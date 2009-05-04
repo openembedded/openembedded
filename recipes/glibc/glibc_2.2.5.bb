@@ -23,8 +23,6 @@ python __anonymous () {
                                    bb.data.getVar('TARGET_OS', d, 1))
 }
 
-PROVIDES_unslung = "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc libc6-unslung"
-
 libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 
 FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir} ${datadir}/zoneinfo ${libdir}/locale"
@@ -195,21 +193,3 @@ do_stage() {
 }
 
 require glibc-package.bbclass
-
-
-# Unslung distribution specific packages follow ...
-
-PACKAGES_unslung = "libc6-unslung libsegfault"
-PACKAGE_ARCH_unslung = "nslu2"
-PACKAGE_NO_GCONV_unslung = "1"
-RDEPENDS_libc6-unslung = "nslu2-linksys-libs"
-RPROVIDES_libc6-unslung = "libc6"
-
-FILES_libc6-unslung = "/lib/librt*"
-
-# For some reason, ldconfig segfaults on nslu2.
-# FILES_libc6-unslung += " /sbin/ldconfig"
-
-# For some reason, libnss_compat causes segmentation faults on nslu2.
-# FILES_libc6-unslung += " /lib/libnss_compat*"
-

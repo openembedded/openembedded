@@ -278,7 +278,7 @@ diff -urNd ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/Makefile gpe-othello-0.2-1/
  install-program: all 
 -	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
 -	strip $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
-+	install -s -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
  	install -d $(DESTDIR)$(PREFIX)/share/pixmaps
  	install -m 644 $(PACKAGE).png $(DESTDIR)$(PREFIX)/share/pixmaps/
  	install -d $(DESTDIR)$(PREFIX)/share/applications

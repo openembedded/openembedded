@@ -125,9 +125,11 @@ def base_dep_prepend(d):
 	# the case where host == build == target, for now we don't work in
 	# that case though.
 	#
-	deps = "shasum-native "
-	if bb.data.getVar('PN', d, True) == "shasum-native":
+	deps = "shasum-native coreutils-native"
+	if bb.data.getVar('PN', d, True) == "shasum-native" or bb.data.getVar('PN', d, True) == "stagemanager-native":
 		deps = ""
+	if bb.data.getVar('PN', d, True) == "coreutils-native":
+		deps = "shasum-native"
 
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
@@ -1234,8 +1236,11 @@ def check_app_exists(app, d):
 	return len(which(path, app)) != 0
 
 def check_gcc3(data):
+	# Primarly used by qemu to make sure we have a workable gcc-3.4.x.
+	# Start by checking for the program name as we build it, was not
+	# all host-provided gcc-3.4's will work.
 
-	gcc3_versions = 'gcc-3.4 gcc34 gcc-3.4.4 gcc-3.4.6 gcc-3.4.7 gcc-3.3 gcc33 gcc-3.3.6 gcc-3.2 gcc32'
+	gcc3_versions = 'gcc-3.4.6 gcc-3.4.4 gcc34 gcc-3.4.7 gcc-3.3 gcc33 gcc-3.3.6 gcc-3.2 gcc32'
 
 	for gcc3 in gcc3_versions.split():
 		if check_app_exists(gcc3, data):

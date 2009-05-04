@@ -1,0 +1,47 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: coreutils-7.1/configure.ac
+===================================================================
+--- coreutils-7.1.orig/configure.ac
++++ coreutils-7.1/configure.ac
+@@ -373,6 +373,20 @@
+ # For a test of uniq: it uses the $LOCALE_FR envvar.
+ gt_LOCALE_FR
+ 
++AC_MSG_CHECKING([whether to build man pages])
++AC_ARG_WITH(manpages, 
++	AS_HELP_STRING([--with-manpages],
++		[Enable building of manpages (default=yes)]),
++	[cu_cv_build_manpages=$enableval],
++	[cu_cv_build_manpages=yes])
++# help2man doesn't work when crosscompiling, as it needs to run the
++# binary that was built.
++if test x"$cross_compiling" = x"yes"; then
++  cu_cv_build_manpages=no
++fi
++AC_MSG_RESULT($cu_cv_build_manpages)
++AM_CONDITIONAL(ENABLE_MANPAGES, test x"$cu_cv_build_manpages" = x"yes")
++
+ AC_CONFIG_FILES(
+   Makefile
+   doc/Makefile
+Index: coreutils-7.1/Makefile.am
+===================================================================
+--- coreutils-7.1.orig/Makefile.am
++++ coreutils-7.1/Makefile.am
+@@ -15,7 +15,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
++if ENABLE_MANPAGES
+ SUBDIRS = lib src doc man po tests gnulib-tests
++else
++SUBDIRS = lib src doc po tests gnulib-tests
++endif
++
+ EXTRA_DIST = cfg.mk maint.mk \
+   .prev-version THANKS-to-translators THANKStt.in \
+   .version \

@@ -7,6 +7,8 @@ PR = "r0"
 
 inherit pkgconfig gpe
 
+SRC_URI += "file://makefile-fix.patch;patch=1"
+
 headers = "displaymigration.h auth.h crypt.h"
 
 do_install() {

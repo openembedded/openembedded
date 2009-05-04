@@ -21,6 +21,8 @@ FILES_bonnie-scripts="/bin"
 
 S="${WORKDIR}/${PN}-${PV}"
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_install () {
 	install -d ${D}/bin
 	install -d ${D}/sbin

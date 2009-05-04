@@ -1,6 +1,6 @@
 inherit canadian-sdk
 
-PR = "r2"
+PR = "r3"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
 

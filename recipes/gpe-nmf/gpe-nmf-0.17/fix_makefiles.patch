@@ -8,8 +8,8 @@ diff -urNd ../gpe-nmf-0.17-r0/gpe-nmf-0.17/backend/Makefile gpe-nmf-0.17/backend
 -install_program: all
 +install-program: all
  	mkdir -p $(DESTDIR)$(PREFIX)/lib
- 	install -s $(BACKEND) $(DESTDIR)$(PREFIX)/lib/$(BACKEND)
- 	for i in $(CODECS); do install -s $$i $(DESTDIR)$(PREFIX)/lib/gpe-nmf/decoders/$$i; done
+ 	install $(BACKEND) $(DESTDIR)$(PREFIX)/lib/$(BACKEND)
+ 	for i in $(CODECS); do install $$i $(DESTDIR)$(PREFIX)/lib/gpe-nmf/decoders/$$i; done
 diff -urNd ../gpe-nmf-0.17-r0/gpe-nmf-0.17/Makefile gpe-nmf-0.17/Makefile
 --- ../gpe-nmf-0.17-r0/gpe-nmf-0.17/Makefile	2004-08-03 03:31:46.000000000 +0100
 +++ gpe-nmf-0.17/Makefile	2004-08-03 12:37:33.000000000 +0100

@@ -1,0 +1,45 @@
+Many MTK devices allow to set distances from 0.1 m and time 0.1 km/h.
+Modify limits accordingly.
+FIXME: Entering non-integer values should be possible.
+Index: mtkbabel-0.8/mtkbabel
+===================================================================
+--- mtkbabel-0.8.orig/mtkbabel	2009-01-20 21:27:52.000000000 +0000
++++ mtkbabel-0.8/mtkbabel	2009-04-28 21:16:41.000000000 +0000
+@@ -241,7 +241,7 @@
+     -p port                  Communication port, default: $port
+     -R                       Recover from disabled log: erase data and reset recording criteria
+     -r time:distance:speed   Set logging criteria (zero to disable):
+-                             every 1-999 seconds, every 10-9999 meters, over 10-999 km/h
++                             every 1-999 seconds, every 1-9999 meters, over 1-999 km/h
+     -s speed                 Serial port speed, default $baudrate baud
+     -t                       Create a gpx file with tracks
+     -v                       Print MTKBabel version and exit
+@@ -376,11 +376,11 @@
+         packet_send(sprintf('PMTK182,1,3,%u', $time * 10));
+         packet_wait('PMTK001,182,1,3');
+     }
+-    if (defined($distance) and (($distance >= 10 and $distance <= 9999) or ($distance == 0))) {
++    if (defined($distance) and (($distance >= 1 and $distance <= 9999) or ($distance == 0))) {
+         packet_send(sprintf('PMTK182,1,4,%u', $distance * 10));
+         packet_wait('PMTK001,182,1,3');
+     }
+-    if (defined($speed) and (($speed >= 10 and $speed <= 999) or ($speed == 0))) {
++    if (defined($speed) and (($speed >= 1 and $speed <= 999) or ($speed == 0))) {
+         packet_send(sprintf('PMTK182,1,5,%u', $speed * 10));
+         packet_wait('PMTK001,182,1,3');
+     }
+Index: mtkbabel-0.8/mtkbabel.1
+===================================================================
+--- mtkbabel-0.8.orig/mtkbabel.1	2009-01-20 21:27:52.000000000 +0000
++++ mtkbabel-0.8/mtkbabel.1	2009-04-28 21:17:29.000000000 +0000
+@@ -124,8 +124,8 @@
+ Recover from disabled log: erase data and reset recording criteria.
+ .TP
+ .BR "\-r" " time:distance:speed"
+-Set logging criteria (zero to disable): every 1-999 seconds, every 10-9999
+-meters, over 10-999 km/h.
++Set logging criteria (zero to disable): every 1-999 seconds, every 1-9999
++meters, over 1-999 km/h.
+ .TP
+ .BR "\-s" " speed"
+ Serial port speed, default

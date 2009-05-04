@@ -1,0 +1,11 @@
+--- /tmp/Makefile.old	2004-08-29 13:59:52.000000000 +0200
++++ gpe-confd-0.16/Makefile	2009-05-01 15:33:00.000000000 +0200
+@@ -32,7 +32,7 @@
+ 
+ install-program: $(PACKAGE)
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	mkdir -p $(DESTDIR)/etc/X11/Xsession.d
+ 	install $(PACKAGE).xs $(DESTDIR)/etc/X11/Xsession.d/70gpe-confd
+ 

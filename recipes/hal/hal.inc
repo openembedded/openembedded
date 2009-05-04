@@ -36,10 +36,11 @@ PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'acpi', '${MACHINE_ARCH}', 
 PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
 
 do_install_append() {
-	install -d ${D}/etc/default/volatiles
-	install -m 0644 ${WORKDIR}/99_hal ${D}/etc/default/volatiles
-        install -d ${D}/etc/dbus-1/event.d
-        install -m 0755 ${WORKDIR}/20hal ${D}/etc/dbus-1/event.d
+	install -d ${D}/${sysconfdir}/default/volatiles
+	install -m 0644 ${WORKDIR}/99_hal ${D}/${sysconfdir}/default/volatiles
+        install -d ${D}/${sysconfdir}/dbus-1/event.d
+        install -m 0755 ${WORKDIR}/20hal ${D}/${sysconfdir}/dbus-1/event.d
+	rm -rf ${D}/${sysconfdir}/rc.d || true
 }
 
 do_stage() {
@@ -58,15 +59,15 @@ pkg_postinst_hal () {
 		exit 1
 	fi
 
-	grep haldaemon /etc/group || addgroup haldaemon
-	grep haldaemon /etc/passwd || adduser --disabled-password --system --home /var/run/hald --no-create-home haldaemon --ingroup haldaemon -g HAL
+	grep haldaemon ${sysconfdir}/group || addgroup haldaemon
+	grep haldaemon ${sysconfdir}/passwd || adduser --disabled-password --system --home /var/run/hald --no-create-home haldaemon --ingroup haldaemon -g HAL
 
-	/etc/init.d/populate-volatile.sh update
+	${sysconfdir}/init.d/populate-volatile.sh update
 
 	DBUSPID=`pidof dbus-daemon`
 
 	if [ "x$DBUSPID" != "x" ]; then
-		/etc/init.d/dbus-1 force-reload
+		${sysconfdir}/init.d/dbus-1 force-reload
 	fi
 }
 

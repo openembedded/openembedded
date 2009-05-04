@@ -1,0 +1,11 @@
+--- /tmp/Makefile.old	2006-04-10 13:41:32.000000000 +0200
++++ gpe-taskmanager-0.20/Makefile	2009-05-01 22:03:35.000000000 +0200
+@@ -32,7 +32,7 @@
+ 
+ install-program: all all-desktop
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	install -d $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	install -m 644 $(PACKAGE).png $(DESTDIR)$(PREFIX)/share/pixmaps/$(PACKAGE).png
+ 	install -d $(DESTDIR)$(PREFIX)/share/applications
