@@ -1,5 +1,5 @@
 require connman.inc
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF += "\
   --disable-gtk-doc \
@@ -31,6 +31,7 @@ EXTRA_OECONF += "\
 
 SRC_URI  = "\
   http://www.kernel.org/pub/linux/network/connman/connman-${PV}.tar.gz \
+  file://connman.dbus \
   file://connman \
 "
 
