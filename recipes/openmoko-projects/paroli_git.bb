@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -19,6 +19,8 @@ RDEPENDS = "\
   python-pygobject \
   dbus-x11 \
   task-fso-compliance \
+  elementary \
+  elementary-themes \
 "
 
 E_CONFIG_DIR="/usr/share/enlightenment/data"
@@ -33,8 +35,8 @@ do_install_append() {
 	#install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
 	install -d ${D}${datadir}/elementary/themes
 	install ${S}/data/default.edj ${D}${datadir}/elementary/themes
-    	install -d ${D}/etc/enlightenment/
-	echo 'E_PROFILE="-profile illume"' > ${D}${sysconfdir}/enlightenment/default_profile
+#    	install -d ${D}/etc/enlightenment/
+#	echo 'E_PROFILE="-profile illume"' > ${D}${sysconfdir}/enlightenment/default_profile
 
     	install -d ${D}${datadir}/pixmaps	
 	install ${S}/data/paroli.png ${D}${datadir}/pixmaps
@@ -48,6 +50,7 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/freesmartphone/oevents
 	install ${S}/data/rules.yaml ${D}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml
 	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/paroli_frameworkd.conf
+#	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/frameworkd.conf
 
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone
 	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml
@@ -72,16 +75,19 @@ exit 0
 pkg_postinst_${PN}() {
 #!/bin/sh
 # post installation script
+echo "*******************************************"
+echo "Paroli post processing"
+echo "*******************************************"
 if [ ! -e ${sysconfdir}/old_frameworkd.conf ] ; then
     echo "Backing up ${sysconfdir}/frameworkd.conf"
     mv ${sysconfdir}/frameworkd.conf ${sysconfdir}/old_frameworkd.conf
 fi
-cp ${sysconfdir}/paroli_frameworkd.conf ${sysconfdir}/frameworkd.conf
-if [ ! -e ${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
-    echo "Backing up ${sysconfdir}/freesmartphone/oevents/rules.yaml"
-    mv ${sysconfdir}/freesmartphone/oevents/rules.yaml ${sysconfdir}/freesmartphone/oevents/old_rules.yaml
-fi
-cp ${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml ${sysconfdir}/freesmartphone/oevents/rules.yaml
+mv ${sysconfdir}/paroli_frameworkd.conf ${sysconfdir}/frameworkd.conf
+#if [ ! -e ${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
+#    echo "Backing up ${sysconfdir}/freesmartphone/oevents/rules.yaml"
+#    mv ${sysconfdir}/freesmartphone/oevents/rules.yaml ${sysconfdir}/freesmartphone/oevents/old_rules.yaml
+#fi
+#cp ${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml ${sysconfdir}/freesmartphone/oevents/rules.yaml
 exit 0
 }
 
@@ -108,6 +114,7 @@ FILES_${PN} += " \
 	${sysconfdir}/paroli \
 	${sysconfdir}/freesmartphone/oevents \
 	${sysconfdir}/paroli_frameworkd.conf \ 
+#	${sysconfdir}/frameworkd.conf \ 
 	${datadir}/lib \
 	${datadir}/bin \
 	${datadir}/applications \
@@ -119,7 +126,6 @@ FILES_${PN} += " \
 FILES_${PN}-theme = " \
 	${E_CONFIG_DIR}/themes \
 	${E_CONFIG_DIR}/config \
-	${sysconfdir}/enlightenment \
 	"
 
 FILES_${PN}-autostart = "${E_CONFIG_DIR}/applications"
@@ -129,11 +135,14 @@ FILES_${PN}-sounds = " \
 	${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml \
 	"
 
-CONFILES_${PN}-theme = " \
-	${sysconfdir}/enlightenment/default_profile \
-	"
+#CONFILES_${PN}-theme = " \
+#	${sysconfdir}/enlightenment/default_profile \
+#	"
+
 CONFFILES_${PN} += " \
+	${sysconfdir}/paroli/paroli.cfg \
 	${sysconfdir}/paroli_frameworkd.conf \
+#	${sysconfdir}/frameworkd.conf \
 	${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml \
 	"
 CONFFILES_${PN}-sounds += " \
