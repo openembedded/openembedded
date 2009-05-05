@@ -5,8 +5,8 @@ DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial"
 
 PROVIDES = "mingw-w32api"
 
-DEFAULT_PREFERENCE = "0"
-DEFAULT_PREFERENCE_sdk-mingw32 = "1"
+DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_mingw32 = "1"
 
 PACKAGES = ""
 
