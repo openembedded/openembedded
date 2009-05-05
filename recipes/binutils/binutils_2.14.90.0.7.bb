@@ -4,7 +4,7 @@ inherit autotools gettext
 DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"
 LICENSE = "GPL"
-PR = "r7"
+PR = "r6"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
