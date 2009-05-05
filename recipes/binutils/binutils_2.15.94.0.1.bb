@@ -2,7 +2,7 @@ DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 inherit autotools gettext
 
