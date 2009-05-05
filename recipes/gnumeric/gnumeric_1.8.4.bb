@@ -1,10 +1,10 @@
 LICENSE = "GPL"
 SECTION = "x11/utils"
 S = "${WORKDIR}/gnumeric-${PV}"
-DEPENDS = "libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui libbonoboui orbit2-native"
+DEPENDS = "gdk-pixbuf-csource-native libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui libbonoboui orbit2-native"
 DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 
-PR = "r1"
+PR = "r0"
 
 PARALLEL_MAKE = ""
 
@@ -14,9 +14,9 @@ SRC_URI += "file://remove-docs.patch;patch=1"
 
 EXTRA_OECONF=" --without-perl "
 
-PACKAGES_DYNAMIC = "gnumeric-plugin-*"
+PACKAGES_DYNAMIC += "gnumeric-plugin-*"
 
-FILES_${PN}-dbg += "${libdir}/gnumeric/1.8.2/plugins/*/.debug"
+FILES_${PN}-dbg += "${libdir}/gnumeric/${PV}/plugins/*/.debug"
 FILES_gnumeric_append = " /usr/lib/libspreadsheet-${PV}.so "
 
 # We need native orbit-idl with target idl files. No way to say it in a clean way:
