@@ -5,9 +5,11 @@ BOOT_ROOT=
 ROOT_DEVICE=
 
 early_setup() {
-    mkdir /proc
+    mkdir -p /proc /sys /mnt /tmp
+
     mount -t proc proc /proc
-    mkdir /mnt
+    mount -t sysfs sysfs /sys
+
     modprobe -q mtdblock
 }
 
