@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -54,6 +54,9 @@ do_install_append() {
 
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone
 	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml
+
+	install -d ${D}${datadir}/dbus-1/system-services/
+	install ${S}/data/dbus/org.tichy.launcher.service ${D}${datadir}/dbus-1/system-services/
 
 	install -d ${D}${datadir}/sounds
 	install ${S}/data/sounds/* ${D}${datadir}/sounds
@@ -121,6 +124,7 @@ FILES_${PN} += " \
 	${datadir}/elementary \
 	${datadir}/paroli \
 	${datadir}/pixmaps \
+	${datadir}/dbus-1/system-services/ \
 	"
 
 FILES_${PN}-theme = " \
