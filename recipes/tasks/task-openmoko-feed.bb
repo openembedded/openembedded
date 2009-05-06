@@ -9,6 +9,7 @@ RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   openmoko-agpsui \
   openmoko-qa-scripts \
+  callrec \
   gypsy \
   hotplug2 \
   linphone \
@@ -24,6 +25,7 @@ RDEPENDS_task-openmoko-feed = "\
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo gpe-contacts \
   leafpad abiword \
   claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
+  telepathy-glib \
   ipkg-link ipkg-utils \
   joe \
   kbdd \
@@ -57,6 +59,7 @@ RDEPENDS_task-openmoko-feed = "\
   classpath \
   gpsdrive \
   gpsd \
+  sms-sentry \
   asterisk \
 #  gnash \
 #  mono \
