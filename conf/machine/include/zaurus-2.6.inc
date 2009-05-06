@@ -10,8 +10,7 @@ ERASEBLOCKSIZE_akita = "0x20000"
 
 EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=${ERASEBLOCKSIZE} --pad --faketime -n" 
 
-EXTRA_IMAGEDEPENDS += "zaurus-updater"
-KEXECBOOT_IMAGEDEPENDS = "zaurus-updater"
+EXTRA_IMAGEDEPENDS += "zaurus-installer"
 
 SERIAL_CONSOLE = "115200 ttyS0"
 
@@ -43,23 +42,5 @@ KERNEL_IMAGE_MAXSIZE = "1294336"
 
 ZAURUS_KERNEL_IMAGETYPE ?= "zImage"
 KERNEL_IMAGETYPE = "${ZAURUS_KERNEL_IMAGETYPE}"
-
-MACHINE_POSTPROCESS_COMMAND = "zaurus_make_installkit"
-
-zaurus_make_installkit () {
-
-	cd ${DEPLOY_DIR_IMAGE}
-	rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/         
-	mkdir installkit-${MACHINE}/
-
-	[ -f "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin" ] && cp ${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin installkit-${MACHINE}/${KERNEL_IMAGETYPE}
-
-	cp updater.sh.${MACHINE} installkit-${MACHINE}/updater.sh
- 
-	tar czf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz installkit-${MACHINE}/
-	md5sum ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz > ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz.md5
-	rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/     
-
-}
 
 require conf/machine/include/kexecboot.inc
