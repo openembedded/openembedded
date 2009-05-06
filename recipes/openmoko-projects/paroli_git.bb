@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r16"
+PR = "r17"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -66,11 +66,11 @@ do_install_append() {
 pkg_postinst_${PN}-autostart() {
 #!/bin/sh
 # post installation script
-if [ -e ${sysconfdir}/X11/Xsession.d/80zhone ]; then
+if [ -x ${IMAGE_ROOTFS}${sysconfdir}/X11/Xsession.d/80zhone ]; then
    echo "*******************************************"
    echo "Deactivating zhone autostart"
    echo "*******************************************"
-   chmod -x ${sysconfdir}/X11/Xsession.d/80zhone || true
+   chmod -x ${IMAGE_ROOTFS}${sysconfdir}/X11/Xsession.d/80zhone || true
 fi
 exit 0
 }
@@ -81,34 +81,34 @@ pkg_postinst_${PN}() {
 echo "*******************************************"
 echo "Paroli post processing"
 echo "*******************************************"
-if [ ! -e ${sysconfdir}/old_frameworkd.conf ] ; then
+if [ ! -e ${IMAGE_ROOTFS}${sysconfdir}/old_frameworkd.conf ] ; then
     echo "Backing up ${sysconfdir}/frameworkd.conf"
-    mv ${sysconfdir}/frameworkd.conf ${sysconfdir}/old_frameworkd.conf
+    mv ${IMAGE_ROOTFS}${sysconfdir}/frameworkd.conf ${IMAGE_ROOTFS}${sysconfdir}/old_frameworkd.conf
 fi
-mv ${sysconfdir}/paroli_frameworkd.conf ${sysconfdir}/frameworkd.conf
-#if [ ! -e ${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
-#    echo "Backing up ${sysconfdir}/freesmartphone/oevents/rules.yaml"
-#    mv ${sysconfdir}/freesmartphone/oevents/rules.yaml ${sysconfdir}/freesmartphone/oevents/old_rules.yaml
-#fi
-#cp ${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml ${sysconfdir}/freesmartphone/oevents/rules.yaml
+mv ${IMAGE_ROOTFS}${sysconfdir}/paroli_frameworkd.conf ${IMAGE_ROOTFS}${sysconfdir}/frameworkd.conf
+if [ ! -e ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
+    echo "Backing up ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/oevents/rules.yaml"
+    mv ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/oevents/rules.yaml ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/oevents/old_rules.yaml
+fi
+cp ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/oevents/rules.yaml
 exit 0
 }
 
 pkg_postinst_${PN}-sounds() {
 #!/bin/sh
 # post installation script
-if [ ! -e ${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml ] ; then
+if [ ! -e /${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml ] ; then
     echo "Backing up ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml"
-    mv ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
-fi;
-cp ${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
+    mv ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
+fi
+cp ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml ${IMAGE_ROOTFS}${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
 exit 0
 }
 
 pkg_postinst_${PN}-theme() {
 #!/bin/sh
 # post installation script
-echo 'E_PROFILE="-profile paroli"' > ${sysconfdir}/enlightenment/default_profile
+echo 'E_PROFILE="-profile paroli"' > ${IMAGE_ROOTFS}${sysconfdir}/enlightenment/default_profile
 exit 0
 }
 
