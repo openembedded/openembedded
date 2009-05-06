@@ -10,10 +10,8 @@ IMAGE_DEVICE_TABLES_h2200 = "device_table-oldmmc.txt"
 
 export IMAGE_BASENAME = "initramfs-kexecboot-image"
 
-KEXECBOOT_IMAGEDEPENDS ?= ""
-
 # avoid circular dependencies
-EXTRA_IMAGEDEPENDS = "${KEXECBOOT_IMAGEDEPENDS}"
+EXTRA_IMAGEDEPENDS = ""
 
 IMAGE_INSTALL = "kexecboot"
 
