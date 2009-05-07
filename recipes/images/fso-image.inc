@@ -133,6 +133,8 @@ fso_rootfs_postprocess() {
     mkdir -p ./etc/profile.d/
     echo "echo 0 0 0 0 >/proc/sys/kernel/printk" >./etc/profile.d/printk.sh
     chmod a+rx ./etc/profile.d/printk.sh
+    # zap broken desktop file
+    mv ./usr/share/applications/htop.desktop ./usr/share/applications/htop.desktop.broken
     # back on track
     cd $curdir
 }
