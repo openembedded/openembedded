@@ -3,7 +3,7 @@ DESCRIPTION = "Point-to-Point Protocol (PPP) daemon"
 HOMEPAGE = "http://samba.org/ppp/"
 DEPENDS = "libpcap"
 LICENSE = "BSD GPLv2"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
         file://ppp-2.4.3-mppe-mppc-1.1.patch;patch=1 \
@@ -39,6 +39,7 @@ do_install_append () {
 	mkdir -p ${D}${bindir}/ ${D}${sysconfdir}/init.d
 	mkdir -p ${D}${sysconfdir}/ppp/ip-up.d/
 	mkdir -p ${D}${sysconfdir}/ppp/ip-down.d/
+	mkdir -p ${D}${sysconfdir}/ppp/peers/
  	install -m 0755 ${WORKDIR}/pon ${D}${bindir}/pon
 	install -m 0755 ${WORKDIR}/poff ${D}${bindir}/poff
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/ppp
