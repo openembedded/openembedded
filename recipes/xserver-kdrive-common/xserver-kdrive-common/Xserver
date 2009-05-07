@@ -126,7 +126,7 @@ case `module_id` in
                 XSERVER=/usr/bin/Xomap ;;
 	"Palm Treo 650")
 		ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor" ;;
-        "Motorola Ezx Platform")
+        "Motorola EZX A780" | "Motorola EZX E680" | "Motorola EZX A1200" | "Motorola EZX A910" | "Motorola EZX E6" | "Motorola EZX E2")
                 ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE}" ;;
 	"Glofiish M800")
                 ARGS="$ARGS -dpi 285 -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor" ;;
