@@ -5,6 +5,8 @@ addtask distribute_sources before do_build after do_fetch
 python do_distribute_sources () {
 	import os, re, bb
 
+	bb.build.exec_func("do_fetch", d)
+
 	l = bb.data.createCopy(d)
 	bb.data.update_data(l)
 
