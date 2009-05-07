@@ -2,7 +2,7 @@ DESCRIPTION = "EFL based widget set for mobile devices"
 LICENSE = "LGPL"
 DEPENDS = "evas ecore edje eet edbus"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 inherit efl
 
@@ -12,7 +12,6 @@ SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary;prot
 S = "${WORKDIR}/elementary"
 
 RDEPENDS_${PN} = "elementary-themes"
-RRECOMMENDS_${PN} = "elementary-tests"
 
 do_compile_append() {
         sed -i -e s:${STAGING_DIR_TARGET}::g \
