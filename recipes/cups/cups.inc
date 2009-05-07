@@ -62,6 +62,13 @@ python do_package_append() {
 	os.system('chmod 0511 %s/install/cups/var/run/cups/certs' % workdir)
 }
 
+do_stage_append() {
+	# Undo mangle of cups_datadir and cups_serverbin
+	sed -e 's:cups_datadir=.*:cups_datadir=${datadir}/cups:g' \
+	    -e 's:cups_serverbin=.*:cups_serverbin=${libdir}/cups:g' \
+	    -i ${STAGING_BINDIR_CROSS}/cups-config
+}
+
 PACKAGES =+ "${PN}-lib ${PN}-libimage"
 
 FILES_${PN}-lib = "${libdir}/libcups.so.*"
