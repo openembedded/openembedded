@@ -1,0 +1,29 @@
+Index: trunk/include/llvm/Config/config.h.cmake
+===================================================================
+--- trunk.orig/include/llvm/Config/config.h.cmake	2009-05-06 16:39:19.957841609 +0200
++++ trunk/include/llvm/Config/config.h.cmake	2009-05-06 16:39:20.185842055 +0200
+@@ -194,7 +194,7 @@
+ #cmakedefine HAVE_LIBPSAPI ${HAVE_LIBPSAPI}
+ 
+ /* Define to 1 if you have the `pthread' library (-lpthread). */
+-#undef HAVE_LIBPTHREAD
++#cmakedefine HAVE_LIBPTHREAD ${HAVE_LIBPTHREAD}
+ 
+ /* Define to 1 if you have the `udis86' library (-ludis86). */
+ #undef HAVE_LIBUDIS86
+Index: trunk/cmake/config-ix.cmake
+===================================================================
+--- trunk.orig/cmake/config-ix.cmake	2009-05-06 16:49:45.121841057 +0200
++++ trunk/cmake/config-ix.cmake	2009-05-06 16:50:25.738552620 +0200
+@@ -98,6 +98,11 @@
+   if( HAVE_PTHREAD_H OR WIN32 )
+     set(ENABLE_THREADS 1)
+   endif()
++
++# FIXME: Actually check for the library
++  if( HAVE_PTHREAD_H )
++    set(HAVE_LIBPTHREAD 1)
++  endif()
+ endif()
+ 
+ if( ENABLE_THREADS )

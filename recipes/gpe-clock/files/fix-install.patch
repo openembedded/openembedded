@@ -1,0 +1,13 @@
+diff --git gpe-clock-0.25/Makefile-orig gpe-clock-0.25/Makefile
+index 4fa59bf..e716fcb 100644
+--- gpe-clock-0.25/Makefile-orig
++++ gpe-clock-0.25/Makefile
+@@ -36,7 +36,7 @@ $(PACKAGE): $(OBJS)
+ 
+ install-program: all
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	install -d $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	install -m 644 $(PACKAGE).png $(DESTDIR)$(PREFIX)/share/pixmaps/
+ 	install -d $(DESTDIR)$(PREFIX)/share/applications
