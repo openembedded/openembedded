@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r22"
+PR ="r23"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
@@ -9,11 +9,13 @@ SRCREV_spitz = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_afeb9260 = "2077e348c2a84901022ad95311b47b70361e6daa"
 
-SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
+SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev-usb;protocol=git \
                  file://fw-env.patch;patch=1 \
                  file://dss2.patch;patch=1 \
+                 file://omap-usb-dev-dfu.patch;patch=1 \
+                 file://dfu-second-patch.patch;patch=1 \ 
 "
-SRCREV_beagleboard = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
+SRCREV_beagleboard = "715c646c0bd3e99d4f964f2b5539d2155ce8f87a"
 PV_beagleboard = "2009.03+${PR}+gitr${SRCREV}"
 
 SRC_URI_omap3evm = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git"
