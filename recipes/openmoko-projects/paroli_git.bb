@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r19"
+PR = "r20"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -67,50 +67,75 @@ do_install_append() {
 
 pkg_postinst_${PN}-autostart() {
 #!/bin/sh
+# do this off or on line
+if [ "x$D" != "x" ]; then
+	ROOTFS=${IMAGE_ROOTFS}
+else
+	ROOTFS=""
+fi
+
 # post installation script
-if [ -x $IMAGE_ROOTFS${sysconfdir}/X11/Xsession.d/80zhone ]; then
+if [ -x $ROOTFS${sysconfdir}/X11/Xsession.d/80zhone ]; then
    echo "*******************************************"
    echo "Deactivating zhone autostart"
    echo "*******************************************"
-   chmod -x $IMAGE_ROOTFS${sysconfdir}/X11/Xsession.d/80zhone || true
+   chmod -x $ROOTFS${sysconfdir}/X11/Xsession.d/80zhone || true
 fi
 exit 0
 }
 
 pkg_postinst_${PN}() {
 #!/bin/sh
+# do this off or on line
+if [ "x$D" != "x" ]; then
+	ROOTFS=${IMAGE_ROOTFS}
+else
+	ROOTFS=""
+fi
 # post installation script
 echo "*******************************************"
 echo "Paroli post processing"
 echo "*******************************************"
-if [ ! -e $IMAGE_ROOTFS${sysconfdir}/old_frameworkd.conf ] ; then
+if [ ! -e $ROOTFS${sysconfdir}/old_frameworkd.conf ] ; then
     echo "Backing up ${sysconfdir}/frameworkd.conf"
-    mv $IMAGE_ROOTFS${sysconfdir}/frameworkd.conf $IMAGE_ROOTFS${sysconfdir}/old_frameworkd.conf
+    mv $ROOTFS${sysconfdir}/frameworkd.conf $ROOTFS${sysconfdir}/old_frameworkd.conf
 fi
-mv $IMAGE_ROOTFS${sysconfdir}/paroli_frameworkd.conf $IMAGE_ROOTFS${sysconfdir}/frameworkd.conf
-if [ ! -e $IMAGE_ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
-    echo "Backing up $IMAGE_ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml"
-    mv $IMAGE_ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml $IMAGE_ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml
+mv $ROOTFS${sysconfdir}/paroli_frameworkd.conf $ROOTFS${sysconfdir}/frameworkd.conf
+if [ ! -e $ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
+    echo "Backing up $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml"
+    mv $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml $ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml
 fi
-cp $IMAGE_ROOTFS${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml $IMAGE_ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml
+cp $ROOTFS${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml
 exit 0
 }
 
 pkg_postinst_${PN}-sounds() {
 #!/bin/sh
-# post installation script
-if [ ! -e /$IMAGE_ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml ] ; then
-    echo "Backing up ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml"
-    mv $IMAGE_ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml $IMAGE_ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
+# do this off or on line
+if [ "x$D" != "x" ]; then
+	ROOTFS=${IMAGE_ROOTFS}
+else
+	ROOTFS=""
 fi
-cp $IMAGE_ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml $IMAGE_ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
+# post installation script
+if [ ! -e /$ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml ] ; then
+    echo "Backing up ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml"
+    mv $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
+fi
+cp $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
 exit 0
 }
 
 pkg_postinst_${PN}-theme() {
 #!/bin/sh
+# do this off or on line
+if [ "x$D" != "x" ]; then
+	ROOTFS=${IMAGE_ROOTFS}
+else
+	ROOTFS=""
+fi
 # post installation script
-echo 'E_PROFILE="-profile paroli"' > $IMAGE_ROOTFS${sysconfdir}/enlightenment/default_profile
+echo 'E_PROFILE="-profile paroli"' > $ROOTFS${sysconfdir}/enlightenment/default_profile
 exit 0
 }
 
