@@ -1,0 +1,11 @@
+--- git/framework/patterns/dbuscache.py.orig	2009-05-08 08:44:12.000000000 -0600
++++ git/framework/patterns/dbuscache.py	2009-05-08 08:44:46.000000000 -0600
+@@ -30,7 +30,7 @@
+         try:
+             obj = _objects[ ( service, object ) ]
+         except KeyError:
+-            obj = _objects[ ( service, object ) ] = _bus.get_object( service, object, introspect=False, follow_name_owner_changes=False )
++            obj = _objects[ ( service, object ) ] = _bus.get_object( service, object, introspect=False, follow_name_owner_changes=True )
+         iface = _ifaces[ ( service, object, interface ) ] = dbus.Interface( obj, interface )
+ 
+     return iface

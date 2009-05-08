@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.5.1+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit distutils update-rc.d
 
@@ -15,6 +15,7 @@ INITSCRIPT_PARAMS = "defaults 29"
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd \
            file://frameworkd.conf \
+	   file://dbuscache.diff;patch=0 \
 	   "
 S = "${WORKDIR}/git"
 
