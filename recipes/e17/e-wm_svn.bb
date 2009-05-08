@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r8"
+PR = "r9"
 
 inherit e update-alternatives
 
@@ -12,6 +12,7 @@ SRC_URI += "\
   file://applications.menu \
   file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
   file://fix-profiles.diff;patch=1;maxrev=39889 \
+  file://illume-flow.patch;patch=0 \
 "
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
