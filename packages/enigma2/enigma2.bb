@@ -43,7 +43,7 @@ RREPLACES_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemp
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090401"
+SRCDATE = "20090509"
 
 # if you want experimental, use:
 REL_MAJOR="2"
