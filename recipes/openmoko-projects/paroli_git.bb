@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r18"
+PR = "r19"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -24,6 +24,9 @@ RDEPENDS = "\
 "
 
 E_CONFIG_DIR="/usr/share/enlightenment/data"
+
+RULES_YAML = rules.yaml
+RULES_YAML_om-gta01 = gta01_rules.yaml
 
 do_install_append() {
        	# install paroli theme
@@ -48,9 +51,8 @@ do_install_append() {
        	echo "${E_CONFIG_DIR}/applications/all/paroli.desktop" >> ${D}${E_CONFIG_DIR}/applications/startup/.order
 
 	install -d ${D}${sysconfdir}/freesmartphone/oevents
-	install ${S}/data/rules.yaml ${D}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml
+	install ${S}/data/${RULES_YAML} ${D}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml
 	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/paroli_frameworkd.conf
-#	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/frameworkd.conf
 
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone
 	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml
