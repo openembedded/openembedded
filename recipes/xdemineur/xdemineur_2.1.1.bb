@@ -1,5 +1,6 @@
 inherit gpe
 LICENSE = "BSD-X"
+PR = "r1"
 
 DEPENDS = "virtual/libx11 libxpm"
 SECTION = "gpe/games"
