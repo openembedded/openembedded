@@ -1,0 +1,13 @@
+diff --git gpe-tetris-0.6-4/Makefile-orig gpe-tetris-0.6-4/Makefile
+index 82c7245..27de49f 100644
+--- gpe-tetris-0.6-4/Makefile-orig
++++ gpe-tetris-0.6-4/Makefile
+@@ -46,7 +46,7 @@ install-program: all
+ 	install -m 644 pixmaps/stop.png $(DESTDIR)$(PREFIX)/share/gpe/pixmaps/default/tetris/stop.png
+ 	install -m 644 pixmaps/pause.png $(DESTDIR)$(PREFIX)/share/gpe/pixmaps/default/tetris/pause.png
+ 	install -m 644 pixmaps/highscores.png $(DESTDIR)$(PREFIX)/share/gpe/pixmaps/default/tetris/highscores.png
+-	install -s $(PACKAGE) $(BIN_PATH)/$(PACKAGE)
++	install $(PACKAGE) $(BIN_PATH)/$(PACKAGE)
+ 	install -d $(DESTDIR)$(PREFIX)/share/applications
+ 	install -d $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	install -m 644 gpe-tetris.desktop $(DESTDIR)$(PREFIX)/share/applications/
