@@ -1,6 +1,8 @@
 require u-boot.inc
 PR ="r23"
 
+FILESPATHPKG =. "u-boot-git:"
+
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_davinci-dvevm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
