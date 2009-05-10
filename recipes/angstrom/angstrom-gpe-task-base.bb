@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r38"
+PR = "r39"
 
 inherit task
 
@@ -10,13 +10,11 @@ RDEPENDS_${PN} = "\
     matchbox \
     matchbox-panel-hacks \
     matchbox-applet-startup-monitor \
-    xcursor-transparent-theme \
     rxvt-unicode \
     gpe-terminal \
     matchbox-keyboard \
     xkbd \
     xkbd-layout-ru \
-    gpe-theme-clearlooks \
     xst \
     xhost \
     xrdb \
@@ -39,3 +37,7 @@ RDEPENDS_${PN} = "\
     ${@base_contains("COMBINED_FEATURES", "bluetooth", "gnome-bluetooth", "",d)} \
     "
 
+RRECOMMENDS_${PN} = " \
+    gpe-theme-clearlooks \
+    xcursor-transparent-theme \
+"
