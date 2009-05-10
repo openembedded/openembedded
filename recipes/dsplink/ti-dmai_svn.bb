@@ -15,7 +15,7 @@ SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRIJESH_GIT_022309;proto
            file://unloadmodules-ti-dmai-apps.sh \
    "
 
-SRCREV = "36"
+SRCREV = "120"
 
 S = "${WORKDIR}/BRIJESH_GIT_022309/davinci_multimedia_application_interface/dmai"
 # Yes, the xdc stuff still breaks with a '.' in PWD

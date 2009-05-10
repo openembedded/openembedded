@@ -1,3 +1,4 @@
 require libart-lgpl.inc
 
-PR = "r2"
+PR = "${INC_PR}.1"
+

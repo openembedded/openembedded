@@ -22,7 +22,7 @@ xdemineur: $(OBJS)
 
 install: all
 	install -d $(DESTDIR)$(PREFIX)/bin
-	install -s xdemineur $(DESTDIR)$(PREFIX)/bin/xdemineur
+	install xdemineur $(DESTDIR)$(PREFIX)/bin/xdemineur
 	install -D -m 644 xdemineur.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/xdemineur.xpm
 	install -D -m 644 familiar/xdemineur.png $(DESTDIR)$(PREFIX)/share/pixmaps/xdemineur.png
 	install -d $(DESTDIR)$(PREFIX)/share/applications

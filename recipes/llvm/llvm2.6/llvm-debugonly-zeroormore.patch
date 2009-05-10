@@ -1,0 +1,13 @@
+Index: lib/Support/Debug.cpp
+===================================================================
+--- lib/Support/Debug.cpp	(Revision 71077)
++++ lib/Support/Debug.cpp	(Arbeitskopie)
+@@ -48,7 +48,7 @@
+   static cl::opt<DebugOnlyOpt, true, cl::parser<std::string> >
+   DebugOnly("debug-only", cl::desc("Enable a specific type of debug output"),
+             cl::Hidden, cl::value_desc("debug string"),
+-            cl::location(DebugOnlyOptLoc), cl::ValueRequired);
++            cl::location(DebugOnlyOptLoc), cl::ValueRequired, cl::ZeroOrMore);
+ #endif
+ }
+ 

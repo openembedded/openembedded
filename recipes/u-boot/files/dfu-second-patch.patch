@@ -1,0 +1,53 @@
+commit 123a795c1f7a3f427672dfba6dfc4d0e5056488b
+Author: Diego Dompe <ddompe@Aleph.(none)>
+Date:   Wed May 6 14:00:21 2009 -0600
+
+    Fix mappings issues
+
+diff --git a/drivers/serial/usbtty.c b/drivers/serial/usbtty.c
+index 2699e0f..bada5e2 100644
+--- a/drivers/serial/usbtty.c
++++ b/drivers/serial/usbtty.c
+@@ -50,7 +50,7 @@
+  * Defines
+  */
+ #define NUM_CONFIGS    1
+-#define MAX_INTERFACES 2
++#define MAX_INTERFACES 3
+ #define NUM_ENDPOINTS  3
+ #define ACM_TX_ENDPOINT 3
+ #define ACM_RX_ENDPOINT 2
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 0086618..a97d232 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -58,7 +58,7 @@
+  */
+ #define CONFIG_ENV_SIZE			SZ_128K	/* Total Size Environment */
+ 						/* Sector */
+-#define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + SZ_128K)
++#define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + SZ_128K + 0x10000)
+ #define CONFIG_SYS_GBL_DATA_SIZE	128	/* bytes reserved for */
+ 						/* initial data */
+ 
+@@ -170,7 +170,8 @@
+ 
+ #define CONFIG_JFFS2_NAND
+ #define CONFIG_JFFS2_CMDLINE
+-#define MTDPARTS_DEFAULT  	"mtdparts=nand0:32k(x-loader),2400k(u-boot),128k(u-boot_env),4096(kernel),-(fs)"
++#define MTDIDS_DEFAULT          "nand0=omapnand"
++#define MTDPARTS_DEFAULT  	"mtdparts=omapnand:512k(x-loader),1920k(u-boot),128k(u-boot_env),4096k(kernel),-(fs)"
+ 
+ /* Environment information */
+ #define CONFIG_BOOTDELAY		10
+@@ -199,6 +200,7 @@
+ 		"run nandargs; " \
+ 		"nboot kernel; " \
+ 		"bootm ${loadaddr}\0" \
++	"mtdparts=omapnand:512k(x-loader),1920k(u-boot),128k(u-boot_env),4096k(kernel),-(fs)\0" \
+ 	"usbtty=cdc_acm\0"\
+ 	"stdout=serial,usbtty\0" \
+ 	"stdin=serial,usbtty\0" \
+diff --git a/tools/dfu-util/configure b/tools/dfu-util/configure
+old mode 100644
+new mode 100755
