@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.29-omap1
-# Sat Apr 25 09:31:25 2009
+# Tue Apr 28 18:41:30 2009
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1566,7 +1566,7 @@ CONFIG_USB_EHCI_HCD=y
 CONFIG_OMAP_EHCI_PHY_MODE=y
 # CONFIG_OMAP_EHCI_TLL_MODE is not set
 CONFIG_USB_EHCI_ROOT_HUB_TT=y
-# CONFIG_USB_EHCI_TT_NEWSCHED is not set
+CONFIG_USB_EHCI_TT_NEWSCHED=y
 # CONFIG_USB_OXU210HP_HCD is not set
 # CONFIG_USB_ISP116X_HCD is not set
 # CONFIG_USB_OHCI_HCD is not set
