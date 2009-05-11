@@ -25,7 +25,7 @@ RDEPENDS = "perl\
 RDEPENDS += "perl-module-exporter-heavy"
 RDEPENDS += "perl-module-file-spec-unix"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 	   file://ppmtojpeg.patch;patch=42 \
@@ -34,7 +34,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 
 PARALLEL_MAKE = ""
 
-EXTRA_OEMAKE = "ENDIANGEN=${S}/buildtools/oeendiangen TARGET_LD=${LD}"
+EXTRA_OEMAKE = "ENDIANGEN=${S}/buildtools/oeendiangen TARGET_LD=${LD} 'STRIPFLAG='"
 
 do_configure() {
 	install -c -m 644 ../Makefile.config .
