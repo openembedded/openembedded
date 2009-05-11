@@ -9,8 +9,8 @@ COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-3d7k"
 
 KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA01.bin"
-KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA02.bin"
-KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-OM3D7K.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-gta02 = "uImage-GTA02.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-gta03 = "uImage-OM3D7K.bin"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
 
@@ -52,6 +52,7 @@ do_configure_prepend() {
 do_deploy_append() {
 	rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.bin
 	ln -sf ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE_ARCH}.bin ${DEPLOY_DIR_IMAGE}/uImage-${MACHINE_ARCH}-latest.bin
+	ln -sf ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE_ARCH}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_SYMLINK_NAME}.bin
 }
 
 # opkg flash update service
