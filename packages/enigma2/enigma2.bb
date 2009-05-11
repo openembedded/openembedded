@@ -8,7 +8,7 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl gst-plugin-decodebin gst-plugin-decodebin2 python-stringold \
 	gst-plugin-queue2 gst-plugin-app \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
-	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
+	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert gst-plugin-audioresample \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
