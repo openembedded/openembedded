@@ -1,7 +1,7 @@
 DESCRIPTION = "MokoGateway: Tasks for a companion server for the Openmoko Linux Distribution"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
-PR = "r5"
+PR = "r6"
 
 inherit task
 
@@ -33,7 +33,7 @@ RRECOMMENDS_task-mokogateway-usbnet = "\
 
 DESCRIPTION_task-mokogateway-bluetooth = "MokoGateway: Bluetooth"
 RDEPENDS_task-mokogateway-bluetooth = "\
-	bluez-utils \
+	bluez4 \
 "
 RRECOMMENDS_task-mokogateway-bluetooth = "\
 	kernel-module-bluetooth \
@@ -84,5 +84,9 @@ RDEPENDS_task-mokogateway-debug = "\
 # will, at least, get the feeds working again.
 #	dfu-util \
 #	openocd \
+#
+# The following packages are obsolete, and have been replaced.
+#	bluez-utils \
+
 RRECOMMENDS_task-mokogateway-debug = "\
 "
