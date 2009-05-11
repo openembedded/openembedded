@@ -12,7 +12,7 @@ require gcc-${PV}.inc
 DEPENDS = "gmp-canadian mpfr-canadian"
 
 require gcc-configure-canadian-sdk.inc
-require gcc-package-canadian-sdk.inc
+require gcc-package-sdk.inc
 
 SRC_URI_append = "file://fortran-cross-compile-hack.patch;patch=1 \
 		  file://pr22133-mingw-path-fixup.patch;patch=1 \
