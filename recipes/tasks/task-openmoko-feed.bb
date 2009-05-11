@@ -10,6 +10,7 @@ RDEPENDS_task-openmoko-feed = "\
   openmoko-agpsui \
   openmoko-qa-scripts \
   callrec \
+  dictator \
   gypsy \
   hotplug2 \
   linphone \
