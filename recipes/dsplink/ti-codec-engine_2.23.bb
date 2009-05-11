@@ -9,23 +9,20 @@ INSANE_SKIP_${PN} = True
 
 inherit module
 
-# disable this package for now, while we're in test mode
-DEFAULT_PREFERENCE = "-1"
-
 # tconf from xdctools dislikes '.' in pwd :/
 PV = "223"
 
 # Get CE tarball from TI website, place in sources and calculate md5sum
 # Look for tarball at https://www-a.ti.com/downloads/sds_support/targetcontent/CE/index.html
 
-SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_23.tar.gz \
+SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_23_01.tar.gz \
            file://loadmodules-ti-dsplink-apps.sh \
            file://unloadmodules-ti-dsplink-apps.sh \
            file://loadmodules-ti-codec-engine-apps.sh \
            file://unloadmodules-ti-codec-engine-apps.sh \
 "
 
-S = "${WORKDIR}/codec_engine_2_23"
+S = "${WORKDIR}/codec_engine_2_23_01"
 
 ###########
 
@@ -167,7 +164,7 @@ do_compile () {
       DSPLINK_REPO="${DSPLINK}/.." \
       LINUXKERNEL_INSTALL_DIR="${STAGING_KERNEL_DIR}" \
       MVTOOL_PREFIX="${TARGET_PREFIX}" \
-      .clean default
+      clean default
 
     # CMEM - Build the cmem kernel module and associated test apps
     # TODO - Still need to clean up UCTOOLs - don't really want to build UC here - it's not good to just build with MVTOOLS (GLIBC) 
