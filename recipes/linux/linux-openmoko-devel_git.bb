@@ -6,11 +6,11 @@ DESCRIPTION_${PN} = "Linux ${KERNEL_VERSION} kernel for the Openmoko Neo GSM Sma
 DEFAULT_PREFERENCE = "-1"
 
 KERNEL_RELEASE = "2.6.28"
-KERNEL_VERSION = "2.6.29-rc3-g537f7da-dirty"
+KERNEL_VERSION = "2.6.29-rc3"
 
 OMV = "andy-tracking"
 PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
