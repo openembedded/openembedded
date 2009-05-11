@@ -3,11 +3,11 @@ DEPENDS += "autoconf213-native cairo alsa-lib sqlite3"
 
 PV = "0.9+1.0b2pre"
 MOZPV = "1.0b2pre"
-PR = "r3"
+PR = "r4"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=451c1f1753f0 \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=9435ee77dda3 \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=8c9a6d851018 \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=c24b8b4ade53 \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
 "
@@ -60,7 +60,7 @@ do_install() {
 	install -d ${D}/${libdir}
 	tar xjf ${S}/objdir/mobile/dist/fennec-${MOZPV}*.tar.bz2 -C ${D}/${libdir}
 	# remove x86 binary
-	rm ${D}/${libdir}/fennec/xulrunner/nsinstall
+	rm ${D}/${libdir}/fennec/xulrunner/nsinstall ||true
         install -d ${D}${datadir}/applications
         install -d ${D}${datadir}/pixmaps
         install -m 0644 ${WORKDIR}/mozilla-${PN}.desktop ${D}${datadir}/applications/
