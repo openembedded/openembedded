@@ -16,8 +16,8 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
-RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska gst-plugins-icydemux \
-	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc
+RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska gst-plugin-icydemux \
+	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
 RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux gst-plugin-icydemux"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
