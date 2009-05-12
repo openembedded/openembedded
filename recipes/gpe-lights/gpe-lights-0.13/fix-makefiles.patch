@@ -278,7 +278,7 @@ diff -urNd ../gpe-lights-0.12-r0/gpe-lights-0.12/Makefile gpe-lights-0.12/Makefi
  install-program: all 
 -	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
 -	strip $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
-+	install -s -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
  	install -d $(DESTDIR)$(PREFIX)/share/pixmaps
  	install -d $(DESTDIR)$(PREFIX)/share/applications
  	install -m 644 $(PACKAGE).png $(DESTDIR)$(PREFIX)/share/pixmaps/
