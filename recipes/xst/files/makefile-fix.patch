@@ -1,0 +1,11 @@
+--- /tmp/Makefile.old	2005-08-27 01:13:47.000000000 +0200
++++ xst-0.15/Makefile	2009-05-01 15:48:15.000000000 +0200
+@@ -32,7 +32,7 @@
+ 
+ install-program: $(PACKAGE)
+ 	mkdir -p $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 
+ clean:
+ 	rm -f $(PACKAGE) $(OBJS) $(DEPS)
