@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r112"
+PR = "r113"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -34,6 +34,8 @@ SRC_URI = "file://functions \
            file://save-rtc.sh"
 
 SRC_URI_append_arm = " file://alignment.sh"
+
+SRC_URI_append_openmoko = " file://g_ether.sh"
 
 KERNEL_VERSION = ""
 
@@ -77,6 +79,9 @@ do_install () {
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		install -m 0755 ${WORKDIR}/alignment.sh	${D}${sysconfdir}/init.d
 	fi
+#	if [ "${DISTRO}" = "openmoko" ]; then
+#		install -m 0755 ${WORKDIR}/g_ether.sh	${D}${sysconfdir}/init.d
+#	fi
 #
 # Install device dependent scripts
 #
@@ -122,6 +127,9 @@ do_install () {
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		ln -sf	../init.d/alignment.sh	${D}${sysconfdir}/rcS.d/S06alignment
 	fi
+#	if [ "${DISTRO}" = "openmoko" ]; then
+#		ln -sf	../init.d/g_ether.sh	${D}${sysconfdir}/rcS.d/S02g_ether.sh
+#	fi
 
 	install -m 0755		${WORKDIR}/device_table.txt		${D}${sysconfdir}/device_table
 }
@@ -129,4 +137,10 @@ do_install () {
 # Angstrom doesn't support devfs
 do_install_append_angstrom () {
 	rm ${D}${sysconfdir}/init.d/devices ${D}${sysconfdir}/rcS.d/S05devices
+}
+
+# Oepnmoko persistent USB networking
+do_install_append_openmoko () {
+	install -m 0755 ${WORKDIR}/g_ether.sh	${D}${sysconfdir}/init.d
+	ln -sf	../init.d/g_ether.sh	${D}${sysconfdir}/rcS.d/S02g_ether.sh
 }
