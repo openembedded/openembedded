@@ -2,7 +2,7 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "X11 Resize and Rotate extension library"
 LICENSE = "BSD-X"
-DEPENDS += "randrproto libxrender-native libxext-native"
+DEPENDS += "randrproto-native libxrender-native libxext-native"
 PR = "r0"
 PE = "1"
 
