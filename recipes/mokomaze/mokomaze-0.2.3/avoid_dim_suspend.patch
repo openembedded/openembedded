@@ -1,0 +1,14 @@
+diff -r fd8e721228a3 data/config.json
+--- a/data/config.json	Mon May 04 10:29:40 2009 +0200
++++ b/data/config.json	Mon May 04 11:28:27 2009 +0200
+@@ -20,8 +20,8 @@
+     },
+ 
+     "exec": {
+-        "init": "",
+-        "final": ""
++        "init": "bus-send --system --type=method_call --dest=org.shr.ophonekitd.Usage /org/shr/ophonekitd/Usage org.shr.ophonekitd.Usage.RequestResource string:Display",
++        "final": "bus-send --system --type=method_call --dest=org.shr.ophonekitd.Usage /org/shr/ophonekitd/Usage org.shr.ophonekitd.Usage.ReleaseResource string:Display"
+     }
+ 
+ }
