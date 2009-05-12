@@ -6,3 +6,4 @@ DESCRIPTION = "GPE configuration daemon"
 LICENSE = "GPL"
 PR = "r1"
 
+SRC_URI += "file://makefile-fix.patch;patch=1"
