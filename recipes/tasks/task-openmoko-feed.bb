@@ -27,6 +27,8 @@ RDEPENDS_task-openmoko-feed = "\
   leafpad abiword \
   claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
   telepathy-python \
+  mokomaze \
+  omnewrotate \
   ipkg-link ipkg-utils \
   joe \
   kbdd \
