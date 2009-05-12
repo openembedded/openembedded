@@ -12,13 +12,14 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
+	gst-plugin-apetag gst-plugin-icydemux \
 	glibc-gconv-iso8859-15"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
-RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska gst-plugin-icydemux \
+RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
 	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
-RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux gst-plugin-icydemux"
+RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
 # enigma2 and enigma2-plugins produce enigma2-plugin-*.
