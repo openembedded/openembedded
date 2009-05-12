@@ -5,7 +5,7 @@ DEPENDS = "popt"
 RDEPENDS = "cron"
 SECTION = "admin"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/l/logrotate/logrotate_${PV}.orig.tar.gz \
 	   file://logrotate-3.7.1.patch;patch=1 \
@@ -21,7 +21,7 @@ do_compile() {
 
 do_install () {
     # Install the binary and conf file
-    install -D -s -m 0755 ${S}/logrotate ${D}${base_sbindir}/logrotate
+    install -D -m 0755 ${S}/logrotate ${D}${base_sbindir}/logrotate
     install -D -m 0644 ${WORKDIR}/logrotate.conf ${D}${sysconfdir}/logrotate.conf
     install -m 0755 -d ${D}${sysconfdir}/logrotate.d
 }
