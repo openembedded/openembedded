@@ -26,7 +26,7 @@ RDEPENDS_task-openmoko-feed = "\
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo gpe-contacts \
   leafpad abiword \
   claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
-  telepathy-glib \
+  telepathy-python \
   ipkg-link ipkg-utils \
   joe \
   kbdd \
