@@ -7,7 +7,7 @@
 -	install -sD $(PROG) $(DESTDIR)$(PREFIX)/bin/$(PROG)
 -	install -D -m 644 $(PROG)rc $(DESTDIR)/etc/$(PROG)rc
 +	install -d $(DESTDIR)$(PREFIX)/bin
-+	install -s $(PROG) $(DESTDIR)$(PREFIX)/bin/$(PROG)
++	install $(PROG) $(DESTDIR)$(PREFIX)/bin/$(PROG)
 +	install -d $(DESTDIR)/etc
 +	install -m 644 $(PROG)rc $(DESTDIR)/etc/$(PROG)rc
  	install -d $(DESTDIR)/etc/X11/Xsession.d
