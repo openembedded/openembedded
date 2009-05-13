@@ -87,11 +87,7 @@ fi
 [ -d /etc/modprobe.d ] || mkdir /etc/modprobe.d
 echo "options g_ether $daddr $haddr" >/etc/modprobe.d/g_ether.conf
 
-# And now, since this is first boot, we need to probe the module
-modprobe g_ether 2>/dev/null || true
-
-# try to slap the interface into working the first time
-ifdown usb0 || true
-ifup usb0 || true
+# And now, since this is first boot, make sure the module gets probed
+echo "g_ether" > /etc/modutils/g_ether
 
 fi
