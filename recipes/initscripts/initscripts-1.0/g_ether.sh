@@ -28,19 +28,19 @@ if [ -z "$da" ] ; then
     # Ok, this is ugly.  We run before udev, so we need to rummage about in
     # /sys to see if we have an identity partition, and create the device
     # node if it doesn't already exist.
-    if [ ! -e /dev/mtd5ro -a -e /sys/class/mtd/mtd5ro/dev ] ; then
-      majmin=`sed -e 's|:| |' /sys/class/mtd/mtd5ro/dev`
-      mknod /dev/mtd5ro c $majmin
+    if [ ! -e /dev/mtd5 -a -e /sys/class/mtd/mtd5/dev ] ; then
+      majmin=`sed -e 's|:| |' /sys/class/mtd/mtd5/dev`
+      mknod /dev/mtd5 c $majmin
     fi
 
     # We should have the device node now.
-    if [ -e /dev/mtd5ro ] ; then
+    if [ -e /dev/mtd5 ] ; then
 
       # The partition is an ext2 filesystem; we probably should mount the
       # thing using a loopback mount and then read the correct file from it,
       # but we're running way early in the boot; not only will that be slow,
       # there's a good chance it may not even work (udev hasn't run yet).
-      da=`strings /dev/mtd5ro | grep ^U: | sed -n -e 's|U:\(..:..:..:..:..:..\).*|\1|p'`
+      da=`strings /dev/mtd5 | grep ^U: | sed -n -e 's|U:\(..:..:..:..:..:..\).*|\1|p'`
 
     fi
 
@@ -89,5 +89,9 @@ echo "options g_ether $daddr $haddr" >/etc/modprobe.d/g_ether.conf
 
 # And now, since this is first boot, we need to probe the module
 modprobe g_ether 2>/dev/null || true
+
+# try to slap the interface into working the first time
+ifdown usb0 || true
+ifup usb0 || true
 
 fi
