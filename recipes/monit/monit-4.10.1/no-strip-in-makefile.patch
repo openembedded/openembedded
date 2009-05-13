@@ -1,0 +1,11 @@
+--- monit-4.10.1/Makefile.in.orig	2009-05-10 21:19:00.000000000 -0500
++++ monit-4.10.1/Makefile.in	2009-05-10 21:19:11.000000000 -0500
+@@ -39,7 +39,7 @@ MODE_CONF       = 600
+ MODE_DIRS       = 755
+ 
+ INSTALL         = @INSTALL@ 
+-INSTALL_PROG    = $(INSTALL) -m $(MODE_PROGS) -s
++INSTALL_PROG    = $(INSTALL) -m $(MODE_PROGS)
+ INSTALL_FILE    = $(INSTALL) -m $(MODE_FILES)
+ INSTALL_DIR     = $(INSTALL) -m $(MODE_DIRS) -d
+ 

@@ -6,4 +6,7 @@ DESCRIPTION = "Sokoban game for GTK"
 PRIORITY = "optional"
 PR = "r1"
 
-SRC_URI += "file://fix_makefiles.patch;patch=1"
+SRC_URI += " \
+            file://fix_makefiles.patch;patch=1 \
+            file://fix_install.patch;patch=1 \
+           "

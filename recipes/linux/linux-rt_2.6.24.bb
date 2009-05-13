@@ -5,7 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
 
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;p=1 \
@@ -68,6 +68,7 @@ http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-DTS.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-sata-pm.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-fix-large-file-transfer.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-default-configuration.patch;patch=1 \
+file://defconfig \
 "
 
 # Last 5 patches in the series, for crypto stuff. The 2nd of these is created

@@ -3,6 +3,7 @@ LICENSE = "GPL"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "virtual/libx11 startup-notification glib-2.0 libmatchbox"
+PR = "r1"
 
 inherit gpe pkgconfig
 

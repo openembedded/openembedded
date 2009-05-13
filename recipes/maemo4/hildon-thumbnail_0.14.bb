@@ -1,6 +1,6 @@
 require hildon-thumbnail.inc
 
-DEPENDS = "libosso gnome-vfs gconf gdk-pixbuf glib-2.0"
+DEPENDS = "libosso gnome-vfs gconf gtk+ glib-2.0"
 
 PR = "r1"
 

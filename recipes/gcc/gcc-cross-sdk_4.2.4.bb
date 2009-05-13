@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "${INC_PR}.1"
 
 inherit sdk
 

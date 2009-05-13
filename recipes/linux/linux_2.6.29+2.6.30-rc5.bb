@@ -1,6 +1,6 @@
 require linux.inc
 
-KERNEL_RELEASE = "2.6.30-rc3"
+KERNEL_RELEASE = "2.6.30-rc5"
 OLD_KERNEL_RELEASE = "2.6.29"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}"
 PR = "r1"
