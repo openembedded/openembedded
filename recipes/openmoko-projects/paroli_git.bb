@@ -34,7 +34,9 @@ do_install_append() {
        	install ${S}/data/e-config/paroli.edj ${D}${E_CONFIG_DIR}/themes/
        	install -d ${D}${E_CONFIG_DIR}/config/paroli
        	install ${S}/data/e-config/paroli/* ${D}${E_CONFIG_DIR}/config/paroli/
-       	install -d ${D}${E_CONFIG_DIR}/themes
+       	install -d ${D}${E_CONFIG_DIR}/config/paroli-illume
+       	install ${S}/data/e-config/paroli-illume/* ${D}${E_CONFIG_DIR}/config/paroli-illume/
+       	#install -d ${D}${E_CONFIG_DIR}/themes
 	#install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
 	install -d ${D}${datadir}/elementary/themes
 	install ${S}/data/default.edj ${D}${datadir}/elementary/themes
