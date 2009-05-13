@@ -1,3 +1,5 @@
+LICENSE = "MIT"
+
 # Set some defaults
 
 MACHINE_TASK_PROVIDER = "task-base-extended"
@@ -46,5 +48,6 @@ IMAGE_INSTALL = "\
     ${GPE_EXTRA_INSTALL}"
 
 ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'
+ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "demo", "set_image_autologin; ", "",d)}'
 
 inherit image
