@@ -17,4 +17,5 @@ do_configure_prepend() {
         exit 0
 }
 
+FILES_${PN} += "${datadir}"
 
