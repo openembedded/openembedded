@@ -65,6 +65,7 @@ SRC_URI_append_sh4  = " file://sh_unwind.patch;patch=1 \
 		      "
 # Language Overrides
 FORTRAN = ""
+FORTRAN_linux-gnueabi = ",fortran"
 JAVA = ""
 
 EXTRA_OECONF_BASE = "  --enable-cheaders=c_std --enable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"
