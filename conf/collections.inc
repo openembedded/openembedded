@@ -1,9 +1,6 @@
 # Take a list of directories in COLLECTIONS, in priority order (highest to
 # lowest), and use those to populate BBFILES, BBFILE_COLLECTIONS,
-# BBFILE_PATTERN_*, and BBFILE_PRIORITY_*.  By default, COLLECTIONS is
-# prepopulated with the locations the user specified in their BBPATH.
-# Note that it will not overwrite existing BBFILES or BBFILE_* variables, so
-# you'll need to remove those from your config in order to use this.
+# BBFILE_PATTERN_*, and BBFILE_PRIORITY_*.
 #
 # Specifying an archive in COLLECTIONS is also supported.  Any archives of a
 # supported format will be unpacked into COLLECTIONS_UNPACKDIR and used from
@@ -44,8 +41,8 @@ def collection_unpack(collection, name, d):
             pass
         else:
             if oldmd5sum == md5sum:
-                bb.debug(1, "Using existing %s for collection %s" % (outpath, name))
-                return outpath
+                bb.note("Using existing %s for collection '%s'" % (outpath, name))
+                return outpath, False
 
         bb.note("Removing old unpacked collection at %s" % outpath)
         os.system("rm -rf %s" % outpath)
@@ -69,7 +66,7 @@ def collection_unpack(collection, name, d):
     md5out = open(md5file, "w")
     md5out.write(md5sum)
     md5out.close()
-    return outpath
+    return outpath, True
 
 def collections_setup(d):
     """ Populate collection and bbfiles metadata from the COLLECTIONS var. """
@@ -85,21 +82,30 @@ def collections_setup(d):
     collections = d.getVar("COLLECTIONS", 1)
     if not collections:
         return
-    globbed = (glob(path) for path in collections.split())
-    collections = list(chain(*globbed))
+
+    bb.debug(1, "Processing COLLECTIONS (%s)" % collections)
+
+    globbed = []
+    for path in collections.split():
+        paths = glob(os.path.normpath(path))
+        if not paths:
+            bb.msg.warn(None, "No matches in filesystem for %s in COLLECTIONS" % path)
+        globbed += paths
+    collections = globbed
 
     collectionmap = {}
     namemap = {}
     for collection in collections:
-        if collection.endswith(os.sep):
-            collection = collection[:-1]
         basename = os.path.basename(collection).split(os.path.extsep)[0]
         if namemap.get(basename):
             basename = "%s-%s" % (basename, hash(collection))
         namemap[basename] = collection
         collectionmap[collection] = basename
 
-    for (collection, priority) in izip(collectionmap, xrange(len(collections), 0, -1)):
+    unpackedthisexec = False
+    oldbbpath = d.getVar("BBPATH", 1)
+    bbpath = (oldbbpath or "").split(":")
+    for (collection, priority) in izip(collections, xrange(len(collections), 0, -1)):
         if not os.path.exists(collection):
             bb.fatal("Collection %s does not exist" % collection)
 
@@ -109,18 +115,39 @@ def collections_setup(d):
 
         if not os.path.isdir(collection):
             del collectionmap[collection]
-            unpacked = collection_unpack(collection, name, d)
+            unpacked, unpackedthisexec = collection_unpack(collection, name, d)
             if unpacked:
                 collection = unpacked
                 collectionmap[collection] = name
+                for dir in glob("%s/*/" % collection):
+                    if not dir in bbpath:
+                        bbpath.append(dir)
             else:
                 bb.fatal("Unable to unpack collection %s" % collection)
+        else:
+            if not collection in bbpath:
+                bbpath.append(collection)
 
         setifunset("BBFILE_PATTERN_%s" % name, "^%s/" % collection)
         setifunset("BBFILE_PRIORITY_%s" % name, str(priority))
 
     setifunset("BBFILE_COLLECTIONS", " ".join(collectionmap.values()))
     setifunset("BBFILES", " ".join(collectionmap.keys()))
+
+    # Strip out the fallback bitbake.conf from BB_RUN_LOCATION
+    bbpath = [os.path.realpath(dir) for dir in bbpath if os.path.exists(dir)]
+    try:
+        bbpath.remove(os.path.realpath(bb.data.expand("${BB_RUN_LOCATION}/../share/bitbake", d)))
+    except (OSError, ValueError):
+        pass
+
+    from sets import Set
+    d.setVar("BBPATH", ":".join(bbpath))
+    if unpackedthisexec or Set(bbpath).symmetric_difference(Set(oldbbpath.split(":"))):
+        bb.debug(1, "Re-executing bitbake with BBPATH of %s" % d.getVar("BBPATH", 0))
+        import sys
+        os.environ["BBPATH"] = d.getVar("BBPATH", 0)
+        os.execvpe("bitbake", sys.argv, os.environ)
 
 addhandler collections_eh
 python collections_eh () {
