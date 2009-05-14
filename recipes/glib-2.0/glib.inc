@@ -22,9 +22,12 @@ FILES_gobject-2.0 = "${libdir}/libgobject-2.0.so.*"
 FILES_gio-2.0 = "${libdir}/libgio-2.0.so.*"
 FILES_gthread-2.0 = "${libdir}/libgthread-2.0.so.*"
 
-# Let the gthread library end up in glib package
-# for compatibility.
+# Let various glib components end up in glib package
+# for compatibility (with binary packages from Maemo).
 FILES_gthread-2.0_chinook-compat = ""
+FILES_gmodule-2.0_chinook-compat = ""
+FILES_gobject-2.0_chinook-compat = ""
+FILES_gio-2.0_chinook-compat = ""
 
 EXTRA_OECONF = "--disable-debug "
 

@@ -4,6 +4,8 @@ LICENSE = "LGPL"
 
 ART_CONFIG = "${HOST_ARCH}/art_config.h"
 
+INC_PR = "r4"
+
 # can't use gnome.oeclass due to _ in filename
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libart_lgpl/2.3/libart_lgpl-${PV}.tar.bz2 \
        file://${ART_CONFIG} \
@@ -27,7 +29,6 @@ EXTRA_OECONF = "--disable-gtk-doc"
 # enforced.
 export MKDIR_P = "mkdir -p"
 export mkdir_p = "mkdir -p"
-export INSTALL = "${STAGING_BINDIR_NATIVE}/install-sh"
 
 do_stage() {
 	autotools_stage_includes

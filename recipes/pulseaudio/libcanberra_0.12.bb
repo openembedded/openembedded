@@ -1,8 +1,10 @@
 DESCRIPTION = "Libcanberra is an implementation of the XDG Sound Theme and Name Specifications, for generating event sounds on free desktops."
 LICENSE = "LGPL"
-DEPENDS = "gtk+ pulseaudio alsa-lib"
+DEPENDS = "gtk+ pulseaudio alsa-lib gstreamer"
 
-inherit gconf autotools
+PR = "r1"
+
+inherit gnome
 
 SRC_URI = "http://0pointer.de/lennart/projects/libcanberra/libcanberra-${PV}.tar.gz"
 
@@ -13,10 +15,9 @@ do_configure() {
 	oe_runconf
 }
 
-FILES_${PN} += "${libdir}/gtk-2.0/modules/ ${datadir}/gnome"
-FILES_${PN}-dbg += "${libdir}/gtk-2.0/modules/.debug"
-
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
+FILES_${PN} += "${libdir}/gtk-2.0/modules/ ${datadir}/gnome ${libdir}/*/*.so"
+FILES_${PN}-dbg += "${libdir}/gtk-2.0/modules/.debug ${libdir}/*/.debug"
+FILES_${PN}-dev += "${libdir}/*/*.a"
 
 do_stage() {
 	autotools_stage_all

@@ -27,3 +27,16 @@ diff -urNd ../gsoko-0.4.2-gpe5-r0/gsoko-0.4.2-gpe5/Makefile gsoko-0.4.2-gpe5/Mak
  
  clean:
  	rm -f *.o
+Index: Makefile
+===================================================================
+--- a/Makefile	(Revision 9905)
++++ b/Makefile	(Arbeitskopie)
+@@ -29,7 +29,7 @@
+ 
+ install-program: gsoko gsoko.desktop
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s gsoko $(DESTDIR)$(PREFIX)/bin/gsoko
++	install  gsoko $(DESTDIR)$(PREFIX)/bin/gsoko
+ 	install -d $(DESTDIR)$(PREFIX)/share/gsoko/img
+ 	install -d $(DESTDIR)$(PREFIX)/share/gsoko/levels
+ 	for i in $(LEVELS); do install -m 644 levels/$$i.lev $(DESTDIR)$(PREFIX)/share/gsoko/levels/$$i.lev; done

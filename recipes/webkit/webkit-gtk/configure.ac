@@ -2,7 +2,7 @@ AC_PREREQ(2.59)
 
 m4_define([webkit_major_version], [1])
 m4_define([webkit_minor_version], [1])
-m4_define([webkit_micro_version], [4])
+m4_define([webkit_micro_version], [6])
 
 AC_INIT([WebKit],[webkit_major_version.webkit_minor_version.webkit_micro_version],[http://bugs.webkit.org/])
 
@@ -24,7 +24,7 @@ AC_CONFIG_SRCDIR([WebCore/config.h])
 
 dnl # Libtool library version, not to confuse with API version
 dnl # see http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html#Libtool-versioning
-LIBWEBKITGTK_VERSION=4:0:2
+LIBWEBKITGTK_VERSION=6:0:4
 AC_SUBST([LIBWEBKITGTK_VERSION])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects tar-ustar])
@@ -183,7 +183,7 @@ LIBXML_REQUIRED_VERSION=2.6
 
 # minimum GTK+ base dependencies
 PANGO_REQUIRED_VERSION=1.0
-GTK_REQUIRED_VERSION=2.8
+GTK_REQUIRED_VERSION=2.10
 
 # optional modules
 LIBSOUP_REQUIRED_VERSION=2.25.91
@@ -191,6 +191,7 @@ LIBXSLT_REQUIRED_VERSION=1.1.7
 SQLITE_REQUIRED_VERSION=3.0
 GSTREAMER_REQUIRED_VERSION=0.10
 GNOME_KEYRING_REQUIRED_VERSION=2.26.0
+ENCHANT_REQUIRED_VERSION=0.22
 
 # Available modules
 #
@@ -199,7 +200,12 @@ GNOME_KEYRING_REQUIRED_VERSION=2.26.0
 #
 # todo: webcore gtk
 WEBKIT_CHECK_DEPENDENCIES([glib unicode])
-                          
+
+GETTEXT_PACKAGE=$PACKAGE
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
+                   [The gettext catalog name])
+
 PKG_CHECK_MODULES(LIBXML, libxml-2.0 >= $LIBXML_REQUIRED_VERSION)
 AC_SUBST(LIBXML_CFLAGS)
 AC_SUBST(LIBXML_LIBS)
@@ -218,6 +224,7 @@ if test "$with_target" = "directfb"; then
 else
    PKG_CHECK_MODULES(CAIRO, cairo >= $CAIRO_REQUIRED_VERSION)
    PKG_CHECK_MODULES(GTK, gtk+-2.0 >= $GTK_REQUIRED_VERSION)
+   PKG_CHECK_MODULES(ENCHANT, enchant >= $ENCHANT_REQUIRED_VERSION)
 
    if test "$with_target" = "x11" && test "$os_win32" = "no"; then
       # check for XT
@@ -244,6 +251,8 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(CAIRO_CFLAGS)
 AC_SUBST(CAIRO_LIBS)
+AC_SUBST(ENCHANT_CFLAGS)
+AC_SUBST(ENCHANT_LIBS)
 
 # check whether to build with debugging enabled
 AC_MSG_CHECKING([whether to do a debug build])
@@ -286,6 +295,14 @@ AC_ARG_ENABLE(channel_messaging,
                              [enable HTML5 channel messaging support [default=no]]),
               [],[enable_channel_messaging="no"])
 AC_MSG_RESULT([$enable_channel_messaging])
+
+# check whether to enable JavaScript debugger/profiler support
+AC_MSG_CHECKING([whether to enable JavaScript debugger/profiler support])
+AC_ARG_ENABLE(javascript_debugger,
+              AC_HELP_STRING([--enable-javascript-debugger],
+                             [enable JavaScript debugger/profiler support [default=yes]]),
+              [],[enable_javascript_debugger="yes"])
+AC_MSG_RESULT([$enable_javascript_debugger])
 
 # check whether to enable HTML5 Offline Web Applications support
 AC_MSG_CHECKING([whether to enable HTML5 offline web applications support])
@@ -625,6 +642,7 @@ AM_CONDITIONAL([ENABLE_DEBUG],[test "$enable_debug" = "yes"])
 AM_CONDITIONAL([ENABLE_DASHBOARD_SUPPORT],[test "$enable_dashboard_support" = "yes"])
 AM_CONDITIONAL([ENABLE_3D_TRANSFORMS],[test "$enable_3D_transforms" = "yes"])
 AM_CONDITIONAL([ENABLE_CHANNEL_MESSAGING],[test "$enable_channel_messaging" = "yes"])
+AM_CONDITIONAL([ENABLE_JAVASCRIPT_DEBUGGER],[test "$enable_javascript_debugger" = "yes"])
 AM_CONDITIONAL([ENABLE_OFFLINE_WEB_APPLICATIONS],[test "$enable_offline_web_applications" = "yes"])
 AM_CONDITIONAL([ENABLE_DOM_STORAGE],[test "$enable_dom_storage" = "yes"])
 AM_CONDITIONAL([ENABLE_DATABASE],[test "$enable_database" = "yes"])
@@ -651,6 +669,7 @@ AC_CONFIG_FILES([
 GNUmakefile
 WebKit/gtk/webkit-1.0.pc:WebKit/gtk/webkit.pc.in
 WebKit/gtk/webkit/webkitversion.h
+WebKit/gtk/docs/GNUmakefile
 WebKit/gtk/docs/version.xml
 ]
 )
@@ -673,6 +692,7 @@ Features:
  Dashboard support                                        : $enable_dashboard_support
  Geolocation support                                      : $enable_geolocation
  GNOME Keyring support                                    : $enable_gnomekeyring
+ JavaScript debugger/profiler support                     : $enable_javascript_debugger
  HTML5 offline web applications support                   : $enable_offline_web_applications
  HTML5 channel messaging support                          : $enable_channel_messaging
  HTML5 client-side session and persistent storage support : $enable_dom_storage

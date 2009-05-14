@@ -1,0 +1,12 @@
+Index: madwifi-trunk-r3837-20080802/scripts/get_arch.mk
+===================================================================
+--- madwifi-trunk-r3837-20080802.orig/scripts/get_arch.mk	2009-05-07 18:15:10.318387697 +0400
++++ madwifi-trunk-r3837-20080802/scripts/get_arch.mk	2009-05-07 18:15:13.746381708 +0400
+@@ -20,6 +20,7 @@
+ ARCH-$(CONFIG_PPC) = ppc
+ ARCH-$(CONFIG_PPC64) = ppc64
+ ARCH-$(CONFIG_PPC_MERGE) = powerpc
++ARCH-$(CONFIG_PPC_OF) = powerpc
+ ARCH-$(CONFIG_ARCH-S390) = s390
+ ARCH-$(CONFIG_ARCH-S390X) = s390x
+ ARCH-$(CONFIG_SUPERH) = sh

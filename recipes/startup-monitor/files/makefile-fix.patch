@@ -1,0 +1,11 @@
+--- /tmp/Makefile.old	2006-01-16 13:40:16.000000000 +0100
++++ startup-monitor/Makefile	2009-05-09 23:08:22.000000000 +0200
+@@ -41,7 +41,7 @@
+ 
+ install-program: all
+ 	mkdir -p $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	mkdir -p $(DESTDIR)/etc/X11/Xsession.d
+ 	install $(PACKAGE).xsession $(DESTDIR)/etc/X11/Xsession.d/70startup-monitor
+ 

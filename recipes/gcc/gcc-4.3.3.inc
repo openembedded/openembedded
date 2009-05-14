@@ -7,6 +7,8 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
+INC_PR = "r3"
+
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-ia64-libunwind.patch;patch=1;pnum=0 \
@@ -65,6 +67,7 @@ SRC_URI_append_sh4  = " file://sh_unwind.patch;patch=1 \
 		      "
 # Language Overrides
 FORTRAN = ""
+FORTRAN_linux-gnueabi = ",fortran"
 JAVA = ""
 
 EXTRA_OECONF_BASE = "  --enable-cheaders=c_std --enable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"

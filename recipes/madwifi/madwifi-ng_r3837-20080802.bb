@@ -13,6 +13,7 @@ WACKELF_SRC_URI_ixp4xx =          " file://20-xscale-VFP-wackelf-v2.patch;patch=
 WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf-v2.patch;patch=1"
 
 SRC_URI += "file://respect-ldflags.patch;patch=1"
+SRC_URI += "file://madwifi-fix-2.6.30.patch;patch=1"
 
 SRCNAME = "madwifi-trunk"
 

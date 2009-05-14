@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
 
-inherit distutils-base autotools pkgconfig
+inherit distutils-base autotools autotools_stage pkgconfig
 
 export BUILD_SYS
 export HOST_SYS=${MULTIMACH_TARGET_SYS}
