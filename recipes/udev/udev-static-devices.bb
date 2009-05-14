@@ -1,7 +1,7 @@
 DESCRIPTION = "Provide per-machine static nodes of /dev"
-RDEPENDS = "udev"
+RDEPENDS = "udev tar"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "file://udev_static_devices_tarball"
 
