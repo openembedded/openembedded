@@ -4,9 +4,9 @@
 
 Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
 ===================================================================
---- kexec-tools-1.101.orig/kexec/arch/arm/kexec-zImage-arm.c	2007-12-26 21:17:07.000000000 +0000
-+++ kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c	2007-12-27 01:24:25.000000000 +0000
-@@ -1,11 +1,83 @@
+--- kexec-tools-1.101.orig/kexec/arch/arm/kexec-zImage-arm.c
++++ kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
+@@ -1,11 +1,82 @@
 +/*
 + * - 08/21/2007 ATAG support added by Uli Luckas <u.luckas@road.de>
 + *
@@ -20,7 +20,6 @@ Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
 +#include <stdint.h>
 +#include <getopt.h>
 +#include <arch/options.h>
-+#include <asm/page.h>
  #include "../../kexec.h"
  
 +#define COMMAND_LINE_SIZE 1024
@@ -90,7 +89,7 @@ Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
  int zImage_arm_probe(const char *buf, off_t len)
  {
  	/* 
-@@ -14,21 +86,194 @@ int zImage_arm_probe(const char *buf, of
+@@ -14,21 +85,194 @@ int zImage_arm_probe(const char *buf, of
  	 */	
  	return 0;
  }
@@ -102,8 +101,7 @@ Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
 +		"     --initrd=FILE         Use FILE as the kernel's initial ramdisk.\n"
 +		"     --ramdisk=FILE        Use FILE as the kernel's initial ramdisk.\n"
 +		);
- }
--int zImage_arm_load(int argc, char **argv, const char *buf, off_t len, 
++}
 +
 +static
 +struct tag * atag_read_tags(void)
@@ -210,7 +208,8 @@ Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
 +	}
 +
 +	return 0;
-+}
+ }
+-int zImage_arm_load(int argc, char **argv, const char *buf, off_t len, 
 +
 +int zImage_arm_load(int argc, char **argv, const char *buf, off_t len,
  	struct kexec_info *info)
