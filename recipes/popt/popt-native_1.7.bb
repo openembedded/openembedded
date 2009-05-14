@@ -15,6 +15,6 @@ S = "${WORKDIR}/popt-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/popt-${PV}"
 
 do_install() {
-	oe_libinstall -a -so libpopt ${STAGING_LIBDIR_NATIVE}
+	oe_libinstall -so libpopt ${STAGING_LIBDIR_NATIVE}
 	install -m 0644 popt.h ${STAGING_INCDIR_NATIVE}
 }
