@@ -1,6 +1,10 @@
 require fso-image.inc
 
-ILLUME_THEME = ""
+ILLUME_THEME = "paroli"
+
+BASE_INSTALL += " \
+  udev-static-devices \
+"
 
 # not many extra apps
 GTK_INSTALL = " \
