@@ -61,7 +61,13 @@ do_build
 # * ppc603e:   efika
 # * i586:      qemux86
 
-for machine in simpad om-gta01 c7x0 ixp4xxbe nokia800 htckaiser beagleboard dht-walnut efika qemux86
+if [ "$1" = "" ] ; then
+	ARCH_MACHINES="simpad om-gta01 c7x0 ixp4xxbe nokia800 htckaiser beagleboard dht-walnut efika qemux86"
+else
+	ARCH_MACHINES="$@"
+fi
+
+for machine in ${ARCH_MACHINES}
 do
         BUILD_MACHINE=$machine
         BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
@@ -356,8 +362,13 @@ done
 
 # machine packages (machine specific (sub)packages)
 
-for machine in overo omap3-pandora beagleboard omap3evm neuros-osd2 efika dht-walnut palmt650 omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 dns323 mv2120 kuropro lspro tsx09 ts409 qemux86  
+if [ "$1" = "" ] ; then
+    MACHINES="simpad om-gta01 c7x0 ixp4xxbe nokia800 htckaiser beagleboard dht-walnut efika qemux86"
+else
+    MACHINES="$@"
+fi
 
+for machine in ${MACHINES}
 do
         BUILD_MACHINE=$machine
             BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
