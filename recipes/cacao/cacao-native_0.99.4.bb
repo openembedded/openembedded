@@ -1,4 +1,5 @@
-# Do not use this on amd64 hosts yet!
+# 0.99.4 appears to be broken on amd64 and i386 :(
+DEFAULT_PREFERENCE = "-1"
 
 require cacao-native.inc
 
