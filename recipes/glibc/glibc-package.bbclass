@@ -252,7 +252,11 @@ python package_do_split_gconvs () {
 		if target_arch in ("i486", "i586", "i686"):
 		   target_arch = "i386"
 
-		qemu = "qemu-%s  -s 1048576 -r 2.6.16" % target_arch
+		kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
+		if kernel_ver is None:
+			qemu = "qemu-%s  -s 1048576" % target_arch
+		else:
+			qemu = "qemu-%s  -s 1048576 -r %s" % (target_arch, kernel_ver)
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 		m = re.match("(.*)\.(.*)", name)
 		if m:
