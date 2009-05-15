@@ -2,7 +2,7 @@ require llvm-native.inc
 
 SRCREV = "71428"
 
-PV = "2.5+svnr${SRCPV}"
+PV = "2.5+svnr${SRCREV}"
 
 PR = "r0"
 
