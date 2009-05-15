@@ -8,7 +8,6 @@ S = "${WORKDIR}/linux-${KERNEL_RELEASE}"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_afeb9260 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/linux-${KERNEL_RELEASE}.tar.bz2 \
            file://defconfig"

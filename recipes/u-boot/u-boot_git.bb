@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r23"
+PR ="r24"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -9,7 +9,10 @@ SRCREV_davinci-dvevm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_akita = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_spitz = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
-SRCREV_afeb9260 = "2077e348c2a84901022ad95311b47b70361e6daa"
+SRCREV_afeb9260 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
+SRCREV_afeb9260-180 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
+SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch;patch=1"
+SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 
 SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev-usb;protocol=git \
                  file://fw-env.patch;patch=1 \

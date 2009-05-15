@@ -1,5 +1,4 @@
 DESCRIPTION = "Mozilla Mobile browser"
-DEPENDS += "autoconf213-native cairo alsa-lib sqlite3"
 
 PV = "0.9+1.0b2pre"
 MOZPV = "1.0b2pre"
@@ -16,6 +15,8 @@ S = "${WORKDIR}/mozilla-central"
 
 inherit mozilla
 require firefox.inc
+
+DEPENDS += "libnotify autoconf213-native cairo alsa-lib sqlite3"
 
 PARALLEL_MAKE = ""
 export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"

@@ -1,24 +1,13 @@
-<<<<<<< HEAD:recipes/llvm/llvm2.6/fix-build.patch
-Index: tools/llvm-config/CMakeLists.txt
-===================================================================
---- a/tools.orig/llvm-config/CMakeLists.txt	2009-04-09 10:45:01.000000000 +0200
-+++ b/tools/llvm-config/CMakeLists.txt	2009-04-09 10:43:52.000000000 +0200
-=======
 Index: trunk/tools/llvm-config/CMakeLists.txt
 ===================================================================
 --- trunk.orig/tools/llvm-config/CMakeLists.txt	2009-04-10 11:56:56.000000000 +0200
 +++ trunk/tools/llvm-config/CMakeLists.txt	2009-04-10 12:21:19.000000000 +0200
->>>>>>> New recipes by Xerxes Ranby (xerxes@zafena.se):recipes/llvm/llvm2.6/fix-build.patch
 @@ -90,7 +90,7 @@
  add_custom_command(OUTPUT ${LLVM_CONFIG}
    COMMAND echo 's!@LLVM_CPPFLAGS@!${CPP_FLGS}!' > temp.sed
    COMMAND echo 's!@LLVM_CFLAGS@!${C_FLGS}!' >> temp.sed
 -  COMMAND echo 's!@LLVM_CXXFLAGS@!${CXX_FLGS}!' >> temp.sed
-<<<<<<< HEAD:recipes/llvm/llvm2.6/fix-build.patch
-+  COMMAND echo 's!@LLVM_CXXFLAGS@!${CXX_FLGS} -fpermissive -fvisibility-inlines-hidden!' >> temp.sed
-=======
 +  COMMAND echo 's!@LLVM_CXXFLAGS@!${CXX_FLGS} -fpermissive -fvisibility-inlines-hidden -Woverloaded-virtual!' >> temp.sed
->>>>>>> New recipes by Xerxes Ranby (xerxes@zafena.se):recipes/llvm/llvm2.6/fix-build.patch
    # TODO: Use general flags for linking! not just for shared libs:
    COMMAND echo 's!@LLVM_LDFLAGS@!${CMAKE_SHARED_LINKER_FLAGS}!' >> temp.sed
    COMMAND echo 's!@LIBS@!!' >> temp.sed                    # TODO: System libs
