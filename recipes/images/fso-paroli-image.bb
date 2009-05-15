@@ -3,7 +3,7 @@ require fso-image.inc
 ILLUME_THEME = "paroli"
 
 BASE_INSTALL += " \
-  udev-static-devices \
+#  udev-static-devices \
 "
 
 # not many extra apps
