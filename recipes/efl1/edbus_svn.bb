@@ -2,7 +2,7 @@ DESCRIPTION = "DBus and HAL convenience wrappers for EFL"
 DEPENDS = "dbus ecore"
 LICENSE = "MIT BSD"
 PV = "0.5.0.050+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit efl
 
@@ -18,8 +18,8 @@ DEBIAN_NOAUTONAME_${PN}-ehal = "1"
 DEBIAN_NOAUTONAME_${PN}-test-gui = "1"
 
 PACKAGES =+ "${PN}-enotify ${PN}-edbus ${PN}-enm ${PN}-ehal ${PN}-test-gui"
-FILES_${PN}-enotify = "${libdir}/libenotify.so.*"
-FILES_${PN}-edbus = "${libdir}/libedbus.so.*"
-FILES_${PN}-enm = "${libdir}/libenm.so.*"
-FILES_${PN}-ehal = "${libdir}/libehal.so.*"
+FILES_${PN}-enotify = "${libdir}/libenotify*.so.*"
+FILES_${PN}-edbus = "${libdir}/libedbus*.so.*"
+FILES_${PN}-enm = "${libdir}/libenm*.so.*"
+FILES_${PN}-ehal = "${libdir}/libehal*.so.*"
 FILES_${PN}-test-gui = "${bindir}/e_dbus_hal"
