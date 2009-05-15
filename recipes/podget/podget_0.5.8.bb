@@ -2,8 +2,9 @@ DESCRIPTION = "A simple podcast aggregator."
 HOMEPAGE = "http://podget.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
-
-RDEPENDS = "bash sed wget libiconv"
+DEPENDS += "virtual/libiconv"
+RDEPENDS = "bash sed wget"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/podget/podget_${PV}.tar.gz \
            file://busybox_df.patch;patch=1"
