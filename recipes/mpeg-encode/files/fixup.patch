@@ -1,6 +1,6 @@
 diff -urN mpeg_encode.old/headers/libpnmrw.h mpeg_encode/headers/libpnmrw.h
 --- mpeg_encode.old/headers/libpnmrw.h	1995-08-09 16:17:41.000000000 +0100
-+++ mpeg_encode/headers/libpnmrw.h	2009-03-24 23:24:25.000000000 +0000
++++ mpeg_encode/headers/libpnmrw.h	2009-05-16 17:38:24.000000000 +0100
 @@ -13,18 +13,7 @@
  #ifndef _PNMRW_H_
  #define _PNMRW_H_
@@ -22,7 +22,7 @@ diff -urN mpeg_encode.old/headers/libpnmrw.h mpeg_encode/headers/libpnmrw.h
  
 diff -urN mpeg_encode.old/jpeg/Makefile mpeg_encode/jpeg/Makefile
 --- mpeg_encode.old/jpeg/Makefile	1995-08-05 00:27:00.000000000 +0100
-+++ mpeg_encode/jpeg/Makefile	2009-03-24 23:24:25.000000000 +0000
++++ mpeg_encode/jpeg/Makefile	2009-05-16 17:38:24.000000000 +0100
 @@ -20,9 +20,6 @@
  manprefix =
  manext = 1
@@ -56,7 +56,7 @@ diff -urN mpeg_encode.old/jpeg/Makefile mpeg_encode/jpeg/Makefile
  cjpeg: $(COBJECTS) libjpeg.a
 diff -urN mpeg_encode.old/libpnmrw.c mpeg_encode/libpnmrw.c
 --- mpeg_encode.old/libpnmrw.c	1995-08-16 23:24:26.000000000 +0100
-+++ mpeg_encode/libpnmrw.c	2009-03-24 23:24:25.000000000 +0000
++++ mpeg_encode/libpnmrw.c	2009-05-16 17:38:24.000000000 +0100
 @@ -28,6 +28,7 @@
  #endif
  
@@ -76,12 +76,14 @@ diff -urN mpeg_encode.old/libpnmrw.c mpeg_encode/libpnmrw.c
    e = sys_errlist[errno];
 diff -urN mpeg_encode.old/Makefile mpeg_encode/Makefile
 --- mpeg_encode.old/Makefile	1995-08-16 23:16:56.000000000 +0100
-+++ mpeg_encode/Makefile	2009-03-24 23:24:47.000000000 +0000
-@@ -204,7 +204,7 @@
++++ mpeg_encode/Makefile	2009-05-16 18:56:22.000000000 +0100
+@@ -203,8 +203,8 @@
+ ############
  
  mpeg_encode: $(MP_ALL_OBJS) $(JPEG_LIB)
- 	$(PURIFY) $(CC) $(CFLAGS) -o $@ $(MP_ALL_OBJS) $(LIBDIRS) $(LIBS)
+-	$(PURIFY) $(CC) $(CFLAGS) -o $@ $(MP_ALL_OBJS) $(LIBDIRS) $(LIBS)
 -	strip mpeg_encode
++	$(PURIFY) $(CC) $(CFLAGS) -o $@ $(MP_ALL_OBJS) $(LIBDIRS) $(LIBS) $(LDFLAGS)
 +	$(STRIP) mpeg_encode
  
  profile: $(MP_ALL_OBJS)

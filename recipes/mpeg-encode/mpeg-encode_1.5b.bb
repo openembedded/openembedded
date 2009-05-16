@@ -1,7 +1,7 @@
 DESCRIPTION = "The Berkeley MPEG Encoder."
 HOMEPAGE = "http://bmrc.berkeley.edu/frame/research/mpeg/mpeg_encode.html"
 SECTION = "multimedia"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://bmrc.berkeley.edu/ftp/pub/multimedia/mpeg/encode/mpeg_encode-${PV}-src.tar.gz \
            file://fixup.patch;patch=1"

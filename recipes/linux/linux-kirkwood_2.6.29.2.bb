@@ -13,6 +13,7 @@ PR_append = "+gitr${SRCREV}"
 SRCREV = "10a12868405319fbf114af2bde9789aa64c34144"
 SRC_URI = "git://git.marvell.com/orion.git;protocol=git;branch=stable-2.6.29 \
            file://fw.patch;patch=1 \
+           file://mvsdio.patch;patch=1 \
            file://defconfig \
                "
 

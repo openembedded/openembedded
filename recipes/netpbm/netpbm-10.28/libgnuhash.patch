@@ -1,0 +1,12 @@
+diff -urN netpbm-10.28.old/lib/Makefile netpbm-10.28/lib/Makefile
+--- netpbm-10.28.old/lib/Makefile	2005-02-05 18:47:27.000000000 +0000
++++ netpbm-10.28/lib/Makefile	2009-05-12 13:33:10.000000000 +0100
+@@ -111,7 +111,7 @@
+ 	rm -f $@
+ 	$(SYMLINK) $< $@
+ libnetpbm.$(NETPBMLIBSUFFIX).$(MAJ).$(MIN): $(LIBOBJECTS) $(LIBOBJECTS_X)
+-	$(LD) $(LDSHLIB) -o $@ $(LIBOBJECTS) $(LIBOBJECTS_X) \
++	$(LD) $(LDFLAGS) $(LDSHLIB) -o $@ $(LIBOBJECTS) $(LIBOBJECTS_X) \
+           $(SHLIB_CLIB) $(LADD)
+ endif
+ 
