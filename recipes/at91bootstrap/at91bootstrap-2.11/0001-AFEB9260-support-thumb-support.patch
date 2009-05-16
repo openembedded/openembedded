@@ -1,27 +1,33 @@
-From 9d253ab04ceaea4aeebf397e3397c2088f08bd87 Mon Sep 17 00:00:00 2001
+From c628ebaf33fb1054b391c96225565a43df0b375b Mon Sep 17 00:00:00 2001
 From: slapin <slapin@builder.iar.darktech.org>
 Date: Sun, 10 May 2009 02:16:44 +0400
-Subject: [PATCH] AFEB9260 support
+Subject: [PATCH] AFEB9260 support / thumb support
 
-
-Signed-off-by: Sergey Lapin <slapin@ossfans.org>
 ---
  Config.in                                 |    5 +-
  Makefile                                  |    2 +-
  board/Config.in                           |   47 +++++-
- board/afeb9260/afeb9260.c                 |  246 +++++++++++++++++++++++++++++
+ board/afeb9260/afeb9260.c                 |  251 +++++++++++++++++++++++++++++
  board/afeb9260/afeb9260.h                 |  126 +++++++++++++++
  board/afeb9260/afeb9260_defconfig         |   94 +++++++++++
- board/afeb9260/old/afeb9260.c             |  240 ++++++++++++++++++++++++++++
+ board/afeb9260/old/afeb9260.c             |  240 +++++++++++++++++++++++++++
  board/afeb9260/old/afeb9260.mk            |    8 +
  board/afeb9260/old/dataflash/afeb9260.h   |  127 +++++++++++++++
- board/afeb9260/old/nandflash/afeb9260ek.h |  151 ++++++++++++++++++
+ board/afeb9260/old/nandflash/afeb9260ek.h |  151 +++++++++++++++++
  board/afeb9260/old/pll.h                  |   35 ++++
+ board/at91cap9adk/at91cap9adk.c           |    6 +-
+ board/at91sam9260ek/at91sam9260ek.c       |    5 +
+ board/at91sam9261ek/at91sam9261ek.c       |    5 +
+ board/at91sam9263ek/at91sam9263ek.c       |    5 +
+ board/at91sam9g20ek/at91sam9g20ek.c       |    6 +-
+ board/at91sam9rlek/at91sam9rlek.c         |    5 +
+ board/at91sam9xeek/at91sam9xeek.c         |    5 +
  board/board_cpp.mk                        |   25 +++
+ crt0_gnu.S                                |   12 ++
  driver/Config.in.dataflash                |    2 +-
  driver/dataflash.c                        |    2 +-
  include/part.h                            |    6 +
- 15 files changed, 1105 insertions(+), 11 deletions(-)
+ 23 files changed, 1157 insertions(+), 13 deletions(-)
  create mode 100644 board/afeb9260/afeb9260.c
  create mode 100644 board/afeb9260/afeb9260.h
  create mode 100644 board/afeb9260/afeb9260_defconfig
@@ -185,10 +191,10 @@ index 074018a..1c2168b 100644
 -
 diff --git a/board/afeb9260/afeb9260.c b/board/afeb9260/afeb9260.c
 new file mode 100644
-index 0000000..4e11b6b
+index 0000000..249a372
 --- /dev/null
 +++ b/board/afeb9260/afeb9260.c
-@@ -0,0 +1,246 @@
+@@ -0,0 +1,251 @@
 +/* ----------------------------------------------------------------------------
 + *         ATMEL Microcontroller Software Support  -  ROUSSET  -
 + * ----------------------------------------------------------------------------
@@ -229,6 +235,7 @@ index 0000000..4e11b6b
 +#include "debug.h"
 +#include "memory.h"
 +
++#ifndef CONFIG_THUMB
 +static inline unsigned int get_cp15(void)
 +{
 +	unsigned int value;
@@ -240,6 +247,10 @@ index 0000000..4e11b6b
 +{
 +	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
 +}
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
 +
 +#ifdef CONFIG_HW_INIT
 +/*----------------------------------------------------------------------------*/
@@ -1258,8 +1269,171 @@ index 0000000..6d20299
 +
 +/* Switch MCK on PLLA output PCK = PLLA = 2 * MCK */
 +#define MCKR_SETTINGS	(AT91C_PMC_CSS_PLLA_CLK | AT91C_PMC_PRES_CLK | AT91C_PMC_MDIV_2)
+diff --git a/board/at91cap9adk/at91cap9adk.c b/board/at91cap9adk/at91cap9adk.c
+index ef78a86..7e80212 100644
+--- a/board/at91cap9adk/at91cap9adk.c
++++ b/board/at91cap9adk/at91cap9adk.c
+@@ -39,6 +39,7 @@
+ #include "main.h"
+ 
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -50,7 +51,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
+-
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*---------------------------------------------------------------------------- */
+diff --git a/board/at91sam9260ek/at91sam9260ek.c b/board/at91sam9260ek/at91sam9260ek.c
+index 3224624..042dcae 100644
+--- a/board/at91sam9260ek/at91sam9260ek.c
++++ b/board/at91sam9260ek/at91sam9260ek.c
+@@ -38,6 +38,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -49,6 +50,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+diff --git a/board/at91sam9261ek/at91sam9261ek.c b/board/at91sam9261ek/at91sam9261ek.c
+index baa856d..5505a23 100644
+--- a/board/at91sam9261ek/at91sam9261ek.c
++++ b/board/at91sam9261ek/at91sam9261ek.c
+@@ -38,6 +38,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -49,6 +50,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*------------------------------------------------------------------------------*/
+diff --git a/board/at91sam9263ek/at91sam9263ek.c b/board/at91sam9263ek/at91sam9263ek.c
+index b957bb4..906c0cc 100644
+--- a/board/at91sam9263ek/at91sam9263ek.c
++++ b/board/at91sam9263ek/at91sam9263ek.c
+@@ -37,6 +37,7 @@
+ #include "memory.h"
+ #include "psram.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -48,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*---------------------------------------------------------------------------- */
+diff --git a/board/at91sam9g20ek/at91sam9g20ek.c b/board/at91sam9g20ek/at91sam9g20ek.c
+index da32fdd..9855406 100644
+--- a/board/at91sam9g20ek/at91sam9g20ek.c
++++ b/board/at91sam9g20ek/at91sam9g20ek.c
+@@ -37,7 +37,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
+-
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -49,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+diff --git a/board/at91sam9rlek/at91sam9rlek.c b/board/at91sam9rlek/at91sam9rlek.c
+index ae22cd5..6c6abd4 100644
+--- a/board/at91sam9rlek/at91sam9rlek.c
++++ b/board/at91sam9rlek/at91sam9rlek.c
+@@ -37,6 +37,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -48,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*------------------------------------------------------------------------------*/
+diff --git a/board/at91sam9xeek/at91sam9xeek.c b/board/at91sam9xeek/at91sam9xeek.c
+index 40101da..0f4b82f 100644
+--- a/board/at91sam9xeek/at91sam9xeek.c
++++ b/board/at91sam9xeek/at91sam9xeek.c
+@@ -37,6 +37,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -48,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
 diff --git a/board/board_cpp.mk b/board/board_cpp.mk
-index 9b91909..dd64467 100644
+index 9b91909..435d4e8 100644
 --- a/board/board_cpp.mk
 +++ b/board/board_cpp.mk
 @@ -1,4 +1,13 @@
@@ -1270,8 +1444,8 @@ index 9b91909..dd64467 100644
 +endif
 +
 +ifeq ($(CONFIG_THUMB),y)
-+CPPFLAGS += -mthumb -mthumb-interwork
-+ASFLAGS += -DCONFIG_AFEB9260 -mthumb -mthumb-interwork
++CPPFLAGS += -DCONFIG_THUMB -mthumb -mthumb-interwork
++ASFLAGS += -DCONFIG_THUMB -mthumb-interwork
 +endif
  
  CPPFLAGS += \
@@ -1306,6 +1480,29 @@ index 9b91909..dd64467 100644
  ifeq ($(CONFIG_BUS_SPEED_100MHZ),y)
  CPPFLAGS += -DCONFIG_BUS_SPEED_100MHZ
  endif
+diff --git a/crt0_gnu.S b/crt0_gnu.S
+index a6b13f7..9f14cac 100644
+--- a/crt0_gnu.S
++++ b/crt0_gnu.S
+@@ -182,6 +182,18 @@ _go:
+ 	mov     lr, pc
+ 	bx      r0
+ 
++#ifdef CONFIG_THUMB
++	.globl set_cp15
++set_cp15:
++	mcr	p15, 0, r0, c1, c0, 0
++	bx	lr
++
++	.globl get_cp15
++get_cp15:
++	mrc	p15, 0, r0, c1, c0, 0
++	bx	lr
++#endif
++
+ 	.align
+ _lp_data:
+         .word _etext
 diff --git a/driver/Config.in.dataflash b/driver/Config.in.dataflash
 index 7853bc3..22367da 100644
 --- a/driver/Config.in.dataflash
