@@ -1,0 +1,10 @@
+--- gcc-4.3.2/gcc/config/arm/arm.md.old	2008-12-09 10:23:57.000000000 +0000
++++ gcc-4.3.2/gcc/config/arm/arm.md	2009-03-10 12:14:01.000000000 +0000
+@@ -11110,6 +11110,7 @@
+   [(unspec:SI [(match_operand:SI 0 "register_operand" "")] UNSPEC_PROLOGUE_USE)]
+   ""
+   "%@ %0 needed for prologue"
++  [(set_attr "length" "0")]
+ )
+ 
+ 
