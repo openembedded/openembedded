@@ -1,0 +1,13 @@
+--- python-ecore/ecore/x/ecore.x.c_ecore_x_window.pxi-orig   2009-05-15 15:21:05.000000000 -0400
++++ python-ecore/ecore/x/ecore.x.c_ecore_x_window.pxi        2009-05-15 15:20:36.000000000 -0400
+@@ -428,5 +428,9 @@
+         return (bool(accepts_focus), initial_state, icon_pixmap, icon_mask,
+                 icon_window, window_group, bool(is_urgent))
+ 
++    def x_window_virtual_keyboard_state_set(self, Ecore_X_Virtual_Keyboard_State type):
++        cdef Ecore_X_Window x_win
++        x_win = self.xid
++        ecore_x_e_virtual_keyboard_state_set(x_win, type)
+ 
+ 
+ def Window_from_xid(unsigned long xid):
