@@ -1,8 +1,7 @@
-TARGET_CC_ARCH = "-march=ep9312 -mtune=ep9312 -mcpu=ep9312"
-# add "-mfp=maverick" for newer gcc versions > 4.0
+TARGET_CC_ARCH = "-mcpu=ep9312 -mfpu=maverick -mfloat-abi=softfp -fno-signed-zeros -O"
 
 #set arch to ep9312 for all generated packages
-PACKAGE_EXTRA_ARCHS += "armv4 armv4t ep9312"
+PACKAGE_EXTRA_ARCHS += "armv4 armv4t ep93xx"
 BASE_PACKAGE_ARCH = "ep9312"
 FEED_ARCH = "ep9312"
 
