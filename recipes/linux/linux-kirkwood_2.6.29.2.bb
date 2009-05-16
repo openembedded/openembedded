@@ -7,7 +7,6 @@ require linux.inc
 
 # Change MACHINE_KERNEL_PR in conf/machine/include/kirkwood.inc
 PV = "2.6.29.2"
-PR = "r2"
 PR_append = "+gitr${SRCREV}"
 #PV = "2.6.28+2.6.29rc7-${PR}+gitr${SRCREV}"
 
