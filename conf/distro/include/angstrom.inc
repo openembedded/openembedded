@@ -99,6 +99,9 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 # We only want to build UTF8 locales
 LOCALE_UTF8_ONLY = "1"
 
+#qemu doesn't like this fp
+ENABLE_BINARY_LOCALE_GENERATION_ep93xx = "0"
+
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
 
