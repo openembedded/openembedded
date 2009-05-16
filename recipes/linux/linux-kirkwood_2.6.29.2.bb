@@ -14,6 +14,8 @@ SRCREV = "10a12868405319fbf114af2bde9789aa64c34144"
 SRC_URI = "git://git.marvell.com/orion.git;protocol=git;branch=stable-2.6.29 \
            file://fw.patch;patch=1 \
            file://mvsdio.patch;patch=1 \
+           file://0001--ARM-Kirkwood-CPU-idle-driver.patch;patch=1 \
+           file://0002--ARM-Kirkwood-peripherals-clock-gating-for-power-m.patch;patch=1 \
            file://defconfig \
                "
 
