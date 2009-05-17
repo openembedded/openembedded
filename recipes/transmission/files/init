@@ -11,12 +11,12 @@
 # Exit if the package is not installed
 test -f /usr/bin/transmission-daemon || exit 0
 
-
+SSDOPTIONS="--chuid transmission:transmission"
 
 case "$1" in
   start)
     echo  "Starting transmission-daemon"
-    /sbin/start-stop-daemon --start --quiet --exec /usr/bin/transmission-daemon -- -w /home/transmission -g /home/transmission/.config
+    /sbin/start-stop-daemon $SSDOPTIONS --start --quiet --exec /usr/bin/transmission-daemon -- -w /home/transmission -g /home/transmission/.config
     ;;
   stop)
     echo  "Stopping transmission-daemon"
@@ -31,7 +31,7 @@ case "$1" in
         echo -n "."
     done
     echo  "Restarting transmission-daemon" 
-    /sbin/start-stop-daemon --start --quiet --exec /usr/bin/transmission-daemon -- -w /home/transmission -g /home/transmission/.config
+    /sbin/start-stop-daemon $SSDOPTIONS --start --quiet --exec /usr/bin/transmission-daemon -- -w /home/transmission -g /home/transmission/.config
     ;;
   *)
     echo "Usage: /etc/init.d/tranmission {start|stop|restart}"
