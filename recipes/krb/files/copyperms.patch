@@ -1,0 +1,12 @@
+diff -urN src.old/config/pre.in src/config/pre.in
+--- src.old/config/pre.in	2006-10-15 19:19:28.000000000 +0100
++++ src/config/pre.in	2009-05-17 21:28:54.000000000 +0100
+@@ -258,7 +258,7 @@
+ transform = @program_transform_name@
+ 
+ RM = rm -f
+-CP  = cp
++CP  = cp -f
+ MV = mv -f
+ CHMOD=chmod
+ RANLIB = @RANLIB@
