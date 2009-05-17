@@ -9,7 +9,7 @@ I appended a diff which fixes the problem for me.
 
 Regards, Frederik
 
-Index: vala/gobject/valadbusclientmodule.vala
+Index: vala/codegen/valadbusclientmodule.vala
 ===================================================================
 --- vala/gobject/valadbusclientmodule.vala	(Revision 2430)
 +++ vala/gobject/valadbusclientmodule.vala	(Arbeitskopie)
