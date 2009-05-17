@@ -24,12 +24,9 @@ do_configure_append () {
 	cd ${S}/po
 	SEDR=`ls *.gmo -1 --color=none | sed 's/.gmo//' | tr '\n' ' '`
 	SEDL='@ALL_LINGUAS@'
-	sed "s/${SEDL}.*/${SEDR}/" Makefile.in.in > Mii.tmp
-	sed "s/${SEDL}.*/${SEDR}/" Makefile.in > Mi.tmp
-	sed "s/${SEDL}.*/${SEDR}/" Makefile > M.tmp
-	mv Mii.tmp Makefile.in.in
-	mv Mi.tmp Makefile.in
-	mv M.tmp Makefile
+	sed -i "s/${SEDL}.*/${SEDR}/" Makefile.in.in
+	sed -i "s/${SEDL}.*/${SEDR}/" Makefile.in
+	sed -i "s/${SEDL}.*/${SEDR}/" Makefile
 
 	# Fix unset @INTLTOOL_LIBDIR@
 	#   Only needed for a check to see if charmap.alias is present,
@@ -37,19 +34,15 @@ do_configure_append () {
 	#   in ${S}
 
 	cd ${S}
-	sed 's/@INTLTOOL_LIBDIR@/./' intltool-merge.in > Ii.tmp
-	sed 's/@INTLTOOL_LIBDIR@/./' intltool-merge > I.tmp
-	mv Ii.tmp intltool-merge.in
-	mv I.tmp intltool-merge
+	sed -i 's/@INTLTOOL_LIBDIR@/./' intltool-merge.in
+	sed -i 's/@INTLTOOL_LIBDIR@/./' intltool-merge
 
 	# Fix unset @GTK_LIBDIR@
 	#   This is the same as ${libdir} so we use that
 
 	cd ${S}/extras/gtk2_immodule
-	sed 's/@GTK_LIBDIR@/$(libdir)/g' Makefile.in > Mi.tmp
-	sed 's/@GTK_LIBDIR@/$(libdir)/g' Makefile.am > Ma.tmp
-	mv Mi.tmp Makefile.in
-	mv Ma.tmp Makefile.am
+	sed -i 's/@GTK_LIBDIR@/$(libdir)/g' Makefile.in
+	sed -i 's/@GTK_LIBDIR@/$(libdir)/g' Makefile.am
 }
 
 pkg_postinst_${PN} () {
