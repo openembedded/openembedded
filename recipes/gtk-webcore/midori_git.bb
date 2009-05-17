@@ -3,13 +3,18 @@ require midori.inc
 DEPENDS += "python-native python-docutils-native"
 
 # increment PR every time SRCREV is updated!
-PR = "r2"
-PV = "0.1.2+${PR}+gitr${SRCREV}"
+PR = "r0"
+PV = "0.1.6+${PR}+gitr${SRCREV}"
 
-SRC_URI = "git://git.xfce.org/kalikiana/midori;protocol=git"
+SRC_URI = "git://git.xfce.org/kalikiana/midori;protocol=git \
+           file://waf"
+
 S = "${WORKDIR}/git"
 
+
+
 do_configure() {
+	cp -f ${WORKDIR}/waf ${S}/
 	./configure \
             --prefix=${prefix} \
             --bindir=${bindir} \
