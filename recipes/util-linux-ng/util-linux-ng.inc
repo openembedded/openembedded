@@ -1,7 +1,7 @@
 DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux system."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "udev zlib ncurses util-linux-ng virtual/libintl"
+DEPENDS = "udev zlib ncurses virtual/libintl"
 
 inherit autotools_stage
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
@@ -14,6 +14,7 @@ RC ?= ""
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2"
 
 PACKAGES =+ "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-swaponoff util-linux-ng-losetup util-linux-ng-umount util-linux-ng-mount util-linux-ng-readprofile "
+PACKAGES_DYNAMIC = "libblkid*"
 
 FILES_${PN}-doc += "/usr/share/misc/getopt/getopt-*.*"
 FILES_${PN} = "${bindir} ${sbindir} ${base_bindir} ${base_sbindir}"
