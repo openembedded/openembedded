@@ -17,11 +17,10 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/transmission
 }
 
+FILES_${PN} += "${datadir}/icons"
+
+# No need for online check, since update-rc.d will prepend it to here
 pkg_postinst_${PN}() {
-#!/bin/sh
-if [ "x$D" != "x" ] ; then        
-        exit 1
-fi
 grep -q transmission  ${sysconfdir}/group || addgroup transmission
 grep -q transmission ${sysconfdir}/passwd || adduser -h /home/transmission -S -D -G transmission -s ${base_bindir}/false transmission
 mkdir -p /home/transmission/.config
@@ -29,10 +28,6 @@ chown transmission:transmission /home/transmission/.config
 }
 
 pkg_postrm_${PN}() {
-#!/bin/sh
-if [ "x$D" != "x" ] ; then        
-        exit 1
-fi
 delgroup transmission
 deluser transmission
 }
