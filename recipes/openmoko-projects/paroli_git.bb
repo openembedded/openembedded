@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r20"
+PR = "r21"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -21,6 +21,7 @@ RDEPENDS = "\
   task-fso-compliance \
   elementary \
   elementary-themes \
+  edbus-ehal \
 "
 
 E_CONFIG_DIR="/usr/share/enlightenment/data"
