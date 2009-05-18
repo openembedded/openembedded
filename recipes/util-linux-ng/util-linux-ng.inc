@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "udev zlib ncurses e2fsprogs-libs virtual/libintl"
 
-inherit autotools
+inherit autotools_stage
 
 DEFAULT_PREFERENCE = "-1"
 
