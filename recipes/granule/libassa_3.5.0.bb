@@ -6,8 +6,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 PR = "r0"
 
-
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}-2.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 
 inherit autotools pkgconfig
 
