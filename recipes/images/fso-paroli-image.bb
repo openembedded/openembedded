@@ -4,6 +4,8 @@ ILLUME_THEME = "paroli"
 
 BASE_INSTALL += " \
 #  udev-static-devices \
+  libx11-locale \
+  localedef \
 "
 
 # not many extra apps
