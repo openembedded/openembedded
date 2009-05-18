@@ -1,0 +1,117 @@
+Only in python-elementary/elementary: .directory
+diff -ru -x .svn /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/elementary/elementary.c_elementary_scroller.pxi python-elementary/elementary/elementary.c_elementary_scroller.pxi
+--- /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/elementary/elementary.c_elementary_scroller.pxi	2009-05-18 14:14:34.000000000 -0400
++++ python-elementary/elementary/elementary.c_elementary_scroller.pxi	2009-05-15 17:15:47.000000000 -0400
+@@ -23,7 +23,18 @@
+     def content_set(self, c_evas.Object child):
+         elm_scroller_content_set(self.obj, child.obj)
+ 
+-    def content_min_limit(self, w, h):
++    def content_min_limit(self, int w, int h):
+         elm_scroller_content_min_limit(self.obj, w, h)
+ 
++    def region_show(self, x, y, w, h):
++        elm_scroller_region_show(self.obj, x, y, w, h)
++        
++    def policy_set(self, h, v):
++        elm_scroller_policy_set(self.obj, h, v)
+ 
++    #results in segfault
++    #def region_get(self, x, y, w, h):
++        #elm_scroller_region_get(self.obj, x, y, w, h)
++        
++    def bounce_set(self, h_bounce, v_bounce):
++        elm_scroller_bounce_set(self.obj, h_bounce, v_bounce)
+diff -ru -x .svn /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/elementary/elementary.c_elementary_window.pxi python-elementary/elementary/elementary.c_elementary_window.pxi
+--- /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/elementary/elementary.c_elementary_window.pxi	2009-05-18 14:14:34.000000000 -0400
++++ python-elementary/elementary/elementary.c_elementary_window.pxi	2009-05-15 18:56:56.000000000 -0400
+@@ -136,14 +136,7 @@
+         else:
+             elm_win_keyboard_win_set(self.obj, 0)
+ 
+-    # TODO
+-    """
+     def xwindow_get(self):
+         cdef Ecore_X_Window xwin
+         xwin = elm_win_xwindow_get(self.obj)
+-        
+-
+-        return Null
+-    """
+-
+-
++        return xwin
+Only in python-elementary/elementary: elementary.c_elementary_window.pxi~
+diff -ru -x .svn /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/include/elementary/c_elementary.pxd python-elementary/include/elementary/c_elementary.pxd
+--- /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/include/elementary/c_elementary.pxd	2009-05-18 14:14:31.000000000 -0400
++++ python-elementary/include/elementary/c_elementary.pxd	2009-05-15 18:51:30.000000000 -0400
+@@ -51,6 +51,11 @@
+     ELM_TEXT_FORMAT_PLAIN_UTF8
+     ELM_TEXT_FORMAT_MARKUP_UTF8
+ 
++cdef enum Elm_Scroller_Policy:
++    ELM_SCROLLER_POLICY_AUTO
++    ELM_SCROLLER_POLICY_ON
++    ELM_SCROLLER_POLICY_OFF
++
+ cdef enum Elm_Icon_Type:
+     ELM_ICON_NONE
+     ELM_ICON_FILE
+@@ -68,6 +73,7 @@
+ cdef extern from "Ecore_X.h":
+     ctypedef unsigned int Ecore_X_ID
+     ctypedef Ecore_X_ID Ecore_X_Window
++    
+ 
+ # For Debugging
+ """
+@@ -78,6 +84,9 @@
+ cdef extern from "Eina.h":
+     ctypedef struct Eina_List
+ 
++cdef extern from "Evas.h":
++    ctypedef int Evas_Coord
++
+ cdef extern from "Ecore_Job.h":
+     ctypedef struct Ecore_Job
+ 
+@@ -153,7 +162,7 @@
+     evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
+     void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
+     void elm_win_inwin_style_set(evas.c_evas.Evas_Object *obj, char *style)
+-    void         elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
++    void elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+     
+     # Background object
+     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
+@@ -187,7 +196,10 @@
+     evas.c_evas.Evas_Object *elm_scroller_add(evas.c_evas.Evas_Object *parent)
+     void elm_scroller_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child)
+     void elm_scroller_content_min_limit(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool w, evas.c_evas.Evas_Bool h)
+-    void         elm_scroller_region_show(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas. c_evas.Evas_Coord h)
++    void elm_scroller_region_show(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas. c_evas.Evas_Coord h)
++    void elm_scroller_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Bool h_bounce, evas.c_evas.Evas_Bool v_bounce)
++    void elm_scroller_region_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas.c_evas.Evas_Coord h)
++    void elm_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
+     
+     # Label object  
+     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
+Only in python-elementary/include/elementary: c_elementary.pxd~
+diff -ru -x .svn /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/setup.py python-elementary/setup.py
+--- /home/mirko/openmoko/e-svn/e/trunk/BINDINGS/python/python-elementary/setup.py	2009-05-18 14:14:34.000000000 -0400
++++ python-elementary/setup.py	2009-05-15 17:17:08.000000000 -0400
+@@ -1,3 +1,4 @@
++# -*- coding: utf-8 -*-
+ import sys
+ import os
+ 
+@@ -69,7 +70,7 @@
+     name = 'python-elementary',
+     version = '0.1',
+     license = 'LGPL',
+-    author = 'Simon Busch',
++    author = 'Simon Busch && Mirko Lindner',
+     author_email = 'morphis@gravedo.de',
+     url='http://www.freeesmartphone.org',
+     description = 'Python bindings for Elementary',
+Only in python-elementary/: setup.py~
