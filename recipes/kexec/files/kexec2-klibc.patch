@@ -57,14 +57,39 @@ Index: kexec-tools-2.0.0/purgatory/Makefile
 ===================================================================
 --- kexec-tools-2.0.0.orig/purgatory/Makefile	2009-04-24 14:15:34.037827479 +0100
 +++ kexec-tools-2.0.0/purgatory/Makefile	2009-04-24 14:15:47.022825503 +0100
-@@ -47,6 +47,7 @@
- $(PURGATORY): CC=$(TARGET_CC)
- $(PURGATORY): CFLAGS+=$($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
-		      -Os -fno-builtin -ffreestanding \
-+		      -nostdinc \
-		      -fno-zero-initialized-in-bss
+@@ -55,9 +54,7 @@
+			-I$(srcdir)/purgatory/arch/$(ARCH)/include \
+			-I$(srcdir)/util_lib/include \
+			-I$(shell $(CC) -print-file-name=include)
+-$(PURGATORY): LDFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS)\
+-			--no-undefined -nostartfiles -nostdlib -nodefaultlibs \
+-			-e purgatory_start -r
++$(PURGATORY): LDFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS)
 
- $(PURGATORY): CPPFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
+ $(PURGATORY): $(PURGATORY_OBJS)
+	$(MKDIR) -p $(@D)
+Index: kexec-tools-2.0.0/purgatory/purgatory.c
+===================================================================
+--- kexec-tools-2.0.0.orig/purgatory/purgatory.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/purgatory/purgatory.c	2009-05-16 14:15:21.000000000 +0200
+@@ -1,4 +1,4 @@
+-
++//#include <stdarg.h>
+ #include <limits.h>
+ #include <stdint.h>
+ #include <purgatory.h>
+@@ -3,7 +3,7 @@
+ #include <stdint.h>
+ #include <purgatory.h>
+ #include <sha256.h>
+-#include <string.h>
++/* #include <string.h> */
+ #include "../kexec/kexec-sha256.h"
+
+ struct sha256_region sha256_regions[SHA256_REGIONS] = {};
+	}
+	sha256_finish(&ctx, digest);
+	if (memcmp(digest, sha256_digest, sizeof(digest)) != 0) {
 Index: kexec-tools-2.0.0/kexec/kexec-elf-rel.c
 ===================================================================
 --- kexec-tools-2.0.0.orig/kexec/kexec-elf-rel.c	2009-04-24 14:15:34.025828340 +0100
@@ -165,3 +190,68 @@ Index: kexec-tools-2.0.0/kexec/crashdump-xen.c
  #include <errno.h>
  #include <limits.h>
  #include <sys/types.h>
+Index: kexec-tools-2.0.0/kexec/crashdump-elf.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/crashdump-elf.c.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kexec/crashdump-elf.c	2009-05-16 11:12:15.000000000 +0200
+@@ -43,8 +43,8 @@
+	if (xen_present())
+		nr_cpus = xen_get_nr_phys_cpus();
+	else
+-		nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
+-
++/*		nr_cpus = sysconf(_SC_NPROCESSORS_CONF); */
++		nr_cpus = 1;
+	if (nr_cpus < 0) {
+		return -1;
+	}
+Index: kexec-tools-2.0.0/kexec/kexec-elf-boot.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/kexec-elf-boot.c.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kexec/kexec-elf-boot.c	2009-05-16 11:13:28.000000000 +0200
+@@ -22,7 +22,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <errno.h>
+-#include <elf.h>
++#include "../include/elf.h"
+ #include <boot/elf_boot.h>
+ #include <ip_checksum.h>
+ #include <x86/x86-linux.h>
+Index: kexec-tools-2.0.0/kdump/kdump.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kdump/kdump.c.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kdump/kdump.c	2009-05-16 11:13:08.000000000 +0200
+@@ -8,7 +8,7 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <endian.h>
+-#include <elf.h>
++#include "../include/elf.h"
+
+ #if !defined(__BYTE_ORDER) || !defined(__LITTLE_ENDIAN) || !defined(__BIG_ENDIAN)
+ #error Endian defines missing
+Index: kexec-tools-2.0.0/kexec/kexec.h
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/kexec.h.old	2008-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kexec/kexec.h	2009-05-16 17:32:15.000000000 +0200
+@@ -197,7 +197,7 @@
+ extern char *slurp_file(const char *filename, off_t *r_size);
+ extern char *slurp_file_len(const char *filename, off_t size);
+ extern char *slurp_decompress_file(const char *filename, off_t *r_size);
+-extern unsigned long virt_to_phys(unsigned long addr);
++/* extern unsigned long virt_to_phys(unsigned long addr); */
+ extern void add_segment(struct kexec_info *info,
+	const void *buf, size_t bufsz, unsigned long base, size_t memsz);
+ extern void add_segment_phys_virt(struct kexec_info *info,
+Index: kexec-tools-2.0.0/purgatory/string.c
+===================================================================
+--- kexec-tools-2.0.0.orig/purgatory/string.c.old	2008-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/purgatory/string.c	2009-05-16 17:49:04.000000000 +0200
+@@ -1,5 +1,5 @@
+ #include <stddef.h>
+-#include <string.h>
++/* #include <string.h> */
+
+ size_t strnlen(const char *s, size_t max)
+ {

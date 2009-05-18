@@ -6,13 +6,16 @@ COMPATIBLE_MACHINE = "sheevaplug"
 require linux.inc
 
 # Change MACHINE_KERNEL_PR in conf/machine/include/kirkwood.inc
-PV = "2.6.29.1"
+PV = "2.6.29.2"
 PR_append = "+gitr${SRCREV}"
 #PV = "2.6.28+2.6.29rc7-${PR}+gitr${SRCREV}"
 
-SRCREV = "f66f1d49e6d8617a07b07681c684083e48547eef"
+SRCREV = "10a12868405319fbf114af2bde9789aa64c34144"
 SRC_URI = "git://git.marvell.com/orion.git;protocol=git;branch=stable-2.6.29 \
            file://fw.patch;patch=1 \
+           file://mvsdio.patch;patch=1 \
+           file://0001--ARM-Kirkwood-CPU-idle-driver.patch;patch=1 \
+           file://0002--ARM-Kirkwood-peripherals-clock-gating-for-power-m.patch;patch=1 \
            file://defconfig \
                "
 

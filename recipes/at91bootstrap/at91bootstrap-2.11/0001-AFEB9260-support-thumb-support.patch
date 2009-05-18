@@ -1,0 +1,1554 @@
+From c628ebaf33fb1054b391c96225565a43df0b375b Mon Sep 17 00:00:00 2001
+From: slapin <slapin@builder.iar.darktech.org>
+Date: Sun, 10 May 2009 02:16:44 +0400
+Subject: [PATCH] AFEB9260 support / thumb support
+
+---
+ Config.in                                 |    5 +-
+ Makefile                                  |    2 +-
+ board/Config.in                           |   47 +++++-
+ board/afeb9260/afeb9260.c                 |  251 +++++++++++++++++++++++++++++
+ board/afeb9260/afeb9260.h                 |  126 +++++++++++++++
+ board/afeb9260/afeb9260_defconfig         |   94 +++++++++++
+ board/afeb9260/old/afeb9260.c             |  240 +++++++++++++++++++++++++++
+ board/afeb9260/old/afeb9260.mk            |    8 +
+ board/afeb9260/old/dataflash/afeb9260.h   |  127 +++++++++++++++
+ board/afeb9260/old/nandflash/afeb9260ek.h |  151 +++++++++++++++++
+ board/afeb9260/old/pll.h                  |   35 ++++
+ board/at91cap9adk/at91cap9adk.c           |    6 +-
+ board/at91sam9260ek/at91sam9260ek.c       |    5 +
+ board/at91sam9261ek/at91sam9261ek.c       |    5 +
+ board/at91sam9263ek/at91sam9263ek.c       |    5 +
+ board/at91sam9g20ek/at91sam9g20ek.c       |    6 +-
+ board/at91sam9rlek/at91sam9rlek.c         |    5 +
+ board/at91sam9xeek/at91sam9xeek.c         |    5 +
+ board/board_cpp.mk                        |   25 +++
+ crt0_gnu.S                                |   12 ++
+ driver/Config.in.dataflash                |    2 +-
+ driver/dataflash.c                        |    2 +-
+ include/part.h                            |    6 +
+ 23 files changed, 1157 insertions(+), 13 deletions(-)
+ create mode 100644 board/afeb9260/afeb9260.c
+ create mode 100644 board/afeb9260/afeb9260.h
+ create mode 100644 board/afeb9260/afeb9260_defconfig
+ create mode 100644 board/afeb9260/old/afeb9260.c
+ create mode 100644 board/afeb9260/old/afeb9260.mk
+ create mode 100644 board/afeb9260/old/dataflash/afeb9260.h
+ create mode 100644 board/afeb9260/old/nandflash/afeb9260ek.h
+ create mode 100644 board/afeb9260/old/pll.h
+
+diff --git a/Config.in b/Config.in
+index e187a27..d7f7a3b 100644
+--- a/Config.in
++++ b/Config.in
+@@ -109,4 +109,7 @@ config CONFIG_USER_HW_INIT
+ 	help
+ 	  Initialize Hardware
+ 
+-
++config CONFIG_THUMB
++	bool "Build in thumb mode"
++	help
++	  Build code in thumb mode
+diff --git a/Makefile b/Makefile
+index 32bd556..8a53e94 100644
+--- a/Makefile
++++ b/Makefile
+@@ -189,7 +189,7 @@ include		driver/driver_cpp.mk
+ #  -lgcc   : 	tells the linker to tie in newlib
+ LDFLAGS+=-nostartfiles -Map=result/$(BOOT_NAME).map --cref
+ #LDFLAGS+=-lc -lgcc
+-LDFLAGS+=-T elf32-littlearm.lds -Ttext $(LINK_ADDR)
++LDFLAGS+=-T elf32-littlearm.lds --gc-sections -Ttext $(LINK_ADDR)
+ 
+ all: 	$(obj) $(AT91BOOTSTRAP) .config filesize
+ 
+diff --git a/board/Config.in b/board/Config.in
+index 074018a..1c2168b 100644
+--- a/board/Config.in
++++ b/board/Config.in
+@@ -92,6 +92,17 @@ config	CONFIG_AT91CAP9ADK
+ 	help
+ 	  Use the AT91CAP9ADK Development board
+ 
++config	CONFIG_AFEB9260
++	bool "afeb9260"
++	select CONFIG_SDRAM
++	select ALLOW_DATAFLASH
++	select ALLOW_NANDFLASH
++	select ALLOW_CPU_CLK_166MHZ
++	select ALLOW_CPU_CLK_180MHZ
++	select ALLOW_CRYSTAL_18_432MHZ
++	help
++	  Use the AFEB9260 Development board
++
+ endchoice
+ 
+ config CONFIG_CHIP
+@@ -103,6 +114,7 @@ config CONFIG_CHIP
+ 	default "AT91SAM9XE"	if CONFIG_AT91SAM9XEEK
+ 	default "AT91SAM9G20"	if CONFIG_AT91SAM9G20EK
+ 	default "AT91CAP9"	if CONFIG_AT91CAP9ADK
++	default "AT91SAM9260"	if CONFIG_AFEB9260
+ 	help
+ 	  Name of the board, A Board Support package
+ 	  (BSP) must be available.
+@@ -116,6 +128,7 @@ config CONFIG_BOARD
+ 	default "at91sam9xeek"	if CONFIG_AT91SAM9XEEK
+ 	default "at91sam9g20ek"	if CONFIG_AT91SAM9G20EK
+ 	default "at91cap9adk"	if CONFIG_AT91CAP9ADK
++	default "afeb9260"	if CONFIG_AFEB9260
+ 	help
+ 	  Name of the board, A Board Support package
+ 	  (BSP) must be available.
+@@ -129,6 +142,7 @@ config CONFIG_MACH_TYPE
+ 	default "0x44B"	if CONFIG_AT91SAM9XEEK
+ 	default "0x658"	if CONFIG_AT91SAM9G20EK
+ 	default "1442"	if CONFIG_AT91CAP9ADK
++	default "1859"	if CONFIG_AFEB9260
+ 	help
+ 
+ config CONFIG_LINK_ADDR
+@@ -141,6 +155,7 @@ config CONFIG_LINK_ADDR
+ 	default "0x200000"	if CONFIG_AT91SAM9G20EK
+ 	default "0x000000"	if CONFIG_AT91CAP9ADK	&& CONFIG_DATAFLASH
+ 	default "0x100000"	if CONFIG_AT91CAP9ADK	&& CONFIG_FLASH
++	default "0x200000"	if CONFIG_AFEB9260
+ 	default "0x200000"
+ 	help
+ 
+@@ -153,11 +168,13 @@ config CONFIG_TOP_OF_MEMORY
+ 	default "0x301000"	if CONFIG_AT91SAM9XEEK
+ 	default "0x301000"	if CONFIG_AT91SAM9G20EK
+ 	default "0x108000"	if CONFIG_AT91CAP9ADK
++	default "0x301000"	if CONFIG_AFEB9260
+ 	help
+ 
+ config CONFIG_BOOTSTRAP_MAXSIZE
+ 	string
+ 	default "4096"	if CONFIG_AT91SAM9260EK
++	default "4096"	if CONFIG_AFEB9260
+ 	default "16384"
+ 
+ choice
+@@ -212,6 +229,14 @@ choice
+ 	prompt "CPU clock"
+ 	default CONFIG_CPU_CLK_200MHZ
+ 
++config	CONFIG_CPU_CLK_166MHZ
++	bool "166 MHz"
++	depends on ALLOW_CPU_CLK_166MHZ
++
++config	CONFIG_CPU_CLK_180MHZ
++	bool "180 MHz"
++	depends on ALLOW_CPU_CLK_180MHZ
++
+ config	CONFIG_CPU_CLK_200MHZ
+ 	bool "200 MHz"
+ 	depends on ALLOW_CPU_CLK_200MHZ
+@@ -231,6 +256,12 @@ config	CONFIG_CPU_CLK_400MHZ
+ 
+ endchoice
+ 
++config	ALLOW_CPU_CLK_166MHZ
++	bool
++
++config	ALLOW_CPU_CLK_180MHZ
++	bool
++
+ config	ALLOW_CPU_CLK_200MHZ
+ 	bool
+ 
+@@ -251,10 +282,18 @@ config	DISABLE_CPU_CLK_240MHZ
+ choice
+ 	prompt "Bus Speed"
+ 	default CONFIG_BUS_SPEED_133MHZ
+-	depends on CONFIG_AT91SAM9G20EK
++	depends on CONFIG_AT91SAM9G20EK || CONFIG_AFEB9260
+ 	help
+ 	  Select the speed of the bus
+ 
++config CONFIG_BUS_SPEED_83MHZ
++	bool "83 MHz"
++	depends on CONFIG_AFEB9260
++
++config CONFIG_BUS_SPEED_90MHZ
++	bool "90 MHz"
++	depends on CONFIG_AFEB9260
++
+ config CONFIG_BUS_SPEED_100MHZ
+ 	bool "100 MHz"
+ 	depends on CONFIG_AT91SAM9G20EK
+@@ -264,9 +303,3 @@ config CONFIG_BUS_SPEED_133MHZ
+ 	depends on CONFIG_AT91SAM9G20EK
+ 
+ endchoice
+-
+-
+-
+-
+-
+-
+diff --git a/board/afeb9260/afeb9260.c b/board/afeb9260/afeb9260.c
+new file mode 100644
+index 0000000..249a372
+--- /dev/null
++++ b/board/afeb9260/afeb9260.c
+@@ -0,0 +1,251 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2006, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaiimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : at91sam9260ek.c
++ * Object              :
++ * Creation            : NLe Jul 13th 2006
++ * ODi Nov 9th         : dstp #3507 "Bad PIO descriptors in at91samxxxek.c"
++ *-----------------------------------------------------------------------------
++ */
++#include "part.h"
++#include "main.h"
++#include "gpio.h"
++#include "pmc.h"
++#include "debug.h"
++#include "memory.h"
++
++#ifndef CONFIG_THUMB
++static inline unsigned int get_cp15(void)
++{
++	unsigned int value;
++	__asm__("mrc p15, 0, %0, c1, c0, 0" : "=r" (value));
++	return value;
++}
++
++static inline void set_cp15(unsigned int value)
++{
++	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
++}
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
++
++#ifdef CONFIG_HW_INIT
++/*----------------------------------------------------------------------------*/
++/* \fn    hw_init							      */
++/* \brief This function performs very low level HW initialization	      */
++/* This function is invoked as soon as possible during the c_startup	      */
++/* The bss segment must be initialized					      */
++/*----------------------------------------------------------------------------*/
++void hw_init(void)
++{
++	unsigned int cp15;
++	
++	/* Disable watchdog */
++	writel(AT91C_WDTC_WDDIS, AT91C_BASE_WDTC + WDTC_WDMR);
++
++	/* At this stage the main oscillator is supposed to be enabled
++	 * PCK = MCK = MOSC */
++
++	/* Configure PLLA = MOSC * (PLL_MULA + 1) / PLL_DIVA */
++	pmc_cfg_plla(PLLA_SETTINGS, PLL_LOCK_TIMEOUT);
++
++	/* PCK = PLLA = 2 * MCK */
++	pmc_cfg_mck(MCKR_SETTINGS, PLL_LOCK_TIMEOUT);
++	/* Switch MCK on PLLA output */
++	pmc_cfg_mck(MCKR_CSS_SETTINGS, PLL_LOCK_TIMEOUT);
++
++	/* Configure PLLB */
++	pmc_cfg_pllb(PLLB_SETTINGS, PLL_LOCK_TIMEOUT);
++
++	/* Configure CP15 */
++	cp15 = get_cp15();
++	cp15 |= I_CACHE;
++	set_cp15(cp15);
++
++	/* Configure the PIO controller */
++	writel(3 << 14, AT91C_BASE_PIOB + PIO_ASR(0));
++	writel(3 << 14, AT91C_BASE_PIOB + PIO_PDR(0));
++
++	/* Configure the EBI Slave Slot Cycle to 64 */
++	writel( (readl((AT91C_BASE_MATRIX + MATRIX_SCFG3)) & ~0xFF) | 0x40, (AT91C_BASE_MATRIX + MATRIX_SCFG3));
++
++#ifdef CONFIG_DEBUG
++	/* Enable Debug messages on the DBGU */
++	dbg_init(BAUDRATE(MASTER_CLOCK, 115200));
++	header();
++#endif /* CONFIG_DEBUG */
++
++#ifdef CONFIG_SDRAM
++	/* Initialize the matrix */
++	writel(readl(AT91C_BASE_CCFG + CCFG_EBICSA) | AT91C_EBI_CS1A_SDRAMC, AT91C_BASE_CCFG + CCFG_EBICSA);
++
++#if defined(CONFIG_BUS_SPEED_83MHZ) || defined(CONFIG_BUS_SPEED_90MHZ)
++/* CLK= 11ns */
++/* TWR = tDPL = 2 2CLK always */
++/* TRC = tRC = 65ns = 6 clk */
++/* TRP = tRP = 20ns = 2 clk */
++/* TRCD = tRCD = 20ns = 2 clk */
++/* TRAS = tRAS = 45ns = 5 clk */
++/* TXSR = tRRC = 65ns = 6 clk */
++
++	sdram_init(	AT91C_SDRAMC_NC_9  |
++				AT91C_SDRAMC_NR_13 |
++				AT91C_SDRAMC_CAS_2 |
++				AT91C_SDRAMC_NB_4_BANKS |
++				AT91C_SDRAMC_DBW_32_BITS |
++				AT91C_SDRAMC_TWR_2 |
++				AT91C_SDRAMC_TRC_6 | /* *7 */
++				AT91C_SDRAMC_TRP_2 |
++				AT91C_SDRAMC_TRCD_2 |
++				AT91C_SDRAMC_TRAS_5 | /* *5 */
++				AT91C_SDRAMC_TXSR_6, /* *8 */	/* Control Register */
++				710, AT91C_SDRAMC_MD_SDRAM);	/* Refresh Timer Register */
++#else
++	/* Configure SDRAM Controller */
++	sdram_init(	AT91C_SDRAMC_NC_9  |
++				AT91C_SDRAMC_NR_13 |
++				AT91C_SDRAMC_CAS_2 |
++				AT91C_SDRAMC_NB_4_BANKS |
++				AT91C_SDRAMC_DBW_32_BITS |
++				AT91C_SDRAMC_TWR_2 |
++				AT91C_SDRAMC_TRC_7 |
++				AT91C_SDRAMC_TRP_2 |
++				AT91C_SDRAMC_TRCD_2 |
++				AT91C_SDRAMC_TRAS_5 |
++				AT91C_SDRAMC_TXSR_8,		/* Control Register */
++				(MASTER_CLOCK * 7)/1000000,	/* Refresh Timer Register */
++				AT91C_SDRAMC_MD_SDRAM);		/* SDRAM (no low power)   */ 
++#endif
++
++#endif /* CONFIG_SDRAM */
++}
++#endif /* CONFIG_HW_INIT */
++
++#ifdef CONFIG_SDRAM
++/*------------------------------------------------------------------------------*/
++/* \fn    sdramc_hw_init							*/
++/* \brief This function performs SDRAMC HW initialization			*/
++/*------------------------------------------------------------------------------*/
++void sdramc_hw_init(void)
++{
++	/* Configure PIOs */
++/*	const struct pio_desc sdramc_pio[] = {
++		{"D16", AT91C_PIN_PC(16), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D17", AT91C_PIN_PC(17), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D18", AT91C_PIN_PC(18), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D19", AT91C_PIN_PC(19), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D20", AT91C_PIN_PC(20), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D21", AT91C_PIN_PC(21), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D22", AT91C_PIN_PC(22), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D23", AT91C_PIN_PC(23), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D24", AT91C_PIN_PC(24), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D25", AT91C_PIN_PC(25), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D26", AT91C_PIN_PC(26), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D27", AT91C_PIN_PC(27), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D28", AT91C_PIN_PC(28), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D29", AT91C_PIN_PC(29), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D30", AT91C_PIN_PC(30), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D31", AT91C_PIN_PC(31), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++*/
++	/* Configure the SDRAMC PIO controller to output PCK0 */
++/*	pio_setup(sdramc_pio); */
++
++	writel(0xFFFF0000, AT91C_BASE_PIOC + PIO_ASR(0));
++	writel(0xFFFF0000, AT91C_BASE_PIOC + PIO_PDR(0));
++
++}
++#endif /* CONFIG_SDRAM */
++
++#ifdef CONFIG_DATAFLASH
++/*------------------------------------------------------------------------------*/
++/* \fn    df_hw_init								*/
++/* \brief This function performs DataFlash HW initialization			*/
++/*------------------------------------------------------------------------------*/
++void df_hw_init(void)
++{
++	writel(0xf, 0xfffff444);
++	writel(0xf, 0xfffff460);
++	writel(0xf, 0xfffff470);
++	writel(0xf, 0xfffff404);
++	writel(1 << 11, AT91C_BASE_PIOC + PIO_BSR(0));
++	writel(1 << 11, AT91C_BASE_PIOC + PIO_PDR(0));
++}
++#endif /* CONFIG_DATAFLASH */
++
++/* We init NAND regardless of whatever */
++/*------------------------------------------------------------------------------*/
++/* \fn    nandflash_hw_init							*/
++/* \brief NandFlash HW init							*/
++/*------------------------------------------------------------------------------*/
++void nandflash_hw_init(void)
++{
++	/* Setup Smart Media, first enable the address range of CS3 in HMATRIX user interface */
++	writel(readl(AT91C_BASE_CCFG + CCFG_EBICSA) | AT91C_EBI_CS3A_SM, AT91C_BASE_CCFG + CCFG_EBICSA);
++		    
++	/* Configure SMC CS3 */
++ 	writel((AT91C_SM_NWE_SETUP | AT91C_SM_NCS_WR_SETUP | AT91C_SM_NRD_SETUP | AT91C_SM_NCS_RD_SETUP), AT91C_BASE_SMC + SMC_SETUP3);
++  	writel((AT91C_SM_NWE_PULSE | AT91C_SM_NCS_WR_PULSE | AT91C_SM_NRD_PULSE | AT91C_SM_NCS_RD_PULSE), AT91C_BASE_SMC + SMC_PULSE3);
++	writel((AT91C_SM_NWE_CYCLE | AT91C_SM_NRD_CYCLE)						, AT91C_BASE_SMC + SMC_CYCLE3);
++	writel((AT91C_SMC_READMODE | AT91C_SMC_WRITEMODE | AT91C_SMC_NWAITM_NWAIT_DISABLE | 
++  		AT91C_SMC_DBW_WIDTH_EIGTH_BITS | AT91C_SM_TDF)						, AT91C_BASE_SMC + SMC_CTRL3);
++
++	/* Configure the PIO controller */
++	writel((1 << AT91C_ID_PIOC), PMC_PCER + AT91C_BASE_PMC);
++
++	writel(1 << 13, AT91C_BASE_PIOC + PIO_IFDR(0));
++	writel(1 << 13, AT91C_BASE_PIOC + PIO_PPUER(0));
++	writel(1 << 13, AT91C_BASE_PIOC + PIO_ODR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_CODR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_MDDR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_PPUDR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_OER(0));
++	writel(3 << 13, AT91C_BASE_PIOC + PIO_IDR(0));
++	writel(3 << 13, AT91C_BASE_PIOC + PIO_PER(0));
++}
++
++
++/*------------------------------------------------------------------------------*/
++/* \fn    nandflash_cfg_16bits_dbw_init						*/
++/* \brief Configure SMC in 16 bits mode						*/
++/*------------------------------------------------------------------------------*/
++void nandflash_cfg_16bits_dbw_init(void)
++{
++	writel(readl(AT91C_BASE_SMC + SMC_CTRL3) | AT91C_SMC_DBW_WIDTH_SIXTEEN_BITS, AT91C_BASE_SMC + SMC_CTRL3);
++}
++
++/*------------------------------------------------------------------------------*/
++/* \fn    nandflash_cfg_8bits_dbw_init						*/
++/* \brief Configure SMC in 8 bits mode						*/
++/*------------------------------------------------------------------------------*/
++void nandflash_cfg_8bits_dbw_init(void)
++{
++	writel((readl(AT91C_BASE_SMC + SMC_CTRL3) & ~(AT91C_SMC_DBW)) | AT91C_SMC_DBW_WIDTH_EIGTH_BITS, AT91C_BASE_SMC + SMC_CTRL3);
++}
+diff --git a/board/afeb9260/afeb9260.h b/board/afeb9260/afeb9260.h
+new file mode 100644
+index 0000000..7310c0f
+--- /dev/null
++++ b/board/afeb9260/afeb9260.h
+@@ -0,0 +1,126 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2006, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaiimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : afeb9260.h
++ * Object              :
++ * Creation            : NLe Jul 13th 2006
++ *-----------------------------------------------------------------------------
++ */
++#ifndef _AFEB9260_H
++#define _AFEB9260_H
++
++/* ******************************************************************* */
++/* PMC Settings                                                        */
++/*                                                                     */
++/* The main oscillator is enabled as soon as possible in the c_startup */
++/* and MCK is switched on the main oscillator.                         */
++/* PLL initialization is done later in the hw_init() function          */
++/* ******************************************************************* */
++#if	defined(CONFIG_CPU_CLK_200MHZ)
++#define MASTER_CLOCK		(198656000/2)
++#define PLLA_SETTINGS		0x2060BF09
++#endif
++
++#if	defined(CONFIG_CPU_CLK_166MHZ)
++#define PLLA_SETTINGS   0x25ceBFa5 /* 166MHz */
++#define MASTER_CLOCK            (165999709/2) /* 166MHz MCK=83MHz*/
++#endif
++
++#if	defined(CONFIG_CPU_CLK_180MHZ)
++#define PLLA_SETTINGS		0x2125BF1E /* 180MHz */
++#define MASTER_CLOCK		(179999198/2) /* 180MHz MCK=90MHz */
++#endif
++
++#define	TOP_OF_MEMORY		0x301000
++#define PLL_LOCK_TIMEOUT	1000000
++
++#define PLLB_SETTINGS	0x10483F0E
++
++/* Switch MCK on PLLA output PCK = PLLA = 2 * MCK */
++#define MCKR_SETTINGS		(AT91C_PMC_PRES_CLK | AT91C_PMC_MDIV_2)
++#define MCKR_CSS_SETTINGS	(AT91C_PMC_CSS_PLLA_CLK | MCKR_SETTINGS)
++
++/* ******************************************************************* */
++/* DataFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_BASE_SPI	AT91C_BASE_SPI0
++#define AT91C_ID_SPI	AT91C_ID_SPI0
++
++/* AC characteristics */
++/* DLYBS = tCSS= 250ns min and DLYBCT = tCSH = 250ns */
++#define DATAFLASH_TCSS		(0x1a << 16)	/* 250ns min (tCSS) <=> 12/48000000 = 250ns */
++#define DATAFLASH_TCHS		(0x1 << 24)	/* 250ns min (tCSH) <=> (64*1+SCBR)/(2*48000000) */
++
++#define DF_CS_SETTINGS 		(AT91C_SPI_NCPHA | (AT91C_SPI_DLYBS & DATAFLASH_TCSS) | (AT91C_SPI_DLYBCT & DATAFLASH_TCHS) | ((MASTER_CLOCK / AT91C_SPI_CLK) << 8))
++
++/* ******************************************************************* */
++/* NandFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_SMARTMEDIA_BASE	0x40000000
++
++#define AT91_SMART_MEDIA_ALE    (1 << 21)	/* our ALE is AD21 */
++#define AT91_SMART_MEDIA_CLE    (1 << 22)	/* our CLE is AD22 */
++
++#define NAND_DISABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_SODR = AT91C_PIO_PC14;} while(0)
++#define NAND_ENABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_CODR = AT91C_PIO_PC14;} while(0)
++
++#define NAND_WAIT_READY() while (!(*(volatile unsigned int *)AT91C_PIOC_PDSR & AT91C_PIO_PC13))
++
++
++/* ******************************************************************** */
++/* SMC Chip Select 3 Timings for NandFlash for MASTER_CLOCK = 100000000.*/
++/* Please refer to SMC section in AT91SAM datasheet to learn how 	*/
++/* to generate these values. 						*/
++/* ******************************************************************** */
++#define AT91C_SM_NWE_SETUP	(1 << 0)
++#define AT91C_SM_NCS_WR_SETUP	(0 << 8)
++#define AT91C_SM_NRD_SETUP	(1 << 16)
++#define AT91C_SM_NCS_RD_SETUP	(0 << 24)
++  
++#define AT91C_SM_NWE_PULSE 	(3 << 0)
++#define AT91C_SM_NCS_WR_PULSE	(3 << 8)
++#define AT91C_SM_NRD_PULSE	(3 << 16)
++#define AT91C_SM_NCS_RD_PULSE	(3 << 24)
++  
++#define AT91C_SM_NWE_CYCLE 	(5 << 0)
++#define AT91C_SM_NRD_CYCLE	(5 << 16)
++#define AT91C_SM_TDF	        (2 << 16)
++
++#endif	/* _AT91SAM9260EK_H */
++
++
++
++
++
++
++
++
++
++
++
+diff --git a/board/afeb9260/afeb9260_defconfig b/board/afeb9260/afeb9260_defconfig
+new file mode 100644
+index 0000000..bf8b6f9
+--- /dev/null
++++ b/board/afeb9260/afeb9260_defconfig
+@@ -0,0 +1,94 @@
++#
++# Automatically generated make config: don't edit
++# Sun May 10 01:26:05 2009
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="afeb9260"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91CAP9ADK is not set
++CONFIG_AFEB9260=y
++CONFIG_CHIP="AT91SAM9260"
++CONFIG_BOARD="afeb9260"
++CONFIG_MACH_TYPE="1859"
++CONFIG_LINK_ADDR="0x200000"
++CONFIG_TOP_OF_MEMORY="0x301000"
++CONFIG_BOOTSTRAP_MAXSIZE="4096"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++CONFIG_CPU_CLK_166MHZ=y
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++# CONFIG_CPU_CLK_400MHZ is not set
++ALLOW_CPU_CLK_166MHZ=y
++ALLOW_CPU_CLK_180MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++CONFIG_BUS_SPEED_83MHZ=y
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++# CONFIG_BUS_SPEED_133MHZ is not set
++
++#
++# Memory selection
++#
++CONFIG_SDRAM=y
++# CONFIG_SDDRC is not set
++# CONFIG_DDR2 is not set
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++# ALLOW_SDCARD is not set
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++CONFIG_RAM_64MB=y
++# CONFIG_RAM_128MB is not set
++# CONFIG_RAM_256MB is not set
++CONFIG_DATAFLASH=y
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++# CONFIG_SDCARD is not set
++CONFIG_MEMORY="dataflash"
++
++#
++# SPI configuration
++#
++CONFIG_SPI_CLK=33000000
++# CONFIG_SPI_BOOT_CS0 is not set
++CONFIG_SPI_BOOT_CS1=y
++# DATAFLASHCARD_ON_CS0 is not set
++# DATAFLASHCARD_ON_CS1 is not set
++# DATAFLASHCARD_ON_CS2 is not set
++# DATAFLASHCARD_ON_CS3 is not set
++# CONFIG_DATAFLASHCARD is not set
++CONFIG_CARD_SUFFIX=""
++CONFIG_SPI_BOOT="AT91C_SPI_PCS1_DATAFLASH"
++CONFIG_SPI_MODE_0=y
++# CONFIG_SPI_MODE_1 is not set
++# CONFIG_SPI_MODE_2 is not set
++# CONFIG_SPI_MODE_3 is not set
++CONFIG_SPI_MODE=0
++CONFIG_PROJECT="dataflash"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_IMG_SIZE="0x00040000"
++CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_APP_CHECK=y
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
+diff --git a/board/afeb9260/old/afeb9260.c b/board/afeb9260/old/afeb9260.c
+new file mode 100644
+index 0000000..81c0919
+--- /dev/null
++++ b/board/afeb9260/old/afeb9260.c
+@@ -0,0 +1,240 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2006, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaiimer below.
++ *
++ * - Redistributions in binary form must reproduce the above copyright notice,
++ * this list of conditions and the disclaimer below in the documentation and/or
++ * other materials provided with the distribution.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : at91sam9260ek.c
++ * Object              :
++ * Creation            : NLe Jul 13th 2006
++ * ODi Nov 9th         : dstp #3507 "Bad PIO descriptors in at91samxxxek.c"
++ *-----------------------------------------------------------------------------
++ */
++#include "../../include/part.h"
++#include "../../include/gpio.h"
++#include "../../include/pmc.h"
++#include "../../include/debug.h"
++#include "../../include/sdramc.h"
++#include "../../include/main.h"
++#ifdef CFG_NANDFLASH
++#include "../../include/nandflash.h"
++#endif
++#ifdef CFG_DATAFLASH
++#include "../../include/dataflash.h"
++#endif
++#ifdef CFG_FLASH
++#include "../../include/flash.h"
++#endif
++
++/* We init NAND regardless of whatever */
++/*------------------------------------------------------------------------------*/
++/* \fn    nandflash_hw_init							*/
++/* \brief NandFlash HW init							*/
++/*------------------------------------------------------------------------------*/
++void nandflash_hw_init(void)
++{
++	/* Setup Smart Media, first enable the address range of CS3 in HMATRIX user interface */
++	writel(readl(AT91C_BASE_CCFG + CCFG_EBICSA) | AT91C_EBI_CS3A_SM, AT91C_BASE_CCFG + CCFG_EBICSA);
++		    
++	/* Configure SMC CS3 */
++ 	writel((AT91C_SM_NWE_SETUP | AT91C_SM_NCS_WR_SETUP | AT91C_SM_NRD_SETUP | AT91C_SM_NCS_RD_SETUP), AT91C_BASE_SMC + SMC_SETUP3);
++  	writel((AT91C_SM_NWE_PULSE | AT91C_SM_NCS_WR_PULSE | AT91C_SM_NRD_PULSE | AT91C_SM_NCS_RD_PULSE), AT91C_BASE_SMC + SMC_PULSE3);
++	writel((AT91C_SM_NWE_CYCLE | AT91C_SM_NRD_CYCLE)						, AT91C_BASE_SMC + SMC_CYCLE3);
++	writel((AT91C_SMC_READMODE | AT91C_SMC_WRITEMODE | AT91C_SMC_NWAITM_NWAIT_DISABLE | 
++  		AT91C_SMC_DBW_WIDTH_EIGTH_BITS | AT91C_SM_TDF)						, AT91C_BASE_SMC + SMC_CTRL3);
++
++	/* Configure the PIO controller */
++	writel((1 << AT91C_ID_PIOC), PMC_PCER + AT91C_BASE_PMC);
++
++	writel(1 << 13, AT91C_BASE_PIOC + PIO_IFDR(0));
++	writel(1 << 13, AT91C_BASE_PIOC + PIO_PPUER(0));
++	writel(1 << 13, AT91C_BASE_PIOC + PIO_ODR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_CODR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_MDDR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_PPUDR(0));
++	writel(1 << 14, AT91C_BASE_PIOC + PIO_OER(0));
++	writel(3 << 13, AT91C_BASE_PIOC + PIO_IDR(0));
++	writel(3 << 13, AT91C_BASE_PIOC + PIO_PER(0));
++}
++
++
++#ifdef CFG_HW_INIT
++/*----------------------------------------------------------------------------*/
++/* \fn    hw_init							      */
++/* \brief This function performs very low level HW initialization	      */
++/* This function is invoked as soon as possible during the c_startup	      */
++/* The bss segment must be initialized					      */
++/*----------------------------------------------------------------------------*/
++void hw_init(void)
++{
++	/* Disable watchdog */
++	writel(AT91C_WDTC_WDDIS, AT91C_BASE_WDTC + WDTC_WDMR);
++
++	/* At this stage the main oscillator is supposed to be enabled
++	 * PCK = MCK = MOSC */
++
++	/* Configure PLLA = MOSC * (PLL_MULA + 1) / PLL_DIVA */
++	pmc_cfg_plla(PLLA_SETTINGS, PLL_LOCK_TIMEOUT);
++
++	/* Switch MCK on PLLA output PCK = PLLA = 2 * MCK */
++	pmc_cfg_mck(MCKR_SETTINGS, PLL_LOCK_TIMEOUT);
++
++	/* Configure PLLB */
++	pmc_cfg_pllb(PLLB_SETTINGS, PLL_LOCK_TIMEOUT);
++
++	/* Configure the PIO controller */
++	writel(3 << 14, AT91C_BASE_PIOB + PIO_ASR(0));
++	writel(3 << 14, AT91C_BASE_PIOB + PIO_PDR(0));
++
++#ifdef CFG_DEBUG
++	/* Enable Debug messages on the DBGU */
++	dbg_init(BAUDRATE(MASTER_CLOCK, 115200));
++
++	dbg_print("AT91 bootstrap loading from 0x8400\n\r");
++#endif /* CFG_DEBUG */
++
++#ifdef CFG_SDRAM
++	/* Initialize the matrix */
++	writel(readl(AT91C_BASE_CCFG + CCFG_EBICSA) | AT91C_EBI_CS1A_SDRAMC, AT91C_BASE_CCFG + CCFG_EBICSA);
++
++	/* Configure SDRAM Controller */
++
++#define HYNIX
++
++//#define MICRON
++#ifdef MICRON
++#define MICRON_REFRESH 1420 /* 15.625 us / 11 ns @ 180 Mhz*/
++	sdram_init(	AT91C_SDRAMC_NC_9  |
++				AT91C_SDRAMC_NR_12 |
++				AT91C_SDRAMC_CAS_2 |
++				AT91C_SDRAMC_NB_4_BANKS |
++				AT91C_SDRAMC_DBW_32_BITS |
++				AT91C_SDRAMC_TWR_2 | // 1 CLK+7ns
++				AT91C_SDRAMC_TRC_7 | // 60 ns
++				AT91C_SDRAMC_TRP_3 | // 15 ns
++				AT91C_SDRAMC_TRCD_3 | // 15 ns
++				AT91C_SDRAMC_TRAS_7 | // 37-120 ns
++				AT91C_SDRAMC_TXSR_7, /* 67ns */ /* Control Register */
++				/* 600 700 735 */ MICRON_REFRESH /* 740 1536*/ );	/* Refresh Timer Register */
++
++#endif
++/* 
++HY57V561620BT-H
++     *CAS lat		*tRCD		*tRAS		*tRC		*tRP		tAC	tOH
++133	2		2		6		8		2		5.4ns	2.7ns
++125	3		3		6		9		3		6ns	3ns
++100	2		2		5		7		2		6ns	3ns
++
++*/
++#ifdef HYNIX
++#if defined(PLLA_180MHz)
++/* CLK= 11ns */
++/* TWR = tDPL = 2 2CLK always */
++/* TRC = tRC = 65ns = 6 clk */
++/* TRP = tRP = 20ns = 2 clk */
++/* TRCD = tRCD = 20ns = 2 clk */
++/* TRAS = tRAS = 45ns = 5 clk */
++/* TXSR = tRRC = 65ns = 6 clk */
++
++	sdram_init(	AT91C_SDRAMC_NC_9  |
++				AT91C_SDRAMC_NR_13 |
++				AT91C_SDRAMC_CAS_2 |
++				AT91C_SDRAMC_NB_4_BANKS |
++				AT91C_SDRAMC_DBW_32_BITS |
++				AT91C_SDRAMC_TWR_2 |
++				AT91C_SDRAMC_TRC_6 | /* *7 */
++				AT91C_SDRAMC_TRP_2 |
++				AT91C_SDRAMC_TRCD_2 |
++				AT91C_SDRAMC_TRAS_5 | /* *5 */
++				AT91C_SDRAMC_TXSR_6, /* *8 */	/* Control Register */
++				710);	/* Refresh Timer Register */
++
++#elif defined(PLLA_120MHz)
++/* CLK= 16ns, MCLK=60MHz */
++/* TWR = tDPL = 2 2CLK always */
++/* TRC = tRC = 65ns = 4 clk */
++/* TRP = tRP = 20ns = 2 clk */
++/* TRCD = tRCD = 20ns = 2 clk */
++/* TRAS = tRAS = 45ns = 3 clk */
++/* TXSR = tRRC = 65ns = 4 clk */
++
++	sdram_init(	AT91C_SDRAMC_NC_9  |
++				AT91C_SDRAMC_NR_13 |
++				AT91C_SDRAMC_CAS_2 |
++				AT91C_SDRAMC_NB_4_BANKS |
++				AT91C_SDRAMC_DBW_32_BITS |
++				AT91C_SDRAMC_TWR_2 |
++				AT91C_SDRAMC_TRC_4 |
++				AT91C_SDRAMC_TRP_2 |
++				AT91C_SDRAMC_TRCD_2 |
++				AT91C_SDRAMC_TRAS_3 | /* *5 */
++				AT91C_SDRAMC_TXSR_4, /* *8 */	/* Control Register */
++				1032);	/* Refresh Timer Register */
++#else
++#error define PLLA180MHz
++#endif
++#endif /* HYNIX */
++#endif /* CFG_SDRAM */
++
++#ifdef	CFG_FLASH
++	flash_hw_init();
++#endif
++	nandflash_hw_init();
++}
++#endif /* CFG_HW_INIT */
++
++#ifdef CFG_SDRAM
++/*------------------------------------------------------------------------------*/
++/* \fn    sdramc_hw_init							*/
++/* \brief This function performs SDRAMC HW initialization			*/
++/*------------------------------------------------------------------------------*/
++void sdramc_hw_init(void)
++{
++	writel(0xFFFF0000, AT91C_BASE_PIOC + PIO_ASR(0));
++	writel(0xFFFF0000, AT91C_BASE_PIOC + PIO_PDR(0));
++
++}
++#endif /* CFG_SDRAM */
++
++#ifdef CFG_DATAFLASH
++
++/*------------------------------------------------------------------------------*/
++/* \fn    df_hw_init								*/
++/* \brief This function performs DataFlash HW initialization			*/
++/*------------------------------------------------------------------------------*/
++void df_hw_init(void)
++{
++	writel(0xf, 0xfffff444);
++	writel(0xf, 0xfffff460);
++	writel(0xf, 0xfffff470);
++	writel(0xf, 0xfffff404);
++	writel(1 << 11, AT91C_BASE_PIOC + PIO_BSR(0));
++	writel(1 << 11, AT91C_BASE_PIOC + PIO_PDR(0));
++}
++#endif /* CFG_DATAFLASH */
++
+diff --git a/board/afeb9260/old/afeb9260.mk b/board/afeb9260/old/afeb9260.mk
+new file mode 100644
+index 0000000..88c2f64
+--- /dev/null
++++ b/board/afeb9260/old/afeb9260.mk
+@@ -0,0 +1,8 @@
++# Target name (case sensitive!!!)
++TARGET=AFEB9260
++# Board name (case sensitive!!!)
++BOARD=afeb9260
++# Link Address and Top_of_Memory
++LINK_ADDR=0x200000
++TOP_OF_MEMORY=0x301000
++
+diff --git a/board/afeb9260/old/dataflash/afeb9260.h b/board/afeb9260/old/dataflash/afeb9260.h
+new file mode 100644
+index 0000000..8e60faa
+--- /dev/null
++++ b/board/afeb9260/old/dataflash/afeb9260.h
+@@ -0,0 +1,127 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2006, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaiimer below.
++ *
++ * - Redistributions in binary form must reproduce the above copyright notice,
++ * this list of conditions and the disclaimer below in the documentation and/or
++ * other materials provided with the distribution.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : at91sam9260ek.h
++ * Object              :
++ * Creation            : NLe Jul 13th 2006
++ *-----------------------------------------------------------------------------
++ */
++#ifndef _AFEB9260_H
++#define _AFEB9260_H
++#include	"spi.h"
++#include 	"pll.h"
++
++/* ******************************************************************* */
++/* DataFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_BASE_SPI	AT91C_BASE_SPI0
++#define AT91C_ID_SPI	AT91C_ID_SPI0
++
++/* SPI CLOCK */
++#define AT91C_SPI_CLK 		 5000000
++/* AC characteristics */
++/* DLYBS = tCSS= 250ns min and DLYBCT = tCSH = 250ns */
++#define DATAFLASH_TCSS		(0x1a << 16)	/* 250ns min (tCSS) <=> 12/48000000 = 250ns */
++#define DATAFLASH_TCHS		(0x1 << 24)	/* 250ns min (tCSH) <=> (64*1+SCBR)/(2*48000000) */
++
++#define DF_CS_SETTINGS 		((SPI_MODE) | (AT91C_SPI_DLYBS & DATAFLASH_TCSS) | (AT91C_SPI_DLYBCT & DATAFLASH_TCHS) | ((MASTER_CLOCK / AT91C_SPI_CLK) << 8))
++
++
++/* ******************************************************************* */
++/* BootStrap Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define MACH_TYPE       	0x44B		/* AT91SAM9260-EK */
++
++#define IMG_ADDRESS 		0x8400		/* Image Address in DataFlash */
++
++#if	defined(IMG_SIZE)
++#warning			"IMG_SIZE redefined"
++#else
++#define	IMG_SIZE		0x39000	/* Image Size in DataFlash    */
++#endif
++
++#if	defined(JUMP_ADDR)
++#warning			"JUMP_ADDR redefined"
++#else
++#define JUMP_ADDR		0x21F00000	/* Final Jump Address 	      */
++#endif
++
++/* ******************************************************************* */
++/* NandFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_SMARTMEDIA_BASE	0x40000000
++
++#define AT91_SMART_MEDIA_ALE    (1 << 21)	/* our ALE is AD21 */
++#define AT91_SMART_MEDIA_CLE    (1 << 22)	/* our CLE is AD22 */
++
++#define NAND_DISABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_SODR = AT91C_PIO_PC14;} while(0)
++#define NAND_ENABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_CODR = AT91C_PIO_PC14;} while(0)
++
++#define NAND_WAIT_READY() while (!(*(volatile unsigned int *)AT91C_PIOC_PDSR & AT91C_PIO_PC13))
++
++
++/* ******************************************************************** */
++/* SMC Chip Select 3 Timings for NandFlash for MASTER_CLOCK = 100000000.*/
++/* Micron 16bits 256Mb for MASTER_CLOCK = 100000000.			*/
++/* Please refer to SMC section in AT91SAM9261 datasheet to learn how 	*/
++/* to generate these values. 						*/
++/* ******************************************************************** */
++
++#define AT91C_SM_NWE_SETUP	(2 << 0)
++#define AT91C_SM_NCS_WR_SETUP	(2 << 8)
++#define AT91C_SM_NRD_SETUP	(2 << 16)
++#define AT91C_SM_NCS_RD_SETUP	(2 << 24)
++  
++#define AT91C_SM_NWE_PULSE 	(4 << 0)
++#define AT91C_SM_NCS_WR_PULSE	(4 << 8)
++#define AT91C_SM_NRD_PULSE	(4 << 16)
++#define AT91C_SM_NCS_RD_PULSE	(4 << 24)
++  
++#define AT91C_SM_NWE_CYCLE 	(8 << 0)
++#define AT91C_SM_NRD_CYCLE	(8 << 16)
++
++#define AT91C_SM_TDF	        (2 << 16)
++
++
++
++/* ******************************************************************* */
++/* Application Settings                                                */
++/* ******************************************************************* */
++#define CFG_DEBUG
++#define CFG_DATAFLASH
++#define	CFG_SDRAM
++#define	CFG_HW_INIT
++
++
++#endif	/* _AT91SAM9260EK_H */
+diff --git a/board/afeb9260/old/nandflash/afeb9260ek.h b/board/afeb9260/old/nandflash/afeb9260ek.h
+new file mode 100644
+index 0000000..752ae0a
+--- /dev/null
++++ b/board/afeb9260/old/nandflash/afeb9260ek.h
+@@ -0,0 +1,151 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2006, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaimer below.
++ *
++ * - Redistributions in binary form must reproduce the above copyright notice,
++ * this list of conditions and the disclaimer below in the documentation and/or
++ * other materials provided with the distribution.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : at91sam9260ek.h
++ * Object              :
++ * Creation            : NLe Sep 28th 2006
++ *-----------------------------------------------------------------------------
++ */
++#ifndef _AFEB9260_H
++#define _AFEB9260_H
++#include	"spi.h"
++#include 	"pll.h"
++
++/* ******************************************************************* */
++/* DataFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_BASE_SPI	AT91C_BASE_SPI0
++#define AT91C_ID_SPI	AT91C_ID_SPI0
++
++/* SPI CLOCK */
++#define AT91C_SPI_CLK 		 5000000
++/* AC characteristics */
++/* DLYBS = tCSS= 250ns min and DLYBCT = tCSH = 250ns */
++#define DATAFLASH_TCSS		(0x1a << 16)	/* 250ns min (tCSS) <=> 12/48000000 = 250ns */
++#define DATAFLASH_TCHS		(0x1 << 24)	/* 250ns min (tCSH) <=> (64*1+SCBR)/(2*48000000) */
++
++#define DF_CS_SETTINGS 		((SPI_MODE) | (AT91C_SPI_DLYBS & DATAFLASH_TCSS) | (AT91C_SPI_DLYBCT & DATAFLASH_TCHS) | ((MASTER_CLOCK / AT91C_SPI_CLK) << 8))
++
++
++/* ******************************************************************* */
++/* NandFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_SMARTMEDIA_BASE	0x40000000
++
++#define AT91_SMART_MEDIA_ALE    (1 << 21)	/* our ALE is AD21 */
++#define AT91_SMART_MEDIA_CLE    (1 << 22)	/* our CLE is AD22 */
++
++#define NAND_DISABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_SODR = AT91C_PIO_PC14;} while(0)
++#define NAND_ENABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_CODR = AT91C_PIO_PC14;} while(0)
++
++#define NAND_WAIT_READY() while (!(*(volatile unsigned int *)AT91C_PIOC_PDSR & AT91C_PIO_PC13))
++
++
++/* ******************************************************************** */
++/* SMC Chip Select 3 Timings for NandFlash for MASTER_CLOCK = 100000000.*/
++/* Micron 16bits 256Mb for MASTER_CLOCK = 100000000.			*/
++/* Please refer to SMC section in AT91SAM9261 datasheet to learn how 	*/
++/* to generate these values. 						*/
++/* ******************************************************************** */
++
++#define AT91C_SM_NWE_SETUP	(2 << 0)
++#define AT91C_SM_NCS_WR_SETUP	(2 << 8)
++#define AT91C_SM_NRD_SETUP	(2 << 16)
++#define AT91C_SM_NCS_RD_SETUP	(2 << 24)
++  
++#define AT91C_SM_NWE_PULSE 	(4 << 0)
++#define AT91C_SM_NCS_WR_PULSE	(4 << 8)
++#define AT91C_SM_NRD_PULSE	(4 << 16)
++#define AT91C_SM_NCS_RD_PULSE	(4 << 24)
++  
++#define AT91C_SM_NWE_CYCLE 	(8 << 0)
++#define AT91C_SM_NRD_CYCLE	(8 << 16)
++
++#define AT91C_SM_TDF	        (2 << 16)
++
++
++/* ******************************************************************** */
++/* SMC Chip Select 3 Timings for NandFlash for MASTER_CLOCK = 100000000.*/
++/* Micron 16bits 256Mb for MASTER_CLOCK = 100000000.			*/
++/* Please refer to SMC section in AT91SAM9261 datasheet to learn how 	*/
++/* to generate these values. 						*/
++/* ******************************************************************** */
++/*#define AT91C_SM_NWE_SETUP	(0 << 0)
++#define AT91C_SM_NCS_WR_SETUP	(0 << 8)
++#define AT91C_SM_NRD_SETUP	(0 << 16)
++#define AT91C_SM_NCS_RD_SETUP	(0 << 24)
++  
++#define AT91C_SM_NWE_PULSE 	(2 << 0)
++#define AT91C_SM_NCS_WR_PULSE	(3 << 8)
++#define AT91C_SM_NRD_PULSE	(2 << 16)
++#define AT91C_SM_NCS_RD_PULSE	(3 << 24)
++  
++#define AT91C_SM_NWE_CYCLE 	(3 << 0)
++#define AT91C_SM_NRD_CYCLE	(3 << 16)
++
++#define AT91C_SM_TDF	        (1 << 16)
++*/
++
++/* ******************************************************************* */
++/* BootStrap Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define MACH_TYPE      		0x44B       	/* AT91SAM9260-EK */
++
++#define IMG_ADDRESS 		0x20000		/* Image Address in NandFlash */
++
++#if	defined(IMG_SIZE)
++#warning			"IMG_SIZE redefined"
++#else
++#define	IMG_SIZE		0x30000		/* Image Size in NandFlash    */
++#endif
++
++#if	defined(JUMP_ADDR)
++#warning			"JUMP_ADDR redefined"
++#else
++#define JUMP_ADDR		0x23F00000	/* Final Jump Address 	      */
++#endif
++
++/* ******************************************************************* */
++/* Application Settings                                                */
++/* ******************************************************************* */
++#define CFG_DEBUG
++#undef CFG_DATAFLASH
++
++#define CFG_NANDFLASH
++#undef	NANDFLASH_SMALL_BLOCKS	/* NANDFLASH_LARGE_BLOCKS used instead */
++
++#define CFG_HW_INIT
++#define CFG_SDRAM
++
++#endif	/* _AT91SAM9260EK_H */
+diff --git a/board/afeb9260/old/pll.h b/board/afeb9260/old/pll.h
+new file mode 100644
+index 0000000..6d20299
+--- /dev/null
++++ b/board/afeb9260/old/pll.h
+@@ -0,0 +1,35 @@
++/* ******************************************************************* */
++/* PMC Settings                                                        */
++/*                                                                     */
++/* The main oscillator is enabled as soon as possible in the c_startup */
++/* and MCK is switched on the main oscillator.                         */
++/* PLL initialization is done later in the hw_init() function          */
++/* ******************************************************************* */
++#define PLL_LOCK_TIMEOUT	1000000
++
++#define PLLA_180MHz
++
++#ifdef PLLA_200MHz
++#define PLLA_SETTINGS	0x2060BF09
++#define MASTER_CLOCK		(198656000/2)
++#endif
++
++#ifdef PLLA_180MHz
++#define PLLA_SETTINGS	0x2125BF1E /* 180MHz */
++#define MASTER_CLOCK		(179999198/2) /* 180MHz MCK=90MHz */
++#endif
++
++#ifdef PLLA_120MHz
++//#define PLLA_SETTINGS	0x2125BF2d /* 120MHz */
++//#define MASTER_CLOCK		(119999322) /* 120MHz MCK=60MHz*/
++#define PLLA_SETTINGS	0x2125BF2d /* 120MHz */
++#define MASTER_CLOCK		(119999465/2) /* 120MHz MCK=60MHz*/
++#endif
++
++#if !defined(PLLA_180MHz) && !defined(PLLA_120MHz)
++#error Define PLLA frequency
++#endif
++#define PLLB_SETTINGS	0x10483F0E
++
++/* Switch MCK on PLLA output PCK = PLLA = 2 * MCK */
++#define MCKR_SETTINGS	(AT91C_PMC_CSS_PLLA_CLK | AT91C_PMC_PRES_CLK | AT91C_PMC_MDIV_2)
+diff --git a/board/at91cap9adk/at91cap9adk.c b/board/at91cap9adk/at91cap9adk.c
+index ef78a86..7e80212 100644
+--- a/board/at91cap9adk/at91cap9adk.c
++++ b/board/at91cap9adk/at91cap9adk.c
+@@ -39,6 +39,7 @@
+ #include "main.h"
+ 
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -50,7 +51,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
+-
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*---------------------------------------------------------------------------- */
+diff --git a/board/at91sam9260ek/at91sam9260ek.c b/board/at91sam9260ek/at91sam9260ek.c
+index 3224624..042dcae 100644
+--- a/board/at91sam9260ek/at91sam9260ek.c
++++ b/board/at91sam9260ek/at91sam9260ek.c
+@@ -38,6 +38,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -49,6 +50,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+diff --git a/board/at91sam9261ek/at91sam9261ek.c b/board/at91sam9261ek/at91sam9261ek.c
+index baa856d..5505a23 100644
+--- a/board/at91sam9261ek/at91sam9261ek.c
++++ b/board/at91sam9261ek/at91sam9261ek.c
+@@ -38,6 +38,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -49,6 +50,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*------------------------------------------------------------------------------*/
+diff --git a/board/at91sam9263ek/at91sam9263ek.c b/board/at91sam9263ek/at91sam9263ek.c
+index b957bb4..906c0cc 100644
+--- a/board/at91sam9263ek/at91sam9263ek.c
++++ b/board/at91sam9263ek/at91sam9263ek.c
+@@ -37,6 +37,7 @@
+ #include "memory.h"
+ #include "psram.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -48,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*---------------------------------------------------------------------------- */
+diff --git a/board/at91sam9g20ek/at91sam9g20ek.c b/board/at91sam9g20ek/at91sam9g20ek.c
+index da32fdd..9855406 100644
+--- a/board/at91sam9g20ek/at91sam9g20ek.c
++++ b/board/at91sam9g20ek/at91sam9g20ek.c
+@@ -37,7 +37,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
+-
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -49,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+diff --git a/board/at91sam9rlek/at91sam9rlek.c b/board/at91sam9rlek/at91sam9rlek.c
+index ae22cd5..6c6abd4 100644
+--- a/board/at91sam9rlek/at91sam9rlek.c
++++ b/board/at91sam9rlek/at91sam9rlek.c
+@@ -37,6 +37,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -48,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*------------------------------------------------------------------------------*/
+diff --git a/board/at91sam9xeek/at91sam9xeek.c b/board/at91sam9xeek/at91sam9xeek.c
+index 40101da..0f4b82f 100644
+--- a/board/at91sam9xeek/at91sam9xeek.c
++++ b/board/at91sam9xeek/at91sam9xeek.c
+@@ -37,6 +37,7 @@
+ #include "debug.h"
+ #include "memory.h"
+ 
++#ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+ {
+ 	unsigned int value;
+@@ -48,6 +49,10 @@ static inline void set_cp15(unsigned int value)
+ {
+ 	__asm__("mcr p15, 0, %0, c1, c0, 0" : : "r" (value));
+ }
++#else
++int get_cp15(void);
++void set_cp15(unsigned int value);
++#endif
+ 
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+diff --git a/board/board_cpp.mk b/board/board_cpp.mk
+index 9b91909..435d4e8 100644
+--- a/board/board_cpp.mk
++++ b/board/board_cpp.mk
+@@ -1,4 +1,13 @@
+ 
++ifeq ($(CONFIG_AFEB9260),y)
++CPPFLAGS += -DCONFIG_AFEB9260
++ASFLAGS += -DCONFIG_AFEB9260
++endif
++
++ifeq ($(CONFIG_THUMB),y)
++CPPFLAGS += -DCONFIG_THUMB -mthumb -mthumb-interwork
++ASFLAGS += -DCONFIG_THUMB -mthumb-interwork
++endif
+ 
+ CPPFLAGS += \
+ 	-D$(CHIP) 				\
+@@ -35,6 +44,14 @@ endif
+ 
+ # CPU clock
+ 
++ifeq ($(CONFIG_CPU_CLK_180MHZ),y)
++CPPFLAGS += -DCONFIG_CPU_CLK_180MHZ
++endif
++
++ifeq ($(CONFIG_CPU_CLK_166MHZ),y)
++CPPFLAGS += -DCONFIG_CPU_CLK_166MHZ
++endif
++
+ ifeq ($(CONFIG_CPU_CLK_200MHZ),y)
+ CPPFLAGS += -DCONFIG_CPU_CLK_200MHZ
+ endif
+@@ -53,6 +70,14 @@ endif
+ 
+ # Bus speed
+ 
++ifeq ($(CONFIG_BUS_SPEED_83MHZ),y)
++CPPFLAGS += -DCONFIG_BUS_SPEED_83MHZ
++endif
++
++ifeq ($(CONFIG_BUS_SPEED_90MHZ),y)
++CPPFLAGS += -DCONFIG_BUS_SPEED_90MHZ
++endif
++
+ ifeq ($(CONFIG_BUS_SPEED_100MHZ),y)
+ CPPFLAGS += -DCONFIG_BUS_SPEED_100MHZ
+ endif
+diff --git a/crt0_gnu.S b/crt0_gnu.S
+index a6b13f7..9f14cac 100644
+--- a/crt0_gnu.S
++++ b/crt0_gnu.S
+@@ -182,6 +182,18 @@ _go:
+ 	mov     lr, pc
+ 	bx      r0
+ 
++#ifdef CONFIG_THUMB
++	.globl set_cp15
++set_cp15:
++	mcr	p15, 0, r0, c1, c0, 0
++	bx	lr
++
++	.globl get_cp15
++get_cp15:
++	mrc	p15, 0, r0, c1, c0, 0
++	bx	lr
++#endif
++
+ 	.align
+ _lp_data:
+         .word _etext
+diff --git a/driver/Config.in.dataflash b/driver/Config.in.dataflash
+index 7853bc3..22367da 100644
+--- a/driver/Config.in.dataflash
++++ b/driver/Config.in.dataflash
+@@ -24,7 +24,7 @@ config	CONFIG_SPI_BOOT_CS0
+ config	CONFIG_SPI_BOOT_CS1
+ 	bool	"Boot from chip select 1"
+ 	depends on CONFIG_DATAFLASH
+-	depends on CONFIG_AT91SAM9260EK || CONFIG_AT91SAM9G20EK || CONFIG_AT91SAM9XEEK
++	depends on CONFIG_AT91SAM9260EK || CONFIG_AT91SAM9G20EK || CONFIG_AT91SAM9XEEK || CONFIG_AFEB9260
+ 
+ endchoice
+ 
+diff --git a/driver/dataflash.c b/driver/dataflash.c
+index 43e2816..2619222 100644
+--- a/driver/dataflash.c
++++ b/driver/dataflash.c
+@@ -533,7 +533,7 @@ int load_df(unsigned int pcs, unsigned int img_addr, unsigned int img_size, unsi
+ 	if (df_init(pDf) == FAILURE) 
+ 		return FAILURE;
+ 
+-#if defined(AT91SAM9260) || defined(AT91SAM9XE) || defined(AT91SAM9G20)
++#if !defined(CONFIG_AFEB9260) && (defined(AT91SAM9260) || defined(AT91SAM9XE) || defined(AT91SAM9G20))
+ 	/* Test if a button has been pressed or not */
+ 	/* Erase Page 0 to avoid infinite loop */
+ 	df_recovery(pDf);
+diff --git a/include/part.h b/include/part.h
+index 39f1f2f..a5c30a6 100644
+--- a/include/part.h
++++ b/include/part.h
+@@ -39,9 +39,15 @@
+ 
+ #ifdef AT91SAM9260
+ #include "AT91SAM9260_inc.h"
++
++#ifdef CONFIG_AFEB9260
++#include "afeb9260.h"
++#else
+ #include "at91sam9260ek.h"
+ #endif
+ 
++#endif
++
+ #ifdef AT91SAM9XE
+ /* For all SAM9XE chips 128/256/512/.. we use the XE128 file */
+ #include "AT91SAM9XE128_inc.h"
+-- 
+1.5.6.5
+
