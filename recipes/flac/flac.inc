@@ -5,7 +5,6 @@ SECTION = "libs"
 DEPENDS = "libogg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/flac/flac-${PV}.tar.gz \
-	   file://disable-xmms-plugin.patch;patch=1 \
 	   file://xmms.m4"
 
 inherit autotools
