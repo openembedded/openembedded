@@ -1,9 +1,10 @@
 DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux system."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "udev zlib ncurses e2fsprogs-libs virtual/libintl"
+DEPENDS = "udev zlib ncurses util-linux-ng virtual/libintl"
 
 inherit autotools_stage
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,6 +16,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-n
 PACKAGES =+ "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-swaponoff util-linux-ng-losetup util-linux-ng-umount util-linux-ng-mount util-linux-ng-readprofile "
 
 FILES_${PN}-doc += "/usr/share/misc/getopt/getopt-*.*"
+FILES_${PN} = "${bindir} ${sbindir} ${base_bindir} ${base_sbindir}"
 
 FILES_util-linux-ng-fdisk = "/sbin/fdisk.${PN}"
 FILES_util-linux-ng-cfdisk = "/sbin/cfdisk"
@@ -30,7 +32,8 @@ RDEPENDS_${PN} = "util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-los
 
 EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
---enable-arch --enable-init"
+--enable-arch --enable-init --enable-partx --enable-schedutils \
+--with-fsprobe=builtin"
 
 S = "${WORKDIR}/util-linux-ng-${PV}${RC}"
 
@@ -117,6 +120,16 @@ do_install () {
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fastboot
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fasthalt
 }
+
+python populate_packages_prepend () {
+	cv_libdir = bb.data.expand('${libdir}', d)
+	cv_libdir_dbg = bb.data.expand('${libdir}/.debug', d)
+	do_split_packages(d, cv_libdir, '^lib(.*)\.so$', 'lib%s-dev', 'util-linux-ng %s development package', extra_depends='${PN}-dev', allow_links=True)
+	do_split_packages(d, cv_libdir, '^lib(.*)\.la$', 'lib%s-dev', 'util-linux-ng %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, cv_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'util-linux-ng %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, cv_libdir, '^lib(.*)\.so\.*', 'lib%s', 'util-linux-ng %s library', extra_depends='', allow_links=True)
+}
+
 
 pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/dmesg dmesg dmesg.${PN} 100
