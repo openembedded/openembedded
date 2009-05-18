@@ -3,7 +3,7 @@ SECTION = "network"
 HOMEPAGE = "www.transmissionbt.com/"
 DEPENDS = "gtk+ gnutls openssl gettext libtool intltool-native curl glib-2.0-native"
 LICENSE = "GPLv2"
-PR = "r3"
+PR = "r4"
 SRC_URI = "http://mirrors.m0k.org/transmission/files/transmission-${PV}.tar.bz2 \
            file://init"
 
@@ -18,6 +18,10 @@ do_install_append() {
 }
 
 pkg_postinst_${PN}() {
+#!/bin/sh
+if [ "x$D" != "x" ] ; then        
+        exit 1
+fi
 grep -q transmission  ${sysconfdir}/group || addgroup transmission
 grep -q transmission ${sysconfdir}/passwd || adduser -h /home/transmission -S -D -G transmission -s ${base_bindir}/false transmission
 mkdir -p /home/transmission/.config
@@ -26,6 +30,9 @@ chown transmission:transmission /home/transmission/.config
 
 pkg_postrm_${PN}() {
 #!/bin/sh
+if [ "x$D" != "x" ] ; then        
+        exit 1
+fi
 delgroup transmission
 deluser transmission
 }
