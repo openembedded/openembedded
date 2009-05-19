@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r21"
+PR = "r22"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -22,6 +22,7 @@ RDEPENDS = "\
   elementary \
   elementary-themes \
   edbus-ehal \
+  paroli-elementary \
 "
 
 E_CONFIG_DIR="/usr/share/enlightenment/data"
@@ -40,7 +41,7 @@ do_install_append() {
        	#install -d ${D}${E_CONFIG_DIR}/themes
 	#install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
 	install -d ${D}${datadir}/elementary/themes
-	install ${S}/data/default.edj ${D}${datadir}/elementary/themes
+	install ${S}/data/paroli.edj ${D}${datadir}/elementary/themes
 #    	install -d ${D}/etc/enlightenment/
 #	echo 'E_PROFILE="-profile illume"' > ${D}${sysconfdir}/enlightenment/default_profile
 
