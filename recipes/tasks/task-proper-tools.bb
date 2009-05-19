@@ -1,24 +1,29 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-PR = "r9"
+PR = "r10"
 
 inherit task
 
 RDEPENDS_${PN} = "\
 		binutils-symlinks \
 		coreutils \
+		cpio \
 		debianutils \
 		diffutils \
 		e2fsprogs \
+		e2fsprogs-fsck \
 		fbset \
 		findutils \
 		gawk \
 		grep \
+		gzip \
 		iproute2 \
 		iputils \
 		less \
 		module-init-tools \
+		netcat \
 		net-tools \
 		patch \
+		procps \
 		psmisc \
 		sed \
 		tar \
