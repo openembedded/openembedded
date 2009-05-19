@@ -70,7 +70,7 @@ fi
 for machine in ${ARCH_MACHINES}
 do
         BUILD_MACHINE=$machine
-        BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
+        BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS=" \
                       abiword \
                       aircrack-ng \
@@ -347,6 +347,7 @@ do
                       xserver-xorg \
                       zauralign \
                       zddice \
+                      zenity \
                       zgscore \
                       zhone \
                       ziq \
@@ -371,7 +372,7 @@ fi
 for machine in ${MACHINES}
 do
         BUILD_MACHINE=$machine
-            BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
+            BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS="task-base task-boot \
                        task-opie task-opie-all \
                        task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \

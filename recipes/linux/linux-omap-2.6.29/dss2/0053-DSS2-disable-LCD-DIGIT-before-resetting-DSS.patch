@@ -1,7 +1,7 @@
 From c7ce3c5e9f7e28900b8ea9c3e1afe41dcdc0863d Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 23 Apr 2009 10:46:53 +0300
-Subject: [PATCH] DSS2: disable LCD & DIGIT before resetting DSS
+Subject: [PATCH 53/69] DSS2: disable LCD & DIGIT before resetting DSS
 
 This seems to fix the synclost problem that we get, if the bootloader
 starts the DSS and the kernel resets it.
@@ -37,5 +37,5 @@ index adc1f34..aab9758 100644
  	/* autoidle */
  	REG_FLD_MOD(DSS_SYSCONFIG, 1, 0, 0);
 -- 
-1.5.6.5
+1.6.2.4
 

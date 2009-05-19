@@ -1,7 +1,7 @@
 From 832b763db235da8e62f7b6ab02bcb8ad6bcb7a01 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 2 Apr 2009 16:48:41 +0300
-Subject: [PATCH] DSS2: Add function to get DSS logic clock rate
+Subject: [PATCH 14/69] DSS2: Add function to get DSS logic clock rate
 
 ---
  drivers/video/omap2/dss/dispc.c |   15 +++++++++++++++
@@ -47,5 +47,5 @@ index bac5ece..0be42b6 100644
  void dispc_set_pol_freq(struct omap_panel *panel);
  void find_lck_pck_divs(bool is_tft, unsigned long req_pck, unsigned long fck,
 -- 
-1.5.6.5
+1.6.2.4
 

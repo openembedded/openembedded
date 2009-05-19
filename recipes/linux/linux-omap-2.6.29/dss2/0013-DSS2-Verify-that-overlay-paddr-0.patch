@@ -1,7 +1,7 @@
 From 360a55ddd309e3a45b227a4a905ae7120dd16169 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 2 Apr 2009 14:21:12 +0300
-Subject: [PATCH] DSS2: Verify that overlay paddr != 0
+Subject: [PATCH 13/69] DSS2: Verify that overlay paddr != 0
 
 ---
  drivers/video/omap2/dss/dispc.c   |    3 +++
@@ -37,5 +37,5 @@ index 968edbe..9209acf 100644
  	ovl->info = *info;
  
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -1,7 +1,7 @@
 From 02243f13eec816e11d16676a131bc04b8a0666ab Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Wed, 11 Feb 2009 16:33:02 +0200
-Subject: [PATCH] OMAPFB: move omapfb.h to include/linux/
+Subject: [PATCH 02/69] OMAPFB: move omapfb.h to include/linux/
 
 This is needed so that omapfb.h is automatically exported to user space.
 
@@ -1312,5 +1312,5 @@ index 0000000..b226bdf
 +
 +#endif /* __OMAPFB_H */
 -- 
-1.5.6.5
+1.6.2.4
 

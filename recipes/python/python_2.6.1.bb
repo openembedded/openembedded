@@ -12,6 +12,7 @@ SRC_URI = "\
   file://04-default-is-optimized.patch;patch=1 \
   file://05-enable-ctypes-cross-build.patch;patch=1 \
   file://06-libffi-enable-default-mips.patch;patch=1 \
+  file://07-export-grammer.patch;patch=1 \
   file://99-ignore-optimization-flag.patch;patch=1 \
   \
 # not yet pushed forward

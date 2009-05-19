@@ -1,7 +1,7 @@
 From a8a37babe4856170f4cba86c425a8f21975d9e9e Mon Sep 17 00:00:00 2001
 From: Tim Yamin <plasm@roo.me.uk>
 Date: Mon, 13 Apr 2009 13:57:42 -0700
-Subject: [PATCH] DSS2: OMAPFB: Set line_length correctly for YUV with VRFB.
+Subject: [PATCH 29/69] DSS2: OMAPFB: Set line_length correctly for YUV with VRFB.
 
 Signed-off-by: Tim Yamin <plasm@roo.me.uk>
 ---
@@ -57,5 +57,5 @@ index 57f5900..cd63740 100644
  	ovl->get_overlay_info(ovl, &info);
  
 -- 
-1.5.6.5
+1.6.2.4
 

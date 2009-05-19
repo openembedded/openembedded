@@ -8,7 +8,7 @@ RPROVIDES_${PN} = "virtual/psplash"
 RCONFLICTS_${PN} = "exquisite"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r21"
+PR = "r22"
 
 # You can create your own pslash-hand-img.h by doing
 # ./make-image-header.sh <file>.png HAND

@@ -3,10 +3,10 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPL"
 
-# Untested, fails to create shared libs
+# Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r1"
+PR = "r4"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
@@ -20,12 +20,20 @@ SRC_URI += " \
        file://mount.sh \
        file://network.sh \
        file://local.rules \
+       file://default \
        file://init"
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
 
 inherit update-rc.d autotools_stage
+
+# Put stuff in /lib and /sbin
+export sbindir="${base_sbindir}"
+export exec_prefix=""
+EXTRA_OECONF += " --with-udev-prefix= \
+                  --with-libdir-name=${base_libdir} \
+"
 
 INITSCRIPT_NAME = "udev"
 INITSCRIPT_PARAMS = "start 03 S ."
@@ -40,7 +48,7 @@ RPROVIDES_${PN} = "hotplug"
 FILES_${PN} += "${usrbindir}/* ${usrsbindir}/udevd"
 FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 
-FILES_${PN} += "${base_libdir}/udev/*"
+FILES_${PN} += "${libdir}/udev/* ${base_libdir}/udev/*"
 FILES_${PN}-dbg += "${base_libdir}/udev/.debug"
 
 do_install () {
@@ -49,6 +57,9 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
+
+	install -d ${D}${sysconfdir}/default
+	install -m 0755 ${WORKDIR}/default ${D}${sysconfdir}/default/udev
 
 	install -d ${D}${sysconfdir}/udev/rules.d/
 
@@ -62,12 +73,14 @@ do_install () {
 		install -m 0644 ${WORKDIR}/devfs-udev.rules ${D}${sysconfdir}/udev/rules.d/devfs-udev.rules
 	fi
 
+	touch ${D}${sysconfdir}/udev/saved.uname
+	touch ${D}${sysconfdir}/udev/saved.cmdline
+	touch ${D}${sysconfdir}/udev/saved.atags
+
 	install -d ${D}${sysconfdir}/udev/scripts/
 
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
-
-	install -d ${D}${base_libdir}/udev/
 }
 
 do_install_append_h2200() {

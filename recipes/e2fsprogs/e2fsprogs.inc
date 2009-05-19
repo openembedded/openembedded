@@ -15,3 +15,8 @@ EXTRA_OECONF = "${@['','--disable-tls'][bb.data.getVar('ARM_ABI', d, 1) == 'oabi
 		--enable-dynamic-e2fsck --disable-nls --sbindir=${base_sbindir}"
 
 PARALLEL_MAKE = ""
+
+e2miscbins = "mke2fs badblocks tune2fs dumpe2fs blkid logsave e2image fsck \
+              e2undo chattr lsattr uuidgen mklost+found filefrag uuidd e2initrd_helper"
+
+

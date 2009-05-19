@@ -1,7 +1,7 @@
 From 85848d329ca3a2d6ee6841cdc11cc5951d187931 Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Fri, 3 Apr 2009 19:09:20 +0200
-Subject: [PATCH] DSS2: Disable video planes on sync lost error
+Subject: [PATCH 17/69] DSS2: Disable video planes on sync lost error
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -99,5 +99,5 @@ index 1bc23f7..41734f3 100644
  
  	if (errors & DISPC_IRQ_OCP_ERR) {
 -- 
-1.5.6.5
+1.6.2.4
 

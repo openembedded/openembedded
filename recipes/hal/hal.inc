@@ -9,8 +9,9 @@ S = "${WORKDIR}/hal-${PV}"
 
 inherit autotools pkgconfig
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb gperf-native"
+DEPENDS = "virtual/kernel util-linux-ng dbus-glib udev intltool intltool-native expat libusb gperf-native"
 RDEPENDS += "hal-info udev-utils"
+RRECOMMENDS += "eject"
 
 SRC_URI += "file://99_hal \
             file://20hal \
@@ -27,6 +28,7 @@ EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
                 --disable-policy-kit \
                 --disable-pmu \
                 --disable-pnp-ids \
+                --with-udev-prefix=${sysconfdir} \
                 ${@base_contains('COMBINED_FEATURES', 'pci', '--enable-pci --enable-pci-ids', '--disable-pci --disable-pci-ids',d)} \
                 ${@base_contains('MACHINE_FEATURES', 'acpi', '--enable-acpi', '--disable-acpi',d)} \
                "

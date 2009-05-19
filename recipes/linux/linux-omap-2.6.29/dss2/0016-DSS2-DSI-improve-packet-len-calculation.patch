@@ -1,7 +1,7 @@
 From 6b2c9d84c7accdfe1067fcdc8a00e50674aab4bb Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 2 Apr 2009 17:42:26 +0300
-Subject: [PATCH] DSS2: DSI: improve packet len calculation
+Subject: [PATCH 16/69] DSS2: DSI: improve packet len calculation
 
 ---
  drivers/video/omap2/dss/dsi.c |   21 ++++++++++++++++-----
@@ -54,5 +54,5 @@ index aecb89d..66ac6ea 100644
  	if (dsi.use_te)
  		l = FLD_MOD(l, 1, 30, 30); /* TE_EN */
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -3,7 +3,7 @@ SECTION = "network"
 HOMEPAGE = "www.transmissionbt.com/"
 DEPENDS = "gtk+ gnutls openssl gettext libtool intltool-native curl glib-2.0-native"
 LICENSE = "GPLv2"
-PR = "r3"
+PR = "r4"
 SRC_URI = "http://mirrors.m0k.org/transmission/files/transmission-${PV}.tar.bz2 \
            file://init"
 
@@ -17,6 +17,9 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/transmission
 }
 
+FILES_${PN} += "${datadir}/icons"
+
+# No need for online check, since update-rc.d will prepend it to here
 pkg_postinst_${PN}() {
 grep -q transmission  ${sysconfdir}/group || addgroup transmission
 grep -q transmission ${sysconfdir}/passwd || adduser -h /home/transmission -S -D -G transmission -s ${base_bindir}/false transmission
@@ -25,7 +28,6 @@ chown transmission:transmission /home/transmission/.config
 }
 
 pkg_postrm_${PN}() {
-#!/bin/sh
 delgroup transmission
 deluser transmission
 }

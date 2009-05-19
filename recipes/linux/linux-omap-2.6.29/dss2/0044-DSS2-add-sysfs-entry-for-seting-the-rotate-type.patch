@@ -1,7 +1,7 @@
 From a9b3500bd14609750a2337e866e1df62627c1bac Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Mon, 20 Apr 2009 14:55:33 +0200
-Subject: [PATCH] DSS2: add sysfs entry for seting the rotate type
+Subject: [PATCH 44/69] DSS2: add sysfs entry for seting the rotate type
 
 This can help in utilizing VRAM memory better. Since with VRFB rotation
 we waste a lot of physical memory due to the VRFB HW design, provide the
@@ -72,5 +72,5 @@ index 2c88718..4e3da42 100644
  	__ATTR(size, S_IRUGO | S_IWUSR, show_size, store_size),
  	__ATTR(overlays, S_IRUGO | S_IWUSR, show_overlays, store_overlays),
 -- 
-1.5.6.5
+1.6.2.4
 
