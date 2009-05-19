@@ -9,11 +9,10 @@ nylon_create_imgz() {
 	
         # copy the kernel (for mips on flash) into tmp  
         FLASH_BIN=${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.flash.bin  
-        test -f ${FLASH_BIN} && \ 
         cp ${FLASH_BIN} ${DEPLOY_DIR_IMAGE}/tmp/zImage.flash 
  
         # copy rootfs.jffs (or so) into tmp 
-	cp ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.${type} ${DEPLOY_DIR_IMAGE}/tmp/rootfs.${type}
+	cp ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${DEPLOY_DIR_IMAGE}/tmp/rootfs.jffs2
 
 	# make an imgz out of tmp
 	( cd ${DEPLOY_DIR_IMAGE}/tmp; tar cvzf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.imgz * )
