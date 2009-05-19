@@ -4,6 +4,7 @@ ILLUME_THEME = "paroli"
 
 BASE_INSTALL += " \
 #  udev-static-devices \
+  locale-base-en-ca \
   libx11-locale \
   localedef \
 "
@@ -48,3 +49,12 @@ IMAGE_INSTALL = "\
   ${APPS_INSTALL} \
 "
 
+paroli_rootfs_postprocess() {
+    curdir=$PWD
+    cd ${IMAGE_ROOTFS}
+    # set a default locale    
+    echo "export LC_ALL = en_CA.utf-8" >>./etc/profile
+    cd $curdir
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "paroli_rootfs_postprocess"
