@@ -1,5 +1,7 @@
 require e2fsprogs.inc
 
+PR = "r1"
+
 SRC_URI += "file://mkinstalldirs.patch;patch=1"
 
 DEPENDS += "gettext-native"
@@ -48,11 +50,30 @@ do_install_append () {
 	mv ${D}${base_sbindir}/fsck ${D}${base_sbindir}/fsck.${PN}
 	mv ${D}${base_sbindir}/blkid ${D}${base_sbindir}/blkid.${PN}
 	mv ${D}${base_sbindir}/e2fsck ${D}${base_sbindir}/e2fsck.${PN}
-	mv ${D}${base_sbindir}/fsck.ext2 ${D}${base_sbindir}/fsck.ext2.${PN}
-	mv ${D}${base_sbindir}/fsck.ext3 ${D}${base_sbindir}/fsck.ext3.${PN}
+	rm ${D}${base_sbindir}/fsck.ext2
+	rm ${D}${base_sbindir}/fsck.ext3
+	rm ${D}${base_sbindir}/fsck.ext4*
 	mv ${D}${base_sbindir}/mke2fs ${D}${base_sbindir}/mke2fs.${PN}
-	mv ${D}${base_sbindir}/mkfs.ext2 ${D}${base_sbindir}/mkfs.ext2.${PN}
-	mv ${D}${base_sbindir}/mkfs.ext3 ${D}${base_sbindir}/mkfs.ext3.${PN}
+	rm ${D}${base_sbindir}/mkfs.ext2
+	rm ${D}${base_sbindir}/mkfs.ext3
+	rm ${D}${base_sbindir}/mkfs.ext4*
+
+	cd ${D}/${base_sbindir}
+	ln -sf ./e2fsck.${PN} fsck.ext2.${PN}
+	ln -sf ./e2fsck.${PN} fsck.ext3.${PN}
+	ln -sf ./e2fsck.${PN} fsck.ext4.${PN}
+	ln -sf ./e2fsck.${PN} fsck.ext4dev.${PN}
+	ln -sf ./mke2fs.${PN} mkfs.ext2.${PN}
+	ln -sf ./mke2fs.${PN} mkfs.ext3.${PN}
+	ln -sf ./mke2fs.${PN} mkfs.ext4.${PN}
+	ln -sf ./mke2fs.${PN} mkfs.ext4dev.${PN}
+
+	ln -sf ./tune2fs findfs
+	ln -sf ./tune2fs e2label
+}
+
+pkg_postinst_e2fsprogs () {
+	update-alternatives --install ${base_bindir}/chattr chattr chattr.${PN} 100
 }
 
 pkg_postinst_e2fsprogs-fsck () {
@@ -75,22 +96,30 @@ pkg_postinst_e2fsprogs-e2fsck () {
 	update-alternatives --install ${base_sbindir}/e2fsck e2fsck e2fsck.${PN} 100
 	update-alternatives --install ${base_sbindir}/fsck.ext2 fsck.ext2 fsck.ext2.${PN} 100
 	update-alternatives --install ${base_sbindir}/fsck.ext3 fsck.ext3 fsck.ext3.${PN} 100
+	update-alternatives --install ${base_sbindir}/fsck.ext4 fsck.ext4 fsck.ext4.${PN} 100
+	update-alternatives --install ${base_sbindir}/fsck.ext4dev fsck.ext4dev fsck.ext4dev.${PN} 100
 }
 
 pkg_prerm_e2fsprogs-e2fsck () {
 	update-alternatives --remove e2fsck e2fsck.${PN}
 	update-alternatives --remove fsck.ext2 fsck.ext2.${PN}
 	update-alternatives --remove fsck.ext3 fsck.ext3.${PN}
+	update-alternatives --remove fsck.ext4 fsck.ext4.${PN}
+	update-alternatives --remove fsck.ext4dev fsck.ext4dev.${PN}
 }
 
 pkg_postinst_e2fsprogs-mke2fs () {
 	update-alternatives --install ${base_sbindir}/mke2fs mke2fs mke2fs.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkfs.ext2 mkfs.ext2 mkfs.ext2.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkfs.ext3 mkfs.ext3 mkfs.ext3.${PN} 100
+	update-alternatives --install ${base_sbindir}/mkfs.ext4 mkfs.ext4 mkfs.ext4.${PN} 100
+	update-alternatives --install ${base_sbindir}/mkfs.ext4dev mkfs.ext4dev mkfs.ext4dev.${PN} 100
 }
 
 pkg_prerm_e2fsprogs-mke2fs () {
 	update-alternatives --remove mke2fs mke2fs.${PN}
 	update-alternatives --remove mkfs.ext2 mkfs.ext2.${PN}
 	update-alternatives --remove mkfs.ext3 mkfs.ext3.${PN}
+	update-alternatives --remove mkfs.ext4 mkfs.ext4.${PN}
+	update-alternatives --remove mkfs.ext4dev mkfs.ext4dev.${PN}
 }
