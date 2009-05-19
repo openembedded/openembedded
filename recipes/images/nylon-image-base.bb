@@ -1,25 +1,36 @@
 inherit image
 inherit nylon-image
 
+IMAGE_FSTYPES = "jffs2 tar.gz"
+
 export IMAGE_BASENAME = "nylon-base"
  
 NYLON_BASE = "base-files base-passwd bash busybox \
 	ipkg initscripts less \
+	madwifi-modules \
 	mtd-utils \
+	nylon-scripts \
 	nano ncurses netbase \
-	openssh sysvinit \
-	tzdata tinylogin udev"
+	openssh \
+	pciutils \
+	sysvinit \
+	tinylogin \
+	tzdata \
+	wireless-tools wlan-ng-utils"
 
 DEPENDS += "virtual/kernel less nano"
-IMAGE_INSTALL = "kernel less nano elvis-tiny \
-	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
 ## kernel 2.4 ##
-RDEPENDS_append_mtx-1 = " modutils modutils-initscripts modutils-depmod modutils-modinfo"
-RDEPENDS_append_mtx-2 = " modutils modutils-initscripts modutils-depmod modutils-modinfo"
+NYLON_IMAGE_RDEPENDS_mtx-1 = " modutils modutils-initscripts modutils-depmod modutils-modinfo"
+NYLON_IMAGE_RDEPENDS_mtx-2 = " modutils modutils-initscripts modutils-depmod modutils-modinfo"
 ## kernel 2.6 ##
-RDEPENDS_append_mtx-3 = " module-init-tools udev"
-RDEPENDS_append_mtx-3a = " module-init-tools"
+NYLON_IMAGE_RDEPENDS_mtx-3 = " module-init-tools udev"
+NYLON_IMAGE_RDEPENDS_mtx-3a = " module-init-tools"
+
+RDEPENDS_append = ${NYLON_IMAGE_RDEPENDS}
+
+IMAGE_INSTALL = "kernel less nano elvis-tiny \
+	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS} ${NYLON_IMAGE_RDEPENDS}"
 
 IMAGE_LINGUAS = ""
 
