@@ -42,8 +42,8 @@
  
  ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
 \ No newline at end of file
---- /tmp/mach-poodle-vars	2009-04-28 16:39:58.000000000 +0200
-+++ zaurusd/config/mach-config/mach-poodle-vars	2009-04-28 16:40:06.000000000 +0200
+--- /tmp/mach-poodle-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-poodle-vars.in	2009-04-28 16:40:06.000000000 +0200
 @@ -4,6 +4,6 @@
  SWITCH_EVENT_DEVICE=/dev/input/event0
  
