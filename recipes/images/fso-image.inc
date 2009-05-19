@@ -139,4 +139,4 @@ fso_rootfs_postprocess() {
     cd $curdir
 }
 
-ROOTFS_POSTPROCESS_COMMAND += "fso_rootfs_postprocess"
+ROOTFS_POSTPROCESS_COMMAND += "fso_rootfs_postprocess;"
