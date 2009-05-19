@@ -4,28 +4,28 @@ PR = "r9"
 inherit task
 
 RDEPENDS_${PN} = "\
-		coreutils \
-		findutils \
-		util-linux-ng \
-		grep \
-		gawk \
-		sed \
-		wget \
-		patch \
-		tar \
-		diffutils \
-		less \
-		vim \
-		e2fsprogs \
 		binutils-symlinks \
-		module-init-tools \
-		net-tools \
+		coreutils \
+		debianutils \
+		diffutils \
+		e2fsprogs \
+		fbset \
+		findutils \
+		gawk \
+		grep \
 		iproute2 \
 		iputils \
+		less \
+		module-init-tools \
+		net-tools \
+		patch \
 		psmisc \
-		debianutils \
+		sed \
+		tar \
 		tcptraceroute \
-		fbset \
+		util-linux-ng \
+		vim \
+		wget \
         "
 #
 # binutils-symlinks provide ar in a way which conflict with busybox - #1465 for more info
