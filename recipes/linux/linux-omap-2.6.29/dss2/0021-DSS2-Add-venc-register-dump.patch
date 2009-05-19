@@ -1,7 +1,7 @@
 From c5e71be877e71c7df329205307e830f158c403bf Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Mon, 6 Apr 2009 17:32:06 +0200
-Subject: [PATCH] DSS2: Add venc register dump
+Subject: [PATCH 21/69] DSS2: Add venc register dump
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -92,5 +92,5 @@ index aceed9f..b655df4 100644
 +#undef DUMPREG
 +}
 -- 
-1.5.6.5
+1.6.2.4
 

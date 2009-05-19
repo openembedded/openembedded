@@ -1,7 +1,7 @@
 From 635fa66abe6e502c9b78b1dc66757bf67fd163e1 Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Wed, 22 Apr 2009 14:40:48 +0200
-Subject: [PATCH] DSS2: VRAM: fix section mismatch warning
+Subject: [PATCH 52/69] DSS2: VRAM: fix section mismatch warning
 
 postponed_regions are accessed from the non __init
 omap_vram_add_region().
@@ -30,5 +30,5 @@ index e847579..b126a64 100644
  struct vram_alloc {
  	struct list_head list;
 -- 
-1.5.6.5
+1.6.2.4
 

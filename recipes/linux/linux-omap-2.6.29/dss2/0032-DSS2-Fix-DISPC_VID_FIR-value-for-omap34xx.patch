@@ -1,7 +1,7 @@
 From ed7a9223f6785be03951c55f3b0695b0d5635c80 Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Thu, 9 Apr 2009 15:04:44 +0200
-Subject: [PATCH] DSS2: Fix DISPC_VID_FIR value for omap34xx
+Subject: [PATCH 32/69] DSS2: Fix DISPC_VID_FIR value for omap34xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -31,5 +31,5 @@ index 076d3d4..b8a3329 100644
  }
  
 -- 
-1.5.6.5
+1.6.2.4
 

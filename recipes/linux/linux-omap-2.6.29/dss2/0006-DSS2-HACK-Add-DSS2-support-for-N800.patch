@@ -1,7 +1,7 @@
 From 18a25382e81c03230e022ca2eb7e0fce24479d6a Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 2 Apr 2009 10:31:57 +0300
-Subject: [PATCH] DSS2: HACK: Add DSS2 support for N800
+Subject: [PATCH 06/69] DSS2: HACK: Add DSS2 support for N800
 
 Works, but it an ugly quick hack.
 
@@ -1075,5 +1075,5 @@ index 0000000..91d3e37
 +MODULE_DESCRIPTION("N800 LCD Driver");
 +MODULE_LICENSE("GPL");
 -- 
-1.5.6.5
+1.6.2.4
 

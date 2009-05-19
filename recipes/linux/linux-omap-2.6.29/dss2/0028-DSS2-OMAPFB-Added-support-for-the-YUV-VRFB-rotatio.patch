@@ -1,7 +1,7 @@
 From c09f1a0642fd58a1b081594ea36dfd1bf71aec52 Mon Sep 17 00:00:00 2001
 From: Hardik Shah <hardik.shah@ti.com>
 Date: Thu, 9 Apr 2009 12:13:07 +0530
-Subject: [PATCH] DSS2: OMAPFB: Added support for the YUV VRFB rotation and mirroring.
+Subject: [PATCH 28/69] DSS2: OMAPFB: Added support for the YUV VRFB rotation and mirroring.
 
 DSS2 now requires roatation_type to be specified by driver.
 Added support for that.
@@ -232,5 +232,5 @@ index 2607def..43f6922 100644
  	bool mirror;
  };
 -- 
-1.5.6.5
+1.6.2.4
 

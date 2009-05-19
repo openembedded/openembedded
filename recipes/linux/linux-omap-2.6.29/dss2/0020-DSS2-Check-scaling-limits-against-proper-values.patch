@@ -1,7 +1,7 @@
 From 9f8f1613253656f155b3844c8255a560f86e0acd Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Mon, 6 Apr 2009 17:32:05 +0200
-Subject: [PATCH] DSS2: Check scaling limits against proper values
+Subject: [PATCH 20/69] DSS2: Check scaling limits against proper values
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -75,5 +75,5 @@ index 61861d8..ae7be3d 100644
  	_dispc_set_color_mode(plane, color_mode);
  
 -- 
-1.5.6.5
+1.6.2.4
 

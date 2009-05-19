@@ -1,7 +1,7 @@
 From 370510e24ddbf539392ebb6a1e43280965fcb19b Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Tue, 31 Mar 2009 18:47:32 +0530
-Subject: [PATCH] DSS2: Small VRFB context allocation bug fixed
+Subject: [PATCH 10/69] DSS2: Small VRFB context allocation bug fixed
 
 This is minor bug while requesting and mapping memory for
 VRFB space.
@@ -24,5 +24,5 @@ index 852abe5..44febef 100644
  		}
  
 -- 
-1.5.6.5
+1.6.2.4
 
