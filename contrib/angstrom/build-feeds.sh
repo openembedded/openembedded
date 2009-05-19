@@ -347,6 +347,7 @@ do
                       xserver-xorg \
                       zauralign \
                       zddice \
+                      zenity \
                       zgscore \
                       zhone \
                       ziq \
