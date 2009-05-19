@@ -8,7 +8,4 @@ RDEPENDS = "mplayer"
 
 inherit autotools pkgconfig gconf
 
-SRC_URI += "file://ac-gthread.patch;patch=1 \
-    file://1.patch;patch=1 \
-    file://uchar-for-utf8-check.patch;patch=1 \
-    file://non-utf8-id3-fallback.patch;patch=1"
+SRC_URI = "http://gnome-mplayer.googlecode.com/files/${P}.tar.gz"
