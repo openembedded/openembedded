@@ -47,7 +47,7 @@ ALLOW_EMPTY = "1"
 PACKAGES += "${PN}-apps"
 FILES_${PN}-apps = "${bindir}"
 
-FILES_${PN} = ""
+FILES_${PN} = "${datadir}/gstreamer-0.10"
 FILES_${PN}-dbg += "${libdir}/gstreamer-${LIBV}/.debug"
 
 
