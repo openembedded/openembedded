@@ -6,10 +6,10 @@ LICENSE="GPLv3"
 DEPENDS="libsdl-ttf libsdl-image ode"
 RDEPENDS="ttf-liberation-mono"
 
-PR="r3"
-SRC_URI="http://projects.openmoko.org/frs/download.php/781/${P}.tar.gz"
+PR="r4"
+SRC_URI="http://projects.openmoko.org/frs/download.php/813/${PN}-${PV}.tar.gz"
 
-S=${WORKDIR}/mokomaze-0.5.0
+S=${WORKDIR}/${PN}-${PV}
 
 inherit autotools
 
