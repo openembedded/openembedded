@@ -21,3 +21,5 @@ do_install() {
 	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/ser
 	oe_runmake bin-target=${sbindir} doc-target=${docdir}/ser modules-target=${libdir}/ser/modules/ cfg-target=${sysconfdir}/ser/ prefix=${D}/usr cfg-prefix=${D} LD='${CC}' install
 }
+
+FILES_${PN}-dbg += "${libdir}/ser/modules/.debug ${sbindir}/.debug"
