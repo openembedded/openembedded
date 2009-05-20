@@ -8,7 +8,16 @@ if [ "`id -u`" -eq 0 ]; then
 fi
 if [ "$PS1" ]; then
 # works for bash and ash (no other shells known to be in use here)
-   PS1='\u@\h:\w\$ '
+   if [ "$UID" = "0" -o "$USER" = "root" ]; then
+     B='# '
+   else
+     B='$ '
+   fi
+   if [ -n "$BASH" ]; then
+     PS1="\u@\h:\w\$B"
+   else
+     PS1="$B"
+   fi
 fi
 
 if [ -d /etc/profile.d ]; then

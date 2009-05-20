@@ -55,19 +55,16 @@ Index: kexec-tools-2.0.0/kexec/ifdown.c
  #include <netinet/in.h>
 Index: kexec-tools-2.0.0/purgatory/Makefile
 ===================================================================
---- kexec-tools-2.0.0.orig/purgatory/Makefile	2009-04-24 14:15:34.037827479 +0100
-+++ kexec-tools-2.0.0/purgatory/Makefile	2009-04-24 14:15:47.022825503 +0100
-@@ -55,9 +54,7 @@
-			-I$(srcdir)/purgatory/arch/$(ARCH)/include \
-			-I$(srcdir)/util_lib/include \
-			-I$(shell $(CC) -print-file-name=include)
--$(PURGATORY): LDFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS)\
--			--no-undefined -nostartfiles -nostdlib -nodefaultlibs \
--			-e purgatory_start -r
-+$(PURGATORY): LDFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS)
+--- kexec-tools-2.0.0.orig/purgatory/Makefile	2009-05-19 14:15:34.037827479 +0100
++++ kexec-tools-2.0.0/purgatory/Makefile	2009-05-19 14:15:47.022825503 +0100
+@@ -47,6 +47,7 @@
+ $(PURGATORY): CC=$(TARGET_CC)
+ $(PURGATORY): CFLAGS+=$($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
+		      -Os -fno-builtin -ffreestanding \
++		      -nostdinc \
+		      -fno-zero-initialized-in-bss
 
- $(PURGATORY): $(PURGATORY_OBJS)
-	$(MKDIR) -p $(@D)
+ $(PURGATORY): CPPFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
 Index: kexec-tools-2.0.0/purgatory/purgatory.c
 ===================================================================
 --- kexec-tools-2.0.0.orig/purgatory/purgatory.old	2009-05-16 13:28:19.000000000 +0200

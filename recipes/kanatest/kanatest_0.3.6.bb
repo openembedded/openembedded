@@ -1,8 +1,5 @@
-PR = "r0"
-
-SRC_URI = "http://clay.ll.pl/download/${PN}-${PV}.tar.gz file://${PN}.desktop"
-
 require kanatest.inc
 
-CFLAGS += "-D_GNU_SOURCE"
-
+PR = "r1"
+SRC_URI = "${DEBIAN_MIRROR}/main/k/kanatest/${PN}_${PV}.orig.tar.gz \
+        file://${PN}.desktop"

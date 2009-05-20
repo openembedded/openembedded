@@ -38,6 +38,12 @@ SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;
 SRCREV_overo = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_overo = "2009.03+${PR}+gitr${SRCREV}"
 
+SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
+                        file://leopardboard-support.patch;patch=1 \
+"
+SRCREV_dm355-leopard = "86d5c98d3d97d631b1d3a5f5e6a17e87c99b42cf"
+PV_dm355-leopard = "2009.05+2009.06-rc2+gitr${SRCREV}"
+
 SRC_URI_neuros-osd2 = "git://github.com/neuros/u-boot.git;protocol=git;branch=neuros"
 SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"
 

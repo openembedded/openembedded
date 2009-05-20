@@ -1,0 +1,33 @@
+--- linux/drivers/usb/serial/usbserial.c-27	2006-06-27 10:26:06.294476250 +0200
++++ linux/drivers/usb/serial/usbserial.c	2006-06-27 10:30:31.011020000 +0200
+@@ -528,8 +528,18 @@
+ 		down(&port->sem);
+ 		dbg("%s - port %d len %d backlog %d", __FUNCTION__,
+ 		    port->number, job->len, port->write_backlog);
+-		if (port->tty != NULL)
+-			__serial_write(port, 0, job->buff, job->len);
++		if (port->tty != NULL) {
++			int rc;
++			int sent = 0;
++			while (sent < job->len) {
++				rc = __serial_write(port, 0, job->buff + sent, job->len - sent);
++				if ((rc < 0) || signal_pending(current))
++					break;
++				sent += rc;
++				if ((sent < job->len) && current->need_resched)
++					schedule();
++			}
++		}
+ 		up(&port->sem);
+ 
+ 		spin_lock_irqsave(&post_lock, flags);
+@@ -725,6 +735,9 @@
+ 	struct usb_serial_port *port = (struct usb_serial_port *) tty->driver_data;
+ 	int rc;
+ 
++	if (!port)
++		return -ENODEV;
++
+ 	if (!in_interrupt()) {
+ 		/*
+ 		 * Run post_list to reduce a possiblity of reordered writes.

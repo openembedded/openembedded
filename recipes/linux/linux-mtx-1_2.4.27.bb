@@ -35,7 +35,11 @@ SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_
 	file://26-usbd-amd-pb1x00-kit-23may2003-update.diff;patch=1 \
 	file://27-usbd-amd-pb1x00-kit-23may2003-usbd.diff;patch=1 \
 	file://29-au1000-pci-config-clear-errors.diff;patch=1 \
+	file://32-usbserial-stalled-hack.diff;patch=1 \
+	file://33-usbserial-bulk_in_size-4096.diff;patch=1 \
 	file://42-usb-ohci-fixes.patch;patch=1 \
+	file://43-usbserial-27-32-backport.diff;patch=1 \
+	file://45-acm-tty-and-sb2.patch;patch=1 \
 	file://48-pptp.patch;patch=1 \
 	file://defconfig-mtx-1"
 
@@ -74,8 +78,8 @@ fi
 FILES_kernel += " /tmp"
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
-	install -m 0644 arch/mips/zboot/images/mtx-1.flash.bin ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.bin
-        install -m 0644 arch/mips/zboot/images/mtx-1.flash.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.srec
-	install -m 0644 arch/mips/zboot/images/mtx-1.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.ram.srec
+	install -d 0755 ${DEPLOY_DIR_IMAGE}
+	install -m 0644 arch/mips/zboot/images/mtx-1.flash.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.flash.bin
+        install -m 0644 arch/mips/zboot/images/mtx-1.flash.srec ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.flash.srec
+	install -m 0644 arch/mips/zboot/images/mtx-1.srec ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.ram.srec
 }

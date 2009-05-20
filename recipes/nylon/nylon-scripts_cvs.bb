@@ -4,12 +4,14 @@ DEPENDS = "hostap-utils"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-SRCDATE = "20060923"
+#SRCDATE = "20060923"
+SRCDATE = "20051022"
 PV = "1.0.0+cvs${SRCDATE}"
 PR = "r2"
 RDEPENDS = "bash"
 
-SRC_URI = "http://meshcube.org/download/${PN}_${SRCDATE}.tgz"
+SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/${PN}_gruen.4g__${SRCDATE}.tar.gz \
+	file://firewall-bash.diff;patch=1"
 S = "${WORKDIR}/${PN}"
 INHIBIT_PACKAGE_STRIP = "1"
 

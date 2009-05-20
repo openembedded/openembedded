@@ -46,8 +46,8 @@ SRCDATE_waimea ?= "20060814"
 SRCDATE_xcompmgr ?= "20060814"
 SRCDATE_xirssi ?= "20060814"
 SRCDATE_xsvg ?= "20060814"
-SRCDATE_yamonenv ?= "20060814"
-SRCDATE_zaurusd ?= "20060628"
+SRCDATE_yamonenv ?= "20051022"
+SRCDATE_zaurusd ?= "20090501"
 
 # Freedesktop.org
 SRCDATE_poppler0.6 = "20070708"

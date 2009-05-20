@@ -1,0 +1,8 @@
+--- simple-firewall/etc/init.d/simple-firewall-orig	2009-04-25 13:42:10.000000000 +0200
++++ simple-firewall/etc/init.d/simple-firewall	2009-04-25 13:42:16.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ #$HeadURL: http://gruen.4g/svn/branches/stable-1.0/application/simple-firewall/etc/init.d/simple-firewall $ $Rev: 2593 $
+ 
+ if [ -f /etc/firewall/firewall.conf ]; then

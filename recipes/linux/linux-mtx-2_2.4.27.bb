@@ -86,8 +86,8 @@ fi
 FILES_kernel += " /tmp"
 
 do_deploy() {
-        install -d ${DEPLOY_DIR}/images
-	install -m 0644 arch/mips/zboot/images/mtx-2.flash.bin ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.bin
-        install -m 0644 arch/mips/zboot/images/mtx-2.flash.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.srec
-	install -m 0644 arch/mips/zboot/images/mtx-2.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.ram.srec
+	install -d 0755 ${DEPLOY_DIR_IMAGE}
+	install -m 0644 arch/mips/zboot/images/mtx-2.flash.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.flash.bin
+        install -m 0644 arch/mips/zboot/images/mtx-2.flash.srec ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.flash.srec
+	install -m 0644 arch/mips/zboot/images/mtx-2.srec ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.ram.srec
 }

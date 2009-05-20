@@ -61,7 +61,6 @@ KERNEL_MODULES = " \
     kernel-module-ds \
     kernel-module-fat \
     kernel-module-mii \
-    kernel-module-pcmcia-core \
     kernel-module-scsi-mod \
     kernel-module-sd-mod \
     kernel-module-usb-storage \
