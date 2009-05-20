@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
@@ -91,6 +91,7 @@ do_install_append_h2200() {
 do_stage_append() {
         install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}
         oe_libinstall -C extras/volume_id/lib -so libvolume_id ${STAGING_LIBDIR}
+        oe_libinstall -C udev/lib -so libudev ${STAGING_LIBDIR}
 }
 
 
