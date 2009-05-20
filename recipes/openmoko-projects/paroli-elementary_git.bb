@@ -1,8 +1,9 @@
 DESCRIPTION = "python-elementary paroli bindings"
 DEPENDS = "python-cython-native python-pyrex-native python-numeric eina elementary"
 RDEPENDS = "python-lang python-evas python-ecore python-edje" 
+PROVIDES = "python-elementary"
 PV = "0.1+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 inherit setuptools
 
