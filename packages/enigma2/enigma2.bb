@@ -8,17 +8,18 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl gst-plugin-decodebin gst-plugin-decodebin2 python-stringold \
 	gst-plugin-queue2 gst-plugin-app \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
-	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
+	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert gst-plugin-audioresample \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
+	gst-plugin-apetag gst-plugin-icydemux \
 	glibc-gconv-iso8859-15"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
-RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska gst-plugins-icydemux \
-	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc
-RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux gst-plugin-icydemux"
+RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
+	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
+RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
 # enigma2 and enigma2-plugins produce enigma2-plugin-*.
@@ -60,8 +61,6 @@ MODULE=trunk
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \
            file://enigma2.sh"
-
-SRC_URI_append_dm7025 = " file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/${MODULE}"
 
