@@ -1,0 +1,42 @@
+--- /tmp/Makefile.in	2009-05-21 13:45:20.000000000 +0200
++++ device-mapper.1.02.28/dmsetup/Makefile.in	2009-05-21 14:09:43.000000000 +0200
+@@ -31,12 +31,10 @@
+ include ../make.tmpl
+ 
+ dmsetup: $(OBJECTS) $(interfacedir)/libdevmapper.$(LIB_SUFFIX)
+-	$(CC) -o $@ $(OBJECTS) $(CFLAGS) $(LDFLAGS) \
+-	      -L$(interfacedir) -L$(DESTDIR)/lib -ldevmapper $(LIBS)
++	$(CC) -o $@ $(OBJECTS) -L$(interfacedir) -ldevmapper $(LIBS) $(CFLAGS) $(LDFLAGS)
+ 
+ dmsetup.static: $(OBJECTS) $(interfacedir)/libdevmapper.a
+-	$(CC) -o $@ $(OBJECTS) $(CFLAGS) $(LDFLAGS) -static \
+-	      -L$(interfacedir) -L$(DESTDIR)/lib -ldevmapper $(LIBS) \
++	$(CC) -o $@ $(OBJECTS) -L$(interfacedir) -ldevmapper $(LIBS) $(CFLAGS) $(LDFLAGS) -static \
+ 	      $(LIB_PTHREAD)
+ 
+ install: $(INSTALL_TYPE)
+--- /tmp/make.tmpl.in	2009-05-21 14:24:02.000000000 +0200
++++ device-mapper.1.02.28/make.tmpl.in	2009-05-21 14:29:20.000000000 +0200
+@@ -151,19 +151,19 @@
+ $(TARGETS): $(OBJECTS)
+ 
+ %.o: %.c
+-	$(CC) -c $(INCLUDES) $(DEFS) $(CFLAGS) $< -o $@
++	$(CC) -c $(INCLUDES) $(DEFS) $(CFLAGS) ${LDFLAGS} $< -o $@
+ 
+ %.pot: %.c Makefile
+ 	$(CC) -E $(INCLUDES) -include $(top_srcdir)/include/pogen.h \
+ 		$(DEFS) $(CFLAGS) $< > $@
+ 
+ %.so: %.o
+-	$(CC) -c $(INCLUDES) $(DEFS) $(CFLAGS) $< -o $@
++	$(CC) -c $(INCLUDES) $(DEFS) $(CFLAGS) ${LDFLAGS} $< -o $@
+ 
+ ifeq ("@LIB_SUFFIX@","so")
+ $(LIB_SHARED): $(OBJECTS) $(LDDEPS)
+ 	$(CC) -shared -Wl,-soname,$(notdir $@).$(LIB_VERSION) \
+-	$(CFLAGS) $(CLDFLAGS) $(OBJECTS) $(LIBS) -o $@
++	$(CFLAGS) $(CLDFLAGS) ${LDFLAGS} $(OBJECTS) $(LIBS) -o $@
+ endif
+ 
+ ifeq ("@LIB_SUFFIX@","dylib")
