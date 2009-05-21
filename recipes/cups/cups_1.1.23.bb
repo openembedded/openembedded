@@ -2,7 +2,7 @@ DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 DEPENDS = "openssl jpeg libpng zlib fakeroot-native"
-PR = "r6"
+PR = "${INC_PR}.1"
 
 SRC_URI = "ftp://ftp3.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://strftime_fix.patch;patch=1"
