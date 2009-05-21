@@ -1,0 +1,12 @@
+--- configure	2009-05-21 15:48:14.000000000 +0100
++++ configure	2009-05-21 15:48:14.000000000 +0100
+@@ -4474,9 +4474,6 @@
+   LIBS="-lX11 -lXext"
+   SYSLIBS="$SYSLIBS -L$x_libraries -lX11 -lXext"
+ fi
+-if test x$x_includes != x ; then
+-  XINCLUDES="-I$x_includes"
+-fi
+ echo $ac_n "checking for XDGAQueryVersion in -lXxf86dga""... $ac_c" 1>&6
+ echo "configure:4482: checking for XDGAQueryVersion in -lXxf86dga" >&5
+ ac_lib_var=`echo Xxf86dga'_'XDGAQueryVersion | sed 'y%./+-%__p_%'`

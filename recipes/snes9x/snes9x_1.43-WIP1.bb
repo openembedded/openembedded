@@ -8,7 +8,9 @@ RDEPENDS_epia = "kernel-module-joydev"
 SRC_URI = "http://www.lysator.liu.se/snes9x/1.43-WIP1/snes9x-1.43-WIP1-src.tar.gz \
 	file://makefile.patch;patch=1;pnum=2 \
 	file://private.patch;patch=1;pnum=0 \
-	file://64bit.patch;patch=1"
+	file://64bit.patch;patch=1 \
+        file://configure.patch;patch=1;pnum=0 \
+        file://linkage.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/snes9x-1.43-dev-src/snes9x"
 
