@@ -43,18 +43,18 @@ S = "${WORKDIR}/${BOOST_P}"
 # Make a package for each library, plus -dev
 PACKAGES = "${PN}-dbg ${BOOST_PACKAGES}"
 python __anonymous () {
-	import bb
+    import bb
 
-	packages = []
-	extras = [] 
-	for lib in bb.data.getVar('BOOST_LIBS', d, 1).split( ):
-		pkg = "boost-%s" % lib.replace("_", "-")
-		extras.append("--with-%s" % lib)
-		packages.append(pkg)
-		if not bb.data.getVar("FILES_%s" % pkg, d, 1):
-			bb.data.setVar("FILES_%s" % pkg, "${libdir}/libboost_%s*.so*" % lib, d)
-	bb.data.setVar("BOOST_PACKAGES", " ".join(packages), d)
-	bb.data.setVar("BJAM_EXTRA", " ".join(extras), d)
+    packages = []
+    extras = []
+    for lib in bb.data.getVar('BOOST_LIBS', d, 1).split( ):
+            pkg = "boost-%s" % lib.replace("_", "-")
+            extras.append("--with-%s" % lib)
+            packages.append(pkg)
+            if not bb.data.getVar("FILES_%s" % pkg, d, 1):
+                    bb.data.setVar("FILES_%s" % pkg, "${libdir}/libboost_%s*.so*" % lib, d)
+    bb.data.setVar("BOOST_PACKAGES", " ".join(packages), d)
+    bb.data.setVar("BJAM_EXTRA", " ".join(extras), d)
 }
 
 # Override the contents of specific packages

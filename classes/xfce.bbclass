@@ -5,7 +5,7 @@
 # Global class to make it easier to maintain XFCE packages
 
 HOMEPAGE = "http://www.xfce.org"
-LICENSE = "LGPL-2"
+LICENSE = "LGPLv2"
 DEPENDS += "startup-notification"
 
 XFCE_VERSION = ${PV}

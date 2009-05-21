@@ -1,0 +1,12 @@
+diff -Nru a/acpid.c b/acpid.c
+--- a/acpid.c	2008-11-03 14:04:43.000000000 +0100
++++ b/acpid.c	2008-12-19 18:38:14.291127677 +0100
+@@ -456,7 +456,7 @@
+ 	int log_opts;
+ 
+ 	/* open /dev/null */
+-	nullfd = open("/dev/null", O_RDONLY);
++	nullfd = open("/dev/null", O_RDWR);
+ 	if (nullfd < 0) {
+ 		fprintf(stderr, "%s: can't open %s: %s\n", progname, 
+ 			"/dev/null", strerror(errno));
