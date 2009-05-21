@@ -3,6 +3,8 @@ SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 DEPENDS = "gnutls jpeg dbus dbus-glib libpng zlib fakeroot-native"
 
+INC_PR = "r7"
+
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
 	  "
 
@@ -89,4 +91,3 @@ FILES_${PN} += "${datadir}/doc/cups/images \
 		${datadir}/doc/cups/*.css \
                 ${datadir}/icons/ \
 	       "
-
