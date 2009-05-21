@@ -3,33 +3,35 @@ DESCRIPTION = "The Device-mapper is a new component of the linux kernel \
 that supports logical volume management. It is required by LVM2 and EVMS. \
 The original LVM (included in stock 2.4 kernels) does not use it."
 LICENSE = "GPL"
-PR = "r4"
 
 S = "${WORKDIR}/${PN}.${PV}"
 
 SRC_URI = "ftp://sources.redhat.com/pub/dm/device-mapper.${PV}.tgz \
-	   file://devmap-mknod-busybox.patch;patch=1 \
+       file://devmap-mknod-busybox.patch;patch=1 \
 	   file://remove_insanity.patch;patch=1 "
 
-inherit autotools update-rc.d
+inherit autotools_stage update-rc.d
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 # The install-script will fail without this.
 EXTRA_OECONF="--with-user= --with-group= "
-TARGET_CC_ARCH += "${LDFLAGS}"
-
 
 INITSCRIPT_NAME = "devmap_mknod.sh"
 INITSCRIPT_PARAMS = "defaults"
 
-do_stage () {
-        install -m 0644 ${S}/lib/libdevmapper.h ${STAGING_INCDIR} || die "failed to install libdevmapper.h"
-        oe_libinstall -a -so -C lib/ioctl libdevmapper ${STAGING_LIBDIR}
-}
-
-do_install() {
-        autotools_do_install
-#	oe_runmake install_static_lib
+do_install_append() {
 	install -d ${D}/${libdir}/ioctl
 	install -m 755 ${S}/lib/ioctl/libdevmapper.a ${D}/${libdir}/ioctl/
         install -D -m 755 ${S}/scripts/${INITSCRIPT_NAME} ${D}${sysconfdir}/init.d/${INITSCRIPT_NAME}
 }
+
+FILES_${PN}-dev += "${libdir}/ioctl/*.a"
+
+do_stage_append() {
+	install -d ${STAGING_LIBDIR}/pkgconfig/
+	for pc in ${S}/*/*.pc ; do
+		cp $pc ${STAGING_LIBDIR}/pkgconfig/
+		cp $pc ${STAGING_LIBDIR}/pkgconfig/$(echo $(basename $pc) | sed s:lib::g)
+	done
+}
+

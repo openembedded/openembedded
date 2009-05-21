@@ -1,0 +1,9 @@
+--- device-mapper.1.01.05/scripts/devmap_mknod.sh	2002-07-23 05:50:13.000000000 -0700
++++ device-mapper.1.01.05/scripts/devmap_mknod.sh~	2005-08-25 14:51:13.000000000 -0700
+@@ -37,5 +37,5 @@
+ test -e $CONTROL && rm -f $CONTROL
+ 
+ echo "Creating $CONTROL character device with major:$MAJOR minor:$MINOR."
+-mknod --mode=600 $CONTROL c $MAJOR $MINOR
++mknod -m 600 $CONTROL c $MAJOR $MINOR
+ 
