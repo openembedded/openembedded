@@ -6,7 +6,7 @@ PR = "r0"
 DEPENDS += "sysfsutils"
 
 SRC_URI = " \
-    http://directfb.org/downloads/Core/DirectFB-${PV}.tar.gz \
+    http://directfb.org/downloads/Old/DirectFB-${PV}.tar.gz \
     file://directfb-1.2.x-fix-pkgconfig-cflags.patch;patch=1 \
     file://mkdfiff.patch;patch=1 \
     file://dont-use-linux-config.patch;patch=1 \
