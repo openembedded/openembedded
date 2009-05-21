@@ -1,3 +1,7 @@
+# status as of 2009/05/21: This particular bb file is broken beyond what I
+# (Laibsch) care to fix.  If you fix it, please base your changes on top
+# of pwlib.inc
+
 # pwlib .bb build file
 # Copyright (C) 2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see /COPYING)
