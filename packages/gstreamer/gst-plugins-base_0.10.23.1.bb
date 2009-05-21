@@ -1,0 +1,15 @@
+include gst-plugins.inc
+PROVIDES_${PN} += "gst-plugins"
+RCONFLICTS_gst-plugins-base = "libgstapp-0.10-0"
+RREPLACES_gst-plugins-base = "libgstapp-0.10-0"
+EXTRA_OECONF += "--with-audioresample-format=int"
+
+PR = "r1"
+SRCDATE = "20090519"
+REL = "0.10.23"
+
+SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${REL}.tar.bz2 \
+file://gst-plugins-base_${REL}_to_git${SRCDATE}.patch;patch=1;pnum=0 \
+file://gst-plugins_configure_skip_shave.patch;patch=1;pnum=0"
+
+S = "${WORKDIR}/${PN}-${REL}"

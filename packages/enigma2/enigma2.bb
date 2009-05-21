@@ -5,12 +5,14 @@ DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	gst-plugin-dvbmediasink \
 	libfribidi gstreamer libxmlccwrap libdreamdvd"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
-	python-xml python-fcntl gst-plugin-decodebin python-stringold \
+	python-xml python-fcntl gst-plugin-decodebin gst-plugin-decodebin2 python-stringold \
+	gst-plugin-queue2 gst-plugin-app \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
-	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
+	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert gst-plugin-audioresample \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
+	gst-plugin-apetag gst-plugin-icydemux \
 	glibc-gconv-iso8859-15"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
@@ -43,7 +45,7 @@ RREPLACES_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemp
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090401"
+SRCDATE = "20090509"
 
 # if you want experimental, use:
 REL_MAJOR="2"
@@ -60,8 +62,6 @@ MODULE=trunk
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \
            file://enigma2.sh"
-
-SRC_URI_append_dm7025 = " file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/${MODULE}"
 
