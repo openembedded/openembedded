@@ -1,5 +1,7 @@
 require evas.inc
-PR = "r2"
+PR = "r2.5"
+
+SRC_URI_append = " file://rtl_cursor.patch;patch=0 "
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
