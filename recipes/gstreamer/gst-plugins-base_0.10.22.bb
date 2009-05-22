@@ -1,5 +1,7 @@
 require gst-plugins.inc
 
+PR = "${INC_PR}.1"
+
 PROVIDES += "gst-plugins"
 
 PR = "r2"

@@ -1,5 +1,7 @@
 require gst-plugins.inc
 
+PR = "${INC_PR}.1"
+
 SRC_URI += "file://vorbisenc.h file://vorbisdec.h \
             file://ivorbis-thumb.patch;patch=1"
 DEPENDS += "gst-plugins-base directfb"

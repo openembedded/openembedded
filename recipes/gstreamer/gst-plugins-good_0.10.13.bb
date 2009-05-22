@@ -1,6 +1,6 @@
 require gst-plugins.inc
 
-PR = "r1"
+PR = "${INC_PR}.1"
 
 inherit gconf 
 
