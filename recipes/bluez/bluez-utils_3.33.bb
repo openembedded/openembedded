@@ -2,6 +2,10 @@ require bluez-utils3.inc
 
 PR = "r3"
 
+# TI patch landed upstream sometime between 3.35 and 3.36, 
+# albeit in a somewhat different form
+SRC_URI += "file://hciattach-ti-bts.patch;patch=1" 
+
 # see bluez-utils3.inc for the explanation of these option
 EXTRA_OECONF = " \
                  --enable-bccmd \
