@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages"
-PR = "r8"
+PR = "r9"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -25,17 +25,14 @@ RDEPENDS_task-sdk-x11-ext = "\
     libxcursor-dev \
     libxdmcp-dev \
     libxft-dev \
-    libxrandr-dev \
-    libxrender-dev \
     libxsettings-client-dev \
     randrproto-dev \
     libxau-dev \
-    xcalibrateext-dev \
-    libxcomposite-dev \
-    libxdamage-dev \
-    libxext-dev \
+    calibrateproto-dev \
+    compositeproto-dev \
+    damageproto-dev \
     xextproto-dev \
-    libxfont-dev \
+    fontsproto-dev \
     libxpm-dev \
     xproto-dev \
     libxt-dev \
