@@ -5,6 +5,8 @@ DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 
+PR = "r1"
+
 # For angstrom we want this to replace at least bluez-libs
 PROVIDES_append_angstrom = " bluez-utils bluez-libs"
 
@@ -16,7 +18,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/bluez-${PV}"
 
-inherit autotools_stage
+inherit autotools_stage update-rc.d
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 EXTRA_OECONF = "\
@@ -46,6 +48,9 @@ do_install_append() {
         # at_console doesn't really work with the current state of OE, so punch some more holes so people can actually use BT
         install -m 0644 ${WORKDIR}/bluetooth.conf ${D}/${sysconfdir}/dbus-1/system.d/
 }
+
+INITSCRIPT_NAME = "bluetooth"
+INITSCRIPT_PARAMS = "defaults 23 19"
 
 PACKAGES =+ "gst-plugin-bluez libasound-module-bluez"
 
