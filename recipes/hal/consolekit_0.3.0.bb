@@ -1,6 +1,8 @@
 DESCRIPTION = "ConsoleKit is a framework for defining and tracking users, login sessions, and seats."
 LICENSE = "GPLv2"
-DEPENDS = "libpam dbus"
+DEPENDS = "policykit libpam dbus"
+
+PR = "r1"
 
 inherit gnome
 
@@ -11,7 +13,7 @@ do_stage () {
 	autotools_stage_all
 }
 
-FILES_${PN} += "${libdir}/ConsoleKit ${datadir}/dbus-1"
+FILES_${PN} += "${libdir}/ConsoleKit ${datadir}/dbus-1 ${datadir}/PolicyKit"
 
 
 
