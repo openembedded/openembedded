@@ -1,0 +1,17 @@
+--- S97atd-orig	2009-03-29 11:59:02.000000000 +0200
++++ S97atd	2009-03-29 12:03:07.000000000 +0200
+@@ -20,9 +20,13 @@
+         rm -f /var/spool/at/trigger
+         echo "."
+         ;;
++  restart)
++	$0 stop
++	$0 start
++	;;
+ 
+   *)
+-        echo "Usage: /etc/init.d/atd {start|stop}"
++        echo "Usage: /etc/init.d/atd {start|stop|restart}"
+         exit 1
+ esac
+ 

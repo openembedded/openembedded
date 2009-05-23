@@ -1,0 +1,13 @@
+--- /dev/null	2009-03-26 10:57:36.511814417 +0100
++++ dist/etc/dbus-1/system.d/atd-over-fso.conf	2009-03-29 03:15:37.000000000 +0200
+@@ -0,0 +1,10 @@
++<!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
++ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
++<busconfig>
++	<policy user="root">
++		<allow own="org.openmoko.projects.ffalarms.atd"/>
++		<allow send_path="/"/>
++		<allow send_destination="org.openmoko.projects.ffalarms.atd"/>
++		<allow receive_sender="org.openmoko.projects.ffalarms.atd"/>
++	</policy>
++</busconfig>

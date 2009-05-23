@@ -1,0 +1,8 @@
+--- dbus-c++/Makefile.am.orig	2009-03-18 22:57:48.000000000 +0100
++++ dbus-c++/Makefile.am	2009-03-18 22:58:08.000000000 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS = src tools data doc examples
++SUBDIRS = src tools data doc
+ 
+ EXTRA_DIST = autogen.sh libdbus-c++.spec libdbus-c++.spec.in
+ 

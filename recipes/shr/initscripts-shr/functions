@@ -1,0 +1,17 @@
+# -*-Shell-script-*-
+#
+# functions     This file contains functions to be used by most or all
+#               shell scripts in the /etc/init.d directory.
+#
+
+machine_id() {		# return the machine ID
+    awk 'BEGIN { FS=": " } /Hardware/ { gsub(" ", "_", $2); print tolower($2) } ' </proc/cpuinfo
+}
+
+killproc() {		# kill the named process(es)
+    pid=`/bin/ps -e x |
+         /bin/grep $1 |
+         /bin/grep -v grep |
+         /bin/sed -e 's/^  *//' -e 's/ .*//'`
+    [ "$pid" != "" ] && kill $pid
+}

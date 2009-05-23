@@ -1,0 +1,14 @@
+--- Makefile-orig	2003-03-23 19:46:26.000000000 +0100
++++ Makefile	2009-03-16 19:39:39.000000000 +0100
+@@ -10,6 +10,11 @@
+ 	rm -f atq
+ 	ln -s atd atq
+ 
++atd.o: atd-alarm-glue.h
++
++atd-alarm-glue.h: atd-alarm.xml
++	dbus-binding-tool --prefix=atd_alarm --mode=glib-server $< --output=$@
++
+ dist: atd
+ 	cp atd dist/usr/sbin/
+ 	rm dist/usr/bin/atq

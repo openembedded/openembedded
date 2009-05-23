@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Mofi
+Comment=View and send SMS messages
+Exec=mofi_gui.py
+Icon=wifi
+Terminal=false
+Type=Application
+Categories=GTK;Office;PIM;
+SingleInstance=true
+StartupNotify=true
+Categories=Office;
+

@@ -1,0 +1,25 @@
+DESCRIPTION = "Simple Neo1973 Daemon for Button Handling and Power Management (SHR branch)"
+LICENSE = "GPL"
+SECTION = "openmoko/daemons"
+DEPENDS = "gtk+ pulseaudio apmd"
+RDEPENDS = "gpe-scap xrandr alsa-utils-amixer apm dbus"
+SHR_PV = "0.2.0"
+PR = "r1"
+
+inherit shr gconf autotools pkgconfig
+
+SRC_URI += "file://htc.patch;patch=1;maxrev=3348 \
+            file://ipaq.patch;patch=1;maxrev=3348"
+
+EXTRA_OECONF_om-gta01 = "--with-platform=neo1973"
+EXTRA_OECONF_om-gta02 = "--with-platform=neo1973"
+EXTRA_OECONF_a780      = "--with-platform=ezx"
+EXTRA_OECONF_a1200     = "--with-platform=ezx"
+EXTRA_OECONF_e680      = "--with-platform=ezx"
+EXTRA_OECONF_rokre2    = "--with-platform=ezx"
+EXTRA_OECONF_rokre6    = "--with-platform=ezx"
+EXTRA_OECONF_magician  = "--with-platform=htc"
+EXTRA_OECONF_hx4700    = "--with-platform=ipaq"
+EXTRA_OECONF_htcuniversal = "--with-platform=htc"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"

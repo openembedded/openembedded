@@ -1,0 +1,81 @@
+diff -ur mofi.0.02.old/connect.sh mofi.0.02/connect.sh
+--- mofi.0.02.old/connect.sh	2008-07-29 15:46:36.000000000 +0200
++++ mofi.0.02/connect.sh	2008-11-10 18:49:28.000000000 +0100
+@@ -5,7 +5,7 @@
+ 
+ ifconfig usb0 down
+ ifconfig eth0 up
+-wpa_supplicant -ieth0 -c/home/root/.mofi_wpa_supplicant.conf -B
++wpa_supplicant -ieth0 -c/etc/mofi/mofi_wpa_supplicant.conf -B
+ sleep 10
+ udhcpc eth0
+ #iwconfig eth0
+diff -ur mofi.0.02.old/mofi.py mofi.0.02/mofi.py
+--- mofi.0.02.old/mofi.py	2008-07-29 13:13:11.000000000 +0200
++++ mofi.0.02/mofi.py	2008-11-10 18:52:54.000000000 +0100
+@@ -29,7 +29,7 @@
+ def main():
+     
+     config = ConfigParser()
+-    config.read(os.path.join(os.environ['HOME'], '.mofi.conf'))
++    config.read('/etc/mofi/mofi.conf')
+     
+     # get a list of interfaces..
+     ifnames = getNICnames()
+@@ -120,14 +120,14 @@
+     		
+ 
+ 	# save config to file
+-	FILE = open(os.path.join(os.environ['HOME'], 'mofi_wpa_supplicant.conf'),"w")
++	FILE = open('/etc/mofi/mofi_wpa_supplicant.conf',"w")
+ 	FILE.write(wpa_conf)
+ 	FILE.close()
+ 	
+ 	print 'connecting using wpa_supplicant configuration'
+ 	
+     # run shell script that uses conf to connect..
+-    os.system('./connect.sh') 
++    os.system('/etc/mofi/connect.sh') 
+     
+ if __name__ == "__main__":
+     main()
+\ Pas de fin de ligne à la fin du fichier.
+diff -ur mofi.0.02.old/settingsgui/MofiPanel.py mofi.0.02/settingsgui/MofiPanel.py
+--- mofi.0.02.old/settingsgui/MofiPanel.py	2008-07-29 15:48:58.000000000 +0200
++++ mofi.0.02/settingsgui/MofiPanel.py	2008-11-10 18:52:57.000000000 +0100
+@@ -36,7 +36,7 @@
+         gtk.VBox.__init__(self, False, 0)
+         
+         self.config = ConfigParser()
+-        self.config.read(os.path.join(os.environ['HOME'], '.mofi.conf'))
++        self.config.read('/etc/mofi/mofi.conf')
+         
+         self.ap_ui = {}
+         
+@@ -132,7 +132,7 @@
+                 
+ 
+         # save config to file
+-        FILE = open(os.path.join(os.environ['HOME'], '.mofi_wpa_supplicant.conf'),"w")
++        FILE = open('/etc/mofi/mofi_wpa_supplicant.conf',"w")
+         FILE.write(wpa_conf)
+         FILE.close()
+ 
+@@ -183,7 +183,7 @@
+             if not self.config.has_section(self.connecting_to):
+                 self.config.add_section(self.connecting_to)
+             self.config.set(self.connecting_to, 'password', self.password.get_text())
+-            FILE = open(os.path.join(os.environ['HOME'], '.mofi.conf'),"w")
++            FILE = open('/etc/mofi/mofi.conf',"w")
+             self.config.write(FILE)
+             FILE.close()
+             self.last_aps[self.connecting_to]['password'] = self.password.get_text()
+@@ -215,7 +215,7 @@
+                     self.generate_wpa_supplicant([essid])
+                     
+                     # call our connection shell script and capture the output..
+-                    proc = subprocess.Popen([r"sh", "/home/root/pymofi/connect.sh"], stdout=subprocess.PIPE)
++                    proc = subprocess.Popen([r"sh", "/etc/mofi/connect.sh"], stdout=subprocess.PIPE)
+                     proc.wait()
+                     output = proc.stdout.read()
+                     

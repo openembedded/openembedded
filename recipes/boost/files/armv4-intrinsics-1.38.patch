@@ -1,0 +1,78 @@
+--- boost_1_38_0.orig/boost/detail/atomic_count_sync.hpp	2008-09-28 17:05:17.000000000 +0200
++++ boost_1_38_0/boost/detail/atomic_count_sync.hpp	2009-04-11 14:53:18.752180879 +0200
+@@ -33,17 +33,75 @@
+ 
+     void operator++()
+     {
++#if defined(__ARM_ARCH_7A__) or defined(__ARM_ARCH_6J__)
++       int v1, tmp;
++       asm volatile ("1:                 \n\t"
++                     "ldrex   %0, %1     \n\t"
++                     "add     %0 ,%0, #1 \n\t"
++                     "strex   %2, %0, %1 \n\t"
++                     "cmp     %2, #0     \n\t"
++                     "bne     1b         \n\t"
++                     : "=&r" (v1), "+Q"(value_), "=&r"(tmp)
++                    ); //v1 = temp,value = the of the class value to change,tmp = what we return
++#elif defined(__ARM_ARCH_4T__)
++        register int temp asm("r1"); //value that we will return
++        register int val asm("r2") = (value_); //memory pointer
++        asm volatile ("1:                                 \n\t"
++            "ldr     r0, [%1]                            \n\t"
++            "mov     r3, #0xffff0fff                     \n\t"
++            "add     lr, pc, #4                          \n\t"
++            "add     r1, r0, #1                          \n\t"
++            "add     pc, r3, #(0xffff0fc0 - 0xffff0fff)  \n\t"
++            "bcc     1b                                  \n\t"
++	    : "=&r" (temp), "=r" (val) //output 
++	    : "1" (val) //input
++	    : "r0","r3","ip","lr","cc","memory" ); //clobber
++//todo: add armv4(remove the bcc and check for armv4 compilence)
++#else
+         __sync_add_and_fetch( &value_, 1 );
++#endif
+     }
+ 
+     long operator--()
+     {
++#if defined(__ARM_ARCH_7A__) or defined(__ARM_ARCH_6J__)
++        int v1, tmp;
++        asm volatile ("1:                 \n\t"
++                      "ldrex   %0, %1     \n\t"
++                      "sub     %0 ,%0, #1 \n\t"
++                      "strex   %2, %0, %1 \n\t"
++                      "cmp     %2, #0     \n\t"
++                      "bne     1b         \n\t"
++                      : "=&r" (v1), "+Q"(value_), "=&r"(tmp)
++                     );
++        return value_;
++#elif defined(__ARM_ARCH_4T__)
++        register int temp asm("r1"); //value that we will return
++        register int val asm("r2") = (value_); //memory pointer
++        asm volatile ("1:                                \n\t"
++            "ldr     r0, [%1]                            \n\t"
++            "mov     r3, #0xffff0fff                     \n\t"
++            "add     lr, pc, #4                          \n\t"
++            "sub     r1, r0, #1                          \n\t"
++            "add     pc, r3, #(0xffff0fc0 - 0xffff0fff)  \n\t"
++            "bcc     1b                                  \n\t"
++            : "=&r" (temp ),"=r" (val) //output 
++            : "1" (val) //input
++            : "r0","r3","ip","lr","cc","memory" ); //clobber
++        return value_;
++//todo: add armv4(remove the bcc and check for armv4 compilence)
++#else
+         return __sync_add_and_fetch( &value_, -1 );
++#endif
+     }
+ 
+     operator long() const
+     {
++#if defined( __ARM_ARCH_7A__) or defined(__ARM_ARCH_6J__) or defined(__ARM_ARCH_4T__) or defined(__ARM_ARCH_4__)
++        return value_;
++#else
+         return __sync_fetch_and_add( &value_, 0 );
++#endif
+     }
+ 
+ private:

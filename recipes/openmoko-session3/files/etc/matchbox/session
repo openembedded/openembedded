@@ -1,0 +1,14 @@
+#!/bin/sh
+#!/bin/sh
+SHOWCURSOR="no"
+
+echo "Starting matchbox session..."
+
+openmoko-today >> /var/tmp/x.log 2>&1 &
+matchbox-panel-2 --start-applets systray,startup --end-applets openmoko-panel-battery,openmoko-panel-gsm\
+openmoko-panel-gps,openmoko-panel-usb,openmoko-panel-bt,openmoko-panel-memory,openmoko-panel-wifi --titlebar >> /var/tmp/x.log 2>&1 &
+
+# This is the future !
+ophonekitd >> /var/tmp/x.log 2>&1 &
+
+exec matchbox-window-manager -use_titlebar yes -use_desktop_mode decorated -theme MBOpus -use_cursor $SHOWCURSOR $@
