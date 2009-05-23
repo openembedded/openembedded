@@ -2,10 +2,10 @@ DESCRIPTION = "A psplash replacement for display"
 LICENSE = "MIT BSD"
 DEPENDS = "eet evas ecore embryo edje"
 PV = "0.0.1+svnr${SRCREV}"
-PR = "r8"
+PR = "r9"
 RDEPENDS = "initscripts"
 RRECOMMENDS_${PN} = "exquisite-themes"
-RCONFLICTS_${PN} = "psplash virtual/psplash"
+RCONFLICTS_${PN} = "psplash virtual-psplash"
 
 SRCNAME = "exquisite"
 

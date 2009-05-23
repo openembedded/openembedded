@@ -4,11 +4,11 @@ SECTION = "base"
 LICENSE = "GPL"
 RDEPENDS = "initscripts"
 PROVIDES = "virtual/psplash"
-RPROVIDES_${PN} = "virtual/psplash"
+RPROVIDES_${PN} = "virtual-psplash"
 RCONFLICTS_${PN} = "exquisite"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r22"
+PR = "r23"
 
 # You can create your own pslash-hand-img.h by doing
 # ./make-image-header.sh <file>.png HAND
