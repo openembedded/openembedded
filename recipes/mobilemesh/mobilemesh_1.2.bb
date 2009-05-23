@@ -3,7 +3,7 @@ DESCRIPTION = "MobileMesh mobile ad-hoc routing protocol"
 HOMEPAGE = "http://www.mitre.org/work/tech_transfer/mobilemesh/"
 LICENSE = "GPL"
 DEPENDS = "openssl"
-SRC_URI = "http://meshcube.org/download/mobilemesh_1.2.tgz"
+SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/mobilemesh_1.2.tgz"
 PR = "r1"
 
 S = "${WORKDIR}/mobilemesh"
@@ -34,4 +34,7 @@ do_install() {
 	install ${S}/mobilemesh.init ${D}${sysconfdir}/init.d/mobilemesh
 }
 
+FILES_${PN}-dbg += "${sysconfdir}/mobilemesh/mmtodot.debug ${sysconfdir}/mobilemesh/mmborder.debug \
+	${sysconfdir}/mobilemesh/mmrp.debug ${sysconfdir}/mobilemesh/mmdiscover.debug"
 CONFFILES_${PN}_nylon = "${sysconfdir}/mobilemesh/mmrp.conf ${sysconfdir}/mobilemesh/mmdiscover.conf"
+
