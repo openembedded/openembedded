@@ -9,6 +9,8 @@ PR = "r0"
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2 \
 "
+SRC_URI_append_nylon = " file://gcc-3-compatibility.patch;patch=1 \
+"
 S = "${WORKDIR}/libusb-${PV}"
 
 inherit autotools pkgconfig binconfig lib_package

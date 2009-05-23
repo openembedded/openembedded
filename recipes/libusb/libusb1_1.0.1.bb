@@ -8,6 +8,8 @@ LICENSE = "LGPL"
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2 \
 "
+SRC_URI_append_nylon = " file://gcc-3-compatibility.patch;patch=1 \
+"
 S = "${WORKDIR}/libusb-${PV}"
 
 inherit autotools_stage binconfig lib_package

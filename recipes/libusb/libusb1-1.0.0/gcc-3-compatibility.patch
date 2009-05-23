@@ -1,0 +1,22 @@
+--- libusb-1.0.0/configure.ac-orig	2009-02-26 13:18:31.000000000 +0100
++++ libusb-1.0.0/configure.ac	2009-02-26 13:18:43.000000000 +0100
+@@ -62,7 +62,7 @@
+ CFLAGS="$saved_cflags"
+ 
+ AC_DEFINE([API_EXPORTED], [__attribute__((visibility("default")))], [Default visibility])
+-AM_CFLAGS="-std=gnu99 $inline_cflags -Wall -Wundef -Wunused -Wstrict-prototypes -Werror-implicit-function-declaration -Wno-pointer-sign -Wshadow"
++AM_CFLAGS="-std=gnu99 $inline_cflags -Wall -Wundef -Wunused -Wstrict-prototypes -Werror-implicit-function-declaration -Wshadow"
+ AC_SUBST(AM_CFLAGS)
+ 
+ AC_CONFIG_FILES([libusb-1.0.pc] [Makefile] [libusb/Makefile] [examples/Makefile] [doc/Makefile] [doc/doxygen.cfg])
+--- libusb-1.0.0/libusb/Makefile.am-orig	2009-02-26 13:18:11.000000000 +0100
++++ libusb-1.0.0/libusb/Makefile.am	2009-02-26 13:18:23.000000000 +0100
+@@ -8,7 +8,7 @@
+ OS_SRC = $(LINUX_USBFS_SRC)
+ endif
+ 
+-libusb_1_0_la_CFLAGS = -fvisibility=hidden $(AM_CFLAGS) -pthread
++libusb_1_0_la_CFLAGS = $(AM_CFLAGS) -pthread
+ libusb_1_0_la_SOURCES = libusbi.h core.c descriptor.c io.c sync.c $(OS_SRC)
+ libusb_1_0_la_LIBADD = -lrt
+ 
