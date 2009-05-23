@@ -3,8 +3,9 @@ SECTION = "network"
 HOMEPAGE = "www.transmissionbt.com/"
 DEPENDS = "gtk+ gnutls openssl gettext libtool intltool-native curl glib-2.0-native"
 LICENSE = "GPLv2"
-PR = "r4"
+PR = "r5"
 SRC_URI = "http://mirrors.m0k.org/transmission/files/transmission-${PV}.tar.bz2 \
+           file://webupload.patch;patch=1;pnum=0 \
            file://init"
 
 INITSCRIPT_NAME = "transmission"
