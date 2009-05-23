@@ -5,6 +5,10 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "openssl ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
 PR = "r1"
+DEPENDS_append_mtx-1 = " madwifi-modules"
+DEPENDS_append_mtx-2 = " madwifi-modules"
+CPPFLAGS_append_mtx-1 = " -I${STAGING_INCDIR}/madwifi/"
+CPPFLAGS_append_mtx-2 = " -I${STAGING_INCDIR}/madwifi/"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"
