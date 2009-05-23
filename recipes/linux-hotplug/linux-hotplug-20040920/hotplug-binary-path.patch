@@ -1,0 +1,20 @@
+--- hotplug-2004_09_20/etc/hotplug/pci.rc-orig	2009-04-07 21:00:18.000000000 +0200
++++ hotplug-2004_09_20/etc/hotplug/pci.rc	2009-04-07 21:00:43.000000000 +0200
+@@ -38,7 +38,7 @@
+ 		sub_vendor_id=`cat $PCI_DEVICE/subsystem_vendor`
+ 		sub_device_id=`cat $PCI_DEVICE/subsystem_device`
+ 		PCI_SUBSYS_ID="${sub_vendor_id#0x}:${sub_device_id#0x}"
+-		/sbin/hotplug pci
++		/usr/sbin/hotplug pci
+ 	    done
+ 	fi
+     else
+@@ -53,7 +53,7 @@
+ 	for BUS in `cd /proc/bus/pci;find * -type d -print`; do
+ 	    for SLOT_FUNC in `cd /proc/bus/pci/$BUS; echo *`; do
+ 		PCI_SLOT=$BUS:$SLOT_FUNC
+-		/sbin/hotplug pci
++		/usr/sbin/hotplug pci
+ 	    done
+ 	done
+     fi
