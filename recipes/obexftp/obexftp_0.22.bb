@@ -3,10 +3,10 @@ SECTION = "console/network"
 HOMEPAGE = "http://dev.zuckschwerdt.org/openobex/wiki/ObexFtp"
 LICENSE = "GPL"
 DEPENDS = "openobex bluez-libs libusb virtual/libiconv"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.bz2 \
-	  "
+	   file://include-bluetooth.h.patch;patch=1"
 
 inherit autotools pkgconfig
 

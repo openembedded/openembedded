@@ -1,0 +1,12 @@
+--- o/apps/obexftpd.c	2008-06-15 22:18:58.000000000 +0300
++++ n/apps/obexftpd.c	2008-12-09 00:01:20.000000000 +0200
+@@ -58,6 +58,9 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include <netdb.h>
++#ifdef HAVE_BLUETOOTH
++#include <bluetooth/bluetooth.h>
++#endif
+ #endif
+ 
+ /* just until there is a server layer in obexftp */
