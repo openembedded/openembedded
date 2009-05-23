@@ -23,7 +23,7 @@ PREFERRED_PROVIDER_virtual/xserver_collie = "xserver-kdrive-fbdev"
 
 PCMCIA_MANAGER ?= "pcmciautils"
 
-IMAGE_FSTYPES += "jffs2"
+IMAGE_FSTYPES += "jffs2 tar.gz"
 
 MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen vfat ext2"
 MACHINE_FEATURES_append_akita = " usbhost "
@@ -45,4 +45,4 @@ MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle kernel-module-p
 MACHINE_EXTRA_RRECOMMENDS_tosa = "wlan-ng-modules-usb apm-tosa-suspendfix"
 
 require conf/machine/include/zaurus-kernel.inc
-require conf/machine/include/kexecboot.inc
+require conf/machine/include/initramfs-kexecboot.inc
