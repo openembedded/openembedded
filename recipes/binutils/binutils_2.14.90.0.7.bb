@@ -48,7 +48,8 @@ SRC_URI = \
      file://binutils-uclibc-210-cflags.patch;patch=1 \
      file://binutils-100_cflags_for_build.patch;patch=1 \
      file://plt32trunc.patch;patch=1 \
-     file://600-arm-textrel.patch;patch=1"
+     file://600-arm-textrel.patch;patch=1 \
+     file://binutils-2.14.90.0.7-fix-broken-configure.patch;patch=1"
 
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
