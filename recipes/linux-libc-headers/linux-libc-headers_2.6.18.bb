@@ -69,9 +69,12 @@ do_stage () {
 }
 
 do_stage_append_nylon () {
-	cp -pPR include/asm-${ARCH}/* ${STAGING_INCDIR}/asm/
-	cp -pPR include/asm-${ARCH}/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
-	cp -pPR include/linux/* ${STAGING_INCDIR}/linux/
-	cp -pPR include/linux/* ${CROSS_DIR}/${TARGET_SYS}/include/linux/
+	install -d ${STAGING_INCDIR}/asm/
+	cp -vpPR include/asm-${ARCH}/* ${STAGING_INCDIR}/asm/
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	cp -vpPR include/asm-${ARCH}/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	cp -vpPR include/linux/* ${STAGING_INCDIR}/linux/
+	install -d ${CROSS_DIR}/${TARGET_SYS}/include/linux/
+	cp -vpPR include/linux/* ${CROSS_DIR}/${TARGET_SYS}/include/linux/
 }
 
