@@ -66,7 +66,7 @@ fi
 # Set the system clock from hardware clock
 # If the timestamp is 1 day or more recent than the current time,
 # use the timestamp instead.
-/etc/init.d/hwclock.sh start
+test -x /etc/init.d/hwclock.sh && /etc/init.d/hwclock.sh start
 if test -e /etc/timestamp
 then
 	SYSTEMDATE=`date "+%Y%m%d"`
