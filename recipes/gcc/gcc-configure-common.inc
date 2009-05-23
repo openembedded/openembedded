@@ -89,4 +89,7 @@ do_configure () {
 	echo "#define STANDARD_INCLUDE_DIR \"${layout_includedir}\"" >> ${S}/gcc/defaults.h
 
 	oe_runconf
+
+	# make sure that no @LDFLAG@ is left in the generated Makefile
+  	sed -i "s/@LDFLAGS@//g" ${B}/Makefile
 }
