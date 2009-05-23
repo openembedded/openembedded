@@ -31,7 +31,7 @@ MACHINE_FEATURES_append_spitz = " usbhost "
 MACHINE_FEATURES_append_tosa  = " usbhost wifi "
 
 MACHINE_EXTRA_RDEPENDS = "zaurusd mtd-utils nandlogical"
-MACHINE_EXTRA_RDEPENDS_collie = "zaurusd mtd-utils"
+MACHINE_EXTRA_RDEPENDS_collie = ""
 
 # Fixme ? pcmcia and pxa2xx-cs are now compiled in kernel
 # Here we just need snd modules
@@ -43,6 +43,9 @@ MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle kernel-module-p
 # For tosa only: wlan-ng Modules and OHCI suspend/resume fixup
 # Fixme ? module-snd for tosa
 MACHINE_EXTRA_RRECOMMENDS_tosa = "wlan-ng-modules-usb apm-tosa-suspendfix"
+
+# Fixme ? module-snd for collie
+MACHINE_EXTRA_RRECOMMENDS_collie = ""
 
 require conf/machine/include/zaurus-kernel.inc
 require conf/machine/include/initramfs-kexecboot.inc
