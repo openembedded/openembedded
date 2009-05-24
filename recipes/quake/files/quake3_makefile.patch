@@ -1,0 +1,29 @@
+--- /tmp/Makefile	2009-05-25 14:59:16.000000000 +0530
++++ git/pandora/Makefile	2009-05-25 15:07:46.000000000 +0530
+@@ -64,14 +64,14 @@ ARFLAGS=ar rv
+ DLL_ONLY=true
+ ARCH=arm
+ VENDOR=dec
+-BASE_CFLAGS =	-mcpu=cortex-a8 -mtune=cortex-a8 -march=armv7-a -mfloat-abi=softfp \
+-		-mfpu=neon -ftree-vectorize -ffast-math -fomit-frame-pointer \
++BASE_CFLAGS =	-O3 -mtune=cortex-a8 -march=armv7-a -mfloat-abi=softfp \
++		-mfpu=neon -ffast-math -fomit-frame-pointer \
+ 		-fno-strict-aliasing -fsingle-precision-constant \
+ 		-I$(PNDSDK)/usr/include -DIPHONE -DBOTLIB -DDLL_ONLY -DC_ONLY -D__arm__ -DSHLIB_SUFFIX="\"so\"" -D_PANDORA_
+ 
+ THREAD_LDFLAGS=-lpthread
+ 
+-LDFLAGS=-L$(PNDSDK)/usr/lib -ldl -lm -lX11 -lXau -lXdmcp -lXxf86vm -lXext
++LDFLAGS+=-L$(PNDSDK)/usr/lib -ldl -lm -lX11 -lXau -lXdmcp -lXxf86vm -lXext
+ 
+ GL_CFAGS = -I$(PNDSDK)/usr/X11R6/include 
+ 
+@@ -126,7 +126,7 @@ DO_NASM=nasm -f elf -o $@  $<
+ DO_DED_CC=$(CC) -DDEDICATED -DC_ONLY $(CFLAGS) -o $@ -c $<
+ 
+ #### DEFAULT TARGET
+-default:build_debug
++default:build_release
+ 
+ debug: build_debug
+ release: build_release
