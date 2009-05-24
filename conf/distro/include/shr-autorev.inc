@@ -77,6 +77,7 @@ SRCREV_pn-e-wm-config-illume-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-sysactions-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-theme-illume-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-menu-shr = "${AUTOREV}"
+SRCREV_pn-etk-theme-shr = "${AUTOREV}"
 
 SRCREV_pn-navit = "2198"
 SRCREV_pn-python-elementary = "39834"
@@ -94,3 +95,4 @@ PREFERRED_VERSION_calc = "0.0.1"
 #pin shr-config due to gnome bug 579803 (requires vala > 0.7.1)
 SRCREV_pn-shr-config = "9b59390d265805b68ea10136fa03fa67713f1275"
 SRCREV_pn-libeflvala = "${AUTOREV}"
+
