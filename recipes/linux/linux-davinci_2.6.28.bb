@@ -5,9 +5,9 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "(dm6446-evm|dm6467-evm|davinci-sffsdr)"
 
-SRCREV = "0fc192ac07c977ad6f14333651b53096a6027bc6"
+# The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
-PR = "r1"
+SRCREV = "0fc192ac07c977ad6f14333651b53096a6027bc6"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git \
            file://defconfig"
