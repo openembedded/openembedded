@@ -17,9 +17,11 @@ inherit autotools gtk-icon-cache pkgconfig gconf mime
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
-PACKAGES =+ "${PN}-scrollkeeper-leftovers"
-FILES_${PN}-scrollkeeper-leftovers = "${localstatedir}/lib/scrollkeeper"
-
 gnome_stage_includes() {
 	autotools_stage_includes
 }
+
+do_install_append() {
+	rm -rf ${D}${localstatedir}/lib/scrollkeeper/*
+}
+
