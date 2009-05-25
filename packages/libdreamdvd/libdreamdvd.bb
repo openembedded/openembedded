@@ -6,7 +6,7 @@ RDEPENDS = "libdvdnav"
 
 PR = "r0"
 PV = "1.0cvs${SRCDATE}"
-SRCDATE = "20090128"
+SRCDATE = "20090517"
 SRC_URI="cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/libdreamdvd;module=libdreamdvd;method=pserver"
 
 CFLAGS_dm8000_append = " -DHARDWARE_SUPPORT_LPCM"
