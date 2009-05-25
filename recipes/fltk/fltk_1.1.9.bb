@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "alsa-lib zlib jpeg libpng libxext libxft"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/${PV}/fltk-${PV}-source.tar.bz2 \
 	   file://disable_test.patch;patch=1 \
@@ -12,7 +12,9 @@ SRC_URI = "ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/${PV}/fl
 
 S = "${WORKDIR}/fltk-${PV}"
 
-inherit lib_package autotools binconfig
+inherit lib_package autotools_stage binconfig
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 EXTRA_OECONF = "--enable-shared \
 		--enable-threads \
@@ -21,10 +23,6 @@ EXTRA_OECONF = "--enable-shared \
 
 do_configure() {
         oe_runconf
-}
-
-do_stage() {
-	autotools_stage_all
 }
 
 python populate_packages_prepend () {
