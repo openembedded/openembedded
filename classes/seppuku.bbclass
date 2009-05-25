@@ -319,6 +319,12 @@ python seppuku_eventhandler() {
         passw   = bb.data.getVar("SEPPUKU_PASS",  data, True)
         product = bb.data.getVar("SEPPUKU_PRODUCT", data, True)
         component = bb.data.getVar("SEPPUKU_COMPONENT", data, True)
+	proxy	= bb.data.getVar('HTTP_PROXY', data, True )
+	if (proxy):
+		phl = urllib2.ProxyHandler({'http' : proxy})
+		poster.add_handler(phl)
+		opener.add_handler(phl)
+
         # evil hack to figure out what is going on
         debug_file = open(os.path.join(bb.data.getVar("TMPDIR", data, True),"..","seppuku-log"),"a")
 
