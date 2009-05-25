@@ -6,7 +6,10 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r7"
+PR = "r8"
+
+# needed for init.d script
+RDEPENDS_udev += "udev-utils"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
