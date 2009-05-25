@@ -1,0 +1,56 @@
+From 312b5ad7a3e1f92abaa113c3e72c8da5cb3e6cb0 Mon Sep 17 00:00:00 2001
+From: Otavio Salvador <otavio@ossystems.com.br>
+Date: Fri, 22 May 2009 20:40:16 -0300
+Subject: [PATCH 2/2] [GX] fix RandR to properly use dixSetPrivate
+
+Signed-off-by: Otavio Salvador <otavio@ossystems.com.br>
+---
+ src/gx_randr.c |   13 +++----------
+ 1 files changed, 3 insertions(+), 10 deletions(-)
+
+diff --git a/src/gx_randr.c b/src/gx_randr.c
+index 6cdd244..68e1dbd 100644
+--- a/src/gx_randr.c
++++ b/src/gx_randr.c
+@@ -57,18 +57,13 @@ typedef struct _GXRandRInfo
+ 
+ #define AMD_OLDPRIV (GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 4)
+ 
+-#if AMD_OLDPRIV
+-
+ static int GXRandRIndex;
+ 
++#if AMD_OLDPRIV
+ #define XF86RANDRINFO(p) ((XF86RandRInfoPtr) (p)->devPrivates[GXRandRIndex].ptr)
+ #else
+-
+-static DevPrivateKey GXRandRKey;
+-
+ #define XF86RANDRINFO(p) ((XF86RandRInfoPtr) \
+-			  dixLookupPrivate(&(p)->devPrivates, GXRandRKey));
+-
++			  dixLookupPrivate(&(p)->devPrivates, GXRandRIndex));
+ #endif
+ 
+ static int
+@@ -333,8 +328,6 @@ GXRandRInit(ScreenPtr pScreen, int rotation)
+     }
+ #if AMD_OLDPRIV
+     GXRandRIndex = AllocateScreenPrivateIndex();
+-#else
+-    GXRandRKey = &GXRandRKey;
+ #endif
+ 
+     pRandr = xcalloc(sizeof(XF86RandRInfoRec), 1);
+@@ -363,7 +356,7 @@ GXRandRInit(ScreenPtr pScreen, int rotation)
+ #if AMD_OLDPRIV
+     pScreen->devPrivates[GXRandRIndex].ptr = pRandr;
+ #else
+-    dixSetPrivate(&pScreen->devPrivates, GXRandRKey, pRandr);
++    dixSetPrivate(&pScreen->devPrivates, &GXRandRIndex, pRandr);
+ #endif
+     return TRUE;
+ }
+-- 
+1.6.3.1.54.g99dd
+
