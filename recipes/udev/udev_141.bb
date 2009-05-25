@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
@@ -63,6 +63,9 @@ do_install () {
 
 	mv ${D}${base_libdir}/udev/rules.d ${D}${sysconfdir}/udev/
 	ln -sf ${sysconfdir}/udev/rules.d ${D}${base_libdir}/udev/
+
+ 	cp ${S}/rules/rules.d/* ${D}${sysconfdir}/udev/rules.d/
+	cp ${S}/rules/packages/* ${D}${sysconfdir}/udev/rules.d/
 
 	install -m 0644 ${WORKDIR}/mount.blacklist     ${D}${sysconfdir}/udev/
 	install -m 0644 ${WORKDIR}/local.rules         ${D}${sysconfdir}/udev/rules.d/local.rules
