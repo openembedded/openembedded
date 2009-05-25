@@ -3,8 +3,11 @@ DEFAULT_PREFERENCE = "-999"
 ARM_INSTRUCTION_SET = "arm"
 
 require gcc-common.inc
+LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
+
+INC_PR = "r4"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
@@ -44,7 +47,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://904-flatten-switch-stmt-00.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
-	file://ldflags.patch;patch=1 \
 	file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
 	file://gfortran-4.3.x.patch;patch=1 \
@@ -52,7 +54,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 #	file://pr34130.patch;patch=1 \
 #	file://fortran-static-linking.patch;patch=1 \
 	file://gcc-arm-frename-registers.patch;patch=1 \
-	file://gcc-4.3.1-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \
+	file://gcc-4.3.3-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \
 	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://gcc-flags-for-build.patch;patch=1 \
@@ -65,6 +67,7 @@ SRC_URI_append_sh4  = " file://sh_unwind.patch;patch=1 \
 		      "
 # Language Overrides
 FORTRAN = ""
+FORTRAN_linux-gnueabi = ",fortran"
 JAVA = ""
 
 EXTRA_OECONF_BASE = "  --enable-cheaders=c_std --enable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"

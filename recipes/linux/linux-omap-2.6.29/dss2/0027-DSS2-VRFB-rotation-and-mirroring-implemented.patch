@@ -1,7 +1,7 @@
 From 77e848eeba461e9b55b09d39fd0d640caea13e19 Mon Sep 17 00:00:00 2001
 From: Hardik Shah <hardik.shah@ti.com>
 Date: Thu, 9 Apr 2009 12:09:44 +0530
-Subject: [PATCH] DSS2: VRFB rotation and mirroring implemented.
+Subject: [PATCH 27/69] DSS2: VRFB rotation and mirroring implemented.
 
 DSS2 modified to accept the rotation_type input
 to get the dma or VRFB rotation.
@@ -320,5 +320,5 @@ index b0fee80..8ca0bbb 100644
  				ovl->info.mirror);
  
 -- 
-1.5.6.5
+1.6.2.4
 

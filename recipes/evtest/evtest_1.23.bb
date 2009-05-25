@@ -11,6 +11,8 @@ PR = "r0"
 SRC_URI = "http://beagleboard.googlecode.com/files/evtest.c"
 S = "${WORKDIR}"
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_compile() {
     ${CC} evtest.c -o evtest -I${STAGING_INCDIR} -L${STAGING_LIBDIR}
 }

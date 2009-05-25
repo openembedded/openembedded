@@ -3,6 +3,7 @@ DEFAULT_PREFERENCE = "-99"
 ARM_INSTRUCTION_SET = "arm"
 
 require gcc-common.inc
+LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
@@ -47,7 +48,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://arm-softfloat.patch;patch=1 \
 	file://arm-thumb.patch;patch=1 \
 	file://arm-thumb-cache.patch;patch=1 \
-	file://ldflags.patch;patch=1 \
 	file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
 	file://gfortran-4.3.x.patch;patch=1 \

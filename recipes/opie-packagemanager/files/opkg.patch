@@ -1,0 +1,562 @@
+Index: packagemanager/installdlg.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/installdlg.cpp,v
+retrieving revision 1.16
+diff -u -d -r1.16 installdlg.cpp
+--- packagemanager/installdlg.cpp	5 Jun 2005 22:41:15 -0000	1.16
++++ packagemanager/installdlg.cpp	18 May 2009 21:03:02 -0000
+@@ -45,6 +45,7 @@
+ #include <qmap.h>
+ #include <qmultilineedit.h>
+ #include <qpushbutton.h>
++#include <qprogressbar.h>
+ 
+ #include <sys/vfs.h>
+ 
+@@ -130,16 +131,21 @@
+     groupBoxLayout->addWidget( m_output );
+     layout->addMultiCellWidget( groupBox, 2, 2, 0, 1 );
+ 
++    m_progressBar = new QProgressBar( this );
++    m_progressBar->setTotalSteps( 100 );
++    m_progressBar->hide();
++    layout->addMultiCellWidget( m_progressBar, 3, 3, 0, 1 );
++
+     m_btnStart = new QPushButton( Opie::Core::OResource::loadPixmap( "packagemanager/apply",
+                                   Opie::Core::OResource::SmallIcon ), tr( "Start" ), this );
+     m_btnStart->setMinimumHeight( AppLnk::smallIconSize() );
+-    layout->addWidget( m_btnStart, 3, 0 );
++    layout->addWidget( m_btnStart, 4, 0 );
+     connect( m_btnStart, SIGNAL(clicked()), this, SLOT(slotBtnStart()) );
+ 
+     m_btnOptions = new QPushButton( Opie::Core::OResource::loadPixmap( "SettingsIcon", Opie::Core::OResource::SmallIcon ),
+                                     tr( "Options" ), this );
+     m_btnOptions->setMinimumHeight( AppLnk::smallIconSize() );
+-    layout->addWidget( m_btnOptions, 3, 1 );
++    layout->addWidget( m_btnOptions, 4, 1 );
+     connect( m_btnOptions, SIGNAL( clicked() ), this, SLOT(slotBtnOptions()) );
+ 
+     // Display packages being acted upon in output widget
+@@ -251,13 +257,23 @@
+         m_btnStart->setEnabled( false );
+     }
+ 
++    connect( m_packman, SIGNAL(signalProgress(const QString &, int)), this, SLOT(slotProgress(const QString &, int)) );
++
++    m_progressBar->show();
++
+     for ( m_currCommand = 0; m_currCommand < m_numCommands; m_currCommand++ )
+     {
++        m_progressBar->reset();
+         // Execute next command
+         m_packman->executeCommand( m_command[ m_currCommand ], m_packages[ m_currCommand ], dest,
+                                    this, SLOT(slotOutput(const QString &)), true );
+     }
+ 
++    slotOutput( tr("Completed") );
++    m_progressBar->hide();
++
++    disconnect( m_packman, SIGNAL(signalProgress(const QString &, int)), this, SLOT(slotProgress(const QString &, int)) );
++
+     // All commands executed, allow user to close dialog
+     m_btnStart->setEnabled( true );
+     m_btnStart->setText( tr( "Close" ) );
+@@ -314,3 +330,15 @@
+     // Update available space
+     slotDisplayAvailSpace( QString::null );
+ }
++
++void InstallDlg::slotProgress( const QString &msg, int percentage )
++{
++    static QString lastmsg = "";
++    if( lastmsg != msg ) {
++        slotOutput( msg );
++        lastmsg = msg; 
++    }
++
++    m_progressBar->setProgress( percentage );
++}
++
+Index: packagemanager/installdlg.h
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/installdlg.h,v
+retrieving revision 1.9
+diff -u -d -r1.9 installdlg.h
+--- packagemanager/installdlg.h	5 Jun 2005 22:18:10 -0000	1.9
++++ packagemanager/installdlg.h	18 May 2009 21:03:02 -0000
+@@ -39,6 +39,7 @@
+ class QLabel;
+ class QMultiLineEdit;
+ class QPushButton;
++class QProgressBar;
+ 
+ class OConfItem;
+ class OPackageManager;
+@@ -69,6 +70,7 @@
+     QMultiLineEdit  *m_output;      // Multi-line edit to display status
+     QPushButton     *m_btnStart;    // Start/abort/close button
+     QPushButton     *m_btnOptions;  // Installation options button
++    QProgressBar    *m_progressBar;
+ 
+     // Commands and packages to execute
+     int               m_numCommands; // Number of commands to be executed
+@@ -85,6 +87,7 @@
+     
+     // Execution slots
+     void slotOutput( const QString &msg );
++    void slotProgress( const QString &msg, int percentage );
+ 
+ signals:
+     void closeInstallDlg();
+Index: packagemanager/mainwindow.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/mainwindow.cpp,v
+retrieving revision 1.18
+diff -u -d -r1.18 mainwindow.cpp
+--- packagemanager/mainwindow.cpp	5 Jun 2005 22:41:15 -0000	1.18
++++ packagemanager/mainwindow.cpp	18 May 2009 21:03:02 -0000
+@@ -178,8 +178,8 @@
+     QAction *actionDownload = new QAction( tr( "Download" ), iconDownload, QString::null, 0, this, 0 );
+     actionDownload->setWhatsThis( tr( "Tap here to download the currently selected package(s)." ) );
+     connect( actionDownload, SIGNAL(activated()), this, SLOT(slotDownload()) );
+-    actionDownload->addTo( popup );
+-    actionDownload->addTo( &m_toolBar );
++//X    actionDownload->addTo( popup );
++//X    actionDownload->addTo( &m_toolBar );
+ 
+     a = new QAction( tr( "Apply changes" ), Opie::Core::OResource::loadPixmap( "packagemanager/apply",
+                      Opie::Core::OResource::SmallIcon ), QString::null, 0, this, 0 );
+Index: packagemanager/oipkg.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/oipkg.cpp,v
+retrieving revision 1.25
+diff -u -d -r1.25 oipkg.cpp
+--- packagemanager/oipkg.cpp	11 May 2009 21:55:52 -0000	1.25
++++ packagemanager/oipkg.cpp	18 May 2009 21:03:03 -0000
+@@ -39,21 +39,60 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ 
+-extern "C" {
+-#include <libipkg.h>
+-};
+-args_t m_ipkgArgs; // libipkg configuration arguments
+-
+-const QString IPKG_CONF        = "/etc/ipkg.conf";      // Fully-qualified name of Ipkg primary configuration file
+-const QString IPKG_CONF_DIR    = "/etc/ipkg";           // Directory of secondary Ipkg configuration files
+-const QString IPKG_PKG_PATH    = "/usr/lib/ipkg/lists"; // Directory containing server package lists
+-const QString IPKG_STATUS_PATH = "usr/lib/ipkg/status"; // Destination status file location
+-const QString IPKG_INFO_PATH   = "usr/lib/ipkg/info";   // Package file lists location
++const QString IPKG_CONF        = "/etc/opkg.conf";      // Fully-qualified name of Ipkg primary configuration file
++const QString IPKG_CONF_DIR    = "/etc/opkg";           // Directory of secondary Ipkg configuration files
++const QString IPKG_PKG_PATH    = "/usr/lib/opkg/lists"; // Directory containing server package lists
++const QString IPKG_STATUS_PATH = "usr/lib/opkg/status"; // Destination status file location
++const QString IPKG_INFO_PATH   = "usr/lib/opkg/info";   // Package file lists location
+ 
+ OIpkg *oipkg;
+ 
+ // Ipkg callback functions
+ 
++
++void fsignalOpkgProgress (opkg_t *opkg, const opkg_progress_data_t *progress, void *user_data)
++{
++    QString msg;
++
++    QString pkginfo;
++    if( progress->package ) {
++        pkginfo = progress->package->name;
++        pkginfo += " ";
++        pkginfo += progress->package->version;
++    }
++    switch( progress->action ) {
++        case OPKG_INSTALL:
++            if( pkginfo != "" )
++                msg = QObject::tr("Installing %1").arg( pkginfo );
++            else
++                msg = QObject::tr("Installing");
++            break;
++        case OPKG_REMOVE:
++            if( pkginfo != "" )
++                msg = QObject::tr("Removing %1").arg( pkginfo );
++            else
++                msg = QObject::tr("Removing");
++            break;
++        case OPKG_DOWNLOAD:
++            if( pkginfo != "" )
++                msg = QObject::tr("Downloading %1").arg( pkginfo );
++            else
++                msg = QObject::tr("Downloading");
++            break;
++        default:
++            msg = QObject::tr("Processing");
++    }
++    msg += "...";
++    oipkg->progress( (const char *)msg, progress->percentage );
++}
++
++void fsignalOpkgPackage (opkg_t *opkg, opkg_package_t *package, void *user_data)
++{
++
++}
++
++
++/*X
+ int fsignalIpkgMessage( ipkg_conf_t *conf, message_level_t level, char *msg )
+ {
+     // Display message only if it is below the message level threshold
+@@ -64,6 +103,7 @@
+ 
+     return 0;
+ }
++*/
+ 
+ char *fIpkgResponse( char */*question*/ )
+ {
+@@ -76,13 +116,41 @@
+     return 0;
+ }
+ 
+-int fIpkgFiles( char */*name*/, char *desc, char */*version*/, pkg_state_status_t /*status*/,
+-                void */*userdata*/ )
++QString opkg_error_message( int err )
+ {
+-    oipkg->ipkgList( desc );
+-    return 0;
++    switch(err) {
++        case OPKG_NO_ERROR:
++            return "Success";
++        case OPKG_UNKNOWN_ERROR:
++            return "Unknown error";
++        case OPKG_DOWNLOAD_FAILED:
++            return "Download failed";
++        case OPKG_DEPENDENCIES_FAILED:
++            return "Unable to complete operation due to dependencies";
++        case OPKG_PACKAGE_ALREADY_INSTALLED:
++            return "Specified package is already installed";
++        case OPKG_PACKAGE_NOT_AVAILABLE:
++            return "Specified package is not available";
++        case OPKG_PACKAGE_NOT_FOUND:
++            return "Specified package could not be found";
++        case OPKG_PACKAGE_NOT_INSTALLED:
++            return "Specified package is not installed";
++        case OPKG_GPG_ERROR:
++            return "GPG verification failed";
++        case OPKG_MD5_ERROR:
++            return "MD5 verification failed";
++        default:
++            return "Unrecognised error code";
++    }
+ }
+ 
++//Xint fIpkgFiles( char */*name*/, char *desc, char */*version*/, pkg_state_status_t /*status*/,
++//X                void */*userdata*/ )
++//X{
++//X    oipkg->ipkgList( desc );
++//X    return 0;
++//X}
++
+ OIpkg::OIpkg( Config *config, QObject *parent, const char *name )
+     : QObject( parent, name )
+     , m_config( config )
+@@ -94,11 +162,7 @@
+     oipkg = this;
+ 
+     // Initialize libipkg
+-    ipkg_init( &fsignalIpkgMessage, &fIpkgResponse, &m_ipkgArgs );
+-
+-    // Default ipkg run-time arguments
+-    m_ipkgArgs.noaction = false;
+-    m_ipkgArgs.force_defaults = true;
++    m_opkg = opkg_new();
+ }
+ 
+ OIpkg::~OIpkg()
+@@ -108,7 +172,7 @@
+         m_confInfo->setAutoDelete( true );
+ 
+     // Free up libipkg resources
+-    ipkg_deinit( &m_ipkgArgs );
++    opkg_free( m_opkg );
+ }
+ 
+ OConfItemList *OIpkg::configItems()
+@@ -237,10 +301,7 @@
+     }
+ 
+     // Reinitialize libipkg to pick up new configuration
+-    ipkg_deinit( &m_ipkgArgs );
+-    ipkg_init( &fsignalIpkgMessage, &fIpkgResponse, &m_ipkgArgs );
+-    m_ipkgArgs.noaction = false;
+-    m_ipkgArgs.force_defaults = true;
++    opkg_re_read_config_files( m_opkg );
+ }
+ 
+ void OIpkg::saveSettings()
+@@ -430,17 +491,29 @@
+ bool OIpkg::executeCommand( OPackage::Command command, const QStringList &parameters, const QString &destination,
+                             const QObject *receiver, const char *slotOutput, bool rawOutput )
+ {
++    int optvalue;
++
+     if ( command == OPackage::NotDefined )
+         return false;
+ 
+     // Set ipkg run-time options/arguments
+-    m_ipkgArgs.force_depends = ( m_ipkgExecOptions & FORCE_DEPENDS );
+-    m_ipkgArgs.force_reinstall = ( m_ipkgExecOptions & FORCE_REINSTALL );
+-    // TODO m_ipkgArgs.force_remove = ( m_ipkgExecOptions & FORCE_REMOVE );
+-    m_ipkgArgs.force_overwrite = ( m_ipkgExecOptions & FORCE_OVERWRITE );
+-    m_ipkgArgs.force_removal_of_dependent_packages = ( m_ipkgExecOptions & FORCE_RECURSIVE );
++    optvalue = ( m_ipkgExecOptions & FORCE_DEPENDS ) ? 1 : 0;
++    opkg_set_option( m_opkg, "force_depends", &optvalue );
++
++    optvalue = ( m_ipkgExecOptions & FORCE_REINSTALL ) ? 1 : 0;
++    opkg_set_option( m_opkg, "force_reinstall", &optvalue );
++
++    optvalue = ( m_ipkgExecOptions & FORCE_OVERWRITE ) ? 1 : 0;
++    opkg_set_option( m_opkg, "force_overwrite", &optvalue );
++
++    optvalue = ( m_ipkgExecOptions & FORCE_RECURSIVE ) ? 1 : 0;
++    opkg_set_option( m_opkg, "force_removal_of_dependent_packages", &optvalue );
++
++    optvalue = m_ipkgExecVerbosity;
++    opkg_set_option( m_opkg, "verbosity", &optvalue );
++
++/*X    // TODO m_ipkgArgs.force_remove = ( m_ipkgExecOptions & FORCE_REMOVE );
+     m_ipkgArgs.verbose_wget = ( m_ipkgExecOptions & FORCE_VERBOSE_WGET );
+-    m_ipkgArgs.verbosity = m_ipkgExecVerbosity;
+     if ( m_ipkgArgs.dest )
+         free( m_ipkgArgs.dest );
+     if ( !destination.isNull() )
+@@ -452,7 +525,7 @@
+     }
+     else
+         m_ipkgArgs.dest = 0l;
+-
++*/
+     // Connect output signal to widget
+ 
+     if ( !rawOutput )
+@@ -460,17 +533,29 @@
+         // TODO - connect to local slot and parse output before emitting signalIpkgMessage
+     }
+ 
++    int ret = 0;
++
+     switch( command )
+     {
+         case OPackage::Update : {
+                 connect( this, SIGNAL(signalIpkgMessage(const QString &)), receiver, slotOutput );
+-                ipkg_lists_update( &m_ipkgArgs );
++                ret = opkg_update_package_lists( m_opkg, &fsignalOpkgProgress, NULL );
+                 disconnect( this, SIGNAL(signalIpkgMessage(const QString &)), 0, 0 );
++
++                if( ret != OPKG_NO_ERROR ) {
++                    emit signalIpkgMessage( tr("Update failed: ") + opkg_error_message( ret ) );
++                    return false;
++                }
+             };
+             break;
+         case OPackage::Upgrade : {
+                 connect( this, SIGNAL(signalIpkgMessage(const QString &)), receiver, slotOutput );
+-                ipkg_packages_upgrade( &m_ipkgArgs );
++                ret = opkg_upgrade_all( m_opkg, &fsignalOpkgProgress, NULL );
++                if( ret != OPKG_NO_ERROR ) {
++                    emit signalIpkgMessage( tr("Upgrade failed: ") + opkg_error_message( ret ) );
++                    disconnect( this, SIGNAL(signalIpkgMessage(const QString &)), 0, 0 );
++                    return false;
++                }
+ 
+                 // Re-link non-root destinations to make sure everything is in sync
+                 OConfItemList *destList = destinations();
+@@ -489,7 +574,12 @@
+                 connect( this, SIGNAL(signalIpkgMessage(const QString &)), receiver, slotOutput );
+                 for ( QStringList::ConstIterator it = parameters.begin(); it != parameters.end(); ++it )
+                 {
+-                    ipkg_packages_install( &m_ipkgArgs, (*it) );
++                    ret = opkg_install_package( m_opkg, (*it), &fsignalOpkgProgress, NULL );
++                    if( ret != OPKG_NO_ERROR ) {
++                        emit signalIpkgMessage( tr("Install failed: ") + opkg_error_message( ret ) );
++                        disconnect( this, SIGNAL(signalIpkgMessage(const QString &)), 0, 0 );
++                        return false;
++                    }
+                 }
+                 if ( destination != "root" )
+                     linkPackageDir( destination );
+@@ -505,7 +595,18 @@
+                 for ( QStringList::ConstIterator it = parameters.begin(); it != parameters.end(); ++it )
+                 {
+                     unlinkPackage( (*it), destList );
+-                    ipkg_packages_remove( &m_ipkgArgs, (*it), true );
++                    ret = opkg_remove_package( m_opkg, (*it), &fsignalOpkgProgress, NULL );
++                    if( ret != OPKG_NO_ERROR ) {
++                        if ( ret == OPKG_DEPENDENCIES_FAILED || ret == OPKG_UNKNOWN_ERROR ) {
++                            emit signalIpkgMessage( tr("Remove failed: other package(s) depend on the specified package") );
++                        }
++                        else {
++                            emit signalIpkgMessage( tr("Remove failed: ") + opkg_error_message( ret ) );
++                        }
++                        delete destList;
++                        disconnect( this, SIGNAL(signalIpkgMessage(const QString &)), 0, 0 );
++                        return false;
++                    }
+                 }
+ 
+                 delete destList;
+@@ -516,20 +617,38 @@
+                 connect( this, SIGNAL(signalIpkgMessage(const QString &)), receiver, slotOutput );
+                 for ( QStringList::ConstIterator it = parameters.begin(); it != parameters.end(); ++it )
+                 {
+-                    ipkg_packages_download( &m_ipkgArgs, (*it) );
++//X                    ipkg_packages_download( &m_ipkgArgs, (*it) );
+                 }
+                 disconnect( this, SIGNAL(signalIpkgMessage(const QString &)), 0, 0 );
+             };
+             break;
+         case OPackage::Info : {
+                 connect( this, SIGNAL(signalIpkgStatus(const QString &)), receiver, slotOutput );
+-                ipkg_packages_info( &m_ipkgArgs, (*parameters.begin()), &fIpkgStatus, 0l );
++//X                ipkg_packages_info( &m_ipkgArgs, (*parameters.begin()), &fIpkgStatus, 0l );
++                opkg_package_t *pkginfo = opkg_find_package( m_opkg, (*parameters.begin()), NULL, NULL, NULL );
++                if(pkginfo) {
++                    QString msg = tr("Package:  %1\n").arg( pkginfo->name );
++                    msg += tr("Version:  %1\n").arg( pkginfo->version );
++                    msg += tr("Architecture:  %1\n").arg( pkginfo->architecture );
++                    if( pkginfo->repository )
++                        msg += tr("Repository:  %1\n").arg( pkginfo->repository );
++                    if( pkginfo->description )
++                        msg += tr("Description:  %1\n\n").arg( pkginfo->description );
++                    if( pkginfo->tags )
++                        msg += tr("Tags:  %1\n").arg( pkginfo->tags );
++                    if( pkginfo->url )
++                        msg += tr("URL:  %1\n").arg( pkginfo->url );
++                    if( pkginfo->size > 0 )
++                        msg += tr("Size:  %1\n").arg( pkginfo->size );
++                    msg += tr("Status:  %1").arg( pkginfo->installed ? tr("installed") : "" );
++                    emit signalIpkgStatus( msg );
++                }
+                 disconnect( this, SIGNAL(signalIpkgStatus(const QString &)), 0, 0 );
+             };
+             break;
+         case OPackage::Files : {
+                 connect( this, SIGNAL(signalIpkgList(const QString &)), receiver, slotOutput );
+-                ipkg_package_files( &m_ipkgArgs, (*parameters.begin()), &fIpkgFiles, 0l );
++//X                ipkg_package_files( &m_ipkgArgs, (*parameters.begin()), &fIpkgFiles, 0l );
+                 disconnect( this, SIGNAL(signalIpkgList(const QString &)), 0, 0 );
+             };
+             break;
+@@ -539,7 +658,7 @@
+     return true;
+ }
+ 
+-void OIpkg::ipkgMessage( char *msg )
++void OIpkg::ipkgMessage( const char *msg )
+ {
+     emit signalIpkgMessage( msg );
+ }
+@@ -554,6 +673,11 @@
+     emit signalIpkgList( filelist );
+ }
+ 
++void OIpkg::progress( const QString &msg, int percentage )
++{
++    emit signalProgress( msg, percentage );
++}
++
+ void OIpkg::loadConfiguration()
+ {
+     if ( m_confInfo )
+Index: packagemanager/oipkg.h
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/oipkg.h,v
+retrieving revision 1.10
+diff -u -d -r1.10 oipkg.h
+--- packagemanager/oipkg.h	17 May 2009 21:33:07 -0000	1.10
++++ packagemanager/oipkg.h	18 May 2009 21:03:03 -0000
+@@ -38,6 +38,10 @@
+ 
+ #include <qobject.h>
+ 
++extern "C" {
++#include <opkg.h>
++};
++
+ // Ipkg execution options (m_ipkgExecOptions)
+ #define FORCE_DEPENDS                           0x0001
+ #define FORCE_REMOVE                            0x0002
+@@ -86,9 +90,11 @@
+                          bool rawOutput = true );
+     void abortCommand();
+ 
+-    void ipkgMessage( char *msg );
++    void ipkgMessage( const char *msg );
+     void ipkgStatus( char *status );
+     void ipkgList( char *filelist );
++    void progressInit();
++    void progress( const QString &msg, int percentage );
+ 
+ private:
+     Config        *m_config;            // Pointer to application configuration file
+@@ -96,6 +102,7 @@
+     int            m_ipkgExecOptions;   // Bit-mapped flags for Ipkg execution options
+     int            m_ipkgExecVerbosity; // Ipkg execution verbosity level
+     QString        m_rootPath;          // Directory path where the 'root' destination is located
++    opkg_t        *m_opkg; 
+ 
+     void           loadConfiguration();
+     OConfItemList *filterConfItems( OConfItem::Type typefilter = OConfItem::NotDefined );
+@@ -108,6 +115,8 @@
+     void signalIpkgMessage( const QString &msg );
+     void signalIpkgStatus( const QString &status );
+     void signalIpkgList( const QString &filelist );
++    void signalProgressInit();
++    void signalProgress( const QString &msg, int percentage );
+ };
+ 
+ #endif
+Index: packagemanager/opackagemanager.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/opackagemanager.cpp,v
+retrieving revision 1.10
+diff -u -d -r1.10 opackagemanager.cpp
+--- packagemanager/opackagemanager.cpp	5 Jun 2005 22:18:10 -0000	1.10
++++ packagemanager/opackagemanager.cpp	18 May 2009 21:03:03 -0000
+@@ -43,6 +43,7 @@
+     , m_categories()
+ {
+     m_packages.setAutoDelete( true );
++    connect( &m_ipkg, SIGNAL(signalProgress(const QString &, int)), this, SIGNAL(signalProgress(const QString &, int)) );
+ }
+ 
+ void OPackageManager::loadAvailablePackages()
+Index: packagemanager/opackagemanager.h
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/opackagemanager.h,v
+retrieving revision 1.6
+diff -u -d -r1.6 opackagemanager.h
+--- packagemanager/opackagemanager.h	5 Jun 2005 22:18:10 -0000	1.6
++++ packagemanager/opackagemanager.h	18 May 2009 21:03:03 -0000
+@@ -89,6 +89,7 @@
+     void initStatus( int numSteps );
+     void statusText( const QString &status );
+     void statusBar( int currStep );
++    void signalProgress( const QString &msg, int percentage );
+ };
+ 
+ #endif
+Index: packagemanager/packagemanager.pro
+===================================================================
+RCS file: /cvs/opie/noncore/settings/packagemanager/packagemanager.pro,v
+retrieving revision 1.9
+diff -u -d -r1.9 packagemanager.pro
+--- packagemanager/packagemanager.pro	24 Dec 2004 20:13:38 -0000	1.9
++++ packagemanager/packagemanager.pro	18 May 2009 21:03:03 -0000
+@@ -29,7 +29,7 @@
+ TARGET       = packagemanager
+ INCLUDEPATH += $(OPIEDIR)/include
+ DEPENDPATH  += $(OPIEDIR)/include
+-LIBS        += -lqpe -lopiecore2 -lopieui2 -lipkg
++LIBS        += -lqpe -lopiecore2 -lopieui2 -lopkg
+ 
+ include( $(OPIEDIR)/include.pro )
+ 

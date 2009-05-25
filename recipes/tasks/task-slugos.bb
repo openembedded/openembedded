@@ -6,9 +6,9 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r22"
+PR = "r23"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug)"
 ALLOW_EMPTY = "1"
 
 #----------------------------------------------------------------------------------
@@ -17,9 +17,12 @@ ALLOW_EMPTY = "1"
 # EXTRA PACKAGES
 # --------------
 # The standard firmware contents and additional packages built as requirements
-# of the firmware are defined here in SLUGOS_STANDARD_RDEPENDS.
+# of the firmware are defined here in SLUGOS_STANDARD_RDEPENDS.  This represents
+# the standard set of software for the 8-MByte NSLU2 device.
 SLUGOS_STANDARD_RDEPENDS = ""
 SLUGOS_STANDARD_RRECOMMENDS = ""
+SLUGOS_MACHINE_RDEPENDS = ""
+SLUGOS_MACHINE_RRECOMMENDS = ""
 
 # The full cpio (non-busybox) is required for turnup and sysconfig.
 SLUGOS_STANDARD_RRECOMMENDS += "\
@@ -64,13 +67,6 @@ kernel-module-nls-utf8 \
 kernel-module-nfs \
 "
 
-# Add daemon required for HW RNG support
-SLUGOS_RNG_TOOLS_PACKAGE = "rng-tools"
-SLUGOS_RNG_TOOLS_PACKAGE_linux-uclibc = ""
-SLUGOS_STANDARD_RRECOMMENDS += "\
-${SLUGOS_RNG_TOOLS_PACKAGE} \
-"
-
 # Add modules required for usb support
 SLUGOS_STANDARD_RRECOMMENDS += "\
 kernel-module-ehci-hcd \
@@ -78,41 +74,25 @@ kernel-module-ohci-hcd \
 kernel-module-uhci-hcd \
 "
 
-# Add modules required for IDE support
-SLUGOS_STANDARD_RRECOMMENDS += "\
-kernel-module-libata \
-kernel-module-pata-artop \
-"
-
-# Add modules required for Network support
-SLUGOS_STANDARD_RRECOMMENDS += "\
-kernel-module-mii \
-kernel-module-ixp4xx-mac \
-kernel-module-ixp4xx-qmgr \
-kernel-module-via-velocity \
-kernel-module-netconsole \
-"
-
 # Add packages and modules required for RAID-1 support
-# (temporary, intended only to facilitate testing - MJW)
 SLUGOS_STANDARD_RRECOMMENDS += "\
 mdadm \
 kernel-module-md-mod \
 kernel-module-raid1 \
 "
 
-# Other candidate packages that have been considered and
-# are intentionally excluded from the base flash image.
-#
-# portmap \
-# kexec-tools \
-# kernel-module-isofs \
-# kernel-module-udf \
-# kernel-module-loop \
-# wireless-tools \
-# wpa-supplicant \
-# zd1211-firmware kernel-module-zd1211rw \
-# madwifi-ng-modules madwifi-ng-tools \
+# Add the machine-specific RRECOMMENDS stuff -- kernel modules required for
+# network support.
+SLUGOS_MACHINE_RRECOMMENDS_nslu2 = "\
+kernel-module-mii \
+kernel-module-ixp4xx-mac \
+kernel-module-ixp4xx-qmgr \
+"
+
+# Add machine-specific RDEPENDS stuff - packages such as the NPE firmware
+SLUGOS_MACHINE_RDEPENDS_nslu2 = "\
+ixp4xx-npe \
+"
 
 DISTRO_EXTRA_DEPENDS ?= ""
 DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
@@ -141,9 +121,10 @@ DISTRO_EXTRA_RDEPENDS ?= ""
 ## and it uses the busybox wget command instead of libcurl - MJW
 ## SlugOS 5.0 - module-init-tools replaced by busybox as well - MJW
 ## SlugOS 5.2 - module-init-tools reinstated due to busybox bugs - MJW
+## SlugOS 5.4 - util-linux-mount reinstated due to busybox bugs - MJW
 
 RDEPENDS += "\
-	kernel ixp4xx-npe \
+	kernel \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit udev \
@@ -151,11 +132,14 @@ RDEPENDS += "\
         opkg-collateral opkg-nogpg-nocurl \
 	libgcc \
 	beep \
+	util-linux-mount \
 	${SLUGOS_STANDARD_RDEPENDS} \
+	${SLUGOS_MACHINE_RDEPENDS} \
 	${DISTRO_EXTRA_RDEPENDS}"
 
 DISTRO_EXTRA_RRECOMMENDS ?= ""
 RRECOMMENDS += "\
 	openssh \
 	${SLUGOS_STANDARD_RRECOMMENDS} \
+        ${SLUGOS_MACHINE_RRECOMMENDS} \
 	${DISTRO_EXTRA_RRECOMMENDS}"

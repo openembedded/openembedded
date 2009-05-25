@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2005-02-28 20:32:13.000000000 +0100
++++ libdisplaymigration-0.99/Makefile	2009-05-01 14:26:17.000000000 +0200
+@@ -36,7 +36,7 @@
+ 
+ install-program: $(SONAME)
+ 	install -d $(DESTDIR)$(PREFIX)/lib
+-	install -s $(SONAME) $(DESTDIR)$(PREFIX)/lib/$(SONAME)
++	install $(SONAME) $(DESTDIR)$(PREFIX)/lib/$(SONAME)
+ 
+ install-devel:
+ 	for i in $(HEADERS); do install -m 644 -D $$i $(DESTDIR)$(PREFIX)/include/$$i; done

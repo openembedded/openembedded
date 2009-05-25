@@ -81,7 +81,7 @@ FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${IMAGE_BASENAME}
 # to enable/disable debugging in the distro.  Here noirqdebug is used to
 # remove the messages about unhandled interrupts - people debugging interrupt
 # issues in the kernel need to cancel this (set CMDLINE_DEBUG empty in local.conf)
-CMDLINE_ROOT  = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc"
+CMDLINE_ROOT  = "root=/dev/mtdblock4 rootfstype=jffs2 rootflags=noatime rw init=/linuxrc"
 CMDLINE_DEBUG = "noirqdebug"
 
 # EXTRA PACKAGES
@@ -119,13 +119,6 @@ PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial	    = "gcc-cross-initial"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-intermediate"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc		    = "gcc-cross"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++		    = "gcc-cross"
-
-#Set preferred provider for the C library that is used to build the crosscompiler (NPTL voodoo)
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc	    = "glibc"
-PREFERRED_PROVIDER_virtual/arm-linux-libc-for-gcc	    = "glibc"
-PREFERRED_PROVIDER_virtual/armeb-linux-libc-for-gcc	    = "glibc"
-PREFERRED_PROVIDER_virtual/arm-linux-gnueabi-libc-for-gcc   = "glibc"
-PREFERRED_PROVIDER_virtual/armeb-linux-gnueabi-libc-for-gcc = "glibc"
 
 # Set the preferred provider for a few toolchain-related items, otherwise
 # these may be selected from the external-toolchain instead.

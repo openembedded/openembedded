@@ -63,4 +63,4 @@ do_install() {
     done
 }
 
-FILES-${PN}-dbg += "${palmtopdir}/lib/xmms/Input/.debug"
+FILES_${PN}-dbg += "${palmtopdir}/lib/xmms/Input/.debug"

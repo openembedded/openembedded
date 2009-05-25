@@ -3,7 +3,9 @@ require linux.inc
 DESCRIPTION = "Linux kernel for Davinci processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "davinci-sffsdr"
+COMPATIBLE_MACHINE = "(dm6446-evm|dm6467-evm|davinci-sffsdr)"
+
+# The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
 SRCREV = "0fc192ac07c977ad6f14333651b53096a6027bc6"
 

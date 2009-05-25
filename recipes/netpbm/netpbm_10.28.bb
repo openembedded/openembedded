@@ -9,7 +9,7 @@ LICENSE = "GPL MIT Artistic"
 # licenses.  The compiled and linked command line utilties are
 # subject to the licenses of the libraries they use too - including
 # libpng libz, IJG, and libtiff licenses
-DEPENDS = "jpeg zlib libpng tiff install-native flex-native"
+DEPENDS = "jpeg zlib libpng tiff flex-native"
 RDEPENDS = "perl\
 	perl-module-cwd\
 	perl-module-english\
@@ -25,16 +25,17 @@ RDEPENDS = "perl\
 RDEPENDS += "perl-module-exporter-heavy"
 RDEPENDS += "perl-module-file-spec-unix"
 
-PR = "r5"
+PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 	   file://ppmtojpeg.patch;patch=42 \
+	   file://libgnuhash.patch;patch=1 \
 	   file://Makefile.config \
 	   file://oeendiangen"
 
 PARALLEL_MAKE = ""
 
-EXTRA_OEMAKE = "ENDIANGEN=${S}/buildtools/oeendiangen TARGET_LD=${LD}"
+EXTRA_OEMAKE = "ENDIANGEN=${S}/buildtools/oeendiangen TARGET_LD=${LD} 'STRIPFLAG='"
 
 do_configure() {
 	install -c -m 644 ../Makefile.config .

@@ -19,16 +19,6 @@ do_install() {
 	install ${WORKDIR}/update-modules ${D}${sbindir}
 }
 
-# The Unslung distro uses a 2.4 kernel for a machine (the NSLU2) which
-# supports both 2.4 and 2.6 kernels.  Rather than forcing OE to have
-# to deal with that unique legacy corner case, we just nullify the
-# RDEPENDS here and handle it in the Unslung image recipe. I know this
-# is ugly.  Please don't remove it unless you first make the RDEPENDS
-# line at the top of this file understand that a machine can be used
-# in both a 2.4 kernel distro and a 2.6 kernel distro.  Really, it's
-# not worth the effort to do that, so just overlook the next line.
-RDEPENDS_unslung = ""
-
 # The SlugOS distro is testing the use of the busybox mod* utilities.
 # If that works out, we should create a virtual/update-modules, and
 # let the distros select if they want busybox, or some other package

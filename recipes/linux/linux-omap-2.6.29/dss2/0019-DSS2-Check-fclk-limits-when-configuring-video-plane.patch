@@ -1,7 +1,7 @@
 From 67f3fc050ab4e2006d5b7ec6ec341896627181ab Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Mon, 6 Apr 2009 17:32:04 +0200
-Subject: [PATCH] DSS2: Check fclk limits when configuring video planes
+Subject: [PATCH 19/69] DSS2: Check fclk limits when configuring video planes
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -179,5 +179,5 @@ index 41734f3..61861d8 100644
  		_dispc_set_vid_color_conv(plane, cconv);
  	}
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -39,6 +39,14 @@ def base_path_relative(src, dest):
 
     return sep.join(relpath)
 
+def base_path_out(path, d):
+    """ Prepare a path for display to the user. """
+    rel = base_path_relative(d.getVar("TOPDIR", 1), path)
+    if len(rel) > len(path):
+        return path
+    else:
+        return rel
+
 # for MD5/SHA handling
 def base_chk_load_parser(config_paths):
     import ConfigParser, os, bb
@@ -69,6 +77,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
 
     # md5 and sha256 should be valid now
     if not os.path.exists(localpath):
+        localpath = base_path_out(localpath, data)
         bb.note("The localpath does not exist '%s'" % localpath)
         raise Exception("The path does not exist '%s'" % localpath)
 
@@ -125,9 +134,11 @@ def base_dep_prepend(d):
 	# the case where host == build == target, for now we don't work in
 	# that case though.
 	#
-	deps = "shasum-native "
-	if bb.data.getVar('PN', d, True) == "shasum-native":
+	deps = "shasum-native coreutils-native"
+	if bb.data.getVar('PN', d, True) == "shasum-native" or bb.data.getVar('PN', d, True) == "stagemanager-native":
 		deps = ""
+	if bb.data.getVar('PN', d, True) == "coreutils-native":
+		deps = "shasum-native"
 
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
@@ -495,11 +506,11 @@ python base_do_clean() {
 	"""clear the build and temp directories"""
 	dir = bb.data.expand("${WORKDIR}", d)
 	if dir == '//': raise bb.build.FuncFailed("wrong DATADIR")
-	bb.note("removing " + dir)
+	bb.note("removing " + base_path_out(dir, d))
 	os.system('rm -rf ' + dir)
 
 	dir = "%s.*" % bb.data.expand(bb.data.getVar('STAMP', d), d)
-	bb.note("removing " + dir)
+	bb.note("removing " + base_path_out(dir, d))
 	os.system('rm -f '+ dir)
 }
 
@@ -554,7 +565,7 @@ python base_do_distclean() {
 		except bb.MalformedUrl, e:
 			bb.debug(1, 'Unable to generate local path for malformed uri: %s' % e)
 		else:
-			bb.note("removing %s" % local)
+			bb.note("removing %s" % base_path_out(local, d))
 			try:
 				if os.path.exists(local + ".md5"):
 					os.remove(local + ".md5")
@@ -775,7 +786,7 @@ def oe_unpack_file(file, data, url = None):
 		os.chdir(newdir)
 
 	cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', data, 1), cmd)
-	bb.note("Unpacking %s to %s/" % (file, os.getcwd()))
+	bb.note("Unpacking %s to %s/" % (base_path_out(file, data), base_path_out(os.getcwd(), data)))
 	ret = os.system(cmd)
 
 	os.chdir(save_cwd)
@@ -894,22 +905,11 @@ python base_eventhandler() {
 	from bb.event import Handled, NotHandled, getName
 	import os
 
-	messages = {}
-	messages["Completed"] = "completed"
-	messages["Succeeded"] = "completed"
-	messages["Started"] = "started"
-	messages["Failed"] = "failed"
-
 	name = getName(e)
-	msg = ""
-	if name.startswith("Task"):
-		msg += "package %s: task %s: " % (data.getVar("PF", e.data, 1), e.task)
-		msg += messages.get(name[4:]) or name[4:]
-	elif name.startswith("Build"):
-		msg += "build %s: " % e.name
-		msg += messages.get(name[5:]) or name[5:]
+	if name == "TaskCompleted":
+		msg = "package %s: task %s is complete." % (data.getVar("PF", e.data, 1), e.task)
 	elif name == "UnsatisfiedDep":
-		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
+		msg = "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
 	else:
 		return NotHandled
 
@@ -1234,8 +1234,11 @@ def check_app_exists(app, d):
 	return len(which(path, app)) != 0
 
 def check_gcc3(data):
+	# Primarly used by qemu to make sure we have a workable gcc-3.4.x.
+	# Start by checking for the program name as we build it, was not
+	# all host-provided gcc-3.4's will work.
 
-	gcc3_versions = 'gcc-3.4 gcc34 gcc-3.4.4 gcc-3.4.6 gcc-3.4.7 gcc-3.3 gcc33 gcc-3.3.6 gcc-3.2 gcc32'
+	gcc3_versions = 'gcc-3.4.6 gcc-3.4.4 gcc34 gcc-3.4 gcc-3.4.7 gcc-3.3 gcc33 gcc-3.3.6 gcc-3.2 gcc32'
 
 	for gcc3 in gcc3_versions.split():
 		if check_app_exists(gcc3, data):

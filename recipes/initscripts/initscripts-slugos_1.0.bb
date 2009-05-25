@@ -1,9 +1,9 @@
 # SlugOS specific stuff for the init scripts.
 #
-# This is, in effect, an extended patch to fix various
-# problems in the initscripts on SlugOS.  The problems
-# mostly come down to the order the scripts are executed
-# in.
+# This is, in effect, an extended patch to fix various problems
+# in the initscripts on SlugOS.  The problems mostly come down
+# to the order in which the scripts are executed.
+
 include initscripts_${PV}.bb
 
 RCONFLICTS = "initscripts"
@@ -16,23 +16,25 @@ RDEPENDS = ""
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.19"
+PR := "${PR}.21"
 
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+# We wish to search the same file paths as does the initscripts recipe.
+FILESPATHPKG = "initscripts-${PV}:initscripts:files"
 
 PACKAGES = "${PN}-dbg ${PN}"
 
 SRC_URI += "file://alignment.sh"
 SRC_URI += "file://domainname.sh"
-SRC_URI += "file://devices.patch;patch=1"
 SRC_URI += "file://bootclean.sh"
 
 # Without this it is not possible to patch checkroot
 S = "${WORKDIR}"
 
 do_install_append() {
-	# the image build command now installs this for slugos
+	# devfs is not used with SlugOS - remove all traces of it.
 	rm	${D}${sysconfdir}/device_table
+	rm	${D}${sysconfdir}/init.d/devices
+	rm	${D}${sysconfdir}/rcS.d/S05devices
 
 	# slugos specific scripts
 	install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d
@@ -68,7 +70,6 @@ do_install_append() {
 	rm	${D}${sysconfdir}/rcS.d/S55bootmisc.sh
 #	rm	${D}${sysconfdir}/rcS.d/S55urandom
 	rm	${D}${sysconfdir}/rcS.d/S99finish.sh
-	rm	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
 	rm	${D}${sysconfdir}/rcS.d/S03sysfs
 	rm	${D}${sysconfdir}/rcS.d/S38devpts.sh
@@ -100,7 +101,6 @@ do_install_append() {
 	update-rc.d -r ${D} banner		start  2 S .
 	update-rc.d -r ${D} sysfs.sh		start  3 S .
 	# udev runs at S 04 .
-	update-rc.d -r ${D} devices		start  5 S .
 	update-rc.d -r ${D} alignment.sh	start  7 S .
 	# busybox hwclock.sh (slugos-init) starts here (08)
 	# slugos-init umountinitrd runs here (09)

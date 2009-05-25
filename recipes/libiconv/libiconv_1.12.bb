@@ -1,4 +1,5 @@
 require libiconv.inc
+LICENSE = "GPLv3 LGPLv2"
 
 PROVIDES = "virtual/libiconv"
 PR = "r1"

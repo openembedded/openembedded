@@ -1,0 +1,13 @@
+--- /tmp/Makefile.old	2005-03-04 20:19:01.000000000 +0100
++++ teleport-0.34/Makefile	2009-05-01 22:19:16.000000000 +0200
+@@ -37,8 +37,8 @@
+ 
+ install-program: all
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s teleport $(DESTDIR)$(PREFIX)/bin/
+-	install -s tp-keygen $(DESTDIR)$(PREFIX)/bin/
++	install teleport $(DESTDIR)$(PREFIX)/bin/
++	install tp-keygen $(DESTDIR)$(PREFIX)/bin/
+ 	install -d $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	install -m 644 teleport.png $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	install -d $(DESTDIR)$(PREFIX)/share/applications

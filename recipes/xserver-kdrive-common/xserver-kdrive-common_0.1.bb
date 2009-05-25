@@ -1,7 +1,7 @@
 DESCRIPTION = "Common X11 scripts"
 LICENSE = "GPL"
 SECTION = "x11"
-PR = "r37"
+PR = "r38"
 
 SRC_URI = "\
   file://Xdefaults \
@@ -9,7 +9,7 @@ SRC_URI = "\
   file://Xserver \
   file://Xsession \
   \
-  file://30xTs_Calibrate \
+  file://89xTs_Calibrate \
   file://60xXDefaults \
   file://90xXWindowManager \
   "
@@ -22,7 +22,7 @@ etcFiles = "\
   Xsession \
   "
 sessionFiles = "\
-  30xTs_Calibrate \
+  89xTs_Calibrate \
   60xXDefaults \
   90xXWindowManager \
   "

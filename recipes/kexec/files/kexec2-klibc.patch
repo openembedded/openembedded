@@ -1,0 +1,254 @@
+Index: kexec-tools-2.0.0/kexec/arch/arm/kexec-elf-rel-arm.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/arch/arm/kexec-elf-rel-arm.c	2009-04-24 14:15:46.934825202 +0100
++++ kexec-tools-2.0.0/kexec/arch/arm/kexec-elf-rel-arm.c	2009-04-24 14:15:47.014827381 +0100
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-#include <elf.h>
++#include "../../../include/elf.h"
+ #include "../../kexec.h"
+ #include "../../kexec-elf.h"
+
+Index: kexec-tools-2.0.0/kexec/arch/arm/kexec-zImage-arm.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/arch/arm/kexec-zImage-arm.c	2009-04-24 14:15:46.982825391 +0100
++++ kexec-tools-2.0.0/kexec/arch/arm/kexec-zImage-arm.c	2009-04-26 01:58:20.838624318 +0200
+@@ -2,6 +2,10 @@
+  * - 08/21/2007 ATAG support added by Uli Luckas <u.luckas@road.de>
+  *
+  */
++
++/* work around for linux header files */
++#define __deprecated
++
+ #define _GNU_SOURCE
+ #include <stdio.h>
+ #include <string.h>
+@@ -110,13 +114,13 @@
+	}
+
+	fread(buf, sizeof(buf[1]), BOOT_PARAMS_SIZE, fp);
+-	if (ferror(fp)) {
++/*	if (ferror(fp)) {
+		fprintf(stderr, "Cannot read %s: %s\n",
+			fn, strerror(errno));
+		fclose(fp);
+		return NULL;
+	}
+-
++*/
+	fclose(fp);
+	return (struct tag *) buf;
+ }
+Index: kexec-tools-2.0.0/kexec/ifdown.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/ifdown.c	2009-04-24 14:15:34.025828340 +0100
++++ kexec-tools-2.0.0/kexec/ifdown.c	2009-04-24 14:15:47.014827381 +0100
+@@ -14,7 +14,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/socket.h>
+ #include <sys/time.h>
+-#include <sys/errno.h>
++#include <errno.h>
+
+ #include <net/if.h>
+ #include <netinet/in.h>
+Index: kexec-tools-2.0.0/purgatory/Makefile
+===================================================================
+--- kexec-tools-2.0.0.orig/purgatory/Makefile	2009-05-19 14:15:34.037827479 +0100
++++ kexec-tools-2.0.0/purgatory/Makefile	2009-05-19 14:15:47.022825503 +0100
+@@ -47,6 +47,7 @@
+ $(PURGATORY): CC=$(TARGET_CC)
+ $(PURGATORY): CFLAGS+=$($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
+		      -Os -fno-builtin -ffreestanding \
++		      -nostdinc \
+		      -fno-zero-initialized-in-bss
+
+ $(PURGATORY): CPPFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
+Index: kexec-tools-2.0.0/purgatory/purgatory.c
+===================================================================
+--- kexec-tools-2.0.0.orig/purgatory/purgatory.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/purgatory/purgatory.c	2009-05-16 14:15:21.000000000 +0200
+@@ -1,4 +1,4 @@
+-
++//#include <stdarg.h>
+ #include <limits.h>
+ #include <stdint.h>
+ #include <purgatory.h>
+@@ -3,7 +3,7 @@
+ #include <stdint.h>
+ #include <purgatory.h>
+ #include <sha256.h>
+-#include <string.h>
++/* #include <string.h> */
+ #include "../kexec/kexec-sha256.h"
+
+ struct sha256_region sha256_regions[SHA256_REGIONS] = {};
+	}
+	sha256_finish(&ctx, digest);
+	if (memcmp(digest, sha256_digest, sizeof(digest)) != 0) {
+Index: kexec-tools-2.0.0/kexec/kexec-elf-rel.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/kexec-elf-rel.c	2009-04-24 14:15:34.025828340 +0100
++++ kexec-tools-2.0.0/kexec/kexec-elf-rel.c	2009-04-24 14:15:47.030825302 +0100
+@@ -4,7 +4,7 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <stdlib.h>
+-#include "elf.h"
++#include "../include/elf.h"
+ #include <boot/elf_boot.h>
+ #include "kexec.h"
+ #include "kexec-elf.h"
+Index: kexec-tools-2.0.0/kexec/kexec-syscall.h
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/kexec-syscall.h	2009-04-24 14:15:46.950825917 +0100
++++ kexec-tools-2.0.0/kexec/kexec-syscall.h	2009-04-24 14:15:47.030825302 +0100
+@@ -2,7 +2,7 @@
+ #define KEXEC_SYSCALL_H
+
+ #define __LIBRARY__
+-#include <syscall.h>
++/*#include <syscall.h>*/
+ #include <sys/syscall.h>
+ #include <unistd.h>
+
+@@ -21,7 +21,7 @@
+ #define LINUX_REBOOT_CMD_KEXEC_OLD	0x81726354
+ #define LINUX_REBOOT_CMD_KEXEC_OLD2	0x18263645
+ #define LINUX_REBOOT_CMD_KEXEC		0x45584543
+-
++/*
+ #ifdef __i386__
+ #define __NR_kexec_load		283
+ #endif
+@@ -55,18 +55,19 @@
+ #ifndef __NR_kexec_load
+ #error Unknown processor architecture.  Needs a kexec_load syscall number.
+ #endif
+-
++*/
+ struct kexec_segment;
+-
++/*
+ static inline long kexec_load(void *entry, unsigned long nr_segments,
+			struct kexec_segment *segments, unsigned long flags)
+ {
+	return (long) syscall(__NR_kexec_load, entry, nr_segments, segments, flags);
+ }
+-
++*/
+ static inline long kexec_reboot(void)
+ {
+-	return (long) syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_KEXEC, 0);
++	//return (long) syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_KEXEC, 0);
++	return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_KEXEC, 0);
+ }
+
+
+Index: kexec-tools-2.0.0/kexec/kexec.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/kexec.c	2009-04-24 14:15:46.950825917 +0100
++++ kexec-tools-2.0.0/kexec/kexec.c	2009-04-26 01:58:53.545624148 +0200
+@@ -38,9 +38,7 @@
+
+ #include "config.h"
+
+-#ifdef HAVE_LIBZ
+-#include <zlib.h>
+-#endif
++#include "zlib.h"
+ #include <sha256.h>
+ #include "kexec.h"
+ #include "kexec-syscall.h"
+Index: kexec-tools-2.0.0/kexec/crashdump.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/crashdump.old	2009-05-15 17:47:56.000000000 +0200
++++ kexec-tools-2.0.0/kexec/crashdump.c	2009-05-15 13:28:19.000000000 +0200
+@@ -26,7 +26,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include <elf.h>
++#include "../../../include/elf.h"
+ #include "kexec.h"
+ #include "crashdump.h"
+
+Index: kexec-tools-2.0.0/kexec/crashdump-xen.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/crashdump-xen.c.old	2009-05-15 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kexec/crashdump-xen.c	2009-05-15 17:49:04.000000000 +0200
+@@ -3,7 +3,7 @@
+ #include <stdarg.h>
+ #include <string.h>
+ #include <stdlib.h>
+-#include <elf.h>
++#include "../../../include/elf.h"
+ #include <errno.h>
+ #include <limits.h>
+ #include <sys/types.h>
+Index: kexec-tools-2.0.0/kexec/crashdump-elf.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/crashdump-elf.c.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kexec/crashdump-elf.c	2009-05-16 11:12:15.000000000 +0200
+@@ -43,8 +43,8 @@
+	if (xen_present())
+		nr_cpus = xen_get_nr_phys_cpus();
+	else
+-		nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
+-
++/*		nr_cpus = sysconf(_SC_NPROCESSORS_CONF); */
++		nr_cpus = 1;
+	if (nr_cpus < 0) {
+		return -1;
+	}
+Index: kexec-tools-2.0.0/kexec/kexec-elf-boot.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/kexec-elf-boot.c.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kexec/kexec-elf-boot.c	2009-05-16 11:13:28.000000000 +0200
+@@ -22,7 +22,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <errno.h>
+-#include <elf.h>
++#include "../include/elf.h"
+ #include <boot/elf_boot.h>
+ #include <ip_checksum.h>
+ #include <x86/x86-linux.h>
+Index: kexec-tools-2.0.0/kdump/kdump.c
+===================================================================
+--- kexec-tools-2.0.0.orig/kdump/kdump.c.old	2009-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kdump/kdump.c	2009-05-16 11:13:08.000000000 +0200
+@@ -8,7 +8,7 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <endian.h>
+-#include <elf.h>
++#include "../include/elf.h"
+
+ #if !defined(__BYTE_ORDER) || !defined(__LITTLE_ENDIAN) || !defined(__BIG_ENDIAN)
+ #error Endian defines missing
+Index: kexec-tools-2.0.0/kexec/kexec.h
+===================================================================
+--- kexec-tools-2.0.0.orig/kexec/kexec.h.old	2008-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/kexec/kexec.h	2009-05-16 17:32:15.000000000 +0200
+@@ -197,7 +197,7 @@
+ extern char *slurp_file(const char *filename, off_t *r_size);
+ extern char *slurp_file_len(const char *filename, off_t size);
+ extern char *slurp_decompress_file(const char *filename, off_t *r_size);
+-extern unsigned long virt_to_phys(unsigned long addr);
++/* extern unsigned long virt_to_phys(unsigned long addr); */
+ extern void add_segment(struct kexec_info *info,
+	const void *buf, size_t bufsz, unsigned long base, size_t memsz);
+ extern void add_segment_phys_virt(struct kexec_info *info,
+Index: kexec-tools-2.0.0/purgatory/string.c
+===================================================================
+--- kexec-tools-2.0.0.orig/purgatory/string.c.old	2008-05-16 13:28:19.000000000 +0200
++++ kexec-tools-2.0.0/purgatory/string.c	2009-05-16 17:49:04.000000000 +0200
+@@ -1,5 +1,5 @@
+ #include <stddef.h>
+-#include <string.h>
++/* #include <string.h> */
+
+ size_t strnlen(const char *s, size_t max)
+ {

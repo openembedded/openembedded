@@ -1,0 +1,38 @@
+
+[ConnectionManager]
+BusName=org.freedesktop.Telepathy.ConnectionManager.gabble
+ObjectPath=/org/freedesktop/Telepathy/ConnectionManager/gabble
+
+[Protocol jabber]
+param-account=s required register
+param-password=s required register
+param-server=s
+param-resource=s
+param-priority=n
+param-port=q
+param-old-ssl=b
+param-require-encryption=b
+param-register=b
+param-low-bandwidth=b
+param-https-proxy-server=s
+param-https-proxy-port=q
+param-fallback-conference-server=s
+param-stun-server=s
+param-stun-port=q
+param-fallback-stun-server=s
+param-fallback-stun-port=q
+param-ignore-ssl-errors=b
+param-alias=s
+param-fallback-socks5-proxies=as
+default-resource=Telepathy
+default-priority=0
+default-old-ssl=false
+default-require-encryption=false
+default-register=false
+default-low-bandwidth=false
+default-https-proxy-port=443
+default-stun-port=3478
+default-fallback-stun-server=stun.collabora.co.uk
+default-fallback-stun-port=3478
+default-ignore-ssl-errors=false
+default-fallback-socks5-proxies=proxy.jabber.org;proxy.jabberfr.org;proxy.isgeek.info;proxy2.isgeek.info;proxy65.rooyee.biz;proxy.jabbim.cz;proxy.911910.cn;proxy.aszlig.net;proxy.brauchen.info;proxy.core.im;proxy.deshalbfrei.org;proxy.downtempo.de;proxy.draugr.de;proxy.egbers.info;proxy.headcounter.org;proxy.im.flosoft.biz;proxy.jabber-hispano.org;proxy.jabber.bluendo.com;proxy.jabber.dk;proxy.jabber.freenet.de;proxy.fsinf.at;proxy.jabber.kg;proxy.jabber.minus273.org;proxy.jabber.planetteamspeak.com;proxy.jabber.tf-network.de;proxy.jabjab.de;proxy.jabster.pl;proxy.noicq.org;proxy.schokokeks.org;proxy.silper.cz;proxy.ubuntu-jabber.de;proxy.ubuntu-jabber.net;proxy65.unstable.nl;proxy.verdammung.org;proxy.vke.ru;proxy.vodka-pomme.net;proxy.xabber.de;proxy.jabbernet.eu;

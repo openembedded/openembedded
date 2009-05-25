@@ -5,7 +5,7 @@
  
  install-program: all
 -	install -Ds $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
-+	install -D -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
  	mkdir -p $(DESTDIR)/etc/init.d
  	install $(PACKAGE).init $(DESTDIR)/etc/init.d/$(PACKAGE)
  	install $(PACKAGE).conf $(DESTDIR)/etc/$(PACKAGE).conf

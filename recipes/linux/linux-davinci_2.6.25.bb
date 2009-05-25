@@ -2,8 +2,8 @@ require linux-omap.inc
 
 SRCREV = "f5691bc8f65a08a6cb9900a5c7099a36b2b9b7a7"
 
+# The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 PV = "2.6.25"
-PR = "r3"
 
 COMPATIBLE_MACHINE = "(davinci-dvevm|davinci-sffsdr)"
 

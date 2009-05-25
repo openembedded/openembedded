@@ -3,7 +3,7 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_MACHINE = "(ixp4xx|nslu2|fsg3)"
 
@@ -17,9 +17,9 @@ S = ${WORKDIR}/arm-kernel-shim-${PV}
 
 CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
 
-CMDLINE_ROOT_DSMG600 = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
-CMDLINE_ROOT_NAS100D = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
-CMDLINE_ROOT_NSLU2   = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc"
+CMDLINE_ROOT_DSMG600 = "root=/dev/mtdblock2 rootfstype=jffs2 rootflags=noatime rw init=/linuxrc"
+CMDLINE_ROOT_NAS100D = "root=/dev/mtdblock2 rootfstype=jffs2 rootflags=noatime rw init=/linuxrc"
+CMDLINE_ROOT_NSLU2   = "root=/dev/mtdblock4 rootfstype=jffs2 rootflags=noatime rw init=/linuxrc"
 # CMDLINE is passed correctly on the Freecom FSG-3 from the bootloader.
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${CROSS_DIR}/bin/${HOST_PREFIX}"

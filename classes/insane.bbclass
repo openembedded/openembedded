@@ -219,7 +219,7 @@ def package_qa_write_error(error_class, name, path, d):
 
 def package_qa_handle_error(error_class, error_msg, name, path, d):
     import bb
-    bb.error("QA Issue: %s" % error_msg)
+    bb.error("QA Issue with %s: %s" % (name, error_msg))
     package_qa_write_error(error_class, name, path, d)
     return not package_qa_make_fatal_error(error_class, name, path, d)
 
@@ -499,7 +499,7 @@ def package_qa_check_rdepends(pkg, workdir, d):
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
     import bb
-    bb.note("DO PACKAGE QA")
+    bb.debug(2, "DO PACKAGE QA")
     workdir = bb.data.getVar('WORKDIR', d, True)
     packages = bb.data.getVar('PACKAGES',d, True)
 
@@ -515,10 +515,10 @@ python do_package_qa () {
     rdepends_sane = True
     for package in packages.split():
         if bb.data.getVar('INSANE_SKIP_' + package, d, True):
-            bb.note("Package: %s (skipped)" % package)
+            bb.note("package %s skipped" % package)
             continue
 
-        bb.note("Checking Package: %s" % package)
+        bb.debug(1, "Checking Package: %s" % package)
         path = "%s/install/%s" % (workdir, package)
         if not package_qa_walk(path, checks, package, d):
             walk_sane  = False
@@ -527,14 +527,14 @@ python do_package_qa () {
 
     if not walk_sane or not rdepends_sane:
         bb.fatal("QA run found fatal errors. Please consider fixing them.")
-    bb.note("DONE with PACKAGE QA")
+    bb.debug(2, "DONE with PACKAGE QA")
 }
 
 
 # The Staging Func, to check all staging
 addtask qa_staging after do_populate_staging before do_build
 python do_qa_staging() {
-    bb.note("QA checking staging")
+    bb.debug(2, "QA checking staging")
 
     if not package_qa_check_staged(bb.data.getVar('STAGING_LIBDIR',d,True), d):
         bb.fatal("QA staging was broken by the package built above")
@@ -543,7 +543,7 @@ python do_qa_staging() {
 # Check broken config.log files
 addtask qa_configure after do_configure before do_compile
 python do_qa_configure() {
-    bb.note("Checking sanity of the config.log file")
+    bb.debug(1, "Checking sanity of the config.log file")
     import os
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
         statement = "grep 'CROSS COMPILE Badness:' %s > /dev/null" % \

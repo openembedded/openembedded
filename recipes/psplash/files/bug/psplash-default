@@ -1,0 +1,4 @@
+# Parameters to pass to psplash
+PARAMS=""
+
+export FBDEV="/dev/fb1"

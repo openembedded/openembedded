@@ -1,6 +1,6 @@
 nas100d_pack_image () {
 	install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
-	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-nas100d${SITEINFO_ENDIANESS} \
+	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${SITEINFO_ENDIANESS}.bin \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz
@@ -16,5 +16,4 @@ nas100d_pack_image () {
 	rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
 }
 
-# nas100d is not a separate machine - use the nslu2 machine override.
-IMAGE_POSTPROCESS_COMMAND_nslu2 += "nas100d_pack_image; "
+IMAGE_POSTPROCESS_COMMAND += "nas100d_pack_image; "

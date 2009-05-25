@@ -5,3 +5,5 @@ SECTION = "gpe"
 DESCRIPTION = "GPE configuration utility"
 LICENSE = "GPL"
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
+
+SRC_URI += "file://makefile-fix.patch;patch=1"

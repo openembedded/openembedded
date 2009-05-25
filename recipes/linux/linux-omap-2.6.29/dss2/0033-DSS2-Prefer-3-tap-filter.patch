@@ -1,7 +1,7 @@
 From 5390230ed12585a79683733209db34e9130b8e3b Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Thu, 9 Apr 2009 15:04:43 +0200
-Subject: [PATCH] DSS2: Prefer 3-tap filter
+Subject: [PATCH 33/69] DSS2: Prefer 3-tap filter
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -78,5 +78,5 @@ index b8a3329..b631dd8 100644
  		DSSDBG("required fclk rate = %lu Hz\n", fclk);
  		DSSDBG("current fclk rate = %lu Hz\n", dispc_fclk_rate());
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -1,4 +1,5 @@
 require gnutls.inc
+LICENSE_${PN}-extra = "GPLv3"
 
 SRC_URI += "\
 	file://gnutls-openssl.patch;patch=1 \

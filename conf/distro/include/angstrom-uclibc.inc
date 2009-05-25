@@ -1,12 +1,5 @@
 # uclibc:
-#fix some iconv issues, needs to be adjusted when doing uclibc builds
-PREFERRED_PROVIDER_virtual/libc = "uclibc"
-PREFERRED_PROVIDER_virtual/libiconv ?= "libiconv"
-PREFERRED_PROVIDER_virtual/libintl ?= "gettext"
-PREFERRED_PROVIDER_virtual/libintl_avr32 = "proxy-libintl"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "uclibc"
-PREFERRED_PROVIDER_virtual/arm-angstrom-linux-uclibcgnueabi-libc-for-gcc    = "uclibc-initial"
-PREFERRED_PROVIDER_virtual/armeb-angstrom-linux-uclibcgnueabi-libc-for-gcc  = "uclibc-initial"
+require conf/distro/include/uclibc.inc
 
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils = "binutils-cross"
 PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"

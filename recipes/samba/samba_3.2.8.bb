@@ -1,5 +1,6 @@
 require samba.inc
 require samba-basic.inc
+LICENSE = "GPLv3"
 
 SRC_URI += "file://configure-3.2.8.patch;patch=1 \
             file://config-h.patch;patch=1 \

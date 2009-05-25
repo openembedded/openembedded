@@ -1,0 +1,8 @@
+--- nylon-scripts/etc/init.d/firewall-orig	2009-04-25 13:46:25.000000000 +0200
++++ nylon-scripts/etc/init.d/firewall	2009-04-25 13:46:28.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # this is a meta firewall start script:
+ # it either starts a local firewall script or shorewall

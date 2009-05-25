@@ -3,15 +3,21 @@ require nylon-image-base.bb
 export IMAGE_BASENAME = "nylon-standard"
 
 NYLON_STANDARD = "\
-	hostap-utils \
+	dash \
+	dnsmasq \
+	hostap-daemon hostap-utils \
 	linux-hotplug \
 	ifplugd \
+	iproute2 \
+	madwifi-modules \
+	nylon-config \
 	olsrd \
 	ppp \
 	rp-pppoe \
-	shorewall \
+	simple-firewall \
 	tcpdump \
-	wpa-supplicant"
+	wpa-supplicant \
+	yamonenv"
 
 DEPENDS += "hostap-modules ntp \
 	${NYLON_STANDARD}"

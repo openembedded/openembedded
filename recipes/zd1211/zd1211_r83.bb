@@ -8,10 +8,6 @@ PR = "r1"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
            file://makefile.patch;patch=1"
-SRC_URI_unslung = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
-        file://makefile-unslung.patch;patch=1 \
-        file://unslung-iwpriv-hack.patch;patch=1 \
-        file://unslung-writel-logging.patch;patch=1"
 
 S = "${WORKDIR}/zd1211-driver-${PV}"
 

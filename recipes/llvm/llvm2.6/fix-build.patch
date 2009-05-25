@@ -1,0 +1,13 @@
+Index: trunk/tools/llvm-config/CMakeLists.txt
+===================================================================
+--- trunk.orig/tools/llvm-config/CMakeLists.txt	2009-04-10 11:56:56.000000000 +0200
++++ trunk/tools/llvm-config/CMakeLists.txt	2009-04-10 12:21:19.000000000 +0200
+@@ -90,7 +90,7 @@
+ add_custom_command(OUTPUT ${LLVM_CONFIG}
+   COMMAND echo 's!@LLVM_CPPFLAGS@!${CPP_FLGS}!' > temp.sed
+   COMMAND echo 's!@LLVM_CFLAGS@!${C_FLGS}!' >> temp.sed
+-  COMMAND echo 's!@LLVM_CXXFLAGS@!${CXX_FLGS}!' >> temp.sed
++  COMMAND echo 's!@LLVM_CXXFLAGS@!${CXX_FLGS} -fpermissive -fvisibility-inlines-hidden -Woverloaded-virtual!' >> temp.sed
+   # TODO: Use general flags for linking! not just for shared libs:
+   COMMAND echo 's!@LLVM_LDFLAGS@!${CMAKE_SHARED_LINKER_FLAGS}!' >> temp.sed
+   COMMAND echo 's!@LIBS@!!' >> temp.sed                    # TODO: System libs

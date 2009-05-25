@@ -1,10 +1,6 @@
 # Originally brought to you by the Angstrom Distribution
 
 # uclibc:
-#fix some iconv issues, needs to be adjusted when doing uclibc builds
-PREFERRED_PROVIDER_virtual/libc = "uclibc"
-PREFERRED_PROVIDER_virtual/libiconv ?= "libiconv"
-PREFERRED_PROVIDER_virtual/libintl ?= "gettext"
 
 USE_NLS ?= "no"
 USE_NLS_glib-2.0 = "yes"

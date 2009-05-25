@@ -166,7 +166,7 @@ def runstrip(file, d):
     # If the file is in a .debug directory it was already stripped,
     # don't do it again...
     if os.path.dirname(file).endswith(".debug"):
-        bb.note("Already ran strip")
+        bb.debug(2, "Already ran strip on %s" % file)
         return 0
 
     strip = bb.data.getVar("STRIP", d, 1)
@@ -564,7 +564,7 @@ python package_do_shlibs() {
 
 	exclude_shlibs = bb.data.getVar('EXCLUDE_FROM_SHLIBS', d, 0)
 	if exclude_shlibs:
-		bb.note("not generating shlibs")
+		bb.debug(1, "not generating shlibs")
 		return
 		
 	lib_re = re.compile("^lib.*\.so")

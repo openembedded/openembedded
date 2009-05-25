@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "glib-2.0-native intltool-native gtkmm libxml2 libassa"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}-${MINVER}.tar.gz"
 
 inherit autotools pkgconfig
 

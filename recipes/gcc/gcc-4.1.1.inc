@@ -20,7 +20,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc41-configure.in.patch;patch=1 \
 	file://arm-thumb.patch;patch=1 \
 	file://arm-thumb-cache.patch;patch=1 \
-	file://ldflags.patch;patch=1 \
 	file://cse.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://unbreak-armv4t.patch;patch=1 \

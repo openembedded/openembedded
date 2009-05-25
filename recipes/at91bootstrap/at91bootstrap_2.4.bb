@@ -1,4 +1,4 @@
-DESCRIPTION = "at91bootstrap"
+require at91bootstrap.inc
 SRC_URI = "ftp://www.at91.com/pub/buildroot/${PN}-${PV}.tar.bz2 \
            "
 SRC_URI_append_afeb9260 = " file://0001-Generic-code-changes.patch;patch=1 \
@@ -6,8 +6,7 @@ SRC_URI_append_afeb9260 = " file://0001-Generic-code-changes.patch;patch=1 \
            file://0003-AFEB9260-board-support.patch;patch=1 \
            file://0004-AFEB9260-133-board-support.patch;patch=1"
 
-PR = "r4"
-SECTION = "bootloaders"
+PR = "r5"
 
 AT91BOOTSTRAP_MACHINE ?= "${MACHINE}"
 AT91BOOTSTRAP_FLAGS ?= ""
@@ -15,8 +14,6 @@ AT91BOOTSTRAP_MEMORY ?= "dataflash"
 
 AT91BOOTSTRAP_IMAGE = "at91bootstrap-${MACHINE}-${AT91BOOTSTRAP_MEMORY}-${PV}-${PR}.bin"
 AT91BOOTSTRAP_SYMLINK = "at91bootstrap.bin"
-
-S = "${WORKDIR}/${PN}-${PV}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX} MEMORY=${AT91BOOTSTRAP_MEMORY}"

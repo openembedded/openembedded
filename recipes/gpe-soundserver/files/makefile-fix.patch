@@ -1,0 +1,13 @@
+--- /tmp/Makefile.old	2004-08-18 16:28:08.000000000 +0200
++++ gpe-soundserver-0.4-1/Makefile	2009-05-01 22:44:27.000000000 +0200
+@@ -37,8 +37,8 @@
+ 
+ install-program: all
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+-	install -s wrapesd $(DESTDIR)$(PREFIX)/bin/wrapesd
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install wrapesd $(DESTDIR)$(PREFIX)/bin/wrapesd
+ 	install -d $(DESTDIR)/etc/X11/Xsession.d
+ 	install $(PACKAGE).xsession $(DESTDIR)/etc/X11/Xsession.d/50sound-server
+ 

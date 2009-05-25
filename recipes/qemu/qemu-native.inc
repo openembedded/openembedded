@@ -1,6 +1,6 @@
 inherit native
 
-DEPENDS = "libsdl-native zlib-native gcc3-native"
+DEPENDS = "libsdl-native zlib-native"
 
-require qemu-gcc3-check.inc
+export OS_CFLAGS="${CFLAGS} ${LDFLAGS}"
 

@@ -1,5 +1,6 @@
 require samba.inc
 require samba-ads.inc
+LICENSE = "GPLv3"
 
 PR = "r2"
 SRC_URI += "file://config-lfs.patch;patch=1 \

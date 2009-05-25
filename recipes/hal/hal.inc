@@ -9,8 +9,9 @@ S = "${WORKDIR}/hal-${PV}"
 
 inherit autotools pkgconfig
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb gperf-native"
+DEPENDS = "virtual/kernel util-linux-ng dbus-glib udev intltool intltool-native expat libusb gperf-native"
 RDEPENDS += "hal-info udev-utils"
+RRECOMMENDS += "eject"
 
 SRC_URI += "file://99_hal \
             file://20hal \
@@ -27,6 +28,7 @@ EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
                 --disable-policy-kit \
                 --disable-pmu \
                 --disable-pnp-ids \
+                --with-udev-prefix=${sysconfdir} \
                 ${@base_contains('COMBINED_FEATURES', 'pci', '--enable-pci --enable-pci-ids', '--disable-pci --disable-pci-ids',d)} \
                 ${@base_contains('MACHINE_FEATURES', 'acpi', '--enable-acpi', '--disable-acpi',d)} \
                "
@@ -36,10 +38,11 @@ PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'acpi', '${MACHINE_ARCH}', 
 PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
 
 do_install_append() {
-	install -d ${D}/etc/default/volatiles
-	install -m 0644 ${WORKDIR}/99_hal ${D}/etc/default/volatiles
-        install -d ${D}/etc/dbus-1/event.d
-        install -m 0755 ${WORKDIR}/20hal ${D}/etc/dbus-1/event.d
+	install -d ${D}/${sysconfdir}/default/volatiles
+	install -m 0644 ${WORKDIR}/99_hal ${D}/${sysconfdir}/default/volatiles
+        install -d ${D}/${sysconfdir}/dbus-1/event.d
+        install -m 0755 ${WORKDIR}/20hal ${D}/${sysconfdir}/dbus-1/event.d
+	rm -rf ${D}/${sysconfdir}/rc.d || true
 }
 
 do_stage() {
@@ -58,15 +61,15 @@ pkg_postinst_hal () {
 		exit 1
 	fi
 
-	grep haldaemon /etc/group || addgroup haldaemon
-	grep haldaemon /etc/passwd || adduser --disabled-password --system --home /var/run/hald --no-create-home haldaemon --ingroup haldaemon -g HAL
+	grep haldaemon ${sysconfdir}/group || addgroup haldaemon
+	grep haldaemon ${sysconfdir}/passwd || adduser --disabled-password --system --home /var/run/hald --no-create-home haldaemon --ingroup haldaemon -g HAL
 
-	/etc/init.d/populate-volatile.sh update
+	${sysconfdir}/init.d/populate-volatile.sh update
 
 	DBUSPID=`pidof dbus-daemon`
 
 	if [ "x$DBUSPID" != "x" ]; then
-		/etc/init.d/dbus-1 force-reload
+		${sysconfdir}/init.d/dbus-1 force-reload
 	fi
 }
 

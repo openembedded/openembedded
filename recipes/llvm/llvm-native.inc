@@ -1,6 +1,6 @@
 require llvm.inc
 
-DEPENDS = "llvm-common-native"
+DEPENDS = "llvm-common-native cmake-native"
 
 inherit native
 

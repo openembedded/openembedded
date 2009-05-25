@@ -1,10 +1,10 @@
 DESCRIPTION = "FLAC is a Free Lossless Audio Codec."
+HOMEPAGE = "http://flac.sourceforge.net"
 LICENSE = "BSD GPL"
 SECTION = "libs"
 DEPENDS = "libogg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/flac/flac-${PV}.tar.gz \
-	   file://disable-xmms-plugin.patch;patch=1 \
 	   file://xmms.m4"
 
 inherit autotools
@@ -27,50 +27,7 @@ do_configure () {
 }
 
 do_stage () {
-	install -d ${STAGING_DATADIR}/aclocal
-
-	oe_libinstall -a -so -C src/libOggFLAC libOggFLAC ${STAGING_LIBDIR}/
-	install -d ${STAGING_INCDIR}/OggFLAC
-	install -m 0644 ${S}/include/OggFLAC/export.h ${STAGING_INCDIR}/OggFLAC/export.h
-
-	install -m 0644 ${S}/include/OggFLAC/all.h ${STAGING_INCDIR}/OggFLAC/all.h
-	install -m 0644 ${S}/include/OggFLAC/stream_encoder.h ${STAGING_INCDIR}/OggFLAC/stream_encoder.h
-	install -m 0644 ${S}/include/OggFLAC/stream_decoder.h ${STAGING_INCDIR}/OggFLAC/stream_decoder.h
-	install -m 0644 ${S}/src/libOggFLAC/libOggFLAC.m4 ${STAGING_DATADIR}/aclocal/
-
-	oe_libinstall -a -so -C src/libFLAC libFLAC ${STAGING_LIBDIR}/
-	install -d ${STAGING_INCDIR}/FLAC
-	install -m 0644 ${S}/include/FLAC/export.h ${STAGING_INCDIR}/FLAC/export.h
-	install -m 0644 ${S}/include/FLAC/metadata.h ${STAGING_INCDIR}/FLAC/metadata.h
-	install -m 0644 ${S}/include/FLAC/all.h ${STAGING_INCDIR}/FLAC/all.h
-	install -m 0644 ${S}/include/FLAC/format.h ${STAGING_INCDIR}/FLAC/format.h
-	install -m 0644 ${S}/include/FLAC/stream_encoder.h ${STAGING_INCDIR}/FLAC/stream_encoder.h
-	install -m 0644 ${S}/include/FLAC/stream_decoder.h ${STAGING_INCDIR}/FLAC/stream_decoder.h
-	install -m 0644 ${S}/include/FLAC/ordinals.h ${STAGING_INCDIR}/FLAC/ordinals.h
-	install -m 0644 ${S}/include/FLAC/seekable_stream_encoder.h ${STAGING_INCDIR}/FLAC/seekable_stream_encoder.h
-	install -m 0644 ${S}/include/FLAC/file_encoder.h ${STAGING_INCDIR}/FLAC/file_encoder.h
-	install -m 0644 ${S}/include/FLAC/seekable_stream_decoder.h ${STAGING_INCDIR}/FLAC/seekable_stream_decoder.h
-	install -m 0644 ${S}/include/FLAC/file_decoder.h ${STAGING_INCDIR}/FLAC/file_decoder.h
-	install -m 0644 ${S}/include/FLAC/assert.h ${STAGING_INCDIR}/FLAC/assert.h
-	install -m 0644 ${S}/include/FLAC/callback.h ${STAGING_INCDIR}/FLAC/callback.h
-	install -m 0644 ${S}/src/libFLAC/libFLAC.m4 ${STAGING_DATADIR}/aclocal/
-
-	oe_libinstall -a -so -C src/libFLAC++ libFLAC++ ${STAGING_LIBDIR}/
-	install -d ${STAGING_INCDIR}/FLAC++
-	install -m 0644 ${S}/include/FLAC++/export.h ${STAGING_INCDIR}/FLAC++/export.h
-	install -m 0644 ${S}/include/FLAC++/metadata.h ${STAGING_INCDIR}/FLAC++/metadata.h
-	install -m 0644 ${S}/include/FLAC++/all.h ${STAGING_INCDIR}/FLAC++/all.h
-	install -m 0644 ${S}/include/FLAC++/encoder.h ${STAGING_INCDIR}/FLAC++/encoder.h
-	install -m 0644 ${S}/include/FLAC++/decoder.h ${STAGING_INCDIR}/FLAC++/decoder.h
-	install -m 0644 ${S}/src/libFLAC++/libFLAC++.m4 ${STAGING_DATADIR}/aclocal/
-
-	oe_libinstall -a -so -C src/libOggFLAC++ libOggFLAC++ ${STAGING_LIBDIR}/
-	install -d ${STAGING_INCDIR}/OggFLAC++
-	install -m 0644 ${S}/include/OggFLAC++/export.h ${STAGING_INCDIR}/OggFLAC++/export.h
-	install -m 0644 ${S}/include/OggFLAC++/all.h ${STAGING_INCDIR}/OggFLAC++/all.h
-	install -m 0644 ${S}/include/OggFLAC++/encoder.h ${STAGING_INCDIR}/OggFLAC++/encoder.h
-	install -m 0644 ${S}/include/OggFLAC++/decoder.h ${STAGING_INCDIR}/OggFLAC++/decoder.h
-	install -m 0644 ${S}/src/libOggFLAC++/libOggFLAC++.m4 ${STAGING_DATADIR}/aclocal/
+	autotools_stage_all
 }
 
 PACKAGES += "libflac libflac++ liboggflac liboggflac++"

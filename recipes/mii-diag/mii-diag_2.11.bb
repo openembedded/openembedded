@@ -2,7 +2,7 @@ DESCRIPTION = "Examines and sets the MII registers of network cards."
 LICENSE = "GPL"
 SECTION = "console/network"
 PRIORITY = "optional"
-PR = "r3"
+PR = "r4"
 
 S = "${WORKDIR}/"
 
@@ -15,7 +15,7 @@ FILES_${PN} = "${base_sbindir}/mii-diag"
 
 do_compile() {
 ${CC} -O -c libmii.c
-${CC} -O -DLIBMII mii-diag.c libmii.o -o mii-diag
+${CC} -O -DLIBMII mii-diag.c libmii.o -o mii-diag ${LDFLAGS}
 }
 
 do_install() {

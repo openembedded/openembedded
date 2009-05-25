@@ -1,6 +1,6 @@
 DESCRIPTION = "SIP-based IP phone (Console edition)"
 HOMEPAGE = "http://www.linphone.org/?lang=us"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 DEPENDS = "libosip2 speex libogg alsa-lib readline"
 PR = "r0"
 

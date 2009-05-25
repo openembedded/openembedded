@@ -1,0 +1,13 @@
+diff --git gpe-announce-0.13/Makefile-orig gpe-announce-0.13/Makefile
+index 56e016a..f8bade4 100644
+--- gpe-announce-0.13/Makefile-orig
++++ gpe-announce-0.13/Makefile
+@@ -47,7 +47,7 @@ $(PACKAGE): $(OBJS)
+ 
+ install-program: all 
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 
+ clean:
+ 	rm -f $(PACKAGE) $(OBJS) $(DEPS)

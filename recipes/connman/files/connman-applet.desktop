@@ -6,5 +6,5 @@ Icon=stock_internet
 Exec=connman-applet
 Terminal=false
 Type=Application
-Categories=Network;GTK
+Categories=Network;GTK;
 

@@ -18,11 +18,12 @@ SRC_DIST_LOCAL ?= "symlink"
 
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROMLIBC ?= "glibc"
-PSTAGE_EXTRAPATH = "${ANGSTROMLIBC}"
+LIBC ?= "${ANGSTROMLIBC}"
+PSTAGE_EXTRAPATH = "${LIBC}"
 
-CACHE = "${TMPDIR}/cache/${ANGSTROMLIBC}/${MACHINE}"
-DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROMLIBC}"
-require conf/distro/include/angstrom-${ANGSTROMLIBC}.inc
+CACHE = "${TMPDIR}/cache/${LIBC}/${MACHINE}"
+DEPLOY_DIR = "${TMPDIR}/deploy/${LIBC}"
+require conf/distro/include/angstrom-${LIBC}.inc
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
@@ -31,9 +32,6 @@ require conf/distro/include/angstrom-${ANGSTROMLIBC}.inc
 
 # We can't do ARM_INSTRUCTION_SET_armv4t since that will un-overridable in recipes like gcc
 ANGSTROM_ARM_INSTRUCTION_SET ?= "arm"
-ANGSTROM_ARM_INSTRUCTION_SET_armv4t = "thumb"
-ANGSTROM_ARM_INSTRUCTION_SET_armv5te = "thumb"
-ANGSTROM_ARM_INSTRUCTION_SET_armv5teb = "thumb"
 
 
 ARM_INSTRUCTION_SET = "${ANGSTROM_ARM_INSTRUCTION_SET}"
@@ -101,11 +99,6 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 # We only want to build UTF8 locales
 LOCALE_UTF8_ONLY = "1"
 
-#qemu doesn't like armv6/eabi/vfp
-ENABLE_BINARY_LOCALE_GENERATION_armv6 = "0"
-ENABLE_BINARY_LOCALE_GENERATION_armv6-novfp = "0"
-ENABLE_BINARY_LOCALE_GENERATION_armv7a = "0"
-
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
 
@@ -144,7 +137,7 @@ PACKAGE_EXTRA_ARCHS_htcwallaby = "arm-oabi"
 
 
 #Name the generated images in a sane way
-IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${ANGSTROMLIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
+IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${LIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
 DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
 
 # Angstrom *always* has some form of release config, so error out if someone thinks he knows better 
@@ -156,7 +149,7 @@ DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove thi
 # in their local.conf 
 
 #Name of the client
-TINDER_MACHINE  = "${MACHINE}-${ANGSTROMLIBC}-build-image"
+TINDER_MACHINE  = "${MACHINE}-${LIBC}-build-image"
 
 # Which lof file to write to, which tree to report to
 TINDER_LOG        = "${TMPDIR}/tinder.log"

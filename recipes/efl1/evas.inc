@@ -20,7 +20,7 @@ python populate_packages_prepend () {
             basedir = bb.data.expand( '${libdir}/evas/modules/%s' % plugin_type, d )
 
             do_split_packages(d, basedir, '^(.*)',
-            output_pattern = 'evas-' + plugin_type[:-1] + "-%s",
+            output_pattern = 'libevas-' + plugin_type[:-1] + "-%s",
             description = 'Evas module %s',
             allow_dirs=True, recursive=False, extra_depends="" )
 }

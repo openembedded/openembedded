@@ -1,7 +1,7 @@
 From bda19b9359d9dc60f8b0beb5685e173e236ee30f Mon Sep 17 00:00:00 2001
 From: Hardik Shah <hardik.shah@ti.com>
 Date: Wed, 15 Apr 2009 17:05:18 +0530
-Subject: [PATCH] DSS2: dispc_get_trans_key was returning wrong key type
+Subject: [PATCH 30/69] DSS2: dispc_get_trans_key was returning wrong key type
 
 Signed-off-by: Hardik Shah <hardik.shah@ti.com>
 ---
@@ -25,5 +25,5 @@ index 23a8155..076d3d4 100644
  			BUG();
  	}
 -- 
-1.5.6.5
+1.6.2.4
 

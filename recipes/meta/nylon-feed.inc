@@ -36,6 +36,7 @@ ncurses \
 netbase \
 netperf \
 ntp \
+nylon-config \
 nylon-scripts \
 nylon-statistics \
 olsrd \
@@ -48,7 +49,7 @@ ppp \
 pptp-linux \
 rrdtool \
 ser \
-shorewall \
+simple-firewall \
 stunnel \
 sysvinit \
 tcl \

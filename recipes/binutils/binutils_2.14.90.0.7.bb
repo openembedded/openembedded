@@ -1,4 +1,5 @@
 SECTION = "devel"
+LICENSE = "GPL"
 inherit autotools gettext
 
 DESCRIPTION = "A GNU collection of binary utilities"

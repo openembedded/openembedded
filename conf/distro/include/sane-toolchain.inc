@@ -115,9 +115,10 @@ TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
 #############################################################################
 
 # Can be "glibc", "eglibc" or "uclibc"
-PREFERRED_LIBC ?= "glibc"
-PSTAGE_EXTRAPATH = "${PREFERRED_LIBC}"
-require conf/distro/include/sane-toolchain-${PREFERRED_LIBC}.inc
+LIBC ?= "glibc"
+require conf/distro/include/${LIBC}.inc
+PSTAGE_EXTRAPATH = "${LIBC}"
+require conf/distro/include/sane-toolchain-${LIBC}.inc
 
 # Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable
 PREFERRED_PROVIDER_qemu-native = "qemu-native"

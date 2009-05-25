@@ -8,7 +8,7 @@
 REMOTEM=angstrom@linuxtogo.org
 
 # Feed dir we want to upload to
-REMOTED=website/feeds/2008/ipk/$(basename $PWD)
+REMOTED=website/feeds/unstable/ipk/$(basename $PWD)
 
 # create upload dir
 mkdir -p upload-queue || true
@@ -36,7 +36,7 @@ rm -f upload-queue/ti*codec* upload-queue/*3.00.*
 
 # Copy over non-duplicate files
 echo "Starting rsync..."
-rsync -vz --copy-links --progress --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
+rsync -vz --partial --copy-links --progress --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
 
 # Clean up temporary files
 echo "Removing upload queue"
