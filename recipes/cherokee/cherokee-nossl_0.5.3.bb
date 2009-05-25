@@ -2,7 +2,7 @@ require cherokee_${PV}.bb
 
 DEPENDS = "libpcre"
 
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/cherokee-${PV}', '${FILE_DIRNAME}/cherokee', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+FILESPATHPKG =. "cherokee-${PV}:cherokee:"
 
 S = "${WORKDIR}/cherokee-${PV}"
 
