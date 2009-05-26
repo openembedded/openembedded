@@ -1,5 +1,7 @@
 require emacs.inc
 
+PR="r1"
+
 EXTRA_OECONF = "--without-sound --without-x"
 
 SRC_URI = "${GNU_MIRROR}/emacs/emacs-${PV}.tar.gz \
