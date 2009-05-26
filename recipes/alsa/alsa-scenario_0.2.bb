@@ -3,13 +3,12 @@ HOMEPAGE = "http://opensource.wolfsonmicro.com/node/22"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
-PV = "0.2+gitr${SRCREV}"
+
 PR = "r0"
 PE = "1"
 
-DEFAULT_PREFERENCE = "-1"
+SRC_URI = "http://slimlogic.co.uk/pub/downloads/libscenario/scenario-lib-0.2.0.tar.bz2"
 
-SRC_URI = "git://slimlogic.co.uk/alsa-scenario;branch=master;protocol=git"
-S = "${WORKDIR}/git"
+S = "${WORKDIR}/scenario-lib-0.2.0"
 
 inherit autotools

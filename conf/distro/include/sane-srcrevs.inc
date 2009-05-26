@@ -13,7 +13,7 @@
 
 SRCREV_pn-accelges ?= "206"
 SRCREV_pn-aircrack-ng ?= "802"
-SRCREV_pn-alsa-scenario ?= "633aaccc37f845146e490090dbd2a1ebb8064fd6"
+SRCREV_pn-alsa-scenario ?= "8bd7f83d847424eb44704cf1649974b2fda8d8f1"
 SRCREV_pn-app-restarter ?= "4552"
 SRCREV_pn-assassin ?= "268"
 SRCREV_pn-assassin-thumbnail ?= "4690"
