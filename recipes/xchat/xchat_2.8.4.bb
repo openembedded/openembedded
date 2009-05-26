@@ -4,9 +4,11 @@ HOMEPAGE = "http://www.xchat.org"
 SECTION = "x11/network"
 DEPENDS = "libgcrypt zlib gtk+"
 DEPENDS += "gdk-pixbuf-csource-native"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.xchat.org/files/source/2.8/xchat-${PV}.tar.bz2"
+SRC_URI = "http://www.xchat.org/files/source/2.8/xchat-${PV}.tar.bz2 \
+file://remove-define-gtk-disable-deprecated.patch;patch=1 \
+"
 
 inherit autotools
 
