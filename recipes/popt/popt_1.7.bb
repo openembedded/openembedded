@@ -11,6 +11,6 @@ SRC_URI = "ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
 	   file://intl.patch;patch=1"
 
 do_stage() {
-	oe_libinstall -a -so libpopt ${STAGING_LIBDIR}
+	oe_libinstall -so libpopt ${STAGING_LIBDIR}
 	install -m 0644 popt.h ${STAGING_INCDIR}
 }
