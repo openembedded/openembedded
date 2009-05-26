@@ -50,6 +50,7 @@ SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
 SRCREV_pn-openmoocow = "${AUTOREV}"
 SRCREV_pn-libmokoui2 = "4695"
 SRCREV_pn-intone = "${AUTOREV}"
+SRCREV_pn-libgee = "${AUTOREV}"
 
 #PREFERRED_VERSION_fakeroot = "1.12.1"
 #PREFERRED_VERSION_fakeroot-native = "1.12.1"
