@@ -1,0 +1,20 @@
+--- kismet_wrapper.cc
++++ kismet_wrapper.cc
+@@ -79,7 +79,7 @@ void reap(int sig) {
+ 		if (FD_ISSET(epipe[0], &rset)) {
+ 			if (fgets(ret, 2048, err) == NULL ||
+ 				feof(err)) {
+-				if (feof(out))
++				if (!check_out || feof(out))
+ 					break;
+ 
+ 				fclose(err);
+@@ -98,7 +98,7 @@ void reap(int sig) {
+ 		if (FD_ISSET(rpipe[0], &rset)) {
+ 			if (fgets(ret, 2048, out) == NULL ||
+ 				feof(out)) {
+-				if (feof(err))
++				if (!check_err || feof(err))
+ 					break;
+ 
+ 				fclose(out);
