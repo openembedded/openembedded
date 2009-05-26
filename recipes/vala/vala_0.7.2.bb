@@ -1,3 +1,2 @@
 require vala.inc
-DEPENDS = "vala-bootstrap-native"
-PR = "r0"
+PR = "r1"
