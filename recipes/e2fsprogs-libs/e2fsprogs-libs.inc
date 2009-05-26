@@ -15,12 +15,12 @@ FILES_e2fsprogs-libs-dev_append = " ${datadir}/et ${datadir}/ss"
 FILES_${PN} = "${bindir}"
 
 python populate_packages_prepend () {
-	cv_libdir = bb.data.expand('${libdir}', d)
-	cv_libdir_dbg = bb.data.expand('${libdir}/.debug', d)
-	do_split_packages(d, cv_libdir, '^lib(.*)\.so$', 'lib%s-dev', 'e2fsprogs-libs %s development package', extra_depends='${PN}-dev', allow_links=True)
-	do_split_packages(d, cv_libdir, '^lib(.*)\.la$', 'lib%s-dev', 'e2fsprogs-libs %s development package', extra_depends='${PN}-dev')
-	do_split_packages(d, cv_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'e2fsprogs-libs %s development package', extra_depends='${PN}-dev')
-	do_split_packages(d, cv_libdir, '^lib(.*)\.so\.*', 'lib%s', 'e2fsprogs-libs %s library', extra_depends='', allow_links=True)
+	e2fs_libdir = bb.data.expand('${libdir}', d)
+	e2fs_libdir_dbg = bb.data.expand('${libdir}/.debug', d)
+	do_split_packages(d, e2fs_libdir, '^lib(.*)\.so$', 'lib%s-dev', 'e2fsprogs-libs %s development package', extra_depends='${PN}-dev', allow_links=True)
+	do_split_packages(d, e2fs_libdir, '^lib(.*)\.la$', 'lib%s-dev', 'e2fsprogs-libs %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, e2fs_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'e2fsprogs-libs %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, e2fs_libdir, '^lib(.*)\.so\.*', 'lib%s', 'e2fsprogs-libs %s library', extra_depends='', allow_links=True)
 }
 
 do_stage () {
