@@ -11,6 +11,8 @@ S = "${WORKDIR}/SDL_ttf-${PV}"
 
 inherit autotools
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_stage() {
 	autotools_stage_all
 }
