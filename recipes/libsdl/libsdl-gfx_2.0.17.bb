@@ -10,6 +10,7 @@ S = "${WORKDIR}/SDL_gfx-${PV}"
 inherit autotools
 
 EXTRA_OECONF = "--disable-mmx"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_stage() {
 	autotools_stage_all
