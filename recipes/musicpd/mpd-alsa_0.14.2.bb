@@ -24,8 +24,8 @@ INITSCRIPT_NAME = "mpd"
 EXTRA_OECONF = "\
 --enable-ogg \
 --enable-oggvorbis \
---disable-oggflac \  
---enable-flac \ 
+--disable-oggflac \
+--enable-flac \
 --enable-faad \
 --with-ao-libraries=${STAGING_LIBDIR} \
 --with-ao-includes=${STAGING_INCDIR} \
@@ -41,14 +41,15 @@ EXTRA_OECONF = "\
 --with-ogg-includes=${STAGING_INCDIR} \
 --with-vorbis-libraries=${STAGING_LIBDIR} \
 --with-vorbis-includes=${STAGING_INCDIR} \
---disable-aotest \      
---disable-alsatest \   
---disable-oggtest \    
---disable-vorbistest \      
---disable-libFLACtest \      
---disable-libOggFLACtest  \    
---disable-audiofiletest  \     
+--disable-aotest \
+--disable-alsatest \
+--disable-oggtest \
+--disable-vorbistest \
+--disable-libFLACtest \
+--disable-libOggFLACtest  \
+--disable-audiofiletest  \
 --disable-libmikmodtest \
+--with-lame-includes=${STAGING_INCDIR} \
 "
 
 do_configure_append() {

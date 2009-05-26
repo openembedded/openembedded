@@ -30,7 +30,8 @@ EXTRA_OECONF = "\
         --disable-jack \
         --enable-pulse \
         --enable-mod \
-        --disable-oggflac"
+        --disable-oggflac \
+	--with-lame-includes=${STAGING_INCDIR}"
 
 do_compile_prepend() {
     find -name Makefile | xargs sed -i 's~-I/usr/include~-I${STAGING_INCDIR}~g'
