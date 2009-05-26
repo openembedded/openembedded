@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r115"
+PR = "r116"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -119,7 +119,7 @@ do_install () {
 	ln -sf		../init.d/finish	${D}${sysconfdir}/rcS.d/S99finish
 	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
-	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S03sysfs
+	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S02sysfs
 	ln -sf		../init.d/populate-volatile.sh	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
 	ln -sf		../init.d/devpts.sh	${D}${sysconfdir}/rcS.d/S38devpts.sh
 	if [ "${TARGET_ARCH}" = "arm" ]; then
@@ -137,7 +137,7 @@ do_install_append_angstrom () {
 do_install_append_openmoko () {
  	# Oepnmoko persistent USB networking
 	install -m 0755 ${WORKDIR}/g_ether.sh	${D}${sysconfdir}/init.d
-	ln -sf	../init.d/g_ether.sh	${D}${sysconfdir}/rcS.d/S02g_ether.sh
+	ln -sf	../init.d/g_ether.sh	${D}${sysconfdir}/rcS.d/S03g_ether.sh
 
 	# drop some things to speed up boot
 	rm ${D}${sysconfdir}/rcS.d/S02banner

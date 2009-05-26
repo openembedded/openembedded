@@ -1,0 +1,24 @@
+commit 25e5107d2fd9e97c49d2280e3c2962f605c6dc01
+Author: raster <raster@7cbeb6ba-43b4-40fd-8cce-4c39aea84d33>
+Date:   Sat May 23 12:17:27 2009 +0000
+
+    add includes
+    
+    
+    
+    git-svn-id: http://svn.enlightenment.org/svn/e/trunk/ecore@40794 7cbeb6ba-43b4-40fd-8cce-4c39aea84d33
+
+diff --git a/src/lib/ecore/ecore_private.h b/src/lib/ecore/ecore_private.h
+index 02b4e45..2b09627 100644
+--- a/src/lib/ecore/ecore_private.h
++++ b/src/lib/ecore/ecore_private.h
+@@ -3,6 +3,9 @@
+ 
+ #include <sys/types.h>
+ #include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
+ 
+ #ifdef HAVE_SIGNAL_H
+ # include <signal.h>

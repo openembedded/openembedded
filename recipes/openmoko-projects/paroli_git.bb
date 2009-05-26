@@ -30,6 +30,10 @@ E_CONFIG_DIR="/usr/share/enlightenment/data"
 RULES_YAML = rules.yaml
 RULES_YAML_om-gta01 = gta01_rules.yaml
 
+do_configure_append() {
+        echo "version=\"${SRCREV}\"" > ${S}/paroli-core/tichy/__version__.py
+}
+
 do_install_append() {
        	# install paroli theme
        	install -d ${D}${E_CONFIG_DIR}/themes
@@ -42,8 +46,6 @@ do_install_append() {
 	#install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
 	install -d ${D}${datadir}/elementary/themes
 	install ${S}/data/paroli.edj ${D}${datadir}/elementary/themes
-#    	install -d ${D}/etc/enlightenment/
-#	echo 'E_PROFILE="-profile illume"' > ${D}${sysconfdir}/enlightenment/default_profile
 
     	install -d ${D}${datadir}/pixmaps	
 	install ${S}/data/paroli.png ${D}${datadir}/pixmaps
