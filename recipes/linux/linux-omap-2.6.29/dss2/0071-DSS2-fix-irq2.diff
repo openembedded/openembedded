@@ -1,0 +1,35 @@
+From 8af2f6550d6971875e4c5d3f93982f86f4bcf216 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Sat, 23 May 2009 15:00:00 +0000
+Subject: DSS2: DISPC: clear irqstatus for newly enabled irqs
+
+This fixes the problem that when requesting a new irq
+we could get the isr called too early in case irqstatus
+already had that irq flag on.
+---
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index b3685b2..2471cfe 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -2515,6 +2515,7 @@ int dispc_get_clock_div(struct dispc_clock_info *cinfo)
+ static void _omap_dispc_set_irqs(void)
+ {
+ 	u32 mask;
++	u32 old_mask;
+ 	int i;
+ 	struct omap_dispc_isr_data *isr_data;
+ 
+@@ -2530,6 +2531,11 @@ static void _omap_dispc_set_irqs(void)
+ 	}
+ 
+ 	enable_clocks(1);
++
++	old_mask = dispc_read_reg(DISPC_IRQENABLE);
++	/* clear the irqstatus for newly enabled irqs */
++	dispc_write_reg(DISPC_IRQSTATUS, (mask ^ old_mask) & mask);
++
+ 	dispc_write_reg(DISPC_IRQENABLE, mask);
+ 
+ 	enable_clocks(0);
+--
+cgit v0.8.2.1-10-g45e7
