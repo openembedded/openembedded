@@ -1,0 +1,13 @@
+Index: xorg-server-1.5.1/hw/xfree86/os-support/linux/Makefile.am
+===================================================================
+--- xorg-server-1.5.1.orig/hw/xfree86/os-support/linux/Makefile.am	2008-09-23 19:24:59.000000000 +0100
++++ xorg-server-1.5.1/hw/xfree86/os-support/linux/Makefile.am	2008-10-27 13:27:40.000000000 +0000
+@@ -40,7 +40,7 @@
+ 
+ AM_CFLAGS = -DUSESTDRES -DHAVE_SYSV_IPC $(DIX_CFLAGS) $(XORG_CFLAGS) $(PLATFORM_DEFINES)
+ 
+-INCLUDES = $(XORG_INCS) $(PLATFORM_INCLUDES) -I/usr/include/drm # FIXME this last part is crack
++INCLUDES = $(XORG_INCS) $(PLATFORM_INCLUDES) $(LIBDRM_CFLAGS)
+ 
+ # FIXME: These need to be added to the build
+ LNX_EXTRA_SRCS = \
