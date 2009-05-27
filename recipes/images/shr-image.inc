@@ -3,9 +3,9 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r1"
+PR = "r2"
 
-IMAGE_LINGUAS = "en-us"
+IMAGE_LINGUAS ?= "en-us"
 
 DEPENDS += "task-shr-minimal"
 
