@@ -4,8 +4,7 @@ PRIORITY = "optional"
 LICENSE = "Perl Clarified Artistic License"
 DEPENDS = "ncurses"
 
-#SRC_URI = "ftp://ftp.cs.pdx.edu/pub/elvis/elvis-2.2_0.tar.gz"
-SRC_URI = "http://www.fh-wedel.de/pub/elvis/elvis-2.2_0.tar.gz"
+SRC_URI = "ftp://ftp.cs.pdx.edu/pub/elvis/elvis-2.2_0.tar.gz"
 S = "${WORKDIR}/elvis-2.2_0"
 
 CFLAGS_prepend = " -I. -Iosunix -L${STAGING_LIBDIR} "

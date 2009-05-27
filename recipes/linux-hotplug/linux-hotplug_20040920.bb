@@ -27,7 +27,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20
 	file://sysconfig-usb \
 	file://isapnp-exit.diff;patch=1 \
 	file://usb-storage \
-	file://soc.agent"
+	file://soc.agent \
+	file://hotplug-binary-path.patch;patch=1"
 
 SRC_URI_append_openzaurus = " file://quiet-pci.patch;patch=1"
 

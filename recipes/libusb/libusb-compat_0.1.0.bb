@@ -11,7 +11,8 @@ DEPENDS = "libusb1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-compat-${PV}.tar.bz2 \
           "
-
+SRC_URI_append_nylon = " file://gcc-3-compatibility.patch;patch=1 \
+"
 inherit autotools pkgconfig binconfig lib_package
 
 PARALLEL_MAKE = ""
