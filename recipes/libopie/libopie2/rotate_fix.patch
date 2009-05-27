@@ -1,0 +1,87 @@
+--- libopie2/opiecore/device/odevice_ipaq.cpp	24 May 2009 20:09:49 -0000	1.40
++++ libopie2/opiecore/device/odevice_ipaq.cpp	27 May 2009 21:16:24 -0000
+@@ -35,6 +35,7 @@
+ #include <qfile.h>
+ #include <qtextstream.h>
+ #include <qwindowsystem_qws.h>
++#include <qgfx_qws.h>
+ 
+ /* OPIE */
+ #include <qpe/config.h>
+@@ -335,11 +336,11 @@
+             int quarters;
+             switch (d->m_rotation) {
+                 case Rot0:   quarters = 0/*0deg*/; break;
+-                case Rot90:  quarters = 1/*90deg*/; break;
++                case Rot90:  quarters = 3/*90deg*/; break;
+                 case Rot180: quarters = 2/*180deg*/; break;
+-                case Rot270: quarters = 3/*270deg*/; break;
++                case Rot270: quarters = 1/*270deg*/; break;
+             }
+-            newkeycode = Key_Left + ( keycode - Key_Left + quarters ) % 4;
++            newkeycode = Key_Left + ( keycode - Key_Left + quarters + qt_screen->transformOrientation() ) % 4;
+             break;
+         }
+ 
+--- libopie2/opiecore/device/odevice_zaurus.cpp	24 May 2009 20:09:49 -0000	1.57
++++ libopie2/opiecore/device/odevice_zaurus.cpp	27 May 2009 21:16:24 -0000
+@@ -807,16 +807,8 @@
+         case Key_Up   :
+         case Key_Down :
+         {
+-            if (d->m_model == Model_Zaurus_SLC3000) {
+-                // This ensures that the cursor keys work correctly and that the
+-                // side wheel works as expected when the screen is flipped over
+-                if (rotation() == Rot270)
+-                    newkeycode = Key_Left + ( keycode - Key_Left + 1 ) % 4;
+-            }
+-            else {
+-                if (rotation()==Rot90)
+-                    newkeycode = Key_Left + ( keycode - Key_Left + 3 ) % 4;
+-            }
++            if (rotation()==Rot90)
++                newkeycode = Key_Left + ( keycode - Key_Left + 3 ) % 4;
+             break;
+             
+         }
+--- libopie2/opiecore/device/odevice_palm.cpp	2009-05-27 22:28:37.000000000 +0100
++++ libopie2/opiecore/device/odevice_palm.cpp	2009-05-27 22:28:09.000000000 +0100
+@@ -295,25 +295,21 @@
+ {
+     int newkeycode = keycode;
+ 
+-    if (qt_screen->transformOrientation() != Rot0){
+-
+-        switch ( keycode ) {
+-	    case Key_Left :
+-            case Key_Right:
+-            case Key_Up   :
+-            case Key_Down :
+-		    newkeycode = Key_Left + ( keycode - Key_Left + 4 ) % 4;
+-	    default:
+-		break;
+-        }
++    switch ( keycode ) {
++        case Key_Left :
++        case Key_Right:
++        case Key_Up   :
++        case Key_Down :
++            newkeycode = Key_Left + ( keycode - Key_Left + qt_screen->transformOrientation() ) % 4;
++        default:
++            break;
++    }
+ 
+-        if (newkeycode!=keycode) {
+-            if ( newkeycode != Key_unknown ) {
+-                QWSServer::sendKeyEvent ( -1, newkeycode, modifiers, isPress, autoRepeat );
+-            }
+-            return true;
++    if (newkeycode!=keycode) {
++        if ( newkeycode != Key_unknown ) {
++            QWSServer::sendKeyEvent ( -1, newkeycode, modifiers, isPress, autoRepeat );
+         }
+-
++        return true;
+     }
+ 
+     return false;
