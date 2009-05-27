@@ -11,14 +11,15 @@ PROVIDES = "virtual/xserver"
 
 PE = "1"
 PV = "1.3.0.0+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = 'om-gta02'
 
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-1.3.0.0:${FILE_DIRNAME}/xserver-kdrive:${FILE_DIRNAME}/files"
 
-SRC_URI = "git://git.openmoko.org/git/xglamo.git;protocol=git"
+SRC_URI = "git://git.openmoko.org/git/xglamo.git;protocol=git \
+           file://fix-crashes-with-composite.patch;patch=1"
 S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig

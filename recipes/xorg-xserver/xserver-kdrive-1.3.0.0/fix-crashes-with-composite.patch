@@ -1,0 +1,21 @@
+diff -ur xserver-kdrive-glamo-1.3.0.0.orig/hw/kdrive/src/koffscreen.c xserver-kdrive-glamo-1.3.0.0/hw/kdrive/src/koffscreen.c
+--- xserver-kdrive-glamo-1.3.0.0.orig/hw/kdrive/src/koffscreen.c 2009-02-19 19:04:49.000000000 +0100
++++ xserver-kdrive-glamo-1.3.0.0/hw/kdrive/src/koffscreen.c      2009-02-28 20:25:58.000000000 +0100
+@@ -142,7 +142,7 @@
+ 	    {
+ 		if (scan->state == KdOffscreenLocked) {
+ 		    /* Can't make room here, start after this locked area. */
+-		    begin = scan->next;
++		    begin = scan;
+ 		    break;
+ 		}
+ 		/* Score should only be non-zero for KdOffscreenRemovable */
+@@ -168,7 +168,7 @@
+ 
+ 	/* adjust size to match alignment requirement */
+ 	real_size = size;
+-	tmp = begin->offset % align;
++	tmp = area->offset % align;
+ 	if (tmp)
+ 	    real_size += (align - tmp);
+ 
