@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r22"
+PR = "r23"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -38,12 +38,11 @@ do_install_append() {
        	# install paroli theme
        	install -d ${D}${E_CONFIG_DIR}/themes
        	install ${S}/data/e-config/paroli.edj ${D}${E_CONFIG_DIR}/themes/
+       	install ${S}/data/e-config/serenity.edj ${D}${E_CONFIG_DIR}/themes/
        	install -d ${D}${E_CONFIG_DIR}/config/paroli
        	install ${S}/data/e-config/paroli/* ${D}${E_CONFIG_DIR}/config/paroli/
-       	install -d ${D}${E_CONFIG_DIR}/config/paroli-illume
-       	install ${S}/data/e-config/paroli-illume/* ${D}${E_CONFIG_DIR}/config/paroli-illume/
-       	#install -d ${D}${E_CONFIG_DIR}/themes
-	#install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
+       	install -d ${D}${E_CONFIG_DIR}/config/paroli-serenity
+       	install ${S}/data/e-config/paroli-serenity/* ${D}${E_CONFIG_DIR}/config/paroli-serenity/
 	install -d ${D}${datadir}/elementary/themes
 	install ${S}/data/paroli.edj ${D}${datadir}/elementary/themes
 
