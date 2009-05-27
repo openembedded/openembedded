@@ -118,6 +118,7 @@ RDEPENDS_${PN}-apps = "\
   shr-dialer \
   shr-messages \
   shr-contacts \
+  notifier \
   ophonekitd \ 
   libframeworkd-phonegui-efl \
   rxvt-unicode \
