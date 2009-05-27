@@ -1,10 +1,10 @@
 DESCRIPTION = "Ophonekitd daemon - Vala rewrite"
 SECTION = "x11/applications"
-DEPENDS = "vala-native vala-dbus-binding-tool-native vala libmodulo dbus-glib libfso-glib libframeworkd-phonegui sqlite3"
+DEPENDS = "vala-dbus-binding-tool-native libgee libmodulo dbus-glib libfso-glib libframeworkd-phonegui sqlite3"
 PV = "0.0.1+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
-inherit pkgconfig autotools autotools_stage
+inherit pkgconfig autotools autotools_stage vala girepository
 
 SRC_URI = "git://git.shr-project.org/repo/ophonekitd.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
@@ -21,5 +21,3 @@ do_install_append() {
 }
 
 FILES_${PN} += "${datadir} ${sysconfdir}"
-
-FILES_${PN}-dev += "${datadir}/vala/vapi/*.vapi"
