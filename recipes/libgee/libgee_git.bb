@@ -6,6 +6,7 @@ DEPENDS = "glib-2.0"
 LICENSE = "LGPL"
 DEFAULT_PREFERENCE = -1
 PV = "0.1.5+gitr${SRCREV}"
+PR = "r0"
 
 inherit autotools autotools_stage pkgconfig vala
 
