@@ -37,6 +37,8 @@ SRC_URI_append_arm = " file://alignment.sh"
 
 SRC_URI_append_openmoko = " file://g_ether.sh"
 
+SRC_URI_append_shr = " file://g_ether.sh"
+
 KERNEL_VERSION = ""
 
 do_install () {
@@ -132,6 +134,15 @@ do_install () {
 # Angstrom doesn't support devfs
 do_install_append_angstrom () {
 	rm ${D}${sysconfdir}/init.d/devices ${D}${sysconfdir}/rcS.d/S05devices
+}
+
+do_install_append_shr () {
+ 	# Oepnmoko persistent USB networking
+	install -m 0755 ${WORKDIR}/g_ether.sh	${D}${sysconfdir}/init.d
+	ln -sf	../init.d/g_ether.sh	${D}${sysconfdir}/rcS.d/S03g_ether.sh
+
+	# drop some things to speed up boot
+	rm ${D}${sysconfdir}/rcS.d/S02banner
 }
 
 do_install_append_openmoko () {
