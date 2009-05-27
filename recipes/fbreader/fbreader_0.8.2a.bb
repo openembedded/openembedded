@@ -4,7 +4,7 @@ SECTION = "x11/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv"
-PR = "r5"
+PR = "r6"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.
@@ -16,7 +16,10 @@ SRC_URI = "http://www.fbreader.org/obsolete/fbreader-sources-${PV}.tgz \
 
 SRC_URI_append_openmoko = "\
 		file://fbreader-openmoko.patch;patch=1"
-	   
+
+SRC_URI_append_shr = "\
+		file://fbreader-openmoko.patch;patch=1"
+
 SRC_URI_append_spitz = "\
 		  file://zaurus-VGA.patch;patch=1"
 
