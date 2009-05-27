@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libmikmod libvorbis"
 LICENSE = "LGPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz"
 S = "${WORKDIR}/SDL_mixer-${PV}"
@@ -15,6 +15,11 @@ inherit autotools
 EXTRA_OECONF = "--disable-music-mp3"
 # although we build smpeg... need to find out how
 # to deal with optional dependencies
+
+do_configure_prepend() {
+   sed -i '/libtool.m4/q' ${S}/acinclude.m4
+   autoreconf -i -f
+}
 
 do_stage() {
 	oe_libinstall -so libSDL_mixer ${STAGING_LIBDIR}
