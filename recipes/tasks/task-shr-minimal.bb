@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r5"
+PR = "r6"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -96,11 +96,11 @@ RDEPENDS_${PN}-audio = "\
 "
 
 RDEPENDS_${PN}-audio_append_om-gta01 = "\
-  openmoko-alsa-scenarios \
+  alsa-scenarii-shr \
 "
 
 RDEPENDS_${PN}-audio_append_om-gta02 =  "\
-  openmoko-alsa-scenarios \
+  alsa-scenarii-shr \
 "
 
 RDEPENDS_${PN}-x = "\
