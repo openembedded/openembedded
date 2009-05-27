@@ -99,4 +99,4 @@ PREFERRED_VERSION_calc = "0.0.1"
 #pin shr-config due to gnome bug 579803 (requires vala > 0.7.1)
 SRCREV_pn-shr-config = "9b59390d265805b68ea10136fa03fa67713f1275"
 SRCREV_pn-libeflvala = "${AUTOREV}"
-
+SRCREV_pn-alsa-scenarii-shr = "${AUTOREV}"
