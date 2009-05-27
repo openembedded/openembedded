@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r14"
+PR = "r15"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -23,6 +23,7 @@ RDEPENDS_${PN} += "\
 		pingus \
 		mokomaze \
 		openmoocow \
+		dosbox \
 		vagalume \
 		python-pygame \
 		mokoko \
