@@ -1,7 +1,3 @@
-# PREFERRED_PROVIDER_frameworkd = "frameworkd-devel"
-
-# libeflvala needs at least 2.18.0 and upstream OE provides only 2.16.4
-PREFERRED_VERSION_glib-2.0 = "2.18.3"
 
 # FSO stuff
 SRCREV_pn-frameworkd = "${AUTOREV}"
@@ -11,7 +7,6 @@ SRCREV_pn-frameworkd-config-shr = "${AUTOREV}"
 SRCREV_pn-frameworkd-config-shr_FSO_REV = "${AUTOREV}"
 SRCREV_pn-frameworkd-config-shr_SHR_REV = "${AUTOREV}"
 SRCREV_pn-dbus-hlid = "${AUTOREV}"
-SRCREV_pn-vala-terminal = "2f849c5690d8"
 SRCREV_pn-vala-dbus-binding-tool-native = "${AUTOREV}"
 SRCREV_pn-libfso-glib = "${AUTOREV}"
 SRCREV_pn-fso-specs = "${AUTOREV}"
@@ -35,12 +30,11 @@ SRCREV_pn-libhito = "${AUTOREV}"
 SRCREV_pn-neod = "${AUTOREV}"
 SRCREV_pn-libframeworkd-phonegui-gtk = "${AUTOREV}"
 SRCREV_pn-libframeworkd-phonegui-gtk2 = "${AUTOREV}"
-PREFERRED_VERSION_calc = "0.0.1"
 #pin shr-config due to gnome bug 579803 (requires vala > 0.7.1)
-SRCREV_pn-shr-config = "9b59390d265805b68ea10136fa03fa67713f1275"
+#SRCREV_pn-shr-config = "9b59390d265805b68ea10136fa03fa67713f1275"
 
-EFL_SRCREV = "40567"
-SRCREV_pn-python-elementary = "40756"
+#EFL_SRCREV = "40567"
+#SRCREV_pn-python-elementary = "40756"
 
 # KERNEL
 SRCREV_pn-linux-openmoko-2.6.28 = "${AUTOREV}"
@@ -55,6 +49,5 @@ SRCREV_pn-libgee = "${AUTOREV}"
 #PREFERRED_VERSION_fakeroot = "1.12.1"
 #PREFERRED_VERSION_fakeroot-native = "1.12.1"
 
-SRCREV_pn-boost-signals2 = "52299"
 SRCREV_pn-dbus-c++-native = "${AUTOREV}"
 SRCREV_pn-dbus-c++ = "${AUTOREV}"
