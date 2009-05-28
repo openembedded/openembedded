@@ -56,7 +56,6 @@ tcl \
 tcpdump \
 tinc \
 tzdata \
-usbutils \
 vtun \
 wireless-tools \
 wpa-supplicant \

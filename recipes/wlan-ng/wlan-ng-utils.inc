@@ -10,11 +10,11 @@ DEPENDS = "virtual/kernel"
 SRC_URI = "file://only-the-utils.patch;patch=1 \
 	file://wlan-ng.modutils \
 	file://wlan.agent \
-	file://usbctl \
 	file://resume \
 	file://pre-up \
 	file://post-down \
 	file://config.in"
+SRC_URI_append_arm = " file://usbctl"
 
 # yeah, it's kind of backwards, but otherwise the config step will fail
 inherit module
@@ -59,10 +59,13 @@ do_install() {
 	install -m 0755 ${WORKDIR}/post-down ${D}${sysconfdir}/network/if-post-down.d/wlan-ng
 	install -d ${D}${sysconfdir}/apm/resume.d
 	install -m 0755 ${WORKDIR}/resume ${D}${sysconfdir}/apm/resume.d/wlan-ng
-	install -m 0755 ${WORKDIR}/usbctl ${D}${base_sbindir}/usbctl
 	install -d ${D}${mandir}/man1
 	install -m 0644 ${S}/man/*.1 ${D}${mandir}/man1/
 	rm -rf ${D}/usr/local/man
+}
+
+do_install_append_arm() {
+	install -m 0755 ${WORKDIR}/usbctl ${D}${base_sbindir}/usbctl
 }
 
 FILES_${PN}-dbg += "/sbin/.debug"

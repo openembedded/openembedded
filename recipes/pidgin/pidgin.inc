@@ -52,11 +52,11 @@ FILES_${PN}-dev += "${libdir}/${PN}/*.la"
 PACKAGES_DYNAMIC = "libpurple-protocol-* libpurple-plugin-* pidgin-plugin-* finch-plugin-*"
 
 python populate_packages_prepend () {
-	root   = bb.data.expand('${libdir}/pidgin', d)
-	purple = bb.data.expand('${libdir}/purple-2', d)
-	finch  = bb.data.expand('${libdir}/finch', d)
+	pidgroot = bb.data.expand('${libdir}/pidgin', d)
+	purple   = bb.data.expand('${libdir}/purple-2', d)
+	finch    = bb.data.expand('${libdir}/finch', d)
 
-	do_split_packages(d, root, '^([^l][^i][^b].*)\.so$',
+	do_split_packages(d, pidgroot, '^([^l][^i][^b].*)\.so$',
 		output_pattern='pidgin-plugin-%s',
 		description='Pidgin plugin %s',
 		prepend=True, extra_depends='')

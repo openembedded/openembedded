@@ -1,0 +1,36 @@
+Index: kismet-2007-10-R1/kismet_wrapper.cc
+===================================================================
+--- kismet-2007-10-R1.orig/kismet_wrapper.cc	2007-10-06 21:50:03.000000000 +0000
++++ kismet-2007-10-R1/kismet_wrapper.cc	2009-05-26 12:58:01.000000000 +0000
+@@ -25,6 +25,7 @@
+ #include <sys/wait.h>
+ #include <fcntl.h>
+ #include <unistd.h>
++#include <string.h>
+ 
+ #include "config.h"
+ 
+Index: kismet-2007-10-R1/ringbuf.cc
+===================================================================
+--- kismet-2007-10-R1.orig/ringbuf.cc	2005-12-11 19:14:39.000000000 +0000
++++ kismet-2007-10-R1/ringbuf.cc	2009-05-26 12:56:17.000000000 +0000
+@@ -17,6 +17,7 @@
+ */
+ 
+ #include "ringbuf.h"
++#include <string.h>
+ 
+ RingBuffer::RingBuffer(int in_size) {
+     ring_len = in_size;
+Index: kismet-2007-10-R1/util.cc
+===================================================================
+--- kismet-2007-10-R1.orig/util.cc	2006-08-28 20:37:29.000000000 +0000
++++ kismet-2007-10-R1/util.cc	2009-05-26 12:57:00.000000000 +0000
+@@ -22,6 +22,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <string.h>
+ 
+ // We need this to make uclibc happy since they don't even have rintf...
+ #ifndef rintf

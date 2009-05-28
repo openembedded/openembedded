@@ -1,0 +1,26 @@
+XServer 1.6.x introduced XInput3. Official drivers were fixed by X.org
+developers. This change is based on xf86-input-citron:
+
+http://cgit.freedesktop.org/xorg/driver/xf86-input-citron/commit/?id=591674bee43061f1169ebeede653fb6d98147724
+
+Signed-off-by: Marcin Juszkiewicz <marcin@buglabs.net>
+---
+ src/tslib.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- xf86-input-tslib-0.0.5.orig/src/tslib.c
++++ xf86-input-tslib-0.0.5/src/tslib.c
+@@ -199,11 +199,13 @@ xf86TslibControlProc(DeviceIntPtr device
+ 			return !Success;
+ 		}
+ 
+ 		if (InitValuatorClassDeviceStruct(device,
+ 						  2,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
+ 						  xf86GetMotionEvents,
++#endif
+ 						  0, Absolute) == FALSE) {
+ 			ErrorF("unable to allocate Valuator class device\n");
+ 			return !Success;
+ 		}
+ 

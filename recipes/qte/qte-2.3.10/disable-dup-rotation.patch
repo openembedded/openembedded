@@ -4,7 +4,7 @@
      case Qt::Key_Down:
          unicode = 0xffff;
          mod_key = false;
-+#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
++#if 0
          if (qt_screen->isTransformed())
              qtKeyCode = static_cast<Qt::Key>( xform_dirkey(static_cast<int>( qtKeyCode ) ) );
 +#endif

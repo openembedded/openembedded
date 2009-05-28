@@ -1,0 +1,10 @@
+--- pcapsource.cc
++++ pcapsource.cc
+@@ -2914,6 +2914,7 @@
+ 			return -1;
+ 
+ 	}
++	return -1;
+ }
+ #endif
+ 

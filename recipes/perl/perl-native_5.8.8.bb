@@ -85,5 +85,11 @@ do_stage_append() {
             install $i ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE
         done
 }
+do_stage_append_nylon() {
+        # get rid of definitions not supported by the gcc version we use for nylon...
+        for i in ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${STAGING_DIR_HOST}/perl/config.sh; do
+                perl -pi -e 's/-Wdeclaration-after-statement //g' ${i}
+        done
+}
 
 PARALLEL_MAKE = ""

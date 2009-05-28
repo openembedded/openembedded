@@ -189,6 +189,11 @@ Website:    www.codeomega.info
 Interests:  text-to-speech, vnc
 Recipes:    libvncserver, fbvncserver2
 
+Person:     Paul Eggleton
+Mail:       bluelightning@bluelightning.org
+Interests:  PocketPC and Zaurus userland (especially Opie)
+Recipes:    opie-*, qpe-*
+
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
 Machines:   h3900, h4000, hx4700
