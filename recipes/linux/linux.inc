@@ -9,6 +9,9 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 # Enable OABI compat for people stuck with obsolete userspace
 ARM_KEEP_OABI ?= "1"
 
+# Quirk for udev greater or equal 141
+UDEV_GE_141 ?= "0"
+
 # Specify the commandline for your device
 
 # Boot from mmc
@@ -103,6 +106,20 @@ do_configure_prepend() {
 
         echo 'CONFIG_LOCALVERSION=""' >>${S}/.config
         echo '# CONFIG_LOCALVERSION_AUTO is not set' >>${S}/.config
+
+        #
+        # Udev quirks
+        #
+
+        # Newer versions of udev mandate that sysfs doesn't have deprecated entries
+        if [ "${UDEV_GE_141}" = "1" ] ; then
+            sed -e /CONFIG_SYSFS_DEPRECATED/d \
+                -e /CONFIG_SYSFS_DEPRECATED_V2/d \
+                -i '${S}/.config'
+            echo '# CONFIG_SYSFS_DEPRECATED is not set' >> ${S}/.config
+            echo '# CONFIG_SYSFS_DEPRECATED_V2 is not set' >> ${S}/.config
+        fi
+
         #
         # root-over-nfs-over-usb-eth support. Limited, but should cover some cases.
         # Enable this by setting a proper CMDLINE_NFSROOT_USB.
