@@ -4,9 +4,12 @@ AUTHOR = "Pietro Montorfano"
 LICENSE = "GPLv3"
 RDEPENDS = "python-elementary python python-edbus"
 SECTION = "x11/application"
+PR = "r1"
 
 SRC_URI = "http://monto.homelinux.org/notifier \
 http://monto.homelinux.org/89notifier"
+
+S = "${WORKDIR}"
 
 do_install() {
 	install -d ${D}${bindir}
