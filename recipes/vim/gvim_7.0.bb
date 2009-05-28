@@ -3,7 +3,7 @@ VIMVER = "70"
 require vim.inc
 
 DEPENDS += "gtk+ xt"
-PR = "r1"
+PR = "${INC_PR}.1"
 FILESPATHPKG =. "vim-${PV}:vim:"
 
 EXTRA_OECONF = "--enable-gui=gtk2 --enable-gtk2-test --disable-gtktest \
