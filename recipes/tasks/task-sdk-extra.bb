@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages"
-PR = "r9"
+PR = "r10"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -49,5 +49,5 @@ RDEPENDS_task-sdk-gpe = "\
     libgpelaunch-dev \
     libgpewidget-dev \
     libhandoff-dev \
+    libxi-dev \
     gconf-dbus-dev"
-
