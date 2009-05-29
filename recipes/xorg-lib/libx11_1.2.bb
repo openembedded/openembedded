@@ -13,6 +13,11 @@ SRC_URI += "file://x11_disable_makekeys.patch;patch=1 \
 
 EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
 
+# Dolt gets used on x86 and ppc and hardcodes 'libtool'
+do_configure_append() {
+        cp ${TARGET_PREFIX}libtool libtool || true
+}
+
 do_compile() {
 	(
 		unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
