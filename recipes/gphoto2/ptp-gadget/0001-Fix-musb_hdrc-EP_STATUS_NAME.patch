@@ -1,0 +1,33 @@
+From b78a6fe59f5d093c8841a7c2da661af81f762018 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Fri, 29 May 2009 16:52:10 +0200
+Subject: [ptp-gadget][PATCH 1/2] Fix musb_hdrc EP_STATUS_NAME
+
+There is no 'ep3', only 'epX{in,out}':
+root@beagleboard:~# ls /dev/gadget/
+ep10in	 ep11in   ep12in   ep13  ep15	ep1out	ep2out	ep3out	ep4out	ep5out	ep6out	ep7out	ep8out	ep9out
+ep10out  ep11out  ep12out  ep14  ep1in	ep2in	ep3in	ep4in	ep5in	ep6in	ep7in	ep8in	ep9in	musb_hdrc
+
+Tested on OMAP3530 based beagleboard with iPhoto as PTP application on a macbook
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ ptp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/ptp.c b/ptp.c
+index edb307f..ec80199 100644
+--- a/ptp.c
++++ b/ptp.c
+@@ -701,7 +701,7 @@ static int autoconfig(void)
+ 		fs_status_desc.bEndpointAddress
+ 			= hs_status_desc.bEndpointAddress
+ 			= USB_DIR_IN | 3;
+-		EP_STATUS_NAME = "ep3";
++		EP_STATUS_NAME = "ep3in";
+ 
+ 	/* Atmel AT91 processors, full speed only */
+ 	} else if (stat(DEVNAME = "at91_udc", &statb) == 0) {
+-- 
+1.6.1
+
