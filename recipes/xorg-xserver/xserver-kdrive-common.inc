@@ -73,6 +73,7 @@ SRC_URI ?= "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES}"
 KDRIVE_COMMON_PATCHES = " \
 	file://kmode.patch;patch=1 \
+	file://kmode-800_480.patch;patch=1 \
 	file://disable-apm.patch;patch=1 \
 	file://no-serial-probing.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1  \
