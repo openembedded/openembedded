@@ -6,6 +6,8 @@ PR = "r2"
 
 inherit efl
 
+EXTRA_AUTORECONF = ""
+
 EXTRA_OECONF = "\
   --enable-software-x11 \
   --enable-software-16-x11 \
