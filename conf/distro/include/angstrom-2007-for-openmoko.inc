@@ -26,7 +26,7 @@ DISTRO_TYPE ?= "debug"
 # (locales, UI transalations, help, etc. - useless for pros, but really 
 # helpful for common users).
 # Also, it appears that no locales fit in 16Mb for now. "C" locale rules!
-IMAGE_LINGUAS = '${@base_less_or_equal("ROOT_FLASH_SIZE", "16", "", "en-gb", d)}'
+IMAGE_LINGUAS ?= '${@base_less_or_equal("ROOT_FLASH_SIZE", "16", "", "en-gb", d)}'
 
 # set feed path variables
 FEED_BASEPATH = "feeds/2007/${ANGSTROM_PKG_FORMAT}/${ANGSTROMLIBC}/"
