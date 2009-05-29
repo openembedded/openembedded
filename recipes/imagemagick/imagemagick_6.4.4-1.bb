@@ -3,6 +3,8 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "tiff"
 
+PR = "r1"
+
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;patch=1 \
           "
@@ -14,7 +16,7 @@ S = "${WORKDIR}/ImageMagick-${IMVER}"
 inherit autotools binconfig pkgconfig
 
 EXTRA_AUTORECONF += "--exclude=libtoolize"
-EXTRA_OECONF = "--without-x --without-freetype --without-perl --disable-openmp"
+EXTRA_OECONF = "--program-prefix= --without-x --without-freetype --without-perl --disable-openmp"
 
 do_configure() {
 	gnu-configize
