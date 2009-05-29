@@ -1,0 +1,24 @@
+--- a/hw/kdrive/src/kmode.c~	2009-05-28 16:30:24.000000000 +0200
++++ b/hw/kdrive/src/kmode.c	2009-05-28 16:30:24.000000000 +0200
+@@ -112,10 +112,18 @@
+     },
+ 
+ 
+-  {   480,    640,    60,     0,                      /* VESA */
+-               0,      0,     0,    KdSyncNegative, /* 31.469 */
++    {   480,    640,    60,     0,                      /* VESA */
++                0,      0,     0,    KdSyncNegative, /* 31.469 */
+                0,      0,     0,     KdSyncNegative, /* 59.940 */
+-   },
++    },
++    {   800,    480,    51,     0,
++              0,      0,     0,    KdSyncNegative,
++              0,      0,     0,     KdSyncNegative,
++    },
++    {   480,    800,    51,     0,
++              0,      0,     0,    KdSyncNegative,
++              0,      0,     0,     KdSyncNegative,
++    },
+   
+     
+     /* 800x600 modes */
