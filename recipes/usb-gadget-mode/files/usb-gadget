@@ -26,7 +26,7 @@ go() {
 	networking)	setup_usb g_ether "$MODULE_OPTIONS" ;;
 	zero)		setup_usb g_zero "$MODULE_OPTIONS" ;;
 	midi)		setup_usb g_midi "$MODULE_OPTIONS" ;;
-	printer		setup_usb g_printer "$MODULE_OPTIONS" ;;
+	printer)	setup_usb g_printer "$MODULE_OPTIONS" ;;
 	gadgetfs) 	setup_usb gadgetfs "$MODULE_OPTIONS" ;;
 	composite)	setup_usb g_cdc "$MODULE_OPTIONS" ;;
 	storage)	setup_usb g_file_storage "$MODULE_OPTIONS" ;;
