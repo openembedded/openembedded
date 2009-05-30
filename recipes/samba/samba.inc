@@ -6,6 +6,7 @@ SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
            file://volatiles.03_samba \
            file://smb.conf \
            file://init \
+           file://tdb.pc \
            "
 
 S = "${WORKDIR}/samba-${PV}/source"
@@ -55,6 +56,8 @@ do_compile () {
 }
 
 do_install_append() {
+	install -d ${D}${libdir}/pkgconfig/
+	cp ${WORKDIR}/tdb.pc ${D}${libdir}/pkgconfig/
 	mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0 || true
 	ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
 	mkdir -p ${D}${base_sbindir}
@@ -83,4 +86,7 @@ do_stage() {
 	oe_libinstall -C bin -a -so libtdb ${STAGING_LIBDIR}
 	oe_libinstall -C bin -a -so libtalloc ${STAGING_LIBDIR}
 	oe_libinstall -C bin -so libwbclient ${STAGING_LIBDIR}
+	install -d ${STAGING_LIBDIR}/pkgconfig/
+	install -m 0644 ${WORKDIR}/tdb.pc ${STAGING_LIBDIR}/pkgconfig/
+	install -m 0644 ${S}/lib/tdb/include/*.h ${STAGING_INCDIR}/
 }
