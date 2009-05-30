@@ -55,6 +55,9 @@ paroli_rootfs_postprocess() {
     # set a default locale    
     echo "export LC_ALL=en_CA.utf-8" >>./etc/profile
     cd $curdir
+
+    # nuke bad bluetooth file - figure this out on monday
+    rm /etc/dbus-1/system.d/bluetooth.conf
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "paroli_rootfs_postprocess;"
