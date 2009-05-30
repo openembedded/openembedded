@@ -1,4 +1,4 @@
- require fso-image.inc
+require fso-image.inc
 
 ILLUME_THEME = "paroli"
 
