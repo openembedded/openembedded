@@ -5,9 +5,8 @@ LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
 PV = "0.1+gitr${SRCREV}"
 PR = "r0"
-PE = "1"
 
-SRC_URI = "git://opensource.wolfsonmicro.com/alsa-scenario;branch=master;protocol=git"
+SRC_URI = "${FREESMARTPHONE_GIT}/alsa-scenario;branch=mickey;protocol=git"
 S = "${WORKDIR}/git"
 
-inherit autotools
+inherit autotools autotools_stage lib_package

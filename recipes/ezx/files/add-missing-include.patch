@@ -1,0 +1,12 @@
+Index: boot_usb/boot_usb.c
+===================================================================
+--- boot_usb.orig/boot_usb.c
++++ boot_usb/boot_usb.c
+@@ -23,6 +23,7 @@
+  *
+  */
+ 
++#include <linux/limits.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>

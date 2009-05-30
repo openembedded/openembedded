@@ -1,7 +1,7 @@
 require python.inc
 DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
-PR = "ml0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
@@ -11,9 +11,10 @@ SRC_URI = "\
   file://03-fix-tkinter-detection.patch;patch=1 \
   file://04-default-is-optimized.patch;patch=1 \
   file://05-enable-ctypes-cross-build.patch;patch=1 \
+  file://99-ignore-optimization-flag.patch;patch=1 \
   \
 # not yet pushed forward
-# sitecustomize, sitebranding
+# sitebranding
   \
 #  file://05-install.patch;patch=1 \
 #  file://06-fix-urllib-exception.patch;patch=1 \
@@ -26,8 +27,13 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
 
+# The 3 lines below are copied from the libffi recipe, ctypes ships its own copy of the libffi sources
+#Somehow gcc doesn't set __SOFTFP__ when passing -mfloatabi=softp :(
+TARGET_CC_ARCH_append_armv6 = " -D__SOFTFP__"
+TARGET_CC_ARCH_append_armv7a = " -D__SOFTFP__"
+
 #
-# copy config.h and an appropriate Makefile for distutils.sysconfig
+# Copy config.h and an appropriate Makefile for distutils.sysconfig,
 # which laters uses the information out of these to compile extensions
 #
 do_compile_prepend() {
@@ -90,10 +96,27 @@ RRECOMMENDS_python-crypt = "openssl"
 
 # add sitecustomize
 FILES_python-core += "${libdir}/python${PYTHON_MAJMIN}/sitecustomize.py"
+# ship 2to3
+FILES_python-core += "${bindir}/2to3"
 
-# package libpython
+# package libpython2
 PACKAGES =+ "libpython2"
 FILES_libpython2 = "${libdir}/libpython*.so*"
+
+# additional stuff -dev
+
+FILES_${PN}-dev = "\
+  ${includedir} \
+  ${libdir}/lib*${SOLIBSDEV} \
+  ${libdir}/*.la \
+  ${libdir}/*.a \
+  ${libdir}/*.o \
+  ${libdir}/pkgconfig \
+  ${base_libdir}/*.a \
+  ${base_libdir}/*.o \
+  ${datadir}/aclocal \
+  ${datadir}/pkgconfig \
+"
 
 # catch debug extensions (isn't that already in python-core-dbg?)
 FILES_python-dbg += "${libdir}/python${PYTHON_MAJMIN}/lib-dynload/.debug"
