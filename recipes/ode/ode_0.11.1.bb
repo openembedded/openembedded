@@ -2,14 +2,14 @@ DESCRIPTION = "ODE is an Open Source Physics Engine."
 SECTION = "libs"
 HOMEPAGE = "http://www.ode.org"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/opende/ode-${PV}.tar.gz "
 
 
 inherit autotools binconfig
 
-EXTRA_OECONF = "--disable-demos --enable-soname"
+EXTRA_OECONF = "--disable-demos --enable-soname --enable-shared"
 
 do_configure_append() {
 	echo "#define dInfinity DBL_MAX" >>include/ode/config.h
