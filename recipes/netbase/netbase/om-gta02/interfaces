@@ -16,7 +16,7 @@ iface eth1 inet dhcp
 
 # Ethernet/RNDIS gadget (g_ether)
 # ... or on host side, usbnet and random hwaddr
-allow-hotplug usb0
+auto usb0
 iface usb0 inet static
 	address 192.168.0.202
 	netmask 255.255.255.0
