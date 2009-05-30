@@ -34,9 +34,9 @@ RDEPENDS_${PN} += "\
 		fltk-chess \
 		remoko \
 		shr-config \
-                shr-splash \
+		shr-splash \
 		shr-splash-theme-simple \
-                shr-splash-theme-dontpanic \
+		shr-splash-theme-dontpanic \
 		openbmap-logger \
 		ffalarms \
 		libnotify \
@@ -60,5 +60,6 @@ RDEPENDS_${PN} += "\
 		emacs \
 		mcabber \
 		gdb \
-                oh-puzzles \
+		oh-puzzles \
+		links \
 "
