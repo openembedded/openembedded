@@ -1,0 +1,11 @@
+--- a/conv_matrix.cpp  2003-01-27 21:18:45.000000000 +0100
++++ b/conv_matrix.cpp  2009-05-30 00:57:23.311764092 +0200
+@@ -27,7 +27,7 @@
+ #include <qmap.h>
+ #include <qcombobox.h>
+ #include <qpopupmenu.h>
+-#include <iostream.h>
++#include <iostream>
+ #include <stdlib.h>
+ 
+ 
