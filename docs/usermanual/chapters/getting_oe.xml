@@ -244,7 +244,7 @@ MACHINE = "om-gta01"</screen>
 
     <para>The primary interface to the build system is
       the <command>bitbake</command> command (see
-      the <ulink url="http://subversion.tigris.org/faq.html#proxy">BitBake
+      the <ulink url="http://bitbake.berlios.de/manual/">BitBake
       users manual</ulink>). BitBake will download and patch files from the
       internet, so it helps if you are on a well connected machine.
     </para>
