@@ -1,7 +1,7 @@
 require python.inc
 DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
-PR = "{$INC_PR}.1"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
@@ -11,6 +11,7 @@ SRC_URI = "\
   file://03-fix-tkinter-detection.patch;patch=1 \
   file://04-default-is-optimized.patch;patch=1 \
   file://05-enable-ctypes-cross-build.patch;patch=1 \
+  file://99-ignore-optimization-flag.patch;patch=1 \
   \
 # not yet pushed forward
 # sitebranding
@@ -27,7 +28,7 @@ S = "${WORKDIR}/Python-${PV}"
 inherit autotools
 
 # The 3 lines below are copied from the libffi recipe, ctypes ships its own copy of the libffi sources
-# Somehow gcc doesn't set __SOFTFP__ when passing -mfloatabi=softp :(
+#Somehow gcc doesn't set __SOFTFP__ when passing -mfloatabi=softp :(
 TARGET_CC_ARCH_append_armv6 = " -D__SOFTFP__"
 TARGET_CC_ARCH_append_armv7a = " -D__SOFTFP__"
 
