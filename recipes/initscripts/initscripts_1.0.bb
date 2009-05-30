@@ -137,7 +137,8 @@ do_install_append_angstrom () {
 do_install_append_openmoko () {
  	# Oepnmoko persistent USB networking
 	install -m 0755 ${WORKDIR}/g_ether.sh	${D}${sysconfdir}/init.d
-	ln -sf	../init.d/g_ether.sh	${D}${sysconfdir}/rcS.d/S03g_ether.sh
+	# Get this to run after the firlesytem is mounted
+	ln -sf	../init.d/g_ether.sh	${D}${sysconfdir}/rcS.d/S36g_ether.sh
 
 	# drop some things to speed up boot
 	rm ${D}${sysconfdir}/rcS.d/S02banner
