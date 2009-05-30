@@ -11,6 +11,7 @@ SRCREV_pn-vala-dbus-binding-tool-native = "${AUTOREV}"
 SRCREV_pn-libfso-glib = "${AUTOREV}"
 SRCREV_pn-fso-specs = "${AUTOREV}"
 SRCPV_pn-paroli-elementary = "6455e99d6c4c979ff19cd3d97d02ad6cab8efcea"
+SRCREV_pn-fsoraw = "${AUTOREV}"
 
 # SHR stuff
 SRCREV_pn-shr-settings = "${AUTOREV}"
