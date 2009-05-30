@@ -4,16 +4,13 @@ SECTION = "devel"
 DEPENDS = "glib-2.0 dbus"
 HOMEPAGE = "http://live.gnome.org/Vala"
 LICENSE = "LGPL"
+PV = "0.7.2+0.7.3-fso1"
+INC_PR = "r0"
 
-MAJV = "${@bb.data.getVar('PV',d,1)[:3]}"
+SRC_URI = "http://www.freesmartphone.org/sources/vala-0.7.3-fso1.tar.gz"
+S = "${WORKDIR}/vala-0.7.3-fso1"
 
-SRC_URI = "\
-  http://download.gnome.org/sources/vala/${MAJV}/vala-${PV}.tar.bz2 \
-  file://static-dbus-methods.patch;patch=1 \
-"
-S = "${WORKDIR}/vala-${PV}"
-
-inherit autotools autotools_stage lib_package
+inherit autotools autotools_stage
 
 EXTRA_OECONF = "--enable-vapigen"
 
