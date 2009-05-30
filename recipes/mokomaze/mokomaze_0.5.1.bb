@@ -4,15 +4,17 @@ SECTION="x11/games"
 PRIORITY="optional"
 LICENSE="GPLv3"
 DEPENDS="libsdl-ttf libsdl-image ode"
-RDEPENDS="ttf-liberation-mono"
+RDEPENDS="ttf-liberation-mono libpng"
 
-PR="r4"
+PR="r5"
 SRC_URI="http://projects.openmoko.org/frs/download.php/813/${PN}-${PV}.tar.gz"
 
 S=${WORKDIR}/${PN}-${PV}
 
 inherit autotools
 
-EXTRA_OEMAKE="FONTDIR=${datadir}/fonts/truetype"
+EXTRA_OECONF="FONTDIR=${datadir}/fonts/truetype"
 
+# needed for ode
+LDFLAGS += "-lstdc++"
 
