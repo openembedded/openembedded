@@ -1,4 +1,5 @@
 require cornucopia.inc
 inherit fso-plugin
-PR = "${INC_PR}.0"
 
+DEPENDS += "libascenario libcanberra"
+PR = "${INC_PR}.0"
