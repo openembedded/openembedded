@@ -1,5 +1,5 @@
 require glibc.inc
-PR = "r15"
+PR = "r16"
 
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
@@ -59,6 +59,7 @@ SRC_URI = "\
   file://glibc-arm-no-asm-page.patch;patch=1 \
   file://armv4t-interworking.patch;patch=1 \
   file://march-i686.patch;patch=1;pnum=0 \
+  file://glibc-2.6.1-backport-eventfd.patch;patch=1 \
 "
 
 # Build fails on sh3 and sh4 without additional patches
