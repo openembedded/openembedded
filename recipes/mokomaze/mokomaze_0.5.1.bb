@@ -7,7 +7,8 @@ DEPENDS="libsdl-ttf libsdl-image ode"
 RDEPENDS="ttf-liberation-mono libpng"
 
 PR="r5"
-SRC_URI="http://projects.openmoko.org/frs/download.php/813/${PN}-${PV}.tar.gz"
+SRC_URI="http://projects.openmoko.org/frs/download.php/813/${PN}-${PV}.tar \
+         file://avoid_dim_suspend.patch;patch=1"
 
 S=${WORKDIR}/${PN}-${PV}
 
