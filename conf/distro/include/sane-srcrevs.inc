@@ -74,6 +74,7 @@ SRCREV_pn-gcc-cross-initial ?= ${GCCREV}
 SRCREV_pn-gcc-cross-intermediate ?= ${GCCREV}
 SRCREV_pn-gcc-cross-sdk ?= ${GCCREV}
 SRCREV_pn-gconf-dbus ?= "641"
+SRCREV_pn-gnet ?= "495"
 SRCREV_pn-gnuradio ?= "10302"
 SRCREV_pn-gpe-conf ?= "9900"
 SRCREV_pn-gpe-contacts ?= "9312"
