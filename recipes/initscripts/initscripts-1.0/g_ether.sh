@@ -89,5 +89,8 @@ echo "options g_ether $daddr $haddr" >/etc/modprobe.d/g_ether.conf
 
 # And now, since this is first boot, make sure the module gets probed
 echo "g_ether" > /etc/modutils/g_ether
+rmmod g_ether || true
+rmmod usbnet || true
+modprobe g_ether
 
 fi
