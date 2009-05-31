@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r35"
+PR = "r36"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -14,6 +14,7 @@ PR = "r35"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
+	   file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch;patch=1 \
            ${RPSRC}/pxa25x_suspend_fixes-r0.patch;patch=1;status=merged \
            ${RPSRC}/lzo_jffs2-r3.patch;patch=1;status=merged \
            ${RPSRC}/lzo_jffs2_lzomode-r1.patch;patch=1;status=merged \

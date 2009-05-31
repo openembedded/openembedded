@@ -3,7 +3,6 @@ require e2tools_${PV}.bb
 inherit native
 
 DEPENDS = "e2fsprogs-libs-native e2fsprogs-native"
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/e2tools-${PV}', '${FILE_DIRNAME}/e2tools', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 PACKAGES = ""
 
 e2links = "e2ln e2ls e2mkdir e2mv e2rm e2tail"

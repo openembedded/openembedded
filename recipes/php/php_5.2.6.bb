@@ -2,7 +2,7 @@ require php.inc
 
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 "
 
@@ -17,6 +17,7 @@ EXTRA_OECONF = "    --without-iconv \
     		    --enable-wddx \
                     --enable-embedded-mysqli \
                     --enable-magic-quotes \
+		    --enable-fastcgi \
 		    --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
                     --with-libxml-dir=${STAGING_BINDIR_CROSS} \
 #                   --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \

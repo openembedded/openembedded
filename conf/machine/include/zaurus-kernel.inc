@@ -11,7 +11,7 @@ MACHINE_KERNEL_PR = "r11"
 MACHINE_KERNEL_PR_collie = "r8"
 MACHINE_KERNEL_PR_tosa = "r4"
 
-MACHINE_KERNEL_PR_pn-linux-kexecboot = "r12"
+MACHINE_KERNEL_PR_pn-linux-kexecboot = "r13"
 
 KERNEL_IMAGE_MAXSIZE = "1294336"
 KERNEL_IMAGE_MAXSIZE_collie = "1048576"

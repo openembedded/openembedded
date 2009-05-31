@@ -24,7 +24,7 @@ python __anonymous () {
 ENABLE_BINARY_LOCALE_GENERATION ?= "0"
 
 # BINARY_LOCALE_ARCHES is a space separated list of regular expressions
-BINARY_LOCALE_ARCHES ?= "arm.* i[3-6]86 x86_64"
+BINARY_LOCALE_ARCHES ?= "arm.* i[3-6]86 x86_64 powerpc"
 
 # Set this to zero if you don't want ldconfig in the output package
 USE_LDCONFIG ?= "1"
@@ -250,7 +250,9 @@ python package_do_split_gconvs () {
 	def output_locale_binary(name, locale, encoding):
 		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
 		if target_arch in ("i486", "i586", "i686"):
-		   target_arch = "i386"
+			target_arch = "i386"
+		elif target_arch == "powerpc":
+			target_arch = "ppc"
 
 		kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
 		if kernel_ver is None:
