@@ -1,21 +1,18 @@
 DESCRIPTION = "O-Hand Jana Library"
-DEPENDS = "libmokojournal2 gtk+ eds-dbus gconf" 
+DEPENDS = "libmokojournal2"
+DEPENDS = "gtk+ eds-dbus gconf" 
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r5"
 
-inherit autotools pkgconfig lib_package
+inherit autotools_stage pkgconfig lib_package
 
-SRC_URI = "svn://svn.o-hand.com/repos/jana/;module=trunk;proto=http"
+SRC_URI = "svn://svn.gnome.org/svn/jana/;module=trunk;proto=http"
 S = "${WORKDIR}/trunk/"
 
 EXTRA_OECONF = "--enable-examples "
 
 do_configure_prepend() {
 	touch gtk-doc.make
-}
-
-do_stage() {
-	autotools_stage_all
 }
 
 PACKAGES =+ "libjana-ecal libjana-ecal-dbg \
