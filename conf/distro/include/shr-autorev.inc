@@ -20,7 +20,7 @@ DISTRO_DEV_MANAGER = "udev"
 # with each change.  So if you change one of these, go to the kernel recipe
 # and bump the OEV value up as well.
 SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
-SRCREV_pn-linux-openmoko-2.6.28 = "f16c3431a1a7510eb3504ec5d96677dd0fac4cd6"
+SRCREV_pn-linux-openmoko-shr-devel = "f16c3431a1a7510eb3504ec5d96677dd0fac4cd6"
 
 PREFERRED_PROVIDER_frameworkd-config = "frameworkd-config-shr"
 PREFERRED_PROVIDER_frameworkd = "frameworkd"

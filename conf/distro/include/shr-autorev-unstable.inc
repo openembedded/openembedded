@@ -38,7 +38,7 @@ SRCREV_pn-libframeworkd-phonegui-gtk2 = "${AUTOREV}"
 #SRCREV_pn-python-elementary = "40756"
 
 # KERNEL
-SRCREV_pn-linux-openmoko-2.6.28 = "${AUTOREV}"
+SRCREV_pn-linux-openmoko-shr-devel = "${AUTOREV}"
 SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
 
 # other stuff
