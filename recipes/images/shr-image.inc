@@ -5,7 +5,6 @@
 PV = "2.0"
 PR = "r2"
 
-IMAGE_LINGUAS ?= "en-us"
 
 DEPENDS += "task-shr-minimal"
 
