@@ -26,6 +26,24 @@ EXTRA_OECONF = " \
 
 GR_CPU_SELECTION_armv7a = " --with-md-cpu=arm "
 
+# This is an awful hack to allow GNU Radio to use libusb-0.12, regardless
+# of what is used by the rest of OE
+
+export USB_CFLAGS=""
+export USB_LIBS="-L${WORKDIR}/libusb-0.1.12/.libs/ -l:libusb-gnur.a"
+
+do_buildlibusb() {
+    cd ${WORKDIR}/libusb-0.1.12
+    sed -e 's/AC_LANG_CPLUSPLUS/AC_PROG_CXX/' -i configure.in
+    sed -e s:tests::g -i Makefile.am
+    sed -e s:tests::g -i Makefile.in || true
+    ./configure --build=${BUILD_SYS} --host=${HOST_SYS} --target=${TARGET_SYS} --prefix=${prefix} --exec_prefix=${exec_prefix} --bindir=${bindir} --sbindir=${sbindir} --libexecdir=${libexecdir} --datadir=${datadir} --sysconfdir=${sysconfdir} --sharedstatedir=${sharedstatedir} --localstatedir=${localstatedir} --libdir=${libdir} --includedir=${includedir} --oldincludedir=${oldincludedir} --infodir=${infodir} --mandir=${mandir} --disable-shared --disable-build-docs
+    make
+    mv .libs/libusb.a .libs/libusb-gnur.a || true
+    cd ${WORKDIR}
+}
+
+
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/acinclude.m4 ] ; then
 		cp ${WORKDIR}/acinclude.m4 ${S}
