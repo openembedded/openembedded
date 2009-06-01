@@ -111,8 +111,7 @@ shr_rootfs_postprocess() {
     echo "alias la='ls $LS_OPTIONS -ltrA'; alias lh='ls $LS_OPTIONS -ltrh'; alias lr='ls $LS_OPTIONS -ltr';" >> ./etc/profile
     echo "alias lR='ls $LS_OPTIONS -ltrR'" >> ./etc/profile
     echo "# set your locale here:" >> ./etc/profile
-    echo "export LC_ALL=en_GB.UTF-8" >> ./etc/profile
-    echo "export LANG=en_GB.UTF-8" >> ./etc/profile
+    echo "export LANG=en_US.UTF-8" >> ./etc/profile
 
     #fix sound in elementary-alarm
     /bin/sh -c "cd ./usr/share; ln -s elementary-alarm elementary_alarm"
