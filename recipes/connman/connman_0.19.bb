@@ -1,5 +1,7 @@
 require connman.inc
 
+PR = "r1"
+
 EXTRA_OECONF += "\
   --disable-gtk-doc \
   --enable-debug \
