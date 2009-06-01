@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.5.1+gitr${SRCPV}"
-PR = "r4"
+PR = "r5"
 
 inherit distutils update-rc.d
 
@@ -44,7 +44,7 @@ RDEPENDS_${PN} += "\
   python-subprocess \
   python-syslog \
   python-textutils \
-  \
+  python-multiprocessing \
   ${PN}-config \
 "
 
