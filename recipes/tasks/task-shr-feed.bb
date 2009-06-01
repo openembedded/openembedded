@@ -61,5 +61,5 @@ RDEPENDS_${PN} += "\
 		mcabber \
 		gdb \
 		oh-puzzles \
-		links \
+		links-x11 \
 "
