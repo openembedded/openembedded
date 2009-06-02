@@ -19,6 +19,8 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/gnuradio-3.2.tar.gz \
 
 addtask buildlibusb before do_configure after do_unpack
 
+do_buildlibusb[deptask] = "do_populate_staging"
+
 do_compile_append() {
         sed -i -e s:${STAGING_DIR_TARGET}::g \
                -e s:/${TARGET_SYS}::g \
