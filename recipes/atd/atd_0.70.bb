@@ -1,10 +1,10 @@
 DESCRIPTION = "Lightweight At Daemon"
 SECTION = "base"
-LICENSE = "GPLV2"
+LICENSE = "GPLv2"
 RCONFLICTS = "at"
 RREPLACES = "at"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
 			file://atd-startup.patch;patch=1;pnum=0"
