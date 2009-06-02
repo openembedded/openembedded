@@ -2,7 +2,7 @@ LICENSE = "MIT"
 
 PV = "${DISTRO_VERSION}"
 PR = "r2"
-PE = "1"
+PE = "2"
 
 PACKAGES = "${PN}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
