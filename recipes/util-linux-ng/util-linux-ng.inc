@@ -28,8 +28,12 @@ FILES_util-linux-ng-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
 FILES_util-linux-ng-umount = "/bin/umount.${PN}"
 FILES_util-linux-ng-readprofile = "/usr/sbin/readprofile.${PN}"
 
+PACKAGES =+ "${PN}-mountall"
+FILES_${PN}-mountall = "${sysconfdir}/default/mountall"
+RREPLACES_${PN}-mountall = "busybox-mountall"
+
 RRECOMMENDS_${PN} = "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-mount util-linux-ng-readprofile "
-RDEPENDS_${PN} = "util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-losetup"
+RDEPENDS_${PN} = "${PN}-mountall util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-losetup"
 
 EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \

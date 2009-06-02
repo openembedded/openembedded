@@ -1,6 +1,6 @@
 require util-linux-ng.inc
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://fix-make-c.patch;patch=1 \
             file://optional-uuid.patch;patch=1 \
