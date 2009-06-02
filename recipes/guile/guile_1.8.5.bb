@@ -23,6 +23,10 @@ EXTRA_OECONF = " \
                "		
 
 do_compile() {
+	for i in $(find ${S} -name "Makefile") ; do
+		sed -i -e s:-Werror::g $i
+	done
+
 	(cd libguile; oe_runmake CC="${BUILD_CC}" CFLAGS="${BUILD_CFLAGS}" LDFLAGS="${BUILD_LDFLAGS}" guile_filter_doc_snarfage)
 	oe_runmake preinstguile="`which guile`"
         
