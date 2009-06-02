@@ -10,6 +10,7 @@
 #
 # 20070606 - v0.0.1	- Initial release
 # 20070630 - v0.0.2	- Add forgotten host mode
+# 20090529 - add support for all gadgets in 2.6.29 (koen)
 
 CONF_FILE="/etc/default/usb-gadget"
 
@@ -23,6 +24,11 @@ go() {
 	
 	case "$USB_MODE" in
 	networking)	setup_usb g_ether "$MODULE_OPTIONS" ;;
+	zero)		setup_usb g_zero "$MODULE_OPTIONS" ;;
+	midi)		setup_usb g_midi "$MODULE_OPTIONS" ;;
+	printer)	setup_usb g_printer "$MODULE_OPTIONS" ;;
+	gadgetfs) 	setup_usb gadgetfs "$MODULE_OPTIONS" ;;
+	composite)	setup_usb g_cdc "$MODULE_OPTIONS" ;;
 	storage)	setup_usb g_file_storage "$MODULE_OPTIONS" ;;
 	hostmode)	unload_usb_gadgets
 			setup_usb ohci_hcd "$MODULE_OPTIONS" ;;

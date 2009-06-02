@@ -14,7 +14,7 @@ EXTRA_OECONF += "\
 "
 
 INITSCRIPT_NAME = "connman"
-INITSCRIPT_PARAMS = "defaults 22"
+INITSCRIPT_PARAMS = "start 05 5 2 . stop 22 0 1 6 ."
 
 PARALLEL_MAKE = ""
 

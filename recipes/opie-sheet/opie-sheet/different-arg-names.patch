@@ -1,0 +1,13 @@
+# NOTE: This patch has been applied upstream and will be included in 1.2.5
+#  - Paul Eggleton <bluelightning@bluelightning.org>
+--- opie-sheet/sheet.h       2009-05-25 07:47:12.042719009 +0200
++++ opie-sheet/sheet.h       2009-05-25 08:07:19.291516199 +0200
+@@ -209,7 +207,7 @@
+     void insertRows(int no=1, bool allColumns=TRUE);
+     void insertColumns(int no=1, bool allRows=TRUE);
+ 
+-    void dataFindReplace(const QString &find, const QString &replace, bool matchCase=TRUE, bool allCells=TRUE, bool entireCell=FALSE, bool replace=FALSE, bool replaceAll=FALSE);
++    void dataFindReplace(const QString &find, const QString &replacestr, bool matchCase=TRUE, bool allCells=TRUE, bool entireCell=FALSE, bool replace=FALSE, bool replaceAll=FALSE);
+ 
+     // Static functions
+     static int getHeaderColumn(const QString &section);

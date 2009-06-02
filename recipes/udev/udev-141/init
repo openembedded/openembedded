@@ -32,7 +32,7 @@ echo -n "Starting udev"
 LANG=C awk "\$2 == \"/dev\" && \$4 == \"tmpfs\" { exit 1 }" /proc/mounts && {
         mount -n -o mode=0755 -t tmpfs none "/dev"
         mkdir -m 0755 /dev/pts
-        mkdir -m 0755 /dev/shm
+        mkdir -m 1777 /dev/shm
 }
 
 if [ "$DEVCACHE" != "" ]; then
@@ -56,10 +56,10 @@ kill_udevd > "/dev/null" 2>&1
         echo -e '\000\000\000\000' > /proc/sys/kernel/hotplug
         /sbin/udevd -d
 
-        /sbin/udevadm control env STARTUP=1
+        /sbin/udevadm control --env STARTUP=1
 		if [ "$not_first_boot" != "" ];then
 			/sbin/udevadm trigger --subsystem-nomatch=tty --subsystem-nomatch=mem --subsystem-nomatch=vc --subsystem-nomatch=vtconsole --subsystem-nomatch=misc --subsystem-nomatch=dcon --subsystem-nomatch=pci_bus  --subsystem-nomatch=graphics  --subsystem-nomatch=backlight --subsystem-nomatch=video4linux  --subsystem-nomatch=platform
-			(/sbin/udevadm settle --timeout=3; /sbin/udevadm control env STARTUP=)&
+			(/sbin/udevadm settle --timeout=3; /sbin/udevadm control --env STARTUP=)&
 			if [ "$DEVCACHE" != "" ]; then
 				rm -f /tmp/uname
 				rm -f /tmp/cmdline

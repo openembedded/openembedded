@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
-PR = "r1"
+PR = "r3"
 
 PACKAGE_ARCH = "all"
 
@@ -15,5 +15,5 @@ SRC_URI_append = " file://setDPI.sh \
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
-	install -m 0755 "${WORKDIR}/89xdgautostart.sh" "${D}/etc/X11/Xinit.d/89xdgautostart.sh"
+	install -m 0755 "${WORKDIR}/89xdgautostart.sh" "${D}/etc/X11/Xsession.d/89xdgautostart"
 }

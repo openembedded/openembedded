@@ -2,8 +2,6 @@ require glibc.inc
 
 PR = "r5"
 
-#FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/glibc-2.3.6', '${FILE_DIRNAME}/orig/glibc', '${FILE_DIRNAME}/orig/files', '${FILE_DIRNAME}/orig' ], d)}"
-
 GLIBC_ADDONS ?= "linuxthreads"
 
 #           ${CROSSTOOL_PATCH_URL}glibc-2.3.5-cygwin.patch;patch=1

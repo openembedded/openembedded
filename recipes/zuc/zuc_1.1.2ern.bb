@@ -5,10 +5,12 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "zuc"
 APPDESKTOP = "${S}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.linux-solutions.at/projects/zaurus/source/zuc_V${PV}.tar.gz \
-           http://nick.kreucher.net/zuc/zuc_units"
+           http://nick.kreucher.net/zuc/zuc_units \
+           file://fixed-include.patch;patch=1"
+
 S = "${WORKDIR}/zuc_V${PV}"
 
 inherit opie

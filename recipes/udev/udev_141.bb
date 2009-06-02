@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r8"
+PR = "r10"
 
 # needed for init.d script
 RDEPENDS_udev += "udev-utils"
