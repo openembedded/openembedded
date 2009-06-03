@@ -1,5 +1,5 @@
 DEPENDS += "cairo"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \
@@ -13,6 +13,7 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://wchart.diff;patch=1 \
 	file://0001-Remove-Werror-from-build.patch;patch=1 \
 	file://0002-Fix-security-cross-compile-cpu-detection-error.patch;patch=1 \
+	file://use-native-bpp.patch;patch=1 \
 "
 
 S = "${WORKDIR}/mozilla"
