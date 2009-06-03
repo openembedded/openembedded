@@ -53,7 +53,7 @@ paroli_rootfs_postprocess() {
     curdir=$PWD
     cd ${IMAGE_ROOTFS}
     # set a default locale    
-    echo "export LC_ALL=en_CA.utf-8" >>./etc/profile
+    echo "export LANG=en_CA.utf-8" >>./etc/profile
     cd $curdir
 }
 
