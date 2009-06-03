@@ -6,7 +6,7 @@ DEPENDS = "gtk+"
 PV = "0.1+svnr${SRCREV}"
 PR = "r1"
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/openmoko-agpsui;module=trunk;proto=https \
+SRC_URI = "svn://svn.projects.openmoko.org/svnroot/openmoko-agpsui;module=trunk;proto=http \
 file://fix-configure-for-new-autotools.patch;patch=1;pnum=2"
 
 S = "${WORKDIR}/trunk"
