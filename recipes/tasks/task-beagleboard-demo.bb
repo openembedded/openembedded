@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r8"
+PR = "r9"
 
 inherit task 
 
@@ -29,7 +29,6 @@ RDEPENDS_${PN} = "\
 #    irssi \
     mplayer \
     gnome-games \
-    rt73-firmware zd1211-firmware \
     stalonetray \
 	synergy \
 	x11vnc angstrom-x11vnc-xinit \
@@ -40,7 +39,12 @@ RDEPENDS_${PN} = "\
 "
 
 # Install all kernel modules
-RRECOMMENDS_${PN} += "kernel-modules"
+RRECOMMENDS_${PN} += " \
+	kernel-modules \
+	linux-firmware \
+    rt73-firmware \
+	zd1211-firmware \
+"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 RRECOMMENDS_${PN}_append_armv7a = " omapfbplay"
