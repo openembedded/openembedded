@@ -63,6 +63,7 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-fonts \
              ${QT_BASE_NAME}-linguist \
              ${QT_BASE_NAME}-makeqpf \
+             ${QT_BASE_NAME}-mkspecs \
              ${QT_BASE_NAME}-pixeltool \
              ${QT_BASE_NAME}-qt3to4"
 
@@ -98,6 +99,7 @@ FILES_${QT_BASE_NAME}-qt3to4               = "${bindir}/qt3to4 ${datadir}/${QT_D
 FILES_${QT_BASE_NAME}-qt3to4-dbg           = "${bindir}/.debug/qt3to4"
 FILES_${QT_BASE_NAME}-makeqpf              = "${bindir}/makeqpf"
 FILES_${QT_BASE_NAME}-makeqpf-dbg          = "${bindir}/.debug/makeqpf"
+FILES_${QT_BASE_NAME}-mkspecs              = "${datadir}/${QT_DIR_NAME}/mkspecs/*"
 
 
 do_configure() {
@@ -209,7 +211,6 @@ do_install() {
 
     # XXX, FIXME, TODO: package the demos and examples properly
     rm -rf ${D}/${bindir}/${QT_DIR_NAME}
-    rm -rf ${D}/${datadir}/${QT_DIR_NAME}/mkspecs
 
     # fix pkgconfig, libtool and prl files
     sed -i -e s#-L${S}/lib##g \
