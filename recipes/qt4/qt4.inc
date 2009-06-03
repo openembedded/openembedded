@@ -222,6 +222,9 @@ do_install() {
     sed -i -e s#"moc_location=.*$"#"moc_location=${bindir}/moc4"# \
            -e s#"uic_location=.*$"#"uic_location=${bindir}/uic4"# \
            ${D}${libdir}/pkgconfig/*.pc
+    for name in ${QT_LIB_NAMES}; do
+           sed -i -e /Requires/s#"${name}"#"${name}${QT_LIBINFIX}"#g ${D}${libdir}/pkgconfig/*.pc
+    done
 
     install -d ${D}/${libdir}/fonts
     touch ${D}/${libdir}/fonts/fontdir
@@ -244,6 +247,9 @@ do_stage() {
     sed -i -e s#"moc_location=.*$"## \
            -e s#"uic_location=.*$"## \
            ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc
+    for name in ${QT_LIB_NAMES}; do
+           sed -i -e "/Requires/s#${name}#${name}${QT_LIBINFIX}#"g ${D}${libdir}/pkgconfig/*.pc
+    done
 
     # fix libtool files
     sed -i -e s#installed=yes#installed=no#g ${STAGE_TEMP}/${libdir}/*.la
