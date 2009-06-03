@@ -1,12 +1,5 @@
 # SHR conf file
 
-## This file, contrary to its name, is really the equivalent of the
-## distro conf file for SHR.
-
-# Since we're not a distro yet, we have to manually add "shr" as an
-# override -- this line should be removed when SHR becomes a distro.
-OVERRIDES .= ":shr"
-
 # We need to override some machine stuff as well; include the machine-
 # specific file here (if it exists).
 include conf/distro/include/shr-${MACHINE}.conf
