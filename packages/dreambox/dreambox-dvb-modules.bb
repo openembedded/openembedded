@@ -24,10 +24,11 @@ KV_dm500plus = "2.6.12"
 PV_dm500plus = "${KV}-20080822"
 
 KV_dm800 = "2.6.12-5.1-brcmstb-dm800"
-PV_dm800 = "${KV}-20090529"
+PV_dm800 = "${KV}-20090603"
 
 KV_dm8000 = "2.6.12-5.1-brcmstb-dm8000"
-PV_dm8000 = "${KV}-20090514"
+#build 20090601 is based on old drivers without DTS... but its more tested and stable
+PV_dm8000 = "${KV}-20090601"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
