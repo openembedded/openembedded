@@ -1,4 +1,4 @@
- require fso-image.inc
+require fso-image.inc
 
 ILLUME_THEME = "paroli"
 
@@ -57,7 +57,7 @@ paroli_rootfs_postprocess() {
     cd $curdir
 
     # nuke bad bluetooth file - figure this out on monday
-    rm ./etc/dbus-1/system.d/bluetooth.conf
+    rm /etc/dbus-1/system.d/bluetooth.conf
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "paroli_rootfs_postprocess;"
