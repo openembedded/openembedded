@@ -18,6 +18,10 @@ SRC_URI_append_openmoko = "\
   file://default \
 "
 
+SRC_URI_append_shr = "\
+  file://default \
+"
+
 inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "dropbear"
@@ -81,3 +85,4 @@ pkg_postrm_append () {
 }
 
 CONFFILES_${PN}_openmoko += "${sysconfdir}/default/dropbear"
+CONFFILES_${PN}_shr += "${sysconfdir}/default/dropbear"

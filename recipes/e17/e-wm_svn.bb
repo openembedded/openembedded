@@ -76,6 +76,7 @@ SRC_URI = "\
 "
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1 "
+SRC_URI_append_shr = " file://illume-disable-screensaver.patch;patch=1 "
 
 S = "${WORKDIR}/e"
 
