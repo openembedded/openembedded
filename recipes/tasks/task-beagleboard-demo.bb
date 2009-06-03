@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r9"
+PR = "r8"
 
 inherit task 
 
@@ -41,7 +41,6 @@ RDEPENDS_${PN} = "\
 # Install all kernel modules
 RRECOMMENDS_${PN} += " \
 	kernel-modules \
-	linux-firmware \
     rt73-firmware \
 	zd1211-firmware \
 "
