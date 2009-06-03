@@ -14,9 +14,9 @@ PACKAGES =+ "${PN}-utils"
 RDEPENDS_${PN}-utils = "cpp cpp-symlinks embryo-tests"
 
 RRECOMMENDS_${PN}-utils = "\
-  libevas-saver-png \
-  libevas-saver-jpeg \
-  libevas-saver-eet \
+  evas-saver-png \
+  evas-saver-jpeg \
+  evas-saver-eet \
 "
 
 DEBIAN_NOAUTONAME_${PN}-utils = "1"
