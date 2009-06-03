@@ -3,10 +3,10 @@ PRIORITY = "optional"
 DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
-PV = "0.15.2"
+PV = "0.15.8"
 PR_append = "+gitr${SRCREV}"
 
-SRCREV = "e74a2847ddcb3b4c1675efaaa923e78556277dff"
+SRCREV = "a673a898e1e119836c9c68eff71feaec49f97bf1"
 
 DEFAULT_PREFERENCE = "-1"
 
