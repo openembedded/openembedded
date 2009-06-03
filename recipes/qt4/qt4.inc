@@ -31,7 +31,7 @@ python __anonymous () {
     dev_packages = []
     dbg_packages = []
     for name in bb.data.getVar("QT_LIB_NAMES", d, 1).split():
-        pkg = "${QT_BASE_LIB}"+ name.lower().replace("qt", "") + "4"
+        pkg = "${QT_BASE_LIB}" + name.lower().replace("qt", "") + "4"
         # NOTE: the headers for QtAssistantClient are different
         incname = name.replace("QtAssistantClient", "QtAssistant")
         bb.data.setVar("FILES_%s" % pkg, "${libdir}/lib%(name)s${QT_LIBINFIX}.so.*" % locals(), d)
@@ -45,6 +45,9 @@ python __anonymous () {
         lib_packages.append(pkg)
         dev_packages.append("%s-dev" % pkg)
         dbg_packages.append("%s-dbg" % pkg)
+    for name in bb.data.getVar("OTHER_PACKAGES", d, 1).split():
+        dbg_packages.append("%s-dbg" % name)
+
     bb.data.setVar("LIB_PACKAGES", " ".join(lib_packages), d)
     bb.data.setVar("DEV_PACKAGES", " ".join(dev_packages), d)
     bb.data.setVar("DBG_PACKAGES", " ".join(dbg_packages), d)
@@ -59,7 +62,9 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-examples \
              ${QT_BASE_NAME}-fonts \
              ${QT_BASE_NAME}-linguist \
-             ${QT_BASE_NAME}-pixeltool"
+             ${QT_BASE_NAME}-makeqpf \
+             ${QT_BASE_NAME}-pixeltool \
+             ${QT_BASE_NAME}-qt3to4"
 
 PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
 PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*  ${QT_BASE_NAME}-translation-*"
@@ -67,20 +72,32 @@ PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*  ${QT_BASE_NAME}-translation-*"
 ALLOW_EMPTY_${PN} = "1"
 FILES_${PN}     = ""
 FILES_${PN}-dev = "${includedir}/${QT_DIR_NAME}/Qt/*"
-FILES_${PN}-dbg = "${bindir}/*/.debug"
+FILES_${PN}-dbg = ""
 RRECOMMENDS_${PN} = "${LIB_PACKAGES} ${OTHER_PACKAGES}"
 RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
 RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
 
-FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
+FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant* ${bindir}/qcollectiongenerator ${bindir}/qhelpconverter ${bindir}/qhelpgenerator"
+FILES_${QT_BASE_NAME}-assistant-dbg        = "${bindir}/.debug/*assistant* ${bindir}/.debug/qcollectiongenerator ${bindir}/.debug/qhelpconverter ${bindir}/.debug/qhelpgenerator"
 FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
+FILES_${QT_BASE_NAME}-common-dbg           = "${bindir}/.debug/qtconfig"
 FILES_${QT_BASE_NAME}-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
+FILES_${QT_BASE_NAME}-dbus-dbg             = "${bindir}/.debug/qdbus ${bindir}/.debug/qdbusxml2cpp ${bindir}/.debug/qdbuscpp2xml ${bindir}/.debug/qdbusviewer"
 FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_DIR_NAME}/demos/*"
+FILES_${QT_BASE_NAME}-demos-dbg            = "${bindir}/.debug/qtdemo ${bindir}/${QT_DIR_NAME}/demos/.debug/*"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
+FILES_${QT_BASE_NAME}-designer-dbg         = "${bindir}/.debug/*designer*"
 FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_DIR_NAME}/examples/*"
+FILES_${QT_BASE_NAME}-examples-dbg         = "${bindir}/${QT_DIR_NAME}/examples/.debug/*"
 FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
-FILES_${QT_BASE_NAME}-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/qm2ts"
+FILES_${QT_BASE_NAME}-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/lconvert ${bindir}/qm2ts"
+FILES_${QT_BASE_NAME}-linguist-dbg         = "${bindir}/.debug/*linguist* ${bindir}/.debug/lrelease ${bindir}/.debug/lupdate ${bindir}/.debug/lconvert ${bindir}/.debug/qm2ts"
 FILES_${QT_BASE_NAME}-pixeltool            = "${bindir}/pixeltool"
+FILES_${QT_BASE_NAME}-pixeltool-dbg        = "${bindir}/.debug/pixeltool"
+FILES_${QT_BASE_NAME}-qt3to4               = "${bindir}/qt3to4 ${datadir}/${QT_DIR_NAME}/q3porting.xml"
+FILES_${QT_BASE_NAME}-qt3to4-dbg           = "${bindir}/.debug/qt3to4"
+FILES_${QT_BASE_NAME}-makeqpf              = "${bindir}/makeqpf"
+FILES_${QT_BASE_NAME}-makeqpf-dbg          = "${bindir}/.debug/makeqpf"
 
 
 do_configure() {
@@ -136,7 +153,7 @@ do_compile() {
 python populate_packages_prepend() {
         translation_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
         translation_name = bb.data.expand('${QT_BASE_NAME}-translation-%s', d)
-        do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '${PN} translation for %s', extra_depends='' )
+        do_split_packages(d, translation_dir, '^(assistant|designer|linguist|qt|qtconfig|qvfb)_(.*)\.qm$', translation_name, '${PN} translation for %s', extra_depends='' )
  
         phrasebook_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/phrasebooks/', d)
         phrasebook_name = bb.data.expand('${QT_BASE_NAME}-phrasebook-%s', d)
