@@ -4,9 +4,6 @@
 # specific file here (if it exists).
 include conf/distro/include/shr-${MACHINE}.conf
 
-DISTRO_INITSCRIPTS = "initscripts-shr"
-DISTRO_DEV_MANAGER = "udev"
-
 # Nail down some SRCREV's for the kernels.  There is a real potential problem
 # here, in that git hashes are hashes, not incrementing version numbers.  Thus
 # we need to have something else in the kernel version string that gets bumped
@@ -14,10 +11,6 @@ DISTRO_DEV_MANAGER = "udev"
 # and bump the OEV value up as well.
 SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
 SRCREV_pn-linux-openmoko-shr-devel = "f16c3431a1a7510eb3504ec5d96677dd0fac4cd6"
-
-PREFERRED_PROVIDER_frameworkd-config = "frameworkd-config-shr"
-PREFERRED_PROVIDER_frameworkd = "frameworkd"
-PREFERRED_PROVIDER_gpsd = "fso-gpsd"
 
 PREFERRED_VERSION_shared-mime-info = "0.51"
 PREFERRED_VERSION_navit = "0.1.0+svnrev${SRCREV}"
@@ -27,7 +20,6 @@ PREFERRED_VERSION_midori = "0.1.2"
 PREFERRED_VERSION_obexftp = "0.22"
 PREFERRED_VERSION_glib-2.0 = "2.18.3"
 PREFERRED_VERSION_mokomaze = "0.5.1"
-PREFERRED_PROVIDER_e-wm-menu = "e-wm-menu-shr"
 PREFERRED_VERSION_glib-2.0 = "2.18.3"
 PREFERRED_VERSION_calc = "0.0.1"
 
@@ -48,7 +40,6 @@ SRCREV_pn-python-pytrc = "${AUTOREV}"
 SRCREV_pn-zhone = "${AUTOREV}"
 
 #SHR stuff
-PREFERRED_PROVIDER_virtual/shr-splash-theme = "shr-splash-theme-simple"
 SRCREV_pn-libhito = "${AUTOREV}"
 SRCREV_pn-neod = "${AUTOREV}"
 SRCREV_pn-shr-settings = "29cc9e80246082f21899bd732bf649d33895c26d"
