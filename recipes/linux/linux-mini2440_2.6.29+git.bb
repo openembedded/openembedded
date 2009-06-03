@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for mini2440 development board"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r8"
+MACHINE_KERNEL_PR = "r8"
 
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 

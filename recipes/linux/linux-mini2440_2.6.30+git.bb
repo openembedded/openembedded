@@ -1,7 +1,8 @@
 DESCRIPTION = "Linux Kernel for mini2440 development board"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r2"
+MACHINE_KERNEL_PR = "r3"
+#PR = "r3"
 
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 
@@ -22,4 +23,4 @@ do_configure() {
 	oe_runmake oldconfig
 }
 
-KERNEL_RELEASE = "2.6.29"
+KERNEL_RELEASE = "2.6.30"
