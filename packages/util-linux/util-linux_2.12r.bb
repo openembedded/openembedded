@@ -7,4 +7,4 @@ SRC_URI += "file://fdiskbsdlabel-avr32.patch;patch=1"
 SRC_URI += "file://util-linux-2.12r-cramfs-1.patch;patch=1" 
 SRC_URI += "file://sfdisk-fix-large-drives.patch;patch=1"
 
-FILE_PR = "r16"
+PR = "r16"
