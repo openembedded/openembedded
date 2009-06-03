@@ -11,6 +11,8 @@ LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
 
+INC_PR = "r20"
+
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   file://busybox-cron \
@@ -71,64 +73,30 @@ do_install () {
 		mv busybox.links.new busybox.links
 	fi
 
-	unset CFLAGS CPPFLAGS CXXFLAGS
 	install -d ${D}${sysconfdir}/init.d
-	oe_runmake "PREFIX=${D}" install
-	cp -pPR ${S}/_install/* ${D}/
 
-	# Move everything to /busybox (not supposed to end up in any package)
-	install -d ${D}/busybox
-	ls ${D} -R
-
-	# Copy /bin and /sbin -- and /usr, if prefix is not "".
-	for i in ${D}${base_bindir} ${D}${base_sbindir} ${prefix:+${D}${prefix}}
-	do
-		if [ -d $i ]; then
-			cp -pPR $i ${D}/busybox/
-		fi
-	done
-	# Move the busybox binary back to /bin
+	# Install /bin/busybox, and the /bin/sh link so the postinst script
+	# can run. Let update-alternatives handle the rest.
 	install -d ${D}${base_bindir}
-	mv ${D}/busybox${base_bindir}/busybox ${D}${base_bindir}/
-	# Move back the sh symlink
-	test -h ${D}/busybox${base_bindir}/sh && mv ${D}/busybox${base_bindir}/sh ${D}${base_bindir}/
+	install -m 0755 ${S}/busybox ${D}${base_bindir}
+	ln -sf busybox ${D}${base_bindir}/sh
 
 	install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/
 	install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/
 	if grep "CONFIG_CROND=y" ${WORKDIR}/defconfig; then
-		# Move crond back to /usr/sbin/crond
-		install -d ${D}${sbindir}
-		mv ${D}/busybox${sbindir}/crond ${D}${sbindir}/
-
 		install -m 0755 ${WORKDIR}/busybox-cron ${D}${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_HTTPD=y" ${WORKDIR}/defconfig; then
-		# Move httpd back to /usr/sbin/httpd
-		install -d ${D}${sbindir}
-		mv ${D}/busybox${sbindir}/httpd ${D}${sbindir}/
-
 		install -m 0755 ${WORKDIR}/busybox-httpd ${D}${sysconfdir}/init.d/
 		install -d ${D}/srv/www
 	fi
 	if grep "CONFIG_APP_UDHCPD=y" ${WORKDIR}/defconfig; then
-		# Move udhcpd back to /usr/sbin/udhcpd
-		install -d ${D}${sbindir}
-		mv ${D}/busybox${sbindir}/udhcpd ${D}${sbindir}/
-
 		install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_HWCLOCK=y" ${WORKDIR}/defconfig; then
-		# Move hwclock back to /sbin/hwclock
-		install -d ${D}${base_sbindir}
-		mv ${D}/busybox${base_sbindir}/hwclock ${D}${base_sbindir}/
-
 		install -m 0755 ${WORKDIR}/hwclock.sh ${D}${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_APP_UDHCPC=y" ${WORKDIR}/defconfig; then
-		# Move dhcpc back to /usr/sbin/udhcpc
-		install -d ${D}${base_sbindir}
-		mv ${D}/busybox${base_sbindir}/udhcpc ${D}${base_sbindir}/
-
 		install -d ${D}${sysconfdir}/udhcpc.d
 		install -d ${D}${datadir}/udhcpc
 		install -m 0755 ${S}/examples/udhcp/simple.script ${D}${sysconfdir}/udhcpc.d/50default

@@ -1,5 +1,5 @@
 require busybox_${PV}.bb
-PR = "r4"
+PR = "${INC_PR}.1"
 
 FILESPATH = "${FILE_DIRNAME}/busybox-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 S = "${WORKDIR}/busybox-${PV}"
