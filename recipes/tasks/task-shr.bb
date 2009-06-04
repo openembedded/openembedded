@@ -14,6 +14,8 @@ PACKAGES = "\
 RDEPENDS_${PN}-gtk = "\
   gpe-scap \
   pidgin \
+  libpurple-protocol-msn \
+  libpurple-protocol-icq \
   vagalume \
   gpe-sketchbook \ 
 "
