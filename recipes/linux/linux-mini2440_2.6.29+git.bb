@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
 inherit kernel
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = "mini2440"
+COMPATIBLE_MACHINE = "(mini2440|micro2440)"
 
 do_configure() {
 	install ${WORKDIR}/defconfig-mini2440 ${S}/.config

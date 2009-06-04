@@ -2,7 +2,6 @@ DESCRIPTION = "Linux Kernel for mini2440 development board"
 SECTION = "kernel"
 LICENSE = "GPL"
 MACHINE_KERNEL_PR = "r3"
-#PR = "r3"
 
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 
@@ -16,7 +15,7 @@ S = "${WORKDIR}/git"
 inherit kernel
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = "mini2440"
+COMPATIBLE_MACHINE = "(mini2440|micro2440)"
 
 do_configure() {
 	install ${WORKDIR}/defconfig-mini2440 ${S}/.config
