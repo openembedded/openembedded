@@ -6,6 +6,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cups \
            libxrandr libxdamage libxrender libxcomposite"
+PROVIDES = "gdk-pixbuf"
 
 inherit autotools pkgconfig
 
