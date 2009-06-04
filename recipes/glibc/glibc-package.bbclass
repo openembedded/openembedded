@@ -32,12 +32,12 @@ USE_LDCONFIG ?= "1"
 PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* locale-base-* glibc-binary-localedata-*"
 
-libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
+libc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so ${base_libdir}/libc*.so.* ${base_libdir}/libc-*.so ${base_libdir}/libm*.so.* ${base_libdir}/libm-*.so ${base_libdir}/ld*.so.* ${base_libdir}/ld-*.so ${base_libdir}/libpthread*.so.* ${base_libdir}/libpthread-*.so ${base_libdir}/libresolv*.so.* ${base_libdir}/libresolv-*.so ${base_libdir}/librt*.so.* ${base_libdir}/librt-*.so ${base_libdir}/libutil*.so.* ${base_libdir}/libutil-*.so ${base_libdir}/libnsl*.so.* ${base_libdir}/libnsl-*.so ${base_libdir}/libnss_files*.so.* ${base_libdir}/libnss_files-*.so ${base_libdir}/libnss_compat*.so.* ${base_libdir}/libnss_compat-*.so ${base_libdir}/libnss_dns*.so.* ${base_libdir}/libnss_dns-*.so ${base_libdir}/libdl*.so.* ${base_libdir}/libdl-*.so ${base_libdir}/libanl*.so.* ${base_libdir}/libanl-*.so ${base_libdir}/libBrokenLocale*.so.* ${base_libdir}/libBrokenLocale-*.so"
 
 FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '/sbin/ldconfig', '', d)}"
 FILES_ldd = "${bindir}/ldd"
-FILES_libsegfault = "/lib/libSegFault*"
-FILES_glibc-extra-nss = "/lib/libnss*"
+FILES_libsegfault = "${base_libdir}/libSegFault*"
+FILES_glibc-extra-nss = "${base_libdir}/libnss*"
 FILES_sln = "/sbin/sln"
 FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
 FILES_nscd = "${sbindir}/nscd*"
@@ -46,8 +46,8 @@ FILES_glibc-gconv = "${libdir}/gconv/*"
 FILES_${PN}-dbg += " ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
 FILES_catchsegv = "${bindir}/catchsegv"
 RDEPENDS_catchsegv = "libsegfault"
-FILES_glibc-pcprofile = "/lib/libpcprofile.so"
-FILES_glibc-thread-db = "/lib/libthread_db*"
+FILES_glibc-pcprofile = "${base_libdir}/libpcprofile.so"
+FILES_glibc-thread-db = "${base_libdir}/libthread_db*"
 FILES_localedef = "${bindir}/localedef"
 RPROVIDES_glibc-dev += "libc-dev"
 
@@ -145,7 +145,7 @@ do_prep_locale_tree() {
 	for i in $treedir/${datadir}/i18n/charmaps/*gz; do 
 		gunzip $i
 	done
-	ls ${D}/lib/* | xargs -iBLAH cp -pPR BLAH $treedir/lib
+	ls ${D}${base_libdir}/* | xargs -iBLAH cp -pPR BLAH $treedir/lib
 	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so ]; then
 		cp -pPR ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so $treedir/lib
 	fi
