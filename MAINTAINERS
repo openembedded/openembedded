@@ -167,6 +167,11 @@ Mail:       liam.girdwood@wolfsonmicro.com
 Machines:   mx31ads
 Recipes:    mx31ads-kernel*	
 
+Person:     Lynn Lin
+Mail:       Lin_Lynn@emc.com
+Interests:  Linux,build system,python,git 
+Recipes:    mini-httpd,dmidecode,mktemp
+
 Person:     Marcin Juszkiewicz
 Mail:       marcin@juszkiewicz.com.pl
 Website:    http://marcin.juszkiewicz.com.pl/

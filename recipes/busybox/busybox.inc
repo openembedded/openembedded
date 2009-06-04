@@ -62,12 +62,15 @@ do_compile() {
 
 do_install () {
 	oe_runmake busybox.links
-	if [ "x${layout_prefix}" = "x" ]; then
-		sed 's:^/usr/:/:' < busybox.links >busybox.links.new
+	if [ "${prefix}" != "/usr" ]; then
+		sed "s:^/usr/:${prefix}/:" busybox.links > busybox.links.new
 		mv busybox.links.new busybox.links
-        elif [ "${layout_prefix}" != "/usr" ]; then
-		echo "warning, busybox.links will lose with this prefix"
 	fi
+	if [ "${base_sbindir}" != "/sbin" ]; then
+		sed "s:^/sbin/:${base_sbindir}/:" busybox.links > busybox.links.new
+		mv busybox.links.new busybox.links
+	fi
+
 	unset CFLAGS CPPFLAGS CXXFLAGS
 	install -d ${D}${sysconfdir}/init.d
 	oe_runmake "PREFIX=${D}" install
@@ -77,9 +80,11 @@ do_install () {
 	install -d ${D}/busybox
 	ls ${D} -R
 
-	for i in ${D}${base_bindir} ${D}${base_sbindir} ${D}${prefix} ; do
+	# Copy /bin and /sbin -- and /usr, if prefix is not "".
+	for i in ${D}${base_bindir} ${D}${base_sbindir} ${prefix:+${D}${prefix}}
+	do
 		if [ -d $i ]; then
-			cp -dPr $i ${D}/busybox/
+			cp -pPR $i ${D}/busybox/
 		fi
 	done
 	# Move the busybox binary back to /bin

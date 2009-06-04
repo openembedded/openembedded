@@ -6,9 +6,8 @@ PR = "r14"
 
 COMPATIBLE_MACHINE = "(palmld|palmtc|palmtt3|palmtt5|palmtx|palmz31|palmz72|palmt650)"
 
-SRC_URI = "git://git.hackndev.com/linux-hnd;protocol=git;tag=master \
-	   file://defconfig"
-
+SRC_URI = "git://git.hackndev.com/hackndev/linux-hnd.git;protocol=git;tag=master \
+           file://defconfig "
 S = "${WORKDIR}/git"
 
 K_MAJOR = "2"
