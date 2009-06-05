@@ -65,6 +65,7 @@ SRCREV_pn-e-wm-config-illume-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-sysactions-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-theme-illume-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-menu-shr = "${AUTOREV}"
+SRCREV_pn-e-wm-illume-dict-pl = "${AUTOREV}"
 SRCREV_pn-etk-theme-shr = "${AUTOREV}"
 SRCREV_pn-libgee = "780e79f624419b1911de422cbd72f289d23cd9af"
 
