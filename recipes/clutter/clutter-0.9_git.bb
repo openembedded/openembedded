@@ -1,24 +1,21 @@
 require clutter.inc
 
-SRCREV = "36cfb6030784791a4420a1e52a8c18d56b1d0c69"
-#good: 20090512 08a73a215f2cf18abcfd7d93e8047583511497bd
+SRCREV = "745ca8a62ca52eedfad850e556f160f36eb32953"
 
 PV = "0.9.3"
+PR = "r1"
 PR_append = "+git${SRCREV}"
 
-SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git;branch=master \
+SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git;branch=1.0-integration \
            file://enable_tests.patch;patch=1 "
 S = "${WORKDIR}/git"
 
 BASE_CONF += "--disable-introspection"
 
-# Fixup gles backend: 
-
 do_compile_prepend() {
-	for i in ${S}/clutter/cogl/gles/* ; do
-		sed -i -e s:CGL_NEAREST:COGL_TEXTURE_FILTER_NEAREST:g \
-		       -e s:CGL_LINEAR:iCOGL_TEXTURE_FILTER_LINEAR:g \
-		       -e s:CGL_VERTEX_SHADER:COGL_SHADER_TYPE_VERTEX:g \
-		       -e s:CGL_FRAGMENT_SHADER:COGL_SHADER_TYPE_FRAGMENT:g $i
+	for i in $(find ${S} -name Makefile) ; do
+		sed -i -e s:-Werror::g $i
 	done
+    ( cd clutter/cogl/gles ; for i in *.glsl ; do sh stringify.sh -h $i ; done )
 }
+
