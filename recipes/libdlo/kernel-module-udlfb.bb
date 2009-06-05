@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PV = "0.2.2"
 
 SRC_URI = "file://udlfb.c \
-           file://dlfb.h \
+           file://udlfb.h \
            file://Makefile \
 "
 
