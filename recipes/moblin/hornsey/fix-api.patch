@@ -1,0 +1,2048 @@
+From 0139503d38f9df51b4f911712afa9e100501a153 Mon Sep 17 00:00:00 2001
+From: Øyvind Kolås <pippin@linux.intel.com>
+Date: Fri, 05 Jun 2009 12:52:37 +0000
+Subject: Changes to accomodate API changes in clutter master.
+
+---
+diff --git a/data/hrn-item-quick-play.png b/data/hrn-item-quick-play.png
+index 13b57dd..bcd5dcc 100644
+--- a/data/hrn-item-quick-play.png
++++ b/data/hrn-item-quick-play.png
+Binary files differ
+diff --git a/data/hrn-item-zoom.png b/data/hrn-item-zoom.png
+index a5e8568..093bdd2 100644
+--- a/data/hrn-item-zoom.png
++++ b/data/hrn-item-zoom.png
+Binary files differ
+diff --git a/src/hornsey.c b/src/hornsey.c
+index 07ceab5..9d4972c 100644
+--- a/src/hornsey.c
++++ b/src/hornsey.c
+@@ -790,8 +790,8 @@ main (gint    argc,
+ {
+   UniqueApp *app;
+   ClutterColor stage_bg = {HRN_STAGE_COLOR};
+-  guint     stage_width = 0;
+-  guint     stage_height = 0;
++  gfloat stage_width = 0;
++  gfloat stage_height = 0;
+   gboolean stage_fullscreen = TRUE;
+   gboolean no_disclaimer = TRUE;    /* change this to FALSE
+                                        and the annoying disclaimer
+diff --git a/src/hrn-cluster.c b/src/hrn-cluster.c
+index ef3b89d..48e7230 100644
+--- a/src/hrn-cluster.c
++++ b/src/hrn-cluster.c
+@@ -62,12 +62,12 @@ static void ensure_labels (HrnCluster *cluster,
+ static void
+ hrn_cluster_allocate (ClutterActor          *self,
+ 		      const ClutterActorBox *box,
+-		      gboolean               origin_changed)
++		      ClutterAllocationFlags flags)
+ {
+   ClutterActorClass *parent_class;
+   parent_class = CLUTTER_ACTOR_CLASS (hrn_cluster_parent_class);
+ 
+-  parent_class->allocate (self, box, origin_changed);
++  parent_class->allocate (self, box, flags);
+ 
+   if (hrn_switcher_get_state (HRN_SWITCHER (self))>0)
+     {
+@@ -85,17 +85,17 @@ hrn_cluster_allocate (ClutterActor          *self,
+   }
+ 
+   if (CLUTTER_ACTOR(HRN_CLUSTER(self)->priv->frame))
+-    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->priv->frame), origin_changed);
++    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->priv->frame), flags);
+ #if HRN_USE_NORMAL_LABELS
+   if (HRN_CLUSTER(self)->title)
+     {
+-      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->title), origin_changed);
+-      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->meta), origin_changed);
++      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->title), flags);
++      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->meta), flags);
+     }
+   if (HRN_CLUSTER(self)->title2)
+     {
+-      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->title2), origin_changed);
+-      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->meta2), origin_changed);
++      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->title2), flags);
++      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_CLUSTER(self)->meta2), flags);
+     }
+ #endif
+ }
+@@ -226,6 +226,46 @@ hrn_cluster_pick (ClutterActor       *actor,
+   in_pick--;
+ }
+ 
++static void
++hrn_cluster_map (ClutterActor *self)
++{
++  HrnCluster *cluster = HRN_CLUSTER (self);
++  HrnClusterPrivate *priv = cluster->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_cluster_parent_class)->map (self);
++
++  if (cluster->title)
++    clutter_actor_map (CLUTTER_ACTOR (cluster->title));
++  if (cluster->meta)
++    clutter_actor_map (CLUTTER_ACTOR (cluster->meta));
++  if (cluster->title2)
++    clutter_actor_map (CLUTTER_ACTOR (cluster->title2));
++  if (cluster->meta2)
++    clutter_actor_map (CLUTTER_ACTOR (cluster->meta2));
++  if (priv->frame)
++    clutter_actor_map (priv->frame);
++}
++
++static void
++hrn_cluster_unmap (ClutterActor *self)
++{
++  HrnCluster *cluster = HRN_CLUSTER (self);
++  HrnClusterPrivate *priv = cluster->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_cluster_parent_class)->unmap (self);
++
++  if (cluster->title)
++    clutter_actor_unmap (CLUTTER_ACTOR (cluster->title));
++  if (cluster->meta)
++    clutter_actor_unmap (CLUTTER_ACTOR (cluster->meta));
++  if (cluster->title2)
++    clutter_actor_unmap (CLUTTER_ACTOR (cluster->title2));
++  if (cluster->meta2)
++    clutter_actor_unmap (CLUTTER_ACTOR (cluster->meta2));
++  if (priv->frame)
++    clutter_actor_unmap (priv->frame);
++}
++
+ 
+ static void
+ hrn_cluster_class_init (HrnClusterClass *klass)
+@@ -238,6 +278,8 @@ hrn_cluster_class_init (HrnClusterClass *klass)
+   actor_class->paint         = hrn_cluster_paint;
+   actor_class->pick          = hrn_cluster_pick;
+   actor_class->allocate      = hrn_cluster_allocate;
++  actor_class->map           = hrn_cluster_map;
++  actor_class->unmap         = hrn_cluster_unmap;
+ 
+   g_type_class_add_private (gobject_class, sizeof (HrnClusterPrivate));
+ }
+@@ -528,7 +570,7 @@ static void cluster_set_frame (HrnCluster *cluster,
+    }
+   hrn_texture_frame_set_draw_middle (frame, TRUE); /* this should be set only
+ 							    for the modes that need it */
+-  clutter_actor_queue_redraw (frame);
++  clutter_actor_queue_redraw (CLUTTER_ACTOR (frame));
+ }
+ 
+ 
+@@ -555,7 +597,7 @@ hrn_cluster_constructor (GType                  type,
+   if (front_handle == 0)
+     {
+       front_handle = cogl_texture_new_from_file (PKGDATADIR "hrn-stack-front.png",
+-						 63, COGL_TEXTURE_NONE,
++						 COGL_TEXTURE_NONE,
+ 						 COGL_PIXEL_FORMAT_ANY, 
+ 						 NULL);
+       front_material = cogl_material_new ();
+@@ -583,14 +625,14 @@ hrn_cluster_dispose (GObject *object)
+ #if HRN_USE_NORMAL_LABELS
+   HrnCluster *cluster = HRN_CLUSTER (object);
+   if (cluster->title)
+-    g_object_unref (cluster->title);
++    clutter_actor_destroy (CLUTTER_ACTOR (cluster->title));
+   if (cluster->meta)
+-    g_object_unref (cluster->meta);
++    clutter_actor_destroy (CLUTTER_ACTOR (cluster->meta));
+   cluster->title = cluster->meta = NULL;
+   if (cluster->title2)
+-    g_object_unref (cluster->title2);
++    clutter_actor_destroy (CLUTTER_ACTOR (cluster->title2));
+   if (cluster->meta2)
+-    g_object_unref (cluster->meta2);
++    clutter_actor_destroy (CLUTTER_ACTOR (cluster->meta2));
+   cluster->title2 = cluster->meta2 = NULL;
+ #endif
+   G_OBJECT_CLASS (hrn_cluster_parent_class)->dispose (object);
+@@ -1000,8 +1042,8 @@ static gboolean cluster_enter (ClutterActor *actor,
+       if (child)
+ 	{
+       clutter_actor_animate (child, CLUTTER_EASE_IN_OUT_QUINT, 800,
+-			     "x", (gint)(hoverdata[num][i][0]+0),
+-			     "y", (gint)(hoverdata[num][i][1]+0),
++			     "x", (gdouble)(hoverdata[num][i][0]+0),
++			     "y", (gdouble)(hoverdata[num][i][1]+0),
+ 			     "scale-x", hoverdata[num][i][2],
+ 			     "scale-y", hoverdata[num][i][2],
+ 			     "rotation-angle-z", 0.0,
+@@ -1048,8 +1090,8 @@ static gboolean cluster_leave (ClutterActor *actor,
+       child = g_list_nth_data (children, num-1-i);
+ 
+    clutter_actor_animate (child, CLUTTER_EASE_IN_OUT_QUINT, 800,
+-			 "x", (gint)clustered_x (i),
+-			 "y", (gint)clustered_y (i),
++			 "x", (gdouble)clustered_x (i),
++			 "y", (gdouble)clustered_y (i),
+ 			 "scale-x", clustered_scale (i),
+ 			 "scale-y", clustered_scale (i),
+ 			 "rotation-angle-z", clustered_rotation (i, accum),
+@@ -1311,7 +1353,6 @@ static void cluster_alone_to_grouped_adapt (HrnSwitcher  *switcher,
+       if (child)
+ 	{
+ 	  clutter_actor_set_position (child, LIN(0.0, clustered_x (i)), LIN(0, clustered_y (i)));
+-	  if(0)clutter_actor_set_depthu (child, CLUTTER_UNITS_FROM_FLOAT (LIN( clustered_depth(i) * 0.1, clustered_depth(i))));
+ 	  clutter_actor_set_scale (child, LIN(1.0, clustered_scale(i)), LIN(1.0, clustered_scale(i)));
+ 
+ 	  if (i>0)clutter_actor_set_opacity (child, LIN(0.0, 255.0));
+@@ -1422,7 +1463,7 @@ static void cluster_eightlim_to_eight_adapt (HrnSwitcher  *switcher,
+   g_list_free (children);
+ }
+ 
+-static gint xs[MAX_CLUSTER_SIZE];
++static gfloat xs[MAX_CLUSTER_SIZE];
+ static gint ys[MAX_CLUSTER_SIZE];
+ 
+ static void cluster_eight_to_four_adapt (HrnSwitcher  *switcher,
+diff --git a/src/hrn-drag-n-drop.c b/src/hrn-drag-n-drop.c
+index 835f041..861e7d0 100644
+--- a/src/hrn-drag-n-drop.c
++++ b/src/hrn-drag-n-drop.c
+@@ -112,8 +112,8 @@ static gboolean drag_capture (ClutterActor *stage,
+ 
+         if (rel_x * rel_x + rel_y * rel_y > 16 && !drag->in_drag)
+           {
+-            gint x0, y0;
+-            guint w, h;
++            gfloat x0, y0;
++            gfloat w, h;
+             drag->in_drag = TRUE;
+ 
+             drag->ghost = clutter_clone_new (drag->drag_data->actor);
+diff --git a/src/hrn-element.c b/src/hrn-element.c
+index fe4f964..3a7b7da 100644
+--- a/src/hrn-element.c
++++ b/src/hrn-element.c
+@@ -58,7 +58,7 @@ static void sync_size (ClutterActor *actor,
+                        gpointer      unused,
+                        HrnSwitcher  *switcher)
+ {
+-  guint w,h;
++  gfloat w,h;
+   clutter_actor_get_size (actor, &w, &h);
+ 
+   if (DIM/(w*1.0) > DIM / (h*1.0))
+@@ -104,7 +104,7 @@ static ClutterActor *element_square (BklItem *item)
+             {
+               if (g_str_equal (orientation, "right - top"))
+                 {
+-                  guint w,h;
++                  gfloat w,h;
+                   clutter_actor_set_rotation (actor, CLUTTER_Z_AXIS, 90, 0,0,0);
+                   clutter_actor_set_anchor_point_from_gravity (actor, CLUTTER_GRAVITY_SOUTH_WEST);
+                   ClutterActor *group = clutter_group_new ();
+@@ -183,7 +183,7 @@ static ClutterActor *element_thumb (HrnSwitcher *switcher,
+             {
+               if (g_str_equal (orientation, "right - top"))
+                 {
+-                  guint w,h;
++                  gfloat w,h;
+                   clutter_actor_set_rotation (actor, CLUTTER_Z_AXIS, 90, 0,0,0);
+                   clutter_actor_set_anchor_point_from_gravity (actor, CLUTTER_GRAVITY_SOUTH_WEST);
+                   ClutterActor *group = clutter_group_new ();
+@@ -243,7 +243,7 @@ static ClutterActor *element_original (HrnSwitcher *switcher,
+   g_print ("%s %s %s\n",  uri, path, path);
+   if (path)
+     {
+-      guint w,h;
++      gfloat w,h;
+       actor = hrn_texture_load (path);
+       clutter_actor_get_size (actor, &w, &h);
+ 
+diff --git a/src/hrn-image-player.c b/src/hrn-image-player.c
+index d46f941..1f1253a 100644
+--- a/src/hrn-image-player.c
++++ b/src/hrn-image-player.c
+@@ -68,17 +68,17 @@ hrn_image_player_get_property (GObject    *object,
+ static void
+ hrn_image_player_allocate (ClutterActor          *actor,
+                            const ClutterActorBox *box,
+-                           gboolean               origin_changed)
++                           ClutterAllocationFlags flags)
+ {
+     HrnImagePlayer *player = (HrnImagePlayer *) actor;
+     HrnImagePlayerPrivate *priv = player->priv;
+ 
+     CLUTTER_ACTOR_CLASS (hrn_image_player_parent_class)->allocate
+-        (actor, box, origin_changed);
++        (actor, box, flags);
+ 
+     if (priv->image_player) {
+         clutter_actor_allocate_preferred_size (priv->image_player,
+-                                               origin_changed);
++                                               flags);
+     }
+ }
+ 
+@@ -101,6 +101,29 @@ hrn_image_player_pick (ClutterActor       *actor,
+ }
+ 
+ static void
++hrn_image_player_map (ClutterActor *self)
++{
++  HrnImagePlayerPrivate *priv = HRN_IMAGE_PLAYER (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_image_player_parent_class)->map (self);
++
++  if (priv->image_player)
++    clutter_actor_map (CLUTTER_ACTOR (priv->image_player));
++}
++
++static void
++hrn_image_player_unmap (ClutterActor *self)
++{
++  HrnImagePlayerPrivate *priv = HRN_IMAGE_PLAYER (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_image_player_parent_class)->unmap (self);
++
++  if (priv->image_player)
++    clutter_actor_unmap (CLUTTER_ACTOR (priv->image_player));
++}
++
++
++static void
+ hrn_image_player_class_init (HrnImagePlayerClass *klass)
+ {
+     GObjectClass *o_class = (GObjectClass *) klass;
+@@ -114,6 +137,8 @@ hrn_image_player_class_init (HrnImagePlayerClass *klass)
+     a_class->allocate = hrn_image_player_allocate;
+     a_class->paint = hrn_image_player_paint;
+     a_class->pick = hrn_image_player_pick;
++    a_class->map = hrn_image_player_map;
++    a_class->unmap = hrn_image_player_unmap;
+ 
+     g_type_class_add_private (klass, sizeof (HrnImagePlayerPrivate));
+ }
+@@ -161,7 +186,7 @@ player_set_uri (HrnIfacePlayer *player,
+     BklItem *item;
+     const char *orient;
+     char *filename;
+-    guint w, h, sw, sh;
++    gfloat w, h, sw, sh;
+     double xs, ys, scale;
+     int x, y;
+ 
+diff --git a/src/hrn-item-image.c b/src/hrn-item-image.c
+index 2cf15e7..2b36973 100644
+--- a/src/hrn-item-image.c
++++ b/src/hrn-item-image.c
+@@ -120,6 +120,10 @@ HrnItemImage *hrn_item_image_create (BklItem *item,
+   hrn_switcher_add_state_full (self, NULL, -1, 0.25,
+                                item_image_alone, item,
+                                NULL, NULL);
++
++#if 1
++
++
+ #if HRN_ITEM_USE_FRAME
+ 
+   hrn_switcher_add_state_full (self, NULL, -1, 0.55, hrn_item_element_framed, item,
+@@ -140,5 +144,7 @@ HrnItemImage *hrn_item_image_create (BklItem *item,
+                                item_image_alone, item,
+                                NULL, NULL);
+ 
++#endif
++
+   return HRN_ITEM_IMAGE (self);
+ }
+diff --git a/src/hrn-item.c b/src/hrn-item.c
+index 255bb80..275b35a 100644
+--- a/src/hrn-item.c
++++ b/src/hrn-item.c
+@@ -104,12 +104,12 @@ hrn_item_dispose (GObject *object);
+ static void
+ hrn_item_allocate (ClutterActor          *self,
+                    const ClutterActorBox *box,
+-                   gboolean               origin_changed)
++                   ClutterAllocationFlags flags)
+ {
+   ClutterActorClass *parent_class;
+   parent_class = CLUTTER_ACTOR_CLASS (hrn_item_parent_class);
+ 
+-  parent_class->allocate (self, box, origin_changed);
++  parent_class->allocate (self, box, flags);
+ 
+   
+ 
+@@ -133,14 +133,14 @@ hrn_item_allocate (ClutterActor          *self,
+ 
+   if (HRN_ITEM(self)->title)
+    {
+-    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->title), origin_changed);
+-    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->meta), origin_changed);
++    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->title), flags);
++    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->meta), flags);
+    }
+ 
+   if (HRN_ITEM(self)->title2)
+    {
+-    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->title2), origin_changed);
+-    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->meta2), origin_changed);
++    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->title2), flags);
++    clutter_actor_allocate_preferred_size (CLUTTER_ACTOR(HRN_ITEM(self)->meta2), flags);
+    }
+ 
+ 
+@@ -163,6 +163,7 @@ static void
+ hrn_item_paint (ClutterActor *actor)
+ {
+   ClutterActorClass *parent_class;
++  HrnItem *item = HRN_ITEM (actor);
+ 
+   parent_class = CLUTTER_ACTOR_CLASS (hrn_item_parent_class);
+ 
+@@ -182,19 +183,27 @@ hrn_item_paint (ClutterActor *actor)
+ 
+   if (hrn_switcher_get_state (HRN_SWITCHER (actor))>0)
+     {
++      if (!hrn_item_get_view (actor))
++        return;
+       switch (hrn_view_labels_visible (hrn_item_get_view (actor)))
+         {
+         case ZOOM_ITEMS_8:
+-          clutter_actor_paint (CLUTTER_ACTOR (HRN_ITEM (actor)->title));
+-          clutter_actor_paint (CLUTTER_ACTOR (HRN_ITEM (actor)->meta));
++          if (item->title)
++            clutter_actor_paint (CLUTTER_ACTOR (item->title));
++          if (item->meta)
++            clutter_actor_paint (CLUTTER_ACTOR (item->meta));
+           break;
+         case ZOOM_ITEMS_4:
+-          clutter_actor_paint (CLUTTER_ACTOR (HRN_ITEM (actor)->title2));
+-          clutter_actor_paint (CLUTTER_ACTOR (HRN_ITEM (actor)->meta2));
++          if (item->title2)
++            clutter_actor_paint (CLUTTER_ACTOR (item->title2));
++          if (item->meta2)
++            clutter_actor_paint (CLUTTER_ACTOR (item->meta2));
+           break;
+         case ZOOM_ITEMS_3:
+-          clutter_actor_paint (CLUTTER_ACTOR (HRN_ITEM (actor)->title2));
+-          clutter_actor_paint (CLUTTER_ACTOR (HRN_ITEM (actor)->meta2));
++          if (item->title2)
++            clutter_actor_paint (CLUTTER_ACTOR (item->title2));
++          if (item->meta2)
++            clutter_actor_paint (CLUTTER_ACTOR (item->meta2));
+         }
+   }
+ }
+@@ -216,6 +225,41 @@ static void hrn_item_get_property (GObject    *gobject,
+                                    GValue     *value,
+                                    GParamSpec *pspec);
+ 
++static void
++hrn_item_map (ClutterActor *self)
++{
++  HrnItem *item = HRN_ITEM (self);
++
++  CLUTTER_ACTOR_CLASS (hrn_item_parent_class)->map (self);
++
++  if (item->title)
++    clutter_actor_map (CLUTTER_ACTOR (item->title));
++  if (item->meta)
++    clutter_actor_map (CLUTTER_ACTOR (item->meta));
++  if (item->title2)
++    clutter_actor_map (CLUTTER_ACTOR (item->title2));
++  if (item->meta2)
++    clutter_actor_map (CLUTTER_ACTOR (item->meta2));
++}
++
++static void
++hrn_item_unmap (ClutterActor *self)
++{
++  HrnItem *item = HRN_ITEM (self);
++
++  CLUTTER_ACTOR_CLASS (hrn_item_parent_class)->unmap (self);
++
++  if (item->title)
++    clutter_actor_unmap (CLUTTER_ACTOR (item->title));
++  if (item->meta)
++    clutter_actor_unmap (CLUTTER_ACTOR (item->meta));
++  if (item->title2)
++    clutter_actor_unmap (CLUTTER_ACTOR (item->title2));
++  if (item->meta2)
++    clutter_actor_unmap (CLUTTER_ACTOR (item->meta2));
++}
++
++
+ 
+ static void
+ hrn_item_class_init (HrnItemClass *klass)
+@@ -228,6 +272,8 @@ hrn_item_class_init (HrnItemClass *klass)
+   gobject_class->constructor = hrn_item_constructor;
+   actor_class->paint         = hrn_item_paint;
+   actor_class->pick          = hrn_item_pick;
++  actor_class->map           = hrn_item_map;
++  actor_class->unmap         = hrn_item_unmap;
+   actor_class->allocate      = hrn_item_allocate;
+   gobject_class->set_property = hrn_item_set_property;
+   gobject_class->get_property = hrn_item_get_property;
+@@ -386,15 +432,14 @@ hrn_item_dispose (GObject *object)
+     {
+   HrnItem *item = HRN_ITEM (object);
+   if (item->title)
+-    g_object_unref (item->title);
++      clutter_actor_destroy (CLUTTER_ACTOR (item->title));
+   if (item->meta)
+-    g_object_unref (item->meta);
+-  item->title = item->meta = NULL;
++      clutter_actor_destroy (CLUTTER_ACTOR (item->meta));
+   if (item->title2)
+-    g_object_unref (item->title2);
++      clutter_actor_destroy (CLUTTER_ACTOR (item->title2));
+   if (item->meta2)
+-    g_object_unref (item->meta2);
+-  item->title2 = item->meta2 = NULL;
++      clutter_actor_destroy (CLUTTER_ACTOR (item->meta2));
++  item->title = item->meta = item->title2 = item->meta2 = NULL;
+     }
+ #endif
+   G_OBJECT_CLASS (hrn_item_parent_class)->dispose (object);
+@@ -1020,7 +1065,7 @@ ClutterActor *hrn_item_element_framed (HrnSwitcher *switcher,
+   ClutterActor *group = clutter_group_new ();
+   ClutterActor *item_image;
+ 
+-  gint x;
++  gfloat x;
+   gint y;
+ 
+ 
+@@ -1028,8 +1073,8 @@ ClutterActor *hrn_item_element_framed (HrnSwitcher *switcher,
+   priv->frame = clutter_rectangle_new ();
+ #else
+   priv->frame = hrn_texture_frame_new (frame_tex(), 35,35,35,35);
+-  hrn_texture_frame_set_draw_middle (priv->frame, TRUE);
+-  hrn_texture_frame_set_can_pinch (priv->frame, TRUE);
++  hrn_texture_frame_set_draw_middle (HRN_TEXTURE_FRAME (priv->frame), TRUE);
++  hrn_texture_frame_set_can_pinch (HRN_TEXTURE_FRAME (priv->frame), TRUE);
+ #endif
+ 
+   switch (state_no)  /* squareness will depend on these states ... */
+diff --git a/src/hrn-item.h b/src/hrn-item.h
+index 2767630..5a73b3d 100644
+--- a/src/hrn-item.h
++++ b/src/hrn-item.h
+@@ -89,12 +89,6 @@ hrn_item_drop (ClutterActor *actor,
+ 
+ GType    hrn_item_get_type       (void) G_GNUC_CONST;
+ 
+-/* this is a factory method that creates a hrn item of the correct class */
+-HrnItem *hrn_item_create         (BklItem *item);
+-
+-
+-
+-
+ 
+ 
+ 
+diff --git a/src/hrn-popup.c b/src/hrn-popup.c
+index 6e00d4e..9c1bd81 100644
+--- a/src/hrn-popup.c
++++ b/src/hrn-popup.c
+@@ -89,7 +89,7 @@ void hrn_popup_actor (gint          x,
+                       gint          y,
+                       ClutterActor *actor)
+ {
+-  guint w2,h2;
++  gfloat w2,h2;
+   gint w,h;
+   ClutterActor *stage = clutter_stage_get_default ();
+ 
+@@ -172,7 +172,7 @@ void hrn_popup_actor_fixed (gint          x,
+                             gint          y,
+                             ClutterActor *actor)
+ {
+-  guint w2,h2;
++  gfloat w2,h2;
+   gint w,h;
+   ClutterActor *stage = clutter_stage_get_default ();
+ 
+@@ -196,13 +196,13 @@ ClutterActor *hrn_popup_actions (gpointer *actions,
+   gint i;
+   gint max_width = 0;
+   ClutterActor *group = CLUTTER_ACTOR (g_object_new (NBTK_TYPE_GRID,
+-                                                     "width", 0,
++                                                     "width", 0.0,
+                                                      NULL));
+   nbtk_widget_set_style_class_name (NBTK_WIDGET (group), "HrnPopup");
+ 
+   for (i=0; actions[i]; i+=2)
+     {
+-      guint w,h;
++      gfloat w,h;
+       ClutterActor *label;
+ 
+       label = CLUTTER_ACTOR (nbtk_button_new_with_label (gettext (actions[i])));
+@@ -240,13 +240,13 @@ ClutterActor *hrn_popup_actions_bolded (gpointer *actions,
+   gint i;
+   gint max_width = 0;
+   ClutterActor *group = CLUTTER_ACTOR (g_object_new (NBTK_TYPE_GRID,
+-                                                     "width", 0,
++                                                     "width", 0.0,
+                                                      NULL));
+   nbtk_widget_set_style_class_name (NBTK_WIDGET (group), "HrnPopup");
+ 
+   for (i=0; actions[i]; i+=2)
+     {
+-      guint w,h;
++      gfloat w,h;
+       ClutterActor *label;
+ 
+       label = CLUTTER_ACTOR (nbtk_button_new_with_label (gettext (actions[i])));
+diff --git a/src/hrn-queue.c b/src/hrn-queue.c
+index 818b413..1d9c019 100644
+--- a/src/hrn-queue.c
++++ b/src/hrn-queue.c
+@@ -99,7 +99,7 @@ hrn_queue_dispose (GObject *object);
+ static void
+ hrn_queue_allocate (ClutterActor          *self,
+                     const ClutterActorBox *box,
+-                    gboolean               origin_changed);
++                    ClutterAllocationFlags flags);
+ static void  hrn_queue_reposition   (HrnQueue    *queue);
+ static void
+ hrn_queue_paint (ClutterActor *actor);
+@@ -112,6 +112,28 @@ static void
+ hrn_queue_style_changed (NbtkWidget *widget);
+ 
+ static void
++hrn_queue_map (ClutterActor *self)
++{
++  HrnQueuePrivate *priv = HRN_QUEUE (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_queue_parent_class)->map (self);
++
++  if (priv->toptable)
++    clutter_actor_map (CLUTTER_ACTOR (priv->toptable));
++}
++
++static void
++hrn_queue_unmap (ClutterActor *self)
++{
++  HrnQueuePrivate *priv = HRN_QUEUE (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_queue_parent_class)->unmap (self);
++
++  if (priv->toptable)
++    clutter_actor_unmap (CLUTTER_ACTOR (priv->toptable));
++}
++
++static void
+ hrn_queue_class_init (HrnQueueClass *klass)
+ {
+   GObjectClass      *gobject_class = G_OBJECT_CLASS (klass);
+@@ -124,6 +146,8 @@ hrn_queue_class_init (HrnQueueClass *klass)
+   actor_class->allocate       = hrn_queue_allocate;
+   actor_class->paint          = hrn_queue_paint;
+   actor_class->pick           = hrn_queue_pick;
++  actor_class->map            = hrn_queue_map;
++  actor_class->unmap          = hrn_queue_unmap;
+   widget_class->style_changed = hrn_queue_style_changed;
+ 
+   g_type_class_add_private (gobject_class, sizeof (HrnQueuePrivate));
+@@ -133,8 +157,8 @@ hrn_queue_class_init (HrnQueueClass *klass)
+ static void
+ hrn_queue_init (HrnQueue *self)
+ {
+-  HrnQueuePrivate *priv = HRN_QUEUE_GET_PRIVATE (self);
+-  memset (priv, 0, sizeof (priv));
++  self->priv = HRN_QUEUE_GET_PRIVATE (self);
++  memset (self->priv, 0, sizeof (self->priv));
+ }
+ 
+ static gboolean completed (ClutterAnimation *anim,
+@@ -151,14 +175,14 @@ static gboolean expanded_clicked_cb (NbtkButton   *button,
+   if (nbtk_button_get_checked (button))
+     {
+       clutter_actor_animate (queue, CLUTTER_EASE_IN_OUT_CUBIC, 350,
+-                            "y", -300,
++                            "y", -300.0,
+                             NULL);
+       clutter_actor_show (CLUTTER_ACTOR (priv->scrollview));
+     }
+   else
+     {
+       clutter_actor_animate (queue, CLUTTER_EASE_IN_OUT_CUBIC, 350,
+-                            "y", 0,
++                            "y", 0.0,
+                             "signal::completed", completed, priv->scrollview,
+                             NULL);
+     }
+@@ -617,15 +641,15 @@ NbtkAdjustment *hrn_queue_get_audio_adjustment (HrnQueue *queue)
+ static void
+ hrn_queue_allocate (ClutterActor          *self,
+                     const ClutterActorBox *box,
+-                    gboolean               origin_changed)
++                    ClutterAllocationFlags flags)
+ {
+   HrnQueuePrivate *priv = HRN_QUEUE_GET_PRIVATE (self);
+   ClutterActorClass *parent_class;
+ 
+   parent_class = CLUTTER_ACTOR_CLASS (hrn_queue_parent_class);
+ 
+-  parent_class->allocate (self, box, origin_changed);
+-  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->toptable), origin_changed);
++  parent_class->allocate (self, box, flags);
++  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->toptable), flags);
+ }
+ 
+ static void
+@@ -652,8 +676,8 @@ hrn_queue_pick  (ClutterActor         *actor,
+                  const ClutterColor   *color)
+ {
+   HrnQueuePrivate *priv = HRN_QUEUE_GET_PRIVATE (actor);
+-  guint width;
+-  guint height;
++  gfloat width;
++  gfloat height;
+   clutter_actor_get_size (CLUTTER_ACTOR (priv->toptable), &width, &height);
+ 
+ #if CLUTTER_MINOR_VERSION < 9
+@@ -897,17 +921,15 @@ hrn_item_can_drop (ClutterActor *actor,
+   priv  = HRN_QUEUE_GET_PRIVATE (queue);
+ 
+   {
+-    ClutterUnit xu, yu;
++    gfloat xu, yu;
+     gdouble foo;
+     NbtkScrollBar *scrollbar = NBTK_SCROLL_BAR (nbtk_scroll_view_get_vscroll_bar (NBTK_SCROLL_VIEW (priv->scrollview)));
+     foo = nbtk_adjustment_get_value (nbtk_scroll_bar_get_adjustment (scrollbar));
+ 
+-    xu = CLUTTER_UNITS_FROM_INT (x);
+-    yu = CLUTTER_UNITS_FROM_INT (y);
+     clutter_actor_transform_stage_point (CLUTTER_ACTOR (queue), 
+-                                         xu, yu, &xu, &yu);
++                                         x, y, &xu, &yu);
+ 
+-    no=((CLUTTER_UNITS_TO_INT(yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT - 1;
++    no=((floor(yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT - 1;
+ 
+     if (no==-1)
+       return TRUE;
+@@ -952,17 +974,15 @@ hrn_item_drop (ClutterActor *actor,
+   priv  = HRN_QUEUE_GET_PRIVATE (queue);
+ 
+   {
+-    ClutterUnit xu, yu;
++    gfloat xu, yu;
+     gdouble foo;
+     NbtkScrollBar *scrollbar = NBTK_SCROLL_BAR (nbtk_scroll_view_get_vscroll_bar (NBTK_SCROLL_VIEW (priv->scrollview)));
+     foo = nbtk_adjustment_get_value (nbtk_scroll_bar_get_adjustment (scrollbar));
+ 
+-    xu = CLUTTER_UNITS_FROM_INT (x);
+-    yu = CLUTTER_UNITS_FROM_INT (y);
+     clutter_actor_transform_stage_point (CLUTTER_ACTOR (queue), 
+-                                         xu, yu, &xu, &yu);
++                                         x, y, &xu, &yu);
+ 
+-    no=((CLUTTER_UNITS_TO_INT(yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT-1;
++    no=((floor(yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT-1;
+     if (yu < QUEUE_TIP_HEIGHT)
+       no = -1;
+   }
+@@ -1010,17 +1030,15 @@ gboolean hrn_cluster_dropped (ClutterActor *actor,
+   priv  = HRN_QUEUE_GET_PRIVATE (queue);
+ 
+   {
+-    ClutterUnit xu, yu;
++    gfloat  xu, yu;
+     gdouble foo;
+     NbtkScrollBar *scrollbar = NBTK_SCROLL_BAR (nbtk_scroll_view_get_vscroll_bar (NBTK_SCROLL_VIEW (priv->scrollview)));
+     foo = nbtk_adjustment_get_value (nbtk_scroll_bar_get_adjustment (scrollbar));
+ 
+-    xu = CLUTTER_UNITS_FROM_INT (x);
+-    yu = CLUTTER_UNITS_FROM_INT (y);
+     clutter_actor_transform_stage_point (CLUTTER_ACTOR (queue), 
+                                          xu, yu, &xu, &yu);
+ 
+-    no=((CLUTTER_UNITS_TO_INT(yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT-1;
++    no=((floor (yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT-1;
+     if (yu < QUEUE_TIP_HEIGHT)
+       no = -1;
+   }
+@@ -1067,15 +1085,13 @@ static gboolean from_queue_drop (ClutterActor *actor,
+     }
+ 
+   {
+-    ClutterUnit xu, yu;
++    gfloat  xu, yu;
+     gdouble foo;
+     NbtkScrollBar *scrollbar = NBTK_SCROLL_BAR (nbtk_scroll_view_get_vscroll_bar (NBTK_SCROLL_VIEW (priv->scrollview)));
+     foo = nbtk_adjustment_get_value (nbtk_scroll_bar_get_adjustment (scrollbar));
+ 
+-    xu = CLUTTER_UNITS_FROM_INT (x);
+-    yu = CLUTTER_UNITS_FROM_INT (y);
+     clutter_actor_transform_stage_point (CLUTTER_ACTOR (queue_item->queue), 
+-                                         xu, yu, &xu, &yu);
++                                         x, y, &xu, &yu);
+ 
+     no=0;
+      {
+@@ -1096,7 +1112,7 @@ static gboolean from_queue_drop (ClutterActor *actor,
+       g_object_ref (item);
+       hrn_queue_remove (queue_item->queue, no);
+ 
+-      no=((CLUTTER_UNITS_TO_INT(yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT-1;
++      no=((floor(yu) + (gint)foo)-ROW_OFFSET)/ROW_HEIGHT-1;
+       if (yu < QUEUE_TIP_HEIGHT)
+         no = -1;
+ 
+@@ -1126,9 +1142,10 @@ static void  hrn_queue_reposition   (HrnQueue    *queue)
+       QueueItem *item = iter->data;
+       if (CLUTTER_ACTOR_IS_VISIBLE (item->actor))
+         {
+-          gint x = 7;
+-          gint y = no * ROW_HEIGHT + ROW_OFFSET;
+-
++          gfloat x = 7;
++          gfloat y = no * ROW_HEIGHT + ROW_OFFSET;
++#if 0
++#endif
+           if (clutter_actor_get_x(item->actor)==0&&
+               clutter_actor_get_y(item->actor)==0)
+ 
+@@ -1163,7 +1180,7 @@ static void add_item (HrnQueue *queue, QueueItem *queue_item)
+   gchar *meta = hrn_item_get_meta (item);
+   NbtkWidget *text = nbtk_label_new (title);
+   NbtkWidget *meta_text = nbtk_label_new (meta);
+-  guint w,h;
++  gfloat w,h;
+   gdouble scale;
+ 
+   nbtk_widget_set_style_class_name (text, "HrnQueueItemLabel");
+diff --git a/src/hrn-searchbar.c b/src/hrn-searchbar.c
+index fe2c60c..63ba06b 100644
+--- a/src/hrn-searchbar.c
++++ b/src/hrn-searchbar.c
+@@ -47,7 +47,7 @@ hrn_search_bar_dispose (GObject *object);
+ static void
+ hrn_searchbar_allocate (ClutterActor          *self,
+                         const ClutterActorBox *box,
+-                        gboolean               origin_changed);
++                        ClutterAllocationFlags flags);
+ static void
+ hrn_searchbar_paint (ClutterActor *actor);
+ static void
+@@ -55,7 +55,32 @@ hrn_searchbar_pick  (ClutterActor         *actor,
+                      const ClutterColor   *color);
+               
+ 
++static void
++hrn_searchbar_map (ClutterActor *self)
++{
++  HrnSearchBarPrivate *priv = HRN_SEARCH_BAR (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_search_bar_parent_class)->map (self);
++
++  if (priv->pin_button)
++    clutter_actor_map (priv->pin_button);
++  if (priv->clear_button)
++    clutter_actor_map (priv->clear_button);
++}
++
+ 
++static void
++hrn_searchbar_unmap (ClutterActor *self)
++{
++  HrnSearchBarPrivate *priv = HRN_SEARCH_BAR (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_search_bar_parent_class)->unmap (self);
++
++  if (priv->pin_button)
++    clutter_actor_unmap (priv->pin_button);
++  if (priv->clear_button)
++    clutter_actor_unmap (priv->clear_button);
++}
+ 
+ static void
+ hrn_search_bar_style_changed (NbtkWidget *widget)
+@@ -78,6 +103,8 @@ hrn_search_bar_class_init (HrnSearchBarClass *klass)
+   gobject_class->constructor = hrn_search_bar_constructor;
+   actor_class->paint = hrn_searchbar_paint;
+   actor_class->pick = hrn_searchbar_pick;
++  actor_class->map = hrn_searchbar_map;
++  actor_class->unmap = hrn_searchbar_unmap;
+   actor_class->allocate = hrn_searchbar_allocate;
+   widget_class->style_changed = hrn_search_bar_style_changed;
+ 
+@@ -350,19 +377,19 @@ hrn_search_bar_dispose (GObject *object)
+ static void
+ hrn_searchbar_allocate (ClutterActor          *self,
+                         const ClutterActorBox *box,
+-                        gboolean               origin_changed)
++                        ClutterAllocationFlags flags)
+ {
+   HrnSearchBarPrivate *priv = HRN_SEARCH_BAR_GET_PRIVATE (self);
+ 
+-  CLUTTER_ACTOR_CLASS (hrn_search_bar_parent_class)->allocate (self, box, origin_changed);
++  CLUTTER_ACTOR_CLASS (hrn_search_bar_parent_class)->allocate (self, box, flags);
+ 
+   clutter_actor_set_x (CLUTTER_ACTOR (priv->pin_button),
+      clutter_actor_get_width (self));
+   clutter_actor_set_x (CLUTTER_ACTOR (priv->clear_button),
+      clutter_actor_get_x (priv->pin_button)-
+      20);
+-  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->pin_button), origin_changed);
+-  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->clear_button), origin_changed);
++  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->pin_button), flags);
++  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->clear_button), flags);
+ }
+ 
+ static void
+diff --git a/src/hrn-sidebar-subitem.c b/src/hrn-sidebar-subitem.c
+index 50e1554..3760baf 100644
+--- a/src/hrn-sidebar-subitem.c
++++ b/src/hrn-sidebar-subitem.c
+@@ -222,9 +222,9 @@ static void rename_cb (gpointer button)
+     ClutterColor shade_color = {0x0,0x0,0x0,0xff};
+     ClutterStage *stage = CLUTTER_STAGE (clutter_stage_get_default ());
+     ClutterActor *text;
+-    guint sw, sh;
+-    gint x, y;
+-    guint w, h;
++    gfloat sw, sh;
++    gfloat x, y;
++    gfloat w, h;
+     gint i;
+ 
+     data = g_new0 (struct _rename_data, 1);
+diff --git a/src/hrn-sidebar.c b/src/hrn-sidebar.c
+index 8533d22..77fb1e5 100644
+--- a/src/hrn-sidebar.c
++++ b/src/hrn-sidebar.c
+@@ -58,13 +58,38 @@ hrn_sidebar_dispose (GObject *object);
+ static void
+ hrn_sidebar_allocate (ClutterActor          *self,
+                     const ClutterActorBox *box,
+-                    gboolean               origin_changed);
++                    ClutterAllocationFlags flags);
+ static void
+ hrn_sidebar_paint (ClutterActor *actor);
+ static void
+ hrn_sidebar_pick  (ClutterActor         *actor,
+                  const ClutterColor   *color);
+-              
++            
++static void
++hrn_sidebar_map (ClutterActor *self)
++{
++  HrnSidebarPrivate *priv = HRN_SIDEBAR (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_sidebar_parent_class)->map (self);
++
++  if (priv->scroll)
++    clutter_actor_map (CLUTTER_ACTOR (priv->scroll));
++  if (priv->expanded)
++    clutter_actor_map (CLUTTER_ACTOR (priv->expanded));
++}
++
++static void
++hrn_sidebar_unmap (ClutterActor *self)
++{
++  HrnSidebarPrivate *priv = HRN_SIDEBAR (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_sidebar_parent_class)->unmap (self);
++
++  if (priv->scroll)
++    clutter_actor_unmap (CLUTTER_ACTOR (priv->scroll));
++  if (priv->expanded)
++    clutter_actor_unmap (CLUTTER_ACTOR (priv->expanded));
++}
+ 
+ 
+ static void
+@@ -79,6 +104,8 @@ hrn_sidebar_class_init (HrnSidebarClass *klass)
+   actor_class->allocate      = hrn_sidebar_allocate;
+   actor_class->paint         = hrn_sidebar_paint;
+   actor_class->pick          = hrn_sidebar_pick;
++  actor_class->map          = hrn_sidebar_map;
++  actor_class->unmap          = hrn_sidebar_unmap;
+ 
+   g_type_class_add_private (gobject_class, sizeof (HrnSidebarPrivate));
+ 
+@@ -209,7 +236,7 @@ void hrn_retrieve_query (const gchar *qname)
+ 
+   hrn_view_set_source (HRN_VIEW (hrn_view), source);
+ 
+-  tb = hrn_toolbar_group_get_view_toolbar (hrn_toolbar);
++  tb = hrn_toolbar_group_get_view_toolbar (HRN_TOOLBAR_GROUP (hrn_toolbar));
+   hrn_toolbar_set_mode (tb, filter);
+   hrn_view_set_filter (HRN_VIEW (hrn_view), filter);
+ 
+@@ -323,7 +350,7 @@ static void add_source (HrnSidebar *sidebar,
+                         HrnSource  *source,
+                         gboolean    is_local)
+ {
+-  HrnSidebarPrivate *priv = HRN_SIDEBAR_GET_PRIVATE (sidebar);
++  HrnSidebarPrivate *priv = sidebar->priv;
+ 
+   NbtkWidget *button;
+ 
+@@ -335,6 +362,8 @@ static void add_source (HrnSidebar *sidebar,
+       button = nbtk_button_new_with_label (name);
+     }
+ 
++  g_print ("%p %p %i\n", sidebar, source, is_local);
++
+   nbtk_widget_set_style_class_name (button, "HrnSidebarItem");
+   clutter_actor_set_reactive (CLUTTER_ACTOR (button), TRUE);
+ 
+@@ -456,9 +485,10 @@ static void add_source (HrnSidebar *sidebar,
+ void hrn_sidebar_update_sources (HrnSidebar *sidebar)
+ {
+   GList *sources, *s;
+-  HrnSidebarPrivate *priv = HRN_SIDEBAR_GET_PRIVATE (sidebar);
++  HrnSidebarPrivate *priv = sidebar->priv;
+   HrnSource *source;
+ 
++
+   {
+     GList *c, *children = clutter_container_get_children (CLUTTER_CONTAINER (priv->flow));
+ 
+@@ -506,7 +536,12 @@ hrn_sidebar_constructor (GType                  type,
+   nbtk_widget_set_style_class_name (NBTK_WIDGET (sidebar), "HrnSidebar");
+   clutter_actor_set_name (CLUTTER_ACTOR (sidebar), "HrnSidebar");
+ 
++#if 1
+   clutter_actor_set_parent (CLUTTER_ACTOR (priv->scroll), CLUTTER_ACTOR (sidebar));
++#else
++  clutter_container_add_actor (CLUTTER_CONTAINER (object), priv->scroll);
++#endif
++
+   clutter_container_add_actor (CLUTTER_CONTAINER (priv->scroll), CLUTTER_ACTOR (priv->flow));
+   g_object_set_data (object, "HRN_DROP_MASK", GINT_TO_POINTER(HRN_DROP_MASK_SIDEBAR));
+   g_object_set_data (G_OBJECT(priv->flow), "HRN_DROP_MASK", GINT_TO_POINTER(HRN_DROP_MASK_SIDEBAR));
+@@ -529,7 +564,7 @@ hrn_sidebar_constructor (GType                  type,
+ 
+   /* hack to sync up size */
+   {
+-    guint width = SIDEBAR_WIDTH_PADDED;
++    gfloat width = SIDEBAR_WIDTH_PADDED;
+     guint height = clutter_actor_get_height (clutter_stage_get_default())-61;
+ 
+     clutter_actor_set_size (CLUTTER_ACTOR (priv->flow), width - 40, height);
+@@ -546,17 +581,17 @@ hrn_sidebar_constructor (GType                  type,
+ 
+ static void
+ hrn_sidebar_allocate (ClutterActor          *self,
+-                    const ClutterActorBox *box,
+-                    gboolean               origin_changed)
++                      const ClutterActorBox *box,
++                      ClutterAllocationFlags flags)
+ {
+   HrnSidebarPrivate *priv = HRN_SIDEBAR_GET_PRIVATE (self);
+   ClutterActorClass *parent_class;
+ 
+   parent_class = CLUTTER_ACTOR_CLASS (hrn_sidebar_parent_class);
+ 
+-  parent_class->allocate (self, box, origin_changed);
+-  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->scroll), origin_changed);
+-  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->expanded), origin_changed);
++  parent_class->allocate (self, box, flags);
++  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->scroll), flags);
++  clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->expanded), flags);
+ }
+ 
+ static void
+@@ -583,21 +618,17 @@ static void
+ hrn_sidebar_pick  (ClutterActor         *actor,
+                  const ClutterColor   *color)
+ {
+-  guint width;
+-  guint height;
++  gfloat width;
++  gfloat height;
++  HrnSidebarPrivate  *priv  = HRN_SIDEBAR_GET_PRIVATE (actor);
+   clutter_actor_get_size (CLUTTER_ACTOR (actor), &width, &height);
+  
+-#if CLUTTER_MINOR_VERSION < 9
+-  cogl_color (color);
+-#else
+-  cogl_set_source_color4ub (color->red,
+-                            color->green,
+-                            color->blue,
+-                            color->alpha);
+-#endif
++  cogl_set_source_color ((void*)color);
+   cogl_rectangle (0, 0, width, height);
+ 
+-  hrn_sidebar_paint (actor);
++  clutter_actor_paint (CLUTTER_ACTOR (priv->scroll));
++  clutter_actor_paint (CLUTTER_ACTOR (priv->expanded));
++  /*hrn_sidebar_paint (actor);*/
+ }
+ 
+ HrnSidebar *hrn_sidebar_new (void)
+@@ -618,13 +649,13 @@ gboolean sidebar_hide_handler (gpointer foo)
+   nbtk_button_set_checked (NBTK_BUTTON (priv->expanded), FALSE);
+ 
+   clutter_actor_animate (hrn_sidebar, CLUTTER_EASE_IN_CUBIC, SIDEBAR_OUT_DURATION,
+-                         "x", -180,
++                         "x", -180.0,
+                          "opacity", 255,
+                          NULL);
+ 
+   clutter_actor_animate (hrn_content_area, CLUTTER_EASE_IN_CUBIC, SIDEBAR_OUT_DURATION,
+-                         "depth", 0,
+-                         "x", 0,
++                         "depth", 0.0,
++                         "x", 0.0,
+                           NULL);
+ 
+   sidebar_hide_handler_id = 0;
+@@ -645,7 +676,7 @@ void hrn_sidebar_wake (void)
+     }
+ 
+    clutter_actor_animate (hrn_sidebar, CLUTTER_EASE_IN_OUT_QUINT, SIDEBAR_IN_DURATION,
+-                          "x", 0,
++                          "x", 0.0,
+                           NULL);
+ 
+   if (hrn_theatre_get_active (HRN_THEATRE (hrn_theatre)))
+@@ -658,8 +689,8 @@ void hrn_sidebar_wake (void)
+   else
+     {
+        clutter_actor_animate (hrn_content_area, CLUTTER_EASE_IN_OUT_QUINT, SIDEBAR_IN_DURATION,
+-                              "depth", -200,
+-                              "x", 110,
++                              "depth", -200.0,
++                              "x", 110.0,
+                               NULL);
+     }
+ 
+@@ -681,8 +712,9 @@ void hrn_sidebar_unpin (void)
+ 
+ void hrn_sidebar_hide (void)
+ {
+-  if (sidebar_hide_handler_id == 0)
+-    sidebar_hide_handler_id = g_idle_add (sidebar_hide_handler, NULL);
++  if (sidebar_hide_handler_id != 0)
++    g_source_remove (sidebar_hide_handler_id);
++  sidebar_hide_handler (NULL);
+ }
+ 
+ 
+diff --git a/src/hrn-square-clone.c b/src/hrn-square-clone.c
+index c2d388e..760b3f3 100644
+--- a/src/hrn-square-clone.c
++++ b/src/hrn-square-clone.c
+@@ -52,9 +52,9 @@ struct _HrnSquareClonePrivate
+ 
+ static void
+ hrn_square_clone_get_preferred_width (ClutterActor *self,
+-                                        ClutterUnit   for_height,
+-                                        ClutterUnit  *min_width_p,
+-                                        ClutterUnit  *natural_width_p)
++                                      gfloat        for_height,
++                                      gfloat       *min_width_p,
++                                      gfloat       *natural_width_p)
+ {
+   HrnSquareClonePrivate *priv = HRN_SQUARE_CLONE (self)->priv;
+ 
+@@ -85,9 +85,9 @@ hrn_square_clone_get_preferred_width (ClutterActor *self,
+ 
+ static void
+ hrn_square_clone_get_preferred_height (ClutterActor *self,
+-                                         ClutterUnit   for_width,
+-                                         ClutterUnit  *min_height_p,
+-                                         ClutterUnit  *natural_height_p)
++                                       gfloat        for_width,
++                                       gfloat       *min_height_p,
++                                       gfloat       *natural_height_p)
+ {
+   HrnSquareClonePrivate *priv = HRN_SQUARE_CLONE (self)->priv;
+ 
+@@ -186,8 +186,8 @@ hrn_square_clone_paint (ClutterActor *self)
+   bw = cogl_texture_get_width (tex); /* base texture width */
+   bh = cogl_texture_get_height (tex); /* base texture height */
+ 
+-  aw = CLUTTER_UNITS_TO_INT (box.x2 - box.x1); /* allocation width */
+-  ah = CLUTTER_UNITS_TO_INT (box.y2 - box.y1); /* allocation height */
++  aw = (box.x2 - box.x1); /* allocation width */
++  ah = (box.y2 - box.y1); /* allocation height */
+ 
+   /* no comment */
+   if ((float)bw/bh < (float)aw/ah)
+diff --git a/src/hrn-switcher.c b/src/hrn-switcher.c
+index 215d79b..b43f79b 100644
+--- a/src/hrn-switcher.c
++++ b/src/hrn-switcher.c
+@@ -105,8 +105,78 @@ hrn_switcher_pick  (ClutterActor         *actor,
+ static void
+ hrn_switcher_allocate (ClutterActor          *self,
+                       const ClutterActorBox *box,
+-                      gboolean               origin_changed);
++                      ClutterAllocationFlags flags);
+ 
++static void
++hrn_switcher_map (ClutterActor *self)
++{
++  HrnSwitcher        *switcher = HRN_SWITCHER (self);
++  HrnSwitcherPrivate *priv     = HRN_SWITCHER_GET_PRIVATE (switcher);
++  gint                 i;
++
++  CLUTTER_ACTOR_CLASS (hrn_switcher_parent_class)->map (self);
++
++  for (i = 0; i < priv->state_count; i++)
++    {
++      if (priv->states[i].actor)
++        {
++          clutter_actor_map (priv->states[i].actor);
++        }
++    }
++}
++
++static void
++hrn_switcher_unmap (ClutterActor *self)
++{
++  HrnSwitcher        *switcher = HRN_SWITCHER (self);
++  HrnSwitcherPrivate *priv     = HRN_SWITCHER_GET_PRIVATE (switcher);
++  gint                 i;
++
++  CLUTTER_ACTOR_CLASS (hrn_switcher_parent_class)->unmap (self);
++
++  for (i = 0; i < priv->state_count; i++)
++    {
++      if (priv->states[i].actor)
++        {
++          clutter_actor_unmap (priv->states[i].actor);
++        }
++    }
++}
++
++static void
++hrn_switcher_realize (ClutterActor *self)
++{
++  HrnSwitcher        *switcher = HRN_SWITCHER (self);
++  HrnSwitcherPrivate *priv     = HRN_SWITCHER_GET_PRIVATE (switcher);
++  gint                 i;
++
++  for (i = 0; i < priv->state_count; i++)
++    {
++      if (priv->states[i].actor)
++        {
++          clutter_actor_realize (priv->states[i].actor);
++        }
++    }
++  /*CLUTTER_ACTOR_CLASS (hrn_switcher_parent_class)->realize (self);*/
++}
++
++static void
++hrn_switcher_unrealize (ClutterActor *self)
++{
++  HrnSwitcher        *switcher = HRN_SWITCHER (self);
++  HrnSwitcherPrivate *priv     = HRN_SWITCHER_GET_PRIVATE (switcher);
++  gint                 i;
++
++
++  for (i = 0; i < priv->state_count; i++)
++    {
++      if (priv->states[i].actor)
++        {
++          clutter_actor_unrealize (priv->states[i].actor);
++        }
++    }
++  CLUTTER_ACTOR_CLASS (hrn_switcher_parent_class)->unrealize (self);
++}
+ 
+ static void
+ hrn_switcher_class_init (HrnSwitcherClass *klass)
+@@ -118,6 +188,10 @@ hrn_switcher_class_init (HrnSwitcherClass *klass)
+   gobject_class->constructor = hrn_switcher_constructor;
+   actor_class->paint         = hrn_switcher_paint;
+   actor_class->pick          = hrn_switcher_pick;
++  actor_class->map           = hrn_switcher_map;
++  actor_class->unmap         = hrn_switcher_unmap;
++  actor_class->realize       = hrn_switcher_realize;
++  actor_class->unrealize     = hrn_switcher_unrealize;
+   actor_class->allocate      = hrn_switcher_allocate;
+ 
+   g_type_class_add_private (gobject_class, sizeof (HrnSwitcherPrivate));
+@@ -166,19 +240,19 @@ hrn_switcher_constructor (GType                  type,
+ static void
+ hrn_switcher_allocate (ClutterActor          *self,
+                       const ClutterActorBox *box,
+-                      gboolean               origin_changed)
++                      ClutterAllocationFlags flags)
+ {
+   HrnSwitcherPrivate *priv = HRN_SWITCHER_GET_PRIVATE (self);
+   ClutterActorClass *parent_class;
+ 
+   parent_class = CLUTTER_ACTOR_CLASS (hrn_switcher_parent_class);
+ 
+-  parent_class->allocate (self, box, origin_changed);
++  parent_class->allocate (self, box, flags);
+ 
+   hrn_switcher_adapt (HRN_SWITCHER (self));
+ 
+   if (priv->states[priv->state].actor)
+-      clutter_actor_allocate_preferred_size (priv->states[priv->state].actor, origin_changed);
++      clutter_actor_allocate_preferred_size (priv->states[priv->state].actor, flags);
+ }
+ 
+ void
+@@ -368,8 +442,8 @@ hrn_switcher_add_state (HrnSwitcher   *self,
+ 
+ void
+ hrn_actor_get_geom (ClutterActor *actor,
+-                    gint *ox, gint *oy,
+-                    guint *owidth, guint *oheight,
++                    gfloat *ox, gfloat *oy,
++                    gfloat *owidth, gfloat *oheight,
+                     gdouble *oscalex, gdouble *oscaley)
+ {
+   gfloat x, y;
+@@ -392,7 +466,7 @@ hrn_actor_get_geom (ClutterActor *actor,
+   parent = clutter_actor_get_parent (actor);
+   while (parent)
+     {
+-      gint ax, ay;
++      gfloat ax, ay;
+       clutter_actor_get_anchor_point (parent, &ax, &ay);
+       clutter_actor_get_scale (parent, &scalex, &scaley);
+       x -= ax;
+@@ -412,7 +486,7 @@ hrn_actor_get_geom (ClutterActor *actor,
+         they are more expensive than the above as well
+         */
+   {
+-    guint w,h;
++    gfloat w,h;
+     gint nx, ny;
+     clutter_actor_get_transformed_size (actor, &w, &h);
+     clutter_actor_get_transformed_position (actor, &nx, &ny);
+@@ -435,15 +509,15 @@ static gboolean
+ hrn_actor_is_off_stage (HrnSwitcher  *switcher,
+                         ClutterActor *actor)
+ {
+-  gint  x, y;
+-  guint width, height;
++  gfloat x, y;
++  gfloat width, height;
+   gdouble scalex, scaley;
+   HrnSwitcherPrivate *priv = HRN_SWITCHER_GET_PRIVATE (switcher);
+ 
+   /*gint sw = CLUTTER_STAGE_WIDTH ();*/
+   gint sh = CLUTTER_STAGE_HEIGHT ();
+ 
+-  hrn_actor_get_geom (actor, &x, &y, &width,&height,&scalex, &scaley);
++  hrn_actor_get_geom (actor, &x, &y, &width, &height, &scalex, &scaley);
+ 
+   if (
+       (gint)(y + height)    < -sh *  (HRN_OFF_STAGE_FUDGE) ||
+diff --git a/src/hrn-texture-cache.c b/src/hrn-texture-cache.c
+index d52101c..1f5995a 100755
+--- a/src/hrn-texture-cache.c
++++ b/src/hrn-texture-cache.c
+@@ -222,6 +222,11 @@ hrn_texture_cache_get_texture (HrnTextureCache *self,
+   ClutterActor *clone;
+   HrnCacheEntry *entry;
+ 
++  /* XXX: originally planned to use clones here, but it seems the square
++   * texture works well on its own when it is not forced to be square
++   */
++  return hrn_texture_cache_get_sq_texture (self, path_or_uri, load_async);
++
+   if (!path_or_uri)
+     return NULL;
+   file = g_file_new_for_commandline_arg (path_or_uri);
+@@ -278,7 +283,7 @@ hrn_texture_cache_get_texture (HrnTextureCache *self,
+       g_hash_table_insert (priv->cache, g_strdup (path), entry);
+ 
+       {
+-        guint w,h;
++        gfloat w,h;
+         clutter_actor_get_size (original, &w, &h);
+         priv->sum_size += w*h * 4;
+       }
+@@ -329,7 +334,7 @@ hrn_texture_cache_get_texture (HrnTextureCache *self,
+               /*g_assert (G_OBJECT(nuke_entry->original)->ref_count == 1);  not valid with anim */
+               clutter_actor_destroy (nuke_entry->original);
+               {
+-                guint w,h;
++                gfloat w,h;
+                 clutter_actor_get_size (nuke_entry->original, &w, &h);
+                 priv->sum_size -= w*h * 4;
+               }
+@@ -414,7 +419,7 @@ hrn_texture_cache_get_sq_texture (HrnTextureCache *self,
+       g_hash_table_insert (priv->cache, g_strdup (path), entry);
+ 
+       {
+-        guint w,h;
++        gfloat w,h;
+         clutter_actor_get_size (original, &w, &h);
+         priv->sum_size += w*h * 4;
+       }
+diff --git a/src/hrn-theatre.c b/src/hrn-theatre.c
+index 9fda276..51013be 100644
+--- a/src/hrn-theatre.c
++++ b/src/hrn-theatre.c
+@@ -75,17 +75,17 @@ hrn_theatre_get_property (GObject    *object,
+ static void
+ hrn_theatre_allocate (ClutterActor          *actor,
+                       const ClutterActorBox *box,
+-                      gboolean               origin_changed)
++                      ClutterAllocationFlags flags)
+ {
+     HrnTheatre *theatre = (HrnTheatre *) actor;
+     HrnTheatrePrivate *priv = theatre->priv;
+ 
+     CLUTTER_ACTOR_CLASS (hrn_theatre_parent_class)->allocate (actor, box,
+-                                                              origin_changed);
++                                                              flags);
+ 
+     if (priv->player) {
+         clutter_actor_allocate_preferred_size (priv->player,
+-                                               origin_changed);
++                                               flags);
+     }
+ }
+ 
+@@ -304,7 +304,6 @@ br_player_show_uri (BrIfacePlayer *player,
+     HrnTheatre *theatre = (HrnTheatre *) player;
+     HrnTheatrePrivate *priv = theatre->priv;
+     gboolean new_player = FALSE;
+-    int no;
+ 
+     if (uri == NULL || mimetype == NULL) {
+         return TRUE;
+@@ -425,7 +424,7 @@ hrn_theatre_show (HrnTheatre *theatre)
+                            NULL);
+     clutter_actor_animate (hrn_scrollbar, CLUTTER_EASE_IN_OUT_CUBIC,
+                            HRN_TO_THEATRE_DURATION,
+-                           "x", 30,
++                           "x", 30.0,
+                            NULL);
+ 
+     hrn_controls_can_has_fade = TRUE;
+@@ -433,8 +432,8 @@ hrn_theatre_show (HrnTheatre *theatre)
+ 
+     clutter_actor_animate (hrn_content_area, CLUTTER_EASE_IN_OUT_CUBIC,
+                            SIDEBAR_OUT_DURATION,
+-                           "depth", 0,
+-                           "x", 0,
++                           "depth", 0.0,
++                           "x", 0.0,
+                            NULL);
+ 
+     clutter_actor_animate (hrn_sidebar, CLUTTER_EASE_IN_OUT_CUBIC,
+@@ -491,7 +490,7 @@ hrn_theatre_hide (HrnTheatre *theatre)
+ 
+     clutter_actor_animate (hrn_scrollbar, CLUTTER_EASE_IN_OUT_CUBIC,
+                            HRN_FROM_THEATRE_DURATION,
+-                           "x", 0,
++                           "x", 0.0,
+                            NULL);
+     clutter_actor_animate (hrn_controls_frame, CLUTTER_LINEAR,
+                            HRN_FROM_THEATRE_DURATION,
+@@ -508,8 +507,8 @@ hrn_theatre_hide (HrnTheatre *theatre)
+     if (hrn_sidebar_visible ()) {
+         clutter_actor_animate (hrn_content_area, CLUTTER_EASE_IN_OUT_QUINT,
+                                SIDEBAR_IN_DURATION,
+-                               "depth", -200,
+-                               "x", 110,
++                               "depth", -200.0,
++                               "x", 110.0,
+                                NULL);
+     }
+ 
+diff --git a/src/hrn-toolbar-group.c b/src/hrn-toolbar-group.c
+index 35204de..ac2a796 100644
+--- a/src/hrn-toolbar-group.c
++++ b/src/hrn-toolbar-group.c
+@@ -97,7 +97,7 @@ hrn_toolbar_group_set_mode (HrnToolbarGroup    *group,
+                                NULL);
+ 
+         /* When switching to view mode, focus the toolbar */
+-        hrn_toolbar_focused (priv->view_toolbar);
++        hrn_toolbar_focused (CLUTTER_ACTOR (priv->view_toolbar));
+         break;
+ 
+     case HRN_TOOLBAR_GROUP_MODE_THEATRE:
+diff --git a/src/hrn-toolbar.c b/src/hrn-toolbar.c
+index a90460e..f135b13 100644
+--- a/src/hrn-toolbar.c
++++ b/src/hrn-toolbar.c
+@@ -114,9 +114,36 @@ hrn_toolbar_set_query (HrnToolbar *toolbar,
+ }
+ 
+ static void
++hrn_toolbar_map (ClutterActor *self)
++{
++  HrnToolbarPrivate *priv = HRN_TOOLBAR (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_toolbar_parent_class)->map (self);
++
++  if (priv->zoom_bar_label)
++    clutter_actor_map (CLUTTER_ACTOR (priv->zoom_bar_label));
++}
++
++static void
++hrn_toolbar_unmap (ClutterActor *self)
++{
++  HrnToolbarPrivate *priv = HRN_TOOLBAR (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_toolbar_parent_class)->unmap (self);
++
++  if (priv->zoom_bar_label)
++    clutter_actor_unmap (CLUTTER_ACTOR (priv->zoom_bar_label));
++}
++
++
++static void
+ hrn_toolbar_class_init (HrnToolbarClass *klass)
+ {
+   GObjectClass *object_class = G_OBJECT_CLASS (klass);
++  ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
++
++  actor_class->map =  hrn_toolbar_map;
++  actor_class->unmap =  hrn_toolbar_unmap;
+ 
+   g_type_class_add_private (klass, sizeof (HrnToolbarPrivate));
+ 
+@@ -279,7 +306,7 @@ static gboolean sort_button_release (ClutterActor *actor,
+ {
+   if (event->button.button == 1)
+     {
+-      gint x, y;
++      gfloat x, y;
+       const gchar *sortfunc;
+       gint selected;
+       clutter_actor_get_transformed_position (actor, &x, &y);
+@@ -315,7 +342,7 @@ static gboolean showbutton_release (ClutterActor *actor,
+ {
+   if (event->button.button == 1)
+     {
+-      gint x, y;
++      gfloat x, y;
+       gint selected;
+       clutter_actor_get_transformed_position (actor, &x, &y);
+       x-=14; /* XXX: hardcoded offset to handle padding */
+@@ -421,7 +448,8 @@ hrn_toolbar_init (HrnToolbar *self)
+                           "nbtk-zoom-bar");
+   clutter_actor_set_name (CLUTTER_ACTOR (priv->zoom_bar_label),
+                           "hrn-zoom-bar-label");
+-  clutter_actor_set_parent (priv->zoom_bar_label, CLUTTER_ACTOR (self));
++  clutter_actor_set_parent (CLUTTER_ACTOR (priv->zoom_bar_label),
++                            CLUTTER_ACTOR (self));
+ 
+   g_signal_connect (priv->settings_button, "clicked",
+                     G_CALLBACK (hrn_toolbar_settings_clicked_cb), self);
+diff --git a/src/hrn-video-player.c b/src/hrn-video-player.c
+index a1fe597..7c90169 100644
+--- a/src/hrn-video-player.c
++++ b/src/hrn-video-player.c
+@@ -70,17 +70,17 @@ hrn_video_player_get_property (GObject    *object,
+ static void
+ hrn_video_player_allocate (ClutterActor          *actor,
+                            const ClutterActorBox *box,
+-                           gboolean               origin_changed)
++                           ClutterAllocationFlags flags)
+ {
+     HrnVideoPlayer *player = (HrnVideoPlayer *) actor;
+     HrnVideoPlayerPrivate *priv = player->priv;
+ 
+     CLUTTER_ACTOR_CLASS (hrn_video_player_parent_class)->allocate
+-        (actor, box, origin_changed);
++        (actor, box, flags);
+ 
+     if (priv->video_player) {
+         clutter_actor_allocate_preferred_size (priv->video_player,
+-                                               origin_changed);
++                                               flags);
+     }
+ }
+ 
+@@ -102,6 +102,30 @@ hrn_video_player_pick (ClutterActor       *actor,
+     hrn_video_player_paint (actor);
+ }
+ 
++
++static void
++hrn_video_player_map (ClutterActor *self)
++{
++  HrnVideoPlayerPrivate *priv = HRN_VIDEO_PLAYER (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_video_player_parent_class)->map (self);
++
++  if (priv->video_player)
++    clutter_actor_map (CLUTTER_ACTOR (priv->video_player));
++}
++
++static void
++hrn_video_player_unmap (ClutterActor *self)
++{
++  HrnVideoPlayerPrivate *priv = HRN_VIDEO_PLAYER (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_video_player_parent_class)->unmap (self);
++
++  if (priv->video_player)
++    clutter_actor_unmap (CLUTTER_ACTOR (priv->video_player));
++}
++
++
+ static void
+ hrn_video_player_class_init (HrnVideoPlayerClass *klass)
+ {
+@@ -116,6 +140,8 @@ hrn_video_player_class_init (HrnVideoPlayerClass *klass)
+     a_class->allocate = hrn_video_player_allocate;
+     a_class->paint = hrn_video_player_paint;
+     a_class->pick = hrn_video_player_pick;
++    a_class->map = hrn_video_player_map;
++    a_class->unmap = hrn_video_player_unmap;
+ 
+     g_type_class_add_private (klass, sizeof (HrnVideoPlayerPrivate));
+ }
+diff --git a/src/hrn-view.c b/src/hrn-view.c
+index 87ce82f..52b2bc8 100644
+--- a/src/hrn-view.c
++++ b/src/hrn-view.c
+@@ -29,6 +29,8 @@
+ #include "hrn-switcher.h"
+ 
+ 
++static void hrn_view_pause (void);
++static void hrn_view_go (void);
+ static void
+ hrn_view_refilter (HrnView  *view);
+ typedef struct _HrnViewActorData HrnViewActorData;
+@@ -78,19 +80,19 @@ static void hrn_view_pick (ClutterActor       *actor,
+ 
+ static void
+ hrn_view_get_preferred_width (ClutterActor *self,
+-                              ClutterUnit for_height,
+-                              ClutterUnit *min_width_p,
+-                              ClutterUnit *natural_width_p);
++                              gfloat      for_height,
++                              gfloat      *min_width_p,
++                              gfloat      *natural_width_p);
+ 
+ static void
+ hrn_view_get_preferred_height (ClutterActor *self,
+-                               ClutterUnit for_width,
+-                               ClutterUnit *min_height_p,
+-                               ClutterUnit *natural_height_p);
++                               gfloat      for_width,
++                               gfloat      *min_height_p,
++                               gfloat      *natural_height_p);
+ 
+ static void hrn_view_allocate (ClutterActor *self,
+                                const ClutterActorBox *box,
+-                               gboolean absolute_origin_changed);
++                               ClutterAllocationFlags flags);
+ void source_item_added (HrnSource *source,
+                         BklItem   *item,
+                         gpointer   userdata);
+@@ -113,9 +115,9 @@ G_DEFINE_TYPE_WITH_CODE (HrnView, hrn_view,
+ 
+ struct _HrnViewPrivate
+ {
+-  ClutterUnit for_height,  for_width;
+-  ClutterUnit pref_width,  pref_height;
+-  ClutterUnit alloc_width, alloc_height;
++  gfloat      for_height,  for_width;
++  gfloat      pref_width,  pref_height;
++  gfloat      alloc_width, alloc_height;
+   ClutterActor *group;
+ 
+ 
+@@ -131,14 +133,14 @@ struct _HrnViewPrivate
+ 
+   gdouble     height;
+ 
+-  gboolean    absolute_origin_changed;
++  ClutterAllocationFlags flags;
+   GHashTable *hash_table;
+   GList      *list;
+ 
+   gint        labels_visible;
+ 
+   gboolean    first_of_batch;
+-  ClutterUnit a_current_sum, a_wrap;
++  gfloat      a_current_sum, a_wrap;
+ 
+   HrnSource *current_source;
+   guint32 item_added_id;
+@@ -176,9 +178,38 @@ struct _HrnViewActorData
+   gint cells; /* the number of cells needed for item when
+                * expanded.
+                */
+-  gint xmod; /* the position of the first item */
++  gfloat xmod; /* the position of the first item */
+ };
+ 
++
++static void
++hrn_view_map (ClutterActor *self)
++{
++  HrnViewPrivate *priv = HRN_VIEW (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_view_parent_class)->map (self);
++
++  if (priv->group)
++    clutter_actor_map (CLUTTER_ACTOR (priv->group));
++  if (priv->lasso)
++    clutter_actor_map (CLUTTER_ACTOR (priv->lasso));
++}
++
++static void
++hrn_view_unmap (ClutterActor *self)
++{
++  HrnViewPrivate *priv = HRN_VIEW (self)->priv;
++
++  CLUTTER_ACTOR_CLASS (hrn_view_parent_class)->unmap (self);
++
++  if (priv->group)
++    clutter_actor_unmap (CLUTTER_ACTOR (priv->group));
++  if (priv->lasso)
++    clutter_actor_map (CLUTTER_ACTOR (priv->lasso));
++}
++
++
++
+ static void
+ hrn_view_class_init (HrnViewClass *klass)
+ {
+@@ -193,6 +224,8 @@ hrn_view_class_init (HrnViewClass *klass)
+ 
+   actor_class->paint                = hrn_view_paint;
+   actor_class->pick                 = hrn_view_pick;
++  actor_class->map                  = hrn_view_map;
++  actor_class->unmap                = hrn_view_unmap;
+   actor_class->get_preferred_width  = hrn_view_get_preferred_width;
+   actor_class->get_preferred_height = hrn_view_get_preferred_height;
+   actor_class->allocate             = hrn_view_allocate;
+@@ -432,21 +465,12 @@ GList *hrn_view_get_selected (HrnView *view)
+   return g_hash_table_get_values (priv->selected);
+ }
+ 
+-static void destroy_when_done (ClutterAnimation *anim,
+-                               HrnViewPrivate   *priv)
+-{
+-  if (priv->lasso)
+-    clutter_actor_destroy (priv->lasso);
+-  priv->lasso = NULL;
+-}
+-
+-
+ static guint    select_capture = 0;
+ static gboolean view_capture (ClutterActor *actor,
+                               ClutterEvent *event,
+                               gpointer      view)
+ {
+-  ClutterUnit x, y;
++  gfloat x, y;
+   HrnViewPrivate *priv = HRN_VIEW (view)->priv;
+   switch (clutter_event_type (event))
+     {
+@@ -457,7 +481,7 @@ static gboolean view_capture (ClutterActor *actor,
+ #if 1
+         clutter_actor_animate (priv->lasso, CLUTTER_LINEAR, 250, 
+                                "opacity", 0,
+-                               "signal::completed", destroy_when_done, priv,
++    /*                           "signal::completed", destroy_when_done, priv,*/
+                                NULL);
+ #endif
+ 
+@@ -592,7 +616,7 @@ static gboolean view_pressed (ClutterActor *actor,
+                               ClutterEvent *event,
+                               gpointer      data)
+ {
+-  ClutterUnit x, y;
++  gfloat x, y;
+   HrnViewPrivate *priv = HRN_VIEW (actor)->priv;
+   ClutterModifierType state = event->button.modifier_state;
+   g_print ("pressed view\n");
+@@ -656,7 +680,7 @@ hrn_view_new (void)
+   g_signal_connect (self, "scroll-event", G_CALLBACK (handle_scroll), NULL);
+ 
+   {
+-    guint w,h;
++    gfloat w,h;
+     clutter_actor_get_size (self, &w, &h);
+   }
+ 
+@@ -807,15 +831,15 @@ hrn_view_pick (ClutterActor *actor,
+ 
+ static void
+ hrn_view_get_preferred_width (ClutterActor *self,
+-                              ClutterUnit for_height,
+-                              ClutterUnit *min_width_p,
+-                              ClutterUnit *natural_width_p)
++                              gfloat        for_height,
++                              gfloat       *min_width_p,
++                              gfloat       *natural_width_p)
+ {
+   HrnView *layout = (HrnView *) self;
+   HrnViewPrivate *priv = layout->priv;
+-  ClutterUnit natural_width;
++  gfloat          natural_width;
+ 
+-  natural_width = CLUTTER_UNITS_FROM_INT (1024 * 2);
++  natural_width = 1024 * 2;
+   if (min_width_p)
+     *min_width_p = natural_width;
+   if (natural_width_p)
+@@ -826,17 +850,15 @@ hrn_view_get_preferred_width (ClutterActor *self,
+ 
+ static void
+ hrn_view_get_preferred_height (ClutterActor *self,
+-                               ClutterUnit for_width,
+-                               ClutterUnit *min_height_p,
+-                               ClutterUnit *natural_height_p)
++                               gfloat        for_width,
++                               gfloat       *min_height_p,
++                               gfloat       *natural_height_p)
+ {
+   HrnView *layout = (HrnView *) self;
+   HrnViewPrivate *priv = layout->priv;
+-  ClutterUnit natural_height;
++  gfloat      natural_height;
+ 
+-  natural_height = CLUTTER_UNITS_FROM_INT (600 * 2); /* XXX: making sure
+-                                                        it is large enough
+-                                                        for netbooks first */
++  natural_height = 600 * 2; 
+ 
+   priv->for_width = for_width;
+   priv->pref_height = natural_height;
+@@ -1067,7 +1089,7 @@ hrn_view_center (ClutterActor *self,
+ static void
+ hrn_view_allocate (ClutterActor          *self,
+                    const ClutterActorBox *box,
+-                   gboolean               absolute_origin_changed)
++                   ClutterAllocationFlags flags)
+ {
+   HrnView *layout = (HrnView *) self;
+   HrnViewPrivate *priv = layout->priv;
+@@ -1078,22 +1100,22 @@ hrn_view_allocate (ClutterActor          *self,
+ 
+   /* chain up to set actor->allocation */
+   CLUTTER_ACTOR_CLASS (hrn_view_parent_class)
+-    ->allocate (self, box, absolute_origin_changed);
++    ->allocate (self, box, flags);
+ 
+   gdouble scale;
+   clutter_actor_get_scale (self, &scale, NULL);
+   scale = hrn_actor_get_abs_scale (self);
+   priv->alloc_width = box->x2 - box->x1;
+   priv->alloc_height = box->y2 - box->y1;
+-  priv->absolute_origin_changed = absolute_origin_changed;
++  priv->flags = flags;
+ 
+   clutter_actor_get_preferred_size (self, NULL, NULL, NULL, NULL);
+   clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->group),
+-                                         absolute_origin_changed);
++                                         flags);
+ 
+   if (priv->lasso)
+     clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (priv->lasso),
+-                                           absolute_origin_changed);
++                                           flags);
+ 
+ 
+   priv->a_wrap = priv->alloc_width;
+@@ -1101,7 +1123,7 @@ hrn_view_allocate (ClutterActor          *self,
+   for (i=0,iter = priv->list; iter; i++,iter=iter->next)
+     {
+       ClutterActor *child = iter->data;
+-      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (child), absolute_origin_changed);
++      clutter_actor_allocate_preferred_size (CLUTTER_ACTOR (child), flags);
+     }
+ }
+ 
+@@ -1270,10 +1292,10 @@ hrn_view_reposition (HrnView *self)
+   
+   for (i=0,iter = priv->list; iter; i++,iter=iter->next)
+     {
+-      ClutterActor *child = iter->data;
+-      ClutterActorBox child_box;
+-      ClutterUnit natural_a;
+-      ClutterUnit natural_b;
++      ClutterActor      *child = iter->data;
++      ClutterActorBox    child_box;
++      gfloat             natural_a;
++      gfloat             natural_b;
+       HrnViewActorData *data;
+ 
+ 
+@@ -1301,10 +1323,10 @@ hrn_view_reposition (HrnView *self)
+         else if (y > BUG_THRESHOLD )
+           y = BUG_THRESHOLD ;
+ #endif
+-        child_box.y1 = CLUTTER_UNITS_FROM_FLOAT (y);
++        child_box.y1 = y;
+       }
+-      child_box.x1 = CLUTTER_UNITS_FROM_FLOAT (hrn_view_compute_x (data->num, data->accum_pos, scale));
+-      clutter_actor_set_positionu (child, child_box.x1, child_box.y1);
++      child_box.x1 = hrn_view_compute_x (data->num, data->accum_pos, scale);
++      clutter_actor_set_position (child, child_box.x1, child_box.y1);
+       
+       /* clamp the vertical position to avoid overflow (both on
+        * stage as well as in clutter functions
+@@ -1783,7 +1805,7 @@ hrn_view_set_source (HrnView   *view,
+ static void
+ hrn_view_refilter (HrnView  *view)
+ {
+-  HrnViewPrivate *priv = HRN_VIEW_GET_PRIVATE (view);
++  HrnViewPrivate *priv = view->priv;
+   GList *children, *iter;
+ 
+   g_print ("[");
+@@ -1967,12 +1989,16 @@ extern gint desired_pos;
+ 
+ void hrn_set_zoom (gdouble zoom)
+ {
+-  HrnViewPrivate *priv = hrn_view->priv;
++  HrnViewPrivate *priv = HRN_VIEW (hrn_view)->priv;
+   /* (hrn_target_zoom contains the old value in these checks) */
+ 
+   if (priv->zoom_lock) {
+     return;
+   }
++  if (zoom != hrn_target_zoom || zoom != scale)
++    {
++
++    } 
+ 
+   priv->zoom_lock = TRUE;
+ 
+@@ -2056,6 +2082,7 @@ gdouble hrn_view_get_loc (void)
+ void    hrn_view_set_loc (gdouble loc)
+ {
+   HrnViewPrivate *priv = HRN_VIEW_GET_PRIVATE (hrn_view);
++
+ 
+   priv->target_center_pos = priv->height * loc;
+ 
+@@ -2074,6 +2101,7 @@ gint    hrn_view_center_pos (void)
+ 
+ void hrn_view_set_pos (gint pos)
+ {
++
+   hrn_target_loc = pos;
+   hrn_view_center (hrn_view, pos);
+   hrn_view_reposition (HRN_VIEW (hrn_view));
+@@ -2143,9 +2179,13 @@ static gboolean transition_iterate (ClutterTimeline *timeline,
+               else
+                 scale = hrn_target_zoom;
+             }
++
+         }
+       else if (hrn_target_zoom != scale)
+-        scale = hrn_target_zoom;
++        {
++          scale = hrn_target_zoom;
++
++        }
+       else
+         break;
+     }
+@@ -2154,10 +2194,11 @@ static gboolean transition_iterate (ClutterTimeline *timeline,
+     {
+       if (fabs (priv->target_center_pos - priv->center_pos) > 1)
+         {
+-          #define RATE 0.02
++          #define RATE 0.012
+ 
+           priv->center_pos = priv->target_center_pos * (RATE) +
+                              priv->center_pos * (1.0-RATE);
++
+         }
+       else if (priv->target_center_pos != priv->center_pos)
+         priv->center_pos = priv->target_center_pos;
+@@ -2450,7 +2509,7 @@ hrn_text_paint (gint x, gint y, const gchar *text)
+   if(0)clutter_actor_set_position (actor, x, y);
+   {
+     ClutterActorBox box;
+-    ClutterUnit natural_x, natural_y;
++    gfloat natural_x, natural_y;
+     clutter_actor_get_preferred_size (actor,
+                                       NULL, NULL,
+                                       &natural_x, &natural_y);
+diff --git a/src/hrn-view.h b/src/hrn-view.h
+index 6cdf29e..f90fe52 100644
+--- a/src/hrn-view.h
++++ b/src/hrn-view.h
+@@ -57,10 +57,10 @@ struct _HrnView
+   ClutterActor parent;
+ 
+   HrnViewPrivate *priv;
+-  gint              bkl_item_type_mask;
+-  gchar            *search;
++  gint            bkl_item_type_mask;
++  gchar          *search;
+ 
+-  gboolean          dirty_frames;
++  gboolean        dirty_frames;
+ };
+ 
+ GType hrn_view_get_type (void) G_GNUC_CONST;
+diff --git a/src/hrn.h b/src/hrn.h
+index 4d69b0b..08ab297 100644
+--- a/src/hrn.h
++++ b/src/hrn.h
+@@ -117,11 +117,11 @@ extern gint  DIM;
+ #define HRN_FRAME_USE_RECTANGLE 0
+ #define HRN_STAGE_COLOR       0xff,0xff,0xff,0xff
+ /*#define HRN_STAGE_COLOR       0x00,0x00,0x00,0xff*/
+-#define HRN_VIEW_FPS          30
++#define HRN_VIEW_FPS          60
+ 
+ #define HRN_CACHE_MAX_SIZE    (1024*1024*128) /* 128mb texture memory */
+ 
+-#define HRN_ZOOM_RATE         1.0011/* 1.0015 seems good the rate of zooming */
++#define HRN_ZOOM_RATE         1.0009/* 1.0015 seems good the rate of zooming */
+ #define HRN_OFF_STAGE_FUDGE   0.1   /* how many stage sizes to include above
+                           00          and below the stage to be considered
+                                        "on-stage" (this will act as a
+@@ -225,8 +225,8 @@ ClutterActor *hrn_texture_load (const gchar *path);
+ 
+ void
+ hrn_actor_get_geom (ClutterActor *actor,
+-                    gint *ox, gint *oy,
+-                    guint *owidth, guint *oheight, gdouble *oscalex, gdouble *oscaley);
++                    gfloat *ox, gfloat *oy,
++                    gfloat *owidth, gfloat *oheight, gdouble *oscalex, gdouble *oscaley);
+ 
+ void hrn_sidebar_hide (void);
+ 
+diff --git a/src/nbtk-texture-frame.c b/src/nbtk-texture-frame.c
+index 9cec8cf..2557ec5 100644
+--- a/src/nbtk-texture-frame.c
++++ b/src/nbtk-texture-frame.c
+@@ -68,9 +68,9 @@ struct _HrnTextureFramePrivate
+ 
+ static void
+ hrn_texture_frame_get_preferred_width (ClutterActor *self,
+-                                        ClutterUnit   for_height,
+-                                        ClutterUnit  *min_width_p,
+-                                        ClutterUnit  *natural_width_p)
++                                       gfloat        for_height,
++                                       gfloat       *min_width_p,
++                                       gfloat       *natural_width_p)
+ {
+   HrnTextureFramePrivate *priv = HRN_TEXTURE_FRAME (self)->priv;
+ 
+@@ -101,9 +101,9 @@ hrn_texture_frame_get_preferred_width (ClutterActor *self,
+ 
+ static void
+ hrn_texture_frame_get_preferred_height (ClutterActor *self,
+-                                         ClutterUnit   for_width,
+-                                         ClutterUnit  *min_height_p,
+-                                         ClutterUnit  *natural_height_p)
++                                        gfloat        for_width,
++                                        gfloat       *min_height_p,
++                                        gfloat       *natural_height_p)
+ {
+   HrnTextureFramePrivate *priv = HRN_TEXTURE_FRAME (self)->priv;
+ 
+--
+cgit v0.8.2
