@@ -1,8 +1,8 @@
 DESCRIPTION = "openBmap logger and uploader of GPS/GSM data"
 SECTION = "x11/utils"
-DEPENDS = "python python-dbus python-pygobject python-pygtk libglade"
-RDEPENDS = "python-subprocess python-netclient python-math python-core python-io frameworkd"
-PR = "r0"
+RDEPENDS = "python python-dbus python-pygobject python-pygtk libglade \
+	python-subprocess python-netclient python-math python-core python-io frameworkd"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/myposition/openbmap-logger-${PV}.tar.gz"
 
