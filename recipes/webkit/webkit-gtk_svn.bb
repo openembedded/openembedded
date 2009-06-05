@@ -20,6 +20,7 @@ SRC_URI = "\
   file://symbols.filter \
   file://GNUmakefile.am \
   file://gtk-doc.make \
+  file://unicode-fixes.diff;patch=1;maxrev=44459 \
  "
 
 S = "${WORKDIR}/"
@@ -33,7 +34,8 @@ EXTRA_OECONF = "\
                 --enable-svg \
                 --enable-icon-database=yes \
                 --with-http-backend=soup \
-               "
+#                --with-unicode-backend=glib \
+"
 
 EXTRA_AUTORECONF = " -I autotools "
 
@@ -67,5 +69,5 @@ FILES_${PN}launcher = "${bindir}/GtkLauncher"
 FILES_${PN}launcher-dbg = "${bindir}/.debug/GtkLauncher"
 FILES_libjavascriptcore = "${libdir}/libJavaScriptCore.so.*"
 FILES_${PN}-webinspector = "${datadir}/webkit-1.0/webinspector/"
-FILES_${PN} += "${datadir}/webkit-1.0/resources/error.html"
+FILES_${PN} += "${datadir}/webkit-1.0/resources/error.html ${datadir}/webkit-1.0/images"
 
