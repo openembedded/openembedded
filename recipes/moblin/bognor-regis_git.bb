@@ -1,7 +1,7 @@
 LICENSE = "GPLv2"
 
-SRCREV = "181a62fa73527905fa01859b49eeb9d326ef7742"
-PV = "0.3.1"
+SRCREV = "7f3f5f46cc40f9012300aca66a25ca31511df897"
+PV = "0.4.1"
 PR_append = "+git${SRCREV}"
 
 DEPENDS = "dbus-glib gstreamer glib-2.0"
