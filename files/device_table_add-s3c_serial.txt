@@ -1,0 +1,2 @@
+# Include nodes for the S3C24XX serial ports on Samsung SoC boards
+/dev/ttySAC	c	640	0	5	204	64	0	1	3

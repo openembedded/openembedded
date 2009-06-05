@@ -55,6 +55,12 @@ SRCREV_sequoa = "cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093"
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git;tag=cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093 "
 
+SRC_URI_mini2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"
+SRCREV_mini2440 = "3516c35fb777ca959e5cadf2156a792ca10e1cff"
+
+SRC_URI_micro2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"
+SRCREV_micro2440 = "3516c35fb777ca959e5cadf2156a792ca10e1cff"
+
 SRC_URI_neuros-osd2 += "file://Makefile-fix.patch;patch=1"
 SRC_URI_append_akita = "file://pdaXrom-u-boot.patch;patch=1 \
                         file://uboot-eabi-fix-HACK2.patch;patch=1 \
@@ -83,3 +89,12 @@ do_configure_prepend_spitz() {
 do_configure_prepend_c7x0() {
         sed -i s:ROOT_FLASH_SIZE:${ROOT_FLASH_SIZE}:g ${S}/include/configs/corgi.h
 }
+
+do_deploy_prepend_mini2440() {
+	cp ${S}/u-boot-nand16k.bin ${S}/u-boot.bin
+}
+
+do_deploy_prepend_micro2440() {
+	cp ${S}/u-boot-nand16k.bin ${S}/u-boot.bin
+}
+
