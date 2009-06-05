@@ -14,6 +14,9 @@ EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=${ERASEBLOCKSIZE} --pad --f
 
 EXTRA_IMAGEDEPENDS += "zaurus-installer"
 
+# collie is flashed by pressing C+D on power-on
+EXTRA_IMAGEDEPENDS_collie += ""
+
 SERIAL_CONSOLE = "115200 ttyS0"
 SERIAL_CONSOLE_collie = "115200 ttySA0"
 
