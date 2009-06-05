@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r15"
+PR = "r16"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -62,5 +62,5 @@ RDEPENDS_${PN} += "\
 		gdb \
 		oh-puzzles \
 		links-x11 \
-                e-wm-illume-dict-pl \
+		e-wm-illume-dict-pl \
 "
