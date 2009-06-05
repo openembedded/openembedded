@@ -2,7 +2,7 @@ DESCRIPTION = "SHR splash screen"
 SECTION = "x11/data"
 LICENSE = "MIT BSD"
 PV = "1.2-gitr${SRCPV}"
-PR = "r2"
+PR = "r3"
 RDEPENDS += "virtual/shr-splash-theme"
 
 inherit update-rc.d
@@ -25,4 +25,4 @@ do_install() {
 }
 
 INITSCRIPT_NAME = "shr-splash.sh"
-INITSCRIPT_PARAMS = "start 01 S . stop 20 0 1 6 ."
+INITSCRIPT_PARAMS = "start 01 S . stop 21 0 1 6 ."
