@@ -62,4 +62,5 @@ RDEPENDS_${PN} += "\
 		gdb \
 		oh-puzzles \
 		links-x11 \
+                e-wm-illume-dict-pl \
 "
