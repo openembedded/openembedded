@@ -3,9 +3,11 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
-RDEPENDS = "xkbd gpe-theme-clearlooks"
+RDEPENDS_${PN} = "xkbd"
+RRECOMMENDS_${PN} =  "gpe-theme-clearlooks"
 RPROVIDES_${PN} = "gpe-session-starter"
-PR = "r1"
+
+PR = "r2"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
