@@ -1,0 +1,60 @@
+From 69f75d284caed6c38ccbdc4479f69fb16bb3ec46 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Fri, 5 Jun 2009 14:21:34 +0200
+Subject: [PATCH] clutter-gst videosink: guard GL calls with #ifdef CLUTTER_COGL_HAS_GL so it can be compiled against the GLES backend
+
+---
+ clutter-gst/clutter-gst-video-sink.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/clutter-gst/clutter-gst-video-sink.c b/clutter-gst/clutter-gst-video-sink.c
+index c20fbd7..2f2d27b 100644
+--- a/clutter-gst/clutter-gst-video-sink.c
++++ b/clutter-gst/clutter-gst-video-sink.c
+@@ -245,6 +245,8 @@ _string_array_to_char_array (char	*dst,
+   *dst = '\0';
+ }
+ 
++#ifdef CLUTTER_COGL_HAS_GL
++
+ static void
+ clutter_gst_video_sink_fp_paint (ClutterActor        *actor,
+                                 ClutterGstVideoSink *sink)
+@@ -284,6 +286,8 @@ clutter_gst_video_sink_set_fp_shader (ClutterGstVideoSink *sink,
+ 
+ }
+ 
++#endif /* CLUTTER_COGL_HAS_GL */
++
+ static void
+ clutter_gst_video_sink_paint (ClutterActor        *actor,
+                               ClutterGstVideoSink *sink)
+@@ -746,14 +750,17 @@ clutter_gst_build_renderers_list (ClutterGstSymbols *syms)
+     {
+       &rgb24_renderer,
+       &rgb32_renderer,
++#ifdef CLUTTER_COGL_HAS_GL
+       &yv12_glsl_renderer,
+       &yv12_fp_renderer,
+       &i420_glsl_renderer,
+       &i420_fp_renderer,
+       &ayuv_glsl_renderer,
++#endif /* CLUTTER_COGL_HAS_GL */
+       NULL
+     };
+ 
++#ifdef CLUTTER_COGL_HAS_GL
+   /* get the features */
+   gl_extensions = (const gchar*) glGetString (GL_EXTENSIONS);
+   if (cogl_check_extension ("GL_ARB_multitexture", gl_extensions))
+@@ -773,6 +780,7 @@ clutter_gst_build_renderers_list (ClutterGstSymbols *syms)
+           features |= CLUTTER_GST_MULTI_TEXTURE;
+         }
+     }
++#endif /* CLUTTER_COGL_HAS_GL */
+ 
+   if (cogl_check_extension ("GL_ARB_fragment_program", gl_extensions))
+     {
+-- 
+1.6.1
+
