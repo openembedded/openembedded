@@ -1,0 +1,315 @@
+diff -uri o/src/callbacks.c n/src/callbacks.c
+--- o/src/callbacks.c	2009-03-29 13:40:40.000000000 +0200
++++ n/src/callbacks.c	2009-05-27 03:23:28.000000000 +0200
+@@ -49,6 +49,19 @@
+ 
+ }
+ 
++void
++on_buttonzoomin_clicked                     (GtkButton       *button,
++                                        gpointer         user_data)
++{
++	 zoom_in();
++}
++
++void
++on_buttonzoomout_clicked                     (GtkButton       *button,
++                                        gpointer         user_data)
++{
++	 zoom_out();
++}
+ 
+ void
+ on_button4_clicked                     (GtkButton       *button,
+diff -uri o/src/callbacks.h n/src/callbacks.h
+--- o/src/callbacks.h	2009-03-29 11:16:45.000000000 +0200
++++ n/src/callbacks.h	2009-05-26 23:08:30.000000000 +0200
+@@ -30,6 +30,14 @@
+                                         gpointer         user_data);
+ 
+ void
++on_buttonzoomin_clicked                     (GtkButton       *button,
++                                        gpointer         user_data);
++
++void
++on_buttonzoomout_clicked                     (GtkButton       *button,
++                                        gpointer         user_data);
++
++void
+ on_button5_clicked                     (GtkButton       *button,
+                                         gpointer         user_data);
+ 
+diff -uri o/src/interface.c n/src/interface.c
+--- o/src/interface.c	2009-03-29 14:54:26.000000000 +0200
++++ n/src/interface.c	2009-05-27 15:50:56.000000000 +0200
+@@ -54,6 +54,11 @@
+   GtkWidget *image9;
+   GtkWidget *button6;
+   GtkWidget *image6;
++  GtkWidget *labelzoom;
++  GtkWidget *buttonzoomin;
++  GtkWidget *imagezoomin;
++  GtkWidget *buttonzoomout;
++  GtkWidget *imagezoomout;
+   GtkWidget *eventbox3;
+   GtkWidget *hbox2;
+   GtkWidget *button12;
+@@ -197,6 +202,34 @@
+   gtk_widget_show (image6);
+   gtk_container_add (GTK_CONTAINER (button6), image6);
+ 
++
++
++  labelzoom = gtk_label_new ("");
++  gtk_widget_show (labelzoom);
++  gtk_box_pack_start (GTK_BOX (hbox1), labelzoom, FALSE, FALSE, 0);
++  gtk_widget_set_size_request (labelzoom, 10, -1);
++
++  buttonzoomin = gtk_button_new ();
++  gtk_widget_show (buttonzoomin);
++  gtk_box_pack_start (GTK_BOX (hbox1), buttonzoomin, FALSE, FALSE, 0);
++  gtk_tooltips_set_tip (tooltips, buttonzoomin, "Zoom In", NULL);
++
++  imagezoomin = gtk_image_new_from_stock ("gtk-zoom-in", GTK_ICON_SIZE_BUTTON);
++  gtk_widget_show (imagezoomin);
++  gtk_container_add (GTK_CONTAINER (buttonzoomin), imagezoomin);
++
++  buttonzoomout = gtk_button_new ();
++  gtk_widget_show (buttonzoomout);
++  gtk_box_pack_start (GTK_BOX (hbox1), buttonzoomout, FALSE, FALSE, 0);
++  gtk_tooltips_set_tip (tooltips, buttonzoomout, "Zoom Out", NULL);
++
++  imagezoomout = gtk_image_new_from_stock ("gtk-zoom-out", GTK_ICON_SIZE_BUTTON);
++  gtk_widget_show (imagezoomout);
++  gtk_container_add (GTK_CONTAINER (buttonzoomout), imagezoomout);
++
++
++
++
+   eventbox3 = gtk_event_box_new ();
+   gtk_widget_show (eventbox3);
+   gtk_box_pack_start (GTK_BOX (hbox1), eventbox3, TRUE, TRUE, 0);
+@@ -219,6 +252,9 @@
+   gtk_box_pack_start (GTK_BOX (hbox2), entry1, TRUE, TRUE, 0);
+   gtk_tooltips_set_tip (tooltips, entry1, "Enter URL", NULL);
+   gtk_entry_set_invisible_char (GTK_ENTRY (entry1), 9679);
++  
++  gtk_widget_set_name(entry1, "url");
++  gtk_rc_parse_string("style \"url\" {\n font = \"30\"\n}\n");
+ 
+   button10 = gtk_button_new ();
+   gtk_widget_show (button10);
+@@ -274,18 +310,27 @@
+   gtk_box_pack_start (GTK_BOX (vbox2), label5, FALSE, FALSE, 10);
+   gtk_label_set_use_markup (GTK_LABEL (label5), TRUE);
+ 
++  gtk_widget_set_name(label5, "preferences");
++  gtk_rc_parse_string("style \"preferences\" {\n font = \"30\"\n}\n");
++
+   checkbutton2 = gtk_check_button_new_with_mnemonic ("Auto Load Images");
+   gtk_widget_show (checkbutton2);
+   gtk_box_pack_start (GTK_BOX (vbox2), checkbutton2, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (checkbutton2, -1, 45);
+   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton2), TRUE);
+ 
++  gtk_widget_set_name(checkbutton2, "autoload");
++  gtk_rc_parse_string("style \"autoload\" {\n font = \"30\"\n}\n");
++
+   checkbutton1 = gtk_check_button_new_with_mnemonic ("Javascript");
+   gtk_widget_show (checkbutton1);
+   gtk_box_pack_start (GTK_BOX (vbox2), checkbutton1, FALSE, FALSE, 5);
+   gtk_widget_set_size_request (checkbutton1, -1, 45);
+   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton1), TRUE);
+ 
++  gtk_widget_set_name(checkbutton1, "javascript");
++  gtk_rc_parse_string("style \"javascript\" {\n font = \"30\"\n}\n");
++
+   hbox6 = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox2), hbox6, TRUE, TRUE, 6);
+ 
+@@ -293,6 +338,9 @@
+   gtk_widget_show (label7);
+   gtk_box_pack_start (GTK_BOX (hbox6), label7, FALSE, FALSE, 0);
+ 
++  gtk_widget_set_name(label7, "defaultfont");
++  gtk_rc_parse_string("style \"defaultfont\" {\n font = \"30\"\n}\n");
++
+   spinbutton1_adj = gtk_adjustment_new (11, 7, 40, 1, 10, 10);
+   spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton1_adj), 1, 0);
+   gtk_widget_show (spinbutton1);
+@@ -303,6 +351,9 @@
+   gtk_box_pack_start (GTK_BOX (vbox2), label6, FALSE, FALSE, 5);
+   gtk_label_set_use_markup (GTK_LABEL (label6), TRUE);
+   gtk_misc_set_alignment (GTK_MISC (label6), 0.01, 0.5);
++  
++  gtk_widget_set_name(label6, "startpage");
++  gtk_rc_parse_string("style \"startpage\" {\n font = \"30\"\n}\n");
+ 
+   entry2 = gtk_entry_new ();
+   gtk_widget_show (entry2);
+@@ -320,6 +371,9 @@
+   gtk_box_pack_start (GTK_BOX (hbox5), button13, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (button13, 110, 45);
+ 
++  gtk_widget_set_name(button13, "closebutton");
++  gtk_rc_parse_string("style \"closebutton\" {\n font = \"30\"\n}\n");
++
+   g_signal_connect ((gpointer) window1, "configure_event",
+                     G_CALLBACK (on_window1_configure_event),
+                     NULL);
+@@ -368,6 +422,12 @@
+   g_signal_connect ((gpointer) button6, "clicked",
+                     G_CALLBACK (on_button6_clicked),
+                     NULL);
++  g_signal_connect ((gpointer) buttonzoomin, "clicked",
++                    G_CALLBACK (on_buttonzoomin_clicked),
++                    NULL);
++  g_signal_connect ((gpointer) buttonzoomout, "clicked",
++                    G_CALLBACK (on_buttonzoomout_clicked),
++                    NULL);
+   g_signal_connect ((gpointer) eventbox3, "button_release_event",
+                     G_CALLBACK (on_eventbox3_button_release_event),
+                     NULL);
+@@ -431,6 +491,11 @@
+   GLADE_HOOKUP_OBJECT (window1, image9, "image9");
+   GLADE_HOOKUP_OBJECT (window1, button6, "button6");
+   GLADE_HOOKUP_OBJECT (window1, image6, "image6");
++  GLADE_HOOKUP_OBJECT (window1, label4, "labelzoom");
++  GLADE_HOOKUP_OBJECT (window1, buttonzoomin, "buttonzoomin");
++  GLADE_HOOKUP_OBJECT (window1, imagezoomin, "imagezoomin");
++  GLADE_HOOKUP_OBJECT (window1, buttonzoomout, "buttonzoomout");
++  GLADE_HOOKUP_OBJECT (window1, imagezoomout, "imagezoomout");
+   GLADE_HOOKUP_OBJECT (window1, eventbox3, "eventbox3");
+   GLADE_HOOKUP_OBJECT (window1, hbox2, "hbox2");
+   GLADE_HOOKUP_OBJECT (window1, button12, "button12");
+diff -uri o/src/main.c n/src/main.c
+--- o/src/main.c	2009-03-29 14:53:50.000000000 +0200
++++ n/src/main.c	2009-05-27 15:20:04.000000000 +0200
+@@ -112,17 +112,30 @@
+ 
+ 	//settings = webkit_web_settings_new ();
+ 	settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(web_view));
+-	
++/*
+         g_object_set (
+                 settings,
++                "enforce-96-dpi",
++                TRUE,
++                NULL
++        );
++*/
++	g_object_set (
++                settings,
+                 "default-font-size",
+-                11,
++                5,
+                 NULL
+         );
+         g_object_set (
+                 settings,
+                 "minimum-font-size",
+-                7,
++                1,
++                NULL
++        );
++        g_object_set (
++                settings,
++                "minimum-logical-font-size",
++                1,
+                 NULL
+         );
+ 
+@@ -642,6 +655,23 @@
+ 	webkit_web_view_go_forward(WEBKIT_WEB_VIEW(web_view));
+ }
+ 
++void
++zoom_in()
++{
++	webkit_web_view_zoom_in(WEBKIT_WEB_VIEW(web_view));
++	if(!gconfclient)
++		gconfclient = gconf_client_get_default();
++	gconf_client_set_float(gconfclient, "/apps/woosh/zoom", webkit_web_view_get_zoom_level (WEBKIT_WEB_VIEW(web_view)) , NULL);
++}
++void
++zoom_out()
++{
++	webkit_web_view_zoom_out(WEBKIT_WEB_VIEW(web_view));
++	if(!gconfclient)
++		gconfclient = gconf_client_get_default();
++	gconf_client_set_float(gconfclient, "/apps/woosh/zoom", webkit_web_view_get_zoom_level (WEBKIT_WEB_VIEW(web_view)) , NULL);
++}
++
+ static gboolean
+ cb_link_clicked (WebKitWebView *view, WebKitWebFrame *frame, WebKitNetworkRequest *request)
+ {
+@@ -774,7 +804,8 @@
+ {
+ 	GtkWidget *scrolled_window, *widget;
+ 	char *homepage;
+-
++	gfloat zoom;
++	
+ 	/* Create the widgets */
+ 	scrolled_window = lookup_widget(window1, "scrolledwindow1");
+ 	web_view = webkit_web_view_new ();
+@@ -853,11 +884,16 @@
+ 	//webkit_web_view_set_editable(web_view, TRUE);
+ 	prefs_load();
+ 	
++	//zoom fonts and images
++	webkit_web_view_set_full_content_zoom (WEBKIT_WEB_VIEW (web_view), TRUE);
++	
+ 	/* Open a webpage */
+ 	//webkit_web_view_open (WEBKIT_WEB_VIEW (web_view), "http://127.0.0.1/"); //"http://www.google.com/");
+ 	if(!gconfclient)
+ 		gconfclient = gconf_client_get_default();
+ 	homepage = gconf_client_get_string(gconfclient, "/apps/woosh/homepage", NULL);
++	zoom = gconf_client_get_float(gconfclient, "/apps/woosh/zoom", NULL);
++	webkit_web_view_set_zoom_level (WEBKIT_WEB_VIEW (web_view), zoom);
+ 	widget = lookup_widget(window1, "entry2");
+ 	if(homepage){
+ 		gtk_entry_set_text(GTK_ENTRY(widget), homepage);
+@@ -871,6 +907,9 @@
+ main (int argc, char *argv[])
+ {
+ 	GtkWidget *widget;
++	gdouble DPI;
++	GdkScreen* screen;
++
+ 
+ 	gtk_set_locale ();
+ 	gtk_init (&argc, &argv);
+@@ -880,12 +919,17 @@
+ 
+ 
+ 	window1 = create_window1 ();
+-	gtk_window_set_default_size (GTK_WINDOW (window1), 800, 600);
++	gtk_window_set_default_size (GTK_WINDOW (window1), 480, 640);
+ 	gtk_widget_show (window1);
+ 	gtk_window_set_icon_from_file(GTK_WINDOW(window1), PACKAGE_PIXMAPS_DIR "/woosh.png" ,NULL);
+ 	web_view_hadjustment = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(lookup_widget(window1, "scrolledwindow1")));
+ 	web_view_vadjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(lookup_widget(window1, "scrolledwindow1")));
+ 
++	//sets DPI of screen to 72dpi
++	DPI = 72;
++	screen = gtk_widget_has_screen(GTK_WIDGET(window1)) ? gtk_widget_get_screen(GTK_WIDGET(window1)) : gdk_screen_get_default();
++	gdk_screen_set_resolution(screen,DPI);
++	
+ 	
+ 	g_idle_add_full(G_PRIORITY_LOW, (GSourceFunc)create_web_view,NULL, NULL);
+ 	
+diff -uri o/src/main.h n/src/main.h
+--- o/src/main.h	2009-03-29 13:40:49.000000000 +0200
++++ n/src/main.h	2009-05-26 23:10:55.000000000 +0200
+@@ -39,6 +39,10 @@
+ 
+ void scroll_down();
+ 
++void zoom_in();
++
++void zoom_out();
++
+ void add_bookmark();
+ 
+ void

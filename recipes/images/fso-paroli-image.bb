@@ -53,13 +53,8 @@ paroli_rootfs_postprocess() {
     curdir=$PWD
     cd ${IMAGE_ROOTFS}
     # set a default locale    
-    echo "export LC_ALL=en_CA.utf-8" >>./etc/profile
-
-    # nuke bad bluetooth file - figure this out on monday
-    rm ./etc/dbus-1/system.d/bluetooth.conf
-
+    echo "export LANG=en_CA.utf-8" >>./etc/profile
     cd $curdir
-
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "paroli_rootfs_postprocess;"

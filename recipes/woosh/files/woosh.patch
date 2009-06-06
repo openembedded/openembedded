@@ -1,0 +1,10 @@
+--- n/src/main.c	2009-05-08 01:08:44.000000000 +0200
++++ o/src/main.c	2009-05-08 01:08:44.000000000 +0200
+@@ -872,6 +872,7 @@
+ {
+ 	GtkWidget *widget;
+ 
++	g_thread_init(NULL);
+ 	gtk_set_locale ();
+ 	gtk_init (&argc, &argv);
+ 	
