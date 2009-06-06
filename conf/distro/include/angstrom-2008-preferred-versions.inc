@@ -34,6 +34,7 @@ PREFERRED_VERSION_tiff 		= "3.8.2+4.0.0beta2"
 PREFERRED_VERSION_udev 		= "141"
 UDEV_GE_141 = "1"
 
+PREFERRED_VERSION_usbutils = "0.82"
 PREFERRED_VERSION_util-macros-native = "1.2.1"
 PREFERRED_VERSION_util-macros = "1.2.1"
 PREFERRED_VERSION_wpa-supplicant = "0.6.7"
