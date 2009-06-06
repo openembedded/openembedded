@@ -5,9 +5,10 @@ DEPENDS = "alsa-lib gstreamer gtk+ libvorbis pulseaudio"
 SECTION = "libs/multimedia"
 AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
-PR = "r1"
+PR = "r2"
 
-inherit autotools autotools_stage
+inherit autotools_stage
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 SRC_URI = "http://0pointer.de/lennart/projects/libcanberra/libcanberra-${PV}.tar.gz"
 
@@ -45,9 +46,9 @@ PACKAGES =+ "${PN}-gtk"
 
 FILES_${PN}-gtk = "\
   ${sysconfdir}/gconf \
-  ${bindir} \
+  ${bindir}/* \
   ${libdir}/libcanberra-gtk.so.* \
-  ${libdir}/gtk-2.0/modules/ \
+  ${libdir}/gtk-2.0/modules/* \
   ${datadir}/gnome \
 "
 FILES_${PN}-dev += "\
@@ -57,5 +58,3 @@ FILES_${PN}-dbg += "\
   ${libdir}/gtk-2.0/modules/.debug \
   ${libdir}/${P}/.debug \
 "
-
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
