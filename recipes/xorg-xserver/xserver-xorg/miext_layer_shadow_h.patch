@@ -1,3 +1,5 @@
+upstream: https://bugs.freedesktop.org/show_bug.cgi?id=22132
+
 --- temp/xorg-server-X11R7.0-1.0.1/miext/layer/Makefile.am	2005-12-01 23:02:44.000000000 -0700
 +++ xorg-server-X11R7.0-1.0.1/miext/layer/Makefile.am	2006-04-18 23:16:04.315823560 -0600
 @@ -2,7 +2,7 @@

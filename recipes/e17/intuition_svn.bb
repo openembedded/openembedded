@@ -1,0 +1,11 @@
+DESCRIPTION = "Intuition a prototype context dependent mobile search engine"
+SECTION = "x11"
+LICENSE = "GPLv2"
+DEPENDS = "elementary sqlite"
+PV = "0.2.0+svnr${SRCREV}"
+PR = "r0"
+
+SRC_URI = "svn://svn.om.vptt.ch/trunk/;proto=http;module=intuition"
+S = "${WORKDIR}/intuition"
+
+inherit autotools pkgconfig

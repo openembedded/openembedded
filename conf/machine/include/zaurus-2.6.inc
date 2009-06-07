@@ -40,9 +40,10 @@ MACHINE_EXTRA_RRECOMMENDS_akita  = "kernel-module-snd-soc-spitz kernel-module-px
 MACHINE_EXTRA_RRECOMMENDS_spitz  = "kernel-module-snd-soc-spitz kernel-module-pxa2xx-cs kernel-module-pcmcia"
 MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle kernel-module-pxa2xx-cs kernel-module-pcmcia"
 
-# For tosa only: wlan-ng Modules and OHCI suspend/resume fixup
+# For tosa: OHCI suspend/resume fixup
+# wlan-ng is now in kernel (2.6.29)
 # Fixme ? module-snd for tosa
-MACHINE_EXTRA_RRECOMMENDS_tosa = "wlan-ng-modules-usb apm-tosa-suspendfix"
+MACHINE_EXTRA_RRECOMMENDS_tosa = "apm-tosa-suspendfix"
 
 # Fixme ? module-snd for collie
 MACHINE_EXTRA_RRECOMMENDS_collie = ""

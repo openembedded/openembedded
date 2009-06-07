@@ -1,10 +1,10 @@
 DESCRIPTION = "Installkit for kexecboot-kernel"
-DEPENDS = "zaurus-updater linux-kexecboot"
-PR = "r0"
+DEPENDS = "${@base_conditional('MACHINE', 'collie', 'linux-kexecboot', 'zaurus-updater linux-kexecboot', d)}"
+PR = "r1"
 
 PACKAGES = ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-COMPATIBLE_MACHINE = '(poodle|c7x0|spitz|akita|tosa)'
+COMPATIBLE_MACHINE = '(collie|poodle|c7x0|spitz|akita|tosa)'
 
 S = "${WORKDIR}"
 
@@ -22,7 +22,9 @@ do_deploy() {
 
 	[ -f "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin" ] && cp ${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin installkit-${MACHINE}/${KERNEL_IMAGETYPE}
 
-	cp updater.sh.${MACHINE} installkit-${MACHINE}/updater.sh
+	if [ ! "${MACHINE}" = "collie" ]; then
+		cp updater.sh.${MACHINE} installkit-${MACHINE}/updater.sh
+	fi
  
 	tar czf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz installkit-${MACHINE}/
 	md5sum ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz > ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz.md5

@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r8"
+PR = "r9"
 
 inherit task 
 
@@ -36,6 +36,7 @@ RDEPENDS_${PN} = "\
 	openssh-scp openssh-ssh \
 	picodlp-control \
 	connman-gnome \
+	gnome-bluetooth \
 "
 
 # Install all kernel modules
