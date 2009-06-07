@@ -1,3 +1,5 @@
+upstream: https://bugs.freedesktop.org/show_bug.cgi?id=22131
+
 Index: xorg-server-1.4/hw/xfree86/os-support/linux/Makefile.am
 ===================================================================
 --- xorg-server-1.4.orig/hw/xfree86/os-support/linux/Makefile.am	2007-08-23 21:04:53.000000000 +0200
