@@ -35,6 +35,7 @@ EXTRA_OECONF = "\
                 --enable-icon-database=yes \
                 --with-http-backend=soup \
 #                --with-unicode-backend=glib \
+                --with-libsoup-gnome=yes \
 "
 
 EXTRA_AUTORECONF = " -I autotools "
