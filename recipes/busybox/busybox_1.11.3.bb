@@ -25,11 +25,6 @@ SRC_URI = "\
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
-do_configure () {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-	cml1_do_configure
-}
-
 do_install_append() {
     install -m 0644 ${WORKDIR}/mdev.conf ${D}${sysconfdir}/
     install -d ${D}${sysconfdir}/init.d/
