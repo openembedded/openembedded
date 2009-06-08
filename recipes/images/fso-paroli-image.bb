@@ -58,3 +58,18 @@ paroli_rootfs_postprocess() {
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "paroli_rootfs_postprocess;"
+
+do_rootfs_append() {
+	echo "[ubifs]" > ${S}/ubinize.cfg
+	echo "mode=ubi" >> ${S}/ubinize.cfg
+	echo "image=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.ubifs.img" >> ${S}/ubinize.cfg
+	echo "vol_id=0" >> ${S}/ubinize.cfg
+	echo "vol_size=200MiB" >> ${S}/ubinize.cfg
+	echo "vol_type=dynamic" >> ${S}/ubinize.cfg
+	echo "vol_name=rootfs" >> ${S}/ubinize.cfg
+	echo "vol_flags=autoresize" >> ${S}/ubinize.cfg
+
+	ubinize -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.ubifs.img.flashable -m 2048 -p 128KiB ${S}/ubinize.cfg
+}
+
+	
