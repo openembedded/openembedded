@@ -10,7 +10,7 @@ KERNEL_VERSION = "2.6.29-rc2"
 
 OMV = "stable"
 PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \
