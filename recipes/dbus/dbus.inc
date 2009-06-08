@@ -3,6 +3,7 @@ HOMEPAGE = "http://dbus.freedesktop.org"
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
+INC_PR = "r10"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
@@ -12,7 +13,6 @@ SRC_URI = "\
   file://0001-Make-the-default-DBus-reply-timeout-configurable.patch;patch=1 \
   file://dbus-1.init \
 "
-
 S = "${WORKDIR}/dbus-${PV}"
 
 inherit autotools pkgconfig update-rc.d gettext
