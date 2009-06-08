@@ -23,6 +23,7 @@ PREFERRED_VERSION_mokomaze = "0.5.1"
 PREFERRED_VERSION_calc = "0.0.1"
 PREFERRED_VERSION_dbus = "1.2.14"
 PREFERRED_VERSION_dbus-glib = "0.78"
+PREFERRED_VERSION_bluez4 = "4.39"
 
 
 #FSO stuff
