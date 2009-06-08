@@ -1,3 +1,5 @@
+upstream: http://bugs.freedesktop.org/show_bug.cgi?id=15882
+
 Index: xorg-server-1.4/hw/kdrive/Makefile.am
 ===================================================================
 --- xorg-server-1.4.orig/hw/kdrive/Makefile.am	2007-09-06 23:32:04.000000000 +0200

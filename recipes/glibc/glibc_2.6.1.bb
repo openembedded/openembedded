@@ -60,7 +60,14 @@ SRC_URI = "\
   file://march-i686.patch;patch=1;pnum=0 \
 "
 
-#  file://ldsocache-varrun.patch;patch=1 \
+SRC_URI_append_ep9312 = "\
+  file://glibc-crunch-endian-littleword-littlebyte.patch;patch=1 \
+  file://glibc-crunch-eabi-setjmp_longjmp.patch;patch=1 \
+  file://glibc-crunch-eabi-unwind.patch;patch=1 \
+  file://glibc-crunch-eabi.patch;patch=1 \
+  file://glibc-crunch-eabi-force.patch;patch=1 \
+  file://glibc-crunch-eabi-fraiseexcpt.patch;patch=1 \
+"
 
 # Build fails on sh3 and sh4 without additional patches
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"

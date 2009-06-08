@@ -11,7 +11,7 @@ LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r20"
+INC_PR = "r21"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -58,6 +58,12 @@ INITSCRIPT_PARAMS_${PN}_slugos = "start 20 ."
 LD = "${CC} -nostdlib"
 
 inherit cml1 update-rc.d
+
+do_configure () {
+	sed -e 's#@DATADIR@#${datadir}#g' \
+		< ${WORKDIR}/defconfig > ${S}/.config
+	cml1_do_configure
+}
 
 do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS

@@ -39,12 +39,10 @@ SRC_URI = "\
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
-do_configure () {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+do_configure_prepend () {
 	if [ "${TARGET_ARCH}" = "avr32" ] ; then
-		sed -i s:CONFIG_FEATURE_OSF_LABEL=y:CONFIG_FEATURE_OSF_LABEL=n: ${S}/.config
+		sed -i s:CONFIG_FEATURE_OSF_LABEL=y:CONFIG_FEATURE_OSF_LABEL=n: ${WORKDIR}/defconfig
 	fi
-	cml1_do_configure
 }
 
 do_install_append() {
