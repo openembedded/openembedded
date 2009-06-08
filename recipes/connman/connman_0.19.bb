@@ -33,5 +33,6 @@ EXTRA_OECONF += "\
 SRC_URI  = "\
   http://www.kernel.org/pub/linux/network/connman/connman-${PV}.tar.gz \
   file://connman \
+  file://connman.dbus \
 "
 
