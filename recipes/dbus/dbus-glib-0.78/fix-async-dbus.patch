@@ -1,0 +1,115 @@
+diff -ur dbus-glib-0.78/dbus/dbus-gproxy.c patched/dbus-glib-0.78/dbus/dbus-gproxy.c
+--- dbus-glib-0.78/dbus/dbus-gproxy.c	2008-11-17 19:45:50.000000000 +0100
++++ patched/dbus-glib-0.78/dbus/dbus-gproxy.c	2009-01-30 18:12:51.000000000 +0100
+@@ -2175,6 +2175,41 @@
+   return NULL;
+ }
+ 
++struct dbus_g_proxy_begin_call_internal_helper_args
++{
++  DBusGProxy          *proxy;
++  DBusGProxyCallNotify notify;
++  guint                call_id;
++  gpointer             user_data;
++  GDestroyNotify       destroy;
++};
++
++static void
++dbus_g_proxy_begin_call_internal_helper (DBusPendingCall *pending, void *user_data)
++{
++  struct dbus_g_proxy_begin_call_internal_helper_args *t1 = user_data;
++  DBusGProxyPrivate *priv = DBUS_G_PROXY_GET_PRIVATE(t1->proxy);
++  GPendingNotifyClosure *closure;
++
++
++  t1->call_id = ++priv->call_id_counter;
++
++  if (t1->notify != NULL)
++    {
++      closure = g_new (GPendingNotifyClosure, 1);
++      closure->proxy = t1->proxy; /* No need to ref as the lifecycle is tied to proxy */
++      closure->call_id = t1->call_id;
++      closure->func = t1->notify;
++      closure->data = t1->user_data;
++      closure->free_data_func = t1->destroy;
++      dbus_pending_call_set_notify (pending, d_pending_call_notify,
++				    closure,
++				    d_pending_call_free);
++    }
++
++  g_hash_table_insert (priv->pending_calls, GUINT_TO_POINTER (t1->call_id), pending);
++}
++
+ static guint
+ dbus_g_proxy_begin_call_internal (DBusGProxy          *proxy,
+ 				  const char          *method,
+@@ -2182,52 +2217,42 @@
+ 				  gpointer             user_data,
+ 				  GDestroyNotify       destroy,
+ 				  GValueArray         *args,
+-				  int timeout)
++				  int                  timeout)
+ {
++  struct dbus_g_proxy_begin_call_internal_helper_args t1;
++
+   DBusMessage *message;
+   DBusPendingCall *pending;
+-  GPendingNotifyClosure *closure;
+-  guint call_id;
+   DBusGProxyPrivate *priv = DBUS_G_PROXY_GET_PRIVATE(proxy);
+ 
++  t1.proxy = proxy;
++  t1.notify = notify;
++  t1.user_data = user_data;
++  t1.destroy = destroy;
++
+   pending = NULL;
+ 
+   message = dbus_g_proxy_marshal_args_to_message (proxy, method, args);
+   if (!message)
+     goto oom;
+ 
+-  if (!dbus_connection_send_with_reply (priv->manager->connection,
+-                                        message,
+-                                        &pending,
+-                                        timeout))
++  if (!dbus_connection_send_with_reply_setup (priv->manager->connection,
++                                              message,
++                                              &pending,
++                                              dbus_g_proxy_begin_call_internal_helper,
++                                              &t1,
++                                              timeout))
+     goto oom;
+   dbus_message_unref (message);
+-  
++
+   /* If we got a NULL pending, that means the connection was disconnected,
+-   * and we need to abort this call.  
++   * and we need to abort this call.
+    * https://bugs.freedesktop.org/show_bug.cgi?id=12675
+    */
+   if (pending == NULL)
+     return 0;
+ 
+-  call_id = ++priv->call_id_counter;
+-
+-  if (notify != NULL)
+-    {
+-      closure = g_new (GPendingNotifyClosure, 1);
+-      closure->proxy = proxy; /* No need to ref as the lifecycle is tied to proxy */
+-      closure->call_id = call_id;
+-      closure->func = notify;
+-      closure->data = user_data;
+-      closure->free_data_func = destroy;
+-      dbus_pending_call_set_notify (pending, d_pending_call_notify,
+-				    closure,
+-				    d_pending_call_free);
+-    }
+-
+-  g_hash_table_insert (priv->pending_calls, GUINT_TO_POINTER (call_id), pending);
+-
+-  return call_id;
++  return t1.call_id;
+  oom:
+   g_error ("Out of memory");
+   return 0;
