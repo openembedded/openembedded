@@ -73,7 +73,7 @@ SRCREV_pn-e-wm-illume-dict-pl = "${AUTOREV}"
 SRCREV_pn-etk-theme-shr = "${AUTOREV}"
 SRCREV_pn-libgee = "780e79f624419b1911de422cbd72f289d23cd9af"
 
-SRCREV_pn-navit = "2308"
+SRCREV_pn-navit = "2309"
 SRCREV_pn-omview = "${AUTOREV}"
 SRCREV_pn-pythm = "${AUTOREV}"
 SRCREV_pn-omoney = "29"
