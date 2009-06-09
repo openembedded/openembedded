@@ -2,6 +2,7 @@ DESCRIPTION = "HPA's tftp server"
 DEPENDS = "tcp-wrappers readline"
 SECTION = "network"
 LICENSE = "BSD"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/software/network/tftp/tftp-hpa-${PV}.tar.bz2 \
            file://default \
@@ -22,7 +23,7 @@ do_install() {
 	install -d ${D}${sysconfdir}/default
 	install -d ${D}${sysconfdir}/init.d
 
-	install -m 0644 ${WORKDIR}/default ${D}${sysconfdir}/default/tftp-hpa
+	install -m 0644 ${WORKDIR}/default ${D}${sysconfdir}/default/tftpd-hpa
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/tftp-hpa
 }
 
@@ -34,7 +35,7 @@ PACKAGES += "tftpd-hpa"
 
 FILES_${PN} = "${bindir}"
 FILES_tftpd-hpa = "${sbindir} ${sysconfdir}"
-CONFFILES_tftpd-hpa = "${sysconfdir}/default/${PN}"
+CONFFILES_tftpd-hpa = "${sysconfdir}/default/tftpd-hpa"
 
 ALTERNATIVE_NAME = "tftp"
 ALTERNATIVE_LINK = "${bindir}/tftp"
