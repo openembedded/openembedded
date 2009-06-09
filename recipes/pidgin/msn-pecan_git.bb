@@ -3,7 +3,7 @@ HOMEPAGE="http://code.google.com/p/msn-pecan/"
 SECTION = "x11/network"
 LICENSE="GPL-2"
 RDEPENDS="pidgin"
-DEPENDS="libpurple"
+DEPENDS="pidgin"
 PV="0.0.1-gitr${SRCREV}"
 PR="r0"
 
