@@ -1,0 +1,18 @@
+--- glibc-2.5/ports/sysdeps/arm/sysdep.h	2007-07-02 13:05:53.000000000 +1000
++++ glibc-2.5/ports/sysdeps/arm/sysdep.h	2007-07-02 13:06:26.000000000 +1000
+@@ -51,6 +51,7 @@
+ 
+ #endif
+ 
++#if 0 // ndef __MAVERICK__
+ /* APCS-32 doesn't preserve the condition codes across function call. */
+ #ifdef __APCS_32__
+ #define LOADREGS(cond, base, reglist...)\
+@@ -74,6 +75,7 @@
+ #define DO_RET(_reg)		\
+ 	movs pc, _reg
+ #endif
++#endif
+ 
+ /* Define an entry point visible from C.  */
+ #define	ENTRY(name)							      \
