@@ -112,6 +112,7 @@ RDEPENDS_${PN}-x = "\
   ${@get_rdepends(bb, d)} \
   libx11-locale \
   localedef \
+  libmokoui2 \
 "
 
 RDEPENDS_${PN}-apps = "\

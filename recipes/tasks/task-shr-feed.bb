@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r16"
+PR = "r17"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -186,4 +186,5 @@ RDEPENDS_${PN} += "\
 		font-sun-misc \
 		font-winitzki-cyrillic \
 #		font-xfree86-type1 \
+		msn-pecan \
 "
