@@ -25,6 +25,7 @@ PREFERRED_VERSION_dbus = "1.2.14"
 PREFERRED_VERSION_dbus-glib = "0.78"
 PREFERRED_VERSION_bluez4 = "4.39"
 PREFERRED_VERSION_connman = "0.19"
+PREFERRED_VERSION_irssi = " 0.8.13"
 
 
 #FSO stuff
