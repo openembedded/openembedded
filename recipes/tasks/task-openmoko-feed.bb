@@ -16,7 +16,7 @@ RDEPENDS_task-openmoko-feed = "\
   linphone \
   fso-gsm0710muxd \
   ppp \
-  bluez-hcidump \
+#  bluez-hcidump \
   bootchart \
   cellhunter \
   eet evas ecore embryo epsilon edje efreet emotion \
@@ -27,6 +27,7 @@ RDEPENDS_task-openmoko-feed = "\
   leafpad abiword \
   claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
   telepathy-python \
+  numptyphysics \
   mokomaze \
   omnewrotate \
   ipkg-link ipkg-utils \
