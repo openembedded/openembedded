@@ -21,7 +21,7 @@ LEAD_SONAME = "libspeechd.so"
 EXTRA_OECONF = " --with-espeak --with-flite --without-ibmtts --without-nas --with-alsa "
 EXTRA_OECONF_shr = " --with-espeak --with-flite --without-ibmtts --without-nas --with-alsa --without-pulse "
 
-INITSCRIPT_NAE = "speech-dispatcher"
+INITSCRIPT_NAME = "speech-dispatcher"
 INITSCRIPT_PARAMS = "defaults 45"
 
 do_install() {
