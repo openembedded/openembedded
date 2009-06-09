@@ -16,7 +16,7 @@ RDEPENDS_${PN} = "\
   fsonetworkd \
   fsousaged \
   \
-  fso-apmd \
+  fso-apm \
   fso-gpsd \
   fso-monitord \
   connman \
