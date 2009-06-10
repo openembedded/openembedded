@@ -3,6 +3,7 @@ HOMEPAGE = "http://tslib.berlios.de/"
 AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
+INC_PR = "r22"
 
 SRC_URI += "\
   file://ts.conf \
@@ -69,7 +70,7 @@ DEBIAN_NOAUTONAME_tslib-calibrate = "1"
 
 RDEPENDS_${PN} = "tslib-conf"
 # Ship calibration data if it exists
-RRECOMMENDS_angstrom = " pointercal "
+RRECOMMENDS = " pointercal "
 
 FILES_${PN}-dbg += "${libdir}/ts/.debug*"
 FILES_tslib-conf = "${sysconfdir}/ts.conf ${sysconfdir}/profile.d/tslib.sh ${datadir}/tslib"

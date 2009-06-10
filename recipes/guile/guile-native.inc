@@ -1,8 +1,6 @@
 SECTION = "unknown"
 LICENSE = "GPL"
-DEPENDS = "gmp-native libtool (< 2)"
-SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
-           "
+DEPENDS = "gettext-native gmp-native"
 
 inherit autotools native
 
@@ -10,11 +8,6 @@ S="${WORKDIR}/guile-${PV}"
 
 OE_LT_RPATH_ALLOW = "any"
 LDFLAGS += " -L${STAGING_LIBDIR} "
-
-do_configure() {
-	# no autoreconf, thanks
-	oe_runconf
-}
 
 LIBGUILE_HEADERS = "\
 __scm.h \
@@ -132,3 +125,8 @@ do_stage() {
 	oe_libinstall -C guile-readline -so -a libguilereadline-v-17 ${STAGING_LIBDIR}
 	oe_libinstall -C libguile -so -a libguile ${STAGING_LIBDIR}
 }
+
+do_configure_append() {
+        find ${S} -name Makefile | xargs sed -i s:'-Werror':'':g
+}
+
