@@ -12,5 +12,6 @@ inherit distutils
 
 S = ${WORKDIR}/dictator-${PV}
 
+FILES_${PN} += " ${sysconfdir}/dictator.conf ${datadir}"
 
 
