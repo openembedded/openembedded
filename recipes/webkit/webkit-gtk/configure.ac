@@ -494,6 +494,10 @@ AC_ARG_ENABLE([jit],
               [],[enable_jit="yes"])
 if test "$enable_jit" = "yes"; then
     case "$host_cpu" in
+        arm)
+            AC_DEFINE([ENABLE_JIT_OPTIMIZE_CALL], [1], [Define to enable optimizing calls])
+            AC_DEFINE([ENABLE_JIT_OPTIMIZE_METHOD_CALLS], [1], [Define to enable optimizing method calls])
+		;;
         i*86|x86_64)
             AC_DEFINE([ENABLE_JIT], [1], [Define to enable JIT])
             AC_DEFINE([ENABLE_YARR], [1], [Define to enable YARR])

@@ -1,4 +1,4 @@
 require qt4-tools-native.inc
-PR = "r1"
+PR = "${INC_PR}.1"
 
 TOBUILD := "src/tools/bootstrap ${TOBUILD}"

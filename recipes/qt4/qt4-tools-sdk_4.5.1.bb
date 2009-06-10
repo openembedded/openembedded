@@ -1,13 +1,11 @@
-DESCRIPTION = "Native tools for Qt/[X11|Mac|Embedded] version 4.x"
+DESCRIPTION = "SDK tools for Qt/[X11|Mac|Embedded] version 4.x"
 DEPENDS = "zlib-native dbus-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-INC_PR = "r4"
-
-inherit native
+inherit sdk
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
            file://configure-lflags.patch;patch=1 \
@@ -16,6 +14,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${
            file://linux.conf"
 S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 
+# FIXME: make it work with "${STAGING_BINDIR_NATIVE}/pkg-config --cflags dbus-1"
 EXTRA_OECONF = "-prefix ${prefix} \
                 -qt-libjpeg -qt-gif -system-zlib \
                 -no-libjpeg -no-libpng \
@@ -25,17 +24,21 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -no-nas-sound \
                 -no-nis \
                 -verbose -release -fast -static \
-                -qt3support"
+                -qt3support \
+                -I${STAGING_DIR_NATIVE}/usr/include \
+                -I${STAGING_DIR_NATIVE}/usr/include/dbus-1.0 \
+                -I${STAGING_DIR_NATIVE}/usr/lib/dbus-1.0/include"
 
 # yank default -e, otherwise we get the following error:
 # moc_qbuffer.cpp: No such file or directory
 EXTRA_OEMAKE = " "
 
 do_configure() {
-   (echo o; echo yes) | LFLAGS="-L${STAGING_LIBDIR_NATIVE}" ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
+   (echo o; echo yes) | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 TOBUILD = "\
+  src/tools/bootstrap \
   src/tools/moc \
   src/corelib \
   src/sql \
@@ -64,12 +67,6 @@ do_stage() {
     for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
         install -m 0755 bin/${i} ${STAGING_BINDIR_NATIVE}/${i}4
     done
-    
-    install -d ${STAGING_DATADIR_NATIVE}/qt4/
-    cp -PfR mkspecs ${STAGING_DATADIR_NATIVE}/qt4/
-    ln -sf linux-g++ ${STAGING_DATADIR_NATIVE}/qt4/mkspecs/${BUILD_OS}-oe-g++
-    cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf ${STAGING_DATADIR_NATIVE}/qt4/mkspecs/common/
-
-    install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DATADIR_NATIVE}/qt4/
 }
+
 
