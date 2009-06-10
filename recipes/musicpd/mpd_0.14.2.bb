@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.musicpd.org"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv faad2 pulseaudio \
-           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag lame', d)}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
 	   file://mpd/mpd.conf \
@@ -27,6 +27,8 @@ EXTRA_OECONF = "\
 		--with-mad-includes=${STAGING_INCDIR} \
         --with-faad-libraries=${STAGING_LIBDIR} \
 		--with-faad-includes=${STAGING_INCDIR} \
+        --disable-curl \
+        --disable-ffmpeg \
         --disable-jack \
         --enable-pulse \
         --enable-mod \

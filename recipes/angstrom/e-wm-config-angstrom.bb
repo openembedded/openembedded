@@ -4,7 +4,7 @@ DEPENDS = "edje-native eet-native"
 RDEPENDS = "e-wm"
 RRECOMMENDS_${PN} = "places"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = " \
           file://e.src \

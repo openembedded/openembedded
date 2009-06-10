@@ -1,6 +1,6 @@
 SECTION = "unknown"
 LICENSE = "GPL"
-DEPENDS = "gmp-native"
+DEPENDS = "gmp-native libtool (< 2)"
 SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
            "
 

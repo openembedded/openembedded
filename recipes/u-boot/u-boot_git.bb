@@ -1,13 +1,10 @@
 require u-boot.inc
-PR ="r25"
+PR ="r26"
 
 FILESPATHPKG =. "u-boot-git:"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
-SRCREV_dm6446-evm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
-SRCREV_dm6467-evm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
-SRCREV_dm355-evm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_akita = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_spitz = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
@@ -37,6 +34,22 @@ SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;
 "
 SRCREV_overo = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_overo = "2009.03+${PR}+gitr${SRCREV}"
+
+SRC_URI_dm6446-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
+SRCREV_dm6446-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+PV_dm6446-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
+
+SRC_URI_dm6467-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
+SRCREV_dm6467-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+PV_dm6467-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
+
+SRC_URI_dm355-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
+SRCREV_dm355-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+PV_dm355-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
+
+SRC_URI_dm365-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
+SRCREV_dm365-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+PV_dm365-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
                         file://leopardboard-support.patch;patch=1 \
@@ -95,4 +108,3 @@ do_deploy_prepend_mini2440() {
 do_deploy_prepend_micro2440() {
 	cp ${S}/u-boot-nand16k.bin ${S}/u-boot.bin
 }
-

@@ -3,8 +3,6 @@ SECTION = "x11/gnome/libs"
 LICENSE = "GPL"
 DEPENDS = "libproxy glib-2.0 gnutls libxml2 sqlite3"
 
-PR = "r2"
-
 inherit gnome
 
 SRC_URI = "${GNOME_MIRROR}/libsoup/${@gnome_verdir("${PV}")}/libsoup-${PV}.tar.bz2"

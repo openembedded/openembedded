@@ -1,9 +1,9 @@
 DESCRIPTION = "Expedite is a comprehensive benchmarking suite for Evas"
 DEPENDS = "eet evas"
-RDEPENDS = "libevas-engine-buffer libevas-engine-fb libevas-engine-software-generic libevas-engine-software-x11 libevas-loader-png"
+RDEPENDS = "evas-engine-buffer evas-engine-fb evas-engine-software-generic evas-engine-software-x11 evas-loader-png"
 LICENSE = "MIT BSD"
 PV = "0.6.0+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 inherit e
 

@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 
 require binutils.inc
 LICENSE = "GPLv3"
@@ -18,3 +18,6 @@ SRC_URI = "\
 
 # powerpc patches
 SRC_URI += "file://binutils-2.16.1-e300c2c3.patch;patch=1"
+
+# ep93xx crunch patches
+SRC_URI_append_ep9312 = " file://binutils-crunch.patch;patch=1"
