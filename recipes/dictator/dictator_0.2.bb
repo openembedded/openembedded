@@ -3,6 +3,7 @@ SECTION = "utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python python-pygtk python-xml python-netclient pydes"
+PR="r1"
 
 ARCH_pyring = "all"
 
