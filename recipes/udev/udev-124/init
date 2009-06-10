@@ -23,6 +23,21 @@ kill_udevd() {
         fi
 }
 
+# I hate this hack.  -- Md
+make_extra_nodes() {
+  [ -e /etc/udev/links.conf ] || return 0
+  grep '^[^#]' /etc/udev/links.conf | \
+  while read type name arg1; do
+    [ "$type" -a "$name" -a ! -e "/dev/$name" -a ! -L "/dev/$name" ] ||continue
+    case "$type" in
+      L) ln -s $arg1 /dev/$name ;;
+      D) mkdir -p /dev/$name ;;
+      M) mknod -m 600 /dev/$name $arg1 ;;
+      *) echo "links.conf: unparseable line ($type $name $arg1)" ;;
+    esac
+  done
+}
+
 export ACTION=add
 # propagate /dev from /sys
 echo -n "Starting udev"
@@ -39,7 +54,7 @@ if [ -e /etc/dev.tar ]; then
 	not_first_boot=1
 fi
 
-# make_extra_nodes
+make_extra_nodes
 kill_udevd > "/dev/null" 2>&1
 
         # trigger the sorted events
