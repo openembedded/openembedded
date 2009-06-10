@@ -3,6 +3,7 @@ HOMEPAGE = "http://tslib.berlios.de/"
 AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
+INC_PR = "r21"
 
 SRC_URI += "\
   file://ts.conf \
