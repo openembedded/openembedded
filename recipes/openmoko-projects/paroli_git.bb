@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r22"
+PR = "r25"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -23,6 +23,20 @@ RDEPENDS = "\
   elementary-themes \
   edbus-ehal \
   paroli-elementary \
+"
+
+RDEPENDS_shr = "\
+  python-datetime \
+  python-subprocess \
+  python-textutils \
+  python-dbus \
+  python-pygobject \
+  python-elementary \
+  dbus-x11 \
+  task-fso-compliance \
+  elementary \
+  elementary-themes \
+  edbus-ehal \
 "
 
 E_CONFIG_DIR="/usr/share/enlightenment/data"
