@@ -1,0 +1,19 @@
+--- libmokoui.old/bindings/python/Makefile.am	2009-06-10 12:42:32.000000000 +0200
++++ libmokoui2/bindings/python/Makefile.am	2009-06-10 12:51:45.000000000 +0200
+@@ -1,13 +1,12 @@
+-
+-PY_DEFS=`pkg-config --variable=defsdir pygtk-2.0`
+-PYTHON_INCLUDES=-I/usr/include/python${PYTHON_VERSION}
++PY_DEFS=${PKG_CONFIG_SYSROOT_DIR}`pkg-config --variable=defsdir pygtk-2.0`
++PYTHON_INCLUDES=-I${PKG_CONFIG_SYSROOT_DIR}/usr/include/python${PYTHON_VERSION}
+ 
+ CLEANFILES = \
+ 	mokoui.defs \
+ 	mokoui.c
+ 
+ mokoui.defs: ../../libmokoui/moko-finger-scroll.h
+-	python /usr/share/pygtk/2.0/codegen/h2def.py ../../libmokoui/moko-finger-scroll.h > mokoui.defs
++	python ${PKG_CONFIG_SYSROOT_DIR}`pkg-config --variable=codegendir pygtk-2.0`/h2def.py ../../libmokoui/moko-finger-scroll.h > mokoui.defs
+ 
+ mokoui.c: mokoui.defs mokoui.override
+ 	pygtk-codegen-2.0 --prefix mokoui \

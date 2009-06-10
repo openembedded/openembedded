@@ -1,13 +1,16 @@
 SECTION = "openmoko/libs"
-DEPENDS = "gtk+"
-DEPENDS_shr += " gnome-python"
+DEPENDS = "gtk+ python-pygtk"
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit openmoko2
 
+SRC_URI += "\
+	file://configure.patch;patch=1 \
+	file://makefile.am.patch;patch=1 \
+	"
 LICENSE = "LGPL"
-EXTRA_OECONF_shr += " --enable-python"
+EXTRA_OECONF += " --enable-python"
 do_configure_prepend() {
         touch gtk-doc.make
 }
@@ -15,4 +18,4 @@ do_configure_prepend() {
 do_stage() {
         autotools_stage_all
 }
-
+FILES_${PN} += "${libdir}/python2.6/site-packages/mokoui.*"
