@@ -3,10 +3,13 @@ access to USB devices."
 HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
 	   file://configure_fix.patch;patch=1"
+SRC_URI_append_shr = "\
+                file://libusb-packed-struct.patch;patch=1 \
+                file://libusb-ansi-types.patch;patch=1"
 
 S = "${WORKDIR}/libusb-${PV}"
 
