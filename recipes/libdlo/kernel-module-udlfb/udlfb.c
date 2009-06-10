@@ -7,6 +7,7 @@
  * Based on the amazing work of Florian Echtler and libdlo 0.1                      *
  *                                                                                  *
  *                                                                           	    *	
+ * 10.06.09 release 0.2.3 (edid ioctl, fallback for unsupported modes)              *
  * 05.06.09 release 0.2.2 (real screen blanking, rle compression, double buffer)    *
  * 31.05.09 release 0.2                                                      	    *
  * 22.05.09 First public (ugly) release                                             *
@@ -600,10 +601,21 @@ static int dlfb_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
 {
 
 	struct dlfb_data *dev_info = info->par;
-	struct dloarea *area = (struct dloarea *)arg;
+	struct dloarea *area = NULL;
+	
 
+	if (cmd == 0xAD) {
+		char *edid = (char *)arg;
+		dlfb_edid(dev_info);
+		if (copy_to_user(edid, dev_info->edid, 128)) {
+			return -EFAULT;
+		}
+		return 0;
+	}
 
-	if (cmd == 0xAA || cmd == 0xAB) {
+	if (cmd == 0xAA || cmd == 0xAB || cmd == 0xAC) {
+
+		area = (struct dloarea *)arg;
 
 
 		if (area->x < 0)
@@ -714,7 +726,6 @@ dlfb_probe(struct usb_interface *interface, const struct usb_device_id *id)
 {
 	struct dlfb_data *dev_info;
 	struct fb_info *info;
-	int i;
 
 	int ret;
 	char rbuf[4];
@@ -755,15 +766,7 @@ dlfb_probe(struct usb_interface *interface, const struct usb_device_id *id)
 	printk("ret control msg 0: %d %x%x%x%x\n", ret, rbuf[0], rbuf[1],
 	       rbuf[2], rbuf[3]);
 
-	for (i = 0; i < 128; i++) {
-		ret =
-		    usb_control_msg(dev_info->udev,
-				    usb_rcvctrlpipe(dev_info->udev, 0), (0x02),
-				    (0x80 | (0x02 << 5)), i << 8, 0xA1, rbuf, 2,
-				    0);
-		/* printk("ret control msg edid %d: %d [%d]\n",i, ret, rbuf[1]); */
-		dev_info->edid[i] = rbuf[1];
-	}
+	dlfb_edid(dev_info);
 
 	info = framebuffer_alloc(sizeof(u32) * 256, &dev_info->udev->dev);
 
@@ -775,6 +778,10 @@ dlfb_probe(struct usb_interface *interface, const struct usb_device_id *id)
 	fb_parse_edid(dev_info->edid, &info->var);
 
 	printk("EDID XRES %d YRES %d\n", info->var.xres, info->var.yres);
+	if (info->var.xres == 0 || info->var.yres == 0) {
+		info->var.xres = 800;
+		info->var.yres = 480;
+	}
 
 	if (dlfb_set_video_mode(dev_info, info->var.xres, info->var.yres) != 0)
 		goto out;
@@ -828,7 +835,12 @@ dlfb_probe(struct usb_interface *interface, const struct usb_device_id *id)
 
 	info->fix.smem_start = (unsigned long)info->screen_base;
 	info->fix.smem_len = PAGE_ALIGN(dev_info->screen_size);
-	memcpy(info->fix.id, "DisplayLink FB", 14);
+	if (strlen(dev_info->udev->product) > 15) {
+		memcpy(info->fix.id, dev_info->udev->product, 15);
+	}
+	else {
+		memcpy(info->fix.id, dev_info->udev->product, strlen(dev_info->udev->product));
+	}
 	info->fix.type = FB_TYPE_PACKED_PIXELS;
 	info->fix.visual = FB_VISUAL_TRUECOLOR;
 	info->fix.accel = info->flags;

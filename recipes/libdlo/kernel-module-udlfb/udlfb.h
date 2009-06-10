@@ -50,6 +50,24 @@ static void dlfb_bulk_callback(struct urb *urb)
 
 }
 
+static void dlfb_edid(struct dlfb_data *dev_info)
+{
+	int i;
+	int ret;
+	char rbuf[2];
+
+	for (i = 0; i < 128; i++) {
+                ret =
+                    usb_control_msg(dev_info->udev,
+                                    usb_rcvctrlpipe(dev_info->udev, 0), (0x02),
+                                    (0x80 | (0x02 << 5)), i << 8, 0xA1, rbuf, 2,
+                                    0);
+                /*printk("ret control msg edid %d: %d [%d]\n",i, ret, rbuf[1]);*/
+                dev_info->edid[i] = rbuf[1];
+        }
+
+}
+
 static int dlfb_bulk_msg(struct dlfb_data *dev_info, int len)
 {
 
