@@ -4,7 +4,7 @@ RCONFLICTS_gst-plugins-base = "libgstapp-0.10-0"
 RREPLACES_gst-plugins-base = "libgstapp-0.10-0"
 EXTRA_OECONF += "--with-audioresample-format=int"
 
-PR = "r1"
+PR = "r2"
 SRCDATE = "20090606"
 REL = "0.10.23"
 
