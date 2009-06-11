@@ -17,6 +17,9 @@ IMAGE_INITSCRIPTS ?= "initscripts"
 #
 IMAGE_LOGIN_MANAGER ?= "tinylogin"
 
+IMAGE_KEEPROOTFS ?= ""
+IMAGE_KEEPROOTFS[doc] = "Set to non-empty to keep ${IMAGE_ROOTFS} around after image creation."
+
 IMAGE_BOOT ?= "${IMAGE_INITSCRIPTS} \
 ${IMAGE_DEV_MANAGER} \
 ${IMAGE_INIT_MANAGER} \
@@ -133,6 +136,7 @@ fakeroot do_rootfs () {
 	${IMAGE_POSTPROCESS_COMMAND}
 	
 	${MACHINE_POSTPROCESS_COMMAND}
+	${@['rm -rf ${IMAGE_ROOTFS}', ''][bool(d.getVar("IMAGE_KEEPROOTFS", 1))]}
 }
 
 do_deploy_to[nostamp] = "1"
