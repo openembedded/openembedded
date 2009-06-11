@@ -7,15 +7,15 @@ HOMEPAGE = "http://www.gstreamer.net/"
 MAINTAINER = "Andreas Frisch <andreas.frisch@multimedia-labs.de>"
 DEPENDS = "libmatroska libxml2 glib-2.0 gettext-native popt"
 
-PR = "r0"
+PR = "r2"
 REL = "0.10.23"
-SRCDATE = "20090606"
+SRCDATE = "20090612"
 
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${REL}.tar.bz2 \
-file://${PN}_${REL}_to_git${SRCDATE}.patch;patch=1;pnum=1 \
 file://gst-configure_skip_shave.patch;patch=1;pnum=0"
+#file://${PN}_${REL}_to_git${SRCDATE}.patch;patch=1;pnum=1 \
 
 EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --with-check=no --disable-examples"
 
