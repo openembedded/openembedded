@@ -21,3 +21,5 @@ PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 FILES_${PN} += "${datadir}/shr"
 
 CONFFILES_${PN} += "${datadir}/shr/scenarii/*"
+RPROVIDES_${PN} = "openmoko-alsa-scenarios"
+
