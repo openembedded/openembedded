@@ -23,6 +23,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
         file://linux-keyboard-mediumraw.patch;patch=1 \
         file://gumstix-kmode.patch;patch=1 \
         file://fix-picturestr-include-order.patch;patch=1 \
+        file://autotools.patch;patch=1 \
 "
 
 SRC_URI_append_avr32 = " \
