@@ -6,7 +6,7 @@ AUTHOR = "Damien Elmes"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 RDEPENDS = "python-pyqt"
-RRECOMMENDS = "kakasi virtual/japanese-font"
+RRECOMMENDS = "kakasi virtual-japanese-font"
 
 SRC_URI = "http://ichi2.net/anki/download/anki-${PV}.tgz"
 

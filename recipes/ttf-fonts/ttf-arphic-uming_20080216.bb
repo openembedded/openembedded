@@ -2,7 +2,7 @@ DESCRIPTION = "Unicode Mingti (printed) TrueType Font"
 HOMEPAGE = "http://www.freedesktop.org/wiki/Software/CJKUnifonts"
 LICENSE = "${PN}"
 SRC_DISTRIBUTE_LICENSES += "${PN}"
-RPROVIDES = "virtual/chinese-font"
+RPROVIDES = "virtual-chinese-font"
 PR = "r1"
 
 SRC_URI = \

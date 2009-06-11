@@ -1,6 +1,5 @@
-
 SRC_URI = "file://zzapsplash-init"
-PR = "r1"
+PR = "r2"
 
 do_install_prepend() {
 	install -d "${D}${sysconfdir}/init.d/"
