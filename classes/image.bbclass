@@ -231,8 +231,32 @@ rootfs_update_timestamp () {
 	date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp
 }
 
+# Install locales into image for every entry in IMAGE_LINGUAS
+install_linguas() {
+if [ -e ${IMAGE_ROOTFS}/usr/bin/opkg-cl ] ; then
+	OPKG="opkg-cl ${IPKG_ARGS}"
+
+	${OPKG} update
+	${OPKG} list_installed | awk '{print $1}' |sort | uniq > /tmp/installed-packages
+
+	for i in $(cat /tmp/installed-packages) ; do
+		for translation in ${IMAGE_LINGUAS}; do
+			echo ${i}-locale-${translation}
+		done
+	done | sort | uniq > /tmp/wanted-locale-packages
+
+	${OPKG} list | awk '{print $1}' |grep locale |sort | uniq > /tmp/available-locale-packages
+
+	cat /tmp/wanted-locale-packages /tmp/available-locale-packages | sort | uniq -d > /tmp/pending-locale-packages
+	cat /tmp/installed-packages /tmp/pending-locale-packages | grep locale | sort | uniq -u > /tmp/translation-list
+
+	cat /tmp/translation-list | xargs ${OPKG} -nodeps install
+	rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
+fi
+}
+
 # export the zap_root_password, create_etc_timestamp and remote_init_link
-EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp
+EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp install_linguas
 
 addtask rootfs after do_compile before do_install
 addtask deploy_to after do_rootfs
