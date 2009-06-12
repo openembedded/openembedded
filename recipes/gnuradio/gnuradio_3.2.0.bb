@@ -2,11 +2,11 @@ require gnuradio.inc
 
 DEPENDS += " gsl "
 
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/gnuradio-3.2"
 
-EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable--usrp2"
+EXTRA_OECONF += "--program-prefix= --with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable--usrp2"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/gnuradio-3.2.tar.gz \
     file://no-usrp2.patch;patch=1 \
