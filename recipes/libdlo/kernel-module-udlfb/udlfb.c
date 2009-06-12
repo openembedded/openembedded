@@ -1,17 +1,17 @@
-/************************************************************************************
- *                          DLFB Kernel Driver                                      *
- *                            Version 0.2 (udlfb)                                   *
- *             (C) 2009 Roberto De Ioris <roberto@unbit.it>                         *
- *                                                                                  *
- *     This file is licensed under the GPLv2. See COPYING in the package.           *
- * Based on the amazing work of Florian Echtler and libdlo 0.1                      *
- *                                                                                  *
- *                                                                           	    *	
- * 10.06.09 release 0.2.3 (edid ioctl, fallback for unsupported modes)              *
- * 05.06.09 release 0.2.2 (real screen blanking, rle compression, double buffer)    *
- * 31.05.09 release 0.2                                                      	    *
- * 22.05.09 First public (ugly) release                                             *
- ************************************************************************************/
+/*****************************************************************************
+ *                          DLFB Kernel Driver                               *
+ *                            Version 0.2 (udlfb)                            *
+ *             (C) 2009 Roberto De Ioris <roberto@unbit.it>                  *
+ *                                                                           *
+ *     This file is licensed under the GPLv2. See COPYING in the package.    *
+ * Based on the amazing work of Florian Echtler and libdlo 0.1               *
+ *                                                                           *
+ *                                                                           *
+ * 10.06.09 release 0.2.3 (edid ioctl, fallback for unsupported modes)       *
+ * 05.06.09 release 0.2.2 (real screen blanking, rle compression, double buffer) *
+ * 31.05.09 release 0.2                                                      *
+ * 22.05.09 First public (ugly) release                                      *
+ *****************************************************************************/
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -121,30 +121,29 @@ MODULE_DEVICE_TABLE(usb, id_table);
 static struct usb_driver dlfb_driver;
 
 // thanks to Henrik Bjerregaard Pedersen for this function
-static char *
-rle_compress16(uint16_t *src, char *dst, int rem)
+static char *rle_compress16(uint16_t * src, char *dst, int rem)
 {
 
-    int rl;
-    uint16_t pix0;
-    char *end_if_raw = dst + 6 + 2 * rem;
+	int rl;
+	uint16_t pix0;
+	char *end_if_raw = dst + 6 + 2 * rem;
 
-    dst += 6; // header will be filled in if RLE is worth it
+	dst += 6;		// header will be filled in if RLE is worth it
 
-    while (rem && dst < end_if_raw) {
-        char *start = (char *)src;
+	while (rem && dst < end_if_raw) {
+		char *start = (char *)src;
 
-        pix0 = *src++;
-        rl = 1;
-        rem--;
-        while (rem && *src == pix0)
-            rem--, rl++, src++;
-        *dst++ = rl;
-        *dst++ = start[1];
-        *dst++ = start[0];
-    }
+		pix0 = *src++;
+		rl = 1;
+		rem--;
+		while (rem && *src == pix0)
+			rem--, rl++, src++;
+		*dst++ = rl;
+		*dst++ = start[1];
+		*dst++ = start[0];
+	}
 
-    return dst;
+	return dst;
 }
 
 /*
@@ -165,21 +164,20 @@ image_blit(struct dlfb_data *dev_info, int x, int y, int width, int height,
 
 	char *bufptr;
 
-	if (x + width > dev_info->info->var.xres) {
+	if (x + width > dev_info->info->var.xres)
 		return -EINVAL;
-	}
 
-	if (y + height > dev_info->info->var.yres) {
+	if (y + height > dev_info->info->var.yres)
 		return -EINVAL;
-	}
 
 	mutex_lock(&dev_info->bulk_mutex);
 
-	base = dev_info->base16 + ( (dev_info->info->var.xres * 2 * y) + (x * 2) );
+	base =
+	    dev_info->base16 + ((dev_info->info->var.xres * 2 * y) + (x * 2));
 
 	data += (dev_info->info->var.xres * 2 * y) + (x * 2);
 
-	//printk("IMAGE_BLIT\n");
+	/* printk("IMAGE_BLIT\n"); */
 
 	bufptr = dev_info->buf;
 
@@ -192,7 +190,7 @@ image_blit(struct dlfb_data *dev_info, int x, int y, int width, int height,
 
 		rem = width;
 
-		//printk("WRITING LINE %d\n", i);
+		/* printk("WRITING LINE %d\n", i); */
 
 		while (rem) {
 
@@ -202,56 +200,66 @@ image_blit(struct dlfb_data *dev_info, int x, int y, int width, int height,
 						  bufptr - dev_info->buf);
 				bufptr = dev_info->buf;
 			}
+			// number of pixels to consider this time
+			thistime = rem;
+			if (thistime > 255)
+				thistime = 255;
 
-            // number of pixels to consider this time
-            thistime = rem;
-            if (thistime > 255)
-                 thistime = 255;
-
-            // find position of first pixel that has changed
+			// find position of first pixel that has changed
 			firstdiff = -1;
 			for (j = 0; j < thistime * 2; j++) {
-				if (dev_info->
-				    backing_buffer[ base - dev_info->base16 + j] !=
-				    data[j]) {
-					firstdiff = j/2;
+				if (dev_info->backing_buffer
+				    [base - dev_info->base16 + j] != data[j]) {
+					firstdiff = j / 2;
 					break;
 				}
 			}
 
 			if (firstdiff >= 0) {
-                char *end_of_rle;
+				char *end_of_rle;
 
-                end_of_rle =
-                    rle_compress16((uint16_t *)(data + firstdiff * 2),
-                                     bufptr, thistime-firstdiff);
+				end_of_rle =
+				    rle_compress16((uint16_t *) (data +
+								 firstdiff * 2),
+						   bufptr,
+						   thistime - firstdiff);
 
-                if (end_of_rle < bufptr + 6 + 2 * (thistime-firstdiff)) {
-                    bufptr[0] = 0xAF;
-		   		    bufptr[1] = 0x69;
+				if (end_of_rle <
+				    bufptr + 6 + 2 * (thistime - firstdiff)) {
+					bufptr[0] = 0xAF;
+					bufptr[1] = 0x69;
 
-				    bufptr[2] = (char)((base+firstdiff*2) >> 16);
-				    bufptr[3] = (char)((base+firstdiff*2) >> 8);
-				    bufptr[4] = (char)(base+firstdiff*2);
-                    bufptr[5] = thistime-firstdiff;
- 
-                    bufptr = end_of_rle;
+					bufptr[2] =
+					    (char)((base +
+						    firstdiff * 2) >> 16);
+					bufptr[3] =
+					    (char)((base + firstdiff * 2) >> 8);
+					bufptr[4] =
+					    (char)(base + firstdiff * 2);
+					bufptr[5] = thistime - firstdiff;
 
-                } else {
-                    // fallback to raw (or some other encoding?)
-                    *bufptr++ = 0xAF;
-		   		    *bufptr++ = 0x68;
+					bufptr = end_of_rle;
 
-				    *bufptr++ = (char)((base+firstdiff*2) >> 16);
-				    *bufptr++ = (char)((base+firstdiff*2) >> 8);
-				    *bufptr++ = (char)(base+firstdiff*2);
-				    *bufptr++ = thistime-firstdiff;
-				    // PUT COMPRESSION HERE
-				    for (j = firstdiff * 2; j < thistime * 2; j += 2) {
-					    *bufptr++ = data[j + 1];
-					    *bufptr++ = data[j];
-				    }
-                }
+				} else {
+					// fallback to raw (or some other encoding?)
+					*bufptr++ = 0xAF;
+					*bufptr++ = 0x68;
+
+					*bufptr++ =
+					    (char)((base +
+						    firstdiff * 2) >> 16);
+					*bufptr++ =
+					    (char)((base + firstdiff * 2) >> 8);
+					*bufptr++ =
+					    (char)(base + firstdiff * 2);
+					*bufptr++ = thistime - firstdiff;
+					// PUT COMPRESSION HERE
+					for (j = firstdiff * 2;
+					     j < thistime * 2; j += 2) {
+						*bufptr++ = data[j + 1];
+						*bufptr++ = data[j];
+					}
+				}
 			}
 
 			base += thistime * 2;
@@ -259,8 +267,8 @@ image_blit(struct dlfb_data *dev_info, int x, int y, int width, int height,
 			rem -= thistime;
 		}
 
-		memcpy(dev_info->backing_buffer + (base-dev_info->base16) - (width * 2),
-		       data - (width * 2), width * 2);
+		memcpy(dev_info->backing_buffer + (base - dev_info->base16) -
+		       (width * 2), data - (width * 2), width * 2);
 
 		base += (dev_info->info->var.xres * 2) - (width * 2);
 		data += (dev_info->info->var.xres * 2) - (width * 2);
@@ -276,6 +284,7 @@ image_blit(struct dlfb_data *dev_info, int x, int y, int width, int height,
 	return base;
 
 }
+
 static int
 draw_rect(struct dlfb_data *dev_info, int x, int y, int width, int height,
 	  unsigned char red, unsigned char green, unsigned char blue)
@@ -305,8 +314,10 @@ draw_rect(struct dlfb_data *dev_info, int x, int y, int width, int height,
 	for (i = y; i < y + height; i++) {
 
 		for (j = 0; j < width * 2; j += 2) {
-			dev_info->backing_buffer[base - dev_info->base16 + j] = (char)(col >> 8);
-			dev_info->backing_buffer[base - dev_info->base16 + j + 1] = (char)(col);
+			dev_info->backing_buffer[base - dev_info->base16 + j] =
+			    (char)(col >> 8);
+			dev_info->backing_buffer[base - dev_info->base16 + j +
+						 1] = (char)(col);
 		}
 		if (dev_info->bufend - bufptr < BUF_HIGH_WATER_MARK) {
 			ret = dlfb_bulk_msg(dev_info, bufptr - dev_info->buf);
@@ -360,14 +371,15 @@ draw_rect(struct dlfb_data *dev_info, int x, int y, int width, int height,
 	return 1;
 }
 
-static void swapfb(struct dlfb_data *dev_info) {
+static void swapfb(struct dlfb_data *dev_info)
+{
 
 	int tmpbase;
 	char *bufptr;
 
 	mutex_lock(&dev_info->bulk_mutex);
 
-	tmpbase = dev_info->base16 ;
+	tmpbase = dev_info->base16;
 
 	dev_info->base16 = dev_info->base16d;
 	dev_info->base16d = tmpbase;
@@ -375,17 +387,12 @@ static void swapfb(struct dlfb_data *dev_info) {
 	bufptr = dev_info->buf;
 
 	bufptr = dlfb_set_register(bufptr, 0xFF, 0x00);
-	
-			// set addresses
-        		bufptr =
-        		dlfb_set_register(bufptr, 0x20,
-                                              (char)(dev_info->base16 >> 16));
-                        bufptr =
-                            dlfb_set_register(bufptr, 0x21,
-                                              (char)(dev_info->base16 >> 8));
-                        bufptr =
-                            dlfb_set_register(bufptr, 0x22,
-                                              (char)(dev_info->base16));
+
+	// set addresses
+	bufptr =
+	    dlfb_set_register(bufptr, 0x20, (char)(dev_info->base16 >> 16));
+	bufptr = dlfb_set_register(bufptr, 0x21, (char)(dev_info->base16 >> 8));
+	bufptr = dlfb_set_register(bufptr, 0x22, (char)(dev_info->base16));
 
 	bufptr = dlfb_set_register(bufptr, 0xFF, 0x00);
 
@@ -397,12 +404,11 @@ static void swapfb(struct dlfb_data *dev_info) {
 static int copyfb(struct dlfb_data *dev_info)
 {
 	int base;
-        int source;
-        int rem;
-        int i, ret;
+	int source;
+	int rem;
+	int i, ret;
 
-        char *bufptr;
-
+	char *bufptr;
 
 	base = dev_info->base16d;
 
@@ -415,59 +421,59 @@ static int copyfb(struct dlfb_data *dev_info)
 	for (i = 0; i < dev_info->info->var.yres; i++) {
 
 		if (dev_info->bufend - bufptr < BUF_HIGH_WATER_MARK) {
-                        ret = dlfb_bulk_msg(dev_info, bufptr - dev_info->buf);
-                        bufptr = dev_info->buf;
-                }
+			ret = dlfb_bulk_msg(dev_info, bufptr - dev_info->buf);
+			bufptr = dev_info->buf;
+		}
 
-                rem = dev_info->info->var.xres;
+		rem = dev_info->info->var.xres;
 
 		while (rem) {
 
-                        if (dev_info->bufend - bufptr < BUF_HIGH_WATER_MARK) {
-                                ret =
-                                    dlfb_bulk_msg(dev_info,
-                                                  bufptr - dev_info->buf);
-                                bufptr = dev_info->buf;
+			if (dev_info->bufend - bufptr < BUF_HIGH_WATER_MARK) {
+				ret =
+				    dlfb_bulk_msg(dev_info,
+						  bufptr - dev_info->buf);
+				bufptr = dev_info->buf;
 
 			}
 
-                        *bufptr++ = 0xAF;
-                        *bufptr++ = 0x6A;
+			*bufptr++ = 0xAF;
+			*bufptr++ = 0x6A;
 
-                        *bufptr++ = (char)(base >> 16);
-                        *bufptr++ = (char)(base >> 8);
-                        *bufptr++ = (char)(base);
+			*bufptr++ = (char)(base >> 16);
+			*bufptr++ = (char)(base >> 8);
+			*bufptr++ = (char)(base);
 
-			 if (rem > 255) {
-                                *bufptr++ = 255;
-                                *bufptr++ = (char)(source >> 16);
-                                *bufptr++ = (char)(source >> 8);
-                                *bufptr++ = (char)(source);
+			if (rem > 255) {
+				*bufptr++ = 255;
+				*bufptr++ = (char)(source >> 16);
+				*bufptr++ = (char)(source >> 8);
+				*bufptr++ = (char)(source);
 
-                                rem -= 255;
-                                base += 255 * 2;
-                                source += 255 * 2;
+				rem -= 255;
+				base += 255 * 2;
+				source += 255 * 2;
 
-                        } else {
-                                *bufptr++ = rem;
-                                *bufptr++ = (char)(source >> 16);
-                                *bufptr++ = (char)(source >> 8);
-                                *bufptr++ = (char)(source);
+			} else {
+				*bufptr++ = rem;
+				*bufptr++ = (char)(source >> 16);
+				*bufptr++ = (char)(source >> 8);
+				*bufptr++ = (char)(source);
 
-                                base += rem * 2;
-                                source += rem * 2;
-                                rem = 0;
-                        }
-                }
-        }
+				base += rem * 2;
+				source += rem * 2;
+				rem = 0;
+			}
+		}
+	}
 
-        if (bufptr > dev_info->buf)
-                ret = dlfb_bulk_msg(dev_info, bufptr - dev_info->buf);
+	if (bufptr > dev_info->buf)
+		ret = dlfb_bulk_msg(dev_info, bufptr - dev_info->buf);
 
-        mutex_unlock(&dev_info->bulk_mutex);
-		
+	mutex_unlock(&dev_info->bulk_mutex);
+
 	return 1;
-	
+
 }
 
 static int
@@ -582,7 +588,8 @@ static void dlfb_imageblit(struct fb_info *info, const struct fb_image *image)
 	/* printk("IMAGE BLIT (2) %d %d %d %d DEPTH %d {%p} %d!!!\n", image->dx, image->dy, image->width, image->height, image->depth, dev->udev, ret); */
 }
 
-static void dlfb_fillrect(struct fb_info *info, const struct fb_fillrect *region)
+static void dlfb_fillrect(struct fb_info *info,
+			  const struct fb_fillrect *region)
 {
 
 	unsigned char red, green, blue;
@@ -602,7 +609,6 @@ static int dlfb_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
 
 	struct dlfb_data *dev_info = info->par;
 	struct dloarea *area = NULL;
-	
 
 	if (cmd == 0xAD) {
 		char *edid = (char *)arg;
@@ -616,7 +622,6 @@ static int dlfb_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
 	if (cmd == 0xAA || cmd == 0xAB || cmd == 0xAC) {
 
 		area = (struct dloarea *)arg;
-
 
 		if (area->x < 0)
 			area->x = 0;
@@ -640,17 +645,17 @@ static int dlfb_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
 		image_blit(dev_info, area->x, area->y, area->w, area->h,
 			   info->screen_base);
 		swapfb(dev_info);
-	}
-	else if (cmd == 0xAB) {
+	} else if (cmd == 0xAB) {
 
 		if (area->x2 < 0)
-                        area->x2 = 0;
+			area->x2 = 0;
 
 		if (area->y2 < 0)
-                        area->y2 = 0;
+			area->y2 = 0;
 
 		copyarea(dev_info,
-			area->x2, area->y2, area->x, area->y, area->w, area->h);
+			 area->x2, area->y2, area->x, area->y, area->w,
+			 area->h);
 	}
 	return 0;
 }
@@ -699,8 +704,7 @@ static int dlfb_blank(int blank_mode, struct fb_info *info)
 	bufptr = dlfb_set_register(bufptr, 0xFF, 0x00);
 	if (blank_mode != FB_BLANK_UNBLANK) {
 		bufptr = dlfb_set_register(bufptr, 0x1F, 0x01);
-	}
-	else {
+	} else {
 		bufptr = dlfb_set_register(bufptr, 0x1F, 0x00);
 	}
 	bufptr = dlfb_set_register(bufptr, 0xFF, 0xFF);
@@ -778,13 +782,15 @@ dlfb_probe(struct usb_interface *interface, const struct usb_device_id *id)
 	fb_parse_edid(dev_info->edid, &info->var);
 
 	printk("EDID XRES %d YRES %d\n", info->var.xres, info->var.yres);
-	if (info->var.xres == 0 || info->var.yres == 0) {
+
+	if (dlfb_set_video_mode(dev_info, info->var.xres, info->var.yres) != 0) {
 		info->var.xres = 800;
 		info->var.yres = 480;
+		if (dlfb_set_video_mode
+		    (dev_info, info->var.xres, info->var.yres) != 0) {
+			goto out;
+		}
 	}
-
-	if (dlfb_set_video_mode(dev_info, info->var.xres, info->var.yres) != 0)
-		goto out;
 
 	printk("found valid mode...%d\n", info->var.pixclock);
 
@@ -837,9 +843,9 @@ dlfb_probe(struct usb_interface *interface, const struct usb_device_id *id)
 	info->fix.smem_len = PAGE_ALIGN(dev_info->screen_size);
 	if (strlen(dev_info->udev->product) > 15) {
 		memcpy(info->fix.id, dev_info->udev->product, 15);
-	}
-	else {
-		memcpy(info->fix.id, dev_info->udev->product, strlen(dev_info->udev->product));
+	} else {
+		memcpy(info->fix.id, dev_info->udev->product,
+		       strlen(dev_info->udev->product));
 	}
 	info->fix.type = FB_TYPE_PACKED_PIXELS;
 	info->fix.visual = FB_VISUAL_TRUECOLOR;
@@ -858,13 +864,13 @@ dlfb_probe(struct usb_interface *interface, const struct usb_device_id *id)
 
 	return 0;
 
- out2:
+out2:
 	fb_dealloc_cmap(&info->cmap);
- out1:
+out1:
 	rvfree(info->screen_base, dev_info->screen_size);
- out0:
+out0:
 	framebuffer_release(info);
- out:
+out:
 	usb_set_intfdata(interface, NULL);
 	usb_put_dev(dev_info->udev);
 	kfree(dev_info);
