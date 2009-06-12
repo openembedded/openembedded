@@ -3,7 +3,7 @@ AUTHOR = "Team FSO"
 LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-native glib-2.0 dbus dbus-glib libfso-glib libgee"
-DEPENDS  += "${@["libfsoframework", ""][(bb.data.getVar('PN', d, 1) == 'libfsoframework')]}"
+DEPENDS  += "${@['libfsoframework', ''][(bb.data.getVar('PN', d, 1) in 'libfsoframework misc-vapi'.split())]}"
 PV = "0.0.0.0+gitr${SRCREV}"
 INC_PR = "r3"
 
