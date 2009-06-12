@@ -7,6 +7,8 @@ USERDISTRO := "${DISTRO}"
 DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"
 
+BUILDNAME = "Angstrom ${DISTRO_VERSION}"
+
 TARGET_VENDOR = "-angstrom"
 
 # Add FEED_ARCH to overrides
