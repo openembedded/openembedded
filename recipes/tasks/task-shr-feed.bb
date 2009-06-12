@@ -52,6 +52,7 @@ RDEPENDS_${PN} += "\
 		shr-splash \
 		shr-splash-theme-simple \
 		shr-splash-theme-dontpanic \
+		shr-splash-theme-dociswatchingyou \
 		shr-splash-theme-handy \
 		openbmap-logger \
 		ffalarms \
