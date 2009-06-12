@@ -18,12 +18,6 @@ inherit autotools binconfig pkgconfig
 EXTRA_AUTORECONF += "--exclude=libtoolize"
 EXTRA_OECONF = "--program-prefix= --without-x --without-freetype --without-perl --disable-openmp"
 
-do_configure() {
-	gnu-configize
-	cp config.{sub,guess} config/
-	oe_runconf
-}
-
 do_stage() {
 	autotools_stage_all
 }
