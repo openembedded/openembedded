@@ -93,7 +93,7 @@ do_install () {
 		echo ${hostname} > ${D}${sysconfdir}/hostname
 	fi
 
-        if [ "${DISTRO}" != "micro" ]; then
+        if [ "${DISTRO}" != "micro" -a "${DISTRO}" != "micro-uclibc" ]; then
                 install -m 644 ${WORKDIR}/issue*  ${D}${sysconfdir}  
 
                 if [ -n "${DISTRO_NAME}" ]; then
