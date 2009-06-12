@@ -15,7 +15,7 @@ inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${REL}.tar.bz2 \
 file://gst-configure_skip_shave.patch;patch=1;pnum=0"
-#file://${PN}_${REL}_to_git${SRCDATE}.patch;patch=1;pnum=1 \
+file://${PN}_${REL}_to_git${SRCDATE}.patch;patch=1;pnum=1 \
 
 EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --with-check=no --disable-examples"
 

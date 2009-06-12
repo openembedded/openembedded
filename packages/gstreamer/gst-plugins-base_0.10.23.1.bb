@@ -3,6 +3,7 @@ PROVIDES_${PN} += "gst-plugins"
 RCONFLICTS_gst-plugins-base = "libgstapp-0.10-0"
 RREPLACES_gst-plugins-base = "libgstapp-0.10-0"
 EXTRA_OECONF += "--with-audioresample-format=int"
+RDEPENDS += "gstreamer (>= ${PV})"
 
 PR = "r2"
 SRCDATE = "20090606"
