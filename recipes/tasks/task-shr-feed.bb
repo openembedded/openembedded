@@ -188,4 +188,6 @@ RDEPENDS_${PN} += "\
 #		font-xfree86-type1 \
 		msn-pecan \
 		erminig \
+		qwo \
+		fso-apm \
 "
