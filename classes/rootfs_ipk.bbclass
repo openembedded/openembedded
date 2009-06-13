@@ -97,6 +97,7 @@ fakeroot rootfs_ipk_do_rootfs () {
 		ln -s opkg ${IMAGE_ROOTFS}${libdir}/ipkg
 	else
 		rm -rf ${IMAGE_ROOTFS}${libdir}/opkg
+		rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
 	fi
 	
 	${ROOTFS_POSTPROCESS_COMMAND}
