@@ -12,6 +12,7 @@ include conf/distro/include/shr-${MACHINE}.conf
 SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
 SRCREV_pn-linux-openmoko-shr-devel = "f16c3431a1a7510eb3504ec5d96677dd0fac4cd6"
 
+
 PREFERRED_VERSION_shared-mime-info = "0.51"
 PREFERRED_VERSION_navit = "0.1.0+svnrev${SRCREV}"
 PREFERRED_VERSION_libosip2 = "2.2.2"
@@ -26,6 +27,8 @@ PREFERRED_VERSION_dbus-glib = "0.78"
 PREFERRED_VERSION_bluez4 = "4.39"
 PREFERRED_VERSION_connman = "0.19"
 PREFERRED_VERSION_irssi = " 0.8.13"
+PREFERRED_VERSION_linux-libc-headers ?= "2.6.23"
+
 
 
 #FSO stuff
