@@ -24,24 +24,25 @@ TZONES= "africa antarctica asia australasia europe northamerica southamerica  \
 CONFFILES_${PN} = "${sysconfdir}/timezone ${sysconfdir}/localtime"
 
 do_compile () {
+        mkdir -p build
         for zone in ${TZONES}; do \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}${datadir}/zoneinfo -L /dev/null \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}/build${datadir}/zoneinfo -L /dev/null \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}${datadir}/zoneinfo/posix -L /dev/null \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}}/build${datadir}/zoneinfo/posix -L /dev/null \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}${datadir}/zoneinfo/right -L ${S}/leapseconds \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}}/build${datadir}/zoneinfo/right -L ${S}/leapseconds \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
         done
 }
 
 do_install () {
-        install -d ${D}/usr ${D}${datadir}/zoneinfo
-        cp -pPR ${S}/usr ${D}/
+        install -d ${D}${prefix} ${D}${datadir}/zoneinfo
+        cp -pPR ${WORKDIR}/build${prefix}/* ${D}${prefix}
 
         # Install a sane default for timezones
         install -d ${D}${sysconfdir}
         echo ${DEFAULT_TIMEZONE} > ${D}${sysconfdir}/timezone
-        cp -pPR ${S}/usr/share/zoneinfo/${DEFAULT_TIMEZONE} ${D}${sysconfdir}/localtime
+        cp -pPR ${WORKDIR}/build${datadir}/zoneinfo/${DEFAULT_TIMEZONE} ${D}${sysconfdir}/localtime
 }
 
 # Packages primarily organized by directory with a major city
