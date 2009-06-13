@@ -41,15 +41,15 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}${sysconfdir}/gpe/xsettings-default.d/disable-composite
 
-	mv ${D}/usr/bin/gpe-logout.sh ${D}/usr/bin/gpe-logout.sh.matchbox
+	mv ${D}${bindir}/gpe-logout.sh ${D}${bindir}/gpe-logout.sh.matchbox
 }
 
 pkg_postinst_${PN}() {
-	update-alternatives --install /usr/bin/gpe-logout.sh gpe-logout.sh /usr/bin/gpe-logout.sh.matchbox 10
+	update-alternatives --install ${bindir}/gpe-logout.sh gpe-logout.sh ${bindir}/gpe-logout.sh.matchbox 10
 }
 
 pkg_postrm_${PN}() {
-       update-alternatives --remove gpe-logout.sh /usr/bin/gpe-logout.sh.matchbox
+       update-alternatives --remove gpe-logout.sh ${bindir}/gpe-logout.sh.matchbox
 }
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately
