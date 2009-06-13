@@ -4,7 +4,8 @@ LICENSE = "GPLv2"
 DEPENDS = "gtk+ libxml2"
 PR = "r1"
 
-SRC_URI = "http://handhelds.org/~mallum/downloadables/figment/figment-${PV}.tar.gz \
+# original src_uri, http://handhelds.org/~mallum/downloadables/figment/figment-${PV}.tar.gz, is now unfetchable
+SRC_URI = "http://ftp.sh.cvut.cz/MIRRORS/rock/ROCK-2.0/gnome2/figment/figment-${PV}.tar.bz2 \
 	file://dotdesktop-name-comment.patch;patch=1"
 S = "${WORKDIR}/figment-${PV}"
 
