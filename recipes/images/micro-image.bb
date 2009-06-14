@@ -27,8 +27,4 @@ IMAGE_DEV_MANAGER = "udev"
 IMAGE_INIT_MANAGER = "sysvinit sysvinit-pidof"
 IMAGE_INITSCRIPTS = ""
 
-# Do not install target package management system
-ONLINE_PACKAGE_MANAGEMENT = "none"
-
 inherit image
-
