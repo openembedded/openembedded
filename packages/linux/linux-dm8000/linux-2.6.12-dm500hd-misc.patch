@@ -1,0 +1,51 @@
+Index: stblinux-2.6.12/drivers/serial/8250.c
+===================================================================
+--- stblinux-2.6.12.orig/drivers/serial/8250.c	2009-01-20 18:17:12.000000000 +0100
++++ stblinux-2.6.12/drivers/serial/8250.c	2009-01-20 18:17:27.000000000 +0100
+@@ -1800,6 +1800,9 @@
+ 	 */
+ 	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk/16); 
+ 	quot = serial8250_get_divisor(port, baud);
++	
++	quot = 5;
++	baud = 1000000;
+ 
+ 	/*
+ 	 * THT: Workaround for Ikos, forcing a value of quot = 14
+@@ -1909,8 +1912,8 @@
+ 		serial_outp(up, UART_LCR, cval | UART_LCR_DLAB);/* set DLAB */
+ 	}
+ 
+-	serial_outp(up, UART_DLL, quot & 0xff);		/* LS of divisor */
+-	serial_outp(up, UART_DLM, quot >> 8);		/* MS of divisor */
++//	serial_outp(up, UART_DLL, quot & 0xff);		/* LS of divisor */
++//	serial_outp(up, UART_DLM, quot >> 8);		/* MS of divisor */
+ 
+ 	/*
+ 	 * LCR DLAB must be set to enable 64-byte FIFO mode. If the FCR
+Index: stblinux-2.6.12/Makefile
+===================================================================
+--- stblinux-2.6.12.orig/Makefile	2009-01-20 18:17:44.000000000 +0100
++++ stblinux-2.6.12/Makefile	2009-01-20 18:17:48.000000000 +0100
+@@ -2,7 +2,7 @@
+ PATCHLEVEL = 6
+ SUBLEVEL = 12
+ # STABLE_VERSION = .2
+-EXTRAVERSION =-5.1-brcmstb-dm8000
++EXTRAVERSION =-5.1-brcmstb-dm500hd
+ NAME=Woozy Numbat
+ 
+ # *DOCUMENTATION*
+Index: stblinux-2.6.12/arch/mips/brcmstb/lib/udivdi3.c
+===================================================================
+--- stblinux-2.6.12.orig/arch/mips/brcmstb/lib/udivdi3.c	2009-01-20 18:23:12.000000000 +0100
++++ stblinux-2.6.12/arch/mips/brcmstb/lib/udivdi3.c	2009-01-20 18:23:16.000000000 +0100
+@@ -32,7 +32,7 @@
+ #include "gcclib.h"
+ #include "longlong.h"
+ 
+-static const UQItype __clz_tab[] =
++const UQItype __clz_tab[] =
+ {
+   0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+   6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
