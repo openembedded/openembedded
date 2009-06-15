@@ -68,8 +68,8 @@ SRCREV_pn-shr-splash-theme-handy = "${AUTOREV}"
 SRCREV_pn-shr-splash-theme-dociswatchingyou = "${AUTOREV}"
 
 #General stuff
-EFL_SRCREV = "40567"
-SRCREV_pn-python-elementary = "40756"
+EFL_SRCREV = "41040"
+SRCREV_pn-python-elementary = "41040"
 SRCREV_pn-e-wm-config-illume-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-sysactions-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-theme-illume-shr = "${AUTOREV}"
