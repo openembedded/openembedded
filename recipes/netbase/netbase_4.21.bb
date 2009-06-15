@@ -2,7 +2,7 @@ DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r35"
+PR = "r36"
 
 inherit update-rc.d
 
@@ -51,8 +51,10 @@ do_install () {
 	install -m 0644 etc-rpc ${D}${sysconfdir}/rpc
 	install -m 0644 etc-protocols ${D}${sysconfdir}/protocols
 	install -m 0644 etc-services ${D}${sysconfdir}/services
+        if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
 	install -m 0755 update-inetd ${D}${sbindir}/
 	install -m 0644 update-inetd.8 ${D}${mandir}/man8/
+        fi
 	install -m 0644 ${WORKDIR}/interfaces ${D}${sysconfdir}/network/interfaces
 }
 
