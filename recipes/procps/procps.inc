@@ -8,6 +8,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
 
+FILES_${PN} += "${base_libdir}/libproc-*.so"
+
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
            file://install.patch;patch=1"
 
