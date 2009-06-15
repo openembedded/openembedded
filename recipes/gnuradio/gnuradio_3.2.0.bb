@@ -2,7 +2,7 @@ require gnuradio.inc
 
 DEPENDS += " gsl "
 
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/gnuradio-3.2"
 
