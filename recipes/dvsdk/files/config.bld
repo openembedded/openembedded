@@ -1,0 +1,48 @@
+/* 
+ * CROSS_DIR   - toolchain installation location
+ * PLATFORM    - platform to be build
+ * doBuildArm  - true (to build arm)
+ * doBuildDsp  - true (to build dsp)
+ * buildDualCpu - build example for dual cpu 
+ */
+       
+var buildTable = {
+    "Arm":    [{doBuild: doBuildArm,
+                target:  "gnu.targets.arm.GCArmv5T",
+                cgtoolsRootDir: "CROSS_DIR",
+                platforms: [ 
+                  {platform: "PLATFORM", dualCpu: buildDualCpu, outDir: "bin/PLATFORM"},
+                ],
+              }],
+    "DSP":    [{doBuild: doBuildDsp, 
+                target:  "ti.targets.C64P",
+                cgtoolsRootDir: "TICGTOOLSDIR",
+                platforms: [ 
+                  {platform: "PLATFORM", outDir: "bin/PLATFORM"},
+                ],
+              }]
+
+};
+
+var targets = [];
+var userbldBuildPlatforms = {};
+for each (var cpu in buildTable) {
+    for (var t = 0; t < cpu.length; t++) {
+        if (cpu[t].doBuild) {
+            var targ = xdc.useModule(cpu[t].target);
+            targets.push(targ);
+            targ.rootDir = cpu[t].cgtoolsRootDir;
+            userbldBuildPlatforms[targ.name] = cpu[t].platforms;
+        }
+    }
+}
+
+Build.targets = targets;
+for (var i = 0; i < Build.targets.length; i++) {
+    var t = targets[i];
+
+    if (t.name == "GCArmv5T") {
+    t.LONGNAME = "bin/CROSS_PREFIX";
+    }
+}
+
