@@ -13,7 +13,7 @@ SRC_DISTRIBUTECOMMAND-symlink () {
 # copies the files to the SRC_DISTRIBUTEDIR
 SRC_DISTRIBUTECOMMAND-copy () {
     test -e ${SRC}.md5 && cp -f ${SRC}.md5 .
-    cp -f ${SRC} .
+    cp -fr ${SRC} .
 }
 
 # moves the files to the SRC_DISTRIBUTEDIR and symlinks them back
