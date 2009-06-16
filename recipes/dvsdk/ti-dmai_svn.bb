@@ -1,87 +1,105 @@
-DESCRIPTION = "Davinci (and OMAP) Multimedia Application Interface"
-DEPENDS = "virtual/kernel ti-codec-engine ti-codec-combos"
-LICENCE = "unknown"
+require ti-dmai.inc
 
 inherit module-base
 
-require ti-paths.inc
+# compile time dependencies
+DEPENDS_omap3evm  += "alsa-lib ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-codec-combo-omap3530 virtual/kernel"
+DEPENDS_beagleboard	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-codec-combo-omap3530 virtual/kernel "
+DEPENDS_dm6446-evm 	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-codec-combo-dm6446 virtual/kernel "
+DEPENDS_dm355-evm  	+= "alsa-lib ti-codec-engine ti-xdctools-native ti-codec-combo-dm355 virtual/kernel"
 
-INSANE_SKIP_${PN} = True
-INSANE_SKIP_${PN}-apps = True
+installdir = "${prefix}/ti"
 
-SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRIJESH_GIT_022309;proto=https;user=anonymous;pswd='' \
-	   file://dmai-built-with-angstrom.patch;patch=1 \
-           file://loadmodules-ti-dmai-apps.sh \
-           file://unloadmodules-ti-dmai-apps.sh \
-   "
+# Define DMAI build time variables
+TARGET 			?= "all"
+TARGET_omap3evm 	?= "o3530_al"
+TARGET_beagleboard 	?= "o3530_al"
+TARGET_dm355-evm 	?= "dm355_al"
+TARGET_dm6446-evm 	?= "dm6446_al"
 
-SRCREV = "120"
+CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine"
+CODEC_dm355-evm ="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-dm355"
+CODEC_omap3evm ="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-omap3530"
+CODEC_beagleboard ="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-omap3530"
+CODEC_dm6446-evm ="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-dm6446"
+FC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
+DSPBIOS_DIR="${STAGING_DIR_NATIVE}/ti-dspbios-native"
+CGT6x_DIR="${STAGING_DIR_NATIVE}/ti-cgt6x-native"
+XDCTOOLS_DIR="${STAGING_DIR_NATIVE}/ti-xdctools-native"
+USER_XDC_PATH="${CE_INSTALL_DIR}/examples"
 
-S = "${WORKDIR}/BRIJESH_GIT_022309/davinci_multimedia_application_interface/dmai"
-# Yes, the xdc stuff still breaks with a '.' in PWD
-PV = "120+svnr${SRCREV}"
+PARALLEL_MAKE = ""
 
-TARGET = "all"
-TARGET_neuros-osd2 = " dm6446_al dm6446_db"
+do_configure () {
+    # If kernel version is greater than 2.6.28 replace mach/omapfb.h with
+    # linux/omapfb.h
 
-TARGET_armv7a = " o3530_al"
+    if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 28 ] ; then
+        sed -i -e s:mach/omapfb:linux/omapfb:g ${S}/dmai/packages/ti/sdo/dmai/linux/Display_fbdev.c
+    fi
+}
 
-TARGET_beagleboard = " o3530_al"
-TARGET_omap3evm = " o3530_al"
 
-export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine"
-export FC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
-export CODEC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos"
+do_compile () {
 
-do_compile() {
-	if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 28 ] ; then
-		sed -i -e s:mach/omapfb:linux/omapfb:g packages/ti/sdo/dmai/linux/Display_fbdev.c
-	fi
-	
-	cd packages/ti/sdo/dmai
-	oe_runmake clean
-	oe_runmake ${TARGET} C_FLAGS="-O2 -I${STAGING_INCDIR}"
-	cd apps
-	oe_runmake clean
-	oe_runmake ${TARGET}
+	cd ${S}
+	make XDC_INSTALL_DIR="${XDCTOOLS_DIR}" clean
+
+	#  TODO: Figure out how to pass the alsa include location, currently 
+    #  LINUXLIBS_INSTALL_DIR is hard-coded for armv5te
+	make CE_INSTALL_DIR="${CE_INSTALL_DIR}" \
+		CODEC_INSTALL_DIR="${CODEC}" \
+		FC_INSTALL_DIR="${FC_INSTALL_DIR}" \
+		LINUXKERNEL_INSTALL_DIR="${STAGING_KERNEL_DIR}" \
+		XDC_INSTALL_DIR="${XDCTOOLS_DIR}" \
+		CODEGEN_INSTALL_DIR="${CGT6x_DIR}" \
+		BIOS_INSTALL_DIR="${DSPBIOS_DIR}"\
+		LINUXLIBS_INSTALL_DIR="${STAGING_DIR_HOST}/usr" \
+		USER_XDC_PATH="${USER_XDC_PATH}" \
+		CROSS_COMPILE="${SDK_PATH}/bin/${TARGET_PREFIX}" \
+		VERBOSE="true" \
+		XDAIS_INSTALL_DIR="${CE_INSTALL_DIR}/cetools" \
+		LINK_INSTALL_DIR="${CE_INSTALL_DIR}/cetools/packages/dsplink" \
+		CMEM_INSTALL_DIR="${CE_INSTALL_DIR}/cetools" \
+		LPM_INSTALL_DIR="${CE_INSTALL_DIR}/cetools" \	
+		PLATFORM="${TARGET}"
 }
 
 do_install () {
-	install -d ${D}/${datadir}/ti-dmai/apps
+	# install dmai apps on target
+    install -d ${D}/dmai-apps
+    cd ${S}/dmai
+    make PLATFORM="${TARGET}" EXEC_DIR=${D}/${installdir}/dmai-apps install 
+	install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-apps/loadmodule.sh 
 
-	export EXEC_DIR="${D}/${datadir}/ti-dmai/apps"
-	oe_runmake install
+    cd ${S}/tests
+    install -d ${D}/dmai-tests
+    make PLATFORM="${TARGET}" EXEC_DIR=${D}/${installdir}/dmai-tests install 
+	install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-tests/loadmodule.sh 
+}
 
-    #test app module un/load scripts
-        install ${WORKDIR}/loadmodules-ti-dmai-apps.sh ${D}/${datadir}/ti-dmai
-        install ${WORKDIR}/unloadmodules-ti-dmai-apps.sh ${D}/${datadir}/ti-dmai
+pkg_postinst_ti-dmai-apps () {
+	ln -sf ${installdir}/codec-combo/* ${installdir}/dmai-apps/
 }
 
 do_stage () {
 	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dmai
-	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dmai
+	cp -pPrf ${S}/dmai/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dmai
 }
 
-PACKAGES =+ "ti-dmai-apps"
-
-ALLOW_EMPTY_${PN} = "1"
-RRECOMMENDS_${PN} = "ti-dmai-apps"
-
-FILES_ti-dmai-apps = "${datadir}/ti-dmai/*"
-
-pkg_postinst_ti-dmai-apps () {
-        if [ -n "$D" ]; then
-                exit 1
-        fi
-	ln -sf /usr/share/ti-codec-combos/* /usr/share/ti-dmai/apps
-}
-
-INHIBIT_PACKAGE_STRIP = "1"
+# Disable QA check untils we figure out how to pass LDFLAGS in build
+INSANE_SKIP_${PN} = True
+INSANE_SKIP_ti-dmai-apps = True
+INSANE_SKIP_ti-dmai-tests = True
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+INHIBIT_PACKAGE_STRIP = "1"
+PACKAGES += "ti-dmai-apps ti-dmai-tests"
+FILES_ti-dmai-apps = "${installdir}/dmai-apps/*"
+FILES_ti-dmai-tests = "${installdir}/dmai-tests/*"
 
-#add run-time dependencies - note for kernel module we can only use RRECOMMENDS, since modules might be built into the kernel
-# and for now we make codecs RRECOMMENDS as well, since not everyone will have them
-#RDEPENDS_ti-dmai-apps += "ti-codec-combos"
-RRECOMMENDS_ti-dmai-apps += "ti-cmem-module ti-lpm-module ti-dsplink-module ti-codec-combos"
-
+# run time dependencies 
+RDEPENDS_ti-dmai-apps_dm355-evm += "ti-dm355mm-module ti-cmem-module ti-codec-combo-dm355"
+RDEPENDS_ti-dmai-apps_dm6446-evm += "ti-cmem-module ti-dsplink-module ti-codec-combo-dm6446"
+RDEPENDS_ti-dmai-apps_omap3evm += "ti-cmem-module ti-dsplink-module ti-codec-combo-omap3530 ti-lpm-module ti-sdma-module"
+RDEPENDS_ti-dmai-apps_beagleboard += "ti-cmem-module ti-dsplink-module ti-codec-combo-omap3530 ti-lpm-module ti-sdma-module"

@@ -55,8 +55,13 @@ require clutter-fpu.inc
 
 #Fix up some weirdness in the docs
 do_configure_prepend() {
-        sed -i s:doc/reference/Makefile::g ${S}/configure.ac
-        sed -i s:doc::g ${S}/Makefile.am
+    if [ -e ${WORKDIR}/gtk-doc.make ] ; then
+        cp ${WORKDIR}/gtk-doc.make ${S}/gtk-doc.make
+    else
+        touch ${S}/gtk-doc.make
+    fi
+    sed -i s:doc/reference/Makefile::g ${S}/configure.ac
+    sed -i s:doc::g ${S}/Makefile.am
 }
 
 do_stage () {
