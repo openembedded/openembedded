@@ -38,6 +38,9 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced vi
 RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 
+DESCRIPTION_append_enigma2-plugin-extenstions-modem = "opens a menu to connect to internet via builtin modem."
+RDEPENDS_enigma2-plugin-extensions-modem = "dreambox-modem-ppp-scripts"
+
 PN = "enigma2"
 PR = "r0"
 SRCDATE = "20090614"
