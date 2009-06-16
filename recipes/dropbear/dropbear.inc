@@ -28,13 +28,7 @@ LD = "${CC}"
 
 SBINCOMMANDS = "dropbear dropbearkey dropbearconvert"
 BINCOMMANDS = "dbclient ssh scp"
-BINCOMMANDS_micro = "dbclient scp"
 EXTRA_OEMAKE = 'MULTI=1 SCPPROGRESS=1 PROGRAMS="${SBINCOMMANDS} ${BINCOMMANDS}"'
-EXTRA_OEMAKE_micro = 'PROGRAMS="${SBINCOMMANDS} ${BINCOMMANDS}"'
-PACKAGES_prepend_micro = "dropbear-client dropbear-utils "
-FILES_dropbear-client = "${bindir}/dbclient"
-FILES_dropbear-utils = "${sbindir}/dropbearkey ${sbindir}/dropbearconvert"
-EXTRA_OECONF_micro = "--disable-utmp --disable-wtmp --disable-lastlog --disable-shadow"
 
 do_configure_prepend() {
 	if [ "x${DISTRO_TYPE}" = "xdebug" ]; then
@@ -52,24 +46,13 @@ do_install() {
 	install -d ${D}${sbindir}
 	install -d ${D}${localstatedir}
 
-        if [ -f dropbearmulti ]; then
-        	install -m 0755 dropbearmulti ${D}${sbindir}/
-                ln -s ${sbindir}/dropbearmulti ${D}${bindir}/dbclient
+	install -m 0755 dropbearmulti ${D}${sbindir}/
+	ln -s ${sbindir}/dropbearmulti ${D}${bindir}/dbclient
 	
-        	for i in ${SBINCOMMANDS}
-        	do
-                	ln -sf ./dropbearmulti ${D}${sbindir}/$i
-                done
-        else
-        	for i in ${SBINCOMMANDS}
-        	do
-      	        	install -m 0755 $i ${D}${sbindir}/
-                done
-        	for i in ${BINCOMMANDS}
-        	do
-      	        	install -m 0755 $i ${D}${bindir}/
-                done
-        fi
+	for i in ${SBINCOMMANDS}
+	do
+		ln -sf ./dropbearmulti ${D}${sbindir}/$i
+	done
 	cat ${WORKDIR}/init | sed -e 's,/etc,${sysconfdir},g' \
 				  -e 's,/usr/sbin,${sbindir},g' \
 				  -e 's,/var,${localstatedir},g' \
@@ -84,9 +67,6 @@ do_install() {
 pkg_postinst () {
 	update-alternatives --install ${bindir}/scp scp ${sbindir}/dropbearmulti 20
 	update-alternatives --install ${bindir}/ssh ssh ${sbindir}/dropbearmulti 20
-}
-
-pkg_postinst_micro() {
 }
 
 pkg_postrm_append () {
