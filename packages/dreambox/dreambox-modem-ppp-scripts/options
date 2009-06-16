@@ -10,6 +10,7 @@ usepeerdns
 asyncmap 0
 mtu 552
 mru 552
+user arcor
 
 #hangup script
 disconnect /etc/ppp/disconnect.modem
