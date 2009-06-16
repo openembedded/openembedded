@@ -1,0 +1,40 @@
+From d0a09ac9587fbfc19970456e17f0ecc957a5549b Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Tue, 12 May 2009 01:12:50 +0400
+Subject: [PATCH] AFEB9260 network fix
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ board/afeb9260/afeb9260.c             |    2 +-
+ cpu/arm926ejs/at91/at91sam9260_macb.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/board/afeb9260/afeb9260.c b/board/afeb9260/afeb9260.c
+index 024db2b..a247663 100644
+--- a/board/afeb9260/afeb9260.c
++++ b/board/afeb9260/afeb9260.c
+@@ -177,7 +177,7 @@ int board_eth_init(bd_t *bis)
+ {
+ 	int rc = 0;
+ #ifdef CONFIG_MACB
+-	rc = macb_eth_initialize(0, (void *)AT91SAM9260_BASE_EMAC, 0x00);
++	rc = macb_eth_initialize(0, (void *)AT91SAM9260_BASE_EMAC, 0x01);
+ #endif
+ 	return rc;
+ }
+diff --git a/cpu/arm926ejs/at91/at91sam9260_macb.c b/cpu/arm926ejs/at91/at91sam9260_macb.c
+index ab60fb7..ea5e767 100644
+--- a/cpu/arm926ejs/at91/at91sam9260_macb.c
++++ b/cpu/arm926ejs/at91/at91sam9260_macb.c
+@@ -47,7 +47,7 @@ void at91_macb_hw_init(void)
+ 	at91_set_B_periph(AT91_PIN_PA25, 0);	/* ERX2 */
+ 	at91_set_B_periph(AT91_PIN_PA26, 0);	/* ERX3 */
+ 	at91_set_B_periph(AT91_PIN_PA27, 0);	/* ERXCK */
+-#if defined(CONFIG_AT91SAM9260EK)
++#if defined(CONFIG_AT91SAM9260EK) || defined(CONFIG_AFEB9260)
+ 	/*
+ 	 * use PA10, PA11 for ETX2, ETX3.
+ 	 * PA23 and PA24 are for TWI EEPROM
+-- 
+1.5.6.5
+

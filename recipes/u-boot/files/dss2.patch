@@ -1,0 +1,61 @@
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index dee0417..2f8a952 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -149,14 +149,21 @@
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"loadaddr=0x82000000\0" \
+ 	"console=ttyS2,115200n8\0" \
+-	"videomode=1024x768@60,vxres=1024,vyres=768\0" \
+-	"videospec=omapfb:vram:2M,vram:4M\0" \
++	"vram=12M\0" \
++	"dvimode=1024x768MR-16@60\0" \
++	"defaultdisplay=dvi\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+-		"video=${videospec},mode:${videomode} " \
++		"vram=${vram} " \
++		"omapfb.mode=dvi:${dvimode} " \
++		"omapfb.debug=y " \
++		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=/dev/mmcblk0p2 rw " \
+ 		"rootfstype=ext3 rootwait\0" \
+ 	"nandargs=setenv bootargs console=${console} " \
+-		"video=${videospec},mode:${videomode} " \
++		"vram=${vram} " \
++		"omapfb.mode=dvi:${dvimode} " \
++		"omapfb.debug=y " \
++		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=/dev/mtdblock4 rw " \
+ 		"rootfstype=jffs2\0" \
+ 	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index dee0417..2f8a952 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -149,14 +149,21 @@
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"loadaddr=0x82000000\0" \
+ 	"console=ttyS2,115200n8\0" \
+-	"videomode=1024x768@60,vxres=1024,vyres=768\0" \
+-	"videospec=omapfb:vram:2M,vram:4M\0" \
++	"vram=12M\0" \
++	"dvimode=1024x768MR-16@60\0" \
++	"defaultdisplay=dvi\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+-		"video=${videospec},mode:${videomode} " \
++		"vram=${vram} " \
++		"omapfb.mode=dvi:${dvimode} " \
++		"omapfb.debug=y " \
++		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=/dev/mmcblk0p2 rw " \
+ 		"rootfstype=ext3 rootwait\0" \
+ 	"nandargs=setenv bootargs console=${console} " \
+-		"video=${videospec},mode:${videomode} " \
++		"vram=${vram} " \
++		"omapfb.mode=dvi:${dvimode} " \
++		"omapfb.debug=y " \
++		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=/dev/mtdblock4 rw " \
+ 		"rootfstype=jffs2\0" \
+ 	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
+
