@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# This script is used to dial a modem using a specific
+# number.
+#
+
+if [ $# -lt 1 ]
+then
+  echo "$0: no phone number given." >&2
+  exit -1
+fi
+
+PHONENUM=$1
+
+chat -v \
+ABORT "N" \
+ABORT "n"  \
+'' 'ATZ' \
+'O' "ATDT${PHONENUM}" \
+'c' 

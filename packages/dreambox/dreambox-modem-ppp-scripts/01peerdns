@@ -1,0 +1,3 @@
+#!/bin/sh
+mv /etc/resolv.conf /etc/resolv.conf-back
+ln -s /var/run/ppp/resolv.conf /etc/resolv.conf
