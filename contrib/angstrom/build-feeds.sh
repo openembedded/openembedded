@@ -100,6 +100,7 @@ do
                       cvs \
                       cwiid \
                       dates \
+                      dialog \
                       distcc \
                       dsniff \
                       duke3d \
@@ -307,6 +308,7 @@ do
                       tzdata \
                       ubahnnav \
                       ufraw \
+                      unzip \
                       usbutils \
                       usbview \
                       ushare \
