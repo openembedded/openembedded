@@ -109,7 +109,8 @@ rootfs_ipk_log_check() {
         lf_path="$2"
 
 	lf_txt="`cat $lf_path`"
-	for keyword_die in "Cannot find package" "exit 1" ERR Fail
+	for keyword_die in "Cannot find package" "Cannot satisfy the following dependencies" \
+	    "exit 1" ERR Fail
 	do				
 		if (echo "$lf_txt" | grep -v log_check | grep -w "$keyword_die") >/dev/null 2>&1
 		then
