@@ -1,4 +1,4 @@
-# upstream: oe-only
+upstream: oe-only
 
 diff -upr irda-utils-0.9.16.old/irattach/Makefile irda-utils-0.9.16/irattach/Makefile
 --- irda-utils-0.9.16.old/irattach/Makefile	2009-06-13 12:54:18.000000000 +0100
