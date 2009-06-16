@@ -1,13 +1,13 @@
 DESCRIPTION = "Linux Kernel for mini2440 development board"
 SECTION = "kernel"
 LICENSE = "GPL"
-MACHINE_KERNEL_PR = "r3"
+MACHINE_KERNEL_PR = "r4"
 
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 
 SRCREV = "${AUTOREV}"
 
-SRC_URI = "git://repo.or.cz/linux-2.6/mini2440.git;protocol=git;branch=mini2440-dev \
+SRC_URI = "git://repo.or.cz/linux-2.6/mini2440.git;protocol=git;branch=mini2440-stable-v2.6.30 \
            file://defconfig-mini2440"
 
 S = "${WORKDIR}/git"
