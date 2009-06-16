@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mouse Demo
+Comment=OGLES Demo
+Exec=/usr/demos/OGLES/Mouse/OGLESMouse
+Icon=star
+Type=Application
+Categories=Demos;
+
