@@ -91,9 +91,10 @@ FILES_libgromnithread = "${libdir}/libgromnithread.so*"
 
 FILES_${PN} += "${libdir}/python*/site-packages/gnuradio/*"
 FILES_${PN}-dbg += "${libdir}/python*/site-packages/gnuradio/.debug \
-                   ${libdir}/python*/site-packages/gnuradio/*/.debug \
+                    ${libdir}/python*/site-packages/gnuradio/*/.debug \
 		   "
 
-FILES_gnuradio-usrp = "${libdir}/python*/site-packages/usrpm/* \
+FILES_gnuradio-usrp = "${libdir}/python*/site-packages/usrp/* \
+                       ${bindir}/usrp* \
                        ${datadir}/usrp/*/*"
-FILES_gnuradio-usrp-dbg = "${libdir}/python*/site-packages/usrpm/.debug"
+FILES_gnuradio-usrp-dbg = "${libdir}/python*/site-packages/usrp/.debug"
