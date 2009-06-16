@@ -1,12 +1,12 @@
 require clutter.inc
 
-SRCREV = "745ca8a62ca52eedfad850e556f160f36eb32953"
+SRCREV = "b9a53d379d3aaca4b09a90cd44d5a9d9736a2435"
 
 PV = "0.9.3"
-PR = "r1"
+PR = "r2"
 PR_append = "+git${SRCREV}"
 
-SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git;branch=1.0-integration \
+SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git \
            file://enable_tests.patch;patch=1 "
 S = "${WORKDIR}/git"
 
