@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-native glib-2.0 dbus dbus-glib eina eet evas ecore edje elementary"
 PV = "0.0.1.0+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/libeflvala;protocol=git;branch=master"
 S = "${WORKDIR}/git"
