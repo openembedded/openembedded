@@ -1,5 +1,5 @@
 require glibc.inc
-PR = "r18"
+PR = "r20"
 
 ARM_INSTRUCTION_SET = "arm"
 
@@ -49,6 +49,7 @@ SRC_URI = "\
   file://zecke-sane-readelf.patch;patch=1 \
   file://ldd-unbash.patch;patch=1 \
   file://glibc-2.6.1-use-short-for-fnstsw.patch;patch=1 \
+  file://glibc25-backport-eventfd.patch;patch=1 \
   file://generic-bits_select.h \
   file://generic-bits_types.h \
   file://generic-bits_typesizes.h \

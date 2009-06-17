@@ -16,17 +16,18 @@ RDEPENDS_task-openmoko-feed = "\
   linphone \
   fso-gsm0710muxd \
   ppp \
-  bluez-hcidump \
+#  bluez-hcidump \
   bootchart \
   cellhunter \
   eet evas ecore embryo epsilon edje efreet emotion \
-#  epdf \
+  epdf \
   exhibit edje-viewer \
-#  free42-vga \
+  free42-vga \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo gpe-contacts \
   leafpad abiword \
   claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
   telepathy-python \
+  numptyphysics \
   mokomaze \
   omnewrotate \
   ipkg-link ipkg-utils \
@@ -36,6 +37,7 @@ RDEPENDS_task-openmoko-feed = "\
   midori \
   dillo \
   fennec \
+  woosh \
   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'mplayer', d)} \
   mtpaint \
   mysql \

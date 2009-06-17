@@ -1,5 +1,6 @@
 SECTION = "openmoko/libs"
 DEPENDS = "gtk+ python-pygtk"
+
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r3"
 
@@ -10,7 +11,9 @@ SRC_URI += "\
 	file://makefile.am.patch;patch=1 \
 	"
 LICENSE = "LGPL"
+
 EXTRA_OECONF += " --enable-python"
+
 do_configure_prepend() {
         touch gtk-doc.make
 }

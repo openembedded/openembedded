@@ -4,13 +4,11 @@ SECTION = "devel"
 DEPENDS = "glib-2.0 dbus"
 HOMEPAGE = "http://live.gnome.org/Vala"
 LICENSE = "LGPL"
+PV = "0.7.2+0.7.3-fso1"
+INC_PR = "r0"
 
-MAJV = "${@bb.data.getVar('PV',d,1)[:3]}"
-
-SRC_URI = "\
-  http://download.gnome.org/sources/vala/${MAJV}/vala-${PV}.tar.bz2 \
-"
-S = "${WORKDIR}/vala-${PV}"
+SRC_URI = "http://www.freesmartphone.org/sources/vala-0.7.3-fso1.tar.gz"
+S = "${WORKDIR}/vala-0.7.3-fso1"
 
 inherit autotools autotools_stage
 

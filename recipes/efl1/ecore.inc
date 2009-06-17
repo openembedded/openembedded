@@ -4,9 +4,11 @@ DEPENDS = "curl eet evas tslib libxtst libxcomposite libxinerama libxscrnsaver l
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
 PV = "0.9.9.050+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 inherit efl
+
+SRC_URI += "file://ecore-add-includes.patch;patch=1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 

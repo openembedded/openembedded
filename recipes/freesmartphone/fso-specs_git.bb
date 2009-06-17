@@ -1,18 +1,21 @@
 DESCRIPTIONS = "API Specification for freesmartphone.org"
-AUTHOR = "Mickey Lauer"
-
+AUTHOR = "Michael 'Mickey' Lauer"
+HOMEPAGE = "http://docs.freesmartphone.org"
+LICENSE = "BSD"
+SECTION = "devel/specifications"
 PV = "0.0.1-gitr${SRCREV}"
+PR = "r2"
 
-SRC_URI = "git://git.freesmartphone.org/specs.git;protocol=git;branch=master"
+SRC_URI = "${FREESMARTPHONE_GIT}/specs.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
 do_compile() {
-	     make xml
+	make xml
 }
 
 do_stage() {
-	   mkdir -p "${STAGING_DATADIR}/fso-specs"
-	   cp xml/* "${STAGING_DATADIR}/fso-specs/"
+	install -d "${STAGING_DATADIR}/fso-specs"
+	install -m 0644 xml/* "${STAGING_DATADIR}/fso-specs"
 }
 
-FILE_${PN}-dev = "${datadir}/fso-specs"
+FILE_${PN}-dev += "${datadir}/fso-specs"
