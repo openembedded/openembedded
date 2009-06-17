@@ -11,14 +11,14 @@ LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r21"
+INC_PR = "r22"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
-  file://default.script \
+  file://default.script file://simple.script \
   file://dhcp-hostname.patch;patch=1 \
   file://hwclock.sh \
   file://ifupdown-spurious-environ.patch;patch=1 \
@@ -120,7 +120,7 @@ do_install () {
 	if grep "CONFIG_APP_UDHCPC=y" ${WORKDIR}/defconfig; then
 		install -d ${D}${sysconfdir}/udhcpc.d
 		install -d ${D}${datadir}/udhcpc
-		install -m 0755 ${S}/examples/udhcp/simple.script ${D}${sysconfdir}/udhcpc.d/50default
+                install -m 0755 ${WORKDIR}/simple.script ${D}${sysconfdir}/udhcpc.d/50default
 		install -m 0755 ${WORKDIR}/default.script ${D}${datadir}/udhcpc/default.script
 	fi
 	if grep "CONFIG_FEATURE_MOUNT_FSTAB=y" ${WORKDIR}/defconfig; then
