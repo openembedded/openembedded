@@ -11,12 +11,13 @@ SRC_URI = "git://git.gnome.org/gnome-bluetooth;protocol=git \
 
 S = "${WORKDIR}/git"
 
-SRCREV = "097aef044ced5937dd7e288bfee58b6138939117"
+SRCREV = "93fd8de2cc717b96ad719ab2fb5ed38b8a0fc707"
 PV = "2.27.5"
+PR = "r2"
 PR_append = "+gitr${SRCREV}"
 
-DEPENDS = "obexd obex-data-server gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
-RRECOMMENDS_${PN} += "obexd obex-data-server"
+DEPENDS = "obexd gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
+RRECOMMENDS_${PN} += "obexd"
 RCONFLICTS_${PN} = "bluez-gnome"
 
 do_configure_prepend() {

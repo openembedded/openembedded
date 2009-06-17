@@ -195,6 +195,7 @@ PREFERRED_VERSION_xtrans ?= "1.2.1"
 # This should be here but is needed until bitbake can do
 # versioned depends
 PREFERRED_VERSION_mesa ?= "7.2"
+PREFERRED_VERSION_xtrans-native ?= "1.2.1"
 
 # proto
 PREFERRED_VERSION_applewmproto ?= "1.0.3"
@@ -218,6 +219,7 @@ PREFERRED_VERSION_videoproto ?= "2.2.2"
 PREFERRED_VERSION_windowswmproto ?= "1.0.3"
 PREFERRED_VERSION_xmiscproto ?= "1.1.2"
 PREFERRED_VERSION_xextproto ?= "7.0.3"
+PREFERRED_VERSION_xextproto-native ?= "7.0.3"
 PREFERRED_VERSION_xf86dgaproto ?= "2.0.3"
 PREFERRED_VERSION_xf86driproto ?= "2.0.4"
 PREFERRED_VERSION_xf86miscproto ?= "0.9.2"

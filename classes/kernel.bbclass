@@ -20,6 +20,11 @@ python __anonymous () {
     image = bb.data.getVar('INITRAMFS_IMAGE', d, True)
     if image != '' and image is not None:
         bb.data.setVar('INITRAMFS_TASK', '${INITRAMFS_IMAGE}:do_rootfs', d)
+
+    machine_kernel_pr = bb.data.getVar('MACHINE_KERNEL_PR', d, True)
+
+    if machine_kernel_pr:
+       bb.data.setVar('PR', machine_kernel_pr, d)
 }
 
 INITRAMFS_IMAGE ?= ""
@@ -63,10 +68,6 @@ export CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "tt
 
 KERNEL_VERSION = "${@get_kernelversion('${S}')}"
 KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
-
-# A machine.conf or local.conf can increase MACHINE_KERNEL_PR to force
-# rebuilds for kernel and external modules
-PR = "${MACHINE_KERNEL_PR}"
 
 KERNEL_LOCALVERSION ?= ""
 

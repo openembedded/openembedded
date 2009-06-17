@@ -5,7 +5,7 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r3"
+PR = "r4"
 LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2 \
            file://pcre-cross.patch;patch=1"
@@ -17,7 +17,6 @@ inherit autotools binconfig
 
 PARALLEL_MAKE = ""
 
-LEAD_SONAME = "libpcre.so"
 CFLAGS_append = " -D_REENTRANT"
 CXXFLAGS_powerpc += "-lstdc++"
 EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000 --enable-rebuild-chartables --enable-utf8"
@@ -40,13 +39,19 @@ do_compile () {
 }
 
 do_stage () {
-	oe_libinstall -a -so libpcre ${STAGING_LIBDIR}
-	oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
-	install -m 0644 pcre.h ${STAGING_INCDIR}/
-	install -m 0644 pcreposix.h ${STAGING_INCDIR}/
-        install -d ${STAGING_BINDIR_NATIVE}
+	autotools_stage_all
+	install -d ${STAGING_BINDIR_NATIVE}
 	install -m 0755 ${S}/dftables ${STAGING_BINDIR_NATIVE}/
 }
 
-FILES_${PN} = "${libdir}/lib*.so.*"
+python populate_packages_prepend () {
+	pcre_libdir = bb.data.expand('${libdir}', d)
+	pcre_libdir_dbg = bb.data.expand('${libdir}/.debug', d)
+	do_split_packages(d, pcre_libdir, '^lib(.*)\.so$', 'lib%s-dev', 'libpcre %s development package', extra_depends='${PN}-dev', allow_links=True)
+	do_split_packages(d, pcre_libdir, '^lib(.*)\.la$', 'lib%s-dev', 'libpcre %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, pcre_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'libpcre %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, pcre_libdir, '^lib(.*)\.so\.*', 'lib%s', 'libpcre %s library', extra_depends='', allow_links=True)
+}
+
+FILES_${PN} = "${libdir}/libpcre.so.*"
 FILES_${PN}-dev += "${bindir}/*"
