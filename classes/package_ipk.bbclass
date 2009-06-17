@@ -90,18 +90,13 @@ do_package_update_index_ipk () {
 	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 
 	for arch in $ipkgarchs; do
-		if [ -e ${DEPLOY_DIR_IPK}/$arch/ ] ; then 
-			touch ${DEPLOY_DIR_IPK}/$arch/Packages
-			ipkg-make-index -r ${DEPLOY_DIR_IPK}/$arch/Packages -p ${DEPLOY_DIR_IPK}/$arch/Packages -l ${DEPLOY_DIR_IPK}/$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/$arch/
-		fi
-		if [ -e ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/ ] ; then 
-			touch ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages
-			ipkg-make-index -r ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages -p ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages -l ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages.filelist -m ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/
-		fi
-		if [ -e ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/ ] ; then
-			touch ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages
-			ipkg-make-index -r ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages -p ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages -l ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/
-		fi
+		for ipk_path in $arch ${BUILD_ARCH}-$arch-sdk ${SDK_SYS}-sdk-$arch; do
+			PACK_COUNT=`ls -t ${DEPLOY_DIR_IPK}/$ipk_path/ | head -n 4 | grep Packages | wc -l`
+			if [ -e ${DEPLOY_DIR_IPK}/$ipk_path/ -a "$PACK_COUNT" != "4" ] ; then 
+				touch ${DEPLOY_DIR_IPK}/$ipk_path/Packages
+				ipkg-make-index -r ${DEPLOY_DIR_IPK}/$ipk_path/Packages -p ${DEPLOY_DIR_IPK}/$ipk_path/Packages -l ${DEPLOY_DIR_IPK}/$ipk_path/Packages.filelist -m ${DEPLOY_DIR_IPK}/$ipk_path/
+			fi
+		done
 	done
 }
 
