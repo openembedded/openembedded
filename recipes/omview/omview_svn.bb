@@ -4,7 +4,7 @@ PKG_TAGS_${PN} = "group::communication"
 DEPENDS += " evas ewl epsilon"
 RDEPENDS += " epsilon-thumbd"
 PV = "0.0.1-svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit autotools
 
