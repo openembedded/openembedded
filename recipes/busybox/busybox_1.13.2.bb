@@ -25,7 +25,7 @@ SRC_URI = "\
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
-  file://default.script \
+  file://default.script file://simple.script \
   file://hwclock.sh \
   file://mount.busybox \
   file://mountall \
