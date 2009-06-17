@@ -5,8 +5,7 @@
 # See image.bbclass for a usage of this.
 #
 
-do_rootfs[depends] += "opkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
-do_rootfs[recrdeptask] += "do_package_write_ipk"
+do_rootfs[depends] += "opkg-native:do_populate_staging"
 
 IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
@@ -29,7 +28,6 @@ PACKAGE_INSTALL_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "non
 fakeroot rootfs_ipk_do_rootfs () {
 	set -x
 
-	package_update_index_ipk
 	package_generate_ipkg_conf
 
 	mkdir -p ${T}

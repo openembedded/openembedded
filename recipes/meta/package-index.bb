@@ -23,8 +23,4 @@ do_stage() {
 
 do_build[nostamp] = "1"
 do_build[dirs] = "${DEPLOY_DIR_IPK}"
-do_build() {
-	set -ex
-	package_update_index_ipk
-	set +ex
-}
+addtask package_update_index_ipk before do_build

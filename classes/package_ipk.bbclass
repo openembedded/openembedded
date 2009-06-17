@@ -67,10 +67,16 @@ python package_ipk_install () {
 		raise bb.build.FuncFailed
 }
 
+do_package_update_index_ipk[lockfiles] = "${DEPLOY_DIR_IPK}.lock"
+do_package_update_index_ipk[nostamp] = "1"
+do_package_update_index_ipk[recrdeptask] += "do_package_write_ipk"
+do_package_update_index_ipk[recrdeptask] += "do_package_write_ipk"
+do_package_update_index_ipk[depends] += "ipkg-utils-native:do_populate_staging"
+
 #
 # Update the Packages index files in ${DEPLOY_DIR_IPK}
 #
-package_update_index_ipk () {
+do_package_update_index_ipk () {
 	set -x
 
 	ipkgarchs="${PACKAGE_ARCHS}"
@@ -322,3 +328,4 @@ python do_package_write_ipk () {
 }
 do_package_write_ipk[dirs] = "${D}"
 addtask package_write_ipk before do_package_write after do_package
+addtask package_update_index_ipk before do_rootfs
