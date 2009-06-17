@@ -7,7 +7,7 @@ DEPENDS = "elementary eina sqlite3 edbus"
 RDEPENDS = "mplayer lame libxv libsdl-x11"
 
 PV = "0.0.1+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "svn://intone.googlecode.com/svn/trunk;module=.;proto=http"
 S = "${WORKDIR}"
