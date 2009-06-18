@@ -15,6 +15,7 @@ group "Config" struct {
       value "switch2" int: 0;
     }
   }
+  value "show_menu" uchar: 0;
   value "show_home" uchar: 0;
   value "show_desk" uchar: 0;
   value "show_trash" uchar: 0;

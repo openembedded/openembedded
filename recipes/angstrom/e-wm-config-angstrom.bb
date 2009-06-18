@@ -2,9 +2,9 @@ DESCRIPTION = "Enlightenment DR17 theme for Angstrom"
 LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
 RDEPENDS = "e-wm"
-RRECOMMENDS_${PN} = "places"
+RRECOMMENDS = "places gnome-icon-theme"
 
-PR = "r8"
+PR = "r9"
 
 SRC_URI = " \
           file://configs \
