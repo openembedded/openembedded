@@ -342,11 +342,9 @@ RDEPENDS_task-base-wifi = "\
     wireless-tools \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'hostap-utils', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pci', 'hostap-utils', '',d)} \
-    ${@base_contains('COMBINED_FEATURES', 'pci', 'madwifi-ng-tools', '',d)} \
     wpa-supplicant"
 
 RRECOMMENDS_task-base-wifi = "\
-    ${@base_contains('COMBINED_FEATURES', 'pci', 'madwifi-ng-modules', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-zd1211rw', '',d)} \
     kernel-module-ieee80211-crypt \
     kernel-module-ieee80211-crypt-ccmp \

@@ -15,6 +15,7 @@ DEFAULT_PREFERENCE_micro2440 = "1"
 DEFAULT_PREFERENCE_ep93xx = "1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_at2440evb = "1"
+DEFAULT_PREFERENCE_tqm8540 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2 \
            file://defconfig"

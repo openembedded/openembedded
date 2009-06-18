@@ -198,6 +198,9 @@ python oestats_eventhandler () {
 		oestats_task(server, e.data, e.task, 'Succeeded')
 	elif getName(e) == 'TaskFailed':
 		oestats_task(server, e.data, e.task, 'Failed')
+	elif getName(e) == "PkgFailed":
+		if not bb.data.getVar('AUTOBUILD', e.data, True) == "0":
+			build.exec_func('do_clean', data)
 
 	return NotHandled
 }
