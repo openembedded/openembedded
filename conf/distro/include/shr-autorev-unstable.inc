@@ -1,16 +1,8 @@
 
 # FSO stuff
-SRCREV_pn-frameworkd = "${AUTOREV}"
-SRCREV_pn-frameworkd-config-shr = "${AUTOREV}"
-SRCREV_pn-libeflvala = "${AUTOREV}"
-SRCREV_pn-frameworkd-config-shr = "${AUTOREV}"
-SRCREV_pn-frameworkd-config-shr_FSO_REV = "${AUTOREV}"
-SRCREV_pn-frameworkd-config-shr_SHR_REV = "${AUTOREV}"
-SRCREV_pn-dbus-hlid = "${AUTOREV}"
-SRCREV_pn-vala-dbus-binding-tool-native = "${AUTOREV}"
-SRCREV_pn-libfso-glib = "${AUTOREV}"
-SRCREV_pn-fso-specs = "${AUTOREV}"
-SRCPV_pn-paroli-elementary = "6455e99d6c4c979ff19cd3d97d02ad6cab8efcea"
+# we always want fso-autorev for unstable
+require conf/distro/include/fso-autorev.inc
+
 SRCREV_pn-fsoraw = "${AUTOREV}"
 
 # SHR stuff
