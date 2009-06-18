@@ -4,7 +4,7 @@ DEPENDS = "edje-native eet-native"
 RDEPENDS = "e-wm"
 RRECOMMENDS = "places gnome-icon-theme"
 
-PR = "r9"
+PR = "r11"
 
 SRC_URI = " \
           file://configs \
