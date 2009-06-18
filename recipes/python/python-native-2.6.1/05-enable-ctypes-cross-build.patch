@@ -9,6 +9,7 @@ Index: Python-2.6.1/setup.py
                                           ffi_configfile):
                  from distutils.dir_util import mkpath
                  mkpath(ffi_builddir)
+-                config_args = []
 +                config_args = [] # '--host=%s' % os.environ["HOST_SYS"], ]
  
                  # Pass empty CFLAGS because we'll just append the resulting
