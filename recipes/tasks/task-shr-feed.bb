@@ -191,4 +191,6 @@ RDEPENDS_${PN} += "\
 		erminig \
 		qwo \
 		fso-apm \
+		fso-abyss \
+		fsousaged \
 "
