@@ -4,7 +4,6 @@ HOMEPAGE = "http://live.gnome.org/Libgee"
 SECTION = "libs"
 DEPENDS = "glib-2.0"
 LICENSE = "LGPL"
-DEFAULT_PREFERENCE = -1
 PV = "0.1.5+gitr${SRCREV}"
 PR = "r0"
 
