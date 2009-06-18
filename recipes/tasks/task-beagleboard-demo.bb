@@ -1,10 +1,10 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r9"
+PR = "r10"
 
 inherit task 
 
-ECONFIG ?= "places e-wm-config-angstrom e-wm-config-default"
+ECONFIG ?= "places e-wm-config-angstrom e-wm-config-angstrom-touchscreen e-wm-config-angstrom-widescreen e-wm-config-default"
 
 RDEPENDS_${PN} = "\
     task-proper-tools \
