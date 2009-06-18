@@ -1,0 +1,448 @@
+diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforge/dvb/projectx/common/Common.java
+--- src/net/sourceforge/dvb/projectx/common/Common.java	2007-03-24 21:19:33.000000000 +0100
++++ src/net/sourceforge/dvb/projectx/common/Common.java	2009-06-17 22:58:54.000000000 +0200
+@@ -81,8 +81,8 @@
+ public final class Common extends Object {
+ 
+ 	/* main version index */
+-	private static String version_name = "ProjectX 0.90.4.00.b30";
+-	private static String version_date = "16.05.2009";
++	private static String version_name = "ProjectX 0.90.4.00.b30.Dreambox";
++	private static String version_date = "18.06.2009";
+ 
+ 	private static String line_separator = System.getProperty("line.separator");
+ 
+@@ -235,10 +235,13 @@
+ 	{
+ 		StatusString = Resource.getString("run.status");
+ 
++		System.out.println("scan");
+ 		scan = new Scan();
+-		subpicture = new Subpicture();
+-		teletext = new Teletext();
++		System.out.println("subtitle");
++//		subpicture = new Subpicture();
++		System.out.println("mpv decoder");
+ 		mpvdecoder = new MpvDecoder();
++		System.out.println("color models");
+ 		subpicture_colormodels = loadColorModels();
+ 	}
+ 
+@@ -288,8 +291,8 @@
+ 		guiInterface = new GuiInterface(showGUI);
+ 
+ 		//load gui
+-		if (showGUI())
+-			getGuiInterface().loadGui();
++//		if (showGUI())
++//			getGuiInterface().loadGui();
+ 	}
+ 
+ 	/**
+@@ -1414,7 +1417,7 @@
+ 	{
+ 		List list = new ArrayList();
+ 
+-		list.add("Java Environment");
++/*		list.add("Java Environment");
+ 		list.add(getDateAndTime());
+ 		list.add(Resource.getString("javaev.java.version") + "\t" + System.getProperty("java.version"));
+ 		list.add(Resource.getString("javaev.java.vendor") + "\t" + System.getProperty("java.vendor"));
+@@ -1441,7 +1444,7 @@
+ 		list.add(Resource.getString("javaev.java.user.lang") + "\t" + Resource.getChosenLanguage());
+ 		list.add(Resource.getString("javaev.java.user.name") + "\t" + System.getProperty("user.name"));
+ 		list.add(Resource.getString("javaev.java.user.home") + "\t" + System.getProperty("user.home"));
+-
++*/
+ 		return list.toArray();
+ 	}
+ 
+@@ -1533,7 +1536,9 @@
+ 
+ 		ProcessedPercent = percent;
+ 
+-		getGuiInterface().updateProgressBar(ProcessedPercent);
++		System.out.println("[PROGRESS] " + ProcessedPercent);
++
++//		getGuiInterface().updateProgressBar(ProcessedPercent);
+ 	}
+ 
+ 	/**
+@@ -1544,7 +1549,8 @@
+ 	public static void updateProgressBar(String str)
+ 	{
+ 		setStatusString(str);
+-		getGuiInterface().updateProgressBar(str);
++		System.out.println("[PROGRESS] " + str);
++//		getGuiInterface().updateProgressBar(str);
+ 	}
+ 
+ 	/**
+diff -bur src/net/sourceforge/dvb/projectx/common/Start.java src/net/sourceforge/dvb/projectx/common/Start.java
+--- src/net/sourceforge/dvb/projectx/common/Start.java	2007-03-24 21:19:33.000000000 +0100
++++ src/net/sourceforge/dvb/projectx/common/Start.java	2009-06-17 22:53:16.000000000 +0200
+@@ -209,8 +209,10 @@
+ 			/**
+ 			 * environment
+ 			 */
++			System.out.println("getJAVAEv");
+ 			environment = Common.getJavaEV(Common.getSettings().getInifile());
+ 
++			System.out.println("print");
+ 			for (int i = 0; i < environment.length; i++)
+ 				System.out.println(environment[i].toString());
+ 
+@@ -255,11 +257,12 @@
+ 			/**
+ 			 * planned to disable ftp only, if commons-net is missing
+ 			 */
+-			if ((str = Common.checkLibraryAccess()) != null)
++/*			if ((str = Common.checkLibraryAccess()) != null)
+ 			{
+ 				throw new Exception(str);
+ 				//System.out.println(ret);
+ 			}
++*/
+ 
+ 			System.out.println("Loading AC3 frames...");
+ 
+@@ -300,10 +303,7 @@
+ 
+ 			else
+ 			{
+-				if (!Common.getGuiInterface().isAvailable())
+-					System.out.println("Stopped! Can't start GUI, Classes not available...");
+-
+-				else if (!Common.isCollectionListEmpty())
++				if (!Common.isCollectionListEmpty())
+ 				{
+ 					Common.getGuiInterface().addCollectionAtEnd();
+ 					Common.getGuiInterface().showActiveCollection(0);
+diff -bur -x'*.o' /dream/sources/cvs/projectx/Project-X/src/net/sourceforge/dvb/projectx/parser/MainProcess.java src/net/sourceforge/dvb/projectx/parser/MainProcess.java
+--- src/net/sourceforge/dvb/projectx/parser/MainProcess.java	2009-03-03 11:46:58.000000000 +0100
++++ src/net/sourceforge/dvb/projectx/parser/MainProcess.java	2009-06-18 08:26:26.000000000 +0200
+@@ -1162,9 +1162,9 @@
+ 
+ 		job_processing.setSplitSize(splitsize);
+ 
+-		try {
+-			Toolkit.getDefaultToolkit().beep();
+-		} catch (Exception e) {}
++// 		try {
++// 			Toolkit.getDefaultToolkit().beep();
++// 		} catch (Exception e) {}
+ 
+ 	}
+ 
+diff -bur src/net/sourceforge/dvb/projectx/video/MpvDecoder.java src/net/sourceforge/dvb/projectx/video/MpvDecoder.java
+--- src/net/sourceforge/dvb/projectx/video/MpvDecoder.java	2007-01-25 21:06:16.000000000 +0100
++++ src/net/sourceforge/dvb/projectx/video/MpvDecoder.java	2009-06-17 23:03:59.000000000 +0200
+@@ -72,8 +72,8 @@
+ 
+ public class MpvDecoder extends Object {
+ 
+-	private IDCTRefNative idct;
+-	private IDCTSseNative idctsse;
++//	private IDCTRefNative idct;
++//	private IDCTSseNative idctsse;
+ 
+ 	private int preview_horizontal_size = 512;
+ 	private int preview_vertical_size = 288;
+@@ -134,14 +134,14 @@
+ 	{
+ 		Arrays.fill(pixels2, 0xFF505050);
+ 
+-		idct = new IDCTRefNative();
+-		idctsse = new IDCTSseNative();
++//		idct = new IDCTRefNative();
++//		idctsse = new IDCTSseNative();
+ 
+-		if (IDCTRefNative.isLibraryLoaded())
+-			idct.init();
++//		if (IDCTRefNative.isLibraryLoaded())
++//			idct.init();
+ 
+-		if (IDCTRefNative.isLibraryLoaded() || IDCTSseNative.isLibraryLoaded())
+-			acceleration = true;
++//		if (IDCTRefNative.isLibraryLoaded() || IDCTSseNative.isLibraryLoaded())
++//			acceleration = true;
+ 	}
+ 
+ 	/**
+@@ -184,35 +184,35 @@
+ private int ERROR_CODE1=0;
+ 
+ /* extension start code IDs */
+-final int SEQUENCE_EXTENSION_ID=1;
+-final int SEQUENCE_DISPLAY_EXTENSION_ID=2;
+-final int QUANT_MATRIX_EXTENSION_ID=3;
+-final int COPYRIGHT_EXTENSION_ID=4;
+-final int PICTURE_DISPLAY_EXTENSION_ID=7;
+-final int PICTURE_CODING_EXTENSION_ID=8;
+-final int ZIG_ZAG=0;
+-final int MB_WEIGHT=32;
+-final int MB_CLASS4=64;
+-final int MC_FIELD=1;
+-final int MC_FRAME=2;
+-final int MC_16X8=2;
+-final int MC_DMV=3;
+-final int MV_FIELD=0;
+-final int MV_FRAME=1;
+-final int I_TYPE=1;
+-final int P_TYPE=2;
+-final int B_TYPE=3;
+-final int TOP_FIELD=1;
+-final int BOTTOM_FIELD=2;
+-final int FRAME_PICTURE=3;
+-final int MACROBLOCK_INTRA=1;
+-final int MACROBLOCK_PATTERN=2;
+-final int MACROBLOCK_MOTION_BACKWARD=4;
+-final int MACROBLOCK_MOTION_FORWARD=8;
+-final int MACROBLOCK_QUANT=16;
+-final int CHROMA420=1;
+-final int CHROMA422=2;
+-final int CHROMA444=3;
++final byte SEQUENCE_EXTENSION_ID=1;
++final byte SEQUENCE_DISPLAY_EXTENSION_ID=2;
++final byte QUANT_MATRIX_EXTENSION_ID=3;
++final byte COPYRIGHT_EXTENSION_ID=4;
++final byte PICTURE_DISPLAY_EXTENSION_ID=7;
++final byte PICTURE_CODING_EXTENSION_ID=8;
++final byte ZIG_ZAG=0;
++final byte MB_WEIGHT=32;
++final byte MB_CLASS4=64;
++final byte MC_FIELD=1;
++final byte MC_FRAME=2;
++final byte MC_16X8=2;
++final byte MC_DMV=3;
++final byte MV_FIELD=0;
++final byte MV_FRAME=1;
++final byte I_TYPE=1;
++final byte P_TYPE=2;
++final byte B_TYPE=3;
++final byte TOP_FIELD=1;
++final byte BOTTOM_FIELD=2;
++final byte FRAME_PICTURE=3;
++final byte MACROBLOCK_INTRA=1;
++final byte MACROBLOCK_PATTERN=2;
++final byte MACROBLOCK_MOTION_BACKWARD=4;
++final byte MACROBLOCK_MOTION_FORWARD=8;
++final byte MACROBLOCK_QUANT=16;
++final byte CHROMA420=1;
++final byte CHROMA422=2;
++final byte CHROMA444=3;
+ final int IDCT_CLIP_TABLE_OFFSET=512;
+ 
+ private int q_scale_type=0;  //1
+@@ -790,18 +790,18 @@
+ 	{-1,0},
+ 	{MACROBLOCK_MOTION_FORWARD,3},
+ 	{MACROBLOCK_PATTERN,2}, {MACROBLOCK_PATTERN,2},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,1}, 
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,1},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,1}, 
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,1}
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),1}, 
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),1},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),1}, 
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),1}
+ };
+ 
+ /* Table B-3, macroblock_type in P-pictures, codes 000001..00011x */
+ final byte PMBtab1[][] = {
+ 	{-1,0},
+-	{MACROBLOCK_QUANT|MACROBLOCK_INTRA,6},
+-	{MACROBLOCK_QUANT|MACROBLOCK_PATTERN,5}, {MACROBLOCK_QUANT|MACROBLOCK_PATTERN,5},
+-	{MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,5}, {MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,5},
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_INTRA),6},
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_PATTERN),5}, {(byte)(MACROBLOCK_QUANT|MACROBLOCK_PATTERN),5},
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),5}, {(byte)(MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),5},
+ 	{MACROBLOCK_INTRA,5}, {MACROBLOCK_INTRA,5}
+ };
+ 
+@@ -809,32 +809,32 @@
+ final byte BMBtab0[][] = {
+ 	{-1,0}, 
+ 	{-1,0},
+-	{MACROBLOCK_MOTION_FORWARD,4},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,4},
+-	{MACROBLOCK_MOTION_BACKWARD,3}, 
+-	{MACROBLOCK_MOTION_BACKWARD,3},
+-	{MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,3}, 
+-	{MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,3},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD,2}, 
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD,2},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD,2}, 
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD,2},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,2},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,2},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,2},
+-	{MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,2}
++	{(byte)(MACROBLOCK_MOTION_FORWARD),4},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),4},
++	{(byte)(MACROBLOCK_MOTION_BACKWARD),3}, 
++	{(byte)(MACROBLOCK_MOTION_BACKWARD),3},
++	{(byte)(MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),3}, 
++	{(byte)(MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),3},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD),2}, 
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD),2},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD),2}, 
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD),2},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),2},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),2},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),2},
++	{(byte)(MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),2}
+ };
+ 
+ /* Table B-4, macroblock_type in B-pictures, codes 000001..00011x */
+ final byte BMBtab1[][] = {
+ 	{-1,0},
+-	{MACROBLOCK_QUANT|MACROBLOCK_INTRA,6},
+-	{MACROBLOCK_QUANT|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,6},
+-	{MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN,6},
+-	{MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,5},
+-	{MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN,5},
+-	{MACROBLOCK_INTRA,5}, 
+-	{MACROBLOCK_INTRA,5}
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_INTRA),6},
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),6},
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_PATTERN),6},
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),5},
++	{(byte)(MACROBLOCK_QUANT|MACROBLOCK_MOTION_FORWARD|MACROBLOCK_MOTION_BACKWARD|MACROBLOCK_PATTERN),5},
++	{(byte)(MACROBLOCK_INTRA),5}, 
++	{(byte)(MACROBLOCK_INTRA),5}
+ };
+ 
+ final double frame_rate_Table[] = {
+@@ -2308,33 +2308,33 @@
+ 		//form_predictions(bx, by, macroblock_type, motion_type, PMV, motion_vertical_field_select, dmvector);
+ 
+ 
+-	if (IDCTSseNative.isLibraryLoaded() && isAccelerated())
+-	{
+-		/* copy or add block data into picture */
+-		for (comp=0; comp<block_count; comp++)
+-		{
+-			/* ISO/IEC 13818-2 section Annex A: inverse DCT */
+-			idctsse.referenceIDCT(block[comp]);
+-
+-			/* ISO/IEC 13818-2 section 7.6.8: Adding prediction and coefficient data */
+-			Add_Block(comp, bx, by, dct_type, (macroblock_type[0] & MACROBLOCK_INTRA)==0);
+-		}
+-	}
+-
+-	else if (IDCTRefNative.isLibraryLoaded() && isAccelerated())
+-	{
+-		/* copy or add block data into picture */
+-		for (comp=0; comp<block_count; comp++)
+-		{
+-			/* ISO/IEC 13818-2 section Annex A: inverse DCT */
+-			idct.referenceIDCT(block[comp]);
+-
+-			/* ISO/IEC 13818-2 section 7.6.8: Adding prediction and coefficient data */
+-			Add_Block(comp, bx, by, dct_type, (macroblock_type[0] & MACROBLOCK_INTRA)==0);
+-		}
+-	}
+-
+-	else
++// 	if (IDCTSseNative.isLibraryLoaded() && isAccelerated())
++// 	{
++// 		/* copy or add block data into picture */
++// 		for (comp=0; comp<block_count; comp++)
++// 		{
++// 			/* ISO/IEC 13818-2 section Annex A: inverse DCT */
++// 			idctsse.referenceIDCT(block[comp]);
++// 
++// 			/* ISO/IEC 13818-2 section 7.6.8: Adding prediction and coefficient data */
++// 			Add_Block(comp, bx, by, dct_type, (macroblock_type[0] & MACROBLOCK_INTRA)==0);
++// 		}
++// 	}
++// 
++// 	else if (IDCTRefNative.isLibraryLoaded() && isAccelerated())
++// 	{
++// 		/* copy or add block data into picture */
++// 		for (comp=0; comp<block_count; comp++)
++// 		{
++// 			/* ISO/IEC 13818-2 section Annex A: inverse DCT */
++// 			idct.referenceIDCT(block[comp]);
++// 
++// 			/* ISO/IEC 13818-2 section 7.6.8: Adding prediction and coefficient data */
++// 			Add_Block(comp, bx, by, dct_type, (macroblock_type[0] & MACROBLOCK_INTRA)==0);
++// 		}
++// 	}
++//
++// 	else
+ 	{
+ 		/* copy or add block data into picture */
+ 		for (comp=0; comp<block_count; comp++)
+diff -bur src/net/sourceforge/dvb/projectx/xinput/DirType.java src/net/sourceforge/dvb/projectx/xinput/DirType.java
+--- src/net/sourceforge/dvb/projectx/xinput/DirType.java	2005-12-17 21:47:40.000000000 +0100
++++ src/net/sourceforge/dvb/projectx/xinput/DirType.java	2009-06-17 22:53:16.000000000 +0200
+@@ -45,8 +45,8 @@
+ 	/**
+ 	 * Directory on a ftp server
+ 	 */
+-	public final static DirType FTP_DIR = new DirType(1, "FTP_DIR",
+-			net.sourceforge.dvb.projectx.xinput.ftp.XInputDirectoryImpl.class);
++//	public final static DirType FTP_DIR = new DirType(1, "FTP_DIR",
++//			net.sourceforge.dvb.projectx.xinput.ftp.XInputDirectoryImpl.class);
+ 
+ 	/**
+ 	 * Directory on a harddisk of a topfield receiver in raw format
+diff -bur src/net/sourceforge/dvb/projectx/xinput/FileType.java src/net/sourceforge/dvb/projectx/xinput/FileType.java
+--- src/net/sourceforge/dvb/projectx/xinput/FileType.java	2005-12-17 21:47:40.000000000 +0100
++++ src/net/sourceforge/dvb/projectx/xinput/FileType.java	2009-06-17 22:53:16.000000000 +0200
+@@ -45,8 +45,8 @@
+ 	/**
+ 	 * File on a ftp server
+ 	 */
+-	public final static FileType FTP = new FileType(1, "FTP",
+-			net.sourceforge.dvb.projectx.xinput.ftp.XInputFileImpl.class);
++//	public final static FileType FTP = new FileType(1, "FTP",
++//			net.sourceforge.dvb.projectx.xinput.ftp.XInputFileImpl.class);
+ 
+ 	/**
+ 	 * File on a harddisk of a topfield receiver in raw format
+diff -bur src/net/sourceforge/dvb/projectx/xinput/XInputStream.java src/net/sourceforge/dvb/projectx/xinput/XInputStream.java
+--- src/net/sourceforge/dvb/projectx/xinput/XInputStream.java	2006-03-28 20:44:30.000000000 +0200
++++ src/net/sourceforge/dvb/projectx/xinput/XInputStream.java	2009-06-17 22:53:16.000000000 +0200
+@@ -31,8 +31,6 @@
+ import java.io.InputStream;
+ import java.io.BufferedInputStream;
+ 
+-import net.sourceforge.dvb.projectx.xinput.ftp.XInputFileImpl;
+-
+ import net.sourceforge.dvb.projectx.common.Common;
+ import net.sourceforge.dvb.projectx.common.Keys;
+ 
+@@ -42,7 +40,6 @@
+ 
+ 	private byte[] buffer = new byte[1];
+ 
+-	private XInputFileImpl xInputFile = null;
+ 
+ 	/**
+ 	 * Create stream, which is able to handle special needs of the xinput package.
+@@ -55,9 +52,6 @@
+ 		super(Common.getSettings().getBooleanProperty(Keys.KEY_additionalInputBuffer) ? new BufferedInputStream(aIs, 1048576) : aIs);
+ 	}
+ 
+-	public void setFtpFile(XInputFileImpl aIf) {
+-		xInputFile = aIf;
+-	}
+ 
+ 	/**
+ 	 * Takes care, that always the full amount of data is read (if possible).
+@@ -143,12 +137,6 @@
+ 	public final void close() throws IOException {
+ 		if (debug) System.out.println("Enter XInputStream.close()");
+ 
+-		if (xInputFile != null)
+-		{
+-			xInputFile.randomAccessClose();
+-			xInputFile = null;
+-		}
+-
+ 		super.close();
+ 		if (debug) System.out.println("Leave XInputStream.close()");
+ 	}
