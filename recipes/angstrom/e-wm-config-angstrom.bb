@@ -4,6 +4,8 @@ DEPENDS = "edje-native eet-native"
 RDEPENDS = "e-wm"
 RRECOMMENDS = "places gnome-icon-theme"
 
+PACKAGES_DYNAMIC = "e-wm-config-angstrom*"
+
 PR = "r11"
 
 SRC_URI = " \
