@@ -20,6 +20,7 @@ RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
 RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
 	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
 RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
+RDEPENDS_append_dm500hd = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
 # enigma2 and enigma2-plugins produce enigma2-plugin-*.
@@ -41,6 +42,9 @@ RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 RDEPENDS_enigma2-plugin-systemplugins-softwaremanager = "twisted-web"
 RCONFLICTS_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
 RREPLACES_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
+
+DESCRIPTION_append_enigma2-plugin-extenstions-modem = "opens a menu to connect to internet via builtin modem."
+RDEPENDS_enigma2-plugin-extensions-modem = "dreambox-modem-ppp-scripts"
 
 PN = "enigma2"
 PR = "r0"

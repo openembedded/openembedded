@@ -30,7 +30,6 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-pictureplayer \
 	enigma2-plugin-extensions-mediaplayer \
 	enigma2-plugin-systemplugins-hotplug \
-	enigma2-plugin-systemplugins-networkwizard \
 	enigma2-streamproxy ethtool \
 	enigma2-defaultservices \
 	twisted-web2 twisted python-crypt python-crypto \
@@ -88,7 +87,7 @@ MODEM_SUPPORT_R = "kernel-module-crc-ccitt kernel-module-ppp-async \
 	kernel-module-slhc update-modules"
 
 WLAN_SUPPORT = "wireless-tools wlan-rt73 zd1211b wpa-supplicant"
-WLAN_SUPPORT_R = "enigma2-plugin-systemplugins-wirelesslan"
+WLAN_SUPPORT_R = "enigma2-plugin-systemplugins-wirelesslan 	enigma2-plugin-systemplugins-networkwizard"
 
 WLAN_MADWIFI = "madwifi-ng"
 WLAN_MADWIFI_R = "madwifi-ng-modules madwifi-ng-tools"
@@ -119,6 +118,10 @@ OPENDREAMBOX_COMMON_MACHINE_D_dm7025 += ""
 OPENDREAMBOX_COMMON_MACHINE_dm800 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL} ${WLAN_SUPPORT}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm800 += "${OPENDREAMBOX_EXPERIMENTAL_R} ${WLAN_SUPPORT_R} enigma2-plugin-systemplugins-videomode"
 OPENDREAMBOX_COMMON_MACHINE_D_dm800 += ""
+
+OPENDREAMBOX_COMMON_MACHINE_dm500hd += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm500hd += "${OPENDREAMBOX_EXPERIMENTAL_R} enigma2-plugin-systemplugins-videomode"
+OPENDREAMBOX_COMMON_MACHINE_D_dm500hd += ""
 
 OPENDREAMBOX_COMMON_MACHINE_dm8000 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL} ${WLAN_SUPPORT} ${WLAN_MADWIFI}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm8000 += "${OPENDREAMBOX_EXPERIMENTAL_R} \

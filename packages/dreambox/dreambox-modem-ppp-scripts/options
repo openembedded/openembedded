@@ -1,0 +1,18 @@
+/dev/tts/2 2400
+
+nocrtscts
+nocdtrcts
+local
+
+lock
+defaultroute
+usepeerdns
+asyncmap 0
+mtu 552
+mru 552
+user arcor
+
+#hangup script
+disconnect /etc/ppp/disconnect.modem
+#dial script
+connect "/etc/ppp/dial.modem 01920793"

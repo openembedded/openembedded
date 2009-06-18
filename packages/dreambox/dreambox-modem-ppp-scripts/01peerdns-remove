@@ -1,0 +1,5 @@
+#!/bin/sh
+if [ -f /etc/resolv.conf-back ];  then
+		rm /etc/resolv.conf
+		mv /etc/resolv.conf-back /etc/resolv.conf
+fi
