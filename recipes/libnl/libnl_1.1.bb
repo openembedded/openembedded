@@ -13,6 +13,7 @@ SRC_URI = "\
   file://local-includes.patch;patch=1 \
   file://fix-includes.patch;patch=1 \
   file://respect-ldflags.patch;patch=1 \
+  file://netlink-local-fix.patch;patch=1 \
 "
 
 do_stage () {
