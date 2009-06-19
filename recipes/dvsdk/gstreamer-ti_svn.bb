@@ -5,7 +5,7 @@ inherit autotools
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
 # Fetch source from svn repo
-SRCREV = "225"
+SRCREV = "285"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
 	"
 
@@ -52,9 +52,9 @@ PLATFORM_beagleboard		= "omap3530"
 
 export PLATFORM
 
-CROSS_COMPILE=${META_SDK_PATH}/bin/${TARGET_PREFIX}
-CSTOOL_DIR=${META_SDK_PATH}
-MVTOOL_DIR=${META_SDK_PATH}
+CROSS_COMPILE = "${CROSS_DIR}/bin/${TARGET_PREFIX}"
+CSTOOL_DIR = "${CROSS_DIR}"
+MVTOOL_DIR = "${CROSS_DIR}"
 export CROSS_COMPILE
 export CSTOOL_DIR
 export MVTOOL_DIR
