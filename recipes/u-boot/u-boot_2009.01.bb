@@ -29,6 +29,3 @@ SRC_URI_append_at91sam9g20ek = "\
            file://at91sam9g20-fix-config.patch;patch=1 \
            "
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-PARALLEL_MAKE = ""
-

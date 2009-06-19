@@ -87,7 +87,6 @@ SRC_URI_append_c7x0 = "file://pdaXrom-u-boot.patch;patch=1 \
                        "
 S = "${WORKDIR}/git"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_configure_prepend_akita() {
         sed -i s:ROOT_FLASH_SIZE:${ROOT_FLASH_SIZE}:g ${S}/include/configs/akita.h
