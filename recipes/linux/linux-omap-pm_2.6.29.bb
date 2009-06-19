@@ -5,8 +5,6 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRCREV = "cbfc461bd5c4d0aff8501dd82db18146a22f49cf"
 
 PV = "2.6.29-pm1+gitr${SRCREV}"

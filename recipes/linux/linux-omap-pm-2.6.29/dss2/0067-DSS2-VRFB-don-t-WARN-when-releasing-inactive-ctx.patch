@@ -1,0 +1,29 @@
+From c474849d7aff57d578c639f63a9c3cbdec0501dd Mon Sep 17 00:00:00 2001
+From: Imre Deak <imre.deak@nokia.com>
+Date: Mon, 11 May 2009 15:15:52 +0200
+Subject: [PATCH 67/69] DSS2: VRFB: don't WARN when releasing inactive ctx
+
+Releasing an inactive context is valid, it can happen when
+the application first blanks the screen then frees the
+framebuffer.
+
+Signed-off-by: Imre Deak <imre.deak@nokia.com>
+---
+ arch/arm/plat-omap/vrfb.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vrfb.c b/arch/arm/plat-omap/vrfb.c
+index 29f04e2..34395c2 100644
+--- a/arch/arm/plat-omap/vrfb.c
++++ b/arch/arm/plat-omap/vrfb.c
+@@ -176,7 +176,6 @@ void omap_vrfb_release_ctx(struct vrfb *vrfb)
+ 		BUG();
+ 		return;
+ 	}
+-	WARN_ON(!(ctx_map_active & (1 << ctx)));
+ 	clear_bit(ctx, &ctx_map_active);
+ 	clear_bit(ctx, &ctx_map);
+ 
+-- 
+1.6.2.4
+
