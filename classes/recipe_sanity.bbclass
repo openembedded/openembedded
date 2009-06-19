@@ -1,3 +1,14 @@
+def __note(msg, d):
+    import bb
+    bb.note("%s: recipe_sanity: %s" % (d.getVar("P", 1), msg))
+
+def var_renames_overwrite(cfgdata, d):
+    renames = d.getVar("__recipe_sanity_renames", 0)
+    if renames:
+        for (key, newkey, oldvalue, newvalue) in renames:
+            if oldvalue != newvalue and oldvalue != cfgdata.get(newkey):
+                __note("rename of variable '%s' to '%s' overwrote existing value '%s' with '%s'." % (key, newkey, oldvalue, newvalue), d)
+
 def incorrect_nonempty_PACKAGES(cfgdata, d):
     import bb.data
     if bb.data.inherits_class("native", d) or \
@@ -19,7 +30,7 @@ def can_use_autotools_base(cfgdata, d):
     for clsfile in d.getVar("__inherit_cache", 0):
         (base, _) = os.path.splitext(os.path.basename(clsfile))
         if cfg.find("%s_do_configure" % base) != -1:
-            bb.note("%s: recipe_sanity: autotools_base usage needs verification, spotted %s" % (d.getVar("P", 1), "%s_do_configure" % base))
+            __note("autotools_base usage needs verification, spotted %s_do_configure" % base, d)
 
     return True
 
@@ -34,7 +45,8 @@ def can_remove_FILESPATH(cfgdata, d):
     filespath = [os.path.normpath(f) for f in filespath if os.path.exists(f)]
     for fp in filespath:
         if not fp in expectedpaths:
-            # bb.note("Path %s in FILESPATH not in the expected paths %s" % (fp, expectedpaths))
+            # __note("Path %s in FILESPATH not in the expected paths %s" %
+            # (fp, expectedpaths), d)
             return False
     return expected != unexpanded
 
@@ -74,7 +86,7 @@ def can_remove_others(p, cfgdata, d):
 
         if unexpanded != cfgunexpanded and \
            cfgexpanded == expanded:
-           bb.note("%s: recipe_sanity: candidate for removal of %s" % (p, k))
+           __note("candidate for removal of %s" % k, d)
            bb.debug(1, "%s: recipe_sanity:   cfg's '%s' and d's '%s' both expand to %s" %
                        (p, cfgunexpanded, unexpanded, expanded))
 
@@ -92,9 +104,10 @@ python do_recipe_sanity () {
 
     for (func, msg) in sanitychecks:
         if func(cfgdata, d):
-            bb.note("%s: recipe_sanity: %s" % (p, msg))
+            __note(msg, d)
 
     can_remove_others(p, cfgdata, d)
+    var_renames_overwrite(cfgdata, d)
 }
 do_recipe_sanity[nostamp] = "1"
 #do_recipe_sanity[recrdeptask] = "do_recipe_sanity"
@@ -122,5 +135,18 @@ python recipe_sanity_eh () {
         cfgdata[k] = d.getVar(k, 0)
 
     d.setVar("__recipe_sanity_cfgdata", cfgdata)
+
+    # Sick, very sick..
+    from bb.data_smart import DataSmart
+    old = DataSmart.renameVar
+    def myrename(self, key, newkey):
+        oldvalue = self.getVar(newkey, 0)
+        old(self, key, newkey)
+        newvalue = self.getVar(newkey, 0)
+        if oldvalue:
+            renames = self.getVar("__recipe_sanity_renames", 0) or set()
+            renames.add((key, newkey, oldvalue, newvalue))
+            self.setVar("__recipe_sanity_renames", renames)
+    DataSmart.renameVar = myrename
 }
 addhandler recipe_sanity_eh
