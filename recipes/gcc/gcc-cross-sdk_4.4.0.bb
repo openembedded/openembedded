@@ -4,7 +4,7 @@ require gcc-${PV}.inc
 require gcc-cross-sdk.inc
 require gcc-configure-sdk.inc
 require gcc-package-sdk.inc
-PR = "r0"
+PR = "${INC_PR}.1"
 
 DEPENDS += "gmp-native mpfr-native"
 
