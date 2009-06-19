@@ -2,7 +2,7 @@ DESCRIPTION = "DMAI for TI ARM/DSP processors"
 
 # NOTE: Use Brijesh' DMAI development branch. The URL *must* be updated once
 # we have stable DMAI 2.x on gforge.
-SRCREV = "166"
+SRCREV = "189"
 SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRIJESH_GIT_031809;proto=https;user=anonymous;pswd='' \
 		file://loadmodules-ti-dmai-dm355_al.sh \
 		file://loadmodules-ti-dmai-dm6446_al.sh \
