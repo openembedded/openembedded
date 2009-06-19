@@ -7,11 +7,11 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "9d76f46e79302058464b569dbad9af8c594dbe53"
+SRCREV = "cbfc461bd5c4d0aff8501dd82db18146a22f49cf"
 
-PV = "2.6.29-pm0+gitr${SRCREV}"
+PV = "2.6.29-pm1+gitr${SRCREV}"
 
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm-2.6.29 \
 	   file://defconfig"
 
 SRC_URI_append = " \
@@ -74,6 +74,24 @@ SRC_URI_append = " \
            file://dss2/0051-DSS2-VRAM-use-debugfs-not-procfs.patch;patch=1 \
            file://dss2/0052-DSS2-VRAM-fix-section-mismatch-warning.patch;patch=1 \
            file://dss2/0053-DSS2-disable-LCD-DIGIT-before-resetting-DSS.patch;patch=1 \
+           file://dss2/0054-DSS2-DSI-more-error-handling.patch;patch=1 \
+           file://dss2/0055-DSS2-Added-global-alpha-support.patch;patch=1 \
+           file://dss2/0056-DSS2-Rotation-attrs-for-YUV-need-not-to-be-reversed.patch;patch=1 \
+           file://dss2/0057-DSS2-Documentation-update-for-new-sysfs-entries-in.patch;patch=1 \
+           file://dss2/0058-DSS2-Don-t-touch-plane-coordinates-when-changing-fb.patch;patch=1 \
+           file://dss2/0059-DSS2-DSI-configure-ENTER-EXIT_HS_MODE_LATENCY.patch;patch=1 \
+           file://dss2/0060-DSS2-Avoid-div-by-zero-when-calculating-required-fc.patch;patch=1 \
+           file://dss2/0061-DSS2-VRFB-save-restore-context.patch;patch=1 \
+           file://dss2/0062-DSS2-VRAM-Fix-indentation.patch;patch=1 \
+           file://dss2/0063-DSS2-fix-the-usage-of-get_last_off_on_transaction_i.patch;patch=1 \
+           file://dss2/0064-VRFB-fix-debug-messages.patch;patch=1 \
+           file://dss2/0065-VRFB-add-suspend-resume-functionality.patch;patch=1 \
+           file://dss2/0066-DSS2-DSI-tune-the-timings-to-be-more-relaxed.patch;patch=1 \
+           file://dss2/0067-DSS2-VRFB-don-t-WARN-when-releasing-inactive-ctx.patch;patch=1 \
+           file://dss2/0068-DSS2-Swap-field-offset-values-w-VRFB-rotation.patch;patch=1 \
+           file://dss2/0069-DSS2-OMAP3EVM-Added-DSI-powerup-and-powerdown-func.patch;patch=1 \
+           file://dss2/0070-DSS2-fix-irq1.diff;patch=1 \
+           file://dss2/0071-DSS2-fix-irq2.diff;patch=1 \
            file://dss2/merge-fixups.diff;patch=1 \
            file://overo-cpufreq.diff;patch=1 \
            file://register-all-OPPs.diff;patch=1 \
