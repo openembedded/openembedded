@@ -1,10 +1,9 @@
 DESCRIPTION = "LoWPAN utilities (IEEE802.15.4)"
 LICENSE = "GPL"
-SRCREV = "e9e80a2eefa7aadbbb15bef1519b373e2e907aa0"
-#SRC_URI = "git://github.com/lumag/lowpan-utils.git;protocol=git"
+SRCREV = "28639544fa2496ae6f82ef300ffc9e6543c4bcd0"
 SRC_URI = "git://linux-zigbee.git.sourceforge.net/gitroot/linux-zigbee;protocol=git"
 DEPENDS = "libnl bison-native flex-native"
-PR = "r6"
+PR = "r7"
 
 S = "${WORKDIR}/git"
 PACKAGES += "${PN}-tests-dbg"
