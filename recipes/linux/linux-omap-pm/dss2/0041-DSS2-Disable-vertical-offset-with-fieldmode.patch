@@ -1,7 +1,7 @@
 From 9bcac9b9e678f476c83b5679b1215b6bc946130a Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Mon, 20 Apr 2009 16:26:18 +0200
-Subject: [PATCH] DSS2: Disable vertical offset with fieldmode
+Subject: [PATCH 41/69] DSS2: Disable vertical offset with fieldmode
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -67,5 +67,5 @@ index 7e551c2..f15614b 100644
  		_dispc_set_vid_color_conv(plane, cconv);
  	}
 -- 
-1.5.6.5
+1.6.2.4
 

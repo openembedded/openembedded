@@ -1,7 +1,7 @@
 From a5129f272a48aa22629137c9c31e60eddb8c3f5d Mon Sep 17 00:00:00 2001
 From: Hardik Shah <hardik.shah@ti.com>
 Date: Fri, 17 Apr 2009 14:24:46 +0530
-Subject: [PATCH] DSS2: Provided proper exclusion for destination color keying and alpha blending.
+Subject: [PATCH 40/69] DSS2: Provided proper exclusion for destination color keying and alpha blending.
 
 OMAP does not support destination color key and alpha blending
 simultaneously.  So this patch does not allow the user
@@ -93,5 +93,5 @@ index 7965a84..108489c 100644
  	return size;
  }
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -1,7 +1,7 @@
 From facfd479bb6efad76eec1e74048cb7a31da7287d Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Mon, 6 Apr 2009 22:26:04 +0200
-Subject: [PATCH] DSS2: FB: remove unused var warning
+Subject: [PATCH 22/69] DSS2: FB: remove unused var warning
 
 Signed-off-by: Imre Deak <imre.deak@nokia.com>
 ---
@@ -23,5 +23,5 @@ index afe40a9..12ce0c3 100644
  			omap_vrfb_adjust_size(&w, &h, bytespp);
  
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -1,7 +1,7 @@
 From 4741076cae4f4284e1fff9a03f35475b8455af54 Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Wed, 1 Apr 2009 14:36:39 +0200
-Subject: [PATCH] DSS2: Add function to display object to get the backlight level
+Subject: [PATCH 08/69] DSS2: Add function to display object to get the backlight level
 
 This is needed by an upcoming patch that changes the backlight
 initialization to use the backlight level set by the bootloader.
@@ -35,5 +35,5 @@ index 6288353..6b702c7 100644
  
  struct device;
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -1,7 +1,7 @@
 From 07482193cccdfe9ede1f47d72790dfbe54343505 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Wed, 22 Apr 2009 10:26:06 +0300
-Subject: [PATCH] DSS2: OMAPFB: remove fb clearing code
+Subject: [PATCH 50/69] DSS2: OMAPFB: remove fb clearing code
 
 VRAM manager does the clearing now when the area is allocated.
 ---
@@ -49,5 +49,5 @@ index cd63740..76e7c6c 100644
  
  	rg->paddr = paddr;
 -- 
-1.5.6.5
+1.6.2.4
 

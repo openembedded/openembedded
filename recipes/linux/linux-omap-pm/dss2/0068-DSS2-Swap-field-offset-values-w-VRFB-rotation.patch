@@ -1,0 +1,65 @@
+From 0db37fa025f0eac64f9fdad49e310d7660f48944 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Tue, 12 May 2009 14:38:05 +0200
+Subject: [PATCH 68/69] DSS2: Swap field offset values w/ VRFB rotation
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+The field 0 and field 1 offset values were still incorrect when VRFB
+rotation is used. Swap them to put the fields into proper order.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/dss/dispc.c |   17 +++++++++++------
+ 1 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index 5fc9457..b0e4960 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -1182,6 +1182,11 @@ static void calc_vrfb_rotation_offset(u8 rotation, bool mirror,
+ 
+ 	DSSDBG("calc_rot(%d): scrw %d, %dx%d\n", rotation, screen_width,
+ 			width, height);
++
++	/*
++	 * field 0 = even field = bottom field
++	 * field 1 = odd field = top field
++	 */
+ 	switch (rotation + mirror * 4) {
+ 	case 0:
+ 	case 2:
+@@ -1194,11 +1199,11 @@ static void calc_vrfb_rotation_offset(u8 rotation, bool mirror,
+ 			width = width >> 1;
+ 	case 1:
+ 	case 3:
+-		*offset0 = 0;
++		*offset1 = 0;
+ 		if (fieldmode)
+-			*offset1 = screen_width * ps;
++			*offset0 = screen_width * ps;
+ 		else
+-			*offset1 = 0;
++			*offset0 = 0;
+ 
+ 		*row_inc = pixinc(1 + (screen_width - width) +
+ 				(fieldmode ? screen_width : 0),
+@@ -1216,11 +1221,11 @@ static void calc_vrfb_rotation_offset(u8 rotation, bool mirror,
+ 			width = width >> 1;
+ 	case 5:
+ 	case 7:
+-		*offset0 = 0;
++		*offset1 = 0;
+ 		if (fieldmode)
+-			*offset1 = screen_width * ps;
++			*offset0 = screen_width * ps;
+ 		else
+-			*offset1 = 0;
++			*offset0 = 0;
+ 		*row_inc = pixinc(1 - (screen_width + width) -
+ 				(fieldmode ? screen_width : 0),
+ 				ps);
+-- 
+1.6.2.4
+

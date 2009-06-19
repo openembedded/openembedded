@@ -1,7 +1,7 @@
 From 9c6de0fed6e8a598d026d348533fdf731b737d55 Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Mon, 20 Apr 2009 16:26:19 +0200
-Subject: [PATCH] DSS2: Don't enable fieldmode automatically
+Subject: [PATCH 42/69] DSS2: Don't enable fieldmode automatically
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -30,5 +30,5 @@ index f15614b..1c036c1 100644
  
  	if (ilace) {
 -- 
-1.5.6.5
+1.6.2.4
 

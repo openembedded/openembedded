@@ -1,7 +1,7 @@
 From db9314f01a207e256d545244d3d00dc4ce535280 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 2 Apr 2009 10:25:48 +0300
-Subject: [PATCH] DSS2: OMAP framebuffer driver
+Subject: [PATCH 04/69] DSS2: OMAP framebuffer driver
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
@@ -3399,5 +3399,5 @@ index b226bdf..96190b2 100644
  extern void omapfb_register_panel(struct lcd_panel *panel);
  extern void omapfb_write_first_pixel(struct omapfb_device *fbdev, u16 pixval);
 -- 
-1.5.6.5
+1.6.2.4
 

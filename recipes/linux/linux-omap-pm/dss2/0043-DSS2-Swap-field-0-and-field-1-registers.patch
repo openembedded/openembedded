@@ -1,7 +1,7 @@
 From 35e88797e93b107ba602dee1e2ac8ea761dccd4b Mon Sep 17 00:00:00 2001
 From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
 Date: Mon, 20 Apr 2009 16:26:20 +0200
-Subject: [PATCH] DSS2: Swap field 0 and field 1 registers
+Subject: [PATCH 43/69] DSS2: Swap field 0 and field 1 registers
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -166,5 +166,5 @@ index 1c036c1..9bab6cf 100644
  				(fieldmode ? 1 : 0),
  				ps);
 -- 
-1.5.6.5
+1.6.2.4
 
