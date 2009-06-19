@@ -2,9 +2,14 @@ def __note(msg, d):
     import bb
     bb.note("%s: recipe_sanity: %s" % (d.getVar("P", 1), msg))
 
-__recipe_sanity_badvars = "RDEPENDS RPROVIDES"
-def bad_vars(cfgdata, d):
-    for var in d.getVar("__recipe_sanity_badvars", 1).split():
+__recipe_sanity_badtargetvars = "RDEPENDS RPROVIDES"
+def bad_target_vars(cfgdata, d):
+    import bb.data
+    if bb.data.inherits_class("native", d) or \
+       bb.data.inherits_class("cross", d):
+        return
+
+    for var in d.getVar("__recipe_sanity_badtargetvars", 1).split():
         val = d.getVar(var, 0)
         if val and val != cfgdata.get(var):
             __note("%s should not be set, but is set to '%s'" % (var, val), d)
@@ -137,7 +142,7 @@ python do_recipe_sanity () {
     can_remove_others(p, cfgdata, d)
     var_renames_overwrite(cfgdata, d)
     req_vars(cfgdata, d)
-    bad_vars(cfgdata, d)
+    bad_target_vars(cfgdata, d)
 }
 do_recipe_sanity[nostamp] = "1"
 #do_recipe_sanity[recrdeptask] = "do_recipe_sanity"
