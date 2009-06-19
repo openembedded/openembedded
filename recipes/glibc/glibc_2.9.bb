@@ -54,6 +54,9 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 	   file://glibc-check_pf.patch;patch=1;pnum=0 \
            file://ldd-unbash.patch;patch=1 \
 	   file://glibc-arm-IO-acquire-lock-fix.diff;patch=1 \
+	   file://local-args6.diff;patch=1 \
+	   file://arm-check-pf.patch;patch=1 \
+	   file://arm-lowlevellock-include-tls.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
