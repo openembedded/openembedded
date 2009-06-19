@@ -1,3 +1,10 @@
+def incorrect_nonempty_PACKAGES(cfgdata, d):
+    import bb.data
+    if bb.data.inherits_class("native", d) or \
+       bb.data.inherits_class("cross", d):
+        if d.getVar("PACKAGES", 1):
+            return True
+
 def can_use_autotools_base(cfgdata, d):
     import bb
     cfg = d.getVar("do_configure", 1)
@@ -76,21 +83,29 @@ python do_recipe_sanity () {
     p = "%s %s %s" % (d.getVar("PN", 1), d.getVar("PV", 1), d.getVar("PR", 1))
 
     sanitychecks = [
-        (can_remove_FILESDIR, "removal of FILESDIR"),
-        (can_remove_FILESPATH, "removal of FILESPATH"),
-        #(can_use_autotools_base, "use of autotools_base"),
+        (can_remove_FILESDIR, "candidate for removal of FILESDIR"),
+        (can_remove_FILESPATH, "candidate for removal of FILESPATH"),
+        #(can_use_autotools_base, "candidate for use of autotools_base"),
+        (incorrect_nonempty_PACKAGES, "native or cross recipe with non-empty PACKAGES"),
     ]
     cfgdata = d.getVar("__recipe_sanity_cfgdata", 0)
 
     for (func, msg) in sanitychecks:
         if func(cfgdata, d):
-            bb.note("%s: recipe_sanity: candidate for %s" % (p, msg))
+            bb.note("%s: recipe_sanity: %s" % (p, msg))
 
     can_remove_others(p, cfgdata, d)
 }
 do_recipe_sanity[nostamp] = "1"
-do_recipe_sanity[recrdeptask] = "do_recipe_sanity"
+#do_recipe_sanity[recrdeptask] = "do_recipe_sanity"
 addtask recipe_sanity
+
+do_recipe_sanity_all[nostamp] = "1"
+do_recipe_sanity_all[recrdeptask] = "do_recipe_sanity"
+do_recipe_sanity_all () {
+    :
+}
+addtask recipe_sanity_all after do_recipe_sanity
 
 python recipe_sanity_eh () {
     from bb.event import getName
