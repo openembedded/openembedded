@@ -51,7 +51,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 	   file://zecke-sane-readelf.patch;patch=1 \
 	   file://glibc-2.3.5-fix-weak-alias-arm.patch;patch=1 \
 	   file://glibc-2.3.5-fix-weak-alias-arm-2.patch;patch=1 \
-           file://etc/ld.so.conf \
+	   file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
 # seems to fail on tls platforms
@@ -74,7 +74,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} \
-		--with-headers=${STAGING_INCDIR \
+		--with-headers=${STAGING_INCDIR} \
 		--without-selinux \
 		${GLIBC_EXTRA_OECONF}"
 
