@@ -1,7 +1,7 @@
 From 2c9edd6af31a812a9487dd8bc12322e105a29f44 Mon Sep 17 00:00:00 2001
 From: Hardik Shah <hardik.shah@ti.com>
 Date: Fri, 17 Apr 2009 09:42:36 +0530
-Subject: [PATCH] DSS2: Added support for querying color keying.
+Subject: [PATCH 37/69] DSS2: Added support for querying color keying.
 
 V4L2 Framework has a ioctl for getting/setting color keying.
 So added the function manager pointers for doing same.
@@ -146,5 +146,5 @@ index 90acd28..e0501c4 100644
  			&omap_dss_mgr_enable_alpha_blending;
  		mgr->get_alpha_blending_status =
 -- 
-1.5.6.5
+1.6.2.4
 

@@ -1,7 +1,7 @@
 From a1e8018c0806a1a0579eda4b93b7d6764a2ff643 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Wed, 15 Apr 2009 14:06:54 +0300
-Subject: [PATCH] DSS2: DSI: sidlemode to noidle while sending frame
+Subject: [PATCH 26/69] DSS2: DSI: sidlemode to noidle while sending frame
 
 DISPC interrupts are not wake-up capable. Smart-idle in DISPC_SIDLEMODE
 causes DSS interface to go to idle at the end of the frame, and the
@@ -74,5 +74,5 @@ index 0be42b6..d0917a8 100644
  void dispc_lcd_enable_signal(bool enable);
  void dispc_pck_free_enable(bool enable);
 -- 
-1.5.6.5
+1.6.2.4
 

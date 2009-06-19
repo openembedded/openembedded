@@ -1,7 +1,7 @@
 From 0f88992b2681aed4f31dc7dd3926b357bbc95154 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 21 Apr 2009 10:11:55 +0300
-Subject: [PATCH] DSS2: DSI: decrease sync timeout from 60s to 2s
+Subject: [PATCH 46/69] DSS2: DSI: decrease sync timeout from 60s to 2s
 
 The framedone-problem should be ok now, so we shouldn't get long waits.
 ---
@@ -22,5 +22,5 @@ index 50af925..d59ad38 100644
  
  	DSSDBGF("");
 -- 
-1.5.6.5
+1.6.2.4
 

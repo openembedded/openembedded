@@ -1,7 +1,7 @@
 From c02b843c2732bc7b15a3e35b5dd715d68225bbd1 Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Wed, 8 Apr 2009 12:51:46 +0200
-Subject: [PATCH] DSS2: pass the default FB color format through board info
+Subject: [PATCH 23/69] DSS2: pass the default FB color format through board info
 
 Add a field to the FB memory region platform data, so that board
 init code can pass a default color format to the driver. Set this
@@ -210,5 +210,5 @@ index 96190b2..7a34f22 100644
  	unsigned	map:1;		/* kernel mapped by the driver */
  };
 -- 
-1.5.6.5
+1.6.2.4
 

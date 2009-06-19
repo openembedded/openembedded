@@ -1,0 +1,32 @@
+From bc67f1fce4472087014fdacd3f44ea732200533e Mon Sep 17 00:00:00 2001
+From: Hardik Shah <hardik.shah@ti.com>
+Date: Mon, 27 Apr 2009 13:15:07 +0530
+Subject: [PATCH 57/69] DSS2: Documentation update for new sysfs entries in omapdss/manager
+
+Signed-off-by: Hardik Shah <hardik.shah@ti.com>
+---
+ Documentation/arm/OMAP/DSS |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/Documentation/arm/OMAP/DSS b/Documentation/arm/OMAP/DSS
+index 249e1a3..751000b 100644
+--- a/Documentation/arm/OMAP/DSS
++++ b/Documentation/arm/OMAP/DSS
+@@ -136,8 +136,13 @@ screen_width	width
+ global_alpha   	global alpha 0-255 0=transparent 255=opaque
+ 
+ /sys/devices/platform/omapdss/manager? directory:
+-display		Destination display
++display				Destination display
+ name
++alpha_blending_enabled		0=off 1=on
++color_key_enabled		0=off 1=on
++color_key_type			gfx-destination video-source
++color_key_value			0 to 2^24
++default_color			default background color RGB24 0 to 2^24
+ 
+ /sys/devices/platform/omapdss/display? directory:
+ ctrl_name	Controller name
+-- 
+1.6.2.4
+

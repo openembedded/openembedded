@@ -1,7 +1,7 @@
 From 9c93bcab724b5935d745604773ed43825efefd87 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 2 Apr 2009 13:47:11 +0300
-Subject: [PATCH] DSS2: Fix DMA rotation
+Subject: [PATCH 12/69] DSS2: Fix DMA rotation
 
 u16 was not a good type for offsets. First, they need to be signed,
 and second, 16 bits is not enough.
@@ -61,5 +61,5 @@ index ffb5648..6cea545 100644
  	if (plane == OMAP_DSS_GFX) {
  		if (width != out_width || height != out_height)
 -- 
-1.5.6.5
+1.6.2.4
 

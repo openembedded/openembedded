@@ -1,7 +1,7 @@
 From b0e081456a9b094109c04467d041ff693843ca47 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 21 Apr 2009 09:25:16 +0300
-Subject: [PATCH] DSS2: Fixed line endings from , to ;
+Subject: [PATCH 45/69] DSS2: Fixed line endings from , to ;
 
 ---
  drivers/video/omap2/dss/manager.c |   18 +++++++++---------
@@ -44,5 +44,5 @@ index 108489c..bf059e0 100644
  		dss_overlay_setup_dispc_manager(mgr);
  
 -- 
-1.5.6.5
+1.6.2.4
 

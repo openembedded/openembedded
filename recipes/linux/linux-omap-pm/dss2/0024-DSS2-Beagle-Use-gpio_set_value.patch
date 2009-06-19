@@ -1,7 +1,7 @@
 From 2710416c43572652cb5355a5eaf68038c95659e8 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 9 Apr 2009 12:10:46 +0300
-Subject: [PATCH] DSS2: Beagle: Use gpio_set_value
+Subject: [PATCH 24/69] DSS2: Beagle: Use gpio_set_value
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |   10 +++++++---
@@ -44,5 +44,5 @@ index b67e7a5..8c1961d 100644
  
  static struct omap_board_config_kernel omap3_beagle_config[] __initdata = {
 -- 
-1.5.6.5
+1.6.2.4
 

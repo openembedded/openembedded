@@ -1,0 +1,82 @@
+From 5d3426ae63c27b9405be8179beabe1e095b44a35 Mon Sep 17 00:00:00 2001
+From: Imre Deak <imre.deak@nokia.com>
+Date: Tue, 5 May 2009 19:00:19 +0200
+Subject: [PATCH 63/69] DSS2: fix the usage of get_last_off_on_transaction_id
+
+The function returns int not unsigned since it can fail. Handle the
+failing case as if the context had been lost. So now:
+
+1. No get_last_off_on_transaction_id func in platform data->
+   never restore the context
+2. Return val < 0 -> force the restore
+3. Return val >= 0 do the restore only if the counter has changed.
+
+Signed-off-by: Imre Deak <imre.deak@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/display.h |    2 +-
+ drivers/video/omap2/dss/core.c            |   18 ++++++++++++------
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index 45b16ca..31ebb96 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -234,7 +234,7 @@ struct device;
+ 
+ /* Board specific data */
+ struct  omap_dss_board_info {
+-	unsigned (*get_last_off_on_transaction_id)(struct device *dev);
++	int (*get_last_off_on_transaction_id)(struct device *dev);
+ 	int (*dsi_power_up)(void);
+ 	void (*dsi_power_down)(void);
+ 	int num_displays;
+diff --git a/drivers/video/omap2/dss/core.c b/drivers/video/omap2/dss/core.c
+index ae7cd06..6d11b04 100644
+--- a/drivers/video/omap2/dss/core.c
++++ b/drivers/video/omap2/dss/core.c
+@@ -38,7 +38,7 @@
+ 
+ static struct {
+ 	struct platform_device *pdev;
+-	unsigned	ctx_id;
++	int		ctx_id;
+ 
+ 	struct clk      *dss_ick;
+ 	struct clk	*dss1_fck;
+@@ -63,22 +63,28 @@ module_param_named(debug, dss_debug, bool, 0644);
+ #endif
+ 
+ /* CONTEXT */
+-static unsigned dss_get_ctx_id(void)
++static int dss_get_ctx_id(void)
+ {
+ 	struct omap_dss_board_info *pdata = core.pdev->dev.platform_data;
++	int r;
+ 
+ 	if (!pdata->get_last_off_on_transaction_id)
+ 		return 0;
+-
+-	return pdata->get_last_off_on_transaction_id(&core.pdev->dev);
++	r = pdata->get_last_off_on_transaction_id(&core.pdev->dev);
++	if (r < 0) {
++		dev_err(&core.pdev->dev,
++			"getting transaction ID failed, will force context restore\n");
++		r = -1;
++	}
++	return r;
+ }
+ 
+ int dss_need_ctx_restore(void)
+ {
+ 	int id = dss_get_ctx_id();
+ 
+-	if (id != core.ctx_id) {
+-		DSSDBG("ctx id %u -> id %u\n",
++	if (id < 0 || id != core.ctx_id) {
++		DSSDBG("ctx id %d -> id %d\n",
+ 				core.ctx_id, id);
+ 		core.ctx_id = id;
+ 		return 1;
+-- 
+1.6.2.4
+
