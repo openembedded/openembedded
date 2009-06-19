@@ -2,6 +2,27 @@ def __note(msg, d):
     import bb
     bb.note("%s: recipe_sanity: %s" % (d.getVar("P", 1), msg))
 
+__recipe_sanity_reqvars = "DESCRIPTION"
+__recipe_sanity_reqdiffvars = "LICENSE"
+def req_vars(cfgdata, d):
+    for var in d.getVar("__recipe_sanity_reqvars", 1).split():
+        if not d.getVar(var, 0):
+            __note("%s should be set" % var, d)
+
+    for var in d.getVar("__recipe_sanity_reqdiffvars", 1).split():
+        val = d.getVar(var, 0)
+        cfgval = cfgdata.get(var)
+
+        # Hardcoding is bad, but I'm lazy.  We don't care about license being
+        # unset if the recipe has no sources!
+        if var == "LICENSE" and d.getVar("SRC_URI", 1) == cfgdata.get("SRC_URI"):
+            continue
+
+        if not val:
+            __note("%s should be set" % var, d)
+        elif val == cfgval:
+            __note("%s should be defined to something other than default (%s)" % (var, cfgval), d)
+
 def var_renames_overwrite(cfgdata, d):
     renames = d.getVar("__recipe_sanity_renames", 0)
     if renames:
@@ -108,6 +129,7 @@ python do_recipe_sanity () {
 
     can_remove_others(p, cfgdata, d)
     var_renames_overwrite(cfgdata, d)
+    req_vars(cfgdata, d)
 }
 do_recipe_sanity[nostamp] = "1"
 #do_recipe_sanity[recrdeptask] = "do_recipe_sanity"
@@ -135,6 +157,7 @@ python recipe_sanity_eh () {
         cfgdata[k] = d.getVar(k, 0)
 
     d.setVar("__recipe_sanity_cfgdata", cfgdata)
+    #d.setVar("__recipe_sanity_cfgdata", d)
 
     # Sick, very sick..
     from bb.data_smart import DataSmart
