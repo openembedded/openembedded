@@ -131,7 +131,7 @@ do_install () {
 	install -d ${D}${sysconfdir}/default/
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
-	rm ${D}${sbindir}/swap* -f
+	rm ${D}${sbindir}/swapoff -f
 	ln -sf ${base_sbindir}/swapon.${PN} ${D}${base_sbindir}/swapoff.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/reboot.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/halt.${PN}
