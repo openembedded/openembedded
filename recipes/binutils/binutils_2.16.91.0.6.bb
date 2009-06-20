@@ -2,7 +2,8 @@ DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r3"
+INC_PR = "r3"
+PR = "${INC_PR}.1"
 
 # glibc 2.3 has issues with this version
 # of binutils.
