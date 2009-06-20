@@ -1,4 +1,5 @@
-PR = "r6"
+INC_PR = "r6"
+PR = "${INC_PR}.1"
 
 require binutils.inc
 LICENSE = "GPLv3"
