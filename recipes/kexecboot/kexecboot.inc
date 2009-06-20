@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 
 DEPENDS = "klibc"
-RDEPENDS_${PN} = "kexec-static"
+RDEPENDS_${PN} = "kexec-klibc-static"
 
 inherit autotools
 
