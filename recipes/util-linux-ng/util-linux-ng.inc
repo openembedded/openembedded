@@ -8,6 +8,8 @@ AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 DEFAULT_PREFERENCE = "-1"
 
+INC_PR = "r6"
+
 # allows for a release candidate
 RC ?= ""
 
@@ -19,14 +21,14 @@ PACKAGES_DYNAMIC = "libblkid*"
 FILES_${PN}-doc += "/usr/share/misc/getopt/getopt-*.*"
 FILES_${PN} = "${bindir} ${sbindir} ${base_bindir} ${base_sbindir}"
 
-FILES_util-linux-ng-fdisk = "/sbin/fdisk.${PN}"
-FILES_util-linux-ng-cfdisk = "/sbin/cfdisk"
-FILES_util-linux-ng-sfdisk = "/sbin/sfdisk"
-FILES_util-linux-ng-swaponoff = "/sbin/swapon.${PN} /sbin/swapoff.${PN}"
-FILES_util-linux-ng-losetup = "/sbin/losetup.${PN}"
-FILES_util-linux-ng-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
-FILES_util-linux-ng-umount = "/bin/umount.${PN}"
-FILES_util-linux-ng-readprofile = "/usr/sbin/readprofile.${PN}"
+FILES_util-linux-ng-fdisk = "${base_sbindir}/fdisk.${PN}"
+FILES_util-linux-ng-cfdisk = "${base_sbindir}/cfdisk"
+FILES_util-linux-ng-sfdisk = "${base_sbindir}/sfdisk"
+FILES_util-linux-ng-swaponoff = "${base_sbindir}/swapon.${PN} ${base_sbindir}/swapoff.${PN}"
+FILES_util-linux-ng-losetup = "${base_sbindir}/losetup.${PN}"
+FILES_util-linux-ng-mount = "${base_bindir}/mount.${PN} ${sysconfdir}/default/mountall"
+FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
+FILES_util-linux-ng-readprofile = "${sbindir}/readprofile.${PN}"
 
 PACKAGES =+ "${PN}-mountall"
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall"
@@ -129,7 +131,8 @@ do_install () {
 	install -d ${D}${sysconfdir}/default/
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
-	ln -sf ${sbindir}/swapon ${D}${sbindir}/swapoff.${PN}
+	rm ${D}${sbindir}/swap* -f
+	ln -sf ${base_sbindir}/swapon.${PN} ${D}${base_sbindir}/swapoff.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/reboot.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/halt.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fastboot
