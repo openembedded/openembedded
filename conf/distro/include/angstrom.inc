@@ -80,6 +80,9 @@ INHERIT += "angstrom-mirrors"
 INHERIT += "insane"
 QA_LOG = "1"
 
+#run QA tests on recipes
+INHERIT += "recipe_sanity"
+
 #save statistical info on images
 INHERIT += "testlab"
 
