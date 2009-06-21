@@ -8,7 +8,7 @@ DEPENDS_beagleboard	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-
 DEPENDS_dm6446-evm 	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-codec-combo-dm6446 virtual/kernel "
 DEPENDS_dm355-evm  	+= "alsa-lib ti-codec-engine ti-xdctools-native ti-codec-combo-dm355 virtual/kernel"
 
-installdir = "${prefix}/ti"
+installdir = "${datadir}/ti"
 
 # Define DMAI build time variables
 TARGET 			?= "all"

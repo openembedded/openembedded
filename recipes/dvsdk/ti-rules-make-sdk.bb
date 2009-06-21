@@ -2,7 +2,7 @@ DESCRIPTION = "This package creates Rules.make file and copies top label Makefil
 
 inherit sdk
 
-PR="r4"
+PR="r7"
 
 FILES=${@os.path.dirname(bb.data.getVar('FILE',d,1))}/files/dvsdk-rules
 

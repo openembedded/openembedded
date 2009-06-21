@@ -5,10 +5,11 @@ inherit module
 DEPENDS 	+= " virtual/kernel perl-native ti-dspbios-native ti-cgt6x-native update-modules"
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r11"
 PV = "1613"
+#This is a kernel module, don't set PR directly
+MACHINE_KERNEL_PR_append = "a"
 
-installdir = "${prefix}/ti"
+installdir = "${datadir}/ti"
 SRC_URI = "http://install.source.dir.com/codec_engine_2_23_01.tar.gz  \
 		   file://loadmodules-ti-dsplink-apps.sh \
 		   file://unloadmodules-ti-dsplink-apps.sh"
@@ -18,18 +19,12 @@ S = "${WORKDIR}/codec_engine_2_23_01"
 	
 # DSPLINK - Config Variable for different platform
 DSPLINKPLATFORM            ?= "DAVINCI"
-DSPLINKPLATFORM_omap3evm   ?= "OMAP3530"
-DSPLINKPLATFORM_beagleboard   ?= "OMAP3530"
 DSPLINKPLATFORM_dm6446-evm ?= "DAVINCI"
 
 DSPLINKDSPCFG            ?= "DM6446GEMSHMEM"
-DSPLINKDSPCFG_omap3evm   ?= "OMAP3530SHMEM"
-DSPLINKDSPCFG_beagleboard   ?= "OMAP3530SHMEM"
 DSPLINKDSPCFG_dm6446-evm ?= "DM6446GEMSHMEM"
 
 DSPLINKGPPOS             ?= "MVL5G"
-DSPLINKGPPOS_omap3evm    ?= "OMAPLSP"
-DSPLINKGPPOS_beagleboard    ?= "OMAPLSP"
 DSPLINKGPPOS_dm6446-evm  ?= "MVL5G"
 
 export DSPLINK="${S}/cetools/packages/dsplink"
@@ -153,7 +148,7 @@ INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGES += " ti-dsplink-apps" 
 FILES_${PN} = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*"
-FILES_ti-dsplink-apps = "/${installdir}/dsplink/*"
+FILES_ti-dsplink-apps = "${installdir}/dsplink/*"
 
 # Disable QA check untils we figure out how to pass LDFLAGS in build
 INSANE_SKIP_${PN} = True
