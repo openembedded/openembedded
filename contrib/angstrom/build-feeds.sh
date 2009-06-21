@@ -104,6 +104,10 @@ do
                       distcc \
                       dsniff \
                       duke3d \
+                      dvb-apps \
+                      dvbstream \
+                      dvbtraffic \
+                      dvbtune \
                       e-uae \
                       e-wm \
                       ekiga \
@@ -320,6 +324,7 @@ do
                       win4 \
                       wireshark \
                       wpa-gui \
+                      wscan \
                       wt \
                       wt3 \
                       x11vnc \
