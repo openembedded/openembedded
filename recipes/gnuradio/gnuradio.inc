@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU Radio"
 SECTION =  "apps"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv3"
 DEPENDS = "libusb guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
 INC_PR = "r7"
 
