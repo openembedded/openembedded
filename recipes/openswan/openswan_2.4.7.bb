@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openswan.org"
 LICENSE = "GPLv2"
 DEPENDS = "gmp flex-native"
 RRECOMMENDS = "kernel-module-ipsec"
-RDEPENDS_nylon = "perl"
+RDEPENDS_append_nylon = "perl"
 PR = "r0"
 
 SRC_URI = "http://www.openswan.org/download/openswan-${PV}.tar.gz \
