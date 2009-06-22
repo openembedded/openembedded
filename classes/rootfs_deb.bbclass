@@ -24,10 +24,12 @@ fakeroot rootfs_deb_do_rootfs () {
 			continue;
 		fi
 		cd ${DEPLOY_DIR_DEB}/$arch
-		# if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-			rm -f Packages.gz Packages Packages.bz2
-		# fi
-		dpkg-scanpackages . | bzip2 > Packages.bz2
+		rm -f Packages.gz Packages Packages.bz2
+
+		# apt-native ignores Packages.bz2 unless /bin/bzip2 exists
+		# on the build host, so stick with gzip
+		dpkg-scanpackages . | gzip > Packages.gz
+
 		echo "Label: $arch" > Release
 
 		echo "deb file:${DEPLOY_DIR_DEB}/$arch/ ./" >> ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
