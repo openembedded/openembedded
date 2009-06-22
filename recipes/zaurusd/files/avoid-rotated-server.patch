@@ -10,8 +10,8 @@ Index: zaurusd/config/mach-config/mach-akita-vars.in
 \ No newline at end of file
 +ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
 +
-+export XRANDR_LANDSCAPE=normal
-+export XRANDR_PORTRAIT=left
++export XRANDR_LANDSCAPE=right
++export XRANDR_PORTRAIT=normal
 Index: zaurusd/config/mach-config/mach-borzoi-vars.in
 ===================================================================
 --- zaurusd.orig/config/mach-config/mach-borzoi-vars.in	2009-03-07 11:04:43.000000000 +0000
@@ -27,8 +27,8 @@ Index: zaurusd/config/mach-config/mach-borzoi-vars.in
 \ No newline at end of file
 +ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
 +
-+export XRANDR_LANDSCAPE=normal
-+export XRANDR_PORTRAIT=left
++export XRANDR_LANDSCAPE=right
++export XRANDR_PORTRAIT=normal
 Index: zaurusd/config/mach-config/mach-corgi-vars.in
 ===================================================================
 --- zaurusd.orig/config/mach-config/mach-corgi-vars.in	2009-03-07 11:04:43.000000000 +0000
@@ -108,8 +108,8 @@ Index: zaurusd/config/mach-config/mach-spitz-vars.in
 \ No newline at end of file
 +ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
 +
-+export XRANDR_LANDSCAPE=normal
-+export XRANDR_PORTRAIT=left
++export XRANDR_LANDSCAPE=right
++export XRANDR_PORTRAIT=normal
 Index: zaurusd/config/mach-config/mach-tosa-vars.in
 ===================================================================
 --- zaurusd.orig/config/mach-config/mach-tosa-vars.in	2009-03-07 11:04:43.000000000 +0000

@@ -1,0 +1,72 @@
+Index: xserver-common-1.25/X11/Xserver
+===================================================================
+--- xserver-common-1.25.orig/X11/Xserver	2009-06-18 20:48:31.000000000 +0000
++++ xserver-common-1.25/X11/Xserver	2009-06-18 20:49:36.000000000 +0000
+@@ -48,6 +48,7 @@
+ 
+ SCREEN_SIZE=`fallback_screen_arg`
+ export USER=root
++export XSERVER_DEFAULT_ORIENTATION=normal
+ 
+ ARGS="-br -pn $INPUT_EXTRA_ARGS"
+ 
+@@ -88,7 +89,9 @@
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+ 		ARGS="$ARGS -dpi 200 -rgba rgb" ;;
+ 	"SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")
+-		ARGS="$ARGS -dpi 200 -rgba rgb -screen 480x640@270" ;;
++		ARGS="$ARGS -dpi 200 -rgba rgb -screen 480x640"
++		export XSERVER_DEFAULT_ORIENTATION=normal
++		;;
+ 	"Simpad")
+ 		ARGS="$ARGS -dpi 100 -rgba rgb" ;;
+ 	"Generic OMAP1510/1610/1710")
+Index: xserver-common-1.25/X11/Xinit.d/11zaurus
+===================================================================
+--- xserver-common-1.25.orig/X11/Xinit.d/11zaurus	2009-06-18 20:48:31.000000000 +0000
++++ xserver-common-1.25/X11/Xinit.d/11zaurus	2009-06-18 21:07:14.000000000 +0000
+@@ -1,23 +1,35 @@
+ #!/bin/sh
+ 
+-if [ -z "`which chkhinge`" ]; then
+-   # probably not a clamshell zaurus
+-   exit 0
++if [ -z "`which chkhinge 2>/dev/null`" ]; then
++   # not a clamshell zaurus or we have kernel 2.6
++   # no rotation status check available
++   CHCK=true
++else
++   CHCK=chkhinge
+ fi
+ 
+ module_id() {
+     # Get model name
+-    echo `grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
++    echo `grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//"`
+ }
+ 
+-chkhinge -e
++$CHCK -e
+ if [ $? = 12 ]; then
+    case `module_id` in
+-   	*SPITZ | *AKITA | *BORZOI)
+-   		DIRECTION="left" ;;
+-        default)
++   	*Spitz | *Akita | *Borzoi)
++   		DIRECTION="normal" ;;
++        *)
+                 DIRECTION="right" ;;
+    esac
+-   xrandr -o $DIRECTION
++else
++   case `module_id` in
++   	*Spitz | *Akita | *Borzoi)
++		# Xfbdev needs to settle
++		sleep 2
++   		DIRECTION="right" ;;
++        *)
++                DIRECTION="normal" ;;
++   esac
+ fi
+ 
++xrandr -o $DIRECTION

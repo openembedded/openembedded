@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
-PR = "r0"
+PR = "r1"
 
 PACKAGE_ARCH = "all"
 
@@ -11,6 +11,7 @@ inherit gpe
 
 SRC_URI_append = " file://setDPI.sh \
                    file://89xdgautostart.sh \
+                   file://avoid-rotated-server.patch;patch=1 \
 "
 
 do_install_append() {
