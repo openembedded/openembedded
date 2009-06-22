@@ -18,8 +18,9 @@ def oestats_getid(d):
 	f = file(bb.data.getVar('TMPDIR', d, True) + '/oestats.id', 'r')
 	return f.read()
 	
-def oestats_send(server, action, vars = {}, files = {}):
+def oestats_send(d, server, action, vars = {}, files = {}):
 	import httplib
+	import bb
 
 	# build body
 	output = []
@@ -49,7 +50,16 @@ def oestats_send(server, action, vars = {}, files = {}):
 		"Content-length": str(len(body))}
 
 	# send request
-	conn = httplib.HTTPConnection(server)
+	proxy = bb.data.getVar('HTTP_PROXY', d, True )
+	if (proxy):
+		if (proxy.endswith('/')):
+			proxy = proxy[:-1]
+		if (proxy.startswith('http://')):
+			proxy = proxy[7:]
+		conn = httplib.HTTPConnection(proxy)
+		action = "http://%s%s" %(server, action)
+	else:
+		conn = httplib.HTTPConnection(server)
 	conn.request("POST", action, body, headers)
 	response = conn.getresponse()
 	data = response.read()
@@ -64,7 +74,7 @@ def oestats_start(server, builder, d):
 	# send report
 	id = ""
 	try:
-		data = oestats_send(server, "/builds/", {
+		data = oestats_send(d, server, "/builds/", {
 			'builder': builder,
 			'build_arch': bb.data.getVar('BUILD_ARCH', d, True),
 			'metadata_branch': bb.data.getVar('METADATA_BRANCH', d, True),
@@ -97,7 +107,7 @@ def oestats_stop(server, d, failures):
 		status = "Succeeded"		      
 
 	try:
-		response = oestats_send(server, "/builds/%s/" % id, {
+		response = oestats_send(d, server, "/builds/%s/" % id, {
 			'status': status,
 		})
 		if status == 'Failed':
@@ -157,7 +167,7 @@ def oestats_task(server, d, task, status):
 
 	# send report
 	try:
-		response = oestats_send(server, "/tasks/", vars, files)
+		response = oestats_send(d, server, "/tasks/", vars, files)
 		if status == 'Failed':
 			bb.note("oestats: task failed, see http://%s%s" % (server, response))
 	except:
