@@ -105,7 +105,7 @@ $ <command>svn</command> co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ b
       <para>Once you have installed Git, checkout the OpenEmbedded repository:
         <screen>
 $ cd $OEBASE
-$ git clone git://git.openembedded.net/openembedded</screen>
+$ git clone git://git.openembedded.org/openembedded</screen>
         The <literal>$OEBASE/openembedded/</literal> directory should now
         exist.</para>
     </section>
