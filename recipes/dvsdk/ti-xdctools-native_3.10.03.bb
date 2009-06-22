@@ -8,7 +8,7 @@ S = "${WORKDIR}/xdctools_3_10_03"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "310"
-PR = "r14"
+PR = "r16"
 
 do_stage() {
     install -d ${STAGING_DIR_NATIVE}/${PN}

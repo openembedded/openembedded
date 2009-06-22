@@ -1,10 +1,5 @@
-placeholder for readme
 
-todo with this package
-- rename top level dsplink directory
-- repartion code into different recipes - create codecengine-examples package
-/DONE - fix lpm build to pick up Module.symversion
-- cleanup device selection script - not good to just /d the targets - need cleaner solution
-- staging needs work
+The software needed can be downloaded from:
+* http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/
+* https://www-a.ti.com/downloads/sds_support/TICodegenerationTools/download.htm
 
-- add ce 2.22

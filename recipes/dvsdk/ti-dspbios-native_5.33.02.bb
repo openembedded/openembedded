@@ -8,7 +8,7 @@ S = "${WORKDIR}/bios_5_33_02"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "533"
-PR = "r11"
+PR = "r13"
 
 do_stage() {
     install -d ${STAGING_DIR_NATIVE}/${PN}

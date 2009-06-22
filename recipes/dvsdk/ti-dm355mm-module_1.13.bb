@@ -14,7 +14,8 @@ BINFILE="dm355_codecs_setuplinux_1_13_000.bin"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "113"
-PR = "r15"
+#This is a kernel module, don't set PR directly
+MACHINE_KERNEL_PR_append = "a"
 
 do_configure() {
 	find ${S} -name "*.ko" -exec rm {} \; || true

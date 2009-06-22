@@ -7,11 +7,11 @@ SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dv
 
 S = "${WORKDIR}/dm355_codecs_1_13_000"
 BINFILE="dm355_codecs_setuplinux_1_13_000.bin"
-installdir = "${prefix}/ti"
+installdir = "${datadir}/ti"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "113"
-PR = "r12"
+PR = "r15"
 
 do_compile() {
 	echo "Do nothing"

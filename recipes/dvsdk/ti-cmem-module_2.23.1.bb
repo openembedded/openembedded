@@ -5,12 +5,16 @@ inherit module
 DEPENDS 	= "virtual/kernel perl-native"
 RDEPENDS 	= "update-modules"
 
+# Download codec_engine_2_23_01.tar.gz from 
+# https://www-a.ti.com/downloads/sds_support/targetcontent/CE/ce_2_23/index.html
+
 SRC_URI = "http://install.source.dir.com/codec_engine_2_23_01.tar.gz"
 
 # Set the source directory
 S = "${WORKDIR}/codec_engine_2_23_01"
 
-PR = "r18"
+#This is a kernel module, don't set PR directly
+MACHINE_KERNEL_PR_append = "a"
 PV = "2231"
 
 do_compile() {
@@ -38,7 +42,7 @@ do_install () {
       LINUXKERNEL_INSTALL_DIR="${STAGING_KERNEL_DIR}" \
       MVTOOL_PREFIX="${TARGET_PREFIX}" \
       UCTOOL_PREFIX="${TARGET_PREFIX}" \
-	  EXEC_DIR="${D}${prefix}/ti/ti-cmem-apps" \
+	  EXEC_DIR="${D}${datadir}/ti/ti-cmem-apps" \
       install
 }
 
@@ -57,7 +61,7 @@ pkg_postrm () {
 INHIBIT_PACKAGE_STRIP = "1"
 FILES_${PN} = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
 PACKAGES += " ti-cmem-apps" 
-FILES_ti-cmem-apps = "${prefix}/ti/ti-cmem-apps/*"
+FILES_ti-cmem-apps = "${datadir}/ti/ti-cmem-apps/*"
 INSANE_SKIP_ti-cmem-apps = True
 
 

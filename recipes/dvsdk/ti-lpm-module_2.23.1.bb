@@ -4,8 +4,10 @@ inherit module
 # compile and run time dependencies
 DEPENDS 	= " virtual/kernel perl-native ti-dsplink-module"
 
-PR = "r9"
 PV = "2231"
+#This is a kernel module, don't set PR directly
+MACHINE_KERNEL_PR_append = "a"
+
 
 SRC_URI = "http://install.source.dir.com/codec_engine_2_23_01.tar.gz "
 

@@ -1,4 +1,4 @@
-PR = "r23"
+PR = "${INC_PR}.1"
 
 require gcc-${PV}.inc
 require gcc-configure-target.inc

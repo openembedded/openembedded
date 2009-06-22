@@ -13,7 +13,7 @@ S = "${WORKDIR}/omap3530_dvsdk_combos_tspa_3_16_01"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "316"
-PR = "r8"
+PR = "r10"
 
 do_compile () {
 	echo "No nothing"

@@ -10,7 +10,11 @@ FILES_${PN}-examples = "${bindir}/video-player ${bindir}/video-sink ${bindir}/au
 inherit autotools pkgconfig
 
 do_configure_prepend() {
-        touch ${S}/gtk-doc.make
+	if [ -e ${WORKDIR}/gtk-doc.make ] ; then
+		cp ${WORKDIR}/gtk-doc.make ${S}/gtk-doc.make
+	else
+		touch ${S}/gtk-doc.make
+	fi
 }
 
 do_stage () {

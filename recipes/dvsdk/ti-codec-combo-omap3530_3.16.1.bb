@@ -10,13 +10,33 @@ TARFILE = "omap3530_dvsdk_combos_tspa/omap3530_dvsdk_combos_tspa_3_16_01.tar.gz"
 
 S = "${WORKDIR}/omap3530_dvsdk_combos_tspa_3_16_01"
 
+DEPENDS="ti-codec-engine"
+
+CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine"
+FC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
+LINK_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
+CMEM_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
+LPM_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
+BIOS_INSTALL_DIR="${STAGING_DIR_NATIVE}/ti-dspbios-native"
+CODEGEN_INSTALL_DIR="${STAGING_DIR_NATIVE}/ti-cgt6x-native"
+XDC_INSTALL_DIR="${STAGING_DIR_NATIVE}/ti-xdctools-native"
+
+export ${CODEGEN_INSTALL_DIR}
+
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "3161"
-PR = "r9"
-installdir = "${prefix}/ti"
+PR = "r12"
+installdir = "${datadir}/ti"
 
 do_compile() {
-  	echo "Do not rebuild for now"
+	make CE_INSTALL_DIR=${CE_INSTALL_DIR} \
+		 FC_INSTALL_DIR=${FC_INSTALL_DIR} \
+		 LINK_INSTALL_DIR=${LINK_INSTALL_DIR} \
+		 CMEM_INSTALL_DIR=${CMEM_INSTALL_DIR} \
+		 LPM_INSTALL_DIR=${LPM_INSTALL_DIR} \
+	     BIOS_INSTALL_DIR=${BIOS_INSTALL_DIR} \
+		 CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
+		 XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
 }
 
 do_install () {

@@ -1,9 +1,9 @@
 require clutter.inc
 
-SRCREV = "b9a53d379d3aaca4b09a90cd44d5a9d9736a2435"
+SRCREV = "fdaaa8b6d701d2b43fd2750de1b018b5af5577ea"
 
-PV = "0.9.3"
-PR = "r2"
+PV = "0.9.4"
+PR = "r0"
 PR_append = "+git${SRCREV}"
 
 SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git \

@@ -1,7 +1,7 @@
 SRC_URI = "file://87-kexecboot.sh"
 PR = "r2"
 DESCRIPTION = "An initramfs module for kexecing kernel from rootfs."
-RDEPENDS = "initramfs-uniboot kexec-static"
+RDEPENDS = "initramfs-uniboot kexec-klibc-static"
 
 do_install() {
 	install -d ${D}/initrd.d
