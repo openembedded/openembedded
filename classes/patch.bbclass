@@ -527,7 +527,7 @@ python patch_do_patch() {
 				bb.note("Patch '%s' applies to earlier revisions" % pname)
 				continue
 
-		bb.note("Applying patch '%s' (%s)" % (pname, unpacked))
+		bb.note("Applying patch '%s' (%s)" % (pname, base_path_out(unpacked, d)))
 		try:
 			patchset.Import({"file":unpacked, "remote":url, "strippath": pnum}, True)
 		except:

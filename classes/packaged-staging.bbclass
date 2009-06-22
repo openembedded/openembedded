@@ -135,7 +135,7 @@ do_clean_prepend() {
 	pstage_cleanpackage(removepkg, d)
 
 	stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
-	bb.note("Removing staging package %s" % stagepkg)
+	bb.note("Removing staging package %s" % base_path_out(stagepkg, d))
 	os.system('rm -rf ' + stagepkg)
 }
 
