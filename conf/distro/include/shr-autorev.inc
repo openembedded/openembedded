@@ -59,6 +59,7 @@ SRCREV_pn-libframeworkd-phonegui-efl = "e63d16be7d5a2e900fad1998b4e44985179b44f3
 SRCREV_pn-libframeworkd-phonegui-efl2 = "${AUTOREV}"
 SRCREV_pn-libframeworkd-phonegui-gtk = "${AUTOREV}"
 SRCREV_pn-libframeworkd-glib = "9765f6989d09d8f9b8676e1ef7e2501fe67fbdbc"
+SRCREV_pn-opimd-utils = "${AUTOREV}"
 SRCREV_pn-pyphonelog = "${AUTOREV}"
 SRCREV_pn-shr-theme-brave = "${AUTOREV}"
 SRCREV_pn-shr-theme-gtk-e17lookalike = "${AUTOREV}"
