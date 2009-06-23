@@ -8,6 +8,9 @@ SECTION = "console/utils"
 SRC_URI = "http://www.tux.org/~mayer/linux/${PN}-${PV}.tar.gz \
            file://nbench_32bits.patch;patch=1"
 
+PR = "r1"
+
+TARGET_CC_ARCH += "${CFLAGS} ${LDFLAGS}"
 do_compile() {
 	oe_runmake
 }
