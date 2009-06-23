@@ -3,6 +3,8 @@ compilation of C/C++/ObjC code across machines on a network."
 SECTION = "devel"
 LICENSE = "GPLv2"
 
+PR = "r1"
+
 DEPENDS = "avahi gtk+"
 RRECOMMENDS = "avahi-daemon"
 
@@ -44,3 +46,18 @@ CONFFILES_${PN} += "${sysconfdir}/default/distcc \
 
 FILES_distcc-distmon-gnome = "  ${bindir}/distccmon-gnome \
 				${datadir}/distcc"
+
+
+pkg_postinst_${PN} () {
+    # can't do this offline
+    if [ "x$D" != "x" ]; then
+        exit 1
+    fi
+    grep "^distcc:" /etc/group > /dev/null || addgroup distcc
+    grep "^distcc:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/lib/distcc distcc --ingroup distcc -g "distcc daemon"
+}
+
+pkg_postrm_${PN} () {
+    deluser distcc || true
+    delgroup distcc || true
+}

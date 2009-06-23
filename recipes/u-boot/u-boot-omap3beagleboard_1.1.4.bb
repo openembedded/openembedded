@@ -12,5 +12,4 @@ SRC_URI = "http://www.sakoman.net/omap3/u-boot.tar.gz \
 
 S = "${WORKDIR}/u-boot"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 

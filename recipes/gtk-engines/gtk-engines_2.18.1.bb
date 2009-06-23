@@ -3,6 +3,8 @@ SECTION = "x11/base"
 DESCRIPTION = "GTK theme engines"
 DEPENDS = "gtk+ cairo"
 
+PR = "r1"
+
 RDEPENDS_gtk-theme-redmond = "gtk-engine-redmond95"
 RDEPENDS_gtk-theme-metal = "gtk-engine-metal"
 RDEPENDS_gtk-theme-mist = "gtk-engine-mist"
@@ -11,6 +13,8 @@ RDEPENDS_gtk-theme-lighthouseblue = "gtk-engine-lighthouseblue"
 RDEPENDS_gtk-theme-thinice = "gtk-engine-thinice"
 RDEPENDS_gtk-theme-industrial = "gtk-engine-industrial"
 RDEPENDS_gtk-theme-clearlooks = "gtk-engine-clearlooks"
+
+RREPLACES_gtk-theme-clearlooks = "gpe-theme-clearlooks"
 
 inherit gnome  gtk-binver
 

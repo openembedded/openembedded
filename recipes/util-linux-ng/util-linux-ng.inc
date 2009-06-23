@@ -1,12 +1,14 @@
 DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux system."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "udev zlib ncurses virtual/libintl"
+DEPENDS = "udev zlib ncurses virtual/libintl e2fsprogs-libs"
 
 inherit autotools_stage
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 DEFAULT_PREFERENCE = "-1"
+
+INC_PR = "r6"
 
 # allows for a release candidate
 RC ?= ""
@@ -19,17 +21,21 @@ PACKAGES_DYNAMIC = "libblkid*"
 FILES_${PN}-doc += "/usr/share/misc/getopt/getopt-*.*"
 FILES_${PN} = "${bindir} ${sbindir} ${base_bindir} ${base_sbindir}"
 
-FILES_util-linux-ng-fdisk = "/sbin/fdisk.${PN}"
-FILES_util-linux-ng-cfdisk = "/sbin/cfdisk"
-FILES_util-linux-ng-sfdisk = "/sbin/sfdisk"
-FILES_util-linux-ng-swaponoff = "/sbin/swapon.${PN} /sbin/swapoff.${PN}"
-FILES_util-linux-ng-losetup = "/sbin/losetup.${PN}"
-FILES_util-linux-ng-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
-FILES_util-linux-ng-umount = "/bin/umount.${PN}"
-FILES_util-linux-ng-readprofile = "/usr/sbin/readprofile.${PN}"
+FILES_util-linux-ng-fdisk = "${base_sbindir}/fdisk.${PN}"
+FILES_util-linux-ng-cfdisk = "${base_sbindir}/cfdisk"
+FILES_util-linux-ng-sfdisk = "${base_sbindir}/sfdisk"
+FILES_util-linux-ng-swaponoff = "${base_sbindir}/swapon.${PN} ${base_sbindir}/swapoff.${PN}"
+FILES_util-linux-ng-losetup = "${base_sbindir}/losetup.${PN}"
+FILES_util-linux-ng-mount = "${base_bindir}/mount.${PN} ${sysconfdir}/default/mountall"
+FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
+FILES_util-linux-ng-readprofile = "${sbindir}/readprofile.${PN}"
+
+PACKAGES =+ "${PN}-mountall"
+FILES_${PN}-mountall = "${sysconfdir}/default/mountall"
+RREPLACES_${PN}-mountall = "busybox-mountall"
 
 RRECOMMENDS_${PN} = "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-mount util-linux-ng-readprofile "
-RDEPENDS_${PN} = "util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-losetup"
+RDEPENDS_${PN} = "${PN}-mountall util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-losetup"
 
 EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
@@ -79,43 +85,54 @@ do_install () {
 	oe_runmake ARCH=${TARGET_ARCH} CPU= CPUOPT= \
 		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
 		'LDFLAGS=${LDFLAGS}' 'DESTDIR=${D}' install
-	mkdir ${D}${base_bindir}
-	mkdir ${D}${base_sbindir}
-	test -f ${D}${sbindir}/pivot_root && \
-	mv ${D}${sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
-	mv ${D}${bindir}/dmesg ${D}${base_bindir}/dmesg.${PN}
-	mv ${D}${bindir}/kill ${D}${base_bindir}/kill.${PN}
-	mv ${D}${bindir}/more ${D}${base_bindir}/more.${PN}
-	mv ${D}${sbindir}/hwclock ${D}${base_sbindir}/hwclock.${PN}
-	mv ${D}${sbindir}/mkswap ${D}${base_sbindir}/mkswap.${PN}
-	mv ${D}${sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
-#	mv ${D}${sbindir}/sln ${D}${base_sbindir}/sln.${PN}
-	mv ${D}${sbindir}/mkfs.minix ${D}${base_sbindir}/mkfs.minix.${PN}
-	mv ${D}${sbindir}/fsck.minix ${D}${base_sbindir}/fsck.minix.${PN}
-	mv ${D}${bindir}/hexdump ${D}${bindir}/hexdump.${PN}
-	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
-	mv ${D}${bindir}/logger ${D}${bindir}/logger.${PN}
-	mv ${D}${bindir}/mesg ${D}${bindir}/mesg.${PN}
-	mv ${D}${bindir}/renice ${D}${bindir}/renice.${PN}
-	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
+	mkdir -p ${D}${base_bindir}
 
-	mv ${D}${sbindir}/losetup ${D}${base_sbindir}/losetup.${PN}
-	mv ${D}${sbindir}/swapon ${D}${base_sbindir}/swapon.${PN}
-	mv ${D}${bindir}/umount ${D}${base_bindir}/umount.${PN}
-	mv ${D}${bindir}/mount ${D}${base_bindir}/mount.${PN}
-	mv ${D}${sbindir}/fdisk ${D}${base_sbindir}/fdisk.${PN}
+        sbinprogs="agetty blockdev ctrlaltdel cfdisk"
+        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile"
+        usrbinprogs_a="hexdump last logger mesg renice wall"
+        binprogs_a="dmesg kill more umount mount"
 
-	mv ${D}${sbindir}/agetty ${D}${base_sbindir}/ 
-	mv ${D}${sbindir}/blockdev ${D}${base_sbindir}/
-	mv ${D}${sbindir}/cfdisk ${D}${base_sbindir}/
-	mv ${D}${sbindir}/ctrlaltdel ${D}${base_sbindir}/
+        if [ "${base_sbindir}" != "${sbindir}" ]; then
+        	mkdir -p ${D}${base_sbindir}
+                for p in $sbinprogs $sbinprogs_a; do
+                        if [ -f "${D}${sbindir}/$p" ]; then
+                                mv "${D}${sbindir}/$p" "${D}${base_sbindir}/$p"
+                        fi
+                done
+        fi
 
-	mv ${D}${sbindir}/readprofile ${D}${sbindir}/readprofile.${PN}
-	
+        if [ "${base_bindir}" != "${bindir}" ]; then
+        	mkdir -p ${D}${base_bindir}
+                for p in $binprogs_a; do
+                        if [ -f "${D}${bindir}/$p" ]; then
+                                mv "${D}${bindir}/$p" "${D}${base_bindir}/$p"
+                        fi
+                done
+        fi
+
+        for p in $usrbinprogs_a; do
+                if [ -f "${D}${bindir}/$p" ]; then
+                        mv "${D}${bindir}/$p" "${D}${bindir}/$p.${PN}"
+                fi
+        done
+
+        for p in $binprogs_a; do
+                if [ -f "${D}${base_bindir}/$p" ]; then
+                        mv "${D}${base_bindir}/$p" "${D}${base_bindir}/$p.${PN}"
+                fi
+        done
+
+        for p in $sbinprogs_a; do
+                if [ -f "${D}${base_sbindir}/$p" ]; then
+                        mv "${D}${base_sbindir}/$p" "${D}${base_sbindir}/$p.${PN}"
+                fi
+        done
+
 	install -d ${D}${sysconfdir}/default/
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
-	ln -sf ${sbindir}/swapon ${D}${sbindir}/swapoff.${PN}
+	rm ${D}${sbindir}/swapoff -f
+	ln -sf ${base_sbindir}/swapon.${PN} ${D}${base_sbindir}/swapoff.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/reboot.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/halt.${PN}
 	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fastboot

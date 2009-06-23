@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r42"
+PR = "r43"
 
 inherit task
 
@@ -15,4 +15,3 @@ RDEPENDS = "\
     ttf-dejavu-sans \
     ttf-dejavu-sans-mono \
     "
-

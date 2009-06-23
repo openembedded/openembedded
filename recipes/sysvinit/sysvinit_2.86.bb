@@ -2,7 +2,7 @@ DESCRIPTION = "System-V like init."
 SECTION = "base"
 LICENSE = "GPL"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r53"
+PR = "r57"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -38,10 +38,13 @@ ALTERNATIVE_LINK = "${base_sbindir}/init"
 ALTERNATIVE_PATH = "${base_sbindir}/init.sysvinit"
 ALTERNATIVE_PRIORITY = "60"
 
-PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
+PACKAGES =+ "sysvinit-utils sysvinit-pidof sysvinit-sulogin"
 FILES_${PN} += "${base_sbindir}/* ${base_bindir}/*"
 FILES_sysvinit-pidof = "${base_bindir}/pidof.sysvinit"
 FILES_sysvinit-sulogin = "${base_sbindir}/sulogin"
+FILES_sysvinit-utils = "${bindir}/last.${PN} ${bindir}/mesg.${PN} ${bindir}/wall.${PN} ${base_sbindir}/shutdown.${PN} ${bindir}/lastb ${bindir}/utmpdump ${base_sbindir}/runlevel"
+RRECOMMENDS_${PN} = "sysvinit-utils"
+RRECOMMENDS_${PN}_micro = ""
 
 CFLAGS_prepend = "-D_GNU_SOURCE "
 export LCRYPT = "-lcrypt"
@@ -108,21 +111,29 @@ pkg_postinst_${PN} () {
 #!/bin/sh
 update-alternatives --install ${base_sbindir}/halt halt halt.${PN} 200
 update-alternatives --install ${base_sbindir}/reboot reboot reboot.${PN} 200
-update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 200
 update-alternatives --install ${base_sbindir}/poweroff poweroff poweroff.${PN} 200
+}
+
+pkg_postinst_sysvinit-utils () {
+#!/bin/sh
 update-alternatives --install ${bindir}/last last last.${PN} 200
 update-alternatives --install ${bindir}/mesg mesg mesg.${PN} 200
 update-alternatives --install ${bindir}/wall wall wall.${PN} 200
+update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 200
 }
 
 pkg_prerm_${PN} () {
 #!/bin/sh
 update-alternatives --remove halt halt.${PN}
 update-alternatives --remove reboot reboot.${PN}
-update-alternatives --remove shutdown shutdown.${PN}
+}
+
+pkg_prerm_sysvinit-utils () {
+#!/bin/sh
 update-alternatives --remove last last.${PN}
 update-alternatives --remove mesg mesg.${PN}
 update-alternatives --remove wall wall.${PN}
+update-alternatives --remove shutdown shutdown.${PN}
 }
 
 pkg_postinst_sysvinit-pidof () {

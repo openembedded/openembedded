@@ -18,8 +18,8 @@
   killproc ${ZD_BINDIR}/matchbox-stroke
   
   if [ -x ${ZD_BINDIR}/xrandr ]; then
-  	if ! ( xrandr | awk '{print $4}' | grep -q normal )
+  	if ! ( xrandr | awk '{print $4}' | grep -q $XRANDR_LANDSCAPE )
 	then
-		${ZD_BINDIR}/xrandr -o normal 
+		${ZD_BINDIR}/xrandr -o $XRANDR_LANDSCAPE
 	fi
   fi

@@ -41,4 +41,3 @@ http://www.bitshrine.org/gpp/u-boot-1.2.0-mpc8315erdb-improve-ddr-performance.pa
 http://www.bitshrine.org/gpp/u-boot-1.2.0-mpc8315erdb-fix-PCI-IO-base.patch;patch=1 \ 
 "
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"

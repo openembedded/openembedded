@@ -1,7 +1,8 @@
 LICENSE = "LGPLv2.1"
 
-SRCREV = "6a498c374d176be0ed3ef2cd9b2381f452af1de8"
+SRCREV = "73958e79f0ad69dd4e63cb8e697bd80ecee1cc34"
 PV = "0.8.0"
+PR = "r1"
 PR_append = "+git${SRCREV}"
 
 DEPENDS = "glib-2.0 gtk+ libccss clutter-0.9"

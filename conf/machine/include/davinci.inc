@@ -1,16 +1,15 @@
 require conf/machine/include/tune-arm926ejs.inc
 
 # Increase this everytime you change something in the kernel
-MACHINE_KERNEL_PR = "r6"
+MACHINE_KERNEL_PR = "r8"
 
 TARGET_ARCH = "arm"
 
 KERNEL_IMAGETYPE = "uImage"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-davinci"
-PREFERRED_PROVIDER_xserver = "xserver-kdrive"
 
-PREFERRED_VERSION_u-boot = "git"
+PREFERRED_PROVIDER_virtual/bootloader = "u-boot"
 UBOOT_MACHINE = "davinci_dvevm_config"
 
 UBOOT_ENTRYPOINT = "0x80008000"

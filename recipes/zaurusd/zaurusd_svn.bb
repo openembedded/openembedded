@@ -1,10 +1,10 @@
-DESCRIPTION = "Daemon to handle device specifc features."
+DESCRIPTION = "Daemon to handle device specific features."
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "tslib"
 RDEPENDS = "procps"
 PV = "0.0+svn${SRCDATE}"
-PR = "r20"
+PR = "r22"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
@@ -12,7 +12,8 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
 	   file://alsa-cxx00-default.state.patch;patch=1 \
 	   file://alsa-6000x-default.state.patch;patch=1 \
 	   file://disable-alsa-handling.patch;patch=1 \
-	   file://zaurus-hinge.matchbox-portrait \	   
+	   file://avoid-rotated-server.patch;patch=1 \
+	   file://zaurus-hinge.matchbox-portrait \
 	   file://zaurus-hinge.matchbox-landscape \
 	   file://zaurus-hinge.bl-on \
 	   file://zaurus-hinge.bl-off \

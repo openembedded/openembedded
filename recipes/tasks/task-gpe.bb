@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
-PR = "r6"
+PR = "r7"
 LICENSE = "MIT"
 
 inherit task
@@ -73,8 +73,9 @@ RDEPENDS_gpe-task-settings = "\
     gpe-taskmanager \
     keylaunch \
     minilite \
-    minimix \
-    xmonobut"
+    minimix"
+
+# xmonobut unfetchable, removed
 
 RDEPENDS_gpe-task-apps = "\
     gpe-edit \

@@ -17,3 +17,21 @@
  	ICMP6_FILTER_SETBLOCKALL(&filter);
  
  	if (!working_recverr) {
+--- /tmp/ping6.c	2009-06-15 19:13:57.000000000 +0200
++++ iputils_20071127.orig/ping6.c	2009-06-15 19:14:40.000000000 +0200
+@@ -415,14 +415,9 @@
+ 			exit(2);
+ 		}
+ 		cmsg = (struct cmsghdr*)(cmsgbuf+cmsglen);
+-		cmsglen += CMSG_SPACE(sizeof(*ipi));
+-		cmsg->cmsg_len = CMSG_LEN(sizeof(*ipi));
++		cmsglen += CMSG_SPACE(sizeof(ipi));
+ 		cmsg->cmsg_level = SOL_IPV6;
+ 		cmsg->cmsg_type = IPV6_PKTINFO;
+-
+-		ipi = (struct in6_pktinfo*)CMSG_DATA(cmsg);
+-		memset(ipi, 0, sizeof(*ipi));
+-		ipi->ipi6_ifindex = ifr.ifr_ifindex;
+ 	}
+ 
+ 	if ((whereto.sin6_addr.s6_addr16[0]&htons(0xff00)) == htons (0xff00)) {

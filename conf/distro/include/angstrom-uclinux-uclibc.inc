@@ -10,8 +10,8 @@ TARGET_OS_UC = "uclinux${@['-uclibc','-uclibcgnueabi'][bb.data.getVar('TARGET_AR
 
 #mess with compiler flags to use -Os instead of -O2
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
-FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
-BUILD_OPTIMIZATION = "-Os"
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb3"
+BUILD_OPTIMIZATION = "-O2 -ggdb3"
 
 #Gcc will die with 'internal consistency error when using the above optimizations
 FULL_OPTIMIZATION_avr32 = ""

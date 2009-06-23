@@ -1,12 +1,12 @@
-LICENSE     = "LGPL"
 DESCRIPTION = "Implementation of the Stringprep, Punycode and IDNA specifications defined by the IETF Internationalized Domain Names (IDN) working group."
 SECTION = "libs"
-PRIORITY    = "optional"
-PR          = "r0"
+PRIORITY = "optional"
+LICENSE = "LGPL"
+PR = "r0"
 
 inherit pkgconfig autotools
 
-SRC_URI = "http://josefsson.org/libidn/releases/${P}.tar.gz"
+SRC_URI = "http://alpha.gnu.org/gnu/libidn/libidn-${PV}.tar.gz"
 
 EXTRA_OECONF = " --disable-tld"
 

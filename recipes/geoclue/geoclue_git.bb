@@ -1,42 +1,31 @@
 DESCRIPTION = "GeoClue is a project that provide all kinds of geography information to an application"
-HOMEPAGE = "http://live.gnome.org/GeoClue"
+HOMEPAGE = "http://www.freedesktop.org/wiki/Software/GeoClue"
 
-DEPENDS = "libgpsmgr libgpsbt  gtk+ gpsd libxml2 gconf-dbus libsoup dbus-glib"
+DEPENDS = "libgpsmgr libgpsbt gtk+ gypsy libxml2 gconf-dbus libsoup dbus-glib"
 
-PV = "0.0+git${SRCDATE}"
-PR = "r1"
+SRCREV = "3a31d260074397a968afaf1065856ab763befb01"
+PV = "0.11.1"
+PR_append = "+gitr${SRCREV}"
 PE = "1"
 
-inherit autotools pkgconfig
+inherit gnome autotools_stage
 
-SRC_URI = "git://anongit.freedesktop.org/git/geoclue;protocol=git"
+SRC_URI = "git://anongit.freedesktop.org/git/geoclue;protocol=git \
+           file://gtk-doc.make"
 
 S = "${WORKDIR}/git"
 
 
 LDFLAGS_append = " -lgthread-2.0 "
 
-EXTRA_OECONF = " --enable-applet=no \
-                 --enable-gpsd \
+EXTRA_OECONF = " \
 		 --enable-system-bus"
 
-do_stage() {
-	autotools_stage_all
+do_configure_prepend() {
+	cp ${WORKDIR}/gtk-doc.make ${S}
 }
-
-do_install_append() {
-	mkdir -p ${D}/usr/share/
-	cp -pPr ${D}${STAGING_DATADIR}/* ${D}/usr/share
-	rm -rf ${D}${STAGING_DATADIR}/
-}
-
-PACKAGES =+ "geoclue-applet"
-
-FILES_geoclue-applet += " \
-			${libdir}/bonobo/servers/* \
-			${libdir}/gnome-panel/*"
 
 
 FILES_${PN} += " \
-		${libdir}/gnome-panel/* \
-		${datadir}/dbus-1"
+		   ${datadir}/geoclue-providers/ \
+           ${datadir}/dbus-1"

@@ -25,6 +25,6 @@ IMAGE_INSTALL = "\
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 #zap root password for release images
-ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'
+ROOTFS_POSTPROCESS_COMMAND += 'install_linguas; ${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'
 
 inherit image

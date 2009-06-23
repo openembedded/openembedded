@@ -3,7 +3,7 @@ SECTION = "console/utils"
 DEPENDS = "ncurses"
 LICENSE = "vim"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"
@@ -32,6 +32,6 @@ FILES_vim-tutor = "${datadir}/vim/vim${VIMVER}/tutor ${bindir}/vimtutor"
 #	       /bin /sbin /lib/*/ /lib/*.so* ${datadir}/vim"
 
 ALTERNATIVE_NAME = "vi"
-ALTERNATIVE_PATH = "vim"
+ALTERNATIVE_PATH = "${bindir}/vim"
 ALTERNATIVE_LINK = "${base_bindir}/vi"
 ALTERNATIVE_PRIORITY = "100"

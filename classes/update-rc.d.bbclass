@@ -1,5 +1,5 @@
 DEPENDS_append = " update-rc.d"
-RDEPENDS_append = " update-rc.d"
+RDEPENDS_${PN}_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "update-rc.d", d)}"
 
 INITSCRIPT_PARAMS ?= "defaults"
 

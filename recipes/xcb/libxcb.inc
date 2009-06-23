@@ -7,7 +7,8 @@ PARALLEL_MAKE = ""
 DEPENDS = "xcb-proto xproto libxau libxslt-native"
 # DEPENDS += "xsltproc-native gperf-native"
 
-SRC_URI = "http://xcb.freedesktop.org/dist/libxcb-${PV}.tar.bz2"
+SRC_URI = "http://xcb.freedesktop.org/dist/libxcb-${PV}.tar.bz2 \
+        file://configure.patch;patch=1;pnum=0"
 
 PACKAGES =+ "libxcb-composite libxcb-damage libxcb-dpms libxcb-glx \
              libxcb-randr libxcb-record libxcb-render libxcb-res \
@@ -40,6 +41,8 @@ FILES_libxcb-xv = "${libdir}/libxcb-xv.so.*"
 FILES_libxcb-xvmc = "${libdir}/libxcb-xvmc.so.*"
 
 inherit autotools pkgconfig
+
+EXTRA_OECONF = "STAGING_DIR=${STAGING_DIR_HOST}"
 
 do_stage() {
 	autotools_stage_all

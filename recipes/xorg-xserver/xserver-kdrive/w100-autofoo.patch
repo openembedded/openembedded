@@ -1,3 +1,5 @@
+upstream: http://bugs.freedesktop.org/show_bug.cgi?id=15882
+
 Index: git/hw/kdrive/Makefile.am
 ===================================================================
 --- git.orig/hw/kdrive/Makefile.am	2006-09-02 12:12:13.000000000 +0200

@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r19"
+PR = "${INC_PR}.1"
 
 SRC_URI += "file://wget-long-options.patch;patch=1 \
 	   file://df_rootfs.patch;patch=1 \

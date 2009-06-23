@@ -1,0 +1,13 @@
+group "Mixer_Module_Config" struct {
+  value "version" int: 3;
+  value "default_gc_id" string: "mixer.0";
+  group "gadgets" hash {
+    key "mixer.0";
+    group "Mixer_Gadget_Config" struct {
+      value "lock_sliders" int: 1;
+      value "show_locked" int: 0;
+      value "card" string: "hw:0";
+      value "channel_name" string: "Carkit";
+    }
+  }
+}

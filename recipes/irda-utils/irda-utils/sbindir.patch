@@ -1,0 +1,40 @@
+upstream: oe-only
+
+diff -upr irda-utils-0.9.16.old/irattach/Makefile irda-utils-0.9.16/irattach/Makefile
+--- irda-utils-0.9.16.old/irattach/Makefile	2009-06-13 12:54:18.000000000 +0100
++++ irda-utils-0.9.16/irattach/Makefile	2009-06-13 12:51:58.000000000 +0100
+@@ -62,8 +62,8 @@ dongle_attach: dongle_attach.o
+ 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+ 
+ install: $(TARGETS)
+-	install irattach $(ROOT)/usr/sbin
+-	install dongle_attach $(ROOT)/usr/sbin
++	install irattach $(ROOT)$(sbindir)
++	install dongle_attach $(ROOT)$(sbindir)
+ 
+ clean:
+ 	$(RM_CMD)
+diff -upr irda-utils-0.9.16.old/irdaping/Makefile irda-utils-0.9.16/irdaping/Makefile
+--- irda-utils-0.9.16.old/irdaping/Makefile	2009-06-13 12:54:18.000000000 +0100
++++ irda-utils-0.9.16/irdaping/Makefile	2009-06-13 12:52:15.000000000 +0100
+@@ -58,7 +58,7 @@ irdaping: $(OBJS)
+ 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+ 
+ install: all
+-	install irdaping $(ROOT)/usr/sbin
++	install irdaping $(ROOT)$(sbindir)
+ 
+ clean::
+ 	$(RM_CMD)
+diff -upr irda-utils-0.9.16.old/Makefile irda-utils-0.9.16/Makefile
+--- irda-utils-0.9.16.old/Makefile	2004-03-31 22:55:40.000000000 +0100
++++ irda-utils-0.9.16/Makefile	2009-06-13 12:51:37.000000000 +0100
+@@ -40,7 +40,7 @@ all:
+ 
+ install:
+ 	for i in $(DIRS); do \
+-		cd $$i;make install; cd ..; \
++		cd $$i;make bindir="$(bindir)" sbindir="$(sbindir)" install; cd ..; \
+ 	done
+ 
+ clean:

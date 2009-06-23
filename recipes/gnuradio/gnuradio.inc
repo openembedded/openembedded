@@ -1,8 +1,9 @@
 DESCRIPTION = "GNU Radio"
 SECTION =  "apps"
 PRIORITY = "optional"
-LICENSE = "GPL"
-DEPENDS = "guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
+LICENSE = "GPLv3"
+DEPENDS = "libusb guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
+INC_PR = "r7"
 
 inherit distutils-base autotools autotools_stage pkgconfig
 
@@ -12,6 +13,7 @@ export HOST_SYS=${MULTIMACH_TARGET_SYS}
 CXXFLAGS_powerpc += "-lstdc++"
 
 EXTRA_OECONF = " \
+  --program-prefix= \
   ${GR_CPU_SELECTION} \
   --disable-gr-atsc \
   --enable-gr-video-sdl \
@@ -43,6 +45,9 @@ do_buildlibusb() {
     cd ${WORKDIR}
 }
 
+addtask buildlibusb before do_configure after do_unpack
+
+do_buildlibusb[deptask] = "do_populate_staging"
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/acinclude.m4 ] ; then
@@ -52,6 +57,11 @@ do_configure_prepend() {
 
 do_configure_append() {
 	find ${S} -name Makefile | xargs sed -i s:'-I/usr/include':'-I${STAGING_INCDIR}':g
+}
+
+do_stage() {
+	autotools_stage_all
+	sed -i s,-l:libusb-gnur.a,,g ${STAGING_LIBDIR}/libusrp.la
 }
 
 RDEPENDS_${PN} = "python-core python-audio python-threading python-codecs python-lang python-textutils \
@@ -91,9 +101,10 @@ FILES_libgromnithread = "${libdir}/libgromnithread.so*"
 
 FILES_${PN} += "${libdir}/python*/site-packages/gnuradio/*"
 FILES_${PN}-dbg += "${libdir}/python*/site-packages/gnuradio/.debug \
-                   ${libdir}/python*/site-packages/gnuradio/*/.debug \
+                    ${libdir}/python*/site-packages/gnuradio/*/.debug \
 		   "
 
-FILES_gnuradio-usrp = "${libdir}/python*/site-packages/usrpm/* \
+FILES_gnuradio-usrp = "${libdir}/python*/site-packages/usrp/* \
+                       ${bindir}/usrp* \
                        ${datadir}/usrp/*/*"
-FILES_gnuradio-usrp-dbg = "${libdir}/python*/site-packages/usrpm/.debug"
+FILES_gnuradio-usrp-dbg = "${libdir}/python*/site-packages/usrp/.debug"

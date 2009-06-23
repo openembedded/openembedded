@@ -1,9 +1,9 @@
 #!/bin/sh
 
   if [ -x ${ZD_BINDIR}/xrandr ]; then
-  	if ! ( xrandr | awk '{print $4}' | grep -q left )
+  	if ! ( xrandr | awk '{print $4}' | grep -q $XRANDR_PORTRAIT )
 	then
-		${ZD_BINDIR}/xrandr -o left 
+		${ZD_BINDIR}/xrandr -o $XRANDR_PORTRAIT
 	fi
   fi
   # just to be extra safe

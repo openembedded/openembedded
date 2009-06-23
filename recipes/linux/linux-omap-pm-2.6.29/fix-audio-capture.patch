@@ -1,0 +1,51 @@
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index ee2f0d3..8b4aafb 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -45,8 +45,8 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
+ 	0xc3, /* REG_OPTION		(0x2)	*/
+ 	0x00, /* REG_UNKNOWN		(0x3)	*/
+ 	0x00, /* REG_MICBIAS_CTL	(0x4)	*/
+-	0x20, /* REG_ANAMICL		(0x5)	*/
+-	0x00, /* REG_ANAMICR		(0x6)	*/
++	0x34, /* REG_ANAMICL		(0x5)	*/
++	0x14, /* REG_ANAMICR		(0x6)	*/
+ 	0x00, /* REG_AVADC_CTL		(0x7)	*/
+ 	0x00, /* REG_ADCMICSEL		(0x8)	*/
+ 	0x00, /* REG_DIGMIXING		(0x9)	*/
+
+--- /tmp/Kconfig	2009-06-20 13:13:21.000000000 +0200
++++ git/sound/soc/omap/Kconfig	2009-06-20 13:14:02.000000000 +0200
+@@ -15,6 +15,14 @@
+ 	help
+ 	  Say Y if you want to add support for SoC audio on Nokia N810.
+ 
++config SND_OMAP_SOC_OMAP3_BEAGLE
++	tristate "SoC Audio support for OMAP3 Beagle"
++	depends on SND_OMAP_SOC && MACH_OMAP3_BEAGLE
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_TWL4030
++	help
++	  Say Y if you want to add support for SoC audio on the Beagleboard.
++
+ config SND_OMAP_SOC_OSK5912
+ 	tristate "SoC Audio support for omap osk5912"
+ 	depends on SND_OMAP_SOC && MACH_OMAP_OSK
+--- /tmp/Makefile	2009-06-23 08:37:40.000000000 +0200
++++ git/sound/soc/omap/Makefile	2009-06-23 08:38:38.000000000 +0200
+@@ -7,6 +7,7 @@
+ 
+ # OMAP Machine Support
+ snd-soc-n810-objs := n810.o
++snd-soc-omap3beagle-objs := omap3beagle.o
+ snd-soc-osk5912-objs := osk5912.o
+ snd-soc-overo-objs := overo.o
+ snd-soc-omap2evm-objs := omap2evm.o
+@@ -14,6 +15,7 @@
+ snd-soc-omap3pandora-objs := omap3pandora.o
+ 
+ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
++obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+ obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
+ obj-$(CONFIG_MACH_OMAP2EVM) += snd-soc-omap2evm.o

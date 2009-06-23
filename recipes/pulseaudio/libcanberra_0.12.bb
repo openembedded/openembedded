@@ -2,7 +2,7 @@ DESCRIPTION = "Libcanberra is an implementation of the XDG Sound Theme and Name 
 LICENSE = "LGPL"
 DEPENDS = "gtk+ pulseaudio alsa-lib gstreamer"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome
 
@@ -18,6 +18,8 @@ do_configure() {
 FILES_${PN} += "${libdir}/gtk-2.0/modules/ ${datadir}/gnome ${libdir}/*/*.so"
 FILES_${PN}-dbg += "${libdir}/gtk-2.0/modules/.debug ${libdir}/*/.debug"
 FILES_${PN}-dev += "${libdir}/*/*.a"
+
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_stage() {
 	autotools_stage_all

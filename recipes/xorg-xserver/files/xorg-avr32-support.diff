@@ -1,3 +1,5 @@
+upstream: applied in 82b37d35af13a9f402755e167493ab256b664b9c (2008-04-22)
+
 --- /tmp/servermd.h	2007-09-30 17:27:22.310911628 +0200
 +++ xorg-server-1.4/include/servermd.h	2007-09-30 17:28:25.297799199 +0200
 @@ -130,6 +130,16 @@

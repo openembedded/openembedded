@@ -19,7 +19,7 @@ do_compile () {
 	oe_runmake 'SUBDIRS=${SUBDIRS}'
 }
 
-inherit autotools
+inherit autotools gettext
 
 acpaths = "-I ${WORKDIR}/config"
 

@@ -1,3 +1,5 @@
+upstream: not applicable to upstream
+
 --- xserver/include/site.h-orig	2006-11-02 10:37:14.000000000 +0000
 +++ xserver/include/site.h	2006-11-02 10:37:14.000000000 +0000
 @@ -117,8 +117,8 @@

@@ -1,10 +1,10 @@
 DESCRIPTION = "Framebuffer console driver for displaylink based usb devices"
 LICENSE = "GPLv2"
 
-PV = "0.2"
+PV = "0.2.3"
 
 SRC_URI = "file://udlfb.c \
-           file://dlfb.h \
+           file://udlfb.h \
            file://Makefile \
 "
 

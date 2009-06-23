@@ -16,4 +16,5 @@ DEPENDS = ""
 
 do_stage () {
         oe_runmake install
+        install ${S}/lib/et/compile_et ${STAGING_BINDIR_NATIVE}
 }

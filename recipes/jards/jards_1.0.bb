@@ -4,8 +4,8 @@ HOMEPAGE = "http://gakusei.sf.net"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "virtual/japanese-font qte-mt libpng (>= 1) kpengine"
-PR = "r7"
+RDEPENDS = "virtual-japanese-font qte-mt libpng (>= 1) kpengine"
+PR = "r8"
 
 #  stuff that still needs fixing
 #) is the RDEPENDS line correct and sufficient?

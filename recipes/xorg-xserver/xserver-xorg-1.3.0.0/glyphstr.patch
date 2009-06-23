@@ -1,3 +1,8 @@
+upstream: https://bugs.freedesktop.org/show_bug.cgi?id=22133
+status: Rejected
+comment: It's a bit unclear if this patch was ever needed, but recent versions seem
+ to work fine without it.
+
 --- xorg-server-1.3.0.0/render/glyphstr.h~	2006-09-18 03:04:18.000000000 -0300
 +++ xorg-server-1.3.0.0/render/glyphstr.h	2008-02-03 22:14:23.187159732 -0200
 @@ -25,6 +25,7 @@

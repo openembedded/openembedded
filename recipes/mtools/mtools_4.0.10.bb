@@ -18,3 +18,9 @@ S = "${WORKDIR}/mtools-${PV}"
 inherit autotools
 
 EXTRA_OECONF = "--without-x"
+
+do_fix_perms() {
+	chmod 644 ${S}/*.c ${S}/*.h
+}
+
+addtask fix_perms after do_unpack before do_patch

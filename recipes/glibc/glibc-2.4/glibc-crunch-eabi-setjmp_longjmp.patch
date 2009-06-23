@@ -1,0 +1,112 @@
+--- glibc-2.5/ports/sysdeps/arm/eabi/setjmp.S	2006-09-22 04:39:51.000000000 +1000
++++ glibc-2.5/ports/sysdeps/arm/eabi/setjmp.S	2007-05-24 13:31:20.000000000 +1000
+@@ -74,6 +74,34 @@
+ 	stcl	p1, cr15, [r12], #8
+ Lno_iwmmxt:
+ 
++	tst	a3, #HWCAP_ARM_CRUNCH
++	beq	Lno_crunch
++
++	/* Save the call-preserved crunch registers.  */
++	/* Following instructions are cfstrd cr10, [ip], #8 (etc.)  */
++	/* stcl	p4, cr4,  [r12], #8 */
++	/* stcl	p4, cr5,  [r12], #8 */
++	/* stcl	p4, cr6,  [r12], #8 */
++	/* stcl	p4, cr7,  [r12], #8 */
++	stcl	p4, cr8,  [r12], #8
++	stcl	p4, cr9,  [r12], #8
++	stcl	p4, cr10, [r12], #8
++	stcl	p4, cr11, [r12], #8
++	stcl	p4, cr12, [r12], #8
++	stcl	p4, cr13, [r12], #8
++	stcl	p4, cr14, [r12], #8
++	stcl	p4, cr15, [r12], #8
++	/* Store the floating-point status register.
++	/* Following 6 instructions are FPU_CRUNCH_GETCW (r2) clob (r3, r4) */
++	/* mrc p5, 0, r3, cr0, cr0, 0 */
++	/* mrc p5, 0, r4, cr0, cr0, 1 */
++	/* cdp p4, 0, cr0, cr0, cr0, 7 */
++	/* mrc p5, 0, r2, cr0, cr0, 0 */
++	/* mcr p5, 0, r3, cr0, cr0, 0 */
++	/* mcr p5, 0, r4, cr0, cr0, 1 */
++	/* str	r2, [ip], #4 */
++Lno_crunch:
++
+ 	/* Make a tail call to __sigjmp_save; it takes the same args.  */
+ 	B	PLTJMP(C_SYMBOL_NAME(__sigjmp_save))
+ 
+--- glibc-2.5/ports/sysdeps/arm/eabi/__longjmp.S	2006-09-22 04:39:51.000000000 +1000
++++ glibc-2.5/ports/sysdeps/arm/eabi/__longjmp.S	2007-05-24 13:31:23.000000000 +1000
+@@ -76,6 +76,34 @@
+ 	ldcl	p1, cr15, [r12], #8
+ Lno_iwmmxt:
+ 
++	tst	a2, #HWCAP_ARM_CRUNCH
++	beq	Lno_crunch
++
++	/* Restore the call-preserved crunch registers.  */
++	/* Following instructions are cfldrd cr10, [ip], #8 (etc.)  */
++	/* ldcl	p4, cr4,  [r12], #8 */
++	/* ldcl	p4, cr5,  [r12], #8 */
++	/* ldcl	p4, cr6,  [r12], #8 */
++	/* ldcl	p4, cr7,  [r12], #8 */
++	ldcl	p4, cr8,  [r12], #8
++	ldcl	p4, cr9,  [r12], #8
++	ldcl	p4, cr10, [r12], #8
++	ldcl	p4, cr11, [r12], #8
++	ldcl	p4, cr12, [r12], #8
++	ldcl	p4, cr13, [r12], #8
++	ldcl	p4, cr14, [r12], #8
++	ldcl	p4, cr15, [r12], #8
++	/* Restore the floating-point status register.  */
++	ldr     r1, [ip], #4
++	/* Following 6 instructions are FPU_CRUNCH_SETCW (r1) clob (r2, r3).  */
++	/* mrc p5, 0, r2, cr0, cr0, 0 */
++	/* mrc p5, 0, r3, cr0, cr0, 1 */
++	/* mcr p5, 0, r1, cr0, cr0, 0 */
++	/* cdp p4, 1, cr0, cr0, cr0, 7 */
++	/* mcr p5, 0, r2, cr0, cr0, 0 */
++	/* mcr p5, 0, r3, cr0, cr0, 1 */
++Lno_crunch:
++
+ 	DO_RET(lr)
+ 
+ #ifdef IS_IN_rtld
+--- glibc-2.5/ports/sysdeps/unix/sysv/linux/arm/sysdep.h	2006-09-22 04:39:51.000000000 +1000
++++ glibc-2.5/ports/sysdeps/unix/sysv/linux/arm/sysdep.h	2007-05-24 12:59:03.000000000 +1000
+@@ -48,6 +48,7 @@
+ #define HWCAP_ARM_EDSP		128
+ #define HWCAP_ARM_JAVA		256
+ #define HWCAP_ARM_IWMMXT	512
++#define HWCAP_ARM_CRUNCH  1024
+ 
+ #ifdef __ASSEMBLER__
+ 
+--- glibc-2.5/ports/sysdeps/unix/sysv/linux/arm/dl-procinfo.c	2007-07-02 13:20:36.000000000 +1000
++++ glibc-2.5/ports/sysdeps/unix/sysv/linux/arm/dl-procinfo.c	2007-07-02 13:23:19.000000000 +1000
+@@ -47,12 +47,12 @@
+ #if !defined PROCINFO_DECL && defined SHARED
+   ._dl_arm_cap_flags
+ #else
+-PROCINFO_CLASS const char _dl_arm_cap_flags[10][10]
++PROCINFO_CLASS const char _dl_arm_cap_flags[11][10]
+ #endif
+ #ifndef PROCINFO_DECL
+ = {
+     "swp", "half", "thumb", "26bit", "fast-mult", "fpa", "vfp", "edsp",
+-    "java", "iwmmxt",
++    "java", "iwmmxt", "crunch",
+   }
+ #endif
+ #if !defined SHARED || defined PROCINFO_DECL
+--- glibc-2.5/ports/sysdeps/unix/sysv/linux/arm/dl-procinfo.h	2007-07-02 13:25:23.000000000 +1000
++++ glibc-2.5/ports/sysdeps/unix/sysv/linux/arm/dl-procinfo.h	2007-07-02 13:25:38.000000000 +1000
+@@ -24,7 +24,7 @@
+ #include <ldsodefs.h>
+ #include <sysdep.h>
+ 
+-#define _DL_HWCAP_COUNT 10
++#define _DL_HWCAP_COUNT 11
+ 
+ /* The kernel provides platform data but it is not interesting.  */
+ #define _DL_HWCAP_PLATFORM 	0

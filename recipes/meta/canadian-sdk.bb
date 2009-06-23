@@ -56,7 +56,6 @@ do_populate_sdk() {
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
 
-	package_update_index_ipk
 	package_generate_ipkg_conf
 
 	for arch in ${PACKAGE_ARCHS}; do
@@ -170,5 +169,5 @@ do_populate_sdk() {
 }
 
 do_populate_sdk[nostamp] = "1"
-do_populate_sdk[recrdeptask] = "do_package_write"
+addtask package_update_index_ipk before do_populate_sdk
 addtask populate_sdk before do_build after do_install
