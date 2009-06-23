@@ -177,6 +177,7 @@ do
                       gzip \
                       hal \
                       hexatrolic \
+                      htop \
                       i2c-tools \
                       iaimaster \
                       icebloxx \
@@ -190,6 +191,7 @@ do
                       iscsi-target \
                       ivman \
                       jamvm \
+                      kernel-module-udlfb \
                       kismet \
                       konqueror-embedded \
                       labyrinth \
@@ -239,6 +241,8 @@ do
                       openvpn \
                       opie-notes \
                       orage \
+                      padevchooser \
+                      pavucontrol \
                       palantir \
                       pairs \
                       pciutils \
@@ -333,6 +337,7 @@ do
                       xf86-input-mouse \
                       xf86-input-tslib \
                       xf86-video-ati \
+                      xf86-video-displaylink \
                       xf86-video-fbdev \
                       xf86-video-sisusb \
                       xf86-video-vesa \
@@ -359,6 +364,7 @@ do
                       zenity \
                       zgscore \
                       zhone \
+                      zip \
                       ziq \
                       zlapspeed \
                       zrev7 \
