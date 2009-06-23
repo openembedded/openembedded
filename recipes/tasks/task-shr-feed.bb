@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r17"
+PR = "r18"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -193,4 +193,5 @@ RDEPENDS_${PN} += "\
 		fso-apm \
 		fso-abyss \
 		fsousaged \
+		opimd-utils \
 "
