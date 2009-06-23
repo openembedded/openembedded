@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.netperf.org/"
 LICENSE = "netperf"
 PR = "r1"
 
-SRC_URI="ftp://ftp.netperf.org/netperf/netperf-${PV}.tar.bz2 \
+SRC_URI="ftp://ftp.netperf.org/netperf/archive/netperf-${PV}.tar.bz2 \
          file://cpu_set.patch;patch=1 \
          file://init"
 
