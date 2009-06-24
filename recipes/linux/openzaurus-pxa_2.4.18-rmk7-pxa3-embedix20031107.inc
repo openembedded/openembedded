@@ -7,7 +7,6 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
-COMPATIBLE_MACHINE = "(poodle|corgi|shepherd|husky|poodle255|tosa)"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
@@ -89,7 +88,11 @@ EXTRA_OEMAKE = " EMBEDIXRELEASE=-${DISTRO_VERSION}"
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(corgi|husky|shepherd|poodle|poodle255)'
+
+# For these old 2.4 kernels we override in sharprom-compatible.conf
+#COMPATIBLE_MACHINE = "(poodle|corgi|shepherd|husky|poodle255|tosa)"
+COMPATIBLE_MACHINE = "none"
+
 PARALLEL_MAKE = ""
 
 #

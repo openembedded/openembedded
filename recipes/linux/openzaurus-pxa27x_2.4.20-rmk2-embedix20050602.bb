@@ -5,7 +5,6 @@ PV = "2.4.20-rmk2-embedix"
 LICENSE = "GPL"
 KV = "2.4.20"
 PR = "r18"
-COMPATIBLE_MACHINE = "(akita|spitz)"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3100/20050602/linux-c3100-20050602-rom1_01.tar.bz2 \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
@@ -76,7 +75,11 @@ EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(akita|spitz|borzoi)'
+
+# For these old 2.4 kernels we override in sharprom-compatible.conf
+#COMPATIBLE_MACHINE = "(akita|spitz|borzoi)"
+COMPATIBLE_MACHINE = "none"
+
 PARALLEL_MAKE = ""
 
 #
