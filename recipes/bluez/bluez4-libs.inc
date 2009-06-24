@@ -1,10 +1,9 @@
-DESCRIPTION = "Linux Bluetooth Stack Userland V4"
+DESCRIPTION = "Linux Bluetooth Stack Userland libraries V4"
 SECTION = "libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-
-DEFAULT_PREFERENCE = "-1"
+INC_PR = "r1"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
         file://avinfo-link.patch;patch=1;pnum=0"
