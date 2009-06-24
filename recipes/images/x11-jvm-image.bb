@@ -12,7 +12,7 @@ ADD_JVM = "\
     classpath \
     classpath-common \
     classpath-dev \
-    classpath-example \
+    classpath-examples \
     classpath-gconf \
     classpath-gtk \
     classpath-tools \
@@ -29,8 +29,8 @@ IMAGE_INSTALL = "\
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
     ${SPLASH} \
-    $(ADD_JVM) \
-    $(ADD_OTHER) \
+    ${ADD_JVM} \
+    ${ADD_OTHER} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
