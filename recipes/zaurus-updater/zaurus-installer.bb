@@ -1,5 +1,6 @@
 DESCRIPTION = "Installkit for kexecboot-kernel"
 DEPENDS = "${@base_conditional('MACHINE', 'collie', 'linux-kexecboot', 'zaurus-updater linux-kexecboot', d)}"
+LICENSE = "zaurus-installer"
 PR = "r1"
 
 PACKAGES = ""
