@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r18"
+PR = "r19"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -52,7 +52,6 @@ RDEPENDS_${PN} += "\
 		shr-splash \
 		shr-splash-theme-simple \
 		shr-splash-theme-dontpanic \
-		shr-splash-theme-dociswatchingyou \
 		shr-splash-theme-handy \
 		openbmap-logger \
 		ffalarms \
