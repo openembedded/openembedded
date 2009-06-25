@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r24"
+PR = "r25"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -31,7 +31,7 @@ RDEPENDS_shr = "\
   python-textutils \
   python-dbus \
   python-pygobject \
-  pypthon-elementary \
+  python-elementary \
   dbus-x11 \
   task-fso-compliance \
   elementary \

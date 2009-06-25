@@ -100,7 +100,6 @@ shr_rootfs_postprocess() {
     [ -d ./etc/modutils ] || mkdir ./etc/modutils
     echo "g_ether" > ./etc/modutils/g_ether
     echo "ppp_generic" > ./etc/modutils/ppp_generic
-    echo "snd_pcm_oss" > ./etc/modutils/snd_pcm_oss
 
     #set up some variables to improve default settings
     echo "export DISPLAY=localhost:0" >> ./etc/profile

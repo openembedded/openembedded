@@ -2,8 +2,8 @@ DESCRIPTION = "Call recodering program for Neo Smartphones"
 SECTION = "utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python python-pygtk python-xml python-netclient pydes"
-PR="r1"
+RDEPENDS = "python python-pygtk python-xml python-netclient pydes python-audio"
+PR="r2"
 
 ARCH_pyring = "all"
 

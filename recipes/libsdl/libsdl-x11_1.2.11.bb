@@ -3,7 +3,7 @@ require libsdl.inc
 # extra-keys.patch is missing
 DEFAULT_PREFERENCE = "-1" 
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
@@ -16,7 +16,7 @@ SRC_URI = "\
 "
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
-                --enable-file --enable-oss --enable-alsa --disable-esd --disable-arts \
+                --enable-file --disable-oss --enable-alsa --disable-esd --disable-arts \
                 --disable-diskaudio --disable-nas --disable-esd-shared --disable-esdtest \
                 --disable-mintaudio --disable-nasm --enable-video-x11 --disable-video-dga \
                 --enable-video-fbcon --disable-video-directfb --disable-video-ps2gs \
