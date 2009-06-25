@@ -3,7 +3,7 @@ LICENSE = "GPL"
 
 PR = "r0"
 PV = "0.8cvs${SRCDATE}"
-SRCDATE = "20090601"
+SRCDATE = "20090625"
 SRC_URI="cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/aio-grab;module=aio-grab;method=pserver"
 
 S = "${WORKDIR}/aio-grab"
