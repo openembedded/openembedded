@@ -3,7 +3,7 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
 DEPENDS = "gstreamer libcdio libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib neon flac"
-PR = "r0"
+PR = "r3"
 
 inherit autotools pkgconfig
 

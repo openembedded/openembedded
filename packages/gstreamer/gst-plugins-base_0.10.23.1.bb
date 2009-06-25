@@ -5,7 +5,6 @@ RREPLACES_gst-plugins-base = "libgstapp-0.10-0"
 EXTRA_OECONF += "--with-audioresample-format=int"
 RDEPENDS += "gstreamer (>= ${PV})"
 
-PR = "r2"
 SRCDATE = "20090606"
 REL = "0.10.23"
 
