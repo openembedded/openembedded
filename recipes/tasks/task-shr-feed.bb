@@ -193,4 +193,7 @@ RDEPENDS_${PN} += "\
 		fso-abyss \
 		fsousaged \
 		opimd-utils \
+		omgps \
+		shr-launcher \
+		e-tasks \
 "
