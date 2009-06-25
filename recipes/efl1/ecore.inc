@@ -8,7 +8,7 @@ PR = "r5"
 
 inherit efl
 
-SRC_URI += "file://ecore-add-includes.patch;patch=1"
+SRC_URI += "file://ecore-add-includes.patch;patch=1;maxrev=40794"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 
