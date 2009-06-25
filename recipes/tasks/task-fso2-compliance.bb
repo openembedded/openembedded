@@ -3,7 +3,7 @@ Install this task to make your distribution FSO 2.0-compliant."
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.9.0"
-PR = "r0"
+PR = "r1"
 
 inherit task
 
@@ -16,6 +16,7 @@ RDEPENDS_${PN} = "\
   fsonetworkd \
   fsousaged \
   \
+  fso-alsa-data \
   fso-apm \
   fso-gpsd \
   fso-monitord \

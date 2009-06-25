@@ -12,7 +12,7 @@ SRCREV_pn-libfsotransport ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-misc-vapi ?= "${FSO_CORNUCOPIA_SRCREV}"
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "39e804f28808247df2573788cb99897d4d765e69"
-SRCREV_pn-frameworkd ?= "74fc21962e9bbc7f2a89c74f12c15ce1b5861bfb"
+SRCREV_pn-frameworkd ?= "72e75dbdbe3d19bc5bda9732a117e3adf21e87d2"
 SRCREV_pn-fsod ?= "3fa5eb6f2edcf7c9f0fc2027fda47b91d9f0f136"
 SRCREV_pn-fso-abyss ?= "8ce3c6e40c4852de7dcca502f65784f6b18ca6bf"
 SRCREV_pn-fso-term ?= "e0d92222e3e5a62025089c60a625f1836c510915"
