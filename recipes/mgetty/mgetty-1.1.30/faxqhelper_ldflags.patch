@@ -1,0 +1,13 @@
+Index: mgetty-1.1.30/fax/Makefile
+===================================================================
+--- mgetty-1.1.30.orig/fax/Makefile	2009-05-09 22:00:37.814162343 +0200
++++ mgetty-1.1.30/fax/Makefile	2009-05-09 22:01:04.209581406 +0200
+@@ -36,7 +36,7 @@
+	@cd .. ; $(MAKE) sedscript
+
+ faxq-helper: faxq-helper.o 
+-	$(CC) $(CFLAGS) -o faxq-helper faxq-helper.o
++	$(CC) $(CFLAGS) $(LDFLAGS) -o faxq-helper faxq-helper.o
+
+ faxq-helper.o: faxq-helper.c
+	$(CC) $(CFLAGS) -DFAX_SPOOL_OUT=\"$(FAX_SPOOL_OUT)\" \
