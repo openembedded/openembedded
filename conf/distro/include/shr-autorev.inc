@@ -27,6 +27,7 @@ PREFERRED_VERSION_dbus-glib = "0.78"
 PREFERRED_VERSION_bluez4 = "4.39"
 PREFERRED_VERSION_irssi = " 0.8.13"
 PREFERRED_VERSION_linux-libc-headers ?= "2.6.23"
+PREFERRED_VERSION_connman = "0.19+gitr${SRCREV}"
 
 
 
@@ -98,7 +99,6 @@ SRCREV_pn-libeflvala = "${AUTOREV}"
 SRCREV_pn-alsa-scenarii-shr = "${AUTOREV}"
 SRCREV_pn-msn-pecan = "${AUTOREV}"
 SRCREV_pn-libmokoui2 = "${AUTOREV}"
-PREFERRED_VERSION_connman = "git"
 SRCREV_pn-connman = "1916aa601dafa4915c0f0a47a114b1007dadb09c"
 SRCREV_pn-omgps = "${AUTOREV}"
 SRCREV_pn-shr-launcher = "${AUTOREV}"
