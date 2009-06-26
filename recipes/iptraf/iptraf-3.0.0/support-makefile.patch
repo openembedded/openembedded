@@ -1,0 +1,18 @@
+--- iptraf-3.0.0/support/Makefile.orig	2002-07-19 12:31:48.000000000 -0400
++++ iptraf-3.0.0/support/Makefile	2009-06-08 01:21:19.000000000 -0400
+@@ -7,12 +7,12 @@
+ 
+ libtextbox.a: $(OBJS)
+ 	rm -rf libtextbox.a
+-	ar cq libtextbox.a $(OBJS)
+-	ranlib libtextbox.a
++	$(AR) cq libtextbox.a $(OBJS)
++	$(RANLIB) libtextbox.a
+ #	gcc -shared -o libtextbox.so $(OBJS)
+ 
+ %.o: %.c *.h
+-	gcc -O2 -g -Wall -fPIC $(INCLUDEDIR) -c -o $*.o $<
++#	gcc -O2 -g -Wall -fPIC $(INCLUDEDIR) -c -o $*.o $<
+ 
+ clean:
+ 	rm -rf *.o *~ libtextbox.a libtextbox.so

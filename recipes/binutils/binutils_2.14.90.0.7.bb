@@ -5,7 +5,8 @@ inherit autotools gettext
 DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"
 LICENSE = "GPL"
-PR = "r6"
+INC_PR = "r6"
+PR = "${INC_PR}.1"
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
 
@@ -48,7 +49,8 @@ SRC_URI = \
      file://binutils-uclibc-210-cflags.patch;patch=1 \
      file://binutils-100_cflags_for_build.patch;patch=1 \
      file://plt32trunc.patch;patch=1 \
-     file://600-arm-textrel.patch;patch=1"
+     file://600-arm-textrel.patch;patch=1 \
+     file://binutils-2.14.90.0.7-fix-broken-configure.patch;patch=1"
 
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"

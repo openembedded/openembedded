@@ -41,7 +41,7 @@
 
     <listitem>
       <para>Installs the list of requested <command>.ipkg</command> packages,
-      <command>${IPKG_INSTALL}</command>;</para>
+      <command>${PACKAGE_INSTALL}</command>;</para>
     </listitem>
 
     <listitem>
@@ -89,7 +89,7 @@
 
   <variablelist>
     <varlistentry>
-      <term>IPKG_INSTALL</term>
+      <term>PACKAGE_INSTALL</term>
 
       <listitem>
         <para>The list of packages which will be installed into the root
@@ -114,7 +114,7 @@
     </varlistentry>
 
     <varlistentry>
-      <term>PACKAGE_ARCH</term>
+      <term>PACKAGE_ARCHS</term>
 
       <listitem>
         <para>Defines the list of architectures that are support by the target

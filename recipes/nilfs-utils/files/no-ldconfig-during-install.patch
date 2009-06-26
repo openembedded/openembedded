@@ -1,0 +1,10 @@
+Index: nilfs-utils-2.0.12/lib/Makefile.am
+===================================================================
+--- nilfs-utils-2.0.12.orig/lib/Makefile.am	2009-06-07 14:05:10.000000000 +0200
++++ nilfs-utils-2.0.12/lib/Makefile.am	2009-06-07 14:05:21.000000000 +0200
+@@ -24,5 +24,3 @@
+ libnilfs_la_LDFLAGS = -version-info $(VERSIONINFO)
+ libnilfs_la_LIBADD = libnilfsmisc.la
+ 
+-install-exec-hook:
+-	$(LDCONFIG) $(DESTDIR)$(libdir)

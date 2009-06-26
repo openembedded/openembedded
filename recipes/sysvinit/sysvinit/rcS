@@ -14,7 +14,10 @@ export PATH runlevel prevlevel
 
 #	Make sure proc is mounted
 #
-[ -d "/proc/1" ] || mount /proc
+[ -d "/proc/1" ] || mount proc /proc -t proc
+
+#	Make sure sys is mounted
+[ -d "/sys/kernel" ] || mount sysfs /sys -t sysfs
 
 #
 #	See if system needs to be setup. This is ONLY meant to

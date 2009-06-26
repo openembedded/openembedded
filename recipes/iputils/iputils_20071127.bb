@@ -3,9 +3,13 @@ DESCRIPTION = "Utilities for the IP protocol, including traceroute6, \
 tracepath, tracepath6, ping, ping6 and arping."
 SECTION = "console/network"
 LICENSE ="BSD"
+DEPENDS = "docbook-utils-native"
+
+PR = "r1"
 
 #Need more testing
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_angstrom = "2"
 
 SRC_URI = "http://ftp.de.debian.org/debian/pool/main/i/iputils/iputils_${PV}.orig.tar.gz \
            file://debian/fix-dead-host-ping-stats.diff;patch=1 \
@@ -37,7 +41,7 @@ FILES_${PN}-doc		= "${mandir}/man8"
 do_compile () {
 	oe_runmake 'CC=${CC}' \
 		   KERNEL_INCLUDE="${STAGING_INCDIR}" \
-		   LIBC_INCLUDE="${STAGING_INCDIR}"
+		   LIBC_INCLUDE="${STAGING_INCDIR}" all man
 }
 
 do_install () {
@@ -52,7 +56,7 @@ do_install () {
 	done
 	# Manual pages for things we build packages for
 	for i in tracepath.8 traceroute6.8 ping.8 arping.8; do
-	  install -m 0644 doc/$i ${D}${mandir}/man8/
+	  install -m 0644 doc/$i ${D}${mandir}/man8/ || true
 	done
 }
 

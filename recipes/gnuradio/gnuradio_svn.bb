@@ -4,15 +4,16 @@ DEFAULT_PREFERENCE = "-1"
 
 DEPENDS += " gsl "
 
-PV = "3.1.3+svnr${SRCREV}"
-PR = "r6"
+PV = "3.2.0+svnr${SRCREV}"
+PR = "${INC_PR}.1"
 
-EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable-usrp1 --disable--usrp2"
+EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable--usrp2"
 
 SRC_URI = "svn://gnuradio.org/svn/gnuradio/;module=trunk;proto=http \
     file://no-usrp2.patch;patch=1 \
     file://gnuradio-neon.patch;patch=1;pnum=0 \
-	   "
+     ${SOURCEFORGE_MIRROR}/libusb/libusb-0.1.12.tar.gz \
+"
 
 S="${WORKDIR}/trunk"
 

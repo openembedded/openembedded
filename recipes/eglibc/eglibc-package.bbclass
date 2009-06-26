@@ -24,7 +24,7 @@ python __anonymous () {
 ENABLE_BINARY_LOCALE_GENERATION ?= "0"
 
 # BINARY_LOCALE_ARCHES is a space separated list of regular expressions
-BINARY_LOCALE_ARCHES ?= "arm.*"
+BINARY_LOCALE_ARCHES ?= "arm.* i[3-6]86 x86_64 powerpc"
 
 PACKAGES = "eglibc-dbg eglibc catchsegv sln nscd ldd localedef eglibc-utils eglibc-dev eglibc-doc eglibc-locale libsegfault eglibc-extra-nss eglibc-thread-db eglibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* glibc-binary-localedata-* eglibc-gconv-* eglibc-charmap-* eglibc-localedata-* eglibc-binary-localedata-* locale-base-*"
@@ -89,9 +89,6 @@ do_install() {
 		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
 	done
 	rm -f ${D}/etc/rpc
-        rm -f ${D}${includedir}/scsi/sg.h
-        rm -f ${D}${includedir}/scsi/scsi_ioctl.h
-        rm -f ${D}${includedir}/scsi/scsi.h
 }
 
 TMP_LOCALE="/tmp/locale${libdir}/locale"
@@ -287,7 +284,15 @@ python package_do_split_gconvs () {
 
 	def output_locale_binary(name, locale, encoding):
 		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-		qemu = "qemu-%s -r 2.6.16" % target_arch
+		if target_arch in ("i486", "i586", "i686"):
+			target_arch = "i386"
+		elif target_arch == "powerpc":
+			target_arch = "ppc"
+		kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
+		if kernel_ver is None:
+			qemu = "qemu-%s  -s 1048576" % target_arch
+		else:
+			qemu = "qemu-%s  -s 1048576 -r %s" % (target_arch, kernel_ver)
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 		m = re.match("(.*)\.(.*)", name)
 		if m:
@@ -305,11 +310,12 @@ python package_do_split_gconvs () {
 		bb.data.setVar('PACKAGES', '%s %s' % (pkgname, bb.data.getVar('PACKAGES', d, 1)), d)
 
 		treedir = base_path_join(bb.data.getVar("WORKDIR", d, 1), "locale-tree")
+		ldlibdir = "%s/lib" % treedir
 		path = bb.data.getVar("PATH", d, 1)
 		i18npath = base_path_join(treedir, datadir, "i18n")
 
 		localedef_opts = "--force --old-style --no-archive --prefix=%s --inputfile=%s/i18n/locales/%s --charmap=%s %s" % (treedir, datadir, locale, encoding, name)
-		cmd = "PATH=\"%s\" I18NPATH=\"%s\" %s -L %s %s/bin/localedef %s" % (path, i18npath, qemu, treedir, treedir, localedef_opts)
+		cmd = "PATH=\"%s\" I18NPATH=\"%s\" %s -L %s -E LD_LIBRARY_PATH=%s %s/bin/localedef %s" % (path, i18npath, qemu, treedir, ldlibdir, treedir, localedef_opts)
 		bb.note("generating locale %s (%s)" % (locale, encoding))
 		if os.system(cmd):
 			raise bb.build.FuncFailed("localedef returned an error (command was %s)." % cmd)

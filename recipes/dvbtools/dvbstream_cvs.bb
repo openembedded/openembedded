@@ -4,10 +4,12 @@ LICENSE = "GPLV2"
 DEPENDS = "libxml2"
 PV = "0.0+cvs${SRCDATE}"
 
+PR = "r1"
+
 SRC_URI = "cvs://anonymous@dvbtools.cvs.sourceforge.net/cvsroot/dvbtools;module=dvbstream"
 S = "${WORKDIR}/dvbstream"
 
-CFLAGS_append = " -D_GNU_SOURCE"
+CFLAGS_append = " ${LDFLAGS} -D_GNU_SOURCE"
 
 do_install() {
 	mkdir -p ${D}${bindir}

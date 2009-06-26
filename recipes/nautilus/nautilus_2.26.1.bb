@@ -12,7 +12,7 @@ export SYSROOT = "${STAGING_DIR_HOST}"
 
 LICENSE="GPL"
 
-DEPENDS += " gvfs tracker librsvg libexif eel esound gnome-desktop orbit2-native"
+DEPENDS += "libunique  gvfs tracker librsvg libexif eel esound gnome-desktop orbit2-native"
 RDEPENDS = "gvfs gvfsd-ftp gvfsd-sftp gvfsd-trash"
 
 EXTRA_OECONF = " --disable-gtk-doc  --disable-update-mimedb "

@@ -1,7 +1,7 @@
 require gcc-${PV}.inc
 require gcc-configure-target.inc
 require gcc-package-target.inc
-PR = "r0"
+PR = "${INC_PR}.1"
 
 # GCC 4.4.0 installs crt* in a '4.4.0' dir....
 FILES_${PN} += "\

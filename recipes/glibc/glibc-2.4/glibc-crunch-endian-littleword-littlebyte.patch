@@ -1,0 +1,40 @@
+diff -urN glibc-2.5/ports/sysdeps/arm/bits/endian.h glibc-2.5/ports/sysdeps/arm/bits/endian.h
+--- glibc-2.5/ports/sysdeps/arm/bits/endian.h	2005-06-13 20:11:47.000000000 +1000
++++ glibc-2.5/ports/sysdeps/arm/bits/endian.h	2007-05-18 08:41:52.000000000 +1000
+@@ -15,5 +15,9 @@
+ #ifdef __VFP_FP__
+ #define __FLOAT_WORD_ORDER __BYTE_ORDER
+ #else
++#ifdef __MAVERICK__
++#define __FLOAT_WORD_ORDER __LITTLE_ENDIAN
++#else
+ #define __FLOAT_WORD_ORDER __BIG_ENDIAN
+ #endif
++#endif
+diff -urN glibc-2.5/ports/sysdeps/arm/gccframe.h glibc-2.5/ports/sysdeps/arm/gccframe.h
+--- glibc-2.5/ports/sysdeps/arm/gccframe.h	2001-11-16 11:07:20.000000000 +1000
++++ glibc-2.5/ports/sysdeps/arm/gccframe.h	2007-05-18 08:53:38.000000000 +1000
+@@ -17,6 +17,10 @@
+    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+    02111-1307 USA.  */
+ 
++#ifdef __MAVERICK__
++#define FIRST_PSEUDO_REGISTER 43
++#else
+ #define FIRST_PSEUDO_REGISTER 27
++#endif
+ 
+ #include <sysdeps/generic/gccframe.h>
+diff -urN glibc-2.5/ports/sysdeps/arm/gmp-mparam.h glibc-2.5/ports/sysdeps/arm/gmp-mparam.h
+--- glibc-2.5/ports/sysdeps/arm/gmp-mparam.h	2005-06-13 20:11:47.000000000 +1000
++++ glibc-2.5/ports/sysdeps/arm/gmp-mparam.h	2007-05-18 08:54:21.000000000 +1000
+@@ -29,6 +29,9 @@
+ #if defined(__ARMEB__)
+ # define IEEE_DOUBLE_MIXED_ENDIAN 0
+ # define IEEE_DOUBLE_BIG_ENDIAN 1
++#elif defined(__MAVERICK__)
++#define IEEE_DOUBLE_MIXED_ENDIAN 0
++#define IEEE_DOUBLE_BIG_ENDIAN 0
+ #elif defined(__VFP_FP__)
+ # define IEEE_DOUBLE_MIXED_ENDIAN 0
+ # define IEEE_DOUBLE_BIG_ENDIAN 0

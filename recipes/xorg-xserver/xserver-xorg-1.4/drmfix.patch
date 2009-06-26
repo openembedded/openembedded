@@ -1,3 +1,5 @@
+upstream: applied in b3e981c9d4ff31263a43b47f83cf8db4c2b5aeff (2008-07-28)
+
 Index: xorg-server-1.4/hw/xfree86/os-support/linux/Makefile.am
 ===================================================================
 --- xorg-server-1.4.orig/hw/xfree86/os-support/linux/Makefile.am	2007-08-23 21:04:53.000000000 +0200

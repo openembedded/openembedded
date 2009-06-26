@@ -4,7 +4,7 @@ DEPENDS += "hal libxkbfile libxcalibrate pixman"
 RDEPENDS += "hal"
 
 PE = "1"
-PR = "r5"
+PR = "r7"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
@@ -26,6 +26,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://pkgconfig_fix.patch;patch=1 \
         file://no_xkb.patch;patch=1;pnum=0 \
 	file://xorg-1.4-kdrive-rotation.patch;patch=1 \
+	file://split_multiple_AC_SUBST.patch;patch=1 \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"

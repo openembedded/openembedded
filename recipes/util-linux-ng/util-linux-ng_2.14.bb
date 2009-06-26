@@ -1,7 +1,6 @@
 require util-linux-ng.inc
 
-PR = "r5"
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/util-linux-ng-2.14', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+PR = "${INC_PR}"
 
 SRC_URI += "file://util-linux-ng-uclibc-versionsort.patch;patch=1 \
 	    file://util-linux-ng-replace-siginterrupt.patch;patch=1 \

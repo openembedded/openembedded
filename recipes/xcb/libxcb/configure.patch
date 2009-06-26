@@ -1,0 +1,13 @@
+upstream: oe-only
+
+--- configure.ac~	2006-11-23 15:33:01.000000000 +0000
++++ configure.ac	2009-06-12 19:10:47.000000000 +0100
+@@ -50,7 +50,7 @@
+ 
+ # Find the xcb-proto protocol descriptions
+ AC_MSG_CHECKING(XCBPROTO_XCBINCLUDEDIR)
+-XCBPROTO_XCBINCLUDEDIR=`$PKG_CONFIG --variable=xcbincludedir xcb-proto`
++XCBPROTO_XCBINCLUDEDIR=${STAGING_DIR}`$PKG_CONFIG --variable=xcbincludedir xcb-proto`
+ AC_MSG_RESULT($XCBPROTO_XCBINCLUDEDIR)
+ AC_SUBST(XCBPROTO_XCBINCLUDEDIR)
+ 

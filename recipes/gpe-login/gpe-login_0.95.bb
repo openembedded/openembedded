@@ -3,9 +3,11 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
-RDEPENDS = "xkbd gpe-theme-clearlooks"
+RDEPENDS_${PN} = "xkbd"
+RRECOMMENDS_${PN} =  "gpe-theme-clearlooks"
 RPROVIDES_${PN} = "gpe-session-starter"
-PR = "r0"
+
+PR = "r2"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
@@ -17,6 +19,7 @@ inherit gpe autotools pkgconfig
 SRC_URI += "file://removeblue-fontsize8.patch;patch=1"
 SRC_URI += " file://chvt-keylaunch.patch;patch=1 "
 SRC_URI += " file://c-locale.patch;patch=1 "
+SRC_URI += " file://no-deprecated-sysfs.patch;patch=1 "
 
 SRC_URI_append_spitz = "file://brightness-adjust-keyluanchrc.patch;patch=1"
 SRC_URI_append_akita = "file://brightness-adjust-keyluanchrc.patch;patch=1"

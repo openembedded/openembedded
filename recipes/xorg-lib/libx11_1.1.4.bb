@@ -19,6 +19,7 @@ do_compile() {
 		unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
 		cd src/util; 
 		mv makekeys.c.orig makekeys.c || true
+		sed -i -e 's:MIN_REHASH 15:MIN_REHASH 16:g' makekeys.c
 		touch makekeys-makekeys.o ; ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR_NATIVE} makekeys.c -o makekeys
 		# mv to stop it getting rebuilt
 		mv makekeys.c makekeys.c.orig

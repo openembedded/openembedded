@@ -10,7 +10,9 @@ rsync ~/OE/downloads/ angstrom@linuxtogo.org:~/website/unstable/sources/ -aPvz \
 	--exclude "umac.ko" \
 	--exclude "IPL_*.zip" \
 	--exclude "*.lock" \
+	--exclude "bios*" \
 	--exclude "codec_*" \
 	--exclude "dsplink*" \
 	--exclude "*GFX*" \
+	--exclude "TI-*" \
 	--exclude "*.bin"

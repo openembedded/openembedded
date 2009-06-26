@@ -5,8 +5,7 @@
 # See image.bbclass for a usage of this.
 #
 
-do_rootfs[depends] += "opkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
-do_rootfs[recrdeptask] += "do_package_write_ipk"
+do_rootfs[depends] += "opkg-native:do_populate_staging"
 
 IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
@@ -29,7 +28,6 @@ PACKAGE_INSTALL_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "non
 fakeroot rootfs_ipk_do_rootfs () {
 	set -x
 
-	package_update_index_ipk
 	package_generate_ipkg_conf
 
 	mkdir -p ${T}
@@ -64,9 +62,8 @@ fakeroot rootfs_ipk_do_rootfs () {
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
 	export OPKG_OFFLINE_ROOT=${IPKG_OFFLINE_ROOT}
 	
-	mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/opkg/
-
 	if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
+        	mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/opkg/
 		grep "^arch" ${IPKGCONF_TARGET} >${IMAGE_ROOTFS}${sysconfdir}/opkg/arch.conf
 	fi
 
@@ -97,6 +94,7 @@ fakeroot rootfs_ipk_do_rootfs () {
 		ln -s opkg ${IMAGE_ROOTFS}${libdir}/ipkg
 	else
 		rm -rf ${IMAGE_ROOTFS}${libdir}/opkg
+		rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
 	fi
 	
 	${ROOTFS_POSTPROCESS_COMMAND}
@@ -109,7 +107,8 @@ rootfs_ipk_log_check() {
         lf_path="$2"
 
 	lf_txt="`cat $lf_path`"
-	for keyword_die in "Cannot find package" "exit 1" ERR Fail
+	for keyword_die in "Cannot find package" "Cannot satisfy the following dependencies" \
+	    "exit 1" ERR Fail
 	do				
 		if (echo "$lf_txt" | grep -v log_check | grep -w "$keyword_die") >/dev/null 2>&1
 		then

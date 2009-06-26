@@ -1,6 +1,5 @@
 require xorg-driver-video.inc
 PE = "1"
-PR = "r2"
 
 DEPENDS += " xf86dgaproto"
 

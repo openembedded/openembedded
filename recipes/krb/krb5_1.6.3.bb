@@ -1,14 +1,15 @@
 DESCRIPTION = "A network authentication protocol"
 HOMEPAGE = "http://web.mit.edu/Kerberos/"
 SECTION = "console/network"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
-DEPENDS = "perl-native ncurses e2fsprogs-libs"
+DEPENDS = "perl-native ncurses e2fsprogs-libs e2fsprogs-native"
 
 inherit autotools binconfig
 
 SRC_URI = "http://web.mit.edu/kerberos/dist/krb5/1.6/krb5-1.6.3-signed.tar \
-           file://fix-uclibc-ruserpass-collision.patch"
+           file://fix-uclibc-ruserpass-collision.patch \
+           file://copyperms.patch"
 S = "${WORKDIR}/${PN}-${PV}/src/"
 
 # Will clean this up...
@@ -23,6 +24,7 @@ FILES_${PN}-doc += /usr/share/examples
 krb5_do_unpack() {
 	tar xzf ${WORKDIR}/krb5-1.6.3.tar.gz -C ${WORKDIR}/
 	patch -d ${S} -p1 < ${WORKDIR}/fix-uclibc-ruserpass-collision.patch
+	patch -d ${S} -p1 < ${WORKDIR}/copyperms.patch
 }
 
 python do_unpack() {

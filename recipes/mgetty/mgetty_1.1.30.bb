@@ -3,7 +3,7 @@ DESCRIPTION = "The mgetty package contains an intelligent \
 getty for allowing logins over a serial line (such as \
 through a modem) and receiving incoming faxes."
 LICENSE = "GPL"
-PR ="r3"
+PR ="r4"
 
 # The source can no longer be found at ${DEBIAN_MIRROR}/main/m/mgetty/mgetty_${PV}.orig.tar.gz
 # so the nslu2-linux project has mirrored it until someone updates this package to a newer version.
@@ -38,6 +38,8 @@ SRC_URI = "http://nslu.sf.net/downloads/mgetty_1.1.30.orig.tar.gz \
            file://51-pending-faxq-time;patch=1 \
            file://52-pending-metamail;patch=1 \
            file://install.patch;patch=1 \
+	   file://newslock_ldflags.patch;patch=1 \
+	   file://faxqhelper_ldflags.patch;patch=1 \
            file://policy.h \
            file://voice-defs.h"
 
@@ -79,3 +81,7 @@ do_install () {
 
 CONFFILES_${PN} = "${sysconfdir}/mgetty/mgetty.config \
 	${sysconfdir}/mgetty/login.config ${sysconfdir}/mgetty/sendfax.config"
+
+FILES_${PN} += "${libdir}/mgetty-fax"
+
+FILES_${PN}-dbg += "${libdir}/mgetty-fax/.debug"

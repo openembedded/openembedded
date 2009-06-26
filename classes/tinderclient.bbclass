@@ -1,10 +1,20 @@
-def tinder_http_post(server, selector, content_type, body):
+def tinder_http_post(d, server, selector, content_type, body):
     import httplib
+    from bb import data
     # now post it
     for i in range(0,5):
        try:
-           h = httplib.HTTP(server)
-           h.putrequest('POST', selector)
+	   proxy = data.getVar('HTTP_PROXY', d, True )
+	   if (proxy):
+		   if (proxy.endswith('/')):
+			   proxy = proxy[:-1]
+		   if (proxy.startswith('http://')):
+			   proxy = proxy[7:]
+		   h = httplib.HTTP(proxy)
+		   h.putrequest('POST', 'http://%s%s' % (server, selector))
+	   else:
+		   h = httplib.HTTP(server)
+		   h.putrequest('POST', selector)
            h.putheader('content-type', content_type)
            h.putheader('content-length', str(len(body)))
            h.endheaders()
@@ -12,8 +22,8 @@ def tinder_http_post(server, selector, content_type, body):
            errcode, errmsg, headers = h.getreply()
            #print errcode, errmsg, headers
            return (errcode,errmsg, headers, h.file)
-       except:
-           print "Error sending the report!"
+       except Exception, e:
+           print "Error sending the report! ", e
            # try again
            pass
 
@@ -116,7 +126,7 @@ def tinder_build_start(d):
     #print "selector %s and url %s" % (selector, url)
 
     # now post it
-    errcode, errmsg, headers, h_file = tinder_http_post(server,selector,content_type, body)
+    errcode, errmsg, headers, h_file = tinder_http_post(d,server,selector,content_type, body)
     #print errcode, errmsg, headers
     report = h_file.read()
 
@@ -151,7 +161,7 @@ def tinder_send_http(d, status, _log):
     new_log = _log
     while len(new_log) > 0:
         content_type, body = tinder_format_http_post(d,status,new_log[0:18000])
-        errcode, errmsg, headers, h_file = tinder_http_post(server,selector,content_type, body)
+        errcode, errmsg, headers, h_file = tinder_http_post(d,server,selector,content_type, body)
         #print errcode, errmsg, headers
         #print h.file.read()
         new_log = new_log[18000:]

@@ -1,0 +1,17 @@
+Do not depends on kernel with CONFIG_SYSFS_DEPRECATED*=y.
+With the new sysfs layout, /sys/class/backlight/* contains only symlinks.
+chown -R skips symlinks, keeping device accessible only for root.
+
+Index: gpe-login-0.95/X11/gpe-login.pre-session
+===================================================================
+--- gpe-login-0.95.orig/X11/gpe-login.pre-session	2008-08-06 21:23:40.000000000 +0000
++++ gpe-login-0.95/X11/gpe-login.pre-session	2009-05-28 13:28:37.000000000 +0000
+@@ -57,7 +57,7 @@
+ # screen light control #
+ 
+ if [ -d /sys/class/backlight ]; then
+-chown -R $USER /sys/class/backlight/*
++chown -R $USER /sys/class/backlight/*/*
+ chmod u+rw /sys/class/backlight/*/*
+ fi
+ 

@@ -1,0 +1,35 @@
+Index: gammu-1.24.0/cmake/FindMySQL.cmake
+===================================================================
+--- gammu-1.24.0.orig/cmake/FindMySQL.cmake	2008-11-20 15:37:28.000000000 +0000
++++ gammu-1.24.0/cmake/FindMySQL.cmake	2009-06-12 12:18:06.000000000 +0000
+@@ -30,7 +30,7 @@
+             ARGS --include
+             OUTPUT_VARIABLE MY_TMP)
+ 
+-        string(REGEX REPLACE "-I([^ ]*)( .*)?" "\\1" MY_TMP "${MY_TMP}")
++        string(REGEX REPLACE "-I([^ ]+)( .*)?" "\\1" MY_TMP "${MY_TMP}")
+ 
+         set(MYSQL_ADD_INCLUDE_DIR ${MY_TMP} CACHE FILEPATH INTERNAL)
+ 
+@@ -41,17 +41,19 @@
+ 
+         set(MYSQL_ADD_LIBRARIES "")
+ 
+-        string(REGEX MATCHALL "-l[^ ]*" MYSQL_LIB_LIST "${MY_TMP}")
++        string(REGEX MATCHALL "(^| )-l[^ ]+" MYSQL_LIB_LIST "${MY_TMP}")
+         foreach(LIB ${MYSQL_LIB_LIST})
+             string(REGEX REPLACE "[ ]*-l([^ ]*)" "\\1" LIB "${LIB}")
++            message("${LIB}")
+             list(APPEND MYSQL_ADD_LIBRARIES "${LIB}")
+         endforeach(LIB ${MYSQL_LIBS})
+ 
+         set(MYSQL_ADD_LIBRARY_PATH "")
+ 
+-        string(REGEX MATCHALL "-L[^ ]*" MYSQL_LIBDIR_LIST "${MY_TMP}")
++        string(REGEX MATCHALL "-L[^ ]+" MYSQL_LIBDIR_LIST "${MY_TMP}")
+         foreach(LIB ${MYSQL_LIBDIR_LIST})
+             string(REGEX REPLACE "[ ]*-L([^ ]*)" "\\1" LIB "${LIB}")
++            message("${LIB}")
+             list(APPEND MYSQL_ADD_LIBRARY_PATH "${LIB}")
+         endforeach(LIB ${MYSQL_LIBS})
+ 

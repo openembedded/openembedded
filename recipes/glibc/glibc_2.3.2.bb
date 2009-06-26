@@ -104,6 +104,11 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   file://etc/ld.so.conf \
  	   file://generate-supported.mk"
 
+SRC_URI_append_mtx-1 = " file://mips-abio32.patch;patch=1 \
+                         file://allow-gcc.patch;patch=1 "
+SRC_URI_append_mtx-2 = " file://mips-abio32.patch;patch=1 \
+                         file://allow-gcc.patch;patch=1 "
+
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 

@@ -4,7 +4,7 @@ SECTION = "admin"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI = "http://meshcube.org/download/logrotate_${SRCDATE}.tgz"
+SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/logrotate_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"
 
 do_install() {

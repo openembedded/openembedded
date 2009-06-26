@@ -1,4 +1,4 @@
-PR = "r7"
+PR = "${INC_PR}.1"
 require gcc-${PV}.inc
 require gcc-cross4.inc
 require gcc-configure-cross.inc

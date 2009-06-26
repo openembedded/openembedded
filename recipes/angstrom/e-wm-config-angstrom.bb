@@ -2,21 +2,16 @@ DESCRIPTION = "Enlightenment DR17 theme for Angstrom"
 LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
 RDEPENDS = "e-wm"
-RRECOMMENDS_${PN} = "places systray"
+RRECOMMENDS = "places gnome-icon-theme"
 
-PR = "r6"
+PACKAGES_DYNAMIC = "e-wm-config-angstrom*"
+
+PR = "r11"
 
 SRC_URI = " \
-          file://e.src \
-          file://icon.png \
-          file://*.src \
-          file://profile.desktop \
+          file://configs \
           "
-S = "${WORKDIR}/angstrom"
-
-do_configure() {
-	cp ${WORKDIR}/*.src ${WORKDIR}/*.desktop ${WORKDIR}/*.png ${S}/
-}
+S = "${WORKDIR}/configs"
 
 # [09:16:17] * koen mumbles something about binary config file
 # [09:16:19] <raster> eet -d e.cfg config e.src
@@ -25,20 +20,29 @@ do_configure() {
 # [09:17:12] <raster> will re-encode 
 
 do_compile() {
+rm ${S}/patches -rf
+for dir in ${S}/* ; do	
+	cd $dir
 	for i in *.src ; do
 		eet -e $(echo $i | sed s:src:cfg:g) config $i 1
 	done
+done
 }
 
 do_install() {
-    install -d ${D}${datadir}/enlightenment/data/config/angstrom/
+ 	for i in ${WORKDIR}/configs/* ; do
+		install -d ${D}${datadir}/enlightenment/data/config/$(basename $i)/
     
-    install -m 0644 ${S}/*.cfg ${D}${datadir}/enlightenment/data/config/angstrom/
-    install -m 0644 ${S}/*.desktop ${D}${datadir}/enlightenment/data/config/angstrom/
-    install -m 0644 ${S}/*.png ${D}${datadir}/enlightenment/data/config/angstrom/
+		install -m 0644 ${S}/$(basename $i)/*.cfg ${D}${datadir}/enlightenment/data/config/$(basename $i)/
+		install -m 0644 ${S}/$(basename $i)/*.desktop ${D}${datadir}/enlightenment/data/config/$(basename $i)/
+		install -m 0644 ${S}/$(basename $i)/*.png ${D}${datadir}/enlightenment/data/config/$(basename $i)/
+	done
 }
 
-FILES_${PN} = "${datadir}/enlightenment"
+python populate_packages_prepend () {
+	angstrom_e_dir = bb.data.expand('${datadir}/enlightenment/data/config', d)
+	do_split_packages(d, angstrom_e_dir, '(.*)', 'e-wm-config-%s', 'E17 window manager %s config', extra_depends='', allow_links=True, allow_dirs=True)
+}
 
-PACKAGE_ARCH_${PN} = "all"
+PACKAGE_ARCH = "all"
 

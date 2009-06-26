@@ -4,7 +4,8 @@ LICENCE = "proprietary-binary"
 #HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
 INSANE_SKIP_${PN} = True
 INSANE_SKIP_${PN}-tests = True
-
+INSANE_SKIP_${PN}-demos = True
+INSANE_SKIP_xserver-kdrive-powervrsgx = True
 
 PROVIDES += "virtual/egl"
 
@@ -25,16 +26,37 @@ PROVIDES += "virtual/egl"
 
 SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
            file://rc.pvr \
+           file://chameleonman.desktop \
+           file://evilskull.desktop \
+           file://fivespheres.desktop \
+           file://lighting.desktop \
+           file://mouse.desktop \
+           file://optimizemesh.desktop \
+           file://particles.desktop \
+           file://polybump.desktop \
+           file://shadowtechniques.desktop \
+           file://skybox.desktop \
+           file://trilinear.desktop \
+           file://userclipplanes.desktop \
+           file://vase.desktop \
+           file://shaders.desktop \
+           file://skybox2.desktop \
           "
+
 S = "${WORKDIR}/OMAP35x_Graphics_SDK_${SGXPV}"
 
 BINLOCATION ?= "${S}/gfx_rel"
 
-PACKAGES += " xserver-kdrive-powervrsgx ${PN}-tests"
+PACKAGES += " xserver-kdrive-powervrsgx ${PN}-tests ${PN}-demos"
 
-FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${bindir}/pvrsrvinit"
+FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${libdir}/ES*/* ${bindir}/pvrsrvinit ${bindir}/*/*"
 FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
-FILES_${PN}-tests = "${bindir}/*"
+FILES_${PN}-tests = "${bindir}"
+FILES_${PN}-demos = "${prefix}/demos ${prefix}/share/applications "
+FILES_${PN}-dbg = "${libdir}/.debug/* ${bindir}/.debug/* ${libdir}/ES*/.debug ${bindir}/*/.debug\
+	${prefix}/demos/OGLES/*/.debug/* \
+	${prefix}/demos/OGLES2/*/.debug/* \
+	"
 
 RRECOMMENDS_${PN} = "${PN}-tests \
                      omap3-sgx-modules"
@@ -47,8 +69,9 @@ INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 do_accept_license() {
 	export HOME="${WORKDIR}"
 	echo "Y
+q 
 Y
-${S}" | ${WORKDIR}/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin
+${S}" | ${WORKDIR}/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin --mode console
 }
 
 addtask accept_license after do_unpack before do_configure
@@ -76,8 +99,7 @@ do_install () {
 	cp -pP ${BINLOCATION}/pvrsrvinit ${D}${bindir}/
 	cp -pP ${BINLOCATION}/xgles1test1 ${D}${bindir}/
 
-	cp -pP ${BINLOCATION}/freedesktop/kdrive/usr/X11R6_SGX/bin/Xsgx || true
-	cp -pP ${BINLOCATION}/freedesktop/usr/X11R6_SGX/bin/Xsgx ${D}${bindir}/ || true
+	cp -pP ${BINLOCATION}/freedesktop/kdrive/usr/X11R6_SGX/bin/Xsgx ${D}${bindir}/|| true
 
 	install -d ${D}${includedir}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/* ${D}${includedir}/
@@ -91,6 +113,15 @@ do_install () {
 	install -d ${D}${sysconfdir}
 	echo "[default]" > ${D}${sysconfdir}/powervr.ini
 	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
+
+	install -d ${D}${prefix}/demos/OGLES/
+	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Binaries/CommonX11/Demos/* ${D}${prefix}/demos/OGLES/
+
+	install -d ${D}${prefix}/demos/OGLES2
+	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Binaries/X11/Demos/* ${D}${prefix}/demos/OGLES2
+
+	install -d ${D}${prefix}/share/applications
+	cp -pPR ${WORKDIR}/*.desktop ${D}${prefix}/share/applications
 }
 
 do_stage () {

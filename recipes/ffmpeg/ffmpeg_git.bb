@@ -7,8 +7,6 @@ PV = "0.4.9+${PR}+gitr${SRCREV}"
 PR = "r39"
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_arm = "1"
-DEFAULT_PREFERENCE_avr32 = "1"
 
 FFBRANCH_arm = "arm"
 FFBRANCH ?= "master"

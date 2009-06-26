@@ -1,3 +1,6 @@
+upstream: accepted, this patch has landed upstream albeit in a different form
+sometime between 3.35 and 3.36. see the commit message in "git log e1d12d8bb5b40a6313cce52974f174fd76cbf32c"
+
 --- bluez-utils-2.24/tools/hciattach.c.orig	2005-12-10 15:14:36.000000000 +0100
 +++ bluez-utils-2.24/tools/hciattach.c	2006-01-22 13:56:13.000000000 +0100
 @@ -57,6 +57,8 @@

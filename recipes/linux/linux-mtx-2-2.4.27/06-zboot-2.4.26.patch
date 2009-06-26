@@ -1,6 +1,15 @@
 diff -Naru linux/arch/mips/Makefile linux.spi/arch/mips/Makefile
 --- linux/arch/mips/Makefile	2004-05-06 15:23:41.000000000 -0400
 +++ linux.spi/arch/mips/Makefile	2004-05-11 23:19:24.000000000 -0400
+@@ -17,7 +17,7 @@
+ # Select the object file format to substitute into the linker script.
+ #
+ ifdef CONFIG_CPU_LITTLE_ENDIAN
+-tool-prefix	= mipsel-linux-
++tool-prefix	= mipsel-nylon-linux-
+ ld-emul		= elf32ltsmip
+ else
+ tool-prefix	= mips-linux-
 @@ -29,6 +29,8 @@
  endif
  

@@ -14,8 +14,6 @@ SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
 
 S = "${WORKDIR}/mysql-${PV}"
 
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/mysql-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
-
 BINCONFIG_GLOB = "mysql_config"
 
 inherit autotools binconfig update-rc.d

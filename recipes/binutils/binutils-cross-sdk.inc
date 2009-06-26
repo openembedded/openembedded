@@ -17,7 +17,7 @@ do_install () {
 	rm ${D}${prefix}/${TARGET_SYS}/bin/.debug -Rf
 	rm ${D}${prefix}/${TARGET_SYS}/bin/*
 	for l in ${D}${bindir}/*; do
-		ln -sf "../../${layout_base_bindir}/`basename $l`" "${D}${prefix}/${TARGET_SYS}/bin/`basename $l | sed -e 's,${TARGET_PREFIX},,'`"
+		ln -sf "../../`basename ${bindir}`/`basename $l`" "${D}${prefix}/${TARGET_SYS}/bin/`basename $l | sed -e 's,${TARGET_PREFIX},,'`"
 	done
 
         # Install the libiberty header

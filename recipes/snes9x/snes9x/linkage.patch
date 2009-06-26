@@ -1,0 +1,31 @@
+--- ppu.h~	2004-07-11 22:50:59.000000000 +0100
++++ ppu.h	2009-05-21 15:54:06.000000000 +0100
+@@ -332,10 +332,14 @@
+ 	uint8 _5A22;
+ } SnesModel;
+ 
++START_EXTERN_C
++
+ extern SnesModel* Model;
+ extern SnesModel M1SNES;
+ extern SnesModel M2SNES;
+ 
++END_EXTERN_C
++
+ #define MAX_5C77_VERSION 0x01
+ #define MAX_5C78_VERSION 0x03
+ #define MAX_5A22_VERSION 0x02
+--- dsp1.h~	2004-07-11 22:50:57.000000000 +0100
++++ dsp1.h	2009-05-21 15:53:46.000000000 +0100
+@@ -122,9 +122,10 @@
+ void S9xResetDSP1 ();
+ uint8 S9xGetDSP (uint16 Address);
+ void S9xSetDSP (uint8 Byte, uint16 Address);
+-END_EXTERN_C
+ 
+ extern struct SDSP1 DSP1;
+ 
++END_EXTERN_C
++
+ #endif
+ 

@@ -49,7 +49,7 @@ do_configure () {
 	linux-i486)
 		target=debian-i386-i486
 		;;
-	linux-i586)
+	linux-i586 | linux-viac3)
 		target=debian-i386-i586
 		;;
 	linux-i686)
@@ -73,7 +73,11 @@ do_configure () {
 	esac
 	# inject machine-specific flags
 	sed -i -e "s|^\(\"$target\",\s*\"[^:]\+\):\([^:]\+\)|\1:${CFLAG}|g" Configure
-	perl ./Configure shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
+        useprefix=${prefix}
+        if [ "x$useprefix" == "x" ]; then
+                useprefix=/
+        fi        
+	perl ./Configure shared --prefix=$useprefix --openssldir=${libdir}/ssl $target
 }
 
 do_compile () {

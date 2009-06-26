@@ -3,7 +3,7 @@ DESCRIPTION = "The Device-mapper is a new component of the linux kernel \
 that supports logical volume management. It is required by LVM2 and EVMS. \
 The original LVM (included in stock 2.4 kernels) does not use it."
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 S = "${WORKDIR}/${PN}.${PV}"
 
@@ -15,6 +15,8 @@ inherit autotools update-rc.d
 
 # The install-script will fail without this.
 EXTRA_OECONF="--with-user= --with-group= "
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 
 INITSCRIPT_NAME = "devmap_mknod.sh"
 INITSCRIPT_PARAMS = "defaults"

@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r86"
+PR = "r88"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -45,6 +45,14 @@ dirs755 = "/bin /boot /dev ${sysconfdir} ${sysconfdir}/default \
 	   /mnt /media /media/card /media/cf /media/net /media/ram \
 	   /media/union /media/realroot /media/hdd \
 	   /media/mmc1"
+
+dirs755_micro = "/dev /proc /sys ${sysconfdir}"
+dirs2775_micro = ""
+dirs1777_micro = "/tmp"
+
+media = "card cf net ram"
+media_micro = ""
+
 volatiles = "cache run log lock tmp"
 conffiles = "${sysconfdir}/debian_version ${sysconfdir}/host.conf \
 	     ${sysconfdir}/inputrc ${sysconfdir}/issue /${sysconfdir}/issue.net \
@@ -71,9 +79,11 @@ do_install () {
 		install -m 2755 -d ${D}$d
 	done
 	for d in ${volatiles}; do
-		ln -sf volatile/$d ${D}/${localstatedir}/$d
+                if [ -d ${D}${localstatedir}/volatile/$d ]; then
+                        ln -sf volatile/$d ${D}/${localstatedir}/$d
+                fi
 	done
-	for d in card cf net ram; do
+	for d in ${media}; do
 		ln -sf /media/$d ${D}/mnt/$d
 	done
 
@@ -83,40 +93,42 @@ do_install () {
 		echo ${hostname} > ${D}${sysconfdir}/hostname
 	fi
 
-        install -m 644 ${WORKDIR}/issue*  ${D}${sysconfdir}  
+        if [ "${DISTRO}" != "micro" -a "${DISTRO}" != "micro-uclibc" ]; then
+                install -m 644 ${WORKDIR}/issue*  ${D}${sysconfdir}  
 
-        if [ -n "${DISTRO_NAME}" ]; then
-		echo -n "${DISTRO_NAME} " >> ${D}${sysconfdir}/issue
-		echo -n "${DISTRO_NAME} " >> ${D}${sysconfdir}/issue.net
-		if [ -n "${DISTRO_VERSION}" ]; then
-			echo -n "${DISTRO_VERSION} " >> ${D}${sysconfdir}/issue
-			echo -n "${DISTRO_VERSION} " >> ${D}${sysconfdir}/issue.net
-		fi
-		echo "\n \l" >> ${D}${sysconfdir}/issue
-		echo >> ${D}${sysconfdir}/issue
-		echo "%h"    >> ${D}${sysconfdir}/issue.net
-		echo >> ${D}${sysconfdir}/issue.net
-	else
- 	       install -m 0644 ${WORKDIR}/issue ${D}${sysconfdir}/issue
- 	       install -m 0644 ${WORKDIR}/issue.net ${D}${sysconfdir}/issue.net
- 	fi
+                if [ -n "${DISTRO_NAME}" ]; then
+        		echo -n "${DISTRO_NAME} " >> ${D}${sysconfdir}/issue
+        		echo -n "${DISTRO_NAME} " >> ${D}${sysconfdir}/issue.net
+        		if [ -n "${DISTRO_VERSION}" ]; then
+        			echo -n "${DISTRO_VERSION} " >> ${D}${sysconfdir}/issue
+        			echo -n "${DISTRO_VERSION} " >> ${D}${sysconfdir}/issue.net
+        		fi
+        		echo "\n \l" >> ${D}${sysconfdir}/issue
+        		echo >> ${D}${sysconfdir}/issue
+        		echo "%h"    >> ${D}${sysconfdir}/issue.net
+        		echo >> ${D}${sysconfdir}/issue.net
+        	else
+ 	                install -m 0644 ${WORKDIR}/issue ${D}${sysconfdir}/issue
+                        install -m 0644 ${WORKDIR}/issue.net ${D}${sysconfdir}/issue.net
+                fi
 
-	install -m 0644 ${WORKDIR}/fstab ${D}${sysconfdir}/fstab
-	install -m 0644 ${WORKDIR}/filesystems ${D}${sysconfdir}/filesystems
-	install -m 0644 ${WORKDIR}/usbd ${D}${sysconfdir}/default/usbd
-	install -m 0644 ${WORKDIR}/profile ${D}${sysconfdir}/profile
-	install -m 0755 ${WORKDIR}/share/dot.profile ${D}${sysconfdir}/skel/.profile
-	install -m 0755 ${WORKDIR}/share/dot.bashrc ${D}${sysconfdir}/skel/.bashrc
-	install -m 0644 ${WORKDIR}/inputrc ${D}${sysconfdir}/inputrc
+                install -m 0644 ${WORKDIR}/fstab ${D}${sysconfdir}/fstab
+        	install -m 0644 ${WORKDIR}/filesystems ${D}${sysconfdir}/filesystems
+        	install -m 0644 ${WORKDIR}/usbd ${D}${sysconfdir}/default/usbd
+        	install -m 0644 ${WORKDIR}/profile ${D}${sysconfdir}/profile
+        	install -m 0755 ${WORKDIR}/share/dot.profile ${D}${sysconfdir}/skel/.profile
+        	install -m 0755 ${WORKDIR}/share/dot.bashrc ${D}${sysconfdir}/skel/.bashrc
+        	install -m 0644 ${WORKDIR}/inputrc ${D}${sysconfdir}/inputrc
+        	install -m 0644 ${WORKDIR}/motd ${D}${sysconfdir}/motd
+        	for license in BSD GPL-2 LGPL-2 LGPL-2.1 Artistic GPL-3 LGPL-3 GFDL-1.2; do
+	        	install -m 0644 ${WORKDIR}/licenses/$license ${D}${datadir}/common-licenses/
+        	done
+
+	        ln -sf /proc/mounts ${D}${sysconfdir}/mtab
+        	install -m 0644 ${WORKDIR}/host.conf ${D}${sysconfdir}/host.conf
+        fi
+
 	install -m 0644 ${WORKDIR}/nsswitch.conf ${D}${sysconfdir}/nsswitch.conf
-	install -m 0644 ${WORKDIR}/host.conf ${D}${sysconfdir}/host.conf
-	install -m 0644 ${WORKDIR}/motd ${D}${sysconfdir}/motd
-
-	for license in BSD GPL-2 LGPL-2 LGPL-2.1 Artistic GPL-3 LGPL-3 GFDL-1.2; do
-		install -m 0644 ${WORKDIR}/licenses/$license ${D}${datadir}/common-licenses/
-	done
-
-	ln -sf /proc/mounts ${D}${sysconfdir}/mtab
 }
 
 
@@ -156,6 +168,7 @@ PACKAGE_ARCH_rt3000 = "rt3000"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 CONFFILES_${PN} = "${sysconfdir}/fstab ${sysconfdir}/hostname"
+CONFFILES_${PN}_micro = ""
 CONFFILES_${PN}_nylon = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
 CONFFILES_${PN}_slugos = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
 

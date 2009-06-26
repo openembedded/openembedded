@@ -27,10 +27,13 @@ EXTRA_OECONF = "\
 		--with-mad-includes=${STAGING_INCDIR} \
         --with-faad-libraries=${STAGING_LIBDIR} \
 		--with-faad-includes=${STAGING_INCDIR} \
+        --disable-curl \
+        --disable-ffmpeg \
         --disable-jack \
         --enable-pulse \
         --enable-mod \
-        --disable-oggflac"
+        --disable-oggflac \
+	--with-lame-includes=${STAGING_INCDIR}"
 
 do_compile_prepend() {
     find -name Makefile | xargs sed -i 's~-I/usr/include~-I${STAGING_INCDIR}~g'

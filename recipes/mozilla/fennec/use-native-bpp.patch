@@ -1,0 +1,81 @@
+diff -r f603fec24bf7 gfx/thebes/src/gfxPlatformGtk.cpp
+--- a/gfx/thebes/src/gfxPlatformGtk.cpp	Tue Dec 02 16:05:36 2008 -0500
++++ b/gfx/thebes/src/gfxPlatformGtk.cpp	Tue Dec 02 23:14:03 2008 -0500
+@@ -80,18 +80,23 @@
+ 
+ #define GDK_PIXMAP_SIZE_MAX 32767
+ 
+ #ifndef MOZ_PANGO
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ 
++#include "nsIPrefService.h"
++#include "nsIPrefBranch.h"
++#include "nsServiceManagerUtils.h"
++
+ double gfxPlatformGtk::sDPI = -1.0;
+ gfxFontconfigUtils *gfxPlatformGtk::sFontconfigUtils = nsnull;
++static PRBool gUseSystemVisualFormat = PR_FALSE;
+ 
+ #ifndef MOZ_PANGO
+ typedef nsDataHashtable<nsStringHashKey, nsRefPtr<FontFamily> > FontTable;
+ static FontTable *gPlatformFonts = NULL;
+ static FontTable *gPlatformFontAliases = NULL;
+ static FT_Library gPlatformFTLibrary = NULL;
+ #endif
+ 
+@@ -113,16 +118,26 @@ gfxPlatformGtk::gfxPlatformGtk()
+     gPlatformFonts = new FontTable();
+     gPlatformFonts->Init(100);
+     gPlatformFontAliases = new FontTable();
+     gPlatformFontAliases->Init(100);
+     UpdateFontList();
+ #endif
+ 
+     InitDPI();
++
++    nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
++    if (!prefs)
++        return;
++
++    PRBool val = PR_FALSE;
++    nsresult rv;
++    rv = prefs->GetBoolPref("gfx.system.visual.format", &val);
++    if (NS_SUCCEEDED(rv))
++        gUseSystemVisualFormat = val;
+ }
+ 
+ gfxPlatformGtk::~gfxPlatformGtk()
+ {
+     gfxFontconfigUtils::Shutdown();
+     sFontconfigUtils = nsnull;
+ 
+ #ifdef MOZ_PANGO
+@@ -184,18 +199,24 @@ gfxPlatformGtk::CreateOffscreenSurface(c
+     // XXX we really need a different interface here, something that passes
+     // in more context, including the display and/or target surface type that
+     // we should try to match
+     Display* display = GDK_DISPLAY();
+     if (!display)
+         return nsnull;
+ 
+     GdkPixmap* pixmap = nsnull;
+-    XRenderPictFormat* xrenderFormat =
+-        XRenderFindStandardFormat(display, xrenderFormatID);
++    XRenderPictFormat* xrenderFormat = nsnull;
++
++    if (xrenderFormatID == PictStandardRGB24 && gUseSystemVisualFormat) {
++        // Actually we want not strictly RGB24, but the fastest non-alpha
++        // format (XXX to be verified if it is actually safe)
++        xrenderFormat = XRenderFindVisualFormat(display, GDK_VISUAL_XVISUAL(gdk_visual_get_system()));
++    }
++    if (!xrenderFormat) xrenderFormat = XRenderFindStandardFormat(display, xrenderFormatID);
+ 
+     if (xrenderFormat && sizeOk) {
+         pixmap = gdk_pixmap_new(nsnull, size.width, size.height,
+                                 xrenderFormat->depth);
+ 
+         if (pixmap) {
+             gdk_drawable_set_colormap(GDK_DRAWABLE(pixmap), nsnull);
+             newSurface = new gfxXlibSurface(display,

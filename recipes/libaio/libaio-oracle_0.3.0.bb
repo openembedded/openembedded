@@ -4,7 +4,8 @@
 
 DESCRIPTION="This is a library for accessing the new AIO system calls (asynchronous i/o) for the Linux kernel."
 HOMEPAGE="http://oss.oracle.com/projects/libaio-oracle"
-LICENSE="GPL"
+LICENSE="LGPL"
+PR = "r1"
 
 SRC_URI="http://oss.oracle.com/projects/libaio-oracle/dist/files/${PN}-${PV}.tar.gz"
 
@@ -31,4 +32,3 @@ do_stage() {
 	rm -f ${STAGE_TEMP}/usr/lib/*.la
 	oe_libinstall -a -so -C ${STAGE_TEMP}/usr/lib libaio-oracle ${STAGING_LIBDIR}
 }
-

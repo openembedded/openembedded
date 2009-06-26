@@ -2,11 +2,11 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r15"
+PR = "r16"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
-SRCREV = "f4765e699090872679d4fb2799e35fff5ed4c8df"
+SRCREV = "26df4208b57ccb0f0ca101ae4ddb92c956a0ecc0"
 SRC_URI = "git://git.mansr.com/${PN};protocol=git \
            file://fbplay-static.diff;patch=1 "
 

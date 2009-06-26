@@ -1,7 +1,7 @@
 From 30c40f5e6b1794430f678bf23d3319354321cab7 Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Tue, 14 Apr 2009 14:50:11 +0200
-Subject: [PATCH] DSS2: do bootmem reserve for exclusive access
+Subject: [PATCH 31/69] DSS2: do bootmem reserve for exclusive access
 
 BOOTMEM_DEFAULT would allow multiple reservations for the same location,
 we need to reserve the region for our exclusive use. Also check if the
@@ -29,5 +29,5 @@ index f24a110..520f260 100644
  		if (size > sdram_size) {
  			printk(KERN_ERR "Illegal SDRAM size for VRAM\n");
 -- 
-1.5.6.5
+1.6.2.4
 

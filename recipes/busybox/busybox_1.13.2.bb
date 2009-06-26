@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r18"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -25,7 +25,7 @@ SRC_URI = "\
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
-  file://default.script \
+  file://default.script file://simple.script \
   file://hwclock.sh \
   file://mount.busybox \
   file://mountall \
@@ -39,12 +39,10 @@ SRC_URI = "\
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
-do_configure () {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+do_configure_prepend () {
 	if [ "${TARGET_ARCH}" = "avr32" ] ; then
-		sed -i s:CONFIG_FEATURE_OSF_LABEL=y:CONFIG_FEATURE_OSF_LABEL=n: ${S}/.config
+		sed -i s:CONFIG_FEATURE_OSF_LABEL=y:CONFIG_FEATURE_OSF_LABEL=n: ${WORKDIR}/defconfig
 	fi
-	cml1_do_configure
 }
 
 do_install_append() {

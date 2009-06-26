@@ -34,6 +34,11 @@ Person:     Bernhard Guillon
 Mail:       Bernhard.Guillon@opensimpad.org
 Machines:   simpad
 
+Person:     Christopher Larson
+Mail:       clarson@kergoth.com
+Recipes:    autoconf, automake, libtool, gnu-config
+Recipes:    autoconf*.bbclass
+
 Person:     Cliff Brake
 Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
@@ -70,6 +75,11 @@ Interests:  GNOME on PDA
 Recipes:    mplayer, xmms, xmms-mad, xmms-tremor, dillo, links, links-x11
 Recipes:    epdfview, sylpheed-claws, sylpheed, gqview, tightvnc
 Recipes:    epdfview, gtk+_2.10.* openmoko2/*
+
+Person:     Henning Heinold 'woglinde'
+Mail:       heinold@inf.fu-berlin.de
+Machines:   simpad
+Recipes:    uclibc, gettext
 
 Person:     Holger Hans Peter Freyther
 Mail:       zecke@selfish.org
@@ -157,6 +167,11 @@ Mail:       liam.girdwood@wolfsonmicro.com
 Machines:   mx31ads
 Recipes:    mx31ads-kernel*	
 
+Person:     Lynn Lin
+Mail:       Lin_Lynn@emc.com
+Interests:  Linux,build system,python,git 
+Recipes:    mini-httpd,dmidecode,mktemp
+
 Person:     Marcin Juszkiewicz
 Mail:       marcin@juszkiewicz.com.pl
 Website:    http://marcin.juszkiewicz.com.pl/
@@ -183,11 +198,26 @@ Machines:   om-gta01, om-gta02, om-3d7k, htcraphael, a780, a1200, a910
 Interests:  Core OE infrastructure, Python, EFL, Vala, Freesmartphone.org
 Recipes:    efl1/*, busybox/*, dbus/*, dropbear/*, freesmartphone/*, gstreamer/*, *python*, vala/
 
+Person:     Øyvind Repvik
+Mail:       nail@nslu2-linux.org
+Machines:   nslu2, fsg3, ixp4xx, n2100, turbostation
+Distros:    foonas, slugos
+Recipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, samba
+Recipes:    ccxstream, eciadsl, ssmtp, ixp4xx-npe, joe
+Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
+Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
+Recipes:    vsftpd, zd1211
+
 Person:     Patrick Gfeller
 Mail:       gfellerpatrik@gmx.net
 Website:    www.codeomega.info
 Interests:  text-to-speech, vnc
 Recipes:    libvncserver, fbvncserver2
+
+Person:     Paul Eggleton
+Mail:       bluelightning@bluelightning.org
+Interests:  PocketPC and Zaurus userland (especially Opie)
+Recipes:    opie-*, qpe-*
 
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
@@ -203,6 +233,13 @@ Machines:   omap5912osk, gumstix-connex, gumstix-verdex, Efika, davinci-dvevm
 Interests:  Software Defined Radio, 
 Interests:  wireless networking (not necessarily wireless NIC's)
 Recipes:    omniorb, gnuradio
+
+Person:     Philipp Zabel
+Mail:       philipp.zabel@gmail.com
+Interests:  Kernels, PXA, GTK+, gsmd
+Distros:    Ångström
+Machines:   hx4700, magician
+Recipes:    avahi, libgsmd
 
 Person:     Philippe De Swert
 Mail:       philippedeswert@scarlet.be
@@ -226,6 +263,21 @@ Machines:   akita
 Recipes:    aircrack-ng, kismet, lorcon, mdk, rfakeap, rglueap, 
 Recipes:    rt2570-k2wrlz, void11
 
+Person:     Robert Schuster 'thebohemian'
+Mail:       robert.schuster@tarent.de, thebohemian@gmx.net
+Website:    http://fsfe.org/en/fellows/robertschuster/weblog
+Interests:  free software, java, games, packages/maemo4/*
+Distros:    chinook-compat
+Recipes:    jikes-native, jikes-initial, ecj-initial, ecj-bootstrap-native
+Recipes:    classpath*, cacao*, jamvm*
+Recipes:    miglayout, javasqlite*, sqlitejbdc
+Recipes:    swt-gtk, rxtx, dbus-java, libmatthew, kxml2, xmlpull
+Recipes:    woodstox2, phoneme-advanced-*
+Recipes:    midpath*, logic-analyze
+Recipes:    kobodeluxe, wesnoth
+Recipes:    hildon-thumbnail, libhildon*, libosso*, mce-dev, libconic
+Recipes:    libgpsbt, libgpsmgr, osso-gnome-vfs2, osso-gwconnect, osso-ic-oss
+
 Person:     Rodrigo 'vivijim' Vivi
 Mail:       rodrigo.vivi@openbossa.org
 Website:    http://blog.vivi.eng.br
@@ -242,6 +294,11 @@ Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
 Recipes:    eb*, tomoe, offline-wikipedia
+
+Person:     Sergey Lapin
+Mail:       slapin@ossfans.org
+Machines:   palm*, afeb9260
+Recipes:    at91bootstrap
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
@@ -279,49 +336,4 @@ Person:     Tim Sander
 Mail:       oe@iss.tu-darmstadt.de
 Receipes:   fxload
 
-Person:     Øyvind Repvik
-Mail:       nail@nslu2-linux.org
-Machines:   nslu2, fsg3, ixp4xx, n2100, turbostation
-Distros:    foonas, slugos
-Recipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, samba
-Recipes:    ccxstream, eciadsl, ssmtp, ixp4xx-npe, joe
-Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
-Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
-Recipes:    vsftpd, zd1211
-
-Person:     Henning Heinold 'woglinde'
-Mail:       heinold@inf.fu-berlin.de
-Machines:   simpad
-Recipes:    uclibc, gettext
-
-Person:     Philipp Zabel
-Mail:       philipp.zabel@gmail.com
-Interests:  Kernels, PXA, GTK+, gsmd
-Distros:    Ångström
-Machines:   hx4700, magician
-Recipes:    avahi, libgsmd
-
-Person:     Robert Schuster 'thebohemian'
-Mail:       robert.schuster@tarent.de, thebohemian@gmx.net
-Website:    http://fsfe.org/en/fellows/robertschuster/weblog
-Interests:  free software, java, games, packages/maemo4/*
-Distros:    chinook-compat
-Recipes:    jikes-native, jikes-initial, ecj-initial, ecj-bootstrap-native
-Recipes:    classpath*, cacao*, jamvm*
-Recipes:    miglayout, javasqlite*, sqlitejbdc
-Recipes:    swt-gtk, rxtx, dbus-java, libmatthew, kxml2, xmlpull
-Recipes:    woodstox2, phoneme-advanced-*
-Recipes:    midpath*, logic-analyze
-Recipes:    kobodeluxe, wesnoth
-Recipes:    hildon-thumbnail, libhildon*, libosso*, mce-dev, libconic
-Recipes:    libgpsbt, libgpsmgr, osso-gnome-vfs2, osso-gwconnect, osso-ic-oss
-
-Person:     Sergey Lapin
-Mail:       slapin@ossfans.org
-Machines:   palm*, afeb9260
-Recipes:    at91bootstrap
-
-Person:     Christopher Larson
-Mail:       clarson@kergoth.com
-Recipes:    autoconf, automake, libtool, gnu-config
-Recipes:    autoconf*.bbclass
+NOTE: please read the first ten lines of this files before adding yourself down here!

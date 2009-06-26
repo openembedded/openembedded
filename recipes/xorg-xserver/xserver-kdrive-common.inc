@@ -2,77 +2,80 @@ LICENSE = "MIT"
 DEPENDS = "compositeproto damageproto fixesproto recordproto resourceproto scrnsaverproto xineramaproto videoproto xextproto xproto \
 	libxau libxext libxdmcp libxfont libxrandr tslib virtual/libx11 xtrans"
 
+PKGN ?= "xserver-kdrive"
+
 PROVIDES = "virtual/xserver"
-PACKAGES =+ "xserver-kdrive-fbdev \
-             xserver-kdrive-sdl \
-             xserver-kdrive-fake \
-             xserver-kdrive-xephyr \
-             xserver-kdrive-epson \
-             xserver-kdrive-ati \
-             xserver-kdrive-chips \
-             xserver-kdrive-i810 \
-             xserver-kdrive-mach64 \
-             xserver-kdrive-mga \
-             xserver-kdrive-neomagic \
-             xserver-kdrive-nvidia \
-             xserver-kdrive-pm2 \
-             xserver-kdrive-r128 \
-             xserver-kdrive-smi \
-             xserver-kdrive-vesa \
-             xserver-kdrive-via \
-             xserver-kdrive-w100 \	
- 	"
+PACKAGES =+ "${PKGN}-fbdev \
+             ${PKGN}-sdl \
+             ${PKGN}-fake \
+             ${PKGN}-xephyr \
+             ${PKGN}-epson \
+             ${PKGN}-ati \
+             ${PKGN}-chips \
+             ${PKGN}-i810 \
+             ${PKGN}-mach64 \
+             ${PKGN}-mga \
+             ${PKGN}-neomagic \
+             ${PKGN}-nvidia \
+             ${PKGN}-pm2 \
+             ${PKGN}-r128 \
+             ${PKGN}-smi \
+             ${PKGN}-vesa \
+             ${PKGN}-via \
+             ${PKGN}-w100 \
+        "
 
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
-DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"
-DESCRIPTION_xserver-kdrive-fake = "Fake X server"
-DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
-DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Epson S1D13806 devices"
-DESCRIPTION_xserver-kdrive-sdl = "X server from freedesktop.org, SDL version"
-DESCRIPTION_xserver-kdrive-w100 = "X server from freedesktop.org, supporting the ATI imageon w100 chipset"
-DESCRIPTION_xserver-kdrive-ati = "X server from freedesktop.org, supporting ATI devices"
-DESCRIPTION_xserver-kdrive-chips = "X server from freedesktop.org, supporting Chips chipsets"
-DESCRIPTION_xserver-kdrive-i810 = "X server from freedesktop.org, supporting Intel chipsets"
-DESCRIPTION_xserver-kdrive-imageon = "X server from freedesktop.org, supporting the ATI imageon 100 chipset"
-DESCRIPTION_xserver-kdrive-mach64 = "X server from freedesktop.org, supporting mach64 chipsets"
-DESCRIPTION_xserver-kdrive-mga = "X server from freedesktop.org, supporting mga chipsets"
-DESCRIPTION_xserver-kdrive-neomagic = "X server from freedesktop.org, supporting neomagic chipsets"
-DESCRIPTION_xserver-kdrive-nvidia = "X server from freedesktop.org, supporting nvidia devices"
-DESCRIPTION_xserver-kdrive-pm2 = "X server from freedesktop.org, supporting Permedia2 chipsets"
-DESCRIPTION_xserver-kdrive-r128 = "X server from freedesktop.org, supporting rage128 chipsets"
-DESCRIPTION_xserver-kdrive-smi = "X server from freedesktop.org, supporting Silicon Motion devices"
-DESCRIPTION_xserver-kdrive-vesa = "X server from freedesktop.org, supporting any card with a VESA, VGA or even EGA BIOS. x86 hardware only"
-DESCRIPTION_xserver-kdrive-via = "X server from freedesktop.org, supporting VIA chipsets"
+DESCRIPTION_${PKGN}-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"
+DESCRIPTION_${PKGN}-fake = "Fake X server"
+DESCRIPTION_${PKGN}-xephyr = "X server in an X window"
+DESCRIPTION_${PKGN}-epson = "X server from freedesktop.org, supporting Epson S1D13806 devices"
+DESCRIPTION_${PKGN}-sdl = "X server from freedesktop.org, SDL version"
+DESCRIPTION_${PKGN}-w100 = "X server from freedesktop.org, supporting the ATI imageon w100 chipset"
+DESCRIPTION_${PKGN}-ati = "X server from freedesktop.org, supporting ATI devices"
+DESCRIPTION_${PKGN}-chips = "X server from freedesktop.org, supporting Chips chipsets"
+DESCRIPTION_${PKGN}-i810 = "X server from freedesktop.org, supporting Intel chipsets"
+DESCRIPTION_${PKGN}-imageon = "X server from freedesktop.org, supporting the ATI imageon 100 chipset"
+DESCRIPTION_${PKGN}-mach64 = "X server from freedesktop.org, supporting mach64 chipsets"
+DESCRIPTION_${PKGN}-mga = "X server from freedesktop.org, supporting mga chipsets"
+DESCRIPTION_${PKGN}-neomagic = "X server from freedesktop.org, supporting neomagic chipsets"
+DESCRIPTION_${PKGN}-nvidia = "X server from freedesktop.org, supporting nvidia devices"
+DESCRIPTION_${PKGN}-pm2 = "X server from freedesktop.org, supporting Permedia2 chipsets"
+DESCRIPTION_${PKGN}-r128 = "X server from freedesktop.org, supporting rage128 chipsets"
+DESCRIPTION_${PKGN}-smi = "X server from freedesktop.org, supporting Silicon Motion devices"
+DESCRIPTION_${PKGN}-vesa = "X server from freedesktop.org, supporting any card with a VESA, VGA or even EGA BIOS. x86 hardware only"
+DESCRIPTION_${PKGN}-via = "X server from freedesktop.org, supporting VIA chipsets"
 
 PACKAGES =+ "xserver-security-policy"
 FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
 RRECOMMENDS_${PN} += "xserver-security-policy"
 
-FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
-FILES_xserver-kdrive-fake = "${bindir}/Xfake"
-FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
-FILES_xserver-kdrive-epson = "${bindir}/Xepson"
-FILES_xserver-kdrive-sdl = "${bindir}/Xsdl"
-FILES_xserver-kdrive-w100 = "${bindir}/Xw100"
-FILES_xserver-kdrive-ati = "${bindir}/Xati"
-FILES_xserver-kdrive-chips = "${bindir}/Xchips"
-FILES_xserver-kdrive-i810 = "${bindir}/Xi810"
-FILES_xserver-kdrive-imageon = "${bindir}/Ximageon"
-FILES_xserver-kdrive-mach64 = "${bindir}/Xmach64"
-FILES_xserver-kdrive-mga = "${bindir}/Xmga"
-FILES_xserver-kdrive-neomagic = "${bindir}/Xneomagic"
-FILES_xserver-kdrive-nvidia = "${bindir}/Xnvidia"
-FILES_xserver-kdrive-pm2 = "${bindir}/Xpm2"
-FILES_xserver-kdrive-r128 = "${bindir}/Xr128"
-FILES_xserver-kdrive-smi = "${bindir}/Xsmi"
-FILES_xserver-kdrive-vesa = "${bindir}/Xvesa"
-FILES_xserver-kdrive-via = "${bindir}/Xvia"
+FILES_${PKGN}-fbdev = "${bindir}/Xfbdev"
+FILES_${PKGN}-fake = "${bindir}/Xfake"
+FILES_${PKGN}-xephyr = "${bindir}/Xephyr"
+FILES_${PKGN}-epson = "${bindir}/Xepson"
+FILES_${PKGN}-sdl = "${bindir}/Xsdl"
+FILES_${PKGN}-w100 = "${bindir}/Xw100"
+FILES_${PKGN}-ati = "${bindir}/Xati"
+FILES_${PKGN}-chips = "${bindir}/Xchips"
+FILES_${PKGN}-i810 = "${bindir}/Xi810"
+FILES_${PKGN}-imageon = "${bindir}/Ximageon"
+FILES_${PKGN}-mach64 = "${bindir}/Xmach64"
+FILES_${PKGN}-mga = "${bindir}/Xmga"
+FILES_${PKGN}-neomagic = "${bindir}/Xneomagic"
+FILES_${PKGN}-nvidia = "${bindir}/Xnvidia"
+FILES_${PKGN}-pm2 = "${bindir}/Xpm2"
+FILES_${PKGN}-r128 = "${bindir}/Xr128"
+FILES_${PKGN}-smi = "${bindir}/Xsmi"
+FILES_${PKGN}-vesa = "${bindir}/Xvesa"
+FILES_${PKGN}-via = "${bindir}/Xvia"
 
 SRC_URI ?= "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES}"
 KDRIVE_COMMON_PATCHES = " \
 	file://kmode.patch;patch=1 \
+	file://kmode-800_480.patch;patch=1 \
 	file://disable-apm.patch;patch=1 \
 	file://no-serial-probing.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1  \

@@ -1,11 +1,11 @@
 require busybox.inc
-PR = "r13"
+PR = "${INC_PR}.1"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://busybox-cron \
            file://busybox-httpd \
            file://busybox-udhcpd \
-           file://default.script \
+           file://default.script file://simple.script \
            file://hwclock.sh \
            file://mount.busybox \
            file://mountall \

@@ -6,7 +6,7 @@ Index: gcc-4.4+svnr145550/gcc/incpath.c
    p->construct = 0;
    p->user_supplied_p = user_supplied_p;
  
-+#ifdef CROSS_COMPILE
++#ifdef CROSS_DIRECTORY_STRUCTURE
 +    /* A common error when cross compiling is including
 +    host headers. This code below will try to fail fast
 +    for cross compiling. Currently we consider /usr/include,

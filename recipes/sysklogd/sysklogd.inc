@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 SECTION = "base"
-DESCRIPTION = "The sysklogd package implements \
-two system log daemons."
+DESCRIPTION = "The sysklogd package implements two system log daemons."
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/sysklogd-${PV}.tar.gz \
 	   file://nonrootinstall.patch;patch=1"

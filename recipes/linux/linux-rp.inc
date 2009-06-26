@@ -20,6 +20,9 @@ COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux8
 # Enable OABI compat for people stuck with obsolete userspace
 ARM_KEEP_OABI ?= "1"
 
+# Quirk for udev greater or equal 141
+UDEV_GE_141 ?= "0"
+
 KERNEL_DEFCONFIG ?= "defconfig-${MACHINE}"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
@@ -144,6 +147,22 @@ do_configure() {
 	    -e '/CONFIG_LOGO_OZ480_CLUT224=/d' \
 	    -e '/CONFIG_LOGO_OZ640_CLUT224=/d' \
 	    '${WORKDIR}/${KERNEL_DEFCONFIG}' >>'${S}/.config'
+
+        echo 'CONFIG_LOCALVERSION=""' >>${S}/.config
+        echo '# CONFIG_LOCALVERSION_AUTO is not set' >>${S}/.config
+
+        #
+        # Udev quirks
+        #
+
+        # Newer versions of udev mandate that sysfs doesn't have deprecated entries
+        if [ "${UDEV_GE_141}" = "1" ] ; then
+            sed -e /CONFIG_SYSFS_DEPRECATED/d \
+                -e /CONFIG_SYSFS_DEPRECATED_V2/d \
+                -i '${S}/.config'
+            echo '# CONFIG_SYSFS_DEPRECATED is not set' >> ${S}/.config
+            echo '# CONFIG_SYSFS_DEPRECATED_V2 is not set' >> ${S}/.config
+        fi
 
 	yes '' | oe_runmake oldconfig
 }

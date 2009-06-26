@@ -1,11 +1,14 @@
-TARGET_CC_ARCH = "-march=ep9312 -mtune=ep9312 -mcpu=ep9312"
-# add "-mfp=maverick" for newer gcc versions > 4.0
+TARGET_CC_ARCH = "-mcpu=ep9312 -mfpu=maverick -mfloat-abi=softfp"
 
 #set arch to ep9312 for all generated packages
-PACKAGE_EXTRA_ARCHS += "armv4 armv4t ep9312"
+PACKAGE_EXTRA_ARCHS += "armv4t ep9312"
 BASE_PACKAGE_ARCH = "ep9312"
 FEED_ARCH = "ep9312"
 
 # Include tune file for thumb support, it defaults to off so DISTROs can turn it on if they wish
 require conf/machine/include/tune-thumb.inc
 
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O -fno-signed-zeros"
+DEBUG_OPTIMIZATION = "-O -fno-omit-frame-pointer -g"
+SELECTED_OPTIMIZATION = "${@bb.data.getVar(['FULL_OPTIMIZATION', 'DEBUG_OPTIMIZATION'][bb.data.getVar('DEBUG_BUILD', d, 1) == '1'], d, 1)}"
+BUILD_OPTIMIZATION = "-O"

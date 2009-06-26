@@ -1,2 +1,2 @@
 require qt4-tools-native.inc
-PR = "r4"
+PR = "${INC_PR}.1"

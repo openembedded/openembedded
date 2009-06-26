@@ -2,7 +2,7 @@ DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
 LICENSE = "MIT"
 
-PR = "r12"
+PR = "r13"
 
 inherit task
 
@@ -12,11 +12,11 @@ PACKAGES = "task-opie-base \
             task-opie-base-applets task-opie-base-apps \
             task-opie-base-decorations task-opie-base-inputmethods \
             task-opie-base-pim task-opie-base-settings \
-            task-opie-base-styles task-opie-bluetooth \
-            task-opie-base-todayplugins \
+            task-opie-base-styles task-opie-base-todayplugins \
             task-opie-extra-settings \
             task-opie-extra-styles \
-            task-opie-irda \
+  ${@base_contains("COMBINED_FEATURES", "bluetooth", "task-opie-bluetooth", "",d)} \
+  ${@base_contains("COMBINED_FEATURES", "irda", "task-opie-irda", "",d)} \
            "
 
 RDEPENDS_task-opie-everything := "${PACKAGES}"

@@ -1,0 +1,18 @@
+diff -Nur nbench-byte-2.2.3_orig/Makefile nbench-byte-2.2.3/Makefile
+--- nbench-byte-2.2.3_orig/Makefile	2004-12-30 03:23:30.000000000 +0100
++++ nbench-byte-2.2.3/Makefile	2008-10-06 18:38:46.000000000 +0200
+@@ -119,12 +119,8 @@
+ 	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
+ 		-c emfloat.c
+ 
+-pointer.h: pointer Makefile
+-	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
+-		-o pointer pointer.c
+-	rm -f pointer.h
+-	if [ "4" = `./pointer` ] ; then touch pointer.h ;\
+-	else echo "#define LONG64" >pointer.h ; fi
++pointer.h: Makefile
++	touch pointer.h ;
+ 
+ misc.o: misc.h misc.c Makefile
+ 	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\

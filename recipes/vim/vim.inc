@@ -3,12 +3,14 @@ SECTION = "console/utils"
 DEPENDS = "ncurses"
 LICENSE = "vim"
 
+INC_PR = "r3"
+
 SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"
 
 S = "${WORKDIR}/vim${VIMVER}/src"
 
-inherit autotools
+inherit autotools update-alternatives
 
 do_configure () {
 	rm -f auto/*
@@ -28,3 +30,8 @@ FILES_vim-tutor = "${datadir}/vim/vim${VIMVER}/tutor ${bindir}/vimtutor"
 #FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
 #	       ${libdir}/*/ ${sysconfdir} ${sharedstatedir} ${localstatedir} \
 #	       /bin /sbin /lib/*/ /lib/*.so* ${datadir}/vim"
+
+ALTERNATIVE_NAME = "vi"
+ALTERNATIVE_PATH = "${bindir}/vim"
+ALTERNATIVE_LINK = "${base_bindir}/vi"
+ALTERNATIVE_PRIORITY = "100"

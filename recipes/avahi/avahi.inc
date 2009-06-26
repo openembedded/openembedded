@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "expat virtual/libintl libdaemon dbus glib-2.0"
 
 # uclibc has no nss
-RRECOMMENDS_avahi-daemon_append_linux = "libnss-mdns"
+RRECOMMENDS_avahi-daemon_append_libc-glibc = "libnss-mdns"
 RDEPENDS_avahi-daemon += "sysvinit-pidof update-rc.d"
 RDEPENDS_avahi-autoipd += "update-rc.d"
 

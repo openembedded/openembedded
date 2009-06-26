@@ -1,5 +1,7 @@
 require gcc-common.inc
 
+INC_PR = "r9"
+
 DEFAULT_PREFERENCE = "-1"
 
 # Use the same patches as gcc-4.1.1 does

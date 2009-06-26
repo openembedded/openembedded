@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
            file://alsa-utils-automake.patch;patch=1 \
@@ -20,6 +20,7 @@ inherit autotools
 do_configure_append() {
 	for i in $(find ${S} -name Makefile) ; do
 		sed -i -e s:/usr/include/ncurses:${STAGING_INCDIR}/ncurses:g $i
+		sed -i -e 's:-L/usr/lib -lncurses:-L${STAGING_LIBDIR} -lncurses:g' $i
 	done
 }
 

@@ -885,7 +885,7 @@ def base_get_metadata_svn_revision(path, d):
 
 def base_get_metadata_git_branch(path, d):
 	import os
-	branch = os.popen('cd %s; git symbolic-ref HEAD' % path).read().rstrip()
+	branch = os.popen('cd %s; PATH=%s git symbolic-ref HEAD 2>/dev/null' % (path, d.getVar("BBPATH", 1))).read().rstrip()
 
 	if len(branch) != 0:
 		return branch.replace("refs/heads/", "")
@@ -893,7 +893,7 @@ def base_get_metadata_git_branch(path, d):
 
 def base_get_metadata_git_revision(path, d):
 	import os
-	rev = os.popen("cd %s; git show-ref HEAD" % path).read().split(" ")[0].rstrip()
+	rev = os.popen("cd %s; PATH=%s git show-ref HEAD 2>/dev/null" % (path, d.getVar("BBPATH", 1))).read().split(" ")[0].rstrip()
 	if len(rev) != 0:
 		return rev
 	return "<unknown>"
@@ -923,7 +923,7 @@ python base_eventhandler() {
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
 		statusvars = bb.data.getVar("BUILDCFG_VARS", e.data, 1).split()
 		statuslines = ["%-17s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
-		statusmsg = "\nOE Build Configuration:\n%s\n" % '\n'.join(statuslines)
+		statusmsg = "\n%s\n%s\n" % (bb.data.getVar("BUILDCFG_HEADER", e.data, 1), "\n".join(statuslines))
 		print statusmsg
 
 		needed_vars = bb.data.getVar("BUILDCFG_NEEDEDVARS", e.data, 1).split()

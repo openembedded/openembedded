@@ -1,0 +1,126 @@
+Index: zaurusd/config/mach-config/mach-akita-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-akita-vars.in	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-akita-vars.in	2009-06-22 20:51:47.000000000 +0000
+@@ -7,4 +7,7 @@
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
+ TSKEYS_DEVICE=/dev/input/event1
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
++
++export XRANDR_LANDSCAPE=right
++export XRANDR_PORTRAIT=normal
+Index: zaurusd/config/mach-config/mach-borzoi-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-borzoi-vars.in	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-borzoi-vars.in	2009-06-22 20:51:00.000000000 +0000
+@@ -5,6 +5,9 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
+-TSKEYS_DEVICE=/dev/input/event1
++TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
++
++export XRANDR_LANDSCAPE=right
++export XRANDR_PORTRAIT=normal
+Index: zaurusd/config/mach-config/mach-corgi-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-corgi-vars.in	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-corgi-vars.in	2009-06-22 20:51:47.000000000 +0000
+@@ -7,4 +7,7 @@
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-c7x0.conf
+ TSKEYS_DEVICE=/dev/input/event1
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
++
++export XRANDR_LANDSCAPE=normal
++export XRANDR_PORTRAIT=left
+Index: zaurusd/config/mach-config/mach-htcuniversal-vars
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-htcuniversal-vars	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-htcuniversal-vars	2009-06-22 20:49:01.000000000 +0000
+@@ -2,3 +2,6 @@
+ 
+ export SWITCH_EVENT_ZHINGE=1
+ SWITCH_EVENT_DEVICE=/dev/input/event3
++
++export XRANDR_LANDSCAPE=normal
++export XRANDR_PORTRAIT=left
+Index: zaurusd/config/mach-config/mach-husky-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-husky-vars.in	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-husky-vars.in	2009-06-22 20:51:47.000000000 +0000
+@@ -7,4 +7,7 @@
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-c7x0.conf
+ TSKEYS_DEVICE=/dev/input/event1
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
++
++export XRANDR_LANDSCAPE=normal
++export XRANDR_PORTRAIT=left
+Index: zaurusd/config/mach-config/mach-poodle-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-poodle-vars.in	2009-06-22 20:49:01.000000000 +0000
++++ zaurusd/config/mach-config/mach-poodle-vars.in	2009-06-22 20:51:47.000000000 +0000
+@@ -6,4 +6,7 @@
+ #TSKEYS_CONF=@appconfdir@/tskeys/zaurus-clamshell.conf
+ #TSKEYS_DEVICE=/dev/input/event1
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/poodle-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/poodle-default.state
++
++export XRANDR_LANDSCAPE=normal
++export XRANDR_PORTRAIT=left
+Index: zaurusd/config/mach-config/mach-shepherd-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-shepherd-vars.in	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-shepherd-vars.in	2009-06-22 20:51:47.000000000 +0000
+@@ -7,4 +7,7 @@
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-c7x0.conf
+ TSKEYS_DEVICE=/dev/input/event1
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
++
++export XRANDR_LANDSCAPE=normal
++export XRANDR_PORTRAIT=left
+Index: zaurusd/config/mach-config/mach-spitz-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-spitz-vars.in	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-spitz-vars.in	2009-06-22 20:51:47.000000000 +0000
+@@ -7,4 +7,7 @@
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
+ TSKEYS_DEVICE=/dev/input/event1
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
++
++export XRANDR_LANDSCAPE=right
++export XRANDR_PORTRAIT=normal
+Index: zaurusd/config/mach-config/mach-tosa-vars.in
+===================================================================
+--- zaurusd.orig/config/mach-config/mach-tosa-vars.in	2009-03-07 11:04:43.000000000 +0000
++++ zaurusd/config/mach-config/mach-tosa-vars.in	2009-06-22 20:51:47.000000000 +0000
+@@ -6,4 +6,7 @@
+ #TSKEYS_CONF=@appconfdir@/tskeys/zaurus-clamshell.conf
+ #TSKEYS_DEVICE=/dev/input/event1
+ 
+-ALSA_MIXER_INIT=@appconfdir@/alsa/6000x-default.state
+\ No newline at end of file
++ALSA_MIXER_INIT=@appconfdir@/alsa/6000x-default.state
++
++export XRANDR_LANDSCAPE=normal
++export XRANDR_PORTRAIT=left

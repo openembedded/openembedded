@@ -8,7 +8,7 @@ DEFAULT_PREFERENCE_at91rm9200dk	 = "1"
 DEFAULT_PREFERENCE_at91sam9rlek	 = "1"
 DEFAULT_PREFERENCE_at91sam9260ek = "1"
 DEFAULT_PREFERENCE_at91sam9261ek = "1"
-DEFAULT_PREFERENCE_at91sam9g20ek = "1"
+DEFAULT_PREFERENCE_at91sam9g20ek = "-1"
 DEFAULT_PREFERENCE_at91sam9263ek = "1"
 DEFAULT_PREFERENCE_at91cap9adk	 = "1"
 DEFAULT_PREFERENCE_atngw100	 = "1"
@@ -28,7 +28,4 @@ SRC_URI_append_at91sam9g20ek = "\
 	   file://u-boot-2009.01-exp-003-drivers-net-macb.c.patch;patch=1 \
            file://at91sam9g20-fix-config.patch;patch=1 \
            "
-
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-PARALLEL_MAKE = ""
 

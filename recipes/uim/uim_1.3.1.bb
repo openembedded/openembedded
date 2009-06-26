@@ -1,7 +1,7 @@
 require uim.inc
 DEPENDS = "gtk+ uim-native anthy fontconfig libxft xt glib-2.0 ncurses"
 SECTION_uim-gtk2.0 = "x11/inputmethods"
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://uim-module-manager.patch;patch=1"
 
@@ -11,7 +11,7 @@ PACKAGES += "uim-xim uim-utils uim-skk uim-gtk2.0 uim-fep uim-common uim-anthy l
 
 LEAD_SONAME = "libuim.so.1"
 RDEPENDS_uim = "libuim0"
-RDEPENDS_uim-anthy = "virtual/japanese-font"
+RDEPENDS_uim-anthy = "virtual-japanese-font"
 
 DESCRIPTION_libuim0 = "Simple and flexible input method collection and library"
 SECTION_libuim0 = "libs/inputmethods"

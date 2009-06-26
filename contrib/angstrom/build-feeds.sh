@@ -70,7 +70,7 @@ fi
 for machine in ${ARCH_MACHINES}
 do
         BUILD_MACHINE=$machine
-        BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
+        BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS=" \
                       abiword \
                       aircrack-ng \
@@ -100,9 +100,14 @@ do
                       cvs \
                       cwiid \
                       dates \
+                      dialog \
                       distcc \
                       dsniff \
                       duke3d \
+                      dvb-apps \
+                      dvbstream \
+                      dvbtraffic \
+                      dvbtune \
                       e-uae \
                       e-wm \
                       ekiga \
@@ -122,6 +127,7 @@ do
                       findutils \
                       firefox \
                       fish \
+                      fldigi \
                       flex \
                       flite \
                       frameworkd \
@@ -171,6 +177,7 @@ do
                       gzip \
                       hal \
                       hexatrolic \
+                      htop \
                       i2c-tools \
                       iaimaster \
                       icebloxx \
@@ -184,6 +191,7 @@ do
                       iscsi-target \
                       ivman \
                       jamvm \
+                      kernel-module-udlfb \
                       kismet \
                       konqueror-embedded \
                       labyrinth \
@@ -233,6 +241,8 @@ do
                       openvpn \
                       opie-notes \
                       orage \
+                      padevchooser \
+                      pavucontrol \
                       palantir \
                       pairs \
                       pciutils \
@@ -306,6 +316,7 @@ do
                       tzdata \
                       ubahnnav \
                       ufraw \
+                      unzip \
                       usbutils \
                       usbview \
                       ushare \
@@ -317,6 +328,7 @@ do
                       win4 \
                       wireshark \
                       wpa-gui \
+                      wscan \
                       wt \
                       wt3 \
                       x11vnc \
@@ -325,7 +337,9 @@ do
                       xf86-input-mouse \
                       xf86-input-tslib \
                       xf86-video-ati \
+                      xf86-video-displaylink \
                       xf86-video-fbdev \
+                      xf86-video-sisusb \
                       xf86-video-vesa \
                       xfce-mcs-manager
                       xfce-mcs-manager \
@@ -347,8 +361,10 @@ do
                       xserver-xorg \
                       zauralign \
                       zddice \
+                      zenity \
                       zgscore \
                       zhone \
+                      zip \
                       ziq \
                       zlapspeed \
                       zrev7 \
@@ -371,7 +387,7 @@ fi
 for machine in ${MACHINES}
 do
         BUILD_MACHINE=$machine
-            BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
+            BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS="task-base task-boot \
                        task-opie task-opie-all \
                        task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \

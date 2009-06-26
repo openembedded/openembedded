@@ -1,7 +1,7 @@
 From 4cc0368574f587f448231ccd121266bed4bf9729 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 2 Apr 2009 10:29:56 +0300
-Subject: [PATCH] DSS2: Add panel drivers
+Subject: [PATCH 05/69] DSS2: Add panel drivers
 
 - Generic panel
 - Samsung LTE430WQ-F0C LCD Panel
@@ -254,7 +254,7 @@ index 0000000..e4bb781
 +		.vfp		= 4,
 +		.vbp		= 12-10,
 +	},
-+	.recommended_bpp = 16,
++
 +	.config = OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IHS | OMAP_DSS_LCD_IVS,
 +};
 +
@@ -392,5 +392,5 @@ index 0000000..1f99150
 +module_exit(sharp_ls_panel_drv_exit);
 +MODULE_LICENSE("GPL");
 -- 
-1.5.6.5
+1.6.2.4
 

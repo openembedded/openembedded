@@ -1,0 +1,13 @@
+01_plainio.dpatch by Martin Pitt <mpitt@debian.org>
+Fixes garbage output of mtype under certain circumstances; closes #217413
+
+--- mtools-3.9.9/plain_io.c	2003-02-16 17:18:58.000000000 +0100
++++ mtools-3.9.9/plain_io.c	2004-01-14 00:56:11.000000000 +0100
+@@ -524,6 +524,7 @@
+ 		printOom();
+ 		return 0;
+ 	}
++    memset((void*)This, 0, sizeof(SimpleFile_t));
+ 	This->scsi_sector_size = 512;
+ 	This->seekable = 1;
+ #ifdef OS_hpux

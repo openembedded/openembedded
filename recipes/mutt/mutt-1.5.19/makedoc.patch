@@ -1,0 +1,26 @@
+Index: mutt-1.5.19/doc/Makefile.am
+===================================================================
+--- mutt-1.5.19.orig/doc/Makefile.am
++++ mutt-1.5.19/doc/Makefile.am
+@@ -7,7 +7,7 @@ AM_CPPFLAGS = -I. -I.. -I$(includedir) -
+ 
+ MAKEDOC_CPP = $(CPP) $(AM_CPPFLAGS) $(DEFS) $(CPPFLAGS) -D_MAKEDOC -C
+ 
+-noinst_PROGRAMS = makedoc
++makedoc : $(makedoc_SOURCES)
+ 
+ EXTRA_DIST = dotlock.man		\
+ 	muttbug.man			\
+Index: mutt-1.5.19/doc/makedoc.c
+===================================================================
+--- mutt-1.5.19.orig/doc/makedoc.c
++++ mutt-1.5.19/doc/makedoc.c
+@@ -51,7 +51,7 @@
+ #ifndef HAVE_STRERROR
+ #ifndef STDC_HEADERS
+ extern int sys_nerr;
+-extern char *sys_errlist[];
++/*extern char *sys_errlist[];*/
+ #endif
+ 
+ #define strerror(x) ((x) > 0 && (x) < sys_nerr) ? sys_errlist[(x)] : 0

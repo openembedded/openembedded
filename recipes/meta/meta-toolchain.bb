@@ -56,24 +56,24 @@ do_populate_sdk() {
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
 
-	package_update_index_ipk
 	package_generate_ipkg_conf
 
 	for arch in ${PACKAGE_ARCHS}; do
 		revipkgarchs="$arch $revipkgarchs"
 	done
 
-	mkdir -p ${SDK_OUTPUT}/usr/lib/opkg
+	mkdir -p ${SDK_OUTPUT}/${layout_libdir}/opkg
 	${IPKG_HOST} update
 	${IPKG_HOST} -force-depends install ${TOOLCHAIN_HOST_TASK}
 
-	mkdir -p ${SDK_OUTPUT}/${SDK_PATH}/${TARGET_SYS}/usr/lib/opkg
+	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_libdir}/opkg
 	${IPKG_TARGET} update
 	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
 
-	install -d ${SDK_OUTPUT}/${prefix}/usr/lib/opkg
-	mv ${SDK_OUTPUT}/usr/lib/opkg/* ${SDK_OUTPUT}/${prefix}/usr/lib/opkg/
-	rm -Rf ${SDK_OUTPUT}/usr/lib
+	install -d ${SDK_OUTPUT}/${prefix}/${layout_libdir}/opkg
+	mv ${SDK_OUTPUT}/${layout_libdir}/opkg/* \
+		${SDK_OUTPUT}/${prefix}/${layout_libdir}/opkg/
+	rm -Rf ${SDK_OUTPUT}/${layout_libdir}
 
 	install -d ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}
 	install -m 0644 ${IPKGCONF_TARGET} ${IPKGCONF_SDK} ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}/
@@ -170,5 +170,5 @@ do_populate_sdk() {
 }
 
 do_populate_sdk[nostamp] = "1"
-do_populate_sdk[recrdeptask] = "do_package_write"
+addtask package_update_index_ipk before do_populate_sdk
 addtask populate_sdk before do_build after do_install

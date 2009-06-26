@@ -1,3 +1,7 @@
+upstream: not applicable upstream.  The relevant code seems to have been dropped
+ within the last three years.  the outdated cvs recipe is the only bb that uses
+ this patch.
+
 --- xc/extras/drm/shared/drm.h.old	2004-09-14 21:42:45.000000000 +0100
 +++ xc/extras/drm/shared/drm.h	2004-09-14 21:42:47.000000000 +0100
 @@ -38,7 +38,6 @@

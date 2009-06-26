@@ -56,7 +56,7 @@ do_install () {
        # Manually run the target stripper since we won't get it run by
        # the packaging.
        if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
-               ${TARGET_PREFIX}strip ${D}${target_libdir}/libstdc++.so.*
+               ${TARGET_PREFIX}strip ${D}${target_libdir}/libstdc++.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libg2c.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libgfortran*.so* || true

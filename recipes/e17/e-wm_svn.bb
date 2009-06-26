@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
-PV = "0.16.999.050+svnr${SRCREV}"
+PV = "0.16.999.060+svnr${SRCREV}"
 PR = "r6"
 
 inherit e update-alternatives
@@ -53,11 +53,10 @@ RDEPENDS_${PN} += "\
 "
 
 # Uclibc build don't have 'glibc-utils'
-# I suspect the workaround below breaks eglibc, though. Koen - 20081125
-RDEPENDS_${PN}_append_linux = " glibc-utils "
-RDEPENDS_${PN}_append_linux-gnueabi = " glibc-utils "
-RDEPENDS_${PN}_append_linux-uclibc = " uclibc-utils "
-RDEPENDS_${PN}_append_linux-uclibcgnueabi = " uclibc-utils "
+RDEPENDS_${PN}_append_libc-glibc = " glibc-utils "
+
+# The systray module used to be external, but is part of e-wm now
+RREPLACES_${PN} = "systray"
 
 PACKAGES =+ "\
   ${PN}-config-default \

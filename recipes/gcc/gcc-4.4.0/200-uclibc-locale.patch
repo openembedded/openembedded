@@ -2794,15 +2794,6 @@ Index: gcc-4.3.2/libstdc++-v3/configure
    esac
  
    # This is where the testsuite looks for locale catalogs, using the
-@@ -17016,7 +17089,7 @@
- 
-   # Fake what AC_TRY_COMPILE does.  XXX Look at redoing this new-style.
-     cat > conftest.$ac_ext << EOF
--#line 17019 "configure"
-+#line 17092 "configure"
- int main()
- {
-   // NB: _Atomic_word not necessarily int.
 Index: gcc-4.3.2/libstdc++-v3/include/c_compatibility/wchar.h
 ===================================================================
 --- gcc-4.3.2.orig/libstdc++-v3/include/c_compatibility/wchar.h	2007-03-04 14:59:49.000000000 -0800

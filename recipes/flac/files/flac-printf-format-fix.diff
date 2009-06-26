@@ -1,0 +1,43 @@
+--- src/test_grabbag/cuesheet/main.c-dist	2007-04-10 19:14:42.000000000 +0200
++++ src/test_grabbag/cuesheet/main.c	2007-04-10 19:15:33.000000000 +0200
+@@ -115,12 +115,12 @@ int main(int argc, char *argv[])
+ 	const char *usage = "usage: test_cuesheet cuesheet_file lead_out_offset [ cdda ]\n";
+ 
+ 	if(argc > 1 && 0 == strcmp(argv[1], "-h")) {
+-		printf(usage);
++		fputs(usage, stdout);
+ 		return 0;
+ 	}
+ 
+ 	if(argc < 3 || argc > 4) {
+-		fprintf(stderr, usage);
++		fputs(usage, stderr);
+ 		return 255;
+ 	}
+ 
+@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
+ 		if(0 == strcmp(argv[3], "cdda"))
+ 			is_cdda = true;
+ 		else {
+-			fprintf(stderr, usage);
++			fputs(usage, stderr);
+ 			return 255;
+ 		}
+ 	}
+--- src/test_grabbag/picture/main.c-dist	2007-04-10 19:15:47.000000000 +0200
++++ src/test_grabbag/picture/main.c	2007-04-10 19:16:02.000000000 +0200
+@@ -211,12 +211,12 @@ int main(int argc, char *argv[])
+ 	const char *usage = "usage: test_pictures path_prefix\n";
+ 
+ 	if(argc > 1 && 0 == strcmp(argv[1], "-h")) {
+-		printf(usage);
++		fputs(usage, stdout);
+ 		return 0;
+ 	}
+ 
+ 	if(argc != 2) {
+-		fprintf(stderr, usage);
++		fputs(usage, stderr);
+ 		return 255;
+ 	}
+ 

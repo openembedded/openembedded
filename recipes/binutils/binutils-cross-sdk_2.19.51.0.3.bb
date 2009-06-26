@@ -1,3 +1,3 @@
 require binutils_${PV}.bb
 require binutils-cross-sdk.inc
-PR = "r0"
+PR = "${INC_PR}.1"

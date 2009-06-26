@@ -1,0 +1,12 @@
+--- glibc-2.7/ports/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind.h	2008-04-04 15:57:19.000000000 +1000
++++ glibc-2.7/ports/sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind.h	2008-04-04 16:00:41.000000000 +1000
+@@ -138,7 +138,8 @@
+       _UVRSC_VFP = 1,       /* vfp */
+       _UVRSC_FPA = 2,       /* fpa */
+       _UVRSC_WMMXD = 3,     /* Intel WMMX data register */
+-      _UVRSC_WMMXC = 4      /* Intel WMMX control register */
++      _UVRSC_WMMXC = 4,     /* Intel WMMX control register */
++      _UVRSC_CRUNCH = 5     /* Maverick crunch register */
+     }
+   _Unwind_VRS_RegClass;
+ 

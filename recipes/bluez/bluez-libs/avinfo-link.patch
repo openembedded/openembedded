@@ -1,0 +1,27 @@
+upstream: not applicable
+comment from pb: not needed upstream, it's just a consequence of splitting the
+ package into -libs and -apps. But, equally, it wouldn't do any harm upstream
+ either.  I might send it to them and see what they say.
+
+--- tools/Makefile.am.old	2009-05-22 11:27:06.000000000 +0100
++++ tools/Makefile.am	2009-05-22 11:27:29.000000000 +0100
+@@ -1,8 +1,10 @@
+ 
+ if TOOLS
+ tools_programs = hcitool l2ping sdptool ciptool
++avinfo_programs = avinfo
+ tools_manfiles = hcitool.1 l2ping.1 sdptool.1 ciptool.1
+ else
++avinfo_programs =
+ tools_programs =
+ tools_manfiles =
+ endif
+@@ -41,7 +43,7 @@
+ 
+ bin_PROGRAMS = $(tools_programs) $(dfutool_programs) $(dfubabel_programs)
+ 
+-noinst_PROGRAMS = hcieventmask hcisecfilter ppporc avinfo $(usb_programs)
++noinst_PROGRAMS = hcieventmask hcisecfilter ppporc $(avinfo_programs) $(usb_programs)
+ 
+ hcieventmask_LDADD = @BLUEZ_LIBS@
+ 

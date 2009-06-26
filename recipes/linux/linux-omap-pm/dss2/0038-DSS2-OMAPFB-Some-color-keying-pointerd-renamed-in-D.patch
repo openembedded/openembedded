@@ -1,7 +1,7 @@
 From 9e8877f0e5b17d3ddd101d6a63aa86fdb14d35d5 Mon Sep 17 00:00:00 2001
 From: Hardik Shah <hardik.shah@ti.com>
 Date: Fri, 17 Apr 2009 09:51:25 +0530
-Subject: [PATCH] DSS2:OMAPFB: Some color keying pointerd renamed in DSS2. Replicated in FB
+Subject: [PATCH 38/69] DSS2:OMAPFB: Some color keying pointerd renamed in DSS2. Replicated in FB
 
 Signed-off-by: Hardik Shah <hardik.shah@ti.com>
 ---
@@ -52,5 +52,5 @@ index 7f18d2a..79d8916 100644
  		r = -ENODEV;
  		goto err;
 -- 
-1.5.6.5
+1.6.2.4
 

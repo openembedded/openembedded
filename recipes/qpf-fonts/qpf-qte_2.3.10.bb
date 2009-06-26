@@ -20,8 +20,8 @@ PROVIDES += "qte-font-smoothserif-140 qte-font-smoothserif-180  qte-font-smooths
 PROVIDES += "qte-font-smoothtimes-100  qte-font-smoothtimes-160 qte-font-smoothtimes-170"
 PROVIDES += "qte-font-smoothtimes-220 qte-font-smoothtimes-250  qte-font-smoothtimes-440"
 PROVIDES += "qte-font-unifont"
-RPROVIDES_qte-font-unifont += "virtual/japanese-font"
-RPROVIDES_qte-font-japanese += "virtual/japanese-font"
+RPROVIDES_qte-font-unifont += "virtual-japanese-font"
+RPROVIDES_qte-font-japanese += "virtual-japanese-font"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz"
 S = "${WORKDIR}/qt-${PV}"

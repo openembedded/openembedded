@@ -4,6 +4,7 @@ DEPENDS = "expat libusb-compat"
 HOMEPAGE = "http://www.gpsbabel.org/"
 LICENSE = "GPL"
 
-SRC_URI = "http://www.gpsbabel.org/plan9.php?dl=gpsbabel-${PV}.tar.gz"
+SRC_URI = "http://www.gpsbabel.org/plan9.php?dl=gpsbabel-${PV}.tar.gz \
+           file://autotools.patch;patch=1"
 
 inherit autotools pkgconfig

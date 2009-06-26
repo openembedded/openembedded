@@ -1,11 +1,14 @@
 HOMEPAGE = "http://www.linuxtv.org"
 LICENSE = "GPL"
-S = "${WORKDIR}/linuxtv-dvb-apps-${PV}"
 
 SRC_URI = "http://linuxtv.org/downloads/linuxtv-dvb-apps-${PV}.tar.bz2 \
-           file://makefile.patch;patch=1"
+           file://update-to-trunk.diff;patch=1"
 
-PACKAGES += "evtest evtest-dbg \
+PR = "r1"
+
+S = "${WORKDIR}/linuxtv-dvb-apps-${PV}"
+
+PACKAGES =+ "evtest evtest-dbg \
              dvbapp-tests dvbapp-tests-dbg \
              dvbdate dvbdate-dbg \
              dvbtraffic dvbtraffic-dbg \
@@ -19,17 +22,17 @@ PACKAGES += "evtest evtest-dbg \
              dvb-zap-data"
 
 
-TARGET_CC_ARCH += "${LDFLAGS}"
+TARGET_CC_ARCH += "${LDFLAGS} -static"
 
-FILES_${PN} = ""
-FILES_${PN}-dbg = ""
+FILES_${PN} = "${bindir} ${datadir}/dvb"
 FILES_${PN}-doc = ""
+FILES_${PN}-dev = "${includedir}"
 
 FILES_evtest = "${bindir}/evtest"
 FILES_evtest-dbg = "${bindir}/.debug/evtest"
 
-FILES_dvbapp-tests = "${bindir}/test_*"
-FILES_dvbapp-tests-dbg = "${bindir}/.debug/test_*"
+FILES_dvbapp-tests = "${bindir}/*test* "
+FILES_dvbapp-tests-dbg = "${bindir}/.debug/*test*"
 
 FILES_dvbdate = "${bindir}/dvbdate"
 FILES_dvbdate-dbg = "${bindir}/.debug/dvbdate"
@@ -40,8 +43,8 @@ FILES_dvbtraffic-dbg = "${bindir}/.debug/dvbtraffic"
 FILES_dvbnet = "${bindir}/dvbnet"
 FILES_dvbnet-dbg = "${bindir}/.debug/dvbnet"
 
-FILES_dvb-scan = "${bindir}/scan"
-FILES_dvb-scan-dbg = "${bindir}/.debug/scan"
+FILES_dvb-scan = "${bindir}/*scan "
+FILES_dvb-scan-dbg = "${bindir}/.debug/*scan"
 FILES_dvb-scan-data = "${docdir}/dvb-apps/scan"
 
 FILES_dvb-azap = "${bindir}/azap"
@@ -61,13 +64,17 @@ FILES_dvb-femon-dbg = "${bindir}/.debug/femon"
 
 FILES_dvb-zap-data = "${docdir}/dvb-apps/szap"
 
-
+do_configure() {
+	sed -i -e s:/usr/include:${STAGING_INCDIR}:g util/av7110_loadkeys/generate-keynames.sh 
+}
 
 do_install() {
-    install -d ${D}/${bindir}
+    make DESTDIR=${D} install
+	install -d ${D}/${bindir}
     install -d ${D}/${docdir}/dvb-apps
     install -d ${D}/${docdir}/dvb-apps/scan
     install -d ${D}/${docdir}/dvb-apps/szap
+	chmod a+rx ${D}/${libdir}/*.so*
 
     # Install tests
     install -m 0755 ${S}/test/setvoltage      ${D}${bindir}/test_setvoltage
@@ -87,25 +94,14 @@ do_install() {
     install -m 0755 ${S}/test/test_pes        ${D}${bindir}/
     install -m 0755 ${S}/test/test_dvr        ${D}${bindir}/
 
-    # Install the utils
-    install -m 0755 ${S}/util/dvbtraffic/dvbtraffic  ${D}${bindir}/
-    install -m 0755 ${S}/util/scan/scan              ${D}${bindir}/
-    install -m 0755 ${S}/util/szap/tzap              ${D}${bindir}/
-    install -m 0755 ${S}/util/szap/czap              ${D}${bindir}/
-    install -m 0755 ${S}/util/szap/femon             ${D}${bindir}/
-    install -m 0755 ${S}/util/szap/szap              ${D}${bindir}/
-    install -m 0755 ${S}/util/szap/azap              ${D}${bindir}/
-    install -m 0755 ${S}/util/av7110_loadkeys/evtest ${D}${bindir}/
-    install -m 0755 ${S}/util/dvbnet/dvbnet          ${D}${bindir}/
-    install -m 0755 ${S}/util/dvbdate/dvbdate        ${D}${bindir}/
-
-    # Install data files
-    cp -pPR ${S}/util/scan/dvb-c    ${D}/${docdir}/dvb-apps/scan/
-    cp -pPR ${S}/util/scan/dvb-s    ${D}/${docdir}/dvb-apps/scan/
-    cp -pPR ${S}/util/scan/dvb-t    ${D}/${docdir}/dvb-apps/scan/
-    cp -pPR ${S}/util/scan/atsc     ${D}/${docdir}/dvb-apps/scan/
-    cp -pPR ${S}/util/scan/README   ${D}/${docdir}/dvb-apps/scan/
-
-    cp -pPR ${S}/util/szap/channels.conf-* ${D}/${docdir}/dvb-apps/szap/
+    cp -pPR ${S}/util/szap/channels-conf* ${D}/${docdir}/dvb-apps/szap/
     cp -pPR ${S}/util/szap/README   ${D}/${docdir}/dvb-apps/szap/
+}
+
+python populate_packages_prepend () {
+	dvb_libdir = bb.data.expand('${libdir}', d)
+	do_split_packages(d, dvb_libdir, '^lib(.*)\.so$', 'lib%s', 'DVB %s package', extra_depends='', allow_links=True)
+	do_split_packages(d, dvb_libdir, '^lib(.*)\.la$', 'lib%s-dev', 'DVB %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, dvb_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'DVB %s development package', extra_depends='${PN}-dev')
+	do_split_packages(d, dvb_libdir, '^lib(.*)\.so\.*', 'lib%s', 'DVB %s library', extra_depends='', allow_links=True)
 }

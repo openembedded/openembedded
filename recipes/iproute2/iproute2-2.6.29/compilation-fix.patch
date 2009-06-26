@@ -1,0 +1,12 @@
+Index: iproute2-2.6.29/ip/link_gre.c
+===================================================================
+--- iproute2-2.6.29.orig/ip/link_gre.c	2009-06-22 11:10:24.212963299 +0400
++++ iproute2-2.6.29/ip/link_gre.c	2009-06-22 11:10:33.940691491 +0400
+@@ -12,6 +12,7 @@
+ 
+ #include <string.h>
+ #include <net/if.h>
++#include <linux/ip.h>
+ #include <linux/if_tunnel.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>

@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/libs"
 LICENSE = "MIT-X"
 
+DEPENDS = "util-macros"
+
 XORG_PN = "${PN}"
 
 ALLOW_EMPTY = "1"

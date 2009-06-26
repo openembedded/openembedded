@@ -1,7 +1,7 @@
 From 63e15ba8d5f95b13d3abf359da718537d769f112 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 7 Apr 2009 10:01:58 +0300
-Subject: [PATCH] DSS2: check for ovl paddr only when enabling
+Subject: [PATCH 18/69] DSS2: check for ovl paddr only when enabling
 
 It seems Xvideo uses SETUP_PLANE ioctl even when
 the fb memory has not been allocated. Sigh.
@@ -36,5 +36,5 @@ index 9209acf..c047206 100644
  	ovl->info = *info;
  
 -- 
-1.5.6.5
+1.6.2.4
 

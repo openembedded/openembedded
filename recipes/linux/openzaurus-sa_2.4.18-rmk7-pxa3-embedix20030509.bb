@@ -8,7 +8,6 @@ PXAV = "3"
 SHARPV = "20030509"
 PR = "r23"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
-COMPATIBLE_MACHINE = "collie"
 
 SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
            file://cacko.patch;patch=1 \
@@ -58,7 +57,11 @@ ALLOW_EMPTY = "1"
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = "collie"
+
+# For these old 2.4 kernels we override in sharprom-compatible.conf
+#COMPATIBLE_MACHINE = "collie"
+COMPATIBLE_MACHINE = "none"
+
 EXTRA_OEMAKE = " EMBEDIXRELEASE=-${DISTRO_VERSION}"
 
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"

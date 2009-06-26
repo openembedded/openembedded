@@ -1,7 +1,7 @@
 From 66e16f86d3f4c5b34b37e965c65102b7192371de Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Thu, 2 Apr 2009 11:47:13 +0300
-Subject: [PATCH] DSS2: Add acx565akm panel
+Subject: [PATCH 09/69] DSS2: Add acx565akm panel
 
 Signed-off-by: Imre Deak <imre.deak@nokia.com>
 ---
@@ -774,5 +774,5 @@ index 0000000..6d3727b
 +#endif
 +
 -- 
-1.5.6.5
+1.6.2.4
 

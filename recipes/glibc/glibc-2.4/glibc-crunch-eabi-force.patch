@@ -1,0 +1,133 @@
+diff -urN glibc-2.6.1/ports/sysdeps/arm/eabi/bits/fenv.h glibc-2.6.1/ports/sysdeps/arm/eabi/bits/fenv.h
+--- glibc-2.6.1/ports/sysdeps/arm/eabi/bits/fenv.h	2008-04-04 18:32:58.000000000 +1000
++++ glibc-2.6.1/ports/sysdeps/arm/eabi/bits/fenv.h	2008-04-07 10:40:28.000000000 +1000
+@@ -20,6 +20,8 @@
+ # error "Never use <bits/fenv.h> directly; include <fenv.h> instead."
+ #endif
+ 
++#if 0
++
+ /* Define bits representing exceptions in the VFP FPU status word.  */
+ enum
+   {
+@@ -55,37 +57,50 @@
+ #define FE_TOWARDZERO FE_TOWARDZERO
+   };
+ 
++#endif
++
+ /* Define bits representing exceptions in the CRUNCH FPU status word.  */
+ enum
+   {
+     FE_CRUNCH_INVALID = (1),
+ #define FE_CRUNCH_INVALID FE_CRUNCH_INVALID
++#define FE_INVALID FE_CRUNCH_INVALID
++#define FE_DIVBYZERO 0
+     FE_CRUNCH_OVERFLOW = (4),
+ #define FE_CRUNCH_OVERFLOW FE_CRUNCH_OVERFLOW
++#define FE_OVERFLOW FE_CRUNCH_OVERFLOW
+     FE_CRUNCH_UNDERFLOW = (8),
+ #define FE_CRUNCH_UNDERFLOW FE_CRUNCH_UNDERFLOW
++#define FE_UNDERFLOW FE_CRUNCH_UNDERFLOW
+     FE_CRUNCH_INEXACT = (16),
+ #define FE_CRUNCH_INEXACT FE_CRUNCH_INEXACT
++#define FE_INEXACT FE_CRUNCH_INEXACT
+   };
+ 
+ /* Amount to shift by to convert an exception to a mask bit.  */
+ #define FE_CRUNCH_EXCEPT_SHIFT	5
++#define FE_EXCEPT_SHIFT FE_CRUNCH_EXCEPT_SHIFT
+ 
+ /* All supported exceptions, except DIVBYZERO.  */
+ #define FE_CRUNCH_ALL_EXCEPT	\
+ 	(FE_CRUNCH_INVALID | FE_CRUNCH_OVERFLOW | FE_CRUNCH_UNDERFLOW | FE_CRUNCH_INEXACT)
++#define FE_ALL_EXCEPT FE_CRUNCH_ALL_EXCEPT
+ 
+ /* CRUNCH supports all of the four defined rounding modes.  */
+ enum
+   {
+     FE_CRUNCH_TONEAREST = 0,
+ #define FE_CRUNCH_TONEAREST FE_CRUNCH_TONEAREST
++#define FE_TONEAREST FE_CRUNCH_TONEAREST
+     FE_CRUNCH_TOWARDZERO = 0x400,
+ #define FE_CRUNCH_TOWARDZERO FE_CRUNCH_TOWARDZERO
++#define FE_TOWARDZERO FE_CRUNCH_TOWARDZERO
+     FE_CRUNCH_DOWNWARD = 0x800,
+ #define FE_CRUNCH_DOWNWARD FE_CRUNCH_DOWNWARD
++#define FE_DOWNWARD FE_CRUNCH_DOWNWARD
+     FE_CRUNCH_UPWARD = 0xc00
+ #define FE_CRUNCH_UPWARD FE_CRUNCH_UPWARD
++#define FE_UPWARD FE_CRUNCH_UPWARD
+   };
+ 
+ 
+diff -urN glibc-2.6.1/ports/sysdeps/arm/eabi/fpu_control.h glibc-2.6.1/ports/sysdeps/arm/eabi/fpu_control.h
+--- glibc-2.6.1/ports/sysdeps/arm/eabi/fpu_control.h	2008-04-04 18:32:58.000000000 +1000
++++ glibc-2.6.1/ports/sysdeps/arm/eabi/fpu_control.h	2008-04-07 11:02:13.000000000 +1000
+@@ -20,6 +20,8 @@
+ #ifndef _FPU_CONTROL_H
+ #define _FPU_CONTROL_H
+ 
++#if 0
++
+ /* masking of interrupts */
+ #define _FPU_MASK_IM	0x00000100	/* invalid operation */
+ #define _FPU_MASK_ZM	0x00000200	/* divide by zero */
+@@ -45,6 +47,11 @@
+ #define _FPU_SETCW(cw) \
+   __asm__ __volatile__ ("mcr p10, 7, %0, cr1, cr0, 0" : : "r" (cw))
+ 
++#endif
++
+ /* CRUNCH SECTION */
+
++/* Type of the control word.  */
++typedef unsigned int fpu_control_t;
++ 
+ /* DSPSC register: (from EP9312 User's Guide)
+@@ -69,19 +73,27 @@
+ 
+ /* masking of interrupts */
+ #define _FPU_CRUNCH_MASK_IM	(1 << 5)	/* invalid operation */
++#define _FPU_MASK_IM _FPU_CRUNCH_MASK_IM
+ #define _FPU_CRUNCH_MASK_ZM	0       	/* divide by zero */ 
++#define _FPU_MASK_ZM _FPU_CRUNCH_MASK_ZM
+ #define _FPU_CRUNCH_MASK_OM	(1 << 7)    /* overflow */
++#define _FPU_MASK_OM _FPU_CRUNCH_MASK_OM
+ #define _FPU_CRUNCH_MASK_UM    (1 << 8)	/* underflow */
++#define _FPU_MASK_UM _FPU_CRUNCH_MASK_UM
+ #define _FPU_CRUNCH_MASK_PM	(1 << 9)	/* inexact */
++#define _FPU_MASK_PM _FPU_CRUNCH_MASK_PM
+ #define _FPU_CRUNCH_MASK_DM    0           /* denormalized operation */
++#undef _FPU_MASK_DM
+ 
+ /* Some bits in the FPSCR are not yet defined.  They must be preserved when
+    modifying the contents.  */
+ #define _FPU_CRUNCH_RESERVED	0x03000042
++#define _FPU_RESERVED _FPU_CRUNCH_RESERVED
+ #define _FPU_CRUNCH_DEFAULT    0x00b00000
++#define _FPU_DEFAULT _FPU_CRUNCH_DEFAULT
+ /* Default + exceptions enabled. */
+ #define _FPU_CRUNCH_IEEE	(_FPU_CRUNCH_DEFAULT | 0x000003a0)
+-
++#define _FPU_IEEE _FPU_CRUNCH_IEEE
+ 
+ /* Macros for accessing the hardware control word.  */
+ /*	cfmvr64l	%1, mvdx0    */
+@@ -103,6 +115,7 @@
+ 	: "=r" (cw), "=r" (__t1), "=r" (__t2)	\
+ 	);					\
+ })
++#define _FPU_GETCW(cw) _FPU_CRUNCH_GETCW(cw)
+ 
+ /* cfmvr64l	%1, mvdx0    */
+ /* cfmvr64h	%2, mvdx0    */
+@@ -123,7 +136,7 @@
+ 	: "=r" (__t1), "=r" (__t2) : "r" (cw)	\
+ 	);					\
+ })
+-
++#define _FPU_SETCW(cw) _FPU_CRUNCH_SETCW(cw)
+ 
+ /* Default control word set at startup.  */
+ extern fpu_control_t __fpu_control;

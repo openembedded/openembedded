@@ -1,6 +1,6 @@
 require gimp.inc
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS += "webkit-gtk lcms gegl hal"
 

@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r8"
+PR = "r10"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -11,6 +11,7 @@ DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_gamecube = "1"
 DEFAULT_PREFERENCE_wrap = "1"
+DEFAULT_PREFERENCE_tx27 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
            file://defconfig"
@@ -63,5 +64,10 @@ SRC_URI_append_tosa = " \
 SRC_URI_append_gamecube = " \
 	file://patch-2.6.28-gc;patch=1 \
 	"
+
+SRC_URI_append_tx27 = " \
+	file://linux-2.6.28-karo4.diff;patch=1 \
+	"
+
 
 S = "${WORKDIR}/linux-2.6.28/"

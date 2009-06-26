@@ -1,6 +1,6 @@
 PR = "r6"
 
-SRC_URI = "http://projects.linuxtogo.org/frs/?group_id=50/kexecboot-${PV}.tar.gz \
+SRC_URI = "http://kexecboot.home.linuxtogo.org/kexecboot-${PV}.tar.gz \
 	file://add-reboot-option.patch;patch=1 \
 	file://scan_devices-top.patch;patch=1 \
 	file://graphical-no-devices.patch;patch=1 \

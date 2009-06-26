@@ -20,3 +20,8 @@ AUTOTOOLS_STAGE_PKGCONFIG = "1"
 gnome_stage_includes() {
 	autotools_stage_includes
 }
+
+do_install_append() {
+	rm -rf ${D}${localstatedir}/lib/scrollkeeper/*
+}
+

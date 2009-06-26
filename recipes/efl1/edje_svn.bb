@@ -1,7 +1,7 @@
 DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
 DEPENDS = "eet evas ecore embryo edje-native"
 LICENSE = "MIT BSD"
-PV = "0.5.0.050+svnr${SRCREV}"
+PV = "0.9.92.060+svnr${SRCREV}"
 PR = "r3"
 
 inherit efl
@@ -14,9 +14,9 @@ PACKAGES =+ "${PN}-utils"
 RDEPENDS_${PN}-utils = "cpp cpp-symlinks embryo-tests"
 
 RRECOMMENDS_${PN}-utils = "\
-  libevas-saver-png \
-  libevas-saver-jpeg \
-  libevas-saver-eet \
+  evas-saver-png \
+  evas-saver-jpeg \
+  evas-saver-eet \
 "
 
 DEBIAN_NOAUTONAME_${PN}-utils = "1"

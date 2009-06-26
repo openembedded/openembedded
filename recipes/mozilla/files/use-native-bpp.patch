@@ -1,0 +1,37 @@
+Subject: [PATCH] Use native format for storing non-transparent pictures.
+
+When using 16-bit color depth for desktop, it is preferable
+to also use 16bpp format for images to get better performance.
+As an additional bonus, the browser uses less memory when
+viewing pages with lots of images.
+
+Taken from https://bugzilla.mozilla.org/show_bug.cgi?id=386440
+---
+ gfx/thebes/src/gfxPlatformGtk.cpp |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/gfx/thebes/src/gfxPlatformGtk.cpp b/gfx/thebes/src/gfxPlatformGtk.cpp
+index 39e09e7..78e6002 100644
+--- a/gfx/thebes/src/gfxPlatformGtk.cpp
++++ b/gfx/thebes/src/gfxPlatformGtk.cpp
+@@ -142,8 +142,15 @@ gfxPlatformGtk::CreateOffscreenSurface(const gfxIntSize& size,
+ 
+     if (!UseGlitz()) {
+         GdkPixmap* pixmap = nsnull;
+-        XRenderPictFormat* xrenderFormat =
+-            XRenderFindStandardFormat(display, xrenderFormatID);
++        XRenderPictFormat* xrenderFormat = nsnull;
++
++        if (xrenderFormatID == PictStandardRGB24) {
++            // Actually we want not strictly RGB24, but the fastest non-alpha format 
++            xrenderFormat = XRenderFindVisualFormat(display, GDK_VISUAL_XVISUAL(gdk_visual_get_system()));
++        }
++
++        if (!xrenderFormat)
++            xrenderFormat = XRenderFindStandardFormat(display, xrenderFormatID);
+ 
+         if (!xrenderFormat) {
+             // We don't have Render; see if we can just create a pixmap
+-- 
+1.5.6.5
+
