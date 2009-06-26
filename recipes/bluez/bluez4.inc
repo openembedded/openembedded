@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland V4"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
+DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 INC_PR = "r1"

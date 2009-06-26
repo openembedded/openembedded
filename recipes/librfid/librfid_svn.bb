@@ -2,7 +2,7 @@ DESCRIPTION = "RFID library"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "libusb"
+DEPENDS = "virtual/libusb0"
 SRCNAME = "librfid"
 
 PV = "0.2.0+svnr${SRCREV}"

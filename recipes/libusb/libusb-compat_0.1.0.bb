@@ -3,6 +3,7 @@ access to USB devices."
 HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
+PROVIDES = "virtual/libusb0"
 
 PE = "1"
 PR = "r0"

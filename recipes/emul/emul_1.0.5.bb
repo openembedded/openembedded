@@ -2,7 +2,7 @@ DESCRIPTION = "EarthMate Userland Library"
 SECTION = "libs/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "libusb ncurses"
+DEPENDS = "virtual/libusb0 ncurses"
 PR = "r1"
 
 SRC_URI = "http://download.berlios.de/emul/emul-${PV}.tar.gz"

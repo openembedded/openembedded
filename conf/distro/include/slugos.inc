@@ -159,6 +159,7 @@ PREFERRED_PROVIDER_gdk-pixbuf-loader-xpm	?= "gtk+"
 
 PREFERRED_PROVIDER_avahi			?= "avahi"
 PREFERRED_PROVIDER_gconf			?= "gconf"
+PREFERRED_PROVIDER_virtual/libusb0		?= "libusb-compat"
 
 # Include any package preferred versions and srcrevs:
 

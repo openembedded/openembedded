@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 PR = "r0"
 
-DEPENDS = "gstreamer gst-plugins-base libusb1 dbus glib-2.0"
+DEPENDS = "gstreamer gst-plugins-base dbus glib-2.0"
 PROVIDES = "bluez-utils-dbus"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
 RREPLACES = "bluez-utils-dbus"
