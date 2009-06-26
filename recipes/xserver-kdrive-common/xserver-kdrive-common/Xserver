@@ -171,6 +171,10 @@ case `module_id` in
         "Freescale MX21ADS")
 	# That's what /proc/cpuinfo shows as hardware on the chumby
                  ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib" ;;
+        "Ronetix PM9261" | "Ronetix PM9261/BB9261" | "Ronetix PM9263" | \
+        "Ronetix PM9263/BB9261"  | "Ronetix PM9263/BB9263")               
+                ARGS="$ARGS -screen 240/54x320/81@90x16"                      
+                ;;  
         "OMAP3 Beagle Board" | "Gumstix Overo")
                  ARGS="$ARGS ${PPM}"
 # 32bpp - we'll enable it once newer kernels are.. working.                 
