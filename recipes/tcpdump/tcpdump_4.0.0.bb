@@ -4,7 +4,7 @@ LICENSE = "BSD"
 SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "libpcap"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " \
 	http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz \
@@ -24,4 +24,9 @@ do_configure() {
 	oe_runconf
 	sed -i 's:/usr/lib:${STAGING_LIBDIR}:' ./Makefile
 	sed -i 's:/usr/include:${STAGING_INCDIR}:' ./Makefile
+}
+
+do_install_append() {
+	# tcpdump 4.0.0 installs a copy to /usr/sbin/tcpdump.4.0.0
+	rm -f ${D}${sbindir}/tcpdump.${PV}
 }
