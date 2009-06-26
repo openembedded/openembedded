@@ -1,6 +1,8 @@
---- libusb-compat-0.1.0/configure.ac-orig	2009-02-26 15:30:51.000000000 +0100
-+++ libusb-compat-0.1.0/configure.ac	2009-02-26 15:31:04.000000000 +0100
-@@ -55,7 +55,7 @@
+Index: libusb-compat-0.1.2/configure.ac
+===================================================================
+--- libusb-compat-0.1.2.orig/configure.ac	2009-06-11 22:49:08.000000000 +0000
++++ libusb-compat-0.1.2/configure.ac	2009-06-26 21:44:08.000000000 +0000
+@@ -56,7 +56,7 @@
  CFLAGS="$saved_cflags"
  
  AC_DEFINE([API_EXPORTED], [__attribute__((visibility("default")))], [Default visibility])
@@ -9,8 +11,10 @@
  AC_SUBST(AM_CFLAGS)
  
  AC_CONFIG_FILES([libusb.pc] [libusb-config] [Makefile] [libusb/Makefile] [examples/Makefile])
---- libusb-compat-0.1.0/libusb/Makefile.am-orig	2009-02-26 15:33:30.000000000 +0100
-+++ libusb-compat-0.1.0/libusb/Makefile.am	2009-02-26 15:33:40.000000000 +0100
+Index: libusb-compat-0.1.2/libusb/Makefile.am
+===================================================================
+--- libusb-compat-0.1.2.orig/libusb/Makefile.am	2008-06-17 23:13:02.000000000 +0000
++++ libusb-compat-0.1.2/libusb/Makefile.am	2009-06-26 21:44:08.000000000 +0000
 @@ -2,7 +2,7 @@
  lib_LTLIBRARIES = libusb.la
  
