@@ -12,7 +12,7 @@
 
   <para>The final root file system will consist of all of the files located in
   image root filesystem directory, <command>${IMAGE_ROOTFS}</command>, which
-  is usually <command>tmp/rootfs</command> in the build area. One important
+  is usually <command>tmp/rootfs/${PN}</command> in the build area. One important
   difference between the images and the root file system directory is that any
   files which can only be created by privileged users, such as device nodes,
   will not appear in the <command>${IMAGE_ROOTFS}</command> directory but they
