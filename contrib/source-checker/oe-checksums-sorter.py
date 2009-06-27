@@ -29,20 +29,64 @@
 #
 
 
+import ConfigParser
+import getopt
+import os
 import sys
+import tempfile
 
-if len(sys.argv) < 2:
-    print """
-    OpenEmbedded source checksums script require argument:
+def usage(rc):
+    print """usage: %s [--inplace|-i] conf/checksums.ini
 
-    1. location of conf/checksums.ini
-    """
-    sys.exit(0)
+    --inplace, -i: update file in place (default is to write to stdout)
 
-import ConfigParser, os
+    If no input file is given, will read from standard input.
+    """ % sys.argv[0]
+    sys.exit(rc)
+
+try:
+    optlist, args = getopt.getopt(sys.argv[1:], "ih", ["inplace", "help"])
+except getopt.GetoptError, e:
+    print >> sys.stderr, "%s: %s" % (sys.argv[0], e)
+    usage(1)
+
+inplace = False
+infp = sys.stdin
+filename = None
+for opt, val in optlist:
+    if opt == '-i' or opt == '--inplace':
+        inplace = True
+    elif opt == 'h' or opt == '--help':
+        usage(0)
+    else:
+        print >> sys.stderr, "%s: %s: invalid argument" % (sys.argv[0], opt)
+        usage(1)
+
+if len(args) == 0:
+    if inplace:
+        print >> sys.stderr, "%s: --inplace requires a filename" % sys.argv[0]
+        usage(1)
+elif len(args) == 1:
+    filename = args[0]
+    try:
+        infp = open(filename, "r")
+    except Exception, e:
+        print >> sys.stderr, "%s: %s" % (sys.argv[0], e)
+        sys.exit(1)
+else:
+    print >> sys.stderr, "%s: extra arguments" % sys.argv[0]
+    usage(1)
+
+out = sys.stdout
+tmpfn = None
+if inplace:
+    outfd, tmpfn = tempfile.mkstemp(prefix='cksums',
+                                    dir=os.path.dirname(filename) or '.')
+    os.chmod(tmpfn, os.stat(filename).st_mode)
+    out = os.fdopen(outfd, 'w')
 
 checksums_parser = ConfigParser.ConfigParser()
-checksums_parser.read(sys.argv[1])
+checksums_parser.readfp(infp)
 
 item = 1;
 files_total   = len(checksums_parser.sections())
@@ -60,4 +104,8 @@ for source in checksums_parser.sections():
 new_list.sort()
 
 for entry in new_list:
-    print "[%s]\nmd5=%s\nsha256=%s\n" % (entry[1], entry[2], entry[3])
+    print >> out, "[%s]\nmd5=%s\nsha256=%s\n" % (entry[1], entry[2], entry[3])
+
+if inplace:
+    out.close()
+    os.rename(tmpfn, filename)

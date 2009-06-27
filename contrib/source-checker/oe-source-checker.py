@@ -39,13 +39,14 @@
 import sys
 
 if len(sys.argv) < 3:
+    print >> sys.stderr, "%s: missing argument" % sys.argv[0]
     print """
     OpenEmbedded source checker script require two arguments:
 
     1. location of conf/checksums.ini
     2. path to DL_DIR (without "/" at the end)
     """
-    sys.exit(0)
+    sys.exit(1)
 
 import ConfigParser, os, itertools
 
