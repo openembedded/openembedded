@@ -88,18 +88,18 @@ if inplace:
 checksums_parser = ConfigParser.ConfigParser()
 checksums_parser.readfp(infp)
 
-item = 1;
-files_total   = len(checksums_parser.sections())
-
 new_list = []
+seen = {}
 
 for source in checksums_parser.sections():
     archive = source.split("/")[-1]
     md5 = checksums_parser.get(source, "md5")
     sha = checksums_parser.get(source, "sha256")
 
-    if new_list.count([archive, source, md5, sha]) < 1:
-        new_list += [[archive, source, md5, sha]]
+    tup = (archive, source, md5, sha)
+    if not seen.has_key(tup):
+        new_list.append(tup)
+        seen[tup] = 1
 
 new_list.sort()
 
