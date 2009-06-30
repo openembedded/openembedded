@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
 	   file://alsa-utils-remove-xmlto-1.0.19plus.patch;patch=1 \
