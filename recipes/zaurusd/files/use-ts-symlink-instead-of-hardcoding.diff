@@ -15,7 +15,7 @@
  SWITCH_EVENT_DEVICE=/dev/input/event0
  
  TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
--TSKEYS_DEVICE=/dev/input/touchscreen0
+-TSKEYS_DEVICE=/dev/input/event1
 +TSKEYS_DEVICE=/dev/input/touchscreen0
  
  ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state

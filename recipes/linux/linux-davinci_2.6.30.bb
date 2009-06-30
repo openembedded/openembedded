@@ -7,12 +7,12 @@ COMPATIBLE_MACHINE = "(dm6446-evm|dm6467-evm|dm355-evm|davinci-sffsdr|dm355-leop
 
 DEFAULT_PREFERENCE = "1"
 
-SRCREV = "5bbb6571043c7e3a1d73b874334037a64d10612f"
+SRCREV = "5212151f26e688416faac9f6f33ddd958f7de96c"
 
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 PV = "2.6.30-${PR}+gitr${SRCREV}"
 
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git;branch=staging/vpfe \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git \
            file://defconfig"
 
 # Need checking
