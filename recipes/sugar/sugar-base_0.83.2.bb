@@ -1,6 +1,8 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
+PR = "r1"
+
 DEPENDS = "python-pygtk sugar-toolkit"
 RDEPENDS = "librsvg-gtk \
             ohm-plugin-x11 ohm \
@@ -27,9 +29,9 @@ RDEPENDS = "librsvg-gtk \
 	    python-doctest \
 	    ssh-keygen"
 
-SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-base/${PN}-${PV}.tar.bz2"
+inherit gnome distutils-base
 
-inherit autotools distutils-base
+SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-base/${PN}-${PV}.tar.bz2"
 
 SRC_URI += "file://acinclude.m4"
 
