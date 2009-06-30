@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r5"
+PR = "r6"
 
 S = "${WORKDIR}/linux-2.6.29"
 
@@ -22,7 +22,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2 \
 
 SRC_URI_append_boc01 = "\
 	file://boc01.dts \
-	file://001-090114-sqn11x0-usb-hack.patch;patch=1 \
 	file://004-081205-usb.patch;patch=1 \
 	file://005-090226-isl12024.patch;patch=1 \
 	file://007-081217-lm73.patch;patch=1 \
