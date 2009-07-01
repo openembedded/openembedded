@@ -13,7 +13,7 @@ RCONFLICTS = "initscripts"
 # a suffix
 PR := "${PR}.11"
 
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+FILESPATHPKG =. "${P}:initscripts-${PV}:"
 
 PACKAGES = "${PN}-dbg ${PN}"
 
