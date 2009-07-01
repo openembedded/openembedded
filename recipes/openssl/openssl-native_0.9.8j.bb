@@ -16,8 +16,6 @@ SRC_URI += "file://configure-targets.patch;patch=1 \
 
 PARALLEL_MAKE = ""
 
-FILESPATH = "${@base_set_filespath( ['${FILE_DIRNAME}/openssl-${PV}', '${FILE_DIRNAME}/openssl', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
-
 do_install() {
 	:
 }
