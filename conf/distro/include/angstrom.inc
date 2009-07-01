@@ -101,11 +101,6 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 # We only want to build UTF8 locales
 LOCALE_UTF8_ONLY = "1"
 
-#qemu doesn't like armv6/eabi/vfp
-ENABLE_BINARY_LOCALE_GENERATION_armv6 = "0"
-ENABLE_BINARY_LOCALE_GENERATION_armv6-novfp = "0"
-ENABLE_BINARY_LOCALE_GENERATION_armv7a = "0"
-
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
 
