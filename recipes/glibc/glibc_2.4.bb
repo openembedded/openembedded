@@ -1,6 +1,6 @@
 require glibc.inc
 
-PR = "r20"
+PR = "r21"
 
 #add the hosts that are confirmed to be working to COMPATIBLE_HOSTi
 COMPATIBLE_HOST = '(i.86.*-linux|sh.*-linux)'
@@ -34,6 +34,7 @@ python __anonymous () {
 }
 
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
+RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
 #	   file://noinfo.patch;patch=1
 #	   file://ldconfig.patch;patch=1;pnum=0

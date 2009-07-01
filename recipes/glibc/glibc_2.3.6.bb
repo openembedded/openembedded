@@ -1,6 +1,6 @@
 require glibc.inc
 
-PR = "r4"
+PR = "r5"
 
 #FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/glibc-2.3.6', '${FILE_DIRNAME}/orig/glibc', '${FILE_DIRNAME}/orig/files', '${FILE_DIRNAME}/orig' ], d)}"
 
@@ -34,6 +34,9 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
+
+RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
+RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \

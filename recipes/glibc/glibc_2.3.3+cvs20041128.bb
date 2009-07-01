@@ -3,7 +3,7 @@ require glibc.inc
 DEFAULT_PREFERENCE_sh3 = "-99"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r15"
+PR = "r16"
 
 GLIBC_ADDONS ?= "linuxthreads"
 
@@ -49,6 +49,9 @@ SRC_URI_append_openmn = " file://ldsocache-varrun.patch;patch=1"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
+
+RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
+RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \

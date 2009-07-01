@@ -1,7 +1,7 @@
 require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r20"
+PR = "r21"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -41,7 +41,8 @@ DEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "/lib/libpcprofile.so"
 FILES_glibc-thread-db = "/lib/libthread_db*"
 FILES_localedef = "${bindir}/localedef"
-RPROVIDES_glibc-dev += "libc-dev"
+RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
+RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
 #	   file://noinfo.patch;patch=1 \
 #	   file://ldconfig.patch;patch=1;pnum=0 \
