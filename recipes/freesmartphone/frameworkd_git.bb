@@ -4,8 +4,8 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.8.5.1+gitr${SRCPV}"
-PR = "r6"
+PV = "0.8.5.3+gitr${SRCPV}"
+PR = "r0"
 
 inherit distutils update-rc.d
 
@@ -27,6 +27,10 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/frameworkd ${D}${sysconfdir}/init.d/
 	install -m 0644 ${WORKDIR}/frameworkd.conf ${D}${sysconfdir}
 }
+
+RDEPENDS_${PN} += "\
+  fsousaged \
+"
 
 RDEPENDS_${PN} += "\
   python-ctypes \
