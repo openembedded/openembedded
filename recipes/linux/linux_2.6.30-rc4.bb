@@ -1,8 +1,8 @@
 require linux.inc
 
-PR = "r0"
+PV = "2.6.29+2.6.30-rc4"
 
-S = "${WORKDIR}/linux-${PV}"
+S = "${WORKDIR}/linux-2.6.30-rc4"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
