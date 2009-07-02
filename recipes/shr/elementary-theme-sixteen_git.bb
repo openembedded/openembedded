@@ -3,7 +3,7 @@ SECTION = "e/utils"
 DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
 PV = "0.1-${EFL_SRCREV}-gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 
@@ -14,10 +14,10 @@ do_compile() {
 }
 
 do_install() {
-        install -d ${D}${datadir}/enlightenment/data/themes/
-        install -m 0644 ${S}/sixteen.edj ${D}${datadir}/enlightenment/data/themes/
+        install -d ${D}${datadir}/elementary/themes/
+        install -m 0644 ${S}/sixteen.edj ${D}${datadir}/elementary/themes/
 }
 
-FILES_${PN} = "${datadir}/enlightenment/data/themes/sixteen.edj"
+FILES_${PN} = "${datadir}/elementary/themes/sixteen.edj"
 
 
