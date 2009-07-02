@@ -1,6 +1,6 @@
 DESCRIPTION = "illume SHR theme"
 SECTION = "e/utils"
-DEPENDS = "edje"
+DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
 PV = "1.1-${EFL_SRCREV}-gitr${SRCPV}"
 PR = "r6"
@@ -10,7 +10,7 @@ SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=ma
 S = "${WORKDIR}/git/e-wm/${PN}"
 
 do_compile() {
-	edje_cc -id ${S}/images/. -fd ${S}/fonts/. ${S}/illume-shr.edc -o ${S}/illume-shr.edj
+	${STAGING_BINDIR_NATIVE}/edje_cc -id ${S}/images/. -fd ${S}/fonts/. ${S}/illume-shr.edc -o ${S}/illume-shr.edj
 }
 
 do_install() {
