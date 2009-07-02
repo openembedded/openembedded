@@ -2,6 +2,8 @@
 # FSO stuff
 # we always want fso-autorev for unstable
 require conf/distro/include/fso-autorev.inc
+SRCREV_pn-frameworkd-config-shr_FSO_REV = "${AUTOREV}"
+SRCREV_pn-frameworkd-config-shr_SHR_REV = "${AUTOREV}"
 
 SRCREV_pn-fsoraw = "${AUTOREV}"
 
