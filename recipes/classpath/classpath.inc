@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "Classpath"
 PBN = "classpath"
 
-DEPENDS = "virtual/javac-native fastjar-native zip-native"
+DEPENDS = "virtual/javac-native fastjar-native zip-native gmp"
 RPROVIDES = ""
 
 RDEPENDS_${PN} = "${PBN}-common (>= ${PV})"
