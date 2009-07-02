@@ -1,6 +1,6 @@
 DESCRIPTION = "etk SHR theme"
 SECTION = "e/utils"
-DEPENDS = "edje"
+DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
 PV = "1.1-${EFL_SRCREV}-gitr${SRCPV}"
 
@@ -9,7 +9,7 @@ SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=ma
 S = "${WORKDIR}/git/etk/${PN}"
 
 do_compile() {
-	edje_cc -id ${S}/. -fd ${S}/. ${S}/default.edc -o ${S}/default.edj
+	${STAGING_BINDIR_NATIVE}/edje_cc -id ${S}/. -fd ${S}/. ${S}/default.edc -o ${S}/default.edj
 }
 
 do_install() {
