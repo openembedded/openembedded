@@ -196,4 +196,6 @@ RDEPENDS_${PN} += "\
 		omgps \
 		shr-launcher \
 		e-tasks \
+		elementary-theme-sixteen \
+		e-wm-theme-illume-sixteen \
 "
