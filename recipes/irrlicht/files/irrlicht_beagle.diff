@@ -1,0 +1,865 @@
+Index: source/Irrlicht/SoftwareDriver2_compile_config.h
+===================================================================
+--- source/Irrlicht/SoftwareDriver2_compile_config.h	(revision 2409)
++++ source/Irrlicht/SoftwareDriver2_compile_config.h	(working copy)
+@@ -60,7 +60,7 @@
+ 	//#define SOFTWARE_DRIVER_2_LIGHTING
+ 	//#define SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
+ 	//#define SOFTWARE_DRIVER_2_32BIT
+-	#define SOFTWARE_DRIVER_2_MIPMAPPING
++	//#define SOFTWARE_DRIVER_2_MIPMAPPING
+ 	#define SOFTWARE_DRIVER_2_USE_WBUFFER
+ 	#define SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE		0
+ #endif
+Index: source/Irrlicht/CSoftwareDriver2.cpp
+===================================================================
+--- source/Irrlicht/CSoftwareDriver2.cpp	(revision 2409)
++++ source/Irrlicht/CSoftwareDriver2.cpp	(working copy)
+@@ -1489,18 +1489,6 @@
+ 	setCurrentShader();
+ }
+ 
+-
+-
+-#ifdef SOFTWARE_DRIVER_2_LIGHTING
+-
+-//! Sets the fog mode.
+-void CBurningVideoDriver::setFog(SColor color, bool linearFog, f32 start,
+-	f32 end, f32 density, bool pixelFog, bool rangeFog)
+-{
+-	CNullDriver::setFog(color, linearFog, start, end, density, pixelFog, rangeFog);
+-	LightSpace.FogColor.setA8R8G8B8 ( color.color );
+-}
+-
+ /*!
+ 	Camera Position in World Space
+ */
+@@ -1524,6 +1512,18 @@
+ 	LightSpace.campos.w = 1.f;
+ }
+ 
++#ifdef SOFTWARE_DRIVER_2_LIGHTING
++
++//! Sets the fog mode.
++void CBurningVideoDriver::setFog(SColor color, bool linearFog, f32 start,
++	f32 end, f32 density, bool pixelFog, bool rangeFog)
++{
++	CNullDriver::setFog(color, linearFog, start, end, density, pixelFog, rangeFog);
++	LightSpace.FogColor.setA8R8G8B8 ( color.color );
++}
++
++
++
+ /*!
+ 	applies lighting model
+ */
+Index: source/Irrlicht/COGLESTexture.cpp
+===================================================================
+--- source/Irrlicht/COGLESTexture.cpp	(revision 2409)
++++ source/Irrlicht/COGLESTexture.cpp	(working copy)
+@@ -105,7 +105,8 @@
+ 			default:
+ 			break;
+ 		}
+-	}
++	}
++	destFormat=ECF_A1R5G5B5; //Added to get textures working on Beagle Board
+ 	return destFormat;
+ }
+ 
+Index: include/IrrCompileConfig.h
+===================================================================
+--- include/IrrCompileConfig.h	(revision 2409)
++++ include/IrrCompileConfig.h	(working copy)
+@@ -254,9 +254,9 @@
+ 			16Bit + SubPixel/SubTexel Correct + ZBuffer
+ */
+ 
+-#define BURNINGVIDEO_RENDERER_BEAUTIFUL
++//#define BURNINGVIDEO_RENDERER_BEAUTIFUL
+ //#define BURNINGVIDEO_RENDERER_FAST
+-//#define BURNINGVIDEO_RENDERER_ULTRA_FAST
++#define BURNINGVIDEO_RENDERER_ULTRA_FAST
+ //#define BURNINGVIDEO_RENDERER_CE
+ 
+ //! Uncomment the following line if you want to ignore the deprecated warnings
+Index: examples/03.CustomSceneNode/main.cpp
+===================================================================
+--- examples/03.CustomSceneNode/main.cpp	(revision 2409)
++++ examples/03.CustomSceneNode/main.cpp	(working copy)
+@@ -171,7 +171,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL-ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -182,7 +182,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/03.CustomSceneNode/Makefile
+===================================================================
+--- examples/03.CustomSceneNode/Makefile	(revision 2409)
++++ examples/03.CustomSceneNode/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/07.Collision/main.cpp
+===================================================================
+--- examples/07.Collision/main.cpp	(revision 2409)
++++ examples/07.Collision/main.cpp	(working copy)
+@@ -42,7 +42,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -53,7 +53,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/07.Collision/Makefile
+===================================================================
+--- examples/07.Collision/Makefile	(revision 2409)
++++ examples/07.Collision/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/15.LoadIrrFile/main.cpp
+===================================================================
+--- examples/15.LoadIrrFile/main.cpp	(revision 2409)
++++ examples/15.LoadIrrFile/main.cpp	(working copy)
+@@ -25,7 +25,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -36,7 +36,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/15.LoadIrrFile/Makefile
+===================================================================
+--- examples/15.LoadIrrFile/Makefile	(revision 2409)
++++ examples/15.LoadIrrFile/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/18.SplitScreen/main.cpp
+===================================================================
+--- examples/18.SplitScreen/main.cpp	(revision 2409)
++++ examples/18.SplitScreen/main.cpp	(working copy)
+@@ -78,7 +78,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -89,7 +89,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/18.SplitScreen/Makefile
+===================================================================
+--- examples/18.SplitScreen/Makefile	(revision 2409)
++++ examples/18.SplitScreen/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/05.UserInterface/main.cpp
+===================================================================
+--- examples/05.UserInterface/main.cpp	(revision 2409)
++++ examples/05.UserInterface/main.cpp	(working copy)
+@@ -163,7 +163,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -174,7 +174,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/05.UserInterface/Makefile
+===================================================================
+--- examples/05.UserInterface/Makefile	(revision 2409)
++++ examples/05.UserInterface/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/19.MouseAndJoystick/main.cpp
+===================================================================
+--- examples/19.MouseAndJoystick/main.cpp	(revision 2409)
++++ examples/19.MouseAndJoystick/main.cpp	(working copy)
+@@ -107,7 +107,7 @@
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -118,7 +118,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/19.MouseAndJoystick/Makefile
+===================================================================
+--- examples/19.MouseAndJoystick/Makefile	(revision 2409)
++++ examples/19.MouseAndJoystick/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32: CPPFLAGS += -D__GNUWIN32__ -D_WIN32 -DWIN32 -D_WINDOWS -D_MBCS -D_USRDLL
+Index: examples/12.TerrainRendering/main.cpp
+===================================================================
+--- examples/12.TerrainRendering/main.cpp	(revision 2409)
++++ examples/12.TerrainRendering/main.cpp	(working copy)
+@@ -89,7 +89,7 @@
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -100,7 +100,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/12.TerrainRendering/Makefile
+===================================================================
+--- examples/12.TerrainRendering/Makefile	(revision 2409)
++++ examples/12.TerrainRendering/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/Demo/main.cpp
+===================================================================
+--- examples/Demo/main.cpp	(revision 2409)
++++ examples/Demo/main.cpp	(working copy)
+@@ -29,7 +29,7 @@
+ 	bool aa = false;
+ 
+ #ifndef _IRR_WINDOWS_
+-	video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
++	video::E_DRIVER_TYPE driverType = video::EDT_OPENGLES1;
+ #else
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+ #endif
+Index: examples/Demo/Makefile
+===================================================================
+--- examples/Demo/Makefile	(revision 2409)
++++ examples/Demo/Makefile	(working copy)
+@@ -10,10 +10,11 @@
+ endif
+ 
+ all: all_linux
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+ all_linux: SYSTEM=Linux
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/$(SYSTEM) -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/$(SYSTEM) -lIrrlicht $(OGELSLIBS) -lXxf86vm -lXext -lX11
+ 
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+ all_win32: LDFLAGS = -L../../lib/$(SYSTEM) -lIrrlicht -lopengl32 -lm
+Index: examples/13.RenderToTexture/main.cpp
+===================================================================
+--- examples/13.RenderToTexture/main.cpp	(revision 2409)
++++ examples/13.RenderToTexture/main.cpp	(working copy)
+@@ -24,7 +24,7 @@
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -35,7 +35,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/13.RenderToTexture/Makefile
+===================================================================
+--- examples/13.RenderToTexture/Makefile	(revision 2409)
++++ examples/13.RenderToTexture/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/20.ManagedLights/main.cpp
+===================================================================
+--- examples/20.ManagedLights/main.cpp	(revision 2409)
++++ examples/20.ManagedLights/main.cpp	(working copy)
+@@ -284,7 +284,7 @@
+ 	else
+ 	{
+ 		printf("Please select the driver you want for this example:\n"\
+-			" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++			" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 			" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 			" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -296,7 +296,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/20.ManagedLights/Makefile
+===================================================================
+--- examples/20.ManagedLights/Makefile	(revision 2409)
++++ examples/20.ManagedLights/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32: CPPFLAGS += -D__GNUWIN32__ -D_WIN32 -DWIN32 -D_WINDOWS -D_MBCS -D_USRDLL
+Index: examples/01.HelloWorld/Makefile
+===================================================================
+--- examples/01.HelloWorld/Makefile	(revision 2409)
++++ examples/01.HelloWorld/Makefile	(working copy)
+@@ -30,10 +30,11 @@
+ 
+ #default target is Linux
+ all: all_linux
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+ all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
+-all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32 clean_win32 static_win32: SYSTEM=Win32-gcc
+ all_win32 clean_win32 static_win32: SUF=.exe
+Index: examples/21.Quake3Explorer/main.cpp
+===================================================================
+--- examples/21.Quake3Explorer/main.cpp	(revision 2409)
++++ examples/21.Quake3Explorer/main.cpp	(working copy)
+@@ -680,7 +680,7 @@
+ 	gui.VideoDriver = env->addComboBox(rect<s32>( dim.Width - 300, 24, dim.Width - 10, 40 ),gui.Window);
+ 	gui.VideoDriver->addItem(L"Direct3D 9.0c", EDT_DIRECT3D9 );
+ 	gui.VideoDriver->addItem(L"Direct3D 8.1", EDT_DIRECT3D8 );
+-	gui.VideoDriver->addItem(L"OpenGL 1.5", EDT_OPENGL);
++	gui.VideoDriver->addItem(L"OpenGL ES1", EDT_OGLES1);
+ 	gui.VideoDriver->addItem(L"Software Renderer", EDT_SOFTWARE);
+ 	gui.VideoDriver->addItem(L"Burning's Video (TM) Thomas Alten", EDT_BURNINGSVIDEO);
+ 	gui.VideoDriver->setSelected ( gui.VideoDriver->getIndexForItemData ( Game->deviceParam.DriverType ) );
+@@ -2080,7 +2080,7 @@
+ 		{
+ 			game.setDefault ();
+ 			printf("Please select the driver you want for this example:\n"\
+-				" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++				" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 				" (d) Software Renderer\n (e) Burning's Video (TM) Thomas Alten\n"\
+ 				" (otherKey) exit\n\n");
+ 
+@@ -2091,7 +2091,7 @@
+ 			{
+ 				case 'a': game.deviceParam.DriverType = EDT_DIRECT3D9;break;
+ 				case 'b': game.deviceParam.DriverType = EDT_DIRECT3D8;break;
+-				case 'c': game.deviceParam.DriverType = EDT_OPENGL;   break;
++				case 'c': game.deviceParam.DriverType = EDT_OGLES1;   break;
+ 				case 'd': game.deviceParam.DriverType = EDT_SOFTWARE; break;
+ 				case 'e': game.deviceParam.DriverType = EDT_BURNINGSVIDEO;break;
+ 				default: game.retVal = 3; break;
+Index: examples/21.Quake3Explorer/Makefile
+===================================================================
+--- examples/21.Quake3Explorer/Makefile	(revision 2409)
++++ examples/21.Quake3Explorer/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/11.PerPixelLighting/main.cpp
+===================================================================
+--- examples/11.PerPixelLighting/main.cpp	(revision 2409)
++++ examples/11.PerPixelLighting/main.cpp	(working copy)
+@@ -159,7 +159,7 @@
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -170,7 +170,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/11.PerPixelLighting/Makefile
+===================================================================
+--- examples/11.PerPixelLighting/Makefile	(revision 2409)
++++ examples/11.PerPixelLighting/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/16.Quake3MapShader/main.cpp
+===================================================================
+--- examples/16.Quake3MapShader/main.cpp	(revision 2409)
++++ examples/16.Quake3MapShader/main.cpp	(working copy)
+@@ -130,7 +130,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -141,7 +141,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/16.Quake3MapShader/Makefile
+===================================================================
+--- examples/16.Quake3MapShader/Makefile	(revision 2409)
++++ examples/16.Quake3MapShader/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/08.SpecialFX/main.cpp
+===================================================================
+--- examples/08.SpecialFX/main.cpp	(revision 2409)
++++ examples/08.SpecialFX/main.cpp	(working copy)
+@@ -37,7 +37,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -47,7 +47,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/08.SpecialFX/Makefile
+===================================================================
+--- examples/08.SpecialFX/Makefile	(revision 2409)
++++ examples/08.SpecialFX/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/09.Meshviewer/main.cpp
+===================================================================
+--- examples/09.Meshviewer/main.cpp	(revision 2409)
++++ examples/09.Meshviewer/main.cpp	(working copy)
+@@ -554,7 +554,7 @@
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D8;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -564,8 +564,8 @@
+ 	switch(key)
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+-		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'b': driverType = video::EDT_DIRECT3D8;break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/09.Meshviewer/Makefile
+===================================================================
+--- examples/09.Meshviewer/Makefile	(revision 2409)
++++ examples/09.Meshviewer/Makefile	(working copy)
+@@ -6,8 +6,8 @@
+ 
+ # general compiler settings
+ CPPFLAGS = -I../../include -I/usr/X11R6/include
+-CXXFLAGS = -O3 -ffast-math
+-#CXXFLAGS = -g -Wall
++#CXXFLAGS = -O3 -ffast-math
++CXXFLAGS = -g -Wall
+ 
+ #default target is Linux
+ all: all_linux
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/02.Quake3Map/main.cpp
+===================================================================
+--- examples/02.Quake3Map/main.cpp	(revision 2409)
++++ examples/02.Quake3Map/main.cpp	(working copy)
+@@ -54,9 +54,9 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
+-		" (d) OpenGL-ES1\n (e) Software Renderer\n (f) Burning's Software Renderer\n"\
+-		" (g) NullDevice\n (otherKey) exit\n\n");
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
++		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
++		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+ 	char i;
+ 	std::cin >> i;
+@@ -65,11 +65,10 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
+-		case 'd': driverType = video::EDT_OGLES1;   break;
+-		case 'e': driverType = video::EDT_SOFTWARE; break;
+-		case 'f': driverType = video::EDT_BURNINGSVIDEO;break;
+-		case 'g': driverType = video::EDT_NULL;     break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
++		case 'd': driverType = video::EDT_SOFTWARE; break;
++		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
++		case 'f': driverType = video::EDT_NULL;     break;
+ 		default: return 1;
+ 	}	
+ 
+Index: examples/02.Quake3Map/Makefile
+===================================================================
+--- examples/02.Quake3Map/Makefile	(revision 2409)
++++ examples/02.Quake3Map/Makefile	(working copy)
+@@ -16,7 +16,7 @@
+ LIBSELECT=64
+ endif
+ 
+-OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+ all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+Index: examples/10.Shaders/main.cpp
+===================================================================
+--- examples/10.Shaders/main.cpp	(revision 2409)
++++ examples/10.Shaders/main.cpp	(working copy)
+@@ -119,7 +119,7 @@
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -130,7 +130,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/10.Shaders/Makefile
+===================================================================
+--- examples/10.Shaders/Makefile	(revision 2409)
++++ examples/10.Shaders/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/06.2DGraphics/main.cpp
+===================================================================
+--- examples/06.2DGraphics/main.cpp	(revision 2409)
++++ examples/06.2DGraphics/main.cpp	(working copy)
+@@ -29,7 +29,7 @@
+ 	video::E_DRIVER_TYPE driverType;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -40,7 +40,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/06.2DGraphics/Makefile
+===================================================================
+--- examples/06.2DGraphics/Makefile	(revision 2409)
++++ examples/06.2DGraphics/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32 clean_win32: SYSTEM=Win32-gcc
+Index: examples/04.Movement/main.cpp
+===================================================================
+--- examples/04.Movement/main.cpp	(revision 2409)
++++ examples/04.Movement/main.cpp	(working copy)
+@@ -75,7 +75,7 @@
+ 	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+ 
+ 	printf("Please select the driver you want for this example:\n"\
+-		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL 1.5\n"\
++		" (a) Direct3D 9.0c\n (b) Direct3D 8.1\n (c) OpenGL ES1\n"\
+ 		" (d) Software Renderer\n (e) Burning's Software Renderer\n"\
+ 		" (f) NullDevice\n (otherKey) exit\n\n");
+ 
+@@ -86,7 +86,7 @@
+ 	{
+ 		case 'a': driverType = video::EDT_DIRECT3D9;break;
+ 		case 'b': driverType = video::EDT_DIRECT3D8;break;
+-		case 'c': driverType = video::EDT_OPENGL;   break;
++		case 'c': driverType = video::EDT_OGLES1;   break;
+ 		case 'd': driverType = video::EDT_SOFTWARE; break;
+ 		case 'e': driverType = video::EDT_BURNINGSVIDEO;break;
+ 		case 'f': driverType = video::EDT_NULL;     break;
+Index: examples/04.Movement/Makefile
+===================================================================
+--- examples/04.Movement/Makefile	(revision 2409)
++++ examples/04.Movement/Makefile	(working copy)
+@@ -15,9 +15,10 @@
+ ifeq ($(HOSTTYPE), x86_64)
+ LIBSELECT=64
+ endif
+-
++
++OGLESLIBS := -L$(HOME)/irrlicht/SDKPackage-ogles1/Builds/OGLES/LinuxPC/Lib -lGLES_CM -lEGL
+ # target specific settings
+-all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht -lGL -lXxf86vm -lXext -lX11
++all_linux: LDFLAGS = -L/usr/X11R6/lib$(LIBSELECT) -L../../lib/Linux -lIrrlicht $(OGLESLIBS) -lXxf86vm -lXext -lX11
+ all_linux clean_linux: SYSTEM=Linux
+ all_win32: LDFLAGS = -L../../lib/Win32-gcc -lIrrlicht -lopengl32 -lm
+ all_win32: CPPFLAGS += -D__GNUWIN32__ -D_WIN32 -DWIN32 -D_WINDOWS -D_MBCS -D_USRDLL

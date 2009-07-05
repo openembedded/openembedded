@@ -4,7 +4,7 @@ SRC_URI = "http://freedesktop.org/software/icon-slicer/releases/icon-slicer-${PV
 
 inherit autotools native
 
-DEPENDS = "gtk+-native popt-native"
+DEPENDS = "gdk-pixbuf-csource-native popt-native"
 
 S = "${WORKDIR}/icon-slicer-${PV}"
 

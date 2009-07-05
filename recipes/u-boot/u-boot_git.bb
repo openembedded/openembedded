@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r26"
+PR ="r27"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -16,6 +16,7 @@ SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw-env.patch;patch=1 \
                  file://dss2.patch;patch=1 \
+                 file://new-pinmux.patch;patch=1 \
 "
 SRCREV_beagleboard = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
 PV_beagleboard = "2009.05+${PR}+gitr${SRCREV}"

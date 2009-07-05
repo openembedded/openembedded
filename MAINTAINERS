@@ -46,6 +46,12 @@ Interests:  Support in OE for single board computers, web application support
 Machines:   cm-x270, em-x270, gesbc-9302
 Recipes:    mono, argtable, vala, socketcan
 
+Person:     Denys Dmytriyenko
+Mail:       denis@denix.org
+Machines:   davinci (dm6446-evm, dm6467-evm, dm355-evm, dm365-evm), omap3evm
+Distros:    Ångström, Arago
+Interests:  External Toolchains
+
 Person:     Dmitry Eremin-Solenikov
 Mail:       dbaryshkov@gmail.com
 Website:    http://tosa.lumag.spb.ru

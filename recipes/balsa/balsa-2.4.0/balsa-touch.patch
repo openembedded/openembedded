@@ -1,0 +1,11 @@
+--- balsa-2.4.0/src/main-window.c
++++ balsa-2.4.0/src/main-window.c
+@@ -375,7 +375,7 @@
+      G_CALLBACK(mailbox_conf_add_mbox_cb)},
+     {"NewMaildir", GTK_STOCK_ADD, N_("New \"Maildir\" mailbox..."), NULL,
+      N_("Add a new Maildir style mailbox"),
+-     G_CALLBACK(bw_mailbox_conf_add_maildir_cb)},
++     G_CALLBACK(mailbox_conf_add_maildir_cb)},
+     {"NewMH", GTK_STOCK_ADD, N_("New \"MH\" mailbox..."), NULL,
+      N_("Add a new MH style mailbox"), G_CALLBACK(mailbox_conf_add_mh_cb)},
+ #endif /* ENABLE_TOUCH_UI */

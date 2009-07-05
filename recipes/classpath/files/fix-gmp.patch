@@ -1,0 +1,19 @@
+---
+ configure.ac |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- classpath-0.98.orig/configure.ac
++++ classpath-0.98/configure.ac
+@@ -766,11 +766,11 @@ if test "x${COMPILE_JNI}" = xyes; then
+   dnl __gmpz_mul_si for earlier versions (>= 3.1).
+   dnl IMPORTANT: if you decide to look for __gmpz_combit, don't forget to
+   dnl change the name of the corresponding ac_ variable on lines 860...
+   if test "x${COMPILE_GMP}" = xyes; then
+     AC_CHECK_LIB(gmp, __gmpz_mul_si,
+-      [GMP_CFLAGS=-I/usr/include
++      [GMP_CFLAGS=
+        GMP_LIBS=-lgmp ],
+       [GMP_CFLAGS=
+        GMP_LIBS= ])
+     AC_SUBST(GMP_CFLAGS)
+     AC_SUBST(GMP_LIBS)

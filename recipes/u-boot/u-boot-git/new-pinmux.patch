@@ -1,0 +1,71 @@
+From: Steve Sakoman <sakoman@tera.(none)>
+Date: Thu, 16 Apr 2009 05:08:11 +0000 (-0700)
+Subject: beagle: first cut at pinmux to support tincan zippy
+X-Git-Url: http://www.sakoman.net/cgi-bin/gitweb.cgi?p=u-boot-omap3.git;a=commitdiff_plain;h=22223c0fe848871a6c2ecfcdd292c7d6d38b1d1d
+
+beagle: first cut at pinmux to support tincan zippy
+---
+
+diff --git a/board/omap3/beagle/beagle.h b/board/omap3/beagle/beagle.h
+index fe18223..e3f0da0 100644
+--- a/board/omap3/beagle/beagle.h
++++ b/board/omap3/beagle/beagle.h
+@@ -203,16 +203,16 @@ const omap3_sysinfo sysinfo = {
+  MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT6*/\
+  MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT7*/\
+  /*Wireless LAN */\
+- MUX_VAL(CP(MMC2_CLK),		(IEN  | PTU | EN  | M4)) /*GPIO_130*/\
+- MUX_VAL(CP(MMC2_CMD),		(IEN  | PTU | EN  | M4)) /*GPIO_131*/\
+- MUX_VAL(CP(MMC2_DAT0),		(IEN  | PTU | EN  | M4)) /*GPIO_132*/\
+- MUX_VAL(CP(MMC2_DAT1),		(IEN  | PTU | EN  | M4)) /*GPIO_133*/\
+- MUX_VAL(CP(MMC2_DAT2),		(IEN  | PTU | EN  | M4)) /*GPIO_134*/\
+- MUX_VAL(CP(MMC2_DAT3),		(IEN  | PTU | EN  | M4)) /*GPIO_135*/\
+- MUX_VAL(CP(MMC2_DAT4),		(IEN  | PTU | EN  | M4)) /*GPIO_136*/\
+- MUX_VAL(CP(MMC2_DAT5),		(IEN  | PTU | EN  | M4)) /*GPIO_137*/\
+- MUX_VAL(CP(MMC2_DAT6),		(IEN  | PTU | EN  | M4)) /*GPIO_138*/\
+- MUX_VAL(CP(MMC2_DAT7),		(IEN  | PTU | EN  | M4)) /*GPIO_139*/\
++ MUX_VAL(CP(MMC2_CLK),		(IEN  | PTU | EN  | M0)) /*MMC2_CLK*/\
++ MUX_VAL(CP(MMC2_CMD),		(IEN  | PTU | EN  | M0)) /*MMC2_CMD*/\
++ MUX_VAL(CP(MMC2_DAT0),		(IEN  | PTU | EN  | M0)) /*MMC2_DAT0*/\
++ MUX_VAL(CP(MMC2_DAT1),		(IEN  | PTU | EN  | M0)) /*MMC2_DAT1*/\
++ MUX_VAL(CP(MMC2_DAT2),		(IEN  | PTU | EN  | M0)) /*MMC2_DAT2*/\
++ MUX_VAL(CP(MMC2_DAT3),		(IEN  | PTU | EN  | M0)) /*MMC2_DAT3*/\
++ MUX_VAL(CP(MMC2_DAT4),		(IEN  | PTU | EN  | M1)) /*MMC2_DIR_DAT0*/\
++ MUX_VAL(CP(MMC2_DAT5),		(IEN  | PTU | EN  | M1)) /*MMC2_DIR_DAT1*/\
++ MUX_VAL(CP(MMC2_DAT6),		(IEN  | PTU | EN  | M1)) /*MMC2_DIR_CMD*/\
++ MUX_VAL(CP(MMC2_DAT7),		(IEN  | PTU | EN  | M1)) /*MMC2_CLKIN*/\
+  /*Bluetooth*/\
+  MUX_VAL(CP(MCBSP3_DX),		(IEN  | PTD | DIS | M1)) /*UART2_CTS*/\
+  MUX_VAL(CP(MCBSP3_DR),		(IDIS | PTD | DIS | M1)) /*UART2_RTS*/\
+@@ -231,13 +231,13 @@ const omap3_sysinfo sysinfo = {
+  MUX_VAL(CP(MCBSP4_DR),		(IEN  | PTD | DIS | M1)) /*SSI1_FLAG_RX*/\
+  MUX_VAL(CP(MCBSP4_DX),		(IEN  | PTD | DIS | M1)) /*SSI1_RDY_RX*/\
+  MUX_VAL(CP(MCBSP4_FSX),	(IEN  | PTD | DIS | M1)) /*SSI1_WAKE*/\
+- MUX_VAL(CP(MCBSP1_CLKR),	(IDIS | PTD | DIS | M4)) /*GPIO_156*/\
+- MUX_VAL(CP(MCBSP1_FSR),	(IDIS | PTU | EN  | M4)) /*GPIO_157*/\
+- MUX_VAL(CP(MCBSP1_DX),		(IDIS | PTD | DIS | M4)) /*GPIO_158*/\
+- MUX_VAL(CP(MCBSP1_DR),		(IDIS | PTD | DIS | M4)) /*GPIO_159*/\
++ MUX_VAL(CP(MCBSP1_CLKR),	(IEN  | PTU | EN  | M1)) /*MCSPI4_CLK*/\
++ MUX_VAL(CP(MCBSP1_FSR),	(IEN  | PTU | EN  | M4)) /*GPIO_157*/\
++ MUX_VAL(CP(MCBSP1_DX),		(IEN  | PTD | EN  | M1)) /*MCSPI4_SIMO*/\
++ MUX_VAL(CP(MCBSP1_DR),		(IEN  | PTD | DIS | M1)) /*MCSPI4_SOMI*/\
+  MUX_VAL(CP(MCBSP_CLKS),	(IEN  | PTU | DIS | M0)) /*McBSP_CLKS*/\
+- MUX_VAL(CP(MCBSP1_FSX),	(IDIS | PTD | DIS | M4)) /*GPIO_161*/\
+- MUX_VAL(CP(MCBSP1_CLKX),	(IDIS | PTD | DIS | M4)) /*GPIO_162*/\
++ MUX_VAL(CP(MCBSP1_FSX),	(IEN  | PTD | EN  | M1)) /*MCSPI4_CS0*/\
++ MUX_VAL(CP(MCBSP1_CLKX),	(IEN  | PTD | DIS | M4)) /*GPIO_162*/\
+  /*Serial Interface*/\
+  MUX_VAL(CP(UART3_CTS_RCTX),	(IEN  | PTD | EN  | M0)) /*UART3_CTS_RCTX*/\
+  MUX_VAL(CP(UART3_RTS_SD),	(IDIS | PTD | DIS | M0)) /*UART3_RTS_SD */\
+@@ -257,8 +257,8 @@ const omap3_sysinfo sysinfo = {
+  MUX_VAL(CP(HSUSB0_DATA7),	(IEN  | PTD | DIS | M0)) /*HSUSB0_DATA7*/\
+  MUX_VAL(CP(I2C1_SCL),		(IEN  | PTU | EN  | M0)) /*I2C1_SCL*/\
+  MUX_VAL(CP(I2C1_SDA),		(IEN  | PTU | EN  | M0)) /*I2C1_SDA*/\
+- MUX_VAL(CP(I2C2_SCL),		(IEN  | PTU | EN  | M4)) /*GPIO_168*/\
+- MUX_VAL(CP(I2C2_SDA),		(IEN  | PTU | EN  | M4)) /*GPIO_183*/\
++ MUX_VAL(CP(I2C2_SCL),		(IEN  | PTU | EN  | M0)) /*I2C2_SCL*/\
++ MUX_VAL(CP(I2C2_SDA),		(IEN  | PTU | EN  | M0)) /*I2C2_SDA*/\
+  MUX_VAL(CP(I2C3_SCL),		(IEN  | PTU | EN  | M0)) /*I2C3_SCL*/\
+  MUX_VAL(CP(I2C3_SDA),		(IEN  | PTU | EN  | M0)) /*I2C3_SDA*/\
+  MUX_VAL(CP(I2C4_SCL),		(IEN  | PTU | EN  | M0)) /*I2C4_SCL*/\
+ 
