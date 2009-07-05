@@ -38,7 +38,7 @@ SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
 # other stuff
 SRCREV_pn-openmoocow = "${AUTOREV}"
 SRCREV_pn-libmokoui2 = "4695"
-SRCREV_pn-intone = "11"
+SRCREV_pn-intone = "${AUTOREV}"
 SRCREV_pn-connman = "${AUTOREV}"
 
 #PREFERRED_VERSION_fakeroot = "1.12.1"
