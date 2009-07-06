@@ -3,11 +3,12 @@ require linux.inc
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Mainstone (PXA270 ref design)"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.25/patch-2.6.25-rc4.bz2;patch=1 \
            file://mainstone-keypad.patch;patch=1 \
+	   file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.24"
