@@ -1,5 +1,5 @@
 require cornucopia.inc
 inherit fso-plugin
 
-DEPENDS += "alsa-lib libcanberra"
-PR = "${INC_PR}.1"
+DEPENDS += "alsa-lib libcanberra-alsa"
+PR = "${INC_PR}.2"
