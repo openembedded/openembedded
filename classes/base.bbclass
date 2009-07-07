@@ -620,6 +620,9 @@ python base_do_fetch() {
 	except bb.fetch.NoMethodError:
 		(type, value, traceback) = sys.exc_info()
 		raise bb.build.FuncFailed("No method: %s" % value)
+	except bb.MalformedUrl:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Malformed URL: %s" % value)
 
 	try:
 		bb.fetch.go(localdata)
