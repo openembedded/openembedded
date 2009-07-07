@@ -12,7 +12,7 @@ SRC_URI += "\
   file://gtk-fix.patch;patch=1;pnum=0 \
   "
 
-PR = "r8"
+PR = "r9"
 
 DEPENDS += "gtk+ gconf libxtst"
 

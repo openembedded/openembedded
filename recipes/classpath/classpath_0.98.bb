@@ -7,7 +7,7 @@ SRC_URI += "\
   file://fix-gmp.patch;patch=1 \
   "
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS += "gtk+ gconf libxtst"
 
