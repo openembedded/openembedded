@@ -1,3 +1,3 @@
 require libgpg-error.inc
 
-PR = "r2"
+PR = "${INC_PR}.1"
