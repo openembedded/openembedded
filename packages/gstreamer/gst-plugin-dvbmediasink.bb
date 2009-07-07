@@ -4,11 +4,11 @@ PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
 DEPENDS = "gstreamer gst-plugins-base"
 PV = "0.10+${SRCDATE}"
-PR = "r3"
+PR = "r0"
 
 inherit autotools pkgconfig
 
-SRCDATE = "20090604"
+SRCDATE = "20090708"
 SRCDATE_dm7025 = "20080907"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/dvbmediasink;module=dvbmediasink;method=pserver"
