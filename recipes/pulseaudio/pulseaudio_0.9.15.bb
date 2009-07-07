@@ -1,7 +1,9 @@
 require pulseaudio.inc
 
 DEPENDS += "gdbm speex"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
+
+inherit gettext
 
 SRC_URI += "\
   file://buildfix.patch;patch=1 \
@@ -9,6 +11,7 @@ SRC_URI += "\
   file://periodfix.patch;patch=1 \
   file://fallback.patch;patch=1 \
   file://autoconf_version.patch;patch=1 \
+  file://gettext.patch;patch=1 \
 "
 
 do_compile_prepend() {
