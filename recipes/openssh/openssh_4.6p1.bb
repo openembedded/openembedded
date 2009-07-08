@@ -5,4 +5,4 @@ SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.
            file://ssh_config \
            file://init \
 	   "
-PR = "r6"
+PR = "${INC_PR}.0"

@@ -1,4 +1,7 @@
 require openssh.inc
+
+PR = "${INC_PR}.0"
+
 DEFAULT_PREFERENCE = "-1" 
 #not tested extensively(I tested only ssh) and it's an important recipe I'm afraid to broke
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
