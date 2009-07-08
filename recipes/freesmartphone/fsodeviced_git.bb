@@ -3,4 +3,5 @@ inherit fso-plugin
 
 DEPENDS += "alsa-lib"
 RDEPENDS += "libcanberra-alsa"
-PR = "${INC_PR}.3"
+RRECOMMENDS += "fso-alsa-data"
+PR = "${INC_PR}.4"
