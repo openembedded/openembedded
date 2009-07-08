@@ -48,6 +48,7 @@ GTK_INSTALL = "\
   vala-terminal \
   gpe-scap \
   tangogps \
+  openbmap-logger \
 "
 
 GAMES_INSTALL = "\
