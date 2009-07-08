@@ -122,6 +122,8 @@ do_configure() {
     echo "Examples=${bindir}/${QT_DIR_NAME}/examples" >> $QT_CONF_PATH
     echo "Demos=${bindir}/${QT_DIR_NAME}/demos"   >> $QT_CONF_PATH
 
+    ${EXTRA_QMAKE_MUNGE}|| true
+
     (echo o; echo yes) | ./configure -v \
             -prefix ${prefix} \
             -bindir ${bindir} \
