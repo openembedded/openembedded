@@ -7,10 +7,10 @@ DEPENDS = "elementary eina sqlite3 edbus libvorbis id3lib"
 RDEPENDS = "mplayer lame libxv libsdl-x11"
 
 PV = "0.0.1+svnr${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "svn://intone.googlecode.com/svn/trunk;module=.;proto=http \
-file://vorbis-include-id3tag.patch;pnum=1;patch=1"
+file://vorbis-include-id3tag.patch;pnum=1;patch=1;maxrev=18"
 S = "${WORKDIR}"
 
 inherit autotools
