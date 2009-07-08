@@ -53,7 +53,7 @@ do_stage() {
 
 		for h in adler32.h avstring.h avutil.h base64.h bswap.h \
                  common.h crc.h fifo.h integer.h intfloat_readwrite.h \
-                 log.h lzo.h mathematics.h md5.h mem.h pixfmt.h random.h \
+                 log.h lzo.h mathematics.h md5.h mem.h pixfmt.h random*.h \
                  rational.h sha1.h
 		do
            install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/ffmpeg/$h
