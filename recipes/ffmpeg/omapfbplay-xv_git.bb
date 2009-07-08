@@ -1,5 +1,5 @@
 DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
-DEPENDS = libxv "bzip2 lame ffmpeg virtual/kernel"
+DEPENDS = "libxv bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
