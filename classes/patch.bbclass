@@ -189,6 +189,24 @@ def patch_init(d):
 		def Clean(self):
 			""""""
 
+	class GitApplyTree(PatchTree):
+		def __init__(self, dir, d):
+			PatchTree.__init__(self, dir, d)
+
+		def _applypatch(self, patch, force = False, reverse = False, run = True):
+			shellcmd = ["git", "--git-dir=.", "apply", "-p%s" % patch['strippath']]
+
+			if reverse:
+				shellcmd.append('-R')
+
+			shellcmd.append(patch['file'])
+
+			if not run:
+				return "sh" + "-c" + " ".join(shellcmd)
+
+			return runcmd(["sh", "-c", " ".join(shellcmd)], self.dir)
+
+
 	class QuiltTree(PatchSet):
 		def _runcmd(self, args, run = True):
 			quiltrc = bb.data.getVar('QUILTRCFILE', self.d, 1)
@@ -424,6 +442,7 @@ def patch_init(d):
 	g["PatchSet"] = PatchSet
 	g["PatchTree"] = PatchTree
 	g["QuiltTree"] = QuiltTree
+	g["GitApplyTree"] = GitApplyTree
 	g["Resolver"] = Resolver
 	g["UserResolver"] = UserResolver
 	g["NOOPResolver"] = NOOPResolver
@@ -449,6 +468,7 @@ python patch_do_patch() {
 	patchsetmap = {
 		"patch": PatchTree,
 		"quilt": QuiltTree,
+		"git": GitApplyTree,
 	}
 
 	cls = patchsetmap[bb.data.getVar('PATCHTOOL', d, 1) or 'quilt']
