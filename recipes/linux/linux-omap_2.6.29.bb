@@ -157,6 +157,10 @@ SRC_URI_append = " \
            file://0124-leds-gpio-broken-with-current-git.patch;patch=1 \
            file://modedb-hd720.patch;patch=1 \
            file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+           file://vfp/02-vfp-ptrace.patch;patch=1 \
+           file://vfp/03-vfp-corruption.patch;patch=1 \
+           file://vfp/04-vfp-threads.patch;patch=1 \
+           file://vfp/05-vfp-signal-handlers.patch;patch=1 \
 "
 
 
