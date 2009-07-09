@@ -36,9 +36,9 @@ AUDIO_INSTALL = "\
   alsa-utils-amixer \
   gst-meta-audio \
   gst-plugin-modplug \
-  gst-plugin-sid \
   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
   fso-sounds \
+  fso-alsa-data \
 "
 
 GTK_INSTALL = "\
@@ -80,7 +80,6 @@ ZHONE_INSTALL = "\
 # additional apps
 APPS_INSTALL = "\
   cellhunter \
-#  paroli \
   gpe-gallery \
   gpe-sketchbook \
   gpe-filemanager \
