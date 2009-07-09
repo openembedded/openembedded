@@ -38,7 +38,6 @@ AUDIO_INSTALL = "\
   gst-plugin-modplug \
   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
   fso-sounds \
-  fso-alsa-data \
 "
 
 GTK_INSTALL = "\
