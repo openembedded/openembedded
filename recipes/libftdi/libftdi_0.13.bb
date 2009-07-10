@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.intra2net.com/de/produkte/opensource/ftdi/"
 LICENSE = "LGPL"
 SECTION = "libs"
 
-DEPENDS = "libusb"
+DEPENDS = "virtual/libusb0"
 
 SRC_URI = "http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/libftdi-${PV}.tar.gz \
 	   file://autotools.patch;patch=1 \

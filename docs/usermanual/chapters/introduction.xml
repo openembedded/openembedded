@@ -30,7 +30,7 @@
         </listitem>
 
         <listitem>
-          <para>Must be able to emit packages (tar, rpm, ipk)</para>
+          <para>Must be able to emit packages (tar, rpm, deb,ipk)</para>
         </listitem>
 
         <listitem>

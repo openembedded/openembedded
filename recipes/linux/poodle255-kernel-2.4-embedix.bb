@@ -1,4 +1,4 @@
-COMPATIBLE_MACHINE = "poodle255"
+MACHINE = "poodle255"
 COMPATIBLE_HOST = "arm.*-linux"
 require openzaurus-pxa_2.4.18-rmk7-pxa3-embedix20031107.inc
 

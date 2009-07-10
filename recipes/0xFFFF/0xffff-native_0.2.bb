@@ -1,6 +1,6 @@
 require 0xffff.inc
 
-DEPENDS = "libusb-native"
+DEPENDS = "virtual/libusb0-native"
 
 inherit native
 

@@ -1,4 +1,3 @@
 require pulseaudio.inc
 
-PR = "r8"
-
+PR = "${INC_PR}.1"

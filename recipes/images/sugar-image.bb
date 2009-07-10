@@ -1,5 +1,6 @@
 XSERVER ?= "xserver-kdrive-fbdev"
 SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
+ANGSTROM_EXTRA_INSTALL += ""
 
 export IMAGE_BASENAME = "sugar-image"
 
@@ -10,7 +11,7 @@ IMAGE_INSTALL = "\
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
-    sugar-sucrose \
+    task-sugar-sucrose \
     ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 

@@ -1,5 +1,5 @@
 DESCRIPTION = "Boot a Motorola EZX device with a user supplied kernel"
-DEPENDS = "libusb-native virtual/kernel"
+DEPENDS = "virtual/libusb0-native virtual/kernel"
 SECTION = "devel"
 AUTHOR = "Team OpenEZX <openezx-devel@lists.openezx.org>"
 LICENSE = "GPL"

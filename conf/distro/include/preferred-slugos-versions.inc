@@ -63,11 +63,5 @@ PREFERRED_VERSION_udev				?= "118"
 
 ##################### Stuff with special notes, and broken stuff:
 
-# Hack alert - selecting this version of libusb effectively selects
-# the use of libusb1 and libusb-compat in the case that something
-# still depends on libusb. This is required because otherwise
-# libusb will overwrite libusb-compat in staging.
-PREFERRED_VERSION_libusb			?= "0.0.0"
-
 # boost 1.36 won't build
 PREFERRED_VERSION_boost				?= "1.33.1"

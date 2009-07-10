@@ -1,6 +1,5 @@
 SECTION = "libs"
-DEPENDS = "jpeg libusb libexif"
-RPEDENDS = "libusb"
+DEPENDS = "jpeg virtual/libusb0 libexif"
 DESCRIPTION = "libgphoto2 allows you to access digital cameras"
 PR = "r6"
 

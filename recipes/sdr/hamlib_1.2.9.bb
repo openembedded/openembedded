@@ -1,7 +1,7 @@
 DESCRIPTION = "The Ham Radio Control Libraries, Hamlib for short, is a development effort to provide a consistent interface for programmers wanting to incorporate radio control in their programs"
 LICENSE = "GPLv2"
 
-DEPENDS = "swig-native perl python libusb-compat tcl gnuradio"
+DEPENDS = "swig-native perl python virtual/libusb0 tcl gnuradio"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/hamlib/hamlib-${PV}.tar.gz"
 

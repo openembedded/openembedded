@@ -565,7 +565,7 @@
         <term>GENTOO_MIRROR</term>
 
         <listitem>
-          <para>http://distro.ibiblio.org/pub/linux/distributions/gentoo/distfiles</para>
+          <para>http://distfiles.gentoo.org/distfiles</para>
         </listitem>
       </varlistentry>
 

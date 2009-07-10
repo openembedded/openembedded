@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 DEPENDS += "virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
 
-INC_PR = "r10"
+INC_PR = "r12"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -21,8 +21,8 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
            "
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
-
-QT_CONFIG_FLAGS += "-no-xinerama -no-xkb -no-opengl"
+QT_GLFLAGS ?= "-no-opengl"
+QT_CONFIG_FLAGS += "-no-xinerama -no-xkb ${QT_GLFLAGS}"
 QT_BASE_NAME = "qt4"
 QT_BASE_LIB  = "libqt"
 QT_DIR_NAME = "qt4"

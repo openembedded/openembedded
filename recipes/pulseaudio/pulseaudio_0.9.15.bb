@@ -1,6 +1,7 @@
 require pulseaudio.inc
 
-DEPENDS += "dbus gdbm speex"
+DEPENDS += "gdbm speex"
+PR = "${INC_PR}.1"
 
 SRC_URI += "\
   file://buildfix.patch;patch=1 \

@@ -3,7 +3,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
@@ -33,7 +33,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://arm-thumb-cache.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://unbreak-armv4t.patch;patch=1 \
-	file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
 	file://gfortran.patch;patch=1 \
 	file://gcc-4.0.2-e300c2c3.patch;patch=1 \

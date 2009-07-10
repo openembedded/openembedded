@@ -1,6 +1,6 @@
 SUMMARY="Basic networking tools"
 LICENSE="GPL"
-PR = "r2"
+PR = "r3"
 
 #
 # NOTE:
@@ -61,6 +61,7 @@ SRC_URI = "http://download.berlios.de/${PN}/${PN}-${PV}.tar.bz2;md5sum=888774acc
            file://net-tools-1.60-selinux.patch;patch=1 \
            file://net-tools-1.60-netstat_stop_trim.patch;patch=1 "
 
+TOPDIR[unexport] = "1"
 
 # Copy config and source over to the source directory
 do_configure() {

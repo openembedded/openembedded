@@ -1,6 +1,6 @@
 inherit qmake_base
 
-DEPENDS += "qt4-tools-native freetype jpeg libpng zlib dbus openssl glib-2.0 gstreamer gst-plugins-base"
+DEPENDS += "qt4-tools-native freetype jpeg libpng zlib dbus openssl glib-2.0 gstreamer gst-plugins-base mysql postgresql sqlite sqlite3"
 
 require qt4_arch.inc
 QT_ARCH := "${@qt_arch(d)}"
@@ -9,7 +9,7 @@ QT_ENDIAN = "${@qt_endian(d)}"
 QT_CONFIG_FLAGS += "-release -no-cups -no-accessibility -reduce-relocations \
                     -shared -no-nas-sound -no-sm -no-nis \
                     -qt-gif -system-libjpeg -system-libpng -system-zlib \
-                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
+                    -no-sql-ibase -plugin-sql-mysql -no-sql-odbc -plugin-sql-psql -plugin-sql-sqlite -plugin-sql-sqlite2 \
                     -no-pch -qdbus -stl -glib -phonon -webkit"
 
 EXTRA_OEMAKE = "-e"
@@ -85,11 +85,11 @@ FILES_${QT_BASE_NAME}-common-dbg           = "${bindir}/.debug/qtconfig"
 FILES_${QT_BASE_NAME}-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
 FILES_${QT_BASE_NAME}-dbus-dbg             = "${bindir}/.debug/qdbus ${bindir}/.debug/qdbusxml2cpp ${bindir}/.debug/qdbuscpp2xml ${bindir}/.debug/qdbusviewer"
 FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_DIR_NAME}/demos/*"
-FILES_${QT_BASE_NAME}-demos-dbg            = "${bindir}/.debug/qtdemo ${bindir}/${QT_DIR_NAME}/demos/.debug/*"
+FILES_${QT_BASE_NAME}-demos-dbg            = "${bindir}/.debug/qtdemo ${bindir}/${QT_DIR_NAME}/demos/.debug/*  ${bindir}/${QT_DIR_NAME}/demos/*/.debug  ${bindir}/${QT_DIR_NAME}/demos/*/*/.debug  ${bindir}/${QT_DIR_NAME}/demos/*/*/*/.debug"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
 FILES_${QT_BASE_NAME}-designer-dbg         = "${bindir}/.debug/*designer*"
 FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_DIR_NAME}/examples/*"
-FILES_${QT_BASE_NAME}-examples-dbg         = "${bindir}/${QT_DIR_NAME}/examples/.debug/*"
+FILES_${QT_BASE_NAME}-examples-dbg         = "${bindir}/${QT_DIR_NAME}/examples/.debug ${bindir}/${QT_DIR_NAME}/examples/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/*/*/.debug"
 FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
 FILES_${QT_BASE_NAME}-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/lconvert ${bindir}/qm2ts"
 FILES_${QT_BASE_NAME}-linguist-dbg         = "${bindir}/.debug/*linguist* ${bindir}/.debug/lrelease ${bindir}/.debug/lupdate ${bindir}/.debug/lconvert ${bindir}/.debug/qm2ts"
@@ -122,6 +122,8 @@ do_configure() {
     echo "Examples=${bindir}/${QT_DIR_NAME}/examples" >> $QT_CONF_PATH
     echo "Demos=${bindir}/${QT_DIR_NAME}/demos"   >> $QT_CONF_PATH
 
+    ${EXTRA_QMAKE_MUNGE}|| true
+
     (echo o; echo yes) | ./configure -v \
             -prefix ${prefix} \
             -bindir ${bindir} \
@@ -140,7 +142,8 @@ do_configure() {
             -crossarch ${QT_ARCH} \
             ${QT_CONFIG_FLAGS} -fast \
             -L${STAGING_LIBDIR} -I${STAGING_INCDIR} \
-            -I${STAGING_INCDIR}/freetype2
+            -I${STAGING_INCDIR}/freetype2 \
+            -I${STAGING_INCDIR}/mysql
 }
 
 do_compile() {
@@ -193,6 +196,7 @@ python populate_packages_prepend() {
         qtopia_split('decorations',   'decoration',    '^libqdecoration(.*)\.so$')
         qtopia_split('designer',      'designer',      '^lib(.*)\.so$')
         qtopia_split('gfxdrivers',    'gfxdriver',     '^libq(.*)\.so$')
+        qtopia_split('graphicssystems','graphicssystems', '^libq(.*)\.so$')
         qtopia_split('mousedrivers',  'mousedriver',   '^libq(.*)mousedriver\.so$')
         qtopia_split('iconengines',   'iconengine',    '^libq(.*)\.so$')
         qtopia_split('imageformats',  'imageformat',   '^libq(.*)\.so$')
@@ -205,12 +209,9 @@ python populate_packages_prepend() {
 
 do_install() {
     oe_runmake install INSTALL_ROOT=${D}
-
+	
     # These are host binaries, we should only use them in staging
     rm -rf ${D}/${bindir}/qmake
-
-    # XXX, FIXME, TODO: package the demos and examples properly
-    rm -rf ${D}/${bindir}/${QT_DIR_NAME}
 
     # fix pkgconfig, libtool and prl files
     sed -i -e s#-L${S}/lib##g \

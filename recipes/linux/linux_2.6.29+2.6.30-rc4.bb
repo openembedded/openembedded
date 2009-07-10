@@ -3,7 +3,7 @@ require linux.inc
 KERNEL_RELEASE = "2.6.30-rc4"
 OLD_KERNEL_RELEASE = "2.6.29"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/linux-${OLD_KERNEL_RELEASE}"
 
@@ -18,10 +18,11 @@ DEFAULT_PREFERENCE_poodle = "-1"
 DEFAULT_PREFERENCE_spitz = "-1"
 DEFAULT_PREFERENCE_tosa = "-1"
 DEFAULT_PREFERENCE_afeb9260 = "1"
+DEFAULT_PREFERENCE_tx25 = "1"
 
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KERNEL_RELEASE}.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.30/patch-${KERNEL_RELEASE}.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI_append_afeb9260 = " \
@@ -29,4 +30,9 @@ SRC_URI_append_afeb9260 = " \
         file://0002-RS-485-mode-of-USART1.patch;patch=1 \
         file://0004-AFEB9260-ASoC-driver.patch;patch=1 \
 "
+
+SRC_URI_append_tx25 = " file://linux-2.6.30-rc4-git.patch;patch=1 \
+	file://linux-2.6.30-rc4-karo.diff;patch=1 \
+	file://tx25-ts2.patch;patch=1 \
+        file://tx25-can.patch;patch=1 "
 

@@ -5,6 +5,7 @@ PR = "r6"
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
+DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
 DEFAULT_PREFERENCE_kilauea = "1"
 DEFAULT_PREFERENCE_sequoia = "1"
 DEFAULT_PREFERENCE_cm-x270 = "-1"

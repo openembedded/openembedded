@@ -3,7 +3,7 @@ Object Exchange (OBEX) protocol."
 HOMEPAGE = "http://openobex.triq.net"
 SECTION = "libs"
 PROVIDES = "openobex-apps"
-DEPENDS = "libusb bluez-libs"
+DEPENDS = "virtual/libusb0 bluez-libs"
 LICENSE = "GPL"
 PR = "r0"
 

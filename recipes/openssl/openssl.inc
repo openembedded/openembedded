@@ -49,7 +49,7 @@ do_configure () {
 	linux-i486)
 		target=debian-i386-i486
 		;;
-	linux-i586)
+	linux-i586 | linux-viac3)
 		target=debian-i386-i586
 		;;
 	linux-i686)

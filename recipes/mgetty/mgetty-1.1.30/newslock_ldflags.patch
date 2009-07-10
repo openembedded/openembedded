@@ -1,0 +1,13 @@
+Index: mgetty-1.1.30/Makefile
+===================================================================
+--- mgetty-1.1.30.orig/Makefile	2009-05-09 21:55:50.072936310 +0200
++++ mgetty-1.1.30/Makefile	2009-05-09 21:56:09.401939481 +0200
+@@ -569,7 +569,7 @@
+	./sedscript <sendfax.cfg.in >sendfax.config
+
+ newslock: compat/newslock.c
+-	$(CC) $(CFLAGS) -o newslock compat/newslock.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -o newslock compat/newslock.c
+
+ # internal: use this to create a "clean" mgetty+sendfax tree
+ bindist: all doc-all sedscript

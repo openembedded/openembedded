@@ -2,7 +2,7 @@ DESCRIPTION = "Support software for the Universal Software Radio Peripheral (USR
 LICENSE = "GPL"
 HOMEPAGE = "http://comsec.com/wiki?UniversalSoftwareRadioPeripheral"
 SECTION = "devel"
-DEPENDS = "swig-native sdcc-native libusb-compat python boost"
+DEPENDS = "swig-native sdcc-native virtual/libusb0 python boost"
 RDEPENDS = "python-core"
 PR = "r1"
 

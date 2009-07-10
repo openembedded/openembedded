@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.owfs.org/"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-DEPENDS += "fuse libusb"
+DEPENDS += "fuse virtual/libusb0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/owfs/owfs-${PV}.tar.gz \
            file://owhttpd \

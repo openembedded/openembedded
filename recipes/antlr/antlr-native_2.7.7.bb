@@ -5,7 +5,7 @@ SRC_URI += "file://runantlr"
 inherit java-native
 
 do_configure() {
-	sed -i -e"s|@JAR_FILE@|${STAGING_DATADIR_NATIVE}/java/antlr.jar|" ${WORKDIR}/runantlr
+	sed -i -e"s|@JAR_FILE@|${STAGING_DATADIR_JAVA_NATIVE}/antlr.jar|" ${WORKDIR}/runantlr
 }
 
 do_stage() {

@@ -1,5 +1,5 @@
 DESCRIPTION = "Boots a S3C2410 device with a user supplied kernel zImage"
-DEPENDS = "libusb-native"
+DEPENDS = "virtual/libusb0-native"
 SECTION = "devel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"

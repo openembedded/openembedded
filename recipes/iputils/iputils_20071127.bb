@@ -3,6 +3,7 @@ DESCRIPTION = "Utilities for the IP protocol, including traceroute6, \
 tracepath, tracepath6, ping, ping6 and arping."
 SECTION = "console/network"
 LICENSE ="BSD"
+DEPENDS = "docbook-utils-native"
 
 PR = "r1"
 
@@ -40,7 +41,7 @@ FILES_${PN}-doc		= "${mandir}/man8"
 do_compile () {
 	oe_runmake 'CC=${CC}' \
 		   KERNEL_INCLUDE="${STAGING_INCDIR}" \
-		   LIBC_INCLUDE="${STAGING_INCDIR}"
+		   LIBC_INCLUDE="${STAGING_INCDIR}" all man
 }
 
 do_install () {

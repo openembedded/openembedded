@@ -1,0 +1,18 @@
+Index: alsa-utils-1.0.19/alsactl/Makefile.am
+===================================================================
+--- alsa-utils-1.0.19.orig/alsactl/Makefile.am	2009-06-24 01:08:16.000000000 -0400
++++ alsa-utils-1.0.19/alsactl/Makefile.am	2009-06-24 01:08:26.000000000 -0400
+@@ -2,13 +2,7 @@
+ 
+ sbin_PROGRAMS=alsactl
+ man_MANS=alsactl.1
+-if USE_XMLTO
+-man_MANS += alsactl_init.7
+-endif
+ EXTRA_DIST=alsactl.1 alsactl_init.xml
+ 
+ alsactl_SOURCES=alsactl.c state.c utils.c init_parse.c
+ noinst_HEADERS=alsactl.h list.h init_sysdeps.c init_utils_string.c init_utils_run.c init_sysfs.c
+-
+-%.7: %.xml
+-	xmlto man $?

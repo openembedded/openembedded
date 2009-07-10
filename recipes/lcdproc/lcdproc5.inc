@@ -4,7 +4,7 @@ HOMEPAGE = "http://lcdproc.org"
 SECTION = "utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "libusb ncurses"
+DEPENDS = "virtual/libusb0 ncurses"
 RRECOMMENDS_lcdproc = "lcdd"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/${P}.tar.gz"

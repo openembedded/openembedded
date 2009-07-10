@@ -127,9 +127,11 @@ PREFERRED_PROVIDER_virtual/arm-linux-binutils		    = "binutils-cross"
 PREFERRED_PROVIDER_virtual/armeb-linux-binutils		    = "binutils-cross"
 PREFERRED_PROVIDER_linux-libc-headers			    = "linux-libc-headers"
 
-# Select the smallest provider of x11 libraries
-PREFERRED_PROVIDER_virtual/libx11		= "diet-x11"
-SRCDATE_diet-x11				?= "20060106"
+# Select the appropriate x11 library provider.  The diet-x11 libraries are
+# much smaller, but may not be as current as the standard x11 libraries; by
+# default we will select the standard libraries and permit the use of an
+# override if the user wishes (and has the correct PREFERRED_VERSIONs set).
+PREFERRED_PROVIDER_virtual/libx11		?= "libx11"
 
 # Ensure consistency across all SlugOS builds for the provider of a relational
 # database - use the latest version of the SleepyCat Berkeley database
@@ -159,6 +161,7 @@ PREFERRED_PROVIDER_gdk-pixbuf-loader-xpm	?= "gtk+"
 
 PREFERRED_PROVIDER_avahi			?= "avahi"
 PREFERRED_PROVIDER_gconf			?= "gconf"
+PREFERRED_PROVIDER_virtual/libusb0		?= "libusb-compat"
 
 # Include any package preferred versions and srcrevs:
 

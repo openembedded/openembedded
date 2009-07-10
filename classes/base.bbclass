@@ -923,7 +923,7 @@ python base_eventhandler() {
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
 		statusvars = bb.data.getVar("BUILDCFG_VARS", e.data, 1).split()
 		statuslines = ["%-17s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
-		statusmsg = "\nOE Build Configuration:\n%s\n" % '\n'.join(statuslines)
+		statusmsg = "\n%s\n%s\n" % (bb.data.getVar("BUILDCFG_HEADER", e.data, 1), "\n".join(statuslines))
 		print statusmsg
 
 		needed_vars = bb.data.getVar("BUILDCFG_NEEDEDVARS", e.data, 1).split()
