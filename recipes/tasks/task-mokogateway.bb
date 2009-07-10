@@ -55,8 +55,8 @@ DESCRIPTION_task-mokogateway-wifi = "MokoGateway: WiFi"
 RDEPENDS_task-mokogateway-wifi = "\
 	bridge-utils \
 	wireless-tools \
-	${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng-modules", "",d)} \
-	${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng-tools", "",d)} \
+	${@base_contains("COMBINED_FEATURES", "madwifi", "madwifi-ng-modules", "",d)} \
+	${@base_contains("COMBINED_FEATURES", "madwifi", "madwifi-ng-tools", "",d)} \
 	wpa-supplicant \
 "
 RRECOMMENDS_task-mokogateway-wifi = "\
