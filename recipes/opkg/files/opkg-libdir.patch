@@ -1,0 +1,11 @@
+--- trunk/utils/update-alternatives.orig	2009-06-23 15:33:56.000000000 -0300
++++ trunk/utils/update-alternatives	2009-06-23 15:34:10.000000000 -0300
+@@ -21,7 +21,7 @@
+ set -e
+ 
+ # admin dir
+-ad="$OPKG_OFFLINE_ROOT/usr/lib/opkg/alternatives"
++ad="$OPKG_OFFLINE_ROOT/${libdir}/opkg/alternatives"
+ 
+ usage() {
+ 	echo "update-alternatives: $*
