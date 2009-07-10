@@ -159,6 +159,12 @@ def base_read_file(filename):
 		return f.read().strip()
 	return None
 
+def base_ifelse(condition, iftrue = True, iffalse = False):
+    if condition:
+        return iftrue
+    else:
+        return iffalse
+
 def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
 	import bb
 	if bb.data.getVar(variable,d,1) == checkvalue:
