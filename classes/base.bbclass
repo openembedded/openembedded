@@ -1179,11 +1179,10 @@ def base_after_parse(d):
     override = bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1)
     if override != '0':
         paths = []
-        for a in [ "${MACHINE}" ] + bb.data.getVar('MACHINE_FALLBACK', d).split():
-            for p in [ "${PF}", "${P}", "${PN}", "files", "" ]:
-                path = bb.data.expand(os.path.join("${FILE_DIRNAME}", p, a), d)
-                if os.path.isdir(path):
-                    paths.append(path)
+        for p in [ "${PF}", "${P}", "${PN}", "files", "" ]:
+            path = bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d)
+            if os.path.isdir(path):
+                paths.append(path)
         if len(paths) != 0:
             for s in srcuri.split():
                 if not s.startswith("file://"):
