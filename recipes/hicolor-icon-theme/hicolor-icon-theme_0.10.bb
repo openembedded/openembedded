@@ -1,6 +1,10 @@
 SECTION = "unknown"
 LICENSE = "GPL"
-inherit gnome
+inherit autotools gtk-icon-cache
+
+# Override RDEPENDS = hicolor-icon-theme from gtk-icon-cache
+RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 SRC_URI = "http://icon-theme.freedesktop.org/releases/${P}.tar.gz"
 
