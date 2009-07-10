@@ -1,0 +1,16 @@
+Description: Set docdir appropriately for Debian
+Author: Masayuki Hatta <mhatta@debian.org>
+diff -urN a/base/Makefile.in b/base/Makefile.in
+--- a/base/Makefile.in
++++ b/base/Makefile.in
+@@ -71,8 +71,8 @@
+ gssharedir = @libdir@/ghostscript/$(GS_DOT_VERSION)
+ gsincludedir = @includedir@/ghostscript/
+ 
+-docdir=$(gsdatadir)/doc
+-exdir=$(gsdatadir)/examples
++docdir=$(prefix)/share/doc/ghostscript
++exdir=$(prefix)/share/doc/ghostscript/examples
+ GS_DOCDIR=$(docdir)
+ 
+ # Define install location for 'cups' device/filter support
