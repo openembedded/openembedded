@@ -8,4 +8,4 @@ PR = "r0"
 inherit autotools
 
 SRC_URI = "http://www.mikecrash.com/download/neo/chronometer_${PV}.tar.gz"
-S = "${WORKDIR}/${PN}-${PN}"
+S = "${WORKDIR}/${PN}-${PV}"
