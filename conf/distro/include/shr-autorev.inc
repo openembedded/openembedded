@@ -105,3 +105,5 @@ SRCREV_pn-connman = "1916aa601dafa4915c0f0a47a114b1007dadb09c"
 SRCREV_pn-omgps = "${AUTOREV}"
 SRCREV_pn-shr-launcher = "${AUTOREV}"
 SRCREV_pn-e-tasks = "${AUTOREV}"
+SRCREV_pn-mokonnect = "${AUTOREV}"
+

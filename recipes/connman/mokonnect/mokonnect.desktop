@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Mokonnect
+TryExec=/usr/bin/mokonnect.py
+GenericName=Mokonnect
+Comment=Connection Manager for Openmoko Phone
+StartupNotify=true
+Exec=/usr/bin/mokonnect.py
+Terminal=false
+Type=Application
+Categories=Settings;
+Icon=mokonnect.png
