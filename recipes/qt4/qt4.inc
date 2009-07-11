@@ -110,7 +110,7 @@ do_configure() {
     cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf mkspecs/common/
 
     echo "[Paths]"                                 > $QT_CONF_PATH
-    echo "Prefix=${prefix}"                       >> $QT_CONF_PATH
+    echo "Prefix=${prefix}/"                      >> $QT_CONF_PATH
     echo "Documentation=${docdir}/${QT_DIR_NAME}" >> $QT_CONF_PATH
     echo "Headers=${includedir}/${QT_DIR_NAME}"   >> $QT_CONF_PATH
     echo "Libraries=${libdir}"                    >> $QT_CONF_PATH
@@ -125,7 +125,7 @@ do_configure() {
     ${EXTRA_QMAKE_MUNGE}|| true
 
     (echo o; echo yes) | ./configure -v \
-            -prefix ${prefix} \
+            -prefix ${prefix}/ \
             -bindir ${bindir} \
             -libdir ${libdir} \
             -datadir ${datadir}/${QT_DIR_NAME} \
