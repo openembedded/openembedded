@@ -60,7 +60,7 @@ done
 
 
 # No graphics
-for machine in dns323 mv2120 kuropro lspro tsx09 ts409 gumstix-connex gumstix-verdex efika dht-walnut omap5912osk afeb9260
+for machine in dns323 mv2120 kuropro lspro tsx09 ts409 gumstix-connex gumstix-verdex efika dht-walnut omap5912osk afeb9260 at91sam9g20ek
 do
 	BUILD_MACHINE=$machine
 	BUILD_CLEAN="base-files"
