@@ -4,23 +4,17 @@ DEFAULT_PREFERENCE = "-1"
 
 DEPENDS += " gsl "
 
-PV = "3.2.0+svnr${SRCREV}"
+PV = "3.2.1+svnr${SRCREV}"
 PR = "${INC_PR}.1"
 
 EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable--usrp2"
 
 SRC_URI = "svn://gnuradio.org/svn/gnuradio/;module=trunk;proto=http \
-    file://no-usrp2.patch;patch=1 \
-    file://gnuradio-neon.patch;patch=1;pnum=0 \
+    file://no-usrp2-svn.patch;patch=1 \
      ${SOURCEFORGE_MIRROR}/libusb/libusb-0.1.12.tar.gz \
 "
 
 S="${WORKDIR}/trunk"
-
-#do_configure() {
-#        ./bootstrap
-#        oe_runconf
-#}
 
 do_compile_append() {
         sed -i -e s:${STAGING_DIR_TARGET}::g \

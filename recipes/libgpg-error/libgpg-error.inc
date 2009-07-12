@@ -8,6 +8,8 @@ DEPENDS += "virtual/libiconv"
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-${PV}.tar.gz \
 	   file://pkgconfig.patch;patch=1"
 
+INC_PR = "r6"
+
 # move libgpg-error-config into -dev package
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}/*"

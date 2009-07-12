@@ -84,7 +84,7 @@ python do_package_tar () {
 		tarfn = bb.data.getVar('PKGFN', localdata, 1)
 		os.chdir(root)
 		from glob import glob
-		if not glob('*'):
+		if not glob('*') + glob('.[!.]*'):
 			bb.note("Not creating empty archive for %s-%s" % (pkg, bb.data.expand('${PV}-${PR}${DISTRO_PR}', d, True)))
 			continue
 		ret = os.system("tar -czf %s %s" % (tarfn, '.'))
