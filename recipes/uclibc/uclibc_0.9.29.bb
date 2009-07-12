@@ -39,6 +39,4 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
 KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
 
-SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
-
 S = "${WORKDIR}/uClibc-${UCLIBC_BASE}"
