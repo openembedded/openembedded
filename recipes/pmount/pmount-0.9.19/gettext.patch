@@ -1,0 +1,197 @@
+Index: pmount-0.9.18/src/pmount-hal.c
+===================================================================
+--- pmount-0.9.18.orig/src/pmount-hal.c	2008-10-09 23:19:46.000000000 +0200
++++ pmount-0.9.18/src/pmount-hal.c	2009-07-12 17:16:00.719122863 +0200
+@@ -16,7 +16,6 @@
+ #include <dirent.h>
+ #include <sys/stat.h>
+ #include <locale.h>
+-#include <libintl.h>
+ #include <libhal-storage.h>
+ 
+ #include "policy.h"
+@@ -25,9 +24,6 @@
+ 
+ #include "realpath.h"
+ 
+-/* gettext abbreviation */
+-#define _(String) gettext(String)
+-
+ void help() {
+     puts( _(
+ "pmount-hal - execute pmount with additional information from hal\n\n"
+@@ -198,8 +194,8 @@
+ 
+     /* initialize locale */
+     setlocale( LC_ALL, "" );
+-    bindtextdomain( "pmount", NULL );
+-    textdomain( "pmount" );
++    bindtextdomain(PACKAGE, NULL );
++    textdomain(PACKAGE);
+ 
+     if( argc < 2 ) {
+         help();
+Index: pmount-0.9.18/src/utils.h
+===================================================================
+--- pmount-0.9.18.orig/src/utils.h	2008-10-09 23:19:46.000000000 +0200
++++ pmount-0.9.18/src/utils.h	2009-07-12 17:23:01.384780369 +0200
+@@ -12,8 +12,31 @@
+ #define __utils_h
+ 
+ /* gettext abbreviation */
++#ifdef ENABLE_NLS
++
++#include <libintl.h>
++
+ #define _(String) gettext(String)
+ 
++#ifdef gettext_noop
++#define N_(String) gettext_noop(String)
++#else
++#define N_(String) (String)
++#endif
++
++#else /* NLS is disabled */
++
++#define _(String) (String)
++#define N_(String) (String)
++#define textdomain(String) (String)
++#define gettext(String) (String)
++#define dgettext(Domain,String) (String)
++#define dcgettext(Domain,String,Type) (String)
++#define bindtextdomain(Domain,Directory) (Domain)
++#define bind_textdomain_codeset(Domain,Codeset) (Codeset)
++
++#endif /* ENABLE_NLS */
++
+ /* global flag whether to print debug messages (false by default) */
+ extern int enable_debug;
+ 
+Index: pmount-0.9.18/configure.ac
+===================================================================
+--- pmount-0.9.18.orig/configure.ac	2008-10-18 21:02:18.000000000 +0200
++++ pmount-0.9.18/configure.ac	2009-07-12 17:16:00.719122863 +0200
+@@ -5,8 +5,6 @@
+ AC_CONFIG_SRCDIR(src)
+ AM_INIT_AUTOMAKE(pmount, 0.9.18)
+ 
+-AC_PROG_INTLTOOL([0.21])
+-
+ AM_MAINTAINER_MODE
+ AC_ISC_POSIX
+ AC_HEADER_STDC
+@@ -77,10 +75,13 @@
+ fi
+ AM_CONDITIONAL(PMOUNT_HAL, test -n "$BUILD_HAL")
+ 													   
+-GETTEXT_PACKAGE="pmount"
+-AC_SUBST(GETTEXT_PACKAGE)
+-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Gettext package])
+-AM_GLIB_GNU_GETTEXT
++
++IT_PROG_INTLTOOL([0.21])
++GETTEXT_PACKAGE=$PACKAGE
++AC_SUBST([GETTEXT_PACKAGE])
++AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],["$GETTEXT_PACKAGE"],[Gettext package])
++AM_GNU_GETTEXT([external])
++AM_GNU_GETTEXT_VERSION([0.17])
+ 
+ AC_OUTPUT([
+ Makefile
+Index: pmount-0.9.18/src/pmount.c
+===================================================================
+--- pmount-0.9.18.orig/src/pmount.c	2008-10-18 20:49:54.000000000 +0200
++++ pmount-0.9.18/src/pmount.c	2009-07-12 17:16:00.722456315 +0200
+@@ -21,7 +21,6 @@
+ #include <errno.h>
+ #include <locale.h>
+ #include <langinfo.h>
+-#include <libintl.h>
+ #include <sys/stat.h>
+ 
+ #include "fs.h"
+@@ -652,8 +651,8 @@
+ 
+     /* initialize locale */
+     setlocale( LC_ALL, "" );
+-    bindtextdomain( "pmount", NULL );
+-    textdomain( "pmount" );
++    bindtextdomain(PACKAGE, NULL );
++    textdomain(PACKAGE);
+ 
+     /* If pmount is run without a single argument, print out the list
+        of removable devices. Does not require root privileges, just read access
+Index: pmount-0.9.18/src/pumount.c
+===================================================================
+--- pmount-0.9.18.orig/src/pumount.c	2008-10-09 23:19:46.000000000 +0200
++++ pmount-0.9.18/src/pumount.c	2009-07-12 17:16:00.722456315 +0200
+@@ -16,9 +16,9 @@
+ #include <sys/wait.h>
+ #include <limits.h>
+ #include <getopt.h>
+-#include <libintl.h>
+ #include <locale.h>
+ 
++
+ #include "policy.h"
+ #include "utils.h"
+ #include "luks.h"
+@@ -174,8 +174,8 @@
+ 
+     /* initialize locale */
+     setlocale( LC_ALL, "" );
+-    bindtextdomain( "pmount", NULL );
+-    textdomain( "pmount" );
++    bindtextdomain(PACKAGE, NULL );
++    textdomain(PACKAGE);
+ 
+     /* are we root? */
+     if( geteuid() ) {
+Index: pmount-0.9.18/src/luks.c
+===================================================================
+--- pmount-0.9.18.orig/src/luks.c	2009-07-12 17:17:45.278704656 +0200
++++ pmount-0.9.18/src/luks.c	2009-07-12 17:17:49.627119155 +0200
+@@ -14,7 +14,6 @@
+ #include <stdio.h>
+ #include <limits.h>
+ #include <sys/stat.h>
+-#include <libintl.h>
+ 
+ enum decrypt_status
+ luks_decrypt( const char* device, char* decrypted, int decrypted_size, 
+Index: pmount-0.9.18/src/policy.c
+===================================================================
+--- pmount-0.9.18.orig/src/policy.c	2009-07-12 17:17:55.502449663 +0200
++++ pmount-0.9.18/src/policy.c	2009-07-12 17:18:03.200672861 +0200
+@@ -18,7 +18,6 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ #include <dirent.h>
+-#include <libintl.h>
+ #include <sys/stat.h>
+ #include <sysfs/libsysfs.h>
+ #include <regex.h>
+Index: pmount-0.9.18/src/realpath.c
+===================================================================
+--- pmount-0.9.18.orig/src/realpath.c	2009-07-12 17:18:27.354526224 +0200
++++ pmount-0.9.18/src/realpath.c	2009-07-12 17:18:32.256256916 +0200
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include "realpath.h"
+-#include <libintl.h>
+ #include "utils.h"
+ 
+ #define MAX_READLINKS 32
+Index: pmount-0.9.18/src/utils.c
+===================================================================
+--- pmount-0.9.18.orig/src/utils.c	2009-07-12 17:18:09.718277410 +0200
++++ pmount-0.9.18/src/utils.c	2009-07-12 17:18:13.935179014 +0200
+@@ -21,7 +21,6 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <signal.h>
+-#include <libintl.h>
+ 
+ /* File name used to tag directories created by pmount */
+ #define CREATED_DIR_STAMP ".created_by_pmount"
