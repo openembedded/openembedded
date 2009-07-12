@@ -27,7 +27,7 @@ PREFERRED_VERSION_dbus-glib = "0.78"
 PREFERRED_VERSION_bluez4 = "4.39"
 PREFERRED_VERSION_irssi = " 0.8.13"
 PREFERRED_VERSION_linux-libc-headers ?= "2.6.23"
-PREFERRED_VERSION_connman = "0.19+gitr${SRCREV}"
+PREFERRED_VERSION_connman = "0.22+gitr${SRCPV}"
 
 
 
