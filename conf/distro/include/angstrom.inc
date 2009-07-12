@@ -92,6 +92,7 @@ ARM_KEEP_OABI = "0"
 # Do keep OABI compat for om-gta01 to keep the gllin binary working
 ARM_KEEP_OABI_pn-linux-openmoko-2.6.24_om-gta01 = "1"
 ARM_KEEP_OABI_pn-linux-openmoko-2.6.28_om-gta01 = "1"
+ARM_KEEP_OABI_pn-linux-openmoko-shr-devel_om-gta01 = "1"
 
 
 #Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable
