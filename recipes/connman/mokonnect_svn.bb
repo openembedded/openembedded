@@ -6,37 +6,34 @@ SECTION = "e/apps"
 RDEPENDS = "python-elementary"
 
 PV = "0.2+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http \
-file://mokonnect.desktop"
+SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http"
 
 S = "${WORKDIR}/Mokonnect/trunk"
 
-inherit distutils-base
-
-
-PY_FILES = "mkbase.py mkdev_usbnet.py mkdev_wifi.py mkmenu.py qdbus.py"
-
 do_install() {
-	install -d ${D}${libdir}
-	install -d ${D}${libdir}/${PYTHON_DIR}
-	install -d ${D}${libdir}/${PYTHON_DIR}/site-packages
-
-	for f in ${PY_FILES}
+	install -d ${D}${datadir}/mokonnect
+	for pyfile in *.py
 	do
-		install -m 0644 $f ${D}${libdir}/${PYTHON_DIR}/site-packages/
+		install -m 644 $pyfile ${D}${datadir}/mokonnect/
 	done
-
-	install -d ${D}${bindir}
-	install -m 755 mokonnect.py ${D}${bindir}/
+	chmod 755 ${D}${datadir}/mokonnect/mokonnect.py
 
 	install -d ${D}${datadir}/applications
-	install -m 644 ${WORKDIR}/mokonnect.desktop ${D}${datadir}/applications/
+	install -m 644 mokonnect.desktop ${D}${datadir}/applications/
 
 	install -d ${D}${datadir}/pixmaps
 	install -m 644 mokonnect.png ${D}${datadir}/pixmaps/
+
+	install -d ${D}${bindir}
+	ln -sf ${datadir}/mokonnect/mokonnect.py ${D}${bindir}/mokonnect
 }
 
-FILES_${PN} += " ${datadir}/*/*"
+FILES_${PN} = "\
+${datadir}/mokonnect \
+${datadir}/applications/* \
+${datadir}/pixmaps/* \
+${bindir}/mokonnect \
+"
 
