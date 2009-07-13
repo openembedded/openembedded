@@ -100,6 +100,7 @@ do
                       cvs \
                       cwiid \
                       dates \
+                      devicekit-disks \
                       dialog \
                       distcc \
                       dsniff \
@@ -173,9 +174,11 @@ do
                       gqview \
                       gsm0710muxd \
                       gspcav1 \
+                      gst-omapfb \
                       gtk+ \
                       gzip \
                       hal \
+                      hdparm \
                       hexatrolic \
                       htop \
                       i2c-tools \
@@ -191,6 +194,7 @@ do
                       iscsi-target \
                       ivman \
                       jamvm \
+                      julius \
                       kernel-module-udlfb \
                       kismet \
                       konqueror-embedded \
@@ -225,6 +229,7 @@ do
                       mutt \
                       mythtv \
                       nautilus \
+                      nbench-byte \
                       navit \
                       netkit-ftp \
                       netsurf \
