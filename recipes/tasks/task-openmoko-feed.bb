@@ -16,14 +16,13 @@ RDEPENDS_task-openmoko-feed = "\
   linphone \
   fso-gsm0710muxd \
   ppp \
-#  bluez-hcidump \
   bootchart \
   cellhunter \
   eet evas ecore embryo epsilon edje efreet emotion \
   epdf \
   exhibit edje-viewer \
   free42-vga \
-  gpe-filemanager gpe-gallery gpe-timesheet gpe-todo gpe-contacts \
+  gpe-filemanager gpe-gallery gpe-timesheet gpe-todo gpe-contacts gpe-calendar \
   leafpad abiword \
   claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
   telepathy-python \
@@ -39,6 +38,7 @@ RDEPENDS_task-openmoko-feed = "\
   fennec \
   woosh \
   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'mplayer', d)} \
+  intone \
   mtpaint \
   mysql \
   nano \
@@ -46,7 +46,6 @@ RDEPENDS_task-openmoko-feed = "\
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   openbmap-logger \
   python python-pygtk python-pyserial python-gst python-pygame \
-#  python-lightblue \
   python-pybluez \
   obexpush \
   ruby \
@@ -85,6 +84,7 @@ RDEPENDS_task-openmoko-feed = "\
   assassin \
   assassin-thumbnail \
   tangogps \
+  omgps \
   pyefl-sudoku \
   minicom \
   iotop \
@@ -96,7 +96,7 @@ RDEPENDS_task-openmoko-feed = "\
   gpsd \
   mc \
   devmem2 \
-  bluez-utils-alsa \
+#  bluez-utils-alsa \
   tcpdump \
   gdb \
   lsof \
