@@ -4,10 +4,12 @@ AUTHOR = "cchandel"
 LICENSE = "GPLv2"
 SECTION = "e/apps"
 DEPENDS = "elementary eina sqlite3 edbus"
-RDEPENDS = "mplayer lame libxv libsdl-x11"
+RDEPENDS = "libxv libsdl-x11"
+RDEPENDS += ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'mplayer', d)}
+RDEPENDS += ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame', d)}
 
 PV = "0.0.1+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "svn://intone.googlecode.com/svn/trunk;module=.;proto=http"
 S = "${WORKDIR}"
