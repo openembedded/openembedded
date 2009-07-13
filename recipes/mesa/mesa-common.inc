@@ -19,8 +19,7 @@ EXTRA_OECONF = "--enable-glu \
                 --disable-glut \
 	       "
 
-require mesa-tls.inc
-EXTRA_OECONF += "${@get_tls_setting(bb, d)} "
+inherit glx-use-tls
 
 # Package contents vary according to ${MACHINE_DRI_MODULES}.
 PACKAGE_ARCH = "${MACHINE}"
