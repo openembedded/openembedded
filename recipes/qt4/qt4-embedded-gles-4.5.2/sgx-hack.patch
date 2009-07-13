@@ -1,0 +1,18 @@
+--- /tmp/qglscreen_qws.h	2009-07-09 09:39:40.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.5.2/src/opengl/qglscreen_qws.h	2009-07-09 09:40:11.000000000 +0200
+@@ -60,7 +60,6 @@
+ #else
+ #include <GLES/egl.h>
+ #endif
+-#if !defined(EGL_VERSION_1_3) && !defined(QEGL_NATIVE_TYPES_DEFINED)
+ #undef EGLNativeWindowType
+ #undef EGLNativePixmapType
+ #undef EGLNativeDisplayType
+@@ -68,7 +67,6 @@
+ typedef NativePixmapType EGLNativePixmapType;
+ typedef NativeDisplayType EGLNativeDisplayType;
+ #define QEGL_NATIVE_TYPES_DEFINED 1
+-#endif
+ 
+ QT_BEGIN_HEADER
+ 
