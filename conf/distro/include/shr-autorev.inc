@@ -69,6 +69,7 @@ SRCREV_pn-shr-splash-theme-simple = "${AUTOREV}"
 SRCREV_pn-shr-splash-theme-dontpanic = "${AUTOREV}"
 SRCREV_pn-shr-splash-theme-handy = "${AUTOREV}"
 SRCREV_pn-shr-splash-theme-dociswatchingyou = "${AUTOREV}"
+SRCREV_pn-shr-installer = "${AUTOREV}"
 
 #General stuff
 EFL_SRCREV = "41040"
