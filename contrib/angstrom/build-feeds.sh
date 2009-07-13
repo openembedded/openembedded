@@ -204,7 +204,7 @@ do
                       lighttpd \
                       links-x11 \
                       lirc \
-                      lowpan-utils \
+                      lowpan-tools \
                       m4 \
                       madplay \
                       mahjongg \

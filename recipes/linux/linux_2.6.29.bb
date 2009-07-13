@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r6"
+PR = "r7"
 
 S = "${WORKDIR}/linux-2.6.29"
 
