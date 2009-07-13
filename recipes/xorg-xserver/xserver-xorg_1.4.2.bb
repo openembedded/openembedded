@@ -4,7 +4,7 @@ DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman"
 RDEPENDS += "hal"
 PE = "1"
-PR = "r11"
+PR = "${INC_PR}.0"
 
 SRC_URI += "file://drmfix.patch;patch=1 \
             file://pkgconfig_fix.patch;patch=1 \
