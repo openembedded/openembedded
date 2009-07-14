@@ -18,7 +18,7 @@ OE-Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
  sound/arm/Makefile                         |    4 
  sound/arm/at91-ac97.c                      |  911 +++++++++++++++++++++++++++++
  sound/arm/at91-ac97.h                      |  295 +++++++++
- 11 files changed, 1485 insertions(+), 62 deletions(-)
+ 10 files changed, 1367 insertions(+), 21 deletions(-)
 
 --- linux-2.6.30.orig/arch/arm/mach-at91/include/mach/at91_pmc.h
 +++ linux-2.6.30/arch/arm/mach-at91/include/mach/at91_pmc.h
