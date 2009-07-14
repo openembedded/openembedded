@@ -1,0 +1,22 @@
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct	2009-07-14 20:45:56.924100368 +0200
++++ git/SConstruct	2009-07-14 20:46:27.553677127 +0200
+@@ -131,7 +131,7 @@
+ if os.environ.has_key('CXXFLAGS'):
+ 	env['CCFLAGS'] = [os.environ['CXXFLAGS'].split()]
+ if os.environ.has_key('LD'):
+-	env['LINK'] = [os.environ['LD'].split()]
++	env['LINK'] = [os.environ['CXX'].split()]
+ if os.environ.has_key('LDFLAGS'):
+ 	env['LINKFLAGS'] = [os.environ['LDFLAGS'].split()]
+ 
+@@ -156,7 +156,7 @@
+ idir_data   = idir_prefix + '/share/disko'
+ 
+ # link with -rpath
+-env['LINKFLAGS'].append('-Wl,-rpath=' + env['prefix'] + '/lib/disko')
++env['LINKFLAGS'].append('-Wl,-rpath-link=' + env['prefix'] + '/lib/disko')
+ 
+ # extra flags
+ if env['messages']:
