@@ -77,7 +77,7 @@ INHERIT += "devshell"
 INHERIT += "angstrom-mirrors" 
 
 #run QA tests on builds and packages and log them  
-INHERIT += "insane"
+INHERIT += "insane packagehistory"
 QA_LOG = "1"
 
 #run QA tests on recipes
