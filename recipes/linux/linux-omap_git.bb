@@ -3,40 +3,26 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo"
+COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom"
 
-# This is missing the EHCI patch for beagle
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_omapzoom2 = "1"
 
+SRCREV = "7c5cb7862d32cb344be7831d466535d5255e35ac"
 
-SRCREV = "90e758af52ba803cba233fabee81176d99589f09"
+FILESPATHPKG_prepend = "linux-omap-2.6.31:"
 
-#PV = "2.6.29+2.6.30-rc1+${PR}+gitr${SRCREV}"
-PV = "2.6.29-${PR}+gitr${SRCREV}"
+# The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
+PV = "2.6.30+2.6.31-rc1+gitr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append = " \
-           file://no-empty-flash-warnings.patch;patch=1 \
-           file://no-cortex-deadlock.patch;patch=1 \
-           file://read_die_ids.patch;patch=1 \
-           file://fix-install.patch;patch=1 \
-           file://DSS2.diff;patch=1 \
-"
-
-
-SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
-			     "
-
-SRC_URI_append_omap3evm = " \
-	file://evm-mcspi-ts.diff;patch=1 \
 "
 
 S = "${WORKDIR}/git"
 
-
 module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"
-
 
