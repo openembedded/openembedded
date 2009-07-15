@@ -5,7 +5,7 @@ DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 # For angstrom we want this to replace at least bluez-libs
 PROVIDES_append_angstrom = " bluez-utils bluez-libs"
@@ -40,6 +40,15 @@ EXTRA_OECONF = "\
   --enable-initscripts \
   --disable-pcmciarules \
 "
+
+# correct audio routing for Openmoko phones
+do_install_prepend_om-gta01() {
+	sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${S}/audio/audio.conf
+}
+
+do_install_prepend_om-gta02() {
+	sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${S}/audio/audio.conf
+}
 
 do_install_append() {
         install -m 0644 ${S}/audio/audio.conf ${D}/${sysconfdir}/bluetooth/
