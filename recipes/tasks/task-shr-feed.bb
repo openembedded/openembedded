@@ -198,4 +198,5 @@ RDEPENDS_${PN} += "\
 		e-tasks \
 		elementary-theme-sixteen \
 		e-wm-theme-illume-sixteen \
+		elmdentica \
 "
