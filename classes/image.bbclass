@@ -72,13 +72,11 @@ def get_devtable_list(d):
     devtable = bb.data.getVar('IMAGE_DEVICE_TABLE', d, 1)
     if devtable != None:
         return devtable
-    str = ""
     devtables = bb.data.getVar('IMAGE_DEVICE_TABLES', d, 1)
     if devtables == None:
         devtables = 'files/device_table-minimal.txt'
-    for devtable in devtables.split():
-        str += " %s" % bb.which(bb.data.getVar('BBPATH', d, 1), devtable)
-    return str
+    return " ".join([ bb.which(bb.data.getVar('BBPATH', d, 1), devtable)
+                      for devtable in devtables.split() ])
 
 def get_imagecmds(d):
     import bb
