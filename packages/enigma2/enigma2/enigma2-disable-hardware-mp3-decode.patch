@@ -15,6 +15,6 @@ index d395701..8b8ab31 100644
  				break;
  			}
 +#endif
- 			case atAAC:
+ 			case atAC3:
  			{
  				if ( !audiodemux )
