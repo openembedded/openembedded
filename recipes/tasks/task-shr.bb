@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Fat Image Feed"
-PR = "r1"
+PR = "r2"
 PV = "2.0"
 LICENSE = "GPL"
 
