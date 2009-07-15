@@ -1,7 +1,8 @@
 DESCRIPTION = "Kernel based automounter for linux."
 SECTION = "base"
 LICENSE = "GPL"
-INC_PR = "r3"
+INC_PR = "r4"
+EXTRA_OEMAKE += "'RANLIB=${RANLIB}'"
 
 inherit autotools
 
