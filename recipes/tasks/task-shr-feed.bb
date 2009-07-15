@@ -199,4 +199,5 @@ RDEPENDS_${PN} += "\
 		elementary-theme-sixteen \
 		e-wm-theme-illume-sixteen \
 		elmdentica \
+		shr-installer \
 "
