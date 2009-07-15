@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r19"
+PR = "r20"
 PV = "1.0"
 LICENSE = "GPL"
 
