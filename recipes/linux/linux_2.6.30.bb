@@ -7,6 +7,7 @@ S = "${WORKDIR}/linux-${PV}"
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
+DEFAULT_PREFERENCE_calamari = "1"
 DEFAULT_PREFERENCE_mx27ads = "1"
 
 # machine boots with it, works but was not tested too much
@@ -19,3 +20,4 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch;patch=1"
 
 SRC_URI_append_at91sam9263ek = " file://hrw-linux-2.6.30-exp.patch;patch=1 "
+
