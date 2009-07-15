@@ -4,7 +4,7 @@ DESCRIPTION = " The prelink package contains a utility which modifies ELF shared
 and executables, so that far fewer relocations need to be resolved at \
 runtime and thus programs come up faster."
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/p/prelink/prelink_0.0.${PV}.orig.tar.gz \
            file://prelink.conf \
@@ -35,12 +35,15 @@ if [ "x$D" != "x" ]; then
   exit 1
 fi
 
-prelink -a
+. ${sysconfdir}/cron.daily/prelink
 }
 
 pkg_prerm_prelink() {
 #!/bin/sh
 
-prelink -au
+if [ -f ${sysconfdir}/prelink.cache ]; then
+    prelink -au
+    rm -f ${sysconfdir}/prelink.cache
+fi
 }
 
