@@ -2,9 +2,9 @@ DESCRIPTION = "Plugin for gstreamer: dvbmediasink"
 SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
-DEPENDS = "gstreamer"
+DEPENDS = "gstreamer gst-plugins-base"
 PV = "0.10+${SRCDATE}"
-PR = "r0
+PR = "r0"
 
 inherit autotools pkgconfig
 
