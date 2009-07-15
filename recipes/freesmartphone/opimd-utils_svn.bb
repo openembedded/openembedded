@@ -2,10 +2,10 @@ DESCRIPTION = "Test scripts for freesmartphone.org opimd interface"
 HOMEPAGE = "http://freesmartphone.org"
 SHR_RELEASE ?= "shr"
 LICENSE ?= "GPL"
-RDEPENDS = "python-elementary python-dbus python-codecs python-shell python python-core python-edbus shr-settings frameworkd"
+RDEPENDS = "python-elementary python-dbus python-codecs python-shell python python-core python-edbus shr-settings frameworkd pyphonelog shr-theme"
 SECTION = "x11/application"
 PV = "0.0.1+r${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 inherit setuptools
 
