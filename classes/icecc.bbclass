@@ -257,7 +257,8 @@ def icc_path(bb,d):
     for black in package_blacklist:
         if black in package_tmp:
             bb.note(package_tmp, ' found in blacklist, disable icecc')
-            bb.data.setVar("PARALLEL_MAKE" , "", d) 
+            fallback_parallel = bb.data.getVar('ICECC_FALLBACK_PARALLEL', d) or ""
+            bb.data.setVar("PARALLEL_MAKE", fallback_parallel, d)
             return ""
 
     prefix = bb.data.expand('${HOST_PREFIX}', d)
