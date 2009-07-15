@@ -132,7 +132,9 @@ do_configure_append_avr32() {
 }
 
 do_configure_append() {
+        if [ -e scripts/Makefile.fwinst ]; then
         sed -i -e "s:-m0644:-m 0644:g" scripts/Makefile.fwinst
+        fi
 }
 
 do_compile_append() {
