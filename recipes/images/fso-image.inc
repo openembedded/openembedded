@@ -42,7 +42,6 @@ AUDIO_INSTALL = "\
 
 GTK_INSTALL = "\
   hicolor-icon-theme \
-  tango-icon-theme \
   openmoko-calculator2 \
   vala-terminal \
   gpe-scap \
@@ -50,9 +49,8 @@ GTK_INSTALL = "\
   openbmap-logger \
 "
 
-GAMES_INSTALL = "\
-  numptyphysics \
-  cellhunter \
+GTK_INSTALL_append_om-gta02 = "\
+  tango-icon-theme \
 "
 
 # FIXME these should rather be part of alsa-state,
@@ -79,23 +77,34 @@ ZHONE_INSTALL = "\
 # additional apps
 APPS_INSTALL = "\
   cellhunter \
-  gpe-gallery \
-  gpe-sketchbook \
   gpe-filemanager \
   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'vagalume', d)} \
+"
+
+APP_INSTALL_append_om-gta02 = "\
+  gpe-gallery \
+  gpe-sketchbook \
   starling \
+  midori \
+"
+
+GAMES_INSTALL = "\
+  numptyphysics \
 "
 
 IMAGE_INSTALL = "\
   ${BASE_INSTALL} \
   ${X_INSTALL} \
   ${GTK_INSTALL} \
-  ${GAMES_INSTALL} \
   ${AUDIO_INSTALL} \
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
   ${ZHONE_INSTALL} \
   ${APPS_INSTALL} \
+"
+
+IMAGE_INSTALL_append_om-gta02 = "\
+  ${GAMES_INSTALL} \
 "
 
 inherit image

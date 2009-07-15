@@ -11,7 +11,3 @@ ZHONE_INSTALL = "\
   task-fso-compliance \
   zhone \
 "
-
-ZHONE_INSTALL_append_om-gta02 = "\
-  midori \
-"
