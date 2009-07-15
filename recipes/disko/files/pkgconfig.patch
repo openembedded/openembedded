@@ -1,26 +1,103 @@
-Index: git/Makefile
-===================================================================
---- git.orig/Makefile	2009-03-24 14:41:03.000000000 +0100
-+++ git/Makefile	2009-03-25 02:20:38.613872577 +0100
-@@ -59,7 +59,7 @@
- install-pkgconfig:
- 	@echo "writing pkgconfig information"
- 	@install -d "$(DESTDIR)$(libdir)/../pkgconfig"
--	@echo "prefix=$(prefix)" > $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
-+	@echo "prefix=/usr" > $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
- 	@echo "exec_prefix=\$${prefix}/bin" >> $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
- 	@echo "libdir=\$${prefix}/lib/disko" >> $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
- 	@echo "includedir=\$${prefix}/include/disko" >> $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
 Index: git/SConstruct
 ===================================================================
---- git.orig/SConstruct	2009-03-25 02:22:03.018024446 +0100
-+++ git/SConstruct	2009-03-25 02:22:41.668240834 +0100
-@@ -473,7 +473,7 @@
+--- git.orig/SConstruct	2009-07-14 23:53:04.460889326 +0200
++++ git/SConstruct	2009-07-14 23:56:23.408030317 +0200
+@@ -542,6 +542,7 @@
+ #######################################################################
+ # TODO: handle disko_pc_libs                                          #
+ if 'install' in BUILD_TARGETS:
++	PKG_CCFLAGS = ''
+ 	disko_pc = open('disko.pc', 'w')
+ 	disko_pc_requires = 'libxml-2.0 >= 2.6, libcurl, sigc++-2.0, libpng >= 1.2, freetype2'
+ 	if env['LIBPATH']:
+@@ -559,31 +560,43 @@
+ 
+ 	if env.has_key('libiconv'):
+ 		disko_pc_libs += ' -liconv'
++        if('fbdev' in env['graphics']):
++        	PKG_CCFLAGS += '-D__HAVE_FBDEV__ '
+ 	
+ 	if 'dfb' in env['graphics']:
+ 		disko_pc_requires += ', directfb'
++		PKG_CCFLAGS += '-D__HAVE_DIRECTFB__ '
+ 	  
+ 	if 'x11' in env['graphics']:
+ 		disko_pc_requires += ', x11, xv, xxf86vm'
++		PKG_CCFLAGS += '-D__HAVE_XLIB__ '
++		PKG_CCFLAGS += '-D__ENABLE_MMSFB_X11_CORE__ '
++		PKG_CCFLAGS += '-D__ENABLE_MMSFBSURFACE_X11_CORE__ '
+ 		
+ 	if env['media'] != 'none':
+ 	 	disko_pc_requires += ', alsa'
+ 		if not env['big_lib']:
+ 			disko_pc_libs += ' -lmmsmedia'
++		PKG_CCFLAGS += '-D__HAVE_MMSMEDIA__ -D__HAVE_MIXER__ '
+ 		
+ 	if 'xine' in env['media']:
+ 		if('x11' in env['graphics']):
+ 			disko_pc_requires += ', libxine >= 1.1.15'
+ 		else:
+ 			disko_pc_requires += ', libxine'
++		PKG_CCFLAGS += '-D__HAVE_XINE__ '
++		if conf.checkXineBlDvb():
++                                PKG_CCFLAGS += '-D__HAVE_XINE_BLDVB__ '
+ 
+ 	if 'gstreamer' in env['media']:
+ 		disko_pc_requires += ', gstreamer-0.10'
++		PKG_CCFLAGS += '-D__HAVE_GSTREAMER__ '
+ 
+ 	if env['enable_flash']:
+ 		disko_pc_requires += ', swfdec-0.8'
+ 		if not env['big_lib']:
+ 			disko_pc_libs += ' -lmmsflash'
++		PKG_CCFLAGS += '-D__HAVE_MMSFLASH__ '
+ 
+ 	if env['enable_sip']:
+ 		disko_pc_requires += ', libpj'
+@@ -591,18 +604,32 @@
+ 			disko_pc_libs += ' -lmmssip'
+ 		if('uuid' in env['LIBS']):
+ 			disko_pc_requires += ', uuid'
++		PKG_CCFLAGS += '-D__HAVE_MMSSIP__ '
+ 		
+ 	if env['enable_mail']:
+ 		disko_pc_requires += ', vmime'
++		PKG_CCFLAGS += '-D__HAVE_VMIME__ '
+ 		
+ 	if env['mmscrypt']:
+ 		disko_pc_requires += ', openssl'
++		PKG_CCFLAGS += '-D__HAVE_MMSCRYPT__ '
+ 
+ 	if 'sqlite3' in env['database']:
+ 		disko_pc_requires += ', sqlite3'
++		PKG_CCFLAGS += '-D__ENABLE_SQLITE__ '
+ 		
  	if 'mysql' in env['database']:
  		disko_pc_requires += ', mysql'
++		PKG_CCFLAGS += '-D__ENABLE_MYSQL__ '
++
++	if 'odbc' in env['database']:
++		PKG_CCFLAGS += '-D__ENABLE_FREETDS__ '
++
++	if env['messages']:
++        	PKG_CCFLAGS += '-D__ENABLE_LOG__ '
++
++	if env['debug']:
++        	PKG_CCFLAGS += '-D__ENABLE_DEBUG__ '
  
--	disko_pc.write('prefix=' + env['prefix'] + '\n')
-+	disko_pc.write('prefix=/usr' + '\n')
+ 	disko_pc.write('prefix=' + env['prefix'] + '\n')
  	disko_pc.write('exec_prefix=${prefix}\n')
- 	disko_pc.write('libdir=${exec_prefix}/lib/disko\n')
- 	disko_pc.write('includedir=${exec_prefix}/include/disko\n\n')
+@@ -614,12 +641,7 @@
+ 	disko_pc.write('Requires: ' + disko_pc_requires + '\n')
+ 	disko_pc.write('Libs: -L${libdir} ' + disko_pc_libs + '\n')
+ 	disko_pc.write('Cflags: -I${includedir}/ ')
+-	for ccflag in env['CCFLAGS']:
+-		disko_pc.write(' ')
+-		if(type(ccflag).__name__ == 'str'):
+-			disko_pc.write(ccflag)
+-		else:
+-			disko_pc.write(' '.join(ccflag))
++	disko_pc.write(PKG_CCFLAGS)
+ 	disko_pc.write('\n')
+ 	
+ 	disko_pc.close()

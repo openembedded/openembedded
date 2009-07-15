@@ -2,7 +2,7 @@ DESCRIPTION = "TagLib is a library for reading and editing the meta-data of seve
 SECTION = "libs/multimedia"
 HOMEPAGE = "http://developer.kde.org/~wheeler/taglib.html"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://developer.kde.org/~wheeler/files/src/taglib-${PV}.tar.gz \
            file://add_missing_exports_fix.diff;patch=1 \
@@ -16,7 +16,7 @@ inherit cmake pkgconfig binconfig
 
 do_stage() {
 	 install -d ${STAGING_INCDIR}/${PN}
-         install -m 0644 ${D}/usr/include/${PN}/*.h ${STAGING_INCDIR}/${PN}
+         install -m 0644 ${D}/${includedir}/${PN}/*.h ${STAGING_INCDIR}/${PN}
 	 oe_libinstall -C ${PN} -so libtag ${STAGING_LIBDIR}
 }
 

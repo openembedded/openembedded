@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r10"
+PR = "r11"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"

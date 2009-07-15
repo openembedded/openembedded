@@ -3,7 +3,7 @@ DEPENDS = "enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu lib
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
-PV = "1.1.7+svnr${SRCREV}"
+PV = "1.1.11+svnr${SRCREV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -17,10 +17,8 @@ SRC_URI = "\
   file://Makefile.shared \
   file://autogen.sh \
   file://configure.ac \
-  file://symbols.filter \
   file://GNUmakefile.am \
   file://gtk-doc.make \
-  file://unicode-fixes.diff;patch=1;maxrev=44459 \
  "
 
 S = "${WORKDIR}/"
@@ -57,7 +55,7 @@ do_compile_prepend() {
             ${BUILD_CXX} dftables.cpp -o dftables -I. -I../wtf
         fi
         cp dftables ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
-        cp dftables ${S}/Programs/        
+        cp dftables ${S}/Programs/
 	cd ${S}
 }
 

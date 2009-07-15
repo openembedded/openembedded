@@ -1,13 +1,13 @@
 require eglibc.inc
 
 DEPENDS += "gperf-native"
-SRCREV = "8551"
-# DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
-PV = "2.10+svnr${SRCREV}"
+PV = "2.10"
 PR = "${INC_PR}.1"
-EGLIBC_BRANCH="trunk"
-SRC_URI = "svn://svn.eglibc.org;module=trunk \
+SVN_REV="8632"
+EGLIBC_BRANCH="eglibc-2_10"
+SRC_URI = "svn://svn.eglibc.org/branches;module=eglibc-2_10;rev=${SVN_REV};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
