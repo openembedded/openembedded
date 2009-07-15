@@ -60,7 +60,6 @@ def create_cross_env(bb,d):
         os.stat(os.path.join(ice_dir, target_sys, 'lib', 'libstdc++.so'))
         os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
     except: # no cross compiler built yet
-        bb.error('no cross compiler built yet?')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,target_sys,"bin","g++") )
@@ -157,7 +156,6 @@ def create_cross_kernel_env(bb,d):
     try:
         os.stat(os.path.join(ice_dir, 'bin', kernel_cc))
     except: # no cross compiler built yet
-        bb.error('no kernel cross compiler built yet')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,"bin",kernel_cc) )
