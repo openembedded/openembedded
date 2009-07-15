@@ -43,6 +43,7 @@ EXTRA_OECONF = "\
 "
 
 do_install_append() {
+        sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${S}/audio/audio.conf
         install -m 0644 ${S}/audio/audio.conf ${D}/${sysconfdir}/bluetooth/
         install -m 0644 ${S}/network/network.conf ${D}/${sysconfdir}/bluetooth/
         install -m 0644 ${S}/input/input.conf ${D}/${sysconfdir}/bluetooth/
