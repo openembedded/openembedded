@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV_FORMAT = "gitrFSO_REV-SHR_REV"
 PV = "0.8.5.1+${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master;name=FSO_REV \
            git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master;name=SHR_REV"
@@ -57,7 +57,7 @@ do_install_append() {
         install -m 0644 ${CONF_PATH}/profiles/rules/silent.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/rules/
 
         install -d ${D}${datadir}/sounds
-        install -m 0644 ${CONF_PATH}/ringtone_ringnroll.wav ${D}${datadir}/sounds/
+        install -m 0644 ${CONF_PATH}/*.wav ${D}${datadir}/sounds/
 }
 
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
@@ -65,7 +65,7 @@ PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 FILES_${PN} = "\
   ${sysconfdir}/frameworkd.conf \
   ${sysconfdir}/freesmartphone \
-  ${datadir}/sounds/ringtone_ringnroll.wav \
+  ${datadir}/sounds \
 "
 CONFFILES_${PN} = "\
   ${sysconfdir}/frameworkd.conf \
