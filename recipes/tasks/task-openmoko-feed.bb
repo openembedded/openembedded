@@ -18,7 +18,7 @@ RDEPENDS_task-openmoko-feed = "\
   ppp \
   bootchart \
   cellhunter \
-  mokoconnect \
+  mokonnect \
   eet evas ecore embryo epsilon edje efreet emotion \
   epdf \
   exhibit edje-viewer \
