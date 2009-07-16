@@ -5,12 +5,6 @@ HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 PR = "r0"
 
-python () {
-    distro = bb.data.getVar("DISTRO_NAME", d, 1)
-    if distro == "Angstrom":
-        raise bb.parse.SkipPackage("Angstrom doesn't support bluez3 anymore, only bluez4")
-}
-
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-libs-${PV}.tar.gz"
 
 inherit autotools pkgconfig
