@@ -54,6 +54,9 @@ paroli_rootfs_postprocess() {
     cd ${IMAGE_ROOTFS}
     # set a default locale    
     echo "export LANG=en_CA.utf-8" >>./etc/profile
+    echo "export ELM_ENGINE=x11-16" >>./etc/profile
+
+    sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${IMAGE_ROOTFS}/etc/bluetooth/audio.conf
     cd $curdir
 }
 
