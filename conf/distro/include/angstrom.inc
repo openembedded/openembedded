@@ -70,6 +70,9 @@ INHERIT += "debian"
 #activate config checker
 INHERIT += "sanity" 
 
+#activate the blacklister
+INHERIT += "angstrom"
+
 #make devshell available as task
 INHERIT += "devshell" 
 
