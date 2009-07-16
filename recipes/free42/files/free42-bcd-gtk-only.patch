@@ -1,6 +1,6 @@
---- free42-orig/gtk/Makefile	2007-01-06 09:37:55.000000000 -0800
-+++ free42gtk/gtk/Makefile	2007-09-02 23:54:34.000000000 -0700
-@@ -35,20 +35,14 @@
+--- free42/gtk/Makefile.orig	2009-07-12 22:00:48.000000000 -0600
++++ free42/gtk/Makefile	2009-07-12 22:01:21.000000000 -0600
+@@ -35,14 +35,10 @@
  	core_math2.o core_phloat.o core_sto_rcl.o core_tables.o \
  	core_variables.o
  
@@ -13,15 +13,18 @@
 -EXE = free42bin
 -endif
  
- $(EXE): $(OBJS)
- 	$(CXX) -o $(EXE) $(LDFLAGS) $(OBJS) $(LIBS)
+ ifdef OLPC
+ CXXFLAGS += -DOLPC
+@@ -57,8 +53,6 @@
+ 	rm -rf Free42.activity
+ endif
  
 -$(SRCS): symlinks
 -
  .cc.o:
  	$(CXX) $(CXXFLAGS) -c -o $@ $<
  
-@@ -64,74 +58,18 @@
+@@ -74,62 +68,6 @@
  keymap.cc: keymap2cc keymap.txt
  	./keymap2cc
  
@@ -84,17 +87,3 @@
  clean: FORCE
  	rm -f `find . -type l` \
  		skin2cc skin2cc.exe skins.cc \
- 		keymap2cc keymap2cc.exe keymap.cc \
--		*.o *.d *.i *.ii *.s symlinks core.*
-+		*.o *.d *.i *.ii *.s core.*
- 
- cleaner: FORCE
- 	rm -f `find . -type l` \
- 		free42bin free42bin.exe free42dec free42dec.exe \
- 		skin2cc skin2cc.exe skins.cc \
- 		keymap2cc keymap2cc.exe keymap.cc \
--		*.o *.d *.i *.ii *.s symlinks core.*
-+		*.o *.d *.i *.ii *.s core.*
- 
- FORCE:
- 
