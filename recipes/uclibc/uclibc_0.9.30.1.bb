@@ -21,6 +21,7 @@ SRC_URI += "file://uClibc.machine file://uClibc.distro \
 	    file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
 	    file://gcc-4.4-fixlet.patch;patch=1 \
 	    file://uclibc-c99-ldbl-math.patch;patch=1 \
+	    file://0001-Use-__always_inline-instead-of-__inline__.patch;patch=1 \
 	   "
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
