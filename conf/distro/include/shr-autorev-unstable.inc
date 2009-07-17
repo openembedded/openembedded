@@ -9,6 +9,7 @@ SRCREV_pn-fsoraw = "${AUTOREV}"
 
 # SHR stuff
 SRCREV_pn-shr-settings = "${AUTOREV}"
+SRCREV_pn-libphone-utils = "${AUTOREV}"
 SRCREV_pn-shr-theme = "${AUTOREV}"
 SRCREV_pn-shr-theme-gtk-e17lookalike = "${AUTOREV}"
 SRCREV_pn-libframeworkd-glib = "${AUTOREV}"
