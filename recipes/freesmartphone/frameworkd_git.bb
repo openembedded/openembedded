@@ -58,16 +58,16 @@ RRECOMMENDS_${PN} += "\
   ppp \
 "
 
-# machine specific stuff, should ideally be elsewhere
-# - recommend MUXer on platforms that require one
-RDEPENDS_${PN}_append_om-gta01 = " fso-abyss"
-RDEPENDS_${PN}_append_om-gta02 = " fso-abyss"
-RDEPENDS_${PN}-append-om-3d7k  = " fso-abyss"
-# - add wmiconfig for wireless configuration
-RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"
-
 PACKAGES =+ "${PN}-config"
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
+
+# machine specific stuff, should ideally be elsewhere
+# - recommend MUXer on platforms that require one
+RDEPENDS_${PN}-config_append_om-gta01 = " fso-abyss"
+RDEPENDS_${PN}-config_append_om-gta02 = " fso-abyss"
+RDEPENDS_${PN}-config_append-om-3d7k  = " fso-abyss"
+# - add wmiconfig for wireless configuration
+RDEPENDS_${PN}-config_append_om-gta02 = " wmiconfig"
 
 FILES_${PN}-config = "\
   ${sysconfdir}/frameworkd.conf \
