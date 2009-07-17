@@ -104,6 +104,7 @@ do
                       dialog \
                       distcc \
                       dsniff \
+                      dosfstools \
                       duke3d \
                       dvb-apps \
                       dvbstream \
