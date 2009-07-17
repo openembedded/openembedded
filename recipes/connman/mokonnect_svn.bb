@@ -5,8 +5,8 @@ LICENSE = "GPLv2"
 SECTION = "e/apps"
 RDEPENDS = "python-elementary"
 
-PV = "0.2+svnr${SRCREV}"
-PR = "r1"
+PV = "0.3+svnr${SRCREV}"
+PR = "r0"
 
 SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http"
 

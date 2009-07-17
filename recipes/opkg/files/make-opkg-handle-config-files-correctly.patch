@@ -1,0 +1,288 @@
+Index: libopkg/pkg.c
+===================================================================
+--- libopkg/pkg.c	(revision 3)
++++ libopkg/pkg.c	(revision 31)
+@@ -137,6 +137,7 @@
+      pkg->source = NULL;
+      conffile_list_init(&pkg->conffiles);
+      pkg->installed_files = NULL;
++     pkg->conffiles_md5sum = NULL;
+      pkg->installed_files_ref_cnt = 0;
+      pkg->essential = 0;
+      pkg->provided_by_hand = 0;
+@@ -157,6 +158,10 @@
+     free (depends->possibilities);
+ }
+ 
++static void free_hash_string(const char *key, void *entry, void *data) {
++     if(entry)
++         free(entry);
++}
+ void pkg_deinit(pkg_t *pkg)
+ {
+      int i;
+@@ -269,6 +274,11 @@
+ 	assertion here instead? */
+      pkg->installed_files_ref_cnt = 1;
+      pkg_free_installed_files(pkg);
++     if (pkg->conffiles_md5sum) {
++         hash_table_foreach (pkg->conffiles_md5sum, free_hash_string, NULL);
++         hash_table_deinit (pkg->conffiles_md5sum);
++     }
++     pkg->conffiles_md5sum = NULL;
+      pkg->essential = 0;
+      free (pkg->tags);
+      pkg->tags = NULL;
+@@ -1384,14 +1394,43 @@
+      }
+ 
+      rootdirlen = strlen( pkg->dest->root_dir );
+-     while (1) {
++
++     /* Init the hash table */
++     pkg->conffiles_md5sum = malloc(sizeof(hash_table_t));
++     if ( !pkg->conffiles_md5sum ) {
++         fprintf(stderr, "Warning: Can't alloc %s:%d\n", __FILE__, __LINE__);
++     }
++     else {    
++	 /* FIXME: aronud a very ugly hash table bug */
++	 memset(pkg->conffiles_md5sum, 0, sizeof(hash_table_t));
++         hash_table_init("installed-md5",pkg->conffiles_md5sum,OPKG_CONF_DEFAULT_HASH_LEN);
++     }
++	
++     while (1) { 
++          /* FIXME:file_name is never freed! */
+ 	  char *file_name;
++	  char *file_hash;
+ 	
+ 	  line = file_read_line_alloc(list_file);
+ 	  if (line == NULL) {
+ 	       break;
+ 	  }
+ 	  str_chomp(line);
++	  if (!(file_hash = strchr(line, FILELIST_NAME_DELIMITER))) {
++	       /*fprintf(stderr, "%s: Error extracting file list from %s\n"
++	               		"Bad line found (missing delimiter):\n%s\n"
++	               		"ignoring md5sum!\n",
++        			__FUNCTION__, pkg->local_filename, line);*/
++	       file_hash = "";
++          }
++	  else {
++	       /* Null Terminate file_name (the first half) and make md5_hash to
++               * actually point to the hash */
++	       *(file_hash++) = '\0';
++	  }
++	     
++
++	  
+ 	  file_name = line;
+ 
+ 	  /* Take pains to avoid uglies like "/./" in the middle of file_name. */
+@@ -1412,6 +1451,12 @@
+ 	       sprintf_alloc(&installed_file_name, "%s", file_name);
+ 	  }
+ 	  str_list_append(pkg->installed_files, installed_file_name);
++	  /* insert the hash of the file to the hash table */
++
++	  if (pkg->conffiles_md5sum)
++	      hash_table_insert(pkg->conffiles_md5sum, installed_file_name,
++	                    	strdup(file_hash));
++	     
+           free(installed_file_name);
+ 	  free(line);
+      }
+@@ -1792,7 +1837,17 @@
+      struct pkg_write_filelist_data *data = data_;
+      pkg_t *entry = entry_;
+      if (entry == data->pkg) {
+-	  fprintf(data->stream, "%s\n", key);
++	  char *md5sum = file_md5sum_alloc(key);
++	  if (md5sum) {
++	  	fprintf(data->stream, "%s%c%s\n", key, FILELIST_NAME_DELIMITER,
++		          	md5sum);
++		free(md5sum);
++	  }
++	  else {
++		fprintf(stderr, "Warning could not calculate md5sum for %s\n",
++		        	 key);
++		fprintf(data->stream, "%s%c\n", key, FILELIST_NAME_DELIMITER);
++	  }
+      }
+ }
+ 
+Index: libopkg/pkg.h
+===================================================================
+--- libopkg/pkg.h	(revision 3)
++++ libopkg/pkg.h	(revision 31)
+@@ -30,6 +30,9 @@
+ #include "opkg_conf.h"
+ #include "conffile_list.h"
+ 
++/* a char used to seperate the path from the md5 hash in the list file */
++#define FILELIST_NAME_DELIMITER '|'
++
+ struct opkg_conf;
+ 
+ 
+@@ -166,9 +169,11 @@
+      char *priority;
+      char *source;
+      conffile_list_t conffiles;
++     hash_table_t *conffiles_md5sum;
+      time_t installed_time;
+      /* As pointer for lazy evaluation */
+      str_list_t *installed_files;
++     /* md5sum of all the installed files */
+      /* XXX: CLEANUP: I'd like to perhaps come up with a better
+ 	mechanism to avoid the problem here, (which is that the
+ 	installed_files list was being freed from an inner loop while
+Index: libopkg/opkg_install.c
+===================================================================
+--- libopkg/opkg_install.c	(revision 3)
++++ libopkg/opkg_install.c	(revision 31)
+@@ -66,7 +66,7 @@
+ static int install_maintainer_scripts(opkg_conf_t *conf, pkg_t *pkg, pkg_t *old_pkg);
+ static int remove_disappeared(opkg_conf_t *conf, pkg_t *pkg);
+ static int install_data_files(opkg_conf_t *conf, pkg_t *pkg);
+-static int resolve_conffiles(opkg_conf_t *conf, pkg_t *pkg);
++static int resolve_conffiles(opkg_conf_t *conf, pkg_t *pkg, hash_table_t *conffiles_md5sum);
+ 
+ static int cleanup_temporary_files(opkg_conf_t *conf, pkg_t *pkg);
+ 
+@@ -767,7 +767,8 @@
+      int old_state_flag;
+      char* file_md5;
+      char *pkgid;
+-    
++     hash_table_t *conffiles_md5sum;
++
+      if ( from_upgrade ) 
+         message = 1;            /* Coming from an upgrade, and should change the output message */
+ 
+@@ -873,7 +874,6 @@
+          }
+          free(file_md5);
+      }
+-
+      if (pkg->tmp_unpack_dir == NULL) {
+ 	  unpack_pkg_control_files(conf, pkg);
+      }
+@@ -909,7 +909,6 @@
+ 	       sigaddset(&newset, SIGINT);
+ 	       sigprocmask(SIG_BLOCK, &newset, &oldset);
+ 	  }
+-
+ 	  opkg_state_changed++;
+ 	  pkg->state_flag |= SF_FILELIST_CHANGED;
+ 
+@@ -962,7 +961,6 @@
+ 
+ 	  }
+ 
+-
+ 	  opkg_message(conf, OPKG_INFO,
+ 		       "  installing maintainer scripts\n");
+ 	  install_maintainer_scripts(conf, pkg, old_pkg);
+@@ -972,14 +970,15 @@
+ 
+ 	  opkg_message(conf, OPKG_INFO,
+ 		       "  installing data files\n");
+-	  install_data_files(conf, pkg);
+-
++          install_data_files(conf, pkg);   
++	  /* backup the conffiles hash */
++	  conffiles_md5sum = (old_pkg) ? old_pkg->conffiles_md5sum : NULL;
++	  
+ /* read comments from function for detail but I will execute this here as all other tests are ok.*/
+ 	  err = check_data_file_clashes_change(conf, pkg, old_pkg);
+-
+ 	  opkg_message(conf, OPKG_INFO,
+ 		       "  resolving conf files\n");
+-	  resolve_conffiles(conf, pkg);
++	  resolve_conffiles(conf, pkg, conffiles_md5sum);
+ 
+ 	  pkg->state_status = SS_UNPACKED;
+ 	  old_state_flag = pkg->state_flag;
+@@ -1546,6 +1545,9 @@
+      err = pkg_write_filelist(conf, pkg);
+      if (err)
+ 	  return err;
++     /*err = pkg_write_conffilelist(conf, pkg);
++     if (err)
++	  return err;*/
+ 
+      /* XXX: FEATURE: opkg should identify any files which existed
+ 	before installation and which were overwritten, (see
+@@ -1561,13 +1563,14 @@
+      return 0;
+ }
+ 
+-static int resolve_conffiles(opkg_conf_t *conf, pkg_t *pkg)
++static int resolve_conffiles(opkg_conf_t *conf, pkg_t *pkg, hash_table_t *conffiles_md5sum)
+ {
+      conffile_list_elt_t *iter;
+      conffile_t *cf;
+      char *cf_backup;
+ 
+-    char *md5sum;
++     char *saved_md5sum;
++     char *current_md5sum;
+ 
+     
+      if (conf->noaction) return 0;
+@@ -1577,6 +1580,12 @@
+ 	  cf = (conffile_t *)iter->data;
+ 	  root_filename = root_filename_alloc(conf, cf->name);
+ 
++	  /* We check the saved md5sum against the new md5sum */
++	  if (conffiles_md5sum)
++               saved_md5sum = hash_table_get(conffiles_md5sum, root_filename);
++	  else
++               saved_md5sum = "";
++	     
+ 	  /* Might need to initialize the md5sum for each conffile */
+ 	  if (cf->value == NULL) {
+ 	       cf->value = file_md5sum_alloc(root_filename);
+@@ -1589,20 +1598,30 @@
+ 
+ 	  cf_backup = backup_filename_alloc(root_filename);
+ 
+-
+-          if (file_exists(cf_backup)) {
+-              /* Let's compute md5 to test if files are changed */
+-              md5sum = file_md5sum_alloc(cf_backup);
+-              if (strcmp( cf->value,md5sum) != 0 ) {
+-                  if (conf->force_maintainer) {
+-                      opkg_message(conf, OPKG_NOTICE, "Conffile %s using maintainer's setting.\n", cf_backup);
+-                  } else if (conf->force_defaults
+-                          || user_prefers_old_conffile(cf->name, cf_backup) ) {
+-                      rename(cf_backup, root_filename);
++	  /* if we should even bother to check the md5 we got */
++          if (file_exists(cf_backup)) { 
++	      /* if conf file haven't changed between packages, use OUR conffile */
++              if (saved_md5sum && strcmp(cf->value, saved_md5sum) == 0 ) {
++                  rename(cf_backup, root_filename);
++	      }
++              /* check and resolve the clash */
++              else {
++	          current_md5sum = file_md5sum_alloc(cf_backup);
++                  if (strcmp(cf->value, current_md5sum) != 0 ) {
++                      if (conf->force_maintainer
++                             /* user didn't modify the config 
++                             || !strcmp(saved_md5sum , current_md5sum)
++                              */ ) { 	  
++                          opkg_message(conf, OPKG_NOTICE, "Conffile %s using maintainer's setting.\n", cf_backup);
++                      } else if (conf->force_defaults
++                              || user_prefers_old_conffile(cf->name, cf_backup) ) {
++                          rename(cf_backup, root_filename);
++                      }
+                   }
+-              }
++		  free(current_md5sum);
++	      }
++		  
+               unlink(cf_backup);
+-              free(md5sum);
+           }
+ 
+ 	  free(cf_backup);

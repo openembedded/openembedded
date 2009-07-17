@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Fat Image Feed"
-PR = "r1"
+PR = "r2"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -22,7 +22,7 @@ RDEPENDS_${PN}-gtk = "\
 
 RDEPENDS_${PN}-apps += "\
    task-shr-minimal-apps \
-	mofi \
+	mokonnect \
 	midori \
 	intone \
 "

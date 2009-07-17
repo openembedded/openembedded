@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r19"
+PR = "r20"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -198,4 +198,6 @@ RDEPENDS_${PN} += "\
 		e-tasks \
 		elementary-theme-sixteen \
 		e-wm-theme-illume-sixteen \
+		elmdentica \
+		shr-installer \
 "
