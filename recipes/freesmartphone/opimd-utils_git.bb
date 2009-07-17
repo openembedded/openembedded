@@ -9,7 +9,7 @@ PR = "r4"
 
 inherit setuptools
 
-SRC_URI = "git://git.shr-project.org/opimd-utils.git;protocol=http"
+SRC_URI = "git://git.shr-project.org/repo/opimd-utils.git;protocol=http"
 S = "${WORKDIR}/git"
 FILES_${PN} += "${sysconfdir}/X11/Xsession.d/89opimd-notifier"
 FILES_${PN} += "${prefix}/share/applications/"
