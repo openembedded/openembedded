@@ -197,7 +197,9 @@ def runstrip(file, d):
 
     os.system("%s'%s' --only-keep-debug '%s' '%s'" % (pathprefix, objcopy, file, debugfile))
     ret = os.system("%s%s" % (pathprefix, stripcmd))
-    os.system("%s'%s' --add-gnu-debuglink='%s' '%s'" % (pathprefix, objcopy, debugfile, file))
+    debuglink = bb.data.getVar('KEEP_GNU_DEBUGLINK', d, 1) or '1'
+    if debuglink != '0':
+        os.system("%s'%s' --add-gnu-debuglink='%s' '%s'" % (pathprefix, objcopy, debugfile, file))
 
     if newmode:
         os.chmod(file, origmode)
