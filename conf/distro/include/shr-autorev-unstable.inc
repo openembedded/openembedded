@@ -5,6 +5,8 @@
 # KERNEL
 SRCREV_pn-linux-openmoko-shr-devel = "${AUTOREV}"
 
+PREFERRED_VERSION_vala-native = "0.7.4+0.7.5-fso2"
+
 
 # FSO stuff
 SRCREV_pn-dbus-hlid = "${AUTOREV}"
@@ -41,7 +43,6 @@ SRCREV_pn-mickeyterm = "${AUTOREV}"
 SRCREV_pn-misc-vapi = "${AUTOREV}"
 SRCREV_pn-python-pytrc = "${AUTOREV}"
 SRCREV_pn-vala-dbus-binding-tool-native = "6071da6ad645e1200eb2aee88d254ada348d361b"
-SRCREV_pn-vala-native = "${AUTOREV}"
 SRCREV_pn-vala = "${AUTOREV}"
 SRCREV_pn-zhone = "${AUTOREV}"
 
@@ -61,10 +62,9 @@ SRCREV_pn-libframeworkd-phonegui-efl = "${AUTOREV}"
 SRCREV_pn-libframeworkd-phonegui-efl2 = "${AUTOREV}"
 SRCREV_pn-libframeworkd-phonegui-gtk = "${AUTOREV}"
 SRCREV_pn-libframeworkd-phonegui-gtk2 = "${AUTOREV}"
-SRCREV_pn-libframeworkd-glib = "${AUTOREV}"
 SRCREV_pn-opimd-utils = "${AUTOREV}"
 SRCREV_pn-pyphonelog = "${AUTOREV}"
-SRCREV_pn-shr-theme                  = "${AUTOREV}"
+SRCREV_pn-shr-theme = "${AUTOREV}"
 SRCREV_pn-shr-theme-brave = "${AUTOREV}"
 SRCREV_pn-shr-theme-gtk-e17lookalike = "${AUTOREV}"
 SRCREV_pn-shr-splash = "${AUTOREV}"
