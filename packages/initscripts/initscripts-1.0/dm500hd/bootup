@@ -1,0 +1,70 @@
+echo 10 > /proc/progress
+[ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
+
+mount -t sysfs sysfs /sys
+echo 12 > /proc/progress
+
+depmod -Ae
+echo 13 > /proc/progress
+
+for mod in cifs usb-storage sd_mod autofs4 vfat; do
+	modprobe $mod
+done
+
+mount -at nonfs,nosmbfs,noncpfs,nocifs
+echo 14 > /proc/progress
+
+swapon -a
+echo 15 > /proc/progress
+
+tar xzf /etc/var.tar.gz -C /
+echo 16 > /proc/progress
+
+# sleep after 10min
+hdparm -S 120 /dev/discs/disc0/disc
+
+echo 17 > /proc/progress
+
+# set UDMA66, enable dma
+hdparm -d 1 /dev/discs/disc0/disc
+hdparm -X66 /dev/discs/disc0/disc
+
+# accustic management
+hdparm -M 128 /dev/discs/disc0/disc
+
+echo 18 > /proc/progress
+for mod in dreambox_keyboard fp bcm7405; do
+	modprobe $mod
+done
+
+echo 19 > /proc/progress
+
+cat /etc/videomode > /proc/stb/video/videomode
+
+echo 20 > /proc/progress
+
+for mod in rt73 zd1211b; do
+	modprobe $mod
+done
+
+echo 21 > /proc/progress
+
+[ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
+
+hostname -F /etc/hostname
+
+echo 22 > /proc/progress
+
+/usr/bin/wdog /usr/bin/dccamd -
+
+echo 23 > /proc/progress
+
+[ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
+
+echo 24 > /proc/progress
+
+ldconfig
+
+echo 25 > /proc/progress
+
+ipkg-cl configure

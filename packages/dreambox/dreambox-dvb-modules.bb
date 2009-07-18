@@ -26,6 +26,9 @@ PV_dm500plus = "${KV}-20080822"
 KV_dm800 = "2.6.12-5.1-brcmstb-dm800"
 PV_dm800 = "${KV}-20090707"
 
+KV_dm500hd = "2.6.12-5.1-brcmstb-dm500hd"
+PV_dm500hd = "${KV}-20090521"
+
 KV_dm8000 = "2.6.12-5.1-brcmstb-dm8000"
 PV_dm8000 = "${KV}-20090707"
 
@@ -46,6 +49,13 @@ do_install() {
 }
 
 do_install_dm800() {
+	install -d ${D}/lib/modules/${KV}/extra
+	for f in *.ko LICENSE; do
+		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
+	done
+}
+
+do_install_dm500hd() {
 	install -d ${D}/lib/modules/${KV}/extra
 	for f in *.ko LICENSE; do
 		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;

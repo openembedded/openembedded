@@ -32,6 +32,9 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linux-2.6.12-fixup-memsize.patch;patch=1;pnum=1 \
 	http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.12.tar.bz2"
 
+SRC_URI_append_dm500hd = " file://linux-2.6.12-dm500hd-misc.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-7405-enable-llsc.patch;patch=1;pnum=1"
+
 S = "${WORKDIR}/stblinux-2.6.12"
 
 inherit kernel
