@@ -1,15 +1,14 @@
-From 20d79137ecaa6c7dad007d9ea1d7be5550db4839 Mon Sep 17 00:00:00 2001
-From: Vaibhav Hiremath <hvaibhav@ti.com>
-Date: Fri, 13 Feb 2009 15:40:25 +0530
-Subject: [PATCH 2/2] Resizer bug fixes on top of 1.0.2 release
+From ad3bbadb7fc39a946dfd0cdac19e2ec8647b2c2c Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <vaibhav@psp-nfs-02.india.ti.com>
+Date: Wed, 29 Apr 2009 17:20:27 +0530
+Subject: [PATCH 24/26] OMAP3-Resizer: V4L2-buf layer issues fixed
 
-This commit contains resizer bug fixes on top of
-    PSP1.0.2 release -
-       - 4096 aligned address constraint
-       - workaround for extra page allocation for page aligned
-         size buffers
+V4L2-Buffer layer issues fixed under this commit.
+This patch is same as available with PSP1.0.2 release
 
-Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+The discussion is initiated on this with V4L2 mailing list.
+
+Please note that this patch is not being tested.
 ---
  drivers/media/video/isp/omap_resizer.c |  417 ++++++++++++++++++++++++--------
  include/linux/omap_resizer.h           |    3 +-
@@ -125,11 +124,11 @@ index 54bc425..8059c70 100644
  	}
  
 -	if (fh->isp_addr_read) {
--		ispmmu_vunmap(fh->isp_addr_read);
+-		ispmmu_unmap(fh->isp_addr_read);
 -		fh->isp_addr_read = 0;
 -	}
 -	if (fh->isp_addr_write) {
--		ispmmu_vunmap(fh->isp_addr_write);
+-		ispmmu_unmap(fh->isp_addr_write);
 -		fh->isp_addr_write = 0;
 -	}
 -
@@ -270,11 +269,11 @@ index 54bc425..8059c70 100644
 +	dma = videobuf_to_dma(q->bufs[vb->i]);
 +	videobuf_dma_unmap(q, dma);
 +	videobuf_dma_free(dma);
-+	ispmmu_vunmap(fh->config->buf_address[vb->i]);
++	ispmmu_unmap(fh->config->buf_address[vb->i]);
 +	fh->config->buf_address[vb->i] = 0;
  
--	ispmmu_vunmap(fh->isp_addr_read);
--	ispmmu_vunmap(fh->isp_addr_write);
+-	ispmmu_unmap(fh->isp_addr_read);
+-	ispmmu_unmap(fh->isp_addr_write);
 -	fh->isp_addr_read = 0;
 -	fh->isp_addr_write = 0;
  	spin_lock(&fh->vbq_lock);
@@ -429,7 +428,7 @@ index 54bc425..8059c70 100644
  	if (vb->state == VIDEOBUF_NEEDS_INIT) {
 -		err = videobuf_iolock(q, vb, NULL);
 -		if (!err) {
--			isp_addr = ispmmu_vmap(dma->sglist, dma->sglen);
+-			isp_addr = ispmmu_map_sg(dma->sglist, dma->sglen);
 -			if (!isp_addr)
 -				err = -EIO;
 -			else {
@@ -491,7 +490,7 @@ index 54bc425..8059c70 100644
 +				goto buf_release;
 +			spin_unlock(&fh->vbq_lock);
 +		}
-+		isp_addr = ispmmu_vmap(dma->sglist, dma->sglen);
++		isp_addr = ispmmu_map_sg(dma->sglist, dma->sglen);
 +		if (!isp_addr)
 +			err = -EIO;
 +		else {
@@ -726,5 +725,5 @@ index 5ac0c88..47b8dd8 100644
  #define RSZ_INTYPE_YCBCR422_16BIT	0
  #define RSZ_INTYPE_PLANAR_8BIT		1
 -- 
-1.6.0.3
+1.6.2.4
 

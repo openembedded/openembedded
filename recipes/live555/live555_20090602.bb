@@ -7,6 +7,8 @@ HOMEPAGE = "http://live.com/"
 LICENSE = "LGPL"
 SECTION = "devel"
 
+PR = "r1"
+
 SRC_URI = "http://www.live555.com/liveMedia/public/live.2009.06.02.tar.gz \
            file://config.linux-cross"
 
@@ -36,7 +38,17 @@ do_install() {
 }
 
 do_stage () {
-	cp -a ${D}${includedir}/* ${STAGING_INCDIR}
-	cp -a ${D}${libdir}/* ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/
+	install -d ${STAGING_LIBDIR}/
+
+	# Find all the headers
+	for i in $(find . -name "*.hh") $(find . -name "*.h") ; do
+		install ${i} ${STAGING_INCDIR}/
+	done
+
+	# Find the libs *.a
+	for i in $(find . -name "*.a") ; do
+		install ${i} ${STAGING_LIBDIR}
+	done
 }
 

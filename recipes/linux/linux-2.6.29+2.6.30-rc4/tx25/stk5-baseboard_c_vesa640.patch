@@ -1,0 +1,40 @@
+--- a/arch/arm/mach-mx2/stk5-baseboard.c.orig	2009-07-17 00:57:10.000000000 +0200
++++ b/arch/arm/mach-mx2/stk5-baseboard.c	2009-07-16 13:02:20.000000000 +0200
+@@ -613,6 +613,37 @@
+ 
+ static struct imx_fb_platform_data stk5_fb_data[] __initdata = {
+ 	{
++		/* VESA 640x480@60 */
++		.init = stk5_gpio_lcdc_active,
++		.exit = stk5_gpio_lcdc_inactive,
++		.lcd_power = NULL,
++		.backlight_power = NULL,
++
++		.pixclock	= 39721,
++
++		.xres		= 640,
++		.yres		= 480,
++
++		.bpp		= 16,
++
++		.hsync_len	= 64,
++		.right_margin	= 24,
++		.left_margin	= 40,
++
++		.vsync_len	= 2,
++		.lower_margin	= 11,
++		.upper_margin	= 32,
++
++		.pcr		= PCR_TFT | PCR_COLOR | PCR_PBSIZ_8 |
++		                  PCR_BPIX_16 | PCR_FLMPOL | PCR_LPPOL | PCR_SCLK_SEL,
++		.dmacr		= 0x80040060,
++
++		.cmap_greyscale	= 0,
++		.cmap_inverse	= 0,
++		.cmap_static	= 0,
++
++		.fixed_screen_cpu = NULL,
++	}, {
+ #if 1
+ 		//.fb_mode = "Xenarc_700_Y-18",
+ 		.init = stk5_gpio_lcdc_active,
