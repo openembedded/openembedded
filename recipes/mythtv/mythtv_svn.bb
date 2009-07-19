@@ -8,14 +8,14 @@ PV = "0.21+0.22rc+svnr${SRCREV}"
 PR = "r0"
 REALPV = "0.22"
 
-SRCREV = "20923"
+SRCREV = "20947"
 SRC_URI = "svn://svn.mythtv.org/svn/trunk;module=mythtv;proto=http"
 
 S = "${WORKDIR}/mythtv"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-mythlibs = "mythdb mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
+mythlibs = "mythdb mythavutil mythavcodec mythavformat mythswscale mythhdhomerun myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
 
 FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
@@ -49,10 +49,12 @@ EXTRA_MYTHTVCONF ?= ""
 
 EXTRA_OECONF = " \
         --cross-prefix=${TARGET_PREFIX} \
+        --sysroot=${STAGING_DIR_HOST} \
         --prefix=${prefix} \
         \
         --arch=${TARGET_ARCH} \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
+        --extra-cxxflags="${TARGET_CXXFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-ldflags="${TARGET_LDFLAGS}" \
         ${EXTRA_MYTHTVCONF} \
 "
@@ -63,7 +65,7 @@ do_configure_prepend() {
 
 	./configure     --qmake=qmake2          \
 			--disable-altivec	\
-		 	--disable-opengl-video \
+		 	--disable-opengl	\
 			--disable-stripping	\
 			--disable-xvmc		\
 			--enable-v4l		\
@@ -71,15 +73,8 @@ do_configure_prepend() {
 			--enable-dvb		\
 			--enable-libmp3lame \
             --dvb-path=${STAGING_INCDIR} \
-			--with-bindings= \
+			--without-bindings=perl,python \
 			${EXTRA_OECONF}
-
-	sed 's!PREFIX =.*!PREFIX = ${prefix}!;/INCLUDEPATH += $${PREFIX}\/include/d' < settings.pro > settings.pro.new
-	mv settings.pro.new settings.pro
-    for pro in ${S}/*/*pro ${S}/*/*/*pro ${S}/*/*/*/*pro ; do
-		sed -i -e s:opengl::g $pro
-	done
-	sed -i /.SUBDIR/d ${S}/bindings/*pro
 }
 
 python populate_packages_prepend () {

@@ -37,7 +37,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r10"
+PR = "r12"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
@@ -76,7 +76,7 @@ EXTRA_OECONF = " \
 	--enable-rtc \
 	--enable-network \
 	--disable-smb \
-	--disable-live \
+	--enable-live \
 	--disable-dvdnav \
 	--enable-dvdread \
 	--disable-dvdread-internal \
@@ -169,7 +169,8 @@ EXTRA_OECONF = " \
 	--disable-win32waveout \
 	--enable-select \
 	\
-	"
+	--extra-libs=' -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock -lliveMedia -lstdc++' \
+"
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 				--disable-encoder=vorbis_encoder"
@@ -215,7 +216,6 @@ do_configure() {
 	
 	cat ${WORKDIR}/configh >> ${S}/config.h
 	cat ${WORKDIR}/configmak  ${OPTSMAK} >> ${S}/config.mak
-
 }
 
 do_compile () {

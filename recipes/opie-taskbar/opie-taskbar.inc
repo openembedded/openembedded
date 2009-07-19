@@ -17,7 +17,6 @@ inherit opie
 do_configure_prepend() {
 	ln -s ${WORKDIR}/calibrate ${S}/calibrate
 	ln -s ${WORKDIR}/mediummount ${S}/mediummount
-	install -m 0644 ${WORKDIR}/server.pro ${S}/server.pro
 }
 
 do_stage() {
