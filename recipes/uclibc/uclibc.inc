@@ -71,7 +71,11 @@ UCLIBC_LOCALE_URI_arm = "http://wiki.openembedded.net/dl/uclibc-locale/${UCLIBC_
 SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
 	   file://uClibc.config \
            http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
+	   file://uclibc-bfin-ldd.patch;patch=1 \
           "
+SRC_URI_append_bfin += "file://uclibc-check-ld-fix.patch;patch=1 \
+			file://uclibc-bfin-dl-sysdeps.patch;patch=1 "
+
 UCLIBC_STAGE_PREFIX = "${STAGING_DIR_HOST}${layout_prefix}"
 
 # do_stage barfs on a CC with whitepspace, therefore put the 'HOST_CC_ARCH' in

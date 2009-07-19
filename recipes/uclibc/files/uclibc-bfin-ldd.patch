@@ -1,0 +1,18 @@
+Index: a/utils/ldd.c
+===================================================================
+--- a/utils/ldd.c (revision 3342)
++++ a/utils/ldd.c (working copy)
+@@ -120,6 +120,11 @@
+ #define ELFCLASSM  ELFCLASS64
+ #endif
+ 
++#if defined(__bfin__)
++#define MATCH_MACHINE(x) (x == EM_BLACKFIN)
++#define ELFCLASSM  ELFCLASS32
++#endif
++
+ #ifndef MATCH_MACHINE
+ # ifdef __linux__
+ #  include <asm/elf.h>
+
+

@@ -1,0 +1,13 @@
+Index: uClibc-0.9.30/Rules.mak
+===================================================================
+--- uClibc-0.9.30.orig/Rules.mak	2009-07-19 14:09:46.842444177 +0400
++++ uClibc-0.9.30/Rules.mak	2009-07-19 14:10:00.962446173 +0400
+@@ -146,7 +146,7 @@
+ 	if $(CC) -Wa,$(1) -Wa,-Z -c -o /dev/null -xassembler /dev/null > /dev/null 2>&1; \
+ 	then echo "-Wa,$(1)"; fi)
+ check_ld=$(shell \
+-	if $(LD) $(1) -o /dev/null -b binary /dev/null > /dev/null 2>&1; \
++	if $(LD) $(1) --oformat binary -o /dev/null -b binary /dev/null > /dev/null 2>&1; \
+ 	then echo "$(1)"; fi)
+ 
+ ARFLAGS:=cr
