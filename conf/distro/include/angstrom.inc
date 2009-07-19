@@ -136,9 +136,6 @@ TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
 
 FEED_ARCH ?= "${BASE_PACKAGE_ARCH}"
 
-#blackfin machines
-FEED_ARCH_bfin          = "blackfin"
-
 #Tweak packaging for strongarm machines since they can't use EABI
 
 PACKAGE_EXTRA_ARCHS_collie = "arm-oabi"
