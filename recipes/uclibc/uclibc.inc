@@ -136,6 +136,17 @@ do_configure() {
 		cat ${WORKDIR}/uClibc.config >>${S}/merged.config
 	fi
 	cp ${S}/merged.config ${S}/.config	
+	if [ "${TARGET_ARCH}" = "bfin" ]
+	then
+		sed -e '/DOPIC/d' -e '/MALLOC/d' -e '/UCLIBC_STATIC_LDCONFIG/d' -e '/FORCE_SHAREABLE/d' -e '/WORDEXP/d' -i ${S}/.config
+		echo "DOPIC=y"                          >> ${S}/.config
+		echo "UCLIBC_STATIC_LDCONFIG=y"         >> ${S}/.config
+		echo "MALLOC=y"                         >> ${S}/.config
+		grep "MALLOC_GLIBC_COMPAT" ${S}/merged.config >> ${S}/.config
+		echo "FORCE_SHAREABLE_TEXT_SEGMENTS=y"  >> ${S}/.config
+		echo "# UCLIBC_HAS_WORDEXP is not defined" >> ${S}/.config
+	fi
+
 
 	# Mangle the resulting .config depending on OE variables
 	perl -i -p -e 's,^CROSS=.*,TARGET_ARCH=${TARGET_ARCH}\nCROSS=${TARGET_PREFIX},g' ${S}/Rules.mak
