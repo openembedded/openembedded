@@ -2,11 +2,11 @@ DESCRIPTION = "Navit is a car navigation system with routing engine."
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS = "glib-2.0 gtk+"
-RRECOMMENDS = "gpsd speechd flite"
+RRECOMMENDS = "gpsd espeak flite"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned  --enable-svg2png-scaling-flag=32"
+EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher"
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
 
@@ -17,6 +17,7 @@ SRC_URI_append = " \
                   file://navit.desktop \
                   file://navit.launcher \
                   file://navit.png \
+                  file://navit.xml-so.patch;patch=1 \
 	  	 "
 
 do_install_append() {
