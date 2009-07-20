@@ -12,7 +12,7 @@ SRC_URI_append_nylon = "file://gcc-3-compatibility.patch;patch=1 "
 
 PARALLEL_MAKE = ""
 
-PR ="r2"
+PR ="r3"
 
 EXTRA_OEMAKE += "'STRIP = '"
 export SHARED=yes
@@ -21,18 +21,20 @@ do_configure () {
 	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})
 }
 
-export PREFIX = "${D}${prefix}"
-export SBINDIR = "${D}${sbindir}"
-export SHAREDIR = "${D}${datadir}"
-export MANDIR = "${D}${mandir}"
+export DESTDIR = "${D}"
+export PREFIX = "${prefix}"
+export SBINDIR = "${sbindir}"
+export SHAREDIR = "${datadir}"
+export MANDIR = "${mandir}"
+export IDSDIR = "${datadir}"
 
 do_install () {
 	oe_runmake install
 }
 
 do_install_append () {
-	install -d ${D}/${prefix}/share
-	install -m 6440 ${WORKDIR}/${PN}-${PV}/pci.ids ${D}/${prefix}/share
+	install -d ${D}/${datadir}
+	install -m 6440 ${WORKDIR}/${PN}-${PV}/pci.ids.gz ${D}/${datadir}
 
 	# The makefile does not install the development files:
 	# libpci.so pci.h header.h config.h types.h
@@ -57,4 +59,4 @@ do_stage () {
 
 
 PACKAGES =+ "pciutils-ids"
-FILES_pciutils-ids="${prefix}/share/pci.ids"
+FILES_pciutils-ids="${datadir}/pci.ids.gz"
