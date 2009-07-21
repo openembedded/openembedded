@@ -12,28 +12,6 @@ include conf/distro/include/shr-${MACHINE}.conf
 SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
 SRCREV_pn-linux-openmoko-shr-devel = "f16c3431a1a7510eb3504ec5d96677dd0fac4cd6"
 
-
-PREFERRED_VERSION_shared-mime-info = "0.51"
-PREFERRED_VERSION_navit = "0.1.0+svnrev${SRCREV}"
-PREFERRED_VERSION_libosip2 = "2.2.2"
-PREFERRED_VERSION_udev = "124"
-PREFERRED_VERSION_midori = "0.1.2"
-PREFERRED_VERSION_obexftp = "0.22"
-PREFERRED_VERSION_glib-2.0 = "2.18.3"
-PREFERRED_VERSION_mokomaze = "0.5.1"
-PREFERRED_VERSION_calc = "0.0.1"
-PREFERRED_VERSION_dbus = "1.2.14"
-PREFERRED_VERSION_dbus-glib = "0.78"
-PREFERRED_VERSION_bluez4 = "4.39"
-PREFERRED_VERSION_irssi = " 0.8.13"
-PREFERRED_VERSION_linux-libc-headers ?= "2.6.23"
-PREFERRED_VERSION_connman = "0.22+gitr${SRCPV}"
-PREFERRED_VERSION_calc = "0.0.1"
-PREFERRED_VERSION_libpam = "1.0.2"
-PREFERRED_VERSION_vala-native = "0.7.2+0.7.3-fso1"
-
-SHRREV = "356fcaffed927a7ff3d56b004dc09bc52df3"
-
 # FSO stuff
 SRCREV_pn-dbus-hlid = "39e804f28808247df2573788cb99897d4d765e69"
 SRCREV_pn-frameworkd = "7c09174fb4e8837aabc8826e84e1efa6c2456216"
@@ -74,6 +52,8 @@ SRCREV_pn-zhone = "${AUTOREV}"
 
 
 # SHR stuff
+SHRREV = "356fcaffed927a7ff3d56b004dc09bc52df3"
+
 SRCREV_pn-libhito = "${AUTOREV}"
 SRCREV_pn-neod = "${AUTOREV}"
 SRCREV_pn-shr-settings = "a1ec0d72a61735eab96ec4e19c74e6231368771f"
