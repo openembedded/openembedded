@@ -1,0 +1,30 @@
+diff -ur tslib-1.0/plugins/input-raw.c tslib/plugins/input-raw.c
+--- tslib-1.0/plugins/input-raw.c	2006-08-24 23:02:54.000000000 +0200
++++ tslib/plugins/input-raw.c	2009-07-21 00:54:29.000000000 +0200
+@@ -95,7 +95,11 @@
+ 			case EV_KEY:
+ 				switch (ev.code) {
+ 				case BTN_TOUCH:
+-					if (ev.value == 0) {
++					if (ev.value) {
++						samp->x = i->current_x;
++						samp->y = i->current_y;
++						samp->pressure = i->current_p = 1;
++					} else {
+ 						/* pen up */
+ 						samp->x = 0;
+ 						samp->y = 0;
+@@ -198,7 +202,11 @@
+ 			} else if (ev.type == EV_KEY) {
+ 				switch (ev.code) {
+ 				case BTN_TOUCH:
+-					if (ev.value == 0) {
++					if (ev.value) {
++						samp->x = i->current_x;
++						samp->y = i->current_y;
++						samp->pressure = i->current_p = 1;
++					} else {
+ 						/* pen up */
+ 						samp->x = 0;
+ 						samp->y = 0;
+
