@@ -101,8 +101,8 @@ md = "${libexecdir}/openldap"
 # To disable this set all three of the following variables to <empty> in
 # a .conf file (this will allow ldbm to be build with gdbm).
 #OPENLDAP_OPTION_bdb   ?= "--enable-bdb=mod"
-#OPENLDAP_DEPENDS_bdb  ?= "db"
-#OPENLDAP_PACKAGE_bdb  ?= "${PN}-backend-bdb"
+OPENLDAP_DEPENDS_bdb  ?= "db"
+OPENLDAP_PACKAGE_bdb  ?= "${PN}-backend-bdb"
 FILES_${PN}-backend-bdb = "${md}/back_bdb.so ${md}/back_bdb.la ${md}/back_bdb-*.so.*"
 EXTRA_OECONF += "${OPENLDAP_OPTION_bdb}"
 DEPENDS += "${OPENLDAP_DEPENDS_bdb}"
