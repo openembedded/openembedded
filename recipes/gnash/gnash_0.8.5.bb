@@ -1,6 +1,6 @@
 require gnash.inc
 
-DEPENDS += "gst-plugins-base"
+DEPENDS += "gst-plugins-base cairo"
 
 acpaths = " -Imacros"
 
@@ -33,6 +33,10 @@ EXTRA_OECONF += " --without-included-ltdl \
                   --enable-png \
                   --with-png-incl=${STAGING_INCDIR} \
                   --with-png-lib=${STAGING_LIBDIR} \
+                  --with-cairo-incl=${STAGING_DIR_HOST}/usr/include/cairo \
+                  --with-cairo-lib=${STAGING_DIR_HOST}/usr/lib \
                   --enable-media=gst \
-				"
+                  --disable-speex \
+                  --disable-speexdsp \
+                "
 
