@@ -11,8 +11,6 @@ PRIORITY = "optional"
 LICENSE = "OpenLDAP"
 SECTION = "libs"
 
-PR = "r5"
-
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
 
 SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
@@ -53,9 +51,9 @@ EXTRA_OECONF += "--with-yielding-select=yes"
 EXTRA_OECONF += "--enable-dynamic"
 #
 # Disable TLS to remove the need for openssl/libcrypto
-OPENLDAP_OPTION_tls  ?= "--without-tls"
+OPENLDAP_OPTION_tls  ?= "--with-tls"
 # set the following to "openssl" to build tls support
-OPENLDAP_DEPENDS_tls ?= ""
+OPENLDAP_DEPENDS_tls ?= "gnutls"
 EXTRA_OECONF += "${OPENLDAP_OPTION_tls}"
 DEPENDS += "${OPENLDAP_DEPENDS_tls}"
 #
@@ -87,7 +85,7 @@ DEPENDS += "${OPENLDAP_DEPENDS_modules}"
 # is also disabled.  If you try to change the backends but fail to
 # enable a single one the build will fail in an obvious way.
 #
-EXTRA_OECONF += "--disable-bdb --disable-monitor"
+EXTRA_OECONF += "--disable-bdb --disable-hdb --disable-monitor"
 #
 # Backends="bdb dnssrv hdb ldap ldbm meta monitor null passwd perl shell sql"
 #
@@ -102,9 +100,9 @@ md = "${libexecdir}/openldap"
 # the version 4 implementation or better.
 # To disable this set all three of the following variables to <empty> in
 # a .conf file (this will allow ldbm to be build with gdbm).
-OPENLDAP_OPTION_bdb   ?= "--enable-bdb=mod"
-OPENLDAP_DEPENDS_bdb  ?= "db"
-OPENLDAP_PACKAGE_bdb  ?= "${PN}-backend-bdb"
+#OPENLDAP_OPTION_bdb   ?= "--enable-bdb=mod"
+#OPENLDAP_DEPENDS_bdb  ?= "db"
+#OPENLDAP_PACKAGE_bdb  ?= "${PN}-backend-bdb"
 FILES_${PN}-backend-bdb = "${md}/back_bdb.so ${md}/back_bdb.la ${md}/back_bdb-*.so.*"
 EXTRA_OECONF += "${OPENLDAP_OPTION_bdb}"
 DEPENDS += "${OPENLDAP_DEPENDS_bdb}"
@@ -118,7 +116,7 @@ PACKAGES += "${PN}-backend-dnssrv"
 #
 #--enable-hdb          enable Hierarchical DB backend no|yes|mod no
 # This forces ldbm to use Berkeley too, remove to use gdbm
-OPENLDAP_OPTION_hdb   ?= "--enable-hdb=mod"
+#OPENLDAP_OPTION_hdb   ?= "--enable-hdb=mod"
 OPENLDAP_DEPENDS_hdb  ?= "db"
 OPENLDAP_PACKAGE_hdb  ?= "${PN}-backend-hdb"
 FILES_${PN}-backend-hdb = "${md}/back_hdb.so ${md}/back_hdb.la ${md}/back_hdb-*.so.*"
@@ -140,8 +138,8 @@ PACKAGES += "${PN}-backend-ldap"
 # support for ldbm (because the 'DEPENDS_ldbm' is empty below.)
 #
 # So to use gdbm set:
-#OPENLDAP_OPTION_ldbm = "--enable-ldbm=mod --with-ldbm-api=gdbm"
-#OPENLDAP_DEPENDS_ldbm = gdbm
+OPENLDAP_OPTION_ldbm = "--enable-ldbm=mod --with-ldbm-api=gdbm"
+OPENLDAP_DEPENDS_ldbm = gdbm
 # And clear the bdb and hdb settings.
 OPENLDAP_OPTION_ldbm ?= "--enable-ldbm=mod"
 OPENLDAP_DEPENDS_ldbm ?= ""
