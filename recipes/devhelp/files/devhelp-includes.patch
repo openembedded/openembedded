@@ -1,0 +1,12 @@
+g_mapped_file_free() is deprecated since glib-2.22.
+================================================================================
+--- devhelp-0.23/src/Makefile.am
++++ devhelp-0.23/src/Makefile.am
+@@ -6,7 +6,6 @@
+ 	-DLOCALEDIR=\""$(datadir)/locale"\" 	  	\
+ 	-DDATADIR=\""$(datadir)"\"                      \
+ 	-DG_LOG_DOMAIN=\"Devhelp\"			\
+-	-DG_DISABLE_DEPRECATED				\
+ 	-DGDK_DISABLE_DEPRECATED			\
+ 	-DGTK_DISABLE_DEPRECATED			\
+ 	-DG_DISABLE_SINGLE_INCLUDES			\
