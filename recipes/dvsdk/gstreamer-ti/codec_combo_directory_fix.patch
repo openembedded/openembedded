@@ -1,0 +1,52 @@
+From: Vishnudas P <vishnudas@gmail.com>
+
+Found the fix here.
+http://wiki.davincidsp.com/index.php?title=Configuring_Codec_Engine_in_Arm_apps_with_createFromServer
+In the section "Advanced: overwriting fields, creating multiple engines"
+
+Needed tor reverse the previous patch 263 and apply the attached patch.
+
+When you call createFromServer the path you give is relative to
+package, not the filesystem one. For that you need to set
+"engine.server" to the desired full filesystem path.
+This is what the attached patch does.
+
+--
+
+
+diff -Naur ticodecplugin.orig/src/gstticodecplugin_dm6446.cfg ticodecplugin/src/gstticodecplugin_dm6446.cfg
+--- ticodecplugin.orig/src/gstticodecplugin_dm6446.cfg	2009-07-21 12:55:32.000000000 -0700
++++ ticodecplugin/src/gstticodecplugin_dm6446.cfg	2009-07-21 12:55:26.000000000 -0700
+@@ -38,6 +38,8 @@
+     "./encodeCombo.x64P",
+     "ti.sdo.servers.encode"
+     );
++encodeEngine.server = "/usr/share/ti-codec-combos/encodeCombo.x64P";
++decodeEngine.server = "/usr/share/ti-codec-combos/decodeCombo.x64P";
+ 
+ /* Load support for the 'Davinci Multimedia Application Interface' modules */
+ var DMAI = xdc.loadPackage('ti.sdo.dmai');
+diff -Naur ticodecplugin.orig/src/gstticodecplugin_dm6467.cfg ticodecplugin/src/gstticodecplugin_dm6467.cfg
+--- ticodecplugin.orig/src/gstticodecplugin_dm6467.cfg	2009-07-21 12:55:32.000000000 -0700
++++ ticodecplugin/src/gstticodecplugin_dm6467.cfg	2009-07-21 12:55:26.000000000 -0700
+@@ -39,6 +39,8 @@
+     "./encodeCombo.x64P",
+     "ti.sdo.servers.encode"
+     );
++encodeEngine.server = "/usr/share/ti-codec-combos/encodeCombo.x64P";
++decodeEngine.server = "/usr/share/ti-codec-combos/decodeCombo.x64P";
+ 
+ /* Load support for the 'Davinci Multimedia Application Interface' modules */
+ var DMAI = xdc.loadPackage('ti.sdo.dmai');
+diff -Naur ticodecplugin.orig/src/gstticodecplugin_omap3530.cfg ticodecplugin/src/gstticodecplugin_omap3530.cfg
+--- ticodecplugin.orig/src/gstticodecplugin_omap3530.cfg	2009-07-21 12:55:32.000000000 -0700
++++ ticodecplugin/src/gstticodecplugin_omap3530.cfg	2009-07-21 12:55:26.000000000 -0700
+@@ -38,6 +38,8 @@
+     "./decodeCombo.x64P",
+     "ti.sdo.servers.decode"
+     );
++encEngine.server = "/usr/share/ti-codec-combos/encodeCombo.x64P";
++decEngine.server = "/usr/share/ti-codec-combos/decodeCombo.x64P";
+ 
+ /* Load support for the DMAI module */
+ var DMAI = xdc.loadPackage('ti.sdo.dmai');

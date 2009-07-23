@@ -1,12 +1,16 @@
 SECTION = "unknown"
 LICENSE = "GPL"
 DEPENDS = "gmp-native libtool (< 2)"
-SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
-           "
+SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz"
+         
+PR = "r1"
 
 inherit autotools native
 
 S="${WORKDIR}/guile-${PV}"
+
+
+EXTRA_OECONF += "--enable-error-on-warning=no"
 
 OE_LT_RPATH_ALLOW = "any"
 LDFLAGS += " -L${STAGING_LIBDIR} "

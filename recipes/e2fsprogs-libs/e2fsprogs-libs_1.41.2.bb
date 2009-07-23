@@ -1,6 +1,6 @@
 require e2fsprogs-libs.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
 	   file://mkinstalldirs.patch;patch=1 \
@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
 
 DEPENDS = "gettext-native"
 
-EXTRA_OECONF=" --enable-elf-shlibs "
+EXTRA_OECONF += " --enable-elf-shlibs "
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX

@@ -9,7 +9,7 @@ SRC_URI = "http://www.sqlite.org/sqlite-${PV}.tar.gz \
 
 S = "${WORKDIR}/sqlite-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools_stage pkgconfig
 
 EXTRA_OECONF = "--disable-tcl --enable-shared \
 		--enable-threadsafe"
@@ -25,15 +25,6 @@ do_compile_prepend() {
 	oe_runmake sqlite3.h
 	install -m 0644 sqlite3.h ${STAGING_INCDIR}
 }
-
-do_stage() {
-	oe_libinstall -so libsqlite3 ${STAGING_LIBDIR}
-	install -m 0644 sqlite3.h ${STAGING_INCDIR}
-}
-
-#do_install() {
-#	oe_runmake install DESTDIR=${D} prefix=${prefix} exec_prefix=${exec_prefix}
-#}
 
 PACKAGES = "libsqlite libsqlite-dev libsqlite-doc sqlite3 sqlite3-dbg"
 FILES_sqlite3 = "${bindir}/*"
