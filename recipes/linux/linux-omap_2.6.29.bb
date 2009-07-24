@@ -8,6 +8,7 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_overo = "1"
 DEFAULT_PREFERENCE_beagleboard = "1"
+DEFAULT_PREFERENCE_omap3evm = "1"
 
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
@@ -176,6 +177,14 @@ SRC_URI_append_omap3evm = " \
 
 
 S = "${WORKDIR}/git"
+
+do_install_append() {
+        install -d ${D}/boot
+        install -m 0644 Documentation/arm/OMAP/DSS ${D}/boot || true
+}
+
+PACKAGES =+ "omap-dss-doc"
+FILES_omap-dss-doc = "/boot/DSS"
 
 
 module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"

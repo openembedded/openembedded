@@ -1,0 +1,40 @@
+# recipe to build GLES gfxdriver
+
+FILESPATHPKG =. "qt4-x11-free-${PV}:qt4-x11-free:"
+
+QT_GLFLAGS = "-opengl es1 -openvg" 
+
+include qt4-x11-free.inc
+LICENSE += "LGPL"
+PR = "${INC_PR}.0+gitr${SRCREV}"
+
+DEPENDS += "virtual/egl"
+
+SRCREV = "b11f173"
+SRC_URI = "git://git.gitorious.org/qt/qt.git;protocol=http \
+           file://0001-cross-compile.patch;patch=1 \
+           file://0002-fix-resinit-declaration.patch;patch=1 \
+           file://0003-no-tools.patch;patch=1 \
+           file://0004-no-qmake.patch;patch=1 \
+           file://0006-freetype-host-includes.patch;patch=1 \
+           file://0007-openssl-host-includes.patch;patch=1 \
+           file://0008-qt-lib-infix.patch;patch=1 \
+           file://g++.conf \
+           file://linux.conf \
+           "
+#SRC_URI += "file://sgx-hack.patch;patch=1"
+
+S = "${WORKDIR}/git"
+
+export EXTRA_QMAKE_MUNGE = " glmunge "
+
+glmunge() {
+sed -e /QMAKE_INCDIR_OPENGL/d -e /QMAKE_LIBDIR_OPENGL/d -e /QMAKE_LIBS_OPENGL/d -e /QMAKE_LIBS_OPENGL_QT/d -i mkspecs/${OE_QMAKE_PLATFORM}/qmake.conf
+echo "QMAKE_INCDIR_OPENGL = ${STAGING_INCDIR}/GLES/" >> mkspecs/${OE_QMAKE_PLATFORM}/qmake.conf
+echo "QMAKE_LIBDIR_OPENGL  = ${STAGING_LIBDIR}" >> mkspecs/${OE_QMAKE_PLATFORM}/qmake.conf
+echo "QMAKE_LIBS_OPENGL = -lEGL -lGLES_CM -lIMGegl -lsrv_um -lOpenVG" >> mkspecs/${OE_QMAKE_PLATFORM}/qmake.conf
+echo "QMAKE_LIBS_OPENGL_QT = -lEGL -lGLES_CM -lIMGegl -lsrv_um -lOpenVG" >> mkspecs/${OE_QMAKE_PLATFORM}/qmake.conf
+}
+
+
+

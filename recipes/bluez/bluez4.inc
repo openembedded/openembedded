@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-INC_PR = "r2"
+INC_PR = "r3"
 
 # For angstrom we want this to replace at least bluez-libs
 PROVIDES_append_angstrom = " bluez-utils-dbus bluez-utils bluez-libs"
@@ -31,7 +31,7 @@ EXTRA_OECONF = "\
   --enable-hid2hci \
   --enable-dfutool \
   --enable-hidd \
-  --enable-pandd \
+  --enable-pand \
   --enable-dund \
   --disable-cups \
   --enable-test \
