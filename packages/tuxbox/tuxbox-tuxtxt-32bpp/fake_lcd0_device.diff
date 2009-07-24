@@ -1,0 +1,42 @@
+diff -Naur tuxtxt_org/python/plugin.py tuxtxt/python/plugin.py
+--- tuxtxt_org/python/plugin.py	2009-07-24 13:12:23.000000000 +0200
++++ tuxtxt/python/plugin.py	2009-07-24 13:16:32.000000000 +0200
+@@ -1,11 +1,13 @@
+-from enigma import *
++from enigma import eConsoleAppContainer, iServiceInformation, fbClass, eRCInput, eDBoxLCD
+ from Screens.Screen import Screen
+ from Plugins.Plugin import PluginDescriptor
++from os import symlink, mkdir, remove, rmdir, path
+ 
+ class ShellStarter(Screen):
+ 	skin = """
+ 		<screen position="1,1" size="1,1" title="TuxTXT" >
+                 </screen>"""
++	faked_lcd = False
+ 
+ 	def __init__(self, session, args = None):
+ 		self.skin = ShellStarter.skin
+@@ -28,6 +30,11 @@
+ 		eRCInput.getInstance().lock()
+ 		fbClass.getInstance().lock()
+ 
++		self.faked_lcd = not path.exists("/dev/dbox")
++		if self.faked_lcd:
++			mkdir("/dev/dbox")
++			symlink("/dev/null", "/dev/dbox/lcd0")
++
+ 		if self.container.execute("/usr/bin/tuxtxt " + demux + " " + txtpid):
+ 			self.finished(-1)
+ 
+@@ -35,6 +42,11 @@
+ 		fbClass.getInstance().unlock()
+ 		eRCInput.getInstance().unlock()
+ 		eDBoxLCD.getInstance().unlock()
++
++		if self.faked_lcd:
++			remove("/dev/dbox/lcd0")
++			rmdir("/dev/dbox")
++
+ 		self.close()
+ 
+ def main(session, **kwargs):
