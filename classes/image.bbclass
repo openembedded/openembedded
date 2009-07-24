@@ -105,7 +105,6 @@ LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVa
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
 do_build[nostamp] = "1"
-do_install[nostamp] = "1"
 
 # Must call real_do_rootfs() from inside here, rather than as a separate
 # task, so that we have a single fakeroot context for the whole process.
@@ -234,5 +233,5 @@ rootfs_update_timestamp () {
 # export the zap_root_password, create_etc_timestamp and remote_init_link
 EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp
 
-addtask rootfs after do_compile before do_install
+addtask rootfs before do_build after do_install
 addtask deploy_to after do_rootfs
