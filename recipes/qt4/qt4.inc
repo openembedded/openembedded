@@ -160,7 +160,8 @@ do_configure() {
             ${QT_CONFIG_FLAGS} -fast \
             -L${STAGING_LIBDIR} -I${STAGING_INCDIR} \
             -I${STAGING_INCDIR}/freetype2 \
-            -I${STAGING_INCDIR}/mysql
+            -I${STAGING_INCDIR}/mysql \
+            -I${STAGING_INCDIR}/postgresql
 }
 
 do_compile() {
