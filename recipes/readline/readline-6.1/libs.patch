@@ -1,0 +1,13 @@
+Index: readline-6.0/shlib/Makefile.in
+===================================================================
+--- readline-6.0.orig/shlib/Makefile.in
++++ readline-6.0/shlib/Makefile.in
+@@ -85,7 +85,7 @@ SHOBJ_XLDFLAGS = @SHOBJ_XLDFLAGS@
+ SHOBJ_LIBS = @SHOBJ_LIBS@
+ 
+ SHLIB_XLDFLAGS = @LDFLAGS@ @SHLIB_XLDFLAGS@
+-SHLIB_LIBS = @SHLIB_LIBS@
++SHLIB_LIBS = @SHLIB_LIBS@ $(TERMCAP_LIB)
+ 
+ SHLIB_DOT = @SHLIB_DOT@
+ SHLIB_LIBPREF = @SHLIB_LIBPREF@
