@@ -2,6 +2,8 @@ require libgles-omap3.inc
 
 DEFAULT_PREFERENCE = "-1"
 
+PR = "r1"
+
 SGXPV = "3_00_00_09"
 IMGPV = "1.3.13.1832"
 BINFILE := "OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin"
