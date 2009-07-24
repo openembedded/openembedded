@@ -8,7 +8,7 @@ RRECOMMENDS = "dbus-x11"
 PR = "r0"
 
 SRC_URI = "\
-  http://garage.maemo.org/frs/download.php/4505/vagalume_${PV}.orig.tar.gz\
+  http://vagalume.igalia.com/files/source/vagalume_${PV}.orig.tar.gz\
   file://index.theme \
 "
 S = "${WORKDIR}/vagalume-${PV}.orig"
