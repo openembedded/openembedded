@@ -112,4 +112,5 @@ SRCREV_pn-shr-launcher = "${AUTOREV}"
 SRCREV_pn-e-tasks = "${AUTOREV}"
 SRCREV_pn-mokonnect = "${AUTOREV}"
 SRCREV_pn-elmdentica = "${AUTOREV}"
+SRCREV_pn-vala-terminal = "${AUTOREV}"
 
