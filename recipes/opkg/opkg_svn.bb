@@ -1,6 +1,6 @@
 require opkg.inc
 
-PR = "r2"
+PR = "r3"
 
 PACKAGES =+ "libopkg-dev libopkg"
 
@@ -32,5 +32,10 @@ update-alternatives --install ${bindir}/opkg opkg ${bindir}/opkg-cl 100
 pkg_postrm_${PN} () {
 #!/bin/sh
 update-alternatives --remove opkg ${bindir}/opkg-cl
+}
+
+pkg_postinst_${PN}_shr () {
+#!/bin/sh
+sed -i "s/|.*//" /usr/lib/opkg/info/*.list
 }
 
