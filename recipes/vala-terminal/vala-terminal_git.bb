@@ -1,7 +1,8 @@
 DESCRIPTION = "A lightweight Terminal Emulator based on libvte, written in Vala."
 SECTION = "x11/applications"
 DEPENDS = "vala-native vte"
-PV = "1.1.1+gitr${SRCREV}"
+# remove the x on next version bump
+PV = "1.1.1+gitrx${SRCPV}"
 PR = "r0"
 
 inherit autotools
