@@ -1,5 +1,8 @@
 require libxine.inc
 
+#fails do_configure in minimal and angstrom
+DEFAULT_PREFERENCE = "-1"
+
 PPDIR = "1.26"
 PR = "r0"
 
