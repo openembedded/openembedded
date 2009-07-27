@@ -13,6 +13,7 @@ CFLAGS += "${LDFLAGS}"
 CFLAGS_append_beagleboard = " -DOMAP3"
 CFLAGS_append_overo = " -DOMAP3"
 CFLAGS_append_omap3evm = " -DOMAP3"
+CFLAGS_append_omapzoom2 = " -DOMAP3"
 
 
 do_configure() {
