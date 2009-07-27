@@ -82,6 +82,7 @@ SRCREV_pn-shr-installer = "${AUTOREV}"
 SRCREV_pn-shr-config = "${AUTOREV}"
 SRCREV_pn-alsa-scenarii-shr = "${AUTOREV}"
 SRCREV_pn-libphone-utils = "${AUTOREV}"
+SRCREV_pn-python-phoneutils = "${AUTOREV}"
 
 
 # E17 stuff
