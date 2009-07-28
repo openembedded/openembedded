@@ -50,7 +50,12 @@ def oestats_send(d, server, action, vars = {}, files = {}):
 		"Content-type": "multipart/form-data; boundary=%s" % bound,
 		"Content-length": str(len(body))}
 
-	# send request using urllib2, proxies should be auto-detected
+	proxy	= bb.data.getVar('HTTP_PROXY', d, True )
+	if (proxy):
+		phl = urllib2.ProxyHandler({'http' : proxy})
+		opener = urllib2.build_opener(phl)
+		urllib2.install_opener(opener)
+
 	actionURL = "%s%s" %(server, action)
 	req = urllib2.Request(actionURL, body, headers);
 	response = urllib2.urlopen(req)
