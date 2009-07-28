@@ -2,8 +2,6 @@ require e2fsprogs-libs.inc
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
 	  "
 
-DEPENDS += "gettext-native"
-
 EXTRA_OECONF += " --enable-elf-shlibs "
 
 do_configure() {
