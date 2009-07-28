@@ -1,15 +1,21 @@
 HOMEPAGE = "http://www.packagekit.org/"
 DEPENDS = "libpam expat dbus-glib"
 
-PR = "r4"
+PR = "r5"
 
-SRC_URI = "http://hal.freedesktop.org/releases/PolicyKit-${PV}.tar.gz"
+SRC_URI = "http://hal.freedesktop.org/releases/PolicyKit-${PV}.tar.gz \
+           file://PolicyKit.conf \
+          "
 
 EXTRA_OECONF = "--with-authfw=pam --with-os-type=moblin --disable-man-pages --disable-gtk-doc"
 
 S = "${WORKDIR}/PolicyKit-${PV}"
 
 inherit autotools pkgconfig
+
+do_install_append () {
+	install -m 0644 ${WORKDIR}/PolicyKit.conf ${D}${sysconfdir}/PolicyKit/PolicyKit.conf
+}
 
 do_stage() {
         autotools_stage_all
