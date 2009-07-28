@@ -1,0 +1,19 @@
+---
+ hw/kdrive/nomadik/nomadik-video.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- xorg-server-1.3.0.0.orig/hw/kdrive/nomadik/nomadik-video.c
++++ xorg-server-1.3.0.0/hw/kdrive/nomadik/nomadik-video.c
+@@ -1571,10 +1571,12 @@ nomadikStopVideo (KdScreenInfo *screen,
+ {
+     NomadikXVPriv *xvPriv = data ;
+ 
+     NOMADIK_LOG("enter\n") ;
+     if (exit) {
++	NOMADIK_LOG ("clear all the service ...\n") ;
++        nomadikXVPrivClearSVAServices (xvPriv) ;
+         NOMADIK_LOG ("freeing sva cur buffer...\n") ;
+         nomadikXVPrivFreeSVABuffer (xvPriv) ;
+         NOMADIK_LOG ("sva cur buffer freed\n") ;
+         REGION_EMPTY (screen->pScreen,
+                       &xvPriv->clipping_region) ;
