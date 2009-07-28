@@ -1,0 +1,69 @@
+--- linux-2.6.20/sound/nomadik_stw5095.c	2008-12-02 19:24:57.059205000 +0530
++++ ../new/linux-2.6.20/sound/nomadik_stw5095.c	2008-12-04 10:41:34.474339000 +0530
+@@ -2577,13 +2577,65 @@ t_codec_error nomadik_acodec_powerup(voi
+ {
+ 	t_codec_error error_status = CODEC_OK;
+ 
+-	DEBUG(1, "  Entering nomadik_acodec_powerup()\n");
++	DEBUG(1, "  Entering nomadik_acodec_powerup Sequence()\n");
+ 
++	//CR0 conf
++	g_codec_system_context.codec_configuration.cr0_powerup =
++		    CODEC_STW5095_CR0_POWERUP_OFF;
++	g_codec_system_context.codec_configuration.cr0_enana =
++			CODEC_STW5095_CR0_ENANA_ON;
++
++	error_status = codec_stw5095_update_cr0();
++	if (CODEC_OK != error_status)
++		return (error_status);
++	
++	//CR2 conf
++	codec_stw5095_i2cwrite(CODEC_STW5095_CR2, 0x0);
++	//CR19 conf
++	g_codec_system_context.codec_configuration.cr19_lssel =
++			CODEC_STW5095_CR19_LSSEL_MUTELOUDSPEAKER_DRIVER;
++	g_codec_system_context.codec_configuration.cr19_mutehp =
++			CODEC_STW5095_CR19_MUTEHP_MUTED;
++	g_codec_system_context.codec_configuration.cr19_mutelo =
++			CODEC_STW5095_CR19_MUTELO_MUTED;
++
++	error_status = codec_stw5095_update_cr19();
++	if (CODEC_OK != error_status)
++		return (error_status);
++
++	//CR0 conf
+ 	g_codec_system_context.codec_configuration.cr0_powerup =
+ 	    CODEC_STW5095_CR0_POWERUP_ON;
++	
+ 	error_status = codec_stw5095_update_cr0();
++	if (CODEC_OK != error_status)
++		return (error_status);
++
++	#if 0
++	//CR2 conf
++	g_codec_system_context.codec_configuration.cr2_enlol =
++			CODEC_STW5095_CR2_ENLOL_ENABLED;
++	g_codec_system_context.codec_configuration.cr2_enlor =
++			CODEC_STW5095_CR2_ENLOR_ENABLED;
++
++	error_status = codec_stw5095_update_cr2();
++	if (CODEC_OK != error_status)
++		return (error_status);
++
++	//CR19 conf
++	g_codec_system_context.codec_configuration.cr19_mutehp =
++			CODEC_STW5095_CR19_MUTEHP_MUTED;
++
++	g_codec_system_context.codec_configuration.cr19_mutelo =
++			CODEC_STW5095_CR19_MUTELO_NOT_MUTED;
++
++	error_status = codec_stw5095_update_cr19();
++	if (CODEC_OK != error_status)
++		return (error_status);
++	#endif
+ 
+ 	DEBUG(1, "  leaving nomadik_acodec_powerup()\n");
++
+ 	return (error_status);
+ }
+ 

@@ -1,0 +1,77 @@
+--- linux-2.6.20/sound/nomadik_stw5095.c	2008-11-26 18:36:04.000000000 +0530
++++ ../new/linux-2.6.20/sound/nomadik_stw5095.c	2008-12-02 19:24:57.059205000 +0530
+@@ -1993,6 +1993,16 @@ t_codec_error nomadik_acodec_enable_audi
+ 
+ 	break;
+ 	case 0:
++		/*enable the amplifiers*/
++		err = STMPE2401_SetGpioAltFunction(STMPE0,EGPIO_PIN_12,STMPE2401_PRIMARY_FUNCTION);
++        	if (err != STMPE2401_OK)
++               		printk("Couldn't set STMPE%d %d as primary function\n",STMPE1,EGPIO_PIN_12);
++        	err = STMPE2401_SetGpioDir( STMPE0,EGPIO_PIN_12,STMPE2401_GPIO_OUT );
++        	if (err != STMPE2401_OK)
++                	printk("Couldn't set STMPE EGPIO:%d in Output direction\n", EGPIO_PIN_12);
++        	err = STMPE2401_SetGpioVal( STMPE0, EGPIO_PIN_12, 1);
++        	if (err != STMPE2401_OK)
++                	printk("Couldn't set STMPE GPIO12\n");
+ 		codec_error = nomadik_acodec_select_output(CODEC_DEST_LOUDSPEAKER,user);
+ 		if (CODEC_OK != codec_error) {
+ 			printk("AUDIOCODEC: ERROR: select output failed\n");
+@@ -2222,6 +2232,16 @@ t_codec_error nomadik_acodec_enable_voic
+ 
+ 	break;
+ 	case 0:
++		/*enable the amplifiers*/
++		err = STMPE2401_SetGpioAltFunction(STMPE0,EGPIO_PIN_12,STMPE2401_PRIMARY_FUNCTION);
++        	if (err != STMPE2401_OK)
++               		printk("Couldn't set STMPE%d %d as primary function\n",STMPE1,EGPIO_PIN_12);
++        	err = STMPE2401_SetGpioDir( STMPE0,EGPIO_PIN_12,STMPE2401_GPIO_OUT );
++        	if (err != STMPE2401_OK)
++                	printk("Couldn't set STMPE EGPIO:%d in Output direction\n", EGPIO_PIN_12);
++        	err = STMPE2401_SetGpioVal( STMPE0, EGPIO_PIN_12, 1);
++        	if (err != STMPE2401_OK)
++                	printk("Couldn't set STMPE GPIO12\n");
+ 		codec_error = nomadik_acodec_select_output(CODEC_DEST_LOUDSPEAKER,user);
+ 		if (CODEC_OK != codec_error) {
+ 			printk("AUDIOCODEC: ERROR: select output failed\n");
+@@ -2525,11 +2545,22 @@ t_codec_error nomadik_acodec_set_volume(
+ 
+ t_codec_error nomadik_acodec_powerdown(__u8 flag)
+ {
++	int err=0;
+ 	t_codec_error error_status = CODEC_OK;
+ 
+ 	g_codec_system_context.codec_configuration.cr0_powerup =
+ 	    CODEC_STW5095_CR0_POWERUP_OFF;
+ 	error_status = codec_stw5095_update_cr0();
++	/*disable the amplifiers to save power*/
++	err = STMPE2401_SetGpioAltFunction(STMPE0,EGPIO_PIN_12,STMPE2401_PRIMARY_FUNCTION);
++	if (err != STMPE2401_OK)
++		printk("Couldn't set STMPE%d %d as primary function\n",STMPE1,EGPIO_PIN_12);
++	err = STMPE2401_SetGpioDir( STMPE0,EGPIO_PIN_12,STMPE2401_GPIO_OUT );
++	if (err != STMPE2401_OK)
++		printk("Couldn't set STMPE EGPIO:%d in Output direction\n", EGPIO_PIN_12);
++	err = STMPE2401_SetGpioVal( STMPE0, EGPIO_PIN_12, 0);
++	if (err != STMPE2401_OK)
++		printk("Couldn't set STMPE GPIO12\n");
+ 
+ 	DEBUG(1, "leaving nomadik_acodec_powerdown() \n");
+ 	return (error_status);
+@@ -3345,17 +3376,6 @@ static void codec_callback1(void *user)
+ void codec_hd_amp_init(t_acodec_user user)
+ {
+ 	int err = 0;
+-	/*enable the amplifier*/
+-	err = STMPE2401_SetGpioAltFunction(STMPE0,EGPIO_PIN_12,STMPE2401_PRIMARY_FUNCTION);
+-	if (err != STMPE2401_OK)
+-        	printk("Couldn't set STMPE%d %d as primary function\n",STMPE1,EGPIO_PIN_12);
+-       	err = STMPE2401_SetGpioDir( STMPE0,EGPIO_PIN_12,STMPE2401_GPIO_OUT );
+-       	if (err != STMPE2401_OK)
+-        	printk("Couldn't set STMPE EGPIO:%d in Output direction\n", EGPIO_PIN_12);
+-	err = STMPE2401_SetGpioVal( STMPE0, EGPIO_PIN_12, 1);
+-        if (err != STMPE2401_OK)
+-        	printk("Couldn't set STMPE GPIO12\n");
+-
+ 	/**/
+ 	err = STMPE2401_SetGpioAltFunction(STMPE0,EGPIO_PIN_7,STMPE2401_PRIMARY_FUNCTION);
+ 	if (err != STMPE2401_OK)
