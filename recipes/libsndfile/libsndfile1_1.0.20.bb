@@ -18,5 +18,13 @@ do_configure_prepend_arm() {
 	ac_cv_sizeof_off_t=8
 }
 
+do_configure_prepend_chinook-compat () {
+
+        for i in  lt~obsolete.m4 ltsugar.m4 libtool.m4 ltoptions.m4 ltversion.m4
+        do
+                rm ${S}/M4/${i}
+        done
+}
+
 PACKAGES =+ "${PN}-octave"
 FILES_${PN}-octave += "/usr/share/octave/site/m"
