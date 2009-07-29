@@ -10,7 +10,7 @@ PR = "${INC_PR}.0+gitr${SRCREV}"
 
 DEPENDS += "virtual/egl"
 
-SRCREV = "b11f173"
+SRCREV = "9ec431c"
 SRC_URI = "git://git.gitorious.org/qt/qt.git;protocol=http \
            file://0001-cross-compile.patch;patch=1 \
            file://0002-fix-resinit-declaration.patch;patch=1 \
