@@ -43,13 +43,15 @@ RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 RDEPENDS_enigma2-plugin-systemplugins-softwaremanager = "twisted-web"
 RCONFLICTS_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
 RREPLACES_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
+DESCRIPTION_append_enigma2-plugin-systemplugins-crashlogautosubmit = "automatically send crashlogs to Dream Multimedia"
+RDEPENDS_enigma2-plugin-systemplugins-crashlogautosubmit = "twisted-mail twisted-names python-compression python-mime"
 
 DESCRIPTION_append_enigma2-plugin-extenstions-modem = "opens a menu to connect to internet via builtin modem."
 RDEPENDS_enigma2-plugin-extensions-modem = "dreambox-modem-ppp-scripts"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090623"
+SRCDATE = "20090630"
 
 # if you want experimental, use:
 REL_MAJOR="2"
