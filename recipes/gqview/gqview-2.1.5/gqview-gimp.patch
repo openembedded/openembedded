@@ -1,0 +1,11 @@
+--- src/editors.c
++++ src/editors.c
+@@ -47,7 +47,7 @@
+ 
+ 
+ static gchar *editor_slot_defaults[] = {
+-	N_("The Gimp"), "gimp-remote -n %f",
++	N_("The Gimp"), "gimp %f",
+ 	N_("XV"), "xv %f",
+ 	N_("Xpaint"), "xpaint %f",
+ 	NULL, NULL,
