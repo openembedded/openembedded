@@ -141,7 +141,7 @@ diff -Nurd linux-2.6.24-base/drivers/mtd/nand/hipox_nand.c linux-2.6.24/drivers/
 +	}, {
 +		.name		= "system",
 +		.offset		= 0x02000000,
-+		.size		= 0x0e000000,
++		.size		= 0x1e000000,
 +	},
 +};
 +#endif
