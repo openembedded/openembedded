@@ -1,0 +1,47 @@
+From b3624e06210fe8f8306f4794a0e1059f25a7e74d Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Mon, 29 Jun 2009 14:38:58 +0300
+Subject: [PATCH 129/146] DSS2: DSI: export dsi_vc_send_bta_sync()
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/display.h |    1 +
+ drivers/video/omap2/dss/dsi.c             |    3 ++-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index 92603eb..6df28dc 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -212,6 +212,7 @@ int dsi_vc_dcs_write_nosync(int channel, u8 *data, int len);
+ int dsi_vc_dcs_read(int channel, u8 dcs_cmd, u8 *buf, int buflen);
+ int dsi_vc_set_max_rx_packet_size(int channel, u16 len);
+ int dsi_vc_send_null(int channel);
++int dsi_vc_send_bta_sync(int channel);
+ 
+ /* Board specific data */
+ struct omap_dss_board_info {
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index 3b15684..1e18fdf 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -1808,7 +1808,7 @@ static int dsi_vc_send_bta(int channel)
+ 	return 0;
+ }
+ 
+-static int dsi_vc_send_bta_sync(int channel)
++int dsi_vc_send_bta_sync(int channel)
+ {
+ 	int r = 0;
+ 	u32 err;
+@@ -1839,6 +1839,7 @@ err:
+ 
+ 	return r;
+ }
++EXPORT_SYMBOL(dsi_vc_send_bta_sync);
+ 
+ static inline void dsi_vc_write_long_header(int channel, u8 data_type,
+ 		u16 len, u8 ecc)
+-- 
+1.6.2.4
+

@@ -3,6 +3,8 @@ require opkg.inc
 DEPENDS = "curl-native"
 PR = "r3"
 
+SRC_URI += "file://opkg-libdir.patch;patch=1"
+
 target_libdir := "${libdir}"
 
 inherit native

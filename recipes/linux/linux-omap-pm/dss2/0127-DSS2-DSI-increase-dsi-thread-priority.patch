@@ -1,0 +1,37 @@
+From e847a1241c2707453701d5b680fafbb2ce2ae1d8 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 26 Jun 2009 15:22:37 +0300
+Subject: [PATCH 127/146] DSS2: DSI: increase dsi thread priority
+
+This should help keep the framerates up even if there's
+lots of CPU load.
+---
+ drivers/video/omap2/dss/dsi.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index 97a67e5..d2c5b94 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -3418,6 +3418,9 @@ int dsi_init_display(struct omap_dss_device *dssdev)
+ int dsi_init(struct platform_device *pdev)
+ {
+ 	u32 rev;
++	struct sched_param param = {
++		.sched_priority = MAX_USER_RT_PRIO-1
++	};
+ 
+ 	spin_lock_init(&dsi.errors_lock);
+ 	dsi.errors = 0;
+@@ -3432,6 +3435,8 @@ int dsi_init(struct platform_device *pdev)
+ 		DSSERR("cannot create kthread\n");
+ 		return PTR_ERR(dsi.thread);
+ 	}
++	sched_setscheduler(dsi.thread, SCHED_FIFO, &param);
++
+ 	init_waitqueue_head(&dsi.waitqueue);
+ 	spin_lock_init(&dsi.update_lock);
+ 
+-- 
+1.6.2.4
+

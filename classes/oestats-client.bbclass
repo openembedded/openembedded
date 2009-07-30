@@ -5,8 +5,9 @@
 # To make use of this class, add to your local.conf:
 #
 # INHERIT += "oestats-client"
-# OESTATS_SERVER = "some.server.org"
+# OESTATS_SERVER = "http://some.server.org"
 # OESTATS_BUILDER = "some_nickname"
+# 
 
 def oestats_setid(d, val):
 	import bb
@@ -19,8 +20,8 @@ def oestats_getid(d):
 	return f.read()
 	
 def oestats_send(d, server, action, vars = {}, files = {}):
-	import httplib
 	import bb
+	import urllib2
 
 	# build body
 	output = []
@@ -49,21 +50,17 @@ def oestats_send(d, server, action, vars = {}, files = {}):
 		"Content-type": "multipart/form-data; boundary=%s" % bound,
 		"Content-length": str(len(body))}
 
-	# send request
-	proxy = bb.data.getVar('HTTP_PROXY', d, True )
+	proxy	= bb.data.getVar('HTTP_PROXY', d, True )
 	if (proxy):
-		if (proxy.endswith('/')):
-			proxy = proxy[:-1]
-		if (proxy.startswith('http://')):
-			proxy = proxy[7:]
-		conn = httplib.HTTPConnection(proxy)
-		action = "http://%s%s" %(server, action)
-	else:
-		conn = httplib.HTTPConnection(server)
-	conn.request("POST", action, body, headers)
-	response = conn.getresponse()
+		phl = urllib2.ProxyHandler({'http' : proxy})
+		opener = urllib2.build_opener(phl)
+		urllib2.install_opener(opener)
+
+	actionURL = "%s%s" %(server, action)
+	req = urllib2.Request(actionURL, body, headers);
+	response = urllib2.urlopen(req)
 	data = response.read()
-	conn.close()
+	
 	return data
 
 def oestats_start(server, builder, d):
@@ -111,7 +108,7 @@ def oestats_stop(server, d, failures):
 			'status': status,
 		})
 		if status == 'Failed':
-			bb.note("oestats: build failed, see http://%s%s" % (server,response))
+			bb.note("oestats: build failed, see %s%s" % (server, response))
 	except:
 		bb.note("oestats: error stopping build")
 
@@ -169,7 +166,7 @@ def oestats_task(server, d, task, status):
 	try:
 		response = oestats_send(d, server, "/tasks/", vars, files)
 		if status == 'Failed':
-			bb.note("oestats: task failed, see http://%s%s" % (server, response))
+			bb.note("oestats: task failed, see %s%s" % (server, response))
 	except:
 		bb.note("oestats: error sending task, disabling stats")
 		oestats_setid(d, "")
@@ -184,6 +181,8 @@ python oestats_eventhandler () {
 		return NotHandled
 
 	server = bb.data.getVar('OESTATS_SERVER', e.data, True)
+	if not server.startswith('http://') and not server.startswith('https://'):
+		server = "http://%s" %(server)
 	builder = bb.data.getVar('OESTATS_BUILDER', e.data, True)
 	if not server or not builder:
 		return NotHandled

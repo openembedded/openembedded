@@ -24,6 +24,9 @@ export QT_CONF_PATH="${WORKDIR}/qt.conf"
 
 # Library packages
 QT_LIB_NAMES = "Qt3Support QtAssistantClient QtCLucene QtCore QtDBus QtDesigner QtDesignerComponents QtGui QtHelp QtNetwork QtOpenGL QtScript QtScriptTools QtSql QtSvg QtTest QtUiTools QtWebKit QtXml phonon"
+
+QT_EXTRA_LIBS = "pvrQWSWSEGL"
+
 python __anonymous () {
     import bb
 
@@ -47,6 +50,20 @@ python __anonymous () {
         dbg_packages.append("%s-dbg" % pkg)
     for name in bb.data.getVar("OTHER_PACKAGES", d, 1).split():
         dbg_packages.append("%s-dbg" % name)
+
+    for name in bb.data.getVar("QT_EXTRA_LIBS", d, 1).split():
+        pkg = "${QT_BASE_LIB}" + name.lower().replace("qt", "") + "4"
+        bb.data.setVar("FILES_%s" % pkg, "${libdir}/lib%(name)s.so.*" % locals(), d)
+        bb.data.setVar("FILES_%s-dev" % pkg, """${libdir}/lib%(name)s.prl
+                  ${libdir}/lib%(name)s.a
+                  ${libdir}/lib%(name)s.la
+                  ${libdir}/lib%(name)s.so
+                  ${includedir}/${QT_DIR_NAME}/%(incname)s
+                  ${libdir}/pkgconfig/%(name)s.pc""" % locals(), d)
+        bb.data.setVar("FILES_%s-dbg" % pkg, "${libdir}/.debug/lib%(name)s.so.*" % locals(), d)
+        lib_packages.append(pkg)
+        dev_packages.append("%s-dev" % pkg)
+        dbg_packages.append("%s-dbg" % pkg)
 
     bb.data.setVar("LIB_PACKAGES", " ".join(lib_packages), d)
     bb.data.setVar("DEV_PACKAGES", " ".join(dev_packages), d)
@@ -110,7 +127,7 @@ do_configure() {
     cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf mkspecs/common/
 
     echo "[Paths]"                                 > $QT_CONF_PATH
-    echo "Prefix=${prefix}"                       >> $QT_CONF_PATH
+    echo "Prefix=${prefix}/"                      >> $QT_CONF_PATH
     echo "Documentation=${docdir}/${QT_DIR_NAME}" >> $QT_CONF_PATH
     echo "Headers=${includedir}/${QT_DIR_NAME}"   >> $QT_CONF_PATH
     echo "Libraries=${libdir}"                    >> $QT_CONF_PATH
@@ -125,7 +142,7 @@ do_configure() {
     ${EXTRA_QMAKE_MUNGE}|| true
 
     (echo o; echo yes) | ./configure -v \
-            -prefix ${prefix} \
+            -prefix ${prefix}/ \
             -bindir ${bindir} \
             -libdir ${libdir} \
             -datadir ${datadir}/${QT_DIR_NAME} \
@@ -143,7 +160,8 @@ do_configure() {
             ${QT_CONFIG_FLAGS} -fast \
             -L${STAGING_LIBDIR} -I${STAGING_INCDIR} \
             -I${STAGING_INCDIR}/freetype2 \
-            -I${STAGING_INCDIR}/mysql
+            -I${STAGING_INCDIR}/mysql \
+            -I${STAGING_INCDIR}/postgresql
 }
 
 do_compile() {

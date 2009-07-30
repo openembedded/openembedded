@@ -1,6 +1,8 @@
 LICENSE = "LGPL"
 DEPENDS = "libgnome libsoup-2.4 gtk+"
 
+PR = "r1"
+
 inherit gnome
 
 do_configure_prepend() {
@@ -19,6 +21,10 @@ do_configure_prepend() {
 }
 
 EXTRA_OEMAKE = "ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2"
+
+# A hundred meg of xml files is a bit much...
+PACKAGES =+ "${PN}-locationdata"
+FILES_${PN}-locationdata = "${datadir}/libgweather/Locations*"
 
 do_stage() {
         autotools_stage_all

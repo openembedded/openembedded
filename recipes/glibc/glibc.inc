@@ -10,6 +10,9 @@ DEPENDS = "virtual/${TARGET_PREFIX}gcc-intermediate linux-libc-headers"
 PROVIDES = "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
 PROVIDES += "virtual/libintl virtual/libiconv"
 
+# INC_PR for glibc.inc, glibc-initial.inc and glibc-stage.inc
+INC_PR = "r32"
+
 inherit autotools
 
 LEAD_SONAME = "libc.so"

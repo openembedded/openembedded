@@ -1,0 +1,53 @@
+From 93859ac92c1f76585c6130e651d79ff14bc10c29 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 4 Jun 2009 15:06:22 +0300
+Subject: [PATCH 102/146] DSS2: CLK: change omapfb -> omapdss in clock framework
+
+---
+ arch/arm/mach-omap2/clock24xx.c |    8 ++++----
+ arch/arm/mach-omap2/clock34xx.c |   10 +++++-----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/clock24xx.c b/arch/arm/mach-omap2/clock24xx.c
+index 44de027..402a3d4 100644
+--- a/arch/arm/mach-omap2/clock24xx.c
++++ b/arch/arm/mach-omap2/clock24xx.c
+@@ -103,10 +103,10 @@ static struct omap_clk omap24xx_clks[] = {
+ 	CLK(NULL,	"mdm_ick",	&mdm_ick,	CK_243X),
+ 	CLK(NULL,	"mdm_osc_ck",	&mdm_osc_ck,	CK_243X),
+ 	/* DSS domain clocks */
+-	CLK("omapfb",	"ick",		&dss_ick,	CK_243X | CK_242X),
+-	CLK("omapfb",	"dss1_fck",	&dss1_fck,	CK_243X | CK_242X),
+-	CLK("omapfb",	"dss2_fck",	&dss2_fck,	CK_243X | CK_242X),
+-	CLK("omapfb",	"tv_fck",	&dss_54m_fck,	CK_243X | CK_242X),
++	CLK("omapdss",	"ick",		&dss_ick,	CK_243X | CK_242X),
++	CLK("omapdss",	"dss1_fck",	&dss1_fck,	CK_243X | CK_242X),
++	CLK("omapdss",	"dss2_fck",	&dss2_fck,	CK_243X | CK_242X),
++	CLK("omapdss",	"tv_fck",	&dss_54m_fck,	CK_243X | CK_242X),
+ 	/* L3 domain clocks */
+ 	CLK(NULL,	"core_l3_ck",	&core_l3_ck,	CK_243X | CK_242X),
+ 	CLK(NULL,	"ssi_fck",	&ssi_ssr_sst_fck, CK_243X | CK_242X),
+diff --git a/arch/arm/mach-omap2/clock34xx.c b/arch/arm/mach-omap2/clock34xx.c
+index 045da92..dd7bba2 100644
+--- a/arch/arm/mach-omap2/clock34xx.c
++++ b/arch/arm/mach-omap2/clock34xx.c
+@@ -200,11 +200,11 @@ static struct omap_clk omap34xx_clks[] = {
+ 	CLK("omap_rng",	"ick",		&rng_ick,	CK_343X),
+ 	CLK(NULL,	"sha11_ick",	&sha11_ick,	CK_343X),
+ 	CLK(NULL,	"des1_ick",	&des1_ick,	CK_343X),
+-	CLK("omapfb",	"dss1_fck",	&dss1_alwon_fck, CK_343X),
+-	CLK("omapfb",	"tv_fck",	&dss_tv_fck,	CK_343X),
+-	CLK("omapfb",	"video_fck",	&dss_96m_fck,	CK_343X),
+-	CLK("omapfb",	"dss2_fck",	&dss2_alwon_fck, CK_343X),
+-	CLK("omapfb",	"ick",		&dss_ick,	CK_343X),
++	CLK("omapdss",	"dss1_fck",	&dss1_alwon_fck, CK_343X),
++	CLK("omapdss",	"tv_fck",	&dss_tv_fck,	CK_343X),
++	CLK("omapdss",	"video_fck",	&dss_96m_fck,	CK_343X),
++	CLK("omapdss",	"dss2_fck",	&dss2_alwon_fck, CK_343X),
++	CLK("omapdss",	"ick",		&dss_ick,	CK_343X),
+ 	CLK(NULL,	"cam_mclk",	&cam_mclk,	CK_343X),
+ 	CLK(NULL,	"cam_ick",	&cam_ick,	CK_343X),
+ 	CLK(NULL,	"csi2_96m_fck",	&csi2_96m_fck,	CK_343X),
+-- 
+1.6.2.4
+

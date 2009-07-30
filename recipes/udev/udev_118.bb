@@ -14,6 +14,7 @@ SRC_URI = "\
  file://udevtrigger_add_devname_filtering.patch;patch=1 \
  file://mount.blacklist \
 "
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 require udev.inc
 

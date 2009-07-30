@@ -1,10 +1,10 @@
 require eglibc.inc
 
 DEPENDS += "gperf-native"
-SRCREV = "7542"
+SRCREV = "8551"
 # DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
-PV = "2.9+svnr${SRCREV}"
+PV = "2.10+svnr${SRCREV}"
 PR = "${INC_PR}.1"
 EGLIBC_BRANCH="trunk"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \

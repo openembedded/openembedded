@@ -14,7 +14,8 @@ PR = "r1"
 XORG_PN = "libX11"
 LEAD_SONAME = "libX11.so"
 
-SRC_URI += "file://include_fix.patch;patch=1"
+SRC_URI += "file://include_fix.patch;patch=1 \
+            file://makekeys-update.patch;patch=1"
 
 EXTRA_OECONF += "--with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
 #EXTRA_OECONF += "--disable-xlocale --disable-xcms --with-xcb"

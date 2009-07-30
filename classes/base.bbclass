@@ -885,7 +885,7 @@ def base_get_metadata_svn_revision(path, d):
 
 def base_get_metadata_git_branch(path, d):
 	import os
-	branch = os.popen('cd %s; PATH=%s git symbolic-ref HEAD 2>/dev/null' % (path, d.getVar("BBPATH", 1))).read().rstrip()
+	branch = os.popen('cd %s; PATH=%s git symbolic-ref HEAD 2>/dev/null' % (path, d.getVar("PATH", 1))).read().rstrip()
 
 	if len(branch) != 0:
 		return branch.replace("refs/heads/", "")
@@ -893,7 +893,7 @@ def base_get_metadata_git_branch(path, d):
 
 def base_get_metadata_git_revision(path, d):
 	import os
-	rev = os.popen("cd %s; PATH=%s git show-ref HEAD 2>/dev/null" % (path, d.getVar("BBPATH", 1))).read().split(" ")[0].rstrip()
+	rev = os.popen("cd %s; PATH=%s git show-ref HEAD 2>/dev/null" % (path, d.getVar("PATH", 1))).read().split(" ")[0].rstrip()
 	if len(rev) != 0:
 		return rev
 	return "<unknown>"

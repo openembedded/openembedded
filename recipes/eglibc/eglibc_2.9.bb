@@ -4,11 +4,12 @@ DEPENDS += "gperf-native"
 DEFAULT_PREFERENCE = "1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.9"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 SVN_REV="7430"
 EGLIBC_BRANCH="eglibc-2_9"
 SRC_URI = "svn://svn.eglibc.org/branches;module=eglibc-2_9;rev=${SVN_REV};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
+           file://eglibc_adjust_begin_insertion.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"

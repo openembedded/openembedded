@@ -1,0 +1,26 @@
+From 501537af71157a95e5947a5827514014909a6608 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Mon, 15 Jun 2009 15:13:25 +0300
+Subject: [PATCH 116/146] DSS2: Fix default_color sysfs output
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/dss/manager.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/manager.c b/drivers/video/omap2/dss/manager.c
+index f6df4d6..0b0c51e 100644
+--- a/drivers/video/omap2/dss/manager.c
++++ b/drivers/video/omap2/dss/manager.c
+@@ -101,7 +101,7 @@ put_device:
+ static ssize_t manager_default_color_show(struct omap_overlay_manager *mgr,
+ 					  char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%d", mgr->info.default_color);
++	return snprintf(buf, PAGE_SIZE, "%d\n", mgr->info.default_color);
+ }
+ 
+ static ssize_t manager_default_color_store(struct omap_overlay_manager *mgr,
+-- 
+1.6.2.4
+

@@ -539,7 +539,7 @@ python emit_pkgdata() {
 			allow_empty = bb.data.getVar('ALLOW_EMPTY', d, 1)
 		root = "%s/install/%s" % (workdir, pkg)
 		os.chdir(root)
-		g = glob('*')
+		g = glob('*') + glob('.[!.]*')
 		if g or allow_empty == "1":
 			packagedfile = pkgdatadir + '/runtime/%s.packaged' % pkg
 			file(packagedfile, 'w').close()

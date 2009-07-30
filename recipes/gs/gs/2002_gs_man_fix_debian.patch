@@ -1,0 +1,40 @@
+Description: Fixes for gs.1 (Debian specific path adjustments)
+Author: Masayuki Hatta <mhatta@debian.org>
+diff -urN a/man/gs.1 b/man/gs.1
+--- a/man/gs.1
++++ b/man/gs.1
+@@ -295,18 +295,18 @@
+ are typically based in \fBC:\\GS\fR, but may be elsewhere, especially if
+ you install Ghostscript with \fBGSview\fR.  Run "\fBgs -h\fR" to find the
+ location of Ghostscript documentation on your system, from which you can
+-get more details.
++get more details. On a Debian system they are in \fB/usr\fR.
+ .TP
+-.B /usr/local/share/ghostscript/#.##/*
++.B /usr/share/gs-gpl/#.##/*/*
+ Startup files, utilities, and basic font definitions
+ .TP
+-.B /usr/local/share/ghostscript/fonts/*
+-More font definitions
++.B /usr/share/fonts/type1/gsfonts/*
++More font definitions from the gsfonts package
+ .TP
+-.B /usr/local/share/ghostscript/#.##/examples/*
++.B /usr/share/doc/gs-gpl/examples/*
+ Ghostscript demonstration files
+ .TP
+-.B /usr/local/share/ghostscript/#.##/doc/*
++.B /usr/share/doc/gs-gpl/*
+ Diverse document files
+ .SH "INITIALIZATION FILES"
+ When looking for the initialization files "gs_*.ps", the files related to
+@@ -330,7 +330,8 @@
+ Ghostscript makefile when the executable was built.  When \fBgs\fR is built
+ on Unix, \fBGS_LIB_DEFAULT\fR is usually
+ "/usr/local/share/ghostscript/#.##:/usr/local/share/ghostscript/fonts"
+-where "#.##" represents the Ghostscript version number.
++where "#.##" represents the Ghostscript version number. They are
++"/usr/share/gs-gpl/#.## on a Debian system".
+ .PP
+ Each of these (\fBGS_LIB_DEFAULT\fR, \fBGS_LIB\fR, and \fB\-I\fR parameter)
+ may be either a single directory or a list of directories separated by

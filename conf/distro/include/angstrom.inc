@@ -70,6 +70,9 @@ INHERIT += "debian"
 #activate config checker
 INHERIT += "sanity" 
 
+#activate the blacklister
+INHERIT += "angstrom"
+
 #make devshell available as task
 INHERIT += "devshell" 
 
@@ -78,6 +81,7 @@ INHERIT += "angstrom-mirrors"
 
 #run QA tests on builds and packages and log them  
 INHERIT += "insane"
+# INHERIT += "packagehistory"
 QA_LOG = "1"
 
 #run QA tests on recipes

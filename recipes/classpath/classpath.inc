@@ -33,7 +33,7 @@ EXTRA_OECONF = "\
   --with-antlr-jar=${STAGING_DATADIR_JAVA_NATIVE}/antlr.jar \
   "
 
-inherit autotools
+inherit autotools java
 
 do_configure_prepend () {
 

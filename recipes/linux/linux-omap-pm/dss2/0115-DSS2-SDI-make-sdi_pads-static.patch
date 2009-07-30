@@ -1,0 +1,26 @@
+From 81a652bad3261a822821fd49d3bc21a165a8d26f Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 12 Jun 2009 16:17:44 +0300
+Subject: [PATCH 115/146] DSS2: SDI: make sdi_pads static
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/dss/sdi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/sdi.c b/drivers/video/omap2/dss/sdi.c
+index c484e0c..ef07c7c 100644
+--- a/drivers/video/omap2/dss/sdi.c
++++ b/drivers/video/omap2/dss/sdi.c
+@@ -46,7 +46,7 @@ static struct {
+ } sdi;
+ 
+ /* CONTROL_PADCONF_DSS_DATAXX */
+-const u16 sdi_pads[] =
++static const u16 sdi_pads[] =
+ {
+ 	0x0f0,		/* 10[ 7..0]:SDI_DAT1N */
+ 	0x0f2,		/* 10[15..0]:SDI_DAT1P */
+-- 
+1.6.2.4
+

@@ -11,12 +11,12 @@ SRC_URI = "git://git.gnome.org/gnome-bluetooth;protocol=git \
 
 S = "${WORKDIR}/git"
 
-SRCREV = "93fd8de2cc717b96ad719ab2fb5ed38b8a0fc707"
-PV = "2.27.5"
-PR = "r2"
+SRCREV = "59efa1c06153cd5bdaff64f7efca791c11c77f2f"
+PV = "2.27.8"
+PR = "r0"
 PR_append = "+gitr${SRCREV}"
 
-DEPENDS = "obexd gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
+DEPENDS = "geoclue obexd gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
 RRECOMMENDS_${PN} += "obexd"
 RCONFLICTS_${PN} = "bluez-gnome"
 
@@ -26,3 +26,6 @@ do_configure_prepend() {
 	echo "EXTRA_DIST = version.xml" > gnome-doc-utils.make
 }
 
+# Todo: automagic plugin splitting
+
+FILES_${PN}-dbg += "${libdir}/gnome-bluetooth/plugins/.debug"

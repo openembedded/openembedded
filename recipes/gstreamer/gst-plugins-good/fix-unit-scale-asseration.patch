@@ -1,0 +1,33 @@
+diff -uNr gst-plugins-good-0.10.15/sys/v4l2/gstv4l2src.c gst-plugins-good-0.10.15.new/sys/v4l2/gstv4l2src.c
+--- gst-plugins-good-0.10.15/sys/v4l2/gstv4l2src.c	2009-05-11 19:00:07.000000000 -0500
++++ gst-plugins-good-0.10.15.new/sys/v4l2/gstv4l2src.c	2009-06-22 09:51:50.000000000 -0500
+@@ -1377,14 +1377,22 @@
+       timestamp = gst_clock_get_time (clock) - timestamp;
+       gst_object_unref (clock);
+ 
+-      latency =
+-          gst_util_uint64_scale_int (GST_SECOND, v4l2src->fps_d,
+-          v4l2src->fps_n);
++      /* we must have a framerate */
++      if (v4l2src->fps_n <= 0 || v4l2src->fps_d <= 0) {
++        GST_WARNING_OBJECT (src,
++            "Can't give latency since framerate isn't fixated !");
++        timestamp = GST_CLOCK_TIME_NONE;
++      }
++      else {
++        latency =
++            gst_util_uint64_scale_int (GST_SECOND, v4l2src->fps_d,
++            v4l2src->fps_n);
+ 
+-      if (timestamp > latency)
+-        timestamp -= latency;
+-      else
+-        timestamp = 0;
++        if (timestamp > latency)
++          timestamp -= latency;
++        else
++          timestamp = 0;
++      }
+     }
+ 
+     /* FIXME: use the timestamp from the buffer itself! */

@@ -1,0 +1,66 @@
+--- /tmp/Xserver	2009-07-21 12:53:26.000000000 +0200
++++ xserver-common-1.25/X11/Xserver	2009-07-21 12:53:41.000000000 +0200
+@@ -53,13 +53,13 @@
+ ARGS="-br -pn $INPUT_EXTRA_ARGS"
+ 
+ # use ucb 1x00 touchscreen if present
+-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
++if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ] && [ "$XSERVER" != "Xorg" ] ; then
+   ARGS="$ARGS -mouse /dev/touchscreen/ucb1x00"
+ fi
+ 
+ # kdrive 1.4 onwards needs -mouse args
+ # Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
+-if [ -e "$TSLIB_TSDEVICE" ] ; then
++if [ -e "$TSLIB_TSDEVICE" ] && [ "$XSERVER" != "Xorg" ] ; then
+   ARGS="$ARGS -mouse tslib"
+ else
+   if  [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ] ; then
+@@ -97,7 +97,7 @@
+ 	"Generic OMAP1510/1610/1710")
+ 		ARGS="$ARGS -dpi 220 -mouse /dev/input/event0" ;;
+ 	"TI-OSK")
+-		ARGS="$ARGS -dpi 100 -mouse tslib" ;;
++		ARGS="$ARGS -dpi 100 " ;;
+ 	"Cellon C8000 Board")
+ 		ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE},10,1" ;;
+ 	"HTC Universal")
+@@ -105,13 +105,13 @@
+ 	"HTC Tornado")
+ 		ARGS="$ARGS -dpi 100 -hide-cursor" ;;
+ 	"Atmel AT91SAM9261-EK" | "Atmel AT91SAM9263-EK")
+-		ARGS="$ARGS -mouse tslib -dpi 100 -rgba bgr -screen 240x320" ;;	
++		ARGS="$ARGS -dpi 100 -rgba bgr -screen 240x320" ;;	
+ 	"Generic OMAP1510/1610/1710" | "Nokia N770")
+-		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" ;;
++		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} " ;;
+ 	"Nokia N800")
+-		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" ;;
++		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} " ;;
+ 	"Nokia RX-44")
+-		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" ;;
++		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} " ;;
+ 	"GTA01" )
+ 		ARGS="$ARGS -dpi 285"
+ 		if [ "$XSERVER" != "Xorg" ] ; then
+@@ -132,16 +132,16 @@
+ 		fi
+ 		;;
+ 	"Boundary Devices Neon board")
+-		ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE} -mouse tslib"
++		ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE} "
+ 		;;
+ 	"Hoeft&Wessel HW90350")
+-		 ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE} -mouse tslib"
++		 ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE} "
+ 		 ;;
+ 	"Hoeft&Wessel HW90250")
+-		 ARGS="$ARGS -dpi 100 -screen 240x320@90 -mouse tslib"
++		 ARGS="$ARGS -dpi 100 -screen 240x320@90 "
+ 		 ;;
+ 	"MINI2440")
+-		 ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE} -mouse tslib"
++		 ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE} "
+ 		 ;;
+ 	# This is a fallback for PCs
+ 	"")

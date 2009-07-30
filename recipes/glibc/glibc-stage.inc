@@ -5,12 +5,10 @@ do_stage() {
 		   '${STAGING_DIR_HOST}${layout_base_libdir}/libc.so.6' \
 		   install
 
-	install -d ${STAGING_INCDIR}/gnu \
-		   ${STAGING_INCDIR}/bits \
-		   ${STAGING_INCDIR}/rpcsvc
-	install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_INCDIR}/gnu/
-	install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_INCDIR}/bits/
-	install -m 0644 misc/syscall-list.h ${STAGING_INCDIR}/bits/syscall.h
+	# "make install" omits some (not all) RPC headers that other distros
+	# ship.
+	install -d ${STAGING_INCDIR}/rpcsvc
+
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/

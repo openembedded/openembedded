@@ -1,0 +1,70 @@
+From 1011922e3dd0c5f0f375fef28caa7222f68d4601 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Tue, 16 Jun 2009 17:14:03 +0300
+Subject: [PATCH 121/146] DSS2: VRFB: clean up BUG() calls
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/plat-omap/vrfb.c |   25 ++++++++++---------------
+ 1 files changed, 10 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vrfb.c b/arch/arm/plat-omap/vrfb.c
+index 7cd7c61..201640a 100644
+--- a/arch/arm/plat-omap/vrfb.c
++++ b/arch/arm/plat-omap/vrfb.c
+@@ -121,7 +121,6 @@ void omap_vrfb_setup(struct vrfb *vrfb, unsigned long paddr,
+ 
+ 	default:
+ 		BUG();
+-		return;
+ 	}
+ 
+ 	if (color_mode == OMAP_DSS_COLOR_YUV2 ||
+@@ -176,10 +175,8 @@ void omap_vrfb_release_ctx(struct vrfb *vrfb)
+ 
+ 	mutex_lock(&ctx_lock);
+ 
+-	if (!(ctx_map & (1 << ctx))) {
+-		BUG();
+-		return;
+-	}
++	BUG_ON(!(ctx_map & (1 << ctx)));
++
+ 	clear_bit(ctx, &ctx_map_active);
+ 	clear_bit(ctx, &ctx_map);
+ 
+@@ -254,11 +251,10 @@ void omap_vrfb_suspend_ctx(struct vrfb *vrfb)
+ {
+ 	DBG("suspend ctx %d\n", vrfb->context);
+ 	mutex_lock(&ctx_lock);
+-	if (vrfb->context >= VRFB_NUM_CTXS ||
+-	    (!(1 << vrfb->context) & ctx_map_active)) {
+-		BUG();
+-		return;
+-	}
++
++	BUG_ON(vrfb->context >= VRFB_NUM_CTXS);
++	BUG_ON(!((1 << vrfb->context) & ctx_map_active));
++
+ 	clear_bit(vrfb->context, &ctx_map_active);
+ 	mutex_unlock(&ctx_lock);
+ }
+@@ -268,11 +264,10 @@ void omap_vrfb_resume_ctx(struct vrfb *vrfb)
+ {
+ 	DBG("resume ctx %d\n", vrfb->context);
+ 	mutex_lock(&ctx_lock);
+-	if (vrfb->context >= VRFB_NUM_CTXS ||
+-	    ((1 << vrfb->context) & ctx_map_active)) {
+-		BUG();
+-		return;
+-	}
++
++	BUG_ON(vrfb->context >= VRFB_NUM_CTXS);
++	BUG_ON((1 << vrfb->context) & ctx_map_active);
++
+ 	/*
+ 	 * omap_vrfb_restore_context is normally called by the core domain
+ 	 * save / restore logic, but since this VRFB context was suspended
+-- 
+1.6.2.4
+

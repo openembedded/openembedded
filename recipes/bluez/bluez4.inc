@@ -4,10 +4,11 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-INC_PR = "r1"
+INC_PR = "r3"
 
 # For angstrom we want this to replace at least bluez-libs
-PROVIDES_append_angstrom = " bluez-utils bluez-libs"
+PROVIDES_append_angstrom = " bluez-utils-dbus bluez-utils bluez-libs"
+RPROVIDES_bluez4-dev_angstrom = "bluez-libs-dev"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
@@ -30,7 +31,7 @@ EXTRA_OECONF = "\
   --enable-hid2hci \
   --enable-dfutool \
   --enable-hidd \
-  --enable-pandd \
+  --enable-pand \
   --enable-dund \
   --disable-cups \
   --enable-test \

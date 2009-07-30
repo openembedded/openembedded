@@ -1,0 +1,34 @@
+From 7afd9adb31922a0b3b16c92df3f767f78f7cdc68 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Mon, 4 May 2009 16:18:30 +0200
+Subject: [PATCH 058/146] DSS2: Avoid div by zero when calculating required fclk
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+When calculating the required fclk rate for five tap filtering if the
+display width and output width are equal div by zero could occur. The
+TRM doesn't actually specify how this case should be handled but for
+now just skip the calculation which would trigger the div by zero.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/dss/dispc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index f79decb..5fc9457 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -1399,7 +1399,7 @@ static unsigned long calc_fclk_five_taps(u16 width, u16 height,
+ 		do_div(tmp, 2 * out_height * ppl);
+ 		fclk = tmp;
+ 
+-		if (height > 2 * out_height) {
++		if (height > 2 * out_height && ppl != out_width) {
+ 			tmp = pclk * (height - 2 * out_height) * out_width;
+ 			do_div(tmp, 2 * out_height * (ppl - out_width));
+ 			fclk = max(fclk, (u32) tmp);
+-- 
+1.6.2.4
+

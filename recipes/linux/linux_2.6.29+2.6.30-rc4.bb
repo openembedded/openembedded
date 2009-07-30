@@ -3,7 +3,7 @@ require linux.inc
 KERNEL_RELEASE = "2.6.30-rc4"
 OLD_KERNEL_RELEASE = "2.6.29"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}"
-PR = "r2"
+PR = "r5"
 
 S = "${WORKDIR}/linux-${OLD_KERNEL_RELEASE}"
 
@@ -32,7 +32,5 @@ SRC_URI_append_afeb9260 = " \
 "
 
 SRC_URI_append_tx25 = " file://linux-2.6.30-rc4-git.patch;patch=1 \
-	file://linux-2.6.30-rc4-karo.diff;patch=1 \
-	file://tx25-ts2.patch;patch=1 \
-        file://tx25-can.patch;patch=1 "
-
+	file://linux-2.6.30-rc4-karo3.diff;patch=1 \
+        file://stk5-baseboard_c_vesa640.patch;patch=1"

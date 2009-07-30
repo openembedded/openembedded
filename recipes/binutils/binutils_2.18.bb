@@ -1,4 +1,4 @@
-INC_PR = "r6"
+INC_PR = "r8"
 PR = "${INC_PR}.1"
 
 require binutils.inc
@@ -15,6 +15,8 @@ SRC_URI = "\
      file://binutils-uclibc-300-012_check_ldrunpath_length.patch;patch=1 \
      file://binutils-uclibc-gas-needs-libm.patch;patch=1 \
      file://binutils-x86_64_i386_biarch.patch;patch=1 \
+     file://binutils-section-in-segment.patch;patch=1;pnum=0 \
+     file://parse-neon-vmov.diff;patch=1 \
      "
 
 # powerpc patches

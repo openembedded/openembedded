@@ -130,7 +130,7 @@ python do_package_deb () {
 
         os.chdir(root)
         from glob import glob
-        g = glob('*')
+        g = glob('*') + glob('.[!.]*')
         try:
             del g[g.index('DEBIAN')]
             del g[g.index('./DEBIAN')]
