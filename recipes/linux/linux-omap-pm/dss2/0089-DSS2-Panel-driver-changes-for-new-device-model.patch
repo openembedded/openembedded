@@ -1,0 +1,400 @@
+From 449ff8409e92f76f71baf538867f600a832f92e3 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 28 May 2009 13:29:55 +0300
+Subject: [PATCH 089/146] DSS2: Panel driver changes for new device model
+
+Changes to generic, samsung and sharp panel drivers
+---
+ drivers/video/omap2/displays/panel-generic.c       |   72 ++++++++++--------
+ .../omap2/displays/panel-samsung-lte430wq-f0c.c    |   77 ++++++++++---------
+ .../video/omap2/displays/panel-sharp-ls037v7dw01.c |   79 ++++++++++----------
+ 3 files changed, 122 insertions(+), 106 deletions(-)
+
+diff --git a/drivers/video/omap2/displays/panel-generic.c b/drivers/video/omap2/displays/panel-generic.c
+index 8382acb..738147e 100644
+--- a/drivers/video/omap2/displays/panel-generic.c
++++ b/drivers/video/omap2/displays/panel-generic.c
+@@ -22,73 +22,81 @@
+ 
+ #include <mach/display.h>
+ 
+-static int generic_panel_init(struct omap_display *display)
++static struct omap_video_timings generic_panel_timings = {
++	/* 640 x 480 @ 60 Hz  Reduced blanking VESA CVT 0.31M3-R */
++	.x_res		= 640,
++	.y_res		= 480,
++	.pixel_clock	= 23500,
++	.hfp		= 48,
++	.hsw		= 32,
++	.hbp		= 80,
++	.vfp		= 3,
++	.vsw		= 4,
++	.vbp		= 7,
++};
++
++static int generic_panel_probe(struct omap_dss_device *dssdev)
+ {
++	dssdev->panel.config = OMAP_DSS_LCD_TFT;
++	dssdev->panel.timings = generic_panel_timings;
++
+ 	return 0;
+ }
+ 
+-static int generic_panel_enable(struct omap_display *display)
++static void generic_panel_remove(struct omap_dss_device *dssdev)
++{
++}
++
++static int generic_panel_enable(struct omap_dss_device *dssdev)
+ {
+ 	int r = 0;
+ 
+-	if (display->hw_config.panel_enable)
+-		r = display->hw_config.panel_enable(display);
++	if (dssdev->platform_enable)
++		r = dssdev->platform_enable(dssdev);
+ 
+ 	return r;
+ }
+ 
+-static void generic_panel_disable(struct omap_display *display)
++static void generic_panel_disable(struct omap_dss_device *dssdev)
+ {
+-	if (display->hw_config.panel_disable)
+-		display->hw_config.panel_disable(display);
++	if (dssdev->platform_disable)
++		dssdev->platform_disable(dssdev);
+ }
+ 
+-static int generic_panel_suspend(struct omap_display *display)
++static int generic_panel_suspend(struct omap_dss_device *dssdev)
+ {
+-	generic_panel_disable(display);
++	generic_panel_disable(dssdev);
+ 	return 0;
+ }
+ 
+-static int generic_panel_resume(struct omap_display *display)
++static int generic_panel_resume(struct omap_dss_device *dssdev)
+ {
+-	return generic_panel_enable(display);
++	return generic_panel_enable(dssdev);
+ }
+ 
+-static struct omap_panel generic_panel = {
+-	.owner		= THIS_MODULE,
+-	.name		= "panel-generic",
+-	.init		= generic_panel_init,
++static struct omap_dss_driver generic_driver = {
++	.probe		= generic_panel_probe,
++	.remove		= generic_panel_remove,
++
+ 	.enable		= generic_panel_enable,
+ 	.disable	= generic_panel_disable,
+ 	.suspend	= generic_panel_suspend,
+ 	.resume		= generic_panel_resume,
+ 
+-	.timings = {
+-		/* 640 x 480 @ 60 Hz  Reduced blanking VESA CVT 0.31M3-R */
+-		.x_res		= 640,
+-		.y_res		= 480,
+-		.pixel_clock	= 23500,
+-		.hfp		= 48,
+-		.hsw		= 32,
+-		.hbp		= 80,
+-		.vfp		= 3,
+-		.vsw		= 4,
+-		.vbp		= 7,
++	.driver         = {
++		.name   = "generic_panel",
++		.owner  = THIS_MODULE,
+ 	},
+-
+-	.config		= OMAP_DSS_LCD_TFT,
+ };
+ 
+-
+ static int __init generic_panel_drv_init(void)
+ {
+-	omap_dss_register_panel(&generic_panel);
+-	return 0;
++	return omap_dss_register_driver(&generic_driver);
+ }
+ 
+ static void __exit generic_panel_drv_exit(void)
+ {
+-	omap_dss_unregister_panel(&generic_panel);
++	omap_dss_unregister_driver(&generic_driver);
+ }
+ 
+ module_init(generic_panel_drv_init);
+diff --git a/drivers/video/omap2/displays/panel-samsung-lte430wq-f0c.c b/drivers/video/omap2/displays/panel-samsung-lte430wq-f0c.c
+index e4bb781..eafe581 100644
+--- a/drivers/video/omap2/displays/panel-samsung-lte430wq-f0c.c
++++ b/drivers/video/omap2/displays/panel-samsung-lte430wq-f0c.c
+@@ -21,86 +21,91 @@
+ 
+ #include <mach/display.h>
+ 
+-static int samsung_lte_panel_init(struct omap_display *display)
++static struct omap_video_timings samsung_lte_timings = {
++	.x_res = 480,
++	.y_res = 272,
++
++	.pixel_clock	= 9200,
++
++	.hsw		= 41,
++	.hfp		= 8,
++	.hbp		= 45-41,
++
++	.vsw		= 10,
++	.vfp		= 4,
++	.vbp		= 12-10,
++};
++
++static int samsung_lte_panel_probe(struct omap_dss_device *dssdev)
+ {
++	dssdev->panel.config = OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IVS |
++		OMAP_DSS_LCD_IHS;
++	dssdev->panel.timings = samsung_lte_timings;
++
+ 	return 0;
+ }
+ 
+-static void samsung_lte_panel_cleanup(struct omap_display *display)
++static void samsung_lte_panel_remove(struct omap_dss_device *dssdev)
+ {
+ }
+ 
+-static int samsung_lte_panel_enable(struct omap_display *display)
++static int samsung_lte_panel_enable(struct omap_dss_device *dssdev)
+ {
+ 	int r = 0;
+ 
+ 	/* wait couple of vsyncs until enabling the LCD */
+ 	msleep(50);
+ 
+-	if (display->hw_config.panel_enable)
+-		r = display->hw_config.panel_enable(display);
++	if (dssdev->platform_enable)
++		r = dssdev->platform_enable(dssdev);
+ 
+ 	return r;
+ }
+ 
+-static void samsung_lte_panel_disable(struct omap_display *display)
++static void samsung_lte_panel_disable(struct omap_dss_device *dssdev)
+ {
+-	if (display->hw_config.panel_disable)
+-		display->hw_config.panel_disable(display);
++	if (dssdev->platform_disable)
++		dssdev->platform_disable(dssdev);
+ 
+ 	/* wait at least 5 vsyncs after disabling the LCD */
++
+ 	msleep(100);
+ }
+ 
+-static int samsung_lte_panel_suspend(struct omap_display *display)
++static int samsung_lte_panel_suspend(struct omap_dss_device *dssdev)
+ {
+-	samsung_lte_panel_disable(display);
++	samsung_lte_panel_disable(dssdev);
+ 	return 0;
+ }
+ 
+-static int samsung_lte_panel_resume(struct omap_display *display)
++static int samsung_lte_panel_resume(struct omap_dss_device *dssdev)
+ {
+-	return samsung_lte_panel_enable(display);
++	return samsung_lte_panel_enable(dssdev);
+ }
+ 
+-static struct omap_panel samsung_lte_panel = {
+-	.owner		= THIS_MODULE,
+-	.name		= "samsung-lte430wq-f0c",
+-	.init		= samsung_lte_panel_init,
+-	.cleanup	= samsung_lte_panel_cleanup,
++static struct omap_dss_driver samsung_lte_driver = {
++	.probe		= samsung_lte_panel_probe,
++	.remove		= samsung_lte_panel_remove,
++
+ 	.enable		= samsung_lte_panel_enable,
+ 	.disable	= samsung_lte_panel_disable,
+ 	.suspend	= samsung_lte_panel_suspend,
+ 	.resume		= samsung_lte_panel_resume,
+ 
+-	.timings = {
+-		.x_res = 480,
+-		.y_res = 272,
+-
+-		.pixel_clock	= 9200,
+-
+-		.hsw		= 41,
+-		.hfp		= 8,
+-		.hbp		= 45-41,
+-
+-		.vsw		= 10,
+-		.vfp		= 4,
+-		.vbp		= 12-10,
++	.driver         = {
++		.name   = "samsung_lte_panel",
++		.owner  = THIS_MODULE,
+ 	},
+-
+-	.config = OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IHS | OMAP_DSS_LCD_IVS,
+ };
+ 
+-
+ static int __init samsung_lte_panel_drv_init(void)
+ {
+-	omap_dss_register_panel(&samsung_lte_panel);
+-	return 0;
++	return omap_dss_register_driver(&samsung_lte_driver);
+ }
+ 
+ static void __exit samsung_lte_panel_drv_exit(void)
+ {
+-	omap_dss_unregister_panel(&samsung_lte_panel);
++	omap_dss_unregister_driver(&samsung_lte_driver);
+ }
+ 
+ module_init(samsung_lte_panel_drv_init);
+diff --git a/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c b/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c
+index 1f99150..6b93ea5 100644
+--- a/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c
++++ b/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c
+@@ -22,89 +22,92 @@
+ 
+ #include <mach/display.h>
+ 
+-static int sharp_ls_panel_init(struct omap_display *display)
++static struct omap_video_timings sharp_ls_timings = {
++	.x_res = 480,
++	.y_res = 640,
++
++	.pixel_clock	= 19200,
++
++	.hsw		= 2,
++	.hfp		= 1,
++	.hbp		= 28,
++
++	.vsw		= 1,
++	.vfp		= 1,
++	.vbp		= 1,
++};
++
++static int sharp_ls_panel_probe(struct omap_dss_device *dssdev)
+ {
++	dssdev->panel.config = OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IVS |
++		OMAP_DSS_LCD_IHS;
++	dssdev->panel.acb = 0x28;
++	dssdev->panel.timings = sharp_ls_timings;
++
+ 	return 0;
+ }
+ 
+-static void sharp_ls_panel_cleanup(struct omap_display *display)
++static void sharp_ls_panel_remove(struct omap_dss_device *dssdev)
+ {
+ }
+ 
+-static int sharp_ls_panel_enable(struct omap_display *display)
++static int sharp_ls_panel_enable(struct omap_dss_device *dssdev)
+ {
+ 	int r = 0;
+ 
+ 	/* wait couple of vsyncs until enabling the LCD */
+ 	msleep(50);
+ 
+-	if (display->hw_config.panel_enable)
+-		r = display->hw_config.panel_enable(display);
++	if (dssdev->platform_enable)
++		r = dssdev->platform_enable(dssdev);
+ 
+ 	return r;
+ }
+ 
+-static void sharp_ls_panel_disable(struct omap_display *display)
++static void sharp_ls_panel_disable(struct omap_dss_device *dssdev)
+ {
+-	if (display->hw_config.panel_disable)
+-		display->hw_config.panel_disable(display);
++	if (dssdev->platform_disable)
++		dssdev->platform_disable(dssdev);
+ 
+ 	/* wait at least 5 vsyncs after disabling the LCD */
+ 
+ 	msleep(100);
+ }
+ 
+-static int sharp_ls_panel_suspend(struct omap_display *display)
++static int sharp_ls_panel_suspend(struct omap_dss_device *dssdev)
+ {
+-	sharp_ls_panel_disable(display);
++	sharp_ls_panel_disable(dssdev);
+ 	return 0;
+ }
+ 
+-static int sharp_ls_panel_resume(struct omap_display *display)
++static int sharp_ls_panel_resume(struct omap_dss_device *dssdev)
+ {
+-	return sharp_ls_panel_enable(display);
++	return sharp_ls_panel_enable(dssdev);
+ }
+ 
+-static struct omap_panel sharp_ls_panel = {
+-	.owner		= THIS_MODULE,
+-	.name		= "sharp-ls037v7dw01",
+-	.init		= sharp_ls_panel_init,
+-	.cleanup	= sharp_ls_panel_cleanup,
++static struct omap_dss_driver sharp_ls_driver = {
++	.probe		= sharp_ls_panel_probe,
++	.remove		= sharp_ls_panel_remove,
++
+ 	.enable		= sharp_ls_panel_enable,
+ 	.disable	= sharp_ls_panel_disable,
+ 	.suspend	= sharp_ls_panel_suspend,
+ 	.resume		= sharp_ls_panel_resume,
+ 
+-	.timings = {
+-		.x_res = 480,
+-		.y_res = 640,
+-
+-		.pixel_clock	= 19200,
+-
+-		.hsw		= 2,
+-		.hfp		= 1,
+-		.hbp		= 28,
+-
+-		.vsw		= 1,
+-		.vfp		= 1,
+-		.vbp		= 1,
++	.driver         = {
++		.name   = "sharp_ls_panel",
++		.owner  = THIS_MODULE,
+ 	},
+-
+-	.acb		= 0x28,
+-
+-	.config	= OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IVS |	OMAP_DSS_LCD_IHS,
+ };
+ 
+-
+ static int __init sharp_ls_panel_drv_init(void)
+ {
+-	omap_dss_register_panel(&sharp_ls_panel);
+-	return 0;
++	return omap_dss_register_driver(&sharp_ls_driver);
+ }
+ 
+ static void __exit sharp_ls_panel_drv_exit(void)
+ {
+-	omap_dss_unregister_panel(&sharp_ls_panel);
++	omap_dss_unregister_driver(&sharp_ls_driver);
+ }
+ 
+ module_init(sharp_ls_panel_drv_init);
+-- 
+1.6.2.4
+

@@ -1,0 +1,28 @@
+From 57cf924ba722d0ef7f48b4a0f8a44a0ddeefc470 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 26 Jun 2009 17:14:25 +0300
+Subject: [PATCH 128/146] DSS2: DSI: check bus_lock in send_bta()
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/dss/dsi.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index d2c5b94..3b15684 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -1786,7 +1786,9 @@ static int dsi_vc_send_bta(int channel)
+ {
+ 	unsigned long tmo;
+ 
+-	/*DSSDBG("dsi_vc_send_bta_sync %d\n", channel); */
++	DSSDBG("dsi_vc_send_bta %d\n", channel);
++
++	WARN_ON(!mutex_is_locked(&dsi.bus_lock));
+ 
+ 	if (REG_GET(DSI_VC_CTRL(channel), 20, 20)) {	/* RX_FIFO_NOT_EMPTY */
+ 		DSSERR("rx fifo not empty when sending BTA, dumping data:\n");
+-- 
+1.6.2.4
+

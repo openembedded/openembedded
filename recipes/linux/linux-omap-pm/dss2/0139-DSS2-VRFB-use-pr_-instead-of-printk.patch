@@ -1,0 +1,43 @@
+From c9a738cd1c5afda7f7c5a92cce23caa90d901c41 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 2 Jul 2009 11:21:27 +0300
+Subject: [PATCH 139/146] DSS2: VRFB: use pr_* instead of printk
+
+---
+ arch/arm/plat-omap/vrfb.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vrfb.c b/arch/arm/plat-omap/vrfb.c
+index 24ea412..f526ee1 100644
+--- a/arch/arm/plat-omap/vrfb.c
++++ b/arch/arm/plat-omap/vrfb.c
+@@ -30,7 +30,7 @@
+ /*#define DEBUG*/
+ 
+ #ifdef DEBUG
+-#define DBG(format, ...) printk(KERN_DEBUG "VRFB: " format, ## __VA_ARGS__)
++#define DBG(format, ...) pr_debug("VRFB: " format, ## __VA_ARGS__)
+ #else
+ #define DBG(format, ...)
+ #endif
+@@ -229,7 +229,7 @@ int omap_vrfb_request_ctx(struct vrfb *vrfb)
+ 			break;
+ 
+ 	if (ctx == VRFB_NUM_CTXS) {
+-		printk(KERN_ERR "vrfb: no free contexts\n");
++		pr_err("vrfb: no free contexts\n");
+ 		r = -EBUSY;
+ 		goto out;
+ 	}
+@@ -247,7 +247,7 @@ int omap_vrfb_request_ctx(struct vrfb *vrfb)
+ 	for (rot = 0; rot < 4; ++rot) {
+ 		paddr = SMS_ROT_VIRT_BASE(ctx, rot);
+ 		if (!request_mem_region(paddr, OMAP_VRFB_SIZE, "vrfb")) {
+-			printk(KERN_ERR "vrfb: failed to reserve VRFB "
++			pr_err("vrfb: failed to reserve VRFB "
+ 					"area for ctx %d, rotation %d\n",
+ 					ctx, rot * 90);
+ 			omap_vrfb_release_ctx(vrfb);
+-- 
+1.6.2.4
+

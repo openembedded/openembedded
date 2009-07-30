@@ -1,0 +1,35 @@
+From 08a8816f1b41c331073a3144dbb90b4fe9eeec05 Mon Sep 17 00:00:00 2001
+From: Hardik Shah <hardik.shah@ti.com>
+Date: Fri, 24 Apr 2009 14:33:48 +0530
+Subject: [PATCH 054/146] DSS2: Rotation attrs for YUV need not to be reversed for 90 and 270
+
+DSS2 supports horizontal mirroing. so only 180 and 0 degree attributes needs
+to be reversed for mirroring.
+Slight corrupt image is seen with 90 ad 270 degree rotation with mirroring
+when the image height and widht is not 32-pixels aligned. To be specific
+resolution is 168X192.
+
+Signed-off-by: Hardik Shah <hardik.shah@ti.com>
+---
+ drivers/video/omap2/dss/dispc.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index b6a39f5..f79decb 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -1110,9 +1110,9 @@ static void _dispc_set_rotation_attrs(enum omap_plane plane, u8 rotation,
+ 		if (mirroring) {
+ 			switch (rotation) {
+ 			case 0: vidrot = 2; break;
+-			case 1: vidrot = 3; break;
++			case 1: vidrot = 1; break;
+ 			case 2: vidrot = 0; break;
+-			case 3: vidrot = 1; break;
++			case 3: vidrot = 3; break;
+ 			}
+ 		} else {
+ 			switch (rotation) {
+-- 
+1.6.2.4
+

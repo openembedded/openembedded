@@ -1,0 +1,32 @@
+From 26e96637277d8631372a14e82e43b4023b75eff7 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 27 May 2009 16:19:28 +0300
+Subject: [PATCH 083/146] DSS2: DSI: reset perf frame counter when starting autoupdate
+
+---
+ drivers/video/omap2/dss/dsi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index 38d3807..a845ea6 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -365,6 +365,7 @@ static void perf_mark_start(void)
+ 
+ static void perf_mark_start_auto(void)
+ {
++	dsi.perf_measure_frames = 0;
+ 	dsi.perf_start_time_auto = ktime_get();
+ }
+ 
+@@ -440,7 +441,6 @@ static void perf_show(const char *name)
+ 				s_max_trans_us,
+ 				s_total_trans_us / numframes);
+ 
+-		dsi.perf_measure_frames = 0;
+ 		s_total_setup_us = 0;
+ 		s_min_setup_us = 0xffffffff;
+ 		s_max_setup_us = 0;
+-- 
+1.6.2.4
+

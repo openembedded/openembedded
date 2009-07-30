@@ -1,0 +1,85 @@
+From bbf1f63b3b6fa18a33b70ad85729dad6bd280c16 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Mon, 27 Apr 2009 11:06:16 +0300
+Subject: [PATCH 052/146] DSS2: DSI: more error handling
+
+---
+ drivers/video/omap2/dss/dsi.c |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index d59ad38..d8df353 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -289,6 +289,8 @@ static struct
+ 
+ 	bool autoupdate_setup;
+ 
++	u32		errors;
++	spinlock_t	errors_lock;
+ #ifdef DEBUG
+ 	ktime_t perf_setup_time;
+ 	ktime_t perf_start_time;
+@@ -541,6 +543,9 @@ void dsi_irq_handler(void)
+ 	if (irqstatus & DSI_IRQ_ERROR_MASK) {
+ 		DSSERR("DSI error, irqstatus %x\n", irqstatus);
+ 		print_irq_status(irqstatus);
++		spin_lock(&dsi.errors_lock);
++		dsi.errors |= irqstatus & DSI_IRQ_ERROR_MASK;
++		spin_unlock(&dsi.errors_lock);
+ 	} else if (debug_irq) {
+ 		print_irq_status(irqstatus);
+ 	}
+@@ -616,6 +621,17 @@ static void _dsi_initialize_irq(void)
+ 			-1 & (~DSI_CIO_IRQ_ERRCONTROL2));
+ }
+ 
++static u32 dsi_get_errors(void)
++{
++	unsigned long flags;
++	u32 e;
++	spin_lock_irqsave(&dsi.errors_lock, flags);
++	e = dsi.errors;
++	dsi.errors = 0;
++	spin_unlock_irqrestore(&dsi.errors_lock, flags);
++	return e;
++}
++
+ static void dsi_vc_enable_bta_irq(int channel)
+ {
+ 	u32 l;
+@@ -1807,6 +1823,7 @@ static int dsi_vc_send_bta(int channel)
+ static int dsi_vc_send_bta_sync(int channel)
+ {
+ 	int r = 0;
++	u32 err;
+ 
+ 	init_completion(&dsi.bta_completion);
+ 
+@@ -1822,6 +1839,13 @@ static int dsi_vc_send_bta_sync(int channel)
+ 		r = -EIO;
+ 		goto err;
+ 	}
++
++	err = dsi_get_errors();
++	if (err) {
++		DSSERR("Error while sending BTA: %x\n", err);
++		r = -EIO;
++		goto err;
++	}
+ err:
+ 	dsi_vc_disable_bta_irq(channel);
+ 
+@@ -3720,6 +3744,9 @@ int dsi_init(void)
+ {
+ 	u32 rev;
+ 
++	spin_lock_init(&dsi.errors_lock);
++	dsi.errors = 0;
++
+ 	spin_lock_init(&dsi.cmd_lock);
+ 	dsi.cmd_fifo = kfifo_alloc(
+ 			DSI_CMD_FIFO_LEN * sizeof(struct dsi_cmd_item),
+-- 
+1.6.2.4
+

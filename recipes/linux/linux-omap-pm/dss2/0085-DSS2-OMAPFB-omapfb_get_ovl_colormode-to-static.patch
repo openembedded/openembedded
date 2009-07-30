@@ -1,0 +1,26 @@
+From 5e7b8aa4d0c904556af01085a82f50ad895a59d5 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 28 May 2009 15:26:08 +0300
+Subject: [PATCH 085/146] DSS2: OMAPFB: omapfb_get_ovl_colormode to static
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-ioctl.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-ioctl.c b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+index 123f5dc..57e6287 100644
+--- a/drivers/video/omap2/omapfb/omapfb-ioctl.c
++++ b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+@@ -434,7 +434,7 @@ static int omapfb_memory_read(struct fb_info *fbi,
+ 	return r;
+ }
+ 
+-int omapfb_get_ovl_colormode(struct omapfb2_device *fbdev,
++static int omapfb_get_ovl_colormode(struct omapfb2_device *fbdev,
+ 			     struct omapfb_ovl_colormode *mode)
+ {
+ 	int ovl_idx = mode->overlay_idx;
+-- 
+1.6.2.4
+

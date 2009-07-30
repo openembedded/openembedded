@@ -1,0 +1,48 @@
+From fc26a92aecdb3ea3f72196f4e17bbd55589a75a8 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 10 Jun 2009 14:14:35 +0300
+Subject: [PATCH 106/146] DSS2: OMAPFB: Disable forced display update on fb close
+
+---
+ drivers/video/omap2/omapfb/omapfb-main.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
+index 1fe770c..b4ac9ec 100644
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -613,6 +613,7 @@ static int omapfb_open(struct fb_info *fbi, int user)
+ 
+ static int omapfb_release(struct fb_info *fbi, int user)
+ {
++#if 0
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+ 	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	struct omap_dss_device *display = fb2display(fbi);
+@@ -620,7 +621,7 @@ static int omapfb_release(struct fb_info *fbi, int user)
+ 	DBG("Closing fb with plane index %d\n", ofbi->id);
+ 
+ 	omapfb_lock(fbdev);
+-#if 1
++
+ 	if (display && display->get_update_mode && display->update) {
+ 		/* XXX this update should be removed, I think. But it's
+ 		 * good for debugging */
+@@ -635,13 +636,12 @@ static int omapfb_release(struct fb_info *fbi, int user)
+ 			display->update(display, 0, 0, w, h);
+ 		}
+ 	}
+-#endif
+ 
+ 	if (display && display->sync)
+ 		display->sync(display);
+ 
+ 	omapfb_unlock(fbdev);
+-
++#endif
+ 	return 0;
+ }
+ 
+-- 
+1.6.2.4
+

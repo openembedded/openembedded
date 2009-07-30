@@ -1,0 +1,38 @@
+From 9b9a9009fbb2d13adf0db67a2c27d27e7d624258 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 5 Jun 2009 11:21:13 +0300
+Subject: [PATCH 104/146] DSS2: Fix documentation
+
+---
+ Documentation/arm/OMAP/DSS |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/arm/OMAP/DSS b/Documentation/arm/OMAP/DSS
+index 958686a..0af0e9e 100644
+--- a/Documentation/arm/OMAP/DSS
++++ b/Documentation/arm/OMAP/DSS
+@@ -195,8 +195,8 @@ FB2 --- VID2 -/   TV ----- TV
+ Example: Switch from LCD to DVI
+ ----------------------
+ 
+-w=`cat $dvi/horizontal | cut -d "," -f 1`
+-h=`cat $dvi/vertical | cut -d "," -f 1`
++w=`cat $dvi/timings | cut -d "," -f 2 | cut -d "/" -f 1`
++h=`cat $dvi/timings | cut -d "," -f 3 | cut -d "/" -f 1`
+ 
+ echo "0" > $lcd/enabled
+ echo "" > $mgr0/display
+@@ -214,8 +214,8 @@ FB2 --- VID2 -/   TV ----- TV
+ Example: Clone GFX overlay to LCD and TV
+ -------------------------------
+ 
+-w=`cat $tv/horizontal | cut -d "," -f 1`
+-h=`cat $tv/vertical | cut -d "," -f 1`
++w=`cat $tv/timings | cut -d "," -f 2 | cut -d "/" -f 1`
++h=`cat $tv/timings | cut -d "," -f 3 | cut -d "/" -f 1`
+ 
+ echo "0" > $ovl0/enabled
+ echo "0" > $ovl1/enabled
+-- 
+1.6.2.4
+

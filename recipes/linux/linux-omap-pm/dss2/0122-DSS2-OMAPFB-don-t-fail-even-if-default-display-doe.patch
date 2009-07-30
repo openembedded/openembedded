@@ -1,0 +1,139 @@
+From 9abe23c8bc711a0883dfe8fd73371e35f48dddf0 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Tue, 23 Jun 2009 11:55:52 +0300
+Subject: [PATCH 122/146] DSS2: OMAPFB: don't fail even if default display doesn't start
+
+This will allow secondary displays to be used even if the
+main display is out of order.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-main.c |   91 ++++++++++++------------------
+ 1 files changed, 37 insertions(+), 54 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
+index 1473581..b806dc9 100644
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -1994,21 +1994,9 @@ static int omapfb_probe(struct platform_device *pdev)
+ 	for (i = 0; i < fbdev->num_managers; i++)
+ 		fbdev->managers[i] = omap_dss_get_overlay_manager(i);
+ 
+-
+-	/* gfx overlay should be the default one. find a display
+-	 * connected to that, and use it as default display */
+-	ovl = omap_dss_get_overlay(0);
+-	if (ovl->manager && ovl->manager->device) {
+-		def_display = ovl->manager->device;
+-	} else {
+-		dev_err(&pdev->dev, "cannot find default display\n");
+-		r = -EINVAL;
+-		goto cleanup;
+-	}
+-
+ 	if (def_mode && strlen(def_mode) > 0) {
+ 		if (omapfb_parse_def_modes(fbdev))
+-			dev_err(&pdev->dev, "cannot parse default modes\n");
++			dev_warn(&pdev->dev, "cannot parse default modes\n");
+ 	}
+ 
+ 	r = omapfb_create_framebuffers(fbdev);
+@@ -2019,59 +2007,54 @@ static int omapfb_probe(struct platform_device *pdev)
+ 		struct omap_overlay_manager *mgr;
+ 		mgr = fbdev->managers[i];
+ 		r = mgr->apply(mgr);
+-		if (r) {
+-			dev_err(fbdev->dev, "failed to apply dispc config\n");
+-			goto cleanup;
+-		}
++		if (r)
++			dev_warn(fbdev->dev, "failed to apply dispc config\n");
+ 	}
+ 
+ 	DBG("mgr->apply'ed\n");
+ 
+-	r = def_display->enable(def_display);
+-	if (r) {
+-		dev_err(fbdev->dev, "Failed to enable display '%s'\n",
+-				def_display->name);
+-		goto cleanup;
+-	}
+-
+-	/* set the update mode */
+-	if (def_display->caps & OMAP_DSS_DISPLAY_CAP_MANUAL_UPDATE) {
+-#ifdef CONFIG_FB_OMAP2_FORCE_AUTO_UPDATE
+-		if (def_display->enable_te)
+-			def_display->enable_te(def_display, 1);
+-		if (def_display->set_update_mode)
+-			def_display->set_update_mode(def_display,
+-					OMAP_DSS_UPDATE_AUTO);
+-#else
+-		if (def_display->enable_te)
+-			def_display->enable_te(def_display, 0);
+-		if (def_display->set_update_mode)
+-			def_display->set_update_mode(def_display,
+-					OMAP_DSS_UPDATE_MANUAL);
+-#endif
++	/* gfx overlay should be the default one. find a display
++	 * connected to that, and use it as default display */
++	ovl = omap_dss_get_overlay(0);
++	if (ovl->manager && ovl->manager->device) {
++		def_display = ovl->manager->device;
+ 	} else {
+-		if (def_display->set_update_mode)
+-			def_display->set_update_mode(def_display,
+-					OMAP_DSS_UPDATE_AUTO);
++		dev_warn(&pdev->dev, "cannot find default display\n");
++		def_display = NULL;
+ 	}
+ 
+-	for (i = 0; i < fbdev->num_displays; i++) {
+-		struct omap_dss_device *display = fbdev->displays[i];
++	if (def_display) {
+ 		u16 w, h;
++		r = def_display->enable(def_display);
++		if (r)
++			dev_warn(fbdev->dev, "Failed to enable display '%s'\n",
++					def_display->name);
+ 
+-		if (!display->get_update_mode || !display->update)
+-			continue;
+-
+-		if (display->get_update_mode(display) ==
+-				OMAP_DSS_UPDATE_MANUAL) {
+-
+-			display->get_resolution(display, &w, &h);
+-			display->update(display, 0, 0, w, h);
++		/* set the update mode */
++		if (def_display->caps & OMAP_DSS_DISPLAY_CAP_MANUAL_UPDATE) {
++#ifdef CONFIG_FB_OMAP2_FORCE_AUTO_UPDATE
++			if (def_display->enable_te)
++				def_display->enable_te(def_display, 1);
++			if (def_display->set_update_mode)
++				def_display->set_update_mode(def_display,
++						OMAP_DSS_UPDATE_AUTO);
++#else /* MANUAL_UPDATE */
++			if (def_display->enable_te)
++				def_display->enable_te(def_display, 0);
++			if (def_display->set_update_mode)
++				def_display->set_update_mode(def_display,
++						OMAP_DSS_UPDATE_MANUAL);
++
++			def_display->get_resolution(def_display, &w, &h);
++			def_display->update(def_display, 0, 0, w, h);
++#endif
++		} else {
++			if (def_display->set_update_mode)
++				def_display->set_update_mode(def_display,
++						OMAP_DSS_UPDATE_AUTO);
+ 		}
+ 	}
+ 
+-	DBG("display->updated\n");
+-
+ 	return 0;
+ 
+ cleanup:
+-- 
+1.6.2.4
+
