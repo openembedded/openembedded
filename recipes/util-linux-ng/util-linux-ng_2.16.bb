@@ -1,8 +1,9 @@
 require util-linux-ng.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI += "file://uclibc-compile.patch;patch=1 \
+            file://tls.patch;patch=1 \
            "
 
 EXTRA_OECONF += " --enable-libuuid --enable-libblkid \

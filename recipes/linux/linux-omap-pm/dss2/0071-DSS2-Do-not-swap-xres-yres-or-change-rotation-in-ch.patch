@@ -1,0 +1,68 @@
+From cff6ff96f2b280924e7a2bb453bc8d6d9bbb67f0 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Thu, 14 May 2009 15:03:48 +0200
+Subject: [PATCH 071/146] DSS2: Do not swap xres/yres or change rotation in check_fb_var()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Do not to change the actual rotation setting in check_fb_var() and
+also remove the xres/yres swap from the same place. Applications must
+now specify var.xres and var.yres in framebuffer coordinates. Eg. if
+you have a 480x800 framebuffer and want it rotated cw/ccw to a 800x480
+display xres must be 480 and yres must be 800. So the application
+doesn't have to know if it's dealing with a 480x800 unrotated display
+or a 800x480 rotated display.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-main.c |   26 ++++++--------------------
+ 1 files changed, 6 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
+index 4bb74b7..0cdf36e 100644
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -391,6 +391,12 @@ void set_fb_fix(struct fb_info *fbi)
+ 	/* used by open/write in fbmem.c */
+ 	fbi->screen_base = (char __iomem *)omapfb_get_region_vaddr(ofbi);
+ 
++	if (ofbi->rotation != var->rotate) {
++		DBG("changing rotation %d -> %d\n",
++				ofbi->rotation, var->rotate);
++		ofbi->rotation = var->rotate;
++	}
++
+ 	/* used by mmap in fbmem.c */
+ 	if (ofbi->rotation_type == OMAP_DSS_ROT_VRFB) {
+ 		switch (var->nonstd) {
+@@ -482,26 +488,6 @@ int check_fb_var(struct fb_info *fbi, struct fb_var_screeninfo *var)
+ 	if (var->rotate < 0 || var->rotate > 3)
+ 		return -EINVAL;
+ 
+-	if (var->rotate != fbi->var.rotate) {
+-		DBG("rotation changing\n");
+-
+-		ofbi->rotation = var->rotate;
+-
+-		if (abs(var->rotate - fbi->var.rotate) != 2) {
+-			int tmp;
+-			DBG("rotate changing 90/270 degrees. "
+-					"swapping x/y res\n");
+-
+-			tmp = var->yres;
+-			var->yres = var->xres;
+-			var->xres = tmp;
+-
+-			tmp = var->yres_virtual;
+-			var->yres_virtual = var->xres_virtual;
+-			var->xres_virtual = tmp;
+-		}
+-	}
+-
+ 	xres_min = OMAPFB_PLANE_XRES_MIN;
+ 	xres_max = 2048;
+ 	yres_min = OMAPFB_PLANE_YRES_MIN;
+-- 
+1.6.2.4
+

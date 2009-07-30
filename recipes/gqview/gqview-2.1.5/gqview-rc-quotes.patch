@@ -1,0 +1,26 @@
+--- src/rcfile.c
++++ src/rcfile.c
+@@ -390,7 +390,7 @@
+ 	gchar option[1024];
+ 	gchar value[1024];
+ 	gchar value_all[1024];
+-	gint c,l,i;
++	gint c,l,i,inside_quotes;
+ 
+ 	rc_path = g_strconcat(homedir(), "/", GQVIEW_RC_DIR, "/", RC_FILE_NAME, NULL);
+ 
+@@ -416,7 +416,13 @@
+ 		while ((s_buf[c] == ' ' || s_buf[c] == 8) && c < l) c++;
+ 		s_buf_ptr = s_buf + c;
+ 		strncpy(value_all, s_buf_ptr, sizeof(value_all));
+-		while (s_buf[c] != 8 && s_buf[c] != ' ' && s_buf[c] != '\n' && c < l) c++;
++		inside_quotes = 0;
++		while (s_buf[c] != 8 && ( s_buf[c] != ' ' || inside_quotes) && s_buf[c] != '\n' && c < l)
++			{
++			/* this is an ugly hack, which does not sanitize value inside quotes */
++			if (s_buf[c] == '"') inside_quotes = !inside_quotes;
++			c++;
++			}
+ 		s_buf[c] = '\0';
+ 		strncpy(option, s_buf, sizeof(option));
+ 		strncpy(value, s_buf_ptr, sizeof(value));

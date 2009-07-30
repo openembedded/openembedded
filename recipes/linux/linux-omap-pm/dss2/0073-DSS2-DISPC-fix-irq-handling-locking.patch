@@ -1,0 +1,225 @@
+From a4df82191832d6b384da9b6a07328ac404db9393 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Sat, 23 May 2009 18:00:21 +0300
+Subject: [PATCH 073/146] DSS2: DISPC: fix irq handling locking
+
+---
+ drivers/video/omap2/dss/dispc.c |   74 +++++++++++++++++++++++---------------
+ 1 files changed, 45 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index b0e4960..b3685b2 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -154,23 +154,20 @@ static struct {
+ 
+ 	struct clk	*dpll4_m4_ck;
+ 
+-	spinlock_t	irq_lock;
+-
+ 	unsigned long	cache_req_pck;
+ 	unsigned long	cache_prate;
+ 	struct dispc_clock_info cache_cinfo;
+ 
+-	u32		irq_error_mask;
++	spinlock_t irq_lock;
++	u32 irq_error_mask;
+ 	struct omap_dispc_isr_data registered_isr[DISPC_MAX_NR_ISRS];
+-
+-	spinlock_t error_lock;
+ 	u32 error_irqs;
+ 	struct work_struct error_work;
+ 
+ 	u32		ctx[DISPC_SZ_REGS / sizeof(u32)];
+ } dispc;
+ 
+-static void omap_dispc_set_irqs(void);
++static void _omap_dispc_set_irqs(void);
+ 
+ static inline void dispc_write_reg(const struct dispc_reg idx, u32 val)
+ {
+@@ -1691,10 +1688,13 @@ void dispc_enable_digit_out(bool enable)
+ 	}
+ 
+ 	if (enable) {
++		unsigned long flags;
+ 		/* When we enable digit output, we'll get an extra digit
+ 		 * sync lost interrupt, that we need to ignore */
++		spin_lock_irqsave(&dispc.irq_lock, flags);
+ 		dispc.irq_error_mask &= ~DISPC_IRQ_SYNC_LOST_DIGIT;
+-		omap_dispc_set_irqs();
++		_omap_dispc_set_irqs();
++		spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ 	}
+ 
+ 	/* When we disable digit output, we need to wait until fields are done.
+@@ -1728,9 +1728,12 @@ void dispc_enable_digit_out(bool enable)
+ 		DSSERR("failed to unregister EVSYNC isr\n");
+ 
+ 	if (enable) {
++		unsigned long flags;
++		spin_lock_irqsave(&dispc.irq_lock, flags);
+ 		dispc.irq_error_mask = DISPC_IRQ_MASK_ERROR;
+ 		dispc_write_reg(DISPC_IRQSTATUS, DISPC_IRQ_SYNC_LOST_DIGIT);
+-		omap_dispc_set_irqs();
++		_omap_dispc_set_irqs();
++		spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ 	}
+ 
+ 	enable_clocks(0);
+@@ -2508,14 +2511,14 @@ int dispc_get_clock_div(struct dispc_clock_info *cinfo)
+ 	return 0;
+ }
+ 
+-static void omap_dispc_set_irqs(void)
++/* dispc.irq_lock has to be locked by the caller */
++static void _omap_dispc_set_irqs(void)
+ {
+-	unsigned long flags;
+-	u32 mask = dispc.irq_error_mask;
++	u32 mask;
+ 	int i;
+ 	struct omap_dispc_isr_data *isr_data;
+ 
+-	spin_lock_irqsave(&dispc.irq_lock, flags);
++	mask = dispc.irq_error_mask;
+ 
+ 	for (i = 0; i < DISPC_MAX_NR_ISRS; i++) {
+ 		isr_data = &dispc.registered_isr[i];
+@@ -2528,9 +2531,8 @@ static void omap_dispc_set_irqs(void)
+ 
+ 	enable_clocks(1);
+ 	dispc_write_reg(DISPC_IRQENABLE, mask);
+-	enable_clocks(0);
+ 
+-	spin_unlock_irqrestore(&dispc.irq_lock, flags);
++	enable_clocks(0);
+ }
+ 
+ int omap_dispc_register_isr(omap_dispc_isr_t isr, void *arg, u32 mask)
+@@ -2571,11 +2573,14 @@ int omap_dispc_register_isr(omap_dispc_isr_t isr, void *arg, u32 mask)
+ 
+ 		break;
+ 	}
+-err:
++
++	_omap_dispc_set_irqs();
++
+ 	spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ 
+-	if (ret == 0)
+-		omap_dispc_set_irqs();
++	return 0;
++err:
++	spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -2606,10 +2611,10 @@ int omap_dispc_unregister_isr(omap_dispc_isr_t isr, void *arg, u32 mask)
+ 		break;
+ 	}
+ 
+-	spin_unlock_irqrestore(&dispc.irq_lock, flags);
+-
+ 	if (ret == 0)
+-		omap_dispc_set_irqs();
++		_omap_dispc_set_irqs();
++
++	spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -2645,11 +2650,15 @@ static void print_irq_status(u32 status)
+ void dispc_irq_handler(void)
+ {
+ 	int i;
+-	u32 irqstatus = dispc_read_reg(DISPC_IRQSTATUS);
++	u32 irqstatus;
+ 	u32 handledirqs = 0;
+ 	u32 unhandled_errors;
+ 	struct omap_dispc_isr_data *isr_data;
+ 
++	spin_lock(&dispc.irq_lock);
++
++	irqstatus = dispc_read_reg(DISPC_IRQSTATUS);
++
+ #ifdef DEBUG
+ 	if (dss_debug)
+ 		print_irq_status(irqstatus);
+@@ -2673,15 +2682,15 @@ void dispc_irq_handler(void)
+ 	unhandled_errors = irqstatus & ~handledirqs & dispc.irq_error_mask;
+ 
+ 	if (unhandled_errors) {
+-		spin_lock(&dispc.error_lock);
+ 		dispc.error_irqs |= unhandled_errors;
+-		spin_unlock(&dispc.error_lock);
+ 
+ 		dispc.irq_error_mask &= ~unhandled_errors;
+-		omap_dispc_set_irqs();
++		_omap_dispc_set_irqs();
+ 
+ 		schedule_work(&dispc.error_work);
+ 	}
++
++	spin_unlock(&dispc.irq_lock);
+ }
+ 
+ static void dispc_error_worker(struct work_struct *work)
+@@ -2690,10 +2699,10 @@ static void dispc_error_worker(struct work_struct *work)
+ 	u32 errors;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&dispc.error_lock, flags);
++	spin_lock_irqsave(&dispc.irq_lock, flags);
+ 	errors = dispc.error_irqs;
+ 	dispc.error_irqs = 0;
+-	spin_unlock_irqrestore(&dispc.error_lock, flags);
++	spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ 
+ 	if (errors & DISPC_IRQ_GFX_FIFO_UNDERFLOW) {
+ 		DSSERR("GFX_FIFO_UNDERFLOW, disabling GFX\n");
+@@ -2836,8 +2845,10 @@ static void dispc_error_worker(struct work_struct *work)
+ 		}
+ 	}
+ 
++	spin_lock_irqsave(&dispc.irq_lock, flags);
+ 	dispc.irq_error_mask |= errors;
+-	omap_dispc_set_irqs();
++	_omap_dispc_set_irqs();
++	spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ }
+ 
+ int omap_dispc_wait_for_irq_timeout(u32 irqmask, unsigned long timeout)
+@@ -2921,6 +2932,10 @@ void dispc_fake_vsync_irq(void)
+ 
+ static void _omap_dispc_initialize_irq(void)
+ {
++	unsigned long flags;
++
++	spin_lock_irqsave(&dispc.irq_lock, flags);
++
+ 	memset(dispc.registered_isr, 0, sizeof(dispc.registered_isr));
+ 
+ 	dispc.irq_error_mask = DISPC_IRQ_MASK_ERROR;
+@@ -2929,7 +2944,9 @@ static void _omap_dispc_initialize_irq(void)
+ 	 * so clear it */
+ 	dispc_write_reg(DISPC_IRQSTATUS, dispc_read_reg(DISPC_IRQSTATUS));
+ 
+-	omap_dispc_set_irqs();
++	_omap_dispc_set_irqs();
++
++	spin_unlock_irqrestore(&dispc.irq_lock, flags);
+ }
+ 
+ void dispc_enable_sidle(void)
+@@ -2970,7 +2987,6 @@ int dispc_init(void)
+ 	u32 rev;
+ 
+ 	spin_lock_init(&dispc.irq_lock);
+-	spin_lock_init(&dispc.error_lock);
+ 
+ 	INIT_WORK(&dispc.error_work, dispc_error_worker);
+ 
+-- 
+1.6.2.4
+

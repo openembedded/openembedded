@@ -1,0 +1,68 @@
+From f41bc6591494db0698b5f0f6bcf01ee6050c732f Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Fri, 22 May 2009 17:23:57 +0200
+Subject: [PATCH 076/146] DSS2: Fix PAL/NTSC timings
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Fix the PAL/NTSC video timings. Only some of these values are actually
+specified for digital video, the rest were calculated based on the the
+analog timings. The analog timings differ from the digital timings
+anyway but these should be close to the truth. These values aren't
+actually needed by the VENC but it doesn't hurt to make them a bit more
+accurate.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/dss/venc.c |   28 ++++++++++++++--------------
+ 1 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/venc.c b/drivers/video/omap2/dss/venc.c
+index 0cbba9f..02286b8 100644
+--- a/drivers/video/omap2/dss/venc.c
++++ b/drivers/video/omap2/dss/venc.c
+@@ -263,26 +263,26 @@ static const struct venc_config venc_config_pal_bdghi = {
+ const struct omap_video_timings omap_dss_pal_timings = {
+ 	.x_res = 720,
+ 	.y_res = 574,
+-	.pixel_clock = 26181,
+-	.hsw = 32,
+-	.hfp = 80,
+-	.hbp = 48,
+-	.vsw = 7,
+-	.vfp = 3,
+-	.vbp = 6,
++	.pixel_clock = 13500,
++	.hsw = 64,
++	.hfp = 12,
++	.hbp = 68,
++	.vsw = 5,
++	.vfp = 5,
++	.vbp = 41,
+ };
+ EXPORT_SYMBOL(omap_dss_pal_timings);
+ 
+ const struct omap_video_timings omap_dss_ntsc_timings = {
+ 	.x_res = 720,
+ 	.y_res = 482,
+-	.pixel_clock = 22153,
+-	.hsw = 32,
+-	.hfp = 80,
+-	.hbp = 48,
+-	.vsw = 10,
+-	.vfp = 3,
+-	.vbp = 6,
++	.pixel_clock = 13500,
++	.hsw = 64,
++	.hfp = 16,
++	.hbp = 58,
++	.vsw = 6,
++	.vfp = 6,
++	.vbp = 31,
+ };
+ EXPORT_SYMBOL(omap_dss_ntsc_timings);
+ 
+-- 
+1.6.2.4
+
