@@ -1,6 +1,8 @@
 DESCRIPTION = "Gnome videoconferencing application"
 LICENSE = "GPLv2"
 
+PE = "1"
+
 ARM_INSTRUCTION_SET = "arm"
 
 inherit gnome

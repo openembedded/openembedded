@@ -1,4 +1,5 @@
 PR = "r1"
+PE = "1"
 
 SRC_URI = "http://kexecboot.home.linuxtogo.org/kexecboot-${PV}.tar.gz"
 

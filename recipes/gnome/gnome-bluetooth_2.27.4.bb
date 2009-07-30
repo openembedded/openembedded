@@ -1,6 +1,8 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome"
 
+PE = "1"
+
 inherit autotools gnome pkgconfig
 
 DEPENDS = "obexd obex-data-server gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"

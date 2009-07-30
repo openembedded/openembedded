@@ -1,6 +1,7 @@
 require midori.inc
 
 PR = "r1"
+PE = "1"
 
 DEPENDS += "python-native python-docutils-native"
 

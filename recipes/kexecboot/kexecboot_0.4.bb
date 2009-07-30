@@ -1,4 +1,5 @@
 PR = "r6"
+PE = "1"
 
 SRC_URI = "http://kexecboot.home.linuxtogo.org/kexecboot-${PV}.tar.gz \
 	file://add-reboot-option.patch;patch=1 \

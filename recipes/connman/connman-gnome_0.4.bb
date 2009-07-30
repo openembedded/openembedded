@@ -4,6 +4,7 @@ SECTION = "libs/network"
 LICENSE = "GPL"
 DEPENDS = "gtk+ dbus"
 PR = "r7"
+PE = "1"
 
 RRECOMMENDS_${PN} = "connman connman-plugin-ethernet connman-plugin-loopback connman-plugin-udhcp connman-plugin-wifi"
 

@@ -8,6 +8,7 @@ SRC_URI = "svn://svn.gnome.org/svn/${PN};module=trunk;rev=${GBTREV};proto=http"
 S = "${WORKDIR}/trunk"
 PV = "2.27.3+svnr${GBTREV}"
 PR = "r1"
+PE = "1"
 
 DEPENDS = "obexd obex-data-server gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
 RRECOMMENDS_${PN} += "obexd obex-data-server"
