@@ -35,5 +35,7 @@ PREFERRED_VERSION_pkgconfig     = "0.23"
 PREFERRED_VERSION_pkgconfig-native = "0.23"
 PREFERRED_VERSION_pulseaudio    = "0.9.10"
 PREFERRED_VERSION_tiff          = "3.8.2+4.0.0beta2"
+PREFERRED_VERSION_vala 		= "0.7.3"
+PREFERRED_VERSION_vala-native 	= "0.7.4+0.7.5-fso2"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
 
