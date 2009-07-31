@@ -3,7 +3,7 @@ DEPENDS = "zlib-native dbus-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "LGPLv2.1 GPLv3"
 
 inherit sdk
 
