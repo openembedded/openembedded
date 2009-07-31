@@ -6,6 +6,8 @@ QT_CONFIG_FLAGS += "-D QT_QWS_CLIENTBLIT -depths 16,24,32 -opengl es1 -plugin-gf
 
 require qt4-embedded_${PV}.bb
 
+LICENSE = "LGPLv2.1 GPLv3"
+
 DEPENDS += "virtual/egl"
 SRC_URI += "file://sgx-hack.patch;patch=1"
 
