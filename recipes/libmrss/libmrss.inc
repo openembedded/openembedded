@@ -8,7 +8,7 @@ INC_PR = "r1"
 inherit autotools pkgconfig
 
 SRC_URI = "http://www.autistici.org/bakunin/libmrss/libmrss-${PV}.tar.gz \
-           file://better-parse-url-r0.patch;patch=1                       "
+          "
 
 do_stage() {
     autotools_stage_all
