@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 
 DEPENDS = "curl"
 
-INC_PR = "0"
+INC_PR = "r0"
 
 inherit autotools pkgconfig
 
