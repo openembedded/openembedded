@@ -1,5 +1,5 @@
 SECTION = "base"
-require uclibc_svn.bb
+require uclibc_git.bb
 
 DEPENDS = "linux-libc-headers ncurses-native virtual/${TARGET_PREFIX}gcc-initial"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
