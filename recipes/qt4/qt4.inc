@@ -123,11 +123,11 @@ do_configure() {
     unset QMAKESPEC
     unset QTDIR
 
-    if [! -e bin/qmake]; then
+    if [ ! -e bin/qmake ]; then
         ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
     fi
 
-    if [! -e mkspecs/${TARGET_OS}-oe-g++]; then
+    if [ ! -e mkspecs/${TARGET_OS}-oe-g++ ]; then
         ln -sf linux-g++ mkspecs/${TARGET_OS}-oe-g++
     fi
 
