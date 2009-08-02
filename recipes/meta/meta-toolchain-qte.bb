@@ -1,11 +1,12 @@
 # Qt Embedded toolchain
-
-require meta-toolchain.bb
-
+PR = "r1"
 TOOLCHAIN_HOST_TASK = "task-qte-toolchain-host"
 TOOLCHAIN_TARGET_TASK = "task-qte-toolchain-target"
 
+require meta-toolchain.bb
 SDK_SUFFIX = "toolchain-qte"
+
+
 QT_DIR_NAME = "qtopia"
 
 do_populate_sdk_append() {
