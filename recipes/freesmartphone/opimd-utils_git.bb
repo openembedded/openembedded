@@ -4,8 +4,8 @@ SHR_RELEASE ?= "shr"
 LICENSE ?= "GPL"
 RDEPENDS = "python-elementary python-dbus python-codecs python-shell python python-core python-edbus shr-settings frameworkd pyphonelog shr-theme"
 SECTION = "x11/application"
-PV = "0.0.1+gitr${SRCPV}"
-PR = "r4"
+PV = "0.0.2+gitr${SRCPV}"
+PR = "r0"
 
 inherit setuptools
 
