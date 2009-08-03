@@ -1,6 +1,6 @@
-include qt4-embedded.inc
+require qt4-embedded.inc
 
 PR = "${INC_PR}.1"
 
-LICENSE += "LGPL"
+LICENSE = "LGPLv2.1 GPLv3"
 SRC_URI += "file://0010-no-simpledecoration-example.patch;patch=1"

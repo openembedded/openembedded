@@ -7,9 +7,9 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.30"
-PV = "${UCLIBC_BASE}+svnr${SRCREV}"
+SRCREV="b1913a876059949e6c309bafade55e9425ef33fb"
+PV = "${UCLIBC_BASE}+gitr${SRCREV}"
 PR = "r1"
-#DEFAULT_PREFERENCE = "2"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
@@ -19,13 +19,15 @@ PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-FILESPATHPKG =. "uclibc-svn:uclibc-${UCLIBC_BASE}:"
+FILESPATHPKG =. "uclibc-git:uclibc-${UCLIBC_BASE}:"
 
 #as stated above, uclibc needs real kernel-headers
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 
-SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
+SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
+	${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
+	file://uClibc.config \
 	file://uClibc.machine \
 	file://uClibc.distro \
 	file://uclibc-arm-ftruncate64.patch;patch=1 \
@@ -33,4 +35,4 @@ SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
 	file://uclibc_ldso_use_O0.patch;patch=1 \
 	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
 	"
-S = "${WORKDIR}/uClibc"
+S = "${WORKDIR}/git"

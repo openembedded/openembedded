@@ -216,6 +216,9 @@ def base_package_name(d):
 		pn = pn[0:-8]
   elif pn.endswith("-intermediate"):
 		pn = pn[0:-13]
+  elif pn.endswith("-sdk"):
+		pn = pn[0:-4]
+
 
   return pn
 

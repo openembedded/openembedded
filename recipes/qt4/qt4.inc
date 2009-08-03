@@ -122,8 +122,15 @@ FILES_${QT_BASE_NAME}-mkspecs              = "${datadir}/${QT_DIR_NAME}/mkspecs/
 do_configure() {
     unset QMAKESPEC
     unset QTDIR
-    ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
-    ln -sf linux-g++ mkspecs/${TARGET_OS}-oe-g++
+
+    if [ ! -e bin/qmake ]; then
+        ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
+    fi
+
+    if [ ! -e mkspecs/${TARGET_OS}-oe-g++ ]; then
+        ln -sf linux-g++ mkspecs/${TARGET_OS}-oe-g++
+    fi
+
     cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf mkspecs/common/
 
     echo "[Paths]"                                 > $QT_CONF_PATH

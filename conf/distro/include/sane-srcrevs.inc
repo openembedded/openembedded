@@ -249,8 +249,6 @@ SRCREV_pn-toscoterm ?= "f02add76f365a2fecd2dbefc230ceaab20244f96"
 SRCREV_pn-u-boot-bug ?= "8674"
 SRCREV_pn-u-boot-openmoko ?= "650149a53dbdd48bf6dfef90930c8ab182adb512"
 SRCREV_pn-u-boot-openmoko-devel ?= "ba029a1426bfca169572bf80d50a8b190a6b0e19"
-SRCREV_pn-uclibc ?= "25712"
-SRCREV_pn-uclibc-initial ?= "25712"
 SRCREV_pn-usbpath ?= "3172"
 SRCREV_pn-usbpath-native ?= "3172"
 SRCREV-pn-vala-dbus-binding-tool-native ?= "55a6bc5dd032731d89c238d274b2898ef02d12f8"
@@ -268,7 +266,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "41038"
+EFL_SRCREV ?= "41533"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
