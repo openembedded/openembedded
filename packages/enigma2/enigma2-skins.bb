@@ -1,7 +1,7 @@
 DESCRIPTION = "Skins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20090303"
+SRCDATE = "20090729"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
