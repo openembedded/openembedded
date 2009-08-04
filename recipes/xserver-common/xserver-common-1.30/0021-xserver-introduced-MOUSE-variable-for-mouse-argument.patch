@@ -1,0 +1,63 @@
+From 3ada7e341334766f6be27164dbb43a3715faf580 Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Tue, 21 Jul 2009 13:36:17 +0200
+Subject: [PATCH 21/22] xserver: introduced MOUSE variable for "-mouse" argument
+
+MOUSE is not passed in ARGS if Xorg server is used as it is KDrive only.
+
+Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+---
+ X11/Xserver |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/X11/Xserver b/X11/Xserver
+index 25ce816..e7e88d9 100755
+--- a/X11/Xserver
++++ b/X11/Xserver
+@@ -46,19 +46,20 @@ export XSERVER_DEFAULT_ORIENTATION=normal
+ 
+ ARGS="-br -pn $INPUT_EXTRA_ARGS"
+ DPI="100"
++MOUSE=""
+ 
+ # use ucb 1x00 touchscreen if present
+ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
+-  ARGS="$ARGS -mouse /dev/touchscreen/ucb1x00"
++  MOUSE="-mouse /dev/touchscreen/ucb1x00"
+ fi
+ 
+ # kdrive 1.4 onwards needs -mouse args
+ # Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
+ if [ -e "$TSLIB_TSDEVICE" ] ; then
+-  ARGS="$ARGS -mouse tslib"
++  MOUSE="-mouse tslib"
+ else
+   if  [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ] ; then
+-    ARGS="$ARGS -mouse mouse"
++    MOUSE="-mouse mouse"
+   fi
+ fi
+ 
+@@ -103,7 +104,7 @@ else
+ 		    ARGS="$ARGS -rgba rgb"
+ 		    DPI="100" ;;
+ 	    "generic_omap1510/1610/1710")
+-		    ARGS="$ARGS -mouse /dev/input/event0"
++		    MOUSE="-mouse /dev/input/event0"
+ 		    DPI="220" ;;
+ 	    "ti-osk")
+ 		    DPI="100" ;;
+@@ -183,6 +184,10 @@ else
+     esac
+ fi
+ 
++if [ "$XSERVER" != "Xorg" ] ; then
++    ARGS="$ARGS $MOUSE"
++fi
++
+ echo "tslib: $TSLIB_TSDEVICE"
+ echo "exec $XSERVER $ARGS -dpi $DPI $*"
+ exec $XSERVER $ARGS -dpi $DPI $*
+-- 
+1.6.3.3
+
