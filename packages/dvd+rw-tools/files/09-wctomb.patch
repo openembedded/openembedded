@@ -1,0 +1,15 @@
+Author: Kees Cook <kees@debian.org>
+Description: wctomb called with too small a buffer, patch originally taken from fedora (Closes: #497833).
+
+diff -Naurp dvd-rw-tools.orig/transport.hxx dvd-rw-tools/transport.hxx
+--- dvd-rw-tools.orig/transport.hxx	2009-02-05 09:01:23.000000000 +0000
++++ dvd-rw-tools/transport.hxx	2009-02-05 09:01:35.000000000 +0000
+@@ -124,7 +124,7 @@ class autofree {
+ extern "C" char *plusminus_locale()
+ { static class __plusminus {
+     private:
+-	char str[4];
++	char str[MB_LEN_MAX];
+     public:
+ 	__plusminus()	{   setlocale(LC_CTYPE,ENV_LOCALE);
+ 			    int l = wctomb(str,(wchar_t)(unsigned char)'±');

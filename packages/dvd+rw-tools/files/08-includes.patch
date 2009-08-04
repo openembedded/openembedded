@@ -1,0 +1,14 @@
+Author: Daniel Schepler <schepler@math.unipd.it>
+Description: Add missing include in transport.hxx, fixes FTBFS with gcc-4.2 and gcc-4.3 (Closes: #455276, #456551).
+
+diff -Naurp dvd+rw-tools.orig/transport.hxx dvd+rw-tools/transport.hxx
+--- dvd+rw-tools.orig/transport.hxx	2008-04-01 09:04:51.000000000 +0000
++++ dvd+rw-tools/transport.hxx	2008-04-01 09:23:09.000000000 +0000
+@@ -16,6 +16,7 @@
+ #include <fcntl.h>
+ #include <poll.h>
+ #include <sys/time.h>
++#include <limits.h>
+ 
+ inline long getmsecs()
+ { struct timeval tv;
