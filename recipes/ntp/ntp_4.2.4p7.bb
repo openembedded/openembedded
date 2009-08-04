@@ -1,9 +1,8 @@
 require ntp.inc
 
-PR = "r2"
+PR = "r0"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
-	file://ipv6only-workaround.patch;patch=1 \
 	file://tickadj.c.patch;patch=1 \
         file://ntp-4.2.4_p6-nano.patch;patch=1 \
 	file://ntpd \
