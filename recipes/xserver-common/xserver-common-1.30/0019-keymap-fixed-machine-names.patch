@@ -1,0 +1,59 @@
+From e564699c60d69148e19150dc9d2105734b1df7e1 Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Mon, 20 Jul 2009 18:58:54 +0200
+Subject: [PATCH 19/22] keymap: fixed machine names
+
+
+Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+---
+ X11/Xinit.d/12keymap |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/X11/Xinit.d/12keymap b/X11/Xinit.d/12keymap
+index 0a909d0..cfa9750 100644
+--- a/X11/Xinit.d/12keymap
++++ b/X11/Xinit.d/12keymap
+@@ -1,31 +1,31 @@
+ #!/bin/sh
+ 
+-MACHINE=`awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo`
++. /etc/init.d/functions
+ 
+ # since kdrive 1.4 there is no default keymap in server
+ xmodmap - </etc/X11/xmodmap/default.xmodmap
+ 
+-case $MACHINE in
+-	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
++case `machine_id` in
++	"sharp shepherd" | "sharp husky" | "sharp corgi")
+ 		xmodmap - < /etc/X11/xmodmap/shepherd.xmodmap
+ 		;;
+-	"SHARP Akita" | "SHARP Borzoi" | "SHARP Spitz")
++	"sharp akita" | "sharp borzoi" | "sharp spitz")
+ 		xmodmap - < /etc/X11/xmodmap/slcXXXX.xmodmap
+ 		;;				
+-	"SHARP Poodle")
++	"sharp poodle")
+ 		xmodmap - < /etc/X11/xmodmap/poodle.xmodmap
+ 		;;
+-        "Sharp-Collie")
++        "sharp-collie")
+                 xmodmap - < /etc/X11/xmodmap/collie.xmodmap
+                 ;;
+-	"HP iPAQ h6300")
++	"hp ipaq h6300")
+ 		xmodmap - < /etc/X11/xmodmap/h6300.xmodmap
+ 		;;
+-	"TI-OSK")
++	"ti-osk")
+ 		xmodmap - < /etc/X11/xmodmap/omap5912osk.xmodmap
+ 		;;
+ 	# All the rest of keyboardless PDA machines use common buttonmap
+-	"Simpad" | "HP iPAQ"* | "Asus MyPal"*)
++	"simpad" | "hp ipaq"* | "asus mypal"*)
+ 		xmodmap - < /etc/X11/xmodmap/keyboardless.xmodmap
+ 		;;
+ esac
+-- 
+1.6.3.3
+

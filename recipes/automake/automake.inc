@@ -12,6 +12,7 @@ RDEPENDS_automake += "\
     perl-module-file-compare \
     perl-module-file-copy \
     perl-module-file-glob \
+    perl-module-file-path \
     perl-module-file-spec-unix \
     perl-module-file-stat \
     perl-module-getopt-long \

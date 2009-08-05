@@ -5,7 +5,7 @@ LICENSE = "GPL LGPL AFL"
 
 DEFAULT_PREFERENCE = "-1"
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat libusb-compat"
+DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat virtual/libusb0"
 RDEPENDS_${PN} += "udev-utils hal-info"
 
 SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \

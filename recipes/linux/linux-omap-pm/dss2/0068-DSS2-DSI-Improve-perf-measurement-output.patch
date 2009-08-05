@@ -1,0 +1,127 @@
+From ba927a58cb0bc990839f4278e0fc71529cb4dc70 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 22 May 2009 12:59:41 +0300
+Subject: [PATCH 068/146] DSS2: DSI: Improve perf-measurement output
+
+---
+ drivers/video/omap2/dss/dsi.c |   67 +++++++++++++++++++++++++++++-----------
+ 1 files changed, 48 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index 67ecfcf..057b057 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -294,6 +294,7 @@ static struct
+ #ifdef DEBUG
+ 	ktime_t perf_setup_time;
+ 	ktime_t perf_start_time;
++	ktime_t perf_start_time_auto;
+ 	int perf_measure_frames;
+ 
+ 	struct {
+@@ -360,13 +361,16 @@ static void perf_mark_start(void)
+ 	dsi.perf_start_time = ktime_get();
+ }
+ 
++static void perf_mark_start_auto(void)
++{
++	dsi.perf_start_time_auto = ktime_get();
++}
++
+ static void perf_show(const char *name)
+ {
+ 	ktime_t t, setup_time, trans_time;
+ 	u32 total_bytes;
+ 	u32 setup_us, trans_us, total_us;
+-	const int numframes = 100;
+-	static u32 s_trans_us, s_min_us = 0xffffffff, s_max_us;
+ 
+ 	if (!dsi_perf)
+ 		return;
+@@ -393,34 +397,57 @@ static void perf_show(const char *name)
+ 		dsi.update_region.bytespp;
+ 
+ 	if (dsi.update_mode == OMAP_DSS_UPDATE_AUTO) {
++		static u32 s_total_trans_us, s_total_setup_us;
++		static u32 s_min_trans_us = 0xffffffff, s_min_setup_us;
++		static u32 s_max_trans_us, s_max_setup_us;
++		const int numframes = 100;
++		ktime_t total_time_auto;
++		u32 total_time_auto_us;
++
+ 		dsi.perf_measure_frames++;
+ 
+-		if (trans_us < s_min_us)
+-			s_min_us = trans_us;
++		if (setup_us < s_min_setup_us)
++			s_min_setup_us = setup_us;
++
++		if (setup_us > s_max_setup_us)
++			s_max_setup_us = setup_us;
+ 
+-		if (trans_us > s_max_us)
+-			s_max_us = trans_us;
++		s_total_setup_us += setup_us;
+ 
+-		s_trans_us += trans_us;
++		if (trans_us < s_min_trans_us)
++			s_min_trans_us = trans_us;
++
++		if (trans_us > s_max_trans_us)
++			s_max_trans_us = trans_us;
++
++		s_total_trans_us += trans_us;
+ 
+ 		if (dsi.perf_measure_frames < numframes)
+ 			return;
+ 
+-		DSSINFO("%s update: %d frames in %u us "
+-				"(min/max/avg %u/%u/%u), %u fps\n",
+-				name, numframes,
+-				s_trans_us,
+-				s_min_us,
+-				s_max_us,
+-				s_trans_us / numframes,
+-				1000*1000 / (s_trans_us / numframes));
++		total_time_auto = ktime_sub(t, dsi.perf_start_time_auto);
++		total_time_auto_us = (u32)ktime_to_us(total_time_auto);
++
++		printk("DSI(%s): %u fps, setup %u/%u/%u, trans %u/%u/%u\n",
++				name,
++				1000 * 1000 * numframes / total_time_auto_us,
++				s_min_setup_us,
++				s_max_setup_us,
++				s_total_setup_us / numframes,
++				s_min_trans_us,
++				s_max_trans_us,
++				s_total_trans_us / numframes);
+ 
+ 		dsi.perf_measure_frames = 0;
+-		s_trans_us = 0;
+-		s_min_us = 0xffffffff;
+-		s_max_us = 0;
++		s_total_setup_us = 0;
++		s_min_setup_us = 0xffffffff;
++		s_max_setup_us = 0;
++		s_total_trans_us = 0;
++		s_min_trans_us = 0xffffffff;
++		s_max_trans_us = 0;
++		perf_mark_start_auto();
+ 	} else {
+-		DSSINFO("%s update %u us + %u us = %u us (%uHz), %u bytes, "
++		printk("DSI(%s): %u us + %u us = %u us (%uHz), %u bytes, "
+ 				"%u kbytes/sec\n",
+ 				name,
+ 				setup_us,
+@@ -2814,6 +2841,8 @@ static void dsi_start_auto_update(struct omap_display *display)
+ 	dsi.autoupdate_setup = 1;
+ 
+ 	dsi_push_autoupdate(display);
++
++	perf_mark_start_auto();
+ }
+ 
+ 
+-- 
+1.6.2.4
+

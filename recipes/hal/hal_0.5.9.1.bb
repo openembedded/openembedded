@@ -3,7 +3,7 @@ HOMEPAGE = "http://freedesktop.org/Software/hal"
 SECTION = "unknown"
 LICENSE = "GPL LGPL AFL"
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat libusb-compat"
+DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat virtual/libusb0"
 RDEPENDS_${PN} += "udev-utils hal-info"
 
 PR = "r9"

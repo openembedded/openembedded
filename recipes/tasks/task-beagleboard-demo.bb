@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r10"
+PR = "r12"
 
 inherit task 
 
@@ -15,10 +15,10 @@ RDEPENDS_${PN} = "\
     angstrom-zeroconf-audio \
     angstrom-led-config \ 
     gpe-scap \
-    mime-support e-wm ${ECONFIG} exhibit \
+    mime-support e-wm ${ECONFIG} \
     xterm xmms \
     firefox midori \
-    swfdec-mozilla \
+    gnash gnash-browser-plugin \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
     abiword \

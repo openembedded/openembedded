@@ -1,6 +1,6 @@
 inherit qmake_base
 
-DEPENDS += "qt4-tools-native freetype jpeg libpng zlib dbus openssl glib-2.0 gstreamer gst-plugins-base"
+DEPENDS += "qt4-tools-native freetype jpeg libpng zlib dbus openssl glib-2.0 gstreamer gst-plugins-base mysql postgresql sqlite sqlite3"
 
 require qt4_arch.inc
 QT_ARCH := "${@qt_arch(d)}"
@@ -9,7 +9,7 @@ QT_ENDIAN = "${@qt_endian(d)}"
 QT_CONFIG_FLAGS += "-release -no-cups -no-accessibility -reduce-relocations \
                     -shared -no-nas-sound -no-sm -no-nis \
                     -qt-gif -system-libjpeg -system-libpng -system-zlib \
-                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
+                    -no-sql-ibase -plugin-sql-mysql -no-sql-odbc -plugin-sql-psql -plugin-sql-sqlite -plugin-sql-sqlite2 \
                     -no-pch -qdbus -stl -glib -phonon -webkit"
 
 EXTRA_OEMAKE = "-e"
@@ -24,6 +24,9 @@ export QT_CONF_PATH="${WORKDIR}/qt.conf"
 
 # Library packages
 QT_LIB_NAMES = "Qt3Support QtAssistantClient QtCLucene QtCore QtDBus QtDesigner QtDesignerComponents QtGui QtHelp QtNetwork QtOpenGL QtScript QtScriptTools QtSql QtSvg QtTest QtUiTools QtWebKit QtXml phonon"
+
+QT_EXTRA_LIBS = "pvrQWSWSEGL"
+
 python __anonymous () {
     import bb
 
@@ -47,6 +50,20 @@ python __anonymous () {
         dbg_packages.append("%s-dbg" % pkg)
     for name in bb.data.getVar("OTHER_PACKAGES", d, 1).split():
         dbg_packages.append("%s-dbg" % name)
+
+    for name in bb.data.getVar("QT_EXTRA_LIBS", d, 1).split():
+        pkg = "${QT_BASE_LIB}" + name.lower().replace("qt", "") + "4"
+        bb.data.setVar("FILES_%s" % pkg, "${libdir}/lib%(name)s.so.*" % locals(), d)
+        bb.data.setVar("FILES_%s-dev" % pkg, """${libdir}/lib%(name)s.prl
+                  ${libdir}/lib%(name)s.a
+                  ${libdir}/lib%(name)s.la
+                  ${libdir}/lib%(name)s.so
+                  ${includedir}/${QT_DIR_NAME}/%(incname)s
+                  ${libdir}/pkgconfig/%(name)s.pc""" % locals(), d)
+        bb.data.setVar("FILES_%s-dbg" % pkg, "${libdir}/.debug/lib%(name)s.so.*" % locals(), d)
+        lib_packages.append(pkg)
+        dev_packages.append("%s-dev" % pkg)
+        dbg_packages.append("%s-dbg" % pkg)
 
     bb.data.setVar("LIB_PACKAGES", " ".join(lib_packages), d)
     bb.data.setVar("DEV_PACKAGES", " ".join(dev_packages), d)
@@ -85,11 +102,11 @@ FILES_${QT_BASE_NAME}-common-dbg           = "${bindir}/.debug/qtconfig"
 FILES_${QT_BASE_NAME}-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
 FILES_${QT_BASE_NAME}-dbus-dbg             = "${bindir}/.debug/qdbus ${bindir}/.debug/qdbusxml2cpp ${bindir}/.debug/qdbuscpp2xml ${bindir}/.debug/qdbusviewer"
 FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_DIR_NAME}/demos/*"
-FILES_${QT_BASE_NAME}-demos-dbg            = "${bindir}/.debug/qtdemo ${bindir}/${QT_DIR_NAME}/demos/.debug/*"
+FILES_${QT_BASE_NAME}-demos-dbg            = "${bindir}/.debug/qtdemo ${bindir}/${QT_DIR_NAME}/demos/.debug/*  ${bindir}/${QT_DIR_NAME}/demos/*/.debug  ${bindir}/${QT_DIR_NAME}/demos/*/*/.debug  ${bindir}/${QT_DIR_NAME}/demos/*/*/*/.debug"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
 FILES_${QT_BASE_NAME}-designer-dbg         = "${bindir}/.debug/*designer*"
 FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_DIR_NAME}/examples/*"
-FILES_${QT_BASE_NAME}-examples-dbg         = "${bindir}/${QT_DIR_NAME}/examples/.debug/*"
+FILES_${QT_BASE_NAME}-examples-dbg         = "${bindir}/${QT_DIR_NAME}/examples/.debug ${bindir}/${QT_DIR_NAME}/examples/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/*/*/.debug"
 FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
 FILES_${QT_BASE_NAME}-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/lconvert ${bindir}/qm2ts"
 FILES_${QT_BASE_NAME}-linguist-dbg         = "${bindir}/.debug/*linguist* ${bindir}/.debug/lrelease ${bindir}/.debug/lupdate ${bindir}/.debug/lconvert ${bindir}/.debug/qm2ts"
@@ -105,12 +122,19 @@ FILES_${QT_BASE_NAME}-mkspecs              = "${datadir}/${QT_DIR_NAME}/mkspecs/
 do_configure() {
     unset QMAKESPEC
     unset QTDIR
-    ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
-    ln -sf linux-g++ mkspecs/${TARGET_OS}-oe-g++
+
+    if [ ! -e bin/qmake ]; then
+        ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
+    fi
+
+    if [ ! -e mkspecs/${TARGET_OS}-oe-g++ ]; then
+        ln -sf linux-g++ mkspecs/${TARGET_OS}-oe-g++
+    fi
+
     cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf mkspecs/common/
 
     echo "[Paths]"                                 > $QT_CONF_PATH
-    echo "Prefix=${prefix}"                       >> $QT_CONF_PATH
+    echo "Prefix=${prefix}/"                      >> $QT_CONF_PATH
     echo "Documentation=${docdir}/${QT_DIR_NAME}" >> $QT_CONF_PATH
     echo "Headers=${includedir}/${QT_DIR_NAME}"   >> $QT_CONF_PATH
     echo "Libraries=${libdir}"                    >> $QT_CONF_PATH
@@ -122,8 +146,10 @@ do_configure() {
     echo "Examples=${bindir}/${QT_DIR_NAME}/examples" >> $QT_CONF_PATH
     echo "Demos=${bindir}/${QT_DIR_NAME}/demos"   >> $QT_CONF_PATH
 
+    ${EXTRA_QMAKE_MUNGE}|| true
+
     (echo o; echo yes) | ./configure -v \
-            -prefix ${prefix} \
+            -prefix ${prefix}/ \
             -bindir ${bindir} \
             -libdir ${libdir} \
             -datadir ${datadir}/${QT_DIR_NAME} \
@@ -140,7 +166,9 @@ do_configure() {
             -crossarch ${QT_ARCH} \
             ${QT_CONFIG_FLAGS} -fast \
             -L${STAGING_LIBDIR} -I${STAGING_INCDIR} \
-            -I${STAGING_INCDIR}/freetype2
+            -I${STAGING_INCDIR}/freetype2 \
+            -I${STAGING_INCDIR}/mysql \
+            -I${STAGING_INCDIR}/postgresql
 }
 
 do_compile() {
@@ -193,6 +221,7 @@ python populate_packages_prepend() {
         qtopia_split('decorations',   'decoration',    '^libqdecoration(.*)\.so$')
         qtopia_split('designer',      'designer',      '^lib(.*)\.so$')
         qtopia_split('gfxdrivers',    'gfxdriver',     '^libq(.*)\.so$')
+        qtopia_split('graphicssystems','graphicssystems', '^libq(.*)\.so$')
         qtopia_split('mousedrivers',  'mousedriver',   '^libq(.*)mousedriver\.so$')
         qtopia_split('iconengines',   'iconengine',    '^libq(.*)\.so$')
         qtopia_split('imageformats',  'imageformat',   '^libq(.*)\.so$')
@@ -205,12 +234,9 @@ python populate_packages_prepend() {
 
 do_install() {
     oe_runmake install INSTALL_ROOT=${D}
-
+	
     # These are host binaries, we should only use them in staging
     rm -rf ${D}/${bindir}/qmake
-
-    # XXX, FIXME, TODO: package the demos and examples properly
-    rm -rf ${D}/${bindir}/${QT_DIR_NAME}
 
     # fix pkgconfig, libtool and prl files
     sed -i -e s#-L${S}/lib##g \

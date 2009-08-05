@@ -1,0 +1,76 @@
+From 0d16c11a3df3e09cb8ba20883174f600ac3611b5 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 24 Jun 2009 14:55:54 +0300
+Subject: [PATCH 125/146] DSS2: VRAM: Add function to get free vram info
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/vram.h |    2 +
+ arch/arm/plat-omap/vram.c              |   38 ++++++++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/vram.h b/arch/arm/plat-omap/include/mach/vram.h
+index 8639e08..494ddde 100644
+--- a/arch/arm/plat-omap/include/mach/vram.h
++++ b/arch/arm/plat-omap/include/mach/vram.h
+@@ -28,6 +28,8 @@ extern int omap_vram_add_region(unsigned long paddr, size_t size);
+ extern int omap_vram_free(unsigned long paddr, size_t size);
+ extern int omap_vram_alloc(int mtype, size_t size, unsigned long *paddr);
+ extern int omap_vram_reserve(unsigned long paddr, size_t size);
++extern void omap_vram_get_info(unsigned long *vram, unsigned long *free_vram,
++		unsigned long *largest_free_block);
+ extern void omap2_set_sdram_vram(u32 size, u32 start);
+ extern void omap2_set_sram_vram(u32 size, u32 start);
+ 
+diff --git a/arch/arm/plat-omap/vram.c b/arch/arm/plat-omap/vram.c
+index f3ce849..d4a8110 100644
+--- a/arch/arm/plat-omap/vram.c
++++ b/arch/arm/plat-omap/vram.c
+@@ -398,6 +398,44 @@ int omap_vram_alloc(int mtype, size_t size, unsigned long *paddr)
+ }
+ EXPORT_SYMBOL(omap_vram_alloc);
+ 
++void omap_vram_get_info(unsigned long *vram,
++		unsigned long *free_vram,
++		unsigned long *largest_free_block)
++{
++	struct vram_region *vr;
++	struct vram_alloc *va;
++
++	*vram = 0;
++	*free_vram = 0;
++	*largest_free_block = 0;
++
++	mutex_lock(&region_mutex);
++
++	list_for_each_entry(vr, &region_list, list) {
++		unsigned free;
++		unsigned long pa;
++
++		pa = vr->paddr;
++		*vram += vr->pages << PAGE_SHIFT;
++
++		list_for_each_entry(va, &vr->alloc_list, list) {
++			free = va->paddr - pa;
++			*free_vram += free;
++			if (free > *largest_free_block)
++				*largest_free_block = free;
++			pa = va->paddr + (va->pages << PAGE_SHIFT);
++		}
++
++		free = vr->paddr + (vr->pages << PAGE_SHIFT) - pa;
++		*free_vram += free;
++		if (free > *largest_free_block)
++			*largest_free_block = free;
++	}
++
++	mutex_unlock(&region_mutex);
++}
++EXPORT_SYMBOL(omap_vram_get_info);
++
+ #if defined(CONFIG_DEBUG_FS)
+ static int vram_debug_show(struct seq_file *s, void *unused)
+ {
+-- 
+1.6.2.4
+

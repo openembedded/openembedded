@@ -1,13 +1,14 @@
 require libxine.inc
 
 PPDIR = "1.26"
-PR = "r0"
+PR = "r1"
 
 FILESPATHPKG .= ":libxine-1.1.16"
 
 SRC_URI += " \
     	file://libxine-arm-configure.patch;patch=1 \
 	file://iconv.patch;patch=1 \
+	file://ffmpeg_headers.patch;patch=1 \
         "
 
 python populate_packages_prepend () {

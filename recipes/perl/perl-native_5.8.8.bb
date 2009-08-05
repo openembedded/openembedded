@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r13"
+PR = "r14"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
@@ -43,6 +43,7 @@ do_configure () {
         -Dusethreads \
         -Duseithreads \
         -Duselargefiles \
+	-Dnoextensions=ODBM_File \
         -Ud_dosuid \
         -Ui_db \
         -Ui_ndbm \

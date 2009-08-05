@@ -182,6 +182,15 @@ else
   fi
 fi
 
+ROOTFSDEV="/dev/root"
+if ! grep -q "^$ROOTFSDEV\>" /proc/mounts; then
+  ROOTFSDEV="rootfs"
+fi
+if [ x$(grep "^$ROOTFSDEV\>" /proc/mounts | awk '{print $4}') = "x$rootmode" ]; then
+	echo "Root filesystem already $rootmode, not remounting"
+	exit 0
+fi
+
 #
 #	If the root filesystem was not marked as read-only in /etc/fstab,
 #	remount the rootfs rw but do not try to change mtab because it
@@ -189,15 +198,6 @@ fi
 #	and finally write the new mtab.
 #	This part is only needed if the rootfs was mounted ro.
 #
-ROOTFSDEV="/dev/root"
-if ! grep -q "^$ROOTFSDEV\w" /proc/mounts; then
-  ROOTFSDEV="rootfs"
-fi
-if [ x$(grep "^$ROOTFSDEV\w" /proc/mounts | awk '{print $4}') = "xrw" ]; then
-	echo "Root filesystem already read-write, not remounting"
-	exit 0
-fi
-
 echo "Remounting root file system..."
 mount -n -o remount,$rootmode /
 if test "$rootmode" = rw

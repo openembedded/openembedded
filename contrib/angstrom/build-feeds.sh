@@ -100,9 +100,11 @@ do
                       cvs \
                       cwiid \
                       dates \
+                      devicekit-disks \
                       dialog \
                       distcc \
                       dsniff \
+                      dosfstools \
                       duke3d \
                       dvb-apps \
                       dvbstream \
@@ -173,9 +175,11 @@ do
                       gqview \
                       gsm0710muxd \
                       gspcav1 \
+                      gst-omapfb \
                       gtk+ \
                       gzip \
                       hal \
+                      hdparm \
                       hexatrolic \
                       htop \
                       i2c-tools \
@@ -191,6 +195,7 @@ do
                       iscsi-target \
                       ivman \
                       jamvm \
+                      julius \
                       kernel-module-udlfb \
                       kismet \
                       konqueror-embedded \
@@ -200,7 +205,7 @@ do
                       lighttpd \
                       links-x11 \
                       lirc \
-                      lowpan-utils \
+                      lowpan-tools \
                       m4 \
                       madplay \
                       mahjongg \
@@ -225,6 +230,7 @@ do
                       mutt \
                       mythtv \
                       nautilus \
+                      nbench-byte \
                       navit \
                       netkit-ftp \
                       netsurf \

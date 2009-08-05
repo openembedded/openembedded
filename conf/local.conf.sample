@@ -119,6 +119,11 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # squashfs, squashfs-lzma
 IMAGE_FSTYPES = "jffs2 tar"
 
+# Uncomment this if you want to keep the temporary rootfs
+# diretory, this can be useful during development.
+# (Note that this rootfs is NOT usuable as NFS export.)
+# IMAGE_KEEPROOTFS = "1"
+
 # Uncomment this to disable the parse cache (not recommended).
 # CACHE = ""
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland V4"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
+DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 
@@ -9,7 +9,7 @@ LICENSE = "GPL"
 PROVIDES_append_angstrom = " bluez-utils bluez-libs"
 
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
@@ -32,7 +32,7 @@ EXTRA_OECONF = "\
   --enable-hid2hci \
   --enable-dfutool \
   --enable-hidd \
-  --enable-pandd \
+  --enable-pand \
   --enable-dund \
   --disable-cups \
   --enable-test \

@@ -21,7 +21,7 @@ CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfs
 
 # Set the verbosity of kernel messages during runtime
 # You can define CMDLINE_DEBUG in your local.conf or distro.conf to override this behaviour  
-CMDLINE_DEBUG ?= '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
+CMDLINE_DEBUG ?= '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug", d)}'
 CMDLINE_append = " ${CMDLINE_DEBUG} "
 
 # Support for binary device tree generation
@@ -29,6 +29,7 @@ CMDLINE_append = " ${CMDLINE_DEBUG} "
 FILES_kernel-devicetree = "/boot/devicetree*"
 
 KERNEL_DEVICETREE_boc01 = "${WORKDIR}/boc01.dts"
+KERNEL_DEVICETREE_calamari = "arch/${ARCH}/boot/dts/mpc8536ds.dts"
 KERNEL_DEVICETREE_canyonlands = "arch/${ARCH}/boot/dts/canyonlands.dts"
 KERNEL_DEVICETREE_kilauea = "arch/${ARCH}/boot/dts/kilauea.dts"
 KERNEL_DEVICETREE_lsppchd = "arch/${ARCH}/boot/dts/kuroboxHD.dts"
@@ -155,22 +156,6 @@ do_configure_append() {
         if test -e scripts/Makefile.fwinst ; then
 		sed -i -e "s:-m0644:-m 0644:g" scripts/Makefile.fwinst
 	fi
-}
-
-do_compile_append() {
-    if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
-        if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
-            ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
-            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C none -a ${UBOOT_LOADADDRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
-            rm -f linux.bin
-        else
-            ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
-            rm -f linux.bin.gz
-            gzip -9 linux.bin
-            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C gzip -a ${UBOOT_LOADADDRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz arch/${ARCH}/boot/uImage
-            rm -f linux.bin.gz
-        fi
-    fi
 }
 
 do_devicetree_image() {

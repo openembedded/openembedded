@@ -1,0 +1,122 @@
+From a41c88224dc74dc2feebe16e579fc5df28ad85a4 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 4 Jun 2009 15:07:14 +0300
+Subject: [PATCH 103/146] DSS2: Use clkdev
+
+---
+ drivers/video/omap2/dss/core.c |   85 ++++++++++++++++++++++------------------
+ 1 files changed, 47 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/core.c b/drivers/video/omap2/dss/core.c
+index 3f544dc..e8d430c 100644
+--- a/drivers/video/omap2/dss/core.c
++++ b/drivers/video/omap2/dss/core.c
+@@ -150,58 +150,67 @@ void dss_dump_clocks(struct seq_file *s)
+ 	}
+ }
+ 
+-static int dss_get_clocks(void)
++static int dss_get_clock(struct clk **clock, const char *clk_name)
+ {
+-	const struct {
+-		struct clk **clock;
+-		char *omap2_name;
+-		char *omap3_name;
+-	} clocks[5] = {
+-		{ &core.dss_ick, "dss_ick", "dss_ick" }, /* L3 & L4 ick */
+-		{ &core.dss1_fck, "dss1_fck", "dss1_alwon_fck" },
+-		{ &core.dss2_fck, "dss2_fck", "dss2_alwon_fck" },
+-		{ &core.dss_54m_fck, "dss_54m_fck", "dss_tv_fck" },
+-		{ &core.dss_96m_fck, NULL, "dss_96m_fck" },
+-	};
++	struct clk *clk;
+ 
+-	int r = 0;
+-	int i;
+-	const int num_clocks = 5;
++	clk = clk_get(&core.pdev->dev, clk_name);
+ 
+-	for (i = 0; i < num_clocks; i++)
+-		*clocks[i].clock = NULL;
++	if (IS_ERR(clk)) {
++		DSSERR("can't get clock %s", clk_name);
++		return PTR_ERR(clk);
++	}
+ 
+-	for (i = 0; i < num_clocks; i++) {
+-		struct clk *clk;
+-		const char *clk_name;
++	*clock = clk;
+ 
+-		clk_name = cpu_is_omap34xx() ? clocks[i].omap3_name
+-			: clocks[i].omap2_name;
++	DSSDBG("clk %s, rate %ld\n", clk_name, clk_get_rate(clk));
+ 
+-		if (!clk_name)
+-			continue;
++	return 0;
++}
+ 
+-		clk = clk_get(NULL, clk_name);
++static int dss_get_clocks(void)
++{
++	int r;
+ 
+-		if (IS_ERR(clk)) {
+-			DSSERR("can't get clock %s", clk_name);
+-			r = PTR_ERR(clk);
+-			goto err;
+-		}
++	core.dss_ick = NULL;
++	core.dss1_fck = NULL;
++	core.dss2_fck = NULL;
++	core.dss_54m_fck = NULL;
++	core.dss_96m_fck = NULL;
+ 
+-		DSSDBG("clk %s, rate %ld\n",
+-				clk_name, clk_get_rate(clk));
++	r = dss_get_clock(&core.dss_ick, "ick");
++	if (r)
++		goto err;
+ 
+-		*clocks[i].clock = clk;
+-	}
++	r = dss_get_clock(&core.dss1_fck, "dss1_fck");
++	if (r)
++		goto err;
++
++	r = dss_get_clock(&core.dss2_fck, "dss2_fck");
++	if (r)
++		goto err;
++
++	r = dss_get_clock(&core.dss_54m_fck, "tv_fck");
++	if (r)
++		goto err;
++
++	r = dss_get_clock(&core.dss_96m_fck, "video_fck");
++	if (r)
++		goto err;
+ 
+ 	return 0;
+ 
+ err:
+-	for (i = 0; i < num_clocks; i++) {
+-		if (!IS_ERR(*clocks[i].clock))
+-			clk_put(*clocks[i].clock);
+-	}
++	if (core.dss_ick)
++		clk_put(core.dss_ick);
++	if (core.dss1_fck)
++		clk_put(core.dss1_fck);
++	if (core.dss2_fck)
++		clk_put(core.dss2_fck);
++	if (core.dss_54m_fck)
++		clk_put(core.dss_54m_fck);
++	if (core.dss_96m_fck)
++		clk_put(core.dss_96m_fck);
+ 
+ 	return r;
+ }
+-- 
+1.6.2.4
+

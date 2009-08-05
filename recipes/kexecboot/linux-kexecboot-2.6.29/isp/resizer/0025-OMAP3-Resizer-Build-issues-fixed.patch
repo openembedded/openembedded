@@ -1,0 +1,36 @@
+From 9fec955e98b4ef7922f629e3a81d2d1af216e028 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <vaibhav@psp-nfs-02.india.ti.com>
+Date: Wed, 29 Apr 2009 18:12:42 +0530
+Subject: [PATCH 25/26] OMAP3-Resizer: Build issues fixed
+
+There were some building issues with latest gitorious tree,
+fixed them.
+---
+ drivers/media/video/isp/omap_resizer.c |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/video/isp/omap_resizer.c b/drivers/media/video/isp/omap_resizer.c
+index 8059c70..dd90b24 100644
+--- a/drivers/media/video/isp/omap_resizer.c
++++ b/drivers/media/video/isp/omap_resizer.c
+@@ -1033,7 +1033,7 @@ static void rsz_vbq_release(struct videobuf_queue *q,
+ 	dma = videobuf_to_dma(q->bufs[vb->i]);
+ 	videobuf_dma_unmap(q, dma);
+ 	videobuf_dma_free(dma);
+-	ispmmu_unmap(fh->config->buf_address[vb->i]);
++	ispmmu_vunmap(fh->config->buf_address[vb->i]);
+ 	fh->config->buf_address[vb->i] = 0;
+ 
+ 	spin_lock(&fh->vbq_lock);
+@@ -1293,7 +1293,7 @@ static int rsz_vbq_prepare(struct videobuf_queue *q,
+ 				goto buf_release;
+ 			spin_unlock(&fh->vbq_lock);
+ 		}
+-		isp_addr = ispmmu_map_sg(dma->sglist, dma->sglen);
++		isp_addr = ispmmu_vmap(dma->sglist, dma->sglen);
+ 		if (!isp_addr)
+ 			err = -EIO;
+ 		else {
+-- 
+1.6.2.4
+

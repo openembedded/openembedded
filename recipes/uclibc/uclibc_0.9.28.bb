@@ -9,8 +9,6 @@ require uclibc.inc
 KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
-SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
-
 S = "${WORKDIR}/uClibc-${PV}"
 
 #*** PATCHES ***

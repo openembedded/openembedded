@@ -1,8 +1,8 @@
-PR = "r1"
-DEFAULT_PREFERENCE = "-1"
+PV = "0.5"
+PR = "r3+gitr${SRCREV}"
 
-SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git "
-SRCREV = "c5f17845f0f620adff854c2239a8aaa5d9942255"
+SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git;branch=cfgfiles "
+SRCREV = "0d4d33d85baa6251de3b1e20bd7bd464f11c5097"
 
 # v0.51 (pre cfg-files)
 #SRCREV = "c5f17845f0f620adff854c2239a8aaa5d9942255"

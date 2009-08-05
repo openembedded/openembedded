@@ -1,0 +1,311 @@
+From 623b67b81b32b758915a58816bc75e092aa33bb8 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 2 Jul 2009 11:05:08 +0300
+Subject: [PATCH 136/146] DSS2: VRAM: separate VRAM setup from the old fb vram setup
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/mach-omap2/io.c               |    2 +
+ arch/arm/plat-omap/fb.c                |   11 +++++-
+ arch/arm/plat-omap/include/mach/vram.h |    6 +++
+ arch/arm/plat-omap/sram.c              |   15 +++++---
+ arch/arm/plat-omap/vram.c              |   60 ++++++++++++++++----------------
+ include/linux/omapfb.h                 |    5 +++
+ 6 files changed, 62 insertions(+), 37 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/io.c b/arch/arm/mach-omap2/io.c
+index 5c91f36..221c60f 100644
+--- a/arch/arm/mach-omap2/io.c
++++ b/arch/arm/mach-omap2/io.c
+@@ -32,6 +32,7 @@
+ #include <mach/sram.h>
+ #include <mach/sdrc.h>
+ #include <mach/gpmc.h>
++#include <mach/vram.h>
+ 
+ #ifndef CONFIG_ARCH_OMAP4	/* FIXME: Remove this once clkdev is ready */
+ #include "clock.h"
+@@ -240,6 +241,7 @@ void __init omap2_map_common_io(void)
+ 	omap2_check_revision();
+ 	omap_sram_init();
+ 	omapfb_reserve_sdram();
++	omap_vram_reserve_sdram();
+ }
+ 
+ /*
+diff --git a/arch/arm/plat-omap/fb.c b/arch/arm/plat-omap/fb.c
+index 1dc3415..70fbeae 100644
+--- a/arch/arm/plat-omap/fb.c
++++ b/arch/arm/plat-omap/fb.c
+@@ -355,6 +355,16 @@ static inline int omap_init_fb(void)
+ 
+ arch_initcall(omap_init_fb);
+ 
++void omapfb_reserve_sdram(void) {}
++unsigned long omapfb_reserve_sram(unsigned long sram_pstart,
++				  unsigned long sram_vstart,
++				  unsigned long sram_size,
++				  unsigned long start_avail,
++				  unsigned long size_avail)
++{
++	return 0;
++}
++
+ #else
+ 
+ void omapfb_reserve_sdram(void) {}
+@@ -367,5 +377,4 @@ unsigned long omapfb_reserve_sram(unsigned long sram_pstart,
+ 	return 0;
+ }
+ 
+-
+ #endif
+diff --git a/arch/arm/plat-omap/include/mach/vram.h b/arch/arm/plat-omap/include/mach/vram.h
+index 66b788e..8d26b05 100644
+--- a/arch/arm/plat-omap/include/mach/vram.h
++++ b/arch/arm/plat-omap/include/mach/vram.h
+@@ -37,4 +37,10 @@ extern void omap_vram_get_info(unsigned long *vram, unsigned long *free_vram,
+ extern void omap2_set_sdram_vram(u32 size, u32 start);
+ extern void omap2_set_sram_vram(u32 size, u32 start);
+ 
++extern void omap_vram_reserve_sdram(void);
++extern unsigned long omap_vram_reserve_sram(unsigned long sram_pstart,
++					    unsigned long sram_vstart,
++					    unsigned long sram_size,
++					    unsigned long pstart_avail,
++					    unsigned long size_avail);
+ #endif
+diff --git a/arch/arm/plat-omap/sram.c b/arch/arm/plat-omap/sram.c
+index 4ea7380..26797e7 100644
+--- a/arch/arm/plat-omap/sram.c
++++ b/arch/arm/plat-omap/sram.c
+@@ -19,6 +19,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
++#include <linux/omapfb.h>
+ 
+ #include <asm/tlb.h>
+ #include <asm/cacheflush.h>
+@@ -28,6 +29,7 @@
+ #include <mach/sram.h>
+ #include <mach/board.h>
+ #include <mach/cpu.h>
++#include <mach/vram.h>
+ 
+ #include <mach/control.h>
+ 
+@@ -76,12 +78,6 @@ static unsigned long omap_sram_base;
+ static unsigned long omap_sram_size;
+ static unsigned long omap_sram_ceil;
+ 
+-extern unsigned long omapfb_reserve_sram(unsigned long sram_pstart,
+-					 unsigned long sram_vstart,
+-					 unsigned long sram_size,
+-					 unsigned long pstart_avail,
+-					 unsigned long size_avail);
+-
+ /*
+  * Depending on the target RAMFS firewall setup, the public usable amount of
+  * SRAM varies.  The default accessible size for all device types is 2k. A GP
+@@ -185,6 +181,13 @@ void __init omap_detect_sram(void)
+ 				       omap_sram_start + SRAM_BOOTLOADER_SZ,
+ 				       omap_sram_size - SRAM_BOOTLOADER_SZ);
+ 	omap_sram_size -= reserved;
++
++	reserved = omap_vram_reserve_sram(omap_sram_start, omap_sram_base,
++				          omap_sram_size,
++				          omap_sram_start + SRAM_BOOTLOADER_SZ,
++				          omap_sram_size - SRAM_BOOTLOADER_SZ);
++	omap_sram_size -= reserved;
++
+ 	omap_sram_ceil = omap_sram_base + omap_sram_size;
+ }
+ 
+diff --git a/arch/arm/plat-omap/vram.c b/arch/arm/plat-omap/vram.c
+index 2954764..6c4bc18 100644
+--- a/arch/arm/plat-omap/vram.c
++++ b/arch/arm/plat-omap/vram.c
+@@ -39,7 +39,7 @@
+ #include <mach/dma.h>
+ 
+ #ifdef DEBUG
+-#define DBG(format, ...) printk(KERN_DEBUG "VRAM: " format, ## __VA_ARGS__)
++#define DBG(format, ...) pr_debug("VRAM: " format, ## __VA_ARGS__)
+ #else
+ #define DBG(format, ...)
+ #endif
+@@ -239,7 +239,7 @@ static int _omap_vram_reserve(unsigned long paddr, unsigned pages)
+ 		if (!(start <= paddr && end >= paddr + size - 1))
+ 			continue;
+ found:
+-		DBG("FOUND area start %lx, end %lx\n", start, end);
++		DBG("found area start %lx, end %lx\n", start, end);
+ 
+ 		if (omap_vram_create_allocation(rm, paddr, pages) == NULL)
+ 			return -ENOMEM;
+@@ -352,7 +352,7 @@ found:
+ 		if (end - start < pages << PAGE_SHIFT)
+ 			continue;
+ 
+-		DBG("FOUND %lx, end %lx\n", start, end);
++		DBG("found %lx, end %lx\n", start, end);
+ 
+ 		alloc = omap_vram_create_allocation(rm, start, pages);
+ 		if (alloc == NULL)
+@@ -504,30 +504,30 @@ arch_initcall(omap_vram_init);
+ /* boottime vram alloc stuff */
+ 
+ /* set from board file */
+-static u32 omapfb_sram_vram_start __initdata;
+-static u32 omapfb_sram_vram_size __initdata;
++static u32 omap_vram_sram_start __initdata;
++static u32 omap_vram_sram_size __initdata;
+ 
+ /* set from board file */
+-static u32 omapfb_sdram_vram_start __initdata;
+-static u32 omapfb_sdram_vram_size __initdata;
++static u32 omap_vram_sdram_start __initdata;
++static u32 omap_vram_sdram_size __initdata;
+ 
+ /* set from kernel cmdline */
+-static u32 omapfb_def_sdram_vram_size __initdata;
+-static u32 omapfb_def_sdram_vram_start __initdata;
++static u32 omap_vram_def_sdram_size __initdata;
++static u32 omap_vram_def_sdram_start __initdata;
+ 
+-static void __init omapfb_early_vram(char **p)
++static void __init omap_vram_early_vram(char **p)
+ {
+-	omapfb_def_sdram_vram_size = memparse(*p, p);
++	omap_vram_def_sdram_size = memparse(*p, p);
+ 	if (**p == ',')
+-		omapfb_def_sdram_vram_start = simple_strtoul((*p) + 1, p, 16);
++		omap_vram_def_sdram_start = simple_strtoul((*p) + 1, p, 16);
+ }
+-__early_param("vram=", omapfb_early_vram);
++__early_param("vram=", omap_vram_early_vram);
+ 
+ /*
+  * Called from map_io. We need to call to this early enough so that we
+  * can reserve the fixed SDRAM regions before VM could get hold of them.
+  */
+-void __init omapfb_reserve_sdram(void)
++void __init omap_vram_reserve_sdram(void)
+ {
+ 	struct bootmem_data	*bdata;
+ 	unsigned long		sdram_start, sdram_size;
+@@ -535,14 +535,14 @@ void __init omapfb_reserve_sdram(void)
+ 	u32 size = 0;
+ 
+ 	/* cmdline arg overrides the board file definition */
+-	if (omapfb_def_sdram_vram_size) {
+-		size = omapfb_def_sdram_vram_size;
+-		paddr = omapfb_def_sdram_vram_start;
++	if (omap_vram_def_sdram_size) {
++		size = omap_vram_def_sdram_size;
++		paddr = omap_vram_def_sdram_start;
+ 	}
+ 
+ 	if (!size) {
+-		size = omapfb_sdram_vram_size;
+-		paddr = omapfb_sdram_vram_start;
++		size = omap_vram_sdram_size;
++		paddr = omap_vram_sdram_start;
+ 	}
+ 
+ #ifdef CONFIG_OMAP2_DSS_VRAM_SIZE
+@@ -564,7 +564,7 @@ void __init omapfb_reserve_sdram(void)
+ 	if (paddr) {
+ 		if ((paddr & ~PAGE_MASK) || paddr < sdram_start ||
+ 				paddr + size > sdram_start + sdram_size) {
+-			printk(KERN_ERR "Illegal SDRAM region for VRAM\n");
++			pr_err("Illegal SDRAM region for VRAM\n");
+ 			return;
+ 		}
+ 
+@@ -574,7 +574,7 @@ void __init omapfb_reserve_sdram(void)
+ 		}
+ 	} else {
+ 		if (size > sdram_size) {
+-			printk(KERN_ERR "Illegal SDRAM size for VRAM\n");
++			pr_err("Illegal SDRAM size for VRAM\n");
+ 			return;
+ 		}
+ 
+@@ -597,7 +597,7 @@ void __init omapfb_reserve_sdram(void)
+  * this point, since the driver built as a module would have problem with
+  * freeing / reallocating the regions.
+  */
+-unsigned long __init omapfb_reserve_sram(unsigned long sram_pstart,
++unsigned long __init omap_vram_reserve_sram(unsigned long sram_pstart,
+ 				  unsigned long sram_vstart,
+ 				  unsigned long sram_size,
+ 				  unsigned long pstart_avail,
+@@ -608,8 +608,8 @@ unsigned long __init omapfb_reserve_sram(unsigned long sram_pstart,
+ 	u32 paddr;
+ 	u32 size;
+ 
+-	paddr = omapfb_sram_vram_start;
+-	size = omapfb_sram_vram_size;
++	paddr = omap_vram_sram_start;
++	size = omap_vram_sram_size;
+ 
+ 	if (!size)
+ 		return 0;
+@@ -620,7 +620,7 @@ unsigned long __init omapfb_reserve_sram(unsigned long sram_pstart,
+ 	if (!paddr) {
+ 		/* Dynamic allocation */
+ 		if ((size_avail & PAGE_MASK) < size) {
+-			printk(KERN_ERR "Not enough SRAM for VRAM\n");
++			pr_err("Not enough SRAM for VRAM\n");
+ 			return 0;
+ 		}
+ 		size_avail = (size_avail - size) & PAGE_MASK;
+@@ -629,7 +629,7 @@ unsigned long __init omapfb_reserve_sram(unsigned long sram_pstart,
+ 
+ 	if (paddr < sram_pstart ||
+ 			paddr + size > sram_pstart + sram_size) {
+-		printk(KERN_ERR "Illegal SRAM region for VRAM\n");
++		pr_err("Illegal SRAM region for VRAM\n");
+ 		return 0;
+ 	}
+ 
+@@ -648,14 +648,14 @@ unsigned long __init omapfb_reserve_sram(unsigned long sram_pstart,
+ 
+ void __init omap2_set_sdram_vram(u32 size, u32 start)
+ {
+-	omapfb_sdram_vram_start = start;
+-	omapfb_sdram_vram_size = size;
++	omap_vram_sdram_start = start;
++	omap_vram_sdram_size = size;
+ }
+ 
+ void __init omap2_set_sram_vram(u32 size, u32 start)
+ {
+-	omapfb_sram_vram_start = start;
+-	omapfb_sram_vram_size = size;
++	omap_vram_sram_start = start;
++	omap_vram_sram_size = size;
+ }
+ 
+ #endif
+diff --git a/include/linux/omapfb.h b/include/linux/omapfb.h
+index 0df0df9..67dc375 100644
+--- a/include/linux/omapfb.h
++++ b/include/linux/omapfb.h
+@@ -424,6 +424,11 @@ extern struct lcd_ctrl omap2_disp_ctrl;
+ extern void omapfb_set_platform_data(struct omapfb_platform_data *data);
+ 
+ extern void omapfb_reserve_sdram(void);
++extern unsigned long omapfb_reserve_sram(unsigned long sram_pstart,
++					 unsigned long sram_vstart,
++					 unsigned long sram_size,
++					 unsigned long pstart_avail,
++					 unsigned long size_avail);
+ extern void omapfb_register_panel(struct lcd_panel *panel);
+ extern void omapfb_write_first_pixel(struct omapfb_device *fbdev, u16 pixval);
+ extern void omapfb_notify_clients(struct omapfb_device *fbdev,
+-- 
+1.6.2.4
+

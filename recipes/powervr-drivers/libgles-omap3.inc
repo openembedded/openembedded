@@ -66,15 +66,7 @@ inherit update-rc.d
 INITSCRIPT_NAME = "pvr-init"
 INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 
-do_accept_license() {
-	export HOME="${WORKDIR}"
-	echo "Y
-q 
-Y
-${S}" | ${WORKDIR}/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin --mode console
-}
-
-addtask accept_license after do_unpack before do_configure
+require ../dvsdk/ti-dspbios.inc
 
 do_compile() {
     for sofile in $(find ${S} -name "lib*Open*.so") $(find ${S} -name "lib*srv*.so")   $(find ${S} -name "lib*gl*.so") $(find ${S} -name "libpvr*.so") $(find ${S} -name "lib*GL*.so"); do
@@ -96,7 +88,7 @@ do_install () {
 	cp -pP ${BINLOCATION}/gles1test1 ${D}${bindir}/
 	cp -pP ${BINLOCATION}/gles1_texture_stream ${D}${bindir}/
 	cp -pP ${BINLOCATION}/gles2test1 ${D}${bindir}/
-	cp -pP ${BINLOCATION}/pvrsrvinit ${D}${bindir}/
+	cp -pP ${BINLOCATION}/p[dv]* ${D}${bindir}/
 	cp -pP ${BINLOCATION}/xgles1test1 ${D}${bindir}/
 
 	cp -pP ${BINLOCATION}/freedesktop/kdrive/usr/X11R6_SGX/bin/Xsgx ${D}${bindir}/|| true
@@ -106,6 +98,8 @@ do_install () {
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/Include/* ${D}${includedir}/
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES/
 	cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES2/
+	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/v* ${D}${includedir}/
+	cp -pPr ${S}/include/*.h ${D}${includedir} || true
 	
 	install -d ${D}${sysconfdir}/init.d/
 	cp -pP ${WORKDIR}/rc.pvr ${D}${sysconfdir}/init.d/pvr-init
@@ -134,6 +128,8 @@ do_stage () {
     cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/Include/* ${STAGING_INCDIR}/
     cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES/
     cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES2/
+	cp -pPr ${S}/include/*.h ${STAGING_INCDIR} || true
+	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/v* ${STAGING_INCDIR}/
 }
 
 pkg_postinst() {

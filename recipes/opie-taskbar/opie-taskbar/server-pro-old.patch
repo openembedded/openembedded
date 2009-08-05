@@ -1,0 +1,76 @@
+--- launcher/server.pro	2009-07-17 21:17:31.000000000 +0100
++++ launcher/server.pro	2009-07-17 21:16:43.000000000 +0100
+@@ -2,10 +2,10 @@
+ 
+ CONFIG		+= qt warn_on 
+ 
+-DESTDIR		= $$(OPIEDIR)/bin
++DESTDIR		= 
+ 
+ HEADERS		+= server.h \
+-	    qrr.h \
++		  qrr.h \
+ 		  serverinterface.h \
+ 		  launchertab.h \
+ 		  documentlist.h \
+@@ -20,7 +20,7 @@
+ 		  shutdownimpl.h \
+ 		  launcher.h \
+ 		  launcherview.h \
+-		  $$(OPIEDIR)/core/apps/calibrate/calibrate.h \
++		  calibrate/calibrate.h \
+ 		  startmenu.h \
+ 		  transferserver.h \
+ 		  qcopbridge.h \
+@@ -31,11 +31,11 @@
+ 		  serverapp.h \
+ 		  qprocess.h \
+ 		  screensaver.h \
+-        $$(OPIEDIR)/noncore/settings/mediummount/mediumwidget.h \
++		  mediummount/mediumwidget.h \
+                   mediadlg.h 
+ 
+ SOURCES		+= server.cpp \
+-      qrr.cpp \
++		  qrr.cpp \
+ 		  serverinterface.cpp \
+ 		  launchertab.cpp \
+ 		  documentlist.cpp \
+@@ -50,7 +50,7 @@
+ 		  shutdownimpl.cpp \
+ 		  launcher.cpp \
+ 		  launcherview.cpp \
+-		  $$(OPIEDIR)/core/apps/calibrate/calibrate.cpp \
++		  calibrate/calibrate.cpp \
+ 		  transferserver.cpp \
+ 		  packageslave.cpp \
+    		  irserver.cpp \
+@@ -63,20 +63,20 @@
+ 		  qprocess.cpp \
+ 		  qprocess_unix.cpp \
+ 		  screensaver.cpp \
+-        $$(OPIEDIR)/noncore/settings/mediummount/mediumwidget.cc \
++        	  mediummount/mediumwidget.cc \
+                   mediadlg.cpp
+ 
+ 
+-INCLUDEPATH += $(OPIEDIR)/core/apps/calibrate
+-DEPENDPATH	+= $(OPIEDIR)/core/apps/calibrate
++INCLUDEPATH += calibrate
++DEPENDPATH	+= calibrate
+ 
+-INCLUDEPATH += $(OPIEDIR)/include $(OPIEDIR)/rsync
+-DEPENDPATH	+= $(OPIEDIR)/rsync
++INCLUDEPATH += $(OPIEDIR)/include rsync
++DEPENDPATH	+= rsync
+ 
+-INCLUDEPATH += $(OPIEDIR)/noncore/settings/mediummount
+-DEPENDPATH  += $(OPIEDIR)/noncore/settings/mediummount
++INCLUDEPATH += mediummount
++DEPENDPATH	+= mediummount
+ 
+-LIBS        += -lqpe -lopiecore2 -lopieui2 -lopiesecurity2 -lqrsync
++LIBS         = -lqpe -lopiecore2 -lopieui2 -lopiesecurity2 -lqrsync
+ TARGET       = qpe
+ 
+ ## not ready for use yet

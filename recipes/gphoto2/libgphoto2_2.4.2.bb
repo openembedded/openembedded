@@ -2,7 +2,7 @@ DESCRIPTION = "libgphoto2 allows you to access digital cameras"
 
 SECTION = "libs"
 LICENSE = "GPL"
-DEPENDS = "libtool jpeg libusb libexif"
+DEPENDS = "libtool jpeg virtual/libusb0 libexif"
 
 PR = "r0"
 

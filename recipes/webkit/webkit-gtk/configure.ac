@@ -2,7 +2,14 @@ AC_PREREQ(2.59)
 
 m4_define([webkit_major_version], [1])
 m4_define([webkit_minor_version], [1])
-m4_define([webkit_micro_version], [8])
+m4_define([webkit_micro_version], [11])
+
+# This is the version we'll be using as part of our User-Agent string
+# e.g., AppleWebKit/$(webkit_user_agent_version) ...
+#
+# Sourced from WebCore/Configurations/Version.xcconfig
+m4_define([webkit_user_agent_major_version], [531])
+m4_define([webkit_user_agent_minor_version], [2])
 
 AC_INIT([WebKit],[webkit_major_version.webkit_minor_version.webkit_micro_version],[http://bugs.webkit.org/])
 
@@ -16,15 +23,19 @@ AC_CANONICAL_HOST
 WEBKIT_MAJOR_VERSION=webkit_major_version
 WEBKIT_MINOR_VERSION=webkit_minor_version
 WEBKIT_MICRO_VERSION=webkit_micro_version
+WEBKIT_USER_AGENT_MAJOR_VERSION=webkit_user_agent_major_version
+WEBKIT_USER_AGENT_MINOR_VERSION=webkit_user_agent_minor_version
 AC_SUBST(WEBKIT_MAJOR_VERSION)
 AC_SUBST(WEBKIT_MINOR_VERSION)
 AC_SUBST(WEBKIT_MICRO_VERSION)
+AC_SUBST(WEBKIT_USER_AGENT_MAJOR_VERSION)
+AC_SUBST(WEBKIT_USER_AGENT_MINOR_VERSION)
 
 AC_CONFIG_SRCDIR([WebCore/config.h])
 
 dnl # Libtool library version, not to confuse with API version
 dnl # see http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html#Libtool-versioning
-LIBWEBKITGTK_VERSION=8:0:6
+LIBWEBKITGTK_VERSION=10:0:8
 AC_SUBST([LIBWEBKITGTK_VERSION])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects tar-ustar])
@@ -176,6 +187,7 @@ if test "$with_hildon" = "yes"; then
 fi
 
 # minimum base dependencies
+LIBSOUP_REQUIRED_VERSION=2.27.4
 CAIRO_REQUIRED_VERSION=1.2
 FONTCONFIG_REQUIRED_VERSION=2.4
 FREETYPE2_REQUIRED_VERSION=9.0
@@ -186,12 +198,12 @@ PANGO_REQUIRED_VERSION=1.0
 GTK_REQUIRED_VERSION=2.10
 
 # optional modules
-LIBSOUP_REQUIRED_VERSION=2.25.91
 LIBXSLT_REQUIRED_VERSION=1.1.7
 SQLITE_REQUIRED_VERSION=3.0
 GSTREAMER_REQUIRED_VERSION=0.10
 GNOME_KEYRING_REQUIRED_VERSION=2.26.0
 ENCHANT_REQUIRED_VERSION=0.22
+GAIL_REQUIRED_VERSION=1.8
 
 # Available modules
 #
@@ -219,6 +231,10 @@ AC_SUBST(PANGO_LIBS)
 PKG_CHECK_MODULES(ENCHANT, enchant >= $ENCHANT_REQUIRED_VERSION)
 AC_SUBST(ENCHANT_CFLAGS)
 AC_SUBST(ENCHANT_LIBS)
+
+PKG_CHECK_MODULES(GAIL, gail >= $GAIL_REQUIRED_VERSION)
+AC_SUBST(GAIL_CFLAGS)
+AC_SUBST(GAIL_LIBS)
 
 # check for target-specific dependencies
 if test "$with_target" = "directfb"; then
@@ -293,8 +309,8 @@ AC_MSG_RESULT([$enable_3D_transforms])
 AC_MSG_CHECKING([whether to enable HTML5 Channel Messaging support])
 AC_ARG_ENABLE(channel_messaging,
               AC_HELP_STRING([--enable-channel-messaging],
-                             [enable HTML5 channel messaging support [default=no]]),
-              [],[enable_channel_messaging="no"])
+                             [enable HTML5 channel messaging support [default=yes]]),
+              [],[enable_channel_messaging="yes"])
 AC_MSG_RESULT([$enable_channel_messaging])
 
 # check whether to enable JavaScript debugger/profiler support
@@ -393,13 +409,21 @@ AC_ARG_ENABLE(wml,
               [],[enable_wml="no"])
 AC_MSG_RESULT([$enable_wml])
 
+# check whether to enable SharedWorkers support
+AC_MSG_CHECKING([whether to enable SharedWorkers support])
+AC_ARG_ENABLE(shared_workers,
+              AC_HELP_STRING([--enable-shared-workers],
+                             [enable support for SharedWorkers [default=no]]),
+              [],[enable_shared_workers="no"])
+AC_MSG_RESULT([$enable_shared_workers])
+
 # check whether to enable Web Workers support
 AC_MSG_CHECKING([whether to enable Web Workers support])
-AC_ARG_ENABLE(web_workers,
-              AC_HELP_STRING([--enable-web-workers],
+AC_ARG_ENABLE(workers,
+              AC_HELP_STRING([--enable-workers],
                              [enable support for Web Workers [default=yes]]),
-              [],[enable_web_workers="yes"])
-AC_MSG_RESULT([$enable_web_workers])
+              [],[enable_workers="yes"])
+AC_MSG_RESULT([$enable_workers])
 
 # turn off svg features if --disable-svg is requested
 if test "$enable_svg" = "no"; then
@@ -407,7 +431,7 @@ if test "$enable_svg" = "no"; then
    enable_svg_fonts=no
    enable_svg_foreign_object=no
    enable_svg_as_image=no
-   enable_svg_use_element=no
+   enable_svg_use=no
 fi
 
 # check whether to enable support for SVG animation
@@ -452,18 +476,18 @@ AC_MSG_RESULT([$enable_svg_as_image])
 
 # check whether to enable SVG USE element support
 AC_MSG_CHECKING([whether to enable support for SVG use element])
-AC_ARG_ENABLE(svg_use_element,
-              AC_HELP_STRING([--enable-svg-use-element],
+AC_ARG_ENABLE(svg_use,
+              AC_HELP_STRING([--enable-svg-use],
                              [enable SVG use element support (experimental) [default=yes]]),
-              [],[enable_svg_use_element="yes"])
-AC_MSG_RESULT([$enable_svg_use_element])
+              [],[enable_svg_use="yes"])
+AC_MSG_RESULT([$enable_svg_use])
 
 # check for SVG features, enabling SVG if necessary
 if test "$enable_svg_animation" = "yes" || \
    test "$enable_svg_fonts" = "yes" || \
    test "$enable_svg_foreign_object" = "yes" || \
    test "$enable_svg_as_image" = "yes" || \
-   test "$enable_svg_use_element" = "yes"; then
+   test "$enable_svg_use" = "yes"; then
    svg_flags=yes
    if test "$enable_svg" = "no"; then
        AC_MSG_WARN([SVG feature(s) requested but SVG is disabled.. Enabling SVG support])
@@ -494,10 +518,6 @@ AC_ARG_ENABLE([jit],
               [],[enable_jit="yes"])
 if test "$enable_jit" = "yes"; then
     case "$host_cpu" in
-        arm)
-            AC_DEFINE([ENABLE_JIT_OPTIMIZE_CALL], [1], [Define to enable optimizing calls])
-            AC_DEFINE([ENABLE_JIT_OPTIMIZE_METHOD_CALLS], [1], [Define to enable optimizing method calls])
-		;;
         i*86|x86_64)
             AC_DEFINE([ENABLE_JIT], [1], [Define to enable JIT])
             AC_DEFINE([ENABLE_YARR], [1], [Define to enable YARR])
@@ -674,11 +694,12 @@ AM_CONDITIONAL([ENABLE_SVG_ANIMATION],[test "$enable_svg_animation" = "yes"])
 AM_CONDITIONAL([ENABLE_SVG_FONTS],[test "$enable_svg_fonts" = "yes"])
 AM_CONDITIONAL([ENABLE_SVG_FOREIGN_OBJECT],[test "$enable_svg_foreign_object" = "yes"])
 AM_CONDITIONAL([ENABLE_SVG_AS_IMAGE],[test "$enable_svg_as_image" = "yes"])
-AM_CONDITIONAL([ENABLE_SVG_USE],[test "$enable_svg_use_element" = "yes"])
+AM_CONDITIONAL([ENABLE_SVG_USE],[test "$enable_svg_use" = "yes"])
 AM_CONDITIONAL([ENABLE_COVERAGE],[test "$enable_coverage" = "yes"])
 AM_CONDITIONAL([ENABLE_FAST_MALLOC],[test "$enable_fast_malloc" = "yes"])
 AM_CONDITIONAL([ENABLE_WML],[test "$enable_wml" = "yes"])
-AM_CONDITIONAL([ENABLE_WORKERS],[test "$enable_web_workers" = "yes"])
+AM_CONDITIONAL([ENABLE_WORKERS],[test "$enable_workers" = "yes"])
+AM_CONDITIONAL([ENABLE_SHARED_WORKERS],[test "$enable_shared_workers" = "yes"])
 AM_CONDITIONAL([SVG_FLAGS],[test "$svg_flags" = "yes"])
 AM_CONDITIONAL([HTML_FLAGS],[test "$html_flags" = "yes"])
 
@@ -717,14 +738,15 @@ Features:
  HTML5 client-side database storage support               : $enable_database
  HTML5 video element support                              : $enable_video
  Icon database support                                    : $enable_icon_database
+ SharedWorkers support                                    : $enable_shared_workers
  SVG support                                              : $enable_svg
  SVG animation support                                    : $enable_svg_animation
  SVG fonts support                                        : $enable_svg_fonts
  SVG foreign object support                               : $enable_svg_foreign_object
  SVG as image support                                     : $enable_svg_as_image
- SVG use element support                                  : $enable_svg_use_element
+ SVG use element support                                  : $enable_svg_use
  WML support                                              : $enable_wml
- Web Workers support                                      : $enable_web_workers
+ Web Workers support                                      : $enable_workers
  XPATH support                                            : $enable_xpath
  XSLT support                                             : $enable_xslt
 GTK+ configuration:

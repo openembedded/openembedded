@@ -1,5 +1,5 @@
 SECTION = "libs"
-DEPENDS = "jpeg libusb libexif"
+DEPENDS = "jpeg virtual/libusb0 libexif"
 DESCRIPTION = "libgphoto2 allows you to access digital cameras"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gphoto/libgphoto2-${PV}.tar.bz2"

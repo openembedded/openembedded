@@ -5,20 +5,17 @@ inherit qmake2 qt4x11
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.21+0.22rc+svnr${SRCREV}"
-PR = "r2"
+PR = "r0"
 REALPV = "0.22"
 
-SRCREV = "17892"
+SRCREV = "20947"
 SRC_URI = "svn://svn.mythtv.org/svn/trunk;module=mythtv;proto=http"
-
-SRC_URI += "file://configure.patch;patch=1 \
-           "
 
 S = "${WORKDIR}/mythtv"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-mythlibs = "mythdb mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
+mythlibs = "mythdb mythavutil mythavcodec mythavformat mythswscale mythhdhomerun myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
 
 FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
@@ -47,48 +44,37 @@ python __anonymous () {
     bb.data.setVar("PACKAGES", packages, d)
 }
 
-EXTRA_OECONF_armv5te = " --enable-armv5te "
-EXTRA_OECONF_armv6 = " --enable-armv6 "
-EXTRA_OECONF_armv7a = " --enable-armv6"
+EXTRA_MYTHTVCONF_armv7a  = "--cpu=cortex-a8"
+EXTRA_MYTHTVCONF ?= ""
 
-#build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
-#not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt
-MY_ARCH := "${PACKAGE_ARCH}"
-PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', 'iwmmxt', '${MY_ARCH}',d)}"
-
-MY_TARGET_CC_ARCH := "${TARGET_CC_ARCH}"
-TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt -mtune=iwmmxt', '${MY_TARGET_CC_ARCH}',d)}"
-
-EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
-
+EXTRA_OECONF = " \
+        --cross-prefix=${TARGET_PREFIX} \
+        --sysroot=${STAGING_DIR_HOST} \
+        --prefix=${prefix} \
+        \
+        --arch=${TARGET_ARCH} \
+        --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
+        --extra-cxxflags="${TARGET_CXXFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
+        --extra-ldflags="${TARGET_LDFLAGS}" \
+        ${EXTRA_MYTHTVCONF} \
+"
 
 do_configure_prepend() {
 # it's not autotools anyway, so we call ./configure directly
 	find . -name "Makefile"|xargs rm -f
 
-	./configure	--prefix=/usr		\
-			--mandir=/usr/man 	\
-			--cpu=${MYTHTV_ARCH}	\
-			--arch=${MYTHTV_ARCH} \
+	./configure     --qmake=qmake2          \
 			--disable-altivec	\
-		 	--disable-opengl-video \
-			--disable-strip \
+		 	--disable-opengl	\
+			--disable-stripping	\
+			--disable-xvmc		\
 			--enable-v4l		\
 			--enable-audio-oss	\
-			--enable-proc-opt	\
 			--enable-dvb		\
 			--enable-libmp3lame \
-			--cross-compile	\
             --dvb-path=${STAGING_INCDIR} \
-			--with-bindings= \
+			--without-bindings=perl,python \
 			${EXTRA_OECONF}
-
-	sed 's!PREFIX =.*!PREFIX = ${prefix}!;/INCLUDEPATH += $${PREFIX}\/include/d' < settings.pro > settings.pro.new
-	mv settings.pro.new settings.pro
-    for pro in ${S}/*/*pro ${S}/*/*/*pro ${S}/*/*/*/*pro ; do
-		sed -i -e s:opengl::g $pro
-	done
-	sed -i /.SUBDIR/d ${S}/bindings/*pro
 }
 
 python populate_packages_prepend () {

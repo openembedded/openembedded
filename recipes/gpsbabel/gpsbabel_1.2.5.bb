@@ -1,6 +1,6 @@
 SECTION = "console/utils"
 DESCRIPTION = "GPS data converter"
-DEPENDS = "expat libusb"
+DEPENDS = "expat virtual/libusb0"
 HOMEPAGE = "http://gpsbabel.sf.net"
 LICENSE = "GPL"
 

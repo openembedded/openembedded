@@ -1,0 +1,65 @@
+From 324ac5a3f4ea601d1854eadff1388a4310ce660e Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 1 Jul 2009 13:43:55 +0300
+Subject: [PATCH 134/146] DSS2: VENC: Add invert_polarity flag
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/display.h |    1 +
+ drivers/video/omap2/dss/venc.c            |   21 +++++++++++++--------
+ 2 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index 6df28dc..9477ccb 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -381,6 +381,7 @@ struct omap_dss_device {
+ 
+ 		struct {
+ 			enum omap_dss_venc_type type;
++			bool invert_polarity;
+ 		} venc;
+ 	} phy;
+ 
+diff --git a/drivers/video/omap2/dss/venc.c b/drivers/video/omap2/dss/venc.c
+index a9a5a8c..091ecc4 100644
+--- a/drivers/video/omap2/dss/venc.c
++++ b/drivers/video/omap2/dss/venc.c
+@@ -510,6 +510,8 @@ void venc_exit(void)
+ 
+ static void venc_power_on(struct omap_dss_device *dssdev)
+ {
++	u32 l;
++
+ 	venc_enable_clocks(1);
+ 
+ 	venc_reset();
+@@ -518,14 +520,17 @@ static void venc_power_on(struct omap_dss_device *dssdev)
+ 	dss_set_venc_output(dssdev->phy.venc.type);
+ 	dss_set_dac_pwrdn_bgz(1);
+ 
+-	if (dssdev->phy.venc.type == OMAP_DSS_VENC_TYPE_COMPOSITE) {
+-		if (cpu_is_omap24xx())
+-			venc_write_reg(VENC_OUTPUT_CONTROL, 0x2);
+-		else
+-			venc_write_reg(VENC_OUTPUT_CONTROL, 0xa);
+-	} else { /* S-Video */
+-		venc_write_reg(VENC_OUTPUT_CONTROL, 0xd);
+-	}
++	l = 0;
++
++	if (dssdev->phy.venc.type == OMAP_DSS_VENC_TYPE_COMPOSITE)
++		l |= 1 << 1;
++	else /* S-Video */
++		l |= (1 << 0) | (1 << 2);
++
++	if (dssdev->phy.venc.invert_polarity == false)
++		l |= 1 << 3;
++
++	venc_write_reg(VENC_OUTPUT_CONTROL, l);
+ 
+ 	dispc_set_digit_size(dssdev->panel.timings.x_res,
+ 			dssdev->panel.timings.y_res/2);
+-- 
+1.6.2.4
+

@@ -11,7 +11,7 @@ PRIORITY = "optional"
 LICENSE = "OpenLDAP"
 SECTION = "libs"
 
-PR = "r4"
+PR = "r5"
 
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
 
@@ -216,6 +216,8 @@ PACKAGES += "${PN}-overlay-proxycache"
 # The distro/lcoal options must be added in *last*
 EXTRA_OECONF += "${OPENLDAP_OPTIONS}"
 DEPENDS      += "${OPENLDAP_DEPENDS}"
+
+CPPFLAGS_append = " -D_GNU_SOURCE"
 
 do_configure() {
 	gnu-configize

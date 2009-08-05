@@ -2,8 +2,9 @@ DESCRIPTION = "EXT2 Filesystem Utilities"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "optional"
+DEPENDS = "util-linux-ng"
 
-inherit autotools pkgconfig
+inherit autotools_stage gettext pkgconfig
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -13,6 +14,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
 S = "${WORKDIR}/e2fsprogs-libs-${PV}"
 FILES_e2fsprogs-libs-dev_append = " ${datadir}/et ${datadir}/ss"
 FILES_${PN} = "${bindir}"
+EXTRA_OECONF = "--disable-libblkid --disable-libuuid"
 
 python populate_packages_prepend () {
 	e2fs_libdir = bb.data.expand('${libdir}', d)
@@ -24,18 +26,12 @@ python populate_packages_prepend () {
 }
 
 do_stage () {
-        for i in libcom_err libss libuuid libblkid; do
+        for i in libcom_err libss; do
                 oe_libinstall -a -C lib $i ${STAGING_LIBDIR}
         done
         install -d ${STAGING_INCDIR}/et \
-                   ${STAGING_INCDIR}/ss \
-                   ${STAGING_INCDIR}/uuid \
-                   ${STAGING_INCDIR}/blkid
+                   ${STAGING_INCDIR}/ss
         install -m 0644 lib/et/com_err.h ${STAGING_INCDIR}/et/
         install -m 0644 lib/ss/ss.h ${STAGING_INCDIR}/ss/
         install -m 0644 lib/ss/ss_err.h ${STAGING_INCDIR}/ss/
-        install -m 0644 lib/uuid/uuid.h ${STAGING_INCDIR}/uuid/
-        install -m 0644 lib/uuid/uuid_types.h ${STAGING_INCDIR}/uuid/
-        install -m 0644 lib/blkid/blkid.h ${STAGING_INCDIR}/blkid/
-        install -m 0644 lib/blkid/blkid_types.h ${STAGING_INCDIR}/blkid/
 }

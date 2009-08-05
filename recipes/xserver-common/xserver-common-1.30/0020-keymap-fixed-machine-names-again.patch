@@ -1,0 +1,50 @@
+From f216da13941685575786e617c2cc072edd5b210c Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Mon, 20 Jul 2009 19:01:08 +0200
+Subject: [PATCH 20/22] keymap: fixed machine names again
+
+
+Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+---
+ X11/Xinit.d/12keymap |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/X11/Xinit.d/12keymap b/X11/Xinit.d/12keymap
+index cfa9750..7eac296 100644
+--- a/X11/Xinit.d/12keymap
++++ b/X11/Xinit.d/12keymap
+@@ -6,26 +6,26 @@
+ xmodmap - </etc/X11/xmodmap/default.xmodmap
+ 
+ case `machine_id` in
+-	"sharp shepherd" | "sharp husky" | "sharp corgi")
++	"sharp_shepherd" | "sharp_husky" | "sharp_corgi")
+ 		xmodmap - < /etc/X11/xmodmap/shepherd.xmodmap
+ 		;;
+-	"sharp akita" | "sharp borzoi" | "sharp spitz")
++	"sharp_akita" | "sharp_borzoi" | "sharp_spitz")
+ 		xmodmap - < /etc/X11/xmodmap/slcXXXX.xmodmap
+ 		;;				
+-	"sharp poodle")
++	"sharp_poodle")
+ 		xmodmap - < /etc/X11/xmodmap/poodle.xmodmap
+ 		;;
+         "sharp-collie")
+                 xmodmap - < /etc/X11/xmodmap/collie.xmodmap
+                 ;;
+-	"hp ipaq h6300")
++	"hp_ipaq_h6300")
+ 		xmodmap - < /etc/X11/xmodmap/h6300.xmodmap
+ 		;;
+ 	"ti-osk")
+ 		xmodmap - < /etc/X11/xmodmap/omap5912osk.xmodmap
+ 		;;
+ 	# All the rest of keyboardless PDA machines use common buttonmap
+-	"simpad" | "hp ipaq"* | "asus mypal"*)
++	"simpad" | "hp_ipaq"* | "asus_mypal"*)
+ 		xmodmap - < /etc/X11/xmodmap/keyboardless.xmodmap
+ 		;;
+ esac
+-- 
+1.6.3.3
+

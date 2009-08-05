@@ -1,6 +1,6 @@
 require glibc.inc
 
-PR = "r5"
+PR = "${INC_PR}.0"
 
 GLIBC_ADDONS ?= "linuxthreads"
 

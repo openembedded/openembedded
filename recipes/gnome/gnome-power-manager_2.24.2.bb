@@ -31,6 +31,6 @@ FILES_${PN} += "${datadir}/icons \
 		${datadir}/gnome/autostart \
 		"
 
-FILE_{PN}-doc += "${datadir}/omf \
-                  ${datadir}/gnome/help "
+FILES_${PN}-doc += "${datadir}/omf \
+                    ${datadir}/gnome/help "
 

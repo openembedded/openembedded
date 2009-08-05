@@ -3,7 +3,7 @@ HOMEPAGE = "http://g15tools.sourceforge.net"
 LICENSE = "GPLv2"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "libusb"
+DEPENDS = "virtual/libusb0"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/g15tools/libg15-${PV}.tar.bz2"

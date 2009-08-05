@@ -1,6 +1,6 @@
 require rdesktop.inc
 
-PR = "r0"
+PR = "${INC_PR}.1"
 
 inherit autotools
 

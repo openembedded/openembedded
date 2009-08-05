@@ -1,5 +1,5 @@
 DESCRIPTION = "Scanner drivers for SANE"
-DEPENDS = "hal gphoto2 jpeg libusb"
+DEPENDS = "hal gphoto2 jpeg virtual/libusb0"
 LICENSE = "LGPL"
 
 SRC_URI = "http://alioth.debian.org/frs/download.php/2318/sane-backends-${PV}.tar.gz \

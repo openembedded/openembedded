@@ -1,12 +1,10 @@
 DESCRIPTION = "Enlightenment DR17 theme for Angstrom"
 LICENSE = "MIT/BSD"
-DEPENDS = "edje-native eet-native"
-RDEPENDS = "e-wm"
-RRECOMMENDS = "places gnome-icon-theme"
+DEPENDS = "edje-native eet-native e-wm places gnome-icon-theme"
 
 PACKAGES_DYNAMIC = "e-wm-config-angstrom*"
 
-PR = "r11"
+PR = "r13"
 
 SRC_URI = " \
           file://configs \
@@ -39,9 +37,11 @@ do_install() {
 	done
 }
 
+RDEPENDS_${PN} = "e-wm places gnome-icon-theme"
+
 python populate_packages_prepend () {
 	angstrom_e_dir = bb.data.expand('${datadir}/enlightenment/data/config', d)
-	do_split_packages(d, angstrom_e_dir, '(.*)', 'e-wm-config-%s', 'E17 window manager %s config', extra_depends='', allow_links=True, allow_dirs=True)
+	do_split_packages(d, angstrom_e_dir, '(.*)', 'e-wm-config-%s', 'E17 window manager %s config', extra_depends='e-wm places gnome-icon-theme', allow_links=True, allow_dirs=True)
 }
 
 PACKAGE_ARCH = "all"

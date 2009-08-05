@@ -1,5 +1,5 @@
 require e2fsprogs-libs.inc
-
+PR = "r1"
 SRC_URI += "file://ldflags.patch;patch=1"
 
 do_compile_prepend () {

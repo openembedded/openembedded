@@ -1,0 +1,210 @@
+From 740a3556ebdb8b046b91287a48a6c0fd84fdc1b2 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Mon, 1 Jun 2009 17:06:26 +0200
+Subject: [PATCH 111/146] DSS2: Fix bottom field initial starting line
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+When downscaling the bottom field offset may be several source lines.
+Unfortunately the registers for the initial accumulator value will only
+hold the fractional part of of that offset so the integer part must be
+added to the bottom field base address. The TV-out quality is
+significantly improved as a result. Additionally this fixes the bottom
+field offset with DMA rotation and mirroring enabled as it was
+previously miscalculated.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/dss/dispc.c |   69 +++++++++++++++++++++++++-------------
+ 1 files changed, 45 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index 762a0f1..2463bab 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -1100,7 +1100,7 @@ static void _dispc_set_scaling(enum omap_plane plane,
+ 	 */
+ 	if (ilace && !fieldmode) {
+ 		accu1 = 0;
+-		accu0 = fir_vinc / 2;
++		accu0 = (fir_vinc / 2) & 0x3ff;
+ 		if (accu0 >= 1024/2) {
+ 			accu1 = 1024/2;
+ 			accu0 -= accu1;
+@@ -1178,6 +1178,7 @@ static void calc_vrfb_rotation_offset(u8 rotation, bool mirror,
+ 		u16 screen_width,
+ 		u16 width, u16 height,
+ 		enum omap_color_mode color_mode, bool fieldmode,
++		unsigned int field_offset,
+ 		unsigned *offset0, unsigned *offset1,
+ 		s32 *row_inc, s32 *pix_inc)
+ {
+@@ -1227,8 +1228,8 @@ static void calc_vrfb_rotation_offset(u8 rotation, bool mirror,
+ 	case 1:
+ 	case 3:
+ 		*offset1 = 0;
+-		if (fieldmode)
+-			*offset0 = screen_width * ps;
++		if (field_offset)
++			*offset0 = field_offset * screen_width * ps;
+ 		else
+ 			*offset0 = 0;
+ 
+@@ -1249,8 +1250,8 @@ static void calc_vrfb_rotation_offset(u8 rotation, bool mirror,
+ 	case 5:
+ 	case 7:
+ 		*offset1 = 0;
+-		if (fieldmode)
+-			*offset0 = screen_width * ps;
++		if (field_offset)
++			*offset0 = field_offset * screen_width * ps;
+ 		else
+ 			*offset0 = 0;
+ 		*row_inc = pixinc(1 - (screen_width + width) -
+@@ -1268,6 +1269,7 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 		u16 screen_width,
+ 		u16 width, u16 height,
+ 		enum omap_color_mode color_mode, bool fieldmode,
++		unsigned int field_offset,
+ 		unsigned *offset0, unsigned *offset1,
+ 		s32 *row_inc, s32 *pix_inc)
+ {
+@@ -1320,10 +1322,10 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 	switch (rotation + mirror * 4) {
+ 	case 0:
+ 		*offset1 = 0;
+-		if (fieldmode)
+-			*offset0 = screen_width * ps;
++		if (field_offset)
++			*offset0 = *offset1 + field_offset * screen_width * ps;
+ 		else
+-			*offset0 = 0;
++			*offset0 = *offset1;
+ 		*row_inc = pixinc(1 + (screen_width - fbw) +
+ 				(fieldmode ? screen_width : 0),
+ 				ps);
+@@ -1331,8 +1333,8 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 		break;
+ 	case 1:
+ 		*offset1 = screen_width * (fbh - 1) * ps;
+-		if (fieldmode)
+-			*offset0 = *offset1 + ps;
++		if (field_offset)
++			*offset0 = *offset1 + field_offset * ps;
+ 		else
+ 			*offset0 = *offset1;
+ 		*row_inc = pixinc(screen_width * (fbh - 1) + 1 +
+@@ -1341,8 +1343,8 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 		break;
+ 	case 2:
+ 		*offset1 = (screen_width * (fbh - 1) + fbw - 1) * ps;
+-		if (fieldmode)
+-			*offset0 = *offset1 - screen_width * ps;
++		if (field_offset)
++			*offset0 = *offset1 - field_offset * screen_width * ps;
+ 		else
+ 			*offset0 = *offset1;
+ 		*row_inc = pixinc(-1 -
+@@ -1353,8 +1355,8 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 		break;
+ 	case 3:
+ 		*offset1 = (fbw - 1) * ps;
+-		if (fieldmode)
+-			*offset0 = *offset1 - ps;
++		if (field_offset)
++			*offset0 = *offset1 - field_offset * ps;
+ 		else
+ 			*offset0 = *offset1;
+ 		*row_inc = pixinc(-screen_width * (fbh - 1) - 1 -
+@@ -1365,8 +1367,8 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 	/* mirroring */
+ 	case 0 + 4:
+ 		*offset1 = (fbw - 1) * ps;
+-		if (fieldmode)
+-			*offset0 = *offset1 + screen_width * ps;
++		if (field_offset)
++			*offset0 = *offset1 + field_offset * screen_width * ps;
+ 		else
+ 			*offset0 = *offset1;
+ 		*row_inc = pixinc(screen_width * 2 - 1 +
+@@ -1377,8 +1379,8 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 
+ 	case 1 + 4:
+ 		*offset1 = 0;
+-		if (fieldmode)
+-			*offset0 = *offset1 + screen_width * ps;
++		if (field_offset)
++			*offset0 = *offset1 + field_offset * ps;
+ 		else
+ 			*offset0 = *offset1;
+ 		*row_inc = pixinc(-screen_width * (fbh - 1) + 1 +
+@@ -1389,8 +1391,8 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 
+ 	case 2 + 4:
+ 		*offset1 = screen_width * (fbh - 1) * ps;
+-		if (fieldmode)
+-			*offset0 = *offset1 + screen_width * ps;
++		if (field_offset)
++			*offset0 = *offset1 - field_offset * screen_width * ps;
+ 		else
+ 			*offset0 = *offset1;
+ 		*row_inc = pixinc(1 - screen_width * 2 -
+@@ -1401,8 +1403,8 @@ static void calc_dma_rotation_offset(u8 rotation, bool mirror,
+ 
+ 	case 3 + 4:
+ 		*offset1 = (screen_width * (fbh - 1) + fbw - 1) * ps;
+-		if (fieldmode)
+-			*offset0 = *offset1 + screen_width * ps;
++		if (field_offset)
++			*offset0 = *offset1 - field_offset * ps;
+ 		else
+ 			*offset0 = *offset1;
+ 		*row_inc = pixinc(screen_width * (fbh - 1) - 1 -
+@@ -1498,6 +1500,7 @@ static int _dispc_setup_plane(enum omap_plane plane,
+ 	s32 row_inc;
+ 	s32 pix_inc;
+ 	u16 frame_height = height;
++	unsigned int field_offset = 0;
+ 
+ 	if (paddr == 0)
+ 		return -EINVAL;
+@@ -1596,15 +1599,33 @@ static int _dispc_setup_plane(enum omap_plane plane,
+ 			return -EINVAL;
+ 	}
+ 
++	if (ilace && !fieldmode) {
++		/*
++		 * when downscaling the bottom field may have to start several
++		 * source lines below the top field. Unfortunately ACCUI
++		 * registers will only hold the fractional part of the offset
++		 * so the integer part must be added to the base address of the
++		 * bottom field.
++		 */
++		if (!height || height == out_height)
++			field_offset = 0;
++		else
++			field_offset = height / out_height / 2;
++	}
++
++	/* Fields are independent but interleaved in memory. */
++	if (fieldmode)
++		field_offset = 1;
++
+ 	if (rotation_type == OMAP_DSS_ROT_DMA)
+ 		calc_dma_rotation_offset(rotation, mirror,
+ 				screen_width, width, frame_height, color_mode,
+-				fieldmode,
++				fieldmode, field_offset,
+ 				&offset0, &offset1, &row_inc, &pix_inc);
+ 	else
+ 		calc_vrfb_rotation_offset(rotation, mirror,
+ 				screen_width, width, frame_height, color_mode,
+-				fieldmode,
++				fieldmode, field_offset,
+ 				&offset0, &offset1, &row_inc, &pix_inc);
+ 
+ 	DSSDBG("offset0 %u, offset1 %u, row_inc %d, pix_inc %d\n",
+-- 
+1.6.2.4
+

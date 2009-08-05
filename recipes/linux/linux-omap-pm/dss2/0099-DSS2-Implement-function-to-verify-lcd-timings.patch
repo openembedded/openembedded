@@ -1,0 +1,144 @@
+From 875cf440d5450f5d91b2ef1ba6f051f93e77b8eb Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 3 Jun 2009 10:45:54 +0300
+Subject: [PATCH 099/146] DSS2: Implement function to verify lcd timings
+
+---
+ drivers/video/omap2/dss/dispc.c |   52 +++++++++++++++++++++++++++------------
+ drivers/video/omap2/dss/dpi.c   |   25 +-----------------
+ drivers/video/omap2/dss/dss.h   |    1 +
+ 3 files changed, 39 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index 5ef9a32..762a0f1 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -2015,34 +2015,49 @@ void dispc_set_parallel_interface_mode(enum omap_parallel_interface_mode mode)
+ 	enable_clocks(0);
+ }
+ 
++static bool _dispc_lcd_timings_ok(int hsw, int hfp, int hbp,
++		int vsw, int vfp, int vbp)
++{
++	if (cpu_is_omap24xx() || omap_rev() < OMAP3430_REV_ES3_0) {
++		if (hsw < 1 || hsw > 64 ||
++				hfp < 1 || hfp > 256 ||
++				hbp < 1 || hbp > 256 ||
++				vsw < 1 || vsw > 64 ||
++				vfp < 0 || vfp > 255 ||
++				vbp < 0 || vbp > 255)
++			return false;
++	} else {
++		if (hsw < 1 || hsw > 256 ||
++				hfp < 1 || hfp > 4096 ||
++				hbp < 1 || hbp > 4096 ||
++				vsw < 1 || vsw > 256 ||
++				vfp < 0 || vfp > 4095 ||
++				vbp < 0 || vbp > 4095)
++			return false;
++	}
++
++	return true;
++}
++
++bool dispc_lcd_timings_ok(struct omap_video_timings *timings)
++{
++	return _dispc_lcd_timings_ok(timings->hsw, timings->hfp,
++			timings->hbp, timings->vsw,
++			timings->vfp, timings->vbp);
++}
++
+ static void _dispc_set_lcd_timings(int hsw, int hfp, int hbp,
+ 				   int vsw, int vfp, int vbp)
+ {
+ 	u32 timing_h, timing_v;
+ 
+ 	if (cpu_is_omap24xx() || omap_rev() < OMAP3430_REV_ES3_0) {
+-		BUG_ON(hsw < 1 || hsw > 64);
+-		BUG_ON(hfp < 1 || hfp > 256);
+-		BUG_ON(hbp < 1 || hbp > 256);
+-
+-		BUG_ON(vsw < 1 || vsw > 64);
+-		BUG_ON(vfp < 0 || vfp > 255);
+-		BUG_ON(vbp < 0 || vbp > 255);
+-
+ 		timing_h = FLD_VAL(hsw-1, 5, 0) | FLD_VAL(hfp-1, 15, 8) |
+ 			FLD_VAL(hbp-1, 27, 20);
+ 
+ 		timing_v = FLD_VAL(vsw-1, 5, 0) | FLD_VAL(vfp, 15, 8) |
+ 			FLD_VAL(vbp, 27, 20);
+ 	} else {
+-		BUG_ON(hsw < 1 || hsw > 256);
+-		BUG_ON(hfp < 1 || hfp > 4096);
+-		BUG_ON(hbp < 1 || hbp > 4096);
+-
+-		BUG_ON(vsw < 1 || vsw > 256);
+-		BUG_ON(vfp < 0 || vfp > 4095);
+-		BUG_ON(vbp < 0 || vbp > 4095);
+-
+ 		timing_h = FLD_VAL(hsw-1, 7, 0) | FLD_VAL(hfp-1, 19, 8) |
+ 			FLD_VAL(hbp-1, 31, 20);
+ 
+@@ -2062,6 +2077,11 @@ void dispc_set_lcd_timings(struct omap_video_timings *timings)
+ 	unsigned xtot, ytot;
+ 	unsigned long ht, vt;
+ 
++	if (!_dispc_lcd_timings_ok(timings->hsw, timings->hfp,
++				timings->hbp, timings->vsw,
++				timings->vfp, timings->vbp))
++		BUG();
++
+ 	_dispc_set_lcd_timings(timings->hsw, timings->hfp, timings->hbp,
+ 			timings->vsw, timings->vfp, timings->vbp);
+ 
+diff --git a/drivers/video/omap2/dss/dpi.c b/drivers/video/omap2/dss/dpi.c
+index f5867cf..d244e54 100644
+--- a/drivers/video/omap2/dss/dpi.c
++++ b/drivers/video/omap2/dss/dpi.c
+@@ -287,29 +287,8 @@ static int dpi_check_timings(struct omap_dss_device *dssdev,
+ 	unsigned long fck;
+ 	unsigned long pck;
+ 
+-	if (cpu_is_omap24xx() || omap_rev() < OMAP3430_REV_ES3_0) {
+-		if (timings->hsw < 1 || timings->hsw > 64 ||
+-				timings->hfp < 1 || timings->hfp > 256 ||
+-				timings->hbp < 1 || timings->hbp > 256) {
+-			return -EINVAL;
+-		}
+-
+-		if (timings->vsw < 1 || timings->vsw > 64 ||
+-				timings->vfp > 255 || timings->vbp > 255) {
+-			return -EINVAL;
+-		}
+-	} else {
+-		if (timings->hsw < 1 || timings->hsw > 256 ||
+-				timings->hfp < 1 || timings->hfp > 4096 ||
+-				timings->hbp < 1 || timings->hbp > 4096) {
+-			return -EINVAL;
+-		}
+-
+-		if (timings->vsw < 1 || timings->vsw > 64 ||
+-				timings->vfp > 4095 || timings->vbp > 4095) {
+-			return -EINVAL;
+-		}
+-	}
++	if (!dispc_lcd_timings_ok(timings))
++		return -EINVAL;
+ 
+ 	if (timings->pixel_clock == 0)
+ 		return -EINVAL;
+diff --git a/drivers/video/omap2/dss/dss.h b/drivers/video/omap2/dss/dss.h
+index 9a3aea1..370c54b 100644
+--- a/drivers/video/omap2/dss/dss.h
++++ b/drivers/video/omap2/dss/dss.h
+@@ -308,6 +308,7 @@ void dispc_enable_alpha_blending(enum omap_channel ch, bool enable);
+ bool dispc_trans_key_enabled(enum omap_channel ch);
+ bool dispc_alpha_blending_enabled(enum omap_channel ch);
+ 
++bool dispc_lcd_timings_ok(struct omap_video_timings *timings);
+ void dispc_set_lcd_timings(struct omap_video_timings *timings);
+ unsigned long dispc_fclk_rate(void);
+ unsigned long dispc_lclk_rate(void);
+-- 
+1.6.2.4
+

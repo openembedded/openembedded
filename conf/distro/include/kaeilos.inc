@@ -56,15 +56,15 @@ THUMB_INTERWORK = "yes"
 
 
 #Use this variable in feeds and other parts that need a URI
-ANGSTROM_URI ?= "http://www.angstrom-distribution.org"
+ANGSTROM_URI ?= "http://www.kaeilos.com"
 
 #Use this variable to select which recipe you want to use to get feed configs (/etc/ipkg/, /etc/apt/sources.list)
 # usefull for derivative distros and local testing
 # As this is runtime we can't and won't use virtual/feed-configs
 ANGSTROM_FEED_CONFIGS ?= "angstrom-feed-configs"
 
-#Set the default maintainer to angstrom-dev
-MAINTAINER = "KaeilOS Developers <info@koansoftware.com>"
+#Set the default maintainer of kaeilos
+MAINTAINER = "KaeilOS Mantainer <m.cavallini@koansoftware.com>"
 
 #use debian style naming
 INHERIT += "debian"

@@ -173,7 +173,7 @@
         directory.</para>
 
         <para>Default: <command>IMAGE_ROOTFS =
-        "${TMPDIR}/rootfs"</command></para>
+        "${TMPDIR}/rootfs/${PN}"</command></para>
       </listitem>
     </varlistentry>
 

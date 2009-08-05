@@ -1,0 +1,16 @@
+--- xserver-common-1.22/run-calibrate.sh-orig	2007-07-12 11:21:28.000000000 -0700
++++ xserver-common-1.22/run-calibrate.sh	2009-02-18 06:42:00.000000000 -0800
+@@ -1,12 +1,8 @@
+ #! /bin/sh
+ 
+-if [ -x /usr/bin/xtscal ]; then
+-	exec /usr/bin/xtscal
+-else
++if [ -e /dev/input/touchscreen0 ]; then
+ 	if [ -x /usr/bin/ts_calibrate ]; then
+ 	        exec /usr/bin/ts_calibrate
+ 	fi
+ fi
+ 
+-exec xtscal
+-

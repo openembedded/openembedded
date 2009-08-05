@@ -1,0 +1,100 @@
+From feaf5b69b627c85e3ea40accf50ab5771125cf00 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 29 May 2009 12:07:27 +0300
+Subject: [PATCH 093/146] DSS2: Sharp panel: use regulator fw
+
+---
+ .../video/omap2/displays/panel-sharp-ls037v7dw01.c |   38 ++++++++++++++++++++
+ 1 files changed, 38 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c b/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c
+index 6b93ea5..cb8ce34 100644
+--- a/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c
++++ b/drivers/video/omap2/displays/panel-sharp-ls037v7dw01.c
+@@ -19,9 +19,20 @@
+ 
+ #include <linux/module.h>
+ #include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/regulator/consumer.h>
++#include <linux/err.h>
+ 
+ #include <mach/display.h>
+ 
++struct sharp_data {
++	/* XXX This regulator should actually be in SDP board file, not here,
++	 * as it doesn't actually power the LCD, but something else that
++	 * affects the output to LCD (I think. Somebody clarify). It doesn't do
++	 * harm here, as SDP is the only board using this currently */
++	struct regulator *vdvi_reg;
++};
++
+ static struct omap_video_timings sharp_ls_timings = {
+ 	.x_res = 480,
+ 	.y_res = 640,
+@@ -39,25 +50,48 @@ static struct omap_video_timings sharp_ls_timings = {
+ 
+ static int sharp_ls_panel_probe(struct omap_dss_device *dssdev)
+ {
++	struct sharp_data *sd;
++
+ 	dssdev->panel.config = OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IVS |
+ 		OMAP_DSS_LCD_IHS;
+ 	dssdev->panel.acb = 0x28;
+ 	dssdev->panel.timings = sharp_ls_timings;
+ 
++	sd = kzalloc(sizeof(*sd), GFP_KERNEL);
++	if (!sd)
++		return -ENOMEM;
++
++	dev_set_drvdata(&dssdev->dev, sd);
++
++	sd->vdvi_reg = regulator_get(&dssdev->dev, "vdvi");
++	if (IS_ERR(sd->vdvi_reg)) {
++		kfree(sd);
++		printk("failed to get VDVI regulator\n");
++		return PTR_ERR(sd->vdvi_reg);
++	}
++
+ 	return 0;
+ }
+ 
+ static void sharp_ls_panel_remove(struct omap_dss_device *dssdev)
+ {
++	struct sharp_data *sd = dev_get_drvdata(&dssdev->dev);
++
++	regulator_put(sd->vdvi_reg);
++
++	kfree(sd);
+ }
+ 
+ static int sharp_ls_panel_enable(struct omap_dss_device *dssdev)
+ {
++	struct sharp_data *sd = dev_get_drvdata(&dssdev->dev);
+ 	int r = 0;
+ 
+ 	/* wait couple of vsyncs until enabling the LCD */
+ 	msleep(50);
+ 
++	regulator_enable(sd->vdvi_reg);
++
+ 	if (dssdev->platform_enable)
+ 		r = dssdev->platform_enable(dssdev);
+ 
+@@ -66,9 +100,13 @@ static int sharp_ls_panel_enable(struct omap_dss_device *dssdev)
+ 
+ static void sharp_ls_panel_disable(struct omap_dss_device *dssdev)
+ {
++	struct sharp_data *sd = dev_get_drvdata(&dssdev->dev);
++
+ 	if (dssdev->platform_disable)
+ 		dssdev->platform_disable(dssdev);
+ 
++	regulator_disable(sd->vdvi_reg);
++
+ 	/* wait at least 5 vsyncs after disabling the LCD */
+ 
+ 	msleep(100);
+-- 
+1.6.2.4
+

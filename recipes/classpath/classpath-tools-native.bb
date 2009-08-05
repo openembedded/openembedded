@@ -5,3 +5,9 @@
 DESCRIPTION = "Provides working jar, javah etc. from the GNU Classpath project"
 
 DEPENDS = "virtual/java-native classpath-native"
+
+inherit native
+
+do_stage () {
+	echo 1 /dev/null
+}

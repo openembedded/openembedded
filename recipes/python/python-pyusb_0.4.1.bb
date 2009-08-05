@@ -2,7 +2,7 @@ DESCRIPTION = "libusb Python Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "BSD"
-DEPENDS = "libusb"
+DEPENDS = "virtual/libusb0"
 SRCNAME = "pyusb"
 PR = "r1"
 

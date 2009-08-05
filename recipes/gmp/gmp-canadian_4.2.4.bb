@@ -1,5 +1,6 @@
 PV = "4.2.4"
 require gmp_${PV}.bb
+PR = "${INC_PR}.1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gmp-${PV}"
 S = "${WORKDIR}/gmp-${PV}"

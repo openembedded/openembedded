@@ -16,12 +16,9 @@ Index: zaurusd/config/mach-config/mach-borzoi-vars.in
 ===================================================================
 --- zaurusd.orig/config/mach-config/mach-borzoi-vars.in	2009-03-07 11:04:43.000000000 +0000
 +++ zaurusd/config/mach-config/mach-borzoi-vars.in	2009-06-22 20:51:00.000000000 +0000
-@@ -5,6 +5,9 @@
- SWITCH_EVENT_DEVICE=/dev/input/event0
- 
+@@ -7,4 +7,7 @@
  TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
--TSKEYS_DEVICE=/dev/input/event1
-+TSKEYS_DEVICE=/dev/input/touchscreen0
+ TSKEYS_DEVICE=/dev/input/event1
  
 -ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
 \ No newline at end of file

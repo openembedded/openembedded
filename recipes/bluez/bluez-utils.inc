@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
 SECTION = "console"
 PRIORITY = "optional"
-DEPENDS = "gstreamer gst-plugins-base bluez-libs-${PV} libusb-compat dbus cups"
+DEPENDS = "gstreamer gst-plugins-base bluez-libs-${PV} virtual/libusb0 dbus cups"
 PROVIDES = "bluez-utils-dbus"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
 RREPLACES = "bluez-utils-dbus"

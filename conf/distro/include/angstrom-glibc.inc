@@ -17,11 +17,9 @@ FULL_OPTIMIZATION_pn-glibc = "-fexpensive-optimizations -fomit-frame-pointer -O2
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 FULL_OPTIMIZATION_ep9312 = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O -fno-signed-zeros"
 
-BUILD_OPTIMIZATION = "-O2 -ggdb3"
-BUILD_OPTIMIZATION_pn-perl = "-O1"
-BUILD_OPTIMIZATION_pn-glibc = "-O2"
-BUILD_OPTIMIZATION_sparc = "-O2"
-BUILD_OPTIMIZATION_ep9312 = "-O"
+# This is only used for -native packages
+BUILD_OPTIMIZATION = "-O2 -g"
+BUILD_OPTIMIZATION_pn-perl-native = "-O1 -g"
 
 TARGET_LINK_HASH_STYLE = "${@['-Wl,--hash-style=gnu',''][bb.data.getVar('TARGET_ARCH',d,1) in ['mips', 'mipsel']]}"
 

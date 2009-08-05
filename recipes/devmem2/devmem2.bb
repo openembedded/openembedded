@@ -1,7 +1,7 @@
 DESCRIPTION = "Simple program to read/write from/to any location in memory."
 SRC_URI = "http://www.lartmaker.nl/lartware/port/devmem2.c"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}"
 

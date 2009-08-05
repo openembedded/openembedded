@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "Classpath"
 PBN = "classpath"
 
-DEPENDS = "virtual/javac-native fastjar-native zip-native"
+DEPENDS = "virtual/javac-native fastjar-native zip-native gmp antlr-native"
 RPROVIDES = ""
 
 RDEPENDS_${PN} = "${PBN}-common (>= ${PV})"
@@ -30,9 +30,10 @@ EXTRA_OECONF = "\
   --includedir=${includedir}/classpath \
   --with-vm=java \
   --disable-Werror \
+  --with-antlr-jar=${STAGING_DATADIR_JAVA_NATIVE}/antlr.jar \
   "
 
-inherit autotools
+inherit autotools java
 
 do_configure_prepend () {
 

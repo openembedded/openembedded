@@ -186,7 +186,7 @@ python do_package_ipk () {
 		bb.mkdirhier(pkgoutdir)
 		os.chdir(root)
 		from glob import glob
-		g = glob('*')
+		g = glob('*') + glob('.[!.]*')
 		try:
 			del g[g.index('CONTROL')]
 			del g[g.index('./CONTROL')]

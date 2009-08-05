@@ -1,5 +1,5 @@
 require glibc.inc
-PR = "r17"
+PR = "${INC_PR}.0"
 
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"

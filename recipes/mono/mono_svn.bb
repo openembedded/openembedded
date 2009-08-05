@@ -5,7 +5,7 @@ DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI += "file://configure-svnr87352.patch;patch=1"
+SRC_URI += ""
 
 # Per http://www.mono-project.com/Mono:ARM
 EXTRA_OECONF += " --disable-mcs-build "
@@ -37,7 +37,7 @@ do_install_append() {
 inherit mono
 
 # Import file definitions from Debian
-require mono_1.2.5.1-files.inc
+require mono_2.x-files.inc
 
 # Add some packages
 PACKAGES_append = " mono-doc mono mono-runtime"

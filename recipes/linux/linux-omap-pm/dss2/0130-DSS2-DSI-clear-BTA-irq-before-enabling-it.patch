@@ -1,0 +1,26 @@
+From 852518e23aafed505a8432a3105d8045bf51a3f2 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Tue, 30 Jun 2009 11:39:30 +0300
+Subject: [PATCH 130/146] DSS2: DSI: clear BTA irq before enabling it
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/dss/dsi.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index 1e18fdf..45df3f7 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -616,6 +616,8 @@ static void dsi_vc_enable_bta_irq(int channel)
+ {
+ 	u32 l;
+ 
++	dsi_write_reg(DSI_VC_IRQSTATUS(channel), DSI_VC_IRQ_BTA);
++
+ 	l = dsi_read_reg(DSI_VC_IRQENABLE(channel));
+ 	l |= DSI_VC_IRQ_BTA;
+ 	dsi_write_reg(DSI_VC_IRQENABLE(channel), l);
+-- 
+1.6.2.4
+

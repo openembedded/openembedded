@@ -10,7 +10,7 @@ SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
            file://xmms-config-dequote.patch;patch=1 \
 	   file://acinclude.m4 \
            file://xmms.sh"
-PR = "r4"
+PR = "r5"
 
 RRECOMMENDS_${PN} = "xmms-plugin-output-oss xmms-plugin-output-alsa \
                     xmms-mad xmms-tremor"
@@ -36,9 +36,14 @@ do_configure_prepend() {
 do_install_append() {
 	install -m 0755 ${WORKDIR}/xmms.sh ${D}${bindir}
 	install -d ${D}${datadir}/applications
-	install xmms/xmms.desktop ${D}${datadir}/applications
-	sed -i "s/Exec=xmms/Exec=xmms.sh/" ${D}${datadir}/applications/xmms.desktop
+
+	install xmms/xmms.desktop                             ${D}${datadir}/applications
+	sed -i "s/Exec=xmms/Exec=xmms.sh/"                    ${D}${datadir}/applications/xmms.desktop
+	sed -i "s/comment/Comment/"                           ${D}${datadir}/applications/xmms.desktop
+	sed -i "s/Encoding=Legacy-Mixed/StartupNotify=true/"  ${D}${datadir}/applications/xmms.desktop
+	sed -i "s/Terminal=0/Terminal=false/"                 ${D}${datadir}/applications/xmms.desktop
 	sed -i "s/Type=Application/Type=Application\nCategories=AudioVideo;/" ${D}${datadir}/applications/xmms.desktop
+
 	install -d ${D}${datadir}/pixmaps
 	install xmms/xmms_mini.xpm ${D}${datadir}/pixmaps
 }

@@ -1,0 +1,14 @@
+Index: git/wscript
+===================================================================
+--- git.orig/wscript
++++ git/wscript
+@@ -62,8 +62,7 @@ def rc_file(self, node):
+     rctask.set_inputs (node)
+     rctask.set_outputs (node.change_ext ('.rc.o'))
+     self.compiled_tasks.append (rctask)
+-Task.simple_task_type ('winrc', '${WINRC} -o${TGT} ${SRC}', color='BLUE',
+-    before='cc cxx', shell=False)
++    Task.simple_task_type ('winrc', '${WINRC} -o${TGT} ${SRC}', color='BLUE', before='cc cxx', shell=False)
+ 
+ def configure (conf):
+     def option_checkfatal (option, desc):

@@ -1,0 +1,43 @@
+From 10b82544210f731f5c02e7bfc277f8ecb57c9263 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Tue, 2 Jun 2009 17:11:24 +0300
+Subject: [PATCH 098/146] DSS2: use sysfs_streq() to compare display names
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/dss/manager.c |   14 +++-----------
+ 1 files changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/manager.c b/drivers/video/omap2/dss/manager.c
+index 6afc1cb..798867c 100644
+--- a/drivers/video/omap2/dss/manager.c
++++ b/drivers/video/omap2/dss/manager.c
+@@ -54,22 +54,14 @@ static ssize_t manager_display_store(struct omap_overlay_manager *mgr,
+ 	int match(struct omap_dss_device *dssdev, void *data)
+ 	{
+ 		const char *str = data;
+-		return strcmp(dssdev->name, str) == 0;
++		return sysfs_streq(dssdev->name, str);
+ 	}
+ 
+ 	if (buf[size-1] == '\n')
+ 		--len;
+ 
+-	if (len > 0) {
+-		char name[64];
+-		int n;
+-
+-		n = min(len, sizeof(name) - 1);
+-		strncpy(name, buf, n);
+-		name[n - 1] = 0;
+-
+-		dssdev = omap_dss_find_device(name, match);
+-	}
++	if (len > 0)
++		dssdev = omap_dss_find_device((void *)buf, match);
+ 
+ 	if (len > 0 && dssdev == NULL)
+ 		return -EINVAL;
+-- 
+1.6.2.4
+
