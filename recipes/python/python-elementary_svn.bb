@@ -2,9 +2,7 @@ require python-efl.inc
 DEPENDS += "elementary"
 RDEPENDS += "python-evas python-ecore python-edje" 
 PV = "0.1+svnr${SRCREV}"
-PR = "ml1"
-
-SRC_URI += "file://py_elm.patch;patch=1"
+PR = "ml2"
 
 do_stage() {         
 	distutils_stage_all 
