@@ -5,7 +5,7 @@ DESCRIPTION_${PN} = "Linux ${KERNEL_VERSION} kernel for the Openmoko Neo GSM Sma
 
 DEFAULT_PREFERENCE = "-1"
 
-KERNEL_VERSION = "2.6.30.4"
+KERNEL_VERSION = "2.6.30.1"
 
 SRC_URI = "\
   http://kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
@@ -39,7 +39,7 @@ SRC_URI = "\
   file://110-serial.patch;patch=1 \
   file://120-fix-wm8753-reg_cache.patch;patch=1 \
   file://130-fix-s3c_gpiolib_getchip.patch;patch=1 \
-  file://750-glamo-headers.patch;patch=1 \
+#  file://750-glamo-headers.patch;patch=1 \
 #  file://150-ignore-init-argument.patch;patch=1 \
 "
 
