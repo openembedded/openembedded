@@ -4,19 +4,19 @@ Index: klibc-1.5/usr/utils/Kbuild
 +++ klibc-1.5/usr/utils/Kbuild	2008-03-07 22:48:44.660783243 +0100
 @@ -3,8 +3,8 @@
  #
- 
+
  progs := chroot dd mkdir mkfifo mknod mount pivot_root umount
 -progs += true false sleep ln nuke minips cat
--progs += uname halt kill readlink cpio sync dmesg
+-progs += insmod uname halt kill readlink cpio
 +progs += true false sleep ln nuke minips cat losetup
-+progs += uname halt kill readlink cpio sync dmesg modprobe
- 
++progs += insmod uname halt kill readlink cpio modprobe
+
  static-y := $(addprefix static/, $(progs))
  shared-y := $(addprefix shared/, $(progs))
-@@ -54,7 +54,10 @@
+@@ -52,7 +52,10 @@
+ shared/readlink-y   := readlink.o
+ static/cpio-y	    := cpio.o
  shared/cpio-y       := cpio.o
- static/sync-y       := sync.o
- shared/sync-y       := sync.o
 -
 +static/modprobe-y   := modprobe.o
 +shared/modprobe-y   := modprobe.o
@@ -24,7 +24,7 @@ Index: klibc-1.5/usr/utils/Kbuild
 +shared/losetup-y    := losetup.o
  # Additionally linked targets
  always := static/reboot static/poweroff shared/reboot shared/poweroff
- 
+
 Index: klibc-1.5/usr/utils/list.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
@@ -674,7 +674,7 @@ Index: klibc-1.5/usr/utils/modprobe.c
 +	}
 +}
 +
-+/* Is module in /proc/modules?  If so, fill in usecount if not NULL. 
++/* Is module in /proc/modules?  If so, fill in usecount if not NULL.
 +   0 means no, 1 means yes, -1 means unknown.
 + */
 +static int module_in_kernel(const char *modname, unsigned int *usecount)
@@ -765,7 +765,7 @@ Index: klibc-1.5/usr/utils/modprobe.c
 +		return NULL;
 +	if (size < sechdrs[hdr->e_shstrndx].sh_offset)
 +		return NULL;
-+		
++
 +	secnames = file + sechdrs[hdr->e_shstrndx].sh_offset;
 +	for (i = 1; i < hdr->e_shnum; i++)
 +		if (strcmp(secnames + sechdrs[i].sh_name, name) == 0) {
@@ -792,7 +792,7 @@ Index: klibc-1.5/usr/utils/modprobe.c
 +		return NULL;
 +	if (size < sechdrs[hdr->e_shstrndx].sh_offset)
 +		return NULL;
-+		
++
 +	secnames = file + sechdrs[hdr->e_shstrndx].sh_offset;
 +	for (i = 1; i < hdr->e_shnum; i++)
 +		if (strcmp(secnames + sechdrs[i].sh_name, name) == 0) {
@@ -962,7 +962,7 @@ Index: klibc-1.5/usr/utils/modprobe.c
 +	    struct module_options *options)
 +{
 +	struct module_options *new;
-+	char *tab; 
++	char *tab;
 +
 +	new = NOFAIL(malloc(sizeof(*new)));
 +	new->modulename = NOFAIL(strdup(modname));
@@ -1532,7 +1532,7 @@ Index: klibc-1.5/usr/utils/modprobe.c
 +	return ret;
 +}
 +
-+static const char *default_configs[] = 
++static const char *default_configs[] =
 +{
 +	"/etc/modprobe.conf",
 +	"/etc/modprobe.d",
