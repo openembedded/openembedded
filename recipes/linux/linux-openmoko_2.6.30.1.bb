@@ -22,7 +22,7 @@ SRC_URI = "\
   file://030-dont-override-logo-with-early-printks.patch;patch=1 \  
   file://040-rename-serialdevs.patch;patch=1 \                      
   file://050-s3c2442-touchscreen.patch;patch=1 \
-  file://051-gta02kbd.patch;patch=1 \             
+#  file://051-gta02kbd.patch;patch=1 \             
   file://052-touchscreen_filter.patch;patch=1 \   
   file://053-glamo.patch;patch=1 \                
   file://054-bq27000.patch;patch=1 \              
@@ -38,7 +38,8 @@ SRC_URI = "\
   file://100-udc-poll-vbus.patch;patch=1 \
   file://110-serial.patch;patch=1 \
   file://120-fix-wm8753-reg_cache.patch;patch=1 \
-  file://750-glamo-headers.patch;patch=1 \
+  file://130-fix-s3c_gpiolib_getchip.patch;patch=1 \
+#  file://750-glamo-headers.patch;patch=1 \
 #  file://150-ignore-init-argument.patch;patch=1 \
 "
 
