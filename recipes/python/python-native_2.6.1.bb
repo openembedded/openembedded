@@ -1,7 +1,7 @@
 require python.inc
 DEPENDS = "openssl-native bzip2-full-native zlib-native readline-native"
 
-PR .= ".1"
+PR .= ".2"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
@@ -21,6 +21,7 @@ exec_prefix = "${STAGING_DIR_NATIVE}/${layout_exec_prefix}"
 EXTRA_OEMAKE = '\
   BUILD_SYS="" \
   HOST_SYS="" \
+  LIBC="" \
   STAGING_LIBDIR=${STAGING_LIBDIR_NATIVE} \
   STAGING_INCDIR=${STAGING_INCDIR_NATIVE} \
 '
