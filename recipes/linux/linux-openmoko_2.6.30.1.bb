@@ -39,7 +39,7 @@ SRC_URI = "\
   file://110-serial.patch;patch=1 \
   file://120-fix-wm8753-reg_cache.patch;patch=1 \
   file://130-fix-s3c_gpiolib_getchip.patch;patch=1 \
-#  file://750-glamo-headers.patch;patch=1 \
+  file://750-glamo-headers.patch;patch=1 \
 #  file://150-ignore-init-argument.patch;patch=1 \
 "
 
