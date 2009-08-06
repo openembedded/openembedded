@@ -5,7 +5,7 @@ DEPENDS = "alsa-lib gstreamer gtk+ libvorbis pulseaudio"
 SECTION = "libs/multimedia"
 AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
-PR = "r0"
+PR = "r1"
 
 inherit autotools_stage
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
@@ -35,14 +35,14 @@ do_configure() {
 OE_LT_RPATH_ALLOW = "any"
 OE_LT_RPATH_ALLOW[export] = "1"
 
-PACKAGES_DYNAMIC = "libcanberra-*"
-
 python populate_packages_prepend() {
 	plugindir = bb.data.expand('${libdir}/${P}/', d)
-	do_split_packages(d, plugindir, '^lib(.*)\.so$', 'lib%s', '%s support library', extra_depends='' )
+	do_split_packages(d, plugindir, '^libcanberra-(.*)\.so$', 'libcanberra-%s', '%s support library', extra_depends='' )
 }
 
 PACKAGES =+ "${PN}-gtk"
+
+PACKAGES_DYNAMIC = "libcanberra-*"
 
 FILES_${PN}-gtk = "\
   ${sysconfdir}/gconf \
