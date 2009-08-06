@@ -1,6 +1,9 @@
-require klibc-common_1.5.15.inc
+require klibc-common.inc
 
 PR = "r1"
+
+KLIBC_FETCHDIR = "Testing"
+FILESPATHPKG =. "klibc-${PV}:"
 
 # We only want the static utils. klibc build both. So we install only what we want.
 do_install() {

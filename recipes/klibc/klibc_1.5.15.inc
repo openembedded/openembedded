@@ -1,4 +1,4 @@
-require klibc-common_1.5.15.inc
+require klibc-common.inc
 
 SRC_URI += "file://staging.patch;patch=1 \
 	    file://klibc_kexecsyscall.patch;patch=1 \

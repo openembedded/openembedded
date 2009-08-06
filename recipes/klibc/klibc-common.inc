@@ -4,13 +4,15 @@ DESCRIPTION = "klibc is intended to be a minimalistic libc subset for \
 use with initramfs.  It is deliberately written for small size, \
 minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/Stable/klibc-${PV}.tar.bz2 \
+
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-${PV}.tar.bz2 \
 	   file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
 	   file://modprobe.patch;patch=1 \
 	   file://losetup.patch;patch=1 \
 	   file://dash_readopt.patch;patch=1 \
 	   file://wc.patch;patch=1 \
 	   "
+
 S = "${WORKDIR}/klibc-${PV}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
