@@ -115,11 +115,6 @@ fi
 echo "*******************************************"
 echo "Paroli post processing"
 echo "*******************************************"
-if [ ! -e $ROOTFS${sysconfdir}/old_frameworkd.conf ] ; then
-    echo "Backing up ${sysconfdir}/frameworkd.conf"
-    mv $ROOTFS${sysconfdir}/frameworkd.conf $ROOTFS${sysconfdir}/old_frameworkd.conf
-fi
-mv $ROOTFS${sysconfdir}/paroli_frameworkd.conf $ROOTFS${sysconfdir}/frameworkd.conf
 if [ ! -e $ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
     echo "Backing up $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml"
     mv $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml $ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml
