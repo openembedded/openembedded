@@ -1,10 +1,15 @@
 require libtool.inc
 require libtool_${PV}.bb
 
-PR = "r0"
+PR = "r1"
 SRC_URI_append = " file://cross_compile.patch;patch=1"
 
 inherit sdk
+
+# skip ac_cv_... setting for cross build: host paths must be used
+do_configure_prepend () {
+	export LIBTOOL_BB_DO_NOT_SET_PATHS=1
+}
 
 do_install () {
 	install -d ${D}${bindir}/

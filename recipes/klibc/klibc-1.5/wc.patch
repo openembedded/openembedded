@@ -4,12 +4,12 @@ Index: klibc-1.5/usr/utils/Kbuild
 +++ klibc-1.5/usr/utils/Kbuild	2008-04-14 23:24:38.817291977 +0200
 @@ -3,7 +3,7 @@
  #
- 
+
  progs := chroot dd mkdir mkfifo mknod mount pivot_root umount
 -progs += true false sleep ln nuke minips cat losetup
 +progs += true false sleep ln nuke minips cat losetup wc
- progs += uname halt kill readlink cpio sync dmesg modprobe
- 
+ progs += insmod uname halt kill readlink cpio modprobe
+
  static-y := $(addprefix static/, $(progs))
 @@ -56,6 +56,9 @@
  shared/modprobe-y   := modprobe.o
@@ -20,7 +20,7 @@ Index: klibc-1.5/usr/utils/Kbuild
 +
  # Additionally linked targets
  always := static/reboot static/poweroff shared/reboot shared/poweroff
- 
+
 Index: klibc-1.5/usr/utils/wc.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000

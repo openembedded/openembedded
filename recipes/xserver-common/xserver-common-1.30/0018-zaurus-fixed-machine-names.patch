@@ -1,0 +1,35 @@
+From a287e6414a765926fc7b169617bc1174370bc183 Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Mon, 20 Jul 2009 18:57:56 +0200
+Subject: [PATCH 18/22] zaurus: fixed machine names
+
+
+Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+---
+ X11/Xinit.d/11zaurus |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/X11/Xinit.d/11zaurus b/X11/Xinit.d/11zaurus
+index 02090be..54ea6f5 100644
+--- a/X11/Xinit.d/11zaurus
++++ b/X11/Xinit.d/11zaurus
+@@ -13,14 +13,14 @@ fi
+ $CHCK -e
+ if [ $? = 12 ]; then
+    case `machine_id` in
+-   	*Spitz | *Akita | *Borzoi)
++   	*spitz | *akita | *borzoi)
+    		DIRECTION="normal" ;;
+         *)
+                 DIRECTION="right" ;;
+    esac
+ else
+    case `machine_id` in
+-   	*Spitz | *Akita | *Borzoi)
++   	*spitz | *akita | *borzoi)
+ 		# Xfbdev needs to settle
+ 		sleep 2
+    		DIRECTION="right" ;;
+-- 
+1.6.3.3
+
