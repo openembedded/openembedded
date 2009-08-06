@@ -23,6 +23,8 @@ PAROLI_INSTALL = "\
   paroli-sounds \
   paroli-autostart \
   task-fso-compliance \
+  fsousaged \
+  fso-abyss \
 "
 
 PYTHON_INSTALL = "\
