@@ -12,8 +12,8 @@ SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master;name=F
            git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master;name=SHR_REV"
 S = "${WORKDIR}/git"
 
-PROVIDES = "frameworkd-config"
-RPROVIDES = "frameworkd-config"
+PROVIDES_${PN} = "frameworkd-config"
+RPROVIDES_${PN} = "frameworkd-config"
 CONF_PATH = "${S}/frameworkd/${PN}"
 
 do_install_append() {
