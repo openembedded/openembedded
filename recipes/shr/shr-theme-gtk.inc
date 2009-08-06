@@ -1,4 +1,4 @@
-RPROVIDES += "virtual/shr-theme-gtk"
+RPROVIDES_${PN} += "virtual/shr-theme-gtk"
 
 #inherit update-alternatives
 
