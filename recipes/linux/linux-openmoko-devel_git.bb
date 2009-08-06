@@ -8,8 +8,8 @@ DEFAULT_PREFERENCE = "-1"
 KERNEL_RELEASE = "2.6.28"
 KERNEL_VERSION = "2.6.29-rc3"
 
-OMV = "andy-tracking"
-PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCREV}"
+OMV = "oe10"
+PV = "${KERNEL_RELEASE}+${KERNEL_VERSION}-${OMV}+gitr${SRCREV}"
 PR = "r5"
 
 SRC_URI = "\
