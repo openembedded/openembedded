@@ -32,7 +32,7 @@ case "$1" in
         $0 start
         ;;
     *)
-        echo "Usage: /etc/init.d/odeviced {start|stop|restart|force-reload}"
+        echo "Usage: /etc/init.d/frameworkd {start|stop|restart|force-reload}"
         exit 1
         ;;
 esac

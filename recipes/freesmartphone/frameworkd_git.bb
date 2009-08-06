@@ -4,7 +4,7 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.8.5.2+gitr${SRCREV}"
+PV = "0.9.5.9+gitr${SRCREV}"
 PR = "r0"
 
 inherit distutils update-rc.d
@@ -14,7 +14,8 @@ INITSCRIPT_PARAMS = "defaults 29"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd \
-           file://frameworkd.conf"
+           file://frameworkd.conf \
+	   "
 S = "${WORKDIR}/git"
 
 do_configure_append() {
@@ -28,12 +29,17 @@ do_install_append() {
 }
 
 RDEPENDS_${PN} += "\
+  fsousaged \
+"
+
+RDEPENDS_${PN} += "\
   python-ctypes \
   python-dbus \
   python-datetime \
   python-difflib \
   python-logging \
   python-pprint \
+  python-pyalsaaudio \
   python-pygobject \
   python-pyrtc \
   python-pyserial \
@@ -42,7 +48,7 @@ RDEPENDS_${PN} += "\
   python-subprocess \
   python-syslog \
   python-textutils \
-  \
+  python-multiprocessing \
   ${PN}-config \
 "
 
@@ -52,16 +58,15 @@ RRECOMMENDS_${PN} += "\
   ppp \
 "
 
-# machine specific stuff, should ideally be elsewhere
-# - recommend MUXer on platforms that require one
-RDEPENDS_${PN}_append_om-gta01 = " fso-gsm0710muxd"
-RDEPENDS_${PN}_append_om-gta02 = " fso-gsm0710muxd"
-RDEPENDS_${PN}-append-om-3d7k  = " fso-abyss"
-# - add wmiconfig for wireless configuration
-RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"
-
 PACKAGES =+ "${PN}-config"
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
+
+# machine specific stuff, should ideally be elsewhere
+# - recommend MUXer on platforms that require one
+RDEPENDS_${PN}-config_append_om-gta01 = " fso-abyss"
+RDEPENDS_${PN}-config_append_om-gta02 = " fso-abyss"
+# - add wmiconfig for wireless configuration
+RDEPENDS_${PN}-config_append_om-gta02 = " wmiconfig"
 
 FILES_${PN}-config = "\
   ${sysconfdir}/frameworkd.conf \

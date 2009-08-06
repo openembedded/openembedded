@@ -1,8 +1,9 @@
 DESCRIPTION = "FSO monitor daemon"
+AUTHOR = "M. Lauer et. al."
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
-PV = "0.2.0+gitr${SRCREV}"
+PV = "0.0.0+gitr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/fso-monitord.git;protocol=git;branch=master"
