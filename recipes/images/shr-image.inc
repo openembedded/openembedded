@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r2"
+PR = "r3"
 
 
 DEPENDS += "task-shr-minimal"
@@ -12,14 +12,12 @@ RDEPENDS += "\
   ${MACHINE_TASK_PROVIDER} \
   task-base \
   task-shr-minimal-base \
+  task-shr-minimal-cli \
   task-shr-minimal-apps \
   task-shr-minimal-audio \
   task-shr-minimal-gtk \
   task-shr-minimal-x \
   task-x11-illume \
-  task-fso-compliance \
-  task-cli-tools \
-  task-cli-tools-python \
   task-fonts-truetype-core \
 "
 
@@ -27,14 +25,12 @@ IMAGE_INSTALL += "\
   ${MACHINE_TASK_PROVIDER} \
   task-base \
   task-shr-minimal-base \
+  task-shr-minimal-cli \
   task-shr-minimal-apps \
   task-shr-minimal-audio \
   task-shr-minimal-gtk \
   task-shr-minimal-x \
   task-x11-illume \
-  task-fso-compliance \
-  task-cli-tools \
-  task-cli-tools-python \
   task-fonts-truetype-core \
 "
 
