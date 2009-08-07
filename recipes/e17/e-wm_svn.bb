@@ -2,14 +2,13 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.050+svnr${SRCREV}"
-PR = "r5.4"
+PR = "r5.5"
 
 inherit e update-alternatives
 
 RDEPENDS_${PN} += "\
   shared-mime-info \
   mime-support \
-  edje-utils \
   ${PN}-utils \
 "
 
