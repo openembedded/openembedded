@@ -126,7 +126,7 @@ RDEPENDS_${PN}-apps = "\
   notifier \
   ophonekitd \ 
   libframeworkd-phonegui-efl \
-  elementary-alarm \
+  ffalarms \
   shr-settings \
   shr-theme \
   calc \
