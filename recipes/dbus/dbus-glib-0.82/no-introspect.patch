@@ -1,0 +1,14 @@
+Index: dbus-glib-0.82/tools/Makefile.am
+===================================================================
+--- dbus-glib-0.82.orig/tools/Makefile.am
++++ dbus-glib-0.82/tools/Makefile.am
+@@ -3,9 +3,6 @@
+ nodist_libdbus_glib_HEADERS = dbus-glib-bindings.h
+ libdbus_glibdir = $(includedir)/dbus-1.0/dbus
+ 
+-dbus-glib-bindings.h: dbus-bus-introspect.xml $(top_builddir)/dbus/dbus-binding-tool$(EXEEXT)
+-	$(DBUS_BINDING_TOOL) --mode=glib-client --prefix=dbus_bus --output=dbus-glib-bindings.h dbus-bus-introspect.xml
+-
+ BUILT_SOURCES = dbus-glib-bindings.h dbus-bus-introspect.xml
+ 
+ if USE_INTROSPECT_XML
