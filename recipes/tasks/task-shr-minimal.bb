@@ -78,6 +78,7 @@ RDEPENDS_${PN}-base = "\
 "
 
 RDEPENDS_${PN}-fso = "\
+  fsoraw \
   python-codecs \
   python-gst \
 "
