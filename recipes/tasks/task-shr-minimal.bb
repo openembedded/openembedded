@@ -85,15 +85,8 @@ RDEPENDS_${PN}-fso = "\
 
 
 RDEPENDS_${PN}-audio = "\
-  alsa-oss \
-  alsa-state \
   alsa-utils-aplay \
   alsa-utils-amixer \
-  gst-meta-audio \
-  gst-plugin-mad \
-  gst-plugin-modplug \
-  gst-plugin-sid \
-  fso-sounds \
 "
 
 RDEPENDS_${PN}-audio_append_om-gta01 = "\
