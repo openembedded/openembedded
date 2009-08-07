@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r8"
+PR = "r9"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -116,7 +116,6 @@ RDEPENDS_${PN}-x = "\
   etk-theme-shr \
   ${@get_rdepends(bb, d)} \
   libx11-locale \
-  localedef \
   libmokoui2 \
 "
 
@@ -127,7 +126,6 @@ RDEPENDS_${PN}-apps = "\
   notifier \
   ophonekitd \ 
   libframeworkd-phonegui-efl \
-  rxvt-unicode \
   elementary-alarm \
   shr-settings \
   shr-theme \
@@ -138,7 +136,6 @@ RDEPENDS_${PN}-apps = "\
 RDEPENDS_${PN}-gtk = "\
   openmoko-icon-theme-standard2 \
   shr-theme-gtk-e17lookalike \
-  gpe-filemanager \
   vala-terminal \
   tangogps \
   pyphonelog \
