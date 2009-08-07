@@ -1,5 +1,7 @@
 require shr-image.inc
 
+IMAGE_BASENAME = "full"
+
 DEPENDS += "task-shr"
 RDEPENDS += "\
     task-shr-apps \
