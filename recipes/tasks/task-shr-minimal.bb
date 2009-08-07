@@ -52,6 +52,7 @@ def get_rdepends(bb, d):
 
 PACKAGES += "\
 	${PN}-base \
+	${PN}-cli \
 	${PN}-fso \
 	${PN}-audio \
 	${PN}-x \
@@ -75,6 +76,16 @@ RDEPENDS_${PN}-base = "\
   logrotate\
   util-linux-fdisk \
   shr-splash \
+"
+
+RDEPENDS_${PN}-cli = "\
+  screen \
+  nano \
+  iptables \
+  mtd-utils \
+  s3c24xx-gpio \
+  mickeydbus \
+  mickeyterm \
 "
 
 RDEPENDS_${PN}-fso = "\
