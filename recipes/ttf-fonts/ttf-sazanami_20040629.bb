@@ -10,7 +10,7 @@ SRC_DISTRIBUTE_LICENSES += "${PN}"
 RPROVIDES = "virtual-japanese-font"
 PR = "r4"
 
-SRC_URI = "http://download.sourceforge.jp/efont/10087/sazanami-20040629.tar.bz2"
+SRC_URI = "http://osdn.dl.sourceforge.jp/efont/10087/sazanami-20040629.tar.bz2"
 S = "${WORKDIR}/sazanami-20040629"
 
 PACKAGES = "${PN}-dbg ttf-sazanami-gothic ttf-sazanami-mincho"
