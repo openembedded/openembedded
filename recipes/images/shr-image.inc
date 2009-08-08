@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r3"
+PR = "r4"
 
 
 DEPENDS += "task-shr-minimal"
@@ -18,6 +18,7 @@ RDEPENDS += "\
   task-shr-minimal-gtk \
   task-shr-minimal-x \
   task-x11-illume \
+  task-fso-compliance \
   task-fonts-truetype-core \
 "
 
@@ -31,6 +32,7 @@ IMAGE_INSTALL += "\
   task-shr-minimal-gtk \
   task-shr-minimal-x \
   task-x11-illume \
+  task-fso-compliance \
   task-fonts-truetype-core \
 "
 
