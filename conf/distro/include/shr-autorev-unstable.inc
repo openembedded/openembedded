@@ -93,6 +93,18 @@ SRCREV_pn-e-wm-illume-dict-pl = "${AUTOREV}"
 SRCREV_pn-etk-theme-shr = "${AUTOREV}"
 SRCREV_pn-libeflvala = "${AUTOREV}"
 
+SRCREV_pn-illume-keyboard-german = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-arabic = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-browse = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-danish = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-default-alt = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-dutch = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-dvorak = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-french = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-hebrew = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-numeric-alt = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-russian-terminal = "${AUTOREV}"
+SRCREV_pn-illume-keyboard-russian = "${AUTOREV}"
 
 # Other stuff
 SRCREV_pn-navit = "2309"
