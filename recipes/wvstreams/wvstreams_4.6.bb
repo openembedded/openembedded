@@ -3,20 +3,13 @@ LICENSE = "LGPL"
 DESCRIPTION = "WvStreams is a network programming library in C++"
 DEPENDS = "zlib openssl (>= 0.9.8)"
 
-PR = "r3"
-
 SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
-	file://build-fixes-and-sanity.patch;patch=1 \
-	file://dont-forget-header.patch;patch=1 \
-	file://gcc4.3.patch;patch=1 \
 	"
-
 
 inherit autotools pkgconfig
 
 LDFLAGS_append = " -Wl,-rpath-link,${CROSS_DIR}/${TARGET_SYS}/lib"
 
-EXTRA_AUTORECONF += " -I${S}/gnulib/m4"
 EXTRA_OECONF = " --without-tcl --without-qt --without-pam"
 
 PACKAGES_prepend = "libuniconf libuniconf-dbg "
@@ -39,4 +32,8 @@ FILES_libwvstreams-extras-dbg = "${libdir}/.debug/libwvbase.so.* ${libdir}/.debu
 
 do_stage() {
     autotools_stage_all
+}
+do_configure() {
+        autoreconf
+        oe_runconf
 }
