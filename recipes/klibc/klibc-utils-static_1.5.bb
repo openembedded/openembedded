@@ -2,6 +2,9 @@ require klibc-common.inc
 
 PR = "r12"
 
+KLIBC_FETCHDIR = "Stable"
+FILESPATHPKG =. "klibc-${PV}:"
+
 # We only want the static utils. klibc build both. So we install only what we want.				
 do_install() {
         install -d ${D}${base_bindir}

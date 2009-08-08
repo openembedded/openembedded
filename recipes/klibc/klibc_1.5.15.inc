@@ -1,4 +1,4 @@
-require klibc-common_1.5.15.inc
+require klibc-common.inc
 
 SRC_URI += "file://staging.patch;patch=1 \
 	    file://klibc_kexecsyscall.patch;patch=1 \
@@ -19,6 +19,7 @@ do_install() {
         install -m 755 usr/utils/shared/chroot ${D}${base_bindir}
         install -m 755 usr/utils/shared/cpio ${D}${base_bindir}
         install -m 755 usr/utils/shared/dd ${D}${base_bindir}
+        install -m 755 usr/utils/shared/dmesg ${D}${base_bindir}
         install -m 755 usr/utils/shared/false ${D}${base_bindir}
         install -m 755 usr/utils/shared/halt ${D}${base_bindir}
         install -m 755 usr/utils/shared/kill ${D}${base_bindir}
@@ -34,6 +35,7 @@ do_install() {
         install -m 755 usr/utils/shared/readlink ${D}${base_bindir}
         install -m 755 usr/utils/shared/reboot ${D}${base_bindir}
         install -m 755 usr/utils/shared/sleep ${D}${base_bindir}
+        install -m 755 usr/utils/shared/sync ${D}${base_bindir}
         install -m 755 usr/utils/shared/true ${D}${base_bindir}
         install -m 755 usr/utils/shared/umount ${D}${base_bindir}
         install -m 755 usr/utils/shared/uname ${D}${base_bindir}
@@ -63,15 +65,16 @@ PACKAGES = "${PN} klibc-utils-sh klibc-utils-kinit \
 	klibc-utils-nfsmount klibc-utils-resume \
 	klibc-utils-run-init klibc-utils-cat \
 	klibc-utils-chroot klibc-utils-cpio \
-	klibc-utils-dd klibc-utils-false \
-	klibc-utils-halt \
+	klibc-utils-dd klibc-utils-dmesg \
+	klibc-utils-false klibc-utils-halt \
 	klibc-utils-kill klibc-utils-ln \
 	klibc-utils-minips klibc-utils-mkdir \
 	klibc-utils-mkfifo klibc-utils-mknod \
         klibc-utils-mount klibc-utils-nuke \
         klibc-utils-pivot-root klibc-utils-poweroff \
 	klibc-utils-readlink klibc-utils-reboot \
-        klibc-utils-sleep klibc-utils-true \
+	klibc-utils-sleep \
+        klibc-utils-sync klibc-utils-true \
         klibc-utils-umount klibc-utils-uname \
         klibc-utils-gzip klibc-utils-modprobe \
 	klibc-utils-losetup klibc-utils-wc"
@@ -89,6 +92,7 @@ FILES_klibc-utils-cat = "${base_bindir}/cat"
 FILES_klibc-utils-chroot = "${base_bindir}/chroot"
 FILES_klibc-utils-cpio = "${base_bindir}/cpio"
 FILES_klibc-utils-dd = "${base_bindir}/dd"
+FILES_klibc-utils-dmesg = "${base_bindir}/dmesg"
 FILES_klibc-utils-false = "${base_bindir}/false"
 FILES_klibc-utils-halt = "${base_bindir}/halt"
 FILES_klibc-utils-kill = "${base_bindir}/kill"
@@ -104,6 +108,7 @@ FILES_klibc-utils-poweroff = "${base_bindir}/poweroff"
 FILES_klibc-utils-readlink = "${base_bindir}/readlink"
 FILES_klibc-utils-reboot = "${base_bindir}/reboot"
 FILES_klibc-utils-sleep = "${base_bindir}/sleep"
+FILES_klibc-utils-sync = "${base_bindir}/sync"
 FILES_klibc-utils-true = "${base_bindir}/true"
 FILES_klibc-utils-umount = "${base_bindir}/umount"
 FILES_klibc-utils-uname = "${base_bindir}/uname"
@@ -123,6 +128,7 @@ RDEPENDS_klibc-utils-cat = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-chroot = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-cpio = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-dd = "${PN} (=${PV}-${PR})"
+RDEPENDS_klibc-utils-dmesg = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-false = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-halt = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-kill = "${PN} (=${PV}-${PR})"
@@ -138,6 +144,7 @@ RDEPENDS_klibc-utils-poweroff = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-readlink = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-reboot = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-sleep = "${PN} (=${PV}-${PR})"
+RDEPENDS_klibc-utils-sync = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-true = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-umount = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-uname = "${PN} (=${PV}-${PR})"

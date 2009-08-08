@@ -1,6 +1,9 @@
-require klibc-common_1.5.15.inc
+require klibc-common.inc
 
-PR = "r1"
+PR = "r2"
+
+KLIBC_FETCHDIR = "Testing"
+FILESPATHPKG =. "klibc-${PV}:"
 
 # We only want the static utils. klibc build both. So we install only what we want.
 do_install() {
@@ -18,6 +21,7 @@ do_install() {
         install -m 755 usr/utils/static/chroot ${D}${base_bindir}
         install -m 755 usr/utils/static/cpio ${D}${base_bindir}
         install -m 755 usr/utils/static/dd ${D}${base_bindir}
+        install -m 755 usr/utils/static/dmesg ${D}${base_bindir}
         install -m 755 usr/utils/static/false ${D}${base_bindir}
         install -m 755 usr/utils/static/halt ${D}${base_bindir}
         install -m 755 usr/utils/static/kill ${D}${base_bindir}
@@ -33,6 +37,7 @@ do_install() {
         install -m 755 usr/utils/static/readlink ${D}${base_bindir}
         install -m 755 usr/utils/static/reboot ${D}${base_bindir}
         install -m 755 usr/utils/static/sleep ${D}${base_bindir}
+        install -m 755 usr/utils/static/sync ${D}${base_bindir}
         install -m 755 usr/utils/static/true ${D}${base_bindir}
         install -m 755 usr/utils/static/umount ${D}${base_bindir}
         install -m 755 usr/utils/static/uname ${D}${base_bindir}
@@ -51,14 +56,15 @@ PACKAGES = "klibc-utils-static-sh klibc-utils-static-gzip \
 	klibc-utils-static-resume klibc-utils-static-run-init \
 	klibc-utils-static-cat klibc-utils-static-chroot \
         klibc-utils-static-cpio klibc-utils-static-dd \
-        klibc-utils-static-false klibc-utils-static-halt \
-        klibc-utils-static-kill \
+        klibc-utils-static-dmesg klibc-utils-static-false \
+        klibc-utils-static-halt klibc-utils-static-kill \
         klibc-utils-static-ln klibc-utils-static-minips \
         klibc-utils-static-mkdir klibc-utils-static-mkfifo \
 	klibc-utils-static-mknod klibc-utils-static-mount \
 	klibc-utils-static-nuke klibc-utils-static-pivot-root \
 	klibc-utils-static-poweroff klibc-utils-static-readlink \
 	klibc-utils-static-reboot klibc-utils-static-sleep \
+	klibc-utils-static-sync \
 	klibc-utils-static-true klibc-utils-static-umount \
 	klibc-utils-static-uname klibc-utils-static-modprobe \
 	klibc-utils-static-losetup klibc-utils-static-wc"
@@ -75,6 +81,7 @@ FILES_klibc-utils-static-cat = "${base_bindir}/cat"
 FILES_klibc-utils-static-chroot = "${base_bindir}/chroot"
 FILES_klibc-utils-static-cpio = "${base_bindir}/cpio"
 FILES_klibc-utils-static-dd = "${base_bindir}/dd"
+FILES_klibc-utils-static-dmesg = "${base_bindir}/dmesg"
 FILES_klibc-utils-static-false = "${base_bindir}/false"
 FILES_klibc-utils-static-halt = "${base_bindir}/halt"
 FILES_klibc-utils-static-kill = "${base_bindir}/kill"
@@ -90,6 +97,7 @@ FILES_klibc-utils-static-poweroff = "${base_bindir}/poweroff"
 FILES_klibc-utils-static-readlink = "${base_bindir}/readlink"
 FILES_klibc-utils-static-reboot = "${base_bindir}/reboot"
 FILES_klibc-utils-static-sleep = "${base_bindir}/sleep"
+FILES_klibc-utils-static-sync = "${base_bindir}/sync"
 FILES_klibc-utils-static-true = "${base_bindir}/true"
 FILES_klibc-utils-static-umount = "${base_bindir}/umount"
 FILES_klibc-utils-static-uname = "${base_bindir}/uname"

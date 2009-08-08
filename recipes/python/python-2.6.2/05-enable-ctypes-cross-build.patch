@@ -22,7 +22,7 @@ Index: Python-2.6.1/setup.py
                  res = os.system(cmd)
                  if res or not os.path.exists(ffi_configfile):
 -                    print "Failed to configure _ctypes module"
-+                    print "Failed to configure _ctypes module (ret=%d) or missing conffile=%s" % ( ret, ffi_configfile )
++                    print "Failed to configure _ctypes module (res=%d) or missing conffile=%s" % ( res, ffi_configfile )
                      return False
  
              fficonfig = {}
