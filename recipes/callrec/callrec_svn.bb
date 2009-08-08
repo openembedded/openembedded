@@ -5,7 +5,7 @@ LICENSE = "GPLv3 or later"
 SRCNAME = "callrec"
 DEPENDS = "gtk+"
 RDEPENDS += "alsa-utils-alsactl alsa-utils-aplay"
-PV = "0.2.3"
+PV = "0.2.4"
 PR = "r0"
 
 S = "${WORKDIR}/trunk"
@@ -16,6 +16,7 @@ FILES_${PN} += "${datadir} ${sysconfdir}"
 
 pkg_postinst_callrec_append() {
 	#!/bin/sh
+	#still a bit buggy, if the state path change for instance
 	files0="gsmhandset.state"
 	files1="gsmheadset.state"
 	files2="gsmspeakerout.state"
@@ -36,7 +37,8 @@ pkg_postinst_callrec_append() {
 			echo "Backing up ${filename}"
 			cp ${current_file} ${callrec_dir}/
 			
-			#should fix the patch first
+			#fix the patch
+			sed -i "s!@STATE_PATH@!${current_file}!g" ${callrec_dir}/${filename}.patch
 			echo "Patching ${filename}"
 			patch -p0 < ${callrec_dir}/${filename}.patch && patched="1"
 		fi
