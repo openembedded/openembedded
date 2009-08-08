@@ -1,5 +1,5 @@
 INC_PR = "r0"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.4"
 
 SRC_URI_append += "file://sh4-asmfix.patch;patch=1 \
                    file://use-includedir.patch;patch=1 \
