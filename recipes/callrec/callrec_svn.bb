@@ -5,13 +5,12 @@ LICENSE = "GPLv3 or later"
 SRCNAME = "callrec"
 DEPENDS = "gtk+"
 RDEPENDS += "alsa-utils-alsactl alsa-utils-aplay"
-PV = "0.2.2"
-#PR = "r0"
+PV = "0.2.3"
+PR = "r0"
 
 S = "${WORKDIR}/trunk"
 inherit autotools 
 
-#SRC_URI = "file://../trunk"
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/callrec;module=trunk"
 FILES_${PN} += "${datadir} ${sysconfdir}"
 
@@ -20,7 +19,7 @@ pkg_postinst_callrec_append() {
 	files0="gsmhandset.state"
 	files1="gsmheadset.state"
 	files2="gsmspeakerout.state"
-	state_dir="/usr/share/openmoko/scenarios"
+	state_dir=`sed -n "s/^scenario_dir\s*=\s*//p" /etc/frameworkd.conf`
 	callrec_dir="/usr/share/callrec"
 	
 	for index in 0 1 2
@@ -50,13 +49,12 @@ pkg_postinst_callrec_append() {
 		fi
 	done
 }
-
 pkg_prerm_callrec_append() {
 	#!/bin/sh
 	files0="gsmhandset.state"
 	files1="gsmheadset.state"
 	files2="gsmspeakerout.state"
-	state_dir="/usr/share/openmoko/scenarios"
+	state_dir=`sed -n "s/^scenario_dir\s*=\s*//p" /etc/frameworkd.conf`
 	
 	for index in 0 1 2
 	do
