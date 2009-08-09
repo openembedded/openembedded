@@ -2,7 +2,7 @@ DESCRIPTION = "GNOME editor"
 SECTION = "x11/gnome"
 LICENSE = "GPL"
 
-DEPENDS = "gnome-common glib-2.0 gtk+ gconf gtksourceview2"
+DEPENDS = "iso-codes gnome-common glib-2.0 gtk+ gconf gtksourceview2"
 RDEPENDS += " gtksourceview2"
 
 inherit gnome pkgconfig

@@ -196,7 +196,7 @@ arm-linux-objdump
       <title>The prebuilt libraries</title>
 
       <para>We need the header files and the libraries itself. The following
-      directory layout is assume. <command>PRE_BUILT</command> has two
+      directory layout is assumed. <command>PRE_BUILT</command> has two
       subdirectories one is called <emphasis>include</emphasis> and holds the
       header files and the other directory is called <emphasis>lib</emphasis>
       and holds the shared and static libraries. Additionally a Qt2 directory

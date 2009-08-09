@@ -1,0 +1,58 @@
+Index: lilo/boot.c
+===================================================================
+--- lilo.orig/boot.c	2009-08-08 19:09:05.779211145 -0700
++++ lilo/boot.c	2009-08-08 19:15:45.111207238 -0700
+@@ -21,6 +21,7 @@
+ #include "map.h"
+ #include "partition.h"
+ #include "boot.h"
++#include <linux/genhd.h>
+ 
+ 
+ static GEOMETRY geo;
+@@ -64,9 +65,9 @@
+     if (!modern_kernel || !(hdr.flags & LFLAG_HIGH))
+ 	check_size(spec,setup,sectors);
+     else {
+-	if (hdr.start % PAGE_SIZE)
++	if (hdr.start % getpagesize())
+ 	    die("Can't load kernel at mis-aligned address 0x%08lx\n",hdr.start);
+-	descr->start_page = hdr.start/PAGE_SIZE; /* load kernel high */
++	descr->start_page = hdr.start/getpagesize(); /* load kernel high */
+     }
+     geo_close(&geo);
+     if (verbose > 1)
+@@ -161,7 +162,6 @@
+     cfg_unset(cf_other,"map-drive");
+ }
+ 
+-
+ #define PART(s,n) (((struct partition *) (s)[0].par_c.ptable)[(n)])
+ 
+ 
+Index: lilo/lilo.c
+===================================================================
+--- lilo.orig/lilo.c	2009-08-08 19:09:05.779211145 -0700
++++ lilo/lilo.c	2009-08-08 19:09:06.135205054 -0700
+@@ -154,7 +154,7 @@
+ 			printf("    Kernel is loaded \"low\"\n");
+ 		    else printf("    Kernel is loaded \"high\", at 0x%08lx\n",
+ 			  (unsigned long) descrs.d.descr[image].start_page*
+-			  PAGE_SIZE);
++			  getpagesize());
+ 		    if (!*(unsigned long *) descrs.d.descr[image].rd_size)
+ 			printf("    No initial RAM disk\n");
+ 		    else printf("    Initial RAM disk is %ld bytes\n",
+Index: lilo/Makefile
+===================================================================
+--- lilo.orig/Makefile	2009-08-08 19:45:05.247206997 -0700
++++ lilo/Makefile	2009-08-08 19:45:18.759234365 -0700
+@@ -24,7 +24,7 @@
+ #   VARSETUP	  Enables use of variable-size setup segments.
+ #   XL_SECS=n	  Support for extra large (non-standard) floppies.
+ 
+-CONFIG=-DIGNORECASE -DVARSETUP -DREWRITE_TABLE -DLARGE_EBDA -DONE_SHOT
++CONFIG=-DIGNORECASE -DVARSETUP -DREWRITE_TABLE -DLARGE_EBDA -DONE_SHOT -DCONFIG_BLOCK
+ 
+ # End of configuration variables
+ 

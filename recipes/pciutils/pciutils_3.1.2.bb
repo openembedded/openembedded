@@ -12,7 +12,7 @@ SRC_URI_append_nylon = "file://gcc-3-compatibility.patch;patch=1 "
 
 PARALLEL_MAKE = ""
 
-PR ="r3"
+PR ="r4"
 
 EXTRA_OEMAKE += "'STRIP = '"
 export SHARED=yes
@@ -34,7 +34,7 @@ do_install () {
 
 do_install_append () {
 	install -d ${D}/${datadir}
-	install -m 6440 ${WORKDIR}/${PN}-${PV}/pci.ids.gz ${D}/${datadir}
+	install -m 6440 ${WORKDIR}/${PN}-${PV}/pci.ids ${D}/${datadir}
 
 	# The makefile does not install the development files:
 	# libpci.so pci.h header.h config.h types.h
@@ -59,4 +59,4 @@ do_stage () {
 
 
 PACKAGES =+ "pciutils-ids"
-FILES_pciutils-ids="${datadir}/pci.ids.gz"
+FILES_pciutils-ids="${datadir}/pci.ids"
