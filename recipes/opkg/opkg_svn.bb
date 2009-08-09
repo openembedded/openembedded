@@ -1,6 +1,6 @@
 require opkg.inc
 
-PR = "r3"
+PR = "r4"
 
 PACKAGES =+ "libopkg-dev libopkg"
 
@@ -34,7 +34,7 @@ pkg_postrm_${PN} () {
 update-alternatives --remove opkg ${bindir}/opkg-cl
 }
 
-pkg_postinst_${PN}_shr () {
+pkg_postinst_${PN}_append_shr () {
 #!/bin/sh
 sed -i "s/|.*//" /usr/lib/opkg/info/*.list
 }
