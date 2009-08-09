@@ -24,8 +24,8 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 QT_GLFLAGS ?= "-no-opengl"
 QT_CONFIG_FLAGS += "-no-xinerama -no-xkb ${QT_GLFLAGS}"
-QT_BASE_NAME = "qt4"
-QT_BASE_LIB  = "libqt"
+QT_BASE_NAME ?= "qt4"
+QT_BASE_LIB  ?= "libqt"
 QT_DIR_NAME = "qt4"
 QT_LIBINFIX = ""
 
