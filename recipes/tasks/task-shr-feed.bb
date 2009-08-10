@@ -213,4 +213,5 @@ RDEPENDS_${PN} += "\
 		illume-keyboard-numeric-alt \
 		illume-keyboard-russian-terminal \
 		illume-keyboard-russian \
+		python-xlib \
 "
