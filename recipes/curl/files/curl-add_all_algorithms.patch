@@ -1,0 +1,22 @@
+--- curl-7.19.5/lib/ssluse.c	2009-01-26 15:36:22.000000000 +0100
++++ curl-7.19.5/lib/ssluse.c	2009-07-23 15:44:12.000000000 +0200
+@@ -58,6 +58,7 @@
+ #ifdef USE_SSLEAY
+ 
+ #ifdef USE_OPENSSL
++#include <openssl/evp.h>
+ #include <openssl/rand.h>
+ #include <openssl/x509v3.h>
+ #else
+@@ -627,6 +628,11 @@
+   /* Lets get nice error messages */
+   SSL_load_error_strings();
+ 
++#ifdef USE_OPENSSL
++  /* Load all algorithms (including SHA2) */
++  OpenSSL_add_all_algorithms();
++#endif /* USE_OPENSSL */
++
+   /* Setup all the global SSL stuff */
+   if(!SSLeay_add_ssl_algorithms())
+     return 0;
