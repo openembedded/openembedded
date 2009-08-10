@@ -23,6 +23,7 @@ do_populate_sdk_append() {
        echo 'export OE_QMAKE_RCC=${prefix}/bin/rcc4' >> $script
        echo 'export OE_QMAKE_QDBUSCPP2XML=${prefix}/bin/qdbuscpp2xml4' >> $script
        echo 'export OE_QMAKE_QDBUSXML2CPP=${prefix}/bin/qdbusxml2cpp4' >> $script
+       echo 'export OE_QMAKE_QT_CONFIG=${prefix}/${TARGET_SYS}/${layout_datadir}/${QT_DIR_NAME}/mkspecs/qconfig.pri' >> $script
 
        # Repack SDK with new environment-setup
        cd ${SDK_OUTPUT}
