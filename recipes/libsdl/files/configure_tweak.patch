@@ -1,7 +1,6 @@
-Index: SDL-1.2.11/configure.in
-===================================================================
---- SDL-1.2.11.orig/configure.in	2006-06-27 05:48:33.000000000 +0100
-+++ SDL-1.2.11/configure.in	2008-02-21 19:48:47.000000000 +0000
+diff -uri SDL-1.2.11/configure.in SDL-1.2.11.mrmoku/configure.in
+--- SDL-1.2.11/configure.in	2006-06-27 06:48:33.000000000 +0200
++++ SDL-1.2.11.mrmoku/configure.in	2009-08-10 15:07:51.000000000 +0200
 @@ -40,13 +40,13 @@
  AC_SUBST(LT_AGE)
  
@@ -204,54 +203,25 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/audio/dsp/*.c"
              SOURCES="$SOURCES $srcdir/src/audio/dma/*.c"
              have_audio=yes
-@@ -314,45 +314,7 @@
-     AC_ARG_ENABLE(alsa,
- AC_HELP_STRING([--enable-alsa], [support the ALSA audio API [[default=yes]]]),
-                   , enable_alsa=yes)
--    if test x$enable_audio = xyes -a x$enable_alsa = xyes; then
--        AM_PATH_ALSA(0.9.0, have_alsa=yes, have_alsa=no)
--        # Restore all flags from before the ALSA detection runs
--        CFLAGS="$alsa_save_CFLAGS"
--        LDFLAGS="$alsa_save_LDFLAGS"
--        LIBS="$alsa_save_LIBS"
--        if test x$have_alsa = xyes; then
--            AC_ARG_ENABLE(alsa-shared,
--AC_HELP_STRING([--enable-alsa-shared], [dynamically load ALSA audio support [[default=yes]]]),
--                          , enable_alsa_shared=yes)
--            if test "x`echo $ALSA_LIBS | grep -- -L`" = "x"; then
--                if test "x`ls /lib/libasound.so.* 2> /dev/null`" != "x"; then
--                    ALSA_LIBS="-L/lib $ALSA_LIBS"
--                elif test "x`ls /usr/lib/libasound.so.* 2> /dev/null`" != "x"; then
--                    ALSA_LIBS="-L/usr/lib $ALSA_LIBS"
--                elif test "x`ls /usr/local/lib/libasound.so.* 2> /dev/null`" != "x"; then
--                    ALSA_LIBS="-L/usr/local/lib $ALSA_LIBS"
--                fi
--            fi
--            alsa_lib_spec=`echo $ALSA_LIBS | sed 's/.*-L\([[^ ]]*\).*/\1\/libasound.so.*/'`
--            alsa_lib=`ls -- $alsa_lib_spec | sed 's/.*\/\(.*\)/\1/; q'`
--            echo "-- $alsa_lib_spec -> $alsa_lib"
--
--            AC_DEFINE(SDL_AUDIO_DRIVER_ALSA)
--            SOURCES="$SOURCES $srcdir/src/audio/alsa/*.c"
--            EXTRA_CFLAGS="$EXTRA_CFLAGS $ALSA_CFLAGS"
--            if test x$have_loadso != xyes && \
--               test x$enable_alsa_shared = xyes; then
--                AC_MSG_WARN([You must have SDL_LoadObject() support for dynamic ALSA loading])
--            fi
--            if test x$have_loadso = xyes && \
--               test x$enable_alsa_shared = xyes && test x$alsa_lib != x; then
--                AC_DEFINE_UNQUOTED(SDL_AUDIO_DRIVER_ALSA_DYNAMIC, "$alsa_lib")
--            else
--                EXTRA_LDFLAGS="$EXTRA_LDFLAGS $ALSA_LIBS"
--            fi
--            have_audio=yes
--        fi
--    fi
-+    enable_alsa=no
- }
+@@ -337,7 +337,7 @@
+             alsa_lib=`ls -- $alsa_lib_spec | sed 's/.*\/\(.*\)/\1/; q'`
+             echo "-- $alsa_lib_spec -> $alsa_lib"
  
- dnl Check whether we want to use IRIX 6.5+ native audio or not
-@@ -371,7 +333,7 @@
+-            AC_DEFINE(SDL_AUDIO_DRIVER_ALSA)
++            AC_DEFINE(SDL_AUDIO_DRIVER_ALSA,1,"")
+             SOURCES="$SOURCES $srcdir/src/audio/alsa/*.c"
+             EXTRA_CFLAGS="$EXTRA_CFLAGS $ALSA_CFLAGS"
+             if test x$have_loadso != xyes && \
+@@ -346,7 +346,7 @@
+             fi
+             if test x$have_loadso = xyes && \
+                test x$enable_alsa_shared = xyes && test x$alsa_lib != x; then
+-                AC_DEFINE_UNQUOTED(SDL_AUDIO_DRIVER_ALSA_DYNAMIC, "$alsa_lib")
++                AC_DEFINE_UNQUOTED(SDL_AUDIO_DRIVER_ALSA_DYNAMIC, "$alsa_lib", "")
+             else
+                 EXTRA_LDFLAGS="$EXTRA_LDFLAGS $ALSA_LIBS"
+             fi
+@@ -371,7 +371,7 @@
          AC_MSG_RESULT($have_dmedia)
          # Set up files for the audio library
          if test x$have_dmedia = xyes; then
@@ -260,7 +230,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/audio/dmedia/*.c"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -laudio"
              have_audio=yes
-@@ -408,7 +370,7 @@
+@@ -408,7 +408,7 @@
          AC_MSG_RESULT($have_mme)
          # Set up files for the audio library
          if test x$have_mme = xyes; then
@@ -269,7 +239,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/audio/mme/*.c"
              EXTRA_CFLAGS="$EXTRA_CFLAGS $MME_CFLAGS"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS $MME_LIBS"
-@@ -433,7 +395,7 @@
+@@ -433,7 +433,7 @@
              esd_lib=`ls -- $esd_lib_spec | sed 's/.*\/\(.*\)/\1/; q'`
              echo "-- $esd_lib_spec -> $esd_lib"
  
@@ -278,7 +248,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/audio/esd/*.c"
              EXTRA_CFLAGS="$EXTRA_CFLAGS $ESD_CFLAGS"
              if test x$have_loadso != xyes && \
-@@ -442,7 +404,7 @@
+@@ -442,7 +442,7 @@
              fi
              if test x$have_loadso = xyes && \
                 test x$enable_esd_shared = xyes && test x$esd_lib != x; then
@@ -287,7 +257,7 @@ Index: SDL-1.2.11/configure.in
              else
                  EXTRA_LDFLAGS="$EXTRA_LDFLAGS $ESD_LIBS"
              fi
-@@ -485,7 +447,7 @@
+@@ -485,7 +485,7 @@
                  arts_lib=`ls -- $arts_lib_spec | sed 's/.*\/\(.*\)/\1/; q'`
                  echo "-- $arts_lib_spec -> $arts_lib"
  
@@ -296,7 +266,7 @@ Index: SDL-1.2.11/configure.in
                  SOURCES="$SOURCES $srcdir/src/audio/arts/*.c"
                  EXTRA_CFLAGS="$EXTRA_CFLAGS $ARTS_CFLAGS"
                  if test x$have_loadso != xyes && \
-@@ -494,7 +456,7 @@
+@@ -494,7 +494,7 @@
                  fi
                  if test x$have_loadso = xyes && \
                     test x$enable_arts_shared = xyes && test x$arts_lib != x; then
@@ -305,7 +275,7 @@ Index: SDL-1.2.11/configure.in
                  else
                      EXTRA_LDFLAGS="$EXTRA_LDFLAGS $ARTS_LIBS"
                  fi
-@@ -527,7 +489,7 @@
+@@ -527,7 +527,7 @@
          fi
          AC_MSG_RESULT($have_nas)
          if test x$have_nas = xyes; then
@@ -314,7 +284,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/audio/nas/*.c"
              EXTRA_CFLAGS="$EXTRA_CFLAGS $NAS_CFLAGS"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS $NAS_LIBS"
-@@ -543,7 +505,7 @@
+@@ -543,7 +543,7 @@
  AC_HELP_STRING([--enable-diskaudio], [support the disk writer audio driver [[default=yes]]]),
                    , enable_diskaudio=yes)
      if test x$enable_audio = xyes -a x$enable_diskaudio = xyes; then
@@ -323,7 +293,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/audio/disk/*.c"
      fi
  }
-@@ -555,7 +517,7 @@
+@@ -555,7 +555,7 @@
  AC_HELP_STRING([--enable-dummyaudio], [support the dummy audio driver [[default=yes]]]),
                    , enable_dummyaudio=yes)
      if test x$enable_audio = xyes -a x$enable_dummyaudio = xyes; then
@@ -332,7 +302,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/audio/dummy/*.c"
      fi
  }
-@@ -571,7 +533,7 @@
+@@ -571,7 +571,7 @@
          AC_CHECK_HEADER(mint/falcon.h, have_mint_falcon_hdr=yes)
          if test x$have_mint_falcon_hdr = xyes; then
              mintaudio=yes
@@ -341,7 +311,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/audio/mint/*.c"
              SOURCES="$SOURCES $srcdir/src/audio/mint/*.S"
              have_audio=yes
-@@ -602,7 +564,7 @@
+@@ -602,7 +602,7 @@
              AC_PATH_PROG(NASM, nasm)
          fi
          if test "x$NASM" != x -a "x$NASM" != x'"$NASM"'; then
@@ -350,7 +320,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/hermes/*.asm"
              if test x"$NASMFLAGS" = x; then
                  case $ARCH in
-@@ -713,9 +675,9 @@
+@@ -713,9 +713,9 @@
          CFLAGS="$save_CFLAGS"
  
          if test x$have_gcc_altivec = xyes; then
@@ -362,7 +332,7 @@ Index: SDL-1.2.11/configure.in
              fi
              EXTRA_CFLAGS="$EXTRA_CFLAGS $altivec_CFLAGS"
          fi
-@@ -758,7 +720,7 @@
+@@ -758,7 +758,7 @@
  
      if test x$enable_ipod = xyes; then
          EXTRA_CFLAGS="$EXTRA_CFLAGS -DIPOD"
@@ -371,7 +341,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/video/ipod/*.c"
      fi
  }
-@@ -792,7 +754,7 @@
+@@ -792,7 +792,7 @@
              EXTRA_CFLAGS="$EXTRA_CFLAGS -DENABLE_NANOX_DIRECT_FB"
          fi
  
@@ -380,7 +350,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/video/nanox/*.c"
          EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lnano-X"
          have_video=yes
-@@ -881,7 +843,7 @@
+@@ -881,7 +881,7 @@
              CFLAGS="$CFLAGS $X_CFLAGS"
              LDFLAGS="$LDFLAGS $X_LIBS"
  
@@ -389,7 +359,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/x11/*.c"
              EXTRA_CFLAGS="$EXTRA_CFLAGS $X_CFLAGS"
  
-@@ -903,8 +865,8 @@
+@@ -903,8 +903,8 @@
                 test x$enable_x11_shared = xyes && test x$x11_lib != x && test x$x11ext_lib != x; then
                  echo "-- dynamic libX11 -> $x11_lib"
                  echo "-- dynamic libX11ext -> $x11ext_lib"
@@ -400,7 +370,7 @@ Index: SDL-1.2.11/configure.in
              else
                  enable_x11_shared=no
                  EXTRA_LDFLAGS="$EXTRA_LDFLAGS $X_LIBS -lX11 -lXext"
-@@ -921,20 +883,20 @@
+@@ -921,20 +921,20 @@
  AC_HELP_STRING([--enable-video-dga], [use DGA 2.0 video driver [[default=yes]]]),
                    , enable_video_dga=yes)
              if test x$enable_dga = xyes -a x$enable_video_dga = xyes; then
@@ -424,7 +394,7 @@ Index: SDL-1.2.11/configure.in
                  SOURCES="$SOURCES $srcdir/src/video/Xext/Xxf86vm/*.c"
              fi
              AC_ARG_ENABLE(video-x11-xv,
-@@ -948,14 +910,14 @@
+@@ -948,14 +948,14 @@
  AC_HELP_STRING([--enable-video-x11-xinerama], [enable X11 Xinerama support [[default=yes]]]),
                              , enable_video_x11_xinerama=yes)
              if test x$enable_video_x11_xinerama = xyes; then
@@ -441,7 +411,7 @@ Index: SDL-1.2.11/configure.in
                  SOURCES="$SOURCES $srcdir/src/video/Xext/XME/*.c"
              fi
              AC_ARG_ENABLE(video-x11-xrandr,
-@@ -972,8 +934,8 @@
+@@ -972,8 +972,8 @@
                      if test x$enable_x11_shared = xyes && test x$xrandr_lib != x ; then
                          echo "-- dynamic libXrender -> $xrender_lib"
                          echo "-- dynamic libXrandr -> $xrandr_lib"
@@ -452,7 +422,7 @@ Index: SDL-1.2.11/configure.in
                          definitely_enable_video_x11_xrandr=yes
                      else
                          AC_CHECK_LIB(Xrender, XRenderQueryExtension, have_xrender_lib=yes)
-@@ -986,7 +948,7 @@
+@@ -986,7 +986,7 @@
                  fi
              fi
              if test x$definitely_enable_video_x11_xrandr = xyes; then
@@ -461,7 +431,7 @@ Index: SDL-1.2.11/configure.in
              fi
              AC_ARG_ENABLE(video-x11-dpms,
  AC_HELP_STRING([--enable-video-x11-dpms], [enable X11 DPMS extension [[default=yes]]]),
-@@ -998,7 +960,7 @@
+@@ -998,7 +998,7 @@
                                  [#include <X11/Xlib.h>
                                  ])
                  if test x$have_dpms_h_hdr = xyes; then
@@ -470,7 +440,7 @@ Index: SDL-1.2.11/configure.in
                  fi
              fi
          fi
-@@ -1026,7 +988,7 @@
+@@ -1026,7 +1026,7 @@
          ])
          AC_MSG_RESULT($video_photon)
          if test x$video_photon = xyes; then
@@ -479,7 +449,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/photon/*.c"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lph"
              have_video=yes
-@@ -1040,7 +1002,7 @@
+@@ -1040,7 +1040,7 @@
  CheckBWINDOW()
  {
      if test x$enable_video = xyes; then
@@ -488,7 +458,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/video/bwindow/*.cc"
          have_video=yes
      fi
-@@ -1063,7 +1025,7 @@
+@@ -1063,7 +1063,7 @@
          ])
          AC_MSG_RESULT($have_carbon)
          if test x$have_carbon = xyes; then
@@ -497,7 +467,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/maccommon/*.c"
              SOURCES="$SOURCES $srcdir/src/video/macrom/*.c"
              have_video=yes
-@@ -1092,7 +1054,7 @@
+@@ -1092,7 +1092,7 @@
          AC_MSG_RESULT($have_cocoa)
          CFLAGS="$save_CFLAGS"
          if test x$have_cocoa = xyes; then
@@ -506,7 +476,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/quartz/*.m"
              have_video=yes
          fi
-@@ -1118,7 +1080,7 @@
+@@ -1118,7 +1118,7 @@
          ])
          AC_MSG_RESULT($video_fbcon)
          if test x$video_fbcon = xyes; then
@@ -515,7 +485,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/fbcon/*.c"
              have_video=yes
          fi
-@@ -1163,7 +1125,7 @@
+@@ -1163,7 +1163,7 @@
          fi
  
          if test x$video_directfb = xyes; then
@@ -524,7 +494,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/directfb/*.c"
              EXTRA_CFLAGS="$EXTRA_CFLAGS $DIRECTFB_CFLAGS"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS $DIRECTFB_LIBS"
-@@ -1190,7 +1152,7 @@
+@@ -1190,7 +1190,7 @@
          ])
          AC_MSG_RESULT($video_ps2gs)
          if test x$video_ps2gs = xyes; then
@@ -533,7 +503,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/ps2gs/*.c"
              have_video=yes
          fi
-@@ -1215,7 +1177,7 @@
+@@ -1215,7 +1215,7 @@
          ])
          AC_MSG_RESULT($video_ggi)
          if test x$video_ggi = xyes; then
@@ -542,7 +512,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/ggi/*.c"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lggi -lgii -lgg"
              have_video=yes
-@@ -1245,7 +1207,7 @@
+@@ -1245,7 +1245,7 @@
          ])
          AC_MSG_RESULT($video_svga)
          if test x$video_svga = xyes; then
@@ -551,7 +521,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/svga/*.c"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvga"
              have_video=yes
-@@ -1277,7 +1239,7 @@
+@@ -1277,7 +1277,7 @@
          ])
          AC_MSG_RESULT($video_vgl)
          if test x$video_vgl = xyes; then
@@ -560,7 +530,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/vgl/*.c"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvgl"
              have_video=yes
-@@ -1305,7 +1267,7 @@
+@@ -1305,7 +1305,7 @@
          ])
          AC_MSG_RESULT($video_wscons)
          if test x$video_wscons = xyes; then
@@ -569,7 +539,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/wscons/*.c"
              have_video=yes
          fi
-@@ -1330,7 +1292,7 @@
+@@ -1330,7 +1330,7 @@
          ])
          AC_MSG_RESULT($video_aalib)
          if test x$video_aalib = xyes; then
@@ -578,7 +548,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/aalib/*.c"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -laa"
              have_video=yes
-@@ -1360,7 +1322,7 @@
+@@ -1360,7 +1360,7 @@
          CXXFLAGS="$OLD_CXX"
          AC_MSG_RESULT($video_qtopia)
          if test x$video_qtopia = xyes; then
@@ -587,7 +557,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/qtopia/*.cc"
              SDLMAIN_SOURCES="$srcdir/src/main/qtopia/*.cc"
              EXTRA_CFLAGS="$EXTRA_CFLAGS $QTOPIA_FLAGS"
-@@ -1389,7 +1351,7 @@
+@@ -1389,7 +1389,7 @@
          ])
          AC_MSG_RESULT($video_picogui)
          if test x$video_picogui = xyes; then
@@ -596,7 +566,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/picogui/*.c"
              SDL_LIBS="$SDL_LIBS -lpgui"
              have_video=yes
-@@ -1413,7 +1375,7 @@
+@@ -1413,7 +1413,7 @@
      video_xbios=no
      if test x$enable_video = xyes -a x$enable_video_xbios = xyes; then
          video_xbios=yes
@@ -605,7 +575,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/video/xbios/*.c"
          have_video=yes
      fi
-@@ -1431,7 +1393,7 @@
+@@ -1431,7 +1431,7 @@
          AC_CHECK_LIB(gem, appl_init, have_gem_lib=yes)
          if test x$have_gem_hdr = xyes -a x$have_gem_lib = xyes; then
              video_gem=yes
@@ -614,7 +584,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/gem/*.c"
              SDL_LIBS="$SDL_LIBS -lgem"
              have_video=yes
-@@ -1446,7 +1408,7 @@
+@@ -1446,7 +1446,7 @@
  AC_HELP_STRING([--enable-video-dummy], [use dummy video driver [[default=yes]]]),
                    , enable_video_dummy=yes)
      if test x$enable_video_dummy = xyes; then
@@ -623,7 +593,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/video/dummy/*.c"
          have_video=yes
      fi
-@@ -1472,8 +1434,8 @@
+@@ -1472,8 +1472,8 @@
          ])
          AC_MSG_RESULT($video_opengl)
          if test x$video_opengl = xyes; then
@@ -634,7 +604,7 @@ Index: SDL-1.2.11/configure.in
          fi
      fi
  }
-@@ -1492,7 +1454,7 @@
+@@ -1492,7 +1492,7 @@
          ])
          AC_MSG_RESULT($video_opengl)
          if test x$video_opengl = xyes; then
@@ -643,7 +613,7 @@ Index: SDL-1.2.11/configure.in
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lGL"
          fi
      fi
-@@ -1502,8 +1464,8 @@
+@@ -1502,8 +1502,8 @@
  CheckWIN32GL()
  {
      if test x$enable_video = xyes -a x$enable_video_opengl = xyes; then
@@ -654,7 +624,7 @@ Index: SDL-1.2.11/configure.in
      fi
  }
  
-@@ -1511,7 +1473,7 @@
+@@ -1511,7 +1511,7 @@
  CheckBeGL()
  {
      if test x$enable_video = xyes -a x$enable_video_opengl = xyes; then
@@ -663,7 +633,7 @@ Index: SDL-1.2.11/configure.in
          EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lGL"
      fi
  }
-@@ -1520,7 +1482,7 @@
+@@ -1520,7 +1520,7 @@
  CheckMacGL()
  {
      if test x$enable_video = xyes -a x$enable_video_opengl = xyes; then
@@ -672,7 +642,7 @@ Index: SDL-1.2.11/configure.in
          case "$host" in
              *-*-darwin*)
                  if test x$enable_video_cocoa = xyes; then
-@@ -1552,8 +1514,8 @@
+@@ -1552,8 +1552,8 @@
              OSMESA_CFLAGS=`$OSMESA_CONFIG --cflags`
              OSMESA_LIBS=`$OSMESA_CONFIG --libs`
          fi
@@ -683,7 +653,7 @@ Index: SDL-1.2.11/configure.in
          SDL_CFLAGS="$SDL_CFLAGS $OSMESA_CFLAGS"
          SDL_LIBS="$SDL_LIBS $OSMESA_LIBS"
  
-@@ -1563,7 +1525,7 @@
+@@ -1563,7 +1563,7 @@
          if test "x$enable_osmesa_shared" = "xyes" -a "x$enable_atari_ldg" = "xyes"; then
              # Dynamic linking
              if test "x$have_osmesa_hdr" = "xyes"; then
@@ -692,7 +662,7 @@ Index: SDL-1.2.11/configure.in
              fi
          fi
      fi
-@@ -1590,7 +1552,7 @@
+@@ -1590,7 +1590,7 @@
          ])
          AC_MSG_RESULT($use_input_events)
          if test x$use_input_events = xyes; then
@@ -701,7 +671,7 @@ Index: SDL-1.2.11/configure.in
          fi
      fi
  }
-@@ -1612,7 +1574,7 @@
+@@ -1612,7 +1612,7 @@
          ])
          AC_MSG_RESULT($enable_input_tslib)
          if test x$enable_input_tslib = xyes; then
@@ -710,7 +680,7 @@ Index: SDL-1.2.11/configure.in
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lts"
          fi
      fi
-@@ -1635,7 +1597,7 @@
+@@ -1635,7 +1635,7 @@
          AC_MSG_CHECKING(pth)
          AC_MSG_RESULT($use_pth)
          if test "x$use_pth" = xyes; then
@@ -719,7 +689,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/thread/pth/*.c"
              SOURCES="$SOURCES $srcdir/src/thread/generic/SDL_syssem.c"
              SDL_CFLAGS="$SDL_CFLAGS `$PTH_CONFIG --cflags`"
-@@ -1741,7 +1703,7 @@
+@@ -1741,7 +1741,7 @@
  
          # Do futher testing if we have pthread support...
          if test x$use_pthreads = xyes; then
@@ -728,7 +698,7 @@ Index: SDL-1.2.11/configure.in
              EXTRA_CFLAGS="$EXTRA_CFLAGS $pthread_cflags"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS $pthread_lib"
              SDL_CFLAGS="$SDL_CFLAGS $pthread_cflags"
-@@ -1763,7 +1725,7 @@
+@@ -1763,7 +1763,7 @@
                    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
                  ],[
                  has_recursive_mutexes=yes
@@ -737,7 +707,7 @@ Index: SDL-1.2.11/configure.in
                  ])
              fi
              if test x$has_recursive_mutexes = xno; then
-@@ -1774,7 +1736,7 @@
+@@ -1774,7 +1774,7 @@
                    pthread_mutexattr_setkind_np(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
                  ],[
                  has_recursive_mutexes=yes
@@ -746,7 +716,7 @@ Index: SDL-1.2.11/configure.in
                  ])
              fi
              AC_MSG_RESULT($has_recursive_mutexes)
-@@ -1849,7 +1811,7 @@
+@@ -1849,7 +1849,7 @@
      fi
  
      if test x$enable_video = xyes; then
@@ -755,7 +725,7 @@ Index: SDL-1.2.11/configure.in
          SOURCES="$SOURCES $srcdir/src/video/wincommon/*.c"
          SOURCES="$SOURCES $srcdir/src/video/windib/*.c"
          have_video=yes
-@@ -1871,7 +1833,7 @@
+@@ -1871,7 +1871,7 @@
              have_directx=yes
          fi
          if test x$enable_video = xyes -a x$have_directx = xyes; then
@@ -764,7 +734,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/video/windx5/*.c"
              have_video=yes
          fi
-@@ -1904,9 +1866,9 @@
+@@ -1904,9 +1904,9 @@
                    AC_CHECK_LIB(ltdl, dlopen, EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lltdl")))
              AC_CHECK_LIB(dl, dlvsym, have_dlvsym=yes)
              if test x$have_dlvsym = xyes; then
@@ -776,7 +746,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/loadso/dlopen/*.c"
              have_loadso=yes
          fi
-@@ -1923,7 +1885,7 @@
+@@ -1923,7 +1923,7 @@
          AC_CHECK_HEADER(ldg.h, have_ldg_hdr=yes)
          AC_CHECK_LIB(ldg, ldg_open, have_ldg_lib=yes, have_ldg_lib=no, -lgem)
          if test x$have_ldg_hdr = xyes -a x$have_ldg_lib = xyes; then
@@ -785,7 +755,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/loadso/mint/*.c"
              SDL_LIBS="$SDL_LIBS -lldg -lgem"
              have_loadso=yes
-@@ -2049,11 +2011,11 @@
+@@ -2049,11 +2049,11 @@
              have_machine_joystick=yes
              ])
              if test x$have_machine_joystick = xyes; then
@@ -799,7 +769,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/joystick/bsd/*.c"
              EXTRA_CFLAGS="$EXTRA_CFLAGS $USB_CFLAGS"
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS $USB_LIBS"
-@@ -2072,7 +2034,7 @@
+@@ -2072,7 +2072,7 @@
      if test x$enable_clock_gettime = xyes; then
          AC_CHECK_LIB(rt, clock_gettime, have_clock_gettime=yes)
          if test x$have_clock_gettime = xyes; then
@@ -808,7 +778,7 @@ Index: SDL-1.2.11/configure.in
              EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lrt"
          fi
      fi
-@@ -2103,7 +2065,7 @@
+@@ -2103,7 +2103,7 @@
          CheckIPod
          # Set up files for the timer library
          if test x$enable_timers = xyes; then
@@ -817,7 +787,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
              have_timers=yes
          fi
-@@ -2166,17 +2128,17 @@
+@@ -2166,17 +2166,17 @@
          if test x$enable_audio = xyes; then
            case $ARCH in
              sysv5|solaris|hpux)
@@ -838,7 +808,7 @@ Index: SDL-1.2.11/configure.in
                  SOURCES="$SOURCES $srcdir/src/audio/paudio/*.c"
                  have_audio=yes
              ;;
-@@ -2186,7 +2148,7 @@
+@@ -2186,7 +2186,7 @@
          if test x$enable_joystick = xyes; then
            case $ARCH in
              linux)
@@ -847,7 +817,7 @@ Index: SDL-1.2.11/configure.in
                  SOURCES="$SOURCES $srcdir/src/joystick/linux/*.c"
                  have_joystick=yes
              ;;
-@@ -2196,32 +2158,32 @@
+@@ -2196,32 +2196,32 @@
          if test x$enable_cdrom = xyes; then
            case $ARCH in
              linux|solaris)
@@ -886,7 +856,7 @@ Index: SDL-1.2.11/configure.in
                  SOURCES="$SOURCES $srcdir/src/cdrom/osf/*.c"
                  have_cdrom=yes
              ;;
-@@ -2229,7 +2191,7 @@
+@@ -2229,7 +2229,7 @@
          fi
          # Set up files for the thread library
          if test x$enable_threads = xyes -a x$use_pthreads != xyes -a x$use_pth != xyes -a x$ARCH = xirix; then
@@ -895,7 +865,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/thread/irix/*.c"
              SOURCES="$SOURCES $srcdir/src/thread/generic/SDL_sysmutex.c"
              SOURCES="$SOURCES $srcdir/src/thread/generic/SDL_syscond.c"
-@@ -2237,7 +2199,7 @@
+@@ -2237,7 +2237,7 @@
          fi
          # Set up files for the timer library
          if test x$enable_timers = xyes; then
@@ -904,7 +874,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
              have_timers=yes
          fi
-@@ -2256,20 +2218,20 @@
+@@ -2256,20 +2256,20 @@
          CheckPTHREAD
          # Set up files for the audio library
          if test x$enable_audio = xyes; then
@@ -928,7 +898,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
              have_timers=yes
          fi
-@@ -2294,29 +2256,29 @@
+@@ -2294,29 +2294,29 @@
          CheckNASM
          # Set up files for the audio library
          if test x$enable_audio = xyes; then
@@ -963,7 +933,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/thread/win32/SDL_sysmutex.c"
              SOURCES="$SOURCES $srcdir/src/thread/win32/SDL_syssem.c"
              SOURCES="$SOURCES $srcdir/src/thread/win32/SDL_systhread.c"
-@@ -2325,13 +2287,13 @@
+@@ -2325,13 +2325,13 @@
          fi
          # Set up files for the timer library
          if test x$enable_timers = xyes; then
@@ -979,7 +949,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/loadso/win32/*.c"
              have_loadso=yes
          fi
-@@ -2356,25 +2318,25 @@
+@@ -2356,25 +2356,25 @@
          CheckBeGL
          # Set up files for the audio library
          if test x$enable_audio = xyes; then
@@ -1009,7 +979,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/thread/beos/*.c"
              SOURCES="$SOURCES $srcdir/src/thread/generic/SDL_sysmutex.c"
              SOURCES="$SOURCES $srcdir/src/thread/generic/SDL_syscond.c"
-@@ -2382,13 +2344,13 @@
+@@ -2382,13 +2382,13 @@
          fi
          # Set up files for the timer library
          if test x$enable_timers = xyes; then
@@ -1025,7 +995,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/loadso/beos/*.c"
              have_loadso=yes
          fi
-@@ -2425,7 +2387,7 @@
+@@ -2425,7 +2425,7 @@
          # Set up files for the shared object loading library
          # (this needs to be done before the dynamic X11 check)
          if test x$enable_loadso = xyes -a x$have_dlopen != xyes; then
@@ -1034,7 +1004,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/loadso/macosx/*.c"
              have_loadso=yes
          fi
-@@ -2443,28 +2405,28 @@
+@@ -2443,28 +2443,28 @@
  
          # Set up files for the audio library
          if test x$enable_audio = xyes; then
@@ -1068,7 +1038,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
              have_timers=yes
          fi
-@@ -2500,30 +2462,30 @@
+@@ -2500,30 +2500,30 @@
          # Set up files for the audio library
          if test x$enable_threads = xyes -a x$enable_pth = xyes; then
              if test x$enable_audio = xyes; then
@@ -1104,7 +1074,7 @@ Index: SDL-1.2.11/configure.in
                  SOURCES="$SOURCES $srcdir/src/timer/mint/*.c"
                  SOURCES="$SOURCES $srcdir/src/timer/mint/*.S"
              fi
-@@ -2536,20 +2498,20 @@
+@@ -2536,20 +2536,20 @@
          CheckPTHREAD
          # Set up files for the video library
          if test x$enable_video = xyes; then
@@ -1128,7 +1098,7 @@ Index: SDL-1.2.11/configure.in
              SOURCES="$SOURCES $srcdir/src/timer/riscos/*.c"
              have_timers=yes
          fi
-@@ -2566,31 +2528,31 @@
+@@ -2566,31 +2566,31 @@
  # Verify that we have all the platform specific files we need
  if test x$have_joystick != xyes; then
      if test x$enable_joystick = xyes; then

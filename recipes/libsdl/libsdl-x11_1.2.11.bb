@@ -3,7 +3,7 @@ require libsdl.inc
 # extra-keys.patch is missing
 DEFAULT_PREFERENCE = "-1" 
 
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
@@ -14,6 +14,7 @@ SRC_URI = "\
   file://sdl-cdfix.patch;patch=1 \
   file://fixmfour.patch;patch=1 \
 "
+
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
                 --enable-file --disable-oss --enable-alsa --disable-esd --disable-arts \
