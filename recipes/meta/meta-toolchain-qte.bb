@@ -17,12 +17,12 @@ do_populate_sdk_append() {
        echo 'export OE_QMAKE_LINK=${TARGET_SYS}-g++' >> $script
        echo 'export OE_QMAKE_LIBDIR_QT=${prefix}/${TARGET_SYS}/${layout_libdir}' >> $script
        echo 'export OE_QMAKE_INCDIR_QT=${prefix}/${TARGET_SYS}/${layout_includedir}/${QT_DIR_NAME}' >> $script
-       echo 'export OE_QMAKE_MOC=${prefix}/${layout_bindir}/moc4' >> $script
-       echo 'export OE_QMAKE_UIC=${prefix}/${layout_bindir}/uic4' >> $script
-       echo 'export OE_QMAKE_UIC3=${prefix}/${layout_bindir}/uic34' >> $script
-       echo 'export OE_QMAKE_RCC=${prefix}/${layout_bindir}/rcc4' >> $script
-       echo 'export OE_QMAKE_QDBUSCPP2XML=${prefix}/${layout_bindir}/qdbuscpp2xml4' >> $script
-       echo 'export OE_QMAKE_QDBUSXML2CPP=${prefix}/${layout_bindir}/qdbusxml2cpp4' >> $script
+       echo 'export OE_QMAKE_MOC=${prefix}/bin/moc4' >> $script
+       echo 'export OE_QMAKE_UIC=${prefix}/bin/uic4' >> $script
+       echo 'export OE_QMAKE_UIC3=${prefix}/bin/uic34' >> $script
+       echo 'export OE_QMAKE_RCC=${prefix}/bin/rcc4' >> $script
+       echo 'export OE_QMAKE_QDBUSCPP2XML=${prefix}/bin/qdbuscpp2xml4' >> $script
+       echo 'export OE_QMAKE_QDBUSXML2CPP=${prefix}/bin/qdbusxml2cpp4' >> $script
 
        # Repack SDK with new environment-setup
        cd ${SDK_OUTPUT}
