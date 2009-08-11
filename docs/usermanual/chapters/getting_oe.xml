@@ -209,7 +209,7 @@ $ <command>vi</command> build/conf/local.conf</screen>
         the following three
         entries: <varname>BBFILES</varname>, <varname>DISTRO</varname>
         and <varname>MACHINE</varname>. For example, consider the following
-        mininal <literal>local.conf</literal> file for the &Aring;ngstr&ouml;m
+        minimal <literal>local.conf</literal> file for the &Aring;ngstr&ouml;m
         distribution and the Openmoko gta01 machine:
 
         <screen>
@@ -294,7 +294,7 @@ MACHINE = "om-gta01"</screen>
 
         <varlistentry>
           <term><filename>meta/</filename></term>
-          <listitem><para>A collection of usefull meta tasks and recipes that
+          <listitem><para>A collection of useful meta tasks and recipes that
               don't fit in a general category.</para></listitem>
         </varlistentry>
 

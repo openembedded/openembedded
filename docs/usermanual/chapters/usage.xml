@@ -542,7 +542,7 @@ tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1.0.0</screen></para>
     <para>When you go about building and installing a software package there
     are a number of tasks that you generally follow with most software
     packages. You probably need to start out by downloading the source code,
-    then unpacking the source code. Maye you need to apply some patches for
+    then unpacking the source code. Maybe you need to apply some patches for
     some reason. Then you might run the configure script of the package,
     perhaps passing it some options to configure it to your liking. The you
     might run "make install" to install the software. If your actually going

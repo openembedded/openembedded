@@ -146,7 +146,7 @@ VAR2 = "The version is ${PV}"</screen></para>
         <term>Conditional assignment</term>
 
         <listitem>
-          <para>Conditional assignement is used to assign a value to a
+          <para>Conditional assignment is used to assign a value to a
           variable, but only when the variable is currently unset. This is
           commonly used to provide a default value for use when no specific
           definition is provided by the machine or distro configuration of the
@@ -1503,7 +1503,7 @@ inherit autotools</screen></para>
           example from net-snmp shows oe_runconf being called manually so that
           the parameter for specifying the endianess can be computed and
           passed in to the configure script:<screen>do_configure() {
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
     oenote Determined endianess as: $ENDIANESS
     oe_runconf $ENDIANESS
@@ -1576,7 +1576,7 @@ inherit autotools</screen></para>
           <para>The following example from net-snmp uses oenote to tell the
           user which endianess it determined was appropriate for the target
           device:<screen>do_configure() {
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
     oenote Determined endianess as: $ENDIANESS
     oe_runconf $ENDIANESS
@@ -1694,7 +1694,7 @@ inherit autotools</screen></para>
           to le for little endian targets and to be for big endian
           targets:<screen>do_compile () {
     ...
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"
     ...</screen></para>
         </listitem>
@@ -2928,7 +2928,7 @@ fi</screen></para>
     <para>Sometimes packages require root permissions in order to perform
     some action, such as changing user or group owners or creating device
     nodes. Since OpenEmbedded will not keep the user and group information
-    it's usually preferabe to remove that from the makefiles. For device
+    it's usually preferable to remove that from the makefiles. For device
     nodes it's usually preferably to create them from the initial device node
     lists or via udev configuration.</para>
 
@@ -3268,7 +3268,7 @@ do_configure() {
           to le for little endian targets and to be for big endian
           targets:<screen>do_compile () {
     ...
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"
     ...</screen></para>
         </listitem>
@@ -3544,7 +3544,7 @@ which find
     all contents of the <emphasis role="bold">/var</emphasis> directory is
     lost when the device is powered off or restarted. Therefore special
     handling of <emphasis role="bold">/var</emphasis> is required in all
-    packages. Even if your distrubution does not use a tmpfs based <emphasis
+    packages. Even if your distribution does not use a tmpfs based <emphasis
     role="bold">/var</emphasis> you need to assume it does when creating
     packages to ensure the package can be used on those distributions that do
     use a tmpfs based <emphasis role="bold">/var</emphasis>. This special
