@@ -58,7 +58,7 @@ $ <command>cd</command> $OEBASE</screen>
 		<screen>
 $ <command>cd</command> $OEBASE
 $ <command>wget</command>http://download.berlios.de/bitbake/bitbake-1.8.12.tar.gz
-$ <command>tar</command> xvzf bitbake-1.8.12.tar.gz
+$ <command>tar</command> -xvzf bitbake-1.8.12.tar.gz
 $ <command>mv</command> bitbake-1.8.12 bitbake
 </screen>
 	  </para>
