@@ -1,0 +1,13 @@
+diff -Naur org/lib/dvb/cahandler.cpp enigma/lib/dvb/cahandler.cpp
+diff -Naur org/lib/dvb/esection.cpp enigma/lib/dvb/esection.cpp
+--- org/lib/dvb/esection.cpp	2007-03-09 13:41:23.000000000 +0100
++++ enigma/lib/dvb/esection.cpp	2009-07-21 22:57:12.000000000 +0200
+@@ -204,7 +204,7 @@
+ 			pid == 0x14 /* TOT/TDT */ ? 90000 :
+ 			pid == 0x10     /* NIT */ ? 12000 :
+ 			pid == 0x00     /* PAT */ ?  4000 :
+-			pid == 0x11     /* SDT */ ?  5000 :
++			pid == 0x11     /* SDT */ ? 60000 :
+ 			pid == 0x12     /* EIT */ ? 15000 :
+ 			tableid == 0x02 /* PMT */ ?  4000 : 10000, true);
+ 	return setFilter(pid, tableid, tableidext, version, flags, tableidmask, dmxdev);

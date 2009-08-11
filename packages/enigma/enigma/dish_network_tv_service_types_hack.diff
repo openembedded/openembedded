@@ -1,0 +1,23 @@
+diff -Naur enigma_org/lib/dvb/servicedvb.cpp enigma/lib/dvb/servicedvb.cpp
+--- enigma_org/lib/dvb/servicedvb.cpp	2009-07-26 10:08:59.000000000 +0200
++++ enigma/lib/dvb/servicedvb.cpp	2009-07-26 10:17:04.000000000 +0200
+@@ -1040,6 +1040,19 @@
+ 		if ( onlyNew && !(s->dvb && s->dvb->dxflags & eServiceDVB::dxNewFound ) )
+ 			return;
+ 		int t = ((eServiceReferenceDVB&)service).getServiceType();
++// hack for dish network TV service types!!!
++		if ( type & (1<<1) ) // search for tv services ?
++		{
++			int onid = ((eServiceReferenceDVB&)service).getOriginalNetworkID().get();
++			if (onid >= 0x1001 && onid <= 0x100b) // is dish network id?
++			{
++				static int dish_tv_types[] = { 128, 133, 137, 140, 144, 145, 150, 154, 160, 163, 164, 165, 166, 167, 168, 173, 174 };
++				static size_t dish_tv_num_types = sizeof(dish_tv_types) / sizeof(int);
++				if (std::binary_search(dish_tv_types, dish_tv_types + dish_tv_num_types, t))
++					t = 1; // patch to tv service
++			}
++		}
++///////////////////////////////////////////
+ 		int nspace = ((eServiceReferenceDVB&)service).getDVBNamespace().get()&0xFFFF0000;
+ 		if (t < 0)
+ 			t=0;
