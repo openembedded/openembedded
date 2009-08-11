@@ -2,17 +2,14 @@ DESCRIPTION = "PackageKit package management abstraction"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "gtk+ python cppunit policykit dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
+DEPENDS = "gtk+ python cppunit dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
 RDEPENDS_${PN} = "${IPKG_VARIANT}"
 
 inherit gnome autotools_stage
 
-SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
-           file://no_validate.patch;patch=1 \
-           file://opkg-fix-includes.diff;patch=1 \
-           file://opkg-fix-declarations.diff;patch=1 "
+SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz"
 
-PR = "r2"
+PR = "r0"
 PE = "1"
 
 S = "${WORKDIR}/PackageKit-${PV}"
@@ -20,10 +17,12 @@ S = "${WORKDIR}/PackageKit-${PV}"
 EXTRA_OECONF = "--with-security-framework=dummy \
                 --with-default-backend=opkg \
                 --enable-opkg \
+                --enable-dummy \
                 --disable-tests \
                 --disable-qt \
                 --disable-gstreamer-plugin \
                 --disable-local  \
+                --disable-strict \
                 ac_cv_path_XMLTO=no \
                 "
 
@@ -31,7 +30,7 @@ EXTRA_OECONF = "--with-security-framework=dummy \
 do_configure_prepend() {
 	mkdir -p m4
 	echo "EXTRA_DIST=" > gtk-doc.make
-	sed -i -e s:0\.1\.5:0\.1\.6:g -e /Werror/d configure.ac
+        sed -i -e s:0\.1\.5:0\.1\.6:g configure.ac
 }
 
 do_configure_append() {
