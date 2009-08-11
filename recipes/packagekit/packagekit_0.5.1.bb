@@ -10,7 +10,7 @@ inherit gnome autotools_stage
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz"
 
 PR = "r0"
-PE = "1"
+PE = "2"
 
 S = "${WORKDIR}/PackageKit-${PV}"
 
