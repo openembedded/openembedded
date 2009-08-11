@@ -3,9 +3,9 @@ SECTION = "devel"
 LICENSE = "MIT"
 RDEPENDS = "cpp gcc-symlinks binutils-symlinks \
             perl perl-modules bitbake bash \
-			task-proper-tools glibc-utils \
-			linux-libc-headers-dev glibc-dev \
-			texinfo make cvs subversion monotone-6"
+            task-proper-tools glibc-utils \
+            linux-libc-headers-dev glibc-dev \
+            texinfo make cvs subversion git"
 
 #
 # quilt-native REQ bash and perl/perl-modules
