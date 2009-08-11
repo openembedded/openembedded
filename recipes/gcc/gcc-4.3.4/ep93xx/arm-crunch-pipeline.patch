@@ -1,0 +1,461 @@
+Patch to add description of MaverickCrunch pipelines.
+
+This increases the speed as measured by the fftw benchmark from
+5.4 to 5.8 mflops and reduced LAME's execution time from 2m30 to 2m20.
+
+I don't know who wrote this - I got it from Hasjim Williams.
+
+        -martinwguy
+
+--- gcc-4.3.2/gcc/config/arm/arm.md.old	2008-11-21 19:06:18.000000000 +0000
++++ gcc-4.3.2/gcc/config/arm/arm.md	2008-11-21 19:06:37.000000000 +0000
+@@ -230,13 +230,10 @@
+ ; store2	store 2 words
+ ; store3	store 3 words
+ ; store4	store 4 (or more) words
+-;  Additions for Cirrus Maverick co-processor:
+-; mav_farith	Floating point arithmetic (4 cycle)
+-; mav_dmult	Double multiplies (7 cycle)
+ ;
+ 
+ (define_attr "type"
+-	"alu,alu_shift,alu_shift_reg,mult,block,float,fdivx,fdivd,fdivs,fmul,fmuls,fmuld,fmacs,fmacd,ffmul,farith,ffarith,f_flag,float_em,f_load,f_store,f_loads,f_loadd,f_stores,f_stored,f_mem_r,r_mem_f,f_2_r,r_2_f,f_cvt,branch,call,load_byte,load1,load2,load3,load4,store1,store2,store3,store4,mav_farith,mav_dmult"
++	"alu,alu_shift,alu_shift_reg,mult,block,float,fdivx,fdivd,fdivs,fmul,fmuls,fmuld,fmacs,fmacd,ffmul,farith,ffarith,f_flag,float_em,f_load,f_store,f_loads,f_loadd,f_stores,f_stored,f_mem_r,r_mem_f,f_2_r,r_2_f,f_cvt,branch,call,load_byte,load1,load2,load3,load4,store1,store2,store3,store4"
+ 	(if_then_else 
+ 	 (eq_attr "insn" "smulxy,smlaxy,smlalxy,smulwy,smlawx,mul,muls,mla,mlas,umull,umulls,umlal,umlals,smull,smulls,smlal,smlals")
+ 	 (const_string "mult")
+@@ -7340,7 +7337,7 @@
+ 		      (match_operand:SF 1 "cirrus_fp_register" "v")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcmps%?\\tr15, %V0, %V1"
+-  [(set_attr "type"   "mav_farith")
++  [(set_attr "type"   "farith")
+    (set_attr "cirrus" "compare")]
+ )
+ 
+@@ -7351,7 +7348,7 @@
+ 		      (match_operand:DF 1 "cirrus_fp_register" "v")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcmpd%?\\tr15, %V0, %V1"
+-  [(set_attr "type"   "mav_farith")
++  [(set_attr "type"   "farith")
+    (set_attr "cirrus" "compare")]
+ )
+ 
+@@ -7374,7 +7371,7 @@
+ 		    (match_operand:DI 1 "cirrus_fp_register" "v")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK & 0"
+   "cfcmp64%?\\tr15, %V0, %V1"
+-  [(set_attr "type"   "mav_farith")
++  [(set_attr "type"   "farith")
+    (set_attr "cirrus" "compare")]
+ )
+ 
+--- gcc-4.3.2/gcc/config/arm/cirrus.md.old	2008-11-21 14:25:50.000000000 +0000
++++ gcc-4.3.2/gcc/config/arm/cirrus.md	2008-11-21 14:42:01.000000000 +0000
+@@ -19,6 +19,58 @@
+ ;; along with GCC; see the file COPYING3.  If not see
+ ;; <http://www.gnu.org/licenses/>.
+ 
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++;; Pipeline description
++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++
++(define_automaton "crunch")
++
++;; There are 2 pipelines in the CRUNCH unit.
++;;
++;; - A 8/9-stage? FMAC pipeline (7/8? execute + writeback)
++;;
++;; - A 4-stage LS pipeline (execute + 2 memory + writeback) with forward from
++;;   second memory stage for loads.
++
++(define_cpu_unit "crunch_fmac" "crunch")
++
++(define_cpu_unit "crunch_ls" "crunch")
++
++;; The CRUNCH "type" attributes differ from those used in the FPA and VFP model.
++;; ffarith	Fast floating point insns.
++;; farith	Most arithmetic insns.
++;; fmul		Double precision multiply.
++;; f_load[sd]	Floating point load from memory.
++;; f_store[sd]	Floating point store to memory.
++;; f_2_r	Transfer crunch to arm reg.
++;; r_2_f	Transfer arm to crunch reg.
++;; f_cvt	Convert floating<->integral
++
++(define_insn_reservation "crunch_ffarith" 18
++ (and (eq_attr "fpu" "maverick")
++      (eq_attr "type" "ffarith"))
++ "crunch_fmac")
++
++(define_insn_reservation "crunch_farith" 18
++ (and (eq_attr "fpu" "maverick")
++      (eq_attr "type" "farith,f_cvt"))
++ "crunch_fmac")
++
++(define_insn_reservation "crunch_fmul" 30
++ (and (eq_attr "fpu" "maverick")
++      (eq_attr "type" "fmul"))
++ "crunch_fmac*2")
++
++;; Moves to/from arm regs also use the load/store pipeline.
++(define_insn_reservation "crunch_fload" 8
++ (and (eq_attr "fpu" "maverick")
++      (eq_attr "type" "f_loads,f_loadd,r_2_f"))
++ "crunch_ls")
++
++(define_insn_reservation "crunch_fstore" 8
++ (and (eq_attr "fpu" "maverick")
++      (eq_attr "type" "f_stores,f_stored,f_2_r"))
++ "crunch_ls")
+ 
+ ; Cirrus types for invalid insn combinations
+ ; not		Not a cirrus insn
+@@ -35,7 +87,7 @@
+ 		 (match_operand:DI 2 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfadd64%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -45,7 +97,7 @@
+ 		 (match_operand:SI 2 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfadd32%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -55,7 +107,7 @@
+ 		 (match_operand:SF 2 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfadds%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -65,7 +117,7 @@
+ 		 (match_operand:DF 2 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfaddd%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -75,7 +127,7 @@
+ 		  (match_operand:DI 2 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfsub64%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -85,7 +137,7 @@
+ 		  (match_operand:SI 2 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfsub32%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -95,7 +147,7 @@
+ 		  (match_operand:SF 2 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfsubs%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -105,7 +157,7 @@
+ 		  (match_operand:DF 2 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfsubd%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -115,7 +167,7 @@
+ 		 (match_operand:SI 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfmul32%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -125,7 +177,7 @@
+ 		 (match_operand:DI 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfmul64%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_dmult")
++  [(set_attr "type" "fmul")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -137,7 +189,7 @@
+ 	  (match_operand:SI          3 "cirrus_fp_register"  "0")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfmac32%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -150,7 +202,7 @@
+ 		   (match_operand:SI 3 "cirrus_fp_register"  "v"))))]
+   "0 && TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfmsc32%?\\t%V0, %V2, %V3"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -160,7 +212,7 @@
+ 		 (match_operand:SF 2 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfmuls%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_farith")
++  [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -170,7 +222,7 @@
+ 		 (match_operand:DF 2 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfmuld%?\\t%V0, %V1, %V2"
+-  [(set_attr "type" "mav_dmult")
++  [(set_attr "type" "fmul")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -180,7 +232,8 @@
+ 		   (match_operand:SI 2 "cirrus_shift_const"  "")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfsh32%?\\t%V0, %V1, #%s2"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "cirrus_ashiftrt_const"
+@@ -189,7 +242,8 @@
+ 		     (match_operand:SI 2 "cirrus_shift_const"  "")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfsh32%?\\t%V0, %V1, #-%s2"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "cirrus_ashlsi3"
+@@ -198,7 +252,8 @@
+ 		   (match_operand:SI 2 "register_operand"    "r")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfrshl32%?\\t%V1, %V0, %s2"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "ashldi3_cirrus"
+@@ -207,7 +262,8 @@
+ 		   (match_operand:SI 2 "register_operand"    "r")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfrshl64%?\\t%V1, %V0, %s2"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "cirrus_ashldi_const"
+@@ -216,7 +272,8 @@
+ 		   (match_operand:SI 2 "cirrus_shift_const"  "")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfsh64%?\\t%V0, %V1, #%s2"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "cirrus_ashiftrtdi_const"
+@@ -225,7 +282,8 @@
+ 		     (match_operand:SI 2 "cirrus_shift_const"  "")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfsh64%?\\t%V0, %V1, #-%s2"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "*cirrus_absdi2"
+@@ -233,7 +291,8 @@
+ 	(abs:DI (match_operand:DI 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfabs64%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ ;; This doesn't really clobber ``cc''.  Fixme: aldyh.  
+@@ -243,7 +302,8 @@
+    (clobber (reg:CC CC_REGNUM))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfneg64%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "*cirrus_negsi2"
+@@ -251,7 +311,8 @@
+ 	(neg:SI (match_operand:SI 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfneg32%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ ; Cirrus hardware bug: neg 0 -> 0 instead of -0
+@@ -260,7 +321,8 @@
+ 	(neg:SF (match_operand:SF 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS (SFmode)"
+   "cfnegs%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "*cirrus_negdf2"
+@@ -268,7 +330,8 @@
+ 	(neg:DF (match_operand:DF 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS (DFmode)"
+   "cfnegd%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ ;; This doesn't really clobber the condition codes either.  
+@@ -278,7 +341,8 @@
+    (clobber (reg:CC CC_REGNUM))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfabs32%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "*cirrus_abssf2"
+@@ -286,7 +350,8 @@
+         (abs:SF (match_operand:SF 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfabss%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "*cirrus_absdf2"
+@@ -294,7 +359,8 @@
+         (abs:DF (match_operand:DF 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfabsd%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "farith")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ ;; Convert Cirrus-SI to Cirrus-SF
+@@ -303,7 +369,8 @@
+  	(float:SF (match_operand:SI 1 "s_register_operand"  "r")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfmv64lr%?\\t%Z0, %1\;cfcvt32s%?\\t%V0, %Y0"
+-  [(set_attr "length" "8")
++  [(set_attr "type" "f_cvt")
++   (set_attr "length" "8")
+    (set_attr "cirrus" "move")]
+ )
+ 
+@@ -312,7 +379,8 @@
+ 	(float:DF (match_operand:SI 1 "s_register_operand" "r")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfmv64lr%?\\t%Z0, %1\;cfcvt32d%?\\t%V0, %Y0"
+-  [(set_attr "length" "8")
++  [(set_attr "type" "f_cvt")
++   (set_attr "length" "8")
+    (set_attr "cirrus" "move")]
+ )
+ 
+@@ -321,14 +389,18 @@
+ 	(float:SF (match_operand:DI 1 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcvt64s%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")])
++  [(set_attr "type" "f_cvt")
++   (set_attr "cirrus" "normal")]
++)
+ 
+ (define_insn "floatdidf2"
+   [(set (match_operand:DF 0 "cirrus_fp_register" "=v")
+ 	(float:DF (match_operand:DI 1 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcvt64d%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")])
++  [(set_attr "type" "f_cvt")
++   (set_attr "cirrus" "normal")]
++)
+ 
+ (define_insn "cirrus_truncsfsi2"
+   [(set (match_operand:SI         0 "s_register_operand" "=r")
+@@ -336,7 +408,8 @@
+    (clobber (match_scratch:DF     2                      "=v"))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cftruncs32%?\\t%Y2, %V1\;cfmvr64l%?\\t%0, %Z2"
+-  [(set_attr "length" "8")
++  [(set_attr "type" "f_cvt")
++   (set_attr "length" "8")
+    (set_attr "cirrus" "normal")]
+ )
+ 
+@@ -346,7 +419,8 @@
+    (clobber (match_scratch:DF     2                      "=v"))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cftruncd32%?\\t%Y2, %V1\;cfmvr64l%?\\t%0, %Z2"
+-  [(set_attr "length" "8")]
++  [(set_attr "type" "f_cvt")
++   (set_attr "length" "8")]
+ )
+ 
+ (define_insn "*cirrus_truncdfsf2"
+@@ -355,7 +429,8 @@
+          (match_operand:DF 1 "cirrus_fp_register" "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcvtds%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "f_cvt")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "*cirrus_extendsfdf2"
+@@ -363,7 +438,8 @@
+         (float_extend:DF (match_operand:SF 1 "cirrus_fp_register"  "v")))]
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcvtsd%?\\t%V0, %V1"
+-  [(set_attr "cirrus" "normal")]
++  [(set_attr "type" "f_cvt")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ (define_insn "*cirrus_arm_movdi"
