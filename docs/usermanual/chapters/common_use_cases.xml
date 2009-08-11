@@ -509,12 +509,12 @@ SDK_SUFFIX = "toolchain-YOUR"
             distribution you are targetting.
             </para>
 
-            <note>SDK creation currently does not work with the <emphasis>DISTRO</emphasis>
-            set to <emphasis>micro</emphasis>.</note>
+            <note><para>SDK creation currently does not work with the <emphasis>DISTRO</emphasis>
+            set to <emphasis>micro</emphasis>.</para></note>
 
-            <note>If the environment-setup script packaged in the SDK should
+            <note><para>If the environment-setup script packaged in the SDK should
             require more environment look at the <filename>meta-toolchain-qte.bb</filename>
-            to accomplish this.</note>
+            to accomplish this.</para></note>
         </section>
     </section>
   </section>
@@ -550,20 +550,20 @@ SDK_SUFFIX = "toolchain-YOUR"
 </screen>
             </para>
 
-            <note>The deployment directory depends on the distribution and used
-            C library. In the case of Angstrom and glibc it is located in
-            <filename>tmp/deploy/glibc/sdk</filename>.</note>
+            <note><para>The deployment directory depends on the distribution
+            and used C library. In the case of Angstrom and glibc it is
+            located in <filename>tmp/deploy/glibc/sdk</filename>.</para></note>
 
-            <note>Change <filename>qt4-embedded.inc</filename> and
+            <note><para>Change <filename>qt4-embedded.inc</filename> and
             <filename>qt4.inc</filename> for using different Qt configuration
             flags. This might include a custom qconfig.h to produce a reduced
-            size build.</note>
+            size build.</para></note>
 
-            <note>When distributing the SDK make sure to include a written offer
+            <note><para>When distributing the SDK make sure to include a written offer
             to provide the sourcecode of GPL licensed applications or provide
             parts of the <filename>sources</filename> folder. The <filename>
             sources</filename> folder is located right next to the <filename>sdk</filename>
-            one.</note>
+            one.</para></note>
         </section>
 
 
