@@ -1,7 +1,8 @@
 require nandlogical_${PV}.bb
 
-SRC_URI_append = " file://nandlogical.c \
-		    file://mtd-user.h \
+FILESPATHPKG =. "nandlogical:"
+
+SRC_URI_append = " file://mtd-user.h \
 		    file://mtd-abi.h \
 		    "
 DEPENDS += "klibc"
