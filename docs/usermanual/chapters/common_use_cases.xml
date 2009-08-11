@@ -105,7 +105,7 @@ SRCDATE = "20061014"
     <section>
         <title>building from unstable source code</title>
         <para>Building against the latest, bleeding-edge source has some intricacies of its own.
-        For one, it is desirable to pin down a souce code revision that is known to build to 
+        For one, it is desirable to pin down a 1 code revision that is known to build to
         prevent random breakage in OE at the most inopportune time for all OE users.  Here is
         how to do that properly.
           <itemizedlist>
@@ -221,7 +221,7 @@ qt2
       available.</para>
 
       <section>
-        <title>Sourcable script</title>
+        <title>Sourceable script</title>
 
         <para>To ease the usage of OpenEmbedded we start by creating a
         source-able script. This is actually a small variation from the
@@ -381,7 +381,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
       <para>OpenEmbedded tries to automatically add run-time dependencies
       (RDEPENDS) to generated packages. It is inspecting binaries and
       libraries and uses the <emphasis><link linkend="shlibs">shlibs</link>
-      </emphasis> system to do add dependencies for the linked libaries,
+      </emphasis> system to do add dependencies for the linked libraries,
       however in this case it was not able to find packages providing these
       libraries as they were prebuilt.
       </para>
@@ -410,7 +410,7 @@ ASSUME_SHLIBS = "libqtopia2.so.2:qtopia2_2.4 libc.so.6:libc"
         <title>What is provided by a SDK</title>
 
         <para>The Software Development Kit (SDK) should be easy to install and
-        enable your userbase to create binaries and libraries that work on the
+        enable your user-base to create binaries and libraries that work on the
         target hardware.
         </para>
 
@@ -452,10 +452,10 @@ RDEPENDS_${PN} += "YOUR-DEPENDENCY-sdk"
         </section>
 
         <section>
-            <title>Preapring the target side</title>
+            <title>Preparing the target side</title>
             <para>Your SDK should provide your user with header files and libraries
             he will need when doing application development. In OpenEmbedded the
-            <command>${PN}-dev</command> isi providing the header files, pkg-config
+            <command>${PN}-dev</command> is providing the header files, pkg-config
             files and symbolic links to libraries to allow using the library. The SDK
             should install these development packages to the SDK.
             </para>
@@ -506,7 +506,7 @@ SDK_SUFFIX = "toolchain-YOUR"
             directory inside your deploy directory with a SDK waiting for you. With
             the above command you still need to have OE configured with your
             <filename>conf/local.conf</filename> to select the machine and
-            distribution you are targetting.
+            distribution you are targeting.
             </para>
 
             <note><para>SDK creation currently does not work with the <emphasis>DISTRO</emphasis>
@@ -526,11 +526,11 @@ SDK_SUFFIX = "toolchain-YOUR"
             <title>Creating the SDK</title>
 
             <para>The SDK should contain a build of Qt Embedded, but also
-            optional depedencies like directFB, glib-2.0, gstreamer-0.10, tslib
-            and more esoteric depedencies like mysql and postgres. This allows
+            optional dependencies like directFB, glib-2.0, gstreamer-0.10, tslib
+            and more esoteric dependencies like mysql and postgres. This allows
             developers to simply start developing using Qt and enables system
-            integrators to easily recompile Qt and base libraries without tracking
-            down extra depedencies.
+            integrator to easily recompile Qt and base libraries without tracking
+            down extra dependencies.
             </para>
 
             <para>OpenEmbedded provides an easy way to create a Qt Embedded
