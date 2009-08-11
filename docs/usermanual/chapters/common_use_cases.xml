@@ -169,7 +169,7 @@ inherit image
       toolchain is in your <command>PATH</command>.</para>
 
       <screen>
-<command>ls</command> pre-built/cross/bin
+$ <command>ls</command> pre-built/cross/bin
 
 arm-linux-g++
 arm-linux-ld
@@ -204,7 +204,7 @@ arm-linux-objdump
       <emphasis>lib</emphasis> sub-directory.</para>
 
       <screen>
-<command>ls</command> $PRE_BUILT
+$ <command>ls</command> $PRE_BUILT
 include
 lib
 qt2
@@ -546,7 +546,7 @@ SDK_SUFFIX = "toolchain-YOUR"
             the below command and after the operation finished you should find
             a SDK in the deployment directory.
 <screen>
-# bitbake meta-toolchain-qte
+$ <command>bitbake</command> meta-toolchain-qte
 </screen>
             </para>
 
@@ -581,13 +581,13 @@ SDK_SUFFIX = "toolchain-YOUR"
 
 <screen>
 Untar the SDK once
-# tar -C / -xjf angstrom-armv5te-linux-gnueabi-toolchain-qte.tar.bz2
+$ <command>tar</command> -C / -xjf angstrom-armv5te-linux-gnueabi-toolchain-qte.tar.bz2
 
 Before using it source the environment
-# . /usr/local/angstrom/arm/environment-setup
+$ <command>.</command> /usr/local/angstrom/arm/environment-setup
 
 Use qmake2 to build software for the target
-# qmake2
+$ <command>qmake2</command>
 </screen>
 
             <para>Creating and building a simple example. We will create a simple
@@ -595,16 +595,16 @@ Use qmake2 to build software for the target
             <command>make</command> to cross compile.
 
 <screen>
-# . /usr/local/angstrom/arm/environment-setup
-# cd $HOME
-# mkdir qte-example
-# cd qte-example
+$ <command>.</command> /usr/local/angstrom/arm/environment-setup
+$ <command>cd</command> $HOME
+$ <command>mkdir</command> qte-example
+$ <command>cd</command> qte-example
 
-# echo "TEMPLATE=app
+$ <command>echo</command> "TEMPLATE=app
 SOURCES=main.cpp
 " > qte-example.pro
 
-# echo '#include &lt;QApplication&gt;
+$ <command>echo</command> '#include &lt;QApplication&gt;
 #include &lt;QPushButton&gt;
 
 int main(int argc, char** argv) {
@@ -618,8 +618,8 @@ int main(int argc, char** argv) {
 }
 ' > main.cpp
 
-# qmake2
-# make
+$ <command>qmake2</command>
+$ <command>make</command>
 </screen>
             </para>
 
