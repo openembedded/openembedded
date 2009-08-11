@@ -50,41 +50,22 @@ $ cd $OEBASE</screen>
     set the PATH variable so that the BitBake tools are accessible (see
     <xref linkend="gettingoe_configuring_oe"/>).</para>
 
-	<section><title>Getting <application>BitBake</application> Using Subversion</title>
-	  <para>To checkout the latest version of the BitBake 1.8 branch, use the
-		following command:
+	<section><title>Downloading a <application>BitBake</application> release</title>
+	  <para>Releases are available from the berlios project website. The current
+          release series is <application>BitBake</application> <emphasis>1.8</emphasis>
+          and the current release is <emphasis>1.8.12</emphasis>. To download execute
+	  the following commands:
 		<screen>
-$ cd $OEBASE
-$ <command>svn</command> co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ bitbake
+$ <command>cd</command> $OEBASE
+$ <command>wget</command>http://download.berlios.de/bitbake/bitbake-1.8.12.tar.gz
+$ <command>tar</command> xvzf bitbake-1.8.12.tar.gz
+$ <command>mv</command> bitbake-1.8.12 bitbake
 </screen>
 	  </para>
 
-	  <para><application>BitBake</application> is checked out now and
+	  <para><application>BitBake</application> is now downloaded and
 		the <varname>$OEBASE</varname> directory will contain
 		a <literal>bitbake/</literal> subdirectory.</para>
-
-	  <para>If you need to access a Subversion server through a proxy, see the
-		<ulink url="http://subversion.tigris.org/faq.html#proxy">SVN FAQ</ulink>
-	  </para>
-	</section>
-
-	<section><title>Updating <application>BitBake</application></title>
-	  <para>Bitbake is being revised fairly often. Periodically it's a good
-		idea to check the repository of bitbake stable branches to see if a
-		new stable branch is available or if the current branch has been
-		revised. Compare your existing bitbake directory with the latest
-		bitbake branch in the repository. Your existing bitbake branch and
-		its 'last changed revision' number can be found as follows:
-
-		<screen>$ cd $OEBASE/bitbake; svn info</screen>
-
-		If there is a new stable branch, you will want to move or delete
-		your existing bitbake directory and repeat the process listed above
-		under "To obtain bitbake". If there is no new branch, it is easy to
-		update bitbake:
-
-		<screen>$ cd $OEBASE/bitbake; svn update</screen>
-	  </para>
 	</section>
   </section>
 
