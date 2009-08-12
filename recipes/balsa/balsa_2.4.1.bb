@@ -2,9 +2,7 @@ DESCRIPTION = "Robust and configurable e-mail client for GNOME"
 HOMEPAGE = "http://pawsa.fedorapeople.org/balsa/"
 SECTION = "x11/network"
 LICENSE = "GPL"
-SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2 \
-           file://balsa-touch.patch;patch=1 \
-           file://balsa-no-spell.patch;patch=1"
+SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2"
 
 DEPENDS = "glib-2.0 libgmime-2.4 gtk+ intltool-native libesmtp libxml-parser-perl-native"
 # FIXME: It is possible to build several variants of balsa: lite (SSL, gqlite/GPE, maybe HTML),
@@ -50,21 +48,25 @@ DEPENDS += "gconf libgnome libgnomeui"
 # Optional dependencies (not yet in OE): X-Face support:
 #DEPENDS += "compface"
 
+# Optional dependencies: sound support:
+#DEPENDS += "libcanberra"
+
 # FIXME: doc build requires docbook4 and gnome-doc-utils
 
 inherit autotools
 
 EXTRA_OECONF="--with-ssl \
 	      --without-gnome \
-	      --enable-touch-ui \
 	      --disable-scrollkeeper \
 	      --enable-smime \
 	      --with-sqlite \
 	      --with-ssl \
 	      --with-webkit \
 	      --with-unique \
-#	      --without-gtkspell \
+	      --without-gtkspell \
 "
+# Broken (does not compile, crashes after symbol fix):
+#	      --enable-touch-ui \
 # Not enabled:
 #	      --with-gtkspell \
 #	      --with-gpgme \
@@ -73,6 +75,7 @@ EXTRA_OECONF="--with-ssl \
 #	      --with-gss \
 #	      --with-ldap \
 #	      --with-compface \
+#	      --with-canberra \
 
 do_configure_prepend() {
 	# aclocal seems to insist on looking in here.  Make sure it exists.
