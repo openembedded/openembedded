@@ -4,8 +4,8 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib libgsm0710mux"
 LICENSE = "GPL"
-PV = "0.3.1+gitr${SRCREV}"
-PR = "r1"
+PV = "0.3.5+gitr${SRCPV}"
+PR = "r0"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-abyss.git;protocol=git;branch=master \
