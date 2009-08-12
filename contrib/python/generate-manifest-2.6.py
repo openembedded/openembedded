@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # generate Python Manifest for the OpenEmbedded build system
-# (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # (C) 2007 Jeremy Laine
 # licensed under MIT, see COPYING.MIT
 
@@ -12,7 +12,7 @@ import time
 VERSION = "2.6.1"
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20081214"
+__version__ = "20090812"
 
 class MakefileMaker:
 
@@ -23,7 +23,7 @@ class MakefileMaker:
         self.output = outfile
         self.out( """
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: '%s' Version %s (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: '%s' Version %s (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 """ % ( sys.argv[0], __version__ ) )
 
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     m.addPackage( "python-doctest", "Python framework for running examples in docstrings.", "python-core python-lang python-io python-re python-unittest python-debugger python-difflib",
     "doctest.*" )
 
-    m.addPackage( "python-email", "Python Email Support", "python-core python-io python-re python-mime python-audio python-image",
+    m.addPackage( "python-email", "Python Email Support", "python-core python-io python-re python-mime python-audio python-image python-netclient",
     "email" ) # package
 
     m.addPackage( "python-fcntl", "Python's fcntl Interface", "python-core",
@@ -244,6 +244,9 @@ if __name__ == "__main__":
     m.addPackage( "python-io", "Python Low-Level I/O", "python-core python-math",
     "lib-dynload/_socket.so lib-dynload/_ssl.so lib-dynload/select.so lib-dynload/termios.so lib-dynload/cStringIO.so " +
     "pipes.* socket.* tempfile.* StringIO.* " )
+
+    m.addPackage( "python-json", "Python JSON Support", "python-core python-math python-re",
+    "json" ) # package
 
     m.addPackage( "python-lang", "Python Low-Level Language Support", "python-core",
     "lib-dynload/_bisect.so lib-dynload/_collections.so lib-dynload/_heapq.so lib-dynload/_weakref.so lib-dynload/_functools.so " +
@@ -271,7 +274,7 @@ if __name__ == "__main__":
 
     m.addPackage( "python-netclient", "Python Internet Protocol Clients", "python-core python-crypt python-datetime python-io python-lang python-logging python-mime",
     "*Cookie*.* " + 
-    "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.* uuid.*" )
+    "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.* uuid.* rfc822.* mimetools.*" )
 
     m.addPackage( "python-netserver", "Python Internet Protocol Servers", "python-core python-netclient",
     "cgi.* BaseHTTPServer.* SimpleHTTPServer.* SocketServer.*" )
