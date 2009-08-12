@@ -15,7 +15,7 @@ do_compile() {
 
 do_install() {
         install -d ${D}${datadir}/elementary/themes/
-        install -m 0644 ${S}/sixteen.edj ${D}${datadir}/elementary/themes/
+        install -m 0644 ${S}/niebiee.edj ${D}${datadir}/elementary/themes/
 }
 
 FILES_${PN} = "${datadir}/elementary/themes/niebiee.edj"
