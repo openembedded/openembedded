@@ -1,0 +1,59 @@
+Index: linknx/src/logger.h
+===================================================================
+RCS file: /cvsroot/linknx/linknx/linknx/src/logger.h,v
+retrieving revision 1.5
+diff -u -r1.5 logger.h
+--- linknx/src/logger.h	8 Mar 2009 22:34:23 -0000	1.5
++++ linknx/src/logger.h	17 May 2009 22:29:02 -0000
+@@ -132,7 +132,7 @@
+     std::string cat_m;
+     typedef std::pair<std::string ,Logger*> LoggerPair_t;
+     typedef std::map<std::string ,Logger*> LoggerMap_t;
+-    static LoggerMap_t loggerMap_m;
++    static LoggerMap_t* getLoggerMap();
+     static int level_m; // 10=DEBUG, 20=INFO, 30=NOTICE, 40=WARN, 50=ERROR, 
+     static bool timestamp_m;
+     static std::ostream nullStream_m;
+Index: linknx/src/logger.cpp
+===================================================================
+RCS file: /cvsroot/linknx/linknx/linknx/src/logger.cpp,v
+retrieving revision 1.6
+diff -u -r1.6 logger.cpp
+--- linknx/src/logger.cpp	12 Mar 2009 21:56:55 -0000	1.6
++++ linknx/src/logger.cpp	17 May 2009 22:29:02 -0000
+@@ -118,7 +118,7 @@
+ 
+ #include    <ctime>
+ 
+-Logger::LoggerMap_t Logger::loggerMap_m;
++//Logger::LoggerMap_t Logger::loggerMap_m;
+ int Logger::level_m;
+ bool Logger::timestamp_m;
+ NullStreamBuf Logger::nullStreamBuf_m;
+@@ -157,14 +157,23 @@
+         pConfig->SetAttribute("level", level_m);
+ }
+ 
++Logger::LoggerMap_t* Logger::getLoggerMap() {
++    // This static local is used to avoid problems with
++    // initialization order of static object present in
++    // different compilation units
++    static LoggerMap_t* loggerMap = new LoggerMap_t();
++    return loggerMap;
++}
++
+ Logger& Logger::getInstance(const char* cat) {
+-    LoggerMap_t::iterator it = loggerMap_m.find(cat);
++    LoggerMap_t* map = getLoggerMap();
++    LoggerMap_t::iterator it = map->find(cat);
+     Logger* logger;
+-    if (it != loggerMap_m.end())
++    if (it != map->end())
+         logger = it->second;
+     else {
+         logger = new Logger(cat);
+-        loggerMap_m.insert(LoggerPair_t(cat, logger));
++        map->insert(LoggerPair_t(cat, logger));
+     }
+     return *(logger);
+ }
