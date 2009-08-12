@@ -9,7 +9,7 @@ import os
 import sys
 import time
 
-VERSION = "2.6.1"
+VERSION = "2.6.2"
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 __version__ = "20090812"
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     "compiler" ) # package
 
     m.addPackage( "python-compression", "Python High Level Compression Support", "python-core python-zlib",
-    "gzip.* zipfile.* tarfile.*" )
+    "gzip.* zipfile.* tarfile.* lib-dynload/bz2.so" )
 
     m.addPackage( "python-crypt", "Python Basic Cryptographic and Hashing Support", "python-core",
     "hashlib.* md5.* sha.* lib-dynload/crypt.so lib-dynload/_hashlib.so lib-dynload/_sha256.so lib-dynload/_sha512.so" )
@@ -223,8 +223,12 @@ if __name__ == "__main__":
     m.addPackage( "python-doctest", "Python framework for running examples in docstrings.", "python-core python-lang python-io python-re python-unittest python-debugger python-difflib",
     "doctest.*" )
 
+    # FIXME consider adding to some higher level package
+    m.addPackage( "python-elementtree", "Python elementree", "python-core",
+    "lib-dynload/_elementtree.so" )
+
     m.addPackage( "python-email", "Python Email Support", "python-core python-io python-re python-mime python-audio python-image python-netclient",
-    "email" ) # package
+    "imaplib.* email" ) # package
 
     m.addPackage( "python-fcntl", "Python's fcntl Interface", "python-core",
     "lib-dynload/fcntl.so" )
@@ -257,8 +261,8 @@ if __name__ == "__main__":
     m.addPackage( "python-logging", "Python Logging Support", "python-core python-io python-lang python-pickle python-stringold",
     "logging" ) # package
 
-    m.addPackage( "python-tkinter", "Python Tcl/Tk Bindings", "python-core",
-    "lib-dynload/_tkinter.so lib-tk" ) # package
+    m.addPackage( "python-mailbox", "Python Mailbox Format Support", "python-core python-mime",
+    "mailbox.*" )
 
     m.addPackage( "python-math", "Python Math Support", "python-core",
     "lib-dynload/cmath.so lib-dynload/math.so lib-dynload/_random.so random.* sets.*" )
@@ -268,9 +272,9 @@ if __name__ == "__main__":
 
     m.addPackage( "python-mmap", "Python Memory-Mapped-File Support", "python-core python-io",
     "lib-dynload/mmap.so " )
-
-    m.addPackage( "python-unixadmin", "Python Unix Administration Support", "python-core",
-    "lib-dynload/nis.so lib-dynload/grp.so lib-dynload/pwd.so getpass.*" )
+    
+    m.addPackage( "python-multiprocessing", "Python Multiprocessing Support", "python-core python-io python-lang",
+    "lib-dynload/_multiprocessing.so multiprocessing" ) # package   
 
     m.addPackage( "python-netclient", "Python Internet Protocol Clients", "python-core python-crypt python-datetime python-io python-lang python-logging python-mime",
     "*Cookie*.* " + 
@@ -310,7 +314,7 @@ if __name__ == "__main__":
     "subprocess.*" )
 
     m.addPackage( "python-sqlite3", "Python Sqlite3 Database Support", "python-core python-datetime python-lang python-crypt python-io python-threading python-zlib",
-    "lib-dynload/_sqlite3.so sqlite3/dbapi2.* sqlite3/__init__.*" )
+    "lib-dynload/_sqlite3.so sqlite3/dbapi2.* sqlite3/__init__.* sqlite3/dump.*" )
 
     m.addPackage( "python-sqlite3-tests", "Python Sqlite3 Database Support Tests", "python-core python-sqlite3",
     "sqlite3/test" )
@@ -318,7 +322,7 @@ if __name__ == "__main__":
     m.addPackage( "python-stringold", "Python String APIs [deprecated]", "python-core python-re",
     "lib-dynload/strop.so string.*" )
 
-    m.addPackage( "python-syslog", "Python's Syslog Interface", "python-core",
+    m.addPackage( "python-syslog", "Python Syslog Interface", "python-core",
     "lib-dynload/syslog.so" )
 
     m.addPackage( "python-terminal", "Python Terminal Controlling Support", "python-core python-io",
@@ -329,10 +333,16 @@ if __name__ == "__main__":
 
     m.addPackage( "python-threading", "Python Threading & Synchronization Support", "python-core python-lang",
     "_threading_local.* dummy_thread.* dummy_threading.* mutex.* threading.* Queue.*" )
-
+    
+    m.addPackage( "python-tkinter", "Python Tcl/Tk Bindings", "python-core",
+    "lib-dynload/_tkinter.so lib-tk" ) # package
+    
     m.addPackage( "python-unittest", "Python Unit Testing Framework", "python-core python-stringold python-lang",
     "unittest.*" )
 
+    m.addPackage( "python-unixadmin", "Python Unix Administration Support", "python-core",
+    "lib-dynload/nis.so lib-dynload/grp.so lib-dynload/pwd.so getpass.*" )
+        
     m.addPackage( "python-xml", "Python basic XML support.", "python-core python-re",
     "lib-dynload/pyexpat.so xml xmllib.*" ) # package
 
@@ -344,13 +354,5 @@ if __name__ == "__main__":
 
     m.addPackage( "python-mailbox", "Python Mailbox Format Support", "python-core python-mime",
     "mailbox.*" )
-
-    # FIXME consider adding to python-compression
-    m.addPackage( "python-bzip2", "Python bzip2 support", "python-core",
-    "lib-dynload/bz2.so" )
-
-    # FIXME consider adding to some higher level package
-    m.addPackage( "python-elementtree", "Python elementree", "python-core",
-    "lib-dynload/_elementtree.so" )
 
     m.make()
