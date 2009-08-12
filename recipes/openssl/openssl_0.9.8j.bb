@@ -2,7 +2,7 @@ inherit pkgconfig
 
 require openssl.inc
 
-PR = "r2"
+PR = "${INC_PR}.0"
 
 export OE_LDFLAGS="${LDFLAGS}"
 

@@ -1,6 +1,6 @@
 require openssl.inc
 
-PR = "r6"
+PR = "${INC_PR}.0"
 
 SRC_URI += "file://debian.patch;patch=1 \
             file://armeb.patch;patch=1 \

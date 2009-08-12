@@ -6,6 +6,8 @@ SECTION = "libs/network"
 SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz"
 S = "${WORKDIR}/openssl-${PV}"
 
+INC_PR = "r10"
+
 AR_append = " r"
 CFLAG = "${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
 	-DTERMIO ${FULL_OPTIMIZATION} -Wall"
@@ -94,9 +96,16 @@ do_stage () {
 }
 
 do_install () {
-	install -m 0755 -d ${D}${libdir}/pkgconfig
 	oe_runmake INSTALL_PREFIX="${D}" install
-	chmod 644 ${D}${libdir}/pkgconfig/openssl.pc
+
+	# On x86_64, move lib/* to lib64
+	if [ "${libdir}" != "${prefix}/lib" ]
+	then
+		install -d ${D}${libdir} ${D}${libdir}/pkgconfig
+		mv ${D}${prefix}/lib/lib* ${D}${libdir}
+		mv ${D}${prefix}/lib/pkgconfig/*.pc ${D}${libdir}/pkgconfig
+	fi
+
 	oe_libinstall -so libcrypto ${D}${libdir}
 	oe_libinstall -so libssl ${D}${libdir}
 }
