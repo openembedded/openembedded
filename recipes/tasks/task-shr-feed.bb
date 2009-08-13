@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r22"
+PR = "r23"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -216,4 +216,6 @@ RDEPENDS_${PN} += "\
 		illume-keyboard-russian \
 		python-xlib \
 		xcompmgr \
+		man \
+		man-pages \
 "
