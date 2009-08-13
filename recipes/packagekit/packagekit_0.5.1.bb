@@ -9,9 +9,10 @@ inherit gnome autotools_stage
 
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
            file://fix-segfaults-when-consolekit-is-missing.patch;patch=1 \
+           file://fix-segfault-when-hald-is-not-running.patch;patch=1 \
            "
 
-PR = "r1"
+PR = "r2"
 PE = "2"
 
 S = "${WORKDIR}/PackageKit-${PV}"

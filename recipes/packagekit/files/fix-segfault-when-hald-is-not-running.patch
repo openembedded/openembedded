@@ -1,0 +1,22 @@
+From cdb5dad2785a6f418bec25e80283c0554fa972cd Mon Sep 17 00:00:00 2001
+From: Richard Hughes <richard@hughsie.com>
+Date: Thu, 13 Aug 2009 13:14:19 +0000
+Subject: If there is no HAL, don't segfault when unloading PkInhibit
+
+---
+diff --git a/src/pk-inhibit.c b/src/pk-inhibit.c
+index a9e68a7..5038aec 100644
+--- a/src/pk-inhibit.c
++++ b/src/pk-inhibit.c
+@@ -215,7 +215,8 @@ pk_inhibit_finalize (GObject *object)
+ 	}
+ 	/* no need to free the data in the array */
+ 	g_ptr_array_free (inhibit->priv->array, TRUE);
+-	g_object_unref (inhibit->priv->proxy);
++	if (inhibit->priv->proxy != NULL)
++		g_object_unref (inhibit->priv->proxy);
+ 
+ 	G_OBJECT_CLASS (pk_inhibit_parent_class)->finalize (object);
+ }
+--
+cgit v0.8.2
