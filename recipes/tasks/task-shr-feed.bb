@@ -199,6 +199,7 @@ RDEPENDS_${PN} += "\
 		e-tasks \
 		elementary-theme-sixteen \
 		e-wm-theme-illume-sixteen \
+		e-wm-theme-illume-niebiee \
 		elementary-theme-niebiee \
 		elmdentica \
 		shr-installer \
