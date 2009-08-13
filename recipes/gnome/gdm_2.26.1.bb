@@ -1,7 +1,7 @@
 DESCRIPTION = "Graphical login manager"
 LICENSE = "GPL"
 
-DEPENDS = "dbus-glib glib-2.0 gtk+ pango libglade gconf policykit policykit-gnome gnome-panel libxklavier fontconfig"
+DEPENDS = "xinput dbus-glib glib-2.0 gtk+ pango libglade gconf policykit policykit-gnome gnome-panel libxklavier fontconfig"
 
 PR = "r1"
 
