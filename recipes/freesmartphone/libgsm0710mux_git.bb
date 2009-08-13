@@ -3,8 +3,8 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
 DEPENDS = "glib-2.0 libgsm0710 libfsotransport"
-PV = "0.3.5+gitr${SRCREV}"
-PR = "r0"
+PV = "0.3.5+gitr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/libgsm0710mux;protocol=git;branch=master \
