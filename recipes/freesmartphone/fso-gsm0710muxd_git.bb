@@ -3,8 +3,8 @@ HOMEPAGE = "http://www.freesmartphone.org/mediawiki/index.php/Implementations/gs
 SECTION = "console/network"
 DEPENDS = "dbus dbus-glib"
 LICENSE = "GPL"
-PV = "0.9.3.1+gitr${SRCREV}"
-PR = "r0"
+PV = "0.9.3.1+gitr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/gsm0710muxd.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
