@@ -3,7 +3,7 @@ DEPENDS = "zlib-native dbus-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "LGPLv2.1 GPLv3"
 
 inherit sdk
 
@@ -61,12 +61,11 @@ do_compile() {
     done
 }
 
-do_stage() {
-    install -d ${STAGING_BINDIR_NATIVE}/
-    install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
+do_install() {
+    install -d ${D}${bindir}
+    install -m 0755 bin/qmake ${D}${bindir}/qmake2
     for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
-        install -m 0755 bin/${i} ${STAGING_BINDIR_NATIVE}/${i}4
+        install -m 0755 bin/${i} ${D}${bindir}/${i}4
     done
 }
-
 

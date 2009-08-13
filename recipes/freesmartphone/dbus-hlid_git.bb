@@ -1,9 +1,10 @@
 DESCRIPTION = "High Level DBus Introspection Daemon"
-AUTHOR = "M. Lauer et. al."
+HOMEPAGE = "http://www.freesmartphone.org/mediawiki/index.php/Implementations/DbusHlid"
+AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
-PV = "0.9.0+gitr${SRCPV}"
+PV = "1.0.1+gitr${SRCPV}"
 PR = "r0"
 PE = "1"
 

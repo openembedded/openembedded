@@ -15,4 +15,5 @@ rsync ~/OE/downloads/ angstrom@linuxtogo.org:~/website/unstable/sources/ -aPvz \
 	--exclude "dsplink*" \
 	--exclude "*GFX*" \
 	--exclude "TI-*" \
+	--exclude "*.avi" \
 	--exclude "*.bin"

@@ -2,8 +2,7 @@ DESCRIPTION = "A (de)compression library for the ZIP format"
 SECTION = "console/utils"
 LICENSE = "Info-ZIP"
 PR = "r1"
-
-SRC_URI = "http://ftp.info-zip.org/pub/infozip/src/unzip${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/project/infozip/UnZip%205.x%20and%20earlier/5.52/unzip${PV}.tar.gz"
 S = "${WORKDIR}/unzip-5.52"
 
 export LD = "${CC} ${LDFLAGS}"

@@ -1,0 +1,11 @@
+--- mono-2.4.2.1/mono/mini/mini-arm.h	2009-06-23 09:41:00.000000000 -0600
++++ mono-2.4.2.1/mono/mini/mini-arm.h	2009-06-23 09:40:27.000000000 -0600
+@@ -9,7 +9,7 @@
+ #endif
+ 
+ #ifdef ARM_FPU_VFP
+-#error "VFP support is not complete, try mono SVN for that."
++//#error "VFP support is not complete, try mono SVN for that."
+ #endif
+ 
+ #if defined(__ARM_EABI__)

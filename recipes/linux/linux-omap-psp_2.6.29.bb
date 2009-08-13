@@ -19,7 +19,7 @@ S = "${WORKDIR}/git"
 SRC_URI_append = " \
 	file://fix-twl-merge-damage.diff;patch=1 \
 	file://fix-section-mismatch.diff;patch=1 \
-	file:///no-3517-hack.diff;patch=1 \
+	file://no-3517-hack.diff;patch=1 \
 "
 
 do_install_append() {

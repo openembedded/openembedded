@@ -1,11 +1,10 @@
 DESCRIPTION = "A GSM 07.10 Multiplexing Engine"
-HOMEPAGE = "http://www.freesmartphone.org/index.php/Implementations/libgsm0710mux"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
-DEPENDS = "libgsm0710 vala-native glib-2.0 libfsotransport"
-PV = "0.3.4+gitr${SRCPV}"
-PR = "r1"
+DEPENDS = "glib-2.0 libgsm0710 libfsotransport"
+PV = "0.3.6+gitr${SRCPV}"
+PR = "r0"
 PE = "1"
 
 SRC_URI = "\
@@ -14,7 +13,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-inherit autotools_stage pkgconfig
+inherit autotools_stage pkgconfig vala
 
 do_install_append() {
 	install -d ${D}${sysconfdir}
@@ -24,8 +23,6 @@ do_install_append() {
 PACKAGES =+ "${PN}-config"
 
 FILES_${PN} += "${sysconfdir} ${datadir}"
-# ship vapi file
-FILES_${PN}-dev += "${datadir}/vala"
 
 RRECOMMENDS_${PN} = "${PN}-config"
 

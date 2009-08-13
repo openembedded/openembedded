@@ -6,8 +6,8 @@ HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "directfb tslib"
 INC_PR = "r14"
 
-QT_BASE_NAME = "qt4-embedded"
-QT_BASE_LIB  = "libqt-embedded"
+QT_BASE_NAME ?= "qt4-embedded"
+QT_BASE_LIB  ?= "libqt-embedded"
 QT_DIR_NAME = "qtopia"
 QT_LIBINFIX = "E"
 
@@ -20,6 +20,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${
            file://0007-openssl-host-includes.patch;patch=1 \
            file://0008-qt-lib-infix.patch;patch=1 \
            file://0009-support-2bpp.patch;patch=1 \
+           file://fix-config-tests.patch;patch=1 \
            file://g++.conf \
            file://linux.conf \
            "

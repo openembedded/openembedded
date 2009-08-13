@@ -16,6 +16,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
            file://0006-freetype-host-includes.patch;patch=1 \
            file://0007-openssl-host-includes.patch;patch=1 \ 
            file://0008-qt-lib-infix.patch;patch=1 \
+           file://fix-config-tests.patch;patch=1 \
            file://g++.conf \
            file://linux.conf \
            "
@@ -23,8 +24,8 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 QT_GLFLAGS ?= "-no-opengl"
 QT_CONFIG_FLAGS += "-no-xinerama -no-xkb ${QT_GLFLAGS}"
-QT_BASE_NAME = "qt4"
-QT_BASE_LIB  = "libqt"
+QT_BASE_NAME ?= "qt4"
+QT_BASE_LIB  ?= "libqt"
 QT_DIR_NAME = "qt4"
 QT_LIBINFIX = ""
 

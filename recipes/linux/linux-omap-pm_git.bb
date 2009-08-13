@@ -23,6 +23,8 @@ SRC_URI_append = " \
            file://read_die_ids.patch;patch=1 \
            file://fix-install.patch;patch=1 \
            file://fix-musb-oops.diff;patch=1 \
+           file://fix-mtd.diff;patch=1 \
+           file://ehci.patch;patch=1 \
            file://dss2/0001-OMAPFB-move-omapfb.h-to-include-linux.patch;patch=1 \
            file://dss2/0002-DSS2-OMAP2-3-Display-Subsystem-driver.patch;patch=1 \
            file://dss2/0003-DSS2-OMAP-framebuffer-driver.patch;patch=1 \
@@ -172,6 +174,7 @@ SRC_URI_append = " \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
+           file://beagle-writable-uboot.diff;patch=1 \
 			     "
 
 SRC_URI_append_omap3evm = " \

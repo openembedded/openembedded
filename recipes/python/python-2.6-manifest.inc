@@ -1,12 +1,13 @@
+
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: '../org.openembedded.dev/contrib/python/generate-manifest-2.6.py' Version 20081214 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: '/local/pkg/oe/openembedded/contrib/python/generate-manifest-2.6.py' Version 20090812 (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 
  
 
-PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PROVIDES+="python-profile python-threading python-distutils python-doctest python-stringold python-codecs python-ctypes python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-json python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-multiprocessing python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
 
-PACKAGES="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio  python-modules"
+PACKAGES="python-profile python-threading python-distutils python-doctest python-stringold python-codecs python-ctypes python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-json python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-multiprocessing python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio  python-modules"
 
 DESCRIPTION_python-profile="Python Basic Profiling Support"
 RDEPENDS_python-profile="python-core python-textutils"
@@ -24,6 +25,10 @@ DESCRIPTION_python-doctest="Python framework for running examples in docstrings.
 RDEPENDS_python-doctest="python-core python-lang python-io python-re python-unittest python-debugger python-difflib"
 FILES_python-doctest="${libdir}/python2.6/doctest.* "
 
+DESCRIPTION_python-stringold="Python String APIs [deprecated]"
+RDEPENDS_python-stringold="python-core python-re"
+FILES_python-stringold="${libdir}/python2.6/lib-dynload/strop.so ${libdir}/python2.6/string.* "
+
 DESCRIPTION_python-codecs="Python Codecs, Encodings & i18n Support"
 RDEPENDS_python-codecs="python-core python-lang"
 FILES_python-codecs="${libdir}/python2.6/codecs.* ${libdir}/python2.6/encodings ${libdir}/python2.6/gettext.* ${libdir}/python2.6/locale.* ${libdir}/python2.6/lib-dynload/_locale.so ${libdir}/python2.6/lib-dynload/unicodedata.so ${libdir}/python2.6/stringprep.* ${libdir}/python2.6/xdrlib.* "
@@ -35,10 +40,6 @@ FILES_python-ctypes="${libdir}/python2.6/ctypes ${libdir}/python2.6/lib-dynload/
 DESCRIPTION_python-pickle="Python Persistence Support"
 RDEPENDS_python-pickle="python-core python-codecs python-io python-re"
 FILES_python-pickle="${libdir}/python2.6/pickle.* ${libdir}/python2.6/shelve.* ${libdir}/python2.6/lib-dynload/cPickle.so "
-
-DESCRIPTION_python-bzip2="Python bzip2 support"
-RDEPENDS_python-bzip2="python-core"
-FILES_python-bzip2="${libdir}/python2.6/lib-dynload/bz2.so "
 
 DESCRIPTION_python-datetime="Python Calendar and Time support"
 RDEPENDS_python-datetime="python-core python-codecs"
@@ -58,7 +59,7 @@ FILES_python-compiler="${libdir}/python2.6/compiler "
 
 DESCRIPTION_python-compression="Python High Level Compression Support"
 RDEPENDS_python-compression="python-core python-zlib"
-FILES_python-compression="${libdir}/python2.6/gzip.* ${libdir}/python2.6/zipfile.* ${libdir}/python2.6/tarfile.* "
+FILES_python-compression="${libdir}/python2.6/gzip.* ${libdir}/python2.6/zipfile.* ${libdir}/python2.6/tarfile.* ${libdir}/python2.6/lib-dynload/bz2.so "
 
 DESCRIPTION_python-re="Python Regular Expression APIs"
 RDEPENDS_python-re="python-core"
@@ -73,8 +74,8 @@ RDEPENDS_python-terminal="python-core python-io"
 FILES_python-terminal="${libdir}/python2.6/pty.* ${libdir}/python2.6/tty.* "
 
 DESCRIPTION_python-email="Python Email Support"
-RDEPENDS_python-email="python-core python-io python-re python-mime python-audio python-image"
-FILES_python-email="${libdir}/python2.6/email "
+RDEPENDS_python-email="python-core python-io python-re python-mime python-audio python-image python-netclient"
+FILES_python-email="${libdir}/python2.6/imaplib.* ${libdir}/python2.6/email "
 
 DESCRIPTION_python-image="Python Graphical Image Handling"
 RDEPENDS_python-image="python-core"
@@ -92,6 +93,10 @@ DESCRIPTION_python-resource="Python Resource Control Interface"
 RDEPENDS_python-resource="python-core"
 FILES_python-resource="${libdir}/python2.6/lib-dynload/resource.so "
 
+DESCRIPTION_python-json="Python JSON Support"
+RDEPENDS_python-json="python-core python-math python-re"
+FILES_python-json="${libdir}/python2.6/json "
+
 DESCRIPTION_python-devel="Python Development Package"
 RDEPENDS_python-devel="python-core"
 FILES_python-devel="${includedir} ${libdir}/python2.6/config "
@@ -104,7 +109,7 @@ DESCRIPTION_python-math="Python Math Support"
 RDEPENDS_python-math="python-core"
 FILES_python-math="${libdir}/python2.6/lib-dynload/cmath.so ${libdir}/python2.6/lib-dynload/math.so ${libdir}/python2.6/lib-dynload/_random.so ${libdir}/python2.6/random.* ${libdir}/python2.6/sets.* "
 
-DESCRIPTION_python-syslog="Python's Syslog Interface"
+DESCRIPTION_python-syslog="Python Syslog Interface"
 RDEPENDS_python-syslog="python-core"
 FILES_python-syslog="${libdir}/python2.6/lib-dynload/syslog.so "
 
@@ -138,7 +143,7 @@ FILES_python-fcntl="${libdir}/python2.6/lib-dynload/fcntl.so "
 
 DESCRIPTION_python-netclient="Python Internet Protocol Clients"
 RDEPENDS_python-netclient="python-core python-crypt python-datetime python-io python-lang python-logging python-mime"
-FILES_python-netclient="${libdir}/python2.6/*Cookie*.* ${libdir}/python2.6/base64.* ${libdir}/python2.6/cookielib.* ${libdir}/python2.6/ftplib.* ${libdir}/python2.6/gopherlib.* ${libdir}/python2.6/hmac.* ${libdir}/python2.6/httplib.* ${libdir}/python2.6/mimetypes.* ${libdir}/python2.6/nntplib.* ${libdir}/python2.6/poplib.* ${libdir}/python2.6/smtplib.* ${libdir}/python2.6/telnetlib.* ${libdir}/python2.6/urllib.* ${libdir}/python2.6/urllib2.* ${libdir}/python2.6/urlparse.* ${libdir}/python2.6/uuid.* "
+FILES_python-netclient="${libdir}/python2.6/*Cookie*.* ${libdir}/python2.6/base64.* ${libdir}/python2.6/cookielib.* ${libdir}/python2.6/ftplib.* ${libdir}/python2.6/gopherlib.* ${libdir}/python2.6/hmac.* ${libdir}/python2.6/httplib.* ${libdir}/python2.6/mimetypes.* ${libdir}/python2.6/nntplib.* ${libdir}/python2.6/poplib.* ${libdir}/python2.6/smtplib.* ${libdir}/python2.6/telnetlib.* ${libdir}/python2.6/urllib.* ${libdir}/python2.6/urllib2.* ${libdir}/python2.6/urlparse.* ${libdir}/python2.6/uuid.* ${libdir}/python2.6/rfc822.* ${libdir}/python2.6/mimetools.* "
 
 DESCRIPTION_python-pprint="Python Pretty-Print Support"
 RDEPENDS_python-pprint="python-core"
@@ -190,7 +195,7 @@ FILES_python-mime="${libdir}/python2.6/mimetools.* ${libdir}/python2.6/uu.* ${li
 
 DESCRIPTION_python-sqlite3="Python Sqlite3 Database Support"
 RDEPENDS_python-sqlite3="python-core python-datetime python-lang python-crypt python-io python-threading python-zlib"
-FILES_python-sqlite3="${libdir}/python2.6/lib-dynload/_sqlite3.so ${libdir}/python2.6/sqlite3/dbapi2.* ${libdir}/python2.6/sqlite3/__init__.* "
+FILES_python-sqlite3="${libdir}/python2.6/lib-dynload/_sqlite3.so ${libdir}/python2.6/sqlite3/dbapi2.* ${libdir}/python2.6/sqlite3/__init__.* ${libdir}/python2.6/sqlite3/dump.* "
 
 DESCRIPTION_python-sqlite3-tests="Python Sqlite3 Database Support Tests"
 RDEPENDS_python-sqlite3-tests="python-core python-sqlite3"
@@ -200,9 +205,9 @@ DESCRIPTION_python-unittest="Python Unit Testing Framework"
 RDEPENDS_python-unittest="python-core python-stringold python-lang"
 FILES_python-unittest="${libdir}/python2.6/unittest.* "
 
-DESCRIPTION_python-stringold="Python String APIs [deprecated]"
-RDEPENDS_python-stringold="python-core python-re"
-FILES_python-stringold="${libdir}/python2.6/lib-dynload/strop.so ${libdir}/python2.6/string.* "
+DESCRIPTION_python-multiprocessing="Python Multiprocessing Support"
+RDEPENDS_python-multiprocessing="python-core python-io python-lang"
+FILES_python-multiprocessing="${libdir}/python2.6/lib-dynload/_multiprocessing.so ${libdir}/python2.6/multiprocessing "
 
 DESCRIPTION_python-robotparser="Python robots.txt parser"
 RDEPENDS_python-robotparser="python-core python-netclient"
@@ -257,7 +262,7 @@ RDEPENDS_python-audio="python-core"
 FILES_python-audio="${libdir}/python2.6/wave.* ${libdir}/python2.6/chunk.* ${libdir}/python2.6/sndhdr.* ${libdir}/python2.6/lib-dynload/ossaudiodev.so ${libdir}/python2.6/lib-dynload/audioop.so "
 
 DESCRIPTION_python-modules="All Python modules"
-RDEPENDS_python-modules="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio  "
+RDEPENDS_python-modules="python-profile python-threading python-distutils python-doctest python-stringold python-codecs python-ctypes python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-resource python-json python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-multiprocessing python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio  "
 ALLOW_EMPTY_python-modules = "1"
 
 

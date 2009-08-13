@@ -1,0 +1,94 @@
+1:'PCM Volume':2:235,235
+2:'ADC Capture Volume':2:195,195
+3:'Headphone Playback Volume':2:127,127
+4:'Speaker Playback Volume':2:0,0
+5:'Mono Playback Volume':1:121
+6:'Bypass Playback Volume':2:2,2
+7:'Sidetone Playback Volume':2:2,2
+8:'Voice Playback Volume':2:2,2
+9:'Headphone Playback ZC Switch':2:0,0
+10:'Speaker Playback ZC Switch':2:0,0
+11:'Mono Bypass Playback Volume':1:2
+12:'Mono Sidetone Playback Volume':1:2
+13:'Mono Voice Playback Volume':1:2
+14:'Mono Playback ZC Switch':1:0
+15:'Bass Boost':1:0
+16:'Bass Filter':1:0
+17:'Bass Volume':1:0
+18:'Treble Volume':1:0
+19:'Treble Cut-off':1:0
+20:'Sidetone Capture Volume':2:2,2
+21:'Voice Sidetone Capture Volume':1:2
+22:'Capture Volume':2:23,23
+23:'Capture ZC Switch':2:0,0
+24:'Capture Switch':2:0,0
+25:'Capture Filter Select':1:0
+26:'Capture Filter Cut-off':1:0
+27:'Capture Filter Switch':1:1
+28:'ALC Capture Target Volume':1:3
+29:'ALC Capture Max Volume':1:7
+30:'ALC Capture Function':1:0
+31:'ALC Capture ZC Switch':1:0
+32:'ALC Capture Hold Time':1:15
+33:'ALC Capture Decay Time':1:12
+34:'ALC Capture Attack Time':1:2
+35:'ALC Capture NG Threshold':1:0
+36:'ALC Capture NG Type':1:0
+37:'ALC Capture NG Switch':1:0
+38:'3D Function':1:0
+39:'3D Upper Cut-off':1:0
+40:'3D Lower Cut-off':1:0
+41:'3D Volume':1:0
+42:'3D Switch':1:0
+43:'Capture 6dB Attenuate':1:0
+44:'Playback 6dB Attenuate':1:0
+45:'De-emphasis':1:0
+46:'Playback Mono Mix':1:0
+47:'Playback Phase':1:0
+48:'Mic2 Capture Volume':1:0
+49:'Mic1 Capture Volume':1:0
+50:'DAI Mode':1:0
+51:'ADC Data Select':1:0
+52:'ROUT2 Phase':1:1
+53:'Mic Selection Mux':1:0
+54:'Rx Mixer':1:0
+55:'Line Mixer':1:0
+56:'Line Mono Mux':1:0
+57:'Line Right Mux':1:1
+58:'Line Left Mux':1:1
+59:'ALC Mixer Line Capture Switch':1:0
+60:'ALC Mixer Mic2 Capture Switch':1:0
+61:'ALC Mixer Mic1 Capture Switch':1:0
+62:'ALC Mixer Rx Capture Switch':1:0
+63:'Mic Sidetone Mux':1:0
+64:'Capture Right Mux':1:0
+65:'Capture Left Mux':1:0
+66:'Capture Right Mixer':1:0
+67:'Capture Left Mixer':1:0
+68:'Playback Mixer Voice Capture Sw':1:0
+69:'Playback Mixer Left Capture Swi':1:0
+70:'Playback Mixer Right Capture Sw':1:0
+71:'Out4 Mux':1:0
+72:'Out3 Mux':1:0
+73:'Mono 2 Mux':1:0
+74:'Mono Mixer Left Playback Switch':1:0
+75:'Mono Mixer Right Playback Switc':1:0
+76:'Mono Mixer Voice Playback Switc':1:0
+77:'Mono Mixer Sidetone Playback Sw':1:0
+78:'Mono Mixer Bypass Playback Swit':1:0
+79:'Right Mixer Voice Playback Swit':1:0
+80:'Right Mixer Sidetone Playback S':1:0
+81:'Right Mixer Right Playback Swit':1:1
+82:'Right Mixer Bypass Playback Swi':1:0
+83:'Left Mixer Voice Playback Switc':1:0
+84:'Left Mixer Sidetone Playback Sw':1:0
+85:'Left Mixer Left Playback Switch':1:1
+86:'Left Mixer Bypass Playback Swit':1:0
+87:'DAPM Stereo Out Switch':1:1
+88:'DAPM GSM Line Out Switch':1:0
+89:'DAPM GSM Line In Switch':1:0
+90:'DAPM Headset Mic Switch':1:0
+91:'DAPM Handset Mic Switch':1:0
+92:'DAPM Handset Spk Switch':1:0
+93:'Amp State Switch':1:1
+94:'Amp Spk Switch':1:0

@@ -1,0 +1,29 @@
+Disable the Maverick's cmpdi instruction which cannot perform the simultaneous
+signed/unsigned comparison expected by GCC.
+
+diff -ruN /home/hwilliams/openembedded/build/tmp/work/ep9312-angstrom-linux-gnueabi/gcc-cross-4.1.2-r0/gcc-4.1.2/gcc/config/arm/arm.md gcc-4.1.2/gcc/config/arm/arm.md
+--- /home/hwilliams/openembedded/build/tmp/work/ep9312-angstrom-linux-gnueabi/gcc-cross-4.1.2-r0/gcc-4.1.2/gcc/config/arm/arm.md	2006-09-28 03:10:22.000000000 +1000
++++ gcc-4.1.2/gcc/config/arm/arm.md	2007-05-15 09:53:21.000000000 +1000
+@@ -7354,10 +7366,12 @@
+ )
+ 
+ ;; Cirrus DI compare instruction
++;; This is disabled and left go through ARM core registers, because currently
++;; Crunch coprocessor does only signed comparison.
+ (define_expand "cmpdi"
+   [(match_operand:DI 0 "cirrus_fp_register" "")
+    (match_operand:DI 1 "cirrus_fp_register" "")]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK & 0"
+   "{
+      arm_compare_op0 = operands[0];
+      arm_compare_op1 = operands[1];
+@@ -7368,7 +7382,7 @@
+   [(set (reg:CC CC_REGNUM)
+ 	(compare:CC (match_operand:DI 0 "cirrus_fp_register" "v")
+ 		    (match_operand:DI 1 "cirrus_fp_register" "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK & 0"
+   "cfcmp64%?\\tr15, %V0, %V1"
+   [(set_attr "type"   "mav_farith")
+    (set_attr "cirrus" "compare")]

@@ -101,6 +101,7 @@ do
                       cwiid \
                       dates \
                       devicekit-disks \
+                      devmem2 \
                       dialog \
                       distcc \
                       dsniff \
@@ -202,6 +203,7 @@ do
                       labyrinth \
                       lcd4linux \
                       leafpad \
+                      libv4l \
                       lighttpd \
                       links-x11 \
                       lirc \
@@ -238,6 +240,7 @@ do
                       nmap \
                       nmm \
                       notecase \
+                      ntfs-3g \
                       numptyphysics \
                       octave \
                       opencv \
@@ -270,6 +273,7 @@ do
                       python \
                       python-pybluez \
                       python-coherence \
+                      python-pygame \
                       qfish2 \
                       qmatrix \
                       qpe-nmap \
@@ -363,6 +367,7 @@ do
                       xfwm4 \
                       xfwm4-themes \
                       xmms \
+                      xrefresh \
                       xserver-kdrive \
                       xserver-xorg \
                       zauralign \

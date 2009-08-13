@@ -19,6 +19,8 @@ S = "${WORKDIR}/${PN}"
 
 CFLAGS_append = " -DDEBUG " 
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_configure() {
         sed -i -e s:CROSS:CC:g Makefile
 }

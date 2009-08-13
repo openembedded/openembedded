@@ -1,8 +1,9 @@
 DESCRIPTION = "FSO monitor daemon"
+AUTHOR = "M. Lauer et. al."
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
-PV = "0.2.0+gitr${SRCPV}"
+PV = "0.0.0+gitr${SRCPV}"
 PR = "r0"
 PE = "1"
 

@@ -22,8 +22,8 @@
 	<para>To create the directory structure:
 
     <screen>
-$ mkdir -p $OEBASE/build/conf
-$ cd $OEBASE</screen>
+$ <command>mkdir</command> -p $OEBASE/build/conf
+$ <command>cd</command> $OEBASE</screen>
 
 	The <literal>$OEBASE/build</literal> directory will contain your
 	local configurations and extensions to the OpenEmbedded system which allow
@@ -50,41 +50,22 @@ $ cd $OEBASE</screen>
     set the PATH variable so that the BitBake tools are accessible (see
     <xref linkend="gettingoe_configuring_oe"/>).</para>
 
-	<section><title>Getting <application>BitBake</application> Using Subversion</title>
-	  <para>To checkout the latest version of the BitBake 1.8 branch, use the
-		following command:
+	<section><title>Downloading a <application>BitBake</application> release</title>
+	  <para>Releases are available from the berlios project website. The current
+          release series is <application>BitBake</application> <emphasis>1.8</emphasis>
+          and the current release is <emphasis>1.8.12</emphasis>. To download execute
+	  the following commands:
 		<screen>
-$ cd $OEBASE
-$ <command>svn</command> co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ bitbake
+$ <command>cd</command> $OEBASE
+$ <command>wget</command>http://download.berlios.de/bitbake/bitbake-1.8.12.tar.gz
+$ <command>tar</command> -xvzf bitbake-1.8.12.tar.gz
+$ <command>mv</command> bitbake-1.8.12 bitbake
 </screen>
 	  </para>
 
-	  <para><application>BitBake</application> is checked out now and
+	  <para><application>BitBake</application> is now downloaded and
 		the <varname>$OEBASE</varname> directory will contain
 		a <literal>bitbake/</literal> subdirectory.</para>
-
-	  <para>If you need to access a Subversion server through a proxy, see the
-		<ulink url="http://subversion.tigris.org/faq.html#proxy">SVN FAQ</ulink>
-	  </para>
-	</section>
-
-	<section><title>Updating <application>BitBake</application></title>
-	  <para>Bitbake is being revised fairly often. Periodically it's a good
-		idea to check the repository of bitbake stable branches to see if a
-		new stable branch is available or if the current branch has been
-		revised. Compare your existing bitbake directory with the latest
-		bitbake branch in the repository. Your existing bitbake branch and
-		its 'last changed revision' number can be found as follows:
-
-		<screen>$ cd $OEBASE/bitbake; svn info</screen>
-
-		If there is a new stable branch, you will want to move or delete
-		your existing bitbake directory and repeat the process listed above
-		under "To obtain bitbake". If there is no new branch, it is easy to
-		update bitbake:
-
-		<screen>$ cd $OEBASE/bitbake; svn update</screen>
-	  </para>
 	</section>
   </section>
 
@@ -104,8 +85,8 @@ $ <command>svn</command> co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ b
     <section><title>Checking Out OpenEmbedded With Git</title>
       <para>Once you have installed Git, checkout the OpenEmbedded repository:
         <screen>
-$ cd $OEBASE
-$ git clone git://git.openembedded.org/openembedded</screen>
+$ <command>cd</command> $OEBASE
+$ <command>git</command> clone git://git.openembedded.org/openembedded</screen>
         The <literal>$OEBASE/openembedded/</literal> directory should now
         exist.</para>
     </section>
@@ -117,22 +98,22 @@ $ git clone git://git.openembedded.org/openembedded</screen>
         seems good practice to update your OpenEmbedded tree at least
         daily. To do this, run:
         <screen>
-$ cd $OEBASE
-$ git pull</screen>
+$ <command>cd</command> $OEBASE
+$ <command>git</command> pull</screen>
       </para>
     </section>
     <section><title>Changing Branches</title>
       <para>Working with multiple branches is very easy to do with Git. The
         OpenEmbedded repository holds many branches. To list all branches, use this command:
-        <screen>$ git branch -a</screen>
+        <screen>$ <command>git</command> branch -a</screen>
         Branch names that begin with <literal>origin/</literal> denote
         branches that exist on the remote server. The name with a * in front
         of it is the branch currently checked out. If you want to work with a
         remote branch, you must first create a local copy of it. The following
         command will create a local copy of a remote branch:
-        <screen>$ git branch &lt;local_name&gt; &lt;remote_name&gt;</screen>
+        <screen>$ <command>git</command> branch &lt;local_name&gt; &lt;remote_name&gt;</screen>
         To change branches, use this command:
-        <screen>$ git checkout &lt;branch_name&gt;</screen>
+        <screen>$ <command>git</command> checkout &lt;branch_name&gt;</screen>
         There are more complicated branch operations that can be done with git,
         but those are beyond the scope of this document.</para>
     </section>
@@ -168,12 +149,12 @@ $ git pull</screen>
           <para>If you use a CSH like shell (e.g. on a FreeBSD system), you
             will set environment variables like this:
             <screen>
-$ setenv VAR_NAME "VAR_VALUE"</screen>
+$ <command>setenv</command> VAR_NAME "VAR_VALUE"</screen>
           </para>
         </footnote>, do this:
 
         <screen>
-$ export OEBASE=/path/to/your/oe/installation</screen>
+$ <command>export</command> OEBASE=/path/to/your/oe/installation</screen>
 
       </para>
 
@@ -182,7 +163,7 @@ $ export OEBASE=/path/to/your/oe/installation</screen>
         your <varname>PATH</varname> environment variable like this:
 
         <screen>
-$ export PATH=$OEBASE/bitbake/bin:$PATH</screen>
+$ <command>export</command> PATH=$OEBASE/bitbake/bin:$PATH</screen>
       </para>
 
       <para>In order for bitbake to find the configuration files for
@@ -190,7 +171,7 @@ $ export PATH=$OEBASE/bitbake/bin:$PATH</screen>
         variable.
 
         <screen>
-$ export BBPATH=$OEBASE/build:$OEBASE/openembedded</screen>
+$ <command>export</command> BBPATH=$OEBASE/build:$OEBASE/openembedded</screen>
       </para>
 
       <para>Finally, if you wish to allow BitBake to inherit
@@ -198,7 +179,7 @@ $ export BBPATH=$OEBASE/build:$OEBASE/openembedded</screen>
         need to set the <varname>BB_ENV_EXTRAWHITE</varname> variable:
 
         <screen>
-$ export BB_ENV_EXTRAWHITE="OEBASE"</screen>
+$ <command>export</command> BB_ENV_EXTRAWHITE="OEBASE"</screen>
 
         Note the absence of the "$" character which implies that you are
         setting <varname>BB_ENV_EXTRAWHITE</varname> to the variable name, not
@@ -211,9 +192,9 @@ $ export BB_ENV_EXTRAWHITE="OEBASE"</screen>
         copy the default <filename>local.conf.sample</filename> like this:
 
         <screen>
-$ cd $OEBASE
-$ cp openembedded/conf/local.conf.sample build/conf/local.conf
-$ vi build/conf/local.conf</screen>
+$ <command>cd</command> $OEBASE
+$ <command>cp</command> openembedded/conf/local.conf.sample build/conf/local.conf
+$ <command>vi</command> build/conf/local.conf</screen>
 
         It is actually recommended to start smaller and
         keep <filename>local.conf.sample</filename> in the background. Add
@@ -228,7 +209,7 @@ $ vi build/conf/local.conf</screen>
         the following three
         entries: <varname>BBFILES</varname>, <varname>DISTRO</varname>
         and <varname>MACHINE</varname>. For example, consider the following
-        mininal <literal>local.conf</literal> file for the &Aring;ngstr&ouml;m
+        minimal <literal>local.conf</literal> file for the &Aring;ngstr&ouml;m
         distribution and the Openmoko gta01 machine:
 
         <screen>
@@ -313,7 +294,7 @@ MACHINE = "om-gta01"</screen>
 
         <varlistentry>
           <term><filename>meta/</filename></term>
-          <listitem><para>A collection of usefull meta tasks and recipes that
+          <listitem><para>A collection of useful meta tasks and recipes that
               don't fit in a general category.</para></listitem>
         </varlistentry>
 

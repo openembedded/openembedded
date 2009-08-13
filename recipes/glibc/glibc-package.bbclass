@@ -147,7 +147,7 @@ do_prep_locale_tree() {
 	for i in $treedir/${datadir}/i18n/charmaps/*gz; do 
 		gunzip $i
 	done
-	ls ${D}${base_libdir}/* | xargs -iBLAH cp -pPR BLAH $treedir/lib
+	ls -d ${D}${base_libdir}/* | xargs -iBLAH cp -pPR BLAH $treedir/lib
 	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so ]; then
 		cp -pPR ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so $treedir/lib
 	fi

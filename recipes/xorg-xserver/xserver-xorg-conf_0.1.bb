@@ -1,5 +1,5 @@
 DESCRIPTION = "Machine specific xorg.conf files"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "file://xorg.conf"
 
@@ -9,4 +9,4 @@ do_install() {
 }
 
 CONFFILES_${PN} += "${sysconfdir}/X11/xorg.conf"
-
+PACKAGE_ARCH = "${MACHINE_ARCH}"

@@ -3,7 +3,7 @@ DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui l
 
 inherit gnome distutils-base gconf
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
            "
@@ -24,7 +24,7 @@ do_configure_prepend() {
 
 do_configure_append() {
 	for i in $(find ${S} -name "Makefile") ; do
-		sed -i -e s:'-I /usr/include -I /usr/local/include'::g $i
+		sed -i -e s:'I/usr/include'::g -e s:'-I /usr/include -I /usr/local/include'::g $i
 	done	
 }
 

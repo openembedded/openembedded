@@ -7,7 +7,8 @@ PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz \
            file://add-pkgconfig.patch;patch=1 \
-	   file://mad.diff;patch=1 "
+	   file://mad.diff;patch=1 \
+	   file://mad-mips-h-constraint.patch;patch=1"
 
 S = "${WORKDIR}/libmad-${PV}"
 

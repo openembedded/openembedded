@@ -1,0 +1,160 @@
+Index: ccache-2.4/ccache.c
+===================================================================
+--- ccache-2.4.orig/ccache.c
++++ ccache-2.4/ccache.c
+@@ -47,6 +47,9 @@ static char *input_file;
+ /* the name of the file containing the cached object code */
+ static char *hashname;
+ 
++/* the name of the file containing the cached gcov gcno data */
++static char *hashnamegcno;
++
+ /* the extension of the file after pre-processing */
+ static const char *i_extension;
+ 
+@@ -154,16 +157,18 @@ static const char *tmp_string(void)
+ static void to_cache(ARGS *args)
+ {
+ 	char *path_stderr;
+-	char *tmp_stdout, *tmp_stderr, *tmp_hashname;
+-	struct stat st1, st2;
++	char *tmp_stdout, *tmp_stderr, *tmp_hashname, *output_file_gcno;
++	struct stat st1, st2, stgcno;
+ 	int status;
+ 
+ 	x_asprintf(&tmp_stdout, "%s/tmp.stdout.%s", temp_dir, tmp_string());
+ 	x_asprintf(&tmp_stderr, "%s/tmp.stderr.%s", temp_dir, tmp_string());
+ 	x_asprintf(&tmp_hashname, "%s/tmp.hash.%s.o", temp_dir, tmp_string());
++	x_asprintf(&output_file_gcno, "%scno", output_file);
++	output_file_gcno[strlen(output_file_gcno) - 4] = 'g';
+ 
+ 	args_add(args, "-o");
+-	args_add(args, tmp_hashname);
++	args_add(args, output_file);
+ 
+ 	/* Turn off DEPENDENCIES_OUTPUT when running cc1, because
+ 	 * otherwise it will emit a line like
+@@ -187,6 +192,7 @@ static void to_cache(ARGS *args)
+ 		unlink(tmp_stdout);
+ 		unlink(tmp_stderr);
+ 		unlink(tmp_hashname);
++		unlink(output_file_gcno);
+ 		failed();
+ 	}
+ 	unlink(tmp_stdout);
+@@ -198,8 +204,7 @@ static void to_cache(ARGS *args)
+ 
+ 		fd = open(tmp_stderr, O_RDONLY | O_BINARY);
+ 		if (fd != -1) {
+-			if (strcmp(output_file, "/dev/null") == 0 ||
+-			    rename(tmp_hashname, output_file) == 0 || errno == ENOENT) {
++			if (strcmp(output_file, "/dev/null") == 0) {
+ 				if (cpp_stderr) {
+ 					/* we might have some stderr from cpp */
+ 					int fd2 = open(cpp_stderr, O_RDONLY | O_BINARY);
+@@ -225,11 +230,14 @@ static void to_cache(ARGS *args)
+ 		
+ 		unlink(tmp_stderr);
+ 		unlink(tmp_hashname);
++		unlink(output_file_gcno);
+ 		failed();
+ 	}
+ 
+ 	x_asprintf(&path_stderr, "%s.stderr", hashname);
+ 
++	rename(output_file, tmp_hashname);
++
+ 	if (stat(tmp_stderr, &st1) != 0 ||
+ 	    stat(tmp_hashname, &st2) != 0 ||
+ 	    rename(tmp_hashname, hashname) != 0 ||
+@@ -238,11 +246,23 @@ static void to_cache(ARGS *args)
+ 		stats_update(STATS_ERROR);
+ 		failed();
+ 	}
+-
+ 	cc_log("Placed %s into cache\n", output_file);
+ 	stats_tocache(file_size(&st1) + file_size(&st2));
+ 
++        /* if we have .gcno files, move them too */
++	if (stat(output_file_gcno, &stgcno) == 0) {
++		if (rename(output_file_gcno, hashnamegcno) != 0) {
++			cc_log("failed to rename gcno file - %s\n", strerror(errno));
++			stats_update(STATS_ERROR);
++			failed();
++		}
++		cc_log("Placed %s into cache\n", output_file_gcno);
++		stats_tocache(file_size(&stgcno));
++	 }
++
++
+ 	free(tmp_hashname);
++	free(output_file_gcno);
+ 	free(tmp_stderr);
+ 	free(tmp_stdout);
+ 	free(path_stderr);
+@@ -442,6 +462,7 @@ static void find_hash(ARGS *args)
+ 		failed();
+ 	}
+ 	x_asprintf(&hashname, "%s/%s", hash_dir, s+nlevels);
++	x_asprintf(&hashnamegcno, "%s/%s.gcno", hash_dir, s+nlevels);
+ 	free(hash_dir);
+ }
+ 
+@@ -454,8 +475,9 @@ static void from_cache(int first)
+ {
+ 	int fd_stderr, fd_cpp_stderr;
+ 	char *stderr_file;
++	char *gcno_file, *output_file_gcno;
+ 	int ret;
+-	struct stat st;
++	struct stat st, stgcno;
+ 
+ 	x_asprintf(&stderr_file, "%s.stderr", hashname);
+ 	fd_stderr = open(stderr_file, O_RDONLY | O_BINARY);
+@@ -486,7 +508,6 @@ static void from_cache(int first)
+ 	if (strcmp(output_file, "/dev/null") == 0) {
+ 		ret = 0;
+ 	} else {
+-		unlink(output_file);
+ 		if (getenv("CCACHE_HARDLINK")) {
+ 			ret = link(hashname, output_file);
+ 		} else {
+@@ -526,6 +547,38 @@ static void from_cache(int first)
+ 		free(i_tmpfile);
+ 		i_tmpfile = NULL;
+ 	}
++        /* if a gcov file exists in cache, retrieve it as well */
++	if (strcmp(output_file, "/dev/null") != 0) {
++		x_asprintf(&gcno_file, "%s.gcno", hashname);
++		if (stat(gcno_file, &stgcno) == 0) {
++			x_asprintf(&output_file_gcno, "%scno", output_file);
++                	output_file_gcno[strlen(output_file_gcno) - 4] = 'g';
++			unlink(output_file_gcno);
++			if (getenv("CCACHE_HARDLINK")) {
++				ret = link(gcno_file, output_file_gcno);
++			} else {
++				ret = copy_file(gcno_file, output_file_gcno);
++			}
++			if (first) {
++				cc_log("got cached result for %s\n", output_file_gcno);
++				stats_update(STATS_CACHED);
++			}
++                        free(output_file_gcno);
++		}
++		free(gcno_file);
++	}
++
++	if (strcmp(output_file, "/dev/null") == 0) {
++		ret = 0;
++	} else {
++		unlink(output_file);
++		if (getenv("CCACHE_HARDLINK")) {
++			ret = link(hashname, output_file);
++		} else {
++			ret = copy_file(hashname, output_file);
++		}
++	}
++
+ 
+ 	/* send the cpp stderr, if applicable */
+ 	fd_cpp_stderr = open(cpp_stderr, O_RDONLY | O_BINARY);

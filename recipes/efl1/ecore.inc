@@ -27,6 +27,27 @@ PACKAGES =+ "\
     ${PN}-x \
     ${PN}-input \
     "
+# Some upgrade path tweaking
+AUTO_LIBNAME_PKGS = ""
+
+RREPLACES_${PN} = "libecore-ver-pre-svn-00-0 libecore-ver-pre-svn-01-0"
+REPLACES_${PN}-tests = "libecore-ver-pre-svn-01-tests"
+RREPLACES_${PN}-con = "libecore-ver-pre-svn-01-con libecore-con-ver-pre-svn-01-0"
+RREPLACES_${PN}-config = "libecore-config-ver-pre-svn-01-0"
+RREPLACES_${PN}-desktop = "libecore-desktop-ver-pre-svn-01-0"
+RREPLACES_${PN}-directfb = "libecore-directfb-ver-pre-svn-01-0"
+RREPLACES_${PN}-sdl = "libecore-sdl-ver-pre-svn-01-0"
+RREPLACES_${PN}-evas = "libecore-evas-ver-pre-svn-01-0"
+RREPLACES_${PN}-fb = "libecore-fb-ver-pre-svn-01-0"
+RREPLACES_${PN}-file = "libecore-file-ver-pre-svn-01-0"
+RREPLACES_${PN}-imf-evas = "libecore-imf-evas-ver-pre-svn-01-0"
+RREPLACES_${PN}-imf = "libecore-imf-ver-pre-svn-01-0"
+RREPLACES_${PN}-ipc = "libecore-ipc-ver-pre-svn-01-0"
+RREPLACES_${PN}-job = "libecore-job-ver-pre-svn-01-0"
+RREPLACES_${PN}-txt = "libecore-txt-ver-pre-svn-01-0"
+RREPLACES_${PN}-x = "libecore-x-ver-pre-svn-01-0"
+RREPLACES_${PN}-input = "libecore-input-ver-pre-svn-01-0"
+
 FILES_${PN} = "${libdir}/libecore*.so.*"
 FILES_${PN}-con = "${libdir}/libecore_con*.so.*"
 FILES_${PN}-config = "${libdir}/libecore_config*.so.*"
@@ -43,3 +64,6 @@ FILES_${PN}-job = "${libdir}/libecore_job*.so.*"
 FILES_${PN}-txt = "${libdir}/libecore_txt*.so.*"
 FILES_${PN}-x = "${libdir}/libecore_x*.so.*"
 FILES_${PN}-input = "${libdir}/libecore_input*.so.*"
+
+
+

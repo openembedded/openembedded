@@ -1,0 +1,13 @@
+Index: wvstreams-4.4.1/include/uniconfkey.h
+===================================================================
+--- wvstreams-4.4.1.orig/include/uniconfkey.h	2009-07-28 17:42:39.000000000 +0530
++++ wvstreams-4.4.1/include/uniconfkey.h	2009-07-28 17:42:55.000000000 +0530
+@@ -9,7 +9,7 @@
+ 
+ #include "wvstring.h"
+ #include "wvlinklist.h"
+-
++#include <limits.h>
+ 
+ // The Python headers try to #define ANY as void.  If we're building Python
+ // wrappers, get rid of that.

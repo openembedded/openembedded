@@ -8,7 +8,6 @@
 #
 UCLIBC_BASE ?= "0.9.30"
 PR = "r7"
-DEFAULT_PREFERENCE = "1"
 
 require uclibc.inc
 

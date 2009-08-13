@@ -1,10 +1,10 @@
 DESCRIPTION = "Abyss is a GSM 07.10 muxer userspace daemon"
-HOMEPAGE = "http://www.freesmartphone.org/index.php/Implementations/fso-abyss"
+HOMEPAGE = "http://www.freesmartphone.org/mediawiki/index.php/Implementations/Abyss"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
-DEPENDS = "dbus dbus-glib libgsm0710mux"
+DEPENDS = "vala-native dbus dbus-glib libgsm0710mux"
 LICENSE = "GPL"
-PV = "0.3.3+gitr${SRCPV}"
+PV = "0.3.6+gitr${SRCPV}"
 PR = "r0"
 PE = "1"
 
@@ -13,6 +13,6 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-inherit autotools vala
+inherit autotools
 
 FILES_${PN} += "${datadir}"

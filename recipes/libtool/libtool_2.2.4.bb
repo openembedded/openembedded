@@ -1,5 +1,5 @@
 require libtool.inc
-PR = "r16"
+PR = "r17"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz"
 S = "${WORKDIR}/libtool-${PV}"
@@ -17,10 +17,12 @@ EXTRA_AUTORECONF = "--exclude=libtoolize"
 do_configure_prepend () {
 	# Skip this for native build:
 	if test -n "$CONFIG_SITE" ; then
-		export ac_cv_path_SED=${ac_cv_path_GREP=/bin/sed}
-		export ac_cv_path_GREP=${ac_cv_path_GREP=/bin/grep}
-		export ac_cv_path_EGREP=${ac_cv_path_EGREP=/bin/grep -E}
-		export ac_cv_path_FGREP=${ac_cv_path_FGREP=/bin/grep -F}
+	if test -z "$LIBTOOL_BB_DO_NOT_SET_PATHS" ; then
+			export ac_cv_path_SED="${ac_cv_path_SED=/bin/sed}"
+			export ac_cv_path_GREP="${ac_cv_path_GREP=/bin/grep}"
+			export ac_cv_path_EGREP="${ac_cv_path_EGREP=/bin/grep -E}"
+			export ac_cv_path_FGREP="${ac_cv_path_FGREP=/bin/grep -F}"
+		fi
 	fi
 }
 
