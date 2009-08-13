@@ -198,7 +198,7 @@ RDEPENDS_${PN} += "\
 		e-tasks \
 		elementary-theme-sixteen \
 		e-wm-theme-illume-sixteen \
-                elementary-theme-niebiee \
+		elementary-theme-niebiee \
 		elmdentica \
 		shr-installer \
 		eject \
@@ -215,4 +215,5 @@ RDEPENDS_${PN} += "\
 		illume-keyboard-russian-terminal \
 		illume-keyboard-russian \
 		python-xlib \
+		xcompmgr \
 "
