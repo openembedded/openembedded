@@ -1,8 +1,8 @@
 require clutter.inc
 
-SRCREV = "fdaaa8b6d701d2b43fd2750de1b018b5af5577ea"
+SRCREV = "13e055a351f83c56b895b131566a6e842d24ed2a"
 
-PV = "0.9.4"
+PV = "1.1.0"
 PR = "r0"
 PR_append = "+git${SRCREV}"
 
@@ -11,6 +11,8 @@ SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git \
 S = "${WORKDIR}/git"
 
 BASE_CONF += "--disable-introspection"
+
+PARALLEL_MAKE = ""
 
 do_compile_prepend() {
 	for i in $(find ${S} -name Makefile) ; do
