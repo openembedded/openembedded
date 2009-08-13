@@ -3,7 +3,7 @@ AUTHOR = "M. Lauer et. al."
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
-PV = "0.9.0+gitr${SRCREV}"
+PV = "1.0.0+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/dbus-hlid.git;protocol=git;branch=master"
