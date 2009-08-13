@@ -28,6 +28,7 @@ PREFERRED_VERSION_pango 	= "1.24.4"
 PREFERRED_VERSION_pkgconfig	= "0.23"
 PREFERRED_VERSION_pkgconfig-native = "0.23"
 PREFERRED_VERSION_pulseaudio 	= "0.9.15"
+PREFERRED_VERSION_python = "2.6.1"
 PREFERRED_VERSION_samba		= "3.3.0"
 PREFERRED_VERSION_tiff 		= "3.8.2+4.0.0beta2"
 
