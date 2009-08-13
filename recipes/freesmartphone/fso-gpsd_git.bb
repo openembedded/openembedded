@@ -2,8 +2,8 @@ DESCRIPTION = "freesmartphone.org gpsd compatibility daemon"
 LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "dbus-glib"
-PV = "0.8+gitr${SRCREV}"
-PR = "r2"
+PV = "0.8+gitr${SRCPV}"
+PR = "r3"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-gpsd.git;protocol=git;branch=master \
