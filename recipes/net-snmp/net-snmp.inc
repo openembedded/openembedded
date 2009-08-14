@@ -48,8 +48,8 @@ do_stage() {
     	fi
         install -d ${STAGING_DIR_HOST}${layout_bindir}
         sed -e "s@-I/usr/include@@g" \
-            -e "s@^prefix=.*@prefix=${STAING_DIR_HOST}@g" \
-            -e "s@^exec_prefix=.*@exec_prefix=${STAING_DIR_HOST}@g" \
+            -e "s@^prefix=.*@prefix=${STAGING_DIR_HOST}@g" \
+            -e "s@^exec_prefix=.*@exec_prefix=${STAGING_DIR_HOST}@g" \
             -e "s@^includedir=.*@includedir=${STAGING_INCDIR}@g" \
             -e "s@^libdir=.*@libdir=${STAGING_LIBDIR}@g" \
                 -i net-snmp-config
