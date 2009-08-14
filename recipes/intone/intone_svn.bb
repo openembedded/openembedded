@@ -6,7 +6,7 @@ SECTION = "e/apps"
 DEPENDS = "elementary eina sqlite3 edbus libvorbis id3lib"
 RDEPENDS = "mplayer lame libxv libsdl-x11"
 
-PV = "0.60+svnr${SRCREV}"
+PV = "0.66+svnr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "svn://intone.googlecode.com/svn/trunk;module=.;proto=http \
