@@ -40,7 +40,7 @@ inherit image
 
 # perform some SHR convenience tweaks to the rootfs
 shr_rootfs_postprocess() {
-    dirs=`find ${FILESDIR} -type d -printf "%P\n" | grep -v "^.$" | grep -v ".git" | grep -v "^./patches$"`
+    dirs=`find ${FILESDIR} -type d -printf "%P\n" | grep -v "^.$" | grep -v ".git"`
     for dir in $dirs; do
         mkdir -p ${IMAGE_ROOTFS}/$dir
     done
@@ -100,7 +100,10 @@ shr_rootfs_postprocess() {
     echo "ppp_generic" > ./etc/modutils/ppp_generic
 
     #set up some variables to improve default settings
-    echo "export DISPLAY=localhost:0" >> ./etc/profile
+    echo "if [ \"$DISPLAY\" = \"\" ]" >> ./etc/profile
+    echo "then" >> ./etc/profile
+    echo "    export DISPLAY=localhost:0" >> ./etc/profile
+    echo "fi" >> ./etc/profile
     echo "export HISTFILESIZE=1000" >> ./etc/profile
     echo "export HISTSIZE=1000" >> ./etc/profile
     echo "alias rm='rm -i'; alias cp='cp -i'; alias mv='mv -i'" >> ./etc/profile
