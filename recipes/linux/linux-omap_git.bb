@@ -8,12 +8,12 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_omapzoom2 = "1"
 
-SRCREV = "7c5cb7862d32cb344be7831d466535d5255e35ac"
+SRCREV = "fd673394fa970fb82e4bc206e171c58995d0c2ba"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.31:"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PV = "2.6.30+2.6.31-rc1+gitr${SRCPV}"
+PV = "2.6.30+2.6.31-rc5+gitr${SRCPV}"
 PR = "r0"
 PE = "1"
 

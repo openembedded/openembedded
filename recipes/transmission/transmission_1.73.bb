@@ -3,9 +3,10 @@ SECTION = "network"
 HOMEPAGE = "www.transmissionbt.com/"
 DEPENDS = "gtk+ gnutls openssl gettext libtool intltool-native curl glib-2.0-native"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 SRC_URI = "http://mirrors.m0k.org/transmission/files/transmission-${PV}.tar.bz2 \
-           file://init"
+           file://init \
+           file://config"
 
 INITSCRIPT_NAME = "transmission"
 INITSCRIPT_PARAMS = "defaults 60 "
@@ -13,8 +14,11 @@ INITSCRIPT_PARAMS = "defaults 60 "
 inherit autotools update-rc.d
 
 do_install_append() {
-	install -d -p ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/transmission
+	install -d ${D}${sysconfdir}/default
+	install -m 0755 ${WORKDIR}/config ${D}${sysconfdir}/default/transmission-daemon
+	install -d ${D}${localstatedir}/lib/transmission-daemon
 }
 
 FILES_${PN} += "${datadir}/icons"
@@ -22,9 +26,8 @@ FILES_${PN} += "${datadir}/icons"
 # No need for online check, since update-rc.d will prepend it to here
 pkg_postinst_${PN}() {
 grep -q transmission  ${sysconfdir}/group || addgroup transmission
-grep -q transmission ${sysconfdir}/passwd || adduser -h /home/transmission -S -D -G transmission -s ${base_bindir}/false transmission
-mkdir -p /home/transmission/.config
-chown transmission:transmission /home/transmission/.config
+grep -q transmission ${sysconfdir}/passwd || adduser -h ${localstatedir}/lib/transmission -S -D -G transmission -s ${base_bindir}/false transmission
+chown -R transmission:transmission /var/lib/transmission/
 }
 
 pkg_postrm_${PN}() {

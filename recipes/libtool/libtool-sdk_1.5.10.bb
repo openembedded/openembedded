@@ -1,8 +1,7 @@
 require libtool.inc
 require libtool_${PV}.bb
 
-PR = "r0"
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
+PR = "${INC_PR}.0"
 SRC_URI_append = " file://rpath-control.patch;patch=1 \
                    file://libdir-la.patch;patch=1 \
                    file://libdir-la2.patch;patch=1 \

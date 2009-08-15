@@ -1,10 +1,14 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland V4"
+HOMEPAGE = "http://www.bluez.org"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
-HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-INC_PR = "r3"
+DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
+INC_PR = "r4"
+
+# temporary solution until bug 5176 is properly fixed
+PROVIDES_bluez4 += "bluez-utils bluez-libs"
+RPROVIDES_bluez4 += "bluez-utils bluez-libs"
 
 # For angstrom we want this to replace at least bluez-libs
 PROVIDES_append_angstrom = " bluez-utils-dbus bluez-utils bluez-libs"
