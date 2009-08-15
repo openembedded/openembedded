@@ -1,0 +1,44 @@
+upstream: http://bugzilla.o-hand.com/show_bug.cgi?id=1764
+
+diff -ru psplash/psplash-fb.c /home/muromec/psplash/psplash-fb.c
+--- psplash/psplash-fb.c       2007-08-29 21:27:49.000000000 +0300
++++ /home/muromec/psplash/psplash-fb.c 2009-08-16 11:59:57.000000000 +0300
+@@ -72,6 +72,7 @@
+   fb->real_width  = fb->width  = fb_var.xres;
+   fb->real_height = fb->height = fb_var.yres;
+   fb->bpp    = fb_var.bits_per_pixel;
++  fb->depth  = fb_var.red.length + fb_var.green.length + fb_var.blue.length;
+   fb->stride = fb_fix.line_length;
+   fb->type   = fb_fix.type;
+   fb->visual = fb_fix.visual;
+@@ -176,7 +177,7 @@
+     }
+
+   /* FIXME: handle no RGB orderings */
+-  switch (fb->bpp)
++  switch (fb->depth)
+     {
+     case 24:
+     case 32:
+@@ -184,6 +185,10 @@
+       *(fb->data + off + 1) = green;
+       *(fb->data + off + 2) = blue;
+       break;
++    case 18:
++      *(fb->data + off)     = (red >> 2) | ((green & 0x0C) << 4);
++      *(fb->data + off + 1) = ((green & 0xF0) >> 4) | ((blue & 0x3C) << 2);
++      *(fb->data + off + 2) = (blue & 0xC0) >> 6;
+     case 16:
+       *(volatile uint16 *) (fb->data + off)
+       = ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
+diff -ru psplash/psplash-fb.h /home/muromec/psplash/psplash-fb.h
+--- psplash/psplash-fb.h       2007-08-29 21:27:49.000000000 +0300
++++ /home/muromec/psplash/psplash-fb.h 2009-08-16 11:58:39.000000000 +0300
+@@ -26,6 +26,7 @@
+   int            visual;
+   int            width, height;
+   int            bpp;
++  int            depth;
+   int            stride;
+   char                *data;
+   char                *base;
