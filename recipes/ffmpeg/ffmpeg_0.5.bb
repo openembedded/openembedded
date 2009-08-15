@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "schroedinger libgsm"
 
 PE = "1"
-PR = "r4"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "1"
 
@@ -60,6 +60,3 @@ do_configure() {
 		sed -i -e s:Os:O4:g ${B}/config.h
 }
 
-do_install_append() {
-       rm ${D}${datadir}/*.ffpreset
-}
