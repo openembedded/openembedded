@@ -20,3 +20,7 @@ do_install() {
     install -m 0644 ${S}/author ${D}${datadir}/shr-splash/themes/${PN}/author
     install -m 0644 ${S}/preview.png ${D}${datadir}/shr-splash/themes/${PN}/preview.png
 }
+
+pkg_postinst() {
+    [ -e ${datadir}/pixmaps/xsplash-vga.ppm ] || ln -s ${datadir}/shr-splash/theme/xsplash-vga.ppm ${datadir}/pixmaps/xsplash-vga.ppm
+}
