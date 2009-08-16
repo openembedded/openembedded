@@ -1,0 +1,66 @@
+--- /tmp/board-omap3beagle.c	2009-07-01 01:06:44.000000000 +0200
++++ git/arch/arm/mach-omap2/board-omap3beagle.c	2009-07-01 01:06:50.000000000 +0200
+@@ -125,6 +125,13 @@
+ 		.wires		= 8,
+ 		.gpio_wp	= 29,
+ 	},
++	{
++		.mmc		= 2,
++		.wires		= 4,
++		.gpio_wp	= 141,
++		.gpio_cd	= 162,
++        .transceiver    = true,
++	},
+ 	{}	/* Terminator */
+ };
+ 
+@@ -132,6 +139,11 @@
+ 	.supply			= "vmmc",
+ };
+ 
++static struct regulator_consumer_supply beagle_vmmc2_supply = {
++    .supply         = "vmmc",
++};
++
++
+ static struct regulator_consumer_supply beagle_vsim_supply = {
+ 	.supply			= "vmmc_aux",
+ };
+@@ -148,6 +160,7 @@
+ 
+ 	/* link regulators to MMC adapters */
+ 	beagle_vmmc1_supply.dev = mmc[0].dev;
++	beagle_vmmc2_supply.dev = mmc[1].dev;
+ 	beagle_vsim_supply.dev = mmc[0].dev;
+ 
+ 	/* REVISIT: need ehci-omap hooks for external VBUS
+@@ -209,6 +222,21 @@
+ 	.consumer_supplies	= &beagle_vmmc1_supply,
+ };
+ 
++/* VMMC2 for MMC2 pins CMD, CLK, DAT0..DAT3 (max 100 mA) */
++static struct regulator_init_data beagle_vmmc2 = {
++	.constraints = {
++		.min_uV			= 2700000,
++		.max_uV			= 3150000,
++		.valid_modes_mask	= REGULATOR_MODE_NORMAL
++					| REGULATOR_MODE_STANDBY,
++		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE
++					| REGULATOR_CHANGE_MODE
++					| REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies	= 1,
++	.consumer_supplies	= &beagle_vmmc2_supply,
++};
++
+ /* VSIM for MMC1 pins DAT4..DAT7 (2 mA, plus card == max 50 mA) */
+ static struct regulator_init_data beagle_vsim = {
+ 	.constraints = {
+@@ -284,6 +312,7 @@
+ 	.gpio		= &beagle_gpio_data,
+ 	.power		= &beagle_power_data,
+ 	.vmmc1		= &beagle_vmmc1,
++	.vmmc2		= &beagle_vmmc2,
+ 	.vsim		= &beagle_vsim,
+ 	.vdac		= &beagle_vdac,
+ 	.vpll2		= &beagle_vpll2,
