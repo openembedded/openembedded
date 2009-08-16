@@ -2,7 +2,7 @@ DESCRIPTION = "SHR splash screen"
 SECTION = "x11/data"
 LICENSE = "MIT BSD"
 PV = "1.2-gitr${SRCPV}"
-PR = "r3"
+PR = "r4"
 RRECOMMENDS_${PN} += "\
 	virtual/shr-splash-theme"
 
@@ -24,6 +24,11 @@ do_install() {
     install -m 0755 ${S}/shr-splash.sh        ${D}${sysconfdir}/init.d/shr-splash.sh
 
 }
+
+pkg_postinst() {
+    [ -e ${datadir}/pixmaps/xsplash-vga.ppm ] || ln -s ${datadir}/shr-splash/theme/xsplash-vga.ppm ${datadir}/pixmaps/xsplash-vga.ppm
+}
+
 
 INITSCRIPT_NAME = "shr-splash.sh"
 INITSCRIPT_PARAMS = "start 01 S . stop 21 0 1 6 ."
