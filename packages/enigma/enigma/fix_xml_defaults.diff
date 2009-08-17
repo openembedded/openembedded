@@ -1,0 +1,47 @@
+---------------------
+PatchSet 4404 
+Date: 2009/08/18 00:32:30
+Author: ghostrider
+Branch: HEAD
+Tag: (none) 
+Log:
+fix defaults for current terrestrial.xml
+
+Members: 
+	lib/dvb/dvb.cpp:1.84->1.85 
+
+--- enigma-org/lib/dvb/dvb.cpp:1.84	Mon May 19 19:39:56 2008
++++ enigma/lib/dvb/dvb.cpp	Mon Aug 17 22:32:30 2009
+@@ -655,7 +655,7 @@
+ 			if (!apolarisation)
+ 				continue;
+ 			if (!afec_inner)
+-				continue;
++				afec_inner="0";
+ 			if (!ainversion)
+ 				ainversion="2";
+ 			int frequency=atoi(afrequency), symbol_rate=atoi(asymbol_rate),
+@@ -680,17 +680,17 @@
+ 			if (!abandwidth)
+ 				continue;
+ 			if (!aconstellation)
+-				continue;
++				aconstellation="3";
+ 			if (!ahierarchy_information)
+-				continue;
++				ahierarchy_information="4";
+ 			if (!acode_rate_hp)
+-				continue;
++				acode_rate_hp="5";
+ 			if (!acode_rate_lp)
+-				continue;
++				acode_rate_lp="5";
+ 			if (!aguard_interval)
+-				continue;
++				aguard_interval="4";
+ 			if (!atransmission_mode)
+-				continue;
++				atransmission_mode="3";
+ 			if (!ainversion)
+ 				ainversion="2";
+ 			int centre_frequency=atoi(acentre_frequency),
