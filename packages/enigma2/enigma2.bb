@@ -51,7 +51,7 @@ RDEPENDS_enigma2-plugin-extensions-modem = "dreambox-modem-ppp-scripts"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090630"
+SRCDATE = "20090817"
 
 # if you want experimental, use:
 REL_MAJOR="2"
@@ -72,6 +72,8 @@ SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${S
 S = "${WORKDIR}/${MODULE}"
 
 FILES_${PN} += "${datadir}/fonts"
+FILES_meta-${PN} = "${datadir}/enigma2/meta/${PN}"
+PACKAGES =+ "meta-${PN}"
 
 inherit autotools pkgconfig
 
