@@ -1,7 +1,7 @@
 DESCRIPTION = "Touchscreen calibration utility"
 SECTION = "x11/base"
 LICENSE = "GPL"
-DEPENDS = "virtual/libx11 libxft libxrandr xcalibrate"
+DEPENDS = "virtual/libx11 libxcalibrate libxft libxrandr"
 
 # xtscal needs a font to display text
 RRECOMMENDS = "ttf-dejavu-sans"

@@ -49,7 +49,7 @@ RDEPENDS = "\
     xserver-kdrive-xomap \
     xserver-kdrive-common \
     xserver-nodm-init \
-    xcalibrate \
+    libxcalibrate \
     xinit \
     xsp \
 "
