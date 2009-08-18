@@ -1,0 +1,13 @@
+--- a/data/config.json	2009-08-18 20:53:19.000000000 +0200
++++ b/data/config.json	2009-08-18 21:09:27.000000000 +0200
+@@ -26,8 +26,8 @@
+     },
+ 
+     "exec": {
+-        "init": "",
+-        "final": ""
++        "init": "dbus-send --system --type=method_call --dest=org.shr.ophonekitd.Usage /org/shr/ophonekitd/Usage org.shr.ophonekitd.Usage.RequestResource string:Display",
++        "final": "dbus-send --system --type=method_call --dest=org.shr.ophonekitd.Usage /org/shr/ophonekitd/Usage org.shr.ophonekitd.Usage.ReleaseResource string:Display"
+     }
+ 
+ }
