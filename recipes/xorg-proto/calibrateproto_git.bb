@@ -8,3 +8,9 @@ PE = "1"
 
 SRC_URI = "git://anongit.freedesktop.org/git/xorg/proto/calibrateproto;protocol=git"
 S = "${WORKDIR}/git"
+
+do_stage() {
+	autotools_stage_all
+	#make it compatible with the old package from cvs
+	ln -sf ${PKG_CONFIG_DIR}/xcalibrateproto.pc ${PKG_CONFIG_DIR}/xcalibrateext.pc
+}
