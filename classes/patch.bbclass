@@ -543,10 +543,9 @@ python patch_do_patch() {
 		bb.note("Applying patch '%s' (%s)" % (pname, base_path_out(unpacked, d)))
 		try:
 			patchset.Import({"file":unpacked, "remote":url, "strippath": pnum}, True)
-		except:
-			import sys
-			raise bb.build.FuncFailed(str(sys.exc_value))
-		resolver.Resolve()
+			resolver.Resolve()
+		except Exception, e:
+			raise bb.build.FuncFailed(str(e))
 }
 
 EXPORT_FUNCTIONS do_patch
