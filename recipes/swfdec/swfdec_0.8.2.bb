@@ -1,9 +1,9 @@
 DESCRIPTION = "Swfdec is a decoder/renderer for Macromedia Flash animations."
 LICENSE = "LGPL"
-PR = "r1"
+
 DEPENDS = "gstreamer gst-plugins-base libsoup-2.4 pango cairo liboil zlib gtk+ alsa-lib"
 
-SRC_URI = "http://swfdec.freedesktop.org/download/swfdec/0.9/${P}.tar.gz \
+SRC_URI = "http://swfdec.freedesktop.org/download/swfdec/0.8/${P}.tar.gz \
 "
 
 inherit autotools pkgconfig 
@@ -20,6 +20,5 @@ do_stage() {
 }
 
 PACKAGES =+ "libswfdecgtk libswfdec"
-
-FILES_libswfdec = "${libdir}/libswfdec-0.9.so.*"
-FILES_libswfdecgtk = "${libdir}/libswfdec-gtk-0.9.so.*"
+FILES_libswfdec = "${libdir}/libswfdec-0.8.so.*"
+FILES_libswfdecgtk = "${libdir}/libswfdec-gtk-0.8.so.*"
