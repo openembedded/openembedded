@@ -100,7 +100,7 @@ shr_rootfs_postprocess() {
     echo "ppp_generic" > ./etc/modutils/ppp_generic
 
     #set up some variables to improve default settings
-    echo "if [ \"$DISPLAY\" = \"\" ]" >> ./etc/profile
+    echo "if [ \"\$DISPLAY\" = \"\" ]" >> ./etc/profile
     echo "then" >> ./etc/profile
     echo "    export DISPLAY=localhost:0" >> ./etc/profile
     echo "fi" >> ./etc/profile
