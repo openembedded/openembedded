@@ -3,7 +3,7 @@ HOMEPAGE = "http://hostap.epitest.fi"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "openssl ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
+DEPENDS = "openssl ${@base_contains("COMBINED_FEATURES", "madwifi", "madwifi-ng", "",d)}"
 PR = "r1"
 DEPENDS_append_mtx-1 = " madwifi-modules"
 DEPENDS_append_mtx-2 = " madwifi-modules"
@@ -12,7 +12,7 @@ CPPFLAGS_append_mtx-2 = " -I${STAGING_INCDIR}/madwifi/"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"
-PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
+PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'madwifi', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
 	file://makefile-cross.diff;patch=1 \
@@ -21,14 +21,14 @@ SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
 
 S = "${WORKDIR}/hostapd-${PV}"
 
-export HAS_PCI = "${@base_contains('COMBINED_FEATURES', 'pci', 1, 0,d)}"
+export HAS_MADWIFI = "${@base_contains('COMBINED_FEATURES', 'madwifi', 1, 0,d)}"
 
 inherit update-rc.d
 INITSCRIPT_NAME=hostapd
 
 do_configure() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-	if [ "x$HAS_PCI" = "x1" ] ; then
+	if [ "x$HAS_MADWIFI" = "x1" ] ; then
 		echo "CONFIG_DRIVER_MADWIFI=y" >> .config
 		echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
 	fi
