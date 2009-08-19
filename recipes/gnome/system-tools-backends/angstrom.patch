@@ -1,0 +1,54 @@
+--- system-tools-backends-2.6.1/Utils/Platform.pm-orig
++++ system-tools-backends-2.6.1/Utils/Platform.pm
+@@ -99,6 +99,7 @@ my $PLATFORM_INFO = {
+   "nexenta-1.0"     => [ "Nexenta GNU/Solaris", "1.0", "Ellate" ],
+   "yellowdog-4.1"   => [ "Yellow Dog Linux", "4.1", "Sagitta" ],
+   "guadalinex-v4"   => [ "Guadalinex", "v4", "Toro" ],
++  "angstrom"        => [ "Angstrom", "", "" ],
+ };
+ 
+ sub get_platform_info
+@@ -157,6 +158,7 @@ sub ensure_distro_map
+      "vlos-1.2"         => "gentoo",
+      "nexenta-1.0"      => "solaris-2.11",
+      "guadalinex-v4"    => "debian-3.0",
++     "angstrom"         => "debian-3.0",
+      );
+ 
+   return $metamap{$distro} if ($metamap{$distro});
+@@ -389,6 +391,7 @@ sub guess
+                   [ \&check_ark ],
+                   [ \&check_yoper ],
+                   [ \&check_distro_file, "/etc/yellowdog-release", "yellowdog", "^Yellow Dog Linux release (\\S+)" ],
++                  [ \&check_file_exists, "/etc/angstrom-version", "angstrom" ],
+                  ],
+     "FreeBSD" => [[ \&check_freebsd ]],
+     "SunOS"   => [[ \&check_solaris ]]
+--- system-tools-backends-2.6.1/Users/Groups.pm-orig
++++ system-tools-backends-2.6.1/Users/Groups.pm
+@@ -39,8 +39,9 @@ $cmd_groupdel = &Utils::File::locate_too
+ $cmd_groupadd = &Utils::File::locate_tool ("groupadd");
+ $cmd_groupmod = &Utils::File::locate_tool ("groupmod");
+ 
+-$cmd_delgroup = &Utils::File::locate_tool ("delgroup");
+-$cmd_addgroup = &Utils::File::locate_tool ("addgroup");
++# disable use of the busybox tools, since they lack full functionality
++$cmd_delgroup = "";
++$cmd_addgroup = "";
+ 
+ $cmd_usermod  = &Utils::File::locate_tool ("usermod");
+ $cmd_gpasswd  = &Utils::File::locate_tool ("gpasswd");	
+--- system-tools-backends-2.6.1/Users/Users.pm-orig
++++ system-tools-backends-2.6.1/Users/Users.pm
+@@ -66,8 +66,9 @@ $cmd_usermod  = &Utils::File::locate_too
+ $cmd_userdel  = &Utils::File::locate_tool ("userdel");
+ $cmd_useradd  = &Utils::File::locate_tool ("useradd");
+ 
+-$cmd_adduser  = &Utils::File::locate_tool ("adduser");
+-$cmd_deluser  = &Utils::File::locate_tool ("deluser");
++# disable use of the busybox tools, since they lack full functionality
++$cmd_adduser  = "";
++$cmd_deluser  = "";
+ 
+ $cmd_chfn     = &Utils::File::locate_tool ("chfn");
+ $cmd_pw       = &Utils::File::locate_tool ("pw");
