@@ -10,10 +10,11 @@ inherit autotools binconfig
 SRC_URI = "http://web.mit.edu/kerberos/dist/krb5/1.6/krb5-1.6.3-signed.tar \
            file://fix-uclibc-ruserpass-collision.patch \
            file://copyperms.patch"
+
 S = "${WORKDIR}/${PN}-${PV}/src/"
 
 # Will clean this up...
-EXTRA_OECONF += " krb5_cv_attr_constructor_destructor=yes ac_cv_func_regcomp=yes \
+EXTRA_OECONF += " --without-tcl krb5_cv_attr_constructor_destructor=yes ac_cv_func_regcomp=yes \
                   ac_cv_printf_positional=yes ac_cv_file__etc_environment=yes \
                   ac_cv_file__etc_TIMEZONE=no --with-system-et"
 CFLAGS_append += "-DDESTRUCTOR_ATTR_WORKS=1 -I${STAGING_INCDIR}/et"
