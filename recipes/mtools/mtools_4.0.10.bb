@@ -13,11 +13,14 @@ SRC_URI="http://ftp.gnu.org/gnu/mtools/mtools-${PV}.tar.bz2 \
 	file://plainio.patch;patch=1 \
 	file://use-sg_io.patch;patch=1"
 
-S = "${WORKDIR}/mtools-${PV}"
+PR = "r1"
 
 inherit autotools
 
 EXTRA_OECONF = "--without-x"
+
+# Don't try to run install-info -- it'll fail on non-Debian build systems.
+EXTRA_OEMAKE = "INSTALL_INFO="
 
 do_fix_perms() {
 	chmod 644 ${S}/*.c ${S}/*.h

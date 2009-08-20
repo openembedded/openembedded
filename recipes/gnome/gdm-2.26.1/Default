@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Note that any setup should come before the sessreg command as
+# that must be 'exec'ed for the pid to be correct (sessreg uses the parent
+# pid)
+#
+# Note that output goes into the .xsession-errors file for easy debugging
+#
+PATH="/usr/bin:$PATH:/bin:/usr/bin"
+start-pulseaudio-x11
+

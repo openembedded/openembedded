@@ -1,4 +1,6 @@
 require gettext_${PV}.bb
+PR = "r1"
+
 S = "${WORKDIR}/gettext-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gettext-${PV}"
 inherit native

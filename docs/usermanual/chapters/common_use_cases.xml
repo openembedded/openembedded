@@ -105,7 +105,7 @@ SRCDATE = "20061014"
     <section>
         <title>building from unstable source code</title>
         <para>Building against the latest, bleeding-edge source has some intricacies of its own.
-        For one, it is desirable to pin down a souce code revision that is known to build to 
+        For one, it is desirable to pin down a 1 code revision that is known to build to
         prevent random breakage in OE at the most inopportune time for all OE users.  Here is
         how to do that properly.
           <itemizedlist>
@@ -169,7 +169,7 @@ inherit image
       toolchain is in your <command>PATH</command>.</para>
 
       <screen>
-<command>ls</command> pre-built/cross/bin
+$ <command>ls</command> pre-built/cross/bin
 
 arm-linux-g++
 arm-linux-ld
@@ -196,7 +196,7 @@ arm-linux-objdump
       <title>The prebuilt libraries</title>
 
       <para>We need the header files and the libraries itself. The following
-      directory layout is assume. <command>PRE_BUILT</command> has two
+      directory layout is assumed. <command>PRE_BUILT</command> has two
       subdirectories one is called <emphasis>include</emphasis> and holds the
       header files and the other directory is called <emphasis>lib</emphasis>
       and holds the shared and static libraries. Additionally a Qt2 directory
@@ -204,7 +204,7 @@ arm-linux-objdump
       <emphasis>lib</emphasis> sub-directory.</para>
 
       <screen>
-<command>ls</command> $PRE_BUILT
+$ <command>ls</command> $PRE_BUILT
 include
 lib
 qt2
@@ -221,7 +221,7 @@ qt2
       available.</para>
 
       <section>
-        <title>Sourcable script</title>
+        <title>Sourceable script</title>
 
         <para>To ease the usage of OpenEmbedded we start by creating a
         source-able script. This is actually a small variation from the
@@ -379,20 +379,16 @@ NOTE: Couldn't find shared library provider for libm.so.6
 </screen>
 
       <para>OpenEmbedded tries to automatically add run-time dependencies
-      (RDEPENDS) to the package. It uses the <emphasis><link
-      linkend="shlibs">shlibs</link></emphasis> system to do add them, in this
-      case it was not able to find packages providing these libraries as they
-      are prebuilt. This means they will not be added to the RDEPENDS of the
-      just created package. The result can be fatal. If you use OpenEmbedded
-      to create images you will end up with a image without a libc being
-      installed. This will lead to a fatal failure. To workaround this issue
-      you could create a package for the metadata to install every needed
-      library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is
-      installed when creating images.</para>
-      
-      <para>However, the correct way to resolve this is to provide explicit 
-      mapping using ASSUME_SHLIBS variable. For example, for the libraries 
-      above (partial):
+      (RDEPENDS) to generated packages. It is inspecting binaries and
+      libraries and uses the <emphasis><link linkend="shlibs">shlibs</link>
+      </emphasis> system to do add dependencies for the linked libraries,
+      however in this case it was not able to find packages providing these
+      libraries as they were prebuilt.
+      </para>
+
+      <para>One way to resolve this problem is to provide an explicit mapping
+      using the ASSUME_SHLIBS variable in a config file <filename>local.conf</filename>.
+      For example, for the libraries above (partial):
       <screen>
 ASSUME_SHLIBS = "libqtopia2.so.2:qtopia2_2.4 libc.so.6:libc"
 </screen>
@@ -405,5 +401,228 @@ ASSUME_SHLIBS = "libqtopia2.so.2:qtopia2_2.4 libc.so.6:libc"
     <title>Using a new package format</title>
 
     <para>This section is a stub, help us by expanding it</para>
+  </section>
+
+  <section id="commonuse_qte_sdk">
+    <title>Creating Software Development Kits (SDKs)</title>
+
+    <section>
+        <title>What is provided by a SDK</title>
+
+        <para>The Software Development Kit (SDK) should be easy to install and
+        enable your user-base to create binaries and libraries that work on the
+        target hardware.
+        </para>
+
+        <para>To accomplish this goal OpenEmbedded SDKs contain tools for the
+        host and tools for the target hardware. Among these tools is a cross
+        compiler, libraries and header files for additional dependencies, pkg-config
+        files to allow buildsystems to easily find the dependencies, a file with
+        results for autoconf and a script that can be sourced to setup the
+        environment.
+        </para>
+    </section>
+
+    <section>
+        <title>Creating a SDK with your libraries pre-installed</title>
+
+        <section>
+            <title>Preparing the host side</title>
+            <para>Your SDK might need utilities that will run on the
+            host. These could include scripts, buildsystem software like
+            cmake, or an emulator like qemu. For these dependencies it is
+            imported that they <emphasis>inherit sdk</emphasis> and by
+            convention end with <emphasis>-sdk</emphasis> in the
+            <command>PN</command>.
+            </para>
+
+            <para>A new task should be created that will assure that all
+            host utilities will be installed. Place a file called
+            <filename>task-YOUR-toolchain-host.bb</filename> in the
+            <filename>recipes/tasks</filename> directory and place the
+            following content in it:
+<screen>
+require task-sdk-host.bb
+DESCRIPTION = "Host packages for YOUR SDK"
+LICENSE = "MIT"
+ALLOW_EMPTY = "1"
+RDEPENDS_${PN} += "YOUR-DEPENDENCY-sdk"
+</screen>
+            </para>
+        </section>
+
+        <section>
+            <title>Preparing the target side</title>
+            <para>Your SDK should provide your user with header files and libraries
+            he will need when doing application development. In OpenEmbedded the
+            <command>${PN}-dev</command> is providing the header files, pkg-config
+            files and symbolic links to libraries to allow using the library. The SDK
+            should install these development packages to the SDK.
+            </para>
+
+            <para>To install the development packages you will need to create a
+            new task. Create a new file <filename>task-YOUR-toolchain-target.bb</filename>
+            in the <filename>recipes/tasks</filename> directory and place the
+            following content in it:
+<screen>
+DESCRIPTION = "Target package for YOUR SDK"
+LICENSE = "MIT"
+ALLOW_EMPTY = "1"
+
+PR = "r0"
+
+RDEPENDS_${PN} += "\
+        task-sdk-bare \
+        your-lib-dev \
+        your-data
+        "
+</screen>
+            </para>
+        </section>
+
+        <section>
+            <title>Putting it together</title>
+            <para>In the previous two sections we have prepared the host and
+            target side. One thing that is missing is combining the two newly
+            created tasks and actually create the SDK. This is what we are going
+            to do now.</para>
+
+            <para>Create <filename>meta-toolchain-YOU.bb</filename> in the
+            <filename>recipes/meta</filename> directory and place the following
+            content in it:
+<screen>
+PR = "r0"
+TOOLCHAIN_TARGET_TASK = "task-YOUR-toolchain-target"
+TOOLCHAIN_HOST_TASK = "task-YOUR-toolchain-host"
+
+require meta-toolchain.bb
+SDK_SUFFIX = "toolchain-YOUR"
+</screen>
+
+            </para>
+
+            <para>Using <command>bitbake meta-toolchain-YOU</command> the SDK
+            creation should be started and you should find a <filename>sdk</filename>
+            directory inside your deploy directory with a SDK waiting for you. With
+            the above command you still need to have OE configured with your
+            <filename>conf/local.conf</filename> to select the machine and
+            distribution you are targeting.
+            </para>
+
+            <note><para>SDK creation currently does not work with the <emphasis>DISTRO</emphasis>
+            set to <emphasis>micro</emphasis>.</para></note>
+
+            <note><para>If the environment-setup script packaged in the SDK should
+            require more environment look at the <filename>meta-toolchain-qte.bb</filename>
+            to accomplish this.</para></note>
+        </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Creating and Using a Qt Embedded SDK</title>
+
+        <section>
+            <title>Creating the SDK</title>
+
+            <para>The SDK should contain a build of Qt Embedded, but also
+            optional dependencies like directFB, glib-2.0, gstreamer-0.10, tslib
+            and more esoteric dependencies like mysql and postgres. This allows
+            developers to simply start developing using Qt and enables system
+            integrator to easily recompile Qt and base libraries without tracking
+            down extra dependencies.
+            </para>
+
+            <para>OpenEmbedded provides an easy way to create a Qt Embedded
+            SDK. In
+            <filename>recipes/tasks/task-qte-toolchain-host.bb</filename> host
+            tools like moc, uic, rcc, qmake will get installed and in <filename>
+            recipes/tasks/task-qte-toolchain-target.bb</filename> the Qt4 header
+            files and libraries will be installed.
+            </para>
+
+            <para>To build the SDK, setup OpenEmbedded in the usual way by picking
+            a <emphasis>DISTRO</emphasis> and <emphasis>MACHINE</emphasis>. Issue
+            the below command and after the operation finished you should find
+            a SDK in the deployment directory.
+<screen>
+$ <command>bitbake</command> meta-toolchain-qte
+</screen>
+            </para>
+
+            <note><para>The deployment directory depends on the distribution
+            and used C library. In the case of Angstrom and glibc it is
+            located in <filename>tmp/deploy/glibc/sdk</filename>.</para></note>
+
+            <note><para>Change <filename>qt4-embedded.inc</filename> and
+            <filename>qt4.inc</filename> for using different Qt configuration
+            flags. This might include a custom qconfig.h to produce a reduced
+            size build.</para></note>
+
+            <note><para>When distributing the SDK make sure to include a written offer
+            to provide the sourcecode of GPL licensed applications or provide
+            parts of the <filename>sources</filename> folder. The <filename>
+            sources</filename> folder is located right next to the <filename>sdk</filename>
+            one.</para></note>
+        </section>
+
+
+        <section>
+            <title>Using the Qt Embedded SDK</title>
+
+            <para>In this example we are assuming that the target hardware
+            is an armv5t system and the SDK targets the Angstrom Distribution. You
+            should start by downloading the SDK and untar it to the root folder
+            (<filename>/</filename>). Once this operation is finished you will
+            find a new directory <filename>/usr/local/angstrom/arm/</filename> and
+            it contains the <filename>environment-setup</filename> to setup the
+            <emphasis>QMAKESPEC</emphasis> and various other paths.
+            </para>
+
+<screen>
+Untar the SDK once
+$ <command>tar</command> -C / -xjf angstrom-armv5te-linux-gnueabi-toolchain-qte.tar.bz2
+
+Before using it source the environment
+$ <command>.</command> /usr/local/angstrom/arm/environment-setup
+
+Use qmake2 to build software for the target
+$ <command>qmake2</command>
+</screen>
+
+            <para>Creating and building a simple example. We will create a simple
+            Qt Embedded application and use <command>qmake2</command> and
+            <command>make</command> to cross compile.
+
+<screen>
+$ <command>.</command> /usr/local/angstrom/arm/environment-setup
+$ <command>cd</command> $HOME
+$ <command>mkdir</command> qte-example
+$ <command>cd</command> qte-example
+
+$ <command>echo</command> "TEMPLATE=app
+SOURCES=main.cpp
+" > qte-example.pro
+
+$ <command>echo</command> '#include &lt;QApplication&gt;
+#include &lt;QPushButton&gt;
+
+int main(int argc, char** argv) {
+    QApplication app(argc, argv);
+
+    QPushButton btn("Hello World");
+    btn.show();
+    btn.showMaximized();
+
+    return app.exec();
+}
+' > main.cpp
+
+$ <command>qmake2</command>
+$ <command>make</command>
+</screen>
+            </para>
+
+        </section>
   </section>
 </chapter>

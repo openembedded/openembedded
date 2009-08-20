@@ -1,7 +1,7 @@
 require opkg.inc
 
 DEPENDS = "curl-native"
-PR = "r3"
+PR = "${INC_PR}"
 
 SRC_URI += "file://opkg-libdir.patch;patch=1"
 

@@ -5,7 +5,7 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo"
 
-SRCREV = "9c133058b929e738e6f28cb99e99c7fb5b35c59a"
+SRCREV = "e63cf0710a4fb639d91d3e8b05aa485fbfa381b3"
 
 PV = "2.6.29"
 MACHINE_KERNEL_PR_append = "-pm2+gitr${SRCREV}"
@@ -94,12 +94,45 @@ SRC_URI_append = " \
            file://dss2/merge-fixups.diff;patch=1 \
            file://overo-cpufreq.diff;patch=1 \
            file://register-all-OPPs.diff;patch=1 \
-           file://fix-audio-capture.patch;patch=1 \
+           file://isp/v4l/0001-V4L2-Add-COLORFX-user-control.patch;patch=1 \
+           file://isp/v4l/0002-V4L-Int-if-v4l2_int_device_try_attach_all-requires.patch;patch=1 \
+           file://isp/v4l/0003-V4L-Int-if-Dummy-slave.patch;patch=1 \
+           file://isp/v4l/0004-V4L-int-device-add-support-for-VIDIOC_QUERYMENU.patch;patch=1 \
+           file://isp/v4l/0005-V4L-Int-if-Add-vidioc_int_querycap.patch;patch=1 \
+           file://isp/iommu/0001-omap-iommu-tlb-and-pagetable-primitives.patch;patch=1 \
+           file://isp/iommu/0002-omap-iommu-omap2-architecture-specific-functions.patch;patch=1 \
+           file://isp/iommu/0003-omap-iommu-omap3-iommu-device-registration.patch;patch=1 \
+           file://isp/iommu/0004-omap-iommu-simple-virtual-address-space-management.patch;patch=1 \
+           file://isp/iommu/0005-omap-iommu-entries-for-Kconfig-and-Makefile.patch;patch=1 \
+           file://isp/iommu/0006-omap-iommu-Don-t-try-BUG_ON-in_interrupt.patch;patch=1 \
+           file://isp/iommu/0007-omap-iommu-We-support-chained-scatterlists-probabl.patch;patch=1 \
+           file://isp/iommu/0008-omap2-iommu-entries-for-Kconfig-and-Makefile.patch;patch=1 \
+           file://isp/omap3camera/0001-omap3isp-Add-ISP-main-driver-and-register-definitio.patch;patch=1 \
+           file://isp/omap3camera/0002-omap3isp-Add-ISP-MMU-wrapper.patch;patch=1 \
+           file://isp/omap3camera/0003-omap3isp-Add-userspace-header.patch;patch=1 \
+           file://isp/omap3camera/0004-omap3isp-Add-ISP-frontend-CCDC.patch;patch=1 \
+           file://isp/omap3camera/0005-omap3isp-Add-ISP-backend-PRV-and-RSZ.patch;patch=1 \
+           file://isp/omap3camera/0006-omap3isp-Add-statistics-collection-modules-H3A-and.patch;patch=1 \
+           file://isp/omap3camera/0007-omap3isp-Add-CSI2-interface-support.patch;patch=1 \
+           file://isp/omap3camera/0008-omap3isp-Add-ISP-tables.patch;patch=1 \
+           file://isp/omap3camera/0009-omap34xxcam-Add-camera-driver.patch;patch=1 \
+           file://isp/resizer/0023-OMAP-Resizer-Basic-Resizer-refreshed-with-latest-gi.patch;patch=1 \
+           file://isp/resizer/0024-OMAP3-Resizer-V4L2-buf-layer-issues-fixed.patch;patch=1 \
+           file://isp/resizer/0025-OMAP3-Resizer-Build-issues-fixed.patch;patch=1 \
+           file://modedb-hd720.patch;patch=1 \
+           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+           file://vfp/02-vfp-ptrace.patch;patch=1 \
+           file://vfp/03-vfp-corruption.patch;patch=1 \
+           file://vfp/04-vfp-threads.patch;patch=1 \
+           file://vfp/05-vfp-signal-handlers.patch;patch=1 \
+           file://arch-has-holes.diff;patch=1 \
 "
 
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
-			     "
+                               file://tincantools-puppy.diff;patch=1 \
+                               file://tincantools-zippy.diff;patch=1 \
+"
 
 SRC_URI_append_omap3evm = " \
 	file://evm-mcspi-ts.diff;patch=1 \

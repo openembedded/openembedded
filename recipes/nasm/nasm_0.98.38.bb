@@ -1,7 +1,8 @@
 DESCRIPTION = "General-purpose x86 assembler"
 SECTION = "devel"
 LICENSE = "GPL"
-COMPATIBLE_HOST = '(x86_64|i.86.*)-(linux|freebsd.*)'
+COMPATIBLE_HOST = '(x86_64|i.86).*-(linux|freebsd.*)'
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nasm/nasm-${PV}.tar.bz2"
 

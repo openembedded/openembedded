@@ -1,0 +1,136 @@
+From: George G. Davis <gdavis@mvista.com>
+Date: Wed, 1 Apr 2009 18:27:18 +0000 (+0100)
+Subject: 5440/1: Fix VFP state corruption due to preemption during VFP exceptions
+X-Git-Url: http://siarhei.siamashka.name/gitweb/?p=linux-omap-2.6.git;a=commitdiff_plain;h=4f7720780dc4a298a6d59c0ec39f7687022cc36f
+
+5440/1: Fix VFP state corruption due to preemption during VFP exceptions
+
+[ARM] 5440/1: Fix VFP state corruption due to preemption during VFP exceptions
+
+We've observed that ARM VFP state can be corrupted during VFP exception
+handling when PREEMPT is enabled.  The exact conditions are difficult
+to reproduce but appear to occur during VFP exception handling when a
+task causes a VFP exception which is handled via VFP_bounce and is then
+preempted by yet another task which in turn causes yet another VFP
+exception.  Since the VFP_bounce code is not preempt safe, VFP state then
+becomes corrupt.  In order to prevent preemption from occuring while
+handling a VFP exception, this patch disables preemption while handling
+VFP exceptions.
+
+Signed-off-by: George G. Davis <gdavis@mvista.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+
+diff --git a/arch/arm/vfp/entry.S b/arch/arm/vfp/entry.S
+index ba592a9..a2bed62 100644
+--- a/arch/arm/vfp/entry.S
++++ b/arch/arm/vfp/entry.S
+@@ -15,13 +15,16 @@
+  *  r10 = thread_info structure
+  *  lr  = failure return
+  */
+-#include <linux/linkage.h>
+-#include <linux/init.h>
+-#include <asm/asm-offsets.h>
+-#include <asm/assembler.h>
++#include <asm/thread_info.h>
+ #include <asm/vfpmacros.h>
++#include "../kernel/entry-header.S"
+ 
+ ENTRY(do_vfp)
++#ifdef CONFIG_PREEMPT
++	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
++	add	r11, r4, #1		@ increment it
++	str	r11, [r10, #TI_PREEMPT]
++#endif
+ 	enable_irq
+  	ldr	r4, .LCvfp
+ 	ldr	r11, [r10, #TI_CPU]	@ CPU number
+@@ -30,6 +33,12 @@ ENTRY(do_vfp)
+ ENDPROC(do_vfp)
+ 
+ ENTRY(vfp_null_entry)
++#ifdef CONFIG_PREEMPT
++	get_thread_info	r10
++	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
++	sub	r11, r4, #1		@ decrement it
++	str	r11, [r10, #TI_PREEMPT]
++#endif
+ 	mov	pc, lr
+ ENDPROC(vfp_null_entry)
+ 
+@@ -41,6 +50,12 @@ ENDPROC(vfp_null_entry)
+ 
+ 	__INIT
+ ENTRY(vfp_testing_entry)
++#ifdef CONFIG_PREEMPT
++	get_thread_info	r10
++	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
++	sub	r11, r4, #1		@ decrement it
++	str	r11, [r10, #TI_PREEMPT]
++#endif
+ 	ldr	r0, VFP_arch_address
+ 	str	r5, [r0]		@ known non-zero value
+ 	mov	pc, r9			@ we have handled the fault
+diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+index 902d396..ea0a156 100644
+--- a/arch/arm/vfp/vfphw.S
++++ b/arch/arm/vfp/vfphw.S
+@@ -131,6 +131,12 @@ check_for_exception:
+ 	VFPFMXR	FPEXC, r1		@ restore FPEXC last
+ 	sub	r2, r2, #4
+ 	str	r2, [sp, #S_PC]		@ retry the instruction
++#ifdef CONFIG_PREEMPT
++	get_thread_info	r10
++	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
++	sub	r11, r4, #1		@ decrement it
++	str	r11, [r10, #TI_PREEMPT]
++#endif
+ 	mov	pc, r9			@ we think we have handled things
+ 
+ 
+@@ -149,6 +155,12 @@ look_for_VFP_exceptions:
+ 	@ not recognised by VFP
+ 
+ 	DBGSTR	"not VFP"
++#ifdef CONFIG_PREEMPT
++	get_thread_info	r10
++	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
++	sub	r11, r4, #1		@ decrement it
++	str	r11, [r10, #TI_PREEMPT]
++#endif
+ 	mov	pc, lr
+ 
+ process_exception:
+diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
+index 75457b3..01599c4 100644
+--- a/arch/arm/vfp/vfpmodule.c
++++ b/arch/arm/vfp/vfpmodule.c
+@@ -266,7 +266,7 @@ void VFP_bounce(u32 trigger, u32 fpexc, struct pt_regs *regs)
+ 		 * on VFP subarch 1.
+ 		 */
+ 		 vfp_raise_exceptions(VFP_EXCEPTION_ERROR, trigger, fpscr, regs);
+-		 return;
++		goto exit;
+ 	}
+ 
+ 	/*
+@@ -297,7 +297,7 @@ void VFP_bounce(u32 trigger, u32 fpexc, struct pt_regs *regs)
+ 	 * the FPEXC.FP2V bit is valid only if FPEXC.EX is 1.
+ 	 */
+ 	if (fpexc ^ (FPEXC_EX | FPEXC_FP2V))
+-		return;
++		goto exit;
+ 
+ 	/*
+ 	 * The barrier() here prevents fpinst2 being read
+@@ -310,6 +310,8 @@ void VFP_bounce(u32 trigger, u32 fpexc, struct pt_regs *regs)
+ 	exceptions = vfp_emulate_instruction(trigger, orig_fpscr, regs);
+ 	if (exceptions)
+ 		vfp_raise_exceptions(exceptions, trigger, orig_fpscr, regs);
++ exit:
++	preempt_enable();
+ }
+ 
+ static void vfp_enable(void *unused)

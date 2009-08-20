@@ -80,12 +80,15 @@ FILES_${PN}-vhook = "${libdir}/vhook"
 FILES_${PN}-vhook-dbg += "${libdir}/vhook/.debug"
 
 
-PACKAGES += "libavcodec  libavcodec-dev  libavcodec-dbg \
+PACKAGES += "ffmpeg-x264-presets \
+             libavcodec  libavcodec-dev  libavcodec-dbg \
              libavdevice libavdevice-dev libavdevice-dbg \
              libavformat libavformat-dev libavformat-dbg \
              libavutil   libavutil-dev   libavutil-dbg \
              libpostproc libpostproc-dev libpostproc-dbg \
              libswscale  libswscale-dev  libswscale-dbg"
+
+FILES_ffmpeg-x264-presets = "${datadir}/*.ffpreset"
 
 FILES_${PN}-dev = "${includedir}"
 FILES_libavcodec = "${libdir}/libavcodec*.so.*"

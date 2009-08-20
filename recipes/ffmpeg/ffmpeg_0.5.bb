@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "schroedinger libgsm"
 
 PE = "1"
-PR = "r2"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "1"
 
@@ -31,7 +31,7 @@ EXTRA_OECONF = " \
         --enable-postproc \
         \
         --cross-prefix=${TARGET_PREFIX} \
-        --prefix=${prefix} \
+        --prefix=${prefix}/ \
         \
         --enable-x11grab \
         --enable-libfaac \

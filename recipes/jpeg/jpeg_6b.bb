@@ -8,7 +8,8 @@ RPROVIDES_${PN} = "jpeg"
 
 PR = "r8"
 
-SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
+#SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
+SRC_URI = "ftp://aeneas.mit.edu/pub/gnu/ghostscript/jpegsrc.v${PV}.tar.gz \
 	   file://debian.patch;patch=1 \
 	   file://ldflags.patch;patch=1 \
 	   file://paths.patch;patch=1 \

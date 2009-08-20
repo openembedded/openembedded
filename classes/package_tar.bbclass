@@ -1,7 +1,5 @@
 inherit package
 
-IMAGE_PKGTYPE ?= "tar"
-
 python package_tar_fn () {
 	import os
 	from bb import data

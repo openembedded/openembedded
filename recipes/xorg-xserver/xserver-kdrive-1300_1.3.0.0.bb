@@ -5,7 +5,7 @@ FILESPATH = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xserver-kdrive-1.3.
 PKGN = xserver-kdrive-1300
 require xserver-kdrive_1.3.0.0.bb
 
-PR_append = ".1"
+PR_append = ".3"
 
 RPROVIDES_${PKGN}-fbdev_angstrom += "xserver-kdrive-fbdev"
 RREPLACES_${PKGN}-fbdev_angstrom += "xserver-kdrive-fbdev"

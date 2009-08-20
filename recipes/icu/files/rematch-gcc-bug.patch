@@ -5,7 +5,7 @@
  all-local: $(ALL_TARGETS)
  
 +rematch.o: $(srcdir)/rematch.cpp
-+	$(CXX) $(CPPFLAGS) $(DEFS) -c -o $@ $<
++	$(CXX) -fPIC $(CPPFLAGS) $(DEFS) -c -o $@ $<
 +
  install-local: install-headers install-library
  

@@ -1,0 +1,107 @@
+--- gcc-4.3.2-orig/gcc/config/arm/README-Maverick	1970-01-01 01:00:00.000000000 +0100
++++ gcc-4.3.2/gcc/config/arm/README-Maverick	2009-03-10 22:04:26.000000000 +0000
+@@ -0,0 +1,104 @@
++Cirrus Logic MaverickCrunch FPU support
++=======================================
++
++The MaverickCrunch is an FPU coprocessor that only exists in combination
++with an arm920t (ARMv4t arch) integer core in the 200MHz EP93xx devices.
++Code generation for it is usually selected with
++	-mcpu=ep9312 -mfpu=maverick (and most likely -mfloat-abi=softfp)
++
++Within GCC, the names "cirrus" "maverick" and "crunch" are used randomly
++in filenames and identifiers, but they all refer to the same thing.
++
++Initial support was mainlined by RedHat in gcc-3 but this never generated
++working code.  Cirrus Logic funded the company Nucleusys to produce a modified
++GCC for it, but this never worked either.  The first set of patches to pass
++the testsuite were made by Hasjim Williams for Open Embedded, though they
++did this by disabling various features and optimisations, therby incurring
++a small negative impact on regular ARM code generation.
++The OE ideas were reimplemented by Martin Guy to produce a working compiler
++with no negwative impact on regular code generation.
++
++The FPU's characteristics
++-------------------------
++Like most ARM coprocessors, it runs in parallel with the ARM though its
++instructions are inserted into the regular ARM instructions stream.
++It has 16 64-bit registers that can be operated as 32-bit or 64-bit integers
++or as 32-bit or 64-bit floats, three 72-bit saturating multiplier-accumulators.
++It can add, sub, mul, cmp, abs and neg these types, convert between them and
++transfer values between its registers and the ARM registers or main memory.
++
++Comparisons performed in the Maverick unit set the condition codes differently
++from the ARM/FPA/VFP instructions:
++
++	ARM/FPA/VFP - (cmp*):		MaverickCrunch - (cfcmp*):
++		N  Z  C  V		        N  Z  C  V
++	A == B  0  1  1  0		A == B  0  1  0  0
++	A <  B  1  0  0  0		A <  B  1  0  0  0
++	A >  B  0  0  1  0		A >  B  1  0  0  1
++	unord   0  0  1  1		unord   0  0  0  0
++
++which means that the same conditions have to be tested for with different ARM
++conditions after a Maverick comparison.  Furthermore, some conditions cannot
++be tested with a single condition.
++This was already true on ARM/FPA/VFP for conditions UNEQ and LTGT; 
++on Maverick comparisons it is GE UNLT ORDERED and UNORDERED that cannot.
++(GE after a floating point comparison, that is, not after an integer comarison)
++
++GCC's use of the Maverick unit
++------------------------------
++GCC only uses the 32-bit and 64-bit floating point modes and the 64-bit
++integer mode. It does not use the 72-bit accumulators or the 32-bit integer
++mode because, from "GCC Machine Descriptions":
++    "It is obligatory to support floating point `movm' instructions
++    into and out of any registers that can hold fixed point values,
++    because unions and structures (which have modes SImode or DImode)
++    can be in those registers and they may have floating point members."
++(search also for "grief" in arm.c).
++
++It does not use the 64-bit integer comparison instruction because it can only
++do a signed or an unsigned comparison, while GCC expect the comparison to set
++the conditions codes for both modes and then to use the signed or unsigned
++mode when the condition code bits are tested.
++
++The different setting of the condition codes is tracked with an additional
++CCMAV mode for the condition code register, set when a comparison is performed
++in the Maverick unit. This always indicates a floating point comparison since
++the Maverick's 64-bit comparison is not used.
++
++Hardware bugs and workarounds
++-----------------------------
++All silicon implementations of the FPU have a dozen hardware bugs, mostly
++timing-dependent bugs that can write garbage into registers or memory or get
++conditional tests wrong, as well as a widespread failure to respect
++denormalised values.  See http://wiki.debian.org/ArmEabiMaverickCrunch
++
++There used to be a -mcirrus-fix-invalid-instructions flag that claimed
++to avoid bugs in revision D0 silicon but its code was broken junk.
++Currently GCC always avoids the timing bugs in revision D1 to E2 silicon,
++while the many extra timing bugs in the now rare revision D0 are not handled.
++
++By default, the instructions that drop denoermalized values are enabled
++so as to obtain maximum speed at lower precision.  By default, the cfnegs
++and cfnegd instrutions are disabled, since they also fail to produce negative
++zero.  They can be enabled with -fno-signed-zeros.
++
++When -mfpu=maverick is selected, an additional -mieee flag is active that
++gives full IEEE precision by performs all the non-denorm-respecting
++floating point instructions in the softfloat library routines or in the
++integer registers.
++
++The 64-bit integer support is still buggy so it is disabled unless the
++-mcirrus-di flag is supplied. As well as the having unidentified
++hardware bugs which make openssl's testsuite fail in */sha/sha512.c and in
++*/bn/bn_adm.c, 64-bit shifts only work up to 31 places left or 32 right.
++
++Other bugs
++----------
++There seems to be no way to configure GCC to select Maverick code generation
++as the default.
++
++--with-arch=ep9312 the assembler barfs saying that ep9312 is not a
++recognised architecture.
++--with-arch=armv4t the build fails when it tries to compile hard FPA
++instructions into libgcc,
++--with-cpu=ep9312 it compiles armv5t instructions into libgcc

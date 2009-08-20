@@ -12,6 +12,7 @@ PR = "${INC_PR}.3"
 
 DEPENDS += "virtual/egl"
 #SRC_URI += "file://sgx-hack.patch;patch=1"
+SRC_URI += "file://hack-out-pg_config.patch;patch=1"
 
 export EXTRA_QMAKE_MUNGE = " glmunge "
 

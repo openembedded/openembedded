@@ -1,5 +1,5 @@
 require libtool.inc
-PR = "r5"
+PR = "${INC_PR}.0"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
            file://autotools.patch;patch=1 \

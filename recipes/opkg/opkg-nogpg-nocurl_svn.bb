@@ -11,7 +11,7 @@ SRC_URI += " \
 	    file://opkg_wget_nogpg_03_fix_tmpdirs.patch;patch=1 \
 	    file://opkg_wget_nogpg_04_default_tmpdir.patch;patch=1 \
 	   "
-PR = "r8"
+PR = "${INC_PR}"
 
 SRCREV = "${SRCREV_pn-opkg}"
 

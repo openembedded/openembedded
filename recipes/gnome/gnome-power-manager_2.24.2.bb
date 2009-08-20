@@ -12,6 +12,10 @@ EXTRA_OECONF = " --disable-scrollkeeper \
                  ac_cv_header_X11_extensions_dpms_h=yes \
                "
 
+do_configure_prepend() {
+        sed -i -e 's:	man	::g' ${S}/Makefile.am
+}
+
 do_configure_append() {
         rm config.log
         # Sigh... --enable-compile-warnings=no doesn't actually turn off -Werror

@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r12"
+PR = "r13"
 
 inherit task 
 
@@ -18,7 +18,6 @@ RDEPENDS_${PN} = "\
     mime-support e-wm ${ECONFIG} \
     xterm xmms \
     firefox midori \
-    gnash gnash-browser-plugin \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
     abiword \
@@ -47,5 +46,7 @@ RRECOMMENDS_${PN} += " \
 "
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-RRECOMMENDS_${PN}_append_armv7a = " omapfbplay"
+RRECOMMENDS_${PN}_append_armv7a = " \
+	gnash gnash-browser-plugin \
+	omapfbplay"
 

@@ -243,8 +243,10 @@ if [ -e ${IMAGE_ROOTFS}/usr/bin/opkg-cl ] ; then
 	${OPKG} list_installed | awk '{print $1}' |sort | uniq > /tmp/installed-packages
 
 	for i in $(cat /tmp/installed-packages | grep -v locale) ; do
-		for translation in ${IMAGE_LINGUAS} $(echo ${IMAGE_LINGUAS} | awk -F_ '{print $1}'); do
+		for translation in ${IMAGE_LINGUAS}; do
+			translation_split=$(echo ${translation} | awk -F '-' '{print $1}')
 			echo ${i}-locale-${translation}
+			echo ${i}-locale-${translation_split}
 		done
 	done | sort | uniq > /tmp/wanted-locale-packages
 

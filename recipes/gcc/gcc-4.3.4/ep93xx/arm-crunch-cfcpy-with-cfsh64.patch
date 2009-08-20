@@ -1,0 +1,27 @@
+cfcpys and cfcpyd have hardware bugs which mean they truncate denormalized
+values to zero and convert minus zero to plus zero.
+
+A 64-bit shift with a shift count of 0 copies them bitwise.
+
+    Martin Guy <martinwguy@yahoo.it>, December 2008
+
+--- gcc-4.3.2/gcc/config/arm/cirrus.md.old	2008-11-21 19:06:37.000000000 +0000
++++ gcc-4.3.2/gcc/config/arm/cirrus.md	2008-12-03 12:13:08.000000000 +0000
+@@ -485,7 +485,7 @@
+    && (GET_CODE (operands[0]) != MEM
+        || register_operand (operands[1], SFmode))"
+   "@
+-   cfcpys%?\\t%V0, %V1
++   cfsh64%?\\t%Z0, %Z1, #0\\t%@ float
+    cfldrs%?\\t%V0, %1
+    cfmvsr%?\\t%V0, %1
+    cfmvrs%?\\t%0, %V1
+@@ -514,7 +514,7 @@
+     case 1: return \"stm%?ia\\t%m0, %M1\\t%@ double\";
+     case 2: return \"#\";
+     case 3: case 4: return output_move_double (operands);
+-    case 5: return \"cfcpyd%?\\t%V0, %V1\";
++    case 5: return \"cfsh64%?\\t%Z0, %Z1, #0\\t%@ double\";
+     case 6: return \"cfldrd%?\\t%V0, %1\";
+     case 7: return \"cfmvdlr\\t%V0, %Q1\;cfmvdhr%?\\t%V0, %R1\";
+     case 8: return \"cfmvrdl%?\\t%Q0, %V1\;cfmvrdh%?\\t%R0, %V1\";

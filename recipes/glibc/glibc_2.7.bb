@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
@@ -68,6 +68,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
            file://etc/ld.so.conf \
            file://generate-supported.mk \
            file://march-i686.patch;patch=1;pnum=0 \
+	   file://glibc-arm-no-asm-page.patch;patch=1 \
            "
 
 

@@ -1,0 +1,98 @@
+--- mozilla/security/coreconf/Linux.mk.orig	2006-12-12 10:53:12.000000000 +0000
++++ mozilla/security/coreconf/Linux.mk	2006-12-12 10:54:13.000000000 +0000
+@@ -52,93 +52,8 @@
+ 
+ DEFAULT_COMPILER = gcc
+ 
+-ifeq ($(OS_TEST),m68k)
+-	OS_REL_CFLAGS	= -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH	= m68k
+-else
+-ifeq ($(OS_TEST),ppc64)
+-	OS_REL_CFLAGS	= -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH	= ppc
+-ifeq ($(USE_64),1)
+-	ARCHFLAG	= -m64
+-endif
+-else
+-ifeq ($(OS_TEST),ppc)
+-	OS_REL_CFLAGS	= -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH	= ppc
+-else
+-ifeq ($(OS_TEST),alpha)
+-        OS_REL_CFLAGS   = -D_ALPHA_ -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH	= alpha
+-else
+-ifeq ($(OS_TEST),ia64)
+-	OS_REL_CFLAGS	= -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH	= ia64
+-else
+-ifeq ($(OS_TEST),x86_64)
+-ifeq ($(USE_64),1)
+-	OS_REL_CFLAGS	= -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH	= x86_64
+-else
+-	OS_REL_CFLAGS	= -DLINUX1_2 -Di386 -D_XOPEN_SOURCE
+-	CPU_ARCH	= x86
+-	ARCHFLAG	= -m32
+-endif
+-else
+-ifeq ($(OS_TEST),sparc)
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = sparc
+-else
+-ifeq ($(OS_TEST),sparc64)
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = sparc
+-else
+-ifeq (,$(filter-out arm% sa110,$(OS_TEST)))
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = arm
+-else
+-ifeq ($(OS_TEST),parisc)
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = hppa
+-else
+-ifeq ($(OS_TEST),parisc64)
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = hppa
+-else
+-ifeq ($(OS_TEST),s390)
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = s390
+-else
+-ifeq ($(OS_TEST),s390x)
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = s390x
+-else
+-ifeq ($(OS_TEST),mips)
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH        = mips
+-else
+-ifeq (,$(filter-out i%86,$(OS_TEST)))
+-	OS_REL_CFLAGS	= -DLINUX1_2 -Di386 -D_XOPEN_SOURCE
+-	CPU_ARCH	= x86
+-else
+-	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+-	CPU_ARCH	= $(OS_TEST)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
+-
++OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
++CPU_ARCH =
+ 
+ LIBC_TAG		= _glibc
+ 

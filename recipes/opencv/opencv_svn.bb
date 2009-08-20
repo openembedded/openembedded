@@ -6,15 +6,13 @@ LICENSE = "GPLv2"
 
 ARM_INSTRUCTION_SET = "arm"
 
-PR = "r1"
-
 DEPENDS = "ffmpeg gtk+ libtool swig swig-native python jpeg zlib libpng tiff glib-2.0"
 
 SRC_URI = "svn://opencvlibrary.svn.sourceforge.net/svnroot/opencvlibrary/trunk;module=opencv;proto=https \
            file://acinclude.m4"
 
-SRCREV = "1820"
-PV = "1.0.0+svnr${SRCREV}"
+SRCREV = "2027"
+PV = "1.0.0+1.1pre1+svnr${SRCREV}"
 
 S = "${WORKDIR}/opencv"
 
@@ -24,6 +22,7 @@ EXTRA_OECONF = " \
 		--disable-debug \
 		--with-gtk \
 		--without-quicktime \
+		--with-ffmpeg \
 		--with-gthread \
 		--without-gstreamer \
 		--with-v4l \
