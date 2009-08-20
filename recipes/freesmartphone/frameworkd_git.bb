@@ -38,6 +38,7 @@ RDEPENDS_${PN} += "\
   python-datetime \
   python-difflib \
   python-logging \
+  python-phoneutils \
   python-pprint \
   python-pyalsaaudio \
   python-pygobject \
