@@ -12,6 +12,7 @@ FILESPATH = "${FILE_DIRNAME}/local:${FILE_DIRNAME}/ncurses-${PV}-${PR}:${FILE_DI
 
 EXTRA_OECONF = "\
   --with-shared \
+  --with-libtool \
   --without-profile \
   --without-debug \
   --disable-rpath \
