@@ -4,9 +4,10 @@ PRIORITY = "optional"
 LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "dreambox-wdog"
+RDEPENDS = "dreambox-wdog"
 
 PV = "1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/tpmd-${MACHINE}-${PV} \
 	file://tpmd"
