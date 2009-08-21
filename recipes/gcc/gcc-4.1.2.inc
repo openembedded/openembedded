@@ -2,7 +2,7 @@ require gcc-common.inc
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r20"
+INC_PR = "r21"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \

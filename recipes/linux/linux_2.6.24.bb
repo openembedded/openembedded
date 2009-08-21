@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE_oxnas = "1"
 DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 
-PR = "r31"
+PR = "r33"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://squashfs-lzma-2.6.24.patch;patch=1 \
@@ -102,6 +102,7 @@ SRC_URI_append_hipox = " \
 	file://hipox-nand.patch;patch=1 \
 	file://hipox-ubifs.patch;patch=1 \
 	file://hipox-kconfig.patch;patch=1 \
+	file://hipox-sata-module.patch;patch=1 \
 	"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"

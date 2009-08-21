@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 FILESPATHPKG .= ":gcc-$PV"
 
