@@ -4,9 +4,10 @@ PRIORITY = "optional"
 LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "dreambox-wdog"
+RDEPENDS = "dreambox-wdog"
 
 PV = "1.1"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/dccamd-${MACHINE}-${PV} \
 	    file://dccamd.sh"
