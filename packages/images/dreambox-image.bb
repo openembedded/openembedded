@@ -16,7 +16,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 	base-files-doc sambaserver avahi-daemon"
 
 # experimental packages
-OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2 aio-grab"
+OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2 aio-grab enigma2-skins"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
 	enigma2-plugin-systemplugins-softwareupdate \
 	enigma2-plugin-systemplugins-crashlogautosubmit \
@@ -33,6 +33,7 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-mediaplayer \
 	enigma2-plugin-systemplugins-hotplug \
 	enigma2-plugin-systemplugins-networkwizard \
+	enigma2-skin-nemesis.glassline \
 	enigma2-streamproxy ethtool \
 	enigma2-defaultservices \
 	twisted-web2 twisted python-crypt python-crypto \
