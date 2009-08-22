@@ -3,6 +3,8 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 SRCDATE = "20090303"
 
+PACKAGES_DYNAMIC = "enigma2-skin-*"
+
 # if you want experimental, use:
 REL_MAJOR="2"
 REL_MINOR="6"
