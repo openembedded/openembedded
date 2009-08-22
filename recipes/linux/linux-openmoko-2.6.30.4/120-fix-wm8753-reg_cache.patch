@@ -9,7 +9,7 @@
  };
  
  /* codec private data */
-@@ -1660,7 +1660,7 @@ static int wm8753_register(struct wm8753
+@@ -1660,11 +1660,11 @@ static int wm8753_register(struct wm8753
  	codec->set_bias_level = wm8753_set_bias_level;
  	codec->dai = wm8753_dai;
  	codec->num_dai = 2;
@@ -19,7 +19,8 @@
 +	codec->reg_cache = wm8753->reg_cache;
  	codec->private_data = wm8753;
  
-	memcpy(codec->reg_cache, wm8753_reg, sizeof(wm8753_reg));
+-	memcpy(codec->reg_cache, wm8753_reg, sizeof(wm8753->reg_cache));
++	memcpy(codec->reg_cache, wm8753_reg, sizeof(wm8753_reg));
  	INIT_DELAYED_WORK(&codec->delayed_work, wm8753_work);
  
  	ret = wm8753_reset(codec);

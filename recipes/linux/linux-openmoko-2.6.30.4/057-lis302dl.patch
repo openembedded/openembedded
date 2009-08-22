@@ -18,7 +18,7 @@
  	depends on MFD_PCF50633
 --- a/drivers/input/misc/Makefile
 +++ b/drivers/input/misc/Makefile
-@@ -25,3 +25,4 @@ obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
+@@ -25,2 +25,3 @@ obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
  obj-$(CONFIG_INPUT_WISTRON_BTNS)	+= wistron_btns.o
  obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
 +obj-$(CONFIG_INPUT_LIS302DL)		+= lis302dl.o
