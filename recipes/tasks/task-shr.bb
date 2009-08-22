@@ -22,6 +22,7 @@ RDEPENDS_${PN}-gtk = "\
 
 RDEPENDS_${PN}-apps += "\
    task-shr-minimal-apps \
+	opimd-utils-notes \
 	mokonnect \
 	midori \
 	intone \
