@@ -24,7 +24,7 @@ KV_dm500plus = "2.6.12"
 PV_dm500plus = "${KV}-20080822"
 
 KV_dm800 = "2.6.12-5.1-brcmstb-dm800"
-PV_dm800 = "${KV}-20090820"
+PV_dm800 = "${KV}-20090822"
 
 KV_dm500hd = "2.6.12-5.1-brcmstb-dm500hd"
 PV_dm500hd = "${KV}-20090521"
