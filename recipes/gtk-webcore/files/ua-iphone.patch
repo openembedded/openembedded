@@ -1,0 +1,36 @@
+diff --git a/midori/midori-websettings.c b/midori/midori-websettings.c
+index b0e5607..4931d6b 100644
+--- a/midori/midori-websettings.c
++++ b/midori/midori-websettings.c
+@@ -235,6 +235,7 @@ midori_identity_get_type (void)
+     {
+         static const GEnumValue values[] = {
+          { MIDORI_IDENT_MIDORI, "MIDORI_IDENT_MIDORI", N_("Midori") },
++         { MIDORI_IDENT_IPHONE, "MIDORI_IDENT_IPHONE", N_("iPhone") },
+          { MIDORI_IDENT_SAFARI, "MIDORI_IDENT_SAFARI", N_("Safari") },
+          { MIDORI_IDENT_FIREFOX, "MIDORI_IDENT_FIREFOX", N_("Firefox") },
+          { MIDORI_IDENT_EXPLORER, "MIDORI_IDENT_EXPLORER", N_("Internet Explorer") },
+@@ -826,6 +827,11 @@ generate_ident_string (MidoriIdentity identify_as)
+     case MIDORI_IDENT_MIDORI:
+         return g_strdup_printf ("%s (%s; %s; U; %s) WebKit/532+",
+                                 appname, platform, os, lang);
++    case MIDORI_IDENT_IPHONE:
++        return g_strdup_printf ("Mozilla/5.0 (iPhone; U; %s; %s) "
++            "AppleWebKit/532+ (KHTML, like Gecko) Version/3.0 Mobile/1A538b" 
++            "Safari/419.3 %s",
++                                os, lang, appname);
+     case MIDORI_IDENT_SAFARI:
+         return g_strdup_printf ("Mozilla/5.0 (%s; U; %s; %s) "
+             "AppleWebKit/532+ (KHTML, like Gecko) Safari/419.3 %s",
+diff --git a/midori/midori-websettings.h b/midori/midori-websettings.h
+index 96e5816..588f66a 100644
+--- a/midori/midori-websettings.h
++++ b/midori/midori-websettings.h
+@@ -107,6 +107,7 @@ midori_accept_cookies_get_type (void) G_GNUC_CONST;
+ typedef enum
+ {
+     MIDORI_IDENT_MIDORI,
++    MIDORI_IDENT_IPHONE,
+     MIDORI_IDENT_SAFARI,
+     MIDORI_IDENT_FIREFOX,
+     MIDORI_IDENT_EXPLORER,
