@@ -115,7 +115,7 @@ TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
 #############################################################################
 
 # Can be "glibc", "eglibc" or "uclibc"
-LIBC ?= "glibc"
+LIBC ?= "eglibc"
 require conf/distro/include/${LIBC}.inc
 PSTAGE_EXTRAPATH = "${LIBC}"
 require conf/distro/include/sane-toolchain-${LIBC}.inc
