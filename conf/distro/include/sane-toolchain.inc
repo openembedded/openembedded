@@ -11,8 +11,10 @@ PREFERRED_BINUTILS                   ?= "2.18"
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
 PREFERRED_VERSION_glibc             ?= "2.6.1"
 PREFERRED_VERSION_glibc-initial     ?= "2.6.1"
-PREFERRED_VERSION_uclibc            ?= "0.9.30"
-PREFERRED_VERSION_uclibc-initial    ?= "0.9.30"
+PREFERRED_VERSION_eglibc             ?= "2.10"
+PREFERRED_VERSION_eglibc-initial     ?= "2.10"
+PREFERRED_VERSION_uclibc            ?= "0.9.30.1"
+PREFERRED_VERSION_uclibc-initial    ?= "0.9.30.1"
 
 # Some systems need a special gcc version
 PREFERRED_GCC_VERSION_486sx          ?= "4.3.2"
@@ -115,7 +117,7 @@ TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
 #############################################################################
 
 # Can be "glibc", "eglibc" or "uclibc"
-LIBC ?= "glibc"
+LIBC ?= "eglibc"
 require conf/distro/include/${LIBC}.inc
 PSTAGE_EXTRAPATH = "${LIBC}"
 require conf/distro/include/sane-toolchain-${LIBC}.inc

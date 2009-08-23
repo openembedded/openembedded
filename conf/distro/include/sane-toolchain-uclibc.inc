@@ -3,7 +3,12 @@
 # uclibc:
 
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils = "binutils-cross"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "uclibc"
 PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
+PREFERRED_PROVIDER_virtual/libc         = "uclibc"
+PREFERRED_PROVIDER_linux-libc-headers   = "linux-libc-headers"
+PREFERRED_PROVIDER_virtual/libintl      = "proxy-libintl"
+PREFERRED_PROVIDER_virtual/libiconv     = "libiconv"
 
 USE_NLS ?= "no"
 USE_NLS_glib-2.0 = "yes"

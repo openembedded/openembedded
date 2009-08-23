@@ -67,7 +67,6 @@ SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git"
 SRCREV_sequoa = "cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093"
 
-SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git;tag=cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093 "
 
 SRC_URI_mini2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"
