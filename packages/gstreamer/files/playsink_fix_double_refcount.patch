@@ -1,16 +1,64 @@
---- gst-plugins-base-0.10.24.org/gst/playback/gstplaysink.c	2009-07-14 12:03:45.000000000 +0200
-+++ gst-plugins-base-0.10.24/gst/playback/gstplaysink.c	2009-08-24 14:42:32.000000000 +0200
-@@ -418,11 +418,11 @@
-   }
-   if (chainp) {
-     /* we have an active chain with a sink, get the sink */
--    result = gst_object_ref (chainp);
-+    result = chainp;
-   }
-   /* nothing found, return last configured sink */
-   if (result == NULL && elem)
--    result = gst_object_ref (elem);
-+    result = elem;
-   GST_PLAY_SINK_UNLOCK (playsink);
+From c3ebeec5a54c6c00bf30f7196968a9369c3d8205 Mon Sep 17 00:00:00 2001
+From: Wim Taymans <wim.taymans@collabora.co.uk>
+Date: Mon, 24 Aug 2009 13:06:28 +0000
+Subject: playbin2: fix refcounting of _get_sink()
+
+g_value_set_object() increases the refcount of the sink, which is not needed
+because the object should already be refcounted. Make sure this is always the
+case and use g_value_take_object().
+
+Fixes: #592884
+---
+diff --git a/gst/playback/gstplaybin2.c b/gst/playback/gstplaybin2.c
+index 6fc8d2d..24071b5 100644
+--- a/gst/playback/gstplaybin2.c
++++ b/gst/playback/gstplaybin2.c
+@@ -1618,8 +1618,12 @@ gst_play_bin_get_current_sink (GstPlayBin * playbin, GstElement ** elem,
+       GST_PTR_FORMAT ", the originally set %s sink is %" GST_PTR_FORMAT,
+       dbg, sink, dbg, *elem);
  
-   return result;
+-  if (sink == NULL)
+-    sink = *elem;
++  if (sink == NULL) {
++    GST_PLAY_BIN_LOCK (playbin);
++    if ((sink = *elem))
++      gst_object_ref (sink);
++    GST_PLAY_BIN_UNLOCK (playbin);
++  }
+ 
+   return sink;
+ }
+@@ -1720,26 +1724,26 @@ gst_play_bin_get_property (GObject * object, guint prop_id, GValue * value,
+       GST_PLAY_BIN_UNLOCK (playbin);
+       break;
+     case PROP_VIDEO_SINK:
+-      g_value_set_object (value,
++      g_value_take_object (value,
+           gst_play_bin_get_current_sink (playbin, &playbin->video_sink,
+               "video", GST_PLAY_SINK_TYPE_VIDEO));
+       break;
+     case PROP_AUDIO_SINK:
+-      g_value_set_object (value,
++      g_value_take_object (value,
+           gst_play_bin_get_current_sink (playbin, &playbin->audio_sink,
+               "audio", GST_PLAY_SINK_TYPE_AUDIO));
+       break;
+     case PROP_VIS_PLUGIN:
+-      g_value_set_object (value,
++      g_value_take_object (value,
+           gst_play_sink_get_vis_plugin (playbin->playsink));
+       break;
+     case PROP_TEXT_SINK:
+-      g_value_set_object (value,
++      g_value_take_object (value,
+           gst_play_bin_get_current_sink (playbin, &playbin->text_sink,
+               "text", GST_PLAY_SINK_TYPE_TEXT));
+       break;
+     case PROP_SUBPIC_SINK:
+-      g_value_set_object (value,
++      g_value_take_object (value,
+           gst_play_bin_get_current_sink (playbin, &playbin->subpic_sink,
+               "subpicture", GST_PLAY_SINK_TYPE_SUBPIC));
+       break;
+--
+cgit v0.8.2
