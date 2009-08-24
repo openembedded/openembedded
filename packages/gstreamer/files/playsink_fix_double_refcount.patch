@@ -1,0 +1,16 @@
+--- gst-plugins-base-0.10.24.org/gst/playback/gstplaysink.c	2009-07-14 12:03:45.000000000 +0200
++++ gst-plugins-base-0.10.24/gst/playback/gstplaysink.c	2009-08-24 14:42:32.000000000 +0200
+@@ -418,11 +418,11 @@
+   }
+   if (chainp) {
+     /* we have an active chain with a sink, get the sink */
+-    result = gst_object_ref (chainp);
++    result = chainp;
+   }
+   /* nothing found, return last configured sink */
+   if (result == NULL && elem)
+-    result = gst_object_ref (elem);
++    result = elem;
+   GST_PLAY_SINK_UNLOCK (playsink);
+ 
+   return result;
