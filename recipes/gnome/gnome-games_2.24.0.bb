@@ -24,7 +24,10 @@ do_configure_prepend() {
 
 do_configure_append() {
 	for i in $(find ${S} -name "Makefile") ; do
-		sed -i -e s:'I/usr/include'::g -e s:'-I /usr/include -I /usr/local/include'::g $i
+		sed -i \
+			-e s:'-I/usr/include/SDL':'-I${STAGING_INCDIR}/SDL':g \
+			-e s:'-I/usr/local/include/SDL':'-I${STAGING_INCDIR}/SDL':g \
+			$i
 	done	
 }
 
