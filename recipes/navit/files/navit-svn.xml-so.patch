@@ -1,0 +1,17 @@
+--- navit/navit/navit_shipped.xml.orig	2009-07-19 13:08:16.000000000 +0200
++++ navit/navit/navit_shipped.xml	2009-07-19 13:09:12.000000000 +0200
+@@ -6,10 +6,10 @@
+      on upgrade. Rather copy it to ~/.navit/. Please read wiki -->
+ <config xmlns:xi="http://www.w3.org/2001/XInclude">
+     <plugins>
+-        <plugin path="$NAVIT_LIBDIR/*/${NAVIT_LIBPREFIX}lib*.so" ondemand="yes"/>
+-        <plugin path="$NAVIT_LIBDIR/autoload/${NAVIT_LIBPREFIX}lib*.so"/>
+-        <plugin path="$NAVIT_LIBDIR/*/${NAVIT_LIBPREFIX}libbinding_dbus.so" active="no"/>
+-        <plugin path="$NAVIT_LIBDIR/*/${NAVIT_LIBPREFIX}libgraphics_null.so" active="no"/>
++        <plugin path="$NAVIT_LIBDIR/*/${NAVIT_LIBPREFIX}lib*.so.0" ondemand="yes"/>
++        <plugin path="$NAVIT_LIBDIR/autoload/${NAVIT_LIBPREFIX}lib*.so.0"/>
++        <plugin path="$NAVIT_LIBDIR/*/${NAVIT_LIBPREFIX}libbinding_dbus.so.0" active="no"/>
++        <plugin path="$NAVIT_LIBDIR/*/${NAVIT_LIBPREFIX}libgraphics_null.so.0" active="no"/>
+     </plugins>
+ 
+     <debug name="navit:do_draw" level="0"/>
