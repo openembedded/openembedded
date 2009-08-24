@@ -17,7 +17,6 @@ SRC_URI_append = " \
                   file://navit.desktop \
                   file://navit.launcher \
                   file://navit.png \
-                  file://navit.xml-so.patch;patch=1 \
 	  	 "
 
 do_install_append() {
