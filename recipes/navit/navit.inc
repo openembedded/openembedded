@@ -10,8 +10,9 @@ EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap -
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
 
+FILES_${PN} += "${libdir}/${PN}/*/*.so"
 FILES_${PN}-dbg += "${libdir}/${PN}/*/.debug"
-FILES_${PN}-dev += "${libdir}/${PN}/*/*.so ${libdir}/${PN}/*/*.la"
+FILES_${PN}-dev += "${libdir}/${PN}/*/*.la"
 
 SRC_URI_append = " \
                   file://navit.desktop \
