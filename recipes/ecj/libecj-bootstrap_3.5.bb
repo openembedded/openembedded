@@ -1,3 +1,7 @@
+# Causes problems with openjdk/icedtea. See Eclipse bug eclipse bug #285466
+# Might get fixed in IcedTea 1.6
+DEFAULT_PREFERENCE = "-1"
+
 require libecj-bootstrap.inc
 
 PR = "r0"

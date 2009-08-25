@@ -6,7 +6,7 @@ LIB_DEPS = "libdrm virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
 PV = "7.2+gitr${SRCREV}"
-PR = "r1"
+PR = "${INC_PR}.0"
 PE = "1"
 
 DEFAULT_PREFERENCE = "-1"
@@ -18,4 +18,3 @@ FILES_${PN} += "${libdir}/dri/*.so"
 FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
 
 EXTRA_OECONF += "--with-driver=dri --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
-

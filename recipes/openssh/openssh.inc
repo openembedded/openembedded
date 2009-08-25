@@ -2,6 +2,7 @@ DEPENDS = "zlib openssl"
 
 RCONFLICTS_${PN} = "dropbear"
 RCONFLICTS_${PN}-sshd = "dropbear"
+RCONFLICTS_${PN}-keygen = "ssh-keygen"
 
 SECTION = "console/network"
 DESCRIPTION = "Secure rlogin/rsh/rcp/telnet replacement (OpenSSH) \
@@ -15,7 +16,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 inherit autotools
 

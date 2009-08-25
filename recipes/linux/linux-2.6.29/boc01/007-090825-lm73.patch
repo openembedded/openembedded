@@ -1,7 +1,7 @@
 Index: linux-2.6.29/drivers/hwmon/Kconfig
 ===================================================================
---- linux-2.6.29.orig/drivers/hwmon/Kconfig	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/hwmon/Kconfig	2009-04-01 17:37:50.000000000 +0200
+--- linux-2.6.29.orig/drivers/hwmon/Kconfig	2009-08-25 17:33:48.000000000 +0200
++++ linux-2.6.29/drivers/hwmon/Kconfig	2009-08-25 17:34:24.000000000 +0200
 @@ -448,6 +448,15 @@
  	  This driver can also be built as a module.  If so, the module
  	  will be called lm70.
@@ -21,16 +21,18 @@ Index: linux-2.6.29/drivers/hwmon/Kconfig
 Index: linux-2.6.29/drivers/hwmon/lm73.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.29/drivers/hwmon/lm73.c	2009-04-01 17:37:50.000000000 +0200
-@@ -0,0 +1,232 @@
++++ linux-2.6.29/drivers/hwmon/lm73.c	2009-08-25 18:43:49.000000000 +0200
+@@ -0,0 +1,243 @@
 + /*
 + * LM73 Sensor driver
 + * Based on LM75
 + *
-+ *
 + * Copyright (C) 2007, CenoSYS (www.cenosys.com).
-+ * Guillaume Ligneul
-+ * Guillaume.ligneul@gmail.com
++ * Copyright (C) 2009, Bollore telecom (www.bolloretelecom.eu).
++ *
++ * Guillaume Ligneul (Guillaume.ligneul@gmail.com)
++ * Adrien Demarez <adrien.demarez@bolloretelecom.eu>
++ * Jeremy Laine <jeremy.laine@bolloretelecom.eu>
 + *
 + * This software program is licensed subject to the GNU General Public License
 + * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
@@ -47,7 +49,7 @@ Index: linux-2.6.29/drivers/hwmon/lm73.c
 +#include <linux/mutex.h>
 +
 +
-+/* Addresses to scan */
++/* Addresses scanned */
 +static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b, 0x4c,
 +					0x4d, 0x4e, 0x4f, I2C_CLIENT_END };
 +
@@ -55,57 +57,44 @@ Index: linux-2.6.29/drivers/hwmon/lm73.c
 +I2C_CLIENT_INSMOD_1(lm73);
 +
 +/* LM73 registers */
-+#define LM73_REG_INPUT		0x00
 +#define LM73_REG_CONF		0x01
-+#define LM73_REG_T_HIGH		0x02
-+#define LM73_REG_T_LOW		0x03
-+
 +static const u8 LM73_REG_TEMP[3] = {
-+	LM73_REG_INPUT,		/* input */
-+	LM73_REG_T_HIGH,	/* max */
-+	LM73_REG_T_LOW,		/* min	*/
++	0x00,		/* input */
++	0x02,		/* max */
++	0x03,		/* min	*/
 +};
 +
 +/* Each client has this additional data */
 +struct lm73_data {
-+	struct i2c_client	client;
-+	struct device *hwmon_dev;
++	struct device		*hwmon_dev;
 +	struct mutex		update_lock;
-+	char			valid;		/* !=0 if following fields are valid */
-+	unsigned long		last_updated;	/* In jiffies */
 +	u16			temp[3];	/* Register values,
 +						   0 = input
 +						   1 = max
 +						   2 = min */
 +};
 +
-+static int lm73_attach_adapter(struct i2c_adapter *adapter);
-+static int lm73_detect(struct i2c_adapter *adapter, int address, int kind);
-+static int lm73_detach_client(struct i2c_client *client);
 +static int lm73_read_value(struct i2c_client *client, u8 reg);
 +static int lm73_write_value(struct i2c_client *client, u8 reg, short value);
 +
-+/* This is the driver that will be inserted */
-+static struct i2c_driver lm73_driver = {
-+	.driver = {
-+		.name	= "lm73",
-+	},
-+	.attach_adapter	= lm73_attach_adapter,
-+	.detach_client	= lm73_detach_client,
-+};
++
++/*-----------------------------------------------------------------------*/
++
++/* sysfs attributes for hwmon */
 +
 +static ssize_t show_temp(struct device *dev, struct device_attribute *da,
 +			 char *buf)
 +{
 +	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 +	struct i2c_client *client = to_i2c_client(dev);
++	struct lm73_data *data = i2c_get_clientdata(client);
 +	int iTemp = 0;
 +
++	mutex_lock(&data->update_lock);
 +	iTemp = lm73_read_value(client, LM73_REG_TEMP[attr->index]);
++	mutex_unlock(&data->update_lock);
 +
 +	return sprintf(buf, "%d\n", iTemp);
-+
-+
 +}
 +
 +static ssize_t set_temp(struct device *dev, struct device_attribute *da,
@@ -113,11 +102,13 @@ Index: linux-2.6.29/drivers/hwmon/lm73.c
 +{
 +	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 +	struct i2c_client *client = to_i2c_client(dev);
++	struct lm73_data *data = i2c_get_clientdata(client);
 +	int nr = attr->index;
++	long temp = simple_strtol(buf, NULL, 10);
 +
-+	long tmp = simple_strtol(buf, NULL, 10);
-+
-+	lm73_write_value(client, LM73_REG_TEMP[nr], tmp);
++	mutex_lock(&data->update_lock);
++	lm73_write_value(client, LM73_REG_TEMP[nr], temp);
++	mutex_unlock(&data->update_lock);
 +	return count;
 +}
 +
@@ -127,13 +118,6 @@ Index: linux-2.6.29/drivers/hwmon/lm73.c
 +			show_temp, set_temp, 2);
 +static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_temp, NULL, 0);
 +
-+static int lm73_attach_adapter(struct i2c_adapter *adapter)
-+{
-+	if (!(adapter->class & I2C_CLASS_HWMON))
-+		return 0;
-+
-+	return i2c_probe(adapter, &addr_data, lm73_detect);
-+}
 +
 +static struct attribute *lm73_attributes[] = {
 +	&sensor_dev_attr_temp1_input.dev_attr.attr,
@@ -147,85 +131,111 @@ Index: linux-2.6.29/drivers/hwmon/lm73.c
 +	.attrs = lm73_attributes,
 +};
 +
-+/* This function is called by i2c_probe */
-+static int lm73_detect(struct i2c_adapter *adapter, int address, int kind)
++/*-----------------------------------------------------------------------*/
++
++/* device probe and removal */
++
++static int
++lm73_probe(struct i2c_client *client, const struct i2c_device_id *id)
 +{
-+	struct i2c_client *new_client;
 +	struct lm73_data *data;
-+	int err = 0;
-+	const char *name = "";
++	int status;
 +
-+	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
-+				     I2C_FUNC_SMBUS_WORD_DATA))
-+		goto exit;
++	if (!i2c_check_functionality(client->adapter,
++			I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA))
++            return -EIO;
 +
-+	if (!(data = kzalloc(sizeof(struct lm73_data), GFP_KERNEL))) {
-+		err = -ENOMEM;
-+		goto exit;
-+	}
++	data = kzalloc(sizeof(struct lm73_data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
 +
-+	new_client = &data->client;
-+	i2c_set_clientdata(new_client, data);
-+	new_client->addr = address;
-+	new_client->adapter = adapter;
-+	new_client->driver = &lm73_driver;
-+	new_client->flags = 0;
-+
-+	name = "lm73";
-+
-+	/* Fill in the remaining client fields and put it into the global list */
-+	strlcpy(new_client->name, name, I2C_NAME_SIZE);
-+	data->valid = 0;
++	i2c_set_clientdata(client, data);
 +	mutex_init(&data->update_lock);
 +
-+	/* Tell the I2C layer a new client has arrived */
-+	if ((err = i2c_attach_client(new_client)))
-+		goto exit_free;
-+
 +	/* Register sysfs hooks */
-+	if ((err = sysfs_create_group(&new_client->dev.kobj, &lm73_group)))
-+		goto exit_detach;
++	status = sysfs_create_group(&client->dev.kobj, &lm73_group);
++	if (status)
++        	goto exit_free;
 +
-+	data->hwmon_dev = hwmon_device_register(&new_client->dev);
++	data->hwmon_dev = hwmon_device_register(&client->dev);
 +	if (IS_ERR(data->hwmon_dev)) {
-+		err = PTR_ERR(data->hwmon_dev);
++		status = PTR_ERR(data->hwmon_dev);
 +		goto exit_remove;
 +	}
++
++	dev_info(&client->dev, "%s: sensor '%s'\n",
++		 dev_name(data->hwmon_dev), client->name);
 +
 +	return 0;
 +
 +exit_remove:
-+	sysfs_remove_group(&new_client->dev.kobj, &lm73_group);
-+exit_detach:
-+	i2c_detach_client(new_client);
++	sysfs_remove_group(&client->dev.kobj, &lm73_group);
 +exit_free:
++	i2c_set_clientdata(client, NULL);
 +	kfree(data);
-+exit:
-+	return err;
++	return status;
 +}
 +
-+static int lm73_detach_client(struct i2c_client *client)
++static int lm73_remove(struct i2c_client *client)
 +{
 +	struct lm73_data *data = i2c_get_clientdata(client);
++
 +	hwmon_device_unregister(data->hwmon_dev);
 +	sysfs_remove_group(&client->dev.kobj, &lm73_group);
-+	i2c_detach_client(client);
++	i2c_set_clientdata(client, NULL);
 +	kfree(data);
 +	return 0;
 +}
 +
++static const struct i2c_device_id lm73_ids[] = {
++	{ "lm73", lm73 },
++	{ /* LIST END */ }
++};
++MODULE_DEVICE_TABLE(i2c, lm73_ids);
++
++/* Return 0 if detection is successful, -ENODEV otherwise */
++static int lm73_detect(struct i2c_client *new_client, int kind,
++		       struct i2c_board_info *info)
++{
++	struct i2c_adapter *adapter = new_client->adapter;
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
++				     I2C_FUNC_SMBUS_WORD_DATA))
++		return -ENODEV;
++
++	/* NOTE: we treat "force=..." and "force_lm73=..." the same.
++	 * Only new-style driver binding distinguishes chip types.
++	 */
++	strlcpy(info->type, "lm73", I2C_NAME_SIZE);
++
++	return 0;
++}
++
++static struct i2c_driver lm73_driver = {
++	.class		= I2C_CLASS_HWMON,
++	.driver = {
++		.name	= "lm73",
++	},
++	.probe		= lm73_probe,
++	.remove		= lm73_remove,
++	.id_table	= lm73_ids,
++	.detect		= lm73_detect,
++	.address_data	= &addr_data,
++};
++
++/*-----------------------------------------------------------------------*/
++
++/* register access */
++
 +static int lm73_read_value(struct i2c_client *client, u8 reg)
 +{
-+	short sVal;
++	short value;
 +
 +	if (reg == LM73_REG_CONF)
 +		return i2c_smbus_read_byte_data(client, reg);
-+	else
-+	{
-+		sVal = swab16(i2c_smbus_read_word_data(client, reg));
-+		sVal = sVal >> 7;
-+		return sVal;
-+	}
++
++	value = swab16(i2c_smbus_read_word_data(client, reg)) >> 7;
++	return value;
 +}
 +
 +static int lm73_write_value(struct i2c_client *client, u8 reg, short value)
@@ -233,11 +243,12 @@ Index: linux-2.6.29/drivers/hwmon/lm73.c
 +	if (reg == LM73_REG_CONF)
 +		return i2c_smbus_write_byte_data(client, reg, value);
 +	else
-+	{
-+		value = value<<7;
-+		return i2c_smbus_write_word_data(client, reg, swab16(value));
-+	}
++		return i2c_smbus_write_word_data(client, reg, swab16(value<<7));
 +}
++
++/*-----------------------------------------------------------------------*/
++
++/* module glue */
 +
 +static int __init sensors_lm73_init(void)
 +{
@@ -257,8 +268,8 @@ Index: linux-2.6.29/drivers/hwmon/lm73.c
 +module_exit(sensors_lm73_exit);
 Index: linux-2.6.29/drivers/hwmon/Makefile
 ===================================================================
---- linux-2.6.29.orig/drivers/hwmon/Makefile	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/hwmon/Makefile	2009-04-01 17:37:50.000000000 +0200
+--- linux-2.6.29.orig/drivers/hwmon/Makefile	2009-08-25 17:33:48.000000000 +0200
++++ linux-2.6.29/drivers/hwmon/Makefile	2009-08-25 17:34:24.000000000 +0200
 @@ -54,6 +54,7 @@
  obj-$(CONFIG_SENSORS_LIS3LV02D) += lis3lv02d.o hp_accel.o
  obj-$(CONFIG_SENSORS_LM63)	+= lm63.o

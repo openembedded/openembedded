@@ -2,6 +2,8 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
+INC_PR = "r12"
+
 PROVIDES = "virtual/xserver"
 
 DEPENDS = "hal fontconfig freetype flex-native lbxutil kbproto \ 
@@ -21,7 +23,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig glx-use-tls
 
 EXTRA_OECONF += " --enable-xcalibrate \
                   --enable-kdrive \
