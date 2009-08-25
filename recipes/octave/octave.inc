@@ -2,7 +2,7 @@ DESCRIPTION = "Matlab alternative for numerical computations"
 HOMEPAGE = "http://www.gnu.org/software/octave/"
 SECTION = "console/scientific"
 LICENSE = "GPL"
-DEPENDS = "readline ncurses fftw"
+DEPENDS = "gperf-native readline ncurses fftw"
 RDEPENDS = "libfftw3"
 # fftw compiled with --disable-fortran
 
@@ -13,6 +13,8 @@ inherit autotools
 EXTRA_OECONF = "--without-hdf5 --without-glpk -without-umfpack \
                 --without-colamd --without-ccolamd --without-cholmod \
                 --without-cxsparse"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 # additional missing dependency/functionality: Qhull gperf
 
