@@ -121,7 +121,7 @@ RDEPENDS_${PN} += "\
 		wxwidgets \
 		x11vnc \
 #		libswt3.4-gtk-java \
-#       	cacao \
+		cacao \
 #		jamvm \
 		dbus-x11 \
 		bluez-utils-alsa \
