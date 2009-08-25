@@ -108,7 +108,7 @@ RDEPENDS_${PN} += "\
 		microcom \
 		minicom \
 		leafpad \
-#		abiword \
+		abiword \
 		aspell \
 		enchant \
 		joe \
