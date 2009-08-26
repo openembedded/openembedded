@@ -14,29 +14,13 @@
 # operation.
 
 
+# Grab convenience methods & sane default for do_clean
+inherit clean
+
+# Build here
 S = "${FILE_DIRNAME}"
 SRC_URI = ""
 
-#TYPE = "${@'${PN}'.replace('${BPN}', '').strip()}"
-#WORKDIR = "${S}/tmp${TYPE}.${MULTIMACH_HOST_SYS}"
-#STAMP = "${WORKDIR}/tasks/stamp"
-#WORKDIR_LOCAL = "${S}/tmp${TYPE}.${MULTIMACH_HOST_SYS}"
-#T = "${WORKDIR_LOCAL}/bitbake-tasks"
-
-# Hack, so things don't explode in builds that don't inherit package
-do_package ?= "    pass"
-do_package[func] = "1"
-do_package[python] = "1"
-addtask package after do_populate_staging
-
-# This stuff is needed to facilitate variants (normal, native, cross, sdk)
-# that share a ${S}.  It's ugly as hell.  Only really necessary for recipes
-# that can't use a ${B}, and which have variants like native.  Not sure what
-# the best solution is long term.
-#
-# We merge configure+compile+install into the populate_staging task, uses a
-# lock file.  This ensures that none of the tasks which access ${S} can
-# interleave amongst the recipes that share that ${S}.
 
 def merge_tasks(d):
 	"""
@@ -130,56 +114,8 @@ python do_populate_staging () {
 }
 do_populate_staging[lockfiles] += "${S}/.lock"
 
-make_do_clean () {
-	oe_runmake clean
-}
-
-def clean_builddir(d):
-	from shutil import rmtree
-
-	builddir = d.getVar("B", True)
-	srcdir = d.getVar("S", True)
-	if builddir != srcdir:
-		rmtree(builddir, ignore_errors=True)
-
-def clean_stamps(d):
-	from glob import glob
-	from bb import note
-	from bb.data import expand
-	from os import unlink
-
-	note("Removing stamps")
-	for stamp in glob(expand('${STAMP}.*', d)):
-		try:
-			unlink(stamp)
-		except OSError:
-			pass
-
-def clean_workdir(d):
-	from shutil import rmtree
-	from bb import note
-
-	workdir = d.getVar("WORKDIR", 1)
-	note("Removing %s" % workdir)
-	rmtree(workdir, ignore_errors=True)
-
-def clean_git(d):
-	from subprocess import call
-
-	call(["git", "clean", "-d", "-f", "-X"], cwd=d.getVar("S", True))
-
-def clean_make(d):
-	import bb
-
-	bb.note("Running make clean")
-	try:
-		bb.build.exec_func("make_do_clean", d)
-	except bb.build.FuncFailed:
-		pass
-
-python do_clean () {
-	clean_stamps(d)
-	clean_workdir(d)
-	clean_builddir(d)
-	clean_make(d)
-}
+# Hack, so things don't explode in builds that don't inherit package
+do_package ?= "    pass"
+do_package[func] = "1"
+do_package[python] = "1"
+addtask package after do_populate_staging
