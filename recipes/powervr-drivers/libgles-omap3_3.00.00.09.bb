@@ -1,6 +1,6 @@
 require libgles-omap3.inc
 
-DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "1"
 
 PR = "r1"
 
