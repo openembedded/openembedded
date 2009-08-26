@@ -126,16 +126,8 @@ def clean_make(d):
 		pass
 
 python do_clean () {
-	from os.path import exists
-	from bb.build import FuncFailed
-	from bb.data import expand
-
 	clean_stamps(d)
 	clean_workdir(d)
-	if exists(expand("${S}/.git", d)) and \
-	   exists(expand("${S}/.gitignore", d)):
-		clean_git(d)
-	else:
-		clean_builddir(d)
-		clean_make(d)
+	clean_builddir(d)
+	clean_make(d)
 }
