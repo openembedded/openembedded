@@ -2,14 +2,14 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r26"
+PR = "r27"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
 
 inherit distutils
 
-PACKAGES += "${PN}-autostart ${PN}-theme ${PN}-sounds"
+PACKAGES += "${PN}-autostart ${PN}-theme ${PN}-sounds ${PN}-calculator"
 
 RDEPENDS = "\
   python-datetime \
@@ -17,27 +17,15 @@ RDEPENDS = "\
   python-textutils \
   python-dbus \
   python-pygobject \
+  python-elementary \
   dbus-x11 \
   task-fso-compliance \
   elementary \
   elementary-themes \
   edbus-ehal \
-  python-elementary \
 "
 
-RDEPENDS_shr = "\
-  python-datetime \
-  python-subprocess \
-  python-textutils \
-  python-dbus \
-  python-pygobject \
-  python-elementary \
-  dbus-x11 \
-  task-fso-compliance \
-  elementary \
-  elementary-themes \
-  edbus-ehal \
-"
+RDEPENDS_${PN}-calculator = "paroli"
 
 E_CONFIG_DIR="/usr/share/enlightenment/data"
 
@@ -71,7 +59,7 @@ do_install_append() {
 
 	install -d ${D}${sysconfdir}/freesmartphone/oevents
 	install ${S}/data/${RULES_YAML} ${D}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml
-	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/paroli_frameworkd.conf
+#	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/paroli_frameworkd.conf
 
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone
 	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml
@@ -157,15 +145,25 @@ FILES_${PN} += " \
 	${sysconfdir}/dbus-1 \
 	${sysconfdir}/paroli \
 	${sysconfdir}/freesmartphone/oevents \
-	${sysconfdir}/paroli_frameworkd.conf \ 
-#	${sysconfdir}/frameworkd.conf \ 
+#	${sysconfdir}/paroli_frameworkd.conf \ 
 	${datadir}/lib \
 	${datadir}/bin \
+	${datadir}/applications/common-for-edje \
+	${datadir}/applications/i-o2 \
+	${datadir}/applications/msgs2 \
+	${datadir}/applications/paroli-launcher2 \
+	${datadir}/applications/people2 \
+	${datadir}/applications/settings \
+	${datadir}/applications/tele2 \
 	${datadir}/applications \
 	${datadir}/elementary \
 	${datadir}/paroli \
 	${datadir}/pixmaps \
 	${datadir}/dbus-1/system-services/ \
+	"
+
+FILES_${PN}-calculator += " \
+	${datadir}/applications/calculator \
 	"
 
 FILES_${PN}-theme = " \
@@ -180,14 +178,8 @@ FILES_${PN}-sounds = " \
 	${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml \
 	"
 
-#CONFILES_${PN}-theme = " \
-#	${sysconfdir}/enlightenment/default_profile \
-#	"
-
 CONFFILES_${PN} += " \
 	${sysconfdir}/paroli/paroli.cfg \
-	${sysconfdir}/paroli_frameworkd.conf \
-#	${sysconfdir}/frameworkd.conf \
 	${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml \
 	"
 CONFFILES_${PN}-sounds += " \
