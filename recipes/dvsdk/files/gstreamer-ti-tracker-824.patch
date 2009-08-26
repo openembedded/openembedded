@@ -1,0 +1,125 @@
+diff -uNr ticodecplugin/src/gstticodecplugin_omap3530.cfg ticodecplugin.new/src/gstticodecplugin_omap3530.cfg
+--- ticodecplugin/src/gstticodecplugin_omap3530.cfg	2009-06-10 17:29:59.000000000 -0500
++++ ticodecplugin.new/src/gstticodecplugin_omap3530.cfg	2009-08-07 16:17:24.000000000 -0500
+@@ -12,8 +12,6 @@
+  *
+  */
+ 
+-prog.build.platform = "ti.platforms.evm3530";
+-
+ /* Load the Codec Engine 'Operating System Abstraction Layer' */
+ var osalGlobal = xdc.useModule('ti.sdo.ce.osal.Global');
+ 
+@@ -27,21 +25,15 @@
+ /*
+  *  ======== Engine Configuration ========
+  */
+-var Engine    = xdc.useModule('ti.sdo.ce.Engine');
+-var encEngine = Engine.createFromServer(
+-    "encode",
+-    "./encodeCombo.x64P",
+-    "ti.sdo.servers.encode"
+-    );
+-var decEngine = Engine.createFromServer(
+-    "decode",
+-    "./decodeCombo.x64P",
+-    "ti.sdo.servers.decode"
++var Engine = xdc.useModule('ti.sdo.ce.Engine');
++var demoEngine = Engine.createFromServer(
++    "codecServer",
++    "./bin/cs.x64P",
++    "ti.sdo.server.cs"
+     );
+ 
+ /* Load support for the DMAI module */
+ var DMAI = xdc.loadPackage('ti.sdo.dmai');
+ 
+-/* Load support for user space DMA */
+-var SCPY = xdc.useModule("ti.sdo.fc.scpy.SCPY");
+-var SDMA = xdc.useModule("ti.sdo.linuxutils.sdma.SDMA");
++var SCPY = xdc.useModule('ti.sdo.fc.scpy.SCPY');
++var SDMA = xdc.useModule('ti.sdo.linuxutils.sdma.SDMA');
+diff -uNr ticodecplugin/src/gstticodecs_omap3530.c ticodecplugin.new/src/gstticodecs_omap3530.c
+--- ticodecplugin/src/gstticodecs_omap3530.c	2009-06-10 17:29:59.000000000 -0500
++++ ticodecplugin.new/src/gstticodecs_omap3530.c	2009-08-07 16:17:24.000000000 -0500
+@@ -22,8 +22,7 @@
+ #include "gstticodecs.h"
+ 
+ /* Declaration of the production engine and decoders shipped with the DVSDK */
+-static Char decodeEngine[] = "decode";
+-static Char encodeEngine[] = "encode";
++static Char codecServer[] = "codecServer";
+ 
+ /* NULL terminated list of speech decoders in the engine to use in the demo */
+ GstTICodec gst_ticodec_codecs[] = {
+@@ -32,59 +31,55 @@
+     {
+         "AAC Audio Decoder",     /* String name of codec used by plugin      */
+         "aachedec",              /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     }, {
+         "MPEG1L2 Audio Decoder", /* String name of codec used by plugin      */
+         "mp3dec",                /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     }, {
+         "MPEG1L3 Audio Decoder", /* String name of codec used by plugin      */
+         "mp3dec",                /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
+-    }, {
+-        "WMA Audio Decoder",     /* String name of codec used by plugin      */
+-        "wmadec",                /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     },
+-    
++
+     /* Video Decoders */
+     {
+         "H.264 Video Decoder",   /* String name of codec used by plugin      */
+         "h264dec",               /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     }, {
+         "MPEG4 Video Decoder",   /* String name of codec used by plugin      */
+         "mpeg4dec",              /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     }, {
+         "MPEG2 Video Decoder",   /* String name of codec used by plugin      */
+         "mpeg2dec",              /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     },
+ 
+     /* Image Decoders */
+     {
+         "JPEG Image Decoder",    /* String name of codec used by plugin      */
+         "jpegdec",               /* String name of codec used by CE          */
+-        decodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     },
+ 
+     /* Video Encoders */
+     {
+         "H.264 Video Encoder",   /* String name of codec used by plugin      */
+         "h264enc",               /* String name of codec used by CE          */
+-        encodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     }, {
+         "MPEG4 Video Encoder",   /* String name of codec used by plugin      */
+         "mpeg4enc",              /* String name of codec used by CE          */
+-        encodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     },
+ 
+     /* Image Encoders */
+     {
+         "JPEG Image Encoder",    /* String name of codec used by plugin      */
+         "jpegenc",               /* String name of codec used by CE          */
+-        encodeEngine             /* Engine that contains this codec          */
++        codecServer              /* Engine that contains this codec          */
+     },
+ 
+     { NULL }

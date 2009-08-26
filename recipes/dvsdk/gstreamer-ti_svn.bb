@@ -1,47 +1,27 @@
 DESCRIPTION = "Gstreamer plugin for TI Davinci and OMAP processors"
 
+require ti-paths.inc
+
 inherit autotools
 
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
 # Fetch source from svn repo
-SRCREV = "308"
+SRCREV = "285"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
-file://codec_combo_directory_fix.patch;patch=1 \
-	"
+           file://gstreamer-ti-tracker-824.patch;patch=1 \
+"
 
 # Again, no '.' in PWD allowed :(
-PR = "r24"
+PR = "r28"
 PV = "svnr${SRCREV}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
 
-installdir = "${datadir}/ti"
-
-META_SDK_PATH ?= "${CROSS_DIR}"
-
-DMAI_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dmai"
-CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine"
-FC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
-CODEC_INSTALL_DIR_dm355-evm="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-dm355"
-CODEC_INSTALL_DIR_dm6446-evm="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-dm6446"
-CODEC_INSTALL_DIR_omap3evm="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-omap3530"
-CODEC_INSTALL_DIR_beagleboard="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo-omap3530"
-XDC_INSTALL_DIR="${STAGING_DIR}/${BUILD_SYS}/ti-xdctools-native"
-CODEGEN_INSTALL_DIR="${STAGING_DIR}/${BUILD_SYS}/ti-cgt6x-native"
-
-export DMAI_INSTALL_DIR
-export CE_INSTALL_DIR
-export FC_INSTALL_DIR
-export CODEC_INSTALL_DIR
-export XDC_INSTALL_DIR
-export CODEGEN_INSTALL_DIR
-
 XDC_TARGET  				= gnu.targets.arm.GCArmv5T
 XDC_PLATFORM_dm355-evm 		= ti.platforms.evmDM355
 XDC_PLATFORM_dm6446-evm 	= ti.platforms.evmDM6446
-XDC_PLATFORM_omap3evm  		= ti.platforms.evm3530
-XDC_PLATFORM_beagleboard	= ti.platforms.evm3530
+XDC_PLATFORM_da830-omapl137-evm 	= ti.platforms.omapl137
 PLATFORM_XDC				= ${XDC_PLATFORM}
 
 export XDC_TARGET
@@ -50,17 +30,7 @@ export PLATFORM_XDC
 
 PLATFORM_dm355-evm 			= "dm355"
 PLATFORM_dm6446-evm 		= "dm6446"
-PLATFORM_omap3evm 			= "omap3530"
-PLATFORM_beagleboard		= "omap3530"
-
-export PLATFORM
-
-CROSS_COMPILE=${META_SDK_PATH}/bin/${TARGET_PREFIX}
-CSTOOL_DIR=${META_SDK_PATH}
-MVTOOL_DIR=${META_SDK_PATH}
-export CROSS_COMPILE
-export CSTOOL_DIR
-export MVTOOL_DIR
+PLATFORM_da830-omapl137-evm = "ol137"
 
 CPPFLAGS_append 			= " -DPlatform_${PLATFORM}"
 

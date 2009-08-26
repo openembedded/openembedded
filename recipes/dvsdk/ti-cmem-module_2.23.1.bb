@@ -5,16 +5,17 @@ inherit module
 DEPENDS 	= "virtual/kernel perl-native"
 RDEPENDS 	= "update-modules"
 
-# Download codec_engine_2_23_01.tar.gz from 
-# https://www-a.ti.com/downloads/sds_support/targetcontent/CE/ce_2_23/index.html
+# Download codec_engine_2_23_01.tar.gz from https://www-a.ti.com/downloads/sds_support/targetcontent/CE/ce_2_23/index.html and copy in Arago (or OE) download directory.
 
-SRC_URI = "http://install.source.dir.com/codec_engine_2_23_01.tar.gz"
+SRC_URI = "http://install.source.dir.com/codec_engine_2_23_01.tar.gz \
+			file://cmem-remove-show-pte-function.patch;patch=1 "
 
 # Set the source directory
 S = "${WORKDIR}/codec_engine_2_23_01"
 
 #This is a kernel module, don't set PR directly
 MACHINE_KERNEL_PR_append = "a"
+
 PV = "2231"
 
 do_compile() {

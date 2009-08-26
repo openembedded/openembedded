@@ -21,8 +21,8 @@ diff -Naur ticodecplugin.orig/src/gstticodecplugin_dm6446.cfg ticodecplugin/src/
      "./encodeCombo.x64P",
      "ti.sdo.servers.encode"
      );
-+encodeEngine.server = "/usr/share/ti-codec-combos/encodeCombo.x64P";
-+decodeEngine.server = "/usr/share/ti-codec-combos/decodeCombo.x64P";
++codecServer.server = "/usr/share/ti-codec-combos/cs.x64P";
++
  
  /* Load support for the 'Davinci Multimedia Application Interface' modules */
  var DMAI = xdc.loadPackage('ti.sdo.dmai');
@@ -33,8 +33,8 @@ diff -Naur ticodecplugin.orig/src/gstticodecplugin_dm6467.cfg ticodecplugin/src/
      "./encodeCombo.x64P",
      "ti.sdo.servers.encode"
      );
-+encodeEngine.server = "/usr/share/ti-codec-combos/encodeCombo.x64P";
-+decodeEngine.server = "/usr/share/ti-codec-combos/decodeCombo.x64P";
++codecServer.server = "/usr/share/ti-codec-combos/cs.x64P";
++
  
  /* Load support for the 'Davinci Multimedia Application Interface' modules */
  var DMAI = xdc.loadPackage('ti.sdo.dmai');
@@ -45,8 +45,8 @@ diff -Naur ticodecplugin.orig/src/gstticodecplugin_omap3530.cfg ticodecplugin/sr
      "./decodeCombo.x64P",
      "ti.sdo.servers.decode"
      );
-+encEngine.server = "/usr/share/ti-codec-combos/encodeCombo.x64P";
-+decEngine.server = "/usr/share/ti-codec-combos/decodeCombo.x64P";
++codecServer.server = "/usr/share/ti-codec-combos/cs.x64P";
++
  
  /* Load support for the DMAI module */
  var DMAI = xdc.loadPackage('ti.sdo.dmai');

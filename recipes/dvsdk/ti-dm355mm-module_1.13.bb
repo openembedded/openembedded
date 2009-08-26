@@ -2,6 +2,7 @@ DESCRIPTION = "User space DMA module for DM355"
 
 require ti-codec-combo-dm355.inc
 inherit module
+
 # compile and run time dependencies
 DEPENDS 	= "virtual/kernel perl-native"
 RDEPENDS 	= "update-modules"
@@ -9,13 +10,15 @@ RDEPENDS 	= "update-modules"
 SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/codecs/dm355_codecs_setuplinux_1_13_000.bin \
 		   file://dm355mm_1_30.patch;patch=1 \
 	      "
+
 S = "${WORKDIR}/dm355_codecs_1_13_000"
-BINFILE="dm355_codecs_setuplinux_1_13_000.bin"
+BINFILE = "dm355_codecs_setuplinux_1_13_000.bin"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "113"
 #This is a kernel module, don't set PR directly
 MACHINE_KERNEL_PR_append = "a"
+
 
 do_configure() {
 	find ${S} -name "*.ko" -exec rm {} \; || true

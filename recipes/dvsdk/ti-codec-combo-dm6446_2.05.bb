@@ -1,17 +1,33 @@
-DESCRIPTION = "DM6446 Codec Combo 2.05"
+DEPENDS="ti-codec-engine ti-dsplink-module"
 
-# Should be replaced with real http URL, but for now create codec combo tar from DVSDK installation.
-SRC_URI	= "http://install.source.dir.com/dm6446_dvsdk_combos_2_05.tar.gz"
+require ti-codec.inc
+require ti-codec-combo-dm6446.inc
 
-S = "${WORKDIR}/dm6446_dvsdk_combos_2_05"
+SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/S1SDKLNX/DVSDK_2_00/exports/dm6446_codecs_setuplinux_2_00_00_22.bin"
+
+S = "${WORKDIR}/dvsdk_2_00_00_22/dm6446_dvsdk_combos_2_05"
+BINFILE = "dm6446_codecs_setuplinux_2_00_00_22.bin"
+
+export ${CODEGEN_INSTALL_DIR}
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "205"
-PR = "r11"
+PR = "r15"
 
-installdir = "${datadir}/ti"
+do_configure () {
+	find . -name *.x64P | xargs rm -rf {} 
+}
+
 do_compile() {
-	echo "do nothing"
+	make BIOS_INSTALL_DIR=${BIOS_INSTALL_DIR} \
+		XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
+		CE_INSTALL_DIR=${CE_INSTALL_DIR} \
+		FC_INSTALL_DIR=${FC_INSTALL_DIR} \
+		CMEM_INSTALL_DIR=${CMEM_INSTALL_DIR} \
+		XDAIS_INSTALL_DIR=${XDAIS_INSTALL_DIR} \
+		LINK_INSTALL_DIR=${LINK_INSTALL_DIR} \
+		CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
+		XDCARGS=\"eval\"
 }
 
 do_install () {
@@ -21,12 +37,4 @@ do_install () {
 		cp ${file} ${D}/${installdir}/codec-combo
 	done
 }
-
-do_stage() {
-    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}
-    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/ 
-}
-
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-FILES_${PN} = "/${installdir}/codec-combo/*"
 
