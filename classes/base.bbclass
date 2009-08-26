@@ -523,6 +523,12 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+python do_cleanall() {
+    pass
+}
+do_cleanall[recrdeptask] = "do_clean"
+addtask cleanall after do_clean
+
 #Uncomment this for bitbake 1.8.12
 #addtask rebuild after do_${BB_DEFAULT_TASK}
 addtask rebuild
