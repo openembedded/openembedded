@@ -106,16 +106,10 @@ python do_populate_staging () {
 				rec_exec_task(dep, seen)
 		seen.add(task)
 		#if not exists("%s.%s" % (stamp, task)):
-		note("Executing task %s" % task)
+		note("%s: executing task %s" % (d.getVar("PF", True), task))
 		exec_task(task, d)
 
 	rec_exec_task("do_install", set())
 	exec_func("do_stage", d)
 }
 do_populate_staging[lockfiles] += "${S}/.lock"
-
-# Hack, so things don't explode in builds that don't inherit package
-do_package ?= "    pass"
-do_package[func] = "1"
-do_package[python] = "1"
-addtask package after do_populate_staging
