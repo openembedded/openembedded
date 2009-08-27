@@ -1,5 +1,7 @@
 DESCRIPTION = "LPM module for TI OMAP3 processors"
 
+require ti-paths.inc
+
 inherit module
 # compile and run time dependencies
 DEPENDS 	= " virtual/kernel perl-native ti-dsplink-module"
@@ -12,16 +14,10 @@ PV = "2241"
 # LPM seems to be missing from 2.24.01
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "http://install.source.dir.com/codec_engine_2_24_01.tar.gz "
+SRC_URI = "http://install.source.dir.com/local_power_manager_1_24.tar.gz"
 
 # Set the source directory
-S = "${WORKDIR}/codec_engine_2_24_01"
-
-export DSPLINK="${S}/cetools/packages/dsplink"
-
-LPMDSPPOWERSOC 				 ?= "omap3530"
-LPMDSPPOWERSOC_omap3evm 	 ?= "omap3530"
-LPMDSPPOWERSOC_beagleboard 	 ?= "omap3530"
+S = "${WORKDIR}/local_power_manager_1_24"
 
 do_compile () {
     # TODO :: KERNEL_CC, etc need replacing with user CC
@@ -31,7 +27,7 @@ do_compile () {
 
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 
-    cd ${S}/cetools/packages/ti/bios/power/modules/${LPMDSPPOWERSOC}/lpm
+    cd ${S}/packages/ti/bios/power/modules/${LPMDSPPOWERSOC}/lpm
     make \
       DSPLINK_REPO="${DSPLINK}/.." \
       LINUXKERNEL_INSTALL_DIR="${STAGING_KERNEL_DIR}" \
@@ -43,7 +39,7 @@ do_install () {
 
     # LPM/CMEM/SDMA drivers - kernel modules
     install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
-	  install -m 0755 ${S}/cetools/packages/ti/bios/power/modules/${LPMDSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
+	  install -m 0755 ${S}/packages/ti/bios/power/modules/${LPMDSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
 }
 
 
