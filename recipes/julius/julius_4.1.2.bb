@@ -2,7 +2,10 @@ DESCRIPTION = "Julius is a high-performance, two-pass large vocabulary continuou
 LICENSE = "julius"
 DEPENDS = "libsndfile1 flex zlib alsa-lib"
 
-SRC_URI = "http://iij.dl.sourceforge.jp/julius/37582/julius-${PV}.tar.gz"
+PR = "r1"
+
+SRC_URI = "http://iij.dl.sourceforge.jp/julius/37582/julius-${PV}.tar.gz \
+           file://patch-julius-4.1.2-command-pipe.patch;patch=1 "
 
 inherit autotools
 
