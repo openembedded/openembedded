@@ -2,7 +2,7 @@ DESCRIPTION = "Kernel based automounter for linux."
 SECTION = "base"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-misc-fixes.patch;patch=1 \
@@ -20,7 +20,9 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "autofs"
 INITSCRIPT_PARAMS = "defaults"
 
-EXTRA_OEMAKE="TARGET_PREFIX=${TARGET_PREFIX}"
+# FIXME: modules/Makefile has crappy rules that don't obey LDFLAGS
+CFLAGS += "${LDFLAGS}"
+EXTRA_OEMAKE = "STRIP=/bin/true"
 PARALLEL_MAKE = ""
 
 do_configure_prepend () {
