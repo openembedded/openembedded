@@ -136,7 +136,7 @@ RDEPENDS_${PN} += "\
 		irssi \
 		zhone \
 		paroli \
-#		cu \
+		cu \
 		net-tools \
 		iproute2 \
 		iputils \
