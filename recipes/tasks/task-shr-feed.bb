@@ -220,4 +220,5 @@ RDEPENDS_${PN} += "\
 		xcompmgr \
 		man \
 		man-pages \
+		om-neon \
 "
