@@ -1,11 +1,9 @@
 require intltool.inc
 
-DEPENDS = "libxml-parser-perl-native"
 RDEPENDS = "perl-module-text-wrap perl-module-re"
-
-PR = "r2"
-
 RRECOMMENDS = "perl-modules"
+
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
