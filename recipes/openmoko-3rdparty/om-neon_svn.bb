@@ -8,7 +8,7 @@ DEPENDS = "edje-native python-native"
 
 SRCREV = ${AUTOREV}
 PV = "1.0.0+svn${SRCREV}"
-PR = "r0"
+PR = "r2"
 
 S = "${WORKDIR}/trunk"
 
@@ -19,10 +19,12 @@ SRC_URI = "svn://svn.projects.openmoko.org/svnroot/neon;module=trunk"
 
 inherit distutils
 
-FILES_${PN} += "${datadir}/${PN} ${datadir}/applications/neon.desktop ${datadir}/pixmaps"
+FILES_${PN} += "${datadir}/neon ${datadir}/applications/neon.desktop ${datadir}/pixmaps"
 
 RDEPENDS += "python-textutils python-evas python-ecore python-edje"
 
 do_compile_prepend() {
-	sed -i "s/\/opt\/bin\/edje_cc -v/${@"${STAGING_BINDIR_NATIVE}".replace('/', '\/')}\/edje_cc/g" ${S}/build_edje.py 
+	sed -i "s/\/opt\/bin\/edje_cc -v/${@"${STAGING_BINDIR_NATIVE}".replace('/', '\/')}\/edje_cc/g" ${S}/build_edje.py
+	sed -i "s/#THEMES_DIR = '\/usr\/share\/neon\/themes'/THEMES_DIR = '\/usr\/share\/neon\/themes'/g" ${S}/neon/neon.py
+	sed -i "s/THEMES_DIR = '..\/data\/themes'/#THEMES_DIR = '..\/data\/themes'/g" ${S}/neon/neon.py
 }
