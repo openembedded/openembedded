@@ -220,5 +220,6 @@ RDEPENDS_${PN} += "\
 		xcompmgr \
 		man \
 		man-pages \
+		aceofpenguins-launcher \
 		om-neon \
 "
