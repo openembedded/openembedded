@@ -223,4 +223,5 @@ RDEPENDS_${PN} += "\
 		aceofpenguins-launcher \
 		om-neon \
 		ipython \
+		phoneme-advanced-foundation \
 "
