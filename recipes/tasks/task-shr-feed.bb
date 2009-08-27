@@ -222,4 +222,5 @@ RDEPENDS_${PN} += "\
 		man-pages \
 		aceofpenguins-launcher \
 		om-neon \
+		ipython \
 "
