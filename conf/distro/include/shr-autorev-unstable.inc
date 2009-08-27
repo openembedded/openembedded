@@ -106,7 +106,7 @@ SRCREV_pn-illume-keyboard-russian-terminal = "${AUTOREV}"
 SRCREV_pn-illume-keyboard-russian = "${AUTOREV}"
 
 # Other stuff
-SRCREV_pn-navit = "2520"
+SRCREV_pn-navit = "${AUTOREV}"
 SRCREV_pn-omview = "${AUTOREV}"
 SRCREV_pn-pythm = "${AUTOREV}"
 SRCREV_pn-omoney = "29"
@@ -126,4 +126,3 @@ SRCREV_pn-e-tasks = "${AUTOREV}"
 SRCREV_pn-mokonnect = "${AUTOREV}"
 SRCREV_pn-elmdentica = "${AUTOREV}"
 SRCREV_pn-vala-terminal = "${AUTOREV}"
-
