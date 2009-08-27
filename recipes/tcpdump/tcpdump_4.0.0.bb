@@ -4,19 +4,21 @@ LICENSE = "BSD"
 SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "libpcap"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = " \
 	http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz \
 	file://tcpdump_configure_no_-O2.patch;patch=1 \
 	file://no-ipv6-tcpdump4.patch;patch=1 \
 	file://0001-minimal-IEEE802.15.4-allowed.patch;patch=1 \
+	file://ipv6-cross.patch;patch=1 \
 "
 
 inherit autotools
 # ac_cv_linux_vers=${ac_cv_linux_vers=2}
 
-EXTRA_OECONF = "--without-crypto"
+EXTRA_OECONF = "--without-crypto \
+		${@base_contains('DISTRO_FEATURES', 'ipv6', '--enable-ipv6', '--disable-ipv6', d)}"
 
 do_configure() {
 	gnu-configize
