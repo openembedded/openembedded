@@ -1,7 +1,7 @@
 DESCRIPTION = "Additional plugins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20090812"
+SRCDATE = "20090828"
 
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
