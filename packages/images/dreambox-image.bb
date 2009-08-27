@@ -18,6 +18,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 # experimental packages
 OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2 aio-grab enigma2-skins"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
+	enigma2-plugin-systemplugins-cleanupwizard \
 	enigma2-plugin-systemplugins-crashlogautosubmit \
 	enigma2-plugin-systemplugins-softwaremanager \
 	enigma2-plugin-systemplugins-positionersetup \
