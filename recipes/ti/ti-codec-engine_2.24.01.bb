@@ -7,13 +7,9 @@ DEPENDS_dm6446-evm 	+= "ti-xdctools-native ti-cgt6x-native ti-dspbios-native ti-
 DEPENDS_armv7a   	+= "ti-cgt6x-native ti-dspbios-native ti-xdctools-native ti-dsplink-module"
 DEPENDS_dm355-evm 	+= "ti-xdctools-native"
 
-# disable this package for now, while we're in test mode
-DEFAULT_PREFERENCE = "-1"
-
-
 # tconf from xdctools dislikes '.' in pwd :/
 PR = "r7"
-PV = "224"
+PV = "2241"
 
 SRC_URI = "http://install.source.dir.com/codec_engine_2_24_01.tar.gz "
 
@@ -39,6 +35,10 @@ XDCTOOLS_DIR="${STAGING_DIR_NATIVE}/ti-xdctools-native"
 CE_INSTALL_DIR="${S}"
 
 do_compile () {
+
+	sed -i  \
+		-e s:arm-none-linux-gnueabi-:${TARGET_PREFIX}:g \
+		${S}/examples/xdcpaths.mak
 
 	for i in codecs extensions servers apps ; do
 		cd ${S}/examples/ti/sdo/ce/examples/$i
