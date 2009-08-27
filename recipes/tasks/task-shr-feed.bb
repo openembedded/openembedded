@@ -126,8 +126,8 @@ RDEPENDS_${PN} += "\
 		dbus-x11 \
 		bluez-utils-alsa \
 		python-pybluez \
-#		xournal \
-#		evince \
+		xournal \
+		evince \
 #		asterisk \
 		git \
 		ruby \
