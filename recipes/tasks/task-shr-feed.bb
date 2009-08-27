@@ -133,7 +133,7 @@ RDEPENDS_${PN} += "\
 		ruby \
 		orrery \
 		synergy \
-#		irssi \
+		irssi \
 		zhone \
 		paroli \
 #		cu \
