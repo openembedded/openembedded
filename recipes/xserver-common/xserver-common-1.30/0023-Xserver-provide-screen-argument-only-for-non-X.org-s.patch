@@ -1,0 +1,27 @@
+From 0ea66d0827131952dc1069f1ea3cb317b831df55 Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <hrw@koansoftware.com>
+Date: Fri, 28 Aug 2009 18:47:55 +0200
+Subject: [PATCH 1/1] Xserver: provide -screen argument only for non-X.org servers
+
+---
+ X11/Xserver |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/X11/Xserver b/X11/Xserver
+index 3d93a0a..583cd0d 100755
+--- a/X11/Xserver
++++ b/X11/Xserver
+@@ -179,7 +179,9 @@ else
+ 			# It is a device we do not know about, in which case we force
+ 			# kdrive to use the current framebuffer geometry -- otherwise
+ 			# it will default to trying to achieve 1024x768
+-			ARGS="$ARGS -screen ${SCREEN_SIZE}"
++			if [ "$XSERVER" != "Xorg" ] ; then
++			    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++			fi
+ 		    fi
+     esac
+ fi
+-- 
+1.6.3.3
+
