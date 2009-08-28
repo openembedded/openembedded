@@ -63,6 +63,9 @@ SRC_URI = "http://download.berlios.de/${PN}/${PN}-${PV}.tar.bz2;md5sum=888774acc
 
 TOPDIR[unexport] = "1"
 
+# The Makefile is lame, no parallel build
+PARALLEL_MAKE = ""
+
 # Copy config and source over to the source directory
 do_configure() {
     cp ${WORKDIR}/net-tools-${PV}-config.h    ${S}/config.h

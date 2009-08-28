@@ -1,4 +1,3 @@
-DEFAULT_PREFERENCE = "1"
 PR = "r18"
 
 require uclibc.inc
