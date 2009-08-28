@@ -1,13 +1,14 @@
 include erlang.inc
 DEPENDS += "erlang-native openssl"
 
-SRC_URI += "file://erts-configure.in.patch;patch=1 \
+SRC_URI += "\
             file://erts-emulator-Makefile.in.patch;patch=1 \
             file://erts-etc-unix-Install.src.patch;patch=1 \
-            file://lib-crypto-c_src-Makefile.in.patch;patch=1 \
             file://lib-erl_interface-src-Makefile.in.patch;patch=1 \
             file://Makefile.in.patch;patch=1 \
             "
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 EXTRA_OEMAKE = "BUILD_CC='${BUILD_CC}'"
 
@@ -50,7 +51,7 @@ do_install() {
     done
 }
 
-def get_erlang_libs(d):
+def get_erlang_libs_R13B01(d):
     import os, bb
     install_root = bb.data.getVar('D', d, 1)
     libdir = bb.data.getVar('libdir', d, 1)[1:]
@@ -68,5 +69,5 @@ def get_erlang_libs(d):
     return libs
 
 FILES_${PN}-dbg += " ${libdir}/erlang/bin/.debug ${libdir}/erlang/*/bin/.debug ${libdir}/erlang/lib/*/bin/.debug"
-FILES_${PN}-libs += " ${@' '.join(get_erlang_libs(d))}"
+FILES_${PN}-libs += " ${@' '.join(get_erlang_libs_R13B01(d))}"
 PACKAGES =+ "${PN}-libs"
