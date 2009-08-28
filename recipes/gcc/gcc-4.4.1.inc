@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -17,6 +17,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
 	file://gcc-disable-linux-unwind-with-libc-inhibit.patch;patch=1 \
 	file://gcc-link-libgcc-with-libm.patch;patch=1 \
+	file://gcc-improve-tls-macro.patch;patch=1 \
 	"
 # Language Overrides
 FORTRAN = ""
