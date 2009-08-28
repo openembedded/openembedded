@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -16,6 +16,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
 	file://gcc-disable-linux-unwind-with-libc-inhibit.patch;patch=1 \
+	file://gcc-link-libgcc-with-libm.patch;patch=1 \
 	"
 # Language Overrides
 FORTRAN = ""
@@ -24,3 +25,7 @@ JAVA = ""
 EXTRA_OECONF_BASE = " --enable-libssp \
 		      --disable-bootstrap --disable-libgomp \
 		      --disable-libmudflap"
+
+EXTRA_OECONF_append_linux-uclibc        = " --disable-decimal-float"
+EXTRA_OECONF_append_linux-uclibcgnueabi = " --disable-decimal-float"
+
