@@ -17,6 +17,7 @@ file://0019-keymap-fixed-machine-names.patch;patch=1 \
 file://0020-keymap-fixed-machine-names-again.patch;patch=1 \
 file://0021-xserver-introduced-MOUSE-variable-for-mouse-argument.patch;patch=1 \
 file://0022-xserver-fix-syntax-error.patch;patch=1 \
+file://0023-Xserver-provide-screen-argument-only-for-non-X.org-s.patch;patch=1 \
 "
 
 do_install_append() {
