@@ -3,10 +3,10 @@ HOMEPAGE="http://mokomaze.projects.openmoko.org/"
 SECTION="x11/games"
 PRIORITY="optional"
 LICENSE="GPLv3"
-DEPENDS="libsdl-ttf libsdl-image ode fsoraw"
-RDEPENDS="ttf-liberation-mono libpng"
+DEPENDS="libsdl-ttf libsdl-image ode"
+RDEPENDS="ttf-liberation-mono libpng fsoraw"
 
-PR="r0"
+PR="r1"
 PV="0.5.5+git8"
 
 SRC_URI="http://mokomaze.projects.openmoko.org/files/${PN}-${PV}.tar.gz \
