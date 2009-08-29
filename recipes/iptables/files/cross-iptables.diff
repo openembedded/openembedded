@@ -1,0 +1,15 @@
+--- a/extensions/Makefile~	2007-03-21 17:04:36.000000000 -0700
++++ b/extensions/Makefile	2009-07-14 19:01:56.000000000 -0700
+@@ -80,10 +80,10 @@
+ 
+ ifdef NO_SHARED_LIBS
+ extensions/libext.a: $(EXT_OBJS)
+-	rm -f $@; ar crv $@ $(EXT_OBJS)
++	rm -f $@; $(AR) crv $@ $(EXT_OBJS); $(RANLIB) $@
+ 
+ extensions/libext6.a: $(EXT6_OBJS)
+-	rm -f $@; ar crv $@ $(EXT6_OBJS)
++	rm -f $@; $(AR) crv $@ $(EXT6_OBJS); $(RANLIB) $@
+ 
+ extensions/initext.o: extensions/initext.c
+ extensions/initext6.o: extensions/initext6.c

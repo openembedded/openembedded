@@ -66,7 +66,7 @@ inherit update-rc.d
 INITSCRIPT_NAME = "pvr-init"
 INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 
-require ../dvsdk/ti-dspbios.inc
+require ../ti/ti-dspbios.inc
 
 do_compile() {
     for sofile in $(find ${S} -name "lib*Open*.so") $(find ${S} -name "lib*srv*.so")   $(find ${S} -name "lib*gl*.so") $(find ${S} -name "libpvr*.so") $(find ${S} -name "lib*GL*.so"); do

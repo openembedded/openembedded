@@ -523,6 +523,12 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+python do_cleanall() {
+    pass
+}
+do_cleanall[recrdeptask] = "do_clean"
+addtask cleanall after do_clean
+
 #Uncomment this for bitbake 1.8.12
 #addtask rebuild after do_${BB_DEFAULT_TASK}
 addtask rebuild
@@ -728,9 +734,14 @@ base_do_buildall() {
 	:
 }
 
+def subprocess_setup():
+	import signal
+	# Python installs a SIGPIPE handler by default. This is usually not what
+	# non-Python subprocesses expect.
+	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 def oe_unpack_file(file, data, url = None):
-	import bb, os
+	import bb, os, subprocess
 	if not url:
 		url = "file://%s" % file
 	dots = file.split(".")
@@ -799,7 +810,7 @@ def oe_unpack_file(file, data, url = None):
 
 	cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', data, 1), cmd)
 	bb.note("Unpacking %s to %s/" % (base_path_out(file, data), base_path_out(os.getcwd(), data)))
-	ret = os.system(cmd)
+	ret = subprocess.call(cmd, preexec_fn=subprocess_setup, shell=True)
 
 	os.chdir(save_cwd)
 

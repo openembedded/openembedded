@@ -48,7 +48,7 @@ case "$arch" in
 	"armv4t")
 			machines="micro2440 ep93xx h6300 om-gta01 om-gta02 fic-gta01 fic-gta02" ;;
 	"armv5te")
-			machines="htcalpine dm6446-evm dm6467-evm dm355-evm dm365-evm dm357-evm topas910 sheevaplug dm355-leopard n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa mx27ads at91sam9g20ek mainstone" ;;
+			machines="da830-omapl137-evm htcalpine dm6446-evm dm6467-evm dm355-evm dm365-evm dm357-evm topas910 sheevaplug dm355-leopard n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa mx27ads at91sam9g20ek mainstone" ;;
 	"armv5teb")
 			machines="ixp4xxbe nslu2be" ;;
 	"armv6-novfp")
@@ -86,13 +86,20 @@ case "$arch" in
 			machines="" ;;
 esac
 
+if [ $(find . -name  "*.ipk"| grep $arch | wc -l) -gt 0 ] ; then
+	export SORTFEED=1
+else
+	export SORTFEED=0
+fi
+
 echo "Sorting $arch"
-for i in `find . -name  "*.ipk"| grep $arch` ; do mkdir -p ../$archdir/base/ || true ;mv $i ../$archdir/base/ ; done
+
+mkdir -p ../$archdir/base/ || true
+for i in `find . -name  "*.ipk"| grep $arch` ; do mv $i ../$archdir/base/ ; done
         for machine in $machines ; do
                 for i in `find . -name  "*_$machine.ipk"| grep $machine` ; do mkdir -p ../$archdir/machine/$machine || true ;mv $i ../$archdir/machine/$machine ; done
 	done
-( mkdir -p ../$archdir ; cd ../$archdir && do_index )
-
+( cd ../$archdir && do_index )
 }
 
 do_index() {
@@ -101,6 +108,7 @@ echo "Processing $(basename $PWD) packages...."
 
 BPWD=`pwd`
 
+if [ "${SORTFEED}" -eq 1 ] ; then
 mkdir -p base
 cd base
 
@@ -116,20 +124,8 @@ for i in ../* ; do
   if [ -d $i ]; then
       cd $i
       echo -n "building index for $i:" |sed s:\.\./::
-      ${ipkg_tools_path}/ipkg-make-index -p Packages -l Packages.filelist  -m -L ../locales  . >& /tmp/index-log
+      ${ipkg_tools_path}/ipkg-make-index -m -p Packages -l Packages.filelist  -L ../locales  . >& /tmp/index-log
       echo " DONE"
-  fi
-done
-mkdir -p  ${BPWD}/machine
-cd ${BPWD}/machine
-
-for i in ./* ; do
-  if [ -d $i ]; then
-     cd $i
-     echo -n "building index for machine $i:"
-     ${ipkg_tools_path}/ipkg-make-index -p Packages -l Packages.filelist  -m  . >& /dev/null
-     echo " DONE"
-     cd ../
   fi
 done
 
@@ -139,12 +135,26 @@ echo -n "building index for locales:"
 for i in ../* ; do
   if [ -d $i ]; then
    echo -n " $i" |sed s:\.\./::
-   ${ipkg_tools_path}/ipkg-make-index -p Packages -l Packages.filelist  -m . >& /dev/null;
+   ${ipkg_tools_path}/ipkg-make-index -m -p Packages -l Packages.filelist . >& /dev/null;
    cd $i
   fi
  done
 echo " DONE"
-cd ${BPWD}
+
+fi
+mkdir -p  ${BPWD}/machine
+cd ${BPWD}/machine
+
+for i in ./* ; do
+  if [ -d $i ]; then
+     cd $i
+     echo -n "building index for machine $i:"
+     ${ipkg_tools_path}/ipkg-make-index -m -p Packages -l Packages.filelist . >& /dev/null
+     echo " DONE"
+     cd ../
+  fi
+done
+cd ${BPWD} 
 
 }
 

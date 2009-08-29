@@ -1,6 +1,6 @@
 require intltool.inc
 
-PR = "r2"
+PR = "${INC_PR}.1"
 
 EXTRA_OEMAKE = "'PERL_TARGET=/usr/bin/perl'"
 

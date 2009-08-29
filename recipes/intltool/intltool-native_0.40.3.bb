@@ -1,9 +1,6 @@
 require intltool_${PV}.bb
 
-PR = "r2"
-
 inherit native
-DEPENDS = "libxml-parser-perl-native"
 
 EXTRA_OEMAKE = "'PERL_TARGET=/usr/bin/env perl'"
 

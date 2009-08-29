@@ -1,29 +1,23 @@
---- dash-0.5.1/src/Makefile.am.orig	2004-07-03 05:13:27.000000000 +0200
-+++ dash-0.5.1/src/Makefile.am	2005-01-11 11:14:11.896299544 +0100
-@@ -3,6 +3,7 @@
- AM_CPPFLAGS = -include $(top_builddir)/config.h
- AM_YFLAGS = -d
- 
-+BUILD_CC ?= gcc
- CFLAGS = -g -O2 -Wall
- DEFS = \
- 	-DBSD=1 -DSMALL -DSHELL \
-@@ -35,6 +36,18 @@
- 	mktokens mkbuiltins builtins.def mkinit.c \
+Index: dash-0.5.5.1/src/Makefile.am
+===================================================================
+--- dash-0.5.5.1.orig/src/Makefile.am	2009-01-13 15:37:13.000000000 -0800
++++ dash-0.5.5.1/src/Makefile.am	2009-08-26 23:56:58.879275498 -0700
+@@ -44,6 +44,18 @@
+ 	mktokens mkbuiltins builtins.def.in mkinit.c \
  	mknodes.c nodetypes nodes.c.pat mksyntax.c mksignames.c
  
 +mknodes:
-+	$(BUILD_CC) mknodes.c -o mknodes
++	$(COMPILE_FOR_BUILD) mknodes.c -o mknodes
 +
 +mksyntax:
-+	$(BUILD_CC) mksyntax.c -o mksyntax
++	$(COMPILE_FOR_BUILD) mksyntax.c -o mksyntax
 +
 +mkinit:
-+	$(BUILD_CC) mkinit.c -o mkinit
++	$(COMPILE_FOR_BUILD) mkinit.c -o mkinit
 +
 +mksignames:
-+	$(BUILD_CC) mksignames.c -o mksignames
-+				
++	$(COMPILE_FOR_BUILD) mksignames.c -o mksignames
++
  token.h: mktokens
  	sh $^
  

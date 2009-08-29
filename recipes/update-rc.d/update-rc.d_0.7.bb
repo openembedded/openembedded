@@ -3,6 +3,7 @@ PRIORITY = "standard"
 DESCRIPTION = "Manage symlinks in /etc/rcN.d"
 LICENSE = "GPL"
 S = "${WORKDIR}/update-rc.d"
+INHIBIT_DEFAULT_DEPS = "1"
 PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_7 \

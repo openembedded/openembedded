@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU roff"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
 	           file://Makefile.in.patch;patch=1 \
@@ -11,7 +11,7 @@ SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
 PARALLEL_MAKE = ""
 # prefix and exec-prefix are broken and the .in file is broken too
 # and can't be autoreconf'ed, so specify every dir
-EXTRA_OECONF="--prefix=${D} --exec-prefix=${D} --bindir=${D}${bindir} --datadir=${D}${datadir} --mandir=${D}${datadir}/man --infodir=${D}${datadir}/info --with-appresdir=${D}${datadir}"
+EXTRA_OECONF="--without-x --prefix=${D} --exec-prefix=${D} --bindir=${D}${bindir} --datadir=${D}${datadir} --mandir=${D}${datadir}/man --infodir=${D}${datadir}/info --with-appresdir=${D}${datadir}"
 inherit autotools
 
 do_configure() {

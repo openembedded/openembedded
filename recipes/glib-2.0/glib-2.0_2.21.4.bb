@@ -8,4 +8,7 @@ SRC_URI = "\
   file://glibconfig-sysdefs.h \
   file://configure-libtool.patch;patch=1 \
 "
-SRC_URI_append_arm = " file://atomic-thumb.patch;patch=1"
+SRC_URI_append_arm = " file://atomic-thumb.patch;patch=1 \
+"
+SRC_URI_append_armv6 = " file://gatomic_armv6.patch;patch=1"
+SRC_URI_append_armv7a = " file://gatomic_armv6.patch;patch=1" 

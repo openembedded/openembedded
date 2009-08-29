@@ -42,5 +42,7 @@ do_stage() {
 
 do_install_append () {
     install -d ${D}/${bindir}
-    install -m 0755 ${S}/progs/xdemos/{glxdemo,glxgears,glxheads,glxinfo} ${D}/${bindir}
+    for i in glxdemo glxgears glxheads glxinfo; do 
+        install -m 0755 ${S}/progs/xdemos/${i} ${D}/${bindir}
+    done
 }

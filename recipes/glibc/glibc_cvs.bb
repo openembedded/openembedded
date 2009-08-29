@@ -37,6 +37,7 @@ RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 #	   file://ldd.patch;patch=1;pnum=0 \
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   cvs://anoncvs@sources.redhat.com/cvs/glibc;module=ports \
+	   file://nscd-init.patch;patch=1;pnum=0 \
 	   file://arm-audit.patch;patch=1 \
 	   file://arm-audit2.patch;patch=1 \
 	   file://arm-memcpy.patch;patch=1 \
@@ -71,6 +72,8 @@ do_munge() {
 addtask munge before do_patch after do_unpack
 
 do_configure () {
+# /var/db was not included to FHS
+	sed -i s:/var/db/nscd:/var/run/nscd: ${S}/nscd/nscd.h
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers

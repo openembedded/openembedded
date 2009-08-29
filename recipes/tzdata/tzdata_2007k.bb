@@ -12,7 +12,7 @@ RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-australia timezone-europe timezone-indian \
              timezone-iso3166.tab timezone-pacific timezone-zone.tab"
 
-SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz"
+SRC_URI = "http://bent.latency.net/bent/darcs/zoneinfo-2007k/src/tzdata${PV}.tar.gz"
 
 S = "${WORKDIR}"
 

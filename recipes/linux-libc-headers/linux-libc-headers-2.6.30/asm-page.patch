@@ -1,0 +1,55 @@
+This patch makes asm/page.h available with PAGE_SIZE available to
+the user space again, as it was in old header sets.
+It's better to not use it and fix recipes instead:
+- Use getpagesize(), -D_BSD_SOURCE or -D_XOPEN_SOURCE=500 and
+  #include <unistd.h>
+- in glibc >= 2.10 you can use PAGE_SIZE and #include <sys/user.h>.
+
+Index: linux-2.6.30/arch/arm/include/asm/page.h
+===================================================================
+--- linux-2.6.30.orig/arch/arm/include/asm/page.h
++++ linux-2.6.30/arch/arm/include/asm/page.h
+@@ -15,11 +15,12 @@
+ #define PAGE_SIZE		(1UL << PAGE_SHIFT)
+ #define PAGE_MASK		(~(PAGE_SIZE-1))
+ 
++#ifdef __KERNEL__
+ #ifndef __ASSEMBLY__
+ 
+ #ifndef CONFIG_MMU
+ 
+-#include "page-nommu.h"
++#include <asm/page-nommu.h>
+ 
+ #else
+ 
+@@ -204,4 +205,5 @@ typedef struct page *pgtable_t;
+ 
+ #include <asm-generic/page.h>
+ 
++#endif /* __KERNEL__ */
+ #endif
+Index: linux-2.6.30/include/asm-generic/Kbuild.asm
+===================================================================
+--- linux-2.6.30.orig/include/asm-generic/Kbuild.asm
++++ linux-2.6.30/include/asm-generic/Kbuild.asm
+@@ -16,6 +16,7 @@ unifdef-y += ioctls.h
+ unifdef-y += ipcbuf.h
+ unifdef-y += mman.h
+ unifdef-y += msgbuf.h
++unifdef-y += page.h
+ unifdef-y += param.h
+ unifdef-y += poll.h
+ unifdef-y += posix_types.h
+Index: linux-2.6.30/include/asm-generic/Kbuild
+===================================================================
+--- linux-2.6.30.orig/include/asm-generic/Kbuild
++++ linux-2.6.30/include/asm-generic/Kbuild
+@@ -3,6 +3,7 @@ header-y += errno.h
+ header-y += fcntl.h
+ header-y += ioctl.h
+ header-y += mman.h
++header-y += page.h
+ header-y += poll.h
+ header-y += signal.h
+ header-y += statfs.h

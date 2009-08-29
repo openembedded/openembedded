@@ -10,4 +10,6 @@ UPSTREAM_VERSION = "${@bb.data.getVar('PV', d, 1).replace('.', '-')}"
 SRC_URI = "http://erlang.org/download/otp_src_${UPSTREAM_VERSION}.tar.gz"
 S = "${WORKDIR}/otp_src_${UPSTREAM_VERSION}"
 
+PARALLEL_MAKE = ""
+
 inherit autotools

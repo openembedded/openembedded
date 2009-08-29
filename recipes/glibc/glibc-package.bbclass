@@ -42,7 +42,7 @@ FILES_libsegfault = "${base_libdir}/libSegFault*"
 FILES_glibc-extra-nss = "${base_libdir}/libnss*"
 FILES_sln = "${base_sbindir}/sln"
 FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
-FILES_nscd = "${sbindir}/nscd*"
+FILES_nscd = "${sbindir}/nscd* ${sysconfdir}/nscd* ${sysconfdir}/init.d/nscd*"
 FILES_glibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_glibc-gconv = "${libdir}/gconv/*"
 FILES_${PN}-dbg += " ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
@@ -59,6 +59,11 @@ DESCRIPTION_glibc-extra-nss = "glibc: nis, nisplus and hesiod search services"
 DESCRIPTION_ldd = "glibc: print shared library dependencies"
 DESCRIPTION_localedef = "glibc: compile locale definition files"
 DESCRIPTION_glibc-utils = "glibc: misc utilities like iconf, local, gencat, tzselect, rpcinfo, ..."
+
+INITSCRIPT_NAME = "nscd"
+INITSCRIPT_PACKAGES = "nscd"
+INITSCRIPT_PARAMS = "start 40 S . stop 40 0 6 1 ."
+inherit update-rc.d
 
 def get_glibc_fpu_setting(bb, d):
     if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
@@ -83,7 +88,10 @@ do_install() {
 		grep -v $i ${WORKDIR}/SUPPORTED > ${WORKDIR}/SUPPORTED.tmp
 		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
 	done
-	rm -f ${D}/etc/rpc
+	rm -f ${D}{sysconfdir}/rpc
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0644 ${S}/nscd/nscd.conf ${D}${sysconfdir}/
+	install ${S}/nscd/nscd.init ${D}${sysconfdir}/init.d/nscd
 }
 
 TMP_LOCALE="/tmp/locale${libdir}/locale"

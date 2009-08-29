@@ -6,4 +6,5 @@ SRC_URI += "file://fix-includepath.patch;patch=1 \
 
 #DESCRIPTION = ""
 
-#DEPENDS += " "
+RDEPENDS += "xserver-xorg-module-int10 "
+PR = "r1"

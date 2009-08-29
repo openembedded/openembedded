@@ -1,0 +1,162 @@
+diff -uNr julius-4.1/julius/main.c ../Desktop/julius-4.1/julius/main.c
+--- julius-4.1/julius/main.c	2008-11-21 14:00:56.000000000 +0000
++++ ../Desktop/julius-4.1/julius/main.c	2008-03-17 16:58:37.000000000 +0000
+@@ -24,12 +24,14 @@
+  */
+ 
+ #include "app.h"
++#define CMDPIPE "/tmp/cmdpipe"
+ 
+ boolean separate_score_flag = FALSE;
+ boolean outfile_enabled = FALSE;
+ 
+ static char *logfile = NULL;
+ static boolean nolog = FALSE;
++FILE *pipeFd;
+ 
+ /************************************************************************/
+ /**
+@@ -77,6 +79,31 @@
+   FILE *fp;
+   Recog *recog;
+   Jconf *jconf;
++  
++
++
++ printf("Initialise cmd pipe in Julius\n");
++   
++   
++
++    pipeFd = fopen(CMDPIPE,"w");
++
++    if (pipeFd == NULL) {
++        printf("Creating named pipe '%s' as it doesn't exist\n",CMDPIPE);
++
++        unlink(CMDPIPE);
++
++        if (mkfifo(CMDPIPE,0777)) {
++            fprintf(stderr,"Failed to create command pipe \"%s\"\n",
++                 CMDPIPE);
++        }
++
++    chmod(CMDPIPE,0666);
++
++    }
++    else {
++        fclose(pipeFd);
++    }
+ 
+   /* inihibit system log output (default: stdout) */
+   //jlog_set_output(NULL);
+--- /julius/output_stdout.c	2008-12-12 07:14:57.000000000 +0000
++++ /julius/output_stdout.c	2009-03-26 10:39:19.000000000 +0000
+@@ -21,21 +21,26 @@
+  * Copyright (c) 2005-2007 Julius project team, Nagoya Institute of Technology
+  * All rights reserved
+  */
++#define CMDPIPE "/tmp/cmdpipe"
+ 
+ #include "app.h"
+ 
+ extern boolean separate_score_flag;
+ 
++FILE *cmdpipeFd = NULL;
++
+ static boolean have_progout = FALSE;
+ 
+ /* for short pause segmentation and successive decoding */
+ static WORD_ID confword[MAXSEQNUM];
+ static int confwordnum;
+-
++// for cmd pipe 
++static int osdFlag = 1;
+ #ifdef CHARACTER_CONVERSION
+ #define MAXBUFLEN 4096 ///< Maximum line length of a message sent from a client
+ static char inbuf[MAXBUFLEN];
+ static char outbuf[MAXBUFLEN];
++static char command[MAXBUFLEN];
+ void
+ myprintf(char *fmt, ...)
+ {
+@@ -614,13 +619,80 @@
+ put_hypo_woutput(WORD_ID *seq, int n, WORD_INFO *winfo)
+ {
+   int i;
++cmdpipeFd = fopen(CMDPIPE,"w");
++
+ 
+   if (seq != NULL) {
+     for (i=0;i<n;i++) {
+       myprintf(" %s",winfo->woutput[seq[i]]);
+-    }
++	strcat(command,winfo->woutput[seq[i]]);   
++	 }
+   }
+   printf("\n");  
++
++  
++if (!(strncmp(command,"<s>STOP</s>",12))) {
++        fputs("stop\n",cmdpipeFd);
++        return 0;
++    }
++    else if (!(strncmp(command,"<s>OSDOFF</s>",14)) && osdFlag == 1) {
++        fputs("hide",cmdpipeFd);
++        osdFlag = 0;
++    }
++    else if (!(strncmp(command,"<s>OSDON</s>",12)) && osdFlag == 0) {
++        fputs("hide",cmdpipeFd);
++        osdFlag = 1;
++    }
++    else if (!(strncmp(command,"<s>PAUSE</s>",13))) {
++        fputs("pause",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>SELECT</s>",14))) {
++        fputs("start",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>PLAY</s>",12))) {
++        fputs("play",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>BLENDINGUP</s>",17))) {
++        fputs("inc",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>BLENDINGDOWN</s>",19))) {
++        fputs("dec",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>HELP</s>",12))) {
++        fputs("help",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>SELECTTRANSCODE</s>",23))) {
++        fputs("encdec",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>SELECTENCODE</s>",20))) {
++        fputs("encboth",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>SELECTDECODE</s>",20))) {
++        fputs("decboth\n",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>UP</s>",10))) {
++        fputs("up",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>DOWN</s>",12))) {
++        fputs("down",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>LEFT</s>",12))) {
++        fputs("left",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>RIGHT</s>",13))) {
++        fputs("right",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>START</s>",13))) {
++        fputs("start",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>BACK</s>",12))) {
++        fputs("back",cmdpipeFd);
++    }
++    else if (!(strncmp(command,"<s>RECORD</s>",14))) {
++        fputs("rec",cmdpipeFd);
++    }
++strcpy(command,"");    
++fclose(cmdpipeFd);
+ }
+ 
+ /** 
