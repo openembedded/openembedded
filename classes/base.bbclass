@@ -84,7 +84,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
 
     # call md5(sum) and shasum
     try:
-        md5pipe = os.popen('md5sum ' + localpath)
+	md5pipe = os.popen('PATH=%s md5sum %s' % (bb.data.getVar('PATH', data, True), localpath))
         md5data = (md5pipe.readline().split() or [ "" ])[0]
         md5pipe.close()
     except OSError:
