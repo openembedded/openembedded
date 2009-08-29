@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Brickshooter
+Comment=Brickshooter
+Exec=brickshooter
+Icon=/usr/share/pixmaps/brickshooter.png
+Type=Application
+Categories=Game;
+StartupNotify=false

@@ -1,0 +1,128 @@
+Binary files brickshooter-0.04/brickshooter and brickshooter-0.04-patched/brickshooter differ
+diff -pruN brickshooter-0.04/brickshooter.c brickshooter-0.04-patched/brickshooter.c
+--- brickshooter-0.04/brickshooter.c	2008-05-07 17:48:00.000000000 +0200
++++ brickshooter-0.04-patched/brickshooter.c	2009-08-29 10:21:16.000000000 +0200
+@@ -40,6 +40,9 @@
+ 
+ #define boolean int
+ 
++#define DATADIR "/usr/share/brickshooter/"
++/*#define DATADIR ""*/
++
+ 
+ #define GAME_NAME "brickshooter"
+ #define GAME_VERSION "v0.04"
+@@ -68,9 +71,9 @@ boolean is_fullscreen = FALSE;
+ boolean is_paused = FALSE;
+ boolean debugging_level = 0;
+ boolean do_quit = FALSE;
+-int SCREEN_WID = 800;
+-int SCREEN_HEI = 600;
+-int SCREEN_BPP = 24;
++int SCREEN_WID = 480;
++int SCREEN_HEI = 640;
++int SCREEN_BPP = 16;
+ 
+ enum {
+     DIR_N = 0,
+@@ -97,10 +100,10 @@ int SCORE_BG_X = 32;
+ int SCORE_BG_Y = 32;
+ 
+ 
+-int LEVEL_POS_X = 800 - 100;
++int LEVEL_POS_X = 480 - 100;
+ int LEVEL_POS_Y = 32+16;
+ 
+-int LEVELTXT_BG_X = 800 - 196;
++int LEVELTXT_BG_X = 480 - 196;
+ int LEVELTXT_BG_Y = 32;
+ 
+ 
+@@ -135,15 +138,15 @@ Mix_Chunk *audio_sound[NUM_SOUNDS];
+ int audio_channels[NUM_SOUNDS];
+ 
+ char *audio_sound_files[NUM_SOUNDS] = {
+-    "snd/explode.wav",
+-    "snd/gameover.wav",
+-    "snd/blockhit.wav",
+-    "snd/nextlevel.wav",
+-    "snd/blockout.wav",
+-    "snd/finishset.wav",
+-    "snd/cantmove.wav",
+-    "snd/shootblock.wav",
+-    "snd/startup.wav"
++    DATADIR "snd/explode.wav",
++    DATADIR "snd/gameover.wav",
++    DATADIR "snd/blockhit.wav",
++    DATADIR "snd/nextlevel.wav",
++    DATADIR "snd/blockout.wav",
++    DATADIR "snd/finishset.wav",
++    DATADIR "snd/cantmove.wav",
++    DATADIR "snd/shootblock.wav",
++    DATADIR "snd/startup.wav"
+ };
+ 
+ 
+@@ -1132,7 +1135,7 @@ levelfile_load(char *fname)
+ 
+     char fnamebuf[128];
+ 
+-    snprintf(fnamebuf, 127, "levels/%s.dat", fname);
++    snprintf(fnamebuf, 127, DATADIR "levels/%s.dat", fname);
+ 
+     levelfile_free();
+ 
+@@ -1966,27 +1969,27 @@ init_game()
+     allow_color = SDL_MapRGB(screen->format, 100,100,100);
+     bg_color = SDL_MapRGB(screen->format, 0, 0, 0);
+ 
+-    background = IMG_Load("gfx/background.png");
++    background = IMG_Load(DATADIR "gfx/background.png");
+ 
+-    window_border = IMG_Load("gfx/window_border.png");
++    window_border = IMG_Load(DATADIR "gfx/window_border.png");
+ 
+-    cursor_img = IMG_Load("gfx/cursor.png");
++    cursor_img = IMG_Load(DATADIR "gfx/cursor.png");
+ 
+-    target_pointer_img = IMG_Load("gfx/targeting.png");
++    target_pointer_img = IMG_Load(DATADIR "gfx/targeting.png");
+ 
+-    score_bg_img = IMG_Load("gfx/score_bg.png");
+-    leveltxt_bg_img = IMG_Load("gfx/level_bg.png");
++    score_bg_img = IMG_Load(DATADIR "gfx/score_bg.png");
++    leveltxt_bg_img = IMG_Load(DATADIR "gfx/level_bg.png");
+ 
+-    charset_img = IMG_Load("gfx/charset.png");
++    charset_img = IMG_Load(DATADIR "gfx/charset.png");
+     if (charset_img == NULL) {
+ 	fprintf(stderr, "Couldn't load charset: %s.\n",
+ 		SDL_GetError());
+ 	exit(1);
+     }
+ 
+-    explosion_img = IMG_Load("gfx/explosion.png");
++    explosion_img = IMG_Load(DATADIR "gfx/explosion.png");
+ 
+-    tilegfx = IMG_Load("gfx/tiles.png");
++    tilegfx = IMG_Load(DATADIR "gfx/tiles.png");
+ 
+     if (tilegfx == NULL) {
+ 	fprintf(stderr, "Couldn't load tiles: %s.\n",
+diff -pruN brickshooter-0.04/Makefile brickshooter-0.04-patched/Makefile
+--- brickshooter-0.04/Makefile	2008-05-07 17:48:00.000000000 +0200
++++ brickshooter-0.04-patched/Makefile	2009-08-29 09:46:23.000000000 +0200
+@@ -1,11 +1,11 @@
+-GCC = gcc
++CC = gcc
+ CFLAGS = -g -Wall --pedantic -lSDL_image -lSDL_mixer `sdl-config --libs --cflags`
+ EXE = brickshooter
+ 
+ ##########################
+ 
+ all:
+-	$(GCC) $(CFLAGS) $(EXE).c -o $(EXE)
++	$(CC) $(CFLAGS) $(EXE).c -o $(EXE)
+ 
+ clean:
+ 	rm -f *.o $(EXE) core
