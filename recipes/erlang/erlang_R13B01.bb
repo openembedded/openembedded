@@ -1,7 +1,7 @@
 include erlang.inc
 DEPENDS += "erlang-native openssl"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "\
             file://erts-emulator-Makefile.in.patch;patch=1 \
@@ -71,6 +71,6 @@ def get_erlang_libs_R13B01(d):
     libs.sort()
     return libs
 
-FILES_${PN}-dbg += " ${libdir}/erlang/bin/.debug ${libdir}/erlang/*/bin/.debug ${libdir}/erlang/lib/*/bin/.debug"
+FILES_${PN}-libs-dbg += " ${libdir}/erlang/*/.debug ${libdir}/erlang/*/*/.debug ${libdir}/erlang/*/*/*/.debug ${libdir}/erlang/*/*/*/*/.debug ${libdir}/erlang/*/*/*/*/*/.debug "
 FILES_${PN}-libs += " ${@' '.join(get_erlang_libs_R13B01(d))}"
-PACKAGES =+ "${PN}-libs"
+PACKAGES =+ "${PN}-libs-dbg ${PN}-libs"
