@@ -9,12 +9,12 @@
 UCLIBC_BASE ?= "0.9.30"
 SRCREV="d57e6548d253a9efed91d72498aeda092fa265d2"
 PV = "${UCLIBC_BASE}+gitr${SRCREV}"
-PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
 require uclibc.inc
+PR = "${INC_PR}.0"
 
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
