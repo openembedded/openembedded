@@ -1,0 +1,32 @@
+From 309ba3de37f0374c72c4569186e381a3272c24bc Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Mon, 31 Aug 2009 12:47:05 +0200
+Subject: [PATCH 1/1] Makefile: move modmaps, install xserver-common
+
+---
+ Makefile |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- xserver-common-1.30.orig/Makefile
++++ xserver-common-1.30/Makefile
+@@ -15,16 +15,18 @@ endif
+ all:
+ 
+ install-program: 
+ 	for i in X11/Xsession.d X11/Xinit.d; do install -d $(DESTDIR)/etc/$$i; FILES=`echo $$i/* | sed "s:$$i/CVS::"`; install -m 755 $$FILES $(DESTDIR)/etc/$$i/; done
+ 	install -d $(DESTDIR)$(PREFIX)/bin
++	install -d $(DESTDIR)/etc/X11/xmodmap
+ 	install -m 755 run-calibrate.sh $(DESTDIR)$(PREFIX)/bin/run-calibrate.sh
+ 	install -m 644 X11/Xdefaults $(DESTDIR)/etc/X11/Xdefaults
+ 	install -m 755 X11/Xinit $(DESTDIR)/etc/X11/Xinit
+ 	install -m 755 X11/Xserver $(DESTDIR)/etc/X11/Xserver
++	install -m 644 X11/xserver-common $(DESTDIR)/etc/X11/xserver-common
+ 	install -m 755 X11/Xsession $(DESTDIR)/etc/X11/Xsession
+-	install -m 644 X11/xmodmap/*.xmodmap $(DESTDIR)/etc/X11/
+-	install -m 644 X11/xmodmap-* $(DESTDIR)/etc/X11/
++	install -m 644 X11/xmodmap/* $(DESTDIR)/etc/X11/xmodmap/
++	install -m 644 X11/xmodmap-* $(DESTDIR)/etc/X11/xmodmap/
+ 
+ clean:
+ 
+ include $(BUILD)/Makefile.dpkg_ipkg

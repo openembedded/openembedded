@@ -1,0 +1,25 @@
+From 884521a985831e9f6eb231bc8dd96613ca90c636 Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Mon, 31 Aug 2009 12:53:29 +0200
+Subject: [PATCH 1/1] 98keymap-fixup: fixed path to xmodmap file
+
+---
+ X11/Xinit.d/98keymap-fixup |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/X11/Xinit.d/98keymap-fixup b/X11/Xinit.d/98keymap-fixup
+index fcc84d9..6895e24 100755
+--- a/X11/Xinit.d/98keymap-fixup
++++ b/X11/Xinit.d/98keymap-fixup
+@@ -3,7 +3,7 @@
+ # kdrive 1.4 and up have a heisenbug where it may take multiple tries to apply a modmap
+ iter=0
+ while [ $(xmodmap -pke | awk '{if ($2 == 36) { if ($4 == "Return") { print "good" } else {print "bad" }}}') = "bad" ] ; do
+-	xmodmap - </etc/X11/default.xmodmap
++	xmodmap - </etc/X11/xmodmap/default.xmodmap
+ 	let iter=iter+1
+ done
+ 
+-- 
+1.6.3.3
+
