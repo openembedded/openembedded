@@ -1,6 +1,6 @@
 
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: '/local/pkg/oe/openembedded/contrib/python/generate-manifest-2.6.py' Version 20090812 (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: '../../contrib/python/generate-manifest-2.6.py' Version 20090812 (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 
  
@@ -99,7 +99,7 @@ FILES_python-json="${libdir}/python2.6/json "
 
 DESCRIPTION_python-devel="Python Development Package"
 RDEPENDS_python-devel="python-core"
-FILES_python-devel="${includedir} ${libdir}/python2.6/config "
+FILES_python-devel="${includedir} ${libdir}/libpython2.6.so ${libdir}/python2.6/config "
 
 DESCRIPTION_python-difflib="Python helpers for computing deltas between objects."
 RDEPENDS_python-difflib="python-lang python-re"
@@ -151,7 +151,7 @@ FILES_python-pprint="${libdir}/python2.6/pprint.* "
 
 DESCRIPTION_python-netserver="Python Internet Protocol Servers"
 RDEPENDS_python-netserver="python-core python-netclient"
-FILES_python-netserver="${libdir}/python2.6/cgi.* ${libdir}/python2.6/BaseHTTPServer.* ${libdir}/python2.6/SimpleHTTPServer.* ${libdir}/python2.6/SocketServer.* "
+FILES_python-netserver="${libdir}/python2.6/cgi.* ${libdir}/python2.6/*HTTPServer.* ${libdir}/python2.6/SocketServer.* "
 
 DESCRIPTION_python-curses="Python Curses Support"
 RDEPENDS_python-curses="python-core"

@@ -1,0 +1,66 @@
+commit cb3827e31b14e4830bdfd309c12f5510e0402d8d
+Author: michael <michael@ea9f5d8b-f83d-0410-bf23-ec2180cbb196>
+Date:   Mon Jun 25 21:52:51 2007 +0000
+
+    20040325.1: add HTTP Host: header to work behind Hughes satellite autoproxy
+    
+    
+    git-svn-id: file:///usr/local/httpd/SourceForge/home/users/michael/svn/svnrepos/os/packages/sscep/trunk@37 ea9f5d8b-f83d-0410-bf23-ec2180cbb196
+
+diff --git a/sscep.c b/sscep.c
+index 6ec2a4d..6eefdc9 100644
+--- a/sscep.c
++++ b/sscep.c
+@@ -16,6 +16,7 @@ main(int argc, char **argv) {
+ 	int			c, host_port = 80, count = 1;
+ 	char			*host_name, *p, *dir_name = NULL;
+ 	char			http_string[16384];
++	char			http_host[256];
+ 	struct http_reply	reply;
+ 	unsigned int		n;
+ 	unsigned char		md[EVP_MAX_MD_SIZE];
+@@ -250,6 +251,9 @@ main(int argc, char **argv) {
+ 	if (p_flag) {
+ 		host_name = strdup(p_char);
+ 		dir_name = url_char;
++
++		/* I won't bother with the Host: header for proxy mode. */
++		http_host[0] = '\0';
+ 	}
+ 
+ 	/* Break down the URL */
+@@ -289,6 +293,12 @@ main(int argc, char **argv) {
+ 				host_port);
+ 		exit (SCEP_PKISTATUS_ERROR);
+ 	}
++	if (!p_flag) {
++		if (snprintf(http_host, sizeof(http_host), "Host: %s:%d\r\n",
++			     host_name, host_port) >= sizeof(http_host)) {
++			http_host[0] = '\0';
++		}
++	}
+ 	if (v_flag) {
+ 		fprintf(stdout, "%s: hostname: %s\n", pname, host_name);
+ 		fprintf(stdout, "%s: directory: %s\n", pname, dir_name);
+@@ -349,8 +359,8 @@ main(int argc, char **argv) {
+ 			/* Forge the HTTP message */
+ 			snprintf(http_string, sizeof(http_string),
+ 			 "GET %s%s?operation=GetCACert&message=%s "
+-			 "HTTP/1.0\r\n\r\n", p_flag ? "" : "/", dir_name,
+-					i_char); 
++			 "HTTP/1.0\r\n%s\r\n", p_flag ? "" : "/",
++					dir_name, i_char, http_host);
+ 			printf("%s: requesting CA certificate\n", pname);
+ 			if (d_flag)
+ 				fprintf(stdout, "%s: scep msg: %s", pname,
+@@ -549,8 +559,8 @@ not_enroll:
+ 			snprintf(http_string, sizeof(http_string),
+ 				"GET %s%s?operation="
+ 				"PKIOperation&message="
+-				"%s HTTP/1.0\r\n\r\n",
+-				p_flag ? "" : "/", dir_name, p);
++				"%s HTTP/1.0\r\n%s\r\n",
++				p_flag ? "" : "/", dir_name, p, http_host);
+ 
+ 			free(p);
+ 			p = NULL;
