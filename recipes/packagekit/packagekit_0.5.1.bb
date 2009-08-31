@@ -10,9 +10,11 @@ inherit gnome autotools_stage
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
            file://fix-segfaults-when-consolekit-is-missing.patch;patch=1 \
            file://fix-segfault-when-hald-is-not-running.patch;patch=1 \
+           file://opkg-fix-installing-and-removing-multiple-packages-at-once.patch;patch=1 \
+#           file://opkg-fix-infinite-loop-in-get_updates.patch;patch=1 \
            "
 
-PR = "r2"
+PR = "r3.3"
 PE = "2"
 
 S = "${WORKDIR}/PackageKit-${PV}"
@@ -21,6 +23,8 @@ EXTRA_OECONF = "--with-security-framework=dummy \
                 --with-default-backend=opkg \
                 --enable-opkg \
                 --enable-dummy \
+                --disable-networkmanager \
+                --disable-connman \
                 --disable-tests \
                 --disable-qt \
                 --disable-gstreamer-plugin \
