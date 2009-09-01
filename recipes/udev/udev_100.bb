@@ -9,11 +9,12 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
 	   file://flags.patch;patch=1 \
+	   file://mtd-exclude-persistent.patch;patch=1 \
 	   file://mount.blacklist \
 	   file://mount.sh \
 	   "
