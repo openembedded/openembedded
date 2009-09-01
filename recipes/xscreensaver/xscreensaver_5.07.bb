@@ -1,5 +1,5 @@
 require xscreensaver.inc
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
            file://configure.in.patch;patch=1 \
