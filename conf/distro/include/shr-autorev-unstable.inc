@@ -81,6 +81,7 @@ SRCREV_pn-python-phoneutils = "${AUTOREV}"
 
 # E17 stuff
 EFL_SRCREV = "41040"
+SRCREV_pn-eve = "41151"
 SRCREV_pn-python-elementary = "41040"
 SRCREV_pn-e-wm-config-illume-shr = "${AUTOREV}"
 SRCREV_pn-e-wm-sysactions-shr = "${AUTOREV}"
