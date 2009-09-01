@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.assembla.com/wiki/show/shrdev"
 AUTHOR = "Fate"
 LICENSE = "GPLv2"
 SECTION = "e/apps"
-RDEPENDS = "python-elementary"
+RDEPENDS = "python-elementary connman"
 
 PV = "0.4+svnr${SRCREV}"
 PR = "r0"
