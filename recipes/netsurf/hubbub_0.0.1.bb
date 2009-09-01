@@ -5,7 +5,10 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 DEPENDS = "libparserutils"
 
-SRC_URI = "http://www.netsurf-browser.org/projects/releases/hubbub-${PV}-src.tar.gz"
+SRC_URI = "http://www.netsurf-browser.org/projects/releases/hubbub-${PV}-src.tar.gz \
+           file://hubbub-uninitialised.patch;patch=1"
+
+PR = "r1"
 
 inherit pkgconfig
 

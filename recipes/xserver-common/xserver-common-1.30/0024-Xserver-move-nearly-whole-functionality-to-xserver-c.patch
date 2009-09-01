@@ -1,0 +1,415 @@
+From dc0efcbc35a7e0c5b5f908fb4d27a76c4ee304ac Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Mon, 31 Aug 2009 12:05:17 +0200
+Subject: [PATCH 1/1] Xserver: move nearly whole functionality to xserver-common
+
+/etc/X11/Xserver script now use /etc/X11/xserver-common one to get
+values for XSERVER, ARGS, DPI variables.
+
+This split allows to use xserver-common for other X11 startup systems.
+---
+ X11/Xserver        |  188 +--------------------------------------------------
+ X11/xserver-common |  191 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 192 insertions(+), 187 deletions(-)
+ create mode 100644 X11/xserver-common
+
+diff --git a/X11/Xserver b/X11/Xserver
+index 583cd0d..d53e1c9 100755
+--- a/X11/Xserver
++++ b/X11/Xserver
+@@ -1,194 +1,8 @@
+ #!/bin/sh
+ #
+ 
+-XSERVER=Xfbdev
+-BINDIR=/usr/bin
++. /etc/X11/xserver-common
+ 
+-if [ -f $BINDIR/Xepson ]; then
+-  XSERVER=Xepson
+-fi
+-if [ -f $BINDIR/Xorg ]; then
+-  XSERVER=Xorg
+-fi
+-if [ -f $BINDIR/Xomap ]; then
+-  XSERVER=Xomap
+-fi
+-if [ -f $BINDIR/Xw100 ]; then
+-  XSERVER=Xw100
+-fi
+-if [ -f $BINDIR/Xvesa ]; then
+-  XSERVER=Xvesa
+-fi
+-if [ -f $BINDIR/Ximageon ]; then
+-  XSERVER=Ximageon
+-fi
+-if [ -f $BINDIR/Xglamo ]; then
+-  XSERVER=Xglamo
+-fi
+-
+-if [ -f /etc/profile ]; then
+-  . /etc/profile
+-fi
+-
+-. /etc/init.d/functions
+-
+-fallback_screen_arg() {
+-    geom=`fbset | grep geometry`
+-    w=`echo $geom | awk '{ print $2 }'`
+-    h=`echo $geom | awk '{ print $3 }'`
+-    b=`echo $geom | awk '{ print $6 }'`
+-    echo -n "${w}x${h}x${b}"
+-}
+-
+-SCREEN_SIZE=`fallback_screen_arg`
+-export USER=root
+-export XSERVER_DEFAULT_ORIENTATION=normal
+-
+-ARGS="-br -pn $INPUT_EXTRA_ARGS"
+-DPI="100"
+-MOUSE=""
+-
+-# use ucb 1x00 touchscreen if present
+-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
+-  MOUSE="-mouse /dev/touchscreen/ucb1x00"
+-fi
+-
+-# kdrive 1.4 onwards needs -mouse args
+-# Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
+-if [ -e "$TSLIB_TSDEVICE" ] ; then
+-  MOUSE="-mouse tslib"
+-else
+-  if  [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ] ; then
+-    MOUSE="-mouse mouse"
+-  fi
+-fi
+-
+-if [ -e /etc/default/xserver ] ; then
+-    . /etc/default/xserver
+-else
+-    # start off server in conventional location.
+-    case `machine_id` in
+-	    "aml_m8050")
+-		    ARGS="$ARGS  -screen 320x240@270"
+-		    DPI="100" ;;
+-	    "hp_ipaq_h3100" | "hp_ipaq_h3800")
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@90"
+-		    DPI="100" ;;
+-	    "hp_ipaq_h3600" | "hp_ipaq_h3700" | "hp_ipaq_h3900")
+-		    ARGS="$ARGS -rgba vbgr -screen 320x240@270"
+-		    DPI="100" ;;
+-	    "hp_ipaq_h5400" | "hp_ipaq_h2200")
+-		    ARGS="$ARGS -rgba rgb"
+-		    DPI="100" ;;
+-	    "hp_ipaq_hx4700")
+-		    DPI="200" ;;
+-	    "ramses")
+-		    # What is this "vt2" in aid of?
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@90 vt2"
+-		    DPI="100" ;;
+-	    *poodle)
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@270"
+-		    DPI="100" ;;
+-	    # both 'Sharp-Collie' and just 'Collie' have been reported
+-	    *collie)
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@270"
+-		    DPI="100" ;;
+-	    "sharp_shepherd" | "sharp_husky" | "sharp_corgi")
+-		    ARGS="$ARGS -rgba rgb"
+-		    DPI="200" ;;
+-	    "sharp_spitz" | "sharp_akita" | "sharp_borzoi")
+-		    export XSERVER_DEFAULT_ORIENTATION="normal"
+-		    ARGS="$ARGS -rgba rgb -screen 480x640"
+-		    DPI="200" ;;
+-	    "simpad")
+-		    ARGS="$ARGS -rgba rgb"
+-		    DPI="100" ;;
+-	    "generic_omap1510/1610/1710")
+-		    MOUSE="-mouse /dev/input/event0"
+-		    DPI="220" ;;
+-	    "ti-osk")
+-		    DPI="100" ;;
+-	    "cellon_c8000_board")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE},10,1"
+-		    DPI="100" ;;
+-	    "htc_magician")
+-		    DPI="142" ;;
+-	    "htc_universal")
+-		    ARGS="$ARGS -screen 480x640@270"
+-		    DPI="100" ;;
+-	    "htc_tornado")
+-		    ARGS="$ARGS -hide-cursor"
+-		    DPI="100" ;;
+-	    "generic_omap1510/1610/1710")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="225" ;;
+-	    "nokia_n800" | "nokia_rx-44" | "nokia_n770")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="225" ;;
+-	    "gta01" )
+-		    DPI="285"
+-		    if [ "$XSERVER" != "Xorg" ] ; then
+-			    ARGS="$ARGS -screen 480x640"
+-		    fi
+-		    ;;
+-	    "gta02")
+-		    DPI="285"
+-		    if [ "$XSERVER" != "Xorg" ] ; then
+-			    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    fi
+-		    ;;
+-	    "motorola_ezx_platform")
+-		    ARGS="$ARGS -screen 240x320"
+-		    DPI="170" ;;
+-	    "arm-integratorcp" | "arm-versatile_pb")
+-		    ARGS="$ARGS -rgba vrgb" ;;
+-	    "compulab_cm-x270")
+-		    modprobe mbxfb
+-		    ARGS="$ARGS -fb /dev/fb1" ;;
+-	    "boundary_devices_neon_board")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="100" ;;
+-	    "hoeft&wessel_hw90350")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="100" ;;
+-	    "hoeft&wessel_hw90250")
+-		    ARGS="$ARGS -screen 240x320@90"
+-		    DPI="100" ;;
+-	    "mini2440")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="100" ;;
+-	    "palm_treo_650")
+-	            DPI="181"
+-		    ARGS="$ARGS -screen 320x320 -hide-cursor" ;;
+-	    "glofiish_m800")
+-	            DPI="285"
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE} -hide-cursor vt1" ;;
+-	    "freescale_mx21ads")
+-	    # That's what /proc/cpuinfo shows as hardware on the chumby
+-	            DPI="121"
+-		    ARGS="$ARGS -screen 320x240 -hide-cursor" ;;
+-
+-            # this is to rotate X display properly, tested with display TX09D71VM1CCA
+-            ronetix*pm9261*  | ronetix*pm9263*)
+-         	    ARGS="$ARGS -screen 240/54x320/81@90x16" ;;
+-	    # This is a fallback for PCs
+-	    "")
+-		    if [ -f $BINDIR/Xvesa ]; then
+-			    ARGS="$ARGS -mode 0x0114"
+-		    else
+-			# It is a device we do not know about, in which case we force
+-			# kdrive to use the current framebuffer geometry -- otherwise
+-			# it will default to trying to achieve 1024x768
+-			if [ "$XSERVER" != "Xorg" ] ; then
+-			    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-			fi
+-		    fi
+-    esac
+-fi
+-
+-if [ "$XSERVER" != "Xorg" ] ; then
+-    ARGS="$ARGS $MOUSE"
+-fi
+ 
+ echo "tslib: $TSLIB_TSDEVICE"
+ echo "exec $XSERVER $ARGS -dpi $DPI $*"
+diff --git a/X11/xserver-common b/X11/xserver-common
+new file mode 100644
+index 0000000..29d152f
+--- /dev/null
++++ b/X11/xserver-common
+@@ -0,0 +1,191 @@
++#!/bin/sh
++#
++
++XSERVER=Xfbdev
++BINDIR=/usr/bin
++
++if [ -f $BINDIR/Xepson ]; then
++  XSERVER=Xepson
++fi
++if [ -f $BINDIR/Xorg ]; then
++  XSERVER=Xorg
++fi
++if [ -f $BINDIR/Xomap ]; then
++  XSERVER=Xomap
++fi
++if [ -f $BINDIR/Xw100 ]; then
++  XSERVER=Xw100
++fi
++if [ -f $BINDIR/Xvesa ]; then
++  XSERVER=Xvesa
++fi
++if [ -f $BINDIR/Ximageon ]; then
++  XSERVER=Ximageon
++fi
++if [ -f $BINDIR/Xglamo ]; then
++  XSERVER=Xglamo
++fi
++
++if [ -f /etc/profile ]; then
++  . /etc/profile
++fi
++
++. /etc/init.d/functions
++
++fallback_screen_arg() {
++    geom=`fbset | grep geometry`
++    w=`echo $geom | awk '{ print $2 }'`
++    h=`echo $geom | awk '{ print $3 }'`
++    b=`echo $geom | awk '{ print $6 }'`
++    echo -n "${w}x${h}x${b}"
++}
++
++SCREEN_SIZE=`fallback_screen_arg`
++export USER=root
++export XSERVER_DEFAULT_ORIENTATION=normal
++
++ARGS="-br -pn $INPUT_EXTRA_ARGS"
++DPI="100"
++MOUSE=""
++
++# use ucb 1x00 touchscreen if present
++if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
++  MOUSE="-mouse /dev/touchscreen/ucb1x00"
++fi
++
++# kdrive 1.4 onwards needs -mouse args
++# Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
++if [ -e "$TSLIB_TSDEVICE" ] ; then
++  MOUSE="-mouse tslib"
++else
++  if  [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ] ; then
++    MOUSE="-mouse mouse"
++  fi
++fi
++
++if [ -e /etc/default/xserver ] ; then
++    . /etc/default/xserver
++else
++    # start off server in conventional location.
++    case `machine_id` in
++	    "aml_m8050")
++		    ARGS="$ARGS  -screen 320x240@270"
++		    DPI="100" ;;
++	    "hp_ipaq_h3100" | "hp_ipaq_h3800")
++		    ARGS="$ARGS -rgba vrgb -screen 320x240@90"
++		    DPI="100" ;;
++	    "hp_ipaq_h3600" | "hp_ipaq_h3700" | "hp_ipaq_h3900")
++		    ARGS="$ARGS -rgba vbgr -screen 320x240@270"
++		    DPI="100" ;;
++	    "hp_ipaq_h5400" | "hp_ipaq_h2200")
++		    ARGS="$ARGS -rgba rgb"
++		    DPI="100" ;;
++	    "hp_ipaq_hx4700")
++		    DPI="200" ;;
++	    "ramses")
++		    # What is this "vt2" in aid of?
++		    ARGS="$ARGS -rgba vrgb -screen 320x240@90 vt2"
++		    DPI="100" ;;
++	    *poodle)
++		    ARGS="$ARGS -rgba vrgb -screen 320x240@270"
++		    DPI="100" ;;
++	    # both 'Sharp-Collie' and just 'Collie' have been reported
++	    *collie)
++		    ARGS="$ARGS -rgba vrgb -screen 320x240@270"
++		    DPI="100" ;;
++	    "sharp_shepherd" | "sharp_husky" | "sharp_corgi")
++		    ARGS="$ARGS -rgba rgb"
++		    DPI="200" ;;
++	    "sharp_spitz" | "sharp_akita" | "sharp_borzoi")
++		    export XSERVER_DEFAULT_ORIENTATION="normal"
++		    ARGS="$ARGS -rgba rgb -screen 480x640"
++		    DPI="200" ;;
++	    "simpad")
++		    ARGS="$ARGS -rgba rgb"
++		    DPI="100" ;;
++	    "generic_omap1510/1610/1710")
++		    MOUSE="-mouse /dev/input/event0"
++		    DPI="220" ;;
++	    "ti-osk")
++		    DPI="100" ;;
++	    "cellon_c8000_board")
++		    ARGS="$ARGS -screen ${SCREEN_SIZE},10,1"
++		    DPI="100" ;;
++	    "htc_magician")
++		    DPI="142" ;;
++	    "htc_universal")
++		    ARGS="$ARGS -screen 480x640@270"
++		    DPI="100" ;;
++	    "htc_tornado")
++		    ARGS="$ARGS -hide-cursor"
++		    DPI="100" ;;
++	    "generic_omap1510/1610/1710")
++		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++		    DPI="225" ;;
++	    "nokia_n800" | "nokia_rx-44" | "nokia_n770")
++		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++		    DPI="225" ;;
++	    "gta01" )
++		    DPI="285"
++		    if [ "$XSERVER" != "Xorg" ] ; then
++			    ARGS="$ARGS -screen 480x640"
++		    fi
++		    ;;
++	    "gta02")
++		    DPI="285"
++		    if [ "$XSERVER" != "Xorg" ] ; then
++			    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++		    fi
++		    ;;
++	    "motorola_ezx_platform")
++		    ARGS="$ARGS -screen 240x320"
++		    DPI="170" ;;
++	    "arm-integratorcp" | "arm-versatile_pb")
++		    ARGS="$ARGS -rgba vrgb" ;;
++	    "compulab_cm-x270")
++		    modprobe mbxfb
++		    ARGS="$ARGS -fb /dev/fb1" ;;
++	    "boundary_devices_neon_board")
++		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++		    DPI="100" ;;
++	    "hoeft&wessel_hw90350")
++		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++		    DPI="100" ;;
++	    "hoeft&wessel_hw90250")
++		    ARGS="$ARGS -screen 240x320@90"
++		    DPI="100" ;;
++	    "mini2440")
++		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++		    DPI="100" ;;
++	    "palm_treo_650")
++	            DPI="181"
++		    ARGS="$ARGS -screen 320x320 -hide-cursor" ;;
++	    "glofiish_m800")
++	            DPI="285"
++		    ARGS="$ARGS -screen ${SCREEN_SIZE} -hide-cursor vt1" ;;
++	    "freescale_mx21ads")
++	    # That's what /proc/cpuinfo shows as hardware on the chumby
++	            DPI="121"
++		    ARGS="$ARGS -screen 320x240 -hide-cursor" ;;
++
++            # this is to rotate X display properly, tested with display TX09D71VM1CCA
++            ronetix*pm9261*  | ronetix*pm9263*)
++         	    ARGS="$ARGS -screen 240/54x320/81@90x16" ;;
++	    # This is a fallback for PCs
++	    "")
++		    if [ -f $BINDIR/Xvesa ]; then
++			    ARGS="$ARGS -mode 0x0114"
++		    else
++			# It is a device we do not know about, in which case we force
++			# kdrive to use the current framebuffer geometry -- otherwise
++			# it will default to trying to achieve 1024x768
++			if [ "$XSERVER" != "Xorg" ] ; then
++			    ARGS="$ARGS -screen ${SCREEN_SIZE}"
++			fi
++		    fi
++    esac
++fi
++
++if [ "$XSERVER" != "Xorg" ] ; then
++    ARGS="$ARGS $MOUSE"
++fi
+-- 
+1.6.3.3
+

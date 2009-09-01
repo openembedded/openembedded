@@ -164,7 +164,7 @@ if __name__ == "__main__":
     "lib-dynload/.debug ${bindir}/.debug ${libdir}/.debug" )
 
     m.addPackage( "python-devel", "Python Development Package", "python-core",
-    "${includedir} config" ) # package
+    "${includedir} ${libdir}/libpython2.6.so config" ) # package
 
     m.addPackage( "python-idle", "Python Integrated Development Environment", "python-core python-tkinter",
     "${bindir}/idle idlelib" ) # package
@@ -281,7 +281,7 @@ if __name__ == "__main__":
     "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.* uuid.* rfc822.* mimetools.*" )
 
     m.addPackage( "python-netserver", "Python Internet Protocol Servers", "python-core python-netclient",
-    "cgi.* BaseHTTPServer.* SimpleHTTPServer.* SocketServer.*" )
+    "cgi.* *HTTPServer.* SocketServer.*" )
 
     m.addPackage( "python-pickle", "Python Persistence Support", "python-core python-codecs python-io python-re",
     "pickle.* shelve.* lib-dynload/cPickle.so" )

@@ -7,11 +7,10 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r5"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
 
 require uclibc.inc
-
+PR = "${INC_PR}.0"
 PROVIDES_append_bfin = " virtual/${TARGET_PREFIX}libc-for-gcc "
 
 #recent versions uclibc require real kernel headers

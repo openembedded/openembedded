@@ -8,6 +8,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2 \
            http://www.rpsys.net/openzaurus/patches/archive/input_power-r7.patch;patch=1 \
 	   file://suspend-button.patch;patch=1 \
            file://linux-2.6-limits.patch;patch=1 \
+           file://1300-fix-gcc-4.3-false-modulo-optimization.patch.patch;patch=1 \
 	   file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.21"
