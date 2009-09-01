@@ -6,7 +6,7 @@ SECTION = "e/apps"
 RDEPENDS = "python-elementary connman"
 
 PV = "0.4+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http"
 
