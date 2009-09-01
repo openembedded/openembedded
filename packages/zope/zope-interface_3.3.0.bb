@@ -13,9 +13,7 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 inherit distutils
 
 PACKAGES += "\
-  ${PN}-dbg \
   ${PN}-test \
-  ${PN}-doc \
 "
 
 FILES_${PN} = " \
