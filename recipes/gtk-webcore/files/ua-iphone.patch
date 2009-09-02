@@ -16,7 +16,7 @@ index b0e5607..4931d6b 100644
                                  appname, platform, os, lang);
 +    case MIDORI_IDENT_IPHONE:
 +        return g_strdup_printf ("Mozilla/5.0 (iPhone; U; %s; %s) "
-+            "AppleWebKit/532+ (KHTML, like Gecko) Version/3.0 Mobile/1A538b" 
++            "AppleWebKit/532+ (KHTML, like Gecko) Version/3.0 Mobile/1A538b " 
 +            "Safari/419.3 %s",
 +                                os, lang, appname);
      case MIDORI_IDENT_SAFARI:

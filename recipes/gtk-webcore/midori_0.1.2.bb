@@ -4,7 +4,7 @@ DEPENDS += "python-native"
 
 SRC_URI = "http://goodies.xfce.org/releases/midori/midori-${PV}.tar.bz2"
 SRC_URI += "file://ua-iphone.patch;patch=1"
-PR = "r1"
+PR = "r2"
 
 do_configure() {
 	./configure \
