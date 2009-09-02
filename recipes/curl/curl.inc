@@ -6,6 +6,8 @@ SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2 \
            file://pkgconfig_fix.patch;patch=1"
 S = "${WORKDIR}/curl-${PV}"
 
+PR = "r1"
+
 CURL_FEATURES ?= "zlib,gnutls,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp"
 # other allowed features: ipv6, ares
 
@@ -15,7 +17,6 @@ EXTRA_OECONF = " \
                 --without-libssh2 \
 		--with-random=/dev/urandom \
 		--without-libidn \
-                --without-ssl \
 		"
 
 python __anonymous() {

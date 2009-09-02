@@ -49,6 +49,7 @@ RDEPENDS_${PN} += "\
 		fltk-chess \
 		remoko \
 		shr-config \
+		shr-today \
 		shr-splash \
 		shr-splash-theme-simple \
 		shr-splash-theme-dontpanic \
@@ -126,17 +127,17 @@ RDEPENDS_${PN} += "\
 		dbus-x11 \
 		bluez-utils-alsa \
 		python-pybluez \
-#		xournal \
-#		evince \
+		xournal \
+		evince \
 #		asterisk \
 		git \
 		ruby \
 		orrery \
 		synergy \
-#		irssi \
+		irssi \
 		zhone \
 		paroli \
-#		cu \
+		cu \
 		net-tools \
 		iproute2 \
 		iputils \
@@ -222,4 +223,6 @@ RDEPENDS_${PN} += "\
 		man-pages \
 		aceofpenguins-launcher \
 		om-neon \
+		ipython \
+		phoneme-advanced-foundation \
 "

@@ -1,0 +1,11 @@
+--- mokomaze-0.5.5+git8/data/mokomaze.desktop	2009-08-22 12:14:31.000000000 +0200
++++ mokomaze-0.5.5+git8/data/mokomaze.desktop	2009-08-22 12:50:30.000000000 +0200
+@@ -4,7 +4,7 @@
+ Encoding=UTF-8
+ Version=0.5
+ Type=Application
+-Exec=mokomaze
++Exec=fsoraw -r Display mokomaze
+ Terminal=false
+ Categories=Game;
+ X-MB-SingleInstance=true
