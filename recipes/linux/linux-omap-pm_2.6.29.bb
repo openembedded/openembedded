@@ -126,6 +126,37 @@ SRC_URI_append = " \
            file://vfp/04-vfp-threads.patch;patch=1 \
            file://vfp/05-vfp-signal-handlers.patch;patch=1 \
            file://arch-has-holes.diff;patch=1 \
+           file://musb/0001-USB-musb-only-turn-off-vbus-in-OTG-hosts.patch;patch=1 \
+           file://musb/0002-USB-composite-avoid-inconsistent-lock-state.patch;patch=1 \
+           file://musb/0003-USB-musb-NAK-timeout-scheme-on-bulk-RX-endpoint.patch;patch=1 \
+           file://musb/0004-USB-musb-rewrite-host-periodic-endpoint-allocation.patch;patch=1 \
+           file://musb/0005-USB-TWL-disable-VUSB-regulators-when-cable-unplugg.patch;patch=1 \
+           file://musb/0006-USB-gadget-composite-device-level-suspend-resume-h.patch;patch=1 \
+           file://musb/0007-usb-gadget-fix-ethernet-link-reports-to-ethtool.patch;patch=1 \
+           file://musb/0008-usb-musb_host-minor-enqueue-locking-fix-v2.patch;patch=1 \
+           file://musb/0009-usb-musb_host-fix-ep0-fifo-flushing.patch;patch=1 \
+           file://musb/0010-musb-sanitize-clearing-TXCSR-DMA-bits-take-2.patch;patch=1 \
+           file://musb/0011-musb-fix-isochronous-TXDMA-take-2.patch;patch=1 \
+           file://musb/0012-musb-fix-possible-panic-while-resuming.patch;patch=1 \
+           file://musb/0013-musb_host-refactor-musb_save_toggle-take-2.patch;patch=1 \
+           file://musb/0014-musb_gadget-suppress-parasitic-TX-interrupts-with.patch;patch=1 \
+           file://musb/0015-musb_gadget-fix-unhandled-endpoint-0-IRQs.patch;patch=1 \
+           file://musb/0016-musb_host-factor-out-musb_ep_-get-set-_qh.patch;patch=1 \
+           file://musb/0017-musb_host-refactor-URB-giveback.patch;patch=1 \
+           file://musb/0018-musb-split-out-CPPI-interrupt-handler.patch;patch=1 \
+           file://musb/0019-musb_host-simplify-check-for-active-URB.patch;patch=1 \
+           file://musb/0020-musb_host-streamline-musb_cleanup_urb-calls.patch;patch=1 \
+           file://musb/0021-twl4030-usb-fix-minor-reporting-goofage.patch;patch=1 \
+           file://musb/0022-musb-use-dma-mode-1-for-TX-if-transfer-size-equals.patch;patch=1 \
+           file://musb/0023-musb-add-high-bandwidth-ISO-support.patch;patch=1 \
+           file://musb/0024-USB-otg-adding-nop-usb-transceiver.patch;patch=1 \
+           file://musb/0025-nop-usb-xceiv-behave-when-linked-as-a-module.patch;patch=1 \
+           file://musb/0026-musb-proper-hookup-to-transceiver-drivers.patch;patch=1 \
+           file://musb/0027-musb-otg-timer-cleanup.patch;patch=1 \
+           file://musb/0028-musb-make-initial-HNP-roleswitch-work-v2.patch;patch=1 \
+           file://musb/0029-musb-support-disconnect-after-HNP-roleswitch.patch;patch=1 \
+           file://cache/l1cache-shift.patch;patch=1 \
+           file://cache/copy-page-tweak.patch;patch=1 \
 "
 
 
