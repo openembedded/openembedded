@@ -1,31 +1,17 @@
 DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
-PV = "0.2.1+gitr${SRCREV}"
-PR = "r25"
+PV = "0.2.1+gitr${SRCPV}"
+PR = "r26"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
 
 inherit distutils
 
-PACKAGES += "${PN}-autostart ${PN}-theme ${PN}-sounds"
+PACKAGES += "${PN}-autostart ${PN}-theme ${PN}-sounds ${PN}-calculator"
 
 RDEPENDS = "\
-  python-datetime \
-  python-subprocess \
-  python-textutils \
-  python-dbus \
-  python-pygobject \
-  dbus-x11 \
-  task-fso-compliance \
-  elementary \
-  elementary-themes \
-  edbus-ehal \
-  paroli-elementary \
-"
-
-RDEPENDS_shr = "\
   python-datetime \
   python-subprocess \
   python-textutils \
@@ -69,12 +55,12 @@ do_install_append() {
     	install -d ${D}${E_CONFIG_DIR}/applications/startup
        	echo "${E_CONFIG_DIR}/applications/all/paroli.desktop" >> ${D}${E_CONFIG_DIR}/applications/startup/.order
 
-	install -d ${D}${sysconfdir}/freesmartphone/oevents
-	install ${S}/data/${RULES_YAML} ${D}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml
-	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/paroli_frameworkd.conf
+#	install -d ${D}${sysconfdir}/freesmartphone/oevents
+#	install ${S}/data/${RULES_YAML} ${D}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml
+#	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/paroli_frameworkd.conf
 
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone
-	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml
+	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
 
 	install -d ${D}${datadir}/dbus-1/system-services/
 	install ${S}/data/dbus/org.tichy.launcher.service ${D}${datadir}/dbus-1/system-services/
@@ -103,47 +89,22 @@ fi
 exit 0
 }
 
-pkg_postinst_${PN}() {
+#pkg_postinst_${PN}-sounds() {
 #!/bin/sh
 # do this off or on line
-if [ "x$D" != "x" ]; then
-	ROOTFS=${IMAGE_ROOTFS}
-else
-	ROOTFS=""
-fi
+#if [ "x$D" != "x" ]; then
+#	ROOTFS=${IMAGE_ROOTFS}
+#else
+#	ROOTFS=""
+#fi
 # post installation script
-echo "*******************************************"
-echo "Paroli post processing"
-echo "*******************************************"
-if [ ! -e $ROOTFS${sysconfdir}/old_frameworkd.conf ] ; then
-    echo "Backing up ${sysconfdir}/frameworkd.conf"
-    mv $ROOTFS${sysconfdir}/frameworkd.conf $ROOTFS${sysconfdir}/old_frameworkd.conf
-fi
-mv $ROOTFS${sysconfdir}/paroli_frameworkd.conf $ROOTFS${sysconfdir}/frameworkd.conf
-if [ ! -e $ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
-    echo "Backing up $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml"
-    mv $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml $ROOTFS${sysconfdir}/freesmartphone/oevents/old_rules.yaml
-fi
-cp $ROOTFS${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml $ROOTFS${sysconfdir}/freesmartphone/oevents/rules.yaml
-exit 0
-}
-
-pkg_postinst_${PN}-sounds() {
-#!/bin/sh
-# do this off or on line
-if [ "x$D" != "x" ]; then
-	ROOTFS=${IMAGE_ROOTFS}
-else
-	ROOTFS=""
-fi
-# post installation script
-if [ ! -e /$ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml ] ; then
-    echo "Backing up ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml"
-    mv $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
-fi
-cp $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
-exit 0
-}
+#if [ ! -e /$ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml ] ; then
+#    echo "Backing up ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml"
+#    mv $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
+#fi
+#cp $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml $ROOTFS${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
+#exit 0
+#}
 
 pkg_postinst_${PN}-theme() {
 #!/bin/sh
@@ -158,17 +119,24 @@ echo 'E_PROFILE="-profile paroli"' > $ROOTFS${sysconfdir}/enlightenment/default_
 exit 0
 }
 
-FILES_${PN} += " \
+FILES_${PN} = " \
 	${sysconfdir}/dbus-1 \
 	${sysconfdir}/paroli \
 	${sysconfdir}/freesmartphone/oevents \
-	${sysconfdir}/paroli_frameworkd.conf \ 
-#	${sysconfdir}/frameworkd.conf \ 
 	${datadir}/lib \
 	${datadir}/bin \
+	/usr/bin \
+	${datadir}/paroli/applications/common-for-edje \
+	${datadir}/paroli/applications/tele2 \
+	${datadir}/paroli/applications/i-o2 \
+	${datadir}/paroli/applications/msgs2 \
+	${datadir}/paroli/applications/paroli-launcher2 \
+	${datadir}/paroli/applications/people2 \
+	${datadir}/paroli/applications/settings \
 	${datadir}/applications \
 	${datadir}/elementary \
-	${datadir}/paroli \
+	${datadir}/paroli/services \
+	${datadir}/paroli/data \
 	${datadir}/pixmaps \
 	${datadir}/dbus-1/system-services/ \
 	"
@@ -182,19 +150,18 @@ FILES_${PN}-autostart = "${E_CONFIG_DIR}/applications"
 
 FILES_${PN}-sounds = " \
 	${datadir}/sounds/ \
-	${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml \
+	${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml \
 	"
 
-#CONFILES_${PN}-theme = " \
-#	${sysconfdir}/enlightenment/default_profile \
-#	"
+FILES_${PN}-calculator = " \
+	${datadir}/paroli/applications/calculator \
+	"
 
 CONFFILES_${PN} += " \
 	${sysconfdir}/paroli/paroli.cfg \
-	${sysconfdir}/paroli_frameworkd.conf \
 #	${sysconfdir}/frameworkd.conf \
-	${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml \
+#	${sysconfdir}/freesmartphone/oevents/rules.yaml \
 	"
 CONFFILES_${PN}-sounds += " \
-	${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml \
+	${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml \
 	"
