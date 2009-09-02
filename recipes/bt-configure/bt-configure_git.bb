@@ -4,6 +4,9 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python python-pygtk bluez4"
 
+PV = "gitr${SRCPV}"
+PR = "r1"
+
 ARCH_bt-configure = "all"
 
 SRC_URI = "git://github.com/nytowl/BT-Configure.git;protocol=http"
