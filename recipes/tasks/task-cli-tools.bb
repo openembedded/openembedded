@@ -1,12 +1,12 @@
-DESCRIPTION = "A set of command line tools, python tools-based tools, debug tools"
+DESCRIPTION = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r7"
+PR = "r8"
 
 inherit task
 
-PACKAGES += "${PN}-debug ${PN}-python"
+PACKAGES += "${PN}-debug"
 
 RDEPENDS_${PN} = "\
   dosfstools \
@@ -33,9 +33,4 @@ RDEPENDS_${PN}-debug = "\
   s3c24xx-gpio \
   s3c64xx-gpio \
   strace \
-"
-
-RDEPENDS_${PN}-python = "\
-  mickeydbus \
-  mickeyterm \
 "
