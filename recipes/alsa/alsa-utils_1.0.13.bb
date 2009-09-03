@@ -12,7 +12,7 @@ SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2"
 # please close bug and remove this comment when properly fixed
 #
 EXTRA_OECONF_linux-uclibc = "--disable-nls"
-EXTRA_OECONF_linux-uclibcgnueabi = "--disable-nls"
+EXTRA_OECONF_linux-uclibceabi = "--disable-nls"
 
 inherit autotools
 

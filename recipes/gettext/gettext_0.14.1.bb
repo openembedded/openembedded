@@ -15,7 +15,7 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
            file://disable_java.patch;patch=1"
 
 SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch;patch=1"
-SRC_URI_append_linux-uclibcgnueabi = " file://gettext-error_print_progname.patch;patch=1"
+SRC_URI_append_linux-uclibceabi = " file://gettext-error_print_progname.patch;patch=1"
 
 PARALLEL_MAKE = ""
 

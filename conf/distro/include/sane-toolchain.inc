@@ -65,16 +65,21 @@ PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
 # Branding
 TARGET_VENDOR = "-oe"
 
+# Add FEED_ARCH to the overrides list so that we can override the
+# ARM_INSTRUCTION_SET like below
+
+OVERRIDES .= ":${FEED_ARCH}"
+
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
 # Minimal turns on thumb for armv4t machine according to this RFC:
 # http://lists.linuxtogo.org/pipermail/angstrom-distro-devel/2008-October/002714.html
 
 # We can't set ARM_INSTRUCTION_SET_<override> directly since that will un-overridable in recipes like gcc
-PREFERRED_ARM_INSTRUCTION_SET         ?=  "arm"
 PREFERRED_ARM_INSTRUCTION_SET_armv4t   = "thumb"
 PREFERRED_ARM_INSTRUCTION_SET_armv5te  = "thumb"
 PREFERRED_ARM_INSTRUCTION_SET_armv5teb = "thumb"
+PREFERRED_ARM_INSTRUCTION_SET         ?=  "arm"
 ARM_INSTRUCTION_SET = "${PREFERRED_ARM_INSTRUCTION_SET}"
 # "arm" "thumb"
 #    The instruction set the compiler should use when generating application
@@ -136,7 +141,58 @@ ENABLE_BINARY_LOCALE_GENERATION_armv7a = "0"
 
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
+def detect_arm_abi (d):
+    	import bb
+	if bb.data.getVar('DISTRO_FEATURES',d) is None:
+		if bb.data.getVar('TARGET_ARCH', d, 1) in [ 'arm', 'armeb' ]:
+			return "oabi"
+		else:
+			return ""
+	if bb.data.getVar('TARGET_ARCH', d, 1) in [ 'arm', 'armeb' ]:          
+		if 'eabi' in bb.data.getVar('DISTRO_FEATURES',d).split():
+			return "eabi"
+		return "oabi"
+	return ""
+
+def compute_os_portion_of_target_triplet (d):
+	import bb
+	arm_eabi_supporting_arches = "armv6 armv6-novfp \
+	armv5te iwmmxt armv7a armv7 armv6 armv5teb armv5te armv4t"
+	ppc_spe_supporting_arches = "ppce500v2 ppce500"
+
+  	if bb.data.getVar("LIBC", d, 1) == "uclibc":
+    		libc_suffix = "uclibc"
+	else:
+		libc_suffix = "gnu"
+	
+	if bb.data.getVar('TARGET_ARCH',d,1) in ['bfin']:
+		if libc_suffix == "gnu":
+			bb.fatal("bfin is not supported on glibc/eglibc. Please choose uclibc")
+		else:
+			os_suffix = "uclinux"
+	else:
+  		os_suffix = "linux"
+	bparch = bb.data.getVar('BASE_PACKAGE_ARCH', d,1)
+
+	if bb.data.getVar('DISTRO_FEATURES',d,1) is not None and \
+	bparch is not None:
+		if 'eabi' in bb.data.getVar('DISTRO_FEATURES',d,1).split() and \
+		bb.data.getVar('TARGET_ARCH', d, 1) in [ 'arm', 'armeb' ]:
+			if bparch not in arm_eabi_supporting_arches.split():
+				bb.fatal("DISTRO requested EABI but selected machine does not support EABI")
+				abi_suffix = ""
+			else:
+				abi_suffix = "eabi"
+		elif bparch in ppc_spe_supporting_arches.split():
+			abi_suffix = "spe"
+		else:
+			abi_suffix = ""
+	else:
+		bb.note("DISTRO_FEATURES is not set abi suffix not set")
+		abi_suffix = ""
+	return os_suffix + "-" + libc_suffix + abi_suffix
 
 # This is needed to get a correct PACKAGE_ARCH for packages that have PACKAGE_ARCH = ${MACHINE_ARCH}
-ARM_ABI ?= "${@['','oabi'][bb.data.getVar('MACHINE',d) in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"
+ARM_ABI = "${@detect_arm_abi(d)}"
+TARGET_OS = "${@compute_os_portion_of_target_triplet(d)}"
 include conf/distro/include/sane-toolchain-${ARM_ABI}.inc

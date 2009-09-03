@@ -34,6 +34,9 @@ do_configure () {
 	if [ "x$os" = "xlinux-uclibc" ]; then
 		os=linux
 	fi
+	if [ "x$os" = "xlinux-uclibceabi" ]; then
+		os=linux
+	fi
 	target="$os-${HOST_ARCH}"
 	case $target in
 	linux-arm)

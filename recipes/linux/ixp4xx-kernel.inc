@@ -192,7 +192,7 @@ do_configure_prepend() {
 		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
 	fi
 
-        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then               
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibceabi" ]; then               
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config               
                 echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config       
         else
