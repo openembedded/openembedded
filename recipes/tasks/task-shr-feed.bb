@@ -225,4 +225,5 @@ RDEPENDS_${PN} += "\
 		om-neon \
 		ipython \
 		phoneme-advanced-foundation \
+		python-pybluez \
 "
