@@ -3,16 +3,20 @@ PRIORITY = "optional"
 DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
-PV = "0.15.16"
-PR = "r1"
+PV = "0.17.1"
+PR = "r2"
 PR_append = "+gitr${SRCREV}"
 
-SRCREV = "f9660ce29ed072c6cbaec711c5d18b9f0ba113ae"
+SRCREV = "7af985a69a9147e54dd5946a8062dbc2e534b735"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
 SRC_URI = "git://anongit.freedesktop.org/pixman;protocol=git \
+           file://pixman-28986.patch;patch=1 \
+           file://nearest-neighbour.patch;patch=1 \
+           file://remove-broken.patch;patch=1 \
+           file://over-8888-0565.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"
