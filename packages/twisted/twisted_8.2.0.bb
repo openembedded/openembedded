@@ -30,7 +30,6 @@ PACKAGES += "\
   ${PN}-words \
   ${PN}-words-scripts \
   ${PN}-zsh \
-  ${PN}-dbg \
   ${PN}-test \
 "
 

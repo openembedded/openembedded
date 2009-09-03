@@ -1,7 +1,7 @@
 DESCRIPTION = "Additional plugins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20090902"
+SRCDATE = "20090904"
 
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
@@ -18,7 +18,10 @@ TAG = ""
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/enigma2-plugins;module=enigma2-plugins;method=pserver${TAG};date=${SRCDATE}"
+
 FILES_${PN} += " /usr/share/enigma2 /usr/share/fonts "
+FILES_${PN}-meta = "${datadir}/meta"
+PACKAGES += "${PN}-meta"
 
 inherit autotools
 
