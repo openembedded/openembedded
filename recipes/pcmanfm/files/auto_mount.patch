@@ -1,10 +1,18 @@
---- a/src/vfs/vfs-volume-hal.c	2008-12-16 17:39:21.000000000 -0200
-+++ b/src/vfs/vfs-volume-hal.c	2008-12-16 17:37:07.000000000 -0200
-@@ -1237,6 +1237,7 @@
-                     {
-                       /* add the volume to the volume manager */
-                       vfs_volume_add (volume);
-+                      vfs_volume_mount (volume, NULL);
-                     }
-                   /* release the HAL drive */
-                   libhal_drive_free (hd);
+commit 773ce494a6299e2fdc266e30bcb57305f13cc9d1
+Author: Luis Gustavo S. Barreto <gustavo@ossystems.com.br>
+Date:   Mon Sep 7 09:27:35 2009 -0300
+
+    auto
+
+diff --git a/src/vfs/vfs-volume-hal.c b/src/vfs/vfs-volume-hal.c
+index 761ac33..ec5c64f 100644
+--- a/src/vfs/vfs-volume-hal.c
++++ b/src/vfs/vfs-volume-hal.c
+@@ -1177,6 +1177,7 @@ vfs_volume_update_volume_by_udi ( const gchar *udi)
+ static void vfs_volume_add( VFSVolume* volume )
+ {
+     volumes = g_list_append( volumes, volume );
++    vfs_volume_mount( volume, NULL );
+     call_callbacks( volume, VFS_VOLUME_ADDED );
+ }
+ 
