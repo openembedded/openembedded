@@ -23,7 +23,28 @@ SRC_URI_append = " \
                   file://ehci-phy-reset.patch;patch=1 \
                   file://ehci.patch;patch=1 \
                   file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+                  file://cache/l1cache-shift.patch;patch=1 \
+                  file://cache/copy-page-tweak.patch;patch=1 \
+                  file://dss2/0001-OMAP2-Add-funcs-for-writing-SMS_ROT_-registers.patch;patch=1 \
+                  file://dss2/0002-OMAP-OMAPFB-split-omapfb.h.patch;patch=1 \
+                  file://dss2/0003-OMAP-OMAPFB-add-omapdss-device.patch;patch=1 \
+                  file://dss2/0004-OMAP-Add-VRAM-manager.patch;patch=1 \
+                  file://dss2/0005-OMAP-Add-support-for-VRFB-rotation-engine.patch;patch=1 \
+                  file://dss2/0006-OMAP-DSS2-Documentation-for-DSS2.patch;patch=1 \
+                  file://dss2/0007-OMAP-DSS2-Display-Subsystem-Driver-core.patch;patch=1 \
+                  file://dss2/0008-OMAP-DSS2-Add-more-core-files.patch;patch=1 \
+                  file://dss2/0009-OMAP-DSS2-DISPC.patch;patch=1 \
+                  file://dss2/0010-OMAP-DSS2-DPI-driver.patch;patch=1 \
+                  file://dss2/0011-OMAP-DSS2-Video-encoder-driver.patch;patch=1 \
+                  file://dss2/0012-OMAP-DSS2-RFBI-driver.patch;patch=1 \
+                  file://dss2/0013-OMAP-DSS2-SDI-driver.patch;patch=1 \
+                  file://dss2/0014-OMAP-DSS2-DSI-driver.patch;patch=1 \
+                  file://dss2/0015-OMAP-DSS2-omapfb-driver.patch;patch=1 \
+                  file://dss2/0016-OMAP-DSS2-Add-DPI-panel-drivers.patch;patch=1 \
+                  file://dss2/0017-OMAP-DSS2-Taal-DSI-command-mode-panel-driver.patch;patch=1 \
 "
+
+SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
 
 S = "${WORKDIR}/git"
 

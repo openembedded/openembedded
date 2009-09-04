@@ -1,0 +1,169 @@
+Path: news.gmane.org!not-for-mail
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+Newsgroups: gmane.linux.ports.arm.kernel
+Subject: [PATCH] ARM: copy_page.S: take into account the size of the cache line
+Date: Wed,  2 Sep 2009 20:19:58 +0300
+Lines: 92
+Approved: news@gmane.org
+Message-ID: <1251911998-3112-1-git-send-email-kirill__11898.5180197798$1251901300$gmane$org@shutemov.name>
+References: <20090902132423.GA12595@n2100.arm.linux.org.uk>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Trace: ger.gmane.org 1251901300 3930 80.91.229.12 (2 Sep 2009 14:21:40 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Wed, 2 Sep 2009 14:21:40 +0000 (UTC)
+Cc: Bityutskiy Artem <Artem.Bityutskiy@nokia.com>,
+	"Kirill A. Shutemov" <kirill@shutemov.name>,
+	Siarhei Siamashka <siarhei.siamashka@nokia.com>,
+	Moiseichuk Leonid <leonid.moiseichuk@nokia.com>,
+	Koskinen Aaro <aaro.koskinen@nokia.com>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Original-X-From: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org Wed Sep 02 16:21:32 2009
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Envelope-to: linux-arm-kernel@m.gmane.org
+Original-Received: from bombadil.infradead.org ([18.85.46.34])
+	by lo.gmane.org with esmtp (Exim 4.50)
+	id 1MiqiI-0003K3-An
+	for linux-arm-kernel@m.gmane.org; Wed, 02 Sep 2009 16:21:30 +0200
+Original-Received: from localhost ([::1] helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MiqhG-0005iZ-OK; Wed, 02 Sep 2009 14:20:26 +0000
+Original-Received: from mail-bw0-f222.google.com ([209.85.218.222])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Miqh8-0005LP-ED for linux-arm-kernel@lists.infradead.org;
+	Wed, 02 Sep 2009 14:20:23 +0000
+Original-Received: by bwz22 with SMTP id 22so788877bwz.18
+	for <linux-arm-kernel@lists.infradead.org>;
+	Wed, 02 Sep 2009 07:20:06 -0700 (PDT)
+Original-Received: by 10.204.162.143 with SMTP id v15mr6724283bkx.50.1251901206540;
+	Wed, 02 Sep 2009 07:20:06 -0700 (PDT)
+Original-Received: from localhost.localdomain (viktor.cosmicparrot.net [217.152.255.14])
+	by mx.google.com with ESMTPS id d13sm11540576fka.2.2009.09.02.07.20.05
+	(version=SSLv3 cipher=RC4-MD5); Wed, 02 Sep 2009 07:20:05 -0700 (PDT)
+X-Mailer: git-send-email 1.6.4.2
+In-Reply-To: <20090902132423.GA12595@n2100.arm.linux.org.uk>
+X-CRM114-Version: 20090807-BlameThorstenAndJenny ( TRE 0.7.5 (LGPL) )
+	MR-646709E3 
+X-CRM114-CacheID: sfid-20090902_102018_607316_8AE98A04 
+X-CRM114-Status: UNSURE (   9.59  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -4.2 (----)
+X-Spam-Report: SpamAssassin version 3.2.5 on bombadil.infradead.org summary:
+	Content analysis details:   (-4.2 points)
+	pts rule name              description
+	---- ----------------------
+	--------------------------------------------------
+	-2.6 BAYES_00 BODY: Bayesian spam probability is 0 to 1%
+	[score: 0.0000]
+	-1.6 AWL AWL: From: address is in the auto white-list
+X-BeenThere: linux-arm-kernel@lists.infradead.org
+X-Mailman-Version: 2.1.12
+Precedence: list
+List-Id: <linux-arm-kernel.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Original-Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Xref: news.gmane.org gmane.linux.ports.arm.kernel:65025
+Archived-At: <http://permalink.gmane.org/gmane.linux.ports.arm.kernel/65025>
+
+Optimized version of copy_page() was written with assumption that cache
+line size is 32 bytes. On Cortex-A8 cache line size is 64 bytes.
+
+This patch tries to generalize copy_page() to work with any cache line
+size if cache line size is multiple of 16 and page size is multiple of
+two cache line size.
+
+After this optimization we've got ~25% speedup on OMAP3(tested in
+userspace).
+
+There is test for kernelspace which trigger copy-on-write after fork():
+
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+
+ #define BUF_SIZE (10000*4096)
+ #define NFORK 200
+
+ int main(int argc, char **argv)
+ {
+         char *buf = malloc(BUF_SIZE);
+         int i;
+
+         memset(buf, 0, BUF_SIZE);
+
+         for(i = 0; i < NFORK; i++) {
+                 if (fork()) {
+                         wait(NULL);
+                 } else {
+                         int j;
+
+                         for(j = 0; j < BUF_SIZE; j+= 4096)
+                                 buf[j] = (j & 0xFF) + 1;
+                         break;
+                 }
+         }
+
+         free(buf);
+         return 0;
+ }
+
+Before optimization this test takes ~66 seconds, after optimization
+takes ~56 seconds.
+
+Signed-off-by: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Signed-off-by: Kirill A. Shutemov <kirill@shutemov.name>
+---
+ arch/arm/lib/copy_page.S |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/lib/copy_page.S b/arch/arm/lib/copy_page.S
+index 6ae04db..6ee2f67 100644
+--- a/arch/arm/lib/copy_page.S
++++ b/arch/arm/lib/copy_page.S
+@@ -12,8 +12,9 @@
+ #include <linux/linkage.h>
+ #include <asm/assembler.h>
+ #include <asm/asm-offsets.h>
++#include <asm/cache.h>
+ 
+-#define COPY_COUNT (PAGE_SZ/64 PLD( -1 ))
++#define COPY_COUNT (PAGE_SZ / (2 * L1_CACHE_BYTES) PLD( -1 ))
+ 
+ 		.text
+ 		.align	5
+@@ -26,17 +27,16 @@
+ ENTRY(copy_page)
+ 		stmfd	sp!, {r4, lr}			@	2
+ 	PLD(	pld	[r1, #0]		)
+-	PLD(	pld	[r1, #32]		)
++	PLD(	pld	[r1, #L1_CACHE_BYTES]		)
+ 		mov	r2, #COPY_COUNT			@	1
+ 		ldmia	r1!, {r3, r4, ip, lr}		@	4+1
+-1:	PLD(	pld	[r1, #64]		)
+-	PLD(	pld	[r1, #96]		)
+-2:		stmia	r0!, {r3, r4, ip, lr}		@	4
+-		ldmia	r1!, {r3, r4, ip, lr}		@	4+1
+-		stmia	r0!, {r3, r4, ip, lr}		@	4
+-		ldmia	r1!, {r3, r4, ip, lr}		@	4+1
++1:	PLD(	pld	[r1, #2 * L1_CACHE_BYTES])
++	PLD(	pld	[r1, #3 * L1_CACHE_BYTES])
++2:
++	.rept	(2 * L1_CACHE_BYTES / 16 - 1)
+ 		stmia	r0!, {r3, r4, ip, lr}		@	4
+ 		ldmia	r1!, {r3, r4, ip, lr}		@	4
++	.endr
+ 		subs	r2, r2, #1			@	1
+ 		stmia	r0!, {r3, r4, ip, lr}		@	4
+ 		ldmgtia	r1!, {r3, r4, ip, lr}		@	4
+-- 
+1.6.4.2
