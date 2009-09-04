@@ -1,0 +1,235 @@
+diff -purN git2/arch/arm/include/asm/memory.h git/arch/arm/include/asm/memory.h
+--- git2/arch/arm/include/asm/memory.h	2009-06-08 06:42:26.000000000 +0530
++++ git/arch/arm/include/asm/memory.h	2009-08-17 11:58:07.000000000 +0530
+@@ -204,7 +204,6 @@ static inline __deprecated void *bus_to_
+  *
+  *  page_to_pfn(page)	convert a struct page * to a PFN number
+  *  pfn_to_page(pfn)	convert a _valid_ PFN number to struct page *
+- *  pfn_valid(pfn)	indicates whether a PFN number is valid
+  *
+  *  virt_to_page(k)	convert a _valid_ virtual address to struct page *
+  *  virt_addr_valid(k)	indicates whether a virtual address is valid
+@@ -213,10 +212,6 @@ static inline __deprecated void *bus_to_
+ 
+ #define ARCH_PFN_OFFSET		PHYS_PFN_OFFSET
+ 
+-#ifndef CONFIG_SPARSEMEM
+-#define pfn_valid(pfn)		((pfn) >= PHYS_PFN_OFFSET && (pfn) < (PHYS_PFN_OFFSET + max_mapnr))
+-#endif
+-
+ #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+ #define virt_addr_valid(kaddr)	((unsigned long)(kaddr) >= PAGE_OFFSET && (unsigned long)(kaddr) < (unsigned long)high_memory)
+ 
+@@ -233,18 +228,6 @@ static inline __deprecated void *bus_to_
+ #define arch_pfn_to_nid(pfn)	PFN_TO_NID(pfn)
+ #define arch_local_page_offset(pfn, nid) LOCAL_MAP_NR((pfn) << PAGE_SHIFT)
+ 
+-#define pfn_valid(pfn)						\
+-	({							\
+-		unsigned int nid = PFN_TO_NID(pfn);		\
+-		int valid = nid < MAX_NUMNODES;			\
+-		if (valid) {					\
+-			pg_data_t *node = NODE_DATA(nid);	\
+-			valid = (pfn - node->node_start_pfn) <	\
+-				node->node_spanned_pages;	\
+-		}						\
+-		valid;						\
+-	})
+-
+ #define virt_to_page(kaddr)					\
+ 	(ADDR_TO_MAPBASE(kaddr) + LOCAL_MAP_NR(kaddr))
+ 
+diff -purN git2/arch/arm/include/asm/page.h git/arch/arm/include/asm/page.h
+--- git2/arch/arm/include/asm/page.h	2009-06-08 06:42:26.000000000 +0530
++++ git/arch/arm/include/asm/page.h	2009-08-17 11:58:07.000000000 +0530
+@@ -186,6 +186,10 @@ typedef unsigned long pgprot_t;
+ 
+ typedef struct page *pgtable_t;
+ 
++#ifndef CONFIG_SPARSEMEM
++extern int pfn_valid(unsigned long);
++#endif
++
+ #include <asm/memory.h>
+ 
+ #endif /* !__ASSEMBLY__ */
+diff -purN git2/arch/arm/Kconfig git/arch/arm/Kconfig
+--- git2/arch/arm/Kconfig	2009-07-20 05:07:12.000000000 +0530
++++ git/arch/arm/Kconfig	2009-08-17 12:08:37.000000000 +0530
+@@ -272,6 +272,7 @@ config ARCH_EP93XX
+ 	select HAVE_CLK
+ 	select COMMON_CLKDEV
+ 	select ARCH_REQUIRE_GPIOLIB
++	select ARCH_HAS_HOLES_MEMORYMODEL
+ 	help
+ 	  This enables support for the Cirrus EP93xx series of CPUs.
+ 
+@@ -569,6 +570,7 @@ config ARCH_OMAP
+ 	select ARCH_REQUIRE_GPIOLIB
+ 	select GENERIC_TIME
+ 	select GENERIC_CLOCKEVENTS
++	select ARCH_HAS_HOLES_MEMORYMODEL
+ 	help
+ 	  Support for TI's OMAP platform (OMAP1 and OMAP2).
+ 
+@@ -891,10 +893,9 @@ config OABI_COMPAT
+ 	  UNPREDICTABLE (in fact it can be predicted that it won't work
+ 	  at all). If in doubt say Y.
+ 
+-config ARCH_FLATMEM_HAS_HOLES
++config ARCH_HAS_HOLES_MEMORYMODEL
+ 	bool
+-	default y
+-	depends on FLATMEM
++	default n
+ 
+ # Discontigmem is deprecated
+ config ARCH_DISCONTIGMEM_ENABLE
+diff -purN git2/arch/arm/mm/init.c git/arch/arm/mm/init.c
+--- git2/arch/arm/mm/init.c	2009-06-08 06:42:27.000000000 +0530
++++ git/arch/arm/mm/init.c	2009-08-17 12:03:16.000000000 +0530
+@@ -15,7 +15,7 @@
+ #include <linux/mman.h>
+ #include <linux/nodemask.h>
+ #include <linux/initrd.h>
+-
++#include <linux/sort.h>
+ #include <asm/mach-types.h>
+ #include <asm/sections.h>
+ #include <asm/setup.h>
+@@ -333,12 +333,40 @@ static void __init bootmem_free_node(int
+ 	free_area_init_node(node, zone_size, start_pfn, zhole_size);
+ }
+ 
++#ifndef CONFIG_SPARSEMEM
++int pfn_valid(unsigned long pfn)
++{
++	struct meminfo *mi = &meminfo;
++	unsigned int mid, left = 0, right = mi->nr_banks;
++
++	while ((mid = (right - left) / 2) > 0) {
++		struct membank *bank = &mi->bank[mid];
++		
++		if (pfn < bank_pfn_start(bank))
++			right = mid;
++		else if (pfn >= bank_pfn_end(bank))
++			left = mid + 1;
++		else
++			return 1;
++	}
++	return 0;
++}
++EXPORT_SYMBOL(pfn_valid);
++#endif
++
++static int __init meminfo_cmp(const void *_a, const void *_b) {
++	const struct membank *a = _a, *b = _b;
++	long cmp = bank_pfn_start(a) - bank_pfn_start(b);
++	return cmp < 0 ? -1 : cmp > 0 ? 1 : 0; }
++
+ void __init bootmem_init(void)
+ {
+ 	struct meminfo *mi = &meminfo;
+ 	unsigned long memend_pfn = 0;
+ 	int node, initrd_node;
+ 
++	sort(&mi->bank, mi->nr_banks, sizeof(mi->bank[0]), meminfo_cmp, NULL);
++
+ 	/*
+ 	 * Locate which node contains the ramdisk image, if any.
+ 	 */
+diff -purN git2/include/linux/mmzone.h git/include/linux/mmzone.h
+--- git2/include/linux/mmzone.h	2009-06-08 06:42:40.000000000 +0530
++++ git/include/linux/mmzone.h	2009-08-17 11:57:17.000000000 +0530
+@@ -1095,6 +1095,32 @@ unsigned long __init node_memmap_size_by
+ #define pfn_valid_within(pfn) (1)
+ #endif
+ 
++#ifdef CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
++/*
++ * pfn_valid() is meant to be able to tell if a given PFN has valid memmap
++ * associated with it or not. In FLATMEM, it is expected that holes always
++ * have valid memmap as long as there is valid PFNs either side of the hole.
++ * In SPARSEMEM, it is assumed that a valid section has a memmap for the
++ * entire section.
++ *
++ * However, an ARM, and maybe other embedded architectures in the future
++ * free memmap backing holes to save memory on the assumption the memmap is
++ * never used. The page_zone linkages are then broken even though pfn_valid()
++ * returns true. A walker of the full memmap must then do this additional
++ * check to ensure the memmap they are looking at is sane by making sure
++ * the zone and PFN linkages are still valid. This is expensive, but walkers
++ * of the full memmap are extremely rare.
++ */
++int memmap_valid_within(unsigned long pfn,
++					struct page *page, struct zone *zone);
++#else
++static inline int memmap_valid_within(unsigned long pfn,
++					struct page *page, struct zone *zone)
++{
++	return 1;
++}
++#endif /* CONFIG_ARCH_HAS_HOLES_MEMORYMODEL */
++
+ #endif /* !__GENERATING_BOUNDS.H */
+ #endif /* !__ASSEMBLY__ */
+ #endif /* _LINUX_MMZONE_H */
+diff -purN git2/mm/mmzone.c git/mm/mmzone.c
+--- git2/mm/mmzone.c	2009-06-08 06:42:41.000000000 +0530
++++ git/mm/mmzone.c	2009-08-17 11:57:17.000000000 +0530
+@@ -6,6 +6,7 @@
+ 
+ 
+ #include <linux/stddef.h>
++#include <linux/mm.h>
+ #include <linux/mmzone.h>
+ #include <linux/module.h>
+ 
+@@ -72,3 +73,17 @@ struct zoneref *next_zones_zonelist(stru
+ 	*zone = zonelist_zone(z);
+ 	return z;
+ }
++
++#ifdef CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
++int memmap_valid_within(unsigned long pfn,
++					struct page *page, struct zone *zone)
++{
++	if (page_to_pfn(page) != pfn)
++		return 0;
++
++	if (page_zone(page) != zone)
++		return 0;
++
++	return 1;
++}
++#endif /* CONFIG_ARCH_HAS_HOLES_MEMORYMODEL */
+diff -purN git2/mm/vmstat.c git/mm/vmstat.c
+--- git2/mm/vmstat.c	2009-06-08 06:42:41.000000000 +0530
++++ git/mm/vmstat.c	2009-08-17 11:57:17.000000000 +0530
+@@ -516,22 +516,11 @@ static void pagetypeinfo_showblockcount_
+ 			continue;
+ 
+ 		page = pfn_to_page(pfn);
+-#ifdef CONFIG_ARCH_FLATMEM_HAS_HOLES
+-		/*
+-		 * Ordinarily, memory holes in flatmem still have a valid
+-		 * memmap for the PFN range. However, an architecture for
+-		 * embedded systems (e.g. ARM) can free up the memmap backing
+-		 * holes to save memory on the assumption the memmap is
+-		 * never used. The page_zone linkages are then broken even
+-		 * though pfn_valid() returns true. Skip the page if the
+-		 * linkages are broken. Even if this test passed, the impact
+-		 * is that the counters for the movable type are off but
+-		 * fragmentation monitoring is likely meaningless on small
+-		 * systems.
+-		 */
+-		if (page_zone(page) != zone)
++
++		/* Watch for unexpected holes punched in the memmap */
++		if (!memmap_valid_within(pfn, page, zone))
+ 			continue;
+-#endif
++
+ 		mtype = get_pageblock_migratetype(page);
+ 
+ 		if (mtype < MIGRATE_TYPES)

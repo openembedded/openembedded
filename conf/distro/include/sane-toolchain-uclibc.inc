@@ -3,15 +3,17 @@
 # uclibc:
 
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils = "binutils-cross"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "uclibc"
 PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
+PREFERRED_PROVIDER_virtual/libc         = "uclibc"
+PREFERRED_PROVIDER_linux-libc-headers   = "linux-libc-headers"
+PREFERRED_PROVIDER_virtual/libintl      = "proxy-libintl"
+PREFERRED_PROVIDER_virtual/libiconv     = "libiconv"
 
 USE_NLS ?= "no"
 USE_NLS_glib-2.0 = "yes"
 USE_NLS_glib-2.0-native = "yes"
 USE_NLS_gcc-cross = "no"
-
-TARGET_OS_UC = "linux${@['-uclibc','-uclibcgnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb'] and bb.data.getVar('MACHINE',d) not in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"
-TARGET_OS = "${@['${TARGET_OS_UC}', 'uclinux-uclibc'][bb.data.getVar('TARGET_ARCH',d)  in ['bfin']]}"
 
 #mess with compiler flags to use -Os instead of -O2
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info

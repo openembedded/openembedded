@@ -8,7 +8,7 @@ AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 # allows for a release candidate
 RC ?= ""
@@ -18,17 +18,31 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-n
 PACKAGES =+ "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-swaponoff util-linux-ng-losetup util-linux-ng-umount util-linux-ng-mount util-linux-ng-readprofile "
 PACKAGES_DYNAMIC = "libblkid*"
 
+# Provide old util-linux names (several recipes still use DEPENDS or RDEPENDS = "util-linux"):
+PROVIDES = "util-linux"
+RPROVIDES_${PN} = "util-linux"
+RPROVIDES_util-linux-ng-fdisk = "util-linux-fdisk"
+RPROVIDES_util-linux-ng-cfdisk = "util-linux-cfdisk"
+RPROVIDES_util-linux-ng-sfdisk = "util-linux-sfdisk"
+RPROVIDES_util-linux-ng-swaponoff = "util-linux-swaponoff"
+RPROVIDES_util-linux-ng-losetup = "util-linux-losetup"
+RPROVIDES_util-linux-ng-umount = "util-linux-umount"
+RPROVIDES_util-linux-ng-mount = "util-linux-mount"
+RPROVIDES_util-linux-ng-readprofile = "util-linux-readprofile"
+
 FILES_${PN}-doc += "/usr/share/misc/getopt/getopt-*.*"
 FILES_${PN} = "${bindir} ${sbindir} ${base_bindir} ${base_sbindir}"
 
 FILES_util-linux-ng-fdisk = "${base_sbindir}/fdisk.${PN}"
 FILES_util-linux-ng-cfdisk = "${base_sbindir}/cfdisk"
-FILES_util-linux-ng-sfdisk = "${base_sbindir}/sfdisk"
+# Moved to ${sbindir} in new versions:
+FILES_util-linux-ng-sfdisk = "${base_sbindir}/sfdisk ${sbindir}/sfdisk"
 FILES_util-linux-ng-swaponoff = "${base_sbindir}/swapon.${PN} ${base_sbindir}/swapoff.${PN}"
 FILES_util-linux-ng-losetup = "${base_sbindir}/losetup.${PN}"
 FILES_util-linux-ng-mount = "${base_bindir}/mount.${PN} ${sysconfdir}/default/mountall"
 FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
-FILES_util-linux-ng-readprofile = "${sbindir}/readprofile.${PN}"
+# Moved to ${base_sbindir} by do_install:
+FILES_util-linux-ng-readprofile = "${base_sbindir}/readprofile.${PN}"
 
 PACKAGES =+ "${PN}-mountall"
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall"

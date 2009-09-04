@@ -1,7 +1,5 @@
-DEFAULT_PREFERENCE = "1"
-PR = "r18"
-
 require uclibc.inc
+PR = "${INC_PR}.0"
 
 # This is the correct KERNEL_SOURCE location, if the uClibc
 # fix_includes.sh script is run (see nokernelheader.patch below)

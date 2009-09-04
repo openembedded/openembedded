@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
-PR = "r2"
+PR = "r4"
 
 PACKAGE_ARCH = "all"
 DEFAULT_PREFERENCE = "-1"
@@ -17,6 +17,10 @@ file://0019-keymap-fixed-machine-names.patch;patch=1 \
 file://0020-keymap-fixed-machine-names-again.patch;patch=1 \
 file://0021-xserver-introduced-MOUSE-variable-for-mouse-argument.patch;patch=1 \
 file://0022-xserver-fix-syntax-error.patch;patch=1 \
+file://0023-Xserver-provide-screen-argument-only-for-non-X.org-s.patch;patch=1 \
+file://0024-Xserver-move-nearly-whole-functionality-to-xserver-c.patch;patch=1 \
+file://0025-Makefile-move-modmaps-install-xserver-common.patch;patch=1 \
+file://0026-98keymap-fixup-fixed-path-to-xmodmap-file.patch;patch=1 \
 "
 
 do_install_append() {

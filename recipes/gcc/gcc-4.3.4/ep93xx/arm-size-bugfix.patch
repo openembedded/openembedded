@@ -1,0 +1,33 @@
+Fix an obvious bug in GCC-4.3.2's ARM code generator.
+
+PR target/37668
+ * arm.c (arm_size_rtx_costs, case NEG): Don't fall through if the
+   result will be in an FPU register.
+
+This has been applied in gcc-4.4.0
+
+   Martin Guy <martinwguy@yahoo.it>
+
+*** gcc-4.3.2/gcc/config/arm/arm.c	(revision 142660)
+--- gcc-4.3.2/gcc/config/arm/arm.c	(local)
+*************** arm_size_rtx_costs (rtx x, int code, int
+*** 5201,5207 ****
+  
+      case NEG:
+        if (TARGET_HARD_FLOAT && GET_MODE_CLASS (mode) == MODE_FLOAT)
+! 	*total = COSTS_N_INSNS (1);
+        /* Fall through */
+      case NOT:
+        *total = COSTS_N_INSNS (ARM_NUM_REGS (mode));
+--- 5201,5211 ----
+  
+      case NEG:
+        if (TARGET_HARD_FLOAT && GET_MODE_CLASS (mode) == MODE_FLOAT)
+! 	{
+! 	  *total = COSTS_N_INSNS (1);
+! 	  return false;
+! 	}
+! 
+        /* Fall through */
+      case NOT:
+        *total = COSTS_N_INSNS (ARM_NUM_REGS (mode));

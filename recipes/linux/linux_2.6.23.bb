@@ -28,6 +28,9 @@ SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 
                  file://defconfig \
                  http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1 \
                 "
+SRC_URI_append_em-x270 = "\
+	file://em-x270.patch;patch=1 \
+	file://01-prevent_loop_timespec_add_ns.patch;patch=1"
 
 SRC_URI_append_cm-x270 = "\
 	file://0001-cm-x270-base2.patch;patch=1 \

@@ -1,6 +1,8 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
 
+RDEPENDS_${PN} += "devmem2"
+
 #HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
 INSANE_SKIP_${PN} = True
 INSANE_SKIP_${PN}-tests = True
@@ -25,6 +27,7 @@ PROVIDES += "virtual/egl"
 # voila!
 
 SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
+           file://cputype \
            file://rc.pvr \
            file://chameleonman.desktop \
            file://evilskull.desktop \
@@ -66,7 +69,7 @@ inherit update-rc.d
 INITSCRIPT_NAME = "pvr-init"
 INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 
-require ../dvsdk/ti-dspbios.inc
+require ../ti/ti-dspbios.inc
 
 do_compile() {
     for sofile in $(find ${S} -name "lib*Open*.so") $(find ${S} -name "lib*srv*.so")   $(find ${S} -name "lib*gl*.so") $(find ${S} -name "libpvr*.so") $(find ${S} -name "lib*GL*.so"); do
@@ -83,6 +86,8 @@ do_install () {
 	cp -pP ${BINLOCATION}/*.so* ${D}${libdir}
 
 	install -d ${D}${bindir}/
+	install -m 0755 ${WORKDIR}/cputype ${D}${bindir}/
+
 	cp -pP ${BINLOCATION}/*_test ${D}${bindir}/
 	cp -pP ${BINLOCATION}/gl2info ${D}${bindir}/
 	cp -pP ${BINLOCATION}/gles1test1 ${D}${bindir}/

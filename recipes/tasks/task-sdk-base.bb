@@ -8,7 +8,7 @@ DEPENDS = "task-sdk-bare"
 RDEPENDS = "\
     task-sdk-bare \
     glibc \
-    glibc-dev \
+    virtual-libc-dev \
     libgcc \
     alsa-dev \
     audiofile-dev \

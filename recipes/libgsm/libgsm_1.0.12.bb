@@ -4,7 +4,7 @@ PRIORITY = "optional"
 #DEPENDS = ""
 LICENSE = "libgsm"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://user.cs.tu-berlin.de/~jutta/gsm/gsm-${PV}.tar.gz \
 	   file://01_makefile.patch;patch=1 \
@@ -28,9 +28,9 @@ do_compile() {
 do_install() {
 	oe_libinstall -a -C lib libgsm ${D}${libdir}
         oe_libinstall -so -C lib libgsm ${D}${libdir}
-        install -d ${D}/usr/include/gsm
-        install -m 0644 ${S}/inc/gsm.h ${D}/usr/include/gsm/
-	cd ${D}/usr/include/
+        install -d ${D}${includedir}/gsm
+        install -m 0644 ${S}/inc/gsm.h ${D}${includedir}/gsm/
+	cd ${D}${includedir}
 	ln -s gsm/gsm.h gsm.h
 }
 

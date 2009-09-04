@@ -23,3 +23,6 @@ ac_cv___va_copy=${ac_cv___va_copy=yes}
 ac_cv_func_posix_getpwuid_r=${ac_cv_func_posix_getpwuid_r=yes}
 ac_cv_func_posix_getgrgid_r=${ac_cv_func_posix_getgrgid_r=yes}
 ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
+
+# guile
+guile_cv_use_csqrt=${guile_cv_use_csqrt=no}

@@ -67,7 +67,7 @@
         <varlistentry>
           <term><filename>recipes/</filename></term>
           <listitem>
-            <para>Conatins all of the
+            <para>Contains all of the
               <application>BitBake</application> <filename>.bb</filename>
               files. There is a subdirectory for each task or application
               and within that subdirectory is

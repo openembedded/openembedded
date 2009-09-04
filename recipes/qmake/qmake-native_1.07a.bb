@@ -18,7 +18,7 @@ EXTRA_OEMAKE = "-e"
 
 do_configure() {
 	# Install the OE build templates
-	for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++ linux-uclibcgnueabi-oe-g++
+	for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++ linux-uclibceabi-oe-g++
 	do
 		install -d ${S}/mkspecs/$template
 		install -m 0644 ${WORKDIR}/linux-oe-qmake.conf ${S}/mkspecs/$template/qmake.conf

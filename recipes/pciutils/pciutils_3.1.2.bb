@@ -12,15 +12,10 @@ SRC_URI_append_nylon = "file://gcc-3-compatibility.patch;patch=1 "
 
 PARALLEL_MAKE = ""
 
-PR ="r3"
+PR = "r5"
 
-EXTRA_OEMAKE += "'STRIP = '"
+EXTRA_OEMAKE += "'STRIP = ' PREFIX=${prefix} LIBDIR=${libdir}"
 export SHARED=yes
-
-do_configure () {
-	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})
-}
-
 export DESTDIR = "${D}"
 export PREFIX = "${prefix}"
 export SBINDIR = "${sbindir}"
@@ -28,35 +23,30 @@ export SHAREDIR = "${datadir}"
 export MANDIR = "${mandir}"
 export IDSDIR = "${datadir}"
 
-do_install () {
-	oe_runmake install
+do_configure () {
+	export ZLIB=yes
+	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})
 }
 
-do_install_append () {
-	install -d ${D}/${datadir}
-	install -m 6440 ${WORKDIR}/${PN}-${PV}/pci.ids.gz ${D}/${datadir}
+do_install () {
+	oe_runmake install install-lib
 
-	# The makefile does not install the development files:
-	# libpci.so pci.h header.h config.h types.h
-	install -d ${D}/${libdir}
-	install -d ${D}/${includedir}/pci
-
+	# "make install" misses the debug file for the library
 	oe_libinstall -so -C lib libpci ${D}/${libdir}
-	install -m 0644 ${S}/lib/pci.h ${D}/${includedir}/pci/
-	install -m 0644 ${S}/lib/header.h ${D}/${includedir}/pci/
-	install -m 0644 ${S}/lib/config.h ${D}/${includedir}/pci/
-	install -m 0644 ${S}/lib/types.h ${D}/${includedir}/pci/
+
+	# Some older versions of hal may need the uncompressed version.
+	# We install it in a separate package, pciutils-ids-uncompressed.
+	install -m 0644 ${S}/pci.ids ${D}/${datadir}
 }
 
 do_stage () {
+	oe_runmake install-lib DESTDIR=${STAGING_DIR_HOST}
+
+	# "make install-lib" misses the symlink libpci.so.3
 	oe_libinstall -so -C lib libpci ${STAGING_LIBDIR}
-	install -m 0755 -d ${STAGING_INCDIR}/pci
-	install -m 0644 ${S}/lib/pci.h ${STAGING_INCDIR}/pci/
-	install -m 0644 ${S}/lib/header.h ${STAGING_INCDIR}/pci/
-	install -m 0644 ${S}/lib/config.h ${STAGING_INCDIR}/pci/
-	install -m 0644 ${S}/lib/types.h ${STAGING_INCDIR}/pci/
 }
 
 
-PACKAGES =+ "pciutils-ids"
-FILES_pciutils-ids="${datadir}/pci.ids.gz"
+PACKAGES =+ "${PN}-ids ${PN}-ids-uncompressed"
+FILES_${PN}-ids = "${datadir}/pci.ids.gz"
+FILES_${PN}-ids-uncompressed = "${datadir}/pci.ids"

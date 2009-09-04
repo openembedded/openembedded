@@ -1,6 +1,6 @@
 require libtool.inc
 require libtool_${PV}.bb
-PR = "r0"
+PR = "${INC_PR}.0"
 
 SRC_URI += "\
   file://cross_compile.patch;patch=1 \

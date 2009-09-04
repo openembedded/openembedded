@@ -197,7 +197,7 @@
     that this may not be exactly what see - there are a lot of options that
     can effect exactly how things are done, but it gives us a pretty good idea
     of whats going on. What we are looking at here is the tmp directory (as
-    specified by TMPDIR in your local.conf):<screen>~%&gt; find tmp -maxdepth 2 -type d 
+    specified by TMPDIR in your local.conf):<screen>$ <command>find</command> tmp -maxdepth 2 -type d 
 tmp
 tmp/stamps
 tmp/cross
@@ -329,9 +329,9 @@ tmp/deploy/images</screen></para>
     <para>To perform a complete rebuild from script you would usually rename
     or delete tmp and then restart your build. I recommend keeping one old
     version of tmp around to use for comparison if something goes wrong with
-    your new build. For example:<screen>%&gt; rm -fr tmp.OLD
-$&gt; mv tmp tmp.OLD
-%&gt; bitbake bootstrap-image</screen></para>
+    your new build. For example:<screen>$ <command>rm</command> -fr tmp.OLD
+$ <command>mv</command> tmp tmp.OLD
+$ <command>bitbake</command> bootstrap-image</screen></para>
 
     <section id="usage_workdir" xreflabel="work directory">
       <title>work directory (tmp/work)</title>
@@ -344,7 +344,7 @@ $&gt; mv tmp tmp.OLD
       defined by the PR variable within the recipe).</para>
 
       <para>Here's an example of a few of the subdirectories under the work
-      directory:<screen>~%&gt; find tmp/work -maxdepth 1 -type d | head -4
+      directory:<screen>$ <command>find</command> tmp/work -maxdepth 1 -type d | head -4
 tmp/work
 tmp/work/busybox-1.2.1-r13
 tmp/work/libice-1_1.0.3-r0
@@ -354,7 +354,7 @@ tmp/work/arpwatch-2.1a15-r2</screen>You can see that the first three (of
       It's also possible that you may just have a sub directory for your
       targets architecture and operating system in which case these
       directories will be in that additional subdirectory, as shown
-      here:<screen>~%&gt; find tmp/work -maxdepth 2 -type d | head -4
+      here:<screen>$ <command>find</command> tmp/work -maxdepth 2 -type d | head -4
 tmp/work
 tmp/work/sh4-linux
 tmp/work/sh4-linux/busybox-1.2.1-r13
@@ -375,7 +375,7 @@ tmp/work/sh4-linux/arpwatch-2.1a15-r2</screen></para>
       distribution is using it.</para>
 
       <para>Using lzo 1.08 as an example we'll examine the contents of the
-      working directory for a typical recipe:<screen>~%&gt; find tmp/work/lzo-1.08-r14 -maxdepth 1
+      working directory for a typical recipe:<screen>$ <command>find</command> tmp/work/lzo-1.08-r14 -maxdepth 1
 tmp/work/lzo-1.08-r14
 tmp/work/lzo-1.08-r14/temp
 tmp/work/lzo-1.08-r14/lzo-1.08
@@ -478,7 +478,7 @@ tmp/work/lzo-1.08-r14/image</screen></para>
 
       <para>How about checking out what happened during the configuration of
       lzo? Well that requires checking the log file for configure that is
-      generated in the temp directory:<screen>~%&gt; less tmp/work/lzo-1.08-r14/temp/log.do_configure.*
+      generated in the temp directory:<screen>$ <command>less</command> tmp/work/lzo-1.08-r14/temp/log.do_configure.*
 ...
 checking whether ccache sh4-linux-gcc -ml -m4 suffers the -fschedule-insns bug... unknown
 checking whether ccache sh4-linux-gcc -ml -m4 suffers the -fstrength-reduce bug... unknown
@@ -499,7 +499,7 @@ config.status: executing depfiles commands</screen></para>
       <para>Or perhaps you want to see how the files were distributed into
       individual packages prior to packaging? The install directory is where
       the files are split into separate packages and so that shows us which
-      files end up where:<screen>~%&gt; find tmp/work/lzo-1.08-r14/install                
+      files end up where:<screen>$ <command>find</command> tmp/work/lzo-1.08-r14/install
 tmp/work/lzo-1.08-r14/install
 tmp/work/lzo-1.08-r14/install/lzo-doc
 tmp/work/lzo-1.08-r14/install/lzo-dbg
@@ -542,7 +542,7 @@ tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1.0.0</screen></para>
     <para>When you go about building and installing a software package there
     are a number of tasks that you generally follow with most software
     packages. You probably need to start out by downloading the source code,
-    then unpacking the source code. Maye you need to apply some patches for
+    then unpacking the source code. Maybe you need to apply some patches for
     some reason. Then you might run the configure script of the package,
     perhaps passing it some options to configure it to your liking. The you
     might run "make install" to install the software. If your actually going
@@ -554,7 +554,7 @@ tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1.0.0</screen></para>
     each recipe. Any many of the tasks correspond to those listed above like
     <emphasis>"download the source"</emphasis>. In fact you've probably
     already seen some of the names of these tasks - bitbake displays them as
-    they are processed:<screen>~%&gt; bitbake lzo
+    they are processed:<screen>$ <command>bitbake</command> lzo
 NOTE: Psyco JIT Compiler (http://psyco.sf.net) not available. Install it to increase performance.
 NOTE: Handling BitBake files: \ (4541/4541) [100 %]
 NOTE: Parsing finished. 4325 cached, 0 parsed, 216 skipped, 0 masked.
@@ -827,7 +827,7 @@ NOTE: build 200705041709: completed</screen><note>
 
     <para>To determine the full list of tasks available for a specific recipe
     you can run bitbake on the recipe and asking it for the full list of
-    available tasks:<screen>~%&gt; bitbake -b recipes/perl/perl_5.8.8.bb -c listtasks
+    available tasks:<screen>$ <command>bitbake</command> -b recipes/perl/perl_5.8.8.bb -c listtasks
 NOTE: package perl-5.8.8: started
 NOTE: package perl-5.8.8-r11: task do_listtasks: started
 do_fetchall
@@ -851,7 +851,7 @@ do_qa_staging
 do_patch
 NOTE: package perl-5.8.8-r11: task do_listtasks: completed
 NOTE: package perl-5.8.8: completed
-~%&gt; </screen></para>
+$ </screen></para>
 
     <para>If your being observant you'll note that
     <emphasis>listtasks</emphasis> is in fact a task itself, and that the
@@ -878,8 +878,8 @@ NOTE: package perl-5.8.8: completed
 
     <para>Here's a typically example that cleans up the package (using the
     <emphasis>clean</emphasis> task) and the rebuilds it with debugging output
-    from bitbake enabled:<screen>~%&gt; bitbake -b &lt;bb-file&gt; -c clean
-~%&gt; bitbake -b &lt;bb-file&gt; -D</screen></para>
+    from bitbake enabled:<screen>$ <command>bitbake</command> -b &lt;bb-file&gt; -c clean
+$ <command>bitbake</command> -b &lt;bb-file&gt; -D</screen></para>
 
     <para>The options to bitbake that are most useful here are:</para>
 
@@ -1020,27 +1020,27 @@ NOTE: package perl-5.8.8: completed
 
     <para>A typically development session might involve editing files in the
     working directory and then recompiling until it all works:<screen>[<emphasis>... test ...</emphasis>]
-~%&gt; bitbake -b recipes/testapp/testapp_4.3.bb -c compile -D
+$ <command>bitbake</command> -b recipes/testapp/testapp_4.3.bb -c compile -D
 
 [<emphasis>... save a copy of main.c and make some changes ...</emphasis>]
-~%&gt; vi tmp/work/testapp-4.3-r0/main.c
-~%&gt; bitbake -b recipes/testapp/testapp_4.3.bb -c compile -D -f
+$ <command>vi</command> tmp/work/testapp-4.3-r0/main.c
+$ <command>bitbake</command> -b recipes/testapp/testapp_4.3.bb -c compile -D -f
 
 [<emphasis>... create a patch and add it to the recipe ...</emphasis>]
-~%&gt; vi recipes/testapp/testapp_4.3.bb
+$ <command>vi</command> recipes/testapp/testapp_4.3.bb
 
 [<emphasis>... test from clean ...</emphasis>]
-~%&gt; bitbake -b recipes/testapp/testapp_4.3.bb -c clean
-~%&gt; bitbake -b recipes/testapp/testapp_4.3.bb
+$ <command>bitbake</command> -b recipes/testapp/testapp_4.3.bb -c clean
+$ <command>bitbake</command> -b recipes/testapp/testapp_4.3.bb
 
 [<emphasis>... NOTE: How to create the patch is not covered at this point ...</emphasis>]</screen></para>
 
     <para>Here's another example showing how you might go about fixing up the
-    packaging in your recipe:<screen>~%&gt; bitbake -b recipes/testapp/testapp_4.3.bb -c install -f
-~%&gt; bitbake -b recipes/testapp/testapp_4.3.bb -c stage -f
-~%&gt; find tmp/work/testapp_4.3/install
+    packaging in your recipe:<screen>$ <command>bitbake</command> -b recipes/testapp/testapp_4.3.bb -c install -f
+$ <command>bitbake</command> -b recipes/testapp/testapp_4.3.bb -c stage -f
+$ <command>find</command> tmp/work/testapp_4.3/install
 ...
-~%&gt; vi recipes/testapp/testapp_4.3.bb</screen>At this stage you play with
+$ <command>vi</command> recipes/testapp/testapp_4.3.bb</screen>At this stage you play with
     the <emphasis role="bold">PACKAGE_</emphasis> and <emphasis
     role="bold">FILES_</emphasis> variables and then repeat the above
     sequence.</para>
@@ -1062,7 +1062,7 @@ NOTE: package perl-5.8.8: completed
   <section id="usage_interactive_bitbake" xreflabel="interactive bitbake">
     <title>Interactive bitbake</title>
 
-    <para>To interactively test things use:<screen>~%&gt; bitbake -i</screen>this
+    <para>To interactively test things use:<screen>$ <command>bitbake</command> -i</screen>this
     will open the bitbake shell. From here there are a lot of commands
     available (try help).</para>
 
@@ -1103,7 +1103,7 @@ BB&gt;&gt; build net-snmp</screen>Note that you can use wildcards in the
             role="bold">devshell</emphasis>"</screen></para>
 
       <para>With the inclusion of this class you'll find that devshell is
-      added as a new task that you can use on recipes:<screen>~%&gt; bitbake -b recipes/lzo/lzo_1.08.bb -c listtasks
+      added as a new task that you can use on recipes:<screen>$ <command>bitbake</command> -b recipes/lzo/lzo_1.08.bb -c listtasks
 NOTE: package lzo-1.08: started
 NOTE: package lzo-1.08-r14: task do_listtasks: started
 <emphasis role="bold">do_devshell</emphasis>
@@ -1130,7 +1130,7 @@ NOTE: package lzo-1.08-r14: task do_listtasks: completed
 NOTE: package lzo-1.08: completed</screen></para>
 
       <para>To bring up the devshell you call bitbake on a recipe and ask it
-      for the devshell task:<screen>~%&gt; ./bb -b recipes/lzo/lzo_1.08.bb -c devshell
+      for the devshell task:<screen>$ <command>bitbake</command> -b recipes/lzo/lzo_1.08.bb -c devshell
 NOTE: package lzo-1.08: started
 NOTE: package lzo-1.08-r14: task do_devshell: started
 [<emphasis>... devshell will appear here ...</emphasis>]
@@ -1163,11 +1163,11 @@ NOTE: package lzo-1.08: completed</screen></para>
       a devshell.</para>
 
       <para>It requires no changes to your configuration, instead you simply
-      build the devshell recipe:<screen>bitabike devshell</screen></para>
+      build the devshell recipe:<screen>$ <command>bitbake</command> devshell</screen></para>
 
       <para>and then manually startup the shell. Once in the shell you'll
       usually want to change into the working directory for the recipe you are
-      working on:<screen>~%&gt; ./tmp/deploy/addons/sh4-linux-erouter-titan-devshell
+      working on:<screen>$ <command>./tmp/deploy/addons/sh4-linux-erouter-titan-devshell</command>
 bash: alias: `./configure': invalid alias name
 [OE::sh4-linux-erouter-titan]:~$ cd tmp/work/lzo-1.08-r14/lzo-1.08
 [OE::sh4-linux-erouter-titan]:~tmp/work/lzo-1.08-r14/lzo-1.08$</screen><note>

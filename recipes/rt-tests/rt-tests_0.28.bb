@@ -1,11 +1,13 @@
 DESCRIPTION = "Real-time tests, such as cyclictest, for real-time linux PREEMPT RT kernels"
 HOMEPAGE = "http://rt.wiki.kernel.org/index.php/Cyclictest"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/people/tglx/rt-tests/rt-tests-${PV}.tar.bz2"
 
 S = "${WORKDIR}/rt-tests"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 # Limit to cyclictest only for non-real-time kernels.
 # EXTRA_OEMAKE = "cyclictest"

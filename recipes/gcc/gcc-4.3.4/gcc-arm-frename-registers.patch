@@ -1,0 +1,15 @@
+Index: gcc-4.3.4/gcc/regrename.c
+===================================================================
+--- gcc-4.3.4.orig/gcc/regrename.c	2009-02-04 22:42:04.000000000 +0100
++++ gcc-4.3.4/gcc/regrename.c	2009-08-07 14:57:58.021444122 +0200
+@@ -789,6 +789,10 @@ build_def_use (basic_block bb)
+ 	          || (predicated && recog_data.operand_type[i] == OP_OUT))
+ 		recog_data.operand_type[i] = OP_INOUT;
+ 	    }
++	  /* Unshare dup_loc RTL */
++	  for (i = 0; i < recog_data.n_dups; i++)
++	    *recog_data.dup_loc[i] = copy_rtx(*recog_data.dup_loc[i]);
++
+ 
+ 	  /* Step 1: Close chains for which we have overlapping reads.  */
+ 	  for (i = 0; i < n_ops; i++)

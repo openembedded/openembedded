@@ -3,10 +3,14 @@ LICENSE = "LGPL"
 DESCRIPTION = "WvStreams is a network programming library in C++"
 DEPENDS = "zlib openssl (>= 0.9.8)"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
-           file://build-fixes-and-sanity.patch;patch=1 "
+	file://build-fixes-and-sanity.patch;patch=1 \
+	file://dont-forget-header.patch;patch=1 \
+	file://gcc4.3.patch;patch=1 \
+	"
+
 
 inherit autotools pkgconfig
 

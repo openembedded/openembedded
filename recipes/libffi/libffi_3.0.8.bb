@@ -46,7 +46,7 @@ EXTRA_OECONF_PATHS = "--with-local-prefix=${prefix}/local \
 EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-gnueabi       = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-uclibc        = " --disable-__cxa_atexit"
-EXTRA_OECONF_append_linux-uclibcgnueabi = " --disable-__cxa_atexit"
+EXTRA_OECONF_append_linux-uclibceabi = " --disable-__cxa_atexit"
 EXTRA_OECONF_FPU = "${@get_gcc_fpu_setting(bb, d)}"
 
 #Somehow gcc doesn't set __SOFTFP__ when passing -mfloatabi=softp :(

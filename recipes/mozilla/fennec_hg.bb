@@ -1,12 +1,12 @@
 DESCRIPTION = "Mozilla Mobile browser"
 
-PV = "0.9+1.0b2pre"
-MOZPV = "1.0b2pre"
-PR = "r5"
+PV = "0.9+1.0b4pre"
+MOZPV = "1.0b4pre"
+PR = "r7"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=8c9a6d851018 \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=c24b8b4ade53 \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=37acc871cb55 \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=c725e5e30b9d \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
            file://use-native-bpp.patch;patch=1 \
@@ -20,7 +20,7 @@ require firefox.inc
 DEPENDS += "libnotify autoconf213-native cairo alsa-lib sqlite3"
 
 PARALLEL_MAKE = ""
-export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
+
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 export LIBXUL_DIST="${S}/objdir/xulrunner/dist/"

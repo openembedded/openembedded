@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r27"
+PR ="r29"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -40,19 +40,19 @@ SRCREV_overo = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_overo = "2009.03+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm6446-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
-SRCREV_dm6446-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+SRCREV_dm6446-evm = "fa6ec6e75eeec4fa1543cc4452e11707758540a2"
 PV_dm6446-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm6467-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
-SRCREV_dm6467-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+SRCREV_dm6467-evm = "fa6ec6e75eeec4fa1543cc4452e11707758540a2"
 PV_dm6467-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm355-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
-SRCREV_dm355-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+SRCREV_dm355-evm = "fa6ec6e75eeec4fa1543cc4452e11707758540a2"
 PV_dm355-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm365-evm = "git://arago-project.org/git/people/sandeep/u-boot-davinci.git;protocol=git"
-SRCREV_dm365-evm = "6dc7c97635b46ed00117e326d16d092a963fb6d4"
+SRCREV_dm365-evm = "fa6ec6e75eeec4fa1543cc4452e11707758540a2"
 PV_dm365-evm = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
@@ -67,7 +67,6 @@ SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git"
 SRCREV_sequoa = "cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093"
 
-SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git;tag=cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093 "
 
 SRC_URI_mini2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"

@@ -1,29 +1,17 @@
 DESCRIPTION = "All tools needed for OpenEmbedded build"
 SECTION = "devel"
 LICENSE = "MIT"
-RDEPENDS = "cpp gcc-symlinks binutils-symlinks \
-            perl perl-modules bitbake bash \
-			task-proper-tools glibc-utils \
-			linux-libc-headers-dev glibc-dev \
-			texinfo make cvs subversion monotone-6"
+RDEPENDS = "task-native-sdk python-modules bash texinfo cvs subversion git"
+PR = "r1"
 
 #
 # quilt-native REQ bash and perl/perl-modules
 # binutils REQ texinfo
 #
-# bitbake will fetch all needed python modules
+# Bitbake require Python and should be fetched from GIT tree
 #
 # toolchain:
-# - gcc-symlinks will fetch gcc
-# - binutils-symlinks will fetch binutils
-# - glibc-utils REQ cpp
-#
-# problems:
-# - binutils-symlinks conflict with busybox
-# - glibc-dev conflict with libc-linux-headers-dev
-# - perl is so granulated that it is probably impossible
-#   to find out which packages are needed
-#
+# - task-native-sdk provides it for glibc/uclibc systems
 
 ALLOW_EMPTY = "1"
 

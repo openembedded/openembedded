@@ -1,0 +1,198 @@
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/dma.c linux-2.6.24/arch/arm/mach-hipox/dma.c
+--- linux-2.6.24.orig//arch/arm/mach-hipox/dma.c	2009-08-20 08:10:53.000000000 +0200
++++ linux-2.6.24/arch/arm/mach-hipox/dma.c	2009-08-20 08:17:17.000000000 +0200
+@@ -2847,3 +2847,8 @@
+ EXPORT_SYMBOL(hipox_sata_dma_settings);
+ EXPORT_SYMBOL(hipox_dpe_rx_dma_settings);
+ EXPORT_SYMBOL(hipox_dpe_tx_dma_settings);
++
++EXPORT_SYMBOL(hipox_dma_device_set_sg);
++EXPORT_SYMBOL(hipox_dma_alloc_sg_entries);
++EXPORT_SYMBOL(hipox_dma_device_set_prd);
++EXPORT_SYMBOL(hipox_dma_free_sg_entries);
+diff -Nurd linux-2.6.24.orig//drivers/ata/Kconfig linux-2.6.24/drivers/ata/Kconfig
+--- linux-2.6.24.orig//drivers/ata/Kconfig	2009-08-20 08:10:53.000000000 +0200
++++ linux-2.6.24/drivers/ata/Kconfig	2009-08-20 08:17:17.000000000 +0200
+@@ -190,7 +190,7 @@
+ 	  This option enables support for the 924 based sata core
+ 
+ config SATA_OX810
+-	bool "Oxford Semiconductor OX810 SATA support"
++	tristate "Oxford Semiconductor OX810 SATA support"
+ 	depends on ARCH_HIPOX && HIPOX_VERSION_0X810
+ 	default n
+ 	help
+diff -Nurd linux-2.6.24.orig//drivers/ata/ox810sata.c linux-2.6.24/drivers/ata/ox810sata.c
+--- linux-2.6.24.orig//drivers/ata/ox810sata.c	2009-08-20 08:10:53.000000000 +0200
++++ linux-2.6.24/drivers/ata/ox810sata.c	2009-08-20 08:17:17.000000000 +0200
+@@ -52,7 +52,7 @@
+ //#define SATA_DUMP_REGS
+ //#define SATA_TF_DUMP
+ //#define DEBUG_EOT_FAILURE
+-#define ERROR_INJECTION
++//#define ERROR_INJECTION
+ 
+ #define CRAZY_DUMP_DEBUG
+ #if 0
+@@ -192,6 +192,7 @@
+     .error_inject = 0,
+     .hw_raid_active = 0,
+     .active_port = 0,
++    .spot_the_end_q = NULL,
+ };
+ 
+ /** If we were writing this in C++ then we would be deriving a subclass of 
+@@ -274,7 +275,7 @@
+ 
+ /**************************************************************************/
+ MODULE_LICENSE("GPL");
+-MODULE_VERSION(1.0);
++MODULE_VERSION("1.0");
+ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ 
+@@ -386,7 +387,11 @@
+     }
+ 
+     /* initialise a work queue to spot the end of transfers */
++	if(!ox810sata_driver.spot_the_end_q)
++	{
+     ox810sata_driver.spot_the_end_q = create_singlethread_workqueue("sata-endQ");
++	}
++
+     if (!ox810sata_driver.spot_the_end_q) {
+         printk(KERN_ERR DRIVER_NAME " Couldn't create a work queue.\n");
+         return -1;
+@@ -416,6 +421,7 @@
+     if (!host) {
+         printk(KERN_ERR DRIVER_NAME " Couldn't create an ata host.\n");
+         destroy_workqueue(ox810sata_driver.spot_the_end_q);
++        ox810sata_driver.spot_the_end_q = NULL;
+     }
+ 
+     /* set to base of ata core */
+@@ -447,10 +453,19 @@
+ 
+     // Disable the clock to the SATA block
+     writel(1UL << SYS_CTRL_CKEN_SATA_BIT, SYS_CTRL_CKEN_CLR_CTRL);
++
++    if(ox810sata_driver.spot_the_end_q)
++    {
++        destroy_workqueue(ox810sata_driver.spot_the_end_q);
++        ox810sata_driver.spot_the_end_q = NULL;
++    }
+     
+     return 0;
+ }
+ 
++static int ox810sata_device_init(void);
++static void ox810sata_device_exit(void);
++
+ /** 
+  * module initialisation
+  * @return success
+@@ -461,6 +476,9 @@
+     
+     ret = platform_driver_register( &ox810sata_driver.driver );
+     DPRINTK(" %i\n", ret);    
++
++    if(ret)
++        return ret;
+     
+ #ifdef ERROR_INJECTION
+ {
+@@ -473,6 +491,9 @@
+     //create_proc_read_entry("ox810sata_errorinject", 0, NULL, ox810sata_error_inject_show, NULL);
+ }   
+ #endif
++
++    ret = ox810sata_device_init();
++
+     return ret; 
+ }
+ 
+@@ -481,6 +502,8 @@
+  */
+ static void __exit ox810sata_exit( void )
+ {
++    ox810sata_device_exit();
++
+     platform_driver_unregister( &ox810sata_driver.driver );
+ }
+ 
+@@ -1578,6 +1601,13 @@
+ 		pd->sg_entries = 0;
+ 	}
+ 
++	if(ap->prd)
++	{
++		struct device* pdev = ap->host->dev;
++
++		dma_free_coherent(pdev, ATA_PRD_TBL_SZ, ap->prd, ap->prd_dma);
++	}
++
+     kfree(pd);
+ }
+ 
+@@ -2233,6 +2263,10 @@
+     },
+ };
+ 
++static void ox810_device_release(struct device *dev)
++{
++}
++
+ static struct platform_device ox810sata_dev0 = 
+ {
+     .name = DRIVER_NAME,
+@@ -2240,6 +2274,7 @@
+     .num_resources = 2,
+ 	.resource  = ox810sata_port0_resources,
+     .dev.coherent_dma_mask = 0xffffffff,
++    .dev.release = ox810_device_release,
+ }; 
+ 
+ static struct platform_device ox810sata_dev1 = 
+@@ -2249,13 +2284,14 @@
+     .num_resources = 2,
+ 	.resource  = ox810sata_port1_resources,
+     .dev.coherent_dma_mask = 0xffffffff,
++    .dev.release = ox810_device_release,
+ }; 
+ 
+ /** 
+  * module initialisation
+  * @return success is 0
+  */
+-static int __init ox810sata_device_init( void )
++static int ox810sata_device_init( void )
+ {
+     int ret;
+ 
+@@ -2282,10 +2318,12 @@
+ /** 
+  * module cleanup
+  */
+-static void __exit ox810sata_device_exit(void)
++static void ox810sata_device_exit(void)
+ {
+-    platform_device_unregister( &ox810sata_dev0 );
++#ifndef CONFIG_OX810SATA_SINGLE_SATA
+     platform_device_unregister( &ox810sata_dev1 );
++#endif /* CONFIG_OX810_SINGLE_SATA */
++    platform_device_unregister( &ox810sata_dev0 );
+ }
+ 
+ /**
+@@ -2413,11 +2451,3 @@
+ }
+ 
+ #endif /* ERROR_INJECTION */
+-
+-
+-
+-/** 
+- * macros to register intiialisation and exit functions with kernal
+- */
+-module_init(ox810sata_device_init);
+-module_exit(ox810sata_device_exit);

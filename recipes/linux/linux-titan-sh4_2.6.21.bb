@@ -1,12 +1,14 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for SH4 based TITAN (NP51R/LinkGear Series 100) router appliance"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	   file://titan-flash.patch;patch=1 \
 	   file://titan-pcibios-scan-update.patch;patch=1 \
            file://no-mm-mutex.patch;patch=1 \
+	   file://linux-2.6-limits.patch;patch=1 \
+	   file://linux-sh-__sdivsi3_i4i.patch;patch=1 \
 	   file://titan-config"
 S = "${WORKDIR}/linux-${PV}"
 

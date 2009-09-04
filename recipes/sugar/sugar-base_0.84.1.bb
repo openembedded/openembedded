@@ -25,7 +25,7 @@ RDEPENDS = "librsvg-gtk \
             python-pydoc \
             python-mmap \
             python-doctest \
-            ssh-keygen"
+            openssh-keygen"
 
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-base/${PN}-${PV}.tar.bz2"
 

@@ -4,6 +4,8 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
 
+INC_PR = "r16"
+
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   file://cross.patch;patch=1 \
@@ -29,6 +31,10 @@ EXTRA_OECONF = "\
   --with-x \
   --with-dbus-default-reply-timeout=200000 \
 "
+
+do_compile_prepend_mipsel() {
+	sed -i -e 's/\-fPIE//' -e 's/\-pie\ \-Wl\,\-z\,relro//' bus/Makefile
+}
 
 do_install_append() {
         install -d ${D}${sysconfdir}/init.d

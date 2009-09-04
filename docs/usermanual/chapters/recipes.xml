@@ -146,7 +146,7 @@ VAR2 = "The version is ${PV}"</screen></para>
         <term>Conditional assignment</term>
 
         <listitem>
-          <para>Conditional assignement is used to assign a value to a
+          <para>Conditional assignment is used to assign a value to a
           variable, but only when the variable is currently unset. This is
           commonly used to provide a default value for use when no specific
           definition is provided by the machine or distro configuration of the
@@ -253,7 +253,7 @@ CFLAGS_prepend += "-I${S}/myincludes2 "</screen>Note also the lack of a space
           <emphasis>oe-stylize.py</emphasis> which can be used to reformat
           your recipes to the correct style. The output will contain a list of
           warnings (to let you know what you did wrong) which should be edited
-          out before using the new file.<screen>contrib/oe-stylize.py myrecipe.bb &gt; fixed-recipe.bb
+          out before using the new file.<screen>$ <command>contrib/oe-stylize.py</command> myrecipe.bb &gt; fixed-recipe.bb
 vi fixed-recipe.bb
 mv fixed.recipe.bb myrecipe.bb</screen></para>
         </listitem>
@@ -1071,9 +1071,9 @@ ${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
 
       <para>First we'll create the myhelloworld.c file and a readme file.
       We'll place this in the files subdirectory, which is one of the places
-      that is searched for file:// URIs:<screen>mkdir recipes/myhelloworld
-mkdir recipes/myhelloworld/files
-cat &gt; recipes/myhelloworld/files/myhelloworld.c
+      that is searched for file:// URIs:<screen>$ <command>mkdir</command> recipes/myhelloworld
+$ <command>mkdir</command> recipes/myhelloworld/files
+$ <command>cat</command> &gt; recipes/myhelloworld/files/myhelloworld.c
 #include &lt;stdio.h&gt;
 
 int main(int argc, char** argv)
@@ -1082,7 +1082,7 @@ int main(int argc, char** argv)
         return 0;
 }
 ^D
-cat &gt; recipes/myhelloworld/files/README.txt
+$ <command>cat</command> &gt; recipes/myhelloworld/files/README.txt
 Readme file for myhelloworld.
 ^D</screen></para>
 
@@ -1176,7 +1176,7 @@ PR = "r0"</screen></para>
       </itemizedlist>
 
       <para>We'll consider this release 0 and version 0.1 of a program called
-      helloworld. So we'll name the recipe myhelloworld_0.1.bb:<screen>cat &gt; recipes/myhelloworld/myhelloworld_0.1.bb
+      helloworld. So we'll name the recipe myhelloworld_0.1.bb:<screen>$ <command>cat</command> &gt; recipes/myhelloworld/myhelloworld_0.1.bb
 DESCRIPTION = "Hello world program"
 PR = "r0"
 
@@ -1193,7 +1193,7 @@ do_install() {
         install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/myhelloworld
 }
 ^D</screen>Now we are ready to build our package, hopefully it'll all work
-      since it's such a simple example:<screen>~/oe%&gt; bitbake -b recipes/myhelloworld/myhelloworld_0.1.bb
+      since it's such a simple example:<screen>$ <command>bitbake</command> -b recipes/myhelloworld/myhelloworld_0.1.bb
 NOTE: package myhelloworld-0.1: started
 NOTE: package myhelloworld-0.1-r0: task do_fetch: started
 NOTE: package myhelloworld-0.1-r0: task do_fetch: completed
@@ -1225,17 +1225,17 @@ NOTE: package myhelloworld-0.1-r0: task do_build: completed
 NOTE: package myhelloworld-0.1: completed
 Build statistics:
   Attempted builds: 1
-~/oe%&gt;</screen></para>
+$</screen></para>
 
       <para>The package was successfully built, the output consists of two
       .ipkg files, which are ready to be installed on the target. One contains
-      the binary and the other contains the readme file:<screen>~/oe%&gt; ls -l tmp/deploy/ipk/*/myhelloworld*
+      the binary and the other contains the readme file:<screen>$ <command>ls</command> -l tmp/deploy/ipk/*/myhelloworld*
 -rw-r--r--  1 lenehan lenehan 3040 Jan 12 14:46 tmp/deploy/ipk/sh4/myhelloworld_0.1-r0_sh4.ipk
 -rw-r--r--  1 lenehan lenehan  768 Jan 12 14:46 tmp/deploy/ipk/sh4/myhelloworld-doc_0.1-r0_sh4.ipk
-~/oe%&gt;</screen></para>
+$</screen></para>
 
       <para>It's worthwhile looking at the working directory to see where
-      various files ended up:<screen>~/oe%&gt; find tmp/work/myhelloworld-0.1-r0
+      various files ended up:<screen>$ <command>find</command> tmp/work/myhelloworld-0.1-r0
 tmp/work/myhelloworld-0.1-r0
 tmp/work/myhelloworld-0.1-r0/myhelloworld-0.1
 tmp/work/myhelloworld-0.1-r0/myhelloworld-0.1/patches
@@ -1271,7 +1271,7 @@ tmp/work/myhelloworld-0.1-r0/image/usr/share/doc
 tmp/work/myhelloworld-0.1-r0/image/usr/share/doc/myhelloworld
 tmp/work/myhelloworld-0.1-r0/myhelloworld.c
 tmp/work/myhelloworld-0.1-r0/README.txt
-~/oe%&gt;</screen>Things to note here are:</para>
+$</screen>Things to note here are:</para>
 
       <itemizedlist>
         <listitem>
@@ -1321,11 +1321,11 @@ tmp/work/myhelloworld-0.1-r0/README.txt
 
       <para>At this stage it's good to verify that we really did produce a
       binary for the target and not for our host system. We can check that
-      with the file command:<screen>~/oe%&gt; file tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld
+      with the file command:<screen>$ <command>file</command> tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld
 tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld: ELF 32-bit LSB executable, Hitachi SH, version 1 (SYSV), for GNU/Linux 2.4.0, dynamically linked (uses shared libs), for GNU/Linux 2.4.0, not stripped
-~/oe%&gt; file /bin/ls
+$ <command>file</command> /bin/ls
 /bin/ls: ELF 64-bit LSB executable, AMD x86-64, version 1 (SYSV), for GNU/Linux 2.4.0, dynamically linked (uses shared libs), for GNU/Linux 2.4.0, stripped
-~/oe%&gt;</screen>This shows us that the helloworld program is for an SH
+$</screen>This shows us that the helloworld program is for an SH
       processor (obviously this will change depending on what your target
       system is), while checking the <emphasis role="bold">/bin/ls</emphasis>
       program on the host shows us that the host system is an AMD X86-64 system.
@@ -1344,7 +1344,7 @@ tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld: ELF 32-b
       of building an autotools based package.</para>
 
       <para>Let's take a look at the tuxnes recipe which is an example of a
-      very simple autotools based recipe:<screen>%~oe&gt; cat recipes/tuxnes/tuxnes_0.75.bb
+      very simple autotools based recipe:<screen>$ <command>cat</command> recipes/tuxnes/tuxnes_0.75.bb
 DESCRIPTION = "Tuxnes Nintendo (8bit) Emulator"
 HOMEPAGE = "http://prdownloads.sourceforge.net/tuxnes/tuxnes-0.75.tar.gz"
 LICENSE = "GPLv2"
@@ -1503,7 +1503,7 @@ inherit autotools</screen></para>
           example from net-snmp shows oe_runconf being called manually so that
           the parameter for specifying the endianess can be computed and
           passed in to the configure script:<screen>do_configure() {
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
     oenote Determined endianess as: $ENDIANESS
     oe_runconf $ENDIANESS
@@ -1576,7 +1576,7 @@ inherit autotools</screen></para>
           <para>The following example from net-snmp uses oenote to tell the
           user which endianess it determined was appropriate for the target
           device:<screen>do_configure() {
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
     oenote Determined endianess as: $ENDIANESS
     oe_runconf $ENDIANESS
@@ -1694,7 +1694,7 @@ inherit autotools</screen></para>
           to le for little endian targets and to be for big endian
           targets:<screen>do_compile () {
     ...
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"
     ...</screen></para>
         </listitem>
@@ -2070,7 +2070,7 @@ PACKAGES += "FILES-${PN}-test"</screen>
       the install directory there is one subdirectory created per package, and
       the files are moved into the install directory as they are matched to a
       specific package. The following shows the packages and files for the
-      helloworld example:<screen>~/oe%&gt; find tmp/work/helloworld-0.1-r0/install
+      helloworld example:<screen>$ <command>find</command> tmp/work/helloworld-0.1-r0/install
 tmp/work/helloworld-0.1-r0/install
 tmp/work/helloworld-0.1-r0/install/helloworld-locale
 tmp/work/helloworld-0.1-r0/install/helloworld-dbg
@@ -2085,7 +2085,7 @@ tmp/work/helloworld-0.1-r0/install/helloworld
 tmp/work/helloworld-0.1-r0/install/helloworld/usr
 tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin
 tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin/helloworld
-~/oe%&gt;</screen>The above shows that the -local, -dbg and -dev packages are
+$</screen>The above shows that the -local, -dbg and -dev packages are
       all empty, and the -doc and base package contain a single file each.
       Using the "<emphasis role="bold">-type f</emphasis>" option to find to show
       just files will make this clearer as well.</para>
@@ -2093,17 +2093,17 @@ tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin/helloworld
       <para>In addition to the install directory the image directory (which
       corresponds to the destination directory, <emphasis
       role="bold">D</emphasis>) will contain any files that were not
-      packaged:<screen>~/oe%&gt; find tmp/work/helloworld-0.1-r0/image
+      packaged:<screen>$ <command>find</command> tmp/work/helloworld-0.1-r0/image
 tmp/work/helloworld-0.1-r0/image
 tmp/work/helloworld-0.1-r0/image/usr
 tmp/work/helloworld-0.1-r0/image/usr/bin
 tmp/work/helloworld-0.1-r0/image/usr/share
 tmp/work/helloworld-0.1-r0/image/usr/share/doc
 tmp/work/helloworld-0.1-r0/image/usr/share/doc/helloworld
-~/oe%&gt;</screen>In this case all files were packaged and so there are no
+$</screen>In this case all files were packaged and so there are no
       left over files. Using find with "<emphasis role="bold">-type
-      f</emphasis>" makes this much clearer:<screen>~/oe%&gt; find tmp/work/helloworld-0.1-r0/image -type f
-~/oe%&gt;</screen></para>
+      f</emphasis>" makes this much clearer:<screen>$ <command>find</command> tmp/work/helloworld-0.1-r0/image -type f
+$</screen></para>
 
       <para>Messages regarding missing files are also displayed by bitbake during
       the package task:<screen>NOTE: package helloworld-0.1-r0: task do_package: started
@@ -2164,7 +2164,7 @@ NOTE: package helloworld-0.1-r0: task do_package: completed</screen>Except in
 
       <para>If we look at the <emphasis>lzo_1.08.bb</emphasis> recipe,
       currently at release 14, it generates a package containing a single
-      shared library :<screen>~oe/build/titan-glibc-25%&gt; find tmp/work/lzo-1.08-r14/install/
+      shared library :<screen>$ <command>find</command> tmp/work/lzo-1.08-r14/install/
 tmp/work/lzo-1.08-r14/install/lzo
 tmp/work/lzo-1.08-r14/install/lzo/usr
 tmp/work/lzo-1.08-r14/install/lzo/usr/lib
@@ -2178,7 +2178,7 @@ tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1.0.0</screen>Without
       enabled the package is renamed based on the name of the shared library,
       which is <command>liblzo.so.1.0.0</command> in this case. So the name
       <command>lzo</command> is replaced with
-      <command>liblzo1</command>:<screen>~oe/build/titan-glibc-25%&gt; find tmp/deploy/ipk/ -name '*lzo*'  
+      <command>liblzo1</command>:<screen>$ <command>find</command> tmp/deploy/ipk/ -name '*lzo*'  
 tmp/deploy/ipk/sh4/liblzo1_1.08-r14_sh4.ipk
 tmp/deploy/ipk/sh4/liblzo-dev_1.08-r14_sh4.ipk
 tmp/deploy/ipk/sh4/liblzo-dbg_1.08-r14_sh4.ipk</screen></para>
@@ -2485,9 +2485,9 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     linkend="chapter_reference" />.</para>
 
     <para>Looking in the staging area under tmp you can see the result of the
-    bzip2 recipes staging task:<screen>%&gt; find tmp/staging -name '*bzlib*'
+    bzip2 recipes staging task:<screen>$ <command>find</command> tmp/staging -name '*bzlib*'
 tmp/staging/sh4-linux/include/bzlib.h
-%&gt; find tmp/staging -name '*libbz*'
+$ <command>find</command> tmp/staging -name '*libbz*'
 tmp/staging/sh4-linux/lib/libbz2.so
 tmp/staging/sh4-linux/lib/libbz2.so.1.0
 tmp/staging/sh4-linux/lib/libbz2.so.1
@@ -2928,7 +2928,7 @@ fi</screen></para>
     <para>Sometimes packages require root permissions in order to perform
     some action, such as changing user or group owners or creating device
     nodes. Since OpenEmbedded will not keep the user and group information
-    it's usually preferabe to remove that from the makefiles. For device
+    it's usually preferable to remove that from the makefiles. For device
     nodes it's usually preferably to create them from the initial device node
     lists or via udev configuration.</para>
 
@@ -3268,7 +3268,7 @@ do_configure() {
           to le for little endian targets and to be for big endian
           targets:<screen>do_compile () {
     ...
-    # Additional flag based on target endiness (see siteinfo.bbclass)
+    # Additional flag based on target endianess (see siteinfo.bbclass)
     CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"
     ...</screen></para>
         </listitem>
@@ -3356,10 +3356,10 @@ do_configure() {
     via the <command>PV</command> variable).</para>
 
     <para>For example if we were to ask bitbake to build procps and the
-    following packages are available:<screen>~/oe%&gt; ls recipes/procps 
+    following packages are available:<screen>$ <command>ls</command> recipes/procps
 procps-3.1.15/    procps-3.2.1/    procps-3.2.5/    procps-3.2.7/    procps.inc
 procps_3.1.15.bb  procps_3.2.1.bb  procps_3.2.5.bb  procps_3.2.7.bb
-~/oe%&gt;</screen>then we would expect it to select version
+$</screen>then we would expect it to select version
     <command>3.2.7</command> (the highest version number) to build.</para>
 
     <para>Sometimes this is not actually what you want to happen though.
@@ -3544,7 +3544,7 @@ which find
     all contents of the <emphasis role="bold">/var</emphasis> directory is
     lost when the device is powered off or restarted. Therefore special
     handling of <emphasis role="bold">/var</emphasis> is required in all
-    packages. Even if your distrubution does not use a tmpfs based <emphasis
+    packages. Even if your distribution does not use a tmpfs based <emphasis
     role="bold">/var</emphasis> you need to assume it does when creating
     packages to ensure the package can be used on those distributions that do
     use a tmpfs based <emphasis role="bold">/var</emphasis>. This special

@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
@@ -45,6 +45,7 @@ RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.7.tar.bz2 \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2 \
+	   file://nscd-init.patch;patch=1;pnum=0 \
            file://arm-memcpy.patch;patch=1 \
            file://arm-longlong.patch;patch=1 \
            file://fhs-linux-paths.patch;patch=1 \
@@ -65,6 +66,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
            file://generate-supported.mk \
            file://march-i686.patch;patch=1;pnum=0 \
 	   file://tls_i486.patch;patch=1 \
+	   file://glibc-arm-no-asm-page.patch;patch=1 \
            "
 
 
@@ -124,6 +126,8 @@ addtask munge before do_patch after do_unpack
 
 
 do_configure () {
+# /var/db was not included to FHS
+	sed -i s:/var/db/nscd:/var/run/nscd: ${S}/nscd/nscd.h
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers

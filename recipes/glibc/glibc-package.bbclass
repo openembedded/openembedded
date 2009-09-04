@@ -36,13 +36,13 @@ INSANE_SKIP_glibc-dbg = True
 
 libc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so ${base_libdir}/libc*.so.* ${base_libdir}/libc-*.so ${base_libdir}/libm*.so.* ${base_libdir}/libm-*.so ${base_libdir}/ld*.so.* ${base_libdir}/ld-*.so ${base_libdir}/libpthread*.so.* ${base_libdir}/libpthread-*.so ${base_libdir}/libresolv*.so.* ${base_libdir}/libresolv-*.so ${base_libdir}/librt*.so.* ${base_libdir}/librt-*.so ${base_libdir}/libutil*.so.* ${base_libdir}/libutil-*.so ${base_libdir}/libnsl*.so.* ${base_libdir}/libnsl-*.so ${base_libdir}/libnss_files*.so.* ${base_libdir}/libnss_files-*.so ${base_libdir}/libnss_compat*.so.* ${base_libdir}/libnss_compat-*.so ${base_libdir}/libnss_dns*.so.* ${base_libdir}/libnss_dns-*.so ${base_libdir}/libdl*.so.* ${base_libdir}/libdl-*.so ${base_libdir}/libanl*.so.* ${base_libdir}/libanl-*.so ${base_libdir}/libBrokenLocale*.so.* ${base_libdir}/libBrokenLocale-*.so"
 
-FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '/sbin/ldconfig', '', d)}"
+FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '${base_sbindir}/ldconfig', '', d)}"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "${base_libdir}/libSegFault*"
 FILES_glibc-extra-nss = "${base_libdir}/libnss*"
-FILES_sln = "/sbin/sln"
+FILES_sln = "${base_sbindir}/sln"
 FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
-FILES_nscd = "${sbindir}/nscd*"
+FILES_nscd = "${sbindir}/nscd* ${sysconfdir}/nscd* ${sysconfdir}/init.d/nscd*"
 FILES_glibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_glibc-gconv = "${libdir}/gconv/*"
 FILES_${PN}-dbg += " ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
@@ -60,12 +60,18 @@ DESCRIPTION_ldd = "glibc: print shared library dependencies"
 DESCRIPTION_localedef = "glibc: compile locale definition files"
 DESCRIPTION_glibc-utils = "glibc: misc utilities like iconf, local, gencat, tzselect, rpcinfo, ..."
 
+INITSCRIPT_NAME = "nscd"
+INITSCRIPT_PACKAGES = "nscd"
+INITSCRIPT_PARAMS = "start 40 S . stop 40 0 6 1 ."
+inherit update-rc.d
+
 def get_glibc_fpu_setting(bb, d):
     if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
         return "--without-fp"
     return ""
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
+EXTRA_OEMAKE += "rootsbindir=${base_sbindir}"
 
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
 
@@ -82,7 +88,10 @@ do_install() {
 		grep -v $i ${WORKDIR}/SUPPORTED > ${WORKDIR}/SUPPORTED.tmp
 		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
 	done
-	rm -f ${D}/etc/rpc
+	rm -f ${D}{sysconfdir}/rpc
+	install -d ${D}${sysconfdir}/init.d
+	install -m 0644 ${S}/nscd/nscd.conf ${D}${sysconfdir}/
+	install ${S}/nscd/nscd.init ${D}${sysconfdir}/init.d/nscd
 }
 
 TMP_LOCALE="/tmp/locale${libdir}/locale"
@@ -147,7 +156,7 @@ do_prep_locale_tree() {
 	for i in $treedir/${datadir}/i18n/charmaps/*gz; do 
 		gunzip $i
 	done
-	ls ${D}${base_libdir}/* | xargs -iBLAH cp -pPR BLAH $treedir/lib
+	ls -d ${D}${base_libdir}/* | xargs -iBLAH cp -pPR BLAH $treedir/lib
 	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so ]; then
 		cp -pPR ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so $treedir/lib
 	fi

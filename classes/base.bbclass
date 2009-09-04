@@ -84,7 +84,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
 
     # call md5(sum) and shasum
     try:
-        md5pipe = os.popen('md5sum ' + localpath)
+	md5pipe = os.popen('PATH=%s md5sum %s' % (bb.data.getVar('PATH', data, True), localpath))
         md5data = (md5pipe.readline().split() or [ "" ])[0]
         md5pipe.close()
     except OSError:
@@ -158,6 +158,12 @@ def base_read_file(filename):
 	else:
 		return f.read().strip()
 	return None
+
+def base_ifelse(condition, iftrue = True, iffalse = False):
+    if condition:
+        return iftrue
+    else:
+        return iffalse
 
 def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
 	import bb
@@ -517,6 +523,12 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+python do_cleanall() {
+    pass
+}
+do_cleanall[recrdeptask] = "do_clean"
+addtask cleanall after do_clean
+
 #Uncomment this for bitbake 1.8.12
 #addtask rebuild after do_${BB_DEFAULT_TASK}
 addtask rebuild
@@ -614,6 +626,9 @@ python base_do_fetch() {
 	except bb.fetch.NoMethodError:
 		(type, value, traceback) = sys.exc_info()
 		raise bb.build.FuncFailed("No method: %s" % value)
+	except bb.MalformedUrl:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Malformed URL: %s" % value)
 
 	try:
 		bb.fetch.go(localdata)
@@ -719,9 +734,14 @@ base_do_buildall() {
 	:
 }
 
+def subprocess_setup():
+	import signal
+	# Python installs a SIGPIPE handler by default. This is usually not what
+	# non-Python subprocesses expect.
+	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 def oe_unpack_file(file, data, url = None):
-	import bb, os
+	import bb, os, subprocess
 	if not url:
 		url = "file://%s" % file
 	dots = file.split(".")
@@ -790,7 +810,7 @@ def oe_unpack_file(file, data, url = None):
 
 	cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', data, 1), cmd)
 	bb.note("Unpacking %s to %s/" % (base_path_out(file, data), base_path_out(os.getcwd(), data)))
-	ret = os.system(cmd)
+	ret = subprocess.call(cmd, preexec_fn=subprocess_setup, shell=True)
 
 	os.chdir(save_cwd)
 
@@ -1279,7 +1299,6 @@ ${DEBIAN_MIRROR}	ftp://ftp.es.debian.org/debian/pool
 ${DEBIAN_MIRROR}	ftp://ftp.se.debian.org/debian/pool
 ${DEBIAN_MIRROR}	ftp://ftp.tr.debian.org/debian/pool
 ${GNU_MIRROR}	ftp://mirrors.kernel.org/gnu
-${GNU_MIRROR}	ftp://ftp.matrix.com.br/pub/gnu
 ${GNU_MIRROR}	ftp://ftp.cs.ubc.ca/mirror2/gnu
 ${GNU_MIRROR}	ftp://sunsite.ust.hk/pub/gnu
 ${GNU_MIRROR}	ftp://ftp.ayamura.org/pub/gnu
@@ -1313,6 +1332,10 @@ ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://gd.tuwien.ac.at/utils/adm
 ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://sunsite.ualberta.ca/pub/Mirror/lsof/
 ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://the.wiretapped.net/pub/security/host-security/lsof/
 http://www.apache.org/dist  http://archive.apache.org/dist
+ftp://.*/.*     http://mirrors.openembedded.org/
+https?$://.*/.* http://mirrors.openembedded.org/
+ftp://.*/.*     http://sources.openembedded.org/
+https?$://.*/.* http://sources.openembedded.org/
 
 }
 

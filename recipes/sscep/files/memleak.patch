@@ -1,0 +1,25 @@
+commit ec9b27537400def0bee1ebbbdd69f2cf5486a99a
+Author: michael <michael@ea9f5d8b-f83d-0410-bf23-ec2180cbb196>
+Date:   Mon May 9 16:10:54 2005 +0000
+
+    Maybe fix a memory leak
+    
+    
+    git-svn-id: file:///usr/local/httpd/SourceForge/home/users/michael/svn/svnrepos/os/packages/sscep/trunk@15 ea9f5d8b-f83d-0410-bf23-ec2180cbb196
+
+diff --git a/sscep.c b/sscep.c
+index 637f1f0..b8f3289 100644
+--- a/sscep.c
++++ b/sscep.c
+@@ -539,7 +539,10 @@ not_enroll:
+ 				"GET %s%s?operation="
+ 				"PKIOperation&message="
+ 				"%s HTTP/1.0\r\n\r\n",
+-				p_flag ? "" : "/", dir_name, p); 
++				p_flag ? "" : "/", dir_name, p);
++
++			free(p);
++			p = NULL;
+ 
+ 			if (d_flag)
+ 				fprintf(stdout, "%s: scep msg: %s",

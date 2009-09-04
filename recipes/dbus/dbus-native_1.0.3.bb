@@ -1,6 +1,6 @@
 require dbus.inc
 
-PR = "r1"
+PR = "${INC_PR}.0"
 DEFAULT_PREFERENCE = "-1"
 
 inherit native

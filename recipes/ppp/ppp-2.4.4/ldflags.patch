@@ -1,0 +1,120 @@
+Index: ppp-2.4.3/chat/Makefile.linux
+===================================================================
+--- ppp-2.4.3.orig/chat/Makefile.linux	2009-04-08 10:00:38.000000000 +0200
++++ ppp-2.4.3/chat/Makefile.linux	2009-04-08 10:01:16.000000000 +0200
+@@ -18,7 +18,7 @@
+ all:	chat
+ 
+ chat:	chat.o
+-	$(CC) -o chat chat.o
++	$(CC) $(LDFLAGS) -o chat chat.o
+ 
+ chat.o:	chat.c
+ 	$(CC) -c $(CFLAGS) -o chat.o chat.c
+Index: ppp-2.4.3/pppd/plugins/Makefile.linux
+===================================================================
+--- ppp-2.4.3.orig/pppd/plugins/Makefile.linux	2009-04-08 10:00:38.000000000 +0200
++++ ppp-2.4.3/pppd/plugins/Makefile.linux	2009-04-08 10:03:54.000000000 +0200
+@@ -1,6 +1,5 @@
+ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I.. -I../../include -fPIC
+-LDFLAGS	= -shared
+ INSTALL	= install
+ 
+ DESTDIR = @DESTDIR@
+@@ -22,7 +21,7 @@
+ 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$d all; done
+ 
+ %.so: %.c
+-	$(CC) -o $@ $(LDFLAGS) $(CFLAGS) $^
++	$(CC) -o $@ $(LDFLAGS) -shared $(CFLAGS) $^
+ 
+ VERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../patchlevel.h)
+ 
+Index: ppp-2.4.3/pppd/plugins/pppoatm/Makefile.linux
+===================================================================
+--- ppp-2.4.3.orig/pppd/plugins/pppoatm/Makefile.linux	2009-04-08 10:00:38.000000000 +0200
++++ ppp-2.4.3/pppd/plugins/pppoatm/Makefile.linux	2009-04-08 10:03:15.000000000 +0200
+@@ -1,6 +1,5 @@
+ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I../.. -I../../../include -fPIC
+-LDFLAGS	= -shared
+ INSTALL	= install
+ 
+ #***********************************************************************
+@@ -32,7 +31,7 @@
+ all: $(PLUGIN)
+ 
+ $(PLUGIN): $(PLUGIN_OBJS)
+-	$(CC) $(CFLAGS) -o $@ -shared $^ $(LIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ -shared $^ $(LIBS)
+ 
+ install: all
+ 	$(INSTALL) -d -m 755 $(LIBDIR)
+Index: ppp-2.4.3/pppd/plugins/radius/Makefile.linux
+===================================================================
+--- ppp-2.4.3.orig/pppd/plugins/radius/Makefile.linux	2009-04-08 10:00:38.000000000 +0200
++++ ppp-2.4.3/pppd/plugins/radius/Makefile.linux	2009-04-08 10:01:16.000000000 +0200
+@@ -43,13 +43,13 @@
+ 	$(INSTALL) -m 444 pppd-radattr.8 $(MANDIR)
+ 
+ radius.so: radius.o libradiusclient.a
+-	$(CC) -o radius.so -shared radius.o libradiusclient.a
++	$(CC) $(LDFLAGS) -o radius.so -shared radius.o libradiusclient.a
+ 
+ radattr.so: radattr.o
+-	$(CC) -o radattr.so -shared radattr.o
++	$(CC) $(LDFLAGS) -o radattr.so -shared radattr.o
+ 
+ radrealms.so: radrealms.o
+-	$(CC) -o radrealms.so -shared radrealms.o
++	$(CC) $(LDFLAGS) -o radrealms.so -shared radrealms.o
+ 
+ CLIENTOBJS = avpair.o buildreq.o config.o dict.o ip_util.o \
+ 	clientid.o sendserver.o lock.o util.o md5.o
+Index: ppp-2.4.3/pppd/plugins/rp-pppoe/Makefile.linux
+===================================================================
+--- ppp-2.4.3.orig/pppd/plugins/rp-pppoe/Makefile.linux	2009-04-08 10:00:38.000000000 +0200
++++ ppp-2.4.3/pppd/plugins/rp-pppoe/Makefile.linux	2009-04-08 10:01:16.000000000 +0200
+@@ -29,13 +29,13 @@
+ all: rp-pppoe.so pppoe-discovery
+ 
+ pppoe-discovery: libplugin.a pppoe-discovery.o
+-	$(CC) -o pppoe-discovery pppoe-discovery.o libplugin.a
++	$(CC) $(LDFLAGS) -o pppoe-discovery pppoe-discovery.o libplugin.a
+ 
+ pppoe-discovery.o: pppoe-discovery.c
+ 	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o pppoe-discovery.o pppoe-discovery.c
+ 
+ rp-pppoe.so: libplugin.a plugin.o
+-	$(CC) -o rp-pppoe.so -shared plugin.o libplugin.a
++	$(CC) $(LDFLAGS) -o rp-pppoe.so -shared plugin.o libplugin.a
+ 
+ install: all
+ 	$(INSTALL) -d -m 755 $(LIBDIR)
+Index: ppp-2.4.3/pppdump/Makefile.linux
+===================================================================
+--- ppp-2.4.3.orig/pppdump/Makefile.linux	2009-04-08 10:00:38.000000000 +0200
++++ ppp-2.4.3/pppdump/Makefile.linux	2009-04-08 10:01:16.000000000 +0200
+@@ -10,7 +10,7 @@
+ all:	pppdump
+ 
+ pppdump: $(OBJS)
+-	$(CC) -o pppdump $(OBJS)
++	$(CC) $(LDFLAGS) -o pppdump $(OBJS)
+ 
+ clean:
+ 	rm -f pppdump $(OBJS) *~
+Index: ppp-2.4.3/pppstats/Makefile.linux
+===================================================================
+--- ppp-2.4.3.orig/pppstats/Makefile.linux	2009-04-08 10:00:38.000000000 +0200
++++ ppp-2.4.3/pppstats/Makefile.linux	2009-04-08 10:01:16.000000000 +0200
+@@ -26,7 +26,7 @@
+ 	$(INSTALL) -c -m 444 pppstats.8 $(MANDIR)
+ 
+ pppstats: $(PPPSTATSRCS)
+-	$(CC) $(CFLAGS) -o pppstats pppstats.c $(LIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o pppstats pppstats.c $(LIBS)
+ 
+ clean:
+ 	rm -f pppstats *~ #* core

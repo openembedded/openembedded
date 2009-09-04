@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r9"
+PR = "r10"
 DEPENDS = "virtual/libiconv"
 PROVIDES = "virtual/libintl"
 
@@ -10,11 +10,12 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 	   file://gettext-vpath.patch;patch=1;pnum=1 \
 	   file://fixchicken.patch;patch=1;pnum=1 \
 	   file://linklib_from_0.17.patch;patch=1 \
+	   file://gettext-autoconf-lib-link-no-L.patch;patch=1 \
            file://getline.m4.patch;patch=1 \
            file://disable_java.patch;patch=1"
 
 SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch;patch=1"
-SRC_URI_append_linux-uclibcgnueabi = " file://gettext-error_print_progname.patch;patch=1"
+SRC_URI_append_linux-uclibceabi = " file://gettext-error_print_progname.patch;patch=1"
 
 PARALLEL_MAKE = ""
 

@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI += "\
+SRC_URI = "\
   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.${PV}.tar.gz \
   file://man.patch;patch=1 \
   file://shared_lib_ldflags.patch;patch=1 \

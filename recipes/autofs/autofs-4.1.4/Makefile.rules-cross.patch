@@ -6,15 +6,15 @@
  ifdef DEBUG
 -CFLAGS    = -O2 -g -DDEBUG
 -LDFLAGS   = -g
-+CFLAGS    += -O2 -g -DDEBUG
-+LDFLAGS   += -g
++CFLAGS    ?= -O2 -g -DDEBUG
++LDFLAGS   ?= -g
  STRIP     = :
  else
 -CFLAGS    = -O3 -fomit-frame-pointer -Wall
 -LDFLAGS   = -s
 -STRIP     = strip --strip-debug
-+CFLAGS    += -O3 -fomit-frame-pointer -Wall
-+LDFLAGS   += -s
++CFLAGS    ?= -O3 -fomit-frame-pointer -Wall
++LDFLAGS   ?= -s
 +STRIP     = ${TARGET_PREFIX}strip --strip-debug
  endif
  

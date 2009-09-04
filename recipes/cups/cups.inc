@@ -24,9 +24,10 @@ EXTRA_OECONF = " \
 
 
 do_configure() {
+    	export DSOFLAGS="${LDFLAGS}"
 	gnu-configize
 	libtoolize --force
-	DSOFLAGS="${LDFLAGS}" oe_runconf
+	oe_runconf
 }
 
 do_compile () {

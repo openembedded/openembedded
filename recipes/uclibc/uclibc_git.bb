@@ -7,14 +7,14 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.30"
-SRCREV="b1913a876059949e6c309bafade55e9425ef33fb"
+SRCREV="6625518cd6894338937a74ca6b9187b7b8167b03"
 PV = "${UCLIBC_BASE}+gitr${SRCREV}"
-PR = "r1"
+DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
 require uclibc.inc
-
+PR = "${INC_PR}.0"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 #recent versions uclibc require real kernel headers

@@ -210,7 +210,9 @@ python do_package_rpm () {
 
 python () {
     import bb
-    if bb.data.getVar('PACKAGES', d, True) != '':
+    if bb.data.getVar('PACKAGES', d, True) != '' and \
+       not bb.data.inherits_class('native', d) and \
+       not bb.data.inherits_class('cross', d):
         deps = (bb.data.getVarFlag('do_package_write_rpm', 'depends', d) or "").split()
         deps.append('rpm-native:do_populate_staging')
         deps.append('fakeroot-native:do_populate_staging')

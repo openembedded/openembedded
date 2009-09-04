@@ -1,0 +1,12 @@
+--- gcc-4.3.2/gcc/config/arm/cirrus.md.old	2009-02-16 16:19:19.000000000 +0000
++++ gcc-4.3.2/gcc/config/arm/cirrus.md	2009-03-10 12:13:10.000000000 +0000
+@@ -425,7 +425,8 @@
+   "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cftruncd32%?\\t%Y2, %V1\;cfmvr64l%?\\t%0, %Z2"
+   [(set_attr "type" "f_cvt")
+-   (set_attr "length" "8")]
++   (set_attr "length" "8")
++   (set_attr "cirrus" "normal")]
+ )
+ 
+ ; Cirrus hardware bugs: denormalized values on input are truncated to zero

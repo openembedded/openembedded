@@ -5,5 +5,5 @@
 ARM_ABI = "oabi"
 TARGET_CC_ARCH = "-march=armv4 -mtune=strongarm"
 FEED_ARCH = "arm-oabi"
-
+PACKAGE_BASE_ARCH = "armv4" 
 PACKAGE_EXTRA_ARCHS += "armv4 "

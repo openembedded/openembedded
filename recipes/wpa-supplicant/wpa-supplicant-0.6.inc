@@ -2,16 +2,17 @@ DESCRIPTION = "A Client for Wi-Fi Protected Access (WPA)."
 SECTION = "network"
 LICENSE = "GPL"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
-DEPENDS = "dbus gnutls ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
+DEPENDS = "dbus gnutls ${@base_contains("COMBINED_FEATURES", "madwifi", "madwifi-ng", "",d)}"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"
-PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
+PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'madwifi', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
 
 DEFAULT_PREFERENCE = "-2"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-0.6.0-gnutls \
+	file://action_wpa.sh \
 	file://ifupdown.sh \
 	file://functions.sh"
 
@@ -26,12 +27,12 @@ RREPLACES = "wpa-supplicant-cli"
 
 RRECOMMENDS_${PN} = "wpa-supplicant-passphrase"
 
-export HAS_PCI = "${@base_contains('COMBINED_FEATURES', 'pci', 1, 0,d)}"
+export HAS_MADWIFI = "${@base_contains('COMBINED_FEATURES', 'madwifi', 1, 0,d)}"
 
 do_configure () {
         install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls  .config
 
-        if [ "x$HAS_PCI" == "x1" ] ; then
+        if [ "x$HAS_MADWIFI" == "x1" ] ; then
                 echo "CONFIG_DRIVER_MADWIFI=y" >> .config
                 echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
         fi
@@ -57,6 +58,7 @@ do_install () {
 	install -d ${D}${sysconfdir}/network/if-down.d/
 
 	install -d ${D}${sysconfdir}/wpa_supplicant
+	install -m 755 ${WORKDIR}/action_wpa.sh ${D}${sysconfdir}/wpa_supplicant/
 	install -m 755 ${WORKDIR}/ifupdown.sh ${D}${sysconfdir}/wpa_supplicant/
 	install -m 755 ${WORKDIR}/functions.sh ${D}${sysconfdir}/wpa_supplicant
 

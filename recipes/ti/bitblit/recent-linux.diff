@@ -1,0 +1,41 @@
+Index: trunk/bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c
+===================================================================
+--- trunk/bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c	(revision 2)
++++ trunk/bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c	(working copy)
+@@ -53,9 +53,7 @@
+ #include <linux/fb.h>
+ 
+ /* Davinci/OMAP specific kernel headers */
+-#ifdef _omap3530
+-#include <video/omapfbdev.h>
+-#else
++#ifndef _omap3530
+ #include <video/davincifb_ioctl.h>
+ #endif
+ 
+@@ -248,9 +246,11 @@
+     if (waitForVsync) {
+         /* Wait for vertical sync */
+         /* Assumption is that rgb and alpha flip together - only wait on rgb */
++#if defined (FBIO_WAITFORVSYNC)
+         if (ioctl(hDisplay->fd, FBIO_WAITFORVSYNC, &dummy) == -1) {
+-            printf("Failed FBIO_WAITFORVSYNC (%s)\n", strerror(errno));
++           printf("Failed FBIO_WAITFORVSYNC (%s)\n", strerror(errno));
+         }
++#endif
+     }
+ #endif  /* #ifdef _DMAI */
+ 
+@@ -276,10 +276,12 @@
+     
+     /* Wait for vertical sync */
+     /* Assumption is that rgb and alpha flip together - only wait on rgb */
++#if defined (FBIO_WAITFORVSYNC)
+     if (ioctl(hDisplay->fd, FBIO_WAITFORVSYNC, &dummy) == -1) {
+         printf("Failed FBIO_WAITFORVSYNC (%s)\n", strerror(errno));
+     }
+ #endif
++#endif
+ }
+ 
+ 

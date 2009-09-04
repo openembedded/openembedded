@@ -1,0 +1,35 @@
+http://source.netsurf-browser.org/?view=rev&revision=7398
+Initialise variables to stop GCC 4.4 complaining (credit: Jeroen Habraken)
+
+--- hubbub/src/tokeniser/tokeniser.c	2009/04/06 15:22:16	7052
++++ hubbub/src/tokeniser/tokeniser.c	2009/05/05 17:18:41	7398
+@@ -787,7 +787,7 @@
+ 							+ 1);
+ 		} else {
+ 			parserutils_error error;
+-			const uint8_t *cptr;
++			const uint8_t *cptr = NULL;
+ 			error = parserutils_inputstream_peek(
+ 					tokeniser->input,
+ 					tokeniser->context.pending,
+@@ -1590,8 +1590,8 @@
+ 					tokeniser->context.match_entity.length
+ 					+ 1;
+ 		} else {
+-			size_t len;
+-			const uint8_t *cptr;
++			size_t len = 0;
++			const uint8_t *cptr = NULL;
+ 			parserutils_error error;
+ 
+ 			error = parserutils_inputstream_peek(
+@@ -3137,7 +3137,7 @@
+ {
+ 	hubbub_token token;
+ 	size_t len;
+-	const uint8_t *cptr;
++	const uint8_t *cptr = NULL;
+ 	parserutils_error error;
+ 
+ 	/* Calling this with nothing to output is a probable bug */
+

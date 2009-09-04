@@ -4,6 +4,8 @@ AUTHOR = "Don Capps <don.capps2@verizon.net>, William D. Norcott <wnorcott@us.or
 SECTION = "console/tests"
 LICENSE = "${PN}"
 
+PR = "r1"
+
 SRC_URI = "http://www.iozone.org/src/current/iozone3_263.tar \
 	   file://copyright.txt \
            file://fileop-arm.patch;patch=1"
@@ -11,6 +13,8 @@ SRC_URI = "http://www.iozone.org/src/current/iozone3_263.tar \
 S = "${WORKDIR}/${PN}_${PV}/src/current/"
 
 EXTRA_OEMAKE = "linux-arm CC='${CC}'"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_install() {
        install -d ${D}${bindir} \

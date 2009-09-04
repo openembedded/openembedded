@@ -6,4 +6,6 @@ HOMEPAGE = "http://www.gnu.org/software/libtool/libtool.html"
 LICENSE = "GPL"
 SECTION = "devel"
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
+INC_PR = "r24"
+
+FILESPATHPKG=. "libtool-${PV}:"

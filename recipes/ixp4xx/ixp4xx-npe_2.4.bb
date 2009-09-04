@@ -13,7 +13,7 @@ SRC_URI = "http://You-Have-To-Download-The-Microcode-Manually-So-Please-Read-ixp
            file://Intel"
 S = "${WORKDIR}/ixp400_xscale_sw/src/npeDl"
 
-COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx|kixrp435)"
 
 FILES_${PN} = "${base_libdir}/firmware/NPE-B ${base_libdir}/firmware/NPE-C"
 

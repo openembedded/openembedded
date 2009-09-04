@@ -2,7 +2,11 @@ DESCRIPTION = "A library handling all the details of proxy configuration"
 LICENSE = "LGPL"
 DEPENDS = "libxmu gconf virtual/libx11"
 
-SRC_URI = "http://libproxy.googlecode.com/files/libproxy-${PV}.tar.gz"
+PR = "r1"
+
+SRC_URI = "http://libproxy.googlecode.com/files/libproxy-${PV}.tar.gz \
+	   file://libproxy-move-define-__USE_BSD.patch;patch=1 \
+	   "
 
 inherit autotools_stage
 

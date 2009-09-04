@@ -7,8 +7,6 @@ DEPENDS = "docbook-utils-native"
 
 PR = "r1"
 
-#Need more testing
-DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "2"
 
 SRC_URI = "http://ftp.de.debian.org/debian/pool/main/i/iputils/iputils_${PV}.orig.tar.gz \

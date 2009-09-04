@@ -1,4 +1,5 @@
 require dbus.inc
+PR = "${INC_PR}.0"
 RRECOMMENDS_${PN} = ""
 RDEPENDS_${PN} = ""
 inherit native

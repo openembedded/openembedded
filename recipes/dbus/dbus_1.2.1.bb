@@ -1,3 +1,3 @@
 include dbus.inc
 
-PR = "r12"
+PR = "${INC_PR}.0"

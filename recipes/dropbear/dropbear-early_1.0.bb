@@ -1,7 +1,7 @@
 DESCRIPTION = "Allow to start dropbear soon after boot, depending on kernel command line option."
 SECTION = "devel"
 RDEPENDS = "dropbear"
-PR = "r3"
+PR = "${INC_PR}.0"
 
 SRC_URI = "file://dropbear-early"
 

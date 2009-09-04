@@ -4,6 +4,8 @@ DESCRIPTION = "An open source implementation of the OpenGL spec"
 HOMEPAGE = "http://mesa3d.org"
 LICENSE = "MIT"
 
+INC_PR = "r7"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 \
            ${SOURCEFORGE_MIRROR}/mesa3d/MesaDemos-${PV}.tar.bz2 "
 S = "${WORKDIR}/Mesa-${PV}"
@@ -17,8 +19,10 @@ EXTRA_OECONF = "--enable-glu \
                 --disable-glut \
 	       "
 
-require mesa-tls.inc
-EXTRA_OECONF += "${@get_tls_setting(bb, d)} "
+inherit glx-use-tls
+
+# Package contents vary according to ${MACHINE_DRI_MODULES}.
+PACKAGE_ARCH = "${MACHINE}"
 
 PACKAGES =+ "libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev"
 FILES_libgl = "${libdir}/libGL.so.*"
@@ -36,4 +40,9 @@ do_stage() {
 		cp -pPr ${S}/include/GL/internal* ${STAGING_INCDIR}/GL/
 }
 
-
+do_install_append () {
+    install -d ${D}/${bindir}
+    for i in glxdemo glxgears glxheads glxinfo; do 
+        install -m 0755 ${S}/progs/xdemos/${i} ${D}/${bindir}
+    done
+}

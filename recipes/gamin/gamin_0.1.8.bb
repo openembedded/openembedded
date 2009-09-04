@@ -2,7 +2,8 @@ DESCRIPTION = "Gamin is a file and directory monitoring system defined to be a s
 LICENSE = "LGPL"
 
 SRC_URI = "http://www.gnome.org/~veillard/gamin/sources/gamin-${PV}.tar.gz \
-           file://no-abstract-sockets.patch;patch=1"
+           file://no-abstract-sockets.patch;patch=1 \
+           file://configure_ucred.patch;patch=1 "
 
 EXTRA_OECONF = " --without-python " 
 

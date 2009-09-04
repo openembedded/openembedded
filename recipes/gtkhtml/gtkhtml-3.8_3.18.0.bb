@@ -7,7 +7,7 @@ SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.18/gtkhtml-${PV}.tar.bz2"
 FILES_${PN} += "${datadir}/gtkhtml-3.8"
 
 do_stage() {
-	mv src/libgtkhtml.pc src/libgtkhtml-3.8.pc || true
+	mv gtkhtml/libgtkhtml.pc gtkhtml/libgtkhtml-3.8.pc || true
 	gnome_stage_includes
-	oe_libinstall -C src -so libgtkhtml-3.8 ${STAGING_LIBDIR}
+	oe_libinstall -C gtkhtml -so libgtkhtml-3.14 ${STAGING_LIBDIR}
 }
