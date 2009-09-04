@@ -6,12 +6,14 @@ DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
 RPROVIDES = "ssh sshd"
 
+INC_PR = "r3"
+
 SRC_URI = "\
   http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \
   file://urandom-xauth-changes-to-options.h.patch;patch=1 \
   file://configure.patch;patch=1 \
   file://fix-2kb-keys.patch;patch=1 \
-  file://allow-nopw.patch \
+  file://allow-nopw.patch;patch=1 \
   file://init \
 "
 SRC_URI_append_openmoko = "\
