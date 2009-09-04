@@ -42,9 +42,17 @@ SRC_URI_append = " \
                   file://dss2/0015-OMAP-DSS2-omapfb-driver.patch;patch=1 \
                   file://dss2/0016-OMAP-DSS2-Add-DPI-panel-drivers.patch;patch=1 \
                   file://dss2/0017-OMAP-DSS2-Taal-DSI-command-mode-panel-driver.patch;patch=1 \
+                  file://dss2/0001-OMAP3-Enable-DSS2-for-OMAP3EVM-board.patch;patch=1 \
+                  file://dss2/0002-V4L2-Added-New-V4L2-CIDs-for-omap-devices-V4L2-IOCT.patch;patch=1 \
+                  file://dss2/0003-V4L2-Updated-v4l2_common-for-new-V4L2-CIDs.patch;patch=1 \
+                  file://dss2/0004-OMAP2-3-V4L2-Add-support-for-OMAP2-3-V4L2-driver-on.patch;patch=1 \
+                  file://expansion-boards/tincantools-zippy.patch;patch=1 \
+                  file://madc/madc-driver.patch;patch=1 \
+                  file://madc/madc.patch;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
+"
 
 S = "${WORKDIR}/git"
 

@@ -1,0 +1,152 @@
+From bcb3cd3f6dd8d80a4f7cc524b769d711addfc48d Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Wed, 22 Jul 2009 23:49:29 +0530
+Subject: [PATCH 2/5] V4L2: Added New V4L2 CIDs for omap devices V4L2 IOCTL
+
+Changes -
+	- Renamed V4L2_CID_ROTATION to V4L2_CID_ROTATE
+	- Implementationadded for VIDIOC_S/G_COLOR_SPACE_CONV
+
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+---
+ drivers/media/video/v4l2-ioctl.c |   19 +++++++++++++++++++
+ include/linux/videodev2.h        |   21 ++++++++++++++++++---
+ include/media/v4l2-ioctl.h       |    4 ++++
+ 3 files changed, 41 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/video/v4l2-ioctl.c b/drivers/media/video/v4l2-ioctl.c
+index f2afc4e..74d2ed9 100644
+--- a/drivers/media/video/v4l2-ioctl.c
++++ b/drivers/media/video/v4l2-ioctl.c
+@@ -278,6 +278,8 @@ static const char *v4l2_ioctls[] = {
+ 	[_IOC_NR(VIDIOC_DBG_G_CHIP_IDENT)] = "VIDIOC_DBG_G_CHIP_IDENT",
+ 	[_IOC_NR(VIDIOC_S_HW_FREQ_SEEK)]   = "VIDIOC_S_HW_FREQ_SEEK",
+ #endif
++	[_IOC_NR(VIDIOC_S_COLOR_SPACE_CONV)]   = "VIDIOC_S_COLOR_SPACE_CONV",
++	[_IOC_NR(VIDIOC_G_COLOR_SPACE_CONV)]   = "VIDIOC_G_COLOR_SPACE_CONV",
+ };
+ #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+ 
+@@ -1784,6 +1786,23 @@ static long __video_do_ioctl(struct file *file,
+ 		break;
+ 	}
+ 
++	/*---------------Color space conversion------------------------------*/
++	case VIDIOC_S_COLOR_SPACE_CONV:
++	{
++		struct v4l2_color_space_conversion *p = arg;
++		if (!ops->vidioc_s_color_space_conv)
++			break;
++		ret = ops->vidioc_s_color_space_conv(file, fh, p);
++		break;
++	}
++	case VIDIOC_G_COLOR_SPACE_CONV:
++	{
++		struct v4l2_color_space_conversion *p = arg;
++		if (!ops->vidioc_g_color_space_conv)
++			break;
++		ret = ops->vidioc_g_color_space_conv(file, fh, p);
++		break;
++	}
+ 	default:
+ 	{
+ 		if (!ops->vidioc_default)
+diff --git a/include/linux/videodev2.h b/include/linux/videodev2.h
+index 74f1687..78e8158 100644
+--- a/include/linux/videodev2.h
++++ b/include/linux/videodev2.h
+@@ -554,6 +554,7 @@ struct v4l2_framebuffer {
+ #define V4L2_FBUF_CAP_LOCAL_ALPHA	0x0010
+ #define V4L2_FBUF_CAP_GLOBAL_ALPHA	0x0020
+ #define V4L2_FBUF_CAP_LOCAL_INV_ALPHA	0x0040
++#define V4L2_FBUF_CAP_SRC_CHROMAKEY	0x0080
+ /*  Flags for the 'flags' field. */
+ #define V4L2_FBUF_FLAG_PRIMARY		0x0001
+ #define V4L2_FBUF_FLAG_OVERLAY		0x0002
+@@ -561,6 +562,7 @@ struct v4l2_framebuffer {
+ #define V4L2_FBUF_FLAG_LOCAL_ALPHA	0x0008
+ #define V4L2_FBUF_FLAG_GLOBAL_ALPHA	0x0010
+ #define V4L2_FBUF_FLAG_LOCAL_INV_ALPHA	0x0020
++#define V4L2_FBUF_FLAG_SRC_CHROMAKEY	0x0040
+ 
+ struct v4l2_clip {
+ 	struct v4l2_rect        c;
+@@ -902,6 +904,8 @@ enum v4l2_colorfx {
+ 
+ /* last CID + 1 */
+ #define V4L2_CID_LASTP1                         (V4L2_CID_BASE+33)
++#define V4L2_CID_ROTATE				(V4L2_CID_BASE+34)
++#define V4L2_CID_BG_COLOR			(V4L2_CID_BASE+35)
+ 
+ /*  MPEG-class control IDs defined by V4L2 */
+ #define V4L2_CID_MPEG_BASE 			(V4L2_CTRL_CLASS_MPEG | 0x900)
+@@ -1213,6 +1217,18 @@ struct v4l2_hw_freq_seek {
+ };
+ 
+ /*
++ * Color conversion
++ * User needs to pass pointer to color conversion matrix
++ * defined by hardware
++ */
++struct v4l2_color_space_conversion {
++	__s32 coefficients[3][3];
++	__s32 const_factor;
++	__s32 input_offs[3];
++	__s32 output_offs[3];
++};
++
++/*
+  *	A U D I O
+  */
+ struct v4l2_audio {
+@@ -1265,7 +1281,6 @@ struct v4l2_enc_idx {
+ 	struct v4l2_enc_idx_entry entry[V4L2_ENC_IDX_ENTRIES];
+ };
+ 
+-
+ #define V4L2_ENC_CMD_START      (0)
+ #define V4L2_ENC_CMD_STOP       (1)
+ #define V4L2_ENC_CMD_PAUSE      (2)
+@@ -1286,7 +1301,6 @@ struct v4l2_encoder_cmd {
+ 
+ #endif
+ 
+-
+ /*
+  *	D A T A   S E R V I C E S   ( V B I )
+  *
+@@ -1423,7 +1437,6 @@ struct v4l2_format {
+ 	} fmt;
+ };
+ 
+-
+ /*	Stream type-dependent parameters
+  */
+ struct v4l2_streamparm {
+@@ -1551,6 +1564,8 @@ struct v4l2_dbg_chip_ident {
+ #endif
+ 
+ #define VIDIOC_S_HW_FREQ_SEEK	 _IOW('V', 82, struct v4l2_hw_freq_seek)
++#define VIDIOC_S_COLOR_SPACE_CONV _IOW('V', 83, struct v4l2_color_space_conversion)
++#define VIDIOC_G_COLOR_SPACE_CONV _IOR('V', 84, struct v4l2_color_space_conversion)
+ /* Reminder: when adding new ioctls please add support for them to
+    drivers/media/video/v4l2-compat-ioctl32.c as well! */
+ 
+diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+index 7a4529d..6f46d09 100644
+--- a/include/media/v4l2-ioctl.h
++++ b/include/media/v4l2-ioctl.h
+@@ -242,6 +242,10 @@ struct v4l2_ioctl_ops {
+ 	/* For other private ioctls */
+ 	long (*vidioc_default)	       (struct file *file, void *fh,
+ 					int cmd, void *arg);
++	int (*vidioc_s_color_space_conv)     (struct file *file, void *fh,
++					struct v4l2_color_space_conversion *a);
++	int (*vidioc_g_color_space_conv)     (struct file *file, void *fh,
++					struct v4l2_color_space_conversion *a);
+ };
+ 
+ 
+-- 
+1.6.2.4
+
