@@ -12,7 +12,7 @@ LICENSE = "GPLv2"
 
 DEPENDS = "flex flex-native"
 
-PR = "r2"
+PR = "r3"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -22,6 +22,10 @@ S = "${WORKDIR}/${p}"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/library/${p}.tar.bz2 \
            file://pam-nodocs.patch;patch=1 "
+
+SRC_URI_append_linux-uclibc = "file://pam-disable-nis-on-uclibc.patch;patch=1"
+SRC_URI_append_linux-uclibceabi = "file://pam-disable-nis-on-uclibc.patch;patch=1"
+SRC_URI_append_linux-uclibcspe = "file://pam-disable-nis-on-uclibc.patch;patch=1"
 
 inherit autotools
 
