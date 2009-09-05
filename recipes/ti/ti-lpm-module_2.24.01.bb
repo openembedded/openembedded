@@ -11,9 +11,6 @@ MACHINE_KERNEL_PR_append = "a"
 
 PV = "2241"
 
-# LPM seems to be missing from 2.24.01
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "http://install.source.dir.com/local_power_manager_1_24.tar.gz"
 
 # Set the source directory
