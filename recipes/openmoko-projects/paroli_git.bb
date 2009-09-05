@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCPV}"
-PR = "r26"
+PR = "r27"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -123,9 +123,8 @@ FILES_${PN} = " \
 	${sysconfdir}/dbus-1 \
 	${sysconfdir}/paroli \
 	${sysconfdir}/freesmartphone/oevents \
-	${datadir}/lib \
-	${datadir}/bin \
-	/usr/bin \
+	${prefix}/lib \
+	${prefix}/bin \
 	${datadir}/paroli/applications/common-for-edje \
 	${datadir}/paroli/applications/tele2 \
 	${datadir}/paroli/applications/i-o2 \
