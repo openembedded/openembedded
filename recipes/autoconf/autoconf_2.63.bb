@@ -1,11 +1,10 @@
 require autoconf.inc
 
+PR = "${INC_PR}.0"
+
 DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
-
-DEPENDS += "m4-native"
-RDEPENDS_${PN} = "m4 gnu-config"
 
 SRC_URI += " \
 	   file://autoreconf-exclude.patch;patch=1 \
