@@ -81,7 +81,7 @@ do_configure() {
         sed -i -e 's,@DESTDIR@,${D},g' \
                -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' \
                -e "s%/usr/include/%${STAGING_INCDIR}/%g" \
-	       -e 's,/usr/,${layout_exec_prefix}/,g' \
+	       -e 's,/usr/,${exec_prefix}/,g' \
             config.sh-${TARGET_ARCH}-${TARGET_OS}
 
         if test "${MACHINE}" != "native"; then
