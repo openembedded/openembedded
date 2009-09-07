@@ -17,7 +17,7 @@ inherit distutils
 FILES_${PN} += "${datadir}/${PN} ${datadir}/applications/ffalarms.desktop ${datadir}/pixmaps"
 
 RDEPENDS += "python-re python-datetime python-edje python-ecore \
-             atd-over-fso alsa-utils-amixer alsa-utils-alsactl openmoko-alsa-scenarios \
+             atd-over-fso alsa-utils-amixer alsa-utils-alsactl \
              ttf-dejavu-sans"
 
-RSUGGESTS += "mplayer alsa-utils-aplay"
+RSUGGESTS += "mplayer alsa-utils-aplay openmoko-alsa-scenarios"
