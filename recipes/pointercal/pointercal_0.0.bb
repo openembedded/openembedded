@@ -1,6 +1,6 @@
 DESCRIPTION = "Touchscreen calibration data"
 SECTION = "base"
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "file://pointercal"
 S = "${WORKDIR}"
