@@ -8,13 +8,9 @@ RDEPENDS_${PN} = "${IPKG_VARIANT}"
 inherit gnome autotools_stage
 
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
-           file://fix-segfaults-when-consolekit-is-missing.patch;patch=1 \
-           file://fix-segfault-when-hald-is-not-running.patch;patch=1 \
-           file://opkg-fix-installing-and-removing-multiple-packages-at-once.patch;patch=1 \
-#           file://opkg-fix-infinite-loop-in-get_updates.patch;patch=1 \
            "
 
-PR = "r3.3"
+PR = "r0"
 PE = "2"
 
 S = "${WORKDIR}/PackageKit-${PV}"
@@ -62,6 +58,3 @@ FILES_${PN}-gtkmodule = "${libdir}/gtk-2.0/*/*.so"
 FILES_${PN} += "${libdir}/packagekit-backend/*.so ${libdir}/pm-utils ${datadir}/dbus-1/system-services/ ${datadir}/PolicyKit ${datadir}/PackageKit"
 FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so ${libdir}/gtk-2.0/*/.debug"
 FILES_${PN}-dev += "${libdir}/packagekit-backend/*a ${libdir}/gtk-2.0/*/*a"
-
-
-
