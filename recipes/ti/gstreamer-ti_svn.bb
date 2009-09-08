@@ -7,13 +7,13 @@ inherit autotools
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
 # Fetch source from svn repo
-SRCREV = "285"
+SRCREV = "331"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
            file://gstreamer-ti-tracker-824.patch;patch=1 \
 "
 
 # Again, no '.' in PWD allowed :(
-PR = "r28"
+PR = "r32"
 PV = "svnr${SRCREV}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
@@ -35,6 +35,12 @@ PLATFORM_da830-omapl137-evm = "ol137"
 CPPFLAGS_append 			= " -DPlatform_${PLATFORM}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+# export codec combo (or server) locations
+export HMJCP_COMBO  = "${installdir}/codec-combo/hmjcp.accel"
+export CODEC_SERVER = "${installdir}/codec-combo/cs.x64P"
+export ENCODE_COMBO = "${installdir}/codec-combo/encodeCombo.x64P" 
+export DECODE_COMBO = "${installdir}/codec-combo/decodeCombo.x64P"
 
 do_install_prepend () {
 	# install gstreamer demo scripts

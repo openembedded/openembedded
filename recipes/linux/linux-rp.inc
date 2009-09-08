@@ -105,7 +105,7 @@ do_configure() {
 
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
-	if [ "${TARGET_OS}" = "linux-gnueabi" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
+	if [ "${TARGET_OS}" = "linux-gnueabi" -o "${TARGET_OS}" = "linux-uclibceabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		if [ "${ARM_KEEP_OABI}" = "1" ] ; then
 			echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config

@@ -11,7 +11,7 @@ SRC_URI = "${GNU_MIRROR}/make/make-${PV}.tar.bz2 \
 inherit autotools
 
 do_configure_prepend() {
-	if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
+	if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibceabi" ]; then
 		export make_cv_sys_gnu_glob="no" 
 		export GLOBINC=-I`pwd`/glob
 		export GLOBLIB=glob/libglob.a

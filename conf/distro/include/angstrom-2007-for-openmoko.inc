@@ -143,8 +143,8 @@ PREFERRED_PROVIDER_virtual/powerpc-angstrom-linux-libc-for-gcc        = "glibc"
 PREFERRED_PROVIDER_virtual/mipsel-angstrom-linux-libc-for-gcc         = "glibc"
 PREFERRED_PROVIDER_virtual/sparc-angstrom-linux-libc-for-gcc          = "glibc"
 
-PREFERRED_PROVIDER_virtual/arm-angstrom-linux-uclibcgnueabi-libc-for-gcc    = "uclibc-initial"
-PREFERRED_PROVIDER_virtual/armeb-angstrom-linux-uclibcgnueabi-libc-for-gcc  = "uclibc-initial"
+PREFERRED_PROVIDER_virtual/arm-angstrom-linux-uclibceabi-libc-for-gcc    = "uclibc-initial"
+PREFERRED_PROVIDER_virtual/armeb-angstrom-linux-uclibceabi-libc-for-gcc  = "uclibc-initial"
 
 # hostap stuff, we prefer the in-kernel modules, but those don't work for all machines
 PREFERRED_PROVIDER_hostap-conf                      ?= "hostap-conf"

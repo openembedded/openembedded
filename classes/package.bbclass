@@ -202,6 +202,51 @@ def runstrip(file, d):
 
     return 1
 
+def write_package_md5sums (root, outfile, ignorepaths):
+    # For each regular file under root, writes an md5sum to outfile.
+    # With thanks to patch.bbclass.
+    import bb, os
+
+    try:
+        # Python 2.5+
+        import hashlib
+        ctor = hashlib.md5
+    except ImportError:
+        import md5
+        ctor = md5.new
+
+    outf = file(outfile, 'w')
+
+    # Each output line looks like: "<hex...>  <filename without leading slash>"
+    striplen = len(root)
+    if not root.endswith('/'):
+        striplen += 1
+
+    for walkroot, dirs, files in os.walk(root):
+        # Skip e.g. the DEBIAN directory
+        if walkroot[striplen:] in ignorepaths:
+            dirs[:] = []
+            continue
+
+        for name in files:
+            fullpath = os.path.join(walkroot, name)
+            if os.path.islink(fullpath) or (not os.path.isfile(fullpath)):
+                continue
+
+            m = ctor()
+            f = file(fullpath, 'rb')
+            while True:
+                d = f.read(8192)
+                if not d:
+                    break
+                m.update(d)
+            f.close()
+
+            print >> outf, "%s  %s" % (m.hexdigest(), fullpath[striplen:])
+
+    outf.close()
+
+
 #
 # Package data handling routines
 #

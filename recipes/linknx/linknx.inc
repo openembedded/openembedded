@@ -7,7 +7,7 @@ LICENSE = "GPL"
 
 DEPENDS = " pthsem lua5.1 curl libesmtp"
 DEPENDS_append_linux-uclibc = " argp-standalone"
-DEPENDS_append_linux-uclibcgnueabi = " argp-standalone"
+DEPENDS_append_linux-uclibceabi = " argp-standalone"
 
 SRC_URI += "file://configure-libcurl.patch;patch=1 \
             file://linknx.start "

@@ -163,6 +163,8 @@ SRC_URI_append = " \
            file://vfp/04-vfp-threads.patch;patch=1 \
            file://vfp/05-vfp-signal-handlers.patch;patch=1 \
            file://arch-has-holes.diff;patch=1 \
+           file://cache/l1cache-shift.patch;patch=1 \
+           file://cache/copy-page-tweak.patch;patch=1 \
 "
 
 

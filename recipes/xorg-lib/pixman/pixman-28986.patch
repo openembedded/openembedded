@@ -1,0 +1,32 @@
+From 7b7860d61fb1526acdf010dd8fd644bbf1396b9e Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Fri, 28 Aug 2009 22:34:21 +0300
+Subject: [PATCH] ARM: workaround for gcc bug in vshll_n_u8 intrinsic
+
+Some versions of gcc (cs2009q1, 4.4.1) incorrectly reject
+shift operand having value >= 8, claiming that it is out of
+range. So inline assembly is used as a workaround.
+---
+ pixman/pixman-arm-neon.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
+index 4125d1b..3e7f566 100644
+--- a/pixman/pixman-arm-neon.c
++++ b/pixman/pixman-arm-neon.c
+@@ -64,6 +64,12 @@ unpack0565 (uint16x8_t rgb)
+     return res;
+ }
+ 
++#ifdef USE_GCC_INLINE_ASM
++/* Some versions of gcc have problems with vshll_n_u8 intrinsic (Bug 23576) */
++#define vshll_n_u8(a, n) ({ uint16x8_t r; \
++    asm ("vshll.u8 %q0, %P1, %2\n" : "=w" (r) : "w" (a), "i" (n)); r; })
++#endif
++
+ static force_inline uint16x8_t
+ pack0565 (uint8x8x4_t s)
+ {
+-- 
+1.5.4.3
+

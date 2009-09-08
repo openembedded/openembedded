@@ -15,7 +15,7 @@ inherit autotools update-alternatives
 # because it uses __mempcpy, there are other things (TBD:
 # see diffutils.mk in buildroot)
 EXTRA_OECONF_linux-uclibc = "--without-included-regex"
-EXTRA_OECONF_linux-uclibcgnueabi = "--without-included-regex"
+EXTRA_OECONF_linux-uclibceabi = "--without-included-regex"
 
 do_install_append () {
         mv ${D}${bindir}/diff ${D}${bindir}/diff.${PN}

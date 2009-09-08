@@ -1,0 +1,47 @@
+From 01984da4f7009c118c18fa251b703de74f26ced2 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Sun, 16 Aug 2009 14:19:55 -0700
+Subject: [PATCH] ARM: OMAP3: Fix EHCI initialization for Overo
+
+Overo uses port 2, not port 1.  Use OVERO_GPIO_USBH_NRESET rather than hard coded value
+
+Note: this alone will not give functional EHCI.  Also required is:
+
+[PATCH 4/9] ehci: fix phy_reset init in ehci probe
+from Ajay Kumar Gupta
+---
+ arch/arm/mach-omap2/board-overo.c |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
+index a9d7c2e..a220a54 100644
+--- a/arch/arm/mach-omap2/board-overo.c
++++ b/arch/arm/mach-omap2/board-overo.c
+@@ -394,7 +394,8 @@ static void __init overo_init(void)
+ 	omap_serial_init(&overo_uart_config);
+ 	overo_flash_init();
+ 	usb_musb_init();
+-	usb_ehci_init(EHCI_HCD_OMAP_MODE_PHY, false, true, 183, -EINVAL);
++	usb_ehci_init(EHCI_HCD_OMAP_MODE_PHY, false, true,
++			-EINVAL, OVERO_GPIO_USBH_NRESET);
+ 	overo_ads7846_init();
+ 	overo_init_smsc911x();
+ 
+@@ -437,14 +438,6 @@ static void __init overo_init(void)
+ 	else
+ 		printk(KERN_ERR "could not obtain gpio for "
+ 					"OVERO_GPIO_USBH_CPEN\n");
+-
+-	if ((gpio_request(OVERO_GPIO_USBH_NRESET,
+-			  "OVERO_GPIO_USBH_NRESET") == 0) &&
+-	    (gpio_direction_output(OVERO_GPIO_USBH_NRESET, 1) == 0))
+-		gpio_export(OVERO_GPIO_USBH_NRESET, 0);
+-	else
+-		printk(KERN_ERR "could not obtain gpio for "
+-					"OVERO_GPIO_USBH_NRESET\n");
+ }
+ 
+ static void __init overo_map_io(void)
+-- 
+1.6.0.4
+

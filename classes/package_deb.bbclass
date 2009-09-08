@@ -243,6 +243,13 @@ python do_package_deb () {
                 conffiles.write('%s\n' % f)
             conffiles.close()
 
+        try:
+            write_package_md5sums(root, os.path.join(controldir, 'md5sums'),
+                                  ['DEBIAN'])
+        except:
+            bb.utils.unlockfile(lf)
+            raise
+
         os.chdir(basedir)
         ret = os.system("PATH=\"%s\" fakeroot dpkg-deb -b %s %s" % (bb.data.getVar("PATH", localdata, 1), root, pkgoutdir))
         if ret != 0:
