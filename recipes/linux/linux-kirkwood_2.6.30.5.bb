@@ -9,7 +9,7 @@ require linux.inc
 PV = "2.6.30.5"
 
 SRCREV = "6fa23e56edcb79a348c968aada8190944f4f3633"
-SRC_URI = "git://git.marvell.com/orion.git;protocol=git;branch=stable-2.6.29 \
+SRC_URI = "git://git.marvell.com/orion.git;protocol=git;branch=stable-2.6.30 \
            file://defconfig \
                "
 
