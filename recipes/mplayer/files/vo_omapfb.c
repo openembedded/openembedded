@@ -118,6 +118,24 @@ static Window parent = 0; // pointer to the newly created window.
 /* This is used to intercept window closing requests.  */
 static Atom wm_delete_window;
 
+
+void vo_calc_drwXY(uint32_t *drwX, uint32_t *drwY)
+{
+    *drwX = *drwY = 0;
+    if (vo_fs) {
+        aspect(&vo_dwidth, &vo_dheight, A_ZOOM);
+        vo_dwidth  = FFMIN(vo_dwidth, vo_screenwidth);
+        vo_dheight = FFMIN(vo_dheight, vo_screenheight);
+        *drwX      = (vo_screenwidth - vo_dwidth) / 2;
+        *drwY      = (vo_screenheight - vo_dheight) / 2;
+        mp_msg(MSGT_VO, MSGL_V, "[vo-fs] dx: %d dy: %d dw: %d dh: %d\n",
+               *drwX, *drwY, vo_dwidth, vo_dheight);
+    } else if (WinID == 0) {
+        *drwX = vo_dx;
+        *drwY = vo_dy;
+    }
+}
+
 /**
  * Function to get the offset to be used when in windowed mode
  * or when using -wid option
