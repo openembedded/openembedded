@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# Most of this stuff is to enable vlans
+
+case "$IFACE" in
+  # Ignore any alias (#272891) which uses <interface>:<alabel>
+  *:*)
+    exit 0
+  ;;
+  vlan0*)
+    vconfig set_name_type VLAN_PLUS_VID
+    VLANID=`echo $IFACE|sed "s/vlan0*//"`
+  ;;
+  vlan*)
+    vconfig set_name_type VLAN_PLUS_VID_NO_PAD
+    VLANID=`echo $IFACE|sed "s/vlan0*//"`
+  ;;
+  eth*.0*|bond*.0*|wlan*.0*)
+    vconfig set_name_type DEV_PLUS_VID
+    VLANID=`echo $IFACE|sed "s/eth[0-9][0-9]*\.0*//g;s/bond[0-9][0-9]*\.0*//;s/wlan[0-9][0-9]*\.0*//"`
+    IF_VLAN_RAW_DEVICE=`echo $IFACE|sed "s/\(eth[0-9][0-9]*\)\..*/\1/;s/\(bond[0-9][0-9]*\)\..*/\1/;s/\(wlan[0-9][0-9]*\)\..*/\1/"`
+  ;;
+  eth*.*|bond*.*|wlan*.*)
+    vconfig set_name_type DEV_PLUS_VID_NO_PAD
+    VLANID=`echo $IFACE|sed "s/eth[0-9][0-9]*\.0*//g;s/bond[0-9][0-9]*\.0*//g;s/wlan[0-9][0-9]*\.0*//g"`
+    IF_VLAN_RAW_DEVICE=`echo $IFACE|sed "s/\(eth[0-9][0-9]*\)\..*/\1/;s/\(bond[0-9][0-9]*\)\..*/\1/;s/\(wlan[0-9][0-9]*\)\..*/\1/"`
+  ;;
+  *.0*)
+    # Silently ignore interfaces which we do not (know how to) support
+    [ -z "$IF_VLAN_RAW_DEVICE" ] && exit 0
+    vconfig set_name_type DEV_PLUS_VID
+    VLANID=`echo $IFACE|sed "s/[^.]*\.0*//g"`
+  ;;
+  *.*)
+    # Silently ignore interfaces which we do not (know how to) support
+    [ -z "$IF_VLAN_RAW_DEVICE" ] && exit 0
+    vconfig set_name_type DEV_PLUS_VID_NO_PAD
+    VLANID=`echo $IFACE|sed "s/[^.]*\.0*//g"`
+  ;;
+
+  *)
+    exit 0
+  ;;
+esac
+
+if [ -n "$IF_VLAN_RAW_DEVICE" ]; then
+    if [ ! -x /sbin/vconfig ]; then
+        exit 0
+    fi
+    if ! ip link show dev "$IF_VLAN_RAW_DEVICE" > /dev/null; then
+        echo "$IF_VLAN_RAW_DEVICE does not exist, unable to create $IFACE"
+        exit 1
+    fi
+    ip link set up dev $IF_VLAN_RAW_DEVICE
+    vconfig add $IF_VLAN_RAW_DEVICE $VLANID
+fi
+
+# This is not vlan specific, and should actually go somewhere else.
+if [ -n "$IF_HW_MAC_ADDRESS" ]; then
+    ip link set $IFACE address $IF_HW_MAC_ADDRESS
+fi

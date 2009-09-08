@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# If IFACE is an automagic vlan interface (without the vlan-raw-device
+# parameter) then let's try to discover the magic here..  Another way would be
+# to just probe for the right device name in /proc/net/vlan
+
+case "$IFACE" in
+  # Ignore any alias (#272891)
+  *:*)
+    exit 0
+  ;;
+  eth*.0*|bond*.0*|wlan*.0*)
+    IF_VLAN_RAW_DEVICE=`echo $IFACE|sed "s/\(eth[0-9][0-9]*\)\..*/\1/;s/\(bond[0-9][0-9]*\)\..*/\1/;s/\(wlan[0-9][0-9]*\)\..*/\1/"`
+  ;;
+  eth*.*|bond*.*|wlan*.*)
+    IF_VLAN_RAW_DEVICE=`echo $IFACE|sed "s/\(eth[0-9][0-9]*\)\..*/\1/;s/\(bond[0-9][0-9]*\)\..*/\1/;s/\(wlan[0-9][0-9]*\)\..*/\1/"`
+  ;;
+  # Test for vlan raw device (#196890, #292648)
+  *)
+    [ -z "$IF_VLAN_RAW_DEVICE" ] && exit 0
+  ;;
+esac
+
+if [ ! -x /sbin/vconfig ]; then
+    exit 0
+fi
+
+vconfig rem $IFACE
