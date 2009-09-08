@@ -1,9 +1,9 @@
-
 DESCRIPTION = "Library for reading some sort of media format."
 SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = ""
+do_unpack[depends] += "unzip-native:do_populate_staging"
 PR ="r2"
 
 inherit autotools

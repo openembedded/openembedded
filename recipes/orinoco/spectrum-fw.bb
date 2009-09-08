@@ -1,5 +1,5 @@
 DESCRIPTION = "Firmware for Spectrum Wireless LAN cards"
-DEPENDS += " unzip-native "
+do_unpack[depends] += "unzip-native:do_populate_staging"
 LICENSE = "unknown"
 PR = "r1"
 

@@ -1,4 +1,5 @@
 LICENSE = "MIT"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freeimage/FreeImage3110.zip"
 

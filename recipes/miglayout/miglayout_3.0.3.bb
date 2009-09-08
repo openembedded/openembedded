@@ -10,7 +10,8 @@ S = "${WORKDIR}"
 
 inherit java-library
 
-DEPENDS = "unzip-native fastjar-native classpath swt3.4-gtk"
+DEPENDS = "fastjar-native classpath swt3.4-gtk"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 
 do_unpackpost() {
 	find -name "*.jar" -exec rm {} \;

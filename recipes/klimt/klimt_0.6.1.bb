@@ -5,6 +5,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/klimt/klimt-src-${PV}.zip"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 S = "${WORKDIR}/klimt/build/LinuxQTE"
 
 EXTRA_QMAKEVARS_POST += " QMAKE_CXXFLAGS+=-fpermissive"

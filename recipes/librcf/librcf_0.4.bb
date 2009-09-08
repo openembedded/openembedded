@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "unknown"
 DEPENDS="zlib openssl boost-asio"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 
 # the SOURCE_URI requires authentication via web browser and cookie (gasp)
 # all we can do right now is download the file and save it under sources/
