@@ -18,6 +18,7 @@ S = "${WORKDIR}/git"
 
 SRC_URI_append_omap3517-evm = " \
         file://shiva-bits.diff;patch=1 \
+        file://shiva-ehci.diff;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " \
