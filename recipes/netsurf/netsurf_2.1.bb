@@ -7,11 +7,12 @@ LICENSE = "GPLv2"
 SRC_URI = "http://www.netsurf-browser.org/downloads/releases/netsurf-${PV}-src.tar.gz \
 	   file://fix_makefile.patch;patch=1 \
 	   file://debugxml_fix.patch;patch=1 \
+	   file://touchscreen.patch;patch=1 \
 	   file://netsurf.png \
 	   file://netsurf.desktop \
 	   file://Makefile.config"
 
-PR = "r1"
+PR = "r2"
 
 # Workaround for 2.1 tarball (unpacks into netsurf/, not netsurf-2.1/ )
 S = "${WORKDIR}/netsurf"

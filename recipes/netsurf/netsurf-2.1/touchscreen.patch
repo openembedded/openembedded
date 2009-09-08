@@ -1,0 +1,21 @@
+--- netsurf.orig/gtk/gtk_window.c
++++ netsurf/gtk/gtk_window.c
+@@ -220,6 +220,7 @@
+ 				GDK_BUTTON_PRESS_MASK |
+ 				GDK_BUTTON_RELEASE_MASK |
+ 				GDK_POINTER_MOTION_MASK |
++				GDK_POINTER_MOTION_HINT_MASK |
+ 				GDK_KEY_PRESS_MASK |
+ 				GDK_KEY_RELEASE_MASK);
+ 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(g->drawing_area), GTK_CAN_FOCUS);
+@@ -344,6 +345,10 @@
+ 	bool shift = event->state & GDK_SHIFT_MASK;
+ 	bool ctrl = event->state & GDK_CONTROL_MASK;
+ 
++	if ((abs(event->x - g->last_x) < 5) && (abs(event->y - g->last_y) < 5))
++		/* necessary for touch screens */
++		return FALSE;
++
+    	if (g->mouse->state & BROWSER_MOUSE_PRESS_1){
+ 		/* Start button 1 drag */
+ 		browser_window_mouse_click(g->bw, BROWSER_MOUSE_DRAG_1,
