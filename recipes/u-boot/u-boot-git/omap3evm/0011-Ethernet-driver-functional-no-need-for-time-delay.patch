@@ -1,0 +1,488 @@
+From f6ee297c14693474a28948432d274bc2801b7578 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Mon, 22 Jun 2009 23:40:44 +0530
+Subject: [PATCH 11/16] Ethernet driver functional(no need for time delay)
+
+Pulled up from branch omap-uboot-denx/int_030000_evm_bringup.
+---
+ board/omap3/omap3517evm/omap3517evm.c |    6 +-
+ board/omap3/omap3517evm/omap3517evm.h |   18 ++--
+ drivers/net/ticpgmac.c                |  139 ++++++++++++++++++++-------------
+ include/asm-arm/arch-omap3/ticpgmac.h |   14 ++--
+ include/configs/omap3517evm.h         |    1 +
+ net/tftp.c                            |    4 +-
+ 6 files changed, 109 insertions(+), 73 deletions(-)
+
+diff --git a/board/omap3/omap3517evm/omap3517evm.c b/board/omap3/omap3517evm/omap3517evm.c
+index 2330776..bf304e3 100644
+--- a/board/omap3/omap3517evm/omap3517evm.c
++++ b/board/omap3/omap3517evm/omap3517evm.c
+@@ -65,7 +65,11 @@ int misc_init_r(void)
+ #endif
+ 
+ #if defined(CONFIG_CMD_NET)
+-	setup_net_chip();
++	//setup_net_chip();
++	if (!eth_hw_init()) {
++		printf("error:Ethernet init failed\n");
++		}
++
+ #endif
+ 
+ 	dieid_num_r();
+diff --git a/board/omap3/omap3517evm/omap3517evm.h b/board/omap3/omap3517evm/omap3517evm.h
+index c3ea037..65276b8 100644
+--- a/board/omap3/omap3517evm/omap3517evm.h
++++ b/board/omap3/omap3517evm/omap3517evm.h
+@@ -337,15 +337,15 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(CCDC_DATA5),	(IEN  | PTD | EN  | M0)) /*ccdc_data5*/\
+  MUX_VAL(CP(CCDC_DATA6),	(IEN  | PTD | EN  | M0)) /*ccdc_data6*/\
+  MUX_VAL(CP(CCDC_DATA7),	(IEN  | PTD | EN  | M0)) /*ccdc_data7*/\
+- MUX_VAL(CP(RMII_MDIO_DATA),	(IEN  | PTD | EN  | M0)) /*rmii_mdio_data*/\
+- MUX_VAL(CP(RMII_MDIO_CLK),	(IEN  | PTD | EN  | M0)) /*rmii_mdio_clk*/\
+- MUX_VAL(CP(RMII_RXD0)	,	(IEN  | PTD | EN  | M0)) /*rmii_rxd0*/\
+- MUX_VAL(CP(RMII_RXD1),		(IEN  | PTD | EN  | M0)) /*rmii_rxd1*/\
+- MUX_VAL(CP(RMII_CRS_DV),	(IEN  | PTD | EN  | M0)) /*rmii_crs_dv*/\
+- MUX_VAL(CP(RMII_RXER),		(IEN  | PTD | EN  | M0)) /*rmii_rxer*/\
+- MUX_VAL(CP(RMII_TXD0),		(IEN  | PTD | EN  | M0)) /*rmii_txd0*/\
+- MUX_VAL(CP(RMII_TXD1),		(IEN  | PTD | EN  | M0)) /*rmii_txd1*/\
+- MUX_VAL(CP(RMII_TXEN),		(IEN  | PTD | EN  | M0)) /*rmii_txen*/\
++ MUX_VAL(CP(RMII_MDIO_DATA),	(PTD |  M0)) /*rmii_mdio_data*/\
++ MUX_VAL(CP(RMII_MDIO_CLK),	(PTD |  M0)) /*rmii_mdio_clk*/\
++ MUX_VAL(CP(RMII_RXD0)	,	(IEN  | PTD | M0)) /*rmii_rxd0*/\
++ MUX_VAL(CP(RMII_RXD1),		(IEN  | PTD | M0)) /*rmii_rxd1*/\
++ MUX_VAL(CP(RMII_CRS_DV),	(IEN  | PTD | M0)) /*rmii_crs_dv*/\
++ MUX_VAL(CP(RMII_RXER),		(PTD | M0)) /*rmii_rxer*/\
++ MUX_VAL(CP(RMII_TXD0),		(PTD | M0)) /*rmii_txd0*/\
++ MUX_VAL(CP(RMII_TXD1),		(PTD | M0)) /*rmii_txd1*/\
++ MUX_VAL(CP(RMII_TXEN),		(PTD | M0)) /*rmii_txen*/\
+  MUX_VAL(CP(RMII_50MHZ_CLK),	(IEN  | PTD | EN  | M0)) /*rmii_50mhz_clk*/\
+  MUX_VAL(CP(USB0_DRVBUS),	(IEN  | PTD | EN  | M0)) /*usb0_drvbus*/\
+  MUX_VAL(CP(HECCL_TXD),		(IEN  | PTD | EN  | M0)) /*heccl_txd*/\
+diff --git a/drivers/net/ticpgmac.c b/drivers/net/ticpgmac.c
+index e83b951..350fb9b 100644
+--- a/drivers/net/ticpgmac.c
++++ b/drivers/net/ticpgmac.c
+@@ -42,25 +42,34 @@
+ #include <miiphy.h>
+ #include <asm/arch/ticpgmac.h>
+ 
++
++#define STATIC
++#define PRINTF(args,...)
++
+ #ifdef CONFIG_DRIVER_TI_EMAC
+ 
+ #ifdef CONFIG_CMD_NET
+ 
+-unsigned int	emac_dbg = 0;
++unsigned int	emac_dbg = 1;
+ #define debug_emac(fmt,args...)	if (emac_dbg) printf(fmt,##args)
+ 
++#define BD_TO_HW(x) \
++        ( ( (x) == 0) ? 0 : ( (x) - EMAC_WRAPPER_RAM_ADDR + EMAC_HW_RAM_ADDR ))
++#define HW_TO_BD(x) \
++        ( ( (x) == 0) ? 0 : ( (x) - EMAC_HW_RAM_ADDR + EMAC_WRAPPER_RAM_ADDR ))
++
+ /* Internal static functions */
+-static int cpgmac_eth_hw_init (void);
+-static int cpgmac_eth_open (void);
+-static int cpgmac_eth_close (void);
+-static int cpgmac_eth_send_packet (volatile void *packet, int length);
+-static int cpgmac_eth_rcv_packet (void);
+-static void cpgmac_eth_mdio_enable(void);
+-
+-static int gen_init_phy(int phy_addr);
+-static int gen_is_phy_connected(int phy_addr);
+-static int gen_get_link_status(int phy_addr);
+-static int gen_auto_negotiate(int phy_addr);
++STATIC int cpgmac_eth_hw_init (void);
++STATIC int cpgmac_eth_open (void);
++STATIC int cpgmac_eth_close (void);
++STATIC int cpgmac_eth_send_packet (volatile void *packet, int length);
++STATIC int cpgmac_eth_rcv_packet (void);
++STATIC void cpgmac_eth_mdio_enable(void);
++
++STATIC int gen_init_phy(int phy_addr);
++STATIC int gen_is_phy_connected(int phy_addr);
++STATIC int gen_get_link_status(int phy_addr);
++STATIC int gen_auto_negotiate(int phy_addr);
+ 
+ /* Wrappers exported to the U-Boot proper */
+ int eth_hw_init(void)
+@@ -96,7 +105,7 @@ void eth_mdio_enable(void)
+ 
+ /* cpgmac_eth_mac_addr[0] goes out on the wire first */
+ 
+-static u_int8_t cpgmac_eth_mac_addr[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0x00 };
++STATIC u_int8_t cpgmac_eth_mac_addr[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0x00 };
+ 
+ /*
+  * This function must be called before emac_open() if you want to override
+@@ -112,26 +121,26 @@ void cpgmac_eth_set_mac_addr(const u_int8_t *addr)
+ }
+ 
+ /* EMAC Addresses */
+-static volatile emac_regs	*adap_emac = (emac_regs *)EMAC_BASE_ADDR;
+-static volatile ewrap_regs	*adap_ewrap = (ewrap_regs *)EMAC_WRAPPER_BASE_ADDR;
+-static volatile mdio_regs	*adap_mdio = (mdio_regs *)EMAC_MDIO_BASE_ADDR;
++STATIC volatile emac_regs	*adap_emac = (emac_regs *)EMAC_BASE_ADDR;
++STATIC volatile ewrap_regs	*adap_ewrap = (ewrap_regs *)EMAC_WRAPPER_BASE_ADDR;
++STATIC volatile mdio_regs	*adap_mdio = (mdio_regs *)EMAC_MDIO_BASE_ADDR;
+ 
+ /* EMAC descriptors */
+-static volatile emac_desc	*emac_rx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_RX_DESC_BASE);
+-static volatile emac_desc	*emac_tx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_TX_DESC_BASE);
+-static volatile emac_desc	*emac_rx_active_head = 0;
+-static volatile emac_desc	*emac_rx_active_tail = 0;
+-static int			emac_rx_queue_active = 0;
++STATIC volatile emac_desc	*emac_rx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_RX_DESC_BASE);
++STATIC volatile emac_desc	*emac_tx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_TX_DESC_BASE);
++STATIC volatile emac_desc	*emac_rx_active_head = 0;
++STATIC volatile emac_desc	*emac_rx_active_tail = 0;
++STATIC int			emac_rx_queue_active = 0;
+ 
+ /* Receive packet buffers */
+-static unsigned char		emac_rx_buffers[EMAC_MAX_RX_BUFFERS * (EMAC_MAX_ETHERNET_PKT_SIZE + EMAC_PKT_ALIGN)];
++STATIC unsigned char		emac_rx_buffers[EMAC_MAX_RX_BUFFERS * (EMAC_MAX_ETHERNET_PKT_SIZE + EMAC_PKT_ALIGN)];
+ 
+ /* PHY address for a discovered PHY (0xff - not found) */
+-static volatile u_int8_t	active_phy_addr = 0xff;
++STATIC volatile u_int8_t	active_phy_addr = 0xff;
+ 
+-static int	no_phy_init (int phy_addr) { return(1); }
+-static int	no_phy_is_connected (int phy_addr) { return(1); }
+-static int	no_phy_get_link_status (int phy_addr)
++STATIC int	no_phy_init (int phy_addr) { return(1); }
++STATIC int	no_phy_is_connected (int phy_addr) { return(1); }
++STATIC int	no_phy_get_link_status (int phy_addr)
+ {
+ 	adap_emac->MACCONTROL = (EMAC_MACCONTROL_MIIEN_ENABLE
+ 		| EMAC_MACCONTROL_FULLDUPLEX_ENABLE);
+@@ -140,7 +149,7 @@ static int	no_phy_get_link_status (int phy_addr)
+ #endif
+ 	return 1;
+ }
+-static int  no_phy_auto_negotiate (int phy_addr) { return(1); }
++STATIC int  no_phy_auto_negotiate (int phy_addr) { return(1); }
+ phy_t				phy  = {
+ 	.init = no_phy_init,
+ 	.is_phy_connected = no_phy_is_connected,
+@@ -148,7 +157,7 @@ phy_t				phy  = {
+ 	.auto_negotiate = no_phy_auto_negotiate
+ };
+ 
+-static void cpgmac_eth_mdio_enable(void)
++STATIC void cpgmac_eth_mdio_enable(void)
+ {
+ 	u_int32_t	clkdiv;
+ 
+@@ -168,7 +177,7 @@ static void cpgmac_eth_mdio_enable(void)
+  * returns 2
+  * Sets active_phy_addr variable when returns 1.
+  */
+-static int cpgmac_eth_phy_detect(void)
++STATIC int cpgmac_eth_phy_detect(void)
+ {
+ 	u_int32_t	phy_act_state;
+ 	int		i;
+@@ -238,7 +247,7 @@ int cpgmac_eth_phy_write(u_int8_t phy_addr, u_int8_t reg_num, u_int16_t data)
+ }
+ 
+ /* PHY functions for a generic PHY */
+-static int gen_init_phy(int phy_addr)
++STATIC int gen_init_phy(int phy_addr)
+ {
+ 	int	ret = 1;
+ 
+@@ -250,14 +259,14 @@ static int gen_init_phy(int phy_addr)
+ 	return(ret);
+ }
+ 
+-static int gen_is_phy_connected(int phy_addr)
++STATIC int gen_is_phy_connected(int phy_addr)
+ {
+ 	u_int16_t	dummy;
+ 
+ 	return(cpgmac_eth_phy_read(phy_addr, PHY_PHYIDR1, &dummy));
+ }
+ 
+-static int gen_get_link_status(int phy_addr)
++STATIC int gen_get_link_status(int phy_addr)
+ {
+ 	u_int16_t	tmp;
+ 
+@@ -288,7 +297,7 @@ static int gen_get_link_status(int phy_addr)
+ 	return(0);
+ }
+ 
+-static int gen_auto_negotiate(int phy_addr)
++STATIC int gen_auto_negotiate(int phy_addr)
+ {
+ 	u_int16_t	tmp;
+ 
+@@ -313,12 +322,12 @@ static int gen_auto_negotiate(int phy_addr)
+ 
+ 
+ #if defined(CONFIG_MII) || defined(CONFIG_CMD_MII)
+-static int cpgmac_mii_phy_read(char *devname, unsigned char addr, unsigned char reg, unsigned short *value)
++STATIC int cpgmac_mii_phy_read(char *devname, unsigned char addr, unsigned char reg, unsigned short *value)
+ {
+ 	return(cpgmac_eth_phy_read(addr, reg, value) ? 0 : 1);
+ }
+ 
+-static int cpgmac_mii_phy_write(char *devname, unsigned char addr, unsigned char reg, unsigned short value)
++STATIC int cpgmac_mii_phy_write(char *devname, unsigned char addr, unsigned char reg, unsigned short value)
+ {
+ 	return(cpgmac_eth_phy_write(addr, reg, value) ? 0 : 1);
+ }
+@@ -336,7 +345,7 @@ int cpgmac_eth_miiphy_initialize(bd_t *bis)
+  * EMAC modules power or pin multiplexors, that is done by board_init()
+  * much earlier in bootup process. Returns 1 on success, 0 otherwise.
+  */
+-static int cpgmac_eth_hw_init(void)
++STATIC int cpgmac_eth_hw_init(void)
+ {
+ 	u_int32_t	phy_id;
+ 	u_int16_t	tmp;
+@@ -395,7 +404,7 @@ static int cpgmac_eth_hw_init(void)
+ 
+ 
+ /* Eth device open */
+-static int cpgmac_eth_open(void)
++STATIC int cpgmac_eth_open(void)
+ {
+ 	dv_reg_p		addr;
+ 	u_int32_t		clkdiv, cnt;
+@@ -467,7 +476,7 @@ static int cpgmac_eth_open(void)
+ 	/* Create RX queue and set receive process in place */
+ 	emac_rx_active_head = emac_rx_desc;
+ 	for (cnt = 0; cnt < EMAC_MAX_RX_BUFFERS; cnt++) {
+-		rx_desc->next = (u_int32_t)(rx_desc + 1);
++		rx_desc->next =BD_TO_HW( (u_int32_t)(rx_desc + 1) );
+ 		rx_desc->buffer = &emac_rx_buffers[cnt * (EMAC_MAX_ETHERNET_PKT_SIZE + EMAC_PKT_ALIGN)];
+ 		rx_desc->buff_off_len = EMAC_MAX_ETHERNET_PKT_SIZE;
+ 		rx_desc->pkt_flag_len = EMAC_CPPI_OWNERSHIP_BIT;
+@@ -500,7 +509,7 @@ static int cpgmac_eth_open(void)
+ 		return(0);
+ 
+ 	/* Start receive process */
+-	adap_emac->RX0HDP = (u_int32_t)emac_rx_desc;
++	adap_emac->RX0HDP = BD_TO_HW((u_int32_t)emac_rx_desc);
+ 
+ 	debug_emac("- emac_open\n");
+ 
+@@ -508,7 +517,7 @@ static int cpgmac_eth_open(void)
+ }
+ 
+ /* EMAC Channel Teardown */
+-static void cpgmac_eth_ch_teardown(int ch)
++STATIC void cpgmac_eth_ch_teardown(int ch)
+ {
+ 	dv_reg		dly = 0xff;
+ 	dv_reg		cnt;
+@@ -551,7 +560,7 @@ static void cpgmac_eth_ch_teardown(int ch)
+ }
+ 
+ /* Eth device close */
+-static int cpgmac_eth_close(void)
++STATIC int cpgmac_eth_close(void)
+ {
+ 	debug_emac("+ emac_close\n");
+ 
+@@ -570,13 +579,13 @@ static int cpgmac_eth_close(void)
+ 	return(1);
+ }
+ 
+-static int tx_send_loop = 0;
++STATIC int tx_send_loop = 0;
+ 
+ /*
+  * This function sends a single packet on the network and returns
+  * positive number (number of bytes transmitted) or negative for error
+  */
+-static int cpgmac_eth_send_packet (volatile void *packet, int length)
++STATIC int cpgmac_eth_send_packet (volatile void *packet, int length)
+ {
+ 	int ret_status = -1;
+ 	tx_send_loop = 0;
+@@ -600,17 +609,30 @@ static int cpgmac_eth_send_packet (volatile void *packet, int length)
+ 					  EMAC_CPPI_SOP_BIT |
+ 					  EMAC_CPPI_OWNERSHIP_BIT |
+ 					  EMAC_CPPI_EOP_BIT);
++				
++	if (!phy.get_link_status (active_phy_addr)) {
++	        printf("Link down . Abort Tx - pHY %d\n",active_phy_addr);
++		cpgmac_eth_ch_teardown (EMAC_CH_TX);
++		return (ret_status);
++	}
++
+ 	/* Send the packet */
+-	adap_emac->TX0HDP = (unsigned int) emac_tx_desc;
++	adap_emac->TX0HDP = BD_TO_HW((unsigned int) emac_tx_desc);
++	PRINTF("Send: BD=0x%X BF=0x%x len=%d \n", emac_tx_desc, emac_tx_desc->buffer, length);
++//	udelay(2500);
+ 
+ 	/* Wait for packet to complete or link down */
+ 	while (1) {
++		#if 0
+ 		if (!phy.get_link_status (active_phy_addr)) {
++		        printf("Link down . Abort Tx - pHY %d\n",active_phy_addr);
+ 			cpgmac_eth_ch_teardown (EMAC_CH_TX);
+ 			return (ret_status);
+ 		}
++		#endif
+ 		if (adap_emac->TXINTSTATRAW & 0x01) {
+ 			ret_status = length;
++	                //PRINTF("Send Complete: BD=0x%X BF=0x%x len=%d \n", emac_tx_desc, emac_tx_desc->buffer, length);
+ 			break;
+ 		}
+ 		tx_send_loop++;
+@@ -622,7 +644,7 @@ static int cpgmac_eth_send_packet (volatile void *packet, int length)
+ /*
+  * This function handles receipt of a packet from the network
+  */
+-static int cpgmac_eth_rcv_packet (void)
++STATIC int cpgmac_eth_rcv_packet (void)
+ {
+ 	volatile emac_desc *rx_curr_desc;
+ 	volatile emac_desc *curr_desc;
+@@ -642,18 +664,21 @@ static int cpgmac_eth_rcv_packet (void)
+ 		}
+ 
+ 		/* Ack received packet descriptor */
+-		adap_emac->RX0CP = (unsigned int) rx_curr_desc;
++		adap_emac->RX0CP = BD_TO_HW((unsigned int) rx_curr_desc);
+ 		curr_desc = rx_curr_desc;
+ 		emac_rx_active_head =
+-			(volatile emac_desc *) rx_curr_desc->next;
++			(volatile emac_desc *) (HW_TO_BD(rx_curr_desc->next));
++		PRINTF("New Rx Active head 0x%x \n",emac_rx_active_head);
++		
+ 
+ 		if (status & EMAC_CPPI_EOQ_BIT) {
+ 			if (emac_rx_active_head) {
+ 				adap_emac->RX0HDP =
+-					(unsigned int) emac_rx_active_head;
++					BD_TO_HW((unsigned int) emac_rx_active_head);
++				PRINTF("Rx EOQ reset HDP for misqueued pkt 0x%x \n",emac_rx_active_head);	
+ 			} else {
+ 				emac_rx_queue_active = 0;
+-				printf ("INFO:emac_rcv_packet: RX Queue not active\n");
++				PRINTF ("INFO:emac_rcv_packet: RX Queue not active\n");
+ 			}
+ 		}
+ 
+@@ -663,24 +688,28 @@ static int cpgmac_eth_rcv_packet (void)
+ 		rx_curr_desc->next = 0;
+ 
+ 		if (emac_rx_active_head == 0) {
+-			printf ("INFO: emac_rcv_pkt: active queue head = 0\n");
++		//	printf ("INFO: emac_rcv_pkt: active queue head = 0\n");
++		        PRINTF(" Rx active head NULL, set head/tail to 0x%x",curr_desc);
+ 			emac_rx_active_head = curr_desc;
+ 			emac_rx_active_tail = curr_desc;
+-			if (emac_rx_queue_active != 0) {
++			if (emac_rx_queue_active == 0) {
+ 				adap_emac->RX0HDP =
+-					(unsigned int) emac_rx_active_head;
+-				printf ("INFO: emac_rcv_pkt: active queue head = 0, HDP fired\n");
++					BD_TO_HW((unsigned int) emac_rx_active_head);
++				//printf ("INFO: emac_rcv_pkt: active queue head = 0, HDP fired\n");
++				PRINTF("Rx Q inactive , set HDP to 0x%x \n", emac_rx_active_head);
+ 				emac_rx_queue_active = 1;
+ 			}
+ 		} else {
++		        PRINTF("Append 0x%x to tail \n", curr_desc);
+ 			tail_desc = emac_rx_active_tail;
+ 			emac_rx_active_tail = curr_desc;
+-			tail_desc->next = (unsigned int) curr_desc;
++			tail_desc->next = BD_TO_HW((unsigned int) curr_desc);
+ 			status = tail_desc->pkt_flag_len;
+ 			if (status & EMAC_CPPI_EOQ_BIT) {
+-				adap_emac->RX0HDP = (unsigned int) curr_desc;
+ 				status &= ~EMAC_CPPI_EOQ_BIT;
+ 				tail_desc->pkt_flag_len = status;
++				adap_emac->RX0HDP = BD_TO_HW((unsigned int) curr_desc);
++				PRINTF("Restart the Q in tail append case\n");
+ 			}
+ 		}
+ 		return (ret);
+diff --git a/include/asm-arm/arch-omap3/ticpgmac.h b/include/asm-arm/arch-omap3/ticpgmac.h
+index d7d77c9..10ec187 100644
+--- a/include/asm-arm/arch-omap3/ticpgmac.h
++++ b/include/asm-arm/arch-omap3/ticpgmac.h
+@@ -36,20 +36,22 @@
+ #ifndef _TI_CPGMAC_H_
+ #define _TI_CPGMAC_H_
+ 
+-#define DAVINCI_EMAC_CNTRL_REGS_BASE		0
+-#define DAVINCI_EMAC_WRAPPER_CNTRL_REGS_BASE	0
+-#define DAVINCI_EMAC_WRAPPER_RAM_BASE		0
++#define DAVINCI_EMAC_CNTRL_REGS_BASE		0x5C010000
++#define DAVINCI_EMAC_WRAPPER_CNTRL_REGS_BASE	0x5C000000
++#define DAVINCI_EMAC_WRAPPER_RAM_BASE		0x5C020000
+ 
+ #define EMAC_BASE_ADDR			DAVINCI_EMAC_CNTRL_REGS_BASE
+ #define EMAC_WRAPPER_BASE_ADDR		DAVINCI_EMAC_WRAPPER_CNTRL_REGS_BASE
+ #define EMAC_WRAPPER_RAM_ADDR		DAVINCI_EMAC_WRAPPER_RAM_BASE
+ #define EMAC_MDIO_BASE_ADDR		0x5C030000
+ 
++#define EMAC_HW_RAM_ADDR		0x01E20000
++
+ /* MDIO module input frequency */
+-#define EMAC_MDIO_BUS_FREQ		26000000	/* 26 MHZ check */		
++#define EMAC_MDIO_BUS_FREQ		166000000	/* 166 MHZ check */		
+ 
+ /* MDIO clock output frequency */
+-#define EMAC_MDIO_CLOCK_FREQ		2000000		/* 2.0 MHz */
++#define EMAC_MDIO_CLOCK_FREQ		1000000		/* 2.0 MHz */
+ 
+ /* Ethernet Min/Max packet size */
+ #define EMAC_MIN_ETHERNET_PKT_SIZE	60
+@@ -59,7 +61,7 @@
+ /* Number of RX packet buffers
+  * NOTE: Only 1 buffer supported as of now
+  */
+-#define EMAC_MAX_RX_BUFFERS		10
++#define EMAC_MAX_RX_BUFFERS		8
+ 
+ 
+ /***********************************************
+diff --git a/include/configs/omap3517evm.h b/include/configs/omap3517evm.h
+index c434b71..9fe3f72 100644
+--- a/include/configs/omap3517evm.h
++++ b/include/configs/omap3517evm.h
+@@ -332,6 +332,7 @@ extern unsigned int boot_flash_type;
+ #if defined(CONFIG_CMD_NET)
+ #define CONFIG_TICPGMAC
+ #define	CONFIG_DRIVER_TI_EMAC
++#define CONFIG_DRIVER_TI_EMAC_USE_RMII
+ #define	CONFIG_MII
+ #define	CONFIG_NET_RETRY_COUNT	10
+ #endif /* (CONFIG_CMD_NET) */
+diff --git a/net/tftp.c b/net/tftp.c
+index 3dac3d8..c779b88 100644
+--- a/net/tftp.c
++++ b/net/tftp.c
+@@ -65,7 +65,7 @@ static int	TftpState;
+ #define STATE_BAD_MAGIC	4
+ #define STATE_OACK	5
+ 
+-#define TFTP_BLOCK_SIZE		512		    /* default TFTP block size	*/
++#define TFTP_BLOCK_SIZE		512	    /* default TFTP block size	*/
+ #define TFTP_SEQUENCE_SIZE	((ulong)(1<<16))    /* sequence number is 16 bit */
+ 
+ #define DEFAULT_NAME_LEN	(8 + 4 + 1)
+@@ -87,7 +87,7 @@ extern flash_info_t flash_info[];
+  * Minus eth.hdrs thats 1468.  Can get 2x better throughput with
+  * almost-MTU block sizes.  At least try... fall back to 512 if need be.
+  */
+-#define TFTP_MTU_BLOCKSIZE 1468
++#define TFTP_MTU_BLOCKSIZE 512
+ static unsigned short TftpBlkSize=TFTP_BLOCK_SIZE;
+ static unsigned short TftpBlkSizeOption=TFTP_MTU_BLOCKSIZE;
+ 
+-- 
+1.6.2.4
+

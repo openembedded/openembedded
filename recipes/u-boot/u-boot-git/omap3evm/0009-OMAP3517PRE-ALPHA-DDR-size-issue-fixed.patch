@@ -1,0 +1,125 @@
+From 930d9fb1e5971e4012ee081c60b578b83d8dc928 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Mon, 15 Jun 2009 20:59:26 +0530
+Subject: [PATCH 09/16] OMAP3517PRE-ALPHA: DDR size issue fixed.
+
+U-Boot was printing DDR size as 0, as of now hard-coded it with
+macro (defined in include/configs/omap3517evm.h).
+
+TODO:
+	- Ideally it should calculate the size baded on EMIF configuration
+	  made by primary bootloader (x-loader).
+---
+ cpu/arm_cortexa8/omap3/board.c    |   13 ++-----------
+ cpu/arm_cortexa8/omap3/mem.c      |   17 +++++++++++++++++
+ cpu/arm_cortexa8/omap3/sys_info.c |    5 +++++
+ include/configs/omap3517evm.h     |    5 +++++
+ 4 files changed, 29 insertions(+), 11 deletions(-)
+
+diff --git a/cpu/arm_cortexa8/omap3/board.c b/cpu/arm_cortexa8/omap3/board.c
+index 15834fd..ea94e59 100644
+--- a/cpu/arm_cortexa8/omap3/board.c
++++ b/cpu/arm_cortexa8/omap3/board.c
+@@ -275,33 +275,24 @@ void watchdog_init(void)
+ int dram_init(void)
+ {
+ 	DECLARE_GLOBAL_DATA_PTR;
+-	unsigned int size0 = 0, size1 = 0;
++	unsigned long size0 = 0, size1 = 0;
+ 	u32 btype;
+ 
+ 	btype = get_board_type();
+ 
+ 	display_board_info(btype);
+ 
++	size0 = get_sdr_cs_size(CS0);
+ 	/*
+ 	 * If a second bank of DDR is attached to CS1 this is
+ 	 * where it can be started.  Early init code will init
+ 	 * memory on CS0.
+ 	 */
+ 	if ((sysinfo.mtype == DDR_COMBO) || (sysinfo.mtype == DDR_STACKED)) {
+-#if defined (CONFIG_OMAP35XX)
+-		emif4_init();
+-		/*
+-		 * TODO: Need to implement function to calculate
+-		 *	DDR size depending on row and coloum size
+-		 */
+-		size0 = 128 * 1024 * 1024;
+-#elif defined (CONFIG_OMAP34XX)
+ 		do_sdrc_init(CS1, NOT_EARLY);
+ 		make_cs1_contiguous();
+ 
+-		size0 = get_sdr_cs_size(CS0);
+ 		size1 = get_sdr_cs_size(CS1);
+-#endif
+ 	}
+ 
+ 	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
+diff --git a/cpu/arm_cortexa8/omap3/mem.c b/cpu/arm_cortexa8/omap3/mem.c
+index 7fb05eb..49047b4 100644
+--- a/cpu/arm_cortexa8/omap3/mem.c
++++ b/cpu/arm_cortexa8/omap3/mem.c
+@@ -254,6 +254,23 @@ void do_sdrc_init(u32 cs, u32 early)
+ 		writel(0, &sdrc_base->cs[cs].mcfg);
+ }
+ 
++unsigned long calc_size_from_emif4(int cs)
++{
++	unsigned int size;
++#if 0
++	unsigned int reg_pagesize, reg_ebank, reg_ibank, reg_rowsize;
++
++	/*
++	 * TODO: Calculate the DDR size based on EMIF configuration
++	 *	done by x-loader.
++	 */
++	size = 
++#else
++	size = CONFIG_SYS_CS0_SIZE;
++#endif
++
++	return size;
++}
+ /********************************************************
+  * emif4 _init() - init the emif4 module for DDR access
+  *  - early init routines, called from flash or
+diff --git a/cpu/arm_cortexa8/omap3/sys_info.c b/cpu/arm_cortexa8/omap3/sys_info.c
+index b385b91..8077ecf 100644
+--- a/cpu/arm_cortexa8/omap3/sys_info.c
++++ b/cpu/arm_cortexa8/omap3/sys_info.c
+@@ -107,10 +107,15 @@ u32 get_sdr_cs_size(u32 cs)
+ {
+ 	u32 size;
+ 
++#if defined (CONFIG_OMAP35XX)
++	size = calc_size_from_emif4(cs);
++#elif defined (CONFIG_OMAP34XX)
+ 	/* get ram size field */
+ 	size = readl(&sdrc_base->cs[cs].mcfg) >> 8;
+ 	size &= 0x3FF;		/* remove unwanted bits */
+ 	size *= SZ_2M;		/* find size in MB */
++#endif
++
+ 	return size;
+ }
+ 
+diff --git a/include/configs/omap3517evm.h b/include/configs/omap3517evm.h
+index 558538b..c434b71 100644
+--- a/include/configs/omap3517evm.h
++++ b/include/configs/omap3517evm.h
+@@ -67,6 +67,11 @@
+ 						/* initial data */
+ 
+ /*
++ * DDR size interfaced
++ */
++#define CONFIG_SYS_CS0_SIZE		SZ_256M
++
++/*
+  * Hardware drivers
+  */
+ 
+-- 
+1.6.2.4
+

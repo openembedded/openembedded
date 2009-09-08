@@ -1,0 +1,277 @@
+From 13fc02c66aa4cc1c5653a4987fdddce63810a7e9 Mon Sep 17 00:00:00 2001
+From: Manikandan Pillai <mani.pillai@ti.com>
+Date: Tue, 7 Apr 2009 14:28:05 +0530
+Subject: [PATCH 03/16] OMAP3 timer handling to 1ms tick and CONFIG_SYS_HZ to 1000.
+
+Clean up macros and comments.
+---
+ cpu/arm_cortexa8/omap3/interrupts.c |   81 ++++++++++------------------------
+ examples/Makefile                   |    2 +-
+ include/configs/omap3_beagle.h      |   11 +++--
+ include/configs/omap3_evm.h         |   13 +++---
+ include/configs/omap3_overo.h       |   10 ++--
+ include/configs/omap3_pandora.h     |   11 ++---
+ include/configs/omap3_zoom1.h       |   11 ++---
+ 7 files changed, 52 insertions(+), 87 deletions(-)
+
+diff --git a/cpu/arm_cortexa8/omap3/interrupts.c b/cpu/arm_cortexa8/omap3/interrupts.c
+index 9e9817d..b99e284 100644
+--- a/cpu/arm_cortexa8/omap3/interrupts.c
++++ b/cpu/arm_cortexa8/omap3/interrupts.c
+@@ -169,7 +169,16 @@ static ulong timestamp;
+ static ulong lastinc;
+ static gptimer_t *timer_base = (gptimer_t *)CONFIG_SYS_TIMERBASE;
+ 
+-/* nothing really to do with interrupts, just starts up a counter. */
++/*
++ * Nothing really to do with interrupts, just starts up a counter.
++ * We run the counter with 13MHz, divided by 8, resulting in timer
++ * frequency of 1.625MHz. With 32bit counter register, counter
++ * overflows in ~44min
++ */
++
++/* 13MHz / 8 = 1.625MHz */
++#define TIMER_CLOCK	(V_SCLK / (2 << CONFIG_SYS_PVT))
++
+ int interrupt_init(void)
+ {
+ 	/* start the counter ticking up, reload value on overflow */
+@@ -204,78 +213,38 @@ void set_timer(ulong t)
+ /* delay x useconds AND perserve advance timstamp value */
+ void udelay(unsigned long usec)
+ {
+-	ulong tmo, tmp;
+-
+-	/* if "big" number, spread normalization to seconds */
+-	if (usec >= 1000) {
+-		/* if "big" number, spread normalization to seconds */
+-		tmo = usec / 1000;
+-		/* find number of "ticks" to wait to achieve target */
+-		tmo *= CONFIG_SYS_HZ;
+-		tmo /= 1000;	/* finish normalize. */
+-	} else {/* else small number, don't kill it prior to HZ multiply */
+-		tmo = usec * CONFIG_SYS_HZ;
+-		tmo /= (1000 * 1000);
+-	}
+-
+-	tmp = get_timer(0);	/* get current timestamp */
+-	/* if setting this forward will roll time stamp */
+-	if ((tmo + tmp + 1) < tmp)
+-		/* reset "advancing" timestamp to 0, set lastinc value */
+-		reset_timer_masked();
+-	else
+-		tmo += tmp;	/* else, set advancing stamp wake up time */
+-	while (get_timer_masked() < tmo)	/* loop till event */
+-		 /*NOP*/;
++	ulong tmo, endtime;
++
++	tmo = usec * (TIMER_CLOCK / CONFIG_SYS_HZ);
++	tmo /= 1000;
++
++	endtime = readl(&timer_base->tcrr) + tmo;
++
++	while (readl(&timer_base->tcrr) < endtime);
+ }
+ 
+ void reset_timer_masked(void)
+ {
+ 	/* reset time, capture current incrementer value time */
+-	lastinc = readl(&timer_base->tcrr);
++	lastinc = readl(&timer_base->tcrr) / (TIMER_CLOCK / CONFIG_SYS_HZ);
+ 	timestamp = 0;		/* start "advancing" time stamp from 0 */
+ }
+ 
+ ulong get_timer_masked(void)
+ {
+-	ulong now = readl(&timer_base->tcrr); /* current tick value */
++	/* current tick value */
++	ulong now = readl(&timer_base->tcrr) / (TIMER_CLOCK / CONFIG_SYS_HZ);
+ 
+ 	if (now >= lastinc)	/* normal mode (non roll) */
+ 		/* move stamp fordward with absoulte diff ticks */
+ 		timestamp += (now - lastinc);
+ 	else	/* we have rollover of incrementer */
+-		timestamp += (0xFFFFFFFF - lastinc) + now;
++		timestamp += ((0xFFFFFFFF / (TIMER_CLOCK / CONFIG_SYS_HZ))
++				- lastinc) + now;
+ 	lastinc = now;
+ 	return timestamp;
+ }
+ 
+-/* waits specified delay value and resets timestamp */
+-void udelay_masked(unsigned long usec)
+-{
+-	ulong tmo;
+-	ulong endtime;
+-	signed long diff;
+-
+-	/* if "big" number, spread normalization to seconds */
+-	if (usec >= 1000) {
+-		/* start to normalize for usec to ticks per sec */
+-		tmo = usec / 1000;
+-		/* find number of "ticks" to wait to achieve target */
+-		tmo *= CONFIG_SYS_HZ;
+-		tmo /= 1000;	/* finish normalize. */
+-	} else {		/* else small number, */
+-				/* don't kill it prior to HZ multiply */
+-		tmo = usec * CONFIG_SYS_HZ;
+-		tmo /= (1000 * 1000);
+-	}
+-	endtime = get_timer_masked() + tmo;
+-
+-	do {
+-		ulong now = get_timer_masked();
+-		diff = endtime - now;
+-	} while (diff >= 0);
+-}
+-
+ /*
+  * This function is derived from PowerPC code (read timebase as long long).
+  * On ARM it just returns the timer value.
+@@ -291,7 +260,5 @@ unsigned long long get_ticks(void)
+  */
+ ulong get_tbclk(void)
+ {
+-	ulong tbclk;
+-	tbclk = CONFIG_SYS_HZ;
+-	return tbclk;
++	return CONFIG_SYS_HZ;
+ }
+diff --git a/examples/Makefile b/examples/Makefile
+index dbcfa92..d2e811a 100644
+--- a/examples/Makefile
++++ b/examples/Makefile
+@@ -33,7 +33,7 @@ ifeq ($(ARCH),arm)
+ ifeq ($(BOARD),omap2420h4)
+ LOAD_ADDR = 0x80300000
+ else
+-ifeq ($(CPU),omap3)
++ifeq ($(SOC),omap3)
+ LOAD_ADDR = 0x80300000
+ else
+ LOAD_ADDR = 0xc100000
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 9057606..2f30783 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -220,14 +220,15 @@
+ 							/* load address */
+ 
+ /*
+- * 2430 has 12 GP timers, they can be driven by the SysClk (12/13/19.2) or by
+- * 32KHz clk, or from external sig. This rate is divided by a local divisor.
++ * OMAP3 has 12 GP timers, they can be driven by the system clock
++ * (12/13/16.8/19.2/38.4MHz) or by 32KHz clock. We use 13MHz (V_SCLK).
++ * This rate is divided by a local divisor.
+  */
+-#define V_PVT				7
+ 
+ #define CONFIG_SYS_TIMERBASE		(OMAP34XX_GPT2)
+-#define CONFIG_SYS_PVT			V_PVT	/* 2^(pvt+1) */
+-#define CONFIG_SYS_HZ			((V_SCLK) / (2 << CONFIG_SYS_PVT))
++#define CONFIG_SYS_PVT			2	/* Divisor: 2^(PVT+1) => 8 */
++#define CONFIG_SYS_HZ			1000
++
+ 
+ /*-----------------------------------------------------------------------
+  * Stack sizes
+diff --git a/include/configs/omap3_evm.h b/include/configs/omap3_evm.h
+index 6283d59..fb8a424 100644
+--- a/include/configs/omap3_evm.h
++++ b/include/configs/omap3_evm.h
+@@ -222,14 +222,13 @@
+ 								/* address */
+ 
+ /*
+- * 2430 has 12 GP timers, they can be driven by the SysClk (12/13/19.2) or by
+- * 32KHz clk, or from external sig. This rate is divided by a local divisor.
++ * OMAP3 has 12 GP timers, they can be driven by the system clock
++ * (12/13/16.8/19.2/38.4MHz) or by 32KHz clock. We use 13MHz (V_SCLK).
++ * This rate is divided by a local divisor.
+  */
+-#define V_PVT				7
+-
+-#define CONFIG_SYS_TIMERBASE		OMAP34XX_GPT2
+-#define CONFIG_SYS_PVT			V_PVT	/* 2^(pvt+1) */
+-#define CONFIG_SYS_HZ			((V_SCLK) / (2 << CONFIG_SYS_PVT))
++#define CONFIG_SYS_TIMERBASE		(OMAP34XX_GPT2)
++#define CONFIG_SYS_PVT			2	/* Divisor: 2^(PVT+1) => 8 */
++#define CONFIG_SYS_HZ			1000
+ 
+ /*-----------------------------------------------------------------------
+  * Stack sizes
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index dee0417..45e5478 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -213,14 +213,14 @@
+ 								/* address */
+ 
+ /*
+- * 2430 has 12 GP timers, they can be driven by the SysClk (12/13/19.2) or by
+- * 32KHz clk, or from external sig. This rate is divided by a local divisor.
++ * OMAP3 has 12 GP timers, they can be driven by the system clock
++ * (12/13/16.8/19.2/38.4MHz) or by 32KHz clock. We use 13MHz (V_SCLK).
++ * This rate is divided by a local divisor.
+  */
+-#define V_PVT				7
+ 
+ #define CONFIG_SYS_TIMERBASE		(OMAP34XX_GPT2)
+-#define CONFIG_SYS_PVT			V_PVT	/* 2^(pvt+1) */
+-#define CONFIG_SYS_HZ			((V_SCLK) / (2 << CONFIG_SYS_PVT))
++#define CONFIG_SYS_PVT			2	/* Divisor: 2^(PVT+1) => 8 */
++#define CONFIG_SYS_HZ			1000
+ 
+ /*-----------------------------------------------------------------------
+  * Stack sizes
+diff --git a/include/configs/omap3_pandora.h b/include/configs/omap3_pandora.h
+index 00c0374..4ed8373 100644
+--- a/include/configs/omap3_pandora.h
++++ b/include/configs/omap3_pandora.h
+@@ -215,14 +215,13 @@
+ 								/* address */
+ 
+ /*
+- * 2430 has 12 GP timers, they can be driven by the SysClk (12/13/19.2) or by
+- * 32KHz clk, or from external sig. This rate is divided by a local divisor.
++ * OMAP3 has 12 GP timers, they can be driven by the system clock
++ * (12/13/16.8/19.2/38.4MHz) or by 32KHz clock. We use 13MHz (V_SCLK).
++ * This rate is divided by a local divisor.
+  */
+-#define V_PVT				7
+-
+ #define CONFIG_SYS_TIMERBASE		(OMAP34XX_GPT2)
+-#define CONFIG_SYS_PVT			V_PVT	/* 2^(pvt+1) */
+-#define CONFIG_SYS_HZ			((V_SCLK) / (2 << CONFIG_SYS_PVT))
++#define CONFIG_SYS_PVT			2	/* Divisor: 2^(PVT+1) => 8 */
++#define CONFIG_SYS_HZ			1000
+ 
+ /*-----------------------------------------------------------------------
+  * Stack sizes
+diff --git a/include/configs/omap3_zoom1.h b/include/configs/omap3_zoom1.h
+index f8ae163..0185fa6 100644
+--- a/include/configs/omap3_zoom1.h
++++ b/include/configs/omap3_zoom1.h
+@@ -222,14 +222,13 @@
+ 							/* load address */
+ 
+ /*
+- * 2430 has 12 GP timers, they can be driven by the SysClk (12/13/19.2) or by
+- * 32KHz clk, or from external sig. This rate is divided by a local divisor.
++ * OMAP3 has 12 GP timers, they can be driven by the system clock
++ * (12/13/16.8/19.2/38.4MHz) or by 32KHz clock. We use 13MHz (V_SCLK).
++ * This rate is divided by a local divisor.
+  */
+-#define V_PVT				7
+-
+ #define CONFIG_SYS_TIMERBASE		(OMAP34XX_GPT2)
+-#define CONFIG_SYS_PVT			V_PVT	/* 2^(pvt+1) */
+-#define CONFIG_SYS_HZ			((V_SCLK) / (2 << CONFIG_SYS_PVT))
++#define CONFIG_SYS_PVT			2	/* Divisor: 2^(PVT+1) => 8 */
++#define CONFIG_SYS_HZ			1000
+ 
+ /*-----------------------------------------------------------------------
+  * Stack sizes
+-- 
+1.6.2.4
+
