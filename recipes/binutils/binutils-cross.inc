@@ -22,13 +22,6 @@ do_stage () {
 	rmdir ${CROSS_DIR}/${libdir} || :
 	rmdir ${CROSS_DIR}/${libdir}64 || :
 	rmdir ${CROSS_DIR}/${prefix} || :
-
-	# We want to move this into the target specific location
-	mkdir -p ${STAGING_DIR_TARGET}/lib
-	mv -f ${CROSS_DIR}/lib/libiberty.a ${STAGING_DIR_TARGET}/lib || \
-		mv -f ${CROSS_DIR}/lib64/libiberty.a ${STAGING_DIR_TARGET}/lib
-	rmdir ${CROSS_DIR}/lib || :
-	rmdir ${CROSS_DIR}/lib64 || :
 }
 
 do_install () {
