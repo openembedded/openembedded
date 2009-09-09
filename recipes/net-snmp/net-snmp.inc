@@ -10,6 +10,7 @@ INC_PR = "r5"
 
 inherit autotools update-rc.d
 
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
         # Additional flag based on target endiness (see siteinfo.bbclass)
