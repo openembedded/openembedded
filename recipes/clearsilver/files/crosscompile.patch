@@ -52,7 +52,7 @@ Index: clearsilver-0.10.3/python/Makefile
  TARGETS = $(NEO_UTIL_SO)
  endif
  
-+PYTHON_SITE = /usr/lib/python2.4/site-packages/
++PYTHON_SITE = /usr/lib/${PYTHON_DIR}/site-packages/
 +
  all: $(TARGETS)
  
