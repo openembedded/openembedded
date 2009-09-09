@@ -1,5 +1,5 @@
 require net-snmp.inc
-PR = "r4"
+PR = "${INC_PR}.0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 	file://uclibc-fix.patch;patch=1 \

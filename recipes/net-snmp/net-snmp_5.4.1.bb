@@ -1,5 +1,5 @@
 require net-snmp.inc
-PR = "r2"
+PR = "${INC_PR}.0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
         file://configure-tail.patch;patch=1 \
