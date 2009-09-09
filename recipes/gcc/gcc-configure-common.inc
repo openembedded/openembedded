@@ -81,13 +81,6 @@ do_configure () {
 
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 
-	# splice our idea of where the headers live into gcc's world
-	echo "NATIVE_SYSTEM_HEADER_DIR = ${layout_includedir}" > ${T}/t-oe
-	sed 's%^tmake_file=.*$%& ${T}/t-oe%' < ${S}/gcc/Makefile.in >${S}/gcc/Makefile.in.new
-	mv ${S}/gcc/Makefile.in.new ${S}/gcc/Makefile.in
-
-	echo "#define STANDARD_INCLUDE_DIR \"${layout_includedir}\"" >> ${S}/gcc/defaults.h
-
 	oe_runconf
 
 	# make sure that no @LDFLAG@ is left in the generated Makefile
