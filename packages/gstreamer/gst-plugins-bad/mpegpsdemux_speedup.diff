@@ -1,0 +1,119 @@
+--- gst/mpegdemux/gstmpegdemux.c	2009-01-06 11:56:05.000000000 +0100
++++ gst/mpegdemux/gstmpegdemux.c	2009-09-10 19:10:49.000000000 +0200
+@@ -290,7 +290,10 @@
+     if (stream != NULL) {
+       if (stream->pad)
+         gst_element_remove_pad (GST_ELEMENT_CAST (demux), stream->pad);
+-
++      if (stream->buf)
++        free(stream->buf);
++      if (stream->meta_buf)
++        gst_buffer_unref(stream->meta_buf);
+       g_free (stream);
+       demux->streams[i] = NULL;
+     }
+@@ -308,6 +311,7 @@
+   gchar *name;
+   GstFluPSDemuxClass *klass = GST_FLUPS_DEMUX_GET_CLASS (demux);
+   GstCaps *caps;
++  gboolean is_video = FALSE;
+ 
+   name = NULL;
+   template = NULL;
+@@ -336,6 +340,7 @@
+       caps = gst_caps_new_simple ("video/mpeg",
+           "mpegversion", G_TYPE_INT, mpeg_version,
+           "systemstream", G_TYPE_BOOLEAN, FALSE, NULL);
++      is_video = TRUE;
+       break;
+     }
+     case ST_AUDIO_MPEG1:
+@@ -355,6 +360,7 @@
+       template = klass->video_template;
+       name = g_strdup_printf ("video_%02x", id);
+       caps = gst_caps_new_simple ("video/x-h264", NULL);
++      is_video = TRUE;
+       break;
+     case ST_PS_AUDIO_AC3:
+       template = klass->audio_template;
+@@ -392,6 +398,15 @@
+   stream->notlinked = FALSE;
+   stream->type = stream_type;
+   stream->pad = gst_pad_new_from_template (template, name);
++  
++  if (is_video) {
++    stream->buf = malloc(64*1024);
++    stream->buf_pos = 0;
++    stream->meta_buf = gst_buffer_new();
++  }
++  else
++    stream->buf = 0;
++
+   gst_pad_set_event_function (stream->pad, gst_flups_demux_src_event);
+   gst_pad_set_query_function (stream->pad, gst_flups_demux_src_query);
+   gst_pad_use_fixed_caps (stream->pad);
+@@ -438,6 +453,7 @@
+   GstFlowReturn result;
+   guint64 timestamp;
+   guint size;
++  gboolean sent = FALSE;
+ 
+   if (stream == NULL)
+     goto no_stream;
+@@ -529,11 +545,38 @@
+   demux->next_pts = G_MAXUINT64;
+   demux->next_dts = G_MAXUINT64;
+ 
+-  result = gst_pad_push (stream->pad, buf);
+-  GST_DEBUG_OBJECT (demux, "pushed stream id 0x%02x type 0x%02x, time: %"
+-      GST_TIME_FORMAT ", size %d. result: %s",
+-      stream->id, stream->type, GST_TIME_ARGS (timestamp),
+-      size, gst_flow_get_name (result));
++  if (stream->buf && stream->buf_pos && (timestamp != GST_CLOCK_TIME_NONE || stream->buf_pos+size > 64*1024)) {
++    GstBuffer *tmp = gst_buffer_new_and_alloc(stream->buf_pos);
++    gst_buffer_copy_metadata(tmp, stream->meta_buf, GST_BUFFER_COPY_ALL);
++    GST_BUFFER_SIZE(tmp) = stream->buf_pos;
++    memcpy(GST_BUFFER_DATA(tmp), stream->buf, stream->buf_pos);
++    result = gst_pad_push (stream->pad, tmp);
++    GST_DEBUG_OBJECT (demux, "pushed stream id 0x%02x type 0x%02x, time: %"
++        GST_TIME_FORMAT ", size %d. result: %s",
++        stream->id, stream->type, GST_TIME_ARGS (timestamp),
++        stream->buf_pos, gst_flow_get_name (result));
++    stream->buf_pos = 0;
++    sent = TRUE;
++  }
++
++  if (!stream->buf || size > 64*1024) {
++    result = gst_pad_push (stream->pad, buf);
++    GST_DEBUG_OBJECT (demux, "pushed stream id 0x%02x type 0x%02x, time: %"
++        GST_TIME_FORMAT ", size %d. result: %s",
++        stream->id, stream->type, GST_TIME_ARGS (timestamp),
++        size, gst_flow_get_name (result));
++  }
++  else {
++    if (!stream->buf_pos)
++      gst_buffer_copy_metadata(stream->meta_buf, buf, GST_BUFFER_COPY_ALL);
++
++    memcpy(stream->buf + stream->buf_pos, GST_BUFFER_DATA(buf), size);
++    stream->buf_pos += size;
++    gst_buffer_unref(buf);
++
++    if (!sent)
++      result = GST_FLOW_OK;
++  }
+ 
+   return result;
+ 
+--- gst/mpegdemux/gstmpegdemux.h	2009-01-06 11:56:05.000000000 +0100
++++ gst/mpegdemux/gstmpegdemux.h	2009-09-10 19:12:55.000000000 +0200
+@@ -88,6 +88,10 @@
+   gboolean       discont;
+   gboolean       notlinked;
+   gboolean       need_segment;
++
++  GstBuffer *meta_buf;
++  unsigned char *buf;
++  size_t buf_pos;
+ };
+ 
+ struct _GstFluPSDemux {
