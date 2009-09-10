@@ -1,5 +1,3 @@
-PR = "r4"
-
 SRC_URI_append = "file://configure.in.patch;patch=1 \
                   file://Makefile.am.patch;patch=1"
 
@@ -9,3 +7,4 @@ do_install_prepend () {
 }
 
 require cherokee.inc
+PR = "${INC_PR}.0"
