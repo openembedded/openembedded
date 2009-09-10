@@ -11,3 +11,19 @@ PR = "r0"
 
 CC += "-lstdc++"
 
+do_configure() {
+	${S}/configure \
+            --prefix=${prefix} \
+            --bindir=${bindir} \
+            --sbindir=${sbindir} \
+            --libexecdir=${libexecdir} \
+            --datadir=${datadir} \
+            --sysconfdir=${sysconfdir} \
+            --sharedstatedir=${sharedstatedir} \
+            --localstatedir=${localstatedir} \
+            --libdir=${libdir} \
+            --includedir=${includedir} \
+            --infodir=${infodir} \
+            --mandir=${mandir} \
+            ${EXTRA_OECONF}
+}
