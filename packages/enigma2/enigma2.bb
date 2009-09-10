@@ -46,7 +46,7 @@ RDEPENDS_enigma2-plugin-extensions-modem = "dreambox-modem-ppp-scripts"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090907"
+SRCDATE = "20090911"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
