@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -16,6 +16,7 @@ DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            http://maxim.org.za/AT91RM9200/2.6/2.6.30-at91.patch.gz;patch=1 \
+           file://aufs2-30.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch;patch=1"

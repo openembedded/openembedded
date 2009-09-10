@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.30
-# Sat Aug 15 17:22:38 2009
+# Thu Sep 10 13:00:34 2009
 #
 # CONFIG_64BIT is not set
 CONFIG_X86_32=y
@@ -4216,6 +4216,18 @@ CONFIG_UFS_FS=m
 # CONFIG_UFS_DEBUG is not set
 CONFIG_EXOFS_FS=m
 # CONFIG_EXOFS_DEBUG is not set
+CONFIG_AUFS_FS=y
+CONFIG_AUFS_BRANCH_MAX_127=y
+# CONFIG_AUFS_BRANCH_MAX_511 is not set
+# CONFIG_AUFS_BRANCH_MAX_1023 is not set
+# CONFIG_AUFS_BRANCH_MAX_32767 is not set
+# CONFIG_AUFS_HINOTIFY is not set
+# CONFIG_AUFS_RDU is not set
+# CONFIG_AUFS_SHWH is not set
+# CONFIG_AUFS_BR_RAMFS is not set
+# CONFIG_AUFS_BR_FUSE is not set
+# CONFIG_AUFS_DEBUG is not set
+CONFIG_AUFS_BDEV_LOOP=y
 CONFIG_NILFS2_FS=m
 CONFIG_NETWORK_FILESYSTEMS=y
 CONFIG_NFS_FS=m
