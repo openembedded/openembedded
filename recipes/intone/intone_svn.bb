@@ -18,10 +18,7 @@ inherit autotools
 do_configure_prepend() {
 	rm -f "${S}/INSTALL"
 	touch "${S}/INSTALL"
-	sed -i 's/\/doc\/intone$/\/share\/doc\/intone/g' ${S}/Makefile.am
-	sed -i '/^EXTRA_DIST = $(glade_DATA)/d' ${S}/src/Makefile.am
-	sed -i '/^gladedir = $(datadir)\/intone\/glade/d' ${S}/src/Makefile.am
-	sed -i '/^glade_DATA = intone.glade/d' ${S}/src/Makefile.am
+	sed -i 's/{prefix}\/doc\/intone$/{prefix}\/share\/doc\/intone/g' ${S}/Makefile.am
 }
 
 do_install_append() {
@@ -30,7 +27,7 @@ do_install_append() {
 	mkdir -p "${D}/${datadir}/applications"
 	install -m 0644 "${S}/resources/intone.desktop" "${D}/${datadir}/applications"
 	mkdir -p "${D}/${datadir}/intone"
-	for ico in "${S}/resources/"*.png "${S}/resources/"*.jpg; do
+	for ico in "${S}/resources/"*.png; do
 		if [ "$(basename $ico)" != "intone.png" ]; then
 			install -m 0644 $ico "${D}/${datadir}/intone"
 		fi
