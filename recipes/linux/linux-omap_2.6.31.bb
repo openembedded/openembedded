@@ -10,8 +10,6 @@ DEFAULT_PREFERENCE_omapzoom2 = "1"
 
 SRCREV = "52a962f09ab2306a2ac6e22c2d3bac1a76ac"
 
-FILESPATHPKG_prepend = "linux-omap-2.6.31:"
-
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 #PV = "2.6.30+2.6.31-rc8+gitr${SRCREV}"
 PV = "2.6.31"

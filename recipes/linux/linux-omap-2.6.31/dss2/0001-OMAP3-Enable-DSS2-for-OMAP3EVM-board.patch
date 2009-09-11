@@ -1,20 +1,17 @@
-From 798f9b1bc478c7ded724fc190c65e413c2401314 Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
-Date: Tue, 11 Aug 2009 15:52:04 +0530
-Subject: [PATCH 1/5] OMAP3: Enable DSS2 for OMAP3EVM board
+Date: Thu, 10 Sep 2009 15:11:34 +0000 (+0530)
+Subject: OMAP3: Enable DSS2 for OMAP3EVM board
+X-Git-Url: http://arago-project.org/git/people/?p=vaibhav%2Fti-psp-omap-video.git;a=commitdiff_plain;h=1022536cf655419eac21299eac837f57f8f72eef
+
+OMAP3: Enable DSS2 for OMAP3EVM board
 
 Tested -
 	- Validated all three outut interfaces (LCD, DVI and TV)
+
 TODO:
-	- Support for Backlight control range (0 - 100)
 	- Enable selection for both S-Video and Composite TV out
 	- DVI color (VPLL2_DEV_GRP should be equal to 0x7)
-
-Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
 ---
- arch/arm/configs/omap3_evm_defconfig |   51 +++++++-
- arch/arm/mach-omap2/board-omap3evm.c |  234 ++++++++++++++++++++++++++++++++--
- 2 files changed, 273 insertions(+), 12 deletions(-)
 
 diff --git a/arch/arm/configs/omap3_evm_defconfig b/arch/arm/configs/omap3_evm_defconfig
 index d5ff477..ba395a2 100644
@@ -79,7 +76,7 @@ index d5ff477..ba395a2 100644
  
  #
 diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
-index c0cb29d..0bc26b3 100644
+index 35f6075..5bc4bfe 100644
 --- a/arch/arm/mach-omap2/board-omap3evm.c
 +++ b/arch/arm/mach-omap2/board-omap3evm.c
 @@ -22,6 +22,7 @@
@@ -271,9 +268,9 @@ index c0cb29d..0bc26b3 100644
 +	},
 +};
  
- static struct omap_uart_platform_data omap3_evm_uart_config __initdata = {
- 	.enabled_uarts	= ((1 << 0) | (1 << 1) | (1 << 2)),
-@@ -143,6 +313,14 @@ static int omap3evm_twl_gpio_setup(struct device *dev,
+ static struct twl4030_hsmmc_info mmc[] = {
+ 	{
+@@ -139,6 +309,14 @@ static int omap3evm_twl_gpio_setup(struct device *dev,
  	 * the P2 connector; notably LEDA for the LCD backlight.
  	 */
  
@@ -288,7 +285,7 @@ index c0cb29d..0bc26b3 100644
  	/* TWL4030_GPIO_MAX + 1 == ledB (out, active low LED) */
  	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
  
-@@ -194,6 +372,47 @@ static struct twl4030_madc_platform_data omap3evm_madc_data = {
+@@ -190,6 +368,47 @@ static struct twl4030_madc_platform_data omap3evm_madc_data = {
  	.irq_line	= 1,
  };
  
@@ -336,7 +333,7 @@ index c0cb29d..0bc26b3 100644
  static struct twl4030_platform_data omap3evm_twldata = {
  	.irq_base	= TWL4030_IRQ_BASE,
  	.irq_end	= TWL4030_IRQ_END,
-@@ -203,6 +422,8 @@ static struct twl4030_platform_data omap3evm_twldata = {
+@@ -199,6 +418,8 @@ static struct twl4030_platform_data omap3evm_twldata = {
  	.madc		= &omap3evm_madc_data,
  	.usb		= &omap3evm_usb_data,
  	.gpio		= &omap3evm_gpio_data,
@@ -345,7 +342,7 @@ index c0cb29d..0bc26b3 100644
  };
  
  static struct i2c_board_info __initdata omap3evm_i2c_boardinfo[] = {
-@@ -223,15 +444,6 @@ static int __init omap3_evm_i2c_init(void)
+@@ -219,15 +440,6 @@ static int __init omap3_evm_i2c_init(void)
  	return 0;
  }
  
@@ -361,12 +358,16 @@ index c0cb29d..0bc26b3 100644
  static void ads7846_dev_init(void)
  {
  	if (gpio_request(OMAP3_EVM_TS_GPIO, "ADS7846 pendown") < 0)
-@@ -287,11 +499,10 @@ static void __init omap3_evm_init_irq(void)
- }
+@@ -275,7 +487,6 @@ struct spi_board_info omap3evm_spi_board_info[] = {
+ };
  
  static struct omap_board_config_kernel omap3_evm_config[] __initdata = {
 -	{ OMAP_TAG_LCD,		&omap3_evm_lcd_config },
  };
+ 
+ static void __init omap3_evm_init_irq(void)
+@@ -289,7 +500,7 @@ static void __init omap3_evm_init_irq(void)
+ }
  
  static struct platform_device *omap3_evm_devices[] __initdata = {
 -	&omap3_evm_lcd_device,
@@ -374,7 +375,7 @@ index c0cb29d..0bc26b3 100644
  	&omap3evm_smc911x_device,
  };
  
-@@ -314,6 +525,7 @@ static void __init omap3_evm_init(void)
+@@ -310,6 +521,7 @@ static void __init omap3_evm_init(void)
  	usb_musb_init();
  	usb_ehci_init(EHCI_HCD_OMAP_MODE_PHY, true, true, 57, 61);
  	ads7846_dev_init();
@@ -382,6 +383,3 @@ index c0cb29d..0bc26b3 100644
  }
  
  static void __init omap3_evm_map_io(void)
--- 
-1.6.2.4
-
