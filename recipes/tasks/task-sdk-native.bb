@@ -7,8 +7,9 @@ RDEPENDS = "gcc-symlinks g++-symlinks cpp cpp-symlinks binutils-symlinks \
 	    patch patchutils diffstat diffutils libstdc++-dev"
 
 RECOMMENDS = " g77-symlinks gfortran-symlinks "
+RPROVIDES_${PN} = "task-native-sdk"
 
-PR = "r6"
+PR = "r7"
 
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
