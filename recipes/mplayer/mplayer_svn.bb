@@ -5,15 +5,18 @@ HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
 	   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
-RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://Makefile-codec-cfg.patch;patch=1 \
 	   file://pld-onlyarm5-svn.patch;patch=1 \
-	   file://makefile-nostrip-svn.patch;patch=1 \
+	   file://mplayer.om-gta02.conf \
 	   file://configh \
 	   file://configmak \
 	   "
+
+SRC_URI_append_om-gta02 = "file://libvo_glamo.svn.patch;patch=1 \
+           file://fmtmpeg4.patch;patch=1 \
+           "
 
 SRC_URI_append_armv7a = " \
 #		file://omapfb.patch;patch=1 \
@@ -37,8 +40,8 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r9"
-DEFAULT_PREFERENCE = "-1"
+PR = "r14"
+DEFAULT_PREFERENCE = "1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
 PARALLEL_MAKE = ""
@@ -47,8 +50,12 @@ S = "${WORKDIR}/trunk"
 
 PACKAGES =+ "mencoder"
 
-FILES_${PN} = "${bindir}/mplayer ${libdir}"
+FILES_${PN} = "${bindir}/mplayer ${libdir} /usr/etc/mplayer/"
 FILES_mencoder = "${bindir}/mencoder"
+CONFFILES_${PN} += "/usr/etc/mplayer/input.conf \
+                    /usr/etc/mplayer/mplayer.conf \
+                    /usr/etc/mplayer/codecs.conf \
+                   "
 
 inherit autotools pkgconfig
 
@@ -87,7 +94,6 @@ EXTRA_OECONF = " \
 	--enable-sortsub \
 	--disable-fribidi \
 	--disable-enca \
-	--disable-macosx \
 	--disable-macosx-bundle \
 	--disable-ftp \
 	--disable-vstream \
@@ -108,7 +114,7 @@ EXTRA_OECONF = " \
 	--disable-libavformat_so \
 	--disable-libpostproc_so \
 	\
-	--enable-tremor-low \
+        --enable-tremor-low \
 	\
 	--disable-speex \
 	--enable-theora \
@@ -177,6 +183,7 @@ EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 EXTRA_OECONF_append_armv6 = " --enable-armv6"
 EXTRA_OECONF_append_armv7a = " --enable-armv6"
 
+EXTRA_OECONF_append_om-gta02 = " --enable-glamo"
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt 
@@ -220,3 +227,11 @@ do_compile () {
 	oe_runmake
 }
 
+do_install_append() {
+        install -d ${D}/usr/etc/
+        install -d ${D}/usr/etc/mplayer
+        install ${WORKDIR}/mplayer.om-gta02.conf ${D}/usr/etc/mplayer/mplayer.conf
+        install ${S}/etc/input.conf ${D}/usr/etc/mplayer/
+        install ${S}/etc/example.conf ${D}/usr/etc/mplayer/
+        install ${S}/etc/codecs.conf ${D}/usr/etc/mplayer/
+}

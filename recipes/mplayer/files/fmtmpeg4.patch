@@ -1,0 +1,589 @@
+Index: mplayer/libmpcodecs/vd_hwmp4.c
+===================================================================
+--- mplayer.orig/libmpcodecs/vd_hwmp4.c	(revision 0)
++++ mplayer/libmpcodecs/vd_hwmp4.c	(revision 0)
+@@ -0,0 +1,379 @@
++/*
++ * MPEG-4 / H-263 passthrough to hardware decoder.
++ *
++ * Copyright (C) 2008 Andrzej Zaborowski  <balrog@zabor.org>
++ *
++ * This file is part of MPlayer.
++ *
++ * MPlayer is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 or (at your option)
++ * version 3 of the License.
++ *
++ * MPlayer is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with MPlayer; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++#include <stdlib.h>
++
++#include "config.h"
++#include "mp_msg.h"
++
++#include "vd_internal.h"
++#include "m_option.h"
++
++#include "libmpdemux/mpeg4_hdr.h"
++#include "libavutil/common.h"
++#include "libvo/video_out.h"
++
++/* Set/get/query special features/parameters */
++static int control(sh_video_t *sh, int cmd, void* arg, ...)
++{
++	switch(cmd) {
++	case VDCTRL_QUERY_FORMAT:
++		if (*((uint32_t *) arg) == IMGFMT_MPEG4)
++			return CONTROL_TRUE;
++
++		return CONTROL_FALSE;
++	}
++
++	return CONTROL_UNKNOWN;
++}
++
++/*
++ * We redefine mp_mpeg_header_t and VOL/VOP decoding functions, which
++ * are already in "libmpdemux/mpeg_hdr.h" because they discard most of the
++ * important info while parsing.
++ */
++#define BITSTREAM(buffer)						\
++	int n = 0;							\
++	uint8_t *p = *buffer;						\
++	uint32_t acc = (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];\
++	p += 4;
++#define GETBITS(size)	((acc >> (32 - size)) & ((1 << size) - 1));	\
++	acc <<= size;							\
++	if ((n & 7) + size >= 8) {					\
++		acc |= *(p ++) << ((n & 7) + size - 8);			\
++		if (size > 8 && (n & 7) + size >= 16)			\
++			acc |= *(p ++) << ((n & 7) + size - 16);	\
++	}								\
++	n += size;
++#define SKIPBITSU(size)	n += size;					\
++	p = (*buffer) + (n >> 3);					\
++	acc = ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]) << (n & 7);
++#define SKIPBITS(size)	(void) GETBITS(size);
++
++static inline int MAX(int a, int b)
++{
++	return a > b ? a : b;
++}
++
++static inline int binlog2(int num)
++{
++	int log;
++
++	for (log = 0; num > (1 << log); log ++);
++
++	return log;
++}
++
++/* Mostly a copy from olv's glamo-utils.  */
++static int mp4_header_process_vol(mp_mpeg_header_t *picture,
++		uint8_t **buffer, int *len)
++{
++	int val;
++	BITSTREAM(buffer);
++
++	SKIPBITS(1);
++
++	picture->vol.vo_type = GETBITS(8);
++	if (picture->vol.vo_type != 1) {
++		mp_msg(MSGT_DECVIDEO, MSGL_ERR, "unknown vo type %x\n",
++				picture->vol.vo_type);
++		return 1;
++	}
++
++	val = GETBITS(1);
++	if (val) {
++		picture->vol.ver_id = GETBITS(4);
++		SKIPBITS(3);
++	} else
++		picture->vol.ver_id = 1;
++
++	picture->vol.aspect_ratio = GETBITS(4);
++	if (picture->vol.aspect_ratio == 15) {
++		SKIPBITS(16);
++	}
++
++	val = GETBITS(1);
++	if (val) {
++		SKIPBITS(3);
++		val = GETBITS(1);
++		if (val) {
++			SKIPBITSU(79);
++		}
++	}
++
++	picture->vol.shape = GETBITS(2);
++	if (picture->vol.shape) {
++		mp_msg(MSGT_DECVIDEO, MSGL_ERR, "unknown shape %x\n",
++				picture->vol.shape);
++		return 1;
++	}
++
++	val = GETBITS(1);
++	if (!val)
++		return 1;
++	picture->vol.time_den = GETBITS(16);
++	if (!picture->vol.time_den)
++		return 1;
++	picture->vol.time_bits = av_log2_16bit(picture->vol.time_den - 1) + 1;
++	val = GETBITS(1);
++	if (!val)
++		return 1;
++	val = GETBITS(1);
++	if (val) {
++		picture->vol.time_num = GETBITS(picture->vol.time_bits);
++	} else
++		picture->vol.time_num = 1;
++
++	SKIPBITS(1);
++	picture->vol.width = GETBITS(13);
++	SKIPBITS(1);
++	picture->vol.height = GETBITS(13);
++	SKIPBITS(1);
++
++	val = GETBITS(1);
++	if (val) {
++		mp_msg(MSGT_DECVIDEO, MSGL_ERR,
++				"non progressive coding not supported\n");
++		return 1;
++	}
++	val = GETBITS(1);
++	if (!val)
++		return 1;
++	val = GETBITS(((picture->vol.ver_id == 1) ? 1 : 2));
++	if (val) {
++		mp_msg(MSGT_DECVIDEO, MSGL_ERR, "sprites not supported\n");
++		return 1;
++	}
++	val = GETBITS(1);
++	if (val) {
++		picture->vol.quant_precision = GETBITS(4);
++		SKIPBITS(4);
++	} else
++		picture->vol.quant_precision = 5;
++	val = GETBITS(1);
++	if (val) {
++		/* When we get here we're screwed, but let's at least get
++		 * something out to the screen.  */
++		val = GETBITS(1);
++		if (val) {
++			SKIPBITSU(512);
++		}
++		val = GETBITS(1);
++		if (val) {
++			SKIPBITSU(512);
++		}
++	}
++	if (picture->vol.ver_id != 1) {
++		SKIPBITS(1);
++	}
++	val = GETBITS(1);
++	if (!val) {
++		mp_msg(MSGT_DECVIDEO, MSGL_ERR, "complexity not supported\n");
++		return 1;
++	}
++
++	picture->vol.resync_marker = GETBITS(1);
++	picture->vol.data_partitioning = GETBITS(1);
++	if (picture->vol.data_partitioning)
++		picture->vol.rvlc = GETBITS(1);
++
++	if (picture->vol.ver_id != 1) {
++		val = GETBITS(1);
++		if (val) {
++			SKIPBITS(3);
++		}
++		SKIPBITS(1);
++	}
++
++	/* Ignore scalability bits */
++
++	*buffer += (n + 7) >> 3;
++	*len -= (n + 7) >> 3;
++
++	mp_msg(MSGT_DECVIDEO, MSGL_V, "found a correct VOL header\n");
++	return 0;
++}
++
++static int mp4_header_process_vop(mp_mpeg_header_t *picture,
++		uint8_t **buffer, int *len)
++{
++	int val;
++	BITSTREAM(buffer);
++
++	if (!picture->valid_vol)
++		return 1;
++
++	picture->vop.coding_type = GETBITS(2);
++	if (picture->vop.coding_type >= 2) {
++		mp_msg(MSGT_DECVIDEO, MSGL_ERR, "unknown coding type %x\n",
++				picture->vop.coding_type);
++		return 1;
++	}
++
++	picture->vop.time_base = 0;
++	do {
++		val = GETBITS(1);
++		picture->vop.time_base += val;
++	} while (val);
++
++	val = GETBITS(1);
++	if (!val)
++		return 1;
++	picture->vop.time_inc = GETBITS(picture->vol.time_bits);
++
++	val = GETBITS(1);
++	if (!val)
++		return 1;
++	picture->vop.vop_coded = GETBITS(1);
++	if (!picture->vop.vop_coded)
++		return 1;
++
++	if (picture->vop.coding_type == 1) {
++		picture->vop.rounding = GETBITS(1);
++	}
++
++	picture->vop.intra_dc_thr = GETBITS(3);
++	picture->vop.qscale = GETBITS(picture->vol.quant_precision);
++
++	if (picture->vop.coding_type) {
++		picture->vop.fcode = GETBITS(3);
++	} else
++		picture->vop.fcode = 1;
++
++	picture->vop.start_bits = n & 7;
++
++	*buffer += n >> 3;
++	*len -= n >> 3;
++	return 0;
++}
++
++struct vo_hwmp4_s {
++	mp_image_t *mpi;
++	int vo_initialized;
++	mp_mpeg_header_t picture;
++	int x, y;
++};
++
++/* Initialise driver */
++static int init(sh_video_t *sh)
++{
++	struct vo_hwmp4_s *s;
++
++	if (!mpcodecs_config_vo(sh, sh->disp_w, sh->disp_h, IMGFMT_MPEG4))
++		return 0;
++
++	s = malloc(sizeof(struct vo_hwmp4_s));
++	s->vo_initialized = 0;
++	s->x = -1;
++	s->y = -1;
++	s->picture.valid_vol = 0;
++	s->picture.valid_vop = 0;
++	sh->context = s;
++
++	return 1;
++}
++
++/* Uninitialise driver */
++static void uninit(sh_video_t *sh){
++	struct vo_hwmp4_s *s = sh->context;
++
++	if (!s)
++		return;
++	free(s);
++	sh->context = 0;
++}
++
++/* Move the pointer to the start of the next header.  */
++uint32_t mpeg4_next_header(uint8_t **p, int *len)
++{
++	uint32_t sc;
++
++	/* TODO: check range */
++	for (sc = 0xff; (sc & 0xffffff00) != 0x100 && *len; (*p) ++, (*len) --)
++		sc = (sc << 8) | **p;
++
++	return sc;
++}
++
++/* Decode all headers found until an end-of-headers marker.  */
++static void mpeg4_decode(mp_mpeg_header_t *picture, uint8_t *data, int len)
++{
++	uint32_t sc;
++
++	while (len > 10 && (sc = mpeg4_next_header(&data, &len)))
++		/* TODO: figure out a better check */
++		/* We need the picture coding information only */
++		switch (sc) {
++		case 0x120 ... 0x12f:
++			picture->valid_vol =
++				!mp4_header_process_vol(picture, &data, &len);
++			break;
++		case 0x1b6:
++			picture->valid_vop =
++				!mp4_header_process_vop(picture, &data, &len);
++			picture->data_start = data;
++			picture->data_size = len;
++			picture->data_end = data + len;
++			return;
++		default:
++			mp_msg(MSGT_DECVIDEO, MSGL_DBG2,
++					"ignoring unknown header %x\n", sc);
++			break;
++		}
++}
++
++/* Decode a frame */
++static mp_image_t *decode(sh_video_t *sh, void *data, int len, int flags)
++{
++	static mp_image_t *mpi;
++	struct vo_hwmp4_s *s = sh->context;
++
++	s->picture.valid_vop = 0;
++
++	mpeg4_decode(&s->picture, (uint8_t *) data, len);
++	if (!s->picture.valid_vol || !s->picture.valid_vop) {
++		mp_msg(MSGT_DECVIDEO, MSGL_V, "skipping this frame\n");
++		return 0;
++	}
++
++	sh->disp_w = s->picture.vol.width;
++	sh->disp_h = s->picture.vol.height;
++	if (sh->disp_w != s->x || sh->disp_h != s->y) {
++		s->x = sh->disp_w;
++		s->y = sh->disp_h;
++		if (!mpcodecs_config_vo(sh, s->x, s->y, IMGFMT_MPEG4))
++			return 0;
++	}
++
++	mpi = mpcodecs_get_image(sh, MP_IMGTYPE_EXPORT, 0, s->x, s->y);
++	mpi->planes[0] = data;
++	mpi->planes[1] = (uint8_t *) &s->picture;
++	return mpi;
++}
++
++static vd_info_t info = {
++	.name		= "MPEG-4 Video passthrough",
++	.short_name	= "hwmp4",
++	.author		= "Andrzej Zaborowski <balrog@zabor.org>",
++	.comment	= "for hw decoders",
++};
++
++LIBVD_EXTERN(hwmp4)
+Index: mplayer/libmpcodecs/vd.c
+===================================================================
+--- mplayer.orig/libmpcodecs/vd.c	(revision 29409)
++++ mplayer/libmpcodecs/vd.c	(working copy)
+@@ -37,6 +37,7 @@
+ extern vd_functions_t mpcodecs_vd_sgi;
+ extern vd_functions_t mpcodecs_vd_libmpeg2;
+ extern vd_functions_t mpcodecs_vd_mpegpes;
++extern vd_functions_t mpcodecs_vd_hwmp4;
+ extern vd_functions_t mpcodecs_vd_zrmjpeg;
+ extern vd_functions_t mpcodecs_vd_realvid;
+ extern vd_functions_t mpcodecs_vd_xvid;
+@@ -80,6 +81,7 @@
+         &mpcodecs_vd_libmpeg2,
+ #endif
+         &mpcodecs_vd_mpegpes,
++        &mpcodecs_vd_hwmp4,
+ #ifdef CONFIG_ZR
+         &mpcodecs_vd_zrmjpeg,
+ #endif
+Index: mplayer/libmpcodecs/vf_expand.c
+===================================================================
+--- mplayer.orig/libmpcodecs/vf_expand.c	(revision 29409)
++++ mplayer/libmpcodecs/vf_expand.c	(working copy)
+@@ -190,7 +190,7 @@
+ static int config(struct vf_instance_s* vf,
+         int width, int height, int d_width, int d_height,
+ 	unsigned int flags, unsigned int outfmt){
+-    if(outfmt == IMGFMT_MPEGPES) {
++    if(outfmt == IMGFMT_MPEGPES || outfmt == IMGFMT_MPEG4) {
+       vf->priv->passthrough = 1;
+       return vf_next_config(vf,width,height,d_width,d_height,flags,outfmt);
+     }
+Index: mplayer/libmpcodecs/mp_image.h
+===================================================================
+--- mplayer.orig/libmpcodecs/mp_image.h	(revision 29409)
++++ mplayer/libmpcodecs/mp_image.h	(working copy)
+@@ -109,7 +109,7 @@
+     mpi->flags&=~(MP_IMGFLAG_PLANAR|MP_IMGFLAG_YUV|MP_IMGFLAG_SWAPPED);
+     mpi->imgfmt=out_fmt;
+     // compressed formats
+-    if(out_fmt == IMGFMT_MPEGPES ||
++    if(out_fmt == IMGFMT_MPEGPES || out_fmt == IMGFMT_MPEG4 ||
+        out_fmt == IMGFMT_ZRMJPEGNI || out_fmt == IMGFMT_ZRMJPEGIT || out_fmt == IMGFMT_ZRMJPEGIB ||
+        IMGFMT_IS_VDPAU(out_fmt) || IMGFMT_IS_XVMC(out_fmt)){
+ 	mpi->bpp=0;
+Index: mplayer/libmpcodecs/img_format.c
+===================================================================
+--- mplayer.orig/libmpcodecs/img_format.c	(revision 29409)
++++ mplayer/libmpcodecs/img_format.c	(working copy)
+@@ -62,6 +62,7 @@
+ 	case IMGFMT_YUVP: return "Packed YUVP";
+ 	case IMGFMT_UYVP: return "Packed UYVP";
+ 	case IMGFMT_MPEGPES: return "Mpeg PES";
++	case IMGFMT_MPEG4: return "MPEG-4";
+ 	case IMGFMT_ZRMJPEGNI: return "Zoran MJPEG non-interlaced";
+ 	case IMGFMT_ZRMJPEGIT: return "Zoran MJPEG top field first";
+ 	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
+Index: mplayer/libmpcodecs/img_format.h
+===================================================================
+--- mplayer.orig/libmpcodecs/img_format.h	(revision 29409)
++++ mplayer/libmpcodecs/img_format.h	(working copy)
+@@ -93,6 +93,7 @@
+ /* Compressed Formats */
+ #define IMGFMT_MPEGPES (('M'<<24)|('P'<<16)|('E'<<8)|('S'))
+ #define IMGFMT_MJPEG (('M')|('J'<<8)|('P'<<16)|('G'<<24))
++#define IMGFMT_MPEG4 (('M'<<24)|('P'<<16)|('G'<<8)|('4'))
+ /* Formats that are understood by zoran chips, we include
+  * non-interlaced, interlaced top-first, interlaced bottom-first */
+ #define IMGFMT_ZRMJPEGNI  (('Z'<<24)|('R'<<16)|('N'<<8)|('I'))
+Index: mplayer/codec-cfg.c
+===================================================================
+--- mplayer.orig/codec-cfg.c	(revision 29409)
++++ mplayer/codec-cfg.c	(working copy)
+@@ -175,6 +175,7 @@
+ 		{"BGR1",  IMGFMT_BGR|1},
+ 
+ 		{"MPES",  IMGFMT_MPEGPES},
++		{"MPG4",  IMGFMT_MPEG4},
+ 		{"ZRMJPEGNI", IMGFMT_ZRMJPEGNI},
+ 		{"ZRMJPEGIT", IMGFMT_ZRMJPEGIT},
+ 		{"ZRMJPEGIB", IMGFMT_ZRMJPEGIB},
+Index: mplayer/Makefile
+===================================================================
+--- mplayer.orig/Makefile	(revision 29409)
++++ mplayer/Makefile	(working copy)
+@@ -396,6 +398,7 @@
+               libmpcodecs/vd_hmblck.c \
+               libmpcodecs/vd_lzo.c \
+               libmpcodecs/vd_mpegpes.c \
++              libmpcodecs/vd_hwmp4.c \
+               libmpcodecs/vd_mtga.c \
+               libmpcodecs/vd_null.c \
+               libmpcodecs/vd_raw.c \
+Index: mplayer/libmpdemux/mpeg4_hdr.h
+===================================================================
+--- mplayer.orig/libmpdemux/mpeg4_hdr.h	(revision 0)
++++ mplayer/libmpdemux/mpeg4_hdr.h	(revision 0)
+@@ -0,0 +1,66 @@
++/*
++ * Copyright (C) 2008 Andrzej Zaborowski  <balrog@zabor.org>
++ *
++ * This file is part of MPlayer.
++ *
++ * MPlayer is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 or (at your option)
++ * version 3 of the License.
++ *
++ * MPlayer is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with MPlayer; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++#ifndef MPLAYER_MPEG4_HDR_H
++#define MPLAYER_MPEG4_HDR_H
++
++/*
++ * We redefine mp_mpeg_header_t and VOL/VOP decoding functions, which
++ * are already in "libmpdemux/mpeg_hdr.h" because they discard most of the
++ * important info while parsing.
++ */
++typedef struct mp_mpeg_header_s {
++	struct {
++		int vo_type;
++		int aspect_ratio;
++		int shape;
++		int ver_id;
++		int time_den;
++		int time_num;
++		int time_bits;
++		int width;
++		int height;
++		int quant_precision;
++		int resync_marker;
++		int data_partitioning;
++		int rvlc;
++	} vol;
++	struct {
++		int coding_type;
++		int rounding;
++		int time_base;
++		int time_inc;
++		int vop_coded;
++		int intra_dc_thr;
++		int qscale;
++		int fcode;
++		int start_bits;
++	} vop;
++	void *data_start;
++	void *data_end;
++	int data_size;
++	int valid_vop, valid_vol;
++} mp_mpeg_header_t;
++
++#if 0
++int mp4_header_process_vol(mp_mpeg_header_t *picture, uint8_t **buffer);
++int mp4_header_process_vop(mp_mpeg_header_t *picture, uint8_t **buffer);
++#endif
++
++#endif /* MPLAYER_MPEG4_HDR_H */
+Index: mplayer/etc/codecs.conf
+===================================================================
+--- mplayer.orig/etc/codecs.conf	(revision 29409)
++++ mplayer/etc/codecs.conf	(working copy)
+@@ -893,6 +893,35 @@
+   dll svq3
+   out YV12,I420,IYUV
+ 
++; MPEG-4 decoding:
++; Note: hwmp4 is preferred for hw decoders:
++
++videocodec hwmp4
++  info "MPEG-4 output (.mp4 or SMedia Glamo hardware)"
++  comment "for hardware decoding"
++  status untested
++  fourcc FMP4,fmp4
++  fourcc DIVX,divx
++  fourcc DIV1,div1 divx
++  fourcc MP4S,mp4s	; ISO MPEG-4 Video V1
++  fourcc M4S2,m4s2
++  fourcc xvid,XVID,XviD,XVIX
++  fourcc DX50,dx50,BLZ0 DX50
++  fourcc mp4v,MP4V
++  format 0x4
++  fourcc UMP4
++  fourcc RMP4
++  fourcc 3IV2,3iv2  ; 3ivx Delta 4   
++  fourcc DXGM
++  fourcc SEDG ; diskless camcorder Samsung Miniket VP-M110
++  fourcc SMP4,smp4 ; Samsung SMP4 video codec
++;  fourcc H263,U263,h263,X263,M263  ; SMedia Glamo also should support h-263
++;  fourcc viv1 h263
++;  fourcc s263
++  format 0x10000004  ; mpeg 4 es
++  driver hwmp4
++  out MPG4 query
++
+ videocodec ffodivx
+   info "FFmpeg MPEG-4"
+   status working
