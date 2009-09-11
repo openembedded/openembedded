@@ -1,2 +1,3 @@
-require console-image.bb 
-IMAGE_INSTALL += "task-native-sdk"
+require console-image.bb
+IMAGE_INSTALL += "task-sdk-native"
+export IMAGE_BASENAME = "native-sdk-image"
