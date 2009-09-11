@@ -1,5 +1,5 @@
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/binutils-cvs"
-PV = "0.0+cvs${SRCDATE}"
+PV = "2.20+cvs${SRCDATE}"
 INC_PR = "r5"
 PR = "${INC_PR}.1"
 
@@ -21,7 +21,7 @@ do_compile () {
 	oe_runmake all-ld all-binutils all-gas
 }
 do_install () {
-        autotools_do_install install-ld install-binutils install-gas
+        oe_runmake 'DESTDIR=${D}' install-ld install-binutils install-gas
 
         # We don't really need these, so we'll remove them...
         rm -rf ${D}${libdir}/ldscripts
