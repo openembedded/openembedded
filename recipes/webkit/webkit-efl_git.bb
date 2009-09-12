@@ -1,11 +1,11 @@
 DESCRIPTION = " Webkit browser engine, EFL edition"
 LICENSE = "GPL"
-PV="0.1"
+PV="0.1+gitr${SRCPV}"
 PR="r0"
 
 DEPENDS = "icu flex gst-plugins-base gstreamer jpeg libpng libxml2 pango libsoup-2.4 eina ecore evas edje cairo fontconfig freetype curl sqlite libxslt gperf-native libxt"
 
-SRC_URI = "git://gitorious.org/webkit-efl/webkit-efl.git;protocol=git;tag=webkit-efl-${PV}"
+SRC_URI = "git://gitorious.org/webkit-efl/webkit-efl.git;protocol=git;branch=master"
 
 S= "${WORKDIR}/git"
 
