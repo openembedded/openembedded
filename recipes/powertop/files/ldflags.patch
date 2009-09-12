@@ -1,0 +1,13 @@
+Index: powertop-1.11/Makefile
+===================================================================
+--- powertop-1.11.orig/Makefile	2008-12-30 10:52:54.000000000 -0800
++++ powertop-1.11/Makefile	2009-09-11 19:46:19.550388421 -0700
+@@ -20,7 +20,7 @@
+ 	
+ 
+ powertop: $(OBJS) Makefile powertop.h
+-	$(CC) ${CFLAGS}  $(OBJS) -lncursesw -o powertop
++	$(CC) $(OBJS) ${CFLAGS} -lncurses -o powertop
+ 	@(cd po/ && $(MAKE))
+ 
+ powertop.1.gz: powertop.1
