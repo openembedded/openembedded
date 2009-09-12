@@ -137,4 +137,7 @@ SRCREV_pn-e-tasks = "${AUTOREV}"
 SRCREV_pn-mokonnect = "${AUTOREV}"
 SRCREV_pn-elmdentica = "${AUTOREV}"
 SRCREV_pn-vala-terminal = "${AUTOREV}"
+SRCREV_pn-pisi = "${AUTOREV}"
+SRCREV_pn-webkit-efl = "${AUTOREV}"
+SRCREV_pn-eve = "${AUTOREV}"
 
