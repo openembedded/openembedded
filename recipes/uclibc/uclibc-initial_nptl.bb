@@ -16,7 +16,7 @@ do_stage() {
 	# This conflicts with the c++ version of this header
 
 	rm -f ${UCLIBC_STAGE_PREFIX}/include/bits/atomicity.h
-
+	install -d ${UCLIBC_STAGE_PREFIX}/lib
 	install -m 644 lib/crt[1in].o ${UCLIBC_STAGE_PREFIX}/lib
 	install -m 644 lib/libc.so ${UCLIBC_STAGE_PREFIX}/lib
 
