@@ -1,0 +1,27 @@
+From 42b879a203c1c16daa9d0c610c6a217ead7a5829 Mon Sep 17 00:00:00 2001
+From: Dave Airlie <airlied@linux.ie>
+Date: Wed, 2 Sep 2009 19:03:11 +1000
+Subject: [PATCH] vgaarb: check pci_sys exists before initing vga arb
+
+---
+ src/common_vgaarb.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/src/common_vgaarb.c b/src/common_vgaarb.c
+index a40b064..ca5c0a7 100644
+--- a/src/common_vgaarb.c
++++ b/src/common_vgaarb.c
+@@ -124,6 +124,10 @@ pci_device_vgaarb_init(void)
+     struct pci_slot_match match;
+     char buf[BUFSIZE];
+     int ret, rsrc;
++
++    if (!pci_sys)
++        return -1;
++
+     if ((pci_sys->vgaarb_fd = open ("/dev/vga_arbiter", O_RDWR)) < 0) {
+         return errno;
+     }
+-- 
+1.6.4.2
+

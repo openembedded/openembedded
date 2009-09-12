@@ -1,0 +1,47 @@
+diff -uNr git.orig/hw/xfree86/dri/dri.c git/hw/xfree86/dri/dri.c
+--- git.orig/hw/xfree86/dri/dri.c	2009-08-30 18:20:26.000000000 +0200
++++ git/hw/xfree86/dri/dri.c	2009-08-30 18:21:40.000000000 +0200
+@@ -73,7 +73,7 @@
+ 
+ #define PCI_BUS_NO_DOMAIN(bus) ((bus) & 0xffu)
+ 
+-#if !defined(PANORAMIX)
++#ifdef PANORAMIX
+ extern Bool noPanoramiXExtension;
+ #endif
+ 
+@@ -321,7 +321,6 @@
+     drm_context_t *       reserved;
+     int                 reserved_count;
+     int                 i;
+-    Bool                xineramaInCore = FALSE;
+     DRIEntPrivPtr       pDRIEntPriv;
+     ScrnInfoPtr         pScrn = xf86Screens[pScreen->myNum];
+     DRIContextFlags	flags    = 0;
+@@ -340,20 +339,17 @@
+ 	return FALSE;
+     }
+ 		
++#ifdef PANORAMIX
+     /*
+      * If Xinerama is on, don't allow DRI to initialise.  It won't be usable
+      * anyway.
+      */
+-    if (xf86LoaderCheckSymbol("noPanoramiXExtension"))
+-	xineramaInCore = TRUE;
+-
+-    if (xineramaInCore) {
+-	if (!noPanoramiXExtension) {
+-	    DRIDrvMsg(pScreen->myNum, X_WARNING,
+-		"Direct rendering is not supported when Xinerama is enabled\n");
+-	    return FALSE;
+-	}
++    if (!noPanoramiXExtension) {
++        DRIDrvMsg(pScreen->myNum, X_WARNING,
++            "Direct rendering is not supported when Xinerama is enabled\n");
++        return FALSE;
+     }
++#endif
+ 
+     if (!DRIOpenDRMMaster(pScrn, pDRIInfo->SAREASize,
+ 			  pDRIInfo->busIdString,

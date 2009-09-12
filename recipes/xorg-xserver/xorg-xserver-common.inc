@@ -4,7 +4,7 @@ LICENSE = "MIT-X"
 
 PROVIDES = "virtual/xserver"
 
-DEPENDS = "hal fontconfig freetype flex-native lbxutil kbproto \ 
+DEPENDS = "hal fontconfig freetype flex-native kbproto \
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
@@ -65,6 +65,7 @@ FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug \
 #  84.0k   libxf4bpp.so
 
 PACKAGES =+ "${PN}-extension-dri \
+             ${PN}-extension-dri2 \
              ${PN}-extension-glx \
              ${PN}-module-libint10 \
              ${PN}-module-libafb \
@@ -76,6 +77,7 @@ PACKAGES =+ "${PN}-extension-dri \
              ${PN}-module-libxf4bpp"
 
 FILES_${PN}-extension-dri = "${libdir}/xorg/modules/extensions/libdri.so"
+FILES_${PN}-extension-dri2 = "${libdir}/xorg/modules/extensions/libdri2.so"
 FILES_${PN}-extension-glx = "${libdir}/xorg/modules/extensions/libglx.so"
 FILES_${PN}-module-libint10 = "${libdir}/xorg/modules/libint10.*"
 FILES_${PN}-module-libafb = "${libdir}/xorg/modules/libafb.*"
