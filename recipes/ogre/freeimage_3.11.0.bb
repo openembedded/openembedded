@@ -1,8 +1,12 @@
 LICENSE = "MIT"
 
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/freeimage/FreeImage3110.zip"
 
 S = "${WORKDIR}/FreeImage/"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
     sed -i -e /^CC/d \
