@@ -8,5 +8,5 @@
 #    b	Block special device file
 #    p	Fifo (named pipe)
 
-/dev/mux	c	660	0	5	250	0	0	1	8
+/dev/mux	c	660	0	5	250	0	1	1	8
 /dev/input/uinput	c	660 	0	0	10	223	-	-	-
