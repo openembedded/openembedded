@@ -7,13 +7,14 @@ inherit autotools
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
 # Fetch source from svn repo
-SRCREV = "331"
+SRCREV = "335"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
            file://gstreamer-ti-tracker-824.patch;patch=1 \
+           file://gstreamer-ti-tracker-462.patch;patch=1 \
 "
 
 # Again, no '.' in PWD allowed :(
-PR = "r32"
+PR = "r33"
 PV = "svnr${SRCREV}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"

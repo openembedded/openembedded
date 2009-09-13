@@ -2,7 +2,7 @@ Depending on platform you need to download one or more components from the exter
 
 DM355
 -----
- - Code Engine 2.24
+ - Code Engine 2.24.01
 
 OMAP3530
 ------
@@ -14,7 +14,7 @@ OMAP3530
 
 URL's:
 ------
-* CE 2.24 (codec_engine_2_24.tar.gz)
+* CE 2.24.01 (codec_engine_2_24.01.tar.gz)
 	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/CE/ce_2_24/index.html
 
 * DSP/BIOS 5.33.04 (bios_setuplinux_5_33_04.bin) 
