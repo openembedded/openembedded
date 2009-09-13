@@ -21,6 +21,17 @@ SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap
 SRCREV_beagleboard = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
 PV_beagleboard = "2009.05+${PR}+gitr${SRCREV}"
 
+SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
+                 file://fw-env.patch;patch=1 \
+                 file://dss2.patch;patch=1 \
+                 file://spi3.patch;patch=1 \
+                 file://spi4.patch;patch=1 \
+                 file://headphone.patch;patch=1 \
+"
+SRCREV_omap3-touchbook = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
+PV_omap3-touchbook = "2009.05+${PR}+gitr${SRCREV}"
+
+
 SRC_URI_omap3evm = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git"
 SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
