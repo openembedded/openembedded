@@ -1,0 +1,52 @@
+From 19a31ba4e8408ce80a4dbb96af489304c5e8128f Mon Sep 17 00:00:00 2001
+From: Tim Yamin <plasm@roo.me.uk>
+Date: Fri, 22 May 2009 18:58:33 -0700
+Subject: [PATCH] Fix scaling checks when rotation is 90 or 270 degrees.
+
+---
+ drivers/video/omap2/dss/dispc.c |   25 +++++++++++++++++++------
+ 1 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index 088d353..77ca81b 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -1508,16 +1508,29 @@ static int _dispc_setup_plane(enum omap_plane plane,
+ 		}
+ 	} else {
+ 		/* video plane */
+-
++		u8 error = 0;
+ 		unsigned long fclk = 0;
+ 
+-		if (out_width < width / maxdownscale ||
+-		   out_width > width * 8)
+-			return -EINVAL;
++		if(rotation == 1 || rotation == 3)
++		{
++			if (out_width < height / maxdownscale || out_width > height * 8)
++				error = 1;
++
++			if (out_height < width / maxdownscale || out_height > width * 8)
++				error = 1;
++		} else {
++			if (out_width < width / maxdownscale || out_width > width * 8)
++				error = 1;
+ 
+-		if (out_height < height / maxdownscale ||
+-		   out_height > height * 8)
++			if (out_height < height / maxdownscale || out_height > height * 8)
++				error = 1;
++		}
++
++		if(error != 0)
++		{
++			printk("DSS: Unable to down/up scale video plane\n");
+ 			return -EINVAL;
++		}
+ 
+ 		switch (color_mode) {
+ 		case OMAP_DSS_COLOR_RGB16:
+-- 
+1.5.6.3
+

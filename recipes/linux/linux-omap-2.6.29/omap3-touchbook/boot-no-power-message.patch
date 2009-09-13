@@ -1,0 +1,11 @@
+--- a/arch/arm/mach-omap2/pm34xx.c	2009-07-18 10:13:43.000000000 -0700
++++ b/arch/arm/mach-omap2/pm34xx.c	2009-07-18 10:13:54.000000000 -0700
+@@ -625,7 +625,7 @@
+ 	struct power_state *pwrst, *tmp;
+ 	int ret;
+ 
+-	printk(KERN_ERR "Power Management for TI OMAP3.\n");
++//	printk(KERN_ERR "Power Management for TI OMAP3.\n");
+ 
+ 	/* XXX prcm_setup_regs needs to be before enabling hw
+ 	 * supervised mode for powerdomains */
