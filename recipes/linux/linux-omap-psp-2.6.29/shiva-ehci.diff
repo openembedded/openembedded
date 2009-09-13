@@ -1,0 +1,60 @@
+commit b73387d2642df981a4cfacddaa36aab8b1ea604b
+Author: Ajay Kumar Gupta <ajay.gupta@ti.com>
+Date:   Fri Jul 10 18:01:29 2009 +0530
+
+    ehci: adding support for EHCI
+    
+    Port1 is used and EHCI port on OMAP3517. GPIO57 is
+    used to reset the EHCI phy.
+    
+    	- Added usb_ehci_init()
+    	- Added port1 phy reset padconfig
+
+diff --git a/arch/arm/mach-omap2/board-omap3517evm.c b/arch/arm/mach-omap2/board-omap3517evm.c
+index cb5af8f..af2d3a9 100644
+--- a/arch/arm/mach-omap2/board-omap3517evm.c
++++ b/arch/arm/mach-omap2/board-omap3517evm.c
+@@ -399,6 +399,9 @@ static void __init omap3517_evm_init(void)
+ 
+ 	omap3517evm_flash_init();
+ 	usb_musb_init();
++	/* GPIO57 as port1 phy reset */
++	omap_cfg_reg(N5_3517_GPIO57_OUT);
++	usb_ehci_init();
+ 	/*
+ 	 * MMC init function
+ 	 */
+ 
+diff --git a/arch/arm/plat-omap/include/mach/mux.h b/arch/arm/plat-omap/include/mach/mux.h
+index aa9d5a1..4e5a247 100644
+--- a/arch/arm/plat-omap/include/mach/mux.h
++++ b/arch/arm/plat-omap/include/mach/mux.h
+@@ -805,6 +805,7 @@ enum omap34xx_index {
+ 	J25_34XX_GPIO170,
+ #ifdef CONFIG_MACH_OMAP3517EVM
+ 	E25_3517_USB0_DRVVBUS,
++	N5_3517_GPIO57_OUT,
+ #endif
+ };
+ 
+--- /tmp/mux.c	2009-09-08 15:06:05.000000000 +0200
++++ git/arch/arm/mach-omap2/mux.c	2009-09-08 15:08:28.000000000 +0200
+@@ -486,16 +486,10 @@
+ 		OMAP34XX_MUX_MODE4 | OMAP34XX_PIN_OUTPUT)
+ MUX_CFG_34XX("J25_34XX_GPIO170", 0x1c6,
+ 		OMAP34XX_MUX_MODE4 | OMAP34XX_PIN_INPUT)
+-#ifdef CONFIG_MACH_OMAP3517EVM
+ MUX_CFG_34XX("E25_3517_USB0_DRVVBUS", 0x212,
+ 		OMAP34XX_MUX_MODE0 | OMAP34XX_PIN_INPUT_PULLDOWN)
+-#if 0
+-MUX_CFG_34XX("F24_3517_USB0_DM", 0x212,
+-		OMAP34XX_MUX_MODE0 | OMAP34XX_PIN_INPUT_PULLDOWN)
+-MUX_CFG_34XX("F25_3517_USB0_DP", 0x212,
+-		OMAP34XX_MUX_MODE0 | OMAP34XX_PIN_INPUT_PULLDOWN)
+-#endif
+-#endif
++MUX_CFG_34XX("N5_3517_GPIO57_OUT", 0x0ba,
++		OMAP34XX_MUX_MODE4 | OMAP34XX_PIN_OUTPUT)
+ };
+ 
+ #define OMAP34XX_PINS_SZ	ARRAY_SIZE(omap34xx_pins)

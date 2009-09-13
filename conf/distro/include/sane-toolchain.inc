@@ -5,7 +5,7 @@
 #############################################################################
 
 # Base line versions, good for most things
-PREFERRED_GCC_VERSION                ?= "4.2.4"
+PREFERRED_GCC_VERSION                ?= "4.4.1"
 PREFERRED_BINUTILS                   ?= "2.18"
 
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
@@ -19,9 +19,9 @@ PREFERRED_VERSION_uclibc-initial    ?= "0.9.30.1"
 # Some systems need a special gcc version
 PREFERRED_GCC_VERSION_486sx          ?= "4.3.2"
 PREFERRED_GCC_VERSION_avr32          ?= "4.2.2"
-PREFERRED_GCC_VERSION_armv7a         ?= "4.3.1" 
+PREFERRED_GCC_VERSION_armv7a         ?= "4.4.1" 
 PREFERRED_GCC_VERSION_bfin           ?= "4.1.2"
-PREFERRED_GCC_VERSION_ppc405         ?= "4.1.1"
+PREFERRED_GCC_VERSION_ppc405         ?= "4.4.1"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 

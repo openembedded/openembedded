@@ -25,6 +25,28 @@ SRC_URI_omap3evm = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-d
 SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
 
+
+SRCREV_omap3517-evm = "e60beb13cf0"
+SRC_URI_append_omap3517-evm = " \
+file://omap3evm/0001-Changes-for-making-a-NAND-build.patch;patch=1 \
+file://omap3evm/0002-Fix-for-NFS-boot-for-OMAP3-EVM.patch;patch=1 \
+file://omap3evm/0003-OMAP3-timer-handling-to-1ms-tick-and-CONFIG_SYS_HZ-t.patch;patch=1 \
+file://omap3evm/0004-Reverse-patch-for-NFS-boot-to-fix-comments-provided.patch;patch=1 \
+file://omap3evm/0005-SMC911x-driver-fixed-for-NFS-boot.patch;patch=1 \
+file://omap3evm/0006-Added-OMAP3517-3505-support.patch;patch=1 \
+file://omap3evm/0007-OMAP3517TEB-validated-on-OMAP3517TEB-board.patch;patch=1 \
+file://omap3evm/0008-OMAP3517PRE-ALPHA-validated-on-OMAP3517PRE_ALPHA-bo.patch;patch=1 \
+file://omap3evm/0009-OMAP3517PRE-ALPHA-DDR-size-issue-fixed.patch;patch=1 \
+file://omap3evm/0010-OMAP3517PRE-ALPHA-Mux-configuration-for-MMC-CD-and.patch;patch=1 \
+file://omap3evm/0011-Ethernet-driver-functional-no-need-for-time-delay.patch;patch=1 \
+file://omap3evm/0012-EMAC-driver-Implement-GPIO-driven-PHY-reset.patch;patch=1 \
+file://omap3evm/0013-Cleaned-up-during-EVM-hang-issue.patch;patch=1 \
+file://omap3evm/0014-EMAC-driver-cleanup-removed-debug-prints.patch;patch=1 \
+file://omap3evm/0015-EMAC-driver-Check-for-link-status-in-packet-send-lo.patch;patch=1 \
+file://omap3evm/0016-Config-option-and-name-changed-to-omap3517_evm.patch;patch=1 \
+"
+PV_omap3517-evm = "2009.03+${PR}+gitr${SRCREV}"
+
 SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
 PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"

@@ -1,0 +1,126 @@
+From 1f9233e69952afbf9c116f69ff6ab1fa840f4116 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Sat, 13 Jun 2009 01:14:53 +0530
+Subject: [PATCH 08/16] OMAP3517PRE-ALPHA: validated on OMAP3517PRE_ALPHA board
+
+OMAP3517 Pre-Alpha board is a development platform
+used before actual OMAP3517EVM board, below are the details -
+
+Validation -
+	- PLL conifguration
+	- NAND 16-bit micron part (x-loader, u-boot, Linux)
+	- MMC1 (x-loader, u-boot, Linux)
+	- Video (LCD (4.3" Sharp part))
+	- Complete NAND boot mode
+	- Complete MMC boot mode
+
+Changes -
+	- GPMC Timing parameters for NAND interface
+	- UART3 made as serial console
+
+Issues -
+	- Clock init code still need to be cleaned up.
+	- boot config code needs to changed for supporting both mmc and nand
+	boot
+---
+ board/omap3/omap3517evm/omap3517evm.h |    6 +++---
+ cpu/arm_cortexa8/omap3/clock.c        |    6 ++++++
+ include/asm-arm/arch-omap3/mem.h      |   12 ++++++------
+ include/configs/omap3517evm.h         |   10 +++++-----
+ 4 files changed, 20 insertions(+), 14 deletions(-)
+
+diff --git a/board/omap3/omap3517evm/omap3517evm.h b/board/omap3/omap3517evm/omap3517evm.h
+index d817e93..000fde6 100644
+--- a/board/omap3/omap3517evm/omap3517evm.h
++++ b/board/omap3/omap3517evm/omap3517evm.h
+@@ -241,7 +241,7 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(MCBSP1_FSX),	(IEN  | PTD | DIS | M0)) /*MCBSP1_FSX*/\
+  MUX_VAL(CP(MCBSP1_CLKX),	(IEN  | PTD | DIS | M0)) /*MCBSP1_CLKX  */\
+  /*Serial Interface*/\
+- MUX_VAL(CP(UART3_CTS_RCTX),	(IEN  | PTD | EN  | M0)) /*UART3_CTS_*/\
++ MUX_VAL(CP(UART3_CTS_RCTX),	(IEN  | PTU | DIS  | M0)) /*UART3_CTS_*/\
+ 							 /* RCTX*/\
+  MUX_VAL(CP(UART3_RTS_SD),	(IDIS | PTD | DIS | M0)) /*UART3_RTS_SD */\
+  MUX_VAL(CP(UART3_RX_IRRX),	(IEN  | PTD | DIS | M0)) /*UART3_RX_IRRX*/\
+@@ -279,8 +279,8 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(MCSPI2_CLK),	(IEN  | PTD | DIS | M0)) /*McSPI2_CLK*/\
+  MUX_VAL(CP(MCSPI2_SIMO),	(IEN  | PTD | DIS | M0)) /*McSPI2_SIMO*/\
+  MUX_VAL(CP(MCSPI2_SOMI),	(IEN  | PTD | DIS | M0)) /*McSPI2_SOMI*/\
+- MUX_VAL(CP(MCSPI2_CS0),	(IEN  | PTD | EN  | M0)) /*McSPI2_CS0*/\
+- MUX_VAL(CP(MCSPI2_CS1),	(IEN  | PTD | EN  | M0)) /*McSPI2_CS1*/\
++ MUX_VAL(CP(MCSPI2_CS0),	(IEN  | PTD | EN  | M4)) /*McSPI2_CS0*/\
++ MUX_VAL(CP(MCSPI2_CS1),	(IEN  | PTD | EN  | M4)) /*McSPI2_CS1*/\
+  /*Control and debug */\
+  MUX_VAL(CP(SYS_32K),		(IEN  | PTD | DIS | M0)) /*SYS_32K*/\
+  MUX_VAL(CP(SYS_CLKREQ),	(IEN  | PTD | DIS | M0)) /*SYS_CLKREQ*/\
+diff --git a/cpu/arm_cortexa8/omap3/clock.c b/cpu/arm_cortexa8/omap3/clock.c
+index a706cd4..d023765 100644
+--- a/cpu/arm_cortexa8/omap3/clock.c
++++ b/cpu/arm_cortexa8/omap3/clock.c
+@@ -368,6 +368,12 @@ void per_clocks_enable(void)
+ 	/* Enable the ICLK for 32K Sync Timer as its used in udelay */
+ 	sr32(&prcm_base->iclken_wkup, 2, 1, 0x1);
+ 
++	sr32(&prcm_base->fclken1_core, 24, 1, 1);
++	sr32(&prcm_base->iclken_wkup, 24, 1, 1);
++
++	sr32(&prcm_base->fclken1_core, 25, 1, 1);
++	sr32(&prcm_base->iclken_wkup, 25, 1, 1);
++
+ 	sr32(&prcm_base->fclken_iva2, 0, 32, FCK_IVA2_ON);
+ 	sr32(&prcm_base->fclken1_core, 0, 32, FCK_CORE1_ON);
+ 	sr32(&prcm_base->iclken1_core, 0, 32, ICK_CORE1_ON);
+diff --git a/include/asm-arm/arch-omap3/mem.h b/include/asm-arm/arch-omap3/mem.h
+index 261f246..1323030 100644
+--- a/include/asm-arm/arch-omap3/mem.h
++++ b/include/asm-arm/arch-omap3/mem.h
+@@ -152,12 +152,12 @@ typedef enum {
+ #else
+ #define M_NAND_GPMC_CONFIG1     0x00000800
+ #endif
+-#define M_NAND_GPMC_CONFIG2	0x00061000
+-#define M_NAND_GPMC_CONFIG3	0x00060600
+-#define M_NAND_GPMC_CONFIG4	0x03000602
+-#define M_NAND_GPMC_CONFIG5	0x00080610
+-#define M_NAND_GPMC_CONFIG6	0x04000D80
+-#define M_NAND_GPMC_CONFIG7	0x00000C48
++#define M_NAND_GPMC_CONFIG2	0x00080800
++#define M_NAND_GPMC_CONFIG3	0x00080800
++#define M_NAND_GPMC_CONFIG4	0x06000600
++#define M_NAND_GPMC_CONFIG5	0x00080808
++#define M_NAND_GPMC_CONFIG6	0x000003cf
++#define M_NAND_GPMC_CONFIG7	0x00000848
+ 
+ #else
+ 
+diff --git a/include/configs/omap3517evm.h b/include/configs/omap3517evm.h
+index f6f4be1..558538b 100644
+--- a/include/configs/omap3517evm.h
++++ b/include/configs/omap3517evm.h
+@@ -39,8 +39,8 @@
+ #define CONFIG_ARMCORTEXA8	1	/* This is an ARM V7 CPU core */
+ #define CONFIG_OMAP		1	/* in a TI OMAP core */
+ #define CONFIG_OMAP35XX		1	/* which is a 34XX */
+-//#define CONFIG_OMAP3_OMAP3517EVM	1	/* working with EVM */
+-#define CONFIG_OMAP3_OMAP3517TEB	1	/* working with TEB */
++#define CONFIG_OMAP3_OMAP3517EVM	1	/* working with EVM */
++//#define CONFIG_OMAP3_OMAP3517TEB	1	/* working with TEB */
+ 
+ #include <asm/arch/cpu.h>	/* get chip and board defs */
+ #include <asm/arch/omap3.h>
+@@ -83,9 +83,9 @@
+ /*
+  * select serial console configuration
+  */
+-#define CONFIG_CONS_INDEX		1
+-#define CONFIG_SYS_NS16550_COM1		OMAP34XX_UART1
+-#define CONFIG_SERIAL1			1	/* UART1 on OMAP3 EVM */
++#define CONFIG_CONS_INDEX		3
++#define CONFIG_SYS_NS16550_COM3		OMAP34XX_UART3
++#define CONFIG_SERIAL3			3	/* UART1 on OMAP3 EVM */
+ 
+ /* allow to overwrite serial and ethaddr */
+ #define CONFIG_ENV_OVERWRITE
+-- 
+1.6.2.4
+

@@ -3,7 +3,7 @@ DESCRIPTION = "Tools for monitoring and filtering incoming requests for tcp \
 LICENSE = "tcp-wrappers"
 PRIORITY = "optional"
 SECTION = "console/network"
-PR ="r3"
+PR ="r4"
 
 
 PACKAGES = "${PN}-dbg libwrap libwrap-doc libwrap-dev tcp-wrappers tcp-wrappers-doc"
@@ -66,6 +66,7 @@ EXTRA_OEMAKE = "'CC=${CC}' \
 
 EXTRA_OEMAKE_NETGROUP = "-DNETGROUP"
 EXTRA_OEMAKE_NETGROUP_linux-uclibc = ""
+EXTRA_OEMAKE_NETGROUP_linux-uclibceabi = ""
 
 do_compile () {
 	oe_runmake 'TABLES=-DHOSTS_DENY=\"${sysconfdir}/hosts.deny\" -DHOSTS_ALLOW=\"${sysconfdir}/hosts.allow\"' \

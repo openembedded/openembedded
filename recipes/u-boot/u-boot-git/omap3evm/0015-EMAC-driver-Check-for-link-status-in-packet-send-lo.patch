@@ -1,0 +1,42 @@
+From 866d110242fe282f3a65b9035bec2157be098445 Mon Sep 17 00:00:00 2001
+From: Sriram <srk@ti.com>
+Date: Mon, 29 Jun 2009 03:50:57 +0530
+Subject: [PATCH 15/16] EMAC driver: Check for link status in packet send loop
+
+---
+ drivers/net/ticpgmac.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ticpgmac.c b/drivers/net/ticpgmac.c
+index 78a54d8..0efd5ed 100644
+--- a/drivers/net/ticpgmac.c
++++ b/drivers/net/ticpgmac.c
+@@ -667,24 +667,18 @@ static int cpgmac_eth_send_packet (volatile void *packet, int length)
+ 					  EMAC_CPPI_OWNERSHIP_BIT |
+ 					  EMAC_CPPI_EOP_BIT);
+ 				
+-	if (!phy.get_link_status (active_phy_addr)) {
+-	        printf("Link down . Abort Tx - pHY %d\n",active_phy_addr);
+-		cpgmac_eth_ch_teardown (EMAC_CH_TX);
+-		return (ret_status);
+-	}
+ 
+ 	/* Send the packet */
+ 	adap_emac->TX0HDP = BD_TO_HW((unsigned int) emac_tx_desc);
+ 
+ 	/* Wait for packet to complete or link down */
+ 	while (1) {
+-		#if 0
+ 		if (!phy.get_link_status (active_phy_addr)) {
+ 		        printf("Link down . Abort Tx - pHY %d\n",active_phy_addr);
+ 			cpgmac_eth_ch_teardown (EMAC_CH_TX);
+ 			return (ret_status);
+ 		}
+-		#endif
++
+ 		if (adap_emac->TXINTSTATRAW & 0x01) {
+ 			ret_status = length;
+ 			break;
+-- 
+1.6.2.4
+

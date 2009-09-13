@@ -3,7 +3,7 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap3evm"
+COMPATIBLE_MACHINE = "omap3evm|omap3517-evm"
 
 SRCREV = "9abb6eb717acbca192ab251a056e3a66b2b47884"
 
@@ -11,11 +11,17 @@ SRCREV = "9abb6eb717acbca192ab251a056e3a66b2b47884"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=int_030000_build3 \
-	   file://defconfig"
+           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+           file://defconfig"
 
 S = "${WORKDIR}/git"
 
-SRC_URI_append = " \
+SRC_URI_append_omap3517-evm = " \
+        file://shiva-bits.diff;patch=1 \
+        file://shiva-ehci.diff;patch=1 \
+"
+
+SRC_URI_append_omap3evm = " \
 	file://fix-twl-merge-damage.diff;patch=1 \
 	file://fix-section-mismatch.diff;patch=1 \
 	file://no-3517-hack.diff;patch=1 \

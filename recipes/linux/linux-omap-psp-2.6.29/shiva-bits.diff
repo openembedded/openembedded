@@ -1,0 +1,11 @@
+--- /tmp/board-omap3517evm.c	2009-09-07 17:34:48.000000000 +0200
++++ git/arch/arm/mach-omap2/board-omap3517evm.c	2009-09-07 17:35:00.000000000 +0200
+@@ -297,7 +297,7 @@
+ 	.type			= OMAP_DISPLAY_TYPE_DPI,
+ 	.name			= "dvi",
+ 	.panel_name		= "panel-generic",
+-	.u.dpi.data_lines	= 24,
++	.u.dpi.data_lines	= 16,
+ 	.panel_enable		= omap3517_evm_panel_enable_dvi,
+ 	.panel_disable		= omap3517_evm_panel_disable_dvi,
+ };

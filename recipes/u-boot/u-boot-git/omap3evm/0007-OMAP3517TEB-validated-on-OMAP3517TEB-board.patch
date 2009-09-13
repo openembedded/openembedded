@@ -1,0 +1,403 @@
+From ba560965c5fc7671545cd4eed5d57be69958941d Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Sat, 13 Jun 2009 00:58:06 +0530
+Subject: [PATCH 07/16] OMAP3517TEB: validated on OMAP3517TEB board
+
+OMAP3517TEB board is being used as a pre-silicon development
+platform, below are the details -
+
+Validation -
+	- PLL conifguration
+	- NAND 8-bit micron part (x-loader, u-boot)
+	- USB Host* (Linux)
+	- MMC1 (x-loader, u-boot, Linux)
+	- Video (TV out, LCD (Toshiba part))
+	- MMC boot from x-loader
+
+Changes -
+	- GPMC timing parameters for NAND  interface
+	- omap3517evm.h config file cleanup
+	- commented out "smi" instruction
+
+Issues -
+	- USB host support has been validated by commenting the
+	mux configuration in u-boot. Was not able to conclude on
+	muxing part of it.
+	- NAND 16-bit is not working, found out to be daughter card issue
+	Daughter card is not designed for 16bit micron part.
+	- LCD is validated based on AVV panel initialization, since it was SPI
+	based LCD panel.
+---
+ board/omap3/omap3517evm/omap3517evm.h |   20 +++++++-------
+ cpu/arm_cortexa8/omap3/board.c        |   19 ++++++++-----
+ cpu/arm_cortexa8/omap3/mem.c          |   48 ++++++++++++++++++++++----------
+ cpu/arm_cortexa8/start.S              |    2 +-
+ drivers/i2c/omap24xx_i2c.c            |    9 ++++--
+ drivers/mmc/omap3_mmc.c               |    6 +++-
+ include/asm-arm/arch-omap3/mem.h      |   18 ++++++++++++
+ include/asm-arm/arch-omap3/mux.h      |    4 +-
+ include/configs/omap3517evm.h         |   10 +++----
+ 9 files changed, 90 insertions(+), 46 deletions(-)
+
+diff --git a/board/omap3/omap3517evm/omap3517evm.h b/board/omap3/omap3517evm/omap3517evm.h
+index aba53bf..d817e93 100644
+--- a/board/omap3/omap3517evm/omap3517evm.h
++++ b/board/omap3/omap3517evm/omap3517evm.h
+@@ -190,16 +190,16 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(MCBSP2_DR),		(IEN  | PTD | DIS | M0)) /*McBSP2_DR*/\
+  MUX_VAL(CP(MCBSP2_DX),		(IDIS | PTD | DIS | M0)) /*McBSP2_DX*/\
+  /*Expansion card  */\
+- MUX_VAL(CP(MMC1_CLK),		(IDIS | PTU | EN  | M0)) /*MMC1_CLK*/\
+- MUX_VAL(CP(MMC1_CMD),		(IEN  | PTU | EN  | M0)) /*MMC1_CMD*/\
+- MUX_VAL(CP(MMC1_DAT0),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT0*/\
+- MUX_VAL(CP(MMC1_DAT1),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT1*/\
+- MUX_VAL(CP(MMC1_DAT2),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT2*/\
+- MUX_VAL(CP(MMC1_DAT3),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT3*/\
+- MUX_VAL(CP(MMC1_DAT4),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT4*/\
+- MUX_VAL(CP(MMC1_DAT5),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT5*/\
+- MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT6*/\
+- MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT7*/\
++ MUX_VAL(CP(MMC1_CLK),		(IEN  | PTU | EN  | M0)) /*MMC1_CLK*/\
++ MUX_VAL(CP(MMC1_CMD),		(IEN  | PTU | DIS | M0)) /*MMC1_CMD*/\
++ MUX_VAL(CP(MMC1_DAT0),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT0*/\
++ MUX_VAL(CP(MMC1_DAT1),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT1*/\
++ MUX_VAL(CP(MMC1_DAT2),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT2*/\
++ MUX_VAL(CP(MMC1_DAT3),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT3*/\
++ MUX_VAL(CP(MMC1_DAT4),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT4*/\
++ MUX_VAL(CP(MMC1_DAT5),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT5*/\
++ MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT6*/\
++ MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT7*/\
+  /*Wireless LAN */\
+  MUX_VAL(CP(MMC2_CLK),		(IEN  | PTD | DIS | M0)) /*MMC2_CLK*/\
+  MUX_VAL(CP(MMC2_CMD),		(IEN  | PTU | EN  | M0)) /*MMC2_CMD*/\
+diff --git a/cpu/arm_cortexa8/omap3/board.c b/cpu/arm_cortexa8/omap3/board.c
+index a0c2d05..15834fd 100644
+--- a/cpu/arm_cortexa8/omap3/board.c
++++ b/cpu/arm_cortexa8/omap3/board.c
+@@ -224,9 +224,9 @@ void s_init(void)
+ 	per_clocks_enable();
+ 
+ 	if (!in_sdram)
+-#ifdef CONFIG_OMAP3_OMAP3517EVM
++#if defined (CONFIG_OMAP35XX)
+ 		emif4_init();
+-#else
++#elif defined (CONFIG_OMAP34XX)
+ 		sdrc_init();
+ #endif
+ }
+@@ -288,17 +288,22 @@ int dram_init(void)
+ 	 * memory on CS0.
+ 	 */
+ 	if ((sysinfo.mtype == DDR_COMBO) || (sysinfo.mtype == DDR_STACKED)) {
+-#ifdef CONFIG_OMAP3_OMAP3517EVM
++#if defined (CONFIG_OMAP35XX)
+ 		emif4_init();
+-#else
++		/*
++		 * TODO: Need to implement function to calculate
++		 *	DDR size depending on row and coloum size
++		 */
++		size0 = 128 * 1024 * 1024;
++#elif defined (CONFIG_OMAP34XX)
+ 		do_sdrc_init(CS1, NOT_EARLY);
+ 		make_cs1_contiguous();
++
++		size0 = get_sdr_cs_size(CS0);
++		size1 = get_sdr_cs_size(CS1);
+ #endif
+ 	}
+ 
+-	size0 = get_sdr_cs_size(CS0);
+-	size1 = get_sdr_cs_size(CS1);
+-
+ 	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
+ 	gd->bd->bi_dram[0].size = size0;
+ 	gd->bd->bi_dram[1].start = PHYS_SDRAM_1 + get_sdr_cs_offset(CS1);
+diff --git a/cpu/arm_cortexa8/omap3/mem.c b/cpu/arm_cortexa8/omap3/mem.c
+index 1badb34..7fb05eb 100644
+--- a/cpu/arm_cortexa8/omap3/mem.c
++++ b/cpu/arm_cortexa8/omap3/mem.c
+@@ -32,23 +32,23 @@
+ #include <command.h>
+ 
+ /* Definitions for EMIF4 configuration values */
+-#define EMIF4_TIM1_T_RP         0x4
+-#define EMIF4_TIM1_T_RCD        0x4
+-#define EMIF4_TIM1_T_WR         0x2
++#define EMIF4_TIM1_T_RP         0x3
++#define EMIF4_TIM1_T_RCD        0x3
++#define EMIF4_TIM1_T_WR         0x3
+ #define EMIF4_TIM1_T_RAS        0x8
+-#define EMIF4_TIM1_T_RC         13
++#define EMIF4_TIM1_T_RC         0xA
+ #define EMIF4_TIM1_T_RRD        0x2
+ #define EMIF4_TIM1_T_WTR        0x2
+ 
+ #define EMIF4_TIM2_T_XP         0x2
+ #define EMIF4_TIM2_T_ODT        0x0
+-#define EMIF4_TIM2_T_XSNR       28
+-#define EMIF4_TIM2_T_XSRD       200
+-#define EMIF4_TIM2_T_RTP        0x2
+-#define EMIF4_TIM2_T_CKE        0x3
++#define EMIF4_TIM2_T_XSNR       0x1C
++#define EMIF4_TIM2_T_XSRD       0xC8
++#define EMIF4_TIM2_T_RTP        0x1
++#define EMIF4_TIM2_T_CKE        0x2
+ 
+ #define EMIF4_TIM3_T_TDQSCKMAX  0x0
+-#define EMIF4_TIM3_T_RFC        33
++#define EMIF4_TIM3_T_RFC        0x25
+ #define EMIF4_TIM3_T_RAS_MAX    0x7
+ 
+ #define EMIF4_PWR_IDLE          0x2
+@@ -58,7 +58,7 @@
+ 
+ #define EMIF4_INITREF_DIS       0x0
+ #define EMIF4_PASR              0x0
+-#define EMIF4_REFRESH_RATE      1295
++#define EMIF4_REFRESH_RATE      0x50F
+ 
+ #define EMIF4_CFG_SDRAM_TYP     0x2
+ #define EMIF4_CFG_IBANK_POS     0x0
+@@ -69,14 +69,21 @@
+ #define EMIF4_CFG_SDR_DRV       0x0
+ #define EMIF4_CFG_CWL           0x0
+ #define EMIF4_CFG_NARROW_MD     0x0
+-#define EMIF4_CFG_CL            0x3
+-#define EMIF4_CFG_ROWSIZE       0x3
++#define EMIF4_CFG_CL            0x5
++#define EMIF4_CFG_ROWSIZE       0x0
+ #define EMIF4_CFG_IBANK         0x3
+ #define EMIF4_CFG_EBANK         0x0
+ #define EMIF4_CFG_PGSIZE        0x2
+ 
+-#define EMIF4_DDR1_READ_LAT	0x3
++/*
++ * EMIF4 PHY Control 1 register configuration
++ */
++#define EMIF4_DDR1_READ_LAT	0x6
++#define EMIF4_DDR1_PWRDN_DIS    0x1
++#define EMIF4_DDR1_STRBEN_EXT   0x1
++#define EMIF4_DDR1_DLL_MODE     0x0
+ #define EMIF4_DDR1_VTP_DYN	0x1
++#define EMIF4_DDR1_LB_CK_SEL    0x0
+ 
+ /*
+  * Only One NAND allowed on board at a time.
+@@ -101,11 +108,15 @@ static u32 gpmc_m_nand[GPMC_MAX_REG] = {
+ gpmc_csx_t *nand_cs_base;
+ gpmc_t *gpmc_cfg_base;
+ 
++#if !defined (CONFIG_OMAP3_OMAP3517TEB)
+ #if defined(CONFIG_ENV_IS_IN_NAND)
+ #define GPMC_CS 0
+ #else
+ #define GPMC_CS 1
+ #endif
++#else
++#define GPMC_CS 2
++#endif
+ 
+ #endif
+ 
+@@ -252,7 +263,9 @@ void emif4_init(void)
+ {
+ 	unsigned int regval;
+ 	/* Set the DDR PHY parameters in PHY ctrl registers */
+-	regval = (EMIF4_DDR1_READ_LAT | (EMIF4_DDR1_VTP_DYN << 15));
++	regval = (EMIF4_DDR1_READ_LAT | (EMIF4_DDR1_VTP_DYN << 15) |
++		(EMIF4_DDR1_STRBEN_EXT << 7) | (EMIF4_DDR1_DLL_MODE << 12) |
++		(EMIF4_DDR1_VTP_DYN << 15) | (EMIF4_DDR1_LB_CK_SEL << 23));
+ 	writel(regval, &emif4_base->ddr_phyctrl1);
+ 	writel(regval, &emif4_base->ddr_phyctrl1_shdw);
+ 	writel(0, &emif4_base->ddr_phyctrl2);
+@@ -261,8 +274,13 @@ void emif4_init(void)
+ 	regval = readl(&emif4_base->sdram_iodft_tlgc);
+ 	regval |= (1<<10);
+ 	writel(regval, &emif4_base->sdram_iodft_tlgc);
+-	while ((readl(&emif4_base->sdram_sts) & (1<<10)) == 0x0);
++	/*Wait till that bit clears*/
++	while ((readl(&emif4_base->sdram_iodft_tlgc) & (1<<10)) == 0x1);
++	/*Re-verify the DDR PHY status*/
++	while ((readl(&emif4_base->sdram_sts) & (1<<2)) == 0x0);
+ 
++	regval |= (1<<0);
++	writel(regval, &emif4_base->sdram_iodft_tlgc);
+ 	/* Set SDR timing registers */
+ 	regval = (EMIF4_TIM1_T_WTR | (EMIF4_TIM1_T_RRD << 3) |
+ 		(EMIF4_TIM1_T_RC << 6) | (EMIF4_TIM1_T_RAS << 12) |
+diff --git a/cpu/arm_cortexa8/start.S b/cpu/arm_cortexa8/start.S
+index 07acdbd..81961ad 100644
+--- a/cpu/arm_cortexa8/start.S
++++ b/cpu/arm_cortexa8/start.S
+@@ -108,7 +108,7 @@ reset:
+ 	orr	r0, r0, #0xd3
+ 	msr	cpsr,r0
+ 
+-#if (CONFIG_OMAP34XX)
++#if defined (CONFIG_OMAP34XX) || (CONFIG_OMAP35XX)
+ 	/* Copy vectors to mask ROM indirect addr */
+ 	adr	r0, _start		@ r0 <- current position of code
+ 	add	r0, r0, #4		@ skip reset vector
+diff --git a/drivers/i2c/omap24xx_i2c.c b/drivers/i2c/omap24xx_i2c.c
+index 6784603..9f7d3e8 100644
+--- a/drivers/i2c/omap24xx_i2c.c
++++ b/drivers/i2c/omap24xx_i2c.c
+@@ -109,7 +109,8 @@ static int i2c_read_byte (u8 devaddr, u8 regoffset, u8 * value)
+ 
+ 		status = wait_for_pin ();
+ 		if (status & I2C_STAT_RRDY) {
+-#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX)
++#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX) \
++		|| defined(CONFIG_OMAP35XX)
+ 			*value = readb (I2C_DATA);
+ #else
+ 			*value = readw (I2C_DATA);
+@@ -154,7 +155,8 @@ static int i2c_write_byte (u8 devaddr, u8 regoffset, u8 value)
+ 	status = wait_for_pin ();
+ 
+ 	if (status & I2C_STAT_XRDY) {
+-#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX)
++#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX) \
++		|| defined(CONFIG_OMAP35XX)
+ 		/* send out 1 byte */
+ 		writeb (regoffset, I2C_DATA);
+ 		writew (I2C_STAT_XRDY, I2C_STAT);
+@@ -207,7 +209,8 @@ static void flush_fifo(void)
+ 	while(1){
+ 		stat = readw(I2C_STAT);
+ 		if(stat == I2C_STAT_RRDY){
+-#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX)
++#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX) \
++		|| defined(CONFIG_OMAP35XX)
+ 			readb(I2C_DATA);
+ #else
+ 			readw(I2C_DATA);
+diff --git a/drivers/mmc/omap3_mmc.c b/drivers/mmc/omap3_mmc.c
+index e90db7e..2d9ec5e 100644
+--- a/drivers/mmc/omap3_mmc.c
++++ b/drivers/mmc/omap3_mmc.c
+@@ -57,7 +57,7 @@ block_dev_desc_t *mmc_get_dev(int dev)
+ {
+ 	return (block_dev_desc_t *) &mmc_blk_dev;
+ }
+-
++#if defined (CONFIG_OMAP3_EVM)
+ void twl4030_mmc_config(void)
+ {
+ 	unsigned char data;
+@@ -67,12 +67,14 @@ void twl4030_mmc_config(void)
+ 	data = VMMC1_VSEL_30;
+ 	i2c_write(PWRMGT_ADDR_ID4, VMMC1_DEDICATED, 1, &data, 1);
+ }
+-
++#endif
+ unsigned char mmc_board_init(void)
+ {
+ 	t2_t *t2_base = (t2_t *)T2_BASE;
+ 
++#if defined (CONFIG_OMAP3_EVM)
+ 	twl4030_mmc_config();
++#endif
+ 
+ 	writel(readl(&t2_base->pbias_lite) | PBIASLITEPWRDNZ1 |
+ 		PBIASSPEEDCTRL0 | PBIASLITEPWRDNZ0,
+diff --git a/include/asm-arm/arch-omap3/mem.h b/include/asm-arm/arch-omap3/mem.h
+index 6f0f90b..261f246 100644
+--- a/include/asm-arm/arch-omap3/mem.h
++++ b/include/asm-arm/arch-omap3/mem.h
+@@ -145,6 +145,22 @@ typedef enum {
+ #define SMNAND_GPMC_CONFIG6	0x1F0F0A80
+ #define SMNAND_GPMC_CONFIG7	0x00000C44
+ 
++#if defined (CONFIG_OMAP3_OMAP3517TEB) || defined (CONFIG_OMAP3_OMAP3517EVM)
++
++#ifdef GPMC_NAND_ECC_LP_x16_LAYOUT
++#define M_NAND_GPMC_CONFIG1     0x00001800
++#else
++#define M_NAND_GPMC_CONFIG1     0x00000800
++#endif
++#define M_NAND_GPMC_CONFIG2	0x00061000
++#define M_NAND_GPMC_CONFIG3	0x00060600
++#define M_NAND_GPMC_CONFIG4	0x03000602
++#define M_NAND_GPMC_CONFIG5	0x00080610
++#define M_NAND_GPMC_CONFIG6	0x04000D80
++#define M_NAND_GPMC_CONFIG7	0x00000C48
++
++#else
++
+ #define M_NAND_GPMC_CONFIG1	0x00001800
+ #define M_NAND_GPMC_CONFIG2	0x00141400
+ #define M_NAND_GPMC_CONFIG3	0x00141400
+@@ -153,6 +169,8 @@ typedef enum {
+ #define M_NAND_GPMC_CONFIG6	0x1f0f0A80
+ #define M_NAND_GPMC_CONFIG7	0x00000C44
+ 
++#endif
++
+ #define STNOR_GPMC_CONFIG1	0x3
+ #define STNOR_GPMC_CONFIG2	0x00151501
+ #define STNOR_GPMC_CONFIG3	0x00060602
+diff --git a/include/asm-arm/arch-omap3/mux.h b/include/asm-arm/arch-omap3/mux.h
+index 5a241cb..d94eb2d 100644
+--- a/include/asm-arm/arch-omap3/mux.h
++++ b/include/asm-arm/arch-omap3/mux.h
+@@ -337,7 +337,7 @@
+ #define CONTROL_PADCONF_ETK_D14_ES2	0x05F8
+ #define CONTROL_PADCONF_ETK_D15_ES2	0x05FA
+ /*Die to Die */
+-#ifndef CONFIG_OMAP3_OMAP3517EVM
++#if defined (CONFIG_OMAP34XX)
+ 
+ #define CONTROL_PADCONF_D2D_MCAD0	0x01E4
+ #define CONTROL_PADCONF_D2D_MCAD1	0x01E6
+@@ -374,7 +374,7 @@
+ #define CONTROL_PADCONF_D2D_MCAD32	0x0224
+ #define CONTROL_PADCONF_D2D_MCAD33	0x0226
+ 
+-#else
++#elif defined (CONFIG_OMAP35XX)
+ 
+ #define CONTROL_PADCONF_CCDC_PCLK	0x01E4
+ #define CONTROL_PADCONF_CCDC_FIELD	0x01E6
+diff --git a/include/configs/omap3517evm.h b/include/configs/omap3517evm.h
+index 28e3d15..f6f4be1 100644
+--- a/include/configs/omap3517evm.h
++++ b/include/configs/omap3517evm.h
+@@ -38,9 +38,9 @@
+  */
+ #define CONFIG_ARMCORTEXA8	1	/* This is an ARM V7 CPU core */
+ #define CONFIG_OMAP		1	/* in a TI OMAP core */
+-#define CONFIG_OMAP34XX		1	/* which is a 34XX */
+-#define CONFIG_OMAP3430		1	/* which is in a 3430 */
+-#define CONFIG_OMAP3_OMAP3517EVM	1	/* working with EVM */
++#define CONFIG_OMAP35XX		1	/* which is a 34XX */
++//#define CONFIG_OMAP3_OMAP3517EVM	1	/* working with EVM */
++#define CONFIG_OMAP3_OMAP3517TEB	1	/* working with TEB */
+ 
+ #include <asm/arch/cpu.h>	/* get chip and board defs */
+ #include <asm/arch/omap3.h>
+@@ -176,7 +176,7 @@
+ 		"bootm ${loadaddr}\0" \
+ 	"nandboot=echo Booting from nand ...; " \
+ 		"run nandargs; " \
+-		"onenand read ${loadaddr} 280000 400000; " \
++		"nand read ${loadaddr} 80000 40000; " \
+ 		"bootm ${loadaddr}\0" \
+ 
+ #define CONFIG_BOOTCOMMAND \
+@@ -270,10 +270,8 @@
+ 
+ /* Monitor at start of flash */
+ #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
+-#define CONFIG_SYS_ONENAND_BASE		ONENAND_MAP
+ 
+ #define CONFIG_ENV_IS_IN_NAND		1
+-#define ONENAND_ENV_OFFSET		0x260000 /* environment starts here */
+ #define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
+ 
+ #define CONFIG_SYS_ENV_SECT_SIZE	boot_flash_sec
+-- 
+1.6.2.4
+

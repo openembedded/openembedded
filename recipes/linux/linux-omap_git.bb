@@ -8,13 +8,13 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_omapzoom2 = "1"
 
-SRCREV = "3777b1e9ffb6e0901be93cbe201ae8e96003179b"
+SRCREV = "52a962f09ab2306a2ac6e22c2d3bac1a76ac"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.31:"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PV = "2.6.30+2.6.31-rc8+gitr${SRCREV}"
-PR = "r0"
+#PV = "2.6.30+2.6.31-rc8+gitr${SRCREV}"
+PV = "2.6.31"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"

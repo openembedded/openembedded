@@ -1,0 +1,319 @@
+From 2cd2cbb5b87695b85471ceecf314146de0dba77e Mon Sep 17 00:00:00 2001
+From: Sriram <srk@ti.com>
+Date: Thu, 18 Jun 2009 01:53:03 +0530
+Subject: [PATCH 12/16] EMAC driver: Implement GPIO driven PHY reset.
+
+---
+ board/omap3/omap3517evm/omap3517evm.c |   33 ++++++++++-
+ board/omap3/omap3517evm/omap3517evm.h |    6 +-
+ drivers/net/ticpgmac.c                |  104 ++++++++++++++++++++++++++++++---
+ include/asm-arm/arch-omap3/mux.h      |    1 +
+ include/asm-arm/arch-omap3/ticpgmac.h |   17 +++++
+ 5 files changed, 149 insertions(+), 12 deletions(-)
+
+diff --git a/board/omap3/omap3517evm/omap3517evm.c b/board/omap3/omap3517evm/omap3517evm.c
+index bf304e3..0f8dc74 100644
+--- a/board/omap3/omap3517evm/omap3517evm.c
++++ b/board/omap3/omap3517evm/omap3517evm.c
+@@ -65,7 +65,8 @@ int misc_init_r(void)
+ #endif
+ 
+ #if defined(CONFIG_CMD_NET)
+-	//setup_net_chip();
++	/* Drive the PHY reset thru GPIO 30 */
++	setup_net_chip();
+ 	if (!eth_hw_init()) {
+ 		printf("error:Ethernet init failed\n");
+ 		}
+@@ -95,6 +96,7 @@ void set_muxconf_regs(void)
+  *****************************************************************************/
+ static void setup_net_chip(void)
+ {
++	#if 0
+ 	gpio_t *gpio3_base = (gpio_t *)OMAP34XX_GPIO3_BASE;
+ 	gpmc_csx_t *gpmc_cs6_base = (gpmc_csx_t *)GPMC_CONFIG_CS6_BASE;
+ 	ctrl_t *ctrl_base = (ctrl_t *)OMAP34XX_CTRL_BASE;
+@@ -125,4 +127,33 @@ static void setup_net_chip(void)
+ 	writel(GPIO0, &gpio3_base->cleardataout);
+ 	udelay(1);
+ 	writel(GPIO0, &gpio3_base->setdataout);
++	#else
++	volatile unsigned int ctr;
++	
++	gpio_t *gpio1_base = (gpio_t *)OMAP34XX_GPIO1_BASE;
++	ctrl_t *ctrl_base = (ctrl_t *)OMAP34XX_CTRL_BASE;
++	
++
++	/* Make GPIO 30 as output pin */
++	writel(readl(&gpio1_base->oe) & ~(GPIO30), &gpio1_base->oe);
++
++	/* Now send a pulse on the GPIO pin */
++	printf("Driving GPIO 30 low \n");
++	writel(GPIO30, &gpio1_base->cleardataout);
++	ctr  = 0;
++	do{
++		udelay(1000);
++		ctr++;
++		}while (ctr <300);
++		
++	printf("Driving GPIO 30 high \n");
++	writel(GPIO30, &gpio1_base->setdataout);
++	ctr =0;
++	/* allow the PHY to stabilize and settle down */
++	do{
++		udelay(1000);
++		ctr++;
++		}while (ctr <300);
++	
++	#endif
+ }
+diff --git a/board/omap3/omap3517evm/omap3517evm.h b/board/omap3/omap3517evm/omap3517evm.h
+index 65276b8..074d4ff 100644
+--- a/board/omap3/omap3517evm/omap3517evm.h
++++ b/board/omap3/omap3517evm/omap3517evm.h
+@@ -287,6 +287,8 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(SYS_32K),		(IEN  | PTD | DIS | M0)) /*SYS_32K*/\
+  MUX_VAL(CP(SYS_CLKREQ),	(IEN  | PTD | DIS | M0)) /*SYS_CLKREQ*/\
+  MUX_VAL(CP(SYS_NIRQ),		(IEN  | PTU | EN  | M0)) /*SYS_nIRQ*/\
++ MUX_VAL(CP(SYS_NRESWARM),	(IDIS | PTU | DIS | M4)) /*SYS_nRESWARM */\
++ 							 /* GPIO 30 */\
+  MUX_VAL(CP(SYS_BOOT0),		(IEN  | PTD | DIS | M4)) /*GPIO_2*/\
+ 							 /* - PEN_IRQ */\
+  MUX_VAL(CP(SYS_BOOT1),		(IEN  | PTD | DIS | M4)) /*GPIO_3 */\
+@@ -337,8 +339,8 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(CCDC_DATA5),	(IEN  | PTD | EN  | M0)) /*ccdc_data5*/\
+  MUX_VAL(CP(CCDC_DATA6),	(IEN  | PTD | EN  | M0)) /*ccdc_data6*/\
+  MUX_VAL(CP(CCDC_DATA7),	(IEN  | PTD | EN  | M0)) /*ccdc_data7*/\
+- MUX_VAL(CP(RMII_MDIO_DATA),	(PTD |  M0)) /*rmii_mdio_data*/\
+- MUX_VAL(CP(RMII_MDIO_CLK),	(PTD |  M0)) /*rmii_mdio_clk*/\
++ MUX_VAL(CP(RMII_MDIO_DATA),	(IEN  |  M0)) /*rmii_mdio_data*/\
++ MUX_VAL(CP(RMII_MDIO_CLK),	(M0)) /*rmii_mdio_clk*/\
+  MUX_VAL(CP(RMII_RXD0)	,	(IEN  | PTD | M0)) /*rmii_rxd0*/\
+  MUX_VAL(CP(RMII_RXD1),		(IEN  | PTD | M0)) /*rmii_rxd1*/\
+  MUX_VAL(CP(RMII_CRS_DV),	(IEN  | PTD | M0)) /*rmii_crs_dv*/\
+diff --git a/drivers/net/ticpgmac.c b/drivers/net/ticpgmac.c
+index 350fb9b..eeff23b 100644
+--- a/drivers/net/ticpgmac.c
++++ b/drivers/net/ticpgmac.c
+@@ -268,26 +268,44 @@ STATIC int gen_is_phy_connected(int phy_addr)
+ 
+ STATIC int gen_get_link_status(int phy_addr)
+ {
+-	u_int16_t	tmp;
++	u_int16_t	tmp,lpa_val,val;
+ 
+ 	if (cpgmac_eth_phy_read(phy_addr, MII_STATUS_REG, &tmp)
+ 							&& (tmp & 0x04)) {
++		//printf("Phy %d MII_Status Reg=0x%x \n",phy_addr,tmp);
++		//printf("MACCTRL 0x%x\n",adap_emac->MACCONTROL);
+ 
++		cpgmac_eth_phy_read(phy_addr,MII_CTRL_REG,&val);
++		//printf("Phy CTRL=0x%x \n",val);
++		
++		cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG,&val);
++	//	printf("Phy ANEG ADV=0x%x \n",val);
++              
++		cpgmac_eth_phy_read(phy_addr,ANEG_LPA_REG,&lpa_val);
++		//printf("Phy ANEG LPA=0x%x \n",lpa_val);
++	      
+ 		/* Speed doesn't matter, there is no setting for it in EMAC. */
+-		if (tmp & GEN_PHY_STATUS_FD_MASK) {
++		//if (tmp & GEN_PHY_STATUS_FD_MASK) {
++		if (lpa_val & (GEN_PHY_ANEG_100DUP | GEN_PHY_ANEG_10DUP ) ) {
+ 			/* set EMAC for Full Duplex  */
++		//	printf("Set MACCTRL for full duplex \n");
+ 			adap_emac->MACCONTROL = EMAC_MACCONTROL_MIIEN_ENABLE |
+ 				EMAC_MACCONTROL_FULLDUPLEX_ENABLE;
+ 		} else {
+ 			/*set EMAC for Half Duplex  */
+ 			adap_emac->MACCONTROL = EMAC_MACCONTROL_MIIEN_ENABLE;
++		//	printf("Set MACCTRL for HALF duplex \n");
+ 		}
+ 
+ #ifdef CONFIG_DRIVER_TI_EMAC_USE_RMII
+-		if(tmp & GEN_PHY_STATUS_SPEED100_MASK) {
++		//if(tmp & GEN_PHY_STATUS_SPEED100_MASK) {
++		if (lpa_val & (GEN_PHY_ANEG_100DUP | GEN_PHY_ANEG_100TX ) ) {
+ 			adap_emac->MACCONTROL |= EMAC_MACCONTROL_RMIISPEED_100;
++		//	printf("Set maccontrol for RMII 100 - 0x%x\n",adap_emac->MACCONTROL);
++
+ 		} else {
+ 			adap_emac->MACCONTROL &= ~EMAC_MACCONTROL_RMIISPEED_100;
++			printf("Set maccontrol for RMII 10 -  0x%x\n",adap_emac->MACCONTROL);
+ 		}
+ #endif
+ 
+@@ -299,20 +317,62 @@ STATIC int gen_get_link_status(int phy_addr)
+ 
+ STATIC int gen_auto_negotiate(int phy_addr)
+ {
+-	u_int16_t	tmp;
++	u_int16_t	tmp,val;
++	unsigned long cntr =0;
+ 
+ 	if (!cpgmac_eth_phy_read(phy_addr, PHY_BMCR, &tmp))
+ 		return(0);
+ 
++        printf("read BMCR 0x%x\n",tmp);
++	
++	val = tmp | GEN_PHY_CTRL_DUP | GEN_PHY_CTRL_ENA_ANEG | GEN_PHY_CTRL_SPD_SEL ;
++	cpgmac_eth_phy_write(phy_addr, PHY_BMCR, val);
++	cpgmac_eth_phy_read(phy_addr, PHY_BMCR, &val);
++	printf("BMCR set to 0x%X \n",val);
++
++	cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG, &val);
++	printf("read ANEG 0x%x \n",val);
++	val |= ( GEN_PHY_ANEG_100DUP | GEN_PHY_ANEG_100TX | GEN_PHY_ANEG_10DUP | GEN_PHY_ANEG_10TX );
++	printf("writing back 0x%x \n",val);
++	cpgmac_eth_phy_write(phy_addr, ANEG_ADVERTISE_REG, val);
++	cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG, &val);
++	printf("ANEG ADVT set to 0x%x \n", val);
++
++	
++	printf("Restart Auto-negn \n");
++	cpgmac_eth_phy_read(phy_addr, PHY_BMCR, &tmp);
++	
+ 	/* Restart Auto_negotiation  */
+-	tmp |= PHY_BMCR_AUTON;
++	tmp |= PHY_BMCR_RST_NEG;
++	printf("writing bk 0x%x to BMCR for anegn \n",tmp);
+ 	cpgmac_eth_phy_write(phy_addr, PHY_BMCR, tmp);
+ 
+ 	/*check AutoNegotiate complete */
+-	udelay (10000);
++	//udelay (10000);
++	do{
++		udelay(40000);
++		cntr++;
++		}while(cntr < 150 );
++
+ 	if (!cpgmac_eth_phy_read(phy_addr, PHY_BMSR, &tmp))
+ 		return(0);
++	printf("BMSR after negn 0x%X\n",tmp);
+ 
++	cpgmac_eth_phy_read(phy_addr,MII_CTRL_REG,&val);
++	printf("Phy CTRL=0x%x \n",val);
++		
++	cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG,&val);
++	printf("Phy ANEG ADV=0x%x \n",val);
++              
++	cpgmac_eth_phy_read(phy_addr,ANEG_LPA_REG,&val);
++	printf("Phy ANEG LPA=0x%x \n",val);
++	      
++	cpgmac_eth_phy_read(phy_addr,ANEG_EXP_REG,&val);
++	printf("Phy ANEG eXP=0x%x \n",val);
++	      
++	cpgmac_eth_phy_read(phy_addr,SPL_VEND_REG,&val);
++	printf("Phy SPL VEND =0x%x \n",val);
++	
+ 	if (!(tmp & PHY_BMSR_AUTN_COMP))
+ 		return(0);
+ 
+@@ -324,16 +384,20 @@ STATIC int gen_auto_negotiate(int phy_addr)
+ #if defined(CONFIG_MII) || defined(CONFIG_CMD_MII)
+ STATIC int cpgmac_mii_phy_read(char *devname, unsigned char addr, unsigned char reg, unsigned short *value)
+ {
++	printf("MII Phy read \n");
+ 	return(cpgmac_eth_phy_read(addr, reg, value) ? 0 : 1);
+ }
+ 
+ STATIC int cpgmac_mii_phy_write(char *devname, unsigned char addr, unsigned char reg, unsigned short value)
+ {
++
++	printf("MII Phy write \n");
+ 	return(cpgmac_eth_phy_write(addr, reg, value) ? 0 : 1);
+ }
+ 
+ int cpgmac_eth_miiphy_initialize(bd_t *bis)
+ {
++	printf("MIIPHY initialize \n");
+ 	miiphy_register(phy.name, cpgmac_mii_phy_read, cpgmac_mii_phy_write);
+ 
+ 	return(1);
+@@ -399,6 +463,28 @@ STATIC int cpgmac_eth_hw_init(void)
+ 
+ 	printf("Ethernet PHY: %s\n", phy.name);
+ 
++	/* Override HW configuration value that were latched */
++	cpgmac_eth_phy_read(active_phy_addr, SPL_VEND_REG, &tmp);
++	printf("read HW config for PHY 0x%x\n",tmp);
++//	tmp |= (1 << 14) | ( 7 << 5) ;
++	tmp = 0x60e0;
++	printf("Program HW config as 0x%x \n",tmp);
++	cpgmac_eth_phy_write(active_phy_addr,SPL_VEND_REG,tmp);
++
++	/* Soft reset the PHY */
++	cpgmac_eth_phy_write(active_phy_addr, PHY_BMCR, (1 << 15));
++
++	active_phy_addr = 0;
++
++	do
++	{
++	cpgmac_eth_phy_read(active_phy_addr, PHY_BMCR , &tmp);
++	
++	}while (tmp & (1 << 15));
++
++	
++	
++
+ 	return(1);
+ }
+ 
+@@ -505,7 +591,7 @@ STATIC int cpgmac_eth_open(void)
+ 	clkdiv = (EMAC_MDIO_BUS_FREQ / EMAC_MDIO_CLOCK_FREQ) - 1;
+ 	adap_mdio->CONTROL = ((clkdiv & 0xff) | MDIO_CONTROL_ENABLE | MDIO_CONTROL_FAULT);
+ 
+-	if (!phy.get_link_status(active_phy_addr))
++	if (!phy.auto_negotiate(active_phy_addr))
+ 		return(0);
+ 
+ 	/* Start receive process */
+diff --git a/include/asm-arm/arch-omap3/mux.h b/include/asm-arm/arch-omap3/mux.h
+index d94eb2d..3e4a2ee 100644
+--- a/include/asm-arm/arch-omap3/mux.h
++++ b/include/asm-arm/arch-omap3/mux.h
+@@ -284,6 +284,7 @@
+ #define CONTROL_PADCONF_SYS_32K		0x0A04
+ #define CONTROL_PADCONF_SYS_CLKREQ	0x0A06
+ #define CONTROL_PADCONF_SYS_NIRQ	0x01E0
++#define CONTROL_PADCONF_SYS_NRESWARM    0x0A08
+ #define CONTROL_PADCONF_SYS_BOOT0	0x0A0A
+ #define CONTROL_PADCONF_SYS_BOOT1	0x0A0C
+ #define CONTROL_PADCONF_SYS_BOOT2	0x0A0E
+diff --git a/include/asm-arm/arch-omap3/ticpgmac.h b/include/asm-arm/arch-omap3/ticpgmac.h
+index 10ec187..2a7c886 100644
+--- a/include/asm-arm/arch-omap3/ticpgmac.h
++++ b/include/asm-arm/arch-omap3/ticpgmac.h
+@@ -81,7 +81,12 @@
+ #define EMAC_TEARDOWN_VALUE		0xfffffffc
+ 
+ /* MII Status Register */
++#define MII_CTRL_REG			0
+ #define MII_STATUS_REG			1
++#define ANEG_ADVERTISE_REG		4
++#define ANEG_LPA_REG			5
++#define ANEG_EXP_REG			6
++#define SPL_VEND_REG			18	
+ 
+ /* Number of statistics registers */
+ #define EMAC_NUM_STATS			36
+@@ -339,4 +344,16 @@ typedef struct
+ #define GEN_PHY_STATUS_SPEED100_MASK	((1 << 13) | (1 << 14))
+ #define GEN_PHY_STATUS_FD_MASK		((1 << 11) | (1 << 13))
+ 
++#define GEN_PHY_ANEG_100DUP		(1 << 8)
++#define GEN_PHY_ANEG_100TX		(1 << 7)
++#define GEN_PHY_ANEG_10DUP		(1 << 6)
++#define GEN_PHY_ANEG_10TX		(1 << 5)
++
++#define GEN_PHY_CTRL_RST_ANEG		(1 << 9)
++#define GEN_PHY_CTRL_DUP			(1 << 8)
++#define GEN_PHY_CTRL_ENA_ANEG		(1 << 12)
++#define GEN_PHY_CTRL_SPD_SEL		(1 << 13)
++
++
++
+ #endif  /* _TI_CPGMAC_H_ */
+-- 
+1.6.2.4
+
