@@ -3,10 +3,10 @@ HOMEPAGE = "http://www.assembla.com/wiki/show/shrdev"
 AUTHOR = "Fate"
 LICENSE = "GPLv2"
 SECTION = "e/apps"
-RDEPENDS = "python-elementary connman"
+RDEPENDS = "python-elementary connman connman-plugin-wifi"
 
 PV = "0.4+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http"
 
