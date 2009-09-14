@@ -110,6 +110,7 @@ SRCREV_pn-illume-keyboard-russian = "${AUTOREV}"
 
 # Other stuff
 SRCREV_pn-bt-configure = "${AUTOREV}"
+SRCREV_pn-advancedcaching = "${AUTOREV}"
 SRCREV_pn-navit = "${AUTOREV}"
 SRCREV_pn-omview = "${AUTOREV}"
 SRCREV_pn-pythm = "${AUTOREV}"
