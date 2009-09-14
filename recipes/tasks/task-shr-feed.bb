@@ -56,6 +56,7 @@ RDEPENDS_${PN} += "\
 		shr-splash-theme-handy \
 		shr-splash-theme-niebiee \
 		openbmap-logger \
+		pisi \
 		ffalarms \
 		libnotify \
 		accelges \
