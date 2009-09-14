@@ -3,8 +3,7 @@ AUTHOR = "Didier 'Ptitjes"
 LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-native vala-dbus-binding-tool-native dbus-glib glib-2.0 fso-specs"
-# remove the x on next version bump
-PV = "0.2.0-gitrx${SRCPV}"
+PV = "0.2.1+gitr${SRCPV}"
 PR = "r0"
 
 inherit autotools_stage pkgconfig vala girepository

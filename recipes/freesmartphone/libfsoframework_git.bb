@@ -1,6 +1,6 @@
 require cornucopia.inc
 DESCRIPTION = "freesmartphone.org support library"
 DEPENDS += "misc-vapi libfsobasics"
-PV = "0.1.0.0+gitr${SRCPV}"
-PR = "${INC_PR}.2"
+PV = "0.2.0.0+gitr${SRCPV}"
+PR = "${INC_PR}.1"
 
