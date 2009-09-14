@@ -5,6 +5,7 @@ SRC_URI += "file://vorbisenc.h file://vorbisdec.h \
             file://gst-plugins-directfb-fix.patch;patch=1;pnum=2 \
             file://ivorbis-thumb.patch;patch=1"
 DEPENDS += "gst-plugins-base directfb"
+gst-plugin-soup_DEPENDS += "libsoup-2.4"
 
 do_compile_prepend() {
 	# work around missing files in upstream tarball (upstream bug #454078)
