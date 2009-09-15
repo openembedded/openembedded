@@ -10,7 +10,7 @@ include conf/distro/include/shr-${MACHINE}.conf
 # with each change.  So if you change one of these, go to the kernel recipe
 # and bump the OEV value up as well.
 SRCREV_pn-linux-eten = "df9715883efa3e6a88866813168fabb1c16b0b7a"
-SRCREV_pn-linux-openmoko-shr-devel = "2d158aae9d8d36f575504f59884ed8e80802efe2"
+SRCREV_pn-linux-openmoko-shr-devel = "a3587e4ed77974adfb057af261aaeea4022018e8"
 
 # FSO stuff
 SRCREV_pn-dbus-hlid = "5df7f49fe8881804aaab544a569fd164c3e93afb"
