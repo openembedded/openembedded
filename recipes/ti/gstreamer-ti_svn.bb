@@ -11,10 +11,11 @@ SRCREV = "335"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
            file://gstreamer-ti-tracker-824.patch;patch=1 \
            file://gstreamer-ti-tracker-462.patch;patch=1 \
+           file://gstreamer-ti-add-omapfb.patch;patch=1 \
 "
 
 # Again, no '.' in PWD allowed :(
-PR = "r33"
+PR = "r35"
 PV = "svnr${SRCREV}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
@@ -66,7 +67,13 @@ PACKAGES += "gstreamer-ti-demo-script"
 FILES_gstreamer-ti-demo-script = "${installdir}/gst/*"
 RDEPENDS_gstreamer-ti-demo-script = "gstreamer-ti"
 
-RDEPENDS_${PN} = "ti-dmai-apps"
+RDEPENDS_${PN} = " \
+gst-plugins-base-meta \
+gst-plugins-good-meta \
+gst-plugins-bad-meta \
+gst-plugins-ugly-meta \
+ti-dmai-apps"
+
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
 FILES_${PN}-dev += "${libdir}/gstreamer-0.10/*.a ${libdir}/gstreamer-0.10/*.la"
 FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
