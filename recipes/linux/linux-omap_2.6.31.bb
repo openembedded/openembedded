@@ -47,6 +47,7 @@ SRC_URI_append = " \
                   file://expansion-boards/tincantools-zippy.patch;patch=1 \
                   file://madc/madc-driver.patch;patch=1 \
                   file://madc/madc.patch;patch=1 \
+                  file://arch-has-holes.diff;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
