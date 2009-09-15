@@ -35,8 +35,8 @@ do_configure_append() {
 	sed -i "s|/etc/|../../etc/|" ${S}/setup.py
 	sed -i "s|prefix,|'../../usr/',|" ${S}/setup.py
 	sed -i "s|core/|/usr/lib/python2.6/site-packages/|" ${S}/scripts/paroli
-	sed -i "s|services|/usr/share/paroli/services|" ${S}${sysconfdir}/paroli/paroli.fso.cfg
-	sed -i "s|applications|/usr/share/paroli/applications|" ${S}$/scripts/paroli.fso.cfg
+	sed -i "s|services|/usr/share/paroli/services|" ${S}/scripts/paroli.fso.cfg
+	sed -i "s|applications|/usr/share/paroli/applications|" ${S}/scripts/paroli.fso.cfg
 }
 
 do_install_append() {
@@ -54,7 +54,7 @@ do_install_append() {
 	install -d ${D}${datadir}/elementary/themes
 	install ${S}/data/paroli.edj ${D}${datadir}/elementary/themes
 
-   	install -d ${D}${datadir}/icons	
+   	install -d ${D}${datadir}/icons
 	install ${S}/data/paroli.png ${D}${datadir}/icons
 
    	install -d ${D}${datadir}/applications	
@@ -148,6 +148,7 @@ FILES_${PN} = " \
 	${datadir}/paroli/services \
 	${datadir}/paroli/data \
 	${datadir}/pixmaps \
+	${datadir}/icons \
 	${datadir}/dbus-1/system-services/ \
 	"
 
