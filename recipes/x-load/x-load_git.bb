@@ -16,6 +16,11 @@ SRC_URI_append_beagleboard = " \
                               file://name.patch;patch=1 \
                              "
 
+SRC_URI_append_omap3-touchbook = " \
+                              file://name.patch;patch=1 \
+                             "
+
+
 SRC_URI_append_omap3517-evm = " \
                                  file://xload-shiva.diff;patch=1 \
 "
