@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCPV}"
-PR = "r27"
+PR = "r28"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -31,10 +31,17 @@ RULES_YAML = rules.yaml
 RULES_YAML_om-gta01 = gta01_rules.yaml
 
 do_configure_append() {
-        echo "version=\"${SRCREV}\"" > ${S}/paroli-core/tichy/__version__.py
+	# fix absolute etc reference
+	sed -i "s|/etc/|../../etc/|" ${S}/setup.py
+	sed -i "s|prefix,|'../../usr/',|" ${S}/setup.py
+	sed -i "s|core/|/usr/lib/python2.6/site-packages/|" ${S}/scripts/paroli
+	sed -i "s|services|/usr/share/paroli/services|" ${S}${sysconfdir}/paroli/paroli.fso.cfg
+	sed -i "s|applications|/usr/share/paroli/applications|" ${S}$/scripts/paroli.fso.cfg
 }
 
 do_install_append() {
+#	install ${D}${sysconfdir}/paroli/paroli.fso.cfg ${D}${sysconfdir}/paroli/paroli.cfg
+
        	# install paroli theme
        	install -d ${D}${E_CONFIG_DIR}/themes
        	install ${S}/data/e-config/paroli.edj ${D}${E_CONFIG_DIR}/themes/
@@ -43,11 +50,15 @@ do_install_append() {
        	install ${S}/data/e-config/paroli/* ${D}${E_CONFIG_DIR}/config/paroli/
        	install -d ${D}${E_CONFIG_DIR}/config/paroli-serenity
        	install ${S}/data/e-config/paroli-serenity/* ${D}${E_CONFIG_DIR}/config/paroli-serenity/
+
 	install -d ${D}${datadir}/elementary/themes
 	install ${S}/data/paroli.edj ${D}${datadir}/elementary/themes
 
-    	install -d ${D}${datadir}/pixmaps	
-	install ${S}/data/paroli.png ${D}${datadir}/pixmaps
+   	install -d ${D}${datadir}/icons	
+	install ${S}/data/paroli.png ${D}${datadir}/icons
+
+   	install -d ${D}${datadir}/applications	
+	install ${S}/data/paroli.desktop ${D}${datadir}/applications
 
        	# install autostart
     	install -d ${D}${E_CONFIG_DIR}/applications/all
@@ -126,11 +137,11 @@ FILES_${PN} = " \
 	${prefix}/lib \
 	${prefix}/bin \
 	${datadir}/paroli/applications/common-for-edje \
-	${datadir}/paroli/applications/tele2 \
-	${datadir}/paroli/applications/i-o2 \
-	${datadir}/paroli/applications/msgs2 \
-	${datadir}/paroli/applications/paroli-launcher2 \
-	${datadir}/paroli/applications/people2 \
+	${datadir}/paroli/applications/inout \
+	${datadir}/paroli/applications/telephony \
+	${datadir}/paroli/applications/messages \
+	${datadir}/paroli/applications/launcher \
+	${datadir}/paroli/applications/people \
 	${datadir}/paroli/applications/settings \
 	${datadir}/applications \
 	${datadir}/elementary \
@@ -157,9 +168,9 @@ FILES_${PN}-calculator = " \
 	"
 
 CONFFILES_${PN} += " \
-	${sysconfdir}/paroli/paroli.cfg \
-#	${sysconfdir}/frameworkd.conf \
-#	${sysconfdir}/freesmartphone/oevents/rules.yaml \
+	${sysconfdir}/paroli/paroli.fallback.cfg \
+	${sysconfdir}/paroli/paroli.pyneo.cfg \
+	${sysconfdir}/paroli/paroli.fso.cfg \
 	"
 CONFFILES_${PN}-sounds += " \
 	${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml \
