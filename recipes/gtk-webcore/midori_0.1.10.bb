@@ -1,13 +1,13 @@
 require midori.inc
 
-DEPENDS += "python-native librsvg"
+DEPENDS += "python-native librsvg python-docutils-native"
 
 SRC_URI = "\
 	http://archive.xfce.org/src/apps/midori/0.1/midori-${PV}.tar.bz2\
 	file://ua-iphone-0.1.10.patch;patch=1\
 "
 
-PR = "r0"
+PR = "r1"
 
 CC += "-lstdc++"
 
