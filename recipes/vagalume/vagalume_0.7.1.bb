@@ -1,21 +1,16 @@
 DESCRIPTION = "Last.fm client"
 AUTHOR = "agarcia@igalia.com"
-HOMEPAGE = "http://people.igalia.com/berto/"
+HOMEPAGE = "http://vagalume.igalia.com/"
 SECTION = "x11"
 DEPENDS = "gtk+ gstreamer"
-RDEPENDS += "librsvg-gtk"
+RDEPENDS = "gst-plugin-mad gst-plugin-autodetect gst-plugin-audioconvert gst-plugin-alsa librsvg-gtk"
 RRECOMMENDS = "dbus-x11"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "\
-  http://vagalume.igalia.com/files/source/vagalume_${PV}.orig.tar.gz\
-  file://index.theme \
-"
+SRC_URI = "http://vagalume.igalia.com/files/source/vagalume_${PV}.orig.tar.gz\
+	  "
 S = "${WORKDIR}/vagalume-${PV}.orig"
 
 inherit autotools
 
-do_install_append() {
-	install -m 0644 ${WORKDIR}/index.theme ${D}${datadir}/vagalume/icons/hicolor
-}
-
+FILES_${PN} += "${datadir}/icons ${datadir}/dbus-1"
