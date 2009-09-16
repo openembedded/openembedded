@@ -1,7 +1,7 @@
 require gtk+.inc
 
 DEPENDS += "cairo jasper"
-PR = "r0"
+PR = "${INC_PR}.0"
 
 # disabled per default - this uses as little patches as possible
 DEFAULT_PREFERENCE = "-1" 

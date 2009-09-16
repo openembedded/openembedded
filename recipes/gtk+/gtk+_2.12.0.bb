@@ -1,6 +1,6 @@
 require gtk+.inc
 
-PR = "r3"
+PR = "${INC_PR}.0"
 
 DEPENDS += "cairo"
 
