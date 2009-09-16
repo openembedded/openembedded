@@ -1,7 +1,5 @@
 require glib.inc
-
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_angstrom = "1"
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.21/glib-${PV}.tar.bz2 \

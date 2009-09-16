@@ -1,5 +1,5 @@
 require glib.inc
-PR = "r0"
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.18/glib-${PV}.tar.bz2 \
