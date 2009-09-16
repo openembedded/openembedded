@@ -1,0 +1,23 @@
+https://bugs.launchpad.net/bugs/427412
+Index: bluez-gnome-1.8/po/cs.po
+===================================================================
+--- bluez-gnome-1.8.orig/po/cs.po
++++ bluez-gnome-1.8/po/cs.po
+@@ -262,7 +262,7 @@
+ #: ../applet/main.c:110 ../applet/main.c:141 ../applet/main.c:204
+ #: ../applet/agent.c:685 ../applet/agent.c:726 ../applet/agent.c:871
+ msgid "Bluetooth device"
+-msgstr "Bluetooth zářízení"
++msgstr "Bluetooth zařízení"
+ 
+ #: ../applet/main.c:137
+ #, c-format
+@@ -295,7 +295,7 @@
+ 
+ #: ../applet/main.c:529
+ msgid "A Bluetooth manager for the GNOME desktop"
+-msgstr "Správce bluetooth pro GNOME"
++msgstr "Správce Bluetooth pro GNOME"
+ 
+ #: ../applet/main.c:532 ../analyzer/dialog.c:128
+ msgid "translator-credits"
