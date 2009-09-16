@@ -82,6 +82,8 @@ fakeroot rootfs_ipk_do_rootfs () {
 
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
+	
+	${ROOTFS_POSTPROCESS_COMMAND}
 
 	if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
 		if [ "${ONLINE_PACKAGE_MANAGEMENT}" == "add" ]; then
@@ -98,8 +100,6 @@ fakeroot rootfs_ipk_do_rootfs () {
 		rm -rf ${IMAGE_ROOTFS}${libdir}/opkg
 		rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
 	fi
-	
-	${ROOTFS_POSTPROCESS_COMMAND}
 	
 	log_check rootfs 	
 	rm -rf ${IPKG_TMP_DIR}
