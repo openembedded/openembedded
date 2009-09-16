@@ -12,10 +12,11 @@ SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=
            file://gstreamer-ti-tracker-824.patch;patch=1 \
            file://gstreamer-ti-tracker-462.patch;patch=1 \
            file://gstreamer-ti-add-omapfb.patch;patch=1 \
+           file://gstreamer-ti-remove-mp3-decode-support-from-auddec1.patch;patch=1 \
 "
 
 # Again, no '.' in PWD allowed :(
-PR = "r35"
+PR = "r36"
 PV = "svnr${SRCREV}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
