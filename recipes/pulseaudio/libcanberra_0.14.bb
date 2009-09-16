@@ -5,7 +5,7 @@ DEPENDS = "alsa-lib gstreamer gtk+ libvorbis pulseaudio"
 SECTION = "libs/multimedia"
 AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
-PR = "r2"
+PR = "r3"
 
 inherit autotools_stage
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
