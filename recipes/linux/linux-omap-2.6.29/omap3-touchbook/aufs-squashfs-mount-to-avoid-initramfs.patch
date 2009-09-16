@@ -7,7 +7,7 @@
 +	int do_special = 0;
 +	if (strcmp(root_device_name, "special") == 0)
 +		do_special = 1;
-+	do_special = 1;
++	//do_special = 1;
 +
 +	if (do_special) {
 +		dev_t ROOT_DEV_RO;
