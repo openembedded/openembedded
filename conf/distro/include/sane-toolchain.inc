@@ -157,7 +157,7 @@ def detect_arm_abi (d):
 def compute_os_portion_of_target_triplet (d):
 	import bb
 	arm_eabi_supporting_arches = "armv6 armv6-novfp \
-	armv5te iwmmxt armv7a armv7 armv6 armv5teb armv5te armv4t"
+	armv5te iwmmxt armv7a armv7 armv6 armv5teb armv4t"
 	ppc_spe_supporting_arches = "ppce500v2 ppce500"
 
   	if bb.data.getVar("LIBC", d, 1) == "uclibc":
