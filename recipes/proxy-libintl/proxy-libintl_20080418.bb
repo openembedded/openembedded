@@ -5,7 +5,6 @@ LICENSE = "LGPL"
 
 PR = "r1"
 PROVIDES = "virtual/libintl"
-LEAD_SONAME = "libintl.so"
 
 SRC_URI = " \
     http://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/${PN}-${PV}.zip \
@@ -15,7 +14,7 @@ SRC_URI = " \
 
 
 S = "${WORKDIR}"
-FILES_${PN}-dev = "${includedir}"
+FILES_${PN}-dev = "${includedir} ${libdir}/libintl.a"
 FILES_${PN} = "${libdir}/libintl.so"
 
 
@@ -35,6 +34,7 @@ do_install() {
     
     install -m 0644 ${WORKDIR}/include/libintl.h ${D}/${includedir}
     install -m 0644 ${WORKDIR}/lib/libintl.so ${D}/${libdir}
+    install -m 0644 ${WORKDIR}/lib/libintl.a ${D}/${libdir}
 }
 
 
