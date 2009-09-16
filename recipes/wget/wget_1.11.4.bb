@@ -1,4 +1,4 @@
-PR="${INC_PR}.1"
+PR="${INC_PR}.0"
 
 DEFAULT_PREFERENCE="-1"
 SRC_URI = " \

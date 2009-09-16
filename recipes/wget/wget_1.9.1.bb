@@ -1,4 +1,4 @@
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.0"
 
 SRC_URI = " \
 	${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
