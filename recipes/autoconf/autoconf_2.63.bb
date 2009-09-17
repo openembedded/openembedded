@@ -6,10 +6,8 @@ DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
 
-SRC_URI += " \
-	   file://autoreconf-exclude.patch;patch=1 \
-	   file://autoreconf-foreign.patch;patch=1 \
-	   file://autoheader-nonfatal-warnings.patch;patch=1 \
-       file://autoreconf-gnuconfigize.patch;patch=1 \
-       file://config-site.patch;patch=1 \
-	   ${@['file://path_prog_fixes.patch;patch=1', ''][bb.data.inherits_class('native', d)]}"
+SRC_URI += "file://autoreconf-exclude.patch;patch=1 \
+	    file://autoreconf-foreign.patch;patch=1 \
+	    file://autoheader-nonfatal-warnings.patch;patch=1 \
+	    file://autoreconf-gnuconfigize.patch;patch=1 \
+	    file://config-site.patch;patch=1"
