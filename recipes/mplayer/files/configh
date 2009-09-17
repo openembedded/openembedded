@@ -1,2 +1,3 @@
 #define HAVE_LLRINT 1
 #define HAVE_ROUNDF 1
+#define HAVE_NEON 0
