@@ -1,6 +1,5 @@
 SECTION = "devel"
 
-require libtool.inc
 require libtool_${PV}.bb
 
 PR = "${INC_PR}.0"
