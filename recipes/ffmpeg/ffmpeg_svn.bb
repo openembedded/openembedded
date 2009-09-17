@@ -2,11 +2,11 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-SRCREV = "16396"
+SRCREV = "19894"
 
 PE = "1"
-PV = "0.4.9+svnr${SRCREV}"
-PR = "r2"
+PV = "0.5.0+${PR}+svnr${SRCREV}"
+PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -42,7 +42,8 @@ EXTRA_OECONF = " \
         --enable-libgsm \
         --enable-libmp3lame \
         --enable-libschroedinger \
-	--enable-swscale \
+        --enable-libtheora  \
+        --enable-libvorbis \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
