@@ -18,6 +18,10 @@ FILES_cups-backend-hal += "${libdir}/cups/backend/*"
 
 EXTRA_OECONF = "--libexecdir=${libdir}/hal/scripts"
 
+do_configure_prepend() {
+	sed -i -e s:{includedir}/cups:{STAGING_INCDIR}/cups:g configure.in
+}
+
 do_configure_append() {
 	sed -i 's,^#!/bin/env python,#!/usr/bin/python,' systemv/hal_lpadmin
 }
