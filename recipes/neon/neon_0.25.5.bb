@@ -4,10 +4,11 @@ SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "zlib libxml2 expat time gnutls"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz \
-	file://gnutls-force-and-detect.patch;patch=1"
+           file://gnutls-force-and-detect.patch;patch=1 \
+           file://gnutls-2.patch;patch=1"
 
 inherit autotools binconfig lib_package pkgconfig
 

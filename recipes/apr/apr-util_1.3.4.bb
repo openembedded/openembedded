@@ -3,33 +3,32 @@ SECTION = "libs"
 DEPENDS = "apr expat gdbm"
 LICENSE = "Apache License, Version 2.0"
 
-PR = "r3"
+PR = "r5"
 
-inherit autotools lib_package binconfig
-
-# apache mirrors?
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
+           file://configfix.patch;patch=1 \
            file://configure_fixes.patch;patch=1"
 
-EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm \
+EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS}/apr-1-config \ 
+		--with-dbm=gdbm \
 		--with-gdbm=${STAGING_DIR_HOST}${layout_prefix} \
 		--without-sqlite2 \
 		--without-sqlite3 \
 		--with-expat=${STAGING_DIR_HOST}${layout_prefix}"
 
 
-OE_BINCONFIG_EXTRA_MANGLE = " -e 's:location=source:location=installed:'"
-EXTRA_OEMAKE = " LIBTOOL=\"${S}/${TARGET_PREFIX}libtool\" "
+inherit autotools_stage lib_package binconfig
 
-export LIBTOOL="${S}/${TARGET_PREFIX}libtool"
+OE_BINCONFIG_EXTRA_MANGLE = " -e 's:location=source:location=installed:'"
 
 do_configure_prepend() {
-	cp ${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool ${S}/
 	cp ${STAGING_DATADIR}/apr/apr_rules.mk ${S}/build/rules.mk
 	echo "AC_PROG_LIBTOOL" >> ${S}/configure.in
-	libtoolize --force
 }
 
-do_stage() {
-	autotools_stage_all
+do_configure_append() {
+	sed -i -e  s:apr_builders=/usr/share/build-1:apr_builders=${STAGING_DATADIR}/build-1:g ${S}/build/rules.mk
+	sed -i /^LIBTOOL/d ${S}/build/rules.mk
+	echo LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool --tag=CC" >> ${S}/build/rules.mk
 }
+
