@@ -1,8 +1,10 @@
+#!/bin/bash
 DATE=`date +%Y%m%d`
-DIR=/tmp/xorg-releases/${DATE}
+SCRDIR=`dirname $0`
+DIR=${SCRDIR}/${DATE}
 PREFIX=http://xorg.freedesktop.org/releases/individual/
 GRPS="app data doc driver font lib proto util xserver"
-OETREE=/home/projects/OE/org.openembedded.dev
+OETREE=${SCRDIR}/../..
 PREFS=${OETREE}/conf/distro/include/preferred-shr-versions.inc
 PREFS_LIVE=${OETREE}/conf/distro/include/preferred-xorg-versions-live.inc
 BBS=${OETREE}/recipes/xorg-
@@ -10,7 +12,6 @@ OUT_LOG=${DIR}.log
 OUT_CMD=${DIR}.cmd
 
 mkdir -p ${DIR}
-cd ${DIR}
 
 function latest {
   IN=$1
@@ -48,14 +49,14 @@ function updateVersions {
 }
 
 for GRP in ${GRPS}; do
-  if [[ ! -e ${GRP}.html ]] ; then
-    wget http://xorg.freedesktop.org/releases/individual/${GRP} -O ${GRP}.html
+  if [[ ! -e ${DIR}/${GRP}.html ]] ; then
+    wget http://xorg.freedesktop.org/releases/individual/${GRP} -O ${DIR}/${GRP}.html
   fi
-  latest ${GRP}.html ${GRP}.txt
-  sed "s/PKG=/${GRP}\//g; s/-\([^-]*\).tar.bz2$/\/\1/g;" ${GRP}.txt | gawk '{ print tolower($0) }' >> latest.txt
+  latest ${DIR}/${GRP}.html ${DIR}/${GRP}.txt
+  sed "s/PKG=/${GRP}\//g; s/-\([^-]*\).tar.bz2$/\/\1/g;" ${DIR}/${GRP}.txt | gawk '{ print tolower($0) }' >> ${DIR}/latest.txt
 done
 
-sort -u latest.txt > latest.sort.txt
+sort -u ${DIR}/latest.txt > ${DIR}/latest.sort.txt
  
 echo "#`date`" > ${PREFS_LIVE}
 #cat << EOF > ${PREFS_LIVE}
@@ -70,7 +71,7 @@ echo "#`date`" > ${PREFS_LIVE}
 echo "#`date`" > ${OUT_LOG}
 echo "#`date`" > ${OUT_CMD}
 
-cat latest.sort.txt | while read LINE; do
+cat ${DIR}/latest.sort.txt | while read LINE; do
   #echo ${LINE};
   PKG=`echo ${LINE} | sed "s%^\(.*\)\/\(.*\)\/\(.*\)$%\2%g;"`
   GRP=`echo ${LINE} | sed "s%^\(.*\)\/\(.*\)\/\(.*\)$%\1%g;"`
@@ -78,3 +79,6 @@ cat latest.sort.txt | while read LINE; do
   updateVersions ${PKG} ${GRP} ${VER}
   updateVersions ${PKG}-native ${GRP} ${VER}
 done
+
+echo "Check ${OUT_LOG} if there is something new and interesting"
+echo "You can update prefs or copy bbfiles with commands from ${OUT_CMD}"
