@@ -11,8 +11,11 @@ SRCREV = "335"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
            file://gstreamer-ti-tracker-824.patch;patch=1 \
            file://gstreamer-ti-tracker-462.patch;patch=1 \
-           file://gstreamer-ti-add-omapfb.patch;patch=1 \
            file://gstreamer-ti-remove-mp3-decode-support-from-auddec1.patch;patch=1 \
+"
+
+SRC_URI_append_armv7a = " \
+           file://gstreamer-ti-add-omapfb.patch;patch=1 \
 "
 
 # Again, no '.' in PWD allowed :(
