@@ -10,7 +10,7 @@ PACKAGE_ARCH = "all"
 FILES_${PN} = "${datadir}/gpe"
 
 do_configure_prepend() {
-        sed -i "s|^\$(DESTDIR)\$(PREFIX)/share/gpe/pixmaps/|$(DESTDIR)$(PREFIX)/share/gpe/pixmaps.${PN}/|g" Makefile
+        sed -i "s| \$(DESTDIR)\$(PREFIX)/share/gpe/pixmaps/| \$(DESTDIR)\$(PREFIX)/share/gpe/pixmaps.${PN}/|g" Makefile
 }
 
 require gpe-icons.inc

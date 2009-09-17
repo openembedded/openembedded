@@ -1,5 +1,5 @@
 SECTION = "e/utils"
-DEPENDS = "edje-utils"
+DEPENDS = "edje-native"
 RDEPENDS = "etk"
 
 S = "${WORKDIR}/git/etk/${PN}/"

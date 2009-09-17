@@ -1,5 +1,5 @@
 SECTION = "e/utils"
-DEPENDS += "ejde-utils"
+DEPENDS += "edje-native"
 
 FILES_${PN} += "${datadir}/libframeworkd-phonegui-efl.${PN}"
 

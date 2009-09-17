@@ -2,7 +2,7 @@ DESCRIPTION = "nEo elementary theme - a very fast, high contrast etk theme"
 SECTION = "e/utils"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
-DEPENDS = "edje-utils"
+DEPENDS = "edje-native"
 RRECOMMENDS = "e-wm-theme-illume-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
