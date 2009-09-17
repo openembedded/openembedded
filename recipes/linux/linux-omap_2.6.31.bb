@@ -63,6 +63,9 @@ SRC_URI_append = " \
                   file://usb/0014-musb-disable-PING-on-status-phase-of-control-transf.patch;patch=1 \
                   file://usb/0015-musb-Add-context-save-and-restore-support.patch;patch=1 \
                   file://usb/0016-usb-update-defconfig.patch;patch=1 \
+                  file://modedb-hd720.patch;patch=1 \
+                  file://fix-omapfb.patch;patch=1 \
+                  file://dss2/beagle-dss2-support.patch;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
