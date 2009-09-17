@@ -18,7 +18,6 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.g
 	   file://defconfig"
 
 SRC_URI_append = " \
-                  file://ehci-phy-reset.patch;patch=1 \
                   file://ehci.patch;patch=1 \
                   file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
                   file://cache/l1cache-shift.patch;patch=1 \
@@ -48,6 +47,22 @@ SRC_URI_append = " \
                   file://madc/madc-driver.patch;patch=1 \
                   file://madc/madc.patch;patch=1 \
                   file://arch-has-holes.diff;patch=1 \
+                  file://usb/0001-musb-fix-put_device-call-sequence.patch;patch=1 \
+                  file://usb/0002-ehci-fix-ehci-pin-mux-init.patch;patch=1 \
+                  file://usb/0003-ehci-adding-mux-pin-for-EHCI-phy-reset-line.patch;patch=1 \
+                  file://usb/0004-ehci-correct-EHCI-init-parameters-on-OMAP3EVM.patch;patch=1 \
+                  file://usb/0005-ehci-fix-phy_reset-init-in-ehci-probe.patch;patch=1 \
+                  file://usb/0006-ehci-increase-timeout-to-fix-ehci-failure.patch;patch=1 \
+                  file://usb/0007-ehci-portwise-configurations.patch;patch=1 \
+                  file://usb/0008-omap3-Add-CHIP_GE_OMAP3430ES3-for-HSUSB.patch;patch=1 \
+                  file://usb/0009-ehci-Support-for-ES3.x.patch;patch=1 \
+                  file://usb/0010-ehci-update-driver-with-generic-change.patch;patch=1 \
+                  file://usb/0011-musb-fix-musb-gadget_driver-NULL-bug.patch;patch=1 \
+                  file://usb/0012-musb-Add-back-old-musb-procfs-file.patch;patch=1 \
+                  file://usb/0013-musb-Remove-USB_SUSPEND-auto-select-with-OTG.patch;patch=1 \
+                  file://usb/0014-musb-disable-PING-on-status-phase-of-control-transf.patch;patch=1 \
+                  file://usb/0015-musb-Add-context-save-and-restore-support.patch;patch=1 \
+                  file://usb/0016-usb-update-defconfig.patch;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

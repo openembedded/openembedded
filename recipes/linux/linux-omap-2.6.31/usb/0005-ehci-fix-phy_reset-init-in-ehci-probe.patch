@@ -1,3 +1,8 @@
+From 42c413f8f9005a5ca109f82baff81f8e400b8854 Mon Sep 17 00:00:00 2001
+From: Ajay Kumar Gupta <ajay.gupta@ti.com>
+Date: Mon, 13 Jul 2009 14:10:46 +0530
+Subject: [PATCH 05/16] ehci: fix phy_reset init in ehci probe
+
 phy_reset is not getting updated from platform_data.
 
 Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
@@ -28,7 +33,3 @@ index 0058f03..55e5259 100644
 -- 
 1.6.2.4
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html

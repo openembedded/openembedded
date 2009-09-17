@@ -1,0 +1,29 @@
+From 2fa09793f0da931d7b893291d684162d03eccef2 Mon Sep 17 00:00:00 2001
+From: Ajay Kumar Gupta <ajay.gupta@ti.com>
+Date: Sat, 20 Jun 2009 14:09:15 +0530
+Subject: [PATCH 13/16] musb: Remove USB_SUSPEND auto select with OTG
+
+As USB power management is not yet supported in MUSB but we want to
+use OTG build image so disable auto selection of USB_SUSPEND with
+OTG till power management is supported.
+
+Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
+---
+ drivers/usb/core/Kconfig |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/usb/core/Kconfig b/drivers/usb/core/Kconfig
+index ad92594..4c7d6e8 100644
+--- a/drivers/usb/core/Kconfig
++++ b/drivers/usb/core/Kconfig
+@@ -109,7 +109,6 @@ config USB_SUSPEND
+ config USB_OTG
+ 	bool
+ 	depends on USB && EXPERIMENTAL
+-	select USB_SUSPEND
+ 	default n
+ 
+ 
+-- 
+1.6.2.4
+
