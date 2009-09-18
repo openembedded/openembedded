@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ ! $JAVA ]; then
+	JAVA=java
+fi
+
+$JAVA -jar /usr/share/java/js.jar $@
+
