@@ -12,7 +12,7 @@ diff -uNr C.orig/update-alternatives C/update-alternatives
  		echo "update-alternatives: removing $link as no more alternatives exist for it"
  		rm $ad/$name
  		if [ -L $link ]; then
-@@ -107,6 +107,9 @@
+@@ -107,11 +107,19 @@
  		return 0
  	fi
  
@@ -22,3 +22,13 @@ diff -uNr C.orig/update-alternatives C/update-alternatives
  	if [ ! -e $link -o -L $link ]; then
  		local link_dir=`dirname $link`
  		if [ ! -d $link_dir ]; then
+ 			mkdir -p $link_dir
+ 		fi
++		if [ -h $link ]; then
++			# if $link exists and the target is directory, than ln -sf $path $link, doesn't replace link to that directory, but creates new link inside
++			echo "update-alternatives: Removing $link"
++			rm -f $link
++		fi
+ 		ln -sf $path $link
+ 		echo "update-alternatives: Linking $link to $path"
+ 	else
