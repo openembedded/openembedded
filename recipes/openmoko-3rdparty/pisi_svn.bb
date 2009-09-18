@@ -1,5 +1,4 @@
 DESCRIPTION = "PISI is synchronizing information"
-SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://projects.openmoko.org/projects/pisi/"
