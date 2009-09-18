@@ -1,0 +1,25 @@
+Index: mail-1.1.2/Makefile.am
+===================================================================
+--- mail-1.1.2.orig/Makefile.am	2008-03-01 11:13:36.000000000 +0100
++++ mail-1.1.2/Makefile.am	2008-03-01 11:17:49.000000000 +0100
+@@ -7,6 +7,8 @@
+ JAVADOC = @JAVADOC@
+ JAVADOCFLAGS = @JAVADOCFLAGS@
+ 
++JARDIR = $(datadir)/java
++
+ src = @srcdir@/source
+ dst = classes
+ doc = @srcdir@/docs
+@@ -433,8 +435,8 @@
+ 	rm -rf $(gnumail_jar) $(providers_jar) META-INF $(dst) $(doc)
+ 
+ install-data-local:
+-	@srcdir@/mkinstalldirs $(DESTDIR)/$(datadir)/java
+-	$(INSTALL_DATA) $(gnumail_jar) $(DESTDIR)/$(datadir)/java
+-	$(INSTALL_DATA) $(providers_jar) $(DESTDIR)/$(datadir)/java
++	@srcdir@/mkinstalldirs $(DESTDIR)/$(JARDIR)
++	$(INSTALL_DATA) $(gnumail_jar) $(DESTDIR)/$(JARDIR)
++	$(INSTALL_DATA) $(providers_jar) $(DESTDIR)/$(JARDIR)
+ 
+ # End of Makefile.am
