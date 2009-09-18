@@ -1,0 +1,27 @@
+diff -Nur xom-1.1/src15/nu/xom/JDK15XML1_0Parser.java xom-1.1.new/src15/nu/xom/JDK15XML1_0Parser.java
+--- xom-1.1/src15/nu/xom/JDK15XML1_0Parser.java	2004-08-17 19:18:30.000000000 +0530
++++ xom-1.1.new/src15/nu/xom/JDK15XML1_0Parser.java	2007-11-13 15:25:08.000000000 +0530
+@@ -24,9 +24,9 @@
+ 
+ import org.xml.sax.SAXException;
+ 
+-import com.sun.org.apache.xerces.internal.parsers.SAXParser;
+-import com.sun.org.apache.xerces.internal.parsers.DTDConfiguration;
+-import com.sun.org.apache.xerces.internal.impl.Constants
++import org.apache.xerces.parsers.SAXParser;
++import org.apache.xerces.parsers.DTDConfiguration;
++import org.apache.xerces.impl.Constants
+ ;
+ /**
+  * <p>
+@@ -47,8 +47,8 @@
+       
+         super(new DTDConfiguration());
+         // workaround for Java 1.5 beta 2 bugs
+-        com.sun.org.apache.xerces.internal.util.SecurityManager manager 
+-          = new com.sun.org.apache.xerces.internal.util.SecurityManager();
++        org.apache.xerces.util.SecurityManager manager 
++          = new org.apache.xerces.util.SecurityManager();
+         setProperty(Constants.XERCES_PROPERTY_PREFIX + Constants.SECURITY_MANAGER_PROPERTY, manager);
+         
+     }
