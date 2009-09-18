@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 require binutils.inc
 LICENSE = "GPLv3"
@@ -13,6 +13,7 @@ SRC_URI = "\
      file://binutils-uclibc-gas-needs-libm.patch;patch=1 \
      file://binutils-arm-pr7093.patch;patch=1 \
      file://ld-stub-crash.patch;patch=1;pnum=0 \
+     file://thumb-func.patch;patch=1 \
      "
 
 # powerpc patches
