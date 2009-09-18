@@ -4,14 +4,13 @@ LICENSE = "GPLv2"
 SECTION = "x11/applications"
 DEPENDS = "poppler gtk+ cups"
 
-SRCREV = "${AUTOREV}"
-
 PV = "0.1.7+svnr${SRCREV}"
 PR = "r0"
 
-SRC_URI = "svn://svn.emma-soft.com/epdfview;module=trunk;proto=svn\
-	   file://acroread.png\
+SRC_URI = "svn://svn.emma-soft.com/epdfview;module=trunk;proto=svn \
 	  "
+SRC_URI_append_shr = "file://acroread.png \
+                     "
 
 S = "${WORKDIR}/trunk"
 
@@ -22,12 +21,17 @@ do_configure_prepend() {
 }
 
 do_compile_append () {
+	sed -i 's|\$.*prefix./|/usr/|' data/epdfview.desktop
+}
+
+do_compile_append_shr () {
 	sed -i 's/Icon=.*/Icon=acroread/' data/epdfview.desktop
 }
 
-do_install_append () {
+do_install_append_shr () {
 	install -d ${D}${datadir}/pixmaps/
 	install -m 0644 ${WORKDIR}/acroread.png ${D}${datadir}/pixmaps/
 }
 
-FILES_${PN} += "${datadir}/pixmaps/acroread.png"
+FILES_${PN}_append_shr = "${datadir}/pixmaps/acroread.png \
+                         "
