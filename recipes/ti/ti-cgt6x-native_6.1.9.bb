@@ -3,7 +3,7 @@ inherit native
 
 # download ti_cgt_c6000_6.1.9_setup_linux_x86.bin from https://www-a.ti.com/downloads/sds_support/TICodegenerationTools/download.htm and copy in Arago (or OE) download directory.
 
-SRC_URI	= "http://install.source.dir.com/ti_cgt_c6000_6.1.9_setup_linux_x86.bin"
+SRC_URI	= "http://install.source.dir.local/ti_cgt_c6000_6.1.9_setup_linux_x86.bin"
 
 BINFILE = "ti_cgt_c6000_6.1.9_setup_linux_x86.bin"
 

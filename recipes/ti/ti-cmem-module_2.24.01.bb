@@ -5,7 +5,7 @@ inherit module
 DEPENDS 	= "virtual/kernel perl-native"
 RDEPENDS 	= "update-modules"
 
-SRC_URI = "http://install.source.dir.com/codec_engine_2_24_01.tar.gz \
+SRC_URI = "http://install.source.dir.local/codec_engine_2_24_01.tar.gz \
 			file://cmem-remove-show-pte-function.patch;patch=1 "
 
 # Set the source directory

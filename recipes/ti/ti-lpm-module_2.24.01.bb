@@ -11,7 +11,7 @@ MACHINE_KERNEL_PR_append = "a"
 
 PV = "2241"
 
-SRC_URI = "http://install.source.dir.com/local_power_manager_1_24.tar.gz"
+SRC_URI = "http://install.source.dir.local/local_power_manager_1_24.tar.gz"
 
 # Set the source directory
 S = "${WORKDIR}/local_power_manager_1_24"

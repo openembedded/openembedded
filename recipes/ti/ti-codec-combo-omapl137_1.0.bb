@@ -1,7 +1,7 @@
 require ti-codec.inc
 
 # Should be replaced with real http URL, but for now create codec combo tar from DVSDK installation.
-SRC_URI	= "http://install.source.dir.com/omapl137_dvsdk_combos_1_0.tar.gz"
+SRC_URI	= "http://install.source.dir.local/omapl137_dvsdk_combos_1_0.tar.gz"
 
 S = "${WORKDIR}/omapl137_dvsdk_combos_1_0"
 
