@@ -1,19 +1,20 @@
 require midori.inc
 
-DEPENDS += "python-native librsvg python-docutils-native"
-
-SRC_URI = "\
-	http://archive.xfce.org/src/apps/midori/0.1/midori-${PV}.tar.bz2\
-	file://ua-iphone-0.1.10.patch;patch=1\
-	file://config\
-"
-
 PR = "r2"
 
-CC += "-lstdc++"
+DEPENDS += "python-native python-docutils-native"
+
+SRC_URI = "http://archive.xfce.org/src/apps/midori/0.1/midori-${PV}.tar.bz2 \
+           file://waf \
+          "
+
+SRC_URI_append_shr = "file://ua-iphone-0.1.10.patch;patch=1 \
+                      file://config"
 
 do_configure() {
-	${S}/configure \
+	cp -f ${WORKDIR}/waf ${S}/
+	sed -i -e 's:, shell=False::g' wscript 
+	./configure \
             --prefix=${prefix} \
             --bindir=${bindir} \
             --sbindir=${sbindir} \
@@ -26,10 +27,14 @@ do_configure() {
             --includedir=${includedir} \
             --infodir=${infodir} \
             --mandir=${mandir} \
-            ${EXTRA_OECONF}
+            ${EXTRA_OECONF} 
+ 
+	sed -i /LINK_CC/d ./_build_/c4che/default.cache.py 
+	echo "LINK_CC = '${CXX}'" >>  ./_build_/c4che/default.cache.py
 }
 
-do_install_append() {
+do_install_append_shr() {
 	install -d ${D}${sysconfdir}/xdg/midori
 	install -m 0644 ${WORKDIR}/config ${D}${sysconfdir}/xdg/midori
 }
+

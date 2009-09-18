@@ -7,4 +7,6 @@ inherit autotools gtk-icon-cache pkgconfig
 
 SRC_URI = "http://software.twotoasts.de/media/midori/midori-${PV}.tar.gz"
 
+EXTRA_OECONF = "  --disable-hildon "
 
+TARGET_CC_ARCH += "${LDFLAGS}"
