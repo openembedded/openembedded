@@ -7,8 +7,7 @@ LICENSE = "LGPL"
 PV = "0.7.2+0.7.3-fso1"
 INC_PR = "r0"
 
-SRC_URI = "http://www.freesmartphone.org/sources/vala-0.7.3-fso1.tar.gz"
-S = "${WORKDIR}/vala-0.7.3-fso1"
+SRC_URI = "http://www.freesmartphone.org/sources/vala-${PV}.tar.gz"
 
 inherit autotools autotools_stage
 
