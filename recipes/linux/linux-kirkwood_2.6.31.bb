@@ -19,8 +19,8 @@ SRC_URI = "git://git.marvell.com/orion.git;protocol=git \
            file://defconfig"
 
 # update machine types list for ARM architecture, only for machines that need it
-do_arm_mach_types_openrd-base() {
-  if test ${TARGET_ARCH} == arm; then
+do_arm_mach_types() {
+  if test ${MACHINE} == openrd-base; then
     curl -o mach-types "http://www.arm.linux.org.uk/developer/machines/download.php" && \
     cp mach-types arch/arm/tools/mach-types
   fi
