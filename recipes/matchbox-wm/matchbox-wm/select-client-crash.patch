@@ -1,0 +1,14 @@
+http://bugzilla.openedhand.com/show_bug.cgi?id=1343
+Index: matchbox-window-manager-1.2/src/select_client.c
+===================================================================
+--- matchbox-window-manager-1.2.orig/src/select_client.c
++++ matchbox-window-manager-1.2/src/select_client.c
+@@ -49,6 +49,8 @@ select_client_new(Wm *w)
+ 
+    if (width == 0 || height == 0) return NULL;
+ 
++   if (w->stack_top_app == NULL) return NULL;
++
+    dbg("%s() got valid size\n", __func__);
+ 
+    button_x = theme_frame_button_get_x_pos(w->mbtheme, FRAME_MAIN, 
