@@ -5,9 +5,6 @@
 # KERNEL
 SRCREV_pn-linux-openmoko-shr-devel = "${AUTOREV}"
 
-PREFERRED_VERSION_vala-native = "0.7.4+0.7.5-fso2"
-
-
 # FSO stuff
 FSOREV_cornucopia = "4f5fe6c8985fbec1b38b3e44d44d783062b380de"
 SRCREV_pn-dbus-hlid = "${AUTOREV}"
