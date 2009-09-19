@@ -9,7 +9,7 @@ do_stage() {
 	# Install initial headers into the cross dir
 	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		install-headers
+		install_headers
 
 	ln -sf include ${CROSS_DIR}/${TARGET_SYS}/sys-include
 
