@@ -24,5 +24,8 @@ EXTRA_OECONF += "--with-driver=dri --with-dri-drivers=swrast,${MACHINE_DRI_MODUL
 
 do_install_append () {
     install -d ${D}/usr/bin
-    install -m 0755 ${S}/progs/xdemos/{glxdemo,glxgears,glxheads,glxinfo} ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxdemo ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxgears ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxheads ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxinfo ${D}/usr/bin/
 }
