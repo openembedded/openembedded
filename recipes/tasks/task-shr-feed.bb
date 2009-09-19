@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r23"
+PR = "r24"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -35,6 +35,7 @@ RDEPENDS_${PN} += "\
 		obexftp \
 		mtpaint \
 		telepathy-python \
+		intone-video \
 		ipkg-link \
 		ipkg-utils \
 		mysql \
@@ -195,6 +196,9 @@ RDEPENDS_${PN} += "\
 		fso-apm \
 		fso-abyss \
 		fsousaged \
+		fsodeviced \
+		fsonetworkd \
+		fsotimed \
 		opimd-utils \
 		omgps \
 		shr-launcher \
@@ -226,5 +230,6 @@ RDEPENDS_${PN} += "\
 		om-neon \
 		ipython \
 		phoneme-advanced-foundation \
+		eve \
 		python-pybluez \
 "
