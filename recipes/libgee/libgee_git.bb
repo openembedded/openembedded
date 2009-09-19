@@ -4,11 +4,14 @@ HOMEPAGE = "http://live.gnome.org/Libgee"
 SECTION = "libs"
 DEPENDS = "glib-2.0"
 LICENSE = "LGPL"
-PV = "0.1.5+gitr${SRCREV}"
+PV = "0.3.0+gitr${SRCPV}"
 PR = "r0"
 
-inherit autotools autotools_stage pkgconfig vala
-
-SRC_URI = "git://git.gnome.org/cgit/libgee;protocol=http;branch=master \
-           file://no-tests.patch;patch=1"
+SRC_URI = "git://git.gnome.org/libgee;protocol=git;branch=master"
 S = "${WORKDIR}/git"
+
+inherit autotools_stage pkgconfig vala
+
+FILES_${PN}-dev += "${datadir}/gir-1.0"
+
+

@@ -47,6 +47,7 @@ SRCREV_pn-python-pytrc = "${AUTOREV}"
 SRCREV_pn-vala-dbus-binding-tool-native = "6071da6ad645e1200eb2aee88d254ada348d361b"
 SRCREV_pn-vala = "${AUTOREV}"
 SRCREV_pn-zhone = "${AUTOREV}"
+SRCREV_pn-libgee = "dd00f92525263fa9568dae9eaf79873776e7567c"
 
 
 # SHR stuff
