@@ -9,7 +9,7 @@
 UCLIBC_BASE ?= "0.9.30"
 
 require uclibc.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
@@ -20,6 +20,7 @@ SRC_URI += "file://uClibc.machine file://uClibc.distro \
 	    file://uclibc_ldso_use_O0.patch;patch=1 \
 	    file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
             file://unifdef-fix.patch;patch=1 \
+	    file://Use-__always_inline-instead-of-__inline__.patch;patch=1 \
 	   "
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
