@@ -5,7 +5,7 @@ Research, Amiga IFF/8SVX, and NIST SPHERE."
 SECTION = "libs"
 LICENSE = "LGPL GPL"
 RPROVIDES_${PN} += "audiofile"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz \
 	   file://audiofile-m4_quote_fix.diff;patch=1;pnum=0 \
@@ -14,4 +14,4 @@ SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz \
 	   file://CVE-2008-5824.patch;patch=1 \
 "
 
-inherit autotools lib_package
+inherit autotools_stage lib_package binconfig
