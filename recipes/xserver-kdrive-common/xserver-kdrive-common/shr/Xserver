@@ -113,13 +113,22 @@ case `module_id` in
                 fi 
                 ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" ;;
        "GTA02")
-                if [ `screen_width` -gt 330 ] ; then
-                     DPI=285
-                else 
-                     DPI=140
-                fi 
-                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" 
-		XSERVER=/usr/bin/Xglamo 
+		if [ -f /usr/bin/Xorg ]; then
+			if [ `screen_width` -gt 330 ] ; then
+				DPI=280
+			else 
+				DPI=140
+			fi 
+			ARGS="$ARGS -dpi ${DPI} vt1" 
+		else
+			if [ `screen_width` -gt 330 ] ; then
+				DPI=285
+			else 
+				DPI=140
+			fi 
+			ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" 
+			XSERVER=/usr/bin/Xglamo 
+		fi
 		;;
 	"Nokia N770")
                 ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
