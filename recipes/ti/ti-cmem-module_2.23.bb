@@ -5,7 +5,7 @@ inherit module
 DEPENDS 	= "virtual/kernel perl-native"
 RDEPENDS 	= "update-modules"
 
-SRC_URI = "http://install.source.dir.com/codec_engine_2_23.tar.gz"
+SRC_URI = "http://install.source.dir.local/codec_engine_2_23.tar.gz"
 
 # Set the source directory
 S = "${WORKDIR}/codec_engine_2_23"

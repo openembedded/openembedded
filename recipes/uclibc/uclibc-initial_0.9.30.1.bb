@@ -9,20 +9,14 @@ do_stage() {
 	# Install initial headers into the cross dir
 	make V=1 CC="${CC}" PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		pregen install_dev
-	make V=1 CC="${CC}" PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		lib/crt1.o lib/crti.o lib/crtn.o
-
-	install -d ${CROSS_DIR}/${TARGET_SYS}	
+		install_headers
 	ln -sf include ${CROSS_DIR}/${TARGET_SYS}/sys-include
 
 	# This conflicts with the c++ version of this header
 	rm -f ${UCLIBC_STAGE_PREFIX}/include/bits/atomicity.h
+	install -d ${UCLIBC_STAGE_PREFIX}/lib
 	install -m 644 lib/crt[1in].o ${UCLIBC_STAGE_PREFIX}/lib
-	${CC} -nostdlib -nostartfiles -shared -x c /dev/null \
-		-o ${UCLIBC_STAGE_PREFIX}/lib/libc.so
-
+	install -m 644 lib/libc.so ${UCLIBC_STAGE_PREFIX}/lib
 }
 
 do_install() {
@@ -30,5 +24,9 @@ do_install() {
 }
 
 do_compile () {
-	:
+	make V=1 CC="${CC}" PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+		lib/crt1.o lib/crti.o lib/crtn.o
+	${CC} -nostdlib -nostartfiles -shared -x c /dev/null \
+		-o lib/libc.so
 }

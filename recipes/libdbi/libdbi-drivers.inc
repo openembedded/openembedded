@@ -17,6 +17,7 @@ inherit autotools
 PACKAGES += "libdbd-sqlite3 libdbd-sqlite libdbd-pgsql libdbd-mysql"
 
 EXTRA_OECONF = "--with-dbi-incdir=${STAGING_INCDIR} \
+                --with-dbi-libdir=${STAGING_LIBDIR} \
                 --with-sqlite \
                 --with-sqlite3 \
                 --with-pgsql \
@@ -28,7 +29,8 @@ EXTRA_OECONF = "--with-dbi-incdir=${STAGING_INCDIR} \
                 --with-mysql-incdir=${STAGING_INCDIR} \
                 --with-mysql-libdir=${STAGING_LIBDIR} \
                 --with-pgsql-incdir=${STAGING_INCDIR} \
-                --with-pgsql-libdir=${STAGING_LIBDIR}"
+                --with-pgsql-libdir=${STAGING_LIBDIR} \
+                --disable-docs"
 
 FILES_${PN}-dbg += " ${libdir}/dbd/.debug/*.so"
 FILES_${PN}-dev += " ${libdir}/dbd/*.la ${libdir}/dbd/*.a"

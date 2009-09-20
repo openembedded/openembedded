@@ -1,0 +1,23 @@
+Index: inetlib-1.1.1/Makefile.am
+===================================================================
+--- inetlib-1.1.1.orig/Makefile.am	2008-03-01 10:49:49.000000000 +0100
++++ inetlib-1.1.1/Makefile.am	2008-03-01 10:52:21.000000000 +0100
+@@ -7,6 +7,8 @@
+ JAVADOC = @JAVADOC@
+ JAVADOCFLAGS = @JAVADOCFLAGS@
+ 
++JARDIR = $(datadir)/java
++
+ src = @srcdir@/source
+ dst = classes
+ doc = @srcdir@/docs
+@@ -280,7 +282,7 @@
+ 	find $(dst) -name '*.class' -exec rm -f '{}' ';'
+ 
+ install-data-local:
+-	$(mkinstalldirs) $(prefix)/share/java
+-	$(INSTALL_DATA) $(inetlib_jar) $(prefix)/share/java
++	$(mkinstalldirs) $(DESTDIR)/$(JARDIR)
++	$(INSTALL_DATA) $(inetlib_jar) $(DESTDIR)/$(JARDIR)
+ 
+ # End of Makefile.am

@@ -5,6 +5,7 @@ DESCRIPTION = "The Freedoom project aims at collaboratively creating a Free IWAD
 HOMEPAGE = "http://freedoom.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 
 SRC_URI = "http://ovh.dl.sourceforge.net/sourceforge/freedoom/freedoom-iwad-0.3.zip"
 

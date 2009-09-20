@@ -26,7 +26,7 @@ kill_udevd() {
 
 export ACTION=add
 # propagate /dev from /sys
-echo -n "Starting udev"
+echo "Starting udev"
 
 # mount the tmpfs on /dev, if not already done
 LANG=C awk "\$2 == \"/dev\" && \$4 == \"tmpfs\" { exit 1 }" /proc/mounts && {
@@ -69,13 +69,13 @@ kill_udevd > "/dev/null" 2>&1
 			/sbin/udevadm trigger
 			/sbin/udevadm settle
 			if [ "$DEVCACHE" != "" ]; then
-				echo -n " and populating dev cache"
+				echo -n "Populating dev cache"
 				(cd /; tar cf $DEVCACHE dev)
 				mv /tmp/uname /etc/udev/saved.uname
 				mv /tmp/cmdline /etc/udev/saved.cmdline
 				mv /tmp/atags /etc/udev/saved.atags
+				echo
 			fi
 		fi
 
-echo
 exit 0

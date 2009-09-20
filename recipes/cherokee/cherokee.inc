@@ -4,6 +4,7 @@ HOMEPAGE = "http://www.cherokee-project.com/"
 SECTION = "network"
 LICENSE = "GPL"
 DEPENDS = "libpcre gnutls"
+INC_PR = "r7"
 
 SRC_URI = "http://www.cherokee-project.com/download/0.5/${PV}/cherokee-${PV}.tar.gz \
            file://cherokee.init "

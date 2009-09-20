@@ -1,0 +1,35 @@
+- Set GPIO_56 muxing for headphone jack detection.
+
+- Set GPT9_PWM muxing.
+- Bring up GPIO_176 high to turn on the screen.
+
+--- a/board/omap3/beagle/beagle.h	2009-02-19 13:30:50.000000000 -0800
++++ b/board/omap3/beagle/beagle.h	2009-02-19 13:12:16.000000000 -0800
+@@ -117,8 +117,8 @@
+  MUX_VAL(CP(GPMC_NCS1),		(IDIS | PTU | EN  | M0)) /*GPMC_nCS1*/\
+  MUX_VAL(CP(GPMC_NCS2),		(IDIS | PTU | EN  | M0)) /*GPMC_nCS2*/\
+  MUX_VAL(CP(GPMC_NCS3),		(IDIS | PTU | EN  | M0)) /*GPMC_nCS3*/\
+- MUX_VAL(CP(GPMC_NCS4),		(IDIS | PTU | EN  | M0)) /*GPMC_nCS4*/\
+- MUX_VAL(CP(GPMC_NCS5),		(IDIS | PTD | DIS | M0)) /*GPMC_nCS5*/\
++ MUX_VAL(CP(GPMC_NCS4),		(IDIS | PTU | DIS | M3)) /*GPMC_nCS4 -- GPT9_PWM*/\
++ MUX_VAL(CP(GPMC_NCS5),		(IEN  | PTD | DIS | M4)) /*GPMC_nCS5 -- PHONES_DETECT GPIO_56*/\
+  MUX_VAL(CP(GPMC_NCS6),		(IEN  | PTD | DIS | M1)) /*SYS_nDMA_REQ2*/\
+  MUX_VAL(CP(GPMC_NCS7),		(IEN  | PTU | EN  | M1)) /*SYS_nDMA_REQ3*/\
+  MUX_VAL(CP(GPMC_NBE1),		(IEN  | PTD | DIS | M0)) /*GPMC_nBE1*/\
+--- a/board/omap3/beagle/beagle.c	2009-02-19 13:30:50.000000000 -0800
++++ b/board/omap3/beagle/beagle.c	2009-02-19 13:12:16.000000000 -0800
+@@ -244,12 +244,12 @@
+ 	power_init_r();
+ 
+ 	/* Configure GPIOs to output */
+-	writel(~(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1), &gpio6_base->oe);
++	writel(~(GPIO16 | GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1), &gpio6_base->oe);
+ 	writel(~(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
+ 		GPIO15 | GPIO14 | GPIO13 | GPIO12), &gpio5_base->oe);
+ 
+ 	/* Set GPIOs */
+-	writel(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1,
++	writel(GPIO16 | GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1,
+ 		&gpio6_base->setdataout);
+ 	writel(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
+ 		GPIO15 | GPIO14 | GPIO13 | GPIO12, &gpio5_base->setdataout);

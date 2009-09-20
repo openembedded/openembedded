@@ -4,6 +4,7 @@ PR = "r1"
 
 SRC_URI = "http://You-Have-To-Download-The-Microcode-Manually-So-Please-Read-ixp4xx-npe_2.3.2.bb-For-Instructions/IPL_ixp400NpeLibrary-2_3_2.zip"
 SRC_URI += "file://IxNpeMicrocode.h"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 inherit native
 S = "${WORKDIR}/ixp400_xscale_sw/src/npeDl"
 

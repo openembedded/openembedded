@@ -8,6 +8,8 @@ DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcr
            libxrandr libxdamage libxrender libxcomposite"
 PROVIDES = "gdk-pixbuf"
 
+INC_PR = "r6"
+
 inherit autotools pkgconfig
 
 LEAD_SONAME = "libgtk-x11-2.0.so"
@@ -18,6 +20,7 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${libdir}/lib*.so.* \
 	${datadir}/themes ${sysconfdir} \
 	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so"
+RDEPENDS_${PN} = "hicolor-icon-theme"
 
 FILES_${PN}-dev += " \
         ${datadir}/gtk-2.0/include \

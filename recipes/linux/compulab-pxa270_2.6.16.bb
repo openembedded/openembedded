@@ -2,6 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
 PR = "r6"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 
 # Note, the compulab package contains a binary NAND driver that is not
 # EABI compatible

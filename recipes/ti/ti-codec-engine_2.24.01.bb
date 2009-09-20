@@ -11,7 +11,7 @@ DEPENDS_dm355-evm 	+= "ti-xdctools-native"
 PR = "r7"
 PV = "2241"
 
-SRC_URI = "http://install.source.dir.com/codec_engine_2_24_01.tar.gz "
+SRC_URI = "http://install.source.dir.local/codec_engine_2_24_01.tar.gz "
 
 # Set the source directory
 S = "${WORKDIR}/codec_engine_2_24_01"

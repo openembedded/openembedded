@@ -1,0 +1,13 @@
+Index: trunk/lib/Support/Debug.cpp
+===================================================================
+--- trunk.orig/lib/Support/Debug.cpp	2009-09-17 10:41:42.000000000 +0200
++++ trunk/lib/Support/Debug.cpp	2009-09-17 10:42:55.000000000 +0200
+@@ -48,7 +48,7 @@
+ static cl::opt<DebugOnlyOpt, true, cl::parser<std::string> >
+ DebugOnly("debug-only", cl::desc("Enable a specific type of debug output"),
+           cl::Hidden, cl::value_desc("debug string"),
+-          cl::location(DebugOnlyOptLoc), cl::ValueRequired);
++          cl::location(DebugOnlyOptLoc), cl::ValueRequired, cl::ZeroOrMore);
+ 
+ // isCurrentDebugType - Return true if the specified string is the debug type
+ // specified on the command line, or if none was specified on the command line

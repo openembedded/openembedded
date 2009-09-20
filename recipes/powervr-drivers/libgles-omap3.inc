@@ -111,7 +111,7 @@ do_install () {
 
 	install -d ${D}${sysconfdir}
 	echo "[default]" > ${D}${sysconfdir}/powervr.ini
-	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
+	echo "WindowSystem=libpvrPVR2D_FLIPWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
 
 	install -d ${D}${prefix}/demos/OGLES/
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Binaries/CommonX11/Demos/* ${D}${prefix}/demos/OGLES/

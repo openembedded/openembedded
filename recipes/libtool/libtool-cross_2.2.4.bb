@@ -1,4 +1,3 @@
-require libtool.inc
 require libtool_${PV}.bb
 PR = "${INC_PR}.0"
 
@@ -21,11 +20,6 @@ S = "${WORKDIR}/libtool-${PV}"
 prefix = "${STAGING_DIR_NATIVE}${layout_prefix}"
 exec_prefix = "${STAGING_DIR_NATIVE}${layout_exec_prefix}"
 bindir = "${STAGING_BINDIR_NATIVE}"
-
-# skip ac_cv_... setting for cross build: host paths must be used
-do_configure_prepend () {
-	export LIBTOOL_BB_DO_NOT_SET_PATHS=1
-}
 
 do_compile () {
 	:

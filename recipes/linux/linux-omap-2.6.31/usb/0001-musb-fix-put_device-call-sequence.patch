@@ -1,0 +1,45 @@
+From f5d23fe1ff54df953c7b65699d6065b4a6336932 Mon Sep 17 00:00:00 2001
+From: Ajay Kumar Gupta <ajay.gupta@ti.com>
+Date: Mon, 3 Aug 2009 11:16:18 +0530
+Subject: [PATCH 01/16] musb: fix put_device() call sequence
+
+Invoke put_device(musb->xceiv->dev) before musb_platform_exit()as
+xceiv is getting unregistered in musb_platform_exit().
+
+Fixes put_device() panic when module insert/removal is performed
+multiple times.
+
+Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
+---
+ drivers/usb/musb/musb_core.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index c7c1ca0..129f9dc 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -1850,6 +1850,10 @@ static void musb_free(struct musb *musb)
+ 		dma_controller_destroy(c);
+ 	}
+ 
++#ifdef CONFIG_USB_MUSB_OTG
++	put_device(musb->xceiv->dev);
++#endif
++
+ 	musb_writeb(musb->mregs, MUSB_DEVCTL, 0);
+ 	musb_platform_exit(musb);
+ 	musb_writeb(musb->mregs, MUSB_DEVCTL, 0);
+@@ -1859,10 +1863,6 @@ static void musb_free(struct musb *musb)
+ 		clk_put(musb->clock);
+ 	}
+ 
+-#ifdef CONFIG_USB_MUSB_OTG
+-	put_device(musb->xceiv->dev);
+-#endif
+-
+ #ifdef CONFIG_USB_MUSB_HDRC_HCD
+ 	usb_put_hcd(musb_to_hcd(musb));
+ #else
+-- 
+1.6.2.4
+

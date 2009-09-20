@@ -1,0 +1,23 @@
+Index: activation-1.1.1/Makefile.am
+===================================================================
+--- activation-1.1.1.orig/Makefile.am	2008-03-01 10:30:06.000000000 +0100
++++ activation-1.1.1/Makefile.am	2008-03-01 10:31:04.000000000 +0100
+@@ -7,6 +7,8 @@
+ JAVADOC = @JAVADOC@
+ JAVADOCFLAGS = @JAVADOCFLAGS@
+ 
++JARDIR = $(datadir)/java
++
+ src = @srcdir@/source
+ dst = classes
+ doc = @srcdir@/docs
+@@ -92,7 +94,7 @@
+ 	$(RM) config.log config.status
+ 
+ install-data-local:
+-	@srcdir@/mkinstalldirs $(DESTDIR)/$(datadir)/java
+-	$(INSTALL_DATA) $(activation_jar) $(DESTDIR)/$(datadir)/java
++	@srcdir@/mkinstalldirs $(DESTDIR)/$(JARDIR)
++	$(INSTALL_DATA) $(activation_jar) $(DESTDIR)/$(JARDIR)
+ 
+ # End of Makefile.am

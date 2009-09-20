@@ -1,0 +1,53 @@
+From 515c1e71f21e6666d8f8da7a539d6edd122a0fc3 Mon Sep 17 00:00:00 2001
+From: Manikandan Pillai <mani.pillai@ti.com>
+Date: Wed, 8 Apr 2009 09:03:10 +0530
+Subject: [PATCH 04/16] Reverse patch for NFS boot to fix comments provided by community
+
+---
+ drivers/net/smc911x.c |   23 +----------------------
+ 1 files changed, 1 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/net/smc911x.c b/drivers/net/smc911x.c
+index 2f0852e..1ded8f0 100644
+--- a/drivers/net/smc911x.c
++++ b/drivers/net/smc911x.c
+@@ -116,27 +116,6 @@ static int smc911x_phy_reset(void)
+ 	return 0;
+ }
+ 
+-static void smc911x_shutdown(void)
+-{
+-	unsigned cr;
+-
+-	/* Turn of Rx and TX */
+-	cr = smc911x_get_mac_csr(MAC_CR);
+-	cr &= ~(MAC_CR_TXEN | MAC_CR_RXEN | MAC_CR_HBDIS);
+-	smc911x_set_mac_csr(MAC_CR, cr);
+-
+-	/* Stop Transmission */
+-	cr = smc911x_get_mac_csr(TX_CFG);
+-	cr &= ~(TX_CFG_STOP_TX);
+-	smc911x_set_mac_csr(TX_CFG, cr);
+-	/* Stop receiving packets */
+-	cr = smc911x_get_mac_csr(RX_CFG);
+-	cr &= ~(RX_CFG_RXDOFF);
+-	smc911x_set_mac_csr(RX_CFG, cr);
+-
+-}
+-
+-
+ static void smc911x_phy_configure(void)
+ {
+ 	int timeout;
+@@ -245,7 +224,7 @@ int eth_send(volatile void *packet, int length)
+ 
+ void eth_halt(void)
+ {
+-	smc911x_shutdown();
++	smc911x_reset();
+ }
+ 
+ int eth_rx(void)
+-- 
+1.6.2.4
+

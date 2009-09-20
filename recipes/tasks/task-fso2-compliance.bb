@@ -22,7 +22,7 @@ RDEPENDS_${PN} = "\
   fso-alsa-data \
   fso-apm \
   fso-gpsd \
-  fso-monitord \
+#  fso-monitord \
   connman \
   connman-scripts \
   connman-plugin-bluetooth \
@@ -42,8 +42,8 @@ RRECOMMENDS_${PN} = "\
   fso-abyss \
   wmiconfig \
   \
-  tzdata \
-  tzdata-americas \
-  tzdata-asia \
-  tzdata-europe \
+#  tzdata \
+#  tzdata-americas \
+#  tzdata-asia \
+#  tzdata-europe \
 "

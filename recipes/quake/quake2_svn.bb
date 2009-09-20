@@ -5,6 +5,7 @@ DEPENDS = "libsdl-x11 libxxf86dga"
 
 SRCREV = "205"
 PV = "0.16.1+svnr${SRCREV}"
+PR = "r1"
 
 SRC_URI = "svn://svn.icculus.org/quake2/;module=trunk \
            file://quake2-arm.patch;patch=1"
@@ -14,7 +15,7 @@ S = "${WORKDIR}/trunk"
 export BUILD_SDLQUAKE2=YES
 export OSTYPE=Linux
 export ARCH=${TARGET_ARCH}
-export BASE_CFLAGS="${TARGET_CC_ARCH} -Wall -pipe -Dstricmp=strcasecmp"
+export BASE_CFLAGS="${TARGET_CC_ARCH} ${LDFLAGS} -Wall -pipe -Dstricmp=strcasecmp"
 export OPT_CFLAGS="-O3 -ffast-math -funroll-loops -fomit-frame-pointer -fexpensive-optimizations"
 
 do_compile() {

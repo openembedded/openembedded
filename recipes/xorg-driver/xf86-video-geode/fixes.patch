@@ -1,0 +1,161 @@
+diff --git a/README b/README
+index 8ae3ce7..74f3a9a 100644
+--- a/README
++++ b/README
+@@ -1,6 +1,6 @@
+ AMD Geode GX and LX graphics driver for X.Org
+ =============================================
+-README last updated: 2009-08-04
++README last updated: 2009-09-03
+ 
+ GIT repository:
+         git://anongit.freedesktop.org/git/xorg/driver/xf86-video-geode
+@@ -29,15 +29,23 @@ at which point xf86-video-cyrix and xf86-video-nsc will be retired.
+ 
+ = Dependencies =
+ 
+-As of version 2.9.0, this driver depends on X.Org server 1.3 or newer,
++As of version 2.11.4, this driver depends upon X server 1.5 or newer,
++because the GX Randr code utilizes dixSetPrivate whose API was modified 
++in a non backward-compatible way.
++
++  #ifdef'ing the changes from f1268f3ba8404129d358db3bb1e66f3841f7018a 
++  and b28abde0276ddd7f687242f3886f98b0e49a7fc2 might make it possible
++  to build this driver against older X servers. Patches are welcome.
++
++As of version 2.9.0, this driver depends on X server 1.3 or newer,
+ because it utilizes the new common DDC probing libraries from X.Org.
+ 
+-If necessary, it might be possible to create autoconf macros to make 
+-this driver compile against older X servers, following this example:
++  If necessary, it might be possible to create autoconf macros to make 
++  this driver compile against older X servers, following this example:
+ 
+-http://lists.freedesktop.org/archives/xorg-commit/2007-February/010341.html
++  http://lists.freedesktop.org/archives/xorg-commit/2007-February/010341.html
+ 
+-Patches accomplishing the same trick for the Geode driver are welcome.
++  Patches accomplishing the same trick for the Geode driver are welcome.
+ 
+ = FAQ =
+ 
+diff --git a/src/geode.h b/src/geode.h
+index 4f0b467..8fe67b5 100644
+--- a/src/geode.h
++++ b/src/geode.h
+@@ -60,7 +60,7 @@
+ #define LX      0x20
+ 
+ #define PCI_VENDOR_ID_CYRIX  0x1078
+-#define PCI_VENDOR_ID_NS     0x100B
++#define PCI_VENDOR_ID_NS     0x100b
+ #define PCI_VENDOR_ID_AMD    0x1022
+ 
+ #define PCI_CHIP_5530     0x0104
+diff --git a/src/gx_driver.c b/src/gx_driver.c
+index 7ff5418..6f5767d 100644
+--- a/src/gx_driver.c
++++ b/src/gx_driver.c
+@@ -464,7 +464,7 @@ GXPreInit(ScrnInfoPtr pScrni, int flags)
+     /* Fill in the monitor information */
+     pScrni->monitor = pScrni->confScreen->monitor;
+ 
+-    if (!xf86SetDepthBpp(pScrni, 16, 16, 16, Support24bppFb | Support32bppFb))
++    if (!xf86SetDepthBpp(pScrni, 24, 16, 32, Support24bppFb | Support32bppFb))
+ 	return FALSE;
+ 
+     switch (pScrni->depth) {
+diff --git a/src/gx_randr.c b/src/gx_randr.c
+index 2669912..91ca43e 100644
+--- a/src/gx_randr.c
++++ b/src/gx_randr.c
+@@ -56,15 +56,17 @@ typedef struct _GXRandRInfo
+     Rotation supported_rotations;      /* driver supported */
+ } XF86RandRInfoRec, *XF86RandRInfoPtr;
+ 
+-#define AMD_OLDPRIV (GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 4)
+-
+ static int GXRandRIndex;
+ 
+-#if AMD_OLDPRIV
+-#define XF86RANDRINFO(p) ((XF86RandRInfoPtr) (p)->devPrivates[GXRandRIndex].ptr)
++#define OLD_VIDEODRV_INTERFACE (GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 4)
++
++#if OLD_VIDEODRV_INTERFACE
++#define XF86RANDRINFO(p)   ((XF86RandRInfoPtr) (p)->devPrivates[GXRandRIndex].ptr)
++#define XF86RANDRSET(p, v) (p)->devPrivates[GXRandRIndex].ptr = v
+ #else
+-#define XF86RANDRINFO(p) ((XF86RandRInfoPtr) \
+-			  dixLookupPrivate(&(p)->devPrivates, &GXRandRIndex));
++#define XF86RANDRINFO(p) ((XF86RandRInfoPtr)						\
++			  dixLookupPrivate(&(p)->devPrivates, &GXRandRIndex))
++#define XF86RANDRSET(p, v) dixSetPrivate(&(p)->devPrivates, &GXRandRIndex, v)
+ #endif
+ 
+ static int
+@@ -327,7 +329,7 @@ GXRandRInit(ScreenPtr pScreen, int rotation)
+     if (GXRandRGeneration != serverGeneration) {
+ 	GXRandRGeneration = serverGeneration;
+     }
+-#if AMD_OLDPRIV
++#if OLD_VIDEODRV_INTERFACE
+     GXRandRIndex = AllocateScreenPrivateIndex();
+ #endif
+ 
+@@ -354,10 +356,7 @@ GXRandRInit(ScreenPtr pScreen, int rotation)
+     pRandr->supported_rotations = rotation;
+     pRandr->maxX = pRandr->maxY = 0;
+ 
+-#if AMD_OLDPRIV
+-    pScreen->devPrivates[GXRandRIndex].ptr = pRandr;
+-#else
+-    dixSetPrivate(&pScreen->devPrivates, &GXRandRIndex, pRandr);
+-#endif
++    XF86RANDRSET(pScreen, pRandr);
++
+     return TRUE;
+ }
+diff --git a/src/lx_driver.c b/src/lx_driver.c
+index 08d1fdd..79ec15c 100644
+--- a/src/lx_driver.c
++++ b/src/lx_driver.c
+@@ -331,7 +331,7 @@ LXPreInit(ScrnInfoPtr pScrni, int flags)
+     /* Fill in the monitor information */
+     pScrni->monitor = pScrni->confScreen->monitor;
+ 
+-    if (!xf86SetDepthBpp(pScrni, 16, 16, 16, Support24bppFb | Support32bppFb))
++    if (!xf86SetDepthBpp(pScrni, 24, 16, 32, Support24bppFb | Support32bppFb))
+ 	return FALSE;
+ 
+     switch (pScrni->depth) {
+diff --git a/src/lx_output.c b/src/lx_output.c
+index 5508477..72e5e2a 100644
+--- a/src/lx_output.c
++++ b/src/lx_output.c
+@@ -108,7 +108,7 @@ lx_output_set_property(xf86OutputPtr output, Atom property,
+ 
+ 	    if (!ret) {
+ 		xf86DrvMsg(pScrni->scrnIndex, X_ERROR,
+-		    "Failed to set mode after propery change!\n");
++		    "Failed to set mode after property change!\n");
+ 
+ 		pGeode->Scale = scale;
+ 		return FALSE;
+diff --git a/src/lx_output.c b/src/lx_output.c
+index 72e5e2a..3eecc9e 100644
+--- a/src/lx_output.c
++++ b/src/lx_output.c
+@@ -163,6 +163,13 @@ lx_output_mode_valid(xf86OutputPtr output, DisplayModePtr pMode)
+ 	    return MODE_BAD;
+     }
+ 
++    if (gfx_is_display_mode_supported(pMode->HDisplay,
++                                      pMode->VDisplay,
++                                      pScrni->bitsPerPixel,
++                                      GeodeGetRefreshRate(pMode)) < 0) {
++        return MODE_BAD;
++    }
++
+     return MODE_OK;
+ }
+ 

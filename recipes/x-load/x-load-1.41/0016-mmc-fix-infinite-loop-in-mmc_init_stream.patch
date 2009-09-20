@@ -1,0 +1,41 @@
+From 47f5d8f6f659848e164b6151c1dac36fdd4eb7a1 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Fri, 1 Aug 2008 12:55:44 -0700
+Subject: [PATCH] mmc:  fix infinite loop in mmc_init_stream
+
+---
+ cpu/omap3/mmc.c |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/cpu/omap3/mmc.c b/cpu/omap3/mmc.c
+index 2453477..279e2a2 100755
+--- a/cpu/omap3/mmc.c
++++ b/cpu/omap3/mmc.c
+@@ -60,16 +60,21 @@ unsigned char mmc_board_init(void)
+ 
+ void mmc_init_stream(void)
+ {
++	volatile unsigned int mmc_stat;
++
+ 	OMAP_HSMMC_CON |= INIT_INITSTREAM;
+ 
+ 	OMAP_HSMMC_CMD = MMC_CMD0;
+-	while (!(OMAP_HSMMC_STAT & CC_MASK));
++	do {
++		mmc_stat = OMAP_HSMMC_STAT;
++	} while (!(mmc_stat & CC_MASK));
+ 
+ 	OMAP_HSMMC_STAT = CC_MASK;
+ 
+ 	OMAP_HSMMC_CMD = MMC_CMD0;
+-	while (!(OMAP_HSMMC_STAT & CC_MASK));
+-
++	do {
++		mmc_stat = OMAP_HSMMC_STAT;
++	} while (!(mmc_stat & CC_MASK));
+ 
+ 	OMAP_HSMMC_STAT = OMAP_HSMMC_STAT;
+ 	OMAP_HSMMC_CON &= ~INIT_INITSTREAM;
+-- 
+1.5.4.3
+

@@ -81,12 +81,18 @@ do_configure () {
 
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 
-	# splice our idea of where the headers live into gcc's world
-	echo "NATIVE_SYSTEM_HEADER_DIR = ${layout_includedir}" > ${T}/t-oe
-	sed 's%^tmake_file=.*$%& ${T}/t-oe%' < ${S}/gcc/Makefile.in >${S}/gcc/Makefile.in.new
-	mv ${S}/gcc/Makefile.in.new ${S}/gcc/Makefile.in
-
-	echo "#define STANDARD_INCLUDE_DIR \"${layout_includedir}\"" >> ${S}/gcc/defaults.h
+	if [ "${HOST_SYS}" != "${TARGET_SYS}" ]; then
+		# splice our idea of where the headers live into gcc's world
+		echo "NATIVE_SYSTEM_HEADER_DIR = ${layout_includedir}" > ${T}/t-oe
+		sed 's%^tmake_file=.*$%& ${T}/t-oe%' < ${S}/gcc/Makefile.in >${S}/gcc/Makefile.in.new
+		mv ${S}/gcc/Makefile.in.new ${S}/gcc/Makefile.in
+		cat ${S}/gcc/defaults.h | grep -v "\#endif.*GCC_DEFAULTS_H" > ${S}/gcc/defaults.h.new
+		echo "#ifndef STANDARD_INCLUDE_DIR" >> ${S}/gcc/defaults.h.new
+		echo "#define STANDARD_INCLUDE_DIR \"${layout_includedir}\"" >> ${S}/gcc/defaults.h.new
+		echo "#endif" >> ${S}/gcc/defaults.h.new
+		echo "#endif /* ! GCC_DEFAULTS_H */" >> ${S}/gcc/defaults.h.new
+		mv ${S}/gcc/defaults.h.new ${S}/gcc/defaults.h
+	fi
 
 	oe_runconf
 

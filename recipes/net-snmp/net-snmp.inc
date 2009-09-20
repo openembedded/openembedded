@@ -6,9 +6,11 @@ RDEPENDS_${PN}-server += "net-snmp-mibs"
 RDEPENDS_${PN}-client += "net-snmp-mibs"
 RDEPENDS_${PN}-dev = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
 RRECOMMENDS_${PN}-dbg = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
+INC_PR = "r5"
 
 inherit autotools update-rc.d
 
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
         # Additional flag based on target endiness (see siteinfo.bbclass)

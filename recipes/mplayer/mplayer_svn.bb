@@ -8,7 +8,7 @@ DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jp
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-	   file://Makefile-codec-cfg.patch;patch=1 \
+#	   file://Makefile-codec-cfg.patch;patch=1 \
 	   file://pld-onlyarm5-svn.patch;patch=1 \
 	   file://makefile-nostrip-svn.patch;patch=1 \
 	   file://configh \
@@ -87,8 +87,6 @@ EXTRA_OECONF = " \
 	--enable-sortsub \
 	--disable-fribidi \
 	--disable-enca \
-	--disable-macosx \
-	--disable-macosx-bundle \
 	--disable-ftp \
 	--disable-vstream \
 	\
@@ -210,6 +208,7 @@ do_configure() {
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+	sed -i 's|HOST_CC|BUILD_CC|' ${S}/Makefile
 
 	export SIMPLE_TARGET_SYS="$(echo ${TARGET_SYS} | sed s:${TARGET_VENDOR}::g)"
 	./configure ${EXTRA_OECONF}
