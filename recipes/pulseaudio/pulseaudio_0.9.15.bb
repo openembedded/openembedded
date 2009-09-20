@@ -14,6 +14,7 @@ SRC_URI += "\
   file://gettext.patch;patch=1 \
   file://fixbluezbuild.patch;patch=1 \
   file://tls_m4.patch;patch=1 \
+  file://sbc-thumb.patch;patch=1 \
 "
 
 do_compile_prepend() {
