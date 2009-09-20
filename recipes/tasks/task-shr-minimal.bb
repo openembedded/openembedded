@@ -118,6 +118,7 @@ RDEPENDS_${PN}-x = "\
   ${@get_rdepends(bb, d)} \
   libx11-locale \
   libmokoui2 \
+  xcursor-transparent-theme \
 "
 
 RDEPENDS_${PN}-apps = "\
