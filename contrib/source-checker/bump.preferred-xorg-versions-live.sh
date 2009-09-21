@@ -11,6 +11,8 @@ BBS=${OETREE}/recipes/xorg-
 OUT_LOG=${DIR}.log
 OUT_CMD=${DIR}.cmd
 
+export LC_ALL=c
+
 mkdir -p ${DIR}
 
 function latest {
@@ -19,7 +21,7 @@ function latest {
   echo "Parsing latest from ${IN} to ${OUT}"
   sed "s/<a href=\"/\nPKG=/g" ${IN} | grep "^PKG=" | sed "s/^\([^\"]*\)\">.*$/\1/g" | grep "bz2$" | sort -V > ${IN}.tmp
   for PKG in `sed "s/^\(.*\)-\([^-]*\)$/\1/g" ${IN}.tmp | sort -u`; do
-    grep ${PKG} ${IN}.tmp | tail -n 1 >> ${OUT};
+    grep ${PKG} ${IN}.tmp | tail -n 1 | sed 's/xorg-server/xserver-xorg/g' >> ${OUT};
   done
 }
 
@@ -28,7 +30,7 @@ function updateVersions {
   GRP=$2
   VER=$3
   PREF_VER=`grep "PREFERRED_VERSION_${PKG} " ${PREFS} | sed 's/.*= *//g; s/"//g'`
-  BB_VER=`ls -1 ${BBS}${GRP}/${PKG}_*.bb 2>/dev/null | sed "s%${BBS}${GRP}/${PKG}_%%g; s%.bb$%%g" | grep -v git | grep -v svn | sort -V | tail -n 1`
+  BB_VER=`ls -1 ${BBS}${GRP}/${PKG}_*.bb 2>/dev/null | sed "s%${BBS}${GRP}/${PKG}_%%g; s%.bb$%%g" | grep -v X11R7.0 | grep -v cvs | grep -v git | grep -v svn | sort -V | tail -n 1`
   #echo ${GRP}/${PKG}/${VER} ${PREF_VER} ${BB_VER}
   echo "PREFERRED_VERSION_${PKG} ?= \"${VER}\"" >> ${PREFS_LIVE}
   if [[ -n ${PREF_VER} &&  ${PREF_VER} != ${VER} ]] ; then
@@ -59,14 +61,6 @@ done
 sort -u ${DIR}/latest.txt > ${DIR}/latest.sort.txt
  
 echo "#`date`" > ${PREFS_LIVE}
-#cat << EOF > ${PREFS_LIVE}
-#PREFERRED_VERSION_xserver-xorg ?= "1.6.999+git%"
-#PREFERRED_VERSION_libdrm-glamo ?= "2.3.1+git%"
-#PREFERRED_VERSION_mesa-dri-glamo ?= "7.5.1+git%"
-#PREFERRED_VERSION_xf86-video-glamo ?= "1.0.0+git%"
-#PREFERRED_VERSION_xf86-input-keyboard ?= "1.3.2+git%"
-#PREFERRED_VERSION_xf86-input-mouse ?= "1.4.0+git%"
-#EOF
 
 echo "#`date`" > ${OUT_LOG}
 echo "#`date`" > ${OUT_CMD}
