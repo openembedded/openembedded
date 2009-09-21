@@ -53,7 +53,7 @@ do_stage() {
 
 		for h in adler32.h avstring.h avutil.h base64.h bswap.h \
                  common.h crc.h fifo.h integer.h intfloat_readwrite.h \
-                 log.h lzo.h mathematics.h md5.h mem.h random.h \
+                 log.h lzo.h mathematics.h md5.h mem.h pixfmt.h random*.h \
                  rational.h sha1.h
 		do
            install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/ffmpeg/$h
@@ -80,12 +80,15 @@ FILES_${PN}-vhook = "${libdir}/vhook"
 FILES_${PN}-vhook-dbg += "${libdir}/vhook/.debug"
 
 
-PACKAGES += "libavcodec  libavcodec-dev  libavcodec-dbg \
+PACKAGES += "ffmpeg-x264-presets \
+             libavcodec  libavcodec-dev  libavcodec-dbg \
              libavdevice libavdevice-dev libavdevice-dbg \
              libavformat libavformat-dev libavformat-dbg \
              libavutil   libavutil-dev   libavutil-dbg \
              libpostproc libpostproc-dev libpostproc-dbg \
              libswscale  libswscale-dev  libswscale-dbg"
+
+FILES_ffmpeg-x264-presets = "${datadir}/*.ffpreset"
 
 FILES_${PN}-dev = "${includedir}"
 FILES_libavcodec = "${libdir}/libavcodec*.so.*"

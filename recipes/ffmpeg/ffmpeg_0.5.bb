@@ -3,22 +3,17 @@ require ffmpeg.inc
 DEPENDS += "schroedinger libgsm"
 
 PE = "1"
-PV = "0.5.0+${PR}+gitr${SRCREV}" 
-PR = "r0"
+PR = "r5"
 
-DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "1"
 
-#FFBRANCH_arm = "arm"
-FFBRANCH ?= "master"
-
-# When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
-SRCREV = "d886804643d7427debfa70d824de7e53ae8e3e83"
-SRCREV_arm = "d886804643d7427debfa70d824de7e53ae8e3e83"
 SRCREV_libswscale = "b2e1c8222eeef74b0ca8053b400957dd69e18e4d"
-SRC_URI = "git://git.mansr.com/ffmpeg.mru;protocol=git;branch=${FFBRANCH} \
-"
+SRC_URI = "http://ffmpeg.org/releases/ffmpeg-${PV}.tar.bz2 \
+	   file://armv4.patch;patch=1 \
+       file://ffmpeg-arm-update.diff;patch=1 \
+	  "
 
-S = "${WORKDIR}/git"
+#S = "${WORKDIR}/git"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
@@ -36,7 +31,7 @@ EXTRA_OECONF = " \
         --enable-postproc \
         \
         --cross-prefix=${TARGET_PREFIX} \
-        --prefix=${prefix} \
+        --prefix=${prefix}/ \
         \
         --enable-x11grab \
         --enable-libfaac \
@@ -47,6 +42,7 @@ EXTRA_OECONF = " \
         --enable-libschroedinger \
         --enable-libtheora  \
         --enable-libvorbis \
+        --enable-swscale \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
@@ -58,10 +54,6 @@ EXTRA_OECONF = " \
 do_configure() {
         sed -i -e s:'check_cflags -std=c99'::g ${S}/configure
         cd ${S}
-	git clone git://git.mplayerhq.hu/libswscale || true
-	cd libswscale
-	git checkout ${SRCREV_libswscale} || true
-	cd ${S}
         mkdir -p ${B}
         cd ${B}
         ${S}/configure ${EXTRA_OECONF}
