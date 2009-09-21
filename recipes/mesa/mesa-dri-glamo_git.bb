@@ -17,7 +17,7 @@ S = "${WORKDIR}/git"
 FILES_${PN} += "${libdir}/dri/*.so"
 FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
 
-EXTRA_OECONF += "--disable-glx-tls --with-driver=dri --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
+EXTRA_OECONF += "--disable-glx-tls --with-driver=dri --disable-gallium-intel --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
 CFLAGS_append = " -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_SVID_SOURCE "
 CFLAGS_append += "-D_BSD_SOURCE -D_GNU_SOURCE"
 
