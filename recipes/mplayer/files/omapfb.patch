@@ -8,3 +8,22 @@
  extern vo_functions_t video_out_svga;
  extern vo_functions_t video_out_png;
  extern vo_functions_t video_out_ggi;
+@@ -177,6 +178,7 @@
+ #ifdef CONFIG_FBDEV
+         &video_out_fbdev,
+         &video_out_fbdev2,
++        &video_out_omapfb,
+ #endif
+ #ifdef CONFIG_SVGALIB
+         &video_out_svga,
+--- a/Makefile	2009-02-03 13:45:48.000000000 -0800
++++ b/Makefile	2009-02-03 13:45:50.000000000 -0800
+@@ -551,7 +551,7 @@
+ SRCS_MPLAYER-$(DXR2)         += libao2/ao_dxr2.c libvo/vo_dxr2.c
+ SRCS_MPLAYER-$(DXR3)         += libvo/vo_dxr3.c
+ SRCS_MPLAYER-$(ESD)          += libao2/ao_esd.c
+-SRCS_MPLAYER-$(FBDEV)        += libvo/vo_fbdev.c libvo/vo_fbdev2.c
++SRCS_MPLAYER-$(FBDEV)        += libvo/vo_fbdev.c libvo/vo_fbdev2.c libvo/vo_omapfb.c libvo/yuv.S
+ SRCS_MPLAYER-$(GGI)          += libvo/vo_ggi.c
+ SRCS_MPLAYER-$(GIF)          += libvo/vo_gif89a.c
+ SRCS_MPLAYER-$(GL)           += libvo/gl_common.c libvo/vo_gl.c libvo/vo_gl2.c

@@ -2,27 +2,26 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
+DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
 	   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
+RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-	   file://Makefile-codec-cfg.patch;patch=1 \
 	   file://pld-onlyarm5-svn.patch;patch=1 \
-	   file://mplayer.om-gta02.conf \
-	   file://configh \
-	   file://configmak \
+	   file://makefile-nostrip-svn.patch;patch=1 \
 	   "
 
-SRC_URI_append_om-gta02 = "file://libvo_glamo.svn.patch;patch=1 \
-           file://fmtmpeg4.patch;patch=1 \
-           "
-
 SRC_URI_append_armv7a = " \
-#		file://omapfb.patch;patch=1 \
+		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
 	   file://yuv.S \
 	  "
+
+SRC_URI_append_om-gta02 = " \
+           file://libvo_glamo.svn.patch;patch=1 \
+           file://fmtmpeg4.patch;patch=1 \
+           "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
@@ -40,9 +39,10 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r14"
-DEFAULT_PREFERENCE = "1"
+PR = "r15"
+DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
+DEFAULT_PREFERENCE_om-gta02 = "1"
 
 PARALLEL_MAKE = ""
 
@@ -53,7 +53,7 @@ PACKAGES =+ "mencoder"
 FILES_${PN} = "${bindir}/mplayer ${libdir} /usr/etc/mplayer/"
 FILES_mencoder = "${bindir}/mencoder"
 CONFFILES_${PN} += "/usr/etc/mplayer/input.conf \
-                    /usr/etc/mplayer/mplayer.conf \
+                    /usr/etc/mplayer/example.conf \
                     /usr/etc/mplayer/codecs.conf \
                    "
 
@@ -83,7 +83,7 @@ EXTRA_OECONF = " \
 	--enable-rtc \
 	--enable-network \
 	--disable-smb \
-	--disable-live \
+	--enable-live \
 	--disable-dvdnav \
 	--enable-dvdread \
 	--disable-dvdread-internal \
@@ -94,7 +94,6 @@ EXTRA_OECONF = " \
 	--enable-sortsub \
 	--disable-fribidi \
 	--disable-enca \
-	--disable-macosx-bundle \
 	--disable-ftp \
 	--disable-vstream \
 	\
@@ -114,7 +113,7 @@ EXTRA_OECONF = " \
 	--disable-libavformat_so \
 	--disable-libpostproc_so \
 	\
-        --enable-tremor-low \
+	--enable-tremor-low \
 	\
 	--disable-speex \
 	--enable-theora \
@@ -175,13 +174,14 @@ EXTRA_OECONF = " \
 	--disable-win32waveout \
 	--enable-select \
 	\
-	"
+	--extra-libs=' -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock -lliveMedia -lstdc++' \
+"
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 				--disable-encoder=vorbis_encoder"
 
 EXTRA_OECONF_append_armv6 = " --enable-armv6"
-EXTRA_OECONF_append_armv7a = " --enable-armv6"
+EXTRA_OECONF_append_armv7a = " --enable-armv6 --enable-neon"
 
 EXTRA_OECONF_append_om-gta02 = " --enable-glamo"
 
@@ -205,6 +205,8 @@ do_configure_prepend_armv7a() {
  	cp ${WORKDIR}/vo_omapfb.c ${S}/libvo
 	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S}/libvo/omapfb.h || true
  	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S}/libvo/omapfb.h || true
+	cp ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ${S}/libvo/omapfb.h || true
+ 	sed -e 's/__user//g' -i ${S}/libvo/omapfb.h || true
 }
 
 CFLAGS_append = " -I${S}/libdvdread4 "
@@ -214,13 +216,11 @@ do_configure() {
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+	sed -i 's|HOST_CC|BUILD_CC|' ${S}/Makefile
 
 	export SIMPLE_TARGET_SYS="$(echo ${TARGET_SYS} | sed s:${TARGET_VENDOR}::g)"
 	./configure ${EXTRA_OECONF}
 	
-	cat ${WORKDIR}/configh >> ${S}/config.h
-	cat ${WORKDIR}/configmak  ${OPTSMAK} >> ${S}/config.mak
-
 }
 
 do_compile () {
@@ -228,9 +228,7 @@ do_compile () {
 }
 
 do_install_append() {
-        install -d ${D}/usr/etc/
         install -d ${D}/usr/etc/mplayer
-        install ${WORKDIR}/mplayer.om-gta02.conf ${D}/usr/etc/mplayer/mplayer.conf
         install ${S}/etc/input.conf ${D}/usr/etc/mplayer/
         install ${S}/etc/example.conf ${D}/usr/etc/mplayer/
         install ${S}/etc/codecs.conf ${D}/usr/etc/mplayer/

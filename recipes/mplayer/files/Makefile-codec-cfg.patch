@@ -1,21 +1,11 @@
 --- /tmp/Makefile	2008-09-24 19:24:26.000000000 +0200
 +++ trunk/Makefile	2008-09-24 19:25:01.683198000 +0200
-@@ -851,7 +851,7 @@
+@@ -752,7 +752,7 @@
  	$(CC) -o $@ $^ $(LDFLAGS_MPLAYER)
  
- codec-cfg$(EXESUF): codec-cfg.c help_mp.h
--	$(HOST_CC) -O -DCODECS2HTML -I. -o $@ $<
-+	$(BUILD_CC) -O -DCODECS2HTML -I. -o $@ $<
+ codec-cfg$(EXESUF): codec-cfg.c codec-cfg.h help_mp.h
+-	$(HOST_CC) -O -DCODECS2HTML $(EXTRA_INC) -o $@ $<
++	$(BUILD_CC) -O -DCODECS2HTML $(EXTRA_INC) -o $@ $<
  
  codecs.conf.h: codec-cfg$(EXESUF) etc/codecs.conf
  	./$^ > $@
---- /tmp/Makefile.orig	2009-07-03 08:49:15.000000000 +0200
-+++ trunk/Makefile	2009-07-03 08:50:13.000000000 +0200
-@@ -375,6 +375,7 @@
-               libaf/af_tools.c \
-               libaf/af_volnorm.c \
-               libaf/af_volume.c \
-+              libaf/af_lavcac3enc.c \
-               libaf/filter.c \
-               libaf/format.c \
-               libaf/reorder_ch.c \
