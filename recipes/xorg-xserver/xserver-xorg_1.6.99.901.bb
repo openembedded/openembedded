@@ -8,6 +8,7 @@ PR = "r1.75"
 
 SRC_URI += "file://sysroot_fix.patch;patch=1 \
             file://dolt-fix.patch;patch=1 \
+            file://xserver-git-master-4d6b20c25af5f590f19530b6c007e3648a8037c3.patch;patch=1 \
            "
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts
