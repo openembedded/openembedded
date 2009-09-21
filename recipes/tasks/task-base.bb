@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r83"
+PR = "r84"
 
 inherit task
 
@@ -347,6 +347,7 @@ RDEPENDS_task-base-wifi = "\
 RRECOMMENDS_task-base-wifi = "\
     ${@base_contains('COMBINED_FEATURES', 'madwifi', 'madwifi-ng-modules', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-zd1211rw', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'usbhost', 'rt3070', '',d)} \
     kernel-module-ieee80211-crypt \
     kernel-module-ieee80211-crypt-ccmp \
     kernel-module-ieee80211-crypt-tkip \
