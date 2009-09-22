@@ -1,0 +1,13 @@
+Index: batman-0.3.2/Makefile
+===================================================================
+--- batman-0.3.2.orig/Makefile	2009-05-15 21:41:16.000000000 +0200
++++ batman-0.3.2/Makefile	2009-09-22 16:20:05.937937168 +0200
+@@ -28,8 +28,6 @@
+ # activate this variable to deactivate policy routing for backward compatibility
+ #NO_POLICY_ROUTING = -DNO_POLICY_ROUTING
+ 
+-CC =		gcc
+-CFLAGS +=	-pedantic -Wall -W -O1 -g3 -std=gnu99
+ EXTRA_CFLAGS =	-DDEBUG_MALLOC -DMEMORY_USAGE -DPROFILE_DATA $(NO_POLICY_ROUTING) -DREVISION_VERSION=$(REVISION_VERSION)
+ LDFLAGS +=	-lpthread
+ 
