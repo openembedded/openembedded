@@ -4,6 +4,7 @@ LICENSE = "GPLv2"
 PR = "r0"
 
 DEPENDS = "sugar-toolkit"
+RDEPEDS = "avahi networkmanager"
 
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-presence-service/${PN}-${PV}.tar.bz2"
 
