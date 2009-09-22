@@ -2,7 +2,7 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-SRCREV = "19947"
+SRCREV = "19958"
 
 PE = "1"
 PV = "0.5.0+${PR}+svnr${SRCREV}"
