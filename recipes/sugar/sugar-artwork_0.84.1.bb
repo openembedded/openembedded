@@ -4,6 +4,9 @@ LICENSE = "GPLv2"
 PR = "r0"
 
 DEPENDS = "sugar icon-slicer-native"
+RDEPENDS = "ttf-dejavu-sans ttf-dejavu-sans-mono ttf-dejavu-sans-condensed \
+            ttf-dejavu-serif ttf-dejavu-serif-condensed \
+            python-pycairo fontconfig freetype python-pygtk"
 
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-artwork/${PN}-${PV}.tar.bz2 "
 

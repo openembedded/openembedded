@@ -3,6 +3,8 @@ LICENSE = "LGPLv2"
 
 DEPENDS = "python-pygtk sugar-toolkit"
 RDEPENDS = "librsvg-gtk \
+            gconf \
+            matchbox-wm \
             ohm-plugin-x11 ohm \
             hippo-canvas \
             python-datetime \
@@ -14,6 +16,8 @@ RDEPENDS = "librsvg-gtk \
             python-subprocess \
             telepathy-gabble telepathy-salut telepathy-python \
             sugar-presence-service \
+            python-pycairo \
+            python-pygobject \
             python-crypt \
             python-numpy \
             python-compression \
