@@ -13,6 +13,7 @@ RREPLACES_${PN} = "initscripts"
 
 SRC_URI = "file://alignment.sh \
 	   file://bootmisc.sh \
+	   file://calibrate-ts.sh \
 	   file://checkroot.sh \
 	   file://finish.sh \
 	   file://functions \
