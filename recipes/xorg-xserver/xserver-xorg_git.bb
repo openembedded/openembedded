@@ -8,7 +8,7 @@ PE = "2"
 
 DEFAULT_PREFERENCE = 1
 
-SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
+SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=server-1.7-branch \
            file://sysroot_fix.patch;patch=1 \
            file://dolt-fix.patch;patch=1 \
 #           file://fix-dri-build-without-xinerama.patch;patch=1 \
