@@ -4,10 +4,11 @@ HOMEPAGE = "http://www.etpan.org"
 SECTION = "libs"
 DEPENDS = "gnutls"
 LICENSE = "BSD"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
-	   file://libetpan-autoreconf.patch;patch=1"
+	   file://libetpan-autoreconf.patch;patch=1 \
+           file://libetpan-ldflags.patch;patch=1"
 
 inherit autotools pkgconfig gettext binconfig
 
@@ -21,3 +22,4 @@ do_stage() {
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la ${libdir}/*.a ${libdir}/pkgconfig"
+
