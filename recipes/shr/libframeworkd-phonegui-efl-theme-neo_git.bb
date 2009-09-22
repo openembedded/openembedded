@@ -6,7 +6,7 @@ RRECOMMENDS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo etk-them
 LICENSE = "unknown"
 
 PV = "0.2-${EFL_SRCREV}-gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 require libframeworkd-phonegui-efl-theme.inc
 

@@ -5,7 +5,7 @@ RRECOMMENDS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo libframe
 LICENSE = "unknown"
 
 PV = "0.2-${EFL_SRCREV}-gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

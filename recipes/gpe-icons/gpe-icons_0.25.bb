@@ -3,7 +3,7 @@ LICENSE = "GPL"
 
 inherit gpe
 
-PR = "r2"
+PR = "r3"
 
 #only icons present in the package
 PACKAGE_ARCH = "all"
