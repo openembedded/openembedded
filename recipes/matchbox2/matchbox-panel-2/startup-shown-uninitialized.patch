@@ -1,0 +1,13 @@
+http://bugzilla.openedhand.com/show_bug.cgi?id=1805
+Index: applets/startup/startup.c
+===================================================================
+--- applets/startup/startup.c	(revision 2098)
++++ applets/startup/startup.c	(working copy)
+@@ -228,6 +228,7 @@
+         applet = g_slice_new (StartupApplet);
+ 
+         applet->launch_list = NULL;
++        applet->hourglass_shown = FALSE;
+ 
+         /* Create image */
+         applet->image = MB_PANEL_SCALING_IMAGE
