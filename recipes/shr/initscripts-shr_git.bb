@@ -5,7 +5,7 @@ DEPENDS = ""
 RDEPENDS = ""
 LICENSE = "GPL"
 PV = "0.0.1+${PR}-gitr${SRCREV}"
-PR = "r11"
+PR = "r12"
 
 RPROVIDES_${PN} = "initscripts"
 RCONFLICTS_${PN} = "initscripts"
@@ -54,6 +54,7 @@ do_install () {
 
 	install -m 0755	${WORKDIR}/alignment.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/bootmisc.sh		${D}${sysconfdir}/init.d
+	install -m 0755	${WORKDIR}/calibrate-ts.sh	${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/checkroot.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/finish.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/functions		${D}${sysconfdir}/init.d
@@ -85,6 +86,7 @@ do_install () {
 	ln -sf		../init.d/checkroot.sh		${D}${sysconfdir}/rcS.d/S02checkroot.sh
 	ln -sf		../init.d/mountdevsubfs.sh	${D}${sysconfdir}/rcS.d/S04mountdevsubfs.sh
 	ln -sf		../init.d/alignment.sh		${D}${sysconfdir}/rcS.d/S06alignment.sh
+	ln -sf		../init.d/calibrate-ts.sh	${D}${sysconfdir}/rcS.d/S06calibrate-ts.sh
 	ln -sf		../init.d/mountall.sh		${D}${sysconfdir}/rcS.d/S35mountall.sh
 	ln -sf		../init.d/populate-volatile.sh	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
 	ln -sf		../init.d/mountnfs.sh		${D}${sysconfdir}/rcS.d/S45mountnfs.sh

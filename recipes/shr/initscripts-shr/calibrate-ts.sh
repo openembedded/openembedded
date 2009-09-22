@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo 0 > /sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration/0
+echo 80000 > /sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration/1
+echo -8000000 > /sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration/2
+echo -81000 > /sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration/3
+echo 0 > /sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration/4
+echo 75000000 > /sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration/5
+echo 65536 > /sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration/6
+
