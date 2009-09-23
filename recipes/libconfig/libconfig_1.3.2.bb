@@ -5,7 +5,6 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPLv2"
 DEPENDS = ""
-PV = "1.3.1"
 PR = "r0"
 
 SRC_URI = "http://www.hyperrealm.com/libconfig/libconfig-${PV}.tar.gz"
