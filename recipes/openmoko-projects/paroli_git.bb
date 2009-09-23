@@ -2,9 +2,9 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCPV}"
-PR = "r28"
+PR = "r29"
 
-SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
+SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http;branch=shr"
 S = "${WORKDIR}/git"
 
 inherit distutils
