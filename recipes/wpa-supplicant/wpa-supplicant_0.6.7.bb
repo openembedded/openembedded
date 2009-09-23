@@ -1,3 +1,3 @@
 require wpa-supplicant-0.6.inc
 
-PR = "r5"
+PR = "${INC_PR}.1"
