@@ -232,6 +232,5 @@ RDEPENDS_${PN} += "\
 		phoneme-advanced-foundation \
 		eve \
 		python-pybluez \
-		vala \
 		x11perf \
 "
