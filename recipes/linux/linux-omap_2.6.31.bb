@@ -8,7 +8,7 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_omapzoom2 = "1"
 
-SRCREV = "52a962f09ab2306a2ac6e22c2d3bac1a76ac"
+SRCREV = "945044d157dd63c6af0f2ed40a5346382af94eb4"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 #PV = "2.6.30+2.6.31-rc8+gitr${SRCREV}"
@@ -48,23 +48,15 @@ SRC_URI_append = " \
                   file://madc/madc.patch;patch=1 \
                   file://arch-has-holes.diff;patch=1 \
                   file://usb/0001-musb-fix-put_device-call-sequence.patch;patch=1 \
-                  file://usb/0002-ehci-fix-ehci-pin-mux-init.patch;patch=1 \
-                  file://usb/0003-ehci-adding-mux-pin-for-EHCI-phy-reset-line.patch;patch=1 \
-                  file://usb/0004-ehci-correct-EHCI-init-parameters-on-OMAP3EVM.patch;patch=1 \
-                  file://usb/0005-ehci-fix-phy_reset-init-in-ehci-probe.patch;patch=1 \
-                  file://usb/0006-ehci-increase-timeout-to-fix-ehci-failure.patch;patch=1 \
-                  file://usb/0007-ehci-portwise-configurations.patch;patch=1 \
                   file://usb/0008-omap3-Add-CHIP_GE_OMAP3430ES3-for-HSUSB.patch;patch=1 \
-                  file://usb/0009-ehci-Support-for-ES3.x.patch;patch=1 \
-                  file://usb/0010-ehci-update-driver-with-generic-change.patch;patch=1 \
                   file://usb/0011-musb-fix-musb-gadget_driver-NULL-bug.patch;patch=1 \
                   file://usb/0012-musb-Add-back-old-musb-procfs-file.patch;patch=1 \
                   file://usb/0013-musb-Remove-USB_SUSPEND-auto-select-with-OTG.patch;patch=1 \
                   file://usb/0014-musb-disable-PING-on-status-phase-of-control-transf.patch;patch=1 \
                   file://usb/0015-musb-Add-context-save-and-restore-support.patch;patch=1 \
                   file://usb/0016-usb-update-defconfig.patch;patch=1 \
+                  file://usb/0001-ARM-OMAP-Fix-beagleboard-EHCI-setup.patch;patch=1 \
                   file://modedb-hd720.patch;patch=1 \
-                  file://fix-omapfb.patch;patch=1 \
                   file://dss2/beagle-dss2-support.patch;patch=1 \
 "
 
