@@ -2,7 +2,7 @@ require edje_${PV}.bb
 inherit native
 PR = "r3"
 
-DEPENDS = "evas-native ecore-native eet-native embryo-native"
+DEPENDS = "lua5.1-native evas-native ecore-native eet-native embryo-native"
 
 do_configure_prepend() {
 	sed -i 's:EMBRYO_PREFIX"/bin:"${STAGING_BINDIR}:' ${S}/src/bin/edje_cc_out.c

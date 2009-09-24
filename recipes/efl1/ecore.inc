@@ -8,6 +8,11 @@ PR = "r3"
 
 inherit efl
 
+do_configure_prepend() {
+	touch ${S}/po/Makefile.in.in || true
+	sed -i -e 's: po::g' ${S}/Makefile.am
+}
+
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 
 PACKAGES =+ "\
