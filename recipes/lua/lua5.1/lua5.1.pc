@@ -6,6 +6,6 @@ Name: Lua
 Description: Lua language engine
 Version: 5.1.3
 Requires:
-Libs: -L${libdir} -llua5.1
+Libs: -L${libdir} -llua
 Libs.private: -lm
-Cflags: -I${includedir}/lua5.1
+Cflags: -I${includedir}
