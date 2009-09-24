@@ -1,5 +1,5 @@
 require mc.inc
-PR = "r3"
+PR = "r4"
 HOMEPAGE = "http://www.midnight-commander.org/"
 
 # most of these fixes were copied from openSUSE Factory.
@@ -77,4 +77,13 @@ do_utf8_conversion() {
 	iconv -f iso8859-5 -t utf-8 -o mcserv.8.in.tmp mcserv.8.in && mv mcserv.8.in.tmp mcserv.8.in
 	popd
 	popd
+}
+
+do_configure_prepend() {
+
+AUTOFOO="config.guess config.rpath config.sub depcomp install-sh missing mkinstalldirs"
+
+         for i in ${AUTOFOO}; do
+           rm config/${i}
+         done
 }
