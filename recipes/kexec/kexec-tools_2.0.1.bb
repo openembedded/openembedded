@@ -4,4 +4,4 @@ EXTRA_OECONF = " --with-zlib=yes"
 
 PR = "r0"
 
-DEFAULT_PREFERENCE = "1"
+DEFAULT_PREFERENCE = "-1"
