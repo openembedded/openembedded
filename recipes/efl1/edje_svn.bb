@@ -6,6 +6,17 @@ PR = "r2"
 
 inherit efl
 
+# The new lua stuff is a bit broken...
+do_configure_append() {
+	for i in $(find "${S}" -name "Makefile") ; do
+		sed -i -e 's:-L/usr/local/lib::g'  $i
+	done
+}
+
+do_compile_append() {
+	sed -i -e s:local/::g -e 's:-L${STAGING_LIBDIR}::g' ${S}/edje.pc
+}
+
 # gain some extra performance at the expense of RAM - generally i'd say bad
 # and a possible source of bugs
 #EXTRA_OECONF = "--enable-edje-program-cache"
