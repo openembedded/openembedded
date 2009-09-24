@@ -54,12 +54,11 @@ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
 fi
 
 # use usb mouse if present
-# Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "/usr/bin/Xorg" ]; then
-  ARGS="$ARGS -mouse /dev/input/mice"
-  #/dev/input/mice exists on neo even without usb mouse connected
-  #create better test for usb mouse and uncomment following line
-  #USB_MOUSE="1"
+# Xorg doesn't support "-mouse" option, and uses /dev/input/mouse0 automatically
+# On neo we have touchscreen as /dev/input/mice, usb connected mouse would be probably mouse0
+if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mouse0 ] && [ "$XSERVER" != "/usr/bin/Xorg" ]; then
+  ARGS="$ARGS -mouse /dev/input/mouse0"
+  USB_MOUSE="1"
 fi
 
 # start off server in conventional location.
