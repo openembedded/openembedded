@@ -50,7 +50,7 @@ fi
 
 # use usb mouse if present
 # Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ]; then
+if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "/usr/bin/Xorg" ]; then
   ARGS="$ARGS -mouse /dev/input/mice"
 fi
 

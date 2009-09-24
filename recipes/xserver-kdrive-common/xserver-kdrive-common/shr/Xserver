@@ -55,8 +55,11 @@ fi
 
 # use usb mouse if present
 # Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ]; then
+if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "/usr/bin/Xorg" ]; then
   ARGS="$ARGS -mouse /dev/input/mice"
+  #/dev/input/mice exists on neo even without usb mouse connected
+  #create better test for usb mouse and uncomment following line
+  #USB_MOUSE="1"
 fi
 
 # start off server in conventional location.
@@ -120,6 +123,9 @@ case `module_id` in
 				DPI=140
 			fi 
 			ARGS="$ARGS -dpi ${DPI} vt1" 
+			if [ -z "$USB_MOUSE}" ]; then
+				ARGS="$ARGS -nocursor"
+			fi
 		else
 			if [ `screen_width` -gt 330 ] ; then
 				DPI=285
