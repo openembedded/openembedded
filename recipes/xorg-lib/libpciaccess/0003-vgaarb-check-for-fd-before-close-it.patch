@@ -1,0 +1,30 @@
+From 13c7e6c8f100882718f995f5bf1d478a012cdbdd Mon Sep 17 00:00:00 2001
+From: Tiago Vignatti <tiago.vignatti@nokia.com>
+Date: Wed, 16 Sep 2009 12:56:53 +0300
+Subject: [PATCH 3/4] vgaarb: check for fd before close it
+
+Signed-off-by: Tiago Vignatti <tiago.vignatti@nokia.com>
+---
+ src/common_vgaarb.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/src/common_vgaarb.c b/src/common_vgaarb.c
+index ca5c0a7..f1c71e0 100644
+--- a/src/common_vgaarb.c
++++ b/src/common_vgaarb.c
+@@ -150,6 +150,12 @@ pci_device_vgaarb_init(void)
+ void
+ pci_device_vgaarb_fini(void)
+ {
++    if (!pci_sys)
++        return;
++
++    if (!pci_sys->vgaarb_fd)
++        return;
++
+     close(pci_sys->vgaarb_fd);
+ }
+ 
+-- 
+1.6.5.rc1
+

@@ -1,0 +1,31 @@
+From cdbdfaf61c05d0d18eae6815b10666f93162148f Mon Sep 17 00:00:00 2001
+From: Keith Packard <keithp@keithp.com>
+Date: Thu, 17 Sep 2009 17:38:56 -0700
+Subject: [PATCH 2/4] Free return value from scandir instead of leaking it.
+
+Scandir is defined to return pointers to malloc'd storage, so make
+sure that memory is nicely freed.
+
+Signed-off-by: Keith Packard <keithp@keithp.com>
+---
+ src/linux_sysfs.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/src/linux_sysfs.c b/src/linux_sysfs.c
+index 02fbd13..85095b3 100644
+--- a/src/linux_sysfs.c
++++ b/src/linux_sysfs.c
+@@ -213,6 +213,10 @@ populate_entries( struct pci_system * p )
+ 	}
+     }
+ 
++    for (i = 0; i < n; i++)
++	free(devices[i]);
++    free(devices);
++
+     if (err) {
+ 	free(p->devices);
+ 	p->devices = NULL;
+-- 
+1.6.5.rc1
+

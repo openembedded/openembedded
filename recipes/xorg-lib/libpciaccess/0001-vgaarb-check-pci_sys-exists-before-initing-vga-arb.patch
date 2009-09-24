@@ -1,7 +1,7 @@
 From 42b879a203c1c16daa9d0c610c6a217ead7a5829 Mon Sep 17 00:00:00 2001
 From: Dave Airlie <airlied@linux.ie>
 Date: Wed, 2 Sep 2009 19:03:11 +1000
-Subject: [PATCH] vgaarb: check pci_sys exists before initing vga arb
+Subject: [PATCH 1/4] vgaarb: check pci_sys exists before initing vga arb
 
 ---
  src/common_vgaarb.c |    4 ++++
@@ -23,5 +23,5 @@ index a40b064..ca5c0a7 100644
          return errno;
      }
 -- 
-1.6.4.2
+1.6.5.rc1
 
