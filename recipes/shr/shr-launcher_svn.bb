@@ -9,6 +9,12 @@ PV = "0.0.1+svnr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "svn://shr-launcher.googlecode.com/svn/trunk;module=.;proto=http"
+
+do_configure_prepend() {
+  rm -f ${S}/config.log
+  rm -f ${S}/config.status
+}
+
 S = "${WORKDIR}"
 
 inherit autotools
