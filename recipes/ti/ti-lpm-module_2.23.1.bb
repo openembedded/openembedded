@@ -1,5 +1,6 @@
 DESCRIPTION = "LPM module for TI OMAP3 processors"
 
+require ti-paths.inc
 inherit module
 # compile and run time dependencies
 DEPENDS 	= " virtual/kernel perl-native ti-dsplink-module"
@@ -20,7 +21,6 @@ export DSPLINK="${S}/cetools/packages/dsplink"
 
 LPMDSPPOWERSOC 				 ?= "omap3530"
 LPMDSPPOWERSOC_omap3evm 	 ?= "omap3530"
-LPMDSPPOWERSOC_beagleboard 	 ?= "omap3530"
 
 do_compile () {
     # TODO :: KERNEL_CC, etc need replacing with user CC
