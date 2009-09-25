@@ -56,8 +56,10 @@ fi
 # use usb mouse if present
 # Xorg doesn't support "-mouse" option, and uses /dev/input/mouse0 automatically
 # On neo we have touchscreen as /dev/input/mice, usb connected mouse would be probably mouse0
-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mouse0 ] && [ "$XSERVER" != "/usr/bin/Xorg" ]; then
-  ARGS="$ARGS -mouse /dev/input/mouse0"
+if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mouse0 ]; then
+  if [ "$XSERVER" != "/usr/bin/Xorg" ]; then
+    ARGS="$ARGS -mouse /dev/input/mouse0"
+  fi
   USB_MOUSE="1"
 fi
 
