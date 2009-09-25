@@ -1,0 +1,21 @@
+--- kexec-tools/kexec/phys_arch.c.old	2008-07-15 02:46:43.000000000 +0200
++++ kexec-tools/kexec/phys_arch.c	2009-09-25 23:46:04.000000000 +0200
+@@ -13,9 +13,16 @@
+		return -1;
+	}
+
+-	for (i = 0; arches[i].machine; ++i)
+-		if (strcmp(utsname.machine, arches[i].machine) == 0)
++	for (i = 0; arches[i].machine; ++i) {
++
++		if ((arches[i].machine == "arm") && (strncmp(utsname.machine, arches[i].machine, 3) == 0)) {
++			return arches[i].arch;
++		}
++
++		if (strcmp(utsname.machine, arches[i].machine) == 0) {
+			return arches[i].arch;
++		}
++	}
+
+	fprintf(stderr, "Unsupported machine type: %s\n",
+		utsname.machine);
