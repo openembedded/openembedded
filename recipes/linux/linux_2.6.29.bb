@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r8"
+PR = "r9"
 
 S = "${WORKDIR}/linux-2.6.29"
 
@@ -23,6 +23,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2 \
 
 SRC_URI_append_boc01 = "\
 	file://boc01.dts \
+	file://boc01.dts.v1 \
 	file://004-081205-usb.patch;patch=1 \
 	file://005-090226-isl12024.patch;patch=1 \
 	file://007-090825-lm73.patch;patch=1 \
@@ -72,4 +73,17 @@ SRC_URI_append_stamp9g20evb = " \
     "
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),0x230000(root),-(config);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd4 rootfstype=jffs2"
+
+do_devicetree_image_append_boc01() {
+	dtc -I dts -O dtb ${KERNEL_DEVICETREE_FLAGS} -o devicetree.v1 ${KERNEL_DEVICETREE}.v1
+	install -m 0644 devicetree.v1 ${D}/boot/devicetree-${KERNEL_VERSION}.v1
+}
+
+pkg_postinst_kernel-devicetree_append_boc01 () {
+	cd /${KERNEL_IMAGEDEST}; update-alternatives --install /${KERNEL_IMAGEDEST}/devicetree.v1 devicetree.v1 devicetree-${KERNEL_VERSION}.v1 ${KERNEL_PRIORITY} || true
+}
+
+pkg_postrm_kernel-devicetree_append_boc01 () {
+	cd /${KERNEL_IMAGEDEST}; update-alternatives --remove devicetree.v1 devicetree-${KERNEL_VERSION}.v1 || true
+}
 
