@@ -1,5 +1,5 @@
 DESCRIPTION = "Machine specific xorg.conf files"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://xorg.conf"
 
@@ -9,5 +9,3 @@ do_install() {
 }
 
 CONFFILES_${PN} += "${sysconfdir}/X11/xorg.conf"
-
-RDEPENDS_append-om-gta02 += "xf86-video-glamo xf86-input-evdev"

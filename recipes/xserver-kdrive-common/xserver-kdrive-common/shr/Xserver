@@ -122,7 +122,7 @@ case `module_id` in
 				DPI=140
 			fi 
 			ARGS="$ARGS -dpi ${DPI} vt1" 
-			if [ -z "$USB_MOUSE}" ]; then
+			if [ -z "${USB_MOUSE}" ]; then
 				ARGS="$ARGS -nocursor"
 			fi
 		else
