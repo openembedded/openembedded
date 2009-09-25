@@ -51,6 +51,7 @@ RDEPENDS_${PN} += "\
 		remoko \
 		shr-config \
 		shr-today \
+                shr-theme-neo \
 		shr-splash \
 		shr-splash-theme-simple \
 		shr-splash-theme-dontpanic \
