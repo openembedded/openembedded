@@ -1,12 +1,11 @@
 require glib.inc
-PR = "${INC_PR}.7"
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
-  http://ftp.gnome.org/pub/GNOME/sources/glib/2.21/glib-${PV}.tar.bz2 \
+  http://ftp.gnome.org/pub/GNOME/sources/glib/2.22/glib-${PV}.tar.bz2 \
   file://glibconfig-sysdefs.h \
   file://configure-libtool.patch;patch=1 \
   file://bug-556515.patch;patch=1 \
-  file://gobject.patch;patch=1 \
 "
 
 
