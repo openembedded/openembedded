@@ -5,6 +5,17 @@
 # KERNEL
 SRCREV_pn-linux-openmoko-shr-devel = "${AUTOREV}"
 
+# X11
+require conf/distro/include/preferred-xorg-versions-live.inc
+SRCREV_pn-xf86-video-glamo = "${AUTOREV}"
+SRCREV_pn-xf86-input-mouse = "${AUTOREV}"
+SRCREV_pn-xf86-input-keyboard = "${AUTOREV}"
+SRCREV_pn-xf86-video-glamo-kms = "${AUTOREV}"
+SRCREV_pn-glamo-dri-tests = "${AUTOREV}"
+SRCREV_pn-mesa-dri-glamo = "${AUTOREV}"
+SRCREV_pn-libdrm-glamo = "${AUTOREV}"
+SRCREV_pn-xserver-xorg = "${AUTOREV}"
+
 # FSO stuff
 FSOREV_cornucopia = "${AUTOREV}"
 SRCREV_pn-dbus-hlid = "${AUTOREV}"
