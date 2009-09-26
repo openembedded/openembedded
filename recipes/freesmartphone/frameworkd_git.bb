@@ -1,11 +1,11 @@
 DESCRIPTION = "The reference implementation of the freesmartphone.org framework APIs"
 HOMEPAGE = "http://www.freesmartphone.org"
-AUTHOR = "FreeSmartphone.Org Development Team"
+AUTHOR = "freesmartphone.org Development Team"
 SECTION = "console/network"
-DEPENDS = "python-cython-native python-pyrex-native"
+#DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 inherit distutils update-rc.d
 
@@ -56,6 +56,8 @@ RDEPENDS_${PN} += "\
 RRECOMMENDS_${PN} += "\
   alsa-utils-amixer \
   python-gst \
+  python-phoneutils \
+  python-vobject \
   ppp \
 "
 
