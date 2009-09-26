@@ -6,7 +6,7 @@ SECTION = "libs/network"
 SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz"
 S = "${WORKDIR}/openssl-${PV}"
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 AR_append = " r"
 CFLAG = "${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
@@ -33,8 +33,9 @@ do_configure () {
 	os=${HOST_OS}
 	if [ "x$os" = "xlinux-uclibc" ]; then
 		os=linux
-	fi
-	if [ "x$os" = "xlinux-uclibceabi" ]; then
+	elif [ "x$os" = "xlinux-uclibceabi" ]; then
+		os=linux
+	elif [ "x$os" = "xlinux-gnu" ]; then
 		os=linux
 	fi
 	target="$os-${HOST_ARCH}"
