@@ -2,10 +2,10 @@ DESCRIPTION = "Modular settings application for SHR based on python-elementary"
 HOMEPAGE = "http://shr-project.org"
 SHR_RELEASE ?= "shr"
 LICENSE ?= "GPL"
-RDEPENDS = "python-elementary python-dbus python-codecs python-shell python-pyrtc python python-core python-edbus dbus-x11 ophonekitd frameworkd"
+RDEPENDS = "python-elementary python-dbus python-codecs python-shell python-pyrtc python python-core python-edbus dbus-x11 ophonekitd frameworkd python-phoneutils"
 SECTION = "x11/application"
 PV = "0.1.1+r${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 inherit setuptools
 
