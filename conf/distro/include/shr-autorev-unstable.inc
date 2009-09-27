@@ -4,6 +4,7 @@
 
 # KERNEL
 SRCREV_pn-linux-openmoko-shr-devel = "${AUTOREV}"
+SRCREV_pn-linux-openmoko-shr-drm-devel = "${AUTOREV}"
 
 # X11
 require conf/distro/include/preferred-xorg-versions-live.inc
