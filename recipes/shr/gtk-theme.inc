@@ -22,10 +22,12 @@ ALTERNATIVE_LINK = "${sysconfdir}/gtk-2.0/gtkrc"
 ALTERNATIVE_PATH = "${sysconfdir}/gtk-2.0/gtkrc.${PN}"
 
 pkg_postinst() {
-        if [[ -e /etc/gtk-2.0/gtkrc && ! -h /etc/gtk-2.0/gtkrc ]] ; then
-                echo "Removing file /etc/gtk-2.0/gtkrc, will be replaced with link managed by update-alternatives"
-                echo "Press enter to continue"
-                read
-                rm -f /etc/gtk-2.0/gtkrc
+        if [[ -e ${ALTERNATIVE_LINK} && ! -h ${ALTERNATIVE_LINK} ]] ; then
+                echo "warn: ${ALTERNATIVE_LINK} exists and it's not a link!"
+                echo "warn: It will be replaced with link managed by update-alternatives"
+                echo "warn: Moving ${ALTERNATIVE_LINK} to ${ALTERNATIVE_LINK}.old."
+                echo "warn: It should be empty but probably isn't!"
+                echo "warn: Check what's left there and remove it manually."
+                mv -f ${ALTERNATIVE_LINK} ${ALTERNATIVE_LINK}.old
         fi
 }
