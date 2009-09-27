@@ -1,5 +1,6 @@
 require xorg-driver-video.inc
-SRC_URI = "git://git.bitwiz.org.uk/xf86-video-glamo.git;protocol=git;branch=kms"
+SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=kms"
+PROVIDES = "xf86-video-glamo"
 
 S = "${WORKDIR}/git"
 
