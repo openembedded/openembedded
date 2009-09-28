@@ -4,11 +4,14 @@ DEPENDS = "curl eet evas tslib libxtst libxcomposite libxinerama libxscrnsaver l
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
 PV = "0.9.9.050+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 inherit efl
 
 SRC_URI += "file://ecore-add-includes.patch;patch=1;maxrev=40794"
+
+# needed to make autotools call autopoint
+EXTRA_AUTORECONF = ""
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 
@@ -65,4 +68,5 @@ DEBIAN_NOAUTONAME_${PN}-x = "1"
 DEBIAN_NOAUTONAME_${PN}-evas = "1"
 DEBIAN_NOAUTONAME_${PN}-sdl = "1"
 DEBIAN_NOAUTONAME_${PN}-tests = "1"
+
 
