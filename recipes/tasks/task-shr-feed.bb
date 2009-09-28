@@ -234,4 +234,7 @@ RDEPENDS_${PN} += "\
 		eve \
 		python-pybluez \
 		x11perf \
+		pyring \
+		bt-configure \
+		bt-gps \
 "
