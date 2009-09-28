@@ -16,7 +16,7 @@ RDEPENDS = ""
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.21"
+PR := "${PR}.22"
 
 # We wish to search the same file paths as does the initscripts recipe.
 FILESPATHPKG = "initscripts-${PV}:initscripts:files"
@@ -32,7 +32,6 @@ S = "${WORKDIR}"
 
 do_install_append() {
 	# devfs is not used with SlugOS - remove all traces of it.
-	rm	${D}${sysconfdir}/device_table
 	rm	${D}${sysconfdir}/init.d/devices
 	rm	${D}${sysconfdir}/rcS.d/S05devices
 

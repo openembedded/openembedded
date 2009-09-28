@@ -1,0 +1,30 @@
+--- a/drivers/usb/core/hub.c	2009-07-28 08:47:00.000000000 -0700
++++ b/drivers/usb/core/hub.c	2009-07-28 08:32:20.000000000 -0700
+@@ -22,6 +22,7 @@
+ #include <linux/kthread.h>
+ #include <linux/mutex.h>
+ #include <linux/freezer.h>
++#include <linux/gpio.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/byteorder.h>
+@@ -3129,9 +3130,18 @@
+ 					USB_PORT_FEAT_C_RESET);
+ 			}
+ 
+-			if (connect_change)
++			if (connect_change) {
++				if(portstatus & USB_PORT_STAT_CONNECTION) {
++					gpio_set_value(176,0);
++					mdelay(25);
++				}
+ 				hub_port_connect_change(hub, i,
+ 						portstatus, portchange);
++				if(portstatus & USB_PORT_STAT_CONNECTION) {
++					mdelay(75);
++					gpio_set_value(176,1);
++				}
++			}
+ 		} /* end for i */
+ 
+ 		/* deal with hub status changes */

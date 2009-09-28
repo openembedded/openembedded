@@ -1,0 +1,108 @@
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index 0c62ace..8f6e83c 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -127,6 +127,7 @@ struct ads7846 {
+ 	void			(*filter_cleanup)(void *data);
+ 	int			(*get_pendown_state)(void);
+ 	int			gpio_pendown;
++	int			rotate;
+ };
+ 
+ /* leave chip selected when we're done, for quicker re-select? */
+@@ -511,6 +512,11 @@ static ssize_t show_x_plate_ohms(struct device *dev, struct device_attribute *at
+ 	return sprintf(buf, "%u\n", ts->x_plate_ohms);
+ }
+ 
++static ssize_t show_rotate(struct device *dev, struct device_attribute *attr, char *buf) {
++	struct ads7846 *ts = dev_get_drvdata(dev);
++	return sprintf(buf, "%u\n", ts->rotate);
++}
++
+ static ssize_t write_debounce_max(struct device *dev, struct device_attribute *attr, const char *buf, size_t count) {
+ 	struct ads7846 *ts = dev_get_drvdata(dev);
+ 	unsigned long i;
+@@ -555,10 +561,22 @@ static ssize_t write_x_plate_ohms(struct device *dev, struct device_attribute *a
+ 	return count;
+ }
+ 
++static ssize_t write_rotate(struct device *dev, struct device_attribute *attr, const char *buf, size_t count) {
++        struct ads7846 *ts = dev_get_drvdata(dev);
++        unsigned long i = 0;
++
++        if (strict_strtoul(buf, 10, &i) || i > 3)
++                return -EINVAL;
++
++        ts->rotate = i;
++        return count;
++}
++
+ static DEVICE_ATTR(debounce_max, S_IRUGO | S_IWUGO, show_debounce_max, write_debounce_max);
+ static DEVICE_ATTR(debounce_tol, S_IRUGO | S_IWUGO, show_debounce_tol, write_debounce_tol);
+ static DEVICE_ATTR(debounce_rep, S_IRUGO | S_IWUGO, show_debounce_rep, write_debounce_rep);
+ static DEVICE_ATTR(x_plate_ohms, S_IRUGO | S_IWUGO, show_x_plate_ohms, write_x_plate_ohms);
++static DEVICE_ATTR(rotate, S_IRUGO | S_IWUGO, show_rotate, write_rotate);
+ 
+ static struct attribute *ads784x_attributes[] = {
+ 	&dev_attr_pen_down.attr,
+@@ -567,6 +585,7 @@ static struct attribute *ads784x_attributes[] = {
+ 	&dev_attr_debounce_tol.attr,
+ 	&dev_attr_debounce_rep.attr,
+ 	&dev_attr_x_plate_ohms.attr,
++	&dev_attr_rotate.attr,
+ 	NULL,
+ };
+ 
+@@ -596,6 +615,8 @@ static void ads7846_rx(void *ads)
+ {
+ 	struct ads7846		*ts = ads;
+ 	struct ads7846_packet	*packet = ts->packet;
++	struct ads7846_platform_data *pdata = ts->spi->dev.platform_data;
++
+ 	unsigned		Rt;
+ 	u16			x, y, z1, z2;
+ 
+@@ -657,6 +678,7 @@ static void ads7846_rx(void *ads)
+ 	 * timer by reading the pen signal state (it's a GPIO _and_ IRQ).
+ 	 */
+ 	if (Rt) {
++		int t;
+ 		struct input_dev *input = ts->input;
+ 
+ 		if (!ts->pendown) {
+@@ -666,6 +688,27 @@ static void ads7846_rx(void *ads)
+ 			dev_dbg(&ts->spi->dev, "DOWN\n");
+ #endif
+ 		}
++
++		switch(ts->rotate)
++		{
++			case 0:
++				x = pdata->x_max - x + pdata->x_min;
++				y = pdata->y_max - y + pdata->y_min;
++				break;
++			case 1:
++				t = x;
++				x = pdata->x_max - (((y - pdata->y_min) * (pdata->x_max - pdata->x_min)) / (pdata->y_max - pdata->y_min));
++				y = pdata->y_min + (((t - pdata->x_min) * (pdata->y_max - pdata->y_min)) / (pdata->x_max - pdata->x_min));
++				break;
++			case 2:
++				break;
++			case 3:
++				t = x;
++				x = pdata->x_min + (((y - pdata->y_min) * (pdata->x_max - pdata->x_min)) / (pdata->y_max - pdata->y_min));
++				y = pdata->y_max - (((t - pdata->x_min) * (pdata->y_max - pdata->y_min)) / (pdata->x_max - pdata->x_min));
++				break;
++		}
++
+ 		input_report_abs(input, ABS_X, x);
+ 		input_report_abs(input, ABS_Y, y);
+ 		input_report_abs(input, ABS_PRESSURE, Rt);
+@@ -980,6 +1023,7 @@ static int __devinit ads7846_probe(struct spi_device *spi)
+ 
+ 	dev_set_drvdata(&spi->dev, ts);
+ 
++	ts->rotate = 0;
+ 	ts->packet = packet;
+ 	ts->spi = spi;
+ 	ts->input = input_dev;

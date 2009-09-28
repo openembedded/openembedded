@@ -212,6 +212,10 @@ SRC_URI_append_omap3evm = " \
 
 S = "${WORKDIR}/git"
 
+do_configure_prepend_omap3-touchbook() {
+	cp ${WORKDIR}/board-omap3beagle.c ${S}/arch/arm/mach-omap2
+}
+
 do_install_append() {
         install -d ${D}/boot
         install -m 0644 Documentation/arm/OMAP/DSS ${D}/boot || true

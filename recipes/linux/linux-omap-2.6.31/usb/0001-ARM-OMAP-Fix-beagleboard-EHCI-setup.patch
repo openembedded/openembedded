@@ -1,0 +1,37 @@
+From 416c7ba6ec7041dc4d61340adf73c9467ff8073a Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@beagleboard.org>
+Date: Wed, 23 Sep 2009 09:35:15 +0200
+Subject: [PATCH] ARM: OMAP: Fix beagleboard EHCI setup
+
+The EHCI configuration in the beagleboard board file was copy/pasted
+from the sdp one and hence wrong. The beagleboard only used one port
+and lacks a charge pump.
+
+Tested on revision C1D and C3 boards
+
+Signed-off-by: Koen Kooi <koen@beagleboard.org>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 496b4a0..aa403e6 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -406,10 +406,10 @@ static struct ehci_hcd_omap_platform_data ehci_pdata __initconst = {
+ 	.port_mode[1] = EHCI_HCD_OMAP_MODE_PHY,
+ 	.port_mode[2] = EHCI_HCD_OMAP_MODE_UNKNOWN,
+ 
+-	.chargepump = true,
++	.chargepump = false,
+ 	.phy_reset  = true,
+-	.reset_gpio_port[0]  = 57,
+-	.reset_gpio_port[1]  = 61,
++	.reset_gpio_port[0]  = -EINVAL,
++	.reset_gpio_port[1]  = 147,
+ 	.reset_gpio_port[2]  = -EINVAL
+ };
+ 
+-- 
+1.6.2.4
+

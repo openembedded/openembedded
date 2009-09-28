@@ -1,0 +1,234 @@
+sed -i 's/@\([A-Z0-9_]*\)@/\$(\1)/g;s/\$(MBWM2_API_VERSION)/@MBWM2_API_VERSION@/g;s/_LIBRARIES/_LTLIBRARIES/g;s/_a_/_la_/g;s/\.a/.la/g' $(find -name Makefile.am)
+Index: matchbox/client-types/Makefile.am
+===================================================================
+--- matchbox/client-types/Makefile.am	(revision 2087)
++++ matchbox/client-types/Makefile.am	(working copy)
+@@ -1,15 +1,15 @@
+ if ENABLE_COMPOSITE
+-compmgr_libs = libmb-wm-client-override.a
++compmgr_libs = libmb-wm-client-override.la
+ compmgr_ltlibs = libmb-wm-client-override.la
+ endif
+ 
+-THEME_LIBS = @MBWM_THEME_LIBS@/libmb-theme.a
++THEME_LIBS = $(MBWM_THEME_LIBS)/libmb-theme.la
+ 
+-INCLUDES     = @MBWM_INCS@ @MBWM_CFLAGS@
++INCLUDES     = $(MBWM_INCS) $(MBWM_CFLAGS)
+ LDADD        =$(THEME_LIBS)
+ DEPENDENCIES = $(THEME_LIBS)
+ 
+-pkgincludedir = $(includedir)/@MBWM2_INCDIR@/client-types
++pkgincludedir = $(includedir)/$(MBWM2_INCDIR)/client-types
+ 
+ if ENABLE_LIBMATCHBOX
+ pkginclude_HEADERS = mb-wm-client-app.h \
+Index: matchbox/comp-mgr/Makefile.am
+===================================================================
+--- matchbox/comp-mgr/Makefile.am	(revision 2087)
++++ matchbox/comp-mgr/Makefile.am	(working copy)
+@@ -12,7 +12,7 @@
+ endif
+ endif
+ 
+-pkgincludedir = $(includedir)/@MBWM2_INCDIR@/comp-mgr
++pkgincludedir = $(includedir)/$(MBWM2_INCDIR)/comp-mgr
+ 
+ if ENABLE_LIBMATCHBOX
+ pkginclude_HEADERS = mb-wm-comp-mgr-clutter.h  mb-wm-comp-mgr.h  mb-wm-comp-mgr-xrender.h
+@@ -21,7 +21,7 @@
+ libmatchbox_window_manager_2_compmgr_la_SOURCES = $(core_h) $(core_c) \
+ 						  $(xrender_h) $(xrender_c) \
+ 						  $(clutter_h) $(clutter_c)
+-libmatchbox_window_manager_2_compmgr_la_CFLAGS = @MBWM_INCS@ @MBWM_CFLAGS@
++libmatchbox_window_manager_2_compmgr_la_CFLAGS = $(MBWM_INCS) $(MBWM_CFLAGS)
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+Index: matchbox/core/Makefile.am
+===================================================================
+--- matchbox/core/Makefile.am	(revision 2087)
++++ matchbox/core/Makefile.am	(working copy)
+@@ -37,13 +37,13 @@
+ 	  mb-wm-main-context.c	\
+           xas.c
+ 
+-pkgincludedir = $(includedir)/@MBWM2_INCDIR@/core
++pkgincludedir = $(includedir)/$(MBWM2_INCDIR)/core
+ 
+ if ENABLE_LIBMATCHBOX
+ pkginclude_HEADERS = $(core_h)
+ endif
+ noinst_LTLIBRARIES =  libmatchbox-window-manager-2-core.la
+ libmatchbox_window_manager_2_core_la_SOURCES = $(core_h) $(core_c)
+-libmatchbox_window_manager_2_core_la_CFLAGS =  @MBWM_INCS@ @MBWM_CFLAGS@
++libmatchbox_window_manager_2_core_la_CFLAGS =  $(MBWM_INCS) $(MBWM_CFLAGS)
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+Index: matchbox/theme-engines/Makefile.am
+===================================================================
+--- matchbox/theme-engines/Makefile.am	(revision 2087)
++++ matchbox/theme-engines/Makefile.am	(working copy)
+@@ -5,7 +5,7 @@
+ 
+ COMMON_SRC = mb-wm-theme.h mb-wm-theme.c mb-wm-theme-xml.h mb-wm-theme-xml.c
+ 
+-pkgincludedir = $(includedir)/@MBWM2_INCDIR@/theme-engines
++pkgincludedir = $(includedir)/$(MBWM2_INCDIR)/theme-engines
+ 
+ if ENABLE_LIBMATCHBOX
+ pkginclude_HEADERS = mb-wm-theme.h  mb-wm-theme-png.h  mb-wm-theme-xml.h
+@@ -14,6 +14,6 @@
+ libmb_theme_la_SOURCES = $(COMMON_SRC) $(PNG_SRC)
+ libmb_theme_la_CFLAGS =
+ 
+-INCLUDES = @MBWM_INCS@ @MBWM_CFLAGS@ -DDATADIR=\"$(datadir)\"
++INCLUDES = $(MBWM_INCS) $(MBWM_CFLAGS) -DDATADIR=\"$(datadir)\"
+ 
+ MAINTAINERCLEANFILES = config.h.in Makefile.in
+Index: matchbox/Makefile.am
+===================================================================
+--- matchbox/Makefile.am	(revision 2087)
++++ matchbox/Makefile.am	(working copy)
+@@ -7,7 +7,7 @@
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+-pkgincludedir = $(includedir)/@MBWM2_INCDIR@
++pkgincludedir = $(includedir)/$(MBWM2_INCDIR)
+ 
+ SUBDIRS = core client-types theme-engines $(comp) managers
+ 
+Index: matchbox/managers/simple/Makefile.am
+===================================================================
+--- matchbox/managers/simple/Makefile.am	(revision 2087)
++++ matchbox/managers/simple/Makefile.am	(working copy)
+@@ -1,22 +1,22 @@
+ INCLUDES = 					       \
+-	@MBWM_INCS@				       \
+-	@MBWM_CFLAGS@
++	$(MBWM_INCS)				       \
++	$(MBWM_CFLAGS)
+ 
+ CLIENT_LIBS = \
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-panel.la	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-dialog.la \
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-note.la \
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-app.la \
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-input.la	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-desktop.la \
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-menu.la
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-panel.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-dialog.la \
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-note.la \
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-app.la \
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-input.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-desktop.la \
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-menu.la
+ 
+ if ENABLE_COMPOSITE
+-COMPMGR_LIBS=@MBWM_COMPMGR_BUILDDIR@/libmatchbox-window-manager-2-compmgr.la \
+-             @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-override.la
++COMPMGR_LIBS=$(MBWM_COMPMGR_BUILDDIR)/libmatchbox-window-manager-2-compmgr.la \
++             $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-override.la
+ endif
+ 
+-THEME_LIBS = @MBWM_THEME_BUILDDIR@/libmb-theme.la
++THEME_LIBS = $(MBWM_THEME_BUILDDIR)/libmb-theme.la
+ 
+ bin_PROGRAMS = matchbox-window-manager-2-simple
+ 
+@@ -28,15 +28,15 @@
+ 	$(LDFLAGS)
+ 
+ matchbox_window_manager_2_simple_LDADD =		\
+-        @MBWM_CORE_LIB@					\
++        $(MBWM_CORE_LIB)					\
+ 	$(THEME_LIBS)					\
+ 	$(CLIENT_LIBS)					\
+ 	$(COMPMGR_LIBS)					\
+-	@MBWM_LIBS@
++	$(MBWM_LIBS)
+ 
+ 
+ matchbox_window_manager_2_simple_DEPENDENCIES =		\
+-        @MBWM_CORE_LIB@					\
++        $(MBWM_CORE_LIB)					\
+ 	$(THEME_LIBS)					\
+         $(CLIENT_LIBS)					\
+ 	$(COMPMGR_LIBS)
+Index: matchbox/managers/maemo/Makefile.am
+===================================================================
+--- matchbox/managers/maemo/Makefile.am	(revision 2087)
++++ matchbox/managers/maemo/Makefile.am	(working copy)
+@@ -1,23 +1,23 @@
+ SUBDIRS = theme
+ 
+ INCLUDES = 					       \
+-	@MBWM_INCS@				       \
+-	@MBWM_CFLAGS@
++	$(MBWM_INCS)				       \
++	$(MBWM_CFLAGS)
+ 
+ CLIENT_LIBS =						\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-panel.a	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-dialog.a	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-note.a	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-app.a	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-input.a	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-desktop.a	\
+-        @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-menu.a
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-panel.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-dialog.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-note.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-app.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-input.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-desktop.la	\
++        $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-menu.la
+ 
+-THEME_LIBS = @MBWM_THEME_BUILDDIR@/libmb-theme.a
++THEME_LIBS = $(MBWM_THEME_BUILDDIR)/libmb-theme.la
+ 
+ if ENABLE_COMPOSITE
+-COMPMGR_LIBS=@MBWM_COMPMGR_BUILDDIR@/libmatchbox-window-manager-2-compmgr.a \
+-	     @MBWM_CLIENT_BUILDDIR@/libmb-wm-client-override.a
++COMPMGR_LIBS=$(MBWM_COMPMGR_BUILDDIR)/libmatchbox-window-manager-2-compmgr.la \
++	     $(MBWM_CLIENT_BUILDDIR)/libmb-wm-client-override.la
+ endif
+ 
+ bin_PROGRAMS = matchbox-window-manager-2-maemo
+@@ -33,14 +33,14 @@
+ 	$(LDFLAGS)
+ 
+ matchbox_window_manager_2_maemo_LDADD =			\
+-        @MBWM_CORE_LIB@					\
++        $(MBWM_CORE_LIB)					\
+ 	$(THEME_LIBS)					\
+ 	$(CLIENT_LIBS)					\
+ 	$(COMPMGR_LIBS)					\
+-	@MBWM_LIBS@
++	$(MBWM_LIBS)
+ 
+ matchbox_window_manager_2_maemo_DEPENDENCIES =		\
+-        @MBWM_CORE_LIB@					\
++        $(MBWM_CORE_LIB)					\
+ 	$(THEME_LIBS)					\
+         $(CLIENT_LIBS)					\
+ 	$(COMPMGR_LIBS)
+Index: data/Makefile.am
+===================================================================
+--- data/Makefile.am	(revision 2087)
++++ data/Makefile.am	(working copy)
+@@ -1,10 +1,10 @@
+ SUBDIRS=themes
+ 
+-pcfiles = libmatchbox2-$(MBWM2_API_VERSION).pc \
++pcfiles = libmatchbox2-@MBWM2_API_VERSION@.pc \
+ 	  libmatchbox2.pc
+ 
+ # clutter-<major>.<minor>.pc - for generic dependencies
+-libmatchbox2-$(MBWM2_API_VERSION).pc: libmatchbox2.pc
++libmatchbox2-@MBWM2_API_VERSION@.pc: libmatchbox2.pc
+ 	@cp $< $@
+ 
+ if ENABLE_LIBMATCHBOX

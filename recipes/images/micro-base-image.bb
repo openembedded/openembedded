@@ -11,7 +11,7 @@ IMAGE_LINGUAS = ""
 IMAGE_LOGIN_MANAGER = "busybox"
 
 # Include minimum init and init scripts
-IMAGE_DEV_MANAGER = "mdev"
+IMAGE_DEV_MANAGER = "busybox-mdev"
 IMAGE_INIT_MANAGER = "sysvinit sysvinit-pidof"
 IMAGE_INITSCRIPTS = ""
 

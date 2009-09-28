@@ -1,0 +1,25 @@
+http://bugzilla.openedhand.com/show_bug.cgi?id=1791
+Index: applets/startup/startup.c
+===================================================================
+--- applets/startup/startup.c	(revision 2098)
++++ applets/startup/startup.c	(working copy)
+@@ -170,16 +170,17 @@
+ 
+         /* handle launchee timeouts */
+         while (tmp != NULL) {
++                GList *tmp_next = tmp->next;
+                 LaunchItem *item = (LaunchItem *) tmp->data;
+                 if ((item->when - t) <= 0) {
+-                        applet->launch_list = g_list_remove (tmp, item);
++                        applet->launch_list = g_list_delete_link (applet->launch_list, tmp);
+                         g_source_remove (item->timeout_id);
+                         free (item->id);
+                         free (item);
+ 
+                         break;
+                 }
+-                tmp = tmp->next;
++                tmp = tmp_next;
+         }
+ 
+         if (applet->launch_list == NULL && applet->hourglass_shown) {

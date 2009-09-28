@@ -1,6 +1,7 @@
 DESCRIPTION = "Sugar toolkit"
 LICENSE = "LGPLv2"
 DEPENDS = "python-pygtk libxml-parser-perl-native libxml2 gtk+ alsa-lib"
+RDEPENDS = "python-pygtk"
 
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-toolkit/sugar-toolkit-${PV}.tar.bz2"
 

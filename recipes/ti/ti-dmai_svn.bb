@@ -4,11 +4,11 @@ require ti-paths.inc
 inherit module-base
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "a"
+MACHINE_KERNEL_PR_append = "b"
 
 # compile time dependencies
 DEPENDS_omap3evm  += "alsa-lib ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-cs1-omap3530 virtual/kernel ti-dsplink-module"
-DEPENDS_beagleboard	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-cs1-omap3530 virtual/kernel ti-dsplink-module "
+DEPENDS_armv7a	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-cs1-omap3530 virtual/kernel ti-dsplink-module "
 DEPENDS_dm6446-evm 	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-codec-combo-dm6446 virtual/kernel ti-dsplink-module "
 DEPENDS_dm355-evm  	+= "alsa-lib ti-codec-engine ti-xdctools-native ti-codec-combo-dm355 virtual/kernel"
 DEPENDS_da830-omapl137-evm 	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-codec-combo-omapl137 virtual/kernel ti-dsplink-module "
@@ -101,6 +101,6 @@ FILES_ti-dmai-tests = "${installdir}/dmai-tests/*"
 RDEPENDS_ti-dmai-apps_dm355-evm += "ti-dm355mm-module ti-cmem-module ti-codec-combo-dm355"
 RDEPENDS_ti-dmai-apps_dm6446-evm += "ti-cmem-module ti-dsplink-module ti-codec-combo-dm6446"
 RDEPENDS_ti-dmai-apps_omap3evm += "ti-cmem-module ti-dsplink-module ti-cs1-omap3530 ti-lpm-module ti-sdma-module"
-RDEPENDS_ti-dmai-apps_beagleboard += "ti-cmem-module ti-dsplink-module ti-cs1-omap3530 ti-lpm-module ti-sdma-module"
+RDEPENDS_ti-dmai-apps_armv7a += "ti-cmem-module ti-dsplink-module ti-cs1-omap3530 ti-lpm-module ti-sdma-module"
 RDEPENDS_ti-dmai-apps_da830-omapl137-evm += "ti-cmem-module ti-dsplink-module ti-codec-combo-ol137"
 

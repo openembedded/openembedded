@@ -3,7 +3,7 @@ Its name stands for LiSt Open Files, and it does just that."
 SECTION = "devel"
 LICENSE = "BSD"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_${PV}.tar.bz2"
 LOCALSRC = "file://${WORKDIR}/lsof_${PV}/lsof_${PV}_src.tar"
@@ -20,6 +20,7 @@ python do_unpack () {
 export LSOF_OS = "${TARGET_OS}"
 LSOF_OS_linux-uclibc = "linux"
 LSOF_OS_linux-uclibceabi = "linux"
+LSOF_OS_linux-gnu = "linux"
 LSOF_OS_linux-gnueabi = "linux"
 export LSOF_INCLUDE = "${STAGING_INCDIR}"
 

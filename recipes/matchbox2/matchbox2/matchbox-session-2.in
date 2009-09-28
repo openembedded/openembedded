@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# running desktop-specific daemons in system-wide init is a mis-conception:
+killall mb-applet-startup-monitor 2>/dev/null
+
+# This should be resourced elsewhere:
+if [ -e /etc/profile ]
+then
+. /etc/profile
+fi
+if [ -e $HOME/profile ]
+then
+. $HOME/.profile
+fi
+
+if [ -e $HOME/.matchbox2/session ]
+then
+	exec $HOME/.matchbox2/session
+fi
+if [ -e @sysconfdir@/matchbox2/session ]
+then
+	exec @sysconfdir@/matchbox2/session
+fi
+
+if [ -e @sysconfdir@/matchbox2/defaults ]
+then
+	. @sysconfdir@/matchbox2/defaults
+fi
+if [ -e $HOME/.matchbox2/defaults ]
+then
+	. $HOME/.matchbox2/defaults
+fi
+
+for LAUNCHER in $LAUNCHERS ; do
+	eval MENU\=\""\$${LAUNCHER}S"\"
+	for APP in $MENU ; do
+		if test -f @datadir@/applications/$APP.desktop ; then
+			AUTOLAUNCHER_APPLETS="$AUTOLAUNCHER_APPLETS launcher:$APP"
+			break
+		fi
+	done
+done
+
+AUTOLAUNCHER_CMD=""
+for APPLET in $AUTOLAUNCHER_APPLETS ; do
+	if test -z "$AUTOLAUNCHER_CMD" ; then
+		AUTOLAUNCHER_CMD="$APPLET"
+	else
+		AUTOLAUNCHER_CMD="$AUTOLAUNCHER_CMD,$APPLET"
+	fi
+done
+START_CMD=""
+for APPLET in $START_APPLETS ; do
+	if test "$APPLET" = "autolauncher" ; then
+		APPLET="$AUTOLAUNCHER_CMD"
+	fi
+	if test -z "$START_CMD" ; then
+		START_CMD=" --start-applets=$APPLET"
+	else
+		START_CMD="$START_CMD,$APPLET"
+	fi
+done
+END_CMD=""
+for APPLET in $END_APPLETS ; do
+	if test "$APPLET" = "autolauncher" ; then
+		APPLET="$AUTOLAUNCHER_CMD"
+	fi
+	if test -z "$END_CMD" ; then
+		END_CMD=" --end-applets=$APPLET"
+	else
+		END_CMD="$END_CMD,$APPLET"
+	fi
+done
+
+PANEL_OPTIONS="$PANEL_OPTIONS$START_CMD$END_CMD"
+
+matchbox-panel-2 $PANEL_OPTIONS &
+sleep 2
+# matchbox-desktop-2 does not resize. Run it last.
+( sleep 5 ; matchbox-desktop-2 $DESKTOP_OPTIONS )&
+exec matchbox-window-manager-2-$MATCHBOX_WM $WM_OPTIONS $@

@@ -530,7 +530,7 @@ do_deploy() {
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
 
 	if [ -d "${D}/lib" ]; then
-	tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz -C ${D} lib
+		fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz -C ${D} lib
 	fi
 
 	cd ${DEPLOY_DIR_IMAGE}
@@ -540,5 +540,6 @@ do_deploy() {
 }
 
 do_deploy[dirs] = "${S}"
+do_deploy[depends] += "fakeroot-native:do_populate_staging"
 
 addtask deploy before do_package after do_install

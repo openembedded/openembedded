@@ -9,6 +9,11 @@ SRC_URI = "file://omap3-sgx-modules-${PV}.tar.bz2 \
            file://build_es3.x_sgx.patch;patch=1 \
 "
 
+SRC_URI_append_omapzoom2 = " file://proc-interface.patch;patch=1"
+SRC_URI_append_omap3evm = " file://proc-interface.patch;patch=1"
+SRC_URI_append_omap3517-evm = " file://proc-interface.patch;patch=1"
+
+
 PVRBUILD = "release"
 
 MAKE_TARGETS = " BUILD=${PVRBUILD}"

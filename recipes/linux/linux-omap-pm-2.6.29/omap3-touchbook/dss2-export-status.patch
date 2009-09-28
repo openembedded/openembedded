@@ -1,0 +1,44 @@
+From c78da49092fd206943f77aa9ebc3fa2c1301ac5a Mon Sep 17 00:00:00 2001
+From: Tim Yamin <plasm@roo.me.uk>
+Date: Thu, 23 Apr 2009 18:19:32 -0700
+Subject: [PATCH] DSS2: Export display status to sysfs
+
+It is useful to know from userspace if the display has been turned off,
+e.g. to toggle display power from userspace.
+
+Signed-off-by: Tim Yamin <plasm@roo.me.uk>
+---
+ drivers/video/omap2/omapfb/omapfb-sysfs.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-sysfs.c b/drivers/video/omap2/omapfb/omapfb-sysfs.c
+index 2c88718..28438fb 100644
+--- a/drivers/video/omap2/omapfb/omapfb-sysfs.c
++++ b/drivers/video/omap2/omapfb/omapfb-sysfs.c
+@@ -326,6 +326,15 @@ static ssize_t show_virt(struct device *dev,
+ 	return snprintf(buf, PAGE_SIZE, "%p\n", ofbi->region.vaddr);
+ }
+ 
++static ssize_t show_display_state(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct fb_info *fbi = dev_get_drvdata(dev);
++	struct omap_display *display = fb2display(fbi);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", display->state);
++}
++
+ static struct device_attribute omapfb_attrs[] = {
+ 	__ATTR(rotate_type, S_IRUGO, show_rotate_type, NULL),
+ 	__ATTR(mirror, S_IRUGO | S_IWUSR, show_mirror, store_mirror),
+@@ -333,6 +342,7 @@ static struct device_attribute omapfb_attrs[] = {
+ 	__ATTR(overlays, S_IRUGO | S_IWUSR, show_overlays, store_overlays),
+ 	__ATTR(phys_addr, S_IRUGO, show_phys, NULL),
+ 	__ATTR(virt_addr, S_IRUGO, show_virt, NULL),
++	__ATTR(display_state, S_IRUGO, show_display_state, NULL),
+ };
+ 
+ int omapfb_create_sysfs(struct omapfb2_device *fbdev)
+-- 
+1.5.6.3
+

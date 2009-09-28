@@ -1,0 +1,43 @@
+# Defaults for matchbox2: @sysconfdir@/matchbox2/defaults or ~/.matchbox2/defaults
+# It is read only if nor /etc/matchbox2/session nor ~/.matchbox2/session exists
+
+# Which launchers should be added to autolauncher:
+LAUNCHERS="BROWSER MAILER VIEWER NAVIGATION TERMINAL"
+
+# Menus for particular autolaunchers (name of variable with trailing "S", first available wins)
+BROWSERS="midori fennec kazehakase minimo gpe-mini-browser links firefox"
+MAILERS="balsa claws-mail"
+VIEWERS="gqview gpe-gallery"
+NAVIGATIONS="tangogps navit gpsdrive viking"
+TERMINALS="vte rxvt xterm"
+
+# Available applets:
+# autolauncher (virtual launcher applet set defined above)
+# battery (battery status, if APM or ACPI is available)
+# brightness (brigthess display and setup, if available)
+# clock (clock)
+# launcher:desktop (laucher of .desktop files)
+# notify (notification box)
+# showdesktop (show launchers on matchbox desktop)
+# startup (hourglass startup notification)
+# startup-notify (notification message on startup)
+# systray (system tray)
+# windowselector[:[static-icon|dynamic-icon|icon-name|name]] (selector of existing windows)
+#
+# Applets on the left/top side:
+START_APPLETS="showdesktop autolauncher startup"
+# Applets on the right/bottom side:
+END_APPLETS="windowselector clock battery systray"
+# Use autolauncher for set of launchers defined above.
+
+# Available matchbox window managers:
+# (simple|maemo)
+MATCHBOX_WM="simple"
+
+# generic options for particular components:
+# (see respective --help)
+WM_OPTIONS=""
+DESKTOP_OPTIONS=""
+PANEL_OPTIONS="--titlebar"
+
+# and here you can run anything you want

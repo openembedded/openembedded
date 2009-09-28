@@ -1,0 +1,39 @@
+--- a/drivers/power/bq27x00_battery.c
++++ b/drivers/power/bq27x00_battery.c
+@@ -93,7 +93,6 @@ static int bq27x00_battery_temperature(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_TEMP, &temp, 0, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading temperature\n");
+ 		return ret;
+ 	}
+ 
+@@ -111,7 +110,6 @@ static int bq27x00_battery_voltage(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_VOLT, &volt, 0, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading voltage\n");
+ 		return ret;
+ 	}
+ 
+@@ -131,12 +129,10 @@ static int bq27x00_battery_current(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_AI, &curr, 0, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading current\n");
+ 		return 0;
+ 	}
+ 	ret = bq27x00_read(BQ27x00_REG_FLAGS, &flags, 0, di);
+ 	if (ret < 0) {
+-		dev_err(di->dev, "error reading flags\n");
+ 		return 0;
+ 	}
+ 	if ((flags & (1 << 7)) != 0) {
+@@ -157,7 +153,6 @@ static int bq27x00_battery_rsoc(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_RSOC, &rsoc, 1, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading relative State-of-Charge\n");
+ 		return ret;
+ 	}
+ 

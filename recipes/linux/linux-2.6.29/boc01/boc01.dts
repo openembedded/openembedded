@@ -194,7 +194,7 @@
 			compatible = "gianfar";
 			reg = <0x25000 0x1000>;
 			local-mac-address = [ 00 00 00 00 00 00 ];
-			interrupts = <34 0x8 33 0x8 32 0x8>;
+			interrupts = <35 0x8 36 0x8 37 0x8>;
 			interrupt-parent = <&ipic>;
 			fixed-link = <1 1 100 0 0>;
 			sleep = <&pmc 0x10000000>;

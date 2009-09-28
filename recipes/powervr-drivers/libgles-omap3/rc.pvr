@@ -2,7 +2,7 @@
 
 CPUTYPE="$(cputype)"
 
-if ( $CPUTYPE == "OMAP3530"); then
+if [ $CPUTYPE = "OMAP3530" ]; then
 
 	rmmod omaplfb
 	rmmod pvrsrvkm

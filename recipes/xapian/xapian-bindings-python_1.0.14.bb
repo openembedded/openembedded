@@ -3,7 +3,7 @@ HOMEPAGE = "http://xapian.org"
 SECTION = "devel/libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "xapian-core"
+DEPENDS = "xapian-core xapian-core-native"
 PR = "r0"
 
 SRC_URI = "http://www.oligarchy.co.uk/xapian/${PV}/xapian-bindings-${PV}.tar.gz"

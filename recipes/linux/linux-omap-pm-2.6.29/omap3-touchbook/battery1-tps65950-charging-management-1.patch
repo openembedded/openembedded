@@ -1,0 +1,221 @@
+From 1b3e7e2e095648f244a08b1459ff035bbdc99942 Mon Sep 17 00:00:00 2001
+From: Tim Yamin <plasm@roo.me.uk>
+Date: Tue, 5 May 2009 23:33:00 -0700
+Subject: [PATCH] TWL BCI: Make charge current controllable and backup battery optional.
+
+This patch makes the charging current controllable via sysfs and also
+makes the backup battery optional. Also, if you don't care about the
+temperature readings, you can opt-out from having to supply a
+temperature lookup table.
+
+Signed-off-by: Tim Yamin <plasm@roo.me.uk>
+---
+ drivers/power/twl4030_bci_battery.c |   91 +++++++++++++++++++++++++++++------
+ include/linux/i2c/twl4030.h         |    2 +
+ 2 files changed, 78 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/power/twl4030_bci_battery.c b/drivers/power/twl4030_bci_battery.c
+index ddba62b..eab0933 100644
+--- a/drivers/power/twl4030_bci_battery.c
++++ b/drivers/power/twl4030_bci_battery.c
+@@ -125,6 +125,14 @@
+ /* BCIEDR3 */
+ #define	VBATLVL_EDRRISIN	0x02
+ 
++/* BCIIREF1 */
++#define REG_BCIIREF1		0x027
++#define REG_BCIIREF2		0x028
++
++/* Key */
++#define KEY_IIREF		0xE7
++#define REG_BCIMFKEY		0x011
++
+ /* Step size and prescaler ratio */
+ #define TEMP_STEP_SIZE		147
+ #define TEMP_PSR_R		100
+@@ -142,9 +150,6 @@
+ #define ENABLE		1
+ #define DISABLE		1
+ 
+-/* Ptr to thermistor table */
+-int *therm_tbl;
+-
+ struct twl4030_bci_device_info {
+ 	struct device		*dev;
+ 
+@@ -160,6 +165,8 @@ struct twl4030_bci_device_info {
+ 	struct power_supply	bk_bat;
+ 	struct delayed_work	twl4030_bci_monitor_work;
+ 	struct delayed_work	twl4030_bk_bci_monitor_work;
++
++	struct twl4030_bci_platform_data *pdata;
+ };
+ 
+ static int usb_charger_flag;
+@@ -518,11 +525,15 @@ int twl4030charger_usb_en(int enable)
+  * Return battery temperature
+  * Or < 0 on failure.
+  */
+-static int twl4030battery_temperature(void)
++static int twl4030battery_temperature(struct twl4030_bci_device_info *di)
+ {
+ 	u8 val;
+ 	int temp, curr, volt, res, ret;
+ 
++	/* Is a temperature table specified? */
++	if (!di->pdata->tblsize)
++		return 0;
++
+ 	/* Getting and calculating the thermistor voltage */
+ 	ret = read_bci_val(T2_BATTERY_TEMP);
+ 	if (ret < 0)
+@@ -543,7 +554,7 @@ static int twl4030battery_temperature(void)
+ 
+ 	/*calculating temperature*/
+ 	for (temp = 58; temp >= 0; temp--) {
+-		int actual = therm_tbl[temp];
++		int actual = di->pdata->battery_tmp_tbl[temp];
+ 		if ((actual - res) >= 0)
+ 			break;
+ 	}
+@@ -772,13 +783,14 @@ static void twl4030_bk_bci_battery_work(struct work_struct *work)
+ 		struct twl4030_bci_device_info,
+ 		twl4030_bk_bci_monitor_work.work);
+ 
+-	twl4030_bk_bci_battery_read_status(di);
++	if(!di->pdata->no_backup_battery)
++		twl4030_bk_bci_battery_read_status(di);
+ 	schedule_delayed_work(&di->twl4030_bk_bci_monitor_work, 500);
+ }
+ 
+ static void twl4030_bci_battery_read_status(struct twl4030_bci_device_info *di)
+ {
+-	di->temp_C = twl4030battery_temperature();
++	di->temp_C = twl4030battery_temperature(di);
+ 	di->voltage_uV = twl4030battery_voltage();
+ 	di->current_uA = twl4030battery_current();
+ }
+@@ -819,6 +831,43 @@ static void twl4030_bci_battery_external_power_changed(struct power_supply *psy)
+ #define to_twl4030_bk_bci_device_info(x) container_of((x), \
+ 		struct twl4030_bci_device_info, bk_bat);
+ 
++static ssize_t
++show_charge_current(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", read_bci_val(REG_BCIIREF1));
++}
++
++static ssize_t
++set_charge_current(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
++{
++	unsigned long newCurrent;
++	int ret;
++
++	ret = strict_strtoul(buf, 10, &newCurrent);
++	if (ret)
++		return -EINVAL;
++
++	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE, KEY_IIREF, REG_BCIMFKEY);
++	if (ret)
++		return ret;
++
++	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE, newCurrent & 0xff, REG_BCIIREF1);
++	if (ret)
++		return ret;
++
++	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE, KEY_IIREF, REG_BCIMFKEY);
++	if (ret)
++		return ret;
++
++	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE, (newCurrent >> 8) & 0x03, REG_BCIIREF2);
++	if (ret)
++		return ret;
++
++	return count;
++}
++
++static DEVICE_ATTR(charge_current, S_IRUGO | S_IWUGO, show_charge_current, set_charge_current);
++
+ static int twl4030_bk_bci_battery_get_property(struct power_supply *psy,
+ 					enum power_supply_property psp,
+ 					union power_supply_propval *val)
+@@ -912,8 +961,6 @@ static int __init twl4030_bci_battery_probe(struct platform_device *pdev)
+ 	int irq;
+ 	int ret;
+ 
+-	therm_tbl = pdata->battery_tmp_tbl;
+-
+ 	di = kzalloc(sizeof(*di), GFP_KERNEL);
+ 	if (!di)
+ 		return -ENOMEM;
+@@ -937,6 +984,7 @@ static int __init twl4030_bci_battery_probe(struct platform_device *pdev)
+ 	di->bk_bat.num_properties = ARRAY_SIZE(twl4030_bk_bci_battery_props);
+ 	di->bk_bat.get_property = twl4030_bk_bci_battery_get_property;
+ 	di->bk_bat.external_power_changed = NULL;
++	di->pdata = pdata;
+ 
+ 	twl4030charger_ac_en(ENABLE);
+ 	twl4030charger_usb_en(ENABLE);
+@@ -951,9 +999,12 @@ static int __init twl4030_bci_battery_probe(struct platform_device *pdev)
+ 		goto temp_setup_fail;
+ 
+ 	/* enabling GPCH09 for read back battery voltage */
+-	ret = twl4030backupbatt_voltage_setup();
+-	if (ret)
+-		goto voltage_setup_fail;
++	if(!di->pdata->no_backup_battery)
++	{
++		ret = twl4030backupbatt_voltage_setup();
++		if (ret)
++			goto voltage_setup_fail;
++	}
+ 
+ 	/* REVISIT do we need to request both IRQs ?? */
+ 
+@@ -988,9 +1039,18 @@ static int __init twl4030_bci_battery_probe(struct platform_device *pdev)
+ 				twl4030_bci_battery_work);
+ 	schedule_delayed_work(&di->twl4030_bci_monitor_work, 0);
+ 
+-	ret = power_supply_register(&pdev->dev, &di->bk_bat);
++	if(!pdata->no_backup_battery)
++	{
++		ret = power_supply_register(&pdev->dev, &di->bk_bat);
++		if (ret) {
++			dev_dbg(&pdev->dev, "failed to register backup battery\n");
++			goto bk_batt_failed;
++		}
++	}
++
++	ret = device_create_file(di->bat.dev, &dev_attr_charge_current);
+ 	if (ret) {
+-		dev_dbg(&pdev->dev, "failed to register backup battery\n");
++		dev_err(&pdev->dev, "failed to create sysfs entries\n");
+ 		goto bk_batt_failed;
+ 	}
+ 
+@@ -1001,7 +1061,8 @@ static int __init twl4030_bci_battery_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ bk_batt_failed:
+-	power_supply_unregister(&di->bat);
++	if(!pdata->no_backup_battery)
++		power_supply_unregister(&di->bat);
+ batt_failed:
+ 	free_irq(irq, di);
+ chg_irq_fail:
+diff --git a/include/linux/i2c/twl4030.h b/include/linux/i2c/twl4030.h
+index 87accda..a188b6c 100644
+--- a/include/linux/i2c/twl4030.h
++++ b/include/linux/i2c/twl4030.h
+@@ -299,6 +299,8 @@ int twl4030_i2c_read(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes);
+ struct twl4030_bci_platform_data {
+ 	int *battery_tmp_tbl;
+ 	unsigned int tblsize;
++
++	bool no_backup_battery;
+ };
+ 
+ /* TWL4030_GPIO_MAX (18) GPIOs, with interrupts */
+-- 
+1.5.6.3
+

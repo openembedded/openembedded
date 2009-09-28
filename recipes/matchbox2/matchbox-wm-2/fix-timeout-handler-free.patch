@@ -1,0 +1,105 @@
+http://bugzilla.openedhand.com/show_bug.cgi?id=1432
+diff --git a/matchbox/core/mb-wm-client.c b/matchbox/core/mb-wm-client.c
+index 0791060..f6d949d 100644
+--- a/matchbox/core/mb-wm-client.c
++++ b/matchbox/core/mb-wm-client.c
+@@ -55,9 +58,11 @@ mb_wm_client_destroy (MBWMObject *obj)
+ 
+   client->sig_prop_change_id = 0;
+ 
+-  if (client->ping_cb_id)
+-    mb_wm_main_context_timeout_handler_remove (wm->main_ctx,
+-					       client->ping_cb_id);
++  /* Must call mb_wm_client_ping_stop rather than
++   * mb_wm_main_context_timeout_handler_remove() to prevent a race condition
++   * segfault in the timeout list manipulation
++   */
++  mb_wm_client_ping_stop (client);
+ 
+ #if ENABLE_COMPOSITE
+   if (mb_wm_compositing_enabled (wm))
+diff --git a/matchbox/core/mb-wm-main-context.c b/matchbox/core/mb-wm-main-context.c
+index f74d249..a206a2e 100644
+--- a/matchbox/core/mb-wm-main-context.c
++++ b/matchbox/core/mb-wm-main-context.c
+@@ -822,7 +822,7 @@ mb_wm_main_context_handle_timeout (MBWMTimeOutEventInfo *tinfo,
+ static Bool
+ mb_wm_main_context_check_timeouts (MBWMMainContext *ctx)
+ {
+-  MBWMList * l = ctx->event_funcs.timeout;
++  MBWMList * l = mb_wm_util_list_get_first(ctx->event_funcs.timeout);
+   struct timeval current_time;
+ 
+   if (!l)
+@@ -833,29 +833,18 @@ mb_wm_main_context_check_timeouts (MBWMMainContext *ctx)
+   while (l)
+     {
+       MBWMTimeOutEventInfo * tinfo = l->data;
++      unsigned long tid = tinfo->id;
+ 
+       if (!mb_wm_main_context_handle_timeout (tinfo, &current_time))
+-	{
+-	  MBWMList * prev = l->prev;
+-	  MBWMList * next = l->next;
+-
+-	  if (prev)
+-	    prev->next = next;
+-	  else
+-	    ctx->event_funcs.timeout = next;
+-
+-	  if (next)
+-	    next->prev = prev;
+-
+-	  free (tinfo);
+-	  free (l);
+-
+-	  l = next;
+-	}
++       {
++         /* Timeout handler notified it can be removed, do so now */
++         mb_wm_main_context_timeout_handler_remove (ctx,tid);
++         /* To avoid race condition, restart at front of list */
++         l = mb_wm_util_list_get_first(ctx->event_funcs.timeout);
++       }
+       else
+-	l = l->next;
++       l = mb_wm_util_list_next(l);
+     }
+-
+   return True;
+ }
+ #endif /* !USE_GLIB_MAINLOOP */
+@@ -904,25 +893,14 @@ mb_wm_main_context_timeout_handler_remove (MBWMMainContext *ctx,
+         MBWMTimeOutEventInfo * info = l->data;
+ 
+       if (info->id == id)
+-	{
+-	  MBWMList * prev = l->prev;
+-	  MBWMList * next = l->next;
+-
+-	  if (prev)
+-	    prev->next = next;
+-	  else
+-	    ctx->event_funcs.timeout = next;
+-
+-	  if (next)
+-	    next->prev = prev;
+-
+-	  free (info);
+-	  free (l);
+-
+-	  return;
+-	}
+-
+-      l = l->next;
++       {
++         /* Reset list head after entry removal */
++         ctx->event_funcs.timeout =
++            mb_wm_util_list_remove(ctx->event_funcs.timeout, l->data);
++         return;
++	   }
++
++      l = mb_wm_util_list_next(l);
+     }
+ #else
+   g_source_remove (id);

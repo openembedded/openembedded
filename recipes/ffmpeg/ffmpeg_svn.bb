@@ -2,20 +2,18 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-SRCREV = "19894"
+SRCREV = "20024"
 
 PE = "1"
 PV = "0.5.0+${PR}+svnr${SRCREV}"
 PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_armv7a = "1"
 
 SRC_URI = "svn://svn.ffmpeg.org/ffmpeg/;module=trunk"
 
 S = "${WORKDIR}/trunk"
-
-DEFAULT_PREFERENCE = "-1"
-
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"

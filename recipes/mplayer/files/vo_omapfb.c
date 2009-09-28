@@ -1,6 +1,7 @@
 /*
  
 Copyright (C) 2008 Gregoire Gentil <gregoire@gentil.com>
+Portions Copyright (C) 2009 Howard Chu <hyc@symas.com>
 This file adds an optimized vo output to mplayer for the OMAP platform. This is a first pass and an attempt to help to improve
 media playing on the OMAP platform. The usual disclaimer comes here: this code is provided without any warranty.
 Many bugs and issues still exist. Feed-back is welcome.
@@ -92,9 +93,12 @@ static uint32_t drwX, drwY;
 extern void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *v, int w, int h, int yw, int cw, int dw);
 static struct fb_var_screeninfo sinfo_p0;
 static struct fb_var_screeninfo sinfo;
+static struct fb_var_screeninfo sinfo2;
 static struct fb_fix_screeninfo finfo;
 static struct omapfb_mem_info minfo;
 static struct omapfb_plane_info pinfo;
+static int xoff, yoff;
+
 static struct {
     unsigned x;
     unsigned y;
@@ -134,6 +138,19 @@ void vo_calc_drwXY(uint32_t *drwX, uint32_t *drwY)
         *drwX = vo_dx;
         *drwY = vo_dy;
     }
+}
+
+static void getPrimaryPlaneInfo()
+{
+    int dev_fd = open("/dev/fb0", O_RDWR);
+
+    if (dev_fd == -1) {
+        mp_msg(MSGT_VO, MSGL_FATAL, "[omapfb] Error /dev/fb0\n");
+        return -1;
+    }
+
+    ioctl(dev_fd, FBIOGET_VSCREENINFO, &sinfo_p0);
+    close(dev_fd);
 }
 
 /**
@@ -184,7 +201,7 @@ static void x11_check_events(void)
 
     if (e & VO_EVENT_EXPOSE || e & VO_EVENT_RESIZE)
     {
-        vo_xv_draw_colorkey(drwX, drwY, vo_dwidth - 1, vo_dheight - 1);
+/*        vo_xv_draw_colorkey(drwX, drwY, vo_dwidth - 1, vo_dheight - 1); */
         omapfb_update(0, 0, 0, 0, 1);
     }
 }
@@ -213,16 +230,7 @@ static int preinit(const char *arg)
         return -1;
     }
 
-    dev_fd = open("/dev/fb0", O_RDWR);
-
-    if (dev_fd == -1) {
-        mp_msg(MSGT_VO, MSGL_FATAL, "[omapfb] Error /dev/fb0\n");
-        return -1;
-    }
-
-    ioctl(dev_fd, FBIOGET_VSCREENINFO, &sinfo_p0);
-    close(dev_fd);
-
+    getPrimaryPlaneInfo();
     dev_fd = open("/dev/fb1", O_RDWR);
 
     if (dev_fd == -1) {
@@ -245,27 +253,120 @@ static int preinit(const char *arg)
 
 static void omapfb_update(int x, int y, int out_w, int out_h, int show)
 {
+    int xres, yres;
     if (!fb_overlay_only)
         x11_get_window_abs_position(mDisplay, vo_window, &x, &y, &out_w, &out_h);
 
-    if (x < 0 || y < 0 || (x + out_w > sinfo_p0.xres) || (y + out_h > sinfo_p0.yres) || /* Clipping not currently supported */
-        (out_w < sinfo.xres / 4) || (out_h < sinfo.yres / 4) ||  /* HW can't scale down by more than 4x */
-        (out_w > sinfo.xres * 8) || (out_h > sinfo.yres * 8) ) { /* HW can't scale up by more than 8x */
+    /* Check for new screen rotation */
+    ioctl(dev_fd, FBIOGET_VSCREENINFO, &sinfo2);
+    if (sinfo2.rotate != sinfo_p0.rotate)
+        getPrimaryPlaneInfo();
+
+    if ( (!x && !y && !out_w && !out_h) ||
+        (out_w < sinfo.xres_virtual / 4) || (out_h < sinfo.yres_virtual / 4) ||  /* HW can't scale down by more than 4x */
+        (out_w > sinfo.xres_virtual * 8) || (out_h > sinfo.yres_virtual * 8) ) { /* HW can't scale up by more than 8x */
         pinfo.enabled = 0;
         pinfo.pos_x = 0;
         pinfo.pos_y = 0;
         ioctl(dev_fd, OMAPFB_SETUP_PLANE, &pinfo);
-        ioctl(dev_fd, FBIOGET_FSCREENINFO, &finfo);
         return;
     }
+
+    xres = sinfo.xres_virtual;
+    yres = sinfo.yres_virtual;
+
+    /* Handle clipping: if the left or top edge of the window goes
+     * offscreen, clamp the overlay to the left or top edge of the
+     * screen, and set the difference into the frame offset. Also
+     * decrease the overlay size by the offset. The offset must
+     * take window scaling into account as well.
+     *
+     * Likewise, if the right or bottom edge of the window goes
+     * offscreen, clamp the overlay to the right or bottom edge of
+     * the screen, and decrease the overlay size accordingly. The
+     * hardware will truncate the output accordingly, so no offset
+     * is needed. Also take window scaling into account.  -- hyc
+     */
+    if (x < 0) {
+        /* clamp to left edge */
+        xoff = -x;
+        if (out_w != sinfo.xres_virtual) {
+            /* account for scaling */
+            xoff *= sinfo.xres_virtual;
+            xoff /= out_w;
+        }
+        xres -= xoff;
+        out_w += x;
+        x = 0;
+    } else {
+        xoff = 0;
+        if (x + out_w > sinfo_p0.xres) {
+            /* clamp to right edge */
+            int diff = sinfo_p0.xres - x;
+            if (out_w != sinfo.xres_virtual) {
+                /* account for scaling */
+                xres = diff * sinfo.xres_virtual;
+                xres /= out_w;
+            } else {
+                xres = diff;
+            }
+            out_w = diff;
+        }
+    }
+
+    if (y < 0) {
+        /* clamp to top edge - this seldom occurs since the window
+         * titlebar is usually forced to stay visible
+         */
+        yoff = -y;
+        if (out_h != sinfo.yres_virtual) {
+            /* account for scaling */
+            yoff *= sinfo.yres_virtual;
+            yoff /= out_h;
+        }
+        yres -= yoff;
+        out_h += y;
+        y = 0;
+    } else {
+        yoff = 0;
+        if (y + out_h > sinfo_p0.yres) {
+            /* clamp to bottom edge */
+            int diff = sinfo_p0.yres - y;
+            if (out_h != sinfo.yres_virtual) {
+                /* account for scaling */
+                yres = diff * sinfo.yres_virtual;
+                yres /= out_h;
+            } else {
+                yres = diff;
+            }
+            out_h = diff;
+        }
+    }
+
+    if (xoff & 1)
+        xoff++;
+    if (xres & 1)
+        xres--;
 
     pinfo.enabled = show;
     pinfo.pos_x = x;
     pinfo.pos_y = y;
     pinfo.out_width  = out_w;
     pinfo.out_height = out_h;
+
+    sinfo.xoffset = fb_pages[page].x + xoff;
+    sinfo.yoffset = fb_pages[page].y + yoff;
+    /* If we had to change the overlay dimensions, update it */
+    if (xres != sinfo2.xres || yres != sinfo2.yres ||
+        sinfo.xoffset != sinfo2.xoffset ||
+        sinfo.yoffset != sinfo2.yoffset) {
+        sinfo.xres = xres;
+        sinfo.yres = yres;
+        sinfo.rotate = sinfo2.rotate;
+        ioctl(dev_fd, FBIOPUT_VSCREENINFO, &sinfo);
+    }
+
     ioctl(dev_fd, OMAPFB_SETUP_PLANE, &pinfo);
-    ioctl(dev_fd, FBIOGET_FSCREENINFO, &finfo);
 }
 
 static int config(uint32_t width, uint32_t height, uint32_t d_width,
@@ -336,8 +437,8 @@ static int config(uint32_t width, uint32_t height, uint32_t d_width,
     for (i = 0; i < minfo.size / 4; i++)
         ((uint32_t*)fbmem)[i] = 0x80008000;
 
-    sinfo.xres = FFMIN(sinfo_p0.xres, width)  & ~15;
-    sinfo.yres = FFMIN(sinfo_p0.yres, height) & ~15;
+    sinfo.xres = width & ~15;
+    sinfo.yres = height & ~15;
     sinfo.xoffset = 0;
     sinfo.yoffset = 0;
     sinfo.nonstd = OMAPFB_COLOR_YUY422;
@@ -360,6 +461,7 @@ static int config(uint32_t width, uint32_t height, uint32_t d_width,
     }
 
     ioctl(dev_fd, FBIOPUT_VSCREENINFO, &sinfo);
+    ioctl(dev_fd, FBIOGET_FSCREENINFO, &finfo);
 
     if (WinID <= 0) {
         if (fullscreen_flag) {
@@ -414,8 +516,8 @@ static int draw_slice(uint8_t *src[], int stride[], int w, int h, int x, int y)
 static void flip_page(void)
 {
     if (fb_page_flip) {
-        sinfo.xoffset = fb_pages[page].x;
-        sinfo.yoffset = fb_pages[page].y;
+        sinfo.xoffset = fb_pages[page].x + xoff;
+        sinfo.yoffset = fb_pages[page].y + yoff;
         ioctl(dev_fd, FBIOPAN_DISPLAY, &sinfo);
         page ^= fb_page_flip;
     }

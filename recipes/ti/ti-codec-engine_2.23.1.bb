@@ -3,7 +3,7 @@ DESCRIPTION = "Codec Engine 2.23.01 for TI ARM/DSP processors"
 # compile time dependencies
 DEPENDS_dm6446-evm 	+= "ti-xdctools-native ti-cgt6x-native ti-dspbios-native"
 DEPENDS_omap3evm   	+= "ti-cgt6x-native ti-dspbios-native ti-xdctools-native"
-DEPENDS_beagleboard	+= "ti-cgt6x-native ti-dspbios-native ti-xdctools-native"
+DEPENDS_armv7a	+= "ti-cgt6x-native ti-dspbios-native ti-xdctools-native"
 DEPENDS_dm355-evm 	+= "ti-xdctools-native"
 
 # tconf from xdctools dislikes '.' in pwd :/

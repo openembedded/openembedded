@@ -1,0 +1,246 @@
+diff --git a/drivers/power/twl4030_bci_battery.c b/drivers/power/twl4030_bci_battery.c
+index eab0933..d1220d7 100644
+--- a/drivers/power/twl4030_bci_battery.c
++++ b/drivers/power/twl4030_bci_battery.c
+@@ -15,6 +15,9 @@
+  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  */
+ 
++/* Boot with automatic charge */
++#define CHARGE_MODE 1
++
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
+@@ -50,6 +53,7 @@
+ /* Boot BCI flag bits */
+ #define BCIAUTOWEN		0x020
+ #define CONFIG_DONE		0x010
++#define CVENAC			0x004
+ #define BCIAUTOUSB		0x002
+ #define BCIAUTOAC		0x001
+ #define BCIMSTAT_MASK		0x03F
+@@ -81,6 +85,11 @@
+ #define REG_BB_CFG		0x012
+ #define BBCHEN			0x010
+ 
++/* GPBR */
++#define REG_GPBR1		0x0c
++#define MADC_HFCLK_EN		0x80
++#define DEFAULT_MADC_CLK_EN	0x10
++
+ /* Power supply charge interrupt */
+ #define REG_PWR_ISR1		0x00
+ #define REG_PWR_IMR1		0x01
+@@ -129,8 +138,12 @@
+ #define REG_BCIIREF1		0x027
+ #define REG_BCIIREF2		0x028
+ 
++/* BCIMFTH1 */
++#define REG_BCIMFTH1		0x016
++
+ /* Key */
+ #define KEY_IIREF		0xE7
++#define KEY_FTH1		0xD2
+ #define REG_BCIMFKEY		0x011
+ 
+ /* Step size and prescaler ratio */
+@@ -432,15 +445,21 @@ static int twl4030battery_hw_presence_en(int enable)
+ /*
+  * Enable/Disable AC Charge funtionality.
+  */
+-static int twl4030charger_ac_en(int enable)
++static int twl4030charger_ac_en(int enable, int automatic)
+ {
+ 	int ret;
+ 
+ 	if (enable) {
+ 		/* forcing the field BCIAUTOAC (BOOT_BCI[0) to 1 */
+-		ret = clear_n_set(TWL4030_MODULE_PM_MASTER, 0,
+-			(CONFIG_DONE | BCIAUTOWEN | BCIAUTOAC),
+-			REG_BOOT_BCI);
++		if(!automatic) {
++			ret = clear_n_set(TWL4030_MODULE_PM_MASTER, BCIAUTOAC | CVENAC,
++				(CONFIG_DONE | BCIAUTOWEN),
++				REG_BOOT_BCI);
++		} else {
++			ret = clear_n_set(TWL4030_MODULE_PM_MASTER, 0,
++				(CONFIG_DONE | BCIAUTOWEN | BCIAUTOAC | CVENAC),
++				REG_BOOT_BCI);
++		}
+ 		if (ret)
+ 			return ret;
+ 	} else {
+@@ -672,6 +691,9 @@ static int twl4030bci_status(void)
+ 		return ret;
+ 	}
+ 
++#ifdef DEBUG
++	printk("BCI DEBUG: BCIMSTATEC Charge state is 0x%x\n", status);
++#endif
+ 	return (int) (status & BCIMSTAT_MASK);
+ }
+ 
+@@ -720,14 +742,43 @@ static int twl4030backupbatt_voltage_setup(void)
+  */
+ static int twl4030battery_temp_setup(void)
+ {
+-	int ret;
++#ifdef DEBUG
++	u8 i;
++#endif
++	u8 ret;
+ 
+ 	/* Enabling thermistor current */
+-	ret = clear_n_set(TWL4030_MODULE_MAIN_CHARGE, 0, ITHEN,
++	ret = clear_n_set(TWL4030_MODULE_MAIN_CHARGE, 0, 0x1B,
+ 		REG_BCICTL1);
+ 	if (ret)
+ 		return ret;
+ 
++#ifdef DEBUG
++	twl4030_i2c_read_u8(TWL4030_MODULE_PM_MASTER, &ret, REG_BOOT_BCI);
++	printk("BCI DEBUG: BOOT_BCI Value is 0x%x\n", ret);
++
++	twl4030_i2c_read_u8(TWL4030_MODULE_PM_MASTER, &ret, REG_STS_HW_CONDITIONS);
++	printk("BCI DEBUG: STS_HW_CONDITIONS Value is 0x%x\n", ret);
++
++	twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &ret, REG_BCICTL1);
++	printk("BCI DEBUG: BCICTL1 Value is 0x%x\n", ret);
++
++	twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &ret, REG_BCICTL2);
++	printk("BCI DEBUG: BCICTL2 Value is 0x%x\n", ret);
++
++	twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &ret, 0x0);
++	printk("BCI DEBUG: BCIMDEN Value is 0x%x\n", ret);
++
++	twl4030_i2c_read_u8(TWL4030_MODULE_INTBR, &ret, REG_GPBR1);
++	printk("BCI DEBUG: GPBR1 Value is 0x%x\n", ret);
++
++	for(i = 0x0; i <= 0x32; i++)
++	{
++		twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &ret, i);
++		printk("BCI DEBUG: BCI 0x%x Value is 0x%x\n", i, ret);
++	}
++#endif
++
+ 	return 0;
+ }
+ 
+@@ -743,7 +794,6 @@ static inline int clear_n_set(u8 mod_no, u8 clear, u8 set, u8 reg)
+ 	ret = twl4030_i2c_read_u8(mod_no, &val, reg);
+ 	if (ret)
+ 		return ret;
+-
+ 	/* Clearing all those bits to clear */
+ 	val &= ~(clear);
+ 
+@@ -834,7 +884,19 @@ static void twl4030_bci_battery_external_power_changed(struct power_supply *psy)
+ static ssize_t
+ show_charge_current(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%d\n", read_bci_val(REG_BCIIREF1));
++	u8  ctl;
++	int ret = read_bci_val(REG_BCIIREF1) & 0x1FF;
++	twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &ctl, REG_BCICTL1);
++
++	if (ctl & CGAIN)
++		ret |= 0x200;
++
++#ifdef DEBUG
++	/* Dump debug */
++	twl4030battery_temp_setup();
++#endif
++
++	return sprintf(buf, "%d\n", ret);
+ }
+ 
+ static ssize_t
+@@ -859,13 +921,45 @@ set_charge_current(struct device *dev, struct device_attribute *attr, const char
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE, (newCurrent >> 8) & 0x03, REG_BCIIREF2);
++	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE, (newCurrent >> 8) & 0x1, REG_BCIIREF2);
+ 	if (ret)
+ 		return ret;
+ 
++	/* Set software-controlled charge */
++	twl4030charger_ac_en(ENABLE, 0);
++
++	/* Set CGAIN = 0 or 1 */
++	if(newCurrent > 511) {
++		u8 tmp;
++
++		/* Set CGAIN = 1 -- need to wait until automatic charge turns off */
++		while(!ret) {
++			clear_n_set(TWL4030_MODULE_MAIN_CHARGE, 0, CGAIN | 0x1B, REG_BCICTL1);
++			twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &tmp, REG_BCICTL1);
++
++			ret = tmp & CGAIN;
++			if(!ret)
++				mdelay(50);
++		}
++	} else {
++		u8 tmp;
++
++		/* Set CGAIN = 0 -- need to wait until automatic charge turns off */
++		while(!ret) {
++			clear_n_set(TWL4030_MODULE_MAIN_CHARGE, CGAIN, 0x1B, REG_BCICTL1);
++			twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE, &tmp, REG_BCICTL1);
++
++			ret = !(tmp & CGAIN);
++			if(!ret)
++				mdelay(50);
++		}
++	}
++
++	/* Set automatic charge (CGAIN = 0/1 persists) */
++	twl4030charger_ac_en(ENABLE, 1);
++
+ 	return count;
+ }
+-
+ static DEVICE_ATTR(charge_current, S_IRUGO | S_IWUGO, show_charge_current, set_charge_current);
+ 
+ static int twl4030_bk_bci_battery_get_property(struct power_supply *psy,
+@@ -986,7 +1080,10 @@ static int __init twl4030_bci_battery_probe(struct platform_device *pdev)
+ 	di->bk_bat.external_power_changed = NULL;
+ 	di->pdata = pdata;
+ 
+-	twl4030charger_ac_en(ENABLE);
++	/* Set up clocks */
++	twl4030_i2c_write_u8(TWL4030_MODULE_INTBR, MADC_HFCLK_EN | DEFAULT_MADC_CLK_EN, REG_GPBR1);
++
++	twl4030charger_ac_en(ENABLE, CHARGE_MODE);
+ 	twl4030charger_usb_en(ENABLE);
+ 	twl4030battery_hw_level_en(ENABLE);
+ 	twl4030battery_hw_presence_en(ENABLE);
+@@ -1058,6 +1155,7 @@ static int __init twl4030_bci_battery_probe(struct platform_device *pdev)
+ 				twl4030_bk_bci_battery_work);
+ 	schedule_delayed_work(&di->twl4030_bk_bci_monitor_work, 500);
+ 
++	set_charge_current (NULL, NULL, "1023", 4);
+ 	return 0;
+ 
+ bk_batt_failed:
+@@ -1071,7 +1169,7 @@ chg_irq_fail:
+ batt_irq_fail:
+ voltage_setup_fail:
+ temp_setup_fail:
+-	twl4030charger_ac_en(DISABLE);
++	twl4030charger_ac_en(DISABLE, CHARGE_MODE);
+ 	twl4030charger_usb_en(DISABLE);
+ 	twl4030battery_hw_level_en(DISABLE);
+ 	twl4030battery_hw_presence_en(DISABLE);
+@@ -1085,7 +1183,7 @@ static int __exit twl4030_bci_battery_remove(struct platform_device *pdev)
+ 	struct twl4030_bci_device_info *di = platform_get_drvdata(pdev);
+ 	int irq;
+ 
+-	twl4030charger_ac_en(DISABLE);
++	twl4030charger_ac_en(DISABLE, CHARGE_MODE);
+ 	twl4030charger_usb_en(DISABLE);
+ 	twl4030battery_hw_level_en(DISABLE);
+ 	twl4030battery_hw_presence_en(DISABLE);
+
+

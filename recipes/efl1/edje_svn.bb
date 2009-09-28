@@ -1,10 +1,21 @@
 DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
-DEPENDS = "eet evas ecore embryo edje-native"
+DEPENDS = "lua5.1 eet evas ecore embryo edje-native"
 LICENSE = "MIT BSD"
 PV = "0.9.92.060+svnr${SRCREV}"
 PR = "r4"
 
 inherit efl
+
+# The new lua stuff is a bit broken...
+do_configure_append() {
+	for i in $(find "${S}" -name "Makefile") ; do
+		sed -i -e 's:-L/usr/local/lib::g'  $i
+	done
+}
+
+do_compile_append() {
+	sed -i -e s:local/::g -e 's:-L${STAGING_LIBDIR}::g' ${S}/edje.pc
+}
 
 # gain some extra performance at the expense of RAM - generally i'd say bad
 # and a possible source of bugs

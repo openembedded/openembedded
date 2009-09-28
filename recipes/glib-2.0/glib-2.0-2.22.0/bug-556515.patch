@@ -1,0 +1,34 @@
+--- /tmp/gobject.c	2009-09-23 10:02:19.000000000 +0200
++++ glib-2.21.6/gobject/gobject.c	2009-09-23 14:52:46.000000000 +0200
+@@ -2377,14 +2376,15 @@
+ 
+   /* here we want to atomically do: if (ref_count>1) { ref_count--; return; } */
+  retry_atomic_decrement1:
+-  old_ref = g_atomic_int_get (&object->ref_count);
++  old_ref = g_atomic_int_get ((int *)&object->ref_count);
+   if (old_ref > 1)
+     {
++      gboolean do_toggle_ref_notify = (old_ref == 2 && OBJECT_HAS_TOGGLE_REF (object));
+       if (!g_atomic_int_compare_and_exchange ((int *)&object->ref_count, old_ref, old_ref - 1))
+ 	goto retry_atomic_decrement1;
+ 
+       /* if we went from 2->1 we need to notify toggle refs if any */
+-      if (old_ref == 2 && OBJECT_HAS_TOGGLE_REF (object))
++      if (do_toggle_ref_notify)
+ 	toggle_refs_notify (object, TRUE);
+     }
+   else
+@@ -2397,11 +2397,12 @@
+       old_ref = g_atomic_int_get ((int *)&object->ref_count);
+       if (old_ref > 1)
+         {
++          gboolean do_toggle_ref_notify = (old_ref == 2 && OBJECT_HAS_TOGGLE_REF (object));
+           if (!g_atomic_int_compare_and_exchange ((int *)&object->ref_count, old_ref, old_ref - 1))
+ 	    goto retry_atomic_decrement2;
+ 
+           /* if we went from 2->1 we need to notify toggle refs if any */
+-          if (old_ref == 2 && OBJECT_HAS_TOGGLE_REF (object))
++          if (do_toggle_ref_notify)
+ 	    toggle_refs_notify (object, TRUE);
+           
+ 	  return;
