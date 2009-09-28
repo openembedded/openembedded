@@ -1,8 +1,8 @@
 Index: evas/src/lib/include/evas_private.h
 ===================================================================
---- evas/src/lib/include/evas_private.h	(revision 41040)
+--- evas/src/lib/include/evas_private.h	(revision 42767)
 +++ evas/src/lib/include/evas_private.h	(working copy)
-@@ -684,6 +684,7 @@
+@@ -671,6 +671,7 @@
  
     void (*image_scale_hint_set)            (void *data, void *image, int hint);
     int  (*image_scale_hint_get)            (void *data, void *image);
@@ -12,11 +12,11 @@ Index: evas/src/lib/include/evas_private.h
  struct _Evas_Image_Load_Func
 Index: evas/src/lib/Evas.h
 ===================================================================
---- evas/src/lib/Evas.h	(revision 41040)
+--- evas/src/lib/Evas.h	(revision 42767)
 +++ evas/src/lib/Evas.h	(working copy)
-@@ -648,6 +648,7 @@
+@@ -647,6 +647,7 @@
     EAPI Evas_Coord        evas_object_text_inset_get        (const Evas_Object *obj) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_PURE;
-    EAPI int               evas_object_text_char_pos_get     (const Evas_Object *obj, int pos, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch) EINA_ARG_NONNULL(1);
+    EAPI Eina_Bool         evas_object_text_char_pos_get     (const Evas_Object *obj, int pos, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch) EINA_ARG_NONNULL(1);
     EAPI int               evas_object_text_char_coords_get  (const Evas_Object *obj, Evas_Coord x, Evas_Coord y, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch) EINA_ARG_NONNULL(1);
 +   EAPI int               evas_object_text_last_up_to_pos(const Evas_Object *obj, Evas_Coord x, Evas_Coord y) EINA_ARG_NONNULL(1);
     EAPI Evas_Text_Style_Type evas_object_text_style_get     (const Evas_Object *obj) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_PURE;
@@ -24,7 +24,7 @@ Index: evas/src/lib/Evas.h
     EAPI void              evas_object_text_shadow_color_set (Evas_Object *obj, int r, int g, int b, int a) EINA_ARG_NONNULL(1);
 Index: evas/src/lib/engines/common/evas_font_draw.c
 ===================================================================
---- evas/src/lib/engines/common/evas_font_draw.c	(revision 41040)
+--- evas/src/lib/engines/common/evas_font_draw.c	(revision 42767)
 +++ evas/src/lib/engines/common/evas_font_draw.c	(working copy)
 @@ -2,11 +2,6 @@
   * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
@@ -36,9 +36,9 @@ Index: evas/src/lib/engines/common/evas_font_draw.c
 -
 -
  #include "evas_common.h"
+ #include "evas_private.h"
  #include "evas_blend_private.h"
- 
-@@ -177,13 +172,14 @@
+@@ -182,13 +177,14 @@
  
  
  static void
@@ -54,7 +54,7 @@ Index: evas/src/lib/engines/common/evas_font_draw.c
     FT_Face pface = NULL;
     FT_UInt prev_index;
     DATA32 *im;
-@@ -191,18 +187,17 @@
+@@ -196,18 +192,17 @@
     int char_index = 0; /* the index of the current char */
  
  #ifdef INTERNATIONAL_SUPPORT
@@ -79,7 +79,7 @@ Index: evas/src/lib/engines/common/evas_font_draw.c
  #endif
  
     pen_x = x;
-@@ -217,6 +212,7 @@
+@@ -222,6 +217,7 @@
  	int gl, kern;
  
  	gl = evas_common_font_utf8_get_next((unsigned char *)text, &chr);
@@ -87,7 +87,7 @@ Index: evas/src/lib/engines/common/evas_font_draw.c
  	if (gl == 0) break;
  	index = evas_common_font_glyph_search(fn, &fi, gl);
  	/* hmmm kerning means i can't sanely do my own cached metric tables! */
-@@ -390,11 +386,8 @@
+@@ -395,11 +391,8 @@
  	  prev_index = index;
       }
  #ifdef INTERNATIONAL_SUPPORT
@@ -103,7 +103,7 @@ Index: evas/src/lib/engines/common/evas_font_draw.c
  
 Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c
 ===================================================================
---- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c	(revision 41040)
+--- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c	(revision 42767)
 +++ evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c	(working copy)
 @@ -1,7 +1,3 @@
 -/* Authors:
@@ -124,7 +124,7 @@ Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c
     /*FIXME: make it skip vowels */
 Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h
 ===================================================================
---- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h	(revision 41040)
+--- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h	(revision 42767)
 +++ evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h	(working copy)
 @@ -1,7 +1,9 @@
  #ifndef _EVAS_INTL_ARABIC
@@ -139,7 +139,7 @@ Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h
  #endif
 Index: evas/src/lib/engines/common/evas_intl_utils.c
 ===================================================================
---- evas/src/lib/engines/common/evas_intl_utils.c	(revision 41040)
+--- evas/src/lib/engines/common/evas_intl_utils.c	(revision 42767)
 +++ evas/src/lib/engines/common/evas_intl_utils.c	(working copy)
 @@ -1,23 +1,27 @@
 -/* Authors:
@@ -190,99 +190,104 @@ Index: evas/src/lib/engines/common/evas_intl_utils.c
 -
     byte_len = strlen(text); /* we need the actual number of bytes, not number of chars */
  
-    unicode_in = (FriBidiChar *)malloc(sizeof(FriBidiChar) * (len + 1));
-@@ -50,33 +45,59 @@
-    unicode_out = (FriBidiChar *)malloc(sizeof(FriBidiChar) * (len + 1));
+    unicode_in = (FriBidiChar *)alloca(sizeof(FriBidiChar) * (len + 1));
+@@ -51,33 +46,59 @@
+    unicode_out = (FriBidiChar *)alloca(sizeof(FriBidiChar) * (len + 1));
     if (!unicode_out)
       {
 -	len = -2;
-+	len = -1;
- 	goto error2;
-      }
- 
+-	goto error1;
+-     }
+-
 -   *embedding_level_list = (FriBidiLevel *)malloc(sizeof(FriBidiLevel) * len);
 -   if (!*embedding_level_list)
 -     {
 -	len = -3;
--	goto error3;
--     }
-+   if (embedding_level_list)
-+      {
-+         *embedding_level_list = (EvasIntlLevel *)malloc(sizeof(EvasIntlLevel) * len);
-+         if (!*embedding_level_list)
-+           {
-+	      len = -1;
-+	      goto error3;
-+           }
-+	 tmp_level_list = *embedding_level_list;
-+      }
++	len = -1;
+ 	goto error2;
+      }
  
-+    if (position_L_to_V_list)
-+      {
-+         *position_L_to_V_list = (EvasIntlStrIndex *)malloc(sizeof(EvasIntlStrIndex) * len);
-+         if (!*position_L_to_V_list)
-+           {
-+	      len = -1;
-+	      goto error4;
-+           }
-+	 tmp_L_to_V_list = *position_L_to_V_list;
-+      }
++    if (embedding_level_list)
++       {
++          *embedding_level_list = (EvasIntlLevel *)malloc(sizeof(EvasIntlLevel) * len);
++          if (!*embedding_level_list)
++            {
++ 	      len = -1;
++ 	      goto error3;
++            }
++ 	 tmp_level_list = *embedding_level_list;
++       }
++ 
++     if (position_L_to_V_list)
++       {
++          *position_L_to_V_list = (EvasIntlStrIndex *)malloc(sizeof(EvasIntlStrIndex) * len);
++          if (!*position_L_to_V_list)
++            {
++ 	      len = -1;
++ 	      goto error4;
++            }
++ 	 tmp_L_to_V_list = *position_L_to_V_list;
++       }
++ 
++     if (position_V_to_L_list)
++       {
++          *position_V_to_L_list = (EvasIntlStrIndex *)malloc(sizeof(EvasIntlStrIndex) * len);
++          if (!*position_V_to_L_list)
++            {
++ 	      len = -1;
++ 	      goto error5;
++            }
++ 	 tmp_V_to_L_list = *position_V_to_L_list;
++       }
 +
-+    if (position_V_to_L_list)
-+      {
-+         *position_V_to_L_list = (EvasIntlStrIndex *)malloc(sizeof(EvasIntlStrIndex) * len);
-+         if (!*position_V_to_L_list)
-+           {
-+	      len = -1;
-+	      goto error5;
-+           }
-+	 tmp_V_to_L_list = *position_V_to_L_list;
-+      }
-+      
  #ifdef ARABIC_SUPPORT
     /* fix arabic context */
     evas_intl_arabic_to_context(unicode_in);
  #endif
     if (!fribidi_log2vis(unicode_in, len, direction,
 -	    unicode_out, NULL, NULL, *embedding_level_list))
-+	    unicode_out, tmp_L_to_V_list, tmp_V_to_L_list, tmp_level_list))
++         unicode_out, tmp_L_to_V_list, tmp_V_to_L_list, tmp_level_list))
       {
 -	len = -4;
--	goto error3;
-+	len = -2;
-+	goto error5;
+-	goto error2;
++ 	len = -2;
++ 	goto error5;
       }
  
     text_out = malloc(UTF8_BYTES_PER_CHAR * len + 1);
     if (!text_out)
       {
 -	len = -5;
--	goto error4;
-+	len = -1;
-+	goto error6;
+-	goto error2;
++ 	len = -1;
++ 	goto error6;
       }
  
     fribidi_unicode_to_utf8(unicode_out, len, text_out);
-@@ -88,10 +109,17 @@
+@@ -85,9 +106,20 @@
+    *ret_len = len;
     return text_out;
  
-    /* ERROR HANDLING */
+-   /* ERROR HANDLING */
++/* ERROR HANDLING */
 +error6:
 +   free(unicode_out);
 +error5:
 +   free(*position_V_to_L_list);
 +   *position_V_to_L_list = NULL;
- error4:
--   free(unicode_out);
++error4:
 +   free(*position_L_to_V_list);
 +   *position_L_to_V_list = NULL;
- error3:
-    free(*embedding_level_list);
++error3:
++   free(*embedding_level_list);
 +   *embedding_level_list = NULL;
  error2:
-    free(unicode_in);
+-   free(*embedding_level_list);
++   free(unicode_in);
  error1:
-@@ -101,7 +129,7 @@
+ 
+    *ret_len = len;
+@@ -95,7 +127,7 @@
  }
  
  int
@@ -293,7 +298,7 @@ Index: evas/src/lib/engines/common/evas_intl_utils.c
       return 0;
 Index: evas/src/lib/engines/common/evas_intl_utils.h
 ===================================================================
---- evas/src/lib/engines/common/evas_intl_utils.h	(revision 41040)
+--- evas/src/lib/engines/common/evas_intl_utils.h	(revision 42767)
 +++ evas/src/lib/engines/common/evas_intl_utils.h	(working copy)
 @@ -4,25 +4,44 @@
  #include "config.h"
@@ -346,7 +351,7 @@ Index: evas/src/lib/engines/common/evas_intl_utils.h
  #endif
 Index: evas/src/lib/engines/common/evas_font_query.c
 ===================================================================
---- evas/src/lib/engines/common/evas_font_query.c	(revision 41040)
+--- evas/src/lib/engines/common/evas_font_query.c	(revision 42767)
 +++ evas/src/lib/engines/common/evas_font_query.c	(working copy)
 @@ -1,5 +1,7 @@
  #include "evas_common.h"
@@ -834,43 +839,23 @@ Index: evas/src/lib/engines/common/evas_font_query.c
 +
 +#endif
 \ No newline at end of file
-Index: evas/src/lib/engines/common/evas_font_main.c
-===================================================================
---- evas/src/lib/engines/common/evas_font_main.c	(revision 41040)
-+++ evas/src/lib/engines/common/evas_font_main.c	(working copy)
-@@ -196,12 +196,13 @@
- 
-    if (index <= 0)
-      return 0;
--   d = buf[index--];
-+   index--;
- 
-    while ((index > 0) && ((buf[index] & 0xc0) == 0x80))
-      index--;
-    len = *iindex - index;
--
-+   d = buf[index];
-+   
-    if (len == 1)
-       r = d;
-    else if (len == 2)
 Index: evas/src/lib/canvas/evas_object_textblock.c
 ===================================================================
---- evas/src/lib/canvas/evas_object_textblock.c	(revision 41040)
+--- evas/src/lib/canvas/evas_object_textblock.c	(revision 42767)
 +++ evas/src/lib/canvas/evas_object_textblock.c	(working copy)
-@@ -1536,17 +1536,15 @@
+@@ -1579,17 +1579,16 @@
  static int
  _layout_text_cutoff_get(Ctxt *c, Evas_Object_Textblock_Format *fmt, Evas_Object_Textblock_Item *it)
  {
 -   int cx, cy, cw, ch;
--
+ 
     if (fmt->font.font)
 -     return c->ENFN->font_char_at_coords_get(c->ENDT, fmt->font.font, it->text,
 +     return c->ENFN->font_last_up_to_pos(c->ENDT, fmt->font.font, it->text,
- 					     c->w - 
- 					     c->o->style_pad.l - 
- 					     c->o->style_pad.r - 
- 					     c->marginl - 
+ 					     c->w -
+ 					     c->o->style_pad.l -
+ 					     c->o->style_pad.r -
+ 					     c->marginl -
  					     c->marginr -
  					     c->x,
 -					     0, &cx, &cy, &cw, &ch);
@@ -878,7 +863,7 @@ Index: evas/src/lib/canvas/evas_object_textblock.c
     return -1;
  }
  
-@@ -1586,7 +1584,6 @@
+@@ -1629,7 +1628,6 @@
  	if (_is_white(chr)) break;
  	tp = p;
       }
@@ -886,7 +871,7 @@ Index: evas/src/lib/canvas/evas_object_textblock.c
     if (p < 0) p = 0;
     if ((p >= 0) && (_is_white(chr)))
       evas_common_font_utf8_get_next((unsigned char *)(str), &p);
-@@ -1873,7 +1870,10 @@
+@@ -1916,7 +1914,10 @@
  			      {
  				 _layout_item_text_cutoff(c, it, wrap);
  				 twrap = wrap;
@@ -900,7 +885,7 @@ Index: evas/src/lib/canvas/evas_object_textblock.c
  			    /* intersects a word */
 Index: evas/src/lib/canvas/evas_object_text.c
 ===================================================================
---- evas/src/lib/canvas/evas_object_text.c	(revision 41040)
+--- evas/src/lib/canvas/evas_object_text.c	(revision 42767)
 +++ evas/src/lib/canvas/evas_object_text.c	(working copy)
 @@ -614,13 +614,47 @@
     return ret;
@@ -952,7 +937,7 @@ Index: evas/src/lib/canvas/evas_object_text.c
     Evas_Object_Text *o;
 Index: evas/src/modules/engines/software_generic/evas_engine.c
 ===================================================================
---- evas/src/modules/engines/software_generic/evas_engine.c	(revision 41040)
+--- evas/src/modules/engines/software_generic/evas_engine.c	(revision 42767)
 +++ evas/src/modules/engines/software_generic/evas_engine.c	(working copy)
 @@ -917,6 +917,12 @@
     return evas_common_font_query_text_at_pos(font, text, x, y, cx, cy, cw, ch);
@@ -967,7 +952,7 @@ Index: evas/src/modules/engines/software_generic/evas_engine.c
  static void
  eng_font_draw(void *data __UNUSED__, void *context, void *surface, void *font, int x, int y, int w __UNUSED__, int h __UNUSED__, int ow __UNUSED__, int oh __UNUSED__, const char *text)
  {
-@@ -1109,8 +1115,11 @@
+@@ -1115,8 +1121,11 @@
       eng_font_hinting_set,
       eng_font_hinting_can_hint,
       eng_image_scale_hint_set,
@@ -982,9 +967,9 @@ Index: evas/src/modules/engines/software_generic/evas_engine.c
  /*
 Index: evas/src/modules/engines/cairo_x11/evas_engine.c
 ===================================================================
---- evas/src/modules/engines/cairo_x11/evas_engine.c	(revision 41040)
+--- evas/src/modules/engines/cairo_x11/evas_engine.c	(revision 42767)
 +++ evas/src/modules/engines/cairo_x11/evas_engine.c	(working copy)
-@@ -121,6 +121,8 @@
+@@ -122,6 +122,8 @@
  static void eng_font_hinting_set(void *data, void *font, int hinting);
  static int eng_font_hinting_can_hint(void *data, int hinting);
  
@@ -993,7 +978,7 @@ Index: evas/src/modules/engines/cairo_x11/evas_engine.c
  typedef struct _Render_Engine Render_Engine;
  
  struct _Render_Engine
-@@ -244,7 +246,9 @@
+@@ -246,7 +248,9 @@
       eng_font_hinting_can_hint,
       
       eng_image_scale_hint_set,
@@ -1004,7 +989,7 @@ Index: evas/src/modules/engines/cairo_x11/evas_engine.c
  };
  
  static void *
-@@ -1478,6 +1482,12 @@
+@@ -1480,6 +1484,12 @@
     re = (Render_Engine *)data;
  }
  
@@ -1014,17 +999,12 @@ Index: evas/src/modules/engines/cairo_x11/evas_engine.c
 +   return evas_common_font_query_last_up_to_pos(font, text, x, y);
 +}
 +
- EAPI int
- module_open(Evas_Module *em)
+ static Eina_Bool
+ eng_canvas_alpha_get(void *data, void *context)
  {
-@@ -1499,3 +1509,4 @@
-      "cairo_x11",
-      "none"
- };
-+
 Index: evas/src/modules/engines/software_16/evas_engine.c
 ===================================================================
---- evas/src/modules/engines/software_16/evas_engine.c	(revision 41040)
+--- evas/src/modules/engines/software_16/evas_engine.c	(revision 42767)
 +++ evas/src/modules/engines/software_16/evas_engine.c	(working copy)
 @@ -772,6 +772,12 @@
     return evas_common_font_query_text_at_pos(font, text, x, y, cx, cy, cw, ch);
@@ -1039,7 +1019,7 @@ Index: evas/src/modules/engines/software_16/evas_engine.c
  static void
  eng_font_draw(void *data __UNUSED__, void *context, void *surface, void *font, int x, int y, int w __UNUSED__, int h __UNUSED__, int ow __UNUSED__, int oh __UNUSED__, const char *text)
  {
-@@ -972,7 +978,9 @@
+@@ -978,7 +984,9 @@
       eng_font_hinting_set,
       eng_font_hinting_can_hint,
       eng_image_scale_hint_set,
