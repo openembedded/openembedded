@@ -1,5 +1,5 @@
 DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
-DEPENDS = "eet evas ecore embryo edje-native"
+DEPENDS = "lua5.1 eet evas ecore embryo edje-native"
 LICENSE = "MIT BSD"
 PV = "0.5.0.050+svnr${SRCREV}"
 PR = "r2"
