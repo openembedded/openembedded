@@ -2,12 +2,12 @@ DESCRIPTION = "Turns your Neo Freerunner into a bluetooth GPS"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python python-pygtk"
+RDEPENDS = "python python-pygtk gps-utils"
 
 SRC_URI = "http://handheldshell.com/software/fso/btgps.tgz  \
 	  "
 
-inherit autotools
+#inherit autotools
 
 S = ${WORKDIR}/bluetooth
 
