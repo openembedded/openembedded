@@ -1,6 +1,6 @@
 Index: evas/src/lib/include/evas_private.h
 ===================================================================
---- evas/src/lib/include/evas_private.h	(revision 42767)
+--- evas/src/lib/include/evas_private.h	(revision 1)
 +++ evas/src/lib/include/evas_private.h	(working copy)
 @@ -671,6 +671,7 @@
  
@@ -12,7 +12,7 @@ Index: evas/src/lib/include/evas_private.h
  struct _Evas_Image_Load_Func
 Index: evas/src/lib/Evas.h
 ===================================================================
---- evas/src/lib/Evas.h	(revision 42767)
+--- evas/src/lib/Evas.h	(revision 1)
 +++ evas/src/lib/Evas.h	(working copy)
 @@ -647,6 +647,7 @@
     EAPI Evas_Coord        evas_object_text_inset_get        (const Evas_Object *obj) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_PURE;
@@ -24,7 +24,7 @@ Index: evas/src/lib/Evas.h
     EAPI void              evas_object_text_shadow_color_set (Evas_Object *obj, int r, int g, int b, int a) EINA_ARG_NONNULL(1);
 Index: evas/src/lib/engines/common/evas_font_draw.c
 ===================================================================
---- evas/src/lib/engines/common/evas_font_draw.c	(revision 42767)
+--- evas/src/lib/engines/common/evas_font_draw.c	(revision 1)
 +++ evas/src/lib/engines/common/evas_font_draw.c	(working copy)
 @@ -2,11 +2,6 @@
   * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
@@ -103,7 +103,7 @@ Index: evas/src/lib/engines/common/evas_font_draw.c
  
 Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c
 ===================================================================
---- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c	(revision 42767)
+--- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c	(revision 1)
 +++ evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c	(working copy)
 @@ -1,7 +1,3 @@
 -/* Authors:
@@ -124,7 +124,7 @@ Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.c
     /*FIXME: make it skip vowels */
 Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h
 ===================================================================
---- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h	(revision 42767)
+--- evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h	(revision 1)
 +++ evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h	(working copy)
 @@ -1,7 +1,9 @@
  #ifndef _EVAS_INTL_ARABIC
@@ -139,7 +139,7 @@ Index: evas/src/lib/engines/common/evas_intl/evas_intl_arabic.h
  #endif
 Index: evas/src/lib/engines/common/evas_intl_utils.c
 ===================================================================
---- evas/src/lib/engines/common/evas_intl_utils.c	(revision 42767)
+--- evas/src/lib/engines/common/evas_intl_utils.c	(revision 1)
 +++ evas/src/lib/engines/common/evas_intl_utils.c	(working copy)
 @@ -1,23 +1,27 @@
 -/* Authors:
@@ -298,7 +298,7 @@ Index: evas/src/lib/engines/common/evas_intl_utils.c
       return 0;
 Index: evas/src/lib/engines/common/evas_intl_utils.h
 ===================================================================
---- evas/src/lib/engines/common/evas_intl_utils.h	(revision 42767)
+--- evas/src/lib/engines/common/evas_intl_utils.h	(revision 1)
 +++ evas/src/lib/engines/common/evas_intl_utils.h	(working copy)
 @@ -4,25 +4,44 @@
  #include "config.h"
@@ -351,7 +351,7 @@ Index: evas/src/lib/engines/common/evas_intl_utils.h
  #endif
 Index: evas/src/lib/engines/common/evas_font_query.c
 ===================================================================
---- evas/src/lib/engines/common/evas_font_query.c	(revision 42767)
+--- evas/src/lib/engines/common/evas_font_query.c	(revision 1)
 +++ evas/src/lib/engines/common/evas_font_query.c	(working copy)
 @@ -1,5 +1,7 @@
  #include "evas_common.h"
@@ -361,305 +361,10 @@ Index: evas/src/lib/engines/common/evas_font_query.c
  EAPI int
  evas_common_font_query_kerning(RGBA_Font_Int* fi,
  			       FT_UInt prev, FT_UInt index,
-@@ -57,7 +59,10 @@
-    return error;
- }
- 
--/* string extents */
-+/* string extents
-+ * Note: no need for special rtl handling
-+ * we can assume there's not between languages kerning
-+ * and that spaces get the same wide anywhere. */
- EAPI void
- evas_common_font_query_size(RGBA_Font *fn, const char *text, int *w, int *h)
- {
-@@ -126,6 +131,7 @@
-    if (h) *h = evas_common_font_max_ascent_get(fn) + evas_common_font_max_descent_get(fn);
- }
- 
-+
- /* text x inset */
- EAPI int
- evas_common_font_query_inset(RGBA_Font *fn, const char *text)
-@@ -163,7 +169,10 @@
-    return fg->glyph_out->left;
- }
- 
--/* h & v advance */
-+/* h & v advance
-+ * Note: no need for special rtl handling
-+ * we can assume there's not between languages kerning
-+ * and that spaces get the same wide anywhere. */
- EAPI void
- evas_common_font_query_advance(RGBA_Font *fn, const char *text, int *h_adv, int *v_adv)
- {
-@@ -216,19 +225,34 @@
-    if (h_adv) *h_adv = pen_x - start_x;
- }
- 
-+
- /* x y w h for char at char pos */
- EAPI int
--evas_common_font_query_char_coords(RGBA_Font *fn, const char *text, int pos, int *cx, int *cy, int *cw, int *ch)
-+evas_common_font_query_char_coords(RGBA_Font *fn, const char *in_text, int pos, int *cx, int *cy, int *cw, int *ch)
- {
-    int use_kerning;
-    int pen_x, pen_y;
-    int prev_chr_end;
-    int chr;
-    int asc, desc;
-+   int char_index = 0; /* the index of the current char */
-+   int position;
-+   const char *text = in_text;
-+   int ret_val = 0;
-    FT_UInt prev_index;
-    RGBA_Font_Int *fi;
-    FT_Face pface = NULL;
- 
-+#ifdef INTERNATIONAL_SUPPORT
-+   int len = 0;
-+   EvasIntlParType direction = FRIBIDI_TYPE_ON;
-+   EvasIntlLevel *level_list;
-+   EvasIntlStrIndex *logical_to_visual;
-+
-+   char *visual_text = evas_intl_utf8_to_visual(in_text, &len, &direction, &logical_to_visual, NULL, &level_list);
-+   text = (visual_text) ? visual_text : in_text;
-+#endif
-+
-    fi = fn->fonts->data;
- 
-    pen_x = 0;
-@@ -239,7 +263,27 @@
-    prev_chr_end = 0;
-    asc = evas_common_font_max_ascent_get(fn);
-    desc = evas_common_font_max_descent_get(fn);
--   for (chr = 0; text[chr];)
-+
-+   /* find the actual index, not the byte position */
-+   position = 0;
-+   chr = 0;
-+   while (in_text[chr] && chr < pos) {
-+      evas_common_font_utf8_get_next((unsigned char *)in_text, &chr);
-+      position++;
-+   }
-+   /* if it's a bad position, break */
-+   if (chr != pos) goto end;
-+   /* if it's the end, the correct position is one after */
-+   if (!in_text[chr]) position++;
-+   
-+#ifdef INTERNATIONAL_SUPPORT 
-+   /* if it's an in string position (not end), get logical position */
-+   if (position < len)
-+      position = evas_intl_position_logical_to_visual(logical_to_visual, position);
-+#endif
-+
-+
-+   for (char_index = 0, chr = 0; text[chr]; char_index++)
-      {
- 	int pchr;
- 	FT_UInt index;
-@@ -249,17 +293,34 @@
- 
- 	pchr = chr;
- 	gl = evas_common_font_utf8_get_next((unsigned char *)text, &chr);
-+	
- 	if (gl == 0) break;
-+
- 	index = evas_common_font_glyph_search(fn, &fi, gl);
- 	kern = 0;
-         /* hmmm kerning means i can't sanely do my own cached metric tables! */
- 	/* grrr - this means font face sharing is kinda... not an option if */
- 	/* you want performance */
- 	if ((use_kerning) && (prev_index) && (index) &&
--	    (pface == fi->src->ft.face))
--	  if (evas_common_font_query_kerning(fi, prev_index, index, &kern))
--	    pen_x += kern;
-+	     (pface == fi->src->ft.face))
-+	   {
-+#ifdef INTERNATIONAL_SUPPORT
-+	      /* if it's rtl, the kerning matching should be reversed, i.e prev
-+	       * index is now the index and the other way around. */
-+	      if (evas_intl_is_rtl_char(level_list, char_index))
-+		{
-+		   if (evas_common_font_query_kerning(fi, index, prev_index, &kern))
-+		      pen_x += kern;
-+		}
-+	      else
-+#endif
-+              {
- 
-+	         if (evas_common_font_query_kerning(fi, prev_index, index, &kern))
-+	            pen_x += kern;
-+	      }
-+           }
-+
- 	pface = fi->src->ft.face;
- 	fg = evas_common_font_int_cache_glyph_get(fi, index);
- 	if (!fg) continue;
-@@ -280,34 +341,57 @@
- 	     chr_w += (chr_x - prev_chr_end);
- 	     chr_x = prev_chr_end;
- 	  }
--	if (pchr == pos)
-+	/* we need to see if the char at the visual position is the char wanted */
-+	if (char_index == position)
- 	  {
- 	     if (cx) *cx = chr_x;
- 	     if (cy) *cy = -asc;
- 	     if (cw) *cw = chr_w;
- 	     if (ch) *ch = asc + desc;
--	     return 1;
-+	     ret_val = 1;
-+	     goto end;
- 	  }
- 	prev_chr_end = chr_x + chr_w;
- 	pen_x += fg->glyph->advance.x >> 16;
- 	prev_index = index;
+@@ -374,3 +376,215 @@
       }
--   return 0;
-+end:
-+
-+#ifdef INTERNATIONAL_SUPPORT
-+   if (level_list) free(level_list);
-+   if (logical_to_visual) free(logical_to_visual);
-+   if (visual_text) free(visual_text);
-+#endif
-+
-+   return ret_val;
+    return -1;
  }
- 
- /* char pos of text at xy pos */
- EAPI int
--evas_common_font_query_text_at_pos(RGBA_Font *fn, const char *text, int x, int y, int *cx, int *cy, int *cw, int *ch)
-+evas_common_font_query_text_at_pos(RGBA_Font *fn, const char *in_text, int x, int y, int *cx, int *cy, int *cw, int *ch)
- {
-    int use_kerning;
-    int pen_x, pen_y;
-    int prev_chr_end;
-    int chr;
-    int asc, desc;
-+   int char_index = 0; /* the index of the current char */
-+   const char *text = in_text;
-+   int ret_val = -1;
-    FT_UInt prev_index;
-    RGBA_Font_Int *fi;
-    FT_Face pface = NULL;
-+   
-+#ifdef INTERNATIONAL_SUPPORT
-+   int len = 0;
-+   EvasIntlParType direction = FRIBIDI_TYPE_ON;
-+   EvasIntlLevel *level_list;
-+   EvasIntlStrIndex *visual_to_logical;
- 
-+   char *visual_text = evas_intl_utf8_to_visual(in_text, &len, &direction, NULL, &visual_to_logical, &level_list);
-+   text = (visual_text) ? visual_text : in_text;
-+#endif
-+
-    fi = fn->fonts->data;
- 
-    pen_x = 0;
-@@ -318,6 +402,130 @@
-    prev_chr_end = 0;
-    asc = evas_common_font_max_ascent_get(fn);
-    desc = evas_common_font_max_descent_get(fn);
-+
-+   for (char_index = 0, chr = 0; text[chr]; char_index++)
-+     {
-+	int pchr;
-+	FT_UInt index;
-+	RGBA_Font_Glyph *fg;
-+	int chr_x, chr_y, chr_w;
-+        int gl, kern;
-+
-+	
-+
-+	gl = evas_common_font_utf8_get_next((unsigned char *)text, &chr);
-+	if (gl == 0) break;
-+	index = evas_common_font_glyph_search(fn, &fi, gl);
-+	kern = 0;
-+        /* hmmm kerning means i can't sanely do my own cached metric tables! */
-+	/* grrr - this means font face sharing is kinda... not an option if */
-+	/* you want performance */
-+	if ((use_kerning) && (prev_index) && (index) &&
-+	     (pface == fi->src->ft.face))
-+	   {
-+#ifdef INTERNATIONAL_SUPPORT
-+	      /* if it's rtl, the kerning matching should be reversed, i.e prev
-+	       * index is now the index and the other way around. */
-+	      if (evas_intl_is_rtl_char(level_list, char_index))
-+		{
-+		   if (evas_common_font_query_kerning(fi, index, prev_index, &kern))
-+		      pen_x += kern;
-+		}
-+	      else
-+#endif
-+              {
-+
-+	         if (evas_common_font_query_kerning(fi, prev_index, index, &kern))
-+	            pen_x += kern;
-+	      }
-+           }
-+
-+	pface = fi->src->ft.face;
-+	fg = evas_common_font_int_cache_glyph_get(fi, index);
-+	if (!fg) continue;
-+
-+	if (kern < 0) kern = 0;
-+        chr_x = ((pen_x - kern) + (fg->glyph_out->left));
-+	chr_y = (pen_y + (fg->glyph_out->top));
-+	chr_w = fg->glyph_out->bitmap.width + kern;
-+/*	if (text[chr]) */
-+	  {
-+	     int advw;
-+
-+	     advw = ((fg->glyph->advance.x + (kern << 16)) >> 16);
-+	     if (chr_w < advw) chr_w = advw;
-+	  }
-+	if (chr_x > prev_chr_end)
-+	  {
-+	     chr_w += (chr_x - prev_chr_end);
-+	     chr_x = prev_chr_end;
-+	  }
-+	if ((x >= chr_x) && (x <= (chr_x + chr_w)) &&
-+	    (y >= -asc) && (y <= desc))
-+	  {
-+	     if (cx) *cx = chr_x;
-+	     if (cy) *cy = -asc;
-+	     if (cw) *cw = chr_w;
-+	     if (ch) *ch = asc + desc;
-+#ifdef INTERNATIONAL_SUPPORT
-+             {
-+		int i;
-+		int logical_chr;
-+		int position = evas_intl_position_visual_to_logical(visual_to_logical, char_index);
-+
-+		 
-+		/* ensure even if the list won't run */
-+		pchr = 0;					
-+		for (logical_chr = 0, i = 0; i <= position; i++) {
-+             	   pchr = logical_chr;
-+             	   evas_common_font_utf8_get_next((unsigned char *)in_text, &logical_chr);
-+                }
-+             }
-+#endif
-+	     ret_val = pchr;
-+	     goto end;
-+	  }
-+	prev_chr_end = chr_x + chr_w;
-+	pen_x += fg->glyph->advance.x >> 16;
-+	prev_index = index;
-+     }
-+
-+end:
-+   
-+#ifdef INTERNATIONAL_SUPPORT
-+   if (level_list) free(level_list);
-+   if (visual_to_logical) free(visual_to_logical);
-+   if (visual_text) free(visual_text);
-+#endif
-+
-+   return ret_val;
-+}
 +
 +/* last char pos of text at xy pos
 + * Note: no need for special rtl handling
@@ -686,24 +391,58 @@ Index: evas/src/lib/engines/common/evas_font_query.c
 +   prev_chr_end = 0;
 +   asc = evas_common_font_max_ascent_get(fn);
 +   desc = evas_common_font_max_descent_get(fn);
-    for (chr = 0; text[chr];)
-      {
- 	int pchr;
-@@ -362,10 +570,6 @@
- 	if ((x >= chr_x) && (x <= (chr_x + chr_w)) &&
- 	    (y >= -asc) && (y <= desc))
- 	  {
--	     if (cx) *cx = chr_x;
--	     if (cy) *cy = -asc;
--	     if (cw) *cw = chr_w;
--	     if (ch) *ch = asc + desc;
- 	     return pchr;
- 	  }
- 	prev_chr_end = chr_x + chr_w;
-@@ -374,3 +578,137 @@
-      }
-    return -1;
- }
++   for (chr = 0; text[chr];)
++     {
++	int pchr;
++	FT_UInt index;
++	RGBA_Font_Glyph *fg;
++	int chr_x, chr_y, chr_w;
++        int gl, kern;
++
++	pchr = chr;
++	gl = evas_common_font_utf8_get_next((unsigned char *)text, &chr);
++	if (gl == 0) break;
++	index = evas_common_font_glyph_search(fn, &fi, gl);
++	kern = 0;
++        /* hmmm kerning means i can't sanely do my own cached metric tables! */
++	/* grrr - this means font face sharing is kinda... not an option if */
++	/* you want performance */
++	if ((use_kerning) && (prev_index) && (index) &&
++	    (pface == fi->src->ft.face))
++	  if (evas_common_font_query_kerning(fi, prev_index, index, &kern))
++	    pen_x += kern;
++
++	pface = fi->src->ft.face;
++	fg = evas_common_font_int_cache_glyph_get(fi, index);
++	if (!fg) continue;
++
++	if (kern < 0) kern = 0;
++        chr_x = ((pen_x - kern) + (fg->glyph_out->left));
++	chr_y = (pen_y + (fg->glyph_out->top));
++	chr_w = fg->glyph_out->bitmap.width + kern;
++/*	if (text[chr]) */
++	  {
++	     int advw;
++
++	     advw = ((fg->glyph->advance.x + (kern << 16)) >> 16);
++	     if (chr_w < advw) chr_w = advw;
++	  }
++	if (chr_x > prev_chr_end)
++	  {
++	     chr_w += (chr_x - prev_chr_end);
++	     chr_x = prev_chr_end;
++	  }
++	if ((x >= chr_x) && (x <= (chr_x + chr_w)) &&
++	    (y >= -asc) && (y <= desc))
++	  {
++	     return pchr;
++	  }
++	prev_chr_end = chr_x + chr_w;
++	pen_x += fg->glyph->advance.x >> 16;
++	prev_index = index;
++     }
++   return -1;
++}
 +#if 0
 +/* last char pos of text at xy pos */
 +EAPI int
@@ -838,54 +577,9 @@ Index: evas/src/lib/engines/common/evas_font_query.c
 +}
 +
 +#endif
-\ No newline at end of file
-Index: evas/src/lib/canvas/evas_object_textblock.c
-===================================================================
---- evas/src/lib/canvas/evas_object_textblock.c	(revision 42767)
-+++ evas/src/lib/canvas/evas_object_textblock.c	(working copy)
-@@ -1579,17 +1579,16 @@
- static int
- _layout_text_cutoff_get(Ctxt *c, Evas_Object_Textblock_Format *fmt, Evas_Object_Textblock_Item *it)
- {
--   int cx, cy, cw, ch;
- 
-    if (fmt->font.font)
--     return c->ENFN->font_char_at_coords_get(c->ENDT, fmt->font.font, it->text,
-+     return c->ENFN->font_last_up_to_pos(c->ENDT, fmt->font.font, it->text,
- 					     c->w -
- 					     c->o->style_pad.l -
- 					     c->o->style_pad.r -
- 					     c->marginl -
- 					     c->marginr -
- 					     c->x,
--					     0, &cx, &cy, &cw, &ch);
-+					     0);
-    return -1;
- }
- 
-@@ -1629,7 +1628,6 @@
- 	if (_is_white(chr)) break;
- 	tp = p;
-      }
--   p = tp;
-    if (p < 0) p = 0;
-    if ((p >= 0) && (_is_white(chr)))
-      evas_common_font_utf8_get_next((unsigned char *)(str), &p);
-@@ -1916,7 +1914,10 @@
- 			      {
- 				 _layout_item_text_cutoff(c, it, wrap);
- 				 twrap = wrap;
--				 ch = evas_common_font_utf8_get_next((unsigned char *)str, &twrap);
-+				 /*we don't want to move next, that's why it's
-+				  * commented out.
-+				  * ch = evas_common_font_utf8_get_next((unsigned char *)str, &twrap);
-+				  */
- 				 str = str + twrap;
- 			      }
- 			    /* intersects a word */
 Index: evas/src/lib/canvas/evas_object_text.c
 ===================================================================
---- evas/src/lib/canvas/evas_object_text.c	(revision 42767)
+--- evas/src/lib/canvas/evas_object_text.c	(revision 1)
 +++ evas/src/lib/canvas/evas_object_text.c	(working copy)
 @@ -614,13 +614,47 @@
     return ret;
@@ -937,7 +631,7 @@ Index: evas/src/lib/canvas/evas_object_text.c
     Evas_Object_Text *o;
 Index: evas/src/modules/engines/software_generic/evas_engine.c
 ===================================================================
---- evas/src/modules/engines/software_generic/evas_engine.c	(revision 42767)
+--- evas/src/modules/engines/software_generic/evas_engine.c	(revision 1)
 +++ evas/src/modules/engines/software_generic/evas_engine.c	(working copy)
 @@ -917,6 +917,12 @@
     return evas_common_font_query_text_at_pos(font, text, x, y, cx, cy, cw, ch);
@@ -967,7 +661,7 @@ Index: evas/src/modules/engines/software_generic/evas_engine.c
  /*
 Index: evas/src/modules/engines/cairo_x11/evas_engine.c
 ===================================================================
---- evas/src/modules/engines/cairo_x11/evas_engine.c	(revision 42767)
+--- evas/src/modules/engines/cairo_x11/evas_engine.c	(revision 1)
 +++ evas/src/modules/engines/cairo_x11/evas_engine.c	(working copy)
 @@ -122,6 +122,8 @@
  static void eng_font_hinting_set(void *data, void *font, int hinting);
@@ -1004,7 +698,7 @@ Index: evas/src/modules/engines/cairo_x11/evas_engine.c
  {
 Index: evas/src/modules/engines/software_16/evas_engine.c
 ===================================================================
---- evas/src/modules/engines/software_16/evas_engine.c	(revision 42767)
+--- evas/src/modules/engines/software_16/evas_engine.c	(revision 1)
 +++ evas/src/modules/engines/software_16/evas_engine.c	(working copy)
 @@ -772,6 +772,12 @@
     return evas_common_font_query_text_at_pos(font, text, x, y, cx, cy, cw, ch);
