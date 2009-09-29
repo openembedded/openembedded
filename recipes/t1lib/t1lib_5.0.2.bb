@@ -1,8 +1,8 @@
 DESCRIPTION = "A Type1 Font Rastering Library"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libx11"
-PR = "r4"
+DEPENDS = "virtual/libx11 libxaw"
+PR = "r5"
 LICENSE = "LGPL GPL"
 SRC_URI = "${DEBIAN_MIRROR}/main/t/t1lib/t1lib_${PV}.orig.tar.gz \
            file://configure.patch;patch=1 \

@@ -16,11 +16,12 @@ DISTUTILS_INSTALL_ARGS = "--root=${D} --prefix=${prefix}"
 
 RDEPENDS_${PN} = "\
   python-email \
+  python-html \
   python-netserver \
   python-pickle \
   python-pprint \
   python-shell \
-  python-sqlite \
+  python-sqlite3 \
   python-textutils \
   python-threading \
   python-unixadmin \

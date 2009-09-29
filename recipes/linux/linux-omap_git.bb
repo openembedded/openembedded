@@ -3,12 +3,11 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom"
+COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom|omapzoom2|omap4430-sdp"
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_omapzoom2 = "1"
 
-SRCREV = "52a962f09ab2306a2ac6e22c2d3bac1a76ac"
+SRCREV = "945044d157dd63c6af0f2ed40a5346382af94eb4"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.31:"
 
@@ -20,7 +19,6 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.g
 	   file://defconfig"
 
 SRC_URI_append = " \
-                  file://ehci-phy-reset.patch;patch=1 \
                   file://ehci.patch;patch=1 \
                   file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
                   file://cache/l1cache-shift.patch;patch=1 \
@@ -49,6 +47,20 @@ SRC_URI_append = " \
                   file://expansion-boards/tincantools-zippy.patch;patch=1 \
                   file://madc/madc-driver.patch;patch=1 \
                   file://madc/madc.patch;patch=1 \
+                  file://arch-has-holes.diff;patch=1 \
+                  file://usb/0001-musb-fix-put_device-call-sequence.patch;patch=1 \
+                  file://usb/0008-omap3-Add-CHIP_GE_OMAP3430ES3-for-HSUSB.patch;patch=1 \
+                  file://usb/0011-musb-fix-musb-gadget_driver-NULL-bug.patch;patch=1 \
+                  file://usb/0012-musb-Add-back-old-musb-procfs-file.patch;patch=1 \
+                  file://usb/0013-musb-Remove-USB_SUSPEND-auto-select-with-OTG.patch;patch=1 \
+                  file://usb/0014-musb-disable-PING-on-status-phase-of-control-transf.patch;patch=1 \
+                  file://usb/0015-musb-Add-context-save-and-restore-support.patch;patch=1 \
+                  file://usb/0016-usb-update-defconfig.patch;patch=1 \
+                  file://usb/0001-ARM-OMAP-Fix-beagleboard-EHCI-setup.patch;patch=1 \
+                  file://modedb-hd720.patch;patch=1 \
+                  file://dss2/beagle-dss2-support.patch;patch=1 \
+                  file://fix-serial.eml;patch=1 \
+                  file://fix-omap4.diff;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

@@ -34,6 +34,7 @@ EXTRA_OECONF = "\
   --enable-tools \
   --includedir=${STAGING_INCDIR}/classpath \
   --with-vm=java \
+  --enable-tool-wrappers \
   "
 
 do_stage() {

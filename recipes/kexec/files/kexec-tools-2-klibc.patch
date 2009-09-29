@@ -140,23 +140,6 @@ Index: kexec-tools-2.0.1/purgatory/string.c
  size_t strnlen(const char *s, size_t max)
  {
 
-Index: kexec-tools-2.0.1/purgatory/purgatory.c
-===================================================================
---- kexec-tools-2.0.1.orig/purgatory/purgatory.c	2009-05-16 13:28:19.000000000 +0200
-+++ kexec-tools-2.0.1/purgatory/purgatory.c	2009-09-16 14:15:21.000000000 +0200
-@@ -3,7 +3,7 @@
- #include <stdint.h>
- #include <purgatory.h>
- #include <sha256.h>
--#include <string.h>
-+/* #include <string.h> */
- #include "../kexec/kexec-sha256.h"
-
- struct sha256_region sha256_regions[SHA256_REGIONS] = {};
-	}
-	sha256_finish(&ctx, digest);
-	if (memcmp(digest, sha256_digest, sizeof(digest)) != 0) {
-
 Index: kexec-tools-2.0.1/kexec/kexec.c
 ===================================================================
 --- kexec-tools-2.0.1.orig/kexec/kexec.c	2008-02-24 14:15:46.950825917 +0100

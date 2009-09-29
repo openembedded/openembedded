@@ -1,6 +1,6 @@
 require classpath-native.inc
 
-PR = "r4"
+PR = "r5"
 
 # The code affected by the javanet-local patch
 # is usually not compiled. However if someone changes

@@ -6,6 +6,10 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ gconf dbus-glib"
 RDEPENDS = "mplayer"
 
-inherit autotools pkgconfig gconf
+inherit gnome
 
 SRC_URI = "http://gnome-mplayer.googlecode.com/files/${P}.tar.gz"
+
+FILES_${PN} += "${datadir}/icons"
+
+
