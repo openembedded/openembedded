@@ -19,12 +19,16 @@ ARM_INSTRUCTION_SET = "arm"
 
 inherit native autotools
 
+# libdir must be modified so that jamvm-initial and -native
+# do not interfere
 EXTRA_OECONF = "\
   --with-classpath-install-dir=${prefix} \
   --program-suffix=-initial \
+  --libdir=${STAGING_LIBDIR}/jamvm-initial \
   "
 
-CFLAGS += "-DDEFAULT_MAX_HEAP=16*MB"
+# jamvm-initial has to run some binaries which need lots of memory.
+CFLAGS += "-DDEFAULT_MAX_HEAP=512*MB"
 
 do_compile() {
   oe_runmake \
