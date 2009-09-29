@@ -2,10 +2,11 @@ DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foun
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
 PV = "0.1.0.042+svnr${SRCREV}"
-PR = "r8"
+PR = "r9"
 
 inherit efl
 
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http"
 SRC_URI += "file://mkinstalldirs"
 
 RRECOMMENDS_${PN} = "\
