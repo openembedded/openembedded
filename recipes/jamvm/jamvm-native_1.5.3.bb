@@ -2,5 +2,7 @@
 
 require jamvm-native.inc
 
-PR = "r0"
+PR = "r1"
+
+SRC_URI += "file://jamvm-1.5.3-jni_h-noinst.patch;patch=1"
 
