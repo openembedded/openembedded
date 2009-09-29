@@ -1,0 +1,165 @@
+Index: hplip-2.8.10/Makefile.am
+===================================================================
+--- hplip-2.8.10.orig/Makefile.am	2008-10-31 18:25:17.000000000 -0400
++++ hplip-2.8.10/Makefile.am	2008-11-10 12:18:45.000000000 -0500
+@@ -47,6 +47,7 @@
+ hp_LDADD = libhpmud.la $(DBUS_LIBS)
+ hp_CFLAGS = $(DBUS_CFLAGS)
+ 
++if !EMBEDDED_BUILD
+ # hp-mkuri.
+ hp_mkuridir = $(bindir)
+ hp_mkuri_PROGRAMS = hp-mkuri
+@@ -110,6 +111,7 @@
+ noinst_PROGRAMS += ptest
+ ptest_SOURCES = pcard/ptest.c pcard/ptest.h pcard/fat.c pcard/fat.h 
+ ptest_LDADD = libhpmud.la
++endif
+ 
+ # data
+ modelsdir = $(hplipdir)/data/models
+@@ -127,6 +129,7 @@
+ dist_postscript_DATA = data/ps/testpage.ps.gz data/ps/clean_page.pdf.gz
+ dist_models_DATA = data/models/models.dat
+ 
++if !EMBEDDED_BUILD
+ if GUI_BUILD
+ dist_images_16x16_DATA = data/images/16x16/*
+ dist_images_24x24_DATA = data/images/24x24/*
+@@ -147,7 +150,9 @@
+ 	data/localization/hplip_pt.qm data/localization/hplip_ru.qm data/localization/hplip_zh.qm
+ dist_noinst_DATA += data/localization/hplip_de.ts data/localization/hplip_es.ts data/localization/hplip_fr.ts data/localization/hplip_it.ts \
+ 	data/localization/hplip_pt.ts data/localization/hplip_ru.ts data/localization/hplip_zh.ts
++endif
+ 
++if !EMBEDDED_BUILD
+ # pcard 
+ pcarddir = $(hplipdir)/pcard
+ dist_pcard_SCRIPTS = pcard/__init__.py pcard/photocard.py
+@@ -170,6 +175,7 @@
+ cupsext_la_SOURCES =  prnt/cupsext/cupsext.c 
+ cupsext_la_CFLAGS = -I$(PYTHONINCLUDEDIR)
+ cupsext_la_LIBADD = -lcups
++endif
+ 
+ # ip library
+ lib_LTLIBRARIES += libhpip.la
+@@ -223,6 +229,7 @@
+ endif
+ libhpmud_la_CFLAGS = -DMUDNAME=\"$(MUDNAME)\" -DCONFDIR=\"$(hplip_confdir)\"
+ 
++if !EMBEDDED_BUILD
+ # hpmudext
+ hpmudextdir = $(pyexecdir)
+ hpmudext_LTLIBRARIES = hpmudext.la
+@@ -232,8 +239,9 @@
+ hpmudext_la_CFLAGS = -I$(PYTHONINCLUDEDIR)
+ 
+ # hpmud.rules
+-rulesdir = /etc/udev/rules.d
++rulesdir = $(sysconfdir)/udev/rules.d
+ dist_rules_DATA = data/rules/55-hpmud.rules
++endif
+ 
+ # ui (qt3)
+ if GUI_BUILD
+@@ -327,6 +335,7 @@
+ #	cherrypy/filters/virtualhostfilter.py cherrypy/filters/gzipfilter.py cherrypy/filters/wsgiappfilter.py \
+ #	cherrypy/filters/logdebuginfofilter.py cherrypy/filters/xmlrpcfilter.py
+ 
++if !EMBEDDED_BUILD
+ # hppgsz
+ noinst_PROGRAMS += hppgsz
+ hppgsz_SOURCES = $(apdk_SOURCES) prnt/hpijs/PrinterProperties.cpp prnt/hpijs/PrinterProperties.h
+@@ -337,11 +346,13 @@
+ # hplip.desktop
+ hplip_desktopdir = $(icondir)
+ hplip_desktop_DATA = hplip.desktop
++endif
+ 
+ # hplip.conf
+-hplip_confdir = /etc/hp
++hplip_confdir = $(sysconfdir)/hp
+ hplip_conf_DATA = hplip.conf
+ 
++if !EMBEDDED_BUILD
+ # hplip-systray.desktop
+ hplip_systraydir = $(systraydir)
+ hplip_systray_DATA = hplip-systray.desktop
+@@ -350,14 +361,17 @@
+ hplipjsdir = $(cupsfilterdir)
+ hplipjs_PROGRAMS = hplipjs
+ hplipjs_SOURCES = prnt/filters/hplipjs.c
++endif
+ 
+ endif	# if HPLIP_BUILD
+ 
++if !EMBEDDED_BUILD
+ # foomatic-rip-hplip
+ if RIP_INSTALL
+ ripdir = $(cupsfilterdir)
+ dist_rip_SCRIPTS = prnt/hpijs/foomatic-rip-hplip
+ endif
++endif
+ 
+ # hpijs
+ bin_PROGRAMS = hpijs
+@@ -416,6 +430,7 @@
+ dist_cupsdrv_DATA = $(foomatic_drv)
+ endif
+ 
++if !EMBEDDED_BUILD
+ install-data-hook: 
+ if HPLIP_BUILD
+ #	   If scanner build, add hpaio entry to sane dll.conf.
+@@ -455,6 +470,7 @@
+ #	   Remove fax support.
+ 	rm -f $(DESTDIR)$(hpfaxdir)/hpfax 
+ endif
++endif
+ 
+ rpm_unleaded:
+ 	epm -f rpm hpliplite UNLEADED=1 hplip.list
+Index: hplip-2.8.10/configure.in
+===================================================================
+--- hplip-2.8.10.orig/configure.in	2008-10-31 18:26:57.000000000 -0400
++++ hplip-2.8.10/configure.in	2008-11-06 18:00:46.000000000 -0500
+@@ -127,6 +127,8 @@
+ fi
+ AM_CONDITIONAL(NETWORK_BUILD, test x$network_build = xyes)
+ 
++AM_CONDITIONAL(EMBEDDED_BUILD, test 1=1)
++
+ AC_MSG_CHECKING([for parallel port build])
+ AC_ARG_ENABLE(pp_build,
+   [  --enable-pp-build    enable parallel port build (default=yes)],
+@@ -205,16 +207,16 @@
+ AM_CONDITIONAL(SHADOW_BUILD, test x$shadow_build = xyes)
+ 
+ AC_ARG_WITH(cupsbackenddir, AC_HELP_STRING([--with-cupsbackenddir=DIR], [set cups backend install directory [default=/usr/lib/cups/backend]]),
+-   cupsbackenddir=$withval, cupsbackenddir="/usr/lib/cups/backend")
++   cupsbackenddir=$withval, cupsbackenddir="$prefix/lib/cups/backend")
+ 
+ AC_ARG_WITH(cupsfilterdir, AC_HELP_STRING([--with-cupsfilterdir=DIR], [set cups filter install directory [default=/usr/lib/cups/filter]]),
+-   cupsfilterdir=$withval, cupsfilterdir="/usr/lib/cups/filter")
++   cupsfilterdir=$withval, cupsfilterdir="$prefix/lib/cups/filter")
+ 
+ AC_ARG_WITH(icondir, AC_HELP_STRING([--with-icondir=DIR], [set hplip.desktop install directory [default=/usr/share/applications]]),
+-   icondir=$withval, icondir="/usr/share/applications")
++   icondir=$withval, icondir="$prefix/share/applications")
+ 
+ AC_ARG_WITH(systraydir, AC_HELP_STRING([--with-systraydir=DIR], [set hplip-systray.desktop install directory [default=/etc/xdg/autostart]]),
+-   systraydir=$withval, systraydir="/etc/xdg/autostart")
++   systraydir=$withval, systraydir="$sysconfdir/xdg/autostart")
+ 
+ AC_ARG_WITH(hpppddir, AC_HELP_STRING([--with-hpppddir=DIR], [set hp ppd install directory [default=datadir/ppd/HP]]),
+    hpppddir=$withval, hpppddir="$datadir/ppd/HP")
+@@ -335,7 +337,7 @@
+    PYTHONINCLUDEDIR=`$PYTHON -c "from distutils.sysconfig import get_python_inc; print get_python_inc();"`
+    AC_MSG_RESULT("using $PYTHONINCLUDEDIR")
+    AC_ARG_VAR(PYTHONINCLUDEDIR, [path to Python.h C header file])
+-   AC_CHECK_HEADERS(python$PYTHON_VERSION/Python.h, ,[AC_MSG_ERROR([cannot find python-devel support], 6)])
++   AC_CHECK_HEADERS($PYTHONINCLUDEDIR/Python.h, ,[AC_MSG_ERROR([cannot find python-devel support], 6)])
+ fi
+ 
+ if test "$hpijs_only_build" = "no" && test "$scan_build" = "yes"; then
