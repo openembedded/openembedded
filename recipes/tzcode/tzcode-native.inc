@@ -1,5 +1,5 @@
 DESCRIPTION = "tzcode, timezone zoneinfo utils -- zic, zdump, tzselect"
-INC_PR = "r1"
+INC_PR = "r2"
 
 S = "${WORKDIR}"
 
