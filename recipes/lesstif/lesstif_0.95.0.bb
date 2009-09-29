@@ -1,7 +1,7 @@
 SECTION = "libs"
 DESCRIPTION = "Free OSM/Motif implementation."
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/lesstif/${BP}.tar.bz2 \
@@ -40,7 +40,7 @@ addtask preconfigure after do_patch before do_configure
 EXTRA_OECONF = "\
 	--with-gnu-ld --disable-verbose --disable-build-12 --disable-build-20 \
 	--enable-build-21 --enable-xrender --enable-production --without-motif \
-	--x-includes=. \
+	--x-includes=. --x-libraries=. \
 "
 
 PACKAGES += "${PN}-bin"

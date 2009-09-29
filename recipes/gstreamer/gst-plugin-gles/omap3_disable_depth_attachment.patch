@@ -1,0 +1,45 @@
+--- /tmp/gstgldisplay.c	2009-09-28 00:49:48.000000000 +0530
++++ git/gst-libs/gst/gl/gstgldisplay.c	2009-09-28 02:35:00.000000000 +0530
+@@ -1252,12 +1252,12 @@ gst_gl_display_thread_init_download (Gst
+           default:
+             g_assert_not_reached ();
+         }
+-
++#if 0
+         //attach the depth render buffer to the FBO
+         glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT,
+             GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT,
+             display->download_depth_buffer);
+-
++#endif
+         gst_gl_display_check_framebuffer_status ();
+ 
+         g_assert (glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) ==
+@@ -1555,11 +1555,11 @@ gst_gl_display_thread_gen_fbo (GstGLDisp
+   //attach the texture to the FBO to renderer to
+   glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
+       GL_TEXTURE_RECTANGLE_ARB, fake_texture, 0);
+-
++#if 0
+   //attach the depth render buffer to the FBO
+   glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
+       GL_RENDERBUFFER_EXT, display->generated_depth_buffer);
+-
++#endif
+   g_assert (glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) ==
+       GL_FRAMEBUFFER_COMPLETE_EXT);
+ 
+@@ -2443,11 +2443,11 @@ gst_gl_display_thread_init_upload_fbo (G
+     //attach the texture to the FBO to renderer to
+     glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
+         GL_TEXTURE_RECTANGLE_ARB, fake_texture, 0);
+-
++#if 0
+     //attach the depth render buffer to the FBO
+     glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
+         GL_RENDERBUFFER_EXT, display->upload_depth_buffer);
+-
++#endif
+     gst_gl_display_check_framebuffer_status ();
+ 
+     g_assert (glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) ==
