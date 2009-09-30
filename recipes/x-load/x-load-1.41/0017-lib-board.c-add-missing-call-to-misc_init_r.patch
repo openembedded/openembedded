@@ -1,0 +1,25 @@
+From 47756aa64c39111942cad5774862fc5f6def362d Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Thu, 7 Aug 2008 17:38:42 -0700
+Subject: [PATCH] lib/board.c:  add missing call to misc_init_r
+
+---
+ lib/board.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/lib/board.c b/lib/board.c
+index 11e87da..5ef7102 100644
+--- a/lib/board.c
++++ b/lib/board.c
+@@ -66,6 +66,8 @@ void start_armboot (void)
+ 		}
+ 	}
+ 
++	misc_init_r();
++
+ 	buf =  (uchar*) CFG_LOADADDR;
+ 
+ #ifdef CONFIG_MMC
+-- 
+1.5.4.3
+

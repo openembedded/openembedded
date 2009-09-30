@@ -1,27 +1,29 @@
 require x-load.inc
 
+DEFAULT_PREFERENCE_omap3517-evm = "-1"
+
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/x-load-git/${MACHINE}"
 
-SRCREV = "73eb0caf065b3b3f407d8af5c4836624e5cc7b69"
+SRCREV = "319b26586fafb86f919f514bcd175838aaab96b3"
 
 PV = "1.42+${PR}+gitr${SRCREV}"
-PR ="r7"
+PR ="r8"
 PE = "1"
 
-SRC_URI = "git://www.sakoman.net/git/x-load-omap3.git;branch=master;protocol=git"
+SRC_URI = "git://gitorious.org/x-load-omap3/mainline.git;branch=master;protocol=git"
 
 SRC_URI_append_beagleboard = " \
                               file://name.patch;patch=1 \
-                              file://armv7-a.patch;patch=1 \
                              "
 
-SRC_URI_append_omap3evm = " \
-                              file://armv7-a.patch;patch=1 \
+SRC_URI_append_omap3-touchbook = " \
+                              file://name.patch;patch=1 \
                              "
 
-SRC_URI_append_overo = " \
-                              file://armv7-a.patch;patch=1 \
-                             "
+
+SRC_URI_append_omap3517-evm = " \
+                                 file://xload-shiva.diff;patch=1 \
+"
 
 S = "${WORKDIR}/git"
 
