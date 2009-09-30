@@ -20,6 +20,5 @@ SRC_URI_append_mpc8323e-rdb = "  file://u-boot-1.1.6-fsl-1-mpc83xx-20061206.patc
 
 
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 UBOOT_MACHINE_sarge-at91 = "sarge_config"

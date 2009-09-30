@@ -5,7 +5,7 @@ inherit native
 PV = "1.2.0+git9912121f7ed804ea58fd62f3f230b5dcfc357d88svn2238"
 PR = "r1"
 
-SRC_URI = "git://www.denx.de/git/u-boot.git/;protocol=git;tag=9912121f7ed804ea58fd62f3f230b5dcfc357d88 \
+SRC_URI = "git://git.denx.de/u-boot.git;protocol=git;tag=9912121f7ed804ea58fd62f3f230b5dcfc357d88 \
 file://uboot-machtypes.patch;patch=1 \
 file://ext2load_hex.patch;patch=1 \
 file://uboot-s3c2410-warnings-fix.patch;patch=1 \

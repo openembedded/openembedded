@@ -1,0 +1,50 @@
+From d58014b0e26652eac04f9799e14640854f7885a8 Mon Sep 17 00:00:00 2001
+From: Manikandan Pillai <mani.pillai@ti.com>
+Date: Tue, 7 Apr 2009 14:26:41 +0530
+Subject: [PATCH 01/16] Changes for making a NAND build.
+
+---
+ include/configs/omap3_evm.h |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/omap3_evm.h b/include/configs/omap3_evm.h
+index f4498a9..6283d59 100644
+--- a/include/configs/omap3_evm.h
++++ b/include/configs/omap3_evm.h
+@@ -106,7 +106,7 @@
+ 
+ #define CONFIG_CMD_I2C		/* I2C serial bus support	*/
+ #define CONFIG_CMD_MMC		/* MMC support			*/
+-#define CONFIG_CMD_ONENAND	/* ONENAND support		*/
++#define CONFIG_CMD_NAND		/* NAND support			*/
+ #define CONFIG_CMD_DHCP
+ #define CONFIG_CMD_PING
+ 
+@@ -125,12 +125,15 @@
+ /*
+  * Board NAND Info.
+  */
++#define CONFIG_NAND_OMAP_GPMC
+ #define CONFIG_SYS_NAND_ADDR		NAND_BASE	/* physical address */
+ 							/* to access nand */
+ #define CONFIG_SYS_NAND_BASE		NAND_BASE	/* physical address */
+ 							/* to access */
+ 							/* nand at CS0 */
+ 
++#define GPMC_NAND_ECC_LP_x16_LAYOUT	1
++
+ #define CONFIG_SYS_MAX_NAND_DEVICE	1		/* Max number of */
+ 							/* NAND devices */
+ #define SECTORSIZE			512
+@@ -271,7 +274,7 @@
+ #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
+ #define CONFIG_SYS_ONENAND_BASE		ONENAND_MAP
+ 
+-#define CONFIG_ENV_IS_IN_ONENAND	1
++#define CONFIG_ENV_IS_IN_NAND		1
+ #define ONENAND_ENV_OFFSET		0x260000 /* environment starts here */
+ #define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
+ 
+-- 
+1.6.2.4
+

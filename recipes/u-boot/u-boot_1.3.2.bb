@@ -39,7 +39,6 @@ SRC_URI_append_boc01 = "\
            file://016-090209-PM.patch;patch=1 \
            "
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_deploy_append_mpc8313e-rdb () {
 	install ${S}/examples/vsc7385_load/vsc7385_load.bin ${DEPLOY_DIR_IMAGE}/vsc7385_load.bin

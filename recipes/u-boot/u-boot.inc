@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 PARALLEL_MAKE=""
 
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
@@ -19,6 +20,17 @@ do_compile () {
 	unset CPPFLAGS
 	oe_runmake ${UBOOT_MACHINE}
 	oe_runmake all
+	oe_runmake tools
+}
+
+do_install () {
+	if [ -e ${WORKDIR}/fw_env.config ] ; then
+	    install -d ${D}$base_sbindir}
+		install -d ${D}${sysconfdir}
+		install -m 644 ${WORKDIR}/fw_env.config ${D}${sysconfdir}/fw_env.config
+		install -m 755 ${S}/tools/env/fw_printenv ${D}${base_sbindir}/fw_printenv
+		install -m 755 ${S}/tools/env/fw_printenv ${D}${base_sbindir}/fw_setenv
+	fi
 }
 
 do_deploy () {

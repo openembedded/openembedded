@@ -1,0 +1,419 @@
+From 8ceef1101c96a5357a7ec82084a53e7001456170 Mon Sep 17 00:00:00 2001
+From: Sriram <srk@ti.com>
+Date: Mon, 29 Jun 2009 03:35:29 +0530
+Subject: [PATCH 14/16] EMAC driver: cleanup(removed debug prints)
+
+Cleaned up the EMAC driver : removed debug prints and other
+debugging aids
+---
+ drivers/net/ticpgmac.c |  127 ++++++++++++++++-------------------------------
+ 1 files changed, 43 insertions(+), 84 deletions(-)
+
+diff --git a/drivers/net/ticpgmac.c b/drivers/net/ticpgmac.c
+index eeff23b..78a54d8 100644
+--- a/drivers/net/ticpgmac.c
++++ b/drivers/net/ticpgmac.c
+@@ -43,14 +43,11 @@
+ #include <asm/arch/ticpgmac.h>
+ 
+ 
+-#define STATIC
+-#define PRINTF(args,...)
+-
+ #ifdef CONFIG_DRIVER_TI_EMAC
+ 
+ #ifdef CONFIG_CMD_NET
+ 
+-unsigned int	emac_dbg = 1;
++unsigned int	emac_dbg = 0;
+ #define debug_emac(fmt,args...)	if (emac_dbg) printf(fmt,##args)
+ 
+ #define BD_TO_HW(x) \
+@@ -59,17 +56,17 @@ unsigned int	emac_dbg = 1;
+         ( ( (x) == 0) ? 0 : ( (x) - EMAC_HW_RAM_ADDR + EMAC_WRAPPER_RAM_ADDR ))
+ 
+ /* Internal static functions */
+-STATIC int cpgmac_eth_hw_init (void);
+-STATIC int cpgmac_eth_open (void);
+-STATIC int cpgmac_eth_close (void);
+-STATIC int cpgmac_eth_send_packet (volatile void *packet, int length);
+-STATIC int cpgmac_eth_rcv_packet (void);
+-STATIC void cpgmac_eth_mdio_enable(void);
+-
+-STATIC int gen_init_phy(int phy_addr);
+-STATIC int gen_is_phy_connected(int phy_addr);
+-STATIC int gen_get_link_status(int phy_addr);
+-STATIC int gen_auto_negotiate(int phy_addr);
++static int cpgmac_eth_hw_init (void);
++static int cpgmac_eth_open (void);
++static int cpgmac_eth_close (void);
++static int cpgmac_eth_send_packet (volatile void *packet, int length);
++static int cpgmac_eth_rcv_packet (void);
++static void cpgmac_eth_mdio_enable(void);
++
++static int gen_init_phy(int phy_addr);
++static int gen_is_phy_connected(int phy_addr);
++static int gen_get_link_status(int phy_addr);
++static int gen_auto_negotiate(int phy_addr);
+ 
+ /* Wrappers exported to the U-Boot proper */
+ int eth_hw_init(void)
+@@ -105,7 +102,7 @@ void eth_mdio_enable(void)
+ 
+ /* cpgmac_eth_mac_addr[0] goes out on the wire first */
+ 
+-STATIC u_int8_t cpgmac_eth_mac_addr[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0x00 };
++static u_int8_t cpgmac_eth_mac_addr[] = { 0x00, 0xff, 0xff, 0xff, 0xff, 0x00 };
+ 
+ /*
+  * This function must be called before emac_open() if you want to override
+@@ -121,26 +118,26 @@ void cpgmac_eth_set_mac_addr(const u_int8_t *addr)
+ }
+ 
+ /* EMAC Addresses */
+-STATIC volatile emac_regs	*adap_emac = (emac_regs *)EMAC_BASE_ADDR;
+-STATIC volatile ewrap_regs	*adap_ewrap = (ewrap_regs *)EMAC_WRAPPER_BASE_ADDR;
+-STATIC volatile mdio_regs	*adap_mdio = (mdio_regs *)EMAC_MDIO_BASE_ADDR;
++static volatile emac_regs	*adap_emac = (emac_regs *)EMAC_BASE_ADDR;
++static volatile ewrap_regs	*adap_ewrap = (ewrap_regs *)EMAC_WRAPPER_BASE_ADDR;
++static volatile mdio_regs	*adap_mdio = (mdio_regs *)EMAC_MDIO_BASE_ADDR;
+ 
+ /* EMAC descriptors */
+-STATIC volatile emac_desc	*emac_rx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_RX_DESC_BASE);
+-STATIC volatile emac_desc	*emac_tx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_TX_DESC_BASE);
+-STATIC volatile emac_desc	*emac_rx_active_head = 0;
+-STATIC volatile emac_desc	*emac_rx_active_tail = 0;
+-STATIC int			emac_rx_queue_active = 0;
++static volatile emac_desc	*emac_rx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_RX_DESC_BASE);
++static volatile emac_desc	*emac_tx_desc = (emac_desc *)(EMAC_WRAPPER_RAM_ADDR + EMAC_TX_DESC_BASE);
++static volatile emac_desc	*emac_rx_active_head = 0;
++static volatile emac_desc	*emac_rx_active_tail = 0;
++static int			emac_rx_queue_active = 0;
+ 
+ /* Receive packet buffers */
+-STATIC unsigned char		emac_rx_buffers[EMAC_MAX_RX_BUFFERS * (EMAC_MAX_ETHERNET_PKT_SIZE + EMAC_PKT_ALIGN)];
++static unsigned char		emac_rx_buffers[EMAC_MAX_RX_BUFFERS * (EMAC_MAX_ETHERNET_PKT_SIZE + EMAC_PKT_ALIGN)];
+ 
+ /* PHY address for a discovered PHY (0xff - not found) */
+-STATIC volatile u_int8_t	active_phy_addr = 0xff;
++static volatile u_int8_t	active_phy_addr = 0xff;
+ 
+-STATIC int	no_phy_init (int phy_addr) { return(1); }
+-STATIC int	no_phy_is_connected (int phy_addr) { return(1); }
+-STATIC int	no_phy_get_link_status (int phy_addr)
++static int	no_phy_init (int phy_addr) { return(1); }
++static int	no_phy_is_connected (int phy_addr) { return(1); }
++static int	no_phy_get_link_status (int phy_addr)
+ {
+ 	adap_emac->MACCONTROL = (EMAC_MACCONTROL_MIIEN_ENABLE
+ 		| EMAC_MACCONTROL_FULLDUPLEX_ENABLE);
+@@ -149,7 +146,7 @@ STATIC int	no_phy_get_link_status (int phy_addr)
+ #endif
+ 	return 1;
+ }
+-STATIC int  no_phy_auto_negotiate (int phy_addr) { return(1); }
++static int  no_phy_auto_negotiate (int phy_addr) { return(1); }
+ phy_t				phy  = {
+ 	.init = no_phy_init,
+ 	.is_phy_connected = no_phy_is_connected,
+@@ -157,7 +154,7 @@ phy_t				phy  = {
+ 	.auto_negotiate = no_phy_auto_negotiate
+ };
+ 
+-STATIC void cpgmac_eth_mdio_enable(void)
++static void cpgmac_eth_mdio_enable(void)
+ {
+ 	u_int32_t	clkdiv;
+ 
+@@ -177,7 +174,7 @@ STATIC void cpgmac_eth_mdio_enable(void)
+  * returns 2
+  * Sets active_phy_addr variable when returns 1.
+  */
+-STATIC int cpgmac_eth_phy_detect(void)
++static int cpgmac_eth_phy_detect(void)
+ {
+ 	u_int32_t	phy_act_state;
+ 	int		i;
+@@ -247,7 +244,7 @@ int cpgmac_eth_phy_write(u_int8_t phy_addr, u_int8_t reg_num, u_int16_t data)
+ }
+ 
+ /* PHY functions for a generic PHY */
+-STATIC int gen_init_phy(int phy_addr)
++static int gen_init_phy(int phy_addr)
+ {
+ 	int	ret = 1;
+ 
+@@ -259,53 +256,44 @@ STATIC int gen_init_phy(int phy_addr)
+ 	return(ret);
+ }
+ 
+-STATIC int gen_is_phy_connected(int phy_addr)
++static int gen_is_phy_connected(int phy_addr)
+ {
+ 	u_int16_t	dummy;
+ 
+ 	return(cpgmac_eth_phy_read(phy_addr, PHY_PHYIDR1, &dummy));
+ }
+ 
+-STATIC int gen_get_link_status(int phy_addr)
++static int gen_get_link_status(int phy_addr)
+ {
+ 	u_int16_t	tmp,lpa_val,val;
+ 
+ 	if (cpgmac_eth_phy_read(phy_addr, MII_STATUS_REG, &tmp)
+ 							&& (tmp & 0x04)) {
+-		//printf("Phy %d MII_Status Reg=0x%x \n",phy_addr,tmp);
+-		//printf("MACCTRL 0x%x\n",adap_emac->MACCONTROL);
+ 
+ 		cpgmac_eth_phy_read(phy_addr,MII_CTRL_REG,&val);
+-		//printf("Phy CTRL=0x%x \n",val);
+ 		
+ 		cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG,&val);
+-	//	printf("Phy ANEG ADV=0x%x \n",val);
+               
+ 		cpgmac_eth_phy_read(phy_addr,ANEG_LPA_REG,&lpa_val);
+-		//printf("Phy ANEG LPA=0x%x \n",lpa_val);
+ 	      
+ 		/* Speed doesn't matter, there is no setting for it in EMAC. */
+ 		//if (tmp & GEN_PHY_STATUS_FD_MASK) {
+ 		if (lpa_val & (GEN_PHY_ANEG_100DUP | GEN_PHY_ANEG_10DUP ) ) {
+ 			/* set EMAC for Full Duplex  */
+-		//	printf("Set MACCTRL for full duplex \n");
+ 			adap_emac->MACCONTROL = EMAC_MACCONTROL_MIIEN_ENABLE |
+ 				EMAC_MACCONTROL_FULLDUPLEX_ENABLE;
+ 		} else {
+ 			/*set EMAC for Half Duplex  */
+ 			adap_emac->MACCONTROL = EMAC_MACCONTROL_MIIEN_ENABLE;
+-		//	printf("Set MACCTRL for HALF duplex \n");
+ 		}
+ 
+ #ifdef CONFIG_DRIVER_TI_EMAC_USE_RMII
+ 		//if(tmp & GEN_PHY_STATUS_SPEED100_MASK) {
+ 		if (lpa_val & (GEN_PHY_ANEG_100DUP | GEN_PHY_ANEG_100TX ) ) {
+ 			adap_emac->MACCONTROL |= EMAC_MACCONTROL_RMIISPEED_100;
+-		//	printf("Set maccontrol for RMII 100 - 0x%x\n",adap_emac->MACCONTROL);
+ 
+ 		} else {
+ 			adap_emac->MACCONTROL &= ~EMAC_MACCONTROL_RMIISPEED_100;
+-			printf("Set maccontrol for RMII 10 -  0x%x\n",adap_emac->MACCONTROL);
+ 		}
+ #endif
+ 
+@@ -315,7 +303,7 @@ STATIC int gen_get_link_status(int phy_addr)
+ 	return(0);
+ }
+ 
+-STATIC int gen_auto_negotiate(int phy_addr)
++static int gen_auto_negotiate(int phy_addr)
+ {
+ 	u_int16_t	tmp,val;
+ 	unsigned long cntr =0;
+@@ -323,55 +311,41 @@ STATIC int gen_auto_negotiate(int phy_addr)
+ 	if (!cpgmac_eth_phy_read(phy_addr, PHY_BMCR, &tmp))
+ 		return(0);
+ 
+-        printf("read BMCR 0x%x\n",tmp);
+ 	
+ 	val = tmp | GEN_PHY_CTRL_DUP | GEN_PHY_CTRL_ENA_ANEG | GEN_PHY_CTRL_SPD_SEL ;
+ 	cpgmac_eth_phy_write(phy_addr, PHY_BMCR, val);
+ 	cpgmac_eth_phy_read(phy_addr, PHY_BMCR, &val);
+-	printf("BMCR set to 0x%X \n",val);
+ 
+ 	cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG, &val);
+-	printf("read ANEG 0x%x \n",val);
+ 	val |= ( GEN_PHY_ANEG_100DUP | GEN_PHY_ANEG_100TX | GEN_PHY_ANEG_10DUP | GEN_PHY_ANEG_10TX );
+-	printf("writing back 0x%x \n",val);
+ 	cpgmac_eth_phy_write(phy_addr, ANEG_ADVERTISE_REG, val);
+ 	cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG, &val);
+-	printf("ANEG ADVT set to 0x%x \n", val);
+ 
+ 	
+-	printf("Restart Auto-negn \n");
+ 	cpgmac_eth_phy_read(phy_addr, PHY_BMCR, &tmp);
+ 	
+ 	/* Restart Auto_negotiation  */
+ 	tmp |= PHY_BMCR_RST_NEG;
+-	printf("writing bk 0x%x to BMCR for anegn \n",tmp);
+ 	cpgmac_eth_phy_write(phy_addr, PHY_BMCR, tmp);
+ 
+ 	/*check AutoNegotiate complete */
+-	//udelay (10000);
+ 	do{
+ 		udelay(40000);
+ 		cntr++;
+-		}while(cntr < 150 );
++		}while(cntr < 50 );
+ 
+ 	if (!cpgmac_eth_phy_read(phy_addr, PHY_BMSR, &tmp))
+ 		return(0);
+-	printf("BMSR after negn 0x%X\n",tmp);
+ 
+ 	cpgmac_eth_phy_read(phy_addr,MII_CTRL_REG,&val);
+-	printf("Phy CTRL=0x%x \n",val);
+ 		
+ 	cpgmac_eth_phy_read(phy_addr,ANEG_ADVERTISE_REG,&val);
+-	printf("Phy ANEG ADV=0x%x \n",val);
+               
+ 	cpgmac_eth_phy_read(phy_addr,ANEG_LPA_REG,&val);
+-	printf("Phy ANEG LPA=0x%x \n",val);
+ 	      
+ 	cpgmac_eth_phy_read(phy_addr,ANEG_EXP_REG,&val);
+-	printf("Phy ANEG eXP=0x%x \n",val);
+ 	      
+ 	cpgmac_eth_phy_read(phy_addr,SPL_VEND_REG,&val);
+-	printf("Phy SPL VEND =0x%x \n",val);
+ 	
+ 	if (!(tmp & PHY_BMSR_AUTN_COMP))
+ 		return(0);
+@@ -382,22 +356,19 @@ STATIC int gen_auto_negotiate(int phy_addr)
+ 
+ 
+ #if defined(CONFIG_MII) || defined(CONFIG_CMD_MII)
+-STATIC int cpgmac_mii_phy_read(char *devname, unsigned char addr, unsigned char reg, unsigned short *value)
++static int cpgmac_mii_phy_read(char *devname, unsigned char addr, unsigned char reg, unsigned short *value)
+ {
+-	printf("MII Phy read \n");
+ 	return(cpgmac_eth_phy_read(addr, reg, value) ? 0 : 1);
+ }
+ 
+-STATIC int cpgmac_mii_phy_write(char *devname, unsigned char addr, unsigned char reg, unsigned short value)
++static int cpgmac_mii_phy_write(char *devname, unsigned char addr, unsigned char reg, unsigned short value)
+ {
+ 
+-	printf("MII Phy write \n");
+ 	return(cpgmac_eth_phy_write(addr, reg, value) ? 0 : 1);
+ }
+ 
+ int cpgmac_eth_miiphy_initialize(bd_t *bis)
+ {
+-	printf("MIIPHY initialize \n");
+ 	miiphy_register(phy.name, cpgmac_mii_phy_read, cpgmac_mii_phy_write);
+ 
+ 	return(1);
+@@ -409,7 +380,7 @@ int cpgmac_eth_miiphy_initialize(bd_t *bis)
+  * EMAC modules power or pin multiplexors, that is done by board_init()
+  * much earlier in bootup process. Returns 1 on success, 0 otherwise.
+  */
+-STATIC int cpgmac_eth_hw_init(void)
++static int cpgmac_eth_hw_init(void)
+ {
+ 	u_int32_t	phy_id;
+ 	u_int16_t	tmp;
+@@ -490,7 +461,7 @@ STATIC int cpgmac_eth_hw_init(void)
+ 
+ 
+ /* Eth device open */
+-STATIC int cpgmac_eth_open(void)
++static int cpgmac_eth_open(void)
+ {
+ 	dv_reg_p		addr;
+ 	u_int32_t		clkdiv, cnt;
+@@ -603,7 +574,7 @@ STATIC int cpgmac_eth_open(void)
+ }
+ 
+ /* EMAC Channel Teardown */
+-STATIC void cpgmac_eth_ch_teardown(int ch)
++static void cpgmac_eth_ch_teardown(int ch)
+ {
+ 	dv_reg		dly = 0xff;
+ 	dv_reg		cnt;
+@@ -646,7 +617,7 @@ STATIC void cpgmac_eth_ch_teardown(int ch)
+ }
+ 
+ /* Eth device close */
+-STATIC int cpgmac_eth_close(void)
++static int cpgmac_eth_close(void)
+ {
+ 	debug_emac("+ emac_close\n");
+ 
+@@ -665,13 +636,13 @@ STATIC int cpgmac_eth_close(void)
+ 	return(1);
+ }
+ 
+-STATIC int tx_send_loop = 0;
++static int tx_send_loop = 0;
+ 
+ /*
+  * This function sends a single packet on the network and returns
+  * positive number (number of bytes transmitted) or negative for error
+  */
+-STATIC int cpgmac_eth_send_packet (volatile void *packet, int length)
++static int cpgmac_eth_send_packet (volatile void *packet, int length)
+ {
+ 	int ret_status = -1;
+ 	tx_send_loop = 0;
+@@ -704,8 +675,6 @@ STATIC int cpgmac_eth_send_packet (volatile void *packet, int length)
+ 
+ 	/* Send the packet */
+ 	adap_emac->TX0HDP = BD_TO_HW((unsigned int) emac_tx_desc);
+-	PRINTF("Send: BD=0x%X BF=0x%x len=%d \n", emac_tx_desc, emac_tx_desc->buffer, length);
+-//	udelay(2500);
+ 
+ 	/* Wait for packet to complete or link down */
+ 	while (1) {
+@@ -718,7 +687,6 @@ STATIC int cpgmac_eth_send_packet (volatile void *packet, int length)
+ 		#endif
+ 		if (adap_emac->TXINTSTATRAW & 0x01) {
+ 			ret_status = length;
+-	                //PRINTF("Send Complete: BD=0x%X BF=0x%x len=%d \n", emac_tx_desc, emac_tx_desc->buffer, length);
+ 			break;
+ 		}
+ 		tx_send_loop++;
+@@ -730,7 +698,7 @@ STATIC int cpgmac_eth_send_packet (volatile void *packet, int length)
+ /*
+  * This function handles receipt of a packet from the network
+  */
+-STATIC int cpgmac_eth_rcv_packet (void)
++static int cpgmac_eth_rcv_packet (void)
+ {
+ 	volatile emac_desc *rx_curr_desc;
+ 	volatile emac_desc *curr_desc;
+@@ -754,17 +722,14 @@ STATIC int cpgmac_eth_rcv_packet (void)
+ 		curr_desc = rx_curr_desc;
+ 		emac_rx_active_head =
+ 			(volatile emac_desc *) (HW_TO_BD(rx_curr_desc->next));
+-		PRINTF("New Rx Active head 0x%x \n",emac_rx_active_head);
+ 		
+ 
+ 		if (status & EMAC_CPPI_EOQ_BIT) {
+ 			if (emac_rx_active_head) {
+ 				adap_emac->RX0HDP =
+ 					BD_TO_HW((unsigned int) emac_rx_active_head);
+-				PRINTF("Rx EOQ reset HDP for misqueued pkt 0x%x \n",emac_rx_active_head);	
+ 			} else {
+ 				emac_rx_queue_active = 0;
+-				PRINTF ("INFO:emac_rcv_packet: RX Queue not active\n");
+ 			}
+ 		}
+ 
+@@ -774,19 +739,14 @@ STATIC int cpgmac_eth_rcv_packet (void)
+ 		rx_curr_desc->next = 0;
+ 
+ 		if (emac_rx_active_head == 0) {
+-		//	printf ("INFO: emac_rcv_pkt: active queue head = 0\n");
+-		        PRINTF(" Rx active head NULL, set head/tail to 0x%x",curr_desc);
+ 			emac_rx_active_head = curr_desc;
+ 			emac_rx_active_tail = curr_desc;
+ 			if (emac_rx_queue_active == 0) {
+ 				adap_emac->RX0HDP =
+ 					BD_TO_HW((unsigned int) emac_rx_active_head);
+-				//printf ("INFO: emac_rcv_pkt: active queue head = 0, HDP fired\n");
+-				PRINTF("Rx Q inactive , set HDP to 0x%x \n", emac_rx_active_head);
+ 				emac_rx_queue_active = 1;
+ 			}
+ 		} else {
+-		        PRINTF("Append 0x%x to tail \n", curr_desc);
+ 			tail_desc = emac_rx_active_tail;
+ 			emac_rx_active_tail = curr_desc;
+ 			tail_desc->next = BD_TO_HW((unsigned int) curr_desc);
+@@ -795,7 +755,6 @@ STATIC int cpgmac_eth_rcv_packet (void)
+ 				status &= ~EMAC_CPPI_EOQ_BIT;
+ 				tail_desc->pkt_flag_len = status;
+ 				adap_emac->RX0HDP = BD_TO_HW((unsigned int) curr_desc);
+-				PRINTF("Restart the Q in tail append case\n");
+ 			}
+ 		}
+ 		return (ret);
+-- 
+1.6.2.4
+

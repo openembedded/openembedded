@@ -8,6 +8,5 @@ SRC_URI = "http://linux.omap.com/pub/bootloader/2430sdp/source/u-boot-SEP1106.ta
 
 S = "${WORKDIR}/u-boot"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #inherit base

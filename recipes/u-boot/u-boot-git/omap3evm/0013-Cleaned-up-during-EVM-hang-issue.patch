@@ -1,0 +1,45 @@
+From f45b26a8511db31f1133dd247f75741e326f5aa7 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Mon, 22 Jun 2009 23:42:51 +0530
+Subject: [PATCH 13/16] Cleaned up during EVM hang issue
+
+CKE0/1 pad configuration cleanup done during board hang issue debug.
+
+Removed PRCM_init function from u-boot, since x-loader is handling
+the clock/DPLL configuration.
+This need to be enabled, after fixing hang issue.
+---
+ board/omap3/omap3517evm/omap3517evm.h |    4 ++--
+ cpu/arm_cortexa8/omap3/board.c        |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/board/omap3/omap3517evm/omap3517evm.h b/board/omap3/omap3517evm/omap3517evm.h
+index 074d4ff..5ce18bd 100644
+--- a/board/omap3/omap3517evm/omap3517evm.h
++++ b/board/omap3/omap3517evm/omap3517evm.h
+@@ -390,7 +390,7 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(D2D_SREAD),		(IEN  | PTD | DIS | M0)) /*d2d_sread*/\
+  MUX_VAL(CP(D2D_MBUSFLAG),	(IEN  | PTD | DIS | M0)) /*d2d_mbusflag*/\
+  MUX_VAL(CP(D2D_SBUSFLAG),	(IEN  | PTD | DIS | M0)) /*d2d_sbusflag*/\
+- MUX_VAL(CP(SDRC_CKE0),		(IDIS | PTU | EN  | M0)) /*sdrc_cke0*/\
+- MUX_VAL(CP(SDRC_CKE1),		(IDIS | PTD | DIS | M7)) /*sdrc_cke1*/\
++ MUX_VAL(CP(SDRC_CKE0),		(M0)) /*sdrc_cke0*/\
++ MUX_VAL(CP(SDRC_CKE1),		(M0)) /*sdrc_cke1*/\
+ 
+ #endif
+diff --git a/cpu/arm_cortexa8/omap3/board.c b/cpu/arm_cortexa8/omap3/board.c
+index ea94e59..ff3603b 100644
+--- a/cpu/arm_cortexa8/omap3/board.c
++++ b/cpu/arm_cortexa8/omap3/board.c
+@@ -219,7 +219,7 @@ void s_init(void)
+ 	set_muxconf_regs();
+ 	delay(100);
+ 
+-	prcm_init();
++//	prcm_init();
+ 
+ 	per_clocks_enable();
+ 
+-- 
+1.6.2.4
+

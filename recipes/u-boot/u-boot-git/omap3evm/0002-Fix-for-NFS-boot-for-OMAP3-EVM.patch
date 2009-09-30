@@ -1,0 +1,55 @@
+From 57a0438b9f70bb3e98a20773134b17ef33e266b9 Mon Sep 17 00:00:00 2001
+From: Manikandan Pillai <mani.pillai@ti.com>
+Date: Tue, 7 Apr 2009 14:27:31 +0530
+Subject: [PATCH 02/16] Fix for NFS boot for OMAP3 EVM
+
+The eth_halt() function has been modified to remove the
+chip reset and instead stop the transmit/receive from the device.
+---
+ drivers/net/smc911x.c |   23 ++++++++++++++++++++++-
+ 1 files changed, 22 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/smc911x.c b/drivers/net/smc911x.c
+index 1ded8f0..2f0852e 100644
+--- a/drivers/net/smc911x.c
++++ b/drivers/net/smc911x.c
+@@ -116,6 +116,27 @@ static int smc911x_phy_reset(void)
+ 	return 0;
+ }
+ 
++static void smc911x_shutdown(void)
++{
++	unsigned cr;
++
++	/* Turn of Rx and TX */
++	cr = smc911x_get_mac_csr(MAC_CR);
++	cr &= ~(MAC_CR_TXEN | MAC_CR_RXEN | MAC_CR_HBDIS);
++	smc911x_set_mac_csr(MAC_CR, cr);
++
++	/* Stop Transmission */
++	cr = smc911x_get_mac_csr(TX_CFG);
++	cr &= ~(TX_CFG_STOP_TX);
++	smc911x_set_mac_csr(TX_CFG, cr);
++	/* Stop receiving packets */
++	cr = smc911x_get_mac_csr(RX_CFG);
++	cr &= ~(RX_CFG_RXDOFF);
++	smc911x_set_mac_csr(RX_CFG, cr);
++
++}
++
++
+ static void smc911x_phy_configure(void)
+ {
+ 	int timeout;
+@@ -224,7 +245,7 @@ int eth_send(volatile void *packet, int length)
+ 
+ void eth_halt(void)
+ {
+-	smc911x_reset();
++	smc911x_shutdown();
+ }
+ 
+ int eth_rx(void)
+-- 
+1.6.2.4
+
