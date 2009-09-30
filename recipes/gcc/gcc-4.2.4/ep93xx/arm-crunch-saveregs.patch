@@ -1,0 +1,90 @@
+Save Maverick registers on function entry and restore them on exit if they
+are modified within the function and are among those that must be preserved
+across function calls.
+
+Also check whether Maverick registers need restoring when deciding whether to
+return directly from the middle of a function without an epilogue.
+
+This combines futaris' [saveregs] and [use_return_insn] patches.
+
+Index: gcc-4.2.4/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.c	2007-09-01 16:28:30.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.c	2009-08-09 15:45:22.000000000 +0100
+@@ -1577,6 +1577,12 @@
+       if (regs_ever_live[regno] && !call_used_regs[regno])
+ 	return 0;
+ 
++  /* Likewise Maverick regs.  */
++  if (TARGET_HARD_FLOAT && TARGET_MAVERICK)
++    for (regno = FIRST_CIRRUS_FP_REGNUM; regno <= LAST_CIRRUS_FP_REGNUM; regno++)
++      if (regs_ever_live[regno] && !call_used_regs[regno])
++	return 0;
++
+   if (TARGET_REALLY_IWMMXT)
+     for (regno = FIRST_IWMMXT_REGNUM; regno <= LAST_IWMMXT_REGNUM; regno++)
+       if (regs_ever_live[regno] && ! call_used_regs [regno])
+@@ -9889,6 +9895,17 @@
+ 			     reg, FP_REGNUM, floats_offset - vfp_offset);
+ 	      }
+ 	}
++      else if (arm_fpu_arch == FPUTYPE_MAVERICK)
++	{
++	  for (reg = LAST_CIRRUS_FP_REGNUM; reg >= FIRST_CIRRUS_FP_REGNUM; reg--)
++	    if (regs_ever_live[reg] && !call_used_regs[reg])
++	      {
++		floats_offset += 8;
++		asm_fprintf (f, "\tcfldrd\tmvd%d, [%r, #-%d]\n",
++			     reg - FIRST_CIRRUS_FP_REGNUM, FP_REGNUM,
++			     floats_offset - vfp_offset);
++	      }
++	}
+       else
+ 	{
+ 	  start_reg = LAST_FPA_REGNUM;
+@@ -10035,6 +10052,13 @@
+ 	      asm_fprintf (f, "\tldfe\t%r, [%r], #12\n",
+ 			   reg, SP_REGNUM);
+ 	}
++      else if (arm_fpu_arch == FPUTYPE_MAVERICK)
++	{
++	  for (reg = FIRST_CIRRUS_FP_REGNUM; reg <= LAST_CIRRUS_FP_REGNUM; reg++)
++	    if (regs_ever_live[reg] && !call_used_regs[reg])
++	      asm_fprintf (f, "\tcfldrd\tmvd%u, [%r], #8\n",
++			   reg - FIRST_CIRRUS_FP_REGNUM, SP_REGNUM);
++	}
+       else
+ 	{
+ 	  start_reg = FIRST_FPA_REGNUM;
+@@ -10529,6 +10553,11 @@
+       func_type = arm_current_func_type ();
+       if (! IS_VOLATILE (func_type))
+ 	{
++	  /* Space for saved MAVERICK registers.  */
++	  for (regno = FIRST_CIRRUS_FP_REGNUM; regno <= LAST_CIRRUS_FP_REGNUM; regno++)
++	    if (regs_ever_live[regno] && ! call_used_regs[regno])
++	      saved += 8;
++
+ 	  /* Space for saved FPA registers.  */
+ 	  for (regno = FIRST_FPA_REGNUM; regno <= LAST_FPA_REGNUM; regno++)
+ 	  if (regs_ever_live[regno] && ! call_used_regs[regno])
+@@ -10837,6 +10866,19 @@
+ 		saved_regs += 12;
+ 	      }
+ 	}
++      else if (arm_fpu_arch == FPUTYPE_MAVERICK)
++	{
++	  for (reg = LAST_CIRRUS_FP_REGNUM; reg >= FIRST_CIRRUS_FP_REGNUM; reg--)
++	    if (regs_ever_live[reg] && !call_used_regs[reg])
++	      {
++		insn = gen_rtx_PRE_DEC (DFmode, stack_pointer_rtx);
++		insn = gen_rtx_MEM (DFmode, insn);
++		insn = emit_insn (gen_rtx_SET (VOIDmode, insn,
++					       gen_rtx_REG (DFmode, reg)));
++		RTX_FRAME_RELATED_P (insn) = 1;
++		saved_regs += 8;
++	      }
++	}
+       else
+ 	{
+ 	  start_reg = LAST_FPA_REGNUM;

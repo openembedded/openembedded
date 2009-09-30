@@ -1,0 +1,17 @@
+Define Maverick floating point word order in libgcc's assemble support routines
+
+Index: gcc-4.2.4/gcc/config/arm/ieee754-df.S
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/ieee754-df.S	2007-01-09 10:11:53.000000000 +0000
++++ gcc-4.2.4/gcc/config/arm/ieee754-df.S	2009-08-09 15:45:27.000000000 +0100
+@@ -42,8 +42,9 @@
+ 
+ 
+ @ For FPA, float words are always big-endian.
++@ For MAVERICK, float words are always little-endian.
+ @ For VFP, floats words follow the memory system mode.
+-#if defined(__VFP_FP__) && !defined(__ARMEB__)
++#if ((defined(__VFP_FP__) && !defined(__ARMEB__)) || defined(__MAVERICK__))
+ #define xl r0
+ #define xh r1
+ #define yl r2

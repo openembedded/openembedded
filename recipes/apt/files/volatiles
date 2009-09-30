@@ -1,0 +1,4 @@
+d root root 0755 /var/cache/apt none
+d root root 0755 /var/cache/apt/archives none
+d root root 0755 /var/cache/apt/archives/partial none
+d root root 0755 /var/log/apt none
