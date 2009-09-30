@@ -1,0 +1,17 @@
+Include the Maverick Crunch registers in the GCC->DWARF2 register number
+mapping. Without this, cc -g with maverick hardfloat fails.
+
+Index: gcc-4.2.4/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.c	2009-08-09 15:43:45.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.c	2009-08-09 15:45:06.000000000 +0100
+@@ -15330,6 +15330,9 @@
+   if (IS_FPA_REGNUM (regno))
+     return (TARGET_AAPCS_BASED ? 96 : 16) + regno - FIRST_FPA_REGNUM;
+ 
++  if (IS_CIRRUS_REGNUM (regno))
++    return 28 + regno - FIRST_CIRRUS_FP_REGNUM;
++
+   if (IS_VFP_REGNUM (regno))
+     return 64 + regno - FIRST_VFP_REGNUM;
+ 

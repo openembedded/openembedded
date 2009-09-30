@@ -1,0 +1,36 @@
+When converting from 32-bit integers (in ARM registers) to single and double
+precision floating points (in Maverick registers), transfer the 32-bit value
+straight to the destination register and convert it in place there,
+instead of pointlessly using an extra Maverick register.
+
+    Martin Guy <martinwguy@yahoo.it> 15 Nov 2008
+
+Index: gcc-4.2.4/gcc/config/arm/cirrus.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/cirrus.md	2009-08-09 15:43:46.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/cirrus.md	2009-08-09 15:45:12.000000000 +0100
+@@ -300,20 +300,18 @@
+ ;; Convert Cirrus-SI to Cirrus-SF
+ (define_insn "cirrus_floatsisf2"
+   [(set (match_operand:SF           0 "cirrus_fp_register" "=v")
+- 	(float:SF (match_operand:SI 1 "s_register_operand"  "r")))
+-   (clobber (match_scratch:DF 2 "=v"))]
++ 	(float:SF (match_operand:SI 1 "s_register_operand"  "r")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+-  "cfmv64lr%?\\t%Z2, %1\;cfcvt32s%?\\t%V0, %Y2"
++  "cfmv64lr%?\\t%Z0, %1\;cfcvt32s%?\\t%V0, %Y0"
+   [(set_attr "length" "8")
+    (set_attr "cirrus" "move")]
+ )
+ 
+ (define_insn "cirrus_floatsidf2"
+   [(set (match_operand:DF           0 "cirrus_fp_register" "=v")
+-	(float:DF (match_operand:SI 1 "s_register_operand" "r")))
+-   (clobber (match_scratch:DF 2 "=v"))]
++	(float:DF (match_operand:SI 1 "s_register_operand" "r")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+-  "cfmv64lr%?\\t%Z2, %1\;cfcvt32d%?\\t%V0, %Y2"
++  "cfmv64lr%?\\t%Z0, %1\;cfcvt32d%?\\t%V0, %Y0"
+   [(set_attr "length" "8")
+    (set_attr "cirrus" "move")]
+ )

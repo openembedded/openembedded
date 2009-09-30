@@ -1,0 +1,31 @@
+Fix two bugs in the Maverick trunc[sd]fsi expansions:
+- the target of cirrus_truncsfsi2 is an ARM register, not a Maverick register.
+- a typo in both descriptions transfers info for operand 0 into operand 1
+
+    Martin Guy <martinwguy"yahoo.it> 15 Nov 2008
+
+Index: gcc-4.2.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.md	2009-08-09 15:43:45.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.md	2009-08-09 15:45:08.000000000 +0100
+@@ -3221,10 +3221,8 @@
+   "
+   if (TARGET_MAVERICK)
+     {
+-      if (!cirrus_fp_register (operands[0], SImode))
+-        operands[0] = force_reg (SImode, operands[0]);
+       if (!cirrus_fp_register (operands[1], SFmode))
+-        operands[1] = force_reg (SFmode, operands[0]);
++        operands[1] = force_reg (SFmode, operands[1]);
+       emit_insn (gen_cirrus_truncsfsi2 (operands[0], operands[1]));
+       DONE;
+     }
+@@ -3238,7 +3236,7 @@
+   if (TARGET_MAVERICK)
+     {
+       if (!cirrus_fp_register (operands[1], DFmode))
+-        operands[1] = force_reg (DFmode, operands[0]);
++        operands[1] = force_reg (DFmode, operands[1]);
+       emit_insn (gen_cirrus_truncdfsi2 (operands[0], operands[1]));
+       DONE;
+     }

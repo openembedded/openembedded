@@ -1,0 +1,277 @@
+This patch adds an -mieee flag to GCC for ARM, that only has any effect when
+hard MaverickCrunch FPU code generation is selected.
+It disables the buggy instructions that do not recognise or do not generate
+denormalized values when they should:
+	add, sub, neg, abs and float<->double conversions.
+That leaves only floating point multiplication, comparison, conversions to/from
+integers and the 64-bit integer operations.
+
+   Martin Guy <martinwguy@yahoo.it>, December 2008
+
+Index: gcc-4.2.4/gcc/doc/invoke.texi
+===================================================================
+--- gcc-4.2.4.orig/gcc/doc/invoke.texi	2008-05-12 19:04:51.000000000 +0100
++++ gcc-4.2.4/gcc/doc/invoke.texi	2009-08-09 15:44:55.000000000 +0100
+@@ -418,6 +418,7 @@
+ -mpic-register=@var{reg} @gol
+ -mnop-fun-dllimport @gol
+ -mcirrus-fix-invalid-insns -mno-cirrus-fix-invalid-insns @gol
++-mieee @gol
+ -mpoke-function-name @gol
+ -mthumb  -marm @gol
+ -mtpcs-frame  -mtpcs-leaf-frame @gol
+@@ -7782,6 +7783,15 @@
+ can be re-enabled by use of the @option{-mno-cirrus-fix-invalid-insns}
+ switch.
+ 
++@item -mieee
++When compiling for the Maverick FPU, disable the instructions that fail
++to honor denormalized values. As these include floating point add, sub,
++neg, abs and float<->double conversions, it incurs a severe speed penalty.
++This option only has an effect if the
++@option{-mcpu=ep9312} @option{-mfpu=maverick} options have been used and is
++disabled by default.
++The default can be re-enabled by use of the @option{-mno-ieee} switch.
++
+ @item -mpoke-function-name
+ @opindex mpoke-function-name
+ Write the name of each function into the text section, directly
+Index: gcc-4.2.4/gcc/config/arm/arm.opt
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.opt	2007-09-01 16:28:30.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.opt	2009-08-09 15:44:55.000000000 +0100
+@@ -93,6 +93,10 @@
+ Target RejectNegative
+ Alias for -mfloat-abi=hard
+ 
++mieee
++Target Report Mask(IEEE)
++Cirrus: Enable denormalized values by disabling buggy Maverick instructions
++
+ mlittle-endian
+ Target Report RejectNegative InverseMask(BIG_END)
+ Assume target CPU is configured as little endian
+Index: gcc-4.2.4/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.c	2009-08-09 15:43:46.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.c	2009-08-09 15:45:00.000000000 +0100
+@@ -858,6 +858,10 @@
+       target_float_abi_name = "hard";
+       return true;
+ 
++    case OPT_mieee:
++      target_flags |= MASK_IEEE;
++      return true;
++
+     case OPT_msoft_float:
+       target_float_abi_name = "soft";
+       return true;
+Index: gcc-4.2.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.md	2009-08-09 15:43:46.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.md	2009-08-09 15:44:59.000000000 +0100
+@@ -808,7 +808,7 @@
+   [(set (match_operand:SF          0 "s_register_operand" "")
+ 	(plus:SF (match_operand:SF 1 "s_register_operand" "")
+ 		 (match_operand:SF 2 "arm_float_add_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   "
+   if (TARGET_MAVERICK
+       && !cirrus_fp_register (operands[2], SFmode))
+@@ -819,7 +819,7 @@
+   [(set (match_operand:DF          0 "s_register_operand" "")
+ 	(plus:DF (match_operand:DF 1 "s_register_operand" "")
+ 		 (match_operand:DF 2 "arm_float_add_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   "
+   if (TARGET_MAVERICK
+       && !cirrus_fp_register (operands[2], DFmode))
+@@ -1031,7 +1031,7 @@
+   [(set (match_operand:SF           0 "s_register_operand" "")
+ 	(minus:SF (match_operand:SF 1 "arm_float_rhs_operand" "")
+ 		  (match_operand:SF 2 "arm_float_rhs_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   "
+   if (TARGET_MAVERICK)
+     {
+@@ -1046,7 +1046,7 @@
+   [(set (match_operand:DF           0 "s_register_operand" "")
+ 	(minus:DF (match_operand:DF 1 "arm_float_rhs_operand" "")
+ 		  (match_operand:DF 2 "arm_float_rhs_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   "
+   if (TARGET_MAVERICK)
+     {
+@@ -3047,7 +3047,7 @@
+ 	(neg:SF (match_operand:SF 1 "s_register_operand" "")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT
+    && (TARGET_FPA || TARGET_VFP
+-       || (TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS(SFmode))"
++       || (TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS(SFmode) && ! TARGET_IEEE))"
+   ""
+ )
+ 
+@@ -3056,7 +3056,7 @@
+ 	(neg:DF (match_operand:DF 1 "s_register_operand" "")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT
+    && (TARGET_FPA || TARGET_VFP
+-       || (TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS(DFmode))"
++       || (TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS(DFmode) && ! TARGET_IEEE))"
+   "")
+ 
+ ;; abssi2 doesn't really clobber the condition codes if a different register
+@@ -3103,13 +3103,13 @@
+ (define_expand "abssf2"
+   [(set (match_operand:SF         0 "s_register_operand" "")
+ 	(abs:SF (match_operand:SF 1 "s_register_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   "")
+ 
+ (define_expand "absdf2"
+   [(set (match_operand:DF         0 "s_register_operand" "")
+ 	(abs:DF (match_operand:DF 1 "s_register_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   "")
+ 
+ (define_expand "sqrtsf2"
+@@ -3247,7 +3247,7 @@
+   [(set (match_operand:SF  0 "s_register_operand" "")
+ 	(float_truncate:SF
+  	 (match_operand:DF 1 "s_register_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   ""
+ )
+ 
+@@ -4084,7 +4084,7 @@
+ (define_expand "extendsfdf2"
+   [(set (match_operand:DF                  0 "s_register_operand" "")
+ 	(float_extend:DF (match_operand:SF 1 "s_register_operand"  "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT"
++  "TARGET_ARM && TARGET_HARD_FLOAT && !(TARGET_MAVERICK && TARGET_IEEE)"
+   ""
+ )
+ 
+Index: gcc-4.2.4/gcc/config/arm/cirrus.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/cirrus.md	2009-08-09 15:43:47.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/cirrus.md	2009-08-09 15:44:57.000000000 +0100
+@@ -101,11 +101,12 @@
+    (set_attr "cirrus" "normal")]
+ )
+ 
++; Cirrus hardware bug: denormalized values on input are truncated to zero
+ (define_insn "*cirrus_addsf3"
+   [(set (match_operand:SF          0 "cirrus_fp_register" "=v")
+ 	(plus:SF (match_operand:SF 1 "cirrus_fp_register" "v")
+ 		 (match_operand:SF 2 "cirrus_fp_register" "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfadds%?\\t%V0, %V1, %V2"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -115,7 +116,7 @@
+   [(set (match_operand:DF          0 "cirrus_fp_register" "=v")
+ 	(plus:DF (match_operand:DF 1 "cirrus_fp_register" "v")
+ 		 (match_operand:DF 2 "cirrus_fp_register" "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfaddd%?\\t%V0, %V1, %V2"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -145,7 +146,7 @@
+   [(set (match_operand:SF           0 "cirrus_fp_register" "=v")
+ 	(minus:SF (match_operand:SF 1 "cirrus_fp_register"  "v")
+ 		  (match_operand:SF 2 "cirrus_fp_register"  "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfsubs%?\\t%V0, %V1, %V2"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -155,7 +156,7 @@
+   [(set (match_operand:DF           0 "cirrus_fp_register" "=v")
+ 	(minus:DF (match_operand:DF 1 "cirrus_fp_register" "v")
+ 		  (match_operand:DF 2 "cirrus_fp_register" "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfsubd%?\\t%V0, %V1, %V2"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -316,10 +317,12 @@
+ )
+ 
+ ; Cirrus hardware bug: neg 0 -> 0 instead of -0
++; Cirrus hardware bug: denormalized values on input are truncated to zero
+ (define_insn "*cirrus_negsf2"
+   [(set (match_operand:SF         0 "cirrus_fp_register" "=v")
+ 	(neg:SF (match_operand:SF 1 "cirrus_fp_register"  "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS (SFmode)"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK
++   && ! HONOR_SIGNED_ZEROS (SFmode) && ! TARGET_IEEE"
+   "cfnegs%?\\t%V0, %V1"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -328,7 +331,8 @@
+ (define_insn "*cirrus_negdf2"
+   [(set (match_operand:DF         0 "cirrus_fp_register" "=v")
+ 	(neg:DF (match_operand:DF 1 "cirrus_fp_register"  "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS (DFmode)"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK
++   && ! HONOR_SIGNED_ZEROS (DFmode) && ! TARGET_IEEE"
+   "cfnegd%?\\t%V0, %V1"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -345,10 +349,11 @@
+    (set_attr "cirrus" "normal")]
+ )
+ 
++; Cirrus hardware bug: denormalized values on input are truncated to zero
+ (define_insn "*cirrus_abssf2"
+   [(set (match_operand:SF         0 "cirrus_fp_register" "=v")
+         (abs:SF (match_operand:SF 1 "cirrus_fp_register"  "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfabss%?\\t%V0, %V1"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -357,7 +362,7 @@
+ (define_insn "*cirrus_absdf2"
+   [(set (match_operand:DF         0 "cirrus_fp_register" "=v")
+         (abs:DF (match_operand:DF 1 "cirrus_fp_register"  "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfabsd%?\\t%V0, %V1"
+   [(set_attr "type" "farith")
+    (set_attr "cirrus" "normal")]
+@@ -423,20 +428,23 @@
+    (set_attr "length" "8")]
+ )
+ 
++; Cirrus hardware bugs: denormalized values on input are truncated to zero
++; and double-to-single float never produces denormalized values.
+ (define_insn "*cirrus_truncdfsf2"
+   [(set (match_operand:SF  0 "cirrus_fp_register" "=v")
+         (float_truncate:SF
+          (match_operand:DF 1 "cirrus_fp_register" "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfcvtds%?\\t%V0, %V1"
+   [(set_attr "type" "f_cvt")
+    (set_attr "cirrus" "normal")]
+ )
+ 
++; Cirrus hardware bug: denormalized values on input are truncated to zero
+ (define_insn "*cirrus_extendsfdf2"
+   [(set (match_operand:DF                  0 "cirrus_fp_register" "=v")
+         (float_extend:DF (match_operand:SF 1 "cirrus_fp_register"  "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK && ! TARGET_IEEE"
+   "cfcvtsd%?\\t%V0, %V1"
+   [(set_attr "type" "f_cvt")
+    (set_attr "cirrus" "normal")]

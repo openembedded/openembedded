@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
@@ -88,8 +88,9 @@ SRC_URI_append_ep93xx = " \
 	file://ep93xx/arm-size-bugfix.patch;patch=1 \
 	file://ep93xx/arm-prologue_use-length.patch;patch=1 \
 	file://ep93xx/arm-crunch-cftruncd32-attr.patch;patch=1 \
-	file://ep93xx/arm-crunch-fix-cirrus-reorg5.patch;patch=1 \
+	file://ep93xx/arm-crunch-fix-cirrus-reorg7.patch;patch=1 \
 	file://ep93xx/arm-crunch-cirrus-di-flag.patch;patch=1 \
+	file://ep93xx/arm-crunch-disable-floatsi.patch;patch=1 \
 "
 # Language Overrides
 FORTRAN = ""

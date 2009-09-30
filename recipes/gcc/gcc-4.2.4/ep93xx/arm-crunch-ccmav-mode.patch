@@ -1,0 +1,744 @@
+These modifications implement a new condition code mode CCMAV which is used
+on floating point comparisons that were performed in the Maverick Crunch FPU.
+
+This is necessary because the Maverick sets the conditions codes differently
+from the ARM/FPA/VFP. Since we do not use the Maverick's 32-bit int modes nor
+its 64-bit comparison, these different conditions pertain to all floating point
+comparisons when compiling for Maverick hardfloat.
+
+        ARM/FPA/VFP - (cmp*):           MaverickCrunch - (cfcmp*):
+                N  Z  C  V                      N  Z  C  V
+        A == B  0  1  1  0              A == B  0  1  0  0
+        A <  B  1  0  0  0              A <  B  1  0  0  0
+        A >  B  0  0  1  0              A >  B  1  0  0  1
+        unord   0  0  1  1              unord   0  0  0  0
+
+The new mode is set on floating point comparisons instead of the usual
+CCFP and CCFPE, then acted upon when the conditional instruction flags
+are output.
+
+Furthermore, the list of conditions that cannot be tested with a single
+conditional test is different.  On ARM/FPA/VFP it is UNEQ and LTGT while
+on Maverick it is GE UNLT ORDERED and UNORDERED.
+We handle this with a new predicate "maverick_comparison_operator" that omits
+the comparisons that cannot be represented and we split the cond_exec pattern
+into for CCMAV mode plus a separate rule for every non-Maverick CC mode.
+This prevents generation of conditional instructions that cannot be represented.
+
+Although Maverick can also represent LTGT and UNEQ with a single test, we do not
+include these since it would mean splitting every other rule that uses
+"arm_comparison_operator" in a similar way for very little gain.
+
+A few other tests are added to prevent optimisations that would
+generate these unrepresentable conditions.
+
+None of these changes affect code generation for ARM or for other FPUs.
+
+One missed optimisation: movsfcc and movdfcc have been
+disabled for Maverick because we don't use the Maverick's instructions
+conditionally to avoid hardware bugs. But a limited movsfcc and movdfcc
+could be included when Maverick, that applies to all modes where the things
+to be moved do not involve the Maverick registers, if such a thing is feasible
+without the optimizer moving things into registers between the expand and the
+instruction generation.
+
+    Martin Guy <martinwguy@yahoo.it>, November 2008
+
+Index: gcc-4.2.4/gcc/config/arm/arm-modes.def
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm-modes.def	2007-09-01 16:28:30.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm-modes.def	2009-08-09 15:43:46.000000000 +0100
+@@ -27,6 +27,7 @@
+ 
+ /* CCFPEmode should be used with floating inequalities,
+    CCFPmode should be used with floating equalities.
++   CCMAVmode should be used with comparisons performed in the Maverick FPU
+    CC_NOOVmode should be used with SImode integer equalities.
+    CC_Zmode should be used if only the Z flag is set correctly
+    CC_Nmode should be used if only the N (sign) flag is set correctly
+@@ -37,6 +38,7 @@
+ CC_MODE (CC_SWP);
+ CC_MODE (CCFP);
+ CC_MODE (CCFPE);
++CC_MODE (CCMAV);
+ CC_MODE (CC_DNE);
+ CC_MODE (CC_DEQ);
+ CC_MODE (CC_DLE);
+Index: gcc-4.2.4/gcc/config/arm/arm.h
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.h	2009-08-09 15:43:45.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.h	2009-08-09 15:43:46.000000000 +0100
+@@ -2138,7 +2138,7 @@
+ #define REVERSIBLE_CC_MODE(MODE) 1
+ 
+ #define REVERSE_CONDITION(CODE,MODE) \
+-  (((MODE) == CCFPmode || (MODE) == CCFPEmode) \
++  (((MODE) == CCFPmode || (MODE) == CCFPEmode || (MODE) == CCMAVmode) \
+    ? reverse_condition_maybe_unordered (code) \
+    : reverse_condition (code))
+ 
+Index: gcc-4.2.4/gcc/config/arm/predicates.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/predicates.md	2007-09-01 16:28:30.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/predicates.md	2009-08-09 15:43:46.000000000 +0100
+@@ -181,6 +181,16 @@
+ (define_special_predicate "arm_comparison_operator"
+   (match_code "eq,ne,le,lt,ge,gt,geu,gtu,leu,ltu,unordered,ordered,unlt,unle,unge,ungt"))
+ 
++;; Comparisons that can be predicated after a Maverick FP comparison, true for
++;; floating point comparisons other than GE, UNLT, UNORDERED or ORDERED
++;;
++;; Maverick can also match LTGT and UNEQ with a single condition
++;; but including these means duplicating every rule containing
++;; arm_comparison_operator including cond_branch and all the *cc rules.
++;; Extra speed when predicating ltgt and uneq is rare enough not to be worth it.
++(define_special_predicate "maverick_comparison_operator"
++(match_code "eq,ne,le,lt,gt,unle,unge,ungt"))
++
+ (define_special_predicate "minmax_operator"
+   (and (match_code "smin,smax,umin,umax")
+        (match_test "mode == GET_MODE (op)")))
+Index: gcc-4.2.4/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.c	2009-08-09 15:43:46.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.c	2009-08-09 15:45:03.000000000 +0100
+@@ -1559,6 +1559,14 @@
+ 	return 0;
+     }
+ 
++  /* Optimisation of __builtin_inunordered at the end of a
++   * function would generate conditional return on (UN)ORDERED, which cannot
++   * be represented by a single condition code test on Maverick.
++   * Since we do not have access to the specific condition used,
++   * we just disable all conditional returns on Maverick.  */
++  if (iscond && TARGET_MAVERICK && TARGET_HARD_FLOAT)
++    return 0;
++
+   /* If there are saved registers but the LR isn't saved, then we need
+      two instructions for the return.  */
+   if (saved_int_regs && !(saved_int_regs & (1 << LR_REGNUM)))
+@@ -6687,6 +6695,10 @@
+      comparison, and CCFPE otherwise.  */
+   if (GET_MODE_CLASS (GET_MODE (x)) == MODE_FLOAT)
+     {
++      /* Comparisons performed in the Maverick FPU set the CCs their own way. */
++      if (TARGET_HARD_FLOAT && TARGET_MAVERICK)
++	return CCMAVmode;
++
+       switch (op)
+ 	{
+ 	case EQ:
+@@ -6705,8 +6717,6 @@
+ 	case LE:
+ 	case GT:
+ 	case GE:
+-	  if (TARGET_HARD_FLOAT && TARGET_MAVERICK)
+-	    return CCFPmode;
+ 	  return CCFPEmode;
+ 
+ 	default:
+@@ -11580,6 +11590,29 @@
+ 	default: gcc_unreachable ();
+ 	}
+ 
++    case CCMAVmode:
++      /* Maverick cmp sets the condition codes differently from ARM/FPA/VFP */
++      switch (comp_code)
++	{
++	case GT: return ARM_VS;
++	case LE: return ARM_LE;
++	case LT: return ARM_LT;
++	case NE: return ARM_NE;
++	case EQ: return ARM_EQ;
++	case UNLE: return ARM_VC;
++	case UNGT: return ARM_GT;
++	case UNGE: return ARM_GE;
++	case UNEQ: return ARM_PL;
++	case LTGT: return ARM_MI;
++	/* These cannot be represented by a single condition code. */
++	case GE: /* Fall through */
++	case UNLT:/* Fall through */
++	case ORDERED:/* Fall through */
++	case UNORDERED:/* Fall through */
++	default:
++		gcc_unreachable ();
++	}
++
+     case CC_SWPmode:
+       switch (comp_code)
+ 	{
+Index: gcc-4.2.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.md	2009-08-09 15:43:46.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.md	2009-08-09 15:45:03.000000000 +0100
+@@ -250,7 +250,9 @@
+ ;   they are altered at all
+ ;
+ ; JUMP_CLOB is used when the condition cannot be represented by a single
+-;   instruction (UNEQ and LTGT).  These cannot be predicated.
++;   instruction. This applies to UNEQ and LTGT for ARM/FPA/VFP comparisons,
++;   GE UNLT ORDERED and UNORDERED for Maverick comparisons.
++;   These cannot be predicated.
+ ;
+ ; NOCOND means that the condition codes are neither altered nor affect the
+ ;   output of this insn
+@@ -6959,9 +6961,9 @@
+ 
+ ;; Cirrus SF compare instruction
+ (define_insn "*cirrus_cmpsf"
+-  [(set (reg:CCFP CC_REGNUM)
+-	(compare:CCFP (match_operand:SF 0 "cirrus_fp_register" "v")
+-		      (match_operand:SF 1 "cirrus_fp_register" "v")))]
++  [(set (reg:CCMAV CC_REGNUM)
++	(compare:CCMAV (match_operand:SF 0 "cirrus_fp_register" "v")
++		       (match_operand:SF 1 "cirrus_fp_register" "v")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcmps%?\\tr15, %V0, %V1"
+   [(set_attr "type"   "farith")
+@@ -6970,9 +6972,9 @@
+ 
+ ;; Cirrus DF compare instruction
+ (define_insn "*cirrus_cmpdf"
+-  [(set (reg:CCFP CC_REGNUM)
+-	(compare:CCFP (match_operand:DF 0 "cirrus_fp_register" "v")
+-		      (match_operand:DF 1 "cirrus_fp_register" "v")))]
++  [(set (reg:CCMAV CC_REGNUM)
++	(compare:CCMAV (match_operand:DF 0 "cirrus_fp_register" "v")
++		       (match_operand:DF 1 "cirrus_fp_register" "v")))]
+   "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
+   "cfcmpd%?\\tr15, %V0, %V1"
+   [(set_attr "type"   "farith")
+@@ -7109,12 +7111,18 @@
+   "operands[1] = arm_gen_compare_reg (LTU, arm_compare_op0, arm_compare_op1);"
+ )
+ 
++;; Some of the following patterns may need two branch instructions, since
++;; there is no single instruction that will handle all cases. Specifically:
++;; ARM/FPA/VFP cannot test UNEQ and LTGT
++;; Maverick cannot test GE on floating point values, UNLT, ORDERED or UNORDERED.
++
+ (define_expand "bunordered"
+   [(set (pc)
+ 	(if_then_else (unordered (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT 
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNORDERED, arm_compare_op0,
+ 				      arm_compare_op1);"
+ )
+@@ -7124,7 +7132,8 @@
+ 	(if_then_else (ordered (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (ORDERED, arm_compare_op0,
+ 				      arm_compare_op1);"
+ )
+@@ -7134,7 +7143,8 @@
+ 	(if_then_else (ungt (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNGT, arm_compare_op0, arm_compare_op1);"
+ )
+ 
+@@ -7143,7 +7153,8 @@
+ 	(if_then_else (unlt (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNLT, arm_compare_op0, arm_compare_op1);"
+ )
+ 
+@@ -7152,7 +7163,8 @@
+ 	(if_then_else (unge (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNGE, arm_compare_op0, arm_compare_op1);"
+ )
+ 
+@@ -7161,18 +7173,18 @@
+ 	(if_then_else (unle (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNLE, arm_compare_op0, arm_compare_op1);"
+ )
+ 
+-;; The following two patterns need two branch instructions, since there is
+-;; no single instruction that will handle all cases.
+ (define_expand "buneq"
+   [(set (pc)
+ 	(if_then_else (uneq (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNEQ, arm_compare_op0, arm_compare_op1);"
+ )
+ 
+@@ -7181,7 +7193,8 @@
+ 	(if_then_else (ltgt (match_dup 1) (const_int 0))
+ 		      (label_ref (match_operand 0 "" ""))
+ 		      (pc)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (LTGT, arm_compare_op0, arm_compare_op1);"
+ )
+ 
+@@ -7189,7 +7202,7 @@
+ ;; Patterns to match conditional branch insns.
+ ;;
+ 
+-; Special pattern to match UNEQ.
++; Special pattern to match UNEQ for FPA and VFP.
+ (define_insn "*arm_buneq"
+   [(set (pc)
+ 	(if_then_else (uneq (match_operand 1 "cc_register" "") (const_int 0))
+@@ -7205,7 +7218,7 @@
+    (set_attr "length" "8")]
+ )
+ 
+-; Special pattern to match LTGT.
++; Special pattern to match LTGT for FPA and VFP.
+ (define_insn "*arm_bltgt"
+   [(set (pc)
+ 	(if_then_else (ltgt (match_operand 1 "cc_register" "") (const_int 0))
+@@ -7221,6 +7234,101 @@
+    (set_attr "length" "8")]
+ )
+ 
++; Special pattern to match floating point GE for Maverick.
++(define_insn "*cirrus_bge"
++  [(set (pc)
++	(if_then_else (ge (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (label_ref (match_operand 0 "" ""))
++		      (pc)))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t%l0\;bvs\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "8")]
++)
++
++; Special pattern to match UNORDERED for Maverick.
++(define_insn "*cirrus_bunordered"
++  [(set (pc)
++	(if_then_else (unordered (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (label_ref (match_operand 0 "" ""))
++		      (pc)))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t.+12\;bmi\\t.+8\;b\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "12")]
++)
++
++; Special pattern to match ORDERED for Maverick.
++(define_insn "*cirrus_bordered"
++  [(set (pc)
++	(if_then_else (ordered (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (label_ref (match_operand 0 "" ""))
++		      (pc)))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t%l0\;bmi\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "8")]
++)
++
++; Special pattern to match UNLT for Maverick.
++(define_insn "*cirrus_bunlt"
++  [(set (pc)
++	(if_then_else (unlt (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (label_ref (match_operand 0 "" ""))
++		      (pc)))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t.+12\;bvs\\t.+8\;b\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "12")]
++)
++
++; Special atterns to match UNEQ and LTGT for Maverick, to handle
++; the two cases not covered by generic *arm_cond_branch
++
++(define_insn "*cirrus_buneq"
++  [(set (pc)
++	(if_then_else (uneq (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (label_ref (match_operand 0 "" ""))
++		      (pc)))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"bpl\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")]
++)
++
++(define_insn "*cirrus_bltgt"
++  [(set (pc)
++	(if_then_else (ltgt (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (label_ref (match_operand 0 "" ""))
++		      (pc)))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"bmi\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")]
++)
++
+ (define_insn "*arm_cond_branch"
+   [(set (pc)
+ 	(if_then_else (match_operator 1 "arm_comparison_operator"
+@@ -7240,7 +7348,7 @@
+    (set_attr "type" "branch")]
+ )
+ 
+-; Special pattern to match reversed UNEQ.
++; Special pattern to match reversed UNEQ for FPA and VFP.
+ (define_insn "*arm_buneq_reversed"
+   [(set (pc)
+ 	(if_then_else (uneq (match_operand 1 "cc_register" "") (const_int 0))
+@@ -7256,7 +7364,7 @@
+    (set_attr "length" "8")]
+ )
+ 
+-; Special pattern to match reversed LTGT.
++; Special pattern to match reversed LTGT for FPA and VFP.
+ (define_insn "*arm_bltgt_reversed"
+   [(set (pc)
+ 	(if_then_else (ltgt (match_operand 1 "cc_register" "") (const_int 0))
+@@ -7272,6 +7380,101 @@
+    (set_attr "length" "8")]
+ )
+ 
++; Patterns to match reversed UNEQ and LTGT for Maverick, the two cases
++; not covered by generic "*arm_cond_branch_reversed"
++
++(define_insn "*cirrus_buneq_reversed"
++  [(set (pc)
++	(if_then_else (uneq (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (pc)
++		      (label_ref (match_operand 0 "" ""))))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"bmi\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")]
++)
++
++(define_insn "*cirrus_bltgt_reversed"
++  [(set (pc)
++	(if_then_else (ltgt (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (pc)
++		      (label_ref (match_operand 0 "" ""))))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"bpl\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")]
++)
++
++; Special pattern to match reversed floating point GE for Maverick.
++(define_insn "*cirrus_bge_reversed"
++  [(set (pc)
++	(if_then_else (ge (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (pc)
++		      (label_ref (match_operand 0 "" ""))))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t.+12\;bvs\\t.+8\;b\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "12")]
++)
++
++; Special pattern to match reversed UNORDERED for Maverick.
++(define_insn "*cirrus_bunordered_reversed"
++  [(set (pc)
++	(if_then_else (unordered (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (pc)
++		      (label_ref (match_operand 0 "" ""))))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t%l0\;bmi\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "8")]
++)
++
++; Special pattern to match reversed ORDERED for Maverick.
++(define_insn "*cirrus_bordered_reversed"
++  [(set (pc)
++	(if_then_else (ordered (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (pc)
++		      (label_ref (match_operand 0 "" ""))))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t.+12\;bmi\\t.+8\;b\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "12")]
++)
++
++; Special pattern to match reversed UNLT for Maverick.
++(define_insn "*cirrus_bunlt_reversed"
++  [(set (pc)
++	(if_then_else (unlt (match_operand:CCMAV 1 "cc_register" "") (const_int 0))
++		      (pc)
++		      (label_ref (match_operand 0 "" ""))))]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "*
++  gcc_assert (!arm_ccfsm_state);
++
++  return \"beq\\t%l0\;bvs\\t%l0\";
++  "
++  [(set_attr "conds" "jump_clob")
++   (set_attr "length" "8")]
++)
++
+ (define_insn "*arm_cond_branch_reversed"
+   [(set (pc)
+ 	(if_then_else (match_operator 1 "arm_comparison_operator"
+@@ -7323,11 +7526,16 @@
+   "operands[1] = arm_gen_compare_reg (LE, arm_compare_op0, arm_compare_op1);"
+ )
+ 
++; SGE can only be represented as a single condition code on ARM/VFP/FPA,
++; not with Maverick when the operands are floating point.
+ (define_expand "sge"
+   [(set (match_operand:SI 0 "s_register_operand" "")
+ 	(ge:SI (match_dup 1) (const_int 0)))]
+   "TARGET_ARM"
+-  "operands[1] = arm_gen_compare_reg (GE, arm_compare_op0, arm_compare_op1);"
++  "if (TARGET_HARD_FLOAT && TARGET_MAVERICK
++       && GET_MODE_CLASS (GET_MODE (arm_compare_op0)) == MODE_FLOAT)
++     FAIL;
++   operands[1] = arm_gen_compare_reg (GE, arm_compare_op0, arm_compare_op1);"
+ )
+ 
+ (define_expand "slt"
+@@ -7365,6 +7573,7 @@
+   "operands[1] = arm_gen_compare_reg (LTU, arm_compare_op0, arm_compare_op1);"
+ )
+ 
++; SORDERED and SUNORDERED cannot be represented on Maverick
+ (define_expand "sunordered"
+   [(set (match_operand:SI 0 "s_register_operand" "")
+ 	(unordered:SI (match_dup 1) (const_int 0)))]
+@@ -7384,7 +7593,8 @@
+ (define_expand "sungt"
+   [(set (match_operand:SI 0 "s_register_operand" "")
+ 	(ungt:SI (match_dup 1) (const_int 0)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNGT, arm_compare_op0,
+ 				      arm_compare_op1);"
+ )
+@@ -7392,11 +7602,13 @@
+ (define_expand "sunge"
+   [(set (match_operand:SI 0 "s_register_operand" "")
+ 	(unge:SI (match_dup 1) (const_int 0)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNGE, arm_compare_op0,
+ 				      arm_compare_op1);"
+ )
+ 
++; SUNLT cannot be represented on Maverick
+ (define_expand "sunlt"
+   [(set (match_operand:SI 0 "s_register_operand" "")
+ 	(unlt:SI (match_dup 1) (const_int 0)))]
+@@ -7408,7 +7620,8 @@
+ (define_expand "sunle"
+   [(set (match_operand:SI 0 "s_register_operand" "")
+ 	(unle:SI (match_dup 1) (const_int 0)))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP || TARGET_MAVERICK)"
+   "operands[1] = arm_gen_compare_reg (UNLE, arm_compare_op0,
+ 				      arm_compare_op1);"
+ )
+@@ -7474,20 +7687,32 @@
+     enum rtx_code code = GET_CODE (operands[1]);
+     rtx ccreg;
+ 
+-    if (code == UNEQ || code == LTGT)
+-      FAIL;
++    /* Reject comparisons not representable by a single condition code */
++    if (TARGET_HARD_FLOAT && TARGET_MAVERICK
++	&& GET_MODE_CLASS (GET_MODE (arm_compare_op0)) == MODE_FLOAT)
++      {
++        if (code == GE || code == UNLT || code == ORDERED || code == UNORDERED)
++	  FAIL;
++      }
++    else
++      {
++	if (code == UNEQ || code == LTGT)
++	  FAIL;
++      }
+ 
+     ccreg = arm_gen_compare_reg (code, arm_compare_op0, arm_compare_op1);
+     operands[1] = gen_rtx_fmt_ee (code, VOIDmode, ccreg, const0_rtx);
+   }"
+ )
+ 
++; We do not use Maverick conditional FP instructions to avoid hardware bugs
++
+ (define_expand "movsfcc"
+   [(set (match_operand:SF 0 "s_register_operand" "")
+ 	(if_then_else:SF (match_operand 1 "arm_comparison_operator" "")
+ 			 (match_operand:SF 2 "s_register_operand" "")
+ 			 (match_operand:SF 3 "nonmemory_operand" "")))]
+-  "TARGET_ARM"
++  "TARGET_ARM && !(TARGET_HARD_FLOAT && TARGET_MAVERICK)"
+   "
+   {
+     enum rtx_code code = GET_CODE (operands[1]);
+@@ -9809,7 +10034,7 @@
+ 
+     operands[5] = gen_rtx_REG (mode, CC_REGNUM);
+     operands[6] = gen_rtx_COMPARE (mode, operands[2], operands[3]);
+-    if (mode == CCFPmode || mode == CCFPEmode)
++    if (mode == CCFPmode || mode == CCFPEmode || mode == CCMAVmode)
+       rc = reverse_condition_maybe_unordered (rc);
+     else
+       rc = reverse_condition (rc);
+@@ -9860,7 +10085,7 @@
+ 
+     operands[6] = gen_rtx_REG (mode, CC_REGNUM);
+     operands[7] = gen_rtx_COMPARE (mode, operands[2], operands[3]);
+-    if (mode == CCFPmode || mode == CCFPEmode)
++    if (mode == CCFPmode || mode == CCFPEmode || mode == CCMAVmode)
+       rc = reverse_condition_maybe_unordered (rc);
+     else
+       rc = reverse_condition (rc);
+@@ -9892,7 +10117,7 @@
+ 
+     operands[6] = gen_rtx_REG (mode, CC_REGNUM);
+     operands[7] = gen_rtx_COMPARE (mode, operands[2], operands[3]);
+-    if (mode == CCFPmode || mode == CCFPEmode)
++    if (mode == CCFPmode || mode == CCFPEmode || mode == CCMAVmode)
+       rc = reverse_condition_maybe_unordered (rc);
+     else
+       rc = reverse_condition (rc);
+@@ -10208,13 +10433,75 @@
+   "TARGET_ARM && arm_arch5e"
+   "pld\\t%a0")
+ 
++;; Special predication patterns for Maverick Crunch floating-point
++;; which has a different set of predicable conditions after a floating
++;; point comparison.
++
++(define_cond_exec
++  [(match_operator 0 "maverick_comparison_operator"
++    [(match_operand:CCMAV 1 "cc_register" "")
++     (const_int 0)])]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  ""
++)
++
++;; Every else is the same as the general ARM pattern.
++
++(define_cond_exec
++  [(match_operator 0 "arm_comparison_operator"
++    [(match_operand:CC_NOOV 1 "cc_register" "")
++     (const_int 0)])]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  ""
++)
++
++(define_cond_exec
++  [(match_operator 0 "arm_comparison_operator"
++    [(match_operand:CC_Z 1 "cc_register" "")
++     (const_int 0)])]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  ""
++)
++
++(define_cond_exec
++  [(match_operator 0 "arm_comparison_operator"
++    [(match_operand:CC_SWP 1 "cc_register" "")
++     (const_int 0)])]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  ""
++)
++
++(define_cond_exec
++  [(match_operator 0 "arm_comparison_operator"
++    [(match_operand:CC_C 1 "cc_register" "")
++     (const_int 0)])]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  ""
++)
++
++(define_cond_exec
++  [(match_operator 0 "arm_comparison_operator"
++    [(match_operand:CC_N 1 "cc_register" "")
++     (const_int 0)])]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  ""
++)
++
++(define_cond_exec
++  [(match_operator 0 "arm_comparison_operator"
++    [(match_operand:CC 1 "cc_register" "")
++     (const_int 0)])]
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  ""
++)
++
+ ;; General predication pattern
+ 
+ (define_cond_exec
+   [(match_operator 0 "arm_comparison_operator"
+     [(match_operand 1 "cc_register" "")
+      (const_int 0)])]
+-  "TARGET_ARM"
++  "TARGET_ARM && !(TARGET_HARD_FLOAT && TARGET_MAVERICK)"
+   ""
+ )
+ 

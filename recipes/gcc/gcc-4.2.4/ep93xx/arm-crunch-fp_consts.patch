@@ -1,0 +1,17 @@
+Maverick does not have immediate FP constants.
+
+Index: gcc-4.2.4/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.c	2009-08-09 15:43:45.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.c	2009-08-09 15:45:10.000000000 +0100
+@@ -5266,7 +5266,9 @@
+   int i;
+   REAL_VALUE_TYPE r;
+ 
+-  if (TARGET_VFP)
++  if (TARGET_MAVERICK)
++    fp_consts_inited = 0;
++  else if (TARGET_VFP)
+     fp_consts_inited = 1;
+   else
+     fp_consts_inited = 8;

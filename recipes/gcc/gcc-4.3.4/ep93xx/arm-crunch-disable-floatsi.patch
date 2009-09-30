@@ -1,0 +1,64 @@
+int->float instructions cfcvt32s and cfcvt32d do seem to work but if they are
+enabled, the vorbis testsuite (file lib/vorbisenc.c) fail and lame to segfault
+on nonstandard bit rate wav files such as 11050 bps (file libmp3lame/util.c).
+
+Until someone wants to figure out what the real problem is we just disable these
+two insns because then everything seems to work.
+
+Index: gcc-4.3.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.3.4.orig/gcc/config/arm/arm.md	2009-09-11 11:39:37.000000000 +0100
++++ gcc-4.3.4/gcc/config/arm/arm.md	2009-09-11 11:42:49.000000000 +0100
+@@ -3543,10 +3543,14 @@
+ 
+ ;; Fixed <--> Floating conversion insns
+ 
++; Maverick int->float conversion insns seem to work but tickle an optimization
++; bug in GCC 4.[123].* so we paper over it to get working code :-/
++; It may be the same as http://gcc.gnu.org/bugzilla/show_bug.cgi?id=39501
++
+ (define_expand "floatsisf2"
+   [(set (match_operand:SF           0 "s_register_operand" "")
+ 	(float:SF (match_operand:SI 1 "s_register_operand" "")))]
+-  "TARGET_32BIT && TARGET_HARD_FLOAT"
++  "TARGET_32BIT && TARGET_HARD_FLOAT && !TARGET_MAVERICK"
+   "
+   if (TARGET_MAVERICK)
+     {
+@@ -3558,7 +3562,7 @@
+ (define_expand "floatsidf2"
+   [(set (match_operand:DF           0 "s_register_operand" "")
+ 	(float:DF (match_operand:SI 1 "s_register_operand" "")))]
+-  "TARGET_32BIT && TARGET_HARD_FLOAT"
++  "TARGET_32BIT && TARGET_HARD_FLOAT && !TARGET_MAVERICK"
+   "
+   if (TARGET_MAVERICK)
+     {
+Index: gcc-4.3.4/gcc/config/arm/cirrus.md
+===================================================================
+--- gcc-4.3.4.orig/gcc/config/arm/cirrus.md	2009-09-11 11:39:47.000000000 +0100
++++ gcc-4.3.4/gcc/config/arm/cirrus.md	2009-09-11 11:44:04.000000000 +0100
+@@ -359,10 +359,13 @@
+ )
+ 
+ ;; Convert Cirrus-SI to Cirrus-SF
++
++; int->float conversions are disabled to avoid a GCC bug. See arm.md
++
+ (define_insn "cirrus_floatsisf2"
+   [(set (match_operand:SF           0 "cirrus_fp_register" "=v")
+  	(float:SF (match_operand:SI 1 "s_register_operand"  "r")))]
+-  "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfmv64lr%?\\t%Z0, %1\;cfcvt32s%?\\t%V0, %Y0"
+   [(set_attr "type" "f_cvt")
+    (set_attr "length" "8")
+@@ -372,7 +375,7 @@
+ (define_insn "cirrus_floatsidf2"
+   [(set (match_operand:DF           0 "cirrus_fp_register" "=v")
+ 	(float:DF (match_operand:SI 1 "s_register_operand" "r")))]
+-  "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_32BIT && TARGET_HARD_FLOAT && TARGET_MAVERICK && 0"
+   "cfmv64lr%?\\t%Z0, %1\;cfcvt32d%?\\t%V0, %Y0"
+   [(set_attr "type" "f_cvt")
+    (set_attr "length" "8")
