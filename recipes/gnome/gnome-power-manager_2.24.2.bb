@@ -1,5 +1,7 @@
 LICENSE = "GPLv2"
-DEPENDS = "libnotify libgnomeui gnome-panel gnome-doc-utils libwnck gtk+ gnome-keyring libglade hal dbus-glib " 
+DEPENDS = "gtk+ gnome-keyring libgnome libgnomeui hal dbus libglade \
+           libnotify libwnck cairo libunique gnome-panel gstreamer \
+           xrandr policykit-gnome gnome-doc-utils dbus-glib " 
 
 inherit gnome
 
