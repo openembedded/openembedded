@@ -3,7 +3,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
@@ -41,23 +41,32 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 "
 
 SRC_URI_append_ep93xx = " \
-        file://arm-crunch-saveregs.patch;patch=1 \
-        file://arm-crunch-20000320.patch;patch=1 \
-        file://arm-crunch-compare.patch;patch=1 \
-        file://arm-crunch-compare-unordered.patch;patch=1 \
-        file://arm-crunch-compare-geu.patch;patch=1 \
-        file://arm-crunch-eabi-ieee754.patch;patch=1 \
-        file://arm-crunch-eabi-ieee754-div.patch;patch=1 \
-        file://arm-crunch-64bit-disable0.patch;patch=1 \
-        file://arm-crunch-offset.patch;patch=1 \
-        file://arm-crunch-fp_consts.patch;patch=1 \
-        file://arm-crunch-neg2.patch;patch=1 \
-        file://arm-crunch-predicates3.patch;patch=1 \
-        file://arm-crunch-cfcvtds-disable.patch;patch=1 \
-        file://arm-crunch-floatsi-disable.patch;patch=1 \
-        file://arm-crunch-truncsi-disable.patch;patch=1 \
-        file://arm-crunch-cfcvt64-disable.patch;patch=1 \
-        file://arm-crunch-cirrus-bugfixes.patch;patch=1 \
+        file://ep93xx/arm-crunch-readme.patch;patch=1 \
+        file://ep93xx/arm-crunch-saveregs.patch;patch=1 \
+        file://ep93xx/arm-crunch-scratch.patch;patch=1 \
+        file://ep93xx/arm-crunch-eabi-ieee754-endian-littleword-littlebyte.patch;patch=1 \
+        file://ep93xx/arm-crunch-eabi-mvf0-scratch-ieee754.patch;patch=1 \
+        file://ep93xx/arm-crunch-20000320.patch;patch=1 \
+        file://ep93xx/arm-crunch-disable-cmpdi.patch;patch=1 \
+        file://ep93xx/arm-crunch-fix-64bit-const-offsets.patch;patch=1 \
+        file://ep93xx/arm-crunch-fp_consts.patch;patch=1 \
+        file://ep93xx/arm-crunch-neg-enable.patch;patch=1 \
+        file://ep93xx/arm-crunch-neg-protect.patch;patch=1 \
+        file://ep93xx/arm-crunch-repair-truncxfsi.patch;patch=1 \
+        file://ep93xx/arm-crunch-floatsi-no-scratch.patch;patch=1 \
+        file://ep93xx/arm-crunch-movsf-movdf-Uy.patch;patch=1 \
+        file://ep93xx/arm-crunch-drop-thumb2.patch;patch=1 \
+        file://ep93xx/arm-crunch-arm_dbx_register_number.patch;patch=1 \
+        file://ep93xx/arm-crunch-pipeline.patch;patch=1 \
+        file://ep93xx/arm-crunch-ccmav-mode.patch;patch=1 \
+        file://ep93xx/arm-crunch-cfcpy-with-cfsh64.patch;patch=1 \
+        file://ep93xx/arm-crunch-mieee.patch;patch=1 \
+        file://ep93xx/arm-size-bugfix.patch;patch=1 \
+        file://ep93xx/arm-prologue_use-length.patch;patch=1 \
+        file://ep93xx/arm-crunch-cftruncd32-attr.patch;patch=1 \
+        file://ep93xx/arm-crunch-fix-cirrus-reorg7.patch;patch=1 \
+        file://ep93xx/arm-crunch-cirrus-di-flag.patch;patch=1 \
+        file://ep93xx/arm-crunch-disable-floatsi.patch;patch=1 \
        "
 
 PACKAGE_ARCH_ep93xx = "${MACHINE_ARCH}"
