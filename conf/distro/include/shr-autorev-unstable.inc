@@ -18,7 +18,7 @@ SRCREV_pn-libdrm-glamo = "${AUTOREV}"
 SRCREV_pn-xserver-xorg = "${AUTOREV}"
 
 # FSO stuff
-FSOREV_cornucopia = "${AUTOREV}"
+FSOREV_cornucopia = "1f16749c17db21c63d28289ae759f2cb45f53c30"
 SRCREV_pn-dbus-hlid = "${AUTOREV}"
 SRCREV_pn-frameworkd = "${AUTOREV}"
 SRCREV_pn-frameworkd-config-shr = "${AUTOREV}"
