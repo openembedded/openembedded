@@ -87,7 +87,6 @@ corekit_cflags += \
 	$(GAIL_CFLAGS) \
 	$(GEOCLUE_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GNOMEKEYRING_CFLAGS) \
 	$(GSTREAMER_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(HILDON_CFLAGS) \
@@ -107,7 +106,8 @@ corekit_cppflags += \
 	$(webcoregtk_cppflags) \
 	$(javascriptcore_cppflags)
 
-if TARGET_X11
+# For the Gtk port we want to use XP_UNIX both in X11 and Mac
+if !TARGET_WIN32
 corekit_cppflags += -DXP_UNIX
 endif
 
@@ -247,7 +247,6 @@ libwebkit_1_0_la_LIBADD = \
 	$(GAIL_LIBS) \
 	$(GEOCLUE_LIBS) \
 	$(GLIB_LIBS) \
-	$(GNOMEKEYRING_LIBS) \
 	$(GSTREAMER_LIBS) \
 	$(GTK_LIBS) \
 	$(HILDON_LIBS) \
@@ -315,22 +314,28 @@ global_cppflags += \
 endif
 
 webkitgtk_h_api += \
-	WebKit/gtk/webkit/webkit.h \
-	WebKit/gtk/webkit/webkitdefines.h \
-	WebKit/gtk/webkit/webkitdownload.h \
-	WebKit/gtk/webkit/webkiterror.h \
-	WebKit/gtk/webkit/webkitnetworkrequest.h \
-	WebKit/gtk/webkit/webkitsoupauthdialog.h \
-	WebKit/gtk/webkit/webkitversion.h \
-	WebKit/gtk/webkit/webkitwebbackforwardlist.h \
-	WebKit/gtk/webkit/webkitwebframe.h \
-	WebKit/gtk/webkit/webkitwebhistoryitem.h \
-	WebKit/gtk/webkit/webkitwebinspector.h \
-	WebKit/gtk/webkit/webkitwebnavigationaction.h \
-	WebKit/gtk/webkit/webkitwebpolicydecision.h \
-	WebKit/gtk/webkit/webkitwebsettings.h \
-	WebKit/gtk/webkit/webkitwebwindowfeatures.h \
-	WebKit/gtk/webkit/webkitwebview.h
+	$(srcdir)/WebKit/gtk/webkit/webkit.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitdefines.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitdownload.h \
+	$(srcdir)/WebKit/gtk/webkit/webkiterror.h \
+	$(srcdir)/WebKit/gtk/webkit/webkithittestresult.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitnetworkrequest.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitnetworkresponse.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitsoupauthdialog.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebbackforwardlist.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebdatasource.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebframe.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebhistoryitem.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebinspector.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebnavigationaction.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebpolicydecision.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebresource.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebsettings.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebwindowfeatures.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebview.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitwebdatabase.h \
+	$(srcdir)/WebKit/gtk/webkit/webkitsecurityorigin.h \
+	$(top_builddir)/WebKit/gtk/webkit/webkitversion.h
 
 webkitgtk_built_sources += \
 	DerivedSources/webkitenumtypes.cpp \
@@ -343,6 +348,8 @@ webkitgtk_sources += \
 	WebKit/gtk/WebCoreSupport/ChromeClientGtk.h \
 	WebKit/gtk/WebCoreSupport/ContextMenuClientGtk.cpp \
 	WebKit/gtk/WebCoreSupport/ContextMenuClientGtk.h \
+	WebKit/gtk/WebCoreSupport/DocumentLoaderGtk.cpp \
+	WebKit/gtk/WebCoreSupport/DocumentLoaderGtk.h \
 	WebKit/gtk/WebCoreSupport/DragClientGtk.cpp \
 	WebKit/gtk/WebCoreSupport/DragClientGtk.h \
 	WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp \
@@ -353,22 +360,30 @@ webkitgtk_sources += \
 	WebKit/gtk/WebCoreSupport/InspectorClientGtk.h \
 	WebKit/gtk/WebCoreSupport/PasteboardHelperGtk.cpp \
 	WebKit/gtk/WebCoreSupport/PasteboardHelperGtk.h \
+	WebKit/gtk/webkit/webkitapplicationcache.cpp \
 	WebKit/gtk/webkit/webkitdownload.cpp \
 	WebKit/gtk/webkit/webkiterror.cpp \
+	WebKit/gtk/webkit/webkithittestresult.cpp \
 	WebKit/gtk/webkit/webkitnetworkrequest.cpp \
+	WebKit/gtk/webkit/webkitnetworkresponse.cpp \
 	WebKit/gtk/webkit/webkitprivate.cpp \
 	WebKit/gtk/webkit/webkitprivate.h \
 	WebKit/gtk/webkit/webkitsoupauthdialog.c \
 	WebKit/gtk/webkit/webkitversion.cpp \
 	WebKit/gtk/webkit/webkitwebbackforwardlist.cpp \
+	WebKit/gtk/webkit/webkitwebdatasource.cpp \
 	WebKit/gtk/webkit/webkitwebframe.cpp \
 	WebKit/gtk/webkit/webkitwebhistoryitem.cpp \
 	WebKit/gtk/webkit/webkitwebinspector.cpp \
 	WebKit/gtk/webkit/webkitwebnavigationaction.cpp \
 	WebKit/gtk/webkit/webkitwebpolicydecision.cpp \
+	WebKit/gtk/webkit/webkitwebresource.cpp \
+	WebKit/gtk/webkit/webkitwebdatabase.cpp \
+	WebKit/gtk/webkit/webkitsecurityorigin.cpp \
 	WebKit/gtk/webkit/webkitwebsettings.cpp \
 	WebKit/gtk/webkit/webkitwebview.cpp \
-	WebKit/gtk/webkit/webkitwebwindowfeatures.cpp
+	WebKit/gtk/webkit/webkitwebwindowfeatures.cpp \
+	WebKit/gtk/webkit/webkitworkers.cpp
 
 webkitgtk_cppflags += \
 	-DBUILDING_WEBKIT \
@@ -378,11 +393,6 @@ webkitgtk_cppflags += \
 	-I$(srcdir)/WebKit/gtk/WebCoreSupport \
 	-I$(srcdir)/WebKit/gtk/webkit \
 	-I$(top_builddir)/WebKit/gtk/webkit
-
-if USE_GNOMEKEYRING
-webkitgtk_cppflags += \
-	-DWTF_USE_GNOMEKEYRING=1
-endif
 
 webkitgtk_cleanfiles += \
 	$(top_builddir)/WebKit/gtk/docs/version.xml \
@@ -411,19 +421,18 @@ $(WEBKIT_MARSHAL).h: stamp-webkitmarshal.h
 	@true
 
 stamp-webkitmarshal.cpp: $(WEBKIT_MARSHAL_LIST)
-	echo "extern \"C\" {" > $(WEBKIT_MARSHAL).cpp && \
+	$(AM_V_GEN) echo "extern \"C\" {" > $(WEBKIT_MARSHAL).cpp && \
 	$(GLIB_GENMARSHAL) --prefix=webkit_marshal $(WEBKIT_MARSHAL_LIST) --body >> $(WEBKIT_MARSHAL).cpp && echo '}' >> $(WEBKIT_MARSHAL).cpp && \
 	echo timestamp > $(@F)
 
 stamp-webkitmarshal.h: $(WEBKIT_MARSHAL_LIST)
-	$(GLIB_GENMARSHAL) --prefix=webkit_marshal $(WEBKIT_MARSHAL_LIST) --header > $(WEBKIT_MARSHAL).h && \
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --prefix=webkit_marshal $(WEBKIT_MARSHAL_LIST) --header > $(WEBKIT_MARSHAL).h && \
 	echo timestamp > $(@F)
 
 WebKit/gtk/webkit/webkitenumtypes.h: stamp-webkitenumtypes.h
 	@true
 stamp-webkitenumtypes.h: $(webkitgtk_h_api) GNUmakefile
-	(cd $(srcdir) \
-	&& glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 			--fhead "#ifndef WEBKIT_ENUM_TYPES_H\n" \
 			--fhead "#define WEBKIT_ENUM_TYPES_H\n\n" \
 			--fhead "#include <glib-object.h>\n\n" \
@@ -431,21 +440,19 @@ stamp-webkitenumtypes.h: $(webkitgtk_h_api) GNUmakefile
 			--fhead "G_BEGIN_DECLS\n\n" \
 			--ftail "G_END_DECLS\n\n" \
 			--ftail "#endif\n" \
-			--fprod "#include <@filename@>\n\n" \
+			--fprod "#include <webkit/@basename@>\n\n" \
 			--eprod "#define WEBKIT_TYPE_@ENUMSHORT@ @enum_name@_get_type()\n\n" \
 			--eprod "WEBKIT_API GType\n@enum_name@_get_type(void);\n\n" \
 		$(webkitgtk_h_api) | \
-		sed 's,WebKit/gtk/,,' | \
 		sed 's,web_kit,webkit,' | \
 		sed 's,WEBKIT_TYPE_KIT,WEBKIT_TYPE,' \
-		) > xgen-gth \
+		> xgen-gth \
 	&& (cmp -s xgen-gth WebKit/gtk/webkit/webkitenumtypes.h || cp xgen-gth WebKit/gtk/webkit/webkitenumtypes.h) \
 	&& rm -f xgen-gth \
 	&& echo timestamp > $(@F)
 
 DerivedSources/webkitenumtypes.cpp: $(webkitgtk_h_api) GNUmakefile
-	(cd $(srcdir) \
-	&& glib-mkenums \
+	$(AM_V_GEN)glib-mkenums \
 			--fhead "#include <config.h>\n" \
 			--fhead "#include <glib-object.h>\n" \
 			--fhead "#include \"$(top_builddir)/WebKit/gtk/webkit/webkitenumtypes.h\"\n\n" \
@@ -462,7 +469,7 @@ DerivedSources/webkitenumtypes.cpp: $(webkitgtk_h_api) GNUmakefile
 			--ftail "}\n" \
 		$(webkitgtk_h_api) | \
 		sed 's,web_kit,webkit,' \
-		) > xgen-gtc \
+		> xgen-gtc \
 	&& cp xgen-gtc $@ \
 	&& rm -f xgen-gtc
 
@@ -528,12 +535,17 @@ webkit_tests_ldflags = \
 TEST_PROGS += Programs/unittests/testhttpbackend \
 	Programs/unittests/testloading \
 	Programs/unittests/testnetworkrequest \
+	Programs/unittests/testnetworkresponse \
 	Programs/unittests/testwebframe \
 	Programs/unittests/testwebbackforwardlist \
 	Programs/unittests/testwebhistoryitem \
+	Programs/unittests/testwindow \
 	Programs/unittests/testdownload \
 	Programs/unittests/testatk \
-	Programs/unittests/testwebsettings
+	Programs/unittests/testhittestresult \
+	Programs/unittests/testwebsettings \
+	Programs/unittests/testwebresource \
+	Programs/unittests/testwebdatasource
 
 # Add additional tests here
 Programs_unittests_testhttpbackend_SOURCES = WebKit/gtk/tests/testhttpbackend.c
@@ -551,6 +563,11 @@ Programs_unittests_testnetworkrequest_CFLAGS = $(webkit_tests_cflags)
 Programs_unittests_testnetworkrequest_LDADD = $(webkit_tests_ldadd)
 Programs_unittests_testnetworkrequest_LDFLAGS = $(webkit_tests_ldflags)
 
+Programs_unittests_testnetworkresponse_SOURCES = WebKit/gtk/tests/testnetworkresponse.c
+Programs_unittests_testnetworkresponse_CFLAGS = $(webkit_tests_cflags)
+Programs_unittests_testnetworkresponse_LDADD = $(webkit_tests_ldadd)
+Programs_unittests_testnetworkresponse_LDFLAGS = $(webkit_tests_ldflags)
+
 Programs_unittests_testwebframe_SOURCES = WebKit/gtk/tests/testwebframe.c
 Programs_unittests_testwebframe_CFLAGS = $(webkit_tests_cflags)
 Programs_unittests_testwebframe_LDADD = $(webkit_tests_ldadd)
@@ -566,6 +583,11 @@ Programs_unittests_testwebhistoryitem_CFLAGS = $(webkit_tests_cflags)
 Programs_unittests_testwebhistoryitem_LDADD = $(webkit_tests_ldadd)
 Programs_unittests_testwebhistoryitem_LDFLAGS = $(webkit_tests_ldflags)
 
+Programs_unittests_testwindow_SOURCES = WebKit/gtk/tests/testwindow.c
+Programs_unittests_testwindow_CFLAGS = $(webkit_tests_cflags)
+Programs_unittests_testwindow_LDADD = $(webkit_tests_ldadd)
+Programs_unittests_testwindow_LDFLAGS = $(webkit_tests_ldflags)
+
 Programs_unittests_testdownload_SOURCES = WebKit/gtk/tests/testdownload.c
 Programs_unittests_testdownload_CFLAGS = $(webkit_tests_cflags)
 Programs_unittests_testdownload_LDADD = $(webkit_tests_ldadd)
@@ -580,6 +602,18 @@ Programs_unittests_testwebsettings_SOURCES = WebKit/gtk/tests/testwebsettings.c
 Programs_unittests_testwebsettings_CFLAGS = $(webkit_tests_cflags)
 Programs_unittests_testwebsettings_LDADD = $(webkit_tests_ldadd)
 Programs_unittests_testwebsettings_LDFLAGS = $(webkit_tests_ldflags)
+
+Programs_unittests_testwebresource_SOURCES = WebKit/gtk/tests/testwebresource.c
+Programs_unittests_testwebresource_CFLAGS = $(webkit_tests_cflags)
+Programs_unittests_testwebresource_LDADD = $(webkit_tests_ldadd)
+
+Programs_unittests_testwebdatasource_SOURCES = WebKit/gtk/tests/testwebdatasource.c
+Programs_unittests_testwebdatasource_CFLAGS = $(webkit_tests_cflags)
+Programs_unittests_testwebdatasource_LDADD = $(webkit_tests_ldadd)
+
+Programs_unittests_testhittestresult_SOURCES = WebKit/gtk/tests/testhittestresult.c
+Programs_unittests_testhittestresult_CFLAGS = $(webkit_tests_cflags)
+Programs_unittests_testhittestresult_LDADD = $(webkit_tests_ldadd)
 
 # Autogenerated sources
 BUILT_SOURCES := \
