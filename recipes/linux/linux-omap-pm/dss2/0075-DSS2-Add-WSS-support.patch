@@ -1,0 +1,172 @@
+From 3b453993217ece5b38170727e8240869c12b89ea Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Fri, 22 May 2009 17:23:56 +0200
+Subject: [PATCH 075/146] DSS2: Add WSS support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Add support for setting the widescreen signalling (WSS) data via sysfs.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/display.h |    3 ++
+ drivers/video/omap2/dss/display.c         |   36 +++++++++++++++++++++++++++
+ drivers/video/omap2/dss/venc.c            |   38 ++++++++++++++++++++++++++++-
+ 3 files changed, 76 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index 5ac1ae7..2031dd5 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -514,6 +514,9 @@ struct omap_display {
+ 			u16 x, u16 y, u16 w, u16 h);
+ 
+ 	void (*configure_overlay)(struct omap_overlay *overlay);
++
++	int (*set_wss)(struct omap_display *display, u32 wss);
++	u32 (*get_wss)(struct omap_display *display);
+ };
+ 
+ int omap_dss_get_num_displays(void);
+diff --git a/drivers/video/omap2/dss/display.c b/drivers/video/omap2/dss/display.c
+index 9aaf392..50ced29 100644
+--- a/drivers/video/omap2/dss/display.c
++++ b/drivers/video/omap2/dss/display.c
+@@ -239,6 +239,39 @@ struct display_attribute {
+ 	ssize_t	(*store)(struct omap_display *, const char *, size_t);
+ };
+ 
++static ssize_t display_wss_show(struct omap_display *display, char *buf)
++{
++	unsigned int wss;
++
++	if (!display->get_wss)
++		return -ENOENT;
++
++	wss = display->get_wss(display);
++
++	return snprintf(buf, PAGE_SIZE, "0x%05x\n", wss);
++}
++
++static ssize_t display_wss_store(struct omap_display *display,
++		const char *buf, size_t size)
++{
++	unsigned long wss;
++	int r;
++
++	if (!display->get_wss || !display->set_wss)
++		return -ENOENT;
++
++	if (strict_strtoul(buf, 0, &wss))
++		return -EINVAL;
++
++	if (wss > 0xfffff)
++		return -EINVAL;
++
++	if ((r = display->set_wss(display, wss)))
++		return r;
++
++	return size;
++}
++
+ #define DISPLAY_ATTR(_name, _mode, _show, _store) \
+ 	struct display_attribute display_attr_##_name = \
+ 	__ATTR(_name, _mode, _show, _store)
+@@ -258,6 +291,8 @@ static DISPLAY_ATTR(mirror, S_IRUGO|S_IWUSR,
+ 		display_mirror_show, display_mirror_store);
+ static DISPLAY_ATTR(panel_name, S_IRUGO, display_panel_name_show, NULL);
+ static DISPLAY_ATTR(ctrl_name, S_IRUGO, display_ctrl_name_show, NULL);
++static DISPLAY_ATTR(wss, S_IRUGO|S_IWUSR,
++		display_wss_show, display_wss_store);
+ 
+ static struct attribute *display_sysfs_attrs[] = {
+ 	&display_attr_name.attr,
+@@ -269,6 +304,7 @@ static struct attribute *display_sysfs_attrs[] = {
+ 	&display_attr_mirror.attr,
+ 	&display_attr_panel_name.attr,
+ 	&display_attr_ctrl_name.attr,
++	&display_attr_wss.attr,
+ 	NULL
+ };
+ 
+diff --git a/drivers/video/omap2/dss/venc.c b/drivers/video/omap2/dss/venc.c
+index b655df4..0cbba9f 100644
+--- a/drivers/video/omap2/dss/venc.c
++++ b/drivers/video/omap2/dss/venc.c
+@@ -289,6 +289,7 @@ EXPORT_SYMBOL(omap_dss_ntsc_timings);
+ static struct {
+ 	void __iomem *base;
+ 	struct mutex venc_lock;
++	u32 wss_data;
+ } venc;
+ 
+ static struct omap_panel venc_panel = {
+@@ -320,7 +321,7 @@ static void venc_write_config(const struct venc_config *config)
+ 	venc_write_reg(VENC_BLACK_LEVEL, config->black_level);
+ 	venc_write_reg(VENC_BLANK_LEVEL, config->blank_level);
+ 	venc_write_reg(VENC_M_CONTROL, config->m_control);
+-	venc_write_reg(VENC_BSTAMP_WSS_DATA, config->bstamp_wss_data);
++	venc_write_reg(VENC_BSTAMP_WSS_DATA, config->bstamp_wss_data | venc.wss_data);
+ 	venc_write_reg(VENC_S_CARR, config->s_carr);
+ 	venc_write_reg(VENC_L21__WC_CTL, config->l21__wc_ctl);
+ 	venc_write_reg(VENC_SAVID__EAVID, config->savid__eavid);
+@@ -482,6 +483,8 @@ static int venc_enable_display(struct omap_display *display)
+ 		goto err;
+ 	}
+ 
++	venc.wss_data = 0;
++
+ 	venc_power_on(display);
+ 
+ 	display->state = OMAP_DSS_DISPLAY_ACTIVE;
+@@ -589,6 +592,37 @@ static int venc_check_timings(struct omap_display *display,
+ 	return -EINVAL;
+ }
+ 
++static u32 venc_get_wss(struct omap_display *display)
++{
++	/* Invert due to VENC_L21_WC_CTL:INV=1 */
++	return (venc.wss_data >> 8) ^ 0xfffff;
++}
++
++static int venc_set_wss(struct omap_display *display,
++			u32 wss)
++{
++	const struct venc_config *config;
++
++	DSSDBG("venc_set_wss\n");
++
++	mutex_lock(&venc.venc_lock);
++
++	config = venc_timings_to_config(&display->panel->timings);
++
++	/* Invert due to VENC_L21_WC_CTL:INV=1 */
++	venc.wss_data = (wss ^ 0xfffff) << 8;
++
++	venc_enable_clocks(1);
++
++	venc_write_reg(VENC_BSTAMP_WSS_DATA, config->bstamp_wss_data | venc.wss_data);
++
++	venc_enable_clocks(0);
++
++	mutex_unlock(&venc.venc_lock);
++
++	return 0;
++}
++
+ void venc_init_display(struct omap_display *display)
+ {
+ 	display->panel = &venc_panel;
+@@ -599,6 +633,8 @@ void venc_init_display(struct omap_display *display)
+ 	display->get_timings = venc_get_timings;
+ 	display->set_timings = venc_set_timings;
+ 	display->check_timings = venc_check_timings;
++	display->get_wss = venc_get_wss;
++	display->set_wss = venc_set_wss;
+ }
+ 
+ void venc_dump_regs(struct seq_file *s)
+-- 
+1.6.2.4
+

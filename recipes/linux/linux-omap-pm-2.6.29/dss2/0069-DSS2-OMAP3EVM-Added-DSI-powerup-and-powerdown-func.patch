@@ -1,0 +1,125 @@
+From b06406f3e5c3958f69185314c969f7c1a3265f71 Mon Sep 17 00:00:00 2001
+From: Hardik Shah <hardik.shah@ti.com>
+Date: Thu, 14 May 2009 15:04:17 +0530
+Subject: [PATCH 69/69] DSS2: OMAP3EVM: Added DSI powerup and powerdown functions
+
+Copied fom 3430sdp implementation.
+
+Signed-off-by: Hardik Shah <hardik.shah@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3evm.c |   62 +++++++++++++++++++++-------------
+ 1 files changed, 38 insertions(+), 24 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
+index 6f5a866..57c4fc7 100644
+--- a/arch/arm/mach-omap2/board-omap3evm.c
++++ b/arch/arm/mach-omap2/board-omap3evm.c
+@@ -237,6 +237,38 @@ static int __init omap3_evm_i2c_init(void)
+ static int lcd_enabled;
+ static int dvi_enabled;
+ 
++static void enable_vpll2(int enable)
++{
++	u8 ded_val, grp_val;
++
++	if (enable) {
++		ded_val = ENABLE_VPLL2_DEDICATED;
++		grp_val = ENABLE_VPLL2_DEV_GRP;
++	} else {
++		ded_val = 0;
++		grp_val = 0;
++	}
++
++	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ded_val, TWL4030_VPLL2_DEDICATED);
++	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			grp_val, TWL4030_VPLL2_DEV_GRP);
++}
++
++static int omap3evm_dsi_power_up(void)
++{
++	if (omap_rev() > OMAP3430_REV_ES1_0)
++		enable_vpll2(1);
++	return 0;
++}
++
++static void omap3evm_dsi_power_down(void)
++{
++	if (omap_rev() > OMAP3430_REV_ES1_0)
++		enable_vpll2(0);
++}
++
++
+ static void __init omap3_evm_display_init(void)
+ {
+ 	int r;
+@@ -306,12 +338,7 @@ static int omap3_evm_panel_enable_lcd(struct omap_display *display)
+ 		printk(KERN_ERR "cannot enable LCD, DVI is enabled\n");
+ 		return -EINVAL;
+ 	}
+-	if (omap_rev() > OMAP3430_REV_ES1_0) {
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
+-			ENABLE_VPLL2_DEDICATED, TWL4030_VPLL2_DEDICATED);
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
+-			ENABLE_VPLL2_DEV_GRP, TWL4030_VPLL2_DEV_GRP);
+-	}
++	omap3evm_dsi_power_up();
+ 	gpio_direction_output(LCD_PANEL_ENABLE_GPIO, 0);
+ 	lcd_enabled = 1;
+ 	return 0;
+@@ -319,12 +346,7 @@ static int omap3_evm_panel_enable_lcd(struct omap_display *display)
+ 
+ static void omap3_evm_panel_disable_lcd(struct omap_display *display)
+ {
+-	if (omap_rev() > OMAP3430_REV_ES1_0) {
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
+-				TWL4030_VPLL2_DEDICATED);
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
+-				TWL4030_VPLL2_DEV_GRP);
+-	}
++	omap3evm_dsi_power_down();
+ 	gpio_direction_output(LCD_PANEL_ENABLE_GPIO, 1);
+ 	lcd_enabled = 0;
+ }
+@@ -370,13 +392,8 @@ static int omap3_evm_panel_enable_dvi(struct omap_display *display)
+ 		printk(KERN_ERR "cannot enable DVI, LCD is enabled\n");
+ 		return -EINVAL;
+ 	}
+-	if (omap_rev() > OMAP3430_REV_ES1_0) {
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
+-			ENABLE_VPLL2_DEDICATED, TWL4030_VPLL2_DEDICATED);
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
+-			ENABLE_VPLL2_DEV_GRP, TWL4030_VPLL2_DEV_GRP);
+-	}
+ 
++	omap3evm_dsi_power_up();
+ 	twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0x80,
+ 			TWL4030_GPIODATA_IN3);
+ 	twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0x80,
+@@ -388,13 +405,8 @@ static int omap3_evm_panel_enable_dvi(struct omap_display *display)
+ 
+ static void omap3_evm_panel_disable_dvi(struct omap_display *display)
+ {
+-	if (omap_rev() > OMAP3430_REV_ES1_0) {
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
+-				TWL4030_VPLL2_DEDICATED);
+-		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
+-				TWL4030_VPLL2_DEV_GRP);
+-	}
+ 
++	omap3evm_dsi_power_down();
+ 	twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0x00,
+ 			TWL4030_GPIODATA_IN3);
+ 	twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0x00,
+@@ -413,6 +425,8 @@ static struct omap_dss_display_config omap3_evm_display_data_dvi = {
+ };
+ 
+ static struct omap_dss_board_info omap3_evm_dss_data = {
++	.dsi_power_up = omap3evm_dsi_power_up,
++	.dsi_power_down = omap3evm_dsi_power_down,
+ 	.num_displays = 3,
+ 	.displays = {
+ 		&omap3_evm_display_data,
+-- 
+1.6.2.4
+

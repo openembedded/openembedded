@@ -1,0 +1,26 @@
+From 5069f20f593bc6b0bdeb1913130be894a2a3d071 Mon Sep 17 00:00:00 2001
+From: Imre Deak <imre.deak@nokia.com>
+Date: Tue, 26 May 2009 16:53:46 +0200
+Subject: [PATCH 080/146] DSS2: fix uninitialized var in OMAPFB_GET_CAPS IOCTL
+
+Spotted-by: Ville Syrjala <ville.syrjala@nokia.com>
+Signed-off-by: Imre Deak <imre.deak@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-ioctl.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-ioctl.c b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+index 980e3db..123f5dc 100644
+--- a/drivers/video/omap2/omapfb/omapfb-ioctl.c
++++ b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+@@ -595,6 +595,7 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
+ 			break;
+ 		}
+ 
++		memset(&p.caps, 0, sizeof(p.caps));
+ 		p.caps.ctrl = display->caps;
+ 
+ 		if (copy_to_user((void __user *)arg, &p.caps, sizeof(p.caps)))
+-- 
+1.6.2.4
+

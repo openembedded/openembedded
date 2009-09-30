@@ -1,0 +1,56 @@
+From eede63f63b5c8b932b938b9b65725918e8f42775 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Fri, 17 Apr 2009 18:34:33 +0200
+Subject: [PATCH 056/146] DSS2: Don't touch plane coordinates when changing fb->ovl mapping
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+When attaching overlays to a framebuffer via the 'overlays' sysfs file
+do not touch the planes' coordinates. Without this change attaching
+VID2 to a framebuffer which already has VID1 attached would cause VID1
+to be reset to position 0,0 and scaled to 1:1 size. Also call
+omapfb_apply_changes() only once after all the overlays have been
+attached to avoid fiddling with all the overlays several times.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-sysfs.c |   13 ++++++-------
+ 1 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-sysfs.c b/drivers/video/omap2/omapfb/omapfb-sysfs.c
+index 13028ae..702199d 100644
+--- a/drivers/video/omap2/omapfb/omapfb-sysfs.c
++++ b/drivers/video/omap2/omapfb/omapfb-sysfs.c
+@@ -183,6 +183,7 @@ static ssize_t store_overlays(struct device *dev, struct device_attribute *attr,
+ 	struct omap_overlay *ovl;
+ 	int num_ovls, r, i;
+ 	int len;
++	bool added = false;
+ 
+ 	num_ovls = 0;
+ 
+@@ -284,15 +285,13 @@ static ssize_t store_overlays(struct device *dev, struct device_attribute *attr,
+ 
+ 		ofbi->overlays[ofbi->num_overlays++] = ovl;
+ 
+-		r = omapfb_apply_changes(fbi, 1);
++		added = true;
++	}
++
++	if (added) {
++		r = omapfb_apply_changes(fbi, 0);
+ 		if (r)
+ 			goto out;
+-
+-		if (ovl->manager) {
+-			r = ovl->manager->apply(ovl->manager);
+-			if (r)
+-				goto out;
+-		}
+ 	}
+ 
+ 	r = count;
+-- 
+1.6.2.4
+

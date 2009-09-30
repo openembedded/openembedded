@@ -1,0 +1,16 @@
+--- /tmp/usb-musb.c	2009-07-23 21:42:51.000000000 +0200
++++ git/arch/arm/mach-omap2/usb-musb.c	2009-07-23 21:46:46.000000000 +0200
+@@ -152,12 +152,10 @@
+ 	if (cpu_is_omap243x()) {
+ 		musb_resources[0].start = OMAP243X_HS_BASE;
+ 		musb_plat.clock = "usbhs_ick";
+-	} else if (1 /*TODO: cpu_is_omap3517()*/) {
+-		musb_resources[0].start = OMAP3517_HSUSB_OTG_BASE;
++	} else if (0 /*TODO: cpu_is_omap3517()*/) {
+ 		musb_plat.clock = "usbotg_vbusp_ck";
+ 		musb_resources[1].start = INT_OMAP3517_HSUSB_OTG;
+ 		/* set mux config for DRVVBUS */
+-		omap_cfg_reg(E25_3517_USB0_DRVVBUS);
+ 		/* OMAP3517 can provide max of 500mA */
+ 		musb_plat.power = 250;
+ 	} else {

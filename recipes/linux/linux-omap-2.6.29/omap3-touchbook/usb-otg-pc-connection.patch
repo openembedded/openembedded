@@ -1,0 +1,36 @@
+--- git/drivers/usb/gadget/file_storage.c	2009-06-07 12:18:05.000000000 -0700
++++ git/drivers/usb/gadget/file_storage.c	2009-06-07 12:08:36.000000000 -0700
+@@ -283,8 +283,8 @@
+  *
+  * DO NOT REUSE THESE IDs with any other driver!!  Ever!!
+  * Instead:  allocate your own, using normal USB-IF procedures. */
+-#define DRIVER_VENDOR_ID	0x0525	// NetChip
+-#define DRIVER_PRODUCT_ID	0xa4a5	// Linux-USB File-backed Storage Gadget
++#define DRIVER_VENDOR_ID	0xa110	// Always Innovating, Inc.
++#define DRIVER_PRODUCT_ID	0x0001	// Tablet product
+ 
+ 
+ /*
+@@ -2025,9 +2025,9 @@
+ {
+ 	u8	*buf = (u8 *) bh->buf;
+ 
+-	static char vendor_id[] = "Linux   ";
++	static char vendor_id[] = "AI, Inc.";
+ 	static char product_disk_id[] = "File-Stor Gadget";
+-	static char product_cdrom_id[] = "File-CD Gadget  ";
++	static char product_cdrom_id[] = "Touch Book      ";
+ 
+ 	if (!fsg->curlun) {		// Unsupported LUNs are okay
+ 		fsg->bad_lun_okay = 1;
+@@ -3671,8 +3671,8 @@
+ 	}
+ 	if (num_sectors < min_sectors) {
+ 		LINFO(curlun, "file too small: %s\n", filename);
+-		rc = -ETOOSMALL;
+-		goto out;
++//		rc = -ETOOSMALL;
++//		goto out;
+ 	}
+ 
+ 	get_file(filp);

@@ -1,0 +1,54 @@
+From 32720bafdbb70ab9f534d93b75a954c891bed8cc Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Sat, 13 Jun 2009 13:38:54 +0300
+Subject: [PATCH 118/146] DSS2: DISPC: fix locking issue with irq handling
+
+Fix the problem that an irq handler couldn't unregister
+itself
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/dss/dispc.c |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index 2463bab..4e1da6b 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -2732,6 +2732,7 @@ void dispc_irq_handler(void)
+ 	u32 handledirqs = 0;
+ 	u32 unhandled_errors;
+ 	struct omap_dispc_isr_data *isr_data;
++	struct omap_dispc_isr_data registered_isr[DISPC_MAX_NR_ISRS];
+ 
+ 	spin_lock(&dispc.irq_lock);
+ 
+@@ -2745,8 +2746,15 @@ void dispc_irq_handler(void)
+ 	 * off */
+ 	dispc_write_reg(DISPC_IRQSTATUS, irqstatus);
+ 
++	/* make a copy and unlock, so that isrs can unregister
++	 * themselves */
++	memcpy(registered_isr, dispc.registered_isr,
++			sizeof(registered_isr));
++
++	spin_unlock(&dispc.irq_lock);
++
+ 	for (i = 0; i < DISPC_MAX_NR_ISRS; i++) {
+-		isr_data = &dispc.registered_isr[i];
++		isr_data = &registered_isr[i];
+ 
+ 		if (!isr_data->isr)
+ 			continue;
+@@ -2757,6 +2765,8 @@ void dispc_irq_handler(void)
+ 		}
+ 	}
+ 
++	spin_lock(&dispc.irq_lock);
++
+ 	unhandled_errors = irqstatus & ~handledirqs & dispc.irq_error_mask;
+ 
+ 	if (unhandled_errors) {
+-- 
+1.6.2.4
+

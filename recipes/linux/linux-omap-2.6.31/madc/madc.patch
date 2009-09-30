@@ -1,0 +1,56 @@
+diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
+index 48f9932..ce84ee7 100644
+--- a/arch/arm/mach-omap2/board-overo.c
++++ b/arch/arm/mach-omap2/board-overo.c
+@@ -340,10 +340,15 @@ static struct regulator_init_data overo_vmmc1 = {
+ 
+ /* mmc2 (WLAN) and Bluetooth don't use twl4030 regulators */
+ 
++static struct twl4030_madc_platform_data overo_madc_data = {
++	.irq_line	= 1,
++};
++
+ static struct twl4030_platform_data overo_twldata = {
+ 	.irq_base	= TWL4030_IRQ_BASE,
+ 	.irq_end	= TWL4030_IRQ_END,
+ 	.gpio		= &overo_gpio_data,
++	.madc		= &overo_madc_data,
+ 	.usb		= &overo_usb_data,
+ 	.power		= GENERIC3430_T2SCRIPTS_DATA,
+ 	.vmmc1		= &overo_vmmc1,
+diff --git a/drivers/mfd/twl4030-core.c b/drivers/mfd/twl4030-core.c
+index 769b34b..c5ca36d 100644
+--- a/drivers/mfd/twl4030-core.c
++++ b/drivers/mfd/twl4030-core.c
+@@ -159,6 +159,7 @@
+ 
+ /* Few power values */
+ #define R_CFG_BOOT			0x05
++#define R_GPBR1				0x0C
+ #define R_PROTECT_KEY			0x0E
+ 
+ /* access control values for R_PROTECT_KEY */
+@@ -166,6 +167,10 @@
+ #define KEY_UNLOCK2			0xec
+ #define KEY_LOCK			0x00
+ 
++/* MADC clock values for R_GPBR1 */
++#define MADC_HFCLK_EN			0x80
++#define DEFAULT_MADC_CLK_EN		0x10
++
+ /* some fields in R_CFG_BOOT */
+ #define HFCLK_FREQ_19p2_MHZ		(1 << 0)
+ #define HFCLK_FREQ_26_MHZ		(2 << 0)
+@@ -717,6 +722,11 @@ static void __init clocks_init(struct device *dev)
+ 	ctrl |= HIGH_PERF_SQ;
+ 	e |= unprotect_pm_master();
+ 	/* effect->MADC+USB ck en */
++
++	if (twl_has_madc())
++		e |= twl4030_i2c_write_u8(TWL4030_MODULE_INTBR,
++				MADC_HFCLK_EN | DEFAULT_MADC_CLK_EN, R_GPBR1);
++
+ 	e |= twl4030_i2c_write_u8(TWL4030_MODULE_PM_MASTER, ctrl, R_CFG_BOOT);
+ 	e |= protect_pm_master();
+ 
+

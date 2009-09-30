@@ -1,0 +1,22 @@
+From 870bb728d41c231941791bffe8783cd88cb7580a Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Sat, 29 Aug 2009 15:46:30 -0700
+Subject: [PATCH] ARM: OMAP3: Fix EHCI initialization for Beagle
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 07aee90..65934ea 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -161,7 +161,7 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 
+ 	/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
+ 	gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
+-	gpio_direction_output(gpio + TWL4030_GPIO_MAX, 1);
++	gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
+ 
+ 	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
+ 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;

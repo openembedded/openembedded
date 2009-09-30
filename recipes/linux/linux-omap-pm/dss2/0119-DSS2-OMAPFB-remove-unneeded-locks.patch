@@ -1,0 +1,391 @@
+From 995d5a236d8b1f7fe24da9dcacb1e89c214afdba Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Tue, 16 Jun 2009 14:33:07 +0300
+Subject: [PATCH 119/146] DSS2: OMAPFB: remove unneeded locks
+
+omapfb_lock() locks the whole omapfb device, meaning all framebuffers.
+Usually it is enough to lock only the framebuffer that is being
+manipulated, and for IOCTLs the fb framework does this already.
+
+Thus, we can remove many omapfb_lock()s totally, and change some
+to lock_fb_info().
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-ioctl.c |   47 ++--------------------------
+ drivers/video/omap2/omapfb/omapfb-main.c  |    5 ---
+ drivers/video/omap2/omapfb/omapfb-sysfs.c |   32 ++++++++++++-------
+ 3 files changed, 24 insertions(+), 60 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-ioctl.c b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+index c513fe0..91308c2 100644
+--- a/drivers/video/omap2/omapfb/omapfb-ioctl.c
++++ b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+@@ -44,8 +44,6 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
+ 
+ 	DBG("omapfb_setup_plane\n");
+ 
+-	omapfb_lock(fbdev);
+-
+ 	if (ofbi->num_overlays != 1) {
+ 		r = -EINVAL;
+ 		goto out;
+@@ -94,7 +92,6 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
+ 	}
+ 
+ out:
+-	omapfb_unlock(fbdev);
+ 	if (r)
+ 		dev_err(fbdev->dev, "setup_plane failed\n");
+ 	return r;
+@@ -103,9 +100,6 @@ out:
+ static int omapfb_query_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
+ {
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+-
+-	omapfb_lock(fbdev);
+ 
+ 	if (ofbi->num_overlays != 1) {
+ 		memset(pi, 0, sizeof(*pi));
+@@ -125,8 +119,6 @@ static int omapfb_query_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
+ 		pi->out_height = ovli->out_height;
+ 	}
+ 
+-	omapfb_unlock(fbdev);
+-
+ 	return 0;
+ }
+ 
+@@ -145,43 +137,32 @@ static int omapfb_setup_mem(struct fb_info *fbi, struct omapfb_mem_info *mi)
+ 
+ 	rg = &ofbi->region;
+ 
+-	omapfb_lock(fbdev);
+-
+ 	for (i = 0; i < ofbi->num_overlays; i++) {
+-		if (ofbi->overlays[i]->info.enabled) {
+-			r = -EBUSY;
+-			goto out;
+-		}
++		if (ofbi->overlays[i]->info.enabled)
++			return -EBUSY;
+ 	}
+ 
+ 	if (rg->size != size || rg->type != mi->type) {
+ 		r = omapfb_realloc_fbmem(fbi, size, mi->type);
+ 		if (r) {
+ 			dev_err(fbdev->dev, "realloc fbmem failed\n");
+-			goto out;
++			return r;
+ 		}
+ 	}
+ 
+-	r = 0;
+-out:
+-	omapfb_unlock(fbdev);
+-
+-	return r;
++	return 0;
+ }
+ 
+ static int omapfb_query_mem(struct fb_info *fbi, struct omapfb_mem_info *mi)
+ {
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	struct omapfb2_mem_region *rg;
+ 
+ 	rg = &ofbi->region;
+ 	memset(mi, 0, sizeof(*mi));
+ 
+-	omapfb_lock(fbdev);
+ 	mi->size = rg->size;
+ 	mi->type = rg->type;
+-	omapfb_unlock(fbdev);
+ 
+ 	return 0;
+ }
+@@ -189,8 +170,6 @@ static int omapfb_query_mem(struct fb_info *fbi, struct omapfb_mem_info *mi)
+ static int omapfb_update_window(struct fb_info *fbi,
+ 		u32 x, u32 y, u32 w, u32 h)
+ {
+-	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	struct omap_dss_device *display = fb2display(fbi);
+ 	u16 dw, dh;
+ 
+@@ -205,9 +184,7 @@ static int omapfb_update_window(struct fb_info *fbi,
+ 	if (x + w > dw || y + h > dh)
+ 		return -EINVAL;
+ 
+-	omapfb_lock(fbdev);
+ 	display->update(display, x, y, w, h);
+-	omapfb_unlock(fbdev);
+ 
+ 	return 0;
+ }
+@@ -215,8 +192,6 @@ static int omapfb_update_window(struct fb_info *fbi,
+ static int omapfb_set_update_mode(struct fb_info *fbi,
+ 				   enum omapfb_update_mode mode)
+ {
+-	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	struct omap_dss_device *display = fb2display(fbi);
+ 	enum omap_dss_update_mode um;
+ 	int r;
+@@ -241,9 +216,7 @@ static int omapfb_set_update_mode(struct fb_info *fbi,
+ 		return -EINVAL;
+ 	}
+ 
+-	omapfb_lock(fbdev);
+ 	r = display->set_update_mode(display, um);
+-	omapfb_unlock(fbdev);
+ 
+ 	return r;
+ }
+@@ -251,17 +224,13 @@ static int omapfb_set_update_mode(struct fb_info *fbi,
+ static int omapfb_get_update_mode(struct fb_info *fbi,
+ 		enum omapfb_update_mode *mode)
+ {
+-	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	struct omap_dss_device *display = fb2display(fbi);
+ 	enum omap_dss_update_mode m;
+ 
+ 	if (!display || !display->get_update_mode)
+ 		return -EINVAL;
+ 
+-	omapfb_lock(fbdev);
+ 	m = display->get_update_mode(display);
+-	omapfb_unlock(fbdev);
+ 
+ 	switch (m) {
+ 	case OMAP_DSS_UPDATE_DISABLED:
+@@ -396,8 +365,6 @@ static int omapfb_memory_read(struct fb_info *fbi,
+ 		struct omapfb_memory_read *mr)
+ {
+ 	struct omap_dss_device *display = fb2display(fbi);
+-	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	void *buf;
+ 	int r;
+ 
+@@ -416,8 +383,6 @@ static int omapfb_memory_read(struct fb_info *fbi,
+ 		return -ENOMEM;
+ 	}
+ 
+-	omapfb_lock(fbdev);
+-
+ 	r = display->memory_read(display, buf, mr->buffer_size,
+ 			mr->x, mr->y, mr->w, mr->h);
+ 
+@@ -428,8 +393,6 @@ static int omapfb_memory_read(struct fb_info *fbi,
+ 
+ 	vfree(buf);
+ 
+-	omapfb_unlock(fbdev);
+-
+ 	return r;
+ }
+ 
+@@ -509,9 +472,7 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
+ 			break;
+ 		}
+ 
+-		omapfb_lock(fbdev);
+ 		r = display->sync(display);
+-		omapfb_unlock(fbdev);
+ 		break;
+ 
+ 	case OMAPFB_UPDATE_WINDOW_OLD:
+diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
+index dc9c06c..1473581 100644
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -848,13 +848,10 @@ static int omapfb_pan_display(struct fb_var_screeninfo *var,
+ 		struct fb_info *fbi)
+ {
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	int r = 0;
+ 
+ 	DBG("pan_display(%d)\n", ofbi->id);
+ 
+-	omapfb_lock(fbdev);
+-
+ 	if (var->xoffset != fbi->var.xoffset ||
+ 	    var->yoffset != fbi->var.yoffset) {
+ 		struct fb_var_screeninfo new_var;
+@@ -872,8 +869,6 @@ static int omapfb_pan_display(struct fb_var_screeninfo *var,
+ 		}
+ 	}
+ 
+-	omapfb_unlock(fbdev);
+-
+ 	return r;
+ }
+ 
+diff --git a/drivers/video/omap2/omapfb/omapfb-sysfs.c b/drivers/video/omap2/omapfb/omapfb-sysfs.c
+index a00f61a..ef30e0e 100644
+--- a/drivers/video/omap2/omapfb/omapfb-sysfs.c
++++ b/drivers/video/omap2/omapfb/omapfb-sysfs.c
+@@ -49,7 +49,6 @@ static ssize_t store_rotate_type(struct device *dev,
+ {
+ 	struct fb_info *fbi = dev_get_drvdata(dev);
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	enum omap_dss_rotation_type rot_type;
+ 	int r;
+ 
+@@ -58,7 +57,7 @@ static ssize_t store_rotate_type(struct device *dev,
+ 	if (rot_type != OMAP_DSS_ROT_DMA && rot_type != OMAP_DSS_ROT_VRFB)
+ 		return -EINVAL;
+ 
+-	omapfb_lock(fbdev);
++	lock_fb_info(fbi);
+ 
+ 	r = 0;
+ 	if (rot_type == ofbi->rotation_type)
+@@ -76,7 +75,7 @@ static ssize_t store_rotate_type(struct device *dev,
+ 	 * need to do any further parameter checking at this point.
+ 	 */
+ out:
+-	omapfb_unlock(fbdev);
++	unlock_fb_info(fbi);
+ 
+ 	return r ? r : count;
+ }
+@@ -97,7 +96,6 @@ static ssize_t store_mirror(struct device *dev,
+ {
+ 	struct fb_info *fbi = dev_get_drvdata(dev);
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	bool mirror;
+ 	int r;
+ 	struct fb_var_screeninfo new_var;
+@@ -107,7 +105,7 @@ static ssize_t store_mirror(struct device *dev,
+ 	if (mirror != 0 && mirror != 1)
+ 		return -EINVAL;
+ 
+-	omapfb_lock(fbdev);
++	lock_fb_info(fbi);
+ 
+ 	ofbi->mirror = mirror;
+ 
+@@ -125,7 +123,7 @@ static ssize_t store_mirror(struct device *dev,
+ 
+ 	r = count;
+ out:
+-	omapfb_unlock(fbdev);
++	unlock_fb_info(fbi);
+ 
+ 	return r;
+ }
+@@ -139,6 +137,9 @@ static ssize_t show_overlays(struct device *dev,
+ 	ssize_t l = 0;
+ 	int t;
+ 
++	omapfb_lock(fbdev);
++	lock_fb_info(fbi);
++
+ 	for (t = 0; t < ofbi->num_overlays; t++) {
+ 		struct omap_overlay *ovl = ofbi->overlays[t];
+ 		int ovlnum;
+@@ -153,6 +154,9 @@ static ssize_t show_overlays(struct device *dev,
+ 
+ 	l += snprintf(buf + l, PAGE_SIZE - l, "\n");
+ 
++	unlock_fb_info(fbi);
++	omapfb_unlock(fbdev);
++
+ 	return l;
+ }
+ 
+@@ -192,6 +196,7 @@ static ssize_t store_overlays(struct device *dev, struct device_attribute *attr,
+ 		len = len - 1;
+ 
+ 	omapfb_lock(fbdev);
++	lock_fb_info(fbi);
+ 
+ 	if (len > 0) {
+ 		char *p = (char *)buf;
+@@ -298,6 +303,7 @@ static ssize_t store_overlays(struct device *dev, struct device_attribute *attr,
+ 
+ 	r = count;
+ out:
++	unlock_fb_info(fbi);
+ 	omapfb_unlock(fbdev);
+ 
+ 	return r;
+@@ -311,6 +317,8 @@ static ssize_t show_overlays_rotate(struct device *dev,
+ 	ssize_t l = 0;
+ 	int t;
+ 
++	lock_fb_info(fbi);
++
+ 	for (t = 0; t < ofbi->num_overlays; t++) {
+ 		l += snprintf(buf + l, PAGE_SIZE - l, "%s%d",
+ 				t == 0 ? "" : ",", ofbi->rotation[t]);
+@@ -318,6 +326,8 @@ static ssize_t show_overlays_rotate(struct device *dev,
+ 
+ 	l += snprintf(buf + l, PAGE_SIZE - l, "\n");
+ 
++	unlock_fb_info(fbi);
++
+ 	return l;
+ }
+ 
+@@ -326,7 +336,6 @@ static ssize_t store_overlays_rotate(struct device *dev,
+ {
+ 	struct fb_info *fbi = dev_get_drvdata(dev);
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	int num_ovls = 0, r, i;
+ 	int len;
+ 	bool changed = false;
+@@ -336,7 +345,7 @@ static ssize_t store_overlays_rotate(struct device *dev,
+ 	if (buf[len - 1] == '\n')
+ 		len = len - 1;
+ 
+-	omapfb_lock(fbdev);
++	lock_fb_info(fbi);
+ 
+ 	if (len > 0) {
+ 		char *p = (char *)buf;
+@@ -382,7 +391,7 @@ static ssize_t store_overlays_rotate(struct device *dev,
+ 
+ 	r = count;
+ out:
+-	omapfb_unlock(fbdev);
++	unlock_fb_info(fbi);
+ 
+ 	return r;
+ }
+@@ -401,14 +410,13 @@ static ssize_t store_size(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct fb_info *fbi = dev_get_drvdata(dev);
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+-	struct omapfb2_device *fbdev = ofbi->fbdev;
+ 	unsigned long size;
+ 	int r;
+ 	int i;
+ 
+ 	size = PAGE_ALIGN(simple_strtoul(buf, NULL, 0));
+ 
+-	omapfb_lock(fbdev);
++	lock_fb_info(fbi);
+ 
+ 	for (i = 0; i < ofbi->num_overlays; i++) {
+ 		if (ofbi->overlays[i]->info.enabled) {
+@@ -427,7 +435,7 @@ static ssize_t store_size(struct device *dev, struct device_attribute *attr,
+ 
+ 	r = count;
+ out:
+-	omapfb_unlock(fbdev);
++	unlock_fb_info(fbi);
+ 
+ 	return r;
+ }
+-- 
+1.6.2.4
+

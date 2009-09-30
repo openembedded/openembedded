@@ -1,0 +1,54 @@
+From 6a853312fa903f4369af3ea485c86753aca556fc Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Tue, 26 May 2009 16:14:49 +0200
+Subject: [PATCH 081/146] DSS2: Reset WSS data only when changing TV standard
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Do not reset the the WSS data every time the display is enabled. Only
+reset it when the TV standard changes since PAL and NTSC use different
+WSS data layouts.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/dss/venc.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/venc.c b/drivers/video/omap2/dss/venc.c
+index 02286b8..b0f0795 100644
+--- a/drivers/video/omap2/dss/venc.c
++++ b/drivers/video/omap2/dss/venc.c
+@@ -406,6 +406,8 @@ int venc_init(void)
+ 
+ 	mutex_init(&venc.venc_lock);
+ 
++	venc.wss_data = 0;
++
+ 	venc_panel.timings = omap_dss_pal_timings;
+ 
+ 	venc.base = ioremap(VENC_BASE, SZ_1K);
+@@ -483,8 +485,6 @@ static int venc_enable_display(struct omap_display *display)
+ 		goto err;
+ 	}
+ 
+-	venc.wss_data = 0;
+-
+ 	venc_power_on(display);
+ 
+ 	display->state = OMAP_DSS_DISPLAY_ACTIVE;
+@@ -570,6 +570,11 @@ static void venc_set_timings(struct omap_display *display,
+ 			struct omap_video_timings *timings)
+ {
+ 	DSSDBG("venc_set_timings\n");
++
++	/* Reset WSS data when the TV standard changes. */
++	if (memcmp(&display->panel->timings, timings, sizeof(*timings)))
++		venc.wss_data = 0;
++
+ 	display->panel->timings = *timings;
+ 	if (display->state == OMAP_DSS_DISPLAY_ACTIVE) {
+ 		/* turn the venc off and on to get new timings to use */
+-- 
+1.6.2.4
+

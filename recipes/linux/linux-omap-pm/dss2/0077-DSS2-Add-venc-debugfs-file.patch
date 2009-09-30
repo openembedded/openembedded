@@ -1,0 +1,34 @@
+From d0d9b920dcf074ca854f11a9bb80d3a7fcf83b97 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@nokia.com>
+Date: Fri, 22 May 2009 17:23:58 +0200
+Subject: [PATCH 077/146] DSS2: Add venc debugfs file
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Actually make the venc register dump file visible in debugfs. Somehow
+this hunk got dropped when the venc debugfs file was originally added.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+---
+ drivers/video/omap2/dss/core.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/core.c b/drivers/video/omap2/dss/core.c
+index 6d11b04..2a38507 100644
+--- a/drivers/video/omap2/dss/core.c
++++ b/drivers/video/omap2/dss/core.c
+@@ -396,6 +396,10 @@ static int dss_initialize_debugfs(void)
+ 	debugfs_create_file("dsi", S_IRUGO, dss_debugfs_dir,
+ 			&dsi_dump_regs, &dss_debug_fops);
+ #endif
++#ifdef CONFIG_OMAP2_DSS_VENC
++	debugfs_create_file("venc", S_IRUGO, dss_debugfs_dir,
++			&venc_dump_regs, &dss_debug_fops);
++#endif
+ 	return 0;
+ }
+ 
+-- 
+1.6.2.4
+

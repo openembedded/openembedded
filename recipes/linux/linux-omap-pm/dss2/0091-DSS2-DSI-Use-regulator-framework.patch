@@ -1,0 +1,134 @@
+From d643b84bbc463075017b5ec61406455ad8e55374 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 28 May 2009 17:19:48 +0300
+Subject: [PATCH 091/146] DSS2: DSI: Use regulator framework
+
+DSI needs vdds_dsi regulator
+---
+ arch/arm/plat-omap/include/mach/display.h |    2 --
+ drivers/video/omap2/dss/core.c            |   24 ------------------------
+ drivers/video/omap2/dss/dsi.c             |   18 +++++++++++++++---
+ 3 files changed, 15 insertions(+), 29 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index 57bb8ff..94585ba 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -219,8 +219,6 @@ struct omap_dss_board_info {
+ 	int num_devices;
+ 	struct omap_dss_device **devices;
+ 	struct omap_dss_device *default_device;
+-	int (*dsi_power_up)(void);
+-	void (*dsi_power_down)(void);
+ };
+ 
+ struct omap_video_timings {
+diff --git a/drivers/video/omap2/dss/core.c b/drivers/video/omap2/dss/core.c
+index c56c431..212b774 100644
+--- a/drivers/video/omap2/dss/core.c
++++ b/drivers/video/omap2/dss/core.c
+@@ -411,30 +411,6 @@ static void dss_uninitialize_debugfs(void)
+ }
+ #endif /* CONFIG_DEBUG_FS && CONFIG_OMAP2_DSS_DEBUG_SUPPORT */
+ 
+-
+-/* DSI powers */
+-int dss_dsi_power_up(void)
+-{
+-	struct omap_dss_board_info *pdata = core.pdev->dev.platform_data;
+-
+-	if (!pdata->dsi_power_up)
+-		return 0; /* presume power is always on then */
+-
+-	return pdata->dsi_power_up();
+-}
+-
+-void dss_dsi_power_down(void)
+-{
+-	struct omap_dss_board_info *pdata = core.pdev->dev.platform_data;
+-
+-	if (!pdata->dsi_power_down)
+-		return;
+-
+-	pdata->dsi_power_down();
+-}
+-
+-
+-
+ /* PLATFORM DEVICE */
+ static int omap_dss_probe(struct platform_device *pdev)
+ {
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index fb2f7f0..9c8488e 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -31,6 +31,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/kfifo.h>
+ #include <linux/platform_device.h>
++#include <linux/regulator/consumer.h>
+ 
+ #include <mach/board.h>
+ #include <mach/display.h>
+@@ -256,6 +257,8 @@ static struct
+ 	unsigned long	dsiphy;		/* Hz */
+ 	unsigned long	ddr_clk;	/* Hz */
+ 
++	struct regulator *vdds_dsi_reg;
++
+ 	struct {
+ 		struct omap_dss_device *dssdev;
+ 		enum fifo_size fifo_size;
+@@ -1177,7 +1180,7 @@ int dsi_pll_init(bool enable_hsclk, bool enable_hsdiv)
+ 		goto err0;
+ 	}
+ 
+-	r = dss_dsi_power_up();
++	r = regulator_enable(dsi.vdds_dsi_reg);
+ 	if (r)
+ 		goto err0;
+ 
+@@ -1212,7 +1215,7 @@ int dsi_pll_init(bool enable_hsclk, bool enable_hsdiv)
+ 
+ 	return 0;
+ err1:
+-	dss_dsi_power_down();
++	regulator_disable(dsi.vdds_dsi_reg);
+ err0:
+ 	enable_clocks(0);
+ 	dsi_enable_pll_clock(0);
+@@ -1226,7 +1229,7 @@ void dsi_pll_uninit(void)
+ 
+ 	dsi.pll_locked = 0;
+ 	dsi_pll_power(DSI_PLL_POWER_OFF);
+-	dss_dsi_power_down();
++	regulator_disable(dsi.vdds_dsi_reg);
+ 	DSSDBG("PLL uninit done\n");
+ }
+ 
+@@ -3898,6 +3901,13 @@ int dsi_init(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
++	dsi.vdds_dsi_reg = regulator_get(&pdev->dev, "vdds_dsi");
++	if (IS_ERR(dsi.vdds_dsi_reg)) {
++		iounmap(dsi.base);
++		DSSERR("can't get VDDS_DSI regulator\n");
++		return PTR_ERR(dsi.vdds_dsi_reg);
++	}
++
+ 	enable_clocks(1);
+ 
+ 	rev = dsi_read_reg(DSI_REVISION);
+@@ -3914,6 +3924,8 @@ void dsi_exit(void)
+ 	flush_workqueue(dsi.workqueue);
+ 	destroy_workqueue(dsi.workqueue);
+ 
++	regulator_put(dsi.vdds_dsi_reg);
++
+ 	iounmap(dsi.base);
+ 
+ 	kfifo_free(dsi.cmd_fifo);
+-- 
+1.6.2.4
+

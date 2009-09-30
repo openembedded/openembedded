@@ -1,0 +1,35 @@
+From ad6c07cb298391adfbbb286606cca98738675119 Mon Sep 17 00:00:00 2001
+From: Imre Deak <imre.deak@nokia.com>
+Date: Tue, 5 May 2009 11:16:14 +0200
+Subject: [PATCH 062/146] VRFB: fix debug messages
+
+Signed-off-by: Imre Deak <imre.deak@nokia.com>
+---
+ arch/arm/plat-omap/vrfb.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vrfb.c b/arch/arm/plat-omap/vrfb.c
+index 649803e..289fc8a 100644
+--- a/arch/arm/plat-omap/vrfb.c
++++ b/arch/arm/plat-omap/vrfb.c
+@@ -87,7 +87,7 @@ void omap_vrfb_setup(struct vrfb *vrfb, unsigned long paddr,
+ 	u32 control;
+ 
+ 	DBG("omapfb_set_vrfb(%d, %lx, %dx%d, %d)\n", ctx, paddr,
+-			width, height, bytespp);
++			width, height, color_mode);
+ 
+ 	switch (color_mode) {
+ 	case OMAP_DSS_COLOR_RGB16:
+@@ -127,7 +127,7 @@ void omap_vrfb_setup(struct vrfb *vrfb, unsigned long paddr,
+ 	vrfb_width = ALIGN(width * bytespp, VRFB_PAGE_WIDTH) / bytespp;
+ 	vrfb_height = ALIGN(height, VRFB_PAGE_HEIGHT);
+ 
+-	DBG("vrfb w %u, h %u\n", vrfb_width, vrfb_height);
++	DBG("vrfb w %u, h %u bytespp %d\n", vrfb_width, vrfb_height, bytespp);
+ 
+ 	size  = vrfb_width << SMS_IMAGEWIDTH_OFFSET;
+ 	size |= vrfb_height << SMS_IMAGEHEIGHT_OFFSET;
+-- 
+1.6.2.4
+

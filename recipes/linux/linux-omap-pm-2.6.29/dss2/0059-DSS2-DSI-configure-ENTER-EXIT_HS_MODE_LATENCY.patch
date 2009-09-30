@@ -1,0 +1,97 @@
+From 750f7ddc0881834f3400c40e9a59d11f9427cf99 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 29 Apr 2009 17:26:30 +0300
+Subject: [PATCH 59/69] DSS2: DSI: configure ENTER/EXIT_HS_MODE_LATENCY
+
+---
+ drivers/video/omap2/dss/dsi.c |   49 ++++++++++++++++++++++++++++++++--------
+ 1 files changed, 39 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index d8df353..5225ed6 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -2309,15 +2309,26 @@ static int dsi_proto_config(struct omap_display *display)
+ 	return 0;
+ }
+ 
+-static void dsi_proto_timings(void)
+-{
+-	int tlpx_half, tclk_zero, tclk_prepare, tclk_trail;
+-	int tclk_pre, tclk_post;
+-	int ddr_clk_pre, ddr_clk_post;
++static void dsi_proto_timings(struct omap_display *display)
++{
++	unsigned tlpx, tclk_zero, tclk_prepare, tclk_trail;
++	unsigned tclk_pre, tclk_post;
++	unsigned ths_prepare, ths_prepare_ths_zero, ths_zero;
++	unsigned ths_trail, ths_exit;
++	unsigned ddr_clk_pre, ddr_clk_post;
++	unsigned enter_hs_mode_lat, exit_hs_mode_lat;
++	unsigned ths_eot;
+ 	u32 r;
+ 
++	r = dsi_read_reg(DSI_DSIPHY_CFG0);
++	ths_prepare = FLD_GET(r, 31, 24);
++	ths_prepare_ths_zero = FLD_GET(r, 23, 16);
++	ths_zero = ths_prepare_ths_zero - ths_prepare;
++	ths_trail = FLD_GET(r, 15, 8);
++	ths_exit = FLD_GET(r, 7, 0);
++
+ 	r = dsi_read_reg(DSI_DSIPHY_CFG1);
+-	tlpx_half = FLD_GET(r, 22, 16);
++	tlpx = FLD_GET(r, 22, 16) * 2;
+ 	tclk_trail = FLD_GET(r, 15, 8);
+ 	tclk_zero = FLD_GET(r, 7, 0);
+ 
+@@ -2329,17 +2340,35 @@ static void dsi_proto_timings(void)
+ 	/* min 60ns + 52*UI */
+ 	tclk_post = ns2ddr(60) + 26;
+ 
+-	ddr_clk_pre = (tclk_pre + tlpx_half*2 + tclk_zero + tclk_prepare) / 4;
+-	ddr_clk_post = (tclk_post + tclk_trail) / 4;
++	ddr_clk_pre = DIV_ROUND_UP(tclk_pre + tlpx + tclk_zero + tclk_prepare,
++			4);
++	ddr_clk_post = DIV_ROUND_UP(tclk_post + tclk_trail, 4);
+ 
+ 	r = dsi_read_reg(DSI_CLK_TIMING);
+ 	r = FLD_MOD(r, ddr_clk_pre, 15, 8);
+ 	r = FLD_MOD(r, ddr_clk_post, 7, 0);
+ 	dsi_write_reg(DSI_CLK_TIMING, r);
+ 
+-	DSSDBG("ddr_clk_pre %d, ddr_clk_post %d\n",
++	DSSDBG("ddr_clk_pre %u, ddr_clk_post %u\n",
+ 			ddr_clk_pre,
+ 			ddr_clk_post);
++
++	/* ths_eot is 2 for 2 datalanes and 4 for 1 datalane */
++	if (display->hw_config.u.dsi.data1_lane != 0 &&
++			display->hw_config.u.dsi.data2_lane != 0)
++		ths_eot = 2;
++	else
++		ths_eot = 4;
++
++	enter_hs_mode_lat = DIV_ROUND_UP(tlpx + ths_prepare + ths_zero, 4) + 4;
++	exit_hs_mode_lat = DIV_ROUND_UP(ths_trail + ths_exit, 4) + 1 + ths_eot;
++
++	r = FLD_VAL(enter_hs_mode_lat, 31, 16) |
++		FLD_VAL(exit_hs_mode_lat, 15, 0);
++	dsi_write_reg(DSI_VM_TIMING7, r);
++
++	DSSDBG("enter_hs_mode_lat %u, exit_hs_mode_lat %u\n",
++			enter_hs_mode_lat, exit_hs_mode_lat);
+ }
+ 
+ 
+@@ -3340,7 +3369,7 @@ static int dsi_display_init_dsi(struct omap_display *display)
+ 
+ 	_dsi_print_reset_status();
+ 
+-	dsi_proto_timings();
++	dsi_proto_timings(display);
+ 	dsi_set_lp_clk_divisor();
+ 
+ 	if (1)
+-- 
+1.6.2.4
+

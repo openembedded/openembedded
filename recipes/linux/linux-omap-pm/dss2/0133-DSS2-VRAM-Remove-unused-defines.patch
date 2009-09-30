@@ -1,0 +1,41 @@
+From bc4dd8997279f25e115e27781a8b9f90315cb3ef Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 1 Jul 2009 12:34:05 +0300
+Subject: [PATCH 133/146] DSS2: VRAM: Remove unused defines
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/plat-omap/vram.c |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vram.c b/arch/arm/plat-omap/vram.c
+index d4a8110..940c25d 100644
+--- a/arch/arm/plat-omap/vram.c
++++ b/arch/arm/plat-omap/vram.c
+@@ -1,7 +1,7 @@
+ /*
+- * linux/arch/arm/plat-omap/vram.c
++ * arch/arm/plat-omap/vram.c
+  *
+- * Copyright (C) 2008 Nokia Corporation
++ * Copyright (C) 2009 Nokia Corporation
+  * Author: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+  *
+  * Some code and ideas taken from drivers/video/omap/ driver
+@@ -49,13 +49,6 @@
+ /* Maximum size, in reality this is smaller if SRAM is partially locked. */
+ #define OMAP2_SRAM_SIZE			0xa0000		/* 640k */
+ 
+-#define REG_MAP_SIZE(_page_cnt) \
+-	((_page_cnt + (sizeof(unsigned long) * 8) - 1) / 8)
+-#define REG_MAP_PTR(_rg, _page_nr) \
+-	(((_rg)->map) + (_page_nr) / (sizeof(unsigned long) * 8))
+-#define REG_MAP_MASK(_page_nr) \
+-	(1 << ((_page_nr) & (sizeof(unsigned long) * 8 - 1)))
+-
+ #if defined(CONFIG_FB_OMAP2) || defined(CONFIG_FB_OMAP2_MODULE)
+ 
+ /* postponed regions are used to temporarily store region information at boot
+-- 
+1.6.2.4
+

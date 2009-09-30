@@ -1,0 +1,29 @@
+From 7ae220f46384b34e72b8c3b0c2075a674a3f74fe Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 3 Jul 2009 08:53:11 +0300
+Subject: [PATCH 146/146] DSS2: change include <asm/...> to <linux/...> in omapfb.h
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ include/linux/omapfb.h |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/omapfb.h b/include/linux/omapfb.h
+index 67dc375..0290584 100644
+--- a/include/linux/omapfb.h
++++ b/include/linux/omapfb.h
+@@ -25,9 +25,8 @@
+ #define __OMAPFB_H
+ 
+ #include <linux/fb.h>
+-
+-#include <asm/ioctl.h>
+-#include <asm/types.h>
++#include <linux/ioctl.h>
++#include <linux/types.h>
+ 
+ /* IOCTL commands. */
+ 
+-- 
+1.6.2.4
+

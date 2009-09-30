@@ -1,0 +1,50 @@
+From a9a5c0bd138aaf83b4eeff0b2923abdb255be55c Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 12 Jun 2009 11:22:24 +0300
+Subject: [PATCH 112/146] DSS2: Correctly determine if an interlaced display is used
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+When applying the settings to all the overlays ilace is initialzed to 0
+in the beginning and then changed to 1 when the first overlay directed
+to an interlaced display is found. If there are more overlays after that
+one which are not directed to an interlaced display the code would still
+pass ilace=1 to the the dispc code which would halve the output height of
+the overlay. Fix the problem by correctly setting ilace for each overlay.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@nokia.com>
+
+Conflicts:
+
+	drivers/video/omap2/dss/manager.c
+---
+ drivers/video/omap2/dss/manager.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/manager.c b/drivers/video/omap2/dss/manager.c
+index eeca3f9..f6df4d6 100644
+--- a/drivers/video/omap2/dss/manager.c
++++ b/drivers/video/omap2/dss/manager.c
+@@ -412,7 +412,7 @@ static int omap_dss_mgr_apply(struct omap_overlay_manager *mgr)
+ 	enum omap_dss_update_mode mode;
+ 	struct omap_dss_device *dssdev;
+ 	struct omap_overlay *ovl;
+-	bool ilace = 0;
++	bool ilace;
+ 	int outw, outh;
+ 	int r;
+ 	int num_planes_enabled = 0;
+@@ -452,8 +452,7 @@ static int omap_dss_mgr_apply(struct omap_overlay_manager *mgr)
+ 				mode != OMAP_DSS_UPDATE_AUTO)
+ 			continue;
+ 
+-		if (dssdev->type == OMAP_DISPLAY_TYPE_VENC)
+-			ilace = 1;
++		ilace = dssdev->type == OMAP_DISPLAY_TYPE_VENC;
+ 
+ 		if (ovl->info.out_width == 0)
+ 			outw = ovl->info.width;
+-- 
+1.6.2.4
+

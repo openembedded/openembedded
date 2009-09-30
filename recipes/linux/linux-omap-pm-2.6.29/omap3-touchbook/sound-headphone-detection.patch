@@ -1,0 +1,93 @@
+From db8f1eba9154789c45c6a92413bbbd94f5d9c7f5 Mon Sep 17 00:00:00 2001
+From: Tim Yamin <plasm@roo.me.uk>
+Date: Wed, 29 Apr 2009 17:30:25 -0700
+Subject: [PATCH] Touch Book: turn on/off the class D amplifier depending on whether the
+ headphones are plugged into the jack or not.
+
+Signed-off-by: Tim Yamin <plasm@roo.me.uk>
+---
+ sound/soc/omap/omap3beagle.c |   33 +++++++++++++++++++++++++++++++++
+ 1 files changed, 33 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
+index fd24a4a..1236638 100644
+--- a/sound/soc/omap/omap3beagle.c
++++ b/sound/soc/omap/omap3beagle.c
+@@ -20,7 +20,10 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/irq.h>
++#include <linux/interrupt.h>
+ #include <linux/platform_device.h>
++
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+@@ -35,6 +38,9 @@
+ #include "omap-pcm.h"
+ #include "../codecs/twl4030.h"
+ 
++#define TB_HEADPHONE_GPIO 56
++#define TB_HEADPHONE_IRQ  OMAP_GPIO_IRQ(TB_HEADPHONE_GPIO)
++
+ static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+@@ -103,6 +109,33 @@ static struct snd_soc_device omap3beagle_snd_devdata = {
+ 
+ static struct platform_device *omap3beagle_snd_device;
+ 
++static void jack_work_func(struct work_struct *wq)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(omap3beagle_snd_device);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	snd_soc_dapm_sync(codec);
++}
++DECLARE_WORK(jack_work, jack_work_func);
++
++static irqreturn_t touchbook_headphone_event(int irq, void *snd)
++{
++	int status = gpio_get_value(TB_HEADPHONE_GPIO);
++	struct snd_soc_device *socdev = platform_get_drvdata(omap3beagle_snd_device);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	if(status) {
++		snd_soc_dapm_disable_pin(codec, "HFL");
++		snd_soc_dapm_disable_pin(codec, "HFR");
++        } else {
++		snd_soc_dapm_enable_pin(codec, "HFL");
++		snd_soc_dapm_enable_pin(codec, "HFR");
++	}
++
++	schedule_work(&jack_work);
++	return IRQ_HANDLED;
++}
++
+ static int __init omap3beagle_soc_init(void)
+ {
+ 	int ret;
+@@ -123,10 +156,22 @@ static int __init omap3beagle_soc_init(void)
+ 	omap3beagle_snd_devdata.dev = &omap3beagle_snd_device->dev;
+ 	*(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
+ 
++	/* Touch Book -- headphone jack sensor */
++	omap_set_gpio_debounce(TB_HEADPHONE_GPIO, 1);
++	omap_set_gpio_debounce_time(TB_HEADPHONE_GPIO, 0xff);
++
++	ret = request_irq(TB_HEADPHONE_IRQ, touchbook_headphone_event, IRQF_TRIGGER_RISING |
++			  IRQF_TRIGGER_FALLING, "touchbook_headphone", omap3beagle_snd_device);
++	if (ret < 0)
++		goto err1;
++
+ 	ret = platform_device_add(omap3beagle_snd_device);
+ 	if (ret)
+ 		goto err1;
+ 
++	/* Detect headphone status */
++	touchbook_headphone_event(0, omap3beagle_snd_device);
++
+ 	return 0;
+ 
+ err1:

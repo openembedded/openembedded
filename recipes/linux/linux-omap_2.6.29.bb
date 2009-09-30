@@ -3,11 +3,12 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom"
+COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom|omap3-touchbook"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_overo = "1"
 DEFAULT_PREFERENCE_beagleboard = "1"
+DEFAULT_PREFERENCE_omap3evm = "1"
 
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
@@ -151,17 +152,56 @@ SRC_URI_append = " \
            file://isp/omap3camera/0007-omap3isp-Add-CSI2-interface-support.patch;patch=1 \
            file://isp/omap3camera/0008-omap3isp-Add-ISP-tables.patch;patch=1 \
            file://isp/omap3camera/0009-omap34xxcam-Add-camera-driver.patch;patch=1 \
-#           file://isp/base/0001-omap3-Add-base-address-definitions-and-resources-fo.patch;patch=1 \
-#           file://isp/standalone/0001-Resizer-and-Previewer-driver-added-to-commit.patch;patch=1 \
-#           file://isp/standalone/0002-Resizer-bug-fixes-on-top-of-1.0.2-release.patch;patch=1 \
+           file://isp/resizer/0023-OMAP-Resizer-Basic-Resizer-refreshed-with-latest-gi.patch;patch=1 \
+           file://isp/resizer/0024-OMAP3-Resizer-V4L2-buf-layer-issues-fixed.patch;patch=1 \
+           file://isp/resizer/0025-OMAP3-Resizer-Build-issues-fixed.patch;patch=1 \
            file://0124-leds-gpio-broken-with-current-git.patch;patch=1 \
            file://modedb-hd720.patch;patch=1 \
            file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+           file://vfp/02-vfp-ptrace.patch;patch=1 \
+           file://vfp/03-vfp-corruption.patch;patch=1 \
+           file://vfp/04-vfp-threads.patch;patch=1 \
+           file://vfp/05-vfp-signal-handlers.patch;patch=1 \
+           file://arch-has-holes.diff;patch=1 \
+           file://cache/l1cache-shift.patch;patch=1 \
+           file://cache/copy-page-tweak.patch;patch=1 \
 "
 
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
 			                   file://beagle-asoc.patch;patch=1 \
+                               file://tincantools-puppy.diff;patch=1 \
+                               file://tincantools-zippy.diff;patch=1 \
+			       file://beaglebug/beaglebug-full.patch;patch=1 \
+"
+
+SRC_URI_append_omap3-touchbook = " \
+           file://beagle-asoc.patch;patch=1 \
+           file://accelerometer-mma7455l.patch;patch=1 \
+           file://accelerometer-touchscreen-mux-spi.patch;patch=1 \
+           file://touchscreen-ads7846-export-settings.patch;patch=1 \
+           file://touchscreen-ads7846-rotation-support.patch;patch=1 \
+           file://dspbridge.patch;patch=1 \
+           file://battery2-bq27200-no-error-message.patch;patch=1 \
+           file://sound-headphone-detection.patch;patch=1 \
+           file://dss2-fix-XY-coordinates-when-rotating.patch;patch=1 \
+           file://screen-backlight.patch;patch=1 \
+           file://battery1-tps65950-charging-management-1.patch;patch=1 \
+           file://dss2-fix-scaling-when-rotating.patch;patch=1 \
+           file://dss2-export-status.patch;patch=1 \
+           file://usb-otg-pc-connection.patch;patch=1 \
+           file://battery1-tps65950-charging-management-2.patch;patch=1 \
+           file://memory-move-malloc-end.patch;patch=1 \
+           file://aufs-1.patch;patch=1 \
+           file://aufs-2.patch;patch=1 \
+           file://aufs-3.patch;patch=1 \
+           file://aufs-squashfs-mount-to-avoid-initramfs.patch;patch=1 \
+           file://screen-backlight-accessible-by-user.patch;patch=1 \
+           file://dss2-blank-rotate-accessible-by-user.patch;patch=1 \
+           file://boot-no-power-message.patch;patch=1 \
+           file://usb-lower-current-consumption-upon-insertion.patch;patch=1 \
+           file://battery2-bq27200-gpio-charged.patch;patch=1 \
+           file://board-omap3beagle.c \
 "
 
 SRC_URI_append_omap3evm = " \
@@ -171,6 +211,18 @@ SRC_URI_append_omap3evm = " \
 
 
 S = "${WORKDIR}/git"
+
+do_configure_prepend_omap3-touchbook() {
+	cp ${WORKDIR}/board-omap3beagle.c ${S}/arch/arm/mach-omap2
+}
+
+do_install_append() {
+        install -d ${D}/boot
+        install -m 0644 Documentation/arm/OMAP/DSS ${D}/boot || true
+}
+
+PACKAGES =+ "omap-dss-doc"
+FILES_omap-dss-doc = "/boot/DSS"
 
 
 module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"

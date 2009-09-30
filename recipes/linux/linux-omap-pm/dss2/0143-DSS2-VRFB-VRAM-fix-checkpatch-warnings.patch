@@ -1,0 +1,41 @@
+From 3ef64847bf3139f00aa254f1c5dda46b5c13470d Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 2 Jul 2009 15:14:57 +0300
+Subject: [PATCH 143/146] DSS2: VRFB/VRAM: fix checkpatch warnings
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/plat-omap/include/mach/vram.h |    2 +-
+ arch/arm/plat-omap/include/mach/vrfb.h |    3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/vram.h b/arch/arm/plat-omap/include/mach/vram.h
+index 4f2c2e6..fe72f81 100644
+--- a/arch/arm/plat-omap/include/mach/vram.h
++++ b/arch/arm/plat-omap/include/mach/vram.h
+@@ -22,7 +22,7 @@
+ #define __OMAP_VRAM_H__
+ 
+ #include <linux/autoconf.h>
+-#include <asm/types.h>
++#include <linux/types.h>
+ 
+ #define OMAP_VRAM_MEMTYPE_SDRAM		0
+ #define OMAP_VRAM_MEMTYPE_SRAM		1
+diff --git a/arch/arm/plat-omap/include/mach/vrfb.h b/arch/arm/plat-omap/include/mach/vrfb.h
+index 1a53c0e..dee929c 100644
+--- a/arch/arm/plat-omap/include/mach/vrfb.h
++++ b/arch/arm/plat-omap/include/mach/vrfb.h
+@@ -24,8 +24,7 @@
+ #include <mach/display.h>
+ #define OMAP_VRFB_LINE_LEN 2048
+ 
+-struct vrfb
+-{
++struct vrfb {
+ 	u8 context;
+ 	void __iomem *vaddr[4];
+ 	unsigned long paddr[4];
+-- 
+1.6.2.4
+

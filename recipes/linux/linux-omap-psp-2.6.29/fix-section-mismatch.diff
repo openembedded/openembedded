@@ -1,0 +1,11 @@
+--- /tmp/board-omap3evm.c	2009-07-23 15:25:30.000000000 +0200
++++ git/arch/arm/mach-omap2/board-omap3evm.c	2009-07-23 15:28:47.000000000 +0200
+@@ -186,7 +186,7 @@
+ 	.irq_line	= 1,
+ };
+ 
+-static struct twl4030_platform_data omap3evm_twldata = {
++static struct twl4030_platform_data __initdata omap3evm_twldata = {
+ 	.irq_base	= TWL4030_IRQ_BASE,
+ 	.irq_end	= TWL4030_IRQ_END,
+ 

@@ -1,0 +1,49 @@
+From 7f7e699c5481a69428c4c01b291f14a8eec5c52c Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 2 Jul 2009 11:27:13 +0300
+Subject: [PATCH 140/146] DSS2: VRAM: Change CONFIG_OMAP2_DSS_VRAM_SIZE name
+
+Changed to CONFIG_OMAP2_VRAM_SIZE
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/plat-omap/vram.c       |    4 ++--
+ drivers/video/omap2/dss/Kconfig |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vram.c b/arch/arm/plat-omap/vram.c
+index 0fd5b13..89ae1cf 100644
+--- a/arch/arm/plat-omap/vram.c
++++ b/arch/arm/plat-omap/vram.c
+@@ -543,9 +543,9 @@ void __init omap_vram_reserve_sdram(void)
+ 		paddr = omap_vram_sdram_start;
+ 	}
+ 
+-#ifdef CONFIG_OMAP2_DSS_VRAM_SIZE
++#ifdef CONFIG_OMAP2_VRAM_SIZE
+ 	if (!size) {
+-		size = CONFIG_OMAP2_DSS_VRAM_SIZE * 1024 * 1024;
++		size = CONFIG_OMAP2_VRAM_SIZE * 1024 * 1024;
+ 		paddr = 0;
+ 	}
+ #endif
+diff --git a/drivers/video/omap2/dss/Kconfig b/drivers/video/omap2/dss/Kconfig
+index f2ce068..71d8dec 100644
+--- a/drivers/video/omap2/dss/Kconfig
++++ b/drivers/video/omap2/dss/Kconfig
+@@ -6,10 +6,10 @@ menuconfig OMAP2_DSS
+ 
+ if OMAP2_DSS
+ 
+-config OMAP2_DSS_VRAM_SIZE
++config OMAP2_VRAM_SIZE
+ 	int "VRAM size (MB)"
+ 	range 0 32
+-	default 4
++	default 0
+ 	help
+ 	  The amount of SDRAM to reserve at boot time for video RAM use.
+ 	  This VRAM will be used by omapfb and other drivers that need
+-- 
+1.6.2.4
+

@@ -1,0 +1,25 @@
+From 989ad2f5d7ce459332ecaca7e0c5ffa0e24218b9 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Mon, 1 Jun 2009 14:08:12 +0300
+Subject: [PATCH 086/146] DSS2: VRFB: make vrfb_hw_context static
+
+---
+ arch/arm/plat-omap/vrfb.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vrfb.c b/arch/arm/plat-omap/vrfb.c
+index 34395c2..59ac66a 100644
+--- a/arch/arm/plat-omap/vrfb.c
++++ b/arch/arm/plat-omap/vrfb.c
+@@ -49,7 +49,7 @@ static unsigned long ctx_map_active;
+  * we don't need locking, since no drivers will run until after the wake-up
+  * has finished.
+  */
+-struct {
++static struct {
+ 	u32 physical_ba;
+ 	u32 control;
+ 	u32 size;
+-- 
+1.6.2.4
+

@@ -1,0 +1,265 @@
+From b666333651cbb1e60a84b6be8b9d45b3104ca804 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 27 May 2009 16:34:54 +0300
+Subject: [PATCH 084/146] DSS2: DSI: Implement DSI bus lock
+
+DSI bus lock protects the DSI bus. Normally dsi driver acquires the
+lock, but if display drivers have their own workqueues, or similar,
+they need to acquire the bus lock before sending data.
+---
+ arch/arm/plat-omap/include/mach/display.h |    2 +
+ drivers/video/omap2/dss/dsi.c             |   61 +++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index 2031dd5..d36f730 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -169,6 +169,8 @@ int omap_rfbi_setup_te(enum omap_rfbi_te_mode mode,
+ 			     int hs_pol_inv, int vs_pol_inv, int extif_div);
+ 
+ /* DSI */
++void dsi_bus_lock(void);
++void dsi_bus_unlock(void);
+ int dsi_vc_dcs_write(int channel, u8 *data, int len);
+ int dsi_vc_dcs_write_nosync(int channel, u8 *data, int len);
+ int dsi_vc_dcs_read(int channel, u8 dcs_cmd, u8 *buf, int buflen);
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index a845ea6..a06fb75 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -262,6 +262,7 @@ static struct
+ 	} vc[4];
+ 
+ 	struct mutex lock;
++	struct mutex bus_lock;
+ 
+ 	unsigned pll_locked;
+ 
+@@ -339,6 +340,18 @@ void dsi_restore_context(void)
+ {
+ }
+ 
++void dsi_bus_lock(void)
++{
++	mutex_lock(&dsi.bus_lock);
++}
++EXPORT_SYMBOL(dsi_bus_lock);
++
++void dsi_bus_unlock(void)
++{
++	mutex_unlock(&dsi.bus_lock);
++}
++EXPORT_SYMBOL(dsi_bus_unlock);
++
+ static inline int wait_for_bit_change(const struct dsi_reg idx, int bitnum,
+ 		int value)
+ {
+@@ -1887,6 +1900,8 @@ static inline void dsi_vc_write_long_header(int channel, u8 data_type,
+ 	u32 val;
+ 	u8 data_id;
+ 
++	WARN_ON(!mutex_is_locked(&dsi.bus_lock));
++
+ 	/*data_id = data_type | channel << 6; */
+ 	data_id = data_type | dsi.vc[channel].dest_per << 6;
+ 
+@@ -1978,6 +1993,8 @@ static int dsi_vc_send_short(int channel, u8 data_type, u16 data, u8 ecc)
+ 	u32 r;
+ 	u8 data_id;
+ 
++	WARN_ON(!mutex_is_locked(&dsi.bus_lock));
++
+ 	if (dsi.debug_write)
+ 		DSSDBG("dsi_vc_send_short(ch%d, dt %#x, b1 %#x, b2 %#x)\n",
+ 				channel,
+@@ -2478,6 +2495,8 @@ static int dsi_update_screen_l4(struct omap_display *display,
+ 
+ 	DSSDBG("max_pixels_per_packet %d\n", max_pixels_per_packet);
+ 
++	dsi_bus_lock();
++
+ 	display->ctrl->setup_update(display, x, y, w, h);
+ 
+ 	pixels_left = w * h;
+@@ -2514,6 +2533,7 @@ static int dsi_update_screen_l4(struct omap_display *display,
+ 				DSSERR("fifo stalls overflow, pixels left %d\n",
+ 						pixels_left);
+ 				dsi_if_enable(0);
++				dsi_bus_unlock();
+ 				return -EIO;
+ 			}
+ 		}
+@@ -2526,6 +2546,7 @@ static int dsi_update_screen_l4(struct omap_display *display,
+ 				DSSERR("fifo stalls overflow, pixels left %d\n",
+ 					       pixels_left);
+ 				dsi_if_enable(0);
++				dsi_bus_unlock();
+ 				return -EIO;
+ 			}
+ 		}
+@@ -2536,6 +2557,7 @@ static int dsi_update_screen_l4(struct omap_display *display,
+ 				DSSERR("fifo stalls overflow, pixels left %d\n",
+ 					       pixels_left);
+ 				dsi_if_enable(0);
++				dsi_bus_unlock();
+ 				return -EIO;
+ 			}
+ 		}
+@@ -2568,6 +2590,8 @@ static int dsi_update_screen_l4(struct omap_display *display,
+ 
+ 	perf_show("L4");
+ 
++	dsi_bus_unlock();
++
+ 	return 0;
+ }
+ 
+@@ -2734,6 +2758,8 @@ static void dsi_update_screen_dispc(struct omap_display *display,
+ 	if (len % packet_payload)
+ 		total_len += (len % packet_payload) + 1;
+ 
++	dsi_bus_lock();
++
+ 	display->ctrl->setup_update(display, x, y, w, h);
+ 
+ 	if (dsi.use_ext_te && display->ctrl->wait_for_te)
+@@ -2774,6 +2800,12 @@ static void framedone_timeout_callback(struct work_struct *work)
+ 
+ 	/* XXX TODO: cancel the transfer properly */
+ 
++	dsi_bus_unlock();
++
++	/* Schedule, so that other threads that want dsi-bus-lock can get it.
++	 * Otherwise with autoupdate we may be holding it all the time */
++	schedule();
++
+ 	/* XXX check that fifo is not full. otherwise we would sleep and never
+ 	 * get to process_cmd_fifo below */
+ 	/* We check for target_update_mode, not update_mode. No reason to push
+@@ -2852,6 +2884,12 @@ static void framedone_worker(struct work_struct *work)
+ #endif
+ 	dsi.framedone_scheduled = 0;
+ 
++	dsi_bus_unlock();
++
++	/* Schedule, so that other threads that want dsi-bus-lock can get it.
++	 * Otherwise with autoupdate we may be holding it all the time */
++	schedule();
++
+ 	/* XXX check that fifo is not full. otherwise we would sleep and never
+ 	 * get to process_cmd_fifo below */
+ 	/* We check for target_update_mode, not update_mode. No reason to push
+@@ -2970,6 +3008,9 @@ static void dsi_do_cmd_mem_read(struct omap_display *display,
+ 		struct dsi_cmd_mem_read *mem_read)
+ {
+ 	int r;
++
++	dsi_bus_lock();
++
+ 	r = display->ctrl->memory_read(display,
+ 			mem_read->buf,
+ 			mem_read->size,
+@@ -2978,6 +3019,8 @@ static void dsi_do_cmd_mem_read(struct omap_display *display,
+ 			mem_read->w,
+ 			mem_read->h);
+ 
++	dsi_bus_unlock();
++
+ 	*mem_read->ret_size = (size_t)r;
+ 	complete(mem_read->completion);
+ }
+@@ -2992,6 +3035,8 @@ static void dsi_do_cmd_test(struct omap_display *display,
+ 	if (display->state != OMAP_DSS_DISPLAY_ACTIVE)
+ 		return;
+ 
++	dsi_bus_lock();
++
+ 	/* run test first in low speed mode */
+ 	dsi_vc_enable_hs(0, 0);
+ 
+@@ -3022,6 +3067,8 @@ static void dsi_do_cmd_test(struct omap_display *display,
+ end:
+ 	dsi_vc_enable_hs(0, 1);
+ 
++	dsi_bus_unlock();
++
+ 	*test->result = r;
+ 	complete(test->completion);
+ 
+@@ -3038,7 +3085,9 @@ static void dsi_do_cmd_set_te(struct omap_display *display, bool enable)
+ 	if (display->state != OMAP_DSS_DISPLAY_ACTIVE)
+ 		return;
+ 
++	dsi_bus_lock();
+ 	display->ctrl->enable_te(display, enable);
++	dsi_bus_unlock();
+ 
+ 	if (!display->hw_config.u.dsi.ext_te) {
+ 		if (enable) {
+@@ -3148,13 +3197,17 @@ static void dsi_process_cmd_fifo(struct work_struct *work)
+ 			break;
+ 
+ 		case DSI_CMD_SET_ROTATE:
++			dsi_bus_lock();
+ 			display->ctrl->set_rotate(display, p.u.rotate);
+ 			if (dsi.update_mode == OMAP_DSS_UPDATE_AUTO)
+ 				dsi.autoupdate_setup = 1;
++			dsi_bus_unlock();
+ 			break;
+ 
+ 		case DSI_CMD_SET_MIRROR:
++			dsi_bus_lock();
+ 			display->ctrl->set_mirror(display, p.u.mirror);
++			dsi_bus_unlock();
+ 			break;
+ 
+ 		default:
+@@ -3417,6 +3470,8 @@ static int dsi_display_init_dsi(struct omap_display *display)
+ 
+ 	_dsi_print_reset_status();
+ 
++	dsi_bus_lock();
++
+ 	r = dsi_pll_init(1, 0);
+ 	if (r)
+ 		goto err0;
+@@ -3468,6 +3523,8 @@ static int dsi_display_init_dsi(struct omap_display *display)
+ 	/* enable high-speed after initial config */
+ 	dsi_vc_enable_hs(0, 1);
+ 
++	dsi_bus_unlock();
++
+ 	return 0;
+ err4:
+ 	if (display->ctrl && display->ctrl->disable)
+@@ -3479,15 +3536,18 @@ err2:
+ err1:
+ 	dsi_pll_uninit();
+ err0:
++	dsi_bus_unlock();
+ 	return r;
+ }
+ 
+ static void dsi_display_uninit_dsi(struct omap_display *display)
+ {
++	dsi_bus_lock();
+ 	if (display->panel && display->panel->disable)
+ 		display->panel->disable(display);
+ 	if (display->ctrl && display->ctrl->disable)
+ 		display->ctrl->disable(display);
++	dsi_bus_unlock();
+ 
+ 	dsi_complexio_uninit();
+ 	dsi_pll_uninit();
+@@ -3863,6 +3923,7 @@ int dsi_init(void)
+ 			framedone_timeout_callback);
+ 
+ 	mutex_init(&dsi.lock);
++	mutex_init(&dsi.bus_lock);
+ 
+ 	dsi.target_update_mode = OMAP_DSS_UPDATE_DISABLED;
+ 	dsi.user_update_mode = OMAP_DSS_UPDATE_DISABLED;
+-- 
+1.6.2.4
+

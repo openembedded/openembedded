@@ -1,0 +1,110 @@
+From da9828702ab1cf29401f9a93f1e950505bfa2b76 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 22 May 2009 13:43:26 +0300
+Subject: [PATCH 069/146] DSS2: DSI: Add support for external TE signal
+
+I hope this can be removed when the DSI displays work properly.
+---
+ arch/arm/plat-omap/include/mach/display.h |    4 ++++
+ drivers/video/omap2/dss/dsi.c             |   29 +++++++++++++++++++----------
+ 2 files changed, 23 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index 31ebb96..dccc660 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -201,6 +201,9 @@ struct omap_dss_display_config {
+ 			u8 data2_lane;
+ 			u8 data2_pol;
+ 			unsigned long ddr_clk_hz;
++
++			bool ext_te;
++			u8 ext_te_gpio;
+ 		} dsi;
+ 
+ 		struct {
+@@ -256,6 +259,7 @@ struct omap_ctrl {
+ 			     u16 x, u16 y, u16 w, u16 h);
+ 
+ 	int (*enable_te)(struct omap_display *display, bool enable);
++	int (*wait_for_te)(struct omap_display *display);
+ 
+ 	u8 (*get_rotate)(struct omap_display *display);
+ 	int (*set_rotate)(struct omap_display *display, u8 rotate);
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index 057b057..f39c890 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -274,7 +274,8 @@ static struct
+ 	enum omap_dss_update_mode user_update_mode;
+ 	enum omap_dss_update_mode target_update_mode;
+ 	enum omap_dss_update_mode update_mode;
+-	int use_te;
++	bool use_te;
++	bool use_ext_te;
+ 	int framedone_scheduled; /* helps to catch strange framedone bugs */
+ 
+ 	unsigned long cache_req_pck;
+@@ -2734,6 +2735,9 @@ static void dsi_update_screen_dispc(struct omap_display *display,
+ 
+ 	display->ctrl->setup_update(display, x, y, w, h);
+ 
++	if (dsi.use_ext_te && display->ctrl->wait_for_te)
++		display->ctrl->wait_for_te(display);
++
+ 	if (0)
+ 		dsi_vc_print_status(1);
+ 
+@@ -3001,19 +3005,24 @@ end:
+ 
+ static void dsi_do_cmd_set_te(struct omap_display *display, bool enable)
+ {
+-	dsi.use_te = enable;
++	if (!display->hw_config.u.dsi.ext_te)
++		dsi.use_te = enable;
++	else
++		dsi.use_ext_te = enable;
+ 
+ 	if (display->state != OMAP_DSS_DISPLAY_ACTIVE)
+ 		return;
+ 
+ 	display->ctrl->enable_te(display, enable);
+ 
+-	if (enable) {
+-		/* disable LP_RX_TO, so that we can receive TE.
+-		 * Time to wait for TE is longer than the timer allows */
+-		REG_FLD_MOD(DSI_TIMING2, 0, 15, 15); /* LP_RX_TO */
+-	} else {
+-		REG_FLD_MOD(DSI_TIMING2, 1, 15, 15); /* LP_RX_TO */
++	if (!display->hw_config.u.dsi.ext_te) {
++		if (enable) {
++			/* disable LP_RX_TO, so that we can receive TE.
++			 * Time to wait for TE is longer than the timer allows */
++			REG_FLD_MOD(DSI_TIMING2, 0, 15, 15); /* LP_RX_TO */
++		} else {
++			REG_FLD_MOD(DSI_TIMING2, 1, 15, 15); /* LP_RX_TO */
++		}
+ 	}
+ }
+ 
+@@ -3508,7 +3517,7 @@ static int dsi_display_enable(struct omap_display *display)
+ 
+ 	display->state = OMAP_DSS_DISPLAY_ACTIVE;
+ 
+-	if (dsi.use_te)
++	if (dsi.use_te || dsi.use_ext_te)
+ 		dsi_push_set_te(display, 1);
+ 
+ 	dsi_push_set_update_mode(display, dsi.user_update_mode);
+@@ -3641,7 +3650,7 @@ static int dsi_display_enable_te(struct omap_display *display, bool enable)
+ 
+ static int dsi_display_get_te(struct omap_display *display)
+ {
+-	return dsi.use_te;
++	return dsi.use_te | dsi.use_ext_te;
+ }
+ 
+ 
+-- 
+1.6.2.4
+

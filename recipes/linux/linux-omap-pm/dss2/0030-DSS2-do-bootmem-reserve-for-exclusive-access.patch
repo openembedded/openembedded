@@ -1,0 +1,33 @@
+From 18386ebea56159305014c898ffaf034b95bb7ac5 Mon Sep 17 00:00:00 2001
+From: Imre Deak <imre.deak@nokia.com>
+Date: Tue, 14 Apr 2009 14:50:11 +0200
+Subject: [PATCH 030/146] DSS2: do bootmem reserve for exclusive access
+
+BOOTMEM_DEFAULT would allow multiple reservations for the same location,
+we need to reserve the region for our exclusive use. Also check if the
+reserve succeeded.
+
+Signed-off-by: Imre Deak <imre.deak@nokia.com>
+---
+ arch/arm/plat-omap/vram.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-omap/vram.c b/arch/arm/plat-omap/vram.c
+index f24a110..520f260 100644
+--- a/arch/arm/plat-omap/vram.c
++++ b/arch/arm/plat-omap/vram.c
+@@ -524,7 +524,10 @@ void __init omapfb_reserve_sdram(void)
+ 			return;
+ 		}
+ 
+-		reserve_bootmem(paddr, size, BOOTMEM_DEFAULT);
++		if (reserve_bootmem(paddr, size, BOOTMEM_EXCLUSIVE) < 0) {
++			pr_err("FB: failed to reserve VRAM\n");
++			return;
++		}
+ 	} else {
+ 		if (size > sdram_size) {
+ 			printk(KERN_ERR "Illegal SDRAM size for VRAM\n");
+-- 
+1.6.2.4
+

@@ -1,0 +1,230 @@
+From c8588370442424ac31e2392b07891615629eb999 Mon Sep 17 00:00:00 2001
+From: Hardik Shah <hardik.shah@ti.com>
+Date: Fri, 24 Apr 2009 15:29:06 +0530
+Subject: [PATCH 55/69] DSS2: Added global alpha support.
+
+global_alpha sysfs entry for video1 plane will always show 255 as
+it does not support global_alpha.
+Initliazied the global alpha field for all the overlays
+to 255 (fully opaque).
+Documentation also updated.
+
+Signed-off-by: Hardik Shah <hardik.shah@ti.com>
+---
+ Documentation/arm/OMAP/DSS                |    1 +
+ arch/arm/plat-omap/include/mach/display.h |    1 +
+ drivers/video/omap2/dss/dispc.c           |   25 ++++++++++++++++---
+ drivers/video/omap2/dss/dss.h             |    3 +-
+ drivers/video/omap2/dss/manager.c         |    3 +-
+ drivers/video/omap2/dss/overlay.c         |   37 +++++++++++++++++++++++++++++
+ 6 files changed, 64 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/arm/OMAP/DSS b/Documentation/arm/OMAP/DSS
+index 9e902a2..249e1a3 100644
+--- a/Documentation/arm/OMAP/DSS
++++ b/Documentation/arm/OMAP/DSS
+@@ -133,6 +133,7 @@ name
+ output_size	width,height
+ position	x,y
+ screen_width	width
++global_alpha   	global alpha 0-255 0=transparent 255=opaque
+ 
+ /sys/devices/platform/omapdss/manager? directory:
+ display		Destination display
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index d0b4c83..45b16ca 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -363,6 +363,7 @@ struct omap_overlay_info {
+ 	u16 pos_y;
+ 	u16 out_width;	/* if 0, out_width == width */
+ 	u16 out_height;	/* if 0, out_height == height */
++	u8 global_alpha;
+ };
+ 
+ enum omap_overlay_caps {
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index 9bab6cf..b6a39f5 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -778,6 +778,17 @@ static void _dispc_set_vid_size(enum omap_plane plane, int width, int height)
+ 	dispc_write_reg(vsi_reg[plane-1], val);
+ }
+ 
++static void _dispc_setup_global_alpha(enum omap_plane plane, u8 global_alpha)
++{
++
++	BUG_ON(plane == OMAP_DSS_VIDEO1);
++
++	if (plane == OMAP_DSS_GFX)
++		REG_FLD_MOD(DISPC_GLOBAL_ALPHA, global_alpha, 7, 0);
++	else if (plane == OMAP_DSS_VIDEO2)
++		REG_FLD_MOD(DISPC_GLOBAL_ALPHA, global_alpha, 23, 16);
++}
++
+ static void _dispc_set_pix_inc(enum omap_plane plane, s32 inc)
+ {
+ 	const struct dispc_reg ri_reg[] = { DISPC_GFX_PIXEL_INC,
+@@ -1444,7 +1455,8 @@ static int _dispc_setup_plane(enum omap_plane plane,
+ 		enum omap_color_mode color_mode,
+ 		bool ilace,
+ 		enum omap_dss_rotation_type rotation_type,
+-		u8 rotation, int mirror)
++		u8 rotation, int mirror,
++		u8 global_alpha)
+ {
+ 	const int maxdownscale = cpu_is_omap34xx() ? 4 : 2;
+ 	bool five_taps = 0;
+@@ -1592,6 +1604,9 @@ static int _dispc_setup_plane(enum omap_plane plane,
+ 
+ 	_dispc_set_rotation_attrs(plane, rotation, mirror, color_mode);
+ 
++	if (plane != OMAP_DSS_VIDEO1)
++		_dispc_setup_global_alpha(plane, global_alpha);
++
+ 	return 0;
+ }
+ 
+@@ -3011,7 +3026,7 @@ int dispc_setup_plane(enum omap_plane plane, enum omap_channel channel_out,
+ 		       enum omap_color_mode color_mode,
+ 		       bool ilace,
+ 		       enum omap_dss_rotation_type rotation_type,
+-		       u8 rotation, bool mirror)
++		       u8 rotation, bool mirror, u8 global_alpha)
+ {
+ 	int r = 0;
+ 
+@@ -3032,7 +3047,8 @@ int dispc_setup_plane(enum omap_plane plane, enum omap_channel channel_out,
+ 			   out_width, out_height,
+ 			   color_mode, ilace,
+ 			   rotation_type,
+-			   rotation, mirror);
++			   rotation, mirror,
++			   global_alpha);
+ 
+ 	enable_clocks(0);
+ 
+@@ -3247,7 +3263,8 @@ void dispc_setup_partial_planes(struct omap_display *display,
+ 				pi->color_mode, 0,
+ 				pi->rotation_type,
+ 				pi->rotation,
+-				pi->mirror);
++				pi->mirror,
++				pi->global_alpha);
+ 
+ 		dispc_enable_plane(ovl->id, 1);
+ 	}
+diff --git a/drivers/video/omap2/dss/dss.h b/drivers/video/omap2/dss/dss.h
+index 1d01ff6..20cef0a 100644
+--- a/drivers/video/omap2/dss/dss.h
++++ b/drivers/video/omap2/dss/dss.h
+@@ -273,7 +273,8 @@ int dispc_setup_plane(enum omap_plane plane, enum omap_channel channel_out,
+ 		      enum omap_color_mode color_mode,
+ 		      bool ilace,
+ 		      enum omap_dss_rotation_type rotation_type,
+-		      u8 rotation, bool mirror);
++		      u8 rotation, bool mirror,
++		      u8 global_alpha);
+ 
+ void dispc_go(enum omap_channel channel);
+ void dispc_enable_lcd_out(bool enable);
+diff --git a/drivers/video/omap2/dss/manager.c b/drivers/video/omap2/dss/manager.c
+index bf059e0..1e6cd8d 100644
+--- a/drivers/video/omap2/dss/manager.c
++++ b/drivers/video/omap2/dss/manager.c
+@@ -464,7 +464,8 @@ static int omap_dss_mgr_apply(struct omap_overlay_manager *mgr)
+ 				ilace,
+ 				ovl->info.rotation_type,
+ 				ovl->info.rotation,
+-				ovl->info.mirror);
++				ovl->info.mirror,
++				ovl->info.global_alpha);
+ 
+ 		if (r) {
+ 			DSSERR("dispc_setup_plane failed for ovl %d\n",
+diff --git a/drivers/video/omap2/dss/overlay.c b/drivers/video/omap2/dss/overlay.c
+index c047206..035a57a 100644
+--- a/drivers/video/omap2/dss/overlay.c
++++ b/drivers/video/omap2/dss/overlay.c
+@@ -194,6 +194,37 @@ static ssize_t overlay_enabled_store(struct omap_overlay *ovl, const char *buf,
+ 	return size;
+ }
+ 
++static ssize_t overlay_global_alpha_show(struct omap_overlay *ovl, char *buf)
++{
++	return snprintf(buf, PAGE_SIZE, "%d\n",
++			ovl->info.global_alpha);
++}
++
++static ssize_t overlay_global_alpha_store(struct omap_overlay *ovl,
++		const char *buf, size_t size)
++{
++	int r;
++	struct omap_overlay_info info;
++
++	ovl->get_overlay_info(ovl, &info);
++
++	/* Video1 plane does not support global alpha
++	 * to always make it 255 completely opaque
++	 */
++	if (ovl->id == OMAP_DSS_VIDEO1)
++		info.global_alpha = 255;
++	else
++		info.global_alpha = simple_strtoul(buf, NULL, 10);
++
++	if ((r = ovl->set_overlay_info(ovl, &info)))
++		return r;
++
++	if (ovl->manager && (r = ovl->manager->apply(ovl->manager)))
++		return r;
++
++	return size;
++}
++
+ struct overlay_attribute {
+ 	struct attribute attr;
+ 	ssize_t (*show)(struct omap_overlay *, char *);
+@@ -215,6 +246,8 @@ static OVERLAY_ATTR(output_size, S_IRUGO|S_IWUSR,
+ 		overlay_output_size_show, overlay_output_size_store);
+ static OVERLAY_ATTR(enabled, S_IRUGO|S_IWUSR,
+ 		overlay_enabled_show, overlay_enabled_store);
++static OVERLAY_ATTR(global_alpha, S_IRUGO|S_IWUSR,
++		overlay_global_alpha_show, overlay_global_alpha_store);
+ 
+ static struct attribute *overlay_sysfs_attrs[] = {
+ 	&overlay_attr_name.attr,
+@@ -224,6 +257,7 @@ static struct attribute *overlay_sysfs_attrs[] = {
+ 	&overlay_attr_position.attr,
+ 	&overlay_attr_output_size.attr,
+ 	&overlay_attr_enabled.attr,
++	&overlay_attr_global_alpha.attr,
+ 	NULL
+ };
+ 
+@@ -444,6 +478,7 @@ void dss_init_overlays(struct platform_device *pdev, const char *def_disp_name)
+ 			ovl->id = OMAP_DSS_GFX;
+ 			ovl->supported_modes = OMAP_DSS_COLOR_GFX_OMAP3;
+ 			ovl->caps = OMAP_DSS_OVL_CAP_DISPC;
++			ovl->info.global_alpha = 255;
+ 			break;
+ 		case 1:
+ 			ovl->name = "vid1";
+@@ -451,6 +486,7 @@ void dss_init_overlays(struct platform_device *pdev, const char *def_disp_name)
+ 			ovl->supported_modes = OMAP_DSS_COLOR_VID_OMAP3;
+ 			ovl->caps = OMAP_DSS_OVL_CAP_SCALE |
+ 				OMAP_DSS_OVL_CAP_DISPC;
++			ovl->info.global_alpha = 255;
+ 			break;
+ 		case 2:
+ 			ovl->name = "vid2";
+@@ -458,6 +494,7 @@ void dss_init_overlays(struct platform_device *pdev, const char *def_disp_name)
+ 			ovl->supported_modes = OMAP_DSS_COLOR_VID_OMAP3;
+ 			ovl->caps = OMAP_DSS_OVL_CAP_SCALE |
+ 				OMAP_DSS_OVL_CAP_DISPC;
++			ovl->info.global_alpha = 255;
+ 			break;
+ 		}
+ 
+-- 
+1.6.2.4
+

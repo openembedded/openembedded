@@ -1,0 +1,31 @@
+From 1adaab4805926b3674fd083e7e0ac2b29a30a34a Mon Sep 17 00:00:00 2001
+From: Ajay Kumar Gupta <ajay.gupta@ti.com>
+Date: Fri, 12 Jun 2009 19:01:42 +0530
+Subject: [PATCH 11/16] musb: fix musb->gadget_driver != NULL bug
+
+musb->gadget_driver != NULL is observed when CONFIG_SUSPEND is
+enabled causing failure in gadget driver registration.
+
+Fixing this by making musb->gadget_driver = NULL during musb
+initialization.
+
+Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
+---
+ drivers/usb/musb/musb_gadget.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/usb/musb/musb_gadget.c b/drivers/usb/musb/musb_gadget.c
+index 8b3c4e2..d69d98e 100644
+--- a/drivers/usb/musb/musb_gadget.c
++++ b/drivers/usb/musb/musb_gadget.c
+@@ -1650,6 +1650,7 @@ int __init musb_gadget_setup(struct musb *musb)
+ 	musb->g.dev.dma_mask = musb->controller->dma_mask;
+ 	musb->g.dev.release = musb_gadget_release;
+ 	musb->g.name = musb_driver_name;
++	musb->gadget_driver = NULL;
+ 
+ 	if (is_otg_enabled(musb))
+ 		musb->g.is_otg = 1;
+-- 
+1.6.2.4
+

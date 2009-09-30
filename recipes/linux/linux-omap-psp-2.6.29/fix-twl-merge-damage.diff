@@ -1,0 +1,19 @@
+--- /tmp/twl4030-regulator.c	2009-07-23 14:27:33.000000000 +0200
++++ git/drivers/regulator/twl4030-regulator.c	2009-07-23 14:27:51.000000000 +0200
+@@ -107,16 +107,6 @@
+ 	return (state & P1_GRP) != 0;
+ }
+ 
+-static int twl4030reg_is_enabled(struct regulator_dev *rdev)
+-{
+-	int	state = twl4030reg_grp(rdev);
+-
+-	if (state < 0)
+-		return state;
+-
+-	return (state & P1_GRP) != 0;
+-}
+-
+ static int twl4030reg_enable(struct regulator_dev *rdev)
+ {
+ 	struct twlreg_info	*info = rdev_get_drvdata(rdev);

@@ -1,0 +1,78 @@
+From 8f6e8ec77ffe7b13623046648cdeea33d836169c Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 22 May 2009 14:14:23 +0300
+Subject: [PATCH 070/146] DSS2: DSI: Fix LP clock
+
+Outgoing LP clock is actually DSI fclk / 2 / clk_divisor.
+
+Also don't use hardcoded LP clock frequency, but get it from
+the board file.
+---
+ arch/arm/plat-omap/include/mach/display.h |    1 +
+ drivers/video/omap2/dss/dsi.c             |   18 +++++++++---------
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/mach/display.h b/arch/arm/plat-omap/include/mach/display.h
+index dccc660..5ac1ae7 100644
+--- a/arch/arm/plat-omap/include/mach/display.h
++++ b/arch/arm/plat-omap/include/mach/display.h
+@@ -200,6 +200,7 @@ struct omap_dss_display_config {
+ 			u8 data1_pol;
+ 			u8 data2_lane;
+ 			u8 data2_pol;
++			unsigned long lp_clk_hz;
+ 			unsigned long ddr_clk_hz;
+ 
+ 			bool ext_te;
+diff --git a/drivers/video/omap2/dss/dsi.c b/drivers/video/omap2/dss/dsi.c
+index f39c890..c45140f 100644
+--- a/drivers/video/omap2/dss/dsi.c
++++ b/drivers/video/omap2/dss/dsi.c
+@@ -763,19 +763,19 @@ static unsigned long dsi_fclk_rate(void)
+ 	return r;
+ }
+ 
+-static int dsi_set_lp_clk_divisor(void)
++static int dsi_set_lp_clk_divisor(struct omap_display *display)
+ {
+-	int n;
++	unsigned n;
+ 	unsigned long dsi_fclk;
+-	unsigned long mhz;
+-
+-	/* LP_CLK_DIVISOR, DSI fclk/n, should be 20MHz - 32kHz */
++	unsigned long lp_clk, lp_clk_req;
+ 
+ 	dsi_fclk = dsi_fclk_rate();
+ 
++	lp_clk_req = display->hw_config.u.dsi.lp_clk_hz;
++
+ 	for (n = 1; n < (1 << 13) - 1; ++n) {
+-		mhz = dsi_fclk / n;
+-		if (mhz <= 20*1000*1000)
++		lp_clk = dsi_fclk / 2 / n;
++		if (lp_clk <= lp_clk_req)
+ 			break;
+ 	}
+ 
+@@ -784,7 +784,7 @@ static int dsi_set_lp_clk_divisor(void)
+ 		return -EINVAL;
+ 	}
+ 
+-	DSSDBG("LP_CLK_DIV %d, LP_CLK %ld\n", n, mhz);
++	DSSDBG("LP_CLK_DIV %u, LP_CLK %lu (req %lu)\n", n, lp_clk, lp_clk_req);
+ 
+ 	REG_FLD_MOD(DSI_CLK_CTRL, n, 12, 0);	/* LP_CLK_DIVISOR */
+ 	if (dsi_fclk > 30*1000*1000)
+@@ -3413,7 +3413,7 @@ static int dsi_display_init_dsi(struct omap_display *display)
+ 	_dsi_print_reset_status();
+ 
+ 	dsi_proto_timings(display);
+-	dsi_set_lp_clk_divisor();
++	dsi_set_lp_clk_divisor(display);
+ 
+ 	if (1)
+ 		_dsi_print_reset_status();
+-- 
+1.6.2.4
+

@@ -1,0 +1,35 @@
+aufs2 kbuild patch for linux-2.6.29
+
+diff --git a/fs/Kconfig b/fs/Kconfig
+index 93945dd..75156dd 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -222,6 +222,7 @@ source "fs/qnx4/Kconfig"
+ source "fs/romfs/Kconfig"
+ source "fs/sysv/Kconfig"
+ source "fs/ufs/Kconfig"
++source "fs/aufs/Kconfig"
+ 
+ endif # MISC_FILESYSTEMS
+ 
+diff --git a/fs/Makefile b/fs/Makefile
+index dc20db3..a4e9a65 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -124,3 +124,4 @@ obj-$(CONFIG_DEBUG_FS)		+= debugfs/
+ obj-$(CONFIG_OCFS2_FS)		+= ocfs2/
+ obj-$(CONFIG_BTRFS_FS)		+= btrfs/
+ obj-$(CONFIG_GFS2_FS)           += gfs2/
++obj-$(CONFIG_AUFS_FS)           += aufs/
+diff --git a/include/linux/Kbuild b/include/linux/Kbuild
+index 106c3ba..d0c7262 100644
+--- a/include/linux/Kbuild
++++ b/include/linux/Kbuild
+@@ -34,6 +34,7 @@ header-y += atmppp.h
+ header-y += atmsap.h
+ header-y += atmsvc.h
+ header-y += atm_zatm.h
++header-y += aufs_type.h
+ header-y += auto_fs4.h
+ header-y += ax25.h
+ header-y += b1lli.h

@@ -1,0 +1,52 @@
+From bf864e242e238f99124d63be457d2783d28894c9 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 29 May 2009 13:52:50 +0300
+Subject: [PATCH 094/146] DSS2: Beagle: regulators for VDAC, DSI
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 67e1d5c..977bbbe 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -184,13 +184,13 @@ static struct platform_device beagle_dss_device = {
+ 	},
+ };
+ 
+-static struct regulator_consumer_supply beagle_vdac_supply = {
+-	.supply		= "vdac",
++static struct regulator_consumer_supply beagle_vdda_dac_supply = {
++	.supply		= "vdda_dac",
+ 	.dev		= &beagle_dss_device.dev,
+ };
+ 
+-static struct regulator_consumer_supply beagle_vdvi_supply = {
+-	.supply		= "vdvi",
++static struct regulator_consumer_supply beagle_vdds_dsi_supply = {
++	.supply		= "vdds_dsi",
+ 	.dev		= &beagle_dss_device.dev,
+ };
+ 
+@@ -322,7 +322,7 @@ static struct regulator_init_data beagle_vdac = {
+ 					| REGULATOR_CHANGE_STATUS,
+ 	},
+ 	.num_consumer_supplies	= 1,
+-	.consumer_supplies	= &beagle_vdac_supply,
++	.consumer_supplies	= &beagle_vdda_dac_supply,
+ };
+ 
+ /* VPLL2 for digital video outputs */
+@@ -337,7 +337,7 @@ static struct regulator_init_data beagle_vpll2 = {
+ 					| REGULATOR_CHANGE_STATUS,
+ 	},
+ 	.num_consumer_supplies	= 1,
+-	.consumer_supplies	= &beagle_vdvi_supply,
++	.consumer_supplies	= &beagle_vdds_dsi_supply,
+ };
+ 
+ static struct twl4030_platform_data beagle_twldata = {
+-- 
+1.6.2.4
+

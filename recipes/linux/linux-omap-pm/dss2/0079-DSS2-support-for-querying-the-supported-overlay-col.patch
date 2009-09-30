@@ -1,0 +1,180 @@
+From 31204dee400ffa13900eedef77ec78234a0bbbf9 Mon Sep 17 00:00:00 2001
+From: Imre Deak <imre.deak@nokia.com>
+Date: Tue, 26 May 2009 16:42:16 +0200
+Subject: [PATCH 079/146] DSS2: support for querying the supported overlay color modes
+
+Adds an IOCTL through which an application can iterate through the
+color modes supported by an overlay. Instead of a simple mode ID
+this will give the parameters needed to setup the FB, as this is what
+the application will do anyway.
+
+Signed-off-by: Imre Deak <imre.deak@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-ioctl.c |   62 +++++++++++++++++++++++++++++
+ drivers/video/omap2/omapfb/omapfb-main.c  |    4 +-
+ drivers/video/omap2/omapfb/omapfb.h       |    2 +
+ include/linux/omapfb.h                    |   15 ++++++-
+ 4 files changed, 80 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-ioctl.c b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+index 79d8916..980e3db 100644
+--- a/drivers/video/omap2/omapfb/omapfb-ioctl.c
++++ b/drivers/video/omap2/omapfb/omapfb-ioctl.c
+@@ -434,6 +434,52 @@ static int omapfb_memory_read(struct fb_info *fbi,
+ 	return r;
+ }
+ 
++int omapfb_get_ovl_colormode(struct omapfb2_device *fbdev,
++			     struct omapfb_ovl_colormode *mode)
++{
++	int ovl_idx = mode->overlay_idx;
++	int mode_idx = mode->mode_idx;
++	struct omap_overlay *ovl;
++	enum omap_color_mode supported_modes;
++	struct fb_var_screeninfo var;
++	int i;
++
++	if (ovl_idx >= fbdev->num_overlays)
++		return -ENODEV;
++	ovl = fbdev->overlays[ovl_idx];
++	supported_modes = ovl->supported_modes;
++
++	mode_idx = mode->mode_idx;
++
++	for (i = 0; i < sizeof(supported_modes) * 8; i++) {
++		if (!(supported_modes & (1 << i)))
++			continue;
++		/*
++		 * It's possible that the FB doesn't support a mode
++		 * that is supported by the overlay, so call the
++		 * following here.
++		 */
++		if (dss_mode_to_fb_mode(1 << i, &var) < 0)
++			continue;
++
++		mode_idx--;
++		if (mode_idx < 0)
++			break;
++	}
++
++	if (i == sizeof(supported_modes) * 8)
++		return -ENOENT;
++
++	mode->bits_per_pixel = var.bits_per_pixel;
++	mode->nonstd = var.nonstd;
++	mode->red = var.red;
++	mode->green = var.green;
++	mode->blue = var.blue;
++	mode->transp = var.transp;
++
++	return 0;
++}
++
+ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
+ {
+ 	struct omapfb_info *ofbi = FB2OFB(fbi);
+@@ -447,6 +493,7 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
+ 		struct omapfb_caps		caps;
+ 		struct omapfb_mem_info          mem_info;
+ 		struct omapfb_color_key		color_key;
++		struct omapfb_ovl_colormode	ovl_colormode;
+ 		enum omapfb_update_mode		update_mode;
+ 		int test_num;
+ 		struct omapfb_memory_read	memory_read;
+@@ -554,6 +601,21 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
+ 			r = -EFAULT;
+ 		break;
+ 
++	case OMAPFB_GET_OVERLAY_COLORMODE:
++		DBG("ioctl GET_OVERLAY_COLORMODE\n");
++		if (copy_from_user(&p.ovl_colormode, (void __user *)arg,
++				   sizeof(p.ovl_colormode))) {
++			r = -EFAULT;
++			break;
++		}
++		r = omapfb_get_ovl_colormode(fbdev, &p.ovl_colormode);
++		if (r < 0)
++			break;
++		if (copy_to_user((void __user *)arg, &p.ovl_colormode,
++				 sizeof(p.ovl_colormode)))
++			r = -EFAULT;
++		break;
++
+ 	case OMAPFB_SET_UPDATE_MODE:
+ 		DBG("ioctl SET_UPDATE_MODE\n");
+ 		if (get_user(p.update_mode, (int __user *)arg))
+diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
+index c4bd081..c3690b8 100644
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -364,8 +364,8 @@ static enum omap_color_mode fb_mode_to_dss_mode(struct fb_var_screeninfo *var)
+ 	return -EINVAL;
+ }
+ 
+-static int dss_mode_to_fb_mode(enum omap_color_mode dssmode,
+-			       struct fb_var_screeninfo *var)
++int dss_mode_to_fb_mode(enum omap_color_mode dssmode,
++			struct fb_var_screeninfo *var)
+ {
+ 	int i;
+ 
+diff --git a/drivers/video/omap2/omapfb/omapfb.h b/drivers/video/omap2/omapfb/omapfb.h
+index f40fcce..e750bc0 100644
+--- a/drivers/video/omap2/omapfb/omapfb.h
++++ b/drivers/video/omap2/omapfb/omapfb.h
+@@ -111,6 +111,8 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg);
+ 
+ int omapfb_mode_to_timings(const char *mode_str,
+ 		struct omap_video_timings *timings, u8 *bpp);
++int dss_mode_to_fb_mode(enum omap_color_mode dssmode,
++			struct fb_var_screeninfo *var);
+ 
+ /* find the display connected to this fb, if any */
+ static inline struct omap_display *fb2display(struct fb_info *fbi)
+diff --git a/include/linux/omapfb.h b/include/linux/omapfb.h
+index 7a34f22..fd522d3 100644
+--- a/include/linux/omapfb.h
++++ b/include/linux/omapfb.h
+@@ -24,6 +24,8 @@
+ #ifndef __OMAPFB_H
+ #define __OMAPFB_H
+ 
++#include <linux/fb.h>
++
+ #include <asm/ioctl.h>
+ #include <asm/types.h>
+ 
+@@ -52,6 +54,7 @@
+ #define OMAPFB_QUERY_MEM	OMAP_IOW(56, struct omapfb_mem_info)
+ #define OMAPFB_WAITFORVSYNC	OMAP_IO(57)
+ #define OMAPFB_MEMORY_READ	OMAP_IOR(58, struct omapfb_memory_read)
++#define OMAPFB_GET_OVERLAY_COLORMODE	OMAP_IOR(59, struct omapfb_ovl_colormode)
+ 
+ #define OMAPFB_CAPS_GENERIC_MASK	0x00000fff
+ #define OMAPFB_CAPS_LCDC_MASK		0x00fff000
+@@ -179,11 +182,21 @@ struct omapfb_memory_read {
+ 	void __user *buffer;
+ };
+ 
++struct omapfb_ovl_colormode {
++	__u8 overlay_idx;
++	__u8 mode_idx;
++	__u32 bits_per_pixel;
++	__u32 nonstd;
++	struct fb_bitfield red;
++	struct fb_bitfield green;
++	struct fb_bitfield blue;
++	struct fb_bitfield transp;
++};
++
+ #ifdef __KERNEL__
+ 
+ #include <linux/completion.h>
+ #include <linux/interrupt.h>
+-#include <linux/fb.h>
+ #include <linux/mutex.h>
+ 
+ #include <mach/board.h>
+-- 
+1.6.2.4
+
