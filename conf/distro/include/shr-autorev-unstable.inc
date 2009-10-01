@@ -92,7 +92,7 @@ SRCREV_pn-python-phoneutils = "${AUTOREV}"
 
 
 # E17 stuff
-EFL_SRCREV = "42764"
+EFL_SRCREV = "42837"
 SRCREV_pn-eve = "${AUTOREV}"
 SRCREV_pn-python-elementary = "${EFL_SRCREV}"
 SRCREV_pn-e-wm-config-illume-shr = "${AUTOREV}"
