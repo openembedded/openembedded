@@ -18,6 +18,7 @@ SRC_URI_append = " \
                   file://navit.desktop \
                   file://navit.launcher \
                   file://navit.png \
+                  file://navit.service \
 	  	 "
 SRC_URI_append_shr = "file://use-fso-raw.patch;patch=1 \
                       file://fr-default-config.patch;patch=1"
@@ -29,6 +30,8 @@ do_install_append() {
         install -m 0644 ${WORKDIR}/navit.desktop ${D}${datadir}/applications/
         install -d ${D}${datadir}/pixmaps/
         install -m 0644 ${WORKDIR}/navit.png ${D}${datadir}/pixmaps/
+        install -d ${D}${datadir}/dbus-1/services/
+        install -m 0644 ${WORKDIR}/navit.service ${D}${datadir}/dbus-1/services/
 
         mv ${D}${bindir}/navit ${D}${bindir}/navit.real
         install -m 0755 ${WORKDIR}/navit.launcher ${D}${bindir}/navit
