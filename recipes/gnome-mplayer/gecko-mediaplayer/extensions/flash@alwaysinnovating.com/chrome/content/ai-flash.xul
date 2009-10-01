@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<overlay id="hijackpluginOverlay"
+       	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"> 
+
+<window id="main-window">
+ <script type="text/javascript" src="./ai-flash.js"/>
+</window>
+
+</overlay>
