@@ -201,7 +201,7 @@ static void x11_check_events(void)
 
     if (e & VO_EVENT_EXPOSE || e & VO_EVENT_RESIZE)
     {
-/*        vo_xv_draw_colorkey(drwX, drwY, vo_dwidth - 1, vo_dheight - 1); */
+        vo_xv_draw_colorkey(drwX, drwY, vo_dwidth - 1, vo_dheight - 1);
         omapfb_update(0, 0, 0, 0, 1);
     }
 }
