@@ -4,6 +4,8 @@ LICENSE = "GPL"
 DEPENDS = "firefox gtk+ gconf dbus-glib"
 RDEPENDS = "firefox gnome-mplayer"
 
+PR = "r1"
+
 inherit autotools
 
 SRC_URI = "http://gecko-mediaplayer.googlecode.com/files/${P}.tar.gz \
@@ -24,7 +26,7 @@ do_install_append() {
 
 PACKAGES =+ "${PN}-firefox-hack"
 RDEPENDS_${PN}-firefox-hack = "${PN}"
-FILES_${PN}-firefox-hack = "${D}${libdir}/${MOZILLA_HOME}/extensions"
+FILES_${PN}-firefox-hack = "${libdir}/${MOZILLA_HOME}/extensions"
 
 FILES_${PN} += "${sysconfdir}/* \
                 ${libdir}/${MOZILLA_HOME}/*"
