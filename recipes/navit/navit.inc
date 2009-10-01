@@ -19,7 +19,9 @@ SRC_URI_append = " \
                   file://navit.launcher \
                   file://navit.png \
 	  	 "
-SRC_URI_append_shr = "file://use-fso-raw.patch;patch=1"
+SRC_URI_append_shr = "file://use-fso-raw.patch;patch=1 \
+                      file://fr-default-config.patch;patch=1"
+
 DEPENDS_shr += "gypsy"
 
 do_install_append() {
