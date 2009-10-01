@@ -19,6 +19,7 @@ SRC_URI_append = " \
                   file://navit.launcher \
                   file://navit.png \
 	  	 "
+DEPENDS_shr += "gypsy"
 
 do_install_append() {
         install -d ${D}${datadir}/applications/
