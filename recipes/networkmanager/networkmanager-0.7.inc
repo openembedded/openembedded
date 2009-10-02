@@ -25,6 +25,13 @@ do_stage () {
 	autotools_stage_all
 }
 
+# Work around dbus permission problems since we lack a proper at_console
+do_install_prepend() {
+		sed -i -e s:deny:allow:g ${S}/src/NetworkManager.conf
+		sed -i -e s:deny:allow:g ${S}/system-settings/src/nm-system-settings.conf
+		sed -i -e s:deny:allow:g ${S}/callouts/nm-dispatcher.conf
+}
+
 do_install_append () {
         install -d ${D}/etc/default/volatiles
         install -d ${D}/etc/dbus-1/event.d

@@ -1,5 +1,7 @@
 require networkmanager-0.7.inc
 
+PR = "r1"
+
 SRC_URI += " \
 	file://remove-gtk-doc-make.patch;patch=1 \
 	file://008-BACKEND-debian-fallback-to-generic-loopback.loom.patch;patch=1 \
