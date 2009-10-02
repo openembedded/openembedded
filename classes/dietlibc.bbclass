@@ -4,8 +4,8 @@ def dietlibc_after_parse(d):
     import bb
     # Remove the NLS
     cfg = oe_filter_out('--(dis|en)able-nls', bb.data.getVar('EXTRA_OECONF', d, 1) or "", d)
-    # Remove shared and static and set it right
-    cfg += " --disable-nls --disbale-shared --enable-static"
+    # Remove shared enable static only
+    cfg += " --disable-nls --disable-shared --enable-static"
     bb.data.setVar('EXTRA_OECONF', cfg, d)
     cfg = bb.data.getVar('EXTRA_OEMAKE', d, 1) or ""
     cfg = oe_filter_out("\'CC=", bb.data.getVar('EXTRA_OEMAKE', d, 1) or "", d)
