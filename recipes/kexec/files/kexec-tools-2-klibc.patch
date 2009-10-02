@@ -254,11 +254,26 @@ Index: kexec-tools-2.0.1/Makefile.in
  ASFLAGS		= @ASFLAGS@
  LDFLAGS		= @LDFLAGS@
 
+Index: kexec-tools-2.0.1/util_lib/include/sha256.h
+===================================================================
+--- kexec-tools-2.0.1.orig/util_lib/include/sha256.h	2008-07-15 02:46:43.000000000 +0200
++++ kexec-tools-2.0.1/util_lib/include/sha256.h		2009-10-02 18:28:45.000000000 +0200
+@@ -1,7 +1,8 @@
+ #ifndef SHA256_H
+ #define SHA256_H
+
+-#include <sys/types.h>
++//#include <sys/types.h>
++#include <stddef.h>
+ #include <stdint.h>
+
+ typedef struct
+
 Index: kexec-tools-2.0.1/purgatory/Makefile
 ===================================================================
 --- kexec-tools-2.0.1.orig/purgatory/Makefile	2008-10-09 00:32:14.000000000 +0200
-+++ kexec-tools-2.0.1/purgatory/Makefile	2009-09-30 00:49:15.000000000 +0200
-@@ -47,15 +47,15 @@
++++ kexec-tools-2.0.1.orig/purgatory/Makefile	2009-10-03 00:28:45.000000000 +0200
+@@ -47,7 +47,7 @@
  $(PURGATORY): CC=$(TARGET_CC)
  $(PURGATORY): CFLAGS+=$(PURGATORY_EXTRA_CFLAGS) \
 		      $($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
@@ -267,12 +282,13 @@ Index: kexec-tools-2.0.1/purgatory/Makefile
 
  $(PURGATORY): CPPFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS) \
 			-I$(srcdir)/purgatory/include \
-			-I$(srcdir)/purgatory/arch/$(ARCH)/include \
-			-I$(srcdir)/util_lib/include \
-			-I$(shell $(CC) -print-file-name=include)
- $(PURGATORY): LDFLAGS=$($(ARCH)_PURGATORY_EXTRA_CFLAGS)\
--			--no-undefined -nostartfiles -nostdlib -nodefaultlibs \
-+			-Wl,--no-undefined -nostartfiles -nostdlib -nodefaultlibs \
-			-e purgatory_start -r
+@@ -60,7 +60,8 @@
 
  $(PURGATORY): $(PURGATORY_OBJS)
+	$(MKDIR) -p $(@D)
+-	$(CC) $(LDFLAGS) -o $@ $^
++#	$(CC) $(LDFLAGS) -o $@ $^
++	$(LD) $(LDFLAGS) -o $@ $^
+
+ #	$(LD) $(LDFLAGS) $(EXTRA_LDFLAGS) --no-undefined -e purgatory_start -r -o $@ $(PURGATORY_OBJS) $(UTIL_LIB)
+
