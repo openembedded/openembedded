@@ -1,8 +1,8 @@
 require vala.inc
 PR = "r0"
 
-SRC_URI_append = "\
-                  http://download.gnome.org/sources/vala/0.7/vala-${PV}.tar.gz \
+SRC_URI = "\
+                  ${GNOME_MIRROR}/vala/${@gnome_verdir("${PV}")}/vala-${PV}.tar.bz2 \
                   file://0003-Fix-delegate-variables-in-GObject-creation-methods.patch;patch=1 \
                   file://0005-Fix-return-type-of-closure-unref-function.patch;patch=1 \
                   file://0010-D-Bus-Fix-marshalling-of-GLib.Value-parameters.patch;patch=1 \
