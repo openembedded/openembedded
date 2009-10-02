@@ -3,6 +3,8 @@ SECTION = "x11/gnome"
 LICENSE = "GPL"
 DEPENDS = "gnome-common libgnomeui"
 
+PR = "r1"
+
 EXTRA_OECONF = "--disable-scrollkeeper"
 
 do_configure_prepend () {
@@ -17,4 +19,4 @@ do_stage () {
 	autotools_stage_all
 }
 
-FILES_${PN} += "${datadir}/gnome-about"
+FILES_${PN} += "${datadir}/gnome-about ${datadir}/libgnome-desktop"
