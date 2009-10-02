@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- SGML -*- -->
+
+<deviceinfo version="0.2">
+  <device>
+      <match key="info.product" contains="ITM Inc USB Touch Panel">
+        <match key="info.capabilities" contains="input.touchpad">
+          <merge key="input.x11_driver" type="string">evtouch</merge>
+          <merge key="input.x11_options.reportingmode" type="string">raw</merge>
+          <merge key="input.x11_options.emulate3buttons" type="string">true</merge>
+          <merge key="input.x11_options.emulate3timeout" type="string">50</merge>
+          <merge key="input.x11_options.sendcoreevents" type="string">on</merge>
+              <merge key="input.x11_options.maxx" type="string">3815</merge>
+              <merge key="input.x11_options.maxy" type="string">3948</merge>
+              <merge key="input.x11_options.minx" type="string">295</merge>
+              <merge key="input.x11_options.miny" type="string">200</merge>
+          <merge key="input.x11_options.Swapx" type="string">1</merge>
+          <merge key="input.x11_options.Rotate" type="string">CW</merge>
+        </match>
+    </match>
+  </device>
+</deviceinfo>

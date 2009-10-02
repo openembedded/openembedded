@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="info.product" contains="eGalax">
+      <match key="info.capabilities" contains="input">
+        <merge key="input.x11_driver" type="string">evtouch</merge>
+        <merge key="input.x11_options.minx" type="string">130</merge>
+        <merge key="input.x11_options.miny" type="string">197</merge>
+        <merge key="input.x11_options.maxx" type="string">3945</merge>
+        <merge key="input.x11_options.maxy" type="string">3894</merge>
+        <merge key="input.x11_options.taptimer" type="string">30</merge>
+        <merge key="input.x11_options.longtouchtimer" type="string">750</merge>
+        <merge key="input.x11_options.longtouched_action" type="string">click</merge>
+        <merge key="input.x11_options.longtouched_button" type="string">3</merge>
+        <merge key="input.x11_options.oneandhalftap_button" type="string">2</merge>
+        <merge key="input.x11_options.movelimit" type="string">10</merge>
+        <merge key="input.x11_options.touched_drag" type="string">1</merge>
+        <merge key="input.x11_options.maybetapped_action" type="string">click</merge>
+        <merge key="input.x11_options.maybetapped_button" type="string">1</merge>
+      </match>
+    </match>
+  </device>
+</deviceinfo>
