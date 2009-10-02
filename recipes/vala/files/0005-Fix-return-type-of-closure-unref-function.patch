@@ -1,0 +1,25 @@
+From 9ef542a99cc1d8263d5953b754c0b23bff4d0312 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?J=C3=BCrg=20Billeter?= <j@bitron.ch>
+Date: Tue, 29 Sep 2009 22:25:24 +0200
+Subject: [PATCH] Fix return type of closure unref function
+
+---
+ codegen/valaccodebasemodule.vala |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/codegen/valaccodebasemodule.vala b/codegen/valaccodebasemodule.vala
+index 38662ba..8a1ce31 100644
+--- a/codegen/valaccodebasemodule.vala
++++ b/codegen/valaccodebasemodule.vala
+@@ -1839,7 +1839,7 @@ internal class Vala.CCodeBaseModule : CCodeModule {
+ 			ref_fun.block.add_statement (new CCodeReturnStatement (new CCodeIdentifier ("_data%d_".printf (block_id))));
+ 			source_type_member_definition.append (ref_fun);
+ 
+-			var unref_fun = new CCodeFunction ("block%d_data_unref".printf (block_id), struct_name + "*");
++			var unref_fun = new CCodeFunction ("block%d_data_unref".printf (block_id), "void");
+ 			unref_fun.add_parameter (new CCodeFormalParameter ("_data%d_".printf (block_id), struct_name + "*"));
+ 			unref_fun.modifiers = CCodeModifiers.STATIC;
+ 			source_declarations.add_type_member_declaration (unref_fun.copy ());
+-- 
+1.6.0.4
+
