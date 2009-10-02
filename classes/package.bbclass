@@ -159,7 +159,7 @@ def runstrip(file, d):
     if ret:
         bb.error("runstrip: 'file %s' failed (forced strip)" % file)
 
-    if "not stripped" not in result and ".a" not in file:
+    if "not stripped" not in result and not file.endswith(".a"):
         bb.debug(1, "runstrip: skip %s" % file)
         return 0
 
