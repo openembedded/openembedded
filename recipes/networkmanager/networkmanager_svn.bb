@@ -1,5 +1,7 @@
 require networkmanager-pre0.7.inc
 
+SRCREV = "3202"
+
 PV = "0.7+svnr${SRCREV}"
 PR = "r1"
 
