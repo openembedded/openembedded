@@ -1,8 +1,8 @@
 DESCRIPTION = "EFL based widget set for mobile devices"
 LICENSE = "LGPL"
-DEPENDS = "evas ecore edje eet edbus"
+DEPENDS = "evas ecore edje eet edbus efreet"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 inherit efl
 
