@@ -8,6 +8,8 @@ PR = "r6"
 
 inherit efl
 
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http"
+
 # a gstreamer thumbnailer would be nice now that we have emotion using gstreamer as well
 EXTRA_OECONF = "--disable-xine"
 
