@@ -159,7 +159,7 @@ def runstrip(file, d):
     if ret:
         bb.error("runstrip: 'file %s' failed (forced strip)" % file)
 
-    if "not stripped" not in result:
+    if "not stripped" not in result and not file.endswith(".a"):
         bb.debug(1, "runstrip: skip %s" % file)
         return 0
 
@@ -393,7 +393,7 @@ python populate_packages () {
 		for root, dirs, files in os.walk(dvar):
 			for f in files:
 				file = os.path.join(root, f)
-				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
+				if not os.path.islink(file) and not os.path.isdir(file) and (isexec(file) or ".a" in file):
 					runstrip(file, d)
 
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)

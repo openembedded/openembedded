@@ -99,4 +99,11 @@ do_install () {
 	install -d ${D}${localstatedir}/cache/apt/archives/partial
 	install -d ${D}${docdir}/apt/examples
 	install -m 0644 doc/examples/* ${D}${docdir}/apt/examples/
+
+	install -d ${D}${sysconfdir}/default/volatiles
+	install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_apt
+}
+
+pkg_postinst_${PN} () {
+	/etc/init.d/populate-volatile.sh update
 }

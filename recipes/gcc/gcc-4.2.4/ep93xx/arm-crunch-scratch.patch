@@ -1,0 +1,26 @@
+Increase the number of Cirrus scratch registers from 4 to 8 (ie half of them)
+
+Index: gcc-4.2.4/gcc/config/arm/arm.h
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.h	2007-09-01 16:28:30.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.h	2009-08-09 15:45:06.000000000 +0100
+@@ -562,8 +562,8 @@
+ 
+ /*
+   	mvf0		Cirrus floating point result
+-	mvf1-mvf3	Cirrus floating point scratch
+-	mvf4-mvf15   S	Cirrus floating point variable.  */
++	mvf1-mvf7	Cirrus floating point scratch
++	mvf8-mvf15   S	Cirrus floating point variable.  */
+ 
+ /*	s0-s15		VFP scratch (aka d0-d7).
+ 	s16-s31	      S	VFP variable (aka d8-d15).
+@@ -680,7 +680,7 @@
+ 	       regno <= LAST_CIRRUS_FP_REGNUM; ++ regno)	\
+ 	    {							\
+ 	      fixed_regs[regno] = 0;				\
+-	      call_used_regs[regno] = regno < FIRST_CIRRUS_FP_REGNUM + 4; \
++	      call_used_regs[regno] = regno < FIRST_CIRRUS_FP_REGNUM + 8; \
+ 	    }							\
+ 	}							\
+       if (TARGET_VFP)						\

@@ -1,5 +1,6 @@
 LICENSE = "GPLv2"
-HOMEPAGE = "http://geda.seul.org"
+HOMEPAGE = "http://www.gpleda.org/"
+PR = "r1"
 
 DEPENDS = "gtk+ libgeda"
 

@@ -1,7 +1,21 @@
 require xorg-driver-input.inc
 
+PR = "r8"
+
 DESCRIPTION = "X.Org X server -- evtouch input driver"
 
-
-SRC_URI = "http://www.conan.de/touchscreen/xf86-input-evtouch-0.8.8.tar.bz2 \
+SRC_URI = "http://www.conan.de/touchscreen/xf86-input-evtouch-${PV}.tar.bz2 \
+           file://xf86-input-evtouch_0.8.8-0ubuntu3.diff;patch=1 \
+           file://20_fix_calibrate_submission_directions.patch;patch=1 \
+           file://21_more_calibration_fixups.patch;patch=1 \
+           file://fdi/*.fdi \
 "
+
+do_install_append() {
+	install -d ${D}${datadir}/hal/fdi/policy/20thirdparty
+	cp ${WORKDIR}/fdi/*.fdi ${D}${datadir}/hal/fdi/policy/20thirdparty
+}
+
+FILES_${PN} += "${datadir}/hal"
+
+

@@ -1,5 +1,5 @@
 DEPENDS += "cairo"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \
@@ -12,12 +12,18 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://0001-Remove-Werror-from-build.patch;patch=1 \
 	file://0002-Fix-security-cross-compile-cpu-detection-error.patch;patch=1 \
 	file://plugins-dir.patch;patch=1 \
+	file://firefox-plugin.pc \
+	file://firefox-xpcom.pc \
+	file://nspr.pc \
 "
 
 S = "${WORKDIR}/mozilla-1.9.1"
 
 inherit mozilla
 require firefox.inc
+
+EXTRA_OECONF += " --enable-official-branding "
+
 
 export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
@@ -29,13 +35,39 @@ do_compile_prepend() {
 
 do_stage() {
         install -d ${STAGING_INCDIR}/firefox-${PV}
-        cd dist/sdk/include
-		rm -rf obsolete
+        cd ${S}/dist/sdk/include
+        cp -a obsolete ${STAGING_INCDIR}/firefox-${PV}/
+        rm -rf obsolete
         headers=`find . -name "*.h"`
         for f in $headers
         do
                 install -D -m 0644 $f ${STAGING_INCDIR}/firefox-${PV}/
         done
+        cd ${S}/dist/include/plugin
+        headers=`find . -name "*.h"`
+        for f in $headers
+        do
+                install -D -m 0644 $f ${STAGING_INCDIR}/firefox-${PV}/
+        done
+        cd ${S}/nsprpub/pr/include
+        headers=`find . -name "*.h"`
+        for f in $headers
+        do
+                install -D -m 0644 $f ${STAGING_INCDIR}/firefox-${PV}/
+        done
+        cd ${S}/xpcom/base
+        headers=`find . -name "*.idl"`
+        for f in $headers
+        do
+                install -D -m 0644 $f ${STAGING_INCDIR}/firefox-${PV}/
+        done
+
+        install -d ${PKG_CONFIG_DIR}
+        install -m 0644 ${WORKDIR}/firefox-plugin.pc ${PKG_CONFIG_DIR}
+        install -m 0644 ${WORKDIR}/firefox-xpcom.pc ${PKG_CONFIG_DIR}
+        install -m 0644 ${WORKDIR}/nspr.pc ${PKG_CONFIG_DIR}
+        install -m 0755 ${S}/xpcom/typelib/xpidl/host_xpidl ${STAGING_BINDIR_NATIVE}/xpidl
+
         # removes 2 lines that call absent headers
         sed -e '178,179d' ${STAGING_INCDIR}/firefox-${PV}/nsIServiceManager.h
 }

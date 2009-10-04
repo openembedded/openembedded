@@ -1,0 +1,22 @@
+# simple bash autocompletions file for the OE recipes. It can be
+# inserted into the default profile.sh, or sourced in the same file.
+
+
+_bitbake() 
+{
+    if [[ $OE_HOME ]]; then
+        local cur prev general exact words
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+	general=$(ls $OE_HOME/openembedded/recipes)
+	exact=$(find $OE_HOME/openembedded/recipes -name $cur*.bb | xargs -I"@@" basename @@ '.bb')
+	words="$general $exact"
+
+        COMPREPLY=( $(compgen -W "$words" -- ${cur}) )
+        return 0
+    fi
+    return -1
+}
+complete -F _bitbake bitbake
+

@@ -343,6 +343,7 @@ do
                       wt3 \
                       x11vnc \
                       xf86-input-evdev \
+                      xf86-input-evtouch \
                       xf86-input-keyboard \
                       xf86-input-mouse \
                       xf86-input-tslib \

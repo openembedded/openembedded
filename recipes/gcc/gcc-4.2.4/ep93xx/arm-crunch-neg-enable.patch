@@ -1,0 +1,33 @@
+In arm.md, enable expansion for neg[sd]f for Maverick - the instructions are
+already already defined in cirrus.md
+
+Without this patch for some reason it still manages to produce cfnegd
+instructions but not cfnegs, presumably via some optimization path.
+
+    Martin Guy <martinwguy@yahoo.it> December 2008
+
+Index: gcc-4.2.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.md	2009-08-09 15:43:45.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.md	2009-08-09 15:45:15.000000000 +0100
+@@ -3046,14 +3046,18 @@
+ (define_expand "negsf2"
+   [(set (match_operand:SF         0 "s_register_operand" "")
+ 	(neg:SF (match_operand:SF 1 "s_register_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP
++       || (TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS(SFmode))"
+   ""
+ )
+ 
+ (define_expand "negdf2"
+   [(set (match_operand:DF         0 "s_register_operand" "")
+ 	(neg:DF (match_operand:DF 1 "s_register_operand" "")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP)"
++  "TARGET_ARM && TARGET_HARD_FLOAT
++   && (TARGET_FPA || TARGET_VFP
++       || (TARGET_MAVERICK && ! HONOR_SIGNED_ZEROS(DFmode))"
+   "")
+ 
+ ;; abssi2 doesn't really clobber the condition codes if a different register

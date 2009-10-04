@@ -1,3 +1,2 @@
 require xproto_${PV}.bb
-
-inherit native
+require xorg-proto-native.inc

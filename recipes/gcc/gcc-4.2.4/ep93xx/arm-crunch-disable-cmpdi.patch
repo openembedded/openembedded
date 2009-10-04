@@ -1,0 +1,30 @@
+Disable the Maverick's cmpdi instruction which cannot perform the simultaneous
+signed/unsigned comparison expected by GCC.
+
+Index: gcc-4.2.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.md	2007-09-01 16:28:30.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.md	2009-08-09 15:45:18.000000000 +0100
+@@ -6981,10 +6981,12 @@
+ )
+ 
+ ;; Cirrus DI compare instruction
++;; This is disabled and left go through ARM core registers, because currently
++;; Crunch coprocessor does only signed comparison.
+ (define_expand "cmpdi"
+   [(match_operand:DI 0 "cirrus_fp_register" "")
+    (match_operand:DI 1 "cirrus_fp_register" "")]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK & 0"
+   "{
+      arm_compare_op0 = operands[0];
+      arm_compare_op1 = operands[1];
+@@ -6995,7 +6997,7 @@
+   [(set (reg:CC CC_REGNUM)
+ 	(compare:CC (match_operand:DI 0 "cirrus_fp_register" "v")
+ 		    (match_operand:DI 1 "cirrus_fp_register" "v")))]
+-  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK"
++  "TARGET_ARM && TARGET_HARD_FLOAT && TARGET_MAVERICK & 0"
+   "cfcmp64%?\\tr15, %V0, %V1"
+   [(set_attr "type"   "mav_farith")
+    (set_attr "cirrus" "compare")]

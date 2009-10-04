@@ -1,5 +1,5 @@
 require dpkg.inc
-PR = "r5"
+PR = "r6"
 DEPENDS += "zlib bzip2"
 SRC_URI += "file://noman.patch;patch=1"
 

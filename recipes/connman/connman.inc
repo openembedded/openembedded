@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SECTION = "libs/network"
 LICENSE = "GPL"
 # we need to define the depends here, the dynamic stuff is too late
-DEPENDS  = "wpa-supplicant dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
+DEPENDS  = "libnl wpa-supplicant dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
 
 EXTRA_OECONF += "\
     ac_cv_path_WPASUPPLICANT=/usr/sbin/wpa_supplicant \
@@ -29,6 +29,7 @@ do_compile_append() {
 }
 
 do_install_append() {
+	install -d ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/connman ${D}${sysconfdir}/init.d/connman
 }
 

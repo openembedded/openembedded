@@ -1,7 +1,8 @@
 DESCRIPTION = "gEDA/gaf's Utilities"
 LICENSE = "GPLv2"
-HOMEPAGE = "http://geda.seul.org"
+HOMEPAGE = "http://www.gpleda.org/"
 FILES_${PN} += "${datadir}/gEDA"
+PR = "r1"
 
 DEPENDS = "libgeda"
 

@@ -1,0 +1,11 @@
+This is a set of patches for gcc-4.3 that fix code generation for the
+Maverick Crunch FPU present in Cirrus Logic EP93xx devices.
+
+They are based on the patch ideas for OpenEmbedded that Hasjim Williams sent me
+privately in April 2008, with my own reimplementation of the CCMAV mode and the
+addition of a -mieee switch to fully respect denormalized values (with a 50%
+speed penalty).
+
+See the comments at the top of each patch file for further details.
+
+   Martin Guy <martinwguy@yahoo.it>, 21 November 2008 - 12 March 2009

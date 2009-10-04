@@ -1,7 +1,7 @@
 require eglibc.inc
 
 DEPENDS += "gperf-native"
-SRCREV = "8917"
+SRCREV = "9029"
 DEFAULT_PREFERENCE = "-1"
 FILESPATHPKG =. "eglibc-svn:"
 PV = "2.10+svnr${SRCREV}"

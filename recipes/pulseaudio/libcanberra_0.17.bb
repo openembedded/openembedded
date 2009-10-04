@@ -5,7 +5,7 @@ DEPENDS = "alsa-lib gstreamer gtk+ libvorbis pulseaudio"
 SECTION = "libs/multimedia"
 AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
-PR = "r0"
+PR = "r1"
 
 inherit autotools_stage vala
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
@@ -50,10 +50,13 @@ FILES_${PN}-gtk = "\
   ${libdir}/libcanberra-gtk.so.* \
   ${libdir}/gtk-2.0/modules/* \
   ${datadir}/gnome \
+  ${datadir}//gdm \
 "
+
 FILES_${PN}-dev += "\
   ${libdir}/${P}/*.la \
 "
+
 FILES_${PN}-dbg += "\
   ${libdir}/gtk-2.0/modules/.debug \
   ${libdir}/${P}/.debug \

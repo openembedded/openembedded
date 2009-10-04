@@ -1,8 +1,9 @@
 DESCRIPTION = "PCB Designer"
 LICENSE = "GPLv2"
-HOMEPAGE = "http://geda.seul.org"
+HOMEPAGE = "http://pcb.gpleda.org/"
 FILES_${PN} += " ${datadir}/icons ${datadir}/mime/packages"
 # NOTE: Old KDE integration ${datadir}/mimelnk/application/*.desktop are ignored intentionally
+PR = "r1"
 
 #DEPENDS = "libgeda"
 DEPENDS = "dbus gd gtk+ tcl-native tk-native"

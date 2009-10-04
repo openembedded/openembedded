@@ -3,11 +3,10 @@ RDEPENDS = "dpkg"
 
 require apt.inc
 
-SRC_URI = "${DEBIAN_MIRROR}/main/a/apt/apt_${PV}.tar.gz \
-           file://no-ko-translation.patch;patch=1 \
-           file://use-host.patch;patch=1 "
-
-SRC_URI += "file://nodoc.patch;patch=1"
+SRC_URI += "file://no-doxygen.patch;patch=1 \
+            file://no-ko-translation.patch;patch=1 \
+            file://use-host.patch;patch=1 "
+PR = "r1"
 
 require apt-package.inc
 

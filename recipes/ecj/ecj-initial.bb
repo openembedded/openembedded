@@ -9,6 +9,8 @@ LICENSE = "EPL"
 
 DEPENDS = "libecj-bootstrap"
 
+PR = "r1"
+
 SRC_URI = "file://ecj.in"
 
 S = "${WORKDIR}"

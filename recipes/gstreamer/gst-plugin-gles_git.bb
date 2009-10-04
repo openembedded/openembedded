@@ -2,7 +2,8 @@ DESCRIPTION = "GStreamer OpenGL/GLES2 plugins"
 LICENSE = "LGPL"
 
 SRCREV = "18f5c4875006606b28aa9aa366abbc5dd1e16b60"
-SRCREV_common = "792d198f3f694e5475d1467b5ae9371a23baf7a3" 
+
+PR = "r1"
 PR_append = "+gitr${SRCREV}"
 PV = "0.10"
 
@@ -11,7 +12,7 @@ DEPENDS = "virtual/libsdl libgles-omap3 gstreamer gst-plugins-base"
 
 SRC_URI = "git://anongit.freedesktop.org/gstreamer/gst-plugins-gl;protocol=git \
            http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.23.tar.bz2 \
-           file://omap3_disable_depth_attachment.patch;patch=1 \
+           file://omap3_fix_renderbuffer_storage.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"

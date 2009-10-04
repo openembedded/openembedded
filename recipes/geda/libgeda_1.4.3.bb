@@ -1,7 +1,8 @@
 LICENSE = "GPLv2"
-HOMEPAGE = "http://geda.seul.org"
+HOMEPAGE = "http://www.gpleda.org/"
 FILES_${PN} += "${datadir}/gEDA ${datadir}/icons ${datadir}/mime/packages"
 # NOTE: Old KDE integration ${datadir}/mimelnk/application/*.desktop are ignored intentionally
+PR = "r1"
 
 DEPENDS = "zlib gtk+ guile libpng"
 
