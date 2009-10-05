@@ -143,7 +143,7 @@ Index: kexec-tools-2.0.1/purgatory/string.c
 Index: kexec-tools-2.0.1/kexec/kexec.c
 ===================================================================
 --- kexec-tools-2.0.1.orig/kexec/kexec.c	2008-02-24 14:15:46.950825917 +0100
-+++ kexec-tools-2.0.1/kexec/kexec.c	2009-10-05 23:19:39.000000000 +0200
++++ kexec-tools-2.0.1/kexec/kexec.c	2009-10-06 00:37:01.000000000 +0200
 @@ -38,9 +38,9 @@
 
  #include "config.h"
@@ -171,7 +171,7 @@ Index: kexec-tools-2.0.1/kexec/kexec.c
 	int ret;
 	FILE *fp;
 +	char *endptr;
-+	char *line = NULL;
++	char *line[3];
 
 	fp = fopen("/sys/kernel/kexec_loaded", "r");
 	if (fp == NULL)
@@ -187,7 +187,13 @@ Index: kexec-tools-2.0.1/kexec/kexec.c
 	fclose(fp);
 	return ret;
  }
-@@ -994,9 +1002,14 @@
+@@ -990,17 +998,23 @@
+ {
+	FILE *fp;
+	size_t len;
+-	char *line = NULL;
++	const int sizeof_line = 1024;
++	char *line = malloc(sizeof_line); /* according to strdup() later */
 
 	fp = fopen("/proc/cmdline", "r");
 	if (!fp)
@@ -204,6 +210,11 @@ Index: kexec-tools-2.0.1/kexec/kexec.c
 
 	if (line) {
 		/* strip newline */
+-		*(line + strlen(line) - 1) = 0;
++		line[strlen(line) - 1] = '\0';
+
+		remove_parameter(line, "BOOT_IMAGE");
+		if (kexec_flags & KEXEC_ON_CRASH)
 
 Index: kexec-tools-2.0.1/kexec/arch/arm/kexec-zImage-arm.c
 ===================================================================
