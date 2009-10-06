@@ -12,7 +12,7 @@ import time
 VERSION = "2.6.2"
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20090812"
+__version__ = "20091004"
 
 class MakefileMaker:
 
@@ -70,16 +70,17 @@ class MakefileMaker:
         provideLine += '"'
 
         self.out( provideLine )
-        self.out( "" )       
+        self.out( "" )
 
         #
         # generate package line
         #
 
-        packageLine = 'PACKAGES="'
+        packageLine = 'PACKAGES="python-core-dbg '
         for name in self.packages:
-            packageLine += "%s " % name
-        packageLine += ' python-modules"'
+            if name != 'python-core-dbg':
+                packageLine += "%s " % name
+        packageLine += 'python-modules"'
 
         self.out( packageLine )
         self.out( "" )
@@ -161,7 +162,7 @@ if __name__ == "__main__":
     "lib-dynload/xreadlines.so types.* ${bindir}/python*" )
 
     m.addPackage( "python-core-dbg", "Python core module debug information", "python-core",
-    "lib-dynload/.debug ${bindir}/.debug ${libdir}/.debug" )
+    "config/.debug lib-dynload/.debug ${bindir}/.debug ${libdir}/.debug" )
 
     m.addPackage( "python-devel", "Python Development Package", "python-core",
     "${includedir} ${libdir}/libpython2.6.so config" ) # package
