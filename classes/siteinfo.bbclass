@@ -75,7 +75,6 @@ def get_siteinfo_list(d):
                info = targetinfo[target].split()
                info.append(target)
                info.append("common")
-	       print info
                return info
        else:
                bb.error("Information not available for target '%s'" % target)
