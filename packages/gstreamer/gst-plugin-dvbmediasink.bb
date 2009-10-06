@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
 DEPENDS = "gstreamer gst-plugins-base"
 PV = "0.10+${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig
 
