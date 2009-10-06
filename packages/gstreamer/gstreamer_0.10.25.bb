@@ -12,9 +12,10 @@ PR = "r0"
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-${PV}.tar.bz2 \
-file://gst-configure_skip_shave.patch;patch=1;pnum=0"
+	file://gst-configure_skip_shave.patch;patch=1;pnum=0 \
+	file://gst-configure_disable_introspection.patch;patch=1;pnum=0"
 
-EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --with-check=no"
+EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --disable-tests --disable-check --disable-examples"
 
 do_configure_prepend() {
 	for i in libtool ltoptions ltsugar ltversion lt~obsolete shave; do

@@ -3,7 +3,7 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
 DEPENDS = "gstreamer libcdio libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib neon flac"
-PR = "r4"
+PR = "r0"
 
 inherit autotools pkgconfig
 
@@ -25,6 +25,7 @@ python populate_packages_prepend () {
 }
 
 do_configure_prepend() {
+	rm ${S}/common/m4/introspection.m4 || /bin/true
 	for i in libtool ltoptions ltsugar ltversion lt~obsolete; do
 		rm ${S}/m4/$i.m4 || /bin/true;
 	done

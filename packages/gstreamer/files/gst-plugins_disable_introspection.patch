@@ -1,0 +1,12 @@
+--- configure.ac	2009-10-05 14:04:05.000000000 +0200
++++ configure.ac	2009-10-06 13:03:56.000000000 +0200
+@@ -134,8 +134,7 @@
+ AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
+ AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
+ 
+-dnl check for gobject-introspection
+-GOBJECT_INTROSPECTION_CHECK([0.6.3])
++AM_CONDITIONAL(HAVE_INTROSPECTION, test "a" = "b")
+ 
+ dnl check for documentation tools
+ GTK_DOC_CHECK([1.3])
