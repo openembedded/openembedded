@@ -5,3 +5,5 @@ PV = "0.1.1+svnr${SRCREV}"
 PR = "r1"
 
 inherit e
+
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http"
