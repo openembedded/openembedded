@@ -166,55 +166,6 @@ Index: kexec-tools-2.0.1/kexec/kexec.c
  char *slurp_decompress_file(const char *filename, off_t *r_size)
  {
 	gzFile fp;
-@@ -935,11 +935,19 @@
- {
-	int ret;
-	FILE *fp;
-+	char *endptr;
-+	char *line[3];
-
-	fp = fopen("/sys/kernel/kexec_loaded", "r");
-	if (fp == NULL)
-		return -1;
--	fscanf(fp, "%d", &ret);
-+/*	fscanf(fp, "%d", &ret); */
-+
-+	if ( NULL == fgets(line, sizeof(line), fp) ) {
-+		return -1;
-+	ret = strtol(line, &endptr, 10);
-+	}
-+
-	fclose(fp);
-	return ret;
- }
-@@ -990,17 +998,23 @@
- {
-	FILE *fp;
-	size_t len;
--	char *line = NULL;
-+	const int sizeof_line = 1024;
-+	char *line = malloc(sizeof_line); /* according to strdup() later */
-
-	fp = fopen("/proc/cmdline", "r");
-	if (!fp)
--		die("Could not read /proc/cmdline.");
--	getline(&line, &len, fp);
-+		die("Could not open /proc/cmdline.");
-+
-+	if ( NULL == fgets(line, sizeof(line), fp) ) {
-+		die("Can't read /proc/cmdline.");
-+
-+/* 	getline(&line, &len, fp); */
-	fclose(fp);
-+	}
-
-	if (line) {
-		/* strip newline */
--		*(line + strlen(line) - 1) = 0;
-+		line[strlen(line) - 1] = '\0';
-
-		remove_parameter(line, "BOOT_IMAGE");
-		if (kexec_flags & KEXEC_ON_CRASH)
 
 Index: kexec-tools-2.0.1/kexec/arch/arm/kexec-zImage-arm.c
 ===================================================================
