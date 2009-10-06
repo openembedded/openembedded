@@ -1,7 +1,7 @@
 # the binaries are statical linked against klibc
 require kexec-tools2.inc
 
-DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "1"
 
 PR = "r1"
 DEPENDS = "klibc"
