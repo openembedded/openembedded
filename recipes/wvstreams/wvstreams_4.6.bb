@@ -29,6 +29,7 @@ FILES_libwvstreams-base-dbg = "${libdir}/.debug/libwvutils.so.*"
 FILES_libwvstreams-extras     = "${libdir}/libwvbase.so.* ${libdir}/libwvstreams.so.*"
 FILES_libwvstreams-extras-dbg = "${libdir}/.debug/libwvbase.so.* ${libdir}/.debug/libwvstreams.so.*"
 
+PARALLEL_MAKE = ""
 
 do_stage() {
     autotools_stage_all
