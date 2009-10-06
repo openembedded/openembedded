@@ -3,14 +3,13 @@ SECTION = "net"
 LICENSE = "BSD"
 DEPENDS = "libpcre"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-${PV}.tar.gz \
 	   file://index.html \
 	   file://lighttpd.conf \
 	   file://lighttpd \
           "
-
 
 EXTRA_OECONF=" \
               --without-bzip2 \
@@ -21,11 +20,10 @@ EXTRA_OECONF=" \
               --without-webdav-props \
               --without-webdav-locks \
               --without-openssl \
-              --disable-nls \
               --disable-static \
              "
 
-inherit autotools pkgconfig update-rc.d
+inherit autotools pkgconfig update-rc.d gettext
 
 INITSCRIPT_NAME = "lighttpd"
 INITSCRIPT_PARAMS = "defaults 70"
