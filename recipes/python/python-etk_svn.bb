@@ -4,6 +4,8 @@ RDEPENDS += "python-evas python-ecore python-edje python-numeric python-math etk
 PV = "0.1.1+svnr${SRCREV}"
 PR = "ml1"
 
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD/BINDINGS/python;module=${PN};proto=http"
+
 do_stage() {         
 	distutils_stage_all 
 }  
