@@ -1,0 +1,27 @@
+From 00cbc2b27c7df84d7837760e05ac13b686e6bfa9 Mon Sep 17 00:00:00 2001
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Date: Thu, 23 Jul 2009 12:04:12 +0200
+Subject: [PATCH 22/22] xserver: fix syntax error
+
+
+Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+---
+ X11/Xserver |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/X11/Xserver b/X11/Xserver
+index e7e88d9..3d93a0a 100755
+--- a/X11/Xserver
++++ b/X11/Xserver
+@@ -63,7 +63,7 @@ else
+   fi
+ fi
+ 
+-if [ -e /etc/default/xserver ]
++if [ -e /etc/default/xserver ] ; then
+     . /etc/default/xserver
+ else
+     # start off server in conventional location.
+-- 
+1.6.3.3
+
