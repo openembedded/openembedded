@@ -1,0 +1,31 @@
+From 2dda5192f775543bbd49494934f4d5c54cd45af1 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?J=C3=BCrg=20Billeter?= <j@bitron.ch>
+Date: Fri, 2 Oct 2009 23:46:29 +0200
+Subject: [PATCH] Fix generated code for stack-allocated arrays
+
+Fixes bug 595751.
+---
+ vala/valasymbolresolver.vala     |    7 ++++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/vala/valasymbolresolver.vala b/vala/valasymbolresolver.vala
+index 213bd53..09a9c19 100644
+--- a/vala/valasymbolresolver.vala
++++ b/vala/valasymbolresolver.vala
+@@ -350,7 +350,12 @@ public class Vala.SymbolResolver : CodeVisitor {
+ 	public override void visit_local_variable (LocalVariable local) {
+ 		local.accept_children (this);
+ 		if (local.variable_type is ReferenceType) {
+-			local.variable_type.nullable = true;
++			var array_type = local.variable_type as ArrayType;
++			if (array_type != null && array_type.fixed_length) {
++				// local fixed length arrays are not nullable
++			} else {
++				local.variable_type.nullable = true;
++			}
+ 		}
+ 	}
+ 
+-- 
+1.6.0.4
+
