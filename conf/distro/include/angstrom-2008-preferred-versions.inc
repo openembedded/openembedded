@@ -38,7 +38,7 @@ UDEV_GE_141 = "1"
 PREFERRED_VERSION_usbutils = "0.82"
 PREFERRED_VERSION_util-macros-native = "1.2.1"
 PREFERRED_VERSION_util-macros = "1.2.1"
-PREFERRED_VERSION_wpa-supplicant = "0.6.7"
+PREFERRED_VERSION_wpa-supplicant = "0.6.9"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
 PREFERRED_VERSION_xserver-xorg = "1.6.1"
 
