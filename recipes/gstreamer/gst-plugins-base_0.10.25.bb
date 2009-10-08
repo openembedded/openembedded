@@ -8,5 +8,5 @@ PROVIDES += "gst-plugins"
 # if alsa has been built and is present.  You will
 # not get an error if this is not present, just 
 # a missing alsa plugin
-DEPENDS += "libtheora alsa-lib libsm virtual/libx11 freetype gnome-vfs libxv"
+DEPENDS += "pango libtheora alsa-lib libsm virtual/libx11 freetype gnome-vfs libxv"
 
