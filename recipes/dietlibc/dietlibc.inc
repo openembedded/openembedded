@@ -3,7 +3,7 @@ DESCRIPTION = "The diet libc is a libc that is optimized for small size. \
 It can be used to create small statically linked binaries"
 LICENSE = "GPLv2"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/dietlibc/dietlibc-${PV}.tar.bz2" 
 
@@ -14,7 +14,7 @@ do_configure () {
 
 do_compile () {
 	oe_runmake all CC="${BUILD_CC}" CFLAGS="${BUILD_CFLAGS}" prefix=${STAGING_DIR_TARGET}/lib/dietlibc
-	oe_runmake all ARCH="${TARGET_ARCH}" CROSS=" " prefix=${STAGING_DIR_TARGET}/lib/dietlibc
+	oe_runmake all ARCH="${TARGET_ARCH}" CC="${BUILD_CC}" CROSS="${HOST_PREFIX}" prefix=${STAGING_DIR_TARGET}/lib/dietlibc
 }
 
 #no packages needed, all binaries will be compiled with -static
