@@ -39,7 +39,7 @@ do_install() {
 	done
 
 	# install changedns script
-	install -m 0755 ${WORKDIR}/root${bindir}/changedns ${D}${bindir}/
+	install -m 0755 ${WORKDIR}/root/usr/bin/changedns ${D}${bindir}/
 	install -m 0644 ${WORKDIR}/root/etc/ppp/peers/opie-kppp ${D}${sysconfdir}/ppp/peers
 }
 
