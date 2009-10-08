@@ -35,7 +35,7 @@ do_configure () {
 		os=linux
 	elif [ "x$os" = "xlinux-uclibceabi" ]; then
 		os=linux
-	elif [ "x$os" = "xlinux-gnu" ]; then
+	elif [ "x$os" = "xlinux-gnueabi" ]; then
 		os=linux
 	fi
 	target="$os-${HOST_ARCH}"
@@ -70,7 +70,7 @@ do_configure () {
 	linux-powerpc)
 		target=linux-ppc
 		;;
-	linux-gnuspe-powerpc)
+	linux-spe-powerpc)
 		target=linux-ppc
 		;;
 	linux-supersparc)

@@ -3,7 +3,7 @@ require conf/distro/include/glibc.inc
 
 PREFERRED_PROVIDER_linux-libc-headers ?= "linux-libc-headers"
 
-TARGET_OS = "linux-gnu"
+TARGET_OS = "linux"
 TARGET_OS .= "${@['','eabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb'] and bb.data.getVar('MACHINE',d) not in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"
 
 #mess with compiler flags to use -Os instead of -O2

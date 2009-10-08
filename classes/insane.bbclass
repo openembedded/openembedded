@@ -34,7 +34,7 @@ def package_qa_get_machine_dict():
             "darwin9" : { 
                         "arm" :       (40,     0,    0,          True,          True),
                       },
-            "linux-gnu" : { 
+            "linux" : { 
                         "arm" :       (40,    97,    0,          True,          True),
                         "armeb":      (40,    97,    0,          False,         True),
                         "powerpc":    (20,     0,    0,          False,         True),
@@ -77,7 +77,7 @@ def package_qa_get_machine_dict():
                         "arm" :       (40,     0,    0,          True,          True),
                         "armeb" :     (40,     0,    0,          False,         True),
                       },
-            "linux-gnuspe" : {
+            "linux-spe" : {
                         "powerpc":    (20,     0,    0,          False,         True),
                       },
             "linux-uclibcspe" : {

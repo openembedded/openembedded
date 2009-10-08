@@ -1,12 +1,12 @@
 # eglibc:
 require conf/distro/include/eglibc.inc
 
-TARGET_OS = "linux-gnu"
+TARGET_OS = "linux"
 
 TARGET_OS .= "${@['','eabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb'] and bb.data.getVar('MACHINE',d) not in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"
 TARGET_OS .= "${@['','spe'][bb.data.getVar('TARGET_ARCH',d,1) in ['ppc', 'powerpc'] and bb.data.getVar('MACHINE',d) in ['calamari']]}"
 
-#TARGET_OS = "linux-gnuspe"
+#TARGET_OS = "linux-spe"
 
 #mess with compiler flags to use -Os instead of -O2
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info

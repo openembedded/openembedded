@@ -157,16 +157,16 @@ def detect_arm_abi (d):
 def compute_os_portion_of_target_triplet (d):
 	import bb
 	arm_eabi_supporting_arches = "armv6 armv6-novfp \
-	armv5te iwmmxt armv7a armv7 armv6 armv5teb armv4t"
+	armv5te iwmmxt armv7a armv7 armv5teb armv4t"
 	ppc_spe_supporting_arches = "ppce500v2 ppce500"
 
   	if bb.data.getVar("LIBC", d, 1) == "uclibc":
     		libc_suffix = "uclibc"
 	else:
-		libc_suffix = "gnu"
+		libc_suffix = ""
 	
 	if bb.data.getVar('TARGET_ARCH',d,1) in ['bfin']:
-		if libc_suffix == "gnu":
+		if libc_suffix is not "uclibc":
 			bb.fatal("bfin is not supported on glibc/eglibc. Please choose uclibc")
 		else:
 			os_suffix = "uclinux"
@@ -182,7 +182,7 @@ def compute_os_portion_of_target_triplet (d):
 				bb.fatal("DISTRO requested EABI but selected machine does not support EABI")
 				abi_suffix = ""
 			else:
-				abi_suffix = "eabi"
+				abi_suffix = "gnueabi"
 		elif bparch in ppc_spe_supporting_arches.split():
 			abi_suffix = "spe"
 		else:
@@ -190,7 +190,10 @@ def compute_os_portion_of_target_triplet (d):
 	else:
 		bb.note("DISTRO_FEATURES is not set abi suffix not set")
 		abi_suffix = ""
-	return os_suffix + "-" + libc_suffix + abi_suffix
+	if libc_suffix is not "" or abi_suffix is not "":
+		return os_suffix + "-" + libc_suffix + abi_suffix
+	else:
+		return os_suffix
 
 # This is needed to get a correct PACKAGE_ARCH for packages that have PACKAGE_ARCH = ${MACHINE_ARCH}
 ARM_ABI = "${@detect_arm_abi(d)}"

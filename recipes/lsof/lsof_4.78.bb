@@ -21,9 +21,8 @@ export LSOF_OS = "${TARGET_OS}"
 LSOF_OS_linux-uclibc = "linux"
 LSOF_OS_linux-uclibceabi = "linux"
 LSOF_OS_linux-uclibspe = "linux"
-LSOF_OS_linux-gnu = "linux"
 LSOF_OS_linux-gnueabi = "linux"
-LSOF_OS_linux-gnuspe = "linux"
+LSOF_OS_linux-spe = "linux"
 export LSOF_INCLUDE = "${STAGING_INCDIR}"
 
 do_configure () {
