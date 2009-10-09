@@ -1,0 +1,81 @@
+From 43c8f34ed184a730874f87be47f116d707407ff7 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?J=C3=BCrg=20Billeter?= <j@bitron.ch>
+Date: Mon, 5 Oct 2009 18:49:52 +0200
+Subject: [PATCH] GAsync: Fix async methods with delegate parameters
+
+Fixes bug 597294.
+---
+ codegen/valagasyncmodule.vala     |    7 +++++++
+ tests/Makefile.am                 |    1 +
+ tests/asynchronous/bug597294.vala |    8 ++++++++
+ 3 files changed, 16 insertions(+), 0 deletions(-)
+
+diff --git a/codegen/valagasyncmodule.vala b/codegen/valagasyncmodule.vala
+index 4fade0d..6f17344 100644
+--- a/codegen/valagasyncmodule.vala
++++ b/codegen/valagasyncmodule.vala
+@@ -53,6 +53,7 @@ internal class Vala.GAsyncModule : GSignalModule {
+ 				}
+ 			} else if (param.parameter_type is DelegateType) {
+ 				data.add_field ("gpointer", get_delegate_target_cname (get_variable_cname (param.name)));
++				data.add_field ("GDestroyNotify", get_delegate_target_destroy_notify_cname (get_variable_cname (param.name)));
+ 			}
+ 		}
+ 
+@@ -65,6 +66,7 @@ internal class Vala.GAsyncModule : GSignalModule {
+ 				}
+ 			} else if (m.return_type is DelegateType) {
+ 				data.add_field ("gpointer", get_delegate_target_cname ("result"));
++				data.add_field ("GDestroyNotify", get_delegate_target_destroy_notify_cname ("result"));
+ 			}
+ 		}
+ 
+@@ -96,6 +98,7 @@ internal class Vala.GAsyncModule : GSignalModule {
+ 				if (requires_destroy (param_type)) {
+ 					var ma = new MemberAccess.simple (param.name);
+ 					ma.symbol_reference = param;
++					ma.value_type = param.parameter_type.copy ();
+ 					freeblock.add_statement (new CCodeExpressionStatement (get_unref_expression (new CCodeMemberAccess.pointer (new CCodeIdentifier ("data"), get_variable_cname (param.name)), param.parameter_type, ma)));
+ 				}
+ 			}
+@@ -206,7 +209,11 @@ internal class Vala.GAsyncModule : GSignalModule {
+ 						asyncblock.add_statement (new CCodeExpressionStatement (new CCodeAssignment (new CCodeMemberAccess.pointer (data_var, get_array_length_cname (get_variable_cname (param.name), dim)), new CCodeIdentifier (get_array_length_cname (get_variable_cname (param.name), dim)))));
+ 					}
+ 				} else if (param.parameter_type is DelegateType) {
++					var deleg_type = (DelegateType) param.parameter_type;
+ 					asyncblock.add_statement (new CCodeExpressionStatement (new CCodeAssignment (new CCodeMemberAccess.pointer (data_var, get_delegate_target_cname (get_variable_cname (param.name))), new CCodeIdentifier (get_delegate_target_cname (get_variable_cname (param.name))))));
++					if (deleg_type.value_owned) {
++						asyncblock.add_statement (new CCodeExpressionStatement (new CCodeAssignment (new CCodeMemberAccess.pointer (data_var, get_delegate_target_destroy_notify_cname (get_variable_cname (param.name))), new CCodeIdentifier (get_delegate_target_destroy_notify_cname (get_variable_cname (param.name))))));
++					}
+ 				}
+ 			}
+ 		}
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index 8f704db..e9be7e8 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -62,6 +62,7 @@ TESTS = \
+ 	asynchronous/bug595735.vala \
+ 	asynchronous/bug595755.vala \
+ 	asynchronous/bug596177.vala \
++	asynchronous/bug597294.vala \
+ 	dbus/basic-types.test \
+ 	dbus/arrays.test \
+ 	dbus/async.test \
+diff --git a/tests/asynchronous/bug597294.vala b/tests/asynchronous/bug597294.vala
+new file mode 100644
+index 0000000..92a04bf
+--- /dev/null
++++ b/tests/asynchronous/bug597294.vala
+@@ -0,0 +1,8 @@
++delegate void Foo ();
++
++async void do_foo (Foo f) {
++	f ();
++}
++
++void main () {
++}
+-- 
+1.6.0.4
+

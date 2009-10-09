@@ -1,0 +1,77 @@
+From 663d023a6bca8ccd04cd0e65ed8cc389379e5383 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?J=C3=BCrg=20Billeter?= <j@bitron.ch>
+Date: Wed, 30 Sep 2009 14:28:41 +0200
+Subject: [PATCH] D-Bus: Fix marshalling of GLib.Value parameters
+
+Fixes bug 596862.
+---
+ codegen/valadbusclientmodule.vala |    2 +-
+ codegen/valadbusservermodule.vala |    4 ++--
+ tests/Makefile.am                 |    1 +
+ tests/dbus/bug596862.vala         |    8 ++++++++
+ 4 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/codegen/valadbusclientmodule.vala b/codegen/valadbusclientmodule.vala
+index 2315853..6779e51 100644
+--- a/codegen/valadbusclientmodule.vala
++++ b/codegen/valadbusclientmodule.vala
+@@ -1273,7 +1273,7 @@ internal class Vala.DBusClientModule : DBusModule {
+ 
+ 		foreach (FormalParameter param in sig.get_parameters ()) {
+ 			cdecl = new CCodeDeclaration (param.parameter_type.get_cname ());
+-			cdecl.add_declarator (new CCodeVariableDeclarator (param.name, default_value_for_type (param.parameter_type, true)));
++			cdecl.add_declarator (new CCodeVariableDeclarator.zero (param.name, default_value_for_type (param.parameter_type, true)));
+ 			prefragment.append (cdecl);
+ 
+ 			if (get_type_signature (param.parameter_type) == null) {
+diff --git a/codegen/valadbusservermodule.vala b/codegen/valadbusservermodule.vala
+index c211ecd..fb5fcf1 100644
+--- a/codegen/valadbusservermodule.vala
++++ b/codegen/valadbusservermodule.vala
+@@ -186,7 +186,7 @@ internal class Vala.DBusServerModule : DBusClientModule {
+ 			owned_type.value_owned = true;
+ 
+ 			cdecl = new CCodeDeclaration (owned_type.get_cname ());
+-			cdecl.add_declarator (new CCodeVariableDeclarator (param.name, default_value_for_type (param.parameter_type, true)));
++			cdecl.add_declarator (new CCodeVariableDeclarator.zero (param.name, default_value_for_type (param.parameter_type, true)));
+ 			if (param.direction == ParameterDirection.IN) {
+ 				in_prefragment.append (cdecl);
+ 			} else {
+@@ -270,7 +270,7 @@ internal class Vala.DBusServerModule : DBusClientModule {
+ 				Report.error (m.return_type.source_reference, "D-Bus serialization of type `%s' is not supported".printf (m.return_type.to_string ()));
+ 			} else if (m.return_type.is_real_struct_type ()) {
+ 				cdecl = new CCodeDeclaration (m.return_type.get_cname ());
+-				cdecl.add_declarator (new CCodeVariableDeclarator ("result", default_value_for_type (m.return_type, true)));
++				cdecl.add_declarator (new CCodeVariableDeclarator.zero ("result", default_value_for_type (m.return_type, true)));
+ 				out_prefragment.append (cdecl);
+ 
+ 				if (!m.coroutine) {
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index f3771d5..e510669 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -60,6 +60,7 @@ TESTS = \
+ 	dbus/basic-types.test \
+ 	dbus/arrays.test \
+ 	dbus/async.test \
++	dbus/bug596862.vala \
+ 	$(NULL)
+ 
+ check-TESTS: $(TESTS)
+diff --git a/tests/dbus/bug596862.vala b/tests/dbus/bug596862.vala
+new file mode 100644
+index 0000000..fd9ec5e
+--- /dev/null
++++ b/tests/dbus/bug596862.vala
+@@ -0,0 +1,8 @@
++[DBus (name = "org.example.Test")]
++public class Foo : Object {
++        public void do_foo (Value value) {
++        }
++}
++
++void main () {
++}
+-- 
+1.6.0.4
+
