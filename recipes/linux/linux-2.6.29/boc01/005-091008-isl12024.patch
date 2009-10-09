@@ -1,7 +1,7 @@
 Index: linux-2.6.29/drivers/misc/eeprom/at24.c
 ===================================================================
 --- linux-2.6.29.orig/drivers/misc/eeprom/at24.c	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/misc/eeprom/at24.c	2009-10-08 16:30:58.000000000 +0200
++++ linux-2.6.29/drivers/misc/eeprom/at24.c	2009-10-09 18:37:43.000000000 +0200
 @@ -114,6 +114,8 @@
  	{ "spd", AT24_DEVICE_MAGIC(2048 / 8,
  		AT24_FLAG_READONLY | AT24_FLAG_IRUGO) },
@@ -14,7 +14,7 @@ Index: linux-2.6.29/drivers/misc/eeprom/at24.c
 Index: linux-2.6.29/drivers/rtc/Kconfig
 ===================================================================
 --- linux-2.6.29.orig/drivers/rtc/Kconfig	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/rtc/Kconfig	2009-10-08 16:30:58.000000000 +0200
++++ linux-2.6.29/drivers/rtc/Kconfig	2009-10-09 18:37:43.000000000 +0200
 @@ -128,6 +128,12 @@
  
  if I2C
@@ -31,7 +31,7 @@ Index: linux-2.6.29/drivers/rtc/Kconfig
 Index: linux-2.6.29/drivers/rtc/Makefile
 ===================================================================
 --- linux-2.6.29.orig/drivers/rtc/Makefile	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/rtc/Makefile	2009-10-08 16:30:58.000000000 +0200
++++ linux-2.6.29/drivers/rtc/Makefile	2009-10-09 18:37:43.000000000 +0200
 @@ -39,6 +39,7 @@
  obj-$(CONFIG_RTC_DRV_EP93XX)	+= rtc-ep93xx.o
  obj-$(CONFIG_RTC_DRV_FM3130)	+= rtc-fm3130.o
@@ -43,8 +43,8 @@ Index: linux-2.6.29/drivers/rtc/Makefile
 Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.29/drivers/rtc/rtc-isl12024.c	2009-10-09 15:50:08.000000000 +0200
-@@ -0,0 +1,509 @@
++++ linux-2.6.29/drivers/rtc/rtc-isl12024.c	2009-10-09 19:05:21.000000000 +0200
+@@ -0,0 +1,498 @@
 +/*
 + * Intersil ISL12024 class driver
 + *
@@ -63,7 +63,6 @@ Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 +#include <linux/i2c.h>
 +#include <linux/bcd.h>
 +#include <linux/rtc.h>
-+#include <linux/proc_fs.h>
 +#include <linux/delay.h>
 +
 +#define DRV_VERSION "0.3"
@@ -111,9 +110,6 @@ Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 +static int isl12024_get_status(struct i2c_client *client, unsigned char *sr);
 +static int isl12024_fix_osc(struct i2c_client *client);
 +
-+/* Bufer to store unique identifier in */
-+static u8 buf_id[ISL12024_RTC_SECTION_LEN] = { 0 };
-+
 +static struct i2c_driver isl12024_driver;
 +
 +static int
@@ -134,7 +130,7 @@ Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 +					.addr	= client->addr,
 +					.flags	= I2C_M_RD,
 +					.len	= len ,
-+					.buf	= buf ,
++					.buf	= buf,
 +			},
 +	};
 +
@@ -425,29 +421,30 @@ Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 +	.set_time	= isl12024_rtc_set_time,
 +};
 +
-+static int
-+read_proc(char * page, char ** start, off_t off, int count, int * eof, void * data)
++static ssize_t isl12024_show_id(struct device *dev, struct device_attribute *attr,
++			    char *buf)
 +{
++	struct i2c_client *client = to_i2c_client(dev);
++	int err;
 +	int len = 0;
 +	int i;
++	u8 id_buffer[ISL12024_RTC_SECTION_LEN];
 +
-+	for (i = 0; i < ISL12024_RTC_SECTION_LEN; i++)
-+		len += sprintf(page+len, "%02X", buf_id[i]);
-+	len += sprintf(page+len, "\n");
-+
-+	len -= off;
-+	if ( len < count ) {
-+		*eof = 1;
-+		if ( len <= 0 )
-+			return 0;
-+	} else {
-+		len = count;
++	/* Read unique id from eeprom */
++	err = isl12024_i2c_read_regs(client, ISL12024_REG_ID, id_buffer, sizeof(id_buffer));
++	if (err < 0) {
++		dev_err(&client->dev, "reading RTC section failed\n");
++		return err;
 +	}
 +
-+	*start = page + off;
-+
++	/* Print hexadecimal */
++	for (i = 0; i < sizeof(id_buffer); i++)
++		len += sprintf(buf + len, "%02X", id_buffer[i]);
++	len += sprintf(buf + len, "\n");
 +	return len;
 +}
++
++static DEVICE_ATTR(id, S_IRUGO, isl12024_show_id, NULL);
 +
 +static int
 +isl12024_probe(struct i2c_client *client, const struct i2c_device_id *id)
@@ -455,8 +452,6 @@ Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 +	int rc = 0;
 +	unsigned char sr;
 +	struct rtc_device *rtc = NULL;
-+	struct proc_dir_entry *proc_root;
-+	struct proc_dir_entry *proc_entry;
 +
 +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
 +		return -ENODEV;
@@ -490,16 +485,10 @@ Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 +		isl12024_fix_osc(client);
 +	}
 +
-+	proc_root = proc_mkdir("isl12024", 0);
-+	proc_entry = create_proc_entry("id",  S_IFREG | S_IRUGO, proc_root);
-+	if (proc_entry == NULL)
++	/* Register sysfs hooks */
++	rc = device_create_file(&client->dev, &dev_attr_id);
++	if (rc < 0)
 +		goto exit_unregister;
-+
-+	proc_entry->owner = THIS_MODULE;
-+	proc_entry->read_proc = read_proc;
-+
-+	/* Read unique id from eeprom */
-+	isl12024_i2c_read_regs(client, ISL12024_REG_ID, buf_id, sizeof(buf_id));
 +
 +	return 0;
 +
@@ -514,8 +503,8 @@ Index: linux-2.6.29/drivers/rtc/rtc-isl12024.c
 +{
 +	struct rtc_device *rtc = i2c_get_clientdata(client);
 +
-+	/* FIXME : unregister from procfs */
 +	rtc_device_unregister(rtc);
++	device_remove_file(&client->dev, &dev_attr_id);
 +
 +	return 0;
 +}
