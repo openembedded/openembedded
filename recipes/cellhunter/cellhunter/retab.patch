@@ -1,0 +1,1401 @@
+From: Jan Luebbe <jluebbe@debian.org>
+Date: Thu, 5 Mar 2009 18:01:46 +0000 (+0100)
+Subject: retab with expandtab und tabstop=4
+X-Git-Url: http://git.sicherheitsschwankung.de/?p=jan%2Fcellhunter.git;a=commitdiff_plain;h=fe827632acfc28ae24414509e4f154734945228d
+
+retab with expandtab und tabstop=4
+---
+
+diff --git a/cellhunter.py b/cellhunter.py
+index 59171f3..53c5af0 100644
+--- a/cellhunter.py
++++ b/cellhunter.py
+@@ -85,697 +85,697 @@
+ import dbus, gobject, gtk, subprocess, urllib, random, os, ConfigParser, sys, socket
+ 
+ class CellHunterGUI:
+-	DEBUG = False
+-	
+-	homedir = "/home/root"
+-	
+-	lang = ""
+-	configpresent = False
+-	auto = 0
+-	auto_running = 0
+-	offline = False
+-	data_auto = 0
+-	cell_la = ""
+-	cell_id = ""
+-	provider = ""
+-	mcc = ""
+-	mnc = ""
+-	signal = ""
+-	cell_arfcn = ""
+-	ncells_la = ["", "", "", "", "", ""]
+-	ncells_id = ["", "", "", "", "", ""]
+-	ncells_signal = ["", "", "", "", "", ""]
+-	ncells_arfcn = ["", "", "", "", "", ""]
+-	gps_fix = ""
+-	gps_lat = ""
+-	gps_long = ""
+-	gps_alt = ""
+-	gps_time = ""
+-	groupname = ""
+-	grouppass = ""
+-	device_id = ""
+-	labeltext1 = ""
+-	labeltext2 = ""
+-	labeltext3 = ""
+-
+-	# shut down the modem an get it back to normal state
+-	def gui_destroy(self):
+-		if self.DEBUG: print "gui_destroy"
+-		
+-		if self.DEBUG: print "gui_destroy / kill all old wgets"
+-		subprocess.Popen(["/usr/bin/killall", "wget"])
+-
+-	def delete_event(self, widget, event=None, data=None):
+-		if self.DEBUG: print "delete_event"
+-
+-		if self.offline == True:
+-			if self.lang == "de": offlabel = gtk.Label("Du warst im Offline Modus. Um die Daten\nzu uebertragen musst du, sobald wieder\neine Internetverbindung " +
+-				"besteht, auf der\nKonsole \"cellhunter_upload.sh\" ausfuehren.\nDann werden die Daten gesendet.\n\nDu kannst beliebig oft und " +
+-				"beliebig lange mit\nCellHunter Daten sammeln, erst nach dem\nUebertragen werden die gesammelten Daten\nzurueckgesetzt.")
+-			else: offlabel = gtk.Label("You have been in Offline Mode. To submit the data you\nhave to run \"cellhunter_upload.sh\" on your terminal as\nsoon you " + 
+-				"have a working internet connection again.\nThen the collected data will be transmitted. You can\ncollect cells as long as you want. After " + 
+-				"transmitting the\ndata your offline collected cells will be resetted.");
+-			offlabel.show()
+-			if self.lang == "de": dia = gtk.Dialog('Offline Modus', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+-			else: dia = gtk.Dialog('Offline Mode', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+-			dia.vbox.pack_start(offlabel)
+-			dia.show()
+-			result = dia.run()
+-			if result == gtk.RESPONSE_CLOSE:
+-				dia.destroy()
+-				gtk.main_quit()
+-				return False
+-		else:
+-			gtk.main_quit()
+-			return False
+-
+-	# try to save the config to file if data is correct
+-	def saveconfig(self, button, groupentry, passentry, info_label):
+-		if self.DEBUG: print "saveconfig"
+-
+-		save_config = False
+-
+-		try:
+-			if self.DEBUG: print "saveconfig / checking for group..."
+-			socket.setdefaulttimeout(10)
+-			params = urllib.urlencode({'groupcheck': 1, 'gname': groupentry.get_text(), 'gpass': passentry.get_text()})
+-			f = urllib.urlopen("http://78.47.116.33/~hole/cellhunter/submit.php?%s" % params)
+-			response = f.read()
+-			
+-			if response == "group_add":
+-				if self.DEBUG: print "saveconfig / group added"
+-				save_config = True
+-			if response == "password_ok":
+-				if self.DEBUG: print "saveconfig / group exists, password ok"
+-				save_config = True
+-			if response == "password_wrong":
+-				if self.DEBUG: print "saveconfig / group exists, password wrong"
+-				save_config = False
+-				if self.lang == "de": self.info_label.set_text("\nDas Passwort fuer diese Gruppe ist falsch. Entweder du\nlegst eine neue Gruppe mit einem anderen " +
+-					"Namen an,\noder versuchst es noch einmal mit dem richtigen\nPasswort\n\n")
+-				else: self.info_label.set_text("\nThe password you entered for this group is wrong.\nYou can add a new group with another name or try\nit again with the right password.\n\n\n")
+-		except IOError:
+-			if self.lang == "de": self.info_label.set_text("\nFehler:\nKonnte keine Verbindung zum Server aufbauen.\nBitte die Netzwerkverbindung ueberpruefen.\n\n\n")
+-			else: self.info_label.set_text("\nError:\nNo connection to the Server.\nPlase check your network connection.\n\n\n")
+-			if self.DEBUG: print "saveconfig / no connection to server"
+-
+-		if save_config == True:
+-			if self.DEBUG: print "saveconfig / writing config"
+-			config = ConfigParser.RawConfigParser()
+-			
+-			config.add_section('main')
+-			config.set('main', 'gname', groupentry.get_text())
+-			self.groupname = groupentry.get_text()
+-			if self.groupname == "":
+-				if self.DEBUG: print "saveconfig / user is anonymous"
+-				config.set('main', 'gpass', "")
+-				config.set('main', 'device_id', "")
+-				self.grouppass = ""
+-				self.device_id = ""
+-			else:
+-				if self.DEBUG: print "saveconfig / user is not anonymous"
+-				random.seed()
+-				randomid = random.randint(0, 999999999)
+-				if self.DEBUG: print "save_config / device_id=" + str(randomid)
+-				config.set('main', 'device_id', randomid)
+-				config.set('main', 'gpass', passentry.get_text())
+-				self.grouppass = passentry.get_text()
+-				self.device_id = str(randomid)
+-			
+-			config.set('main', 'lang', self.lang)
+-			
+-			f = open(self.homedir + '/.cellhunter.conf', 'w')
+-			config.write(f)
+-			
+-			self.win2.hide()
+-			self.win.show()
+-
+-	# check cellid and gps data
+-	def check_cellid(self, button, label):
+-		if self.DEBUG: print "check_cellid"
+-
+-		try:
+-			data = self.ogsmd_monitor_iface.GetServingCellInformation()
+-			self.cell_la = data['lac']
+-			self.cell_id = data['cid']
+-			self.signal = str(data['rxlev']/2+2)
+-			self.cell_arfcn = str(data['arfcn'])
+-	
+-			while len(self.cell_la) < 4:
+-				self.cell_la = "0" + self.cell_la
+-			while len(self.cell_id) < 4:
+-				self.cell_id = "0" + self.cell_id
+-	
+-			if self.DEBUG: print "check_cellid / " + self.cell_la + " " + self.cell_id + " " + self.signal + " " + self.cell_arfcn
+-		except dbus.DBusException, e:
+-			print "Error while getting main cell:", e
+-			self.cell_la = "0000"
+-			self.cell_id = "0000"
+-			self.signal = "0"
+-			self.cell_arfcn = "0"
+-		
+-		try:
+-			data = self.ogsmd_network_iface.GetStatus()
+-			self.provider = data['provider']
+-			self.mcc = str(data['code'])[:3]
+-			self.mnc = str(data['code'])[3:]
+-			if self.DEBUG: print "check_cellid / Provider: " + self.provider + " " + self.mcc + " " + self.mnc
+-		except dbus.DBusException, e:
+-			print "Error while getting provider:", e
+-			self.provider = "99999"
+-			self.mcc = "999"
+-			self.mnc = "999"
+-		
+-		try:
+-			#neighbour cells
+-			data = self.ogsmd_monitor_iface.GetNeighbourCellInformation()
+-			# FIXME handle less then 6 neighbours correctly
+-			self.ncells_la = []
+-			self.ncells_id = []
+-			self.ncells_signal = []
+-			self.ncells_arfcn = []
+-	
+-			for cell in data:
+-				self.ncells_la.append(cell['lac'])
+-				self.ncells_id.append(cell['cid'])
+-				self.ncells_signal.append(str(cell['rxlev']/2+2))
+-				self.ncells_arfcn.append(str(cell['arfcn'])) 
+-				while len(self.ncells_la[-1]) < 4:
+-					self.ncells_la[-1] = "0" + self.ncells_la[-1]
+-				while len(self.ncells_id[-1]) < 4:
+-					self.ncells_id[-1] = "0" + self.ncells_id[-1]
+-				#while len(self.ncells_signal[-1]) < 2:
+-				#	self.ncells_signal[-1] = "0" + self.ncells_signal[-1]
+-				
+-				if self.DEBUG: print "check_cellid / neighbours: " + self.ncells_la[-1] + \
+-					" " + self.ncells_id[-1] + " " + self.ncells_signal[-1] + \
+-					" " + self.ncells_arfcn[-1]
+-			while len(self.ncells_la) < 6:
+-				self.ncells_la.append("0000")
+-				self.ncells_id.append("0000")
+-				self.ncells_signal.append("0")
+-				self.ncells_arfcn.append("0") 
+-		except dbus.DBusException, e:
+-			print "Error while getting neighbour cells:", e
+-			self.ncells_la = ["0000", "0000", "0000", "0000", "0000", "0000"]
+-			self.ncells_id = ["0000", "0000", "0000", "0000", "0000", "0000"]
+-			self.ncells_signal = ["0", "0", "0", "0", "0", "0"]
+-			self.ncells_arfcn = ["0", "0", "0", "0", "0", "0"]
+-
+-		# first part of the info label
+-		if self.lang == "de": self.labeltext1 = "Provider:\t\t" + self.provider + " (" + self.mcc + "/" + self.mnc + ")" + "\nZelle:\t\t" + self.cell_la + " / " + self.cell_id + " / " + self.signal + "\n" + "Nachbarn:\t" + self.ncells_la[0] + " / " + self.ncells_id[0] + " / " + self.ncells_signal[0] + "  \t" + self.ncells_la[1] + " / " + self.ncells_id[1] + " / " + self.ncells_signal[1] + "\n\t\t\t" + self.ncells_la[2] + " / " + self.ncells_id[2] + " / " + self.ncells_signal[2] + "	\t" + self.ncells_la[3] + " / " + self.ncells_id[3] + " / " + self.ncells_signal[3] + "\n\t\t\t" + self.ncells_la[4] + " / " + self.ncells_id[4] + " / " + self.ncells_signal[4] + "  \t" + self.ncells_la[5] + " / " + self.ncells_id[5] + " / " + self.ncells_signal[5]
+-		else: self.labeltext1 = "Provider:\t\t" + self.provider + " (" + self.mcc + "/" + self.mnc + ")" + "\nCell:\t\t\t" + self.cell_la + " / " + self.cell_id + " / " + self.signal + "\n" + "Neighbours:\t" + self.ncells_la[0] + " / " + self.ncells_id[0] + " / " + self.ncells_signal[0] + "  \t" + self.ncells_la[1] + " / " + self.ncells_id[1] + " / " + self.ncells_signal[1] + "\n\t\t\t" + self.ncells_la[2] + " / " + self.ncells_id[2] + " / " + self.ncells_signal[2] + "  \t" + self.ncells_la[3] + " / " + self.ncells_id[3] + " / " + self.ncells_signal[3] + "\n\t\t\t" + self.ncells_la[4] + " / " + self.ncells_id[4] + " / " + self.ncells_signal[4] + "  \t" + self.ncells_la[5] + " / " + self.ncells_id[5] + " / " + self.ncells_signal[5]
+-
+-
+-		# get gps data
+-		self.position = self.position_iface.GetPosition()
+-		
+-		# type of gps fix
+-		if self.position[0] >= 3:
+-			self.gps_fix = "2D"
+-		if self.position[0] == 7:
+-			self.gps_fix = "3D"
+-		if self.position[0] < 3:
+-			if self.lang == "de": self.gps_fix = "Kein Fix"
+-			else: self.gps_fix = "No Fix"
+-		
+-		# when got fix, check position
+-		if self.position[0] >= 3:
+-			self.gps_time = str(self.position[1])
+-			self.gps_lat = str(self.position[2])
+-			self.gps_long = str(self.position[3])
+-			self.gps_alt = str(self.position[4])
+-		else:
+-			self.gps_time = ""
+-			self.gps_lat = ""
+-			self.gps_long = ""
+-			self.gps_alt = ""
+-
+-		# debut output
+-		gps_data = "FIX/TIME: " + self.gps_fix + " / " + str(self.position[0]) + " / " + self.gps_time
+-		if self.DEBUG: print "check_cellid / " + gps_data
+-		gps_data = "POS: " + self.gps_lat + " / " + self.gps_long + " / " + self.gps_alt
+-		if self.DEBUG: print "check_cellid / " + gps_data
+-		
+-		# second part of the info label
+-		if self.lang == "de": self.labeltext2 = "Fix: " + self.gps_fix + " / Zeit: " + self.gps_time + "\nPosition: " + self.gps_lat + " / " + self.gps_long + " / " + self.gps_alt
+-		else: self.labeltext2 = "Fix: " + self.gps_fix + " / Time: " + self.gps_time + "\nPosition: " + self.gps_lat + " / " + self.gps_long + " / " + self.gps_alt
+-		
+-		# send data automatically?
+-		if self.data_auto != 0:
+-			if self.DEBUG: print "check_cellid / sending data automatically..."
+-			self.send_data()
+-		
+-		self.check_serverresponse()
+-
+-		# put all labeldata together and set it
+-		labeltext = self.labeltext1 + "\n\n" + self.labeltext2 + "\n\n" + self.labeltext3
+-		label.set_text(labeltext)
+-
+-		# if auto != 0 a next function call is schedules in auto milliseconds
+-		self.auto_running = 0
+-		if self.auto != 0:
+-			if self.DEBUG: print "check_cellid / scheduling next check in " + str(self.auto) + " ms"
+-			self.auto_running = 1
+-			gobject.timeout_add (self.auto, self.check_cellid, button, label)
+-
+-	# toggle auto check for cellid
+-	def check_cellid_auto(self, button, label):
+-		if self.DEBUG: print "check_cellid_auto"
+-
+-		if self.auto == 0:
+-			self.auto = 10000
+-			self.button_100.set_sensitive(False)
+-			self.button_150.set_sensitive(False)
+-			if self.lang == "de": button.set_label("CellID alle 10\nSekunden abfragen")
+-			else: button.set_label("Check CellID\nevery 10 Seconds")
+-			if self.auto_running == 0:
+-				self.check_cellid(button, label)
+-		elif self.auto == 10000:
+-			self.auto = 30000
+-			if self.lang == "de": button.set_label("CellID alle 30\nSekunden abfragen")
+-			else: button.set_label("Check CellID\nevery 30 Seconds")
+-		elif self.auto == 30000:
+-			self.auto = 60000
+-			if self.lang == "de": button.set_label("CellID alle 60\nSekunden abfragen")
+-			else: button.set_label("Check CellID\nevery 60 Seconds")
+-		elif self.auto == 60000:
+-			self.auto = 120000
+-			if self.lang == "de": button.set_label("CellID alle 120\nSekunden abfragen")
+-			else: button.set_label("Check CellID\nevery 120 Seconds")
+-		elif self.auto == 120000:
+-			self.auto = 0
+-			self.button_100.set_sensitive(True)
+-			self.button_150.set_sensitive(True)
+-			if self.lang == "de": button.set_label("CellID automatisch\nabfragen: AUS")
+-			else: button.set_label("Auto check\nCellID: OFF")
+-
+-		if self.DEBUG: print "check_cellid_auto / auto=" + str(self.auto)
+-
+-	# send data button
+-	def check_cellid_data(self, button, label):
+-		if self.DEBUG: print "check_cellid_data"
+-		
+-		self.send_data()
+-		
+-		self.check_serverresponse()
+-		
+-		# label zusammensetzen und anzeigen
+-		if(self.labeltext1 != ""):
+-			labeltext = self.labeltext1 + "\n\n" + self.labeltext2 + "\n\n" + self.labeltext3
+-			label.set_text(labeltext)
+-
+-	# toggle send data automatically
+-	def check_cellid_data_auto(self, button):
+-		if self.DEBUG: print "check_cellid_data_auto"
+-
+-		if self.data_auto == 0:
+-			self.data_auto = 1
+-			if self.lang == "de": button.set_label("Daten automatisch\nuebertragen: AN")
+-			else: button.set_label("Auto submit\nData: ON")
+-		else:
+-			self.data_auto = 0
+-			if self.lang == "de": button.set_label("Daten automatisch\nuebertragen: AUS")
+-			else: button.set_label("Auto submit\nData: OFF")
+-
+-		if self.DEBUG: print "check_cellid_data_auto / data_auto=" + str(self.data_auto)
+-
+-	# toggle offline mode
+-	def offline_mode(self, button):
+-		if self.DEBUG: print "offline_mode"
+-
+-		if self.offline == False:
+-			self.offline = True
+-			if self.lang == "de": button.set_label("Offline Modus: AN")
+-			else: button.set_label("Offline Mode: ON")
+-			if self.lang == "de": offlabel = gtk.Label("Du bist jetzt im Offline Modus. Alle Anfragen\nan den Server werden jetzt nicht gesendet,\nsondern " + 
+-				"gespeichert. Du muss aber trotzdem\n\"Daten uebertragen\", tu einfach so, als waerst du\nonline. Wie du die Daten dann uebertraegst\n" +
+-				"erfaehrst du wenn du das Programm im\nOfflinemodus beendest.")
+-			else: offlabel = gtk.Label("You are in Offline Mode now. All requests to the server\nwill not be sent but saved in a file. But you have to" + 
+-				"\n\"Submit Data\". Just act as you were in online mode.\nYou will get help on transmitting the data to the server\nwhen leaving the program " + 
+-				"in offline mode")
+-			offlabel.show()
+-			if self.lang == "de": dia = gtk.Dialog('Offline Modus', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+-			else: dia = gtk.Dialog('Offline Mode', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+-			dia.vbox.pack_start(offlabel)
+-			dia.show()
+-			result = dia.run()
+-			if result == gtk.RESPONSE_CLOSE:
+-				dia.destroy()
+-		else:
+-			self.offline = False
+-			if self.lang == "de": button.set_label("Offline Modus: AUS")
+-			else: button.set_label("Offline Mode: OFF")
+-
+-		if self.DEBUG: print "offline_mode / offline=" + str(self.offline)
+-
+-	def check_serverresponse(self):
+-		if self.DEBUG: print "check_serverresponse"
+-		
+-		if self.offline == False:
+-			if os.path.isfile("/tmp/cellhunter.wget") == True:
+-				#print "vorhanden"
+-				infile = open("/tmp/cellhunter.wget","r")
+-				self.labeltext3 = "Server Status: " + infile.readline()
+-				infile.close()
+-			else:
+-				#print "nicht vorhanden"
+-				if self.lang == "de": self.labeltext3 = "Server Status: Uebertragung fehlgeschlagen"
+-				else: self.labeltext3 = "Server Status: Connection to Server failed"
+-		else:
+-			if self.lang == "de": self.labeltext3 = "Server Status: Offline Modus"
+-			else: self.labeltext3 = "Server Status: Offline Mode"
+-
+-	# submit data
+-	# using wget is better because gui does not freeze. but i have to get the result from file
+-	# should be done with threads but i am too lazy to do this right now
+-	def send_data(self):
+-		url = "http://78.47.116.33/~hole/cellhunter/submit.php?provider=" + urllib.quote(self.provider) + "&cell_mcc=" + urllib.quote(self.mcc) + "&cell_mnc=" + urllib.quote(self.mnc) + "&cell_la=" + urllib.quote(self.cell_la) + "&cell_id=" + urllib.quote(self.cell_id) + "&signal=" + urllib.quote(self.signal) + "&time=" + urllib.quote(self.gps_time) + "&lat=" + urllib.quote(self.gps_lat) + "&long=" + urllib.quote(self.gps_long) + "&alt=" + urllib.quote(self.gps_alt) + "&gname=" + urllib.quote(self.groupname) + "&gpass=" + urllib.quote(self.grouppass) + "&device_id=" + urllib.quote(self.device_id) + "&cell_arfcn=" + urllib.quote(self.cell_arfcn) + "&serving=1"
+-		
+-		url_n = ["", "", "", "", "", ""]
+-		for i in range(0,6):
+-			url_n[i] = "http://78.47.116.33/~hole/cellhunter/submit.php?provider=" + urllib.quote(self.provider) + "&cell_mcc=" + urllib.quote(self.mcc) + "&cell_mnc=" + urllib.quote(self.mnc) + "&cell_la=" + urllib.quote(self.ncells_la[i]) + "&cell_id=" + urllib.quote(self.ncells_id[i]) + "&signal=" + urllib.quote(self.ncells_signal[i]) + "&time=" + urllib.quote(self.gps_time) + "&lat=" + urllib.quote(self.gps_lat) + "&long=" + urllib.quote(self.gps_long) + "&alt=" + urllib.quote(self.gps_alt) + "&gname=" + urllib.quote(self.groupname) + "&gpass=" + urllib.quote(self.grouppass) + "&device_id=" + urllib.quote(self.device_id) + "&cell_arfcn=" + urllib.quote(self.ncells_arfcn[i]) + "&serving=0"
+-		
+-		if self.offline == False:
+-			if self.DEBUG: print "send_data / online"
+-			if self.cell_la != "0000" or self.cell_id != "0000":
+-				if self.DEBUG: print "send_data / " + url
+-				subprocess.Popen(["/usr/bin/wget", "--user-agent", "cellhunter 0.4.2 online",  "-q", "--output-document=/tmp/cellhunter.wget", url])
+-			for i in range(0,6):
+-				if self.ncells_la[i] != "0000" or self.ncells_id[i] != "0000":
+-					if self.DEBUG: print "send_data / " + url_n[i]
+-					subprocess.Popen(["/usr/bin/wget", "--user-agent", "cellhunter 0.4.2 online", "-q", "--output-document=/tmp/cellhunter.wget" + str(i), url_n[i]])
+-			
+-		elif self.offline == True:
+-			if self.DEBUG: print "send_data / offline"
+-			offlineFile = open(self.homedir + '/cellhunter_offline.log', 'a')
+-			if self.cell_la != "0000" or self.cell_id != "0000":
+-				if self.DEBUG: print "send_data / " + url
+-				offlineFile.write(url + "\n")
+-			for i in range(0,6):
+-				if self.ncells_la[i] != "0000" or self.ncells_id[i] != "0000":
+-					if self.DEBUG: print "send_data / " + url_n[i]
+-					offlineFile.write(url_n[i] + "\n")
+-			offlineFile.close()
+-			
+-			
+-		"""
+-		try:
+-			params = urllib.urlencode({'provider': self.provider, 'cell_la': self.cell_la, 'cell_id': self.cell_id, 'signal': self.signal, 'time': self.gps_time, 'lat': self.gps_lat, 'long': self.gps_long, 'alt': self.gps_alt, 'gname': self.groupname, 'gpass': self.grouppass, 'device_id': self.device_id})
+-			f = urllib.urlopen("http://78.47.116.33/~hole/cellhunter/submit.php?%s" % params)
+-			response = f.read()
+-			self.labeltext3 = "Server Status: " + response
+-			print response
+-		except IOError:
+-			self.labeltext3 = "Server Status: Uebertragung fehlgeschlagen"
+-			print "Konnte keine Verbindung aufbauen"
+-		"""
+-
+-	# close help, display config
+-	def closehelp(self, button):
+-		if self.DEBUG: print "closehelp"
+-		
+-		self.win3.hide()
+-		self.win2.show()
+-
+-	# init
+-	def __init__(self):
+-		for arg in sys.argv:
+-			if arg == "-d" or arg == "--debug":
+-				self.DEBUG = True
+-		
+-		if self.DEBUG: print "__init__"
+-
+-		if self.DEBUG: print "__init__ / checking for homedir"
+-		if os.environ['HOME'] != "":
+-			self.homedir = os.environ['HOME']
+-			if self.DEBUG: print "__init__ / found homedir = " + self.homedir
+-		else:
+-			if self.DEBUG: print "__init__ / homedir = " + self.homedir
+-
+-		# look for config file
+-		if self.DEBUG: print "__init__ / init config"
+-		if os.path.isfile(self.homedir + "/.cellhunter.conf") == True :
+-			self.configpresent = True
+-			config = ConfigParser.RawConfigParser()
+-			config.read(self.homedir + '/.cellhunter.conf')
+-			self.groupname = config.get('main', 'gname')
+-			self.grouppass = config.get('main', 'gpass')
+-			self.device_id = config.get('main', 'device_id')
+-			try:
+-				self.lang = config.get('main', 'lang')
+-			except ConfigParser.NoOptionError:
+-				self.lang = ""
+-
+-		# create initial wget file
+-		if self.DEBUG: print "__init__ / init wget file"
+-		file = open("/tmp/cellhunter.wget","w")
+-		if self.lang == "de": file.write("Warte auf Daten...")
+-		else: file.write("Idle...")
+-		file.close()
+-
+-		# initialise dbus
+-		if self.DEBUG: print "__init__ / init dbus"
+-		bus = dbus.SystemBus()
+-
+-		# get dbus ogsmd object and set modem in verbose mode
+-		ogsmd_obj = bus.get_object( "org.freesmartphone.ogsmd", "/org/freesmartphone/GSM/Device" )
+-		self.ogsmd_monitor_iface = dbus.Interface( ogsmd_obj, "org.freesmartphone.GSM.Monitor" )
+-		self.ogsmd_network_iface = dbus.Interface( ogsmd_obj, "org.freesmartphone.GSM.Network" )
+-
+-		# request gps device
+-		usage_obj = bus.get_object('org.freesmartphone.ousaged', '/org/freesmartphone/Usage')
+-		usage_iface = dbus.Interface(usage_obj, 'org.freesmartphone.Usage')
+-		usage_iface.RequestResource("GPS")
+-
+-		# get interface for polling gps position
+-		gypsy_obj = bus.get_object( 'org.freesmartphone.ogpsd', '/org/freedesktop/Gypsy' )
+-		self.position_iface = dbus.Interface( gypsy_obj, 'org.freedesktop.Gypsy.Position' )
+-
+-		"""
+-		window layout:
+-		-------------------
+-		|  cellid daten   |
+-		-------------------
+-		|   01   |   02   |
+-		-------------------
+-		|   03   |   04   |
+-		-------------------
+-		|      exit       |
+-		-------------------
+-		"""
+-
+-		if self.DEBUG: print "__init__ / init gtk main window"
+-
+-		# main window
+-		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+-		self.win.set_title("CellHunter")
+-		self.win.connect("delete_event", self.delete_event)
+-
+-
+-		if self.configpresent == False or self.lang == "":
+-			langlabel = gtk.Label("Please choose your language\nBitte waehle deine Sprache")
+-			langlabel.show()
+-			dia = gtk.Dialog('CellHunter Language / Sprache', self.win.get_toplevel(), 0, ("English", 1, "Deutsch", 2))
+-			dia.vbox.pack_start(langlabel)
+-			dia.show()
+-			result = dia.run()
+-			if result == 1:
+-				self.lang = "en"
+-				dia.destroy()
+-			if result == 2:
+-				self.lang = "de"
+-				dia.destroy()
+-			if self.configpresent == True:
+-				print "__init__ / appending lang to config"
+-				config = ConfigParser.RawConfigParser()
+-				config.add_section('main')
+-				config.set('main', 'gname', self.groupname)
+-				config.set('main', 'gpass', self.grouppass)
+-				config.set('main', 'device_id', self.device_id)
+-				config.set('main', 'lang', self.lang)
+-				f = open(self.homedir + '/.cellhunter.conf', 'w')
+-				config.write(f)
+-
+-		# vertical main box
+-		self.vbox = gtk.VBox(homogeneous=False, spacing=5)
+-		self.win.add(self.vbox)
+-		self.vbox.show()
+-
+-		# dummy
+-		self.d_label = gtk.Label("")
+-		self.vbox.pack_start(self.d_label, False, False)
+-		self.d_label.show()
+-
+-		# info label with cell, gps, server data
+-		if self.lang == "de": self.cell_label = gtk.Label("Provider:\nZelle:\nNachbarn:\n\n\n\nFix: / Zeit:\nPosition:\n\nServer Status: Warte auf Daten...")
+-		else: self.cell_label = gtk.Label("Provider:\nCell:\nNeighbours:\n\n\n\nFix: / Time:\nPosition:\n\nServer Status: Idle...")
+-		context = self.cell_label.get_pango_context() 
+-		font = context.get_font_description()
+-		font.set_size(4096) 
+-		self.cell_label.modify_font(font)
+-		self.vbox.pack_start(self.cell_label, False, False)
+-		self.cell_label.show()
+-		
+-		# dummy
+-		self.d_label = gtk.Label("")
+-		self.vbox.pack_start(self.d_label, False, False)
+-		self.d_label.show()
+-
+-		# first button row
+-		self.hbox = gtk.HBox(homogeneous=True, spacing=5)
+-		self.vbox.add(self.hbox)  
+-		self.hbox.show()
+-
+-		# button check cellid
+-		if self.lang == "de": self.button_100 = gtk.Button("CellID abfragen")
+-		else: self.button_100 = gtk.Button("Check CellID")
+-		self.hbox.pack_start(self.button_100)
+-		self.button_100.connect("clicked", self.check_cellid, self.cell_label)
+-		self.button_100.show()
+-
+-		# button submit data
+-		if self.lang == "de": self.button_150 = gtk.Button("Daten uebertragen")
+-		else: self.button_150 = gtk.Button("Submit Data")
+-		self.hbox.pack_start(self.button_150)
+-		self.button_150.connect("clicked", self.check_cellid_data, self.cell_label)
+-		self.button_150.show()
+-
+-		# second button row
+-		self.hbox = gtk.HBox(homogeneous=True, spacing=5)
+-		self.vbox.add(self.hbox)  
+-		self.hbox.show()
+-
+-		# button check cellid auto
+-		if self.lang == "de": self.button_101 = gtk.Button("CellID automatisch\nabfragen: AUS")
+-		else: self.button_101 = gtk.Button("Auto check\nCellID: OFF")
+-		self.hbox.pack_start(self.button_101)
+-		self.button_101.connect("clicked", self.check_cellid_auto, self.cell_label)
+-		self.button_101.show()
+-
+-		# button submit data auto
+-		if self.lang == "de": self.button_151 = gtk.Button("Daten automatisch\nuebertragen: AUS")
+-		else: self.button_151 = gtk.Button("Auto submit\nData: OFF")
+-		self.hbox.pack_start(self.button_151)
+-		self.button_151.connect("clicked", self.check_cellid_data_auto)
+-		self.button_151.show()
+-
+-		# third button row
+-		self.hbox = gtk.HBox(homogeneous=True, spacing=5)
+-		self.vbox.add(self.hbox)  
+-		self.hbox.show()
+-
+-		# button exit
+-		self.button_200 = gtk.Button("Exit")
+-		self.hbox.pack_start(self.button_200)
+-		self.button_200.connect("clicked", self.delete_event)
+-		self.button_200.show()
+-
+-		# button offline mode
+-		if self.lang == "de": self.button_201 = gtk.Button("Offline Modus: AUS")
+-		else: self.button_201 = gtk.Button("Offline Mode: OFF")
+-		self.hbox.pack_start(self.button_201)
+-		self.button_201.connect("clicked", self.offline_mode)
+-		self.button_201.show()
+-
+-		if self.configpresent == False:
+-
+-			if self.DEBUG: print "__init__ / init gtk introduction window"
+-
+-			self.win3 = gtk.Window(gtk.WINDOW_TOPLEVEL)
+-			if self.lang == "de": self.win3.set_title("CellHunter Hilfe")
+-			else: self.win3.set_title("CellHunter Help")
+-			self.win3.connect("delete_event", self.delete_event)
+-
+-			self.vbox3 = gtk.VBox(homogeneous=False, spacing=0)
+-			self.win3.add(self.vbox3)
+-			self.vbox3.show()
+-
+-			if self.lang == "de": self.help_label = gtk.Label("\nBitte vor dem Benutzen lesen:\n\nCellHunter ist ein Spiel, bei dem das Ziel ist, moeglichst\nviele " + 
+-				"noch unentdeckte Mobilfunkzellen zu orten. Hierzu\nwird die aktuelle Zelle mit den dazugehoerigen GPS-\nKoordinaten " +
+-				"uebertragen. Spieler koennen sich in\nGruppen zusammentun um ein besseres Ergebnis zu\nerreichen.\n\nMit dem Button \"CellId " +
+-				"abfragen\" fragst du die aktuellen\nZell- und GPS-Daten ab. Ein Klick auf \"Daten uebertragen\"\nsendet diese Daten an den " +
+-				"Server.\n\nSicherheitshinweis!\nFolgende Daten werden an den Server uebertragen:\n- Dein Provider\n- Aktuelle Zellen-ID\n- " +
+-				"Aktuelle Signalstaerke\n- GPS Zeit und Koordinaten\n- Gruppenname und Passwort\n- DeviceID (zufaellige Zahl zwischen 0 und " +
+-				"999999999)\n\nBeim Benutzen dieses Programms stimmst du der\nUebertragung und Speicherung dieser Daten zu.\n")
+-			else: self.help_label = gtk.Label("\nPlease read carefully:\n\nThe goal of CellHunter is to collect as much unknown\nmobile phone cells as " + 
+-				"you can. To reach this goal you\ntransmit the current cell id and your current gps\ncoordinates. You can come together in groups to reach\n" + 
+-				"this goal.\n\nThe button \"Check CellID\" refreshes the current cell\ninformation and gps data. A click on \"Submit Data\"\nsubmits the data " + 
+-				"to the server.\n\nSecurity advise!\nThe following data will be transfered to the server:\n- Your provider name\n- Current CellID\n- Current Signal " + 
+-				"strength\n- GPS time and coordinates\n- Group name and password\n- DeviceID (random number between 0 and 999999999)\n\nWith using this " +
+-				"program you agree the transfer and\nsaving of this data.\n\n");
+-			context = self.help_label.get_pango_context() 
+-			font = context.get_font_description()
+-			font.set_size(4096) 
+-			self.help_label.modify_font(font)
+-			self.vbox3.pack_start(self.help_label, False, False)
+-			self.help_label.show()
+-
+-			if self.lang == "de": self.next = gtk.Button("Weiter")
+-			else: self.next = gtk.Button("Next")
+-			self.vbox3.pack_start(self.next)
+-			self.next.connect("clicked", self.closehelp)
+-			self.next.show()
+-
+-			self.win3.show()
+-
+-			if self.DEBUG: print "__init__ / init gtk group window"
+-
+-			self.win2 = gtk.Window(gtk.WINDOW_TOPLEVEL)
+-			self.win2.set_title("CellHunter Config")
+-			self.win2.connect("delete_event", self.delete_event)
+-
+-			self.vbox2 = gtk.VBox(homogeneous=False, spacing=0)
+-			self.win2.add(self.vbox2)
+-			self.vbox2.show()
+-
+-			if self.lang == "de": self.info_label = gtk.Label("Damit man gemeinsam Zellen sammeln kann, kannst du\nhier eine Gruppe und ein Passwort eingeben. Eine " +
+-				"nicht\nbestehende Gruppe wird beim ersten Zugriff erstellt.\nJeder der das Passwort kennt, kann fuer die Gruppe\nZellen " +
+-				"sammeln. Gibts du nichts ein, bleibst du anonym.\nEs wird dann auch keine DeviceID generiert und gesendet.\n")
+-			else: self.info_label = gtk.Label("To play the game and collect cells in your team you can\nenter a group name and a password. A non-existing group\nwill " + 
+-				"be created. Everyone how knows your password can\ncollect cells for the group. If you leave the fields empty\nyou will be anonymous. In this case even " + 
+-				"no DeviceID\nwill be generated and transmitted.\n")
+-			context = self.info_label.get_pango_context() 
+-			font = context.get_font_description()
+-			font.set_size(4096) 
+-			self.info_label.modify_font(font)
+-			self.vbox2.pack_start(self.info_label, False, False)
+-			self.info_label.show()
+-
+-			if self.lang == "de": self.d_label = gtk.Label("Gruppenname:")
+-			else: self.d_label = gtk.Label("Group name:")
+-			self.vbox2.pack_start(self.d_label, False, False)
+-			self.d_label.show()
+-
+-			self.groupentry = gtk.Entry()
+-			self.vbox2.add(self.groupentry)
+-			self.groupentry.show()
+-
+-			if self.lang == "de": self.d_label = gtk.Label("Gruppenpasswort:")
+-			else: self.d_label = gtk.Label("Group password:")
+-			self.vbox2.pack_start(self.d_label, False, False)
+-			self.d_label.show()
+-
+-			self.passentry = gtk.Entry()
+-			self.vbox2.add(self.passentry)
+-			self.passentry.show()
+-
+-			if self.lang == "de": self.configbutton = gtk.Button("Speichern")
+-			else: self.configbutton = gtk.Button("Save")
+-			self.vbox2.pack_start(self.configbutton)
+-			self.configbutton.connect("clicked", self.saveconfig, self.groupentry, self.passentry, self.info_label)
+-			self.configbutton.show()
+-
+-		else:
+-			self.win.show()
+-
+-	def main(self):
+-		if self.DEBUG: print "main"
+-
+-		gtk.main()
++    DEBUG = False
++    
++    homedir = "/home/root"
++    
++    lang = ""
++    configpresent = False
++    auto = 0
++    auto_running = 0
++    offline = False
++    data_auto = 0
++    cell_la = ""
++    cell_id = ""
++    provider = ""
++    mcc = ""
++    mnc = ""
++    signal = ""
++    cell_arfcn = ""
++    ncells_la = ["", "", "", "", "", ""]
++    ncells_id = ["", "", "", "", "", ""]
++    ncells_signal = ["", "", "", "", "", ""]
++    ncells_arfcn = ["", "", "", "", "", ""]
++    gps_fix = ""
++    gps_lat = ""
++    gps_long = ""
++    gps_alt = ""
++    gps_time = ""
++    groupname = ""
++    grouppass = ""
++    device_id = ""
++    labeltext1 = ""
++    labeltext2 = ""
++    labeltext3 = ""
++
++    # shut down the modem an get it back to normal state
++    def gui_destroy(self):
++        if self.DEBUG: print "gui_destroy"
++        
++        if self.DEBUG: print "gui_destroy / kill all old wgets"
++        subprocess.Popen(["/usr/bin/killall", "wget"])
++
++    def delete_event(self, widget, event=None, data=None):
++        if self.DEBUG: print "delete_event"
++
++        if self.offline == True:
++            if self.lang == "de": offlabel = gtk.Label("Du warst im Offline Modus. Um die Daten\nzu uebertragen musst du, sobald wieder\neine Internetverbindung " +
++                "besteht, auf der\nKonsole \"cellhunter_upload.sh\" ausfuehren.\nDann werden die Daten gesendet.\n\nDu kannst beliebig oft und " +
++                "beliebig lange mit\nCellHunter Daten sammeln, erst nach dem\nUebertragen werden die gesammelten Daten\nzurueckgesetzt.")
++            else: offlabel = gtk.Label("You have been in Offline Mode. To submit the data you\nhave to run \"cellhunter_upload.sh\" on your terminal as\nsoon you " + 
++                "have a working internet connection again.\nThen the collected data will be transmitted. You can\ncollect cells as long as you want. After " + 
++                "transmitting the\ndata your offline collected cells will be resetted.");
++            offlabel.show()
++            if self.lang == "de": dia = gtk.Dialog('Offline Modus', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
++            else: dia = gtk.Dialog('Offline Mode', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
++            dia.vbox.pack_start(offlabel)
++            dia.show()
++            result = dia.run()
++            if result == gtk.RESPONSE_CLOSE:
++                dia.destroy()
++                gtk.main_quit()
++                return False
++        else:
++            gtk.main_quit()
++            return False
++
++    # try to save the config to file if data is correct
++    def saveconfig(self, button, groupentry, passentry, info_label):
++        if self.DEBUG: print "saveconfig"
++
++        save_config = False
++
++        try:
++            if self.DEBUG: print "saveconfig / checking for group..."
++            socket.setdefaulttimeout(10)
++            params = urllib.urlencode({'groupcheck': 1, 'gname': groupentry.get_text(), 'gpass': passentry.get_text()})
++            f = urllib.urlopen("http://78.47.116.33/~hole/cellhunter/submit.php?%s" % params)
++            response = f.read()
++            
++            if response == "group_add":
++                if self.DEBUG: print "saveconfig / group added"
++                save_config = True
++            if response == "password_ok":
++                if self.DEBUG: print "saveconfig / group exists, password ok"
++                save_config = True
++            if response == "password_wrong":
++                if self.DEBUG: print "saveconfig / group exists, password wrong"
++                save_config = False
++                if self.lang == "de": self.info_label.set_text("\nDas Passwort fuer diese Gruppe ist falsch. Entweder du\nlegst eine neue Gruppe mit einem anderen " +
++                    "Namen an,\noder versuchst es noch einmal mit dem richtigen\nPasswort\n\n")
++                else: self.info_label.set_text("\nThe password you entered for this group is wrong.\nYou can add a new group with another name or try\nit again with the right password.\n\n\n")
++        except IOError:
++            if self.lang == "de": self.info_label.set_text("\nFehler:\nKonnte keine Verbindung zum Server aufbauen.\nBitte die Netzwerkverbindung ueberpruefen.\n\n\n")
++            else: self.info_label.set_text("\nError:\nNo connection to the Server.\nPlase check your network connection.\n\n\n")
++            if self.DEBUG: print "saveconfig / no connection to server"
++
++        if save_config == True:
++            if self.DEBUG: print "saveconfig / writing config"
++            config = ConfigParser.RawConfigParser()
++            
++            config.add_section('main')
++            config.set('main', 'gname', groupentry.get_text())
++            self.groupname = groupentry.get_text()
++            if self.groupname == "":
++                if self.DEBUG: print "saveconfig / user is anonymous"
++                config.set('main', 'gpass', "")
++                config.set('main', 'device_id', "")
++                self.grouppass = ""
++                self.device_id = ""
++            else:
++                if self.DEBUG: print "saveconfig / user is not anonymous"
++                random.seed()
++                randomid = random.randint(0, 999999999)
++                if self.DEBUG: print "save_config / device_id=" + str(randomid)
++                config.set('main', 'device_id', randomid)
++                config.set('main', 'gpass', passentry.get_text())
++                self.grouppass = passentry.get_text()
++                self.device_id = str(randomid)
++            
++            config.set('main', 'lang', self.lang)
++            
++            f = open(self.homedir + '/.cellhunter.conf', 'w')
++            config.write(f)
++            
++            self.win2.hide()
++            self.win.show()
++
++    # check cellid and gps data
++    def check_cellid(self, button, label):
++        if self.DEBUG: print "check_cellid"
++
++        try:
++            data = self.ogsmd_monitor_iface.GetServingCellInformation()
++            self.cell_la = data['lac']
++            self.cell_id = data['cid']
++            self.signal = str(data['rxlev']/2+2)
++            self.cell_arfcn = str(data['arfcn'])
++    
++            while len(self.cell_la) < 4:
++                self.cell_la = "0" + self.cell_la
++            while len(self.cell_id) < 4:
++                self.cell_id = "0" + self.cell_id
++    
++            if self.DEBUG: print "check_cellid / " + self.cell_la + " " + self.cell_id + " " + self.signal + " " + self.cell_arfcn
++        except dbus.DBusException, e:
++            print "Error while getting main cell:", e
++            self.cell_la = "0000"
++            self.cell_id = "0000"
++            self.signal = "0"
++            self.cell_arfcn = "0"
++        
++        try:
++            data = self.ogsmd_network_iface.GetStatus()
++            self.provider = data['provider']
++            self.mcc = str(data['code'])[:3]
++            self.mnc = str(data['code'])[3:]
++            if self.DEBUG: print "check_cellid / Provider: " + self.provider + " " + self.mcc + " " + self.mnc
++        except dbus.DBusException, e:
++            print "Error while getting provider:", e
++            self.provider = "99999"
++            self.mcc = "999"
++            self.mnc = "999"
++        
++        try:
++            #neighbour cells
++            data = self.ogsmd_monitor_iface.GetNeighbourCellInformation()
++            # FIXME handle less then 6 neighbours correctly
++            self.ncells_la = []
++            self.ncells_id = []
++            self.ncells_signal = []
++            self.ncells_arfcn = []
++    
++            for cell in data:
++                self.ncells_la.append(cell['lac'])
++                self.ncells_id.append(cell['cid'])
++                self.ncells_signal.append(str(cell['rxlev']/2+2))
++                self.ncells_arfcn.append(str(cell['arfcn'])) 
++                while len(self.ncells_la[-1]) < 4:
++                    self.ncells_la[-1] = "0" + self.ncells_la[-1]
++                while len(self.ncells_id[-1]) < 4:
++                    self.ncells_id[-1] = "0" + self.ncells_id[-1]
++                #while len(self.ncells_signal[-1]) < 2:
++                #   self.ncells_signal[-1] = "0" + self.ncells_signal[-1]
++                
++                if self.DEBUG: print "check_cellid / neighbours: " + self.ncells_la[-1] + \
++                    " " + self.ncells_id[-1] + " " + self.ncells_signal[-1] + \
++                    " " + self.ncells_arfcn[-1]
++            while len(self.ncells_la) < 6:
++                self.ncells_la.append("0000")
++                self.ncells_id.append("0000")
++                self.ncells_signal.append("0")
++                self.ncells_arfcn.append("0") 
++        except dbus.DBusException, e:
++            print "Error while getting neighbour cells:", e
++            self.ncells_la = ["0000", "0000", "0000", "0000", "0000", "0000"]
++            self.ncells_id = ["0000", "0000", "0000", "0000", "0000", "0000"]
++            self.ncells_signal = ["0", "0", "0", "0", "0", "0"]
++            self.ncells_arfcn = ["0", "0", "0", "0", "0", "0"]
++
++        # first part of the info label
++        if self.lang == "de": self.labeltext1 = "Provider:\t\t" + self.provider + " (" + self.mcc + "/" + self.mnc + ")" + "\nZelle:\t\t" + self.cell_la + " / " + self.cell_id + " / " + self.signal + "\n" + "Nachbarn:\t" + self.ncells_la[0] + " / " + self.ncells_id[0] + " / " + self.ncells_signal[0] + "  \t" + self.ncells_la[1] + " / " + self.ncells_id[1] + " / " + self.ncells_signal[1] + "\n\t\t\t" + self.ncells_la[2] + " / " + self.ncells_id[2] + " / " + self.ncells_signal[2] + "  \t" + self.ncells_la[3] + " / " + self.ncells_id[3] + " / " + self.ncells_signal[3] + "\n\t\t\t" + self.ncells_la[4] + " / " + self.ncells_id[4] + " / " + self.ncells_signal[4] + "  \t" + self.ncells_la[5] + " / " + self.ncells_id[5] + " / " + self.ncells_signal[5]
++        else: self.labeltext1 = "Provider:\t\t" + self.provider + " (" + self.mcc + "/" + self.mnc + ")" + "\nCell:\t\t\t" + self.cell_la + " / " + self.cell_id + " / " + self.signal + "\n" + "Neighbours:\t" + self.ncells_la[0] + " / " + self.ncells_id[0] + " / " + self.ncells_signal[0] + "  \t" + self.ncells_la[1] + " / " + self.ncells_id[1] + " / " + self.ncells_signal[1] + "\n\t\t\t" + self.ncells_la[2] + " / " + self.ncells_id[2] + " / " + self.ncells_signal[2] + "  \t" + self.ncells_la[3] + " / " + self.ncells_id[3] + " / " + self.ncells_signal[3] + "\n\t\t\t" + self.ncells_la[4] + " / " + self.ncells_id[4] + " / " + self.ncells_signal[4] + "  \t" + self.ncells_la[5] + " / " + self.ncells_id[5] + " / " + self.ncells_signal[5]
++
++
++        # get gps data
++        self.position = self.position_iface.GetPosition()
++        
++        # type of gps fix
++        if self.position[0] >= 3:
++            self.gps_fix = "2D"
++        if self.position[0] == 7:
++            self.gps_fix = "3D"
++        if self.position[0] < 3:
++            if self.lang == "de": self.gps_fix = "Kein Fix"
++            else: self.gps_fix = "No Fix"
++        
++        # when got fix, check position
++        if self.position[0] >= 3:
++            self.gps_time = str(self.position[1])
++            self.gps_lat = str(self.position[2])
++            self.gps_long = str(self.position[3])
++            self.gps_alt = str(self.position[4])
++        else:
++            self.gps_time = ""
++            self.gps_lat = ""
++            self.gps_long = ""
++            self.gps_alt = ""
++
++        # debut output
++        gps_data = "FIX/TIME: " + self.gps_fix + " / " + str(self.position[0]) + " / " + self.gps_time
++        if self.DEBUG: print "check_cellid / " + gps_data
++        gps_data = "POS: " + self.gps_lat + " / " + self.gps_long + " / " + self.gps_alt
++        if self.DEBUG: print "check_cellid / " + gps_data
++        
++        # second part of the info label
++        if self.lang == "de": self.labeltext2 = "Fix: " + self.gps_fix + " / Zeit: " + self.gps_time + "\nPosition: " + self.gps_lat + " / " + self.gps_long + " / " + self.gps_alt
++        else: self.labeltext2 = "Fix: " + self.gps_fix + " / Time: " + self.gps_time + "\nPosition: " + self.gps_lat + " / " + self.gps_long + " / " + self.gps_alt
++        
++        # send data automatically?
++        if self.data_auto != 0:
++            if self.DEBUG: print "check_cellid / sending data automatically..."
++            self.send_data()
++        
++        self.check_serverresponse()
++
++        # put all labeldata together and set it
++        labeltext = self.labeltext1 + "\n\n" + self.labeltext2 + "\n\n" + self.labeltext3
++        label.set_text(labeltext)
++
++        # if auto != 0 a next function call is schedules in auto milliseconds
++        self.auto_running = 0
++        if self.auto != 0:
++            if self.DEBUG: print "check_cellid / scheduling next check in " + str(self.auto) + " ms"
++            self.auto_running = 1
++            gobject.timeout_add (self.auto, self.check_cellid, button, label)
++
++    # toggle auto check for cellid
++    def check_cellid_auto(self, button, label):
++        if self.DEBUG: print "check_cellid_auto"
++
++        if self.auto == 0:
++            self.auto = 10000
++            self.button_100.set_sensitive(False)
++            self.button_150.set_sensitive(False)
++            if self.lang == "de": button.set_label("CellID alle 10\nSekunden abfragen")
++            else: button.set_label("Check CellID\nevery 10 Seconds")
++            if self.auto_running == 0:
++                self.check_cellid(button, label)
++        elif self.auto == 10000:
++            self.auto = 30000
++            if self.lang == "de": button.set_label("CellID alle 30\nSekunden abfragen")
++            else: button.set_label("Check CellID\nevery 30 Seconds")
++        elif self.auto == 30000:
++            self.auto = 60000
++            if self.lang == "de": button.set_label("CellID alle 60\nSekunden abfragen")
++            else: button.set_label("Check CellID\nevery 60 Seconds")
++        elif self.auto == 60000:
++            self.auto = 120000
++            if self.lang == "de": button.set_label("CellID alle 120\nSekunden abfragen")
++            else: button.set_label("Check CellID\nevery 120 Seconds")
++        elif self.auto == 120000:
++            self.auto = 0
++            self.button_100.set_sensitive(True)
++            self.button_150.set_sensitive(True)
++            if self.lang == "de": button.set_label("CellID automatisch\nabfragen: AUS")
++            else: button.set_label("Auto check\nCellID: OFF")
++
++        if self.DEBUG: print "check_cellid_auto / auto=" + str(self.auto)
++
++    # send data button
++    def check_cellid_data(self, button, label):
++        if self.DEBUG: print "check_cellid_data"
++        
++        self.send_data()
++        
++        self.check_serverresponse()
++        
++        # label zusammensetzen und anzeigen
++        if(self.labeltext1 != ""):
++            labeltext = self.labeltext1 + "\n\n" + self.labeltext2 + "\n\n" + self.labeltext3
++            label.set_text(labeltext)
++
++    # toggle send data automatically
++    def check_cellid_data_auto(self, button):
++        if self.DEBUG: print "check_cellid_data_auto"
++
++        if self.data_auto == 0:
++            self.data_auto = 1
++            if self.lang == "de": button.set_label("Daten automatisch\nuebertragen: AN")
++            else: button.set_label("Auto submit\nData: ON")
++        else:
++            self.data_auto = 0
++            if self.lang == "de": button.set_label("Daten automatisch\nuebertragen: AUS")
++            else: button.set_label("Auto submit\nData: OFF")
++
++        if self.DEBUG: print "check_cellid_data_auto / data_auto=" + str(self.data_auto)
++
++    # toggle offline mode
++    def offline_mode(self, button):
++        if self.DEBUG: print "offline_mode"
++
++        if self.offline == False:
++            self.offline = True
++            if self.lang == "de": button.set_label("Offline Modus: AN")
++            else: button.set_label("Offline Mode: ON")
++            if self.lang == "de": offlabel = gtk.Label("Du bist jetzt im Offline Modus. Alle Anfragen\nan den Server werden jetzt nicht gesendet,\nsondern " + 
++                "gespeichert. Du muss aber trotzdem\n\"Daten uebertragen\", tu einfach so, als waerst du\nonline. Wie du die Daten dann uebertraegst\n" +
++                "erfaehrst du wenn du das Programm im\nOfflinemodus beendest.")
++            else: offlabel = gtk.Label("You are in Offline Mode now. All requests to the server\nwill not be sent but saved in a file. But you have to" + 
++                "\n\"Submit Data\". Just act as you were in online mode.\nYou will get help on transmitting the data to the server\nwhen leaving the program " + 
++                "in offline mode")
++            offlabel.show()
++            if self.lang == "de": dia = gtk.Dialog('Offline Modus', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
++            else: dia = gtk.Dialog('Offline Mode', self.win.get_toplevel(), 0, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
++            dia.vbox.pack_start(offlabel)
++            dia.show()
++            result = dia.run()
++            if result == gtk.RESPONSE_CLOSE:
++                dia.destroy()
++        else:
++            self.offline = False
++            if self.lang == "de": button.set_label("Offline Modus: AUS")
++            else: button.set_label("Offline Mode: OFF")
++
++        if self.DEBUG: print "offline_mode / offline=" + str(self.offline)
++
++    def check_serverresponse(self):
++        if self.DEBUG: print "check_serverresponse"
++        
++        if self.offline == False:
++            if os.path.isfile("/tmp/cellhunter.wget") == True:
++                #print "vorhanden"
++                infile = open("/tmp/cellhunter.wget","r")
++                self.labeltext3 = "Server Status: " + infile.readline()
++                infile.close()
++            else:
++                #print "nicht vorhanden"
++                if self.lang == "de": self.labeltext3 = "Server Status: Uebertragung fehlgeschlagen"
++                else: self.labeltext3 = "Server Status: Connection to Server failed"
++        else:
++            if self.lang == "de": self.labeltext3 = "Server Status: Offline Modus"
++            else: self.labeltext3 = "Server Status: Offline Mode"
++
++    # submit data
++    # using wget is better because gui does not freeze. but i have to get the result from file
++    # should be done with threads but i am too lazy to do this right now
++    def send_data(self):
++        url = "http://78.47.116.33/~hole/cellhunter/submit.php?provider=" + urllib.quote(self.provider) + "&cell_mcc=" + urllib.quote(self.mcc) + "&cell_mnc=" + urllib.quote(self.mnc) + "&cell_la=" + urllib.quote(self.cell_la) + "&cell_id=" + urllib.quote(self.cell_id) + "&signal=" + urllib.quote(self.signal) + "&time=" + urllib.quote(self.gps_time) + "&lat=" + urllib.quote(self.gps_lat) + "&long=" + urllib.quote(self.gps_long) + "&alt=" + urllib.quote(self.gps_alt) + "&gname=" + urllib.quote(self.groupname) + "&gpass=" + urllib.quote(self.grouppass) + "&device_id=" + urllib.quote(self.device_id) + "&cell_arfcn=" + urllib.quote(self.cell_arfcn) + "&serving=1"
++        
++        url_n = ["", "", "", "", "", ""]
++        for i in range(0,6):
++            url_n[i] = "http://78.47.116.33/~hole/cellhunter/submit.php?provider=" + urllib.quote(self.provider) + "&cell_mcc=" + urllib.quote(self.mcc) + "&cell_mnc=" + urllib.quote(self.mnc) + "&cell_la=" + urllib.quote(self.ncells_la[i]) + "&cell_id=" + urllib.quote(self.ncells_id[i]) + "&signal=" + urllib.quote(self.ncells_signal[i]) + "&time=" + urllib.quote(self.gps_time) + "&lat=" + urllib.quote(self.gps_lat) + "&long=" + urllib.quote(self.gps_long) + "&alt=" + urllib.quote(self.gps_alt) + "&gname=" + urllib.quote(self.groupname) + "&gpass=" + urllib.quote(self.grouppass) + "&device_id=" + urllib.quote(self.device_id) + "&cell_arfcn=" + urllib.quote(self.ncells_arfcn[i]) + "&serving=0"
++        
++        if self.offline == False:
++            if self.DEBUG: print "send_data / online"
++            if self.cell_la != "0000" or self.cell_id != "0000":
++                if self.DEBUG: print "send_data / " + url
++                subprocess.Popen(["/usr/bin/wget", "--user-agent", "cellhunter 0.4.2 online",  "-q", "--output-document=/tmp/cellhunter.wget", url])
++            for i in range(0,6):
++                if self.ncells_la[i] != "0000" or self.ncells_id[i] != "0000":
++                    if self.DEBUG: print "send_data / " + url_n[i]
++                    subprocess.Popen(["/usr/bin/wget", "--user-agent", "cellhunter 0.4.2 online", "-q", "--output-document=/tmp/cellhunter.wget" + str(i), url_n[i]])
++            
++        elif self.offline == True:
++            if self.DEBUG: print "send_data / offline"
++            offlineFile = open(self.homedir + '/cellhunter_offline.log', 'a')
++            if self.cell_la != "0000" or self.cell_id != "0000":
++                if self.DEBUG: print "send_data / " + url
++                offlineFile.write(url + "\n")
++            for i in range(0,6):
++                if self.ncells_la[i] != "0000" or self.ncells_id[i] != "0000":
++                    if self.DEBUG: print "send_data / " + url_n[i]
++                    offlineFile.write(url_n[i] + "\n")
++            offlineFile.close()
++            
++            
++        """
++        try:
++            params = urllib.urlencode({'provider': self.provider, 'cell_la': self.cell_la, 'cell_id': self.cell_id, 'signal': self.signal, 'time': self.gps_time, 'lat': self.gps_lat, 'long': self.gps_long, 'alt': self.gps_alt, 'gname': self.groupname, 'gpass': self.grouppass, 'device_id': self.device_id})
++            f = urllib.urlopen("http://78.47.116.33/~hole/cellhunter/submit.php?%s" % params)
++            response = f.read()
++            self.labeltext3 = "Server Status: " + response
++            print response
++        except IOError:
++            self.labeltext3 = "Server Status: Uebertragung fehlgeschlagen"
++            print "Konnte keine Verbindung aufbauen"
++        """
++
++    # close help, display config
++    def closehelp(self, button):
++        if self.DEBUG: print "closehelp"
++        
++        self.win3.hide()
++        self.win2.show()
++
++    # init
++    def __init__(self):
++        for arg in sys.argv:
++            if arg == "-d" or arg == "--debug":
++                self.DEBUG = True
++        
++        if self.DEBUG: print "__init__"
++
++        if self.DEBUG: print "__init__ / checking for homedir"
++        if os.environ['HOME'] != "":
++            self.homedir = os.environ['HOME']
++            if self.DEBUG: print "__init__ / found homedir = " + self.homedir
++        else:
++            if self.DEBUG: print "__init__ / homedir = " + self.homedir
++
++        # look for config file
++        if self.DEBUG: print "__init__ / init config"
++        if os.path.isfile(self.homedir + "/.cellhunter.conf") == True :
++            self.configpresent = True
++            config = ConfigParser.RawConfigParser()
++            config.read(self.homedir + '/.cellhunter.conf')
++            self.groupname = config.get('main', 'gname')
++            self.grouppass = config.get('main', 'gpass')
++            self.device_id = config.get('main', 'device_id')
++            try:
++                self.lang = config.get('main', 'lang')
++            except ConfigParser.NoOptionError:
++                self.lang = ""
++
++        # create initial wget file
++        if self.DEBUG: print "__init__ / init wget file"
++        file = open("/tmp/cellhunter.wget","w")
++        if self.lang == "de": file.write("Warte auf Daten...")
++        else: file.write("Idle...")
++        file.close()
++
++        # initialise dbus
++        if self.DEBUG: print "__init__ / init dbus"
++        bus = dbus.SystemBus()
++
++        # get dbus ogsmd object and set modem in verbose mode
++        ogsmd_obj = bus.get_object( "org.freesmartphone.ogsmd", "/org/freesmartphone/GSM/Device" )
++        self.ogsmd_monitor_iface = dbus.Interface( ogsmd_obj, "org.freesmartphone.GSM.Monitor" )
++        self.ogsmd_network_iface = dbus.Interface( ogsmd_obj, "org.freesmartphone.GSM.Network" )
++
++        # request gps device
++        usage_obj = bus.get_object('org.freesmartphone.ousaged', '/org/freesmartphone/Usage')
++        usage_iface = dbus.Interface(usage_obj, 'org.freesmartphone.Usage')
++        usage_iface.RequestResource("GPS")
++
++        # get interface for polling gps position
++        gypsy_obj = bus.get_object( 'org.freesmartphone.ogpsd', '/org/freedesktop/Gypsy' )
++        self.position_iface = dbus.Interface( gypsy_obj, 'org.freedesktop.Gypsy.Position' )
++
++        """
++        window layout:
++        -------------------
++        |  cellid daten   |
++        -------------------
++        |   01   |   02   |
++        -------------------
++        |   03   |   04   |
++        -------------------
++        |      exit       |
++        -------------------
++        """
++
++        if self.DEBUG: print "__init__ / init gtk main window"
++
++        # main window
++        self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
++        self.win.set_title("CellHunter")
++        self.win.connect("delete_event", self.delete_event)
++
++
++        if self.configpresent == False or self.lang == "":
++            langlabel = gtk.Label("Please choose your language\nBitte waehle deine Sprache")
++            langlabel.show()
++            dia = gtk.Dialog('CellHunter Language / Sprache', self.win.get_toplevel(), 0, ("English", 1, "Deutsch", 2))
++            dia.vbox.pack_start(langlabel)
++            dia.show()
++            result = dia.run()
++            if result == 1:
++                self.lang = "en"
++                dia.destroy()
++            if result == 2:
++                self.lang = "de"
++                dia.destroy()
++            if self.configpresent == True:
++                print "__init__ / appending lang to config"
++                config = ConfigParser.RawConfigParser()
++                config.add_section('main')
++                config.set('main', 'gname', self.groupname)
++                config.set('main', 'gpass', self.grouppass)
++                config.set('main', 'device_id', self.device_id)
++                config.set('main', 'lang', self.lang)
++                f = open(self.homedir + '/.cellhunter.conf', 'w')
++                config.write(f)
++
++        # vertical main box
++        self.vbox = gtk.VBox(homogeneous=False, spacing=5)
++        self.win.add(self.vbox)
++        self.vbox.show()
++
++        # dummy
++        self.d_label = gtk.Label("")
++        self.vbox.pack_start(self.d_label, False, False)
++        self.d_label.show()
++
++        # info label with cell, gps, server data
++        if self.lang == "de": self.cell_label = gtk.Label("Provider:\nZelle:\nNachbarn:\n\n\n\nFix: / Zeit:\nPosition:\n\nServer Status: Warte auf Daten...")
++        else: self.cell_label = gtk.Label("Provider:\nCell:\nNeighbours:\n\n\n\nFix: / Time:\nPosition:\n\nServer Status: Idle...")
++        context = self.cell_label.get_pango_context() 
++        font = context.get_font_description()
++        font.set_size(4096) 
++        self.cell_label.modify_font(font)
++        self.vbox.pack_start(self.cell_label, False, False)
++        self.cell_label.show()
++        
++        # dummy
++        self.d_label = gtk.Label("")
++        self.vbox.pack_start(self.d_label, False, False)
++        self.d_label.show()
++
++        # first button row
++        self.hbox = gtk.HBox(homogeneous=True, spacing=5)
++        self.vbox.add(self.hbox)  
++        self.hbox.show()
++
++        # button check cellid
++        if self.lang == "de": self.button_100 = gtk.Button("CellID abfragen")
++        else: self.button_100 = gtk.Button("Check CellID")
++        self.hbox.pack_start(self.button_100)
++        self.button_100.connect("clicked", self.check_cellid, self.cell_label)
++        self.button_100.show()
++
++        # button submit data
++        if self.lang == "de": self.button_150 = gtk.Button("Daten uebertragen")
++        else: self.button_150 = gtk.Button("Submit Data")
++        self.hbox.pack_start(self.button_150)
++        self.button_150.connect("clicked", self.check_cellid_data, self.cell_label)
++        self.button_150.show()
++
++        # second button row
++        self.hbox = gtk.HBox(homogeneous=True, spacing=5)
++        self.vbox.add(self.hbox)  
++        self.hbox.show()
++
++        # button check cellid auto
++        if self.lang == "de": self.button_101 = gtk.Button("CellID automatisch\nabfragen: AUS")
++        else: self.button_101 = gtk.Button("Auto check\nCellID: OFF")
++        self.hbox.pack_start(self.button_101)
++        self.button_101.connect("clicked", self.check_cellid_auto, self.cell_label)
++        self.button_101.show()
++
++        # button submit data auto
++        if self.lang == "de": self.button_151 = gtk.Button("Daten automatisch\nuebertragen: AUS")
++        else: self.button_151 = gtk.Button("Auto submit\nData: OFF")
++        self.hbox.pack_start(self.button_151)
++        self.button_151.connect("clicked", self.check_cellid_data_auto)
++        self.button_151.show()
++
++        # third button row
++        self.hbox = gtk.HBox(homogeneous=True, spacing=5)
++        self.vbox.add(self.hbox)  
++        self.hbox.show()
++
++        # button exit
++        self.button_200 = gtk.Button("Exit")
++        self.hbox.pack_start(self.button_200)
++        self.button_200.connect("clicked", self.delete_event)
++        self.button_200.show()
++
++        # button offline mode
++        if self.lang == "de": self.button_201 = gtk.Button("Offline Modus: AUS")
++        else: self.button_201 = gtk.Button("Offline Mode: OFF")
++        self.hbox.pack_start(self.button_201)
++        self.button_201.connect("clicked", self.offline_mode)
++        self.button_201.show()
++
++        if self.configpresent == False:
++
++            if self.DEBUG: print "__init__ / init gtk introduction window"
++
++            self.win3 = gtk.Window(gtk.WINDOW_TOPLEVEL)
++            if self.lang == "de": self.win3.set_title("CellHunter Hilfe")
++            else: self.win3.set_title("CellHunter Help")
++            self.win3.connect("delete_event", self.delete_event)
++
++            self.vbox3 = gtk.VBox(homogeneous=False, spacing=0)
++            self.win3.add(self.vbox3)
++            self.vbox3.show()
++
++            if self.lang == "de": self.help_label = gtk.Label("\nBitte vor dem Benutzen lesen:\n\nCellHunter ist ein Spiel, bei dem das Ziel ist, moeglichst\nviele " + 
++                "noch unentdeckte Mobilfunkzellen zu orten. Hierzu\nwird die aktuelle Zelle mit den dazugehoerigen GPS-\nKoordinaten " +
++                "uebertragen. Spieler koennen sich in\nGruppen zusammentun um ein besseres Ergebnis zu\nerreichen.\n\nMit dem Button \"CellId " +
++                "abfragen\" fragst du die aktuellen\nZell- und GPS-Daten ab. Ein Klick auf \"Daten uebertragen\"\nsendet diese Daten an den " +
++                "Server.\n\nSicherheitshinweis!\nFolgende Daten werden an den Server uebertragen:\n- Dein Provider\n- Aktuelle Zellen-ID\n- " +
++                "Aktuelle Signalstaerke\n- GPS Zeit und Koordinaten\n- Gruppenname und Passwort\n- DeviceID (zufaellige Zahl zwischen 0 und " +
++                "999999999)\n\nBeim Benutzen dieses Programms stimmst du der\nUebertragung und Speicherung dieser Daten zu.\n")
++            else: self.help_label = gtk.Label("\nPlease read carefully:\n\nThe goal of CellHunter is to collect as much unknown\nmobile phone cells as " + 
++                "you can. To reach this goal you\ntransmit the current cell id and your current gps\ncoordinates. You can come together in groups to reach\n" + 
++                "this goal.\n\nThe button \"Check CellID\" refreshes the current cell\ninformation and gps data. A click on \"Submit Data\"\nsubmits the data " + 
++                "to the server.\n\nSecurity advise!\nThe following data will be transfered to the server:\n- Your provider name\n- Current CellID\n- Current Signal " + 
++                "strength\n- GPS time and coordinates\n- Group name and password\n- DeviceID (random number between 0 and 999999999)\n\nWith using this " +
++                "program you agree the transfer and\nsaving of this data.\n\n");
++            context = self.help_label.get_pango_context() 
++            font = context.get_font_description()
++            font.set_size(4096) 
++            self.help_label.modify_font(font)
++            self.vbox3.pack_start(self.help_label, False, False)
++            self.help_label.show()
++
++            if self.lang == "de": self.next = gtk.Button("Weiter")
++            else: self.next = gtk.Button("Next")
++            self.vbox3.pack_start(self.next)
++            self.next.connect("clicked", self.closehelp)
++            self.next.show()
++
++            self.win3.show()
++
++            if self.DEBUG: print "__init__ / init gtk group window"
++
++            self.win2 = gtk.Window(gtk.WINDOW_TOPLEVEL)
++            self.win2.set_title("CellHunter Config")
++            self.win2.connect("delete_event", self.delete_event)
++
++            self.vbox2 = gtk.VBox(homogeneous=False, spacing=0)
++            self.win2.add(self.vbox2)
++            self.vbox2.show()
++
++            if self.lang == "de": self.info_label = gtk.Label("Damit man gemeinsam Zellen sammeln kann, kannst du\nhier eine Gruppe und ein Passwort eingeben. Eine " +
++                "nicht\nbestehende Gruppe wird beim ersten Zugriff erstellt.\nJeder der das Passwort kennt, kann fuer die Gruppe\nZellen " +
++                "sammeln. Gibts du nichts ein, bleibst du anonym.\nEs wird dann auch keine DeviceID generiert und gesendet.\n")
++            else: self.info_label = gtk.Label("To play the game and collect cells in your team you can\nenter a group name and a password. A non-existing group\nwill " + 
++                "be created. Everyone how knows your password can\ncollect cells for the group. If you leave the fields empty\nyou will be anonymous. In this case even " + 
++                "no DeviceID\nwill be generated and transmitted.\n")
++            context = self.info_label.get_pango_context() 
++            font = context.get_font_description()
++            font.set_size(4096) 
++            self.info_label.modify_font(font)
++            self.vbox2.pack_start(self.info_label, False, False)
++            self.info_label.show()
++
++            if self.lang == "de": self.d_label = gtk.Label("Gruppenname:")
++            else: self.d_label = gtk.Label("Group name:")
++            self.vbox2.pack_start(self.d_label, False, False)
++            self.d_label.show()
++
++            self.groupentry = gtk.Entry()
++            self.vbox2.add(self.groupentry)
++            self.groupentry.show()
++
++            if self.lang == "de": self.d_label = gtk.Label("Gruppenpasswort:")
++            else: self.d_label = gtk.Label("Group password:")
++            self.vbox2.pack_start(self.d_label, False, False)
++            self.d_label.show()
++
++            self.passentry = gtk.Entry()
++            self.vbox2.add(self.passentry)
++            self.passentry.show()
++
++            if self.lang == "de": self.configbutton = gtk.Button("Speichern")
++            else: self.configbutton = gtk.Button("Save")
++            self.vbox2.pack_start(self.configbutton)
++            self.configbutton.connect("clicked", self.saveconfig, self.groupentry, self.passentry, self.info_label)
++            self.configbutton.show()
++
++        else:
++            self.win.show()
++
++    def main(self):
++        if self.DEBUG: print "main"
++
++        gtk.main()
+ 
+ if __name__ == '__main__':
+-	gui = CellHunterGUI()
+-	gui.main()
+-	gui.gui_destroy()
++    gui = CellHunterGUI()
++    gui.main()
++    gui.gui_destroy()
+ 

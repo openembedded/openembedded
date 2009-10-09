@@ -1,0 +1,17 @@
+--- dist/etc/init.d/atd-orig	2009-03-29 14:20:09.000000000 +0200
++++ dist/etc/init.d/atd	2009-03-29 14:37:31.000000000 +0200
+@@ -20,9 +20,13 @@
+         rm -f /var/spool/at/trigger
+         echo "."
+         ;;
++  restart)
++        $0 stop
++        $0 start
++        ;;
+ 
+   *)
+-        echo "Usage: /etc/init.d/atd {start|stop}"
++        echo "Usage: /etc/init.d/atd {start|stop|restart}"
+         exit 1
+ esac
+ 

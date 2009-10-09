@@ -1,0 +1,11 @@
+diff -r fd8e721228a3 src/Makefile.am
+--- a/src/Makefile.am	Mon May 04 10:29:40 2009 +0200
++++ b/src/Makefile.am	Mon May 04 10:31:38 2009 +0200
+@@ -3,7 +3,7 @@
+ AM_CPPFLAGS = \
+   -DDATADIR=\""$(datadir)"\" -D_GNU_SOURCE \
+   -DPIXMAPDIR=\""$(datadir)/pixmaps"\" \
+-  -DFONTDIR=\""/usr/share/fonts/truetype/ttf-liberation"\"
++  -DFONTDIR=\""/usr/share/fonts/truetype"\"
+ 
+ AM_CFLAGS = -Wall -pedantic -std=c99 @SDL_CFLAGS@

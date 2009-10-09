@@ -1,0 +1,16 @@
+diff -r fd8e721228a3 data/mokomaze.desktop
+--- a/data/mokomaze.desktop	Mon May 04 10:29:40 2009 +0200
++++ b/data/mokomaze.desktop	Mon May 04 10:33:02 2009 +0200
+@@ -1,12 +1,10 @@
+ [Desktop Entry]
+ Name=Mokomaze
+ Comment=Labyrinth game
+-Encoding=UTF-8
+-Version=0.2.3
+ Type=Application
+ Exec=mokomaze
+ Terminal=false
+-Categories=Application;Game;SDL;
++Categories=Game;SDL;
+ X-MB-SingleInstance=true
+ Icon=mokomaze
