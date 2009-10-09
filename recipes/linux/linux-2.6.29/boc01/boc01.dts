@@ -125,7 +125,7 @@
 				interrupt-parent = <&ipic>;
 				dfsrr;
 				rtc@6f {
-					compatible = "isl12024";
+					compatible = "intersil,isl12024";
 					reg = <0x6f>;
 				};
 				dtt@49 {
@@ -137,7 +137,7 @@
 					reg = <0x50>;
 				};
 				at24@57 {
-					compatible = "at24,isl12024";
+					compatible = "at24,isl12024-eeprom";
 					reg = <0x57>;
 				};
 			};
