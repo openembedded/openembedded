@@ -77,7 +77,7 @@ def package_qa_get_machine_dict():
                         "arm" :       (40,     0,    0,          True,          True),
                         "armeb" :     (40,     0,    0,          False,         True),
                       },
-            "linux-spe" : {
+            "linux-gnuspe" : {
                         "powerpc":    (20,     0,    0,          False,         True),
                       },
             "linux-uclibcspe" : {

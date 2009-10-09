@@ -70,7 +70,7 @@ do_configure () {
 	linux-powerpc)
 		target=linux-ppc
 		;;
-	linux-spe-powerpc)
+	linux-gnuspe-powerpc)
 		target=linux-ppc
 		;;
 	linux-supersparc)

@@ -58,7 +58,7 @@ def get_siteinfo_list(d):
                "ppc-linux":               "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
                "ppc64-linux":             "endian-big bit-64 common-linux common-glibc powerpc-common powerpc64-linux",\
 	       "powerpc-linux":           "endian-big bit-32 common-linux common-glibc powerpc-common",\
-	       "powerpc-linux-spe":       "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
+	       "powerpc-linux-gnuspe":       "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
                "powerpc-linux-uclibc":    "endian-big bit-32 common-linux common-uclibc powerpc-common",\
                "powerpc-linux-uclibcspe": "endian-big bit-32 common-linux common-uclibc powerpc-common powerpc-linux-uclibc",\
                "sh3-linux":               "endian-little bit-32 common-linux common-glibc sh-common",\

@@ -184,7 +184,7 @@ def compute_os_portion_of_target_triplet (d):
 			else:
 				abi_suffix = "gnueabi"
 		elif bparch in ppc_spe_supporting_arches.split():
-			abi_suffix = "spe"
+			abi_suffix = "gnuspe"
 		else:
 			abi_suffix = ""
 	else:
