@@ -1,8 +1,8 @@
 Index: linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 ===================================================================
---- linux-2.6.29.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-04-01 17:37:53.000000000 +0200
-@@ -15,17 +15,87 @@
+--- linux-2.6.29.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-05 18:55:57.000000000 +0200
++++ linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-05 18:57:15.000000000 +0200
+@@ -15,17 +15,78 @@
  
  #include <linux/pci.h>
  #include <linux/of_platform.h>
@@ -32,7 +32,6 @@ Index: linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 +
 +static void mpc83xx_spi_activate_cs(u8 cs, u8 polarity)
 +{
-+	//printk(KERN_INFO "%s %d %d\n", __func__, cs, polarity);
 +	if (polarity)
 +		setbits32(&gpio_regs->gpdat, 1 << (31 - 14));
 +	else
@@ -41,7 +40,6 @@ Index: linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 +
 +static void mpc83xx_spi_deactivate_cs(u8 cs, u8 polarity)
 +{
-+//printk(KERN_INFO "%s %d %d\n", __func__, cs, polarity);
 +	if (polarity)
 +		clrbits32(&gpio_regs->gpdat, 1 << (31 - 14));
 +	else
@@ -49,16 +47,11 @@ Index: linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 +
 +}
 +
-+//static struct mmc_spi_platform_data mpc8313_mmc_pdata = {
-+//	.ocr_mask = MMC_VDD_33_34,
-+//};
-+
 +static struct spi_board_info mpc8313_spi_boardinfo = {
 +	.bus_num = 0x7000,
 +	.chip_select = 0,
 +	.max_speed_hz = 50000000,
 +	.modalias = "spidev",
-+//	.platform_data = &mpc8313_mmc_pdata,
 +};
 +
 +static int __init mpc8313_spi_init(void)
@@ -85,24 +78,21 @@ Index: linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 +			mpc83xx_spi_deactivate_cs);
 +}
 +
-+device_initcall(mpc8313_spi_init);
-+
  static void __init mpc831x_rdb_setup_arch(void)
  {
  #ifdef CONFIG_PCI
-@@ -40,6 +110,8 @@
+@@ -40,6 +101,7 @@
  		mpc83xx_add_bridge(np);
  #endif
  	mpc831x_usb_cfg();
-+
 +	mpc8313_spi_init();
  }
  
  static void __init mpc831x_rdb_init_IRQ(void)
 Index: linux-2.6.29/drivers/spi/spi_mpc83xx.c
 ===================================================================
---- linux-2.6.29.orig/drivers/spi/spi_mpc83xx.c	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/spi/spi_mpc83xx.c	2009-04-01 17:37:53.000000000 +0200
+--- linux-2.6.29.orig/drivers/spi/spi_mpc83xx.c	2009-10-05 18:55:57.000000000 +0200
++++ linux-2.6.29/drivers/spi/spi_mpc83xx.c	2009-10-05 18:59:01.000000000 +0200
 @@ -280,7 +280,9 @@
  	if (pm)
  		pm--;
@@ -141,7 +131,7 @@ Index: linux-2.6.29/drivers/spi/spi_mpc83xx.c
  
  	mpc83xx_spi->workqueue = create_singlethread_workqueue(
 -		master->dev.parent->bus_id);
-+			dev->dev.bus_id);
++		dev->dev.bus_id);
  	if (mpc83xx_spi->workqueue == NULL) {
  		ret = -EBUSY;
  		goto free_irq;

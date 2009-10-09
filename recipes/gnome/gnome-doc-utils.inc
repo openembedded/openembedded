@@ -1,11 +1,11 @@
 LICENSE = "GPL LGPL"
 DEPENDS = "libxml2 libxslt libxslt-native"
 
-PR = "r1"
+INC_PR = "r2"
 
 inherit gnome
 
-EXTRA_OECONF = "--disable-scrollkeeper"
+EXTRA_OECONF = "--disable-scrollkeeper ac_cv_path_PYTHON=${bindir}/python"
 
 do_stage() {
 	mkdir -p  ${STAGING_DATADIR}/xml/gnome/xslt/

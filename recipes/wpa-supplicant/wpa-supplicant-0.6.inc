@@ -3,6 +3,7 @@ SECTION = "network"
 LICENSE = "GPL"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "dbus gnutls ${@base_contains("COMBINED_FEATURES", "madwifi", "madwifi-ng", "",d)}"
+INC_PR = "r5"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"
@@ -12,7 +13,6 @@ DEFAULT_PREFERENCE = "-2"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-0.6.0-gnutls \
-	file://action_wpa.sh \
 	file://ifupdown.sh \
 	file://functions.sh"
 
@@ -58,7 +58,6 @@ do_install () {
 	install -d ${D}${sysconfdir}/network/if-down.d/
 
 	install -d ${D}${sysconfdir}/wpa_supplicant
-	install -m 755 ${WORKDIR}/action_wpa.sh ${D}${sysconfdir}/wpa_supplicant/
 	install -m 755 ${WORKDIR}/ifupdown.sh ${D}${sysconfdir}/wpa_supplicant/
 	install -m 755 ${WORKDIR}/functions.sh ${D}${sysconfdir}/wpa_supplicant
 

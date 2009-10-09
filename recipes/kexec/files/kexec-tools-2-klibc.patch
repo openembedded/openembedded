@@ -143,7 +143,7 @@ Index: kexec-tools-2.0.1/purgatory/string.c
 Index: kexec-tools-2.0.1/kexec/kexec.c
 ===================================================================
 --- kexec-tools-2.0.1.orig/kexec/kexec.c	2008-02-24 14:15:46.950825917 +0100
-+++ kexec-tools-2.0.1/kexec/kexec.c	2009-09-26 01:58:53.545624148 +0200
++++ kexec-tools-2.0.1/kexec/kexec.c	2009-10-06 00:37:01.000000000 +0200
 @@ -38,9 +38,9 @@
 
  #include "config.h"
@@ -157,7 +157,8 @@ Index: kexec-tools-2.0.1/kexec/kexec.c
  #include <sha256.h>
  #include "kexec.h"
  #include "kexec-syscall.h"
-@@ -555,6 +555,6 @@
+@@ -554,7 +554,7 @@
+	return buf;
  }
 
 -#if HAVE_LIBZ

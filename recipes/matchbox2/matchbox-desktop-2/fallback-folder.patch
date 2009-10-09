@@ -1,0 +1,15 @@
+matchbox-desktop-2 wants "meta-fallback", but matchbox-common-0.9.x
+defines "fallback" and there is no matchbox-common-2.
+Index: libtaku/taku-menu-desktop.c
+===================================================================
+--- libtaku/taku-menu-desktop.c	(revision 2096)
++++ libtaku/taku-menu-desktop.c	(working copy)
+@@ -239,7 +239,7 @@
+     /* Find a fallback category */
+     if (priv->fallback_category == NULL)
+       for (l = matches; *l; l++)
+-        if (strcmp (*l, "meta-fallback") == 0)
++        if (strcmp (*l, "fallback") == 0)
+           priv->fallback_category = category;
+ 
+   done:

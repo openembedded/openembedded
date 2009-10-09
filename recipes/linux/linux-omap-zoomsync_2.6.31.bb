@@ -10,8 +10,8 @@ DEFAULT_PREFERENCE_omapzoom2 = "1"
 
 LOBRANCH?= "master"
 
-SRCREV = "02b2ce47a93e32f3b4e26662d78a0f31a6ac37ab"
-OEV = "oe1"
+SRCREV = "da065810e5705b8ec32a9329ed10d31671df075a"
+OEV = "oe2"
 PE = "1"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc

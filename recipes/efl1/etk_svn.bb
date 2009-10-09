@@ -6,7 +6,8 @@ PR = "r5"
 
 inherit efl
 
-SRC_URI += "file://mkinstalldirs"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http \
+file://mkinstalldirs"
 
 RRECOMMENDS_${PN} = "\
   etk-engines-software-x11 \

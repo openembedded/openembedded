@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -20,6 +20,9 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-improve-tls-macro.patch;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
 	file://gcc-flags-for-build.patch;patch=1 \
+	file://gcc-ppc_single_precision_regs.patch;patch=1 \
+	file://gcc-ppc_add_d_constraint.patch;patch=1 \
+	file://gcc-pr41175.patch;patch=1 \
 	"
 # Language Overrides
 FORTRAN = ""
