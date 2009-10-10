@@ -3,8 +3,8 @@ require conf/distro/include/glibc.inc
 
 PREFERRED_PROVIDER_linux-libc-headers ?= "linux-libc-headers"
 
-TARGET_OS = "linux-gnu"
-TARGET_OS .= "${@['','eabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb'] and bb.data.getVar('MACHINE',d) not in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"
+TARGET_OS = "linux"
+TARGET_OS .= "${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb'] and bb.data.getVar('MACHINE',d) not in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"
 
 #mess with compiler flags to use -Os instead of -O2
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
