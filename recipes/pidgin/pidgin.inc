@@ -2,6 +2,7 @@ DESCRIPTION = "multi-protocol instant messaging client"
 SECTION = "x11/network"
 LICENSE = "GPL"
 DEPENDS = "python startup-notification avahi gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
+INC_PR = "r1"
 
 inherit autotools gettext pkgconfig gconf
 
@@ -11,6 +12,7 @@ EXTRA_OECONF = " \
 		--disable-tcl \
 		--disable-deprecated \
 		--disable-gevolution \
+		--disable-schemas-install \
 		--x-includes=${STAGING_INCDIR} \
 		--x-libraries=${STAGING_LIBDIR} \
 		--enable-gnutls=yes \
