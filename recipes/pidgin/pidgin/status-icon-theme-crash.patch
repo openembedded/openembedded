@@ -1,0 +1,27 @@
+This is a backport of missing chunk of the patch:
+
+Author:	qulogic@pidgin.im
+Changelog:	I guess this pref name was changed but this one line was not. This would
+cause the status icon theme to revert to the default on startup.
+Fixes #10155.
+Date:	Tue, 01 Sep 2009 00:33:52 GMT
+#
+#
+# patch "pidgin/pidginstock.c"
+#  from [2487a2d68312f5afff439a0fa765c3fe40553701]
+#    to [d1da5e342d29fffdf381c68b779c2cb80c5e2caf]
+#
+Index: pidgin-2.6.2/pidgin/pidginstock.c
+===================================================================
+--- pidgin-2.6.2.orig/pidgin/pidginstock.c
++++ pidgin-2.6.2/pidgin/pidginstock.c
+@@ -609,7 +609,8 @@ pidgin_stock_init(void)
+ 
+ 		PidginStatusIconTheme *theme = PIDGIN_STATUS_ICON_THEME(purple_theme_loader_build(PURPLE_THEME_LOADER(loader), path));
+ 		pidgin_stock_load_status_icon_theme(theme);
+-		g_object_unref(G_OBJECT(theme));
++		if (theme)
++			g_object_unref(G_OBJECT(theme));
+ 
+ 	}
+ 	else
