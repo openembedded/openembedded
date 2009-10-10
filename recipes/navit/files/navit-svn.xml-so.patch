@@ -1,5 +1,5 @@
---- navit/navit/navit.xml.orig	2009-07-19 13:08:16.000000000 +0200
-+++ navit/navit/navit.xml	2009-07-19 13:09:12.000000000 +0200
+--- navit/navit/navit_shipped.xml.orig	2009-07-19 13:08:16.000000000 +0200
++++ navit/navit/navit_shipped.xml	2009-07-19 13:09:12.000000000 +0200
 @@ -6,10 +6,10 @@
       on upgrade. Rather copy it to ~/.navit/. Please read wiki -->
  <config xmlns:xi="http://www.w3.org/2001/XInclude">

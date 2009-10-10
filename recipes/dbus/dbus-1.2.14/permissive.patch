@@ -1,0 +1,11 @@
+--- /usr/src/openmoko/unstable-build/work/armv4t-angstrom-linux-gnueabi/dbus-1.2.14-r1/dbus-1.2.14/bus/system.conf.in	2009-05-06 10:19:43.000000000 -0600
++++ dbus-1.2.4.6/bus/system.conf.in	2009-05-06 11:26:47.000000000 -0600
+@@ -48,7 +48,7 @@
+     <!-- Holes must be punched in service configuration files for
+          name ownership and sending method calls -->
+     <deny own="*"/>
+-    <deny send_type="method_call"/>
++    <allow send_type="method_call" log="true"/>
+ 
+     <!-- Signals and reply messages (method returns, errors) are allowed
+          by default -->

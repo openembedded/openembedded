@@ -1,0 +1,13 @@
+--- a/../navit.launcher
++++ b/../navit.launcher
+@@ -25,6 +25,6 @@ then
+ 	fi
+ fi
+ 
+-navit.real $*
++fsoraw -r Display,GPS -- navit.real $*
+ 	
+ 
+-- 
+1.6.0.4
+
