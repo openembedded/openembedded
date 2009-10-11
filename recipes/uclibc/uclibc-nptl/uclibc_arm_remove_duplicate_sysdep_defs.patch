@@ -1,16 +1,3 @@
---- a/libc/sysdeps/linux/common/Makefile.in.org	2009-09-30 17:22:18.652679321 -0700
-+++ a/libc/sysdeps/linux/common/Makefile.in	2009-09-30 17:21:15.599669303 -0700
-@@ -92,6 +92,10 @@ ifeq ($(TARGET_ARCH),i386)
- CSRC := $(filter-out vfork.c,$(CSRC))
- endif
- 
-+ifeq ($(TARGET_ARCH),arm)
-+CSRC := $(filter-out syscall.c,$(CSRC))
-+endif
-+
- # fails for some reason
- ifneq ($(strip $(ARCH_OBJS)),)
- CSRC := $(filter-out $(notdir $(ARCH_OBJS:.o=.c)),$(CSRC))
 --- a/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep.h.orig	2009-09-30 17:12:46.571672582 -0700
 +++ a/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep.h	2009-09-30 17:10:12.255037520 -0700
 @@ -273,37 +273,6 @@ __local_syscall_error:						\

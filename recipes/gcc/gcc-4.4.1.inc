@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -23,6 +23,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-ppc_single_precision_regs.patch;patch=1 \
 	file://gcc-ppc_add_d_constraint.patch;patch=1 \
 	file://gcc-pr41175.patch;patch=1 \
+	file://gcc-armv4-pass-fix-v4bx-to-ld.patch;patch=1 \
 	"
 # Language Overrides
 FORTRAN = ""
