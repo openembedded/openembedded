@@ -4,7 +4,7 @@ AUTHOR = "dj@delorie.com"
 HOMEPAGE = "http://www.delorie.com/store/ace/"
 SECTION = "games"
 DEPENDS = "libpng zlib libxpm"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://www.delorie.com/store/ace/ace-${PV}.tar.gz\
@@ -15,3 +15,7 @@ S = "${WORKDIR}/ace-${PV}"
 inherit autotools
 
 
+do_configure_prepend() {
+	# Workaround QA issue
+	export CC="${CC} ${LDFLAGS}"
+}

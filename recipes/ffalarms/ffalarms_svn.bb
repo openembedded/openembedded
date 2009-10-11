@@ -1,8 +1,8 @@
 DESCRIPTION = "Finger friendly alarms"
 HOMEPAGE = "http://ffalarms.projects.openmoko.org/"
 LICENSE = "GPLv3"
-AUTHOR = "?ukasz Pankowski <lukpank@o2.pl>"
-MAINTAINER = "?ukasz Pankowski <lukpank@o2.pl>"
+AUTHOR = "Lukasz Pankowski <lukpank@o2.pl>"
+MAINTAINER = "Lukasz Pankowski <lukpank@o2.pl>"
 SECTION = "x11/applications"
 PRIORITY = "optional"
 DEPENDS = "elementary libeflvala"
@@ -13,7 +13,6 @@ PR = "r0"
 inherit vala
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/ffalarms;module=trunk;proto=https"
-SRC_URI_append_shr += "file://shr.patch;patch=1"
 
 S = "${WORKDIR}/trunk"
 
