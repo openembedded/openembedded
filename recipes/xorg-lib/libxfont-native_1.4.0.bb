@@ -8,3 +8,5 @@ PE = "1"
 SRC_URI = "${XORG_MIRROR}/individual/lib/${XORG_PN}-${PV}.tar.bz2"
 
 inherit native
+
+PROVIDES = "xfont-native"

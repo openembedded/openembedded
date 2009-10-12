@@ -3,6 +3,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "\
@@ -23,6 +25,10 @@ EXTRA_OECONF = "\
   --disable-esdtest \
   --enable-threads \
 "
+
+# Workaround QA issue
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 
 do_stage() {
 	oe_libinstall -a -so -C libmikmod libmikmod ${STAGING_LIBDIR}

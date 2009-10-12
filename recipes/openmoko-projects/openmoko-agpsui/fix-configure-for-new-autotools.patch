@@ -1,0 +1,11 @@
+diff -uri openmoko-agpsui/trunk/configure.ac openmoko-agpsui-fixed/trunk/configure.ac
+--- openmoko-agpsui/trunk/configure.ac	2009-05-30 12:24:11.000000000 +0200
++++ openmoko-agpsui-fixed/trunk/configure.ac	2009-05-30 12:26:32.000000000 +0200
+@@ -7,6 +7,7 @@
+ 
+ AC_ISC_POSIX
+ AC_PROG_CC
++AC_PROG_CXX
+ AC_STDC_HEADERS
+ AC_PROG_LIBTOOL
+ 

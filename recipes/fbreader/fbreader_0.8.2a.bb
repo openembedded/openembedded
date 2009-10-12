@@ -4,7 +4,7 @@ SECTION = "x11/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv"
-PR = "r5"
+PR = "r6"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.
@@ -22,6 +22,9 @@ SRC_URI_append_akita = "\
 
 SRC_URI_append_htcuniversal = "\
 		  file://zaurus-VGA.patch;patch=1"
+
+# Workaround QA issue
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 # Set the defaults
 READER_RESOLUTION = "240x320"

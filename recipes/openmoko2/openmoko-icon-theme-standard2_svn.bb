@@ -9,9 +9,9 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target/OM-2007.2/artwork/;module=ico
 S = "${WORKDIR}/icons"
 
 pkg_postinst_${PN} () {
-    if [ "x$D" != "x" ]; then
-        exit 1
-    fi
+#    if [ "x$D" != "x" ]; then
+#        exit 1
+#    fi
     gtk-update-icon-cache -q /usr/share/icons/openmoko-standard
 }
 

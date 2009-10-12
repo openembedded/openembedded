@@ -14,8 +14,5 @@ S = "${WORKDIR}/ace-${PV}"
 
 inherit autotools
 
-
-do_configure_prepend() {
-	# Workaround QA issue
-	export CC="${CC} ${LDFLAGS}"
-}
+# Workaround QA issue
+TARGET_CC_ARCH += "${LDFLAGS}"
