@@ -3,7 +3,7 @@ require xserver-kdrive-common.inc
 DEPENDS += "libxkbfile libxcalibrate"
 
 PE = "1"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
@@ -18,6 +18,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
         file://w100-fix-offscreen-bmp.patch;patch=1 \
         file://fbcompositesrc8888revnpx0565.patch;patch=1 \
         file://xcalibrate_coords.patch;patch=1 \
+	file://report-correct-randr10.patch;patch=1 \
 	"
        
 S = "${WORKDIR}/xorg-server-${PV}"

@@ -1,0 +1,27 @@
+Fixup possible address offsets for constant double integers
+also when using Maverick to handle 64-bit integers.
+
+Index: gcc-4.2.4/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.c	2009-08-09 15:43:44.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.c	2009-08-09 15:45:20.000000000 +0100
+@@ -3516,7 +3516,8 @@
+ 
+   use_ldrd = (TARGET_LDRD
+ 	      && (mode == DImode
+-		  || (mode == DFmode && (TARGET_SOFT_FLOAT || TARGET_VFP))));
++		  || (mode == DFmode
++		      && (TARGET_SOFT_FLOAT || TARGET_VFP || TARGET_MAVERICK))));
+ 
+   if (code == POST_INC || code == PRE_DEC
+       || ((code == PRE_INC || code == POST_DEC)
+@@ -4021,7 +4022,8 @@
+ 	  /* VFP addressing modes actually allow greater offsets, but for
+ 	     now we just stick with the lowest common denominator.  */
+ 	  if (mode == DImode
+-	      || ((TARGET_SOFT_FLOAT || TARGET_VFP) && mode == DFmode))
++	      || (mode == DFmode
++		  && (TARGET_SOFT_FLOAT || TARGET_VFP || TARGET_MAVERICK)))
+ 	    {
+ 	      low_n = n & 0x0f;
+ 	      n &= ~0x0f;

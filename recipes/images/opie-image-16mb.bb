@@ -12,7 +12,6 @@ IMAGE_INSTALL = "task-boot \
                     task-opie-16mb-settings \
                     task-opie-16mb-apps \
                     task-opie-16mb-pim \
-		    task-opie-irda \
                     ${ANGSTROM_EXTRA_INSTALL} "
 
 # create /etc/timestamp from build date

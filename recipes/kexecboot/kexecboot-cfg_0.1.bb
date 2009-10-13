@@ -2,11 +2,11 @@ LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "Configuration file for kexecboot"
 
-PR = "r3"
+PR = "r4"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
-CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd"
+CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd rw"
 CMDLINE_CON_qemuarm = "console=ttyAMA0,115200n8 console=tty1 noinitrd"
 
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'

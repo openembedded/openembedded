@@ -155,15 +155,6 @@
  		    err = errno;
  		    perror (de->d_name);
  		}
-@@ -382,7 +384,7 @@
- 	perror (ctx->statedir);
- 	
-     sprintf_alloc (&cmd, "rm -rf %s", ctx->statedir);
--    err = system (cmd);
-+    err = system (cmd);  /* FIXME FIXME */
-     free (cmd);
- 
-     free (ctx->statedir);
 --- orig/libopkg/opkg_download.c	2008-12-20 15:07:04.000000000 -0600
 +++ opkg/libopkg/opkg_download.c	2008-12-21 21:44:30.000000000 -0600
 @@ -129,16 +129,21 @@

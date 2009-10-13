@@ -1,0 +1,12 @@
+diff -urN apt-0.7.20.2.orig/doc/makefile apt-0.7.20.2/doc/makefile
+--- apt-0.7.20.2.orig/doc/makefile	2009-02-07 16:09:35.000000000 +0100
++++ apt-0.7.20.2/doc/makefile	2009-09-30 09:25:59.000000000 +0200
+@@ -43,7 +43,7 @@
+ doc.pl: %.pl:
+ 	$(MAKE) -C pl $*
+ 
+-ifdef DOXYGEN
++ifdef DOXYGEN_IS_DISABLED
+ DOXYGEN_SOURCES = $(shell find $(BASE)/apt-pkg -not -name .\\\#* -and \( -name \*.cc -or -name \*.h \) )
+ 
+ clean: doxygen-clean

@@ -1,0 +1,69 @@
+Index: kexec-tools-2.0.1/kexec/kexec.c
+===================================================================
+--- kexec-tools-2.0.1.orig/kexec/kexec.c	2008-02-24 14:15:46.950825917 +0100
++++ kexec-tools-2.0.1/kexec/kexec.c	2009-10-07 22:30:58.000000000 +0200
+@@ -933,15 +933,32 @@
+
+ static int kexec_loaded(void)
+ {
+-	int ret;
++	long ret = -1;
+	FILE *fp;
++	char *p;
++	char line[3];
+
+	fp = fopen("/sys/kernel/kexec_loaded", "r");
+	if (fp == NULL)
+		return -1;
+-	fscanf(fp, "%d", &ret);
++/*	fscanf(fp, "%d", &ret); */
++	p = fgets(line, sizeof(line), fp);
+	fclose(fp);
+-	return ret;
++
++	if ( NULL == p)
++		return -1;
++
++	ret = strtol(line, &p, 10);
++
++	if (ret > INT_MAX)
++	/* Too long */
++		return -1;
++
++	if (p == line)
++	/* No digits were found */
++		return -1;
++
++	return (int)ret;
+ }
+
+ /*
+@@ -989,18 +1006,23 @@
+ char *get_command_line(void)
+ {
+	FILE *fp;
+-	size_t len;
+-	char *line = NULL;
++	const int sizeof_line = 1024;
++	char *line = malloc(sizeof_line); /* according to strdup() later */
+
+	fp = fopen("/proc/cmdline", "r");
+	if (!fp)
+-		die("Could not read /proc/cmdline.");
+-	getline(&line, &len, fp);
++		die("Could not open /proc/cmdline.");
++
++	if ( NULL == fgets(line, sizeof(line), fp) ) {
++		die("Can't read /proc/cmdline.");
++
++/* 	getline(&line, &len, fp); */
+	fclose(fp);
++	}
+
+	if (line) {
+		/* strip newline */
+-		*(line + strlen(line) - 1) = 0;
++		line[strlen(line) - 1] = '\0';
+
+		remove_parameter(line, "BOOT_IMAGE");
+		if (kexec_flags & KEXEC_ON_CRASH)

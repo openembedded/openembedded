@@ -2,7 +2,7 @@ DESCRIPTION = "Python Gstreamer bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "gstreamer gst-plugins-base python-pygobject"
-PR = "ml3"
+PR = "ml4"
 
 SRC_URI = "\
   http://gstreamer.freedesktop.org/src/gst-python/gst-python-${PV}.tar.bz2 \
@@ -11,7 +11,9 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/gst-python-${PV}"
 
-inherit autotools distutils-base pkgconfig
+inherit autotools pkgconfig  distutils-base
+
+require fix-path.inc
 
 EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
 

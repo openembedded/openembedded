@@ -1,0 +1,35 @@
+Index: kexec-tools-2.0.1/kexec/kexec-elf.c
+===================================================================
+--- kexec-tools-2.0.1.orig/kexec/kexec-elf.c	2009-10-03 14:19:35.347504269 +0200
++++ kexec-tools-2.0.1/kexec/kexec-elf.c	2009-10-03 14:23:00.414497203 +0200
+@@ -9,6 +9,17 @@
+ #include "kexec.h"
+ #include "kexec-elf.h"
+ 
++#ifdef __dietlibc__
++#include <limits.h>
++# define UINT32_MAX             (4294967295U)
++# if __WORDSIZE == 64
++#  define __UINT64_C(c)   c ## UL
++# else
++#  define __UINT64_C(c)   c ## ULL
++# endif
++# define UINT64_MAX             (__UINT64_C(18446744073709551615))
++#endif
++
+ static const int probe_debug = 0;
+ 
+ uint16_t elf16_to_cpu(const struct mem_ehdr *ehdr, uint16_t value)
+Index: kexec-tools-2.0.1/kexec/Makefile
+===================================================================
+--- kexec-tools-2.0.1.orig/kexec/Makefile	2009-10-03 14:43:59.574859089 +0200
++++ kexec-tools-2.0.1/kexec/Makefile	2009-10-03 14:44:08.190707689 +0200
+@@ -70,7 +70,7 @@
+ 
+ $(KEXEC): $(KEXEC_OBJS) $(UTIL_LIB)
+ 	@$(MKDIR) -p $(@D)
+-	$(LINK.o) -o $@ $^ $(LIBS)
++	$(LINK.o) -o $@ $^ $(LIBS) -lcompat
+ 
+ $(KEXEC): CPPFLAGS+=-I$(srcdir)/kexec/arch/$(ARCH)/include
+ 

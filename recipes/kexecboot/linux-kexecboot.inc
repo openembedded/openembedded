@@ -1,5 +1,5 @@
 # We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "file://defconfig"
 
@@ -11,12 +11,13 @@ require ../linux/linux.inc
 DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-kexecboot-image"
 
-CMDLINE = "console=ttyS0,115200n8 console=tty1"
-CMDLINE_poodle = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
-CMDLINE_akita = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
-CMDLINE_collie = "console=ttySA0,115200n8 console=tty1 mem=64M fbcon=rotate:1"
-CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
-CMDLINE_hx4700 = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+# here we set master console on serial
+CMDLINE = "console=tty1 console=ttyS0,115200n8"
+CMDLINE_poodle = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
+CMDLINE_akita = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
+CMDLINE_collie = "console=tty1 console=ttySA0,115200n8 fbcon=rotate:1 mem=64M"
+CMDLINE_spitz = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
+CMDLINE_hx4700 = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
 
 PACKAGES = ""
 PROVIDES = ""

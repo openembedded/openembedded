@@ -1,8 +1,8 @@
 DESCRIPTION = "H.264 encoder"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
-X264PV = "snapshot-20090127-2245"
+X264PV = "snapshot-20090928-2245"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/x264/snapshots/x264-${X264PV}.tar.bz2"
 

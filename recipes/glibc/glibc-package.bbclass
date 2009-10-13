@@ -265,7 +265,12 @@ python package_do_split_gconvs () {
 		elif target_arch == "powerpc":
 			target_arch = "ppc"
 
-		kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
+		# This is a hack till linux-libc-headers gets patched for the missing arm syscalls and all arm device kernels as well
+		if bb.data.getVar("DISTRO_NAME", d, 1) == "Angstrom":
+			kernel_ver = "2.6.24"
+		else:
+			kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
+
 		if kernel_ver is None:
 			qemu = "qemu-%s  -s 1048576" % target_arch
 		else:

@@ -71,6 +71,11 @@ do_install () {
 	mv ${D}${prefix}/doc/* ${D}/${docdir}/${PN}/ || :
 }
 
+# split out gpgv from main package
+RDEPENDS_gnupg = "gpgv"
+PACKAGES =+ "gpgv"
+FILES_gpgv = "${bindir}/gpgv"
+
 # Exclude debug files from the main packages
 FILES_${PN} = "${bindir}/* ${datadir}/${PN} ${libexecdir}/${PN}/*"
 FILES_${PN}-dbg += "${libexecdir}/${PN}/.debug"

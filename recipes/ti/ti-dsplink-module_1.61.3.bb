@@ -11,7 +11,7 @@ DEPENDS 	+= "virtual/kernel perl-native ti-dspbios-native ti-cgt6x-native update
 MACHINE_KERNEL_PR_append = "a"                                                  
 PV = "1613"
 
-SRC_URI = "http://install.source.dir.com/dsplink_1_61_03.tar.gz \
+SRC_URI = "http://install.source.dir.local/dsplink_1_61_03.tar.gz \
 		   file://loadmodules-ti-dsplink-apps.sh \
 		   file://unloadmodules-ti-dsplink-apps.sh"
 

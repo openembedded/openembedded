@@ -1,0 +1,10 @@
+--- matchbox-panel-0.9.3/src/panel_app.c.orig
++++ matchbox-panel-0.9.3/src/panel_app.c
+@@ -249,6 +249,7 @@
+ 
+   papp = NEW(MBPanelApp);
+   
++  papp->name   = NULL;
+   papp->next   = NULL;
+   papp->win    = win;
+   papp->panel  = panel;

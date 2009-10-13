@@ -3,7 +3,7 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo"
+COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omap3-touchbook"
 
 SRCREV = "e63cf0710a4fb639d91d3e8b05aa485fbfa381b3"
 
@@ -164,6 +164,39 @@ SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
                                file://tincantools-puppy.diff;patch=1 \
                                file://tincantools-zippy.diff;patch=1 \
 "
+
+SRC_URI_append_omap3-touchbook = " \
+           file://beagle-asoc.patch;patch=1 \
+           file://accelerometer-mma7455l.patch;patch=1 \
+           file://accelerometer-touchscreen-mux-spi.patch;patch=1 \
+           file://touchscreen-ads7846-export-settings.patch;patch=1 \
+           file://touchscreen-ads7846-rotation-support.patch;patch=1 \
+           file://dspbridge.patch;patch=1 \
+           file://battery2-bq27200-no-error-message.patch;patch=1 \
+           file://sound-headphone-detection.patch;patch=1 \
+           file://dss2-fix-XY-coordinates-when-rotating.patch;patch=1 \
+           file://screen-backlight.patch;patch=1 \
+           file://battery1-tps65950-charging-management-1.patch;patch=1 \
+           file://dss2-fix-scaling-when-rotating.patch;patch=1 \
+           file://dss2-export-status.patch;patch=1 \
+           file://usb-otg-pc-connection.patch;patch=1 \
+           file://battery1-tps65950-charging-management-2.patch;patch=1 \
+           file://memory-move-malloc-end.patch;patch=1 \
+           file://aufs-1.patch;patch=1 \
+           file://aufs-2.patch;patch=1 \
+           file://aufs-3.patch;patch=1 \
+           file://aufs-squashfs-mount-to-avoid-initramfs.patch;patch=1 \
+           file://screen-backlight-accessible-by-user.patch;patch=1 \
+           file://dss2-blank-rotate-accessible-by-user.patch;patch=1 \
+           file://boot-no-power-message.patch;patch=1 \
+           file://usb-lower-current-consumption-upon-insertion.patch;patch=1 \
+           file://battery2-bq27200-gpio-charged.patch;patch=1 \
+           file://board-omap3beagle.c \
+"
+
+do_configure_prepend_omap3-touchbook() {
+    cp ${WORKDIR}/board-omap3beagle.c ${S}/arch/arm/mach-omap2
+}
 
 SRC_URI_append_omap3evm = " \
 	file://evm-mcspi-ts.diff;patch=1 \

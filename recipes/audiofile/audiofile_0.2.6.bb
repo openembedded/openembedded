@@ -5,19 +5,13 @@ Research, Amiga IFF/8SVX, and NIST SPHERE."
 SECTION = "libs"
 LICENSE = "LGPL GPL"
 RPROVIDES_${PN} += "audiofile"
-PR = "r6"
+PR = "r8"
 
-SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz"
+SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz \
+	   file://audiofile-m4_quote_fix.diff;patch=1;pnum=0 \
+	   file://audiofile-oldstyle.patch;patch=1;pnum=0 \
+	   file://audiofile-0.2.6.patch;patch=1;pnum=0 \
+	   file://CVE-2008-5824.patch;patch=1 \
+"
 
-inherit autotools pkgconfig binconfig
-
-do_stage () {
-	install -m 0644 libaudiofile/audiofile.h libaudiofile/aupvlist.h libaudiofile/af_vfs.h ${STAGING_INCDIR}/
-	oe_libinstall -C libaudiofile libaudiofile ${STAGING_LIBDIR}
-	install -m 0644 audiofile.m4 ${STAGING_DATADIR}/aclocal/
-}
-
-PACKAGES += "${PN}-bin"
-FILES_${PN} = "${libdir}/libaudiofile*.so.*"
-FILES_${PN}-dev += "${bindir}/*-config"
-FILES_${PN}-bin += "${bindir}"
+inherit autotools_stage lib_package binconfig

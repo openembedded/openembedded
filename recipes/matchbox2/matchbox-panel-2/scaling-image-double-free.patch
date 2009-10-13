@@ -1,0 +1,14 @@
+http://bugzilla.openedhand.com/show_bug.cgi?id=1794
+Index: matchbox-panel/mb-panel-scaling-image.c
+===================================================================
+--- matchbox-panel/mb-panel-scaling-image.c	(revision 2098)
++++ matchbox-panel/mb-panel-scaling-image.c	(working copy)
+@@ -284,7 +285,7 @@
+ 
+                 if (image->priv->caching) {
+                         g_hash_table_insert (image->priv->cache,
+-                                             image->priv->icon,
++                                             g_strdup(image->priv->icon),
+                                              pixbuf);
+                 } else
+                         g_object_unref (pixbuf);

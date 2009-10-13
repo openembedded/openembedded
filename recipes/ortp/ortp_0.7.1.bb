@@ -1,4 +1,4 @@
 require ortp.inc
-
-PR = "r1"
+DEPENDS = "glib-2.0 "
+PR = "${INC_PR}.0"
 

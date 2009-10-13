@@ -1,0 +1,20 @@
+--- a/board/omap3/beagle/beagle.h	2009-02-19 13:30:50.000000000 -0800
++++ b/board/omap3/beagle/beagle.h	2009-02-19 13:12:16.000000000 -0800
+@@ -205,12 +205,12 @@
+  MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT6*/\
+  MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT7*/\
+  /*Wireless LAN */\
+- MUX_VAL(CP(MMC2_CLK),		(IEN  | PTU | EN  | M4)) /*GPIO_130*/\
+- MUX_VAL(CP(MMC2_CMD),		(IEN  | PTU | EN  | M4)) /*GPIO_131*/\
+- MUX_VAL(CP(MMC2_DAT0),		(IEN  | PTU | EN  | M4)) /*GPIO_132*/\
++ MUX_VAL(CP(MMC2_CLK),		(IEN  | PTU | DIS  | M1)) /*MCSPI3_CLK*/\
++ MUX_VAL(CP(MMC2_CMD),		(IEN  | PTU | DIS  | M1)) /*MCSPI3_SIMO*/\
++ MUX_VAL(CP(MMC2_DAT0),		(IEN  | PTU | EN  | M1)) /*MCSPI3_SOMI*/\
+  MUX_VAL(CP(MMC2_DAT1),		(IEN  | PTU | EN  | M4)) /*GPIO_133*/\
+- MUX_VAL(CP(MMC2_DAT2),		(IEN  | PTU | EN  | M4)) /*GPIO_134*/\
+- MUX_VAL(CP(MMC2_DAT3),		(IEN  | PTU | EN  | M4)) /*GPIO_135*/\
++ MUX_VAL(CP(MMC2_DAT2),		(IEN  | PTU | EN  | M1)) /*MCSPI3_CS1*/\
++ MUX_VAL(CP(MMC2_DAT3),		(IEN  | PTU | EN  | M1)) /*MCSPI3_CS0*/\
+  MUX_VAL(CP(MMC2_DAT4),		(IEN  | PTU | EN  | M4)) /*GPIO_136*/\
+  MUX_VAL(CP(MMC2_DAT5),		(IEN  | PTU | EN  | M4)) /*GPIO_137*/\
+  MUX_VAL(CP(MMC2_DAT6),		(IEN  | PTU | EN  | M4)) /*GPIO_138*/\

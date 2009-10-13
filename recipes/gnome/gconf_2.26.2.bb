@@ -12,7 +12,7 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/GConf/2.26/GConf-${PV}.tar.bz2
            file://org.gnome.GConf.Defaults.service \
           "
 
-EXTRA_OECONF = "--disable-gtk-doc"
+EXTRA_OECONF = "--disable-gtk-doc POLKIT_POLICY_FILE_VALIDATE=true"
 HEADERS = "gconf.h gconf-changeset.h gconf-listeners.h gconf-schema.h gconf-value.h gconf-error.h gconf-engine.h gconf-client.h gconf-enum-types.h"
 
 inherit autotools pkgconfig gettext

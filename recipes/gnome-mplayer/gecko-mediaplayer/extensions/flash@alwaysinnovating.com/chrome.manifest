@@ -1,0 +1,3 @@
+content ai-flash chrome/content/ xpcnativewrappers=yes
+
+overlay chrome://browser/content/browser.xul chrome://ai-flash/content/ai-flash.xul

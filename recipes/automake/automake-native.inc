@@ -1,7 +1,7 @@
 SECTION = "devel"
 require automake_${PV}.bb
-DEPENDS = "autoconf-native"
-RDEPENDS_automake-native = "autoconf-native perl-native-runtime"
+DEPENDS += "autoconf-native"
+RDEPENDS_automake-native += "autoconf-native perl-native-runtime"
 
 inherit native
 

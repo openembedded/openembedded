@@ -1,6 +1,5 @@
 require glib.inc
-
-PR = "r5"
+PR = "${INC_PR}.0"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/glib/2.16/glib-${PV}.tar.bz2 \
            file://glibconfig-sysdefs.h \

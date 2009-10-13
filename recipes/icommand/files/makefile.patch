@@ -1,0 +1,42 @@
+Index: Release/makefile
+===================================================================
+--- Release.orig/makefile	2008-02-21 14:39:13.000000000 +0100
++++ Release/makefile	2008-02-21 15:31:48.000000000 +0100
+@@ -4,6 +4,8 @@
+ 
+ -include ../makefile.init
+ 
++CC?=gcc
++
+ RM := rm -rf
+ 
+ # All of the sources participating in the build are defined here
+@@ -28,7 +30,7 @@
+ libicmdbluez.so: $(OBJS) $(USER_OBJS)
+ 	@echo 'Building target: $@'
+ 	@echo 'Invoking: GCC C Linker'
+-	gcc -shared -o"libicmdbluez.so" $(OBJS) $(USER_OBJS) $(LIBS)
++	$(CC) $(LDFLAGS) -shared -o"libicmdbluez.so" $(OBJS) $(USER_OBJS) $(LIBS)
+ 	@echo 'Finished building target: $@'
+ 	@echo ' '
+ 
+Index: Release/subdir.mk
+===================================================================
+--- Release.orig/subdir.mk	2008-02-21 14:39:13.000000000 +0100
++++ Release/subdir.mk	2008-02-21 15:30:36.000000000 +0100
+@@ -12,12 +12,14 @@
+ C_DEPS += \
+ ./icmdbluez.d 
+ 
++CC?=gcc
++
+ 
+ # Each subdirectory must supply rules for building sources it contributes
+ %.o: ../%.c
+ 	@echo 'Building file: $<'
+ 	@echo 'Invoking: GCC C Compiler'
+-	gcc -I/usr/include/bluetooth -I/usr/lib/jvm/java-6-sun/include -I/usr/lib/jvm/java-6-sun/include/linux -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
++	$(CC) $(CFLAGS) $(INCLUDES) -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+ 	@echo 'Finished building: $<'
+ 	@echo ' '
+ 

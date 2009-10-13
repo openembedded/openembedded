@@ -5,8 +5,8 @@
 #############################################################################
 
 # Base line versions, good for most things
-PREFERRED_GCC_VERSION                ?= "4.2.4"
-PREFERRED_BINUTILS                   ?= "2.18"
+PREFERRED_GCC_VERSION                ?= "4.4.1"
+PREFERRED_BINUTILS                   ?= "2.19.51"
 
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
 PREFERRED_VERSION_glibc             ?= "2.6.1"
@@ -19,9 +19,9 @@ PREFERRED_VERSION_uclibc-initial    ?= "0.9.30.1"
 # Some systems need a special gcc version
 PREFERRED_GCC_VERSION_486sx          ?= "4.3.2"
 PREFERRED_GCC_VERSION_avr32          ?= "4.2.2"
-PREFERRED_GCC_VERSION_armv7a         ?= "4.3.1" 
+PREFERRED_GCC_VERSION_armv7a         ?= "4.4.1" 
 PREFERRED_GCC_VERSION_bfin           ?= "4.1.2"
-PREFERRED_GCC_VERSION_ppc405         ?= "4.1.1"
+PREFERRED_GCC_VERSION_ppc405         ?= "4.4.1"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 
@@ -157,16 +157,16 @@ def detect_arm_abi (d):
 def compute_os_portion_of_target_triplet (d):
 	import bb
 	arm_eabi_supporting_arches = "armv6 armv6-novfp \
-	armv5te iwmmxt armv7a armv7 armv6 armv5teb armv5te armv4t"
+	armv5te iwmmxt armv7a armv7 armv5teb armv4t"
 	ppc_spe_supporting_arches = "ppce500v2 ppce500"
 
   	if bb.data.getVar("LIBC", d, 1) == "uclibc":
     		libc_suffix = "uclibc"
 	else:
-		libc_suffix = "gnu"
+		libc_suffix = ""
 	
 	if bb.data.getVar('TARGET_ARCH',d,1) in ['bfin']:
-		if libc_suffix == "gnu":
+		if libc_suffix is not "uclibc":
 			bb.fatal("bfin is not supported on glibc/eglibc. Please choose uclibc")
 		else:
 			os_suffix = "uclinux"
@@ -182,15 +182,18 @@ def compute_os_portion_of_target_triplet (d):
 				bb.fatal("DISTRO requested EABI but selected machine does not support EABI")
 				abi_suffix = ""
 			else:
-				abi_suffix = "eabi"
+				abi_suffix = "gnueabi"
 		elif bparch in ppc_spe_supporting_arches.split():
-			abi_suffix = "spe"
+			abi_suffix = "gnuspe"
 		else:
 			abi_suffix = ""
 	else:
 		bb.note("DISTRO_FEATURES is not set abi suffix not set")
 		abi_suffix = ""
-	return os_suffix + "-" + libc_suffix + abi_suffix
+	if libc_suffix is not "" or abi_suffix is not "":
+		return os_suffix + "-" + libc_suffix + abi_suffix
+	else:
+		return os_suffix
 
 # This is needed to get a correct PACKAGE_ARCH for packages that have PACKAGE_ARCH = ${MACHINE_ARCH}
 ARM_ABI = "${@detect_arm_abi(d)}"

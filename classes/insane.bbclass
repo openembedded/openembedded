@@ -80,6 +80,9 @@ def package_qa_get_machine_dict():
             "linux-gnuspe" : {
                         "powerpc":    (20,     0,    0,          False,         True),
                       },
+            "linux-uclibcspe" : {
+                        "powerpc":    (20,     0,    0,          False,         True),
+                      },
 
        }
 

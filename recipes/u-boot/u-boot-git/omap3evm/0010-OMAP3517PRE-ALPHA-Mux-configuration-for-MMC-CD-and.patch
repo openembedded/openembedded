@@ -1,0 +1,34 @@
+From be213a61e04fe2427c51d3687ec82d2cd8741d8c Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Tue, 16 Jun 2009 03:54:56 +0530
+Subject: [PATCH 10/16] OMAP3517PRE-ALPHA: Mux configuration for MMC CD and WP pins
+
+The Mux configuration changed for MMC1 Card Detect and Write Protect
+GPIO pins -
+
+Card Detect --> MMC_DAT5 = GPIO127
+Write Protect --> MMC_DAT4 = GPIO126
+---
+ board/omap3/omap3517evm/omap3517evm.h |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/board/omap3/omap3517evm/omap3517evm.h b/board/omap3/omap3517evm/omap3517evm.h
+index 000fde6..c3ea037 100644
+--- a/board/omap3/omap3517evm/omap3517evm.h
++++ b/board/omap3/omap3517evm/omap3517evm.h
+@@ -196,8 +196,10 @@ static void setup_net_chip(void);
+  MUX_VAL(CP(MMC1_DAT1),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT1*/\
+  MUX_VAL(CP(MMC1_DAT2),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT2*/\
+  MUX_VAL(CP(MMC1_DAT3),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT3*/\
+- MUX_VAL(CP(MMC1_DAT4),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT4*/\
+- MUX_VAL(CP(MMC1_DAT5),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT5*/\
++ MUX_VAL(CP(MMC1_DAT4),		(IEN  | PTU | EN  | M4)) /*MMC1_DAT4,\
++							   WriteProtect*/\
++ MUX_VAL(CP(MMC1_DAT5),		(IEN  | PTU | EN  | M4)) /*MMC1_DAT5,\
++							   CardDetect*/\
+  MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT6*/\
+  MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTU | DIS | M0)) /*MMC1_DAT7*/\
+  /*Wireless LAN */\
+-- 
+1.6.2.4
+

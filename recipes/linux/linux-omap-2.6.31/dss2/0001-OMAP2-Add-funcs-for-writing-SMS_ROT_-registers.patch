@@ -1,0 +1,69 @@
+From 17091382ab8f92a366e7e1267c30f83711ccd9f8 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 7 Aug 2009 11:26:12 +0300
+Subject: [PATCH 01/18] OMAP2: Add funcs for writing SMS_ROT_* registers
+
+SMS_ROT_* registers are used by VRFB rotation engine.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Acked-by: Paul Walmsley <paul@pwsan.com>
+---
+ arch/arm/mach-omap2/sdrc.c             |   16 ++++++++++++++++
+ arch/arm/plat-omap/include/mach/sdrc.h |    9 ++++++++-
+ 2 files changed, 24 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/sdrc.c b/arch/arm/mach-omap2/sdrc.c
+index 9e3bd4f..6a5a2c5 100644
+--- a/arch/arm/mach-omap2/sdrc.c
++++ b/arch/arm/mach-omap2/sdrc.c
+@@ -133,3 +133,19 @@ void __init omap2_sdrc_init(struct omap_sdrc_params *sdrc_cs0,
+ 		(1 << SDRC_POWER_PAGEPOLICY_SHIFT);
+ 	sdrc_write_reg(l, SDRC_POWER);
+ }
++
++void omap2_sms_write_rot_control(u32 val, unsigned ctx)
++{
++	sms_write_reg(val, SMS_ROT_CONTROL(ctx));
++}
++
++void omap2_sms_write_rot_size(u32 val, unsigned ctx)
++{
++	sms_write_reg(val, SMS_ROT_SIZE(ctx));
++}
++
++void omap2_sms_write_rot_physical_ba(u32 val, unsigned ctx)
++{
++	sms_write_reg(val, SMS_ROT_PHYSICAL_BA(ctx));
++}
++
+diff --git a/arch/arm/plat-omap/include/mach/sdrc.h b/arch/arm/plat-omap/include/mach/sdrc.h
+index 0be18e4..6438f0f 100644
+--- a/arch/arm/plat-omap/include/mach/sdrc.h
++++ b/arch/arm/plat-omap/include/mach/sdrc.h
+@@ -79,7 +79,10 @@
+ 
+ /* SMS register offsets - read/write with sms_{read,write}_reg() */
+ 
+-#define SMS_SYSCONFIG		0x010
++#define SMS_SYSCONFIG			0x010
++#define SMS_ROT_CONTROL(context)	(0x180 + 0x10 * context)
++#define SMS_ROT_SIZE(context)		(0x184 + 0x10 * context)
++#define SMS_ROT_PHYSICAL_BA(context)	(0x188 + 0x10 * context)
+ /* REVISIT: fill in other SMS registers here */
+ 
+ 
+@@ -112,6 +115,10 @@ int omap2_sdrc_get_params(unsigned long r,
+ 			  struct omap_sdrc_params **sdrc_cs0,
+ 			  struct omap_sdrc_params **sdrc_cs1);
+ 
++void omap2_sms_write_rot_control(u32 val, unsigned ctx);
++void omap2_sms_write_rot_size(u32 val, unsigned ctx);
++void omap2_sms_write_rot_physical_ba(u32 val, unsigned ctx);
++
+ #ifdef CONFIG_ARCH_OMAP2
+ 
+ struct memory_timings {
+-- 
+1.6.2.4
+

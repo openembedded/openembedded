@@ -7,9 +7,13 @@ HOMEPAGE = "http://libdbi.sourceforge.net/"
 LICENSE = "LGPL"
 SECTION = "libs"
 
+INC_PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/libdbi/libdbi-${PV}.tar.gz"
 
 inherit autotools
+
+EXTRA_OECONF = "--disable-docs"
 
 do_stage () {
 	autotools_stage_includes

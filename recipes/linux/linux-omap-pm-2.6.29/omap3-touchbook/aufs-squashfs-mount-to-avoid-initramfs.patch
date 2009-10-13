@@ -1,0 +1,40 @@
+--- linux-omap-2.6/init/do_mounts.c	2008-11-23 01:22:52.000000000 -0800
++++ linux-omap-2.6/init/do_mounts.c	2008-11-23 02:17:58.000000000 -0800
+@@ -325,6 +325,37 @@
+ 
+ void __init mount_root(void)
+ {
++	int do_special = 0;
++	if (strcmp(root_device_name, "special") == 0)
++		do_special = 1;
++	//do_special = 1;
++
++	if (do_special) {
++		dev_t ROOT_DEV_RO;
++		dev_t ROOT_DEV_RW;
++
++		sys_mkdir("/root-ro", 0700);
++		ROOT_DEV_RO = name_to_dev_t("/dev/mtd4");
++		create_dev("/dev/root-ro", ROOT_DEV_RO);
++		if (sys_mount("/dev/root-ro", "/root-ro", "squashfs", MS_RDONLY | MS_SILENT, NULL) != 0) {
++			ROOT_DEV_RO = name_to_dev_t("/dev/mmcblk0p2");
++			create_dev("/dev/root-ro2", ROOT_DEV_RO);
++			if (sys_mount("/dev/root-ro2", "/root-ro", "squashfs", MS_RDONLY | MS_SILENT, NULL) != 0)
++				goto no_special;
++		}
++		
++		sys_mkdir("/root-rw", 0700);
++		ROOT_DEV_RW = name_to_dev_t("/dev/mmcblk0p3");
++		create_dev("/dev/root-rw", ROOT_DEV_RW);
++		if (sys_mount("/dev/root-rw", "/root-rw", "ext3", MS_SILENT, NULL) != 0)
++			goto no_special;
++		sys_mount("none", "/root", "aufs", 0, "br:/root-rw:/root-ro=ro");
++		sys_chdir("/root");
++		return;
++	}
++
++no_special:
++
+ #ifdef CONFIG_ROOT_NFS
+ 	if (MAJOR(ROOT_DEV) == UNNAMED_MAJOR) {
+ 		if (mount_nfs_root())

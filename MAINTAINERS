@@ -44,7 +44,7 @@ Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
 Interests:  Support in OE for single board computers, web application support
 Machines:   cm-x270, em-x270, gesbc-9302
-Recipes:    mono, argtable, vala, socketcan
+Recipes:    mono, argtable, vala, socketcan, clearsilver
 
 Person:     Denys Dmytriyenko
 Mail:       denis@denix.org

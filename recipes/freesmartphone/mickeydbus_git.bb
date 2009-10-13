@@ -16,7 +16,7 @@ do_install() {
 
 RDEPENDS_${PN} = "\
   python-dbus \
-  python-gobject \
+  python-pygobject \
   python-pprint \
   python-xml \
 "

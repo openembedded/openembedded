@@ -1,0 +1,41 @@
+Index: autoconf-2.61/configure.ac
+===================================================================
+--- autoconf-2.61.orig/configure.ac	2006-11-17 11:04:48.000000000 -0800
++++ autoconf-2.61/configure.ac	2009-09-19 16:37:40.000000000 -0700
+@@ -106,10 +106,6 @@
+ if test "$PERL" = no; then
+   AC_MSG_ERROR([perl is not found])
+ fi
+-$PERL -e 'require 5.005_03;' || {
+-   AC_MSG_ERROR([Perl 5.005_03 or better is required])
+-}
+-
+ 
+ ## ------- ##
+ ## Emacs.  ##
+Index: autoconf-2.61/configure
+===================================================================
+--- autoconf-2.61.orig/configure	2006-11-17 11:05:17.000000000 -0800
++++ autoconf-2.61/configure	2009-09-19 16:38:13.000000000 -0700
+@@ -1557,7 +1557,7 @@
+ # Let the site file select an alternate cache file if it wants to.
+ # Prefer explicitly selected file to automatically selected ones.
+ if test -n "$CONFIG_SITE"; then
+-  set x "$CONFIG_SITE"
++  set x $CONFIG_SITE
+ elif test "x$prefix" != xNONE; then
+   set x "$prefix/share/config.site" "$prefix/etc/config.site"
+ else
+@@ -2406,12 +2406,6 @@
+ echo "$as_me: error: perl is not found" >&2;}
+    { (exit 1); exit 1; }; }
+ fi
+-$PERL -e 'require 5.005_03;' || {
+-   { { echo "$as_me:$LINENO: error: Perl 5.005_03 or better is required" >&5
+-echo "$as_me: error: Perl 5.005_03 or better is required" >&2;}
+-   { (exit 1); exit 1; }; }
+-}
+-
+ 
+ ## ------- ##
+ ## Emacs.  ##

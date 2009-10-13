@@ -1,0 +1,12 @@
+Index: gcc-4.2.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.2.4.orig/gcc/config/arm/arm.md	2009-08-09 15:43:47.000000000 +0100
++++ gcc-4.2.4/gcc/config/arm/arm.md	2009-08-09 15:44:52.000000000 +0100
+@@ -10509,6 +10509,7 @@
+   [(unspec:SI [(match_operand:SI 0 "register_operand" "")] UNSPEC_PROLOGUE_USE)]
+   ""
+   "%@ %0 needed for prologue"
++  [(set_attr "length" "0")]
+ )
+ 
+ 

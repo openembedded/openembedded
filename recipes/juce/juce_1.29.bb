@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.rawmaterialsoftware.com/juce"
 AUTHOR = "Julian Stoerer"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib freetype virtual/libx11"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 PR = "r0"
 
 #FIXME the patches are a) HACKS and b) something's wrong with lineend conversion
@@ -30,4 +31,3 @@ do_install() {
 
 PACKAGES = "${PN}-dbg jucedemo ${PN}"
 FILES_jucedemo = "${bindir}"
-

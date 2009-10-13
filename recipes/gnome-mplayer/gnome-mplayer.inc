@@ -6,6 +6,18 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ gconf dbus-glib"
 RDEPENDS = "mplayer"
 
-inherit autotools pkgconfig gconf
+inherit gnome
 
 SRC_URI = "http://gnome-mplayer.googlecode.com/files/${P}.tar.gz"
+
+PACKAGES =+ "${PN}-nautilus-extension"
+FILES_${PN}-nautilus-extension = "${libdir}/nautilus/extension*/*.so"
+
+FILES_${PN}-dbg += "${libdir}/nautilus/*/.debug"
+
+FILES_${PN} += "${datadir}/icons"
+
+do_install_append() {
+    sed -i "s/OnlyShowIn=GNOME;//" ${D}${datadir}/applications/gnome-mplayer.desktop
+}   
+

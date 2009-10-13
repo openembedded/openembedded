@@ -107,6 +107,7 @@ FILES_${PN} = "\
   ${libdir}/enlightenment/utils/* \
   ${libdir}/enlightenment/modules/*/*.* \
   ${libdir}/enlightenment/modules/*/*/* \
+  ${libdir}/enlightenment/*plugins/*/*/* \
   ${libdir}/enlightenment/preload/e_precache.so \
   ${datadir}/locale \
   ${datadir}/enlightenment/data/icons \
@@ -152,13 +153,14 @@ FILES_${PN}-dbg += "\
   ${libdir}/enlightenment/modules/*/*/.debug/ \
   ${libdir}/enlightenment/preload/.debug/ \
   ${libdir}/enlightenment/utils/.debug/ \
+  ${libdir}/enlightenment/*plugins/*/*/.debug \
 "
 
 FILES_${PN}-doc += "\
   ${datadir}/enlightenment/doc \
 "
 
-CONFFILES_${PN} = "/etc/xdg/menus/applications.menu"
+CONFFILES_${PN} = "${sysconfdir}/xdg/menus/applications.menu"
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
 ALTERNATIVE_NAME = "x-window-manager"

@@ -1,0 +1,45 @@
+From 989f677e807fdfbae2a13ab1444743bfdf2d63f3 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Mon, 20 Jul 2009 22:35:36 +0530
+Subject: [PATCH] lib/board.c: Specify where u-boot is being loaded from
+
+Pulled from  65ed00323f3807197a83abc75d62ed2a8d3f60de commit
+from Sakoman's tree
+---
+ lib/board.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/lib/board.c b/lib/board.c
+index 5ef7102..e573c66 100644
+--- a/lib/board.c
++++ b/lib/board.c
+@@ -73,6 +73,8 @@ void start_armboot (void)
+ #ifdef CONFIG_MMC
+ 	/* first try mmc */
+ 	buf += mmc_boot(buf);
++	if (buf != (uchar *)CFG_LOADADDR)
++		printf("Loading u-boot.bin from mmc\n");
+ #endif
+ 
+ 	if (buf == (uchar *)CFG_LOADADDR) {
+@@ -80,7 +82,7 @@ void start_armboot (void)
+ #if !defined (CONFIG_OMAP3517EVM)
+ 		if (get_mem_type() == GPMC_ONENAND){
+ #ifdef CFG_PRINTF
+-       			printf("Booting from onenand . . .\n");
++			printf("Loading u-boot.bin from onenand\n");
+ #endif
+         		for (i = ONENAND_START_BLOCK; i < ONENAND_END_BLOCK; i++){
+         			if (!onenand_read_block(buf, i))
+@@ -90,7 +92,7 @@ void start_armboot (void)
+ #endif
+ 		if (get_mem_type() == GPMC_NAND){
+ #ifdef CFG_PRINTF
+-       			printf("Booting from nand . . .\n");
++			printf("Loading u-boot.bin from nand\n");
+ #endif
+         		for (i = NAND_UBOOT_START; i < NAND_UBOOT_END; i+= NAND_BLOCK_SIZE){
+         			if (!nand_read_block(buf, i))
+-- 
+1.5.4.3
+

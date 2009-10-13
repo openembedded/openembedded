@@ -1,11 +1,10 @@
-PR = "r7"
-
 SRC_URI_append = "file://configure.patch;patch=1 \
                   file://Makefile.in.patch;patch=1 \
                   file://Makefile.cget.patch;patch=1 \
                   file://util.patch;patch=1"
 
 require cherokee.inc
+PR = "${INC_PR}.0"
 
 do_configure() {
         gnu-configize

@@ -8,11 +8,8 @@ DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jp
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-	   file://Makefile-codec-cfg.patch;patch=1 \
 	   file://pld-onlyarm5-svn.patch;patch=1 \
 	   file://makefile-nostrip-svn.patch;patch=1 \
-	   file://configh \
-	   file://configmak \
 	   "
 
 SRC_URI_append_armv7a = " \
@@ -37,7 +34,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r12"
+PR = "r14"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
@@ -87,8 +84,6 @@ EXTRA_OECONF = " \
 	--enable-sortsub \
 	--disable-fribidi \
 	--disable-enca \
-	--disable-macosx \
-	--disable-macosx-bundle \
 	--disable-ftp \
 	--disable-vstream \
 	\
@@ -176,7 +171,7 @@ EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 				--disable-encoder=vorbis_encoder"
 
 EXTRA_OECONF_append_armv6 = " --enable-armv6"
-EXTRA_OECONF_append_armv7a = " --enable-armv6"
+EXTRA_OECONF_append_armv7a = " --enable-armv6 --enable-neon"
 
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
@@ -210,12 +205,11 @@ do_configure() {
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+	sed -i 's|HOST_CC|BUILD_CC|' ${S}/Makefile
 
 	export SIMPLE_TARGET_SYS="$(echo ${TARGET_SYS} | sed s:${TARGET_VENDOR}::g)"
 	./configure ${EXTRA_OECONF}
 	
-	cat ${WORKDIR}/configh >> ${S}/config.h
-	cat ${WORKDIR}/configmak  ${OPTSMAK} >> ${S}/config.mak
 }
 
 do_compile () {

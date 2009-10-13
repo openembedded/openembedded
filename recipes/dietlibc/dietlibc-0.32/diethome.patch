@@ -1,0 +1,24 @@
+Index: dietlibc-0.32/Makefile
+===================================================================
+--- dietlibc-0.32.orig/Makefile	2008-05-09 06:36:56.000000000 +0200
++++ dietlibc-0.32/Makefile	2009-10-02 14:39:58.059248076 +0200
+@@ -295,16 +295,16 @@
+ $(SYSCALLOBJ): syscalls.h
+ 
+ $(OBJDIR)/elftrunc: $(OBJDIR)/diet contrib/elftrunc.c
+-	bin-$(MYARCH)/diet $(CROSS)$(CC) $(CFLAGS) -o $@ contrib/elftrunc.c
++	DIETHOME=$(PWD) bin-$(MYARCH)/diet $(CROSS)$(CC) $(CFLAGS) -o $@ contrib/elftrunc.c
+ 
+ $(OBJDIR)/dnsd: $(OBJDIR)/diet contrib/dnsd.c
+-	bin-$(MYARCH)/diet $(CROSS)$(CC) $(CFLAGS) -o $@ contrib/dnsd.c
++	DIETHOME=$(PWD) bin-$(MYARCH)/diet $(CROSS)$(CC) $(CFLAGS) -o $@ contrib/dnsd.c
+ 
+ VERSION=dietlibc-$(shell head -n 1 CHANGES|sed 's/://')
+ CURNAME=$(notdir $(shell pwd))
+ 
+ $(OBJDIR)/diet: $(OBJDIR)/start.o $(OBJDIR)/dyn_start.o diet.c $(OBJDIR)/dietlibc.a $(OBJDIR)/dyn_stop.o
+-	$(CROSS)$(CC) -isystem include $(CFLAGS) -nostdlib -o $@ $^ -DDIETHOME=\"$(HOME)\" -DVERSION=\"$(VERSION)\" -lgcc
++	$(CROSS)$(CC) -isystem include $(CFLAGS) -nostdlib -o $@ $^ -DDIETHOME=\"$(prefix)\" -DVERSION=\"$(VERSION)\" -lgcc
+ 	$(CROSS)strip -R .comment -R .note $@
+ 
+ $(OBJDIR)/diet-i: $(OBJDIR)/start.o $(OBJDIR)/dyn_start.o diet.c $(OBJDIR)/dietlibc.a $(OBJDIR)/dyn_stop.o

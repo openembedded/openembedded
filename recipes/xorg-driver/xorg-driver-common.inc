@@ -16,6 +16,9 @@ FILES_${PN}-dbg +=  "${libdir}/xorg/modules/*/.debug"
 
 inherit autotools pkgconfig
 
+TARGET_CPPFLAGS += "-I${STAGING_DIR_HOST}/usr/include/xorg"
+
+
 do_stage() {
 	autotools_stage_all
 }

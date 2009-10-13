@@ -20,17 +20,14 @@ iface wlan0 inet dhcp
 	wpa-driver wext
 	wpa-conf /etc/wpa_supplicant.conf
 
-# Wired or wireless interfaces
-# Handylink Ethernet or Wifi bugmodule or USB Ethernet
+# Wired interface
+# BUGbase Ethernet which is built into kernel
 auto eth0
 iface eth0 inet dhcp
-	wireless_mode managed
-	wireless_essid any
-	wpa-driver wext
-	wpa-conf /etc/wpa_supplicant.conf
+
 #
 # Wired or wireless interfaces
-# Wifi bugmodule or USB Ethernet
+# BUGbase or BUGWifi module or USB Ethernet
 auto eth1
 iface eth1 inet dhcp
 	wireless_mode managed

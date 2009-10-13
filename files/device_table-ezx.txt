@@ -1,2 +1,14 @@
-/dev/mux	c	660	0	5	250	0	0	1	8
+#<path>	<type> <mode>	<uid>	<gid>	<major>	<minor>	<start>	<inc>	<count>
+#/dev/mem    c      640      0       0       1       1       0        0        -
+#
+#type can be one of:
+#    f	A regular file
+#    d	Directory
+#    c	Character special device file
+#    b	Block special device file
+#    p	Fifo (named pipe)
+
+/dev/mux	c	660	0	5	250	0	1	1	8
+/dev/ttyIPC	c	660	0	5	251	0	-	-	-
 /dev/input/uinput	c	660 	0	0	10	223	-	-	-
+/dev/video	c	660	0	44	81	0	-	-	-

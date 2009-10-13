@@ -1,0 +1,64 @@
+--- a/arch/arm/mach-omap2/devices.c	2009-02-17 21:15:12.000000000 -0800
++++ b/arch/arm/mach-omap2/devices.c	2009-02-17 22:30:26.000000000 -0800
+@@ -15,6 +15,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
++#include <linux/spi/spi_gpio.h> 
+ 
+ #include <mach/hardware.h>
+ #include <asm/mach-types.h>
+@@ -347,6 +348,37 @@
+ 		.platform_data = &omap2_mcspi4_config,
+ 	},
+ };
++
++static struct spi_gpio_platform_data spi3_gpio_platform_data = {
++       .miso           = 132,
++       .mosi           = 131,
++       .sck            = 130,
++       .num_chipselect = 1,
++};
++
++static struct platform_device spi3_gpio = {
++       .name           = "spi_gpio",
++       .id             = 3,
++       .dev            = {
++               .platform_data = &spi3_gpio_platform_data,
++       },
++};
++ 
++static struct spi_gpio_platform_data spi4_gpio_platform_data = {
++       .miso           = 159,
++       .mosi           = 158,
++       .sck            = 156,
++       .num_chipselect = 1,
++};
++
++static struct platform_device spi4_gpio = {
++       .name           = "spi_gpio",
++       .id             = 4,
++       .dev            = {
++               .platform_data = &spi4_gpio_platform_data,
++       },
++};
++ 
+ #endif
+ 
+ static void omap_init_mcspi(void)
+--- a/drivers/input/touchscreen/ads7846.c	2009-04-07 10:04:12.000000000 -0700
++++ b/drivers/input/touchscreen/ads7846.c	2009-04-11 12:39:51.000000000 -0700
+@@ -887,13 +919,6 @@
+ 		return 0;
+ 	}
+ 
+-	err = gpio_request(pdata->gpio_pendown, "ads7846_pendown");
+-	if (err) {
+-		dev_err(&spi->dev, "failed to request pendown GPIO%d\n",
+-				pdata->gpio_pendown);
+-		return err;
+-	}
+-
+ 	ts->gpio_pendown = pdata->gpio_pendown;
+ 	return 0;
+ }

@@ -3,20 +3,24 @@ SECTION = "devel/python"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "MIT"
 DEPENDS = "expat dbus dbus-glib virtual/libintl python-pyrex-native"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-python/dbus-python-${PV}.tar.gz"
 S = "${WORKDIR}/dbus-python-${PV}"
 
-inherit distutils-base autotools pkgconfig
+inherit distutils-base autotools_stage pkgconfig
 
 export BUILD_SYS
 export HOST_SYS
 
-do_stage() {
-	autotools_stage_all
-}
+RDEPENDS_${PN} = "\
+  python-io \
+  python-lang \
+  python-logging \
+  python-threading \
+  python-xml \
+"
 
-RDEPENDS = "python-io python-logging python-stringold python-threading python-xml"
-
-FILES_${PN}-dev += "${libdir}/pkgconfig 
+FILES_${PN}-dev += "\
+  ${libdir}/pkgconfig \
+"

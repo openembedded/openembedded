@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ ! $JAVA ]; then
+	JAVA=java
+fi
+
+$JAVA -cp .:/usr/share/java/js.jar org.mozilla.javascript.tools.jsc.Main $@
+

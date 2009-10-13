@@ -41,6 +41,7 @@ do_install_append() {
         install -m 0755 ${WORKDIR}/dbus-1.init ${D}${sysconfdir}/init.d/dbus-1
         # the stock install seems to install the libtool wrapper script, so we have to copy this manually :M:
         if [ -e bus/.libs/dbus-daemon-launch-helper ]; then
+                install -d  ${D}${libexecdir}/
                 install -m 0755 bus/.libs/dbus-daemon-launch-helper ${D}${libexecdir}/
         fi
 }

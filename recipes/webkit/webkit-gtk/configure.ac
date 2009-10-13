@@ -2,7 +2,7 @@ AC_PREREQ(2.59)
 
 m4_define([webkit_major_version], [1])
 m4_define([webkit_minor_version], [1])
-m4_define([webkit_micro_version], [11])
+m4_define([webkit_micro_version], [15])
 
 # This is the version we'll be using as part of our User-Agent string
 # e.g., AppleWebKit/$(webkit_user_agent_version) ...
@@ -35,10 +35,13 @@ AC_CONFIG_SRCDIR([WebCore/config.h])
 
 dnl # Libtool library version, not to confuse with API version
 dnl # see http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html#Libtool-versioning
-LIBWEBKITGTK_VERSION=10:0:8
+LIBWEBKITGTK_VERSION=13:0:11
 AC_SUBST([LIBWEBKITGTK_VERSION])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects tar-ustar])
+
+# Use AM_SILENT_RULES if present
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # host checking - inspired by the GTK+ configure.in
 # TODO: move these to webkit.m4?
@@ -187,21 +190,20 @@ if test "$with_hildon" = "yes"; then
 fi
 
 # minimum base dependencies
-LIBSOUP_REQUIRED_VERSION=2.27.4
+LIBSOUP_REQUIRED_VERSION=2.27.91
 CAIRO_REQUIRED_VERSION=1.2
 FONTCONFIG_REQUIRED_VERSION=2.4
 FREETYPE2_REQUIRED_VERSION=9.0
 LIBXML_REQUIRED_VERSION=2.6
 
 # minimum GTK+ base dependencies
-PANGO_REQUIRED_VERSION=1.0
+PANGO_REQUIRED_VERSION=1.12
 GTK_REQUIRED_VERSION=2.10
 
 # optional modules
 LIBXSLT_REQUIRED_VERSION=1.1.7
 SQLITE_REQUIRED_VERSION=3.0
 GSTREAMER_REQUIRED_VERSION=0.10
-GNOME_KEYRING_REQUIRED_VERSION=2.26.0
 ENCHANT_REQUIRED_VERSION=0.22
 GAIL_REQUIRED_VERSION=1.8
 
@@ -345,6 +347,14 @@ AC_ARG_ENABLE(database,
               [],[enable_database="yes"])
 AC_MSG_RESULT([$enable_database])
 
+# check whether to build with server-sent events support
+AC_MSG_CHECKING([whether to enable HTML5 server-sent events support])
+AC_ARG_ENABLE(eventsource,
+              AC_HELP_STRING([--enable-eventsource],
+                             [enable HTML5 server-sent events support [default=yes]]),
+              [],[enable_eventsource="yes"])
+AC_MSG_RESULT([$enable_eventsource])
+
 # check whether to build with icon database support
 AC_MSG_CHECKING([whether to enable icon database support])
 AC_ARG_ENABLE(icon_database,
@@ -352,6 +362,22 @@ AC_ARG_ENABLE(icon_database,
                              [enable icon database [default=yes]]),
               [],[enable_icon_database="yes"])
 AC_MSG_RESULT([$enable_icon_database])
+
+# check whether to enable HTML5 datalist support
+AC_MSG_CHECKING([whether to enable HTML5 datalist support])
+AC_ARG_ENABLE(datalist,
+              AC_HELP_STRING([--enable-datalist],
+                             [enable HTML5 datalist support [default=yes]]),
+              [],[enable_datalist="yes"])
+AC_MSG_RESULT([$enable_datalist])
+
+# check whether to enable HTML5 ruby support
+AC_MSG_CHECKING([whether to enable HTML5 ruby support])
+AC_ARG_ENABLE(ruby,
+              AC_HELP_STRING([--enable-ruby],
+                             [enable HTML5 ruby support [default=yes]]),
+              [],[enable_ruby="yes"])
+AC_MSG_RESULT([$enable_ruby])
 
 # check whether to enable HTML5 audio/video support
 AC_MSG_CHECKING([whether to enable HTML5 video support])
@@ -384,14 +410,6 @@ AC_ARG_ENABLE(geolocation,
                              [enable support for geolocation [default=no]]),
               [],[enable_geolocation="no"])
 AC_MSG_RESULT([$enable_geolocation])
-
-# check whether to enable gnomekeyring support
-AC_MSG_CHECKING([whether to enable gnomekeyring support])
-AC_ARG_ENABLE(gnomekeyring,
-              AC_HELP_STRING([--enable-gnomekeyring],
-                             [enable support for gnomekeyring [default=no]]),
-              [],[enable_gnomekeyring="no"])
-AC_MSG_RESULT([$enable_gnomekeyring])
 
 # check whether to enable SVG support
 AC_MSG_CHECKING([whether to enable SVG support])
@@ -495,6 +513,14 @@ if test "$enable_svg_animation" = "yes" || \
    fi
 fi
 
+# check whether to enable Web Socket support
+AC_MSG_CHECKING([whether to enable Web Sockets support])
+AC_ARG_ENABLE(web_sockets,
+              AC_HELP_STRING([--enable-web-sockets],
+                             [enable support for Web Sockets [default=yes]]),
+              [],[enable_web_sockets="no"])
+AC_MSG_RESULT([$enable_web_sockets])
+
 # check whether to enable code coverage
 AC_MSG_CHECKING([whether to enable code coverage support])
 AC_ARG_ENABLE(coverage,
@@ -577,13 +603,6 @@ PKG_CHECK_MODULES([LIBSOUP],
 AC_SUBST([LIBSOUP_CFLAGS])
 AC_SUBST([LIBSOUP_LIBS])
 
-if test "$enable_gnomekeyring" = "yes"; then
-   PKG_CHECK_MODULES([GNOMEKEYRING],
-                     [gnome-keyring-1 >= $GNOME_KEYRING_REQUIRED_VERSION])
-   AC_SUBST([GNOMEKEYRING_CFLAGS])
-   AC_SUBST([GNOMEKEYRING_LIBS])
-fi
-
 # check if FreeType/FontConfig are available
 if test "$with_font_backend" = "freetype"; then
    if test "$with_target" = "directfb"; then
@@ -628,8 +647,8 @@ fi
 if test "$enable_video" = "yes"; then
    PKG_CHECK_MODULES([GSTREAMER],
                      [gstreamer-0.10 >= $GSTREAMER_REQUIRED_VERSION
-                     gstreamer-base-0.10,
-                     gstreamer-plugins-base-0.10,
+                     gstreamer-base-0.10
+                     gstreamer-plugins-base-0.10
                      gstreamer-video-0.10])
    AC_SUBST([GSTREAMER_CFLAGS])
    AC_SUBST([GSTREAMER_LIBS])
@@ -667,9 +686,6 @@ AM_CONDITIONAL([TARGET_DIRECTFB], [test "$with_target" = "directfb"])
 AM_CONDITIONAL([USE_ICU_UNICODE], [test "$with_unicode_backend" = "icu"])
 AM_CONDITIONAL([USE_GLIB_UNICODE], [test "$with_unicode_backend" = "glib"])
 
-# Auth backend conditionals
-AM_CONDITIONAL([USE_GNOMEKEYRING], [test "$enable_gnomekeyring" = "yes"])
-
 # Font backend conditionals
 AM_CONDITIONAL([USE_FREETYPE], [test "$with_font_backend" = "freetype"])
 AM_CONDITIONAL([USE_PANGO], [test "$with_font_backend" = "pango"])
@@ -683,12 +699,16 @@ AM_CONDITIONAL([ENABLE_JAVASCRIPT_DEBUGGER],[test "$enable_javascript_debugger" 
 AM_CONDITIONAL([ENABLE_OFFLINE_WEB_APPLICATIONS],[test "$enable_offline_web_applications" = "yes"])
 AM_CONDITIONAL([ENABLE_DOM_STORAGE],[test "$enable_dom_storage" = "yes"])
 AM_CONDITIONAL([ENABLE_DATABASE],[test "$enable_database" = "yes"])
+AM_CONDITIONAL([ENABLE_DATALIST],[test "$enable_datalist" = "yes"])
+AM_CONDITIONAL([ENABLE_EVENTSOURCE],[test "$enable_eventsource" = "yes"])
 AM_CONDITIONAL([ENABLE_ICONDATABASE],[test "$enable_icon_database" = "yes"])
 AM_CONDITIONAL([ENABLE_XPATH],[test "$enable_xpath" = "yes"])
 AM_CONDITIONAL([ENABLE_XSLT],[test "$enable_xslt" = "yes"])
 AM_CONDITIONAL([ENABLE_FILTERS],[test "$enable_filters" = "yes"])
 AM_CONDITIONAL([ENABLE_GEOLOCATION], [test "$enable_geolocation" = "yes"])
+AM_CONDITIONAL([ENABLE_RUBY],[test "$enable_ruby" = "yes"])
 AM_CONDITIONAL([ENABLE_VIDEO],[test "$enable_video" = "yes"])
+AM_CONDITIONAL([ENABLE_NOTIFICATIONS],[test "$enable_notifications" = "yes"])
 AM_CONDITIONAL([ENABLE_SVG],[test "$enable_svg" = "yes"])
 AM_CONDITIONAL([ENABLE_SVG_ANIMATION],[test "$enable_svg_animation" = "yes"])
 AM_CONDITIONAL([ENABLE_SVG_FONTS],[test "$enable_svg_fonts" = "yes"])
@@ -702,6 +722,7 @@ AM_CONDITIONAL([ENABLE_WORKERS],[test "$enable_workers" = "yes"])
 AM_CONDITIONAL([ENABLE_SHARED_WORKERS],[test "$enable_shared_workers" = "yes"])
 AM_CONDITIONAL([SVG_FLAGS],[test "$svg_flags" = "yes"])
 AM_CONDITIONAL([HTML_FLAGS],[test "$html_flags" = "yes"])
+AM_CONDITIONAL([ENABLE_WEB_SOCKETS],[test "$enable_web_sockets" = "yes"])
 
 AC_CONFIG_FILES([
 GNUmakefile
@@ -730,12 +751,13 @@ Features:
  Dashboard support                                        : $enable_dashboard_support
  Filters support                                          : $enable_filters
  Geolocation support                                      : $enable_geolocation
- GNOME Keyring support                                    : $enable_gnomekeyring
  JavaScript debugger/profiler support                     : $enable_javascript_debugger
  HTML5 offline web applications support                   : $enable_offline_web_applications
  HTML5 channel messaging support                          : $enable_channel_messaging
  HTML5 client-side session and persistent storage support : $enable_dom_storage
  HTML5 client-side database storage support               : $enable_database
+ HTML5 ruby support                                       : $enable_ruby
+ HTML5 server-sent events support                         : $enable_eventsource
  HTML5 video element support                              : $enable_video
  Icon database support                                    : $enable_icon_database
  SharedWorkers support                                    : $enable_shared_workers
@@ -746,6 +768,7 @@ Features:
  SVG as image support                                     : $enable_svg_as_image
  SVG use element support                                  : $enable_svg_use
  WML support                                              : $enable_wml
+ Web Sockets support                                      : $enable_web_sockets
  Web Workers support                                      : $enable_workers
  XPATH support                                            : $enable_xpath
  XSLT support                                             : $enable_xslt

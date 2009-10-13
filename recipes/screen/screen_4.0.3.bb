@@ -4,13 +4,15 @@ processes, typically interactive shells."
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "ncurses"
-PR = "r0"
-
-# patch needs adapting
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/screen/screen-${PV}.tar.gz \
-           file://configure.patch;patch=1"
+           file://cross-compile.patch;patch=1 \
+           file://configure.patch;patch=1 \
+           file://sched.patch;patch=1 \
+           file://no-stropts.patch;patch=1 \
+           file://no-utempter.patch;patch=1 \
+	  "
 
 inherit autotools
 

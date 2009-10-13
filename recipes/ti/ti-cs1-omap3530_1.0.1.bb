@@ -1,12 +1,12 @@
 require ti-codec.inc
 require ti-cs1-omap3530.inc
 
-SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/latest//exports/cs1omap3530_setuplinux_1_00_01.bin"
+SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/latest//exports/cs1omap3530_setuplinux_1_00_01-42.bin"
 
 # Specify names of the InstallJammer binary file and the tarball it extracts
-BINFILE = "cs1omap3530_setuplinux_1_00_01.bin"
+BINFILE = "cs1omap3530_setuplinux_1_00_01-42.bin"
 
-S = "${WORKDIR}/dvsdk_3_00_00_40/cs1omap3530_1_00_01"
+S = "${WORKDIR}/dvsdk_3_00_01_42/cs1omap3530_1_00_01"
 
 DEPENDS="ti-codec-engine ti-dsplink-module"
 
@@ -14,7 +14,7 @@ export CODEGEN_INSTALL_DIR
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "101"
-PR = "r4"
+PR = "r5"
 
 do_compile() {
 

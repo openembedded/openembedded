@@ -1,0 +1,39 @@
+diff -Nurd git/board/omap3517evm/omap3517evm.c /OE/angstrom-dev/xload/x-load/board/omap3517evm/omap3517evm.c
+--- git/board/omap3517evm/omap3517evm.c	2009-07-02 04:26:52.000000000 +0200
++++ /OE/angstrom-dev/xload/x-load/board/omap3517evm/omap3517evm.c	2009-09-04 13:08:54.000000000 +0200
+@@ -98,7 +98,7 @@
+  */
+ #define EMIF4_DDR1_RD_LAT	0x6
+ #define	EMIF4_DDR1_PWRDN_DIS	0x1
+-#define EMIF4_DDR1_STRBEN_EXT	0x1
++#define EMIF4_DDR1_STRBEN_EXT	0x0
+ #define EMIF4_DDR1_DLL_MODE	0x0
+ #define EMIF4_DDR1_VTP_DYN	0x1
+ #define EMIF4_DDR1_LB_CK_SEL	0x0
+diff -Nurd git/board/omap3evm/omap3evm.c /OE/angstrom-dev/xload/x-load/board/omap3evm/omap3evm.c
+--- git/board/omap3evm/omap3evm.c	2009-07-02 04:26:52.000000000 +0200
++++ /OE/angstrom-dev/xload/x-load/board/omap3evm/omap3evm.c	2009-09-09 16:36:07.000000000 +0200
+@@ -70,6 +70,10 @@
+ 			  "bne 1b":"=r" (loops):"0"(loops));
+ }
+ 
++void udelay (unsigned long usecs) {
++	delay(usecs);
++}
++
+ /*****************************************
+  * Routine: board_init
+  * Description: Early hardware init.
+@@ -681,6 +685,12 @@
+ 	sr32(CM_FCLKEN1_CORE, 13, 1, 0x1);
+ 	sr32(CM_ICLKEN1_CORE, 13, 1, 0x1);
+ #endif
++
++#ifdef CONFIG_MMC
++	/* Enable MMC1 clocks */
++	sr32(CM_FCLKEN1_CORE, 24, 1, 0x1);
++	sr32(CM_ICLKEN1_CORE, 24, 1, 0x1);
++#endif
+ 	delay(1000);
+ }
+ 

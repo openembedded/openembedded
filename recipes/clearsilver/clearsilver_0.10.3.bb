@@ -3,16 +3,16 @@ SECTION = "net"
 DESCRIPTION = "Clearsilver is a fast, powerful, and language-neutral HTML template system"
 LICENSE = "Neotonic ClearSilver License"
 DEPENDS = "python"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.clearsilver.net/downloads/${P}.tar.gz \
            file://crosscompile.patch;patch=1"
 
 EXTRA_OECONF = "--disable-apache --disable-perl --disable-ruby --disable-java --disable-csharp --enable-gettext --with-python=${STAGING_BINDIR_NATIVE}/python"
 
-inherit autotools
+inherit autotools distutils-common-base
 
-FILES_${PN} += "/usr/lib/python*"
+export PYTHON_DIR
 
 do_compile() {
 	BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} oe_runmake

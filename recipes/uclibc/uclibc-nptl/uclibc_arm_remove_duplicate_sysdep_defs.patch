@@ -1,0 +1,40 @@
+--- a/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep.h.orig	2009-09-30 17:12:46.571672582 -0700
++++ a/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep.h	2009-09-30 17:10:12.255037520 -0700
+@@ -273,37 +273,6 @@ __local_syscall_error:						\
+ #undef INTERNAL_SYSCALL_ERRNO
+ #define INTERNAL_SYSCALL_ERRNO(val, err)	(-(val))
+ 
+-#define LOAD_ARGS_0()
+-#define ASM_ARGS_0
+-#define LOAD_ARGS_1(a1)				\
+-  _a1 = (int) (a1);				\
+-  LOAD_ARGS_0 ()
+-#define ASM_ARGS_1	ASM_ARGS_0, "r" (_a1)
+-#define LOAD_ARGS_2(a1, a2)			\
+-  register int _a2 __asm__ ("a2") = (int) (a2);	\
+-  LOAD_ARGS_1 (a1)
+-#define ASM_ARGS_2	ASM_ARGS_1, "r" (_a2)
+-#define LOAD_ARGS_3(a1, a2, a3)			\
+-  register int _a3 __asm__ ("a3") = (int) (a3);	\
+-  LOAD_ARGS_2 (a1, a2)
+-#define ASM_ARGS_3	ASM_ARGS_2, "r" (_a3)
+-#define LOAD_ARGS_4(a1, a2, a3, a4)		\
+-  register int _a4 __asm__ ("a4") = (int) (a4);	\
+-  LOAD_ARGS_3 (a1, a2, a3)
+-#define ASM_ARGS_4	ASM_ARGS_3, "r" (_a4)
+-#define LOAD_ARGS_5(a1, a2, a3, a4, a5)		\
+-  register int _v1 __asm__ ("v1") = (int) (a5);	\
+-  LOAD_ARGS_4 (a1, a2, a3, a4)
+-#define ASM_ARGS_5	ASM_ARGS_4, "r" (_v1)
+-#define LOAD_ARGS_6(a1, a2, a3, a4, a5, a6)	\
+-  register int _v2 __asm__ ("v2") = (int) (a6);	\
+-  LOAD_ARGS_5 (a1, a2, a3, a4, a5)
+-#define ASM_ARGS_6	ASM_ARGS_5, "r" (_v2)
+-#define LOAD_ARGS_7(a1, a2, a3, a4, a5, a6, a7)	\
+-  register int _v3 __asm__ ("v3") = (int) (a7);	\
+-  LOAD_ARGS_6 (a1, a2, a3, a4, a5, a6)
+-#define ASM_ARGS_7	ASM_ARGS_6, "r" (_v3)
+-
+ #if defined(__ARM_EABI__)
+ #undef INTERNAL_SYSCALL_NCS
+ #define INTERNAL_SYSCALL_NCS(number, err, nr, args...)		\

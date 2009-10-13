@@ -1,7 +1,7 @@
 DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
 DEPENDS = ""
-INC_PR = "r7"
+INC_PR = "r8"
 LICENSE = "GPL"
 
 S = "${WORKDIR}/wget-${PV}"

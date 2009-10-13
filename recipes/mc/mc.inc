@@ -9,7 +9,7 @@ RDEPENDS = "ncurses-terminfo"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools gettext
 
 EXTRA_OECONF = "--disable-glibtest --without-x --without-samba \
 --without-nfs --without-gpm-mouse --with-screen=ncurses \

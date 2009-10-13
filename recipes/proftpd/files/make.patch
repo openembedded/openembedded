@@ -43,9 +43,22 @@ Index: proftpd-1.3.2/Make.rules.in
 -INSTALL_BIN=$(INSTALL) @INSTALL_STRIP@ -o $(INSTALL_USER) -g $(INSTALL_GROUP) -m 0755
 -INSTALL_SBIN=$(INSTALL) @INSTALL_STRIP@ -o $(INSTALL_USER) -g $(INSTALL_GROUP) -m 0755
 -INSTALL_MAN=$(INSTALL) -o $(INSTALL_USER) -g $(INSTALL_GROUP) -m 0644
-+INSTALL_BIN=$(INSTALL) @INSTALL_STRIP@ -m 0755
-+INSTALL_SBIN=$(INSTALL) @INSTALL_STRIP@ -m 0755
++INSTALL_BIN=$(INSTALL) -m 0755
++INSTALL_SBIN=$(INSTALL) -m 0755
 +INSTALL_MAN=$(INSTALL) -m 0644
  
  RM=rm -f
  SHELL=/bin/sh
+Index: proftpd-1.3.2/lib/libcap/Makefile
+===================================================================
+--- proftpd-1.3.2.orig/lib/libcap/Makefile
++++ proftpd-1.3.2/lib/libcap/Makefile
+@@ -26,7 +26,7 @@ OBJS=$(addsuffix .o, $(FILES))
+ all: $(LIBNAME)
+ 
+ _makenames: _makenames.c cap_names.sed
+-	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
++	$(BUILD_CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+ 
+ cap_names.h: _makenames
+ 	./_makenames > cap_names.h

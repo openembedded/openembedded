@@ -1,5 +1,5 @@
 SECTION = "base"
-DEPENDS = "unzip-native"
+do_unpack[depends] += "unzip-native:do_populate_staging"
 
 SRC_URI = "http://hauppauge.lightpath.net/de/nova-pci218c.exe"
 FILES_${PN} = '*'

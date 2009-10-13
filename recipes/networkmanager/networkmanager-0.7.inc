@@ -7,18 +7,29 @@ RDEPENDS = "wpa-supplicant dhcp-client \
            ${@base_contains('COMBINED_FEATURES', '3gmodem', 'ppp', '', d)} \
            "
 
+RCONFLICTS_${PN} = "connman"
+
+inherit gnome update-rc.d
+
+SRC_URI = "${GNOME_MIRROR}/NetworkManager/${@gnome_verdir("${PV}")}/NetworkManager-${PV}.tar.bz2"
+
 EXTRA_OECONF = " \
 		--with-distro=debian \
 		--with-crypto=gnutls \
 		--disable-more-warnings"
-
-inherit autotools pkgconfig update-rc.d
 
 INITSCRIPT_NAME = "NetworkManager"
 INITSCRIPT_PARAMS = "defaults 28"
 
 do_stage () {
 	autotools_stage_all
+}
+
+# Work around dbus permission problems since we lack a proper at_console
+do_install_prepend() {
+		sed -i -e s:deny:allow:g ${S}/src/NetworkManager.conf
+		sed -i -e s:deny:allow:g ${S}/system-settings/src/nm-system-settings.conf
+		sed -i -e s:deny:allow:g ${S}/callouts/nm-dispatcher.conf
 }
 
 do_install_append () {
@@ -44,12 +55,15 @@ FILES_libnmutil += "${libdir}/libnm-util.so.*"
 FILES_libnmglib += "${libdir}/libnm_glib.so.*"
 FILES_libnmglib-vpn += "${libdir}/libnm_glib_vpn.so.*"
 
+
 FILES_${PN} += " \
 		${libexecdir} \
 		${libdir}/pppd/*/nm-pppd-plugin.so \
 		${libdir}/NetworkManager/*.so \
 		${datadir}/PolicyKit \
-		${datadir}/dbus-1"
+		${datadir}/dbus-1 \
+		${base_libdir}/udev/* \
+"
 
 FILES_${PN}-dbg += "${libdir}/NetworkManager/.debug/ \
 		    ${libdir}/pppd/*/.debug/ "

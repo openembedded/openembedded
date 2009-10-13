@@ -1,0 +1,285 @@
+aufs2 standalone patch for linux-2.6.29
+
+diff --git a/fs/namei.c b/fs/namei.c
+index bbc15c2..f446c65 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -335,6 +335,9 @@ int deny_write_access(struct file * file)
+ 
+ 	return 0;
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(deny_write_access);
++#endif
+ 
+ /**
+  * path_get - get a reference to a path
+@@ -1196,7 +1199,7 @@ out:
+  * needs parent already locked. Doesn't follow mounts.
+  * SMP-safe.
+  */
+-static struct dentry *lookup_hash(struct nameidata *nd)
++struct dentry *lookup_hash(struct nameidata *nd)
+ {
+ 	int err;
+ 
+@@ -1205,8 +1208,11 @@ static struct dentry *lookup_hash(struct nameidata *nd)
+ 		return ERR_PTR(err);
+ 	return __lookup_hash(&nd->last, nd->path.dentry, nd);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(lookup_hash);
++#endif
+ 
+-static int __lookup_one_len(const char *name, struct qstr *this,
++int __lookup_one_len(const char *name, struct qstr *this,
+ 		struct dentry *base, int len)
+ {
+ 	unsigned long hash;
+@@ -1227,6 +1233,9 @@ static int __lookup_one_len(const char *name, struct qstr *this,
+ 	this->hash = end_name_hash(hash);
+ 	return 0;
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(__lookup_one_len);
++#endif
+ 
+ /**
+  * lookup_one_len - filesystem helper to lookup single pathname component
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 06f8e63..dcdc4ff 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -37,6 +37,9 @@
+ 
+ /* spinlock for vfsmount related operations, inplace of dcache_lock */
+ __cacheline_aligned_in_smp DEFINE_SPINLOCK(vfsmount_lock);
++#if defined(CONFIG_AUFS_FS_MODULE) && defined(CONFIG_AUFS_EXPORT)
++EXPORT_SYMBOL(vfsmount_lock);
++#endif
+ 
+ static int event;
+ static DEFINE_IDA(mnt_id_ida);
+diff --git a/fs/open.c b/fs/open.c
+index a3a78ce..7d70245 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -220,6 +220,9 @@ int do_truncate(struct dentry *dentry, loff_t length, unsigned int time_attrs,
+ 	mutex_unlock(&dentry->d_inode->i_mutex);
+ 	return err;
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(do_truncate);
++#endif
+ 
+ static long do_sys_truncate(const char __user *pathname, loff_t length)
+ {
+diff --git a/fs/splice.c b/fs/splice.c
+index 4ed0ba4..a110d76 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -888,8 +888,8 @@ EXPORT_SYMBOL(generic_splice_sendpage);
+ /*
+  * Attempt to initiate a splice from pipe to file.
+  */
+-static long do_splice_from(struct pipe_inode_info *pipe, struct file *out,
+-			   loff_t *ppos, size_t len, unsigned int flags)
++long do_splice_from(struct pipe_inode_info *pipe, struct file *out,
++		    loff_t *ppos, size_t len, unsigned int flags)
+ {
+ 	int ret;
+ 
+@@ -908,13 +908,16 @@ static long do_splice_from(struct pipe_inode_info *pipe, struct file *out,
+ 
+ 	return out->f_op->splice_write(pipe, out, ppos, len, flags);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(do_splice_from);
++#endif
+ 
+ /*
+  * Attempt to initiate a splice from a file to a pipe.
+  */
+-static long do_splice_to(struct file *in, loff_t *ppos,
+-			 struct pipe_inode_info *pipe, size_t len,
+-			 unsigned int flags)
++long do_splice_to(struct file *in, loff_t *ppos,
++		  struct pipe_inode_info *pipe, size_t len,
++		  unsigned int flags)
+ {
+ 	int ret;
+ 
+@@ -930,6 +933,9 @@ static long do_splice_to(struct file *in, loff_t *ppos,
+ 
+ 	return in->f_op->splice_read(in, ppos, pipe, len, flags);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(do_splice_to);
++#endif
+ 
+ /**
+  * splice_direct_to_actor - splices data directly between two non-pipes
+diff --git a/fs/super.c b/fs/super.c
+index 6ce5014..95eefb9 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -287,6 +287,9 @@ int fsync_super(struct super_block *sb)
+ 	__fsync_super(sb);
+ 	return sync_blockdev(sb->s_bdev);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(fsync_super);
++#endif
+ 
+ /**
+  *	generic_shutdown_super	-	common helper for ->kill_sb()
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 23bf02f..49e5b47 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -58,7 +58,7 @@ enum lock_usage_bit
+ #define LOCKF_USED_IN_IRQ_READ \
+ 		(LOCKF_USED_IN_HARDIRQ_READ | LOCKF_USED_IN_SOFTIRQ_READ)
+ 
+-#define MAX_LOCKDEP_SUBCLASSES		8UL
++#define MAX_LOCKDEP_SUBCLASSES		12UL
+ 
+ /*
+  * Lock-classes are keyed via unique addresses, by embedding the
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index fc2e035..182d43b 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -75,6 +75,9 @@ extern struct file *lookup_instantiate_filp(struct nameidata *nd, struct dentry
+ extern struct file *nameidata_to_filp(struct nameidata *nd, int flags);
+ extern void release_open_intent(struct nameidata *);
+ 
++extern struct dentry *lookup_hash(struct nameidata *nd);
++extern int __lookup_one_len(const char *name, struct qstr *this,
++			    struct dentry *base, int len);
+ extern struct dentry *lookup_one_len(const char *, struct dentry *, int);
+ extern struct dentry *lookup_one_noperm(const char *, struct dentry *);
+ 
+diff --git a/include/linux/splice.h b/include/linux/splice.h
+index 528dcb9..5123bc6 100644
+--- a/include/linux/splice.h
++++ b/include/linux/splice.h
+@@ -71,4 +71,10 @@ extern ssize_t splice_to_pipe(struct pipe_inode_info *,
+ extern ssize_t splice_direct_to_actor(struct file *, struct splice_desc *,
+ 				      splice_direct_actor *);
+ 
++extern long do_splice_from(struct pipe_inode_info *pipe, struct file *out,
++			   loff_t *ppos, size_t len, unsigned int flags);
++extern long do_splice_to(struct file *in, loff_t *ppos,
++			 struct pipe_inode_info *pipe, size_t len,
++			 unsigned int flags);
++
+ #endif
+diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+index 3aacd0f..76c8876 100644
+--- a/security/device_cgroup.c
++++ b/security/device_cgroup.c
+@@ -507,6 +507,9 @@ acc_check:
+ 
+ 	return -EPERM;
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(devcgroup_inode_permission);
++#endif
+ 
+ int devcgroup_inode_mknod(int mode, dev_t dev)
+ {
+diff --git a/security/security.c b/security/security.c
+index c3586c0..f8798f8 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -389,6 +389,9 @@ int security_path_mkdir(struct path *path, struct dentry *dentry, int mode)
+ 		return 0;
+ 	return security_ops->path_mkdir(path, dentry, mode);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_path_mkdir);
++#endif
+ 
+ int security_path_rmdir(struct path *path, struct dentry *dentry)
+ {
+@@ -396,6 +399,9 @@ int security_path_rmdir(struct path *path, struct dentry *dentry)
+ 		return 0;
+ 	return security_ops->path_rmdir(path, dentry);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_path_rmdir);
++#endif
+ 
+ int security_path_unlink(struct path *path, struct dentry *dentry)
+ {
+@@ -403,6 +409,9 @@ int security_path_unlink(struct path *path, struct dentry *dentry)
+ 		return 0;
+ 	return security_ops->path_unlink(path, dentry);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_path_unlink);
++#endif
+ 
+ int security_path_symlink(struct path *path, struct dentry *dentry,
+ 			  const char *old_name)
+@@ -411,6 +420,9 @@ int security_path_symlink(struct path *path, struct dentry *dentry,
+ 		return 0;
+ 	return security_ops->path_symlink(path, dentry, old_name);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_path_symlink);
++#endif
+ 
+ int security_path_link(struct dentry *old_dentry, struct path *new_dir,
+ 		       struct dentry *new_dentry)
+@@ -419,6 +431,9 @@ int security_path_link(struct dentry *old_dentry, struct path *new_dir,
+ 		return 0;
+ 	return security_ops->path_link(old_dentry, new_dir, new_dentry);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_path_link);
++#endif
+ 
+ int security_path_rename(struct path *old_dir, struct dentry *old_dentry,
+ 			 struct path *new_dir, struct dentry *new_dentry)
+@@ -429,6 +444,9 @@ int security_path_rename(struct path *old_dir, struct dentry *old_dentry,
+ 	return security_ops->path_rename(old_dir, old_dentry, new_dir,
+ 					 new_dentry);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_path_rename);
++#endif
+ 
+ int security_path_truncate(struct path *path, loff_t length,
+ 			   unsigned int time_attrs)
+@@ -437,6 +455,9 @@ int security_path_truncate(struct path *path, loff_t length,
+ 		return 0;
+ 	return security_ops->path_truncate(path, length, time_attrs);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_path_truncate);
++#endif
+ #endif
+ 
+ int security_inode_create(struct inode *dir, struct dentry *dentry, int mode)
+@@ -506,6 +527,9 @@ int security_inode_readlink(struct dentry *dentry)
+ 		return 0;
+ 	return security_ops->inode_readlink(dentry);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_inode_readlink);
++#endif
+ 
+ int security_inode_follow_link(struct dentry *dentry, struct nameidata *nd)
+ {
+@@ -520,6 +544,9 @@ int security_inode_permission(struct inode *inode, int mask)
+ 		return 0;
+ 	return security_ops->inode_permission(inode, mask);
+ }
++#ifdef CONFIG_AUFS_FS_MODULE
++EXPORT_SYMBOL(security_inode_permission);
++#endif
+ 
+ int security_inode_setattr(struct dentry *dentry, struct iattr *attr)
+ {
