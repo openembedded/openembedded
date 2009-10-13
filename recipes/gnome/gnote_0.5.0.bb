@@ -1,7 +1,7 @@
 DESCRIPTION = "Note taking application"
 LICENSE = "GPL"
 
-DEPENDS = "libpcre libgnomeui gconf-dbus gtkmm boost"
+DEPENDS = "libpcre libgnomeui gconf gtkmm boost"
 
 inherit gnome
 
