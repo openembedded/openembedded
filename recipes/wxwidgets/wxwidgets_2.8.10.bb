@@ -1,6 +1,8 @@
 require wxwidgets.inc
 
-PR = "r0"
+PR = "r1"
+
+SRC_URI += "file://gsockgtk-cpp-wx2810.diff;patch=1"
 
 LEAD_SONAME = "libwx_gtk2_core-2.8.so"
 
