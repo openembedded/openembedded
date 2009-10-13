@@ -4,7 +4,6 @@ LICENCE = "unknown"
 
 require ti-paths.inc
 
-
 # Tar-Up Codec Combos from the OMAP DVSDK (http://www.ti.com/dvevmupdates) and drop in files/
 SRC_URI = "file://omap3530_dvsdk_combos_3_16.tar.gz \
     "

@@ -1,0 +1,32 @@
+Depending on platform you need to download one or more components from the external URL and put in downloads directory.
+
+DM355
+-----
+ - Code Engine 2.24.01
+
+OMAP3530
+------
+  - Code Engine 2.24
+  - DSP/BIOS Link for Linux 1.61.03  
+  - DSP/BIOS 5.33.04
+  - C6000 Code Generation Tools v6.1.9 Linux
+  - Local Power Managment 1.24
+
+URL's:
+------
+* CE 2.24.01 (codec_engine_2_24.01.tar.gz)
+	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/CE/ce_2_24/index.html
+
+* DSP/BIOS 5.33.04 (bios_setuplinux_5_33_04.bin) 
+	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/bios/bios_5_33/bios_5_33_04/index_external.html
+
+* DSP/BIOS Link for Linux 1.61.03 (dsplink_1_61_03.tar.gz)
+	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/link/link_1_60/index.html
+
+* C6000 Code Generation Tools v6.1.9 Linux (ti_cgt_c6000_6.1.9_setup_linux_x86.bin)
+	https://www-a.ti.com/downloads/sds_support/TICodegenerationTools/download.htm
+* LPM (local_power_manager_1_24.tar.gz) http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/linuxutils/linuxutils_2_24/index.html 
+
+* Generic download URI
+	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/
+
