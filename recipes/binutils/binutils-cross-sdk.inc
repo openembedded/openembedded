@@ -25,3 +25,5 @@ do_install () {
         install -m 644 ${S}/include/ansidecl.h ${D}${includedir}
         install -m 644 ${S}/include/libiberty.h ${D}${includedir}
 }
+
+FILES_${PN}-dbg += "/*/*/*/*/*/*/*/.debug"
