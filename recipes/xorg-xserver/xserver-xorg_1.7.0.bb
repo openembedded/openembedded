@@ -6,7 +6,7 @@ PE = "2"
 PR = "r1"
 
 SRC_URI += "file://sysroot_fix.patch;patch=1 \
-            file://dolt-fix.patch;patch=1 \
+            file://dolt-fix-1.7.0.patch;patch=1 \
             file://randr-support-1.7.0.patch;patch=1 \
            "
 do_install_prepend() {
