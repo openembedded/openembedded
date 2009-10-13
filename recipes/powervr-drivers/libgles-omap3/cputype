@@ -1,0 +1,5 @@
+#!/bin/sh
+devmem2 0x4800244c | \
+grep 'Value at address' | \
+sed -e 's/.*): //' | \
+sed -e 's/0x5C00/OMAP3503/' -e 's/0x1C00/OMAP3515/' -e 's/0x4C00/OMAP3525/' -e 's/0xC00/OMAP3530/'

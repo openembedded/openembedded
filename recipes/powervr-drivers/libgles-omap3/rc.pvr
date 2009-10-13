@@ -1,24 +1,30 @@
 #!/bin/sh
 
-#rmmod bc_example
-rmmod omaplfb
-rmmod pvrsrvkm
+CPUTYPE="$(cputype)"
 
-insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
-#modprobe bc_example
-modprobe omaplfb
+if [ $CPUTYPE = "OMAP3530" ]; then
 
-pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
+	rmmod omaplfb
+	rmmod pvrsrvkm
 
-if [ -e /dev/pvrsrvkm ] ; then 
-	rm -f /dev/pvrsrvkm
+	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
+
+	modprobe omaplfb
+
+	pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
+
+	if [ -e /dev/pvrsrvkm ] ; then 
+		rm -f /dev/pvrsrvkm
+	fi
+
+	mknod /dev/pvrsrvkm c $pvr_maj 0 
+	chmod 666 /dev/pvrsrvkm
+
+	/usr/bin/pvrsrvinit
+
+	# Set SGX to full speed
+	devmem2 0x48004b40 w 0
+else
+	echo No SGX hardware, not starting pvrsinit
 fi
-
-mknod /dev/pvrsrvkm c $pvr_maj 0 
-chmod 666 /dev/pvrsrvkm
-
-/usr/bin/pvrsrvinit
-
-# Set SGX to full speed
-devmem2 0x48004b40 w 0
 

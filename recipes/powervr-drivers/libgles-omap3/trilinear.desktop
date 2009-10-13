@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Trilinear Demo
+Comment=OGLES Demo
+Exec=/usr/demos/OGLES/Trilinear/OGLESTrilinear
+Icon=star
+Type=Application
+Categories=Demos;
+
