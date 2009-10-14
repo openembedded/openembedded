@@ -1,6 +1,4 @@
 # glibc:
-require conf/distro/include/glibc.inc
-
 require conf/distro/include/glibc-${TOOLCHAIN_TYPE}.inc
 
 TARGET_OS = "linux"

@@ -43,8 +43,8 @@ do_stage() {
 		cp -pPRr ${prefix}/deb/* ${DEPLOY_DIR_DEB}/
 	fi
 
-#	if [ -d ${prefix}/pstage -a "x${DEPLOY_DIR_PSTAGE}" != "x" ]; then
-#		install -d ${DEPLOY_DIR_PSTAGE}/
-#		cp -pPRr ${prefix}/pstage/* ${DEPLOY_DIR_PSTAGE}/
-#	fi
+	if [ -d ${prefix}/pstage -a "x${DEPLOY_DIR_PSTAGE}" != "x" ]; then
+		install -d ${DEPLOY_DIR_PSTAGE}/
+		cp -pPRr ${prefix}/pstage/* ${DEPLOY_DIR_PSTAGE}/
+	fi
 }
