@@ -6,7 +6,7 @@ inherit gnome pkgconfig
 
 EXTRA_OECONF = "--disable-scrollkeeper \
                "
-CFLAGS += "-lgthread-2.0"
+LDFLAGS += "-lgthread-2.0"
 
 do_configure_prepend () {
 	for i in $(find . -name "Makefile.in") ; do
