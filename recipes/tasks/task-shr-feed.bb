@@ -49,7 +49,7 @@ RDEPENDS_${PN} += "\
 		gpe-contacts \
 		fltk-chess \
 		remoko \
-		shr-config \
+#		shr-config \
 		shr-today \
                 shr-theme-neo \
 		shr-splash \
