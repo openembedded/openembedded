@@ -16,7 +16,7 @@ PV = "2.27.8"
 PR = "r0"
 PR_append = "+gitr${SRCREV}"
 
-DEPENDS = "geoclue obexd gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
+DEPENDS = "geoclue obexd gconf gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
 RRECOMMENDS_${PN} += "obexd"
 RCONFLICTS_${PN} = "bluez-gnome"
 

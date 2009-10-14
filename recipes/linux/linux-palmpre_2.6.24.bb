@@ -13,3 +13,9 @@ S = "${WORKDIR}/linux-2.6.24"
 do_configure_prepend() {
         install -m 0644 ${S}/arch/arm/configs/omap_sirloin_3430_defconfig ${WORKDIR}/defconfig
 }
+
+# linux.inc overrides LOCAVERSION but we like to stay with the one used originally
+do_compile_prepend() {
+	sed -i -e '/CONFIG_LOCALVERSION=/d' ${S}/.config
+	echo 'CONFIG_LOCALVERSION="-joplin-3430"' >>${S}/.config
+}

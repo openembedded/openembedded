@@ -10,6 +10,7 @@ SRCREV_spitz = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_afeb9260 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRCREV_afeb9260-180 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
+SRCREV_palmpre = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 
