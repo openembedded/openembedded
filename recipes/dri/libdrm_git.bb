@@ -9,12 +9,14 @@ DEPENDS = "libpthread-stubs virtual/kernel"
 PE=1
 PV=2.4.15+gitr${SRCPV}
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_om-gta02 = "2"
 
 S = "${WORKDIR}/git"
 
-EXTRA_OECONF_append_om-gta02 = " --enable-glamo-experimental-api "
+EXTRA_OECONF_append_om-gta02 = " --enable-glamo-experimental-api --disable-intel"
 
 inherit autotools pkgconfig
 
