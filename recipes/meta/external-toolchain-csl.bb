@@ -126,34 +126,38 @@ DESCRIPTION_sln = "glibc: create symbolic links between files"
 DESCRIPTION_localedef = "glibc: compile locale definition files"
 
 def csl_get_main_version(d):
-	import subprocess,bb
-	return subprocess.Popen([bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc', '-v'], stderr=subprocess.PIPE).communicate()[1].splitlines()[-1].split()[-1].rstrip(')')
+	import subprocess,os,bb
+	if os.path.exists(bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc'):
+		return subprocess.Popen([bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc', '-v'], stderr=subprocess.PIPE).communicate()[1].splitlines()[-1].split()[-1].rstrip(')')
 
 def csl_get_gcc_version(d):
-	import subprocess,bb
-	return subprocess.Popen([bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc', '-v'], stderr=subprocess.PIPE).communicate()[1].splitlines()[-1].split()[2]
+	import subprocess,os,bb
+	if os.path.exists(bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc'):
+		return subprocess.Popen([bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc', '-v'], stderr=subprocess.PIPE).communicate()[1].splitlines()[-1].split()[2]
 
 def csl_get_libc_version(d):
 	import os,bb
-	for file in os.listdir(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/lib/'):
-		if file.find('libc-') == 0:
-			return file[5:-3]
-	return None
+	if os.path.exists(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/lib/'):
+		for file in os.listdir(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/lib/'):
+			if file.find('libc-') == 0:
+				return file[5:-3]
+		return None
 
 def csl_get_kernel_version(d):
 	import os,bb
-	f = open(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/usr/include/linux/version.h', 'r')
-	l = f.readlines();
-	f.close();
-	for s in l:
-		if s.find('LINUX_VERSION_CODE') > 0:
-			ver = int(s.split()[2])
-			maj = ver / 65536
-			ver = ver % 65536
-			min = ver / 256
-			ver = ver % 256
-			return str(maj)+'.'+str(min)+'.'+str(ver)
-	return None
+	if os.path.exists(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/'):
+		f = open(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/usr/include/linux/version.h', 'r')
+		l = f.readlines();
+		f.close();
+		for s in l:
+			if s.find('LINUX_VERSION_CODE') > 0:
+				ver = int(s.split()[2])
+				maj = ver / 65536
+				ver = ver % 65536
+				min = ver / 256
+				ver = ver % 256
+				return str(maj)+'.'+str(min)+'.'+str(ver)
+		return None
 
 CSL_VER_MAIN := "${@csl_get_main_version(d)}"
 CSL_VER_GCC := "${@csl_get_gcc_version(d)}"

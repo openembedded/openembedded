@@ -1,7 +1,7 @@
 # glibc:
 require conf/distro/include/glibc.inc
 
-PREFERRED_PROVIDER_linux-libc-headers ?= "linux-libc-headers"
+require conf/distro/include/glibc-${TOOLCHAIN_TYPE}.inc
 
 TARGET_OS = "linux"
 TARGET_OS .= "${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb'] and bb.data.getVar('MACHINE',d) not in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"
