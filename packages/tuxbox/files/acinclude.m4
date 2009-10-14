@@ -149,15 +149,17 @@ AC_ARG_WITH(driver,
 	[  --with-driver=PATH      path for driver sources [[NONE]]],
 	[DRIVER="$withval"],[DRIVER=""])
 
-if test -d "$DRIVER/include"; then
-	AC_DEFINE(HAVE_DBOX2_DRIVER,1,[Define to 1 if you have the dbox2 driver sources])
-#else
-#	AC_MSG_ERROR([can't find driver sources])
+if test "$DRIVER"; then
+	if test -d "$DRIVER/include"; then
+		AC_DEFINE(HAVE_DBOX2_DRIVER,1,[Define to 1 if you have the dbox2 driver sources])
+	#else
+	#	AC_MSG_ERROR([can't find driver sources])
+	fi
+
+	AC_SUBST(DRIVER)
+
+	CPPFLAGS="$CPPFLAGS -I$DRIVER/include"
 fi
-
-AC_SUBST(DRIVER)
-
-CPPFLAGS="$CPPFLAGS -I$DRIVER/include"
 ])
 
 AC_DEFUN([TUXBOX_APPS_DVB],[
