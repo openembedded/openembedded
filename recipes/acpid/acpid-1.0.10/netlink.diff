@@ -1,0 +1,2964 @@
+Binärdateien acpid-1.0.10/acpid and acpid-1.0.10-netlink2/acpid sind verschieden.
+diff -ruN acpid-1.0.10/acpid.8 acpid-1.0.10-netlink2/acpid.8
+--- acpid-1.0.10/acpid.8	2009-04-28 09:23:21.000000000 +0200
++++ acpid-1.0.10-netlink2/acpid.8	2009-04-29 16:37:13.000000000 +0200
+@@ -10,11 +10,13 @@
+ \fBacpid\fP is designed to notify user-space programs of ACPI events.
+ \fBacpid\fP should be started during the system boot, and will run as a
+ background process, by default.  It will open an events file
+-(\fI/proc/acpi/event\fP by default) and attempt to read whole lines.  When
+-a line is received (an \fIevent\fP), \fBacpid\fP will examine a list of rules,
+-and execute the rules that match the event.
+-\fBacpid\fP will ignore all incoming ACPI events if a lock file exists
+-(\fI/var/lock/acpid\fP by default).
++(\fI/proc/acpi/event\fP by default) and attempt to read whole lines which
++represent ACPI events.  If the events file does not exist, \fBacpid\fP will
++attempt to connect to the Linux kernel via the input layer and netlink.  When an
++ACPI event is received from one of these sources, \fBacpid\fP will examine a
++list of rules, and execute the rules that match the event. \fBacpid\fP will
++ignore all incoming ACPI events if a lock file exists (\fI/var/lock/acpid\fP by
++default).
+ .PP
+ \fIRules\fP are defined by simple configuration files.  \fBacpid\fP
+ will look in a configuration directory (\fI/etc/acpi/events\fP by default),
+@@ -73,6 +75,9 @@
+ This option changes the event file from which \fBacpid\fP reads events.
+ Default is \fI/proc/acpi/event\fP.
+ .TP
++.BI \-n "\fR, \fP" \--netlink
++This option forces \fBacpid\fP to use the Linux kernel input layer and netlink interface for ACPI events.
++.TP
+ .BI \-f "\fR, \fP" \--foreground
+ This option keeps \fBacpid\fP in the foreground by not forking at startup.
+ .TP
+@@ -126,6 +131,8 @@
+ .PD 0
+ .B /proc/acpi/event
+ .br
++.B /dev/input/event*
++.br
+ .B /etc/acpi/
+ .br
+ .B /var/run/acpid.socket
+diff -ruN acpid-1.0.10/acpid.c acpid-1.0.10-netlink2/acpid.c
+--- acpid-1.0.10/acpid.c	2009-04-28 09:23:21.000000000 +0200
++++ acpid-1.0.10-netlink2/acpid.c	2009-05-02 04:22:00.000000000 +0200
+@@ -20,23 +20,23 @@
+  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  */
+ 
+-#include <sys/types.h>
+-#include <sys/stat.h>
++#include <unistd.h>
+ #include <fcntl.h>
+ #include <signal.h>
+-#include <unistd.h>
++#include <string.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <string.h>
+ #include <errno.h>
+ #include <getopt.h>
+-#include <time.h>
+-#include <sys/poll.h>
+-#include <grp.h>
+-#include <syslog.h>
++#include <stdarg.h>
+ 
+ #include "acpid.h"
+-#include "ud_socket.h"
++#include "event.h"
++#include "connection_list.h"
++#include "proc.h"
++#include "sock.h"
++#include "input_layer.h"
++#include "netlink.h"
+ 
+ static int handle_cmdline(int *argc, char ***argv);
+ static void close_fds(void);
+@@ -44,9 +44,7 @@
+ static int open_log(void);
+ static int create_pidfile(void);
+ static void clean_exit(int sig);
+-static void clean_exit_with_status(int status);
+ static void reload_conf(int sig);
+-static char *read_line(int fd);
+ 
+ /* global debug level */
+ int acpid_debug;
+@@ -54,27 +52,17 @@
+ /* do we log event info? */
+ int logevents;
+ 
+-/* the number of non-root clients that are connected */
+-int non_root_clients;
+-
+-static const char *progname;
++const char *progname;
+ static const char *confdir = ACPID_CONFDIR;
+-static const char *eventfile = ACPID_EVENTFILE;
+-static const char *socketfile = ACPID_SOCKETFILE;
+ static const char *lockfile = ACPID_LOCKFILE;
+ static int nosocket;
+-static const char *socketgroup;
+-static mode_t socketmode = ACPID_SOCKETMODE;
+ static int foreground;
+ static const char *pidfile = ACPID_PIDFILE;
+-static int clientmax = ACPID_CLIENTMAX;
++static int netlink;
+ 
+ int
+ main(int argc, char **argv)
+ {
+-	int event_fd;
+-	int sock_fd = -1; /* init to avoid a compiler warning */
+-
+ 	/* learn who we really are */
+ 	progname = (const char *)strrchr(argv[0], '/');
+ 	progname = progname ? (progname + 1) : argv[0];
+@@ -85,14 +73,22 @@
+ 	/* close any extra file descriptors */
+ 	close_fds();
+ 
+-	/* actually open the event file */
+-	event_fd = open(eventfile, O_RDONLY);
+-	if (event_fd < 0) {
+-		fprintf(stderr, "%s: can't open %s: %s\n", progname, 
+-			eventfile, strerror(errno));
+-		exit(EXIT_FAILURE);
++	if (!netlink)
++	{
++		/* open the acpi event file in the proc fs */
++		/* if the open fails, try netlink */
++		if (open_proc())
++			netlink = 1;
++	}
++
++	if (netlink)
++	{
++		/* open the input layer */
++		open_input();
++
++		/* open netlink */
++		open_netlink();
+ 	}
+-	fcntl(event_fd, F_SETFD, FD_CLOEXEC);
+ 
+ /*
+  * if there is data, and the kernel is NOT broken, this eats 1 byte.  We
+@@ -129,34 +125,7 @@
+ 
+ 	/* open our socket */
+ 	if (!nosocket) {
+-		sock_fd = ud_create_socket(socketfile);
+-		if (sock_fd < 0) {
+-			fprintf(stderr, "%s: can't open socket %s: %s\n",
+-				progname, socketfile, strerror(errno));
+-			exit(EXIT_FAILURE);
+-		}
+-		fcntl(sock_fd, F_SETFD, FD_CLOEXEC);
+-		chmod(socketfile, socketmode);
+-		if (socketgroup) {
+-			struct group *gr;
+-			struct stat buf;
+-			gr = getgrnam(socketgroup);
+-			if (!gr) {
+-				fprintf(stderr, "%s: group %s does not exist\n",
+-					progname, socketgroup);
+-				exit(EXIT_FAILURE);
+-			}
+-			if (stat(socketfile, &buf) < 0) {
+-				fprintf(stderr, "%s: can't stat %s\n",
+-					progname, socketfile);
+-				exit(EXIT_FAILURE);
+-			}
+-			if (chown(socketfile, buf.st_uid, gr->gr_gid) < 0) {
+-				fprintf(stderr, "%s: chown(): %s\n",
+-					progname, strerror(errno));
+-				exit(EXIT_FAILURE);
+-			}
+-		}
++		open_sock();
+ 	}
+ 
+ 	/* if we're running in foreground, we don't daemonize */
+@@ -169,7 +138,8 @@
+ 	if (open_log() < 0) {
+ 		exit(EXIT_FAILURE);
+ 	}
+-	acpid_log(LOG_INFO, "starting up\n");
++	acpid_log(LOG_INFO, "starting up with %s\n",
++		netlink ? "netlink and the input layer" : "proc fs");
+ 
+ 	/* trap key signals */
+ 	signal(SIGHUP, reload_conf);
+@@ -188,128 +158,53 @@
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
+-	/* main loop */
+ 	acpid_log(LOG_INFO, "waiting for events: event logging is %s\n",
+ 	    logevents ? "on" : "off");
+-	while (1) {
+-		struct pollfd ar[2];
+-		int r;
+-		int fds = 0;
+-
+-		/* poll for the socket and the event file */
+-		ar[0].fd = event_fd; ar[0].events = POLLIN; fds++;
+-		if (!nosocket) {
+-			ar[1].fd = sock_fd; ar[1].events = POLLIN; fds++;
+-		}
+-		r = poll(ar, fds, -1);
+ 
+-		if (r < 0 && errno == EINTR) {
++	/* main loop */
++	while (1)
++	{
++		fd_set readfds;
++		int nready;
++		int i;
++		struct connection *p;
++
++		/* it's going to get clobbered, so use a copy */
++		readfds = *get_fdset();
++
++		/* wait on data */
++		nready = select(get_highestfd() + 1, &readfds, NULL, NULL, NULL);
++
++		if (nready < 0  &&  errno == EINTR) {
+ 			continue;
+-		} else if (r < 0) {
+-			acpid_log(LOG_ERR, "poll(): %s\n", strerror(errno));
++		} else if (nready < 0) {
++			acpid_log(LOG_ERR, "select(): %s\n", strerror(errno));
+ 			continue;
+ 		}
+ 
+ 		/* house keeping */
+ 		acpid_close_dead_clients();
+ 
+-		/* was it an event? */
+-		if (ar[0].revents) {
+-			char *event;
+-			struct stat trash;
+-			int fexists;
+-
+-			/* check for existence of a lockfile */
+-			fexists = (stat(lockfile, &trash) == 0);
+-
+-			/* this shouldn't happen */
+-			if (!ar[0].revents & POLLIN) {
+-				acpid_log(LOG_DEBUG,
+-				    "odd, poll set flags 0x%x\n",
+-				    ar[0].revents);
+-				continue;
+-			}
+-
+-			/* read an event */
+-			event = read_line(event_fd);
++		/* for each connection */
++		for (i = 0; i <= get_number_of_connections(); ++i)
++		{
++			int fd;
+ 
+-			/* if we're locked, don't process the event */
+-			if (fexists) {
+-				if (logevents) {
+-					acpid_log(LOG_INFO,
+-					    "lockfile present, not processing "
+-					    "event \"%s\"\n", event);
+-				}
+-				continue;
+-			}
++			p = get_connection(i);
+ 
+-			/* handle the event */
+-			if (event) {
+-				if (logevents) {
+-					acpid_log(LOG_INFO,
+-					    "received event \"%s\"\n", event);
+-				}
+-				acpid_handle_event(event);
+-				if (logevents) {
+-					acpid_log(LOG_INFO,
+-					    "completed event \"%s\"\n", event);
+-				}
+-			} else if (errno == EPIPE) {
+-				acpid_log(LOG_WARNING,
+-				    "events file connection closed\n");
++			/* if this connection is invalid, bail */
++			if (!p)
+ 				break;
+-			} else {
+-				static int nerrs;
+-				if (++nerrs >= ACPID_MAX_ERRS) {
+-					acpid_log(LOG_ERR,
+-					    "too many errors reading "
+-					    "events file - aborting\n");
+-					break;
+-				}
+-			}
+-		}
+ 
+-		/* was it a new connection? */
+-		if (!nosocket && ar[1].revents) {
+-			int cli_fd;
+-			struct ucred creds;
+-			char buf[32];
+-			static int accept_errors;
+-
+-			/* this shouldn't happen */
+-			if (!ar[1].revents & POLLIN) {
+-				acpid_log(LOG_DEBUG,
+-				    "odd, poll set flags 0x%x\n",
+-				    ar[1].revents);
+-				continue;
+-			}
++			/* get the file descriptor */
++			fd = p->fd;
+ 
+-			/* accept and add to our lists */
+-			cli_fd = ud_accept(sock_fd, &creds);
+-			if (cli_fd < 0) {
+-				acpid_log(LOG_ERR, "can't accept client: %s\n",
+-				    strerror(errno));
+-				accept_errors++;
+-				if (accept_errors >= 5) {
+-					acpid_log(LOG_ERR, "giving up\n");
+-					clean_exit_with_status(EXIT_FAILURE);
+-				}
+-				continue;
+-			}
+-			accept_errors = 0;
+-			if (creds.uid != 0 && non_root_clients >= clientmax) {
+-				close(cli_fd);
+-				acpid_log(LOG_ERR,
+-				    "too many non-root clients\n");
+-				continue;
+-			}
+-			if (creds.uid != 0) {
+-				non_root_clients++;
++			/* if this file descriptor has data waiting */
++			if (FD_ISSET(fd, &readfds))
++			{
++				/* delegate to this connection's process function */
++				p->process(fd);
+ 			}
+-			fcntl(cli_fd, F_SETFD, FD_CLOEXEC);
+-			snprintf(buf, sizeof(buf)-1, "%d[%d:%d]",
+-				creds.pid, creds.uid, creds.gid);
+-			acpid_add_client(cli_fd, buf);
+ 		}
+ 	}
+ 
+@@ -337,6 +232,7 @@
+ 		{"nosocket", 1, 0, 'S'},
+ 		{"pidfile", 1, 0, 'p'},
+ 		{"lockfile", 1, 0, 'L'},
++		{"netlink", 0, 0, 'n'},
+ 		{"version", 0, 0, 'v'},
+ 		{"help", 0, 0, 'h'},
+ 		{NULL, 0, 0, 0},
+@@ -353,7 +249,8 @@
+ 		"Use the specified socket file.",	/* socketfile */
+ 		"Do not listen on a UNIX socket (overrides -s).",/* nosocket */
+ 		"Use the specified PID file.",		/* pidfile */
+-		"Use the specified lockfile to stop processing.", /* pidfile */
++		"Use the specified lockfile to stop processing.", /* lockfile */
++		"Force netlink/input layer mode. (overrides -e)", /* netlink */
+ 		"Print version information.",		/* version */
+ 		"Print this message.",			/* help */
+ 	};
+@@ -364,7 +261,7 @@
+ 	for (;;) {
+ 		int i;
+ 		i = getopt_long(*argc, *argv,
+-		    "c:C:de:flg:m:s:Sp:L:vh", opts, NULL);
++		    "c:C:de:flg:m:s:Sp:L:nvh", opts, NULL);
+ 		if (i == -1) {
+ 			break;
+ 		}
+@@ -406,6 +303,9 @@
+ 		case 'L':
+ 			lockfile = optarg;
+ 			break;
++		case 'n':
++			netlink = 1;
++			break;
+ 		case 'v':
+ 			printf(PACKAGE "-" VERSION "\n");
+ 			exit(EXIT_SUCCESS);
+@@ -547,7 +447,7 @@
+ 	return -1;
+ }
+ 
+-static void
++void
+ clean_exit_with_status(int status)
+ {
+ 	acpid_cleanup_rules(1);
+@@ -585,54 +485,11 @@
+ 	return 0;
+ }
+ 
+-/* 
+- * This depends on fixes in linux ACPI after 2.4.8
+- */
+-#define MAX_BUFLEN	1024
+-static char *
+-read_line(int fd)
+-{
+-	static char *buf;
+-	int buflen = 64;
+-	int i = 0;
+-	int r;
+-	int searching = 1;
+-
+-	while (searching) {
+-		buf = realloc(buf, buflen);
+-		if (!buf) {
+-			acpid_log(LOG_ERR, "malloc(%d): %s\n",
+-				buflen, strerror(errno));
+-			return NULL;
+-		}
+-		memset(buf+i, 0, buflen-i);
+-
+-		while (i < buflen) {
+-			r = read(fd, buf+i, 1);
+-			if (r < 0 && errno != EINTR) {
+-				/* we should do something with the data */
+-				acpid_log(LOG_ERR, "read(): %s\n",
+-					strerror(errno));
+-				return NULL;
+-			} else if (r == 0) {
+-				/* signal this in an almost standard way */
+-				errno = EPIPE;
+-				return NULL;
+-			} else if (r == 1) {
+-				/* scan for a newline */
+-				if (buf[i] == '\n') {
+-					searching = 0;
+-					buf[i] = '\0';
+-					break;
+-				}
+-				i++;
+-			}
+-		}
+-		if (buflen >= MAX_BUFLEN) {
+-			break;
+-		} 
+-		buflen *= 2;
+-	}
++int
++locked()
++{
++	struct stat trash;
+ 
+-	return buf;
++	/* check for existence of a lockfile */
++	return (stat(lockfile, &trash) == 0);
+ }
+diff -ruN acpid-1.0.10/acpid.h acpid-1.0.10-netlink2/acpid.h
+--- acpid-1.0.10/acpid.h	2009-04-28 09:23:21.000000000 +0200
++++ acpid-1.0.10-netlink2/acpid.h	2009-05-02 04:19:54.000000000 +0200
+@@ -23,11 +23,7 @@
+ #ifndef ACPID_H__
+ #define ACPID_H__
+ 
+-#include <unistd.h>
+ #include <syslog.h>
+-#include <stdarg.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+ 
+ #define ACPI_PROCDIR 		"/proc/acpi"
+ #define ACPID_EVENTFILE		ACPI_PROCDIR "/event"
+@@ -46,16 +42,12 @@
+  */
+ extern int acpid_debug;
+ extern int logevents;
+-extern int non_root_clients;
++extern const char *progname;
++
+ extern int acpid_log(int level, const char *fmt, ...);
+ 
+-/*
+- * event.c
+- */
+-extern int acpid_read_conf(const char *confdir);
+-extern int acpid_add_client(int client, const char *origin);
+-extern int acpid_cleanup_rules(int do_detach);
+-extern int acpid_handle_event(const char *event);
+-extern void acpid_close_dead_clients(void);
++extern int locked();
++
++extern void clean_exit_with_status(int status);
+ 
+ #endif /* ACPID_H__ */
+diff -ruN acpid-1.0.10/acpi_genetlink.h acpid-1.0.10-netlink2/acpi_genetlink.h
+--- acpid-1.0.10/acpi_genetlink.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/acpi_genetlink.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,33 @@
++#ifndef __ACPI_GENETLINK_H__
++#define __ACPI_GENETLINK_H__ 1
++
++#include <linux/types.h>
++
++struct acpi_genl_event {
++        char device_class[20];
++        char bus_id[15];
++        __u32 type;
++        __u32 data;
++};
++
++/* attributes of acpi_genl_family */
++enum {
++        ACPI_GENL_ATTR_UNSPEC,
++        ACPI_GENL_ATTR_EVENT,   /* ACPI event info needed by user space */
++        __ACPI_GENL_ATTR_MAX,
++};
++#define ACPI_GENL_ATTR_MAX (__ACPI_GENL_ATTR_MAX - 1)
++
++/* commands supported by the acpi_genl_family */
++enum {
++        ACPI_GENL_CMD_UNSPEC,
++        ACPI_GENL_CMD_EVENT,    /* kernel->user notifications for ACPI events */        __ACPI_GENL_CMD_MAX,
++};
++#define ACPI_GENL_CMD_MAX (__ACPI_GENL_CMD_MAX - 1)
++#define GENL_MAX_FAM_OPS        256
++#define GENL_MAX_FAM_GRPS       256
++
++#define ACPI_EVENT_FAMILY_NAME		"acpi_event"
++#define ACPI_EVENT_MCAST_GROUP_NAME	"acpi_mc_group"
++
++#endif
+diff -ruN acpid-1.0.10/acpi_ids.c acpid-1.0.10-netlink2/acpi_ids.c
+--- acpid-1.0.10/acpi_ids.c	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/acpi_ids.c	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,254 @@
++/*
++ *  acpi_ids.c - ACPI Netlink Group and Family IDs
++ *
++ *  Copyright (C) 2008 Ted Felix (www.tedfelix.com)
++ *  Portions from acpi_genl Copyright (C) Zhang Rui <rui.zhang@intel.com>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <stdio.h>
++/* needed by netlink.h, should be in there */
++#include <arpa/inet.h>
++#include <linux/types.h>
++#include <string.h>
++
++#include "genetlink.h"
++#include "libnetlink.h"
++
++#include "acpid.h"
++
++#define GENL_MAX_FAM_GRPS       256
++#define ACPI_EVENT_FAMILY_NAME          "acpi_event"
++#define ACPI_EVENT_MCAST_GROUP_NAME     "acpi_mc_group"
++
++static int initialized = 0;
++static __u16 acpi_event_family_id = 0;
++static __u32 acpi_event_mcast_group_id = 0;
++
++/*
++ *  A CTRL_CMD_GETFAMILY message returns an attribute table that looks
++ *    like this:
++ *
++ *  CTRL_ATTR_FAMILY_ID         Use this to make sure we get the proper msgs
++ *  CTRL_ATTR_MCAST_GROUPS
++ *    CTRL_ATTR_MCAST_GRP_NAME
++ *    CTRL_ATTR_MCAST_GRP_ID    Need this for the group mask
++ *    ...
++ */
++
++static int
++get_ctrl_grp_id(struct rtattr *arg)
++{
++	struct rtattr *tb[CTRL_ATTR_MCAST_GRP_MAX + 1];
++	char *name;
++
++	if (arg == NULL)
++		return -1;
++
++	/* nested within the CTRL_ATTR_MCAST_GROUPS attribute are the  */
++	/* group name and ID  */
++	parse_rtattr_nested(tb, CTRL_ATTR_MCAST_GRP_MAX, arg);
++
++	/* if either of the entries needed cannot be found, bail */
++	if (!tb[CTRL_ATTR_MCAST_GRP_NAME] || !tb[CTRL_ATTR_MCAST_GRP_ID])
++		return -1;
++
++	/* get the name of this multicast group we've found */
++	name = RTA_DATA(tb[CTRL_ATTR_MCAST_GRP_NAME]);
++
++	/* if it does not match the ACPI event multicast group name, bail */
++	if (strcmp(name, ACPI_EVENT_MCAST_GROUP_NAME))
++		return -1;
++
++	/* At this point, we've found what we were looking for.  We now  */
++	/* have the multicast group ID for ACPI events over generic netlink. */
++	acpi_event_mcast_group_id =
++		*((__u32 *)RTA_DATA(tb[CTRL_ATTR_MCAST_GRP_ID]));
++
++	return 0;
++}
++
++/* n = the response to a CTRL_CMD_GETFAMILY message */
++static int
++genl_get_mcast_group_id(struct nlmsghdr *n)
++{
++	/*
++	 *  Attribute table.  Note the type name "rtattr" which means "route
++	 *  attribute".  This is a vestige of one of netlink's main uses:
++	 *  routing.
++	 */
++	struct rtattr *tb[CTRL_ATTR_MAX + 1];
++	/* pointer to the generic netlink header in the incoming message */
++	struct genlmsghdr *ghdr = NLMSG_DATA(n);
++	/* length of the attribute and payload */
++	int len = n->nlmsg_len - NLMSG_LENGTH(GENL_HDRLEN);
++	/* Pointer to the attribute portion of the message */
++	struct rtattr *attrs;
++
++	if (len < 0) {
++		fprintf(stderr, "%s: netlink CTRL_CMD_GETFAMILY response, "
++			"wrong controller message len: %d\n", progname, len);
++		return -1;
++	}
++
++	if (n->nlmsg_type != GENL_ID_CTRL) {
++		fprintf(stderr, "%s: not a netlink controller message, "
++			"nlmsg_len=%d nlmsg_type=0x%x\n", 
++			progname, n->nlmsg_len, n->nlmsg_type);
++		return 0;
++	}
++
++	if (ghdr->cmd != CTRL_CMD_GETFAMILY &&
++	    ghdr->cmd != CTRL_CMD_DELFAMILY &&
++	    ghdr->cmd != CTRL_CMD_NEWFAMILY &&
++	    ghdr->cmd != CTRL_CMD_NEWMCAST_GRP &&
++	    ghdr->cmd != CTRL_CMD_DELMCAST_GRP) {
++		fprintf(stderr, "%s: unknown netlink controller command %d\n",
++			progname, ghdr->cmd);
++		return 0;
++	}
++
++	/* set attrs to point to the attribute */
++	attrs = (struct rtattr *)((char *)ghdr + GENL_HDRLEN);
++	/* Read the table from the message into "tb".  This actually just  */
++	/* places pointers into the message into tb[].  */
++	parse_rtattr(tb, CTRL_ATTR_MAX, attrs, len);
++
++	/* if a family ID attribute is present, get it */
++	if (tb[CTRL_ATTR_FAMILY_ID])
++	{
++		acpi_event_family_id =
++			*((__u32 *)RTA_DATA(tb[CTRL_ATTR_FAMILY_ID]));
++	}
++
++	/* if a "multicast groups" attribute is present... */
++	if (tb[CTRL_ATTR_MCAST_GROUPS]) {
++		struct rtattr *tb2[GENL_MAX_FAM_GRPS + 1];
++		int i;
++
++		/* get the group table within this attribute  */
++		parse_rtattr_nested(tb2, GENL_MAX_FAM_GRPS,
++			tb[CTRL_ATTR_MCAST_GROUPS]);
++
++		/* for each group */
++		for (i = 0; i < GENL_MAX_FAM_GRPS; i++)
++			/* if this group is valid */
++			if (tb2[i])
++				/* Parse the ID.  If successful, we're done. */
++				if (!get_ctrl_grp_id(tb2[i]))
++					return 0;
++	}
++
++	return -1;
++}
++
++static int
++genl_get_ids(char *family_name)
++{
++	/* handle to the netlink connection */
++	struct rtnl_handle rth;
++	/* holds the request we are going to send and the reply */
++	struct {
++		struct nlmsghdr n;
++		char buf[4096];    /* ??? Is this big enough for all cases? */
++	} req;
++	/* pointer to the nlmsghdr in req */
++	struct nlmsghdr *nlh;
++	/* pointer to the generic netlink header in req */
++	struct genlmsghdr *ghdr;
++	/* return value */
++	int ret = -1;
++
++	/* clear out the request */
++	memset(&req, 0, sizeof(req));
++
++	/* set up nlh to point to the netlink header in req */
++	nlh = &req.n;
++	/* set up the netlink header */
++	nlh->nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN);
++	nlh->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
++	nlh->nlmsg_type = GENL_ID_CTRL;
++
++	/* set up ghdr to point to the generic netlink header */
++	ghdr = NLMSG_DATA(&req.n);
++	/* set the command we want to run: "GETFAMILY" */
++	ghdr->cmd = CTRL_CMD_GETFAMILY;
++
++	/* the message payload is the family name */
++	addattr_l(nlh, 128, CTRL_ATTR_FAMILY_NAME,
++			  family_name, strlen(family_name) + 1);
++
++	/* open a generic netlink connection */
++	if (rtnl_open_byproto(&rth, 0, NETLINK_GENERIC) < 0) {
++		fprintf(stderr, "%s: cannot open generic netlink socket\n", 
++			progname);
++		return -1;
++	}
++
++	/*
++	 *  Send CTRL_CMD_GETFAMILY message (in nlh) to the generic
++	 *  netlink controller.  Reply will be in nlh upon return.
++	 */
++	if (rtnl_talk(&rth, nlh, 0, 0, nlh, NULL, NULL) < 0) {
++		fprintf(stderr, "%s: error talking to the kernel via netlink\n",
++			progname);
++		goto ctrl_done;
++	}
++
++	/* process the response */
++	if (genl_get_mcast_group_id(nlh) < 0) {
++		fprintf(stderr, "%s: failed to get acpi_event netlink "
++			"multicast group\n", progname);
++		goto ctrl_done;
++	}
++
++	ret = 0;
++
++ctrl_done:
++	rtnl_close(&rth);
++	return ret;
++}
++
++/* initialize the ACPI IDs */
++static void
++acpi_ids_init()
++{
++	genl_get_ids(ACPI_EVENT_FAMILY_NAME);
++
++	initialized = 1;
++}
++
++/* returns the netlink family ID for ACPI event messages */
++__u16
++acpi_ids_getfamily()
++{
++	/* if the IDs haven't been initialized, initialize them */
++	if (initialized == 0)
++		acpi_ids_init();
++
++	return acpi_event_family_id;
++}
++
++/* returns the netlink multicast group ID for ACPI event messages */
++__u32
++acpi_ids_getgroup()
++{
++	/* if the IDs haven't been initialized, initialize them */
++	if (initialized == 0)
++		acpi_ids_init();
++
++	return acpi_event_mcast_group_id;
++}
+diff -ruN acpid-1.0.10/acpi_ids.h acpid-1.0.10-netlink2/acpi_ids.h
+--- acpid-1.0.10/acpi_ids.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/acpi_ids.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,30 @@
++/*
++ *  acpi_ids.h - ACPI Netlink Group and Family IDs
++ *
++ *  Copyright (C) 2008 Ted Felix (www.tedfelix.com)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef ACPI_IDS_H__
++#define ACPI_IDS_H__
++
++/* returns the netlink family ID for ACPI event messages */
++extern __u16 acpi_ids_getfamily();
++
++/* returns the netlink multicast group ID for ACPI event messages */
++extern __u32 acpi_ids_getgroup();
++
++#endif /* ACPI_IDS_H__ */
+Binärdateien acpid-1.0.10/acpi_listen and acpid-1.0.10-netlink2/acpi_listen sind verschieden.
+diff -ruN acpid-1.0.10/acpi_listen.c acpid-1.0.10-netlink2/acpi_listen.c
+--- acpid-1.0.10/acpi_listen.c	2009-04-28 09:23:21.000000000 +0200
++++ acpid-1.0.10-netlink2/acpi_listen.c	2009-04-29 16:37:13.000000000 +0200
+@@ -42,8 +42,8 @@
+ static int handle_cmdline(int *argc, char ***argv);
+ static char *read_line(int fd);
+ 
+-static const char *progname;
+-static const char *socketfile = ACPID_SOCKETFILE;
++const char *progname;
++const char *socketfile = ACPID_SOCKETFILE;
+ static int max_events;
+ 
+ static void
+diff -ruN acpid-1.0.10/Changelog acpid-1.0.10-netlink2/Changelog
+--- acpid-1.0.10/Changelog	2009-04-28 09:23:21.000000000 +0200
++++ acpid-1.0.10-netlink2/Changelog	2009-05-03 02:02:33.000000000 +0200
+@@ -1,4 +1,7 @@
+ %changelog
++* Sat May 02 2009  Michael Meskes and Ted Felix <http://www.tedfelix.com/>
++  - Merge of the following three 1.0.10 changes into 1.0.10-netlink2
++
+ * Wed Apr 22 2009  Tim Hockin <thockin@hockin.org>
+   - Bump version to 1.0.10 for release.
+ 
+@@ -13,6 +16,11 @@
+ * Mon Feb 09 2009  Tim Hockin <thockin@hockin.org>
+   - Open /dev/null O_RDWR, rather than O_RDONLY. (acpid.c)
+ 
++* Thu Dec 11 2008  Ted Felix <http://www.tedfelix.com/>
++  - Version 1.0.8ted1
++  - Netlink and Input Layer support.  Many files have been changed and
++    several have been added.  (Ted Felix <http://www.tedfelix.com/>)
++
+ * Tue Oct 28 2008  Tim Hockin <thockin@hockin.org>
+   - Bump version to 1.0.8 for release.
+ 
+diff -ruN acpid-1.0.10/connection_list.c acpid-1.0.10-netlink2/connection_list.c
+--- acpid-1.0.10/connection_list.c	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/connection_list.c	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,124 @@
++/*
++ *  connection_list.c - ACPI daemon connection list
++ *
++ *  Copyright (C) 2008, Ted Felix (www.tedfelix.com)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ *  Tabs at 4
++ */
++
++#include <unistd.h>
++#include <stdio.h>
++#include <sys/select.h>
++
++#include "acpid.h"
++
++#include "connection_list.h"
++
++#define max(a, b)  (((a)>(b))?(a):(b))
++
++/*---------------------------------------------------------------*/
++/* private objects */
++
++#define MAX_CONNECTIONS 10
++
++static struct connection connection_list[MAX_CONNECTIONS];
++
++static int nconnections = 0;
++
++/* fd_set containing all the fd's that come in */
++static fd_set allfds;
++
++/* highest fd that is opened */
++/* (-2 + 1) causes select() to return immediately */
++static int highestfd = -2;
++
++/*---------------------------------------------------------------*/
++/* public functions */
++
++void
++add_connection(struct connection *p)
++{
++	if (nconnections < 0)
++		return;
++	if (nconnections >= MAX_CONNECTIONS) {
++		acpid_log(LOG_ERR, "Too many connections.\n");
++		return;
++	}
++
++	if (nconnections == 0)
++		FD_ZERO(&allfds);
++	
++	/* add the connection to the connection list */
++	connection_list[nconnections] = *p;
++	++nconnections;
++	
++	/* add to the fd set */
++	FD_SET(p->fd, &allfds);
++	highestfd = max(highestfd, p->fd);
++}
++
++/*---------------------------------------------------------------*/
++
++struct connection *
++find_connection(int fd)
++{
++	int i;
++
++	/* for each connection */
++	for (i = 0; i < nconnections; ++i) {
++		/* if the file descriptors match, return the connection */
++		if (connection_list[i].fd == fd)
++			return &connection_list[i];
++	}
++
++	return NULL;
++}
++
++/*---------------------------------------------------------------*/
++
++int 
++get_number_of_connections()
++{
++	return nconnections;
++}
++
++/*---------------------------------------------------------------*/
++
++struct connection *
++get_connection(int i)
++{
++	if (i < 0  ||  i >= nconnections)
++		return NULL;
++
++	return &connection_list[i];
++}
++
++/*---------------------------------------------------------------*/
++
++const fd_set *
++get_fdset()
++{
++	return &allfds;
++}
++
++/*---------------------------------------------------------------*/
++
++int
++get_highestfd()
++{
++	return highestfd;
++}
+diff -ruN acpid-1.0.10/connection_list.h acpid-1.0.10-netlink2/connection_list.h
+--- acpid-1.0.10/connection_list.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/connection_list.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,59 @@
++/*
++ *  connection_list.h - ACPI daemon connection list
++ *
++ *  Copyright (C) 2008, Ted Felix (www.tedfelix.com)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ *  Tabs at 4
++ */
++
++#ifndef CONNECTION_LIST_H__
++#define CONNECTION_LIST_H__
++
++#include <sys/select.h>
++
++/*****************************************************************
++ *  Connection List Public Members
++ *****************************************************************/
++
++struct connection
++{
++	/* file descriptor */
++	int fd;
++
++	/* process incoming data on the connection */
++	void (* process)(int fd);
++};
++
++/* add a connection to the list */
++extern void add_connection(struct connection *p);
++
++/* find a connection in the list by file descriptor */
++extern struct connection *find_connection(int fd);
++
++/* get the number of connections in the list */
++extern int get_number_of_connections();
++
++/* get a specific connection by index from the list */
++extern struct connection *get_connection(int i);
++
++/* get an fd_set with all the fd's that have been added to the list */
++extern const fd_set *get_fdset();
++
++/* get the highest fd that was added to the list */
++extern int get_highestfd();
++
++#endif /* CONNECTION_LIST_H__ */
+diff -ruN acpid-1.0.10/event.c acpid-1.0.10-netlink2/event.c
+--- acpid-1.0.10/event.c	2009-04-28 09:23:21.000000000 +0200
++++ acpid-1.0.10-netlink2/event.c	2009-05-02 04:27:06.000000000 +0200
+@@ -1,5 +1,5 @@
+ /*
+- *  event.c - ACPI daemon
++ *  event.c - ACPI daemon event handler
+  *
+  *  Copyright (C) 2000 Andrew Henroid
+  *  Copyright (C) 2001 Sun Microsystems (thockin@sun.com)
+@@ -36,6 +36,7 @@
+ #include <signal.h>
+ 
+ #include "acpid.h"
++#include "sock.h"
+ #include "ud_socket.h"
+ 
+ /*
+diff -ruN acpid-1.0.10/event.h acpid-1.0.10-netlink2/event.h
+--- acpid-1.0.10/event.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/event.h	2009-05-02 04:11:51.000000000 +0200
+@@ -0,0 +1,32 @@
++/*
++ *  event.h - ACPI daemon event handler
++ *
++ *  Copyright (C) 1999-2000 Andrew Henroid
++ *  Copyright (C) 2001 Sun Microsystems
++ *  Portions Copyright (C) 2004 Tim Hockin (thockin@hockin.org)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef EVENT_H__
++#define EVENT_H__
++
++extern int acpid_read_conf(const char *confdir);
++extern int acpid_add_client(int client, const char *origin);
++extern int acpid_cleanup_rules(int do_detach);
++extern int acpid_handle_event(const char *event);
++extern void acpid_close_dead_clients(void);
++
++#endif /* EVENT_H__ */
+diff -ruN acpid-1.0.10/genetlink.h acpid-1.0.10-netlink2/genetlink.h
+--- acpid-1.0.10/genetlink.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/genetlink.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,81 @@
++#ifndef __LINUX_GENERIC_NETLINK_H
++#define __LINUX_GENERIC_NETLINK_H
++
++#include <linux/netlink.h>
++
++#define GENL_NAMSIZ	16	/* length of family name */
++
++#define GENL_MIN_ID	NLMSG_MIN_TYPE
++#define GENL_MAX_ID	1023
++
++struct genlmsghdr {
++	__u8	cmd;
++	__u8	version;
++	__u16	reserved;
++};
++
++#define GENL_HDRLEN	NLMSG_ALIGN(sizeof(struct genlmsghdr))
++
++#define GENL_ADMIN_PERM		0x01
++#define GENL_CMD_CAP_DO		0x02
++#define GENL_CMD_CAP_DUMP	0x04
++#define GENL_CMD_CAP_HASPOL	0x08
++
++/*
++ * List of reserved static generic netlink identifiers:
++ */
++#define GENL_ID_GENERATE	0
++#define GENL_ID_CTRL		NLMSG_MIN_TYPE
++
++/**************************************************************************
++ * Controller
++ **************************************************************************/
++
++enum {
++	CTRL_CMD_UNSPEC,
++	CTRL_CMD_NEWFAMILY,
++	CTRL_CMD_DELFAMILY,
++	CTRL_CMD_GETFAMILY,
++	CTRL_CMD_NEWOPS,
++	CTRL_CMD_DELOPS,
++	CTRL_CMD_GETOPS,
++	CTRL_CMD_NEWMCAST_GRP,
++	CTRL_CMD_DELMCAST_GRP,
++	CTRL_CMD_GETMCAST_GRP, /* unused */
++	__CTRL_CMD_MAX,
++};
++
++#define CTRL_CMD_MAX (__CTRL_CMD_MAX - 1)
++
++enum {
++	CTRL_ATTR_UNSPEC,
++	CTRL_ATTR_FAMILY_ID,
++	CTRL_ATTR_FAMILY_NAME,
++	CTRL_ATTR_VERSION,
++	CTRL_ATTR_HDRSIZE,
++	CTRL_ATTR_MAXATTR,
++	CTRL_ATTR_OPS,
++	CTRL_ATTR_MCAST_GROUPS,
++	__CTRL_ATTR_MAX,
++};
++
++#define CTRL_ATTR_MAX (__CTRL_ATTR_MAX - 1)
++
++enum {
++	CTRL_ATTR_OP_UNSPEC,
++	CTRL_ATTR_OP_ID,
++	CTRL_ATTR_OP_FLAGS,
++	__CTRL_ATTR_OP_MAX,
++};
++
++#define CTRL_ATTR_OP_MAX (__CTRL_ATTR_OP_MAX - 1)
++
++enum {
++	CTRL_ATTR_MCAST_GRP_UNSPEC,
++	CTRL_ATTR_MCAST_GRP_NAME,
++	CTRL_ATTR_MCAST_GRP_ID,
++	__CTRL_ATTR_MCAST_GRP_MAX,
++};
++#define CTRL_ATTR_MCAST_GRP_MAX (__CTRL_ATTR_MCAST_GRP_MAX - 1)
++
++#endif	/* __LINUX_GENERIC_NETLINK_H */
+diff -ruN acpid-1.0.10/input_layer.c acpid-1.0.10-netlink2/input_layer.c
+--- acpid-1.0.10/input_layer.c	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/input_layer.c	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,262 @@
++/*
++ *  input_layer - Kernel ACPI Event Input Layer Interface
++ *
++ *  Handles the details of getting kernel ACPI events from the input
++ *  layer (/dev/input/event*).
++ *
++ *  Inspired by (and in some cases blatantly lifted from) Vojtech Pavlik's
++ *  evtest.c.
++ *
++ *  Copyright (C) 2008, Ted Felix (www.tedfelix.com)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ *  (tabs at 4)
++ */
++
++/* system */
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <linux/input.h>
++#include <string.h>
++#include <errno.h>
++#include <malloc.h>
++#include <glob.h>
++
++/* local */
++#include "acpid.h"
++#include "connection_list.h"
++#include "event.h"
++
++#define DIM(a)  (sizeof(a) / sizeof(a[0]))
++
++struct evtab_entry {
++	struct input_event event;
++	const char *str;
++};
++	
++/* event table: events we are interested in and their strings */
++/* use evtest.c or acpi_genl to find new events to add to this table */
++static struct evtab_entry evtab[] = {
++	{{{0,0}, EV_KEY, KEY_POWER, 1}, "button/power PBTN 00000080 00000000"},
++	{{{0,0}, EV_KEY, KEY_SLEEP, 1}, "button/sleep SBTN 00000080 00000000"},
++	{{{0,0}, EV_KEY, KEY_SUSPEND, 1}, 
++ 		"button/suspend SUSP 00000080 00000000"},
++	{{{0,0}, EV_SW, SW_LID, 1}, "button/lid LID close"},
++	{{{0,0}, EV_SW, SW_LID, 0}, "button/lid LID open"}
++};
++	
++/*----------------------------------------------------------------------*/
++/* Given an input event, returns the string corresponding to that event.
++   If there is no corresponding string, NULL is returned.  */
++static const char *
++event_string(struct input_event event)
++{
++	unsigned i;
++	
++	/* for each entry in the event table */
++	for (i = 0; i < DIM(evtab); ++i)
++	{
++		/* if this is a matching event, return its string */
++		if (event.type == evtab[i].event.type  &&
++			event.code == evtab[i].event.code  &&
++			event.value == evtab[i].event.value) {
++			return evtab[i].str;
++		}
++	}
++	
++	return NULL;
++}
++
++/*-----------------------------------------------------------------*/
++/* returns non-zero if the event type/code is one we need */
++static int 
++need_event(int type, int code)
++{
++	unsigned i;
++
++	/* for each entry in the event table */
++	for (i = 0; i < DIM(evtab); ++i) {
++		/* if we found a matching event */
++		if (type == evtab[i].event.type  &&
++			code == evtab[i].event.code) {
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
++/*-----------------------------------------------------------------*/
++/* called when an input layer event is received */
++void process_input(int fd)
++{
++	struct input_event event;
++	ssize_t nbytes;
++	const char *str;
++	static int nerrs;
++
++	nbytes = read(fd, &event, sizeof(event));
++
++	if (nbytes == 0) {
++		acpid_log(LOG_WARNING, "input layer connection closed\n");
++		exit(EXIT_FAILURE);
++	}
++	
++	if (nbytes < 0) {
++		/* if it's a signal, bail */
++		if (errno == EINTR)
++			return;
++		
++		acpid_log(LOG_ERR, "input layer read error: %s (%d)\n",
++			strerror(errno), errno);
++		if (++nerrs >= ACPID_MAX_ERRS) {
++			acpid_log(LOG_ERR,
++				"too many errors reading "
++				"input layer - aborting\n");
++			exit(EXIT_FAILURE);
++		}
++		return;
++	}
++
++	/* ??? Is it possible for a partial message to come across? */
++	/*   If so, we've got more code to write... */
++	
++	if (nbytes != sizeof(event)) {
++		acpid_log(LOG_WARNING, "input layer unexpected length: "
++			"%d   expected: %d\n", nbytes, sizeof(event));
++		return;
++	}
++
++	/* convert the event into a string */
++	str = event_string(event);
++	/* if this is not an event we care about, bail */
++	if (str == NULL)
++		return;
++	
++	/* if we're locked, don't process the event */
++	if (locked()) {
++		if (logevents) {
++			acpid_log(LOG_INFO,
++				"lockfile present, not processing "
++				"input layer event \"%s\"\n", str);
++		}
++		return;
++	}
++
++	if (logevents)
++		acpid_log(LOG_INFO,
++			"received input layer event \"%s\"\n", str);
++	
++	/* send the event off to the handler */
++	acpid_handle_event(str);
++
++	if (logevents)
++		acpid_log(LOG_INFO,
++			"completed input layer event \"%s\"\n", str);
++}
++
++#define BITS_PER_LONG (sizeof(long) * 8)
++#define NBITS(x) ((((x)-1)/BITS_PER_LONG)+1)
++#define OFF(x)  ((x)%BITS_PER_LONG)
++#define LONG(x) ((x)/BITS_PER_LONG)
++#define test_bit(bit, array)	((array[LONG(bit)] >> OFF(bit)) & 1)
++
++/*--------------------------------------------------------------------*/
++/* returns non-zero if the file descriptor supports one of the events */
++/* supported by event_string().  */
++static int 
++has_event(int fd)
++{
++	int type, code;
++	unsigned long bit[EV_MAX][NBITS(KEY_MAX)];
++
++	memset(bit, 0, sizeof(bit));
++	/* get the event type bitmap */
++	ioctl(fd, EVIOCGBIT(0, sizeof(bit[0])), bit[0]);
++
++	/* for each event type */
++	for (type = 0; type < EV_MAX; type++) {
++		/* if this event type is supported */
++		if (test_bit(type, bit[0])) {
++			/* skip sync */
++			if (type == EV_SYN) continue;
++			/* get the event code mask */
++			ioctl(fd, EVIOCGBIT(type, sizeof(bit[type])), bit[type]);
++			/* for each event code */
++			for (code = 0; code < KEY_MAX; code++) {
++				/* if this event code is supported */
++				if (test_bit(code, bit[type])) {
++					/* if we need this event */
++					if (need_event(type, code) != 0)
++						return 1;
++				}
++			}
++		}
++	}
++	return 0;
++}
++
++/* ??? make this changeable by commandline option */
++#define INPUT_LAYER_FS "/dev/input/event*"
++
++/*-----------------------------------------------------------------*
++ * open each of the appropriate /dev/input/event* files for input  */
++void open_input(void)
++{
++	char *filename = NULL;
++	glob_t globbuf;
++	unsigned i;
++	int fd;
++	int success = 0;
++	struct connection c;
++
++	/* get all the matching event filenames */
++	glob(INPUT_LAYER_FS, 0, NULL, &globbuf);
++
++	/* for each event file */
++	for (i = 0; i < globbuf.gl_pathc; ++i)
++	{
++		filename = globbuf.gl_pathv[i];
++
++		fd = open(filename, O_RDONLY | O_NONBLOCK);
++		if (fd >= 0) {
++			/* if this file doesn't have events we need, try the next */
++			if (!has_event(fd))
++			{
++				close(fd);
++				continue;
++			}
++
++			success = 1;
++
++			if (acpid_debug)
++				fprintf(stderr, "%s: input layer %s "
++					"opened successfully\n", progname, filename);
++
++			/* add a connection to the list */
++			c.fd = fd;
++			c.process = process_input;
++			add_connection(&c);
++		}
++	}
++
++	if (!success)
++		fprintf(stderr, "%s: cannot open input layer\n", progname);
++
++	globfree(&globbuf);
++}
+diff -ruN acpid-1.0.10/input_layer.h acpid-1.0.10-netlink2/input_layer.h
+--- acpid-1.0.10/input_layer.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/input_layer.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,32 @@
++/*
++ *  input_layer.h - Kernel ACPI Event Input Layer Interface
++ *
++ *  Handles the details of getting kernel ACPI events from the input
++ *  layer (/dev/input/event*).
++ *
++ *  Copyright (C) 2008, Ted Felix (www.tedfelix.com)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ *  (tabs at 4)
++ */
++
++#ifndef INPUT_LAYER_H__
++#define INPUT_LAYER_H__
++
++/* Open each of the appropriate /dev/input/event* files for input. */
++extern void open_input(void);
++
++#endif /* INPUT_LAYER_H__ */
+diff -ruN acpid-1.0.10/libnetlink.c acpid-1.0.10-netlink2/libnetlink.c
+--- acpid-1.0.10/libnetlink.c	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/libnetlink.c	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,593 @@
++/*
++ * libnetlink.c	RTnetlink service routines.
++ *
++ *		This program is free software; you can redistribute it and/or
++ *		modify it under the terms of the GNU General Public License
++ *		as published by the Free Software Foundation; either version
++ *		2 of the License, or (at your option) any later version.
++ *
++ * Authors:	Alexey Kuznetsov, <kuznet@ms2.inr.ac.ru>
++ *
++ * Modified by Ted Felix (www.tedfelix.com) to fix warnings.
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <syslog.h>
++#include <fcntl.h>
++#include <net/if_arp.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <string.h>
++#include <errno.h>
++#include <time.h>
++#include <sys/uio.h>
++
++#include "libnetlink.h"
++
++void rtnl_close(struct rtnl_handle *rth)
++{
++	if (rth->fd >= 0) {
++		close(rth->fd);
++		rth->fd = -1;
++	}
++}
++
++int rtnl_open_byproto(struct rtnl_handle *rth, unsigned subscriptions,
++		      int protocol)
++{
++	socklen_t addr_len;
++	int sndbuf = 32768;
++	int rcvbuf = 32768;
++
++	memset(rth, 0, sizeof(rth));
++
++	rth->fd = socket(AF_NETLINK, SOCK_RAW, protocol);
++	if (rth->fd < 0) {
++		perror("Cannot open netlink socket");
++		return -1;
++	}
++
++	if (setsockopt(rth->fd,SOL_SOCKET,SO_SNDBUF,&sndbuf,sizeof(sndbuf)) < 0) {
++		perror("SO_SNDBUF");
++		return -1;
++	}
++
++	if (setsockopt(rth->fd,SOL_SOCKET,SO_RCVBUF,&rcvbuf,sizeof(rcvbuf)) < 0) {
++		perror("SO_RCVBUF");
++		return -1;
++	}
++
++	memset(&rth->local, 0, sizeof(rth->local));
++	rth->local.nl_family = AF_NETLINK;
++	rth->local.nl_groups = subscriptions;
++
++	if (bind(rth->fd, (struct sockaddr*)&rth->local, sizeof(rth->local)) < 0) {
++		perror("Cannot bind netlink socket");
++		return -1;
++	}
++	addr_len = sizeof(rth->local);
++	if (getsockname(rth->fd, (struct sockaddr*)&rth->local, &addr_len) < 0) {
++		perror("Cannot getsockname");
++		return -1;
++	}
++	if (addr_len != sizeof(rth->local)) {
++		fprintf(stderr, "Wrong address length %d\n", addr_len);
++		return -1;
++	}
++	if (rth->local.nl_family != AF_NETLINK) {
++		fprintf(stderr, "Wrong address family %d\n", rth->local.nl_family);
++		return -1;
++	}
++	rth->seq = time(NULL);
++	return 0;
++}
++
++int rtnl_open(struct rtnl_handle *rth, unsigned subscriptions)
++{
++	return rtnl_open_byproto(rth, subscriptions, NETLINK_ROUTE);
++}
++
++int rtnl_wilddump_request(struct rtnl_handle *rth, int family, int type)
++{
++	struct {
++		struct nlmsghdr nlh;
++		struct rtgenmsg g;
++	} req;
++	struct sockaddr_nl nladdr;
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++
++	memset(&req, 0, sizeof(req));
++	req.nlh.nlmsg_len = sizeof(req);
++	req.nlh.nlmsg_type = type;
++	req.nlh.nlmsg_flags = NLM_F_ROOT|NLM_F_MATCH|NLM_F_REQUEST;
++	req.nlh.nlmsg_pid = 0;
++	req.nlh.nlmsg_seq = rth->dump = ++rth->seq;
++	req.g.rtgen_family = family;
++
++	return sendto(rth->fd, (void*)&req, sizeof(req), 0,
++		      (struct sockaddr*)&nladdr, sizeof(nladdr));
++}
++
++int rtnl_send(struct rtnl_handle *rth, const char *buf, int len)
++{
++	struct sockaddr_nl nladdr;
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++
++	return sendto(rth->fd, buf, len, 0, (struct sockaddr*)&nladdr, sizeof(nladdr));
++}
++
++int rtnl_dump_request(struct rtnl_handle *rth, int type, void *req, int len)
++{
++	struct nlmsghdr nlh;
++	struct sockaddr_nl nladdr;
++	struct iovec iov[2] = {
++		{ .iov_base = &nlh, .iov_len = sizeof(nlh) },
++		{ .iov_base = req, .iov_len = len }
++	};
++	struct msghdr msg = {
++		.msg_name = &nladdr,
++		.msg_namelen = 	sizeof(nladdr),
++		.msg_iov = iov,
++		.msg_iovlen = 2,
++	};
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++
++	nlh.nlmsg_len = NLMSG_LENGTH(len);
++	nlh.nlmsg_type = type;
++	nlh.nlmsg_flags = NLM_F_ROOT|NLM_F_MATCH|NLM_F_REQUEST;
++	nlh.nlmsg_pid = 0;
++	nlh.nlmsg_seq = rth->dump = ++rth->seq;
++
++	return sendmsg(rth->fd, &msg, 0);
++}
++
++int rtnl_dump_filter(struct rtnl_handle *rth,
++		     rtnl_filter_t filter,
++		     void *arg1,
++		     rtnl_filter_t junk,
++		     void *arg2)
++{
++	struct sockaddr_nl nladdr;
++	struct iovec iov;
++	struct msghdr msg = {
++		.msg_name = &nladdr,
++		.msg_namelen = sizeof(nladdr),
++		.msg_iov = &iov,
++		.msg_iovlen = 1,
++	};
++	char buf[16384];
++
++	iov.iov_base = buf;
++	while (1) {
++		int status;
++		struct nlmsghdr *h;
++
++		iov.iov_len = sizeof(buf);
++		status = recvmsg(rth->fd, &msg, 0);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("OVERRUN");
++			continue;
++		}
++
++		if (status == 0) {
++			fprintf(stderr, "EOF on netlink\n");
++			return -1;
++		}
++
++		h = (struct nlmsghdr*)buf;
++		while (NLMSG_OK(h, (unsigned)status)) {
++			int err;
++
++			if (nladdr.nl_pid != 0 ||
++			    h->nlmsg_pid != rth->local.nl_pid ||
++			    h->nlmsg_seq != rth->dump) {
++				if (junk) {
++					err = junk(&nladdr, h, arg2);
++					if (err < 0)
++						return err;
++				}
++				goto skip_it;
++			}
++
++			if (h->nlmsg_type == NLMSG_DONE)
++				return 0;
++			if (h->nlmsg_type == NLMSG_ERROR) {
++				struct nlmsgerr *msgerr = (struct nlmsgerr*)NLMSG_DATA(h);
++				if (h->nlmsg_len < NLMSG_LENGTH(sizeof(struct nlmsgerr))) {
++					fprintf(stderr, "ERROR truncated\n");
++				} else {
++					errno = -msgerr->error;
++					perror("RTNETLINK answers");
++				}
++				return -1;
++			}
++			err = filter(&nladdr, h, arg1);
++			if (err < 0)
++				return err;
++
++skip_it:
++			h = NLMSG_NEXT(h, status);
++		}
++		if (msg.msg_flags & MSG_TRUNC) {
++			fprintf(stderr, "Message truncated\n");
++			continue;
++		}
++		if (status) {
++			fprintf(stderr, "!!!Remnant of size %d\n", status);
++			exit(1);
++		}
++	}
++}
++
++int rtnl_talk(struct rtnl_handle *rtnl, struct nlmsghdr *n, pid_t peer,
++	      unsigned groups, struct nlmsghdr *answer,
++	      rtnl_filter_t junk,
++	      void *jarg)
++{
++	int status;
++	unsigned seq;
++	struct nlmsghdr *h;
++	struct sockaddr_nl nladdr;
++	struct iovec iov = {
++		.iov_base = (void*) n,
++		.iov_len = n->nlmsg_len
++	};
++	struct msghdr msg = {
++		.msg_name = &nladdr,
++		.msg_namelen = sizeof(nladdr),
++		.msg_iov = &iov,
++		.msg_iovlen = 1,
++	};
++	char   buf[16384];
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++	nladdr.nl_pid = peer;
++	nladdr.nl_groups = groups;
++
++	n->nlmsg_seq = seq = ++rtnl->seq;
++
++	if (answer == NULL)
++		n->nlmsg_flags |= NLM_F_ACK;
++
++	status = sendmsg(rtnl->fd, &msg, 0);
++
++	if (status < 0) {
++		perror("Cannot talk to rtnetlink");
++		return -1;
++	}
++
++	memset(buf,0,sizeof(buf));
++
++	iov.iov_base = buf;
++
++	while (1) {
++		iov.iov_len = sizeof(buf);
++		status = recvmsg(rtnl->fd, &msg, 0);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("OVERRUN");
++			continue;
++		}
++		if (status == 0) {
++			fprintf(stderr, "EOF on netlink\n");
++			return -1;
++		}
++		if (msg.msg_namelen != sizeof(nladdr)) {
++			fprintf(stderr, "sender address length == %d\n", msg.msg_namelen);
++			exit(1);
++		}
++		for (h = (struct nlmsghdr*)buf; (unsigned)status >= sizeof(*h); ) {
++			int err;
++			int len = h->nlmsg_len;
++			int l = len - sizeof(*h);
++
++			if (l<0 || len>status) {
++				if (msg.msg_flags & MSG_TRUNC) {
++					fprintf(stderr, "Truncated message\n");
++					return -1;
++				}
++				fprintf(stderr, "!!!malformed message: len=%d\n", len);
++				exit(1);
++			}
++
++			if (nladdr.nl_pid != (unsigned)peer ||
++			    h->nlmsg_pid != rtnl->local.nl_pid ||
++			    h->nlmsg_seq != seq) {
++				if (junk) {
++					err = junk(&nladdr, h, jarg);
++					if (err < 0)
++						return err;
++				}
++				/* Don't forget to skip that message. */
++				status -= NLMSG_ALIGN(len);
++				h = (struct nlmsghdr*)((char*)h + NLMSG_ALIGN(len));
++				continue;
++			}
++
++			if (h->nlmsg_type == NLMSG_ERROR) {
++				struct nlmsgerr *msgerr = (struct nlmsgerr*)NLMSG_DATA(h);
++				if ((unsigned)l < sizeof(struct nlmsgerr)) {
++					fprintf(stderr, "ERROR truncated\n");
++				} else {
++					errno = -msgerr->error;
++					if (errno == 0) {
++						if (answer)
++							memcpy(answer, h, h->nlmsg_len);
++						return 0;
++					}
++					perror("RTNETLINK1 answers");
++				}
++				return -1;
++			}
++			if (answer) {
++				memcpy(answer, h, h->nlmsg_len);
++				return 0;
++			}
++
++			fprintf(stderr, "Unexpected reply!!!\n");
++
++			status -= NLMSG_ALIGN(len);
++			h = (struct nlmsghdr*)((char*)h + NLMSG_ALIGN(len));
++		}
++		if (msg.msg_flags & MSG_TRUNC) {
++			fprintf(stderr, "Message truncated\n");
++			continue;
++		}
++		if (status) {
++			fprintf(stderr, "!!!Remnant of size %d\n", status);
++			exit(1);
++		}
++	}
++}
++
++int rtnl_listen(struct rtnl_handle *rtnl,
++		rtnl_filter_t handler,
++		void *jarg)
++{
++	int status;
++	struct nlmsghdr *h;
++	struct sockaddr_nl nladdr;
++	struct iovec iov;
++	struct msghdr msg = {
++		.msg_name = &nladdr,
++		.msg_namelen = sizeof(nladdr),
++		.msg_iov = &iov,
++		.msg_iovlen = 1,
++	};
++	char   buf[8192];
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++	nladdr.nl_pid = 0;
++	nladdr.nl_groups = 0;
++
++	iov.iov_base = buf;
++	while (1) {
++		iov.iov_len = sizeof(buf);
++		status = recvmsg(rtnl->fd, &msg, 0);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("OVERRUN");
++			continue;
++		}
++		if (status == 0) {
++			fprintf(stderr, "EOF on netlink\n");
++			return -1;
++		}
++		if (msg.msg_namelen != sizeof(nladdr)) {
++			fprintf(stderr, "Sender address length == %d\n", msg.msg_namelen);
++			exit(1);
++		}
++		for (h = (struct nlmsghdr*)buf; (unsigned)status >= sizeof(*h); ) {
++			int err;
++			int len = h->nlmsg_len;
++			int l = len - sizeof(*h);
++
++			if (l<0 || len>status) {
++				if (msg.msg_flags & MSG_TRUNC) {
++					fprintf(stderr, "Truncated message\n");
++					return -1;
++				}
++				fprintf(stderr, "!!!malformed message: len=%d\n", len);
++				exit(1);
++			}
++
++			err = handler(&nladdr, h, jarg);
++			if (err < 0)
++				return err;
++
++			status -= NLMSG_ALIGN(len);
++			h = (struct nlmsghdr*)((char*)h + NLMSG_ALIGN(len));
++		}
++		if (msg.msg_flags & MSG_TRUNC) {
++			fprintf(stderr, "Message truncated\n");
++			continue;
++		}
++		if (status) {
++			fprintf(stderr, "!!!Remnant of size %d\n", status);
++			exit(1);
++		}
++	}
++}
++
++int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
++		   void *jarg)
++{
++	int status;
++	struct sockaddr_nl nladdr;
++	char   buf[8192];
++	struct nlmsghdr *h = (void*)buf;
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++	nladdr.nl_pid = 0;
++	nladdr.nl_groups = 0;
++
++	while (1) {
++		int err, len, type;
++		int l;
++
++		status = fread(&buf, 1, sizeof(*h), rtnl);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("rtnl_from_file: fread");
++			return -1;
++		}
++		if (status == 0)
++			return 0;
++
++		len = h->nlmsg_len;
++		type= h->nlmsg_type;
++		l = len - sizeof(*h);
++
++		if (l<0 || (unsigned)len>sizeof(buf)) {
++			fprintf(stderr, "!!!malformed message: len=%d @%lu\n",
++				len, ftell(rtnl));
++			return -1;
++		}
++
++		status = fread(NLMSG_DATA(h), 1, NLMSG_ALIGN(l), rtnl);
++
++		if (status < 0) {
++			perror("rtnl_from_file: fread");
++			return -1;
++		}
++		if (status < l) {
++			fprintf(stderr, "rtnl-from_file: truncated message\n");
++			return -1;
++		}
++
++		err = handler(&nladdr, h, jarg);
++		if (err < 0)
++			return err;
++	}
++}
++
++int addattr32(struct nlmsghdr *n, int maxlen, int type, __u32 data)
++{
++	int len = RTA_LENGTH(4);
++	struct rtattr *rta;
++	if ((int)NLMSG_ALIGN(n->nlmsg_len) + len > maxlen) {
++		fprintf(stderr,"addattr32: Error! max allowed bound %d exceeded\n",maxlen);
++		return -1;
++	}
++	rta = NLMSG_TAIL(n);
++	rta->rta_type = type;
++	rta->rta_len = len;
++	memcpy(RTA_DATA(rta), &data, 4);
++	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + len;
++	return 0;
++}
++
++int addattr_l(struct nlmsghdr *n, int maxlen, int type, const void *data,
++	      int alen)
++{
++	int len = RTA_LENGTH(alen);
++	struct rtattr *rta;
++
++	if ((int)NLMSG_ALIGN(n->nlmsg_len) + RTA_ALIGN(len) > maxlen) {
++		fprintf(stderr, "addattr_l ERROR: message exceeded bound of %d\n",maxlen);
++		return -1;
++	}
++	rta = NLMSG_TAIL(n);
++	rta->rta_type = type;
++	rta->rta_len = len;
++	memcpy(RTA_DATA(rta), data, alen);
++	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + RTA_ALIGN(len);
++	return 0;
++}
++
++int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
++{
++	if ((int)NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len) > maxlen) {
++		fprintf(stderr, "addraw_l ERROR: message exceeded bound of %d\n",maxlen);
++		return -1;
++	}
++
++	memcpy(NLMSG_TAIL(n), data, len);
++	memset((void *) NLMSG_TAIL(n) + len, 0, NLMSG_ALIGN(len) - len);
++	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len);
++	return 0;
++}
++
++int rta_addattr32(struct rtattr *rta, int maxlen, int type, __u32 data)
++{
++	int len = RTA_LENGTH(4);
++	struct rtattr *subrta;
++
++	if (RTA_ALIGN(rta->rta_len) + len > maxlen) {
++		fprintf(stderr,"rta_addattr32: Error! max allowed bound %d exceeded\n",maxlen);
++		return -1;
++	}
++	subrta = (struct rtattr*)(((char*)rta) + RTA_ALIGN(rta->rta_len));
++	subrta->rta_type = type;
++	subrta->rta_len = len;
++	memcpy(RTA_DATA(subrta), &data, 4);
++	rta->rta_len = NLMSG_ALIGN(rta->rta_len) + len;
++	return 0;
++}
++
++int rta_addattr_l(struct rtattr *rta, int maxlen, int type,
++		  const void *data, int alen)
++{
++	struct rtattr *subrta;
++	int len = RTA_LENGTH(alen);
++
++	if (RTA_ALIGN(rta->rta_len) + RTA_ALIGN(len) > maxlen) {
++		fprintf(stderr,"rta_addattr_l: Error! max allowed bound %d exceeded\n",maxlen);
++		return -1;
++	}
++	subrta = (struct rtattr*)(((char*)rta) + RTA_ALIGN(rta->rta_len));
++	subrta->rta_type = type;
++	subrta->rta_len = len;
++	memcpy(RTA_DATA(subrta), data, alen);
++	rta->rta_len = NLMSG_ALIGN(rta->rta_len) + RTA_ALIGN(len);
++	return 0;
++}
++
++int parse_rtattr(struct rtattr *tb[], int max, struct rtattr *rta, int len)
++{
++	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
++	while (RTA_OK(rta, len)) {
++		if (rta->rta_type <= max)
++			tb[rta->rta_type] = rta;
++		rta = RTA_NEXT(rta,len);
++	}
++	if (len)
++		fprintf(stderr, "!!!Deficit %d, rta_len=%d\n", len, rta->rta_len);
++	return 0;
++}
++
++int parse_rtattr_byindex(struct rtattr *tb[], int max, struct rtattr *rta, int len)
++{
++	int i = 0;
++
++	memset(tb, 0, sizeof(struct rtattr *) * max);
++	while (RTA_OK(rta, len)) {
++		if (rta->rta_type <= max && i < max)
++			tb[i++] = rta;
++		rta = RTA_NEXT(rta,len);
++	}
++	if (len)
++		fprintf(stderr, "!!!Deficit %d, rta_len=%d\n", len, rta->rta_len);
++	return i;
++}
+diff -ruN acpid-1.0.10/libnetlink.h acpid-1.0.10-netlink2/libnetlink.h
+--- acpid-1.0.10/libnetlink.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/libnetlink.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,91 @@
++#ifndef __LIBNETLINK_H__
++#define __LIBNETLINK_H__ 1
++
++#include <asm/types.h>
++// needed by netlink.h, should be in there
++#include <arpa/inet.h>
++#include <linux/netlink.h>
++#include <linux/rtnetlink.h>
++
++struct rtnl_handle
++{
++	int			fd;
++	struct sockaddr_nl	local;
++	struct sockaddr_nl	peer;
++	__u32			seq;
++	__u32			dump;
++};
++
++extern int rtnl_open(struct rtnl_handle *rth, unsigned subscriptions);
++extern int rtnl_open_byproto(struct rtnl_handle *rth, unsigned subscriptions, int protocol);
++extern void rtnl_close(struct rtnl_handle *rth);
++extern int rtnl_wilddump_request(struct rtnl_handle *rth, int fam, int type);
++extern int rtnl_dump_request(struct rtnl_handle *rth, int type, void *req, int len);
++
++typedef int (*rtnl_filter_t)(const struct sockaddr_nl *,
++			     struct nlmsghdr *n, void *);
++extern int rtnl_dump_filter(struct rtnl_handle *rth, rtnl_filter_t filter,
++			    void *arg1,
++			    rtnl_filter_t junk,
++			    void *arg2);
++extern int rtnl_talk(struct rtnl_handle *rtnl, struct nlmsghdr *n, pid_t peer,
++		     unsigned groups, struct nlmsghdr *answer,
++		     rtnl_filter_t junk,
++		     void *jarg);
++extern int rtnl_send(struct rtnl_handle *rth, const char *buf, int);
++
++
++extern int addattr32(struct nlmsghdr *n, int maxlen, int type, __u32 data);
++extern int addattr_l(struct nlmsghdr *n, int maxlen, int type, const void *data, int alen);
++extern int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len);
++extern int rta_addattr32(struct rtattr *rta, int maxlen, int type, __u32 data);
++extern int rta_addattr_l(struct rtattr *rta, int maxlen, int type, const void *data, int alen);
++
++extern int parse_rtattr(struct rtattr *tb[], int max, struct rtattr *rta, int len);
++extern int parse_rtattr_byindex(struct rtattr *tb[], int max, struct rtattr *rta, int len);
++
++#define parse_rtattr_nested(tb, max, rta) \
++	(parse_rtattr((tb), (max), RTA_DATA(rta), RTA_PAYLOAD(rta)))
++
++extern int rtnl_listen(struct rtnl_handle *, rtnl_filter_t handler,
++		       void *jarg);
++extern int rtnl_from_file(FILE *, rtnl_filter_t handler,
++		       void *jarg);
++
++#define NLMSG_TAIL(nmsg) \
++	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
++
++#ifndef IFA_RTA
++#define IFA_RTA(r) \
++	((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifaddrmsg))))
++#endif
++#ifndef IFA_PAYLOAD
++#define IFA_PAYLOAD(n)	NLMSG_PAYLOAD(n,sizeof(struct ifaddrmsg))
++#endif
++
++#ifndef IFLA_RTA
++#define IFLA_RTA(r) \
++	((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifinfomsg))))
++#endif
++#ifndef IFLA_PAYLOAD
++#define IFLA_PAYLOAD(n)	NLMSG_PAYLOAD(n,sizeof(struct ifinfomsg))
++#endif
++
++#ifndef NDA_RTA
++#define NDA_RTA(r) \
++	((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ndmsg))))
++#endif
++#ifndef NDA_PAYLOAD
++#define NDA_PAYLOAD(n)	NLMSG_PAYLOAD(n,sizeof(struct ndmsg))
++#endif
++
++#ifndef NDTA_RTA
++#define NDTA_RTA(r) \
++	((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ndtmsg))))
++#endif
++#ifndef NDTA_PAYLOAD
++#define NDTA_PAYLOAD(n) NLMSG_PAYLOAD(n,sizeof(struct ndtmsg))
++#endif
++
++#endif /* __LIBNETLINK_H__ */
++
+diff -ruN acpid-1.0.10/Makefile acpid-1.0.10-netlink2/Makefile
+--- acpid-1.0.10/Makefile	2009-04-28 09:23:21.000000000 +0200
++++ acpid-1.0.10-netlink2/Makefile	2009-05-03 02:04:55.000000000 +0200
+@@ -12,7 +12,8 @@
+ BIN_PROGS = acpi_listen
+ PROGS = $(SBIN_PROGS) $(BIN_PROGS)
+ 
+-acpid_SRCS = acpid.c event.c ud_socket.c
++acpid_SRCS = acpid.c acpi_ids.c connection_list.c event.c input_layer.c \
++    libnetlink.c netlink.c proc.c sock.c ud_socket.c
+ acpid_OBJS = $(acpid_SRCS:.c=.o)
+ 
+ acpi_listen_SRCS = acpi_listen.c ud_socket.c
+diff -ruN acpid-1.0.10/netlink.c acpid-1.0.10-netlink2/netlink.c
+--- acpid-1.0.10/netlink.c	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/netlink.c	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,239 @@
++/*
++ *  netlink.c - Kernel ACPI Event Netlink Interface
++ *
++ *  Handles the details of getting kernel ACPI events from netlink.
++ *
++ *  Inspired by (and in some cases blatantly lifted from) Zhang Rui's
++ *  acpi_genl and Alexey Kuznetsov's libnetlink.  Thanks also to Yi Yang
++ *  at intel.
++ *
++ *  Copyright (C) 2008, Ted Felix (www.tedfelix.com)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ *  (tabs at 4)
++ */
++
++/* system */
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++
++/* local */
++#include "acpid.h"
++#include "event.h"
++
++#include "libnetlink.h"
++#include "genetlink.h"
++#include "acpi_genetlink.h"
++
++#include "acpi_ids.h"
++#include "connection_list.h"
++
++static void
++format_netlink(struct nlmsghdr *msg)
++{
++	struct rtattr *tb[ACPI_GENL_ATTR_MAX + 1];
++	struct genlmsghdr *ghdr = NLMSG_DATA(msg);
++	int len;
++	struct rtattr *attrs;
++	
++	len = msg->nlmsg_len;
++	
++	/* if this message doesn't have the proper family ID, drop it */
++	if (msg->nlmsg_type != acpi_ids_getfamily()) {
++		if (logevents) {
++			acpid_log(LOG_INFO, "wrong netlink family ID.\n");
++		}
++		return;
++	}
++
++	len -= NLMSG_LENGTH(GENL_HDRLEN);
++
++	if (len < 0) {
++		acpid_log(LOG_WARNING,
++			"wrong netlink controller message len: %d\n", len);
++		return;
++	}
++
++	attrs = (struct rtattr *)((char *)ghdr + GENL_HDRLEN);
++	/* parse the attributes in this message */
++	parse_rtattr(tb, ACPI_GENL_ATTR_MAX, attrs, len);
++
++	/* if there's an ACPI event attribute... */
++	if (tb[ACPI_GENL_ATTR_EVENT]) {
++		/* get the actual event struct */
++		struct acpi_genl_event *event =
++				RTA_DATA(tb[ACPI_GENL_ATTR_EVENT]);
++		char buf[64];
++
++		/* format it */
++		snprintf(buf, sizeof(buf), "%s %s %08x %08x",
++			event->device_class, event->bus_id, event->type, event->data);
++
++		/* if we're locked, don't process the event */
++		if (locked()) {
++			if (logevents) {
++				acpid_log(LOG_INFO,
++					"lockfile present, not processing "
++					"netlink event \"%s\"\n", buf);
++			}
++			return;
++		}
++
++		if (logevents)
++			acpid_log(LOG_INFO,
++				"received netlink event \"%s\"\n", buf);
++
++		/* send the event off to the handler */
++		acpid_handle_event(buf);
++
++		if (logevents)
++			acpid_log(LOG_INFO,
++				"completed netlink event \"%s\"\n", buf);
++	}
++}
++
++/* (based on rtnl_listen() in libnetlink.c) */
++void
++process_netlink(int fd)
++{
++	int status;
++	struct nlmsghdr *h;
++	/* the address for recvmsg() */
++	struct sockaddr_nl nladdr;
++	/* the io vector for recvmsg() */
++	struct iovec iov;
++	/* recvmsg() parameters */
++	struct msghdr msg = {
++		.msg_name = &nladdr,
++		.msg_namelen = sizeof(nladdr),
++		.msg_iov = &iov,
++		.msg_iovlen = 1,
++	};
++	/* buffer for the incoming data */
++	char buf[8192];
++	static int nerrs;
++
++	/* set up the netlink address */
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++	nladdr.nl_pid = 0;
++	nladdr.nl_groups = 0;
++
++	/* set up the I/O vector */
++	iov.iov_base = buf;
++	iov.iov_len = sizeof(buf);
++	
++	/* read the data into the buffer */
++	status = recvmsg(fd, &msg, 0);
++
++	/* if there was a problem, print a message and keep trying */
++	if (status < 0) {
++		/* if we were interrupted by a signal, bail */
++		if (errno == EINTR)
++			return;
++		
++		acpid_log(LOG_ERR, "netlink read error: %s (%d)\n",
++			strerror(errno), errno);
++		if (++nerrs >= ACPID_MAX_ERRS) {
++			acpid_log(LOG_ERR,
++				"too many errors reading via "
++				"netlink - aborting\n");
++			exit(EXIT_FAILURE);
++		}
++		return;
++	}
++	/* if an orderly shutdown has occurred, we're done */
++	if (status == 0) {
++		acpid_log(LOG_WARNING, "netlink connection closed\n");
++		exit(EXIT_FAILURE);
++	}
++	/* check to see if the address length has changed */
++	if (msg.msg_namelen != sizeof(nladdr)) {
++		acpid_log(LOG_WARNING, "netlink unexpected length: "
++			"%d   expected: %d\n", msg.msg_namelen, sizeof(nladdr));
++		return;
++	}
++	
++	/* for each message received */
++	for (h = (struct nlmsghdr*)buf; (unsigned)status >= sizeof(*h); ) {
++		int len = h->nlmsg_len;
++		int l = len - sizeof(*h);
++
++		if (l < 0  ||  len > status) {
++			if (msg.msg_flags & MSG_TRUNC) {
++				acpid_log(LOG_WARNING, "netlink msg truncated (1)\n");
++				return;
++			}
++			acpid_log(LOG_WARNING,
++				"malformed netlink msg, length %d\n", len);
++			return;
++		}
++
++		/* format the message */
++		format_netlink(h);
++
++		status -= NLMSG_ALIGN(len);
++		h = (struct nlmsghdr*)((char*)h + NLMSG_ALIGN(len));
++	}
++	if (msg.msg_flags & MSG_TRUNC) {
++		acpid_log(LOG_WARNING, "netlink msg truncated (2)\n");
++		return;
++	}
++	if (status) {
++		acpid_log(LOG_WARNING, "netlink remnant of size %d\n", status);
++		return;
++	}
++
++	return;
++}
++
++/* convert the netlink multicast group number into a bit map */
++/* (e.g. 4 => 16, 5 => 32) */
++static __u32
++nl_mgrp(__u32 group)
++{
++	if (group > 31) {
++		fprintf(stderr, "%s: unexpected group number %d\n",
++			progname, group);
++		return 0;
++	}
++	return group ? (1 << (group - 1)) : 0;
++}
++
++void open_netlink(void)
++{
++	struct rtnl_handle rth;
++	struct connection c;
++
++	/* open the appropriate netlink socket for input */
++	if (rtnl_open_byproto(
++		&rth, nl_mgrp(acpi_ids_getgroup()), NETLINK_GENERIC) < 0) {
++		fprintf(stderr, "%s: cannot open generic netlink socket\n",
++			progname);
++		return;
++	}
++
++	if (acpid_debug)
++		fprintf(stderr, "%s: netlink opened successfully\n", progname);
++
++	/* add a connection to the list */
++	c.fd = rth.fd;
++	c.process = process_netlink;
++	add_connection(&c);
++}
+diff -ruN acpid-1.0.10/netlink.h acpid-1.0.10-netlink2/netlink.h
+--- acpid-1.0.10/netlink.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/netlink.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,31 @@
++/*
++ *  netlink.h - Kernel ACPI Event Netlink Interface
++ *
++ *  Handles the details of getting kernel ACPI events from netlink.
++ *
++ *  Copyright (C) 2008, Ted Felix (www.tedfelix.com)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ *  (tabs at 4)
++ */
++
++#ifndef NETLINK_H__
++#define NETLINK_H__
++
++/* open the netlink connection */
++extern void open_netlink(void);
++
++#endif /* NETLINK_H__ */
+diff -ruN acpid-1.0.10/proc.c acpid-1.0.10-netlink2/proc.c
+--- acpid-1.0.10/proc.c	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/proc.c	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,207 @@
++/*
++ *  proc.c - ACPI daemon proc filesystem interface
++ *
++ *  Portions Copyright (C) 2000 Andrew Henroid
++ *  Portions Copyright (C) 2001 Sun Microsystems
++ *  Portions Copyright (C) 2004 Tim Hockin (thockin@hockin.org)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++
++#include "acpid.h"
++#include "event.h"
++#include "connection_list.h"
++
++const char *eventfile = ACPID_EVENTFILE;
++
++static char *read_line(int fd);
++
++static void
++process_proc(int fd)
++{
++	char *event;
++
++	/* read an event */
++	event = read_line(fd);
++
++	/* if we're locked, don't process the event */
++	if (locked()) {
++		if (logevents  &&  event != NULL) {
++			acpid_log(LOG_INFO,
++				"lockfile present, not processing "
++				"event \"%s\"\n", event);
++		}
++		return;
++	}
++
++	/* handle the event */
++	if (event) {
++		if (logevents) {
++			acpid_log(LOG_INFO,
++			          "procfs received event \"%s\"\n", event);
++		}
++		acpid_handle_event(event);
++		if (logevents) {
++			acpid_log(LOG_INFO,
++				"procfs completed event \"%s\"\n", event);
++		}
++	} else if (errno == EPIPE) {
++		acpid_log(LOG_WARNING,
++			"events file connection closed\n");
++		exit(EXIT_FAILURE);
++	} else {
++		static int nerrs;
++		if (++nerrs >= ACPID_MAX_ERRS) {
++			acpid_log(LOG_ERR,
++				"too many errors reading "
++				"events file - aborting\n");
++			exit(EXIT_FAILURE);
++		}
++	}
++}
++
++int
++open_proc()
++{
++	int fd;
++	struct connection c;
++	
++	fd = open(eventfile, O_RDONLY);
++	if (fd < 0) {
++	    if (acpid_debug)
++		fprintf(stderr, "%s: can't open %s: %s\n", progname, 
++			eventfile, strerror(errno));
++		return -1;
++	}
++	fcntl(fd, F_SETFD, FD_CLOEXEC);
++
++	if (acpid_debug)
++		fprintf(stderr, "%s: proc fs opened successfully\n", progname);
++
++	/* add a connection to the list */
++	c.fd = fd;
++	c.process = process_proc;
++	add_connection(&c);
++
++	return 0;
++}
++
++/*
++ * This depends on fixes in linux ACPI after 2.4.8
++ */
++#define BUFLEN 1024
++static char *
++read_line(int fd)
++{
++	static char buf[BUFLEN];
++	int i = 0;
++	int r;
++	int searching = 1;
++
++	while (searching) {
++		memset(buf+i, 0, BUFLEN-i);
++
++		/* only go to BUFLEN-1 so there will always be a 0 at the end */
++		while (i < BUFLEN-1) {
++			r = read(fd, buf+i, 1);
++			if (r < 0 && errno != EINTR) {
++				/* we should do something with the data */
++				acpid_log(LOG_ERR, "read(): %s\n",
++					strerror(errno));
++				return NULL;
++			} else if (r == 0) {
++				/* signal this in an almost standard way */
++				errno = EPIPE;
++				return NULL;
++			} else if (r == 1) {
++				/* scan for a newline */
++				if (buf[i] == '\n') {
++					searching = 0;
++					buf[i] = '\0';
++					break;
++				}
++				i++;
++			}
++		}
++		if (i >= BUFLEN - 1)
++			break;
++	}
++
++	return buf;
++}
++
++#if 0
++/* This version leaks memory.  The above version is simpler and leak-free. */
++/* Downside is that the above version always uses 1k of RAM. */
++/*
++ * This depends on fixes in linux ACPI after 2.4.8
++ */
++#define MAX_BUFLEN	1024
++static char *
++read_line(int fd)
++{
++	static char *buf;
++	int buflen = 64;
++	int i = 0;
++	int r;
++	int searching = 1;
++
++	while (searching) {
++		/* ??? This memory is leaked since it is never freed */
++		buf = realloc(buf, buflen);
++		if (!buf) {
++			acpid_log(LOG_ERR, "malloc(%d): %s\n",
++				buflen, strerror(errno));
++			return NULL;
++		}
++		memset(buf+i, 0, buflen-i);
++
++		while (i < buflen) {
++			r = read(fd, buf+i, 1);
++			if (r < 0 && errno != EINTR) {
++				/* we should do something with the data */
++				acpid_log(LOG_ERR, "read(): %s\n",
++					strerror(errno));
++				return NULL;
++			} else if (r == 0) {
++				/* signal this in an almost standard way */
++				errno = EPIPE;
++				return NULL;
++			} else if (r == 1) {
++				/* scan for a newline */
++				if (buf[i] == '\n') {
++					searching = 0;
++					buf[i] = '\0';
++					break;
++				}
++				i++;
++			}
++		}
++		if (buflen >= MAX_BUFLEN) {
++			break;
++		} 
++		buflen *= 2;
++	}
++
++	return buf;
++}
++#endif
+diff -ruN acpid-1.0.10/proc.h acpid-1.0.10-netlink2/proc.h
+--- acpid-1.0.10/proc.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/proc.h	2009-04-29 16:37:13.000000000 +0200
+@@ -0,0 +1,30 @@
++/*
++ *  proc.h - ACPI daemon proc filesystem interface
++ *
++ *  Portions Copyright (C) 2000 Andrew Henroid
++ *  Portions Copyright (C) 2001 Sun Microsystems
++ *  Portions Copyright (C) 2004 Tim Hockin (thockin@hockin.org)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef PROC_H__
++#define PROC_H__
++
++extern const char *eventfile;
++
++extern int open_proc();
++
++#endif /* PROC_H__ */
+diff -ruN acpid-1.0.10/README-NETLINK acpid-1.0.10-netlink2/README-NETLINK
+--- acpid-1.0.10/README-NETLINK	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/README-NETLINK	2009-05-03 02:25:12.000000000 +0200
+@@ -0,0 +1,12 @@
++acpid for netlink
++
++This is Ted Felix's <http://www.tedfelix.com> branch of the acpid project 
++which includes support for netlink and the input layer.
++
++/proc/acpi/event is a deprecated kernel interface for ACPI events.  Newer
++kernels rely on netlink and the input layer to send ACPI-related events.
++This branch of acpid uses these new interfaces.
++
++Any comments or patches for this branch should be sent to Ted Felix:
++
++http://www.tedfelix.com
+diff -ruN acpid-1.0.10/sock.c acpid-1.0.10-netlink2/sock.c
+--- acpid-1.0.10/sock.c	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/sock.c	2009-05-02 04:34:16.000000000 +0200
+@@ -0,0 +1,118 @@
++/*
++ *  sock.c - ACPI daemon socket interface
++ *
++ *  Portions Copyright (C) 2000 Andrew Henroid
++ *  Portions Copyright (C) 2001 Sun Microsystems
++ *  Portions Copyright (C) 2004 Tim Hockin (thockin@hockin.org)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <grp.h>
++
++#include "acpid.h"
++#include "event.h"
++#include "ud_socket.h"
++#include "connection_list.h"
++
++const char *socketfile = ACPID_SOCKETFILE;
++const char *socketgroup;
++mode_t socketmode = ACPID_SOCKETMODE;
++int clientmax = ACPID_CLIENTMAX;
++
++/* the number of non-root clients that are connected */
++int non_root_clients;
++
++static void
++process_sock(int fd)
++{
++	int cli_fd;
++	struct ucred creds;
++	char buf[32];
++	static int accept_errors;
++
++	/* accept and add to our lists */
++	cli_fd = ud_accept(fd, &creds);
++	if (cli_fd < 0) {
++		acpid_log(LOG_ERR, "can't accept client: %s\n",
++			  strerror(errno));
++		accept_errors++;
++		if (accept_errors >= 5) {
++			acpid_log(LOG_ERR, "giving up\n");
++			clean_exit_with_status(EXIT_FAILURE);
++		}
++		return;
++	}
++	accept_errors = 0;
++	if (creds.uid != 0 && non_root_clients >= clientmax) {
++		close(cli_fd);
++		acpid_log(LOG_ERR,
++		    "too many non-root clients\n");
++		return;
++	}
++	if (creds.uid != 0) {
++		non_root_clients++;
++	}
++	fcntl(cli_fd, F_SETFD, FD_CLOEXEC);
++	snprintf(buf, sizeof(buf)-1, "%d[%d:%d]",
++		 creds.pid, creds.uid, creds.gid);
++	acpid_add_client(cli_fd, buf);
++}
++
++void
++open_sock()
++{
++	int fd;
++	struct connection c;
++
++	fd = ud_create_socket(socketfile);
++	if (fd < 0) {
++		fprintf(stderr, "%s: can't open socket %s: %s\n",
++			progname, socketfile, strerror(errno));
++		exit(EXIT_FAILURE);
++	}
++	fcntl(fd, F_SETFD, FD_CLOEXEC);
++	chmod(socketfile, socketmode);
++	if (socketgroup) {
++		struct group *gr;
++		struct stat buf;
++		gr = getgrnam(socketgroup);
++		if (!gr) {
++			fprintf(stderr, "%s: group %s does not exist\n",
++				progname, socketgroup);
++			exit(EXIT_FAILURE);
++		}
++		if (stat(socketfile, &buf) < 0) {
++			fprintf(stderr, "%s: can't stat %s\n",
++				progname, socketfile);
++			exit(EXIT_FAILURE);
++		}
++		if (chown(socketfile, buf.st_uid, gr->gr_gid) < 0) {
++			fprintf(stderr, "%s: chown(): %s\n",
++				progname, strerror(errno));
++			exit(EXIT_FAILURE);
++		}
++	}
++	
++	/* add a connection to the list */
++	c.fd = fd;
++	c.process = process_sock;
++	add_connection(&c);
++}
+diff -ruN acpid-1.0.10/sock.h acpid-1.0.10-netlink2/sock.h
+--- acpid-1.0.10/sock.h	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/sock.h	2009-05-02 04:26:46.000000000 +0200
+@@ -0,0 +1,34 @@
++/*
++ *  sock.h - ACPI daemon socket interface
++ *
++ *  Portions Copyright (C) 2000 Andrew Henroid
++ *  Portions Copyright (C) 2001 Sun Microsystems
++ *  Portions Copyright (C) 2004 Tim Hockin (thockin@hockin.org)
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef SOCK_H__
++#define SOCK_H__
++
++extern const char *socketfile;
++extern const char *socketgroup;
++extern mode_t socketmode;
++extern int clientmax;
++extern int non_root_clients;
++
++extern void open_sock();
++
++#endif /* SOCK_H__ */
+diff -ruN acpid-1.0.10/TESTPLAN acpid-1.0.10-netlink2/TESTPLAN
+--- acpid-1.0.10/TESTPLAN	1970-01-01 01:00:00.000000000 +0100
++++ acpid-1.0.10-netlink2/TESTPLAN	2008-11-15 03:29:16.000000000 +0100
+@@ -0,0 +1,59 @@
++acpid Test Plan
++
++Note: Run all these tests with valgrind to detect memory leaks.
++
++Normal Paths
++
++* proc fs, all events
++Start acpid against /proc/acpi/event (if it exists).
++Test each of the following events:
++1. Power Button
++2. Laptop Lid Switch
++3. Sleep Button
++4. Laptop AC Adapter
++5. Laptop Battery
++
++* input layer/netlink, all events
++Start acpid against the input layer and netlink.
++Test each of the following events:
++1. Power Button
++2. Laptop Lid Switch
++3. Sleep Button
++4. Laptop AC Adapter
++5. Laptop Battery
++
++* input layer/netlink fallback
++Start acpid with a bogus events file specified via the options.
++  acpid -e /proc/acpi/bogus
++Make sure a connection is made via the input layer and netlink.
++
++* lockfile procfs
++Start acpid against the proc fs
++Try some events and make sure they are coming through.
++Create the lockfile.
++Try some events and make sure they do not come through.
++Remove the lockfile.
++Try some events and make sure they are coming through.
++
++* lockfile netlink
++Start acpid against input layer and netlink.
++Try some events and make sure they are coming through.
++Create the lockfile.
++Try some events and make sure they do not come through.
++Remove the lockfile.
++Try some events and make sure they are coming through.
++
++Debugging Paths
++
++* event logging
++Run acpid without the -l option and make sure no events are logged to syslog.
++Run acpid with the -l option and make sure events are logged to syslog.
++
++* debug mode
++Run acpid with the -d option and note that it runs in the foreground and provides debugging info to the console.
++acpid also supports up to 4 debug levels in the event handler.  Might want to try "-dddd" and see what happens.
++
++* foreground mode
++Run acpid with the -f option and note that it runs in the foreground.
++Run acpid without the -f option and note that it runs in the background.
++
