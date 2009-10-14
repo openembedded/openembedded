@@ -24,13 +24,13 @@ KV_dm500plus = "2.6.12"
 PV_dm500plus = "${KV}-20080822"
 
 KV_dm800 = "2.6.12-5.1-brcmstb-dm800"
-PV_dm800 = "${KV}-20090912"
+PV_dm800 = "${KV}-20091012"
 
 KV_dm500hd = "2.6.12-5.1-brcmstb-dm500hd"
 PV_dm500hd = "${KV}-20090521"
 
 KV_dm8000 = "2.6.12-5.1-brcmstb-dm8000"
-PV_dm8000 = "${KV}-20090912"
+PV_dm8000 = "${KV}-20091012"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
