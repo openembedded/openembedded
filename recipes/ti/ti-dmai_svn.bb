@@ -16,7 +16,6 @@ DEPENDS_da830-omapl137-evm 	+= "alsa-lib  ti-codec-engine ti-xdctools-native ti-
 # Define DMAI build time variables
 TARGET 			?= "all"
 TARGET_armv7a 	?= "o3530_al"
-TARGET_dm355-evm 	?= "dm355_al"
 TARGET_dm6446-evm 	?= "dm6446_al"
 TARGET_da830-omapl137-evm 	?= "ol137_al"
 

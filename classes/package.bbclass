@@ -652,6 +652,10 @@ python package_do_shlibs() {
 		needs_ldconfig = False
 		bb.debug(2, "calculating shlib provides for %s" % pkg)
 
+		pkgver = bb.data.getVar('PV_' + pkg, d, 1)
+		if not pkgver:
+			pkgver = ver
+
 		needed[pkg] = []
 		sonames = list()
 		top = os.path.join(pkgdest, pkg)
@@ -696,7 +700,7 @@ python package_do_shlibs() {
 			fd.close()
 			package_stagefile(shlibs_file, d)
 			fd = open(shver_file, 'w')
-			fd.write(ver + '\n')
+			fd.write(pkgver + '\n')
 			fd.close()
 			package_stagefile(shver_file, d)
 		if needs_ldconfig and use_ldconfig:

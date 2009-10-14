@@ -13,8 +13,8 @@ S = "${WORKDIR}/mail-${PV}"
 
 DEPENDS = "fastjar-native gnujaf inetlib"
 
-export JAVAC = "javac"
-export JAVA = "java"
+export JAVAC = "${STAGING_BINDIR_NATIVE}/javac"
+export JAVA = "${STAGING_BINDIR_NATIVE}/java"
 
 # Fake javadoc
 export JAVADOC = "true"

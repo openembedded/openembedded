@@ -3,9 +3,10 @@ DESCRIPTION = "Codec Engine 2.24.01 for TI ARM/DSP processors"
 require ti-paths.inc
 
 # compile time dependencies
-DEPENDS_dm6446-evm 	+= "ti-xdctools-native ti-cgt6x-native ti-dspbios-native ti-dsplink-module"
-DEPENDS_armv7a   	+= "ti-cgt6x-native ti-dspbios-native ti-xdctools-native ti-dsplink-module"
-DEPENDS_dm355-evm 	+= "ti-xdctools-native"
+DEPENDS = "ti-xdctools-native"
+
+DEPENDS_append_dm6446-evm 	= " ti-cgt6x-native ti-dspbios-native ti-dsplink-module"
+DEPENDS_append_armv7a   	= " ti-cgt6x-native ti-dspbios-native ti-dsplink-module"
 
 # tconf from xdctools dislikes '.' in pwd :/
 PR = "r7"
@@ -17,16 +18,13 @@ SRC_URI = "http://install.source.dir.local/codec_engine_2_24_01.tar.gz "
 S = "${WORKDIR}/codec_engine_2_24_01"
 
 # Define Device variable
-DEVICES_dm355-evm 	?= "DM355"
 DEVICES_dm6446-evm 	?= "DM6446"
 
 # define gppos variable
-GPPOS_dm355-evm 	?= "LINUX_GCC"
 GPPOS_dm6446-evm 	?= "LINUX_GCC"
 
 #define PROGRAM variables
 PROGRAMS 		   = "APP_CLIENT DSP_SERVER"
-PROGRAMS_dm355-evm ?= "APP_LOCAL"
 
 LINK_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dsplink-module/packages"
 DSPBIOS_DIR="${STAGING_DIR_NATIVE}/ti-dspbios-native"
