@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 \
            ${SOURCEFORGE_MIRROR}/mesa3d/MesaDemos-${PV}.tar.bz2 "
 S = "${WORKDIR}/Mesa-${PV}"
 
-PROVIDES = "virtual/libgl"
+PROVIDES = "virtual/libgl mesa"
 
 inherit autotools pkgconfig
 

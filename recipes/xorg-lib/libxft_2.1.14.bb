@@ -8,6 +8,8 @@ PE = "1"
 
 XORG_PN = "libXft"
 
+SRC_URI += "file://autoconf.workaround.patch;patch=1"
+
 python do_package() {
         if bb.data.getVar('DEBIAN_NAMES', d, 1):
             bb.data.setVar('PKG_${PN}', 'libxft2', d)

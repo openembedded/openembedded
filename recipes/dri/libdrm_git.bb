@@ -10,7 +10,7 @@ DEPENDS = "libpthread-stubs virtual/kernel"
 PV=2.4.15+gitr${SRCPV}
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_om-gta02 = "1"
+DEFAULT_PREFERENCE_om-gta02 = "2"
 
 S = "${WORKDIR}/git"
 

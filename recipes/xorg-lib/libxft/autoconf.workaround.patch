@@ -1,0 +1,16 @@
+diff -uNr libXft-2.1.14/include/X11/Xft/Xft.h.in libXft-2.1.14.new/include/X11/Xft/Xft.h.in
+--- libXft-2.1.14/include/X11/Xft/Xft.h.in	2009-10-06 09:36:40.000000000 +0200
++++ libXft-2.1.14.new/include/X11/Xft/Xft.h.in	2009-10-14 20:45:30.000000000 +0200
+@@ -27,9 +27,9 @@
+  * Current Xft version number, set from version in the Xft configure.ac file.
+  */
+ 
+-#undef XFT_MAJOR	/* Will be substituted by configure */
+-#undef XFT_MINOR	/* Will be substituted by configure */
+-#undef XFT_REVISION	/* Will be substituted by configure */
++#define XFT_MAJOR 2
++#define XFT_MINOR 1
++#define XFT_REVISION 14
+ 
+ #define XFT_VERSION	((XFT_MAJOR * 10000) + (XFT_MINOR * 100) + (XFT_REVISION))
+ #define XftVersion	XFT_VERSION
