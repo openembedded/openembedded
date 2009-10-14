@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 inherit e update-alternatives
 
@@ -169,7 +169,7 @@ FILES_${PN}-doc += "\
   ${datadir}/enlightenment/doc \
 "
 
-CONFFILES_${PN} = "${sysconfdir}/xdg/menus/applications.menu"
+CONFFILES_${PN}-menu = "${sysconfdir}/xdg/menus/applications.menu"
 CONFFILES_${PN}-sysactions = "/etc/enlightenment/sysactions.conf"
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
