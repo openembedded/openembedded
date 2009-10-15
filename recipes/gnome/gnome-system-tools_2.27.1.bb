@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME utilities"
 SECTION = "x11/gnome"
 LICENSE = "GPL"
-DEPENDS = "gnome-common glib-2.0 gtk+ gconf liboobs system-tools-backends gnome-control-center"
+DEPENDS = "nautilus gnome-common glib-2.0 gtk+ gconf liboobs system-tools-backends gnome-control-center"
 inherit gnome pkgconfig
 
 EXTRA_OECONF = "--disable-scrollkeeper \
