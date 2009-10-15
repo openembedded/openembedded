@@ -6,8 +6,10 @@ LIB_DEPS = "libdrm virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
 PV = "7.5.1+gitr${SRCREV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 PE = "1"
+
+PROVIDES = "mesa"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_om-gta02 = "2"
@@ -20,7 +22,10 @@ PACKAGES =+ " ${PN}-xprogs "
 
 do_install_append () {
     install -d ${D}/usr/bin
-    install -m 0755 ${S}/progs/xdemos/{glxdemo,glxgears,glxheads,glxinfo} ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxdemo ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxgears ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxheads ${D}/usr/bin/
+    install -m 0755 ${S}/progs/xdemos/glxinfo ${D}/usr/bin/
 }
 
 FILES_${PN} += "${libdir}/dri/*.so"
