@@ -6,10 +6,8 @@ LIB_DEPS = "libdrm virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
 PV = "7.5.1+gitr${SRCREV}"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 PE = "1"
-
-PROVIDES = "mesa"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_om-gta02 = "2"
