@@ -25,10 +25,11 @@ do_configure_append() {
 }
 
 do_install_append() {
+    install -d ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/connman ${D}${sysconfdir}/init.d/connman
     install -d ${D}${libdir}/connman/test/
     for file in test/*; do install -m 0755 $file ${D}${libdir}/connman/test/; done
-    rm ${D}${libdir}/connman/test/Makefile*
+    rm -f ${D}${libdir}/connman/test/Makefile*
     install -d ${D}${datadir}/dbus-1/system-services/
     install ${WORKDIR}/connman.dbus ${D}${datadir}/dbus-1/system-services/org.moblin.connman.service
 }
