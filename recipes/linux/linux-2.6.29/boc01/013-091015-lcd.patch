@@ -1,7 +1,7 @@
 Index: linux-2.6.29/drivers/video/Kconfig
 ===================================================================
---- linux-2.6.29.orig/drivers/video/Kconfig	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/video/Kconfig	2009-04-01 17:38:36.000000000 +0200
+--- linux-2.6.29.orig/drivers/video/Kconfig	2009-10-15 18:49:56.000000000 +0200
++++ linux-2.6.29/drivers/video/Kconfig	2009-10-15 19:16:22.000000000 +0200
 @@ -491,6 +491,28 @@
  	  this driver, say Y or M; otherwise say N. You must specify the
  	  GPIO IO address to be used for setting control and data.
@@ -33,8 +33,8 @@ Index: linux-2.6.29/drivers/video/Kconfig
  	depends on (FB = y) && ATARI
 Index: linux-2.6.29/drivers/video/Makefile
 ===================================================================
---- linux-2.6.29.orig/drivers/video/Makefile	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/video/Makefile	2009-04-01 17:38:36.000000000 +0200
+--- linux-2.6.29.orig/drivers/video/Makefile	2009-10-15 18:49:56.000000000 +0200
++++ linux-2.6.29/drivers/video/Makefile	2009-10-15 19:16:22.000000000 +0200
 @@ -30,6 +30,7 @@
  # Hardware specific drivers go first
  obj-$(CONFIG_FB_AMIGA)            += amifb.o c2p_planar.o
@@ -46,12 +46,13 @@ Index: linux-2.6.29/drivers/video/Makefile
 Index: linux-2.6.29/drivers/video/nt7506fb.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.29/drivers/video/nt7506fb.c	2009-04-01 17:38:36.000000000 +0200
-@@ -0,0 +1,880 @@
++++ linux-2.6.29/drivers/video/nt7506fb.c	2009-10-15 19:16:52.000000000 +0200
+@@ -0,0 +1,899 @@
 +/*
 + * linux/drivers/video/nt7506fb.c -- FB driver for NT7506 monochrome LCD board
 + *
 + * Copyright (C) 2008, CenoSYS (www.cenosys.com).
++ * Copyright (C) 2009, Bollore telecom (www.bolloretelecom.eu).
 + *
 + * Alexandre Coffignal <alexandre.coffignal@cenosys.com>
 + * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
@@ -87,7 +88,6 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +#include <linux/platform_device.h>
 +#include <linux/backlight.h>
 +#include <linux/lcd.h>
-+#include <linux/nt7506fb.h>
 +
 +#include <linux/uaccess.h>
 +
@@ -178,18 +178,18 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +static struct resource *lcd_mem = NULL;
 +static void * _lcd_io = NULL;
 +static unsigned long tuhold;
-+struct fb_info *info;
-+static struct timer_list fb_timer;
-+static char _fps = DEFAULT_FPS;
 +static char _backlight = 1;
 +
 +struct nt7506fb_par {
 +	atomic_t ref_count;
 +	struct fb_info *info;
-+	spinlock_t lock;
 +	struct lcd_device *lcd_dev;
 +	int power;
 +	int contrast;
++
++	/* refresh rate and timer */
++	unsigned int framerate;
++	struct timer_list timer;
 +};
 +
 +static struct fb_fix_screeninfo nt7506fb_fix __initdata = {
@@ -296,9 +296,9 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	struct nt7506fb_par *par = lcd_get_data(lcd_dev);
 +
 +	par->contrast = contrast;
-+	NT7506_writeb_ctl(NT_ELEC_VOL);	NT7506_writeb_ctl(par->contrast);
++	NT7506_writeb_ctl(NT_ELEC_VOL);
++	NT7506_writeb_ctl(par->contrast);
 +
-+	//printk(KERN_INFO DRIVER_NAME": contrast = %d\n", par->contrast);
 +	return 0;
 +}
 +
@@ -313,17 +313,17 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	struct fb_info *info = par->info;
 +	struct lcd_device *lcd_dev;
 +
-+	lcd_dev = lcd_device_register(DRIVER_NAME, info->dev, par, &nt7506fb_lcd_ops);
++	lcd_dev = lcd_device_register("nt7506fb-lcd", info->dev, par, &nt7506fb_lcd_ops);
 +	if (IS_ERR(lcd_dev)) {
 +		par->lcd_dev = NULL;
-+		printk(KERN_WARNING DRIVER_NAME ": LCD device registration failed\n");
++		dev_warn(info->device, "LCD device registration failed\n");
 +		return;
 +	}
 +
 +	par->lcd_dev = lcd_dev;
 +	lcd_dev->props.max_contrast = 255;
 +	par->contrast = DEFAULT_CONTRAST;
-+	printk(KERN_INFO DRIVER_NAME ": LCD contrast management initialized\n");
++	dev_info(info->device, "LCD contrast management initialized\n");
 +}
 +
 +static void
@@ -339,17 +339,18 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +/*
 + * Backlight device management
 + */
-+static void nt7506fb_start_timer(void);
++static void nt7506fb_start_timer(struct nt7506fb_par *par);
 +
 +static int
 +nt7506fb_bl_update_status(struct backlight_device *bd)
 +{
 +	struct nt7506fb_par *par = bl_get_data(bd);
++	struct fb_info *info = par->info;
 +	int power_on = (bd->props.power != FB_BLANK_POWERDOWN);
 +
 +	_backlight = bd->props.brightness & power_on;
 +
-+	printk(KERN_INFO DRIVER_NAME ": backlight=%d power_on=%d\n", _backlight, power_on);
++	dev_info(info->device, "backlight=%d power_on=%d\n", _backlight, power_on);
 +
 +	if ( bd->props.power != par->power ) {
 +		par->power = bd->props.power;
@@ -360,12 +361,12 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +			NT7506_writeb_ctl(NT_RLS_PWRSAVE);
 +
 +			/* Restart refresh timer */
-+			if ( ! timer_pending(&fb_timer) )
-+				nt7506fb_start_timer();
++			if ( ! timer_pending(&par->timer) )
++				nt7506fb_start_timer(par);
 +		}
 +		else {
 +			/* Throttle refresh timer */
-+			del_timer(&fb_timer);
++			del_timer(&par->timer);
 +
 +			/* Put LCD device in power save mode */
 +			NT7506_writeb_ctl(NT_SET_PWRSAVE|ON);
@@ -373,7 +374,6 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +		}
 +	}
 +
-+	//printk(KERN_INFO DRIVER_NAME": backlight = %d\n", _backlight);
 +	return 0;
 +}
 +
@@ -388,17 +388,16 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	.update_status	= nt7506fb_bl_update_status,
 +};
 +
-+
 +static void
 +nt7506fb_bl_init(struct nt7506fb_par *par)
 +{
 +	struct fb_info *info = par->info;
 +	struct backlight_device *bd;
 +
-+	bd = backlight_device_register(DRIVER_NAME, info->dev, par, &nt7506fb_bl_ops);
++	bd = backlight_device_register("nt7506fb-bl", info->dev, par, &nt7506fb_bl_ops);
 +	if (IS_ERR(bd)) {
 +		info->bl_dev = NULL;
-+		printk(KERN_WARNING DRIVER_NAME ": Backlight device registration failed\n");
++		dev_warn(info->device, "Backlight device registration failed\n");
 +		return;
 +	}
 +
@@ -410,7 +409,7 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +
 +	nt7506fb_bl_update_status(bd);
 +
-+	printk(KERN_INFO DRIVER_NAME ": Backlight control initialized\n");
++	dev_info(info->device, "Backlight control initialized\n");
 +}
 +
 +static void
@@ -467,7 +466,7 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	unsigned char *ptr;
 +	unsigned char xshift;
 +
-+	if ( info->var.bits_per_pixel == 1 ) {
++	if ( par->info->var.bits_per_pixel == 1 ) {
 +
 +		for (page = 0; page < LCD_NPAGES; page++) {
 +			NT7506_set_yaddr(page);
@@ -509,8 +508,6 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +{
 +	sys_fillrect(info, rect);
 +}
-+
-+
 +
 +static void nt7506fb_copyarea(struct fb_info *info,
 +			   const struct fb_copyarea *area)
@@ -595,26 +592,6 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +
 +}
 +
-+
-+static int nt7506fb_ioctl(struct fb_info *info,
-+			  unsigned int cmd, unsigned long arg)
-+{
-+	unsigned char frame_rate;
-+
-+	switch ( cmd ) {
-+	case FBIO_FRAMERATE:
-+		if (get_user(frame_rate, (unsigned char *)arg))
-+			return -EFAULT;
-+		printk(KERN_INFO "fb%d: framerate=%d Hz\n", info->node, frame_rate);
-+		_fps = frame_rate;
-+		return 0;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+
 +static struct fb_ops nt7506fb_ops = {
 +	.owner		= THIS_MODULE,
 +	.fb_open	= nt7506fb_open,
@@ -625,23 +602,22 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	.fb_fillrect	= nt7506fb_fillrect,
 +	.fb_copyarea	= nt7506fb_copyarea,
 +	.fb_imageblit	= nt7506fb_imageblit,
-+	.fb_ioctl 	= nt7506fb_ioctl,
 +	.fb_mmap	= nt7506fb_mmap,
 +};
 +
-+
 +static void
-+nt7506fb_start_timer(void)
++nt7506fb_start_timer(struct nt7506fb_par *par)
 +{
-+	fb_timer.expires = jiffies + (HZ/_fps);
-+	add_timer(&fb_timer);
++	par->timer.expires = jiffies + (HZ/par->framerate);
++	add_timer(&par->timer);
 +}
 +
 +static void
 +nt7506fb_refresh(unsigned long data)
 +{
-+	nt7506fb_lcd_update(info->par);
-+	nt7506fb_start_timer();
++	struct nt7506fb_par *par = (struct nt7506fb_par *)data;
++	nt7506fb_lcd_update(par);
++	nt7506fb_start_timer(par);
 +}
 +
 +/*
@@ -664,15 +640,55 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +
 +#endif
 +
++/*
++ * sysfs attributes
++ */
++
++static ssize_t show_framerate(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct fb_info *info = platform_get_drvdata(to_platform_device(dev));
++	struct nt7506fb_par *par = info->par;
++	return snprintf(buf, PAGE_SIZE, "%u\n", par->framerate);
++}
++
++static ssize_t store_framerate(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct fb_info *info = platform_get_drvdata(to_platform_device(dev));
++	struct nt7506fb_par *par = info->par;
++	unsigned int framerate;
++	if (sscanf(buf, "%u", &framerate) == 1 && framerate > 0)
++	{
++		par->framerate = framerate;
++		return count;
++	}
++	return -EINVAL;
++}
++
++static DEVICE_ATTR(framerate, S_IRUGO | S_IWUSR, show_framerate, store_framerate);
++
++static struct attribute *nt7506fb_attributes[] = {
++	&dev_attr_framerate.attr,
++	NULL,
++};
++
++static struct attribute_group nt7506fb_group = {
++	.name = NULL,
++	.attrs = nt7506fb_attributes,
++};
++
 +
 +/*
 + * Device driver intialisation
 + */
 +
 +static int __init
-+nt7506fb_probe(struct platform_device *dev)
++nt7506fb_probe(struct platform_device *pdev)
 +{
 +	int retval = -ENOMEM;
++	struct device *dev = &pdev->dev;
++	struct fb_info *info;
 +	struct nt7506fb_par *par;
 +	static unsigned char *videomemory;
 +	static int videomemorysize;
@@ -682,11 +698,11 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +
 +	videomemorysize = LCD_WIDTH * LCD_HEIGHT / 4;
 +
-+	if (!(videomemory = kmalloc(videomemorysize,GFP_ATOMIC)))
++	if (!(videomemory = kmalloc(videomemorysize, GFP_ATOMIC)))
 +		goto failout;
 +	memset(videomemory, 0, videomemorysize);
 +
-+	info = framebuffer_alloc(sizeof(struct nt7506fb_par), &dev->dev);
++	info = framebuffer_alloc(sizeof(struct nt7506fb_par), dev);
 +
 +	if (!info)
 +		goto out_alloc;
@@ -700,16 +716,16 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +
 +	par = info->par;
 +	par->info = info;
++	par->framerate = DEFAULT_FPS;
 +
 +	info->flags = FBINFO_FLAG_DEFAULT;
-+	spin_lock_init(&par->lock);
-+	platform_set_drvdata(dev, info);
++	platform_set_drvdata(pdev, info);
 +
 +#ifdef CONFIG_FB_NT7506_GRAYSCALE
 +	/* Allocate cmap */
 +	retval = fb_alloc_cmap(&info->cmap, 4, 0);
 +	if (retval < 0) {
-+		printk(KERN_ERR "fb%d: Failed to allocate colormap\n", info->node);
++		dev_err(dev, "Failed to allocate colormap\n");
 +		goto out_register;
 +	}
 +
@@ -725,11 +741,11 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	if (retval < 0)
 +		goto out_register;
 +
-+	setup_timer(&fb_timer, nt7506fb_refresh, (unsigned long) par);
++	setup_timer(&par->timer, nt7506fb_refresh, (unsigned long) par);
 +
-+	printk(KERN_INFO
-+	       "fb%d: nt7506 frame buffer device, using %dK of video memory\n",
-+	       info->node, videomemorysize >> 10);
++	dev_info(dev,
++	       "nt7506 frame buffer device, using %dK of video memory\n",
++	       videomemorysize >> 10);
 +
 +	/* Create procfs entries for grayscale levels adjustment */
 +#ifdef CONFIG_PROC_FS
@@ -742,7 +758,12 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	nt7506fb_bl_init(par);
 +	nt7506fb_lcd_init(par);
 +
-+	nt7506fb_start_timer();
++	/* Register sysfs hooks */
++	retval = sysfs_create_group(&dev->kobj, &nt7506fb_group);
++	if (retval != 0)
++		dev_warn(dev, "Failed to register attributes\n");
++
++	nt7506fb_start_timer(par);
 +
 +	return 0;
 +
@@ -754,13 +775,15 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	return retval;
 +}
 +
-+static int nt7506fb_remove(struct platform_device *dev)
++static int nt7506fb_remove(struct platform_device *pdev)
 +{
-+	struct fb_info *info = platform_get_drvdata(dev);
++	struct fb_info *info = platform_get_drvdata(pdev);
++	struct nt7506fb_par *par = info->par;
 +
-+	del_timer(&fb_timer);
++	del_timer(&par->timer);
 +
 +	if (info) {
++		sysfs_remove_group(&pdev->dev.kobj, &nt7506fb_group);
 +		nt7506fb_lcd_exit(info->par);
 +		nt7506fb_bl_exit(info);
 +		unregister_framebuffer(info);
@@ -771,11 +794,11 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +}
 +
 +#ifdef CONFIG_PM
-+static int nt7506fb_suspend(struct platform_device *dev, pm_message_t state)
++static int nt7506fb_suspend(struct platform_device *pdev, pm_message_t state)
 +{
-+	struct fb_info *info = platform_get_drvdata(dev);
++	struct fb_info *info = platform_get_drvdata(pdev);
 +
-+	printk(KERN_INFO DRIVER_NAME ": suspend\n");
++	dev_info(info->device, "suspend\n");
 +
 +	info->bl_dev->props.power = FB_BLANK_POWERDOWN;
 +	nt7506fb_bl_update_status(info->bl_dev);
@@ -783,11 +806,11 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +	return 0;
 +}
 +
-+static int nt7506fb_resume(struct platform_device *dev)
++static int nt7506fb_resume(struct platform_device *pdev)
 +{
-+	struct fb_info *info = platform_get_drvdata(dev);
++	struct fb_info *info = platform_get_drvdata(pdev);
 +
-+	printk(KERN_INFO DRIVER_NAME ": resume\n");
++	dev_info(info->device, "resume\n");
 +
 +	info->bl_dev->props.power = FB_BLANK_UNBLANK;
 +	nt7506fb_bl_update_status(info->bl_dev);
@@ -816,8 +839,7 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +{
 +	int ret;
 +
-+
-+	if (!(lcd_mem = request_mem_region(LCD_BASE, LCD_SIZE, "mpc8313-lcd")))
++	if (!(lcd_mem = request_mem_region(LCD_BASE, LCD_SIZE, DRIVER_NAME)))
 +		return -ENOMEM;
 +
 +	if (!(_lcd_io = ioremap(LCD_BASE, LCD_SIZE)))
@@ -846,11 +868,8 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +
 +	}
 +
-+
 +	return ret;
-+
 +}
-+
 +
 +static void NT7506_init_lcd(char ael)
 +{
@@ -928,46 +947,10 @@ Index: linux-2.6.29/drivers/video/nt7506fb.c
 +MODULE_AUTHOR("Alexandre Coffignal");
 +MODULE_LICENSE("GPL");
 +
-Index: linux-2.6.29/include/linux/nt7506fb.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.29/include/linux/nt7506fb.h	2009-04-01 17:38:36.000000000 +0200
-@@ -0,0 +1,31 @@
-+
-+/*
-+ * (C) Copyright 2008
-+ * Alexandre Coffignal, CénoSYS, alexandre.coffignal@cenosys.com
-+ *
-+ * See file CREDITS for list of people who contributed to this
-+ * project.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-+ * MA 02111-1307 USA
-+ *
-+ */
-+
-+#ifndef __LINUX_NT7506FB_H__
-+#define __LINUX_NT7506FB_H__
-+
-+#define FBIO_FRAMERATE		_IOR('f', 1, char)
-+
-+#endif
 Index: linux-2.6.29/drivers/video/nt7506fb-procfs.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.29/drivers/video/nt7506fb-procfs.c	2009-04-01 17:38:36.000000000 +0200
++++ linux-2.6.29/drivers/video/nt7506fb-procfs.c	2009-10-15 19:16:22.000000000 +0200
 @@ -0,0 +1,119 @@
 +/*
 + * FB driver for NT7506 monochrome/grayscale LCD board
