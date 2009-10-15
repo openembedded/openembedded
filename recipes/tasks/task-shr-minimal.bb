@@ -141,6 +141,6 @@ RDEPENDS_${PN}-gtk = "\
   vala-terminal \
   tangogps \
   pyphonelog \
-  matchbox-keyboard-im \
+#  matchbox-keyboard-im \
 "
 
