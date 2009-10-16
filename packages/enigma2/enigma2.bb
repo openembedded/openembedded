@@ -12,7 +12,7 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
-	gst-plugin-apetag gst-plugin-icydemux \
+	gst-plugin-apetag gst-plugin-icydemux gst-plugin-autodetect \
 	glibc-gconv-iso8859-15"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
