@@ -27,7 +27,6 @@ RDEPENDS_${PN} += "\
 		vagalume \
 		python-pygame \
 		mokoko \
-		bluez-utils-alsa \
 #		devmem2 \
 		exhibit \
 		edje-viewer \
@@ -124,7 +123,7 @@ RDEPENDS_${PN} += "\
 #		gpsdrive \
 		wxwidgets \
 		x11vnc \
-		xf86-video-glamo-kms \
+		xf86-video-glamo \
 #		libswt3.4-gtk-java \
 		cacao \
 #		jamvm \
