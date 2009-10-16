@@ -141,7 +141,7 @@ case `module_id` in
                          # Fix for segfault while typing on illume keyboard
                          ARGS="$ARGS -nocursor"
                      fi
-                     ARGS="$ARGS -dpi ${DPI} ${PPM} vt1"
+                     ARGS="$ARGS -dpi ${DPI} vt1"
                 else
                      ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" 
                      XSERVER=/usr/bin/Xglamo 
