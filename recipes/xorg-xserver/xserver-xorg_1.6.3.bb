@@ -1,7 +1,7 @@
 require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
-DEPENDS += "pixman libpciaccess openssl dri2proto glproto mesa"
+DEPENDS += "pixman libpciaccess openssl dri2proto glproto"
 PE = "2"
 PR = "r4.74"
 

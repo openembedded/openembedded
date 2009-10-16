@@ -1,10 +1,12 @@
 DESCRIPTION = "Simple DirectMedia Layer - X11 Edition"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "alsa-lib mesa virtual/libx11 libxext"
+DEPENDS = "alsa-lib virtual/libgl virtual/libx11 libxext"
 DEPENDS_avr32 = "alsa-lib virtual/libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
+
+PR = "r1"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \

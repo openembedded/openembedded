@@ -1,7 +1,9 @@
 DESCRIPTION = "freeglut is a completely OpenSourced alternative to the OpenGL Utility Toolkit (GLUT) library. "
 LICENSE = "MIT/X11"
 
-DEPENDS = "mesa"
+DEPENDS = "virtual/libgl"
+
+PR = "r1"
 
 SRC_URI = "http://dfn.dl.sourceforge.net/sourceforge/freeglut/freeglut-${PV}.tar.gz"
 

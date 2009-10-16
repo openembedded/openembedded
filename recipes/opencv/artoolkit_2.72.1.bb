@@ -1,13 +1,15 @@
 DESCRIPTION = "ARToolKit is a software library that allows for the creation of augmented reality applications. "
 LICENSE = "GPL/ARToolkit"
 
-DEPENDS = "libxi gstreamer virtual/libx11 freeglut mesa"
+DEPENDS = "libxi gstreamer virtual/libx11 freeglut virtual/libgl"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/artoolkit/ARToolKit-${PV}.tgz \
            file://configure.diff;patch=1 \
            file://paddle.diff;patch=1 "
 
 S = "${WORKDIR}/ARToolKit"
+
+PR = "r1"
 
 LDFLAGS_append = " `pkg-config --libs gstreamer-0.10` -lpthread -lglut -lGLU -lGL -lXi -lX11 -lm"
 
