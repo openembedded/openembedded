@@ -30,7 +30,7 @@ SRC_URI_append_boc01 = "\
 	file://008-091005-spi.patch;patch=1 \
 	file://011-090115-gpio.patch;patch=1 \
 	file://012-090219-capsense.patch;patch=1 \
-	file://013-090306-lcd.patch;patch=1 \
+	file://013-091015-lcd.patch;patch=1 \
 	"
 
 SRC_URI_append_canyonlands = " \

@@ -1,0 +1,43 @@
+--- acpid-1.0.8.orig/event.c
++++ acpid-1.0.8/event.c
+@@ -23,6 +23,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <libgen.h>
+ #include <sys/poll.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+@@ -92,6 +93,8 @@
+ 	struct dirent *dirent;
+ 	char *file = NULL;
+ 	int nrules = 0;
++	char *basen = NULL;
++	regex_t preg;
+ 
+ 	lock_rules();
+ 
+@@ -141,10 +144,19 @@
+ 			continue; /* skip non-regular files */
+ 		}
+ 
+-		r = parse_file(file);
+-		if (r) {
+-			enlist_rule(&cmd_list, r);
+-			nrules++;
++		/* check for run-parts style filename */
++		basen = basename(file);
++		if (regcomp(&preg, "^[a-zA-Z0-9_-]+$", RULE_REGEX_FLAGS) == 0){
++			if (regexec(&preg, basen, 0, NULL, 0) == 0){
++				r = parse_file(file);
++				if (r) {
++					enlist_rule(&cmd_list, r);
++					nrules++;
++				}
++			} else {
++				acpid_log(LOG_DEBUG, "ignoring conf file %s\n", file);
++			}
++
+ 		}
+ 		free(file);
+ 	}
