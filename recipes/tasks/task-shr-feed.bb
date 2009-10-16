@@ -27,7 +27,6 @@ RDEPENDS_${PN} += "\
 		vagalume \
 		python-pygame \
 		mokoko \
-		bluez-utils-alsa \
 #		devmem2 \
 		exhibit \
 		edje-viewer \
