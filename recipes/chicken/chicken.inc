@@ -7,8 +7,6 @@ INC_PR = "r1"
 
 SRC_URI = "http://chicken.wiki.br/releases/${PV}/chicken-${PV}.tar.gz"
 
-inherit autotools
-
 # Parallel building is not supported
 PARALLEL_MAKE = ""
 
@@ -16,11 +14,8 @@ PARALLEL_MAKE = ""
 export PLATFORM="linux"
 export PREFIX="${prefix}"
 export C_COMPILER="${TARGET_PREFIX}gcc ${LDFLAGS} "
-export LIBRARIAN="${TARGET_PREIX}ar "
+export LIBRARIAN="${TARGET_PREFIX}ar "
 export TARGETSYSTEM="${TARGET_SYS}"
-
-SONAME = "${@bb.data.getVar("PV", d, 1)[0]}"
-ASSUME_SHLIBS += "libchicken.so.${SONAME}:libchicken libuchicken.so.${SONAME}:libuchicken"
 
 do_compile() {
 	case ${TARGET_ARCH} in
@@ -50,22 +45,11 @@ do_install() {
     make ARCH=${ARCH} DESTDIR=${D} install
 }
 
-do_install_append() {
-    # Handle lacking of soname is some versions
-    if [ ! -e ${D}${libdir}/libchicken.so.${SONAME} ]; then
-        (cd ${D}${libdir}
-         mv libchicken.so libchicken.so.${SONAME}
-         ln -s libchicken.so.${SONAME} libchicken.so
-         mv libuchicken.so libuchicken.so.${SONAME}
-         ln -s libuchicken.so.${SONAME} libuchicken.so)
-    fi
-}
-
 PACKAGES += "chicken-bin libchicken libuchicken"
 
 FILES_${PN} = ""
-FILES_libchicken = "${libdir}/libchicken.so.${SONAME}"
-FILES_libuchicken = "${libdir}/libuchicken.so.${SONAME}*"
-FILES_${PN}-bin = "${bindir}/* ${datadir}/chicken/*.* ${libdir}/chicken/${SONAME}/*.so"
+FILES_libchicken = "${libdir}/libchicken.so.*"
+FILES_libuchicken = "${libdir}/libuchicken.so.*"
+FILES_${PN}-bin = "${bindir}/* ${datadir}/chicken/*.* ${libdir}/chicken/*/*.so"
 FILES_${PN}-doc += "${datadir}/chicken/doc"
 FILES_${PN}-dbg += "${libdir}/chicken/*/.debug"
