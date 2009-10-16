@@ -6,9 +6,9 @@ RDEPENDS = "python-elementary python-dbus python-edbus python-ecore"
 SECTION = "x11/applications"
 
 PV = "0.0.1-gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
-inherit setuptools
+inherit distutils
 
 SRC_URI = "git://github.com/slyon/today.git;protocol=http"
 S = "${WORKDIR}/git"
