@@ -6,7 +6,11 @@ SRC_URI = "http://ftp.novell.com/pub/mono/sources/mono/mono-2.4.2.3.tar.bz2"
 
 INC_PR = "r3"
 
-S = "${WORKDIR}/mono-2.4.2.3"
+S = "${WORKDIR}/mono-${PV}"
+
+# parallel make does not work for mono (currently)
+
+PARALLEL_MAKE = ""
 
 do_fix_dolt_libtool() {
 	# look for libtool prefixed with HOST_SYS

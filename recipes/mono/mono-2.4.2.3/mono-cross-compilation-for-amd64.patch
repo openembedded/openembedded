@@ -1,0 +1,23 @@
+This is a workaround for bug 515050
+https://bugzilla.novell.com/show_bug.cgi?id=515050#c2
+
+Real fix is something else which did not make into 2.4.2
+http://lists.ximian.com/pipermail/mono-patches/2009-June/151386.html
+http://lists.ximian.com/pipermail/mono-patches/2009-June/151387.html
+
+but we are ok with workaround its safe.
+
+-Khem
+Index: mono-2.4.2.3/mono/mini/genmdesc.pl
+===================================================================
+--- mono-2.4.2.3.orig/mono/mini/genmdesc.pl	2009-10-15 18:21:45.000000000 -0700
++++ mono-2.4.2.3/mono/mini/genmdesc.pl	2009-10-15 18:22:19.000000000 -0700
+@@ -47,7 +47,7 @@ sub load_opcodes
+ 		$arch_define = "TARGET_ARM";
+ 	}
+ 		
+-	$cpp .= " -D$arch_define $srcdir/mini-ops.h|";
++	$cpp .= " -DMONO_ARCH_SUPPORT_SIMD_INTRINSICS -D$arch_define $srcdir/mini-ops.h|";
+ 	#print "Running: $cpp\n";
+ 	open (OPS, $cpp) || die "Cannot execute cpp: $!";
+ 	while (<OPS>) {
