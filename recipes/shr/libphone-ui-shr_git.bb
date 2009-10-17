@@ -16,4 +16,4 @@ do_configure_prepend() {
         autopoint --force
 }
 
-FILES += "${libdir}/phoneui/modules/*"
+FILES_${PN} += "${libdir}/phoneui/modules/*"
