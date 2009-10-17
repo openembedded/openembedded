@@ -123,6 +123,7 @@ RDEPENDS_${PN} += "\
 #		gpsdrive \
 		wxwidgets \
 		x11vnc \
+		xf86-video-glamo \
 #		libswt3.4-gtk-java \
 		cacao \
 #		jamvm \
