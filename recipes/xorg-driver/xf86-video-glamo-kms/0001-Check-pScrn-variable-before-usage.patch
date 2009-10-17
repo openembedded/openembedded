@@ -1,0 +1,42 @@
+From e5156b9c23a65abede157df55c143e3cbc67ac61 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sat, 17 Oct 2009 02:18:56 +0200
+Subject: [PATCH] Check pScrn variable before usage
+
+---
+ src/glamo-driver.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/src/glamo-driver.c b/src/glamo-driver.c
+index e8d39f6..82c6a0c 100644
+--- a/src/glamo-driver.c
++++ b/src/glamo-driver.c
+@@ -367,7 +367,7 @@ GlamoKMSProbe(DriverPtr drv, GDevPtr *devSections, int numDevSections)
+ static Bool
+ GlamoProbe(DriverPtr drv, int flags)
+ {
+-	ScrnInfoPtr pScrn;
++	ScrnInfoPtr pScrn = NULL;
+ 	GDevPtr *devSections;
+ 	int numDevSections;
+ 	Bool foundScreen = FALSE;
+@@ -384,10 +384,14 @@ GlamoProbe(DriverPtr drv, int flags)
+ 	/* Is today a good day to use KMS? */
+ 	if ( GlamoKernelModesettingAvailable() ) {
+ 		foundScreen = GlamoKMSProbe(drv, devSections, numDevSections);
+-		xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Using KMS!\n");
++		if ( pScrn ) {
++			xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Using KMS!\n");
++		}
+ 	} else {
+ 		foundScreen = GlamoFbdevProbe(drv, devSections, numDevSections);
+-		xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Not using KMS\n");
++		if ( pScrn ) {
++			xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Not using KMS\n");
++		}
+ 	}
+ 
+ 	xfree(devSections);
+-- 
+1.6.5
+
