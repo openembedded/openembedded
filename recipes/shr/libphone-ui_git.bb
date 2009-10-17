@@ -12,4 +12,4 @@ inherit pkgconfig autotools autotools_stage
 SRC_URI = "git://git.shr-project.org/repo/libphone-ui.git;protocol=http;branch=master"
 S="${WORKDIR}/git"
 
-CONFFILES_${PN} = "${sysconfdir}/frameworkd-phonegui.conf"
+CONFFILES_${PN} = "${sysconfdir}/libphoneui.conf"
