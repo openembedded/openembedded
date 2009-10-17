@@ -5,7 +5,7 @@
 # package in step 2.
 # See http://www.mono-project.com/Mono:ARM
 
-require mono_2.4.2.3.inc
+require mono-${PV}.inc
 require mono-mcs-intermediate.inc
 
 DEFAULT_PREFERENCE = "-1"
@@ -13,5 +13,3 @@ DEFAULT_PREFERENCE = "-1"
 SRC_URI += ""
 
 PR = "${INC_PR}.1"
-
-

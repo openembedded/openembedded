@@ -134,6 +134,7 @@ ac_cv_lib_png_png_create_info_struct=${ac_cv_lib_png_png_create_info_struct=yes}
 
 # mono
 cv_mono_sizeof_sunpath=108
+mono_cv_sizeof_sunpath=108
 
 # mysql
 mysql_cv_func_atomic_sub=${mysql_cv_func_atomic_sub=no}
