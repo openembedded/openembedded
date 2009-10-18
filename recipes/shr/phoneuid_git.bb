@@ -17,10 +17,12 @@ EXTRA_OECONF = "\
 
 
 do_install_append() {
-        install -d ${D}${sysconfdir}/dbus-1/session.d/
-	install -d ${D}${datadir}/dbus-1/services/
-        install -m 0644 ${S}/data/phoneuid.conf ${D}${sysconfdir}/dbus-1/session.d/
-	install -m 0644 ${S}/data/phoneuid-*.service ${D}${datadir}/dbus-1/services/
+        install -d ${D}${sysconfdir}/dbus-1/system.d/
+	install -d ${D}${datadir}/dbus-1/system-services/
+	install -d ${D}${sysconfdir}/X11/Xsession.d/
+        install -m 0644 ${S}/data/phoneuid.conf ${D}${sysconfdir}/dbus-1/system.d/
+	install -m 0644 ${S}/data/phoneuid-*.service ${D}${datadir}/dbus-1/system-services/
+	install -m 0755 ${S}/data/80phoneuid ${D}${sysconfdir}/X11/Xsession.d/
 }
 
 FILES_${PN} += "${datadir} ${sysconfdir}"
