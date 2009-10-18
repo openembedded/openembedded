@@ -6,8 +6,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.gammu.org/"
 PR = "r0"
 
-SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2 \
-           file://findmysql.patch;patch=1"
+SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2"
 
 inherit distutils-common-base cmake
 
