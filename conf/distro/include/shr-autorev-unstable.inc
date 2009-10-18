@@ -93,6 +93,7 @@ SRCREV_pn-phoneuid = "${AUTOREV}"
 SRCREV_pn-phonefsod = "${AUTOREV}"
 SRCREV_pn-libphone-ui = "${AUTOREV}"
 SRCREV_pn-libphone-ui-shr = "${AUTOREV}"
+SRCREV_pn-shr-specs = "${AUTOREV}"
 
 
 # E17 stuff
