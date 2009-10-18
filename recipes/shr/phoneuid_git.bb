@@ -7,7 +7,7 @@ PV = "0.0.0+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/phoneuid.git;protocol=http;branch=master"
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/git"
 
 inherit autotools
 
