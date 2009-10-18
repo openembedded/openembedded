@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "AGG License"
 DEPENDS = "virtual/libx11 virtual/libsdl freetype"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.antigrain.com/${P}.tar.gz"
 S = "${WORKDIR}/${P}"
@@ -14,7 +14,7 @@ inherit autotools pkgconfig
 
 export SDL_CONFIG=${STAGING_BINDIR_CROSS}/sdl-config
 
-CFLAGS += " -I{$STAGING_INCDIR} "
+CFLAGS += " -I${STAGING_INCDIR} "
 
 PACKAGES =+ "${PN}-sdl ${PN}-x11"
 
@@ -24,6 +24,8 @@ FILES_${PN} = "${libdir}/libagg.so.* \
                ${libdir}/libaggfontfreetype.so.*"
 
 LEAD_SONAME = "libagg.so"
+
+EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/usr/include --x-libraries=${STAGING_INCDIR}/usr/lib"
 
 do_stage() {
     oe_libinstall -a -so libagg ${STAGING_LIBDIR}
