@@ -1,0 +1,13 @@
+Index: cdstatus-0.97.01/src/cddb_connect_to_server.c
+===================================================================
+--- cdstatus-0.97.01.orig/src/cddb_connect_to_server.c
++++ cdstatus-0.97.01/src/cddb_connect_to_server.c
+@@ -54,7 +54,7 @@ int cddbConnectToServer(const char * cdd
+ 		}
+ 		return 0;
+ 	}
+-	memcpy(&(dest_addr.sin_addr.s_addr), host_info->h_addr, (size_t)host_info->h_length);
++	memcpy(&(dest_addr.sin_addr.s_addr), host_info->h_addr_list[0], (size_t)host_info->h_length);
+ 	/*I hope this doesn't break stuff... */
+ 	/*free(host_info->h_name);
+ 	free(host_info);*/

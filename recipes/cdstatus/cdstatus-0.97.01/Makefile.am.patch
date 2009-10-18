@@ -1,0 +1,10 @@
+Index: cdstatus-0.97.01/src/Makefile.am
+===================================================================
+--- cdstatus-0.97.01.orig/src/Makefile.am
++++ cdstatus-0.97.01/src/Makefile.am
+@@ -1,4 +1,4 @@
+-AM_CFLAGS = -O2 -funroll-loops -finline-functions --std=c99
++AM_CFLAGS = -O2 -funroll-loops -finline-functions
+ bin_PROGRAMS = cdstatus
+ cdstatus_SOURCES = \
+ 	args.h \
