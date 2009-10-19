@@ -5,9 +5,10 @@ DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 DEFAULT_PREFERENCE_gumstix-connex = "1"
 DEFAULT_PREFERENCE_gumstix-verdex = "1"
 
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;patch=1 \
            file://tsc2003.c \
 	   file://tsc2003-config.diff;patch=1 \
 	   file://defconfig \
