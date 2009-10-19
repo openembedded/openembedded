@@ -4,7 +4,7 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 DEPENDS = "zlib-native"
 
@@ -14,15 +14,15 @@ S = "${WORKDIR}/fastjar-${PV}"
 
 inherit autotools native
 
-EXTRA_OECONF = "--with-system-zlib --with-fastjar"
-
 do_configure () {
 	gnu-configize || die "failure running gnu-configize"
 	oe_runconf
 }
 
+do_make() {
+	oe_runmake bin_PROGRAMS
+}
+
 do_stage() {
-	install -d ${STAGING_BINDIR}
-	install -m 755 fastjar ${STAGING_BINDIR}/
-	install -m 755 grepjar ${STAGING_BINDIR}/
+	oe_runmake install-binPROGRAMS
 }
