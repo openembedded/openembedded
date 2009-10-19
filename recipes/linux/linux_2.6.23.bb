@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 DEFAULT_PREFERENCE_avr32 = "1"
 
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
@@ -15,7 +15,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   "
 
 # Bug fixes on the 2.6.23.x stable branch
-SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.12.bz2;patch=1"
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.17.bz2;patch=1"
 # Real-time preemption (includes CFS). This is experimental and requires a different defconfig.
 #SRC_URI += "file://patch-2.6.23.12-rt14;patch=1"
 # Only the Completely Fair Scheduler (CFS), the official backport from 2.6.24
