@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r9"
+PR = "r10"
 
 S = "${WORKDIR}/linux-2.6.29"
 
@@ -19,6 +19,7 @@ DEFAULT_PREFERENCE_tqm8540 = "1"
 DEFAULT_PREFERENCE_stamp9g20evb = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.6.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI_append_boc01 = "\
