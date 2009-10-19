@@ -1,8 +1,4 @@
 require vala.inc
-inherit native
-
-PR = "r2"
-
-DEPENDS = "glib-2.0-native"
+PR = "r0"
 
 SRC_URI = "http://www.freesmartphone.org/sources/vala-${PV}.tar.bz2"
