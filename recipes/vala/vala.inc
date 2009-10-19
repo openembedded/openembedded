@@ -4,12 +4,12 @@ SECTION = "devel"
 DEPENDS = "glib-2.0 dbus"
 HOMEPAGE = "http://vala-project.org"
 LICENSE = "LGPL"
-INC_PR = "r0"
+INC_PR = "r1"
 
 SRC_URI = "http://www.freesmartphone.org/sources/vala-${PV}.tar.gz"
 
 inherit autotools_stage
 
-EXTRA_OECONF = "--enable-vapigen"
+EXTRA_OECONF = "--disable-vapigen"
 
 FILES_${PN}-doc += ${datadir}/devhelp
