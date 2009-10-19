@@ -1,4 +1,4 @@
-require mono_2.4.2.3.inc
+require mono-${PV}.inc
 DEPENDS = "glib-2.0-native perl-native"
 
 PR = "${INC_PR}.1"

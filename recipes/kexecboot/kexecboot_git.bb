@@ -1,13 +1,13 @@
 PV = "0.5"
-PR = "r4+gitr${SRCREV}"
+PR = "r5+gitr${SRCREV}"
 
 SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git "
-SRCREV = "e7f85b13e144a594fa726f5f7ca4bd3e2327e2b3"
 
-#SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git;branch=cfgfiles "
-#SRCREV = "0d4d33d85baa6251de3b1e20bd7bd464f11c5097"
+# v0.52 (using boot.cfg and new screen layout)
+# looking forward to the new 0.6 version
+SRCREV = "8daf258fc5d1e5eb6127285c63d66f31f05cf80d"
 
-# v0.51 (pre cfg-files)
+# v0.51 (pre cfg-files, using kernel-cmdline)
 #SRCREV = "c5f17845f0f620adff854c2239a8aaa5d9942255"
 
 # v0.5 (add rescan / reboot)

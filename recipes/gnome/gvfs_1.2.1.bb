@@ -1,6 +1,6 @@
 DESCRIPTION = "gvfs is a userspace virtual filesystem"
 LICENSE = "LGPL"
-DEPENDS = "gawk-native gnome-keyring glib-2.0 obexftp fuse avahi fuse hal gconf-dbus samba gphoto2"
+DEPENDS = "gawk-native gnome-keyring glib-2.0 obexftp fuse avahi fuse hal gconf samba gphoto2"
 
 inherit gnome
 

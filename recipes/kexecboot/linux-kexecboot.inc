@@ -1,5 +1,5 @@
 # We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "file://defconfig"
 

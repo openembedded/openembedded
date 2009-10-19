@@ -3,12 +3,14 @@ SECTION = "net"
 LICENSE = "BSD"
 DEPENDS = "libpcre"
 RDEPENDS_${PN} += " \
+                    lighttpd-module-access \
+                    lighttpd-module-accesslog \
                     lighttpd-module-indexfile \
                     lighttpd-module-dirlisting \
                     lighttpd-module-staticfile \
                   "
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-${PV}.tar.gz \
 	   file://index.html \

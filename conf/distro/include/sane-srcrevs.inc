@@ -63,7 +63,6 @@ SRCREV_pn-gcc-cross-intermediate ?= ${GCCREV}
 SRCREV_pn-gcc-cross-sdk ?= ${GCCREV}
 SRCREV_pn-gconf-dbus ?= "641"
 SRCREV_pn-gnet ?= "495"
-SRCREV_pn-gnuradio ?= "11418"
 SRCREV_pn-gpe-conf ?= "9900"
 SRCREV_pn-gpe-contacts ?= "9312"
 SRCREV_pn-gpe-gallery ?= "9376"
@@ -244,7 +243,7 @@ SRCREV_pn-xserver-kdrive-glamo ?= "9b28d998424c77fbc057dd3a022ccbb122793a52"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "42645"
+EFL_SRCREV ?= "43038"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"

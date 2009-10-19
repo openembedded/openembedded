@@ -36,7 +36,7 @@ do_install_append() {
 	install -m 0644 ${D}/${datadir}/icons/hicolor/48x48/apps/* ${D}/${datadir}/pixmaps
 }
 
-CFLAGS_append = " -lguile -lgmp -lcrypt -lm -lltdl"
+LDFLAGS += "-lguile -lgmp -lcrypt -lm -lltdl"
 
 FILES_${PN}-doc += " ${datadir}/gnome/help"
 FILES_${PN}-dbg += " ${bindir}/.debug ${libdir}/gnome-games/.debug"

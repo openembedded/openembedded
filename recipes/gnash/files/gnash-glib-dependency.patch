@@ -1,0 +1,33 @@
+If glib is not brought in via GTK, we still need it for GStreamer. This
+seems an upstream bug in gnash, exposed when the FB GUI is built instead of
+the GTK+ GUI.
+
+Signed-off-by: Leon Woestenberg <leon@sidebranch.com>
+
+Index: gnash-0.8.5/gui/Makefile.am
+===================================================================
+--- gnash-0.8.5.orig/gui/Makefile.am	2009-10-18 20:34:19.000000000 +0200
++++ gnash-0.8.5/gui/Makefile.am	2009-10-18 20:35:14.000000000 +0200
+@@ -137,8 +137,8 @@
+ endif
+ 
+ if USE_GST_ENGINE
+-AM_CPPFLAGS += $(GSTREAMER_CFLAGS)
+-AM_LDFLAGS += $(GSTREAMER_LIBS) 
++AM_CPPFLAGS += $(GSTREAMER_CFLAGS) $(GLIB_CFLAGS)
++AM_LDFLAGS += $(GSTREAMER_LIBS) $(GLIB_LIBS)
+ endif
+ 
+ # if USE_GUI_FLTK
+Index: gnash-0.8.5/plugin/plugin.h
+===================================================================
+--- gnash-0.8.5.orig/plugin/plugin.h	2009-10-18 20:34:19.000000000 +0200
++++ gnash-0.8.5/plugin/plugin.h	2009-10-18 20:34:58.000000000 +0200
+@@ -44,6 +44,7 @@
+ #ifdef HAVE_GTK2
+ #include <gtk/gtk.h>
+ #endif
++#include <glib.h>
+ #include <string>
+ #include <map>
+ #include "pluginbase.h"

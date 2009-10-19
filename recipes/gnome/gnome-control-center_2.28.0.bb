@@ -7,7 +7,7 @@ DEPENDS = "metacity eel gstreamer libcanberra gnome-settings-daemon libgnomeui g
 
 inherit gnome
 
-CFLAGS += "-lgthread-2.0 -lxml2"
+LDFLAGS += "-lgthread-2.0 -lxml2"
 
 do_configure_prepend() {
 	sed -i s:help::g Makefile.am
