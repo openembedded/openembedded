@@ -1,6 +1,5 @@
 require xorg-driver-video.inc
-SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=kms \
-           file://0001-Check-pScrn-variable-before-usage.patch;patch=1"
+SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=kms"
 
 S = "${WORKDIR}/git"
 
