@@ -1,7 +1,7 @@
 Index: linux-2.6.29/drivers/input/misc/Kconfig
 ===================================================================
---- linux-2.6.29.orig/drivers/input/misc/Kconfig	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/input/misc/Kconfig	2009-04-01 17:38:02.000000000 +0200
+--- linux-2.6.29.orig/drivers/input/misc/Kconfig	2009-10-19 16:16:01.000000000 +0200
++++ linux-2.6.29/drivers/input/misc/Kconfig	2009-10-19 16:16:03.000000000 +0200
 @@ -227,4 +227,13 @@
  	 Say Y to include support for delivering  PMU events via  input
  	 layer on NXP PCF50633.
@@ -18,8 +18,8 @@ Index: linux-2.6.29/drivers/input/misc/Kconfig
  endif
 Index: linux-2.6.29/drivers/input/misc/Makefile
 ===================================================================
---- linux-2.6.29.orig/drivers/input/misc/Makefile	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29/drivers/input/misc/Makefile	2009-04-01 17:38:23.000000000 +0200
+--- linux-2.6.29.orig/drivers/input/misc/Makefile	2009-10-19 16:16:01.000000000 +0200
++++ linux-2.6.29/drivers/input/misc/Makefile	2009-10-19 16:16:03.000000000 +0200
 @@ -22,3 +22,4 @@
  obj-$(CONFIG_INPUT_APANEL)		+= apanel.o
  obj-$(CONFIG_INPUT_SGI_BTNS)		+= sgi_btns.o
@@ -28,15 +28,17 @@ Index: linux-2.6.29/drivers/input/misc/Makefile
 Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.29/drivers/input/misc/capsense-btns.c	2009-04-01 17:38:02.000000000 +0200
-@@ -0,0 +1,456 @@
++++ linux-2.6.29/drivers/input/misc/capsense-btns.c	2009-10-19 16:16:12.000000000 +0200
+@@ -0,0 +1,440 @@
 +/*
 + * CAPSENSE Interface driver
 + *
 + *
 + * Copyright (C) 2008, CenoSYS (www.cenosys.com).
++ * Copyright (C) 2009, Bollore telecom (www.bolloretelecom.eu).
 + *
 + * Guillaume Ligneul <guillaume.ligneul@gmail.com>
++ * Adrien Demarez <jeremy.laine@bolloretelecom.eu>
 + * Jeremy Lainé <jeremy.laine@bolloretelecom.eu>
 + * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
 + *
@@ -51,20 +53,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +#include <linux/i2c.h>
 +#include <linux/leds.h>
 +
-+
-+static int capsense_attach_adapter(struct i2c_adapter *adapter);
-+static int capsense_detach_client(struct i2c_client *client);
-+#ifdef CONFIG_PM
-+static int capsense_suspend(struct i2c_client *client, pm_message_t mesg);
-+static int capsense_resume(struct i2c_client *client);
-+#endif
-+
 +#define DRIVER_NAME "capsense"
-+
-+/* i2c configuration */
-+#define CAPSENSE_I2C_ADDR 0x25
-+// To debug (may be add in include/linux/i2c-id.h)
-+#define I2C_DRIVERID_CAPSENSE   98
 +
 +#define BUTTONS_POLL_INTERVAL	30	/* msec */
 +
@@ -107,24 +96,6 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +module_param_named(poll, poll_interval, uint, 0);
 +MODULE_PARM_DESC(poll, "poll interval in msec (30=default)");
 +
-+static const unsigned short normal_i2c[] = {
-+	CAPSENSE_I2C_ADDR , I2C_CLIENT_END
-+};
-+I2C_CLIENT_INSMOD;
-+
-+static struct i2c_driver capsense_driver = {
-+	.driver		= {
-+		.name	= DRIVER_NAME,
-+	},
-+	.id		= I2C_DRIVERID_CAPSENSE,
-+	.attach_adapter = &capsense_attach_adapter,
-+	.detach_client	= &capsense_detach_client,
-+#ifdef CONFIG_PM
-+	.suspend        = &capsense_suspend,
-+	.resume         = &capsense_resume,
-+#endif
-+};
-+
 +struct capsense_led {
 +	struct led_classdev cdev;
 +	struct capsense_ctx *capsense;
@@ -134,7 +105,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +
 +struct capsense_ctx {
 +	struct input_polled_dev *ipdev;
-+	struct i2c_client client;
++	struct i2c_client *client;
 +	unsigned char key_state;
 +	struct capsense_led leds[CAP_NLEDS];
 +	unsigned char led_state[2];
@@ -200,7 +171,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +	for (i = 0; i < ARRAY_SIZE(phys_keymap); i++) {
 +		if ( phys_keymap[i].port != port ) {
 +			port = phys_keymap[i].port;
-+			port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_READ_STATUS(port));
++			port_value = i2c_smbus_read_byte_data(capsense->client, CAP_READ_STATUS(port));
 +		}
 +
 +		if ( port_value & (1 << phys_keymap[i].bit) )
@@ -238,7 +209,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +		capsense->led_state[port] &= ~mask;
 +
 +	mutex_lock(&capsense->mutex);
-+	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(port), capsense->led_state[port]);
++	i2c_smbus_write_byte_data(capsense->client, CAP_OUTPUT_PORT(port), capsense->led_state[port]);
 +	mutex_unlock(&capsense->mutex);
 +}
 +
@@ -248,7 +219,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +	struct capsense_ctx *capsense = led->capsense;
 +
 +	mutex_lock(&capsense->mutex);
-+	i2c_smbus_write_byte_data(&capsense->client, CAP_OP_SEL(led->port, led->bit), state ? 0x00 : 0x80);
++	i2c_smbus_write_byte_data(capsense->client, CAP_OP_SEL(led->port, led->bit), state ? 0x00 : 0x80);
 +	mutex_unlock(&capsense->mutex);
 +}
 +
@@ -278,16 +249,15 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +	mutex_lock(&capsense->mutex);
 +
 +	capsense->led_state[0] = 0x00;
-+	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(0), 0x00);
++	i2c_smbus_write_byte_data(capsense->client, CAP_OUTPUT_PORT(0), 0x00);
 +
 +	capsense->led_state[1] = 0x00;
-+	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(1), 0x00);
++	i2c_smbus_write_byte_data(capsense->client, CAP_OUTPUT_PORT(1), 0x00);
 +
 +	mutex_unlock(&capsense->mutex);
 +
 +	return 0;
 +}
-+
 +
 +static void
 +capsense_led_exit(struct capsense_ctx *capsense)
@@ -298,7 +268,6 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +		led_classdev_unregister(&capsense->leds[i].cdev);
 +	}
 +}
-+
 +
 +static inline void
 +capsense_led_suspend(struct capsense_ctx *capsense)
@@ -312,7 +281,6 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +		capsense_led_enable(led, 0);
 +	}
 +}
-+
 +
 +static inline void
 +capsense_led_resume(struct capsense_ctx *capsense)
@@ -342,38 +310,42 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 + */
 +
 +static int
-+capsense_probe(struct i2c_adapter *adapter, int addr, int kind)
++capsense_detect(struct i2c_client *client, int kind, struct i2c_board_info *info)
++{
++	struct i2c_adapter *adapter = client->adapter;
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C))
++		return -ENODEV;
++
++	// FIXME: how do we identify the device?
++
++	return 0;
++}
++
++static int
++capsense_probe(struct i2c_client *client, const struct i2c_device_id *id)
 +{
 +	struct capsense_ctx *capsense;
 +	struct input_polled_dev *ipdev;
 +	struct input_dev *input;
-+	int rc = 0, err = -ENOMEM, i=0;
++	int rc=0, i=0;
 +
 +	capsense = kzalloc(sizeof(*capsense), GFP_KERNEL);
-+		if (!capsense)
-+			goto failout;
++	if (!capsense)
++		return -ENOMEM;
 +
 +	mutex_init(&capsense->mutex);
 +
-+	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
-+		goto failout;
-+	}
-+
 +	ipdev = input_allocate_polled_device();
-+		if (!ipdev)
-+			goto failout;
++	if (!ipdev) {
++		rc = -ENOMEM;
++		goto out_allocated;
++	}
 +
 +	capsense->key_state = 0;
 +	capsense->ipdev = ipdev;
-+	capsense->client.adapter = adapter;
-+	capsense->client.addr = addr;
-+	capsense->client.driver = &capsense_driver;
-+	strlcpy(capsense->client.name, DRIVER_NAME, I2C_NAME_SIZE);
-+	i2c_set_clientdata(&capsense->client, capsense);
-+
-+	rc = i2c_attach_client(&capsense->client);
-+	if (rc)
-+		goto out_attach;
++	capsense->client = client;
++	i2c_set_clientdata(client, capsense);
 +
 +	ipdev->poll = handle_buttons;
 +	ipdev->private = capsense;
@@ -383,8 +355,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +	input->name = "Capsense buttons";
 +	input->phys = "capsense/input0";
 +	input->id.bustype = BUS_I2C;
-+	input->dev.parent = &capsense->client.dev;
-+
++	input->dev.parent = &client->dev;
 +	input->keycode = input_keymap;
 +	input->keycodemax = ARRAY_SIZE(input_keymap);
 +	input->keycodesize = sizeof(unsigned short);
@@ -396,10 +367,11 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +		set_bit(input_keymap[i], ipdev->input->keybit);
 +
 +	rc = input_register_polled_device(ipdev);
-+	if(rc)
++	if (rc)
 +		goto out_polled;
 +
-+	if ( capsense_led_init(capsense) )
++	rc = capsense_led_init(capsense);
++	if (rc)
 +		goto out_registered;
 +
 +#ifdef CONFIG_PROC_FS
@@ -412,31 +384,23 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +out_registered:
 +	input_unregister_polled_device(ipdev);
 +out_polled:
-+	i2c_detach_client(&capsense->client);
-+out_attach:
 +	input_free_polled_device(ipdev);
-+failout:
-+	return err;
++out_allocated:
++	kfree(capsense);
++	return rc;
 +}
 +
 +static int
-+capsense_attach_adapter (struct i2c_adapter *adapter)
-+{
-+	return i2c_probe(adapter, &addr_data, capsense_probe);
-+}
-+
-+static int
-+capsense_detach_client(struct i2c_client *client)
++capsense_remove(struct i2c_client *client)
 +{
 +	struct capsense_ctx *capsense = i2c_get_clientdata(client);
 +
 +	capsense_led_exit(capsense);
 +	input_unregister_polled_device(capsense->ipdev);
-+	i2c_detach_client(&capsense->client);
 +	input_free_polled_device(capsense->ipdev);
++	kfree(capsense);
 +	return 0;
 +}
-+
 +
 +/*
 + * Power management
@@ -447,7 +411,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +{
 +	struct capsense_ctx *capsense = i2c_get_clientdata(client);
 +
-+	printk(KERN_INFO DRIVER_NAME ": suspend\n");
++	dev_info(&client->dev, "suspend\n");
 +
 +	capsense_led_suspend(capsense);
 +
@@ -458,7 +422,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +{
 +	struct capsense_ctx *capsense = i2c_get_clientdata(client);
 +
-+	printk(KERN_INFO DRIVER_NAME ": resume\n");
++	dev_info(&client->dev, "resume\n");
 +
 +	capsense_led_resume(capsense);
 +
@@ -470,6 +434,26 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 +/*
 + * Driver initialisation
 + */
++
++struct i2c_device_id capsense_idtable[] = {
++       { "capsense", 0 },
++       { }
++};
++MODULE_DEVICE_TABLE(i2c, capsense_idtable);
++
++static struct i2c_driver capsense_driver = {
++	.driver		= {
++		.name	= DRIVER_NAME,
++	},
++	.detect		= capsense_detect,
++	.probe		= capsense_probe,
++	.remove		= capsense_remove,
++	.id_table	= capsense_idtable,
++#ifdef CONFIG_PM
++	.suspend        = capsense_suspend,
++	.resume         = capsense_resume,
++#endif
++};
 +
 +static int __init capsense_buttons_init(void)
 +{
@@ -489,7 +473,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-btns.c
 Index: linux-2.6.29/drivers/input/misc/capsense-procfs.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.29/drivers/input/misc/capsense-procfs.c	2009-04-01 17:38:02.000000000 +0200
++++ linux-2.6.29/drivers/input/misc/capsense-procfs.c	2009-10-19 16:16:03.000000000 +0200
 @@ -0,0 +1,390 @@
 +/*
 + * CAPSENSE Interface driver
@@ -553,7 +537,7 @@ Index: linux-2.6.29/drivers/input/misc/capsense-procfs.c
 +	int len;
 +
 +	mutex_lock(&capsense->mutex);
-+	value = i2c_smbus_read_byte_data(&capsense->client, data->command);
++	value = i2c_smbus_read_byte_data(capsense->client, data->command);
 +	mutex_unlock(&capsense->mutex);
 +
 +	if ( data->hex )
@@ -595,9 +579,9 @@ Index: linux-2.6.29/drivers/input/misc/capsense-procfs.c
 +
 +	if ( sscanf(lbuf, "%hhi", &value) == 1 ) {
 +		mutex_lock(&capsense->mutex);
-+		i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_SETUP_MODE);
-+		i2c_smbus_write_byte_data(&capsense->client, data->command, value);
-+		i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_NORMAL_MODE);
++		i2c_smbus_write_byte_data(capsense->client, CAP_COMMAND_REG, CAP_COMMAND_SETUP_MODE);
++		i2c_smbus_write_byte_data(capsense->client, data->command, value);
++		i2c_smbus_write_byte_data(capsense->client, CAP_COMMAND_REG, CAP_COMMAND_NORMAL_MODE);
 +		mutex_unlock(&capsense->mutex);
 +	}
 +	else {
@@ -705,9 +689,9 @@ Index: linux-2.6.29/drivers/input/misc/capsense-procfs.c
 +		}
 +
 +		/* First data byte is the i2c device address:
-+		   Warn if it does not match the standard i2c address */
-+		if ( data[0] != CAPSENSE_I2C_ADDR ) {
-+			printk(KERN_WARNING DRIVER_NAME ": iic:%d: WARNING - Specified i2c address (%02X) differs from standard i2c address (%02X)\n", lnum, data[0], CAPSENSE_I2C_ADDR);
++		   Warn if it does not match the current i2c address */
++		if ( data[0] != capsense->client->addr ) {
++			printk(KERN_WARNING DRIVER_NAME ": iic:%d: WARNING - Specified i2c address (%02X) differs from current i2c address (%02X)\n", lnum, data[0], capsense->client->addr);
 +		}
 +
 +		/* Second data byte is the capsense register:
@@ -720,12 +704,12 @@ Index: linux-2.6.29/drivers/input/misc/capsense-procfs.c
 +		mutex_lock(&capsense->mutex);
 +
 +		msg.addr = data[0];
-+		msg.flags = capsense->client.flags;
++		msg.flags = capsense->client->flags;
 +		msg.len = size - 1;
 +		msg.buf = data + 1;
 +		//printk(KERN_INFO DRIVER_NAME ": iic:%d: i2c transfer: addr=0x%02X flags=0x%04X len=%d\n", lnum, msg.addr, msg.flags, msg.len);
 +
-+		ret = i2c_transfer(capsense->client.adapter, &msg, 1);
++		ret = i2c_transfer(capsense->client->adapter, &msg, 1);
 +		if ( ret < 0 )
 +			printk(KERN_ERR DRIVER_NAME ": iic:%d: i2c transfer failed (%d), command rejected\n", lnum, ret);
 +
@@ -749,9 +733,9 @@ Index: linux-2.6.29/drivers/input/misc/capsense-procfs.c
 +	printk(KERN_INFO DRIVER_NAME ": %s (%02X)\n", command->name, command->command);
 +
 +	mutex_lock(&capsense->mutex);
-+	i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_SETUP_MODE);
-+	i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, command->command);
-+	i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_NORMAL_MODE);
++	i2c_smbus_write_byte_data(capsense->client, CAP_COMMAND_REG, CAP_COMMAND_SETUP_MODE);
++	i2c_smbus_write_byte_data(capsense->client, CAP_COMMAND_REG, command->command);
++	i2c_smbus_write_byte_data(capsense->client, CAP_COMMAND_REG, CAP_COMMAND_NORMAL_MODE);
 +	mutex_unlock(&capsense->mutex);
 +
 +	return count;

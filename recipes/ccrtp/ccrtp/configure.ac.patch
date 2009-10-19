@@ -1,0 +1,12 @@
+Index: ccrtp-1.7.0/configure.ac
+===================================================================
+--- ccrtp-1.7.0.orig/configure.ac
++++ ccrtp-1.7.0/configure.ac
+@@ -9,6 +9,7 @@
+ # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+ # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ 
++m4_pattern_allow(LT_VERSION)
+ AC_INIT(src/ccrtp/rtp.h)
+ 
+ cfg_options=""

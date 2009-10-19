@@ -1,0 +1,12 @@
+Index: commoncpp2-1.7.1/configure.ac
+===================================================================
+--- commoncpp2-1.7.1.orig/configure.ac
++++ commoncpp2-1.7.1/configure.ac
+@@ -10,6 +10,7 @@
+ # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ AC_INIT(src/thread.cpp)
++m4_pattern_allow(LT_VERSION)
+ 
+ VERSION="1.7.1"
+ LT_RELEASE="1.7"
