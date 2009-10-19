@@ -5,9 +5,10 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_cm-x270 = "-1"
 DEFAULT_PREFERENCE_bd-neon = "0"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.19.bz2;patch=1 \
            file://defconfig \
 	   "
 
