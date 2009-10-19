@@ -23,6 +23,6 @@ do_configure () {
 
 do_stage() {
 	install -d ${STAGING_BINDIR}
-	install -m 755 .libs/fastjar ${STAGING_BINDIR}/fastjar
-	install -m 755 .libs/grepjar ${STAGING_BINDIR}
+	install -m 755 fastjar ${STAGING_BINDIR}/
+	install -m 755 grepjar ${STAGING_BINDIR}/
 }
