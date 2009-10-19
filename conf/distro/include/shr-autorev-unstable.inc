@@ -57,6 +57,7 @@ SRCREV_pn-vala-dbus-binding-tool-native = "a346ea6a92edbfd7287cc5b7feb43c70fbea6
 SRCREV_pn-vala = "${AUTOREV}"
 SRCREV_pn-zhone = "${AUTOREV}"
 SRCREV_pn-libgee = "${AUTOREV}"
+SRCREV_pn-libgee-native = "${AUTOREV}"
 
 
 # SHR stuff
