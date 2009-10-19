@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r6"
+PR = "r7"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -15,6 +15,7 @@ DEFAULT_PREFERENCE_at91-l9260 = "1"
 DEFAULT_PREFERENCE_m8050 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.20.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI_append_mpc8313e-rdb = "\
