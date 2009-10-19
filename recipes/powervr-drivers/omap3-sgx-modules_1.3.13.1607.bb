@@ -12,6 +12,8 @@ SRC_URI = "file://omap3-sgx-modules-${PV}.tar.bz2 \
 
 PVRBUILD = "release"
 
+INHIBIT_PACKAGE_STRIP = "1"
+
 MAKE_TARGETS = " BUILD=${PVRBUILD}"
 
 do_install() {
