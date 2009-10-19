@@ -1,14 +1,13 @@
 SECTION = "x11/base"
 LICENSE = "MIT"
 SRC_URI = "git://anongit.freedesktop.org/mesa/drm;protocol=git;branch=master"
-#SRC_URI_om-gta02 = "git://git.bitwiz.org.uk/libdrm.git;protocol=git;branch=glamo"
-SRC_URI_append_om-gta02 = " file://libdrm-glamo.am.patch;patch=1"
+SRC_URI_om-gta02 = "git://git.bitwiz.org.uk/libdrm.git;protocol=git;branch=glamo"
 
 PROVIDES = "drm"
 DEPENDS = "libpthread-stubs virtual/kernel"
 
+PE=1
 PV=2.4.15+gitr${SRCPV}
-
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
