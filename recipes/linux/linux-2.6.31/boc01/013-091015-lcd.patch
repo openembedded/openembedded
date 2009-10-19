@@ -1,0 +1,1070 @@
+Index: linux-2.6.31/drivers/video/Kconfig
+===================================================================
+--- linux-2.6.31.orig/drivers/video/Kconfig	2009-10-19 16:31:51.000000000 +0200
++++ linux-2.6.31/drivers/video/Kconfig	2009-10-19 16:53:39.000000000 +0200
+@@ -491,6 +491,28 @@
+ 	  this driver, say Y or M; otherwise say N. You must specify the
+ 	  GPIO IO address to be used for setting control and data.
+ 
++config FB_NT7506
++	tristate "Novatek 7506 LCD board support"
++	depends on FB
++	select FB_SYS_FILLRECT
++	select FB_SYS_COPYAREA
++	select FB_SYS_IMAGEBLIT
++	select FB_SYS_FOPS
++	select FB_BACKLIGHT
++	select LCD_CLASS_DEVICE
++	help
++	  This is the frame buffer device driver for the Novatek 7506 Monochrome/Grayscale LCD board.
++	  The board is based on the NT7506 LCD controller.
++
++config FB_NT7506_GRAYSCALE
++	bool "Novatek 7506 Grayscale mode"
++	depends on FB_NT7506
++	default y
++	help
++	  This option switches the Monochrome/Grayscale mode for the Novatek 7506 LCD board.
++	  Say Y to enable 4-levels Grayscale mode (2 bpp).
++	  Say N to enable Monochrome mode (1 bpp).
++
+ config FB_ATARI
+ 	bool "Atari native chipset support"
+ 	depends on (FB = y) && ATARI
+Index: linux-2.6.31/drivers/video/Makefile
+===================================================================
+--- linux-2.6.31.orig/drivers/video/Makefile	2009-10-19 16:31:51.000000000 +0200
++++ linux-2.6.31/drivers/video/Makefile	2009-10-19 16:53:39.000000000 +0200
+@@ -30,6 +30,7 @@
+ # Hardware specific drivers go first
+ obj-$(CONFIG_FB_AMIGA)            += amifb.o c2p_planar.o
+ obj-$(CONFIG_FB_ARC)              += arcfb.o
++obj-$(CONFIG_FB_NT7506)           += nt7506fb.o
+ obj-$(CONFIG_FB_CLPS711X)         += clps711xfb.o
+ obj-$(CONFIG_FB_CYBER2000)        += cyber2000fb.o
+ obj-$(CONFIG_FB_PM2)              += pm2fb.o
+Index: linux-2.6.31/drivers/video/nt7506fb.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.31/drivers/video/nt7506fb.c	2009-10-19 16:53:39.000000000 +0200
+@@ -0,0 +1,899 @@
++/*
++ * linux/drivers/video/nt7506fb.c -- FB driver for NT7506 monochrome LCD board
++ *
++ * Copyright (C) 2008, CenoSYS (www.cenosys.com).
++ * Copyright (C) 2009, Bollore telecom (www.bolloretelecom.eu).
++ *
++ * Alexandre Coffignal <alexandre.coffignal@cenosys.com>
++ * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
++ * Jeremy Laine <jeremy.laine@bolloretelecom.eu>
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License. See the file COPYING in the main directory of this archive for
++ * more details.
++ *
++ * Layout is based on arcfb.c by Jaya Kumar
++ *
++ * This driver was written to be used with the Novatek NT7506 LCD board.
++ *
++ * Novatek uses a set of NT7506 chips that control individual 128x128 LCD
++ * matrices. The interface between the board and the host is TTL based GPIO.
++ *
++ * General notes:
++ * - User must set tuhold. It's in microseconds. According to the 108 spec,
++ *   the hold time is supposed to be at least 1 microsecond.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/string.h>
++#include <linux/mm.h>
++#include <linux/vmalloc.h>
++#include <linux/delay.h>
++#include <linux/timer.h>
++#include <linux/fb.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/backlight.h>
++#include <linux/lcd.h>
++
++#include <linux/uaccess.h>
++
++#define DRIVER_NAME "nt7506fb"
++
++//NT7506 Hardware
++#define LCD_RST		0x08
++#define LCD_RSTN	0x00
++#define LCD_BCKLIGH	0x04
++#define LCD_BCKLIGHN	0x00
++#define LCD_RS		0x02
++#define LCD_RSN		0x00
++#define LCD_ERD		0x01
++#define LCD_ERDN	0x00
++
++//Base address
++#define LCD_BASE	0xf0000000
++#define LCD_SIZE	0x2
++
++//NT7506 Instructions
++#define NT_ICON		0xA2
++#define NT_PAGE_ADDR 	0xB0
++#define NT_COL_MSB	0x10
++#define NT_COL_LSB	0x00
++#define NT_DISP		0xAE
++#define NT_START_LINE	0x40
++#define	NT_COM0		0x44
++#define	NT_DUTY		0x48
++#define DUTY_1_128	0x80
++#define NT_REV_DISP	0xA6
++#define NT_POWER	0x28
++#define VC		0x04
++#define VR		0x02
++#define VF		0x01
++#define	NT_DCDC		0x64
++#define	TIME6		0x03
++#define	NT_REG_RES	0x20
++#define	RES_7_2		0x07
++#define	NT_ELEC_VOL	0x81
++#define	NT_BIAS		0x50
++#define BIAS_1_11	0x06
++#define	NT_ADC_NOR	0xA0
++#define	NT_ADC_REV	0xA1
++#define	NT_SHL_NOR	0xC0
++#define	NT_SHL_REV	0xC8
++#define NT_SET_PWRSAVE  0xA8
++#define	NT_OSC		0xAB
++#define NT_RLS_PWRSAVE  0xE1
++#define NT_RESET	0xE2
++#define NT_DATA_DIR	0xe8
++#define NT_FRC_PWM	0x90
++#define PWM15		0x03
++
++#define ON		0x01
++#define OFF		0x00
++
++#define NT_GRAY_SCALE	0x88
++#define GRAY_WHITE_AB	0
++#define GRAY_WHITE_CD	1
++#define GRAY_LIGHT_AB	2
++#define GRAY_LIGHT_CD	3
++#define GRAY_DARK_AB	4
++#define GRAY_DARK_CD	5
++#define GRAY_BLACK_AB	6
++#define GRAY_BLACK_CD	7
++
++#define GRAY_INDEX_WHITE GRAY_WHITE_AB
++#define GRAY_INDEX_LIGHT GRAY_LIGHT_AB
++#define GRAY_INDEX_DARK  GRAY_DARK_AB
++#define GRAY_INDEX_BLACK GRAY_BLACK_AB
++
++#define GRAY_LEVEL_WHITE 0
++#define GRAY_LEVEL_LIGHT 5
++#define GRAY_LEVEL_DARK  10
++#define GRAY_LEVEL_BLACK 15
++#define GRAY_LEVEL_MAX 15
++
++#define GRAY_VALUE(level) (((level)<<4)+(level))
++
++// Geometric settings
++#define LCD_WIDTH	128
++#define LCD_HEIGHT	128
++#define LCD_NPAGES	(LCD_HEIGHT/8)    /* LCD pages of 8 vertical pixels */
++
++#define DEFAULT_CONTRAST	20
++#define DEFAULT_FPS	10
++
++static struct resource *lcd_mem = NULL;
++static void * _lcd_io = NULL;
++static unsigned long tuhold;
++static char _backlight = 1;
++
++struct nt7506fb_par {
++	atomic_t ref_count;
++	struct fb_info *info;
++	struct lcd_device *lcd_dev;
++	int power;
++	int contrast;
++
++	/* refresh rate and timer */
++	unsigned int framerate;
++	struct timer_list timer;
++};
++
++static struct fb_fix_screeninfo nt7506fb_fix __initdata = {
++	.id =		DRIVER_NAME,
++	.type =		FB_TYPE_PACKED_PIXELS,
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++	.visual =	FB_VISUAL_STATIC_PSEUDOCOLOR,
++	.line_length =  LCD_WIDTH / 4,
++#else
++	.visual =	FB_VISUAL_MONO01,
++	.line_length =  LCD_WIDTH / 8,
++#endif
++	.xpanstep =	1,
++	.ypanstep =	1,
++	.ywrapstep =	0,
++	.accel =	FB_ACCEL_NONE,
++};
++
++static struct fb_var_screeninfo nt7506fb_var __initdata = {
++	.xres		= LCD_WIDTH,
++	.yres		= LCD_HEIGHT,
++	.xres_virtual	= LCD_WIDTH,
++	.yres_virtual	= LCD_HEIGHT,
++	.nonstd		= 1,
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++	.bits_per_pixel	= 2,
++	.grayscale	= 1,
++	.red		= { 0, 2, 0 },
++	.green		= { 0, 2, 0 },
++	.blue		= { 0, 2, 0 },
++	.transp		= { 0, 0, 0 },
++#else
++	.bits_per_pixel	= 1,
++#endif
++};
++
++
++/*
++ * Low-level i/o primitives
++ */
++
++static void NT7506_init_lcd(char ael);
++
++static void NT7506_writeb_ctl(unsigned char value)
++{
++	unsigned short svalue;
++	char bl = _backlight ? LCD_BCKLIGH : LCD_BCKLIGHN;
++
++	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERDN | bl;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++	//The data on DB0/7 are latched at the falling edge of the E_RD signal
++	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERD | bl;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++}
++
++static void NT7506_writeb_data(unsigned char value)
++{
++	unsigned short svalue;
++	char bl = _backlight ? LCD_BCKLIGH : LCD_BCKLIGHN;
++
++	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERD | bl ;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++	//The data on DB0/7 are latched at the falling edge of the E_RD signal
++	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERDN | bl;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++}
++
++static void NT7506_set_start_line(unsigned char y)
++{
++	NT7506_writeb_ctl(NT_START_LINE);
++	NT7506_writeb_ctl(y);
++}
++
++static void NT7506_set_yaddr(unsigned char y)
++{
++	NT7506_writeb_ctl(NT_PAGE_ADDR+y);
++}
++
++static void NT7506_set_xaddr(unsigned char x)
++{
++	NT7506_writeb_ctl(NT_COL_MSB | (x >> 0x04)); //Send high nibble
++	NT7506_writeb_ctl(NT_COL_LSB | (x & 0x0F) ); //Send low nibble
++}
++
++
++/*
++ * LCD device management
++ */
++
++static int
++nt7506fb_lcd_get_contrast(struct lcd_device *lcd_dev)
++{
++	struct nt7506fb_par *par = lcd_get_data(lcd_dev);
++	return par->contrast;
++}
++
++static int
++nt7506fb_lcd_set_contrast(struct lcd_device *lcd_dev, int contrast)
++{
++	struct nt7506fb_par *par = lcd_get_data(lcd_dev);
++
++	par->contrast = contrast;
++	NT7506_writeb_ctl(NT_ELEC_VOL);
++	NT7506_writeb_ctl(par->contrast);
++
++	return 0;
++}
++
++static struct lcd_ops nt7506fb_lcd_ops = {
++	.get_contrast = nt7506fb_lcd_get_contrast,
++	.set_contrast = nt7506fb_lcd_set_contrast,
++};
++
++static void
++nt7506fb_lcd_init(struct nt7506fb_par *par)
++{
++	struct fb_info *info = par->info;
++	struct lcd_device *lcd_dev;
++
++	lcd_dev = lcd_device_register("nt7506fb-lcd", info->dev, par, &nt7506fb_lcd_ops);
++	if (IS_ERR(lcd_dev)) {
++		par->lcd_dev = NULL;
++		dev_warn(info->device, "LCD device registration failed\n");
++		return;
++	}
++
++	par->lcd_dev = lcd_dev;
++	lcd_dev->props.max_contrast = 255;
++	par->contrast = DEFAULT_CONTRAST;
++	dev_info(info->device, "LCD contrast management initialized\n");
++}
++
++static void
++nt7506fb_lcd_exit(struct nt7506fb_par *par)
++{
++	if ( par->lcd_dev ) {
++		lcd_device_unregister(par->lcd_dev);
++		par->lcd_dev = NULL;
++	}
++}
++
++
++/*
++ * Backlight device management
++ */
++static void nt7506fb_start_timer(struct nt7506fb_par *par);
++
++static int
++nt7506fb_bl_update_status(struct backlight_device *bd)
++{
++	struct nt7506fb_par *par = bl_get_data(bd);
++	struct fb_info *info = par->info;
++	int power_on = (bd->props.power != FB_BLANK_POWERDOWN);
++
++	_backlight = bd->props.brightness & power_on;
++
++	dev_info(info->device, "backlight=%d power_on=%d\n", _backlight, power_on);
++
++	if ( bd->props.power != par->power ) {
++		par->power = bd->props.power;
++
++		if ( power_on ) {
++			/* Power LCD device on */
++			NT7506_writeb_ctl(NT_SET_PWRSAVE|OFF);
++			NT7506_writeb_ctl(NT_RLS_PWRSAVE);
++
++			/* Restart refresh timer */
++			if ( ! timer_pending(&par->timer) )
++				nt7506fb_start_timer(par);
++		}
++		else {
++			/* Throttle refresh timer */
++			del_timer(&par->timer);
++
++			/* Put LCD device in power save mode */
++			NT7506_writeb_ctl(NT_SET_PWRSAVE|ON);
++			NT7506_writeb_ctl(NT_RLS_PWRSAVE);
++		}
++	}
++
++	return 0;
++}
++
++static int
++nt7506fb_bl_get_brightness(struct backlight_device *bd)
++{
++	return bd->props.brightness;
++}
++
++static struct backlight_ops nt7506fb_bl_ops = {
++	.get_brightness = nt7506fb_bl_get_brightness,
++	.update_status	= nt7506fb_bl_update_status,
++};
++
++static void
++nt7506fb_bl_init(struct nt7506fb_par *par)
++{
++	struct fb_info *info = par->info;
++	struct backlight_device *bd;
++
++	bd = backlight_device_register("nt7506fb-bl", info->dev, par, &nt7506fb_bl_ops);
++	if (IS_ERR(bd)) {
++		info->bl_dev = NULL;
++		dev_warn(info->device, "Backlight device registration failed\n");
++		return;
++	}
++
++	info->bl_dev = bd;
++	bd->props.max_brightness = 1;
++	bd->props.power = FB_BLANK_UNBLANK;
++	bd->props.brightness = 1;
++	par->power = bd->props.power;
++
++	nt7506fb_bl_update_status(bd);
++
++	dev_info(info->device, "Backlight control initialized\n");
++}
++
++static void
++nt7506fb_bl_exit(struct fb_info *info)
++{
++	if ( info->bl_dev ) {
++		backlight_device_unregister(info->bl_dev);
++		info->bl_dev = NULL;
++	}
++}
++
++
++/*
++ * Main frame buffer operations
++ */
++
++static int nt7506fb_open(struct fb_info *info, int user)
++{
++	struct nt7506fb_par *par = info->par;
++	atomic_inc(&par->ref_count);
++	return 0;
++}
++
++static int nt7506fb_release(struct fb_info *info, int user)
++{
++	struct nt7506fb_par *par = info->par;
++	int count = atomic_read(&par->ref_count);
++	if (!count)
++		return -EINVAL;
++	atomic_dec(&par->ref_count);
++	return 0;
++}
++
++static int nt7506fb_pan_display(struct fb_var_screeninfo *var,
++				struct fb_info *info)
++{
++	if ( (var->vmode & FB_VMODE_YWRAP) &&
++	     (var->yoffset < LCD_HEIGHT) &&
++	     (info->var.yres <= LCD_HEIGHT) ) {
++		NT7506_set_start_line(var->yoffset);
++		info->var.yoffset = var->yoffset;
++		return 0;
++	}
++
++	return -EINVAL;
++}
++
++static void nt7506fb_lcd_update(struct nt7506fb_par *par)
++{
++	unsigned char *src = (unsigned char __force *) par->info->screen_base;
++	int line_length = par->info->fix.line_length;
++	int page, x, bit;
++	unsigned char plane1, plane2;
++	unsigned char *ptr;
++	unsigned char xshift;
++
++	if ( par->info->var.bits_per_pixel == 1 ) {
++
++		for (page = 0; page < LCD_NPAGES; page++) {
++			NT7506_set_yaddr(page);
++			NT7506_set_xaddr(0);
++			for (x = 0; x < LCD_WIDTH; x++) {
++				xshift = 7 - (x % 8);
++				plane1 = plane2 = 0;
++				ptr = src + (page * 8 * line_length + x / 8);
++				for (bit = 0; bit < 8; ptr += line_length, bit++) {
++					plane1 |= (((*ptr) >> xshift) & 1) << bit;
++				}
++				NT7506_writeb_data(plane1);
++				NT7506_writeb_data(plane2);
++			}
++		}
++
++	} else {
++
++		for (page = 0; page < LCD_NPAGES; page++) {
++			NT7506_set_yaddr(page);
++			NT7506_set_xaddr(0);
++			for (x = 0; x < LCD_WIDTH; x++) {
++				xshift = (3 - (x % 4)) << 1;
++				plane1 = plane2 = 0;
++				ptr = src + (page * 8 * line_length + x / 4);
++				for (bit = 0; bit < 8; ptr += line_length, bit++) {
++					plane1 |= (((*ptr) >> (xshift + 1)) & 1) << bit;
++					plane2 |= (((*ptr) >> xshift) & 1) << bit;
++				}
++				NT7506_writeb_data(plane1);
++				NT7506_writeb_data(plane2);
++			}
++		}
++
++	}
++}
++
++static void nt7506fb_fillrect(struct fb_info *info,  const struct fb_fillrect *rect)
++{
++	sys_fillrect(info, rect);
++}
++
++static void nt7506fb_copyarea(struct fb_info *info,
++			   const struct fb_copyarea *area)
++{
++	sys_copyarea(info, area);
++}
++
++
++static void nt7506fb_imageblit(struct fb_info *info, const struct fb_image *image)
++{
++	sys_imageblit(info, image);
++}
++
++
++/*
++ * this is the access path from userspace. they can seek and write to
++ * the fb. it's inefficient for them to do anything less than 128*8
++ * writes since we update the lcd in each write() anyway.
++ */
++static ssize_t nt7506fb_write(struct fb_info *info, const char __user *buf,
++			   size_t count, loff_t *ppos)
++{
++	unsigned long p = *ppos;
++	unsigned int fbmemlength;
++	int err = 0;
++
++	fbmemlength = (info->var.xres * info->var.yres) / (8 / info->var.bits_per_pixel);
++
++	if ( p > fbmemlength ) {
++		return -EFBIG;
++	}
++
++	if ( (count + p) > fbmemlength ) {
++		count = fbmemlength - p;
++		err = -ENOSPC;
++	}
++
++	if ( count ) {
++		char *base_addr = (char __force *) info->screen_base;
++		if ( copy_from_user(base_addr + p, buf, count) )
++			err = -EFAULT;
++	}
++
++	if ( !err )
++		*ppos += count;
++
++	return err ? err : count;
++}
++
++
++static int nt7506fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
++{
++	unsigned long off;
++	unsigned long start;
++	u32 len;
++
++	if (vma->vm_end - vma->vm_start == 0)
++		return 0;
++	if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT))
++		return -EINVAL;
++	off = vma->vm_pgoff << PAGE_SHIFT;
++	start = info->fix.smem_start;
++	len = info->fix.smem_len;
++	if (off >= len)
++	{
++		return -EINVAL;
++
++	}
++	if ((vma->vm_end - vma->vm_start + off) > len)
++	{
++			return -EINVAL;
++	}
++	off += start;
++	vma->vm_pgoff = off >> PAGE_SHIFT;
++	if (remap_pfn_range(vma, vma->vm_start, virt_to_phys((void *)info->fix.smem_start) >> PAGE_SHIFT,
++			info->fix.smem_len, vma->vm_page_prot))
++
++	{
++		return -EAGAIN;
++	}
++	return 0;
++
++}
++
++static struct fb_ops nt7506fb_ops = {
++	.owner		= THIS_MODULE,
++	.fb_open	= nt7506fb_open,
++	.fb_read        = fb_sys_read,
++	.fb_write	= nt7506fb_write,
++	.fb_release	= nt7506fb_release,
++	.fb_pan_display	= nt7506fb_pan_display,
++	.fb_fillrect	= nt7506fb_fillrect,
++	.fb_copyarea	= nt7506fb_copyarea,
++	.fb_imageblit	= nt7506fb_imageblit,
++	.fb_mmap	= nt7506fb_mmap,
++};
++
++static void
++nt7506fb_start_timer(struct nt7506fb_par *par)
++{
++	par->timer.expires = jiffies + (HZ/par->framerate);
++	add_timer(&par->timer);
++}
++
++static void
++nt7506fb_refresh(unsigned long data)
++{
++	struct nt7506fb_par *par = (struct nt7506fb_par *)data;
++	nt7506fb_lcd_update(par);
++	nt7506fb_start_timer(par);
++}
++
++/*
++ * Grayscale levels adjustment
++ */
++
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++
++static void nt7506fb_set_gray_level(unsigned char index, unsigned char level)
++{
++	NT7506_writeb_ctl(NT_GRAY_SCALE | index);
++	NT7506_writeb_ctl(GRAY_VALUE(level));
++	NT7506_writeb_ctl(NT_GRAY_SCALE | (index+1));
++	NT7506_writeb_ctl(GRAY_VALUE(level));
++}
++
++#ifdef CONFIG_PROC_FS
++#include "nt7506fb-procfs.c"
++#endif
++
++#endif
++
++/*
++ * sysfs attributes
++ */
++
++static ssize_t show_framerate(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct fb_info *info = platform_get_drvdata(to_platform_device(dev));
++	struct nt7506fb_par *par = info->par;
++	return snprintf(buf, PAGE_SIZE, "%u\n", par->framerate);
++}
++
++static ssize_t store_framerate(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct fb_info *info = platform_get_drvdata(to_platform_device(dev));
++	struct nt7506fb_par *par = info->par;
++	unsigned int framerate;
++	if (sscanf(buf, "%u", &framerate) == 1 && framerate > 0)
++	{
++		par->framerate = framerate;
++		return count;
++	}
++	return -EINVAL;
++}
++
++static DEVICE_ATTR(framerate, S_IRUGO | S_IWUSR, show_framerate, store_framerate);
++
++static struct attribute *nt7506fb_attributes[] = {
++	&dev_attr_framerate.attr,
++	NULL,
++};
++
++static struct attribute_group nt7506fb_group = {
++	.name = NULL,
++	.attrs = nt7506fb_attributes,
++};
++
++
++/*
++ * Device driver intialisation
++ */
++
++static int __init
++nt7506fb_probe(struct platform_device *pdev)
++{
++	int retval = -ENOMEM;
++	struct device *dev = &pdev->dev;
++	struct fb_info *info;
++	struct nt7506fb_par *par;
++	static unsigned char *videomemory;
++	static int videomemorysize;
++	int i;
++
++	NT7506_init_lcd(DEFAULT_CONTRAST);
++
++	videomemorysize = LCD_WIDTH * LCD_HEIGHT / 4;
++
++	if (!(videomemory = kmalloc(videomemorysize, GFP_ATOMIC)))
++		goto failout;
++	memset(videomemory, 0, videomemorysize);
++
++	info = framebuffer_alloc(sizeof(struct nt7506fb_par), dev);
++
++	if (!info)
++		goto out_alloc;
++	info->screen_base = (char __iomem *)videomemory;
++	info->fbops = &nt7506fb_ops;
++
++	info->var = nt7506fb_var;
++	info->fix = nt7506fb_fix;
++	info->fix.smem_start = (unsigned long)videomemory;
++	info->fix.smem_len = videomemorysize;
++
++	par = info->par;
++	par->info = info;
++	par->framerate = DEFAULT_FPS;
++
++	info->flags = FBINFO_FLAG_DEFAULT;
++	platform_set_drvdata(pdev, info);
++
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++	/* Allocate cmap */
++	retval = fb_alloc_cmap(&info->cmap, 4, 0);
++	if (retval < 0) {
++		dev_err(dev, "Failed to allocate colormap\n");
++		goto out_register;
++	}
++
++	/* Set cmap */
++	for (i = 0; i < 4; i++)
++		info->cmap.red[i] = (((4*i)+1)*(0xFFFF))/16;
++	memcpy(info->cmap.green, info->cmap.red, sizeof(u16)*4);
++	memcpy(info->cmap.blue, info->cmap.red, sizeof(u16)*4);
++#endif
++
++	/* Register framebuffer */
++	retval = register_framebuffer(info);
++	if (retval < 0)
++		goto out_register;
++
++	setup_timer(&par->timer, nt7506fb_refresh, (unsigned long) par);
++
++	dev_info(dev,
++	       "nt7506 frame buffer device, using %dK of video memory\n",
++	       videomemorysize >> 10);
++
++	/* Create procfs entries for grayscale levels adjustment */
++#ifdef CONFIG_PROC_FS
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++	nt7506fb_proc_init(par);
++#endif
++#endif
++
++	/* Initialize backlight and contrast control (do not abort driver if it fails) */
++	nt7506fb_bl_init(par);
++	nt7506fb_lcd_init(par);
++
++	/* Register sysfs hooks */
++	retval = sysfs_create_group(&dev->kobj, &nt7506fb_group);
++	if (retval != 0)
++		dev_warn(dev, "Failed to register attributes\n");
++
++	nt7506fb_start_timer(par);
++
++	return 0;
++
++out_register:
++	framebuffer_release(info);
++out_alloc:
++	vfree(videomemory);
++failout:
++	return retval;
++}
++
++static int nt7506fb_remove(struct platform_device *pdev)
++{
++	struct fb_info *info = platform_get_drvdata(pdev);
++	struct nt7506fb_par *par = info->par;
++
++	del_timer(&par->timer);
++
++	if (info) {
++		sysfs_remove_group(&pdev->dev.kobj, &nt7506fb_group);
++		nt7506fb_lcd_exit(info->par);
++		nt7506fb_bl_exit(info);
++		unregister_framebuffer(info);
++		vfree((void __force *)info->screen_base);
++		framebuffer_release(info);
++	}
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int nt7506fb_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct fb_info *info = platform_get_drvdata(pdev);
++
++	dev_info(info->device, "suspend\n");
++
++	info->bl_dev->props.power = FB_BLANK_POWERDOWN;
++	nt7506fb_bl_update_status(info->bl_dev);
++
++	return 0;
++}
++
++static int nt7506fb_resume(struct platform_device *pdev)
++{
++	struct fb_info *info = platform_get_drvdata(pdev);
++
++	dev_info(info->device, "resume\n");
++
++	info->bl_dev->props.power = FB_BLANK_UNBLANK;
++	nt7506fb_bl_update_status(info->bl_dev);
++
++	return 0;
++}
++#else
++#define nt7506fb_suspend NULL
++#define nt7506fb_resume  NULL
++#endif
++
++
++static struct platform_driver nt7506fb_driver = {
++	.probe	= nt7506fb_probe,
++	.remove = nt7506fb_remove,
++	.suspend = nt7506fb_suspend,
++	.resume	 = nt7506fb_resume,
++	.driver	= {
++		.name	= DRIVER_NAME,
++	},
++};
++
++static struct platform_device *nt7506fb_device;
++
++static int __init nt7506fb_init(void)
++{
++	int ret;
++
++	if (!(lcd_mem = request_mem_region(LCD_BASE, LCD_SIZE, DRIVER_NAME)))
++		return -ENOMEM;
++
++	if (!(_lcd_io = ioremap(LCD_BASE, LCD_SIZE)))
++	{
++		release_mem_region(LCD_BASE, LCD_SIZE);
++		lcd_mem = NULL;
++		return -ENOMEM;
++	}
++	ret = platform_driver_register(&nt7506fb_driver);
++
++	if (!ret) {
++		nt7506fb_device = platform_device_alloc(DRIVER_NAME, 0);
++		if (nt7506fb_device)
++		{
++			ret = platform_device_add(nt7506fb_device);
++		}
++		else
++		{
++			ret = -ENOMEM;
++		}
++		if (ret)
++		{
++			platform_device_put(nt7506fb_device);
++			platform_driver_unregister(&nt7506fb_driver);
++		}
++
++	}
++
++	return ret;
++}
++
++static void NT7506_init_lcd(char ael)
++{
++	/* this resets the lcd*/
++	char bl = _backlight ? LCD_BCKLIGH : LCD_BCKLIGHN;
++
++	iowrite16(LCD_RSTN | LCD_ERD | bl, _lcd_io);
++	udelay(100);
++	iowrite16(LCD_RST| LCD_ERD | bl, _lcd_io);
++	udelay(200);
++	/* Soft reset*/
++	NT7506_writeb_ctl(NT_RESET);
++	/* Disable ICON display*/
++	NT7506_writeb_ctl(NT_ICON|OFF);
++	/* Sets the duty ratio 1/128*/
++	NT7506_writeb_ctl(NT_DUTY);		NT7506_writeb_ctl(DUTY_1_128);
++	/* Sets reverse direction between RAM column address and segment driver*/
++	NT7506_writeb_ctl(NT_ADC_REV);
++	NT7506_writeb_ctl(NT_SHL_NOR);
++	/* Enales the built in Oscillator circuit.*/
++	NT7506_writeb_ctl(NT_OSC);
++	/* Set Initial row to 0*/
++	NT7506_writeb_ctl(NT_COM0);		NT7506_writeb_ctl(0);
++	/* Sets DC-DC*/
++	NT7506_writeb_ctl(NT_DCDC|TIME6);
++	/* Selects resistance ratio of the internal resistor*/
++	NT7506_writeb_ctl(NT_REG_RES|RES_7_2);
++	/* set Reference Voltage mode*/
++	NT7506_writeb_ctl(NT_ELEC_VOL);	NT7506_writeb_ctl(ael);
++	/* Selects LCD bias ratio*/
++	NT7506_writeb_ctl(NT_BIAS|BIAS_1_11);
++
++	NT7506_writeb_ctl(NT_DATA_DIR);	NT7506_writeb_ctl(0);
++	NT7506_writeb_ctl(NT_FRC_PWM|PWM15);
++
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++	/* Feed grayscale palette */
++	nt7506fb_set_gray_level(GRAY_INDEX_WHITE, GRAY_LEVEL_WHITE);
++	nt7506fb_set_gray_level(GRAY_INDEX_LIGHT, GRAY_LEVEL_LIGHT);
++	nt7506fb_set_gray_level(GRAY_INDEX_DARK,  GRAY_LEVEL_DARK);
++	nt7506fb_set_gray_level(GRAY_INDEX_BLACK, GRAY_LEVEL_BLACK);
++#endif
++
++	/* Select power circuit functions */
++	NT7506_writeb_ctl(NT_POWER|VC);
++	udelay(5000);
++	NT7506_writeb_ctl(NT_POWER|VC|VR);
++	udelay(5000);
++	NT7506_writeb_ctl(NT_POWER|VC|VR|VF);
++	udelay(5000);
++	/* Reverses the display status on LCD panel */
++	NT7506_writeb_ctl(NT_REV_DISP|OFF);
++	/* Forces the whole LCD points to be turned on regardless of the contents of the display data RAM*/
++	NT7506_writeb_ctl(NT_DISP|ON);
++	/* Set Initial Start Line Address */
++	NT7506_writeb_ctl(NT_START_LINE);	NT7506_writeb_ctl(0x00);
++}
++
++static void __exit nt7506fb_exit(void)
++{
++	if (lcd_mem)
++		release_mem_region(LCD_BASE, LCD_SIZE);
++	lcd_mem = NULL;
++	platform_device_unregister(nt7506fb_device);
++	platform_driver_unregister(&nt7506fb_driver);
++}
++
++module_param(tuhold, ulong, 0);
++MODULE_PARM_DESC(tuhold, "Time to hold between strobing data to NT7506 board");
++
++module_init(nt7506fb_init);
++module_exit(nt7506fb_exit);
++
++MODULE_DESCRIPTION("fbdev driver for Novatek NT7506 monochrome LCD board");
++MODULE_AUTHOR("Alexandre Coffignal");
++MODULE_LICENSE("GPL");
++
+Index: linux-2.6.31/drivers/video/nt7506fb-procfs.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.31/drivers/video/nt7506fb-procfs.c	2009-10-19 16:53:53.000000000 +0200
+@@ -0,0 +1,116 @@
++/*
++ * FB driver for NT7506 monochrome/grayscale LCD board
++ * Device setup using procfs
++ *
++ * Copyright (C) 2009, Goobie (www.goobie.fr).
++ *
++ * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#include <linux/proc_fs.h>
++#include <linux/uaccess.h>
++
++struct nt7506fb_proc_entry {
++	char *name;
++	unsigned char index;
++	unsigned char level;
++	struct nt7506fb_par *par;
++};
++
++static struct nt7506fb_proc_entry nt7506fb_proc_entries[] = {
++	{ "white", GRAY_INDEX_WHITE, GRAY_LEVEL_WHITE },
++	{ "light", GRAY_INDEX_LIGHT, GRAY_LEVEL_LIGHT },
++	{ "dark",  GRAY_INDEX_DARK,  GRAY_LEVEL_DARK  },
++	{ "black", GRAY_INDEX_BLACK, GRAY_LEVEL_BLACK },
++};
++
++static int nt7506fb_proc_read(char *page, char **start, off_t off, int count,
++			      int *eof, void *data)
++{
++	struct nt7506fb_proc_entry *entry = data;
++	int len;
++
++	len = sprintf(page, "%d\n", entry->level);
++
++	len -= off;
++	if ( len < count ) {
++		*eof = 1;
++		if ( len <= 0 )
++			return 0;
++	} else {
++		len = count;
++	}
++
++	*start = page + off;
++
++	return len;
++}
++
++
++static int nt7506fb_proc_write(struct file *file, const char *buf,
++			       unsigned long count, void *data)
++{
++	struct nt7506fb_proc_entry *entry = data;
++	char lbuf[count+1];
++
++	/* Only root can do this */
++	if ( !capable(CAP_SYS_ADMIN) )
++		return -EACCES;
++
++	memset(lbuf, 0, sizeof(lbuf));
++
++	if (copy_from_user(lbuf, buf, count))
++		return -EFAULT;
++
++	if ( sscanf(lbuf, "%hhi", &entry->level) == 1 ) {
++		if ( entry->level > GRAY_LEVEL_MAX )
++			entry->level = GRAY_LEVEL_MAX;
++
++		/* Set grayscale palette entry */
++		nt7506fb_set_gray_level(entry->index, entry->level);
++	}
++	else {
++		printk(KERN_INFO DRIVER_NAME ": [%s] Syntax error in expression\n", entry->name);
++		return -EINVAL;
++	}
++
++	return count;
++}
++
++
++static int nt7506fb_proc_init(struct nt7506fb_par *par)
++{
++	struct proc_dir_entry *root;
++	struct proc_dir_entry *ent;
++	int i;
++
++	/* Create nt7506fb proc directory */
++	printk(KERN_INFO DRIVER_NAME ": Creating setup entries in /proc/" DRIVER_NAME "/\n");
++
++	root = proc_mkdir(DRIVER_NAME, NULL);
++	if ( root == NULL ) {
++		printk(KERN_WARNING DRIVER_NAME ": Cannot create directory /proc/" DRIVER_NAME "\n");
++		return -1;
++	}
++
++	/* Create gray level entries */
++	for (i = 0; i < ARRAY_SIZE(nt7506fb_proc_entries); i++) {
++		struct nt7506fb_proc_entry *entry = &nt7506fb_proc_entries[i];
++
++		entry->par = par;
++
++		ent = create_proc_entry(entry->name, S_IFREG|S_IWUSR, root);
++		if ( ent == NULL ) {
++			printk(KERN_WARNING DRIVER_NAME ": Cannot create entry /proc/" DRIVER_NAME "/%s\n", entry->name);
++			return -1;
++		}
++
++		ent->data = entry;
++		ent->write_proc = nt7506fb_proc_write;
++		ent->read_proc = nt7506fb_proc_read;
++	}
++	return 0;
++}
