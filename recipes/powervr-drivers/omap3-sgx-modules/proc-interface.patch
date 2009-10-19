@@ -1,5 +1,5 @@
---- ./GFX_Linux_KM/services4/srvkm/env/linux/proc.c.orig	2009-10-09 13:46:40.000000000 -0500
-+++ ./GFX_Linux_KM/services4/srvkm/env/linux/proc.c	2009-10-09 13:48:36.000000000 -0500
+--- ./services4/srvkm/env/linux/proc.c.orig	2009-10-09 13:46:40.000000000 -0500
++++ ./services4/srvkm/env/linux/proc.c	2009-10-09 13:48:36.000000000 -0500
 @@ -134,7 +134,9 @@
  
      if (file)
