@@ -7,15 +7,20 @@ PV = "0.17.1"
 PR = "r2"
 PR_append = "+gitr${SRCREV}"
 
-SRCREV = "7af985a69a9147e54dd5946a8062dbc2e534b735"
+SRCREV = "dc46ad274a47d351bacf3c2167c359d23dbaf8b3"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
 SRC_URI = "git://anongit.freedesktop.org/pixman;protocol=git \
+file://0002-ARM-Introduction-of-the-new-framework-for-NEON-fast.patch;patch=1 \
+file://0003-ARM-Added-pixman_composite_src_8888_0565_asm_neon-f.patch;patch=1 \
+file://0004-ARM-Added-pixman_composite_add_8000_8000_asm_neon-f.patch;patch=1 \
+file://0005-ARM-Added-pixman_composite_over_8888_8888_asm_neon.patch;patch=1 \
+file://0006-ARM-Added-a-set-of-NEON-functions-not-fully-optimi.patch;patch=1 \
+file://0007-ARM-Enabled-new-NEON-optimizations.patch;patch=1 \
            file://pixman-28986.patch;patch=1 \
            file://nearest-neighbour.patch;patch=1 \
-           file://remove-broken.patch;patch=1 \
            file://over-8888-0565.patch;patch=1 \
 "
 
