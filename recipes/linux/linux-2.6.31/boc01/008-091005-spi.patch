@@ -1,8 +1,8 @@
 Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 ===================================================================
---- linux-2.6.31.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-19 16:32:13.000000000 +0200
-+++ linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-19 16:48:50.000000000 +0200
-@@ -14,18 +14,175 @@
+--- linux-2.6.31.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-09-10 00:13:59.000000000 +0200
++++ linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-20 15:32:51.000000000 +0200
+@@ -14,18 +14,176 @@
   */
  
  #include <linux/pci.h>
@@ -14,7 +14,6 @@ Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
  #include <asm/time.h>
  #include <asm/ipic.h>
  #include <asm/udbg.h>
-+#include <asm/qe.h>
  #include <sysdev/fsl_pci.h>
 +#include <sysdev/fsl_soc.h>
  
@@ -141,8 +140,10 @@ Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 +
 +static void mpc83xx_spi_cs_control(struct spi_device *spi, bool on)
 +{
-+	pr_debug("%s %d %d\n", __func__, spi->chip_select, on);
-+	par_io_data_set(3, 13, on);
++	if (on)
++		setbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++	else
++		clrbits32(&gpio_regs->gpdat, 1 << (31 - 14));
 +}
 +
 +static struct spi_board_info mpc8313_spi_boardinfo = {
@@ -180,15 +181,15 @@ Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
  #ifdef CONFIG_PCI
 Index: linux-2.6.31/drivers/spi/spi_mpc8xxx.c
 ===================================================================
---- linux-2.6.31.orig/drivers/spi/spi_mpc8xxx.c	2009-10-19 16:32:13.000000000 +0200
-+++ linux-2.6.31/drivers/spi/spi_mpc8xxx.c	2009-10-19 16:41:27.000000000 +0200
+--- linux-2.6.31.orig/drivers/spi/spi_mpc8xxx.c	2009-09-10 00:13:59.000000000 +0200
++++ linux-2.6.31/drivers/spi/spi_mpc8xxx.c	2009-10-20 15:32:55.000000000 +0200
 @@ -285,7 +285,9 @@
  	if (pm)
  		pm--;
  
 -	cs->hw_mode |= SPMODE_PM(pm);
 + 	cs->hw_mode = 0x0F700000;
-+ 	mpc83xx_spi_write_reg(&mpc83xx_spi->base->mode,cs->hw_mode);
++ 	mpc8xxx_spi_write_reg(&mpc8xxx_spi->base->mode, cs->hw_mode);
 + 
  	regval =  mpc8xxx_spi_read_reg(&mpc8xxx_spi->base->mode);
  	if (cs->hw_mode != regval) {
@@ -210,8 +211,8 @@ Index: linux-2.6.31/drivers/spi/spi_mpc8xxx.c
 -		cs->hw_mode |= SPMODE_LOOP;
 +
 +	cs->hw_mode = 0x0F700000;
-+	mpc83xx_spi_write_reg(&mpc83xx_spi->base->mode,cs->hw_mode);
-+	cs->hw_mode = mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
++	mpc8xxx_spi_write_reg(&mpc8xxx_spi->base->mode, cs->hw_mode);
++	cs->hw_mode = mpc8xxx_spi_read_reg(&mpc8xxx_spi->base->mode);
  
  	retval = mpc8xxx_spi_setup_transfer(spi, NULL);
  	if (retval < 0) {
@@ -220,7 +221,7 @@ Index: linux-2.6.31/drivers/spi/spi_mpc8xxx.c
  
  	mpc8xxx_spi->workqueue = create_singlethread_workqueue(
 -		dev_name(master->dev.parent));
-+		dev_name(&dev->dev));
++		dev_name(dev));
  	if (mpc8xxx_spi->workqueue == NULL) {
  		ret = -EBUSY;
  		goto free_irq;
