@@ -1,0 +1,15 @@
+--- xf86-input-tslib-0.0.5/src/tslib.c~	2009-09-22 13:39:28.000000000 +0200
++++ xf86-input-tslib-0.0.5/src/tslib.c	2009-09-22 13:39:28.000000000 +0200
+@@ -285,10 +285,12 @@
+ static void
+ xf86TslibUninit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
+ {
++	struct ts_priv *priv = (struct ts_priv *)(pInfo->private);
+ #ifdef DEBUG
+ 	ErrorF("%s\n", __FUNCTION__);
+ #endif
+ 	xf86TslibControlProc(pInfo->dev, DEVICE_OFF);
++	ts_close(priv->ts);
+ 	xfree(pInfo->private);
+ 	xf86DeleteInput(pInfo, 0);
+ }

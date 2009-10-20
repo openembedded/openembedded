@@ -1,0 +1,12 @@
+--- xf86-input-tslib-0.0.5/src/tslib.c~	2009-09-22 13:41:00.000000000 +0200
++++ xf86-input-tslib-0.0.5/src/tslib.c	2009-09-22 13:41:00.000000000 +0200
+@@ -233,7 +233,9 @@
+ 
+ 		if (InitValuatorClassDeviceStruct(device,
+ 						  2,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
+ 						  xf86GetMotionEvents,
++#endif
+ 						  0, Absolute) == FALSE) {
+ 			ErrorF("unable to allocate Valuator class device\n");
+ 			return !Success;

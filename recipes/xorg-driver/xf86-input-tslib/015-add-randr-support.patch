@@ -1,0 +1,35 @@
+--- xf86-input-tslib-0.0.5/src/tslib.c~	2009-09-22 13:37:56.000000000 +0200
++++ xf86-input-tslib-0.0.5/src/tslib.c	2009-09-22 13:37:56.000000000 +0200
+@@ -128,6 +128,8 @@
+ 	struct ts_sample samp;
+ 	int ret;
+ 	int x,y;
++	ScrnInfoPtr pScrn = xf86Screens[priv->screen_num];
++	Rotation rotation = rrGetScrPriv (pScrn->pScreen) ? RRGetRotation(pScrn->pScreen) : RR_Rotate_0;
+ 
+ 	ret = ts_read(priv->ts, &samp, 1);
+ 
+@@ -154,6 +156,23 @@
+ 		default:		break;
+ 		}
+ 
++		tmp_x = samp.x;
++
++		switch(rotation) {
++		case RR_Rotate_90:
++			samp.x = (priv->height - samp.y - 1) * priv->width / priv->height;
++			samp.y = tmp_x * priv->height / priv->width;
++			break;
++		case RR_Rotate_180:
++			samp.x = priv->width - samp.x - 1;
++			samp.y = priv->height - samp.y - 1;
++			break;
++		case RR_Rotate_270:
++			samp.x = samp.y * priv->width / priv->height;
++			samp.y = (priv->width - tmp_x - 1) * priv->height / priv->width;
++			break;
++		}
++
+ 		priv->lastx = samp.x;
+ 		priv->lasty = samp.y;
+ 		x = samp.x;

@@ -1,0 +1,50 @@
+--- xf86-input-tslib-0.0.5/src/tslib.c~	2009-09-22 13:30:23.000000000 +0200
++++ xf86-input-tslib-0.0.5/src/tslib.c	2009-09-22 13:30:23.000000000 +0200
+@@ -80,21 +80,27 @@
+ static void
+ BellProc(int percent, DeviceIntPtr pDev, pointer ctrl, int unused)
+ {
++#ifdef DEBUG
+ 	ErrorF("%s\n", __FUNCTION__);
++#endif
+ 	return;
+ }
+ 
+ static void
+ KeyControlProc(DeviceIntPtr pDev, KeybdCtrl * ctrl)
+ {
++#ifdef DEBUG
+ 	ErrorF("%s\n", __FUNCTION__);
++#endif
+ 	return;
+ }
+ 
+ static void
+ PointerControlProc(DeviceIntPtr dev, PtrCtrl * ctrl)
+ {
++#ifdef DEBUG
+ 	ErrorF("%s\n", __FUNCTION__);
++#endif
+ 	return;
+ }
+ 
+@@ -186,7 +192,9 @@
+ 	int i;
+ 	struct ts_priv *priv;
+ 
++#ifdef DEBUG
+ 	ErrorF("%s\n", __FUNCTION__);
++#endif
+ 	pInfo = device->public.devicePrivate;
+ 	priv = pInfo->private;
+ 
+@@ -258,7 +266,9 @@
+ static void
+ xf86TslibUninit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
+ {
++#ifdef DEBUG
+ 	ErrorF("%s\n", __FUNCTION__);
++#endif
+ 	xf86TslibControlProc(pInfo->dev, DEVICE_OFF);
+ 	xfree(pInfo->private);
+ }

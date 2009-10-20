@@ -1,0 +1,75 @@
+--- xf86-input-tslib-0.0.5/src/tslib.c~	2009-10-20 11:00:38.000000000 +0200
++++ xf86-input-tslib-0.0.5/src/tslib.c	2009-10-20 11:00:38.000000000 +0200
+@@ -48,6 +48,7 @@
+ #include <exevents.h>		/* Needed for InitValuator/Proximity stuff */
+ #include <X11/keysym.h>
+ #include <mipointer.h>
++#include <xserver-properties.h>
+ 
+ #include <tslib.h>
+ 
+@@ -210,6 +211,15 @@
+ 	unsigned char map[MAXBUTTONS + 1];
+ 	int i;
+ 	struct ts_priv *priv;
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++	Atom buttons[MAXBUTTONS];
++	Atom axes[2];
++
++	axes[0] = XIGetKnownProperty(AXIS_LABEL_PROP_ABS_X);
++	axes[1] = XIGetKnownProperty(AXIS_LABEL_PROP_ABS_Y);
++
++	buttons[0] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_LEFT);
++#endif
+ 
+ #ifdef DEBUG
+ 	ErrorF("%s\n", __FUNCTION__);
+@@ -225,15 +235,19 @@
+ 			map[i + 1] = i + 1;
+ 		}
+ 
+-		if (InitButtonClassDeviceStruct(device,
+-						MAXBUTTONS, map) == FALSE) {
++		if (InitButtonClassDeviceStruct(device, MAXBUTTONS,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++						buttons,
++#endif
++						map) == FALSE) {
+ 			ErrorF("unable to allocate Button class device\n");
+ 			return !Success;
+ 		}
+ 
+-		if (InitValuatorClassDeviceStruct(device,
+-						  2,
+-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
++		if (InitValuatorClassDeviceStruct(device, 2,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++						  axes,
++#elif GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
+ 						  xf86GetMotionEvents,
+ #endif
+ 						  0, Absolute) == FALSE) {
+@@ -241,13 +255,21 @@
+ 			return !Success;
+ 		}
+ 
+-		InitValuatorAxisStruct(device, 0, 0,    	/* min val */
++		InitValuatorAxisStruct(device, 0,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++					       axes[0],
++#endif
++					       0,               /* min val */
+ 					       priv->width - 1,	/* max val */
+ 					       priv->width,	/* resolution */
+ 					       0,		/* min_res */
+ 					       priv->width);	/* max_res */
+ 
+-		InitValuatorAxisStruct(device, 1, 0,    	/* min val */
++		InitValuatorAxisStruct(device, 1,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++					       axes[1],
++#endif
++					       0,       	/* min val */
+ 					       priv->height - 1,/* max val */
+ 					       priv->height,	/* resolution */
+ 					       0,		/* min_res */

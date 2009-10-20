@@ -1,0 +1,30 @@
+--- xf86-input-tslib-0.0.5/src/tslib.c~	2009-09-22 13:35:15.000000000 +0200
++++ xf86-input-tslib-0.0.5/src/tslib.c	2009-09-22 13:35:15.000000000 +0200
+@@ -271,6 +271,7 @@
+ #endif
+ 	xf86TslibControlProc(pInfo->dev, DEVICE_OFF);
+ 	xfree(pInfo->private);
++	xf86DeleteInput(pInfo, 0);
+ }
+ 
+ /*
+@@ -347,15 +348,17 @@
+ 	s = xf86SetStrOption(pInfo->options, "TslibDevice", NULL);
+ 
+ 	priv->ts = ts_open(s, 0);
++	xfree(s);
++	
+ 	if (!priv->ts) {
+ 		ErrorF("ts_open failed (device=%s)\n",s);
++		xf86DeleteInput(pInfo, 0);
+ 		return NULL;
+ 	}
+ 
+-	xfree(s);
+-
+ 	if (ts_config(priv->ts)) {
+ 		ErrorF("ts_config failed\n");
++		xf86DeleteInput(pInfo, 0);
+ 		return NULL;
+ 	}
+ 
