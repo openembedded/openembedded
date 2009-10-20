@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r30"
+PR ="r32"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -14,20 +14,24 @@ SRCREV_palmpre = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 
-SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
-                 file://fw-env.patch;patch=1 \
-                 file://dss2.patch;patch=1 \
+SRC_URI_beagleboard = "git://git.denx.de/u-boot-ti.git;protocol=git \
+                 file://fw_env.config \
                  file://new-pinmux.patch;patch=1 \
 "
-SRCREV_beagleboard = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
-PV_beagleboard = "2009.05+${PR}+gitr${SRCREV}"
+SRCREV_beagleboard = "1590f84007e2b50ad346a482fff89195cb04ff4e"
+PV_beagleboard = "2009.08+${PR}+gitr${SRCREV}"
 
 SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
-                 file://fw-env.patch;patch=1 \
+                 file://fw_env.config \
                  file://dss2.patch;patch=1 \
+                 file://600mhz.patch;patch=1 \
                  file://spi3.patch;patch=1 \
                  file://spi4.patch;patch=1 \
                  file://headphone.patch;patch=1 \
+                 file://power.patch;patch=1 \
+                 file://ai-logo.patch;patch=1 \
+                 file://mmcinit.patch;patch=1 \
+                 file://touchbook-config.patch;patch=1 \
 "
 SRCREV_omap3-touchbook = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
 PV_omap3-touchbook = "2009.05+${PR}+gitr${SRCREV}"
