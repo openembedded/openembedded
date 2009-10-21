@@ -19,7 +19,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;patch=1 \
            file://squashfs-lzma-2.6.24.patch;patch=1 \
            file://ubifs-v2.6.24.patch;patch=1 \
-	   file://time.h.patch;patch=1 \
            file://defconfig"
 
 # Moved away temporarely until committed properly (work in progress).
