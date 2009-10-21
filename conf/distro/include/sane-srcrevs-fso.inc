@@ -1,7 +1,7 @@
 # To be included from sane-srcrevs.inc
 
 # FSO Projects -- Cornucopia
-FSO_CORNUCOPIA_SRCREV ?= "3c3e1b862cdde806cef8f502dfe79f1d48f1c5d7"
+FSO_CORNUCOPIA_SRCREV ?= "a41cae9df1af4fc710c701ac01016d3668dd5fba"
 SRCREV_pn-fsodeviced ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsogsmd ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsogpsd ?= "${FSO_CORNUCOPIA_SRCREV}"
@@ -10,7 +10,9 @@ SRCREV_pn-fsotimed ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsousaged ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoframework ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsotransport ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-misc-vapi ?= "${FSO_CORNUCOPIA_SRCREV}"
+
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "39e804f28808247df2573788cb99897d4d765e69"
 SRCREV_pn-frameworkd ?= "a2dfde0fb46a745f5c07e6a1ab44e4b95b7dde80"
