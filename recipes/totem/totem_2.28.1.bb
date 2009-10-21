@@ -49,7 +49,7 @@ do_configure_prepend() {
 	sed -i -e s:help::g ${S}/Makefile.am
 }
 
-PACKAGES_DYNAMIC += " totem-plugin-*"
+PACKAGES_DYNAMIC += " totem-plugin-* "
 
 python populate_packages_prepend () {
 	totem_libdir = bb.data.expand('${libdir}/totem/plugins/', d)
