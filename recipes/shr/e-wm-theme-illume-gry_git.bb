@@ -3,11 +3,11 @@ SECTION = "e/utils"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
-RECOMMENDS = "elementary-theme-gry"
+RRECOMMENDS = "elementary-theme-gry"
 LICENCE = "unknown"
 
 PV = "0.3-${EFL_SRCREV}-gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 
