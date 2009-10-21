@@ -23,6 +23,8 @@ SRC_URI += "file://sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
 # Add support for squashfs-lzma (a highly compressed read-only filesystem)
 SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;patch=1"
 
+SRC_URI += "file://time.h.patch;patch=1"
+
 # The Atmel patch doesn't apply against 2.6.23.12  :( 
 SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
                  file://defconfig \

@@ -1,0 +1,25 @@
+....since some architectures don't support __udivdi3() (and
+ we don't want to use that, anyway).
+ 
+ Signed-off-by: Segher Boessenkool 
+ ---
+ include/linux/time.h | 4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+
+Index: linux-2.6.24/include/linux/time.h
+===================================================================
+--- linux-2.6.24.orig/include/linux/time.h	2008-06-23 11:17:09.021841180 +0200
++++ linux-2.6.24/include/linux/time.h	2008-06-23 11:18:34.445167140 +0200
+@@ -173,6 +173,11 @@
+ {
+ 	ns += a->tv_nsec;
+ 	while(unlikely(ns >= NSEC_PER_SEC)) {
++		/* The following asm() prevents the compiler from
++		 * optimising this loop into a modulo operation.
++		 */
++		asm("" : "+r"(ns));
++
+ 		ns -= NSEC_PER_SEC;
+ 		a->tv_sec++;
+ 	}
