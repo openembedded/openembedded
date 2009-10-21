@@ -4,7 +4,7 @@ require ti-paths.inc
 inherit module-base
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "b"
+MACHINE_KERNEL_PR_append = "c"
 
 # compile time dependencies
 DEPENDS_omap3evm  += "alsa-lib ti-codec-engine ti-xdctools-native ti-dspbios-native ti-cgt6x-native ti-cs1-omap3530 virtual/kernel ti-dsplink-module"
