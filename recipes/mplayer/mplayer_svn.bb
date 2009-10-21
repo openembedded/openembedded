@@ -8,10 +8,10 @@ DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jp
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-	   file://pld-onlyarm5-svn.patch;patch=1 \
 	   file://makefile-nostrip-svn.patch;patch=1 \
 	   "
 
+SRCREV = "29789"
 SRC_URI_append_armv7a = " \
 		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
