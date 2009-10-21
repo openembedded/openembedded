@@ -8,7 +8,7 @@ PR = "r0"
 
 inherit autotools_stage pkgconfig vala
 
-SRC_URI = "git://git.freesmartphone.org/libfso-glib.git;protocol=git;branch=master"
+SRC_URI = "${FREESMARTPHONE_GIT}/libfso-glib.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
 EXTRA_OECONF = "\
