@@ -2,7 +2,10 @@ DESCRIPTION = "GNOME utilities"
 SECTION = "x11/gnome"
 LICENSE = "GPL"
 DEPENDS = "gnome-common glib-2.0 gtk+ gconf"
+
 inherit gnome pkgconfig
+
+PR = "r1"
 
 EXTRA_OECONF = " \
                 --with-shadow=${STAGING_INCDIR}/.. \
@@ -16,6 +19,8 @@ do_configure_prepend () {
 do_stage () {
 	autotools_stage_all
 }
+
+FILES_${PN} += "${datadir}/*background* ${datadir}/desktop-directories"
 
 FILES_${PN}-dbg += "${libexecdir}/gnome-screensaver/.debug "
 
