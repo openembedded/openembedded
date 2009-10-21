@@ -43,14 +43,12 @@ SRC_URI_append_micro2440 = " \
 	file://0002-S3C-Backported-openmoko-s-touchscreen-filters.patch;patch=1 \
 	file://0003-VENDOR-armworks-logo.patch;patch=1 \
 	file://0004-920T-Use-specific-920t-mtune.patch;patch=1 \
-	file://0005-920T-Temp-fix-for-the-40-relocation-binutils-pro.patch;patch=1 \
 	file://0006-S3C-Allow-the-machine-code-to-get-the-BBT-table-fro.patch;patch=1 \
 	file://0007-MINI2440-Add-machine-support.patch;patch=1 \
 	file://0008-MINI2440-Delays-command-check-response-on-SD.patch;patch=1 \
 	file://0009-MINI2440-Rename-the-SoC-tty-names.patch;patch=1 \
 	file://0010-MINI2440-creates-a-mini2440_defconfig-file.patch;patch=1 \
 	file://0011-MINI2440-Add-touchscreen-support.patch;patch=1 \
-	file://0012-GRO-Disable-GRO-on-legacy-netif_rx-path.patch;patch=1 \
 	"
 
 SRC_URI_append_tosa = " \
