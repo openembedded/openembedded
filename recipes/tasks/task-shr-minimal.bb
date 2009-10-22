@@ -122,15 +122,15 @@ RDEPENDS_${PN}-x = "\
 "
 
 RDEPENDS_${PN}-apps = "\
-  shr-dialer \
-  shr-messages \
-  shr-contacts \
+  phoneui-apps-messages \
+  phoneui-apps-contacts \
+  phoneui-apps-dialer \
   notifier \
-  ophonekitd \ 
   libframeworkd-phonegui-efl \
   ffalarms \
   shr-settings \
   shr-theme \
+  shr-today \
   calc \
 "
 
