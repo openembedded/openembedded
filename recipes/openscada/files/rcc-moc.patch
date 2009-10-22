@@ -1,0 +1,15 @@
+Index: OpenSCADA/configure.in
+===================================================================
+--- OpenSCADA.orig/configure.in	2009-10-21 01:41:21.813245199 -0700
++++ OpenSCADA/configure.in	2009-10-21 01:42:25.163222573 -0700
+@@ -446,8 +446,8 @@ AC_MSG_RESULT(==========================
+ #QT4 check
+ if test ${QT4use} = true; then
+     AC_ARG_WITH(qt4-dir,[  --with-qt4-dir=DIR      Path to directory where QT4 instaled (/usr/lib/qt4 - default) ], [QT4_DIR="$withval"], [QT4_DIR="/usr/lib/qt4"])
+-    AC_CHECK_PROGS(QT4_MOC, moc-qt4 moc, false)
+-    AC_CHECK_PROGS(QT4_RCC, rcc-qt4 rcc, false)
++    AC_CHECK_PROGS(QT4_MOC, moc-qt4 moc4 moc, false)
++    AC_CHECK_PROGS(QT4_RCC, rcc-qt4 rcc4 rcc, false)
+     if test ${QT4_MOC} = false || test ${QT4_RCC} = false; 
+     then if test -d ${QT4_DIR};
+ 	 then
