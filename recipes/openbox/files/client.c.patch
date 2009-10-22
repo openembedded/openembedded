@@ -1,0 +1,47 @@
+--- openbox-3.4.7.2/openbox/client.c~	2009-10-22 14:12:16.000000000 +0200
++++ openbox-3.4.7.2/openbox/client.c	2009-10-22 14:12:16.000000000 +0200
+@@ -1205,6 +1205,11 @@
+     ret = XGetWindowAttributes(ob_display, self->window, &wattrib);
+     g_assert(ret != BadWindow);
+ 
++    /* matz changed */
++    wattrib.width = 480;
++    wattrib.height = 640;
++    /* end matz changed */
++    
+     RECT_SET(self->area, wattrib.x, wattrib.y, wattrib.width, wattrib.height);
+     POINT_SET(self->root_pos, wattrib.x, wattrib.y);
+     self->border_width = wattrib.border_width;
+@@ -1630,9 +1635,9 @@
+     self->min_ratio = 0.0f;
+     self->max_ratio = 0.0f;
+     SIZE_SET(self->size_inc, 1, 1);
+-    SIZE_SET(self->base_size, -1, -1);
+-    SIZE_SET(self->min_size, 0, 0);
+-    SIZE_SET(self->max_size, G_MAXINT, G_MAXINT);
++    SIZE_SET(self->base_size, 480, 590);
++    SIZE_SET(self->min_size, 480, 550);
++    SIZE_SET(self->max_size, 480, 640);
+ 
+     /* get the hints from the window */
+     if (XGetWMNormalHints(ob_display, self->window, &size, &ret)) {
+@@ -1655,13 +1660,16 @@
+         }
+ 
+         if (size.flags & PMinSize)
+-            SIZE_SET(self->min_size, size.min_width, size.min_height);
++            /* SIZE_SET(self->min_size, size.min_width, size.min_height); */
++            SIZE_SET(self->min_size, 480, 550);
+ 
+         if (size.flags & PMaxSize)
+-            SIZE_SET(self->max_size, size.max_width, size.max_height);
++            /* SIZE_SET(self->max_size, size.max_width, size.max_height); */
++            SIZE_SET(self->max_size, 480, 640);
+ 
+         if (size.flags & PBaseSize)
+-            SIZE_SET(self->base_size, size.base_width, size.base_height);
++            /* SIZE_SET(self->base_size, size.base_width, size.base_height); */
++            SIZE_SET(self->base_size, 480, 550);
+ 
+         if (size.flags & PResizeInc && size.width_inc && size.height_inc)
+             SIZE_SET(self->size_inc, size.width_inc, size.height_inc);

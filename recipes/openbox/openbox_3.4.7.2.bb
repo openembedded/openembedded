@@ -1,9 +1,16 @@
 DESCRIPTION = "openbox Window Manager"
 SECTION = "x11/wm"
-DEPENDS = ""
+DEPENDS = "glib-2.0 libxml2 pango"
+RDEPENDS = "libxml2 pango"
+RRECOMMENDS = "startup-notification libxcursor "
+
+PR = "r1"
 
 SRC_URI = "http://icculus.org/openbox/releases/openbox-${PV}.tar.gz"
+SRC_URI_append_om-gta02 += "file://client.c.patch;patch=1 \
+		     file://prompt.c.patch;patch=1 "
 
+S = "${WORKDIR}/${PN}-${PV}"
 inherit autotools update-alternatives
 
 EXTRA_OECONF += "--with-plugins=none"
@@ -24,3 +31,7 @@ ALTERNATIVE_PATH = "${bindir}/openbox"
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
 ALTERNATIVE_PRIORITY = "10"
+
+do_stage() {
+	autotools_stage_all
+}

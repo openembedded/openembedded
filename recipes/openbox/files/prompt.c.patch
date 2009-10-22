@@ -1,0 +1,24 @@
+--- openbox-3.4.7.2/openbox/prompt.c~	2009-10-22 14:14:34.000000000 +0200
++++ openbox-3.4.7.2/openbox/prompt.c	2009-10-22 14:14:34.000000000 +0200
+@@ -348,8 +348,8 @@
+ 
+     /* the user can't resize the prompt */
+     hints.flags = PMinSize | PMaxSize;
+-    hints.min_width = hints.max_width = w;
+-    hints.min_height = hints.max_height = h;
++    hints.min_width = hints.max_width = w = 480;
++    hints.min_height = hints.max_height = h = 640;
+     XSetWMNormalHints(ob_display, self->super.window, &hints);
+ 
+     if (self->mapped) {
+@@ -358,8 +358,8 @@
+         req.display = ob_display;
+         req.parent = RootWindow(ob_display, ob_screen);
+         req.window = self->super.window;
+-        req.width = w;
+-        req.height = h;
++        req.width = w = 480;
++        req.height = h = 640;
+         req.value_mask = CWWidth | CWHeight;
+         XSendEvent(req.display, req.window, FALSE, StructureNotifyMask,
+                    (XEvent*)&req);
