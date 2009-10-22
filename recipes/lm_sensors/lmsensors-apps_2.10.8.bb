@@ -2,6 +2,7 @@ DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://www.lm-sensors.org/"
 DEPENDS = "sysfsutils virtual/libiconv"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.gz \
            file://prefix-fix.patch;patch=1 \
@@ -16,7 +17,7 @@ do_compile() {
 }
 
 do_install() {
-	oe_runmake user_install DESTDIR=${D}
+	oe_runmake user_install EXLDFLAGS="${LDFLAGS}" DESTDIR=${D}
 
 	install -d ${D}/.usr
 	mv ${D}/* ${D}/.usr
@@ -31,7 +32,7 @@ do_install() {
 }
 
 do_stage() {
-	oe_runmake user_install DESTDIR=${STAGING_DIR_TARGET}/${layout_prefix}
+	oe_runmake user_install EXLDFLAGS="${LDFLAGS}" DESTDIR=${STAGING_DIR_TARGET}/${layout_prefix}
 }
 
 PACKAGES =+  "libsensors libsensors-dev libsensors-dbg libsensors-doc"
