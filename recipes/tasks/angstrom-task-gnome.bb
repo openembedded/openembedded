@@ -9,7 +9,9 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-uim task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base"
+PR = "r1"
+
+PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base"
 
 RDEPENDS_task-gnome-apps = " \
   abiword \
@@ -111,17 +113,6 @@ RDEPENDS_task-gnome-gstreamer = " \
   gst-plugins-ugly-meta \
 "
 
-RDEPENDS_task-gnome-uim = " \
-  uim \
-  uim-common \
-  uim-utils \
-  uim-gtk2.0 \
-  uim-anthy \
-  uim-fep \
-  uim-skk \
-  uim-xim \
- "
-
 RDEPENDS_task-gnome-perl = " \
   perl \
   task-perl-module-all \
@@ -201,7 +192,6 @@ RDEPENDS_${PN} = " \
   task-gnome-fonts \
   task-gnome \
   task-gnome-gstreamer \
-  task-gnome-uim \
   task-gnome-perl \
   task-gnome-perl \
   task-gnome-pulseaudio \
