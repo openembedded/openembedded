@@ -14,6 +14,7 @@ PR = "r1"
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=drm-tracking \
   file://fix-install.patch;patch=1 \
+  file://fix-missing-semicolon.patch;patch=1 \
 "
 S = "${WORKDIR}/git"
 
