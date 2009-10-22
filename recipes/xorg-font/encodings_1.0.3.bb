@@ -3,6 +3,6 @@ PE = "1"
 
 #DESCRIPTION = ""
 
-DEPENDS = "mkfontscale-native"
+DEPENDS = "mkfontscale-native font-util-native"
 RDEPENDS = ""
 
