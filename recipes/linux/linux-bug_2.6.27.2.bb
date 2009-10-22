@@ -2,12 +2,12 @@ DESCRIPTION = "Linux kernel for bug"
 
 PV_append = "+svnr${SRCREV}"
 KV = "2.6.27.2"
-PR = "r28"
+PR = "r29"
 
 COMPATIBLE_MACHINE = "bug"
 
 SVN_PRJ = "bug-linux-${KV}"
-SRCREV = "10017"
+SRCREV = "10199"
 
 SRC_URI = "svn://svn.buglabs.net/bug/branches/R1.4/qa;module=${SVN_PRJ};proto=svn \
            file://defconfig \
@@ -21,8 +21,15 @@ UBOOT_ENTRYPOINT = "0x80008000"
 require linux.inc
 
 do_install_append() {
-#        install -m 0644 arch/${ARCH}/boot/uImage ${D}/${KERNEL_IMAGEDEST}/uImage-${KERNEL_VERSION}
         cd ${D}/${KERNEL_IMAGEDEST} && ln -sf uImage-${KERNEL_VERSION} uImage
+}
+
+do_stage_append() {
+	cp -fR arch/arm/include/asm/* ${STAGING_KERNEL_DIR}/include/asm/
+	if [ ! -e ${STAGING_KERNEL_DIR}/include/mach ]; then
+		mkdir ${STAGING_KERNEL_DIR}/include/mach
+	fi
+	cp -fR arch/arm/plat-mxc/include/mach/* ${STAGING_KERNEL_DIR}/include/mach/
 }
 
 FILESDIR = "${WORKDIR}"

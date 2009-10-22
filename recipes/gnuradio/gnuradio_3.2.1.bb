@@ -1,4 +1,4 @@
-require gnuradio.inc
+require gnuradio-libusb-compat.inc
 
 DEPENDS += " gsl "
 

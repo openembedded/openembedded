@@ -13,8 +13,10 @@ RDEPENDS_${PN} = "\
   libfsobasics \
   libfsotransport \
   libfsoframework \
+  libfsoresource \
   \
   fsodeviced \
+  fsogsmd \
   fsonetworkd \
   fsotimed \
   fsousaged \
@@ -24,7 +26,7 @@ RDEPENDS_${PN} = "\
   fso-gpsd \
 #  fso-monitord \
   connman \
-  connman-scripts \
+#  connman-scripts \
   connman-plugin-bluetooth \
 #  connman-plugin-dhclient \
 #  connman-plugin-dnsproxy \

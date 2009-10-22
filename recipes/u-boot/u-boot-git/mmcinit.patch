@@ -1,0 +1,20 @@
+--- a/common/cmd_mmc.c	2009-09-02 23:02:48.000000000 -0700
++++ b/common/cmd_mmc.c	2009-09-02 23:01:09.000000000 -0700
+@@ -92,6 +92,17 @@
+ 	"init [dev] - init MMC sub system\n"
+ 	"mmc device [dev] - show or set current device\n"
+ );
++int do_mmcinit (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	char *argv2[] = {"mmc", "init"};
++	return do_mmc (cmdtp, flag, 2, argv2);
++}
++
++U_BOOT_CMD(
++	mmcinit,	1,	0,	do_mmcinit,
++	"mmcinit - init mmc card\n",
++	NULL
++);
+ #else /* !CONFIG_GENERIC_MMC */
+ 
+ static void print_mmcinfo(struct mmc *mmc)

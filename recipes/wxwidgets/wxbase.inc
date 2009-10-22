@@ -1,7 +1,7 @@
 DESCRIPTION = "wxBase is a library for programming \
 non-GUI (console) applications using the base wxWidgets functionality."
 HOMEPAGE = "http://www.wxwidgets.org/"
-LICENSE = "GPL"
+LICENSE = "wxWindows"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "zlib expat"

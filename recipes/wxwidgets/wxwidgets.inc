@@ -1,10 +1,10 @@
 DESCRIPTION = "wxWidgets is a cross platform application framework utilizing native widgets."
 HOMEPAGE = "http://www.wxwidgets.org"
 SECTION = "x11/libs"
-LICENSE = "GPL"
+LICENSE = "wxWindows"
 DEPENDS = "gtk+ jpeg tiff libpng zlib expat"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/wxwindows/wxWidgets-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/wxwindows/wxWidgets-${PV}.tar.bz2"
 
 S = "${WORKDIR}/wxWidgets-${PV}"
 

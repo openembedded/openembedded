@@ -1,4 +1,4 @@
-require gnuradio.inc
+require gnuradio-libusb-compat.inc
 
 PR = "${INC_PR}.1"
 

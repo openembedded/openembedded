@@ -2,9 +2,9 @@ DESCRIPTION= "All perl modules"
 
 inherit task
 
-PR = "r2"
+PR = "r3"
 
-RDEPENDS_${PN} = " \
+RRECOMMENDS_${PN} = " \
   perl-module-abbrev \
   perl-module-anydbm-file \
   perl-module-assert \
