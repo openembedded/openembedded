@@ -5,8 +5,8 @@
 #############################################################################
 
 # Base line versions, good for most things
-PREFERRED_GCC_VERSION                ?= "4.4.1"
-PREFERRED_BINUTILS                   ?= "2.19.51"
+PREFERRED_GCC_VERSION                ?= "4.4.2"
+PREFERRED_BINUTILS                   ?= "2.20"
 
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
 PREFERRED_VERSION_glibc             ?= "2.6.1"
