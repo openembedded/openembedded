@@ -6,6 +6,9 @@ EXTRA_OECONF = "--with-sysroot=${prefix}/${TARGET_SYS} \
 	       		--enable-install-libbfd \
                 --disable-werror"
 
+# In case we end up with a .debug dir
+FILES_${PN}-dbg += "${prefix}/${HOST_PREFIX}${BUILD_SYS}/${TARGET_SYS}/lib/.debug/*"
+
 do_stage() {
 	:
 }

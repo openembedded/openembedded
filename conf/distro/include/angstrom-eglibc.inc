@@ -1,6 +1,8 @@
 # eglibc:
 require conf/distro/include/eglibc.inc
 
+ANGSTROM_BLACKLIST_pn-libiconv = "the glibc builtin iconv replacement is used"
+
 TARGET_OS = "linux"
 
 TARGET_OS .= "${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb'] and bb.data.getVar('MACHINE',d) not in ['collie','h3600', 'h3800', 'simpad', 'htcwallaby']]}"

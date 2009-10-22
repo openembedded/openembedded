@@ -1,5 +1,5 @@
 DESCRIPTION = "GNOME Mobile & Embedded Initiative"
-PR = "r1"
+PR = "r2"
 
 inherit task
 
@@ -28,7 +28,7 @@ RDEPENDS_gmae-user = " \
 	    avahi-utils \
 	    gstreamer \
 	    matchbox-wm matchbox-panel \
-	    gconf-dbus \
+	    gconf \
 	    gnome-vfs \
 	    "
 

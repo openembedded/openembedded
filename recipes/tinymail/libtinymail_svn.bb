@@ -1,9 +1,9 @@
 DESCRIPTION = "TinyMail is an attempt to create an E-mail framework for mobile devices"
 SECTION = "x11/utils"
 LICENSE = "LGPL"
-DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf-dbus libgnomeui"
+DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf libgnomeui"
 PV = "0.0.5+svnr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 

@@ -1,12 +1,12 @@
 inherit autotools pkgconfig gconf
 
 DESCRIPTION = "GTK PPP dialing tool"
-DEPENDS = "gconf-dbus gtk+ libglade gettext ppp gpe-su"
-RDEPENDS = "ppp gconf-dbus gpe-su"
+DEPENDS = "gconf gtk+ libglade gettext ppp gpe-su"
+RDEPENDS = "ppp gconf gpe-su"
 SECTION = "gpe"
 PRIORITY = "optional"
 
-PR = "r3gpe1"
+PR = "r4"
 
 SRC_URI = "http://familiar.handhelds.org/source/v0.8.2/${PN}-${PV}.tar.gz \
            file://gkdial-pgpe.patch;patch=1 \

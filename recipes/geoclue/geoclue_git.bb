@@ -1,10 +1,11 @@
 DESCRIPTION = "GeoClue is a project that provide all kinds of geography information to an application"
 HOMEPAGE = "http://www.freedesktop.org/wiki/Software/GeoClue"
 
-DEPENDS = "libgpsmgr libgpsbt gtk+ gypsy libxml2 gconf-dbus libsoup dbus-glib"
+DEPENDS = "libgpsmgr libgpsbt gtk+ gypsy libxml2 gconf libsoup dbus-glib"
 
 SRCREV = "3a31d260074397a968afaf1065856ab763befb01"
 PV = "0.11.1"
+PR = "r1"
 PR_append = "+gitr${SRCREV}"
 PE = "1"
 

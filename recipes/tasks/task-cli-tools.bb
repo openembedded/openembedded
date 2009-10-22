@@ -2,7 +2,7 @@ DESCRIPTION = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r8"
+PR = "r9"
 
 inherit task
 
@@ -18,6 +18,7 @@ RDEPENDS_${PN} = "\
   nfs-utils-client \
   powertop \
   screen \
+  serial-forward \
   socat \
   sysstat \
   tcpdump \
@@ -27,7 +28,7 @@ RDEPENDS_${PN}-debug = "\
   evtest \
   devmem2 \
   i2c-tools \
-#  ltrace \
+  ltrace \
   procps \
   pxaregs \
   s3c24xx-gpio \

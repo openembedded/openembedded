@@ -2,9 +2,10 @@ require php.inc
 
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native"
 
-PR = "r5"
+PR = "r6"
 
-SRC_URI += "file://pear-makefile.patch;patch=1 "
+SRC_URI += "file://pear-makefile.patch;patch=1 \
+	file://string.c.patch;patch=1 "
 
 export THREADS="pthread"
 export LIBS=" -lpthread "

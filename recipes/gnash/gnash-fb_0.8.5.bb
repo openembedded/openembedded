@@ -1,6 +1,6 @@
 require gnash.inc
 
-DEPENDS += "gst-plugins-base cairo libmad"
+DEPENDS += "gst-plugins-base agg libmad"
 
 acpaths = " -Imacros"
 

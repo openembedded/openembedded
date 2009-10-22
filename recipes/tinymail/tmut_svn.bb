@@ -1,9 +1,9 @@
 DESCRIPTION = "Tmut is a really small E-Mail client based on Tinymail"
 SECTION = "x11/utils"
 LICENSE = "LGPL"
-DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf-dbus libtinymail"
+DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf libtinymail"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 

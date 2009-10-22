@@ -58,7 +58,7 @@ case "$arch" in
 	"armv7")
 			machines="" ;;
 	"armv7a")
-			machines="omap3-touchbook beagleboard omap3evm omap3517-evm omap3-pandora omapzoom omapzoom2 overo" ;;
+			machines="igep0020 omap3-touchbook beagleboard omap3evm omap3517-evm omap3-pandora omapzoom omapzoom2 overo" ;;
 	"avr32")
 			machines="atngw100 at32stk1000" ;;
 	"bfin")
