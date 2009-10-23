@@ -60,7 +60,7 @@ do_stage() {
         cp '${STAGING_DIR_TARGET}/bin/klcc'  '${CROSS_DIR}/bin/${TARGET_PREFIX}klcc'
 }
 
-PACKAGES = "${PN} klibc-utils-sh klibc-utils-kinit \
+PACKAGES = "${PN} ${PN}-dev klibc-utils-sh klibc-utils-kinit \
 	klibc-utils-fstype klibc-utils-ipconfig \
 	klibc-utils-nfsmount klibc-utils-resume \
 	klibc-utils-run-init klibc-utils-cat \
@@ -79,7 +79,8 @@ PACKAGES = "${PN} klibc-utils-sh klibc-utils-kinit \
         klibc-utils-gzip klibc-utils-modprobe \
 	klibc-utils-losetup klibc-utils-wc"
 
-FILES_${PN} = "${base_libdir}/klibc*.so"
+FILES_${PN} = "${base_libdir}/klibc-*.so"
+FILES_${PN}-dev = "${base_libdir}/klibc.so"
 FILES_klibc-utils-sh = "${base_bindir}/sh"
 FILES_klibc-utils-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
 FILES_klibc-utils-kinit = "${base_bindir}/kinit"

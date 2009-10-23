@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r11"
+PR = "r12"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -51,8 +51,10 @@ RPROVIDES_${PN} = "hotplug"
 FILES_${PN} += "${usrbindir}/* ${usrsbindir}/udevd"
 FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 
-FILES_${PN} += "${libdir}/udev/* ${base_libdir}/udev/*"
-FILES_${PN}-dbg += "${base_libdir}/udev/.debug"
+# udev installs binaries under $(udev_prefix)/lib/udev, even if ${libdir}
+# is ${prefix}/lib64
+FILES_${PN} += "/lib/udev/* /lib/udev/*"
+FILES_${PN}-dbg += "/lib/udev/.debug"
 
 do_install () {
 	install -d ${D}${usrsbindir} \
@@ -64,8 +66,11 @@ do_install () {
 	install -d ${D}${sysconfdir}/default
 	install -m 0755 ${WORKDIR}/default ${D}${sysconfdir}/default/udev
 
-	mv ${D}${base_libdir}/udev/rules.d ${D}${sysconfdir}/udev/
-	ln -sf ${sysconfdir}/udev/rules.d ${D}${base_libdir}/udev/
+	# Move udev rules from $(udev_prefix)/lib to /etc.
+	# This is hardcoded to $(udev_prefix)/lib/udev/rules.d in the
+	# Makefile, even if libdir is lib64.
+	mv ${D}/lib/udev/rules.d ${D}${sysconfdir}/udev/
+	ln -sf ${sysconfdir}/udev/rules.d ${D}/lib/udev/
 
  	cp ${S}/rules/rules.d/* ${D}${sysconfdir}/udev/rules.d/
 	cp ${S}/rules/packages/* ${D}${sysconfdir}/udev/rules.d/
