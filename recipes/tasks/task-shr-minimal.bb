@@ -74,7 +74,7 @@ RDEPENDS_${PN}-base = "\
   openssh-sftp-server \
   cron \
   logrotate\
-  util-linux-fdisk \
+  util-linux-ng-fdisk \
   shr-splash \
 "
 
