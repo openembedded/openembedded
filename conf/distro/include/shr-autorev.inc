@@ -22,8 +22,6 @@ SRCREV_pn-glamo-dri-tests = "${AUTOREV}"
 SRCREV_pn-mesa-dri = "${AUTOREV}"
 SRCREV_pn-libdrm = "${AUTOREV}"
 SRCREV_pn-xserver-xorg = "${AUTOREV}"
-SRCREV_pn-mesa-dri = "${AUTOREV}"
-SRCREV_pn-libdrm = "${AUTOREV}"
 
 # FSO stuff
 FSOREV_cornucopia = "${AUTOREV}"
