@@ -1,6 +1,8 @@
 require libgles-omap3.inc
 
 DEFAULT_PREFERENCE = "1"
+# download required binary distribution from:
+# http://software-dl.ti.com/dsps/forms/export.html?prod_no=/OMAP35x_Graphics_SDK_setuplinux_3_00_00_09.bin
 
 PR = "r1"
 
