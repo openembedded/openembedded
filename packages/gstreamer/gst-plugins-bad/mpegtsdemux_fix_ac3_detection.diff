@@ -1,0 +1,22 @@
+--- gst/mpegdemux/gstmpegtsdemux.c	2009-10-12 12:23:39.000000000 +0200
++++ gst/mpegdemux/gstmpegtsdemux.c	2009-10-22 23:08:42.000000000 +0200
+@@ -738,15 +738,15 @@
+       if (program_info)
+         desc = gst_mpeg_descriptor_find (program_info, DESC_REGISTRATION);
+ 
+-      if (desc && DESC_REGISTRATION_format_identifier (desc) == DRF_ID_HDMV) {
++      if (gst_mpeg_descriptor_find (stream->ES_info,
++              DESC_DVB_ENHANCED_AC3)) {
+         template = klass->audio_template;
+         name = g_strdup_printf ("audio_%04x", stream->PID);
+         caps = gst_caps_new_simple ("audio/x-eac3", NULL);
+-      } else if (gst_mpeg_descriptor_find (stream->ES_info,
+-              DESC_DVB_ENHANCED_AC3)) {
++      } else if (desc && DESC_REGISTRATION_format_identifier (desc) == DRF_ID_HDMV) {
+         template = klass->audio_template;
+         name = g_strdup_printf ("audio_%04x", stream->PID);
+-        caps = gst_caps_new_simple ("audio/x-eac3", NULL);
++        caps = gst_caps_new_simple ("audio/x-ac3", NULL);
+       } else {
+         if (!gst_mpeg_descriptor_find (stream->ES_info, DESC_DVB_AC3)) {
+           GST_WARNING ("AC3 stream type found but no corresponding "
