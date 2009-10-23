@@ -268,6 +268,8 @@ python package_do_split_gconvs () {
 		# This is a hack till linux-libc-headers gets patched for the missing arm syscalls and all arm device kernels as well
 		if bb.data.getVar("DISTRO_NAME", d, 1) == "Angstrom":
 			kernel_ver = "2.6.24"
+		elif bb.data.getVar("DISTRO_NAME", d, 1) == "KaeilOS":
+			kernel_ver = "2.6.24"
 		else:
 			kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
 
