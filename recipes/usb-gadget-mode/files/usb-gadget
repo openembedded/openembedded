@@ -29,6 +29,7 @@ go() {
 	printer)	setup_usb g_printer "$MODULE_OPTIONS" ;;
 	gadgetfs) 	setup_usb gadgetfs "$MODULE_OPTIONS" ;;
 	composite)	setup_usb g_cdc "$MODULE_OPTIONS" ;;
+	serial)		setup_usb g_serial "$MODULE_OPTIONS" ;;
 	storage)	setup_usb g_file_storage "$MODULE_OPTIONS" ;;
 	hostmode)	unload_usb_gadgets
 			setup_usb ohci_hcd "$MODULE_OPTIONS" ;;
