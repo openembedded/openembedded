@@ -1,7 +1,7 @@
 require curl-common.inc
 inherit native
 DEPENDS = "zlib-native"
-PR = "r1"
+PR = "${INC_PR}.1"
 
 do_stage () {
 	autotools_stage_all

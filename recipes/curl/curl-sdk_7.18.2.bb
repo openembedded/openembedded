@@ -1,7 +1,7 @@
 require curl-common.inc
 inherit sdk
 DEPENDS = "zlib-sdk"
-PR = "r1"
+PR = "${INC_PR}.1"
 
 do_stage () {
         install -d ${STAGING_INCDIR}/curl
