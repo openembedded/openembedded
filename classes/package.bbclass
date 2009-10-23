@@ -159,7 +159,7 @@ def runstrip(file, d):
     if ret:
         bb.error("runstrip: 'file %s' failed (forced strip)" % file)
 
-    if "not stripped" not in result and not file.endswith(".a"):
+    if "not stripped" not in result:
         bb.debug(1, "runstrip: skip %s" % file)
         return 0
 
@@ -183,6 +183,9 @@ def runstrip(file, d):
         extraflags = "--remove-section=.comment --remove-section=.note --strip-unneeded"
     elif "shared" in result or "executable" in result:
         extraflags = "--remove-section=.comment --remove-section=.note"
+    elif file.endswith(".a"):
+        extraflags = "--remove-section=.comment --strip-debug"
+
 
     bb.mkdirhier(os.path.join(os.path.dirname(file), ".debug"))
     debugfile=os.path.join(os.path.dirname(file), ".debug", os.path.basename(file))
@@ -393,7 +396,7 @@ python populate_packages () {
 		for root, dirs, files in os.walk(dvar):
 			for f in files:
 				file = os.path.join(root, f)
-				if not os.path.islink(file) and not os.path.isdir(file) and (isexec(file) or ".a" in file):
+				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
 					runstrip(file, d)
 
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
