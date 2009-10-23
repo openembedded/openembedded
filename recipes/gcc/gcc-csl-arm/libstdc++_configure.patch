@@ -1,0 +1,14 @@
+Index: gcc-2005q3/libstdc++-v3/configure
+===================================================================
+--- gcc-2005q3.orig/libstdc++-v3/configure	2009-10-20 00:20:18.975521386 +0200
++++ gcc-2005q3/libstdc++-v3/configure	2009-10-20 00:20:48.563010077 +0200
+@@ -93680,7 +93680,8 @@
+ case "$target" in
+   *arm*-symbianelf)
+   LIBSUPCXX_PRONLY=yes;;
+-  *);;
++  *)
++  LIBSUPCXX_PRONLY=no;;
+ esac
+ 
+ 
