@@ -74,6 +74,7 @@ do
         BUILD_TARGETS=" \
                       abiword \
                       aircrack-ng \
+                      angstrom-task-gnome \
                       angstrom-zeroconf-audio \
                       apache2 \
                       artoolkit \
@@ -208,6 +209,7 @@ do
                       links-x11 \
                       lirc \
                       lowpan-tools \
+                      lyx \
                       m4 \
                       madplay \
                       mahjongg \
@@ -306,6 +308,7 @@ do
                       sugar \
                       sylpheed \
                       systray \
+                      task-beagleboard-demo \
                       task-gpe-pim \
                       task-openmoko-feed \
                       task-openmoko-games \
@@ -367,6 +370,7 @@ do
                       xfprint \
                       xfwm4 \
                       xfwm4-themes \
+                      xmame \
                       xmms \
                       xrefresh \
                       xserver-kdrive \

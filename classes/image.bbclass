@@ -237,7 +237,7 @@ install_linguas() {
 if [ -e ${IMAGE_ROOTFS}/usr/bin/opkg-cl ] ; then
 	OPKG="opkg-cl ${IPKG_ARGS}"
 
-	${OPKG} update
+	${OPKG} update || true
 	${OPKG} list_installed | awk '{print $1}' |sort | uniq > /tmp/installed-packages
 
 	for i in $(cat /tmp/installed-packages | grep -v locale) ; do

@@ -1,3 +1,5 @@
+DEFAULT_PREFERENCE = "-1"
+
 DESCRIPTION = "gnome system tools backends"
 LICENSE = "GPL"
 

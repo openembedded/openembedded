@@ -8,6 +8,9 @@ LICENSE = "GPL"
 # For angstrom we want this to replace at least bluez-libs
 PROVIDES_append_angstrom = " bluez-utils bluez-libs"
 
+# temporary solution for KaeilOS just to replace at least bluez-libs
+PROVIDES_append_angstrom = " bluez-utils bluez-libs"
+
 PR = "r1"
 
 SRC_URI = "\

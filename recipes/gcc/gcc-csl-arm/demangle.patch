@@ -1,0 +1,22 @@
+Index: gcc-2005q3/libiberty/cp-demangle.c
+===================================================================
+--- gcc-2005q3.orig/libiberty/cp-demangle.c	2009-10-20 00:40:24.353743504 +0200
++++ gcc-2005q3/libiberty/cp-demangle.c	2009-10-20 00:40:49.418955689 +0200
+@@ -1404,7 +1404,7 @@
+ 
+ #define NL(s) s, (sizeof s) - 1
+ 
+-CP_STATIC_IF_GLIBCPP_V3
++/*CP_STATIC_IF_GLIBCPP_V3*/
+ const struct demangle_operator_info cplus_demangle_operators[] =
+ {
+   { "aN", NL ("&="),        2 },
+@@ -1744,7 +1744,7 @@
+                   ::= u <source-name>
+ */
+ 
+-CP_STATIC_IF_GLIBCPP_V3
++/*CP_STATIC_IF_GLIBCPP_V3*/
+ const struct demangle_builtin_type_info
+ cplus_demangle_builtin_types[D_BUILTIN_TYPE_COUNT] =
+ {

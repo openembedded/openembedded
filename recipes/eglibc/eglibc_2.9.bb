@@ -3,12 +3,11 @@ require eglibc.inc
 DEPENDS += "gperf-native"
 FILESPATHPKG =. "eglibc-svn:"
 PV = "2.9"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 SVN_REV="8690"
 EGLIBC_BRANCH="eglibc-2_9"
 SRC_URI = "svn://svn.eglibc.org/branches;module=eglibc-2_9;rev=${SVN_REV};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
-           file://eglibc_adjust_begin_insertion.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"

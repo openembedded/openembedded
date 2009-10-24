@@ -21,6 +21,10 @@ SRC_URI_beagleboard = "git://git.denx.de/u-boot-ti.git;protocol=git \
 SRCREV_beagleboard = "1590f84007e2b50ad346a482fff89195cb04ff4e"
 PV_beagleboard = "2009.08+${PR}+gitr${SRCREV}"
 
+SRCREV_calamari = "f67066b6b0740b826ed862615c5ab022aaf4779a"
+PV_calamari = "2009.08+${PR}+gitr${SRCREV}"
+SRC_URI_append_calamari = " file://buggy-gcc-really-no-spe.patch;patch=1"
+
 SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw_env.config \
                  file://dss2.patch;patch=1 \

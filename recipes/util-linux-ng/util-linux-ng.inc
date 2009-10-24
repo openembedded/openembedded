@@ -8,12 +8,14 @@ AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 # allows for a release candidate
 RC ?= ""
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2"
+
+SRC_URI_append_chinook-compat = " file://chinook_libtool.patch;patch=1 "
 
 PACKAGES =+ "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-swaponoff util-linux-ng-losetup util-linux-ng-umount util-linux-ng-mount util-linux-ng-readprofile "
 PACKAGES_DYNAMIC = "libblkid*"
@@ -57,6 +59,14 @@ EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --with-fsprobe=builtin"
 
 S = "${WORKDIR}/util-linux-ng-${PV}${RC}"
+
+do_configure_prepend_chinook-compat () {
+
+        for i in  lt~obsolete.m4 ltsugar.m4 libtool.m4 ltoptions.m4 ltversion.m4
+        do
+                rm ${S}/m4/${i}
+        done
+}
 
 do_compile () {
 	set -e

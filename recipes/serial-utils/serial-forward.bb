@@ -3,11 +3,11 @@ AUTHOR = "Holger 'Zecke' Freyther'"
 LICENSE = "GPL"
 SECTION = "console/devel"
 PV = "1.0.1+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git/;protocol=git"
 S = "${WORKDIR}/git/tools/serial_forward"
-
+EXTRA_OEMAKE = "CC="${CC} ${LDFLAGS}""
 do_compile() {
     cd ${S}
     oe_runmake
