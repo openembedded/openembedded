@@ -13,4 +13,12 @@ do_stage() {
 	autotools_stage_all
 }
 
-FILES_${PN} += "${datadir}/dbus-1/services/"
+
+PROVIDES = "libgypsy libgypsy-dev libgypsy-dbg gypsy gypsy-dbg"
+PACKAGES = "libgypsy libgypsy-dev libgypsy-dbg gypsy gypsy-dbg"
+
+FILES_lib${PN} = "${libdir}/lib*.so*"
+FILES_lib${PN}-dev = "${includedir}/* ${libdir}/*.la ${libdir}/*.a ${libdir}/pkgconfig"
+FILES_lib${PN}-dbg = "${libdir}/.debug"
+FILES_${PN} = "${datadir}/dbus-1/services/ ${libexecdir}/gypsy-daemon ${configdir}/*"
+FILES_${PN}-dbg ="${libexecdir}/.debug*"
