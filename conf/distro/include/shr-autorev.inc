@@ -1,9 +1,5 @@
 # SHR autorev include
 
-# We need to override some machine stuff as well; include the machine-
-# specific file here (if it exists).
-include conf/distro/include/shr-${MACHINE}.conf
-
 # Nail down some SRCREV's for the kernels.  There is a real potential problem
 # here, in that git hashes are hashes, not incrementing version numbers.  Thus
 # we need to have something else in the kernel version string that gets bumped
