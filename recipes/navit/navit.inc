@@ -23,7 +23,7 @@ SRC_URI_append = " \
 SRC_URI_append_shr = "file://use-fso-raw.patch;patch=1"
 #                      file://fr-default-config.patch;patch=1"
 
-DEPENDS_shr += "gypsy"
+DEPENDS_shr += "libgypsy"
 RDEPENDS_shr += "fsoraw"
 
 do_install_append() {
