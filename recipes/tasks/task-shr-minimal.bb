@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r10"
+PR = "r11"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -25,7 +25,7 @@ def get_rdepends(bb, d):
         import os
         ipkdir = bb.data.getVar('DEPLOY_DIR_IPK', d, 1)
 
-        regexp1 = re.compile("glibc-binary-localedata-.*") # search pattern
+        regexp1 = re.compile("eglibc-binary-localedata-.*") # search pattern
         regexp2 = re.compile("_.*") # we want to remove all version info and file extension
 
         for root, subFolders, files in os.walk(ipkdir):
@@ -44,7 +44,7 @@ def get_rdepends(bb, d):
             locale = regexp1.sub("", locale)
             locale = regexp2.sub("-", locale)
             locale = str.lower(locale)
-            rdepends = "%s glibc-binary-localedata-%s" % (rdepends, locale)
+            rdepends = "%s eglibc-binary-localedata-%s" % (rdepends, locale)
     return rdepends
 
 
