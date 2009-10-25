@@ -1,0 +1,11 @@
+--- ./configure.ac.orig	2009-02-25 18:58:49.000000000 +0100
++++ ./configure.ac	2009-03-01 11:14:33.000000000 +0100
+@@ -85,8 +85,8 @@ XDT_CHECK_PACKAGE([LIBXFCE4KBD_PRIVATE],
+ XDT_CHECK_PACKAGE([GLADE], [libglade-2.0], [2.0.0])
+ XDT_CHECK_PACKAGE([XFCONF], [libxfconf-0], [4.6.0])
+ XDT_CHECK_PACKAGE([DBUS_GLIB], [dbus-glib-1], [0.34])
+-XDT_CHECK_PACKAGE([XI], [xi], [1.0.0])
+-XDT_CHECK_PACKAGE([LIBX11], [x11], [1.0.0])
++ XDT_CHECK_PACKAGE([XI], [xi], [1.0.0])
++#XDT_CHECK_PACKAGE([LIBX11], [x11], [1.0.0])
+ XDT_CHECK_PACKAGE([LIBWNCK], [libwnck-1.0], [2.12.0])

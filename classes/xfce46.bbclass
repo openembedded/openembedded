@@ -11,7 +11,7 @@ SECTION ?= "x11/xfce"
 
 XFCE_VERSION = ${PV}
 
-SRC_URI = "http://www.us.xfce.org/archive/xfce-${XFCE_VERSION}/src/${PN}-${PV}.tar.bz2"
+SRC_URI = "http://mocha.xfce.org/archive/src/xfce/${PN}/${@'${PV}'[0:3]}/${PN}-${PV}.tar.bz2"
 
 inherit autotools gtk-icon-cache pkgconfig
 

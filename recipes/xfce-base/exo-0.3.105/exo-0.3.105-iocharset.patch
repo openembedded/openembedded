@@ -1,0 +1,79 @@
+diff --git a/exo-mount/exo-mount-hal.c b/exo-mount/exo-mount-hal.c
+index 791a536..4b130c3 100644
+--- a/exo-mount/exo-mount-hal.c
++++ b/exo-mount/exo-mount-hal.c
+@@ -34,6 +34,8 @@
+ #include <unistd.h>
+ #endif
+ 
++#include <langinfo.h>
++
+ #include <libhal-storage.h>
+ 
+ #include <exo-hal/exo-hal.h>
+@@ -616,6 +618,30 @@ oom:  g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_NOMEM, g_strerror (ENOMEM))
+ 
+ 
+ /**
++ * exo_mount_hal_iocharset:
++ *
++ * Determines the preferred iocharset for filesystems
++ * that support it.
++ *
++ * Return value: iocharset string or %NULL if none.
++ **/
++static const gchar*
++exo_mount_hal_iocharset ()
++{
++  const gchar* cs = g_getenv("EXO_MOUNT_IOCHARSET");
++  if (cs != NULL)
++    return cs;
++
++  const char* codeset = nl_langinfo (CODESET);
++  if (codeset && !strcmp (codeset, "UTF-8"))
++    return "utf8";
++
++  return NULL;
++}
++
++
++
++/**
+  * exo_mount_hal_device_mount:
+  * @device : an #ExoMountHalDevice.
+  * @error  : return location for errors or %NULL.
+@@ -676,6 +702,12 @@ exo_mount_hal_device_mount (ExoMountHalDevice *device,
+               /* however this one is FreeBSD specific */
+               options[n++] = g_strdup ("longnames");
+             }
++          else if (strcmp (device->fsoptions[m], "iocharset=") == 0)
++            {
++              const gchar* iocharset = exo_mount_hal_iocharset();
++              if (iocharset != NULL)
++                options[n++] = g_strdup_printf ("iocharset=%s", iocharset);
++            }
+         }
+     }
+ 
+diff --git a/exo-mount/main.c b/exo-mount/main.c
+index 80eae1d..f442019 100644
+--- a/exo-mount/main.c
++++ b/exo-mount/main.c
+@@ -39,6 +39,8 @@
+ #include <string.h>
+ #endif
+ 
++#include <locale.h>
++
+ #include <glib/gstdio.h>
+ 
+ #include <exo-hal/exo-hal.h>
+@@ -97,6 +99,8 @@ main (int argc, char **argv)
+   /* initialize the i18n support */
+   xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
+ 
++  setlocale(LC_CTYPE, "");
++
+   /* initialize GTK+ */
+   if (!gtk_init_with_args (&argc, &argv, "Xfce mount", entries, GETTEXT_PACKAGE, &err))
+     {
