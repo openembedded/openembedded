@@ -8,8 +8,6 @@
 require mono-${PV}.inc
 require mono-mcs-intermediate.inc
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI += ""
 
 PR = "${INC_PR}.1"
