@@ -8,20 +8,14 @@
 
 GITVER = "${@get_git_pv('${S}', d)}"
 
-def gitver_mark_dependency(d):
-    from bb.data import expand
-    from bb.parse import mark_dependency
-    from os.path import abspath
-
-    fn = abspath(expand("${S}/.git/HEAD", d))
-    mark_dependency(d, fn)
-
 def get_git_pv(path, d, tagadjust=None):
     from subprocess import Popen, PIPE
-    from os.path import join
+    import os
     from bb import error
+    from bb.parse import mark_dependency
 
-    env = {"GIT_DIR": join(d.getVar("S", True), ".git")}
+    gitdir = os.path.abspath(os.path.join(d.getVar("S", True), ".git"))
+    env = { "GIT_DIR": gitdir }
 
     def popen(cmd, **kwargs):
         kwargs["stderr"] = PIPE
@@ -39,7 +33,23 @@ def get_git_pv(path, d, tagadjust=None):
             return
         return stdout.rstrip()
 
-    gitver_mark_dependency(d)
+    # Force the recipe to be reparsed so the version gets bumped
+    # if the active branch is switched, or if the branch changes.
+    mark_dependency(d, os.path.join(gitdir, "HEAD"))
+
+    ref = popen(["git", "symbolic-ref", "HEAD"])
+    reffile = os.path.join(gitdir, ref)
+    if ref and os.path.exists(reffile):
+        mark_dependency(d, reffile)
+    else:
+        # The ref might be hidden in packed-refs. Force a reparse if anything
+        # in the working copy changes.
+        mark_dependency(d, os.path.join(gitdir, "index"))
+
+    # Catch new tags.
+    tagdir = os.path.join(gitdir, "refs", "tags")
+    if os.path.exists(tagdir):
+        mark_dependency(d, tagdir)
 
     ver = popen(["git", "describe", "--tags"], cwd=path)
     if not ver:
