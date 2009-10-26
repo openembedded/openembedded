@@ -24,5 +24,8 @@ BUILD_OPTIMIZATION_pn-perl-native = "-O1 -g"
 
 TARGET_LINK_HASH_STYLE = "${@['-Wl,--hash-style=gnu',''][bb.data.getVar('TARGET_ARCH',d,1) in ['mips', 'mipsel']]}"
 
+# Disable -Wl,as-needed for now till all the test come back OK
+#require conf/distro/include/angstrom-ldflags.inc
+
 CXXFLAGS += "-fvisibility-inlines-hidden"
 
