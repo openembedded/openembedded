@@ -1,0 +1,41 @@
+diff -uNr -x .xdcenv.mak -x mp3dec cs1omap3530_1_00_01/packages/ti/sdo/server/cs/codec.cfg cs1omap3530_1_00_01_patches/packages/ti/sdo/server/cs/codec.cfg
+--- cs1omap3530_1_00_01/packages/ti/sdo/server/cs/codec.cfg	2009-10-26 14:19:21.000000000 -0500
++++ cs1omap3530_1_00_01_patches/packages/ti/sdo/server/cs/codec.cfg	2009-10-26 14:36:03.000000000 -0500
+@@ -92,6 +92,14 @@
+                 MPEG4ENC.alg.udataSection = "DDR2";
+                 MPEG4ENC.alg.dataSection = "DDR2";
+ 
++    var MP3DEC = xdc.useModule('ti.sdo.codecs.mp3dec.ce.MP3DEC');
++
++     // Module Config
++                MP3DEC.alg.watermark = false;
++                MP3DEC.alg.codeSection = "DDR2";
++                MP3DEC.alg.udataSection = "DDR2";
++                MP3DEC.alg.dataSection = "DDR2";
++
+ /*
+  * The array of algorithms this server can serve up.  This array also
+  * configures details about the threads which will be created to run the
+@@ -103,6 +111,11 @@
+         groupId : 1,
+     },
+ 
++    {name: "mp3dec", mod: MP3DEC , threadAttrs: {
++        stackMemId: 0, priority: Server.MINPRI + 3},
++        groupId : 1,
++    },
++
+     {name: "g711dec", mod: G711DEC , threadAttrs: {
+         stackMemId: 0, priority: Server.MINPRI + 3},
+         groupId : 1,
+diff -uNr -x .xdcenv.mak -x mp3dec cs1omap3530_1_00_01/packages/ti/sdo/server/cs/package.xs cs1omap3530_1_00_01_patches/packages/ti/sdo/server/cs/package.xs
+--- cs1omap3530_1_00_01/packages/ti/sdo/server/cs/package.xs	2009-10-26 14:19:20.000000000 -0500
++++ cs1omap3530_1_00_01_patches/packages/ti/sdo/server/cs/package.xs	2009-10-26 14:53:40.000000000 -0500
+@@ -17,6 +17,7 @@
+          validate_one_codec( "ti.sdo.codecs.mpeg2dec", "MPEG2DEC" );
+          validate_one_codec( "ti.sdo.codecs.mpeg4dec", "MPEG4DEC" );
+          validate_one_codec( "ti.sdo.codecs.mpeg4enc", "MPEG4ENC" );
++         validate_one_codec( "ti.sdo.codecs.mp3dec", "MP3DEC" );
+ }
+ 
+ function validate_one_codec( packageName, moduleName ) {
