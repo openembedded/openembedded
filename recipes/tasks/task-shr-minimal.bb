@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r10"
+PR = "r11"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -90,6 +90,7 @@ RDEPENDS_${PN}-cli = "\
 
 RDEPENDS_${PN}-fso = "\
   fsoraw \
+  fso-abyss \
   opimd-utils-cli \
   python-codecs \
   python-gst \
@@ -122,12 +123,9 @@ RDEPENDS_${PN}-x = "\
 "
 
 RDEPENDS_${PN}-apps = "\
-  shr-dialer \
-  shr-messages \
-  shr-contacts \
-  notifier \
-  ophonekitd \ 
-  libframeworkd-phonegui-efl \
+  phoneui-apps \
+  phonefsod \
+  phoneuid \
   ffalarms \
   shr-settings \
   shr-theme \
