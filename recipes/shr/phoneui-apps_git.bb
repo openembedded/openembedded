@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += "dbus-glib"
-PV = "0.0.0+gitr${SRCPV}"
+PV = "0.1+gitr${SRCPV}"
 PR = "r0"
 
 inherit pkgconfig autotools
@@ -11,7 +11,12 @@ inherit pkgconfig autotools
 SRC_URI = "git://git.shr-project.org/repo/phoneui-apps.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
 
-PACKAGES = "${PN}-dialer ${PN}-messages ${PN}-contacts"
+PACKAGES += "${PN}-dialer ${PN}-messages ${PN}-contacts"
+
+ALLOW_EMPTY_${PN} = "1"
+RDEPENDS_${PN} = "phoneuid ${PN}-dialer ${PN}-messages ${PN}-contacts"
+
+FILES_${PN} = ""
 
 FILES_${PN}-dialer = "\
 	/usr/bin/phoneui-dialer \
