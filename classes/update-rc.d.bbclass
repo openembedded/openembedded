@@ -16,9 +16,15 @@ update-rc.d $OPT ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
 
 updatercd_prerm() {
 if test "x$D" = "x"; then
-	${INIT_D_DIR}/${INITSCRIPT_NAME} stop
+	if test "$1" = "upgrade" -o "$1" = "remove"; then
+		${INIT_D_DIR}/${INITSCRIPT_NAME} stop
+	fi
 fi
 }
+
+# Note: to be Debian compliant, we should only invoke update-rc.d remove
+# at the "purge" step, but opkg does not support it. So instead we also
+# run it at the "remove" step if the init script no longer exists.
 
 updatercd_postrm() {
 if test "x$D" != "x"; then
@@ -26,7 +32,11 @@ if test "x$D" != "x"; then
 else
 	OPT=""
 fi
-update-rc.d $OPT ${INITSCRIPT_NAME} remove
+if test "$1" = "remove" -o "$1" = "purge"; then
+	if ! test -e "${INIT_D_DIR}/${INITSCRIPT_NAME}"; then
+		update-rc.d $OPT ${INITSCRIPT_NAME} remove
+	fi
+fi
 }
 
 
