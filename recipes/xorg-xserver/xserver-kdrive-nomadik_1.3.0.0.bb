@@ -3,7 +3,7 @@ require xserver-kdrive-common.inc
 FILESPATH += ":${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xserver-kdrive-1.3.0.0:${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xserver-kdrive"
 
 DEPENDS += "sgalib"
-#          nomadik-multimedia
+COMPATIBLE_MACHINE = "nhk15"
 
 PACKAGES =+ "xserver-kdrive-nomadikfb"
 DESCRIPTION_xserver-kdrive-nomadikfb = "Nomadik X server"
@@ -18,8 +18,6 @@ RDEPENDS_xserver-kdrive-nomadikfb = "sga-init"
 RRECOMMENDS_xserver-kdrive-nomadikfb = "kernel-module-nmdkmod-sva"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
-# 	file://st_nomadik_xserver_1.3.0.0.patch;patch=1 \
-#        file://nomadik-video-buff-id-YUVPL.patch;patch=1 "
         file://nomadik_xserver_1300.patch;patch=1 \
         file://nomadik_xserver_sva_service_cleanup.patch;patch=1 \
         file://autotools.patch;patch=1 \
