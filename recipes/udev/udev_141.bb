@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r12"
+PR = "r13"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -105,7 +105,3 @@ do_stage_append() {
         oe_libinstall -C extras/volume_id/lib -so libvolume_id ${STAGING_LIBDIR}
         oe_libinstall -C udev/lib -so libudev ${STAGING_LIBDIR}
 }
-
-
-
-
