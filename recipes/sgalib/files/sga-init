@@ -1,0 +1,23 @@
+#!/bin/sh
+
+case "$1" in
+  start)
+    test -f /dev/SGA/ || mknod /dev/SGA c 254 0
+  ;;
+
+  stop)
+  ;;
+
+  restart)
+	$0 stop
+        sleep 1
+        $0 start
+  ;;
+
+  *)
+        echo "usage: $0 { start | stop | restart }"
+  ;;
+esac
+
+exit 0
+

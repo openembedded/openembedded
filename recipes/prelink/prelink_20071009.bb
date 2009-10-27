@@ -38,7 +38,7 @@ fi
 prelink -a
 }
 
-pkg_postrm_prelink() {
+pkg_prerm_prelink() {
 #!/bin/sh
 
 prelink -au

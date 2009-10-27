@@ -1,0 +1,17 @@
+---
+ arch/arm/mach-nomadik/Makefile |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- linux-2.6.20.orig/arch/arm/mach-nomadik/Makefile
++++ linux-2.6.20/arch/arm/mach-nomadik/Makefile
+@@ -158,9 +158,10 @@ machmrproper:
+ #This will resolve any machin specific dependency for configuration
+ #This will generate Kconfig file if not present
+ machconfig:
+ ifneq ($(wildcard $(TOPDIR)/arch/arm/mach-nomadik/Kconfig), $(TOPDIR)/arch/arm/mach-nomadik/Kconfig)
+ 	@echo "Generating $(TOPDIR)/arch/arm/mach-nomadik/Kconfig"
++	@chmod 755 ./create_kconfig.pl
+ 	@./create_kconfig.pl $(TOPDIR)/arch/arm/mach-nomadik
+ endif	
+ 
+ # end of Auto board configuration/dependency resolution

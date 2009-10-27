@@ -18,6 +18,7 @@ SRC_URI_append_beagleboard = " \
 
 SRC_URI_append_omap3-touchbook = " \
                               file://name.patch;patch=1 \
+                              file://screen-off.patch;patch=1 \
                              "
 
 

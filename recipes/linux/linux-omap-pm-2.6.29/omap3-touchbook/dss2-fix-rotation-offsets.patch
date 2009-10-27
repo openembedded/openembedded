@@ -1,0 +1,54 @@
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -661,13 +661,15 @@
+ 	u32 data_start_p;
+ 	void __iomem *data_start_v;
+ 	struct omap_overlay_info info;
+-	int xres, yres;
++	int xres, yres, xoff, yoff;
+ 	int screen_width;
+ 	int mirror;
+ 
+ 	DBG("setup_overlay %d, posx %d, posy %d, outw %d, outh %d\n", ofbi->id,
+ 			posx, posy, outw, outh);
+ 
++	xoff = var->xoffset;
++	yoff = var->yoffset;
+ 	if (ofbi->rotation == FB_ROTATE_CW || ofbi->rotation == FB_ROTATE_CCW) {
+ 		xres = var->yres;
+ 		yres = var->xres;
+@@ -676,8 +678,32 @@
+ 		yres = var->yres;
+ 	}
+ 
+-	offset = ((var->yoffset * var->xres_virtual +
+-				var->xoffset) * var->bits_per_pixel) >> 3;
++    if (ofbi->rotation == FB_ROTATE_CW || ofbi->rotation == FB_ROTATE_UD) {
++		if (var->yres < var->yres_virtual) {
++			if (var->yoffset)
++				yoff = 0;
++			else
++				yoff = var->yres_virtual - var->yres;
++		}
++	}
++
++	if (ofbi->rotation == FB_ROTATE_CCW || ofbi->rotation == FB_ROTATE_UD) {
++		if (var->xres < var->xres_virtual) {
++			if (var->xoffset)
++				xoff = 0;
++			else
++				xoff = var->xres_virtual - var->xres;
++		}
++	}
++
++	if (ofbi->rotation == FB_ROTATE_CW || ofbi->rotation == FB_ROTATE_CCW) {
++		offset = ((xoff * fix->line_length) >> 1) +
++				((yoff * var->bits_per_pixel) >> 2);
++	} else
++	{
++		offset = yoff * fix->line_length +
++				((xoff * var->bits_per_pixel) >> 3);
++	}
+ 
+ 	if (ofbi->rotation_type == OMAP_DSS_ROT_VRFB) {
+ 		data_start_p = omapfb_get_region_rot_paddr(ofbi);

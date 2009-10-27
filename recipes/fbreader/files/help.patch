@@ -1,0 +1,23 @@
+--- a/fbreader/Makefile	2009-09-07 22:02:43.000000000 -0700
++++ b/fbreader/Makefile	2009-09-07 22:02:59.000000000 -0700
+@@ -35,7 +35,6 @@
+ 	@install $(TARGET) $(DESTDIR)$(BINDIR)/FBReader
+ 	@install -d $(FBSHAREDIR)
+ 	@install -d $(FBSHAREDIR)/help
+-	@./scripts/install_help.sh $(VARIANT) $(FBSHAREDIR)/help
+ 	@install -d $(FBSHAREDIR)/formats/html
+ 	@install -m 0644 data/formats/html/html.ent $(FBSHAREDIR)/formats/html
+ 	@install -d $(FBSHAREDIR)/formats/xhtml
+@@ -51,9 +51,9 @@
+ 	@install -d $(FBSHAREDIR)/resources
+ 	@install -m 0644 $(wildcard data/resources/*.xml) $(FBSHAREDIR)/resources
+ 	@install -d $(DESTDIR)$(APPIMAGEDIR_REAL)
+-	@install -m 0644 $(wildcard data/icons/toolbar/$(VARIANT)/*.*) $(DESTDIR)$(APPIMAGEDIR_REAL)
+-	@install -m 0644 $(wildcard data/icons/filetree/$(VARIANT)/*.*) $(DESTDIR)$(APPIMAGEDIR_REAL)
+-	@install -m 0644 $(wildcard data/icons/booktree/$(VARIANT)/*.*) $(DESTDIR)$(APPIMAGEDIR_REAL)
++	@install -m 0644 $(wildcard data/icons/toolbar/$(TARGET_ARCH)/*.*) $(DESTDIR)$(APPIMAGEDIR_REAL)
++	@install -m 0644 $(wildcard data/icons/filetree/$(TARGET_ARCH)/*.*) $(DESTDIR)$(APPIMAGEDIR_REAL)
++	@install -m 0644 $(wildcard data/icons/booktree/$(TARGET_ARCH)/*.*) $(DESTDIR)$(APPIMAGEDIR_REAL)
+ 	@make -C $(TARGET_ARCH) RESOLUTION=$(RESOLUTION) install
+ 
+ clean:

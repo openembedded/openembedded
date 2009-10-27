@@ -29,6 +29,7 @@ SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=
                  file://fw_env.config \
                  file://dss2.patch;patch=1 \
                  file://600mhz.patch;patch=1 \
+                 file://new-pinmux.patch;patch=1 \
                  file://spi3.patch;patch=1 \
                  file://spi4.patch;patch=1 \
                  file://headphone.patch;patch=1 \

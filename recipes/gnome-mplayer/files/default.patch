@@ -1,0 +1,29 @@
+--- a/gnome-mplayer.schemas.in	2009-07-29 21:39:06.000000000 -0700
++++ b/gnome-mplayer.schemas.in	2009-07-29 21:39:53.000000000 -0700
+@@ -6,7 +6,7 @@
+       <applyto>/apps/gnome-mplayer/preferences/cache_size</applyto>
+       <owner>gnome-mplayer</owner>
+       <type>int</type>
+-      <default>2000</default>
++      <default>32</default>
+       <locale name="C">
+         <short>Cache size</short>
+         <long>The memory cache size for playing</long>
+@@ -210,7 +210,7 @@
+       <applyto>/apps/gnome-mplayer/preferences/disable_animation</applyto>
+       <owner>gnome-mplayer</owner>
+       <type>bool</type>
+-      <default>FALSE</default>
++      <default>TRUE</default>
+       <locale name="C">
+         <short>Disable Animation</short>
+         <long>Disable animation of fullscreen control bar sliding away</long>
+@@ -330,7 +330,7 @@
+       <applyto>/apps/gnome-mplayer/preferences/single_instance</applyto>
+       <owner>gnome-mplayer</owner>
+       <type>bool</type>
+-      <default>FALSE</default>
++      <default>TRUE</default>
+       <locale name="C">
+         <short>Only allow one instance of the player to run</short>
+         <long>Only allow one instance of the player to run</long>

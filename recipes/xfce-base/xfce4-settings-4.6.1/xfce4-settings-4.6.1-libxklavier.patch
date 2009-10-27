@@ -1,0 +1,12 @@
+diff -ur xfce4-settings-4.6.1.orig/dialogs/keyboard-settings/xfce-keyboard-settings.c xfce4-settings-4.6.1/dialogs/keyboard-settings/xfce-keyboard-settings.c
+--- xfce4-settings-4.6.1.orig/dialogs/keyboard-settings/xfce-keyboard-settings.c	2009-03-02 19:48:00.000000000 +0200
++++ xfce4-settings-4.6.1/dialogs/keyboard-settings/xfce-keyboard-settings.c	2009-07-20 12:08:28.000000000 +0300
+@@ -378,7 +378,7 @@
+   xkl_config_rec_get_from_server (settings->priv->xkl_rec_config, settings->priv->xkl_engine);
+ 
+   settings->priv->xkl_registry = xkl_config_registry_get_instance (settings->priv->xkl_engine);
+-  xkl_config_registry_load (settings->priv->xkl_registry);
++  xkl_config_registry_load (settings->priv->xkl_registry, FALSE);
+ 
+   /* Tab */
+   xkb_tab_layout_vbox = glade_xml_get_widget (settings->priv->glade_xml, "xkb_tab_layout_vbox");
