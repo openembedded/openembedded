@@ -5,6 +5,8 @@ LICENSE = "MIT"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 
+PR = "r1"
+
 inherit autotools pkgconfig binconfig
 
 EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --with-c14n"
@@ -23,7 +25,14 @@ do_stage() {
 
 DEBIANNAME_${PN} = "libxml2"
 
-PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
+PACKAGES =+ "${PN}-utils"
+FILES_${PN} = "${libexecdir}/* ${libdir}/lib*${SOLIBS} \
+            ${sysconfdir} ${sharedstatedir} ${localstatedir} \
+            ${base_libdir}/*${SOLIBS} \
+            ${datadir}/${PN} ${libdir}/${PN}/* \
+            ${datadir}/pixmaps ${datadir}/applications \
+            ${datadir}/idl ${datadir}/omf ${datadir}/sounds \
+            ${libdir}/bonobo/servers"
 
 FILES_${PN}-dev += "${bindir}/*-config"
-FILES_${PN}-utils += "${bindir}/* ${libdir}/*.sh"
+FILES_${PN}-utils = "${bindir}/xmllint ${bindir}/xmlcatalog ${libdir}/*.sh"
