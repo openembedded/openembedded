@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE_at91sam9261ek = "20"
 DEFAULT_PREFERENCE_at91sam9260ek = "20"
 DEFAULT_PREFERENCE_nhk15 = "1"
 
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
