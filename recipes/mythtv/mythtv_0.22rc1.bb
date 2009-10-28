@@ -5,10 +5,12 @@ inherit qmake2 qt4x11
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.21+0.22rc1"
+PR = "r1"
+REALPV = "0.22"
 
 SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22rc1.tar.bz2"
 
-#S = "${WORKDIR}/mythtv"
+S = "${WORKDIR}/mythtv-0.22rc1"
 
 QMAKE_PROFILES = "mythtv.pro"
 
