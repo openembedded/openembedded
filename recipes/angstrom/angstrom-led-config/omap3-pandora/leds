@@ -1,0 +1,8 @@
+#file format: name trigger
+pandora::keypad_bl
+pandora::power default-on
+pandora::charger
+pandora::sd1 mmc0
+pandora::sd2 mmc1
+pandora::bluetooth bluetooth
+pandora::wifi wifi

@@ -7,6 +7,10 @@ S = "${WORKDIR}/DeviceKit-power-${PV}"
 
 inherit autotools pkgconfig
 
+do_configure_prepend() {
+	sed -i -e s:-nonet:\:g ${S}/doc/man/Makefile.am
+}	
+
 do_stage() {
         autotools_stage_all
 }
