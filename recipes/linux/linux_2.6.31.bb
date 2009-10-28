@@ -6,6 +6,7 @@ S = "${WORKDIR}/linux-${PV}"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_boc01 = "1"
 DEFAULT_PREFERENCE_db1200 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
@@ -21,7 +22,7 @@ SRC_URI_append_boc01 = "\
            file://004-081205-usb.patch;patch=1 \
            file://005-091008-isl12024.patch;patch=1 \
            file://007-091005-lm73.patch;patch=1 \
-           file://011-090115-gpio.patch;patch=1 \
+           file://011-091028-gpio.patch;patch=1 \
            file://012-091019-capsense.patch;patch=1 \
            file://013-091015-lcd.patch;patch=1 \
            "
