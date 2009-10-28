@@ -3,7 +3,8 @@ DEPENDS = "enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu lib
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
-PV = "1.1.15+svnr${SRCREV}"
+SRCREV = "50081"
+PV = "1.1.16+svnr${SRCREV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
