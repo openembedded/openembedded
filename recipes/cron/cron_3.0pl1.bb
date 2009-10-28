@@ -2,7 +2,6 @@ SECTION = "base"
 DESCRIPTION = "Vixie cron."
 LICENSE = "cron"
 PR ="r8"
-DEPENDS += "install-native"
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \
 	   file://nonrootinstall.patch;patch=1 \

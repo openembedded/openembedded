@@ -2,7 +2,6 @@ SECTION = "console/network"
 DEPENDS = "cyrus-sasl virtual/db"
 LICENSE = "BSD"
 PR = "r12"
-DEPENDS += "install-native"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
