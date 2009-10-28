@@ -13,8 +13,7 @@ PARALLEL_MAKE = ""
 # Required environment values
 export PLATFORM="linux"
 export PREFIX="${prefix}"
-export C_COMPILER="${TARGET_PREFIX}gcc ${LDFLAGS} "
-export LIBRARIAN="${TARGET_PREFIX}ar "
+export LIBRARIAN="${TARGET_PREFIX}"
 export TARGETSYSTEM="${TARGET_SYS}"
 
 do_compile() {
@@ -28,7 +27,7 @@ do_compile() {
 		;;
 	esac
 
-    make ARCH=${ARCH}
+    make ARCH=${ARCH} TARGET_C_COMPILER=gcc
 }
 
 do_install() {
