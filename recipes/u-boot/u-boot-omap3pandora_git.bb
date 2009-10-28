@@ -21,7 +21,7 @@ SRC_URI = "git://git.openpandora.org/pandora-u-boot.git;branch=master;protocol=g
 #SRC_URI = "git://git.openpandora.org/pandora-u-boot.git;branch=rev3;protocol=git \
 #"
 
-UBOOT_MACHINE_omap3_pandora = "omap3_pandora_config"
+UBOOT_MACHINE_omap3-pandora = "omap3_pandora_config"
 
 S = "${WORKDIR}/git"
 
