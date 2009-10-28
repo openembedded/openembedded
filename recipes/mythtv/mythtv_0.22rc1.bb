@@ -5,7 +5,7 @@ inherit qmake2 qt4x11
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.21+0.22rc1"
-PR = "r1"
+PR = "r2"
 REALPV = "0.22"
 
 SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22rc1.tar.bz2"
@@ -44,6 +44,7 @@ python __anonymous () {
 }
 
 EXTRA_MYTHTVCONF_armv7a  = "--cpu=cortex-a8"
+EXTRA_MYTHTVCONF_armv5te  = "--cpu=armv5te"
 EXTRA_MYTHTVCONF ?= ""
 
 EXTRA_OECONF = " \
