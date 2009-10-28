@@ -1,0 +1,103 @@
+OE modifications to the original patch:
+ * Removed NEWS hunk to apply on vanilla 7.2 coreutils
+
+>From 570beb56f58bb087a614af885bec7e9cf6b19423 Mon Sep 17 00:00:00 2001
+From: Jim Meyering <meyering@redhat.com>
+Date: Wed, 22 Apr 2009 08:45:27 +0200
+Subject: [PATCH] sort -m: don't segfault when output file is also an input =
+file
+
+* src/sort.c (avoid_trashing_input): Fix an off-by-one error and
+guard the use of memmove.
+* NEWS (Bug fixes): Mention it.
+* tests/misc/sort: Add tests to exercise the offending code.
+* THANKS: Update.
+Reported by Otavio Salvador in http://bugs.debian.org/525048.
+---
+ NEWS            |    6 +++++-
+ THANKS          |    1 +
+ src/sort.c      |   10 ++++++----
+ tests/misc/sort |   17 ++++++++++++++++-
+ 4 files changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/THANKS b/THANKS
+index fe523fe..876a6b6 100644
+--- a/THANKS
++++ b/THANKS
+@@ -435,6 +435,7 @@ Ole Laursen                         olau@hardworking.dk
+ Oliver Kiddle                       okiddle@yahoo.co.uk
+ Ørn E. Hansen                       oehansen@daimi.aau.dk
+ Oskar Liljeblad                     osk@hem.passagen.se
++Otavio Salvador                     otavio@ossystems.com.br
+ Pádraig Brady                       P@draigBrady.com
+ Patrick Mauritz                     oxygene@studentenbude.ath.cx
+ Paul D. Smith                       psmith@gnu.org
+diff --git a/src/sort.c b/src/sort.c
+index 2e6ce87..f48d727 100644
+--- a/src/sort.c
++++ b/src/sort.c
+@@ -1,5 +1,5 @@
+ /* sort - sort lines of text (with all kinds of options).
+-   Copyright (C) 1988, 1991-2008 Free Software Foundation, Inc.
++   Copyright (C) 1988, 1991-2009 Free Software Foundation, Inc.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+@@ -2602,18 +2602,20 @@ avoid_trashing_input (struct sortfile *files, size_t ntemps,
+	  pid_t pid;
+	  char *temp = create_temp (&tftp, &pid);
+	  size_t num_merged = 0;
+-	  while (i + num_merged < nfiles)
++	  do
+	    {
+	      num_merged += mergefiles (&files[i], 0, nfiles - i, tftp, temp);
+	      files[i].name = temp;
+	      files[i].pid = pid;
+
+-	      memmove(&files[i], &files[i + num_merged],
+-		      num_merged * sizeof *files);
++	      if (i + num_merged < nfiles)
++	        memmove(&files[i + 1], &files[i + num_merged],
++		       num_merged * sizeof *files);
+	      ntemps += 1;
+	      nfiles -= num_merged - 1;;
+	      i += num_merged;
+	    }
++	  while (i < nfiles);
+	}
+     }
+
+diff --git a/tests/misc/sort b/tests/misc/sort
+index 4f377df..a27f47a 100755
+--- a/tests/misc/sort
++++ b/tests/misc/sort
+@@ -1,6 +1,6 @@
+ #!/usr/bin/perl
+
+-# Copyright (C) 2008 Free Software Foundation, Inc.
++# Copyright (C) 2008, 2009 Free Software Foundation, Inc.
+
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+@@ -339,6 +339,21 @@ my @Tests =
+ ["sort-numeric", '--sort=numeric', {IN=>".01\n0\n"}, {OUT=>"0\n.01\n"}],
+ ["sort-gennum", '--sort=general-numeric',
+   {IN=>"1e2\n2e1\n"}, {OUT=>"2e1\n1e2\n"}],
++
++# -m with output file also used as an input file
++# In coreutils-7.2, this caused a segfault.
++# This test looks a little strange.  Here's why:
++# since we're using "-o f", standard output will be empty, hence OUT=>''
++# We still want to ensure that the output file, "f" has expected contents,
++# hence the added CMP=> directive.
++["output-is-input", '-m -o f', {IN=> {f=> "a\n"}}, {OUT=>''},
++ {CMP=> ["a\n", {'f'=> undef}]} ],
++["output-is-input-2", '-m -o f', {OUT=>''},
++ {IN=> {f=> "a\n"}}, {IN=> {g=> "b\n"}}, {IN=> {h=> "c\n"}},
++ {CMP=> ["a\nb\nc\n", {'f'=> undef}]} ],
++["output-is-input-3", '-m -o f', {OUT=>''},
++ {IN=> {g=> "a\n"}}, {IN=> {h=> "b\n"}}, {IN=> {f=> "c\n"}},
++ {CMP=> ["a\nb\nc\n", {'f'=> undef}]} ],
+ );
+
+ # Add _POSIX2_VERSION=199209 to the environment of each test
