@@ -1,0 +1,24 @@
+From 9f36d9ef134f8e5113db06986409dda33170661a Mon Sep 17 00:00:00 2001
+From: Thomas Kunze <thommycheck@gmx.de>
+Date: Tue, 28 Oct 2008 21:41:39 +0300
+Subject: [PATCH 02/15] collie: fix scoop convesion to new api
+
+---
+ arch/arm/mach-sa1100/collie.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-sa1100/collie.c b/arch/arm/mach-sa1100/collie.c
+index bbf2ebc..b629cba 100644
+--- a/arch/arm/mach-sa1100/collie.c
++++ b/arch/arm/mach-sa1100/collie.c
+@@ -56,6 +56,7 @@ static struct resource collie_scoop_resources[] = {
+ static struct scoop_config collie_scoop_setup = {
+ 	.io_dir 	= COLLIE_SCOOP_IO_DIR,
+ 	.io_out		= COLLIE_SCOOP_IO_OUT,
++	.gpio_base	= COLLIE_SCOOP_GPIO_BASE,
+ };
+ 
+ struct platform_device colliescoop_device = {
+-- 
+1.6.0.4
+
