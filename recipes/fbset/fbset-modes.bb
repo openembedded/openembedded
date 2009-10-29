@@ -1,6 +1,6 @@
 DESCRIPTION = "Default display timings and resolutions for fbset"
 PV = "0.1.0"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://fb.modes"
 

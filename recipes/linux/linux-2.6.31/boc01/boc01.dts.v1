@@ -77,19 +77,23 @@
 			compatible = "fsl,mpc8313-fcm-nand",
 			             "fsl,elbc-fcm-nand";
 			reg = <0x1 0x0 0x2000>;
+		};
 
-			kernel@0 {
-				reg = <0x0 0x400000>;
-				read-only;
+		exio: gpio-controller@3,0 {
+			#gpio-cells = <2>;
+			compatible = "fsl,mpc8313-exio";
+			reg = <0x3 0x0 0x1>;
+			interrupts = <75 0x8>;
+			interrupt-parent = <&ipic>;
+			gpio-controller;
+		};
+
+		leds {
+			compatible = "gpio-leds";
+			blue {
+				gpios = <&exio 7 1>;
+				default-state = "keep";
 			};
-
-			fs@400000 {
-				reg = <0x400000 0x4000000>;
-			};
-
-			appli@4400000 {
-				reg = <0x4400000 0x3c00000>;
- 			};
 		};
 	};
 
@@ -108,7 +112,7 @@
 			reg = <0x200 0x100>;
 		};
 
-		gpio0: gpio-controller@c00 {
+		gpio: gpio-controller@c00 {
 			#gpio-cells = <2>;
 			compatible = "fsl,mpc8313-gpio", "fsl,mpc8349-gpio";
 			reg = <0xc00 0x100>;
@@ -188,7 +192,7 @@
 			mode = "cpu";
 
 			/* gpio representing chip select */
-			gpios = <&gpio0 14 0>;
+			gpios = <&gpio 14 0>;
 
 			rfid@0 {
 				compatible = "nxp,spidev";

@@ -1,0 +1,22 @@
+Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
+===================================================================
+--- linux-2.6.31.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-28 14:56:44.000000000 +0100
++++ linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-28 15:44:23.000000000 +0100
+@@ -20,6 +20,7 @@
+ #include <asm/ipic.h>
+ #include <asm/udbg.h>
+ #include <sysdev/fsl_pci.h>
++#include <sysdev/simple_gpio.h>
+ 
+ #include "mpc83xx.h"
+ 
+@@ -79,6 +80,9 @@
+ 
+ static int __init declare_of_platform_devices(void)
+ {
++	/* memory-mapped IO extender */
++	simple_gpiochip_init("fsl,mpc8313-exio");
++
+ 	of_platform_bus_probe(NULL, of_bus_ids, NULL);
+ 	return 0;
+ }

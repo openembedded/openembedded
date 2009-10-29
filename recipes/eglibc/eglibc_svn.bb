@@ -9,6 +9,7 @@ PR = "${INC_PR}.1"
 EGLIBC_BRANCH="trunk"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
+	   file://armv4t-interworking.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"
