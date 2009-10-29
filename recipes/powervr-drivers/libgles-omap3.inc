@@ -129,6 +129,9 @@ do_stage () {
 	cp -pP ${BINLOCATION}/*.a ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}
+        cp -pPR ${S}/GFX_Linux_KM/include4 ${STAGING_INCDIR}/
+        cp -pPR ${S}/GFX_Linux_KM/services4 ${STAGING_INCDIR}/
+
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/*  ${STAGING_INCDIR}/
     cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/Include/* ${STAGING_INCDIR}/
     cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES/
