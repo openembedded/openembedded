@@ -87,6 +87,14 @@
 			interrupt-parent = <&ipic>;
 			gpio-controller;
 		};
+
+		leds {
+			compatible = "gpio-leds";
+			blue {
+				gpios = <&exio 7 1>;
+				default-state = "keep";
+			};
+		};
 	};
 
 	soc8313@e0000000 {
