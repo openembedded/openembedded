@@ -51,6 +51,7 @@ RDEPENDS_${PN} += "\
 #		shr-config \
 		shr-today \
                 shr-theme-neo \
+		shr-theme-niebiee \
 		shr-splash \
 		shr-splash-theme-simple \
 		shr-splash-theme-dontpanic \
