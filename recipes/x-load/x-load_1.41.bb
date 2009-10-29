@@ -1,6 +1,6 @@
 require x-load.inc
 
-COMPATIBLE_MACHINE = "omap3517-evm"
+COMPATIBLE_MACHINE = "am3517-evm"
 
 SRC_URI = "file://x-loader-03.00.00.01.tar.gz \
 file://0013-board.c-print-boot-method-mmc-onenand-nand.patch;patch=1 \
