@@ -1,8 +1,16 @@
 Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 ===================================================================
---- linux-2.6.31.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-28 14:56:44.000000000 +0100
-+++ linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-28 15:44:23.000000000 +0100
-@@ -20,6 +20,7 @@
+--- linux-2.6.31.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-29 16:31:14.000000000 +0100
++++ linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-29 17:23:51.000000000 +0100
+@@ -13,6 +13,7 @@
+  * option) any later version.
+  */
+ 
++#include <linux/gpio.h>
+ #include <linux/pci.h>
+ #include <linux/of_platform.h>
+ 
+@@ -20,6 +21,7 @@
  #include <asm/ipic.h>
  #include <asm/udbg.h>
  #include <sysdev/fsl_pci.h>
@@ -10,13 +18,26 @@ Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
  
  #include "mpc83xx.h"
  
-@@ -79,6 +80,9 @@
+@@ -79,7 +81,22 @@
  
  static int __init declare_of_platform_devices(void)
  {
-+	/* memory-mapped IO extender */
++	struct device_node *np;
++
++	/* declare memory-mapped IO extender */
 +	simple_gpiochip_init("fsl,mpc8313-exio");
 +
  	of_platform_bus_probe(NULL, of_bus_ids, NULL);
++
++	/* activate USB, RFID and touch board */
++	np = of_find_compatible_node(NULL, NULL, "fsl,mpc8313-exio");
++	if (np)
++	{
++		gpio_direction_output(217, 1); // EXIO1 : USB
++		gpio_direction_output(219, 1); // EXIO3 : RFID
++		gpio_direction_output(220, 1); // EXIO4 : Touch board
++		of_node_put(np);
++	}
  	return 0;
  }
+ machine_device_initcall(mpc831x_rdb, declare_of_platform_devices);
