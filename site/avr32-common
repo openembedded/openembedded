@@ -10,7 +10,7 @@ glib_cv_sizeof_gmutex=${glib_cv_sizeof_gmutex=24}
 #dbus-glib
 ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
 
-# =MALLOC_GLIBC_COMPAT=y in your uclibc .config for this
+# set MALLOC_GLIBC_COMPAT=y in your uclibc .config for this
 ac_cv_func_malloc_0_nonnull=${ac_cv_func_malloc_0_nonnull=yes}
 
 #gstreamer
@@ -19,7 +19,7 @@ as_cv_unaligned_access=${as_cv_unaligned_access=no}
 #libpcap
 ac_cv_linux_vers=${ac_cv_linux_vers=2}
 
-#star=notification
+#startup notification
 ac_cv_func_realloc_works=${ac_cv_func_realloc_works=yes}
 ac_cv_func_realloc_0_nonnull=${ac_cv_func_realloc_0_nonnull=yes}
 lf_cv_sane_realloc=yes
