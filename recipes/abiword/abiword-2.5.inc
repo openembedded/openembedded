@@ -54,6 +54,9 @@ do_install_append() {
 
 PACKAGES += " abiword-clipart abiword-icons abiword-strings abiword-systemprofiles abiword-templates "
 
+ALLOW_EMPTY_abiword-clipart = "1"
+ALLOW_EMPTY_abiword-icons = "1"
+
 FILES_abiword-clipart 		+= "${datadir}/abiword-${SHRT_VER}/clipart"
 FILES_abiword-icons 		+= "${datadir}/abiword-${SHRT_VER}/icons"
 FILES_abiword-strings 		+= "${datadir}/abiword-${SHRT_VER}/AbiWord/strings"

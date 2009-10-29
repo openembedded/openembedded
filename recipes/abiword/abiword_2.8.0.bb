@@ -1,5 +1,7 @@
 require abiword-2.5.inc
 
+PR = "r1"
+
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
 
 do_configure() {
