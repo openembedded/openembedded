@@ -8,4 +8,7 @@ PE = "1"
 
 #SRC_URI += "file://no-scalable-crash.patch;patch=1"
 
+# disable docs
+EXTRA_OECONF += " --disable-devel-docs "
+
 XORG_PN = "libXfont"
