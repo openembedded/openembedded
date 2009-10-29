@@ -4,6 +4,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
 
+DEPENDS = "boost"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/asio/${PN}-${PV}.tar.bz2"
 
 inherit autotools pkgconfig
