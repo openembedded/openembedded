@@ -30,11 +30,8 @@ do_stage() {
 
 PACKAGES += "${PN}-lib"
 
-<<<<<<< HEAD:recipes/python/python-pygobject_2.20.0.bb
-=======
 RDEPENDS_${PN} += "python-textutils"
 
->>>>>>> org.openembedded.dev:recipes/python/python-pygobject_2.20.0.bb
 FILES_${PN} = "${libdir}/python*"
 FILES_${PN}-lib = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir} ${datadir}"
