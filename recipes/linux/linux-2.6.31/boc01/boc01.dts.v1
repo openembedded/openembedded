@@ -108,6 +108,15 @@
 			reg = <0x200 0x100>;
 		};
 
+		gpio0: gpio-controller@c00 {
+			#gpio-cells = <2>;
+			compatible = "fsl,mpc8313-gpio", "fsl,mpc8349-gpio";
+			reg = <0xc00 0x100>;
+			interrupts = <74 0x8>;
+			interrupt-parent = <&ipic>;
+			gpio-controller;
+		};
+
 		sleep-nexus {
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -177,6 +186,15 @@
 			interrupts = <16 0x8>;
 			interrupt-parent = <&ipic>;
 			mode = "cpu";
+
+			/* gpio representing chip select */
+			gpios = <&gpio0 14 0>;
+
+			rfid@0 {
+				compatible = "nxp,spidev";
+				spi-max-frequency = <50000000>;
+				reg = <0>;
+			};
 		};
 
 		/* phy type (ULPI, UTMI, UTMI_WIDE, SERIAL) */

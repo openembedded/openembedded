@@ -6,8 +6,10 @@ SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2 \
            file://pkgconfig_fix.patch;patch=1"
 S = "${WORKDIR}/curl-${PV}"
 
+INC_PR = "r2"
+
 CURL_FEATURES ?= "zlib,gnutls,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp"
-# other allowed features: ipv6, ares
+# other allowed features: ipv6, ares, openssl
 
 inherit autotools pkgconfig binconfig
 
@@ -15,7 +17,6 @@ EXTRA_OECONF = " \
                 --without-libssh2 \
 		--with-random=/dev/urandom \
 		--without-libidn \
-                --without-ssl \
 		"
 
 python __anonymous() {
@@ -37,6 +38,11 @@ python __anonymous() {
                 deps.append("gnutls")
         else:
                 oeconf += " --without-gnutls"
+        if 'openssl' in f:
+                oeconf += " --with-ssl=${STAGING_LIBDIR}/../"
+                deps.append("openssl")
+        else:
+                oeconf += " --without-ssl"
         if 'ares' in f:
                 oeconf += " --enable-ares"
                 deps.append("c-ares")

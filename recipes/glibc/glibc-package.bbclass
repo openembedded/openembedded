@@ -29,7 +29,7 @@ BINARY_LOCALE_ARCHES ?= "arm.* i[3-6]86 x86_64 powerpc"
 # Set this to zero if you don't want ldconfig in the output package
 USE_LDCONFIG ?= "1"
 
-PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
+PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-static glibc-doc glibc-locale libcidn libmemusage libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* locale-base-* glibc-binary-localedata-*"
 
 INSANE_SKIP_glibc-dbg = True
@@ -39,9 +39,11 @@ libc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so ${ba
 FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '${base_sbindir}/ldconfig', '', d)}"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "${base_libdir}/libSegFault*"
+FILES_libcidn = "${base_libdir}/libcidn*.so"
+FILES_libmemusage = "${base_libdir}/libmemusage.so"
 FILES_glibc-extra-nss = "${base_libdir}/libnss*"
 FILES_sln = "${base_sbindir}/sln"
-FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
+FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen ${libdir}/*nonshared.a"
 FILES_nscd = "${sbindir}/nscd* ${sysconfdir}/nscd* ${sysconfdir}/init.d/nscd*"
 FILES_glibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_glibc-gconv = "${libdir}/gconv/*"
@@ -267,6 +269,8 @@ python package_do_split_gconvs () {
 
 		# This is a hack till linux-libc-headers gets patched for the missing arm syscalls and all arm device kernels as well
 		if bb.data.getVar("DISTRO_NAME", d, 1) == "Angstrom":
+			kernel_ver = "2.6.24"
+		elif bb.data.getVar("DISTRO_NAME", d, 1) == "KaeilOS":
 			kernel_ver = "2.6.24"
 		else:
 			kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)

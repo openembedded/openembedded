@@ -165,8 +165,8 @@ SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
                                file://tincantools-zippy.diff;patch=1 \
 "
 
-SRC_URI_append_omap3-touchbook = " \
-           file://beagle-asoc.patch;patch=1 \
+SRC_URI_append_omap3-touchbook = " file://logo_linux_clut224.ppm \
+                                           file://../beagleboard/beagle-asoc.patch;patch=1 \
            file://accelerometer-mma7455l.patch;patch=1 \
            file://accelerometer-touchscreen-mux-spi.patch;patch=1 \
            file://touchscreen-ads7846-export-settings.patch;patch=1 \
@@ -175,7 +175,6 @@ SRC_URI_append_omap3-touchbook = " \
            file://battery2-bq27200-no-error-message.patch;patch=1 \
            file://sound-headphone-detection.patch;patch=1 \
            file://dss2-fix-XY-coordinates-when-rotating.patch;patch=1 \
-           file://screen-backlight.patch;patch=1 \
            file://battery1-tps65950-charging-management-1.patch;patch=1 \
            file://dss2-fix-scaling-when-rotating.patch;patch=1 \
            file://dss2-export-status.patch;patch=1 \
@@ -191,12 +190,12 @@ SRC_URI_append_omap3-touchbook = " \
            file://boot-no-power-message.patch;patch=1 \
            file://usb-lower-current-consumption-upon-insertion.patch;patch=1 \
            file://battery2-bq27200-gpio-charged.patch;patch=1 \
-           file://board-omap3beagle.c \
+           file://keyboard-special-keys.patch;patch=1 \
+           file://dss2-fix-rotation-offsets.patch;patch=1 \
+           file://touchbook-config.patch;patch=1 \
+           file://board-omap3touchbook.c \
+#           file://boot-trace-for-optimization.patch;patch=1 \
 "
-
-do_configure_prepend_omap3-touchbook() {
-    cp ${WORKDIR}/board-omap3beagle.c ${S}/arch/arm/mach-omap2
-}
 
 SRC_URI_append_omap3evm = " \
 	file://evm-mcspi-ts.diff;patch=1 \
@@ -204,6 +203,17 @@ SRC_URI_append_omap3evm = " \
 
 S = "${WORKDIR}/git"
 
+do_configure_prepend_omap3-touchbook() {
+        cp ${WORKDIR}/board-omap3touchbook.c ${S}/arch/arm/mach-omap2
+}
+
+do_install_append() {
+        install -d ${D}/boot
+        install -m 0644 Documentation/arm/OMAP/DSS ${D}/boot || true
+}
+
+PACKAGES =+ "omap-dss-doc"
+FILES_omap-dss-doc = "/boot/DSS"
 
 module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"
 

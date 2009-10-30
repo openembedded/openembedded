@@ -1,5 +1,5 @@
-DESCRIPTION = "FSO monitor daemon"
-AUTHOR = "M. Lauer et. al."
+DESCRIPTION = "freesmartphone.org monitor daemon"
+AUTHOR = "freesmartphone.org development team"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
@@ -13,7 +13,5 @@ inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "fso-monitord"
 INITSCRIPT_PARAMS = "defaults 35"
-
-RDEPENDS_${PN} = "frameworkd"
 
 FILES_${PN} += "${datadir} ${sysconfdir}"

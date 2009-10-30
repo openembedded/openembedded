@@ -217,7 +217,7 @@ SRC_URI_append_omap3evm = " \
 S = "${WORKDIR}/git"
 
 do_configure_prepend_omap3-touchbook() {
-	cp ${WORKDIR}/board-*.c ${S}/arch/arm/mach-omap2
+	cp ${WORKDIR}/board-omap3touchbook.c ${S}/arch/arm/mach-omap2
 }
 
 do_install_append() {

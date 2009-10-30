@@ -2,10 +2,7 @@ DESCRIPTION = "Linux Kernel for Marvell Kirkwood based devices"
 SECTION = "kernel"
 LICENSE = "GPL"
 
-COMPATIBLE_MACHINE = "openrd-base|openrd-client"
-
-# SheevaPlug still needs testing
-#COMPATIBLE_MACHINE = "(openrd-base|sheevaplug)"
+COMPATIBLE_MACHINE = "openrd-base|openrd-client|sheevaplug"
 
 require linux.inc
 
@@ -19,10 +16,10 @@ SRC_URI = "git://repo.or.cz/linux-2.6/linux-2.6-openrd.git;protocol=git \
 
 # update machine types list for ARM architecture, only for machines that need it
 do_arm_mach_types() {
-  if test ${MACHINE} == openrd-base || test ${MACHINE} == openrd-client; then
+#  if test ${MACHINE} == openrd-base || test ${MACHINE} == openrd-client; then
     curl -o mach-types "http://www.arm.linux.org.uk/developer/machines/download.php" && \
     cp mach-types arch/arm/tools/mach-types
-  fi
+#  fi
 }
 
 addtask arm_mach_types after do_patch before do_configure

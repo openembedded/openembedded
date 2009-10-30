@@ -3,7 +3,11 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 DEPENDS = "gconf librsvg libgweather startup-notification libwnck orbit2 gtk+ libbonoboui libglade libgnome libgnomeui gnome-desktop libglade gnome-menus orbit2-native"
 
+PR = "r1"
+
 inherit gnome pkgconfig
+
+SRC_URI += "file://idl-sysroot.patch;patch=1"
 
 CPPFLAGS += " -I${STAGING_INCDIR}/gnome-desktop-2.0" 
 export SYSROOT = "${STAGING_DIR_HOST}"

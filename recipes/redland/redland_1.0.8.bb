@@ -5,6 +5,8 @@ SRC_URI = "http://download.librdf.org/source/redland-1.0.8.tar.gz \
 	   
 PR = "r3"
 
+DEPENDS = "db mysql"
+
 inherit autotools_stage
 
 EXTRA_OECONF = "--with-bdb-lib=${STAGING_LIBDIR} --with-bdb-include=${STAGING_INCDIR} --with-sqlite=no"

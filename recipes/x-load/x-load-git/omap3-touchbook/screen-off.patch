@@ -1,0 +1,20 @@
+--- a/board/omap3530beagle/omap3530beagle.c	2009-09-05 16:23:03.000000000 -0700
++++ b/board/omap3530beagle/omap3530beagle.c	2009-09-05 16:23:50.000000000 -0700
+@@ -768,6 +768,7 @@
+ 	MUX_VAL(CP(SYS_BOOT4),      (IEN  | PTD | DIS | M4)) /*GPIO_6 */\
+ 	MUX_VAL(CP(SYS_BOOT5),      (IEN  | PTD | DIS | M4)) /*GPIO_7 */\
+ 	MUX_VAL(CP(SYS_BOOT6),      (IEN  | PTD | DIS | M4)) /*GPIO_8 */\
++	MUX_VAL(CP(MCSPI1_CS2),     (IDIS | PTD | EN  | M4)) /*GPIO_176*/\
+ 	MUX_VAL(CP(SYS_CLKOUT2),    (IEN  | PTU | EN  | M4)) /*GPIO_186*/\
+ 	MUX_VAL(CP(JTAG_nTRST),     (IEN  | PTD | DIS | M0)) /*JTAG_nTRST*/\
+ 	MUX_VAL(CP(JTAG_TCK),       (IEN  | PTD | DIS | M0)) /*JTAG_TCK*/\
+--- a/include/asm/arch-omap3/mux.h	2009-09-05 16:28:14.000000000 -0700
++++ b/include/asm/arch-omap3/mux.h	2009-09-05 16:30:48.000000000 -0700
+@@ -321,6 +321,7 @@
+ #define  CONTROL_PADCONF_SYS_BOOT6           0x0A16       
+ #define  CONTROL_PADCONF_SYS_OFF_MODE        0x0A18       
+ #define  CONTROL_PADCONF_SYS_CLKOUT1         0x0A1A       
++#define  CONTROL_PADCONF_MCSPI1_CS2          0x01D2       
+ #define  CONTROL_PADCONF_SYS_CLKOUT2         0x01E2       
+ #define  CONTROL_PADCONF_JTAG_nTRST          0x0A1C       
+ #define  CONTROL_PADCONF_JTAG_TCK            0x0A1E       

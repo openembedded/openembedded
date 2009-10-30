@@ -3,8 +3,6 @@ DEPENDS = "glib-2.0-native perl-native"
 
 PR = "${INC_PR}.1"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI += ""
 
 inherit native

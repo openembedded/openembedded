@@ -7,7 +7,7 @@ LICENSE = "Kermit"
 HOMEPAGE = "http://www.columbia.edu/kermit/"
 SECTION = "console/network"
 SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz"
-PR = "r1"
+PR = "r2"
 
 #
 # From http://www.columbia.edu/kermit/ck80.html#license
@@ -60,6 +60,8 @@ export INFODIR = "${infodir}"
 # trying to look inside the stdio headers.
 CKERMIT_ADDITIONAL = ""
 CKERMIT_ADDITIONAL_linux-uclibc = "-DNOARROWKEYS"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile () {
 	# The original makefile doesn't differentiate between CC and CC_FOR_BUILD,
