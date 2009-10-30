@@ -143,8 +143,10 @@ autotools_do_install() {
 	oe_runmake 'DESTDIR=${D}' install
 }
 
-do_install_append() {
-        for i in `find ${D} -name "*.la"` ; do \
+PACKAGE_PREPROCESS_FUNCS += "autotools_prepackage_lamangler"
+
+autotools_prepackage_lamangler () {
+        for i in `find ${PKGD} -name "*.la"` ; do \
                 sed -i -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${libdir}/\1,g' $i
                 sed -i -e s:${CROSS_DIR}/${HOST_SYS}::g $i
                 sed -i -e s:${CROSS_DIR}::g $i
