@@ -2,10 +2,10 @@
 DATE=`date +%Y%m%d`
 SCRDIR=`dirname $0`
 DIR=${SCRDIR}/${DATE}
-PREFIX=http://xorg.freedesktop.org/releases/individual/
+PREFIX=http://www.x.org/releases/X11R7.5/src/
 GRPS="app data doc driver font lib proto util xserver"
 OETREE=${SCRDIR}/../..
-PREFS_LIVE=${OETREE}/conf/distro/include/preferred-xorg-versions-live.inc
+PREFS_LIVE=${OETREE}/conf/distro/include/preferred-xorg-versions-X11R7.5-live.inc
 BBS=${OETREE}/recipes/xorg-
 OUT_LOG=${DIR}.log
 OUT_CMD=${DIR}.cmd
