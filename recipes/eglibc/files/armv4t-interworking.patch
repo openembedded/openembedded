@@ -1,0 +1,53 @@
+Index: libc/ports/sysdeps/arm/memcpy.S
+===================================================================
+--- libc.orig/ports/sysdeps/arm/memcpy.S	2009-09-03 16:12:00.000000000 -0700
++++ libc/ports/sysdeps/arm/memcpy.S	2009-10-28 12:51:22.000000000 -0700
+@@ -130,7 +130,12 @@ ENTRY(memcpy)
+ 		strcsb	r4, [r0], #1
+ 		strcsb	ip, [r0]
+ 
++#if defined (__ARM_ARCH_4T__) && defined(__THUMB_INTERWORK__)
++		ldmfd	sp!, {r0, r4, lr}
++                bx      lr
++#else
+ 		ldmfd	sp!, {r0, r4, pc}
++#endif
+ 
+ 9:		rsb	ip, ip, #4
+ 		cmp	ip, #2
+Index: libc/ports/sysdeps/arm/memmove.S
+===================================================================
+--- libc.orig/ports/sysdeps/arm/memmove.S	2009-09-03 16:12:00.000000000 -0700
++++ libc/ports/sysdeps/arm/memmove.S	2009-10-28 12:51:22.000000000 -0700
+@@ -144,7 +144,12 @@ ENTRY(memmove)
+ 		strneb	r3, [r0, #-1]!
+ 		strcsb	r4, [r0, #-1]!
+ 		strcsb	ip, [r0, #-1]
++#if defined (__ARM_ARCH_4T__) && defined (__THUMB_INTERWORK__)
++		ldmfd	sp!, {r0, r4, lr}
++                bx      lr
++#else
+ 		ldmfd	sp!, {r0, r4, pc}
++#endif
+ 
+ 9:		cmp	ip, #2
+ 		ldrgtb	r3, [r1, #-1]!
+Index: libc/ports/sysdeps/unix/sysv/linux/arm/clone.S
+===================================================================
+--- libc.orig/ports/sysdeps/unix/sysv/linux/arm/clone.S	2009-09-03 16:12:04.000000000 -0700
++++ libc/ports/sysdeps/unix/sysv/linux/arm/clone.S	2009-10-28 12:51:22.000000000 -0700
+@@ -96,8 +96,14 @@ ENTRY(__clone)
+ #endif
+ 	@ pick the function arg and call address off the stack and execute
+ 	ldr	r0, [sp, #4]
++#if defined(__ARM_ARCH_V4T__) && defined(__THUMB_INTERWORK__)
++	ldr 	ip, [sp], #8
++	mov	lr, pc
++        bx      ip
++#else
+ 	mov	lr, pc
+ 	ldr 	pc, [sp], #8
++#endif
+ 
+ 	@ and we are done, passing the return value through r0
+ 	b	PLTJMP(HIDDEN_JUMPTARGET(_exit))

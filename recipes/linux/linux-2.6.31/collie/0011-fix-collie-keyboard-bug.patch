@@ -1,0 +1,24 @@
+From cd73a608d2af290824e6bd0690777a8115467da0 Mon Sep 17 00:00:00 2001
+From: Thomas Kunze <thommycheck@gmx.de>
+Date: Mon, 20 Oct 2008 17:40:32 +0200
+Subject: [PATCH 11/15] fix collie keyboard bug
+
+---
+ drivers/input/keyboard/locomokbd.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/input/keyboard/locomokbd.c b/drivers/input/keyboard/locomokbd.c
+index 9caed30..79e19bf 100644
+--- a/drivers/input/keyboard/locomokbd.c
++++ b/drivers/input/keyboard/locomokbd.c
+@@ -265,6 +265,7 @@ static int __devinit locomokbd_probe(struct locomo_dev *dev)
+ 	for (i = 0; i < LOCOMOKBD_NUMKEYS; i++)
+ 		set_bit(locomokbd->keycode[i], input_dev->keybit);
+ 	clear_bit(0, input_dev->keybit);
++	locomo_writel(0, locomokbd->base + LOCOMO_KSC);
+ 
+ 	/* attempt to get the interrupt */
+ 	err = request_irq(dev->irq[0], locomokbd_interrupt, 0, "locomokbd", locomokbd);
+-- 
+1.6.0.4
+

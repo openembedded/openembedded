@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r32"
+PR ="r33"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -47,8 +47,8 @@ SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
 
 
-SRCREV_omap3517-evm = "e60beb13cf0"
-SRC_URI_append_omap3517-evm = " \
+SRCREV_am3517-evm = "e60beb13cf0"
+SRC_URI_append_am3517-evm = " \
 file://omap3evm/0001-Changes-for-making-a-NAND-build.patch;patch=1 \
 file://omap3evm/0002-Fix-for-NFS-boot-for-OMAP3-EVM.patch;patch=1 \
 file://omap3evm/0003-OMAP3-timer-handling-to-1ms-tick-and-CONFIG_SYS_HZ-t.patch;patch=1 \
@@ -66,7 +66,7 @@ file://omap3evm/0014-EMAC-driver-cleanup-removed-debug-prints.patch;patch=1 \
 file://omap3evm/0015-EMAC-driver-Check-for-link-status-in-packet-send-lo.patch;patch=1 \
 file://omap3evm/0016-Config-option-and-name-changed-to-omap3517_evm.patch;patch=1 \
 "
-PV_omap3517-evm = "2009.03+${PR}+gitr${SRCREV}"
+PV_am3517-evm = "2009.03+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
@@ -143,6 +143,9 @@ SRC_URI_append_c7x0 = "file://pdaXrom-u-boot.patch;patch=1 \
                        file://uboot-eabi-fix-HACK2.patch;patch=1 \
                        file://corgi-standard-partitioning.patch;patch=1 \
                        "
+SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=testing"
+SRCREV_sheevaplug = "119b9942da2e450d4e525fc004208dd7f7d062e0"
+
 S = "${WORKDIR}/git"
 
 
@@ -157,6 +160,14 @@ do_configure_prepend_spitz() {
 do_configure_prepend_c7x0() {
         sed -i s:ROOT_FLASH_SIZE:${ROOT_FLASH_SIZE}:g ${S}/include/configs/corgi.h
 }
+
+do_compile_append_sheevaplug() {
+	oe_runmake u-boot.kwb
+}
+
+UBOOT_IMAGE_sheevaplug = "u-boot-${MACHINE}-${PV}-${PR}.kwb"
+UBOOT_BINARY_sheevaplug = "u-boot.kwb"
+UBOOT_SYMLINK_sheevaplug ?= "u-boot-${MACHINE}.kwb"
 
 do_deploy_prepend_mini2440() {
 	cp ${S}/u-boot-nand16k.bin ${S}/u-boot.bin

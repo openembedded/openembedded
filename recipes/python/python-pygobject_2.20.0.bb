@@ -2,9 +2,7 @@ DESCRIPTION = "Python GObject bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native-${PV}"
-PR = "ml0"
-
-DEFAULT_PREFERENCE = "-1"
+PE = "1"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 
@@ -32,6 +30,11 @@ do_stage() {
 
 PACKAGES += "${PN}-lib"
 
+<<<<<<< HEAD:recipes/python/python-pygobject_2.20.0.bb
+=======
+RDEPENDS_${PN} += "python-textutils"
+
+>>>>>>> org.openembedded.dev:recipes/python/python-pygobject_2.20.0.bb
 FILES_${PN} = "${libdir}/python*"
 FILES_${PN}-lib = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir} ${datadir}"

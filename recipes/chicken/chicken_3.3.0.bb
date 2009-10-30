@@ -1,1 +1,3 @@
-require chicken3.inc
+require chicken.inc
+
+PR = "${INC_PR}.1"

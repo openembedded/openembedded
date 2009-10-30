@@ -1,0 +1,83 @@
+diff -urN psplash.orig/psplash-fb.c psplash/psplash-fb.c
+--- psplash.orig/psplash-fb.c	2007-08-29 20:27:49.000000000 +0200
++++ psplash/psplash-fb.c	2009-01-15 18:42:11.000000000 +0100
+@@ -62,7 +62,8 @@
+       goto fail;
+     }
+   
+-  if (fb_var.bits_per_pixel < 16)
++  if (fb_var.bits_per_pixel != 1 && fb_var.bits_per_pixel != 2
++      && fb_var.bits_per_pixel < 16)
+     {
+       fprintf(stderr,
+ 	      "Error, no support currently for %i bpp frame buffers\n",
+@@ -143,7 +144,18 @@
+   return NULL;
+ }
+ 
+-#define OFFSET(fb,x,y) (((y) * (fb)->stride) + ((x) * ((fb)->bpp >> 3)))
++static inline int
++psplash_fb_offset(PSplashFB *fb, int x, int y)
++{
++  switch (fb->bpp)
++    {
++    /* pixel offset */
++    case 2: return (y * (fb->stride << 2)) + x;
++    case 1: return (y * (fb->stride << 3)) + x;
++    /* byte offset */
++    default: return (y * fb->stride) + (x * (fb->bpp >> 3));
++    }
++}
+ 
+ inline void
+ psplash_fb_plot_pixel (PSplashFB    *fb, 
+@@ -153,7 +165,7 @@
+ 		       uint8        green,
+ 		       uint8        blue)
+ {
+-  int off;
++  int off, shift;
+ 
+   if (x < 0 || x > fb->width-1 || y < 0 || y > fb->height-1)
+     return;
+@@ -161,17 +173,17 @@
+   switch (fb->angle)
+     {
+     case 270:
+-      off = OFFSET (fb, fb->height - y - 1, x);
++      off = psplash_fb_offset (fb, fb->height - y - 1, x);
+       break;
+     case 180:
+-      off = OFFSET (fb, fb->width - x - 1, fb->height - y - 1);
++      off = psplash_fb_offset (fb, fb->width - x - 1, fb->height - y - 1);
+       break;
+     case 90:
+-      off = OFFSET (fb, y, fb->width - x - 1);
++      off = psplash_fb_offset (fb, y, fb->width - x - 1);
+       break;
+     case 0:
+     default:
+-      off = OFFSET (fb, x, y);
++      off = psplash_fb_offset (fb, x, y);
+       break;
+     }
+ 
+@@ -188,6 +200,18 @@
+       *(volatile uint16 *) (fb->data + off) 
+ 	= ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
+       break;
++    case 2:
++      shift = (3 - (off & 3)) << 1;
++      *(fb->data + (off >> 2)) = (*(fb->data + (off >> 2)) & ~(3 << shift))
++      | (((11*red + 16*green + 5*blue) >> 11) << shift);
++      break;
++    case 1:
++      shift = 7 - (off & 7);
++      if (((11*red + 16*green + 5*blue) >> 5) >= 128)
++        *(fb->data + (off >> 3)) |= (1 << shift);
++      else
++        *(fb->data + (off >> 3)) &= ~(1 << shift);
++      break;
+     default:
+       /* depth not supported yet */
+       break;

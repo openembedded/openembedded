@@ -1,7 +1,6 @@
 require python-pygobject_${PV}.bb
 
 DEPENDS = "python-native glib-2.0-native"
-PR = "r0"
 
 PARALLEL_MAKE = ""
 
