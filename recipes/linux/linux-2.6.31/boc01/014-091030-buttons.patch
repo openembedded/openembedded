@@ -1,7 +1,7 @@
 Index: linux-2.6.31/drivers/input/misc/Kconfig
 ===================================================================
---- linux-2.6.31.orig/drivers/input/misc/Kconfig	2009-10-30 11:08:24.000000000 +0100
-+++ linux-2.6.31/drivers/input/misc/Kconfig	2009-10-30 11:08:32.000000000 +0100
+--- linux-2.6.31.orig/drivers/input/misc/Kconfig	2009-10-30 13:52:02.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Kconfig	2009-10-30 13:52:02.000000000 +0100
 @@ -270,6 +270,13 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called dm355evm_keys.
@@ -18,8 +18,8 @@ Index: linux-2.6.31/drivers/input/misc/Kconfig
  	select INPUT_POLLDEV
 Index: linux-2.6.31/drivers/input/misc/Makefile
 ===================================================================
---- linux-2.6.31.orig/drivers/input/misc/Makefile	2009-10-30 11:08:51.000000000 +0100
-+++ linux-2.6.31/drivers/input/misc/Makefile	2009-10-30 11:08:58.000000000 +0100
+--- linux-2.6.31.orig/drivers/input/misc/Makefile	2009-10-30 13:52:02.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Makefile	2009-10-30 13:52:02.000000000 +0100
 @@ -26,4 +26,5 @@
  obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
  obj-$(CONFIG_INPUT_WISTRON_BTNS)	+= wistron_btns.o
@@ -29,8 +29,8 @@ Index: linux-2.6.31/drivers/input/misc/Makefile
 Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.31/drivers/input/misc/boc-btns.c	2009-10-30 11:57:13.000000000 +0100
-@@ -0,0 +1,200 @@
++++ linux-2.6.31/drivers/input/misc/boc-btns.c	2009-10-30 13:52:26.000000000 +0100
+@@ -0,0 +1,209 @@
 +/*
 + * Buttons for BoC
 + *
@@ -61,17 +61,23 @@ Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 +
 +#define BUTTONS_POLL_INTERVAL	30	/* msec */
 +
-+static unsigned char input_gpio[] = {
-+	231, // reset button
++struct input_button {
++	unsigned char gpio;
++	unsigned char active_low;
++};
++
++static struct input_button input_buttons[] = {
++	{ 220, 1 }, // WPS button (active low)
++	{ 231, 0 }, // reset button
 +};
 +
 +static unsigned short input_keymap[] = {
-+	KEY_ESC,
++	KEY_F2,
++	KEY_F3,
 +};
 +
 +struct buttons_dev {
 +	struct input_polled_dev *poll_dev;
-+	unsigned short keymap[ARRAY_SIZE(input_keymap)];
 +	int state[ARRAY_SIZE(input_keymap)];
 +};
 +
@@ -88,7 +94,7 @@ Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 +	// read GPIO
 +	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
 +	{
-+		value = gpio_get_value(input_gpio[i]);
++		value = gpio_get_value(input_buttons[i].gpio) ^ input_buttons[i].active_low;
 +		if (value != bdev->state[i])
 +		{
 +			input_event(input, EV_MSC, MSC_SCAN, i);
@@ -112,7 +118,7 @@ Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 +
 +	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
 +	{
-+		if (gpio_request(input_gpio[i], NULL) < 0)
++		if (gpio_request(input_buttons[i].gpio, NULL) < 0)
 +			return -ENODEV;
 +	}
 +
@@ -126,8 +132,6 @@ Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 +		goto out_allocated;
 +	}
 +
-+	memcpy(bdev->keymap, input_keymap, sizeof(bdev->keymap));
-+
 +	poll_dev->private = bdev;
 +	poll_dev->poll = handle_buttons;
 +	poll_dev->poll_interval = BUTTONS_POLL_INTERVAL;
@@ -138,12 +142,17 @@ Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 +	input->id.bustype = BUS_HOST;
 +	input->dev.parent = &pdev->dev;
 +
-+	input->keycode = bdev->keymap;
-+	input->keycodemax = ARRAY_SIZE(bdev->keymap);
++	input->keycode = input_keymap;
++	input->keycodemax = ARRAY_SIZE(input_keymap);
 +	input->keycodesize = sizeof(unsigned short);
 +
 +	input_set_capability(input, EV_MSC, MSC_SCAN);
 +	set_bit(EV_KEY, input->evbit);
++	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
++	{
++		set_bit(input_keymap[i], input->keybit);
++		bdev->state[i] = 0;
++	}
 +
 +	bdev->poll_dev = poll_dev;
 +	dev_set_drvdata(&pdev->dev, bdev);
@@ -173,7 +182,7 @@ Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 +	dev_set_drvdata(dev, NULL);
 +
 +	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
-+		gpio_free(input_gpio[i]);
++		gpio_free(input_buttons[i].gpio);
 +
 +	return 0;
 +}
