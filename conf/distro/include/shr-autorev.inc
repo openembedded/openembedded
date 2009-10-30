@@ -9,7 +9,6 @@ SRCREV_pn-linux-openmoko-shr-devel = "${AUTOREV}"
 SRCREV_pn-linux-openmoko-shr-drm-devel = "${AUTOREV}"
 
 # X11
-require conf/distro/include/preferred-xorg-versions-live.inc
 SRCREV_pn-xf86-video-glamo = "${AUTOREV}"
 SRCREV_pn-xf86-input-mouse = "${AUTOREV}"
 SRCREV_pn-xf86-input-keyboard = "${AUTOREV}"
