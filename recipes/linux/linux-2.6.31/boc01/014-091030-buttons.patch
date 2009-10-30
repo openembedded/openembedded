@@ -1,7 +1,7 @@
 Index: linux-2.6.31/drivers/input/misc/Kconfig
 ===================================================================
---- linux-2.6.31.orig/drivers/input/misc/Kconfig	2009-10-30 13:52:02.000000000 +0100
-+++ linux-2.6.31/drivers/input/misc/Kconfig	2009-10-30 13:52:02.000000000 +0100
+--- linux-2.6.31.orig/drivers/input/misc/Kconfig	2009-10-30 14:22:53.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Kconfig	2009-10-30 14:22:53.000000000 +0100
 @@ -270,6 +270,13 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called dm355evm_keys.
@@ -18,8 +18,8 @@ Index: linux-2.6.31/drivers/input/misc/Kconfig
  	select INPUT_POLLDEV
 Index: linux-2.6.31/drivers/input/misc/Makefile
 ===================================================================
---- linux-2.6.31.orig/drivers/input/misc/Makefile	2009-10-30 13:52:02.000000000 +0100
-+++ linux-2.6.31/drivers/input/misc/Makefile	2009-10-30 13:52:02.000000000 +0100
+--- linux-2.6.31.orig/drivers/input/misc/Makefile	2009-10-30 14:22:53.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Makefile	2009-10-30 14:22:53.000000000 +0100
 @@ -26,4 +26,5 @@
  obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
  obj-$(CONFIG_INPUT_WISTRON_BTNS)	+= wistron_btns.o
@@ -29,8 +29,8 @@ Index: linux-2.6.31/drivers/input/misc/Makefile
 Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.31/drivers/input/misc/boc-btns.c	2009-10-30 13:52:26.000000000 +0100
-@@ -0,0 +1,209 @@
++++ linux-2.6.31/drivers/input/misc/boc-btns.c	2009-10-30 14:24:42.000000000 +0100
+@@ -0,0 +1,211 @@
 +/*
 + * Buttons for BoC
 + *
@@ -94,7 +94,9 @@ Index: linux-2.6.31/drivers/input/misc/boc-btns.c
 +	// read GPIO
 +	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
 +	{
-+		value = gpio_get_value(input_buttons[i].gpio) ^ input_buttons[i].active_low;
++		value = gpio_get_value(input_buttons[i].gpio) ? 1 : 0;
++		if (input_buttons[i].active_low)
++			value = !value;
 +		if (value != bdev->state[i])
 +		{
 +			input_event(input, EV_MSC, MSC_SCAN, i);
