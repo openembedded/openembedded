@@ -121,12 +121,12 @@ autotools_do_configure() {
 			    echo "no" | glib-gettextize --force --copy
 			  fi
 			fi
+			mkdir -p m4
 			if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
 			  oenote Executing intltoolize --copy --force --automake
 			  intltoolize --copy --force --automake
 			fi
 			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
-			mkdir -p m4
 			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
 			cd $olddir
 		fi
