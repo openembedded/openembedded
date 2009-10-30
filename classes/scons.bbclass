@@ -13,7 +13,7 @@ scons_do_install() {
 
 scons_do_stage() {
 	install -d ${D}${prefix}
-        ${STAGING_BINDIR_NATIVE}/scons PREFIX=${STAGING_DIR_HOST}/${layout_prefix} prefix=${STAGING_DIR_HOST}/${layout_prefix} install || \
+        ${STAGING_BINDIR_NATIVE}/scons PREFIX=${STAGING_DIR_HOST}/${prefix} prefix=${STAGING_DIR_HOST}/${prefix} install || \
         oefatal "scons stage execution failed."
 }
 

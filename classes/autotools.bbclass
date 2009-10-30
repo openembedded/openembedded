@@ -191,14 +191,14 @@ autotools_stage_all() {
 	oe_runmake DESTDIR="${STAGE_TEMP}" install
 	autotools_stage_dir ${STAGE_TEMP}/${includedir} ${STAGING_INCDIR}
 	if [ "${BUILD_SYS}" = "${HOST_SYS}" ]; then
-		autotools_stage_dir ${STAGE_TEMP}/${bindir} ${STAGING_DIR_HOST}${layout_bindir}
-		autotools_stage_dir ${STAGE_TEMP}/${sbindir} ${STAGING_DIR_HOST}${layout_sbindir}
-		autotools_stage_dir ${STAGE_TEMP}/${base_bindir} ${STAGING_DIR_HOST}${layout_base_bindir}
-		autotools_stage_dir ${STAGE_TEMP}/${base_sbindir} ${STAGING_DIR_HOST}${layout_base_sbindir}
-		autotools_stage_dir ${STAGE_TEMP}/${libexecdir} ${STAGING_DIR_HOST}${layout_libexecdir}
+		autotools_stage_dir ${STAGE_TEMP}/${bindir} ${STAGING_DIR_HOST}${bindir}
+		autotools_stage_dir ${STAGE_TEMP}/${sbindir} ${STAGING_DIR_HOST}${sbindir}
+		autotools_stage_dir ${STAGE_TEMP}/${base_bindir} ${STAGING_DIR_HOST}${base_bindir}
+		autotools_stage_dir ${STAGE_TEMP}/${base_sbindir} ${STAGING_DIR_HOST}${base_sbindir}
+		autotools_stage_dir ${STAGE_TEMP}/${libexecdir} ${STAGING_DIR_HOST}${libexecdir}
 		if [ "${prefix}/lib" != "${libdir}" ]; then
 			# python puts its files in here, make sure they are staged as well
-			autotools_stage_dir ${STAGE_TEMP}/${prefix}/lib ${STAGING_DIR_HOST}${layout_prefix}/lib
+			autotools_stage_dir ${STAGE_TEMP}/${prefix}/lib ${STAGING_DIR_HOST}${prefix}/lib
 		fi
 	fi
 	if [ -d ${STAGE_TEMP}/${libdir} ]

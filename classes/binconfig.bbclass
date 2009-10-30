@@ -18,8 +18,8 @@ def get_binconfig_mangle(d):
 		s += " -e 's:OELIBDIR:${STAGING_LIBDIR}:;'"
 		s += " -e 's:OEINCDIR:${STAGING_INCDIR}:;'"
 		s += " -e 's:OEDATADIR:${STAGING_DATADIR}:'"
-		s += " -e 's:OEPREFIX:${STAGING_DIR_HOST}${layout_prefix}:'"
-		s += " -e 's:OEEXECPREFIX:${STAGING_DIR_HOST}${layout_exec_prefix}:'"
+		s += " -e 's:OEPREFIX:${STAGING_DIR_HOST}${prefix}:'"
+		s += " -e 's:OEEXECPREFIX:${STAGING_DIR_HOST}${exec_prefix}:'"
 		s += " -e 's:-I${WORKDIR}:-I${STAGING_INCDIR}:'"
 		s += " -e 's:-L${WORKDIR}:-L${STAGING_LIBDIR}:'"
 		if bb.data.getVar("OE_BINCONFIG_EXTRA_MANGLE", d):
@@ -37,7 +37,7 @@ do_install_append() {
 		-e 's:${STAGING_LIBDIR}:${libdir}:g;' \ 
 		-e 's:${STAGING_INCDIR}:${includedir}:g;' \
 		-e 's:${STAGING_DATADIR}:${datadir}:' \
-		-e 's:${STAGING_DIR_HOST}${layout_prefix}:${prefix}:' > ${D}${bindir}/`basename $config`
+		-e 's:${STAGING_DIR_HOST}${prefix}:${prefix}:' > ${D}${bindir}/`basename $config`
         done
     fi	
 
@@ -46,7 +46,7 @@ do_install_append() {
 		    -e 's:${STAGING_LIBDIR}:${libdir}:g;' \
 		    -e 's:${STAGING_INCDIR}:${includedir}:g;' \
 		    -e 's:${STAGING_DATADIR}:${datadir}:' \
-		    -e 's:${STAGING_DIR_HOST}${layout_prefix}:${prefix}:' \
+		    -e 's:${STAGING_DIR_HOST}${prefix}:${prefix}:' \
 		    $lafile
 	done	    
 }
