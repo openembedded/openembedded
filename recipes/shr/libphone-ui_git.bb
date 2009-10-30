@@ -5,7 +5,7 @@ SECTION = "libs"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r0"
 
-DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libphone-utils"
+DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libphone-utils alsa-lib"
 
 inherit pkgconfig autotools autotools_stage
 
