@@ -237,4 +237,6 @@ RDEPENDS_${PN} += "\
 		pyring \
 		bt-configure \
 		bt-gps \
+		advancedcaching \
+		glamo-dri-tests \
 "
