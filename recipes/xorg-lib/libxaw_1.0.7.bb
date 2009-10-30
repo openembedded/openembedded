@@ -16,6 +16,9 @@ do_stage_append () {
 
 PACKAGES =+ "libxaw6 libxaw7 libxaw8"
 
+# disable docs as groff detection doesn't work on some hosts while cross compilling
+EXTRA_OECONF += " --disable-docs "
+
 FILES_libxaw6 = "${libdir}/libXaw6.so.6*"
 FILES_libxaw7 = "${libdir}/libXaw7.so.7*"
 FILES_libxaw8 = "${libdir}/libXaw8.so.8*"
