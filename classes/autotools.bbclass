@@ -113,7 +113,7 @@ autotools_do_configure() {
 			else
 			  CONFIGURE_AC=configure.ac
 			fi
-			if grep "^AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
+			if grep "^[[:space:]]*AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
 			  if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
 			    : do nothing -- we still have an old unmodified configure.ac
 			  else
@@ -121,7 +121,7 @@ autotools_do_configure() {
 			    echo "no" | glib-gettextize --force --copy
 			  fi
 			fi
-			if grep "^[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
+			if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
 			  oenote Executing intltoolize --copy --force --automake
 			  intltoolize --copy --force --automake
 			fi
