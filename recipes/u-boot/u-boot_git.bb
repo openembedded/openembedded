@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r32"
+PR ="r33"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -143,6 +143,9 @@ SRC_URI_append_c7x0 = "file://pdaXrom-u-boot.patch;patch=1 \
                        file://uboot-eabi-fix-HACK2.patch;patch=1 \
                        file://corgi-standard-partitioning.patch;patch=1 \
                        "
+SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=testing"
+SRCREV_sheevaplug = "119b9942da2e450d4e525fc004208dd7f7d062e0"
+
 S = "${WORKDIR}/git"
 
 
@@ -157,6 +160,14 @@ do_configure_prepend_spitz() {
 do_configure_prepend_c7x0() {
         sed -i s:ROOT_FLASH_SIZE:${ROOT_FLASH_SIZE}:g ${S}/include/configs/corgi.h
 }
+
+do_compile_append_sheevaplug() {
+	oe_runmake u-boot.kwb
+}
+
+UBOOT_IMAGE_sheevaplug = "u-boot-${MACHINE}-${PV}-${PR}.kwb"
+UBOOT_BINARY_sheevaplug = "u-boot.kwb"
+UBOOT_SYMLINK_sheevaplug ?= "u-boot-${MACHINE}.kwb"
 
 do_deploy_prepend_mini2440() {
 	cp ${S}/u-boot-nand16k.bin ${S}/u-boot.bin

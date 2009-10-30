@@ -1,7 +1,7 @@
 Index: linux-2.6.31/drivers/input/misc/Kconfig
 ===================================================================
---- linux-2.6.31.orig/drivers/input/misc/Kconfig	2009-10-19 16:32:13.000000000 +0200
-+++ linux-2.6.31/drivers/input/misc/Kconfig	2009-10-19 16:49:22.000000000 +0200
+--- linux-2.6.31.orig/drivers/input/misc/Kconfig	2009-10-30 12:50:24.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Kconfig	2009-10-30 13:20:50.000000000 +0100
 @@ -269,4 +269,14 @@
  
  	  To compile this driver as a module, choose M here: the
@@ -19,8 +19,8 @@ Index: linux-2.6.31/drivers/input/misc/Kconfig
  endif
 Index: linux-2.6.31/drivers/input/misc/Makefile
 ===================================================================
---- linux-2.6.31.orig/drivers/input/misc/Makefile	2009-10-19 16:32:13.000000000 +0200
-+++ linux-2.6.31/drivers/input/misc/Makefile	2009-10-19 16:49:22.000000000 +0200
+--- linux-2.6.31.orig/drivers/input/misc/Makefile	2009-10-30 12:50:24.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Makefile	2009-10-30 13:20:50.000000000 +0100
 @@ -26,3 +26,4 @@
  obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
  obj-$(CONFIG_INPUT_WISTRON_BTNS)	+= wistron_btns.o
@@ -29,8 +29,8 @@ Index: linux-2.6.31/drivers/input/misc/Makefile
 Index: linux-2.6.31/drivers/input/misc/capsense-btns.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.31/drivers/input/misc/capsense-btns.c	2009-10-19 16:49:22.000000000 +0200
-@@ -0,0 +1,440 @@
++++ linux-2.6.31/drivers/input/misc/capsense-btns.c	2009-10-30 13:21:11.000000000 +0100
+@@ -0,0 +1,443 @@
 +/*
 + * CAPSENSE Interface driver
 + *
@@ -185,9 +185,12 @@ Index: linux-2.6.31/drivers/input/misc/capsense-btns.c
 +	changed = capsense->key_state ^ new_state;
 +	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
 +		if (changed & (1 << i))
++		{
++			input_event(dev->input, EV_MSC, MSC_SCAN, i);
 +			input_report_key(dev->input, input_keymap[i], (new_state & (1 << i)));
++			input_sync(dev->input);
++		}
 +	capsense->key_state = new_state;
-+	input_sync(dev->input);
 +}
 +
 +
@@ -474,7 +477,7 @@ Index: linux-2.6.31/drivers/input/misc/capsense-btns.c
 Index: linux-2.6.31/drivers/input/misc/capsense-procfs.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.31/drivers/input/misc/capsense-procfs.c	2009-10-19 16:50:35.000000000 +0200
++++ linux-2.6.31/drivers/input/misc/capsense-procfs.c	2009-10-30 13:20:03.000000000 +0100
 @@ -0,0 +1,380 @@
 +/*
 + * CAPSENSE Interface driver
