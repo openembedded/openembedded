@@ -141,15 +141,6 @@ FEED_ARCH ?= "${BASE_PACKAGE_ARCH}"
 #blackfin machines
 FEED_ARCH_bfin          = "blackfin"
 
-#Tweak packaging for strongarm machines since they can't use EABI
-
-PACKAGE_EXTRA_ARCHS_collie = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_h3600  = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_h3800  = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_simpad = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_htcwallaby = "arm-oabi"
-
-
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${LIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
 DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
