@@ -1,0 +1,43 @@
+From 35f5efba0365e5029d8cae77f6b2546eea09e4d6 Mon Sep 17 00:00:00 2001
+From: Thomas Kunze <thommycheck@gmx.de>
+Date: Mon, 9 Feb 2009 23:14:44 +0100
+Subject: [PATCH 06/15] SA1100: make gpio_to_irq and reverse a macro
+
+The function can't be used for static initialisations so
+convert them to macros.
+---
+ arch/arm/mach-sa1100/include/mach/gpio.h |   19 ++++---------------
+ 1 files changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm/mach-sa1100/include/mach/gpio.h b/arch/arm/mach-sa1100/include/mach/gpio.h
+index 582a0c9..7befc10 100644
+--- a/arch/arm/mach-sa1100/include/mach/gpio.h
++++ b/arch/arm/mach-sa1100/include/mach/gpio.h
+@@ -49,20 +49,9 @@ static inline void gpio_set_value(unsigned gpio, int value)
+ 
+ #define gpio_cansleep	__gpio_cansleep
+ 
+-static inline unsigned gpio_to_irq(unsigned gpio)
+-{
+-	if (gpio < 11)
+-		return IRQ_GPIO0 + gpio;
+-	else
+-		return IRQ_GPIO11 - 11 + gpio;
+-}
+-
+-static inline unsigned irq_to_gpio(unsigned irq)
+-{
+-	if (irq < IRQ_GPIO11_27)
+-		return irq - IRQ_GPIO0;
+-	else
+-		return irq - IRQ_GPIO11 + 11;
+-}
++#define gpio_to_irq(gpio)	((gpio < 11) ? (IRQ_GPIO0 + gpio) : \
++					(IRQ_GPIO11 - 11 + gpio))
++#define irq_to_gpio(irq)	((irq < IRQ_GPIO11_27) ? (irq - IRQ_GPIO0) : \
++					(irq - IRQ_GPIO11 + 11))
+ 
+ #endif
+-- 
+1.6.0.4
+

@@ -1,0 +1,25 @@
+From 4f4df9e1c0c82cfd9133f52089025a8ff363977c Mon Sep 17 00:00:00 2001
+From: Thomas Kunze <thommycheck@gmx.de>
+Date: Mon, 20 Oct 2008 17:39:02 +0200
+Subject: [PATCH 04/23] fix dma for SA1100
+
+---
+ arch/arm/mach-sa1100/dma.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-sa1100/dma.c b/arch/arm/mach-sa1100/dma.c
+index f990a3e..1489d64 100644
+--- a/arch/arm/mach-sa1100/dma.c
++++ b/arch/arm/mach-sa1100/dma.c
+@@ -39,7 +39,7 @@ typedef struct {
+ 
+ static sa1100_dma_t dma_chan[SA1100_DMA_CHANNELS];
+ 
+-static spinlock_t dma_list_lock;
++static  DEFINE_SPINLOCK(dma_list_lock);
+ 
+ 
+ static irqreturn_t dma_irq_handler(int irq, void *dev_id)
+-- 
+1.5.6.5
+

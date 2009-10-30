@@ -47,8 +47,8 @@ SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
 
 
-SRCREV_omap3517-evm = "e60beb13cf0"
-SRC_URI_append_omap3517-evm = " \
+SRCREV_am3517-evm = "e60beb13cf0"
+SRC_URI_append_am3517-evm = " \
 file://omap3evm/0001-Changes-for-making-a-NAND-build.patch;patch=1 \
 file://omap3evm/0002-Fix-for-NFS-boot-for-OMAP3-EVM.patch;patch=1 \
 file://omap3evm/0003-OMAP3-timer-handling-to-1ms-tick-and-CONFIG_SYS_HZ-t.patch;patch=1 \
@@ -66,7 +66,7 @@ file://omap3evm/0014-EMAC-driver-cleanup-removed-debug-prints.patch;patch=1 \
 file://omap3evm/0015-EMAC-driver-Check-for-link-status-in-packet-send-lo.patch;patch=1 \
 file://omap3evm/0016-Config-option-and-name-changed-to-omap3517_evm.patch;patch=1 \
 "
-PV_omap3517-evm = "2009.03+${PR}+gitr${SRCREV}"
+PV_am3517-evm = "2009.03+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"

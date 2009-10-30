@@ -3,7 +3,7 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap3evm|omap3517-evm"
+COMPATIBLE_MACHINE = "omap3evm|am3517-evm"
 
 SRCREV = "9abb6eb717acbca192ab251a056e3a66b2b47884"
 
@@ -16,7 +16,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
 
 S = "${WORKDIR}/git"
 
-SRC_URI_append_omap3517-evm = " \
+SRC_URI_append_am3517-evm = " \
         file://shiva-bits.diff;patch=1 \
         file://shiva-ehci.diff;patch=1 \
 "
