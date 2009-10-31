@@ -1,0 +1,15 @@
+Index: mythplugins-0.22rc1/mythweather/mythweather/mythweather.pro
+===================================================================
+--- mythplugins-0.22rc1.orig/mythweather/mythweather/mythweather.pro
++++ mythplugins-0.22rc1/mythweather/mythweather/mythweather.pro
+@@ -13,8 +13,8 @@ INSTALLS += target
+ QMAKE_COPY_DIR = sh ../../cpsvndir
+ win32:QMAKE_COPY_DIR = sh ../../cpsimple
+ 
+-INCLUDEPATH += $${PREFIX}/include/mythtv
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythui
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythui
+ 
+ datafiles.path = $${PREFIX}/share/mythtv/mythweather/
+ datafiles.files = weather-screens.xml
