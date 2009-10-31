@@ -1,7 +1,7 @@
 Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 ===================================================================
---- linux-2.6.31.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-29 16:31:14.000000000 +0100
-+++ linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-29 17:23:51.000000000 +0100
+--- linux-2.6.31.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-09-10 00:13:59.000000000 +0200
++++ linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-30 12:44:52.000000000 +0100
 @@ -13,6 +13,7 @@
   * option) any later version.
   */
@@ -18,7 +18,7 @@ Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
  
  #include "mpc83xx.h"
  
-@@ -79,7 +81,22 @@
+@@ -79,7 +81,21 @@
  
  static int __init declare_of_platform_devices(void)
  {
@@ -29,13 +29,12 @@ Index: linux-2.6.31/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 +
  	of_platform_bus_probe(NULL, of_bus_ids, NULL);
 +
-+	/* activate USB, RFID and touch board */
++	/* activate USB and RFID */
 +	np = of_find_compatible_node(NULL, NULL, "fsl,mpc8313-exio");
 +	if (np)
 +	{
 +		gpio_direction_output(217, 1); // EXIO1 : USB
 +		gpio_direction_output(219, 1); // EXIO3 : RFID
-+		gpio_direction_output(220, 1); // EXIO4 : Touch board
 +		of_node_put(np);
 +	}
  	return 0;

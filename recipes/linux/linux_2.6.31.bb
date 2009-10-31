@@ -30,6 +30,7 @@ SRC_URI_append_boc01 = "\
            file://011-091028-gpio.patch;patch=1 \
            file://012-091019-capsense.patch;patch=1 \
            file://013-091015-lcd.patch;patch=1 \
+           file://014-091030-buttons.patch;patch=1 \
            "
 
 SRC_URI_append_collie = "\
