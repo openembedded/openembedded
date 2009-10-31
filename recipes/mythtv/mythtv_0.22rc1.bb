@@ -5,7 +5,7 @@ inherit qmake2 qt4x11
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.21+0.22rc1"
-PR = "r2"
+PR = "r3"
 REALPV = "0.22"
 
 SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22rc1.tar.bz2"
@@ -51,8 +51,8 @@ EXTRA_OECONF = " \
         --cross-prefix=${TARGET_PREFIX} \
         --sysroot=${STAGING_DIR_HOST} \
         --prefix=${prefix} \
+	--arch=${TARGET_ARCH} \
         \
-        --arch=${TARGET_ARCH} \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-cxxflags="${TARGET_CXXFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-ldflags="${TARGET_LDFLAGS}" \
@@ -86,4 +86,38 @@ python populate_packages_prepend () {
 	do_split_packages(d, root=bb.data.expand('${datadir}/mythtv/themes', d), file_regex='(.*)', output_pattern='mythtv-theme-%s', description='MythTV theme %s', allow_dirs=True, hook=the_hook, prepend=True)
 
 	bb.data.setVar("RDEPENDS_${PN}", "%s %s" % (bb.data.getVar("RDEPENDS_${PN}", d), " ".join(new_packages)), d)
+}
+
+do_stage() {
+        install -d ${STAGING_INCDIR}
+        install -d ${STAGING_INCDIR}/${PN}
+        install -d ${STAGING_INCDIR}/${PN}/dvdnav
+        install -d ${STAGING_INCDIR}/${PN}/dvdread
+        install -d ${STAGING_INCDIR}/${PN}/libavcodec
+        install -d ${STAGING_INCDIR}/${PN}/libavformat
+        install -d ${STAGING_INCDIR}/${PN}/libavutil
+        install -d ${STAGING_INCDIR}/${PN}/libmyth
+        install -d ${STAGING_INCDIR}/${PN}/libmythdb
+        install -d ${STAGING_INCDIR}/${PN}/libmythui
+        install -d ${STAGING_INCDIR}/${PN}/libswscale
+        install -d ${STAGING_INCDIR}/${PN}/mpeg2dec
+        install -d ${STAGING_INCDIR}/${PN}/upnp
+	install -m 0644 ${D}/${includedir}/${PN}/*.h ${STAGING_INCDIR}/${PN}
+	install -m 0644 ${D}/${includedir}/${PN}/mythconfig.mak ${STAGING_INCDIR}/${PN}
+	install -m 0644 ${D}/${includedir}/${PN}/dvdnav/*.h ${STAGING_INCDIR}/${PN}/dvdnav
+	install -m 0644 ${D}/${includedir}/${PN}/dvdread/*.h ${STAGING_INCDIR}/${PN}/dvdread
+	install -m 0644 ${D}/${includedir}/${PN}/libavcodec/*.h ${STAGING_INCDIR}/${PN}/libavcodec
+	install -m 0644 ${D}/${includedir}/${PN}/libavformat/*.h ${STAGING_INCDIR}/${PN}/libavformat
+	install -m 0644 ${D}/${includedir}/${PN}/libavutil/*.h ${STAGING_INCDIR}/${PN}/libavutil
+	install -m 0644 ${D}/${includedir}/${PN}/libmyth/*.h ${STAGING_INCDIR}/${PN}/libmyth
+	install -m 0644 ${D}/${includedir}/${PN}/libmythdb/*.h ${STAGING_INCDIR}/${PN}/libmythdb
+	install -m 0644 ${D}/${includedir}/${PN}/libmythui/*.h ${STAGING_INCDIR}/${PN}/libmythui
+	install -m 0644 ${D}/${includedir}/${PN}/libswscale/*.h ${STAGING_INCDIR}/${PN}/libswscale
+	install -m 0644 ${D}/${includedir}/${PN}/mpeg2dec/*.h ${STAGING_INCDIR}/${PN}/mpeg2dec
+	install -m 0644 ${D}/${includedir}/${PN}/upnp/*.h ${STAGING_INCDIR}/${PN}/upnp
+	sed -i 's:LIBDIR=/usr/lib:LIBDIR=${STAGING_LIBDIR}:' ${STAGING_INCDIR}/${PN}/mythconfig.mak
+	# next part may need to be done better
+	cp -R ${D}/${libdir}/* ${STAGING_LIBDIR}
+	# ugly chmod ahead
+	chmod -R ugo+r ${STAGING_LIBDIR}
 }
