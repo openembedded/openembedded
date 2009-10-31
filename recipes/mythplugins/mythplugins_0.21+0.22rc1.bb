@@ -7,6 +7,8 @@ PR = "r0"
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio"
 # to add libcdparanoia
 
+# todo: add mythweb
+
 PACKAGES =+ "mythmovies mythnews mythweather"
 
 RDEPENDS_${PN} = "mythmovies mythnews mythweather"
@@ -85,6 +87,9 @@ SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythplugins-0.22rc1.tar.bz2 \
 S = "${WORKDIR}/mythplugins-0.22rc1"
 
 QMAKE_PROFILES = "mythplugins.pro"
+
+# Note: a lot of functionality is disabled because it depends on QtOpenGL
+# which is not in OE at the moment
 
 EXTRA_OECONF = " \
         --cross-prefix=${TARGET_PREFIX} \
