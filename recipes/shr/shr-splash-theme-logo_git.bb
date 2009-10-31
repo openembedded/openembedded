@@ -7,7 +7,7 @@ PR = "r0"
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 S = "${WORKDIR}/git/shr-splash/${PN}"
 
-ALTERNATIVE_PRIORITY = 2
+ALTERNATIVE_PRIORITY = 3
 
 require shr-splash-theme.inc
 
