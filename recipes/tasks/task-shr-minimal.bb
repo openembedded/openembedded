@@ -122,6 +122,7 @@ RDEPENDS_${PN}-x = "\
 "
 
 RDEPENDS_${PN}-apps = "\
+  fso-abyss \
   phoneui-apps-messages \
   phoneui-apps-contacts \
   phoneui-apps-dialer \
