@@ -7,7 +7,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 DEPENDS = "elementary libeflvala libical"
 
-PV = "0.3+svnr${SRCREV}"
+PV = "0.3.1+svnr${SRCREV}"
 PR = "r0"
 
 inherit vala
