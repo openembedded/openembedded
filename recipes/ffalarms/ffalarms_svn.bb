@@ -5,10 +5,10 @@ AUTHOR = "Lukasz Pankowski <lukpank@o2.pl>"
 MAINTAINER = "Lukasz Pankowski <lukpank@o2.pl>"
 SECTION = "x11/applications"
 PRIORITY = "optional"
-DEPENDS = "elementary libeflvala"
+DEPENDS = "elementary libeflvala libical"
 
-PV = "0.2.4+svnr${SRCREV}"
-PR = "r1"
+PV = "0.3+svnr${SRCREV}"
+PR = "r0"
 
 inherit vala
 
@@ -18,7 +18,7 @@ S = "${WORKDIR}/trunk"
 
 FILES_${PN} += "${datadir}/${PN} ${datadir}/applications ${datadir}/pixmaps"
 
-RDEPENDS = "atd alsa-utils-amixer alsa-utils-alsactl virtual/alsa-scenarios ttf-dejavu-sans"
+RDEPENDS = "atd alsa-utils-amixer alsa-utils-alsactl virtual/alsa-scenarios ttf-dejavu-sans libical"
 
 RSUGGESTS = "mplayer alsa-utils-aplay frameworkd"
 
