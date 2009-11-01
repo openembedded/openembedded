@@ -1,0 +1,25 @@
+From abc6589edec24a8151d53741c2fe479b983e1f46 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sun, 1 Nov 2009 21:58:21 +0100
+Subject: [PATCH 1/2] Modify control() prototype to match the one in video_out_internal.h
+
+---
+ libvo/vo_glamo.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/libvo/vo_glamo.c b/libvo/vo_glamo.c
+index f528649..e53d523 100644
+--- a/libvo/vo_glamo.c
++++ b/libvo/vo_glamo.c
+@@ -182,7 +182,7 @@ static int glamo_window(mp_win_t *win)
+ 	return VO_TRUE;
+ }
+ 
+-static int control(uint32_t request, void *data, ...)
++static int control(uint32_t request, void *data)
+ {
+ 	switch (request) {
+ 	case VOCTRL_QUERY_FORMAT:
+-- 
+1.6.5.2
+

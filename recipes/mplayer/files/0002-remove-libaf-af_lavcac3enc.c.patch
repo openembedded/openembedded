@@ -1,0 +1,49 @@
+From 73f1df1d1719dcdf6c2989e75d4ee87d44141eaa Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Mon, 2 Nov 2009 09:33:46 +0100
+Subject: [PATCH 2/2] remove libaf/af_lavcac3enc.c
+
+---
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index ce4999c..213be06 100644
+--- a/Makefile
++++ b/Makefile
+@@ -138,7 +138,7 @@ SRCS_COMMON-$(LIBAVCODEC)            += av_opts.c \
+                                         libmpcodecs/vf_uspp.c \
+ 
+ # These filters use private headers and do not work with shared libavcodec.
+-SRCS_COMMON-$(LIBAVCODEC_INTERNALS)  += libaf/af_lavcac3enc.c \
++SRCS_COMMON-$(LIBAVCODEC_INTERNALS)  += \
+                                         libmpcodecs/vf_fspp.c \
+                                         libmpcodecs/vf_geq.c \
+                                         libmpcodecs/vf_mcdeint.c \
+-- 
+1.6.5.2
+
+From d194f944b7fd07ec77987a91df17732a4a9a47cd Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Mon, 2 Nov 2009 09:38:53 +0100
+Subject: [PATCH] remove libaf/af_lavcac3enc.c
+
+---
+ Makefile |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 213be06..25c4577 100644
+--- a/Makefile
++++ b/Makefile
+@@ -372,7 +372,6 @@ SRCS_COMMON = asxparser.c \
+               libaf/af_tools.c \
+               libaf/af_volnorm.c \
+               libaf/af_volume.c \
+-              libaf/af_lavcac3enc.c \
+               libaf/filter.c \
+               libaf/format.c \
+               libaf/reorder_ch.c \
+-- 
+1.6.5.2
+

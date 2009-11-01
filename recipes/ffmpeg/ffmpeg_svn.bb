@@ -10,6 +10,7 @@ PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
+DEFAULT_PREFERENCE_om-gta02 = "1"
 
 SRC_URI = "svn://svn.ffmpeg.org/ffmpeg/;module=trunk"
 
