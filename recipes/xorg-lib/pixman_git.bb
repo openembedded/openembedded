@@ -4,10 +4,10 @@ DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
 PV = "0.17.1"
-PR = "r2"
+PR = "r3"
 PR_append = "+gitr${SRCREV}"
 
-SRCREV = "dc46ad274a47d351bacf3c2167c359d23dbaf8b3"
+SRCREV = "67bf739187cd43b5fff754b25693f76bb788d1fa"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
@@ -22,6 +22,8 @@ file://0007-ARM-Enabled-new-NEON-optimizations.patch;patch=1 \
            file://pixman-28986.patch;patch=1 \
            file://nearest-neighbour.patch;patch=1 \
            file://over-8888-0565.patch;patch=1 \
+file://prefetch.patch;patch=1 \
+file://neon-24bpp.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"
