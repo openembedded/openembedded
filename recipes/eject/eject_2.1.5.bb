@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 
 inherit autotools
 
-SRC_URI = "http://ca.geocities.com/jefftranter@rogers.com/eject-${PV}.tar.gz"
+SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/eject-2.1.5.tar.gz"
 
 S = "${WORKDIR}/${PN}"
 
