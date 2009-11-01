@@ -18,6 +18,8 @@ SRCREV = "8cb424312d88810bb62edbeef42a510725ceb482"
 SRC_URI = "git://git.marvell.com/orion.git;protocol=git \
            file://defconfig"
 
+SRC_URI_append_openrd-base = " file://openrd-base-enable-pcie.patch;patch=1"
+
 # update machine types list for ARM architecture, only for machines that need it
 do_arm_mach_types() {
   if test ${MACHINE} == openrd-base; then
