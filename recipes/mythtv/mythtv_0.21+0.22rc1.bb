@@ -5,10 +5,12 @@ inherit qmake2 qt4x11
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.21+0.22rc1"
-PR = "r3"
+PR = "r4"
 REALPV = "0.22"
 
-SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22rc1.tar.bz2"
+SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22rc1.tar.bz2 \
+	file://configure.patch;patch=1 \
+	"
 
 S = "${WORKDIR}/mythtv-0.22rc1"
 
@@ -115,7 +117,6 @@ do_stage() {
 	install -m 0644 ${D}/${includedir}/${PN}/libswscale/*.h ${STAGING_INCDIR}/${PN}/libswscale
 	install -m 0644 ${D}/${includedir}/${PN}/mpeg2dec/*.h ${STAGING_INCDIR}/${PN}/mpeg2dec
 	install -m 0644 ${D}/${includedir}/${PN}/upnp/*.h ${STAGING_INCDIR}/${PN}/upnp
-	sed -i 's:LIBDIR=/usr/lib:LIBDIR=${STAGING_LIBDIR}:' ${STAGING_INCDIR}/${PN}/mythconfig.mak
 	# next part may need to be done better
 	cp -R ${D}/${libdir}/* ${STAGING_LIBDIR}
 	# ugly chmod ahead
