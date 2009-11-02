@@ -1240,6 +1240,8 @@ def base_after_parse(d):
 
 python () {
     base_after_parse(d)
+    if is_legacy_staging(d):
+        bb.debug(1, "Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
 }
 
 def check_app_exists(app, d):
