@@ -1063,6 +1063,18 @@ SYSROOT_PREPROCESS_FUNCS ?= ""
 SYSROOT_DESTDIR = "${WORKDIR}/sysroot-destdir/"
 SYSROOT_LOCK = "${STAGING_DIR}/staging.lock"
 
+python populate_staging_prehook () {
+	return
+}
+
+python populate_staging_posthook () {
+	return
+}
+
+packagedstaging_fastpath () {
+	:
+}
+
 python do_populate_staging () {
     #
     # if do_stage exists, we're legacy. In that case run the do_stage,
@@ -1095,7 +1107,7 @@ python do_populate_staging () {
         #os.system('cp -pPR %s/* %s/' % (dest, sysrootdest))
         for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
             bb.build.exec_func(f, d)
-        bb.build.exec_func("packagedstageing_fastpath", d)
+        bb.build.exec_func("packagedstaging_fastpath", d)
 
         lock = bb.utils.lockfile(lockfile)
         os.system('cp -pPR %s/* /' % (sysrootdest))
