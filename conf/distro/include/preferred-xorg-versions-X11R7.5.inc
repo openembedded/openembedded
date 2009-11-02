@@ -233,10 +233,6 @@ PREFERRED_VERSION_libxkbfile-native ?= "1.0.6"
 PREFERRED_VERSION_xtrans ?= "1.2.5"
 PREFERRED_VERSION_xtrans-native ?= "1.2.5"
 
-# This should be here but is needed until bitbake can do
-# versioned depends
-PREFERRED_VERSION_mesa ?= "7.4"
-
 # proto
 PREFERRED_VERSION_applewmproto ?= "1.4.1"
 PREFERRED_VERSION_bigreqsproto ?= "1.1.0"
