@@ -1,5 +1,7 @@
 DESCRIPTION = "Various uboot scripts"
 
+PR = "r1"
+
 DEPENDS = "u-boot-mkimage-native"
 
 SRC_URI = "file://*.cmd"
