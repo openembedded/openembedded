@@ -1,5 +1,7 @@
 DEPENDS += "cairo"
 
+PR = "r1"
+
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}.source.tar.bz2 \
 	file://jsautocfg.h \
 	file://security-cross.patch;patch=1 \
@@ -61,6 +63,10 @@ do_stage() {
                 install -D -m 0644 $f ${STAGING_INCDIR}/firefox-${PV}/
         done
 
+        for pc in ${WORKDIR}/*.pc ; do
+            sed -i s:3.5.2:${PV}:g $pc
+        done
+        
         install -d ${PKG_CONFIG_DIR}
         install -m 0644 ${WORKDIR}/firefox-plugin.pc ${PKG_CONFIG_DIR}
         install -m 0644 ${WORKDIR}/firefox-xpcom.pc ${PKG_CONFIG_DIR}
