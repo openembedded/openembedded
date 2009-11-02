@@ -110,7 +110,7 @@ def pstage_cleanpackage(pkgname, d):
 	list_cmd = bb.data.getVar("PSTAGE_LIST_CMD", d, True)
 
 	bb.debug(2, "Checking if staging package installed")
-	lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+	lf = bb.utils.lockfile(bb.data.expand("${SYSROOT_LOCK}", d))
 	ret = os.system("PATH=\"%s\" %s | grep %s" % (path, list_cmd, pkgname))
 	if ret == 0:
 		bb.debug(1, "Uninstalling package from staging...")
@@ -228,7 +228,7 @@ python packagestage_scenefunc () {
         if stageok:
             bb.note("Staging package found, using it for %s." % file)
             installcmd = bb.data.getVar("PSTAGE_INSTALL_CMD", d, 1)
-            lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+            lf = bb.utils.lockfile(bb.data.expand("${SYSROOT_LOCK}", d))
             ret = os.system("PATH=\"%s\" %s %s" % (path, installcmd, stagepkg))
             bb.utils.unlockfile(lf)
             if ret != 0:
@@ -292,7 +292,7 @@ populate_staging_postamble () {
 	fi
 }
 
-do_populate_staging[lockfiles] = "${STAGING_DIR}/staging.lock"
+do_populate_staging[lockfiles] = "${SYSROOT_LOCK}"
 do_populate_staging[dirs] =+ "${DEPLOY_DIR_PSTAGE}"
 python do_populate_staging_prepend() {
     bb.build.exec_func("populate_staging_preamble", d)
@@ -420,7 +420,7 @@ python do_package_stage () {
     pstage_set_pkgmanager(d)
     bb.build.exec_func("staging_helper", d)
     bb.build.exec_func("staging_packager", d)
-    lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+    lf = bb.utils.lockfile(bb.data.expand("${SYSROOT_LOCK}", d))
     bb.build.exec_func("staging_package_installer", d)
     bb.utils.unlockfile(lf)
 }
