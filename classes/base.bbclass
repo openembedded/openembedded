@@ -1031,15 +1031,23 @@ sysroot_stage_dirs() {
 	sysroot_stage_dir $from${datadir} $to${STAGING_DATADIR}
 }
 
-
 sysroot_stage_all() {
 	sysroot_stage_dirs ${D} ${SYSROOT_DESTDIR}
 }
 
-
-base_do_stage () {
-	:
-}
+def is_legacy_staging(d):
+    import bb
+    stagefunc = bb.data.getVar('do_stage', d, True)
+    legacy = True
+    if stagefunc is None:
+        legacy = False
+    elif stagefunc.strip() == "autotools_stage_all":
+        legacy = False
+    elif stagefunc.strip() == "do_stage_native" and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
+        legacy = False
+    if bb.data.getVar('PSTAGE_BROKEN_DESTDIR', d, 1) == "1":
+        legacy = True
+    return legacy
 
 do_populate_staging[dirs] = "${STAGING_DIR_TARGET}/${bindir} ${STAGING_DIR_TARGET}/${libdir} \
 			     ${STAGING_DIR_TARGET}/${includedir} \
@@ -1056,9 +1064,42 @@ SYSROOT_DESTDIR = "${WORKDIR}/sysroot-destdir/"
 SYSROOT_LOCK = "${STAGING_DIR}/staging.lock"
 
 python do_populate_staging () {
-    bb.build.exec_func('do_stage', d)
-    for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
-        bb.build.exec_func(f, d)
+    #
+    # if do_stage exists, we're legacy. In that case run the do_stage,
+    # modify the SYSROOT_DESTDIR variable and then run the staging preprocess
+    # functions against staging directly.
+    #
+    # Otherwise setup a destdir, copy the results from do_install
+    # and run the staging preprocess against that
+    #
+    pstageactive = (bb.data.getVar("PSTAGING_ACTIVE", d, True) == "1")
+    lockfile = bb.data.getVar("SYSROOT_LOCK", d, True)
+    stagefunc = bb.data.getVar('do_stage', d, True)
+    legacy = is_legacy_staging(d)
+    if legacy:
+        bb.data.setVar("SYSROOT_DESTDIR", "", d)
+        bb.note("Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
+        lock = bb.utils.lockfile(lockfile)
+        bb.build.exec_func('do_stage', d)
+        bb.build.exec_func('populate_staging_prehook', d)
+        for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
+            bb.build.exec_func(f, d)
+        bb.build.exec_func('populate_staging_posthook', d)
+        bb.utils.unlockfile(lock)
+    else:
+        dest = bb.data.getVar('D', d, True)
+        sysrootdest = bb.data.expand('${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}', d)
+        bb.mkdirhier(sysrootdest)
+
+        bb.build.exec_func("sysroot_stage_all", d)
+        #os.system('cp -pPR %s/* %s/' % (dest, sysrootdest))
+        for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
+            bb.build.exec_func(f, d)
+        bb.build.exec_func("packagedstageing_fastpath", d)
+
+        lock = bb.utils.lockfile(lockfile)
+        os.system('cp -pPR %s/* /' % (sysrootdest))
+        bb.utils.unlockfile(lock)
 }
 
 addtask install after do_compile
@@ -1228,7 +1269,7 @@ inherit patch
 # Move to autotools.bbclass?
 inherit siteinfo
 
-EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_distclean do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
+EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_distclean do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_rebuild do_fetchall
 
 MIRRORS[func] = "0"
 MIRRORS () {

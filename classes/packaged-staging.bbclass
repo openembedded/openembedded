@@ -174,6 +174,7 @@ python packagestage_scenefunc () {
     bb.build.exec_func("staging_helper", d)
 
     removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
+
     pstage_cleanpackage(removepkg, d)
 
     stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
@@ -292,13 +293,21 @@ populate_staging_postamble () {
 	fi
 }
 
-do_populate_staging[lockfiles] = "${SYSROOT_LOCK}"
+packagedstageing_fastpath () {
+	if [ "$PSTAGING_ACTIVE" = "1" ]; then
+		mkdir -p ${PSTAGE_TMPDIR_STAGE}/staging/
+		mkdir -p ${PSTAGE_TMPDIR_STAGE}/cross/
+		cp -fpPR ${SYSROOT_DESTDIR}/${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/staging/ || /bin/true
+		cp -fpPR ${SYSROOT_DESTDIR}/${CROSS_DIR}/* ${PSTAGE_TMPDIR_STAGE}/cross/ || /bin/true
+	fi
+}
+
 do_populate_staging[dirs] =+ "${DEPLOY_DIR_PSTAGE}"
-python do_populate_staging_prepend() {
+python populate_staging_prehook() {
     bb.build.exec_func("populate_staging_preamble", d)
 }
 
-python do_populate_staging_append() {
+python populate_staging_posthook() {
     bb.build.exec_func("populate_staging_postamble", d)
 }
 
