@@ -9,6 +9,10 @@ SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaLib-${PV}.tar.bz2 \
            ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaDemos-${PV}.tar.bz2 \
           "
 
+<<<<<<< HEAD
+=======
+PE = "1"
+>>>>>>> bbfe390... mesa: add version 7.6 for newer xorg
 PR = "${INC_PR}.0"
 
 EXTRA_OECONF += "--disable-gallium --with-driver=xlib"

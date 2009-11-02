@@ -8,6 +8,10 @@ DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaLib-${PV}.tar.bz2 \
            ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaDemos-${PV}.tar.bz2 \
           "
+<<<<<<< HEAD
+=======
+PE = "1"
+>>>>>>> bbfe390... mesa: add version 7.6 for newer xorg
 PR = "${INC_PR}.0"
 
 # most of our targets do not have DRI so will use mesa-xlib
