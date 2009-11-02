@@ -33,7 +33,7 @@ echo "Removing duplicate packages in unsorted"
 cat files-duplicate | xargs rm -f
 
 # Log remaining packages to a file 
-find . -name "*.ipk" |grep -v dbg | grep -v -- -dev | grep -v -- -doc | grep -v angstrom-version | grep -v locale > new-files.txt
+find . -name "*.ipk" |grep -v dbg | grep -v -- -dev | grep -v -- -doc | grep -v -- -static | grep -v angstrom-version | grep -v locale > new-files.txt
 for newfile in $(cat new-files.txt | sed s:./::g) ; do
     echo "$(date -u +%s) $newfile $(basename ${PWD})" >> ../upload-full.txt
 done    
