@@ -62,22 +62,28 @@ STAGING_DIR_TARGET = ""
 SHLIBSDIR = "${STAGING_DIR_NATIVE}/shlibs"
 PKG_CONFIG_DIR = "${libdir}/pkgconfig"
 
-
-do_stage () {
-	if [ "${INHIBIT_NATIVE_STAGE_INSTALL}" != "1" ]
+do_stage_native () {
+	# If autotools is active, use the autotools staging function, else 
+	# use our "make install" equivalent
+	if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" == "1" ]
 	then
-		if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" != "1" ]
-		then
-			oe_runmake install
-		else
-			autotools_stage_all
-		fi
+		autotools_stage_all
+	else
+		oe_runmake install
 	fi
 }
 
-do_install () {
-	true
+do_stage () {
+	do_stage_native
 }
 
 PKG_CONFIG_PATH .= "${EXTRA_NATIVE_PKGCONFIG_PATH}"
 PKG_CONFIG_SYSROOT_DIR = ""
+
+python __anonymous () {
+    # If we've a legacy native do_stage, we need to neuter do_install
+    stagefunc = bb.data.getVar('do_stage', d, True)
+    if (stagefunc.strip() != "do_stage_native" and stagefunc.strip() != "autotools_stage_all") and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
+        bb.data.setVar("do_install", "      :", d)
+}
+
