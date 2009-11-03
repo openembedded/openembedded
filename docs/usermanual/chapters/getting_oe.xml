@@ -30,9 +30,9 @@ $ <command>cd</command> $OEBASE</screen>
 	you to build your applications and images.
     </para>
 
-	<para>The <varname>$OEBASE</varname> will also contain both bitbake/ and
-	openembedded/ directories. These will be discussed in
-	<xref linkend="gettingoe_getting_bitbake"/> and
+	<para>The <varname>$OEBASE</varname> will also contain both of the
+	<literal>bitbake/<literal> and <literal>openembedded/</literal> directories.
+	These will be discussed in <xref linkend="gettingoe_getting_bitbake"/> and
 	<xref linkend="gettingoe_getting_oe"/>.
 	</para>
   </section>
@@ -47,19 +47,19 @@ $ <command>cd</command> $OEBASE</screen>
     directory of <literal>openembedded/</literal>
     and <literal>build/</literal> directories. Indeed, as bitbake is written
     in python it does not need compilation for being used. You'll just have to
-    set the PATH variable so that the BitBake tools are accessible (see
-    <xref linkend="gettingoe_configuring_oe"/>).</para>
+    set the <varname>PATH</varname> variable so that the BitBake tools are
+    accessible (see <xref linkend="gettingoe_configuring_oe"/>).</para>
 
 	<section><title>Downloading a <application>BitBake</application> release</title>
 	  <para>Releases are available from the berlios project website. The current
           release series is <application>BitBake</application> <emphasis>1.8</emphasis>
-          and the current release is <emphasis>1.8.12</emphasis>. To download execute
+          and the current release is <emphasis>1.8.16</emphasis>. To download execute
 	  the following commands:
 		<screen>
 $ <command>cd</command> $OEBASE
-$ <command>wget</command>http://download.berlios.de/bitbake/bitbake-1.8.12.tar.gz
-$ <command>tar</command> -xvzf bitbake-1.8.12.tar.gz
-$ <command>mv</command> bitbake-1.8.12 bitbake
+$ <command>wget</command> http://download.berlios.de/bitbake/bitbake-1.8.16.tar.gz
+$ <command>tar</command> -xvzf bitbake-1.8.16.tar.gz
+$ <command>mv</command> bitbake-1.8.16 bitbake
 </screen>
 	  </para>
 
@@ -270,7 +270,7 @@ MACHINE = "om-gta01"</screen>
       BitBake file is a logical unit of tasks to be executed. Normally this is
       a package to be built. Inter-recipe dependencies are obeyed. The recipes
       are located by BitBake via the <varname>BBFILES</varname> variable (set
-      in your <filename>$OEBASE/build/conf/local/conf</filename>), which is a
+      in your <filename>$OEBASE/build/conf/local.conf</filename>), which is a
       space separated list of <filename>.bb</filename> files, and does handle
       wildcards.
     </para>
