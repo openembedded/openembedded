@@ -8,7 +8,7 @@ DEPENDS 	+= "virtual/kernel perl-native ti-dspbios-native ti-cgt6x-native update
 
 # tconf from xdctools dislikes '.' in pwd :/
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "a"                                                  
+MACHINE_KERNEL_PR_append = "b"                                                  
 PV = "1613"
 
 SRC_URI = "http://install.source.dir.local/dsplink_1_61_03.tar.gz \
@@ -39,6 +39,10 @@ STAGING_TI_CGT6x_DIR="${STAGING_DIR_NATIVE}/ti-cgt6x-native"
 STAGING_TI_XDCTOOL_INSTALL_DIR="${STAGING_DIR_NATIVE}/ti-xdctools-native"
 
 do_compile() {
+
+	# asm/page.h is gone with linux-libc-headers 2.6.31.
+	# We can safely sed it out since it has been empty for the past 2 years
+	sed -i /page.h/d ${S}/dsplink/gpp/src/api/Linux/drv_api.c 
 
     # Run perl script to create appropriate makefiles (v1.60 and up)
     (

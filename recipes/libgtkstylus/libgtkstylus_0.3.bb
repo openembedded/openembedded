@@ -2,7 +2,7 @@ DESCRIPTION = "GTK plugin for stylus based systems"
 SECTION = "libs"
 DEPENDS = "gtk+"
 LICENSE = "LGPL"
-PR = "r5"
+PR = "r6"
 
 inherit autotools
 
@@ -16,4 +16,3 @@ do_install_append() {
 }
 
 FILES_${PN} = "/etc ${libdir}/gtk-2.0/*/modules/*.so*"
-
