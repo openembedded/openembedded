@@ -35,7 +35,11 @@ if [ -x /usr/bin/lockfile-create ]; then
 	LOCKTOUCHPID="$!"
 fi
 
-/usr/bin/ntpdate -s $OPTS $NTPSERVERS 2>/dev/null || :
+if /usr/bin/ntpdate -s $OPTS $NTPSERVERS 2>/dev/null; then
+	if [ "$UPDATE_HWCLOCK" = "yes" ]; then
+		hwclock --systohc || :
+	fi
+fi
 
 if [ -x /usr/bin/lockfile-create ] ; then
 	kill $LOCKTOUCHPID
