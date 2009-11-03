@@ -6,7 +6,7 @@ DEPENDS = "vala-native vala-dbus-binding-tool-native dbus-glib glib-2.0 fso-spec
 PV = "0.2.1+gitr${SRCPV}"
 PR = "r0"
 
-inherit autotools_stage pkgconfig vala girepository
+inherit autotools_stage pkgconfig vala
 
 SRC_URI = "git://git.freesmartphone.org/libfso-glib.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
