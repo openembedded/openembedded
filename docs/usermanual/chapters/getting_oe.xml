@@ -257,7 +257,13 @@ MACHINE = "om-gta01"</screen>
         If your system does not provide
         the <filename>/etc/sysctl.conf</filename> mechanism, you can try adding
         the above <command>echo</command> command line to
-        your <filename>/etc/rc.local</filename>.
+        your <filename>/etc/rc.local</filename>.  But that's not all.
+
+        On some systems (such as Fedora 11), changing that kernel setting
+        will cause an SELinux violation if you're running SELinux in enforcing
+        mode. If that's the case, you can either disable SELinux or run:
+
+        <screen>$ setsebool -P allow_unconfirmed_mmap_low 1</screen>
       </para>
     </note>
 
