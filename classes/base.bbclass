@@ -1045,6 +1045,8 @@ def is_legacy_staging(d):
         legacy = False
     elif stagefunc.strip() == "do_stage_native" and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
         legacy = False
+    elif bb.data.getVar('NATIVE_INSTALL_WORKS', d, 1) == "1":
+        legacy = False
     if bb.data.getVar('PSTAGE_BROKEN_DESTDIR', d, 1) == "1":
         legacy = True
     return legacy
@@ -1110,7 +1112,7 @@ python do_populate_staging () {
         bb.build.exec_func("packagedstaging_fastpath", d)
 
         lock = bb.utils.lockfile(lockfile)
-        os.system('cp -pPR %s/* /' % (sysrootdest))
+        os.system(bb.data.expand('cp -pPR ${SYSROOT_DESTDIR}${TMPDIR}/* ${TMPDIR}/', d))
         bb.utils.unlockfile(lock)
 }
 
