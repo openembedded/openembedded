@@ -1,19 +1,16 @@
 # todo: add mythweb
-# todo: fix and add mythmusic
 # todo: fix and add zoneminder
-#ALLOW_EMPTY_${PN} = "1"
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
 RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery \
-        mythgame mythmovies mythnews mythvideo mythweather"
+        mythgame mythmusic mythmovies mythnews mythvideo mythweather"
 PV = "0.21+0.22rc2"
-PR = "r0"
+PR = "r1"
 
 #DEFAULT_PREFERENCE = "-1"
 
 QMAKE_PROFILES = "mythplugins.pro"
 
 SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythplugins-0.22rc2.tar.bz2 \
-        file://MythBackend.php.patch;patch=1 \
         file://sysroot.patch;patch=1 \
         file://mythplugins_wo_qtopengl.diff;patch=1 \
         file://configure.patch;patch=1 \
@@ -24,15 +21,12 @@ S = "${WORKDIR}/mythplugins-0.22rc2"
 inherit qmake2 qt4x11
 
 # zoneminder needs sql files
-# mythmusic has a problem with cdparanoia and private; from the cdparanoia buglist
-# 'private' as a reserved keyword now being enforced by GCC 4.3, causes a build failure (patched in SVN).
 EXTRA_OECONF = " \
         --cross-prefix=${TARGET_PREFIX} \
         --sysroot=${STAGING_DIR_HOST} \
         --prefix=${prefix} \
         --with-libdir-name=${STAGING_LIBDIR} \
         --disable-opengl \
-        --disable-mythmusic \
         --disable-mythzoneminder \
         \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
@@ -54,6 +48,7 @@ PACKAGES =+ "mytharchive mytharchive-dbg \
         mythgallery mythgallery-dbg \
         mythgame mythgame-dbg \
         mythmovies mythmovies-dbg \
+        mythmusic mythmusic-dbg \
         mythnews mythnews-dbg \
         mythvideo mythvideo-dbg \
         mythweather mythweather-dbg"
@@ -118,6 +113,72 @@ FILES_mythmovies = "${libdir}/mythtv/plugins/libmythmovies.so \
         "
 FILES_mythmovies-dbg = "${bindir}/.debug/ignyte \
         ${libdir}/mythtv/plugins/.debug/libmythmovies.so"
+FILES_mythmusic = "${libdir}/mythtv/plugins/libmythmusic.so \
+        ${datadir}/mythtv/mythmusic/* \
+        ${datadir}/mythtv/i18n/mythmusic* \
+        ${datadir}/mythtv/music_settings.xml \
+        ${datadir}/mythtv/musicmenu.xml \
+        ${datadir}/mythtv/themes/default/selectionbar.png \
+        ${datadir}/mythtv/themes/default/mm_browser_back_reg.png \
+        ${datadir}/mythtv/themes/default/music-sel-bg.png \
+        ${datadir}/mythtv/themes/default/mm_rip_banner.png \
+        ${datadir}/mythtv/themes/default/mm_prev_on.png \
+        ${datadir}/mythtv/themes/default/next_button_off.png \
+        ${datadir}/mythtv/themes/default/mm_next_pushed.png \
+        ${datadir}/mythtv/themes/default/stop_button_pushed.png \
+        ${datadir}/mythtv/themes/default/mm_folder.png \
+        ${datadir}/mythtv/themes/default/mm_left_arrow.png \
+        ${datadir}/mythtv/themes/default/rew_button_on.png \
+        ${datadir}/mythtv/themes/default/next_button_pushed.png \
+        ${datadir}/mythtv/themes/default/mm_trans_background.png \
+        ${datadir}/mythtv/themes/default/prev_button_off.png \
+        ${datadir}/mythtv/themes/default/mm_browser_back_sel.png \
+        ${datadir}/mythtv/themes/default/ff_button_off.png \
+        ${datadir}/mythtv/themes/default/mm_volume_tick.png \
+        ${datadir}/mythtv/themes/default/stop_button_off.png \
+        ${datadir}/mythtv/themes/default/mm_progress-fg.png \
+        ${datadir}/mythtv/themes/default/mm_rip_background.png \
+        ${datadir}/mythtv/themes/default/rew_button_pushed.png \
+        ${datadir}/mythtv/themes/default/mm_next_off.png \
+        ${datadir}/mythtv/themes/default/mm_next_on.png \
+        ${datadir}/mythtv/themes/default/pause_button_pushed.png \
+        ${datadir}/mythtv/themes/default/mm_nothumb.png \
+        ${datadir}/mythtv/themes/default/stop_button_on.png \
+        ${datadir}/mythtv/themes/default/mm_blackhole_border.png \
+        ${datadir}/mythtv/themes/default/mm_prev_pushed.png \
+        ${datadir}/mythtv/themes/default/pause_button_on.png \
+        ${datadir}/mythtv/themes/default/play_button_pushed.png \
+        ${datadir}/mythtv/themes/default/mm_progress_foreground.png \
+        ${datadir}/mythtv/themes/default/pause_button_off.png \
+        ${datadir}/mythtv/themes/default/play_button_off.png \
+        ${datadir}/mythtv/themes/default/mm_progress_background.png \
+        ${datadir}/mythtv/themes/default/mm_up_arrow.png \
+        ${datadir}/mythtv/themes/default/prev_button_on.png \
+        ${datadir}/mythtv/themes/default/mm_volume_background.png \
+        ${datadir}/mythtv/themes/default/ff_button_pushed.png \
+        ${datadir}/mythtv/themes/default/mm_prev_off.png \
+        ${datadir}/mythtv/themes/default/miniplayer_background.png \
+        ${datadir}/mythtv/themes/default/mm_progress-bg.png \
+        ${datadir}/mythtv/themes/default/track_info_background.png \
+        ${datadir}/mythtv/themes/default/mm_waiting.png \
+        ${datadir}/mythtv/themes/default/play_button_on.png \
+        ${datadir}/mythtv/themes/default/prev_button_pushed.png \
+        ${datadir}/mythtv/themes/default/mm_right_arrow.png \
+        ${datadir}/mythtv/themes/default/ff_button_on.png \
+        ${datadir}/mythtv/themes/default/mm_down_arrow.png \
+        ${datadir}/mythtv/themes/default/next_button_on.png \
+        ${datadir}/mythtv/themes/default/mm_rating.png \
+        ${datadir}/mythtv/themes/default/rew_button_off.png \
+        ${datadir}/mythtv/themes/default/mm-titlelines.png \
+        ${datadir}/mythtv/themes/default-wide/music-sel-bg.png \
+        ${datadir}/mythtv/themes/default-wide/mm_blackhole_border.png \
+        ${datadir}/mythtv/themes/default-wide/mm_volume_background.png \
+        ${datadir}/mythtv/themes/default-wide/mm_waiting.png \
+        ${datadir}/mythtv/themes/default-wide/mm-titlelines.png \
+        ${datadir}/mythtv/themes/default/music-ui.xml \
+        ${datadir}/mythtv/themes/default-wide/music-ui.xml \
+        "
+FILES_mythmusic-dbg = "${libdir}/mythtv/plugins/.debug/libmythmusic.so"
 FILES_mythnews = "${libdir}/mythtv/plugins/libmythnews.so \
         ${datadir}/mythtv/mythnews/* \
         ${datadir}/mythtv/i18n/mythnews* \

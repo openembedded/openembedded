@@ -2,15 +2,19 @@ DESCRIPTION = "Gstreamer plugin for TI Davinci and OMAP processors"
 
 require ti-paths.inc
 
+inherit update-rc.d
 inherit autotools
 
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
+GST_TI_RC_SCRIPT_armv7a="gstreamer-ti-omap3530-rc.sh"
+
 # Fetch source from svn repo
-SRCREV = "407"
+SRCREV = "459"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
            file://gstreamer-ti-tracker-462.patch;patch=1 \
            file://gstreamer-ti-remove-mp3-decode-support-from-auddec1.patch;patch=1 \
+		   file://${GST_TI_RC_SCRIPT} \
 "
 
 SRC_URI_append_armv7a = " \
@@ -22,6 +26,8 @@ PR = "r37"
 PV = "svnr${SRCREV}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
+INITSCRIPT_NAME = "gstti-init"
+INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 
 XDC_TARGET  				= gnu.targets.arm.GCArmv5T
 XDC_PLATFORM_dm6446-evm 	= ti.platforms.evmDM6446
@@ -58,6 +64,9 @@ do_install_prepend () {
 		echo "modprobe sdmak" >> ${D}/${installdir}/gst/${PLATFORM}/loadmodules.sh
 	fi
 	chmod 0755 ${D}/${installdir}/gst -R
+
+	install -d ${D}${sysconfdir}/init.d/
+	install -m 0755  ${WORKDIR}/${GST_TI_RC_SCRIPT} ${D}${sysconfdir}/init.d/gstti-init
 }
 
 pkg_postinst_gstreamer-ti-demo-script () {
@@ -75,7 +84,7 @@ gst-plugins-bad-meta \
 gst-plugins-ugly-meta \
 ti-dmai-apps"
 
-FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
+FILES_${PN} += "${libdir}/gstreamer-0.10/*.so ${sysconfdir}"
 FILES_${PN}-dev += "${libdir}/gstreamer-0.10/*.a ${libdir}/gstreamer-0.10/*.la"
 FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
 

@@ -5,3 +5,4 @@
 TARGET_CC_ARCH = "-march=armv4 -mtune=strongarm"
 FEED_ARCH = "armv4"
 BASE_PACKAGE_ARCH = "armv4" 
+PACKAGE_EXTRA_ARCHS += "armv4"
