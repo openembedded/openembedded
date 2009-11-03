@@ -25,7 +25,7 @@ SRC_URI_append_boc01 = "\
            file://boc01.dts \
            file://boc01.dts.v1 \
            file://004-081205-usb.patch;patch=1 \
-           file://005-091008-isl12024.patch;patch=1 \
+           file://005-091103-isl12024.patch;patch=1 \
            file://007-091005-lm73.patch;patch=1 \
            file://011-091028-gpio.patch;patch=1 \
            file://012-091019-capsense.patch;patch=1 \
