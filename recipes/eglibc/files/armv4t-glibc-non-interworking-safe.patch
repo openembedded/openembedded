@@ -1,0 +1,25 @@
+This is not interworking safe on armv4t (although it is on v5).
+Patch by Phill Blundell
+--- a/ports/sysdeps/unix/sysv/linux/arm/sysdep.h	2009-09-16 13:58:18.000000000 +0100
++++ b/ports/sysdeps/unix/sysv/linux/arm/sysdep.h	2009-11-03 19:17:16.000000000 +0000
+@@ -129,6 +129,11 @@
+        DO_RET(lr);						\
+ 1:     .word C_SYMBOL_NAME(rtld_errno) - 0b - 8;
+ # else
++#if defined(__ARM_ARCH_4T__) && defined(__THUMB_INTERWORK__)
++#define POP_PC  ldr     lr, [sp], #4; bx lr
++#else
++#define POP_PC  ldr     pc, [sp], #4
++#endif
+ #  define SYSCALL_ERROR_HANDLER					\
+ __local_syscall_error:						\
+ 	str	lr, [sp, #-4]!;					\
+@@ -138,7 +143,7 @@
+ 	rsb	r1, r1, #0;					\
+ 	str	r1, [r0];					\
+ 	mvn	r0, #0;						\
+-	ldr	pc, [sp], #4;
++	POP_PC;
+ # endif
+ #else
+ # define SYSCALL_ERROR_HANDLER	/* Nothing here; code in sysdep.S is used.  */
