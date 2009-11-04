@@ -2,8 +2,7 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "Base X libs."
 DEPENDS += "bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
-            libxdmcp xf86bigfontproto kbproto inputproto xproto-native \
-            groff"
+            libxdmcp xf86bigfontproto kbproto inputproto xproto-native"
 PROVIDES = "virtual/libx11"
 PE = "1"
 PR = "r3"

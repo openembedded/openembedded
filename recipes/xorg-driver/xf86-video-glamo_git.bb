@@ -4,6 +4,7 @@ SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=m
 S = "${WORKDIR}/git"
 
 PV="1.0.0+gitr${SRCREV}"
+PE = "1"
 PR = "r3"
 
 RDEPENDS = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"

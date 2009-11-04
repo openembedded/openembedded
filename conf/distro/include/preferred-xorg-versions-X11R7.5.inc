@@ -32,7 +32,7 @@ PREFERRED_PROVIDER_xrandr ?= "xrandr"
 PREFERRED_PROVIDER_xserver ?= "xserver-xorg"
 PREFERRED_PROVIDER_virtual/xorg ?= "xserver-xorg"
 
-PREFERRED_VERSION_task-xorg ?= "X11R7.4"
+PREFERRED_VERSION_task-xorg ?= "X11R7.5"
 
 # app
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -232,10 +232,6 @@ PREFERRED_VERSION_libxkbfile ?= "1.0.6"
 PREFERRED_VERSION_libxkbfile-native ?= "1.0.6"
 PREFERRED_VERSION_xtrans ?= "1.2.5"
 PREFERRED_VERSION_xtrans-native ?= "1.2.5"
-
-# This should be here but is needed until bitbake can do
-# versioned depends
-PREFERRED_VERSION_mesa ?= "7.4"
 
 # proto
 PREFERRED_VERSION_applewmproto ?= "1.4.1"
