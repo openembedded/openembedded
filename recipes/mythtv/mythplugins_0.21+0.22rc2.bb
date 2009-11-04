@@ -1,9 +1,9 @@
 # todo: add mythweb
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
 RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery \
-        mythgame mythmusic mythmovies mythnews mythvideo mythweather"
+        mythgame mythmusic mythmovies mythnews mythvideo mythweather mythzoneminder"
 PV = "0.21+0.22rc2"
-PR = "r3"
+PR = "r4"
 
 QMAKE_PROFILES = "mythplugins.pro"
 
@@ -47,7 +47,8 @@ PACKAGES =+ "mytharchive mytharchive-dbg \
         mythmusic mythmusic-dbg \
         mythnews mythnews-dbg \
         mythvideo mythvideo-dbg \
-        mythweather mythweather-dbg"
+        mythweather mythweather-dbg \
+        mythzoneminder mythzoneminder-dbg"
 
 FILES_mytharchive = "${libdir}/mythtv/plugins/libmytharchive.so \
         ${bindir}/mytharchivehelper \
@@ -256,3 +257,16 @@ FILES_mythweather = "${libdir}/mythtv/plugins/libmythweather.so \
         ${datadir}/mythtv/weather_settings.xml \
         "
 FILES_mythweather-dbg = "${libdir}/mythtv/plugins/.debug/libmythweather.so"
+
+FILES_mythzoneminder = "${libdir}/mythtv/plugins/libmythzoneminder.so \
+        ${datadir}/mythtv/zonemindermenu.xml \
+        ${datadir}/mythtv/i18n/mythzoneminder* \
+        ${datadir}/mythtv/themes/default/zoneminder-ui.xml \
+        ${datadir}/mythtv/themes/default/mz_black.png \
+        ${datadir}/mythtv/themes/default/mz_browser_back_sel.png \
+        ${datadir}/mythtv/themes/default/mz_browser_back_reg.png \
+        ${datadir}/mythtv/themes/default/mz_function_popup.png \
+        ${datadir}/mythtv/themes/default/mz_testcard.png \
+        ${datadir}/mythtv/themes/default-wide/zoneminder-ui.xml \
+        "
+FILES_mythzoneminder-dbg = "${libdir}/mythtv/plugins/.debug/libmythzoneminder.so"

@@ -1,0 +1,11 @@
+--- /tmp/elf.h	2009-11-03 20:29:16.000000000 +0100
++++ git/arch/arm/include/asm/elf.h	2009-11-03 20:29:40.000000000 +0100
+@@ -50,6 +50,8 @@
+ #define R_ARM_ABS32	2
+ #define R_ARM_CALL	28
+ #define R_ARM_JUMP24	29
++#define R_ARM_MOVW_ABS_NC 43
++#define R_ARM_MOVT_ABS 44
+ 
+ /*
+  * These are used to set parameters in the core dumps.
