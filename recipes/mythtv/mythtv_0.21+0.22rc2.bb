@@ -1,8 +1,10 @@
 require mythtv.inc
 
-RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data glibc-gconv-utf-16"
+RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
+RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
+
 PV = "0.21+0.22rc2"
-PR = "r1"
+PR = "r2"
 REALPV = "0.22"
 
 DEFAULT_PREFERENCE = "-1"
