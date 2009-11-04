@@ -1,0 +1,4 @@
+if [ -f /usr/bin/chronyd -a -f /etc/chrony.conf ]; then
+  /usr/bin/chronyd
+  echo "Started chronyd"
+fi
