@@ -5,7 +5,7 @@ SRCREV = "9170"
 DEFAULT_PREFERENCE = "-1"
 FILESPATHPKG =. "eglibc-svn:"
 PV = "2.10+svnr${SRCREV}"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 EGLIBC_BRANCH="trunk"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
