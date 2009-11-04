@@ -2,7 +2,7 @@ DESCRIPTION = "Python bindings for DBus, a socket-based message bus system for i
 SECTION = "devel/python"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "MIT"
-DEPENDS = "expat dbus dbus-glib virtual/libintl python-pyrex-native"
+DEPENDS = "expat dbus dbus-glib virtual/libintl python-pyrex-native python-epydoc-native"
 PR = "ml2"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-python/dbus-python-${PV}.tar.gz"
