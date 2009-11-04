@@ -11,8 +11,6 @@ UBOOT_LOADADDRESS = "0x80008000"
 # Only build u-boot, xload is optional
 EXTRA_IMAGEDEPENDS += "u-boot"
 
-MACHINE_EXTRA_RRECOMMENDS = " omap3-sgx-modules "
-
 # TI DVSDK stuff:
 CODEC_INSTALL_DIR ?= "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo"
 CODEC             ?= "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combo"
