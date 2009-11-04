@@ -166,6 +166,8 @@ SRC_URI_append = " \
            file://arch-has-holes.diff;patch=1 \
            file://cache/l1cache-shift.patch;patch=1 \
            file://cache/copy-page-tweak.patch;patch=1 \
+           file://2.6.29_relocation_1.patch;patch=1 \
+           file://2.6.29_relocation_2.patch;patch=1 \
 "
 
 

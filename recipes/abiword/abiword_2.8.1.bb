@@ -1,6 +1,6 @@
 require abiword-2.5.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
 
@@ -17,7 +17,7 @@ EXTRA_OECONF = " --disable-static  \
 
 RCONFLICTS = "abiword-embedded"
 
-FILES_${PN} 			+= "${datadir}/mime-info ${datadir}/abiword-${SHRT_VER}/ui ${datadir}/abiword-${SHRT_VER}/xsl* ${datadir}/abiword-${SHRT_VER}/mime-info ${datadir}/abiword-${SHRT_VER}/Pr*.xml"
+FILES_${PN} 			+= "${libdir}/libabiword-*.so ${datadir}/mime-info ${datadir}/abiword-${SHRT_VER}/certs ${datadir}/abiword-${SHRT_VER}/ui ${datadir}/abiword-${SHRT_VER}/xsl* ${datadir}/abiword-${SHRT_VER}/mime-info ${datadir}/abiword-${SHRT_VER}/Pr*.xml"
 FILES_abiword-strings           += "${datadir}/abiword-${SHRT_VER}/strings"
 FILES_abiword-systemprofiles    += "${datadir}/abiword-${SHRT_VER}/system.profile*"
 

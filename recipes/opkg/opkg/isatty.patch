@@ -1,0 +1,64 @@
+Copyright (c) 2009 MontaVista Software, Inc.  All rights reserved.
+
+Don't prompt for user input from stdin if it's not a tty.  Fixes a minor
+memory leak while we're at it, as the code was strdup'ing the malloc'd string
+read from stdin without ever freeing the original.
+---
+ libopkg/libopkg.c      |   13 ++++++++-----
+ libopkg/opkg_install.c |    3 +++
+ libopkg/user.c         |   10 +++++++---
+ 3 files changed, 18 insertions(+), 8 deletions(-)
+
+--- trunk.orig/libopkg/libopkg.c
++++ trunk/libopkg/libopkg.c
+@@ -71,11 +71,14 @@ int default_opkg_status_callback(char *n
+ char* default_opkg_response_callback(char *question)
+ {
+      char *response = NULL;
+-     printf("%s",question);
+-     fflush(stdout);
+-     do {
+-	  response = (char *)file_read_line_alloc(stdin);
+-     } while (response == NULL);
++     if (isatty(fileno(stdin)))
++     {
++	  printf("%s",question);
++	  fflush(stdout);
++	  do {
++	       response = (char *)file_read_line_alloc(stdin);
++	  } while (response == NULL);
++     }
+      return response;
+ }
+ 
+--- trunk.orig/libopkg/user.c
++++ trunk/libopkg/user.c
+@@ -44,9 +44,13 @@ char *get_user_response(const char *form
+ 	  len = vsnprintf(question,question_len,format,ap);
+           va_end(ap);
+      } while (len > question_len);
+-     response = strdup(opkg_cb_response(question));
+-     str_chomp(response);
+-     str_tolower(response);
++
++     response = opkg_cb_response(question);
++     if (response)
++     {
++         str_chomp(response);
++         str_tolower(response);
++     }
+ 
+      return response;
+ }
+--- trunk.orig/libopkg/opkg_install.c
++++ trunk/libopkg/opkg_install.c
+@@ -1613,6 +1613,9 @@ static int user_prefers_old_conffile(con
+ 				       "          D     : show the differences between the versions (if diff is installed)\n"
+ 				       "     The default action is to keep your current version.\n"
+ 				       "    *** %s (Y/I/N/O/D) [default=N] ? ", file_name, short_file_name);
++	  if (!response)
++	       return 1;
++
+ 	  if (strcmp(response, "y") == 0
+ 	      || strcmp(response, "i") == 0
+ 	      || strcmp(response, "yes") == 0) {

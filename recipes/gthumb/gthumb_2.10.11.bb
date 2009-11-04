@@ -5,7 +5,9 @@ DEPENDS = "gtk+ libexif libgnome libgnomeui libgnomeprintui"
 
 inherit gnome
 
-FILES_${PN} += "${datadir}/gnome* ${datadir}/application-registry/*"
+PR = "r1"
+
+FILES_${PN} += "${libdir}/*.so ${datadir}/gnome* ${datadir}/application-registry/*"
 FILES_${PN}-dbg += "${libdir}/gthumb/modules/.debug"
 
 

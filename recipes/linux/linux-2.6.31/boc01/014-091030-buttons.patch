@@ -1,0 +1,244 @@
+Index: linux-2.6.31/drivers/input/misc/Kconfig
+===================================================================
+--- linux-2.6.31.orig/drivers/input/misc/Kconfig	2009-10-30 14:22:53.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Kconfig	2009-10-30 14:22:53.000000000 +0100
+@@ -270,6 +270,13 @@
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called dm355evm_keys.
+ 
++config INPUT_BOC_BTNS
++	tristate "BoC buttons interface"
++	select INPUT_POLLDEV
++	help
++	  To compile this driver as a module, choose M here:
++	  the module will be called boc-btns.
++
+ config INPUT_CAPSENSE_BTNS
+ 	tristate "CAPSENSE CY8C201xx buttons interface"
+ 	select INPUT_POLLDEV
+Index: linux-2.6.31/drivers/input/misc/Makefile
+===================================================================
+--- linux-2.6.31.orig/drivers/input/misc/Makefile	2009-10-30 14:22:53.000000000 +0100
++++ linux-2.6.31/drivers/input/misc/Makefile	2009-10-30 14:22:53.000000000 +0100
+@@ -26,4 +26,5 @@
+ obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
+ obj-$(CONFIG_INPUT_WISTRON_BTNS)	+= wistron_btns.o
+ obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
++obj-$(CONFIG_INPUT_BOC_BTNS)		+= boc-btns.o
+ obj-$(CONFIG_INPUT_CAPSENSE_BTNS)	+= capsense-btns.o
+Index: linux-2.6.31/drivers/input/misc/boc-btns.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.31/drivers/input/misc/boc-btns.c	2009-10-30 14:24:42.000000000 +0100
+@@ -0,0 +1,211 @@
++/*
++ * Buttons for BoC
++ *
++ * Copyright (C) 2009, Bollore telecom (www.bolloretelecom.eu).
++ *
++ * Jeremy Lainé <jeremy.laine@bolloretelecom.eu>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++#include <linux/init.h>
++#include <linux/gpio.h>
++#include <linux/input-polldev.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#define BUTTONS_POLL_INTERVAL	30	/* msec */
++
++struct input_button {
++	unsigned char gpio;
++	unsigned char active_low;
++};
++
++static struct input_button input_buttons[] = {
++	{ 220, 1 }, // WPS button (active low)
++	{ 231, 0 }, // reset button
++};
++
++static unsigned short input_keymap[] = {
++	KEY_F2,
++	KEY_F3,
++};
++
++struct buttons_dev {
++	struct input_polled_dev *poll_dev;
++	int state[ARRAY_SIZE(input_keymap)];
++};
++
++/*
++ * Buttons events handling
++ */
++
++static void handle_buttons(struct input_polled_dev *dev)
++{
++	int i, value;
++	struct buttons_dev *bdev = dev->private;
++	struct input_dev *input = dev->input;
++
++	// read GPIO
++	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
++	{
++		value = gpio_get_value(input_buttons[i].gpio) ? 1 : 0;
++		if (input_buttons[i].active_low)
++			value = !value;
++		if (value != bdev->state[i])
++		{
++			input_event(input, EV_MSC, MSC_SCAN, i);
++			input_report_key(input, input_keymap[i], value);
++			input_sync(input);
++			bdev->state[i] = value;
++		}
++	}
++}
++
++/*
++ * Device initialisation
++ */
++
++static int __devinit boc_buttons_probe(struct platform_device *pdev)
++{
++	struct buttons_dev *bdev;
++	struct input_polled_dev *poll_dev;
++	struct input_dev *input;
++	int error, i;
++
++	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
++	{
++		if (gpio_request(input_buttons[i].gpio, NULL) < 0)
++			return -ENODEV;
++	}
++
++	bdev = kzalloc(sizeof(struct buttons_dev), GFP_KERNEL);
++	if (!bdev)
++		return -ENOMEM;
++
++	poll_dev = input_allocate_polled_device();
++	if (!poll_dev) {
++		error = -ENOMEM;
++		goto out_allocated;
++	}
++
++	poll_dev->private = bdev;
++	poll_dev->poll = handle_buttons;
++	poll_dev->poll_interval = BUTTONS_POLL_INTERVAL;
++
++	input = poll_dev->input;
++	input->name = "BoC buttons";
++	input->phys = "boc/input0";
++	input->id.bustype = BUS_HOST;
++	input->dev.parent = &pdev->dev;
++
++	input->keycode = input_keymap;
++	input->keycodemax = ARRAY_SIZE(input_keymap);
++	input->keycodesize = sizeof(unsigned short);
++
++	input_set_capability(input, EV_MSC, MSC_SCAN);
++	set_bit(EV_KEY, input->evbit);
++	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
++	{
++		set_bit(input_keymap[i], input->keybit);
++		bdev->state[i] = 0;
++	}
++
++	bdev->poll_dev = poll_dev;
++	dev_set_drvdata(&pdev->dev, bdev);
++
++	error = input_register_polled_device(poll_dev);
++	if (error < 0)
++		goto out_polled;
++
++	return 0;
++
++out_polled:
++	input_free_polled_device(poll_dev);
++out_allocated:
++	kfree(bdev);
++	return error;
++}
++
++static int __devexit boc_buttons_remove(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct buttons_dev *bdev = dev_get_drvdata(dev);
++	int i;
++
++	input_unregister_polled_device(bdev->poll_dev);
++	input_free_polled_device(bdev->poll_dev);
++	kfree(bdev);
++	dev_set_drvdata(dev, NULL);
++
++	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
++		gpio_free(input_buttons[i].gpio);
++
++	return 0;
++}
++
++/*
++ * Driver initialisation
++ */
++
++static struct platform_driver boc_buttons_driver = {
++	.probe	= boc_buttons_probe,
++	.remove	= __devexit_p(boc_buttons_remove),
++	.driver	= {
++		.name	= "boc-btns",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static struct platform_device *boc_buttons_device;
++
++static int __init boc_buttons_init(void)
++{
++	int err;
++
++	err = platform_driver_register(&boc_buttons_driver);
++	if (err)
++		return err;
++
++	boc_buttons_device = platform_device_alloc("boc-btns", -1);
++	if (!boc_buttons_device) {
++		err = -ENOMEM;
++		goto err_unregister_driver;
++	}
++
++	err = platform_device_add(boc_buttons_device);
++	if (err)
++		goto err_free_device;
++
++	return 0;
++
++err_free_device:
++	platform_device_put(boc_buttons_device);
++err_unregister_driver:
++	platform_driver_unregister(&boc_buttons_driver);
++	return err;
++}
++
++static void __exit boc_buttons_exit(void)
++{
++	platform_device_unregister(boc_buttons_device);
++	platform_driver_unregister(&boc_buttons_driver);
++}
++
++MODULE_AUTHOR("Jeremy Laine <jeremy.laine@m4x.org>");
++MODULE_DESCRIPTION("BoC input driver");
++MODULE_LICENSE("GPL");
++module_init(boc_buttons_init);
++module_exit(boc_buttons_exit);
