@@ -661,7 +661,7 @@ python base_do_fetch() {
 		bb.note("No conf/checksums.ini found, not checking checksums")
 		return
 	except:
-		bb.note("Creating the CheckSum parser failed")
+		bb.note("Creating the CheckSum parser failed: %s:%s" % (sys.exc_info()[0], sys.exc_info()[1]))
 		return
 
 	pv = bb.data.getVar('PV', d, True)

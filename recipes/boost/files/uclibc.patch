@@ -1,0 +1,13 @@
+Index: boost-1.40.0.cmake2/libs/thread/src/pthread/thread.cpp
+===================================================================
+--- boost-1.40.0.cmake2.orig/libs/thread/src/pthread/thread.cpp	2009-11-03 21:33:21.392444361 +0100
++++ boost-1.40.0.cmake2/libs/thread/src/pthread/thread.cpp	2009-11-03 21:36:04.748684550 +0100
+@@ -390,7 +390,7 @@
+     {
+ #if defined(PTW32_VERSION) || defined(__hpux)
+         return pthread_num_processors_np();
+-#elif defined(__linux__)
++#elif defined(__linux__) && !defined(__UCLIBC__)
+         return get_nprocs();
+ #elif defined(__APPLE__) || defined(__FreeBSD__)
+         int count;

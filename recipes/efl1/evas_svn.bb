@@ -1,5 +1,8 @@
 require evas.inc
-PR = "r3"
+PR = "r4"
+
+EVAS_CPU_TWEAKS = ""
+EVAS_CPU_TWEAKS_armv7a = "--enable-cpu-neon"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
@@ -60,4 +63,19 @@ EXTRA_OECONF = "\
 		--enable-convert-32-rgb-rot-0	\
 		--enable-convert-32-rgb-rot-90	\
 		--disable-convert-32-rgb-rot-180 \
-		--enable-convert-32-rgb-rot-270"
+		--enable-convert-32-rgb-rot-270 \
+		${EVAS_CPU_TWEAKS}"
+
+
+# either sgx or 6410 atm
+GLES ?= "sgx"
+
+# This is a hack to get openGL|ES 2.x support enabled for people that have the SDK headers in staging.
+# We put this in the main recipe, since it will just not build the gl stuff when the headers are missing
+
+# If the above sentence confuse you: everything is built and configured as before if you don't have the SDK
+
+EXTRA_OECONF += "\
+        --enable-gl-x11 --enable-gl-flavor-gles --enable-gles-variety-${GLES} \
+"
+
