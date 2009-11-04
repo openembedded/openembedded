@@ -1,12 +1,9 @@
 # todo: add mythweb
-# todo: fix and add zoneminder
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
 RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery \
         mythgame mythmusic mythmovies mythnews mythvideo mythweather"
 PV = "0.21+0.22rc2"
-PR = "r2"
-
-#DEFAULT_PREFERENCE = "-1"
+PR = "r3"
 
 QMAKE_PROFILES = "mythplugins.pro"
 
@@ -21,14 +18,12 @@ S = "${WORKDIR}/mythplugins-0.22rc2"
 
 inherit qmake2 qt4x11
 
-# zoneminder needs sql files
 EXTRA_OECONF = " \
         --cross-prefix=${TARGET_PREFIX} \
         --sysroot=${STAGING_DIR_HOST} \
         --prefix=${prefix} \
         --with-libdir-name=${STAGING_LIBDIR} \
         --disable-opengl \
-        --disable-mythzoneminder \
         \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-cxxflags="${TARGET_CXXFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
@@ -76,7 +71,6 @@ FILES_mytharchive-dbg = "${bindir}/.debug/mytharchivehelper \
 FILES_mythbrowser = "${libdir}/mythtv/plugins/libmythbrowser.so \
         ${bindir}/mythbrowser \
         ${datadir}/mythtv/i18n/mythbrowser* \
-        ${datadir}/mythtv/themes/default/webpage.png \
         ${datadir}/mythtv/themes/default/browser-ui.xml \
         ${datadir}/mythtv/themes/default-wide/browser-ui.xml \
         "
@@ -89,7 +83,6 @@ FILES_mythflix = "${libdir}/mythtv/plugins/libmythflix.so \
         ${datadir}/mythtv/themes/default/netflix-ui.xml \
         ${datadir}/mythtv/themes/default-wide/netflix-ui.xml \
         ${datadir}/mythtv/themes/default/title_netflix.png \
-        ${datadir}/mythtv/themes/default-wide/title_netflix-bg.png \
         ${datadir}/mythtv/themes/default-wide/netflix-bg.png \
         "
 FILES_mythflix-dbg = "${libdir}/mythtv/plugins/.debug/libmythflix.so"
@@ -220,13 +213,6 @@ FILES_mythvideo = "${libdir}/mythtv/plugins/libmythvideo.so \
         ${datadir}/mythtv/themes/default-wide/dvd-ui.xml \
         ${datadir}/mythtv/themes/default/video-ui.xml \
         ${datadir}/mythtv/themes/default-wide/video-ui.xml \
-        ${datadir}/mythtv/themes/default-wide/mv-background.png \
-        ${datadir}/mythtv/themes/default-wide/mv-mselect.png \
-        ${datadir}/mythtv/themes/default-wide/mv-sel.png \
-        ${datadir}/mythtv/themes/default-wide/mv-wait-background.png \
-        ${datadir}/mythtv/themes/default-wide/mv-filerequest.png \
-        ${datadir}/mythtv/themes/default-wide/mv-other_background.png \
-        ${datadir}/mythtv/themes/default-wide/mv-selected.png \
         ${datadir}/mythtv/video_settings.xml \
         ${datadir}/mythtv/videomenu.xml \
         "
