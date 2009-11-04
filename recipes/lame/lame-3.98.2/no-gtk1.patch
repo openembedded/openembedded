@@ -1,0 +1,18 @@
+Index: lame-398-2/configure.in
+===================================================================
+--- lame-398-2.orig/configure.in
++++ lame-398-2/configure.in
+@@ -385,7 +385,12 @@ CONFIG_MATH_LIB="${USE_LIBM}"
+ 
+ dnl configure use of features
+ 
+-AM_PATH_GTK(1.2.0, HAVE_GTK="yes", HAVE_GTK="no")
++dnl AM_PATH_GTK(1.2.0, HAVE_GTK="yes", HAVE_GTK="no")
++HAVE_GTK="no"
++GTK_CFLAGS=""
++GTK_LIBS=""
++AC_SUBST(GTK_CFLAGS)
++AC_SUBST(GTK_LIBS)
+ 
+ dnl ElectricFence malloc debugging
+ AC_MSG_CHECKING(use of ElectricFence malloc debugging)
