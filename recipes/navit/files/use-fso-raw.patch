@@ -5,7 +5,7 @@
  fi
  
 -navit.real $*
-+fsoraw -r Display,GPS -- navit.real $*
++fsoraw -r CPU,GPS -- navit.real $*
  	
  
 -- 
