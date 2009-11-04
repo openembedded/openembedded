@@ -128,7 +128,7 @@ BJAM_OPTS    = '${BJAM_TOOLS} \
 do_configure_prepend() {
 	cp -f boost/config/platform/linux.hpp boost/config/platform/linux-gnueabi.hpp
 
-	echo 'using gcc : 4.3.1 : ${CXX} : compileflags -DBOOST_SP_USE_PTHREADS -I${includedir} linkflags -L${libdir} ;' >> ${S}/tools/build/v2/user-config.jam
+	echo "using gcc : $(${CXX} -dumpversion) : ${CXX} : compileflags -DBOOST_SP_USE_PTHREADS -I${includedir} linkflags -L${libdir} ;" >> ${S}/tools/build/v2/user-config.jam
 }
 
 do_compile() {

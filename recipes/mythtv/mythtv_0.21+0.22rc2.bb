@@ -1,11 +1,13 @@
 require mythtv.inc
 
 RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
+RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
+
 PV = "0.21+0.22rc2"
-PR = "r0"
+PR = "r2"
 REALPV = "0.22"
 
-#DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-1"
 ALLOW_EMPTY_${PN} = "1"
 
 QMAKE_PROFILES = "mythtv.pro"

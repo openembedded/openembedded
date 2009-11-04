@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -63,7 +63,8 @@ pkg_postinst_mysql-server () {
 	#Install the database
 	test -d /usr/bin || mkdir -p /usr/bin
 	test -e /usr/bin/hostname || ln -s /bin/hostname /usr/bin/hostname
-	chmod go+rw /var/run
+	mkdir /var/run/mysql
+	chown mysql.nogroup /var/run/mysql
 
 	mysql_install_db
 
@@ -74,6 +75,7 @@ pkg_postrm_mysql-server () {
 }
 
 PACKAGES = "${PN}-dbg ${PN} libmysqlclient libmysqlclient-dev mysql-client mysql-server ${PN}-leftovers"
+CONFFILES_mysql-server = "${sysconfdir}/my.cnf"
 
 FILES_${PN} = " "
 RDEPENDS_${PN} = "mysql-client mysql-server"

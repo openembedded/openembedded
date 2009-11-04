@@ -5,7 +5,7 @@ diff -Nurd boost_1_36_0.orig/boost/detail/atomic_count_sync.hpp boost_1_36_0.arm
  
      void operator++()
      {
-+#ifdef __ARM_ARCH_7A__
++#if defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_6J__)
 +       int v1, tmp;
 +       asm volatile ("1:                 \n\t"
 +                     "ldrex   %0, %1     \n\t"
@@ -22,7 +22,7 @@ diff -Nurd boost_1_36_0.orig/boost/detail/atomic_count_sync.hpp boost_1_36_0.arm
  
      long operator--()
      {
-+#ifdef __ARM_ARCH_7A__
++#if defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_6J__)
 +       int v1, tmp;
 +       asm volatile ("1:                 \n\t"
 +                     "ldrex   %0, %1     \n\t"
@@ -40,7 +40,7 @@ diff -Nurd boost_1_36_0.orig/boost/detail/atomic_count_sync.hpp boost_1_36_0.arm
  
      operator long() const
      {
-+#if __ARM_ARCH_7A__
++#if defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_6J__)
 +        return value_;
 +#else
          return __sync_fetch_and_add( &value_, 0 );
