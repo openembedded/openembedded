@@ -9,7 +9,6 @@ EGLIBC_BRANCH="eglibc-2_10"
 SRC_URI = "svn://svn.eglibc.org/branches;module=eglibc-2_10;rev=${SVN_REV};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
            file://armv4t-interworking.patch;patch=1 \
-           file://armv4t-glibc-non-interworking-safe.patch;patch=1 \
            file://IO-acquire-lock-fix.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
