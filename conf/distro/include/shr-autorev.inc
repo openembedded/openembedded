@@ -7,6 +7,7 @@
 # and bump the OEV value up as well.
 SRCREV_pn-linux-openmoko-shr-devel = "${AUTOREV}"
 SRCREV_pn-linux-openmoko-shr-drm-devel = "${AUTOREV}"
+SRCREV_pn-linux-openmoko-2.6.31 = "${AUTOREV}"
 
 # X11
 SRCREV_pn-xf86-video-glamo = "${AUTOREV}"
