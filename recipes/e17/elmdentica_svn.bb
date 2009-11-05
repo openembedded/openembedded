@@ -1,15 +1,15 @@
 DESCRIPTION = "A indenti.ca client for E"
-DEPENDS = "glib-2.0 gconf libxml2 curl elementary"
+DEPENDS = "glib-2.0 gconf libxml2 curl elementary sqlite3-native"
 LICENSE = "GPLv3+"
 SECTION = "e/apps"
 HOMEPAGE = "http://elmdentica.googlecode.com"
 AUTHOR = "seabra"
-PV = "0.6.0+svn${SRCREV}"
-PR = "r1"
+PV = "0.7.0+svn${SRCREV}"
+PR = "r0"
  
  
-SRC_URI = "svn://elmdentica.googlecode.com/svn/trunk;module=.;proto=http"
+SRC_URI = "svn://elmdentica.googlecode.com/svn;module=trunk;proto=http"
  
-S = "${WORKDIR}"
+S = "${WORKDIR}/trunk"
  
-inherit autotools
+inherit autotools pkgconfig
