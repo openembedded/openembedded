@@ -40,7 +40,7 @@ case "$1" in
 	mkdir -m 01770 /var/log/gdm
 	chown gdm:gdm /var/log/gdm
 
-	if [ -e /tmp/.ICE-unix \ ; then 
+	if [ -e /tmp/.ICE-unix ] ; then 
 		rm -rf /tmp/.ICE-unix
 	fi
 
