@@ -68,7 +68,7 @@ oe_jarinstall() {
 
   # Creates symlinks out of the remaining arguments.
   while [ "$#" -gt 0 ]; do
-    if [ -e $dir/$1 ]; then
+    if [ -e $dir/$1 -o -h $dir/$1 ]; then
       oewarn "file was in the way. removing:" $dir/$1
       rm $dir/$1
     fi
