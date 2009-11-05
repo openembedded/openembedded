@@ -14,7 +14,7 @@ do_stage() {
 }
 
 
-PACKAGES = "libgypsy libgypsy-dev libgypsy-dbg gypsy gypsy-dbg"
+PACKAGES += "libgypsy libgypsy-dev libgypsy-dbg"
 
 FILES_lib${PN} = "${libdir}/lib*.so*"
 FILES_lib${PN}-dev = "${includedir}/* ${libdir}/*.la ${libdir}/*.a ${libdir}/pkgconfig"
