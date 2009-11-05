@@ -1,5 +1,5 @@
 SECTION = "x11/network"
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "${PN}-dbg prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
@@ -14,7 +14,8 @@ RRECOMMENDS = "gpsd"
 SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-0.7.4pre1.tar.gz \
            file://gpsapi.patch;patch=1 \
       ${@['', 'file://wireless.patch;patch=1'][bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1) and bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1).split('.')[2] < '30']} \
-           file://fix-includes.patch;patch=1;pnum=0"
+           file://fix-includes.patch;patch=1;pnum=0 \
+           file://libgps-check.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-0.7.4pre1"
 
@@ -22,7 +23,6 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 		--x-libraries=${STAGING_LIBDIR} \
-		--with-libgps=${STAGING_EXECPREFIXDIR} \
 		--with-libpcap=${STAGING_EXECPREFIXDIR} \
 		--with-sqlite-includes=${STAGING_INCDIR} \
 		--with-sqlite-libs=${STAGING_LIBDIR} \
