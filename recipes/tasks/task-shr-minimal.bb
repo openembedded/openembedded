@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r13"
+PR = "r14"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -130,8 +130,6 @@ RDEPENDS_${PN}-apps = "\
   phoneuid \
   libphone-ui \
   libphone-ui-shr \
-  notifier \
-  libframeworkd-phonegui-efl \
   ffalarms \
   shr-settings \
   shr-theme \
