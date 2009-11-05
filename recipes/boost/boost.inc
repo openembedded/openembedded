@@ -77,6 +77,9 @@ FILES_${PN}-dev = "${includedir} ${libdir}/libboost_*.so ${libdir}/libboost_*.a"
 PACKAGES += "${PN}"
 RRECOMMENDS_${PN} += "${BOOSTLIBS}"
 
+# to avoid GNU_HASH QA errors added LDFLAGS to ARCH; a little bit dirty but at least it works
+TARGET_CC_ARCH += " ${LDFLAGS}" 
+
 # Oh yippee, a new build system, it's sooo cooool I could eat my own
 # foot.  inlining=on lets the compiler choose, I think.  At least this
 # stuff is documented...

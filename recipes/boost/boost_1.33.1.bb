@@ -1,5 +1,5 @@
 include boost.inc
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
