@@ -3,9 +3,11 @@ LICENSE = "GPL"
 
 DEPENDS = "libcanberra libxklavier grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl xrdb"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome update-rc.d
+
+RDEPENDS_${PN} += "grep"
 
 SRC_URI += " \
             file://cross-xdetection.diff;patch=1 \

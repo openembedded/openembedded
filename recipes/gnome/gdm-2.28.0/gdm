@@ -32,10 +32,21 @@ DEFAULT_DISPLAY_MANAGER_FILE=/etc/X11/default-display-manager
 case "$1" in
   start)
 	# make needed directories in volatile
+
+	if [ -e /var/log/gdm ] ; then 
+		rm -rf /var/log/gdm
+	fi
+
 	mkdir -m 01770 /var/log/gdm
 	chown gdm:gdm /var/log/gdm
+
+	if [ -e /tmp/.ICE-unix \ ; then 
+		rm -rf /tmp/.ICE-unix
+	fi
+
 	mkdir -m 01777 /tmp/.ICE-unix
 	chown root:root /tmp/.ICE-unix
+
         CONFIGURED_DAEMON=$(basename "$(cat $DEFAULT_DISPLAY_MANAGER_FILE 2> /dev/null)")
         if grep -wqs text /proc/cmdline; then
             echo "Not starting GNOME Display Manager (gdm); found 'text' in kernel commandline."
