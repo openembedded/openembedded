@@ -1,0 +1,136 @@
+From a96d158a5e2e8d0f6dc73e0d5ae90c6c02b78fef Mon Sep 17 00:00:00 2001
+From: Bob Copeland <me@bobcopeland.com>
+Date: Sun, 7 Jun 2009 16:31:23 -0400
+Subject: [PATCH] msm: add platform driver for sdio-based wifi
+
+Add a platform device driver for the msm_wifi platform device.  The
+driver initializes the gpios to power the device for subsequent
+probing by the SDIO bus.
+
+Signed-off-by: Bob Copeland <me@bobcopeland.com>
+---
+ arch/arm/mach-msm/Kconfig    |    5 ++
+ arch/arm/mach-msm/Makefile   |    2 +
+ arch/arm/mach-msm/msm_wifi.c |   84 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 91 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-msm/msm_wifi.c
+
+diff --git a/arch/arm/mach-msm/Kconfig b/arch/arm/mach-msm/Kconfig
+index 176cb73..74be8cd 100644
+--- a/arch/arm/mach-msm/Kconfig
++++ b/arch/arm/mach-msm/Kconfig
+@@ -78,6 +78,11 @@ config TROUT_BATTCHG
+ 	default y
+ 	bool "Trout battery / charger driver"
+ 
++config TROUT_WIFI
++	depends on ARCH_MSM
++	default m
++	tristate "Trout Wifi Gpio driver (rfkill)"
++
+ config HTC_PWRSINK
+ 	depends on MSM_SMD
+ 	default y
+diff --git a/arch/arm/mach-msm/Makefile b/arch/arm/mach-msm/Makefile
+index 9371f99..fb9954a 100644
+--- a/arch/arm/mach-msm/Makefile
++++ b/arch/arm/mach-msm/Makefile
+@@ -36,3 +36,5 @@ obj-$(CONFIG_TROUT_BATTCHG) += htc_battery.o
+ 
+ obj-$(CONFIG_HTC_PWRSINK) += htc_pwrsink.o
+ obj-$(CONFIG_HTC_HEADSET) += htc_headset.o
++
++obj-$(CONFIG_TROUT_WIFI) += msm_wifi.o
+diff --git a/arch/arm/mach-msm/msm_wifi.c b/arch/arm/mach-msm/msm_wifi.c
+new file mode 100644
+index 0000000..501ed45
+--- /dev/null
++++ b/arch/arm/mach-msm/msm_wifi.c
+@@ -0,0 +1,84 @@
++/*
++ * platform driver for msm_wifi device
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ * Copyright (C) 2008 Google Inc
++ */
++#include <linux/platform_device.h>
++#include <linux/wifi_tiwlan.h>
++
++static int wifi_probe(struct platform_device *pdev)
++{
++	struct wifi_platform_data *wifi_ctrl =
++		(struct wifi_platform_data *)(pdev->dev.platform_data);
++
++	printk(KERN_DEBUG "wifi probe start\n");
++
++	if (!wifi_ctrl)
++		return -ENODEV;
++
++	if (wifi_ctrl->set_power)
++		wifi_ctrl->set_power(1);	/* Power On */
++	if (wifi_ctrl->set_reset)
++		wifi_ctrl->set_reset(0);	/* Reset clear */
++	if (wifi_ctrl->set_carddetect)
++		wifi_ctrl->set_carddetect(1);	/* CardDetect (0->1) */
++
++	printk(KERN_DEBUG "wifi probe done\n");
++	return 0;
++}
++
++static int wifi_remove(struct platform_device *pdev)
++{
++	struct wifi_platform_data *wifi_ctrl =
++		(struct wifi_platform_data *)(pdev->dev.platform_data);
++
++	printk(KERN_DEBUG "wifi remove start\n");
++	if (!wifi_ctrl)
++		return -ENODEV;
++
++	if (wifi_ctrl->set_carddetect)
++		wifi_ctrl->set_carddetect(0);	/* CardDetect (1->0) */
++	if (wifi_ctrl->set_reset)
++		wifi_ctrl->set_reset(1);	/* Reset active */
++	if (wifi_ctrl->set_power)
++		wifi_ctrl->set_power(0);	/* Power Off */
++
++	printk(KERN_DEBUG "wifi remove end\n");
++	return 0;
++}
++
++static struct platform_driver wifi_device = {
++	.probe		= wifi_probe,
++	.remove		= wifi_remove,
++	.driver		= {
++		.name   = "msm_wifi",
++	},
++};
++
++static int __init msm_wifi_sdio_init(void)
++{
++	return platform_driver_register(&wifi_device);
++}
++
++static void __exit msm_wifi_sdio_exit(void)
++{
++	platform_driver_unregister(&wifi_device);
++}
++
++module_init(msm_wifi_sdio_init);
++module_exit(msm_wifi_sdio_exit);
++MODULE_LICENSE("GPL");
+-- 
+1.6.2.5
+
