@@ -53,9 +53,9 @@ fakeroot rootfs_ipk_do_rootfs () {
 			done
 		fi
 	fi
-	if [ ! -z "${PACKAGE_INSTALL}" ]; then
-		opkg-cl ${IPKG_ARGS} install ${PACKAGE_INSTALL}
-	fi
+	for i in ${PACKAGE_INSTALL}; do
+		opkg-cl ${IPKG_ARGS} install $i
+	done
 
 	export D=${IMAGE_ROOTFS}
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
