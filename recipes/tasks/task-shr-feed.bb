@@ -73,7 +73,7 @@ RDEPENDS_${PN} += "\
 		omnewrotate \
 		xchat \
 		python-pyid3lib \
-		libframeworkd-phonegui-efl2 \
+#		libframeworkd-phonegui-efl2 \
 		intone \
 		vim \
 		vpnc \
@@ -156,7 +156,7 @@ RDEPENDS_${PN} += "\
 		bubble-keyboard \
 		intuition \
 		gridpad \
-		essential-dialer \
+#		essential-dialer \
 		font-adobe-100dpi \
 		font-adobe-75dpi \
 		font-adobe-utopia-100dpi \
@@ -192,7 +192,7 @@ RDEPENDS_${PN} += "\
 		font-sun-misc \
 		font-winitzki-cyrillic \
 #		font-xfree86-type1 \
-		msn-pecan \
+#		msn-pecan \
 		erminig \
 		qwo \
 		fso-apm \
