@@ -7,7 +7,7 @@ DEPENDS += " ${@base_contains("MACHINE_FEATURES", "apm", "apmd", "",d)}"
 RDEPENDS_${PN} = "matchbox-panel-2-icon-theme"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 PV = "2.0+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools_stage pkgconfig
 
@@ -18,6 +18,8 @@ SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
 	   file://themeable-icons.patch;patch=1;pnum=0 \
 "
 S = "${WORKDIR}/${PN}"
+
+TARGET_CFLAGS += "-Wno-error"
 
 EXTRA_OECONF = "--disable-static --program-transform-name='s/$/-2/'"
 EXTRA_OECONF += " ${@base_contains("MACHINE_FEATURES", "acpi", "--with-battery=acpi", "",d)}"
