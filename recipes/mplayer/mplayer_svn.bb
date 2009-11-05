@@ -36,7 +36,7 @@ RREPLACES_${PN} = "mplayer-atty"
 PV = "0.0+1.0rc2+svnr${SRCREV}"
 PR = "r14"
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_armv7a = "1"
+DEFAULT_PREFERENCE_angstrom = "1"
 
 PARALLEL_MAKE = ""
 
