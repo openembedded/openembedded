@@ -21,13 +21,11 @@ RDEPENDS_${PN} += "\
 		epdfview \
 		pyphonelog \
 		pingus \
-		mokomaze \
 		openmoocow \
 		dosbox \
 		vagalume \
 		python-pygame \
 		mokoko \
-#		devmem2 \
 		exhibit \
 		edje-viewer \
 		obexpush \
