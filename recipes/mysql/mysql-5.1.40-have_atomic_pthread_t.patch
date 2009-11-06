@@ -1,0 +1,37 @@
+diff -Naur mysql-5.1.40-old/storage/innodb_plugin/plug.in mysql-5.1.40-new/storage/innodb_plugin/plug.in
+--- mysql-5.1.40-old/storage/innodb_plugin/plug.in	2009-10-06 10:50:23.000000000 -0700
++++ mysql-5.1.40-new/storage/innodb_plugin/plug.in	2009-10-21 16:52:45.000000000 -0700
+@@ -63,8 +63,9 @@
+ 		;;
+   esac
+   AC_SUBST(INNODB_DYNAMIC_CFLAGS)
+-  AC_MSG_CHECKING(whether pthread_t can be used by GCC atomic builtins)
+-  AC_TRY_RUN(
++  AC_CACHE_CHECK([whether pthread_t can be used by GCC atomic builtins],
++                 [ac_cv_have_decl_HAVE_ATOMIC_PTHREAD_T],
++  [AC_TRY_RUN(
+     [
+       #include <pthread.h>
+       #include <string.h>
+@@ -84,14 +85,18 @@
+       }
+     ],
+     [
+-      AC_DEFINE([HAVE_ATOMIC_PTHREAD_T], [1],
+-                [pthread_t can be used by GCC atomic builtins])
+       AC_MSG_RESULT(yes)
++      ac_cv_have_decl_HAVE_ATOMIC_PTHREAD_T=yes
+     ],
+     [
+       AC_MSG_RESULT(no)
++      ac_cv_have_decl_HAVE_ATOMIC_PTHREAD_T=no
+     ]
+-    )
++    )])
++    if test "x$ac_cv_have_decl_HAVE_ATOMIC_PTHREAD"= "xyes" ; then
++      AC_DEFINE([HAVE_ATOMIC_PTHREAD_T], [1],
++                [pthread_t can be used by GCC atomic builtins])
++    fi
+ 
+   # Try using solaris atomics on SunOS if GCC atomics are not available
+   AC_CHECK_DECLS(
