@@ -1,10 +1,10 @@
 require mythtv.inc
 
-RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
+RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
 PV = "0.21+0.22rc2"
-PR = "r2"
+PR = "r3"
 REALPV = "0.22"
 
 DEFAULT_PREFERENCE = "-1"
@@ -51,6 +51,12 @@ do_configure_prepend() {
                         --without-bindings=perl,python \
                         ${EXTRA_OECONF}
 }
+do_install() {
+	oe_runmake INSTALL_ROOT=${D} install
+        install -d ${D}${datadir}/mythtv
+        install -d ${D}${datadir}/mythtv/sql
+        install -m 0644 ${S}/database/mc.sql ${D}${datadir}/mythtv/sql
+}
 do_stage() {
         install -d ${STAGING_INCDIR}
         install -d ${STAGING_INCDIR}/${PN}
@@ -84,7 +90,7 @@ do_stage() {
         chmod -R ugo+r ${STAGING_LIBDIR}
 }
 
-PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
+PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database"
 PACKAGES_DYNAMIC = "mythtv-theme-*"
 
 FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
@@ -92,7 +98,7 @@ FILES_mythtv-backend = "${bindir}/mythbackend ${bindir}/mythcommflag ${bindir}/m
 FILES_mythtv-frontend = "${bindir}/mythfrontend ${datadir}/mythtv/i18n/mythfrontend_* ${datadir}/mythtv/*.ttf"
 FILES_mythtv-bin = "${bindir}/*"
 FILES_mythtv-filters = "${libdir}/mythtv/filters/*"
-FILES_mythtv-data = "${datadir}"
+FILES_mythtv-database = "${datadir}/mythtv/sql/"
 
 mythlibs = "mythdb mythavutil mythavcodec mythavformat mythswscale mythhdhomerun myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 
