@@ -239,4 +239,5 @@ RDEPENDS_${PN} += "\
 		advancedcaching \
 		glamo-dri-tests \
 		reiserfsprogs \
+		blipomoko \
 "
