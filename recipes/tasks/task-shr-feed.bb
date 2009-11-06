@@ -238,4 +238,5 @@ RDEPENDS_${PN} += "\
 		bt-gps \
 		advancedcaching \
 		glamo-dri-tests \
+		reiserfsprogs \
 "
