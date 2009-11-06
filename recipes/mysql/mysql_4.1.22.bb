@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -63,8 +63,8 @@ pkg_postinst_mysql-server () {
 	#Install the database
 	test -d /usr/bin || mkdir -p /usr/bin
 	test -e /usr/bin/hostname || ln -s /bin/hostname /usr/bin/hostname
-	mkdir /var/run/mysql
-	chown mysql.nogroup /var/run/mysql
+	mkdir /var/lib/mysql
+	chown mysql.nogroup /var/lib/mysql
 
 	mysql_install_db
 

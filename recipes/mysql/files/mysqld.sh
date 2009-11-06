@@ -7,13 +7,17 @@ case "$1" in
 		/usr/bin/mysqld_safe &
 		;;
 	stop)
-		if test -f /var/run/mysqld.pid ; then
-			PID=`cat /var/run/mysqld.pid`
+		if test -f /var/lib/mysql/mysqld.pid ; then
+			PID=`cat /var/lib/mysql/mysqld.pid`
 			kill $PID
 		fi
 		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
 	*)
-		echo "Usage: /etc/init.d/mysqld {start|stop}"
+		echo "Usage: /etc/init.d/mysqld {start|stop|restart}"
 		;;
 esac
 
