@@ -2,9 +2,12 @@ DESCRIPTION = "Robust and configurable e-mail client for GNOME"
 HOMEPAGE = "http://pawsa.fedorapeople.org/balsa/"
 SECTION = "x11/network"
 LICENSE = "GPL"
-SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2"
+SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2 \
+	   file://gnome-icon-theme.patch;patch=1"
+PR = "r1"
 
-DEPENDS = "glib-2.0 libgmime-2.4 gtk+ intltool-native libesmtp libxml-parser-perl-native"
+DEPENDS = "glib-2.0 libgmime-2.4 gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native"
+RDEPENDS_${PN} = "gnome-icon-theme"
 # FIXME: It is possible to build several variants of balsa: lite (SSL, gqlite/GPE, maybe HTML),
 # standard (GNOME, spell checking, HTML), full (Kerberos, LDAP, PGP, Rubrica, X-Face)
 

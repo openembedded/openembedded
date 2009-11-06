@@ -1,6 +1,9 @@
+require squashfs-tools_${PV}.bb
+
 inherit native
 
-require squashfs-tools_${PV}.bb
+DEPENDS = "zlib-native lzma-native "
+
 PR = "${INC_PR}.1"
 
 PACKAGES = ""
