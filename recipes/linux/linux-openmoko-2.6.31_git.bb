@@ -12,13 +12,13 @@ PR = "r0"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-2.6.31 \
+  file://gta02_defconfig \
 "
 S = "${WORKDIR}/git"
 
-CONFIG_NAME_om-gta01 = "gta02_defconfig"
-CONFIG_NAME_om-gta02 = "gta02_defconfig"
-CONFIG_NAME_om-gta03 = "gta03_defconfig"
+CONFIG_NAME_om-gta01 = "./arch/arm/configs/gta02_defconfig"
+CONFIG_NAME_om-gta02 = "${WORKDIR}/gta02_defconfig"
 
 do_configure_prepend() { 
-	install -m 644 ./arch/arm/configs/${CONFIG_NAME} ${WORKDIR}/defconfig-oe
+	install -m 644 ${CONFIG_NAME} ${WORKDIR}/defconfig-oe
 }
