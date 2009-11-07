@@ -2,7 +2,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 HOMEPAGE = "http://www.xmltwig.com/"
 DEPENDS += "libxml-parser-perl"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://xmltwig.com/xmltwig/XML-Twig-${PV}.tar.gz"
 
