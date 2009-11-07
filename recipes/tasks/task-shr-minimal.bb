@@ -113,7 +113,7 @@ RDEPENDS_${PN}-x = "\
   glibc-utils \
   glibc-charmap-utf-8 \
   e-wm-config-illume-shr \
-  e-wm-theme-illume-shr \
+  shr-theme-gry \
   etk-theme-shr \
   ${@get_rdepends(bb, d)} \
   libx11-locale \

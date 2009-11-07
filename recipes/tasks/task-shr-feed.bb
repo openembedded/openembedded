@@ -50,11 +50,13 @@ RDEPENDS_${PN} += "\
 		shr-today \
                 shr-theme-neo \
 		shr-theme-niebiee \
+		shr-theme-sixteen \
+# gry should be in image already
+#		shr-theme-gry \
 		shr-splash \
 		shr-splash-theme-simple \
 		shr-splash-theme-dontpanic \
 		shr-splash-theme-handy \
-		shr-splash-theme-niebiee \
 		openbmap-logger \
 		pisi \
 		ffalarms \
@@ -203,10 +205,6 @@ RDEPENDS_${PN} += "\
 		omgps \
 		shr-launcher \
 		e-tasks \
-		elementary-theme-sixteen \
-		e-wm-theme-illume-sixteen \
-		e-wm-theme-illume-niebiee \
-		elementary-theme-niebiee \
 		elmdentica \
 		shr-installer \
 		eject \
