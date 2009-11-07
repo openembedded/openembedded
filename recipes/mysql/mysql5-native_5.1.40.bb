@@ -1,4 +1,4 @@
-require mysql5_${PV}.bb
+require mysql5_${PV}.inc
 inherit native
 PR ="r0"
 
