@@ -85,6 +85,14 @@ shr_rootfs_postprocess() {
     #echo 'widget_class "*TreeView*" style "treeview"' >> ./etc/gtk-2.0/gtkrc.default
     update-alternatives --install /etc/gtk-2.0/gtkrc gtk-theme /etc/gtk-2.0/gtkrc.default 1
 
+    # elementary theme foo
+    ELM_PROFILE_SCR=./etc/profile.d/elementary.sh
+    echo 'export ELM_ENGINE=x11-16' > ${ELM_PROFILE_SCR}
+    echo 'export ELM_THEME=gry' >> ${ELM_PROFILE_SCR}
+    echo 'export ELM_SCALE=2' >> ${ELM_PROFILE_SCR}
+    echo 'export ELM_FINGER_SIZE=70' >> ${ELM_PROFILE_SCR}
+    chmod +x ${ELM_PROFILE_SCR}
+
     echo '' >> ./etc/ld.so.conf
     # fix strange iconv/gconf bug
     ln -s libc.so.6 ./lib/libc.so
