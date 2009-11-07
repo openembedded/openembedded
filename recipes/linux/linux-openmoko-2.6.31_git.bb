@@ -12,6 +12,7 @@ PR = "r0"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-2.6.31 \
+  file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch;patch=1 \
   file://gta02_defconfig \
 "
 S = "${WORKDIR}/git"
