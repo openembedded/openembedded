@@ -1,3 +1,3 @@
-inherit qt4x11
+inherit qt4e
 
 require arora.inc
