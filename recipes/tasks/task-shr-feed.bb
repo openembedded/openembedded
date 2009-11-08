@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r24"
+PR = "r25"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -238,4 +238,5 @@ RDEPENDS_${PN} += "\
 		glamo-dri-tests \
 		reiserfsprogs \
 		blipomoko \
+		imagemagick \
 "
