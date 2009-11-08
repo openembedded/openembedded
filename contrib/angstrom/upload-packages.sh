@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 # MIT Licensed
 # Initial version by Graeme 'XorA' Gregory, Further changes by Koen Kooi
 
@@ -32,7 +32,7 @@ cat files-remote files-local | sort | uniq -u >files-uniq
 cat files-uniq files-local | sort | uniq -d > files-trans
 
 # Remove SGX files
-rm -f upload-queue/bigbuck* upload-queue/*libgles* upload-queue/*3.00.*
+rm -f upload-queue/bigbuck* upload-queue/*libgles* upload-queue/*kdrive*sgx* upload-queue/*3.00.*
 
 # Copy over non-duplicate files
 echo "Starting rsync..."

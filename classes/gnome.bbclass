@@ -24,6 +24,7 @@ gnome_stage_includes() {
 
 do_install_append() {
 	rm -rf ${D}${localstatedir}/lib/scrollkeeper/*
+	rm -rf ${D}${localstatedir}/scrollkeeper/*
 	rm -f ${D}${datadir}/applications/*.cache
 }
 

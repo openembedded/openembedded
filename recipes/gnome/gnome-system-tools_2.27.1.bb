@@ -4,6 +4,8 @@ LICENSE = "GPL"
 DEPENDS = "nautilus gnome-common glib-2.0 gtk+ gconf liboobs system-tools-backends gnome-control-center"
 inherit gnome pkgconfig
 
+PR = "r1"
+
 EXTRA_OECONF = "--disable-scrollkeeper \
                "
 LDFLAGS += "-lgthread-2.0"
