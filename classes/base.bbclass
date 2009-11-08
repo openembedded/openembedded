@@ -529,21 +529,11 @@ python do_cleanall() {
 do_cleanall[recrdeptask] = "do_clean"
 addtask cleanall after do_clean
 
-#Uncomment this for bitbake 1.8.12
-#addtask rebuild after do_${BB_DEFAULT_TASK}
-addtask rebuild
+addtask rebuild after do_${BB_DEFAULT_TASK}
 do_rebuild[dirs] = "${TOPDIR}"
 do_rebuild[nostamp] = "1"
 python base_do_rebuild() {
 	"""rebuild a package"""
-	from bb import __version__
-	try:
-		from distutils.version import LooseVersion
-	except ImportError:
-		def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
-	if (LooseVersion(__version__) < LooseVersion('1.8.11')):
-		bb.build.exec_func('do_clean', d)
-		bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
 }
 
 addtask mrproper
@@ -1235,18 +1225,7 @@ def base_after_parse(d):
 
 python () {
     import bb
-    from bb import __version__
     base_after_parse(d)
-
-    # Remove this for bitbake 1.8.12
-    try:
-        from distutils.version import LooseVersion
-    except ImportError:
-        def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
-    if (LooseVersion(__version__) >= LooseVersion('1.8.11')):
-        deps = bb.data.getVarFlag('do_rebuild', 'deps', d) or []
-        deps.append('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1))
-        bb.data.setVarFlag('do_rebuild', 'deps', deps, d)
 }
 
 def check_app_exists(app, d):
