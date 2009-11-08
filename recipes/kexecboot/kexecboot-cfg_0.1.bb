@@ -2,8 +2,10 @@ LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "Configuration file for kexecboot"
 
-PR = "r5"
+PR = "r6"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+SRC_URI = "file://icon.xpm"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd rw"
@@ -29,18 +31,20 @@ CMDLINE += ${CMDLINE_DEBUG}
 
 FILES_${PN} += "/boot/*"
 
+do_configure_prepend () {
+    install -m 0644 ${WORKDIR}/icon.xpm ${S}
+}
+
 do_install_prepend () {
         echo "DEFAULT=${DISTRO}" > ${S}/boot.cfg
         echo "LABEL=${DISTRO}" >> ${S}/boot.cfg
         echo "KERNEL=/boot/${KERNEL_IMAGETYPE}" >> ${S}/boot.cfg
         echo "APPEND=${CMDLINE}" >> ${S}/boot.cfg
-        echo "#ICON=/boot/my_icon.xpm" >> ${S}/boot.cfg
+        echo "ICON=/boot/icon.xpm" >> ${S}/boot.cfg
 }
 
 do_install () {
 	install -d ${D}/boot
 	install -m 0644 boot.cfg ${D}/boot/boot.cfg
-
-	# old kexecboot versions < 0.52 were needing '/boot/kernel-cmdline'
-	# echo "${CMDLINE}"> ${D}/boot/kernel-cmdline
+	install -m 0644 icon.xpm ${D}/boot/icon.xpm
 }
