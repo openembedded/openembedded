@@ -4,6 +4,8 @@ LICENSE = "GPL"
 DEPENDS = "gnome-common glib-2.0 gtk+ gconf vte"
 inherit gnome pkgconfig
 
+PR = "r1"
+
 EXTRA_OECONF = "--disable-scrollkeeper"
 
 do_configure_prepend () {
