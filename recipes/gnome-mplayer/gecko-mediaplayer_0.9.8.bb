@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "firefox gtk+ gconf dbus-glib"
 RDEPENDS = "firefox gnome-mplayer"
 
-PR = "r4"
+PR = "r5"
 
 inherit autotools
 
@@ -14,7 +14,7 @@ SRC_URI = "http://gecko-mediaplayer.googlecode.com/files/${P}.tar.gz \
 "
 
 # Yes, this needs to match the firefox version you are building *exactly*
-MOZILLA_HOME = "firefox-3.5.4"
+MOZILLA_HOME = "firefox-3.5.5"
 
 do_install_append() {
 	install -d ${D}${libdir}/${MOZILLA_HOME}/extensions/
