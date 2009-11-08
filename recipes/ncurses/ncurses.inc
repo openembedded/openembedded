@@ -11,6 +11,7 @@ PARALLEL_MAKE=""
 FILESPATH = "${FILE_DIRNAME}/local:${FILE_DIRNAME}/ncurses-${PV}-${PR}:${FILE_DIRNAME}/ncurses-${PV}:${FILE_DIRNAME}/ncurses:${FILE_DIRNAME}"
 
 EXTRA_OECONF = "\
+  --enable-static \
   --with-shared \
   --with-libtool \
   --without-profile \

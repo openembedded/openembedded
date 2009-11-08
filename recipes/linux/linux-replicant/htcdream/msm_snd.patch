@@ -1,0 +1,3160 @@
+commit 92945ccd0921e940fc2675dc394141db0f7c1386
+Author: Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
+Date:   Sat Oct 17 23:37:16 2009 +0200
+
+    Sound: MSM soc : imported alsa for the MSM from codeaurora
+    
+    I had to make two little change to make it compile:
+    snd_ep = msm_rpc_connect_compatible(snd_rpc_ids.prog,
+    became:
+    snd_ep = msm_rpc_connect(snd_rpc_ids.prog,
+    and I also changed snd_rpc_ids.vers(with ifdefs)
+    to a known and working magick number:
+    
+    it still has serious runtime problems such as:
+    *can produce kernel oops under theses conditions:
+    start alsamixer and if the second bar is on 0 or 4 it can play music with aplay
+    increase the routing alsamixer bar to the max
+    decrease the routing bar to 4 or less
+    then It may have a null pointer problem
+    That bug could be because it tries to route to route to speakers and handset
+    at the same time(SND_DEVICE_HEADSET_AND_SPEAKER in android)
+    that is to say it could be the same bug than here:
+    http://gitorious.org/replicant/msm7k/commit/370d37a088368ca8cc478e76c928a1ce6589495e
+    but I need time to verify that
+    *can pannick if you send things to /dev/dsp when the oss emulation is activated
+    *only aplay works(mplayer,gstreamer don't work)
+    for mplayer an ioctl didn't return...so it get stuck before playing
+    I traced it until
+    rc = wait_event_interruptible(the_locks.read_wait,(prtd->in_count > 0)|| prtd->stopped);
+    in msm-pcm.c
+
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index ef025c6..4b1a48f 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -32,6 +32,7 @@ source "sound/soc/omap/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/s3c24xx/Kconfig"
+ source "sound/soc/sh/Kconfig"
++source "sound/soc/msm/Kconfig"
+ 
+ # Supported codecs
+ source "sound/soc/codecs/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 86a9b1f..ea754e5 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -11,3 +11,4 @@ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= pxa/
+ obj-$(CONFIG_SND_SOC)	+= s3c24xx/
+ obj-$(CONFIG_SND_SOC)	+= sh/
++obj-$(CONFIG_SND_SOC)	+= msm/
+diff --git a/sound/soc/msm/Kconfig b/sound/soc/msm/Kconfig
+new file mode 100644
+index 0000000..7df1a40
+--- /dev/null
++++ b/sound/soc/msm/Kconfig
+@@ -0,0 +1,37 @@
++menu "MSM SoC Audio support"
++
++config SND_MSM_SOC
++	tristate "SoC Audio for the MSM series chips"
++	depends on ARCH_MSM_ARM11 && SND_SOC
++	select MSM_ADSP
++	help
++	  To add support for ALSA PCM driver for MSM board.
++
++config SND_QSD_SOC
++	tristate "SoC Audio for the QSD8x50 chip"
++	depends on ARCH_QSD8X50 && SND_SOC && QSD_AUDIO
++	default y
++	help
++	  To add support for ALSA PCM driver for QSD8k board.
++
++
++config SND_MSM_DAI_SOC
++	tristate "SoC CPU/CODEC DAI for the MSM chip"
++	depends on SND_MSM_SOC || SND_QSD_SOC
++	help
++	 To add support for ALSA PCM driver for MSM board.
++
++config SND_MSM_SOC_MSM7K
++        tristate "SoC Audio support for MSM7K"
++        depends on SND_MSM_SOC
++        help
++	 To add support for SoC audio on msm7k for msm72x1 or msm7x27
++
++config SND_QSD_SOC_QSD8K
++	tristate "SoC Audio support for QSD8K"
++	depends on SND_QSD_SOC
++	help
++	 To add support for SoC audio on qsd8k.
++
++
++endmenu
+diff --git a/sound/soc/msm/Makefile b/sound/soc/msm/Makefile
+new file mode 100644
+index 0000000..fbfce6d
+--- /dev/null
++++ b/sound/soc/msm/Makefile
+@@ -0,0 +1,17 @@
++# MSM CPU/CODEC DAI Support
++snd-soc-msm-dai-objs := msm-dai.o
++obj-$(CONFIG_SND_MSM_DAI_SOC) += snd-soc-msm-dai.o
++
++# MSM Platform Support
++snd-soc-msm-objs := msm-pcm.o msm7k-pcm.o
++obj-$(CONFIG_SND_MSM_SOC) += snd-soc-msm.o
++
++snd-soc-qsd-objs := qsd8k-pcm.o
++obj-$(CONFIG_SND_QSD_SOC) += snd-soc-qsd.o
++
++# MSM Machine Support
++snd-soc-msm7k-objs := msm7201.o
++obj-$(CONFIG_SND_MSM_SOC_MSM7K) += snd-soc-msm7k.o
++
++snd-soc-qsd8k-objs := qsd8k.o
++obj-$(CONFIG_SND_QSD_SOC_QSD8K) += snd-soc-qsd8k.o
+diff --git a/sound/soc/msm/msm-dai.c b/sound/soc/msm/msm-dai.c
+new file mode 100644
+index 0000000..564e7fe
+--- /dev/null
++++ b/sound/soc/msm/msm-dai.c
+@@ -0,0 +1,143 @@
++/* sound/soc/msm/msm-dai.c
++ *
++ * Copyright (C) 2008 Google, Inc.
++ * Copyright (C) 2008 HTC Corporation
++ * Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
++ *
++ * Derived from msm-pcm.c and msm7201.c.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/soc.h>
++#include "msm-pcm.h"
++
++struct snd_soc_dai msm_dais[] = {
++{
++	.name = "CODEC_DAI",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = USE_CHANNELS_MIN,
++		.channels_max = USE_CHANNELS_MAX,
++		.rates = USE_RATE,
++		.rate_min = USE_RATE_MIN,
++		.rate_max = USE_RATE_MAX,
++		.formats = USE_FORMATS,
++	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = USE_CHANNELS_MIN,
++		.channels_max = USE_CHANNELS_MAX,
++		.rate_min = USE_RATE_MIN,
++		.rates = USE_RATE,
++		.formats = USE_FORMATS,
++	},
++},
++{
++	.name = "CPU_DAI",
++	.id = 0,
++	.playback = {
++		.channels_min = USE_CHANNELS_MIN,
++		.channels_max = USE_CHANNELS_MAX,
++		.rates = USE_RATE,
++		.rate_min = USE_RATE_MIN,
++		.rate_max = USE_RATE_MAX,
++		.formats = USE_FORMATS,
++	},
++	.capture = {
++		.channels_min = USE_CHANNELS_MIN,
++		.channels_max = USE_CHANNELS_MAX,
++		.rate_min = USE_RATE_MIN,
++		.rates = USE_RATE,
++		.formats = USE_FORMATS,
++	},
++},
++};
++EXPORT_SYMBOL_GPL(msm_dais);
++
++int msm_pcm_probe(struct platform_device *devptr)
++{
++	struct snd_card *card;
++	struct snd_soc_codec *codec;
++	int ret;
++
++	struct snd_soc_device *socdev = platform_get_drvdata(devptr);
++
++	printk(KERN_ERR "msm_soc: create pcms\n");
++	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (codec == NULL)
++		return -ENOMEM;
++
++	codec->name = "MSM-CARD";
++	codec->owner = THIS_MODULE;
++	socdev->codec = codec;
++	mutex_init(&codec->mutex);
++
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		printk(KERN_ERR "msm_soc: failed to create pcms\n");
++		goto __nopcm;
++	}
++
++	card = socdev->codec->card;
++
++	ret = snd_soc_init_card(socdev);
++	if (ret < 0) {
++		printk(KERN_ERR "msm_soc: failed to register card\n");
++		goto __nodev;
++	}
++
++	return 0;
++
++__nodev:
++	snd_soc_free_pcms(socdev);
++__nopcm:
++	kfree(codec);
++	return ret;
++}
++
++struct snd_soc_codec_device soc_codec_dev_msm = {
++	.probe          = msm_pcm_probe,
++};
++EXPORT_SYMBOL_GPL(soc_codec_dev_msm);
++
++
++static int __init msm_dai_init(void)
++{
++	return snd_soc_register_dais(msm_dais, ARRAY_SIZE(msm_dais));
++}
++
++static void __exit msm_dai_exit(void)
++{
++	snd_soc_unregister_dais(msm_dais, ARRAY_SIZE(msm_dais));
++}
++
++module_init(msm_dai_init);
++module_exit(msm_dai_exit);
++
++/* Module information */
++MODULE_DESCRIPTION("MSM Codec/Cpu Dai driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/msm/msm-pcm.c b/sound/soc/msm/msm-pcm.c
+new file mode 100644
+index 0000000..90e200d
+--- /dev/null
++++ b/sound/soc/msm/msm-pcm.c
+@@ -0,0 +1,643 @@
++/* sound/soc/msm/msm-pcm.c
++ *
++ * Copyright (C) 2008 Google, Inc.
++ * Copyright (C) 2008 HTC Corporation
++ * Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/time.h>
++#include <linux/wait.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <asm/dma.h>
++#include <linux/dma-mapping.h>
++
++#include "msm-pcm.h"
++
++#define MAX_DATA_SIZE 496
++#define AUDPP_ALSA_DECODER	(-1)
++
++#define DB_TABLE_INDEX		(50)
++
++#define audio_send_queue_recbs(prtd, cmd, len) \
++	msm_adsp_write(prtd->audrec, QDSP_uPAudRecBitStreamQueue, cmd, len)
++#define audio_send_queue_rec(prtd, cmd, len) \
++	msm_adsp_write(prtd->audrec, QDSP_uPAudRecCmdQueue, cmd, len)
++
++int intcnt;
++static int audio_dsp_send_buffer(struct msm_audio *prtd,
++			unsigned idx, unsigned len);
++
++struct audio_frame {
++	uint16_t count_low;
++	uint16_t count_high;
++	uint16_t bytes;
++	uint16_t unknown;
++	unsigned char samples[];
++} __attribute__ ((packed));
++
++/* Table contains dB to raw value mapping */
++static const unsigned decoder_db_table[] = {
++
++      31 , /* -50 dB */
++      35 ,      39 ,      44 ,      50 ,      56 ,
++      63 ,      70 ,      79 ,      89 ,      99 ,
++     112 ,     125 ,     141 ,     158 ,     177 ,
++     199 ,     223 ,     251 ,     281 ,     316 ,
++     354 ,     398 ,     446 ,     501 ,     562 ,
++     630 ,     707 ,     794 ,     891 ,     999 ,
++    1122 ,    1258 ,    1412 ,    1584 ,    1778 ,
++    1995 ,    2238 ,    2511 ,    2818 ,    3162 ,
++    3548 ,    3981 ,    4466 ,    5011 ,    5623 ,
++    6309 ,    7079 ,    7943 ,    8912 ,   10000 ,
++   11220 ,   12589 ,   14125 ,   15848 ,   17782 ,
++   19952 ,   22387 ,   25118 ,   28183 ,   31622 ,
++   35481 ,   39810 ,   44668 ,   50118 ,   56234 ,
++   63095 ,   70794 ,   79432 ,   89125 ,  100000 ,
++  112201 ,  125892 ,  141253 ,  158489 ,  177827 ,
++  199526 ,  223872 ,  251188 ,  281838 ,  316227 ,
++  354813 ,  398107 ,  446683 ,  501187 ,  562341 ,
++  630957 ,  707945 ,  794328 ,  891250 , 1000000 ,
++ 1122018 , 1258925 , 1412537 , 1584893 , 1778279 ,
++ 1995262 , 2238721 , 2511886 , 2818382 , 3162277 ,
++ 3548133   /*  51 dB */
++
++};
++
++static unsigned compute_db_raw(int db)
++{
++	unsigned reg_val = 0;        /* Computed result for correspondent db */
++	/* Check if the given db is out of range */
++	if (db <= MIN_DB)
++		return 0;
++	else if (db > MAX_DB)
++		db = MAX_DB;       /* If db is too high then set to max    */
++	reg_val = decoder_db_table[DB_TABLE_INDEX+db];
++	return reg_val;
++}
++
++int msm_audio_volume_update(unsigned id,
++				int volume, int pan)
++{
++	unsigned vol_raw;
++
++	vol_raw = compute_db_raw(volume);
++	printk(KERN_INFO "volume: %8x vol_raw: %8x \n", volume, vol_raw);
++	return audpp_set_volume_and_pan(id, vol_raw, pan);
++}
++EXPORT_SYMBOL(msm_audio_volume_update);
++
++void alsa_dsp_event(void *data, unsigned id, uint16_t *msg)
++{
++	struct msm_audio *prtd = data;
++	struct buffer *frame;
++	unsigned long flag;
++
++	switch (id) {
++	case AUDPP_MSG_STATUS_MSG:
++		break;
++	case AUDPP_MSG_SPA_BANDS:
++		break;
++	case AUDPP_MSG_HOST_PCM_INTF_MSG:{
++			unsigned id = msg[2];
++			unsigned idx = msg[3] - 1;
++			if (id != AUDPP_MSG_HOSTPCM_ID_ARM_RX) {
++				printk(KERN_ERR "bogus id\n");
++				break;
++			}
++			if (idx > 1) {
++				printk(KERN_ERR "bogus buffer idx\n");
++				break;
++			}
++			/* Update with actual sent buffer size */
++			if (prtd->out[idx].used != BUF_INVALID_LEN)
++				prtd->pcm_irq_pos += prtd->out[idx].used;
++
++			if (prtd->pcm_irq_pos > prtd->pcm_size)
++				prtd->pcm_irq_pos = prtd->pcm_count;
++
++			if (prtd->ops->playback)
++				prtd->ops->playback(prtd);
++
++			spin_lock_irqsave(&the_locks.write_dsp_lock, flag);
++			if (prtd->running) {
++				prtd->out[idx].used = 0;
++				frame = prtd->out + prtd->out_tail;
++				if (frame->used) {
++					audio_dsp_send_buffer(prtd,
++							      prtd->out_tail,
++							      frame->used);
++					prtd->out_tail ^= 1;
++				} else {
++					prtd->out_needed++;
++				}
++				wake_up(&the_locks.write_wait);
++			}
++			spin_unlock_irqrestore(&the_locks.write_dsp_lock, flag);
++			break;
++		}
++	case AUDPP_MSG_PCMDMAMISSED:
++		printk(KERN_ERR "alsa_dsp_event: PCMDMAMISSED %d\n", msg[0]);
++		break;
++	case AUDPP_MSG_CFG_MSG:
++		if (msg[0] == AUDPP_MSG_ENA_ENA) {
++			prtd->out_needed = 0;
++			prtd->running = 1;
++			audio_dsp_out_enable(prtd, 1);
++		} else if (msg[0] == AUDPP_MSG_ENA_DIS) {
++			prtd->running = 0;
++		} else {
++			printk(KERN_ERR "alsa_dsp_event:CFG_MSG=%d\n", msg[0]);
++		}
++		break;
++	case EVENT_MSG_ID:
++		printk(KERN_INFO"alsa_dsp_event: arm9 event\n");
++		break;
++	default:
++		printk(KERN_ERR "alsa_dsp_event: UNKNOWN (%d)\n", id);
++	}
++}
++
++void alsa_audpre_dsp_event(void *data, unsigned id, size_t len,
++		      void (*getevent) (void *ptr, size_t len))
++{
++	uint16_t msg[MAX_DATA_SIZE/2];
++
++	if (len > MAX_DATA_SIZE) {
++		printk(KERN_ERR"audpre: event too large(%d bytes)\n", len);
++		return;
++	}
++	getevent(msg, len);
++
++	switch (id) {
++	case AUDPREPROC_MSG_CMD_CFG_DONE_MSG:
++		break;
++	case AUDPREPROC_MSG_ERROR_MSG_ID:
++		printk(KERN_ERR "audpre: err_index %d\n", msg[0]);
++		break;
++	case EVENT_MSG_ID:
++		printk(KERN_INFO"audpre: arm9 event\n");
++		break;
++	default:
++		printk(KERN_ERR "audpre: unknown event %d\n", id);
++	}
++}
++
++void audrec_dsp_event(void *data, unsigned id, size_t len,
++		      void (*getevent) (void *ptr, size_t len))
++{
++	struct msm_audio *prtd = data;
++	unsigned long flag;
++	uint16_t msg[MAX_DATA_SIZE/2];
++
++	if (len > MAX_DATA_SIZE) {
++		printk(KERN_ERR"audrec: event/msg too large(%d bytes)\n", len);
++		return;
++	}
++	getevent(msg, len);
++
++	switch (id) {
++	case AUDREC_MSG_CMD_CFG_DONE_MSG:
++		if (msg[0] & AUDREC_MSG_CFG_DONE_TYPE_0_UPDATE) {
++			if (msg[0] & AUDREC_MSG_CFG_DONE_TYPE_0_ENA)
++				audrec_encoder_config(prtd);
++			else
++				prtd->running = 0;
++		}
++		break;
++	case AUDREC_MSG_CMD_AREC_PARAM_CFG_DONE_MSG:{
++			prtd->running = 1;
++			break;
++		}
++	case AUDREC_MSG_FATAL_ERR_MSG:
++		printk(KERN_ERR "audrec: ERROR %x\n", msg[0]);
++		break;
++	case AUDREC_MSG_PACKET_READY_MSG:
++		alsa_get_dsp_frames(prtd);
++		++intcnt;
++		if (prtd->channel_mode == 1) {
++			spin_lock_irqsave(&the_locks.read_dsp_lock, flag);
++			prtd->pcm_irq_pos += prtd->pcm_count;
++			if (prtd->pcm_irq_pos >= prtd->pcm_size)
++				prtd->pcm_irq_pos = 0;
++			spin_unlock_irqrestore(&the_locks.read_dsp_lock, flag);
++
++			if (prtd->ops->capture)
++				prtd->ops->capture(prtd);
++		} else if ((prtd->channel_mode == 0) && (intcnt % 2 == 0)) {
++			spin_lock_irqsave(&the_locks.read_dsp_lock, flag);
++			prtd->pcm_irq_pos += prtd->pcm_count;
++			if (prtd->pcm_irq_pos >= prtd->pcm_size)
++				prtd->pcm_irq_pos = 0;
++			spin_unlock_irqrestore(&the_locks.read_dsp_lock, flag);
++			if (prtd->ops->capture)
++				prtd->ops->capture(prtd);
++		}
++		break;
++	case EVENT_MSG_ID:
++		printk(KERN_INFO"audrec: arm9 event\n");
++		break;
++	default:
++		printk(KERN_ERR "audrec: unknown event %d\n", id);
++	}
++}
++
++struct msm_adsp_ops aud_pre_adsp_ops = {
++	.event = alsa_audpre_dsp_event,
++};
++
++struct msm_adsp_ops aud_rec_adsp_ops = {
++	.event = audrec_dsp_event,
++};
++
++int alsa_adsp_configure(struct msm_audio *prtd)
++{
++	int ret, i;
++
++	if (prtd->dir == SNDRV_PCM_STREAM_PLAYBACK) {
++		prtd->data = prtd->playback_substream->dma_buffer.area;
++		prtd->phys = prtd->playback_substream->dma_buffer.addr;
++	}
++	if (prtd->dir == SNDRV_PCM_STREAM_CAPTURE) {
++		prtd->data = prtd->capture_substream->dma_buffer.area;
++		prtd->phys = prtd->capture_substream->dma_buffer.addr;
++	}
++	if (!prtd->data) {
++		ret = -ENOMEM;
++		goto err1;
++	}
++
++	ret = audmgr_open(&prtd->audmgr);
++	if (ret)
++		goto err2;
++	if (prtd->dir == SNDRV_PCM_STREAM_PLAYBACK) {
++		prtd->out_buffer_size = PLAYBACK_DMASZ;
++		prtd->out_sample_rate = 44100;
++		prtd->out_channel_mode = AUDPP_CMD_PCM_INTF_STEREO_V;
++		prtd->out_weight = 100;
++
++		prtd->out[0].data = prtd->data + 0;
++		prtd->out[0].addr = prtd->phys + 0;
++		prtd->out[0].size = BUFSZ;
++		prtd->out[1].data = prtd->data + BUFSZ;
++		prtd->out[1].addr = prtd->phys + BUFSZ;
++		prtd->out[1].size = BUFSZ;
++	}
++	if (prtd->dir == SNDRV_PCM_STREAM_CAPTURE) {
++		prtd->samp_rate = RPC_AUD_DEF_SAMPLE_RATE_44100;
++		prtd->samp_rate_index = AUDREC_CMD_SAMP_RATE_INDX_44100;
++		prtd->channel_mode = AUDREC_CMD_STEREO_MODE_STEREO;
++		prtd->buffer_size = STEREO_DATA_SIZE;
++		prtd->type = AUDREC_CMD_TYPE_0_INDEX_WAV;
++		prtd->tx_agc_cfg.cmd_id = AUDPREPROC_CMD_CFG_AGC_PARAMS;
++		prtd->ns_cfg.cmd_id = AUDPREPROC_CMD_CFG_NS_PARAMS;
++		prtd->iir_cfg.cmd_id =
++		    AUDPREPROC_CMD_CFG_IIR_TUNING_FILTER_PARAMS;
++
++		ret = msm_adsp_get("AUDPREPROCTASK",
++				   &prtd->audpre, &aud_pre_adsp_ops, prtd);
++		if (ret)
++			goto err3;
++		ret = msm_adsp_get("AUDRECTASK",
++				   &prtd->audrec, &aud_rec_adsp_ops, prtd);
++		if (ret) {
++			msm_adsp_put(prtd->audpre);
++			goto err3;
++		}
++		prtd->dsp_cnt = 0;
++		prtd->in_head = 0;
++		prtd->in_tail = 0;
++		prtd->in_count = 0;
++		for (i = 0; i < FRAME_NUM; i++) {
++			prtd->in[i].size = 0;
++			prtd->in[i].read = 0;
++		}
++	}
++
++	return 0;
++
++err3:
++	audmgr_close(&prtd->audmgr);
++
++err2:
++	prtd->data = NULL;
++err1:
++	return ret;
++}
++EXPORT_SYMBOL(alsa_adsp_configure);
++
++int alsa_audio_configure(struct msm_audio *prtd)
++{
++	struct audmgr_config cfg;
++	int rc;
++
++	if (prtd->enabled)
++		return 0;
++
++	/* refuse to start if we're not ready with first buffer */
++	if (!prtd->out[0].used)
++		return -EIO;
++
++	cfg.tx_rate = 0;
++	cfg.rx_rate = RPC_AUD_DEF_SAMPLE_RATE_48000;
++	cfg.def_method = RPC_AUD_DEF_METHOD_HOST_PCM;
++	cfg.codec = RPC_AUD_DEF_CODEC_PCM;
++	cfg.snd_method = RPC_SND_METHOD_MIDI;
++	rc = audmgr_enable(&prtd->audmgr, &cfg);
++	if (rc < 0)
++		return rc;
++
++	if (audpp_enable(AUDPP_ALSA_DECODER, alsa_dsp_event, prtd)) {
++		printk(KERN_ERR "audio: audpp_enable() failed\n");
++		audmgr_disable(&prtd->audmgr);
++		return -ENODEV;
++	}
++
++	prtd->enabled = 1;
++	return 0;
++}
++EXPORT_SYMBOL(alsa_audio_configure);
++
++ssize_t alsa_send_buffer(struct msm_audio *prtd, const char __user *buf,
++			  size_t count, loff_t *pos)
++{
++	unsigned long flag;
++	const char __user *start = buf;
++	struct buffer *frame;
++	size_t xfer;
++	int rc = 0;
++
++	mutex_lock(&the_locks.write_lock);
++	while (count > 0) {
++		frame = prtd->out + prtd->out_head;
++		rc = wait_event_interruptible(the_locks.write_wait,
++					      (frame->used == 0)
++					      || (prtd->stopped));
++		if (rc < 0)
++			break;
++		if (prtd->stopped) {
++			rc = -EBUSY;
++			break;
++		}
++		xfer = count > frame->size ? frame->size : count;
++		if (copy_from_user(frame->data, buf, xfer)) {
++			rc = -EFAULT;
++			break;
++		}
++		frame->used = xfer;
++		prtd->out_head ^= 1;
++		count -= xfer;
++		buf += xfer;
++
++		spin_lock_irqsave(&the_locks.write_dsp_lock, flag);
++		frame = prtd->out + prtd->out_tail;
++		if (frame->used && prtd->out_needed) {
++			audio_dsp_send_buffer(prtd, prtd->out_tail,
++					      frame->used);
++			prtd->out_tail ^= 1;
++			prtd->out_needed--;
++		}
++		spin_unlock_irqrestore(&the_locks.write_dsp_lock, flag);
++	}
++	mutex_unlock(&the_locks.write_lock);
++	if (buf > start)
++		return buf - start;
++	return rc;
++}
++EXPORT_SYMBOL(alsa_send_buffer);
++
++int alsa_audio_disable(struct msm_audio *prtd)
++{
++	if (prtd->enabled) {
++		mutex_lock(&the_locks.lock);
++		prtd->enabled = 0;
++		audio_dsp_out_enable(prtd, 0);
++		wake_up(&the_locks.write_wait);
++		audpp_disable(AUDPP_ALSA_DECODER, prtd);
++		audmgr_disable(&prtd->audmgr);
++		prtd->out_needed = 0;
++		mutex_unlock(&the_locks.lock);
++	}
++	return 0;
++}
++EXPORT_SYMBOL(alsa_audio_disable);
++
++int alsa_audrec_disable(struct msm_audio *prtd)
++{
++	if (prtd->enabled) {
++		mutex_lock(&the_locks.lock);
++		prtd->enabled = 0;
++		alsa_rec_dsp_enable(prtd, 0);
++		wake_up(&the_locks.read_wait);
++		msm_adsp_disable(prtd->audpre);
++		msm_adsp_disable(prtd->audrec);
++		audmgr_disable(&prtd->audmgr);
++		prtd->out_needed = 0;
++		prtd->opened = 0;
++		mutex_unlock(&the_locks.lock);
++	}
++	return 0;
++}
++EXPORT_SYMBOL(alsa_audrec_disable);
++
++static int audio_dsp_read_buffer(struct msm_audio *prtd, uint32_t read_cnt)
++{
++	audrec_cmd_packet_ext_ptr cmd;
++
++	memset(&cmd, 0, sizeof(cmd));
++	cmd.cmd_id = AUDREC_CMD_PACKET_EXT_PTR;
++	/* Both WAV and AAC use AUDREC_CMD_TYPE_0 */
++	cmd.type = AUDREC_CMD_TYPE_0;
++	cmd.curr_rec_count_msw = read_cnt >> 16;
++	cmd.curr_rec_count_lsw = read_cnt;
++
++	return audio_send_queue_recbs(prtd, &cmd, sizeof(cmd));
++}
++
++int audrec_encoder_config(struct msm_audio *prtd)
++{
++	audrec_cmd_arec0param_cfg cmd;
++	uint16_t *data = (void *)prtd->data;
++	unsigned n;
++
++	memset(&cmd, 0, sizeof(cmd));
++	cmd.cmd_id = AUDREC_CMD_AREC0PARAM_CFG;
++	cmd.ptr_to_extpkt_buffer_msw = prtd->phys >> 16;
++	cmd.ptr_to_extpkt_buffer_lsw = prtd->phys;
++	cmd.buf_len = FRAME_NUM;	/* Both WAV and AAC use 8 frames */
++	cmd.samp_rate_index = prtd->samp_rate_index;
++	/* 0 for mono, 1 for stereo */
++	cmd.stereo_mode = prtd->channel_mode;
++	cmd.rec_quality = 0x1C00;
++
++	/* prepare buffer pointers:
++	 * Mono: 1024 samples + 4 halfword header
++	 * Stereo: 2048 samples + 4 halfword header
++	 */
++
++	for (n = 0; n < FRAME_NUM; n++) {
++		prtd->in[n].data = data + 4;
++		data += (4 + (prtd->channel_mode ? 2048 : 1024));
++	}
++
++	return audio_send_queue_rec(prtd, &cmd, sizeof(cmd));
++}
++
++int audio_dsp_out_enable(struct msm_audio *prtd, int yes)
++{
++	audpp_cmd_pcm_intf cmd;
++	memset(&cmd, 0, sizeof(cmd));
++	cmd.cmd_id = AUDPP_CMD_PCM_INTF_2;
++	cmd.object_num = AUDPP_CMD_PCM_INTF_OBJECT_NUM;
++	cmd.config = AUDPP_CMD_PCM_INTF_CONFIG_CMD_V;
++	cmd.intf_type = AUDPP_CMD_PCM_INTF_RX_ENA_ARMTODSP_V;
++
++	if (yes) {
++		cmd.write_buf1LSW = prtd->out[0].addr;
++		cmd.write_buf1MSW = prtd->out[0].addr >> 16;
++		cmd.write_buf1_len = 0;
++		cmd.write_buf2LSW = prtd->out[1].addr;
++		cmd.write_buf2MSW = prtd->out[1].addr >> 16;
++		cmd.write_buf2_len = prtd->out[1].used;
++		cmd.arm_to_rx_flag = AUDPP_CMD_PCM_INTF_ENA_V;
++		cmd.weight_decoder_to_rx = prtd->out_weight;
++		cmd.weight_arm_to_rx = 1;
++		cmd.partition_number_arm_to_dsp = 0;
++		cmd.sample_rate = prtd->out_sample_rate;
++		cmd.channel_mode = prtd->out_channel_mode;
++	}
++	return audpp_send_queue2(&cmd, sizeof(cmd));
++}
++
++int alsa_buffer_read(struct msm_audio *prtd, void __user *buf,
++		      size_t count, loff_t *pos)
++{
++	unsigned long flag;
++	void *data;
++	uint32_t index;
++	uint32_t size;
++	int rc = 0;
++
++	mutex_lock(&the_locks.read_lock);
++	while (count > 0) {
++		rc = wait_event_interruptible(the_locks.read_wait,
++					      (prtd->in_count > 0)
++					      || prtd->stopped);
++		if (rc < 0)
++			break;
++
++		if (prtd->stopped) {
++			rc = -EBUSY;
++			break;
++		}
++
++		index = prtd->in_tail;
++		data = (uint8_t *) prtd->in[index].data;
++		size = prtd->in[index].size;
++		if (count >= size) {
++			if (copy_to_user(buf, data, size)) {
++				rc = -EFAULT;
++				break;
++			}
++			spin_lock_irqsave(&the_locks.read_dsp_lock, flag);
++			if (index != prtd->in_tail) {
++				/* overrun: data is invalid, we need to retry */
++				spin_unlock_irqrestore(&the_locks.read_dsp_lock,
++						       flag);
++				continue;
++			}
++			prtd->in[index].size = 0;
++			prtd->in_tail = (prtd->in_tail + 1) & (FRAME_NUM - 1);
++			prtd->in_count--;
++			spin_unlock_irqrestore(&the_locks.read_dsp_lock, flag);
++			count -= size;
++			buf += size;
++		} else {
++			break;
++		}
++	}
++	mutex_unlock(&the_locks.read_lock);
++	return rc;
++}
++EXPORT_SYMBOL(alsa_buffer_read);
++
++static int audio_dsp_send_buffer(struct msm_audio *prtd,
++					unsigned idx, unsigned len)
++{
++	audpp_cmd_pcm_intf_send_buffer cmd;
++	cmd.cmd_id = AUDPP_CMD_PCM_INTF_2;
++	cmd.host_pcm_object = AUDPP_CMD_PCM_INTF_OBJECT_NUM;
++	cmd.config = AUDPP_CMD_PCM_INTF_BUFFER_CMD_V;
++	cmd.intf_type = AUDPP_CMD_PCM_INTF_RX_ENA_ARMTODSP_V;
++	cmd.dsp_to_arm_buf_id = 0;
++	cmd.arm_to_dsp_buf_id = idx + 1;
++	cmd.arm_to_dsp_buf_len = len;
++	return audpp_send_queue2(&cmd, sizeof(cmd));
++}
++
++int alsa_rec_dsp_enable(struct msm_audio *prtd, int enable)
++{
++	audrec_cmd_cfg cmd;
++
++	memset(&cmd, 0, sizeof(cmd));
++	cmd.cmd_id = AUDREC_CMD_CFG;
++	cmd.type_0 = enable ? AUDREC_CMD_TYPE_0_ENA : AUDREC_CMD_TYPE_0_DIS;
++	cmd.type_0 |= (AUDREC_CMD_TYPE_0_UPDATE | prtd->type);
++	cmd.type_1 = 0;
++
++	return audio_send_queue_rec(prtd, &cmd, sizeof(cmd));
++}
++EXPORT_SYMBOL(alsa_rec_dsp_enable);
++
++void alsa_get_dsp_frames(struct msm_audio *prtd)
++{
++	struct audio_frame *frame;
++	uint32_t index = 0;
++	unsigned long flag;
++
++	if (prtd->type == AUDREC_CMD_TYPE_0_INDEX_WAV) {
++		index = prtd->in_head;
++
++		frame =
++		    (void *)(((char *)prtd->in[index].data) - sizeof(*frame));
++
++		spin_lock_irqsave(&the_locks.read_dsp_lock, flag);
++		prtd->in[index].size = frame->bytes;
++
++		prtd->in_head = (prtd->in_head + 1) & (FRAME_NUM - 1);
++
++		/* If overflow, move the tail index foward. */
++		if (prtd->in_head == prtd->in_tail)
++			prtd->in_tail = (prtd->in_tail + 1) & (FRAME_NUM - 1);
++		else
++			prtd->in_count++;
++
++		audio_dsp_read_buffer(prtd, prtd->dsp_cnt++);
++		spin_unlock_irqrestore(&the_locks.read_dsp_lock, flag);
++
++		wake_up(&the_locks.read_wait);
++	} else {
++		/* TODO AAC not supported yet. */
++	}
++}
++EXPORT_SYMBOL(alsa_get_dsp_frames);
+diff --git a/sound/soc/msm/msm-pcm.h b/sound/soc/msm/msm-pcm.h
+new file mode 100644
+index 0000000..7563ef0
+--- /dev/null
++++ b/sound/soc/msm/msm-pcm.h
+@@ -0,0 +1,200 @@
++/* sound/soc/msm/msm-pcm.h
++ *
++ * Copyright (C) 2008 Google, Inc.
++ * Copyright (C) 2008 HTC Corporation
++ * Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++#ifndef _MSM_PCM_H
++#define _MSM_PCM_H
++
++
++#include <mach/qdsp5/qdsp5audppcmdi.h>
++#include <mach/qdsp5/qdsp5audppmsg.h>
++#include <mach/qdsp5/qdsp5audreccmdi.h>
++#include <mach/qdsp5/qdsp5audrecmsg.h>
++#include <mach/qdsp5/qdsp5audpreproccmdi.h>
++#include <mach/qdsp5/qdsp5audpreprocmsg.h>
++
++#include <../arch/arm/mach-msm/qdsp5/adsp.h>
++#include <../arch/arm/mach-msm/qdsp5/audmgr.h>
++
++
++#define FRAME_NUM               (8)
++#define FRAME_SIZE              (2052 * 2)
++#define MONO_DATA_SIZE          (2048)
++#define STEREO_DATA_SIZE        (MONO_DATA_SIZE * 2)
++#define CAPTURE_DMASZ           (FRAME_SIZE * FRAME_NUM)
++
++#define BUFSZ			(960 * 5)
++#define PLAYBACK_DMASZ 		(BUFSZ * 2)
++
++#define MSM_PLAYBACK_DEFAULT_VOLUME 0 /* 0dB */
++#define MSM_PLAYBACK_DEFAULT_PAN 0
++
++#define USE_FORMATS             SNDRV_PCM_FMTBIT_S16_LE
++#define USE_CHANNELS_MIN        1
++#define USE_CHANNELS_MAX        2
++/* Support unconventional sample rates 12000, 24000 as well */
++#define USE_RATE                \
++			(SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
++#define USE_RATE_MIN            8000
++#define USE_RATE_MAX            48000
++#define MAX_BUFFER_PLAYBACK_SIZE \
++				(4800*4)
++/* 2048 frames (Mono), 1024 frames (Stereo) */
++#define CAPTURE_SIZE		4096
++#define MAX_BUFFER_CAPTURE_SIZE (4096*4)
++#define MAX_PERIOD_SIZE         BUFSZ
++#define USE_PERIODS_MAX         1024
++#define USE_PERIODS_MIN		1
++
++
++#define MAX_DB			(16)
++#define MIN_DB			(-50)
++#define PCMPLAYBACK_DECODERID   5
++
++/* 0xFFFFFFFF Indicates not to be used for audio data copy */
++#define	BUF_INVALID_LEN		0xFFFFFFFF
++
++extern int copy_count;
++extern int intcnt;
++
++struct msm_volume {
++	bool update;
++	int volume; /* Volume parameter, in dB Scale */
++	int pan;
++};
++
++struct buffer {
++	void *data;
++	unsigned size;
++	unsigned used;
++	unsigned addr;
++};
++
++struct buffer_rec {
++	void *data;
++	unsigned int size;
++	unsigned int read;
++	unsigned int addr;
++};
++
++struct audio_locks {
++	struct mutex lock;
++	struct mutex write_lock;
++	struct mutex read_lock;
++	spinlock_t read_dsp_lock;
++	spinlock_t write_dsp_lock;
++	spinlock_t mixer_lock;
++	wait_queue_head_t read_wait;
++	wait_queue_head_t write_wait;
++};
++
++extern struct audio_locks the_locks;
++
++struct msm_audio_event_callbacks {
++	/* event is called from interrupt context when a message
++	 * arrives from the DSP.
++	*/
++	void (*playback)(void *);
++	void (*capture)(void *);
++};
++
++
++struct msm_audio {
++	struct buffer out[2];
++	struct buffer_rec in[8];
++
++	uint8_t out_head;
++	uint8_t out_tail;
++	uint8_t out_needed; /* number of buffers the dsp is waiting for */
++	atomic_t out_bytes;
++
++	/* configuration to use on next enable */
++	uint32_t out_sample_rate;
++	uint32_t out_channel_mode;
++	uint32_t out_weight;
++	uint32_t out_buffer_size;
++
++	struct audmgr audmgr;
++	struct snd_pcm_substream *playback_substream;
++	struct snd_pcm_substream *capture_substream;
++
++	/* data allocated for various buffers */
++	char *data;
++	dma_addr_t phys;
++
++	unsigned int pcm_size;
++	unsigned int pcm_count;
++	unsigned int pcm_irq_pos;       /* IRQ position */
++	unsigned int pcm_buf_pos;       /* position in buffer */
++
++	struct msm_adsp_module *audpre;
++	struct msm_adsp_module *audrec;
++
++	/* configuration to use on next enable */
++	uint32_t samp_rate;
++	uint32_t channel_mode;
++	uint32_t buffer_size; /* 2048 for mono, 4096 for stereo */
++	uint32_t type; /* 0 for PCM ,1 for AAC */
++	uint32_t dsp_cnt;
++	uint32_t in_head; /* next buffer dsp will write */
++	uint32_t in_tail; /* next buffer read() will read */
++	uint32_t in_count; /* number of buffers available to read() */
++
++	unsigned short samp_rate_index;
++
++	/* audpre settings */
++	audpreproc_cmd_cfg_agc_params tx_agc_cfg;
++	audpreproc_cmd_cfg_ns_params ns_cfg;
++	/* For different sample rate, the coeff might be different. *
++	* All the coeff should be passed from user space           */
++	audpreproc_cmd_cfg_iir_tuning_filter_params iir_cfg;
++
++	struct  msm_audio_event_callbacks *ops;
++
++	int dir;
++	int opened;
++	int enabled;
++	int running;
++	int stopped; /* set when stopped, cleared on flush */
++};
++
++
++
++/* platform data */
++extern int audio_dsp_out_enable(struct msm_audio *prtd, int yes);
++extern struct snd_soc_platform msm_soc_platform;
++extern struct snd_soc_dai msm_dais[2];
++extern struct snd_soc_codec_device soc_codec_dev_msm;
++
++int audrec_encoder_config(struct msm_audio *prtd);
++extern void alsa_get_dsp_frames(struct msm_audio *prtd);
++extern int alsa_rec_dsp_enable(struct msm_audio *prtd, int enable);
++extern int alsa_audrec_disable(struct msm_audio *prtd);
++extern int alsa_audio_configure(struct msm_audio *prtd);
++extern int alsa_audio_disable(struct msm_audio *prtd);
++extern int alsa_adsp_configure(struct msm_audio *prtd);
++extern int alsa_buffer_read(struct msm_audio *prtd, void __user *buf,
++					size_t count, loff_t *pos);
++ssize_t alsa_send_buffer(struct msm_audio *prtd, const char __user *buf,
++					size_t count, loff_t *pos);
++int msm_audio_volume_update(unsigned id,
++				int volume, int pan);
++extern struct audio_locks the_locks;
++extern struct msm_volume msm_vol_ctl;
++
++#endif /*_MSM_PCM_H*/
+diff --git a/sound/soc/msm/msm7201.c b/sound/soc/msm/msm7201.c
+new file mode 100644
+index 0000000..977fbac
+--- /dev/null
++++ b/sound/soc/msm/msm7201.c
+@@ -0,0 +1,337 @@
++/* linux/sound/soc/msm/msm7201.c
++ *
++ * Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
++ *
++ * All source code in this file is licensed under the following license except
++ * where indicated.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/time.h>
++#include <linux/wait.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <sound/tlv.h>
++#include <sound/initval.h>
++#include <sound/control.h>
++#include <asm/dma.h>
++#include <linux/dma-mapping.h>
++
++#include "msm-pcm.h"
++#include <asm/mach-types.h>
++#include <mach/msm_rpcrouter.h>
++
++static struct msm_rpc_endpoint *snd_ep;
++
++struct msm_snd_rpc_ids {
++	unsigned long   prog;
++	unsigned long   vers;
++	unsigned long   rpc_set_snd_device;
++	int device;
++};
++
++static struct msm_snd_rpc_ids snd_rpc_ids;
++
++static struct platform_device *msm_audio_snd_device;
++
++static int snd_msm_volume_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1; /* Volume Param, in dB */
++	uinfo->value.integer.min = MIN_DB;
++	uinfo->value.integer.max = MAX_DB;
++	return 0;
++}
++
++static int snd_msm_volume_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	spin_lock_irq(&the_locks.mixer_lock);
++	ucontrol->value.integer.value[0] = msm_vol_ctl.volume;
++	spin_unlock_irq(&the_locks.mixer_lock);
++	return 0;
++}
++
++static int snd_msm_volume_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	int change;
++	int volume;
++
++	volume = ucontrol->value.integer.value[0];
++	spin_lock_irq(&the_locks.mixer_lock);
++	change = (msm_vol_ctl.volume != volume);
++	if (change) {
++		msm_vol_ctl.update = 1;
++		msm_vol_ctl.volume = volume;
++	}
++	spin_unlock_irq(&the_locks.mixer_lock);
++	return change;
++}
++
++static int snd_msm_device_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1; /* Device */
++
++	/*
++	 * The number of devices supported is 26 (0 to 25)
++	 */
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 25;
++	return 0;
++}
++
++static int snd_msm_device_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = (uint32_t)snd_rpc_ids.device;
++	return 0;
++}
++
++int msm_snd_init_rpc_ids(void)
++{
++	snd_rpc_ids.prog	= 0x30000002;
++#ifdef CONFIG_MSM_AMSS_VERSION_6225
++	//TODO: complete for other versions
++	snd_rpc_ids.vers	= 0xaa2b1a44;
++#else
++	//seem a new magich number...not in arch/arm/mach-msm and it seem to be for a new amss version
++	snd_rpc_ids.vers	= 0x00020001;
++#endif
++	/*
++	 * The magic number 2 corresponds to the rpc call
++	 * index for snd_set_device
++	 */
++	snd_rpc_ids.rpc_set_snd_device = 2;
++	return 0;
++}
++
++int msm_snd_rpc_connect(void)
++{
++	if (snd_ep) {
++		printk(KERN_INFO "%s: snd_ep already connected\n", __func__);
++		return 0;
++	}
++
++	/* Initialize rpc ids */
++	if (msm_snd_init_rpc_ids()) {
++		printk(KERN_ERR "%s: snd rpc ids initialization failed\n"
++			, __func__);
++		return -ENODATA;
++	}
++
++	snd_ep = msm_rpc_connect(snd_rpc_ids.prog,
++				snd_rpc_ids.vers, 0);
++	if (IS_ERR(snd_ep)) {
++		printk(KERN_ERR "%s: failed (compatible VERS = %ld)\n",
++				__func__, snd_rpc_ids.vers);
++		snd_ep = NULL;
++		return -EAGAIN;
++	}
++	return 0;
++}
++
++int msm_snd_rpc_close(void)
++{
++	int rc = 0;
++
++	if (IS_ERR(snd_ep)) {
++		printk(KERN_ERR "%s: snd handle unavailable, rc = %ld\n",
++				__func__, PTR_ERR(snd_ep));
++		return -EAGAIN;
++	}
++
++	rc = msm_rpc_close(snd_ep);
++	snd_ep = NULL;
++
++	if (rc < 0) {
++		printk(KERN_ERR "%s: close rpc failed! rc = %d\n",
++				__func__, rc);
++		return -EAGAIN;
++	} else
++		printk(KERN_INFO "rpc close success\n");
++
++	return rc;
++}
++
++static int snd_msm_device_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	int rc = 0;
++	struct snd_start_req {
++		struct rpc_request_hdr hdr;
++		uint32_t rpc_snd_device;
++		uint32_t snd_mute_ear_mute;
++		uint32_t snd_mute_mic_mute;
++		uint32_t callback_ptr;
++		uint32_t client_data;
++	} req;
++
++	snd_rpc_ids.device = (int)ucontrol->value.integer.value[0];
++	req.hdr.type = 0;
++	req.hdr.rpc_vers = 2;
++
++	req.rpc_snd_device = cpu_to_be32(snd_rpc_ids.device);
++	req.snd_mute_ear_mute = cpu_to_be32(1);
++	req.snd_mute_mic_mute = cpu_to_be32(0);
++	req.callback_ptr = -1;
++	req.client_data = cpu_to_be32(0);
++
++	req.hdr.prog = snd_rpc_ids.prog;
++	req.hdr.vers = snd_rpc_ids.vers;
++
++	rc = msm_rpc_call(snd_ep, snd_rpc_ids.rpc_set_snd_device ,
++			&req, sizeof(req), 5 * HZ);
++
++	if (rc < 0) {
++		printk(KERN_ERR "%s: snd rpc call failed! rc = %d\n",
++			__func__, rc);
++	} else
++		printk(KERN_INFO "snd device connected \n");
++
++	return rc;
++}
++
++/* Supported range -50dB to 18dB */
++static const DECLARE_TLV_DB_LINEAR(db_scale_linear, -5000, 1800);
++
++#define MSM_EXT(xname, xindex, fp_info, fp_get, fp_put, addr) \
++{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE, \
++  .name = xname, .index = xindex, \
++  .info = fp_info,\
++  .get = fp_get, .put = fp_put, \
++  .private_value = addr, \
++}
++
++#define MSM_EXT_TLV(xname, xindex, fp_info, fp_get, fp_put, addr, tlv_array) \
++{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++  .access = (SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
++		SNDRV_CTL_ELEM_ACCESS_READWRITE), \
++  .name = xname, .index = xindex, \
++  .info = fp_info,\
++  .get = fp_get, .put = fp_put, .tlv.p = tlv_array, \
++  .private_value = addr, \
++}
++
++static struct snd_kcontrol_new snd_msm_controls[] = {
++	MSM_EXT_TLV("PCM Playback Volume", 0, snd_msm_volume_info, \
++	snd_msm_volume_get, snd_msm_volume_put, 0, db_scale_linear),
++	MSM_EXT("device", 1, snd_msm_device_info, snd_msm_device_get, \
++						 snd_msm_device_put, 0),
++};
++
++static int msm_new_mixer(struct snd_card *card)
++{
++	unsigned int idx;
++	int err;
++
++	printk(KERN_ERR "msm_soc:ALSA MSM Mixer Setting");
++	strcpy(card->mixername, "MSM Mixer");
++	for (idx = 0; idx < ARRAY_SIZE(snd_msm_controls); idx++) {
++		err = snd_ctl_add(card,
++				snd_ctl_new1(&snd_msm_controls[idx], NULL));
++		if (err < 0)
++			return err;
++	}
++	return 0;
++}
++
++static int msm_soc_dai_init(struct snd_soc_codec *codec)
++{
++
++	int ret = 0;
++	ret = msm_new_mixer(codec->card);
++	if (ret < 0) {
++		printk(KERN_ERR "msm_soc:ALSA MSM Mixer Fail");
++	}
++
++	return ret;
++}
++
++
++static struct snd_soc_dai_link msm_dai = {
++	.name = "ASOC",
++	.stream_name = "ASOC",
++	.codec_dai = &msm_dais[0],
++	.cpu_dai = &msm_dais[1],
++	.init	= msm_soc_dai_init,
++};
++
++struct snd_soc_card snd_soc_card_msm = {
++	.name 		= "msm-audio",
++	.dai_link	= &msm_dai,
++	.num_links = 1,
++	.platform = &msm_soc_platform,
++};
++
++/* msm_audio audio subsystem */
++static struct snd_soc_device msm_audio_snd_devdata = {
++	.card = &snd_soc_card_msm,
++	.codec_dev = &soc_codec_dev_msm,
++};
++
++
++static int __init msm_audio_init(void)
++{
++	int ret;
++
++	msm_audio_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!msm_audio_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(msm_audio_snd_device, &msm_audio_snd_devdata);
++	msm_audio_snd_devdata.dev = &msm_audio_snd_device->dev;
++	ret = platform_device_add(msm_audio_snd_device);
++	if (ret) {
++		platform_device_put(msm_audio_snd_device);
++		return ret;
++	}
++	mutex_init(&the_locks.lock);
++	mutex_init(&the_locks.write_lock);
++	mutex_init(&the_locks.read_lock);
++	spin_lock_init(&the_locks.read_dsp_lock);
++	spin_lock_init(&the_locks.write_dsp_lock);
++	spin_lock_init(&the_locks.mixer_lock);
++	init_waitqueue_head(&the_locks.write_wait);
++	init_waitqueue_head(&the_locks.read_wait);
++	msm_vol_ctl.volume = MSM_PLAYBACK_DEFAULT_VOLUME;
++	msm_vol_ctl.pan = MSM_PLAYBACK_DEFAULT_PAN;
++
++	ret = msm_snd_rpc_connect();
++
++	return ret;
++}
++
++static void __exit msm_audio_exit(void)
++{
++	msm_snd_rpc_close();
++	platform_device_unregister(msm_audio_snd_device);
++}
++
++module_init(msm_audio_init);
++module_exit(msm_audio_exit);
++
++MODULE_DESCRIPTION("PCM module");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/msm/msm7k-pcm.c b/sound/soc/msm/msm7k-pcm.c
+new file mode 100644
+index 0000000..38e8283
+--- /dev/null
++++ b/sound/soc/msm/msm7k-pcm.c
+@@ -0,0 +1,574 @@
++/* linux/sound/soc/msm/msm7k-pcm.c
++ *
++ * Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
++ *
++ * All source code in this file is licensed under the following license except
++ * where indicated.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++
++
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/time.h>
++#include <linux/wait.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/control.h>
++#include <asm/dma.h>
++#include <linux/dma-mapping.h>
++
++#include "msm-pcm.h"
++
++#define SND_DRIVER        "snd_msm"
++#define MAX_PCM_DEVICES	SNDRV_CARDS
++#define MAX_PCM_SUBSTREAMS 1
++
++struct snd_msm {
++	struct snd_card *card;
++	struct snd_pcm *pcm;
++};
++
++int copy_count;
++
++struct audio_locks the_locks;
++EXPORT_SYMBOL(the_locks);
++struct msm_volume msm_vol_ctl;
++EXPORT_SYMBOL(msm_vol_ctl);
++
++
++static unsigned convert_dsp_samp_index(unsigned index)
++{
++	switch (index) {
++	case 48000:
++		return AUDREC_CMD_SAMP_RATE_INDX_48000;
++	case 44100:
++		return AUDREC_CMD_SAMP_RATE_INDX_44100;
++	case 32000:
++		return AUDREC_CMD_SAMP_RATE_INDX_32000;
++	case 24000:
++		return AUDREC_CMD_SAMP_RATE_INDX_24000;
++	case 22050:
++		return AUDREC_CMD_SAMP_RATE_INDX_22050;
++	case 16000:
++		return AUDREC_CMD_SAMP_RATE_INDX_16000;
++	case 12000:
++		return AUDREC_CMD_SAMP_RATE_INDX_12000;
++	case 11025:
++		return AUDREC_CMD_SAMP_RATE_INDX_11025;
++	case 8000:
++		return AUDREC_CMD_SAMP_RATE_INDX_8000;
++	default:
++		return AUDREC_CMD_SAMP_RATE_INDX_44100;
++	}
++}
++
++static unsigned convert_samp_rate(unsigned hz)
++{
++	switch (hz) {
++	case 48000:
++		return RPC_AUD_DEF_SAMPLE_RATE_48000;
++	case 44100:
++		return RPC_AUD_DEF_SAMPLE_RATE_44100;
++	case 32000:
++		return RPC_AUD_DEF_SAMPLE_RATE_32000;
++	case 24000:
++		return RPC_AUD_DEF_SAMPLE_RATE_24000;
++	case 22050:
++		return RPC_AUD_DEF_SAMPLE_RATE_22050;
++	case 16000:
++		return RPC_AUD_DEF_SAMPLE_RATE_16000;
++	case 12000:
++		return RPC_AUD_DEF_SAMPLE_RATE_12000;
++	case 11025:
++		return RPC_AUD_DEF_SAMPLE_RATE_11025;
++	case 8000:
++		return RPC_AUD_DEF_SAMPLE_RATE_8000;
++	default:
++		return RPC_AUD_DEF_SAMPLE_RATE_44100;
++	}
++}
++
++static struct snd_pcm_hardware msm_pcm_playback_hardware = {
++	.info =                 SNDRV_PCM_INFO_INTERLEAVED,
++	.formats =              USE_FORMATS,
++	.rates =                USE_RATE,
++	.rate_min =             USE_RATE_MIN,
++	.rate_max =             USE_RATE_MAX,
++	.channels_min =         USE_CHANNELS_MIN,
++	.channels_max =         USE_CHANNELS_MAX,
++	.buffer_bytes_max =     MAX_BUFFER_PLAYBACK_SIZE,
++	.period_bytes_min =     64,
++	.period_bytes_max =     MAX_PERIOD_SIZE,
++	.periods_min =          USE_PERIODS_MIN,
++	.periods_max =          USE_PERIODS_MAX,
++	.fifo_size =            0,
++};
++
++static struct snd_pcm_hardware msm_pcm_capture_hardware = {
++	.info =                 SNDRV_PCM_INFO_INTERLEAVED,
++	.formats =		USE_FORMATS,
++	.rates =		USE_RATE,
++	.rate_min =		USE_RATE_MIN,
++	.rate_max =		USE_RATE_MAX,
++	.channels_min =		USE_CHANNELS_MIN,
++	.channels_max =		USE_CHANNELS_MAX,
++	.buffer_bytes_max =	MAX_BUFFER_CAPTURE_SIZE,
++	.period_bytes_min =	CAPTURE_SIZE,
++	.period_bytes_max =	CAPTURE_SIZE,
++	.periods_min =		USE_PERIODS_MIN,
++	.periods_max =		USE_PERIODS_MAX,
++	.fifo_size =		0,
++};
++
++/* Conventional and unconventional sample rate supported */
++static unsigned int supported_sample_rates[] = {
++	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
++};
++
++static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
++	.count = ARRAY_SIZE(supported_sample_rates),
++	.list = supported_sample_rates,
++	.mask = 0,
++};
++
++static void playback_event_handler(void *data)
++{
++	struct msm_audio *prtd = data;
++	snd_pcm_period_elapsed(prtd->playback_substream);
++}
++
++static void capture_event_handler(void *data)
++{
++	struct msm_audio *prtd = data;
++	snd_pcm_period_elapsed(prtd->capture_substream);
++}
++
++static int msm_pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = runtime->private_data;
++
++	prtd->pcm_size = snd_pcm_lib_buffer_bytes(substream);
++	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
++	prtd->pcm_irq_pos = 0;
++	prtd->pcm_buf_pos = 0;
++
++	/* rate and channels are sent to audio driver */
++	prtd->out_sample_rate = runtime->rate;
++	prtd->out_channel_mode = runtime->channels;
++
++	return 0;
++}
++
++static int msm_pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = runtime->private_data;
++	struct audmgr_config cfg;
++	int rc;
++
++	prtd->pcm_size = snd_pcm_lib_buffer_bytes(substream);
++	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
++	prtd->pcm_irq_pos = 0;
++	prtd->pcm_buf_pos = 0;
++
++	/* rate and channels are sent to audio driver */
++	prtd->samp_rate = convert_samp_rate(runtime->rate);
++	prtd->samp_rate_index = convert_dsp_samp_index(runtime->rate);
++	prtd->channel_mode = (runtime->channels - 1);
++	prtd->buffer_size = prtd->channel_mode ? STEREO_DATA_SIZE : \
++							MONO_DATA_SIZE;
++
++	if (prtd->enabled == 1)
++		return 0;
++
++	prtd->type = AUDREC_CMD_TYPE_0_INDEX_WAV;
++
++	cfg.tx_rate = convert_samp_rate(runtime->rate);
++	cfg.rx_rate = RPC_AUD_DEF_SAMPLE_RATE_NONE;
++	cfg.def_method = RPC_AUD_DEF_METHOD_RECORD;
++	cfg.codec = RPC_AUD_DEF_CODEC_PCM;
++	cfg.snd_method = RPC_SND_METHOD_MIDI;
++
++	rc = audmgr_enable(&prtd->audmgr, &cfg);
++	if (rc < 0)
++		return rc;
++
++	if (msm_adsp_enable(prtd->audpre)) {
++		audmgr_disable(&prtd->audmgr);
++		return -ENODEV;
++	}
++	if (msm_adsp_enable(prtd->audrec)) {
++		msm_adsp_disable(prtd->audpre);
++		audmgr_disable(&prtd->audmgr);
++		return -ENODEV;
++	}
++	prtd->enabled = 1;
++	alsa_rec_dsp_enable(prtd, 1);
++
++	return 0;
++}
++
++static int msm_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static snd_pcm_uframes_t
++msm_pcm_playback_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = runtime->private_data;
++
++	if (prtd->pcm_irq_pos == prtd->pcm_size)
++		prtd->pcm_irq_pos = 0;
++	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
++}
++
++static int msm_pcm_capture_copy(struct snd_pcm_substream *substream,
++		 int channel, snd_pcm_uframes_t hwoff, void __user *buf,
++						 snd_pcm_uframes_t frames)
++{
++	int rc = 0, rc1 = 0, rc2 = 0;
++	int fbytes = 0;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = substream->runtime->private_data;
++
++	int monofbytes = 0;
++	char *bufferp = NULL;
++
++	fbytes = frames_to_bytes(runtime, frames);
++	monofbytes = fbytes / 2;
++	if (runtime->channels == 2) {
++		rc = alsa_buffer_read(prtd, buf, fbytes, NULL);
++	} else {
++		bufferp = buf;
++		rc1 = alsa_buffer_read(prtd, bufferp, monofbytes, NULL);
++		bufferp = buf + monofbytes ;
++		rc2 = alsa_buffer_read(prtd, bufferp, monofbytes, NULL);
++		rc = rc1 + rc2;
++	}
++	prtd->pcm_buf_pos += fbytes;
++	return rc;
++}
++
++static snd_pcm_uframes_t
++msm_pcm_capture_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = runtime->private_data;
++
++	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
++}
++
++static int msm_pcm_capture_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = runtime->private_data;
++
++	alsa_audrec_disable(prtd);
++	audmgr_close(&prtd->audmgr);
++	msm_adsp_put(prtd->audrec);
++	msm_adsp_put(prtd->audpre);
++	kfree(prtd);
++
++	return 0;
++}
++
++struct  msm_audio_event_callbacks snd_msm_audio_ops = {
++	.playback = playback_event_handler,
++	.capture = capture_event_handler,
++};
++
++static int msm_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd;
++	int ret = 0;
++
++	prtd = kzalloc(sizeof(struct msm_audio), GFP_KERNEL);
++	if (prtd == NULL) {
++		ret = -ENOMEM;
++		return ret;
++	}
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		msm_vol_ctl.update = 1; /* Update Volume, with Cached value */
++		runtime->hw = msm_pcm_playback_hardware;
++		prtd->dir = SNDRV_PCM_STREAM_PLAYBACK;
++		prtd->playback_substream = substream;
++	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw = msm_pcm_capture_hardware;
++		prtd->dir = SNDRV_PCM_STREAM_CAPTURE;
++		prtd->capture_substream = substream;
++	}
++	ret = snd_pcm_hw_constraint_list(runtime, 0,
++						SNDRV_PCM_HW_PARAM_RATE,
++						&constraints_sample_rates);
++	if (ret < 0)
++		goto out;
++	/* Ensure that buffer size is a multiple of period size */
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		goto out;
++
++	prtd->ops = &snd_msm_audio_ops;
++	prtd->out[0].used = BUF_INVALID_LEN;
++	prtd->out_head = 1; /* point to second buffer on startup */
++	runtime->private_data = prtd;
++
++	ret = alsa_adsp_configure(prtd);
++	if (ret)
++		goto out;
++	copy_count = 0;
++	return 0;
++
++ out:
++	kfree(prtd);
++	return ret;
++}
++
++static int msm_pcm_playback_copy(struct snd_pcm_substream *substream, int a,
++	snd_pcm_uframes_t hwoff, void __user *buf, snd_pcm_uframes_t frames)
++{
++	int rc = 1;
++	int fbytes = 0;
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = runtime->private_data;
++
++	fbytes = frames_to_bytes(runtime, frames);
++	rc = alsa_send_buffer(prtd, buf, fbytes, NULL);
++	++copy_count;
++	prtd->pcm_buf_pos += fbytes;
++	if (copy_count == 1) {
++		mutex_lock(&the_locks.lock);
++		alsa_audio_configure(prtd);
++		mutex_unlock(&the_locks.lock);
++	}
++	if ((prtd->running) && (msm_vol_ctl.update)) {
++		rc = msm_audio_volume_update(PCMPLAYBACK_DECODERID,
++				msm_vol_ctl.volume, msm_vol_ctl.pan);
++		msm_vol_ctl.update = 0;
++	}
++
++	return  rc;
++}
++
++static int msm_pcm_playback_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct msm_audio *prtd = runtime->private_data;
++
++	alsa_audio_disable(prtd);
++	audmgr_close(&prtd->audmgr);
++	kfree(prtd);
++
++	return 0;
++}
++
++
++static int msm_pcm_copy(struct snd_pcm_substream *substream, int a,
++	 snd_pcm_uframes_t hwoff, void __user *buf, snd_pcm_uframes_t frames)
++{
++	int ret = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = msm_pcm_playback_copy(substream, a, hwoff, buf, frames);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = msm_pcm_capture_copy(substream, a, hwoff, buf, frames);
++	return ret;
++}
++
++static int msm_pcm_close(struct snd_pcm_substream *substream)
++{
++	int ret = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = msm_pcm_playback_close(substream);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = msm_pcm_capture_close(substream);
++	return ret;
++}
++static int msm_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	int ret = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = msm_pcm_playback_prepare(substream);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = msm_pcm_capture_prepare(substream);
++	return ret;
++}
++
++static snd_pcm_uframes_t msm_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	snd_pcm_uframes_t ret = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = msm_pcm_playback_pointer(substream);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = msm_pcm_capture_pointer(substream);
++	return ret;
++}
++
++int msm_pcm_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	if (substream->pcm->device & 1) {
++		runtime->hw.info &= ~SNDRV_PCM_INFO_INTERLEAVED;
++		runtime->hw.info |= SNDRV_PCM_INFO_NONINTERLEAVED;
++	}
++	return 0;
++
++}
++
++static struct snd_pcm_ops msm_pcm_ops = {
++	.open           = msm_pcm_open,
++	.copy		= msm_pcm_copy,
++	.hw_params	= msm_pcm_hw_params,
++	.close          = msm_pcm_close,
++	.ioctl          = snd_pcm_lib_ioctl,
++	.prepare        = msm_pcm_prepare,
++	.trigger        = msm_pcm_trigger,
++	.pointer        = msm_pcm_pointer,
++};
++
++
++
++static int msm_pcm_remove(struct platform_device *devptr)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(devptr);
++	snd_soc_free_pcms(socdev);
++	kfree(socdev->codec);
++	platform_set_drvdata(devptr, NULL);
++	return 0;
++}
++
++static int pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
++	int stream)
++{
++	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size;
++	if (!stream)
++		size = PLAYBACK_DMASZ;
++	else
++		size = CAPTURE_DMASZ;
++
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_coherent(pcm->card->dev, size,
++					   &buf->addr, GFP_KERNEL);
++	if (!buf->area)
++		return -ENOMEM;
++
++	buf->bytes = size;
++	return 0;
++}
++
++static void msm_pcm_free_dma_buffers(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++	int stream;
++
++	for (stream = 0; stream < 2; stream++) {
++		substream = pcm->streams[stream].substream;
++		if (!substream)
++			continue;
++
++		buf = &substream->dma_buffer;
++		if (!buf->area)
++			continue;
++
++		dma_free_coherent(pcm->card->dev, buf->bytes,
++				      buf->area, buf->addr);
++		buf->area = NULL;
++	}
++}
++
++static int msm_pcm_new(struct snd_card *card,
++			struct snd_soc_dai *codec_dai,
++			struct snd_pcm *pcm)
++{
++	int ret;
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_32BIT_MASK;
++
++	if (codec_dai->playback.channels_min) {
++		ret = pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_PLAYBACK);
++		if (ret)
++			return ret;
++	}
++
++	if (codec_dai->capture.channels_min) {
++		ret = pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_CAPTURE);
++		if (ret)
++			msm_pcm_free_dma_buffers(pcm);
++	}
++	return ret;
++}
++
++struct snd_soc_platform msm_soc_platform = {
++	.name		= "msm-audio",
++	.remove         = msm_pcm_remove,
++	.pcm_ops 	= &msm_pcm_ops,
++	.pcm_new	= msm_pcm_new,
++	.pcm_free	= msm_pcm_free_dma_buffers,
++};
++EXPORT_SYMBOL(msm_soc_platform);
++
++static int __init msm_soc_platform_init(void)
++{
++	return snd_soc_register_platform(&msm_soc_platform);
++}
++module_init(msm_soc_platform_init);
++
++static void __exit msm_soc_platform_exit(void)
++{
++	snd_soc_unregister_platform(&msm_soc_platform);
++}
++module_exit(msm_soc_platform_exit);
++
++MODULE_DESCRIPTION("PCM module platform driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/msm/qsd-pcm.h b/sound/soc/msm/qsd-pcm.h
+new file mode 100644
+index 0000000..6d919c4
+--- /dev/null
++++ b/sound/soc/msm/qsd-pcm.h
+@@ -0,0 +1,97 @@
++/* linux/sound/soc/msm/qsd-pcm.h
++ *
++ * Copyright (C) 2008 Google, Inc.
++ * Copyright (C) 2008 HTC Corporation
++ * Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++#ifndef _QSD_PCM_H
++#define _QSD_PCM_H
++
++#include <linux/msm_audio.h>
++
++#include <mach/qdsp6/msm8k_ard.h>
++#include <mach/qdsp6/msm8k_cad_write_pcm_format.h>
++#include <mach/qdsp6/msm8k_cad_devices.h>
++#include <mach/qdsp6/msm8k_cad.h>
++#include <mach/qdsp6/msm8k_cad_ioctl.h>
++#include <mach/qdsp6/msm8k_cad_volume.h>
++
++extern void register_cb(void *);
++
++#define USE_FORMATS             (SNDRV_PCM_FMTBIT_S16_LE)
++#define USE_CHANNELS_MIN        1
++#define USE_CHANNELS_MAX        2
++#define USE_RATE                (SNDRV_PCM_RATE_8000_48000 \
++				| SNDRV_PCM_RATE_CONTINUOUS)
++#define USE_RATE_MIN            8000
++#define USE_RATE_MAX            48000
++#define MAX_BUFFER_SIZE         (4096*4)
++#define MAX_PERIOD_SIZE         4096
++#define MIN_PERIOD_SIZE         40
++#define USE_PERIODS_MAX         1024
++#define USE_PERIODS_MIN         1
++
++struct audio_locks {
++	struct mutex lock;
++	struct mutex mixer_lock;
++};
++
++struct qsd_ctl {
++	uint16_t tx_volume; /* Volume parameter */
++	uint16_t rx_volume; /* Volume parameter */
++	int32_t strm_volume; /* stream volume*/
++	uint16_t update;
++	int16_t pan;
++	uint16_t capture_device; /* Device parameter */
++	uint16_t playback_device; /* Device  parameter */
++	uint16_t tx_mute;		 /* Mute  parameter */
++	uint16_t rx_mute;		 /* Mute  parameter */
++};
++
++extern struct audio_locks the_locks;
++extern struct snd_pcm_ops qsd_pcm_ops;
++
++struct qsd_audio {
++	struct snd_pcm_substream *playback_substream;
++	struct snd_pcm_substream *capture_substream;
++
++	/* data allocated for various buffers */
++	char *data;
++	dma_addr_t phys;
++
++	unsigned int pcm_size;
++	unsigned int pcm_count;
++	unsigned int pcm_irq_pos;	/* IRQ position */
++	unsigned int pcm_buf_pos;	/* position in buffer */
++
++	int dir;
++	int opened;
++	int enabled;
++	int running;
++	int stopped;		/* set when stopped, cleared on flush */
++
++	struct cad_open_struct_type cos;
++	uint32_t cad_w_handle;
++	struct cad_buf_struct_type cbs;
++};
++
++extern struct qsd_ctl qsd_glb_ctl;
++
++extern struct snd_soc_dai msm_dais[2];
++extern struct snd_soc_codec_device soc_codec_dev_msm;
++extern struct snd_soc_platform qsd_soc_platform;
++
++#endif /*_QSD_PCM_H*/
+diff --git a/sound/soc/msm/qsd8k-pcm.c b/sound/soc/msm/qsd8k-pcm.c
+new file mode 100644
+index 0000000..afba42d
+--- /dev/null
++++ b/sound/soc/msm/qsd8k-pcm.c
+@@ -0,0 +1,618 @@
++/* linux/sound/soc/msm/qsd8k-pcm.c
++ *
++ * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
++ *
++ * All source code in this file is licensed under the following license except
++ * where indicated.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/time.h>
++#include <linux/wait.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/control.h>
++#include <asm/dma.h>
++#include <linux/dma-mapping.h>
++
++#include "qsd-pcm.h"
++
++struct snd_pcm_runtime *runtime_dummy;
++static int rc = 1;
++
++#define SND_DRIVER        "snd_qsd"
++#define MAX_PCM_DEVICES	SNDRV_CARDS
++#define MAX_PCM_SUBSTREAMS 1
++
++struct snd_qsd {
++	struct snd_card *card;
++	struct snd_pcm *pcm;
++};
++
++struct qsd_ctl qsd_glb_ctl;
++EXPORT_SYMBOL(qsd_glb_ctl);
++struct audio_locks the_locks;
++EXPORT_SYMBOL(the_locks);
++
++static unsigned convert_dsp_samp_index(unsigned index)
++{
++	switch (index) {
++	case 48000:
++		return 3;
++	case 44100:
++		return 4;
++	case 32000:
++		return 5;
++	case 24000:
++		return 6;
++	case 22050:
++		return 7;
++	case 16000:
++		return 8;
++	case 12000:
++		return 9;
++	case 11025:
++		return 10;
++	case 8000:
++		return 11;
++	default:
++		return 3;
++	}
++}
++
++static struct snd_pcm_hardware qsd_pcm_playback_hardware = {
++	.info = SNDRV_PCM_INFO_INTERLEAVED,
++	.formats = USE_FORMATS,
++	.rates = USE_RATE,
++	.rate_min = USE_RATE_MIN,
++	.rate_max = USE_RATE_MAX,
++	.channels_min = USE_CHANNELS_MIN,
++	.channels_max = USE_CHANNELS_MAX,
++	.buffer_bytes_max = MAX_BUFFER_SIZE,
++	.period_bytes_min = MIN_PERIOD_SIZE,
++	.period_bytes_max = MAX_PERIOD_SIZE,
++	.periods_min = USE_PERIODS_MIN,
++	.periods_max = USE_PERIODS_MAX,
++	.fifo_size = 0,
++};
++
++static struct snd_pcm_hardware qsd_pcm_capture_hardware = {
++	.info = SNDRV_PCM_INFO_INTERLEAVED,
++	.formats = USE_FORMATS,
++	.rates = USE_RATE,
++	.rate_min = USE_RATE_MIN,
++	.rate_max = USE_RATE_MAX,
++	.channels_min = USE_CHANNELS_MIN,
++	.channels_max = USE_CHANNELS_MAX,
++	.buffer_bytes_max = MAX_BUFFER_SIZE,
++	.period_bytes_min = MIN_PERIOD_SIZE,
++	.period_bytes_max = MAX_PERIOD_SIZE,
++	.periods_min = USE_PERIODS_MIN,
++	.periods_max = USE_PERIODS_MAX,
++	.fifo_size = 0,
++};
++
++int qsd_audio_volume_update(struct qsd_audio *prtd)
++{
++
++	int rc = 0;
++	struct cad_flt_cfg_strm_vol cad_strm_volume;
++	struct cad_filter_struct flt;
++
++	printk(KERN_INFO "qsd_audio_volume_update: updating volume");
++	memset(&cad_strm_volume, 0, sizeof(struct cad_flt_cfg_strm_vol));
++	memset(&flt, 0, sizeof(struct cad_filter_struct));
++
++	cad_strm_volume.volume = qsd_glb_ctl.strm_volume;
++	flt.filter_type = CAD_DEVICE_FILTER_TYPE_VOL;
++	flt.format_block = &cad_strm_volume;
++	flt.cmd = CAD_FILTER_CONFIG_STREAM_VOLUME;
++	flt.format_block_len = sizeof(struct cad_flt_cfg_strm_vol);
++
++	rc = cad_ioctl(prtd->cad_w_handle,
++		CAD_IOCTL_CMD_SET_STREAM_FILTER_CONFIG,
++		&flt,
++		sizeof(struct cad_filter_struct));
++	if (rc)
++		printk(KERN_ERR "cad_ioctl() set volume failed\n");
++	return rc;
++}
++
++static int qsd_pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++
++	struct cad_stream_device_struct_type cad_stream_dev;
++	struct cad_stream_info_struct_type cad_stream_info;
++	struct cad_write_pcm_format_struct_type cad_write_pcm_fmt;
++	u32 stream_device[1];
++
++	if (prtd->enabled)
++		return 0;
++
++	prtd->pcm_size = snd_pcm_lib_buffer_bytes(substream);
++	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
++	prtd->pcm_irq_pos = 0;
++	prtd->pcm_buf_pos = 0;
++
++	cad_stream_info.app_type = CAD_STREAM_APP_PLAYBACK;
++	cad_stream_info.priority = 0;
++	cad_stream_info.buf_mem_type = CAD_STREAM_BUF_MEM_HEAP;
++	cad_stream_info.ses_buf_max_size = prtd->pcm_count;
++
++	mutex_lock(&the_locks.lock);
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_SET_STREAM_INFO,
++		       &cad_stream_info,
++		       sizeof(struct cad_stream_info_struct_type));
++	mutex_unlock(&the_locks.lock);
++	if (rc)
++		printk(KERN_ERR "cad ioctl failed\n");
++
++	stream_device[0] = CAD_HW_DEVICE_ID_DEFAULT_RX ;
++	cad_stream_dev.device = (u32 *) &stream_device[0];
++	cad_stream_dev.device_len = 1;
++	mutex_lock(&the_locks.lock);
++
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_SET_STREAM_DEVICE,
++		       &cad_stream_dev,
++		       sizeof(struct cad_stream_device_struct_type));
++	mutex_unlock(&the_locks.lock);
++	if (rc)
++		printk(KERN_ERR "cad ioctl  failed\n");
++
++	cad_write_pcm_fmt.us_ver_id = CAD_WRITE_PCM_VERSION_10;
++	cad_write_pcm_fmt.pcm.us_sample_rate =
++	    convert_dsp_samp_index(runtime->rate);
++	cad_write_pcm_fmt.pcm.us_channel_config = runtime->channels;
++	cad_write_pcm_fmt.pcm.us_width = 1;
++	cad_write_pcm_fmt.pcm.us_sign = 0;
++
++	mutex_lock(&the_locks.lock);
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_SET_STREAM_CONFIG,
++		       &cad_write_pcm_fmt,
++		       sizeof(struct cad_write_pcm_format_struct_type));
++	mutex_unlock(&the_locks.lock);
++	if (rc)
++		printk(KERN_ERR "cad ioctl failed\n");
++
++	mutex_lock(&the_locks.lock);
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_STREAM_START,
++		NULL, 0);
++	mutex_unlock(&the_locks.lock);
++	if (rc)
++		printk(KERN_ERR "cad ioctl failed\n");
++	else {
++		prtd->enabled = 1;
++		mutex_lock(&the_locks.mixer_lock);
++		qsd_glb_ctl.update = 1; /* Update Volume, with Cached value */
++		mutex_unlock(&the_locks.mixer_lock);
++	}
++	return rc;
++}
++
++static int qsd_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static snd_pcm_uframes_t
++qsd_pcm_playback_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++
++	if (prtd->pcm_irq_pos == prtd->pcm_size)
++		prtd->pcm_irq_pos = 0;
++	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
++}
++
++void alsa_event_cb_playback(void)
++{
++	if (runtime_dummy) {
++		struct qsd_audio *prtd = runtime_dummy->private_data;
++		prtd->pcm_irq_pos += prtd->pcm_count;
++		snd_pcm_period_elapsed(prtd->playback_substream);
++	}
++}
++void alsa_event_cb_capture(u32 event, void *evt_packet,
++			u32 evt_packet_len, void *client_data)
++{
++	struct qsd_audio *prtd = client_data;
++	prtd->pcm_irq_pos += prtd->pcm_count;
++	snd_pcm_period_elapsed(prtd->capture_substream);
++}
++
++
++static int qsd_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd;
++	struct cad_event_struct_type alsa_event;
++	int ret = 0;
++
++	prtd = kzalloc(sizeof(struct qsd_audio), GFP_KERNEL);
++	if (prtd == NULL) {
++		ret = -ENOMEM;
++		return ret;
++	}
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		runtime_dummy = runtime;
++		printk(KERN_INFO "Stream = SNDRV_PCM_STREAM_PLAYBACK\n");
++		runtime->hw = qsd_pcm_playback_hardware;
++		prtd->dir = SNDRV_PCM_STREAM_PLAYBACK;
++		prtd->playback_substream = substream;
++		prtd->cos.op_code = CAD_OPEN_OP_WRITE;
++	} else {
++		printk(KERN_INFO "Stream = SNDRV_PCM_STREAM_CAPTURE\n");
++		runtime->hw = qsd_pcm_capture_hardware;
++		prtd->dir = SNDRV_PCM_STREAM_CAPTURE;
++		prtd->capture_substream = substream;
++		prtd->cos.op_code = CAD_OPEN_OP_READ;
++	}
++
++	/* Ensure that buffer size is a multiple of period size */
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		kfree(prtd);
++		return ret;
++	}
++
++	runtime->private_data = prtd;
++
++	prtd->cos.format = CAD_FORMAT_PCM;
++
++	mutex_lock(&the_locks.lock);
++	prtd->cad_w_handle = cad_open(&prtd->cos);
++	mutex_unlock(&the_locks.lock);
++
++	mutex_lock(&the_locks.lock);
++	if  (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		alsa_event.callback = &alsa_event_cb_capture;
++		alsa_event.client_data = prtd;
++
++		ret = cad_ioctl(prtd->cad_w_handle,
++			CAD_IOCTL_CMD_SET_STREAM_EVENT_LSTR,
++			&alsa_event, sizeof(struct cad_event_struct_type));
++		if (ret) {
++			mutex_unlock(&the_locks.lock);
++			cad_close(prtd->cad_w_handle);
++			kfree(prtd);
++			return ret;
++		}
++	} else
++		register_cb(&alsa_event_cb_playback);
++	mutex_unlock(&the_locks.lock);
++	prtd->enabled = 0;
++
++	return 0;
++}
++
++static int qsd_pcm_playback_copy(struct snd_pcm_substream *substream, int a,
++				 snd_pcm_uframes_t hwoff, void __user *buf,
++				 snd_pcm_uframes_t frames)
++{
++	int fbytes = 0;
++	size_t xfer;
++	int rc;
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++
++	fbytes = frames_to_bytes(runtime, frames);
++	prtd->cbs.buffer = (void *)buf;
++	prtd->cbs.phys_addr = 0;
++	prtd->cbs.max_size = fbytes;
++	prtd->cbs.actual_size = fbytes;
++
++	prtd->pcm_buf_pos += fbytes;
++	mutex_lock(&the_locks.lock);
++	xfer = cad_write(prtd->cad_w_handle, &prtd->cbs);
++	mutex_unlock(&the_locks.lock);
++
++	mutex_lock(&the_locks.mixer_lock);
++	if (qsd_glb_ctl.update) {
++		rc = qsd_audio_volume_update(prtd);
++		qsd_glb_ctl.update = 0;
++	}
++	mutex_unlock(&the_locks.mixer_lock);
++
++	return 0;
++}
++
++static int qsd_pcm_playback_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++
++	mutex_lock(&the_locks.lock);
++	cad_close(prtd->cad_w_handle);
++	mutex_unlock(&the_locks.lock);
++	prtd->enabled = 0;
++
++	/*
++	 * TODO: Deregister the async callback handler.
++	 * Currently cad provides no interface to do so.
++	 */
++	register_cb(NULL);
++	kfree(prtd);
++
++	return 0;
++}
++
++static int qsd_pcm_capture_copy(struct snd_pcm_substream *substream, int a,
++				 snd_pcm_uframes_t hwoff, void __user *buf,
++				 snd_pcm_uframes_t frames)
++{
++	int fbytes = 0;
++	size_t xfer;
++	int rc = 0;
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++
++	fbytes = frames_to_bytes(runtime, frames);
++	fbytes = fbytes;
++
++	prtd->cbs.buffer = (void *)buf;
++	prtd->cbs.phys_addr = 0;
++	prtd->cbs.max_size = fbytes;
++	prtd->cbs.actual_size = fbytes;
++
++	mutex_lock(&the_locks.lock);
++	xfer = cad_read(prtd->cad_w_handle, &prtd->cbs);
++	mutex_unlock(&the_locks.lock);
++
++	prtd->pcm_buf_pos += fbytes;
++	mutex_lock(&the_locks.mixer_lock);
++	if (qsd_glb_ctl.update) {
++		rc = qsd_audio_volume_update(prtd);
++		qsd_glb_ctl.update = 0;
++	}
++	mutex_unlock(&the_locks.mixer_lock);
++
++	if (xfer < fbytes)
++		return -EIO;
++
++	return rc;
++}
++
++static snd_pcm_uframes_t
++qsd_pcm_capture_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++
++	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
++}
++
++static int qsd_pcm_capture_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++
++	mutex_lock(&the_locks.lock);
++	cad_close(prtd->cad_w_handle);
++	mutex_unlock(&the_locks.lock);
++
++	/*
++	 * TODO: Deregister the async callback handler.
++	 * Currently cad provides no interface to do so.
++	 */
++	kfree(prtd);
++
++	return 0;
++}
++
++static int qsd_pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct qsd_audio *prtd = runtime->private_data;
++	int rc = 0;
++
++	struct cad_stream_device_struct_type cad_stream_dev;
++	struct cad_stream_info_struct_type cad_stream_info;
++	struct cad_write_pcm_format_struct_type cad_write_pcm_fmt;
++	u32 stream_device[1];
++
++	prtd->pcm_size = snd_pcm_lib_buffer_bytes(substream);
++	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
++	prtd->pcm_irq_pos = 0;
++	prtd->pcm_buf_pos = 0;
++
++	cad_stream_info.app_type = CAD_STREAM_APP_RECORD;
++	cad_stream_info.priority = 0;
++	cad_stream_info.buf_mem_type = CAD_STREAM_BUF_MEM_HEAP;
++	cad_stream_info.ses_buf_max_size = prtd->pcm_count;
++
++	if (prtd->enabled)
++		return 0;
++
++	mutex_lock(&the_locks.lock);
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_SET_STREAM_INFO,
++		&cad_stream_info,
++		sizeof(struct cad_stream_info_struct_type));
++	if (rc) {
++		mutex_unlock(&the_locks.lock);
++		return rc;
++	}
++
++	stream_device[0] = CAD_HW_DEVICE_ID_DEFAULT_TX ;
++	cad_stream_dev.device = (u32 *) &stream_device[0];
++	cad_stream_dev.device_len = 1;
++
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_SET_STREAM_DEVICE,
++	       &cad_stream_dev,
++	       sizeof(struct cad_stream_device_struct_type));
++	if (rc) {
++		mutex_unlock(&the_locks.lock);
++		return rc;
++	}
++
++	cad_write_pcm_fmt.us_ver_id = CAD_WRITE_PCM_VERSION_10;
++	cad_write_pcm_fmt.pcm.us_sample_rate =
++	    convert_dsp_samp_index(runtime->rate);
++	cad_write_pcm_fmt.pcm.us_channel_config = runtime->channels;
++	cad_write_pcm_fmt.pcm.us_width = 1;
++	cad_write_pcm_fmt.pcm.us_sign = 0;
++
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_SET_STREAM_CONFIG,
++	       &cad_write_pcm_fmt,
++	       sizeof(struct cad_write_pcm_format_struct_type));
++	if (rc) {
++		mutex_unlock(&the_locks.lock);
++		return rc;
++	}
++	rc = cad_ioctl(prtd->cad_w_handle, CAD_IOCTL_CMD_STREAM_START,
++			NULL, 0);
++	mutex_unlock(&the_locks.lock);
++	if (!rc)
++		prtd->enabled = 1;
++	return rc;
++}
++
++
++static int qsd_pcm_copy(struct snd_pcm_substream *substream, int a,
++			snd_pcm_uframes_t hwoff, void __user *buf,
++			snd_pcm_uframes_t frames)
++{
++	int ret = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = qsd_pcm_playback_copy(substream, a, hwoff, buf, frames);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = qsd_pcm_capture_copy(substream, a, hwoff, buf, frames);
++	return ret;
++}
++
++static int qsd_pcm_close(struct snd_pcm_substream *substream)
++{
++	int ret = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = qsd_pcm_playback_close(substream);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = qsd_pcm_capture_close(substream);
++	return ret;
++}
++static int qsd_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	int ret = 0;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = qsd_pcm_playback_prepare(substream);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = qsd_pcm_capture_prepare(substream);
++	return ret;
++}
++
++static snd_pcm_uframes_t qsd_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	snd_pcm_uframes_t ret = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = qsd_pcm_playback_pointer(substream);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = qsd_pcm_capture_pointer(substream);
++	return ret;
++}
++
++int qsd_pcm_hw_params(struct snd_pcm_substream *substream,
++		      struct snd_pcm_hw_params *params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	if (substream->pcm->device & 1) {
++		runtime->hw.info &= ~SNDRV_PCM_INFO_INTERLEAVED;
++		runtime->hw.info |= SNDRV_PCM_INFO_NONINTERLEAVED;
++	}
++	return 0;
++}
++
++struct snd_pcm_ops qsd_pcm_ops = {
++	.open = qsd_pcm_open,
++	.copy = qsd_pcm_copy,
++	.hw_params = qsd_pcm_hw_params,
++	.close = qsd_pcm_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.prepare = qsd_pcm_prepare,
++	.trigger = qsd_pcm_trigger,
++	.pointer = qsd_pcm_pointer,
++};
++EXPORT_SYMBOL_GPL(qsd_pcm_ops);
++
++static int qsd_pcm_remove(struct platform_device *devptr)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(devptr);
++	snd_soc_free_pcms(socdev);
++	kfree(socdev->codec);
++	platform_set_drvdata(devptr, NULL);
++	return 0;
++}
++
++static int qsd_pcm_new(struct snd_card *card,
++			struct snd_soc_dai *codec_dai,
++			struct snd_pcm *pcm)
++{
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_32BIT_MASK;
++
++	return 0;
++}
++
++struct snd_soc_platform qsd_soc_platform = {
++	.name		= "qsd-audio",
++	.remove         = qsd_pcm_remove,
++	.pcm_ops 	= &qsd_pcm_ops,
++	.pcm_new	= qsd_pcm_new,
++};
++EXPORT_SYMBOL(qsd_soc_platform);
++
++static int __init qsd_soc_platform_init(void)
++{
++	return snd_soc_register_platform(&qsd_soc_platform);
++}
++module_init(qsd_soc_platform_init);
++
++static void __exit qsd_soc_platform_exit(void)
++{
++	snd_soc_unregister_platform(&qsd_soc_platform);
++}
++module_exit(qsd_soc_platform_exit);
++
++MODULE_DESCRIPTION("PCM module platform driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/msm/qsd8k.c b/sound/soc/msm/qsd8k.c
+new file mode 100644
+index 0000000..979fde7
+--- /dev/null
++++ b/sound/soc/msm/qsd8k.c
+@@ -0,0 +1,382 @@
++/* linux/sound/soc/msm/qsd8k.c
++ *
++ * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
++ *
++ * All source code in this file is licensed under the following license except
++ * where indicated.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * See the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, you can find it at http://www.fsf.org.
++ */
++
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/time.h>
++#include <linux/wait.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/control.h>
++#include <asm/dma.h>
++#include <linux/dma-mapping.h>
++
++#include "qsd-pcm.h"
++
++static struct platform_device *qsd_audio_snd_device;
++
++static int snd_qsd_route_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1; /* Device */
++	uinfo->value.integer.min = CAD_HW_DEVICE_ID_HANDSET_MIC;
++	uinfo->value.integer.max = CAD_HW_DEVICE_ID_DEFAULT_RX;
++	return 0;
++}
++
++static int snd_qsd_route_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] =
++			(uint32_t) qsd_glb_ctl.playback_device;
++	ucontrol->value.integer.value[1] =
++			(uint32_t) qsd_glb_ctl.capture_device;
++	return 0;
++}
++
++static int snd_get_device_type(int device)
++{
++	switch (device) {
++	case CAD_HW_DEVICE_ID_HANDSET_MIC:
++	case CAD_HW_DEVICE_ID_HEADSET_MIC:
++	case CAD_HW_DEVICE_ID_BT_SCO_MIC:
++	case CAD_HW_DEVICE_ID_DEFAULT_TX:
++		return CAD_TX_DEVICE;
++	case CAD_HW_DEVICE_ID_HANDSET_SPKR:
++	case CAD_HW_DEVICE_ID_HEADSET_SPKR_MONO:
++	case CAD_HW_DEVICE_ID_HEADSET_SPKR_STEREO:
++	case CAD_HW_DEVICE_ID_SPKR_PHONE_MIC:
++	case CAD_HW_DEVICE_ID_SPKR_PHONE_MONO:
++	case CAD_HW_DEVICE_ID_SPKR_PHONE_STEREO:
++	case CAD_HW_DEVICE_ID_BT_SCO_SPKR:
++	case CAD_HW_DEVICE_ID_BT_A2DP_SPKR:
++	case CAD_HW_DEVICE_ID_DEFAULT_RX:
++		return CAD_RX_DEVICE;
++	default:
++		return -ENODEV;
++	}
++}
++
++static int snd_qsd_route_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	int rc = 0;
++	int device, direction;
++
++	device = ucontrol->value.integer.value[0];
++	direction = snd_get_device_type(device);
++
++	if (direction < 0)
++		return direction;
++
++	rc = audio_switch_device(device);
++	if (rc < 0) {
++		printk(KERN_ERR "audio_switch_device  failed\n");
++		return rc;
++	}
++
++	if (CAD_RX_DEVICE == direction)
++		qsd_glb_ctl.playback_device = device;
++	else /* CAD_TX_DEVICE */
++		qsd_glb_ctl.capture_device = device;
++
++	return 0;
++}
++
++static int snd_vol_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1; /* Volume */
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 100;
++	return 0;
++}
++
++static int snd_rx_vol_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = (uint32_t) qsd_glb_ctl.rx_volume;
++	return 0;
++}
++
++static int snd_rx_vol_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct msm_vol_info vi;
++	int rc = 0;
++
++	vi.vol = ucontrol->value.integer.value[0];
++	vi.path = CAD_RX_DEVICE;
++
++	rc = audio_set_device_volume_path(&vi);
++
++	if (rc)
++		printk(KERN_ERR "audio_set_device_volume failed\n");
++	else
++		qsd_glb_ctl.rx_volume = ucontrol->value.integer.value[0];
++
++	return rc;
++}
++
++static int snd_tx_vol_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = (uint32_t) qsd_glb_ctl.tx_volume;
++	return 0;
++}
++
++static int snd_tx_vol_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct msm_vol_info vi;
++	int rc = 0;
++
++	vi.vol = ucontrol->value.integer.value[0];
++	vi.path = CAD_TX_DEVICE;
++
++	rc = audio_set_device_volume_path(&vi);
++
++	if (rc)
++		printk(KERN_ERR "audio_set_device_volume failed\n");
++	else
++		qsd_glb_ctl.tx_volume = ucontrol->value.integer.value[0];
++
++	return rc;
++}
++
++static int snd_tx_mute_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1; /* MUTE */
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++	return 0;
++}
++
++static int snd_tx_mute_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = (uint32_t) qsd_glb_ctl.tx_mute;
++	return 0;
++}
++
++static int snd_tx_mute_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	int rc = 0;
++	struct msm_mute_info m;
++
++	m.path = CAD_TX_DEVICE;
++	m.mute = ucontrol->value.integer.value[0];
++
++	rc = audio_set_device_mute(&m);
++	if (rc)
++		printk(KERN_ERR "Capture device mute failed\n");
++	else
++		qsd_glb_ctl.tx_mute = ucontrol->value.integer.value[0];
++	return rc;
++}
++
++static int snd_rx_mute_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1; /* MUTE */
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++	return 0;
++}
++
++static int snd_rx_mute_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = (uint32_t) qsd_glb_ctl.rx_mute;
++	return 0;
++}
++
++static int snd_rx_mute_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	int rc = 0;
++	struct msm_mute_info m;
++
++	m.path = CAD_RX_DEVICE;
++	m.mute = ucontrol->value.integer.value[0];
++
++	rc = audio_set_device_mute(&m);
++	if (rc)
++		printk(KERN_ERR "Playback device mute failed\n");
++	else
++		qsd_glb_ctl.rx_mute = ucontrol->value.integer.value[0];
++	return rc;
++}
++
++static int snd_strm_vol_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1; /* Volume Param, in gain */
++	uinfo->value.integer.min = CAD_STREAM_MIN_GAIN;
++	uinfo->value.integer.max = CAD_STREAM_MAX_GAIN;
++	return 0;
++}
++
++static int snd_strm_vol_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = qsd_glb_ctl.strm_volume;
++	return 0;
++}
++
++static int snd_strm_vol_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	int change;
++	int volume;
++
++	if (ucontrol->value.integer.value[0] > CAD_STREAM_MAX_GAIN)
++		ucontrol->value.integer.value[0] = CAD_STREAM_MAX_GAIN;
++	if (ucontrol->value.integer.value[0] < CAD_STREAM_MIN_GAIN)
++		ucontrol->value.integer.value[0] = CAD_STREAM_MIN_GAIN;
++
++	volume = ucontrol->value.integer.value[0];
++	change = (qsd_glb_ctl.strm_volume != volume);
++	mutex_lock(&the_locks.mixer_lock);
++	if (change) {
++		qsd_glb_ctl.strm_volume = volume;
++		qsd_glb_ctl.update = 1;
++	}
++	mutex_unlock(&the_locks.mixer_lock);
++	return 0;
++}
++
++#define QSD_EXT(xname, xindex, fp_info, fp_get, fp_put, addr) \
++{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE, \
++  .name = xname, .index = xindex, \
++  .info = fp_info,\
++  .get = fp_get, .put = fp_put, \
++  .private_value = addr, \
++}
++
++static struct snd_kcontrol_new snd_qsd_controls[] = {
++	QSD_EXT("Master Route", 1, snd_qsd_route_info, \
++			 snd_qsd_route_get, snd_qsd_route_put, 0),
++	QSD_EXT("Master Volume Playback", 2, snd_vol_info, \
++			 snd_rx_vol_get, snd_rx_vol_put, 0),
++	QSD_EXT("Master Volume Capture", 3, snd_vol_info, \
++			 snd_tx_vol_get, snd_tx_vol_put, 0),
++	QSD_EXT("Master Mute Playback", 4, snd_rx_mute_info, \
++			 snd_rx_mute_get, snd_rx_mute_put, 0),
++	QSD_EXT("Master Mute Capture", 5, snd_tx_mute_info, \
++			 snd_tx_mute_get, snd_tx_mute_put, 0),
++	QSD_EXT("Stream Volume", 6, snd_strm_vol_info, \
++			 snd_strm_vol_get, snd_strm_vol_put, 0),
++};
++
++static int qsd_new_mixer(struct snd_card *card)
++{
++	unsigned int idx;
++	int err;
++
++	strcpy(card->mixername, "MSM Mixer");
++	for (idx = 0; idx < ARRAY_SIZE(snd_qsd_controls); idx++) {
++		err = snd_ctl_add(card,
++				snd_ctl_new1(&snd_qsd_controls[idx], NULL));
++		if (err < 0)
++			return err;
++	}
++	return 0;
++}
++
++static int qsd_soc_dai_init(struct snd_soc_codec *codec)
++{
++
++	int ret = 0;
++	ret = qsd_new_mixer(codec->card);
++	if (ret < 0) {
++		printk(KERN_ERR "msm_soc:ALSA MSM Mixer Fail");
++	}
++
++	return ret;
++}
++
++static struct snd_soc_dai_link qsd_dai = {
++	.name = "ASOC",
++	.stream_name = "ASOC",
++	.codec_dai = &msm_dais[0],
++	.cpu_dai = &msm_dais[1],
++	.init   = qsd_soc_dai_init,
++};
++
++struct snd_soc_card snd_soc_card_qsd = {
++	.name 		= "qsd-audio",
++	.dai_link	= &qsd_dai,
++	.num_links 	= 1,
++	.platform = &qsd_soc_platform,
++};
++
++/* qsd_audio audio subsystem */
++static struct snd_soc_device qsd_audio_snd_devdata = {
++	.card = &snd_soc_card_qsd,
++	.codec_dev = &soc_codec_dev_msm,
++};
++
++static int __init qsd_audio_init(void)
++{
++	int ret;
++
++	qsd_audio_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!qsd_audio_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(qsd_audio_snd_device, &qsd_audio_snd_devdata);
++	qsd_audio_snd_devdata.dev = &qsd_audio_snd_device->dev;
++	ret = platform_device_add(qsd_audio_snd_device);
++	if (ret) {
++		platform_device_put(qsd_audio_snd_device);
++		return ret;
++	}
++	mutex_init(&the_locks.lock);
++	mutex_init(&the_locks.mixer_lock);
++
++	return ret;
++}
++
++static void __exit qsd_audio_exit(void)
++{
++	kfree(qsd_audio_snd_devdata.codec_dev);
++	platform_device_unregister(qsd_audio_snd_device);
++}
++
++module_init(qsd_audio_init);
++module_exit(qsd_audio_exit);
++
++MODULE_DESCRIPTION("PCM module");
++MODULE_LICENSE("GPL v2");

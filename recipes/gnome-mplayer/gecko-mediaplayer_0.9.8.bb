@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "firefox gtk+ gconf dbus-glib"
 RDEPENDS = "firefox gnome-mplayer"
 
-PR = "r3"
+PR = "r6"
 
 inherit autotools
 
@@ -13,11 +13,7 @@ SRC_URI = "http://gecko-mediaplayer.googlecode.com/files/${P}.tar.gz \
            file://extensions \
 "
 
-# Yes, this needs to match the firefox version you are building *exactly*
-MOZILLA_HOME = "firefox-3.5.4"
-
 do_install_append() {
-	ln -sf ${libdir}/mozilla ${D}${libdir}/${MOZILLA_HOME}
 	cp -dpR ${WORKDIR}/extens* ${D}${libdir}/mozilla/
 }
 
@@ -26,7 +22,14 @@ RDEPENDS_${PN}-firefox-hack = "${PN}"
 FILES_${PN}-firefox-hack = "${libdir}/mozilla/extensions"
 
 FILES_${PN} += "${sysconfdir}/* \
-                ${libdir}/mozilla/* ${libdir}/${MOZILLA_HOME}"
+                ${libdir}/mozilla/*"
 FILES_${PN}-dbg += "${libdir}/mozilla*/plugins/.debug/*"
 
+pkg_postinst_${PN}-firefox-hack() {
+for firefoxdir in $D${libdir}/firefox-* ; do
+	if [ -e $firefoxdir/extensions/ ] ; then 
+		ln -sf ${libdir}/mozilla/extensions/flash@alwaysinnovating.com $firefoxdir/extensions/
+	fi
+done
+}
 
