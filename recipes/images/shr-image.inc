@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r5"
+PR = "r6"
 
 
 DEPENDS += "task-shr-minimal"
@@ -87,7 +87,7 @@ shr_rootfs_postprocess() {
 
     # elementary theme foo
     ELM_PROFILE_SCR=./etc/profile.d/elementary.sh
-    echo 'export ELM_ENGINE=x11-16' > ${ELM_PROFILE_SCR}
+    echo 'export ELM_ENGINE=x11' > ${ELM_PROFILE_SCR}
     echo 'export ELM_THEME=gry' >> ${ELM_PROFILE_SCR}
     echo 'export ELM_SCALE=2' >> ${ELM_PROFILE_SCR}
     echo 'export ELM_FINGER_SIZE=70' >> ${ELM_PROFILE_SCR}
