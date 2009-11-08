@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -11,6 +11,7 @@ DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_db1200 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
+DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.5.bz2;patch=1 \
