@@ -4,7 +4,7 @@ DEPENDS = "icon-naming-utils-native glib-2.0 intltool-native"
 RDEPENDS = "hicolor-icon-theme"
 RRECOMMENDS = "librsvg-gtk"
 PACKAGE_ARCH = "all"
-PR = "r1"
+PR = "r2"
 
 FILES_${PN} += "${datadir}/*"
 
