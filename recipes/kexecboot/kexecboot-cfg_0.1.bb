@@ -2,7 +2,7 @@ LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "Configuration file for kexecboot"
 
-PR = "r6"
+PR = "r7"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "file://icon.xpm"
@@ -36,15 +36,33 @@ do_configure_prepend () {
 }
 
 do_install_prepend () {
-        echo "DEFAULT=${DISTRO}" > ${S}/boot.cfg
+
+        echo "# Show this label in kexecboot menu." >> ${S}/boot.cfg
         echo "LABEL=${DISTRO}" >> ${S}/boot.cfg
+        echo "#" >> ${S}/boot.cfg
+
+        echo "# Specify full path to the kernel." >> ${S}/boot.cfg
         echo "KERNEL=/boot/${KERNEL_IMAGETYPE}" >> ${S}/boot.cfg
+        echo "#" >> ${S}/boot.cfg
+
+        echo "# Append this tags to the kernel cmdline." >> ${S}/boot.cfg
         echo "APPEND=${CMDLINE}" >> ${S}/boot.cfg
-        echo "ICON=/boot/icon.xpm" >> ${S}/boot.cfg
+        echo "#" >> ${S}/boot.cfg
+
+        echo "# Specify full path for a custom distro-icon for the menu-item." >> ${S}/boot.cfg
+        echo "# If not set, use device-icons as default (NAND, SD, CF, ...)." >> ${S}/boot.cfg
+        echo "#ICON=/boot/icon.xpm" >> ${S}/boot.cfg
+        echo "#" >> ${S}/boot.cfg
+
+        echo "# Priority of item in kexecboot menu." >> ${S}/boot.cfg
+        echo "# Items with highest priority will be shown at top of menu." >> ${S}/boot.cfg
+        echo "# Default: 0 (lowest, ordered by device ordering)" >> ${S}/boot.cfg
+        echo "#PRIORITY=10" >> ${S}/boot.cfg
+        echo "#" >> ${S}/boot.cfg
 }
 
 do_install () {
-	install -d ${D}/boot
-	install -m 0644 boot.cfg ${D}/boot/boot.cfg
-	install -m 0644 icon.xpm ${D}/boot/icon.xpm
+        install -d ${D}/boot
+        install -m 0644 boot.cfg ${D}/boot/boot.cfg
+        install -m 0644 icon.xpm ${D}/boot/icon.xpm
 }
