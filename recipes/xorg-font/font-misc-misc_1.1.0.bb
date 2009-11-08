@@ -1,2 +1,1 @@
-EXTRA_OECONF = "STAGING_LIBDIR_NATIVE=\"${STAGING_LIBDIR_NATIVE}\""
 require xorg-font-common.inc

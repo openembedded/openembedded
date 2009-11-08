@@ -19,6 +19,8 @@ do_configure_prepend() {
         fi
 }
 
+EXTRA_OECONF += " --with-fontrootdir=${libdir}/X11/fonts"
+
 EXTRA_OEMAKE += "FCCACHE=/bin/true"
 do_install_append() {
 	find ${D}${libdir}/X11/fonts -type f -name fonts.dir | xargs rm -f
