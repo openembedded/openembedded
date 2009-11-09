@@ -1008,7 +1008,7 @@ addtask build after do_populate_staging
 do_build = ""
 do_build[func] = "1"
 
-INHERIT =+ "packagedata"
+inherit packagedata
 
 # Functions that update metadata based on files outputted
 # during the build process.
