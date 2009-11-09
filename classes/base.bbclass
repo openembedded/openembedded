@@ -49,7 +49,7 @@ def base_path_out(path, d):
 
 # for MD5/SHA handling
 def base_chk_load_parser(config_paths):
-    import ConfigParser, os, bb
+    import ConfigParser
     parser = ConfigParser.ConfigParser()
     if len(parser.read(config_paths)) < 1:
         raise ValueError("no ini files could be found")
@@ -57,7 +57,6 @@ def base_chk_load_parser(config_paths):
     return parser
 
 def base_chk_file(parser, pn, pv, src_uri, localpath, data):
-    import os, bb
     no_checksum = False
     # Try PN-PV-SRC_URI first and then try PN-SRC_URI
     # we rely on the get method to create errors
@@ -128,7 +127,6 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
 
 
 def base_dep_prepend(d):
-	import bb
 	#
 	# Ideally this will check a flag so we will operate properly in
 	# the case where host == build == target, for now we don't work in
@@ -150,7 +148,6 @@ def base_dep_prepend(d):
 	return deps
 
 def base_read_file(filename):
-	import bb
 	try:
 		f = file( filename, "r" )
 	except IOError, reason:
@@ -166,21 +163,18 @@ def base_ifelse(condition, iftrue = True, iffalse = False):
         return iffalse
 
 def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
-	import bb
 	if bb.data.getVar(variable,d,1) == checkvalue:
 		return truevalue
 	else:
 		return falsevalue
 
 def base_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
-	import bb
 	if float(bb.data.getVar(variable,d,1)) <= float(checkvalue):
 		return truevalue
 	else:
 		return falsevalue
 
 def base_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
-    import bb
     result = bb.vercmp(bb.data.getVar(variable,d,True), checkvalue)
     if result <= 0:
         return truevalue
@@ -188,7 +182,6 @@ def base_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
         return falsevalue
 
 def base_contains(variable, checkvalues, truevalue, falsevalue, d):
-	import bb
 	matches = 0
 	if type(checkvalues).__name__ == "str":
 		checkvalues = [checkvalues]
@@ -200,7 +193,6 @@ def base_contains(variable, checkvalues, truevalue, falsevalue, d):
 	return falsevalue
 
 def base_both_contain(variable1, variable2, checkvalue, d):
-       import bb
        if bb.data.getVar(variable1,d,1).find(checkvalue) != -1 and bb.data.getVar(variable2,d,1).find(checkvalue) != -1:
                return checkvalue
        else:
@@ -211,8 +203,6 @@ DEPENDS_prepend="${@base_dep_prepend(d)} "
 # Returns PN with various suffixes removed
 # or PN if no matching suffix was found.
 def base_package_name(d):
-  import bb;
-
   pn = bb.data.getVar('PN', d, 1)
   if pn.endswith("-native"):
 		pn = pn[0:-7]
@@ -229,7 +219,6 @@ def base_package_name(d):
   return pn
 
 def base_set_filespath(path, d):
-	import os, bb
 	bb.note("base_set_filespath usage is deprecated, %s should be fixed" % d.getVar("P", 1))
 	filespath = []
 	# The ":" ensures we have an 'empty' override
@@ -448,7 +437,6 @@ oe_libinstall() {
 }
 
 def package_stagefile(file, d):
-    import bb, os
 
     if bb.data.getVar('PSTAGING_ACTIVE', d, True) == "1":
         destfile = file.replace(bb.data.getVar("TMPDIR", d, 1), bb.data.getVar("PSTAGE_TMPDIR_STAGE", d, 1))
@@ -529,21 +517,11 @@ python do_cleanall() {
 do_cleanall[recrdeptask] = "do_clean"
 addtask cleanall after do_clean
 
-#Uncomment this for bitbake 1.8.12
-#addtask rebuild after do_${BB_DEFAULT_TASK}
-addtask rebuild
+addtask rebuild after do_${BB_DEFAULT_TASK}
 do_rebuild[dirs] = "${TOPDIR}"
 do_rebuild[nostamp] = "1"
 python base_do_rebuild() {
 	"""rebuild a package"""
-	from bb import __version__
-	try:
-		from distutils.version import LooseVersion
-	except ImportError:
-		def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
-	if (LooseVersion(__version__) < LooseVersion('1.8.11')):
-		bb.build.exec_func('do_clean', d)
-		bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
 }
 
 addtask mrproper
@@ -563,7 +541,6 @@ do_distclean[dirs] = "${TOPDIR}"
 do_distclean[nostamp] = "1"
 python base_do_distclean() {
 	"""clear downloaded sources, build and temp directories"""
-	import os
 
 	bb.build.exec_func('do_clean', d)
 
@@ -741,7 +718,7 @@ def subprocess_setup():
 	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 def oe_unpack_file(file, data, url = None):
-	import bb, os, subprocess
+	import subprocess
 	if not url:
 		url = "file://%s" % file
 	dots = file.split(".")
@@ -819,7 +796,7 @@ def oe_unpack_file(file, data, url = None):
 addtask unpack after do_fetch
 do_unpack[dirs] = "${WORKDIR}"
 python base_do_unpack() {
-	import re, os
+	import re
 
 	localdata = bb.data.createCopy(d)
 	bb.data.update_data(localdata)
@@ -846,7 +823,6 @@ METADATA_REVISION = "${@base_get_scm_revision(d)}"
 METADATA_BRANCH = "${@base_get_scm_branch(d)}"
 
 def base_get_scm(d):
-	import os
 	from bb import which
 	baserepo = os.path.dirname(os.path.dirname(which(d.getVar("BBPATH", 1), "classes/base.bbclass")))
 	for (scm, scmpath) in {"svn": ".svn",
@@ -907,7 +883,6 @@ def base_get_metadata_svn_revision(path, d):
 	return revision
 
 def base_get_metadata_git_branch(path, d):
-	import os
 	branch = os.popen('cd %s; PATH=%s git symbolic-ref HEAD 2>/dev/null' % (path, d.getVar("PATH", 1))).read().rstrip()
 
 	if len(branch) != 0:
@@ -915,7 +890,6 @@ def base_get_metadata_git_branch(path, d):
 	return "<unknown>"
 
 def base_get_metadata_git_revision(path, d):
-	import os
 	rev = os.popen("cd %s; PATH=%s git show-ref HEAD 2>/dev/null" % (path, d.getVar("PATH", 1))).read().split(" ")[0].rstrip()
 	if len(rev) != 0:
 		return rev
@@ -926,7 +900,7 @@ addhandler base_eventhandler
 python base_eventhandler() {
 	from bb import note, error, data
 	from bb.event import Handled, NotHandled, getName
-	import os
+
 
 	name = getName(e)
 	if name == "TaskCompleted":
@@ -1034,6 +1008,8 @@ addtask build after do_populate_staging
 do_build = ""
 do_build[func] = "1"
 
+INHERIT =+ "packagedata"
+
 # Functions that update metadata based on files outputted
 # during the build process.
 
@@ -1054,88 +1030,6 @@ def explode_deps(s):
 			r.append(i)
 	return r
 
-def packaged(pkg, d):
-	import os, bb
-	return os.access(get_subpkgedata_fn(pkg, d) + '.packaged', os.R_OK)
-
-def read_pkgdatafile(fn):
-	pkgdata = {}
-
-	def decode(str):
-		import codecs
-		c = codecs.getdecoder("string_escape")
-		return c(str)[0]
-
-	import os
-	if os.access(fn, os.R_OK):
-		import re
-		f = file(fn, 'r')
-		lines = f.readlines()
-		f.close()
-		r = re.compile("([^:]+):\s*(.*)")
-		for l in lines:
-			m = r.match(l)
-			if m:
-				pkgdata[m.group(1)] = decode(m.group(2))
-
-	return pkgdata
-
-def get_subpkgedata_fn(pkg, d):
-	import bb, os
-	archs = bb.data.expand("${PACKAGE_ARCHS}", d).split(" ")
-	archs.reverse()
-	pkgdata = bb.data.expand('${TMPDIR}/pkgdata/', d)
-	targetdir = bb.data.expand('${TARGET_VENDOR}-${TARGET_OS}/runtime/', d)
-	for arch in archs:
-		fn = pkgdata + arch + targetdir + pkg
-		if os.path.exists(fn):
-			return fn
-	return bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
-
-def has_subpkgdata(pkg, d):
-	import bb, os
-	return os.access(get_subpkgedata_fn(pkg, d), os.R_OK)
-
-def read_subpkgdata(pkg, d):
-	import bb
-	return read_pkgdatafile(get_subpkgedata_fn(pkg, d))
-
-def has_pkgdata(pn, d):
-	import bb, os
-	fn = bb.data.expand('${PKGDATA_DIR}/%s' % pn, d)
-	return os.access(fn, os.R_OK)
-
-def read_pkgdata(pn, d):
-	import bb
-	fn = bb.data.expand('${PKGDATA_DIR}/%s' % pn, d)
-	return read_pkgdatafile(fn)
-
-python read_subpackage_metadata () {
-	import bb
-	data = read_pkgdata(bb.data.getVar('PN', d, 1), d)
-
-	for key in data.keys():
-		bb.data.setVar(key, data[key], d)
-
-	for pkg in bb.data.getVar('PACKAGES', d, 1).split():
-		sdata = read_subpkgdata(pkg, d)
-		for key in sdata.keys():
-			bb.data.setVar(key, sdata[key], d)
-}
-
-
-#
-# Collapse FOO_pkg variables into FOO
-#
-def read_subpkgdata_dict(pkg, d):
-	import bb
-	ret = {}
-	subd = read_pkgdatafile(get_subpkgedata_fn(pkg, d))
-	for var in subd:
-		newvar = var.replace("_" + pkg, "")
-		ret[newvar] = subd[var]
-	return ret
-
 # Make sure MACHINE isn't exported
 # (breaks binutils at least)
 MACHINE[unexport] = "1"
@@ -1151,7 +1045,7 @@ DISTRO[unexport] = "1"
 
 
 def base_after_parse(d):
-    import bb, os, exceptions
+    import exceptions
 
     source_mirror_fetch = bb.data.getVar('SOURCE_MIRROR_FETCH', d, 0)
     if not source_mirror_fetch:
@@ -1234,19 +1128,7 @@ def base_after_parse(d):
     bb.data.setVar('MULTIMACH_ARCH', multiarch, d)
 
 python () {
-    import bb
-    from bb import __version__
     base_after_parse(d)
-
-    # Remove this for bitbake 1.8.12
-    try:
-        from distutils.version import LooseVersion
-    except ImportError:
-        def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
-    if (LooseVersion(__version__) >= LooseVersion('1.8.11')):
-        deps = bb.data.getVarFlag('do_rebuild', 'deps', d) or []
-        deps.append('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1))
-        bb.data.setVarFlag('do_rebuild', 'deps', deps, d)
 }
 
 def check_app_exists(app, d):
