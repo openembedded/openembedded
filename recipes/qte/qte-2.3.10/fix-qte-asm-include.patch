@@ -1,0 +1,19 @@
+--- a/src/kernel/qpixmapcache.cpp	2005-01-23 14:00:46.000000000 +0000
++++ b/src/kernel/qpixmapcache.cpp	2009-11-05 22:49:44.000000000 +0000
+@@ -119,13 +119,13 @@
+ #include <time.h>
+ #include <stdio.h>
+ #include <signal.h>
++#include <unistd.h>
+ 
+ #ifdef THROW_AWAY_UNUSED_PAGES
+ # include <sys/mman.h> // madvise
+-# include <asm/page.h> // PAGE_SIZE,PAGE_MASK,PAGE_ALIGN
+-# ifndef PAGE_ALIGN
++# define PAGE_SIZE		getpagesize()
++# define PAGE_MASK		(~(PAGE_SIZE-1))
+ # define PAGE_ALIGN(addr)	(((addr)+PAGE_SIZE-1)&PAGE_MASK)
+-# endif // PAGE_ALIGN
+ #endif // THROW_AWAY_UNUSED_PAGES 
+ 
+ 

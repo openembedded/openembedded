@@ -1,13 +1,16 @@
-LICENSE = "GPL"
 SECTION = "x11/gnome"
+LICENSE = "GPL"
 DEPENDS = "icon-naming-utils-native glib-2.0 intltool-native"
+
 RDEPENDS = "hicolor-icon-theme"
 RRECOMMENDS = "librsvg-gtk"
-PACKAGE_ARCH = "all"
-PR = "r1"
 
-FILES_${PN} += "${datadir}/*"
+PR = "r2"
+
+inherit gnome
 
 EXTRA_OECONF = "--disable-hicolor-check"
 
-inherit gnome
+PACKAGE_ARCH = "all"
+
+FILES_${PN} += "${datadir}/*"
