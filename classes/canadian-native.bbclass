@@ -1,4 +1,6 @@
-inherit base
+#
+# Note this class is deprecated and replaced by nativesdk.bbclass
+#
 
 # Canadian native packages are built indirectly via dependency,
 # no need for them to be a direct target of 'world'
