@@ -81,7 +81,6 @@ PRIVATE_LIBS = "libnssckbi.so \
                 libxul.so \
                 libplds4.so \
                 libnssutil3.so \
-                libsqlite3.so \
                 libsoftokn3.so \
                 libnssdbm3.so \
                 libsmime3.so \
