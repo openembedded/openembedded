@@ -1,9 +1,8 @@
-# todo: add mythweb
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
-RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery \
-        mythgame mythmusic mythmovies mythnews mythvideo mythweather mythzoneminder"
+RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery mythgame \
+                  mythmusic mythmovies mythnews mythvideo mythweather mythweb mythzoneminder"
 PV = "0.21+0.22rc2"
-PR = "r4"
+PR = "r5"
 
 QMAKE_PROFILES = "mythplugins.pro"
 
@@ -36,7 +35,23 @@ do_configure() {
 }
 do_install () {
         oe_runmake install INSTALL_ROOT="${D}"
+	install -d  ${D}${datadir}/apache2
+	install -d  ${D}${datadir}/apache2/htdocs
+	install -d  ${D}/etc/apache2
+	install -d  ${D}/etc/apache2/extra
+	cp -r ${S}/mythweb/* ${D}${datadir}/apache2/htdocs/
+	cp -r ${S}/mythweb/mythweb.conf.apache ${D}/etc/apache2/extra/mythweb.conf
+	sed -i -e s:/var/www/html:/usr/share/apache2/htdocs:g ${D}/etc/apache2/extra/mythweb.conf
 }
+
+pkg_postinst_${PN}() {
+        chgrp -R apache /usr/share/apache2/htdocs/data
+        chmod g+rw /usr/share/apache2/htdocs/data
+        grep mythweb.conf /etc/apache2/httpd.conf || \
+              echo "Include /etc/apache2/extra/mythweb.conf" >>/etc/apache2/httpd.conf
+
+}
+
 
 PACKAGES =+ "mytharchive mytharchive-dbg \
         mythbrowser mythbrowser-dbg \
@@ -48,6 +63,7 @@ PACKAGES =+ "mytharchive mytharchive-dbg \
         mythnews mythnews-dbg \
         mythvideo mythvideo-dbg \
         mythweather mythweather-dbg \
+        mythweb \
         mythzoneminder mythzoneminder-dbg"
 
 FILES_mytharchive = "${libdir}/mythtv/plugins/libmytharchive.so \
@@ -257,6 +273,9 @@ FILES_mythweather = "${libdir}/mythtv/plugins/libmythweather.so \
         ${datadir}/mythtv/weather_settings.xml \
         "
 FILES_mythweather-dbg = "${libdir}/mythtv/plugins/.debug/libmythweather.so"
+
+FILES_mythweb = "${datadir}/apache2/htdocs \
+        /etc/apache2/extra/mythweb.conf"
 
 FILES_mythzoneminder = "${libdir}/mythtv/plugins/libmythzoneminder.so \
         ${datadir}/mythtv/zonemindermenu.xml \
