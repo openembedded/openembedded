@@ -88,7 +88,7 @@ do_stage_append() {
 }
 do_stage_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
-        for i in ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${STAGING_DIR_HOST}/perl/config.sh; do
+        for i in ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${STAGING_DIR}/${HOST_SYS}/perl/config.sh; do
                 perl -pi -e 's/-Wdeclaration-after-statement //g' ${i}
         done
 }
