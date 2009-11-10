@@ -1,23 +1,166 @@
-This is a workaround for bug 515050
 https://bugzilla.novell.com/show_bug.cgi?id=515050#c2
 
-Real fix is something else which did not make into 2.4.2
+Backport following fixes from mono-2-4 branch
 http://lists.ximian.com/pipermail/mono-patches/2009-June/151386.html
 http://lists.ximian.com/pipermail/mono-patches/2009-June/151387.html
-
-but we are ok with workaround its safe.
 
 -Khem
 Index: mono-2.4.2.3/mono/mini/genmdesc.pl
 ===================================================================
---- mono-2.4.2.3.orig/mono/mini/genmdesc.pl	2009-10-15 18:21:45.000000000 -0700
-+++ mono-2.4.2.3/mono/mini/genmdesc.pl	2009-10-15 18:22:19.000000000 -0700
-@@ -47,7 +47,7 @@ sub load_opcodes
- 		$arch_define = "TARGET_ARM";
- 	}
- 		
--	$cpp .= " -D$arch_define $srcdir/mini-ops.h|";
-+	$cpp .= " -DMONO_ARCH_SUPPORT_SIMD_INTRINSICS -D$arch_define $srcdir/mini-ops.h|";
+--- mono-2.4.2.3.orig/mono/mini/genmdesc.pl	2009-11-04 15:36:19.000000000 -0800
++++ mono-2.4.2.3/mono/mini/genmdesc.pl	2009-11-04 15:36:27.000000000 -0800
+@@ -51,7 +51,7 @@ sub load_opcodes
  	#print "Running: $cpp\n";
  	open (OPS, $cpp) || die "Cannot execute cpp: $!";
  	while (<OPS>) {
+-		next unless /MINI_OP\s*\(\s*(\S+?)\s*,\s*"(.*?)"/;
++		next unless /MINI_OP3?\s*\(\s*(\S+?)\s*,\s*"(.*?)"/;
+ 		my ($sym, $name) = ($1, $2);
+ 		push @opcodes, [$sym, $name];
+ 		$table{$name} = {num => $i, name => $name};
+@@ -159,16 +159,19 @@ sub build_table {
+ }
+ 
+ sub usage {
+-	die "genmdesc.pl arch srcdir desc output name\n";
++	die "genmdesc.pl arch srcdir output name desc [desc2 ...]\n";
+ }
+ 
+ my $arch = shift || usage ();
+ my $srcdir = shift || usage ();
+-my $file = shift || usage ();
+ my $output = shift || usage ();
+ my $name = shift || usage ();
++usage () unless @ARGV;
++my @files = @ARGV;
+ 
+ load_opcodes ($srcdir, $arch);
+-load_file ($file);
++foreach my $file (@files) {
++	load_file ($file);
++}
+ build_table ($output, $name);
+ 
+Index: mono-2.4.2.3/mono/mini/Makefile.am
+===================================================================
+--- mono-2.4.2.3.orig/mono/mini/Makefile.am	2009-11-04 15:30:20.000000000 -0800
++++ mono-2.4.2.3/mono/mini/Makefile.am	2009-11-04 15:36:27.000000000 -0800
+@@ -422,40 +422,40 @@ GENMDESC_PRG=./genmdesc
+ endif !CROSS_COMPILING
+ 
+ cpu-x86.h: cpu-x86.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-x86.md cpu-x86.h x86_desc
++	$(GENMDESC_PRG) cpu-x86.h x86_desc $(srcdir)/cpu-x86.md
+ 
+ cpu-amd64.h: cpu-amd64.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-amd64.md cpu-amd64.h amd64_desc
++	$(GENMDESC_PRG) cpu-amd64.h amd64_desc $(srcdir)/cpu-amd64.md
+ 
+ cpu-ppc.h: cpu-ppc.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-ppc.md cpu-ppc.h ppcg4
++	$(GENMDESC_PRG) cpu-ppc.h ppcg4 $(srcdir)/cpu-ppc.md
+ 
+ cpu-ppc64.h: cpu-ppc64.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-ppc64.md cpu-ppc64.h ppc64_cpu_desc
++	$(GENMDESC_PRG) cpu-ppc64.h ppc64_cpu_desc $(srcdir)/cpu-ppc64.md
+ 
+ cpu-arm.h: cpu-arm.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-arm.md cpu-arm.h arm_cpu_desc
++	$(GENMDESC_PRG) cpu-arm.h arm_cpu_desc $(srcdir)/cpu-arm.md
+ 
+ cpu-sparc.h: cpu-sparc.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-sparc.md cpu-sparc.h sparc_desc
++	$(GENMDESC_PRG) cpu-sparc.h sparc_desc $(srcdir)/cpu-sparc.md
+ 
+ cpu-s390.h: cpu-s390.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-s390.md cpu-s390.h s390_cpu_desc
++	$(GENMDESC_PRG) cpu-s390.h s390_cpu_desc $(srcdir)/cpu-s390.md
+ 
+ cpu-s390x.h: cpu-s390x.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-s390x.md cpu-s390x.h s390x_cpu_desc
++	$(GENMDESC_PRG) cpu-s390x.h s390x_cpu_desc $(srcdir)/cpu-s390x.md
+ 
+ cpu-ia64.h: cpu-ia64.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-ia64.md cpu-ia64.h ia64_desc
++	$(GENMDESC_PRG) cpu-ia64.h ia64_desc $(srcdir)/cpu-ia64.md
+ 
+ cpu-alpha.h: cpu-alpha.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-alpha.md cpu-alpha.h alpha_desc
++	$(GENMDESC_PRG) cpu-alpha.h alpha_desc $(srcdir)/cpu-alpha.md
+ 
+ cpu-hppa.h: cpu-hppa.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-hppa.md cpu-hppa.h hppa_desc
++	$(GENMDESC_PRG) cpu-hppa.h hppa_desc $(srcdir)/cpu-hppa.md
+ 
+ cpu-mips.h: cpu-mips.md genmdesc$(EXEEXT)
+-	$(GENMDESC_PRG) $(srcdir)/cpu-mips.md cpu-mips.h mips_desc
++	$(GENMDESC_PRG) cpu-mips.h mips_desc $(srcdir)/cpu-mips.md
+ 
+ testi: mono test.exe
+ 	$(RUNTIME) -v -v --ncompile 1 --compile Test:$(mtest) test.exe
+Index: mono-2.4.2.3/mono/mini/genmdesc.c
+===================================================================
+--- mono-2.4.2.3.orig/mono/mini/genmdesc.c	2009-11-04 15:35:34.000000000 -0800
++++ mono-2.4.2.3/mono/mini/genmdesc.c	2009-11-04 15:36:27.000000000 -0800
+@@ -211,21 +211,20 @@ int 
+ main (int argc, char* argv [])
+ {
+ 	init_table ();
+-	switch (argc) {
+-	case 2:
++	if (argc == 2) {
+ 		/* useful to get a new file when some opcodes are added: looses the comments, though */
+ 		load_file (argv [1]);
+ 		dump ();
+-		break;
+-	case 4:
+-		load_file (argv [1]);
+-		build_table (argv [2], argv [3]);
+-		break;
+-	default:
++	} else if (argc < 4) {
+ 		g_print ("Usage: genmdesc arguments\n");
+-		g_print ("\tgenmdesc desc             Output to stdout the description file.\n");
+-		g_print ("\tgenmdesc desc output name Write to output the description in a table named 'name'.\n");
++		g_print ("\tgenmdesc desc                        Output to stdout the description file.\n");
++		g_print ("\tgenmdesc output name desc [desc1...] Write to output the description in a table named 'name'.\n");
+ 		return 1;
++	} else {
++		int i;
++		for (i = 3; i < argc; ++i)
++			load_file (argv [i]);
++		build_table (argv [1], argv [2]);
+ 	}
+ 	return 0;
+ }
+Index: mono-2.4.2.3/mono/mini/mini-ops.h
+===================================================================
+--- mono-2.4.2.3.orig/mono/mini/mini-ops.h	2009-11-04 15:35:34.000000000 -0800
++++ mono-2.4.2.3/mono/mini/mini-ops.h	2009-11-04 15:38:37.000000000 -0800
+@@ -72,7 +72,7 @@ MINI_OP(OP_STOREI8_MEMBASE_REG, "storei8
+ MINI_OP(OP_STORER4_MEMBASE_REG, "storer4_membase_reg", IREG, FREG, NONE)
+ MINI_OP(OP_STORER8_MEMBASE_REG, "storer8_membase_reg", IREG, FREG, NONE)
+ 
+-#ifdef MONO_ARCH_SUPPORT_SIMD_INTRINSICS
++#if defined(TARGET_X86) || defined(TARGET_AMD64)
+ MINI_OP(OP_STOREX_MEMBASE_REG, "storex_membase_reg", IREG, XREG, NONE)
+ MINI_OP(OP_STOREX_ALIGNED_MEMBASE_REG,     "storex_aligned_membase_reg", IREG, XREG, NONE)
+ MINI_OP(OP_STOREX_NTA_MEMBASE_REG,     "storex_nta_membase_reg", IREG, XREG, NONE)
+@@ -100,7 +100,7 @@ MINI_OP(OP_LOADR8_MEMBASE,"loadr8_membas
+ 
+ MINI_OP(OP_LOADX_MEMBASE, 			"loadx_membase", XREG, IREG, NONE)
+ 
+-#ifdef MONO_ARCH_SUPPORT_SIMD_INTRINSICS
++#if defined(TARGET_X86) || defined(TARGET_AMD64)
+ MINI_OP(OP_LOADX_ALIGNED_MEMBASE,  "loadx_aligned_membase", XREG, IREG, NONE)
+ #endif
+ 
+@@ -578,7 +578,7 @@ MINI_OP(OP_NOT_NULL, "not_null", NONE, I
+ 
+ /* SIMD opcodes. */
+ 
+-#ifdef MONO_ARCH_SUPPORT_SIMD_INTRINSICS
++#if defined(TARGET_X86) || defined(TARGET_AMD64)
+ 
+ MINI_OP(OP_ADDPS, "addps", XREG, XREG, XREG)
+ MINI_OP(OP_DIVPS, "divps", XREG, XREG, XREG)
