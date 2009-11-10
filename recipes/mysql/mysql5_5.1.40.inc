@@ -5,8 +5,6 @@ LICENSE = "GPL"
 DEPENDS = "ncurses"
 PR = "r2"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
            file://configure.in.patch;patch=1 \
            file://plug.in.patch;patch=1 \
