@@ -199,6 +199,8 @@ def base_both_contain(variable1, variable2, checkvalue, d):
                return ""
 
 DEPENDS_prepend="${@base_dep_prepend(d)} "
+DEPENDS_virtclass-native_prepend="${@base_dep_prepend(d)} "
+DEPENDS_virtclass-nativesdk_prepend="${@base_dep_prepend(d)} "
 
 # Returns PN with various suffixes removed
 # or PN if no matching suffix was found.

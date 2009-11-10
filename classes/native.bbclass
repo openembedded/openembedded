@@ -80,10 +80,38 @@ do_stage () {
 PKG_CONFIG_PATH .= "${EXTRA_NATIVE_PKGCONFIG_PATH}"
 PKG_CONFIG_SYSROOT_DIR = ""
 
+ORIG_DEPENDS := "${DEPENDS}"
+
+DEPENDS_virtclass-native ?= "${ORIG_DEPENDS}"
+
 python __anonymous () {
     # If we've a legacy native do_stage, we need to neuter do_install
     stagefunc = bb.data.getVar('do_stage', d, True)
     if (stagefunc.strip() != "do_stage_native" and stagefunc.strip() != "autotools_stage_all") and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
         bb.data.setVar("do_install", "      :", d)
+
+    if "native" in (bb.data.getVar('BBCLASSEXTEND', d, True) or ""):
+        pn = bb.data.getVar("PN", d, True)
+        depends = bb.data.getVar("DEPENDS_virtclass-native", d, True)
+        deps = bb.utils.explode_deps(depends)
+        newdeps = []
+        for dep in deps:
+            if dep.endswith("-cross"):
+                newdeps.append(dep.replace("-cross", "-native"))
+            elif not dep.endswith("-native"):
+     
+                newdeps.append(dep + "-native")
+            else:
+                newdeps.append(dep)
+        bb.data.setVar("DEPENDS_virtclass-native", " ".join(newdeps), d)
+        provides = bb.data.getVar("PROVIDES", d, True)
+        for prov in provides.split():
+            if prov.find(pn) != -1:
+                continue
+            if not prov.endswith("-native"):
+    
+                provides = provides.replace(prov, prov + "-native")
+        bb.data.setVar("PROVIDES", provides, d)
+        bb.data.setVar("OVERRIDES", bb.data.getVar("OVERRIDES", d, False) + ":virtclass-native", d)
 }
 
