@@ -202,23 +202,13 @@ DEPENDS_prepend="${@base_dep_prepend(d)} "
 DEPENDS_virtclass-native_prepend="${@base_dep_prepend(d)} "
 DEPENDS_virtclass-nativesdk_prepend="${@base_dep_prepend(d)} "
 
-# Returns PN with various suffixes removed
-# or PN if no matching suffix was found.
-def base_package_name(d):
-  pn = bb.data.getVar('PN', d, 1)
-  if pn.endswith("-native"):
-		pn = pn[0:-7]
-  elif pn.endswith("-cross"):
-		pn = pn[0:-6]
-  elif pn.endswith("-initial"):
-		pn = pn[0:-8]
-  elif pn.endswith("-intermediate"):
-		pn = pn[0:-13]
-  elif pn.endswith("-sdk"):
-		pn = pn[0:-4]
-
-
-  return pn
+def base_prune_suffix(var, suffixes, d):
+    # See if var ends with any of the suffixes listed and 
+    # remove it if found
+    for suffix in suffixes:
+        if var.endswith(suffix):
+            return var.replace(suffix, "")
+    return var
 
 def base_set_filespath(path, d):
 	bb.note("base_set_filespath usage is deprecated, %s should be fixed" % d.getVar("P", 1))
