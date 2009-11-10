@@ -1,7 +1,6 @@
 require dhcp3.inc
 
-SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
-	   file://noattrmode.patch;patch=1 \
+SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.1-history/dhcp-${PV}.tar.gz \
 	   file://fixincludes.patch;patch=1 \
 	   file://useless-use-of-bash.patch;patch=1 \
 	   file://dhclient-script-exit-status.dpatch;patch=1 \
