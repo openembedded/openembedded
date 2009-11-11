@@ -7,4 +7,8 @@ SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Log-Dispatch-${PV
 
 S = "${WORKDIR}/Log-Dispatch-${PV}"
 
+do_stage() {
+	:
+}
+
 inherit cpan_build

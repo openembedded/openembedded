@@ -21,6 +21,6 @@ do_configure_prepend () {
 	install -m 0644 ${WORKDIR}/glibconfig-sysdefs.h glib-1.2.*/
 }
 
-do_stage_prepend() {
+do_stage() {
 	install -d -m 0755 ${STAGING_LIBDIR}/pkgconfig
 }

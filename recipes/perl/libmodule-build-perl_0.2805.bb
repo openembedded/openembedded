@@ -12,4 +12,8 @@ PR = "r5"
 
 S = "${WORKDIR}/Module-Build-${PV}"
 
+do_stage() {
+	:
+}
+
 inherit cpan_build
