@@ -9,6 +9,8 @@ RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://makefile-nostrip-svn.patch;patch=1 \
+	   file://mplayer-arm-pld.patch;patch=1 \
+	   file://mplayer-lavc-arm.patch;patch=1 \
 	   "
 
 SRCREV = "29789"

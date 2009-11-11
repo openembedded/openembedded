@@ -1,0 +1,17 @@
+Index: trunk/libavcodec/arm/dsputil_arm.S
+===================================================================
+--- trunk.orig/libavcodec/arm/dsputil_arm.S	2009-11-11 22:16:37.216062301 +0300
++++ trunk/libavcodec/arm/dsputil_arm.S	2009-11-11 22:22:00.908058155 +0300
+@@ -29,6 +29,12 @@
+ .endm
+ #endif
+ 
++#ifndef __THUMB_INTERWORK__
++.macro bx reg
++	mov pc, \reg
++.endm
++#endif
++
+ #if HAVE_ARMV5TE
+ function ff_prefetch_arm, export=1
+         subs            r2,  r2,  #1

@@ -1,0 +1,18 @@
+Index: trunk/libmpeg2/motion_comp_arm_s.S
+===================================================================
+--- trunk.orig/libmpeg2/motion_comp_arm_s.S	2009-11-11 20:49:15.376079099 +0300
++++ trunk/libmpeg2/motion_comp_arm_s.S	2009-11-11 20:51:46.468064654 +0300
+@@ -18,6 +18,13 @@
+ @ along with mpeg2dec; if not, write to the Free Software
+ @ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
++#include "../config.h"
++
++#if !HAVE_PLD
++.macro pld reg
++.endm
++#endif
++
+ 
+ 	.text
+ 
