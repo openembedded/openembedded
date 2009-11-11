@@ -11,13 +11,9 @@ SRCREV_pn-linux-openmoko-2.6.31 = "${AUTOREV}"
 
 # X11
 SRCREV_pn-xf86-video-glamo = "${AUTOREV}"
-SRCREV_pn-xf86-input-mouse = "${AUTOREV}"
-SRCREV_pn-xf86-input-keyboard = "${AUTOREV}"
-SRCREV_pn-xf86-video-glamo-kms = "${AUTOREV}"
 SRCREV_pn-glamo-dri-tests = "${AUTOREV}"
 SRCREV_pn-mesa-dri = "${AUTOREV}"
 SRCREV_pn-libdrm = "${AUTOREV}"
-SRCREV_pn-xserver-xorg = "${AUTOREV}"
 
 # FSO stuff
 FSOREV_cornucopia = "${AUTOREV}"
@@ -61,7 +57,6 @@ SRCREV_pn-vala = "${AUTOREV}"
 SRCREV_pn-zhone = "${AUTOREV}"
 SRCREV_pn-libgee = "${AUTOREV}"
 SRCREV_pn-libgee-native = "${AUTOREV}"
-
 
 # SHR stuff
 SHRREV = "${AUTOREV}"
