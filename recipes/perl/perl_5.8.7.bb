@@ -26,7 +26,7 @@ SRC_URI_append_powerpc += " ${GCCLINK_SRC}"
 
 PARALLEL_MAKE = ""
 
-PR = "r22"
+PR = "r23"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR_NATIVE}/hostperl
