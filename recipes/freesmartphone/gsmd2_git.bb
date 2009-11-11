@@ -4,7 +4,7 @@ AUTHOR = "Ixonos Team"
 SECTION = "console/network"
 DEPENDS = "dbus dbus-glib"
 LICENSE = "GPL"
-PV = "0.1.0+gitr${SRCREV}"
+PV = "0.1.0+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/gsmd2.git;protocol=git;branch=master"

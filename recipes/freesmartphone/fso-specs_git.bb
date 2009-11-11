@@ -3,7 +3,7 @@ AUTHOR = "Michael 'Mickey' Lauer"
 HOMEPAGE = "http://docs.freesmartphone.org"
 LICENSE = "BSD"
 SECTION = "devel/specifications"
-PV = "0.0.1-gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/specs.git;protocol=git;branch=master"

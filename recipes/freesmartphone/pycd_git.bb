@@ -3,7 +3,7 @@ AUTHOR = "Jan Luebbe <jluebbe@debian.org>"
 HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console/network"
 LICENSE = "GPLv2"
-PV = "0.1+gitr${SRCREV}"
+PV = "0.1+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/python-helpers.git;protocol=git;branch=master"

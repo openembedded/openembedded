@@ -3,7 +3,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console"
 LICENSE = "GPLv2"
-PV = "0.0.0+gitr${SRCREV}"
+PV = "0.0.0+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/python-helpers.git;protocol=git;branch=master"
