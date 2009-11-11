@@ -38,9 +38,11 @@ do_stage() {
 	oe_libinstall -a -C libmysqld libmysqld ${STAGING_LIBDIR}
 }
 
-do_stage_append() {
-	sed -i -es,^pkgincludedir=\'/usr/include/mysql\',pkgincludedir=\'${STAGING_INCDIR}\', ${STAGING_BINDIR_CROSS}/mysql_config
-	sed -i -es,^pkglibdir=\'/usr/lib/mysql\',pkglibdir=\'${STAGING_LIBDIR}\', ${STAGING_BINDIR_CROSS}/mysql_config
+SYSROOT_PREPROCESS_FUNCS += "mysqlmangle"
+
+mysqlmangle() {
+	sed -i -es,^pkgincludedir=\'/usr/include/mysql\',pkgincludedir=\'${STAGING_INCDIR}\', ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/mysql_config
+	sed -i -es,^pkglibdir=\'/usr/lib/mysql\',pkglibdir=\'${STAGING_LIBDIR}\', ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/mysql_config
 }
 
 do_install() {
