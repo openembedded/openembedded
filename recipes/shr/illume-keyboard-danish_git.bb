@@ -1,6 +1,6 @@
 AUTHOR = "Esben Damgaard"
 DESCRIPTION = "Illume keyboard with danish layout"
-PV = "0.0-gitr${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
 PR = "r0"
 
 BASEDIR = "danish"

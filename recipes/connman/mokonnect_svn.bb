@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 SECTION = "e/apps"
 RDEPENDS = "python-elementary connman connman-plugin-wifi"
 
-PV = "0.4+svnr${SRCREV}"
+PV = "0.4+svnr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http"

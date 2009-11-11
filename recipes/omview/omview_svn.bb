@@ -3,7 +3,7 @@ SECTION = "x11/graphics"
 PKG_TAGS_${PN} = "group::communication"
 DEPENDS += " evas ewl epsilon"
 RDEPENDS += " epsilon-thumbd"
-PV = "0.0.1-svnr${SRCREV}"
+PV = "0.0.1+svnr${SRCPV}"
 PR = "r2"
 
 inherit autotools

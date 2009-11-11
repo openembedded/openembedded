@@ -4,7 +4,7 @@ HOMEPAGE = "http://projects.openmoko.org/projects/pythm/"
 SECTION = "application/multimedia"
 LICENSE = "GPLv2"
 SRCNAME = "pythm"
-PV = "0.5.1+svnr${SRCREV}"
+PV = "0.5.1+svnr${SRCPV}"
 PR = "r3"
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=pythm \
            file://mplayer-escape-filenames.patch;patch=0 \

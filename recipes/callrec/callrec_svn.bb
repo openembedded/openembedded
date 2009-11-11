@@ -5,7 +5,7 @@ LICENSE = "GPLv3 or later"
 SRCNAME = "callrec"
 DEPENDS = "gtk+"
 RDEPENDS += "alsa-utils-alsactl alsa-utils-aplay"
-PV = "0.2.4"
+PV = "0.2.4+svnr${SRCPV}"
 PR = "r0"
 
 S = "${WORKDIR}/trunk"

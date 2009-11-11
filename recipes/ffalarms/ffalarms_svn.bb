@@ -7,7 +7,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 DEPENDS = "elementary libeflvala libical"
 
-PV = "0.3.1+svnr${SRCREV}"
+PV = "0.3.1+svnr${SRCPV}"
 PR = "r0"
 
 # needed because there is do_stage_append in vala.bbclass and do_stage() was removed..

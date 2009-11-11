@@ -43,7 +43,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+gitr${SRCREV}"
+PV = "0.0+1.0rc2+gitr${SRCPV}"
 PR = "r15"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"

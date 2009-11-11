@@ -1,8 +1,8 @@
 DESCRIPTION = " Enlightenment webbrowser"
 LICENSE = "GPL"
 DEPENDS = "webkit-efl evas ecore edje"
-PV="0.0.1+r${SRCREV}"
-PR="r2"
+PV = "0.0.1+svnr${SRCPV}"
+PR = "r2"
 
 LDFLAGS += "-lstdc++"
 
