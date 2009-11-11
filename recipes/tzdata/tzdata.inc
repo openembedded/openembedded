@@ -38,6 +38,7 @@ do_compile () {
 do_install () {
         install -d ${D}${prefix} ${D}${datadir}/zoneinfo
         cp -pPR ${WORKDIR}/build${prefix}/* ${D}${prefix}
+        cp -pP ${WORKDIR}/{iso3166,zone}.tab ${D}${prefix}
 
         # Install a sane default for timezones
         install -d ${D}${sysconfdir}
@@ -168,5 +169,7 @@ FILES_${PN} += "${datadir}/zoneinfo/Pacific/Honolulu     \
                 ${datadir}/zoneinfo/WET                  \
                 ${datadir}/zoneinfo/Zulu                 \
                 ${datadir}/zoneinfo/Etc/*                \
+                ${datadir}/zoneinfo/iso3166.tab          \
+                ${datadir}/zoneinfo/zone.tab             \
                 ${sysconfdir}/localtime                  \
                 ${sysconfdir}/timezone                   "
