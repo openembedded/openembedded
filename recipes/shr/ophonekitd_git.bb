@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += " dbus-glib libframeworkd-glib libframeworkd-phonegui sqlite3"
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCPV}"
 PR = "r18"
 
 SRC_URI = "git://git.shr-project.org/repo/shr.git;protocol=http;branch=master"

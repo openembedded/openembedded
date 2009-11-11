@@ -1,6 +1,6 @@
 DESCRIPTION = "Package for the different scenarios used by Openmoko"
 SECTION = "openmoko/base"
-PV = "1.0+gitr${SRCREV}"
+PV = "1.0+gitr${SRCPV}"
 PR = "r2"
 
 COMPATIBLE_MACHINE = "(om-gta01|om-gta02|om-3d7k)"
