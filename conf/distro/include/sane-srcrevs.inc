@@ -76,6 +76,7 @@ SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-ffalarms ?= "67"
 SRCREV_pn-flashrom ?= "3682"
 SRCREV_pn-frameworkd-config-shr ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
+SRCREV_pn-frameworkd-config-shr_SHR_REV = ${SRCREV_pn-frameworkd-config-shr}
 SRCREV_pn-fsod ?= "2a33e5ffe96c611e6a6b8b6c33d2a83ba656f55b"
 SRCREV_pn-fsoraw ?= "20"
 SRCREV_pn-fstests ?= "204"
