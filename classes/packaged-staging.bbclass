@@ -27,7 +27,6 @@ PSTAGE_NATIVEDEPENDS = "\
 BB_STAMP_WHITELIST = "${PSTAGE_NATIVEDEPENDS}"
 
 python () {
-    import bb
     pstage_allowed = True
 
     # These classes encode staging paths into the binary data so can only be
