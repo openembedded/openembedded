@@ -12,6 +12,6 @@ do_compile_prepend() {
     find ${S} -name Makefile | xargs sed -i 's~-I$(includedir)~-I${STAGING_INCDIR}~g'
 }
 
-do_stage_append() {
+do_stage() {
     install -m 0644 ${S}/gob2.m4 ${STAGING_DATADIR}/aclocal
 }

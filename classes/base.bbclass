@@ -1085,6 +1085,8 @@ python do_populate_staging () {
     if legacy:
         bb.data.setVar("SYSROOT_DESTDIR", "", d)
         bb.note("Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
+        if bb.data.getVarFlags('do_stage', d) is None:
+            bb.fatal("This recipe (%s) has a do_stage_prepend or do_stage_append and do_stage now doesn't exist. Please rename this to do_stage()" % bb.data.getVar("FILE", d, True))
         lock = bb.utils.lockfile(lockfile)
         bb.build.exec_func('do_stage', d)
         bb.build.exec_func('populate_staging_prehook', d)
@@ -1248,6 +1250,9 @@ python () {
     base_after_parse(d)
     if is_legacy_staging(d):
         bb.debug(1, "Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
+        if bb.data.getVarFlags('do_stage', d) is None:
+            bb.error("This recipe (%s) has a do_stage_prepend or do_stage_append and do_stage now doesn't exist. Please rename this to do_stage()" % bb.data.getVar("FILE", d, True))
+
 }
 
 def check_app_exists(app, d):
