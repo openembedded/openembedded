@@ -61,8 +61,8 @@ do_stage () {
 
 python do_package_append() {
 	# Change permissions back the way they were, they probably had a reason...
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	os.system('chmod 0511 %s/install/cups/var/run/cups/certs' % workdir)
+	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+	os.system('chmod 0511 %s/cups/var/run/cups/certs' % pkgdest)
 }
 
 do_stage_append() {
