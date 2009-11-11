@@ -4,7 +4,7 @@ LICENSE = "GPLv3+"
 SECTION = "e/apps"
 HOMEPAGE = "http://elmdentica.googlecode.com"
 AUTHOR = "seabra"
-PV = "0.7.0+svn${SRCREV}"
+PV = "0.7.0+svnr${SRCREV}"
 PR = "r0"
  
  

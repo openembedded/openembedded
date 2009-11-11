@@ -12,6 +12,8 @@ PE = "1"
 DEFAULT_PREFERENCE = "-2"
 DEFAULT_PREFERENCE_om-gta02 = "2"
 
+SRCREV_om-gta02 ?= "a8a1c12262998e5fa3a857eebf857c6d3a95f85e"
+
 SRC_URI = "git://anongit.freedesktop.org/git/mesa/mesa;protocol=git"
 SRC_URI_om-gta02 = "git://git.bitwiz.org.uk/mesa.git;protocol=git;branch=glamo"
 S = "${WORKDIR}/git"
