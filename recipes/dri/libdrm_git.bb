@@ -2,6 +2,7 @@ SECTION = "x11/base"
 LICENSE = "MIT"
 SRC_URI = "git://anongit.freedesktop.org/mesa/drm;protocol=git;branch=master"
 SRC_URI_om-gta02 = "git://git.bitwiz.org.uk/libdrm.git;protocol=git;branch=glamo"
+SRCREV_om-gta02 ?= "67a3eb2188a38a5000af0ad4ac3a0eba43cab574"
 
 PROVIDES = "drm"
 DEPENDS = "libpthread-stubs virtual/kernel"
