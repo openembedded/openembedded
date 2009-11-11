@@ -74,16 +74,17 @@ shr_rootfs_postprocess() {
     echo "Exec=vala-terminal -e htop" >> ./usr/share/applications/htop.desktop
 
     # minimal gtk theme foo
-    mkdir -p ./etc/gtk-2.0/
-    echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc.default
-    echo 'gtk-theme-name = "shr-theme-gtk-e17lookalike"' >> ./etc/gtk-2.0/gtkrc.default
-    echo 'gtk-icon-theme-name = "openmoko-standard"' >> ./etc/gtk-2.0/gtkrc.default
+    # this should be set in postinst phase of installed gtk-theme package
+    #mkdir -p ./etc/gtk-2.0/
+    #echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc.default
+    #echo 'gtk-theme-name = "shr-theme-gtk-e17lookalike"' >> ./etc/gtk-2.0/gtkrc.default
+    #echo 'gtk-icon-theme-name = "openmoko-standard"' >> ./etc/gtk-2.0/gtkrc.default
     #echo 'style "treeview"' >> ./etc/gtk-2.0/gtkrc.default
     #echo '{   ' >> ./etc/gtk-2.0/gtkrc.default
     #echo '    GtkTreeView::expander-size = 40' >> ./etc/gtk-2.0/gtkrc.default
     #echo '}' >> ./etc/gtk-2.0/gtkrc.default
     #echo 'widget_class "*TreeView*" style "treeview"' >> ./etc/gtk-2.0/gtkrc.default
-    update-alternatives --install /etc/gtk-2.0/gtkrc gtk-theme /etc/gtk-2.0/gtkrc.default 1
+    #update-alternatives --install /etc/gtk-2.0/gtkrc gtk-theme /etc/gtk-2.0/gtkrc.default 1
 
     # elementary theme foo
     ELM_PROFILE_SCR=./etc/profile.d/elementary.sh
