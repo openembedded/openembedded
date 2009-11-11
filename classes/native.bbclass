@@ -52,48 +52,66 @@ export RANLIB = "${HOST_PREFIX}ranlib"
 export STRIP = "${HOST_PREFIX}strip"
 
 # Path prefixes
-export base_prefix = "${STAGING_DIR_NATIVE}"
-export prefix = "${STAGING_DIR_NATIVE}${layout_prefix}"
-export exec_prefix = "${STAGING_DIR_NATIVE}${layout_exec_prefix}"
+base_prefix = "${STAGING_DIR_NATIVE}"
+prefix = "${STAGING_DIR_NATIVE}${prefix_native}"
+exec_prefix = "${STAGING_DIR_NATIVE}${prefix_native}"
 
-# Base paths
-export base_bindir = "${STAGING_DIR_NATIVE}${layout_base_bindir}"
-export base_sbindir = "${STAGING_DIR_NATIVE}${layout_base_sbindir}"
-export base_libdir = "${STAGING_DIR_NATIVE}${layout_base_libdir}"
+# Since we actually install these into situ there is no staging prefix
+STAGING_DIR_HOST = ""
+STAGING_DIR_TARGET = ""
+SHLIBSDIR = "${STAGING_DIR_NATIVE}/shlibs"
+PKG_CONFIG_DIR = "${libdir}/pkgconfig"
 
-# Architecture independent paths
-export datadir = "${STAGING_DIR_NATIVE}${layout_datadir}"
-export sysconfdir = "${STAGING_DIR_NATIVE}${layout_sysconfdir}"
-export sharedstatedir = "${STAGING_DIR_NATIVE}${layout_sharedstatedir}"
-export localstatedir = "${STAGING_DIR_NATIVE}${layout_localstatedir}"
-export infodir = "${STAGING_DIR_NATIVE}${layout_infodir}"
-export mandir = "${STAGING_DIR_NATIVE}${layout_mandir}"
-export docdir = "${STAGING_DIR_NATIVE}${layout_docdir}"
-export servicedir = "${STAGING_DIR_NATIVE}${layout_servicedir}"
-
-# Architecture dependent paths
-export bindir = "${STAGING_DIR_NATIVE}${layout_bindir}"
-export sbindir = "${STAGING_DIR_NATIVE}${layout_sbindir}"
-export libexecdir = "${STAGING_DIR_NATIVE}${layout_libexecdir}"
-export libdir = "${STAGING_DIR_NATIVE}${layout_libdir}"
-export includedir = "${STAGING_DIR_NATIVE}${layout_includedir}"
-export oldincludedir = "${STAGING_DIR_NATIVE}${layout_includedir}"
-
-do_stage () {
-	if [ "${INHIBIT_NATIVE_STAGE_INSTALL}" != "1" ]
+do_stage_native () {
+	# If autotools is active, use the autotools staging function, else 
+	# use our "make install" equivalent
+	if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" == "1" ]
 	then
-		if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" != "1" ]
-		then
-			oe_runmake install
-		else
-			autotools_stage_all
-		fi
+		autotools_stage_all
+	else
+		oe_runmake install
 	fi
 }
 
-do_install () {
-	true
+do_stage () {
+	do_stage_native
 }
 
 PKG_CONFIG_PATH .= "${EXTRA_NATIVE_PKGCONFIG_PATH}"
 PKG_CONFIG_SYSROOT_DIR = ""
+
+ORIG_DEPENDS := "${DEPENDS}"
+
+DEPENDS_virtclass-native ?= "${ORIG_DEPENDS}"
+
+python __anonymous () {
+    # If we've a legacy native do_stage, we need to neuter do_install
+    stagefunc = bb.data.getVar('do_stage', d, True)
+    if (stagefunc.strip() != "do_stage_native" and stagefunc.strip() != "autotools_stage_all") and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
+        bb.data.setVar("do_install", "      :", d)
+
+    if "native" in (bb.data.getVar('BBCLASSEXTEND', d, True) or ""):
+        pn = bb.data.getVar("PN", d, True)
+        depends = bb.data.getVar("DEPENDS_virtclass-native", d, True)
+        deps = bb.utils.explode_deps(depends)
+        newdeps = []
+        for dep in deps:
+            if dep.endswith("-cross"):
+                newdeps.append(dep.replace("-cross", "-native"))
+            elif not dep.endswith("-native"):
+     
+                newdeps.append(dep + "-native")
+            else:
+                newdeps.append(dep)
+        bb.data.setVar("DEPENDS_virtclass-native", " ".join(newdeps), d)
+        provides = bb.data.getVar("PROVIDES", d, True)
+        for prov in provides.split():
+            if prov.find(pn) != -1:
+                continue
+            if not prov.endswith("-native"):
+    
+                provides = provides.replace(prov, prov + "-native")
+        bb.data.setVar("PROVIDES", provides, d)
+        bb.data.setVar("OVERRIDES", bb.data.getVar("OVERRIDES", d, False) + ":virtclass-native", d)
+}
+

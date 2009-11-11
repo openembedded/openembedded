@@ -11,4 +11,4 @@ DEPENDS += "gmp-native mpfr-native"
 
 EXTRA_OECONF += "--disable-libunwind-exceptions --enable-libssp \
 		--enable-libgomp --disable-libmudflap \
-		--with-mpfr=${STAGING_DIR_NATIVE}${layout_exec_prefix}"
+		--with-mpfr=${STAGING_DIR_NATIVE}${prefix_native}"

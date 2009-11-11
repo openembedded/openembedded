@@ -1,4 +1,6 @@
-inherit base
+#
+# Note this class is deprecated and replaced by nativesdk.bbclass
+#
 
 # Canadian native packages are built indirectly via dependency,
 # no need for them to be a direct target of 'world'
@@ -43,33 +45,14 @@ export AS = "${SDK_PREFIX}as"
 export RANLIB = "${SDK_PREFIX}ranlib"
 export STRIP = "${SDK_PREFIX}strip"
 
-# Path prefixes
-export base_prefix = "${STAGING_DIR_HOST}"
-export prefix = "${STAGING_DIR_HOST}${layout_prefix}"
-export exec_prefix = "${STAGING_DIR_HOST}${layout_exec_prefix}"
 
-# Base paths
-export base_bindir = "${STAGING_DIR_HOST}${layout_base_bindir}"
-export base_sbindir = "${STAGING_DIR_HOST}${layout_base_sbindir}"
-export base_libdir = "${STAGING_DIR_HOST}${layout_base_libdir}"
+# Change to place files in SDKPATH
+prefix = "${SDKPATH}"
+exec_prefix = "${SDKPATH}"
+base_prefix = "${SDKPATH}"
 
-# Architecture independent paths
-export datadir = "${STAGING_DIR_HOST}${layout_datadir}"
-export sysconfdir = "${STAGING_DIR_HOST}${layout_sysconfdir}"
-export sharedstatedir = "${STAGING_DIR_HOST}${layout_sharedstatedir}"
-export localstatedir = "${STAGING_DIR_HOST}${layout_localstatedir}"
-export infodir = "${STAGING_DIR_HOST}${layout_infodir}"
-export mandir = "${STAGING_DIR_HOST}${layout_mandir}"
-export docdir = "${STAGING_DIR_HOST}${layout_docdir}"
-export servicedir = "${STAGING_DIR_HOST}${layout_servicedir}"
-
-# Architecture dependent paths
-export bindir = "${STAGING_DIR_HOST}${layout_bindir}"
-export sbindir = "${STAGING_DIR_HOST}${layout_sbindir}"
-export libexecdir = "${STAGING_DIR_HOST}${layout_libexecdir}"
-export libdir = "${STAGING_DIR_HOST}${layout_libdir}"
-export includedir = "${STAGING_DIR_HOST}${layout_includedir}"
-export oldincludedir = "${STAGING_DIR_HOST}${layout_includedir}"
+export PKG_CONFIG_DIR = "${STAGING_DIR_HOST}${libdir}/pkgconfig"
+export PKG_CONFIG_SYSROOT_DIR = "${STAGING_DIR_HOST}"
 
 do_stage () {
         if [ "${INHIBIT_NATIVE_STAGE_INSTALL}" != "1" ]

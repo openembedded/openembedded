@@ -199,24 +199,16 @@ def base_both_contain(variable1, variable2, checkvalue, d):
                return ""
 
 DEPENDS_prepend="${@base_dep_prepend(d)} "
+DEPENDS_virtclass-native_prepend="${@base_dep_prepend(d)} "
+DEPENDS_virtclass-nativesdk_prepend="${@base_dep_prepend(d)} "
 
-# Returns PN with various suffixes removed
-# or PN if no matching suffix was found.
-def base_package_name(d):
-  pn = bb.data.getVar('PN', d, 1)
-  if pn.endswith("-native"):
-		pn = pn[0:-7]
-  elif pn.endswith("-cross"):
-		pn = pn[0:-6]
-  elif pn.endswith("-initial"):
-		pn = pn[0:-8]
-  elif pn.endswith("-intermediate"):
-		pn = pn[0:-13]
-  elif pn.endswith("-sdk"):
-		pn = pn[0:-4]
-
-
-  return pn
+def base_prune_suffix(var, suffixes, d):
+    # See if var ends with any of the suffixes listed and 
+    # remove it if found
+    for suffix in suffixes:
+        if var.endswith(suffix):
+            return var.replace(suffix, "")
+    return var
 
 def base_set_filespath(path, d):
 	bb.note("base_set_filespath usage is deprecated, %s should be fixed" % d.getVar("P", 1))
@@ -973,12 +965,86 @@ base_do_compile() {
 	fi
 }
 
-base_do_stage () {
-	:
+
+sysroot_stage_dir() {
+	src="$1"
+	dest="$2"
+	# This will remove empty directories so we can ignore them
+	rmdir "$src" 2> /dev/null || true
+	if [ -d "$src" ]; then
+		mkdir -p "$dest"
+		cp -fpPR "$src"/* "$dest"
+	fi
 }
 
-do_populate_staging[dirs] = "${STAGING_DIR_TARGET}/${layout_bindir} ${STAGING_DIR_TARGET}/${layout_libdir} \
-			     ${STAGING_DIR_TARGET}/${layout_includedir} \
+sysroot_stage_libdir() {
+	src="$1"
+	dest="$2"
+
+	olddir=`pwd`
+	cd $src
+	las=$(find . -name \*.la -type f)
+	cd $olddir
+	echo "Found la files: $las"		 
+	for i in $las
+	do
+		sed -e 's/^installed=yes$/installed=no/' \
+		    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
+		    -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
+		    -i $src/$i
+	done
+	sysroot_stage_dir $src $dest
+}
+
+sysroot_stage_dirs() {
+	from="$1"
+	to="$2"
+
+	sysroot_stage_dir $from${includedir} $to${STAGING_INCDIR}
+	if [ "${BUILD_SYS}" = "${HOST_SYS}" ]; then
+		sysroot_stage_dir $from${bindir} $to${STAGING_DIR_HOST}${bindir}
+		sysroot_stage_dir $from${sbindir} $to${STAGING_DIR_HOST}${sbindir}
+		sysroot_stage_dir $from${base_bindir} $to${STAGING_DIR_HOST}${base_bindir}
+		sysroot_stage_dir $from${base_sbindir} $to${STAGING_DIR_HOST}${base_sbindir}
+		sysroot_stage_dir $from${libexecdir} $to${STAGING_DIR_HOST}${libexecdir}
+		if [ "${prefix}/lib" != "${libdir}" ]; then
+			# python puts its files in here, make sure they are staged as well
+			autotools_stage_dir $from/${prefix}/lib $to${STAGING_DIR_HOST}${prefix}/lib
+		fi
+	fi
+	if [ -d $from${libdir} ]
+	then
+		sysroot_stage_libdir $from/${libdir} $to${STAGING_LIBDIR}
+	fi
+	if [ -d $from${base_libdir} ]
+	then
+		sysroot_stage_libdir $from${base_libdir} $to${STAGING_DIR_HOST}${base_libdir}
+	fi
+	sysroot_stage_dir $from${datadir} $to${STAGING_DATADIR}
+}
+
+sysroot_stage_all() {
+	sysroot_stage_dirs ${D} ${SYSROOT_DESTDIR}
+}
+
+def is_legacy_staging(d):
+    import bb
+    stagefunc = bb.data.getVar('do_stage', d, True)
+    legacy = True
+    if stagefunc is None:
+        legacy = False
+    elif stagefunc.strip() == "autotools_stage_all":
+        legacy = False
+    elif stagefunc.strip() == "do_stage_native" and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
+        legacy = False
+    elif bb.data.getVar('NATIVE_INSTALL_WORKS', d, 1) == "1":
+        legacy = False
+    if bb.data.getVar('PSTAGE_BROKEN_DESTDIR', d, 1) == "1":
+        legacy = True
+    return legacy
+
+do_populate_staging[dirs] = "${STAGING_DIR_TARGET}/${bindir} ${STAGING_DIR_TARGET}/${libdir} \
+			     ${STAGING_DIR_TARGET}/${includedir} \
 			     ${STAGING_BINDIR_NATIVE} ${STAGING_LIBDIR_NATIVE} \
 			     ${STAGING_INCDIR_NATIVE} \
 			     ${STAGING_DATADIR} \
@@ -987,8 +1053,59 @@ do_populate_staging[dirs] = "${STAGING_DIR_TARGET}/${layout_bindir} ${STAGING_DI
 # Could be compile but populate_staging and do_install shouldn't run at the same time
 addtask populate_staging after do_install
 
+SYSROOT_PREPROCESS_FUNCS ?= ""
+SYSROOT_DESTDIR = "${WORKDIR}/sysroot-destdir/"
+SYSROOT_LOCK = "${STAGING_DIR}/staging.lock"
+
+python populate_staging_prehook () {
+	return
+}
+
+python populate_staging_posthook () {
+	return
+}
+
+packagedstaging_fastpath () {
+	:
+}
+
 python do_populate_staging () {
-    bb.build.exec_func('do_stage', d)
+    #
+    # if do_stage exists, we're legacy. In that case run the do_stage,
+    # modify the SYSROOT_DESTDIR variable and then run the staging preprocess
+    # functions against staging directly.
+    #
+    # Otherwise setup a destdir, copy the results from do_install
+    # and run the staging preprocess against that
+    #
+    pstageactive = (bb.data.getVar("PSTAGING_ACTIVE", d, True) == "1")
+    lockfile = bb.data.getVar("SYSROOT_LOCK", d, True)
+    stagefunc = bb.data.getVar('do_stage', d, True)
+    legacy = is_legacy_staging(d)
+    if legacy:
+        bb.data.setVar("SYSROOT_DESTDIR", "", d)
+        bb.note("Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
+        lock = bb.utils.lockfile(lockfile)
+        bb.build.exec_func('do_stage', d)
+        bb.build.exec_func('populate_staging_prehook', d)
+        for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
+            bb.build.exec_func(f, d)
+        bb.build.exec_func('populate_staging_posthook', d)
+        bb.utils.unlockfile(lock)
+    else:
+        dest = bb.data.getVar('D', d, True)
+        sysrootdest = bb.data.expand('${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}', d)
+        bb.mkdirhier(sysrootdest)
+
+        bb.build.exec_func("sysroot_stage_all", d)
+        #os.system('cp -pPR %s/* %s/' % (dest, sysrootdest))
+        for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
+            bb.build.exec_func(f, d)
+        bb.build.exec_func("packagedstaging_fastpath", d)
+
+        lock = bb.utils.lockfile(lockfile)
+        os.system(bb.data.expand('cp -pPR ${SYSROOT_DESTDIR}${TMPDIR}/* ${TMPDIR}/', d))
+        bb.utils.unlockfile(lock)
 }
 
 addtask install after do_compile
@@ -1129,6 +1246,8 @@ def base_after_parse(d):
 
 python () {
     base_after_parse(d)
+    if is_legacy_staging(d):
+        bb.debug(1, "Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
 }
 
 def check_app_exists(app, d):
@@ -1158,7 +1277,7 @@ inherit patch
 # Move to autotools.bbclass?
 inherit siteinfo
 
-EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_distclean do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
+EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_distclean do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_rebuild do_fetchall
 
 MIRRORS[func] = "0"
 MIRRORS () {

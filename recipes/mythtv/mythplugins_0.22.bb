@@ -1,19 +1,19 @@
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
 RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery mythgame \
                   mythmusic mythmovies mythnews mythvideo mythweather mythweb mythzoneminder"
-PV = "0.21+0.22rc2"
-PR = "r5"
+PV = "0.22"
+PR = "r0"
 
 QMAKE_PROFILES = "mythplugins.pro"
 
-SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythplugins-0.22rc2.tar.bz2 \
+SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythplugins-0.22.tar.bz2 \
         file://sysroot.patch;patch=1 \
         file://mythplugins_wo_qtopengl.diff;patch=1 \
         file://configure.patch;patch=1 \
         file://mytharchive.pro.patch;patch=1 \
         "
 
-S = "${WORKDIR}/mythplugins-0.22rc2"
+S = "${WORKDIR}/mythplugins-0.22"
 
 inherit qmake2 qt4x11
 

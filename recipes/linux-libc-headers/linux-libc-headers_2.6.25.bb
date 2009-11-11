@@ -2,13 +2,14 @@ require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	   file://reinstate-a.out.h.patch;patch=1 \
 	   file://fix-kernel-conditionalize-a.out.h.patch;patch=1 \
 	   file://netfilter-include-types_h-in-userspace.patch;patch=1 \
-           file://procinfo.h"
+           file://procinfo.h \
+           file://unifdef.patch;patch=1"
 
 S = "${WORKDIR}/linux-${PV}"
 
