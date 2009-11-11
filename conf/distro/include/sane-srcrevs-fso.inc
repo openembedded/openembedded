@@ -1,7 +1,7 @@
 # To be included from sane-srcrevs.inc
 
 # FSO Projects -- Cornucopia
-FSO_CORNUCOPIA_SRCREV ?= "39c725db31c6f0d63b32b7cf64d6e06418cd808d"
+FSO_CORNUCOPIA_SRCREV ?= "40e4d0509d2efe0d1d605f572a3c32efc3f15094"
 SRCREV_pn-fso-apm ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsodeviced ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsogsmd ?= "${FSO_CORNUCOPIA_SRCREV}"
