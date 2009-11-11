@@ -1,5 +1,3 @@
-inherit base
-
 # use autotools_stage_all for native packages
 AUTOTOOLS_NATIVE_STAGE_INSTALL = "1"
 
@@ -27,7 +25,11 @@ def autotools_dep_prepend(d):
 	return deps + 'gnu-config-native '
 
 EXTRA_OEMAKE = ""
+
 DEPENDS_prepend = "${@autotools_dep_prepend(d)}"
+DEPENDS_virtclass-native_prepend = "${@autotools_dep_prepend(d)}"
+DEPENDS_virtclass-nativesdk_prepend = "${@autotools_dep_prepend(d)}"
+
 acpaths = "default"
 EXTRA_AUTORECONF = "--exclude=autopoint"
 
@@ -115,7 +117,7 @@ autotools_do_configure() {
 			else
 			  CONFIGURE_AC=configure.ac
 			fi
-			if grep "^AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
+			if grep "^[[:space:]]*AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
 			  if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
 			    : do nothing -- we still have an old unmodified configure.ac
 			  else
@@ -123,12 +125,12 @@ autotools_do_configure() {
 			    echo "no" | glib-gettextize --force --copy
 			  fi
 			fi
-			if grep "^[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
+			mkdir -p m4
+			if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
 			  oenote Executing intltoolize --copy --force --automake
 			  intltoolize --copy --force --automake
 			fi
 			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
-			mkdir -p m4
 			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
 			cd $olddir
 		fi
@@ -145,8 +147,10 @@ autotools_do_install() {
 	oe_runmake 'DESTDIR=${D}' install
 }
 
-do_install_append() {
-        for i in `find ${D} -name "*.la"` ; do \
+PACKAGE_PREPROCESS_FUNCS += "autotools_prepackage_lamangler"
+
+autotools_prepackage_lamangler () {
+        for i in `find ${PKGD} -name "*.la"` ; do \
                 sed -i -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${libdir}/\1,g' $i
                 sed -i -e s:${CROSS_DIR}/${HOST_SYS}::g $i
                 sed -i -e s:${CROSS_DIR}::g $i
@@ -173,14 +177,11 @@ autotools_stage_includes() {
 }
 
 autotools_stage_dir() {
-	from="$1"
-	to="$2"
-	# This will remove empty directories so we can ignore them
-	rmdir "$from" 2> /dev/null || true
-	if [ -d "$from" ]; then
-		mkdir -p "$to"
-		cp -fpPR "$from"/* "$to"
-	fi
+ 	sysroot_stage_dir $1 ${STAGE_TEMP_PREFIX}$2
+}
+
+autotools_stage_libdir() {
+	sysroot_stage_libdir $1 ${STAGE_TEMP_PREFIX}$2
 }
 
 autotools_stage_all() {
@@ -191,55 +192,9 @@ autotools_stage_all() {
 	rm -rf ${STAGE_TEMP}
 	mkdir -p ${STAGE_TEMP}
 	oe_runmake DESTDIR="${STAGE_TEMP}" install
-	autotools_stage_dir ${STAGE_TEMP}/${includedir} ${STAGING_INCDIR}
-	if [ "${BUILD_SYS}" = "${HOST_SYS}" ]; then
-		autotools_stage_dir ${STAGE_TEMP}/${bindir} ${STAGING_DIR_HOST}${layout_bindir}
-		autotools_stage_dir ${STAGE_TEMP}/${sbindir} ${STAGING_DIR_HOST}${layout_sbindir}
-		autotools_stage_dir ${STAGE_TEMP}/${base_bindir} ${STAGING_DIR_HOST}${layout_base_bindir}
-		autotools_stage_dir ${STAGE_TEMP}/${base_sbindir} ${STAGING_DIR_HOST}${layout_base_sbindir}
-		autotools_stage_dir ${STAGE_TEMP}/${libexecdir} ${STAGING_DIR_HOST}${layout_libexecdir}
-		if [ "${prefix}/lib" != "${libdir}" ]; then
-			# python puts its files in here, make sure they are staged as well
-			autotools_stage_dir ${STAGE_TEMP}/${prefix}/lib ${STAGING_DIR_HOST}${layout_prefix}/lib
-		fi
-	fi
-	if [ -d ${STAGE_TEMP}/${libdir} ]
-	then
-		olddir=`pwd`
-		cd ${STAGE_TEMP}/${libdir}
-		las=$(find . -name \*.la -type f)
-		cd $olddir
-		echo "Found la files: $las"		 
-		for i in $las
-		do
-			sed -e 's/^installed=yes$/installed=no/' \
-			    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*.la\),${STAGING_LIBDIR}/\1,g' \
-			    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR},g' \
-			    -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
-			    -i ${STAGE_TEMP}/${libdir}/$i
-		done
-		autotools_stage_dir ${STAGE_TEMP}/${libdir} ${STAGING_LIBDIR}
-	fi
-	# Ok, this is nasty. pkgconfig.bbclass is usually used to install .pc files,
-	# however some packages rely on the presence of .pc files to enable/disable
-	# their configurataions in which case we better should not install everything
-	# unconditionally, but rather depend on the actual results of make install.
-	# The good news though: a) there are not many packages doing this and
-	# b) packaged staging will fix that anyways. :M:
-	if [ "${AUTOTOOLS_STAGE_PKGCONFIG}" = "1" ]
-	then
-		if [ -e ${STAGE_TEMP}/${libdir}/pkgconfig/ ] ; then
-			echo "cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/"
-			cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
-		fi
-		if [ -e ${STAGE_TEMP}/${datadir}/pkgconfig/ ] ; then
-			echo "cp -f ${STAGE_TEMP}/${datadir}/pkgconfig/*.pc ${STAGING_DATADIR}/pkgconfig/"
-			cp -f ${STAGE_TEMP}/${datadir}/pkgconfig/*.pc ${STAGING_DATADIR}/pkgconfig/
-		fi
-	fi
 	rm -rf ${STAGE_TEMP}/${mandir} || true
 	rm -rf ${STAGE_TEMP}/${infodir} || true
-	autotools_stage_dir ${STAGE_TEMP}/${datadir} ${STAGING_DATADIR}
+	sysroot_stage_dirs ${STAGE_TEMP} ${STAGE_TEMP_PREFIX}
 	rm -rf ${STAGE_TEMP}
 }
 

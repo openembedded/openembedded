@@ -2,7 +2,7 @@ require mono-${PV}.inc
 
 DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 # mono makes use of non-thumb-compatible inline asm.
 ARM_INSTRUCTION_SET = "arm"

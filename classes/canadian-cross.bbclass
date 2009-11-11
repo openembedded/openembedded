@@ -1,3 +1,8 @@
+#
+# Note this class is deprecated and replaced by cross-canadian.bbclass
+#
+
+
 # Canadian cross packages are built indirectly via dependency,
 # no need for them to be a direct target of 'world'
 EXCLUDE_FROM_WORLD = "1"
@@ -41,31 +46,31 @@ oldincludedir = "${exec_prefix}/include"
 
 # Path prefixes
 export base_prefix = "${STAGING_DIR_HOST}"
-export prefix = "${STAGING_DIR_HOST}${layout_prefix}"
-export exec_prefix = "${STAGING_DIR_HOST}${layout_exec_prefix}"
+export prefix = "${STAGING_DIR_HOST}/usr"
+export exec_prefix = "${STAGING_DIR_HOST}/usr"
 
 # Base paths
-export base_bindir = "${STAGING_DIR_HOST}${layout_base_bindir}"
-export base_sbindir = "${STAGING_DIR_HOST}${layout_base_sbindir}"
-export base_libdir = "${STAGING_DIR_HOST}${layout_base_libdir}"
+export base_bindir = "${STAGING_DIR_HOST}/bin"
+export base_sbindir = "${STAGING_DIR_HOST}/sbin"
+export base_libdir = "${STAGING_DIR_HOST}/lib"
 
 # Architecture independent paths
-export datadir = "${STAGING_DIR_HOST}${layout_datadir}"
-export sysconfdir = "${STAGING_DIR_HOST}${layout_sysconfdir}"
-export sharedstatedir = "${STAGING_DIR_HOST}${layout_sharedstatedir}"
-export localstatedir = "${STAGING_DIR_HOST}${layout_localstatedir}"
-export infodir = "${STAGING_DIR_HOST}${layout_infodir}"
-export mandir = "${STAGING_DIR_HOST}${layout_mandir}"
-export docdir = "${STAGING_DIR_HOST}${layout_docdir}"
-export servicedir = "${STAGING_DIR_HOST}${layout_servicedir}"
+export datadir = "${STAGING_DIR_HOST}/usr/share"
+export sysconfdir = "${STAGING_DIR_HOST}/etc"
+export sharedstatedir = "${STAGING_DIR_HOST}/com"
+export localstatedir = "${STAGING_DIR_HOST}/var"
+export infodir = "${STAGING_DIR_HOST}/usr/info"
+export mandir = "${STAGING_DIR_HOST}/usr/man"
+export docdir = "${STAGING_DIR_HOST}/usr/doc"
+export servicedir = "${STAGING_DIR_HOST}/srv"
 
 # Architecture dependent paths
-export bindir = "${STAGING_DIR_HOST}${layout_bindir}"
-export sbindir = "${STAGING_DIR_HOST}${layout_sbindir}"
-export libexecdir = "${STAGING_DIR_HOST}${layout_libexecdir}"
-export libdir = "${STAGING_DIR_HOST}${layout_libdir}"
-export includedir = "${STAGING_DIR_HOST}${layout_includedir}"
-export oldincludedir = "${STAGING_DIR_HOST}${layout_includedir}"
+export bindir = "${STAGING_DIR_HOST}/usr/bin"
+export sbindir = "${STAGING_DIR_HOST}/usr/sbin"
+export libexecdir = "${STAGING_DIR_HOST}/usr/libexec"
+export libdir = "${STAGING_DIR_HOST}/usr/lib"
+export includedir = "${STAGING_DIR_HOST}/usr/include"
+export oldincludedir = "${STAGING_DIR_HOST}/usr/include"
 
 do_stage () {
 	oe_runmake install

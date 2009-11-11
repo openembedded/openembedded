@@ -15,9 +15,6 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit native
 
-prefix = "${STAGING_DIR_NATIVE}/${layout_prefix}"
-exec_prefix = "${STAGING_DIR_NATIVE}/${layout_exec_prefix}"
-
 EXTRA_OEMAKE = '\
   BUILD_SYS="" \
   HOST_SYS="" \
