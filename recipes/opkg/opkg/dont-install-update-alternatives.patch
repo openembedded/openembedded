@@ -1,0 +1,6 @@
+diff -uNr trunk.orig/utils/Makefile.am trunk/utils/Makefile.am
+--- trunk.orig/utils/Makefile.am	2009-10-24 00:55:25.000000000 +0200
++++ trunk/utils/Makefile.am	2009-11-11 16:56:00.000000000 +0100
+@@ -1 +1 @@
+-bin_SCRIPTS = update-alternatives opkg-key
++bin_SCRIPTS = opkg-key
