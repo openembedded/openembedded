@@ -5,7 +5,7 @@ PACKAGES = ""
 
 # This is intended to be a -very- basic config
 # sysroot is needed in case we use libc-initial
-EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${layout_prefix} \
+EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${target_prefix} \
 		--enable-shared \
 		--disable-multilib \
 		--disable-threads \
@@ -18,8 +18,8 @@ EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${layout_prefix} \
 
 do_stage_append () {
 	# get rid of dummy libc.so
-	if [ -z "`file ${STAGING_DIR_TARGET}${layout_libdir}/libc.so | grep "ASCII C program text"`" ]; then
-		rm -rf ${STAGING_DIR_TARGET}${layout_libdir}/libc.so
+	if [ -z "`file ${STAGING_DIR_TARGET}${target_libdir}/libc.so | grep "ASCII C program text"`" ]; then
+		rm -rf ${STAGING_DIR_TARGET}${target_libdir}/libc.so
 	fi
 }
 

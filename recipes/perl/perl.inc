@@ -36,8 +36,8 @@ do_install() {
 }
 
 do_stage() {
-	install -d ${STAGING_DIR_HOST}/perl/
-	install config.sh ${STAGING_DIR_HOST}/perl/
+	install -d ${STAGING_DIR}/${HOST_SYS}/perl/
+	install config.sh ${STAGING_DIR}/${HOST_SYS}/perl/
 }
 
 PACKAGES_DYNAMIC = "perl-module-*"

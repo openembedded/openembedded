@@ -4,8 +4,8 @@ Signed-off-by: Jeremy Laine <jeremy.laine@m4x.org>
 
 Index: linux-2.6.31/drivers/misc/eeprom/at24.c
 ===================================================================
---- linux-2.6.31.orig/drivers/misc/eeprom/at24.c	2009-09-10 00:13:59.000000000 +0200
-+++ linux-2.6.31/drivers/misc/eeprom/at24.c	2009-11-03 11:17:22.000000000 +0100
+--- linux-2.6.31.orig/drivers/misc/eeprom/at24.c	2009-11-10 17:20:53.000000000 +0100
++++ linux-2.6.31/drivers/misc/eeprom/at24.c	2009-11-10 17:54:17.000000000 +0100
 @@ -115,6 +115,8 @@
  	{ "spd", AT24_DEVICE_MAGIC(2048 / 8,
  		AT24_FLAG_READONLY | AT24_FLAG_IRUGO) },
@@ -17,14 +17,14 @@ Index: linux-2.6.31/drivers/misc/eeprom/at24.c
  	{ "24c16", AT24_DEVICE_MAGIC(16384 / 8, 0) },
 Index: linux-2.6.31/drivers/rtc/Kconfig
 ===================================================================
---- linux-2.6.31.orig/drivers/rtc/Kconfig	2009-09-10 00:13:59.000000000 +0200
-+++ linux-2.6.31/drivers/rtc/Kconfig	2009-11-03 11:13:42.000000000 +0100
+--- linux-2.6.31.orig/drivers/rtc/Kconfig	2009-11-10 17:20:53.000000000 +0100
++++ linux-2.6.31/drivers/rtc/Kconfig	2009-11-10 17:54:17.000000000 +0100
 @@ -193,6 +193,15 @@
  	  This driver can also be built as a module. If so, the module
  	  will be called rtc-isl1208.
  
 +config RTC_DRV_ISL12024
-+	tristate "Intersil 12024"
++	tristate "Intersil ISL12024"
 +	help
 +	  If you say yes here you get support for the Intersil ISL12024
 +	  RTC chip. This driver also exposes the chip's unique ID.
@@ -37,8 +37,8 @@ Index: linux-2.6.31/drivers/rtc/Kconfig
  	help
 Index: linux-2.6.31/drivers/rtc/Makefile
 ===================================================================
---- linux-2.6.31.orig/drivers/rtc/Makefile	2009-09-10 00:13:59.000000000 +0200
-+++ linux-2.6.31/drivers/rtc/Makefile	2009-11-03 11:13:42.000000000 +0100
+--- linux-2.6.31.orig/drivers/rtc/Makefile	2009-11-10 17:20:53.000000000 +0100
++++ linux-2.6.31/drivers/rtc/Makefile	2009-11-10 17:54:17.000000000 +0100
 @@ -40,6 +40,7 @@
  obj-$(CONFIG_RTC_DRV_EP93XX)	+= rtc-ep93xx.o
  obj-$(CONFIG_RTC_DRV_FM3130)	+= rtc-fm3130.o
@@ -50,8 +50,8 @@ Index: linux-2.6.31/drivers/rtc/Makefile
 Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.31/drivers/rtc/rtc-isl12024.c	2009-11-03 11:14:33.000000000 +0100
-@@ -0,0 +1,457 @@
++++ linux-2.6.31/drivers/rtc/rtc-isl12024.c	2009-11-10 17:54:31.000000000 +0100
+@@ -0,0 +1,455 @@
 +/*
 + * Intersil ISL12024 rtc class driver
 + *
@@ -101,7 +101,7 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +#define ISL12024_REG_HR_PM      (1<<5) /* AM/PM bit in 12h mode */
 +#define ISL12024_RTC_SECTION_LEN 8
 +
-+/* control/status section */
++/* status section */
 +#define ISL12024_REG_SR		0x3F
 +#define ISL12024_REG_SR_BAT	(1<<7) /* battery */
 +#define ISL12024_REG_SR_AL1	(1<<6) /* alarm 0 */
@@ -110,9 +110,10 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +#define ISL12024_REG_SR_RWEL	(1<<2) /* register write enable latch */
 +#define ISL12024_REG_SR_WEL	(1<<1) /* write enable latch */
 +#define ISL12024_REG_SR_RTCF	(1<<0) /* rtc fail */
-+#define ISL12024_REG_INT	0x11
 +
-+#define ISL12024_INT_AL0E	0x20 /* Alarm 0 enable */
++/* control section */
++#define ISL12024_REG_INT	0x11
++#define ISL12024_INT_AL0E	(1<<5) /* Alarm 0 enable */
 +
 +static struct i2c_driver isl12024_driver;
 +
@@ -142,9 +143,9 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +	dt_addr[1] = reg;
 +
 +	ret = i2c_transfer(client->adapter, msgs, 2);
-+	if (ret < 0) {
++	if (ret != 2) {
 +		dev_err(&client->dev, "read error (%i)\n", ret);
-+		return ret;
++		return (ret < 0) ? ret : -EIO;
 +	}
 +	return 0;
 +}
@@ -163,7 +164,7 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +	ret = i2c_master_send(client, i2c_buf, len + 2);
 +	if (ret != len + 2) {
 +		dev_err(&client->dev, "write error (%d)\n", ret);
-+		return -EIO;
++		return (ret < 0) ? ret : -EIO;
 +	}
 +	return 0;
 +}
@@ -189,24 +190,25 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +		return err;
 +	}
 +
-+	tm->tm_sec = bcd2bin(regs[0]);
-+	tm->tm_min = bcd2bin(regs[1]);
++	tm->tm_sec = bcd2bin(regs[CCR_SEC]);
++	tm->tm_min = bcd2bin(regs[CCR_MIN]);
 +
 +	/* HR field has a more complex interpretation */
-+	if (regs[2] & ISL12024_REG_HR_MIL) {
++	if (regs[CCR_HOUR] & ISL12024_REG_HR_MIL) {
 +		/* 24h format */
-+		tm->tm_hour = bcd2bin(regs[2] & 0x3f);
++		tm->tm_hour = bcd2bin(regs[CCR_HOUR] & 0x3f);
 +	} else {
 +		/* 12h format */
-+		tm->tm_hour = bcd2bin(regs[2] & 0x1f);
-+		if (regs[2] & ISL12024_REG_HR_PM) /* PM flag set */
++		tm->tm_hour = bcd2bin(regs[CCR_HOUR] & 0x1f);
++		if (regs[CCR_HOUR] & ISL12024_REG_HR_PM) /* PM flag set */
 +			tm->tm_hour += 12;
 +	}
 +
-+	tm->tm_mday = bcd2bin(regs[3]);
-+	tm->tm_mon  = bcd2bin(regs[4]);
-+	tm->tm_year = bcd2bin(regs[5]) + 100;
-+	tm->tm_wday = bcd2bin(regs[6]);
++	tm->tm_mday = bcd2bin(regs[CCR_MDAY]);
++	tm->tm_mon  = bcd2bin(regs[CCR_MONTH]) - 1;
++	tm->tm_year = bcd2bin(regs[CCR_YEAR])
++			+ (bcd2bin(regs[CCR_Y2K]) * 100) - 1900;
++	tm->tm_wday = bcd2bin(regs[CCR_WDAY]);
 +
 +	return rtc_valid_tm(tm);
 +}
@@ -247,12 +249,12 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +		buf[CCR_MDAY] = bin2bcd(tm->tm_mday);
 +
 +		/* month, 1 - 12 */
-+		buf[CCR_MONTH] = bin2bcd(tm->tm_mon);
++		buf[CCR_MONTH] = bin2bcd(tm->tm_mon + 1);
 +
 +		/* year, since the rtc epoch*/
 +		buf[CCR_YEAR] = bin2bcd(tm->tm_year % 100);
 +		buf[CCR_WDAY] = tm->tm_wday & 0x07;
-+		buf[CCR_Y2K] = bin2bcd(tm->tm_year / 100);
++		buf[CCR_Y2K] = bin2bcd(19 + tm->tm_year / 100);
 +	}
 +
 +	/* If writing alarm registers, set compare bits on registers 0-4 */
@@ -293,10 +295,8 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +		/* Need to set RWEL again as the write has cleared it */
 +		xfer = i2c_master_send(client, rwel, 3);
 +		if (xfer != 3) {
-+			dev_err(&client->dev,
-+				"%s: al0e rwel - %d\n",
-+				__func__,
-+				xfer);
++			dev_err(&client->dev, "%s: al0e rwel - %d\n",
++				__func__, xfer);
 +			return -EIO;
 +		}
 +
@@ -305,10 +305,8 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +
 +		xfer = i2c_master_send(client, al0e, 3);
 +		if (xfer != 3) {
-+			dev_err(&client->dev,
-+				"%s: al0e - %d\n",
-+				__func__,
-+				xfer);
++			dev_err(&client->dev, "%s: al0e - %d\n",
++				__func__, xfer);
 +			return -EIO;
 +		}
 +
@@ -403,7 +401,7 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +	err = isl12024_i2c_read_regs(client, ISL12024_REG_ID, id_buffer,
 +				     sizeof(id_buffer));
 +	if (err < 0) {
-+		dev_err(&client->dev, "reading RTC section failed\n");
++		dev_err(&client->dev, "reading ID section failed\n");
 +		return err;
 +	}
 +
