@@ -10,6 +10,11 @@ DEPENDS = "elementary libeflvala libical"
 PV = "0.3.1+svnr${SRCREV}"
 PR = "r0"
 
+# needed because there is do_stage_append in vala.bbclass and do_stage() was removed..
+do_stage() {
+
+}
+
 inherit vala
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/ffalarms;module=trunk;proto=https"
