@@ -7,7 +7,7 @@ PRIORITY = "optional"
 DEPENDS = "edje-native python-native"
 
 SRCREV = ${AUTOREV}
-PV = "1.0.0+svnr${SRCREV}"
+PV = "1.0.0+svnr${SRCPV}"
 PR = "r2"
 
 S = "${WORKDIR}/trunk"

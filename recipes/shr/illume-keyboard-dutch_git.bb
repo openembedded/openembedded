@@ -1,6 +1,6 @@
 AUTHOR = "Pander"
 DESCRIPTION = "Illume keyboard with dutch layout"
-PV = "0.0-gitr${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
 PR = "r0"
 
 BASEDIR = "dutch"

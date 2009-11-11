@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 SECTION = "x11/applications"
 DEPENDS = "poppler gtk+ cups"
 
-PV = "0.1.7+svnr${SRCREV}"
+PV = "0.1.7+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "svn://svn.emma-soft.com/epdfview;module=trunk;proto=svn \

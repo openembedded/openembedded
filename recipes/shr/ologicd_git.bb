@@ -1,6 +1,6 @@
 DESCRIPTION = ""
 SECTION = "libs"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
 PR = "r0"
 
 inherit autotools

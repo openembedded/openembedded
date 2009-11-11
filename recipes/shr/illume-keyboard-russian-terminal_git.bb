@@ -1,6 +1,6 @@
 AUTHOR = "lucky"
 DESCRIPTION = "Illume keyboard with russian layout for the Terminal"
-PV = "0.0-gitr${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
 PR = "r0"
 
 BASEDIR = "russian-terminal"

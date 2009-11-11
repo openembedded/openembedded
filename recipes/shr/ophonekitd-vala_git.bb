@@ -1,7 +1,7 @@
 DESCRIPTION = "Ophonekitd daemon - Vala rewrite"
 SECTION = "x11/applications"
 DEPENDS = "vala-dbus-binding-tool-native libgee libmodulo dbus-glib libfso-glib libframeworkd-phonegui sqlite3"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
 PR = "r1"
 
 inherit pkgconfig autotools autotools_stage vala girepository

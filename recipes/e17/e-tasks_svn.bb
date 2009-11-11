@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 SECTION = "e/apps"
 #DEPENDS = "elementary eina edbus"
 
-PV = "0.0.1+svnr${SRCREV}"
+PV = "0.0.1+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "svn://e-tasks.googlecode.com/svn/trunk;module=.;proto=http"

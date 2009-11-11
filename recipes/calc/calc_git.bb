@@ -6,7 +6,7 @@ LICENSE  = "MIT"
 RDEPENDS = "python-elementary python python-edbus"
 SECTION = "x11/application"
 SRCREV ?= "1c17792094eb"
-PV = "0.0.1+r${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"

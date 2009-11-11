@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "e/apps"
 DEPENDS = "elementary evas sqlite3"
 
-PV = "0.2.2+svnr${SRCREV}"
+PV = "0.2.2+svnr${SRCPV}"
 PR = "r1"
 SRC_URI = "svn://enotes.googlecode.com/svn/trunk;module=.;proto=http"
 S = "${WORKDIR}"

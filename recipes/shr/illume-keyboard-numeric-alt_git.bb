@@ -1,6 +1,6 @@
 AUTHOR = "Pander"
 DESCRIPTION = "Illume keyboard with an alternative numeric layout"
-PV = "0.0-gitr${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
 PR = "r0"
 
 BASEDIR = "numeric-alt"
