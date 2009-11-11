@@ -3,9 +3,8 @@ It allows you to access the data held on the MusicBrainz server."
 
 HOMEPAGE = "http://musicbrainz.org"
 LICENSE = "LGPL"
-DEPENDS = "cmake-native"
 
-SRC_URI = "http://musicbrainz.org/doc/libdiscid/libdiscid-${PV}.tar.gz"
+SRC_URI = "http://users.musicbrainz.org/~matt/libdiscid-${PV}.tar.gz"
 
 inherit cmake pkgconfig
 
