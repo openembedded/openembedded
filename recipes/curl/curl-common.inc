@@ -6,7 +6,7 @@ SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2 \
            file://pkgconfig_fix.patch;patch=1"
 S = "${WORKDIR}/curl-${PV}"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 CURL_FEATURES ?= "zlib,gnutls,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp"
 # other allowed features: ipv6, ares, openssl
@@ -62,7 +62,5 @@ do_configure_prepend() {
 }
 
 do_stage () {
-	install -d ${STAGING_INCDIR}/curl
-	install -m 0644 ${S}/include/curl/*.h ${STAGING_INCDIR}/curl/
-	oe_libinstall -so -a -C lib libcurl ${STAGING_LIBDIR}
+	autotools_stage_all
 }

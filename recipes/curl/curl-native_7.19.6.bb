@@ -4,11 +4,3 @@ DEPENDS = "zlib-native"
 PR = "${INC_PR}.2"
 
 CURL_FEATURES = "zlib,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp"
-
-do_stage () {
-	autotools_stage_all
-}
-
-do_install() {
-	:
-}
