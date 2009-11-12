@@ -1,22 +1,25 @@
 require mythtv.inc
 
-RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database"
+RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
+mysql5-server mysql5-client"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
-PV = "0.21+0.22rc2"
-PR = "r3"
+PV = "0.22"
+PR = "r0"
+# REALPV is here to support release candidates
+# OE in that case has as PV something like 0.21+0.22rc1
+# but for packaging the real PV is needed
 REALPV = "0.22"
 
-DEFAULT_PREFERENCE = "-1"
 ALLOW_EMPTY_${PN} = "1"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22rc2.tar.bz2 \
+SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22.tar.bz2 \
         file://configure.patch;patch=1 \
         "
 
-S = "${WORKDIR}/mythtv-0.22rc2"
+S = "${WORKDIR}/mythtv-0.22"
 
 inherit qmake2 qt4x11
 

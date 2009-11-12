@@ -1,0 +1,82 @@
+Index: povray-3.7.0.beta.25b/source/backend/support/taskqueue.h
+===================================================================
+--- povray-3.7.0.beta.25b.orig/source/backend/support/taskqueue.h	2009-11-11 21:18:50.066527987 +0100
++++ povray-3.7.0.beta.25b/source/backend/support/taskqueue.h	2009-11-11 21:20:14.249441749 +0100
+@@ -98,6 +98,7 @@
+ 
+ #include <boost/thread.hpp>
+ #include <boost/shared_ptr.hpp>
++#include <boost/thread/condition.hpp>
+ 
+ #include "base/povmscpp.h"
+ #include "backend/support/task.h"
+Index: povray-3.7.0.beta.25b/source/backend/support/task.cpp
+===================================================================
+--- povray-3.7.0.beta.25b.orig/source/backend/support/task.cpp	2009-11-11 21:21:32.645269202 +0100
++++ povray-3.7.0.beta.25b/source/backend/support/task.cpp	2009-11-11 21:22:52.322759257 +0100
+@@ -241,7 +241,7 @@
+ 			FatalErrorHandler(e);
+ 			failed = e.code(kUncategorizedError);
+ 		}
+-		catch(exception& e)
++		catch(std::exception& e)
+ 		{
+ 			FatalErrorHandler(POV_EXCEPTION_STRING(e.what()));
+ 			failed = kUncategorizedError;
+@@ -266,7 +266,7 @@
+ 		FatalErrorHandler(e);
+ 		failed = e.code(kUncategorizedError);
+ 	}
+-	catch(exception& e)
++	catch(std::exception& e)
+ 	{
+ 		FatalErrorHandler(POV_EXCEPTION_STRING(e.what()));
+ 		failed = kUncategorizedError;
+@@ -291,7 +291,7 @@
+ 	{
+ 		FatalErrorHandler(e);
+ 	}
+-	catch(exception& e)
++	catch(std::exception& e)
+ 	{
+ 		FatalErrorHandler(POV_EXCEPTION_STRING(e.what()));
+ 	}
+Index: povray-3.7.0.beta.25b/vfe/vfesession.h
+===================================================================
+--- povray-3.7.0.beta.25b.orig/vfe/vfesession.h	2009-11-11 21:24:05.381913997 +0100
++++ povray-3.7.0.beta.25b/vfe/vfesession.h	2009-11-11 21:27:19.715316358 +0100
+@@ -94,6 +94,8 @@
+ #ifndef __VFESESSION_H__
+ #define __VFESESSION_H__
+ 
++#include <boost/thread/condition.hpp>
++
+ namespace vfe
+ {
+   using namespace pov_frontend;
+Index: povray-3.7.0.beta.25b/vfe/vfecontrol.cpp
+===================================================================
+--- povray-3.7.0.beta.25b.orig/vfe/vfecontrol.cpp	2009-11-11 21:27:33.098560840 +0100
++++ povray-3.7.0.beta.25b/vfe/vfecontrol.cpp	2009-11-11 21:28:18.396060074 +0100
+@@ -430,7 +430,7 @@
+     if (!m_Frontend->Start (m_RenderOptions.m_Options))
+       return (m_LastError = vfeFailedToSendRenderStart) ;
+   }
+-  catch (exception& e)
++  catch (std::exception& e)
+   {
+     if (dynamic_cast<pov_base::Exception *> (&e) != NULL)
+       m_RenderErrorCode = dynamic_cast<pov_base::Exception *> (&e)->code() ;
+Index: povray-3.7.0.beta.25b/vfe/vfesession.cpp
+===================================================================
+--- povray-3.7.0.beta.25b.orig/vfe/vfesession.cpp	2009-11-11 21:29:12.798555641 +0100
++++ povray-3.7.0.beta.25b/vfe/vfesession.cpp	2009-11-11 21:30:29.119796942 +0100
+@@ -695,7 +695,7 @@
+     m_Failed = true;
+     m_LastError = vfeCaughtException;
+   }
+-  catch (exception&)
++  catch (std::exception&)
+   {
+     m_Failed = true;
+     m_LastError = vfeCaughtException;

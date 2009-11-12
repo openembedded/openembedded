@@ -1,10 +1,8 @@
 def __note(msg, d):
-    import bb
     bb.note("%s: recipe_sanity: %s" % (d.getVar("P", 1), msg))
 
 __recipe_sanity_badtargetvars = "RDEPENDS RPROVIDES"
 def bad_target_vars(cfgdata, d):
-    import bb.data
     if bb.data.inherits_class("native", d) or \
        bb.data.inherits_class("cross", d):
         return
@@ -43,14 +41,12 @@ def var_renames_overwrite(cfgdata, d):
                 __note("rename of variable '%s' to '%s' overwrote existing value '%s' with '%s'." % (key, newkey, oldvalue, newvalue), d)
 
 def incorrect_nonempty_PACKAGES(cfgdata, d):
-    import bb.data
     if bb.data.inherits_class("native", d) or \
        bb.data.inherits_class("cross", d):
         if d.getVar("PACKAGES", 1):
             return True
 
 def can_use_autotools_base(cfgdata, d):
-    import bb
     cfg = d.getVar("do_configure", 1)
     if not bb.data.inherits_class("autotools", d):
         return False
@@ -68,8 +64,6 @@ def can_use_autotools_base(cfgdata, d):
     return True
 
 def can_remove_FILESPATH(cfgdata, d):
-    import os
-    import bb
     expected = cfgdata.get("FILESPATH")
     #expected = "${@':'.join([os.path.normpath(os.path.join(fp, p, o)) for fp in d.getVar('FILESPATHBASE', 1).split(':') for p in d.getVar('FILESPATHPKG', 1).split(':') for o in (d.getVar('OVERRIDES', 1) + ':').split(':') if os.path.exists(os.path.join(fp, p, o))])}:${FILESDIR}"
     expectedpaths = bb.data.expand(expected, d)
@@ -84,8 +78,6 @@ def can_remove_FILESPATH(cfgdata, d):
     return expected != unexpanded
 
 def can_remove_FILESDIR(cfgdata, d):
-    import os
-    import bb
     expected = cfgdata.get("FILESDIR")
     #expected = "${@bb.which(d.getVar('FILESPATH', 1), '.')}"
     unexpanded = d.getVar("FILESDIR", 0)
@@ -102,7 +94,6 @@ def can_remove_FILESDIR(cfgdata, d):
             expanded == bb.data.expand(expected, d))
 
 def can_remove_others(p, cfgdata, d):
-    import bb
     for k in ["S", "PV", "PN", "DESCRIPTION", "LICENSE", "DEPENDS",
               "SECTION", "PACKAGES", "EXTRA_OECONF", "EXTRA_OEMAKE"]:
     #for k in cfgdata:

@@ -1,4 +1,4 @@
-require mtd-utils_1.0.0+git.bb
+require mtd-utils_1.2.0+git.bb
 
 # this can probably be integrated into the main mtd-utils package
 # but I did not want to risk breakage -- but would be glad to 

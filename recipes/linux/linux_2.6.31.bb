@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r3"
+PR = "r5"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -11,9 +11,10 @@ DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_db1200 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
+DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.3.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.5.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI_append_db1200 ="\
@@ -25,7 +26,7 @@ SRC_URI_append_boc01 = "\
            file://boc01.dts \
            file://boc01.dts.v1 \
            file://004-081205-usb.patch;patch=1 \
-           file://005-091103-isl12024.patch;patch=1 \
+           file://005-091110-isl12024.patch;patch=1 \
            file://007-091005-lm73.patch;patch=1 \
            file://011-091028-gpio.patch;patch=1 \
            file://012-091019-capsense.patch;patch=1 \

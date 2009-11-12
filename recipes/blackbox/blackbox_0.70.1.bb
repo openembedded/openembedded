@@ -16,6 +16,7 @@ EXTRA_OECONF = "--disable-i18n --without-imlib --with-xpm --with-gnome-menus"
 do_install_append() {
 	sed -i s#${STAGING_LIBDIR}#${libdir}#g ${D}/${libdir}/pkgconfig/libbt.pc
 }
-do_stage_append () {
+
+do_stage () {
 	sed -i s#${STAGING_LIBDIR}#${libdir}#g ${STAGING_LIBDIR}/pkgconfig/libbt.pc
 }
