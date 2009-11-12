@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r13"
+PR = "r14"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -104,4 +104,9 @@ do_stage_append() {
         install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}
         oe_libinstall -C extras/volume_id/lib -so libvolume_id ${STAGING_LIBDIR}
         oe_libinstall -C udev/lib -so libudev ${STAGING_LIBDIR}
+        # Since we change exec_prefix above, autotools_stage_all will not see the .pc files
+        # When we upgrade to 145 with the path bugs fixed we can drop all this (see poky)
+        install -d ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
+        install ${S}/extras/volume_id/lib/libvolume_id.pc ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
+        install ${S}/udev/lib/libudev.pc ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
 }
