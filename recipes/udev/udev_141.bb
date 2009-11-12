@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r14"
+PR = "r15"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -109,4 +109,7 @@ do_stage_append() {
         install -d ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
         install ${S}/extras/volume_id/lib/libvolume_id.pc ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
         install ${S}/udev/lib/libudev.pc ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
+	install -d ${STAGING_DIR_TARGET}${prefix}${includedir}/
+        install ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_DIR_TARGET}${prefix}${includedir}/
+        install ${S}/udev/lib/libudev.h ${STAGING_DIR_TARGET}${prefix}${includedir}/
 }
