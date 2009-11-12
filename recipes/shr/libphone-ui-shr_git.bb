@@ -17,3 +17,4 @@ do_configure_prepend() {
 }
 
 FILES_${PN} += "${libdir}/phoneui/modules/*"
+FILES_${PN}-dbg += "${libdir}/phoneui/modules/.debug"
