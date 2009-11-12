@@ -38,7 +38,8 @@ do_compile () {
 do_install () {
         install -d ${D}${prefix} ${D}${datadir}/zoneinfo
         cp -pPR ${WORKDIR}/build${prefix}/* ${D}${prefix}
-        cp -pP ${WORKDIR}/{iso3166,zone}.tab ${D}${prefix}
+        cp -pP ${WORKDIR}/zone.tab ${D}${datadir}/zoneinfo
+        cp -pP ${WORKDIR}/iso3166.tab ${D}${datadir}/zoneinfo
 
         # Install a sane default for timezones
         install -d ${D}${sysconfdir}
