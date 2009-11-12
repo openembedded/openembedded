@@ -1,5 +1,5 @@
 require dbus.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 RRECOMMENDS_${PN} = ""
 RDEPENDS_${PN} = ""
 inherit native
@@ -11,6 +11,7 @@ SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   file://cross.patch;patch=1 \
   file://tmpdir.patch;patch=1 \
+  file://fix-install-daemon.patch;patch=1 \
   file://dbus-1.init \
 "
 
