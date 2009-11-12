@@ -25,7 +25,7 @@ DEPENDS_prepend = "${@cpan_build_dep_prepend(d)}"
 cpan_build_do_configure () {
 	if [ ${@is_target(d)} == "yes" ]; then
 		# build for target
-		. ${STAGING_DIR_TARGET}/perl/config.sh
+		. ${STAGING_LIBDIR}/perl/config.sh
 		if [ "${IS_NEW_PERL}" = "yes" ]; then
 			perl Build.PL --installdirs vendor \
 				--destdir ${D} \

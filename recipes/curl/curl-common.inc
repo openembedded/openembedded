@@ -23,6 +23,11 @@ python __anonymous() {
 	f = bb.data.getVar("CURL_FEATURES", d, True).split(",")
         oeconf = bb.data.getVar("EXTRA_OECONF", d, False)
         deps = bb.data.getVar("DEPENDS", d, False).split()
+        pn = bb.data.getVar("PN", d, True)
+        if "native" in pn:
+                native = "-native"
+        else:
+                native = ""
         for x in [ 'cookies', 'crypto-auth', 'dict', 'file', 'ftp', 'http', 'telnet', 'tftp', 'ipv6' ]:
                 if x in f:
                         oeconf += " --enable-%s" % x
@@ -30,22 +35,22 @@ python __anonymous() {
                         oeconf += " --disable-%s" % x
         if 'zlib' in f:
                 oeconf += " --with-zlib=${STAGING_LIBDIR}/../"
-                deps.append("zlib")
+                deps.append("zlib" + native)
         else:
                 oeconf += " --without-zlib"
         if 'gnutls' in f:
                 oeconf += " --with-gnutls=${STAGING_BINDIR_CROSS}"
-                deps.append("gnutls")
+                deps.append("gnutls" + native)
         else:
                 oeconf += " --without-gnutls"
         if 'openssl' in f:
                 oeconf += " --with-ssl=${STAGING_LIBDIR}/../"
-                deps.append("openssl")
+                deps.append("openssl" + native)
         else:
                 oeconf += " --without-ssl"
         if 'ares' in f:
                 oeconf += " --enable-ares"
-                deps.append("c-ares")
+                deps.append("c-ares" + native)
         else:
                 oeconf += " --disable-ares"
         bb.data.setVar('EXTRA_OECONF', oeconf, d)
