@@ -125,9 +125,6 @@ shr_rootfs_postprocess() {
     echo "# set your locale here:" >> ./etc/profile
     echo "export LANG=en_US.UTF-8" >> ./etc/profile
 
-    #fix sound in elementary-alarm
-    /bin/sh -c "cd ./usr/share; ln -s elementary-alarm elementary_alarm"
-
     # Add some missing entries to the passwd and group file; but do so carefully
     # since this will be fixed upstream at some point.
     grep -q '^tss:' ./etc/passwd || echo 'tss:x:93:93:Linux TSS User:/bin:/bin/sh' >>./etc/passwd
