@@ -89,7 +89,7 @@ def base_chk_file_vars(parser, localpath, params, data):
     if want_sha256sum:
         try:
             shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
-            shadata = (shapipe.readline().split() or [ "" ])[0]
+            sha256data = (shapipe.readline().split() or [ "" ])[0]
             shapipe.close()
         except OSError, e:
             raise Exception("Executing shasum failed")
