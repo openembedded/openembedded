@@ -24,7 +24,7 @@ diff -uNr C.orig/update-alternatives C/update-alternatives
  		if [ ! -d $link_dir ]; then
  			mkdir -p $link_dir
  		fi
-+		if [ -h $link ]; then
++		if [ -h $link -a -d $link ]; then
 +			# if $link exists and the target is directory, than ln -sf $path $link, doesn't replace link to that directory, but creates new link inside
 +			echo "update-alternatives: Removing $link"
 +			rm -f $link
