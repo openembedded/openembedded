@@ -1,5 +1,5 @@
 DESCRIPTION = "Pingus is a free Lemmings clone."
-DEPENDS = "virtual/libsdl libsdl-image libsdl-mixer boost libpng"
+DEPENDS = "virtual/libiconv virtual/libsdl libsdl-image libsdl-mixer boost libpng"
 LICENSE = "GPL"
 HOMEPAGE = "http://pingus.seul.org/"
 SECTION = "x11/games"
@@ -15,6 +15,8 @@ inherit scons
 SRC_URI = "\
   http://pingus.seul.org/files/pingus-0.7.2.tar.bz2 \
   file://sconstruct.diff;patch=1 \
+  file://boost.patch;patch=1 \
+  file://cheader.patch;patch=1 \
   file://pingus.desktop \
   file://pingus.png \
   file://pingus-gta012.sh \
@@ -37,6 +39,10 @@ do_install() {
 	else
 		install -m 0755 ${S}/pingus ${D}${bindir}/pingus
 	fi
+}
+
+do_stage() {
+	:
 }
 
 # Account for 1337 script in do_install
