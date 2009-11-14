@@ -56,6 +56,50 @@ def base_chk_load_parser(config_paths):
 
     return parser
 
+def base_chk_file_vars(parser, localpath, params, data):
+    try:
+        name = params["name"]
+    except KeyError:
+        return False
+    flagName = "%s.md5sum" % name
+    want_md5sum = bb.data.getVarFlag("SRC_URI", flagName, data)
+    flagName = "%s.sha256sum" % name
+    want_sha256sum = bb.data.getVarFlag("SRC_URI", flagName, data)
+
+    if (want_sha256sum == None and want_md5sum == None):
+        # no checksums to check, nothing to do
+        return False
+
+    if not os.path.exists(localpath):
+        localpath = base_path_out(localpath, data)
+        bb.note("The localpath does not exist '%s'" % localpath)
+        raise Exception("The path does not exist '%s'" % localpath)
+
+    if want_md5sum:
+        try:
+	    md5pipe = os.popen('PATH=%s md5sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+            md5data = (md5pipe.readline().split() or [ "" ])[0]
+            md5pipe.close()
+        except OSError, e:
+            raise Exception("Executing md5sum failed")
+        if want_md5sum != md5data:
+            bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (want_md5sum, md5data))
+            raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (want_md5sum, md5data))
+
+    if want_sha256sum:
+        try:
+            shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+            sha256data = (shapipe.readline().split() or [ "" ])[0]
+            shapipe.close()
+        except OSError, e:
+            raise Exception("Executing shasum failed")
+        if want_sha256sum != sha256data:
+            bb.note("The SHA256Sums did not match. Wanted: '%s' and Got: '%s'" % (want_sha256sum, sha256data))
+            raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (want_sha256sum, sha256data))
+
+    return True
+
+
 def base_chk_file(parser, pn, pv, src_uri, localpath, data):
     no_checksum = False
     # Try PN-PV-SRC_URI first and then try PN-SRC_URI
@@ -639,15 +683,15 @@ python base_do_fetch() {
 	# Check each URI
 	for url in src_uri.split():
 		localpath = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
-		(type,host,path,_,_,_) = bb.decodeurl(url)
+		(type,host,path,_,_,params) = bb.decodeurl(url)
 		uri = "%s://%s%s" % (type,host,path)
 		try:
-			if type == "http" or type == "https" or type == "ftp" or type == "ftps":
-				if not base_chk_file(parser, pn, pv,uri, localpath, d):
-					if not bb.data.getVar("OE_ALLOW_INSECURE_DOWNLOADS",d, True):
-						bb.fatal("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
+			if type in [ "http", "https", "ftp", "ftps" ]:
+				if not (base_chk_file_vars(parser, localpath, params, d) or base_chk_file(parser, pn, pv,uri, localpath, d)):
+					if not bb.data.getVar("OE_ALLOW_INSECURE_DOWNLOADS", d, True):
+						bb.fatal("%s-%s: %s has no checksum defined, cannot check archive integrity" % (pn,pv,uri))
 					else:
-						bb.note("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
+						bb.note("%s-%s: %s has no checksum defined, archive integrity not checked" % (pn,pv,uri))
 		except Exception:
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
@@ -1041,6 +1085,8 @@ def is_legacy_staging(d):
         legacy = False
     if bb.data.getVar('PSTAGE_BROKEN_DESTDIR', d, 1) == "1":
         legacy = True
+    if bb.data.getVar('FORCE_LEGACY_STAGING', d, 1) == "1":
+        legacy = True
     return legacy
 
 do_populate_staging[dirs] = "${STAGING_DIR_TARGET}/${bindir} ${STAGING_DIR_TARGET}/${libdir} \
@@ -1085,9 +1131,11 @@ python do_populate_staging () {
     if legacy:
         bb.data.setVar("SYSROOT_DESTDIR", "", d)
         bb.note("Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
+        if bb.data.getVarFlags('do_stage', d) is None:
+            bb.fatal("This recipe (%s) has a do_stage_prepend or do_stage_append and do_stage now doesn't exist. Please rename this to do_stage()" % bb.data.getVar("FILE", d, True))
         lock = bb.utils.lockfile(lockfile)
-        bb.build.exec_func('do_stage', d)
         bb.build.exec_func('populate_staging_prehook', d)
+        bb.build.exec_func('do_stage', d)
         for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
             bb.build.exec_func(f, d)
         bb.build.exec_func('populate_staging_posthook', d)
@@ -1248,6 +1296,9 @@ python () {
     base_after_parse(d)
     if is_legacy_staging(d):
         bb.debug(1, "Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
+        if bb.data.getVarFlags('do_stage', d) is None:
+            bb.error("This recipe (%s) has a do_stage_prepend or do_stage_append and do_stage now doesn't exist. Please rename this to do_stage()" % bb.data.getVar("FILE", d, True))
+
 }
 
 def check_app_exists(app, d):

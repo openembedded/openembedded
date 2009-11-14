@@ -34,7 +34,7 @@ do_configure () {
 	oe_runconf
 }
 
-do_stage_append () {
+do_stage () {
 	# Fixup various .la files
 	sed -i -e "s|installed=yes|installed=no|" -e "s|dependency_libs\s*=\s*.*|dependency_libs='-L${STAGING_DIR_HOST}${layout_libdir} ${LIBGCCS_VAR} -lc -lm '|" ${STAGING_DIR_HOST}${layout_libdir}/libsupc++.la || true
 	sed -i -e "s|installed=yes|installed=no|" -e "s|dependency_libs\s*=\s*.*|dependency_libs='-L${STAGING_DIR_HOST}${layout_libdir} ${LIBGCCS_VAR} -lc -lm '|" ${STAGING_DIR_HOST}${layout_libdir}/libstdc++.la || true

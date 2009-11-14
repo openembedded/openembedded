@@ -76,8 +76,6 @@ def patch_init(d):
 		def __str__(self):
 			return "Patch Error: %s" % self.msg
 
-	import bb, bb.data, bb.fetch
-
 	class PatchSet(object):
 		defaults = {
 			"strippath": 1
@@ -457,8 +455,6 @@ do_patch[depends] = "${PATCHDEPENDENCY}"
 
 python patch_do_patch() {
 	import re
-	import bb.fetch
-
 	patch_init(d)
 
 	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()

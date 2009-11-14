@@ -1,21 +1,27 @@
 Description: Cope with header changes in kernel commit
  63b852a6b67d0820d388b0ecd0da83ccb4048b8d.
 
-diff -Nur -x '*.orig' -x '*~' klibc-1.5.15/usr/include/arch/i386/klibc/archsignal.h klibc-1.5.15.new/usr/include/arch/i386/klibc/archsignal.h
---- klibc-1.5.15/usr/include/arch/i386/klibc/archsignal.h	2009-10-04 23:10:17.000000000 +0100
-+++ klibc-1.5.15.new/usr/include/arch/i386/klibc/archsignal.h	2009-10-05 09:35:14.000000000 +0100
-@@ -96,7 +96,7 @@
+Index: klibc-1.5.15/usr/include/arch/i386/klibc/archsignal.h
+===================================================================
+--- klibc-1.5.15.orig/usr/include/arch/i386/klibc/archsignal.h	2009-01-04 11:28:03.000000000 -0800
++++ klibc-1.5.15/usr/include/arch/i386/klibc/archsignal.h	2009-11-11 14:21:10.000000000 -0800
+@@ -96,7 +96,12 @@ typedef struct {
  #define MINSIGSTKSZ	2048
  #define SIGSTKSZ	8192
  
--#include <asm-generic/signal.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,31)
 +#include <asm-generic/signal-defs.h>
++#else
+ #include <asm-generic/signal.h>
++#endif
  
  /* This uses gcc anonymous union support... */
  struct siginfo;
-diff -Nur -x '*.orig' -x '*~' klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h klibc-1.5.15.new/usr/include/arch/sparc/klibc/archsignal.h
---- klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h	2009-01-04 19:28:03.000000000 +0000
-+++ klibc-1.5.15.new/usr/include/arch/sparc/klibc/archsignal.h	2009-10-05 09:37:31.000000000 +0100
+Index: klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h
+===================================================================
+--- klibc-1.5.15.orig/usr/include/arch/sparc/klibc/archsignal.h	2009-01-04 11:28:03.000000000 -0800
++++ klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h	2009-11-09 15:06:29.000000000 -0800
 @@ -11,13 +11,6 @@
  #define __WANT_POSIX1B_SIGNALS__
  #include <asm/signal.h>

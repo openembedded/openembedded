@@ -37,9 +37,11 @@ do_stage() {
         autotools_stage_all
 }
 
-# We need to append this so it runs *after* binconfig.do_stage
-do_stage_append() {
-        sed -i -e s:^prefix=:prefix=\"${STAGING_DIR_TARGET}/usr\": ${STAGING_BINDIR_CROSS}/icu-config
+SYSROOT_PREPROCESS_FUNCS += "icu_sysroot_preprocess"
+
+# We need to append this so it runs *after* binconfig's preprocess function
+icu_sysroot_preprocess () {
+        sed -i -e s:^prefix=:prefix=\"${STAGING_DIR_TARGET}/usr\": ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/icu-config
 }	
 
 

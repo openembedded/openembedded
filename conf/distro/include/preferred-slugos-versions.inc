@@ -65,3 +65,6 @@ PREFERRED_VERSION_udev				?= "118"
 
 # boost 1.36 won't build
 PREFERRED_VERSION_boost				?= "1.33.1"
+
+# pulseaudio 0.9.19 is broken (ASM errors during do_compile):
+PREFERRED_VERSION_pulseaudio                    ?= "0.9.15"

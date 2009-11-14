@@ -87,7 +87,12 @@ DEPENDS_virtclass-native ?= "${ORIG_DEPENDS}"
 python __anonymous () {
     # If we've a legacy native do_stage, we need to neuter do_install
     stagefunc = bb.data.getVar('do_stage', d, True)
-    if (stagefunc.strip() != "do_stage_native" and stagefunc.strip() != "autotools_stage_all") and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
+
+    # For now, force legacy mode for native packages using autotools_stage_all
+    if (stagefunc.strip() == "autotools_stage_all"):
+        bb.debug(1, "Forcing legacy staging mode for %s" % bb.data.getVar('FILE', d, 1))
+        bb.data.setVar('FORCE_LEGACY_STAGING', "1", d)
+    elif (stagefunc.strip() != "do_stage_native" and stagefunc.strip() != "autotools_stage_all") and bb.data.getVar('AUTOTOOLS_NATIVE_STAGE_INSTALL', d, 1) == "1":
         bb.data.setVar("do_install", "      :", d)
 
     if "native" in (bb.data.getVar('BBCLASSEXTEND', d, True) or ""):
