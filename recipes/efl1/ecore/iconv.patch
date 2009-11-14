@@ -1,0 +1,35 @@
+Index: ecore/configure.ac
+===================================================================
+--- ecore.orig/configure.ac	2009-11-13 23:33:16.504742218 +0100
++++ ecore/configure.ac	2009-11-13 23:41:52.360519091 +0100
+@@ -392,6 +392,7 @@
+    ]
+ )
+ 
++if test "x${LTLIBICONV}" = "x" ; then
+ if test "x${have_iconv}" = "xno" ; then
+    AC_CHECK_LIB(c, iconv,
+       [have_iconv="yes"]   )
+@@ -413,6 +414,9 @@
+    fi
+ 
+ fi
++else 
++  have_iconv="yes"
++fi
+ AC_MSG_CHECKING(for explicit iconv link options)
+ AC_MSG_RESULT($iconv_libs)
+ 
+Index: ecore/src/lib/ecore_txt/Makefile.am
+===================================================================
+--- ecore.orig/src/lib/ecore_txt/Makefile.am	2009-11-13 23:32:49.374328084 +0100
++++ ecore/src/lib/ecore_txt/Makefile.am	2009-11-13 23:33:08.383909514 +0100
+@@ -16,7 +16,7 @@
+ libecore_txt_la_SOURCES = \
+ ecore_txt.c
+ 
+-libecore_txt_la_LIBADD = @iconv_libs@ \
++libecore_txt_la_LIBADD = @iconv_libs@ $(LTLIBICONV) \
+ @EINA_LIBS@
+ 
+ libecore_txt_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@ @ecore_txt_release_info@
