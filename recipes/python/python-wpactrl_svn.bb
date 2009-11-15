@@ -8,5 +8,5 @@ inherit distutils
 SRCREV = "383"
 SRC_URI = "svn://svn.otaku42.de;module=python-wpactrl;proto=http"
 S = "${WORKDIR}/python-wpactrl/trunk"
-PV = "1.0.1+svnr${SRCREV}"
+PV = "1.0.1+svnr${SRCPV}"
 

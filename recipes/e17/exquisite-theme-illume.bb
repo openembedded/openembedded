@@ -2,7 +2,7 @@ DDESCRIPTION = "A theme for exquisite"
 HOMEPAGE = "http://www.enlightenment.org"
 LICENSE = "MIT/BSD"
 SECTION = "x11"
-PV = "1.0+svnr${SRCREV}"
+PV = "1.0+svnr${SRCPV}"
 PR = "r6"
 
 inherit update-alternatives

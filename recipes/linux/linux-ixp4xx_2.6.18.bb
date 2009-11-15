@@ -3,7 +3,7 @@ require linux-ixp4xx.inc
 
 KERNEL_RELEASE = "2.6.18"
 
-PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
+PV = "${KERNEL_RELEASE}+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KERNEL_RELEASE}.tar.bz2 \

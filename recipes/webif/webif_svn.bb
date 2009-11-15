@@ -1,7 +1,7 @@
 DESCRIPTION = "Web interface"
 LICENSE = "GPL"
 
-PV = "0.0.3+svnr${SRCREV}"
+PV = "0.0.3+svnr${SRCPV}"
 SRCREV = "4737"
 
 SRC_URI = "svn://x-wrt.googlecode.com/svn;module=trunk;proto=http"

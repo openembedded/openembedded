@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.radlinux.org/connexion/"
 SECTION = "devel/python"
 LICENSE = "GPL"
 BV = "0.4.6"
-PV = "${BV}+svnr${SRCREV}"
+PV = "${BV}+svnr${SRCPV}"
 PR = "ml1"
 
 inherit distutils
