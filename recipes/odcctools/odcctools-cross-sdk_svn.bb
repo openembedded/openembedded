@@ -1,7 +1,7 @@
 DESCRIPTION = "cctools for darwin (SDK)"
 HOMEPAGE = "http://code.google.com/p/iphone-dev"
 DEPENDS = "bison-native"
-PV = "0.0+svn${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r2"
 
 SRCREV="280"
