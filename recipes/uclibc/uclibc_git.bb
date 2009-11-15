@@ -9,7 +9,6 @@
 UCLIBC_BASE ?= "0.9.30"
 SRCREV="b364abfd3f728894120996d5da2565614132708f"
 PV = "${UCLIBC_BASE}+gitr${SRCPV}"
-PE = "1"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.

@@ -4,6 +4,7 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libiac libgpephone gnome-vfs libxdamage libxcomposite libgpewidget"
 PR          = "r0"
+PE          = "1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpephone pkgconfig autotools

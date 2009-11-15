@@ -4,6 +4,8 @@ SECTION = "x11/applications"
 DEPENDS = "glib-2.0 gtk+"
 RRECOMMENDS = "gpsd espeak flite"
 
+PE = "1"
+
 inherit autotools
 
 EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher"
