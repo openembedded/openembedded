@@ -23,7 +23,8 @@ SRC_URI_append_armv7a = " \
 
 # Again, no '.' in PWD allowed :(
 PR = "r37"
-PV = "svnr${SRCREV}"
+PV = "1.0.0+svnr${SRCPV}"
+PE = "1"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
 INITSCRIPT_NAME = "gstti-init"
