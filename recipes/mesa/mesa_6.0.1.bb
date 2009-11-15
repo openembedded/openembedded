@@ -3,6 +3,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 \
 	file://Make-config.patch;patch=1 \
 	file://mklib.patch;patch=1"
 S = "${WORKDIR}/Mesa-${PV}"
+PE = "2"
 LICENSE = "LGPL"
 # gcc-3.4 blows up in gtktext with -frename-registers on arm-linux
 CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')}"
