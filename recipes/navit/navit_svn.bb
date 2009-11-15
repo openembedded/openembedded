@@ -1,6 +1,5 @@
 require navit.inc
 
-PE = "1"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r0"
 
