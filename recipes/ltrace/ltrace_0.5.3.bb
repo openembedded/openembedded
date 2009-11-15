@@ -1,17 +1,18 @@
 DESCRIPTION = "ltrace shows runtime library call information for dynamically linked executables."
 HOMEPAGE = "http://ltrace.alioth.debian.org"
 SECTION = "devel"
-DEPENDS = "libelf"
+DEPENDS = "coreutils-native libelf"
 LICENSE = "GPLv2"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz \
-           ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}-2.diff.gz;patch=1 \
-	   file://add-sysdep.patch;patch=1 \
-	   file://ltrace-compile.patch;patch=1 \
-	   file://ltrace-mips-remove-CP.patch;patch=1 \
-	   file://ltrace-mips.patch;patch=1 \
-	   file://ltrace-ppc.patch;patch=1 \
-	  "
+SRC_URI = "\
+  ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz \
+  ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}-2.diff.gz;patch=1 \
+  file://add-sysdep.patch;patch=1 \
+  file://ltrace-compile.patch;patch=1 \
+  file://ltrace-mips-remove-CP.patch;patch=1 \
+  file://ltrace-mips.patch;patch=1 \
+  file://ltrace-ppc.patch;patch=1 \
+"
 inherit autotools
 
 PARALLEL_MAKE = ""
@@ -70,5 +71,5 @@ do_install() {
 		sparc*)   LTRACE_ARCH=sparc ;;
 		x86_64*)  LTRACE_ARCH=x86_64 ;;
 	esac
-	oe_runmake install ${EXTRA_OEMAKE} ARCH=${LTRACE_ARCH} INSTALL=${STAGING_BINDIR_NATIVE}/install DESTDIR=${D}
+	oe_runmake install ${EXTRA_OEMAKE} ARCH=${LTRACE_ARCH} INSTALL=${STAGING_BINDIR_NATIVE}/install.coreutils-native DESTDIR=${D}
 }
