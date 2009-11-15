@@ -3,7 +3,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "BSD"
 DEPENDS = "cairo pango"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "git://git.gitorious.org/madbutterfly/mainline.git;protocol=git \
            file://001_makefile.am_bugs.patch;patch=1"
