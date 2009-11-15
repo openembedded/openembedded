@@ -3,7 +3,8 @@ DEPENDS = "libxv bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
 PR = "r1"
-PV = "0.0+${PR}+gitr${SRCREV}"
+PV = "0.0+${PR}+gitr${SRCPV}"
+PE = "1"
 
 SRCREV = "e66bf25df1f1ff085e6db102b282d90e7ceff4bf"
 SRC_URI = "git://git.mansr.com/omapfbplay;protocol=git \
