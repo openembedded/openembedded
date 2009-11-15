@@ -3,16 +3,15 @@ HOMEPAGE = "http://www.fltk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "zlib jpeg libpng libxext libxft"
+DEPENDS = "zlib jpeg libpng libxext libxft xinput"
 
-SVNREL = "6671"
-PV = "1.9.9+svnr${SVNREL}"
+PV = "1.9.9+svnr${SRCPV}"
 
 SRC_URI = "\
-  http://ftp.easysw.com/pub/fltk/snapshots/fltk-2.0.x-r6671.tar.bz2 \
+  svn://svn.easysw.com/public/fltk/fltk;proto=http;module=trunk \
   file://fix-it-damnit.patch;patch=1 \
 "
-S = "${WORKDIR}/fltk-2.0.x-r6671"
+S = "${WORKDIR}/trunk"
 
 inherit autotools_stage binconfig
 
@@ -26,7 +25,7 @@ EXTRA_OECONF = "\
 "
 
 do_configure() {
-	gnu-configize
+	autoconf
 	oe_runconf
 }
 
