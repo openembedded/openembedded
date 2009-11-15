@@ -5,7 +5,8 @@ PR = "r0"
 
 SRCREV = "42ab9e7cd259fae674dc2b2aa2962caaf8f09409"
 
-PV = "0.51+${PR}+gitr${SRCREV}"
+PV = "0.51+${PR}+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tglx/rt-tests;protocol=git"
 
