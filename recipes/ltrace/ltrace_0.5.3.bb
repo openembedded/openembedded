@@ -10,6 +10,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz \
 	   file://ltrace-compile.patch;patch=1 \
 	   file://ltrace-mips-remove-CP.patch;patch=1 \
 	   file://ltrace-mips.patch;patch=1 \
+	   file://ltrace-ppc.patch;patch=1 \
 	  "
 inherit autotools
 
