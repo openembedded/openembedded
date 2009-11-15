@@ -2,7 +2,7 @@ DESCRIPTION = "Forward a serial using TCP/IP"
 AUTHOR = "Holger 'Zecke' Freyther'"
 LICENSE = "GPL"
 SECTION = "console/devel"
-PV = "1.0.1+gitr${SRCREV}"
+PV = "1.0.1+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git/;protocol=git"
