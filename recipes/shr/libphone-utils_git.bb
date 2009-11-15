@@ -1,6 +1,6 @@
 DESCRIPTION = "phone-utils library"
 SECTION = "libs"
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCPV}"
 PR = "r2"
 
 DEPENDS="glib-2.0"

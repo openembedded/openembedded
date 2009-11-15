@@ -1,7 +1,7 @@
 DESCRIPTION = "illume SHR sysactions config"
 SECTION = "e/utils"
 LICENSE = "MIT BSD"
-PV = "1.1-${EFL_SRCREV}-gitr${SRCREV}"
+PV = "1.1-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r3"
 
 RPROVIDES_${PN} = "e-wm-sysactions"
