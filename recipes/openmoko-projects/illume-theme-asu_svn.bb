@@ -4,7 +4,7 @@ LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
 RPROVIDES_${PN} = "illume-theme"
 RCONFLICTS = "illume-config"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r9"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target/themes/;module=illume-theme-asu;proto=http"

@@ -4,7 +4,7 @@ SECTION = "x11/panels"
 DEPENDS = "imagemagick-native"
 RPROVIDES_${PN} = "matchbox-panel-2-icon-theme"
 PACKAGE_ARCH = "all"
-PV = "0.0.1+svnr${SRCREV}"
+PV = "0.0.1+svnr${SRCPV}"
 PR = "r0"
 
 inherit gtk-icon-cache
