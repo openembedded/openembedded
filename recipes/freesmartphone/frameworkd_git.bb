@@ -4,7 +4,8 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.9.5.9+gitr${SRCREV}"
+PV = "0.9.5.9+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 inherit distutils update-rc.d

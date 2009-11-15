@@ -1,7 +1,8 @@
 DESCRIPTION = "A set of notification sounds"
 LICENSE = "CC"
 SECTION = "multimedia"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
+PE = "1"
 PR = "r2"
 
 SRC_URI = "\
