@@ -1,12 +1,12 @@
 DESCRIPTION = "The reference implementation of the freesmartphone.org framework APIs"
 HOMEPAGE = "http://www.freesmartphone.org"
-AUTHOR = "FreeSmartphone.Org Development Team"
+AUTHOR = "freesmartphone.org Development Team"
 SECTION = "console/network"
-DEPENDS = "python-cython-native python-pyrex-native"
+#DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.9.5.9+gitr${SRCPV}"
-PE = "1"
 PR = "r0"
+PE = "1"
 
 inherit distutils update-rc.d
 
@@ -17,6 +17,8 @@ SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd \
            file://frameworkd.conf \
 	   "
+SRC_URI_append_shr = "file://oeventsd-use-opimd-signals.patch;patch=1"
+
 S = "${WORKDIR}/git"
 
 do_configure_append() {
@@ -56,6 +58,8 @@ RDEPENDS_${PN} += "\
 RRECOMMENDS_${PN} += "\
   alsa-utils-amixer \
   python-gst \
+  python-phoneutils \
+  python-vobject \
   ppp \
 "
 
