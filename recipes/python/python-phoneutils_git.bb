@@ -2,7 +2,7 @@ DESCRIPTION = "Python Bindings for libphone-utils"
 SECTION = "devel/python"
 DEPENDS = "libphone-utils python-cython-native python-pyrex-native"
 RDEPENDS = "libphone-utils"
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/libphone-utils.git;protocol=http;branch=master"
