@@ -3,7 +3,7 @@ SECTION = "libs"
 PV = "0.0.1+gitr${SRCPV}"
 PR = "r1"
 
-inherit autotools autotools_stage pkgconfig vala girepository
+inherit autotools autotools_stage pkgconfig vala
 
 DEPENDS = "glib-2.0 dbus-glib libxml2 libgee"
 
