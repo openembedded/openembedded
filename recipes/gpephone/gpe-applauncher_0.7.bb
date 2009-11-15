@@ -3,6 +3,7 @@ DESCRIPTION = "A cellphone application launcher."
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r1"
+PE          = "1"
 
 DEPENDS = "gtk+ libgpewidget libgpephone libgpelaunch dbus-glib libxsettings-client"
 

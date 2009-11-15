@@ -3,6 +3,7 @@ DESCRIPTION = "LiPS address book"
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
+PE          = "1"
 
 DEPENDS = "gtk+ libgpewidget libgpephone dbus-glib libabenabler libiac libim"
 
