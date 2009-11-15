@@ -1,6 +1,7 @@
 AUTHOR = "Pander"
 DESCRIPTION = "Illume keyboard with a layout optimized for browsing"
-PV = "0.0-gitr${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 BASEDIR = "browse"
