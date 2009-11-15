@@ -7,6 +7,8 @@ LICENSE = "LGPL"
 
 ARM_INSTRUCTION_SET = "arm"
 
+PE = "2"
+
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 

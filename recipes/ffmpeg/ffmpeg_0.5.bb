@@ -2,7 +2,6 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-PE = "1"
 PR = "r5"
 
 DEFAULT_PREFERENCE = "1"
