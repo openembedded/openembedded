@@ -2,7 +2,7 @@ DESCRIPTION = "GNOME default webbrowser"
 DEPENDS = "gnome-desktop gnome-vfs libgnomeui webkit-gtk iso-codes startup-notification"
 RDEPENDS = "gnome-vfs-plugin-http iso-codes"
 
-PV = "2.20.1+svnr${SRCREV}"
+PV = "2.20.1+svnr${SRCPV}"
 PR = "r1"
 
 inherit gnome

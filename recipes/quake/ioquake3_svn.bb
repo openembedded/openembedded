@@ -2,7 +2,7 @@ DESCRIPTION = "ioquake3 (or ioq3 for short,) aims to build upon id Software's Qu
 DEPENDS = "virtual/libsdl"
 LICENSE = "GPLv2"
 
-PV = "1.34+svnr${SRCREV}"
+PV = "1.34+svnr${SRCPV}"
 SRCREV="1470"
 SRC_URI = "svn://svn.icculus.org/quake3/;module=trunk"
 

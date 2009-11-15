@@ -3,6 +3,7 @@ LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "dbus-glib"
 PV = "0.8+gitr${SRCPV}"
+PE = "1"
 PR = "r2"
 
 SRC_URI = "\

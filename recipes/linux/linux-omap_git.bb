@@ -12,7 +12,7 @@ SRCREV = "945044d157dd63c6af0f2ed40a5346382af94eb4"
 FILESPATHPKG_prepend = "linux-omap-2.6.31:"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-#PV = "2.6.30+2.6.31-rc8+gitr${SRCREV}"
+#PV = "2.6.30+2.6.31-rc8+gitr${SRCPV}"
 PV = "2.6.31"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \

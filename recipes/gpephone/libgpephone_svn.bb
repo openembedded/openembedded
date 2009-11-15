@@ -3,7 +3,8 @@ DESCRIPTION = "Base library for GPE phone environment."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ gtk-doc dbus-glib"
-PV = "0.4+svnr-${SRCREV}"
+PV = "0.4+svnr${SRCPV}"
+PE = "1"
 PR          = "r0"
 
 inherit gpephone pkgconfig autotools

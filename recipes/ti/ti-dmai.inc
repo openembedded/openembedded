@@ -11,5 +11,5 @@ SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRANCH_BRIJESH_DMAI_DEV_
 
 S = "${WORKDIR}/BRANCH_BRIJESH_DMAI_DEV_2_xx/davinci_multimedia_application_interface"
 # Yes, the xdc stuff still breaks with a '.' in PWD
-PV = "svnr${SRCREV}"
-
+PV = "2.0+svnr${SRCPV}"
+PE = "1"

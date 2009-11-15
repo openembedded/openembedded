@@ -1,6 +1,7 @@
 DESCRIPTION = "Polish dictionary for Illume keyboard"
 SECTION = "x11/data"
 PV = "1.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

@@ -1,5 +1,5 @@
 LICENSE = "GPLv3 LGPLv3"
-PV = "0.1.0+svnr${SRCREV}"
+PV = "0.1.0+svnr${SRCPV}"
 
 PR = "r3"
 

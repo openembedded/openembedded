@@ -3,6 +3,7 @@ AUTHOR = "Holger 'Zecke' Freyther'"
 LICENSE = "GPL"
 SECTION = "console/devel"
 PV = "1.0.1+gitr${SRCPV}"
+PE = "1"
 PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git/;protocol=git"

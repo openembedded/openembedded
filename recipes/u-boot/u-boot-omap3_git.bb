@@ -4,9 +4,9 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/u-boot-omap3-git/${M
 
 SRCREV = "08d7fdcce5dde5c2dc968fac5b2facf17cbabb5"
 
-PV = "2008.10+${PR}+gitr${SRCREV}"
-PR ="r2"
-PE = "1"
+PV = "2008.10+${PR}+gitr${SRCPV}"
+PR ="r0"
+PE = "2"
 
 SRC_URI = "git://www.sakoman.net/git/u-boot-omap3.git;branch=common;protocol=git \
           "

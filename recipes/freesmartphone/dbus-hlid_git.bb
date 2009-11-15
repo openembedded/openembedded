@@ -5,6 +5,7 @@ SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
 PV = "1.0.1+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/dbus-hlid.git;protocol=git;branch=master"

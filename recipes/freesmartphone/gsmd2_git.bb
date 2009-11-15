@@ -5,6 +5,7 @@ SECTION = "console/network"
 DEPENDS = "dbus dbus-glib"
 LICENSE = "GPL"
 PV = "0.1.0+gitr${SRCPV}"
+PE = "1"
 PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/gsmd2.git;protocol=git;branch=master"

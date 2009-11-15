@@ -4,6 +4,7 @@ SECTION = "console/network"
 DEPENDS = "dbus dbus-glib"
 LICENSE = "GPL"
 PV = "0.9.3.1+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/gsm0710muxd.git;protocol=git;branch=master"

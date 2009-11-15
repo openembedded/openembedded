@@ -7,9 +7,9 @@ SRCREV = "70532c1152662f88ba1e0627c96307d93536508f"
 
 PROVIDES = "u-boot"
 
-PV = "pandora+${PR}+gitr${SRCREV}"
-PR ="r3"
-PE = "1"
+PV = "pandora+${PR}+gitr${SRCPV}"
+PR ="r0"
+PE = "2"
 
 SRC_URI = "git://git.openpandora.org/pandora-u-boot.git;branch=master;protocol=git \
 "

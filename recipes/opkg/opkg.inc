@@ -3,7 +3,7 @@ DESCRIPTION_libopkg = "Opkg Package Manager Library"
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "curl gpgme"
-PV = "0.1.6+svnr${SRCREV}"
+PV = "0.1.6+svnr${SRCPV}"
 INC_PR = "r17"
 
 FILESPATHPKG =. "opkg:"

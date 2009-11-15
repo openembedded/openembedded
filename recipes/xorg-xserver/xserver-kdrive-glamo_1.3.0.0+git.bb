@@ -9,8 +9,8 @@ DEPENDS += "libxkbfile libxcalibrate"
 RDEPENDS_${PN} = "xserver-security-policy"
 PROVIDES = "virtual/xserver"
 
-PE = "1"
-PV = "1.3.0.0+gitr${SRCREV}"
+PE = "2"
+PV = "1.3.0.0+gitr${SRCPV}"
 PR = "r3"
 
 COMPATIBLE_HOST = "arm.*-linux"

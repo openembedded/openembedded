@@ -12,7 +12,8 @@ SRCREV_da830-omapl137-evm = "1f3804f945375f699023056a462891b80ea2a36e"
 SRCREV_da850-omapl138-evm = "1f3804f945375f699023056a462891b80ea2a36e"
 
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
-PV = "2.6.30+2.6.31-rc7-${PR}+gitr${SRCREV}"
+PV = "2.6.30+2.6.31-rc7-${PR}+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git \
            file://defconfig"

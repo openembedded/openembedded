@@ -5,7 +5,7 @@
 PR ="r0"
 LICENSE="GPL"
 
-PV = "10.2+svn${SRCREV}"
+PV = "10.2+svnr${SRCPV}"
 
 SRC_URI="svn://svn.xiph.org/trunk;module=cdparanoia;proto=http \
 	 file://fixes10.patch;patch=1 \

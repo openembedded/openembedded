@@ -3,7 +3,8 @@ SECTION = "gpe/libs"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "glib-2.0 libiac"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 inherit gpephone pkgconfig autotools

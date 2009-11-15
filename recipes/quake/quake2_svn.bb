@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "libsdl-x11 libxxf86dga" 
 
 SRCREV = "205"
-PV = "0.16.1+svnr${SRCREV}"
+PV = "0.16.1+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://svn.icculus.org/quake2/;module=trunk \

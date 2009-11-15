@@ -3,7 +3,7 @@ HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 LICENSE = "GPL"
 PRIORITY = "optional"
 
-PV = "0.5.2+svnr${SRCREV}"
+PV = "0.5.2+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=JavaScriptCore;proto=https \

@@ -4,7 +4,8 @@ DESCRIPTION = "Linux kernel for XO laptop (aka OLPC)"
 
 SRCREV = "28f4cb6e780db078a09c765595e0ee84fda20f88"
 
-PV = "2.6.22+gitr${SRCREV}"
+PV = "2.6.22+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 COMPATIBLE_MACHINE = "xo"

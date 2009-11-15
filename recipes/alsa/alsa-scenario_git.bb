@@ -3,9 +3,9 @@ HOMEPAGE = "http://opensource.wolfsonmicro.com/node/22"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
-PV = "0.2+gitr${SRCREV}"
+PV = "0.2+gitr${SRCPV}"
 PR = "r0"
-PE = "1"
+PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
 

@@ -3,6 +3,7 @@ SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://people.suug.ch/~tgr/libnl"
 PV = "1.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 inherit autotools pkgconfig

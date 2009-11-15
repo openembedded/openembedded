@@ -3,7 +3,7 @@ LICENSE = "zlib"
 DEPENDS = "virtual/libx11 libxxf86vm virtual/egl"
 
 SRCREV = "2409"
-PV = "1.6+svnr${SRCREV}"
+PV = "1.6+svnr${SRCPV}"
 
 SRC_URI = "svn://irrlicht.svn.sourceforge.net/svnroot/irrlicht/branches;module=ogl-es;proto=https \
            file://irrlicht_beagle.diff;patch=1;pnum=0 \

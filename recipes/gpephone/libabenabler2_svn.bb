@@ -3,7 +3,8 @@ SECTION = "gpe/libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 librecord2 gconf sqlite3"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 inherit gpephone pkgconfig autotools

@@ -4,6 +4,7 @@ HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console"
 LICENSE = "GPLv2"
 PV = "0.1.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"

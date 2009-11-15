@@ -5,6 +5,7 @@ SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib libgsm0710mux"
 LICENSE = "GPL"
 PV = "0.9.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "\

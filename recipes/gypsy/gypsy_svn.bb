@@ -6,5 +6,5 @@ SRC_URI = "svn://svn.o-hand.com/repos/${PN}/trunk;module=${PN};proto=http \
            file://remove-werror.patch;patch=1"
 S = "${WORKDIR}/${PN}"
 
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r1"

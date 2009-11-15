@@ -8,7 +8,8 @@ SRCREV = "e712a114e04a1070f1afdf31ec668cb28eda513c"
 
 PR = "r6"
 
-PV = "0.8.6h+${PR}+gitr${SRCREV}"
+PV = "0.8.6h+${PR}+gitr${SRCPV}"
+PE = "1"
 
 DEPENDS = "codec-engine dbus libxml2 gnutls tremor faad2 ffmpeg flac  \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
