@@ -338,7 +338,7 @@ python perform_packagecopy () {
 }
 
 python populate_packages () {
-	import glob, stat, errno, re
+	import glob, stat, errno, re,os
 
 	workdir = bb.data.getVar('WORKDIR', d, True)
 	outdir = bb.data.getVar('DEPLOY_DIR', d, True)
