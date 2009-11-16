@@ -160,7 +160,7 @@ Recipes:    mx31ads-kernel*
 Person:     Marcin Juszkiewicz
 Mail:       marcin@juszkiewicz.com.pl
 Website:    http://marcin.juszkiewicz.com.pl/
-Machines:   progear, alix, at91sam9263ek
+Machines:   bug, progear, alix, at91sam9263ek
 Distros:    Poky, Ångström
 
 Person:     Matthias 'CoreDump' Hentges
