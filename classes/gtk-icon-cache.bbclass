@@ -27,7 +27,6 @@ done
 }
 
 python populate_packages_append () {
-	import os.path
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
 	pkgdest =  bb.data.getVar('PKGDEST', d, 1)
 	
