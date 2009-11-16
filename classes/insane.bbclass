@@ -453,13 +453,13 @@ def package_qa_walk(path, funcs, package,d):
 
     return sane
 
-def package_qa_check_rdepends(pkg, workdir, d):
+def package_qa_check_rdepends(pkg, pkgdest, d):
     sane = True
     if not "-dbg" in pkg and not "task-" in pkg and not "-image" in pkg:
         # Copied from package_ipk.bbclass
         # boiler plate to update the data
         localdata = bb.data.createCopy(d)
-        root = "%s/install/%s" % (workdir, pkg)
+        root = "%s/%s" % (pkgdest, pkg)
 
         bb.data.setVar('ROOT', '', localdata) 
         bb.data.setVar('ROOT_%s' % pkg, root, localdata)
@@ -491,7 +491,7 @@ def package_qa_check_rdepends(pkg, workdir, d):
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
     bb.debug(2, "DO PACKAGE QA")
-    workdir = bb.data.getVar('WORKDIR', d, True)
+    pkgdest = bb.data.getVar('PKGDEST', d, True)
     packages = bb.data.getVar('PACKAGES',d, True)
 
     # no packages should be scanned
@@ -510,10 +510,10 @@ python do_package_qa () {
             continue
 
         bb.debug(1, "Checking Package: %s" % package)
-        path = "%s/install/%s" % (workdir, package)
+        path = "%s/%s" % (pkgdest, package)
         if not package_qa_walk(path, checks, package, d):
             walk_sane  = False
-        if not package_qa_check_rdepends(package, workdir, d):
+        if not package_qa_check_rdepends(package, pkgdest, d):
             rdepends_sane = False
 
     if not walk_sane or not rdepends_sane:
