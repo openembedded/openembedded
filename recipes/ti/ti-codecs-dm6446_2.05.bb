@@ -1,12 +1,14 @@
-DEPENDS="ti-codec-engine ti-dsplink-module"
+DEPENDS="ti-codec-engine ti-linuxutils"
 
 require ti-codec.inc
-require ti-codec-combo-dm6446.inc
 
 SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/S1SDKLNX/DVSDK_2_00/exports/dm6446_codecs_setuplinux_2_00_00_22.bin"
 
 S = "${WORKDIR}/dvsdk_2_00_00_22/dm6446_dvsdk_combos_2_05"
 BINFILE = "dm6446_codecs_setuplinux_2_00_00_22.bin"
+TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
+
+require ti-eula-unpack.inc
 
 export ${CODEGEN_INSTALL_DIR}
 

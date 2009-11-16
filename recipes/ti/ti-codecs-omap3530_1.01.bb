@@ -1,33 +1,24 @@
 require ti-codec.inc
-require ti-codec-combo-omap3530.inc
 
-SRC_URI	= "http://software-dl.ti.com/sdo/sdo_apps_public_sw/omap3530_dvsdk_combos_tspa/omap3530_dvsdk_combos_tspa-3_16_01-Linux-x86.bin"
+SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/latest//exports/cs1omap3530_setuplinux_1_00_01-42.bin"
 
 # Specify names of the InstallJammer binary file and the tarball it extracts
-BINFILE = "omap3530_dvsdk_combos_tspa-3_16_01-Linux-x86.bin"
-TARFILE = "omap3530_dvsdk_combos_tspa/omap3530_dvsdk_combos_tspa_3_16_01.tar.gz"
+BINFILE = "cs1omap3530_setuplinux_1_00_01-42.bin"
+TI_BIN_UNPK_CMDS = "Y:Y: qY:workdir"
 
-S = "${WORKDIR}/omap3530_dvsdk_combos_tspa_3_16_01"
+require ti-eula-unpack.inc
 
-DEPENDS="ti-codec-engine ti-dsplink-module"
+S = "${WORKDIR}/dvsdk_3_00_01_42/cs1omap3530_1_00_01"
 
-CODEC_INSTALL_DIR = "${S}"
+DEPENDS="ti-codec-engine ti-linuxutils"
 
 export CODEGEN_INSTALL_DIR
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
-PV = "3161"
-PR = "r17"
+PV = "1_00_1"
+PR = "r5"
+
 do_compile() {
-	make CE_INSTALL_DIR=${CE_INSTALL_DIR} \
-		 FC_INSTALL_DIR=${FC_INSTALL_DIR} \
-		 LINK_INSTALL_DIR=${LINK_INSTALL_DIR} \
-		 CMEM_INSTALL_DIR=${CMEM_INSTALL_DIR} \
-		 LPM_INSTALL_DIR=${LPM_INSTALL_DIR} \
-	     BIOS_INSTALL_DIR=${BIOS_INSTALL_DIR} \
-		 CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
-	     CODEC_INSTALL_DIR=${CODEC_INSTALL_DIR} \
-		 XDC_INSTALL_DIR=${XDC_INSTALL_DIR} clean
 
 	make CE_INSTALL_DIR=${CE_INSTALL_DIR} \
 		 FC_INSTALL_DIR=${FC_INSTALL_DIR} \
@@ -36,8 +27,21 @@ do_compile() {
 		 LPM_INSTALL_DIR=${LPM_INSTALL_DIR} \
 	     BIOS_INSTALL_DIR=${BIOS_INSTALL_DIR} \
 		 CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
-	     CODEC_INSTALL_DIR=${CODEC_INSTALL_DIR} \
-		 XDC_INSTALL_DIR=${XDC_INSTALL_DIR} 
+		 XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
+		 CODEC_INSTALL_DIR="${S}" \
+		 XDCARGS="prod" \
+		 clean
+
+	make CE_INSTALL_DIR=${CE_INSTALL_DIR} \
+		 FC_INSTALL_DIR=${FC_INSTALL_DIR} \
+		 LINK_INSTALL_DIR=${LINK_INSTALL_DIR} \
+		 CMEM_INSTALL_DIR=${CMEM_INSTALL_DIR} \
+		 LPM_INSTALL_DIR=${LPM_INSTALL_DIR} \
+	     BIOS_INSTALL_DIR=${BIOS_INSTALL_DIR} \
+		 CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
+		 XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
+		 CODEC_INSTALL_DIR="${S}" \
+		 XDCARGS="prod" \
 }
 
 do_install () {

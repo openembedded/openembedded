@@ -6,7 +6,7 @@ SRC_URI	= "http://install.source.dir.local/omapl137_dvsdk_combos_1_0.tar.gz"
 S = "${WORKDIR}/omapl137_dvsdk_combos_1_0"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
-PV = "100"
+PV = "1_0"
 PR = "r1"
 
 do_compile() {
