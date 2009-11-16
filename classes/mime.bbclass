@@ -27,10 +27,11 @@ fi
 python populate_packages_append () {
 	import os.path, re
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
+	pkgdest =  bb.data.getVar('PKGDEST', d, 1)
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	
 	for pkg in packages:
-		mime_dir = '%s/install/%s/usr/share/mime/packages' % (workdir, pkg)
+		mime_dir = '%s/%s/%s/usr/share/mime/packages' % (workdir, pkgdest, pkg)
 		mimes = []
 		mime_re = re.compile(".*\.xml$")
 		if os.path.exists(mime_dir):
