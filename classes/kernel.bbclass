@@ -306,6 +306,7 @@ module_conf_sco = "alias bt-proto-2 sco"
 module_conf_rfcomm = "alias bt-proto-3 rfcomm"
 
 python populate_packages_prepend () {
+	import os
 	def extract_modinfo(file):
 		import tempfile, re
 		tempfile.tempdir = bb.data.getVar("WORKDIR", d, 1)
