@@ -3,7 +3,7 @@ SRC_DISTRIBUTECOMMAND[func] = "1"
 
 addtask distribute_sources before do_build after do_fetch
 python do_distribute_sources () {
-	import os, re, bb
+	import re
 
 	bb.build.exec_func("do_fetch", d)
 

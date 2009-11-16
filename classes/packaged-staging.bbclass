@@ -80,8 +80,6 @@ PSTAGE_LIST_CMD         = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -o ${TMP
 PSTAGE_TMPDIR_STAGE     = "${WORKDIR}/staging-pkg"
 
 def pstage_manualclean(srcname, destvarname, d):
-	import os, bb
-
 	src = os.path.join(bb.data.getVar('PSTAGE_TMPDIR_STAGE', d, True), srcname)
 	dest = bb.data.getVar(destvarname, d, True)
 
@@ -92,7 +90,6 @@ def pstage_manualclean(srcname, destvarname, d):
 			os.system("rm %s" % filepath)
 
 def pstage_set_pkgmanager(d):
-    import bb
     path = bb.data.getVar("PATH", d, 1)
     pkgmanager = bb.which(path, 'opkg-cl')
     if pkgmanager == "":
@@ -102,8 +99,6 @@ def pstage_set_pkgmanager(d):
 
 
 def pstage_cleanpackage(pkgname, d):
-	import os, bb
-
 	path = bb.data.getVar("PATH", d, 1)
 	pstage_set_pkgmanager(d)
 	list_cmd = bb.data.getVar("PSTAGE_LIST_CMD", d, True)
@@ -151,12 +146,11 @@ staging_helper () {
 		done
 		echo "dest root /" >> $conffile
 	fi
-	if [ ! -e ${TMPDIR}${libdir}/opkg/info/ ]; then
-		mkdir -p ${TMPDIR}${libdir}/opkg/info/
+	if [ ! -e ${TMPDIR}${libdir_native}/opkg/info/ ]; then
+		mkdir -p ${TMPDIR}${libdir_native}/opkg/info/
 	fi
- 	if [ ! -e ${TMPDIR}${libdir}/ipkg/ ]; then
-		cd ${TMPDIR}${libdir}/
-		ln -sf opkg/ ipkg || true
+ 	if [ ! -e ${TMPDIR}${libdir_native}/ipkg/ ]; then
+		ln -sf opkg/ ${TMPDIR}${libdir_native}/ipkg || true
 	fi
 }
 
@@ -165,8 +159,6 @@ PSTAGE_TASKS_COVERED = "fetch unpack munge patch configure qa_configure rig_loca
 SCENEFUNCS += "packagestage_scenefunc"
 
 python packagestage_scenefunc () {
-    import os
-
     if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "0":
         return
 
@@ -244,10 +236,7 @@ packagestage_scenefunc[dirs] = "${STAGING_DIR}"
 
 addhandler packagedstage_stampfixing_eventhandler
 python packagedstage_stampfixing_eventhandler() {
-    from bb.event import getName
-    import os
-
-    if getName(e) == "StampUpdate":
+    if bb.event.getName(e) == "StampUpdate":
         taskscovered = bb.data.getVar("PSTAGE_TASKS_COVERED", e.data, 1).split()
         for (fn, task) in e.targets:
             # strip off 'do_'
@@ -337,20 +326,20 @@ staging_packager () {
 staging_package_installer () {
 	#${PSTAGE_INSTALL_CMD} ${PSTAGE_PKG}
 
-	STATUSFILE=${TMPDIR}${libdir}/opkg/status
+	STATUSFILE=${TMPDIR}${libdir_native}/opkg/status
 	echo "Package: ${PSTAGE_PKGPN}"        >> $STATUSFILE
 	echo "Version: ${PSTAGE_PKGVERSION}"   >> $STATUSFILE
 	echo "Status: install user installed"  >> $STATUSFILE
 	echo "Architecture: ${PSTAGE_PKGARCH}" >> $STATUSFILE
 	echo "" >> $STATUSFILE
 
-	CTRLFILE=${TMPDIR}${libdir}/opkg/info/${PSTAGE_PKGPN}.control
+	CTRLFILE=${TMPDIR}${libdir_native}/opkg/info/${PSTAGE_PKGPN}.control
 	echo "Package: ${PSTAGE_PKGPN}"        > $CTRLFILE
 	echo "Version: ${PSTAGE_PKGVERSION}"   >> $CTRLFILE
 	echo "Architecture: ${PSTAGE_PKGARCH}" >> $CTRLFILE
 
 	cd ${PSTAGE_TMPDIR_STAGE}
-	find -type f | grep -v ./CONTROL | sed -e 's/^\.//' > ${TMPDIR}${libdir}/opkg/info/${PSTAGE_PKGPN}.list
+	find -type f | grep -v ./CONTROL | sed -e 's/^\.//' > ${TMPDIR}${libdir_native}/opkg/info/${PSTAGE_PKGPN}.list
 }
 
 python do_package_stage () {

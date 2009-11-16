@@ -32,10 +32,10 @@ fi
 python populate_packages_append () {
 	import os.path, re
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
-	workdir = bb.data.getVar('WORKDIR', d, 1)
+	pkgdest =  bb.data.getVar('PKGDEST', d, 1)
 	
 	for pkg in packages:
-		schema_dir = '%s/install/%s/etc/gconf/schemas' % (workdir, pkg)
+		schema_dir = '%s/%s/etc/gconf/schemas' % (pkgdest, pkg)
 		schemas = []
 		schema_re = re.compile(".*\.schemas$")
 		if os.path.exists(schema_dir):

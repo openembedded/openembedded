@@ -2,7 +2,7 @@ DESCRIPTION = "Frameworkd phonegui library"
 HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "libs"
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCPV}"
 PR = "r10"
 
 DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libphone-utils"

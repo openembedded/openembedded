@@ -17,7 +17,6 @@ python package_ipk_install () {
 	# Warning - this function is not multimachine safe (see stagingdir reference)!
 	#
 
-	import os, sys, bb
 	pkg = bb.data.getVar('PKG', d, 1)
 	pkgfn = bb.data.getVar('PKGFN', d, 1)
 	rootfs = bb.data.getVar('IMAGE_ROOTFS', d, 1)
@@ -31,6 +30,7 @@ python package_ipk_install () {
 		bb.mkdirhier(rootfs)
 		os.chdir(rootfs)
 	except OSError:
+		import sys
 		(type, value, traceback) = sys.exc_info()
 		print value
 		raise bb.build.FuncFailed
@@ -135,14 +135,14 @@ package_generate_ipkg_conf () {
 }
 
 python do_package_ipk () {
-	import sys, re, copy, bb
+	import re, copy
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
 		bb.error("WORKDIR not defined, unable to package")
 		return
 
-	import os # path manipulations
+
 	outdir = bb.data.getVar('DEPLOY_DIR_IPK', d, 1)
 	if not outdir:
 		bb.error("DEPLOY_DIR_IPK not defined, unable to package")
@@ -174,10 +174,9 @@ python do_package_ipk () {
 			pkgname = pkg
 		bb.data.setVar('PKG', pkgname, localdata)
 
-		overrides = bb.data.getVar('OVERRIDES', localdata)
+		overrides = bb.data.getVar('OVERRIDES', localdata, True)
 		if not overrides:
 			raise bb.build.FuncFailed('OVERRIDES not defined')
-		overrides = bb.data.expand(overrides, localdata)
 		bb.data.setVar('OVERRIDES', overrides + ':' + pkg, localdata)
 
 		bb.data.update_data(localdata)
@@ -194,8 +193,7 @@ python do_package_ipk () {
 		except ValueError:
 			pass
 		if not g and bb.data.getVar('ALLOW_EMPTY', localdata) != "1":
-			from bb import note
-			note("Not creating empty archive for %s-%s" % (pkg, bb.data.expand('${PV}-${PR}${DISTRO_PR}', localdata, True)))
+			bb.note("Not creating empty archive for %s-%s" % (pkg, bb.data.expand('${PV}-${PR}${DISTRO_PR}', localdata, True)))
 			bb.utils.unlockfile(lf)
 			continue
 
@@ -237,6 +235,7 @@ python do_package_ipk () {
 						raise KeyError(f)
 				ctrlfile.write(c % tuple(pullData(fs, localdata)))
 		except KeyError:
+			import sys
 			(type, value, traceback) = sys.exc_info()
 			ctrlfile.close()
 			bb.utils.unlockfile(lf)
@@ -308,7 +307,6 @@ python do_package_ipk () {
 }
 
 python () {
-    import bb
     if bb.data.getVar('PACKAGES', d, True) != '':
         deps = (bb.data.getVarFlag('do_package_write_ipk', 'depends', d) or "").split()
         deps.append('ipkg-utils-native:do_populate_staging')
@@ -317,7 +315,6 @@ python () {
 }
 
 python do_package_write_ipk () {
-	import bb
 	packages = bb.data.getVar('PACKAGES', d, True)
 	if not packages:
 		bb.debug(1, "No PACKAGES defined, nothing to package")

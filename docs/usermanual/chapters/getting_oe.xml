@@ -31,7 +31,7 @@ $ <command>cd</command> $OEBASE</screen>
     </para>
 
 	<para>The <varname>$OEBASE</varname> will also contain both of the
-	<literal>bitbake/<literal> and <literal>openembedded/</literal> directories.
+	<literal>bitbake/</literal> and <literal>openembedded/</literal> directories.
 	These will be discussed in <xref linkend="gettingoe_getting_bitbake"/> and
 	<xref linkend="gettingoe_getting_oe"/>.
 	</para>

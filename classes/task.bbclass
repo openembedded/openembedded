@@ -17,7 +17,6 @@ PACKAGE_ARCH = "all"
 # to the list. Their dependencies (RRECOMMENDS) are handled as usual
 # by package_depchains in a following step.
 python () {
-    import bb
     packages = bb.data.getVar('PACKAGES', d, 1).split()
     genpackages = []
     for pkg in packages:
