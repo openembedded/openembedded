@@ -500,7 +500,7 @@ Index: linux-2.6.31/drivers/rtc/rtc-isl12024.c
 +	i2c_del_driver(&isl12024_driver);
 +}
 +
-+MODULE_AUTHOR("Guillaume Ligneul <guillaume.ligneul@cenosys.com>");
++MODULE_AUTHOR("Guillaume Ligneul <guillaume.ligneul@gmail.com>");
 +MODULE_DESCRIPTION("Intersil ISL12024 driver");
 +MODULE_LICENSE("GPL");
 +MODULE_VERSION(DRV_VERSION);
