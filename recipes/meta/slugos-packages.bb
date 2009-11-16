@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r64"
+PR = "r65"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -177,6 +177,7 @@ SLUGOS_PACKAGES = "\
 	openobex \
 	openssh \
 	openvpn \
+	owfs \
 	patch \
 	pciutils \
 	perl \
