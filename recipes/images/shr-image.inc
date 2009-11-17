@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r6"
+PR = "r7"
 
 
 DEPENDS += "task-shr-minimal"
@@ -13,12 +13,13 @@ RDEPENDS += "\
   task-base \
   task-shr-minimal-base \
   task-shr-minimal-cli \
+  task-shr-minimal-fso \
   task-shr-minimal-apps \
   task-shr-minimal-audio \
   task-shr-minimal-gtk \
   task-shr-minimal-x \
   task-x11-illume \
-  task-fso-compliance \
+  task-fso2-compliance \
   task-fonts-truetype-core \
 "
 
