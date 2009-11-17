@@ -6,7 +6,7 @@ RDEPENDS = "python-shell python-pycairo python-pygobject"
 PROVIDES = "python-pygtk2"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml10"
+PR = "ml11"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/${MAJ_VER}/${SRCNAME}-${PV}.tar.bz2 \
@@ -52,7 +52,7 @@ FILES_${PN}-dev += "\
 
 do_stage() {
 	autotools_stage_includes
-	sed -i s:/usr/share:${STAGING_DATADIR}: codegen/pygtk-codegen-2.0
+	sed -i s:${prefix}/share:${STAGING_DATADIR}: codegen/pygtk-codegen-2.0
 	install -m 0755 codegen/pygtk-codegen-2.0 ${STAGING_BINDIR_NATIVE}/
 	# until we have a newer pygobject version, we resue pygtk's codegen
 	ln -sf ./pygtk-codegen-2.0 ${STAGING_BINDIR_NATIVE}/pygobject-codegen-2.0
