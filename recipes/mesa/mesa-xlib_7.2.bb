@@ -5,7 +5,6 @@ LIB_DEPS = "virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
 
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
-PE = "1"
 PR = "r4"
 
 EXTRA_OECONF += "--with-driver=xlib"
