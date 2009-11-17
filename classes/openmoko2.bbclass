@@ -5,7 +5,6 @@ OPENMOKO_RELEASE ?= "OM-2007.2"
 OPENMOKO_MIRROR ?= "svn://svn.openmoko.org/trunk"
 
 def openmoko_two_get_license(d):
-    import bb
     if bb.data.getVar('SECTION', d, 1).find("/") != -1 :
         openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
     else :
@@ -13,7 +12,6 @@ def openmoko_two_get_license(d):
     return "LGPL GPL".split()[section != "libs"]
 
 def openmoko_two_get_subdir(d):
-    import bb
     if bb.data.getVar('SECTION', d, 1).find("/") != -1 :
        openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
     else :
@@ -34,6 +32,3 @@ SRC_URI := "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/${SUBDIR};module=$
 S = "${WORKDIR}/${PN}"
 
 FILES_${PN} += "${datadir}/icons"
-
-SVNREV = "r${SRCREV}"
-#SVNREV = "${SRCDATE}"

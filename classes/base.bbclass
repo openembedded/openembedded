@@ -1072,7 +1072,6 @@ sysroot_stage_all() {
 }
 
 def is_legacy_staging(d):
-    import bb
     stagefunc = bb.data.getVar('do_stage', d, True)
     legacy = True
     if stagefunc is None:
