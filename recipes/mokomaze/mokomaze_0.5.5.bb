@@ -4,15 +4,17 @@ SECTION="x11/games"
 PRIORITY="optional"
 LICENSE="GPLv3"
 DEPENDS="libsdl-ttf libsdl-image ode"
-RDEPENDS="ttf-liberation-mono libpng fsoraw"
+RDEPENDS="ttf-liberation-mono libpng"
+
+RDEPENDS_shr += "fsoraw"
 
 PR="r1"
 PV="0.5.5+git8"
 
-SRC_URI="http://mokomaze.projects.openmoko.org/files/${PN}-${PV}.tar.gz \
-	file://fsoraw.patch;patch=1"
 
-#S=${WORKDIR}/${PN}-${PV}+git8
+SRC_URI="http://mokomaze.projects.openmoko.org/files/${PN}-${PV}.tar.gz"
+
+SRC_URI_append_shr = "file://fsoraw.patch;patch=1"
 
 inherit autotools
 

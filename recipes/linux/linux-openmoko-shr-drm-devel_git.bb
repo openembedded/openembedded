@@ -12,7 +12,8 @@ PV = "${KERNEL_RELEASE}-drm-${OMV}+gitr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "\
-  git://git.openmoko.org/git/kernel.git;protocol=git;branch=drm-tracking \
+#  git://git.openmoko.org/git/kernel.git;protocol=git;branch=drm-tracking \
+  git://git.bitwiz.org.uk/kernel.git;protocol=git;branch=kms-tests \
   file://fix-install.patch;patch=1 \
   file://0001-Add-drm-to-Makefile-version.patch;patch=1 \
   file://0001-Fix-s3c-adc-suspend.patch;patch=1 \

@@ -14,8 +14,8 @@ SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-2.6.31 \
   file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch;patch=1 \
   file://0004-gta02_defconfig-Enable-UBI-support.patch;patch=1 \
+  file://0005-gta02_defconfig-Enable-UBI-debug.patch;patch=1 \
 "
-#  file://0005-gta02_defconfig-Enable-UBI-debug.patch;patch=1 \
 
 S = "${WORKDIR}/git"
 
