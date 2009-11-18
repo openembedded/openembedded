@@ -89,10 +89,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/cputype ${D}${bindir}/
 
 	cp -pP ${BINLOCATION}/*_test ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gl2info ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gles1test1 ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gles1_texture_stream ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gles2test1 ${D}${bindir}/
+	cp -pP ${BINLOCATION}/gl* ${D}${bindir}/
 	cp -pP ${BINLOCATION}/p[dv]* ${D}${bindir}/
 	cp -pP ${BINLOCATION}/xgles1test1 ${D}${bindir}/
 
