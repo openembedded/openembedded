@@ -49,10 +49,13 @@ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
   ARGS="$ARGS -mouse /dev/touchscreen/ucb1x00"
 fi
 
-# use usb mouse if present
-# Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ]; then
-  ARGS="$ARGS -mouse /dev/input/mice"
+# Xorg doesn't support "-mouse" option, and uses /dev/input/mouse0 automatically
+# On neo we have touchscreen as /dev/input/mice, usb connected mouse would be probably mouse0
+if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mouse0 ]; then
+  if [ "$XSERVER" != "/usr/bin/Xorg" ]; then
+    ARGS="$ARGS -mouse /dev/input/mouse0"
+  fi
+  USB_MOUSE="1"
 fi
 
 # start off server in conventional location.
@@ -128,8 +131,21 @@ case `module_id` in
                      fi
                      DPI=142
                 fi 
-                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" 
-		XSERVER=/usr/bin/Xglamo 
+
+                if [ "$XSERVER" = "/usr/bin/Xorg" ]; then
+                     if [ "$DPI" = "285" ]; then
+                         # Fix for only 3 columns of icons in illume desktop
+                         DPI=280
+                     fi
+                     if [ -z "${USB_MOUSE}" ]; then
+                         # Fix for segfault while typing on illume keyboard
+                         ARGS="$ARGS -nocursor"
+                     fi
+                     ARGS="$ARGS -dpi ${DPI} vt1"
+                else
+                     ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" 
+                     XSERVER=/usr/bin/Xglamo 
+                fi
 		;;
 	"Nokia N770")
                 ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
