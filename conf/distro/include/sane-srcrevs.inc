@@ -10,6 +10,7 @@
 # yes, really!
 
 # you know what that means? like... a, b, c, d, e, f, g...
+
 SRCREV_pn-accelges ?= "206"
 SRCREV_pn-advancedcaching ?= "9c3661f5573d2dd712437f1590070153d12e4c02"
 SRCREV_pn-aircrack-ng ?= "802"
@@ -76,6 +77,7 @@ SRCREV_pn-ezxd ?= "2074"
 SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-ffalarms ?= "67"
 SRCREV_pn-flashrom ?= "3682"
+SRCREV_pn-fltk2 ?= "6671"
 SRCREV_pn-frameworkd-config-shr ?= "cb4159e653d770da8e8f9fc9a65135839533d4c5"
 SRCREV_pn-frameworkd-config-shr_SHR_REV = ${SRCREV_pn-frameworkd-config-shr}
 SRCREV_pn-fsod ?= "2a33e5ffe96c611e6a6b8b6c33d2a83ba656f55b"
@@ -163,7 +165,7 @@ SRCREV_pn-linux-openmoko-2.6.28 ?= "8aa6cdde17381dd8865d10ba15ee62c092ec2ba5"
 SRCREV_pn-linux-openmoko-2.6.31 ?= "4331f6c95fadc37ea89359d6afb915be838790f9"
 SRCREV_pn-linux-openmoko-devel ?= "b9aa5bf345a0b802af0d10b6cf1079738fe4fd12"
 SRCREV_pn-linux-openmoko-shr-devel ?= "8c65792a5c83c76d662a617a7c4e1ae8104bb6a5"
-SRCREV_pn-linux-openmoko-shr-drm-devel ?= "7f45ee027a690bbdab4a7dd1530c38bc4e743e13"
+SRCREV_pn-linux-openmoko-shr-drm-devel ?= "44d09f40c5c01989bb41bdefe56dd615ea49bbf8"
 SRCREV_pn-llvm-gcc4 ?= "374"
 SRCREV_pn-llvm-gcc4-cross ?= "374"
 SRCREV_pn-madbutterfly ?= "ecd1842714b5e982f3138cbdd358517d57be6aa3"
