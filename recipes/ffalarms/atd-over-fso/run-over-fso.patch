@@ -1,0 +1,505 @@
+--- src/atd.c-orig	2004-02-02 16:30:39.000000000 +0100
++++ src/atd.c	2009-09-15 22:57:35.000000000 +0200
+@@ -7,10 +7,12 @@
+  *	Copyright (C) 1996, Paul Gortmaker
+  *	Copyright (C) 2001, Russell Nelson
+  *	Copyright (C) 2002-2004, Nils Faerber <nils@handhelds.org>
++ *	Copyright (C) 2009, Łukasz Pankowski <lukpank@o2.pl>
+  *
+  *	Released under the GNU General Public License, version 2,
+  *	included herein by reference.
+  *
++ *	Łukasz Pankowski: modified to work over org.freesmartphone.otimed
+  */
+ 
+ #include <stdio.h>
+@@ -31,6 +33,16 @@
+ #include <dirent.h>
+ #include <pwd.h>
+ #include <signal.h>
++#include <glib.h>
++#include <dbus/dbus-glib.h>
++#include <dbus/dbus-glib-lowlevel.h>
++#include <dbus/dbus.h>
++#include "atd-alarm.h"
++#include "atd-alarm-glue.h"
++
++#define DBUS_NAME "org.openmoko.projects.ffalarms.atd"
++#define DBUS_RECONNECT_TIMEOUT 10
++#define OTIMED "org.freesmartphone.otimed"
+ 
+ 
+ /* globals... */
+@@ -62,33 +74,23 @@
+ }
+ 
+ 
+-void waitfor (time_t t)
++void rtc_set_time (void)
+ {
+-int rtcfd, tfd, retval= 0;
+-unsigned long data;
++int rtcfd, retval= 0;
+ struct rtc_time rtc_tm;
+-time_t now, then;
++time_t now;
+ struct tm *tm;
+-struct timeval tv;
+-int nfds;
+-fd_set afds;
+ 
+ #ifdef DEBUG
+-	printf("waitfor %ld\n", t);
++	printf("rtc_set_time\n");
+ #endif
+ 	rtcfd = open ("/dev/rtc", O_RDONLY);
+ 
+ 	if (rtcfd ==  -1) {
++		/* treat it as warning, may be should retry? */
+ 		perror("/dev/rtc");
+-		exit(errno);
+-	}
+-
+-	/* Read the RTC time/date */
+-	tfd = open ("trigger", O_RDWR);
+-
+-	if (tfd ==  -1) {
+-		perror("trigger");
+-		exit(errno);
++		errno = 0;
++		return;
+ 	}
+ 
+ 	/* Set the RTC time/date */
+@@ -112,112 +114,7 @@
+ 		rtc_tm.tm_hour, rtc_tm.tm_min, rtc_tm.tm_sec);
+ #endif
+ 
+-	tm = gmtime (&t);
+-
+-#ifdef DEBUG
+-	printf ("Alarm date/time is %d-%d-%d, %02d:%02d:%02d.\n",
+-		tm->tm_mday, tm->tm_mon + 1, tm->tm_year + 1900,
+-		tm->tm_hour, tm->tm_min, tm->tm_sec);
+-#endif
+-	if (t && compare_rtc_to_tm (&rtc_tm, tm) >= 0) {
+-		close (rtcfd);
+-		close (tfd);
+-		return;
+-	}
+-
+-	if (t) {
+-		/* set the alarm */
+-		rtc_tm.tm_mday = tm->tm_mday;
+-		rtc_tm.tm_mon = tm->tm_mon;
+-		rtc_tm.tm_year = tm->tm_year;
+-		rtc_tm.tm_sec = tm->tm_sec;
+-		rtc_tm.tm_min = tm->tm_min;
+-		rtc_tm.tm_hour = tm->tm_hour;
+-		retval = ioctl (rtcfd, RTC_ALM_SET, &rtc_tm);
+-		if (retval == -1) {
+-			perror ("ioctl");
+-			exit (errno);
+-		}
+-#ifdef DEBUG
+-		printf ("Alarm date/time now set to %d-%d-%d, %02d:%02d:%02d.\n",
+-			rtc_tm.tm_mday, rtc_tm.tm_mon + 1, rtc_tm.tm_year + 1900,
+-			rtc_tm.tm_hour, rtc_tm.tm_min, rtc_tm.tm_sec);
+-#endif
+-
+-		/* Read the current alarm settings */
+-		retval = ioctl (rtcfd, RTC_ALM_READ, &rtc_tm);
+-		if (retval == -1) {
+-			perror ("ioctl");
+-			exit (errno);
+-		}
+-
+-#ifdef DEBUG
+-		printf ("Alarm date/time now in RTC: %d-%d-%d, %02d:%02d:%02d.\n",
+-			rtc_tm.tm_mday, rtc_tm.tm_mon + 1, rtc_tm.tm_year + 1900,
+-			rtc_tm.tm_hour, rtc_tm.tm_min, rtc_tm.tm_sec);
+-#endif
+-
+-		/* Enable alarm interrupts */
+-		retval = ioctl (rtcfd, RTC_AIE_ON, 0);
+-		if (retval == -1) {
+-			perror ("ioctl");
+-			exit (errno);
+-		}
+-	}
+-
+-#ifdef DEBUG
+-	printf ("Waiting for alarm...");
+-	fflush (stdout);
+-#endif
+-	/* This blocks until the alarm ring causes an interrupt */
+-	FD_ZERO (&afds);
+-	if (t)
+-		FD_SET (rtcfd, &afds);
+-	FD_SET (tfd, &afds);
+-	nfds = rtcfd+1;
+-	if (tfd > rtcfd)
+-		nfds = tfd + 1;
+-	/* Wait up to ten minutes. */
+-	tv.tv_sec = 10 * 60;
+-	tv.tv_usec = 0;
+-	then = now;
+-	if (select (nfds, &afds, (fd_set *) 0, (fd_set *) 0, &tv) < 0) {
+-		if (errno != EINTR)
+-			perror ("select");
+-		exit (errno);
+-	}
+-	now = time (NULL);
+-#ifdef DEBUG
+-	printf ("While we were sleeping, %d seconds elapsed, but %d alarms passed\n",
+-		(int)(now - then), (int)(tv.tv_sec));
+-#endif
+-	if (FD_ISSET (rtcfd, &afds)) {
+-		retval = read (rtcfd, &data, sizeof (unsigned long));
+-		if (retval == -1) {
+-			perror ("read");
+-			exit (errno);
+-		}
+-	}
+-	if (FD_ISSET(tfd, &afds)) {
+-		retval = read (tfd, &data, 1);
+-		if (retval == -1) {
+-			perror ("read");
+-			exit (errno);
+-		}
+-	}
+-#ifdef DEBUG
+-	printf ("Something happened!\n");
+-#endif
+-
+-	/* Disable alarm interrupts */
+-	retval = ioctl (rtcfd, RTC_AIE_OFF, 0);
+-	if (retval == -1) {
+-		perror ("ioctl");
+-		exit (errno);
+-	}
+-
+ 	close (rtcfd);
+-	close (tfd);
+ }
+ 
+ 
+@@ -345,11 +242,223 @@
+ }
+ 
+ 
++G_DEFINE_TYPE(AtdAlarm, atd_alarm, G_TYPE_OBJECT);
++
++
++static void atd_alarm_finalize (GObject* self) {
++	g_object_unref(((AtdAlarm*) self)->alarm_proxy);
++	G_OBJECT_CLASS (atd_alarm_parent_class)->finalize (self);
++}
++
++
++static void atd_alarm_class_init(AtdAlarmClass *cls)
++{
++	G_OBJECT_CLASS (cls)->finalize = atd_alarm_finalize;
++}
++
++
++static void atd_alarm_init(AtdAlarm *self)
++{
++}
++
++
++AtdAlarm* atd_alarm_new (char *spooldir)
++{
++AtdAlarm *self;
++
++	self = g_object_new(ATD_TYPE_ALARM, NULL);
++	if (self) {
++		self->bus = NULL;
++		self->alarm_proxy = NULL;
++		self->trigger = NULL;
++	}
++	return self;
++}
++
++
++gboolean input_on_trigger(GIOChannel *source, GIOCondition condition,
++		   AtdAlarm *obj)
++{
++char data;
++
++	if (read (g_io_channel_unix_get_fd(source), &data, 1) == -1) {
++		perror ("read");
++		exit (errno);
++	}
++	atd_alarm_alarm(obj);
++
++	return TRUE;
++}
++
++
++void display_free_g_error(GError **error)
++{
++	if ((*error)->domain == DBUS_GERROR &&
++	    (*error)->code == DBUS_GERROR_REMOTE_EXCEPTION)
++		g_printerr("Remote exception: %s: %s\n",
++			   dbus_g_error_get_name(*error),
++			   (*error)->message);
++	else
++		g_printerr("Error: %s\n", (*error)->message);
++	g_error_free(*error);
++	*error = NULL;
++}
++
++
++static void otimed_destroy(DBusGProxy *alarm_proxy, AtdAlarm *obj)
++{
++#ifdef DEBUG
++	printf("proxy for " OTIMED " destroyed\n");
++#endif
++	g_object_unref(obj->alarm_proxy);
++	obj->alarm_proxy = NULL;
++}
++
++
++void atd_alarm_connect_otimed(AtdAlarm *self)
++{
++GError *error;
++int tfd;
++
++	error = NULL;
++	self->alarm_proxy = dbus_g_proxy_new_for_name_owner
++		(self->bus, OTIMED, "/org/freesmartphone/Time/Alarm",
++		 "org.freesmartphone.Time.Alarm", &error);
++	if (error != NULL) {
++		display_free_g_error(&error);
++		return;
++	}
++	g_signal_connect(self->alarm_proxy, "destroy",
++			 G_CALLBACK(otimed_destroy), self);
++
++	/* if we are connected to otimed (so we know it is up and
++	 * running) we can open the trigger
++	 */
++	if (self->trigger)
++		return;
++	if (mkfifo ("trigger.new", 0777) < 0)
++		die ("cannot mkfifo trigger.new");
++	if (rename ("trigger.new","trigger"))
++		die ("cannot rename trigger.new");
++	chmod ("trigger", S_IWUSR | S_IWGRP | S_IWOTH);
++	tfd = open ("trigger", O_RDWR);
++	if (tfd ==  -1) {
++		perror("trigger");
++		exit(errno);
++	}
++	self->trigger = g_io_channel_unix_new(tfd);
++	g_io_add_watch(self->trigger, G_IO_IN,
++		       (GIOFunc) input_on_trigger, self);
++}
++	
++
++void atd_alarm_waitfor(AtdAlarm *self, time_t t)
++{
++GError *error;
++
++	if (!t)
++		return;
++
++	rtc_set_time();
++	error = NULL;
++	if (self->alarm_proxy == NULL) {
++		g_printerr(OTIMED " not running, could not call SetAlarm\n");
++	} else if (!dbus_g_proxy_call(self->alarm_proxy, "SetAlarm", &error,
++				      G_TYPE_STRING, DBUS_NAME,
++				      G_TYPE_INT, t, G_TYPE_INVALID,
++				      G_TYPE_INVALID)) {
++		display_free_g_error(&error);
++	}
++#ifdef DEBUG
++	printf("DBus waitfor: %d\n", (int) t);
++#endif
++}
++
++
++void name_owner_changed(DBusGProxy *proxy, const char *name,
++			const char *prev_name, const char *new_name,
++			AtdAlarm *obj)
++{
++	if (!strcmp(name, OTIMED) && *new_name) {
++#ifdef DEBUG
++		printf("DBus NameOwnerChanged: " OTIMED "\n");
++#endif
++		atd_alarm_connect_otimed(obj);
++		atd_alarm_alarm(obj);
++	}
++}
++
++
++static void dbus_disconnected(DBusGProxy *obj, GMainLoop *ml)
++{
++	g_printerr("DBus disconnected\n");
++	g_main_loop_quit(ml);
++}
++
++
++void atd_alarm_start(AtdAlarm *self)
++//int start_atd_alarm(GIOChannel *trigger, int exit_on_error)
++{
++GMainLoop *ml;
++GError *error;
++DBusError dbus_error;
++DBusGProxy *proxy;
++int code;
++
++	error = NULL;
++	self->bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, &error);
++	if (!self->bus) {
++		g_printerr("failed to connect to DBUS: %s\n",
++			   error->message);
++		g_error_free(error);
++		return;
++	}
++	dbus_error_init(&dbus_error);
++	code = dbus_bus_request_name
++		(dbus_g_connection_get_connection(self->bus),
++		 DBUS_NAME, DBUS_NAME_FLAG_DO_NOT_QUEUE, &dbus_error);
++	if (code != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
++		if (code == -1)
++			g_printerr("Error: %s\n", dbus_error.message);
++		else
++			g_printerr("could not register name (%d): %s\n",
++				   code, DBUS_NAME);
++		exit(1);
++	}
++	dbus_g_connection_register_g_object(self->bus, "/", G_OBJECT(self));
++	proxy = dbus_g_proxy_new_for_name(self->bus, "org.freedesktop.DBus",
++					  "/org/freedesktop/DBus",
++					  "org.freedesktop.DBus");
++	dbus_g_proxy_add_signal(proxy, "NameOwnerChanged", G_TYPE_STRING,
++				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
++	dbus_g_proxy_connect_signal(proxy, "NameOwnerChanged",
++				    G_CALLBACK(name_owner_changed), self, NULL);
++	atd_alarm_connect_otimed(self);
++	atd_alarm_alarm(self);
++
++	ml = g_main_loop_new(NULL, FALSE);
++	g_signal_connect(proxy, "destroy", G_CALLBACK(dbus_disconnected), ml);
++	dbus_connection_set_exit_on_disconnect
++		(dbus_g_connection_get_connection(self->bus), FALSE);
++
++	g_main_loop_run(ml);
++
++	g_object_unref(proxy);
++	if (self->alarm_proxy)
++		g_object_unref(self->alarm_proxy);
++	self->alarm_proxy = NULL;
++	dbus_g_connection_unref(self->bus);
++	self->bus = NULL;
++	g_main_loop_unref(ml);
++
++	return;
++}
++
++
+ int main (int argc, char *argv[])
+ {
+-struct dirent *dirent;
+-unsigned long this, next, now;
+ char *argv0;
++AtdAlarm *obj;
+ 
+ 	argv0 = strrchr(argv[0], '/');
+ 	if (!argv0)
+@@ -362,17 +471,36 @@
+ 		die("cannot chdir");
+ 	if (!strcmp (argv0, "atq"))
+ 		exit_atq();
+-	if (mkfifo ("trigger.new", 0777) < 0)
+-		die ("cannot mkfifo trigger.new");
+-	if (rename ("trigger.new","trigger"))
+-		die ("cannot rename trigger.new");
+-	chmod ("trigger", S_IWUSR | S_IWGRP | S_IWOTH);
+ 
+ 	/* ignore some signals we get from spawned processes */
+ 	signal (SIGCHLD, SIG_IGN);
+ 	signal (SIGPIPE, SIG_IGN);
+ 
++
++	g_type_init();
++	dbus_g_object_type_install_info(ATD_TYPE_ALARM,
++					&dbus_glib_atd_alarm_object_info);
++	obj = atd_alarm_new(argv[1]);
++	if (!obj) {
++		g_printerr("Failed to create AtdAlarm object");
++		exit(1);
++	}
+ 	while (1) {
++		atd_alarm_start(obj);
++		sleep(DBUS_RECONNECT_TIMEOUT);
++	}
++}
++
++
++gboolean atd_alarm_alarm(AtdAlarm *self)
++{
++struct dirent *dirent;
++unsigned long this, next, now;
++
++#ifdef DEBUG
++		printf("atd_alarm_alarm() run at: %d\n", (int) time(NULL));
++#endif
++
+ 		/* run all the jobs in the past */
+ 		now = time (NULL);
+ 		scan_from_top ();
+@@ -402,8 +530,7 @@
+ #endif
+ 		if (next == ULONG_MAX)
+ 			next = 0;
+-		waitfor (next);
+-	}
++		atd_alarm_waitfor (self, next);
+ 
+-return 0;
++		return TRUE;
+ } 
+--- /dev/null	2009-09-15 19:51:58.514753360 +0200
++++ src/atd-alarm.h	2009-09-15 22:45:59.000000000 +0200
+@@ -0,0 +1,26 @@
++#ifndef ATD_ALARM_H
++#define ATD_ALARM_H
++
++#include <glib-object.h>
++#include <dbus/dbus-glib.h>
++
++#define ATD_TYPE_ALARM (atd_alarm_get_type())
++
++typedef struct _AtdAlarm
++{
++	GObject parent;
++	DBusGConnection *bus;
++	DBusGProxy *alarm_proxy;
++	GIOChannel *trigger;
++} AtdAlarm;
++
++typedef struct _AtdAlarmClass
++{
++	GObjectClass parent_class;
++} AtdAlarmClass;
++
++static gboolean atd_alarm_alarm(AtdAlarm *self);
++
++static void atd_alarm_waitfor(AtdAlarm *self, time_t t);
++
++#endif
+--- /dev/null	2009-09-15 19:51:58.514753360 +0200
++++ src/atd-alarm.xml	2009-03-16 17:55:48.000000000 +0100
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8" ?>
++
++<node name="/">
++  <interface name="org.freesmartphone.Notification">
++    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="atd_alarm" />
++      <method name="Alarm" />
++  </interface>
++</node>
