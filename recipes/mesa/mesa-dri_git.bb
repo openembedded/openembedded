@@ -7,7 +7,6 @@ DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
 PV = "7.6.1+gitr${SRCPV}"
 PR = "${INC_PR}.3"
-PE = "2"
 
 DEFAULT_PREFERENCE = "-2"
 DEFAULT_PREFERENCE_om-gta02 = "2"
