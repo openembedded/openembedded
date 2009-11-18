@@ -23,7 +23,8 @@ S = "${WORKDIR}/${p}"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/library/${p}.tar.bz2 \
            file://pam-nodocs.patch;patch=1 "
 
-SRC_URI_append_libc-uclibc = "file://pam-disable-nis-on-uclibc.patch;patch=1"
+SRC_URI_append_linux-uclibc = " file://pam-disable-nis-on-uclibc.patch;patch=1"
+SRC_URI_append_linux-uclibceabi = " file://pam-disable-nis-on-uclibc.patch;patch=1"
 
 inherit autotools
 
@@ -31,6 +32,9 @@ LEAD_SONAME = "libpam.so.*"
 
 # maintain the pam default layout
 EXTRA_OECONF += " --includedir=${includedir}/security"
+
+EXTRA_OECONF_linux-uclibc += "--disable-nls"
+EXTRA_OECONF_linux-uclibceabi += "--disable-nls"
 
 PACKAGES_DYNAMIC += " libpam-meta pam-plugin-*"
 

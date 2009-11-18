@@ -5,7 +5,7 @@ RDEPENDS += "libpng"
 LICENSE = "GPL"
 HOMEPAGE = "http://numptyphysics.garage.maemo.org/"
 SECTION = "x11/games"
-PV = "0.2+svnr${SRCREV}"
+PV = "0.2+svnr${SRCPV}"
 PR = "r1"
 
 inherit autotools

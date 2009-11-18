@@ -2,7 +2,7 @@ DESCRIPTION = "A library for displaying a TV-like on-screen display in X."
 SECTION = "libs/x11"
 DEPENDS = "virtual/libx11 libxext"
 LICENSE = "LGPL"
-PV = "2.2.15+svnr${SRCREV}"
+PV = "2.2.15+svnr${SRCPV}"
 PR = "r5"
 
 SRC_URI = "svn://libxosd.svn.sourceforge.net/svnroot/libxosd/source;module=current;proto=https \

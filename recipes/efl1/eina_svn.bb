@@ -1,6 +1,6 @@
 DESCRIPTION = "Eina is the Enlightenment data library"
 LICENSE = "LGPL"
-PV = "0.0.2.060+svnr${SRCREV}"
+PV = "0.0.2.060+svnr${SRCPV}"
 PR = "r0"
 
 inherit efl

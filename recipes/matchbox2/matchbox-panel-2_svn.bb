@@ -6,7 +6,7 @@ DEPENDS += " ${@base_contains("MACHINE_FEATURES", "acpi", "libacpi", "",d)}"
 DEPENDS += " ${@base_contains("MACHINE_FEATURES", "apm", "apmd", "",d)}"
 RDEPENDS_${PN} = "matchbox-panel-2-icon-theme"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-PV = "2.0+svnr${SRCREV}"
+PV = "2.0+svnr${SRCPV}"
 PR = "r0"
 
 inherit autotools_stage pkgconfig

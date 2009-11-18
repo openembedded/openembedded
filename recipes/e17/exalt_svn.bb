@@ -5,7 +5,7 @@ LICENSE = "LGPLv2"
 DEPENDS = "elementary vpnc wpa-supplicant ecore eet edbus"
 RDEPENDS = "vpnc wpa-supplicant"
 
-PV = "0.9+svnr${SRCREV}"
+PV = "0.9+svnr${SRCPV}"
 
 inherit e
 

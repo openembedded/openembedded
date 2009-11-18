@@ -13,7 +13,7 @@ SRC_URI = "svn://gforge.ti.com/svn/${PN};module=trunk;proto=https;user=anonymous
 "
 
 # Again, no '.' in PWD allowed :(
-PV = "0+svnr${SRCREV}"
+PV = "0+svnr${SRCPV}"
 PR = "r1"
 
 S = "${WORKDIR}/trunk/bitblit"

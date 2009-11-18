@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=MooCow
+Comment=Moobox simulator
+Type=Application
+Exec=openmoocow
+Terminal=false
+Categories=Games;
+Icon=openmoocow/icon.png
+X-MB-SingleInstance=true
+

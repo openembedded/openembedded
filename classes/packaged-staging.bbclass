@@ -80,8 +80,6 @@ PSTAGE_LIST_CMD         = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -o ${TMP
 PSTAGE_TMPDIR_STAGE     = "${WORKDIR}/staging-pkg"
 
 def pstage_manualclean(srcname, destvarname, d):
-	import os, bb
-
 	src = os.path.join(bb.data.getVar('PSTAGE_TMPDIR_STAGE', d, True), srcname)
 	dest = bb.data.getVar(destvarname, d, True)
 
@@ -92,7 +90,6 @@ def pstage_manualclean(srcname, destvarname, d):
 			os.system("rm %s" % filepath)
 
 def pstage_set_pkgmanager(d):
-    import bb
     path = bb.data.getVar("PATH", d, 1)
     pkgmanager = bb.which(path, 'opkg-cl')
     if pkgmanager == "":
@@ -102,8 +99,6 @@ def pstage_set_pkgmanager(d):
 
 
 def pstage_cleanpackage(pkgname, d):
-	import os, bb
-
 	path = bb.data.getVar("PATH", d, 1)
 	pstage_set_pkgmanager(d)
 	list_cmd = bb.data.getVar("PSTAGE_LIST_CMD", d, True)
@@ -164,8 +159,6 @@ PSTAGE_TASKS_COVERED = "fetch unpack munge patch configure qa_configure rig_loca
 SCENEFUNCS += "packagestage_scenefunc"
 
 python packagestage_scenefunc () {
-    import os
-
     if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "0":
         return
 
@@ -243,10 +236,7 @@ packagestage_scenefunc[dirs] = "${STAGING_DIR}"
 
 addhandler packagedstage_stampfixing_eventhandler
 python packagedstage_stampfixing_eventhandler() {
-    from bb.event import getName
-    import os
-
-    if getName(e) == "StampUpdate":
+    if bb.event.getName(e) == "StampUpdate":
         taskscovered = bb.data.getVar("PSTAGE_TASKS_COVERED", e.data, 1).split()
         for (fn, task) in e.targets:
             # strip off 'do_'

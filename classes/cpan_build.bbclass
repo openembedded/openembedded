@@ -12,7 +12,6 @@ INHIBIT_NATIVE_STAGE_INSTALL = "1"
 # libmodule-build-perl)
 #
 def cpan_build_dep_prepend(d):
-	import bb;
 	if bb.data.getVar('CPAN_BUILD_DEPS', d, 1):
 		return ''
 	pn = bb.data.getVar('PN', d, 1)

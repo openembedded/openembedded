@@ -2,7 +2,7 @@ DESCRIPTION = "U-boot bootloader w/ BUG support"
 LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
-PV = "1.3.2+svnr${SRCREV}"
+PV = "1.3.2+svnr${SRCPV}"
 SRCREV = "${AUTOREV}"
 PR = "r6"
 

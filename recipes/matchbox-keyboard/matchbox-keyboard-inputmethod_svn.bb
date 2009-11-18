@@ -4,7 +4,7 @@ DEPENDS = "libfakekey expat libxft gtk+ matchbox-panel-2"
 RCONFLICTS_${PN} = "matchbox-keyboard"
 RPROVIDES_${PN} = "matchbox-keyboard"
 SECTION = "x11"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r10"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \

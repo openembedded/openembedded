@@ -1,0 +1,11 @@
+--- ffalarms-0.2.4/ffalarms.vala	2009-09-21 14:05:09.000000000 +0200
++++ ffalarms-0.2.4/ffalarms.vala	2009-09-21 14:05:09.000000000 +0200
+@@ -27,7 +27,7 @@
+     "Could not contact atd daemon, the alarm may not work";
+ public const string COMMANDS = "alsactl amixer";
+ public const string ALSASTATE =
+-    "/usr/share/openmoko/scenarios/stereoout.state";
++    "/usr/share/shr/scenarii/stereoout.state";
+ 
+ 
+ public errordomain MyError {

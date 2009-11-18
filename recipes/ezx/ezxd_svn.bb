@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 SECTION = "devel"
 AUTHOR = "Daniel Ribeiro"
 
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r4"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=ezxd;proto=http \

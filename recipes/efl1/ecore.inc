@@ -1,9 +1,10 @@
 DESCRIPTION = "Ecore is the Enlightenment application framework library"
 LICENSE = "MIT BSD"
-DEPENDS = "curl eet evas tslib libxtst libxcomposite libxinerama libxscrnsaver libxdamage libxrandr libxcursor libxprintutil"
+DEPENDS = "virtual/libiconv curl eet evas tslib \
+           libxtst libxcomposite libxinerama libxscrnsaver libxdamage libxrandr libxcursor libxprintutil"
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
-PV = "0.9.9.060+svnr${SRCREV}"
+PV = "0.9.9.060+svnr${SRCPV}"
 PR = "r3"
 
 inherit efl

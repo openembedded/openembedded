@@ -4,7 +4,7 @@ DEPENDS += "gperf-native"
 SRCREV = "9241"
 DEFAULT_PREFERENCE = "-1"
 FILESPATHPKG =. "eglibc-svn:"
-PV = "2.11+svnr${SRCREV}"
+PV = "2.11+svnr${SRCPV}"
 PR = "${INC_PR}.3"
 EGLIBC_BRANCH="trunk"
 SRC_URI = "svn://svn.eglibc.org;module=${EGLIBC_BRANCH} \

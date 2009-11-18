@@ -11,8 +11,7 @@ SRC_URI = "svn://oscada.org.ua/trunk;module=OpenSCADA;rev=;proto=svn \
            file://rcc-moc.patch;patch=1 \
           "
 
-PV = "0.6.4"
-PR = "svn"
+PV = "0.6.4+svnr${SRCPV}"
 
 S = "${WORKDIR}/OpenSCADA"
 

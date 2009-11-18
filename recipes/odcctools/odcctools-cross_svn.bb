@@ -2,7 +2,7 @@ DESCRIPTION = "cctools for darwin"
 HOMEPAGE = "http://code.google.com/p/iphone-dev"
 DEPENDS = "cross-linkage bison-native"
 PROVIDES = "virtual/${TARGET_PREFIX}binutils"
-PV = "0.0+svn${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r2"
 
 SRCREV="280"
