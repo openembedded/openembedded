@@ -3,9 +3,12 @@ DEPENDS = "virtual/libiconv virtual/libsdl libsdl-image libsdl-mixer boost libpn
 LICENSE = "GPL"
 HOMEPAGE = "http://pingus.seul.org/"
 SECTION = "x11/games"
-PR = "r3"
+PR = "r4"
 
 ARM_INSTRUCTION_SET = "arm"
+
+# Workaround QA issue
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 inherit scons
 
