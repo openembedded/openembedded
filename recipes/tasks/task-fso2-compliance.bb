@@ -3,12 +3,14 @@ Install this task to make your distribution FSO 2.0-compliant."
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.9.0"
-PR = "r1"
+PR = "r2"
 
 inherit task
 
 RDEPENDS_${PN} = "\
   dbus-hlid \
+# TODO: remove when fso2 is finished
+  frameworkd \
   \
   libfsobasics \
   libfsotransport \
@@ -16,9 +18,9 @@ RDEPENDS_${PN} = "\
   libfsoresource \
   \
   fsodeviced \
-  fsogsmd \
+#  fsogsmd \
   fsonetworkd \
-  fsotimed \
+#  fsotimed \
   fsousaged \
   \
   fso-alsa-data \
