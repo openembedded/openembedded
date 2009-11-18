@@ -33,6 +33,10 @@ inherit autotools
 TARGET_CC_ARCH_append_armv6 = " -D__SOFTFP__"
 TARGET_CC_ARCH_append_armv7a = " -D__SOFTFP__"
 
+do_configure_prepend() {
+	autoreconf -Wcross --verbose --install --force --exclude=autopoint Modules/_ctypes/libffi || oenote "_ctypes failed to autoreconf"
+}
+
 #
 # Copy config.h and an appropriate Makefile for distutils.sysconfig,
 # which laters uses the information out of these to compile extensions
