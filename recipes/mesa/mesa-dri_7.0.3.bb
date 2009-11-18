@@ -9,9 +9,6 @@ PACKAGES_DYNAMIC = "mesa-dri-driver-*"
 
 PR = "r1"
 
-# most of our targets do not have DRI so will use mesa-xlib
-DEFAULT_PREFERENCE = "-1"
-
 DEPENDS += "libdrm"
 # DRI is useless without the kernel drivers
 RRECOMMENDS += " kernel-module-drm kernel-module-radeon "
