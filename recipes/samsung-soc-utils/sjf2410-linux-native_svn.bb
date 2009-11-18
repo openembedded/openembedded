@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PV = "0.1+svnr${SRCPV}"
 PR = "r0"
 
-SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=sjf2410-linux;proto=https"
+SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=sjf2410-linux;proto=http"
 S = "${WORKDIR}/sjf2410-linux"
 
 inherit native
