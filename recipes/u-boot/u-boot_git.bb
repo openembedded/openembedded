@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r35"
+PR ="r36"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -102,13 +102,15 @@ SRC_URI_dm6467t-evm = "git://arago-project.org/git/people/hemant/u-boot-dm646x.g
 SRCREV_dm6467t-evm = "3da7475ae13445ba89c77ea563ccdfb9df540bb7"
 PV_dm6467t-evm = "2009.08+gitr${SRCREV}"
 
-SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=wakeup"
-SRCREV_da830-omapl137-evm = "04a03bb477ad842b84c61b29f11422089ad0088d"
-PV_da830-omapl137-evm = "2009.01+gitr${SRCREV}"
+# Corresponding to PSP 3.20.00.07 Release
+SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRCREV_da830-omapl137-evm = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
+PV_da830-omapl137-evm = "2009.08+gitr${SRCREV}"
 
-SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=wakeup"
-SRCREV_da850-omapl138-evm = "04a03bb477ad842b84c61b29f11422089ad0088d"
-PV_da850-omapl138-evm = "2009.01+gitr${SRCREV}"
+# Corresponding to PSP 3.20.00.07 Release
+SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRCREV_da850-omapl138-evm = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
+PV_da850-omapl138-evm = "2009.08+gitr${SRCREV}"
 
 SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
                         file://leopardboard-support.patch;patch=1 \
