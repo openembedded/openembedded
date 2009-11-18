@@ -5,16 +5,23 @@ LIB_DEPS = "libdrm virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
 
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
-PV = "7.2+gitr${SRCREV}"
-PR = "${INC_PR}.0"
-PE = "1"
+PV = "7.6.1+gitr${SRCPV}"
+PR = "${INC_PR}.3"
 
-DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-2"
+DEFAULT_PREFERENCE_om-gta02 = "2"
+
+SRCREV_om-gta02 ?= "a8a1c12262998e5fa3a857eebf857c6d3a95f85e"
 
 SRC_URI = "git://anongit.freedesktop.org/git/mesa/mesa;protocol=git"
+SRC_URI_om-gta02 = "git://git.bitwiz.org.uk/mesa.git;protocol=git;branch=glamo"
 S = "${WORKDIR}/git"
+
+PACKAGES =+ " mesa-utils "
 
 FILES_${PN} += "${libdir}/dri/*.so"
 FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
+FILES_mesa-utils = "${bindir}/*"
 
 EXTRA_OECONF += "--with-driver=dri --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
+EXTRA_OECONF_append_om-gta02 = " --disable-glx-tls --disable-gallium-intel "
