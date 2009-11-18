@@ -1,0 +1,13 @@
+Index: configure.ac
+===================================================================
+--- a/configure.ac	(Revision 148)
++++ b/configure.ac	(Arbeitskopie)
+@@ -41,7 +41,7 @@
+ AC_SUBST(DBUS_SERVICES_DIR)
+ AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR", [Where services dir for D-Bus is])
+ 
+-CFLAGS="$CFLAGS -g -Wall -Werror -Wno-format"
++CFLAGS="$CFLAGS -g -Wall -Wno-format"
+ 
+ # TODO: add --with-xsltproc argument to override PATH
+ AC_CHECK_PROGS(XSLT, xsltproc)
