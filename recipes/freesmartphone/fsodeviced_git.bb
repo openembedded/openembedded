@@ -6,7 +6,7 @@ RDEPENDS += "libcanberra-alsa"
 RRECOMMENDS += "fso-alsa-data"
 PV = "0.9.0+gitr${SRCPV}"
 PE = "1"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 inherit update-rc.d
 
@@ -20,5 +20,4 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/fsodeviced ${D}${sysconfdir}/init.d/
 }
 
-FILES_${PN} += "${sysconfdir}/init.d/fsousaged"
-
+FILES_${PN} += "${sysconfdir}/init.d/fsodeviced"

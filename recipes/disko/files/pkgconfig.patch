@@ -1,8 +1,8 @@
-Index: git/SConstruct
+Index: disko-1.6.0/SConstruct
 ===================================================================
---- git.orig/SConstruct	2009-09-11 01:53:54.000000000 +0200
-+++ git/SConstruct	2009-09-11 02:08:12.789878911 +0200
-@@ -585,6 +585,7 @@
+--- disko-1.6.0.orig/SConstruct	2009-10-14 12:54:36.000000000 +0200
++++ disko-1.6.0/SConstruct	2009-11-17 18:22:49.656165471 +0100
+@@ -580,6 +580,7 @@
  #######################################################################
  # TODO: handle disko_pc_libs                                          #
  if 'install' in BUILD_TARGETS:
@@ -10,7 +10,7 @@ Index: git/SConstruct
  	disko_pc = open('disko.pc', 'w')
  	disko_pc_requires = 'libxml-2.0 >= 2.6, sigc++-2.0, libpng >= 1.2, freetype2'
  	if env['LIBPATH']:
-@@ -610,30 +611,43 @@
+@@ -602,50 +603,76 @@
  	if env.has_key('libdl'):
  		disko_pc_libs += ' -ldl'
  
@@ -54,17 +54,17 @@ Index: git/SConstruct
  
  	if env['enable_sip']:
  		disko_pc_requires += ', libpj'
-@@ -641,18 +655,32 @@
+ 		if not env['big_lib'] and not env['static_lib']:
  			disko_pc_libs += ' -lmmssip'
++			PKG_CCFLAGS += '-D__HAVE_MMSSIP__ '
  		if('uuid' in env['LIBS']):
  			disko_pc_requires += ', uuid'
-+		PKG_CCFLAGS += '-D__HAVE_MMSSIP__ '
  		
  	if env['enable_mail']:
  		disko_pc_requires += ', vmime'
 +		PKG_CCFLAGS += '-D__HAVE_VMIME__ '
  		
- 	if env['mmscrypt']:
+ 	if env['enable_crypt']:
  		disko_pc_requires += ', openssl'
 +		PKG_CCFLAGS += '-D__HAVE_MMSCRYPT__ '
  
@@ -74,20 +74,20 @@ Index: git/SConstruct
  		
  	if 'mysql' in env['database']:
  		disko_pc_requires += ', mysql'
-+		PKG_CCFLAGS += '-D__ENABLE_MYSQL__ '
-+
+ 
 +	if 'odbc' in env['database']:
 +		PKG_CCFLAGS += '-D__ENABLE_FREETDS__ '
 +
 +	if env['messages']:
-+        	PKG_CCFLAGS += '-D__ENABLE_LOG__ '
++		PKG_CCFLAGS += '-D__ENABLE_LOG__ '
 +
 +	if env['debug']:
-+        	PKG_CCFLAGS += '-D__ENABLE_DEBUG__ '
- 
++		PKG_CCFLAGS += '-D__ENABLE_DEBUG__ '
++
  	disko_pc.write('prefix=' + env['prefix'] + '\n')
  	disko_pc.write('exec_prefix=${prefix}\n')
-@@ -664,13 +692,7 @@
+ 	disko_pc.write('libdir=${exec_prefix}/lib/disko\n')
+@@ -656,13 +683,7 @@
  	disko_pc.write('Requires: ' + disko_pc_requires + '\n')
  	disko_pc.write('Libs: -L${libdir} ' + disko_pc_libs + '\n')
  	disko_pc.write('Cflags: -I${includedir}/ ')
