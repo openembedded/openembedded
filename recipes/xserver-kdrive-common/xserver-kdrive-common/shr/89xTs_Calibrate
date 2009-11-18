@@ -1,0 +1,23 @@
+#!/bin/sh
+
+while [ ! -z $TSLIB_TSDEVICE ] && [ ! -f /etc/pointercal ]
+do
+   /usr/bin/xtscal
+done
+
+SYSFS_CALIBRATION_DIR=/sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration
+
+if [ ! -d $SYSFS_CALIBRATION_DIR ]; then
+  # moved in 2.6.31
+  SYSFS_CALIBRATION_DIR=/sys/devices/platform/s3c2440-i2c/i2c-adapter/i2c-0/0-0073/s3c2410-ts/calibration
+fi
+
+if [ -d $SYSFS_CALIBRATION_DIR ]; then
+  echo 0 > $SYSFS_CALIBRATION_DIR/0
+  echo 80000 > $SYSFS_CALIBRATION_DIR/1
+  echo -8000000 > $SYSFS_CALIBRATION_DIR/2
+  echo -81000 > $SYSFS_CALIBRATION_DIR/3
+  echo 0 > $SYSFS_CALIBRATION_DIR/4
+  echo 75000000 > $SYSFS_CALIBRATION_DIR/5
+  echo 65536 > $SYSFS_CALIBRATION_DIR/6
+fi
