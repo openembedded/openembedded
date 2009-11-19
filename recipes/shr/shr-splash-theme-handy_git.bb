@@ -1,7 +1,7 @@
 DESCRIPTION = "SHR splash screen - handy theme"
 SECTION = "x11/data"
 LICENSE = "MIT BSD"
-PV = "1.2+gitr${SRCREV}"
+PV = "1.2+gitr${SRCPV}"
 PR = "r3"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

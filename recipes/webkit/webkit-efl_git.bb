@@ -1,6 +1,6 @@
 DESCRIPTION = " Webkit browser engine, EFL edition"
 LICENSE = "GPL"
-PV="0.1+gitr${SRCREV}"
+PV="0.1+gitr${SRCPV}"
 PR="r1"
 
 DEPENDS = "icu flex gst-plugins-base gstreamer jpeg libpng libxml2 pango \
