@@ -96,10 +96,10 @@ RDEPENDS_${PN}-fso = "\
 "
 
 
+#FIXME: libcanberra-alsa should be pulled in by fsodeviced but isn't
 RDEPENDS_${PN}-audio = "\
   alsa-utils-aplay \
   alsa-utils-amixer \
-  #FIXME: libcanberra-alsa should be pulled in by fsodeviced but isn't
   libcanberra-alsa \
 "
 
