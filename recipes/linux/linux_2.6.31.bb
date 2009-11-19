@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r5"
+PR = "r6"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -16,6 +16,15 @@ DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.5.bz2;patch=1 \
            file://defconfig"
+
+SRC_URI += "file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;patch=1 \
+            file://0002-Squashfs-Factor-out-remaining-zlib-dependencies-int.patch;patch=1 \
+            file://0003-Squashfs-add-a-decompressor-framework.patch;patch=1 \
+            file://0004-Squashfs-add-decompressor-entries-for-lzma-and-lzo.patch;patch=1 \
+            file://0005-Squashfs-add-an-extra-parameter-to-the-decompressor.patch;patch=1 \
+            file://0006-Squashfs-add-LZMA-compression.patch;patch=1 \
+            file://0007-Squashfs-Make-unlzma-available-to-non-initramfs-ini.patch;patch=1 \
+           "
 
 SRC_URI_append_db1200 ="\
             http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;patch=1 \
