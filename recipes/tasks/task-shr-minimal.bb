@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r15"
+PR = "r16"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -99,6 +99,8 @@ RDEPENDS_${PN}-fso = "\
 RDEPENDS_${PN}-audio = "\
   alsa-utils-aplay \
   alsa-utils-amixer \
+  #FIXME: libcanberra-alsa should be pulled in by fsodeviced but isn't
+  libcanberra-alsa \
 "
 
 RDEPENDS_${PN}-audio_append_om-gta01 = "\
