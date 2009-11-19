@@ -41,7 +41,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+gitr${SRCPV}"
+PV = "0.0+1.0rc2+gitr${SRCREV}"
 PR = "r15"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_om-gta02 = "1"
