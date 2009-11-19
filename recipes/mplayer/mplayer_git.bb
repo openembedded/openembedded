@@ -7,10 +7,8 @@ DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jp
 
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "git://repo.or.cz/mplayer.git;protocol=git;branch=tmp_build"
+SRC_URI = "git://repo.or.cz/mplayer.git;protocol=git;branch=master"
 SRC_URI_om-gta02 = "git://repo.or.cz/mplayer/glamo.git;protocol=git;branch=master \
-   file://0001-Modify-control-prototype-to-match-the-one-in-video_o.patch;patch=1 \
-   file://0002-remove-libaf-af_lavcac3enc.c.patch;patch=1 \
    file://makefile-nostrip-svn.patch;patch=1 \
    "
 
@@ -31,8 +29,8 @@ SRC_URI_append_armv7a = " \
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
 
-SRCREV_om-gta02 = "dd07d2721934bc664f69af36e20565d6eac27f7a"
-SRCREV = "8bbb79c03a594e452fb9109dd6fda781d390a798"
+SRCREV_om-gta02 = "5519d0dfd3f9504f24aa9fe154f831bb718cbfc3"
+SRCREV = "e5bcd70bc5b0557635ae51c7093f0e887493d4ba"
 
 PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
@@ -46,7 +44,6 @@ RREPLACES_${PN} = "mplayer-atty"
 PV = "0.0+1.0rc2+gitr${SRCPV}"
 PR = "r15"
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_armv7a = "1"
 DEFAULT_PREFERENCE_om-gta02 = "1"
 
 PARALLEL_MAKE = ""
