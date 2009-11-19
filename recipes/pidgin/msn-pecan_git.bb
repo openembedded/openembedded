@@ -4,7 +4,7 @@ SECTION = "x11/network"
 LICENSE="GPL-2"
 RDEPENDS="pidgin"
 DEPENDS="pidgin"
-PV="0.0.1+gitr${SRCREV}"
+PV="0.0.1+gitr${SRCPV}"
 PR="r0"
 
 inherit pkgconfig
