@@ -45,9 +45,8 @@ RDEPENDS_${PN} = "\
 RRECOMMENDS_${PN} = "\
   fso-abyss \
   wmiconfig \
-  \
-#  tzdata \
-#  tzdata-americas \
-#  tzdata-asia \
-#  tzdata-europe \
+  tzdata \
+  tzdata-americas \
+  tzdata-asia \
+  tzdata-europe \
 "
