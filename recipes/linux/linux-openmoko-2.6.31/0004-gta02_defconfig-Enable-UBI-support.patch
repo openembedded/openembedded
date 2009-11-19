@@ -1,0 +1,67 @@
+From 513b35171de9efbbc0699bff5f2e5a324d2cd8ef Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sun, 8 Nov 2009 11:22:13 +0100
+Subject: [PATCH 4/5] gta02_defconfig: Enable UBI support
+
+---
+ arch/arm/configs/gta02_defconfig |   22 +++++++++++++++++++---
+ 1 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/configs/gta02_defconfig b/arch/arm/configs/gta02_defconfig
+index b0a6d72..3f1b60b 100644
+--- a/arch/arm/configs/gta02_defconfig
++++ b/arch/arm/configs/gta02_defconfig
+@@ -648,7 +648,15 @@ CONFIG_MTD_NAND_S3C2410=y
+ #
+ # UBI - Unsorted block images
+ #
+-# CONFIG_MTD_UBI is not set
++CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_WL_THRESHOLD=4096
++CONFIG_MTD_UBI_BEB_RESERVE=1
++CONFIG_MTD_UBI_GLUEBI=y
++
++#
++# UBI debugging options
++#
++# CONFIG_MTD_UBI_DEBUG is not set
+ # CONFIG_PARPORT is not set
+ CONFIG_BLK_DEV=y
+ # CONFIG_BLK_DEV_COW_COMMON is not set
+@@ -1478,6 +1486,12 @@ CONFIG_JFFS2_ZLIB=y
+ # CONFIG_JFFS2_LZO is not set
+ CONFIG_JFFS2_RTIME=y
+ # CONFIG_JFFS2_RUBIN is not set
++CONFIG_UBIFS_FS=y
++# CONFIG_UBIFS_FS_XATTR is not set
++# CONFIG_UBIFS_FS_ADVANCED_COMPR is not set
++CONFIG_UBIFS_FS_LZO=y
++CONFIG_UBIFS_FS_ZLIB=y
++# CONFIG_UBIFS_FS_DEBUG is not set
+ # CONFIG_CRAMFS is not set
+ # CONFIG_SQUASHFS is not set
+ # CONFIG_VXFS_FS is not set
+@@ -1670,9 +1684,9 @@ CONFIG_CRYPTO_MD5=y
+ #
+ # Compression
+ #
+-# CONFIG_CRYPTO_DEFLATE is not set
++CONFIG_CRYPTO_DEFLATE=y
+ CONFIG_CRYPTO_ZLIB=y
+-# CONFIG_CRYPTO_LZO is not set
++CONFIG_CRYPTO_LZO=y
+ 
+ #
+ # Random Number Generation
+@@ -1695,6 +1709,8 @@ CONFIG_CRC7=y
+ # CONFIG_LIBCRC32C is not set
+ CONFIG_ZLIB_INFLATE=y
+ CONFIG_ZLIB_DEFLATE=y
++CONFIG_LZO_COMPRESS=y
++CONFIG_LZO_DECOMPRESS=y
+ CONFIG_DECOMPRESS_GZIP=y
+ CONFIG_DECOMPRESS_BZIP2=y
+ CONFIG_DECOMPRESS_LZMA=y
+-- 
+1.6.5.2
+

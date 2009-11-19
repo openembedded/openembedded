@@ -1,0 +1,129 @@
+From ab6c9baa5cc8ae3a922ae4baef2550d399b41550 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sun, 8 Nov 2009 10:48:28 +0100
+Subject: [PATCH 4/7] gta02_drm_defconfig: start from gta02_packaging_defconfig
+
+---
+ arch/arm/configs/gta02_drm_defconfig |   40 +++++++++++++--------------------
+ 1 files changed, 16 insertions(+), 24 deletions(-)
+
+diff --git a/arch/arm/configs/gta02_drm_defconfig b/arch/arm/configs/gta02_drm_defconfig
+index 5349014..e2dbbef 100644
+--- a/arch/arm/configs/gta02_drm_defconfig
++++ b/arch/arm/configs/gta02_drm_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.29-rc3
+-# Thu Jul  2 20:40:33 2009
++# Fri Oct  2 20:51:57 2009
+ #
+ CONFIG_ARM=y
+ CONFIG_HAVE_PWM=y
+@@ -35,7 +35,7 @@ CONFIG_EXPERIMENTAL=y
+ CONFIG_BROKEN_ON_SMP=y
+ CONFIG_LOCK_KERNEL=y
+ CONFIG_INIT_ENV_ARG_LIMIT=32
+-CONFIG_LOCALVERSION=""
++CONFIG_LOCALVERSION="-mokodev"
+ # CONFIG_LOCALVERSION_AUTO is not set
+ CONFIG_SWAP=y
+ CONFIG_SYSVIPC=y
+@@ -180,7 +180,7 @@ CONFIG_S3C24XX_PWM=y
+ CONFIG_S3C24XX_GPIO_EXTRA=0
+ CONFIG_S3C2410_DMA=y
+ # CONFIG_S3C2410_DMA_DEBUG is not set
+-# CONFIG_S3C24XX_ADC is not set
++CONFIG_S3C24XX_ADC=y
+ CONFIG_MACH_SMDK=y
+ CONFIG_MACH_NEO1973=y
+ CONFIG_PLAT_S3C=y
+@@ -1084,7 +1084,6 @@ CONFIG_I2C=y
+ CONFIG_I2C_BOARDINFO=y
+ CONFIG_I2C_CHARDEV=y
+ CONFIG_I2C_HELPER_AUTO=y
+-CONFIG_I2C_ALGOBIT=y
+ 
+ #
+ # I2C Hardware Bus support
+@@ -1181,7 +1180,7 @@ CONFIG_APM_POWER=y
+ CONFIG_CHARGER_PCF50633=y
+ CONFIG_BATTERY_BQ27000_HDQ=y
+ CONFIG_HDQ_GPIO_BITBANG=y
+-# CONFIG_BATTERY_GTA01 is not set
++CONFIG_BATTERY_GTA01=m
+ CONFIG_HWMON=y
+ # CONFIG_HWMON_VID is not set
+ # CONFIG_SENSORS_AD7414 is not set
+@@ -1283,14 +1282,11 @@ CONFIG_PCF50633_ADC=y
+ CONFIG_PCF50633_GPIO=y
+ # CONFIG_MFD_PCF50606 is not set
+ CONFIG_MFD_GLAMO=y
+-
+-#
+-# SMedia Glamo 336x/337x engine drivers
+-#
+-# CONFIG_MFD_GLAMO_FB is not set
++CONFIG_MFD_GLAMO_FB=y
++CONFIG_MFD_GLAMO_FB_XGLAMO_WORKAROUND=y
+ CONFIG_MFD_GLAMO_SPI_GPIO=y
++CONFIG_MFD_GLAMO_SPI_FB=y
+ CONFIG_MFD_GLAMO_MCI=y
+-CONFIG_MFD_GLAMO_DRM=y
+ 
+ #
+ # Multimedia devices
+@@ -1312,7 +1308,6 @@ CONFIG_DAB=y
+ #
+ # Graphics support
+ #
+-CONFIG_DRM=y
+ # CONFIG_VGASTATE is not set
+ CONFIG_VIDEO_OUTPUT_CONTROL=y
+ CONFIG_FB=y
+@@ -1790,17 +1785,14 @@ CONFIG_STAGING=y
+ #
+ # Android
+ #
+-CONFIG_ANDROID=y
+-CONFIG_ANDROID_BINDER_IPC=y
+-CONFIG_ANDROID_LOGGER=y
+-CONFIG_ANDROID_RAM_CONSOLE=y
+-CONFIG_ANDROID_RAM_CONSOLE_ENABLE_VERBOSE=y
+-# CONFIG_ANDROID_RAM_CONSOLE_ERROR_CORRECTION is not set
+-# CONFIG_ANDROID_RAM_CONSOLE_EARLY_INIT is not set
+-CONFIG_ANDROID_TIMED_GPIO=y
+-CONFIG_ANDROID_LOW_MEMORY_KILLER=y
++# CONFIG_ANDROID is not set
++# CONFIG_ANDROID_BINDER_IPC is not set
++# CONFIG_ANDROID_LOGGER is not set
++# CONFIG_ANDROID_RAM_CONSOLE is not set
++# CONFIG_ANDROID_TIMED_GPIO is not set
++# CONFIG_ANDROID_LOW_MEMORY_KILLER is not set
+ # CONFIG_ANDROID_WAKELOCK is not set
+-CONFIG_ANDROID_PARANOID_NETWORK=y
++# CONFIG_ANDROID_PARANOID_NETWORK is not set
+ 
+ #
+ # File systems
+@@ -1958,7 +1950,7 @@ CONFIG_NLS_CODEPAGE_850=m
+ # CONFIG_NLS_CODEPAGE_863 is not set
+ # CONFIG_NLS_CODEPAGE_864 is not set
+ # CONFIG_NLS_CODEPAGE_865 is not set
+-# CONFIG_NLS_CODEPAGE_866 is not set
++CONFIG_NLS_CODEPAGE_866=m
+ # CONFIG_NLS_CODEPAGE_869 is not set
+ CONFIG_NLS_CODEPAGE_936=m
+ CONFIG_NLS_CODEPAGE_950=m
+@@ -1967,7 +1959,7 @@ CONFIG_NLS_CODEPAGE_950=m
+ # CONFIG_NLS_CODEPAGE_874 is not set
+ # CONFIG_NLS_ISO8859_8 is not set
+ # CONFIG_NLS_CODEPAGE_1250 is not set
+-# CONFIG_NLS_CODEPAGE_1251 is not set
++CONFIG_NLS_CODEPAGE_1251=m
+ # CONFIG_NLS_ASCII is not set
+ CONFIG_NLS_ISO8859_1=y
+ # CONFIG_NLS_ISO8859_2 is not set
+-- 
+1.6.5.2
+

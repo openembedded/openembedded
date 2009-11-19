@@ -6,7 +6,7 @@ DEPENDS = "edje-native"
 RRECOMMENDS = "elementary-theme-gry"
 LICENCE = "unknown"
 
-PV = "0.3-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.3-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

@@ -5,6 +5,8 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS += "fuse virtual/libusb0"
 
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/owfs/owfs-${PV}.tar.gz \
            file://owhttpd \
            file://owserver "
@@ -15,6 +17,7 @@ EXTRA_OECONF = " \
                  --enable-owhttpd \
                  --enable-cache \
                  --enable-mt \
+                 --disable-swig \
                  "
 
 do_install_prepend() {

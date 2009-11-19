@@ -143,6 +143,9 @@ SRCDATE_ipkg-utils-native			?= "20060106"
 SRCDATE_ipkg-link				?= "20060106"
 SRCDATE_irssi					?= "20050930"
 
+# We want the newer util-linux package
+PREFERRED_PROVIDER_util-linux			?= "util-linux-ng"
+
 # we don't ship gtk-directfb by default
 PREFERRED_PROVIDER_gtk+				?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-ani	?= "gtk+"

@@ -1,0 +1,23 @@
+--- ace-of-penguins-1.2.orig/games/golf.c
++++ ace-of-penguins-1.2/games/golf.c
+@@ -31,7 +31,7 @@
+ 
+ Stack *deck, *discard, *stacks[7];
+ 
+-static int table_width, table_height;
++int table_width, table_height;
+ 
+ int supress_arrows = 0;
+
+--- ace-of-penguins-1.2.orig/games/solitaire.c
++++ ace-of-penguins-1.2/games/solitaire.c
+@@ -337,7 +337,7 @@
+   return something_moved;
+ }
+ 
+-static void
++void
+ check_for_end_of_game()
+ {
+   while (auto_move());
+

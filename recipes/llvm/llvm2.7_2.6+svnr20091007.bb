@@ -1,6 +1,6 @@
 require llvm.inc
 
-SRCREV = "82130"
+SRCREV = "83459"
 
 PV = "2.6+svnr${SRCPV}"
 
@@ -11,7 +11,8 @@ DEPENDS = "llvm-common llvm2.7-native"
 SRC_URI = "\
   svn://llvm.org/svn/llvm-project/llvm/;proto=http;module=trunk \
   file://llvm-debugonly-zeroormore.patch;patch=1 \
-"
+  file://BX_to_BLX.patch;patch=1 \
+  "
 
 EXTRA_OECMAKE += "\
         -DLLVM_TARGET_ARCH:STRING=${LLVM_ARCH} \

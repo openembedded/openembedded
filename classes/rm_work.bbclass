@@ -35,10 +35,7 @@ addtask rm_work_all after do_rm_work
 
 addhandler rmwork_stampfixing_eventhandler
 python rmwork_stampfixing_eventhandler() {
-    from bb.event import getName
-    import os
-
-    if getName(e) == "StampUpdate":
+    if bb.event.getName(e) == "StampUpdate":
         for (fn, task) in e.targets:
             if task == 'rm_work_all':
                 continue

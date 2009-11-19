@@ -1,0 +1,25 @@
+From 153af7f8e784e03401dc103f16741397ce6ca914 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sun, 8 Nov 2009 12:50:40 +0100
+Subject: [PATCH] Add -drm to Makefile version
+
+---
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index ebf0aa4..16b189f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 6
+ SUBLEVEL = 29
+-EXTRAVERSION += -rc3
++EXTRAVERSION += -rc3-drm
+ NAME = Erotic Pickled Herring
+ 
+ # *DOCUMENTATION*
+-- 
+1.6.5.2
+

@@ -1,0 +1,11 @@
+--- linphone-3.1.0/coreapi/linphonecore.c	2009/03/24 22:24:49	366
++++ linphone-3.1.0/coreapi/linphonecore.c	2009/03/24 22:43:14	367
+@@ -2108,7 +2108,7 @@
+ 	if (olddev!=NULL && olddev!=lc->video_conf.device){
+ 		toggle_video_preview(lc,FALSE);/*restart the video local preview*/
+ 	}
+-	if (lc->ready){
++	if (lc->ready && lc->video_conf.device){
+ 		vd=ms_web_cam_get_string_id(lc->video_conf.device);
+ 		if (vd && strstr(vd,"Static picture")!=NULL){
+ 			vd=NULL;
