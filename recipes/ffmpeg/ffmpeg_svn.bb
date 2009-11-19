@@ -2,13 +2,13 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-SRCREV = "20231"
+SRCREV = "20551"
 
 PV = "0.5.0+${PR}+svnr${SRCPV}"
 PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_armv7a = "1"
+DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_om-gta02 = "1"
 
 SRC_URI = "svn://svn.ffmpeg.org/ffmpeg/;module=trunk"
