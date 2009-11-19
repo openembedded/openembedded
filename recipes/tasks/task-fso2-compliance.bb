@@ -3,7 +3,7 @@ Install this task to make your distribution FSO 2.0-compliant."
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.9.0"
-PR = "r2"
+PR = "r3"
 
 inherit task
 
@@ -46,7 +46,9 @@ RRECOMMENDS_${PN} = "\
   fso-abyss \
   wmiconfig \
   tzdata \
+  tzdata-africa \
   tzdata-americas \
   tzdata-asia \
+  tzdata-australia \
   tzdata-europe \
 "
