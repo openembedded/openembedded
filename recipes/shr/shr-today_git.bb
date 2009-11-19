@@ -5,7 +5,7 @@ LICENSE ?= "GPL"
 RDEPENDS = "python-edje python-dbus python-edbus python-ecore"
 SECTION = "x11/applications"
 
-PV = "0.0.1+gitr${SRCPV}"
+PV = "0.0.1+gitr${SRCREV}"
 PR = "r2"
 
 inherit distutils

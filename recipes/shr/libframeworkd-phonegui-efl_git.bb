@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "e/apps"
 DEPENDS += " dbus-glib libframeworkd-glib libframeworkd-phonegui etk evas ecore edje edje-native elementary"
-PV = "0.0.3+gitr${SRCPV}"
+PV = "0.0.3+gitr${SRCREV}"
 PR = "r35"
 
 require libframeworkd-phonegui-efl-theme.inc

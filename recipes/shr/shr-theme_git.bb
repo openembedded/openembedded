@@ -2,7 +2,7 @@ DESCRIPTION = "Standard icon theme for the SHR distribution"
 HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/data"
-PV = "0.0.2+gitr${SRCPV}"
+PV = "0.0.2+gitr${SRCREV}"
 PR = "r2"
 
 inherit autotools
