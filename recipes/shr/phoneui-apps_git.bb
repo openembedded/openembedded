@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += "dbus-glib"
-PV = "0.0.0+gitr${SRCPV}"
+PV = "0.0.0+gitr${SRCREV}"
 PR = "r0"
 
 inherit pkgconfig autotools

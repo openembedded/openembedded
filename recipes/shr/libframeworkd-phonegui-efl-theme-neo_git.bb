@@ -5,7 +5,7 @@ RDEPENDS = "libframeworkd-phonegui-efl"
 RRECOMMENDS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
-PV = "0.2-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.2-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r2"
 
 require libframeworkd-phonegui-efl-theme.inc

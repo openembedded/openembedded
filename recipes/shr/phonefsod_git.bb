@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += " dbus-glib libframeworkd-glib sqlite3 shr-specs"
-PV = "0.0.0+gitr${SRCPV}"
+PV = "0.0.0+gitr${SRCREV}"
 PR = "r2"
 
 SRC_URI = "git://git.shr-project.org/repo/phonefsod.git;protocol=http;branch=master"
