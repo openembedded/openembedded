@@ -1,7 +1,7 @@
 DESCRIPTION = "GPS Controlling Daemon"
 LICENSE = "GPL"
 SECTION = "x11"
-DEPENDS = "glib-2.0 dbus-glib bluez-libs libxslt-native"
+DEPENDS = "glib-2.0 dbus-glib bluez4 libxslt-native"
 
 inherit autotools pkgconfig
 
