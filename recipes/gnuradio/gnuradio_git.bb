@@ -17,7 +17,7 @@ EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_
 GIT_REPO = "balister.git"
 GIT_BRANCH = "omap3-build"
 
-SRC_URI = "git://gnuradio.org/git/${GIT_REPO};branch=${GIT_BRANCH} protocol=http \
+SRC_URI = "git://gnuradio.org/git/${GIT_REPO};branch=${GIT_BRANCH};protocol=http \
      ${SOURCEFORGE_MIRROR}/libusb/libusb-0.1.12.tar.gz \
 "
 
