@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r17"
+PR = "r16"
 PV = "2.0"
 LICENSE = "GPL"
 
