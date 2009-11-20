@@ -1,6 +1,6 @@
 AUTHOR = "lucky"
 DESCRIPTION = "Illume keyboard with russian layout"
-PV = "0.0+gitr${SRCPV}"
+PV = "0.0+gitr${SRCREV}"
 PE = "1"
 PR = "r0"
 

@@ -6,7 +6,7 @@ DEPENDS = "edje-native"
 RRECOMMENDS = "e-wm-theme-illume-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
-PV = "0.2.1-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.2.1-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r3"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master \

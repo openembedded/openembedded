@@ -6,7 +6,7 @@ DEPENDS = "edje-native"
 RRECOMMENDS = "e-wm-theme-illume-gry"
 LICENSE = "unknown"
 
-PV = "0.8-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.8-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master \
