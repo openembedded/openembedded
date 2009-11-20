@@ -1,7 +1,10 @@
 DEPENDS = "libgpewidget sqlite"
+RDEPENDS = "gpe-icons"
 LICENSE = "GPL"
 DESCRIPTION = "A GPE notebook to sketch your notes"
 export CVSBUILD = "no"
+
+PR = "r1"
 
 inherit gpe pkgconfig
 
