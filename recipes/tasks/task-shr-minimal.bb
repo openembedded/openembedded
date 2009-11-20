@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r16"
+PR = "r17"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -76,6 +76,7 @@ RDEPENDS_${PN}-base = "\
   logrotate\
   util-linux-ng-fdisk \
   shr-splash \
+  fso-apm \
 "
 
 RDEPENDS_${PN}-cli = "\
