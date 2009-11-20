@@ -1,6 +1,6 @@
 DESCRIPTION = "Library for rendering SVG files"
 SECTION = "x11/utils"
-DEPENDS = "cairo-native"
+DEPENDS = "cairo-native pango-native"
 LICENSE = "LGPL"
 
 inherit native autotools_stage
