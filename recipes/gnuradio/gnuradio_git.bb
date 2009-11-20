@@ -1,6 +1,6 @@
 require gnuradio.inc
 
-#DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-1"
 
 DEPENDS += " gsl "
 
