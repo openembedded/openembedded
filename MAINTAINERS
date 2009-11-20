@@ -161,11 +161,11 @@ Recipes:    gnumeric, gobby, obby, imposter, inkscape
 Recipes:    *moko*, telepathy, tilibs, xchat, xournal.
 
 Person:     Kristoffer Ericson
-Mail:       Kristoffer_e1@hotmail.com
-Website:    www.jlime.com
-Machines:   spitz, jornada 680, jornada 720
-Distros:    JLime, Openzaurus
-Interests:  wifi, kernels, emulation, qemu, git
+Mail:       Kristoffer.ericson@gmail.com
+Website:    http://www.jlime.com
+Machines:   jornada 680, jornada 720, NEC Mobilepro 900/c, Ben Nanonote
+Distros:    JLime
+Interests:  Kernels, emulation, superh/arm/mips 
 Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
