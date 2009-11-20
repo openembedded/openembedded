@@ -1,33 +1,13 @@
 #
-# For now, we will skip building of a gcc package if it is a uclibc one
-# and our build is not a uclibc one, and we skip a glibc one if our build
-# is a uclibc build.
+# This class knows how to package up glibc. Its shared since prebuild binary toolchains
+# may need packaging and its pointless to duplicate this code.
 #
-# See the note in gcc/gcc_3.4.0.oe
-#
+# Caller should set GLIBC_INTERNAL_USE_BINARY_LOCALE to one of:
+#  "compile" - Use QEMU to generate the binary locale files
+#  "precompiled" - The binary locale files are pregenerated and already present
+#  "ondevice" - The device will build the locale files upon first boot through the postinst
 
-python __anonymous () {
-    import bb, re
-    uc_os = (re.match('.*uclibc*', bb.data.getVar('TARGET_OS', d, 1)) != None)
-    if uc_os:
-        raise bb.parse.SkipPackage("incompatible with target %s" %
-                                   bb.data.getVar('TARGET_OS', d, 1))
-}
-
-
-# Binary locales are generated at build time if ENABLE_BINARY_LOCALE_GENERATION
-# is set. The idea is to avoid running localedef on the target (at first boot)
-# to decrease initial boot time and avoid localedef being killed by the OOM
-# killer which used to effectively break i18n on machines with < 128MB RAM.
-
-# default to disabled until qemu works for everyone
-ENABLE_BINARY_LOCALE_GENERATION ?= "0"
-
-# BINARY_LOCALE_ARCHES is a space separated list of regular expressions
-BINARY_LOCALE_ARCHES ?= "arm.* i[3-6]86 x86_64 powerpc"
-
-# Set this to zero if you don't want ldconfig in the output package
-USE_LDCONFIG ?= "1"
+GLIBC_INTERNAL_USE_BINARY_LOCALE ?= "ondevice"
 
 PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-static glibc-doc glibc-locale libcidn libmemusage libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* locale-base-* glibc-binary-localedata-*"
@@ -36,7 +16,7 @@ INSANE_SKIP_glibc-dbg = True
 
 libc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so ${base_libdir}/libc*.so.* ${base_libdir}/libc-*.so ${base_libdir}/libm*.so.* ${base_libdir}/libm-*.so ${base_libdir}/ld*.so.* ${base_libdir}/ld-*.so ${base_libdir}/libpthread*.so.* ${base_libdir}/libpthread-*.so ${base_libdir}/libresolv*.so.* ${base_libdir}/libresolv-*.so ${base_libdir}/librt*.so.* ${base_libdir}/librt-*.so ${base_libdir}/libutil*.so.* ${base_libdir}/libutil-*.so ${base_libdir}/libnsl*.so.* ${base_libdir}/libnsl-*.so ${base_libdir}/libnss_files*.so.* ${base_libdir}/libnss_files-*.so ${base_libdir}/libnss_compat*.so.* ${base_libdir}/libnss_compat-*.so ${base_libdir}/libnss_dns*.so.* ${base_libdir}/libnss_dns-*.so ${base_libdir}/libdl*.so.* ${base_libdir}/libdl-*.so ${base_libdir}/libanl*.so.* ${base_libdir}/libanl-*.so ${base_libdir}/libBrokenLocale*.so.* ${base_libdir}/libBrokenLocale-*.so"
 
-FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '${base_sbindir}/ldconfig', '', d)}"
+FILES_glibc = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '${base_sbindir}/ldconfig', '', d)}"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "${base_libdir}/libSegFault*"
 FILES_libcidn = "${base_libdir}/libcidn*.so"
@@ -47,7 +27,9 @@ FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen ${libdir}/*nonshared.a
 FILES_nscd = "${sbindir}/nscd* ${sysconfdir}/nscd* ${sysconfdir}/init.d/nscd*"
 FILES_glibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_glibc-gconv = "${libdir}/gconv/*"
-FILES_${PN}-dbg += " ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
+FILES_glibc-dbg = "${bindir}/.debug ${sbindir}/.debug ${libdir}/.debug \
+                  ${base_bindir}/.debug ${base_sbindir}/.debug ${base_libdir}/.debug \
+                  ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
 FILES_catchsegv = "${bindir}/catchsegv"
 RDEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "${base_libdir}/libpcprofile.so"
@@ -61,40 +43,6 @@ DESCRIPTION_glibc-extra-nss = "glibc: nis, nisplus and hesiod search services"
 DESCRIPTION_ldd = "glibc: print shared library dependencies"
 DESCRIPTION_localedef = "glibc: compile locale definition files"
 DESCRIPTION_glibc-utils = "glibc: misc utilities like iconf, local, gencat, tzselect, rpcinfo, ..."
-
-INITSCRIPT_NAME = "nscd"
-INITSCRIPT_PACKAGES = "nscd"
-INITSCRIPT_PARAMS = "start 40 S . stop 40 0 6 1 ."
-inherit update-rc.d
-
-def get_glibc_fpu_setting(bb, d):
-    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
-        return "--without-fp"
-    return ""
-
-EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
-EXTRA_OEMAKE += "rootsbindir=${base_sbindir}"
-
-OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
-
-do_install() {
-	oe_runmake install_root=${D} install
-	for r in ${rpcsvc}; do
-		h=`echo $r|sed -e's,\.x$,.h,'`
-		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
-	done
-	install -d ${D}${libdir}/locale
-	make -f ${WORKDIR}/generate-supported.mk IN="${S}/localedata/SUPPORTED" OUT="${WORKDIR}/SUPPORTED"
-	# get rid of some broken files...
-	for i in ${GLIBC_BROKEN_LOCALES}; do
-		grep -v $i ${WORKDIR}/SUPPORTED > ${WORKDIR}/SUPPORTED.tmp
-		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
-	done
-	rm -f ${D}{sysconfdir}/rpc
-	install -d ${D}${sysconfdir}/init.d
-	install -m 0644 ${S}/nscd/nscd.conf ${D}${sysconfdir}/
-	install ${S}/nscd/nscd.init ${D}${sysconfdir}/init.d/nscd
-}
 
 TMP_LOCALE="/tmp/locale${libdir}/locale"
 
@@ -127,26 +75,6 @@ fi
 localedef --delete-from-archive --inputfile=${datadir}/locales/%s --charmap=%s --prefix=/tmp/locale %s
 mv ${TMP_LOCALE}/locale-archive ${libdir}/locale/
 rm -rf ${TMP_LOCALE}
-}
-
-python __anonymous () {
-    enabled = bb.data.getVar("ENABLE_BINARY_LOCALE_GENERATION", d, 1)
-
-    if enabled and int(enabled):
-        import re
-
-        target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-        binary_arches = bb.data.getVar("BINARY_LOCALE_ARCHES", d, 1) or ""
-
-        for regexp in binary_arches.split(" "):
-            r = re.compile(regexp)
-
-            if r.match(target_arch):
-                depends = bb.data.getVar("DEPENDS", d, 1)
-                depends = "%s qemu-native" % depends
-                bb.data.setVar("DEPENDS", depends, d)
-                bb.data.setVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", "1", d)
-                break
 }
 
 do_prep_locale_tree() {
@@ -312,13 +240,13 @@ python package_do_split_gconvs () {
 
 	def output_locale(name, locale, encoding):
 		use_bin = bb.data.getVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", d, 1)
-		if use_bin:
+		if use_bin == "compile":
 			output_locale_binary(name, locale, encoding)
 		else:
 			output_locale_source(name, locale, encoding)
 
 	use_bin = bb.data.getVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", d, 1)
-	if use_bin:
+	if use_bin == "compile":
 		bb.note("preparing tree for binary locale generation")
 		bb.build.exec_func("do_prep_locale_tree", d)
 
@@ -343,7 +271,7 @@ python package_do_split_gconvs () {
 		bb.note("  " + " ".join(non_utf8))
 
 	use_bin = bb.data.getVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", d, 1)
-	if use_bin:
+	if use_bin == "compile":
 		bb.note("collecting binary locales from locale tree")
 		bb.build.exec_func("do_collect_bins_from_locale_tree", d)
 		do_split_packages(d, binary_locales_dir, file_regex='(.*)', output_pattern='glibc-binary-localedata-%s', description='binary locale definition for %s', extra_depends='', allow_dirs=True)

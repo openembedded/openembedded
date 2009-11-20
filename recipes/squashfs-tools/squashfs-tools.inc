@@ -2,7 +2,7 @@ DESCRIPTION = "Squashfs is a highly compressed read-only filesystem for Linux."
 SECTION = "base"
 LICENSE = "GPLv2"
 DEPENDS = "zlib"
-INC_PR = "r1"
+INC_PR = "r2"
 
 S = "${WORKDIR}/squashfs${@bb.data.getVar('PV',d,1).replace('r','-r')}/squashfs-tools"
 

@@ -28,8 +28,8 @@ RDEPENDS_${PN} += "\
 		mokoko \
 		exhibit \
 		edje-viewer \
-		obexpush \
-		obexftp \
+#		obexpush \
+#		obexftp \
 		mtpaint \
 		telepathy-python \
 		intone-video \
@@ -92,7 +92,7 @@ RDEPENDS_${PN} += "\
 		libpurple-protocol-icq \
 		vagalume \
 		ppp \
-		bluez-hcidump \
+#		bluez-hcidump \
 		kbdd \
 		kexec-tools \
 		claws-mail \
@@ -129,10 +129,9 @@ RDEPENDS_${PN} += "\
 		cacao \
 #		jamvm \
 		dbus-x11 \
-		bluez-utils-alsa \
-		python-pybluez \
+#		bluez-utils-alsa \
 		xournal \
-		evince \
+#		evince \
 #		asterisk \
 		git \
 		ruby \
@@ -229,7 +228,7 @@ RDEPENDS_${PN} += "\
 		ipython \
 		phoneme-advanced-foundation \
 		eve \
-		python-pybluez \
+#		python-pybluez \
 		x11perf \
 		pyring \
 		bt-configure \

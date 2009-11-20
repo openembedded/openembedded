@@ -427,8 +427,8 @@ python populate_packages () {
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
 			ret = bb.copyfile(file, fpath)
-			if ret is False or ret == 0:
-				raise bb.build.FuncFailed("File population failed")
+			if ret is False:
+				raise bb.build.FuncFailed("File population failed when copying %s to %s" % (file, fpath))
 			if pkg == main_pkg and main_is_empty:
 				main_is_empty = 0
 		del localdata

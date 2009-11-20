@@ -1,0 +1,130 @@
+diff -ru git/drivers/input/touchscreen/wm97xx-core.c and/wm97xx-core.c
+--- git/drivers/input/touchscreen/wm97xx-core.c	2009-11-14 20:38:03.000000000 +0200
++++ git/drivers/input/touchscreen/wm97xx-core.c	2009-11-16 13:21:13.949140354 +0200
+@@ -70,13 +70,11 @@
+  * Documentation/input/input-programming.txt for more details.
+  */
+ 
+-
+-static int abs_x[3] = {350, 3900, 5}; 
++static int abs_x[3] = {350, 3900, 5};
+ module_param_array(abs_x, int, NULL, 0);
+ MODULE_PARM_DESC(abs_x, "Touchscreen absolute X min, max, fuzz");
+ 
+-
+-static int abs_y[3] = {320, 3950, 5}; // Zylonite: 320, 3950
++static int abs_y[3] = {320, 3750, 40};
+ module_param_array(abs_y, int, NULL, 0);
+ MODULE_PARM_DESC(abs_y, "Touchscreen absolute Y min, max, fuzz");
+ 
+@@ -411,7 +409,6 @@
+ 			wm->pen_is_down = 0;
+ 			dev_dbg(wm->dev, "pen up\n");
+ 			input_report_abs(wm->input_dev, ABS_PRESSURE, 0);
+-			input_report_key(wm->input_dev, BTN_TOUCH, 0);
+ 			input_sync(wm->input_dev);
+ 		} else if (!(rc & RC_AGAIN)) {
+ 			/* We need high frequency updates only while
+@@ -429,22 +426,13 @@
+ 		}
+ 
+ 	} else if (rc & RC_VALID) {
+-		int absy, absx;
+ 		dev_dbg(wm->dev,
+ 			"pen down: x=%x:%d, y=%x:%d, pressure=%x:%d\n",
+ 			data.x >> 12, data.x & 0xfff, data.y >> 12,
+ 			data.y & 0xfff, data.p >> 12, data.p & 0xfff);
+-		absx = data.x & 0xfff;
+-		if (machine_is_sgh_i780())
+-			absx = (wm->input_dev->absmax[ABS_X] - absx) + wm->input_dev->absmin[ABS_X];
+-		input_report_abs(wm->input_dev, ABS_X, absx);
+-		//invert y coordinate
+-		absy = data.y & 0xfff;
+-		if (machine_is_sgh_i900())
+-			absy = (wm->input_dev->absmax[ABS_Y] - absy) + wm->input_dev->absmin[ABS_Y];
+-		input_report_abs(wm->input_dev, ABS_Y, absy);
++		input_report_abs(wm->input_dev, ABS_X, data.x & 0xfff);
++		input_report_abs(wm->input_dev, ABS_Y, data.y & 0xfff);
+ 		input_report_abs(wm->input_dev, ABS_PRESSURE, data.p & 0xfff);
+-		input_report_key(wm->input_dev, BTN_TOUCH, 1);
+ 		input_sync(wm->input_dev);
+ 		wm->pen_is_down = 1;
+ 		wm->ts_reader_interval = wm->ts_reader_min_interval;
+@@ -641,23 +629,12 @@
+ 	wm->input_dev->open = wm97xx_ts_input_open;
+ 	wm->input_dev->close = wm97xx_ts_input_close;
+ 	set_bit(EV_ABS, wm->input_dev->evbit);
+-	set_bit(EV_KEY, wm->input_dev->evbit);
+ 	set_bit(ABS_X, wm->input_dev->absbit);
+ 	set_bit(ABS_Y, wm->input_dev->absbit);
+ 	set_bit(ABS_PRESSURE, wm->input_dev->absbit);
+-	set_bit(BTN_TOUCH, wm->input_dev->keybit);
+-
+-	if(machine_is_sgh_i780()){
+-		input_set_abs_params(wm->input_dev, ABS_X, 350, 3900, 5, 0);
+-	} else if(machine_is_sgh_i900()){
+-		input_set_abs_params(wm->input_dev, ABS_X, 0, 39181660, 5, 0);
+-	} else	input_set_abs_params(wm->input_dev, ABS_X, abs_x[0], abs_x[1],
++	input_set_abs_params(wm->input_dev, ABS_X, abs_x[0], abs_x[1],
+ 			     abs_x[2], 0);
+-	if(machine_is_sgh_i780()){
+-		input_set_abs_params(wm->input_dev, ABS_Y, 290, 3900, 5, 0);
+-	} else if(machine_is_sgh_i900()){
+-		input_set_abs_params(wm->input_dev, ABS_Y, 0, 65412060, 5, 0);
+-	} else	input_set_abs_params(wm->input_dev, ABS_Y, abs_y[0], abs_y[1],
++	input_set_abs_params(wm->input_dev, ABS_Y, abs_y[0], abs_y[1],
+ 			     abs_y[2], 0);
+ 	input_set_abs_params(wm->input_dev, ABS_PRESSURE, abs_p[0], abs_p[1],
+ 			     abs_p[2], 0);
+diff -ru git/drivers/input/touchscreen/zylonite-wm97xx.c and/zylonite-wm97xx.c
+--- git/drivers/input/touchscreen/zylonite-wm97xx.c	2009-11-14 20:38:03.000000000 +0200
++++ git/drivers/input/touchscreen/zylonite-wm97xx.c	2009-11-16 13:17:21.292645713 +0200
+@@ -76,9 +76,6 @@
+ module_param(ac97_touch_slot, int, 0);
+ MODULE_PARM_DESC(ac97_touch_slot, "Touch screen data slot AC97 number");
+ 
+-static int calibration[7] = {11877, 137, -4688902, 231, -17973, 69206765, 163940}; //omnia calibration parameters
+-
+-
+ /* flush AC97 slot 5 FIFO machines */
+ static void wm97xx_acc_pen_up(struct wm97xx *wm)
+ {
+@@ -101,7 +98,6 @@
+ {
+ 	u16 x, y, p = 0x100 | WM97XX_ADCSEL_PRES;
+ 	int reads = 0;
+-	int absx, absy;
+ 	static u16 last, tries;
+ 	static int skip_one;
+ 
+@@ -149,27 +145,9 @@
+ 
+ 		/* coordinate is good */
+ 		tries = 0;
+-		if(machine_is_sgh_i900()){
+-			x &= 0xfff;
+-			y &= 0xfff;
+-    			absx = (calibration[0] * x + calibration[1] * y +
+-         			calibration[2]);// / calibration[6];
+-    			absy = (calibration[3] * x + calibration[4] * y +
+-         			calibration[5]);// / calibration[6];
+-			if(absx<0) absx = 0;
+-			if(absy<0) absy = 0;
+-		} else {
+-                	absx = x & 0xfff;
+-			if (machine_is_sgh_i780())
+-                		absx = (wm->input_dev->absmax[ABS_X] - absx) + wm->input_dev->absmin[ABS_X];
+-
+-                	absy = y & 0xfff;
+-		}
+-		
+-                input_report_abs(wm->input_dev, ABS_X, absx);
+-                input_report_abs(wm->input_dev, ABS_Y, absy);
+-		p &= 0xfff;
+-		input_report_abs(wm->input_dev, ABS_PRESSURE, p);
++		input_report_abs(wm->input_dev, ABS_X, x & 0xfff);
++		input_report_abs(wm->input_dev, ABS_Y, y & 0xfff);
++		input_report_abs(wm->input_dev, ABS_PRESSURE, p & 0xfff);
+ 		input_report_key(wm->input_dev, BTN_TOUCH, (p != 0));
+ 		input_sync(wm->input_dev);
+ 		reads++;
