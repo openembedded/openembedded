@@ -16,20 +16,32 @@ INSANE_SKIP_glibc-dbg = True
 
 libc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so ${base_libdir}/libc*.so.* ${base_libdir}/libc-*.so ${base_libdir}/libm*.so.* ${base_libdir}/libm-*.so ${base_libdir}/ld*.so.* ${base_libdir}/ld-*.so ${base_libdir}/libpthread*.so.* ${base_libdir}/libpthread-*.so ${base_libdir}/libresolv*.so.* ${base_libdir}/libresolv-*.so ${base_libdir}/librt*.so.* ${base_libdir}/librt-*.so ${base_libdir}/libutil*.so.* ${base_libdir}/libutil-*.so ${base_libdir}/libnsl*.so.* ${base_libdir}/libnsl-*.so ${base_libdir}/libnss_files*.so.* ${base_libdir}/libnss_files-*.so ${base_libdir}/libnss_compat*.so.* ${base_libdir}/libnss_compat-*.so ${base_libdir}/libnss_dns*.so.* ${base_libdir}/libnss_dns-*.so ${base_libdir}/libdl*.so.* ${base_libdir}/libdl-*.so ${base_libdir}/libanl*.so.* ${base_libdir}/libanl-*.so ${base_libdir}/libBrokenLocale*.so.* ${base_libdir}/libBrokenLocale-*.so"
 
-FILES_glibc = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '${base_sbindir}/ldconfig', '', d)}"
+# The problem is that if PN = "glibc", FILES_${PN} will overwrite FILES_glibc
+# Solution: Make them both the same thing, then it doesn't matter
+
+glibcfiles = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '${base_sbindir}/ldconfig', '', d)}"
+glibcdbgfiles = "${bindir}/.debug ${sbindir}/.debug ${libdir}/.debug \
+                  ${base_bindir}/.debug ${base_sbindir}/.debug ${base_libdir}/.debug \
+                  ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
+glibcdevfiles = "${bindir}/rpcgen ${includedir} ${libdir}/lib*${SOLIBSDEV} ${libdir}/*.la \
+                ${libdir}/*.a ${libdir}/*.o ${libdir}/pkgconfig ${libdir}/*nonshared.a \
+                ${base_libdir}/*.a ${base_libdir}/*.o ${datadir}/aclocal"
+
+FILES_glibc = "${glibcfiles}"
+FILES_${PN} = "${glibcfiles}"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "${base_libdir}/libSegFault*"
 FILES_libcidn = "${base_libdir}/libcidn*.so"
 FILES_libmemusage = "${base_libdir}/libmemusage.so"
 FILES_glibc-extra-nss = "${base_libdir}/libnss*"
 FILES_sln = "${base_sbindir}/sln"
-FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen ${libdir}/*nonshared.a"
+FILES_glibc-dev = "${glibcdevfiles}"
+FILES_${PN}-dev = "${glibcdevfiles}"
+FILES_glibc-dbg = "${glibcdbgfiles}"
+FILES_${PN}-dbg = "${glibcdbgfiles}"
 FILES_nscd = "${sbindir}/nscd* ${sysconfdir}/nscd* ${sysconfdir}/init.d/nscd*"
 FILES_glibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_glibc-gconv = "${libdir}/gconv/*"
-FILES_glibc-dbg = "${bindir}/.debug ${sbindir}/.debug ${libdir}/.debug \
-                  ${base_bindir}/.debug ${base_sbindir}/.debug ${base_libdir}/.debug \
-                  ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
 FILES_catchsegv = "${bindir}/catchsegv"
 RDEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "${base_libdir}/libpcprofile.so"
