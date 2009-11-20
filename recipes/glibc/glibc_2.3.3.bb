@@ -109,4 +109,4 @@ do_compile () {
 
 require glibc-stage.inc
 
-require glibc-package.bbclass
+require glibc-package.inc

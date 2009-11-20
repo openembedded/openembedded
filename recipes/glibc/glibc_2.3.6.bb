@@ -92,4 +92,4 @@ do_stage_prepend() {
 
 require glibc-stage.inc
 
-require glibc-package.bbclass
+require glibc-package.inc
