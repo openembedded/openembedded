@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r30"
+PR ="r36"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -10,23 +10,33 @@ SRCREV_spitz = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_afeb9260 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRCREV_afeb9260-180 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
+SRCREV_palmpre = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 
-SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
-                 file://fw-env.patch;patch=1 \
-                 file://dss2.patch;patch=1 \
+SRC_URI_beagleboard = "git://git.denx.de/u-boot-ti.git;protocol=git \
+                 file://fw_env.config \
                  file://new-pinmux.patch;patch=1 \
 "
-SRCREV_beagleboard = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
-PV_beagleboard = "2009.05+${PR}+gitr${SRCREV}"
+SRCREV_beagleboard = "1590f84007e2b50ad346a482fff89195cb04ff4e"
+PV_beagleboard = "2009.08+${PR}+gitr${SRCREV}"
+
+SRCREV_calamari = "f67066b6b0740b826ed862615c5ab022aaf4779a"
+PV_calamari = "2009.08+${PR}+gitr${SRCREV}"
+SRC_URI_append_calamari = " file://buggy-gcc-really-no-spe.patch;patch=1"
 
 SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
-                 file://fw-env.patch;patch=1 \
+                 file://fw_env.config \
                  file://dss2.patch;patch=1 \
+                 file://600mhz.patch;patch=1 \
+                 file://new-pinmux.patch;patch=1 \
                  file://spi3.patch;patch=1 \
                  file://spi4.patch;patch=1 \
                  file://headphone.patch;patch=1 \
+                 file://power.patch;patch=1 \
+                 file://ai-logo.patch;patch=1 \
+                 file://mmcinit.patch;patch=1 \
+                 file://touchbook-config.patch;patch=1 \
 "
 SRCREV_omap3-touchbook = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
 PV_omap3-touchbook = "2009.05+${PR}+gitr${SRCREV}"
@@ -37,8 +47,8 @@ SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
 
 
-SRCREV_omap3517-evm = "e60beb13cf0"
-SRC_URI_append_omap3517-evm = " \
+SRCREV_am3517-evm = "e60beb13cf0"
+SRC_URI_append_am3517-evm = " \
 file://omap3evm/0001-Changes-for-making-a-NAND-build.patch;patch=1 \
 file://omap3evm/0002-Fix-for-NFS-boot-for-OMAP3-EVM.patch;patch=1 \
 file://omap3evm/0003-OMAP3-timer-handling-to-1ms-tick-and-CONFIG_SYS_HZ-t.patch;patch=1 \
@@ -56,7 +66,7 @@ file://omap3evm/0014-EMAC-driver-cleanup-removed-debug-prints.patch;patch=1 \
 file://omap3evm/0015-EMAC-driver-Check-for-link-status-in-packet-send-lo.patch;patch=1 \
 file://omap3evm/0016-Config-option-and-name-changed-to-omap3517_evm.patch;patch=1 \
 "
-PV_omap3517-evm = "2009.03+${PR}+gitr${SRCREV}"
+PV_am3517-evm = "2009.03+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
@@ -92,13 +102,15 @@ SRC_URI_dm6467t-evm = "git://arago-project.org/git/people/hemant/u-boot-dm646x.g
 SRCREV_dm6467t-evm = "3da7475ae13445ba89c77ea563ccdfb9df540bb7"
 PV_dm6467t-evm = "2009.08+gitr${SRCREV}"
 
-SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=wakeup"
-SRCREV_da830-omapl137-evm = "04a03bb477ad842b84c61b29f11422089ad0088d"
-PV_da830-omapl137-evm = "2009.01+gitr${SRCREV}"
+# Corresponding to PSP 3.20.00.07 Release
+SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRCREV_da830-omapl137-evm = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
+PV_da830-omapl137-evm = "2009.08+gitr${SRCREV}"
 
-SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=wakeup"
-SRCREV_da850-omapl138-evm = "04a03bb477ad842b84c61b29f11422089ad0088d"
-PV_da850-omapl138-evm = "2009.01+gitr${SRCREV}"
+# Corresponding to PSP 3.20.00.07 Release
+SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRCREV_da850-omapl138-evm = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
+PV_da850-omapl138-evm = "2009.08+gitr${SRCREV}"
 
 SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
                         file://leopardboard-support.patch;patch=1 \
@@ -133,6 +145,9 @@ SRC_URI_append_c7x0 = "file://pdaXrom-u-boot.patch;patch=1 \
                        file://uboot-eabi-fix-HACK2.patch;patch=1 \
                        file://corgi-standard-partitioning.patch;patch=1 \
                        "
+SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=testing"
+SRCREV_sheevaplug = "119b9942da2e450d4e525fc004208dd7f7d062e0"
+
 S = "${WORKDIR}/git"
 
 
@@ -147,6 +162,14 @@ do_configure_prepend_spitz() {
 do_configure_prepend_c7x0() {
         sed -i s:ROOT_FLASH_SIZE:${ROOT_FLASH_SIZE}:g ${S}/include/configs/corgi.h
 }
+
+do_compile_append_sheevaplug() {
+	oe_runmake u-boot.kwb
+}
+
+UBOOT_IMAGE_sheevaplug = "u-boot-${MACHINE}-${PV}-${PR}.kwb"
+UBOOT_BINARY_sheevaplug = "u-boot.kwb"
+UBOOT_SYMLINK_sheevaplug ?= "u-boot-${MACHINE}.kwb"
 
 do_deploy_prepend_mini2440() {
 	cp ${S}/u-boot-nand16k.bin ${S}/u-boot.bin

@@ -1,0 +1,71 @@
+--- acpid-1.0.10/acpi_ids.c.orig	2009-05-04 14:39:40.000000000 +0200
++++ acpid-1.0.10/acpi_ids.c	2009-05-04 15:28:49.000000000 +0200
+@@ -91,13 +91,15 @@
+ 	 *  routing.
+ 	 */
+ 	struct rtattr *tb[CTRL_ATTR_MAX + 1];
+-	/* pointer to the generic netlink header in the incoming message */
+-	struct genlmsghdr *ghdr = NLMSG_DATA(n);
++	/* place for the generic netlink header in the incoming message */
++	struct genlmsghdr ghdr;
+ 	/* length of the attribute and payload */
+ 	int len = n->nlmsg_len - NLMSG_LENGTH(GENL_HDRLEN);
+ 	/* Pointer to the attribute portion of the message */
+ 	struct rtattr *attrs;
+ 
++	/* copy generic netlink header into structure */
++	memcpy(&ghdr, NLMSG_DATA(n), GENL_HDRLEN);
+ 	if (len < 0) {
+ 		fprintf(stderr, "%s: netlink CTRL_CMD_GETFAMILY response, "
+ 			"wrong controller message len: %d\n", progname, len);
+@@ -111,18 +113,18 @@
+ 		return 0;
+ 	}
+ 
+-	if (ghdr->cmd != CTRL_CMD_GETFAMILY &&
+-	    ghdr->cmd != CTRL_CMD_DELFAMILY &&
+-	    ghdr->cmd != CTRL_CMD_NEWFAMILY &&
+-	    ghdr->cmd != CTRL_CMD_NEWMCAST_GRP &&
+-	    ghdr->cmd != CTRL_CMD_DELMCAST_GRP) {
++	if (ghdr.cmd != CTRL_CMD_GETFAMILY &&
++	    ghdr.cmd != CTRL_CMD_DELFAMILY &&
++	    ghdr.cmd != CTRL_CMD_NEWFAMILY &&
++	    ghdr.cmd != CTRL_CMD_NEWMCAST_GRP &&
++	    ghdr.cmd != CTRL_CMD_DELMCAST_GRP) {
+ 		fprintf(stderr, "%s: unknown netlink controller command %d\n",
+-			progname, ghdr->cmd);
++			progname, ghdr.cmd);
+ 		return 0;
+ 	}
+ 
+ 	/* set attrs to point to the attribute */
+-	attrs = (struct rtattr *)((char *)ghdr + GENL_HDRLEN);
++	attrs = (struct rtattr *)(NLMSG_DATA(n) + GENL_HDRLEN);
+ 	/* Read the table from the message into "tb".  This actually just  */
+ 	/* places pointers into the message into tb[].  */
+ 	parse_rtattr(tb, CTRL_ATTR_MAX, attrs, len);
+@@ -167,8 +169,8 @@
+ 	} req;
+ 	/* pointer to the nlmsghdr in req */
+ 	struct nlmsghdr *nlh;
+-	/* pointer to the generic netlink header in req */
+-	struct genlmsghdr *ghdr;
++	/* place for the generic netlink header before copied into req */
++	struct genlmsghdr ghdr;
+ 	/* return value */
+ 	int ret = -1;
+ 
+@@ -182,10 +184,10 @@
+ 	nlh->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
+ 	nlh->nlmsg_type = GENL_ID_CTRL;
+ 
+-	/* set up ghdr to point to the generic netlink header */
+-	ghdr = NLMSG_DATA(&req.n);
+ 	/* set the command we want to run: "GETFAMILY" */
+-	ghdr->cmd = CTRL_CMD_GETFAMILY;
++	ghdr.cmd = CTRL_CMD_GETFAMILY;
++	/* copy it into req */
++	memcpy(NLMSG_DATA(&req.n), &ghdr, GENL_HDRLEN);
+ 
+ 	/* the message payload is the family name */
+ 	addattr_l(nlh, 128, CTRL_ATTR_FAMILY_NAME,

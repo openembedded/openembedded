@@ -1,28 +1,18 @@
-DESCRIPTION = "jar replacement written in C."
-HOMEPAGE = "http://savannah.nongnu.org/projects/fastjar/"
-SECTION = "devel"
-PRIORITY = "optional"
-LICENSE = "GPL"
-
-INC_PR = "r1"
-
 DEPENDS = "zlib-native"
-
-SRC_URI = "http://download.savannah.nongnu.org/releases/fastjar/fastjar-${PV}.tar.gz"
 
 S = "${WORKDIR}/fastjar-${PV}"
 
-inherit autotools native
-
-EXTRA_OECONF = "--with-system-zlib --with-fastjar"
+inherit native
 
 do_configure () {
 	gnu-configize || die "failure running gnu-configize"
 	oe_runconf
 }
 
+do_make() {
+	oe_runmake bin_PROGRAMS
+}
+
 do_stage() {
-	install -d ${STAGING_BINDIR}
-	install -m 755 .libs/fastjar ${STAGING_BINDIR}/fastjar
-	install -m 755 .libs/grepjar ${STAGING_BINDIR}
+	oe_runmake install-binPROGRAMS
 }

@@ -1,0 +1,13 @@
+Index: pingus-0.7.2/SConstruct
+===================================================================
+--- pingus-0.7.2.orig/SConstruct	2009-11-13 01:58:16.445278586 +0100
++++ pingus-0.7.2/SConstruct	2009-11-13 01:58:25.944023225 +0100
+@@ -476,7 +476,7 @@
+         env['optional_sources'] += ['src/input/xinput_driver.cpp',
+                                     'src/input/xinput_device.cpp']
+         
+-    if not config.CheckLibWithHeader('boost_signals', 'boost/signals.hpp', 'c++'):
++    if not config.CheckLibWithHeader('boost_signals-mt', 'boost/signals.hpp', 'c++'):
+         fatal_error += "  * library 'boost_signals' not found\n"
+ 
+     if not config.CheckLibWithHeader('png', 'png.h', 'c++'):

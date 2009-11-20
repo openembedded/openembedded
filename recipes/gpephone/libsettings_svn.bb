@@ -2,8 +2,9 @@ DESCRIPTION = "G(PE)^2 settings API library"
 SECTION = "gpe/libs"
 PRIORITY = "required"
 LICENSE = "LiPS"
-DEPENDS = "glib-2.0 gconf-dbus"
+DEPENDS = "glib-2.0 gconf"
 PV = "0.0+svnr-${SRCREV}"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

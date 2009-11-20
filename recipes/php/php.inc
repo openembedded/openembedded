@@ -10,7 +10,7 @@ S = "${WORKDIR}/php-${PV}"
 
 inherit autotools
 
-CFLAGS += " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
+CFLAGS += " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED -D_GNU_SOURCE"
 
 acpaths = ""
 

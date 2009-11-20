@@ -1,5 +1,5 @@
-LICENSE = "GPL"
-require module-init-tools_${PV}.bb
+
+require module-init-tools.inc
 inherit cross
 DEFAULT_PREFERENCE = "0"
 PROVIDES += "virtual/${TARGET_PREFIX}depmod virtual/${TARGET_PREFIX}depmod-2.6"

@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11/panels"
 DEPENDS = "gtk+ startup-notification"
 RDEPENDS = "matchbox-common"
-PV = "2.0+svnr${SRCREV}"
+PV = "2.0+svnr${SRCPV}"
 PR = "r1"
 
 inherit autotools_stage pkgconfig

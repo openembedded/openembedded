@@ -1,0 +1,12 @@
+diff -purN orig/boost/exception/enable_current_exception.hpp boost_1_36_0/boost/exception/enable_current_exception.hpp
+--- orig/boost/exception/enable_current_exception.hpp	2008-09-12 11:48:45.000000000 -0400
++++ boost_1_36_0/boost/exception/enable_current_exception.hpp	2008-09-12 15:13:06.000000000 -0400
+@@ -96,6 +96,8 @@ boost
+                         *be1 = *be2;
+                 }
+ 
++            ~exception_clone() throw() { }
++
+             private:
+ 
+             detail::atomic_count mutable count_;

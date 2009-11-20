@@ -5,8 +5,8 @@
 #############################################################################
 
 # Base line versions, good for most things
-PREFERRED_GCC_VERSION                ?= "4.4.1"
-PREFERRED_BINUTILS                   ?= "2.19.51"
+PREFERRED_GCC_VERSION                ?= "4.4.2"
+PREFERRED_BINUTILS                   ?= "2.20"
 
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
 PREFERRED_VERSION_glibc             ?= "2.6.1"
@@ -159,8 +159,8 @@ def compute_os_portion_of_target_triplet (d):
 	arm_eabi_supporting_arches = "armv6 armv6-novfp \
 	armv5te iwmmxt armv7a armv7 armv5teb armv4t"
 	ppc_spe_supporting_arches = "ppce500v2 ppce500"
-
-  	if bb.data.getVar("LIBC", d, 1) == "uclibc":
+	gnu_suffix = ""
+  	if bb.data.getVar('LIBC', d, 1) == "uclibc":
     		libc_suffix = "uclibc"
 	else:
 		libc_suffix = ""
@@ -182,16 +182,20 @@ def compute_os_portion_of_target_triplet (d):
 				bb.fatal("DISTRO requested EABI but selected machine does not support EABI")
 				abi_suffix = ""
 			else:
-				abi_suffix = "gnueabi"
+				if libc_suffix is not "uclibc":
+					gnu_suffix = "gnu"
+				abi_suffix = "eabi"
 		elif bparch in ppc_spe_supporting_arches.split():
-			abi_suffix = "gnuspe"
+			if libc_suffix is not "uclibc":
+				gnu_suffix = "gnu"
+			abi_suffix = "spe"
 		else:
 			abi_suffix = ""
 	else:
 		bb.note("DISTRO_FEATURES is not set abi suffix not set")
 		abi_suffix = ""
 	if libc_suffix is not "" or abi_suffix is not "":
-		return os_suffix + "-" + libc_suffix + abi_suffix
+		return os_suffix + "-" + libc_suffix + gnu_suffix + abi_suffix
 	else:
 		return os_suffix
 

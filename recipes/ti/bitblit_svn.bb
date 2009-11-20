@@ -13,13 +13,12 @@ SRC_URI = "svn://gforge.ti.com/svn/${PN};module=trunk;proto=https;user=anonymous
 "
 
 # Again, no '.' in PWD allowed :(
-PV = "0+svnr${SRCREV}"
+PV = "0+svnr${SRCPV}"
 PR = "r1"
 
 S = "${WORKDIR}/trunk/bitblit"
 
 XDC_TARGET  				= gnu.targets.arm.GCArmv5T
-XDC_PLATFORM_dm355-evm 		= ti.platforms.evmDM355
 XDC_PLATFORM_dm6446-evm 	= ti.platforms.evmDM6446
 XDC_PLATFORM_da830-omapl137-evm 	= ti.platforms.omapl137
 PLATFORM_XDC				= ${XDC_PLATFORM}
@@ -28,7 +27,6 @@ export XDC_TARGET
 export XDC_PLATFORM
 export PLATFORM_XDC 
 
-PLATFORM_dm355-evm 			= "dm355"
 PLATFORM_dm6446-evm 		= "dm6446"
 PLATFORM_da830-omapl137-evm = "ol137"
 

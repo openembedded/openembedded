@@ -1,0 +1,11 @@
+/var/log/frameworkd.log { 
+    rotate 5 
+    weekly 
+    compress 
+} 
+
+/var/log/ophonekitd.log { 
+    rotate 5 
+    weekly 
+    compress 
+} 

@@ -1,8 +1,8 @@
 Index: linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 ===================================================================
---- linux-2.6.29.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-05 18:55:57.000000000 +0200
-+++ linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-05 18:57:15.000000000 +0200
-@@ -15,17 +15,78 @@
+--- linux-2.6.29.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-03-24 00:12:14.000000000 +0100
++++ linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2009-10-16 10:22:49.000000000 +0200
+@@ -15,17 +15,79 @@
  
  #include <linux/pci.h>
  #include <linux/of_platform.h>
@@ -77,22 +77,15 @@ Index: linux-2.6.29/arch/powerpc/platforms/83xx/mpc831x_rdb.c
 +			mpc83xx_spi_activate_cs,
 +			mpc83xx_spi_deactivate_cs);
 +}
++machine_device_initcall(mpc831x_rdb, mpc8313_spi_init);
 +
  static void __init mpc831x_rdb_setup_arch(void)
  {
  #ifdef CONFIG_PCI
-@@ -40,6 +101,7 @@
- 		mpc83xx_add_bridge(np);
- #endif
- 	mpc831x_usb_cfg();
-+	mpc8313_spi_init();
- }
- 
- static void __init mpc831x_rdb_init_IRQ(void)
 Index: linux-2.6.29/drivers/spi/spi_mpc83xx.c
 ===================================================================
---- linux-2.6.29.orig/drivers/spi/spi_mpc83xx.c	2009-10-05 18:55:57.000000000 +0200
-+++ linux-2.6.29/drivers/spi/spi_mpc83xx.c	2009-10-05 18:59:01.000000000 +0200
+--- linux-2.6.29.orig/drivers/spi/spi_mpc83xx.c	2009-03-24 00:12:14.000000000 +0100
++++ linux-2.6.29/drivers/spi/spi_mpc83xx.c	2009-10-16 10:19:50.000000000 +0200
 @@ -280,7 +280,9 @@
  	if (pm)
  		pm--;

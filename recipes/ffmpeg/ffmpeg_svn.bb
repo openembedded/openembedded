@@ -2,21 +2,22 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-SRCREV = "20024"
+SRCREV = "20551"
 
 PE = "1"
-PV = "0.5.0+${PR}+svnr${SRCREV}"
+PV = "0.5.0+${PR}+svnr${SRCPV}"
 PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_armv7a = "1"
+DEFAULT_PREFERENCE_angstrom = "1"
+DEFAULT_PREFERENCE_om-gta02 = "1"
 
 SRC_URI = "svn://svn.ffmpeg.org/ffmpeg/;module=trunk"
 
 S = "${WORKDIR}/trunk"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
+FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -fno-tree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 EXTRA_FFCONF_armv7a = "--cpu=cortex-a8"

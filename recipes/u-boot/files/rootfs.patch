@@ -1,0 +1,62 @@
+--- git/include/configs/omap3_overo.h-orig	2009-09-17 13:06:08.000000000 -0700
++++ git/include/configs/omap3_overo.h	2009-09-17 13:06:49.000000000 -0700
+@@ -158,20 +158,24 @@
+ 	"vram=12M\0" \
+ 	"dvimode=1024x768MR-16@60\0" \
+ 	"defaultdisplay=dvi\0" \
++	"mmcroot=/dev/mmcblk0p2 rw\0" \
++	"mmcrootfstype=ext3 rootwait\0" \
++	"nandroot=/dev/mtdblock4 rw\0" \
++	"nandrootfstype=jffs2\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+ 		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+-		"root=/dev/mmcblk0p2 rw " \
+-		"rootfstype=ext3 rootwait\0" \
++		"root=${mmcroot} " \
++		"rootfstype=${mmcrootfstype}\0" \
+ 	"nandargs=setenv bootargs console=${console} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+ 		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+-		"root=/dev/mtdblock4 rw " \
+-		"rootfstype=jffs2\0" \
++		"root=${nandroot} " \
++		"rootfstype=${nandrootfstype}\0" \
+ 	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+ 		"source ${loadaddr}\0" \
+--- git/include/configs/omap3_beagle.h-orig	2009-09-17 14:48:55.000000000 -0700
++++ git/include/configs/omap3_beagle.h	2009-09-19 22:15:01.000000000 -0700
+@@ -167,20 +167,24 @@
+ 	"vram=12M\0" \
+ 	"dvimode=1024x768MR-16@60\0" \
+ 	"defaultdisplay=dvi\0" \
++	"mmcroot=/dev/mmcblk0p2 rw\0" \
++	"mmcrootfstype=ext3 rootwait\0" \
++	"nandroot=/dev/mtdblock4 rw\0" \
++	"nandrootfstype=jffs2\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+ 		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+-		"root=/dev/mmcblk0p2 rw " \
+-		"rootfstype=ext3 rootwait\0" \
++		"root=${mmcroot} " \
++		"rootfstype=${mmcrootfstype}\0" \
+ 	"nandargs=setenv bootargs console=${console} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+ 		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+-		"root=/dev/mtdblock4 rw " \
+-		"rootfstype=jffs2\0" \
++		"root=${nandroot} " \
++		"rootfstype=${nandrootfstype}\0" \
+ 	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+ 		"source ${loadaddr}\0" \

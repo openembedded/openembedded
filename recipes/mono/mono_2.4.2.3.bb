@@ -1,17 +1,17 @@
-require mono_2.4.2.3.inc
+require mono-${PV}.inc
 
 DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
-DEFAULT_PREFERENCE = "-1"
-
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 # mono makes use of non-thumb-compatible inline asm.
 ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI += "file://configure.patch;patch=1\
 	    file://mini-arm.patch;patch=1\
-            file://0001-remove-docs-dir-from-build.patch;patch=1"
+            file://0001-remove-docs-dir-from-build.patch;patch=1 \
+            file://mono-cross-compilation-for-amd64.patch;patch=1 \
+           "
 
 # Per http://www.mono-project.com/Mono:ARM
 EXTRA_OECONF += " --disable-mcs-build "

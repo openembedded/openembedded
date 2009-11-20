@@ -171,10 +171,10 @@ Recipes:    linux-jlime*, scummvm, blackbox
 Person:     Leon Woestenberg
 Mail:       leon@sidebranch.com
 Website:    http://www.sidebranch.com/
-Interests:  Real-time and/or embedded Linux for industrial applications.
+Interests:  Real-time and embedded Linux for industrial applications.
 Interests:  Small read-only Linux based firmware, deterministic builds.
 Recipes:    lighttpd, fastcgi, squashfs-tools, rt-tests, linux-rt, linux
-Machines:   mpc8313e-rdb, mpc8315e-rdb, efika, ixp4xxbe, x86, canyonlands
+Machines:   mpc8313e-rdb, mpc8315e-rdb, canyonlands, calamari, openrd-base
 
 Person:	    Liam Girdwoord
 Mail:       liam.girdwood@wolfsonmicro.com
@@ -189,7 +189,7 @@ Recipes:    mini-httpd,dmidecode,mktemp
 Person:     Marcin Juszkiewicz
 Mail:       marcin@juszkiewicz.com.pl
 Website:    http://marcin.juszkiewicz.com.pl/
-Machines:   progear, alix, at91sam9263ek
+Machines:   bug, progear, alix, at91sam9263ek
 Distros:    Poky, Ångström
 
 Person:     Marco Cavallini

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r14"
+PR = "r15"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
@@ -66,10 +66,9 @@ do_stage_append() {
         # We need a hostperl link for building perl
         ln -sf ${STAGING_BINDIR_NATIVE}/perl${PV} ${STAGING_BINDIR_NATIVE}/hostperl
         # Store native config in non-versioned directory
-        install -d ${STAGING_DIR_HOST}/perl \
-                   ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
+        install -d ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
                    ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
-        install config.sh ${STAGING_DIR_HOST}/perl
+        install config.sh ${STAGING_LIBDIR}/perl
 	# target configuration
         install lib/Config.pm       ${STAGING_LIBDIR_NATIVE}/perl/${PV}/
 	install lib/ExtUtils/typemap ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
@@ -88,7 +87,7 @@ do_stage_append() {
 }
 do_stage_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
-        for i in ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${STAGING_DIR_HOST}/perl/config.sh; do
+        for i in ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${STAGING_LIBDIR}/perl/config.sh; do
                 perl -pi -e 's/-Wdeclaration-after-statement //g' ${i}
         done
 }

@@ -1,26 +1,3 @@
-Index: git/arch/arm/mach-omap2/board-omap3beagle.c
-===================================================================
---- git.orig/arch/arm/mach-omap2/board-omap3beagle.c
-+++ git/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -154,6 +154,7 @@ static int beagle_twl_gpio_setup(struct
- 	 * power switch and overcurrent detect
- 	 */
- 
-+#if 0 /* TODO: This needs to be modified to not rely on u-boot */
- 	gpio_request(gpio + 1, "EHCI_nOC");
- 	gpio_direction_input(gpio + 1);
- 
-@@ -163,7 +164,7 @@ static int beagle_twl_gpio_setup(struct
- 
- 	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
- 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
--
-+#endif
- 	return 0;
- }
- 
-Index: git/arch/arm/mach-omap2/usb-ehci.c
-===================================================================
 --- git.orig/arch/arm/mach-omap2/usb-ehci.c
 +++ git/arch/arm/mach-omap2/usb-ehci.c
 @@ -147,9 +147,11 @@ static void setup_ehci_io_mux(void)
@@ -43,7 +20,7 @@ Index: git/drivers/usb/host/ehci-omap.c
   *		to get the PHY state machine in working state
   */
  #define EXTERNAL_PHY_RESET
-+#ifdef CONFIG_MACH_OMAP3_BEAGLE
++#ifdef CONFIG_MACH_OMAP3_TOUCHBOOK
 +#define        EXT_PHY_RESET_GPIO_PORT2        (147)
 +#else
  #define	EXT_PHY_RESET_GPIO_PORT1	(57)
@@ -59,7 +36,7 @@ Index: git/drivers/usb/host/ehci-omap.c
   * Use the VBUS from Port1 to power VBUS of Port2 externally
   * So use Port2 as the working ULPI port
   */
-+#ifndef CONFIG_MACH_OMAP3_BEAGLE
++#ifndef CONFIG_MACH_OMAP3_TOUCHBOOK
  #define VBUS_INTERNAL_CHARGEPUMP_HACK
 +#endif
  
@@ -69,7 +46,7 @@ Index: git/drivers/usb/host/ehci-omap.c
  
  #ifdef EXTERNAL_PHY_RESET
  	/* Refer: ISSUE1 */
-+#ifndef CONFIG_MACH_OMAP3_BEAGLE
++#ifndef CONFIG_MACH_OMAP3_TOUCHBOOK
  	gpio_request(EXT_PHY_RESET_GPIO_PORT1, "USB1 PHY reset");
  	gpio_direction_output(EXT_PHY_RESET_GPIO_PORT1, 0);
 +#endif
@@ -113,7 +90,7 @@ Index: git/drivers/usb/host/ehci-omap.c
  	 * Hold the PHY in RESET for enough time till PHY is settled and ready
  	 */
  	udelay(EXT_PHY_RESET_DELAY);
-+#ifndef CONFIG_MACH_OMAP3_BEAGLE
++#ifndef CONFIG_MACH_OMAP3_TOUCHBOOK
  	gpio_set_value(EXT_PHY_RESET_GPIO_PORT1, 1);
 +#endif
  	gpio_set_value(EXT_PHY_RESET_GPIO_PORT2, 1);
@@ -123,7 +100,7 @@ Index: git/drivers/usb/host/ehci-omap.c
  
  
  #ifdef EXTERNAL_PHY_RESET
-+#ifndef CONFIG_MACH_OMAP3_BEAGLE
++#ifndef CONFIG_MACH_OMAP3_TOUCHBOOK
  	gpio_free(EXT_PHY_RESET_GPIO_PORT1);
 +#endif
  	gpio_free(EXT_PHY_RESET_GPIO_PORT2);

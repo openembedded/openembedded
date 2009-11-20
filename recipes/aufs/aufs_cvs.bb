@@ -2,7 +2,6 @@ DESCRIPTION = "Aufs is a stackable unification filesystem such as Unionfs, which
 HOMEPAGE = "http://aufs.sourceforge.net/"
 LICENSE = "GPL"
 PV = "cvs${SRCDATE}"
-PR = "r3"
 
 RSUGGESTS_${PN} = "${PN}-tools"
 
@@ -11,6 +10,8 @@ inherit module
 S = "${WORKDIR}/aufs"
 
 SRC_URI = "cvs://anonymous@aufs.cvs.sourceforge.net/cvsroot/aufs;module=aufs;date=${SRCDATE}"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 EXTRA_OEMAKE = "KDIR=${STAGING_KERNEL_DIR} -f local.mk"
 
@@ -42,6 +43,10 @@ do_compile_prepend() {
 	cd ${S}
 }
 
+do_compile(){
+	LDFLAGS=""
+	oe_runmake 
+}
 
 do_install() {
 	install -d ${D}/${sbindir}
@@ -51,7 +56,6 @@ do_install() {
 	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/extra/	
 	install -m 0644 aufs.ko ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/extra/
 }
-
 
 FILES_${PN} = "/lib/modules"
 PACKAGES += "${PN}-tools"

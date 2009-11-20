@@ -1,0 +1,21 @@
+---
+ drivers/media/nomadik_mm/saa/nomadik-saa.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- linux-2.6.20.orig/drivers/media/nomadik_mm/saa/nomadik-saa.c
++++ linux-2.6.20/drivers/media/nomadik_mm/saa/nomadik-saa.c
+@@ -417,14 +417,12 @@ void saa_eof_handler(saa_event_map* even
+ 	msg.eof_reached.filesize = ((__u64)event_ptr->params.iAlertEofReachedParams.file_size_high << 32) |
+ 		((__u32)event_ptr->params.iAlertEofReachedParams.file_size_mid  << 16) |
+ 		event_ptr->params.iAlertEofReachedParams.file_size_low;
+ 
+ 	DEBUG(8, "EOF alert\n");
+-	DEBUG(8, " cmd_nb = %u\n", event_ptr->params.iAlertEofReachedParams.cmd_nb);
+ 	DEBUG(8, " block id = %u\n", event_ptr->server_id);
+ 	DEBUG(8, " port_id = %u\n", event_ptr->params.iAlertEofReachedParams.port_id);
+-	DEBUG(8, " component_id = %u\n", event_ptr->params.iAlertEofReachedParams.component_id);
+ 	DEBUG(8, " file_size_high = %u\n", event_ptr->params.iAlertEofReachedParams.file_size_high);
+ 	DEBUG(8, " file_size_mid = %u\n", event_ptr->params.iAlertEofReachedParams.file_size_mid);
+ 	DEBUG(8, " file_size_low = %u\n", event_ptr->params.iAlertEofReachedParams.file_size_low);
+ 	DEBUG(8, " origin = %u\n", event_ptr->params.iAlertEofReachedParams.origin);
+ 

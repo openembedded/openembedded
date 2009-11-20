@@ -13,6 +13,7 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
 	   file://run.rules \
 	   file://default \
+	   file://local.rules \
 	   "
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "

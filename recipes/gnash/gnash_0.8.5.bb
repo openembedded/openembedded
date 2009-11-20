@@ -12,6 +12,8 @@ TARGET_CC_ARCH_append = " -I${STAGING_INCDIR}/libxml2 -DHAVE_POLL_H ${@[' -D_BIG
 
 
 do_configure_prepend() {
+	# fix an upstream case-typo in the configure script
+	sed -i s:Media_handler:media_handler:g ${S}/configure.ac
 	sed -i -e 's:GNASH_PKG_FIND(libpng:GNASH_PKG_FIND(png:g' ${S}/configure.ac
 	for i in $(find ${S} -name "Makefile.am") ; do	
 		sed -i -e s:LIBPNG:PNG:g $i

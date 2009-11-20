@@ -2,7 +2,8 @@
 # General packaging help functions
 #
 
-PKGDEST = "${WORKDIR}/install"
+PKGD    = "${WORKDIR}/package"
+PKGDEST = "${WORKDIR}/packages-split"
 
 def legitimize_package_name(s):
 	"""
@@ -26,14 +27,10 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 	Used in .bb files to split up dynamically generated subpackages of a 
 	given package, usually plugins or modules.
 	"""
-	import os, os.path, bb
 
-	dvar = bb.data.getVar('D', d, 1)
-	if not dvar:
-		bb.error("D not defined")
-		return
+	dvar = bb.data.getVar('PKGD', d, True)
 
-	packages = bb.data.getVar('PACKAGES', d, 1).split()
+	packages = bb.data.getVar('PACKAGES', d, True).split()
 
 	if postinst:
 		postinst = '#!/bin/sh\n' + postinst + '\n'
@@ -94,7 +91,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 					the_files.append(aux_files_pattern_verbatim % m.group(1))
 			bb.data.setVar('FILES_' + pkg, " ".join(the_files), d)
 			if extra_depends != '':
-				the_depends = bb.data.getVar('RDEPENDS_' + pkg, d, 1)
+				the_depends = bb.data.getVar('RDEPENDS_' + pkg, d, True)
 				if the_depends:
 					the_depends = '%s %s' % (the_depends, extra_depends)
 				else:
@@ -106,7 +103,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 			if postrm:
 				bb.data.setVar('pkg_postrm_' + pkg, postrm, d)
 		else:
-			oldfiles = bb.data.getVar('FILES_' + pkg, d, 1)
+			oldfiles = bb.data.getVar('FILES_' + pkg, d, True)
 			if not oldfiles:
 				bb.fatal("Package '%s' exists but has no files" % pkg)
 			bb.data.setVar('FILES_' + pkg, oldfiles + " " + os.path.join(root, o), d)
@@ -132,7 +129,6 @@ def package_stash_hook(func, name, d):
 	f.close()
 
 python () {
-    import bb
     if bb.data.getVar('PACKAGES', d, True) != '':
         deps = bb.data.getVarFlag('do_package', 'depends', d) or ""
         for dep in (bb.data.getVar('PACKAGE_DEPENDS', d, True) or "").split():
@@ -150,16 +146,16 @@ def runstrip(file, d):
     # A working 'file' (one which works on the target architecture)
     # is necessary for this stuff to work, hence the addition to do_package[depends]
 
-    import bb, os, commands, stat
+    import commands, stat
 
-    pathprefix = "export PATH=%s; " % bb.data.getVar('PATH', d, 1)
+    pathprefix = "export PATH=%s; " % bb.data.getVar('PATH', d, True)
 
     ret, result = commands.getstatusoutput("%sfile '%s'" % (pathprefix, file))
 
     if ret:
         bb.error("runstrip: 'file %s' failed (forced strip)" % file)
 
-    if "not stripped" not in result and not file.endswith(".a"):
+    if "not stripped" not in result:
         bb.debug(1, "runstrip: skip %s" % file)
         return 0
 
@@ -169,8 +165,8 @@ def runstrip(file, d):
         bb.debug(2, "Already ran strip on %s" % file)
         return 0
 
-    strip = bb.data.getVar("STRIP", d, 1)
-    objcopy = bb.data.getVar("OBJCOPY", d, 1)
+    strip = bb.data.getVar("STRIP", d, True)
+    objcopy = bb.data.getVar("OBJCOPY", d, True)
 
     newmode = None
     if not os.access(file, os.W_OK):
@@ -183,6 +179,9 @@ def runstrip(file, d):
         extraflags = "--remove-section=.comment --remove-section=.note --strip-unneeded"
     elif "shared" in result or "executable" in result:
         extraflags = "--remove-section=.comment --remove-section=.note"
+    elif file.endswith(".a"):
+        extraflags = "--remove-section=.comment --strip-debug"
+
 
     bb.mkdirhier(os.path.join(os.path.dirname(file), ".debug"))
     debugfile=os.path.join(os.path.dirname(file), ".debug", os.path.basename(file))
@@ -252,8 +251,6 @@ def write_package_md5sums (root, outfile, ignorepaths):
 #
 
 def get_package_mapping (pkg, d):
-	import bb, os
-
 	data = read_subpkgdata(pkg, d)
 	key = "PKG_%s" % pkg
 
@@ -263,12 +260,10 @@ def get_package_mapping (pkg, d):
 	return pkg
 
 def runtime_mapping_rename (varname, d):
-	import bb, os
-
-	#bb.note("%s before: %s" % (varname, bb.data.getVar(varname, d, 1)))	
+	#bb.note("%s before: %s" % (varname, bb.data.getVar(varname, d, True)))	
 
 	new_depends = []
-	for depend in explode_deps(bb.data.getVar(varname, d, 1) or ""):
+	for depend in explode_deps(bb.data.getVar(varname, d, True) or ""):
 		# Have to be careful with any version component of the depend
 		split_depend = depend.split(' (')
 		new_depend = get_package_mapping(split_depend[0].strip(), d)
@@ -279,35 +274,26 @@ def runtime_mapping_rename (varname, d):
 
 	bb.data.setVar(varname, " ".join(new_depends) or None, d)
 
-	#bb.note("%s after: %s" % (varname, bb.data.getVar(varname, d, 1)))
+	#bb.note("%s after: %s" % (varname, bb.data.getVar(varname, d, True)))
 
 #
 # Package functions suitable for inclusion in PACKAGEFUNCS
 #
 
 python package_do_split_locales() {
-	import os
-
-	if (bb.data.getVar('PACKAGE_NO_LOCALE', d, 1) == '1'):
+	if (bb.data.getVar('PACKAGE_NO_LOCALE', d, True) == '1'):
 		bb.debug(1, "package requested not splitting locales")
 		return
 
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
+	packages = (bb.data.getVar('PACKAGES', d, True) or "").split()
 
-	datadir = bb.data.getVar('datadir', d, 1)
+	datadir = bb.data.getVar('datadir', d, True)
 	if not datadir:
 		bb.note("datadir not defined")
 		return
 
-	dvar = bb.data.getVar('D', d, 1)
-	if not dvar:
-		bb.error("D not defined")
-		return
-
-	pn = bb.data.getVar('PN', d, 1)
-	if not pn:
-		bb.error("PN not defined")
-		return
+	dvar = bb.data.getVar('PKGD', d, True)
+	pn = bb.data.getVar('PN', d, True)
 
 	if pn + '-locale' in packages:
 		packages.remove(pn + '-locale')
@@ -340,34 +326,27 @@ python package_do_split_locales() {
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 }
 
-python populate_packages () {
-	import glob, stat, errno, re
+python perform_packagecopy () {
+	dest = bb.data.getVar('D', d, True)
+	dvar = bb.data.getVar('PKGD', d, True)
 
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	if not workdir:
-		bb.error("WORKDIR not defined, unable to package")
-		return
-
-	import os # path manipulations
-	outdir = bb.data.getVar('DEPLOY_DIR', d, 1)
-	if not outdir:
-		bb.error("DEPLOY_DIR not defined, unable to package")
-		return
-	bb.mkdirhier(outdir)
-
-	dvar = bb.data.getVar('D', d, 1)
-	if not dvar:
-		bb.error("D not defined, unable to package")
-		return
 	bb.mkdirhier(dvar)
 
-	packages = bb.data.getVar('PACKAGES', d, 1)
+	# Start by package population by taking a copy of the installed 
+	# files to operate on
+	os.system('cp -pPR %s/* %s/' % (dest, dvar))
+}
 
-	pn = bb.data.getVar('PN', d, 1)
-	if not pn:
-		bb.error("PN not defined")
-		return
+python populate_packages () {
+	import glob, stat, errno, re,os
 
+	workdir = bb.data.getVar('WORKDIR', d, True)
+	outdir = bb.data.getVar('DEPLOY_DIR', d, True)
+	dvar = bb.data.getVar('PKGD', d, True)
+	packages = bb.data.getVar('PACKAGES', d, True)
+	pn = bb.data.getVar('PN', d, True)
+
+	bb.mkdirhier(outdir)
 	os.chdir(dvar)
 
 	def isexec(path):
@@ -389,19 +368,19 @@ python populate_packages () {
 		else:
 			package_list.append(pkg)
 
-	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1'):
+	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, True) != '1'):
 		for root, dirs, files in os.walk(dvar):
 			for f in files:
 				file = os.path.join(root, f)
-				if not os.path.islink(file) and not os.path.isdir(file) and (isexec(file) or ".a" in file):
+				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
 					runstrip(file, d)
 
-	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+	pkgdest = bb.data.getVar('PKGDEST', d, True)
 	os.system('rm -rf %s' % pkgdest)
 
 	seen = []
 	main_is_empty = 1
-	main_pkg = bb.data.getVar('PN', d, 1)
+	main_pkg = bb.data.getVar('PN', d, True)
 
 	for pkg in package_list:
 		localdata = bb.data.createCopy(d)
@@ -409,13 +388,13 @@ python populate_packages () {
 		bb.mkdirhier(root)
 
 		bb.data.setVar('PKG', pkg, localdata)
-		overrides = bb.data.getVar('OVERRIDES', localdata, 1)
+		overrides = bb.data.getVar('OVERRIDES', localdata, True)
 		if not overrides:
 			raise bb.build.FuncFailed('OVERRIDES not defined')
 		bb.data.setVar('OVERRIDES', overrides + ':' + pkg, localdata)
 		bb.data.update_data(localdata)
 
-		filesvar = bb.data.getVar('FILES', localdata, 1) or ""
+		filesvar = bb.data.getVar('FILES', localdata, True) or ""
 		files = filesvar.split()
 		for file in files:
 			if os.path.isabs(file):
@@ -470,7 +449,7 @@ python populate_packages () {
 	bb.build.exec_func("package_name_hook", d)
 
 	for pkg in package_list:
-		pkgname = bb.data.getVar('PKG_%s' % pkg, d, 1)
+		pkgname = bb.data.getVar('PKG_%s' % pkg, d, True)
 		if pkgname is None:
 			bb.data.setVar('PKG_%s' % pkg, pkg, d)
 
@@ -529,16 +508,17 @@ python emit_pkgdata() {
 			c = codecs.getencoder("string_escape")
 			return c(str)[0]
 
-		val = bb.data.getVar('%s_%s' % (var, pkg), d, 1)
+		val = bb.data.getVar('%s_%s' % (var, pkg), d, True)
 		if val:
 			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
  			return
- 		val = bb.data.getVar('%s' % (var), d, 1)
+ 		val = bb.data.getVar('%s' % (var), d, True)
  		if val:
  			f.write('%s: %s\n' % (var, encode(val)))
  		return
 
 	packages = bb.data.getVar('PACKAGES', d, True)
+	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 	pkgdatadir = bb.data.getVar('PKGDATA_DIR', d, True)
 
 	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
@@ -551,7 +531,7 @@ python emit_pkgdata() {
 	f.close()
 	package_stagefile(data_file, d)
 
-	workdir = bb.data.getVar('WORKDIR', d, 1)
+	workdir = bb.data.getVar('WORKDIR', d, True)
 
 	for pkg in packages.split():
 		subdata_file = pkgdatadir + "/runtime/%s" % pkg
@@ -579,10 +559,10 @@ python emit_pkgdata() {
 		#if pkgdatadir2:
 		#	bb.copyfile(subdata_file, pkgdatadir2 + "/runtime/%s" % pkg)
 
-		allow_empty = bb.data.getVar('ALLOW_EMPTY_%s' % pkg, d, 1)
+		allow_empty = bb.data.getVar('ALLOW_EMPTY_%s' % pkg, d, True)
 		if not allow_empty:
-			allow_empty = bb.data.getVar('ALLOW_EMPTY', d, 1)
-		root = "%s/install/%s" % (workdir, pkg)
+			allow_empty = bb.data.getVar('ALLOW_EMPTY', d, True)
+		root = "%s/%s" % (pkgdest, pkg)
 		os.chdir(root)
 		g = glob('*') + glob('.[!.]*')
 		if g or allow_empty == "1":
@@ -605,7 +585,7 @@ fi
 SHLIBSDIR = "${STAGING_DIR_HOST}/shlibs"
 
 python package_do_shlibs() {
-	import os, re, os.path
+	import re
 
 	exclude_shlibs = bb.data.getVar('EXCLUDE_FROM_SHLIBS', d, 0)
 	if exclude_shlibs:
@@ -615,21 +595,18 @@ python package_do_shlibs() {
 	lib_re = re.compile("^lib.*\.so")
 	libdir_re = re.compile(".*/lib$")
 
-	packages = bb.data.getVar('PACKAGES', d, 1)
+	packages = bb.data.getVar('PACKAGES', d, True)
 
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	if not workdir:
-		bb.error("WORKDIR not defined")
-		return
+	workdir = bb.data.getVar('WORKDIR', d, True)
 
-	ver = bb.data.getVar('PV', d, 1)
+	ver = bb.data.getVar('PV', d, True)
 	if not ver:
 		bb.error("PV not defined")
 		return
 
-	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+	pkgdest = bb.data.getVar('PKGDEST', d, True)
 
-	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, 1)
+	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, True)
 	bb.mkdirhier(shlibs_dir)
 
 	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
@@ -647,10 +624,14 @@ python package_do_shlibs() {
 		use_ldconfig = False
 
 	needed = {}
-	private_libs = bb.data.getVar('PRIVATE_LIBS', d, 1)
+	private_libs = bb.data.getVar('PRIVATE_LIBS', d, True)
 	for pkg in packages.split():
 		needs_ldconfig = False
 		bb.debug(2, "calculating shlib provides for %s" % pkg)
+
+		pkgver = bb.data.getVar('PV_' + pkg, d, True)
+		if not pkgver:
+			pkgver = ver
 
 		needed[pkg] = []
 		sonames = list()
@@ -661,8 +642,8 @@ python package_do_shlibs() {
 				soname = None
 				path = os.path.join(root, file)
 				if (os.access(path, os.X_OK) or lib_re.match(file)) and not os.path.islink(path):
-					cmd = bb.data.getVar('OBJDUMP', d, 1) + " -p " + path + " 2>/dev/null"
-					cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', d, 1), cmd)
+					cmd = bb.data.getVar('OBJDUMP', d, True) + " -p " + path + " 2>/dev/null"
+					cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', d, True), cmd)
 					fd = os.popen(cmd)
 					lines = fd.readlines()
 					fd.close()
@@ -696,15 +677,15 @@ python package_do_shlibs() {
 			fd.close()
 			package_stagefile(shlibs_file, d)
 			fd = open(shver_file, 'w')
-			fd.write(ver + '\n')
+			fd.write(pkgver + '\n')
 			fd.close()
 			package_stagefile(shver_file, d)
 		if needs_ldconfig and use_ldconfig:
 			bb.debug(1, 'adding ldconfig call to postinst for %s' % pkg)
-			postinst = bb.data.getVar('pkg_postinst_%s' % pkg, d, 1) or bb.data.getVar('pkg_postinst', d, 1)
+			postinst = bb.data.getVar('pkg_postinst_%s' % pkg, d, True) or bb.data.getVar('pkg_postinst', d, True)
 			if not postinst:
 				postinst = '#!/bin/sh\n'
-			postinst += bb.data.getVar('ldconfig_postinst_fragment', d, 1)
+			postinst += bb.data.getVar('ldconfig_postinst_fragment', d, True)
 			bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
 
 	if pstageactive == "1":
@@ -731,7 +712,7 @@ python package_do_shlibs() {
 				for l in lines:
 					shlib_provider[l.rstrip()] = (dep_pkg, lib_ver)
 
-	assumed_libs = bb.data.getVar('ASSUME_SHLIBS', d, 1)
+	assumed_libs = bb.data.getVar('ASSUME_SHLIBS', d, True)
 	if assumed_libs:
 	    for e in assumed_libs.split():
 		l, dep_pkg = e.split(":")
@@ -777,18 +758,13 @@ python package_do_shlibs() {
 }
 
 python package_do_pkgconfig () {
-	import re, os
+	import re
 
-	packages = bb.data.getVar('PACKAGES', d, 1)
+	packages = bb.data.getVar('PACKAGES', d, True)
+	workdir = bb.data.getVar('WORKDIR', d, True)
+	pkgdest = bb.data.getVar('PKGDEST', d, True)
 
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	if not workdir:
-		bb.error("WORKDIR not defined")
-		return
-
-	pkgdest = bb.data.getVar('PKGDEST', d, 1)
-
-	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, 1)
+	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, True)
 	bb.mkdirhier(shlibs_dir)
 
 	pc_re = re.compile('(.*)\.pc$')
@@ -883,7 +859,7 @@ python package_do_pkgconfig () {
 }
 
 python read_shlibdeps () {
-	packages = bb.data.getVar('PACKAGES', d, 1).split()
+	packages = bb.data.getVar('PACKAGES', d, True).split()
 	for pkg in packages:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
 		for extension in ".shlibdeps", ".pcdeps", ".clilibdeps":
@@ -911,14 +887,14 @@ python package_depchains() {
 	package.
 	"""
 
-	packages  = bb.data.getVar('PACKAGES', d, 1)
-	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
-	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
+	packages  = bb.data.getVar('PACKAGES', d, True)
+	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, True) or '').split()
+	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, True) or '').split()
 
 	def pkg_adddeprrecs(pkg, base, suffix, getname, depends, d):
 
 		#bb.note('depends for %s is %s' % (base, depends))
-		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
+		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, True) or bb.data.getVar('RRECOMMENDS', d, True) or "")
 
 		for depend in depends:
 			if depend.find('-native') != -1 or depend.find('-cross') != -1 or depend.startswith('virtual/'):
@@ -939,7 +915,7 @@ python package_depchains() {
 	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
 
 		#bb.note('rdepends for %s is %s' % (base, rdepends))
-		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
+		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, True) or bb.data.getVar('RRECOMMENDS', d, True) or "")
 
 		for depend in rdepends:
 			if depend.endswith('-dev'):
@@ -959,15 +935,15 @@ python package_depchains() {
 			list.append(dep)
 
 	depends = []
-	for dep in explode_deps(bb.data.getVar('DEPENDS', d, 1) or ""):
+	for dep in explode_deps(bb.data.getVar('DEPENDS', d, True) or ""):
 		add_dep(depends, dep)
 
 	rdepends = []
-	for dep in explode_deps(bb.data.getVar('RDEPENDS', d, 1) or ""):
+	for dep in explode_deps(bb.data.getVar('RDEPENDS', d, True) or ""):
 		add_dep(rdepends, dep)
 
 	for pkg in packages.split():
-		for dep in explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 1) or ""):
+		for dep in explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, True) or ""):
 			add_dep(rdepends, dep)
 
 	#bb.note('rdepends is %s' % rdepends)
@@ -1000,13 +976,15 @@ python package_depchains() {
 				pkg_addrrecs(pkg, base, suffix, func, rdepends, d)
 			else:
 				rdeps = []
-				for dep in explode_deps(bb.data.getVar('RDEPENDS_' + base, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or ""):
+				for dep in explode_deps(bb.data.getVar('RDEPENDS_' + base, d, True) or bb.data.getVar('RDEPENDS', d, True) or ""):
 					add_dep(rdeps, dep)
 				pkg_addrrecs(pkg, base, suffix, func, rdeps, d)
 }
 
-
-PACKAGEFUNCS ?= "package_do_split_locales \
+PACKAGE_PREPROCESS_FUNCS ?= ""
+PACKAGEFUNCS ?= "perform_packagecopy \
+                ${PACKAGE_PREPROCESS_FUNCS} \
+		package_do_split_locales \
 		populate_packages \
 		package_do_shlibs \
 		package_do_pkgconfig \
@@ -1028,7 +1006,7 @@ def package_run_hooks(f, d):
 				bb.parse.parse_py.BBHandler.feeder(line, l, fn, os.path.basename(fn), d)
 				line += 1
 			fp.close()
-	                anonqueue = bb.data.getVar("__anonqueue", d, 1) or []
+	                anonqueue = bb.data.getVar("__anonqueue", d, True) or []
         	        body = [x['content'] for x in anonqueue]
             	        flag = { 'python' : 1, 'func' : 1 }
             	        bb.data.setVar("__anonfunc", "\n".join(body), d)
@@ -1047,12 +1025,22 @@ def package_run_hooks(f, d):
             		bb.data.delVar("__anonfunc", d)
 
 python package_do_package () {
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
+	packages = (bb.data.getVar('PACKAGES', d, True) or "").split()
 	if len(packages) < 1:
 		bb.debug(1, "No packages to build, skipping do_package")
 		return
 
-	for f in (bb.data.getVar('PACKAGEFUNCS', d, 1) or '').split():
+	workdir = bb.data.getVar('WORKDIR', d, True)
+	outdir = bb.data.getVar('DEPLOY_DIR', d, True)
+	dest = bb.data.getVar('D', d, True)
+	dvar = bb.data.getVar('PKGD', d, True)
+	pn = bb.data.getVar('PN', d, True)
+
+	if not workdir or not outdir or not dest or not dvar or not pn or not packages:
+		bb.error("WORKDIR, DEPLOY_DIR, D, PN and PKGD all must be defined, unable to package")
+		return
+
+	for f in (bb.data.getVar('PACKAGEFUNCS', d, True) or '').split():
 		bb.build.exec_func(f, d)
 		package_run_hooks(f, d)
 }

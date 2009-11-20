@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://noko.sourceforge.net"
 LICENSE = "GPL"
 DEPENDS = "dbus"
-PV = "0.0.1"
+PV = "0.0.1+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "svn://noko.svn.sourceforge.net/svnroot/noko/trunk;module=fsoraw;proto=https"

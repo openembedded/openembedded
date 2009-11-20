@@ -1,6 +1,7 @@
 require x-load.inc
 
-DEFAULT_PREFERENCE_omap3517-evm = "-1"
+DEFAULT_PREFERENCE_am3517-evm = "-1"
+DEFAULT_PREFERENCE_omap3-pandora = "-1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/x-load-git/${MACHINE}"
 
@@ -18,10 +19,11 @@ SRC_URI_append_beagleboard = " \
 
 SRC_URI_append_omap3-touchbook = " \
                               file://name.patch;patch=1 \
+                              file://screen-off.patch;patch=1 \
                              "
 
 
-SRC_URI_append_omap3517-evm = " \
+SRC_URI_append_am3517-evm = " \
                                  file://xload-shiva.diff;patch=1 \
 "
 

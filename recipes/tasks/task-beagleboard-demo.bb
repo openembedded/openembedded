@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r14"
+PR = "r15"
 
 inherit task 
 
@@ -21,7 +21,7 @@ RDEPENDS_${PN} = "\
     gecko-mediaplayer-firefox-hack \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
-    abiword \
+    abiword-meta \
     gnumeric \
     gimp \
     powertop oprofile \
@@ -35,7 +35,7 @@ RDEPENDS_${PN} = "\
 	angstrom-gnome-icon-theme-enable \
 	openssh-scp openssh-ssh \
 	picodlp-control \
-	connman-gnome \
+	network-manager-applet \
 	gnome-bluetooth \
 "
 

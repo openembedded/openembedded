@@ -9,8 +9,8 @@ DEPENDS = "opencv"
 SRC_URI = "svn://opencvlibrary.svn.sourceforge.net/svnroot/opencvlibrary/trunk;module=opencv;proto=https \
 "
 
-SRCREV = "2196"
-PV = "1.0.0+1.1pre1+svnr${SRCREV}"
+SRCREV = "2219"
+PV = "2.0.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/opencv"
 

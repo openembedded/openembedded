@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r3"
+PR = "r6"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -38,9 +38,11 @@ do_stage() {
 	oe_libinstall -a -C libmysqld libmysqld ${STAGING_LIBDIR}
 }
 
-do_stage_append() {
-	sed -i -es,^pkgincludedir=\'/usr/include/mysql\',pkgincludedir=\'\', ${STAGING_BINDIR_CROSS}/mysql_config
-	sed -i -es,^pkglibdir=\'/usr/lib/mysql\',pkglibdir=\'\', ${STAGING_BINDIR_CROSS}/mysql_config
+SYSROOT_PREPROCESS_FUNCS += "mysqlmangle"
+
+mysqlmangle() {
+	sed -i -es,^pkgincludedir=\'/usr/include/mysql\',pkgincludedir=\'${STAGING_INCDIR}\', ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/mysql_config
+	sed -i -es,^pkglibdir=\'/usr/lib/mysql\',pkglibdir=\'${STAGING_LIBDIR}\', ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/mysql_config
 }
 
 do_install() {
@@ -63,7 +65,8 @@ pkg_postinst_mysql-server () {
 	#Install the database
 	test -d /usr/bin || mkdir -p /usr/bin
 	test -e /usr/bin/hostname || ln -s /bin/hostname /usr/bin/hostname
-	chmod go+rw /var/run
+	mkdir /var/lib/mysql
+	chown mysql.nogroup /var/lib/mysql
 
 	mysql_install_db
 
@@ -74,6 +77,7 @@ pkg_postrm_mysql-server () {
 }
 
 PACKAGES = "${PN}-dbg ${PN} libmysqlclient libmysqlclient-dev mysql-client mysql-server ${PN}-leftovers"
+CONFFILES_mysql-server = "${sysconfdir}/my.cnf"
 
 FILES_${PN} = " "
 RDEPENDS_${PN} = "mysql-client mysql-server"

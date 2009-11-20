@@ -1,0 +1,53 @@
+diff -uri omnewrotate.org/src/omnewrotate.c omnewrotate/src/omnewrotate.c
+--- omnewrotate.org/src/omnewrotate.c	2009-05-03 20:23:56.000000000 +0200
++++ omnewrotate/src/omnewrotate.c	2009-05-07 17:46:07.000000000 +0200
+@@ -95,8 +95,8 @@
+ #define LONG_TIME 0
+ 
+ #define EVENT_PATH "/dev/input/event3"
+-#define GET_BRIGHTNESS_PATH "/sys/class/backlight/pcf50633-bl/actual_brightness"
+-#define SET_BRIGHTNESS_PATH "/sys/class/backlight/pcf50633-bl/brightness"
++#define GET_BRIGHTNESS_PATH "/sys/class/backlight/gta02-bl/actual_brightness"
++#define SET_BRIGHTNESS_PATH "/sys/class/backlight/gta02-bl/brightness"
+ 
+ #define NUM_THREADS 1
+ 
+@@ -197,8 +197,8 @@
+ #endif
+ 
+ 	if (change_brightness && !use_dbus) {
+-		set_brightness_file = open(SET_BRIGHTNESS_PATH, O_RDWR);
+-		get_brightness_file = open(GET_BRIGHTNESS_PATH, O_RDWR);
++		set_brightness_file = open(SET_BRIGHTNESS_PATH, O_WRONLY);
++		get_brightness_file = open(GET_BRIGHTNESS_PATH, O_RDONLY);
+ 
+ 		if (set_brightness_file < 0 || get_brightness_file < 0)
+ 		{
+@@ -273,7 +273,7 @@
+ 	rootWindow = RootWindow(display, screen);
+ 	XRRRotations(display, screen, &r);
+ 
+-	char current_brightness[3] = "63\n";
++	char current_brightness[4] = "255\n";
+ 	char brightness_off[2] = "0\n";
+ 
+ 
+@@ -317,7 +317,7 @@
+ 		else
+ 		{
+ 			lseek(get_brightness_file, 0, SEEK_SET);
+-			read(get_brightness_file, &current_brightness, 2);
++			read(get_brightness_file, &current_brightness, 3);
+ 			lseek(set_brightness_file, 0, SEEK_SET);
+ 			write(set_brightness_file, &brightness_off, 2);
+ 		}
+@@ -333,7 +333,7 @@
+ 		if(debug) printf("Recovering screen brightness for nifty effect\n");
+ 		usleep(500000);
+ 		lseek(set_brightness_file, 0, SEEK_SET);
+-		write(set_brightness_file, &current_brightness, 3);
++		write(set_brightness_file, &current_brightness, 4);
+ 	}
+ 
+ }
+Nur in omnewrotate.org/src: .omnewrotate.c.swp.

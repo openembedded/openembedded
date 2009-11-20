@@ -1,9 +1,13 @@
 DESCRIPTION = "Graphical login manager"
 LICENSE = "GPL"
 
-DEPENDS = "libxklavier grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl xrdb"
+DEPENDS = "tcp-wrappers libcanberra libxklavier grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl xrdb"
+
+PR = "r3"
 
 inherit gnome update-rc.d
+
+RDEPENDS_${PN} += "grep"
 
 SRC_URI += " \
             file://cross-xdetection.diff;patch=1 \

@@ -1,7 +1,7 @@
 require pidgin.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
-DEPENDS += "farsight2"
+DEPENDS += "farsight2 libidn"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/pidgin/pidgin-${PV}.tar.bz2 \

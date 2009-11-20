@@ -1,0 +1,34 @@
+diff -Nur o/midori/midori-websettings.c n/midori/midori-websettings.c
+--- o/midori/midori-websettings.c	2009-09-12 00:09:38.000000000 +0200
++++ n/midori/midori-websettings.c	2009-09-14 13:55:12.000000000 +0200
+@@ -285,6 +285,7 @@
+     {
+         static const GEnumValue values[] = {
+          { MIDORI_IDENT_MIDORI, "MIDORI_IDENT_MIDORI", N_("Midori") },
++         { MIDORI_IDENT_IPHONE, "MIDORI_IDENT_IPHONE", N_("iPhone") },
+          { MIDORI_IDENT_SAFARI, "MIDORI_IDENT_SAFARI", N_("Safari") },
+          { MIDORI_IDENT_FIREFOX, "MIDORI_IDENT_FIREFOX", N_("Firefox") },
+          { MIDORI_IDENT_EXPLORER, "MIDORI_IDENT_EXPLORER", N_("Internet Explorer") },
+@@ -1118,6 +1119,11 @@
+     case MIDORI_IDENT_MIDORI:
+         return g_strdup_printf ("%s (%s; %s; U; %s) %s",
+                                 appname, platform, os, lang, webcore);
++    case MIDORI_IDENT_IPHONE:
++        return g_strdup_printf ("Mozilla/5.0 (iPhone; U; %s; %s) "
++            "AppleWebKit/532+ (KHTML, like Gecko) Version/3.0 Mobile/1A538b " 
++            "Safari/419.3 %s",
++                                os, lang, appname);
+     case MIDORI_IDENT_SAFARI:
+         return g_strdup_printf ("Mozilla/5.0 (%s; U; %s; %s) "
+             "AppleWebKit/532+ (KHTML, like Gecko) Safari/%s %s",
+diff -Nur o/midori/midori-websettings.h n/midori/midori-websettings.h
+--- -o/midori/midori-websettings.h	2009-09-12 00:09:38.000000000 +0200
++++ n/midori/midori-websettings.h	2009-09-14 13:55:14.000000000 +0200
+@@ -132,6 +132,7 @@
+ typedef enum
+ {
+     MIDORI_IDENT_MIDORI,
++    MIDORI_IDENT_IPHONE,
+     MIDORI_IDENT_SAFARI,
+     MIDORI_IDENT_FIREFOX,
+     MIDORI_IDENT_EXPLORER,

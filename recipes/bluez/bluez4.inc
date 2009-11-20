@@ -14,6 +14,11 @@ RPROVIDES_bluez4 += "bluez-utils bluez-libs"
 PROVIDES_append_angstrom = " bluez-utils-dbus bluez-utils bluez-libs"
 RPROVIDES_bluez4-dev_angstrom = "bluez-libs-dev"
 
+# temporary solution for KaeilOS just to replace at least bluez-libs
+PROVIDES_append_kaeilos = " bluez-utils-dbus bluez-utils bluez-libs"
+RPROVIDES_bluez4-dev_kaeilos = "bluez-libs-dev"
+
+
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
   file://fix-dfutool-usb-declaration-mismatch.patch;patch=1 \

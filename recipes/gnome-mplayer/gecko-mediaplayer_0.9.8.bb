@@ -4,32 +4,32 @@ LICENSE = "GPL"
 DEPENDS = "firefox gtk+ gconf dbus-glib"
 RDEPENDS = "firefox gnome-mplayer"
 
-PR = "r1"
+PR = "r7"
 
 inherit autotools
 
 SRC_URI = "http://gecko-mediaplayer.googlecode.com/files/${P}.tar.gz \
+           file://gecko-mplayer-svn.diff;patch=1;pnum=0 \
            file://extensions \
 "
 
-# Yes, this needs to match the firefox version you are building *exactly*
-MOZILLA_HOME = firefox-3.5.2
-
 do_install_append() {
-	install -d  ${D}${libdir}/${MOZILLA_HOME}
-	mv ${D}${libdir}/mozilla/plugins ${D}${libdir}/${MOZILLA_HOME}
-	cp -dpR ${WORKDIR}/extens* ${D}${libdir}/${MOZILLA_HOME}/
+	cp -dpR ${WORKDIR}/extens* ${D}${libdir}/mozilla/
 }
-
-
-#EXTRA_OEMAKE = "-I${STAGING_INCDIR}/${MOZILLA_HOME} -I${STAGING_INCDIR}/linux"
 
 PACKAGES =+ "${PN}-firefox-hack"
 RDEPENDS_${PN}-firefox-hack = "${PN}"
-FILES_${PN}-firefox-hack = "${libdir}/${MOZILLA_HOME}/extensions"
+FILES_${PN}-firefox-hack = "${libdir}/mozilla/extensions"
 
 FILES_${PN} += "${sysconfdir}/* \
-                ${libdir}/${MOZILLA_HOME}/*"
-FILES_${PN}-dbg += "${libdir}/${MOZILLA_HOME}/plugins/.debug/*"
+                ${libdir}/mozilla/*"
+FILES_${PN}-dbg += "${libdir}/mozilla*/plugins/.debug/*"
 
+pkg_postinst_${PN}-firefox-hack() {
+for firefoxdir in $D${libdir}/firefox-* ; do
+	if [ -e $firefoxdir/extensions/ ] ; then 
+		ln -sf ${libdir}/mozilla/extensions/flash@alwaysinnovating.com $firefoxdir/extensions/
+	fi
+done
+}
 

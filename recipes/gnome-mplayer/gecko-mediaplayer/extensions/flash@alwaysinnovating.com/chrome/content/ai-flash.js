@@ -1,6 +1,18 @@
+// ==UserScript==
+// @name Flash AI
+// @description Flash AI add-on
+// @include *
+// ==/UserScript==
 
-window.addEventListener("load", function() { myExtension.init(); }, false);
 
+var firefox = true;
+if (navigator.userAgent.match("midori")) firefox = false;
+
+if (!firefox){
+	window.addEventListener("load", function() { myExtension.onPageLoad(); }, true);
+}else{
+	window.addEventListener("load", function() { myExtension.init(); }, false);
+}
 var myExtension = {
 	init: function() {
 		var appcontent = document.getElementById("appcontent");   // browser
@@ -17,7 +29,7 @@ var myExtension = {
 }
 
 
-	var idInterval=-1;
+var idInterval=-1;
 var stUrl = "";
 var timeout=2000;
 
@@ -67,8 +79,12 @@ function getBrowserForDocument(aDocument) {
 }
 
 function checkPageOnLoad(aEvent) {
-
-        var doc=aEvent.originalTarget;
+	var doc;	
+	if(firefox){
+		doc=aEvent.originalTarget;
+	}else{
+		doc=document;
+	}
 	var loc=doc.location.href;
 	var host=doc.location.hostname;
 	idInterval=-1;
@@ -97,7 +113,7 @@ function checkPageOnLoad(aEvent) {
 	}
 
 	if (host.match(/youtube\./i)!=null) {
-		embmedia=doc.embeds;
+		embmedia=doc.embeds;		
 		if ((embmedia!=null)&&(idInterval==-1)) {
 			embid=embmedia[0].getAttribute('id');
 			flashvars=unescape(embmedia[0].getAttribute('flashvars'));
@@ -121,7 +137,7 @@ function checkPageOnLoad(aEvent) {
 
 	        embmedia=doc.embeds;
 		if ((embmedia!=null)&&(idInterval==-1)) {
-		    
+				    
 			// Myspace loves embedded flash ads, so we have to find the good one for the video...
 			for(i=0;i<embmedia.length;i++){
 				source=unescape(embmedia[i].getAttribute('src'));
@@ -132,11 +148,11 @@ function checkPageOnLoad(aEvent) {
 					if(source.match(/videoid=/i)!=null){
 						// regular video
 						id = (source.split("videoid=")[1]).split("&")[0];
+					
 					}else if (source.match(/m=/i)!=null){
 						// video channels myspace or hot stuff
 						id = (source.split("m=")[1]).split("&")[0].split(",")[0];				
 					}
-			    
 					if(id!=-1){
 						stUrl=getMySpaceURL(doc, id);
 						idInterval = setInterval(replaceTag, timeout, doc, " ", new Array(embmedia[i]));
@@ -150,6 +166,7 @@ function checkPageOnLoad(aEvent) {
 	
 	if (host.match(/video.yahoo\./i)!=null) {
 		embmedia=doc.embeds;
+
 		if ((embmedia!=null)&&(idInterval==-1)) {
 			for(i=0;i<embmedia.length;i++){
 				embid = embmedia[i].getAttribute('id');
@@ -166,25 +183,6 @@ function checkPageOnLoad(aEvent) {
 		return;
 	}
 
-	if (host.match(/video.yahoo\./i)!=null) {
-		embmedia=doc.embeds;
-		if ((embmedia!=null)&&(idInterval==-1)) {
-			for(i=0;i<embmedia.length;i++){
-				embid = embmedia[i].getAttribute('id');
-				if(embid=="video1"){
-					stUrl = getURLfromKeepVid(loc);
-					if (stUrl != null){
-						this.replaceTag(doc, embid, new Array(embmedia[i]));
-						return;
-					}
-				}
-			}
-		}
-		setTimeout(checkPageOnLoad,timeout,aEvent);			    
-		return;
-	}
-	
-	
 
 	//if (loc.match(/my\.yahoo\..*\/\?rd\=nux/i)!=null) {
 	//       atag=doc.getElementsByTagName('a');
@@ -197,7 +195,6 @@ function checkPageOnLoad(aEvent) {
 	//}
 
 	if (host.match(/dailymotion\./i)!=null) {
-	 
 	        embmedia=doc.embeds;
 		if ((embmedia!=null)&&(idInterval==-1)) {
 			embid=embmedia[0].getAttribute('id');

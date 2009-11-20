@@ -4,12 +4,13 @@ SECTION = "console/graphics"
 LICENSE = "povray"
 DEPENDS = "virtual/libx11 boost zlib jpeg libpng tiff"
 
-PR = "r1"
+PR = "r2"
 
 #We apply a patch that subverts the checks for jpeg, zlib, png and tiff because we know OE has the required versions, but it is still a hack.
 SRC_URI = "http://www.povray.org/redirect/www.povray.org/beta/source/povray-src-3.7.0.beta.25b.tar.bz2 \
            file://configure-cross-hack.patch;patch=1 \
 	   file://gcc43.diff;patch=1 \
+           file://boost.patch;patch=1 \
 	   "
 
 S = "${WORKDIR}/povray-3.7.0.beta.25b"

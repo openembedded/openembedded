@@ -1,0 +1,11 @@
+--- a/board/omap3/beagle/beagle.c	2009-10-18 05:31:23.000000000 +0800
++++ b/board/omap3/beagle/beagle.c	2009-10-18 05:31:34.000000000 +0800
+@@ -186,7 +186,7 @@
+ 
+ 	gpmc_init(); /* in SRAM or SDRAM, finish GPMC */
+ 	/* board id for Linux */
+-	gd->bd->bi_arch_number = MACH_TYPE_OMAP3_BEAGLE;
++	gd->bd->bi_arch_number = 2393;
+ 	/* boot param addr */
+ 	gd->bd->bi_boot_params = (OMAP34XX_SDRC_CS0 + 0x100);
+ 

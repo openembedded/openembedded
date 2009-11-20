@@ -6,7 +6,7 @@ DEPENDS = "libxklavier libgnomekbd libgnomeui gnome-desktop gnome-doc-utils gtk+
 
 inherit gnome
 
-CFLAGS += "-lgthread-2.0"
+LDFLAGS += "-lgthread-2.0"
 
 FILES_${PN} += "${libdir}/gnome-settings-daemon-2.0/*.so \
                 ${libdir}/gnome-settings-daemon-2.0/*plugin \

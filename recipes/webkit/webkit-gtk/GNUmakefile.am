@@ -74,6 +74,10 @@ global_cflags :=
 global_cxxflags :=
 corekit_cflags :=
 corekit_cppflags :=
+BUILT_SOURCES :=
+CLEANFILES :=
+DISTCLEANFILES :=
+MAINTAINERCLEANFILES :=
 
 # CFLAGS/CXXFLAGS used by WebCore and WebKit
 #
@@ -395,9 +399,13 @@ webkitgtk_cppflags += \
 	-I$(top_builddir)/WebKit/gtk/webkit
 
 webkitgtk_cleanfiles += \
+	$(top_builddir)/stamp-webkitmarshal.cpp \
+	$(top_builddir)/stamp-webkitmarshal.h \
+	$(top_builddir)/stamp-webkitenumtypes.cpp \
+	$(top_builddir)/stamp-webkitenumtypes.h \
+	$(top_builddir)/Programs/GtkLauncher \
 	$(top_builddir)/WebKit/gtk/docs/version.xml \
 	$(top_builddir)/WebKit/gtk/docs/GNUmakefile \
-	$(top_builddir)/Programs/GtkLauncher \
 	$(top_builddir)/WebKit/gtk/webkit-1.0.pc \
 	$(top_builddir)/WebKit/gtk/webkit/webkitenumtypes.h \
 	$(top_builddir)/WebKit/gtk/webkit/webkitversion.h
@@ -405,11 +413,58 @@ webkitgtk_cleanfiles += \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = WebKit/gtk/webkit-1.0.pc
 
-stamp_files := \
-	stamp-webkitmarshal.cpp \
-	stamp-webkitmarshal.h \
-	stamp-webkitenumtypes.cpp \
-	stamp-webkitenumtypes.h
+# Files that will be distributed
+EXTRA_DIST = \
+	$(srcdir)/gtk-doc.make \
+	WebKit/LICENSE \
+	$(javascriptcore_dist) \
+	$(webcore_dist) \
+	$(srcdir)/autotools/symbols.filter \
+	$(srcdir)/WebKit/gtk/ChangeLog \
+	$(srcdir)/WebKit/gtk/NEWS \
+	$(srcdir)/WebKit/gtk/webkitmarshal.list \
+	$(srcdir)/WebKit/gtk/docs/GNUmakefile.* \
+	$(srcdir)/WebKit/gtk/docs/webkitenvironment.xml \
+	$(srcdir)/WebKit/gtk/docs/webkitgtk-docs.sgml \
+	$(srcdir)/WebKit/gtk/docs/webkitgtk-sections.txt \
+	$(srcdir)/WebKit/gtk/docs/version.xml.in \
+	$(srcdir)/WebKit/gtk/po/* \
+	$(srcdir)/WebKit/gtk/resources/*
+
+if ENABLE_INTROSPECTION
+JSCORE_GIRSOURCES = $(srcdir)/WebKit/gtk/JSCore-1.0.gir # JSCore-1.0.gir is handwritten
+WEBKIT_GIRSOURCES = WebKit-1.0.gir
+
+$(WEBKIT_GIRSOURCES): $(JSCORE_GIRSOURCES) $(G_IR_SCANNER)
+	$(AM_V_GEN)$(G_IR_SCANNER) -v --namespace WebKit --nsversion=1.0 \
+	     --include=GObject-2.0 \
+	     --include=Gtk-2.0 \
+	     --include=JSCore-1.0 \
+	     --include=Soup-2.4 \
+	     --library=webkit-1.0 \
+	     --libtool="$(LIBTOOL)" \
+	     --pkg gobject-2.0 \
+	     --pkg gtk+-2.0 \
+	     --output $@ \
+	     -I$(top_srcdir)/WebKit/gtk \
+	     -I$(top_builddir)/WebKit/gtk \
+	     -I$(top_srcdir)/JavaScriptCore/ForwardingHeaders \
+	     -I$(top_srcdir) \
+	     $(webkitgtk_h_api)
+
+girdir = $(GIRDIR)
+gir_DATA = $(WEBKIT_GIRSOURCES) $(JSCORE_GIRSOURCES)
+
+typelibsdir = $(GIRTYPELIBDIR)
+typelibs_DATA = $(JSCORE_GIRSOURCES:.gir=.typelib) $(WEBKIT_GIRSOURCES:.gir=.typelib)
+
+%.typelib: %.gir $(G_IR_COMPILER)
+	$(AM_V_GEN)$(G_IR_COMPILER) $< -o $@
+
+EXTRA_DIST += $(JSCORE_GIRSOURCES)
+CLEANFILES += $(WEBKIT_GIRSOURCES) $(typelibs_DATA)
+
+endif
 
 WEBKIT_MARSHAL = $(GENSOURCES)/webkitmarshal
 WEBKIT_MARSHAL_LIST = $(top_srcdir)/WebKit/gtk/webkitmarshal.list
@@ -473,35 +528,12 @@ DerivedSources/webkitenumtypes.cpp: $(webkitgtk_h_api) GNUmakefile
 	&& cp xgen-gtc $@ \
 	&& rm -f xgen-gtc
 
-# Files that will be distributed
-EXTRA_DIST = \
-	$(srcdir)/gtk-doc.make \
-	WebKit/LICENSE \
-	$(javascriptcore_dist) \
-	$(webcore_dist) \
-	$(srcdir)/autotools/symbols.filter \
-	$(srcdir)/WebKit/gtk/ChangeLog \
-	$(srcdir)/WebKit/gtk/NEWS \
-	$(srcdir)/WebKit/gtk/webkitmarshal.list \
-	$(srcdir)/WebKit/gtk/docs/GNUmakefile.* \
-	$(srcdir)/WebKit/gtk/docs/webkitenvironment.xml \
-	$(srcdir)/WebKit/gtk/docs/webkitgtk-docs.sgml \
-	$(srcdir)/WebKit/gtk/docs/webkitgtk-sections.txt \
-	$(srcdir)/WebKit/gtk/docs/version.xml.in \
-	$(srcdir)/WebKit/gtk/po/* \
-	$(srcdir)/WebKit/gtk/resources/*
-
 # extra resource files
 resourcesdir = ${datadir}/webkit-1.0/resources
 dist_resources_DATA = \
 	$(shell ls $(srcdir)/WebKit/gtk/resources/*.html)
 
 # END WEBKIT GTK+
-
-# Files that will be cleaned
-MAINTAINERCLEANFILES := $(stamp_files) $(BUILT_SOURCES) doltcompile doltlibtool
-DISTCLEANFILES := $(stamp_files) $(BUILT_SOURCES) doltcompile doltlibtool
-CLEANFILES := $(stamp_files) $(BUILT_SOURCES)
 
 # Include module makefiles
 include JavaScriptCore/GNUmakefile.am
@@ -545,7 +577,8 @@ TEST_PROGS += Programs/unittests/testhttpbackend \
 	Programs/unittests/testhittestresult \
 	Programs/unittests/testwebsettings \
 	Programs/unittests/testwebresource \
-	Programs/unittests/testwebdatasource
+	Programs/unittests/testwebdatasource \
+	Programs/unittests/testkeyevents
 
 # Add additional tests here
 Programs_unittests_testhttpbackend_SOURCES = WebKit/gtk/tests/testhttpbackend.c
@@ -615,8 +648,13 @@ Programs_unittests_testhittestresult_SOURCES = WebKit/gtk/tests/testhittestresul
 Programs_unittests_testhittestresult_CFLAGS = $(webkit_tests_cflags)
 Programs_unittests_testhittestresult_LDADD = $(webkit_tests_ldadd)
 
+Programs_unittests_testkeyevents_SOURCES = WebKit/gtk/tests/testkeyevents.c
+Programs_unittests_testkeyevents_CFLAGS = $(webkit_tests_cflags)
+Programs_unittests_testkeyevents_LDADD = $(webkit_tests_ldadd)
+Programs_unittests_testkeyevents_LDFLAGS = $(webkit_tests_ldflags)
+
 # Autogenerated sources
-BUILT_SOURCES := \
+BUILT_SOURCES += \
 	$(javascriptcore_built_sources) \
 	$(javascriptcore_built_nosources) \
 	$(webcore_built_sources) \
@@ -625,10 +663,20 @@ BUILT_SOURCES := \
 	$(webkitgtk_built_nosources)
 
 # Project-wide clean rules
+# Files that will be cleaned
 CLEANFILES += \
+	$(BUILT_SOURCES) \
 	$(webkitgtk_cleanfiles)
 
+DISTCLEANFILES += \
+	$(CLEANFILES) \
+	$(builddir)/doltcompile \
+	$(builddir)/doltlibtool
+
 MAINTAINERCLEANFILES += \
+	$(CLEANFILES) \
+	$(builddir)/doltcompile \
+	$(builddir)/doltlibtool \
 	$(srcdir)/aconfig.h.in \
 	$(srcdir)/autotools/config.* \
 	$(srcdir)/autotools/compile \

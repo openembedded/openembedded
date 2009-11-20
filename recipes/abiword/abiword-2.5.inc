@@ -2,7 +2,7 @@ DESCRIPTION = "AbiWord is free word processing program similar to Microsoft(r) W
 HOMEPAGE = "http://www.abiword.org""
 SECTION = "x11/office"
 LICENSE = "GPLv2"
-DEPENDS     = "perl-native wv libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng libxml2"
+DEPENDS     = "asio goffice perl-native wv libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng libxml2"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
                glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
 
@@ -29,7 +29,7 @@ FILES_${PN} += " \
 		${datadir}/abiword-${SHRT_VER}/templates/Memo.awt \
 		${datadir}/abiword-${SHRT_VER}/templates/Press-Release.awt "
 
-inherit autotools pkgconfig
+inherit autotools gtk-icon-cache pkgconfig mime
 
 PARALLEL_MAKE = ""
 
@@ -53,6 +53,9 @@ do_install_append() {
 }
 
 PACKAGES += " abiword-clipart abiword-icons abiword-strings abiword-systemprofiles abiword-templates "
+
+ALLOW_EMPTY_abiword-clipart = "1"
+ALLOW_EMPTY_abiword-icons = "1"
 
 FILES_abiword-clipart 		+= "${datadir}/abiword-${SHRT_VER}/clipart"
 FILES_abiword-icons 		+= "${datadir}/abiword-${SHRT_VER}/icons"

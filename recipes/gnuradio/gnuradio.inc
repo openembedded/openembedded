@@ -14,7 +14,6 @@ CXXFLAGS_powerpc += "-lstdc++"
 
 EXTRA_OECONF = " \
   --program-prefix= \
-  ${GR_CPU_SELECTION} \
   --disable-gr-atsc \
   --enable-gr-video-sdl \
   --enable-gr-audio-alsa  \
@@ -26,28 +25,8 @@ EXTRA_OECONF = " \
   PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/${PYTHON_DIR} \
 "
 
-GR_CPU_SELECTION_armv7a = " --with-md-cpu=arm "
-
-# This is an awful hack to allow GNU Radio to use libusb-0.12, regardless
-# of what is used by the rest of OE
-
-export USB_CFLAGS=""
-export USB_LIBS="-L${WORKDIR}/libusb-0.1.12/.libs/ -l:libusb-gnur.a"
-
-do_buildlibusb() {
-    cd ${WORKDIR}/libusb-0.1.12
-    sed -e 's/AC_LANG_CPLUSPLUS/AC_PROG_CXX/' -i configure.in
-    sed -e s:tests::g -i Makefile.am
-    sed -e s:tests::g -i Makefile.in || true
-    ./configure --build=${BUILD_SYS} --host=${HOST_SYS} --target=${TARGET_SYS} --prefix=${prefix} --exec_prefix=${exec_prefix} --bindir=${bindir} --sbindir=${sbindir} --libexecdir=${libexecdir} --datadir=${datadir} --sysconfdir=${sysconfdir} --sharedstatedir=${sharedstatedir} --localstatedir=${localstatedir} --libdir=${libdir} --includedir=${includedir} --oldincludedir=${oldincludedir} --infodir=${infodir} --mandir=${mandir} --disable-shared --disable-build-docs
-    make
-    mv .libs/libusb.a .libs/libusb-gnur.a || true
-    cd ${WORKDIR}
-}
-
-addtask buildlibusb before do_configure after do_unpack
-
-do_buildlibusb[deptask] = "do_populate_staging"
+#export USB_CFLAGS="-I${STAGING_INCDIR}"
+#export USB_LIBS="-L${STAGING_LIBDIR}"
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/acinclude.m4 ] ; then
@@ -57,6 +36,7 @@ do_configure_prepend() {
 
 do_configure_append() {
 	find ${S} -name Makefile | xargs sed -i s:'-I/usr/include':'-I${STAGING_INCDIR}':g
+	find ${S} -name Makefile | xargs sed -i s:' /usr/include':' ${STAGING_INCDIR}':g
 }
 
 do_stage() {

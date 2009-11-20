@@ -2,7 +2,7 @@ DESCRIPTION = "illume SHR theme"
 SECTION = "e/utils"
 DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
-PV = "1.1-${EFL_SRCREV}-gitr${SRCREV}"
+PV = "1.1-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r6"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

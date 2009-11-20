@@ -5,7 +5,7 @@ SRCREV_FORMAT = "webcore-rwebkit"
 PACKAGES =+ "${PN}launcher-dbg ${PN}launcher"
 
 # Yes, this is wrong...
-PV = "0.1+svnr${SRCREV}"
+PV = "0.1+svnr${SRCPV}"
 
 inherit qmake2 pkgconfig
 

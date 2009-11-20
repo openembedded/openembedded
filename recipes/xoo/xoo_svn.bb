@@ -4,7 +4,7 @@ It is intended for embedded developers that want to simulate a target device \
 HOMEPAGE = "http://projects.o-hand.com/xoo"
 LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxtst gtk+ libglade expat"
-PV = "0.7+svnr${SRCREV}"
+PV = "0.7+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=Xoo;proto=http \

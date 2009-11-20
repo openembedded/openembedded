@@ -7,6 +7,7 @@ SRC_URI = "\
   file://udhcpscript.patch;patch=1 \
   file://B921600.patch;patch=1 \
   file://fdisk_lineedit_segfault.patch;patch=1 \
+  file://iptunnel.patch;patch=1 \
   file://busybox-appletlib-dependency.patch;patch=1 \
   file://busybox-cron \
   file://busybox-httpd \

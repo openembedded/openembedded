@@ -52,7 +52,7 @@ BINLOCATION ?= "${S}/gfx_rel"
 
 PACKAGES += " xserver-kdrive-powervrsgx ${PN}-tests ${PN}-demos"
 
-FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${libdir}/ES*/* ${bindir}/pvrsrvinit ${bindir}/*/*"
+FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${libdir}/ES*/* ${bindir}/pvrsrvinit ${bindir}/cputype ${bindir}/*/*"
 FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
 FILES_${PN}-tests = "${bindir}"
 FILES_${PN}-demos = "${prefix}/demos ${prefix}/share/applications "
@@ -89,10 +89,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/cputype ${D}${bindir}/
 
 	cp -pP ${BINLOCATION}/*_test ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gl2info ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gles1test1 ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gles1_texture_stream ${D}${bindir}/
-	cp -pP ${BINLOCATION}/gles2test1 ${D}${bindir}/
+	cp -pP ${BINLOCATION}/gl* ${D}${bindir}/
 	cp -pP ${BINLOCATION}/p[dv]* ${D}${bindir}/
 	cp -pP ${BINLOCATION}/xgles1test1 ${D}${bindir}/
 
@@ -101,9 +98,10 @@ do_install () {
 	install -d ${D}${includedir}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/* ${D}${includedir}/
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/Include/* ${D}${includedir}/
-	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES/
-	cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES2/
-	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/v* ${D}${includedir}/
+	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES/ || true
+	cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES2/ || true
+	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/v* ${D}${includedir}/ || true
+	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/V* ${D}${includedir}/ || true
 	cp -pPr ${S}/include/*.h ${D}${includedir} || true
 	
 	install -d ${D}${sysconfdir}/init.d/
@@ -111,7 +109,7 @@ do_install () {
 
 	install -d ${D}${sysconfdir}
 	echo "[default]" > ${D}${sysconfdir}/powervr.ini
-	echo "WindowSystem=libpvrPVR2D_FLIPWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
+	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
 
 	install -d ${D}${prefix}/demos/OGLES/
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Binaries/CommonX11/Demos/* ${D}${prefix}/demos/OGLES/
@@ -129,12 +127,16 @@ do_stage () {
 	cp -pP ${BINLOCATION}/*.a ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}
+        cp -pPR ${S}/GFX_Linux_KM/include4 ${STAGING_INCDIR}/
+        cp -pPR ${S}/GFX_Linux_KM/services4 ${STAGING_INCDIR}/
+
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/*  ${STAGING_INCDIR}/
     cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/Include/* ${STAGING_INCDIR}/
-    cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES/
-    cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES2/
+    cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES/ || true
+    cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES2/ || true
 	cp -pPr ${S}/include/*.h ${STAGING_INCDIR} || true
-	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/v* ${STAGING_INCDIR}/
+	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/v* ${STAGING_INCDIR}/ || true
+	cp -pPr ${S}/GFX_Linux_SDK/OVG/SDKPackage/Builds/OVG/Include/V* ${STAGING_INCDIR}/ || true
 }
 
 pkg_postinst() {

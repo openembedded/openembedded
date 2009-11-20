@@ -1,6 +1,6 @@
 diff -uNr ticodecplugin/configure.ac ticodecplugin.new/configure.ac
 --- ticodecplugin/configure.ac	2009-09-05 00:04:51.000000000 -0500
-+++ ticodecplugin.new/configure.ac	2009-10-10 15:50:24.000000000 -0500
++++ ticodecplugin.new/configure.ac	2009-10-28 06:35:20.000000000 -0500
 @@ -25,6 +25,7 @@
  AC_SUBST(ACLOCAL_AMFLAGS, "-I m4")
  
@@ -10,14 +10,14 @@ diff -uNr ticodecplugin/configure.ac ticodecplugin.new/configure.ac
  dnl check for tools
  AC_PROG_CC
 diff -uNr ticodecplugin/src/Makefile.am ticodecplugin.new/src/Makefile.am
---- ticodecplugin/src/Makefile.am	2009-10-10 14:27:46.000000000 -0500
-+++ ticodecplugin.new/src/Makefile.am	2009-10-10 15:50:24.000000000 -0500
+--- ticodecplugin/src/Makefile.am	2009-10-28 06:27:14.000000000 -0500
++++ ticodecplugin.new/src/Makefile.am	2009-10-28 06:35:20.000000000 -0500
 @@ -4,16 +4,16 @@
  plugin_LTLIBRARIES  = libgstticodecplugin.la
  
  # sources used to compile this plug-in
--libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c
-+libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c omapfb.c yuv.S
+-libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c
++libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c omapfb.c yuv.S
  
  # flags used to compile this plugin
  # add other _CFLAGS and _LIBS as needed
@@ -34,18 +34,18 @@ diff -uNr ticodecplugin/src/Makefile.am ticodecplugin.new/src/Makefile.am
  # XDC Configuration
  CONFIGURO     = $(XDC_INSTALL_DIR)/xs xdc.tools.configuro
 diff -uNr ticodecplugin/src/gstticodecplugin.c ticodecplugin.new/src/gstticodecplugin.c
---- ticodecplugin/src/gstticodecplugin.c	2009-10-10 14:27:46.000000000 -0500
-+++ ticodecplugin.new/src/gstticodecplugin.c	2009-10-10 15:52:51.000000000 -0500
-@@ -46,6 +46,7 @@
- #include "gsttividenc1.h"
+--- ticodecplugin/src/gstticodecplugin.c	2009-10-28 06:27:14.000000000 -0500
++++ ticodecplugin.new/src/gstticodecplugin.c	2009-10-28 06:36:28.000000000 -0500
+@@ -47,6 +47,7 @@
  #include "gsttiaudenc1.h"
  #include "gsttividresize.h"
+ #include "gsttidmaiperf.h"
 +#include "omapfb.h"
  
  /* entry point to initialize the plug-in
   * initialize the plug-in itself
-@@ -153,6 +154,13 @@
-         GST_TYPE_TIVIDRESIZE))
+@@ -161,6 +162,13 @@
+         GST_TYPE_DMAIPERF))
          return FALSE;
  
 +    env_value = getenv("GST_omapdmaifbsink_DISABLE");
@@ -60,7 +60,7 @@ diff -uNr ticodecplugin/src/gstticodecplugin.c ticodecplugin.new/src/gstticodecp
  
 diff -uNr ticodecplugin/src/omapfb.c ticodecplugin.new/src/omapfb.c
 --- ticodecplugin/src/omapfb.c	1969-12-31 18:00:00.000000000 -0600
-+++ ticodecplugin.new/src/omapfb.c	2009-10-10 15:50:24.000000000 -0500
++++ ticodecplugin.new/src/omapfb.c	2009-10-28 06:35:20.000000000 -0500
 @@ -0,0 +1,1005 @@
 +/*
 + * Copyright (C) 2008 Felipe Contreras <felipe.contreras@gmail.com>
@@ -1069,7 +1069,7 @@ diff -uNr ticodecplugin/src/omapfb.c ticodecplugin.new/src/omapfb.c
 +}
 diff -uNr ticodecplugin/src/omapfb.h ticodecplugin.new/src/omapfb.h
 --- ticodecplugin/src/omapfb.h	1969-12-31 18:00:00.000000000 -0600
-+++ ticodecplugin.new/src/omapfb.h	2009-10-10 15:50:24.000000000 -0500
++++ ticodecplugin.new/src/omapfb.h	2009-10-28 06:35:20.000000000 -0500
 @@ -0,0 +1,142 @@
 +/*
 + * Copyright (C) 2008 Felipe Contreras <felipe.contreras@gmail.com>
@@ -1215,7 +1215,7 @@ diff -uNr ticodecplugin/src/omapfb.h ticodecplugin.new/src/omapfb.h
 +#endif /* GST_OMAPFB_H */
 diff -uNr ticodecplugin/src/yuv.S ticodecplugin.new/src/yuv.S
 --- ticodecplugin/src/yuv.S	1969-12-31 18:00:00.000000000 -0600
-+++ ticodecplugin.new/src/yuv.S	2009-10-10 15:50:24.000000000 -0500
++++ ticodecplugin.new/src/yuv.S	2009-10-28 06:35:20.000000000 -0500
 @@ -0,0 +1,117 @@
 +/*
 +    Copyright (C) 2008 Mans Rullgard

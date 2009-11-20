@@ -1,9 +1,9 @@
 DESCRIPTION = "Expedite is a comprehensive benchmarking suite for Evas"
 DEPENDS = "eet evas"
-RDEPENDS = "evas-engine-buffer evas-engine-fb evas-engine-software-generic evas-engine-software-x11 evas-loader-png"
+RDEPENDS = "expedite-themes evas-engine-buffer evas-engine-fb evas-engine-software-generic evas-engine-software-x11 evas-loader-png"
 LICENSE = "MIT BSD"
-PV = "0.6.0+svnr${SRCREV}"
-PR = "r1"
+PV = "0.6.0+svnr${SRCPV}"
+PR = "r3"
 
 inherit e
 
@@ -13,7 +13,6 @@ EXTRA_OECONF = "\
   --enable-simple-x11 \
 \
   --disable-opengl-glew \
-  --disable-opengl-x11 \
   --enable-software-x11 \
   --enable-xrender-x11 \
   --enable-software-16-x11 \

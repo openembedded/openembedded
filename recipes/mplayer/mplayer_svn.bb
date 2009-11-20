@@ -8,10 +8,12 @@ DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jp
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-	   file://pld-onlyarm5-svn.patch;patch=1 \
 	   file://makefile-nostrip-svn.patch;patch=1 \
+	   file://mplayer-arm-pld.patch;patch=1 \
+	   file://mplayer-lavc-arm.patch;patch=1 \
 	   "
 
+SRCREV = "29934"
 SRC_URI_append_armv7a = " \
 		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
@@ -33,10 +35,10 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+svnr${SRCREV}"
+PV = "0.0+1.0rc2+svnr${SRCPV}"
 PR = "r14"
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_armv7a = "1"
+DEFAULT_PREFERENCE_angstrom = "1"
 
 PARALLEL_MAKE = ""
 
@@ -165,6 +167,7 @@ EXTRA_OECONF = " \
 	--enable-select \
 	\
 	--extra-libs=' -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock -lliveMedia -lstdc++' \
+    --enable-protocol='file_protocol pipe_protocol http_protocol rtmp_protocol tcp_protocol udp_protocol' \
 "
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
@@ -188,6 +191,9 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-ru
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
+# FIXME: Temporarily disable debugging to work-around http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37987
+DEBUG_OPTIMIZATION_spitz = "-O -fomit-frame-pointer -g"
+DEBUG_OPTIMIZATION_akita = "-O -fomit-frame-pointer -g"
 
 do_configure_prepend_armv7a() {
 	cp ${WORKDIR}/yuv.S ${S}/libvo

@@ -13,7 +13,7 @@
 /dev/apm_bios	c	660	0	46	10	134	-	-	-
 /dev/fb0	c	600	0	0	29	0	-	-	-
 /dev/hda	b	660	0	6	3	0	-	-	-
-/dev/hda	b	660	0	6	3	1	1	1	20
+/dev/hda	b	660	0	6	3	1	1	1	19
 /dev/kmem	c	640	0	15	1	2	-	-	-
 /dev/mem	c	640	0	15	1	1	-	-	-
 /dev/null	c	666	0	0	1	3	-	-	-
@@ -33,10 +33,10 @@
 /dev/event 	c	660	0	0	13	64	0	1	8
 
 /dev/mmcblk0	b	660	0	6	179	0	-	-	-
-/dev/mmcblk0p	b	660	0	6	179	1	1	1	8
+/dev/mmcblk0p	b	660	0	6	179	1	1	1	7
 
 # for older kernels before 2.6.22
 # mmc numbers are assigned dynamicly so if you have other dynamic assigned block devices it may be wrong
 #
 #/dev/mmcblk0    b       660     0       6       254     0       -       -       -
-#/dev/mmcblk0p   b       660     0       6       254     1       1       1       8
+#/dev/mmcblk0p   b       660     0       6       254     1       1       1       7

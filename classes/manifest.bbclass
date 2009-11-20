@@ -1,6 +1,6 @@
 
 python read_manifest () {
-	import sys, bb.manifest
+	import sys
 	mfn = bb.data.getVar("MANIFEST", d, 1)
 	if os.access(mfn, os.R_OK):
 		# we have a manifest, so emit do_stage and do_populate_pkgs,

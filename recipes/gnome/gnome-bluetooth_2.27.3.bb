@@ -9,7 +9,7 @@ S = "${WORKDIR}/trunk"
 PV = "2.27.3+svnr${GBTREV}"
 PR = "r1"
 
-DEPENDS = "obexd obex-data-server gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
+DEPENDS = "obexd obex-data-server gconf gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
 RRECOMMENDS_${PN} += "obexd obex-data-server"
 RCONFLICTS_${PN} = "bluez-gnome"
 

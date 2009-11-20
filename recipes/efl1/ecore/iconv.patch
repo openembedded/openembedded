@@ -1,0 +1,96 @@
+Index: ecore/configure.ac
+===================================================================
+--- ecore.orig/configure.ac	2009-11-13 13:16:18.000000000 +0100
++++ ecore/configure.ac	2009-11-19 01:09:28.469345164 +0100
+@@ -29,6 +29,9 @@
+ AM_GNU_GETTEXT_VERSION([0.12.1])
+ AM_GNU_GETTEXT([external])
+ 
++# explicit call AM_ICONV, because gettext is used in a different way
++AM_ICONV
++
+ release="ver-pre-svn-04"
+ case "$host_os" in
+    mingw32ce* | cegcc*)
+@@ -378,48 +381,6 @@
+    requirements_ecore="glib-2.0 ${requirements_ecore}"
+ fi
+ 
+-
+-# iconv library (ecore_txt)
+-
+-iconv_cflags=""
+-iconv_libs=""
+-have_iconv="no"
+-AC_ARG_WITH([iconv-link],
+-   AC_HELP_STRING([--with-iconv-link=ICONV_LINK], [explicitly specify an iconv link option]),
+-   [
+-    iconv_libs=$withval
+-    have_iconv="yes"
+-   ]
+-)
+-
+-if test "x${have_iconv}" = "xno" ; then
+-   AC_CHECK_LIB(c, iconv,
+-      [have_iconv="yes"]   )
+-
+-   if ! test "x${have_iconv}" = "xyes" ; then
+-      AC_CHECK_LIB(iconv, iconv,
+-         [
+-          iconv_libs="-liconv"
+-          have_iconv="yes"
+-         ])
+-   fi
+-
+-   if test "x$have_iconv" != "xyes"; then
+-      AC_CHECK_LIB(iconv_plug, iconv,
+-         [
+-          iconv_libs="-liconv -liconv_plug"
+-          have_iconv="yes"
+-         ])
+-   fi
+-
+-fi
+-AC_MSG_CHECKING(for explicit iconv link options)
+-AC_MSG_RESULT($iconv_libs)
+-
+-AC_SUBST(iconv_cflags)
+-AC_SUBST(iconv_libs)
+-
+-
+ # SDL library (ecore_sdl)
+ 
+ have_sdl="no"
+@@ -790,7 +751,7 @@
+ ECORE_CHECK_MODULE([Job], [${want_ecore_job}])
+ 
+ # ecore_txt
+-ECORE_CHECK_MODULE([Txt], [${want_ecore_txt}], [$have_iconv])
++ECORE_CHECK_MODULE([Txt], [${want_ecore_txt}])
+ 
+ # ecore_con
+ ECORE_CHECK_MODULE([Con], [${want_ecore_con}])
+Index: ecore/src/lib/ecore_txt/Makefile.am
+===================================================================
+--- ecore.orig/src/lib/ecore_txt/Makefile.am	2009-11-13 13:16:12.000000000 +0100
++++ ecore/src/lib/ecore_txt/Makefile.am	2009-11-19 01:08:47.619349166 +0100
+@@ -3,8 +3,7 @@
+ AM_CPPFLAGS = \
+ -I$(top_srcdir)/src/lib/ecore \
+ -I$(top_builddir)/src/lib/ecore \
+-@EFL_ECORE_TXT_BUILD@ \
+-@iconv_cflags@
++@EFL_ECORE_TXT_BUILD@
+ 
+ if BUILD_ECORE_TXT
+ 
+@@ -16,8 +15,7 @@
+ libecore_txt_la_SOURCES = \
+ ecore_txt.c
+ 
+-libecore_txt_la_LIBADD = @iconv_libs@ \
+-@EINA_LIBS@
++libecore_txt_la_LIBADD = $(LTLIBICONV) @EINA_LIBS@
+ 
+ libecore_txt_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@ @ecore_txt_release_info@
+ 

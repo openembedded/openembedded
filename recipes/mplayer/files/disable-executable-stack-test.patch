@@ -19,12 +19,12 @@ at runtime.
 -int main(void) { return 0; }
 -EOF
 -if cc_check -Wl,-z,noexecstack ; then
--  _ld_extra="-Wl,-z,noexecstack $_ld_extra"
+-  extra_ldflags="-Wl,-z,noexecstack $extra_ldflags"
 -  echores "yes"
 -else
 -  echores "no"
 -fi
 +echores "no"
  
- echocheck "ftello()"
- # if we don't have ftello use the osdep/ compatibility module
+ # Dynamic linking flags
+ # (FIXME: 'echocheck "dynamic linking"' above and modify here accordingly)

@@ -1,0 +1,60 @@
+--- a/arch/arm/mach-omap2/Kconfig	2009-10-13 15:19:17.000000000 -0700
++++ b/arch/arm/mach-omap2/Kconfig	2009-10-13 15:19:51.000000000 -0700
+@@ -137,3 +137,9 @@
+ config MACH_OMAP3_PANDORA
+ 	bool "OMAP3 Pandora"
+ 	depends on ARCH_OMAP3 && ARCH_OMAP34XX
++
++config MACH_OMAP3_TOUCHBOOK
++	bool "OMAP3 Touch Book"
++	depends on ARCH_OMAP3 && ARCH_OMAP34XX
++	select BACKLIGHT_CLASS_DEVICE
++
+--- a/arch/arm/mach-omap2/Makefile	2009-10-13 15:22:26.000000000 -0700
++++ b/arch/arm/mach-omap2/Makefile	2009-10-13 15:21:10.000000000 -0700
+@@ -87,6 +87,9 @@
+ 					   twl4030-generic-scripts.o
+ obj-$(CONFIG_MACH_OMAP3_PANDORA)	+= board-omap3pandora.o \
+ 					   mmc-twl4030.o
++obj-$(CONFIG_MACH_OMAP3_TOUCHBOOK)	+= board-omap3touchbook.o \
++					   mmc-twl4030.o \
++					   twl4030-generic-scripts.o
+ 
+ # Platform specific device init code
+ obj-$(CONFIG_USB_MUSB_SOC)		+= usb-musb.o
+--- a/sound/soc/omap/Makefile	2009-10-15 21:07:27.000000000 +0200
++++ b/sound/soc/omap/Makefile	2009-10-15 21:09:18.000000000 +0200
+@@ -13,6 +13,7 @@
+ snd-soc-sdp3430-objs := sdp3430.o
+ snd-soc-omap3pandora-objs := omap3pandora.o
+ snd-soc-omap3beagle-objs := omap3beagle.o
++snd-soc-omap3touchbook-objs := omap3beagle.o
+ 
+ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+@@ -21,3 +22,4 @@
+ obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
++obj-$(CONFIG_SND_OMAP_SOC_OMAP3_TOUCHBOOK) += snd-soc-omap3beagle.o
+--- a/sound/soc/omap/Kconfig	2009-10-15 21:07:35.000000000 +0200
++++ b/sound/soc/omap/Kconfig	2009-10-15 21:08:24.000000000 +0200
+@@ -64,4 +64,11 @@
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the Beagleboard.
+ 
++config SND_OMAP_SOC_OMAP3_TOUCHBOOK
++	tristate "SoC Audio support for OMAP3 Touch Book"
++	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_TOUCHBOOK
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_TWL4030
++	help
++	  Say Y if you want to add support for SoC audio on the Touch Book.
+ 
+--- a/arch/arm/tools/mach-types	2009-10-16 08:22:36.000000000 +0800
++++ b/arch/arm/tools/mach-types	2009-10-16 08:23:13.000000000 +0800
+@@ -2124,3 +2124,4 @@
+ fmzwebmodul		MACH_FMZWEBMODUL	FMZWEBMODUL		2134
+ rd78x00_masa		MACH_RD78X00_MASA	RD78X00_MASA		2135
+ smallogger		MACH_SMALLOGGER		SMALLOGGER		2136
++omap3_touchbook	MACH_OMAP3_TOUCHBOOK	OMAP3_TOUCHBOOK		2393

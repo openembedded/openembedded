@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages"
-PR = "r10"
+PR = "r11"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -11,7 +11,7 @@ PACKAGES = "\
 RDEPENDS_task-sdk-x11 = "\
     atk-dev \
     cairo-dev \
-    gconf-dbus-dev \
+    gconf-dev \
     gtk+-dev \
     gtk-engines-dev \
     libsvg-cairo-dev \
@@ -50,4 +50,4 @@ RDEPENDS_task-sdk-gpe = "\
     libgpewidget-dev \
     libhandoff-dev \
     libxi-dev \
-    gconf-dbus-dev"
+    gconf-dev"

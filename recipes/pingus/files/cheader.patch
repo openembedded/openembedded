@@ -1,0 +1,27 @@
+Index: pingus-0.7.2/src/input/evdev_device.cpp
+===================================================================
+--- pingus-0.7.2.orig/src/input/evdev_device.cpp	2009-11-13 02:02:22.730671880 +0100
++++ pingus-0.7.2/src/input/evdev_device.cpp	2009-11-13 02:05:02.494404553 +0100
+@@ -25,6 +25,8 @@
+ #include <stdexcept>
+ #include <iostream>
+ #include <errno.h>
++#include <cstring>
++#include <cstdio>
+ 
+ #include "evdev_device.hpp"
+ 
+Index: pingus-0.7.2/src/tinygettext/po_file_reader.cpp
+===================================================================
+--- pingus-0.7.2.orig/src/tinygettext/po_file_reader.cpp	2009-11-13 01:59:35.807355200 +0100
++++ pingus-0.7.2/src/tinygettext/po_file_reader.cpp	2009-11-13 02:02:13.407754735 +0100
+@@ -23,7 +23,8 @@
+ #include <errno.h>
+ #include <sstream>
+ #include <stdexcept>
+-#include <string.h>
++#include <cstring>
++#include <cstdio>
+ #include "iconv.hpp"
+ #include "po_file_reader.hpp"
+ 

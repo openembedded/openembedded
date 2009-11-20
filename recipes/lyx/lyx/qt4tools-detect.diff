@@ -1,0 +1,15 @@
+--- /tmp/qt4.m4	2009-10-22 22:45:15.000000000 +0200
++++ lyx-1.6.4.1/config/qt4.m4	2009-10-22 22:46:23.000000000 +0200
+@@ -138,9 +138,9 @@
+ 	if test "$pkg_failed" != "no" ; then
+ 		QT4_DO_MANUAL_CONFIG
+ 	fi
+-	AC_PATH_PROGS(MOC4, [moc-qt4 moc],[],$qt4_cv_bin:$PATH)
+-	AC_PATH_PROGS(UIC4, [uic-qt4 uic],[],$qt4_cv_bin:$PATH)
+-	AC_PATH_PROGS(RCC4, [rcc-qt4 rcc],[],$qt4_cv_bin:$PATH)
++	AC_PATH_PROGS(MOC4, [moc-qt4 moc4],[],$qt4_cv_bin:$PATH)
++	AC_PATH_PROGS(UIC4, [uic-qt4 uic4],[],$qt4_cv_bin:$PATH)
++	AC_PATH_PROGS(RCC4, [rcc-qt4 rcc4],[],$qt4_cv_bin:$PATH)
+ ])
+ 
+ AC_DEFUN([QT4_DO_PKG_CONFIG],

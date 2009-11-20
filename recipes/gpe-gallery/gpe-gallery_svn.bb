@@ -2,7 +2,7 @@ DESCRIPTION = "GPE image viewer application"
 SECTION = "gpe"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget"
-PV = "0.97+svnr${SRCREV}"
+PV = "0.97+svnr${SRCPV}"
 
 inherit autotools 
 export CVSBUILD = "no"

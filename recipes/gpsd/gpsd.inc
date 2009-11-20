@@ -19,7 +19,7 @@ SRC_URI_append_om-gta01 = " \
            file://restart_gllin.sh \
 "
 			   
-inherit autotools update-rc.d
+inherit autotools_stage update-rc.d
 
 INITSCRIPT_NAME = "gpsd"
 INITSCRIPT_PARAMS = "defaults 35"
@@ -37,12 +37,6 @@ do_compile_prepend() {
 do_install_prepend() {
     export BUILD_SYS="${BUILD_SYS}"
     export HOST_SYS="${HOST_SYS}"
-}
-
-do_stage() {
-        oe_libinstall -so libgps ${STAGING_LIBDIR}
-        install -m 0644 ${S}/gps.h ${STAGING_INCDIR}
-        install -m 0644 ${S}/gpsd.h ${STAGING_INCDIR}
 }
 
 do_install_append() {
