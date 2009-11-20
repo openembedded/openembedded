@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 DEFAULT_TIMEZONE ?= "Europe/London"
 
@@ -28,9 +28,9 @@ do_compile () {
         for zone in ${TZONES}; do \
             ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}/build${datadir}/zoneinfo -L /dev/null \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}}/build${datadir}/zoneinfo/posix -L /dev/null \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}/build${datadir}/zoneinfo/posix -L /dev/null \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}}/build${datadir}/zoneinfo/right -L ${S}/leapseconds \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}/build${datadir}/zoneinfo/right -L ${S}/leapseconds \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
         done
 }
@@ -38,8 +38,11 @@ do_compile () {
 do_install () {
         install -d ${D}${prefix} ${D}${datadir}/zoneinfo
         cp -pPR ${WORKDIR}/build${prefix}/* ${D}${prefix}
-        cp -pP ${WORKDIR}/zone.tab ${D}${datadir}/zoneinfo
-        cp -pP ${WORKDIR}/iso3166.tab ${D}${datadir}/zoneinfo
+        # Only eglibc is removing zoneinfo files from package
+        if [ "${LIBC}"x == "eglibc"x ] ; then
+          cp -pP "${WORKDIR}/zone.tab" ${D}${datadir}/zoneinfo
+          cp -pP "${WORKDIR}/iso3166.tab" ${D}${datadir}/zoneinfo
+        fi
 
         # Install a sane default for timezones
         install -d ${D}${sysconfdir}
