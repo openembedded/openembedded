@@ -238,4 +238,5 @@ RDEPENDS_${PN} += "\
 		reiserfsprogs \
 		blipomoko \
 		imagemagick \
+		xboard \
 "
