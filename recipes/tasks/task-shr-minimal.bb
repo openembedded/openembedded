@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r17"
+PR = "r16"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -76,7 +76,6 @@ RDEPENDS_${PN}-base = "\
   logrotate\
   util-linux-ng-fdisk \
   shr-splash \
-  fso-apm \
 "
 
 RDEPENDS_${PN}-cli = "\
@@ -115,7 +114,6 @@ RDEPENDS_${PN}-audio_append_om-gta02 =  "\
 RDEPENDS_${PN}-x = "\
   glibc-utils \
   glibc-charmap-utf-8 \
-  e-wm-config-illume-shr \
   shr-theme-gry \
   etk-theme-shr \
   ${@get_rdepends(bb, d)} \

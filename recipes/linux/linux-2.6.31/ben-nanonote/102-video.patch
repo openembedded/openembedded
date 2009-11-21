@@ -1,0 +1,134 @@
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -237,6 +237,119 @@ config FB_TILEBLITTING
+ comment "Frame buffer hardware drivers"
+ 	depends on FB
+ 
++/************************************************************/
++config FB_JZSOC
++	tristate "JZSOC LCD controller support"
++	depends on FB && JZSOC
++	select FB_CFB_FILLRECT
++	select FB_CFB_COPYAREA
++	select FB_CFB_IMAGEBLIT
++	---help---
++	   JZSOC LCD Controller and Smart LCD Controller driver support.
++
++config FB_JZ4740_SLCD
++	tristate "JZ4740 Smart LCD controller support"
++	depends on FB_JZSOC && SOC_JZ4740
++	default n
++	---help---
++	  This is the frame buffer device driver for the JZ4740 Smart LCD controller.
++	  If select this, please set <JZ4740 LCD controller support> to <n>.
++
++choice
++	depends on FB_JZ4740_SLCD
++	prompt "SLCD Panel"
++	default JZ_SLCD_LGDP4551_8BUS
++
++config JZ_SLCD_LGDP4551
++	bool "LG LGDP4551 Smart LCD panel"
++	---help---
++	Driver for Smart LCD LGDP4551, 8-bit sytem interface, 16BPP.
++
++config JZ_SLCD_SPFD5420A
++	bool "SPFD5420A Smart LCD panel"
++	---help---
++	Driver for Smart LCD SPFD5420A 18-bit sytem interface, 18BPP.
++
++config JZ_SLCD_TRULY
++	bool "TRULY Smart LCD panel (MAX Pixels 400x240)"
++	---help---
++
++endchoice
++
++config FB_JZLCD_4730_4740
++	tristate "JZ4730 JZ4740 LCD controller support"
++	depends on FB_JZSOC && (SOC_JZ4730 || SOC_JZ4740)
++	help
++	  This is the frame buffer device driver for the JZ4730 and JZ4740 LCD controller.
++choice
++	depends on FB_JZLCD_4730_4740
++	prompt "LCD Panel"
++	default JZLCD_SAMSUNG_LTP400WQF01
++
++config JZLCD_SHARP_LQ035Q7
++	bool "SHARP LQ035Q7 TFT panel (240x320)"
++
++config JZLCD_SAMSUNG_LTS350Q1
++	bool "SAMSUNG LTS350Q1 TFT panel (240x320)"
++
++config JZLCD_SAMSUNG_LTV350QVF04
++	bool "SAMSUNG LTV350QV_F04 TFT panel (320x240)"
++
++config JZLCD_SAMSUNG_LTP400WQF01
++	bool "SAMSUNG LTP400WQF01 TFT panel (480x272)(16bits)"
++
++config JZLCD_SAMSUNG_LTP400WQF02
++	bool "SAMSUNG LTP400WQF02 TFT panel (480x272)(18bits)"
++
++config JZLCD_AUO_A030FL01_V1
++	bool "AUO A030FL01_V1 TFT panel (480x272)"
++
++config JZLCD_TRULY_TFTG320240DTSW
++	bool "TRULY TFTG320240DTSW TFT panel (320x240)"
++
++config JZLCD_TRULY_TFTG320240DTSW_SERIAL
++	bool "TRULY TFTG320240DTSW TFT panel (320x240)(8bit-serial mode)"
++
++config JZLCD_TRULY_TFTG240320UTSW_63W_E
++      	bool "TRULY TFTG240320UTSW-63W-E TFT panel (240x320,2.5in)"
++
++config JZLCD_FOXCONN_PT035TN01
++	bool "FOXCONN PT035TN01 TFT panel (320x240)"
++
++config JZLCD_INNOLUX_PT035TN01_SERIAL
++     	bool "INNOLUX PT035TN01 TFT panel (320x240,3.5in)(8bit-serial mode)"
++
++config JZLCD_TOSHIBA_LTM084P363
++	bool "Toshiba LTM084P363 TFT panel (800x600)"
++
++config JZLCD_HYNIX_HT10X21
++	bool "Hynix HT10X21_300 TFT panel (1024x768)"
++
++config JZLCD_INNOLUX_AT080TN42
++      	bool "INNOLUX AT080TN42 TFT panel (800x600)"
++
++config JZLCD_CSTN_800x600
++	bool "800x600 colorDSTN panel"
++
++config JZLCD_CSTN_320x240
++	bool "320x240 colorSTN panel"
++
++config JZLCD_MSTN_480x320
++	bool "480x320 monoSTN panel"
++
++config JZLCD_MSTN_320x240
++	bool "320x240 monoSTN panel"
++
++config JZLCD_MSTN_240x128
++	bool "240x128 monoSTN panel"
++
++config JZLCD_MSTN_INVERSE
++	bool "Use an inverse color display."
++	depends on (JZLCD_MSTN_480x320 || JZLCD_MSTN_240x128)
++
++endchoice
++
++
+ config FB_CIRRUS
+ 	tristate "Cirrus Logic support"
+ 	depends on FB && (ZORRO || PCI)
+--- a/drivers/video/Makefile
++++ b/drivers/video/Makefile
+@@ -28,6 +28,9 @@ obj-$(CONFIG_FB_DDC)           += fb_ddc
+ obj-$(CONFIG_FB_DEFERRED_IO)   += fb_defio.o
+ 
+ # Hardware specific drivers go first
++obj-$(CONFIG_FB_JZLCD_4720_4740)  += jzlcd.o
++obj-$(CONFIG_FB_JZ4740_SLCD)      += jz4740_slcd.o
++
+ obj-$(CONFIG_FB_AMIGA)            += amifb.o c2p_planar.o
+ obj-$(CONFIG_FB_ARC)              += arcfb.o
+ obj-$(CONFIG_FB_CLPS711X)         += clps711xfb.o
