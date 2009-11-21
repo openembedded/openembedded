@@ -716,9 +716,14 @@ base_do_buildall() {
 	:
 }
 
+def subprocess_setup():
+	import signal, subprocess
+	# Python installs a SIGPIPE handler by default. This is usually not what
+	# non-Python subprocesses expect.
+	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 def oe_unpack_file(file, data, url = None):
-	import bb, os
+	import bb, os, signal, subprocess
 	if not url:
 		url = "file://%s" % file
 	dots = file.split(".")
@@ -787,7 +792,7 @@ def oe_unpack_file(file, data, url = None):
 
 	cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', data, 1), cmd)
 	bb.note("Unpacking %s to %s/" % (base_path_out(file, data), base_path_out(os.getcwd(), data)))
-	ret = os.system(cmd)
+	ret = subprocess.call(cmd, preexec_fn=subprocess_setup, shell=True)
 
 	os.chdir(save_cwd)
 
