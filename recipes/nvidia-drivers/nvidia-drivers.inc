@@ -42,6 +42,8 @@ EXTRA_OEMAKE=" KERNEL_SOURCES=${STAGING_KERNEL_DIR} KERNEL_MODLIB=${STAGING_KERN
 
 PKG_BASENAME="NVIDIA-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}"
 
+FILES_${PN}-doc += " /usr/share/doc/*"
+
 nvidia_do_unpack() {
 	sh ${PKG_BASENAME}.run -x
 }
