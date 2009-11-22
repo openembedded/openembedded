@@ -1,0 +1,20 @@
+Index: config/config.sub
+===================================================================
+--- config.orig/config.sub
++++ config/config.sub
+@@ -259,6 +259,7 @@ case $basic_machine in
+ 	| mn10200 | mn10300 \
+ 	| ms1 \
+ 	| msp430 \
++	| nios2 | nios2eb | nios2el \
+ 	| ns16k | ns32k \
+ 	| openrisc | or32 \
+ 	| pdp10 | pdp11 | pj | pjl \
+@@ -338,6 +339,7 @@ case $basic_machine in
+ 	| mmix-* \
+ 	| ms1-* \
+ 	| msp430-* \
++	| nios2-* | nios2eb-* | nios2el-* \
+ 	| none-* | np1-* | ns16k-* | ns32k-* \
+ 	| orion-* \
+ 	| pdp10-* | pdp11-* | pj-* | pjl-* | pn-* | power-* \
