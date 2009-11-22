@@ -2,11 +2,11 @@
 
 do_strip_modules () {
 	for p in ${PACKAGES}; do
-		if test -e ${WORKDIR}/install/$p/lib/modules; then
+		if test -e ${PKGDEST}/$p/lib/modules; then
 			if [ "${KERNEL_MAJOR_VERSION}" == "2.6" ]; then
-				modules="`find ${WORKDIR}/install/$p/lib/modules -name \*.ko`"
+				modules="`find ${PKGDEST}/${p}/lib/modules -name \*.ko`"
 			else
-				modules="`find ${WORKDIR}/install/$p/lib/modules -name \*.o`"
+				modules="`find ${PKGDEST}/${p}/lib/modules -name \*.o`"
 			fi
 			if [ -n "$modules" ]; then
 				for module in $modules ; do
