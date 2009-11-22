@@ -63,8 +63,8 @@ def package_qa_get_machine_dict():
                         "i686":       (   3,     0,    0,          True,          True),
                         "mipsel":     (   8,     0,    0,          True,          True),
                         "avr32":      (6317,     0,    0,          False,         True),
-			"sh4":        (42,	 0,    0,          True,          True),
-
+                        "sh4":        (42,       0,    0,          True,          True),
+                        "nios2":      (113,      0,    0,          True,          True),
                       },
             "uclinux-uclibc" : {
                         "bfin":       ( 106,     0,    0,          True,         True),
