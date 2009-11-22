@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 inherit e update-alternatives
 
@@ -15,6 +15,11 @@ SRC_URI += "\
 "
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
+
+SRC_URI_append_shr = " \
+  file://illume-disable-screensaver.patch;patch=1 \
+  file://wizard-module-skipping.patch;patch=1 \
+"
 
 EXTRA_OECONF = "\
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
