@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r9"
+PR = "r7"
 
 inherit e update-alternatives
 
@@ -17,10 +17,12 @@ SRC_URI += "\
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
 SRC_URI_append_shr = " file://illume-disable-screensaver.patch;patch=1 \
-file://e_fm2-single-click-delay-support.patch;patch=1;maxrev=41127 \
-file://Add-press-delay-support-to-illume.patch;patch=1;maxrev=41128 \
-file://e_fm2-avoid-invalid-clicks-2.patch;patch=1;maxrev=41127 "
-
+  file://e_fm2-single-click-delay-support.patch;patch=1;maxrev=41127 \
+  file://Add-press-delay-support-to-illume.patch;patch=1;maxrev=41128 \
+  file://e_fm2-avoid-invalid-clicks-2.patch;patch=1;maxrev=41127 \
+  file://illume-disable-screensaver.patch;patch=1 \
+  file://wizard-module-skipping.patch;patch=1 \
+"
 
 EXTRA_OECONF = "\
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
