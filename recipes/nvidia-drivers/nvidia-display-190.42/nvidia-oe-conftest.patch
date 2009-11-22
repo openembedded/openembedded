@@ -1,0 +1,27 @@
+Index: nv/Makefile.kbuild
+===================================================================
+--- nv.orig/Makefile.kbuild	2009-10-21 06:04:11.000000000 +0200
++++ nv/Makefile.kbuild	2009-11-22 00:55:06.000000000 +0100
+@@ -284,19 +284,16 @@
+ # sufficient privileges. Rebuild the module dependency file.
+ #
+ 
+-module-install: suser-sanity-check module
++module-install: module
+ 	@mkdir -p $(MODULE_ROOT)/video; \
+-	install -m 0664 -o root -g root $(MODULE_OBJECT) $(MODULE_ROOT)/video; \
+-	PATH="$(PATH):/bin:/sbin" depmod -ae;
++	install -m 0664 $(MODULE_OBJECT) $(MODULE_ROOT)/video;
+ 
+ #
+ # This target builds, then installs, then creates device nodes and inserts
+ # the module, if successful.
+ #
+ 
+-package-install: module-install rmmod-sanity-check
+-	PATH="$(PATH):/bin:/sbin" modprobe $(MODULE_NAME) && \
+-	echo "$(MODULE_OBJECT) installed successfully.";
++package-install: module-install
+ 
+ #
+ # Build an object file suitable for further processing by the installer and

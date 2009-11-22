@@ -239,4 +239,7 @@ RDEPENDS_${PN} += "\
 		blipomoko \
 		imagemagick \
 		xboard \
+		sox \
+		mpg123 \
+		zile \
 "
