@@ -20,7 +20,6 @@ SRC_URI_append_shr = " file://illume-disable-screensaver.patch;patch=1 \
   file://e_fm2-single-click-delay-support.patch;patch=1;maxrev=41127 \
   file://Add-press-delay-support-to-illume.patch;patch=1;maxrev=41128 \
   file://e_fm2-avoid-invalid-clicks-2.patch;patch=1;maxrev=41127 \
-  file://illume-disable-screensaver.patch;patch=1 \
   file://wizard-module-skipping.patch;patch=1 \
 "
 
