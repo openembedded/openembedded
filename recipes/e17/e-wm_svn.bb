@@ -12,7 +12,7 @@ SRC_URI += "\
   file://applications.menu \
   file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
   file://fix-profiles.diff;patch=1;maxrev=39889 \
-  file://illume-flow.patch;patch=0 \
+  file://illume-flow.patch;patch=0;maxrev=43852 \
 "
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
