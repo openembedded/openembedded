@@ -6,11 +6,12 @@ INHIBIT_DEFAULT_DEPS = "1"
 
 FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 PV = "0.1+cvs${FIXEDSRCDATE}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "cvs://anonymous@cvs.sv.gnu.org/cvsroot/config;module=config;method=pserver;date=${FIXEDSRCDATE} \
 	   file://config-guess-uclibc.patch;patch=1 \
            file://avr32.patch;patch=1 \
+           file://nios2.patch;patch=1 \
            file://gnu-configize.in"
 S = "${WORKDIR}/config"
 
