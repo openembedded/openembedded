@@ -12,7 +12,7 @@ valid_archs = "alpha cris ia64 \
                m32r mips \
 	       sh sh64 um h8300   \
 	       parisc s390  v850 \
-	       avr32 blackfin"
+	       avr32 blackfin nios2"
 
 def map_kernel_arch(a, d):
 	import re
