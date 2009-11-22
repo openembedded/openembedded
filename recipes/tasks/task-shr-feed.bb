@@ -242,4 +242,5 @@ RDEPENDS_${PN} += "\
 		sox \
 		mpg123 \
 		zile \
+		speex \
 "
