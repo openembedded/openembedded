@@ -211,9 +211,10 @@ do_install() {
         oe_runmake "SSP_ALL_CFLAGS=${TARGET_LINK_HASH_STYLE}" utils
         oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
                 install_utils
-	
-	# oe_runstrip needs +x on files	
-	chmod +x ${D}/${base_libdir}/*
+	if [ "x$SHARED_LIBRARIESy" != "xnoy"; then
+		# oe_runstrip needs +x on files	
+		chmod +x ${D}/${base_libdir}/*
+	fi
 
 	if [ "${bindir}" != "/usr/bin" ]; then
 		install -d ${D}${bindir}
