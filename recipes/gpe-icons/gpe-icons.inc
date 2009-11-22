@@ -17,4 +17,20 @@ pkg_postinst() {
                 echo "warn: Check what's left there and remove it manually."
                 mv -f ${ALTERNATIVE_LINK} ${ALTERNATIVE_LINK}.old
         fi
+        pixmap_dirs_root="${datadir}/gpe/"
+        cd ${pixmap_dirs_root}
+        for pixmap_dir in pixmaps.*; do
+                if [ "${pixmap_dir}"x == "pixmaps.${PN}"x ] ; then
+                          continue;
+                fi
+                for pixmap in `find ${pixmap_dir}`; do 
+                          pixmap_target=`echo ${pixmap} | sed "s/${pixmap_dir}/pixmaps.${PN}/g"`; 
+                          if [ -e ${pixmap_target} ] ; then 
+                                      echo "${pixmap_target} exists"; 
+                          else 
+                                      echo "${pixmap} merged"; 
+                                      cp -ra ${pixmap} ${pixmap_target}; 
+                          fi; 
+                done
+        done
 }
