@@ -10,6 +10,7 @@ DISTRO_NAME = "Angstrom"
 BUILDNAME = "Angstrom ${DISTRO_VERSION}"
 
 TARGET_VENDOR = "-angstrom"
+TARGET_VENDOR_nios2 = ""
 
 # Add FEED_ARCH to overrides
 OVERRIDES .= ":${FEED_ARCH}"
