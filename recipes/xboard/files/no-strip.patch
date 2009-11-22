@@ -1,15 +1,22 @@
-Index: xboard-4.2.7-r0/xboard-4.2.7/Makefile.in
+Index: xboard-4.4.1-r0/xboard-4.4.1/Makefile.in
 ===================================================================
---- xboard-4.2.7-r0.orig/xboard-4.2.7/Makefile.in
-+++ xboard-4.2.7-r0/xboard-4.2.7/Makefile.in
-@@ -63,8 +63,8 @@ default: xboard zic2xpm
- all: default pseudosource info FAQ html dvi ps
+--- xboard-4.4.1-r0.orig/xboard-4.4.1/Makefile.in
++++ xboard-4.4.1-r0/xboard-4.4.1/Makefile.in
+@@ -939,7 +939,7 @@
  
- install: installdirs default
--	$(INSTALL_PROGRAM) -s xboard $(bindir)/xboard
--	$(INSTALL_PROGRAM) -s zic2xpm $(bindir)/zic2xpm
-+	$(INSTALL_PROGRAM) xboard $(bindir)/xboard
-+	$(INSTALL_PROGRAM) zic2xpm $(bindir)/zic2xpm
- 	$(INSTALL_PROGRAM) cmail $(bindir)/cmail
- 	$(INSTALL_PROGRAM) $(srcdir)/pxboard $(bindir)/pxboard
- 	$(INSTALL_DATA) $(srcdir)/xboard.man $(man6dir)/xboard$(man6ext)
+ uninstall-man: uninstall-man6
+ 
+-.MAKE: install-am install-strip
++.MAKE: install-am
+ 
+ .PHONY: CTAGS GTAGS all all-am am--refresh check check-am clean \
+ 	clean-binPROGRAMS clean-generic ctags dist dist-all dist-bzip2 \
+@@ -951,7 +951,7 @@
+ 	install-data-am install-dvi install-dvi-am install-exec \
+ 	install-exec-am install-html install-html-am install-info \
+ 	install-info-am install-man install-man6 install-pdf \
+-	install-pdf-am install-ps install-ps-am install-strip \
++	install-pdf-am install-ps install-ps-am \
+ 	installcheck installcheck-am installdirs maintainer-clean \
+ 	maintainer-clean-aminfo maintainer-clean-generic \
+ 	maintainer-clean-vti mostlyclean mostlyclean-aminfo \

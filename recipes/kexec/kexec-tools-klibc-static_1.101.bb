@@ -1,10 +1,12 @@
 # the binaries are statical linked against klibc
 require kexec-tools.inc
 
-PR = "r5"
+PR = "r6"
 DEPENDS = "klibc"
 
-SRC_URI += "file://kexec-klibc.patch;patch=1"
+SRC_URI += "file://kexec-static.patch;patch=1 \
+	    file://kexec-klibc.patch;patch=1 \
+	    "
 S = "${WORKDIR}/kexec-tools-${PV}"
 
 EXTRA_OECONF = " --without-zlib"

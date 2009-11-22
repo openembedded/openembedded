@@ -1,0 +1,158 @@
+--- a/drivers/usb/Kconfig
++++ b/drivers/usb/Kconfig
+@@ -44,6 +44,7 @@ config USB_ARCH_HAS_OHCI
+ 	default y if PPC_MPC52xx
+ 	# MIPS:
+ 	default y if SOC_AU1X00
++	default y if JZSOC
+ 	# SH:
+ 	default y if CPU_SUBTYPE_SH7720
+ 	default y if CPU_SUBTYPE_SH7721
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -1857,6 +1857,25 @@ static int hub_port_reset(struct usb_hub
+ {
+ 	int i, status;
+ 
++#ifdef CONFIG_SOC_JZ4730
++	/*
++	 * On Jz4730, we assume that the first USB port was used as device.
++	 * If not, please comment next lines.
++	 */
++	if (port1 == 1) {
++		return 0;
++	}
++#endif
++
++#if defined(CONFIG_SOC_JZ4740) || defined(CONFIG_SOC_JZ4750) || defined(CONFIG_SOC_JZ4750D)
++	/*
++	 * On Jz4740 and Jz4750, the second USB port was used as device.
++	 */
++	if (port1 == 2) {
++		return 0;
++	}
++#endif
++
+ 	/* Block EHCI CF initialization during the port reset.
+ 	 * Some companion controllers don't like it when they mix.
+ 	 */
+@@ -2818,11 +2837,35 @@ static void hub_port_connect_change(stru
+ 			le16_to_cpu(hub->descriptor->wHubCharacteristics);
+ 	struct usb_device *udev;
+ 	int status, i;
++#ifdef CONFIG_JZSOC
++	static char jzhub = 1; /* the hub first to be initialized is jzsoc on-chip hub */
++#endif
+ 
+ 	dev_dbg (hub_dev,
+ 		"port %d, status %04x, change %04x, %s\n",
+ 		port1, portstatus, portchange, portspeed (portstatus));
+ 
++#ifdef CONFIG_SOC_JZ4730
++	/*
++	 * On Jz4730, we assume that the first USB port was used as device.
++	 * If not, please comment next lines.
++	 */
++	if ((port1 == 1) && (jzhub)) {
++		jzhub = 0;
++		return;
++	}
++#endif
++
++#if defined(CONFIG_SOC_JZ4740) || defined(CONFIG_SOC_JZ4750) || defined(CONFIG_SOC_JZ4750D)
++	/*
++	 * On Jz4740 and Jz4750, the second USB port was used as device.
++	 */
++	if ((port1 == 2) && (jzhub)) {
++		jzhub = 0;
++		return;
++	}
++#endif
++
+ 	if (hub->has_indicators) {
+ 		set_port_led(hub, port1, HUB_LED_AUTO);
+ 		hub->indicator[port1-1] = INDICATOR_AUTO;
+--- a/drivers/usb/gadget/Kconfig
++++ b/drivers/usb/gadget/Kconfig
+@@ -121,11 +121,25 @@ choice
+ #
+ # Integrated controllers
+ #
++config USB_GADGET_JZ4740
++	boolean "JZ4740 UDC"
++	depends on SOC_JZ4740
++	select USB_GADGET_SELECTED
++	select USB_GADGET_DUALSPEED
++	help
++    	   Select this to support the Ingenic JZ4740 processor
++           high speed USB device controller.
++
++config USB_JZ4740
++	tristate
++	depends on USB_GADGET_JZ4740
++	default USB_GADGET
+ 
+ config USB_GADGET_AT91
+ 	boolean "Atmel AT91 USB Device Port"
+ 	depends on ARCH_AT91 && !ARCH_AT91SAM9RL && !ARCH_AT91CAP9
+ 	select USB_GADGET_SELECTED
++
+ 	help
+ 	   Many Atmel AT91 processors (such as the AT91RM2000) have a
+ 	   full speed USB Device Port with support for five configurable
+@@ -534,6 +548,10 @@ config USB_DUMMY_HCD
+ 
+ endchoice
+ 
++config USB_JZ_UDC_HOTPLUG
++	boolean "Ingenic USB Device Controller Hotplug Support"
++	depends on USB_GADGET_JZ4750
++
+ config USB_GADGET_DUALSPEED
+ 	bool
+ 	depends on USB_GADGET
+@@ -541,7 +559,6 @@ config USB_GADGET_DUALSPEED
+ 	help
+ 	  Means that gadget drivers should include extra descriptors
+ 	  and code to handle dual-speed controllers.
+-
+ #
+ # USB Gadget Drivers
+ #
+--- a/drivers/usb/gadget/Makefile
++++ b/drivers/usb/gadget/Makefile
+@@ -27,6 +27,9 @@ obj-$(CONFIG_USB_FSL_QE)	+= fsl_qe_udc.o
+ obj-$(CONFIG_USB_CI13XXX)	+= ci13xxx_udc.o
+ obj-$(CONFIG_USB_S3C_HSOTG)	+= s3c-hsotg.o
+ obj-$(CONFIG_USB_LANGWELL)	+= langwell_udc.o
++obj-$(CONFIG_USB_JZ4740)	+= jz4740_udc.o
++
++obj-$(CONFIG_USB_JZ_UDC_HOTPLUG)+= udc_hotplug_core.o
+ 
+ #
+ # USB gadget drivers
+--- a/drivers/usb/gadget/gadget_chips.h
++++ b/drivers/usb/gadget/gadget_chips.h
+@@ -15,6 +15,12 @@
+ #ifndef __GADGET_CHIPS_H
+ #define __GADGET_CHIPS_H
+ 
++#ifdef CONFIG_USB_GADGET_JZ4740
++#define	gadget_is_jz4740(g)	!strcmp("ingenic_hsusb", (g)->name)
++#else
++#define	gadget_is_jz4740(g)	0
++#endif
++
+ #ifdef CONFIG_USB_GADGET_NET2280
+ #define	gadget_is_net2280(g)	!strcmp("net2280", (g)->name)
+ #else
+@@ -239,6 +245,9 @@ static inline int usb_gadget_controller_
+ 		return 0x23;
+ 	else if (gadget_is_langwell(gadget))
+ 		return 0x24;
++	else if (gadget_is_jz4740(gadget))
++		return 0x25;
++
+ 	return -ENOENT;
+ }
+ 

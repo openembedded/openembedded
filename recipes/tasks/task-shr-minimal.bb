@@ -114,7 +114,6 @@ RDEPENDS_${PN}-audio_append_om-gta02 =  "\
 RDEPENDS_${PN}-x = "\
   glibc-utils \
   glibc-charmap-utf-8 \
-  e-wm-config-illume-shr \
   shr-theme-gry \
   etk-theme-shr \
   ${@get_rdepends(bb, d)} \

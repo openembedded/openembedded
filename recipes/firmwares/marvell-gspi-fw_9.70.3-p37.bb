@@ -11,6 +11,7 @@ do_install() {
 	install -d ${D}${base_libdir}/firmware
 	install -m 0644 gspi8686.bin helper_gspi.bin ${D}${base_libdir}/firmware
 	install -m 0644 ${WORKDIR}/Marvell-Licence.txt ${D}${base_libdir}/firmware
+	ln -s helper_gspi.bin ${D}${base_libdir}/firmware/gspi8686_hlp.bin
 }
 
 PACKAGES = "${PN}"

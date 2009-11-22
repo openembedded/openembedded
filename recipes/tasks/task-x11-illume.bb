@@ -10,6 +10,7 @@ inherit task
 
 # Default illume theme
 ILLUME_THEME ?= "e-wm-theme-illume"
+ILLUME_CONFIG ?= "e-wm-config-illume"
 
 RDEPENDS_${PN} = "\
   task-x11-server \
@@ -17,6 +18,6 @@ RDEPENDS_${PN} = "\
 #  xserver-kdrive-splash-illume \
   \
   e-wm \
-  e-wm-config-illume \
+  ${ILLUME_CONFIG} \
   ${ILLUME_THEME} \
 "
