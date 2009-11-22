@@ -19,15 +19,23 @@ FILES_${PN}-dev += "${libdir}/${PN}/*/*.la"
 SRC_URI_append = " \
                   file://navit.desktop \
                   file://navit.launcher \
+                  file://navit.png \
 	  	 "
-SRC_URI_append_shr = "file://use-fso-raw.patch;patch=1"
+SRC_URI_append_shr = "file://navitD.desktop \
+                      file://navitD.png \
+                     "
 
-DEPENDS_shr += "gypsy"
-RDEPENDS_shr += "fsoraw"
+DEPENDS_append_shr = " gypsy"
+RDEPENDS_append_shr = " fsoraw"
 
 do_install_append() {
         install -d ${D}${datadir}/applications/
         install -m 0644 ${WORKDIR}/navit.desktop ${D}${datadir}/applications/
+        install -m 0644 ${WORKDIR}/navitD.desktop ${D}${datadir}/applications/
+
+        install -d ${D}${datadir}/pixmaps/
+        install -m 0644 ${WORKDIR}/navit.png ${D}${datadir}/pixmaps/
+        install -m 0644 ${WORKDIR}/navitD.png ${D}${datadir}/pixmaps/
 
         mv ${D}${bindir}/navit ${D}${bindir}/navit.real
         install -m 0755 ${WORKDIR}/navit.launcher ${D}${bindir}/navit
