@@ -13,6 +13,7 @@ OBJC_linux-uclibceabi ?= ""
 OBJC_linux-uclibc ?= ""
 OBJC_avr ?= ""
 OBJC ?= ",objc"
+SHARED_LIBRARIES ?= "yes"
 
 # gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
 FORTRAN ?= ",f77"
@@ -23,7 +24,7 @@ EXTRA_OECONF_PATHS ?= ""
 
 EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
-                --enable-shared \
+                ${@['--enable-shared', '--disable-shared'][ "$SHARED_LIBRARIES" != "no" ]} \
                 --enable-target-optspace \
                 --enable-languages=${LANGUAGES} \
                 --enable-threads=posix \
