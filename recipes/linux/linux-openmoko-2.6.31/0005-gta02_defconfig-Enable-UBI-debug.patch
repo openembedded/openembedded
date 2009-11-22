@@ -1,0 +1,88 @@
+From 5ae14aa9c5eea7178a8de28515b45d600ecb7a13 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sun, 8 Nov 2009 11:24:01 +0100
+Subject: [PATCH 5/5] gta02_defconfig: Enable UBI debug
+
+---
+ arch/arm/configs/gta02_defconfig |   23 +++++++++++++++++++++--
+ 1 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/configs/gta02_defconfig b/arch/arm/configs/gta02_defconfig
+index 3f1b60b..0f53baf 100644
+--- a/arch/arm/configs/gta02_defconfig
++++ b/arch/arm/configs/gta02_defconfig
+@@ -76,6 +76,7 @@ CONFIG_ANON_INODES=y
+ CONFIG_UID16=y
+ CONFIG_SYSCTL_SYSCALL=y
+ CONFIG_KALLSYMS=y
++CONFIG_KALLSYMS_ALL=y
+ # CONFIG_KALLSYMS_EXTRA_PASS is not set
+ CONFIG_HOTPLUG=y
+ CONFIG_PRINTK=y
+@@ -110,6 +111,7 @@ CONFIG_HAVE_CLK=y
+ #
+ # GCOV-based kernel profiling
+ #
++# CONFIG_GCOV_KERNEL is not set
+ # CONFIG_SLOW_WORK is not set
+ CONFIG_HAVE_GENERIC_DMA_COHERENT=y
+ CONFIG_SLABINFO=y
+@@ -656,7 +658,21 @@ CONFIG_MTD_UBI_GLUEBI=y
+ #
+ # UBI debugging options
+ #
+-# CONFIG_MTD_UBI_DEBUG is not set
++CONFIG_MTD_UBI_DEBUG=y
++CONFIG_MTD_UBI_DEBUG_MSG=y
++# CONFIG_MTD_UBI_DEBUG_PARANOID is not set
++# CONFIG_MTD_UBI_DEBUG_DISABLE_BGT is not set
++# CONFIG_MTD_UBI_DEBUG_EMULATE_BITFLIPS is not set
++# CONFIG_MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES is not set
++# CONFIG_MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES is not set
++
++#
++# Additional UBI debugging messages
++#
++CONFIG_MTD_UBI_DEBUG_MSG_BLD=y
++CONFIG_MTD_UBI_DEBUG_MSG_EBA=y
++CONFIG_MTD_UBI_DEBUG_MSG_WL=y
++CONFIG_MTD_UBI_DEBUG_MSG_IO=y
+ # CONFIG_PARPORT is not set
+ CONFIG_BLK_DEV=y
+ # CONFIG_BLK_DEV_COW_COMMON is not set
+@@ -1238,6 +1254,7 @@ CONFIG_USB_OHCI_LITTLE_ENDIAN=y
+ # CONFIG_USB_VST is not set
+ CONFIG_USB_GADGET=y
+ # CONFIG_USB_GADGET_DEBUG_FILES is not set
++# CONFIG_USB_GADGET_DEBUG_FS is not set
+ CONFIG_USB_GADGET_VBUS_DRAW=500
+ CONFIG_USB_GADGET_SELECTED=y
+ # CONFIG_USB_GADGET_AT91 is not set
+@@ -1419,6 +1436,7 @@ CONFIG_EXT3_FS=y
+ # CONFIG_EXT3_FS_XATTR is not set
+ # CONFIG_EXT4_FS is not set
+ CONFIG_JBD=y
++# CONFIG_JBD_DEBUG is not set
+ # CONFIG_REISERFS_FS is not set
+ # CONFIG_JFS_FS is not set
+ # CONFIG_FS_POSIX_ACL is not set
+@@ -1577,7 +1595,7 @@ CONFIG_NLS_DEFAULT="iso8859-1"
+ CONFIG_FRAME_WARN=1024
+ # CONFIG_MAGIC_SYSRQ is not set
+ # CONFIG_UNUSED_SYMBOLS is not set
+-# CONFIG_DEBUG_FS is not set
++CONFIG_DEBUG_FS=y
+ # CONFIG_HEADERS_CHECK is not set
+ # CONFIG_DEBUG_KERNEL is not set
+ CONFIG_DEBUG_BUGVERBOSE=y
+@@ -1589,6 +1607,7 @@ CONFIG_FRAME_POINTER=y
+ CONFIG_HAVE_FUNCTION_TRACER=y
+ CONFIG_TRACING_SUPPORT=y
+ # CONFIG_FTRACE is not set
++# CONFIG_DYNAMIC_DEBUG is not set
+ # CONFIG_SAMPLES is not set
+ CONFIG_HAVE_ARCH_KGDB=y
+ # CONFIG_ARM_UNWIND is not set
+-- 
+1.6.5.2
+

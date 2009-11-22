@@ -1,5 +1,5 @@
 DESCRIPTION = "fantasy turn-based strategy game"
-PV = "0.01+svnr${SRCREV}"
+PV = "0.01+svnr${SRCPV}"
 PR = "r1"
 SECTION = "games"
 LICENSE = "GPL"

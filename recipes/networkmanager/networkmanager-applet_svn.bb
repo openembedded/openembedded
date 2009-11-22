@@ -11,7 +11,7 @@ SRC_URI = "svn://svn.gnome.org/svn/network-manager-applet/;module=trunk;proto=ht
 
 SRCREV = "200"
 
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/trunk"
 

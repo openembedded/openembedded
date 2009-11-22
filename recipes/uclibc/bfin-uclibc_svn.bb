@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PV = "${UCLIBC_BASE}+svnr${SRCREV}"
+PV = "${UCLIBC_BASE}+svnr${SRCPV}"
 
 require uclibc.inc
 PR = "${INC_PR}.0"

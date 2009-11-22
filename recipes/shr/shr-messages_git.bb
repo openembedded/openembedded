@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += "dbus-glib libframeworkd-glib libframeworkd-phonegui"
-PV = "0.0.2+gitr${SRCPV}"
+PV = "0.0.2+gitr${SRCREV}"
 PR = "r8"
 
 inherit pkgconfig autotools

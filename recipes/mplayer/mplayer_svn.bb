@@ -13,7 +13,7 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://mplayer-lavc-arm.patch;patch=1 \
 	   "
 
-SRCREV = "29789"
+SRCREV = "29934"
 SRC_URI_append_armv7a = " \
 		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
@@ -35,7 +35,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+svnr${SRCREV}"
+PV = "0.0+1.0rc2+svnr${SRCPV}"
 PR = "r14"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
@@ -167,6 +167,7 @@ EXTRA_OECONF = " \
 	--enable-select \
 	\
 	--extra-libs=' -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock -lliveMedia -lstdc++' \
+    --enable-protocol='file_protocol pipe_protocol http_protocol rtmp_protocol tcp_protocol udp_protocol' \
 "
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \

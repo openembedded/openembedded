@@ -2,7 +2,7 @@ DESCRIPTION = "Sphyrna - Hammerhead Reverse Engineering"
 HOMEPAGE = "http://projects.linuxtogo.org/projects/sphyrna"
 LICENSE = "GPLv2"
 DEPENDS = "readline"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://projects.linuxtogo.org/svn;module=sphyrna"

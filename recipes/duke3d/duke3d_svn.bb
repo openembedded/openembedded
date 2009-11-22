@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 DEPENDS = "virtual/libsdl libsdl-mixer"
 
 SRCREV = "185"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.icculus.org/duke3d/;module=trunk \
            file://duke3d.desktop"

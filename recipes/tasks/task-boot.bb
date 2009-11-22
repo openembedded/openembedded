@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r49"
+PR = "r50"
 
 inherit task
 
@@ -20,7 +20,6 @@ DEPENDS = "virtual/kernel"
 # minimal set of packages - needed to boot
 #
 RDEPENDS_task-boot = "\
-    kernel \
     base-files \
     base-passwd \
     busybox \
@@ -32,5 +31,6 @@ RDEPENDS_task-boot = "\
     "
 
 RRECOMMENDS_task-boot = "\
+    kernel \
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
     "

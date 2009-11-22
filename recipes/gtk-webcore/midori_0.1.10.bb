@@ -1,9 +1,15 @@
 require midori.inc
 
+PR = "r2"
+
 DEPENDS += "python-native python-docutils-native"
 
 SRC_URI = "http://archive.xfce.org/src/apps/midori/0.1/midori-${PV}.tar.bz2 \
-           file://waf"
+           file://waf \
+          "
+
+SRC_URI_append_shr = "file://ua-iphone-0.1.10.patch;patch=1 \
+                      file://config"
 
 do_configure() {
 	cp -f ${WORKDIR}/waf ${S}/
@@ -27,5 +33,8 @@ do_configure() {
 	echo "LINK_CC = '${CXX}'" >>  ./_build_/c4che/default.cache.py
 }
 
-
+do_install_append_shr() {
+	install -d ${D}${sysconfdir}/xdg/midori
+	install -m 0644 ${WORKDIR}/config ${D}${sysconfdir}/xdg/midori
+}
 

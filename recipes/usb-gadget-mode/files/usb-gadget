@@ -23,16 +23,16 @@ go() {
 	test -e "$CONF_FILE" && . "$CONF_FILE" 
 	
 	case "$USB_MODE" in
-	networking)	setup_usb g_ether "$MODULE_OPTIONS" ;;
-	zero)		setup_usb g_zero "$MODULE_OPTIONS" ;;
-	midi)		setup_usb g_midi "$MODULE_OPTIONS" ;;
-	printer)	setup_usb g_printer "$MODULE_OPTIONS" ;;
-	gadgetfs) 	setup_usb gadgetfs "$MODULE_OPTIONS" ;;
-	composite)	setup_usb g_cdc "$MODULE_OPTIONS" ;;
-	serial)		setup_usb g_serial "$MODULE_OPTIONS" ;;
-	storage)	setup_usb g_file_storage "$MODULE_OPTIONS" ;;
+	networking)	setup_usb g_ether ;;
+	zero)		setup_usb g_zero ;;
+	midi)		setup_usb g_midi ;;
+	printer)	setup_usb g_printer ;;
+	gadgetfs) 	setup_usb gadgetfs ;;
+	composite)	setup_usb g_cdc ;;
+	serial)		setup_usb g_serial ;;
+	storage)	setup_usb g_file_storage ;;
 	hostmode)	unload_usb_gadgets
-			setup_usb ohci_hcd "$MODULE_OPTIONS" ;;
+			setup_usb ohci_hcd ;;
 	none)		unload_usb_gadgets ;;
 	esac		
 		
@@ -44,7 +44,7 @@ setup_usb() {
 	then
 		unload_usb_gadgets
 		echo "Loading [$1]"
-		modprobe "$1" "$MODULE_OPTIONS"
+		modprobe "$1" $MODULE_OPTIONS
 	else
 		echo "Already loaded: [$1]"
 	fi

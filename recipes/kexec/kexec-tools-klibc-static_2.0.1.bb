@@ -3,7 +3,7 @@ require kexec-tools2.inc
 
 DEFAULT_PREFERENCE = "1"
 
-PR = "r1"
+PR = "r2"
 DEPENDS = "klibc"
 
 SRC_URI += "file://kexec-tools-2-headers.patch;patch=1 \

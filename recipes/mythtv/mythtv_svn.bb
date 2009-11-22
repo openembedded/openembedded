@@ -4,7 +4,7 @@ inherit qmake2 qt4x11
 
 DEFAULT_PREFERENCE = "-1"
 
-PV = "0.21+0.22rc+svnr${SRCREV}"
+PV = "0.21+0.22rc+svnr${SRCPV}"
 PR = "r0"
 REALPV = "0.22"
 

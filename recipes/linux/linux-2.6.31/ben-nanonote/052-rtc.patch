@@ -1,0 +1,30 @@
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -460,6 +460,17 @@ config RTC_DRV_EFI
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called rtc-efi.
+ 
++config RTC_DRV_JZ4740
++	tristate "Ingenic JZ4720/JZ4740 SoC"
++	depends on RTC_CLASS
++	depends on SOC_JZ4740
++	help
++	  If you say yes here you get support for the
++	  Ingenic JZ4720/JZ4740 SoC RTC controller.
++
++	  This driver can also be buillt as a module. If so, the module
++	  will be called rtc-jz4740.
++
+ config RTC_DRV_STK17TA8
+ 	tristate "Simtek STK17TA8"
+ 	depends on RTC_CLASS
+--- a/drivers/rtc/Makefile
++++ b/drivers/rtc/Makefile
+@@ -40,6 +40,7 @@ obj-$(CONFIG_RTC_DRV_EFI)	+= rtc-efi.o
+ obj-$(CONFIG_RTC_DRV_EP93XX)	+= rtc-ep93xx.o
+ obj-$(CONFIG_RTC_DRV_FM3130)	+= rtc-fm3130.o
+ obj-$(CONFIG_RTC_DRV_ISL1208)	+= rtc-isl1208.o
++obj-$(CONFIG_RTC_DRV_JZ4740)	+= rtc-jz4740.o
+ obj-$(CONFIG_RTC_DRV_M41T80)	+= rtc-m41t80.o
+ obj-$(CONFIG_RTC_DRV_M41T94)	+= rtc-m41t94.o
+ obj-$(CONFIG_RTC_DRV_M48T35)	+= rtc-m48t35.o

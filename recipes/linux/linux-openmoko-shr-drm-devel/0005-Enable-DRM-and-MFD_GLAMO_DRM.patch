@@ -1,0 +1,51 @@
+From 8fe4cb1bee0c8af760d8911c248e0904e44fa0b3 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sun, 8 Nov 2009 10:49:43 +0100
+Subject: [PATCH 5/7] Enable DRM and MFD_GLAMO_DRM
+
+---
+ arch/arm/configs/gta02_drm_defconfig |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/configs/gta02_drm_defconfig b/arch/arm/configs/gta02_drm_defconfig
+index e2dbbef..aac2832 100644
+--- a/arch/arm/configs/gta02_drm_defconfig
++++ b/arch/arm/configs/gta02_drm_defconfig
+@@ -35,7 +35,7 @@ CONFIG_EXPERIMENTAL=y
+ CONFIG_BROKEN_ON_SMP=y
+ CONFIG_LOCK_KERNEL=y
+ CONFIG_INIT_ENV_ARG_LIMIT=32
+-CONFIG_LOCALVERSION="-mokodev"
++CONFIG_LOCALVERSION="-drm"
+ # CONFIG_LOCALVERSION_AUTO is not set
+ CONFIG_SWAP=y
+ CONFIG_SYSVIPC=y
+@@ -1282,11 +1282,14 @@ CONFIG_PCF50633_ADC=y
+ CONFIG_PCF50633_GPIO=y
+ # CONFIG_MFD_PCF50606 is not set
+ CONFIG_MFD_GLAMO=y
+-CONFIG_MFD_GLAMO_FB=y
+-CONFIG_MFD_GLAMO_FB_XGLAMO_WORKAROUND=y
++
++#
++# SMedia Glamo 336x/337x engine drivers
++#
++# CONFIG_MFD_GLAMO_FB is not set
+ CONFIG_MFD_GLAMO_SPI_GPIO=y
+-CONFIG_MFD_GLAMO_SPI_FB=y
+ CONFIG_MFD_GLAMO_MCI=y
++CONFIG_MFD_GLAMO_DRM=y
+ 
+ #
+ # Multimedia devices
+@@ -1308,6 +1311,7 @@ CONFIG_DAB=y
+ #
+ # Graphics support
+ #
++CONFIG_DRM=y
+ # CONFIG_VGASTATE is not set
+ CONFIG_VIDEO_OUTPUT_CONTROL=y
+ CONFIG_FB=y
+-- 
+1.6.5.2
+
