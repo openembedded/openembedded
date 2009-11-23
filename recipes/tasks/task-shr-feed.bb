@@ -243,4 +243,7 @@ RDEPENDS_${PN} += "\
 		mpg123 \
 		zile \
 		speex \
+		fltkclock \
+		fltkhackdiet \
+		fltkwwpointcal \
 "

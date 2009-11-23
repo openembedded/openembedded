@@ -11,6 +11,7 @@ SRCREV = "c97b1e803fc214e9880eaeff98410c8fa37f9ddc"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
+DEFAULT_PREFERENCE_shr = "1"
 
 SRC_URI = "git://anongit.freedesktop.org/pixman;protocol=git \
            file://nearest-neighbour.patch;patch=1 \
