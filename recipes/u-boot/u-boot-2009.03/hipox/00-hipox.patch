@@ -6348,7 +6348,7 @@ diff -Nurd u-boot-2009.03.orig/include/configs/hipox.h u-boot-2009.03/include/co
 +
 +#define CONFIG_CMD_DHCP
 +#define CONFIG_CMD_DIAG
-+#define CONFIG_CMD_PING
++//#define CONFIG_CMD_PING
 +
 +/**
 + * Architecture
