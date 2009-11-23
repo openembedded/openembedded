@@ -540,4 +540,4 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 do_deploy[depends] += "fakeroot-native:do_populate_staging"
 
-addtask deploy before do_package after do_install
+addtask deploy after do_package
