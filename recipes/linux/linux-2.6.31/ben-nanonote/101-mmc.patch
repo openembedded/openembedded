@@ -1,0 +1,28 @@
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -66,6 +66,15 @@ config MMC_RICOH_MMC
+ 	  useless. It is safe to select this driver even if you don't
+ 	  have a Ricoh based card reader.
+ 
++config MMC_JZ
++	tristate "JZ SD/Multimedia Card Interface support"
++	depends on SOC_JZ4720 || SOC_JZ4740
++	help
++	  This selects the Ingenic JZ4720/JZ4740 SD/Multimedia card Interface.
++	  If you have abIngenic platform with a Multimedia Card slot,
++	  say Y or M here.
++
++	  If unsure, say N.
+ 
+ 	  To compile this driver as a module, choose M here:
+ 	  the module will be called ricoh_mmc.
+--- a/drivers/mmc/host/Makefile
++++ b/drivers/mmc/host/Makefile
+@@ -6,6 +6,7 @@ ifeq ($(CONFIG_MMC_DEBUG),y)
+ 	EXTRA_CFLAGS		+= -DDEBUG
+ endif
+ 
++obj-$(CONFIG_MMC_JZ)		+= jz_mmc.o
+ obj-$(CONFIG_MMC_ARMMMCI)	+= mmci.o
+ obj-$(CONFIG_MMC_PXA)		+= pxamci.o
+ obj-$(CONFIG_MMC_IMX)		+= imxmmc.o

@@ -1,9 +1,10 @@
-require squashfs-tools.inc
-PR = "${INC_PR}.2"
-
 # This override is required since this has not yet been released
 SRC_URI  = "cvs://anonymous@squashfs.cvs.sourceforge.net/cvsroot/squashfs;module=squashfs;date=${SRCDATE} \
             http://downloads.sourceforge.net/sevenzip/lzma465.tar.bz2"
+
+require squashfs-tools.inc
+PR = "${INC_PR}.2"
+
 S = "${WORKDIR}/squashfs/squashfs-tools"
 
 EXTRA_OEMAKE += "LZMA_SUPPORT=1 LZMA_DIR=../.."

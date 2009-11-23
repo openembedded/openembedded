@@ -1,9 +1,9 @@
 DESCRIPTION = "Lightweight At Daemon working on top of org.freesmartphone.otimed"
 SECTION = "base"
 LICENSE = "GPLV2"
-RCONFLICTS = "at atd"
-RREPLACES = "at atd"
-RPROVIDES = "atd"
+RCONFLICTS_${PN} = "at atd"
+RREPLACES_${PN} = "at atd"
+RPROVIDES_${PN} = "atd"
 DEPENDS = "dbus-glib pkgconfig"
 RDEPENDS += "dbus dbus-glib frameworkd"
 

@@ -1,13 +1,11 @@
-diff --git a/wlan/wextensions.h b/wlan/wextensions.h
-index a89e33a..356aada 100644
---- a/wlan/wextensions.h
-+++ b/wlan/wextensions.h
-@@ -4,6 +4,8 @@
+--- a/wlan/wextensions.h	2009-11-22 00:29:50.000000000 +0100
++++ b/wlan/wextensions.h	2009-11-07 00:53:29.000000000 +0100
+@@ -3,7 +3,7 @@
+ 
  #include <qstring.h>
  
+-#include <net/if.h>
++//#include <net/if.h>
  #include <netinet/ip.h>
-+#include <linux/if.h>
-+#include <linux/types.h>
+ #include <linux/types.h>
  #include <linux/wireless.h>
- 
- class WExtensions {

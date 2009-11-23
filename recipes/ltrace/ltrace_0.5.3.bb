@@ -1,7 +1,7 @@
 DESCRIPTION = "ltrace shows runtime library call information for dynamically linked executables."
 HOMEPAGE = "http://ltrace.alioth.debian.org"
 SECTION = "devel"
-DEPENDS = "coreutils-native libelf"
+DEPENDS = "libelf"
 LICENSE = "GPLv2"
 
 SRC_URI = "\
@@ -14,12 +14,6 @@ SRC_URI = "\
   file://ltrace-ppc.patch;patch=1 \
 "
 inherit autotools
-
-PARALLEL_MAKE = ""
-EXTRA_OEMAKE = "INSTALL_FILE='$(INSTALL) -p -m 0644' \
-		INSTALL_PROGRAM='$(INSTALL) -p -m 0755' \
-		INSTALL_SCRIPT='$(INSTALL) -p -m 0755' \
-		INSTALL_DIR='$(INSTALL) -p -d -m 0755' "
 
 export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_INCDIR}"
 TARGET_CC_ARCH += "${LDFLAGS}"
@@ -71,5 +65,5 @@ do_install() {
 		sparc*)   LTRACE_ARCH=sparc ;;
 		x86_64*)  LTRACE_ARCH=x86_64 ;;
 	esac
-	oe_runmake install ${EXTRA_OEMAKE} ARCH=${LTRACE_ARCH} INSTALL=${STAGING_BINDIR_NATIVE}/install.coreutils-native DESTDIR=${D}
+	oe_runmake install ${EXTRA_OEMAKE} ARCH=${LTRACE_ARCH} DESTDIR=${D}
 }

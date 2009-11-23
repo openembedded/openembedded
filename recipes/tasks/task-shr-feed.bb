@@ -238,4 +238,12 @@ RDEPENDS_${PN} += "\
 		reiserfsprogs \
 		blipomoko \
 		imagemagick \
+		xboard \
+		sox \
+		mpg123 \
+		zile \
+		speex \
+		fltkclock \
+		fltkhackdiet \
+		fltkwwpointcal \
 "

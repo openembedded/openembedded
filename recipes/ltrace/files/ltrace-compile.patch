@@ -54,7 +54,7 @@ Index: ltrace-0.5.3/configure
  CFLAGS='-g -O2'
  LIBS='-lelf -lsupc++ -liberty '
 -INSTALL='/usr/bin/install -c'
-+INSTALL='$/usr/bin/install -c'
++INSTALL='install -c'
  iquote='-iquote '
  iquoteend=''
  

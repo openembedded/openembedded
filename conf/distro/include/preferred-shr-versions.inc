@@ -11,8 +11,10 @@ PREFERRED_VERSION_strace ?= "4.5.15"
 # we need new headers for libc, now OLDEST_KERNEL_linux-gnueabi = "2.6.24"
 PREFERRED_VERSION_linux-libc-headers = "2.6.29"
 
+# override EFL_SRCREV from sane-srcrevs.inc
+EFL_SRCREV ?= "43898"
+
 # upgrades used in Angstrom
-PREFERRED_VERSION_pixman        = "0.17.1"
 PREFERRED_VERSION_gtk+          = "2.18.3"
 PREFERRED_VERSION_hal           = "0.5.13"
 PREFERRED_VERSION_libtool       = "2.2.6a"
