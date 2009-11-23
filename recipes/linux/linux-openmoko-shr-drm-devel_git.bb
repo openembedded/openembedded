@@ -9,7 +9,7 @@ KERNEL_VERSION = "2.6.29-rc3-drm"
 
 OMV = "oe15"
 PV = "${KERNEL_RELEASE}-drm-${OMV}+gitr${SRCREV}"
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=drm-tracking \

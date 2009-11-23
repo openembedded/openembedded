@@ -8,7 +8,7 @@ KERNEL_VERSION = "2.6.29-rc3"
 
 OMV = "oe11"
 PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCREV}"
-PR = "r3.5"
+PR = "r5"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
