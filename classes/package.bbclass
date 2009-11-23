@@ -201,6 +201,26 @@ def runstrip(file, d):
 
     return 1
 
+PACKAGESTRIPFUNCS += "do_runstrip"
+python do_runstrip() {
+	import stat
+
+	dvar = bb.data.getVar('PKGD', d, True)
+	def isexec(path):
+		try:
+			s = os.stat(path)
+		except (os.error, AttributeError):
+			return 0
+		return (s[stat.ST_MODE] & stat.S_IEXEC)
+
+	for root, dirs, files in os.walk(dvar):
+		for f in files:
+			file = os.path.join(root, f)
+			if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
+				runstrip(file, d)
+}
+
+
 def write_package_md5sums (root, outfile, ignorepaths):
     # For each regular file under root, writes an md5sum to outfile.
     # With thanks to patch.bbclass.
@@ -339,7 +359,7 @@ python perform_packagecopy () {
 }
 
 python populate_packages () {
-	import glob, stat, errno, re,os
+	import glob, errno, re,os
 
 	workdir = bb.data.getVar('WORKDIR', d, True)
 	outdir = bb.data.getVar('DEPLOY_DIR', d, True)
@@ -349,13 +369,6 @@ python populate_packages () {
 
 	bb.mkdirhier(outdir)
 	os.chdir(dvar)
-
-	def isexec(path):
-		try:
-			s = os.stat(path)
-		except (os.error, AttributeError):
-			return 0
-		return (s[stat.ST_MODE] & stat.S_IEXEC)
 
 	# Sanity check PACKAGES for duplicates - should be moved to 
 	# sanity.bbclass once we have the infrastucture
@@ -369,12 +382,10 @@ python populate_packages () {
 		else:
 			package_list.append(pkg)
 
+
 	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, True) != '1'):
-		for root, dirs, files in os.walk(dvar):
-			for f in files:
-				file = os.path.join(root, f)
-				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
-					runstrip(file, d)
+		for f in (bb.data.getVar('PACKAGESTRIPFUNCS', d, True) or '').split():
+			bb.build.exec_func(f, d)
 
 	pkgdest = bb.data.getVar('PKGDEST', d, True)
 	os.system('rm -rf %s' % pkgdest)
