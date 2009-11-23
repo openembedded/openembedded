@@ -5,7 +5,7 @@ LICENSE = "X11"
 
 PV = "0.17.3"
 PR = "r4"
-PR_append = "+gitr${SRCREV}"
+PR_append = "+gitr${SRCPV}"
 
 SRCREV = "c97b1e803fc214e9880eaeff98410c8fa37f9ddc"
 
