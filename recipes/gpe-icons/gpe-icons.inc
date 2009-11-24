@@ -3,6 +3,8 @@ RDEPENDS += "gdk-pixbuf-loader-png"
 
 inherit update-alternatives
 
+INC_PR = "r3"
+
 ALTERNATIVE_NAME = "gpe-pixmaps"
 ALTERNATIVE_LINK = "${datadir}/gpe/pixmaps"
 ALTERNATIVE_PATH = "${datadir}/gpe/pixmaps.${PN}"
@@ -25,11 +27,9 @@ pkg_postinst() {
                 fi
                 for pixmap in `find ${pixmap_dir}`; do 
                           pixmap_target=`echo ${pixmap} | sed "s/${pixmap_dir}/pixmaps.${PN}/g"`; 
-                          if [ -e ${pixmap_target} ] ; then 
-                                      echo "${pixmap_target} exists"; 
-                          else 
-                                      echo "${pixmap} merged"; 
+                          if [ ! -e ${pixmap_target} ] ; then 
                                       cp -ra ${pixmap} ${pixmap_target}; 
+                                      echo "${pixmap} merged"; 
                           fi; 
                 done
         done
