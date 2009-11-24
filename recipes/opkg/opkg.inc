@@ -10,8 +10,8 @@ FILESPATHPKG =. "opkg:"
 
 SRC_URI = "svn://opkg.googlecode.com/svn;module=trunk;proto=http \
 	file://opkg_unarchive.patch;patch=1;maxrev=201 \
-	file://opkg-intercept-cleanup.patch;patch=1 \
-	file://isatty.patch;patch=1"
+	file://opkg-intercept-cleanup.patch;patch=1;maxrev=241 \
+"
 
 SRC_URI += "file://configure"
 
