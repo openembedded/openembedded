@@ -1,11 +1,13 @@
 DESCRIPTION="Gnome Office Library"
 LICENSE="GPLv2"
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS="glib-2.0 gtk+ pango cairo libgnomeprint libgsf libglade libpcre libxml2 libart-lgpl"
 
 inherit gnome pkgconfig
+
+SRC_URI += "file://c99math.patch;patch=1"
 
 do_stage() {
 	autotools_stage_all

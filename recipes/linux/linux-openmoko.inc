@@ -33,7 +33,7 @@ module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
 # audio (GTA02)
 module_autoload_snd-soc-neo1973-gta02-wm8753 = "snd-soc-neo1973-gta02-wm8753"
 # audio (GTA03)
-module_autoload_snd-soc-neo1973-gta02-wm8753 = ""
+module_autoload_snd-soc-neo1973-gta03-wm8753 = ""
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 

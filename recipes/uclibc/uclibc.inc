@@ -73,7 +73,6 @@ SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'y
 	   file://uClibc.config \
            http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
           "
-UCLIBC_STAGE_PREFIX = "${STAGING_DIR_HOST}${layout_prefix}"
 
 # do_stage barfs on a CC with whitepspace, therefore put the 'HOST_CC_ARCH' in
 # the CFLAGS (for when building the utils).
@@ -91,6 +90,9 @@ KERNEL_HEADERS = "${STAGING_INCDIR}"
 # ARCH_BIG_ENDIAN=y
 # ARCH_WANTS_BIG_ENDIAN=y
 # ARCH_WANTS_LITTLE_ENDIAN is not set
+
+# How to enable verbose logs:
+#export VERBOSE="1"
 
 configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${KERNEL_SOURCE}",g; \
 		s,^KERNEL_HEADERS=.*,KERNEL_HEADERS="${KERNEL_HEADERS}",g; \
@@ -156,38 +158,14 @@ do_configure() {
 	yes '' | oe_runmake oldconfig
 }
 
-do_stage() {
-	# This MUST be done first because we
-	# will install crt1.o in the install_dev stage and gcc needs it
-
-	# Install into the staging dir
-	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		install_dev install_runtime
-
-	# We don't really need this
-	rm -f ${UCLIBC_STAGE_PREFIX}/include/.cvsignore
-
-	# Fixup shared lib symlinks
-	( cd ${UCLIBC_STAGE_PREFIX}/lib
-		for f in c crypt dl m nsl pthread resolv thread_db util; do
-			ln -sf lib${f}.so.? lib${f}.so
-		done
-	)
-
-	# This conflicts with the c++ version of this header
-	rm -f ${UCLIBC_STAGE_PREFIX}/include/bits/atomicity.h
-}
-
 do_install() {
-        # Tis MUST be done first because we
-        # will install crt1.o in the install_dev stage and gcc needs it)
-	oe_runmake STRIPTOOL=true PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		install_dev install_runtime
-
-	oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
+	oe_runmake PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
 		install_dev install_runtime 
+
+	# Need to overwrite the version from -initial
+	#if [ ! -e ${D}${libdir}/libc.so ]; then
+	#	ln -s ../../lib/libc.so.0 ${D}${libdir}/libc.so
+	#fi
 
 	# We don't really need this in ${includedir}
 	rm -f ${D}${prefix}/include/.cvsignore
@@ -195,30 +173,11 @@ do_install() {
 	# This conflicts with the c++ version of this header
 	rm -f ${D}${prefix}/include/bits/atomicity.h
 
-	# ugh.. uclibc doesn't like obeying our path variables.
-	if [ "${includedir}" != "${prefix}/include" ]; then
-		install -d ${D}${includedir}
-		mv ${D}${prefix}/include/* ${D}${includedir}/
-		rmdir ${D}${prefix}/include
-	fi
-
-	if [ "${libdir}" != "${prefix}/lib" ]; then
-		install -d ${D}${libdir}
-		mv ${D}${prefix}/lib/* ${D}${libdir}/
-		rmdir ${D}${prefix}/lib
-	fi
-
         oe_runmake "SSP_ALL_CFLAGS=${TARGET_LINK_HASH_STYLE}" utils
         oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
                 install_utils
 	
 	# oe_runstrip needs +x on files	
 	chmod +x ${D}/${base_libdir}/*
-
-	if [ "${bindir}" != "/usr/bin" ]; then
-		install -d ${D}${bindir}
-		mv ${D}/usr/bin/* ${D}${bindir}/
-		rmdir ${D}/usr/bin
-	fi
 }
 

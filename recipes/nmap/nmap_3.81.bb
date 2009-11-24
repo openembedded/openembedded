@@ -19,6 +19,8 @@ EXTRA_OECONF = "--with-pcap=linux \
 		--without-openssl"
 EXTRA_OEMAKE = "STRIPPROG=${STRIP}"
 
+PARALLEL_MAKE = ""
+
 CXXFLAGS_append = " -fpermissive"
 # Ugly hack follows -- their configure.ac doesnt match their configure ..
 # doesnt include a check for the length type in recvfrom, so we hack it here

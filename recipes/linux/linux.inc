@@ -169,7 +169,7 @@ do_devicetree_image() {
     fi
 }
 
-addtask devicetree_image after do_deploy before do_package
+addtask devicetree_image after do_install before do_package do_deploy
 
 pkg_postinst_kernel-devicetree () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --install /${KERNEL_IMAGEDEST}/devicetree devicetree devicetree-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true

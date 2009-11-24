@@ -161,20 +161,20 @@ Recipes:    gnumeric, gobby, obby, imposter, inkscape
 Recipes:    *moko*, telepathy, tilibs, xchat, xournal.
 
 Person:     Kristoffer Ericson
-Mail:       Kristoffer_e1@hotmail.com
-Website:    www.jlime.com
-Machines:   spitz, jornada 680, jornada 720
-Distros:    JLime, Openzaurus
-Interests:  wifi, kernels, emulation, qemu, git
+Mail:       Kristoffer.ericson@gmail.com
+Website:    http://www.jlime.com
+Machines:   jornada 680, jornada 720, NEC Mobilepro 900/c, Ben Nanonote
+Distros:    JLime
+Interests:  Kernels, emulation, superh/arm/mips 
 Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
 Mail:       leon@sidebranch.com
 Website:    http://www.sidebranch.com/
-Interests:  Real-time and/or embedded Linux for industrial applications.
+Interests:  Real-time and embedded Linux for industrial applications.
 Interests:  Small read-only Linux based firmware, deterministic builds.
 Recipes:    lighttpd, fastcgi, squashfs-tools, rt-tests, linux-rt, linux
-Machines:   mpc8313e-rdb, mpc8315e-rdb, efika, ixp4xxbe, x86, canyonlands
+Machines:   mpc8313e-rdb, mpc8315e-rdb, canyonlands, calamari, openrd-base
 
 Person:	    Liam Girdwoord
 Mail:       liam.girdwood@wolfsonmicro.com

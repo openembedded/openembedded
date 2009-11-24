@@ -1,0 +1,10 @@
+--- libmokoui.old/configure.ac	2009-06-10 12:42:32.000000000 +0200
++++ libmokoui2/configure.ac	2009-06-10 12:42:43.000000000 +0200
+@@ -28,7 +28,6 @@
+ 
+ if test $enable_python != no ; then
+     AM_PATH_PYTHON(2.3.5)
+-    PKG_CHECK_MODULES(GNOME_PYTHON, gnome-python-2.0 >= 2.10.00)
+     AC_SUBST(PYGDK_CFLAGS)
+     AC_SUBST(PYGDK_LIBS)
+ 

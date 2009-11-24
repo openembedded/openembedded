@@ -1,6 +1,6 @@
 DESCRIPTION = "Modulo is a lightweight component container that supports Inversion Of Control, also commonly called Dependency Injection"
 SECTION = "libs"
-PV = "0.0.1+gitr${SRCPV}"
+PV = "0.0.1+gitr${SRCREV}"
 PR = "r1"
 
 inherit autotools autotools_stage pkgconfig vala

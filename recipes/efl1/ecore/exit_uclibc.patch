@@ -1,0 +1,26 @@
+Index: ecore/src/lib/ecore_con/ecore_con_dns.c
+===================================================================
+--- ecore.orig/src/lib/ecore_con/ecore_con_dns.c	2009-11-14 00:12:04.279051754 +0100
++++ ecore/src/lib/ecore_con/ecore_con_dns.c	2009-11-14 00:14:41.685708230 +0100
+@@ -135,7 +135,7 @@
+ 	     write(fd[1], "", 1);
+ 	  }
+ 	close(fd[1]);
+-# ifdef __USE_ISOC99
++# if defined(__USE_ISOC99) && !defined(__UCLIBC__)
+ 	_Exit(0);
+ # else
+ 	_exit(0);
+Index: ecore/src/lib/ecore_con/ecore_con_info.c
+===================================================================
+--- ecore.orig/src/lib/ecore_con/ecore_con_info.c	2009-11-14 00:14:56.056955719 +0100
++++ ecore/src/lib/ecore_con/ecore_con_info.c	2009-11-14 00:16:40.035696191 +0100
+@@ -243,7 +243,7 @@
+ 	  freeaddrinfo(result);
+ 	err = write(fd[1], "", 1);
+ 	close(fd[1]);
+-# ifdef __USE_ISOC99
++# if defined(__USE_ISOC99) && !defined(__UCLIBC__)
+ 	_Exit(0);
+ # else
+ 	_exit(0);

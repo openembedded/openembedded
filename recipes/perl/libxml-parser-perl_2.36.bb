@@ -11,7 +11,7 @@ EXTRA_CPANFLAGS = "EXPATLIBPATH=${STAGING_LIBDIR} EXPATINCPATH=${STAGING_INCDIR}
 inherit cpan
 
 do_compile() {
-	export LIBC="$(find ${STAGING_DIR}/lib -name 'libc-*.so')"
+	export LIBC="$(find ${STAGING_DIR_TARGET}/lib -name 'libc-*.so')"
 	cpan_do_compile
 }
 

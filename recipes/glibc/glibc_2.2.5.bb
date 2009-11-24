@@ -193,4 +193,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_DIR_HOST}/${layout_base_libdir}/libc.so
 }
 
-require glibc-package.bbclass
+require glibc-package.inc

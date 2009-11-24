@@ -1,0 +1,4 @@
+
+[settings]
+enforce-96-dpi=true
+toolbar-items=Back,Forward,ReloadStop,Fullscreen,Location,Panel,
