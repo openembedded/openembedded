@@ -8,8 +8,10 @@ SRC_URI = "git://sopc.et.ntust.edu.tw/git/elf2flt.git;protocol=git;branch=nios2;
 
 S = "${WORKDIR}/git"
 
-EXTRA_OECONF = " --with-libbfd=/home/walter//nios2-linux/toolchain-build/build/binutils-build/bfd/libbfd.a \
-                 --with-libiberty=/home/walter/nios2-linux/toolchain-build/build/binutils-build/libiberty/libiberty.a \
-                 --with-bfd-include-dir=${STAGING_INCDIR} \
-		 --disable-emit-relocs \
+EXTRA_OECONF = " --with-libiberty=${CROSS_DIR}/lib/libiberty.a \
+                 --with-libbfd=${CROSS_DIR}/${HOST_SYS}/${TARGET_SYS}/lib/libbfd.a \
+                 --with-bfd-include-dir=${CROSS_DIR}/${HOST_SYS}/${TARGET_SYS}/include \
+                 --with-binutils-include-dir=${CROSS_DIR}/include \
+                 --disable-emit-relocs \
                "
+
