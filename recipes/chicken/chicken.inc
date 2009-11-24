@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.call-with-current-continuation.org/"
 SECTION = "interpreters"
 PRIORITY = "optional"
 LICENSE = "BSD"
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "http://chicken.wiki.br/releases/${PV}/chicken-${PV}.tar.gz \
            file://soname.patch;patch=1"

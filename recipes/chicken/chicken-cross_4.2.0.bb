@@ -2,6 +2,7 @@ require chicken.inc
 
 DEPENDS = "gcc-cross-sdk chicken"
 RDEPENDS = "gcc-cross-sdk chicken"
+PR = "${INC_PR}.1"
 
 inherit cross
 
