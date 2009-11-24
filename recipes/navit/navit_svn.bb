@@ -1,5 +1,5 @@
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r0"
+PR = "${INC_PR}.0"
 
 DEPENDS_shr += " librsvg-native"
 
