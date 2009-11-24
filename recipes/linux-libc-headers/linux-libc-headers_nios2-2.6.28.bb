@@ -4,7 +4,9 @@ INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
 PR = "r3"
 
-SRC_URI = "git://sopc.et.ntust.edu.tw/git/linux-2.6.git;branch=test-nios2;tags=3146b39c185f8a436d430132457e84fa1d8f8208 \
+SRCREV = "3146b39c185f8a436d430132457e84fa1d8f8208"
+
+SRC_URI = "git://sopc.et.ntust.edu.tw/git/linux-2.6.git;branch=test-nios2;protocol=http \
            file://procinfo.h \
            file://system.ptf"
 S = "${WORKDIR}/git"
