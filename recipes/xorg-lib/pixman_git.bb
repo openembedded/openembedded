@@ -30,7 +30,7 @@ inherit autotools_stage
 NEON = " --disable-arm-neon "
 NEON_armv7a = ""
 
-EXTRA_OECONF = "${NEON} --disable-gtk"
+EXTRA_OECONF = "${NEON}"
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
