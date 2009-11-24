@@ -10,6 +10,8 @@ EXTRA_OECONF = "--with-sysroot=${STAGING_DIR_TARGET} \
 
 do_stage () {
 	oe_runmake install
+	install -d ${CROSS_DIR}/include
+	install -m 0644 ${S}/include/libiberty.h ${CROSS_DIR}/include
 
 	# We don't really need these, so we'll remove them...
 	rm -rf ${CROSS_DIR}/lib/ldscripts
