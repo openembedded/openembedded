@@ -4,8 +4,8 @@ PR = "${INC_PR}.1"
 require binutils.inc
 LICENSE = "GPLv3"
 
+# prepend this path for files in SRC_URI
 FILESPATHPKG =. "binutils-2.15.94.0.1:"
-
 
 SRCREV = "49396897843c932623b775168c5e6e1f2a43c3c8"
 
@@ -25,3 +25,4 @@ SRC_URI += "\
 
 
 S = "${WORKDIR}/git"
+
