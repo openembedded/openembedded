@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.call-with-current-continuation.org/"
 SECTION = "interpreters"
 PRIORITY = "optional"
 LICENSE = "BSD"
-INC_PR = "r2"
+INC_PR = "r1"
 
 SRC_URI = "http://chicken.wiki.br/releases/${PV}/chicken-${PV}.tar.gz"
 
@@ -13,20 +13,13 @@ PARALLEL_MAKE = ""
 # Required environment values
 export PLATFORM="linux"
 export PREFIX="${prefix}"
-export HOSTSYSTEM="${HOST_SYS}"
+export LIBRARIAN="${TARGET_PREFIX}"
 export TARGETSYSTEM="${TARGET_SYS}"
-export INSTALL_PROGRAM_SHARED_LIBRARY_OPTIONS="-m 755"
-export INSTALL_PROGRAM_STATIC_LIBRARY_OPTIONS="-m 644"
-export INSTALL_PROGRAM_EXECUTABLE_OPTIONS="-m 755"
-export INSTALL_PROGRAM_FILE_OPTIONS="-m 644"
 
 do_compile() {
 	case ${TARGET_ARCH} in
 	i*86)
 		ARCH=x86
-		;;
-	x86_64)
-		ARCH=x86-64
 		;;
 	*)
 		echo "Check ARCH value for ${TARGET_ARCH}"
@@ -41,9 +34,6 @@ do_install() {
 	case ${TARGET_ARCH} in
 	i*86)
 		ARCH=x86
-		;;
-	x86_64)
-		ARCH=x86-64
 		;;
 	*)
 		echo "Check ARCH value for ${TARGET_ARCH}"
