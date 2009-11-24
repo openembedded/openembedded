@@ -10,6 +10,6 @@ do_configure_append () {
 	sed -i 's/-Wl,-read_only_relocs,warning//g' src/libFLAC/Makefile
 }
 
-do_stage_append () {
+do_stage () {
 	install -m 0644 ${S}/include/FLAC/callback.h ${STAGING_INCDIR}/FLAC/callback.h
 }

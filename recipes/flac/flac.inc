@@ -26,10 +26,6 @@ do_configure () {
 	sed -i 's/-Wl,-read_only_relocs,warning//g' src/libFLAC/Makefile
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 PACKAGES += "libflac libflac++ liboggflac liboggflac++"
 FILES_${PN} = "${bindir}/*"
 FILES_libflac = "${libdir}/libFLAC.so.*"

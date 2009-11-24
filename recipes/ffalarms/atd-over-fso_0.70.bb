@@ -4,10 +4,16 @@ LICENSE = "GPLV2"
 RCONFLICTS_${PN} = "at atd"
 RREPLACES_${PN} = "at atd"
 RPROVIDES_${PN} = "atd"
+RCONFLICTS_${PN}-dbg = "at-dbg atd-dbg"
+RREPLACES_${PN}-dbg = "at-dbg atd-dbg"
+RPROVIDES_${PN}-dbg = "atd-dbg"
+RCONFLICTS_${PN}-dev = "at-dev atd-dev"
+RREPLACES_${PN}-dev = "at-dev atd-dev"
+RPROVIDES_${PN}-dev = "atd-dev"
 DEPENDS = "dbus-glib pkgconfig"
 RDEPENDS += "dbus dbus-glib frameworkd"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
 			file://atd-startup.patch;patch=1;pnum=0 \

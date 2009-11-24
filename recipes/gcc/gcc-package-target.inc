@@ -4,6 +4,7 @@ PACKAGES = "\
   cpp cpp-symlinks \
   g77 g77-symlinks \
   gfortran gfortran-symlinks \
+  objc objc-dev \
   gcov gcov-symlinks \
   libmudflap libmudflap-dev \
   libgcc-dev \
@@ -17,7 +18,6 @@ FILES_${PN} = "\
   ${bindir}/${TARGET_PREFIX}gcc \
   ${bindir}/${TARGET_PREFIX}gccbug \
   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/collect2 \
-  ${libdir}/libobjc* \
   ${gcclibdir}/${TARGET_SYS}/${BINV}/*.o \
   ${gcclibdir}/${TARGET_SYS}/${BINV}/specs \
   ${gcclibdir}/${TARGET_SYS}/${BINV}/lib* \
@@ -87,6 +87,13 @@ FILES_libstdc++-dev = "\
 FILES_libgfortran-dev = "${libdir}/libgfortran.a \
                          ${libdir}/libgfortran.so \
                          ${libdir}/libgfortranbegin.a"
+
+FILES_objc = "${libdir}/libobjc*.so.* \
+"
+FILES_objc-dev = "${libdir}/libobjc*.so \
+  ${libdir}/libobjc*.la \
+  ${libdir}/libobjc*.a \
+"
 
 FILES_libmudflap = "${libdir}/libmudflap*.so.*"
 FILES_libmudflap-dev = "\
