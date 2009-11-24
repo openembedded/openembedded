@@ -2,7 +2,7 @@ require update-alternatives-cworth.inc
 
 RPROVIDES_${PN} = "update-alternatives"
 
-PR="r2"
+PR="${INC_PR}.0"
 
 do_install () {
     install -d ${D}${sbindir} \
