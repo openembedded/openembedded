@@ -1,4 +1,4 @@
-# XSL sytlesheets downloaded from http://docbook.sourceforge.net/release/xsl/current/html/
+# XSL stylesheets downloaded from http://docbook.sourceforge.net/release/xsl/current/html/
 
 topdir = .
 manual = $(topdir)/usermanual.xml
