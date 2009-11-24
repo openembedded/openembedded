@@ -6,10 +6,9 @@ PR = "r5"
 
 inherit autotools gettext
 
-# prepend this path for files in SRC_URI
 FILESPATHPKG =. "binutils-2.15.94.0.1:"
 
-PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
+PACKAGES += "${PN}-symlinks"
 
 FILES_${PN} = " \
 	${bindir}/${TARGET_PREFIX}* \
@@ -83,30 +82,32 @@ export LD_FOR_TARGET = "${TARGET_PREFIX}ld"
 export NM_FOR_TARGET = "${TARGET_PREFIX}nm"
 export RANLIB_FOR_TARGET = "${TARGET_PREFIX}ranlib"
 
-export CC_FOR_HOST = "${CCACHE} ${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
-export CXX_FOR_HOST = "${CCACHE} ${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
+export CC_FOR_HOST = "${CCACHE}${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
+export CXX_FOR_HOST = "${CCACHE}${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
 
 export CC_FOR_BUILD = "${BUILD_CC}"
 export CPP_FOR_BUILD = "${BUILD_CPP}"
 export CFLAGS_FOR_BUILD = "${BUILD_CFLAGS}"
 
-export CC = "${CCACHE} ${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
+export CC = "${CCACHE}${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
 
 do_configure () {
 	(cd ${S}; gnu-configize) || die "Failed to run gnu-configize"
 	oe_runconf
 }
 
-do_stage () {
-	oe_libinstall -so -a -C opcodes libopcodes ${STAGING_LIBDIR}/
-	oe_libinstall -a -C libiberty libiberty ${STAGING_LIBDIR}/
-	oe_libinstall -so -a -C bfd libbfd ${STAGING_LIBDIR}/
-	install -m 0644 ${S}/include/dis-asm.h ${STAGING_INCDIR}/
-	install -m 0644 ${S}/include/symcat.h ${STAGING_INCDIR}/
-	install -m 0644 ${S}/include/libiberty.h ${STAGING_INCDIR}/
-	install -m 0644 ${S}/include/ansidecl.h ${STAGING_INCDIR}/
-	install -m 0644 ${S}/include/bfdlink.h ${STAGING_INCDIR}/
-	install -m 0644 bfd/bfd.h ${STAGING_INCDIR}/
+do_stage_append () {
+	oe_libinstall -a -C opcodes libopcodes ${target_libdir}/
+	oe_libinstall -a -C libiberty libiberty ${target_libdir}/
+	oe_libinstall -a -C bfd libbfd ${target_libdir}/
+    install -d ${target_includedir}
+	install -m 0644 ${S}/include/ansidecl.h ${target_includedir}/
+	install -m 0644 ${S}/include/libiberty.h ${target_includedir}
+
+	install -m 0644 ${S}/include/dis-asm.h ${target_includedir}
+	install -m 0644 ${S}/include/symcat.h ${target_includedir}
+	install -m 0644 ${S}/include/bfdlink.h ${target_includedir}
+	install -m 0644 bfd/bfd.h ${target_includedir}
 }
 
 do_install () {
@@ -127,6 +128,13 @@ do_install () {
 	install -d ${D}${includedir}
 	install -m 644 ${S}/include/ansidecl.h ${D}${includedir}
 	install -m 644 ${S}/include/libiberty.h ${D}${includedir}
+
+	install -m 644 ${S}/include/dis-asm.h ${D}${includedir}
+	install -m 644 ${S}/include/symcat.h ${D}${includedir}
+	install -m 644 ${S}/include/libiberty.h ${D}${includedir}
+	install -m 644 ${S}/include/ansidecl.h ${D}${includedir}
+	install -m 644 ${S}/include/bfdlink.h ${D}${includedir}
+	install -m 644 bfd/bfd.h ${D}${includedir}
 
 	cd ${D}${bindir}
 
