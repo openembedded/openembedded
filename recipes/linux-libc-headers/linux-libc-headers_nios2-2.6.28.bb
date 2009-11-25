@@ -9,7 +9,10 @@ SRCREV = "d01303a1035a39e445007c7522d89ad985c4153c"
 
 SRC_URI = "git://sopc.et.ntust.edu.tw/git/linux-2.6.git;branch=test-nios2;protocol=http \
            file://procinfo.h \
-           file://system.ptf"
+           file://system.ptf \
+           file://hardware.mk \
+           file://defconfig"
+
 S = "${WORKDIR}/git"
 
 #SRC_URI = "http://127.0.0.1/linux-nios2-2.6.28-git.tbz \
@@ -41,7 +44,8 @@ set_arch() {
 
 do_configure() {
 	set_arch
-	oe_runmake hwselect SYSPTF=../system.ptf CPU_SELECTION=1 MEM_SELECTION=2 ARCH=$ARCH
+	cp ../hardware.mk arch/nios2
+#	oe_runmake hwselect SYSPTF=../system.ptf CPU_SELECTION=1 MEM_SELECTION=2 ARCH=$ARCH
 	oe_runmake allnoconfig ARCH=$ARCH
 }
 
