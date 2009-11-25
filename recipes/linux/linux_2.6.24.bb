@@ -11,6 +11,7 @@ DEFAULT_PREFERENCE_ts72xx = "1"
 DEFAULT_PREFERENCE_oxnas = "1"
 DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
+DEFAULT_PREFERENCE_smartq5 = "1"
 
 PR = "r33"
 
@@ -104,6 +105,17 @@ SRC_URI_append_hipox = " \
 	file://hipox-kconfig.patch;patch=1 \
 	file://hipox-sata-module.patch;patch=1 \
 	"
+
+
+SRC_URI_smartq5 = " ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
+    http://ftp.kernel.org/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1 \
+    file://smartq-gitupdate.diff;patch=1 \
+    file://base/0001-Apply-samsung-kernel-patch.patch;patch=1 \
+    file://base/0002-Apply-smartq-patch.patch;patch=1 \
+    file://base/0003-Apply-cpufreq-patch-from-gqwang.patch;patch=1 \
+    file://base/0004-Better-compatibility-with-some-memory-chips.patch;patch=1 \
+    file://defconfig \
+"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
