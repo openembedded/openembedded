@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 DEPENDS = ""
 RDEPENDS = "libpam"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " \
            file://pam.d/* \
