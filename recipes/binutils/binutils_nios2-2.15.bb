@@ -9,7 +9,6 @@ FILESPATHPKG =. "binutils-2.15.94.0.1:"
 
 SRCREV = "49396897843c932623b775168c5e6e1f2a43c3c8"
 
-#SRC_URI = "git://sopc.et.ntust.edu.tw/git/binutils.git;protocol=git"
 SRC_URI = "git://sopc.et.ntust.edu.tw/git/binutils.git;protocol=http"
 
 SRC_URI += "\
@@ -22,7 +21,6 @@ SRC_URI += "\
 
 #     file://binutils-2.15.91.0.1-uclibc-100-conf.patch;patch=1 \
 #     file://binutils-2.15.90.0.3-uclibc-200-build_modules.patch;patch=1 \
-
 
 S = "${WORKDIR}/git"
 
