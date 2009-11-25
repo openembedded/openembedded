@@ -15,7 +15,7 @@ NICENESS=10
 case "$1" in
     start)
         echo -n "Starting fsodeviced: "
-        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -N ${NICENESS} -x /usr/bin/fsodeviced
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -N ${NICENESS} -x /usr/sbin/fsodeviced
         if [ $? = 0 ]; then
             echo "(ok)"
         else
