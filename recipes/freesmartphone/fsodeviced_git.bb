@@ -6,7 +6,7 @@ RDEPENDS += "libcanberra-alsa"
 RRECOMMENDS += "fso-alsa-data"
 PV = "0.9.0+gitr${SRCREV}"
 PE = "1"
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 inherit update-rc.d
 
