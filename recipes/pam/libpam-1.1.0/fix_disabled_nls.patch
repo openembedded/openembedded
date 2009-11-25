@@ -1,0 +1,13 @@
+Index: Linux-PAM-1.1.0/modules/pam_lastlog/pam_lastlog.c
+===================================================================
+--- Linux-PAM-1.1.0.orig/modules/pam_lastlog/pam_lastlog.c	2009-11-24 21:47:00.208561627 +0100
++++ Linux-PAM-1.1.0/modules/pam_lastlog/pam_lastlog.c	2009-11-24 21:47:27.385225592 +0100
+@@ -471,7 +471,7 @@
+ 		failed),
+ 	    failed);
+ #else
+-	if (daysleft == 1)
++	if (failed == 1)
+ 	    retval = asprintf(&line,
+ 		_("There was %d failed login attempt since the last successful login."),
+ 		failed);

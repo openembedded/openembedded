@@ -19,7 +19,6 @@ FILES_${PN}-dev += "${libdir}/${PN}/*/*.la"
 
 SRC_URI_append = " \
                   file://navit.desktop \
-                  file://navit.launcher \
                   file://navit.png \
 	  	 "
 SRC_URI_append_shr = "file://navitD.desktop \
@@ -38,6 +37,7 @@ do_install_append() {
         install -m 0644 ${WORKDIR}/navit.png ${D}${datadir}/pixmaps/
         install -m 0644 ${WORKDIR}/navitD.png ${D}${datadir}/pixmaps/
 
-        mv ${D}${bindir}/navit ${D}${bindir}/navit.real
-        install -m 0755 ${WORKDIR}/navit.launcher ${D}${bindir}/navit
+	#FIXME: don't install those in the first place, 
+	#FIXME: rather then deleting post-install?
+	rm ${D}${libdir}/${PN}/*/*.la
 }

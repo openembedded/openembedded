@@ -10,14 +10,12 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 
-DEFAULT_PREFERENCE_libc-uclibc = "-1"
-
 DEPENDS = "flex flex-native"
 
 # PAM is not a lot of use without configuration files and the plugins
 RRECOMMENDS_${PN} = "libpam-meta libpam-base-files"
 
-PR = "r0"
+PR = "r1"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -26,9 +24,18 @@ p = "${pn}-${PV}"
 S = "${WORKDIR}/${p}"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/library/${p}.tar.bz2 \
-           file://pam-nodocs.patch;patch=1 "
+           file://pam-nodocs.patch;patch=1 \
+           file://fix_disabled_nls.patch;patch=1 \
+          "
 
-inherit autotools
+UCLIBC_PATCHES = " file://pam-disable-nis-on-uclibc.patch;patch=1 \
+                   file://disable_modules_uclibc.patch;patch=1 \
+                 "
+
+SRC_URI_append_linux-uclibc = ${UCLIBC_PATCHES}
+SRC_URI_append_linux-uclibceabi = ${UCLIBC_PATCHES}
+
+inherit autotools gettext
 
 LEAD_SONAME = "libpam.so.*"
 
@@ -65,6 +72,3 @@ python populate_packages_prepend () {
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 }
 
-do_stage() {
-	autotools_stage_all
-}
