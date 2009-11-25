@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r25"
+PR = "r26"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -246,4 +246,6 @@ RDEPENDS_${PN} += "\
 		fltkclock \
 		fltkhackdiet \
 		fltkwwpointcal \
+		transmission \
+		xf86-input-tslib \
 "
