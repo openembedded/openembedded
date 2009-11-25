@@ -78,12 +78,14 @@ do
                       angstrom-zeroconf-audio \
                       apache2 \
                       artoolkit \
+                      asciidoc \
                       asterisk \
                       atomic \
                       autoconf \
                       automake \
                       binutils \
                       bison \
+                      blueman \
                       bluez-gnome \
                       bluez-hcidump \
                       boa \
@@ -118,6 +120,7 @@ do
                       empathy \ 
                       epdfview \
                       epiphany \
+                      eve \
                       evince \
                       exo \
                       fakeroot \
@@ -245,6 +248,7 @@ do
                       ntfs-3g \
                       numptyphysics \
                       octave \
+                      openbox \
                       opencv \
                       opencv-samples \
                       openmoko-browser2 \
