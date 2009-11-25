@@ -15,7 +15,6 @@ do_install() {
 	rm -f ${D}${includedir}/bits/atomicity.h
 	install -d ${D}${libdir}/
 	install -m 644 lib/crt[1in].o ${D}${libdir}/
-	install -d ${D}${libdir}/
 	install -m 644 lib/libc.so ${D}${libdir}/
 }
 
