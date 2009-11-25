@@ -3,7 +3,7 @@ DEPENDS_prepend = "pkgconfig-native "
 do_install_prepend () {
 
 for i in `find ${S}/ -name "*.pc" -type f` ; do \
-            sed -i -e 's:-L${STAGING_LIBDIR}::g' $i
+            sed -i -e 's:-L${STAGING_LIBDIR}::g' -e 's:-I${STAGING_INCDIR}::g' $i
         done
 }
 
