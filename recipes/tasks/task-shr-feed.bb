@@ -246,4 +246,5 @@ RDEPENDS_${PN} += "\
 		fltkclock \
 		fltkhackdiet \
 		fltkwwpointcal \
+		transmission \
 "
