@@ -8,12 +8,13 @@ EXTRA_OECONF = "--with-sysroot=${STAGING_DIR_TARGET} \
 		--enable-install-libbfd \
                 --disable-werror"
 
+# --enable-install-libiberty"
+
 do_stage () {
 	oe_runmake install
+
 	install -d ${CROSS_DIR}/include
 	install -m 0644 ${S}/include/libiberty.h ${CROSS_DIR}/include
-#	install -d ${CROSS_DIR}/lib
-#	install -m 0644 ${S}/lib/libiberty.a ${CROSS_DIR}/lib
 
 	# We don't really need these, so we'll remove them...
 	rm -rf ${CROSS_DIR}/lib/ldscripts
@@ -29,5 +30,8 @@ do_stage () {
 }
 
 do_install () {
-	:
+  :
+# this already happens, don't know why
+#	install -d ${CROSS_DIR}/lib
+#	install -m 0644 ${S}/lib/libiberty.a ${CROSS_DIR}/lib
 }
