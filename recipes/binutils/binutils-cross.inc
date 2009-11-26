@@ -12,6 +12,8 @@ do_stage () {
 	oe_runmake install
 	install -d ${CROSS_DIR}/include
 	install -m 0644 ${S}/include/libiberty.h ${CROSS_DIR}/include
+#	install -d ${CROSS_DIR}/lib
+#	install -m 0644 ${S}/lib/libiberty.a ${CROSS_DIR}/lib
 
 	# We don't really need these, so we'll remove them...
 	rm -rf ${CROSS_DIR}/lib/ldscripts
