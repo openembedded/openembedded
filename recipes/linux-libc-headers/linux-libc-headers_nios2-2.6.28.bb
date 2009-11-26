@@ -11,7 +11,10 @@ SRC_URI = "git://sopc.et.ntust.edu.tw/git/linux-2.6.git;branch=test-nios2;protoc
            file://procinfo.h \
            file://system.ptf \
            file://hardware.mk \
-           file://defconfig"
+           file://headless_hwselect.patch;patch=1;pnum=2 \
+	  "
+
+#           file://defconfig \
 
 S = "${WORKDIR}/git"
 
@@ -44,8 +47,8 @@ set_arch() {
 
 do_configure() {
 	set_arch
-	cp ../hardware.mk arch/nios2
-#	oe_runmake hwselect SYSPTF=../system.ptf CPU_SELECTION=1 MEM_SELECTION=2 ARCH=$ARCH
+#	cp ../hardware.mk arch/nios2
+	oe_runmake hwselect SYSPTF=../system.ptf CPU_SELECTION=1 MEM_SELECTION=2 ARCH=$ARCH
 	oe_runmake allnoconfig ARCH=$ARCH
 }
 
