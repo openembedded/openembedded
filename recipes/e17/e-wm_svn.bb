@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r7"
+PR = "r8"
 
 inherit e update-alternatives
 
@@ -90,7 +90,6 @@ RRECOMMENDS_${PN} = "\
   ${PN}-other \
   ${PN}-input-methods \
   ${PN}-sysactions \
-  ${PN}-menu \
 "
 
 PACKAGE_ARCH_${PN}-config-default = "all"
