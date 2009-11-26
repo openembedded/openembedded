@@ -11,7 +11,7 @@ export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
 inherit autotools_stage
 
-EXTRA_OECONF = "--disable-music-mp3"
+EXTRA_OECONF = "--disable-music-mp3 --disable-music-flac"
 # although we build smpeg... need to find out how
 # to deal with optional dependencies
 
