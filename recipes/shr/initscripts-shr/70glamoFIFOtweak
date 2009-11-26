@@ -1,0 +1,4 @@
+#!/bin/sh
+# Enable FIFO stage for the LCD engine's memory access
+# see http://git.bitwiz.org.uk/?p=kernel.git;a=commit;h=01e4e0c2a1c39d7e4556f8996f21dfaf73b2869c
+echo  "4366 16384" > /sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.9/glamo3362.0/regs

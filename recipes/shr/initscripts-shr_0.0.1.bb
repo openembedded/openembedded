@@ -5,7 +5,7 @@ DEPENDS = ""
 RDEPENDS = ""
 LICENSE = "GPL"
 PV = "0.0.1"
-PR = "r11"
+PR = "r12"
 
 RPROVIDES_${PN} = "initscripts"
 RCONFLICTS_${PN} = "initscripts"
@@ -32,6 +32,7 @@ SRC_URI = "file://alignment.sh \
 	   file://sendsigs \
 	   file://umountfs \
 	   file://umountnfs.sh \
+	   file://70glamoFIFOtweak \
 	   "
 
 inherit base
@@ -104,4 +105,8 @@ do_install () {
 	ln -sf		../init.d/umountnfs.sh		${D}${sysconfdir}/rc6.d/S31umountnfs.sh
 	ln -sf		../init.d/umountfs		${D}${sysconfdir}/rc6.d/S40umountfs
 	ln -sf		../init.d/reboot		${D}${sysconfdir}/rc6.d/S90reboot
+
+	# install the Glamo FIFO tweak in an xsession.d file
+	install -d ${D}${sysconfdir}/X11/Xsession.d
+	install -m 0755	${WORKDIR}/70glamoFIFOtweak	${D}${sysconfdir}/X11/Xsession.d
 }
