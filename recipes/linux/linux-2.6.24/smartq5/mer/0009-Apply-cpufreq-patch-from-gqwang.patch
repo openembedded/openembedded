@@ -1,0 +1,113 @@
+From 6a2a98218695242634c6f601dd956ef06369d1d3 Mon Sep 17 00:00:00 2001
+From: YouSheng <david.ysh@gmail.com>
+Date: Thu, 20 Aug 2009 13:58:48 +0800
+Subject: [PATCH 09/13] Apply cpufreq patch from gqwang
+
+---
+ arch/arm/plat-s3c64xx/clock.c           |   23 +++++++++++------------
+ arch/arm/plat-s3c64xx/s3c64xx-cpufreq.c |   18 +++++++++---------
+ 2 files changed, 20 insertions(+), 21 deletions(-)
+
+diff --git a/arch/arm/plat-s3c64xx/clock.c b/arch/arm/plat-s3c64xx/clock.c
+index a776437..1cb7fd4 100644
+--- a/arch/arm/plat-s3c64xx/clock.c
++++ b/arch/arm/plat-s3c64xx/clock.c
+@@ -63,14 +63,17 @@
+ #define PLL_CALC_VAL(MDIV,PDIV,SDIV)	((1<<31)|(MDIV)<<16 |(PDIV)<<8 |(SDIV))
+ #define GET_ARM_CLOCK(baseclk)		s3c6400_get_pll(__raw_readl(S3C_APLL_CON),baseclk)
+ 
+-#define MHZ				1000*1000
+ #define INIT_XTAL			12 * MHZ
+ 
+ /* enable and disable calls for use with the clk struct */
+ static const u32 s3c_cpu_clock_table[][6] = {
++	//{1100*MHZ, 266, 3, 1, 0, 0},
++	//{800*MHZ, 266, 3, 1, 0, 0},
++	{666*MHZ, 266, 3, 1, 0, 0},
+ 	{532*MHZ, 266, 3, 1, 0, 0},
+-	{266*MHZ, 266, 3, 1, 0, 1},
+-	{133*MHZ, 266, 3, 1, 0, 3},
++	{266*MHZ, 266, 3, 1, 0, 0},
++	{133*MHZ, 266, 3, 1, 0, 0},
++	{100*MHZ, 266, 3, 1, 0, 0},
+ };
+ 
+ /* clock information */
+@@ -286,6 +289,7 @@ unsigned long s3c_fclk_round_rate(struct clk *clk, unsigned long rate)
+         return s3c_cpu_clock_table[ARRAY_SIZE(s3c_cpu_clock_table) - 1][0];
+ }
+ 
++#define APLL_MDIV_MASK	    (0x3ff << 16)
+ int s3c_fclk_set_rate(struct clk *clk, unsigned long rate)
+ {
+ 	u32 ret = -EINVAL;
+@@ -296,20 +300,15 @@ int s3c_fclk_set_rate(struct clk *clk, unsigned long rate)
+ 
+ 	round_tmp = s3c_fclk_round_rate(clk,rate);
+ 
+-	if(round_tmp == (int)s3c_fclk_get_rate())
+-		return 0;
+-
+ 	for (iter = 0 ; iter < ARRAY_SIZE(s3c_cpu_clock_table) ; iter++){
+ 		if(round_tmp == s3c_cpu_clock_table[iter][0])
+ 			break;
+ 	}
+ 
+-	clk_div0_tmp = __raw_readl(ARM_CLK_DIV) & ~(ARM_DIV_MASK);
+-	clk_div0_tmp |= s3c_cpu_clock_table[iter][5];
+-
+-	__raw_writel(clk_div0_tmp, ARM_CLK_DIV);
+-
+-	if (__raw_readl(ARM_CLK_DIV) == clk_div0_tmp)
++	apll_con_tmp = __raw_readl(S3C_APLL_CON) & ~(APLL_MDIV_MASK);
++	apll_con_tmp |= (round_tmp / 2000000) << 16;
++	__raw_writel(apll_con_tmp, S3C_APLL_CON);
++	if (__raw_readl(S3C_APLL_CON) == apll_con_tmp)
+ 		ret = 0;
+ 
+ 	clk->rate = s3c_cpu_clock_table[iter][0];
+diff --git a/arch/arm/plat-s3c64xx/s3c64xx-cpufreq.c b/arch/arm/plat-s3c64xx/s3c64xx-cpufreq.c
+index a509071..fae9890 100644
+--- a/arch/arm/plat-s3c64xx/s3c64xx-cpufreq.c
++++ b/arch/arm/plat-s3c64xx/s3c64xx-cpufreq.c
+@@ -44,13 +44,13 @@ extern int ltc3714_init(void);
+ 
+ /* frequency */
+ static struct cpufreq_frequency_table s3c6410_freq_table[] = {
+-	{APLL_GEN_CLK, 667*1000},
+-	{APLL_GEN_CLK, APLL_GEN_CLK},
+-	{APLL_GEN_CLK, APLL_GEN_CLK2},
+-	{APLL_GEN_CLK, APLL_GEN_CLK/2},
+-	{APLL_GEN_CLK, APLL_GEN_CLK2/2},
+-	{APLL_GEN_CLK, APLL_GEN_CLK/4},
+-	{APLL_GEN_CLK, APLL_GEN_CLK2/4},
++//	{0, 1100*1000},
++//	{1, 800*1000},
++	{2, 666*1000},
++	{3, 532*1000},
++	{4, 266*1000},
++	{5, 133*1000},
++	{6, 100*1000},
+ 	{0, CPUFREQ_TABLE_END},
+ };
+ 
+@@ -142,14 +142,14 @@ static int s3c6410_target(struct cpufreq_policy *policy,
+ 		set_power(freqs.new);
+ 
+ 		/* frequency scaling */
+-		ret = clk_set_rate(mpu_clk, target_freq * KHZ_T);
++		ret = clk_set_rate(mpu_clk, freqs.new * KHZ_T);
+ 		if(ret != 0)
+ 			printk("frequency scaling error\n");
+ 	}
+ 
+ 
+ #else
+-	ret = clk_set_rate(mpu_clk, target_freq * KHZ_T);
++	ret = clk_set_rate(mpu_clk, freqs.new * KHZ_T);
+ 	if(ret != 0)
+ 		printk("frequency scaling error\n");
+ 
+-- 
+1.6.2.4
+

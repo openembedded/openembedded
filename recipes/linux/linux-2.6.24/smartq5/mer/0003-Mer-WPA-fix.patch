@@ -1,0 +1,27 @@
+From 5884edb0b88bd1cad2c39ad7e88786c0fd1fbd09 Mon Sep 17 00:00:00 2001
+From: Carsten V. Munk <carsten.munk@gmail.com>
+Date: Thu, 6 Aug 2009 09:28:34 +0000
+Subject: [PATCH 03/13] Mer: WPA fix
+
+---
+ drivers/net/wireless/marvell8686/wlan_wext.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/wireless/marvell8686/wlan_wext.c b/drivers/net/wireless/marvell8686/wlan_wext.c
+index 85ee593..adef3ab 100644
+--- a/drivers/net/wireless/marvell8686/wlan_wext.c
++++ b/drivers/net/wireless/marvell8686/wlan_wext.c
+@@ -2567,7 +2567,9 @@ wlan_get_range(struct net_device *dev, struct iw_request_info *info,
+         range->throughput = 5000 * 1000;
+     else
+         range->throughput = 1500 * 1000;
+-
++    range->enc_capa = IW_ENC_CAPA_WPA | IW_ENC_CAPA_WPA2 |
++                       IW_ENC_CAPA_CIPHER_TKIP | IW_ENC_CAPA_CIPHER_CCMP;
++                                
+     range->min_rts = MRVDRV_RTS_MIN_VALUE;
+     range->max_rts = MRVDRV_RTS_MAX_VALUE;
+     range->min_frag = MRVDRV_FRAG_MIN_VALUE;
+-- 
+1.6.2.4
+

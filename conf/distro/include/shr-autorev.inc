@@ -12,3 +12,5 @@ SRCREV_pn-phonefsod = "${AUTOREV}"
 SRCREV_pn-libphone-ui = "${AUTOREV}"
 SRCREV_pn-libphone-ui-shr = "${AUTOREV}"
 SRCREV_pn-libphone-utils = "${AUTOREV}"
+SRCREV_pn-opimd-utils = "${AUTOREV}"
+

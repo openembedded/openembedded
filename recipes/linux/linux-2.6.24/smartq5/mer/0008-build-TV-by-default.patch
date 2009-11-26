@@ -1,0 +1,136 @@
+From fc4f45f5d2c2fd7fa5e4a1b5923129bd6722f102 Mon Sep 17 00:00:00 2001
+From: Carsten V. Munk <carsten.munk@gmail.com>
+Date: Thu, 6 Aug 2009 12:18:57 +0000
+Subject: [PATCH 08/13] build TV by default.
+
+---
+ arch/arm/configs/hhs3c6410_4_3_defconfig |   36 ++++++++++++++++++++-
+ arch/arm/configs/hhs3c6410_7_defconfig   |   51 ++++++++++++++++++++++++++++-
+ 2 files changed, 83 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/configs/hhs3c6410_4_3_defconfig b/arch/arm/configs/hhs3c6410_4_3_defconfig
+index aa1758a..d503e12 100644
+--- a/arch/arm/configs/hhs3c6410_4_3_defconfig
++++ b/arch/arm/configs/hhs3c6410_4_3_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.24.7
+-# Tue Jun 16 10:48:11 2009
++# Thu Aug  6 11:55:46 2009
+ #
+ CONFIG_ARM=y
+ CONFIG_SYS_SUPPORTS_APM_EMULATION=y
+@@ -910,7 +910,39 @@ CONFIG_SSB_POSSIBLE=y
+ #
+ # Multimedia devices
+ #
+-# CONFIG_VIDEO_DEV is not set
++CONFIG_VIDEO_DEV=m
++# CONFIG_VIDEO_V4L1 is not set
++CONFIG_VIDEO_V4L1_COMPAT=y
++CONFIG_VIDEO_V4L2=y
++CONFIG_VIDEO_CAPTURE_DRIVERS=y
++# CONFIG_VIDEO_ADV_DEBUG is not set
++CONFIG_VIDEO_HELPER_CHIPS_AUTO=y
++# CONFIG_VIDEO_VIVI is not set
++# CONFIG_VIDEO_SAA5246A is not set
++# CONFIG_VIDEO_SAA5249 is not set
++# CONFIG_VIDEO_SAMSUNG is not set
++CONFIG_VIDEO_SAMSUNG_TVENC=m
++CONFIG_VIDEO_SAMSUNG_TVSCALER=m
++CONFIG_V4L_USB_DRIVERS=y
++# CONFIG_VIDEO_PVRUSB2 is not set
++# CONFIG_VIDEO_USBVISION is not set
++# CONFIG_USB_ET61X251 is not set
++# CONFIG_USB_SN9C102 is not set
++# CONFIG_USB_ZC0301 is not set
++# CONFIG_USB_ZR364XX is not set
++CONFIG_RADIO_ADAPTERS=y
++# CONFIG_RADIO_CADET is not set
++# CONFIG_RADIO_RTRACK is not set
++# CONFIG_RADIO_RTRACK2 is not set
++# CONFIG_RADIO_AZTECH is not set
++# CONFIG_RADIO_GEMTEK is not set
++# CONFIG_RADIO_SF16FMI is not set
++# CONFIG_RADIO_SF16FMR2 is not set
++# CONFIG_RADIO_TERRATEC is not set
++# CONFIG_RADIO_TRUST is not set
++# CONFIG_RADIO_TYPHOON is not set
++# CONFIG_RADIO_ZOLTRIX is not set
++# CONFIG_USB_DSBR is not set
+ # CONFIG_DVB_CORE is not set
+ # CONFIG_DAB is not set
+ 
+diff --git a/arch/arm/configs/hhs3c6410_7_defconfig b/arch/arm/configs/hhs3c6410_7_defconfig
+index 2d3147a..b0a4f48 100644
+--- a/arch/arm/configs/hhs3c6410_7_defconfig
++++ b/arch/arm/configs/hhs3c6410_7_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.24.7
+-# Tue Jun 16 10:44:09 2009
++# Thu Aug  6 12:17:50 2009
+ #
+ CONFIG_ARM=y
+ CONFIG_SYS_SUPPORTS_APM_EMULATION=y
+@@ -910,7 +910,54 @@ CONFIG_SSB_POSSIBLE=y
+ #
+ # Multimedia devices
+ #
+-# CONFIG_VIDEO_DEV is not set
++CONFIG_VIDEO_DEV=m
++CONFIG_VIDEO_V4L1=y
++CONFIG_VIDEO_V4L1_COMPAT=y
++CONFIG_VIDEO_V4L2=y
++CONFIG_VIDEO_CAPTURE_DRIVERS=y
++# CONFIG_VIDEO_ADV_DEBUG is not set
++CONFIG_VIDEO_HELPER_CHIPS_AUTO=y
++# CONFIG_VIDEO_VIVI is not set
++# CONFIG_VIDEO_PMS is not set
++# CONFIG_VIDEO_CPIA is not set
++# CONFIG_VIDEO_CPIA2 is not set
++# CONFIG_VIDEO_SAA5246A is not set
++# CONFIG_VIDEO_SAA5249 is not set
++# CONFIG_TUNER_3036 is not set
++# CONFIG_VIDEO_SAMSUNG is not set
++CONFIG_VIDEO_SAMSUNG_TVENC=m
++CONFIG_VIDEO_SAMSUNG_TVSCALER=m
++CONFIG_V4L_USB_DRIVERS=y
++# CONFIG_VIDEO_PVRUSB2 is not set
++# CONFIG_VIDEO_EM28XX is not set
++# CONFIG_VIDEO_USBVISION is not set
++# CONFIG_USB_VICAM is not set
++# CONFIG_USB_IBMCAM is not set
++# CONFIG_USB_KONICAWC is not set
++# CONFIG_USB_QUICKCAM_MESSENGER is not set
++# CONFIG_USB_ET61X251 is not set
++# CONFIG_VIDEO_OVCAMCHIP is not set
++# CONFIG_USB_W9968CF is not set
++# CONFIG_USB_OV511 is not set
++# CONFIG_USB_SE401 is not set
++# CONFIG_USB_SN9C102 is not set
++# CONFIG_USB_STV680 is not set
++# CONFIG_USB_ZC0301 is not set
++# CONFIG_USB_PWC is not set
++# CONFIG_USB_ZR364XX is not set
++CONFIG_RADIO_ADAPTERS=y
++# CONFIG_RADIO_CADET is not set
++# CONFIG_RADIO_RTRACK is not set
++# CONFIG_RADIO_RTRACK2 is not set
++# CONFIG_RADIO_AZTECH is not set
++# CONFIG_RADIO_GEMTEK is not set
++# CONFIG_RADIO_SF16FMI is not set
++# CONFIG_RADIO_SF16FMR2 is not set
++# CONFIG_RADIO_TERRATEC is not set
++# CONFIG_RADIO_TRUST is not set
++# CONFIG_RADIO_TYPHOON is not set
++# CONFIG_RADIO_ZOLTRIX is not set
++# CONFIG_USB_DSBR is not set
+ # CONFIG_DVB_CORE is not set
+ # CONFIG_DAB is not set
+ 
+-- 
+1.6.2.4
+
