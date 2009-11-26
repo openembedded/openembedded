@@ -20,7 +20,7 @@ PREFERRED_VERSION_elf2flt-cross = "nios2-git"
 PREFERRED_VERSION_gcc-cross = "nios2-3.4.6"
 PREFERRED_VERSION_gcc-cross-initial = "nios2-3.4.6"
 PREFERRED_VERSION_gcc-cross-intermediate = "nios2-3.4.6"
-PREFERRED_VERSION_uclibc = "nios2-0.9.27"
+PREFERRED_VERSION_uclibc = "nios2-0.9.29"
 PREFERRED_VERSION_uclibc-initial = "nios2-0.9.27"
 
 # Set default for 16MB machines - can be overridden for more or less flash.
