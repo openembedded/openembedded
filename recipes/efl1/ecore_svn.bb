@@ -1,5 +1,5 @@
 require ecore.inc
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://iconv.patch;patch=1 \
             file://exit_uclibc.patch;patch=1 \
@@ -27,7 +27,7 @@ EXTRA_OECONF = "\
   --disable-ecore-x-xcb \
   --disable-ecore-directfb \
   --disable-ecore-sdl \
-  --disable-ecore-evas-x11-gl \
+  --enable-ecore-evas-x11-gl \
   --disable-ecore-evas-dfb \
   --disable-ecore-evas-sdl \
   --disable-openssl \
