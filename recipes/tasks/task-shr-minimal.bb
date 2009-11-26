@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r16"
+PR = "r17"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -114,6 +114,7 @@ RDEPENDS_${PN}-audio_append_om-gta02 =  "\
 RDEPENDS_${PN}-x = "\
   glibc-utils \
   glibc-charmap-utf-8 \
+  e-wm-menu-shr \
   shr-theme-gry \
   etk-theme-shr \
   ${@get_rdepends(bb, d)} \
