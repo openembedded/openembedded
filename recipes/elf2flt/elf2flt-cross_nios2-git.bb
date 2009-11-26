@@ -1,6 +1,6 @@
 DESCRIPTION = "Elf2flt is a wrapper around the linker for uclinux platforms"
 PV = "0.1"
-DEPENDS = "binutils-cross"
+DEPENDS = "binutils-cross libz-native"
 
 inherit autotools cross
 
