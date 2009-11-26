@@ -3,8 +3,6 @@ LICENSE = "GPL"
 
 DEPENDS = "tcp-wrappers libcanberra libxklavier grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl xrdb"
 
-PR = "r3"
-
 inherit gnome update-rc.d
 
 RDEPENDS_${PN} += "grep"
@@ -25,13 +23,18 @@ EXTRA_OECONF = " --enable-authentication-scheme=shadow \
 
 do_install_prepend() {
 	mkdir -p ${D}/var/lib/gdm/.gconf.mandatory
-	cp ${WORKDIR}/%gconf-tree.xml ${D}/var/lib/gdm/.gconf.mandatory/ 
+	cp ${WORKDIR}/%gconf-tree.xml ${D}/var/lib/gdm/.gconf.mandatory/
+}
 
+do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/gdm ${D}/${sysconfdir}/init.d/
 
 	install -d ${D}/${sysconfdir}/gdm
 	install -m 0644 ${WORKDIR}/gdm.conf ${D}/${sysconfdir}/gdm/
+
+	install -d ${D}/${sysconfdir}/gdm/PreSession
+	install -m 0755 ${WORKDIR}/Default ${D}/${sysconfdir}/gdm/PreSession
 
 	install -d ${D}/${sysconfdir}/pam.d
 	install -m 0755 ${WORKDIR}/gdm-pam       ${D}/${sysconfdir}/pam.d/gdm
