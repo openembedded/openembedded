@@ -33,9 +33,6 @@ do_install_append() {
 	install -d ${D}/${sysconfdir}/gdm
 	install -m 0644 ${WORKDIR}/gdm.conf ${D}/${sysconfdir}/gdm/
 
-	install -d ${D}/${sysconfdir}/gdm/PreSession
-	install -m 0755 ${WORKDIR}/Default ${D}/${sysconfdir}/gdm/PreSession
-
 	install -d ${D}/${sysconfdir}/pam.d
 	install -m 0755 ${WORKDIR}/gdm-pam       ${D}/${sysconfdir}/pam.d/gdm
 	install -m 0755 ${WORKDIR}/other         ${D}/${sysconfdir}/pam.d/
