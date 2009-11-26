@@ -10,10 +10,10 @@ SRCREV = "d01303a1035a39e445007c7522d89ad985c4153c"
 SRC_URI = "git://sopc.et.ntust.edu.tw/git/linux-2.6.git;branch=test-nios2;protocol=http \
            file://procinfo.h \
            file://system.ptf \
-           file://hardware.mk \
            file://headless_hwselect.patch;patch=1;pnum=2 \
 	  "
 
+#           file://hardware.mk \
 #           file://defconfig \
 
 S = "${WORKDIR}/git"
