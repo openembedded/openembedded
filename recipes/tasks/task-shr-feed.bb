@@ -21,6 +21,7 @@ RDEPENDS_${PN} += "\
 		gpe-gallery \
 		gpe-timesheet \
 		gpe-contacts \
+		gtkmm \
 		mc \
 		mplayer \
 		navit \
