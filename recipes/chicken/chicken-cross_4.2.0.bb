@@ -1,21 +1,19 @@
 require chicken.inc
 
-DEPENDS = "gcc-cross-sdk chicken"
-RDEPENDS = "gcc-cross-sdk chicken"
 PR = "${INC_PR}.1"
 
 inherit cross
 
 do_compile() {
-    make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR}/${TARGET_SYS}/usr" TARGET_RUN_PREFIX="${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" C_COMPILER=gcc LIBRARIAN=ar
+    make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR_TARGET}${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" LIBRARIAN=ar
 }
 
 do_install() {
-    make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR}/${TARGET_SYS}/usr" TARGET_RUN_PREFIX="${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" C_COMPILER=gcc LIBRARIAN=ar install
+    make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR_TARGET}${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" LIBRARIAN=ar install
 }
 
 do_stage() {
-    make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR}/${TARGET_SYS}/usr" TARGET_RUN_PREFIX="${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" C_COMPILER=gcc LIBRARIAN=ar install
+    make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR_TARGET}${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" LIBRARIAN=ar install
 }
 
 PACKAGES += "chicken-bin libchicken libuchicken"

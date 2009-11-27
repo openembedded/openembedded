@@ -5,7 +5,7 @@ RDEPENDS = "gcc-cross-sdk"
 PR = "${INC_PR}.1"
 
 do_compile() {
-    make PLATFORM="linux" PREFIX="${prefix}" HOSTSYSTEM="${TARGET_SYS}" ARCH=${CHICKEN_ARCH}
+    make PLATFORM="linux" DESTDIR="${D}" PREFIX="${prefix}" HOSTSYSTEM="${TARGET_SYS}" ARCH=${CHICKEN_ARCH}
 }
 
 do_install() {
@@ -13,7 +13,7 @@ do_install() {
 }
 
 do_stage() {
-    make PLATFORM="linux" PREFIX="${STAGING_DIR}/${TARGET_SYS}${layout_prefix}" HOSTSYSTEM="${TARGET_SYS}" ARCH=${CHICKEN_ARCH} install
+    make PLATFORM="linux" DESTDIR="${STAGING_DIR_TARGET}" PREFIX="${prefix}" HOSTSYSTEM="${TARGET_SYS}" ARCH=${CHICKEN_ARCH} install
 }
 
 PACKAGES += "chicken-bin libchicken libuchicken"
