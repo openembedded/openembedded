@@ -248,4 +248,6 @@ RDEPENDS_${PN} += "\
 		fltkwwpointcal \
 		transmission \
 		xf86-input-tslib \
+		fltkcocktailbar \
+		babiloo-efl \
 "
