@@ -1,0 +1,35 @@
+--- /tmp/Makefile.am	2008-09-05 15:16:21.000000000 +0200
++++ Linux-PAM-1.0.2/Makefile.am	2008-09-05 15:16:56.153198000 +0200
+@@ -5,9 +5,9 @@
+ AUTOMAKE_OPTIONS = 1.9 gnu dist-bzip2 check-news
+ 
+ if STATIC_MODULES
+-SUBDIRS = modules libpam libpamc libpam_misc tests po conf doc examples xtests
++SUBDIRS = modules libpam libpamc libpam_misc tests po conf examples xtests
+ else
+-SUBDIRS = libpam tests libpamc libpam_misc modules po conf doc examples xtests
++SUBDIRS = libpam tests libpamc libpam_misc modules po conf examples xtests
+ endif
+ 
+ CLEANFILES = *~
+@@ -28,19 +28,7 @@
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 
+-release: dist releasedocs
+-
+-release-docs: releasedocs
+-
+-releasedocs:
+-	rm -rf Linux-PAM-$(VERSION)
+-	mkdir -p Linux-PAM-$(VERSION)/doc
+-	make -C doc releasedocs
+-	tar zfc Linux-PAM-$(VERSION)-docs.tar.gz \
+-		Linux-PAM-$(VERSION)/doc
+-	tar jfc Linux-PAM-$(VERSION)-docs.tar.bz2 \
+-		Linux-PAM-$(VERSION)/doc
+-	rm -rf Linux-PAM-$(VERSION)
++release: dist 
+ 
+ xtests:
+ 	make -C xtests xtests

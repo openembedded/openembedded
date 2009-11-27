@@ -12,7 +12,10 @@ LICENSE = "GPLv2"
 
 DEPENDS = "flex flex-native"
 
-PR = "r4"
+# PAM is not a lot of use without configuration files and the plugins
+RRECOMMENDS_${PN} = "libpam-meta libpam-base-files"
+
+PR = "r5"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -65,7 +68,6 @@ python populate_packages_prepend () {
 	packages.append(metapkg)
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 }
-
 
 do_stage() {
 	autotools_stage_all

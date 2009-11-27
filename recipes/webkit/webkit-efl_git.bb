@@ -4,7 +4,7 @@ DEPENDS = "icu flex gst-plugins-base gstreamer jpeg libpng libxml2 pango \
            libsoup-2.4 eina ecore evas edje cairo fontconfig freetype curl \
            sqlite3 libxslt gperf-native libxt"
 
-PV = "0.1+gitr${SRCREV}"
+PV = "1.1.11+gitr${SRCREV}"
 PR = "r1"
 
 SRC_URI = "git://gitorious.org/webkit-efl/webkit-efl.git;protocol=git;branch=master"

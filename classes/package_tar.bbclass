@@ -56,7 +56,8 @@ python do_package_tar () {
 
 	for pkg in packages.split():
 		localdata = bb.data.createCopy(d)
-		root = "%s/install/%s" % (workdir, pkg)
+		pkgdest = bb.data.getVar('PKGDEST', d, 1)
+		root = "%s/%s" % (pkgdest, pkg)
 
 		bb.data.setVar('ROOT', '', localdata)
 		bb.data.setVar('ROOT_%s' % pkg, root, localdata)

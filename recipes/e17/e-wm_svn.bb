@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r7"
+PR = "r8"
 
 inherit e update-alternatives
 
@@ -80,6 +80,7 @@ PACKAGES =+ "\
   ${PN}-input-methods \
   ${PN}-sysactions \
   ${PN}-utils \
+  ${PN}-menu \
 "
 
 RRECOMMENDS_${PN} = "\
@@ -106,6 +107,7 @@ PACKAGE_ARCH_${PN}-icons = "all"
 PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
 PACKAGE_ARCH_${PN}-sysactions = "all"
+PACKAGE_ARCH_${PN}-menu = "all"
 
 FILES_${PN} = "\
   ${bindir}/* \
@@ -140,6 +142,7 @@ FILES_${PN}-other = "${datadir}/enlightenment/data/other"
 FILES_${PN}-input-methods = "${datadir}/enlightenment/data/input_methods"
 FILES_${PN}-sysactions = "${sysconfdir}/enlightenment/sysactions.conf"
 FILES_${PN}-utils = "${libdir}/enlightenment/utils/*"
+FILES_${PN}-menu = "${sysconfdir}/xdg/menus/applications.menu"
 
 RRECOMMENDS_${PN}-config-default = "${PN}-theme-default"
 RRECOMMENDS_${PN}-config-illume = "${PN}-theme-illume"
@@ -165,7 +168,8 @@ FILES_${PN}-doc += "\
   ${datadir}/enlightenment/doc \
 "
 
-CONFFILES_${PN} = "${sysconfdir}/xdg/menus/applications.menu"
+CONFFILES_${PN}-menu = "${sysconfdir}/xdg/menus/applications.menu"
+CONFFILES_${PN}-sysactions = "/etc/enlightenment/sysactions.conf"
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
 ALTERNATIVE_NAME = "x-window-manager"

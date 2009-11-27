@@ -5,7 +5,7 @@ DEPENDS = ""
 RDEPENDS = ""
 LICENSE = "GPL"
 PV = "0.0.1"
-PR = "r11"
+PR = "r13"
 
 RPROVIDES_${PN} = "initscripts"
 RCONFLICTS_${PN} = "initscripts"
@@ -104,4 +104,5 @@ do_install () {
 	ln -sf		../init.d/umountnfs.sh		${D}${sysconfdir}/rc6.d/S31umountnfs.sh
 	ln -sf		../init.d/umountfs		${D}${sysconfdir}/rc6.d/S40umountfs
 	ln -sf		../init.d/reboot		${D}${sysconfdir}/rc6.d/S90reboot
+
 }
