@@ -6,24 +6,47 @@ LICENSE = "GPL"
 inherit task
 
 RDEPENDS_${PN} += "\
-		python-elementary \
-		openmoko-agpsui \
-		mc \
-		mplayer \
-		x11vnc \
-		omview \
-		openvpn \
-		navit \
-		pythm \
-		fbreader \
-		omoney \
+		babiloo-efl \
+		dictator \
+		dosbox \
 		enotes \
 		epdfview \
+		fbreader \
+		ffalarms \
+		gpe-calendar \
+		gpe-todo \
+		gpe-scap \
+		gpe-sketchbook \
+		gpe-filemanager \
+		gpe-gallery \
+		gpe-timesheet \
+		gpe-contacts \
+		mc \
+		mplayer \
+		navit \
+		omview \
+		python-elementary \
+		pythm \
+		openmoko-agpsui \
+		openvpn \
+#		shr-config \
+		shr-today \
+                shr-theme-neo \
+		shr-theme-niebiee \
+		shr-theme-sixteen \
+# gry should be in image already
+#		shr-theme-gry \
+		shr-splash \
+		shr-splash-theme-simple \
+		shr-splash-theme-dontpanic \
+		shr-splash-theme-handy \
+		vagalume \
+		x11vnc \
+
+		omoney \
 		pyphonelog \
 		pingus \
 		openmoocow \
-		dosbox \
-		vagalume \
 		python-pygame \
 		mokoko \
 		exhibit \
@@ -36,30 +59,10 @@ RDEPENDS_${PN} += "\
 		ipkg-link \
 		ipkg-utils \
 		mysql \
-		gpe-calendar \
-		gpe-todo \
-		gpe-scap \
-		gpe-sketchbook \
-		gpe-filemanager \
-		gpe-gallery \
-		gpe-timesheet \
-		gpe-contacts \
 		fltk-chess \
 		remoko \
-#		shr-config \
-		shr-today \
-                shr-theme-neo \
-		shr-theme-niebiee \
-		shr-theme-sixteen \
-# gry should be in image already
-#		shr-theme-gry \
-		shr-splash \
-		shr-splash-theme-simple \
-		shr-splash-theme-dontpanic \
-		shr-splash-theme-handy \
 		openbmap-logger \
 		pisi \
-		ffalarms \
 		libnotify \
 		accelges \
 		ebrainy \
@@ -84,7 +87,6 @@ RDEPENDS_${PN} += "\
 		links-x11 \
 		e-wm-illume-dict-pl \
 		callrec \
-		dictator \
 		midori \
 		numptyphysics \
 		pidgin \
@@ -192,7 +194,6 @@ RDEPENDS_${PN} += "\
 		font-winitzki-cyrillic \
 #		font-xfree86-type1 \
 #		msn-pecan \
-		erminig \
 		qwo \
 		fso-apm \
 		fso-abyss \
