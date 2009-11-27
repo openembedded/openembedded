@@ -1,0 +1,11 @@
+--- a/csc.scm.orig	2009-11-26 17:16:57.000000000 -0200
++++ b/csc.scm	2009-11-26 17:17:09.000000000 -0200
+@@ -89,7 +89,7 @@
+   (quotewrap 
+    (prefix "chicken" "bin"
+ 	   (make-pathname
+-	    (if host-mode INSTALL_BIN_HOME TARGET_BIN_HOME)
++	    INSTALL_BIN_HOME
+ 	    CHICKEN_PROGRAM))))
+ 
+ (define compiler (quotewrap (if host-mode INSTALL_CC TARGET_CC)))
