@@ -1,10 +1,78 @@
---- gcc-4.3.1/libobjc/exception.c.old	2009-04-21 22:13:18.000000000 -0700
-+++ gcc-4.3.1/libobjc/exception.c	2009-04-21 22:23:52.000000000 -0700
-@@ -31,7 +31,14 @@
+Hi,
+
+This patch implements exception-handling support for Objective-C on ARM
+EABI Linux systems, using the ARM-defined EHABI. This patch gets things
+working fairly well, though at least one issue remains -- but this is a
+start, at least.
+
+Test results are clean, apart from the following:
+
+FAIL: objc/execute/exceptions/foward-1.m execution,  -O3
+-fomit-frame-pointer -funroll-loops  -fgnu-runtime
+
+FAIL: objc/execute/exceptions/foward-1.m execution,  -O3
+-fomit-frame-pointer -funroll-all-loops -finline-functions
+-fgnu-runtime
+
+AFAICT, these seem to be caused by data-flow information being corrupted
+somehow: the failure happens during the regrename pass, but I don't
+think the underlying cause is there. On entry to the landing pad:
+
+  @catch (id error)
+  {
+    i++;
+    [error free];
+  }
+
+The "error" pointer gets scrambled, because the register it should be
+passed in, r0, is not marked as live-on-entry to the associated block,
+so register-renaming thinks it's safe to overwrite that register.
+
+On the 4.3 branch, defining the EH_USES macro in arm.h as follows fixed
+this issue:
+
+/* r0 may be used by catch handlers.  Make sure it's marked live on
+   entry to those.  */
+#define EH_USES(N) ((N) == 0)
+
+But, this solution doesn't seem to work on mainline. Does anyone know
+why that might be?
+
+Is the attached patch OK for mainline, despite the above shortcoming?
+(Tested with cross to ARM EABI Linux).
+
+Cheers,
+
+Julian
+
+ChangeLog
+
+    * configure.ac (arm*-*-linux-gnueabi): Don't disable building
+    of libobjc for ARM EABI Linux.
+    * configure: Regenerate.
+
+    libobjc/
+    * exception.c (__objc_exception_class): Initialise as constant
+    array for ARM EABI. Change macro to static const for non-ARM EABI.
+    (ObjcException): Add note about structure layout. Remove landingPad
+    and handlerSwitchValue for ARM EABI.
+    (get_ttype_entry): Add __ARM_EABI_UNWINDER__ version
+    of function.
+    (CONTINUE_UNWINDING): Define for ARM EABI/otherwise cases.
+    (PERSONALITY_FUNCTION): Use ARM EABI-specific arguments, and add
+    ARM EABI unwinding support.
+    (objc_exception_throw): Use memcpy to initialise exception class.
+--MP_/JBpQpWs5CG=5JB9NzgrXUnG
+Content-Type: text/x-patch; name=libobjc-arm-eabi-support-1.diff
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=libobjc-arm-eabi-support-1.diff
+
+--- a/libobjc/exception.c	2008-04-30 05:15:45.000000000 -0700
++++ b/libobjc/exception.c	2008-05-06 05:41:51.000000000 -0700
+@@ -31,16 +31,25 @@ Boston, MA 02110-1301, USA.  */
  #include "unwind-pe.h"
  
  
--/* This is the exception class we report -- "GNUCOBJC".  */
 +#ifdef __ARM_EABI_UNWINDER__
 +
 +const _Unwind_Exception_Class __objc_exception_class
@@ -12,14 +80,16 @@
 +  
 +#else
 +
-+ /* This is the exception class we report -- "GNUCOBJC".  */
- #define __objc_exception_class			\
-   ((((((((_Unwind_Exception_Class) 'G'		\
-          << 8 | (_Unwind_Exception_Class) 'N')	\
-@@ -41,6 +48,17 @@
-      << 8 | (_Unwind_Exception_Class) 'B')	\
-     << 8 | (_Unwind_Exception_Class) 'J')	\
-    << 8 | (_Unwind_Exception_Class) 'C')
+ /* This is the exception class we report -- "GNUCOBJC".  */
+-#define __objc_exception_class			\
+-  ((((((((_Unwind_Exception_Class) 'G'		\
+-         << 8 | (_Unwind_Exception_Class) 'N')	\
+-        << 8 | (_Unwind_Exception_Class) 'U')	\
+-       << 8 | (_Unwind_Exception_Class) 'C')	\
+-      << 8 | (_Unwind_Exception_Class) 'O')	\
+-     << 8 | (_Unwind_Exception_Class) 'B')	\
+-    << 8 | (_Unwind_Exception_Class) 'J')	\
+-   << 8 | (_Unwind_Exception_Class) 'C')
 +static const _Unwind_Exception_Class __objc_exception_class
 +  = ((((((((_Unwind_Exception_Class) 'G'
 +            << 8 | (_Unwind_Exception_Class) 'N')
@@ -34,7 +104,7 @@
  
  /* This is the object that is passed around by the Objective C runtime
     to represent the exception in flight.  */
-@@ -50,12 +68,18 @@
+@@ -50,12 +59,18 @@ struct ObjcException
    /* This bit is needed in order to interact with the unwind runtime.  */
    struct _Unwind_Exception base;
  
@@ -54,7 +124,7 @@
  };
  
  
-@@ -106,6 +130,24 @@
+@@ -106,6 +121,24 @@ parse_lsda_header (struct _Unwind_Contex
    return p;
  }
  
@@ -79,7 +149,7 @@
  static Class
  get_ttype_entry (struct lsda_header_info *info, _Unwind_Word i)
  {
-@@ -122,6 +164,8 @@
+@@ -122,6 +155,8 @@ get_ttype_entry (struct lsda_header_info
      return 0;
  }
  
@@ -88,7 +158,7 @@
  /* Like unto the method of the same name on Object, but takes an id.  */
  /* ??? Does this bork the meta-type system?  Can/should we look up an
     isKindOf method on the id?  */
-@@ -150,12 +194,32 @@
+@@ -150,12 +185,32 @@ isKindOf (id value, Class target)
  #define PERSONALITY_FUNCTION	__gnu_objc_personality_v0
  #endif
  
@@ -121,14 +191,13 @@
  {
    struct ObjcException *xh = (struct ObjcException *) ue_header;
  
-@@ -165,19 +229,66 @@
+@@ -165,19 +220,65 @@ PERSONALITY_FUNCTION (int version,
    const unsigned char *p;
    _Unwind_Ptr landing_pad, ip;
    int handler_switch_value;
 -  int saw_cleanup = 0, saw_handler;
 +  int saw_cleanup = 0, saw_handler, foreign_exception;
    void *return_object;
- 
 +  int ip_before_insn = 0;
 +
 +#ifdef __ARM_EABI_UNWINDER__
@@ -155,7 +224,7 @@
 +      abort();
 +    }
 +  actions |= state & _US_FORCE_UNWIND;
-+ 
+ 
 +  /* TODO: Foreign exceptions need some attention (e.g. rethrowing doesn't
 +     work).  */
 +  foreign_exception = 0;
@@ -171,7 +240,7 @@
    /* Interface version check.  */
    if (version != 1)
      return _URC_FATAL_PHASE1_ERROR;
-+ 
++  
 +  foreign_exception = (exception_class != __objc_exception_class);
 +#endif
  
@@ -190,7 +259,7 @@
        goto install_context;
      }
  
-@@ -186,12 +297,18 @@
+@@ -186,12 +287,18 @@ PERSONALITY_FUNCTION (int version,
  
    /* If no LSDA, then there are no handlers or cleanups.  */
    if (! language_specific_data)
@@ -200,18 +269,17 @@
    /* Parse the LSDA header.  */
    p = parse_lsda_header (context, language_specific_data, &info);
    info.ttype_base = base_of_encoded_value (info.ttype_encoding, context);
--  ip = _Unwind_GetIP (context) - 1;
 +#ifdef HAVE_GETIPINFO
 +  ip = _Unwind_GetIPInfo (context, &ip_before_insn);
 +#else
-+   ip = _Unwind_GetIP (context) - 1;
+   ip = _Unwind_GetIP (context) - 1;
 +#endif
 +  if (!ip_before_insn)
 +    --ip;
    landing_pad = 0;
    action_record = 0;
    handler_switch_value = 0;
-@@ -250,7 +367,7 @@
+@@ -250,7 +357,7 @@ PERSONALITY_FUNCTION (int version,
    /* If ip is not present in the table, C++ would call terminate.  */
    /* ??? As with Java, it's perhaps better to tweek the LSDA to
       that no-action is mapped to no-entry.  */
@@ -220,7 +288,7 @@
  
   found_something:
    saw_cleanup = 0;
-@@ -287,8 +404,7 @@
+@@ -287,8 +394,7 @@ PERSONALITY_FUNCTION (int version,
  
  	  /* During forced unwinding, we only run cleanups.  With a
  	     foreign exception class, we have no class info to match.  */
@@ -230,7 +298,7 @@
  	    ;
  
  	  else if (ar_filter > 0)
-@@ -318,18 +434,24 @@
+@@ -318,18 +424,24 @@ PERSONALITY_FUNCTION (int version,
      }
  
    if (! saw_handler && ! saw_cleanup)
@@ -258,7 +326,7 @@
  	}
        return _URC_HANDLER_FOUND;
      }
-@@ -361,7 +483,9 @@
+@@ -361,7 +473,9 @@ void
  objc_exception_throw (id value)
  {
    struct ObjcException *header = calloc (1, sizeof (*header));
@@ -269,3 +337,6 @@
    header->base.exception_cleanup = __objc_exception_cleanup;
    header->value = value;
  
+
+--MP_/JBpQpWs5CG=5JB9NzgrXUnG--
+
