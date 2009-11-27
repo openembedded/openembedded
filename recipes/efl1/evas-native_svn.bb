@@ -63,7 +63,7 @@ EXTRA_OECONF = "\
 
 
 # evas needs a different oe_libinstall, so copy/paste autotools_stage_all
-do_stage() {
+do_oldstage() {
         rm -rf ${STAGE_TEMP}
         mkdir -p ${STAGE_TEMP}
         oe_runmake DESTDIR="${STAGE_TEMP}" install

@@ -6,6 +6,8 @@ DESCRIPTION = "A GTK2 based media player"
 HOMEPAGE = "http://www.gnome.org/projects/totem/"
 LICENSE = "GPL"
 
+PR = "r1"
+
 DEPENDS = " libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
 RDEPENDS_${PN} += "iso-codes"
 RRECOMMENDS_${PN} += "gst-plugin-playbin \
@@ -40,7 +42,6 @@ EXTRA_OECONF=" --disable-schemas-install \
                --enable-gstreamer \
                --enable-browser-plugins \
 	       --disable-run-in-source-tree \
-	       --disable-python \
 	       --disable-vala \
 	       --with-dbus \
 	       "

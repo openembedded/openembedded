@@ -1,0 +1,25 @@
+From 34c76c67a3f790ff87a0111eee31ffb967b1ae78 Mon Sep 17 00:00:00 2001
+From: Carsten V. Munk <carsten.munk@gmail.com>
+Date: Thu, 6 Aug 2009 09:26:30 +0000
+Subject: [PATCH 02/13] no DM9000
+
+---
+ arch/arm/mach-s3c6410/mach-smdk6410.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-s3c6410/mach-smdk6410.c b/arch/arm/mach-s3c6410/mach-smdk6410.c
+index 74dadd1..6e3c2ec 100644
+--- a/arch/arm/mach-s3c6410/mach-smdk6410.c
++++ b/arch/arm/mach-s3c6410/mach-smdk6410.c
+@@ -434,7 +434,7 @@ static struct platform_device *smdk6410_devices[] __initdata = {
+ 	&s3c_device_g3d,
+ 	&s3c_device_rotator,
+ #if defined(CONFIG_DM9000) || defined(CONFIG_DM9000_MODULE)
+-	&s3c_device_dm9000,
++//	&s3c_device_dm9000,
+ #endif
+ };
+ 
+-- 
+1.6.2.4
+

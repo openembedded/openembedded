@@ -19,7 +19,6 @@ EXTRA_OECONF = "\
 		--enable-software-x11		\
 		--enable-software-16-x11	\
 		--disable-software-xcb		\
-		--disable-gl-x11			\
 		--enable-xrender-x11		\
 		--disable-xrender-xcb		\
 		--disable-glitz-x11			\

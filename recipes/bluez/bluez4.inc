@@ -4,20 +4,12 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
-INC_PR = "r4"
+INC_PR = "r5"
 
 # temporary solution until bug 5176 is properly fixed
-PROVIDES_bluez4 += "bluez-utils bluez-libs"
-RPROVIDES_bluez4 += "bluez-utils bluez-libs"
-
-# For angstrom we want this to replace at least bluez-libs
-PROVIDES_append_angstrom = " bluez-utils-dbus bluez-utils bluez-libs"
-RPROVIDES_bluez4-dev_angstrom = "bluez-libs-dev"
-
-# temporary solution for KaeilOS just to replace at least bluez-libs
-PROVIDES_append_kaeilos = " bluez-utils-dbus bluez-utils bluez-libs"
-RPROVIDES_bluez4-dev_kaeilos = "bluez-libs-dev"
-
+PROVIDES += "bluez-utils bluez-libs bluez-utils-dbus"
+RPROVIDES_bluez4 += "bluez-utils bluez-libs bluez-utils-dbus"
+RPROVIDES_bluez4-dev = "bluez-libs-dev"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \

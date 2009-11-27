@@ -33,5 +33,4 @@ FILES_${PN} += " ${libdir}/pkgconfig"
 FILES_${PN} += " ${datadir}/dbus-1/system-services"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/files"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/scripts"
-FILES_${PN} += " ${datadir}/system-tools-backends-2.0/modules"
 

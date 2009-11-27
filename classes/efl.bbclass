@@ -11,16 +11,19 @@ PE = "2"
 
 ARM_INSTRUCTION_SET = "arm"
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-# do NOT inherit pkgconfig here, see note in autotools_stage_all
 inherit autotools
+
+# evas-native looks at this var, so keep it
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_configure_prepend() {
 	touch config.rpath
 }
 
-do_stage() {
-	autotools_stage_all
+do_install_prepend () {
+	for i in `find ${S}/ -name "*.pc" -type f` ; do \
+		sed -i -e 's:-L${STAGING_LIBDIR}::g' -e 's:-I${STAGING_INCDIR}::g' $i
+	done
 }
 
 # This construction is stupid, someone with more E knowledge should change it to =+ or something

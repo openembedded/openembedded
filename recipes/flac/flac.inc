@@ -12,6 +12,7 @@ inherit autotools
 EXTRA_OECONF = "--disable-oggtest --disable-id3libtest \
 		--with-ogg-libraries=${STAGING_LIBDIR} \
 		--with-ogg-includes=${STAGING_INCDIR} \
+                --disable-xmms-plugin \
 		--without-xmms-prefix \
 		--without-xmms-exec-prefix \
 		--without-libiconv-prefix \
