@@ -11,7 +11,7 @@ PACKAGE_ARCH = "all"
 PV = "2.0.9-3"
 PR = "r0"
 
-SRC_URI = "http://bazaar.launchpad.net/%7Evaudano/babiloo/efl/download/head%3A/babiloo_2.0.93.tar.g-20091127111926-nbrakkua6acwrlmg-3/babiloo_2.0.9-3.tar.gz;name=tarball"
+SRC_URI = "http://bazaar.launchpad.net/%7Evaudano/babiloo/efl/download/head%3A/babiloo_2.0.93.tar.g-20091127144609-qfgdm9zxdc47ap4y-1/babiloo_2.0.9-3.tar.gz;name=tarball"
 SRC_URI[tarball.md5sum] = "3f254dbbe7dd7a4c9527e1e17686101b"
 SRC_URI[tarball.sha256sum] = "4c4eacd8d8aec7ec7f325c18c8401d6d09986b77ddce317768360fccef78e3ef"
 
