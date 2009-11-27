@@ -8,7 +8,7 @@ SECTION = "network"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "ppp"
 RDEPENDS_${PN}-logwtmp-plugin = "${PN}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/poptop/pptpd-${PV}.tar.gz \
            file://fix-plugins-install.patch;patch=1 \
@@ -30,6 +30,8 @@ do_install_append() {
         # broken
 	sed -ri "s,^[:space:]*logwtmp[:space:]*,# logwtmp," ${D}/${sysconfdir}/pptpd.conf
         rm -f ${D}${libdir}/pptpd/pptpd-logwtmp.so
+	# Use mppe option in OE style
+	sed -ri "s,^[[:space:]]*require-mppe-128[[:space:]]*$,mppe required,no40,no56," ${D}/${sysconfdir}/ppp/options.pptpd
 }
 
 PACKAGES = "${PN}-dbg ${PN}-bcrelay ${PN} ${PN}-doc"
