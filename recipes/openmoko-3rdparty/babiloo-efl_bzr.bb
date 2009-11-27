@@ -8,6 +8,7 @@ RDEPENDS = "python-elementary python-compression python-misc python-netclient"
 
 PACKAGE_ARCH = "all"
 
+DEFAULT_PREFERENCE = "-1"
 PV = "2.0.9-bzrr${SRCREV}"
 
 SRC_URI = "bzr://bazaar.launchpad.net/~vaudano/babiloo/efl"
