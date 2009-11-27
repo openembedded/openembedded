@@ -12,7 +12,7 @@ S = "${WORKDIR}/trunk"
 inherit autotools
 
 pkg_postinst_${PN} () {
-	install -d /etc/bootchart-lite
+	mkdir /etc/bootchart-lite
 }
 
 pkg_postrm_${PN} () {
