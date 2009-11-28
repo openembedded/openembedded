@@ -1,5 +1,6 @@
-require chicken.inc
+require chicken-snapshot.inc
 
+DEPENDS = "chicken"
 PR = "${INC_PR}.1"
 
 inherit cross

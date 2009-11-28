@@ -7,6 +7,7 @@ inherit task
 
 RDEPENDS_${PN} += "\
 		babiloo-efl \
+		di \
 		dictator \
 		dosbox \
 		enotes \
@@ -21,6 +22,7 @@ RDEPENDS_${PN} += "\
 		gpe-gallery \
 		gpe-timesheet \
 		gpe-contacts \
+		gtkmm \
 		mc \
 		mplayer \
 		navit \

@@ -5,9 +5,7 @@ PRIORITY = "optional"
 LICENSE = "BSD"
 INC_PR = "r3"
 
-SRC_URI = "http://chicken.wiki.br/releases/${PV}/chicken-${PV}.tar.gz \
-           file://soname.patch;patch=1 \
-           file://translator-cross.patch;patch=1"
+SRC_URI = "http://chicken.wiki.br/dev-snapshots/2009/11/24/chicken-${PV}.tar.gz"
 
 # Parallel building is not supported
 PARALLEL_MAKE = ""
