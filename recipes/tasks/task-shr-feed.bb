@@ -253,4 +253,5 @@ RDEPENDS_${PN} += "\
 		xf86-input-tslib \
 		fltkcocktailbar \
 		babiloo-efl \
+		make \
 "
