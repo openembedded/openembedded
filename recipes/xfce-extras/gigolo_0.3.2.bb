@@ -1,10 +1,10 @@
 DESCRIPTION = "Gigolo is a frontend to easily manage connections to remote filesystems using GIO/GVfs."
-DEPENDS = "pkgconfig gtk+"
-RDEPENDS = "libxfce4util libxfcegui4"
+DEPENDS = "pkgconfig gtk+ gvfs"
+RDEPENDS = "libxfce4util libxfcegui4 gvfs"
 
 SECTION = "x11"
 LICENSE = "GPL-2"
-PR = "r1"
+PR = "r2"
 
 inherit xfce46
 
