@@ -7,6 +7,7 @@ inherit task
 
 RDEPENDS_${PN} += "\
 		babiloo-efl \
+		di \
 		dictator \
 		dosbox \
 		enotes \
