@@ -19,7 +19,7 @@ SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"
 SRCREV_pn-frameworkd ?= "d48bd43c430322b26744e31829f9c76e9b725819"
-SRCREV_pn-frameworkd-config-shr_FSO_REV = ${SRCREV_pn-frameworkd}
+SRCREV_pn-frameworkd-config-shr_FSO_REV ?= ${SRCREV_pn-frameworkd}
 SRCREV_pn-fso-abyss ?= "7f271311e2e0b63235139859169bd248920ade30"
 SRCREV_pn-fso-term ?= "aa0b9c26dee3918a5e9d2809bb36335bda276a0d"
 SRCREV_pn-fso-gpsd ?= "39e810899110a9bb302cf2064e1c0f73541fb4e6"
