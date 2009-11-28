@@ -3,9 +3,11 @@
 # FSO Projects -- Cornucopia
 FSO_CORNUCOPIA_SRCREV ?= "1dcf546fb0423930f938129a51f538874c172226"
 SRCREV_pn-fso-apm ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-fsodeviced ?= "0ea5c80742a4f788a29258e9e01d9ebc25dad2dc"
+SRCREV_pn-fsodatad ?= "1b329ccc044eb087a6f8a7c7c61022c162f51ab2"
+SRCREV_pn-fsodeviced ?= "1b329ccc044eb087a6f8a7c7c61022c162f51ab2"
 SRCREV_pn-fsogsmd ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsogpsd ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-fsomusicd ?= "1b329ccc044eb087a6f8a7c7c61022c162f51ab2"
 SRCREV_pn-fsonetworkd ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsotimed ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsousaged ?= "fe2ec3260b73233c414de584aa1b4a5e49c24a0d"
