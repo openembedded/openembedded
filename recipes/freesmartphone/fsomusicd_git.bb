@@ -1,7 +1,7 @@
 require cornucopia.inc
 DEPENDS += "gstreamer"
+PV = "0.0.1+gitr${SRCREV}"
 PR = "${INC_PR}.0"
-PV = "0.0.1"
 
 RDEPENDS += "\
   gst-plugin-volume \
