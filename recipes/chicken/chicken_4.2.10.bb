@@ -1,7 +1,5 @@
-require chicken.inc
+require chicken-snapshot.inc
 
-DEPENDS = "gcc-cross-sdk"
-RDEPENDS = "gcc-cross-sdk"
 PR = "${INC_PR}.1"
 
 do_compile() {

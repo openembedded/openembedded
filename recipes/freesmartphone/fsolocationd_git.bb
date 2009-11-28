@@ -4,4 +4,4 @@ PR = "${INC_PR}.0"
 PV = "0.0.0+gitr${SRCPV}"
 PE = "1"
 
-DEPENDS += "libfsoresource"
+DEPENDS += "libfsotransport libfsoresource"

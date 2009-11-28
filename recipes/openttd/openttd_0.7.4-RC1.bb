@@ -42,8 +42,8 @@ do_install() {
 }
 
 do_install_append_shr() {
-	install -d ${D}${datadir}/games/openttd/
-	install -m 0644 ${WORKDIR}/openttd.cfg ${D}${datadir}/games/openttd/
+	install -d ${D}${datadir}/games/openttd/data/
+	install -m 0644 ${WORKDIR}/openttd.cfg ${D}${datadir}/games/openttd/data/
 }
 
 FILES_${PN} += "${datadir}"
