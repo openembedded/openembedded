@@ -21,10 +21,6 @@ EXTRA_QMAKEVARS_POST += " DEFINES+=OPIE_BINDIR='\"${bindir}\"' DEFINES+=OPIE_LIB
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
 FILES_${PN} += " ${palmtopdir} "
-FILES_${PN}-dev += " ${palmtopdir}/plugins/*/lib*.so \
-                     ${palmtopdir}/plugins/*/*.la \
-                     ${palmtopdir}/plugins/*/*.a \
-                     ${palmtopdir}/plugins/*/*.o "
 FILES_${PN}-dbg += " ${palmtopdir}/lib/.debug \
                      ${palmtopdir}/bin/.debug \
                      ${palmtopdir}/plugins/*/.debug "

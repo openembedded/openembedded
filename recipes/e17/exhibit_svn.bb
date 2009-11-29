@@ -2,7 +2,7 @@ DESCRIPTION = "Exhibit is the ETK picture viewer"
 LICENSE = "MIT BSD"
 DEPENDS = "evas ecore epsilon edje eet etk efreet"
 PV = "0.1.1+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 inherit e
 
