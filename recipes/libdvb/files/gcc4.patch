@@ -1,0 +1,11 @@
+diff -urN libdvb-0.5.5.1/sample_progs/cam_menu.hh libdvb-0.5.5.1-superterrific/sample_progs/cam_menu.hh
+--- libdvb-0.5.5.1/sample_progs/cam_menu.hh	2005-03-22 08:23:25.000000000 -0500
++++ libdvb-0.5.5.1-superterrific/sample_progs/cam_menu.hh	2009-11-29 19:34:44.000000000 -0500
+@@ -4,6 +4,7 @@
+  */
+ #include <sys/types.h>
+ #include <sys/socket.h>
++#include <cstring>
+ 
+ #ifndef __CAM_MENU_HH
+ #define __CAM_MENU_HH

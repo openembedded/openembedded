@@ -1,0 +1,27 @@
+diff -urN libdvb-0.5.5.1/dvb-mpegtools/Makefile libdvb-0.5.5.1-superterrific/dvb-mpegtools/Makefile
+--- libdvb-0.5.5.1/dvb-mpegtools/Makefile	2009-11-29 19:40:06.000000000 -0500
++++ libdvb-0.5.5.1-superterrific/dvb-mpegtools/Makefile	2009-11-29 19:40:21.000000000 -0500
+@@ -33,19 +33,19 @@
+ 	dvbaudio
+ 
+ dvb-mpegtools_main: main.o
+-	$(CXX) main.o $(LIBS) -o $@
++	$(CXX) main.o $(LDFLAGS) $(LIBS) -o $@
+ 
+ ctest: mainc.o 
+ 	$(CC) $(COBJ) -o $@
+ 
+ dvb-mplex: $(MPLEXOBS)
+-	$(CXX) $(MPLEXOBS) $(LIBS) -o $@
++	$(CXX) $(MPLEXOBS) $(LDFLAGS) $(LIBS) -o $@
+ 
+ dvbaudio: dvbaudio.o
+-	$(CXX) dvbaudio.o $(LIBS) -ldvb -o $@
++	$(CXX) dvbaudio.o $(LDFLAGS) $(LIBS) -ldvb -o $@
+ 
+ audiofilter: audiofilter.o
+-	$(CXX) audiofilter.o -o $@
++	$(CXX) audiofilter.o $(LDFLAGS) -o $@
+ 
+ %.o:    %.cc 
+ 	$(CXX) -c $(DCFLAGS) $(INCLUDES) $(DEFINES) $<
