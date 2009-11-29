@@ -53,13 +53,13 @@ $ <command>cd</command> $OEBASE</screen>
 	<section><title>Downloading a <application>BitBake</application> release</title>
 	  <para>Releases are available from the berlios project website. The current
           release series is <application>BitBake</application> <emphasis>1.8</emphasis>
-          and the current release is <emphasis>1.8.16</emphasis>. To download execute
+          and the current release is <emphasis>1.8.18</emphasis>. To download execute
 	  the following commands:
 		<screen>
 $ <command>cd</command> $OEBASE
-$ <command>wget</command> http://download.berlios.de/bitbake/bitbake-1.8.16.tar.gz
-$ <command>tar</command> -xvzf bitbake-1.8.16.tar.gz
-$ <command>mv</command> bitbake-1.8.16 bitbake
+$ <command>wget</command> http://download.berlios.de/bitbake/bitbake-1.8.18.tar.gz
+$ <command>tar</command> -xvzf bitbake-1.8.18.tar.gz
+$ <command>mv</command> bitbake-1.8.18 bitbake
 </screen>
 	  </para>
 
