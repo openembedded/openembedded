@@ -53,7 +53,7 @@ do_install_append() {
         install -m 0644 ${WORKDIR}/navit.xml ${D}${datadir}/navit/navit.xml
         install -m 0644 ${WORKDIR}/maps.xml ${D}${datadir}/navit/maps.xml
         install -m 0644 ${WORKDIR}/osd.xml ${D}${datadir}/navit/osd.xml
-        install -m 0644 ${WORKDIR}/speech.xml ${D}${datadir}/navit/speach.xml
+        install -m 0644 ${WORKDIR}/speech.xml ${D}${datadir}/navit/speech.xml
 
 	#FIXME: don't install those in the first place, 
 	#FIXME: rather then deleting post-install?
