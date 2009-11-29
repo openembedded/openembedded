@@ -1,0 +1,124 @@
+From 20aa0022f765e702f76fe1cae429b1d58faa9ec4 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sat, 28 Nov 2009 19:24:49 +0100
+Subject: [PATCH] gta02-defconfig: enable NFS and INOTIFY_USER
+
+---
+ arch/arm/configs/gta02_defconfig |   48 ++++++++++++++++++++++++++++++-------
+ 1 files changed, 39 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/configs/gta02_defconfig b/arch/arm/configs/gta02_defconfig
+index 1cce709..acf225e 100644
+--- a/arch/arm/configs/gta02_defconfig
++++ b/arch/arm/configs/gta02_defconfig
+@@ -860,7 +860,7 @@ CONFIG_I2C_CHARDEV=y
+ #
+ # I2C Algorithms
+ #
+-# CONFIG_I2C_ALGOBIT is not set
++CONFIG_I2C_ALGOBIT=y
+ # CONFIG_I2C_ALGOPCF is not set
+ # CONFIG_I2C_ALGOPCA is not set
+ 
+@@ -953,6 +953,7 @@ CONFIG_POWER_SUPPLY=y
+ CONFIG_CHARGER_PCF50633=y
+ CONFIG_BATTERY_BQ27000_HDQ=y
+ CONFIG_HDQ_GPIO_BITBANG=y
++# CONFIG_BATTERY_PLATFORM is not set
+ # CONFIG_HWMON is not set
+ # CONFIG_THERMAL is not set
+ # CONFIG_THERMAL_HWMON is not set
+@@ -1444,15 +1445,15 @@ CONFIG_JBD=y
+ # CONFIG_JBD_DEBUG is not set
+ # CONFIG_REISERFS_FS is not set
+ # CONFIG_JFS_FS is not set
+-# CONFIG_FS_POSIX_ACL is not set
++CONFIG_FS_POSIX_ACL=y
+ # CONFIG_XFS_FS is not set
+ # CONFIG_OCFS2_FS is not set
+ # CONFIG_BTRFS_FS is not set
+ CONFIG_FILE_LOCKING=y
+-# CONFIG_FSNOTIFY is not set
++CONFIG_FSNOTIFY=y
+ # CONFIG_DNOTIFY is not set
+ CONFIG_INOTIFY=y
+-# CONFIG_INOTIFY_USER is not set
++CONFIG_INOTIFY_USER=y
+ # CONFIG_QUOTA is not set
+ # CONFIG_AUTOFS_FS is not set
+ # CONFIG_AUTOFS4_FS is not set
+@@ -1526,7 +1527,31 @@ CONFIG_UBIFS_FS_ZLIB=y
+ # CONFIG_SYSV_FS is not set
+ # CONFIG_UFS_FS is not set
+ # CONFIG_NILFS2_FS is not set
+-# CONFIG_NETWORK_FILESYSTEMS is not set
++CONFIG_NETWORK_FILESYSTEMS=y
++CONFIG_NFS_FS=m
++CONFIG_NFS_V3=y
++CONFIG_NFS_V3_ACL=y
++CONFIG_NFS_V4=y
++# CONFIG_NFS_V4_1 is not set
++CONFIG_NFSD=m
++CONFIG_NFSD_V2_ACL=y
++CONFIG_NFSD_V3=y
++CONFIG_NFSD_V3_ACL=y
++CONFIG_NFSD_V4=y
++CONFIG_LOCKD=m
++CONFIG_LOCKD_V4=y
++CONFIG_EXPORTFS=m
++CONFIG_NFS_ACL_SUPPORT=m
++CONFIG_NFS_COMMON=y
++CONFIG_SUNRPC=m
++CONFIG_SUNRPC_GSS=m
++CONFIG_RPCSEC_GSS_KRB5=m
++# CONFIG_RPCSEC_GSS_SPKM3 is not set
++# CONFIG_SMB_FS is not set
++# CONFIG_CIFS is not set
++# CONFIG_NCP_FS is not set
++# CONFIG_CODA_FS is not set
++# CONFIG_AFS_FS is not set
+ 
+ #
+ # Partition Types
+@@ -1634,13 +1659,18 @@ CONFIG_CRYPTO=y
+ # CONFIG_CRYPTO_FIPS is not set
+ CONFIG_CRYPTO_ALGAPI=y
+ CONFIG_CRYPTO_ALGAPI2=y
++CONFIG_CRYPTO_AEAD2=y
++CONFIG_CRYPTO_BLKCIPHER=m
++CONFIG_CRYPTO_BLKCIPHER2=y
+ CONFIG_CRYPTO_HASH=y
+ CONFIG_CRYPTO_HASH2=y
++CONFIG_CRYPTO_RNG2=y
+ CONFIG_CRYPTO_PCOMP=y
+-# CONFIG_CRYPTO_MANAGER is not set
+-# CONFIG_CRYPTO_MANAGER2 is not set
++CONFIG_CRYPTO_MANAGER=m
++CONFIG_CRYPTO_MANAGER2=y
+ # CONFIG_CRYPTO_GF128MUL is not set
+ # CONFIG_CRYPTO_NULL is not set
++CONFIG_CRYPTO_WORKQUEUE=y
+ # CONFIG_CRYPTO_CRYPTD is not set
+ # CONFIG_CRYPTO_AUTHENC is not set
+ # CONFIG_CRYPTO_TEST is not set
+@@ -1655,7 +1685,7 @@ CONFIG_CRYPTO_PCOMP=y
+ #
+ # Block modes
+ #
+-# CONFIG_CRYPTO_CBC is not set
++CONFIG_CRYPTO_CBC=m
+ # CONFIG_CRYPTO_CTR is not set
+ # CONFIG_CRYPTO_CTS is not set
+ # CONFIG_CRYPTO_ECB is not set
+@@ -1696,7 +1726,7 @@ CONFIG_CRYPTO_MD5=y
+ # CONFIG_CRYPTO_CAMELLIA is not set
+ # CONFIG_CRYPTO_CAST5 is not set
+ # CONFIG_CRYPTO_CAST6 is not set
+-# CONFIG_CRYPTO_DES is not set
++CONFIG_CRYPTO_DES=m
+ # CONFIG_CRYPTO_FCRYPT is not set
+ # CONFIG_CRYPTO_KHAZAD is not set
+ # CONFIG_CRYPTO_SALSA20 is not set
+-- 
+1.6.5.3
+
