@@ -1,0 +1,11 @@
+--- linux/scripts/Configure-orig	2009-11-29 19:12:02.000000000 +0100
++++ linux/scripts/Configure	2009-11-29 19:12:27.000000000 +0100
+@@ -543,7 +543,7 @@
+   echo "#"
+   echo "# Using defaults found in" $DEFAULTS
+   echo "#"
+-  . $DEFAULTS
++  . ./$DEFAULTS
+   sed -e 's/# \(CONFIG_[^ ]*\) is not.*/\1=n/' <$DEFAULTS >.config-is-not.$$
+   . .config-is-not.$$
+   rm .config-is-not.$$

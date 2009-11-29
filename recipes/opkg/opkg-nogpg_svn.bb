@@ -20,5 +20,8 @@ LDFLAGS_append = " -Wl,--as-needed"
 do_configure_prepend() {
 	sed -i -e s:-Werror::g ${S}/libopkg/Makefile.am
 }
+do_configure_prepend_nylon() {
+	LDFLAGS="`echo "$LDFLAGS" | sed "s/ -Wl,--as-needed//"`"
+}
 
 DEFAULT_PREFERENCE = "-1"

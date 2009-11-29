@@ -41,6 +41,7 @@ SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_
 	file://43-usbserial-27-32-backport.diff;patch=1 \
 	file://45-acm-tty-and-sb2.patch;patch=1 \
 	file://48-pptp.patch;patch=1 \
+	file://49-bash4-configure.patch;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"
