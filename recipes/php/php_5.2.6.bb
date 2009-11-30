@@ -13,7 +13,8 @@ export LIBS=" -lpthread "
 EXTRA_OECONF = "    --without-iconv \
  		    --enable-discard-path \
 		    --enable-sockets \
-                    --enable-pcntl \
+		    --enable-shared \
+#                    --enable-pcntl \
     		    --enable-memory-limit \
     		    --enable-wddx \
                     --enable-embedded-mysqli \
@@ -21,7 +22,7 @@ EXTRA_OECONF = "    --without-iconv \
 		    --enable-fastcgi \
 		    --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
                     --with-libxml-dir=${STAGING_BINDIR_CROSS} \
-#                   --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
+                    --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
 #                   --with-mysqli = "${STAGING_BINDIR_NATIVE}/mysql_config" \
                "
 

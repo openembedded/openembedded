@@ -16,19 +16,12 @@ EXTRA_OECONF = "--with-libggz-includes=${STAGING_INCDIR} \
 		INTLTOOL_PERL=${STAGING_BINDIR_NATIVE}/perl \
 	       "
 
+# disable help dir and crappy old sdl-macro
 do_configure_prepend() {
+	rm m4/sdl.m4
 	for i in $(find ${S} -name "Makefile.am") ; do
 		sed -i -e s:help::g $i
 	done
-}
-
-do_configure_append() {
-	for i in $(find ${S} -name "Makefile") ; do
-		sed -i \
-			-e s:'-I/usr/include/SDL':'-I${STAGING_INCDIR}/SDL':g \
-			-e s:'-I/usr/local/include/SDL':'-I${STAGING_INCDIR}/SDL':g \
-			$i
-	done	
 }
 
 # copy matchbox icons

@@ -1,0 +1,13 @@
+Index: httpd-2.2.14/srclib/apr/include/apr.h.in
+===================================================================
+--- httpd-2.2.14.orig/srclib/apr/include/apr.h.in
++++ httpd-2.2.14/srclib/apr/include/apr.h.in
+@@ -224,7 +224,7 @@ extern "C" {
+ #define APR_HAVE_STRUCT_RLIMIT  @struct_rlimit@
+ #define APR_HAVE_UNION_SEMUN    @have_union_semun@
+ #define APR_HAVE_SCTP           @have_sctp@
+-#define APR_HAVE_IOVEC          @have_iovec@
++#define APR_HAVE_IOVEC          1
+ 
+ /*  APR Feature Macros */
+ #define APR_HAS_SHARED_MEMORY     @sharedmem@

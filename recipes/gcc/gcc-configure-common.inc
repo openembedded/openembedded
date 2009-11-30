@@ -12,6 +12,7 @@ JAVA_sh3 ?= ""
 OBJC_linux-uclibceabi ?= ""
 OBJC_linux-uclibc ?= ""
 OBJC_avr ?= ""
+OBJC_nylon ?= ""
 OBJC ?= ",objc"
 
 # gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
