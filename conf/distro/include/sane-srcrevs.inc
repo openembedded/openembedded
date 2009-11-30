@@ -5,8 +5,6 @@
 
 # This will miss recipes that have skippackage set (e.g. uclibc)
 
-SHR-THEMES="9d7ca1cecb93022e5b890cd87756ac6f072710ca"
-
 # this is alphabetical!
 
 # yes, really!
@@ -16,7 +14,7 @@ SHR-THEMES="9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRCREV_pn-accelges ?= "206"
 SRCREV_pn-advancedcaching ?= "9c3661f5573d2dd712437f1590070153d12e4c02"
 SRCREV_pn-aircrack-ng ?= "802"
-SRCREV_pn-alsa-scenarii-shr ?= $SHR{THEMES}
+SRCREV_pn-alsa-scenarii-shr ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRCREV_pn-alsa-scenario ?= "8bd7f83d847424eb44704cf1649974b2fda8d8f1"
 SRCREV_pn-app-restarter ?= "4552"
 SRCREV_pn-assassin ?= "268"
@@ -261,9 +259,9 @@ SRCREV_pn-openmoocow ?= "39648419825cddfea1cb1321e552a12b71fede14"
 SRCREV_pn-openocd ?= "517"
 SRCREV_pn-openocd-native ?= "517"
 SRCREV_pn-opimd-utils ?= "9c1283ec03748a2fa541a16730904ea7f2bb59fc"
-SRCREV_pn-opkg ?= "363"
-SRCREV_pn-opkg-native ?= "240"
-SRCREV_pn-opkg-sdk ?= "363"
+SRCREV_pn-opkg ?= "402"
+SRCREV_pn-opkg-native ?= "402"
+SRCREV_pn-opkg-sdk ?= "402"
 SRCREV_pn-opkg-utils ?= "4578"
 SRCREV_pn-opkg-utils-native ?= "4595"
 SRCREV_pn-oprofileui ?= "173"
@@ -309,13 +307,13 @@ SRCREV_pn-shr-launcher ?= "87"
 SRCREV_pn-shr-messages ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRCREV_pn-shr-settings ?= "324c5419655e1c4d9a778f3b76780e940f84c817"
 SRCREV_pn-shr-specs ?= "a881cd133439737708d4d4d150500246ceff7c7d"
-SRCREV_pn-shr-splash ?= ${SHR-THEMES}
-SRCREV_pn-shr-splash-theme-dontpanic ?= ${SHR-THEMES}
-SRCREV_pn-shr-splash-theme-handy ?= ${SHR-THEMES}
-SRCREV_pn-shr-splash-theme-logo ?= ${SHR-THEMES}
-SRCREV_pn-shr-splash-theme-niebiee ?= ${SHR-THEMES}
-SRCREV_pn-shr-splash-theme-simple ?= ${SHR-THEMES}
-SRCREV_pn-shr-splash-theme-tux ?= ${SHR-THEMES}
+SRCREV_pn-shr-splash ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
+SRCREV_pn-shr-splash-theme-dontpanic ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
+SRCREV_pn-shr-splash-theme-handy ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
+SRCREV_pn-shr-splash-theme-logo ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
+SRCREV_pn-shr-splash-theme-niebiee ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
+SRCREV_pn-shr-splash-theme-simple ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
+SRCREV_pn-shr-splash-theme-tux ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRCREV_pn-shr-theme ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRCREV_pn-shr-theme-gtk-e17lookalike ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
 SRCREV_pn-shr-today ?= "7b69649a9df0e85f0c0f7985fd1d93543c3b11e2"

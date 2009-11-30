@@ -4,8 +4,6 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libmikmod libvorbis"
 LICENSE = "LGPL"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz"
 S = "${WORKDIR}/SDL_mixer-${PV}"
 

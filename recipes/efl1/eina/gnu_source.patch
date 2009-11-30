@@ -1,0 +1,12 @@
+Index: eina/configure.ac
+===================================================================
+--- eina.orig/configure.ac	2009-11-26 15:58:28.784112802 +0100
++++ eina/configure.ac	2009-11-26 15:59:34.524939842 +0100
+@@ -273,6 +273,7 @@
+ AC_C_INLINE
+ AC_C___ATTRIBUTE__
+ AC_PROG_CC_STDC
++AC_GNU_SOURCE
+ 
+ EINA_CPPFLAGS=""
+ case "$host_os" in

@@ -1,0 +1,27 @@
+Index: httpd-2.2.14/srclib/apr/configure.in
+===================================================================
+--- httpd-2.2.14.orig/srclib/apr/configure.in
++++ httpd-2.2.14/srclib/apr/configure.in
+@@ -923,7 +923,7 @@ AC_CHECK_FUNCS([mmap munmap shm_open shm
+                 create_area])
+ 
+ APR_CHECK_DEFINE(MAP_ANON, sys/mman.h)
+-AC_CHECK_FILE(/dev/zero)
++APR_CHECK_FILE(/dev/zero)
+ 
+ # Not all systems can mmap /dev/zero (such as HP-UX).  Check for that.
+ if test "$ac_cv_func_mmap" = "yes" &&
+Index: httpd-2.2.14/configure.in
+===================================================================
+--- httpd-2.2.14.orig/configure.in
++++ httpd-2.2.14/configure.in
+@@ -61,6 +61,9 @@ APR_MKDIR_P_CHECK($top_srcdir/build/mkdi
+ 
+ dnl ## Run configure for packages Apache uses
+ 
++dnl first configure subdirs
++AC_CONFIG_SUBDIRS(srclib/apr srclib/apr-util srclib/prce)
++
+ dnl shared library support for these packages doesn't currently
+ dnl work on some platforms
+ 

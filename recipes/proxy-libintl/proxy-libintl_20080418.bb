@@ -3,7 +3,7 @@ HOMEPAGE = "http://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/"
 SECTION = "libs"
 LICENSE = "LGPL"
 
-PR = "r3"
+PR = "r4"
 PROVIDES = "virtual/libintl"
 
 SRC_URI = " \
@@ -26,16 +26,10 @@ do_compile() {
 }
 
 do_install() {
-    install -d ${D}/usr/include
-    install -d ${D}/usr/lib
-    
+    install -d ${D}/${includedir}
     install -m 0644 ${WORKDIR}/include/libintl.h ${D}/${includedir}
-    install -m 0644 ${WORKDIR}/lib/libintl.so ${D}/${libdir}
-    install -m 0644 ${WORKDIR}/lib/libintl.a ${D}/${libdir}
-}
 
-do_stage() {
-    install -m 0644 ${WORKDIR}/include/libintl.h ${STAGING_INCDIR}
-    oe_libinstall -a -so -C lib libintl ${STAGING_LIBDIR}
+    install -d ${D}/${libdir}
+    oe_libinstall -a -so -C lib libintl ${D}/${libdir}
 }
 
