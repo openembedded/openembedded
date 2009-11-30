@@ -5,6 +5,8 @@
 
 # This will miss recipes that have skippackage set (e.g. uclibc)
 
+SHR-THEMES="9d7ca1cecb93022e5b890cd87756ac6f072710ca"
+
 # this is alphabetical!
 
 # yes, really!
@@ -14,7 +16,7 @@
 SRCREV_pn-accelges ?= "206"
 SRCREV_pn-advancedcaching ?= "9c3661f5573d2dd712437f1590070153d12e4c02"
 SRCREV_pn-aircrack-ng ?= "802"
-SRCREV_pn-alsa-scenarii-shr ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
+SRCREV_pn-alsa-scenarii-shr ?= $SHR{THEMES}
 SRCREV_pn-alsa-scenario ?= "8bd7f83d847424eb44704cf1649974b2fda8d8f1"
 SRCREV_pn-app-restarter ?= "4552"
 SRCREV_pn-assassin ?= "268"
@@ -79,7 +81,7 @@ SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-ffalarms ?= "67"
 SRCREV_pn-flashrom ?= "3682"
 SRCREV_pn-fltk2 ?= "6671"
-SRCREV_pn-frameworkd-config-shr ?= "cb4159e653d770da8e8f9fc9a65135839533d4c5"
+SRCREV_pn-frameworkd-config-shr ?= "e994275bbfdca33a6776d9edbddc711c10aba40d"
 SRCREV_pn-frameworkd-config-shr_SHR_REV ?= ${SRCREV_pn-frameworkd-config-shr}
 SRCREV_pn-fsod ?= "2a33e5ffe96c611e6a6b8b6c33d2a83ba656f55b"
 SRCREV_pn-fsoraw ?= "20"
@@ -148,9 +150,9 @@ SRCREV_pn-libmokopanelui2 ?= "4568"
 SRCREV_pn-libmokoui2 ?= "4695"
 SRCREV_pn-libnl2 ?= "dc273a12da9f0116e80fa81d63beb820e632dd17"
 SRCREV_pn-libowl ?= "277"
-SRCREV_pn-libphone-ui ?= "4455bce1643fcfba0538b17242f47935b869b159"
-SRCREV_pn-libphone-ui-shr ?= "29363d678d77182bde8c617ab7c56114150d6ff9"
-SRCREV_pn-libphone-utils ?= "f1377146556da8a68a84cf10a5f516c5f7b6015b"
+SRCREV_pn-libphone-ui ?= "60a459c7ddb990cc6e134dde7c6b5ac685aa5e90"
+SRCREV_pn-libphone-ui-shr ?= "f38f1c8a6ab87bbb3293a837d6d7e150beef7db6"
+SRCREV_pn-libphone-utils ?= "9c1283ec03748a2fa541a16730904ea7f2bb59fc"
 SRCREV_pn-librfid ?= "2094"
 SRCREV_pn-libsnmp-perl ?= "17367"
 SRCREV_pn-libsynthesis ?= "70f0065aa3b085bdf059830f95e5b5766eecb0bb"
@@ -258,7 +260,7 @@ SRCREV_pn-openmoko-worldclock2 ?= "3365"
 SRCREV_pn-openmoocow ?= "39648419825cddfea1cb1321e552a12b71fede14"
 SRCREV_pn-openocd ?= "517"
 SRCREV_pn-openocd-native ?= "517"
-SRCREV_pn-opimd-utils ?= "0e7007fff120c8cc4c579c0c7e57883798e6d23e"
+SRCREV_pn-opimd-utils ?= "9c1283ec03748a2fa541a16730904ea7f2bb59fc"
 SRCREV_pn-opkg ?= "363"
 SRCREV_pn-opkg-native ?= "240"
 SRCREV_pn-opkg-sdk ?= "363"
@@ -271,9 +273,9 @@ SRCREV_pn-osb-nrcit ?= "125"
 SRCREV_pn-osb-nrcore ?= "126"
 SRCREV_pn-packagekit ?= "96823118e98515dd41748e8c7bdb9cf7b1d4a95f"
 SRCREV_pn-paroli ?= "bb9fb1969acdfbaa48b55902675a6d8949014c6d"
-SRCREV_pn-phonefsod ?= "beb2fe989bfbf6b180a58d247db302082504fa01"
+SRCREV_pn-phonefsod ?= "0bc4b96c16c79a977cda3e3499caab32190cccf1"
 SRCREV_pn-phoneui-apps ?= "c27e620302d0ea956da777f76a4aa217ae8366c6"
-SRCREV_pn-phoneuid ?= "19f40dcc6fdb442ea9f4d7521c60d68f4042977c"
+SRCREV_pn-phoneuid ?= "9b3d304f5171661580d6510e5bccb9620dd6a78c"
 SRCREV_pn-portaudio-v19 ?= "1387"
 SRCREV_pn-psplash ?= "249"
 SRCREV_pn-pty-forward-native ?= "a41cae9df1af4fc710c701ac01016d3668dd5fba"
@@ -305,15 +307,15 @@ SRCREV_pn-shr-dialer ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRCREV_pn-shr-installer ?= "f17fa104639113fb0d3212b6bba366c092854cde"
 SRCREV_pn-shr-launcher ?= "87"
 SRCREV_pn-shr-messages ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
-SRCREV_pn-shr-settings ?= "b92390148cf0e979fd4c678a6633bb5e436d5763"
+SRCREV_pn-shr-settings ?= "324c5419655e1c4d9a778f3b76780e940f84c817"
 SRCREV_pn-shr-specs ?= "a881cd133439737708d4d4d150500246ceff7c7d"
-SRCREV_pn-shr-splash ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
-SRCREV_pn-shr-splash-theme-dontpanic ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-SRCREV_pn-shr-splash-theme-handy ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-SRCREV_pn-shr-splash-theme-logo ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-SRCREV_pn-shr-splash-theme-niebiee ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-SRCREV_pn-shr-splash-theme-simple ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-SRCREV_pn-shr-splash-theme-tux ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
+SRCREV_pn-shr-splash ?= ${SHR-THEMES}
+SRCREV_pn-shr-splash-theme-dontpanic ?= ${SHR-THEMES}
+SRCREV_pn-shr-splash-theme-handy ?= ${SHR-THEMES}
+SRCREV_pn-shr-splash-theme-logo ?= ${SHR-THEMES}
+SRCREV_pn-shr-splash-theme-niebiee ?= ${SHR-THEMES}
+SRCREV_pn-shr-splash-theme-simple ?= ${SHR-THEMES}
+SRCREV_pn-shr-splash-theme-tux ?= ${SHR-THEMES}
 SRCREV_pn-shr-theme ?= "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRCREV_pn-shr-theme-gtk-e17lookalike ?= "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
 SRCREV_pn-shr-today ?= "7b69649a9df0e85f0c0f7985fd1d93543c3b11e2"
