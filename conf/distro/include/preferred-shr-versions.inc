@@ -20,6 +20,11 @@ PREFERRED_VERSION_linux-libc-headers = "2.6.31"
 # now is EFL_SRCREV newer in sane-srcrevs.inc
 # EFL_SRCREV ?= "43898"
 
+# specifically set an openssh version
+# NOTE: whenever changing the version here make sure
+        to check we won't loose our specific config !!!
+PREFERRED_VERSION_openssh = "5.2p1"
+
 # upgrades used in Angstrom
 PREFERRED_VERSION_gtk+          = "2.18.3"
 PREFERRED_VERSION_hal           = "0.5.13"
