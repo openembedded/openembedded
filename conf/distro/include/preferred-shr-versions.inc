@@ -22,7 +22,7 @@ PREFERRED_VERSION_linux-libc-headers = "2.6.31"
 
 # specifically set an openssh version
 # NOTE: whenever changing the version here make sure
-        to check we won't loose our specific config !!!
+#       to check we won't loose our specific config !!!
 PREFERRED_VERSION_openssh = "5.2p1"
 
 # upgrades used in Angstrom
