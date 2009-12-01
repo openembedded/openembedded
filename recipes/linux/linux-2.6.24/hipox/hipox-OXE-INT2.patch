@@ -1,0 +1,188 @@
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/Kconfig linux-2.6.24/arch/arm/mach-hipox/Kconfig
+--- linux-2.6.24.orig//arch/arm/mach-hipox/Kconfig	2009-11-30 17:07:36.000000000 +0100
++++ linux-2.6.24/arch/arm/mach-hipox/Kconfig	2009-11-30 17:08:12.000000000 +0100
+@@ -241,6 +241,20 @@
+ 		reset of the SoC has emerged from reset. This defines the GPIO
+ 		line which is connected to the PCI reset
+ 
++config HIPOX_OXE_INT2
++	bool "Signal power state to HIPOX board controller"
++	default y
++	help
++		Signal power state to HIPOX board controller using OXE_INT2 signal.
++
++config HIPOX_OXE_INT2_GPIO
++	int "GPIO line using as power state signal to HIPOX board controller"
++	depends on HIPOX_OXE_INT2
++	default 34
++	help
++		This defines the GPIO used to signal power state to
++		HIPOX board controller.
++
+ config HIPOX_SATA_POWER_1
+ 	bool "Allow control of SATA 1 disk power via GPIO"
+ 	default n
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/hipox.c linux-2.6.24/arch/arm/mach-hipox/hipox.c
+--- linux-2.6.24.orig//arch/arm/mach-hipox/hipox.c	2009-11-30 17:07:36.000000000 +0100
++++ linux-2.6.24/arch/arm/mach-hipox/hipox.c	2009-11-30 17:10:12.000000000 +0100
+@@ -47,6 +47,30 @@
+ #include <asm/arch/leon-early-prog.h>
+ #endif // CONFIG_LEON_START_EARLY
+ 
++#ifdef CONFIG_HIPOX_OXE_INT2_GPIO
++#if (CONFIG_HIPOX_OXE_INT2_GPIO < 32)
++#define OXE_INT2_NUM               CONFIG_HIPOX_OXE_INT2_GPIO
++#define OXE_INT2_PRISEL_REG        SYS_CTRL_GPIO_PRIMSEL_CTRL_0
++#define OXE_INT2_SECSEL_REG        SYS_CTRL_GPIO_SECSEL_CTRL_0
++#define OXE_INT2_TERSEL_REG        SYS_CTRL_GPIO_TERTSEL_CTRL_0
++#define OXE_INT2_QUASEL_REG        SYS_CTRL_GPIO_PWMSEL_CTRL_0
++#define OXE_INT2_SET_OE_REG        GPIO_A_OUTPUT_ENABLE_SET
++#define OXE_INT2_OUTPUT_SET_REG    GPIO_A_OUTPUT_SET
++#define OXE_INT2_OUTPUT_CLR_REG    GPIO_A_OUTPUT_CLEAR
++#else
++#define OXE_INT2_NUM               ((CONFIG_HIPOX_OXE_INT2_GPIO) - 32)
++#define OXE_INT2_PRISEL_REG        SYS_CTRL_GPIO_PRIMSEL_CTRL_1
++#define OXE_INT2_SECSEL_REG        SYS_CTRL_GPIO_SECSEL_CTRL_1
++#define OXE_INT2_TERSEL_REG        SYS_CTRL_GPIO_TERTSEL_CTRL_1
++#define OXE_INT2_QUASEL_REG        SYS_CTRL_GPIO_PWMSEL_CTRL_1
++#define OXE_INT2_SET_OE_REG        GPIO_B_OUTPUT_ENABLE_SET
++#define OXE_INT2_OUTPUT_SET_REG    GPIO_B_OUTPUT_SET
++#define OXE_INT2_OUTPUT_CLR_REG    GPIO_B_OUTPUT_CLEAR
++#endif
++
++#define OXE_INT2_MASK (1UL << (OXE_INT2_NUM))
++#endif // CONFIG_HIPOX_OXE_INT2_GPIO
++
+ #ifdef CONFIG_HIPOX_PCI_RESET_GPIO
+ #if (CONFIG_HIPOX_PCI_RESET_GPIO < 32)
+ #define PCI_RESET_NUM               CONFIG_HIPOX_PCI_RESET_GPIO
+@@ -393,6 +417,22 @@
+     // Enable all DDR client interfaces
+     *(volatile u32*)DDR_BLKEN_REG |= (((1UL << DDR_BLKEN_CLIENTS_NUM_BITS) - 1) << DDR_BLKEN_CLIENTS_BIT);
+ 
++#ifdef CONFIG_HIPOX_OXE_INT2
++    printk("Enable OXE_INT2\n");
++
++    // Disable primary, secondary and teriary GPIO functions on OXE_INT2 line
++    writel(readl(OXE_INT2_PRISEL_REG) & ~OXE_INT2_MASK, OXE_INT2_PRISEL_REG);
++    writel(readl(OXE_INT2_SECSEL_REG) & ~OXE_INT2_MASK, OXE_INT2_SECSEL_REG);
++    writel(readl(OXE_INT2_TERSEL_REG) & ~OXE_INT2_MASK, OXE_INT2_TERSEL_REG);
++    writel(readl(OXE_INT2_QUASEL_REG) & ~OXE_INT2_MASK, OXE_INT2_QUASEL_REG);
++
++    // Enable GPIO output on OXE_INT2 line
++    writel(OXE_INT2_MASK, OXE_INT2_SET_OE_REG);
++
++    // Set OXE_INT2
++    writel(OXE_INT2_MASK, OXE_INT2_OUTPUT_SET_REG);
++#endif // CONFIG_HIPOX_OXE_INT2
++
+ #ifdef CONFIG_ARCH_HIPOX_UART1
+     // Block reset UART1
+     *(volatile u32*)SYS_CTRL_RSTEN_SET_CTRL = (1UL << SYS_CTRL_RSTEN_UART1_BIT);
+@@ -409,10 +449,10 @@
+     *(volatile u32*)SYS_CTRL_GPIO_TERTSEL_CTRL_1 |=  0x00000001;
+ 
+     // Setup GPIO line direction for UART1 SOUT
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   |= 0x80000000;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   = 0x80000000;
+ 
+     // Setup GPIO line direction for UART1 SIN
+-    *(volatile u32*)GPIO_B_OUTPUT_ENABLE_CLEAR |= 0x00000001;
++    *(volatile u32*)GPIO_B_OUTPUT_ENABLE_CLEAR = 0x00000001;
+ 
+ #ifdef CONFIG_ARCH_HIPOX_UART1_MODEM
+     // Route UART1 modem control lines onto external pins
+@@ -425,11 +465,11 @@
+     *(volatile u32*)SYS_CTRL_GPIO_TERTSEL_CTRL_1 |=  0x00000006;
+ 
+     // Setup GPIO line directions for UART1 modem control lines
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   |= 0x08000000;
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR |= 0x70000000;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   = 0x08000000;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR = 0x70000000;
+ 
+-    *(volatile u32*)GPIO_B_OUTPUT_ENABLE_SET   |= 0x00000004;
+-    *(volatile u32*)GPIO_B_OUTPUT_ENABLE_CLEAR |= 0x00000002;
++    *(volatile u32*)GPIO_B_OUTPUT_ENABLE_SET   = 0x00000004;
++    *(volatile u32*)GPIO_B_OUTPUT_ENABLE_CLEAR = 0x00000002;
+ #endif // CONFIG_ARCH_HIPOX_UART1_MODEM
+ 
+     // Give Linux a contiguous numbering scheme for available UARTs
+@@ -448,8 +488,8 @@
+     *(volatile u32*)SYS_CTRL_GPIO_TERTSEL_CTRL_0 |=  0x00500000;
+ 
+     // Setup GPIO line directions for UART2 SIN/SOUT
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   |= 0x00100000;
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR |= 0x00400000;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   = 0x00100000;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR = 0x00400000;
+ 
+ #ifdef CONFIG_ARCH_HIPOX_UART2_MODEM
+     // Route UART2 modem control lines onto external pins
+@@ -458,8 +498,8 @@
+     *(volatile u32*)SYS_CTRL_GPIO_TERTSEL_CTRL_0 |=  0x07800300;
+ 
+     // Setup GPIO line directions for UART2 modem control lines
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   |= 0x02000200;
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR |= 0x05800100;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   = 0x02000200;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR = 0x05800100;
+ #endif // CONFIG_ARCH_HIPOX_UART2_MODEM
+ 
+     // Give Linux a contiguous numbering scheme for available UARTs
+@@ -478,8 +518,8 @@
+     *(volatile u32*)SYS_CTRL_GPIO_TERTSEL_CTRL_0 |=  0x000000C0;
+ 
+     // Setup GPIO line directions for UART3 SIN/SOUT
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   |= 0x00000080;
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR |= 0x00000040;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   = 0x00000080;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR = 0x00000040;
+ 
+     // Enable UART3 interrupt
+     *(volatile u32*)SYS_CTRL_UART_CTRL |= (1UL << SYS_CTRL_UART3_IQ_EN);
+@@ -491,8 +531,8 @@
+     *(volatile u32*)SYS_CTRL_GPIO_TERTSEL_CTRL_0 |=  0x0000003f;
+ 
+     // Setup GPIO line directions for UART3 modem control lines
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   |= 0x00000030;
+-    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR |= 0x0000000f;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_SET   = 0x00000030;
++    *(volatile u32*)GPIO_A_OUTPUT_ENABLE_CLEAR = 0x0000000f;
+ #endif // CONFIG_ARCH_HIPOX_UART3_MODEM
+ 
+     // Give Linux a contiguous numbering scheme for available UARTs
+@@ -1032,9 +1072,33 @@
+ }
+ #endif // CONFIG_HIPOX_LED_TEST
+ 
++static void hipox_poweroff(void)
++{
++    printk("Power off OXE810.\n");
++#ifdef CONFIG_HIPOX_OXE_INT2
++    printk("Disable OXE_INT2.\n");
++
++    // Disable primary, secondary and teriary GPIO functions on OXE_INT2 line
++    writel(readl(OXE_INT2_PRISEL_REG) & ~OXE_INT2_MASK, OXE_INT2_PRISEL_REG);
++    writel(readl(OXE_INT2_SECSEL_REG) & ~OXE_INT2_MASK, OXE_INT2_SECSEL_REG);
++    writel(readl(OXE_INT2_TERSEL_REG) & ~OXE_INT2_MASK, OXE_INT2_TERSEL_REG);
++    writel(readl(OXE_INT2_QUASEL_REG) & ~OXE_INT2_MASK, OXE_INT2_QUASEL_REG);
++
++    // Enable GPIO output on OXE_INT2 line
++    writel(OXE_INT2_MASK, OXE_INT2_SET_OE_REG);
++
++    // Reset OXE_INT2
++    writel(OXE_INT2_MASK, OXE_INT2_OUTPUT_CLR_REG);
++#endif // CONFIG_HIPOX_OXE_INT2
++}
++
+ static void __init hipox_init_machine(void)
+ {
+ //printk("hipox_init_machine()\n");
++
++    /* Register machine_poweroff */
++    pm_power_off = hipox_poweroff;
++
+     /* Initialise the spinlock used to make GPIO register set access atomic */
+     spin_lock_init(&hipox_gpio_spinlock);
+ 
