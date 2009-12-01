@@ -9,7 +9,7 @@ RDEPENDS = "python-elementary python-compression python-misc python-netclient"
 PACKAGE_ARCH = "all"
 
 PV = "2.0.9-4"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://bazaar.launchpad.net/%7Evaudano/babiloo/efl/download/head%3A/babiloo_2.0.94.tar.g-20091201105555-efky7gi6fkm39xw8-2/babiloo_2.0.9-4.tar.gz;name=tarball"
 SRC_URI[tarball.md5sum] = "f5f25daff7accb8d409fa9f94c49fc17"
@@ -32,9 +32,9 @@ do_install() {
 	install -d "${D}${datadir}/applications"
         install -m 0644 "${S}/babiloo.desktop" "${D}${datadir}/applications"
 
-	#cp -a "${S}/locale" "${D}${datadir}/"
-	#find ${D}${datadir}/locale -name *.po -exec rm {} \;
-	#rm -f ${D}${datadir}/locale/babiloo.pot
+	cp -a "${S}/locale" "${D}${datadir}/"
+	find ${D}${datadir}/locale -name *.po -exec rm {} \;
+	rm -f ${D}${datadir}/locale/babiloo.pot
 }
 
 FILES_${PN} += "${datadir}/babiloo"
