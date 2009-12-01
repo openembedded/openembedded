@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 PE = "1"
 DEPENDS = "vala-native"
 PV = "2.0.0+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/tools/apm2"
@@ -14,3 +14,6 @@ S = "${WORKDIR}/git/tools/apm2"
 inherit autotools
 
 RCONFLICTS_${PN} = "apm"
+RPROVIDES_${PN} = "apm"
+RPROVIDES_${PN}-dev = ""
+RPROVIDES_${PN}-dbg = ""
