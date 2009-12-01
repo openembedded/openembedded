@@ -8,7 +8,7 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-2.6.31 \
@@ -19,10 +19,11 @@ SRC_URI = "\
   file://0002-Glamo-DRM-and-KMS-driver.patch;patch=1 \
   file://0003-Work-on-Glamo-core-for-DRM.patch;patch=1 \
   file://0004-Add-JBT6k74-hook-for-use-by-KMS.patch;patch=1 \
-# enable UBI+DRM
+# enable UBI+DRM+NFS+INOTIFY_USER
   file://0004-gta02_defconfig-Enable-UBI-support.patch;patch=1 \
   file://0005-gta02_defconfig-Enable-UBI-debug.patch;patch=1 \
   file://0001-gta02_defconfig-Enable-GLAMO_DRM.patch;patch=1 \
+  file://0006-gta02-defconfig-enable-NFS-and-INOTIFY_USER.patch \
 "
 
 S = "${WORKDIR}/git"

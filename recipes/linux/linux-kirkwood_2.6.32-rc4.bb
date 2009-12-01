@@ -14,6 +14,8 @@ SRCREV = "1f76e2412659d2619ccd933d0ffd15e6253b1c4e"
 SRC_URI = "git://repo.or.cz/linux-2.6/linux-2.6-openrd.git;protocol=git \
            file://defconfig"
 
+SRC_URI_append_openrd-client += "file://0003-ARM-Kirkwood-Sound-Sound-driver-added.patch;patch=1"
+
 # update machine types list for ARM architecture, only for machines that need it
 do_arm_mach_types() {
 #  if test ${MACHINE} == openrd-base || test ${MACHINE} == openrd-client; then
