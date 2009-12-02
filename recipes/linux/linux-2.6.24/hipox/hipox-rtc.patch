@@ -1,0 +1,650 @@
+diff -Nurd linux-2.6.24.orig//drivers/rtc/Kconfig linux-2.6.24/drivers/rtc/Kconfig
+--- linux-2.6.24.orig//drivers/rtc/Kconfig	2009-12-01 12:31:46.000000000 +0100
++++ linux-2.6.24/drivers/rtc/Kconfig	2009-12-01 12:32:21.000000000 +0100
+@@ -296,6 +296,31 @@
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called rtc-cmos.
+ 
++config RTC_DRV_DRBCC
++	tristate "RTC via HIPOX BCTRL"
++	depends on MACH_HIPOX
++	help
++	  Say "yes" here to get support for the real time clock
++	  found on HIPOX system.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called rtc-drbcc.
++
++config RTC_DRV_DRBCC_DEVPATH
++	string "Serial device to connect with BCTRL"
++	depends on RTC_DRV_DRBCC
++	default "/dev/ttyS0"
++	help
++	  Serial device to connect with BCTRL
++	  found on HIPOX system.
++
++config RTC_DRV_DRBCC_BAUD
++	int "Baud rate for BCTRL serial port (integer)"
++	depends on RTC_DRV_DRBCC
++	default 921600
++	help
++	  Baud rate for BCTRL serial port.
++
+ config RTC_DRV_DS1216
+ 	tristate "Dallas DS1216"
+ 	depends on SNI_RM
+diff -Nurd linux-2.6.24.orig//drivers/rtc/Makefile linux-2.6.24/drivers/rtc/Makefile
+--- linux-2.6.24.orig//drivers/rtc/Makefile	2009-12-01 12:31:46.000000000 +0100
++++ linux-2.6.24/drivers/rtc/Makefile	2009-12-01 12:32:25.000000000 +0100
+@@ -21,6 +21,7 @@
+ obj-$(CONFIG_RTC_DRV_AT91RM9200)+= rtc-at91rm9200.o
+ obj-$(CONFIG_RTC_DRV_BFIN)	+= rtc-bfin.o
+ obj-$(CONFIG_RTC_DRV_CMOS)	+= rtc-cmos.o
++obj-$(CONFIG_RTC_DRV_DRBCC)	+= rtc-drbcc.o
+ obj-$(CONFIG_RTC_DRV_DS1216)	+= rtc-ds1216.o
+ obj-$(CONFIG_RTC_DRV_DS1307)	+= rtc-ds1307.o
+ obj-$(CONFIG_RTC_DRV_DS1374)	+= rtc-ds1374.o
+diff -Nurd linux-2.6.24.orig//drivers/rtc/rtc-drbcc.c linux-2.6.24/drivers/rtc/rtc-drbcc.c
+--- linux-2.6.24.orig//drivers/rtc/rtc-drbcc.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.24/drivers/rtc/rtc-drbcc.c	2009-12-01 12:32:29.000000000 +0100
+@@ -0,0 +1,600 @@
++/* Editor hints for vim
++ * vim:set ts=4 sw=4 noexpandtab:
++ *
++ * HydraIP DRBCC RTC driver
++ * Copyright (C) 2009 DResearch Digital Media Systems
++ * Author: Steffen Sledz <sledz@dresearch.de>
++ *
++ * For usage of filp_open, vfs_read, ..._ioctl & Co. e.g. see :
++ * - http://www.linuxquestions.org/questions/programming-9/accessing-tty-in-kernel-space-596538/
++ * - http://www.linux.it/~rubini/docs/ksys/ksys.html
++ *
++ * $Id: rtc-drbcc.c 2276 2009-12-02 08:28:25Z sledz $
++ */
++
++#include <linux/module.h>
++#include <linux/err.h>
++#include <linux/rtc.h>
++#include <linux/platform_device.h>
++#include <linux/termios.h>
++#include <linux/bcd.h>
++
++#define MODULE_NAME "rtc-drbcc"
++
++/*
++ * Set this to zero to remove all the debug statements via
++ * dead code elimination
++ */
++#define DEBUGGING	1
++
++#if DEBUGGING
++static unsigned int rtc_debug = DEBUGGING;
++#else
++#define rtc_debug 0	/* gcc will remove all the debug code for us */
++#endif
++
++#define PDEBUG(lvl, fmt, args...) if(rtc_debug >= (lvl)) { printk(KERN_DEBUG MODULE_NAME "[%s] " fmt "\n" , __FUNCTION__, ## args); }
++#define PINFO(fmt, args...) printk(KERN_INFO MODULE_NAME "[%s] " fmt "\n" , __FUNCTION__, ## args);
++#define PERROR(fmt, args...) printk(KERN_ERR MODULE_NAME "[%s] " fmt "\n" , __FUNCTION__, ## args);
++
++#define START 0xFA
++#define STOP  0xFB
++
++#define lo8(x) ((x) & 0xFF)
++#define hi8(x) ((x) >> 8)
++
++/*
++ * Driver parameters
++ */
++static int debug = 0;
++
++#ifdef CONFIG_RTC_DRV_DRBCC_DEVPATH
++static char devpath[256] = CONFIG_RTC_DRV_DRBCC_DEVPATH;
++#else
++static char devpath[256] = "/dev/ttyS0";
++#endif // CONFIG_RTC_DRV_DRBCC_DEVPATH
++
++#ifdef CONFIG_RTC_DRV_DRBCC_BAUD
++static int baud = CONFIG_RTC_DRV_DRBCC_BAUD;
++#else
++static int baud = 921600;
++#endif // CONFIG_RTC_DRV_DRBCC_BAUD
++
++module_param(debug, int, 0);
++module_param_string(devpath, devpath, sizeof(devpath), 0);
++module_param(baud, int, 0);
++#if DEBUGGING
++MODULE_PARM_DESC(debug, "debug level (0-6)");
++#else
++MODULE_PARM_DESC(debug, "(ignored)");
++#endif
++MODULE_PARM_DESC(devpath, "Serial device to connect with BCTRL (default: /dev/ttyS0)");
++MODULE_PARM_DESC(baud, "Baud rate for BCTRL serial port (default: 921600)");
++
++static struct platform_device *rtc_drbcc0 = NULL;
++
++static uint8_t myackbit = 0x80;
++
++/*
++ * drbcc commands (see drbcc_ll.h)
++ */
++#define RTC_DRBCC_ACK                     0x00
++#define RTC_DRBCC_SYNC                    0x01
++#define RTC_DRBCC_REQ_RTC_READ            0x05
++#define RTC_DRBCC_IND_RTC_READ            0x06
++#define RTC_DRBCC_REQ_RTC_SET             0x07
++
++static uint16_t rtc_drbcc_crc_ccitt_update(uint16_t crc, uint8_t data)
++{
++    data ^= lo8 (crc);
++    data ^= data << 4;
++
++    return ((((uint16_t)data << 8) | hi8 (crc)) ^ (uint8_t)(data >> 4)
++			^ ((uint16_t)data << 3));
++}
++
++static int rtc_drbcc_bctrl_write_cmd(struct file* filp, const uint8_t msgid, const uint8_t* data, size_t len)
++{
++	size_t buflen = 1+1+len+2+1; /* start char, msgid, data, crc, stop char */
++	uint8_t buf[buflen];
++	unsigned i;
++	uint16_t crc = 0xffff;
++	ssize_t nwritten;
++	loff_t offset_tmp = 0;
++
++	buf[0] = START;
++	buf[1] = msgid;
++	crc = rtc_drbcc_crc_ccitt_update(crc, buf[1]);
++	if(data && (len > 0))
++	{
++		for(i = 0; i < len; i++)
++		{
++			buf[2+i] = data[i];
++			crc = rtc_drbcc_crc_ccitt_update(crc, buf[2+i]);
++		}
++	}
++	buf[buflen-3] = lo8(crc);
++	buf[buflen-2] = hi8(crc);
++	buf[buflen-1] = STOP;
++
++	PDEBUG(1, "vfs_write %d bytes to descriptor %p", buflen, filp);
++	nwritten = vfs_write(filp, (char __user *)buf, buflen, &offset_tmp);
++	PDEBUG(1, "%d of %d bytes written", nwritten, buflen);
++	for(i = 0; i < nwritten; i++)
++	{
++		PDEBUG(2, ">%02X>", buf[i]);
++	}
++
++	return (nwritten == buflen) ? 0 : -EIO;
++}
++
++/*
++ * read at least len bytes into data or timeout,
++ * skip all bytes up to a valid start char
++ */
++static int rtc_drbcc_bctrl_read_answer(struct file* filp, uint8_t* data, size_t len, unsigned timeout /* jiffies */)
++{
++	static uint8_t rbuf[1024]; /* should be enough for or messages */
++	static uint8_t* pos = rbuf;
++	uint8_t* tpos;
++	loff_t offset_tmp = 0;
++	ssize_t nread;
++	int ret = 0;
++
++	if(len > sizeof(rbuf))
++	{
++		PERROR("can't read that much bytes at once");
++		ret = -EIO;
++	}
++
++	PDEBUG(9, "rbuf=%p pos=%p pos-rbuf=%d len=%d", rbuf, pos, pos-rbuf, len);
++	if((ret == 0) && (tpos = memchr(rbuf, START, pos-rbuf)))
++	{
++		if(tpos != rbuf)
++		{
++			PDEBUG(9, "rbuf=%p pos=%p tpos=%p pos-rbuf=%d len=%d", rbuf, pos, tpos, pos-rbuf, len);
++			/* skip bytes up to start char */
++			PDEBUG(9, "move %d bytes from %p to %p", pos-tpos, tpos, rbuf);
++			memmove(rbuf, tpos, pos-tpos);
++			pos -= tpos-rbuf;
++		}
++	}
++
++	while((ret == 0) && (timeout > 0) && ((pos - rbuf) < len))
++	{
++		timeout--;
++
++		/* wait a jiffy */
++		set_current_state(TASK_INTERRUPTIBLE);
++		schedule_timeout(1);
++
++		PDEBUG(1, "vfs_read %d bytes from descriptor %p to pos %p", rbuf+sizeof(rbuf)-pos, filp, pos);
++		nread = vfs_read(filp, (char __user *)pos, rbuf+sizeof(rbuf)-pos, &offset_tmp);
++		if(nread > 0)
++		{
++			unsigned i;
++			PDEBUG(1, "%d bytes read", nread);
++			for(i = 0; i < nread; i++)
++			{
++				PDEBUG(2, "<%02X<", pos[i]);
++			}
++			pos += nread;
++		}
++		else if((nread == -EAGAIN) || (nread == 0))
++		{
++			// wait and try again
++		}
++		else
++		{
++			PERROR("vfs_read returned error %d", nread);
++			ret = -EIO;
++		}
++
++		if((ret == 0) && (tpos = memchr(rbuf, START, pos-rbuf)))
++		{
++			if(tpos != rbuf)
++			{
++				PDEBUG(9, "rbuf=%p pos=%p tpos=%p pos-rbuf=%d len=%d", rbuf, pos, tpos, pos-rbuf, len);
++				/* skip bytes up to start char */
++				PDEBUG(9, "move %d bytes from %p to %p", pos-tpos, tpos, rbuf);
++				memmove(rbuf, tpos, pos-tpos);
++				pos -= tpos-rbuf;
++			}
++		}
++	}
++
++	if(rbuf[0] != START)
++	{
++		PERROR("missing start character");
++		ret = -EIO;
++	}
++
++	if(pos-rbuf < len)
++	{
++		PERROR("not enough data");
++		ret = -EIO;
++	}
++
++	if(rbuf[len-1] != STOP)
++	{
++		PERROR("missing stop character %d 0x%02X", len-1, rbuf[len-1]);
++		ret = -EIO;
++	}
++
++	// TODO: check crc
++
++	if(ret == 0)
++	{
++		memcpy(data, rbuf, len);
++		memmove(rbuf, rbuf+len, pos-rbuf-len);
++		pos -= len;
++	}
++
++	PDEBUG(1, "return %d", ret);
++	return ret;
++}
++
++static int rtc_drbcc_bctrl_check_answer(struct file* filp, const uint8_t msgid, uint8_t* returned_ackbit, uint8_t* data, size_t len, unsigned timeout /* jiffies */)
++{
++	uint8_t rbuf[1+1+len+2+1]; /* start char, msgid, data, crc, stop char */
++	int ret;
++
++	ret = rtc_drbcc_bctrl_read_answer(filp, rbuf, sizeof(rbuf), timeout);
++	if(ret == 0)
++	{
++		unsigned i;
++		PDEBUG(1, "got %d bytes", sizeof(rbuf));
++		for(i = 0; i < sizeof(rbuf); i++)
++		{
++			PDEBUG(2, "[%02X]", rbuf[i]);
++		}
++
++		if((rbuf[1] & 0x7F) != msgid)
++		{
++			PERROR("wrong msgid 0x%02X instead of 0x%02X", rbuf[1] & 0x7F, msgid);
++			ret = -EIO;
++		}
++		PDEBUG(1, "valid answer found");
++		memcpy(data, rbuf+2, len);
++		*returned_ackbit = rbuf[1] & 0x80;
++	}
++
++	PDEBUG(1, "return %d", ret);
++	return ret;
++}
++
++static int rtc_drbcc_set_termios(struct file *filp)
++{
++	struct termios tios;
++	struct inode dummy;
++	speed_t speed = B921600;
++	int ret = 0;
++
++	/* get terminal interface settings */
++	ret = filp->f_op->ioctl(&dummy, filp, TCGETS, (unsigned long)&tios);
++	if(ret == 0)
++	{
++
++		PDEBUG(6, "old tios.c_iflag=0x%08X", tios.c_iflag);
++		PDEBUG(6, "old tios.c_oflag=0x%08X", tios.c_oflag);
++		PDEBUG(6, "old tios.c_cflag=0x%08X", tios.c_cflag);
++		PDEBUG(6, "old tios.c_lflag=0x%08X", tios.c_lflag);
++		PDEBUG(6, "old tios.c_line=0x%02X", tios.c_line);
++
++		/* set terminal raw like cfmakeraw does (see manpage) */
++		tios.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
++		tios.c_oflag &= ~OPOST;
++		tios.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
++		tios.c_cflag &= ~(CSIZE | PARENB);
++		tios.c_cflag |= CS8;
++
++		/* set baud rate like cfsetospeed does (see glibc sources) */
++#ifdef _HAVE_STRUCT_TERMIOS_C_OSPEED
++		tios.c_ospeed = speed;
++#endif
++		tios.c_cflag &= ~(CBAUD | CBAUDEX);
++		tios.c_cflag |= speed;
++
++		/* set 1 stop bit */
++		tios.c_cflag &= ~CSTOPB;
++
++		PDEBUG(6, "new tios.c_iflag=0x%08X", tios.c_iflag);
++		PDEBUG(6, "new tios.c_oflag=0x%08X", tios.c_oflag);
++		PDEBUG(6, "new tios.c_cflag=0x%08X", tios.c_cflag);
++		PDEBUG(6, "new tios.c_lflag=0x%08X", tios.c_lflag);
++		PDEBUG(6, "new tios.c_line=0x%02X", tios.c_line);
++
++		/* set new terminal interface settings */
++		ret = filp->f_op->ioctl(&dummy, filp, TCSETS, (unsigned long)&tios);
++	}
++	PDEBUG(1, "return %d", ret);
++	return ret;
++}
++
++static int rtc_drbcc_read_time(struct device *dev,
++	struct rtc_time *tm)
++{
++	uint8_t remoteackbit = 0x00;
++	struct file *filp;
++	mm_segment_t old_fs;
++	int ret = 0;
++	uint8_t rtcstr[8]; /* for RTC_READ: <sec> <min> <hour> <day> <date> <month> <year> <epoch> */
++
++	old_fs = get_fs();
++	set_fs(KERNEL_DS);
++
++	PDEBUG(1, "opening %s", devpath);
++	filp = filp_open(devpath, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY, 0);
++	if (IS_ERR(filp)) {
++		PERROR("unable to open serial device to BCTRL: %s", devpath);
++		ret = PTR_ERR(filp);
++		goto end2;
++	}
++	PDEBUG(1, "%s opened at descriptor %p", devpath, filp);
++
++	ret = rtc_drbcc_set_termios(filp);
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "send sync");
++	ret = rtc_drbcc_bctrl_write_cmd(filp, RTC_DRBCC_SYNC | myackbit, NULL, 0);
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "wait ack");
++	ret = rtc_drbcc_bctrl_check_answer(filp, RTC_DRBCC_ACK, &remoteackbit, NULL, 0, 100);
++	if(ret)	{ goto end1; }
++	myackbit ^= 0x80; /* toggle ACK bit */
++
++	PDEBUG(1, "send rtc request");
++	ret = rtc_drbcc_bctrl_write_cmd(filp, RTC_DRBCC_REQ_RTC_READ | myackbit, NULL, 0);
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "wait ack");
++	ret = rtc_drbcc_bctrl_check_answer(filp, RTC_DRBCC_ACK, &remoteackbit, NULL, 0, 100);
++	if(ret)	{ goto end1; }
++	myackbit ^= 0x80; /* toggle ACK bit */
++
++	PDEBUG(1, "wait rtc response");
++	ret = rtc_drbcc_bctrl_check_answer(filp, RTC_DRBCC_IND_RTC_READ, &remoteackbit, rtcstr, sizeof(rtcstr), 1000);
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "send ack");
++	ret = rtc_drbcc_bctrl_write_cmd(filp, RTC_DRBCC_ACK | remoteackbit, NULL, 0);
++	if(ret)	{ goto end1; }
++
++	/* <sec> <min> <hour> <day> <date> <month> <year> <epoch> */
++	PDEBUG(1, "read time %02X %02X %02X %02X %02X %02X %02X %02X",
++		   rtcstr[0], rtcstr[1], rtcstr[2], rtcstr[3],
++		   rtcstr[4], rtcstr[5], rtcstr[6], rtcstr[7]);
++	tm->tm_sec = BCD2BIN(rtcstr[0]);
++	tm->tm_min = BCD2BIN(rtcstr[1]);
++	tm->tm_hour = BCD2BIN(rtcstr[2]);
++	tm->tm_wday = BCD2BIN(rtcstr[3]) - 1;
++	tm->tm_mday = BCD2BIN(rtcstr[4]);
++	tm->tm_mon = BCD2BIN(rtcstr[5]) - 1;
++	tm->tm_year = BCD2BIN(rtcstr[6]) + 100;
++	PDEBUG(1, "secs=%d, mins=%d, hours=%d, mday=%d, mon=%d, year=%d, wday=%d",
++		   tm->tm_sec, tm->tm_min,
++		   tm->tm_hour, tm->tm_mday,
++		   tm->tm_mon, tm->tm_year, tm->tm_wday);
++
++ end1:
++	filp_close(filp, current->files);
++ end2:
++	set_fs(old_fs);
++
++	PDEBUG(1, "return %d", ret);
++	return ret;
++}
++
++static int rtc_drbcc_set_time(struct device *dev,
++	struct rtc_time *tm)
++{
++	uint8_t remoteackbit = 0x00;
++	struct file *filp;
++	mm_segment_t old_fs;
++	int ret = 0;
++	uint8_t newrtcstr[7]; /* for RTC_SET: <sec> <min> <hour> <day> <date> <month> <year> */
++	uint8_t rtcstr[8]; /* for RTC_READ: <sec> <min> <hour> <day> <date> <month> <year> <epoch> */
++
++	old_fs = get_fs();
++	set_fs(KERNEL_DS);
++
++	PDEBUG(1, "opening %s", devpath);
++	filp = filp_open(devpath, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY, 0);
++	if (IS_ERR(filp)) {
++		PERROR("unable to open serial device to BCTRL: %s", devpath);
++		ret = PTR_ERR(filp);
++		goto end2;
++	}
++	PDEBUG(1, "%s opened at descriptor %p", devpath, filp);
++
++	ret = rtc_drbcc_set_termios(filp);
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "send sync");
++	ret = rtc_drbcc_bctrl_write_cmd(filp, RTC_DRBCC_SYNC | myackbit, NULL, 0);
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "wait ack");
++	ret = rtc_drbcc_bctrl_check_answer(filp, RTC_DRBCC_ACK, &remoteackbit, NULL, 0, 100);
++	if(ret)	{ goto end1; }
++	myackbit ^= 0x80; /* toggle ACK bit */
++
++	/* <sec> <min> <hour> <day> <date> <month> <year> */
++	PDEBUG(1, "secs=%d, mins=%d, hours=%d, mday=%d, mon=%d, year=%d, wday=%d",
++		   tm->tm_sec, tm->tm_min,
++		   tm->tm_hour, tm->tm_mday,
++		   tm->tm_mon, tm->tm_year, tm->tm_wday);
++	newrtcstr[0] = BIN2BCD(tm->tm_sec);
++	newrtcstr[1] = BIN2BCD(tm->tm_min);
++	newrtcstr[2] = BIN2BCD(tm->tm_hour);
++	newrtcstr[3] = BIN2BCD(tm->tm_wday + 1);
++	newrtcstr[4] = BIN2BCD(tm->tm_mday);
++	newrtcstr[5] = BIN2BCD(tm->tm_mon + 1);
++	newrtcstr[6] = BIN2BCD(tm->tm_year - 100);
++	PDEBUG(1, "set time %02X %02X %02X %02X %02X %02X %02X",
++		   newrtcstr[0], newrtcstr[1], newrtcstr[2], newrtcstr[3],
++		   newrtcstr[4], newrtcstr[5], newrtcstr[6]);
++
++	PDEBUG(1, "send setrtc request");
++	ret = rtc_drbcc_bctrl_write_cmd(filp, RTC_DRBCC_REQ_RTC_SET | myackbit, newrtcstr, sizeof(newrtcstr));
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "wait ack");
++	ret = rtc_drbcc_bctrl_check_answer(filp, RTC_DRBCC_ACK, &remoteackbit, NULL, 0, 100);
++	if(ret)	{ goto end1; }
++	myackbit ^= 0x80; /* toggle ACK bit */
++
++	PDEBUG(1, "wait rtc response");
++	ret = rtc_drbcc_bctrl_check_answer(filp, RTC_DRBCC_IND_RTC_READ, &remoteackbit, rtcstr, sizeof(rtcstr), 1000);
++	if(ret)	{ goto end1; }
++
++	PDEBUG(1, "send ack");
++	ret = rtc_drbcc_bctrl_write_cmd(filp, RTC_DRBCC_ACK | remoteackbit, NULL, 0);
++	if(ret)	{ goto end1; }
++
++	/* <sec> <min> <hour> <day> <date> <month> <year> <epoch> */
++	PDEBUG(1, "read time %02X %02X %02X %02X %02X %02X %02X %02X",
++		   rtcstr[0], rtcstr[1], rtcstr[2], rtcstr[3],
++		   rtcstr[4], rtcstr[5], rtcstr[6], rtcstr[7]);
++
++ end1:
++	filp_close(filp, current->files);
++ end2:
++	set_fs(old_fs);
++
++	PDEBUG(1, "return %d", ret);
++	return ret;
++}
++
++static int rtc_drbcc_proc(struct device *dev, struct seq_file *seq)
++{
++	struct platform_device *plat_dev = to_platform_device(dev);
++
++	seq_printf(seq, "%s\t: yes\n", MODULE_NAME);
++	seq_printf(seq, "id\t\t: %d\n", plat_dev->id);
++
++	return 0;
++}
++
++static int rtc_drbcc_ioctl(struct device *dev, unsigned int cmd,
++	unsigned long arg)
++{
++	switch (cmd) {
++	default:
++		return -ENOIOCTLCMD;
++	}
++	return 0;
++}
++
++static const struct rtc_class_ops rtc_drbcc_ops = {
++	.proc = rtc_drbcc_proc,
++	.read_time = rtc_drbcc_read_time,
++	.set_time = rtc_drbcc_set_time,
++	.ioctl = rtc_drbcc_ioctl,
++};
++
++static int rtc_drbcc_probe(struct platform_device *plat_dev)
++{
++	int err;
++	struct rtc_device *rtc;
++
++	PDEBUG(1, "register device");
++	rtc = rtc_device_register(MODULE_NAME, &plat_dev->dev, &rtc_drbcc_ops, THIS_MODULE);
++	if (IS_ERR(rtc)) {
++		err = PTR_ERR(rtc);
++		return err;
++	}
++
++#if 0
++	err = device_create_file(&plat_dev->dev, &dev_attr_irq);
++	if (err)
++		goto err;
++#endif
++	platform_set_drvdata(plat_dev, rtc);
++
++	return 0;
++
++//err:
++	rtc_device_unregister(rtc);
++	return err;
++}
++
++static int __devexit rtc_drbcc_remove(struct platform_device *plat_dev)
++{
++	struct rtc_device *rtc = platform_get_drvdata(plat_dev);
++
++	PDEBUG(1, "unregister device");
++	rtc_device_unregister(rtc);
++#if 0
++	device_remove_file(&plat_dev->dev, &dev_attr_irq);
++#endif
++	return 0;
++}
++
++static struct platform_driver rtc_drbcc_drv = {
++	.probe	= rtc_drbcc_probe,
++	.remove = __devexit_p(rtc_drbcc_remove),
++	.driver = {
++		.name = MODULE_NAME,
++		.owner = THIS_MODULE,
++	},
++};
++
++static int __init rtc_drbcc_init(void)
++{
++	int err;
++
++#if DEBUGGING
++	rtc_debug = debug;
++#else
++	debug = 0;
++#endif
++
++	PDEBUG(1, "debug=%d devpath=%s baud=%d", debug, devpath, baud);
++	if ((err = platform_driver_register(&rtc_drbcc_drv)))
++		return err;
++
++	if ((rtc_drbcc0 = platform_device_alloc(MODULE_NAME, 0)) == NULL) {
++		err = -ENOMEM;
++		goto exit_driver_unregister;
++	}
++
++	if ((err = platform_device_add(rtc_drbcc0)))
++		goto exit_device_unregister;
++
++	return 0;
++
++exit_device_unregister:
++	platform_device_unregister(rtc_drbcc0);
++
++	platform_device_put(rtc_drbcc0);
++
++exit_driver_unregister:
++	platform_driver_unregister(&rtc_drbcc_drv);
++	return err;
++}
++
++static void __exit rtc_drbcc_exit(void)
++{
++	platform_device_unregister(rtc_drbcc0);
++	platform_driver_unregister(&rtc_drbcc_drv);
++}
++
++MODULE_AUTHOR("Steffen Sledz <sledz@dresearch.de>");
++MODULE_DESCRIPTION("HydraIP DRBCC RTC driver");
++MODULE_LICENSE("GPL");
++
++module_init(rtc_drbcc_init);
++module_exit(rtc_drbcc_exit);
++
++/* Editor hints for emacs
++ *
++ * Local Variables:
++ * mode:c
++ * c-basic-offset:4
++ * indent-tabs-mode:t
++ * tab-width:4
++ * End:
++ * 
++ * NO CODE BELOW THIS! */
