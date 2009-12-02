@@ -24,7 +24,8 @@ S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
 QT_CONFIG_FLAGS += " \
  -no-embedded \
- -xrandr "
+ -xrandr \
+ -x11"
 
 do_configure_prepend() {
 	sed -i \
@@ -33,5 +34,12 @@ do_configure_prepend() {
 	-e /QMAKE_UIC3\ /d \
 	-e /QMAKE_RCC\ /d \
 	${S}/configure
+}
+
+do_install_append() {
+	install -d ${D}${bindir}
+	for i in rcc uic moc ; do
+		install -m 0755 ${S}/bin/$i ${D}${bindir}/
+	done
 }
 
