@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r9"
+PR = "r10"
 
 
 DEPENDS += "task-shr-minimal"
@@ -66,11 +66,6 @@ shr_rootfs_postprocess() {
     echo >>./etc/fstab
     echo "# NFS Host" >>./etc/fstab
     echo "192.168.0.200:/local/pkg /local/pkg nfs noauto,nolock,soft,rsize=32768,wsize=32768 0 0" >>./etc/fstab
-    # fix .desktop files for illume
-    #desktop=`find ./usr/share/applications -name "*.desktop"`
-    #for file in $desktop; do
-    #    echo "Categories=Office;" >>$file
-    #done
 
     # minimal gtk theme foo
     # this should be set in postinst phase of installed gtk-theme package
@@ -107,7 +102,6 @@ shr_rootfs_postprocess() {
     [ -d ./etc/modutils ] || mkdir ./etc/modutils
     # FIXME: do load those modules through module_autoload in 
     # machine config or distro config
-    echo "g_ether" > ./etc/modutils/g_ether
     echo "ppp_generic" > ./etc/modutils/ppp_generic
 
     #set up some variables to improve default settings
