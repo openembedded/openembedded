@@ -20,7 +20,7 @@ cmake_do_configure() {
 
   cmake ${OECMAKE_SOURCEPATH} \
     -DCMAKE_INSTALL_PREFIX:PATH=${prefix} \
-    -DCMAKE_FIND_ROOT_PATH=${STAGING_DIR_HOST} \
+    -DCMAKE_FIND_ROOT_PATH:PATH=${STAGING_DIR_HOST} \
     ${EXTRA_OECMAKE} \
     -Wno-dev
 }
