@@ -28,12 +28,8 @@ THUMB_INTERWORKING = "no"
 module_autoload_ohci-hcd = "ohci-hcd"
 module_autoload_hci_usb = "hci_usb"
 module_autoload_g_ether = "g_ether"
-# audio (GTA01)
-module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
-# audio (GTA02)
-module_autoload_snd-soc-neo1973-gta02-wm8753 = "snd-soc-neo1973-gta02-wm8753"
-# audio (GTA03)
-module_autoload_snd-soc-neo1973-gta03-wm8753 = ""
+module_autoload_ppp_generic = "ppp_generic"
+# snd modules module_autoload_snd-soc-neo1973-*-wm8753 are in machine.conf 
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 
