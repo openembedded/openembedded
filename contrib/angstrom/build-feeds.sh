@@ -120,8 +120,9 @@ do
                       empathy \ 
                       epdfview \
                       epiphany \
-                      eve \
                       evince \
+                      exalt \
+                      exalt-client \
                       exo \
                       fakeroot \
                       fennec \
@@ -157,6 +158,7 @@ do
                       geda-utils \
                       gimp \
                       glider \
+                      gksu \
                       gmp \
                       gmpc \
                       gnome-games \
@@ -191,6 +193,7 @@ do
                       iaimaster \
                       icebloxx \
                       imagemagick \
+                      inkscape \
                       inkwp \
                       ioquake3 \
                       ipaq-sleep \
@@ -260,6 +263,7 @@ do
                       pavucontrol \
                       palantir \
                       pairs \
+                      paprefs \
                       pciutils \
                       pdamaze \
                       perl \
@@ -299,6 +303,7 @@ do
                       screen \
                       scummvm \
                       sdlquake \
+                      sdrshell \
                       sensors-applet \
                       setserial \
                       shisensho \
@@ -349,6 +354,7 @@ do
                       wt \
                       wt3 \
                       x11vnc \
+                      xclip \
                       xf86-input-evdev \
                       xf86-input-evtouch \
                       xf86-input-keyboard \
