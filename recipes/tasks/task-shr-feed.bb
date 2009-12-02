@@ -253,6 +253,8 @@ RDEPENDS_${PN} += "\
 		transmission \
 		xf86-input-tslib \
 		fltkcocktailbar \
+		fltkcurrency \
+		mokoeightball \
 		babiloo-efl \
 		make \
 "
