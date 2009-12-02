@@ -107,11 +107,10 @@ shr_rootfs_postprocess() {
 
     #load modules on boot
     [ -d ./etc/modutils ] || mkdir ./etc/modutils
+    # FIXME: do load those modules through module_autoload in 
+    # machine config or distro config
     echo "g_ether" > ./etc/modutils/g_ether
     echo "ppp_generic" > ./etc/modutils/ppp_generic
-    # FIXME: Only do this for GTA02
-    # FIXME: investigate why module_autoload in machine config doesn't work
-    echo "snd-soc-neo1973-gta02-wm8753" > ./etc/modutils/snd-soc-neo
 
     #set up some variables to improve default settings
     echo "if [ \"\$DISPLAY\" = \"\" ]" >> ./etc/profile
