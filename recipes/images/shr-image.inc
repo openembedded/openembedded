@@ -72,8 +72,6 @@ shr_rootfs_postprocess() {
     #    echo "Categories=Office;" >>$file
     #done
 
-    echo "Exec=vala-terminal -e htop" >> ./usr/share/applications/htop.desktop
-
     # minimal gtk theme foo
     # this should be set in postinst phase of installed gtk-theme package
     #mkdir -p ./etc/gtk-2.0/
