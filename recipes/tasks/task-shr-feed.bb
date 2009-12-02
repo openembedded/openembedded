@@ -29,6 +29,7 @@ RDEPENDS_${PN} += "\
 		omview \
 		python-elementary \
 		pythm \
+		python-wifi \
 		openmoko-agpsui \
 		openvpn \
 #		shr-config \
