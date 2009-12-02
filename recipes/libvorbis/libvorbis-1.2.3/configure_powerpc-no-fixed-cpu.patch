@@ -1,0 +1,15 @@
+Index: libvorbis-1.2.3/configure.ac
+===================================================================
+--- libvorbis-1.2.3.orig/configure.ac	2009-11-25 13:20:46.274395527 +0100
++++ libvorbis-1.2.3/configure.ac	2009-11-25 13:21:05.136894132 +0100
+@@ -157,8 +157,8 @@
+   		fi;;
+ 	powerpc-*-linux*)
+ 		DEBUG="-g -Wall -Wextra -D_REENTRANT -D__NO_MATH_INLINES"
+-		CFLAGS="-O3 -Wall -Wextra -ffast-math -mfused-madd -mcpu=750 -D_REENTRANT"
+-		PROFILE="-pg -g -O3 -ffast-math -mfused-madd -mcpu=750 -D_REENTRANT";;
++		CFLAGS="-O3 -Wall -Wextra -ffast-math -mfused-madd -D_REENTRANT"
++		PROFILE="-pg -g -O3 -ffast-math -mfused-madd -D_REENTRANT";;
+ 	*-*-linux*)
+ 		DEBUG="-g -Wall -Wextra -D_REENTRANT -D__NO_MATH_INLINES -fsigned-char"
+ 		CFLAGS="-O20 -Wall -Wextra -ffast-math -D_REENTRANT -fsigned-char"

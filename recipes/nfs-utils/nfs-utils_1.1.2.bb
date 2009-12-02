@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "console/network"
 LICENSE = "GPL"
 
-PR = "r6"
+PR = "r7"
 
 DEPENDS = "e2fsprogs-libs tcp-wrappers libevent"
 
@@ -44,30 +44,12 @@ do_ccompile() {
 
 INHIBIT_AUTO_STAGE = "1"
 
-do_install() {
+do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/nfsserver ${D}${sysconfdir}/init.d/nfsserver
 
-	install -d ${D}${sbindir}
-	install -d ${D}${base_sbindir}
-	install -m 0755 ${S}/utils/exportfs/exportfs ${D}${sbindir}/exportfs
-	install -m 0755 ${S}/utils/mountd/mountd ${D}${sbindir}/mountd
-	install -m 0755 ${S}/utils/mount/mount.nfs ${D}${base_sbindir}/mount.nfs
-	install -m 0755 ${S}/utils/nfsd/nfsd ${D}${sbindir}/nfsd
-	install -m 0755 ${S}/utils/nfsstat/nfsstat ${D}${sbindir}/nfsstat
-	install -m 0755 ${S}/utils/showmount/showmount ${D}${sbindir}/showmount
-	install -m 0755 ${S}/utils/statd/statd ${D}${sbindir}/statd
-
-	ln -s ${base_sbindir}/mount.nfs ${D}/${base_sbindir}/mount.nfs4
-
-	install -d ${D}${mandir}/man8
-	install -m 0644 ${S}/utils/exportfs/exportfs.man ${D}${mandir}/man8/exportfs.8
-	install -m 0644 ${S}/utils/mountd/mountd.man ${D}${mandir}/man8/mountd.8
-	install -m 0644 ${S}/utils/nfsd/nfsd.man ${D}${mandir}/man8/nfsd.8
-	install -m 0644 ${S}/utils/nfsstat/nfsstat.man ${D}${mandir}/man8/nfsstat.8
-	install -m 0644 ${S}/utils/showmount/showmount.man ${D}${mandir}/man8/showmount.8
-	install -m 0644 ${S}/utils/statd/statd.man ${D}${mandir}/man8/statd.8
+	rm ${D}${sbindir}/rpcdebug
 }
 
 PACKAGES =+ "nfs-utils-client"
-FILES_nfs-utils-client = "${base_sbindir}/mount.nfs ${base_sbindir}/mount.nfs4"
+FILES_nfs-utils-client = "${base_sbindir}/*mount.nfs*"

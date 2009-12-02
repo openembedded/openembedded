@@ -8,6 +8,7 @@ SRC_URI = "file://omap3-sgx-modules-${PV}.tar.bz2 \
            file://rotation-dss2.patch;patch=1 \
            file://build_es3.x_sgx.patch;patch=1 \
            file://proc-interface.patch;patch=1 \
+	   file://0001-Compile-fixes-for-recent-kernels.patch;patch=1 \
 "
 
 PVRBUILD = "release"

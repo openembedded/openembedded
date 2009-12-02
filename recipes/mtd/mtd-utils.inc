@@ -17,7 +17,9 @@ do_stage () {
 		install -m 0644 $f ${STAGING_INCDIR}/mtd/
 	done
 	for binary in ${mtd_utils}; do
-		install -m 0755 $binary ${STAGING_BINDIR}
+		if [ -f $binary ]; then
+			install -m 0755 $binary ${STAGING_BINDIR}
+		fi
 	done
 }
 
@@ -25,7 +27,9 @@ do_install () {
 	install -d ${D}${bindir}
 	install -d ${D}${includedir}/mtd
 	for binary in ${mtd_utils}; do
-		install -m 0755 $binary ${D}${bindir}
+		if [ -f $binary ]; then
+			install -m 0755 $binary ${D}${bindir}
+		fi
 	done
 	for f in ${S}/include/mtd/*.h; do
 		install -m 0644 $f ${D}${includedir}/mtd

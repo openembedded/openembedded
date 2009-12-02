@@ -8,7 +8,7 @@ LICENSE = "GPL"
 
 PR = "r1"
 
-DEPENDS = " libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
+DEPENDS = " libunique libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
 RDEPENDS_${PN} += "iso-codes"
 RRECOMMENDS_${PN} += "gst-plugin-playbin \
                       gst-plugin-gconfelements \

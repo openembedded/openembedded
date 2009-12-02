@@ -7,7 +7,9 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI = "http://www.metzlerbros.org/dvb/${P}.tar.gz \
-          file://topf2ps.patch;patch=1"
+          file://topf2ps.patch;patch=1 \
+          file://gcc4.patch;patch=1 \
+          file://ldflags.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
@@ -16,7 +18,7 @@ PARALLEL_MAKE = ""
 inherit autotools pkgconfig
 
 do_configure() {
-        grep -v ^PREFIX ${S}/config.mk > ${S}/config.mk.new
+        grep -v ^PREFIX ${S}/config.mk | grep -v ^CFLAGS > ${S}/config.mk.new
         echo "PREFIX=${prefix}" >> ${S}/config.mk.new
         mv ${S}/config.mk.new ${S}/config.mk
 }

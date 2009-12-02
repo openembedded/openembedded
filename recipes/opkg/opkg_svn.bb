@@ -1,5 +1,7 @@
 require opkg.inc
 
+DEPENDS_append = " openssl"
+
 PR = "${INC_PR}"
 
 PACKAGES =+ "libopkg-dev libopkg"

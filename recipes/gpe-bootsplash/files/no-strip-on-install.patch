@@ -1,0 +1,11 @@
+--- gpe-bootsplash-1.15/Makefile.old	2005-11-04 23:46:57.000000000 +0100
++++ gpe-bootsplash-1.15/Makefile	2009-12-01 23:39:18.000000000 +0100
+@@ -19,7 +19,7 @@
+ 	mkdir -p $(DESTDIR)/etc/init.d
+ 	cp gpe-bootsplash.init $(DESTDIR)/etc/init.d/gpe-bootsplash
+ 	#install -m 644 $(SPLASH) $(DESTDIR)/usr/share/gpe/splash.png
+-	install -s gpe-bootsplash $(DESTDIR)/usr/bin/
++	install gpe-bootsplash $(DESTDIR)/usr/bin/
+ 	ln -sf ../init.d/gpe-bootsplash $(DESTDIR)/etc/rcS.d/S00bootsplash
+ 
+ clean:

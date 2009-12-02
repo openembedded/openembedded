@@ -4,12 +4,14 @@ DEPENDS = "gtk+ libsvg-cairo"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://splash-p.svg file://splash-l.svg \
             file://c7x0-rotation.patch;patch=1 \
             file://cxx0-rotation.patch;patch=1 \
-			file://cairofix.patch;patch=1"
+            file://cairofix.patch;patch=1 \
+            file://no-strip-on-install.patch;patch=1"
+
 SRC_URI_append_mnci = " file://mnci.patch;patch=1"
 
 FILES_${PN} += "${datadir}/gpe"
