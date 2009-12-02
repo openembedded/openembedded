@@ -377,6 +377,7 @@ SRCREV_pn-evolve-native ?= "${EFL_SRCREV}"
 SRCREV_pn-evolve ?= "${EFL_SRCREV}"
 SRCREV_pn-gevas2 ?= "${EFL_SRCREV}"
 SRCREV_pn-imlib2 ?= "${EFL_SRCREV}"
+SRCREV_pn-libeweather ?= "${EFL_SRCREV}"
 
 # Enlightenment Bindings
 SRCREV_pn-eflpp ?= "${EFL_SRCREV}"
