@@ -26,6 +26,13 @@ do_configure_prepend() {
     ${S}/configure
 }
 
+do_install_append() {
+	install -d ${D}${bindir}
+	for i in rcc uic moc ; do
+		install -m 0755 ${S}/bin/$i ${D}${bindir}/
+	done
+}
+
 LICENSE = "LGPLv2.1 GPLv3"
 SRC_URI += " \
             file://hack-out-pg_config.patch;patch=1"
