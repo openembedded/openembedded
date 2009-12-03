@@ -20,6 +20,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.g
 
 SRC_URI_append = " \
 file://usb/ehci.patch;patch=1 \
+file://usb/ehci-omap.c-mach-to-plat.diff;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
