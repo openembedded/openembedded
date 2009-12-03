@@ -5,6 +5,7 @@ PR = "r15"
 inherit task 
 
 ECONFIG ?= "places e-wm-config-angstrom e-wm-config-angstrom-touchscreen e-wm-config-angstrom-widescreen e-wm-config-default"
+EMENU ?= "e-wm-menu"
 
 RDEPENDS_${PN} = "\
     task-proper-tools \
@@ -15,7 +16,7 @@ RDEPENDS_${PN} = "\
     angstrom-zeroconf-audio \
     angstrom-led-config \ 
     gpe-scap \
-    mime-support e-wm ${ECONFIG} \
+    mime-support e-wm ${ECONFIG} ${EMENU} \
     xterm xmms \
     firefox midori \
     gecko-mediaplayer-firefox-hack \
