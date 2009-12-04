@@ -1,6 +1,6 @@
 DESCRIPTION = "Minimal statically compiled Hello world!"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/${P}"
 
@@ -11,7 +11,8 @@ do_fetch () {
 }
 
 do_compile () {
-	${CC} -o helloworld helloworld.c -static
+	${CC} ${CFLAGS} -c -o helloworld.o helloworld.c
+	${CC} ${LDFLAGS} -o helloworld helloworld.o -static
 }
 
 do_install () {
