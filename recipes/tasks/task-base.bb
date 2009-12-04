@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r86"
+PR = "r87"
 
 inherit task
 
@@ -59,6 +59,9 @@ HOTPLUG ?= "${@base_contains("MACHINE_FEATURES", "kernel24",  "linux-hotplug",""
 # dropbear, openssh or none
 #
 DISTRO_SSH_DAEMON ?= "dropbear"
+
+# Distro can override apm provider
+DISTRO_APM ?= "apm"
 
 #
 # bluetooth manager
@@ -190,7 +193,7 @@ RDEPENDS_task-base-acpi = "\
     acpid"
 
 RDEPENDS_task-base-apm = "\
-    apm \
+    "${DISTRO_APM}" \
     apmd \
     ${@base_contains('MACHINE_FEATURES', 'kernel24', 'network-suspend-scripts', '',d)}"
 
