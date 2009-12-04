@@ -1,0 +1,498 @@
+diff -uNr dm355_codecs_1_13_000/dm355mm/module/dm350mmap.c dm355_codecs_1_13_000.new/dm355mm/module/dm350mmap.c
+--- dm355_codecs_1_13_000/dm355mm/module/dm350mmap.c	2009-05-20 11:22:57.000000000 -0500
++++ dm355_codecs_1_13_000.new/dm355mm/module/dm350mmap.c	2009-06-09 10:43:25.000000000 -0500
+@@ -7,7 +7,7 @@
+  * Use of this software is controlled by the terms and conditions found in the
+  * license agreement under which this software has been supplied or provided.
+  * ============================================================================
+- */  
++ */
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/moduleparam.h>
+@@ -20,274 +20,283 @@
+ #include <linux/proc_fs.h>
+ #include <linux/kernel.h>
+ #include <linux/device.h>
+-  
++#include <linux/clk.h>
++
+ #include <asm/page.h>
+ #include <asm/uaccess.h>
+ #include <asm/pgtable.h>
+ #include <asm/io.h>
+-#include<asm/system.h>
+-#include<asm-arm/memory.h>
++#include <asm/system.h>
++#include <asm/memory.h>
++
+ #include <asm/irq.h>
+-  
++
++#include <linux/version.h>
+ #include <linux/completion.h>
+-#include <asm/arch/edma.h>
+-  
++#include <mach/edma.h>
++
+ #define ASQINT_ENABLE
+-  typedef struct _edma_params
+-{
+-  unsigned long src;
+-   unsigned long dst;
+-   unsigned int srcmode;
+-   unsigned int srcfifowidth;
+-   int srcbidx;
+-   int srccidx;
+-   unsigned int dstmode;
+-   unsigned int dstfifowidth;
+-   int dstbidx;
+-   int dstcidx;
+-   int acnt;
+-   int bcnt;
+-   int ccnt;
+-   int bcntrld;
+-   int syncmode;
+- } edma_params;
++typedef struct _edma_params {
++    unsigned long src;
++    unsigned long dst;
++    unsigned int srcmode;
++    unsigned int srcfifowidth;
++    int     srcbidx;
++    int     srccidx;
++    unsigned int dstmode;
++    unsigned int dstfifowidth;
++    int     dstbidx;
++    int     dstcidx;
++    int     acnt;
++    int     bcnt;
++    int     ccnt;
++    int     bcntrld;
++    int     syncmode;
++} edma_params;
+ 
+ #define DM350MMAP_IOCMEMCPY     0x7
+ #define DM350MMAP_IOCWAIT       0x8
+ #define DM350MMAP_IOCCLEAR_PENDING 0x9
+-  
++
+ #ifdef __DEBUG
+-#define __D(fmt, args...) printk(KERN_DEBUG "DM350MMAP Debug: " fmt, ## args)
++#    define __D(fmt, args...) printk(KERN_DEBUG "DM350MMAP Debug: " fmt, ## args)
+ #else /*  */
+-#define __D(fmt, args...)
++#    define __D(fmt, args...)
+ #endif /*  */
+-  
++
+ #define __E(fmt, args...) printk(KERN_ERR "DM350MMAP Error: " fmt, ## args)
+-  
++
+ #define MAXTYPE(T) ((T) (((T)1 << ((sizeof(T) * 8) - 1) ^ ((T) -1))))
+-  
++
+ static int major = 0;
+ 
+ #if (USE_UDEV==1)
+ static struct class *dm350mmap_class;
+-
+ #endif // USE_UDEV
+-static DECLARE_MUTEX_LOCKED (dm350mmap_reply_mutex);
+-int master_ch;
+-struct completion edmacompletion;
+-
+-/* Forward declaration of system calls */ 
+-static int ioctl (struct inode *inode, struct file *filp, unsigned int cmd,
+-		  unsigned long args);
+-static int mmap (struct file *filp, struct vm_area_struct *vma);
+-static int open (struct inode *inode, struct file *filp);
+-static int release (struct inode *inode, struct file *filp);
++
++static DECLARE_MUTEX(dm350mmap_reply_mutex);
++static struct completion edmacompletion;
++
++/* Forward declaration of system calls */
++static int ioctl(struct inode *inode, struct file *filp, unsigned int cmd,
++                 unsigned long args);
++static int mmap(struct file *filp, struct vm_area_struct *vma);
++static int open(struct inode *inode, struct file *filp);
++static int release(struct inode *inode, struct file *filp);
+ static struct file_operations dm350mmap_fxns = { ioctl: ioctl, mmap: mmap, open: open, release:release
+-    
+ };
+ 
+-static irqreturn_t irq_handler (int irq, void *dev_id, struct pt_regs *regs) 
++/* Structure to hold mjcp clock info */
++static struct clk *mjcp = NULL;
++
++//static irqreturn_t irq_handler (int irq, void *dev_id, struct pt_regs *regs) 
++static irqreturn_t irq_handler(int irq, void *dev_id)
+ {
+-  
+-    /* Release the mutex, suggesting sequencer processing complete */ 
+-    up (&dm350mmap_reply_mutex);
+-  return IRQ_HANDLED;
++    /* Release the mutex, suggesting sequencer processing complete */
++    up(&dm350mmap_reply_mutex);
++    return IRQ_HANDLED;
+ }
+ 
+-static void memcpy_dma_irq_handler (int lch, u16 ch_status, void *data) 
++static void memcpy_dma_irq_handler(unsigned lch, u16 ch_status, void *data)
+ {
+-  complete_all (&edmacompletion);
+-} 
++    complete_all(&edmacompletion);
++}
+ 
+-static int mmap (struct file *filp, struct vm_area_struct *vma) 
++static int mmap(struct file *filp, struct vm_area_struct *vma)
+ {
+-  __D ("mmap: vma->vm_start     = %#lx\n", vma->vm_start);
+-  __D ("mmap: vma->vm_pgoff     = %#lx\n", vma->vm_pgoff);
+-  __D ("mmap: vma->vm_end       = %#lx\n", vma->vm_end);
+-  __D ("mmap: size              = %#lx\n", vma->vm_end - vma->vm_start);
+-  vma->vm_page_prot = pgprot_noncached (vma->vm_page_prot);
+-  if (remap_pfn_range (vma, vma->vm_start, 
+-
+-#ifdef LINUX_2_6_18
+-			 (vma->vm_pgoff >> PAGE_SHIFT), 
++    __D("mmap: vma->vm_start     = %#lx\n", vma->vm_start);
++    __D("mmap: vma->vm_pgoff     = %#lx\n", vma->vm_pgoff);
++    __D("mmap: vma->vm_end       = %#lx\n", vma->vm_end);
++    __D("mmap: size              = %#lx\n", vma->vm_end - vma->vm_start);
++    vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
++    if (remap_pfn_range(vma, vma->vm_start,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,18)
++                        (vma->vm_pgoff >> PAGE_SHIFT),
+ #else /*  */
+-			 vma->vm_pgoff, 
++                        vma->vm_pgoff,
+ #endif /*  */
+-			 
+-			 vma->vm_end - vma->vm_start, vma->vm_page_prot))
+-    {
+-      __E ("mmap: failed remap_pfn_range\n");
+-      return -EAGAIN;
++                        vma->vm_end - vma->vm_start, vma->vm_page_prot)) {
++        __E("mmap: failed remap_pfn_range\n");
++        return -EAGAIN;
+     }
+-  return 0;
++    return 0;
+ }
+ 
+ 
+-static int ioctl (struct inode *inode, struct file *filp, unsigned int cmd,
+-       unsigned long args) 
++static int ioctl(struct inode *inode, struct file *filp, unsigned int cmd,
++                 unsigned long args)
+ {
+-  unsigned int __user *argp = (unsigned int __user *) args;
+-  edma_params edmaparams;
+-  int err = 0, tcc = EDMA_TCC_ANY;
+-  struct paramentry_descriptor paramentry;
+-  switch (cmd)
+-    {
+-      
+-	/*
+-	 * Tries to clear any previously unaccounted interrupt.
+-	 */ 
+-    case DM350MMAP_IOCCLEAR_PENDING:
+-      
+-      {
+-	int retval;
+-	__D ("Clear Pending Call received.\n");
+-        init_MUTEX_LOCKED(&dm350mmap_reply_mutex);
+-	return 0;
+-      }
+-      break;
+-      
+-	/*
+-	 * Blocks till the sequencer completion interrupt arrives.
+-	 */ 
+-    case DM350MMAP_IOCWAIT:
+-      
+-      {
+-	int retval;
+-	__D ("WAIT Call received.\n");
+-	retval = down_interruptible (&dm350mmap_reply_mutex);
+-	return retval;
+-      }
+-      break;
+-    case DM350MMAP_IOCMEMCPY:
+-      __D ("MEMCPY ioctl received.\n");
+-      if (copy_from_user (&edmaparams, argp, sizeof (edmaparams)))
+-	{
+-	  return -EFAULT;
+-	}
+-      err =
+-	davinci_request_dma (EDMA_DMA_CHANNEL_ANY, "EDMA memcpy",
+-			     memcpy_dma_irq_handler, NULL, &master_ch, &tcc,
+-			     EVENTQ_1);
+-      
+-	/* Handle Failure condition here */ 
+-	if (err < 0)
+-	{
+-	  __E ("Error in requesting Master channel %d = 0x%x\n", master_ch,
+-		err);
+-	  return err;
+-	}
+-      davinci_stop_dma (master_ch);
+-      init_completion (&edmacompletion);
+-      davinci_set_dma_src_params (master_ch, 
+-				    (unsigned long) edmaparams.src,
+-				    edmaparams.srcmode,
+-				    edmaparams.srcfifowidth);
+-      davinci_set_dma_dest_params (master_ch,
+-				    (unsigned long) edmaparams.dst,
+-				    edmaparams.dstmode,
+-				    edmaparams.dstfifowidth);
+-      davinci_set_dma_src_index (master_ch, edmaparams.srcbidx,
+-				   edmaparams.srccidx);
+-      davinci_set_dma_dest_index (master_ch, edmaparams.dstbidx,
+-				   edmaparams.dstcidx);
+-      davinci_set_dma_transfer_params (master_ch, edmaparams.acnt,
+-					 edmaparams.bcnt, edmaparams.ccnt,
+-					 edmaparams.bcntrld,
+-					 edmaparams.syncmode);
+-      davinci_get_dma_params (master_ch, &paramentry);
+-      
+-	/*printk("%x : %x : %x : %x : %x : %x : %x\n", paramentry.opt,
+-	   paramentry.a_b_cnt, paramentry.src_dst_bidx,
+-	   paramentry.src_dst_cidx, paramentry.ccnt, paramentry.src,
+-	   paramentry.dst); */ 
+-	davinci_set_dma_params (master_ch, &paramentry);
+-      davinci_start_dma (master_ch);
+-      wait_for_completion (&edmacompletion);
+-      
+-	//printk("Dma completed... \n");
+-	davinci_stop_dma (master_ch);
+-      davinci_free_dma (master_ch);
+-      break;
+-    default:
+-      __E ("Unknown ioctl received = %d.\n", cmd);
+-      return -EINVAL;
++    unsigned int __user *argp = (unsigned int __user *) args;
++    edma_params edmaparams;
++    int     edma_channel;
++    int     retval = 0;
++    struct edmacc_param p_ram;
++
++    switch (cmd) {
++
++            /*
++             * Tries to clear any previously unaccounted interrupt.
++             */
++        case DM350MMAP_IOCCLEAR_PENDING:
++            __D("Clear Pending Call received.\n");
++            init_MUTEX_LOCKED(&dm350mmap_reply_mutex);
++            break;
++
++            /*
++             * Blocks till the sequencer completion interrupt arrives.
++             */
++        case DM350MMAP_IOCWAIT:
++            __D("WAIT Call received.\n");
++            retval = down_interruptible(&dm350mmap_reply_mutex);
++            break;
++
++        case DM350MMAP_IOCMEMCPY:
++            __D("MEMCPY ioctl received.\n");
++            if (copy_from_user(&edmaparams, argp, sizeof(edmaparams))) {
++                retval = -EFAULT;
++                break;
++            }
++
++            edma_channel =
++                edma_alloc_channel(EDMA_CHANNEL_ANY, &memcpy_dma_irq_handler,
++                                   NULL, EVENTQ_1);
++
++            /* Handle Failure condition here */
++            if (edma_channel < 0) {
++                __E("Error in requesting Master channel = 0x%x\n",
++                    edma_channel);
++                retval = edma_channel;
++                break;
++            }
++
++            edma_stop(edma_channel);
++
++            init_completion(&edmacompletion);
++
++            edma_set_src(edma_channel,
++                         (dma_addr_t) edmaparams.src,
++                         edmaparams.srcmode, edmaparams.srcfifowidth);
++
++            edma_set_dest(edma_channel,
++                          (dma_addr_t) edmaparams.dst,
++                          edmaparams.dstmode, edmaparams.dstfifowidth);
++
++            edma_set_src_index(edma_channel, edmaparams.srcbidx,
++                               edmaparams.srccidx);
++            edma_set_dest_index(edma_channel, edmaparams.dstbidx,
++                                edmaparams.dstcidx);
++
++            edma_set_transfer_params(edma_channel,
++                                     edmaparams.acnt,
++                                     edmaparams.bcnt,
++                                     edmaparams.ccnt,
++                                     edmaparams.bcntrld, edmaparams.syncmode);
++
++            edma_read_slot(edma_channel, &p_ram);
++            p_ram.opt |= TCINTEN | EDMA_TCC(edma_channel);
++            edma_write_slot(edma_channel, &p_ram);
++
++            edma_start(edma_channel);
++            wait_for_completion(&edmacompletion);
++            edma_stop(edma_channel);
++            edma_free_channel(edma_channel);
++            break;
++
++        default:
++            __E("Unknown ioctl received = %d.\n", cmd);
++            retval = -EINVAL;
++            break;
+     }
+-  return 0;
++
++    return retval;
+ }
+ 
+ 
+-static int open (struct inode *inode, struct file *filp) 
++static int open(struct inode *inode, struct file *filp)
+ {
+-  __D ("open: called.\n");
+-  return 0;
++    __D("open: called.\n");
++    return 0;
+ }
+ 
+ 
+-static int release (struct inode *inode, struct file *filp) 
++static int release(struct inode *inode, struct file *filp)
+ {
+-  __D ("close: called.");
+-  return 0;
++    __D("close: called.");
++    return 0;
+ }
+ 
+ 
+-int __init dm350mmap_init (void) 
++int __init dm350mmap_init(void)
+ {
+-  __D ("** DM350MMAP kernel module built: " __DATE__ " " __TIME__ "\n");
+-  major = register_chrdev (0, "dm350mmap", &dm350mmap_fxns);
+-  if (major < 0)
+-    {
+-      __E ("Failed to allocate major number.\n");
+-      return -ENODEV;
++    /* In the GIT kernel unused clocks are disabled. To run codec we need to 
++     * enable mjcp clock.
++     */
++    mjcp = clk_get(NULL, "mjcp");
++    if (IS_ERR(mjcp))
++        printk(KERN_WARNING "unable to get MJCP clock\n");
++    else
++        clk_enable(mjcp);
++     
++    __D("** DM350MMAP kernel module built: " __DATE__ " " __TIME__ "\n");
++    major = register_chrdev(0, "dm350mmap", &dm350mmap_fxns);
++    if (major < 0) {
++        __E("Failed to allocate major number.\n");
++        return -ENODEV;
+     }
+-  __D ("Allocated major number: %d\n", major);
+-  
++    __D("Allocated major number: %d\n", major);
++
+ #if (USE_UDEV==1)
+-    dm350mmap_class = class_create (THIS_MODULE, "dm350mmap");
+-  if (IS_ERR (dm350mmap_class))
+-    {
+-      __E ("Error creating dm350mmap device class.\n");
+-      return -EIO;
++    dm350mmap_class = class_create(THIS_MODULE, "dm350mmap");
++    if (IS_ERR(dm350mmap_class)) {
++        __E("Error creating dm350mmap device class.\n");
++        return -EIO;
+     }
+-  class_device_create (dm350mmap_class, NULL, MKDEV (major, 0), NULL,
+-			"dm350mmap");
+-  
++    class_device_create(dm350mmap_class, NULL, MKDEV(major, 0), NULL,
++                        "dm350mmap");
++
+ #endif // USE_UDEV
+-    __D ("Successfully initialized module\n");
+-  
++    __D("Successfully initialized module\n");
++
+ #ifdef ASQINT_ENABLE
+-    if (request_irq (IRQ_ASQINT, irq_handler, 0, "seq_arm_interrupt", NULL))
+-    {
+-      __D ("Could not install ISR\n");
++    if (request_irq(IRQ_ASQINT, irq_handler, 0, "seq_arm_interrupt", NULL)) {
++        __D("Could not install ISR\n");
+     }
+-  
++
+ #endif /*  */
++    init_MUTEX_LOCKED(&dm350mmap_reply_mutex);
+     return 0;
+ }
+ 
+ 
+-void __exit dm350mmap_exit (void) 
++void __exit dm350mmap_exit(void)
+ {
+-  __D ("In dm350mmap_exit()\n");
+-  
++    /* if mjcp clock is enabled then free it */
++    if (mjcp) {
++        clk_disable(mjcp);
++        clk_put(mjcp);
++    }
++
++    __D("In dm350mmap_exit()\n");
++
+ #if (USE_UDEV==1)
+-    class_device_destroy (dm350mmap_class, MKDEV (major, 0));
+-  class_destroy (dm350mmap_class);
+-  
++    class_device_destroy(dm350mmap_class, MKDEV(major, 0));
++    class_destroy(dm350mmap_class);
++
+ #endif // USE_UDEV
+-    __D ("Unregistering character device dm350mmap\n");
+-  unregister_chrdev (major, "dm350mmap");
+-  
++    __D("Unregistering character device dm350mmap\n");
++    unregister_chrdev(major, "dm350mmap");
++
+ #ifdef ASQINT_ENABLE
+-    free_irq (IRQ_ASQINT, NULL);
+-  
++    free_irq(IRQ_ASQINT, NULL);
++
+ #endif /*  */
+-    __D ("dm350mmap unregistered\n");
+-} 
++    __D("dm350mmap unregistered\n");
++}
+ 
+-module_init (dm350mmap_init);
++module_init(dm350mmap_init);
+ 
+-module_exit (dm350mmap_exit);
+-MODULE_LICENSE ("GPL");
+-MODULE_AUTHOR ("Texas Instruments");
+-MODULE_DESCRIPTION ("DM350 mmap export to userland");
++module_exit(dm350mmap_exit);
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Texas Instruments");
++MODULE_DESCRIPTION("DM350 mmap export to userland");
+ 
