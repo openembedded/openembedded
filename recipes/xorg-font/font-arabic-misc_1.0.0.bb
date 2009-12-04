@@ -4,4 +4,4 @@ DESCRIPTION = "100dpi, 24 point (approximately) font to minimally support (almos
 of the Arabic characters available in Unicode."
 
 PE = "1"
-
+PR = "${INC_PR}.0"
