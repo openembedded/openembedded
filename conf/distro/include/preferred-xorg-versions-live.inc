@@ -1,4 +1,4 @@
-#Sun Nov 29 09:04:41 CET 2009
+#Fri Dec  4 07:59:36 CET 2009
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -147,7 +147,7 @@ PREFERRED_VERSION_xf86-video-ati ?= "6.12.4"
 PREFERRED_VERSION_xf86-video-chips ?= "1.2.2"
 PREFERRED_VERSION_xf86-video-cirrus ?= "1.3.2"
 PREFERRED_VERSION_xf86-video-cyrix ?= "1.1.0"
-PREFERRED_VERSION_xf86-video-dummy ?= "0.3.2"
+PREFERRED_VERSION_xf86-video-dummy ?= "0.3.3"
 PREFERRED_VERSION_xf86-video-fbdev ?= "0.4.1"
 PREFERRED_VERSION_xf86-video-geode ?= "2.11.6"
 PREFERRED_VERSION_xf86-video-glint ?= "1.2.4"
@@ -350,4 +350,4 @@ PREFERRED_VERSION_util-macros ?= "1.3.0"
 PREFERRED_VERSION_util-macros-native ?= "1.3.0"
 PREFERRED_VERSION_xorg-cf-files ?= "1.0.3"
 #xserver
-PREFERRED_VERSION_xserver-xorg ?= "1.7.2"
+PREFERRED_VERSION_xserver-xorg ?= "1.7.3"
