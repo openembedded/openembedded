@@ -1,7 +1,7 @@
 require ecore.inc
 PR = "r7"
 
-SRC_URI += "file://iconv.patch;patch=1 \
+SRC_URI += "file://iconv.patch;patch=1;maxrev=43996 \
             file://exit_uclibc.patch;patch=1 \
            "
 
