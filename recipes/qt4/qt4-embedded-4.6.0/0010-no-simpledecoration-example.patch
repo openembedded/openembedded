@@ -1,0 +1,9 @@
+--- qt-embedded-linux-opensource-src-4.5.0.orig/examples/qws/qws.pro	2009-02-25 22:32:34.000000000 +0100
++++ qt-embedded-linux-opensource-src-4.5.0/examples/qws/qws.pro	2009-03-26 19:53:19.000000000 +0100
+@@ -1,5 +1,5 @@
+ TEMPLATE      = subdirs
+-SUBDIRS       = framebuffer mousecalibration simpledecoration
++SUBDIRS       = framebuffer mousecalibration
+ 
+ # install
+ sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS README *.pro

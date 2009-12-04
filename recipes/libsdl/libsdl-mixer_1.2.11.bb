@@ -1,10 +1,14 @@
 DESCRIPTION = "Simple DirectMedia Layer mixer library."
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/libsdl libmikmod libvorbis"
+DEPENDS = "virtual/libsdl flac libmikmod libvorbis"
 LICENSE = "LGPL"
 
-SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz"
+PR = "r1"
+
+SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz \
+           file://fix-flac-madness.diff;patch=1"
+
 S = "${WORKDIR}/SDL_mixer-${PV}"
 
 export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"

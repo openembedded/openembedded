@@ -4,9 +4,11 @@ DEPENDS = "gtk+ librsvg"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
-SRC_URI += "file://splash-p.svg file://splash-l.svg"
+SRC_URI += "file://splash-p.svg \
+            file://splash-l.svg \
+            file://no-strip-on-install.patch;patch=1"
 
 FILES_${PN} += "${datadir}/gpe"
 

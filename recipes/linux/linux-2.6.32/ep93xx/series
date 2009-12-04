@@ -1,0 +1,7 @@
+edb9301-fix-machine-id.patch -p1
+simone-board-def.patch -p1
+ep93xx-regs.patch -p1
+ep93xx-i2c.patch -p1
+ep93xx-touchscreen.patch
+ep93xx-spi.patch -p1
+ep93xx-cpuinfo.patch -p1
