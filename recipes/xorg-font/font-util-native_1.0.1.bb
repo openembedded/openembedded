@@ -1,4 +1,4 @@
-be inherit native
+inherit native
 require xorg-font-common.inc
 
 XORG_PN = "font-util"

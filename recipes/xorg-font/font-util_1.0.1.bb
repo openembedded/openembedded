@@ -1,4 +1,4 @@
-Qurequire xorg-font-common.inc
+require xorg-font-common.inc
 
 PACKAGE_ARCH = "${BASE_PACKAGE_ARCH}"
 
