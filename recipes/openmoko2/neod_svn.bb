@@ -1,11 +1,9 @@
 DESCRIPTION = "Simple Neo1973 Daemon for Button Handling and Power Management"
 SECTION = "openmoko/daemons"
-
-DISTRO_apm ?= "apm"
 DEPENDS = "gtk+ pulseaudio apmd"
-RDEPENDS = "gpe-scap xrandr alsa-utils-amixer ${DISTRO_apm} dbus"
+RDEPENDS = "gpe-scap xrandr alsa-utils-amixer apm dbus"
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r7"
+PR = "r6"
 
 inherit openmoko2 gconf
 

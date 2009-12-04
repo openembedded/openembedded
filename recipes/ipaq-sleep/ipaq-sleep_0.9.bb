@@ -2,9 +2,8 @@ DESCRIPTION = "Automatic sleep/suspend control daemon"
 SECTION = "x11/base"
 LICENSE = "GPL"
 DEPENDS = "apmd virtual/xserver libxext virtual/libx11 libxau xscrnsaverh libxss"
-DISTRO_apm ?= "apm"
-RDEPENDS = "${DISTRO_apm}"
-PR = "r7"
+RDEPENDS = "apm"
+PR = "r6"
 
 inherit gpe pkgconfig
 

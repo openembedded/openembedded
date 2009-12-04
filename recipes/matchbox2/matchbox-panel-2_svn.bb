@@ -1,15 +1,13 @@
 DESCRIPTION = "matchbox-panel-2 is a lightweight dock (system tray) application based on Gtk+"
 LICENSE = "GPLv2"
 SECTION = "x11/panels"
-
-DISTRO_apm ?= "apm"
 DEPENDS = "gtk+ startup-notification dbus dbus-glib matchbox-panel-2-icon-themes"
 DEPENDS += " ${@base_contains("MACHINE_FEATURES", "acpi", "libacpi", "",d)}"
-DEPENDS += " ${@base_contains("MACHINE_FEATURES", "${DISTRO_apm}", "apmd", "",d)}"
+DEPENDS += " ${@base_contains("MACHINE_FEATURES", "apm", "apmd", "",d)}"
 RDEPENDS_${PN} = "matchbox-panel-2-icon-theme"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 PV = "2.0+svnr${SRCPV}"
-PR = "r1"
+PR = "r0"
 
 inherit autotools_stage pkgconfig
 
