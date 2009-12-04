@@ -1,7 +1,9 @@
 DESCRIPTION = "Package for the different scenarios used by Openmoko"
 SECTION = "openmoko/base"
-PV = "1.0+svnr${SRCREV}"
-PR = "r1"
+PV = "1.0+svnr${SRCPV}"
+PR = "r2"
+
+PROVIDES = "virtual/alsa-scenarios"
 
 COMPATIBLE_MACHINE = "(om-gta01|om-gta02)"
 

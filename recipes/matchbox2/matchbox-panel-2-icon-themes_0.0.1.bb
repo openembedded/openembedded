@@ -4,13 +4,14 @@ SECTION = "x11/panels"
 DEPENDS = "imagemagick-native"
 RPROVIDES_${PN} = "matchbox-panel-2-icon-theme"
 PACKAGE_ARCH = "all"
-PV = "0.0.1+svnr${SRCREV}"
+SRCREV_FORMAT = "startup"
+PV = "0.0.1+svnr${SRCPV}"
 PR = "r0"
 
 inherit gtk-icon-cache
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-panel-2/applets/battery/data;proto=http;maxrev=1918 \
-	   svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-panel-2/applets/startup/data;proto=http \
+	   svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-panel-2/applets/startup/data;proto=http;name=startup \
 	   svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-panel-2/applets/brightness/data;proto=http \
 	   file://user-desktop.png \
 	   file://task-switcher.png \

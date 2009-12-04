@@ -1,0 +1,23 @@
+diff -uri intone/src/db_sqlite.c intone.mok/src/db_sqlite.c
+--- intone/src/db_sqlite.c	2009-06-30 22:41:23.000000000 +0200
++++ intone.mok/src/db_sqlite.c	2009-07-05 23:10:01.000000000 +0200
+@@ -17,7 +17,7 @@
+ #include "db_sqlite.h"
+ #include <id3.h>
+ #include <vorbis/codec.h>
+-#include <vorbisfile.h>
++#include <vorbis/vorbisfile.h>
+ #include <string.h>
+ 
+ int check_file_exists(char *path) 
+diff -uri intone/src/Makefile.am intone.mok/src/Makefile.am
+--- intone/src/Makefile.am	2009-05-15 16:29:18.000000000 +0200
++++ intone.mok/src/Makefile.am	2009-07-05 23:54:20.000000000 +0200
+@@ -31,6 +31,6 @@
+ intone_LDFLAGS = \
+ 	-Wl,--export-dynamic
+ 
+-intone_LDADD = $(INTONE_LIBS)
++intone_LDADD = $(INTONE_LIBS) -lid3
+ 
+ EXTRA_DIST = $(glade_DATA)

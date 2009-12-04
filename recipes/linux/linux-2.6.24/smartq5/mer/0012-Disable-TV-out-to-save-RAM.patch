@@ -1,0 +1,100 @@
+From aa8822574f0c07f391b29737ca00f08d641cb93f Mon Sep 17 00:00:00 2001
+From: David Greaves <david@dgreaves.com>
+Date: Tue, 22 Sep 2009 10:01:40 +0100
+Subject: [PATCH 12/13] Disable TV-out to save RAM
+
+---
+ arch/arm/configs/hhs3c6410_4_3_defconfig |   18 +++++++++---------
+ arch/arm/configs/hhs3c6410_7_defconfig   |   20 ++++++++++----------
+ 2 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/arch/arm/configs/hhs3c6410_4_3_defconfig b/arch/arm/configs/hhs3c6410_4_3_defconfig
+index d503e12..e71e588 100644
+--- a/arch/arm/configs/hhs3c6410_4_3_defconfig
++++ b/arch/arm/configs/hhs3c6410_4_3_defconfig
+@@ -910,27 +910,27 @@ CONFIG_SSB_POSSIBLE=y
+ #
+ # Multimedia devices
+ #
+-CONFIG_VIDEO_DEV=m
++# CONFIG_VIDEO_DEV is not set
+ # CONFIG_VIDEO_V4L1 is not set
+-CONFIG_VIDEO_V4L1_COMPAT=y
+-CONFIG_VIDEO_V4L2=y
+-CONFIG_VIDEO_CAPTURE_DRIVERS=y
++# CONFIG_VIDEO_V4L1_COMPAT is not set
++# CONFIG_VIDEO_V4L2 is not set
++# CONFIG_VIDEO_CAPTURE_DRIVERS is not set
+ # CONFIG_VIDEO_ADV_DEBUG is not set
+-CONFIG_VIDEO_HELPER_CHIPS_AUTO=y
++# CONFIG_VIDEO_HELPER_CHIPS_AUTO is not set
+ # CONFIG_VIDEO_VIVI is not set
+ # CONFIG_VIDEO_SAA5246A is not set
+ # CONFIG_VIDEO_SAA5249 is not set
+ # CONFIG_VIDEO_SAMSUNG is not set
+-CONFIG_VIDEO_SAMSUNG_TVENC=m
+-CONFIG_VIDEO_SAMSUNG_TVSCALER=m
+-CONFIG_V4L_USB_DRIVERS=y
++# CONFIG_VIDEO_SAMSUNG_TVENC is not set
++# CONFIG_VIDEO_SAMSUNG_TVSCALER is not set
++# CONFIG_V4L_USB_DRIVERS is not set
+ # CONFIG_VIDEO_PVRUSB2 is not set
+ # CONFIG_VIDEO_USBVISION is not set
+ # CONFIG_USB_ET61X251 is not set
+ # CONFIG_USB_SN9C102 is not set
+ # CONFIG_USB_ZC0301 is not set
+ # CONFIG_USB_ZR364XX is not set
+-CONFIG_RADIO_ADAPTERS=y
++# CONFIG_RADIO_ADAPTERS is not set
+ # CONFIG_RADIO_CADET is not set
+ # CONFIG_RADIO_RTRACK is not set
+ # CONFIG_RADIO_RTRACK2 is not set
+diff --git a/arch/arm/configs/hhs3c6410_7_defconfig b/arch/arm/configs/hhs3c6410_7_defconfig
+index b0a4f48..2694716 100644
+--- a/arch/arm/configs/hhs3c6410_7_defconfig
++++ b/arch/arm/configs/hhs3c6410_7_defconfig
+@@ -910,13 +910,13 @@ CONFIG_SSB_POSSIBLE=y
+ #
+ # Multimedia devices
+ #
+-CONFIG_VIDEO_DEV=m
+-CONFIG_VIDEO_V4L1=y
+-CONFIG_VIDEO_V4L1_COMPAT=y
+-CONFIG_VIDEO_V4L2=y
+-CONFIG_VIDEO_CAPTURE_DRIVERS=y
++# CONFIG_VIDEO_DEV is not set
++# CONFIG_VIDEO_V4L1 is not set
++# CONFIG_VIDEO_V4L1_COMPAT is not set
++# CONFIG_VIDEO_V4L2 is not set
++# CONFIG_VIDEO_CAPTURE_DRIVERS is not set
+ # CONFIG_VIDEO_ADV_DEBUG is not set
+-CONFIG_VIDEO_HELPER_CHIPS_AUTO=y
++# CONFIG_VIDEO_HELPER_CHIPS_AUTO is not set
+ # CONFIG_VIDEO_VIVI is not set
+ # CONFIG_VIDEO_PMS is not set
+ # CONFIG_VIDEO_CPIA is not set
+@@ -925,9 +925,9 @@ CONFIG_VIDEO_HELPER_CHIPS_AUTO=y
+ # CONFIG_VIDEO_SAA5249 is not set
+ # CONFIG_TUNER_3036 is not set
+ # CONFIG_VIDEO_SAMSUNG is not set
+-CONFIG_VIDEO_SAMSUNG_TVENC=m
+-CONFIG_VIDEO_SAMSUNG_TVSCALER=m
+-CONFIG_V4L_USB_DRIVERS=y
++# CONFIG_VIDEO_SAMSUNG_TVENC is not set
++# CONFIG_VIDEO_SAMSUNG_TVSCALER is not set
++# CONFIG_V4L_USB_DRIVERS is not set
+ # CONFIG_VIDEO_PVRUSB2 is not set
+ # CONFIG_VIDEO_EM28XX is not set
+ # CONFIG_VIDEO_USBVISION is not set
+@@ -945,7 +945,7 @@ CONFIG_V4L_USB_DRIVERS=y
+ # CONFIG_USB_ZC0301 is not set
+ # CONFIG_USB_PWC is not set
+ # CONFIG_USB_ZR364XX is not set
+-CONFIG_RADIO_ADAPTERS=y
++# CONFIG_RADIO_ADAPTERS is not set
+ # CONFIG_RADIO_CADET is not set
+ # CONFIG_RADIO_RTRACK is not set
+ # CONFIG_RADIO_RTRACK2 is not set
+-- 
+1.6.2.4
+

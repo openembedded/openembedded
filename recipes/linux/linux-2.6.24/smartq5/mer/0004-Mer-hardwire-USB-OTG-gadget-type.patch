@@ -1,0 +1,25 @@
+From 1f8979f17ddd3af08784d10171328a06dbb19181 Mon Sep 17 00:00:00 2001
+From: Carsten V. Munk <carsten.munk@gmail.com>
+Date: Thu, 6 Aug 2009 09:30:08 +0000
+Subject: [PATCH 04/13] Mer: hardwire USB OTG gadget type
+
+---
+ drivers/usb/gadget/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
+index f71d038..31888dc 100644
+--- a/drivers/usb/gadget/Kconfig
++++ b/drivers/usb/gadget/Kconfig
+@@ -307,7 +307,7 @@ config USB_GADGET_S3C_OTGD_HS
+ 
+ config USB_S3C
+         tristate
+-        depends on USB_GADGET_S3C_FS || USB_GADGET_S3C_HS || USB_GADGET_S3C_OTGD_HS
++        depends on USB_GADGET_S3C_OTGD_HS
+         default USB_GADGET
+         select USB_GADGET_SELECTED
+ 
+-- 
+1.6.2.4
+

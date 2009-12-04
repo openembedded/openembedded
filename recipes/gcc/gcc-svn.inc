@@ -7,7 +7,7 @@ require gcc-common.inc
 DEPENDS = "mpfr gmp"
 
 GCC_BASE ?= "4.5"
-PV = "${GCC_BASE}+svnr${SRCREV}"
+PV = "${GCC_BASE}+svnr${SRCPV}"
 PR = "r0"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.

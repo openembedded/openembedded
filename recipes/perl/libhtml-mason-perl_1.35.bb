@@ -16,6 +16,10 @@ SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/HTML-Mason-${PV}.
 
 S = "${WORKDIR}/HTML-Mason-${PV}"
 
+do_stage() {
+	:
+}
+
 inherit cpan_build
 
 do_install_append () {

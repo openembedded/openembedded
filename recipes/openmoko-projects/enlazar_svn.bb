@@ -3,7 +3,7 @@ HOMEPAGE = "http://enlazar.projects.openmoko.org/"
 LICENSE = "GPL"
 DEPENDS = "evas edje ecore edbus"
 RDEPENDS = "networkmanager"
-PV = "0.1+svnr${SRCREV}"
+PV = "0.1+svnr${SRCPV}"
 PR = "r3"
 PE = "2"
 

@@ -1,0 +1,71 @@
+Index: httpd-2.2.14/configure
+===================================================================
+--- httpd-2.2.14.orig/configure
++++ httpd-2.2.14/configure
+@@ -3795,26 +3795,6 @@ if test "${with_apr+set}" = set; then :
+ 
+ else
+ 
+-        if test -n "1" && test "1" = "1"; then
+-      for apr_temp_apr_config_file in $apr_temp_acceptable_apr_config
+-      do
+-        if $apr_temp_apr_config_file --help > /dev/null 2>&1 ; then
+-          apr_config="$apr_temp_apr_config_file"
+-
+-          apr_found="yes"
+-          break
+-        else
+-                    for lookdir in /usr /usr/local /usr/local/apr /opt/apr; do
+-            if $TEST_X "$lookdir/bin/$apr_temp_apr_config_file"; then
+-              apr_config="$lookdir/bin/$apr_temp_apr_config_file"
+-
+-              apr_found="yes"
+-              break 2
+-            fi
+-          done
+-        fi
+-      done
+-    fi
+         if test "$apr_found" = "no" && test -d ""$srcdir/srclib/apr""; then
+       apr_temp_abs_srcdir="`cd "$srcdir/srclib/apr" && pwd`"
+       apr_found="reconfig"
+@@ -4147,26 +4127,6 @@ if test "${with_apr_util+set}" = set; th
+ 
+ else
+ 
+-    if test -n "1" && test "1" = "1"; then
+-      for apu_temp_apu_config_file in $apu_temp_acceptable_apu_config
+-      do
+-        if $apu_temp_apu_config_file --help > /dev/null 2>&1 ; then
+-          apu_config="$apu_temp_apu_config_file"
+-
+-          apu_found="yes"
+-          break
+-        else
+-                    for lookdir in /usr /usr/local /usr/local/apr /opt/apr; do
+-            if $TEST_X "$lookdir/bin/$apu_temp_apu_config_file"; then
+-              apu_config="$lookdir/bin/$apu_temp_apu_config_file"
+-
+-              apu_found="yes"
+-              break 2
+-            fi
+-          done
+-        fi
+-      done
+-    fi
+         if test "$apu_found" = "no" && test -d ""$srcdir/srclib/apr-util""; then
+       apu_temp_abs_srcdir="`cd "$srcdir/srclib/apr-util" && pwd`"
+       apu_found="reconfig"
+@@ -7045,7 +7005,11 @@ if test "${ap_cv_void_ptr_lt_long+set}"
+   $as_echo_n "(cached) " >&6
+ else
+   if test "$cross_compiling" = yes; then :
+-  ap_cv_void_ptr_lt_long=yes
++    if test "$ac_cv_sizeof_long_p" = "$ac_cv_sizeof_void_p"; then
++      ap_void_ptr_lt_long=no
++    else
++      ap_void_ptr_lt_long=yes
++    fi
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */

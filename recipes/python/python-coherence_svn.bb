@@ -5,7 +5,7 @@ HOMEPAGE = "http://coherence.beebits.net/wiki"
 
 PR = "r1"
 
-PV = "0.6.0+svnr${SRCREV}"
+PV = "0.6.0+svnr${SRCPV}"
 
 inherit setuptools
 

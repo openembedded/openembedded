@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
@@ -44,8 +44,6 @@ do_stage() {
 
 do_install() {
 	autotools_do_install
-	mv libtcl8.4.so libtcl8.4.so.0
-	oe_libinstall -so libtcl8.4 ${D}${libdir}
 	ln -sf ./tclsh8.4 ${D}${bindir}/tclsh
 }
 

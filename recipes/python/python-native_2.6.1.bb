@@ -10,13 +10,12 @@ SRC_URI = "\
   file://10-distutils-fix-swig-parameter.patch;patch=1 \
   file://11-distutils-never-modify-shebang-line.patch;patch=1 \
   file://12-distutils-prefix-is-inside-staging-area.patch;patch=1 \
+  file://debug.patch;patch=1 \
+  file://nohostlibs.patch;patch=1 \
 "
 S = "${WORKDIR}/Python-${PV}"
 
 inherit native
-
-prefix = "${STAGING_DIR_NATIVE}/${layout_prefix}"
-exec_prefix = "${STAGING_DIR_NATIVE}/${layout_exec_prefix}"
 
 EXTRA_OEMAKE = '\
   BUILD_SYS="" \

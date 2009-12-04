@@ -1,0 +1,14 @@
+Index: xmltv-0.5.56/Makefile.PL
+===================================================================
+--- xmltv-0.5.56.orig/Makefile.PL
++++ xmltv-0.5.56/Makefile.PL
+@@ -777,8 +777,7 @@ END
+ 		die;
+ 	    }
+ 	
+-	    $info->{install} =
+-	      ask(0, $msg, not $missing);
++	    $info->{install} = not $missing;
+ 	}
+     }
+ }

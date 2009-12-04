@@ -1,8 +1,5 @@
 require xorg-font-common.inc
 PE = "1"
-
-#DESCRIPTION = ""
+PR = "${INC_PR}.0"
 
 DEPENDS = "mkfontscale-native font-util-native"
-RDEPENDS = ""
-

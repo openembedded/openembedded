@@ -1,9 +1,9 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
 
-RRECOMMENDS_${PN} += "opkg-nogpg"
+RRECOMMENDS_${PN} += "opkg-nogpg-nocurl"
 
 #PV = "${DISTRO_VERSION}"
-PR = "r8"
+PR = "r9"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"

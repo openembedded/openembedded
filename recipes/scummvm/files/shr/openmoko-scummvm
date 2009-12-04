@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Save current AUX Key mapping
+SAVE_KEY="$(xmodmap -pke | grep 'keycode 177')"
+
+# Map AUX Key to F5
+xmodmap -e "keycode 177 = F5"
+
+# Turn LCD feft
+xrandr -o left
+
+# Start the scummvm in fullscreen mode
+scummvm --fullscreen --themepath=/usr/share/scummvm/
+
+# Turn LCD normal
+xrandr -o normal
+
+# Restore the AUX Key mapping
+xmodmap -e "$SAVE_KEY"

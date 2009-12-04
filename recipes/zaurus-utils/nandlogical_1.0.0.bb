@@ -2,14 +2,14 @@ DESCRIPTION = "Nandlogical for Sharp mtd1"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"
 COMPATIBLE_MACHINE = "(poodle|c7x0|akita|spitz|tosa)"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://nandlogical.c"
 
 S = "${WORKDIR}"
 
 do_compile () {
-	${CC} nandlogical.c -o nandlogical ${CFLAGS} ${LDFLAGS}
+	${CC} ${CFLAGS} ${LDFLAGS} nandlogical.c -o nandlogical
 }
 
 do_install () {

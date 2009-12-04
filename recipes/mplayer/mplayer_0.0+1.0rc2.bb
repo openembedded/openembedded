@@ -28,7 +28,8 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc2.tar.bz2 \
            file://imageon-video_out.patch;patch=1 \
            file://pxa_configure.patch;patch=1 \
            file://pxa-video_out.patch;patch=1 \
-           file://motion-comp-pld.patch;patch=1 "
+           file://motion-comp-pld.patch;patch=1 \
+	   file://ivtv-fix.patch;patch=1 "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
@@ -45,7 +46,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r12"
+PR = "r14"
 
 PARALLEL_MAKE = ""
 
@@ -59,8 +60,7 @@ FILES_mencoder = "${bindir}/mencoder"
 inherit autotools pkgconfig
 
 EXTRA_OECONF = " \
-        --prefix=/usr \
-	--mandir=${mandir} \
+        --prefix=${prefix} \
         --target=${TARGET_SYS} \
 	\
 	--enable-mencoder \

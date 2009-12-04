@@ -274,7 +274,7 @@ diff -Nurd u-boot-2009.03.orig/include/configs/hipox.h u-boot-2009.03/include/co
 @@ -34,6 +34,7 @@
  #define CONFIG_CMD_DHCP
  #define CONFIG_CMD_DIAG
- #define CONFIG_CMD_PING
+ //#define CONFIG_CMD_PING
 +#define CONFIG_CMD_CACHE
  
  /**

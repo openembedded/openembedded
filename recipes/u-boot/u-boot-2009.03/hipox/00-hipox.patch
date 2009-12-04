@@ -6348,7 +6348,7 @@ diff -Nurd u-boot-2009.03.orig/include/configs/hipox.h u-boot-2009.03/include/co
 +
 +#define CONFIG_CMD_DHCP
 +#define CONFIG_CMD_DIAG
-+#define CONFIG_CMD_PING
++//#define CONFIG_CMD_PING
 +
 +/**
 + * Architecture
@@ -6675,12 +6675,12 @@ diff -Nurd u-boot-2009.03.orig/include/configs/hipox.h u-boot-2009.03/include/co
 +#define MTDIDS_DEFAULT "nand0=MT29FXX"
 +#define MTDPARTS_DEFAULT   "mtdparts=MT29FXX:"  \
 +                  "32m(boot),"  \
-+                  "224m(system)"
++                  "480m(system)"
 +
-+#define NUM_FLASH_MAIN_BLOCKS   63          /* For Intel 28F320B3T */
-+#define NUM_FLASH_PARAM_BLOCKS  8           /* For Intel 28F320B3T */
-+#define FLASH_MAIN_BLOCK_SIZE   (64*1024)   /* For Intel 28F320B3T family */
-+#define FLASH_PARAM_BLOCK_SIZE  (8*1024)    /* For Intel 28F320B3T family */
++#define NUM_FLASH_MAIN_BLOCKS   31          /* For Atmel AT49BV163D */
++#define NUM_FLASH_PARAM_BLOCKS  8           /* For Atmel AT49BV163D */
++#define FLASH_MAIN_BLOCK_SIZE   (64*1024)
++#define FLASH_PARAM_BLOCK_SIZE  (8*1024)
 +
 +/* Assuming counts main blocks and parameter blocks, as the Intel/AMD detection */
 +/* I'm intending to copy would seem to indicate */

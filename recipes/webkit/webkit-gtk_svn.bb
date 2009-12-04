@@ -4,7 +4,7 @@ DEPENDS = "enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu lib
 SRCREV_FORMAT = "webcore-rwebkit"
 
 SRCREV = "50081"
-PV = "1.1.16+svnr${SRCREV}"
+PV = "1.1.16+svnr${SRCPV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -24,7 +24,7 @@ SRC_URI = "\
 
 S = "${WORKDIR}/"
 
-inherit autotools pkgconfig lib_package
+inherit autotools lib_package
 
 export BISON="${STAGING_BINDIR_NATIVE}/bison"
 ARM_INSTRUCTION_SET = "arm"
@@ -58,10 +58,6 @@ do_compile_prepend() {
         cp dftables ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
         cp dftables ${S}/Programs/
 	cd ${S}
-}
-
-do_stage() {
-	autotools_stage_all
 }
 
 PACKAGES =+ "${PN}-webinspector ${PN}launcher-dbg ${PN}launcher libjavascriptcore"

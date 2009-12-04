@@ -1,12 +1,6 @@
 require curl-common.inc
 inherit native
 DEPENDS = "zlib-native"
-PR = "${INC_PR}.1"
+SRC_URI += "file://curl-7.18.1-CVE-2009-2417.patch;patch=1;pnum=0"
 
-do_stage () {
-	autotools_stage_all
-}
-
-do_install() {
-	:
-}
+PR = "${INC_PR}.2"

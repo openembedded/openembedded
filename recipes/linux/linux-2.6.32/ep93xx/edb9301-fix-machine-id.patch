@@ -1,0 +1,19 @@
+---
+ arch/arm/tools/mach-types |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-2.6.31.orig/arch/arm/tools/mach-types
++++ linux-2.6.31/arch/arm/tools/mach-types
+@@ -473,11 +473,11 @@ hawk			MACH_HAWK		HAWK			456
+ ccat91sbc001		MACH_CCAT91SBC001	CCAT91SBC001		457
+ expresso		MACH_EXPRESSO		EXPRESSO		458
+ h4000			MACH_H4000		H4000			459
+ dino			MACH_DINO		DINO			460
+ ml675k			MACH_ML675K		ML675K			461
+-edb9301			MACH_EDB9301		EDB9301			462
++edb9301			MACH_EDB9301		EDB9301			454
+ edb9315			MACH_EDB9315		EDB9315			463
+ reciva_tt		MACH_RECIVA_TT		RECIVA_TT		464
+ cstcb01			MACH_CSTCB01		CSTCB01			465
+ cstcb1			MACH_CSTCB1		CSTCB1			466
+ shadwell		MACH_SHADWELL		SHADWELL		467

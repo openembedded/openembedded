@@ -2,21 +2,7 @@ DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "opkg-native ipkg-utils-native fakeroot-native sed-native"
 
-# NOTE: We need to save and restore PACKAGE_ARCHS, because sdk.bbclass
-# will change HOST_ARCH, which can result in SITEINFO_ENDIANESS (which
-# is computed in siteinfo.bbclass) in changing if the original HOST_ARCH
-# endianess differs from the new HOST_ARCH endianess.  SITEINFO_ENDIANNESS
-# is used in a number of places, including the construction of the
-# PACKAGE_EXTRA_ARCHS list for machines that are capable of running in
-# either endianess.  There may be better ways to fix this.
-
-# Save value of PACKAGE_ARCHS (note the ":=" syntax to force immediate eval)
-REAL_PACKAGE_ARCHS := "${PACKAGE_ARCHS}"
-
-inherit sdk meta
-
-# Restore PACKAGE_ARCHS (sdk.bbclass may have caused it to change)
-PACKAGE_ARCHS := "${REAL_PACKAGE_ARCHS}"
+inherit meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
@@ -24,7 +10,7 @@ SDK_OUTPUT2 = "${SDK_DIR}/image-extras"
 SDK_DEPLOY = "${DEPLOY_DIR}/sdk"
 
 IPKG_HOST = "opkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
-IPKG_TARGET = "opkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${SDK_PATH}/${TARGET_SYS}"
+IPKG_TARGET = "opkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}"
 
 TOOLCHAIN_HOST_TASK ?= "task-sdk-host"
 TOOLCHAIN_TARGET_TASK ?= "task-sdk-bare"
@@ -37,12 +23,12 @@ RDEPENDS = "${TOOLCHAIN_TARGET_TASK} ${TOOLCHAIN_HOST_TASK}"
 TOOLCHAIN_FEED_URI ?= "${DISTRO_FEED_URI}"
 
 modify_opkg_conf () {
-        OUTPUT_OPKGCONF_TARGET="${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}/opkg.conf"
-        OUTPUT_OPKGCONF_HOST="${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}/opkg-sdk.conf"
+        OUTPUT_OPKGCONF_TARGET="${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}/opkg.conf"
+        OUTPUT_OPKGCONF_HOST="${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}/opkg-sdk.conf"
         OUTPUT_OPKGCONF_SDK="${SDK_OUTPUT}/${sysconfdir}/opkg-sdk.conf"
-        rm ${OUTPUT_OPKGCONF_TARGET}
-        rm ${OUTPUT_OPKGCONF_HOST}
-        rm ${OUTPUT_OPKGCONF_SDK}
+        rm -f ${OUTPUT_OPKGCONF_TARGET}
+        rm -f ${OUTPUT_OPKGCONF_HOST}
+        rm -f ${OUTPUT_OPKGCONF_SDK}
         opkgarchs="${PACKAGE_ARCHS}"
         priority=1
         for arch in ${opkgarchs}; do
@@ -55,6 +41,8 @@ modify_opkg_conf () {
 do_populate_sdk() {
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
+	mkdir -p ${SDK_OUTPUT}${libdir}/opkg/
+	mkdir -p ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}${libdir}/opkg/
 
 	package_generate_ipkg_conf
 
@@ -62,48 +50,45 @@ do_populate_sdk() {
 		revipkgarchs="$arch $revipkgarchs"
 	done
 
-	mkdir -p ${SDK_OUTPUT}/${layout_libdir}/opkg
 	${IPKG_HOST} update
 	${IPKG_HOST} -force-depends install ${TOOLCHAIN_HOST_TASK}
 
-	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_libdir}/opkg
 	${IPKG_TARGET} update
 	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
 
-	install -d ${SDK_OUTPUT}/${prefix}/${layout_libdir}/opkg
-	mv ${SDK_OUTPUT}/${layout_libdir}/opkg/* \
-		${SDK_OUTPUT}/${prefix}/${layout_libdir}/opkg/
-	rm -Rf ${SDK_OUTPUT}/${layout_libdir}
+	install -d ${SDK_OUTPUT}/${SDKPATH}/usr/lib/opkg
+	mv ${SDK_OUTPUT}/usr/lib/opkg/* ${SDK_OUTPUT}/${SDKPATH}/usr/lib/opkg/
+	rm -Rf ${SDK_OUTPUT}/usr/lib
 
-	install -d ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}
-	install -m 0644 ${IPKGCONF_TARGET} ${IPKGCONF_SDK} ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}/
+	install -d ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}
+	install -m 0644 ${IPKGCONF_TARGET} ${IPKGCONF_SDK} ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}/
 
-	install -d ${SDK_OUTPUT}/${sysconfdir}
-	install -m 0644 ${IPKGCONF_SDK} ${SDK_OUTPUT}/${sysconfdir}/
+	install -d ${SDK_OUTPUT}/${SDKPATH}/${sysconfdir}
+	install -m 0644 ${IPKGCONF_SDK} ${SDK_OUTPUT}/${SDKPATH}/${sysconfdir}/
 
 	# extract and store ipks, pkgdata and shlibs data
-	target_pkgs=`cat ${SDK_OUTPUT}/${prefix}/package-status | grep Package: | cut -f 2 -d ' '`
-	mkdir -p ${SDK_OUTPUT2}/${prefix}/ipk/
-	mkdir -p ${SDK_OUTPUT2}/${prefix}/pkgdata/runtime/
-	mkdir -p ${SDK_OUTPUT2}/${prefix}/${TARGET_SYS}/shlibs/
+	target_pkgs=`cat ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/usr/lib/opkg/status | grep Package: | cut -f 2 -d ' '`
+	mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/ipk/
+	mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/runtime/
+	mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/${TARGET_SYS}/shlibs/
 	for pkg in $target_pkgs ; do
 		for arch in $revipkgarchs; do
 			pkgnames=${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk
 			if [ -e $pkgnames ]; then
 				oenote "Found $pkgnames"
-				cp $pkgnames ${SDK_OUTPUT2}/${prefix}/ipk/
+				cp $pkgnames ${SDK_OUTPUT2}/${SDKPATH}/ipk/
 				orig_pkg=`ipkg-list-fields $pkgnames | grep OE: | cut -d ' ' -f2`
 				pkg_subdir=$arch${TARGET_VENDOR}${@['-' + bb.data.getVar('TARGET_OS', d, 1), ''][bb.data.getVar('TARGET_OS', d, 1) == ('' or 'custom')]}
-				mkdir -p ${SDK_OUTPUT2}/${prefix}/pkgdata/$pkg_subdir/runtime
-				cp ${STAGING_DIR}/pkgdata/$pkg_subdir/$orig_pkg ${SDK_OUTPUT2}/${prefix}/pkgdata/$pkg_subdir/
-				subpkgs=`cat ${STAGING_DIR}/pkgdata/$pkg_subdir/$orig_pkg | grep PACKAGES: | cut -b 10-`
+				mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/$pkg_subdir/runtime
+				cp ${TMPDIR}/pkgdata/$pkg_subdir/$orig_pkg ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/$pkg_subdir/
+				subpkgs=`cat ${TMPDIR}/pkgdata/$pkg_subdir/$orig_pkg | grep PACKAGES: | cut -b 10-`
 				for subpkg in $subpkgs; do
-					cp ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg ${SDK_OUTPUT2}/${prefix}/pkgdata/$pkg_subdir/runtime/
-					if [ -e ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ];then
-						cp ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ${SDK_OUTPUT2}/${prefix}/pkgdata/$pkg_subdir/runtime/
+					cp ${TMPDIR}/pkgdata/$pkg_subdir/runtime/$subpkg ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/$pkg_subdir/runtime/
+					if [ -e ${TMPDIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ];then
+						cp ${TMPDIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/$pkg_subdir/runtime/
 					fi
 					if [ -e ${STAGING_DIR_TARGET}/shlibs/$subpkg.list ]; then
-						cp ${STAGING_DIR_TARGET}/shlibs/$subpkg.* ${SDK_OUTPUT2}/${prefix}/${TARGET_SYS}/shlibs/
+						cp ${STAGING_DIR_TARGET}/shlibs/$subpkg.* ${SDK_OUTPUT2}/${SDKPATH}/${TARGET_SYS}/shlibs/
 					fi
 				done
 				break
@@ -115,44 +100,44 @@ do_populate_sdk() {
 	# libgcc-dev should be responsible for that, but it's not getting built
 	# RP: it gets smashed up depending on the order that gcc, gcc-cross and 
 	# gcc-cross-sdk get built :( (30/11/07)
-	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
+	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/lib/libgcc_s.so
 
 	# With sysroot support, gcc expects the default C++ headers to be
 	# in a specific place.
-	install -d ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include
-	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/usr/include/c++ \
-		${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
+	install -d ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/include
+	mv ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/usr/include/c++ \
+		${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/include/
 
 	# Fix or remove broken .la files
-	for i in `find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS} -name \*.la`; do
-		sed -i 	-e "/^dependency_libs=/s,\([[:space:]']\)${layout_base_libdir},\1${prefix}/${TARGET_SYS}${layout_base_libdir},g" \
-			-e "/^dependency_libs=/s,\([[:space:]']\)${layout_libdir},\1${prefix}/${TARGET_SYS}${layout_libdir},g" \
-			-e "/^dependency_libs=/s,\-\([LR]\)${layout_base_libdir},-\1${prefix}/${TARGET_SYS}${layout_base_libdir},g" \
-			-e "/^dependency_libs=/s,\-\([LR]\)${layout_libdir},-\1${prefix}/${TARGET_SYS}${layout_libdir},g" \
+	for i in `find ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS} -name \*.la`; do
+		sed -i 	-e "/^dependency_libs=/s,\([[:space:]']\)${base_libdir},\1${SDKPATH}/${TARGET_SYS}${base_libdir},g" \
+			-e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${SDKPATH}/${TARGET_SYS}${libdir},g" \
+			-e "/^dependency_libs=/s,\-\([LR]\)${base_libdir},-\1${SDKPATH}/${TARGET_SYS}${base_libdir},g" \
+			-e "/^dependency_libs=/s,\-\([LR]\)${libdir},-\1${SDKPATH}/${TARGET_SYS}${libdir},g" \
 			-e 's/^installed=yes$/installed=no/' $i
 	done
-	rm -f ${SDK_OUTPUT}/${prefix}/lib/*.la
+	rm -f ${SDK_OUTPUT}/${SDKPATH}/lib/*.la
 
 	# Setup site file for external use
-	siteconfig=${SDK_OUTPUT}/${prefix}/site-config
+	siteconfig=${SDK_OUTPUT}/${SDKPATH}/site-config
 	touch $siteconfig
 	for sitefile in ${CONFIG_SITE} ; do
 		cat $sitefile >> $siteconfig
 	done
 
 	# Create environment setup script
-	script=${SDK_OUTPUT}/${prefix}/environment-setup
+	script=${SDK_OUTPUT}/${SDKPATH}/environment-setup
 	touch $script
-	echo 'export PATH=${prefix}/bin:$PATH' >> $script
+	echo 'export PATH=${SDKPATH}/bin:$PATH' >> $script
 	echo 'export LIBTOOL_SYSROOT_PATH=${prefix}/${TARGET_SYS}' >> $script
-	echo 'export PKG_CONFIG_SYSROOT_DIR=${prefix}/${TARGET_SYS}' >> $script
-	echo 'export PKG_CONFIG_PATH=${prefix}/${TARGET_SYS}${layout_libdir}/pkgconfig' >> $script
-	echo 'export CONFIG_SITE=${prefix}/site-config' >> $script
-	echo "alias opkg='LD_LIBRARY_PATH=${prefix}/lib ${prefix}/bin/opkg-cl -f ${sysconfdir}/opkg-sdk.conf -o ${prefix}'" >> $script
-	echo "alias opkg-target='LD_LIBRARY_PATH=${prefix}/lib ${prefix}/bin/opkg-cl -f ${prefix}/${TARGET_SYS}${layout_sysconfdir}/opkg.conf -o ${prefix}/${TARGET_SYS}'" >> $script
+	echo 'export PKG_CONFIG_SYSROOT_DIR=${SDKPATH}/${TARGET_SYS}' >> $script
+	echo 'export PKG_CONFIG_PATH=${SDKPATH}/${TARGET_SYS}${libdir}/pkgconfig' >> $script
+	echo 'export CONFIG_SITE=${SDKPATH}/site-config' >> $script
+	echo "alias opkg='LD_LIBRARY_PATH=${SDKPATH}/lib ${SDKPATH}/bin/opkg-cl -f ${SDKPATH}/${sysconfdir}/opkg-sdk.conf -o ${SDKPATH}'" >> $script
+	echo "alias opkg-target='LD_LIBRARY_PATH=${SDKPATH}/lib ${SDKPATH}/bin/opkg-cl -f ${SDKPATH}/${TARGET_SYS}${sysconfdir}/opkg.conf -o ${SDKPATH}/${TARGET_SYS}'" >> $script
 
 	# Add version information
-	versionfile=${SDK_OUTPUT}/${prefix}/version
+	versionfile=${SDK_OUTPUT}/${SDKPATH}/version
 	touch $versionfile
 	echo 'Distro: ${DISTRO}' >> $versionfile
 	echo 'Distro Version: ${DISTRO_VERSION}' >> $versionfile

@@ -1,3 +1,8 @@
+#
+# Note this class is deprecated 
+#
+
+
 # For Canadian SDKs we need to know what these values start out as, and use
 # them as well as the updated ones.
 OLD_PACKAGE_ARCH := "${PACKAGE_ARCH}"

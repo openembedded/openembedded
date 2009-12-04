@@ -4,20 +4,16 @@ SECTION = "devel"
 DEPENDS = "libelf"
 LICENSE = "GPLv2"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz \
-           ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}-2.diff.gz;patch=1 \
-	   file://add-sysdep.patch;patch=1 \
-	   file://ltrace-compile.patch;patch=1 \
-	   file://ltrace-mips-remove-CP.patch;patch=1 \
-	   file://ltrace-mips.patch;patch=1 \
-	  "
+SRC_URI = "\
+  ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz \
+  ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}-2.diff.gz;patch=1 \
+  file://add-sysdep.patch;patch=1 \
+  file://ltrace-compile.patch;patch=1 \
+  file://ltrace-mips-remove-CP.patch;patch=1 \
+  file://ltrace-mips.patch;patch=1 \
+  file://ltrace-ppc.patch;patch=1 \
+"
 inherit autotools
-
-PARALLEL_MAKE = ""
-EXTRA_OEMAKE = "INSTALL_FILE='$(INSTALL) -p -m 0644' \
-		INSTALL_PROGRAM='$(INSTALL) -p -m 0755' \
-		INSTALL_SCRIPT='$(INSTALL) -p -m 0755' \
-		INSTALL_DIR='$(INSTALL) -p -d -m 0755' "
 
 export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_INCDIR}"
 TARGET_CC_ARCH += "${LDFLAGS}"
@@ -69,5 +65,5 @@ do_install() {
 		sparc*)   LTRACE_ARCH=sparc ;;
 		x86_64*)  LTRACE_ARCH=x86_64 ;;
 	esac
-	oe_runmake install ${EXTRA_OEMAKE} ARCH=${LTRACE_ARCH} INSTALL=${STAGING_BINDIR_NATIVE}/install DESTDIR=${D}
+	oe_runmake install ${EXTRA_OEMAKE} ARCH=${LTRACE_ARCH} DESTDIR=${D}
 }

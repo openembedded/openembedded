@@ -4,8 +4,8 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de> et. al."
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-SRCREV_FORMAT = "gitrFSO_REV-SHR_REV"
-PV = "0.9.5.9+${SRCREV}"
+SRCREV_FORMAT = "FSO_REV-SHR_REV"
+PV = "0.9.5.9+gitr${SRCREV}"
 PR = "r7"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master;name=FSO_REV \

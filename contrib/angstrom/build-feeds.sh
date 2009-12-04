@@ -78,12 +78,14 @@ do
                       angstrom-zeroconf-audio \
                       apache2 \
                       artoolkit \
+                      asciidoc \
                       asterisk \
                       atomic \
                       autoconf \
                       automake \
                       binutils \
                       bison \
+                      blueman \
                       bluez-gnome \
                       bluez-hcidump \
                       boa \
@@ -119,6 +121,8 @@ do
                       epdfview \
                       epiphany \
                       evince \
+                      exalt \
+                      exalt-client \
                       exo \
                       fakeroot \
                       fennec \
@@ -154,6 +158,7 @@ do
                       geda-utils \
                       gimp \
                       glider \
+                      gksu \
                       gmp \
                       gmpc \
                       gnome-games \
@@ -188,6 +193,7 @@ do
                       iaimaster \
                       icebloxx \
                       imagemagick \
+                      inkscape \
                       inkwp \
                       ioquake3 \
                       ipaq-sleep \
@@ -245,6 +251,7 @@ do
                       ntfs-3g \
                       numptyphysics \
                       octave \
+                      openbox \
                       opencv \
                       opencv-samples \
                       openmoko-browser2 \
@@ -256,6 +263,7 @@ do
                       pavucontrol \
                       palantir \
                       pairs \
+                      paprefs \
                       pciutils \
                       pdamaze \
                       perl \
@@ -295,6 +303,7 @@ do
                       screen \
                       scummvm \
                       sdlquake \
+                      sdrshell \
                       sensors-applet \
                       setserial \
                       shisensho \
@@ -345,6 +354,7 @@ do
                       wt \
                       wt3 \
                       x11vnc \
+                      xclip \
                       xf86-input-evdev \
                       xf86-input-evtouch \
                       xf86-input-keyboard \

@@ -2,7 +2,7 @@ DESCRIPTION = "A portable audio library"
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "v19+svnr${SRCREV}"
+PV = "v19+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "svn://www.portaudio.com/repos/portaudio;module=trunk;proto=http"

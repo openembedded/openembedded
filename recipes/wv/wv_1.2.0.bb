@@ -2,7 +2,7 @@ DESCRIPTION = "Programs for accessing Microsoft Word documents"
 HOMEPAGE = "http://wvware.sourceforge.net/"
 LICENSE = "GPLv2"
 DEPENDS = "libgsf glib-2.0"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wvware/wv-${PV}.tar.gz \
            file://pkgconfig.patch;patch=1"
@@ -15,4 +15,8 @@ EXTRA_OECONF = ""
 
 do_stage () {
 	autotools_stage_all
+}
+
+do_compile () {
+	oe_runmake -f GNUmakefile 
 }

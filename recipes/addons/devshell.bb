@@ -11,9 +11,6 @@ do_configure() {
 def devshell_emit_env(o, d, all=False, funcwhitelist=None):
     """Emits all items in the data store in a format such that it can be sourced by a shell."""
 
-    import bb
-    import bb.data
-
     env = bb.data.keys(d)
 
     for e in env:

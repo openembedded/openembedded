@@ -8,9 +8,6 @@ KERNEL_IMAGETYPE ?= "zImage"
 # Add dependency on mkimage for kernels that build a uImage
 
 python __anonymous () {
-
-    import bb
-    
     kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
     if kerneltype == 'uImage':
     	depends = bb.data.getVar("DEPENDS", d, 1)
@@ -218,7 +215,7 @@ do_menuconfig() {
 	fi
 }
 do_menuconfig[nostamp] = "1"
-addtask menuconfig after do_patch
+addtask menuconfig after do_configure
 
 pkg_postinst_kernel () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
@@ -309,8 +306,9 @@ module_conf_sco = "alias bt-proto-2 sco"
 module_conf_rfcomm = "alias bt-proto-3 rfcomm"
 
 python populate_packages_prepend () {
+	import os
 	def extract_modinfo(file):
-		import tempfile, os, re
+		import tempfile, re
 		tempfile.tempdir = bb.data.getVar("WORKDIR", d, 1)
 		tf = tempfile.mkstemp()
 		tmpfile = tf[1]
@@ -331,9 +329,9 @@ python populate_packages_prepend () {
 		return vals
 	
 	def parse_depmod():
-		import os, re
+		import re
 
-		dvar = bb.data.getVar('D', d, 1)
+		dvar = bb.data.getVar('PKGD', d, 1)
 		if not dvar:
 			bb.error("D not defined")
 			return
@@ -382,10 +380,10 @@ python populate_packages_prepend () {
 		return deps
 	
 	def get_dependencies(file, pattern, format):
-		file = file.replace(bb.data.getVar('D', d, 1) or '', '', 1)
+		file = file.replace(bb.data.getVar('PKGD', d, 1) or '', '', 1)
 
 		if module_deps.has_key(file):
-			import os.path, re
+			import re
 			dependencies = []
 			for i in module_deps[file]:
 				m = re.match(pattern, os.path.basename(i))
@@ -401,7 +399,7 @@ python populate_packages_prepend () {
 		import re
 		vals = extract_modinfo(file)
 
-		dvar = bb.data.getVar('D', d, 1)
+		dvar = bb.data.getVar('PKGD', d, 1)
 
 		# If autoloading is requested, output /etc/modutils/<name> and append
 		# appropriate modprobe commands to the postinst
@@ -463,7 +461,7 @@ python populate_packages_prepend () {
 	do_split_packages(d, root='/lib/firmware', file_regex='^(.*)\.fw$', output_pattern='kernel-firmware-%s', description='Firmware for %s', recursive=True, extra_depends='')
 	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, postrm=postrm, recursive=True, hook=frob_metadata, extra_depends='%skernel-%s' % (maybe_update_modules, bb.data.getVar("KERNEL_VERSION", d, 1)))
 
-	import re, os
+	import re
 	metapkg = "kernel-modules"
 	bb.data.setVar('ALLOW_EMPTY_' + metapkg, "1", d)
 	bb.data.setVar('FILES_' + metapkg, "", d)
@@ -529,8 +527,8 @@ do_deploy() {
 	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
 
-	if [ -d "${D}/lib" ]; then
-		fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz -C ${D} lib
+	if [ -d "${PKGD}/lib" ]; then
+		fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz -C ${PKGD} lib
 	fi
 
 	cd ${DEPLOY_DIR_IMAGE}
@@ -542,4 +540,4 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 do_deploy[depends] += "fakeroot-native:do_populate_staging"
 
-addtask deploy before do_package after do_install
+addtask deploy before do_build after do_package

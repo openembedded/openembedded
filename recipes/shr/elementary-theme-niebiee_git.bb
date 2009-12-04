@@ -2,7 +2,7 @@ DESCRIPTION = "Extremely blue elementary theme - Niebiee"
 SECTION = "e/utils"
 DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
-PV = "0.1-${EFL_SRCREV}-gitr${SRCREV}"
+PV = "0.1-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

@@ -1,0 +1,13 @@
+Index: boost_1_36_0/boost/test/impl/debug.ipp
+===================================================================
+--- boost_1_36_0.orig/boost/test/impl/debug.ipp	2009-11-11 22:45:05.239343879 +0100
++++ boost_1_36_0/boost/test/impl/debug.ipp	2009-11-11 22:45:11.981848731 +0100
+@@ -277,7 +277,7 @@
+     while( *name_end && *name_end != ')' )
+         ++name_end;
+ 
+-    std::sscanf( name_end+1, "%*s%d", &m_parent_pid );
++    sscanf( name_end+1, "%*s%d", &m_parent_pid );
+ 
+     m_binary_name.assign( name_beg+1, name_end );
+ 

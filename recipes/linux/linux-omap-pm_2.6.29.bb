@@ -195,6 +195,7 @@ SRC_URI_append_omap3-touchbook = " file://logo_linux_clut224.ppm \
            file://touchbook-config.patch;patch=1 \
            file://board-omap3touchbook.c \
 #           file://boot-trace-for-optimization.patch;patch=1 \
+           file://touchbook-sound.diff;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " \

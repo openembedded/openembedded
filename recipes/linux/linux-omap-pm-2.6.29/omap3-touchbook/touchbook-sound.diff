@@ -1,0 +1,18 @@
+--- /tmp/omap3beagle.c	2009-11-05 22:03:52.000000000 +0100
++++ git/sound/soc/omap/omap3beagle.c	2009-11-05 22:04:31.000000000 +0100
+@@ -139,13 +139,13 @@
+ static int __init omap3beagle_soc_init(void)
+ {
+ 	int ret;
+-
++/*
+ 	if (!machine_is_omap3_beagle()) {
+ 		pr_debug("Not OMAP3 Beagle!\n");
+ 		return -ENODEV;
+ 	}
+ 	pr_info("OMAP3 Beagle SoC init\n");
+-
++*/
+ 	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!omap3beagle_snd_device) {
+ 		printk(KERN_ERR "Platform device allocation failed\n");

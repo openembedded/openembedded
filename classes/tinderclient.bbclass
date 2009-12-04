@@ -1,6 +1,5 @@
 def tinder_http_post(d, server, selector, content_type, body):
     import httplib
-    from bb import data
     # now post it
     for i in range(0,5):
        try:
@@ -61,8 +60,7 @@ def tinder_format_http_post(d,status,log):
     for the tinderbox to be happy.
     """
 
-    from bb import data, build
-    import os,random
+    import random
 
     # the variables we will need to send on this form post
     variables =  {
@@ -82,7 +80,6 @@ def tinder_format_http_post(d,status,log):
         "TARGETOS"     : data.getVar('TARGET_OS', d, True) or "Unknown",
         "MACHINE"      : data.getVar('MACHINE', d, True) or "Unknown",
         "DISTRO"       : data.getVar('DISTRO', d, True) or "Unknown",
-        "zecke-rocks"  : "sure",
     }
 
     # optionally add the status

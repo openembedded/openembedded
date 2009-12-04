@@ -4,7 +4,7 @@ LICENSE = "various"
 
 DEPENDS = "llvm2.5-native"
 
-PV = "2.0+svnr${SRCREV}"
+PV = "2.0+svnr${SRCPV}"
 
 PR = "r1"
 

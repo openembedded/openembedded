@@ -1,0 +1,17 @@
+diff -purN orig/boost/detail/atomic_count.hpp boost_1_36_0/boost/detail/atomic_count.hpp
+--- orig/boost/detail/atomic_count.hpp	2008-09-12 11:48:45.000000000 -0400
++++ boost_1_36_0/boost/detail/atomic_count.hpp	2008-09-12 14:36:33.000000000 -0400
+@@ -93,6 +93,13 @@ typedef long atomic_count;
+ 
+ #  include <boost/detail/atomic_count_pthreads.hpp>
+ 
++#elif defined(BOOST_HAS_PTHREADS) && defined(__arm__) && !defined(__ARM_ARCH_7A__) && !defined(__ARM_ARCH_6J__) 
++
++// MLC: need this on ARM, otherwise it'll attempt to use atomic_count_sync,
++// which has no ARM implementation.
++#  define BOOST_AC_USE_PTHREADS
++#  include <boost/detail/atomic_count_pthreads.hpp>
++
+ #elif defined( __GNUC__ ) && ( defined( __i386__ ) || defined( __x86_64__ ) )
+ 
+ # include <boost/detail/atomic_count_gcc_x86.hpp>

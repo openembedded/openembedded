@@ -9,7 +9,7 @@ do_stage() {
 	install -d ${STAGING_BINDIR}/
 	install -m 0755 tclConfig.sh ${STAGING_BINDIR}
 	install -m 0755 tclsh ${STAGING_BINDIR}/tclsh8.4
-        ln -s tclsh8.4 ${STAGING_BINDIR}/tclsh
+        ln -s -f tclsh8.4 ${STAGING_BINDIR}/tclsh
 	cd ..
 	for dir in compat generic unix
 	do

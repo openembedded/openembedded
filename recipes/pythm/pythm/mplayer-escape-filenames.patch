@@ -1,0 +1,19 @@
+diff -ur pythm-org/pythm/mplayer/mplayerbackend.py pythm/pythm/mplayer/mplayerbackend.py
+--- pythm-org/pythm/mplayer/mplayerbackend.py	2008-11-22 14:18:13.227163500 +0100
++++ pythm/pythm/mplayer/mplayerbackend.py	2009-01-15 23:54:50.582429054 +0100
+@@ -96,7 +96,7 @@
+                 entry = self.current[1]
+                 self.emit(Signals.SONG_CHANGED,entry)
+                 self.songend = time.time()
+-                fn = entry.id
++                fn = re.escape(entry.id)
+                 array = self.mplayer.innercmd("loadfile '" + fn + "'\n","======",True)
+                 #array = self.mplayer.arraycmd("loadfile","======",fn)
+                 self.fill_entry(array, entry)
+@@ -404,4 +404,4 @@
+         self.browse()
+ 
+         
+-        
+\ Kein Zeilenumbruch am Dateiende.
++

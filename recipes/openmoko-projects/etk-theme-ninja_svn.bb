@@ -3,7 +3,7 @@ HOMEPAGE = "http://ninja.projects.openmoko.org/"
 SECTION = "openmoko/misc"
 LICENSE = "GPL"
 DEPENDS = "edje"
-PV = "0.0.1+svnr${SRCREV}"
+PV = "0.0.1+svnr${SRCPV}"
 PR = "r1"
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/ninja;module=trunk;proto=http"
 

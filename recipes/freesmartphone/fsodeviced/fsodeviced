@@ -1,0 +1,40 @@
+#! /bin/sh
+#
+# fsodeviced -- This shell script starts and stops the FSO2 device subsystem daemon.
+#
+# chkconfig: 345 90 20
+# description: fsodeviced is the freesmartphone.org FSO2 device daemon
+# processname: fsodeviced
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+NAME=fsodeviced
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+case "$1" in
+    start)
+        echo -n "Starting fsodeviced: "
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -x /usr/sbin/fsodeviced
+        if [ $? = 0 ]; then
+            echo "(ok)"
+        else
+            echo "(failed)"
+        fi
+        ;;
+    stop)
+        echo -n "Stopping fsodeviced: "
+        start-stop-daemon --stop --pidfile /var/run/${NAME}.pid --oknodo
+        rm -f /var/run/${NAME}.pid
+        echo "(done)"
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/fsodeviced {start|stop|restart|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -3,7 +3,7 @@ SECTION = "network"
 HOMEPAGE = "www.transmissionbt.com/"
 DEPENDS = "gtk+ gnutls openssl gettext libtool intltool-native curl glib-2.0-native"
 LICENSE = "GPLv2"
-PR = "r2"
+PR = "r4"
 SRC_URI = "http://mirrors.m0k.org/transmission/files/transmission-${PV}.tar.bz2 \
            file://init \
            file://config"
@@ -21,7 +21,11 @@ do_install_append() {
 	install -d ${D}${localstatedir}/lib/transmission-daemon
 }
 
-FILES_${PN} += "${datadir}/icons"
+PACKAGES += "${PN}-gui ${PN}-client"
+
+FILES_${PN} = "${bindir}/transmission-daemon ${datadir}/transmission ${sysconfdir} ${localstatedir}/lib/${PN}-daemon"
+FILES_${PN}-client = "${bindir}/transmissioncli ${bindir}/transmission-remote"
+FILES_${PN}-gui += "${bindir}/transmission ${datadir}/icons ${datadir}/applications ${datadir}/pixmaps"
 CONFFILES_${PN} = "${sysconfdir}/default/transmission-daemon"
 
 # No need for online check, since update-rc.d will prepend it to here
@@ -35,4 +39,3 @@ pkg_postrm_${PN}() {
 delgroup transmission
 deluser transmission
 }
-

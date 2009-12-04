@@ -1,0 +1,24 @@
+Index: wt-2.99.0/src/Wt/Ext/Widget.C
+===================================================================
+--- wt-2.99.0.orig/src/Wt/Ext/Widget.C	2009-11-12 16:13:54.337530490 +0100
++++ wt-2.99.0/src/Wt/Ext/Widget.C	2009-11-12 16:14:35.268780586 +0100
+@@ -16,6 +16,7 @@
+ #include <iostream>
+ #include <sstream>
+ #include <cstring>
++#include <cstdio>
+ 
+ namespace Wt {
+ 
+Index: wt-2.99.0/src/Wt/WAbstractItemModel.C
+===================================================================
+--- wt-2.99.0.orig/src/Wt/WAbstractItemModel.C	2009-11-12 16:01:30.927610427 +0100
++++ wt-2.99.0/src/Wt/WAbstractItemModel.C	2009-11-12 16:03:33.458430052 +0100
+@@ -6,6 +6,7 @@
+ 
+ #include <boost/lexical_cast.hpp>
+ #include <boost/algorithm/string/predicate.hpp>
++#include <cstdio>
+ 
+ #include "Wt/WModelIndex"
+ #include "Wt/WAbstractItemModel"

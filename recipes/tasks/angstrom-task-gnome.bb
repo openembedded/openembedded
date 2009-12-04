@@ -9,7 +9,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r1"
+PR = "r2"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base"
 
@@ -105,7 +105,6 @@ DEPENDS_task-gnome-gstreamer = " \
 
 RDEPENDS_task-gnome-gstreamer = " \
   gst-ffmpeg \
-  gst-omapfb \
   gst-plugin-pulse \
   gst-plugins-base-meta \
   gst-plugins-good-meta \
@@ -179,6 +178,7 @@ RDEPENDS_task-gnome-xserver-base = " \
   xinetd \
   xinit \
   xlsfonts \
+  xrandr \
   xrdb \
   xrefresh \
   xset \
