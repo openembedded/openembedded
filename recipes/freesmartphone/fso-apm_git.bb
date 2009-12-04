@@ -5,6 +5,7 @@ SECTION = "console"
 LICENSE = "GPLv2"
 PE = "1"
 DEPENDS = "vala-native"
+RCONFLICTS = "apm"
 PV = "2.0.0+gitr${SRCPV}"
 PR = "r1"
 
@@ -13,7 +14,4 @@ S = "${WORKDIR}/git/tools/apm2"
 
 inherit autotools
 
-RCONFLICTS_${PN} = "apm"
-RPROVIDES_${PN} = "apm"
-RPROVIDES_${PN}-dev = ""
-RPROVIDES_${PN}-dbg = ""
+
