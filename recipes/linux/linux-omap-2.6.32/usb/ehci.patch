@@ -1,0 +1,46 @@
+From patchwork Wed Nov 25 08:56:48 2009
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [2/2] usb: ehci: Allow EHCI to be built on OMAP3
+Date: Wed, 25 Nov 2009 08:56:48 -0000
+From: Olof Johansson <olof@lixom.net>
+X-Patchwork-Id: 62727
+
+OMAP34XX has EHCI, so select USB_ARCH_HAS_EHCI.
+
+Signed-off-by: Olof Johansson <olof@lixom.net>
+Acked-by: Anand Gadiyar <gadiyar@ti.com>
+
+---
+On Sat, Nov 07, 2009 at 01:16:32AM +0530, Anand Gadiyar wrote:
+> usb: ehci: Allow EHCI to be built on OMAP3
+> 
+> OMAP3 chips have a built-in EHCI controller.
+> The recently introduced omap ehci-hcd driver missed
+> out on selecting USB_ARCH_HAS_EHCI in Kconfig.
+> 
+> Without this, the driver cannot be built.
+
+This is a losing battle. It scales much better to select the option
+from OMAP34XX, instead of starting to enumerate the various platforms
+in drivers/usb.
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+diff --git a/arch/arm/mach-omap2/Kconfig b/arch/arm/mach-omap2/Kconfig
+index 034d990..a913b05 100644
+--- a/arch/arm/mach-omap2/Kconfig
++++ b/arch/arm/mach-omap2/Kconfig
+@@ -18,6 +18,7 @@ config ARCH_OMAP2430
+ config ARCH_OMAP34XX
+ 	bool "OMAP34xx Based System"
+ 	depends on ARCH_OMAP3
++	select USB_ARCH_HAS_EHCI
+ 
+ config ARCH_OMAP3430
+ 	bool "OMAP3430 support"
