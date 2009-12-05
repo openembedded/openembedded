@@ -406,6 +406,9 @@ SRCREV_pn-illume ?= "${EFL_SRCREV}"
 SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
 SRCREV_pn-waker ?= "${EFL_SRCREV}"
 
+#illume default keyboards
+SRCREV_pn-illume-keyboard-default ?= "${EFL_SRCREV}"
+
 #exalt
 SRCREV_pn-exalt ?= "${EFL_SRCREV}"
 SRCREV_pn-exalt-client ?= "${EFL_SRCREV}"
