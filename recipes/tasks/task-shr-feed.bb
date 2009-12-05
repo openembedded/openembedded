@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r27"
+PR = "r28"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -211,7 +211,18 @@ RDEPENDS_${PN} += "\
 		elmdentica \
 		shr-installer \
 		eject \
-		illume-keyboards-shr \
+		illume-keyboard-arabic \
+		illume-keyboard-browse \
+		illume-keyboard-danish \
+		illume-keyboard-default-alt \
+		illume-keyboard-dutch \
+		illume-keyboard-dvorak \
+		illume-keyboard-french \
+		illume-keyboard-german \
+		illume-keyboard-hebrew \
+		illume-keyboard-numeric-alt \
+		illume-keyboard-russian \
+		illume-keyboard-russian-terminal \
 		python-xlib \
 		xcompmgr \
 		man \
