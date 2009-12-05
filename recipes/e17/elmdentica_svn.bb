@@ -5,7 +5,7 @@ SECTION = "e/apps"
 HOMEPAGE = "http://elmdentica.googlecode.com"
 AUTHOR = "seabra"
 PV = "0.7.0+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
  
  
 SRC_URI = "svn://elmdentica.googlecode.com/svn;module=trunk;proto=http"
