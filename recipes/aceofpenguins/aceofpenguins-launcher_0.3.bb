@@ -8,7 +8,7 @@ SECTION = "x11/application"
 
 PACKAGE_ARCH = "all"
 
-PR = "r0"
+PR = "r1"
 
 inherit setuptools
 

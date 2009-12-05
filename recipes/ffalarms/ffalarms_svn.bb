@@ -8,7 +8,7 @@ PRIORITY = "optional"
 DEPENDS = "elementary libeflvala libical"
 
 PV = "0.3.1+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 # needed because there is do_stage_append in vala.bbclass and do_stage() was removed..
 do_stage() {
