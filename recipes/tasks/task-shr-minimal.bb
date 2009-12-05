@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r17"
+PR = "r18"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -115,6 +115,7 @@ RDEPENDS_${PN}-x = "\
   glibc-utils \
   glibc-charmap-utf-8 \
   e-wm-menu-shr \
+  shr-wizard \
   shr-theme-gry \
   etk-theme-shr \
   ${@get_rdepends(bb, d)} \

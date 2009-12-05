@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer handheld devices."
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,7 +15,11 @@ K_MINOR = "6"
 K_MICRO = "21"
 HHV     = "20"
 
-SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
+SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26 \
+           file://linux-2.6.git-9d20fdd58e74d4d26dc5216efaaa0f800c23dd3a.patch;patch=1 \
+           http://www.rpsys.net/openzaurus/patches/archive/export_atags-r0a.patch;patch=1 \
+           file://gcc4x-limits.patch;patch=1 \
+           file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch;patch=1 \
            file://defconfig"
 
 require linux-handhelds-2.6.inc
