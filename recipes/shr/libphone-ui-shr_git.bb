@@ -2,7 +2,7 @@ DESCRIPTION = "SHR default module for the Phone UI daemon"
 SECTION = "e/apps"
 DEPENDS += " dbus-glib libframeworkd-glib libphone-ui etk evas ecore edje edje-native elementary"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "git://shr.bearstech.com/repo/libphone-ui-shr.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
