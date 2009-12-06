@@ -4,14 +4,13 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "curl gpgme"
 PV = "0.1.6+svnr${SRCPV}"
-INC_PR = "r17"
+INC_PR = "r16"
 
 FILESPATHPKG =. "opkg:"
 
 SRC_URI = "svn://opkg.googlecode.com/svn;module=trunk;proto=http \
 	file://opkg_unarchive.patch;patch=1;maxrev=201 \
 	file://opkg-intercept-cleanup.patch;patch=1;maxrev=241 \
-	file://dont-install-update-alternatives.patch;patch=1 \
 "
 
 SRC_URI += "file://configure"
