@@ -13,14 +13,9 @@ RRECOMMENDS = "gpsd espeak flite"
 
 DEPENDS_shr += " librsvg-native"
 RDEPENDS = " navit-icons"
-EXTRA_OECONF += "--enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher --enable-cache-size=20971520"
+EXTRA_OECONF += " --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher --enable-cache-size=20971520"
 
 SRC_URI = "svn://anonymous@navit.svn.sourceforge.net/svnroot/navit/trunk;module=navit;proto=https"
-
-do_configure_prepend() {
-  #Remove xpm building
-  sed -i 's/\(.*SUBDIRS.*\) xpm\( \|$\)\(.*\)/\1\2\3/g' ${S}/navit/Makefile.am
-}
 
 EXTRA_AUTORECONF = " -I m4"
 
