@@ -22,6 +22,8 @@ EXTRA_OECMAKE = "-DBUILD_SHARED=ON \
 		 -DBUILD_MULTI_THREADED=ON \
 		 -DBUILD_RELEASE=ON \
                  -DBUILD_DEBUG=OFF \
+		 -DWITH_MPI:BOOL=OFF \
+		 -DINSTALL_VERSIONED:BOOL=OFF \
 		"
 
 BOOST_LIBS = "\
@@ -64,7 +66,6 @@ python __anonymous () {
             if not bb.data.getVar("FILES_%s" % pkg, d, 1):
                     bb.data.setVar("FILES_%s" % pkg, "${libdir}/libboost_%s*.so*" % lib, d)
     bb.data.setVar("BOOST_PACKAGES", " ".join(packages), d)
-    bb.data.setVar("BJAM_EXTRA", " ".join(extras), d)
 }
 
 # Override the contents of specific packages
