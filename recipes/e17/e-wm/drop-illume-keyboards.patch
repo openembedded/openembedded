@@ -1,0 +1,17 @@
+Index: e/src/modules/illume/keyboards/Makefile.am
+===================================================================
+--- e/src/modules/illume/keyboards/Makefile.am	(revision 43437)
++++ e/src/modules/illume/keyboards/Makefile.am	(working copy)
+@@ -4,12 +4,6 @@
+ filesdir = $(libdir)/enlightenment/modules/$(MODULE)/keyboards
+ files_DATA = \
+             ignore_built_in_keyboards \
+-            Default.kbd \
+-            alpha.png \
+-	    Numbers.kbd \
+-            numeric.png \
+-            Terminal.kbd \
+-	    qwerty.png \
+ 	    up.png \
+ 	    down.png \
+ 	    left.png \

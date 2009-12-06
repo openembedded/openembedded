@@ -5,6 +5,7 @@ DEPENDS = "glib-2.0 gtk+"
 RRECOMMENDS = "gpsd speechd flite"
 
 PE = "1"
+INC_PR = "r4"
 
 inherit autotools
 
