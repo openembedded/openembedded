@@ -11,7 +11,9 @@ S = "${WORKDIR}/navit"
 # use espeak instead speechd
 RRECOMMENDS = "gpsd espeak flite"
 
-EXTRA_OECONF += "--enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher"
+DEPENDS_shr += " librsvg-native"
+RDEPENDS = " navit-icons"
+EXTRA_OECONF += "--enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher --enable-cache-size=20971520"
 
 SRC_URI = "svn://anonymous@navit.svn.sourceforge.net/svnroot/navit/trunk;module=navit;proto=https"
 
