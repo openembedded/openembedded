@@ -19,12 +19,12 @@ SRCREV_dm6467-evm          = "7b2683fd0168df1576fcea947ef9f63e905de807"
 SRCREV_dm6467t-evm         = "7b2683fd0168df1576fcea947ef9f63e905de807"
 
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
+PE = "1"
 PV_dm355-evm               = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
 PV_dm365-evm               = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
 PV_dm6446-evm              = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
 PV_dm6467-evm              = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
 PV_dm6467t-evm             = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
-PE = "1"
 
 SRC_URI_dm355-evm          = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git \
                               file://defconfig"

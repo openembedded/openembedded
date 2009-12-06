@@ -29,6 +29,7 @@ RDEPENDS_${PN} += "\
 		omview \
 		python-elementary \
 		pythm \
+		python-wifi \
 		openmoko-agpsui \
 		openvpn \
 #		shr-config \
@@ -252,6 +253,8 @@ RDEPENDS_${PN} += "\
 		transmission \
 		xf86-input-tslib \
 		fltkcocktailbar \
+		fltkcurrency \
+		mokoeightball \
 		babiloo-efl \
 		make \
 "

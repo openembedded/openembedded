@@ -8,14 +8,13 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 NAME=fsodeviced
-NICENESS=10
 
 [ -f /etc/default/rcS ] && . /etc/default/rcS
 
 case "$1" in
     start)
         echo -n "Starting fsodeviced: "
-        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -N ${NICENESS} -x /usr/sbin/fsodeviced
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -x /usr/sbin/fsodeviced
         if [ $? = 0 ]; then
             echo "(ok)"
         else

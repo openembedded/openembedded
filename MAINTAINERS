@@ -129,6 +129,10 @@ Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    gtk+, gtkmm
 
+Person:     John Willis 'DJWillis'
+Mail:       source@distant-earth.com
+Machines:   omap3-pandora
+
 Person:     Junqian Gordon Xu 'xjqian'
 Mail:       xjqian@gmail.com
 Machines:   tosa, borzoi, nokia770
