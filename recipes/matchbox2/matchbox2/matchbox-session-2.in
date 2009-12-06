@@ -8,7 +8,7 @@ if [ -e /etc/profile ]
 then
 . /etc/profile
 fi
-if [ -e $HOME/profile ]
+if [ -e $HOME/.profile ]
 then
 . $HOME/.profile
 fi
