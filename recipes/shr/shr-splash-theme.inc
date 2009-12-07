@@ -1,4 +1,4 @@
-RPROVIDES = "virtual/shr-splash-theme"
+RPROVIDES_${PN} = "virtual/shr-splash-theme"
 PROVIDES  = "virtual/shr-splash-theme"
 RDEPENDS += "shr-splash"
 
