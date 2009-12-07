@@ -2,7 +2,7 @@ DESCRIPTION = "SHR splash screen"
 SECTION = "x11/data"
 LICENSE = "MIT BSD"
 PV = "1.2+gitr${SRCPV}"
-PR = "r4"
+PR = "r5"
 DEPENDS = "virtual/shr-splash-theme"
 RRECOMMENDS = "virtual/shr-splash-theme"
 
