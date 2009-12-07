@@ -3,8 +3,8 @@ SECTION = "x11/data"
 LICENSE = "MIT BSD"
 PV = "1.2+gitr${SRCPV}"
 PR = "r4"
-RRECOMMENDS_${PN} += "\
-	virtual/shr-splash-theme"
+DEPENDS = "virtual/shr-splash-theme"
+RRECOMMENDS = "virtual/shr-splash-theme"
 
 inherit update-rc.d
 
