@@ -35,8 +35,8 @@ XDC_PLATFORM_dm355   = ti.platforms.evmDM355
 XDC_PLATFORM_dm365   = ti.platforms.evmDM365
 XDC_PLATFORM_dm6446  = ti.platforms.evmDM6446
 XDC_PLATFORM_omap3   = ti.platforms.evm3530
-XDC_PLATFORM_omapl137 = ti.platforms.omapl137
-XDC_PLATFORM_omapl138 = ti.platforms.omapl138
+XDC_PLATFORM_omapl137 = ti.platforms.evmOMAPL137
+XDC_PLATFORM_omapl138 = ti.platforms.evmOMAPL138
 export XDC_PLATFORM
 
 export PLATFORM_XDC = ${XDC_PLATFORM}
@@ -44,6 +44,10 @@ export PLATFORM_XDC = ${XDC_PLATFORM}
 LPMDSPPOWERSOC_omap3  = "omap3530"
 
 export LPMDSPPOWERSOC
+
+DSPSUFFIX_omapl137 = "x674"
+DSPSUFFIX_omapl138 = "x674"
+DSPSUFFIX ?= "x64P"
 
 PLATFORM_dm355   = "dm355"
 PLATFORM_dm365   = "dm365"

@@ -16,7 +16,7 @@ do_compile() {
 do_install () {
     install -d ${D}/${installdir}/codec-combo
 	cd ${S}
-	for file in `find . -name *.x64P`; do
+	for file in `find . -name *.${DSPSUFFIX}`; do
 		cp ${file} ${D}/${installdir}/codec-combo
 	done
 }

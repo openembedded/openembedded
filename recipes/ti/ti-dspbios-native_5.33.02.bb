@@ -9,7 +9,7 @@ BINFILE="bios_setuplinux_5_33_02.bin"
 S = "${WORKDIR}/bios_5_33_02"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
-PV = "5332"
+PV = "5_33_02"
 PR = "r14"
 
 do_stage() {

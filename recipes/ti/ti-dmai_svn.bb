@@ -66,7 +66,8 @@ do_compile () {
 		LINK_INSTALL_DIR="${LINK_INSTALL_DIR}" \
 		CMEM_INSTALL_DIR="${CMEM_INSTALL_DIR}" \
 		LPM_INSTALL_DIR="${CE_INSTALL_DIR}/cetools" \	
-		PLATFORM="${TARGET}"
+		MVTOOL_PREFIX="${TARGET_PREFIX}" \
+                PLATFORM="${TARGET}"
 }
 
 do_install () {

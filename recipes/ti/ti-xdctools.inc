@@ -7,6 +7,7 @@ S = "${WORKDIR}/xdctools_${PV}"
 
 TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
 
+require ti-paths.inc
 require ti-eula-unpack.inc
 
 

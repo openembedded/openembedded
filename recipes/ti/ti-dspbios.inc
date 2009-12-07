@@ -4,3 +4,5 @@ TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
 
 require ti-eula-unpack.inc
 
+PE = "1"
+
