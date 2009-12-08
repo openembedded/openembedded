@@ -1,6 +1,8 @@
 
 LICENSE = "ICU"
 
+INC_PR = "r5"
+
 SRC_URI = "ftp://ftp.software.ibm.com/software/globalization/icu/3.6/icu4c-3_6-src.tgz \
            file://elif-to-else.patch;patch=1"
 
