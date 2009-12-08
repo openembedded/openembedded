@@ -1,7 +1,7 @@
-Index: trunk/bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c
+Index: bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c
 ===================================================================
---- trunk/bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c	(revision 2)
-+++ trunk/bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c	(working copy)
+--- bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c	(revision 2)
++++ bitblit/packages/ti/sdo/apps/bitblit_test/linux/framebuffer.c	(working copy)
 @@ -53,9 +53,7 @@
  #include <linux/fb.h>
  
