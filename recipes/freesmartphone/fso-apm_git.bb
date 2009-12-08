@@ -4,6 +4,7 @@ HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console"
 LICENSE = "GPLv2"
 DEPENDS = "vala-native"
+RCONFLICTS = "apm"
 PV = "2.0.0+gitr${SRCREV}"
 PR = "r1"
 
@@ -12,7 +13,4 @@ S = "${WORKDIR}/git/tools/apm2"
 
 inherit autotools
 
-RCONFLICTS_${PN} = "apm"
-RPROVIDES_${PN} = "apm"
-RPROVIDES_${PN}-dev = ""
-RPROVIDES_${PN}-dbg = ""
+

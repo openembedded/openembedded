@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "curl gpgme"
 PV = "0.1.6+svnr${SRCPV}"
-INC_PR = "r16"
+INC_PR = "r18"
 
 FILESPATHPKG =. "opkg:"
 

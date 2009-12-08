@@ -7,6 +7,7 @@ PROVIDES = "virtual/alsa-scenarios"
 
 COMPATIBLE_MACHINE = "(om-gta01|om-gta02)"
 
+SRC_URI = "svn://svn.openmoko.org/trunk/src/target/audio/;module=om-gta01;proto=http"
 SRC_URI_${MACHINE_ARCH} = "svn://svn.openmoko.org/trunk/src/target/audio/;module=${MACHINE_ARCH};proto=http"
 
 S = "${WORKDIR}/${MACHINE_ARCH}"

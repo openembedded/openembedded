@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r8"
+PR = "r9"
 
 inherit e update-alternatives
 
@@ -12,6 +12,7 @@ SRC_URI += "\
   file://applications.menu \
   file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
   file://fix-profiles.diff;patch=1;maxrev=39889 \
+  file://drop-illume-keyboards.patch;patch=1 \
 "
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
@@ -145,7 +146,13 @@ FILES_${PN}-utils = "${libdir}/enlightenment/utils/*"
 FILES_${PN}-menu = "${sysconfdir}/xdg/menus/applications.menu"
 
 RRECOMMENDS_${PN}-config-default = "${PN}-theme-default"
-RRECOMMENDS_${PN}-config-illume = "${PN}-theme-illume"
+RRECOMMENDS_${PN}-config-illume = "\
+  ${PN}-theme-illume \
+  illume-keyboard-default-alpha \
+  illume-keyboard-default-numeric \
+  illume-keyboard-default-terminal \
+"
+
 RRECOMMENDS_${PN}-config-minimalist = "\
   ${PN}-background-light-gradient \
   ${PN}-theme-default \
