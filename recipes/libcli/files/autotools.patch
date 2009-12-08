@@ -1,0 +1,88 @@
+Index: libcli-1.9.4/Makefile.am
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libcli-1.9.4/Makefile.am	2009-12-08 11:04:42.788208125 +0100
+@@ -0,0 +1,24 @@
++
++ACLOCAL_AMFLAGS = -I m4 --install
++
++AM_CFLAGS = -Wall -Wformat-security -Wno-format-zero-length
++
++lib_LTLIBRARIES = libcli.la
++
++libcli_la_SOURCES = libcli.c
++
++libcli_la_LIBADD = @LIBCRYPT@
++
++libcli_la_LDFLAGS = -version-number @LIBCLI_LIBRARY_VERSION@
++
++include_HEADERS = libcli.h
++
++bin_PROGRAMS = clitest
++
++clitest_SOURCES = clitest.c
++
++clitest_LDADD = libcli.la
++
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = libcli.pc
++
+Index: libcli-1.9.4/configure.ac
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libcli-1.9.4/configure.ac	2009-12-08 11:04:04.341128615 +0100
+@@ -0,0 +1,39 @@
++#                                               -*- Autoconf -*-
++# Process this file with autoconf to produce a configure script.
++
++AC_PREREQ([2.61])
++AC_INIT([libcli], [1.9.4], [heinold@inf.fu-berlin.de])
++AM_INIT_AUTOMAKE([-Wall foreign])
++AC_CONFIG_SRCDIR([clitest.c])
++AC_CONFIG_HEADERS([config.h])
++AC_CONFIG_MACRO_DIR([m4])
++
++LIBCLI_LIBRARY_VERSION=1:9:0
++AC_SUBST([LIBCLI_LIBRARY_VERSION])
++
++# Checks for programs.
++AC_PROG_CC
++AC_PROG_INSTALL
++AC_PROG_LN_S
++
++AC_PROG_LIBTOOL
++
++# Checks for header files.
++AC_CHECK_HEADERS([arpa/inet.h malloc.h memory.h stdlib.h string.h sys/socket.h unistd.h])
++
++# Checks fro library
++AC_CHECK_LIB([crypt], [crypt_r],[LIBCRYPT=-lcrypt],AC_MSG_ERROR(["libcrypt not found"]))
++AC_SUBST([LIBCRYPT])
++
++# Checks for typedefs, structures, and compiler characteristics.
++
++# Checks for library functions.
++AC_FUNC_FORK
++AC_FUNC_MALLOC
++AC_FUNC_REALLOC
++AC_CHECK_FUNCS([inet_ntoa memmove memset regcomp select socket strcasecmp strchr strdup strerror strncasecmp strpbrk strspn strstr])
++
++AC_CONFIG_FILES([Makefile
++                 libcli.pc
++])
++AC_OUTPUT
+Index: libcli-1.9.4/libcli.pc.in
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libcli-1.9.4/libcli.pc.in	2009-12-08 10:35:05.115463492 +0100
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: libcli
++Description: shared library for including a Cisco-like command-line interface into other software
++Version: @VERSION@
++Libs: -L${libdir} -lcli
++Cflags: -I${includedir}

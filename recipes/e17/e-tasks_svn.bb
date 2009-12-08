@@ -8,7 +8,7 @@ DEPENDS = "elementary eina edbus sqlite3"
 inherit autotools
 
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://e-tasks.googlecode.com/svn/trunk;module=.;proto=http"
 S = "${WORKDIR}"
@@ -16,8 +16,6 @@ S = "${WORKDIR}"
 do_configure_prepend() {
   rm -f ${S}/config.log
   rm -f ${S}/config.status
-  sed -i "s#tasksdocdir = \$.prefix./doc/tasks#tasksdocdir = \$(datadir)/doc/e-tasks#g" ${S}/Makefile.am
-  sed -i "s#gladedir = \$(datadir)/tasks/glade#gladedir = \$(datadir)/e-tasks/glade#g" ${S}/src/Makefile.am
 }
 
 do_install_append() {
