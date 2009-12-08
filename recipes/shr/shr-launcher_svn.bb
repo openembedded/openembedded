@@ -6,13 +6,14 @@ SECTION = "e/apps"
 DEPENDS = "elementary eina edbus"
 
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "svn://shr-launcher.googlecode.com/svn/trunk;module=.;proto=http"
 
 do_configure_prepend() {
   rm -f ${S}/config.log
   rm -f ${S}/config.status
+  sed -i "s#launcherdocdir = \$.prefix./doc/launcher#launcherdocdir = \$(datadir)/doc/shr-launcher#g" ${S}/Makefile.am
 }
 
 S = "${WORKDIR}"
