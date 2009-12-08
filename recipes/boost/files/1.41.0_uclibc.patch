@@ -1,0 +1,13 @@
+Index: boost-1.41.0.cmake0/libs/thread/src/pthread/thread.cpp
+===================================================================
+--- boost-1.41.0.cmake0.orig/libs/thread/src/pthread/thread.cpp
++++ boost-1.41.0.cmake0/libs/thread/src/pthread/thread.cpp
+@@ -380,7 +380,7 @@ namespace boost
+     {
+ #if defined(PTW32_VERSION) || defined(__hpux)
+         return pthread_num_processors_np();
+-#elif defined(_GNU_SOURCE)
++#elif defined(_GNU_SOURCE) && !defined(__UCLIBC__)
+         return get_nprocs();
+ #elif defined(__APPLE__) || defined(__FreeBSD__)
+         int count;
