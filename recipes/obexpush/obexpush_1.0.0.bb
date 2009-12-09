@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.caside.lancs.ac.uk/java_bt.php"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 openobex bluez-libs"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://www.caside.lancs.ac.uk/bt/obexpush.tar.gz \
            file://add-obextool.patch;patch=1 \
@@ -43,6 +43,7 @@ do_install() {
 
 	install -d ${D}${sysconfdir}/init.d
 	install -d ${D}${sysconfdir}/default
+	install -d ${D}/var/obexpush
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/opd
 	install -m 0755 ${WORKDIR}/opd_args ${D}${sysconfdir}/default/opd_args
 }
