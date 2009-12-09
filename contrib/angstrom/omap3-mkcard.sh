@@ -2,6 +2,9 @@
 # mkcard.sh v0.4
 # (c) Copyright 2009 Graeme Gregory <dp@xora.org.uk>
 # Licensed under terms of GPLv2
+#
+# Parts of the procudure base on the work of Denys Dmytriyenko
+# http://wiki.omap.com/index.php/MMC_Boot_Format
 
 LC_ALL=C
 
