@@ -14,7 +14,7 @@ S = "${WORKDIR}/obexpush"
 inherit update-rc.d
 
 INITSCRIPT_NAME = "opd"
-INITSCRIPT_PARAMS = "defaults 33 09"
+INITSCRIPT_PARAMS = "defaults 33 9"
 
 export GLIBINC = "-I${STAGING_INCDIR}/glib-2.0"
 export GLIBLIB = "-I${STAGING_LIBDIR} -lglib-2.0"
