@@ -1,0 +1,1487 @@
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d70a9d2..94e45f4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -677,6 +677,10 @@ Stelian Pop <stelian.pop@leadtechdesign.com>
+ 	at91sam9263ek	ARM926EJS (AT91SAM9263 SoC)
+ 	at91sam9rlek	ARM926EJS (AT91SAM9RL SoC)
+ 
++Mike Rapoport <mike@compulab.co.il>
++
++	cm_t35		ARM CORTEX-A8 (OMAP3xx SoC)
++
+ Tom Rix <Tom.Rix@windriver.com>
+ 
+ 	omap3_zoom2	ARM CORTEX-A8 (OMAP3xx SoC)
+diff --git a/MAKEALL b/MAKEALL
+index d63c5c2..e131c62 100755
+--- a/MAKEALL
++++ b/MAKEALL
+@@ -612,6 +612,7 @@ LIST_ARM11="			\
+ ## ARM Cortex-A8 Systems
+ #########################################################################
+ LIST_ARM_CORTEX_A8="		\
++	cm_t35			\
+ 	devkit8000		\
+ 	omap3_beagle		\
+ 	omap3_overo		\
+diff --git a/Makefile b/Makefile
+index bcb3fe9..9d6150a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3143,6 +3143,8 @@ SMN42_config	:	unconfig
+ #########################################################################
+ ## ARM CORTEX Systems
+ #########################################################################
++cm_t35_config :	unconfig
++	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_t35 NULL omap3
+ 
+ devkit8000_config :	unconfig
+ 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 devkit8000 timll omap3
+diff --git a/board/cm_t35/Makefile b/board/cm_t35/Makefile
+new file mode 100644
+index 0000000..320a817
+--- /dev/null
++++ b/board/cm_t35/Makefile
+@@ -0,0 +1,47 @@
++#
++# (C) Copyright 2000, 2001, 2002
++# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++include $(TOPDIR)/config.mk
++
++LIB	= $(obj)lib$(BOARD).a
++
++COBJS	:= cm_t35.o
++
++SRCS	:= $(COBJS:.o=.c)
++OBJS	:= $(addprefix $(obj),$(COBJS))
++
++$(LIB):	$(obj).depend $(OBJS)
++	$(AR) $(ARFLAGS) $@ $(OBJS)
++
++clean:
++	rm -f $(OBJS)
++
++distclean:	clean
++	rm -f $(LIB) core *.bak $(obj).depend
++
++#########################################################################
++
++# defines $(obj).depend target
++include $(SRCTREE)/rules.mk
++
++sinclude $(obj).depend
+diff --git a/board/cm_t35/cm_t35.c b/board/cm_t35/cm_t35.c
+new file mode 100644
+index 0000000..a9bb86f
+--- /dev/null
++++ b/board/cm_t35/cm_t35.c
+@@ -0,0 +1,257 @@
++/*
++ * (C) Copyright 2009
++ * CompuLab, Ltd. <www.compulab.co.il>
++ *
++ * Authors :
++ *	Igor Vaisbein <igor@compulab.co.il>
++ *	Mike Rapoport <mike@compulab.co.il>
++ *
++ * Derived from omap3evm and Beagle Board by
++ *	Manikandan Pillai <mani.pillai@ti.com>
++ *	Richard Woodruff <r-woodruff2@ti.com>
++ *	Syed Mohammed Khasim <x0khasim@ti.com>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <netdev.h>
++#include <net.h>
++#include <i2c.h>
++#include <twl4030.h>
++
++#include <asm/io.h>
++#include <asm/setup.h>
++#include <asm/arch/mem.h>
++#include <asm/arch/mux.h>
++#include <asm/arch/sys_proto.h>
++#include <asm/mach-types.h>
++
++#include "cm_t35.h"
++
++static u32 gpmc_net_config[GPMC_MAX_REG] = {
++	NET_GPMC_CONFIG1,
++	NET_GPMC_CONFIG2,
++	NET_GPMC_CONFIG3,
++	NET_GPMC_CONFIG4,
++	NET_GPMC_CONFIG5,
++	NET_GPMC_CONFIG6,
++	0
++};
++
++static u32 gpmc_nand_config[GPMC_MAX_REG] = {
++	SMNAND_GPMC_CONFIG1,
++	SMNAND_GPMC_CONFIG2,
++	SMNAND_GPMC_CONFIG3,
++	SMNAND_GPMC_CONFIG4,
++	SMNAND_GPMC_CONFIG5,
++	SMNAND_GPMC_CONFIG6,
++	0,
++};
++
++DECLARE_GLOBAL_DATA_PTR;
++
++/*
++ * Routine: board_init
++ * Description: Early hardware init.
++ */
++int board_init(void)
++{
++	gpmc_init(); /* in SRAM or SDRAM, finish GPMC */
++
++	enable_gpmc_cs_config(gpmc_nand_config, &gpmc_cfg->cs[0],
++			      CONFIG_SYS_NAND_BASE, GPMC_SIZE_16M);
++
++	/* board id for Linux */
++	gd->bd->bi_arch_number = MACH_TYPE_CM_T35;
++	/* boot param addr */
++	gd->bd->bi_boot_params = (OMAP34XX_SDRC_CS0 + 0x100);
++
++	return 0;
++}
++
++/*
++ * Routine: misc_init_r
++ * Description: init i2c and dieid
++ */
++int misc_init_r(void)
++{
++#ifdef CONFIG_DRIVER_OMAP34XX_I2C
++	i2c_init(CONFIG_SYS_I2C_SPEED, CONFIG_SYS_I2C_SLAVE);
++#endif
++
++	dieid_num_r();
++
++	return 0;
++}
++
++/*
++ * Routine: set_muxconf_regs
++ * Description: Setting up the configuration Mux registers specific to the
++ *		hardware. Many pins need to be moved from protect to primary
++ *		mode.
++ */
++void set_muxconf_regs(void)
++{
++	MUX_CM_T35();
++}
++
++/*
++ * Routine: get_board_serial
++ * Description: read system serial number
++ */
++void get_board_serial(struct tag_serialnr *serialnr)
++{
++	u32 low, high;
++	int rc;
++
++	memset(serialnr, 0, sizeof(*serialnr));
++
++	rc = i2c_read(0x50, 0x8, 1, &low, sizeof(low));
++	if (rc)
++		return;
++
++	rc = i2c_read(0x50, 0xc, 1, &high, sizeof(high));
++	if (rc)
++		return;
++
++	if (low != 0xffffffff && high != 0xffffffff) {
++		serialnr->low = low;
++		serialnr->high = high;
++	}
++};
++
++/*
++ * Routine: get_board_rev
++ * Description: read system revision
++ */
++u32 get_board_rev(void)
++{
++	u16 rev;
++	int rc;
++
++	rc = i2c_read(0x50, 0x6, 1, &rev, sizeof(rev));
++	if (rc)
++		return 0;
++
++	return rev;
++};
++
++/*
++ * Routine: setup_net_chip_gmpc
++ * Description: Setting up the configuration GPMC registers specific to the
++ *		Ethernet hardware.
++ */
++static void setup_net_chip_gmpc(void)
++{
++	struct ctrl *ctrl_base = (struct ctrl *)OMAP34XX_CTRL_BASE;
++
++	enable_gpmc_cs_config(gpmc_net_config, &gpmc_cfg->cs[5],
++			      CM_T35_SMC911X_BASE, GPMC_SIZE_16M);
++	enable_gpmc_cs_config(gpmc_net_config, &gpmc_cfg->cs[4],
++			      SB_T35_SMC911X_BASE, GPMC_SIZE_16M);
++
++	/* Enable off mode for NWE in PADCONF_GPMC_NWE register */
++	writew(readw(&ctrl_base->gpmc_nwe) | 0x0E00, &ctrl_base->gpmc_nwe);
++
++	/* Enable off mode for NOE in PADCONF_GPMC_NADV_ALE register */
++	writew(readw(&ctrl_base->gpmc_noe) | 0x0E00, &ctrl_base->gpmc_noe);
++
++	/* Enable off mode for ALE in PADCONF_GPMC_NADV_ALE register */
++	writew(readw(&ctrl_base->gpmc_nadv_ale) | 0x0E00,
++		&ctrl_base->gpmc_nadv_ale);
++}
++
++#ifdef CONFIG_DRIVER_OMAP34XX_I2C
++/*
++ * Routine: reset_net_chip
++ * Description: reset the Ethernet controller via TPS65930 GPIO
++ */
++static void reset_net_chip(void)
++{
++	/* Set GPIO1 of TPS65930 as output */
++	twl4030_i2c_write_u8(TWL4030_CHIP_GPIO, 0x02,
++			     TWL4030_BASEADD_GPIO+0x03);
++	/* Send a pulse on the GPIO pin */
++	twl4030_i2c_write_u8(TWL4030_CHIP_GPIO, 0x02,
++			     TWL4030_BASEADD_GPIO+0x0C);
++	udelay(1);
++	twl4030_i2c_write_u8(TWL4030_CHIP_GPIO, 0x02,
++			     TWL4030_BASEADD_GPIO+0x09);
++	udelay(1);
++	twl4030_i2c_write_u8(TWL4030_CHIP_GPIO, 0x02,
++			     TWL4030_BASEADD_GPIO+0x0C);
++}
++#else
++static inline void reset_net_chip(void) {}
++#endif
++
++/*
++ * Routine: handle_mac_address
++ * Description: prepare MAC address for on-board Ethernet.
++ */
++static int handle_mac_address(void)
++{
++	unsigned char enetaddr[6];
++	int rc;
++
++	memset(enetaddr, 0, 6);
++	rc = eth_getenv_enetaddr("ethaddr", enetaddr);
++	if (rc)
++		return 0;
++
++#ifdef CONFIG_DRIVER_OMAP34XX_I2C
++	rc = i2c_read(0x50, 0, 1, enetaddr, 6);
++	if (rc)
++		return rc;
++#endif
++
++	if (!is_valid_ether_addr(enetaddr))
++		return -1;
++
++	return eth_setenv_enetaddr("ethaddr", enetaddr);
++}
++
++/*
++ * Routine: board_eth_init
++ * Description: initialize module and base-board Ethernet chips
++ */
++int board_eth_init(bd_t *bis)
++{
++	int rc = 0, rc1 = 0;
++
++#ifdef CONFIG_SMC911X
++	setup_net_chip_gmpc();
++	reset_net_chip();
++
++	rc1 = handle_mac_address();
++	if (rc1)
++		printf("CM-T35: No MAC address found\n");
++
++	rc1 = smc911x_initialize(0, CM_T35_SMC911X_BASE);
++	if (rc1 > 0)
++		rc++;
++
++	rc1 = smc911x_initialize(1, SB_T35_SMC911X_BASE);
++	if (rc1 > 0)
++		rc++;
++#endif
++
++	return rc;
++}
+diff --git a/board/cm_t35/cm_t35.h b/board/cm_t35/cm_t35.h
+new file mode 100644
+index 0000000..549422c
+--- /dev/null
++++ b/board/cm_t35/cm_t35.h
+@@ -0,0 +1,180 @@
++/*
++ * (C) Copyright 2009 CompuLab, Ltd
++ * Authors:
++ *	Igor Vaisbein <igor@compulab.co.il>
++ *	Mike Rapoport <mike@compulab.co.il>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++#ifndef _CM_T35_H_
++#define _CM_T35_H_
++
++const omap3_sysinfo sysinfo = {
++	DDR_DISCRETE,
++	"CM-T35 board",
++	"NAND",
++};
++
++/* static void setup_net_chip(void); */
++
++/*
++ * IEN  - Input Enable
++ * IDIS - Input Disable
++ * PTD  - Pull type Down
++ * PTU  - Pull type Up
++ * DIS  - Pull type selection is inactive
++ * EN   - Pull type selection is active
++ * M0   - Mode 0
++ * The commented string gives the final mux configuration for that pin
++ */
++#define MUX_CM_T35() \
++	/*SDRC*/\
++	MUX_VAL(CP(SDRC_D0),		(IEN  | PTD | DIS | M0)) /*SDRC_D0*/\
++	MUX_VAL(CP(SDRC_D1),		(IEN  | PTD | DIS | M0)) /*SDRC_D1*/\
++	MUX_VAL(CP(SDRC_D2),		(IEN  | PTD | DIS | M0)) /*SDRC_D2*/\
++	MUX_VAL(CP(SDRC_D3),		(IEN  | PTD | DIS | M0)) /*SDRC_D3*/\
++	MUX_VAL(CP(SDRC_D4),		(IEN  | PTD | DIS | M0)) /*SDRC_D4*/\
++	MUX_VAL(CP(SDRC_D5),		(IEN  | PTD | DIS | M0)) /*SDRC_D5*/\
++	MUX_VAL(CP(SDRC_D6),		(IEN  | PTD | DIS | M0)) /*SDRC_D6*/\
++	MUX_VAL(CP(SDRC_D7),		(IEN  | PTD | DIS | M0)) /*SDRC_D7*/\
++	MUX_VAL(CP(SDRC_D8),		(IEN  | PTD | DIS | M0)) /*SDRC_D8*/\
++	MUX_VAL(CP(SDRC_D9),		(IEN  | PTD | DIS | M0)) /*SDRC_D9*/\
++	MUX_VAL(CP(SDRC_D10),		(IEN  | PTD | DIS | M0)) /*SDRC_D10*/\
++	MUX_VAL(CP(SDRC_D11),		(IEN  | PTD | DIS | M0)) /*SDRC_D11*/\
++	MUX_VAL(CP(SDRC_D12),		(IEN  | PTD | DIS | M0)) /*SDRC_D12*/\
++	MUX_VAL(CP(SDRC_D13),		(IEN  | PTD | DIS | M0)) /*SDRC_D13*/\
++	MUX_VAL(CP(SDRC_D14),		(IEN  | PTD | DIS | M0)) /*SDRC_D14*/\
++	MUX_VAL(CP(SDRC_D15),		(IEN  | PTD | DIS | M0)) /*SDRC_D15*/\
++	MUX_VAL(CP(SDRC_D16),		(IEN  | PTD | DIS | M0)) /*SDRC_D16*/\
++	MUX_VAL(CP(SDRC_D17),		(IEN  | PTD | DIS | M0)) /*SDRC_D17*/\
++	MUX_VAL(CP(SDRC_D18),		(IEN  | PTD | DIS | M0)) /*SDRC_D18*/\
++	MUX_VAL(CP(SDRC_D19),		(IEN  | PTD | DIS | M0)) /*SDRC_D19*/\
++	MUX_VAL(CP(SDRC_D20),		(IEN  | PTD | DIS | M0)) /*SDRC_D20*/\
++	MUX_VAL(CP(SDRC_D21),		(IEN  | PTD | DIS | M0)) /*SDRC_D21*/\
++	MUX_VAL(CP(SDRC_D22),		(IEN  | PTD | DIS | M0)) /*SDRC_D22*/\
++	MUX_VAL(CP(SDRC_D23),		(IEN  | PTD | DIS | M0)) /*SDRC_D23*/\
++	MUX_VAL(CP(SDRC_D24),		(IEN  | PTD | DIS | M0)) /*SDRC_D24*/\
++	MUX_VAL(CP(SDRC_D25),		(IEN  | PTD | DIS | M0)) /*SDRC_D25*/\
++	MUX_VAL(CP(SDRC_D26),		(IEN  | PTD | DIS | M0)) /*SDRC_D26*/\
++	MUX_VAL(CP(SDRC_D27),		(IEN  | PTD | DIS | M0)) /*SDRC_D27*/\
++	MUX_VAL(CP(SDRC_D28),		(IEN  | PTD | DIS | M0)) /*SDRC_D28*/\
++	MUX_VAL(CP(SDRC_D29),		(IEN  | PTD | DIS | M0)) /*SDRC_D29*/\
++	MUX_VAL(CP(SDRC_D30),		(IEN  | PTD | DIS | M0)) /*SDRC_D30*/\
++	MUX_VAL(CP(SDRC_D31),		(IEN  | PTD | DIS | M0)) /*SDRC_D31*/\
++	MUX_VAL(CP(SDRC_CLK),		(IEN  | PTD | DIS | M0)) /*SDRC_CLK*/\
++	MUX_VAL(CP(SDRC_DQS0),		(IEN  | PTD | DIS | M0)) /*SDRC_DQS0*/\
++	MUX_VAL(CP(SDRC_DQS1),		(IEN  | PTD | DIS | M0)) /*SDRC_DQS1*/\
++	MUX_VAL(CP(SDRC_DQS2),		(IEN  | PTD | DIS | M0)) /*SDRC_DQS2*/\
++	MUX_VAL(CP(SDRC_DQS3),		(IEN  | PTD | DIS | M0)) /*SDRC_DQS3*/\
++	/*GPMC*/\
++	MUX_VAL(CP(GPMC_A1),		(IDIS | PTU | EN  | M0)) /*GPMC_A1*/\
++	MUX_VAL(CP(GPMC_A2),		(IDIS | PTU | EN  | M0)) /*GPMC_A2*/\
++	MUX_VAL(CP(GPMC_A3),		(IDIS | PTU | EN  | M0)) /*GPMC_A3*/\
++	MUX_VAL(CP(GPMC_A4),		(IDIS | PTU | EN  | M0)) /*GPMC_A4*/\
++	MUX_VAL(CP(GPMC_A5),		(IDIS | PTU | EN  | M0)) /*GPMC_A5*/\
++	MUX_VAL(CP(GPMC_A6),		(IDIS | PTU | EN  | M0)) /*GPMC_A6*/\
++	MUX_VAL(CP(GPMC_A7),		(IDIS | PTU | EN  | M0)) /*GPMC_A7*/\
++	MUX_VAL(CP(GPMC_A8),		(IDIS | PTU | EN  | M0)) /*GPMC_A8*/\
++	MUX_VAL(CP(GPMC_A9),		(IDIS | PTU | EN  | M0)) /*GPMC_A9*/\
++	MUX_VAL(CP(GPMC_A10),		(IDIS | PTU | EN  | M0)) /*GPMC_A10*/\
++	MUX_VAL(CP(GPMC_D0),		(IEN  | PTU | EN  | M0)) /*GPMC_D0*/\
++	MUX_VAL(CP(GPMC_D1),		(IEN  | PTU | EN  | M0)) /*GPMC_D1*/\
++	MUX_VAL(CP(GPMC_D2),		(IEN  | PTU | EN  | M0)) /*GPMC_D2*/\
++	MUX_VAL(CP(GPMC_D3),		(IEN  | PTU | EN  | M0)) /*GPMC_D3*/\
++	MUX_VAL(CP(GPMC_D4),		(IEN  | PTU | EN  | M0)) /*GPMC_D4*/\
++	MUX_VAL(CP(GPMC_D5),		(IEN  | PTU | EN  | M0)) /*GPMC_D5*/\
++	MUX_VAL(CP(GPMC_D6),		(IEN  | PTU | EN  | M0)) /*GPMC_D6*/\
++	MUX_VAL(CP(GPMC_D7),		(IEN  | PTU | EN  | M0)) /*GPMC_D7*/\
++	MUX_VAL(CP(GPMC_D8),		(IEN  | PTU | EN  | M0)) /*GPMC_D8*/\
++	MUX_VAL(CP(GPMC_D9),		(IEN  | PTU | EN  | M0)) /*GPMC_D9*/\
++	MUX_VAL(CP(GPMC_D10),		(IEN  | PTU | EN  | M0)) /*GPMC_D10*/\
++	MUX_VAL(CP(GPMC_D11),		(IEN  | PTU | EN  | M0)) /*GPMC_D11*/\
++	MUX_VAL(CP(GPMC_D12),		(IEN  | PTU | EN  | M0)) /*GPMC_D12*/\
++	MUX_VAL(CP(GPMC_D13),		(IEN  | PTU | EN  | M0)) /*GPMC_D13*/\
++	MUX_VAL(CP(GPMC_D14),		(IEN  | PTU | EN  | M0)) /*GPMC_D14*/\
++	MUX_VAL(CP(GPMC_D15),		(IEN  | PTU | EN  | M0)) /*GPMC_D15*/\
++	MUX_VAL(CP(GPMC_NCS0),		(IDIS | PTU | EN  | M0)) /*GPMC_nCS0*/\
++	 /*Expansion card  */\
++	MUX_VAL(CP(MMC1_CLK),		(IDIS | PTU | EN  | M0)) /*MMC1_CLK*/ \
++	MUX_VAL(CP(MMC1_CMD),		(IEN  | PTU | EN  | M0)) /*MMC1_CMD*/ \
++	MUX_VAL(CP(MMC1_DAT0),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT0*/ \
++	MUX_VAL(CP(MMC1_DAT1),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT1*/ \
++	MUX_VAL(CP(MMC1_DAT2),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT2*/ \
++	MUX_VAL(CP(MMC1_DAT3),		(IEN  | PTU | EN  | M0)) /*MMC1_DAT3*/ \
++	/* SB-T35 Ethernet */\
++	MUX_VAL(CP(GPMC_NCS4),		(IEN  | PTU | EN  | M0)) /*GPMC_nCS4*/\
++	/* CM-T35 Ethernet */\
++	MUX_VAL(CP(GPMC_NCS5),		(IDIS | PTU | DIS | M0)) /*GPMC_nCS5*/\
++	MUX_VAL(CP(GPMC_CLK),		(IEN  | PTD | DIS | M4)) /*GPIO_59*/\
++	MUX_VAL(CP(GPMC_NADV_ALE),	(IDIS | PTD | DIS | M0)) /*nADV_ALE*/\
++	MUX_VAL(CP(GPMC_NOE),		(IDIS | PTD | DIS | M0)) /*nOE*/\
++	MUX_VAL(CP(GPMC_NWE),		(IDIS | PTD | DIS | M0)) /*nWE*/\
++	MUX_VAL(CP(GPMC_NBE0_CLE),	(IDIS | PTU | EN  | M0)) /*nBE0_CLE*/\
++	MUX_VAL(CP(GPMC_NBE1),		(IDIS | PTD | DIS | M4)) /*GPIO_61*/\
++	MUX_VAL(CP(GPMC_NWP),		(IEN  | PTD | DIS | M0)) /*nWP*/\
++	MUX_VAL(CP(GPMC_WAIT0),		(IEN  | PTU | EN  | M0)) /*WAIT0*/\
++	/*DSS*/\
++	MUX_VAL(CP(DSS_PCLK),		(IDIS | PTD | DIS | M0)) /*DSS_PCLK*/\
++	MUX_VAL(CP(DSS_HSYNC),		(IDIS | PTD | DIS | M0)) /*DSS_HSYNC*/\
++	MUX_VAL(CP(DSS_VSYNC),		(IDIS | PTD | DIS | M0)) /*DSS_VSYNC*/\
++	MUX_VAL(CP(DSS_ACBIAS),		(IDIS | PTD | DIS | M0)) /*DSS_ACBIAS*/\
++	MUX_VAL(CP(DSS_DATA0),		(IDIS | PTD | DIS | M0)) /*DSS_DATA0*/\
++	MUX_VAL(CP(DSS_DATA1),		(IDIS | PTD | DIS | M0)) /*DSS_DATA1*/\
++	MUX_VAL(CP(DSS_DATA2),		(IDIS | PTD | DIS | M0)) /*DSS_DATA2*/\
++	MUX_VAL(CP(DSS_DATA3),		(IDIS | PTD | DIS | M0)) /*DSS_DATA3*/\
++	MUX_VAL(CP(DSS_DATA4),		(IDIS | PTD | DIS | M0)) /*DSS_DATA4*/\
++	MUX_VAL(CP(DSS_DATA5),		(IDIS | PTD | DIS | M0)) /*DSS_DATA5*/\
++	MUX_VAL(CP(DSS_DATA6),		(IDIS | PTD | DIS | M0)) /*DSS_DATA6*/\
++	MUX_VAL(CP(DSS_DATA7),		(IDIS | PTD | DIS | M0)) /*DSS_DATA7*/\
++	MUX_VAL(CP(DSS_DATA8),		(IDIS | PTD | DIS | M0)) /*DSS_DATA8*/\
++	MUX_VAL(CP(DSS_DATA9),		(IDIS | PTD | DIS | M0)) /*DSS_DATA9*/\
++	MUX_VAL(CP(DSS_DATA10),		(IDIS | PTD | DIS | M0)) /*DSS_DATA10*/\
++	MUX_VAL(CP(DSS_DATA11),		(IDIS | PTD | DIS | M0)) /*DSS_DATA11*/\
++	MUX_VAL(CP(DSS_DATA12),		(IDIS | PTD | DIS | M0)) /*DSS_DATA12*/\
++	MUX_VAL(CP(DSS_DATA13),		(IDIS | PTD | DIS | M0)) /*DSS_DATA13*/\
++	MUX_VAL(CP(DSS_DATA14),		(IDIS | PTD | DIS | M0)) /*DSS_DATA14*/\
++	MUX_VAL(CP(DSS_DATA15),		(IDIS | PTD | DIS | M0)) /*DSS_DATA15*/\
++	MUX_VAL(CP(DSS_DATA16),		(IDIS | PTD | DIS | M0)) /*DSS_DATA16*/\
++	MUX_VAL(CP(DSS_DATA17),		(IDIS | PTD | DIS | M0)) /*DSS_DATA17*/\
++	MUX_VAL(CP(DSS_DATA18),		(IDIS | PTD | DIS | M0)) /*DSS_DATA18*/\
++	MUX_VAL(CP(DSS_DATA19),		(IDIS | PTD | DIS | M0)) /*DSS_DATA19*/\
++	MUX_VAL(CP(DSS_DATA20),		(IDIS | PTD | DIS | M0)) /*DSS_DATA20*/\
++	MUX_VAL(CP(DSS_DATA21),		(IDIS | PTD | DIS | M0)) /*DSS_DATA21*/\
++	MUX_VAL(CP(DSS_DATA22),		(IDIS | PTD | DIS | M0)) /*DSS_DATA22*/\
++	MUX_VAL(CP(DSS_DATA23),		(IDIS | PTD | DIS | M0)) /*DSS_DATA23*/\
++	/*Serial Interface*/\
++	MUX_VAL(CP(UART3_RX_IRRX),	(IEN  | PTD | DIS | M0)) /*UART3_RX*/\
++	MUX_VAL(CP(UART3_TX_IRTX),	(IDIS | PTD | DIS | M0)) /*UART3_TX*/\
++	MUX_VAL(CP(I2C1_SCL),		(IEN  | PTU | EN  | M0)) /*I2C1_SCL*/\
++	MUX_VAL(CP(I2C1_SDA),		(IEN  | PTU | EN  | M0)) /*I2C1_SDA*/\
++	/*Control and debug */\
++	MUX_VAL(CP(SYS_32K),		(IEN  | PTD | DIS | M0)) /*SYS_32K*/\
++	MUX_VAL(CP(SYS_CLKREQ),		(IEN  | PTD | DIS | M0)) /*SYS_CLKREQ*/\
++	MUX_VAL(CP(SYS_NIRQ),		(IEN  | PTU | EN  | M0)) /*SYS_nIRQ*/\
++	MUX_VAL(CP(SYS_OFF_MODE),	(IEN  | PTD | DIS | M0)) /*OFF_MODE*/\
++	MUX_VAL(CP(SYS_CLKOUT1),	(IEN  | PTD | DIS | M0)) /*CLKOUT1*/\
++	MUX_VAL(CP(SYS_CLKOUT2),	(IDIS | PTD | DIS | M4)) /*green LED*/\
++	MUX_VAL(CP(JTAG_nTRST),		(IEN  | PTD | DIS | M0)) /*JTAG_nTRST*/\
++	MUX_VAL(CP(JTAG_TCK),		(IEN  | PTD | DIS | M0)) /*JTAG_TCK*/\
++	MUX_VAL(CP(JTAG_TMS),		(IEN  | PTD | DIS | M0)) /*JTAG_TMS*/\
++	MUX_VAL(CP(JTAG_TDI),		(IEN  | PTD | DIS | M0)) /*JTAG_TDI*/\
++	MUX_VAL(CP(SDRC_CKE0),		(IDIS | PTU | EN  | M0)) /*sdrc_cke0*/\
++	MUX_VAL(CP(SDRC_CKE1),		(IDIS | PTD | DIS | M7)) /*sdrc_cke1*/\
++
++#endif
+diff --git a/board/cm_t35/config.mk b/board/cm_t35/config.mk
+new file mode 100644
+index 0000000..a90c86a
+--- /dev/null
++++ b/board/cm_t35/config.mk
+@@ -0,0 +1,30 @@
++#
++# (C) Copyright 2009
++# CompuLab, Ltd., <www.compulab.co.il>
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++# Physical Address:
++# 8000'0000 (bank0)
++#
++# Linux-Kernel is expected to be at 8000'8000, entry 8000'8000
++# (mem base + reserved)
++
++# For use with external or internal boots.
++TEXT_BASE = 0x80e80000
+diff --git a/cpu/arm_cortexa8/omap3/board.c b/cpu/arm_cortexa8/omap3/board.c
+index dd2c940..0b3805a 100644
+--- a/cpu/arm_cortexa8/omap3/board.c
++++ b/cpu/arm_cortexa8/omap3/board.c
+@@ -291,8 +291,11 @@ int dram_init(void)
+ 
+ 	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
+ 	gd->bd->bi_dram[0].size = size0;
++
++#if (CONFIG_NR_DRAM_BANKS > 1)
+ 	gd->bd->bi_dram[1].start = PHYS_SDRAM_1 + get_sdr_cs_offset(CS1);
+ 	gd->bd->bi_dram[1].size = size1;
++#endif
+ 
+ 	return 0;
+ }
+diff --git a/cpu/arm_cortexa8/omap3/mem.c b/cpu/arm_cortexa8/omap3/mem.c
+index 8b8cd6d..be254b5 100644
+--- a/cpu/arm_cortexa8/omap3/mem.c
++++ b/cpu/arm_cortexa8/omap3/mem.c
+@@ -35,11 +35,6 @@
+  * Only One NAND allowed on board at a time.
+  * The GPMC CS Base for the same
+  */
+-unsigned int boot_flash_base;
+-unsigned int boot_flash_off;
+-unsigned int boot_flash_sec;
+-unsigned int boot_flash_type;
+-volatile unsigned int boot_flash_env_addr;
+ 
+ struct gpmc *gpmc_cfg;
+ 
+@@ -223,10 +218,6 @@ void gpmc_init(void)
+ 	const u32 *gpmc_config = NULL;
+ 	u32 base = 0;
+ 	u32 size = 0;
+-#if defined(CONFIG_ENV_IS_IN_NAND) || defined(CONFIG_ENV_IS_IN_ONENAND)
+-	u32 f_off = CONFIG_SYS_MONITOR_LEN;
+-	u32 f_sec = 0;
+-#endif
+ #endif
+ 	u32 config = 0;
+ 
+@@ -251,15 +242,6 @@ void gpmc_init(void)
+ 	base = PISMO1_NAND_BASE;
+ 	size = PISMO1_NAND_SIZE;
+ 	enable_gpmc_cs_config(gpmc_config, &gpmc_cfg->cs[0], base, size);
+-#if defined(CONFIG_ENV_IS_IN_NAND)
+-	f_off = SMNAND_ENV_OFFSET;
+-	f_sec = (128 << 10);	/* 128 KiB */
+-	/* env setup */
+-	boot_flash_base = base;
+-	boot_flash_off = f_off;
+-	boot_flash_sec = f_sec;
+-	boot_flash_env_addr = f_off;
+-#endif
+ #endif
+ 
+ #if defined(CONFIG_CMD_ONENAND)
+@@ -267,14 +249,5 @@ void gpmc_init(void)
+ 	base = PISMO1_ONEN_BASE;
+ 	size = PISMO1_ONEN_SIZE;
+ 	enable_gpmc_cs_config(gpmc_config, &gpmc_cfg->cs[0], base, size);
+-#if defined(CONFIG_ENV_IS_IN_ONENAND)
+-	f_off = ONENAND_ENV_OFFSET;
+-	f_sec = (128 << 10);	/* 128 KiB */
+-	/* env setup */
+-	boot_flash_base = base;
+-	boot_flash_off = f_off;
+-	boot_flash_sec = f_sec;
+-	boot_flash_env_addr = f_off;
+-#endif
+ #endif
+ }
+diff --git a/cpu/arm_cortexa8/omap3/sys_info.c b/cpu/arm_cortexa8/omap3/sys_info.c
+index 31b2003..3f66a6a 100644
+--- a/cpu/arm_cortexa8/omap3/sys_info.c
++++ b/cpu/arm_cortexa8/omap3/sys_info.c
+@@ -173,15 +173,6 @@ u32 get_gpmc0_width(void)
+ 	return WIDTH_16BIT;
+ }
+ 
+-/*************************************************************************
+- * get_board_rev() - setup to pass kernel board revision information
+- * returns:(bit[0-3] sub version, higher bit[7-4] is higher version)
+- *************************************************************************/
+-u32 get_board_rev(void)
+-{
+-	return 0x20;
+-}
+-
+ /********************************************************
+  *  get_base(); get upper addr of current execution
+  *******************************************************/
+diff --git a/doc/README.omap3 b/doc/README.omap3
+index 6227151..1c1c16f 100644
+--- a/doc/README.omap3
++++ b/doc/README.omap3
+@@ -21,6 +21,8 @@ Currently the following boards are supported:
+ 
+ * TI/Logic PD Zoom 2 [7]
+ 
++* CompuLab Ltd. CM-T35 [8]
++
+ Toolchain
+ =========
+ 
+@@ -61,6 +63,11 @@ make
+ make omap3_zoom2_config
+ make
+ 
++* CM-T35:
++
++make cm_t35_config
++make
++
+ Custom commands
+ ===============
+ 
+@@ -119,7 +126,7 @@ To read a bit :
+ Acknowledgements
+ ================
+ 
+-OMAP3 U-Boot is based on U-Boot tar ball [8] for BeagleBoard and EVM done by
++OMAP3 U-Boot is based on U-Boot tar ball [9] for BeagleBoard and EVM done by
+ several TI employees.
+ 
+ Links
+@@ -153,6 +160,11 @@ http://www.logicpd.com/products/devkit/ti/zoom_mobile_development_kit
+ [7] TI/Logic PD Zoom 2
+ 
+ http://www.logicpd.com/sites/default/files/1012659A_Zoom_OMAP34x-II_MDP_Brief.pdf
+-[8] TI OMAP3 U-Boot:
++
++[8] CompuLab Ltd. CM-T35:
++
++http://www.compulab.co.il/t35/html/t35-cm-datasheet.htm
++
++[9] TI OMAP3 U-Boot:
+ 
+ http://beagleboard.googlecode.com/files/u-boot_beagle_revb.tar.gz
+diff --git a/drivers/net/smc911x.c b/drivers/net/smc911x.c
+index c027abe..8509b6a 100644
+--- a/drivers/net/smc911x.c
++++ b/drivers/net/smc911x.c
+@@ -37,7 +37,7 @@ void pkt_data_push(struct eth_device *dev, u32 addr, u32 val) \
+ 
+ #define mdelay(n)       udelay((n)*1000)
+ 
+-static void smx911x_handle_mac_address(struct eth_device *dev)
++static void smc911x_handle_mac_address(struct eth_device *dev)
+ {
+ 	unsigned long addrh, addrl;
+ 	uchar *m = dev->enetaddr;
+@@ -47,7 +47,7 @@ static void smx911x_handle_mac_address(struct eth_device *dev)
+ 	smc911x_set_mac_csr(dev, ADDRL, addrl);
+ 	smc911x_set_mac_csr(dev, ADDRH, addrh);
+ 
+-	printf(DRIVERNAME ": MAC %pM\n", m);
++	printf("%s: MAC %pM\n", dev->name, m);
+ }
+ 
+ static int smc911x_miiphy_read(struct eth_device *dev,
+@@ -119,12 +119,12 @@ static void smc911x_phy_configure(struct eth_device *dev)
+ 			goto err_out;
+ 	} while (!(status & PHY_BMSR_LS));
+ 
+-	printf(DRIVERNAME ": phy initialized\n");
++	printf("%s: phy initialized\n", dev->name);
+ 
+ 	return;
+ 
+ err_out:
+-	printf(DRIVERNAME ": autonegotiation timed out\n");
++	printf("%s: autonegotiation timed out\n", dev->name);
+ }
+ 
+ static void smc911x_enable(struct eth_device *dev)
+@@ -148,14 +148,14 @@ static int smc911x_init(struct eth_device *dev, bd_t * bd)
+ {
+ 	struct chip_id *id = dev->priv;
+ 
+-	printf(DRIVERNAME ": detected %s controller\n", id->name);
++	printf("%s: detected %s controller\n", dev->name, id->name);
+ 
+ 	smc911x_reset(dev);
+ 
+ 	/* Configure the PHY, initialize the link state */
+ 	smc911x_phy_configure(dev);
+ 
+-	smx911x_handle_mac_address(dev);
++	smc911x_handle_mac_address(dev);
+ 
+ 	/* Turn on Tx + Rx */
+ 	smc911x_enable(dev);
+@@ -193,7 +193,7 @@ static int smc911x_send(struct eth_device *dev,
+ 	if (!status)
+ 		return 0;
+ 
+-	printf(DRIVERNAME ": failed to send packet: %s%s%s%s%s\n",
++	printf("%s: failed to send packet: %s%s%s%s%s\n", dev->name,
+ 		status & TX_STS_LOC ? "TX_STS_LOC " : "",
+ 		status & TX_STS_LATE_COLL ? "TX_STS_LATE_COLL " : "",
+ 		status & TX_STS_MANY_COLL ? "TX_STS_MANY_COLL " : "",
+@@ -206,6 +206,10 @@ static int smc911x_send(struct eth_device *dev,
+ static void smc911x_halt(struct eth_device *dev)
+ {
+ 	smc911x_reset(dev);
++
++#ifdef CONFIG_SMC911X_KEEP_MAC
++	smc911x_handle_mac_address(dev);
++#endif
+ }
+ 
+ static int smc911x_rx(struct eth_device *dev)
+@@ -225,9 +229,8 @@ static int smc911x_rx(struct eth_device *dev)
+ 			*data++ = pkt_data_pull(dev, RX_DATA_FIFO);
+ 
+ 		if (status & RX_STS_ES)
+-			printf(DRIVERNAME
+-				": dropped bad packet. Status: 0x%08x\n",
+-				status);
++			printf("%s: dropped bad packet. Status: 0x%08x\n",
++			       dev->name, status);
+ 		else
+ 			NetReceive(NetRxPackets[0], pktlen);
+ 	}
+@@ -238,6 +241,7 @@ static int smc911x_rx(struct eth_device *dev)
+ int smc911x_initialize(u8 dev_num, int base_addr)
+ {
+ 	unsigned long addrl, addrh;
++	unsigned char enetaddr[6];
+ 	struct eth_device *dev;
+ 
+ 	dev = malloc(sizeof(*dev));
+@@ -248,6 +252,7 @@ int smc911x_initialize(u8 dev_num, int base_addr)
+ 	memset(dev, 0, sizeof(*dev));
+ 
+ 	dev->iobase = base_addr;
++	sprintf(dev->name, "%s-%hu", DRIVERNAME, dev_num);
+ 
+ 	/* Try to detect chip. Will fail if not present. */
+ 	if (smc911x_detect_chip(dev)) {
+@@ -257,18 +262,20 @@ int smc911x_initialize(u8 dev_num, int base_addr)
+ 
+ 	addrh = smc911x_get_mac_csr(dev, ADDRH);
+ 	addrl = smc911x_get_mac_csr(dev, ADDRL);
+-	dev->enetaddr[0] = addrl;
+-	dev->enetaddr[1] = addrl >>  8;
+-	dev->enetaddr[2] = addrl >> 16;
+-	dev->enetaddr[3] = addrl >> 24;
+-	dev->enetaddr[4] = addrh;
+-	dev->enetaddr[5] = addrh >> 8;
++	enetaddr[0] = addrl;
++	enetaddr[1] = addrl >>  8;
++	enetaddr[2] = addrl >> 16;
++	enetaddr[3] = addrl >> 24;
++	enetaddr[4] = addrh;
++	enetaddr[5] = addrh >> 8;
++
++	if (is_valid_ether_addr(enetaddr))
++		memcpy(dev->enetaddr, enetaddr, 6);
+ 
+ 	dev->init = smc911x_init;
+ 	dev->halt = smc911x_halt;
+ 	dev->send = smc911x_send;
+ 	dev->recv = smc911x_rx;
+-	sprintf(dev->name, "%s-%hu", DRIVERNAME, dev_num);
+ 
+ 	eth_register(dev);
+ 	return 1;
+diff --git a/drivers/net/smc911x.h b/drivers/net/smc911x.h
+index 05e007c..0ea6ac1 100644
+--- a/drivers/net/smc911x.h
++++ b/drivers/net/smc911x.h
+@@ -447,7 +447,7 @@ static int smc911x_detect_chip(struct eth_device *dev)
+ 		/* Special case -- no chip present */
+ 		return -1;
+ 	} else if (val != 0x87654321) {
+-		printf(DRIVERNAME ": Invalid chip endian 0x%08lx\n", val);
++		printf("%s: Invalid chip endian 0x%08lx\n", __func__, val);
+ 		return -1;
+ 	}
+ 
+@@ -456,7 +456,7 @@ static int smc911x_detect_chip(struct eth_device *dev)
+ 		if (chip_ids[i].id == val) break;
+ 	}
+ 	if (!chip_ids[i].id) {
+-		printf(DRIVERNAME ": Unknown chip ID %04lx\n", val);
++		printf("%s: Unknown chip ID %04lx\n", __func__, val);
+ 		return -1;
+ 	}
+ 
+@@ -480,8 +480,8 @@ static void smc911x_reset(struct eth_device *dev)
+ 			!(smc911x_reg_read(dev, PMT_CTRL) & PMT_CTRL_READY))
+ 			udelay(10);
+ 		if (!timeout) {
+-			printf(DRIVERNAME
+-				": timeout waiting for PM restore\n");
++			printf("%s: timeout waiting for PM restore\n",
++			       dev->name);
+ 			return;
+ 		}
+ 	}
+@@ -496,7 +496,7 @@ static void smc911x_reset(struct eth_device *dev)
+ 		udelay(10);
+ 
+ 	if (!timeout) {
+-		printf(DRIVERNAME ": reset timeout\n");
++		printf("%s: reset timeout\n", dev->name);
+ 		return;
+ 	}
+ 
+diff --git a/examples/api/Makefile b/examples/api/Makefile
+index 04a270b..057e85a 100644
+--- a/examples/api/Makefile
++++ b/examples/api/Makefile
+@@ -49,6 +49,12 @@ ifeq ($(ARCH),ppc)
+ EXT_SOBJ_FILES-$(CONFIG_API) += lib_ppc/ppcstring.o
+ endif
+ 
++ifeq ($(ARCH),arm)
++ifneq (,$(findstring -mabi=aapcs-linux,$(PLATFORM_CPPFLAGS)))
++EXT_COBJ_FILES-$(CONFIG_API) += lib_arm/eabi_compat.o
++endif
++endif
++
+ # Create a list of source files so their dependencies can be auto-generated
+ SRCS	+= $(addprefix $(SRCTREE)/,$(EXT_COBJ_FILES-y:.o=.c))
+ SRCS	+= $(addprefix $(SRCTREE)/,$(EXT_SOBJ_FILES-y:.o=.S))
+@@ -81,6 +87,10 @@ $(obj)%.o: $(SRCTREE)/lib_generic/%.c
+ $(obj)%.o: $(SRCTREE)/lib_$(ARCH)/%.S
+ 	$(CC) -g $(CFLAGS) -c -o $@ $<
+ 
++# Rule to build architecture-specific library C files
++$(obj)%.o: $(SRCTREE)/lib_$(ARCH)/%.c
++	$(CC) -g $(CFLAGS) -c -o $@ $<
++
+ #########################################################################
+ 
+ # defines $(obj).depend target
+diff --git a/include/asm-arm/arch-omap3/cpu.h b/include/asm-arm/arch-omap3/cpu.h
+index 8ab2e39..7fdf00f 100644
+--- a/include/asm-arm/arch-omap3/cpu.h
++++ b/include/asm-arm/arch-omap3/cpu.h
+@@ -136,6 +136,10 @@ struct gpmc {
+ 	u32 ecc8_result;	/* 0x21C */
+ 	u32 ecc9_result;	/* 0x220 */
+ };
++
++/* Used for board specific gpmc initialization */
++extern struct gpmc *gpmc_cfg;
++
+ #else /* __ASSEMBLY__ */
+ #define GPMC_CONFIG1		0x00
+ #define GPMC_CONFIG2		0x04
+diff --git a/include/configs/cm_t35.h b/include/configs/cm_t35.h
+new file mode 100644
+index 0000000..37edbb5
+--- /dev/null
++++ b/include/configs/cm_t35.h
+@@ -0,0 +1,281 @@
++/*
++ * (C) Copyright 2009 CompuLab, Ltd.
++ *
++ * Authors :
++ *	Igor Vaisbein <igor@compulab.co.il>
++ *	Mike Rapoport <mike@compulab.co.il>
++ *
++ * Derived from omap3evm and Beagle Board by
++ *	Manikandan Pillai <mani.pillai@ti.com>
++ *	Richard Woodruff <r-woodruff2@ti.com>
++ *	Syed Mohammed Khasim <x0khasim@ti.com>
++ *
++ * Configuration settings for the CompuLab CM-T35 board.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++/* High Level Configuration Options */
++#define CONFIG_ARMCORTEXA8	1	/* This is an ARM V7 CPU core */
++#define CONFIG_OMAP		1	/* in a TI OMAP core */
++#define CONFIG_OMAP34XX		1	/* which is a 34XX */
++#define CONFIG_OMAP3430		1	/* which is in a 3430 */
++#define CONFIG_CM_T35		1	/* working with CM_T35 */
++
++#include <asm/arch/cpu.h>	/* get chip and board defs */
++#include <asm/arch/omap3.h>
++
++#define CONFIG_DISPLAY_CPUINFO		1
++#define CONFIG_DISPLAY_BOARDINFO	1
++
++/* Clock Defines */
++#define V_OSCK			26000000	/* Clock output from T2 */
++#define V_SCLK			(V_OSCK >> 1)
++
++/* DDR type - Micron */
++#define CONFIG_OMAP3_MICRON_DDR		1
++
++#undef CONFIG_USE_IRQ			/* no support for IRQs */
++#define CONFIG_MISC_INIT_R
++
++#define CONFIG_CMDLINE_TAG		1	/* enable passing of ATAGs */
++#define CONFIG_SETUP_MEMORY_TAGS	1
++#define CONFIG_INITRD_TAG		1
++#define CONFIG_REVISION_TAG		1
++#define CONFIG_SERIAL_TAG		1
++
++/* Size of malloc() pool */
++#define CONFIG_ENV_SIZE			(128 << 10) /* Total Size Environment */
++						/* Sector */
++#define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + (512 << 10))
++#define CONFIG_SYS_GBL_DATA_SIZE	128	/* bytes reserved for */
++						/* initial data */
++/* NS16550 Configuration */
++#define V_NS16550_CLK			48000000	/* 48MHz (APLL96/2) */
++
++#define CONFIG_SYS_NS16550
++#define CONFIG_SYS_NS16550_SERIAL
++#define CONFIG_SYS_NS16550_REG_SIZE	(-4)
++#define CONFIG_SYS_NS16550_CLK		V_NS16550_CLK
++
++/* serial console configuration */
++#define CONFIG_CONS_INDEX		3
++#define CONFIG_SYS_NS16550_COM3		OMAP34XX_UART3
++#define CONFIG_SERIAL3			3	/* UART3 */
++
++/* allow to overwrite serial and ethaddr */
++#define CONFIG_ENV_OVERWRITE
++#define CONFIG_BAUDRATE			115200
++#define CONFIG_SYS_BAUDRATE_TABLE	{4800, 9600, 19200, 38400, 57600,\
++					115200}
++#define CONFIG_MMC			1
++#define CONFIG_OMAP3_MMC		1
++#define CONFIG_SYS_MMC_MAX_DEVICE	1
++#define CONFIG_DOS_PARTITION		1
++
++/* commands to include */
++#include <config_cmd_default.h>
++
++#define CONFIG_CMD_EXT2		/* EXT2 Support			*/
++#define CONFIG_CMD_FAT		/* FAT support			*/
++#define CONFIG_CMD_JFFS2	/* JFFS2 Support		*/
++#define CONFIG_CMD_YAFFS2	/* YAFFS2 Support		*/
++#define CONFIG_CMD_UBI		/* UBI Support			*/
++#define CONFIG_CMD_MTDPARTS
++
++#define CONFIG_CMD_I2C		/* I2C serial bus support	*/
++#define CONFIG_CMD_MMC		/* MMC support			*/
++#define CONFIG_CMD_NAND		/* NAND support			*/
++#define CONFIG_CMD_DHCP
++#define CONFIG_CMD_PING
++
++#undef CONFIG_CMD_FLASH		/* flinfo, erase, protect	*/
++#undef CONFIG_CMD_FPGA		/* FPGA configuration Support	*/
++#undef CONFIG_CMD_IMLS		/* List all found images	*/
++
++#define CONFIG_SYS_NO_FLASH
++
++/* I2C */
++#define CONFIG_SYS_I2C_SPEED		100000
++#define CONFIG_SYS_I2C_SLAVE		1
++#define CONFIG_SYS_I2C_BUS		0
++#define CONFIG_SYS_I2C_BUS_SELECT	1
++#define CONFIG_DRIVER_OMAP34XX_I2C	1
++
++/* TWL4030 */
++#define CONFIG_TWL4030_POWER		1
++
++/* Board NAND Info. */
++#define CONFIG_NAND_OMAP_GPMC		1
++#define GPMC_NAND_ECC_LP_x8_LAYOUT	1
++#define OMAP34XX_GPMC_NAND_SMNAND	1
++
++#define CONFIG_SYS_NAND_ADDR		NAND_BASE	/* physical address */
++							/* to access nand */
++#define CONFIG_SYS_NAND_BASE		NAND_BASE	/* physical address */
++							/* to access */
++							/* nand at CS0 */
++
++#define CONFIG_SYS_MAX_NAND_DEVICE	1		/* Max number of */
++							/* NAND devices */
++#define CONFIG_SYS_64BIT_VSPRINTF		/* needed for nand_util.c */
++
++/* JFFS2 */
++#define CONFIG_JFFS2_NAND
++#define CONFIG_JFFS2_DEV		"nand0"
++#define CONFIG_SYS_MAX_MTD_BANKS	(CONFIG_SYS_MAX_FLASH_BANKS + \
++					CONFIG_SYS_MAX_NAND_DEVICE)
++#define CONFIG_SYS_JFFS2_MEM_NAND
++#define CONFIG_SYS_JFFS2_FIRST_BANK	CONFIG_SYS_MAX_FLASH_BANKS
++#define CONFIG_SYS_JFFS2_NUM_BANKS	1
++
++/* ubi/ubifs related definitions */
++#define CONFIG_RBTREE
++#define CONFIG_MTD_DEVICE		/* needed for mtdparts commands */
++#define CONFIG_MTD_PARTITIONS
++
++/* Environment information */
++#define CONFIG_BOOTDELAY	3
++
++#define CONFIG_BOOTFILE		uImage
++
++#define CONFIG_EXTRA_ENV_SETTINGS \
++	"loadaddr=0x82000000\0" \
++	"baudrate=115200\0"\
++	"console=ttyS2,115200n8\0" \
++	"autoload=no\0" \
++	"mmcargs=setenv bootargs console=${console} " \
++		"root=/dev/mmcblk0p2 rw " \
++		"rootfstype=ext3 rootwait\0" \
++	"nandargs=setenv bootargs console=${console} " \
++		"root=/dev/mtdblock4 rw " \
++		"rootfstype=jffs2\0" \
++	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
++	"bootscript=echo Running bootscript from mmc ...; " \
++		"source ${loadaddr}\0" \
++	"loaduimage=fatload mmc 0 ${loadaddr} uImage\0" \
++	"mmcboot=echo Booting from mmc ...; " \
++		"run mmcargs; " \
++		"bootm ${loadaddr}\0" \
++	"nandboot=echo Booting from nand ...; " \
++		"run nandargs; " \
++		"onenand read ${loadaddr} 280000 400000; " \
++		"bootm ${loadaddr}\0" \
++
++#define CONFIG_BOOTCOMMAND \
++	"if mmc init; then " \
++		"if run loadbootscript; then " \
++			"run bootscript; " \
++		"else " \
++			"if run loaduimage; then " \
++				"run mmcboot; " \
++			"else run nandboot; " \
++			"fi; " \
++		"fi; " \
++	"else run nandboot; fi"
++
++#define MTDIDS_DEFAULT		"nand0=nand"
++#define MTDPARTS_DEFAULT	"mtdparts=nand:512k(xloader),"		\
++					"1920k(u-boot),"		\
++					"256k(env),"			\
++					"4m(kernel),"			\
++					"-(fs),"
++
++#define CONFIG_AUTO_COMPLETE	1
++/*
++ * Miscellaneous configurable options
++ */
++#define CONFIG_API		1
++#define V_PROMPT		"CM-T35 # "
++
++#define CONFIG_SYS_LONGHELP		/* undef to save memory */
++#define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */
++#define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
++#define CONFIG_SYS_PROMPT		V_PROMPT
++#define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
++
++/* Print Buffer Size */
++#define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + \
++					sizeof(CONFIG_SYS_PROMPT) + 16)
++#define CONFIG_SYS_MAXARGS		16	/* max number of command */
++						/* args */
++/* Boot Argument Buffer Size */
++#define CONFIG_SYS_BARGSIZE		(CONFIG_SYS_CBSIZE)
++
++/* memtest works on */
++#define CONFIG_SYS_MEMTEST_START	(OMAP34XX_SDRC_CS0 + 0x01000000)
++#define CONFIG_SYS_MEMTEST_END		(OMAP34XX_SDRC_CS0 + 0x08000000)
++
++#define CONFIG_SYS_LOAD_ADDR		(OMAP34XX_SDRC_CS0) /* default load */
++								/* address */
++
++/*
++ * OMAP3 has 12 GP timers, they can be driven by the system clock
++ * (12/13/16.8/19.2/38.4MHz) or by 32KHz clock. We use 13MHz (V_SCLK).
++ * This rate is divided by a local divisor.
++ */
++#define CONFIG_SYS_TIMERBASE		OMAP34XX_GPT2
++#define CONFIG_SYS_PTV			2	/* Divisor: 2^(PTV+1) => 8 */
++#define CONFIG_SYS_HZ			1000
++
++/*
++ * Stack sizes
++ *
++ * The stack sizes are set up in start.S using the settings below
++ */
++#define CONFIG_STACKSIZE	(128 << 10)	/* regular stack */
++#ifdef CONFIG_USE_IRQ
++#define CONFIG_STACKSIZE_IRQ	(4 << 10)	/* IRQ stack */
++#define CONFIG_STACKSIZE_FIQ	(4 << 10)	/* FIQ stack */
++#endif
++
++/* Physical Memory Map */
++#define CONFIG_NR_DRAM_BANKS	1	/* CS1 may not be populated on CM-T35 */
++#define PHYS_SDRAM_1		OMAP34XX_SDRC_CS0
++#define PHYS_SDRAM_1_SIZE	(32 << 20)	/* at least 32 meg */
++
++/* SDRAM Bank Allocation method */
++#define SDRC_R_B_C		1
++
++/* PISMO support */
++#define PISMO1_NAND_SIZE		GPMC_SIZE_128M
++
++/* environment */
++#define CONFIG_ENV_IS_IN_NAND		1
++#define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
++#define CONFIG_SYS_ENV_SECT_SIZE	(1 << 128)
++#define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
++
++/* SMSC9220 Ethernet */
++#if defined(CONFIG_CMD_NET)
++#define CONFIG_NET_MULTI
++#define CONFIG_SMC911X
++#define CONFIG_SMC911X_32_BIT
++#define CONFIG_SMC911X_KEEP_MAC
++#define CM_T35_SMC911X_BASE	0x2C000000
++#define SB_T35_SMC911X_BASE	(CM_T35_SMC911X_BASE + (16 << 20))
++#define CONFIG_SMC911X_BASE	CM_T35_SMC911X_BASE	/* for smc911x_eeprom */
++#endif /* (CONFIG_CMD_NET) */
++
++#define CONFIG_OMAP3_GPIO_6		1
++
++#endif /* __CONFIG_H */
+diff --git a/include/configs/devkit8000.h b/include/configs/devkit8000.h
+index bd5037e..bac5127 100644
+--- a/include/configs/devkit8000.h
++++ b/include/configs/devkit8000.h
+@@ -293,15 +293,6 @@
+ #define CONFIG_ENV_IS_IN_NAND		1
+ #define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
+ 
+-#define CONFIG_ENV_OFFSET		boot_flash_off
+-
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
++#define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
+ 
+ #endif /* __CONFIG_H */
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 19a5ec9..73ead6c 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -291,8 +291,8 @@
+ #define ONENAND_ENV_OFFSET		0x260000 /* environment starts here */
+ #define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
+ 
+-#define CONFIG_SYS_ENV_SECT_SIZE	boot_flash_sec
+-#define CONFIG_ENV_OFFSET		boot_flash_off
++#define CONFIG_SYS_ENV_SECT_SIZE	(1 << 128)
++#define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
+ #define CONFIG_ENV_ADDR			SMNAND_ENV_OFFSET
+ 
+ /*-----------------------------------------------------------------------
+@@ -310,13 +310,4 @@
+ #define CONFIG_SYS_JFFS2_FIRST_BANK	CONFIG_SYS_MAX_FLASH_BANKS
+ #define CONFIG_SYS_JFFS2_NUM_BANKS	1
+ 
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
+-
+ #endif /* __CONFIG_H */
+diff --git a/include/configs/omap3_evm.h b/include/configs/omap3_evm.h
+index a5514ae..70eb86b 100644
+--- a/include/configs/omap3_evm.h
++++ b/include/configs/omap3_evm.h
+@@ -262,7 +262,7 @@
+ #define CONFIG_SYS_MAX_FLASH_BANKS	2	/* max number of flash banks */
+ #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* Reserve 2 sectors */
+ 
+-#define CONFIG_SYS_FLASH_BASE		boot_flash_base
++#define CONFIG_SYS_FLASH_BASE		ONENAND_MAP
+ 
+ /* Monitor at start of flash */
+ #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
+@@ -272,9 +272,9 @@
+ #define ONENAND_ENV_OFFSET		0x260000 /* environment starts here */
+ #define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
+ 
+-#define CONFIG_SYS_ENV_SECT_SIZE	boot_flash_sec
+-#define CONFIG_ENV_OFFSET		boot_flash_off
+-#define CONFIG_ENV_ADDR			boot_flash_env_addr
++#define CONFIG_SYS_ENV_SECT_SIZE	(1 << 128)
++#define CONFIG_ENV_OFFSET		ONENAND_ENV_OFFSET
++#define CONFIG_ENV_ADDR			ONENAND_ENV_OFFSET
+ 
+ /*-----------------------------------------------------------------------
+  * CFI FLASH driver setup
+@@ -291,15 +291,6 @@
+ #define CONFIG_SYS_JFFS2_FIRST_BANK	CONFIG_SYS_MAX_FLASH_BANKS
+ #define CONFIG_SYS_JFFS2_NUM_BANKS	1
+ 
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
+-
+ /*----------------------------------------------------------------------------
+  * SMSC9115 Ethernet from SMSC9118 family
+  *----------------------------------------------------------------------------
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index ffb515d..6ffae60 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -266,7 +266,7 @@
+ #define CONFIG_SYS_MAX_FLASH_BANKS	2	/* max number of flash banks */
+ #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* Reserve 2 sectors */
+ 
+-#define CONFIG_SYS_FLASH_BASE		boot_flash_base
++#define CONFIG_SYS_FLASH_BASE		NAND_BASE
+ 
+ /* Monitor at start of flash */
+ #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
+@@ -276,8 +276,8 @@
+ #define ONENAND_ENV_OFFSET		0x240000 /* environment starts here */
+ #define SMNAND_ENV_OFFSET		0x240000 /* environment starts here */
+ 
+-#define CONFIG_SYS_ENV_SECT_SIZE	boot_flash_sec
+-#define CONFIG_ENV_OFFSET		boot_flash_off
++#define CONFIG_SYS_ENV_SECT_SIZE	(1 << 128)
++#define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
+ #define CONFIG_ENV_ADDR			SMNAND_ENV_OFFSET
+ 
+ /*-----------------------------------------------------------------------
+@@ -295,15 +295,6 @@
+ #define CONFIG_SYS_JFFS2_FIRST_BANK	CONFIG_SYS_MAX_FLASH_BANKS
+ #define CONFIG_SYS_JFFS2_NUM_BANKS	1
+ 
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
+-
+ #if defined(CONFIG_CMD_NET)
+ /*----------------------------------------------------------------------------
+  * SMSC9211 Ethernet from SMSC9118 family
+diff --git a/include/configs/omap3_pandora.h b/include/configs/omap3_pandora.h
+index 6f21af3..041412e 100644
+--- a/include/configs/omap3_pandora.h
++++ b/include/configs/omap3_pandora.h
+@@ -259,7 +259,7 @@
+ #define CONFIG_SYS_MAX_FLASH_BANKS	2	/* max number of flash banks */
+ #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* Reserve 2 sectors */
+ 
+-#define CONFIG_SYS_FLASH_BASE		boot_flash_base
++#define CONFIG_SYS_FLASH_BASE		ONENAND_MAP
+ 
+ /* Monitor at start of flash */
+ #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
+@@ -269,8 +269,8 @@
+ #define ONENAND_ENV_OFFSET		0x240000 /* environment starts here */
+ #define SMNAND_ENV_OFFSET		0x240000 /* environment starts here */
+ 
+-#define CONFIG_SYS_ENV_SECT_SIZE	boot_flash_sec
+-#define CONFIG_ENV_OFFSET		boot_flash_off
++#define CONFIG_SYS_ENV_SECT_SIZE	(1 << 128)
++#define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
+ #define CONFIG_ENV_ADDR			SMNAND_ENV_OFFSET
+ 
+ /*-----------------------------------------------------------------------
+@@ -288,13 +288,4 @@
+ #define CONFIG_SYS_JFFS2_FIRST_BANK	CONFIG_SYS_MAX_FLASH_BANKS
+ #define CONFIG_SYS_JFFS2_NUM_BANKS	1
+ 
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
+-
+ #endif				/* __CONFIG_H */
+diff --git a/include/configs/omap3_sdp3430.h b/include/configs/omap3_sdp3430.h
+index 229dc5e..3ec7ce0 100644
+--- a/include/configs/omap3_sdp3430.h
++++ b/include/configs/omap3_sdp3430.h
+@@ -355,15 +355,4 @@
+  *  - rest for filesystem
+  */
+ 
+-/*--------------------------------------------------------------------------*/
+-
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
+-
+ #endif				/* __CONFIG_H */
+diff --git a/include/configs/omap3_zoom1.h b/include/configs/omap3_zoom1.h
+index da4b677..9811f15 100644
+--- a/include/configs/omap3_zoom1.h
++++ b/include/configs/omap3_zoom1.h
+@@ -267,7 +267,7 @@
+ #define CONFIG_SYS_MAX_FLASH_BANKS	2	/* max number of flash banks */
+ #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* Reserve 2 sectors */
+ 
+-#define CONFIG_SYS_FLASH_BASE		boot_flash_base
++#define CONFIG_SYS_FLASH_BASE		CONFIG_SYS_NAND_BASE
+ 
+ /* Monitor at start of flash */
+ #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
+@@ -277,8 +277,8 @@
+ #define ONENAND_ENV_OFFSET		0x260000 /* environment starts here */
+ #define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
+ 
+-#define CONFIG_SYS_ENV_SECT_SIZE	boot_flash_sec
+-#define CONFIG_ENV_OFFSET		boot_flash_off
++#define CONFIG_SYS_ENV_SECT_SIZE	(1 << 128)
++#define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
+ #define CONFIG_ENV_ADDR			SMNAND_ENV_OFFSET
+ 
+ /*-----------------------------------------------------------------------
+@@ -296,13 +296,4 @@
+ #define CONFIG_SYS_JFFS2_FIRST_BANK	CONFIG_SYS_MAX_FLASH_BANKS
+ #define CONFIG_SYS_JFFS2_NUM_BANKS	1
+ 
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
+-
+ #endif				/* __CONFIG_H */
+diff --git a/include/configs/omap3_zoom2.h b/include/configs/omap3_zoom2.h
+index 32cd6fd..1a23acd 100644
+--- a/include/configs/omap3_zoom2.h
++++ b/include/configs/omap3_zoom2.h
+@@ -232,7 +232,7 @@
+ #define CONFIG_SYS_MAX_FLASH_BANKS	2	/* max number of flash banks */
+ #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* Reserve 2 sectors */
+ 
+-#define CONFIG_SYS_FLASH_BASE		boot_flash_base
++#define CONFIG_SYS_FLASH_BASE		CONFIG_SYS_NAND_BASE
+ 
+ /* Monitor at start of flash */
+ #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
+@@ -240,8 +240,8 @@
+ #define CONFIG_ENV_IS_IN_NAND		1
+ #define SMNAND_ENV_OFFSET		0x0c0000 /* environment starts here */
+ 
+-#define CONFIG_SYS_ENV_SECT_SIZE	boot_flash_sec
+-#define CONFIG_ENV_OFFSET		boot_flash_off
++#define CONFIG_SYS_ENV_SECT_SIZE	(1 << 128)
++#define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
+ #define CONFIG_ENV_ADDR			SMNAND_ENV_OFFSET
+ 
+ /*-----------------------------------------------------------------------
+@@ -251,13 +251,4 @@
+ #define CONFIG_SYS_FLASH_ERASE_TOUT	(100 * CONFIG_SYS_HZ)
+ #define CONFIG_SYS_FLASH_WRITE_TOUT	(100 * CONFIG_SYS_HZ)
+ 
+-#ifndef __ASSEMBLY__
+-extern struct gpmc *gpmc_cfg;
+-extern unsigned int boot_flash_base;
+-extern volatile unsigned int boot_flash_env_addr;
+-extern unsigned int boot_flash_off;
+-extern unsigned int boot_flash_sec;
+-extern unsigned int boot_flash_type;
+-#endif
+-
+ #endif /* __CONFIG_H */

@@ -1,0 +1,14 @@
+diff --git a/src/connman-dbus.conf b/src/connman-dbus.conf
+index 2be3764..b4d4acd 100644
+--- a/src/connman-dbus.conf
++++ b/src/connman-dbus.conf
+@@ -6,9 +6,6 @@
+         <allow send_destination="org.moblin.connman"/>
+         <allow send_interface="org.moblin.connman.Agent"/>
+     </policy>
+-    <policy user="system">
+-        <allow send_destination="org.moblin.connman"/>
+-    </policy>
+     <policy at_console="true">
+         <allow send_destination="org.moblin.connman"/>
+     </policy>

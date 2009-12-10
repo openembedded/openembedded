@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES_${PN} = "hotplug"
 
-PR = "r5"
+PR = "r6"
 
 DEFAULT_PREFERENCE = "-118"
 
@@ -12,6 +12,7 @@ SRC_URI = "\
  file://flags.patch;patch=1 \
  file://vol_id_ld.patch;patch=1 \
  file://udevtrigger_add_devname_filtering.patch;patch=1 \
+ file://mtd-exclude-persistent.patch;patch=1 \
  file://mount.blacklist \
 "
 TARGET_CC_ARCH += "${LDFLAGS}"

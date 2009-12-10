@@ -5,9 +5,11 @@ DEPENDS += "python-native python-docutils-native"
 SRC_URI = "http://archive.xfce.org/src/apps/midori/0.2/midori-${PV}.tar.bz2 \
            file://waf"
 
-SRC_URI_append_shr = " file://config "
+SRC_URI_append_shr = " file://config \
+                       file://retain-navigationbar-in-fullwindow.patch;patch=1 \
+                     "
 
-PR = "r1"
+PR = "r2"
 
 do_configure() {
 	cp -f ${WORKDIR}/waf ${S}/
