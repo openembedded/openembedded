@@ -9,6 +9,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
            file://0006-freetype-host-includes.patch;patch=1 \
            file://0008-qt-lib-infix.patch;patch=1 \
            file://0009-support-2bpp.patch;patch=1 \
+           file://0010-no-simpledecoration-example.patch;patch=1 \
            file://fix-config-tests.patch;patch=1 \
            file://g++.conf \
            file://linux.conf \
@@ -16,6 +17,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
 do_configure_prepend() {
+    sed -i s:SEDME:${S}: ${WORKDIR}/linux.conf
     sed -i \
     -e /QMAKE_MOC\ /d \
     -e /QMAKE_UIC\ /d \
@@ -25,6 +27,9 @@ do_configure_prepend() {
 
 #	sed -i /tools.pro/d ${S}/src/src.pro
 }
+
+QT_GLFLAGS ?= ""
+QT_CONFIG_FLAGS += "${QT_GLFLAGS}"
 
 do_install_append() {
 	install -d ${D}${bindir}
