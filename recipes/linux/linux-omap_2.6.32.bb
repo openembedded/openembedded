@@ -17,6 +17,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.g
 	   file://defconfig"
 
 SRC_URI_append = " \
+file://sctp-fix.patch;patch=1 \
 file://cm-t35/0001-omap3-cm-t35-add-mux-initialization.patch;patch=1 \
 file://cm-t35/0001-OMAP-DSS2-add-Toppoly-TDO35S-panel.patch;patch=1 \
 file://cm-t35/0002-omap3-cm-t35-add-DSS2-display-support.patch;patch=1 \
