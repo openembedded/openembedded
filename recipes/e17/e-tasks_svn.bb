@@ -14,8 +14,9 @@ SRC_URI = "svn://e-tasks.googlecode.com/svn/trunk;module=.;proto=http"
 S = "${WORKDIR}"
 
 do_configure_prepend() {
-  rm -f ${S}/config.log
-  rm -f ${S}/config.status
+  # all links to /usr/share/automake-1.10/
+  rm -f ${S}/depcomp ${S}/config.guess ${S}/config.sub ${S}/INSTALL ${S}/install-sh ${S}/missing
+  touch ${S}/INSTALL
 }
 
 do_install_append() {
