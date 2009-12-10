@@ -2,7 +2,7 @@ require php.inc
 
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 \
             "
@@ -10,19 +10,20 @@ export THREADS="pthread"
 export LIBS=" -lpthread "
 
 EXTRA_OECONF = "    --without-iconv \
- 		    --enable-discard-path \
-		    --enable-sockets \
-		    --enable-shared \
+                    --enable-mbstring \
+                    --enable-discard-path \
+                    --enable-sockets \
+                    --enable-shared \
                     --enable-pcntl \
-    		    --enable-memory-limit \
-    		    --enable-wddx \
+                    --enable-memory-limit \
+                    --enable-wddx \
                     --enable-embedded-mysqli \
                     --enable-magic-quotes \
-		    --enable-fastcgi \
-		    --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
+                    --enable-fastcgi \
+                    --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
                     --with-libxml-dir=${STAGING_BINDIR_CROSS} \
                     --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
-#                    --with-mysqli = "${STAGING_BINDIR_NATIVE}/mysql_config" \
+#                   --with-mysqli = "${STAGING_BINDIR_NATIVE}/mysql_config" \
                     --without-pdo-sqlite \
                "
 
