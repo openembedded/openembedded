@@ -6,7 +6,7 @@ DEPENDS_avr32 = "alsa-lib virtual/libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
-PR = "r1"
+INC_PR = "r10"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
