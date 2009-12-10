@@ -31,6 +31,11 @@ do_configure_prepend() {
 QT_GLFLAGS ?= ""
 QT_CONFIG_FLAGS += "${QT_GLFLAGS}"
 
+do_compile() {
+    unset CFLAGS CXXFLAGS
+    oe_runmake ${EXTRA_ENV}
+}
+
 do_install_append() {
 	install -d ${D}${bindir}
 	for i in rcc uic moc ; do
