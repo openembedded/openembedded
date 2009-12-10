@@ -52,5 +52,5 @@ CONFFILES_${PN}-server = "${sysconfdir}/ppp/pppoe-server-options \
 
 INITSCRIPT_PACKAGES            = "${PN}-server"
 INITSCRIPT_NAME_${PN}-server   = "pppoe-server"
-INITSCRIPT_PARAMS_${PN}-server = "defaults 92 08"
+INITSCRIPT_PARAMS_${PN}-server = "defaults 92 8"
 

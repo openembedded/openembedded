@@ -2,7 +2,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES_${PN} = "hotplug"
-PR = "r17"
+PR = "r18"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -10,6 +10,7 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://vol_id_ld.patch;patch=1 \
 	   file://udevtrigger_add_devname_filtering.patch;patch=1 \
 	   file://libvolume-id-soname.patch;patch=1 \
+	   file://mtd-exclude-persistent.patch;patch=1 \
 	   file://mount.blacklist \
 	   file://run.rules \
 	   file://default \
