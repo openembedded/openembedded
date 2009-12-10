@@ -8,7 +8,7 @@ LICENSE = "LGPL"
 DEPENDS = "alsa-lib virtual/libgl virtual/libx11 libxext tslib"
 DEPENDS_avr32 = "alsa-lib virtual/libx11 libxext tslib"
 PROVIDES = "virtual/libsdl"
-PR = "${INC_PR}.0"
+PR = "r2"
 
 SRC_URI = " \
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
