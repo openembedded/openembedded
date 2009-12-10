@@ -13,7 +13,7 @@ EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 
 do_compile () {
  	oe_runmake smdk2410_config
-        oe_runmake tools
+        oe_runmake tools STRIP='/bin/true'
 }
 
 do_stage () {

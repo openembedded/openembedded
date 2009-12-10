@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r23"
+PR = "r24"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug)"
 ALLOW_EMPTY = "1"
@@ -129,7 +129,7 @@ RDEPENDS += "\
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit udev \
 	module-init-tools modutils-initscripts \
-        opkg-collateral opkg-nogpg-nocurl \
+        opkg-collateral ${IPKG_VARIANT} \
 	libgcc \
 	beep \
 	util-linux-mount \

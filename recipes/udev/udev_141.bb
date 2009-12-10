@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r15"
+PR = "r18"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -70,7 +70,6 @@ do_install () {
 	# This is hardcoded to $(udev_prefix)/lib/udev/rules.d in the
 	# Makefile, even if libdir is lib64.
 	mv ${D}/lib/udev/rules.d ${D}${sysconfdir}/udev/
-	ln -sf ${sysconfdir}/udev/rules.d ${D}/lib/udev/
 
  	cp ${S}/rules/rules.d/* ${D}${sysconfdir}/udev/rules.d/
 	cp ${S}/rules/packages/* ${D}${sysconfdir}/udev/rules.d/
@@ -99,6 +98,14 @@ do_install_append_h2200() {
 	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
 }
 
+pkg_postinst_${PN}_append() {
+if [ -d $D/lib/udev/rules.d ] ; then
+	echo "$D/lib/udev/rules.d is not a symlink, fixing that"
+	mv $D/lib/udev/rules.d/* $D${sysconfdir}/udev/rules.d/
+	rm -rf $D/lib/udev/rules.d
+	ln -sf ${sysconfdir}/udev/rules.d $D/lib/udev/
+fi
+}
 
 do_stage_append() {
         install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}

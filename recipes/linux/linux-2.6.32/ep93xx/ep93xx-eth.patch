@@ -1,0 +1,2718 @@
+Index: linux-2.6.24.7/drivers/net/arm/ep93xx_eth.c
+===================================================================
+--- linux-2.6.24.7.orig/drivers/net/arm/ep93xx_eth.c	2009-09-16 17:26:48.000000000 +0100
++++ linux-2.6.24.7/drivers/net/arm/ep93xx_eth.c	2009-09-16 17:38:23.000000000 +0100
+@@ -1,916 +1,1586 @@
+-/*
+- * EP93xx ethernet network device driver
+- * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
+- * Dedicated to Marija Kulikova.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- */
+-
+-#include <linux/dma-mapping.h>
++/*----------------------------------------------------------------------------
++ * ep93xx_eth.c
++ *  Ethernet Device Driver for Cirrus Logic EP93xx.
++ *
++ * Copyright (C) 2003 by Cirrus Logic www.cirrus.com
++ * This software may be used and distributed according to the terms
++ * of the GNU Public License.
++ *
++ *   This driver was written based on skeleton.c by Donald Becker and
++ * smc9194.c by Erik Stahlman.
++ *
++ * Theory of Operation
++ * Driver Configuration
++ *  - Getting MAC address from system
++ *     To setup identical MAC address for each target board, driver need
++ *      to get a MAC address from system.  Normally, system has a Serial
++ *      EEPROM or other media to store individual MAC address when
++ *      manufacturing.
++ *      The macro GET_MAC_ADDR is prepared to get the MAC address from
++ *      system and one should supply a routine for this purpose.
++ * Driver Initialization
++ * DMA Operation
++ * Cache Coherence
++ *
++ * History:
++ * 07/19/01 0.1  Sungwook Kim  initial release
++ * 10/16/01 0.2  Sungwook Kim  add workaround for ignorance of Tx request while sending frame
++ *                             add some error stuations handling
++ *
++ * 03/25/03 Melody Lee Modified for EP93xx
++ *--------------------------------------------------------------------------*/
+ #include <linux/module.h>
++#include <linux/version.h>
+ #include <linux/kernel.h>
+-#include <linux/netdevice.h>
+-#include <linux/mii.h>
+-#include <linux/etherdevice.h>
+-#include <linux/ethtool.h>
+-#include <linux/init.h>
+-#include <linux/moduleparam.h>
+-#include <linux/platform_device.h>
++#include <linux/sched.h>
++#include <linux/types.h>
++#include <linux/fcntl.h>
++#include <linux/interrupt.h>
++#include <linux/ptrace.h>
++#include <linux/ioport.h>
++#include <linux/in.h>
+ #include <linux/delay.h>
+-#include <asm/arch/ep93xx-regs.h>
+-#include <asm/arch/platform.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++#include <asm/system.h>
++#include <asm/bitops.h>
+ #include <asm/io.h>
++#include <asm/dma.h>
++#include <asm/irq.h>
++#include <linux/errno.h>
++#include <linux/init.h>
+ 
+-#define DRV_MODULE_NAME		"ep93xx-eth"
+-#define DRV_MODULE_VERSION	"0.1"
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <linux/skbuff.h>
+ 
+-#define RX_QUEUE_ENTRIES	64
+-#define TX_QUEUE_ENTRIES	8
++#include <asm/arch/hardware.h>
+ 
+-#define MAX_PKT_SIZE		2044
+-#define PKT_BUF_SIZE		2048
++#include "ep93xx_eth.h"
+ 
+-#define REG_RXCTL		0x0000
+-#define  REG_RXCTL_DEFAULT	0x00073800
+-#define REG_TXCTL		0x0004
+-#define  REG_TXCTL_ENABLE	0x00000001
+-#define REG_MIICMD		0x0010
+-#define  REG_MIICMD_READ	0x00008000
+-#define  REG_MIICMD_WRITE	0x00004000
+-#define REG_MIIDATA		0x0014
+-#define REG_MIISTS		0x0018
+-#define  REG_MIISTS_BUSY	0x00000001
+-#define REG_SELFCTL		0x0020
+-#define  REG_SELFCTL_RESET	0x00000001
+-#define REG_INTEN		0x0024
+-#define  REG_INTEN_TX		0x00000008
+-#define  REG_INTEN_RX		0x00000007
+-#define REG_INTSTSP		0x0028
+-#define  REG_INTSTS_TX		0x00000008
+-#define  REG_INTSTS_RX		0x00000004
+-#define REG_INTSTSC		0x002c
+-#define REG_AFP			0x004c
+-#define REG_INDAD0		0x0050
+-#define REG_INDAD1		0x0051
+-#define REG_INDAD2		0x0052
+-#define REG_INDAD3		0x0053
+-#define REG_INDAD4		0x0054
+-#define REG_INDAD5		0x0055
+-#define REG_GIINTMSK		0x0064
+-#define  REG_GIINTMSK_ENABLE	0x00008000
+-#define REG_BMCTL		0x0080
+-#define  REG_BMCTL_ENABLE_TX	0x00000100
+-#define  REG_BMCTL_ENABLE_RX	0x00000001
+-#define REG_BMSTS		0x0084
+-#define  REG_BMSTS_RX_ACTIVE	0x00000008
+-#define REG_RXDQBADD		0x0090
+-#define REG_RXDQBLEN		0x0094
+-#define REG_RXDCURADD		0x0098
+-#define REG_RXDENQ		0x009c
+-#define REG_RXSTSQBADD		0x00a0
+-#define REG_RXSTSQBLEN		0x00a4
+-#define REG_RXSTSQCURADD	0x00a8
+-#define REG_RXSTSENQ		0x00ac
+-#define REG_TXDQBADD		0x00b0
+-#define REG_TXDQBLEN		0x00b4
+-#define REG_TXDQCURADD		0x00b8
+-#define REG_TXDENQ		0x00bc
+-#define REG_TXSTSQBADD		0x00c0
+-#define REG_TXSTSQBLEN		0x00c4
+-#define REG_TXSTSQCURADD	0x00c8
+-#define REG_MAXFRMLEN		0x00e8
++/*----------------------------------------------------------------------------
++ * The name of the card.
++ * It is used for messages and in the requests for io regions, irqs and ...
++ * This device is not in a card but I used same name in skeleton.c file.
++ *--------------------------------------------------------------------------*/
++#define  cardname  "ep93xx-eth"
++
++
++/****  default MAC address   *************/
++static const U8  default_mac[6] = {0x00, 0xba, 0xd0, 0x0b, 0xad, 0x00};
++
++/*----------------------------------------------------------------------------
++ * Some definitions belong to the operation of this driver.
++ * You should understand how it affect to driver before any modification.
++ *--------------------------------------------------------------------------*/
++
++/****  Interrupt Sources in Use  *******************************************/
++/*#define  Default_IntSrc  (IntEn_RxMIE|IntEn_RxSQIE|IntEn_TxLEIE|IntEn_TIE|IntEn_TxSQIE|IntEn_RxEOFIE|IntEn_RxEOBIE|IntEn_RxHDRIE)
++*/
++#define  Default_IntSrc  (IntEn_TxSQIE|IntEn_RxEOFIE|IntEn_RxEOBIE|IntEn_RxHDRIE)
++
++/****  Length of Device Queue in number of entries
++       (must be less than or equal to 255)  ********************************/
++#define  LEN_QueRxDesc  64             /*length of Rx Descriptor Queue (4 or bigger) Must be power of 2.*/
++#define  LEN_QueRxSts   LEN_QueRxDesc  /*length of Rx Status Queue*/
++#define  LEN_QueTxDesc  8              /*length of Tx Descriptor Queue (4 or bigger) Must be power of 2.*/
++#define  LEN_QueTxSts   LEN_QueTxDesc  /*length of Tx Status Queue*/
++
++/****  Tx Queue fill-up level control  *************************************/
++#define  LVL_TxStop    LEN_QueTxDesc - 2    /*level to ask the stack to stop Tx*/
++#define  LVL_TxResume  2   /*level to ask the stack to resume Tx*/
++
++/****  Rx Buffer length in bytes  ******************************************/
++#define  LEN_RxBuf  (1518+2+16)  /*length of Rx buffer, must be 4-byte aligned*/
++#define  LEN_TxBuf   LEN_RxBuf
++
++/*----------------------------------------------------------------------------
++ * MACRO for ease
++ *--------------------------------------------------------------------------*/
++#define  Align32(a)  (((unsigned int)(a)+3)&~0x03)  /*32bit address alignment*/
++#define  IdxNext(idxCur,len)  (((idxCur)+1)%(len))  /*calc next array index number*/
++
++/****  malloc/free routine for DMA buffer  **********************************/
++ /*use non-cached DMA buffer*/
++#define  MALLOC_DMA(size, pPhyAddr)  dma_alloc_writecombine(NULL, (size), (dma_addr_t*)(pPhyAddr), GFP_KERNEL | GFP_DMA)
++//#define  FREE_DMA(size, vaddr, paddr)            dma_free_writecombine(NULL, (size), (vaddr), (paddr))
+ 
+-struct ep93xx_rdesc
+-{
+-	u32	buf_addr;
+-	u32	rdesc1;
+-};
++/*----------------------------------------------------------------------------
++ * DEBUGGING LEVELS
++ *
++ * 0 for normal operation
++ * 1 for slightly more details
++ * >2 for various levels of increasingly useless information
++ *    2 for interrupt tracking, status flags
++ *    3 for packet dumps, etc.
++ *--------------------------------------------------------------------------*/
++//#define _DBG_3
++//#define _DBG_2
++//#define _DBG_1
++//#define _DBG
++
++#ifdef _DBG_3
++#define PRINTK3( fmt, arg... )  printk( fmt, ##arg )
++#else
++#define PRINTK3( fmt, arg... )
++#endif
++
++#ifdef _DBG_2
++#define PRINTK2( fmt, arg... )  printk( fmt, ##arg )
++#else
++#define PRINTK2( fmt, arg... )
++#endif
++
++#ifdef _DBG_1
++#define PRINTK1( fmt, arg... )  printk( fmt, ##arg )
++#else
++#define PRINTK1( fmt, arg... )
++#endif
++
++#ifdef _DBG
++#define PRINTK(x) printk x
++#else
++#define PRINTK(x)
++#endif
++
++
++
++#define  _PRTK_ENTRY      PRINTK2   /*to trace function entries*/
++#define  _PRTK_SWERR      PRINTK    /*logical S/W error*/
++#define  _PRTK_SYSFAIL    PRINTK    /*system service failure*/
++#define  _PRTK_HWFAIL     PRINTK    /*H/W operation failure message*/
++#define  _PRTK_WARN       PRINTK1   /*warning information*/
++#define  _PRTK_INFO       PRINTK2   /*general information*/
++#define  _PRTK_ENTRY_ISR  PRINTK3   /*to trace function entries belong to ISR*/
++#define  _PRTK_WARN_ISR   PRINTK1   /*warning informations from ISR*/
++#define  _PRTK_INFO_ISR   PRINTK3   /*general informations from ISR*/
++#define  _PRTK_           PRINTK    /*for temporary print out*/
++
++#if 0
++# define  _PRTK_DUMP       PRINTK1   /*to dump large amount of debug info*/
++#endif
++
++/*----------------------------------------------------------------------------
++ * Custom Data Structures
++ *--------------------------------------------------------------------------*/
++
++/****  the information about the buffer passed to device.
++       there are matching bufferDescriptor informations
++       for each Tx/Rx Descriptor Queue entry to trace
++       the buffer within those queues.  ************************************/
++typedef  struct bufferDescriptor  {
++    void  *vaddr;                /*virtual address representing the buffer passed to device*/
++    int(*pFreeRtn)(void *pBuf);  /*free routine*/
++}  bufferDescriptor;
++
++/****  device privite informations
++       pointed by struct net_device::priv  *********************************/
++typedef  struct ep93xxEth_info  {
++    /****  static device informations  **********************************/
++    struct {
++        int                 id;            /*device instance ID (0 for 1st and so on)
++                                             must be first element of this structure*/
++        receiveDescriptor   *pQueRxDesc;   /*pointer to Rx Descriptor Queue*/
++        receiveStatus       *pQueRxSts;    /*pointer to Rx Status Queue*/
++        transmitDescriptor  *pQueTxDesc;   /*pointer to Tx Descriptor Queue*/
++        transmitStatus      *pQueTxSts;    /*pointer to Tx Status Queue*/
++        unsigned char       *pRxBuf;       /*base of Rx Buffer pool*/
++        unsigned char       *pTxBuf;       /*base of Tx Buffer pool*/
++        unsigned long       phyQueueBase;  /*physical address of device queues*/
++        unsigned long       phyQueRxDesc,  /*physical address of Rx Descriptor Queue*/
++                            phyQueRxSts,   /*physical address of Rx Status Queue*/
++                            phyQueTxDesc,  /*physical address of Tx Descriptor Queue*/
++                            phyQueTxSts,   /*physical address of Tx Status Queue*/
++                            phyRxBuf,      /*physical address of Rx Buffer pool*/
++                            phyTxBuf;      /*physical address of Tx Buffer pool*/
++        bufferDescriptor    *pRxBufDesc,   /*info of Rx Buffers*/
++                            *pTxBufDesc;   /*info of Tx Buffers*/
++        int                 miiIdPhy;      /*MII Bus ID of Ethernet PHY*/
++    }  s;
++    /****  dynamic information, subject to clear when device open  ******/
++    struct {
++        struct net_device_stats  stats;  /*statistic data*/
++        int  idxQueRxDesc,       /*next processing index of device queues*/
++             idxQueRxSts,
++             idxQueTxDescHead,
++             idxQueTxDescTail,
++             idxQueTxSts;
++        int  txStopped;          /*flag for Tx condition*/
++    }  d;
++}  ep93xxEth_info;
++
++/*----------------------------------------------------------------------------
++ * Global Variables
++ *--------------------------------------------------------------------------*/
++static int  numOfInstance = 0;  /*total number of device instance, 0 means the 1st instance.*/
++
++//static struct sk_buff gTxSkb;
++//static char gTxBuff[LEN_TxBuf];
+ 
+-#define RDESC1_NSOF		0x80000000
+-#define RDESC1_BUFFER_INDEX	0x7fff0000
+-#define RDESC1_BUFFER_LENGTH	0x0000ffff
++//static char gTxDataBuff[LEN_QueTxDesc][LEN_TxBuf];
+ 
+-struct ep93xx_rstat
+-{
+-	u32	rstat0;
+-	u32	rstat1;
+-};
++// To know if PHY auto-negotiation has done?
++static int gPhyAutoNegoDone=0;
+ 
+-#define RSTAT0_RFP		0x80000000
+-#define RSTAT0_RWE		0x40000000
+-#define RSTAT0_EOF		0x20000000
+-#define RSTAT0_EOB		0x10000000
+-#define RSTAT0_AM		0x00c00000
+-#define RSTAT0_RX_ERR		0x00200000
+-#define RSTAT0_OE		0x00100000
+-#define RSTAT0_FE		0x00080000
+-#define RSTAT0_RUNT		0x00040000
+-#define RSTAT0_EDATA		0x00020000
+-#define RSTAT0_CRCE		0x00010000
+-#define RSTAT0_CRCI		0x00008000
+-#define RSTAT0_HTI		0x00003f00
+-#define RSTAT1_RFP		0x80000000
+-#define RSTAT1_BUFFER_INDEX	0x7fff0000
+-#define RSTAT1_FRAME_LENGTH	0x0000ffff
++/*============================================================================
++ *
++ * Internal Routines
++ *
++ *==========================================================================*/
+ 
+-struct ep93xx_tdesc
++/*****************************************************************************
++* free_skb()
++*****************************************************************************/
++static int
++free_skb(void *pSkb)
+ {
+-	u32	buf_addr;
+-	u32	tdesc1;
+-};
++	dev_kfree_skb_irq((struct sk_buff*)pSkb);
++	return 0;
++}
+ 
+-#define TDESC1_EOF		0x80000000
+-#define TDESC1_BUFFER_INDEX	0x7fff0000
+-#define TDESC1_BUFFER_ABORT	0x00008000
+-#define TDESC1_BUFFER_LENGTH	0x00000fff
++/*****************************************************************************
++* waitOnReg32()
++*****************************************************************************/
++static int
++waitOnReg32(struct net_device *pD, int reg, unsigned long mask,
++	    unsigned long expect, int tout)
++{
++	int  i;
++	int  dt;
++
++	for (i = 0; i < 10000; ) {
++		dt = RegRd32(reg);
++		dt = (dt ^ expect) & mask;
++		if (dt == 0)
++			break;
++		if (tout)
++			i++;
++	}
+ 
+-struct ep93xx_tstat
+-{
+-	u32	tstat0;
+-};
++	return dt;
++}
+ 
+-#define TSTAT0_TXFP		0x80000000
+-#define TSTAT0_TXWE		0x40000000
+-#define TSTAT0_FA		0x20000000
+-#define TSTAT0_LCRS		0x10000000
+-#define TSTAT0_OW		0x04000000
+-#define TSTAT0_TXU		0x02000000
+-#define TSTAT0_ECOLL		0x01000000
+-#define TSTAT0_NCOLL		0x001f0000
+-#define TSTAT0_BUFFER_INDEX	0x00007fff
+-
+-struct ep93xx_descs
+-{
+-	struct ep93xx_rdesc	rdesc[RX_QUEUE_ENTRIES];
+-	struct ep93xx_tdesc	tdesc[TX_QUEUE_ENTRIES];
+-	struct ep93xx_rstat	rstat[RX_QUEUE_ENTRIES];
+-	struct ep93xx_tstat	tstat[TX_QUEUE_ENTRIES];
+-};
++#define  phy_wr(reg,dt)  _phy_write(pD, ((ep93xxEth_info*)pD->priv)->s.miiIdPhy, (reg), (dt))
++#define  phy_rd(reg)     _phy_read(pD, ((ep93xxEth_info*)pD->priv)->s.miiIdPhy, (reg))
++#define  phy_waitRdy()  waitOnReg32(pD, REG_MIISts,MIISts_Busy, ~MIISts_Busy, 1)
+ 
+-struct ep93xx_priv
++/*****************************************************************************
++* _phy_write()
++*****************************************************************************/
++static void
++_phy_write(struct net_device *pD, int idPhy, int reg, U16 dt)
+ {
+-	struct resource		*res;
+-	void			*base_addr;
+-	int			irq;
++	phy_waitRdy();
++	RegWr32(REG_MIIData, dt);
++	RegWr32(REG_MIICmd, MIICmd_OP_WR | ((idPhy & 0x1f) << 5) |
++		((reg & 0x1f) << 0));
++}
+ 
+-	struct ep93xx_descs	*descs;
+-	dma_addr_t		descs_dma_addr;
++/*****************************************************************************
++* _phy_read()
++*****************************************************************************/
++static U16
++_phy_read(struct net_device *pD,int idPhy,int reg)
++{
++	U16  dt;
+ 
+-	void			*rx_buf[RX_QUEUE_ENTRIES];
+-	void			*tx_buf[TX_QUEUE_ENTRIES];
++	phy_waitRdy();
++	RegWr32(REG_MIICmd, MIICmd_OP_RD | ((idPhy & 0x1f) << 5) |
++		((reg & 0x1f) << 0));
++	phy_waitRdy();
++	dt = (unsigned short)RegRd32(REG_MIIData);
+ 
+-	spinlock_t		rx_lock;
+-	unsigned int		rx_pointer;
+-	unsigned int		tx_clean_pointer;
+-	unsigned int		tx_pointer;
+-	spinlock_t		tx_pending_lock;
+-	unsigned int		tx_pending;
++	return dt;
++}
+ 
+-	struct net_device	*dev;
+-	struct napi_struct	napi;
++#ifndef _PRTK_DUMP
++#define _dbg_phy_dumpReg(pD)
++#else
++/*****************************************************************************
++* _dbg_phy_dumpReg()
++*****************************************************************************/
++static void
++_dbg_phy_dumpReg(struct net_device *pD)
++{
++	_PRTK_DUMP(("Dumping registers of Ethernet PHY\n"));
++	_PRTK_DUMP((" pD:0x%p, Eth Base Address:0x%x\n", pD,
++		    (unsigned int)pD->base_addr));
+ 
+-	struct net_device_stats	stats;
++	_PRTK_DUMP((" 0-3:0x%04x 0x%04x  0x%04x 0x%04x\n",
++		    phy_rd(0), phy_rd(1), phy_rd(2), phy_rd(3)));
++	_PRTK_DUMP((" 4-6:0x%04x 0x%04x  0x%04x\n",
++		    phy_rd(4), phy_rd(5), phy_rd(6)));
++	_PRTK_DUMP((" 16-19:0x%04x 0x%04x  0x%04x  0x%04x\n",
++		    phy_rd(16), phy_rd(17), phy_rd(18), phy_rd(19)));
++	_PRTK_DUMP((" 20:0x%04x\n", phy_rd(20)));
++}
++#endif
+ 
+-	struct mii_if_info	mii;
+-	u8			mdc_divisor;
+-};
++/*****************************************************************************
++* phy_autoNegotiation()
++*****************************************************************************/
++static int
++phy_autoNegotiation(struct net_device *pD)
++{
++	U16 val;
++	U16 oldVal;
++	U16 count = 0;
+ 
+-#define rdb(ep, off)		__raw_readb((ep)->base_addr + (off))
+-#define rdw(ep, off)		__raw_readw((ep)->base_addr + (off))
+-#define rdl(ep, off)		__raw_readl((ep)->base_addr + (off))
+-#define wrb(ep, off, val)	__raw_writeb((val), (ep)->base_addr + (off))
+-#define wrw(ep, off, val)	__raw_writew((val), (ep)->base_addr + (off))
+-#define wrl(ep, off, val)	__raw_writel((val), (ep)->base_addr + (off))
++	phy_wr(4, 0x01e1);  /*Set 802.3, 100M/10M Full/Half ability*/
++	phy_wr(0, (1 << 12) | (1 << 9)); /* enable auto negotiation*/
++	while (1) {
++		val = phy_rd(1); /* read BM status Reg*/
++		if (val & 0x0020) /* if Auto_Neg_complete?*/
++			break;
++		else {
++			if (count >= 3)
++				return -1;
++			mdelay(1000);//delay 1 second.
++			count++;
++		}
++	}
+ 
+-static int ep93xx_mdio_read(struct net_device *dev, int phy_id, int reg);
++	//CS8952 PHY needs the delay.  Otherwise it won't send the 1st frame.
++	mdelay(1000);//delay 1 second.
+ 
+-static struct net_device_stats *ep93xx_get_stats(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return &(ep->stats);
++	val = phy_rd(5); /* read ANLPAR Reg*/
++	if (val & 0x0140) { /* if 100M_FDX or 10M_FDX?*/
++		oldVal = RegRd16(REG_TestCTL);
++		/*Enable MAC's Full Duplex mode.*/
++		RegWr16(REG_TestCTL, oldVal | TestCTL_MFDX);
++	}
++
++	gPhyAutoNegoDone = 1;
++
++	return 0;
+ }
+ 
+-static int ep93xx_rx(struct net_device *dev, int processed, int budget)
++/*****************************************************************************
++* phy_init()
++*****************************************************************************/
++static int
++phy_init(struct net_device *pD)
++{
++	U32 oldVal;
++	int status = -1;
++	U16 val;
++
++	oldVal = RegRd32(REG_SelfCTL);
++
++	/*
++	 * Set MDC clock to be divided by 8 and disable PreambleSuppress bit
++	 */
++	RegWr32(REG_SelfCTL, 0x4e00);
++
++	/*
++	 * read BM status Reg; Link Status Bit remains cleared until the Reg is
++	 * read.
++	 */
++	val = phy_rd(1);
++
++	/*
++	 * read BMStaReg again to get the current link status
++	 */
++	val = phy_rd(1);
++	if (val & 0x0004)
++		status = phy_autoNegotiation(pD);
++
++	RegWr32(REG_SelfCTL, oldVal);
++
++	return status;
++}
++
++/*****************************************************************************
++* phy_reset()
++*****************************************************************************/
++#if 0
++static int
++phy_reset(struct net_device *pD)
+ {
+-	struct ep93xx_priv *ep = netdev_priv(dev);
++	int i;
+ 
+-	while (processed < budget) {
+-		int entry;
+-		struct ep93xx_rstat *rstat;
+-		u32 rstat0;
+-		u32 rstat1;
+-		int length;
+-		struct sk_buff *skb;
+ 
+-		entry = ep->rx_pointer;
+-		rstat = ep->descs->rstat + entry;
++	phy_wr(0, 1 << 15);
+ 
+-		rstat0 = rstat->rstat0;
+-		rstat1 = rstat->rstat1;
+-		if (!(rstat0 & RSTAT0_RFP) || !(rstat1 & RSTAT1_RFP))
++	for (i = 0; i < 1000; i++)
++		if ((phy_rd(0) & (1 << 15)) == 0)
+ 			break;
+ 
+-		rstat->rstat0 = 0;
+-		rstat->rstat1 = 0;
++	if ((phy_rd(0) & (1 << 15)) != 0) {
++		_PRTK_HWFAIL(("phy_reset(): PHY reset does not self-clear\n"));
++		return -1;
++	}
+ 
+-		if (!(rstat0 & RSTAT0_EOF))
+-			printk(KERN_CRIT "ep93xx_rx: not end-of-frame "
+-					 " %.8x %.8x\n", rstat0, rstat1);
+-		if (!(rstat0 & RSTAT0_EOB))
+-			printk(KERN_CRIT "ep93xx_rx: not end-of-buffer "
+-					 " %.8x %.8x\n", rstat0, rstat1);
+-		if ((rstat1 & RSTAT1_BUFFER_INDEX) >> 16 != entry)
+-			printk(KERN_CRIT "ep93xx_rx: entry mismatch "
+-					 " %.8x %.8x\n", rstat0, rstat1);
+-
+-		if (!(rstat0 & RSTAT0_RWE)) {
+-			ep->stats.rx_errors++;
+-			if (rstat0 & RSTAT0_OE)
+-				ep->stats.rx_fifo_errors++;
+-			if (rstat0 & RSTAT0_FE)
+-				ep->stats.rx_frame_errors++;
+-			if (rstat0 & (RSTAT0_RUNT | RSTAT0_EDATA))
+-				ep->stats.rx_length_errors++;
+-			if (rstat0 & RSTAT0_CRCE)
+-				ep->stats.rx_crc_errors++;
+-			goto err;
+-		}
+-
+-		length = rstat1 & RSTAT1_FRAME_LENGTH;
+-		if (length > MAX_PKT_SIZE) {
+-			printk(KERN_NOTICE "ep93xx_rx: invalid length "
+-					 " %.8x %.8x\n", rstat0, rstat1);
+-			goto err;
+-		}
+-
+-		/* Strip FCS.  */
+-		if (rstat0 & RSTAT0_CRCI)
+-			length -= 4;
+-
+-		skb = dev_alloc_skb(length + 2);
+-		if (likely(skb != NULL)) {
+-			skb_reserve(skb, 2);
+-			dma_sync_single(NULL, ep->descs->rdesc[entry].buf_addr,
+-						length, DMA_FROM_DEVICE);
+-			skb_copy_to_linear_data(skb, ep->rx_buf[entry], length);
+-			skb_put(skb, length);
+-			skb->protocol = eth_type_trans(skb, dev);
++	phy_wr(19, 0x00);
++	phy_wr(4, (1 << 8) | (1 << 7) | (1 << 6) | (1 << 5) | (0x01 << 0));
++	phy_wr(0, (1 << 12) | (1 << 9));
+ 
+-			dev->last_rx = jiffies;
++	return 0;
++}
++#endif
+ 
+-			netif_receive_skb(skb);
++#ifndef _PRTK_DUMP
++# define _dbg_ep93xxEth_dumpQueues(pD)
++#else
++/*****************************************************************************
++* _dbg_ep93xxEth_dumpQueues()
++*****************************************************************************/
++static void
++_dbg_ep93xxEth_dumpQueues(struct net_device *pD)
++{
++	struct ep93xxEth_info *pP = pD->priv;
++	int i;
+ 
+-			ep->stats.rx_packets++;
+-			ep->stats.rx_bytes += length;
+-		} else {
+-			ep->stats.rx_dropped++;
+-		}
++	_PRTK_DUMP(("Dumping Descriptor/Status Queues\n"));
++	_PRTK_DUMP((" pD:0x%p, Base Address:0x%x\n", pD,
++		    (unsigned int)pD->base_addr));
++
++	_PRTK_DUMP((" o Rx Status Queue: at 0x%p, %d entries\n",
++		    pP->s.pQueRxSts, LEN_QueRxSts));
++	for (i = 0; i < LEN_QueRxSts; i++)
++		_PRTK_DUMP(("  - %2d: 0x%08x 0x%08x \n", i,
++			    (unsigned int)pP->s.pQueRxSts[i].w.e0,
++			    (unsigned int)pP->s.pQueRxSts[i].w.e1));
++
++	_PRTK_DUMP((" o Rx Descriptor Queue: at 0x%p, %d entries\n",
++		    pP->s.pQueRxDesc, LEN_QueRxDesc));
++	for (i = 0; i < LEN_QueRxDesc; i++)
++		_PRTK_DUMP(("  - %2d: 0x%08x 0x%08x \n", i,
++			    (unsigned int)pP->s.pQueRxDesc[i].w.e0,
++			    (unsigned int)pP->s.pQueRxDesc[i].w.e1));
++
++	_PRTK_DUMP((" o Tx Status Queue: at 0x%p, %d entries\n",
++		    pP->s.pQueTxSts, LEN_QueTxSts));
++	for (i = 0; i < LEN_QueTxSts; i++)
++		_PRTK_DUMP(("  - %2d: 0x%08x \n", i,
++			    (unsigned int)pP->s.pQueTxSts[i].w.e0));
++
++	_PRTK_DUMP((" o Tx Descriptor Queue: at 0x%p, %d entries\n",
++		    pP->s.pQueTxDesc, LEN_QueTxDesc));
++	for (i = 0; i < LEN_QueTxDesc; i++)
++		_PRTK_DUMP(("  - %2d: 0x%08x 0x%08x \n", i,
++			    (unsigned int)pP->s.pQueTxDesc[i].w.e0,
++			    (unsigned int)pP->s.pQueTxDesc[i].w.e1));
++}
++#endif
++
++/*****************************************************************************
++* devQue_start()
++*
++  make descriptor queues active
++  allocate queue entries if needed
++  and set device registers up to make it operational
++  assume device has been initialized
++*
++*****************************************************************************/
++static int
++devQue_start(struct net_device *pD)
++{
++	int err;
++	struct ep93xxEth_info *pP = pD->priv;
++	int i;
++	void *pBuf;
++	U32 phyA;
+ 
+-err:
+-		ep->rx_pointer = (entry + 1) & (RX_QUEUE_ENTRIES - 1);
+-		processed++;
+-	}
++	RegWr32(REG_BMCtl, BMCtl_RxDis | BMCtl_TxDis | RegRd32(REG_BMCtl));
++	err = waitOnReg32(pD, REG_BMSts, BMSts_TxAct, ~BMSts_TxAct, 1);
++	err |= waitOnReg32(pD, REG_BMSts, BMSts_RxAct, ~BMSts_RxAct, 1);
++	if (err)
++		_PRTK_HWFAIL(("devQue_start(): BM does not stop\n"));
++
++	memset(pP->s.pQueTxSts, 0, sizeof(pP->s.pQueTxSts[0]) * LEN_QueTxSts);
++	pP->d.idxQueTxSts = 0;
++	RegWr32(REG_TxSBA, pP->s.phyQueTxSts);
++	RegWr32(REG_TxSCA, pP->s.phyQueTxSts);
++	RegWr16(REG_TxSBL, sizeof(pP->s.pQueTxSts[0]) * LEN_QueTxSts);
++	RegWr16(REG_TxSCL, sizeof(pP->s.pQueTxSts[0]) * LEN_QueTxSts);
++
++	memset(pP->s.pQueTxDesc, 0,
++	       sizeof(pP->s.pQueTxDesc[0]) * LEN_QueTxDesc);
++	pP->d.idxQueTxDescHead = pP->d.idxQueTxDescTail = 0;
++	RegWr32(REG_TxDBA, pP->s.phyQueTxDesc);
++	RegWr32(REG_TxDCA, pP->s.phyQueTxDesc);
++	RegWr16(REG_TxDBL, sizeof(pP->s.pQueTxDesc[0]) * LEN_QueTxDesc);
++	RegWr16(REG_TxDCL, sizeof(pP->s.pQueTxDesc[0]) * LEN_QueTxDesc);
++
++	memset(pP->s.pQueRxSts, 0, sizeof(pP->s.pQueRxSts[0]) * LEN_QueRxSts);
++	pP->d.idxQueRxSts = 0;
++	RegWr32(REG_RxSBA, pP->s.phyQueRxSts);
++	RegWr32(REG_RxSCA, pP->s.phyQueRxSts);
++	RegWr16(REG_RxSBL, sizeof(pP->s.pQueRxSts[0]) * LEN_QueRxSts);
++	RegWr16(REG_RxSCL, sizeof(pP->s.pQueRxSts[0]) * LEN_QueRxSts);
++
++	memset(pP->s.pQueRxDesc, 0,
++	       sizeof(pP->s.pQueRxDesc[0]) * LEN_QueRxDesc);
++	phyA = pP->s.phyRxBuf;
++	for (i = 0; i < LEN_QueRxDesc; i++) {
++		pP->s.pQueRxDesc[i].f.bi = i;
++		pP->s.pQueRxDesc[i].f.ba = phyA;
++		pP->s.pQueRxDesc[i].f.bl = LEN_RxBuf;
++		phyA += (LEN_RxBuf + 3) & ~0x03;
++	}
++	pP->d.idxQueRxDesc = 0;
++	RegWr32(REG_RxDBA, pP->s.phyQueRxDesc);
++	RegWr32(REG_RxDCA, pP->s.phyQueRxDesc);
++	RegWr16(REG_RxDBL, sizeof(pP->s.pQueRxDesc[0]) * LEN_QueRxDesc);
++	RegWr16(REG_RxDCL, sizeof(pP->s.pQueRxDesc[0]) * LEN_QueRxDesc);
++
++	pBuf = pP->s.pRxBuf;
++	for (i = 0; i < LEN_QueRxDesc; i++) {
++		pP->s.pRxBufDesc[i].vaddr = pBuf;
++		pP->s.pRxBufDesc[i].pFreeRtn = 0;
++		pBuf += (LEN_RxBuf + 3) & ~0x03;
++	}
++
++	memset(pP->s.pTxBufDesc, 0x0,
++	       sizeof(*pP->s.pTxBufDesc) * LEN_QueTxDesc);
++	pBuf = pP->s.pTxBuf;// = &gTxDataBuff[0][0];
++	for (i = 0; i < LEN_QueTxDesc; i++) {
++		pP->s.pTxBufDesc[i].vaddr =  pBuf + (i*LEN_TxBuf);//&gTxDataBuff[i][0];
++		pP->s.pTxBufDesc[i].pFreeRtn = 0;
++	}
++
++	RegWr32(REG_BMCtl, BMCtl_TxEn | BMCtl_RxEn | RegRd32(REG_BMCtl));
++	err = waitOnReg32(pD, REG_BMSts, BMSts_TxAct | BMSts_TxAct,
++			  BMSts_TxAct | BMSts_TxAct, 1);
++	if(err)
++		_PRTK_HWFAIL(("devQue_start(): BM does not start\n"));
+ 
+-	if (processed) {
+-		wrw(ep, REG_RXDENQ, processed);
+-		wrw(ep, REG_RXSTSENQ, processed);
+-	}
++	RegWr32(REG_RxSEQ, LEN_QueRxSts);
++	RegWr32(REG_RxDEQ, LEN_QueRxDesc);
+ 
+-	return processed;
++	return 0;
+ }
+ 
+-static int ep93xx_have_more_rx(struct ep93xx_priv *ep)
+-{
+-	struct ep93xx_rstat *rstat = ep->descs->rstat + ep->rx_pointer;
+-	return !!((rstat->rstat0 & RSTAT0_RFP) && (rstat->rstat1 & RSTAT1_RFP));
+-}
++/*****************************************************************************
++* devQue_init()
++  init device descriptor queues at system level
++  device access is not recommended at this point
++*
++*****************************************************************************/
++static int
++devQue_init(struct net_device *pD)
++{
++	struct ep93xxEth_info *pP = pD->priv;
++	void *pBuf;
++	int size;
++
++	if (sizeof(receiveDescriptor) != 8) {
++		_PRTK_SWERR(("devQue_init(): size of receiveDescriptor is not 8 bytes!!!\n"));
++		return -1;
++	} else if (sizeof(receiveStatus) != 8) {
++		_PRTK_SWERR(("devQue_init(): size of receiveStatus is not 8 bytes!!!\n"));
++		return -1;
++	} else if (sizeof(transmitDescriptor) != 8) {
++		_PRTK_SWERR(("devQue_init(): size of transmitDescriptor is not 8 bytes!!!\n"));
++		return -1;
++	} else if (sizeof(transmitStatus) != 4) {
++		_PRTK_SWERR(("devQue_init(): size of transmitStatus is not 4 bytes!!!\n"));
++		return -1;
++	}
++
++	size = sizeof(receiveDescriptor) * (LEN_QueRxDesc + 1) +
++		sizeof(receiveStatus) * (LEN_QueRxSts + 1) +
++		sizeof(transmitDescriptor) * (LEN_QueTxDesc + 1) +
++		sizeof(transmitStatus) * (LEN_QueTxSts + 1) +
++		sizeof(unsigned long) * 4;
++
++	pBuf = MALLOC_DMA(size, &pP->s.phyQueueBase);
++	if(!pBuf)
++		return -1;
++
++	pP->s.pQueRxDesc = (void *)Align32(pBuf);
++	pBuf = (char *)pBuf + sizeof(receiveDescriptor) * (LEN_QueRxDesc + 1);
++	pP->s.pQueRxSts = (void *)Align32(pBuf);
++	pBuf = (char *)pBuf + sizeof(receiveStatus) * (LEN_QueRxSts + 1);
++	pP->s.pQueTxDesc = (void *)Align32(pBuf);
++	pBuf = (char *)pBuf + sizeof(transmitDescriptor) * (LEN_QueTxDesc + 1);
++	pP->s.pQueTxSts = (void *)Align32(pBuf);
++	pBuf = (char *)pBuf + sizeof(transmitStatus) * (LEN_QueTxSts + 1);
++
++	pP->s.phyQueRxDesc = Align32(pP->s.phyQueueBase);
++	pP->s.phyQueRxSts = pP->s.phyQueRxDesc + ((U32)pP->s.pQueRxSts -
++						  (U32)pP->s.pQueRxDesc);
++	pP->s.phyQueTxDesc = pP->s.phyQueRxDesc + ((U32)pP->s.pQueTxDesc -
++						   (U32)pP->s.pQueRxDesc);
++	pP->s.phyQueTxSts = pP->s.phyQueRxDesc + ((U32)pP->s.pQueTxSts -
++						  (U32)pP->s.pQueRxDesc);
++
++	memset(pP->s.pQueRxDesc, 0, sizeof(receiveDescriptor) * LEN_QueRxDesc);
++	memset(pP->s.pQueRxSts, 0, sizeof(receiveStatus) * LEN_QueRxSts);
++	memset(pP->s.pQueTxDesc, 0,
++	       sizeof(transmitDescriptor) * LEN_QueTxDesc);
++	memset(pP->s.pQueTxSts, 0, sizeof(transmitStatus) * LEN_QueTxSts);
++
++	pP->s.pRxBuf = MALLOC_DMA(((LEN_RxBuf + 3) & ~0x03) * LEN_QueRxDesc,
++				  &pP->s.phyRxBuf);
++	if (!pP->s.pRxBuf) {
++		pP->s.pRxBuf = 0;
++		_PRTK_SYSFAIL(("devQue_init(): fail to allocate memory for RxBuf\n"));
++		return -1;
++	}
++
++        pP->s.pTxBuf = MALLOC_DMA(((LEN_TxBuf + 3) & ~0x03) * LEN_QueTxDesc,
++                                  &pP->s.phyTxBuf);
++        if (!pP->s.pTxBuf) {
++                pP->s.pTxBuf = 0;
++                _PRTK_SYSFAIL(("devQue_init(): fail to allocate memory for TxBuf\n"));
++                return -1;
++        }
++
++	size = sizeof(bufferDescriptor) * (LEN_QueRxDesc + LEN_QueTxDesc);
++	pBuf = kmalloc(size, GFP_KERNEL);
++	if(!pBuf) {
++		_PRTK_SYSFAIL(("devQue_initAll(): fail to allocate memory for buf desc\n"));
++		return -1;
++	}
++	memset(pBuf, 0x0, size);
++	pP->s.pRxBufDesc = pBuf;
++	pP->s.pTxBufDesc = pBuf + sizeof(bufferDescriptor) * LEN_QueRxDesc;
+ 
+-static int ep93xx_poll(struct napi_struct *napi, int budget)
+-{
+-	struct ep93xx_priv *ep = container_of(napi, struct ep93xx_priv, napi);
+-	struct net_device *dev = ep->dev;
+-	int rx = 0;
++	return 0;
++}
+ 
+-poll_some_more:
+-	rx = ep93xx_rx(dev, rx, budget);
+-	if (rx < budget) {
+-		int more = 0;
++#ifndef _PRTK_DUMP
++# define _dbg_ep93xxeth_dumpReg(pD)
++#else
++/*****************************************************************************
++* _dbg_ep93xxeth_dumpReg()
++*****************************************************************************/
++static void
++_dbg_ep93xxeth_dumpReg(struct net_device *pD)
++{
++	struct ep93xxEth_info  *pP = pD->priv;
++
++	_PRTK_DUMP(("Dumping registers of Ethernet Module Embedded within EP93xx\n"));
++	_PRTK_DUMP((" pD:0x%p, Base Address:0x%x\n", pD,
++		    (unsigned int)pD->base_addr));
++
++	_PRTK_DUMP((" RxCTL:0x%08x  TxCTL:0x%08x  TestCTL:0x%08x\n",
++		    (unsigned int)RegRd32(REG_RxCTL),
++		    (unsigned int)RegRd32(REG_TxCTL),
++		    (unsigned int)RegRd32(REG_TestCTL)));
++	_PRTK_DUMP((" SelfCTL:0x%08x  IntEn:0x%08x  IntStsP:0x%08x\n",
++		    (unsigned int)RegRd32(REG_SelfCTL),
++		    (unsigned int)RegRd32(REG_IntEn),
++		    (unsigned int)RegRd32(REG_IntStsP)));
++	_PRTK_DUMP((" GT:0x%08x  FCT:0x%08x  FCF:0x%08x\n",
++		    (unsigned int)RegRd32(REG_GT),
++		    (unsigned int)RegRd32(REG_FCT),
++		    (unsigned int)RegRd32(REG_FCF)));
++	_PRTK_DUMP((" AFP:0x%08x\n", (unsigned int)RegRd32(REG_AFP)));
++	_PRTK_DUMP((" TxCollCnt:0x%08x  RxMissCnt:0x%08x  RxRntCnt:0x%08x\n",
++		    (unsigned int)RegRd32(REG_TxCollCnt),
++		    (unsigned int)RegRd32(REG_RxMissCnt),
++		    (unsigned int)RegRd32(REG_RxRntCnt)));
++	_PRTK_DUMP((" BMCtl:0x%08x  BMSts:0x%08x\n",
++		    (unsigned int)RegRd32(REG_BMCtl),
++		    (unsigned int)RegRd32(REG_BMSts)));
++	_PRTK_DUMP((" RBCA:0x%08x  TBCA:0x%08x\n",
++		    (unsigned int)RegRd32(REG_RBCA),
++		    (unsigned int)RegRd32(REG_TBCA)));
++	_PRTK_DUMP((" RxDBA:0x%08x  RxDBL/CL:0x%08x  RxDCA:0x%08x\n",
++		    (unsigned int)RegRd32(REG_RxDBA),
++		    (unsigned int)RegRd32(REG_RxDBL),
++		    (unsigned int)RegRd32(REG_RxDCA)));
++	_PRTK_DUMP((" RxSBA:0x%08x  RxSBL/CL:0x%08x  RxSCA:0x%08x\n",
++		    (unsigned int)RegRd32(REG_RxSBA),
++		    (unsigned int)RegRd32(REG_RxSBL),
++		    (unsigned int)RegRd32(REG_RxSCA)));
++	_PRTK_DUMP((" RxDEQ:0x%08x  RxSEQ:0x%08x\n",
++		    (unsigned int)RegRd32(REG_RxDEQ),
++		    (unsigned int)RegRd32(REG_RxSEQ)));
++	_PRTK_DUMP((" TxDBA:0x%08x  TxDBL/CL:0x%08x  TxDCA:0x%08x\n",
++		    (unsigned int)RegRd32(REG_TxDBA),
++		    (unsigned int)RegRd32(REG_TxDBL),
++		    (unsigned int)RegRd32(REG_TxDCA)));
++	_PRTK_DUMP((" TxSBA:0x%08x  TxSBL/CL:0x%08x  TxSCA:0x%08x\n",
++		    (unsigned int)RegRd32(REG_TxSBA),
++		    (unsigned int)RegRd32(REG_TxSBL),
++		    (unsigned int)RegRd32(REG_TxSCA)));
++	_PRTK_DUMP((" TxDEQ:0x%08x\n",(unsigned int)RegRd32(REG_TxDEQ)));
++	_PRTK_DUMP((" RxBTH:0x%08x  TxBTH:0x%08x  RxSTH:0x%08x\n",
++		    (unsigned int)RegRd32(REG_RxBTH),
++		    (unsigned int)RegRd32(REG_TxBTH),
++		    (unsigned int)RegRd32(REG_RxSTH)));
++	_PRTK_DUMP((" TxSTH:0x%08x  RxDTH:0x%08x  TxDTH:0x%08x\n",
++		    (unsigned int)RegRd32(REG_TxSTH),
++		    (unsigned int)RegRd32(REG_RxDTH),
++		    (unsigned int)RegRd32(REG_TxDTH)));
++	_PRTK_DUMP((" MaxFL:0x%08x  RxHL:0x%08x\n",
++		    (unsigned int)RegRd32(REG_MaxFL),
++		    (unsigned int)RegRd32(REG_RxHL)));
++	_PRTK_DUMP((" MACCFG0-3:0x%08x 0x%08x 0x%08x 0x%08x\n",
++		    (unsigned int)RegRd32(REG_MACCFG0),
++		    (unsigned int)RegRd32(REG_MACCFG1),
++		    (unsigned int)RegRd32(REG_MACCFG2),
++		    (unsigned int)RegRd32(REG_MACCFG3)));
++
++	/*
++	_PRTK_DUMP((" ---INT Controller Reg---\n"));
++	_PRTK_DUMP((" RawIrqSts :0x%08x 0x%08x\n", _RegRd(U32,0x80800004),
++		    _RegRd(U32,0x80800018)));
++	_PRTK_DUMP((" IrqMask   :0x%08x 0x%08x\n", _RegRd(U32,0x80800008),
++		    _RegRd(U32,0x8080001c)));
++	_PRTK_DUMP((" MaskIrqSts:0x%08x 0x%08x\n", _RegRd(U32,0x80800000),
++		    _RegRd(U32,0x80800014)));
++	*/
++
++
++	_PRTK_DUMP(("Dumping private data:\n"));
++	_PRTK_DUMP((" d.txStopped:%d  d.idxQueTxSts:%d  d.idxQueTxDescHead:%d  d.idxQueTxDescTail:%d\n",
++		    pP->d.txStopped, pP->d.idxQueTxSts, pP->d.idxQueTxDescHead,
++		    pP->d.idxQueTxDescTail));
++	_PRTK_DUMP((" d.idxQueRxDesc:%d  d.idxQueRxSts:%d\n",
++		    pP->d.idxQueRxDesc, pP->d.idxQueRxSts));
++}
++#endif
++
++#define CRC_PRIME 0xFFFFFFFF
++#define CRC_POLYNOMIAL 0x04C11DB6
++/*****************************************************************************
++* calculate_hash_index()
++*****************************************************************************/
++static unsigned char
++calculate_hash_index(char *pMulticastAddr)
++{
++	unsigned long CRC;
++	unsigned char HashIndex;
++	unsigned char AddrByte;
++	unsigned char *pC;
++	unsigned long HighBit;
++	int Byte;
++	int Bit;
++
++	CRC = CRC_PRIME;
++	pC = pMulticastAddr;
++
++	for (Byte = 0; Byte < 6; Byte++) {
++		AddrByte = *pC;
++		pC++;
++
++		for (Bit = 8; Bit > 0; Bit--)
++		{
++			HighBit = CRC >> 31;
++			CRC <<= 1;
++
++			if (HighBit ^ (AddrByte & 1))
++			{
++				CRC ^= CRC_POLYNOMIAL;
++				CRC |= 1;
++		}
+ 
+-		spin_lock_irq(&ep->rx_lock);
+-		__netif_rx_complete(dev, napi);
+-		wrl(ep, REG_INTEN, REG_INTEN_TX | REG_INTEN_RX);
+-		if (ep93xx_have_more_rx(ep)) {
+-			wrl(ep, REG_INTEN, REG_INTEN_TX);
+-			wrl(ep, REG_INTSTSP, REG_INTSTS_RX);
+-			more = 1;
++			AddrByte >>= 1;
+ 		}
+-		spin_unlock_irq(&ep->rx_lock);
++	}
+ 
+-		if (more && netif_rx_reschedule(dev, napi))
+-			goto poll_some_more;
++	for (Bit = 0, HashIndex = 0; Bit < 6; Bit++)
++	{
++		HashIndex <<= 1;
++		HashIndex |= (unsigned char)(CRC & 1);
++		CRC >>= 1;
+ 	}
+ 
+-	return rx;
++	return HashIndex;
+ }
+ 
+-static int ep93xx_xmit(struct sk_buff *skb, struct net_device *dev)
++/*****************************************************************************
++* eth_setMulticastTbl()
++*****************************************************************************/
++static void
++eth_setMulticastTbl(struct net_device *pD, U8 *pBuf)
+ {
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	int entry;
+-
+-	if (unlikely(skb->len > MAX_PKT_SIZE)) {
+-		ep->stats.tx_dropped++;
+-		dev_kfree_skb(skb);
+-		return NETDEV_TX_OK;
+-	}
+-
+-	entry = ep->tx_pointer;
+-	ep->tx_pointer = (ep->tx_pointer + 1) & (TX_QUEUE_ENTRIES - 1);
+-
+-	ep->descs->tdesc[entry].tdesc1 =
+-		TDESC1_EOF | (entry << 16) | (skb->len & 0xfff);
+-	skb_copy_and_csum_dev(skb, ep->tx_buf[entry]);
+-	dma_sync_single(NULL, ep->descs->tdesc[entry].buf_addr,
+-				skb->len, DMA_TO_DEVICE);
+-	dev_kfree_skb(skb);
++	int i;
++	unsigned char position;
++	struct dev_mc_list *cur_addr;
+ 
+-	dev->trans_start = jiffies;
++	memset(pBuf, 0x00, 8);
+ 
+-	spin_lock_irq(&ep->tx_pending_lock);
+-	ep->tx_pending++;
+-	if (ep->tx_pending == TX_QUEUE_ENTRIES)
+-		netif_stop_queue(dev);
+-	spin_unlock_irq(&ep->tx_pending_lock);
++	cur_addr = pD->mc_list;
++	for (i = 0; i < pD->mc_count; i++, cur_addr = cur_addr->next) {
++		if (!cur_addr)
++			break;
++		if (!(*cur_addr->dmi_addr & 1))
++			continue;
++		position = calculate_hash_index(cur_addr->dmi_addr);
++		pBuf[position >> 3] |= 1 << (position & 0x07);
++	}
++}
+ 
+-	wrl(ep, REG_TXDENQ, 1);
++/*****************************************************************************
++* eth_indAddrWr()
++*****************************************************************************/
++static int
++eth_indAddrWr(struct net_device *pD, int afp, char *pBuf)
++{
++	U32 rxctl;
++	int i, len;
++
++	afp &= 0x07;
++	if (afp == 4 || afp == 5) {
++		_PRTK_SWERR(("eth_indAddrWr(): invalid afp value\n"));
++		return -1;
++	}
++	len = (afp == AFP_AFP_HASH) ? 8 : 6;
++
++	rxctl = RegRd32(REG_RxCTL);
++	RegWr32(REG_RxCTL, ~RxCTL_SRxON & rxctl);
++	RegWr32(REG_AFP, afp);
++	for (i = 0; i < len; i++)
++		RegWr8(REG_IndAD + i, pBuf[i]);
++	RegWr32(REG_RxCTL, rxctl);
+ 
+-	return NETDEV_TX_OK;
++	return 0;
+ }
+ 
+-static void ep93xx_tx_complete(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	int wake;
++/*****************************************************************************
++* eth_indAddrRd()
++*****************************************************************************/
++#if 0
++static int
++eth_indAddrRd(struct net_device *pD, int afp, char *pBuf)
++{
++	int i, len;
++
++	afp &= 0x07;
++	if (afp == 4 || afp == 5) {
++		_PRTK_SWERR(("eth_indAddrRd(): invalid afp value\n"));
++		return -1;
++	}
++
++	RegWr32(REG_AFP, afp);
++	len = (afp == AFP_AFP_HASH) ? 8 : 6;
++	for (i = 0; i < len; i++)
++		pBuf[i] = RegRd8(REG_IndAD + i);
+ 
+-	wake = 0;
++	return 0;
++}
++#endif
+ 
+-	spin_lock(&ep->tx_pending_lock);
+-	while (1) {
+-		int entry;
+-		struct ep93xx_tstat *tstat;
+-		u32 tstat0;
++/*****************************************************************************
++* eth_rxCtl()
++*****************************************************************************/
++static int
++eth_rxCtl(struct net_device *pD, int sw)
++{
++	/*
++	 * Workaround for MAC lost 60-byte-long frames: must enable
++	 * Runt_CRC_Accept bit
++	 */
++	RegWr32(REG_RxCTL,
++		sw ? RegRd32(REG_RxCTL) | RxCTL_SRxON | RxCTL_RCRCA :
++		RegRd32(REG_RxCTL) & ~RxCTL_SRxON);
+ 
+-		entry = ep->tx_clean_pointer;
+-		tstat = ep->descs->tstat + entry;
++	return 0;
++}
+ 
+-		tstat0 = tstat->tstat0;
+-		if (!(tstat0 & TSTAT0_TXFP))
+-			break;
++/*****************************************************************************
++* eth_chkTxLvl()
++*****************************************************************************/
++static void
++eth_chkTxLvl(struct net_device *pD)
++{
++	struct ep93xxEth_info *pP = pD->priv;
++	int idxQTxDescHd;
++	int filled;
++
++	idxQTxDescHd = pP->d.idxQueTxDescHead;
++
++	filled = idxQTxDescHd - pP->d.idxQueTxDescTail;
++	if (filled < 0)
++		filled += LEN_QueTxDesc;
++
++	if (pP->d.txStopped && filled <= (LVL_TxResume + 1)) {
++		pP->d.txStopped = 0;
++		pD->trans_start = jiffies;
++		netif_wake_queue(pD);
++	}
++}
+ 
+-		tstat->tstat0 = 0;
++/*****************************************************************************
++* eth_cleanUpTx()
++*****************************************************************************/
++static int
++eth_cleanUpTx(struct net_device *pD)
++{
++	struct ep93xxEth_info *pP = pD->priv;
++	transmitStatus *pQTxSts;
++	int idxSts, bi;
++
++	while (pP->s.pQueTxSts[pP->d.idxQueTxSts].f.txfp) {
++		idxSts = pP->d.idxQueTxSts;
++
++		pP->d.idxQueTxSts = IdxNext(pP->d.idxQueTxSts,LEN_QueTxSts);
++		pQTxSts = &pP->s.pQueTxSts[idxSts];
++		if (!pQTxSts->f.txfp) {
++			_PRTK_HWFAIL(("eth_cleanUpTx(): QueTxSts[%d]:x%08x is empty\n",
++				      idxSts, (int)pQTxSts->w.e0));
++			return -1;
++		}
+ 
+-		if (tstat0 & TSTAT0_FA)
+-			printk(KERN_CRIT "ep93xx_tx_complete: frame aborted "
+-					 " %.8x\n", tstat0);
+-		if ((tstat0 & TSTAT0_BUFFER_INDEX) != entry)
+-			printk(KERN_CRIT "ep93xx_tx_complete: entry mismatch "
+-					 " %.8x\n", tstat0);
++		pQTxSts->f.txfp = 0;
+ 
+-		if (tstat0 & TSTAT0_TXWE) {
+-			int length = ep->descs->tdesc[entry].tdesc1 & 0xfff;
++		bi = pQTxSts->f.bi;
++#if 0
++		if (pP->d.idxQueTxDescTail != bi) {
++			_PRTK_HWFAIL(("eth_cleanUpTx(): unmatching QTxSts[%d].BI:%d idxQTxDTail:%d\n",
++				      idxSts,bi, pP->d.idxQueTxDescTail));
++	}
++#endif
++
++		if (pP->s.pTxBufDesc[bi].pFreeRtn) {
++			(*pP->s.pTxBufDesc[bi].pFreeRtn)(pP->s.pTxBufDesc[bi].vaddr);
++			pP->s.pTxBufDesc[bi].pFreeRtn = 0;
++		}
+ 
+-			ep->stats.tx_packets++;
+-			ep->stats.tx_bytes += length;
++		if (pQTxSts->f.txwe) {
++			pP->d.stats.tx_packets++;
+ 		} else {
+-			ep->stats.tx_errors++;
++			pP->d.stats.tx_errors++;
++			if (pQTxSts->f.lcrs)
++				pP->d.stats.tx_carrier_errors++;
++			if(pQTxSts->f.txu)
++				pP->d.stats.tx_fifo_errors++;
++			if(pQTxSts->f.ecoll)
++				pP->d.stats.collisions++;
+ 		}
+ 
+-		if (tstat0 & TSTAT0_OW)
+-			ep->stats.tx_window_errors++;
+-		if (tstat0 & TSTAT0_TXU)
+-			ep->stats.tx_fifo_errors++;
+-		ep->stats.collisions += (tstat0 >> 16) & 0x1f;
+-
+-		ep->tx_clean_pointer = (entry + 1) & (TX_QUEUE_ENTRIES - 1);
+-		if (ep->tx_pending == TX_QUEUE_ENTRIES)
+-			wake = 1;
+-		ep->tx_pending--;
++		pP->d.idxQueTxDescTail = IdxNext(pP->d.idxQueTxDescTail,
++						 LEN_QueTxDesc);
+ 	}
+-	spin_unlock(&ep->tx_pending_lock);
+ 
+-	if (wake)
+-		netif_wake_queue(dev);
++	return 0;
+ }
+ 
+-static irqreturn_t ep93xx_irq(int irq, void *dev_id)
++/*****************************************************************************
++* eth_restartTx()
++*****************************************************************************/
++static int
++eth_restartTx(struct net_device *pD)
+ {
+-	struct net_device *dev = dev_id;
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	u32 status;
++	struct ep93xxEth_info *pP = pD->priv;
++	int i;
+ 
+-	status = rdl(ep, REG_INTSTSC);
+-	if (status == 0)
+-		return IRQ_NONE;
++	RegWr32(REG_GIntMsk, RegRd32(REG_GIntMsk) & ~GIntMsk_IntEn);
+ 
+-	if (status & REG_INTSTS_RX) {
+-		spin_lock(&ep->rx_lock);
+-		if (likely(netif_rx_schedule_prep(dev, &ep->napi))) {
+-			wrl(ep, REG_INTEN, REG_INTEN_TX);
+-			__netif_rx_schedule(dev, &ep->napi);
+-		}
+-		spin_unlock(&ep->rx_lock);
++	RegWr32(REG_TxCTL, RegRd32(REG_TxCTL) & ~TxCTL_STxON);
++	RegWr32(REG_BMCtl, RegRd32(REG_BMCtl) | BMCtl_TxDis);
++
++	RegWr32(REG_BMCtl, BMCtl_TxChR | RegRd32(REG_BMCtl));
++
++	for (i = 0; i < LEN_QueTxDesc; i++) {
++		if (pP->s.pTxBufDesc[i].pFreeRtn) {
++			pP->s.pTxBufDesc[i].pFreeRtn(pP->s.pTxBufDesc[i].vaddr);
++			pP->s.pTxBufDesc[i].pFreeRtn = 0;
++	}
++		pP->d.stats.tx_dropped++;
+ 	}
+ 
+-	if (status & REG_INTSTS_TX)
+-		ep93xx_tx_complete(dev);
++	memset(pP->s.pQueTxSts, 0, sizeof(pP->s.pQueTxSts[0]) * LEN_QueTxSts);
+ 
+-	return IRQ_HANDLED;
+-}
++	pP->d.txStopped = 0;
++	pP->d.idxQueTxSts = pP->d.idxQueTxDescHead = pP->d.idxQueTxDescTail =
++		0;
+ 
+-static void ep93xx_free_buffers(struct ep93xx_priv *ep)
+-{
+-	int i;
++	waitOnReg32(pD, REG_BMSts, BMCtl_TxChR, ~BMCtl_TxChR, 1);
++	RegWr32(REG_TxSBA, pP->s.phyQueTxSts);
++	RegWr32(REG_TxSCA, pP->s.phyQueTxSts);
++	RegWr16(REG_TxSBL, sizeof(pP->s.pQueTxSts[0]) * LEN_QueTxSts);
++	RegWr16(REG_TxSCL, sizeof(pP->s.pQueTxSts[0]) * LEN_QueTxSts);
++	RegWr32(REG_TxDBA, pP->s.phyQueTxDesc);
++	RegWr32(REG_TxDCA, pP->s.phyQueTxDesc);
++	RegWr16(REG_TxDBL, sizeof(pP->s.pQueTxDesc[0]) * LEN_QueTxDesc);
++	RegWr16(REG_TxDCL, sizeof(pP->s.pQueTxDesc[0]) * LEN_QueTxDesc);
+ 
+-	for (i = 0; i < RX_QUEUE_ENTRIES; i += 2) {
+-		dma_addr_t d;
++	RegWr32(REG_TxCTL, RegRd32(REG_TxCTL) | TxCTL_STxON);
++	RegWr32(REG_BMCtl, RegRd32(REG_BMCtl) | BMCtl_TxEn);
+ 
+-		d = ep->descs->rdesc[i].buf_addr;
+-		if (d)
+-			dma_unmap_single(NULL, d, PAGE_SIZE, DMA_FROM_DEVICE);
++	RegWr32(REG_GIntMsk, RegRd32(REG_GIntMsk) | GIntMsk_IntEn);
+ 
+-		if (ep->rx_buf[i] != NULL)
+-			free_page((unsigned long)ep->rx_buf[i]);
+-	}
++	return 0;
++}
+ 
+-	for (i = 0; i < TX_QUEUE_ENTRIES; i += 2) {
+-		dma_addr_t d;
++/*****************************************************************************
++* eth_reset()
++*****************************************************************************/
++static int
++eth_reset(struct net_device *pD)
++{
++	int err;
+ 
+-		d = ep->descs->tdesc[i].buf_addr;
+-		if (d)
+-			dma_unmap_single(NULL, d, PAGE_SIZE, DMA_TO_DEVICE);
++	RegWr8(REG_SelfCTL, SelfCTL_RESET);
++	err = waitOnReg32(pD, REG_SelfCTL, SelfCTL_RESET, ~SelfCTL_RESET, 1);
++	if (err)
++		_PRTK_WARN(("eth_reset(): Soft Reset does not self-clear\n"));
+ 
+-		if (ep->tx_buf[i] != NULL)
+-			free_page((unsigned long)ep->tx_buf[i]);
+-	}
++	//phy_reset(pD);
+ 
+-	dma_free_coherent(NULL, sizeof(struct ep93xx_descs), ep->descs,
+-							ep->descs_dma_addr);
++	return 0;
+ }
+ 
+-/*
+- * The hardware enforces a sub-2K maximum packet size, so we put
+- * two buffers on every hardware page.
+- */
+-static int ep93xx_alloc_buffers(struct ep93xx_priv *ep)
++/*****************************************************************************
++ . Function: eth_shutDown()
++ . Purpose:  closes down the Ethernet module
++ . Make sure to:
++ .	1. disable all interrupt mask
++ .	2. disable Rx
++ .	3. disable Tx
++ .
++ . TODO:
++ .   (1) maybe utilize power down mode.
++ .	Why not yet?  Because while the chip will go into power down mode,
++ .	the manual says that it will wake up in response to any I/O requests
++ .	in the register space.   Empirical results do not show this working.
++*
++*****************************************************************************/
++static int
++eth_shutDown(struct net_device *pD)
+ {
+-	int i;
+-
+-	ep->descs = dma_alloc_coherent(NULL, sizeof(struct ep93xx_descs),
+-				&ep->descs_dma_addr, GFP_KERNEL | GFP_DMA);
+-	if (ep->descs == NULL)
+-		return 1;
++	eth_reset(pD);
+ 
+-	for (i = 0; i < RX_QUEUE_ENTRIES; i += 2) {
+-		void *page;
+-		dma_addr_t d;
++	return 0;
++}
+ 
+-		page = (void *)__get_free_page(GFP_KERNEL | GFP_DMA);
+-		if (page == NULL)
+-			goto err;
++/*****************************************************************************
++*  eth_enable()
+ 
+-		d = dma_map_single(NULL, page, PAGE_SIZE, DMA_FROM_DEVICE);
+-		if (dma_mapping_error(d)) {
+-			free_page((unsigned long)page);
+-			goto err;
+-		}
++  Purpose:
++        Turn on device interrupt for interrupt driven operation.
++        Also turn on Rx but no Tx.
++*
++*****************************************************************************/
++static int
++eth_enable(struct net_device *pD)
++{
++	RegWr32(REG_IntEn, Default_IntSrc);
++	RegWr32(REG_GIntMsk, GIntMsk_IntEn);
++	eth_rxCtl(pD, 1);
+ 
+-		ep->rx_buf[i] = page;
+-		ep->descs->rdesc[i].buf_addr = d;
+-		ep->descs->rdesc[i].rdesc1 = (i << 16) | PKT_BUF_SIZE;
++	return 0;
++}
+ 
+-		ep->rx_buf[i + 1] = page + PKT_BUF_SIZE;
+-		ep->descs->rdesc[i + 1].buf_addr = d + PKT_BUF_SIZE;
+-		ep->descs->rdesc[i + 1].rdesc1 = ((i + 1) << 16) | PKT_BUF_SIZE;
+-	}
++/*****************************************************************************
++*  eth_init()
+ 
+-	for (i = 0; i < TX_QUEUE_ENTRIES; i += 2) {
+-		void *page;
+-		dma_addr_t d;
++  Purpose:
++        Reset and initialize the device.
++        Device should be initialized enough to function in polling mode.
++        Tx and Rx must be disabled and no INT generation.
++*
++*****************************************************************************/
++static int
++eth_init(struct net_device *pD)
++{
++	int status;
++
++	eth_reset(pD);
++
++	gPhyAutoNegoDone = 0;
++	status = phy_init(pD);
++	if (status != 0)
++		printk(KERN_WARNING "%s: No network cable detected!\n", pD->name);
++
++	RegWr32(REG_SelfCTL, 0x0f00);
++	RegWr32(REG_GIntMsk, 0x00);
++	RegWr32(REG_RxCTL, RxCTL_BA | RxCTL_IA0);
++	RegWr32(REG_TxCTL, 0x00);
++	RegWr32(REG_GT, 0x00);
++	RegWr32(REG_BMCtl, 0x00);
++	RegWr32(REG_RxBTH, (0x80 << 16) | (0x40 << 0));
++	RegWr32(REG_TxBTH, (0x80 << 16) | (0x40 << 0));
++	RegWr32(REG_RxSTH, (4 << 16) | (2 << 0));
++	RegWr32(REG_TxSTH, (4 << 16) | (2 << 0));
++	RegWr32(REG_RxDTH, (4 << 16) | (2 << 0));
++	RegWr32(REG_TxDTH, (4 << 16) | (2 << 0));
++	RegWr32(REG_MaxFL, ((1518 + 1) << 16) | (944 << 0));
++
++	RegRd32(REG_TxCollCnt);
++	RegRd32(REG_RxMissCnt);
++	RegRd32(REG_RxRntCnt);
+ 
+-		page = (void *)__get_free_page(GFP_KERNEL | GFP_DMA);
+-		if (page == NULL)
+-			goto err;
++	RegRd32(REG_IntStsC);
+ 
+-		d = dma_map_single(NULL, page, PAGE_SIZE, DMA_TO_DEVICE);
+-		if (dma_mapping_error(d)) {
+-			free_page((unsigned long)page);
+-			goto err;
+-		}
++	RegWr32(REG_TxCTL, TxCTL_STxON | RegRd32(REG_TxCTL));
+ 
+-		ep->tx_buf[i] = page;
+-		ep->descs->tdesc[i].buf_addr = d;
++	eth_indAddrWr(pD, AFP_AFP_IA0, &pD->dev_addr[0]);
+ 
+-		ep->tx_buf[i + 1] = page + PKT_BUF_SIZE;
+-		ep->descs->tdesc[i + 1].buf_addr = d + PKT_BUF_SIZE;
+-	}
++	devQue_start(pD);
+ 
+ 	return 0;
+-
+-err:
+-	ep93xx_free_buffers(ep);
+-	return 1;
+ }
+ 
+-static int ep93xx_start_hw(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	unsigned long addr;
+-	int i;
+-
+-	wrl(ep, REG_SELFCTL, REG_SELFCTL_RESET);
+-	for (i = 0; i < 10; i++) {
+-		if ((rdl(ep, REG_SELFCTL) & REG_SELFCTL_RESET) == 0)
+-			break;
+-		msleep(1);
+-	}
+-
+-	if (i == 10) {
+-		printk(KERN_CRIT DRV_MODULE_NAME ": hw failed to reset\n");
+-		return 1;
+-	}
+-
+-	wrl(ep, REG_SELFCTL, ((ep->mdc_divisor - 1) << 9));
+-
+-	/* Does the PHY support preamble suppress?  */
+-	if ((ep93xx_mdio_read(dev, ep->mii.phy_id, MII_BMSR) & 0x0040) != 0)
+-		wrl(ep, REG_SELFCTL, ((ep->mdc_divisor - 1) << 9) | (1 << 8));
+-
+-	/* Receive descriptor ring.  */
+-	addr = ep->descs_dma_addr + offsetof(struct ep93xx_descs, rdesc);
+-	wrl(ep, REG_RXDQBADD, addr);
+-	wrl(ep, REG_RXDCURADD, addr);
+-	wrw(ep, REG_RXDQBLEN, RX_QUEUE_ENTRIES * sizeof(struct ep93xx_rdesc));
+-
+-	/* Receive status ring.  */
+-	addr = ep->descs_dma_addr + offsetof(struct ep93xx_descs, rstat);
+-	wrl(ep, REG_RXSTSQBADD, addr);
+-	wrl(ep, REG_RXSTSQCURADD, addr);
+-	wrw(ep, REG_RXSTSQBLEN, RX_QUEUE_ENTRIES * sizeof(struct ep93xx_rstat));
+-
+-	/* Transmit descriptor ring.  */
+-	addr = ep->descs_dma_addr + offsetof(struct ep93xx_descs, tdesc);
+-	wrl(ep, REG_TXDQBADD, addr);
+-	wrl(ep, REG_TXDQCURADD, addr);
+-	wrw(ep, REG_TXDQBLEN, TX_QUEUE_ENTRIES * sizeof(struct ep93xx_tdesc));
+-
+-	/* Transmit status ring.  */
+-	addr = ep->descs_dma_addr + offsetof(struct ep93xx_descs, tstat);
+-	wrl(ep, REG_TXSTSQBADD, addr);
+-	wrl(ep, REG_TXSTSQCURADD, addr);
+-	wrw(ep, REG_TXSTSQBLEN, TX_QUEUE_ENTRIES * sizeof(struct ep93xx_tstat));
+-
+-	wrl(ep, REG_BMCTL, REG_BMCTL_ENABLE_TX | REG_BMCTL_ENABLE_RX);
+-	wrl(ep, REG_INTEN, REG_INTEN_TX | REG_INTEN_RX);
+-	wrl(ep, REG_GIINTMSK, 0);
++/*****************************************************************************
++* eth_isrRx()
++*
++*  Interrupt Service Routines
++*
++*****************************************************************************/
++static int
++eth_isrRx(struct net_device *pD)
++{
++	ep93xxEth_info *pP = pD->priv;
++	receiveStatus *pQRxSts;
++	int idxQRxStsHead;
++	int idxSts;
++	int cntStsProcessed, cntDescProcessed;
++	char *pDest;
++	struct sk_buff *pSkb;
++	int len;
++	UINT dt;
++
++	dt = RegRd32(REG_RxSCA);
++	idxQRxStsHead = (dt - pP->s.phyQueRxSts) / sizeof(pP->s.pQueRxSts[0]);
++	if (!(idxQRxStsHead >= 0 && idxQRxStsHead < LEN_QueRxSts)) {
++		_PRTK_HWFAIL(("eth_isrRx(): invalid REG_RxSCA:0x%x idx:%d (phyQueRxSts:0x%x Len:%x)\n",
++			      dt,idxQRxStsHead, (int)pP->s.phyQueRxSts,
++			      LEN_QueRxSts));
++		return -1;
++	}
++
++	cntStsProcessed = cntDescProcessed = 0;
++	while (idxQRxStsHead != pP->d.idxQueRxSts) {
++		idxSts = pP->d.idxQueRxSts;
++		pP->d.idxQueRxSts = IdxNext(pP->d.idxQueRxSts, LEN_QueRxSts);
++		pQRxSts = &pP->s.pQueRxSts[idxSts];
++		if (!pQRxSts->f.rfp) {
++			_PRTK_HWFAIL(("eth_isrRx(): QueRxSts[%d] is empty; Hd:%d\n",
++				      idxSts,idxQRxStsHead));
++			return -1;
++		}
++		pQRxSts->f.rfp = 0;
+ 
+-	for (i = 0; i < 10; i++) {
+-		if ((rdl(ep, REG_BMSTS) & REG_BMSTS_RX_ACTIVE) != 0)
+-			break;
+-		msleep(1);
+-	}
++		if(pQRxSts->f.eob) {
++			if(pQRxSts->f.bi == pP->d.idxQueRxDesc) {
++				pP->d.idxQueRxDesc =
++					IdxNext(pP->d.idxQueRxDesc,
++						LEN_QueRxDesc);
++				cntDescProcessed++;
++				if (pQRxSts->f.eof && pQRxSts->f.rwe) {
++					len = pQRxSts->f.fl;
++					pSkb = dev_alloc_skb(len + 5);
++					if (pSkb != NULL) {
++						skb_reserve(pSkb, 2);
++						pSkb->dev = pD;
++						pDest = skb_put(pSkb, len);
++
++						memcpy(pDest,
++						       pP->s.pRxBufDesc[pQRxSts->f.bi].vaddr,
++						       len);
++						pSkb->protocol =
++							eth_type_trans(pSkb,
++								       pD);
++						netif_rx(pSkb);
++						pP->d.stats.rx_packets++;
++						if(pQRxSts->f.am == 3)
++							pP->d.stats.multicast++;
++					} else
++						_PRTK_SYSFAIL(("eth_isrRx(): Low Memory, Rx dropped\n"));
++						pP->d.stats.rx_dropped++;
++				} else {
++					pP->d.stats.rx_errors++;
++					if (pQRxSts->f.oe)
++						pP->d.stats.rx_fifo_errors++;
++					if (pQRxSts->f.fe)
++						pP->d.stats.rx_frame_errors++;
++					if (pQRxSts->f.runt ||
++					    pQRxSts->f.edata)
++						pP->d.stats.rx_length_errors++;
++					if (pQRxSts->f.crce)
++						pP->d.stats.rx_crc_errors++;
++				}
++			} else
++				_PRTK_HWFAIL(("eth_isrRx(): unmatching QueRxSts[%d].BI:0x%x; idxQueRxDesc:0x%x\n",
++					      idxSts, pQRxSts->f.bi,
++					      pP->d.idxQueRxDesc));
++		}
+ 
+-	if (i == 10) {
+-		printk(KERN_CRIT DRV_MODULE_NAME ": hw failed to start\n");
+-		return 1;
++		cntStsProcessed++;
+ 	}
+ 
+-	wrl(ep, REG_RXDENQ, RX_QUEUE_ENTRIES);
+-	wrl(ep, REG_RXSTSENQ, RX_QUEUE_ENTRIES);
+-
+-	wrb(ep, REG_INDAD0, dev->dev_addr[0]);
+-	wrb(ep, REG_INDAD1, dev->dev_addr[1]);
+-	wrb(ep, REG_INDAD2, dev->dev_addr[2]);
+-	wrb(ep, REG_INDAD3, dev->dev_addr[3]);
+-	wrb(ep, REG_INDAD4, dev->dev_addr[4]);
+-	wrb(ep, REG_INDAD5, dev->dev_addr[5]);
+-	wrl(ep, REG_AFP, 0);
+-
+-	wrl(ep, REG_MAXFRMLEN, (MAX_PKT_SIZE << 16) | MAX_PKT_SIZE);
+-
+-	wrl(ep, REG_RXCTL, REG_RXCTL_DEFAULT);
+-	wrl(ep, REG_TXCTL, REG_TXCTL_ENABLE);
++	RegWr32(REG_RxSEQ, cntStsProcessed);
++	RegWr32(REG_RxDEQ, cntDescProcessed);
+ 
+ 	return 0;
+ }
+ 
+-static void ep93xx_stop_hw(struct net_device *dev)
++/*****************************************************************************
++* eth_isrTx()
++*****************************************************************************/
++static int
++eth_isrTx(struct net_device *pD)
+ {
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	int i;
++	eth_cleanUpTx(pD);
++	eth_chkTxLvl(pD);
++	return 0;
++}
+ 
+-	wrl(ep, REG_SELFCTL, REG_SELFCTL_RESET);
+-	for (i = 0; i < 10; i++) {
+-		if ((rdl(ep, REG_SELFCTL) & REG_SELFCTL_RESET) == 0)
+-			break;
+-		msleep(1);
+-	}
++/*****************************************************************************
++* ep93xxEth_isr()
++*****************************************************************************/
++static irqreturn_t
++ep93xxEth_isr(int irq,void *pDev)
++{
++	struct net_device *pD = pDev;
++	int lpCnt;
++	U32 intS;
++
++	lpCnt = 0;
++	do {
++		intS = RegRd32(REG_IntStsC);
+ 
+-	if (i == 10)
+-		printk(KERN_CRIT DRV_MODULE_NAME ": hw failed to reset\n");
++		if (!intS)
++			break;
++		if (intS & IntSts_RxSQ)
++			eth_isrRx(pD);
++		if (intS & IntSts_TxSQ)
++			eth_isrTx(pD);
++	} while (lpCnt++ < 64);
++
++	if (lpCnt)
++		return IRQ_HANDLED;
++	else
++		return IRQ_NONE;
+ }
+ 
+-static int ep93xx_open(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	int err;
++/*=========================================================
++ *  Exposed Driver Routines to the Outside World
++ *=======================================================*/
++
++/*****************************************************************************
++* ep93xxEth_getStats()
++*****************************************************************************/
++static struct net_device_stats *
++ep93xxEth_getStats(struct net_device *pD)
++{
++	return &((struct ep93xxEth_info *)pD->priv)->d.stats;
++}
++
++/*****************************************************************************
++* ep93xxEth_setMulticastList()
++*****************************************************************************/
++static void
++ep93xxEth_setMulticastList(struct net_device *pD)
++{
++	U8 tblMulti[8 + 1];
++
++	if (pD->flags & IFF_PROMISC)
++		RegWr32(REG_RxCTL, RxCTL_PA | RegRd32(REG_RxCTL));
++	else if(pD->flags & IFF_ALLMULTI) {
++		RegWr32(REG_RxCTL, RxCTL_MA |
++			(~RxCTL_PA & RegRd32(REG_RxCTL)));
++		eth_indAddrWr(pD, AFP_AFP_HASH,
++			      "\xff\xff\xff\xff\xff\xff\xff\xff");
++	} else if(pD->mc_count) {
++		RegWr32(REG_RxCTL, RxCTL_MA |
++			(~RxCTL_PA & RegRd32(REG_RxCTL)));
++		eth_setMulticastTbl(pD, &tblMulti[0]);
++		eth_indAddrWr(pD, AFP_AFP_HASH, &tblMulti[0]);
++	} else
++		RegWr32(REG_RxCTL,
++			~(RxCTL_PA | RxCTL_MA) & RegRd32(REG_RxCTL));
++}
++
++/*****************************************************************************
++* ep93xxEth_txTimeout()
++*****************************************************************************/
++static void
++ep93xxEth_txTimeout(struct net_device *pD)
++{
++	int status;
++
++	_PRTK_WARN(("ep93xxEth_txTimeout(): transmit timed out\n"));
++
++	if (gPhyAutoNegoDone == 0) {
++		status = phy_init(pD);
++		if (status != 0)
++		{
++			printk(KERN_WARNING "%s: No network cable detected!\n",
++			       pD->name);
++			return;
++		}
++	}
+ 
+-	if (ep93xx_alloc_buffers(ep))
+-		return -ENOMEM;
++	eth_restartTx(pD);
+ 
+-	if (is_zero_ether_addr(dev->dev_addr)) {
+-		random_ether_addr(dev->dev_addr);
+-		printk(KERN_INFO "%s: generated random MAC address "
+-			"%.2x:%.2x:%.2x:%.2x:%.2x:%.2x.\n", dev->name,
+-			dev->dev_addr[0], dev->dev_addr[1],
+-			dev->dev_addr[2], dev->dev_addr[3],
+-			dev->dev_addr[4], dev->dev_addr[5]);
+-	}
+-
+-	napi_enable(&ep->napi);
+-
+-	if (ep93xx_start_hw(dev)) {
+-		napi_disable(&ep->napi);
+-		ep93xx_free_buffers(ep);
+-		return -EIO;
+-	}
+-
+-	spin_lock_init(&ep->rx_lock);
+-	ep->rx_pointer = 0;
+-	ep->tx_clean_pointer = 0;
+-	ep->tx_pointer = 0;
+-	spin_lock_init(&ep->tx_pending_lock);
+-	ep->tx_pending = 0;
++	pD->trans_start = jiffies;
++	netif_wake_queue(pD);
++}
+ 
+-	err = request_irq(ep->irq, ep93xx_irq, IRQF_SHARED, dev->name, dev);
+-	if (err) {
+-		napi_disable(&ep->napi);
+-		ep93xx_stop_hw(dev);
+-		ep93xx_free_buffers(ep);
+-		return err;
++/*****************************************************************************
++* ep93xxEth_hardStartXmit()
++*****************************************************************************/
++static int
++ep93xxEth_hardStartXmit(struct sk_buff *pSkb, struct net_device *pD)
++{
++	struct ep93xxEth_info *pP = pD->priv;
++	transmitDescriptor *pQTxDesc;
++	int idxQTxDescHd;
++	int filled;
++	int status;
++
++	if (gPhyAutoNegoDone == 0) {
++		status = phy_init(pD);
++		if (status != 0)
++		{
++			return 1;
++		}
+ 	}
+ 
+-	wrl(ep, REG_GIINTMSK, REG_GIINTMSK_ENABLE);
++	idxQTxDescHd = pP->d.idxQueTxDescHead;
++	pQTxDesc = &pP->s.pQueTxDesc[idxQTxDescHd];
++
++	filled = idxQTxDescHd - pP->d.idxQueTxDescTail;
++	if (filled < 0)
++		filled += LEN_QueTxDesc;
++	filled += 1;
++
++	if(filled >= LVL_TxStop) {
++		netif_stop_queue(pD);
++		pP->d.txStopped = 1;
++		if(filled > LVL_TxStop) {
++			_PRTK_SYSFAIL(("ep93xxEth_hardStartXmit(): a Tx Request while stop\n"));
++			return 1;
++		}
++	}
+ 
+-	netif_start_queue(dev);
++	if (pSkb->len < 60) {
++		pQTxDesc->f.bl = 60;
++		memset(pP->s.pTxBufDesc[idxQTxDescHd].vaddr, 0, 60);
++	} else
++		pQTxDesc->f.bl = pSkb->len;
++	pQTxDesc->f.ba = pP->s.phyTxBuf+(idxQTxDescHd * LEN_TxBuf);//virt_to_bus(pP->s.pTxBufDesc[idxQTxDescHd].vaddr);
++	pQTxDesc->f.bi = idxQTxDescHd;
++	pQTxDesc->f.af = 0;
++	pQTxDesc->f.eof = 1;
++
++	memcpy(pP->s.pTxBufDesc[idxQTxDescHd].vaddr, pSkb->data, pSkb->len);
++	pP->s.pTxBufDesc[idxQTxDescHd].pFreeRtn = 0;
++
++	free_skb(pSkb);
++
++	pP->d.idxQueTxDescHead = IdxNext(pP->d.idxQueTxDescHead,
++					 LEN_QueTxDesc);
++	RegWr32(REG_TxDEQ, 1);
+ 
+ 	return 0;
+ }
+ 
+-static int ep93xx_close(struct net_device *dev)
++/*****************************************************************************
++ . ep93xxEth_close()
++ .
++ . this makes the board clean up everything that it can
++ . and not talk to the outside world.   Caused by
++ . an 'ifconfig ethX down'
++ *
++*****************************************************************************/
++static int
++ep93xxEth_close(struct net_device *pD)
+ {
+-	struct ep93xx_priv *ep = netdev_priv(dev);
++	netif_stop_queue(pD);
++	eth_shutDown(pD);
+ 
+-	napi_disable(&ep->napi);
+-	netif_stop_queue(dev);
+-
+-	wrl(ep, REG_GIINTMSK, 0);
+-	free_irq(ep->irq, dev);
+-	ep93xx_stop_hw(dev);
+-	ep93xx_free_buffers(ep);
++	/*MOD_DEC_USE_COUNT;*/
+ 
+ 	return 0;
+ }
+ 
+-static int ep93xx_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
++/*******************************************************
++ * ep93xxEth_open()
++ *
++ * Open and Initialize the board
++ *
++ * Set up everything, reset the card, etc ..
++ *
++ ******************************************************/
++static int
++ep93xxEth_open(struct net_device *pD)
+ {
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	struct mii_ioctl_data *data = if_mii(ifr);
++	int status;
++	struct ep93xxEth_info  *pP = pD->priv;
+ 
+-	return generic_mii_ioctl(&ep->mii, data, cmd, NULL);
+-}
++	memset(&pP->d, 0, sizeof(pP->d));
+ 
+-static int ep93xx_mdio_read(struct net_device *dev, int phy_id, int reg)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	int data;
+-	int i;
++	/*MOD_INC_USE_COUNT;*/
+ 
+-	wrl(ep, REG_MIICMD, REG_MIICMD_READ | (phy_id << 5) | reg);
++	status = eth_init(pD);
++	if (status != 0 )
++		return -EAGAIN;
+ 
+-	for (i = 0; i < 10; i++) {
+-		if ((rdl(ep, REG_MIISTS) & REG_MIISTS_BUSY) == 0)
+-			break;
+-		msleep(1);
+-	}
++	eth_enable(pD);
+ 
+-	if (i == 10) {
+-		printk(KERN_INFO DRV_MODULE_NAME ": mdio read timed out\n");
+-		data = 0xffff;
+-	} else {
+-		data = rdl(ep, REG_MIIDATA);
+-	}
++#if 0
++	_dbg_phy_dumpReg(pD);
++	_dbg_ep93xxeth_dumpReg(pD);
++	_dbg_ep93xxEth_dumpQueues(pD);
++#endif
+ 
+-	return data;
++	netif_start_queue(pD);
++
++	return 0;
+ }
+ 
+-static void ep93xx_mdio_write(struct net_device *dev, int phy_id, int reg, int data)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
++/*****************************************************************************
++ .
++ . ep93xxEth_probe( struct net_device * dev )
++ .   This is the first routine called to probe device existance
++ .   and initialize the driver if the device found.
++ .
++ .   Input parameters:
++ .	dev->base_addr == 0, try to find all possible locations
++ .	dev->base_addr == 1, return failure code
++ .	dev->base_addr == 2, always allocate space,  and return success
++ .	dev->base_addr == <anything else>   this is the address to check
++ .
++ .   Output:
++ .	0 --> there is a device
++ .	anything else, error
++
++*****************************************************************************/
++int ep93xxEth_probe(struct net_device *pD) {
++	struct ep93xxEth_info *pP;
++	int err;
+ 	int i;
+ 
+-	wrl(ep, REG_MIIDATA, data);
+-	wrl(ep, REG_MIICMD, REG_MIICMD_WRITE | (phy_id << 5) | reg);
+-
+-	for (i = 0; i < 10; i++) {
+-		if ((rdl(ep, REG_MIISTS) & REG_MIISTS_BUSY) == 0)
+-			break;
+-		msleep(1);
++	if (pD->priv == 0) {
++		pD->priv = kmalloc(sizeof(struct ep93xxEth_info), GFP_KERNEL);
++		if(pD->priv == 0)
++			return -ENOMEM;
+ 	}
++	memset(pD->priv, 0x00, sizeof(struct ep93xxEth_info));
+ 
+-	if (i == 10)
+-		printk(KERN_INFO DRV_MODULE_NAME ": mdio write timed out\n");
+-}
++	pP = pD->priv;
++	pP->s.id = numOfInstance;
++	pP->s.miiIdPhy = 1;
+ 
+-static void ep93xx_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
+-{
+-	strcpy(info->driver, DRV_MODULE_NAME);
+-	strcpy(info->version, DRV_MODULE_VERSION);
+-}
++	for (i = 0; i < 6; i++)
++		pD->dev_addr[i] = default_mac[i];
+ 
+-static int ep93xx_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_ethtool_gset(&ep->mii, cmd);
+-}
++	err = (int)request_irq(pD->irq, &ep93xxEth_isr, 0, cardname, pD);
++	if(err) {
++		kfree(pD->priv);
++		return -EAGAIN;
++	}
+ 
+-static int ep93xx_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_ethtool_sset(&ep->mii, cmd);
+-}
++	pD->open               = &ep93xxEth_open;
++	pD->stop               = &ep93xxEth_close;
++	pD->hard_start_xmit    = &ep93xxEth_hardStartXmit;
++	pD->tx_timeout         = &ep93xxEth_txTimeout;
++	pD->watchdog_timeo     = HZ * 5;
++	pD->get_stats          = &ep93xxEth_getStats;
++	pD->set_multicast_list = &ep93xxEth_setMulticastList;
+ 
+-static int ep93xx_nway_reset(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_nway_restart(&ep->mii);
+-}
++	ether_setup(pD);
+ 
+-static u32 ep93xx_get_link(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_link_ok(&ep->mii);
+-}
++	devQue_init(pD);
++	eth_reset(pD);
+ 
+-static struct ethtool_ops ep93xx_ethtool_ops = {
+-	.get_drvinfo		= ep93xx_get_drvinfo,
+-	.get_settings		= ep93xx_get_settings,
+-	.set_settings		= ep93xx_set_settings,
+-	.nway_reset		= ep93xx_nway_reset,
+-	.get_link		= ep93xx_get_link,
+-};
++	numOfInstance++;
+ 
+-struct net_device *ep93xx_dev_alloc(struct ep93xx_eth_data *data)
+-{
+-	struct net_device *dev;
++	err = register_netdev(pD);
++	if (err) {
++		free_irq(pD->irq, pD);
++		kfree(pP);
++		return err;
++	}
+ 
+-	dev = alloc_etherdev(sizeof(struct ep93xx_priv));
+-	if (dev == NULL)
+-		return NULL;
++	return 0;
++}
+ 
+-	memcpy(dev->dev_addr, data->dev_addr, ETH_ALEN);
++static int ep93xxEth_drv_probe(struct platform_device *pdev)
++{
++	struct net_device *ndev;
++	struct resource *res;
++	int ret;
+ 
+-	dev->get_stats = ep93xx_get_stats;
+-	dev->ethtool_ops = &ep93xx_ethtool_ops;
+-	dev->hard_start_xmit = ep93xx_xmit;
+-	dev->open = ep93xx_open;
+-	dev->stop = ep93xx_close;
+-	dev->do_ioctl = ep93xx_ioctl;
++	PRINTK("ep93xxEth_drv_probe init\n");
+ 
+-	dev->features |= NETIF_F_SG | NETIF_F_HW_CSUM;
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res){
++		printk("platform_get_resource fail\n");
++		return -ENODEV;
++	}
+ 
+-	return dev;
+-}
++	if (!request_mem_region(res->start, 0x10000, cardname)){
++		printk("request_mem_region fail\n");
++		return -EBUSY;
++	}
+ 
++	ndev = alloc_etherdev(sizeof(struct ep93xxEth_info));
++	if (!ndev) {
++		release_mem_region(res->start, 0x10000);
++		printk("alloc_etherdev fail\n");
++		return -ENOMEM;
++	}
+ 
+-static int ep93xx_eth_remove(struct platform_device *pdev)
+-{
+-	struct net_device *dev;
+-	struct ep93xx_priv *ep;
+ 
+-	dev = platform_get_drvdata(pdev);
+-	if (dev == NULL)
+-		return 0;
+-	platform_set_drvdata(pdev, NULL);
++	SET_NETDEV_DEV(ndev, &pdev->dev);
+ 
+-	ep = netdev_priv(dev);
++	ndev->base_addr = (unsigned long)ioremap(res->start, 0x10000);
++	if (!ndev->base_addr) {
++		printk("ioremap failed\n");
++		release_mem_region(res->start, 0x10000);
++		return -ENOMEM;
++	}
++	ndev->irq = platform_get_irq(pdev, 0);
+ 
+-	/* @@@ Force down.  */
+-	unregister_netdev(dev);
+-	ep93xx_free_buffers(ep);
+ 
+-	if (ep->base_addr != NULL)
+-		iounmap(ep->base_addr);
++	dev_set_drvdata(&pdev->dev, ndev);
+ 
+-	if (ep->res != NULL) {
+-		release_resource(ep->res);
+-		kfree(ep->res);
++	ret = ep93xxEth_probe(ndev);
++	if (ret != 0) {
++		free_netdev(ndev);
++		release_mem_region(res->start, 0x10000);
++		printk("ep93xxEth_probe fail\n");
++		return ret;
+ 	}
+ 
+-	free_netdev(dev);
+-
+ 	return 0;
+ }
+ 
+-static int ep93xx_eth_probe(struct platform_device *pdev)
++static int ep93xxEth_drv_remove(struct platform_device *pdev)
+ {
+-	struct ep93xx_eth_data *data;
+-	struct net_device *dev;
+-	struct ep93xx_priv *ep;
+-	int err;
++	struct net_device *ndev = dev_get_drvdata(&pdev->dev);
++	struct resource *res;
+ 
+-	if (pdev == NULL)
+-		return -ENODEV;
+-	data = pdev->dev.platform_data;
++	dev_set_drvdata(&pdev->dev, NULL);
+ 
+-	dev = ep93xx_dev_alloc(data);
+-	if (dev == NULL) {
+-		err = -ENOMEM;
+-		goto err_out;
+-	}
+-	ep = netdev_priv(dev);
+-	ep->dev = dev;
+-	netif_napi_add(dev, &ep->napi, ep93xx_poll, 64);
+-
+-	platform_set_drvdata(pdev, dev);
+-
+-	ep->res = request_mem_region(pdev->resource[0].start,
+-			pdev->resource[0].end - pdev->resource[0].start + 1,
+-			pdev->dev.bus_id);
+-	if (ep->res == NULL) {
+-		dev_err(&pdev->dev, "Could not reserve memory region\n");
+-		err = -ENOMEM;
+-		goto err_out;
+-	}
+-
+-	ep->base_addr = ioremap(pdev->resource[0].start,
+-			pdev->resource[0].end - pdev->resource[0].start);
+-	if (ep->base_addr == NULL) {
+-		dev_err(&pdev->dev, "Failed to ioremap ethernet registers\n");
+-		err = -EIO;
+-		goto err_out;
+-	}
+-	ep->irq = pdev->resource[1].start;
+-
+-	ep->mii.phy_id = data->phy_id;
+-	ep->mii.phy_id_mask = 0x1f;
+-	ep->mii.reg_num_mask = 0x1f;
+-	ep->mii.dev = dev;
+-	ep->mii.mdio_read = ep93xx_mdio_read;
+-	ep->mii.mdio_write = ep93xx_mdio_write;
+-	ep->mdc_divisor = 40;	/* Max HCLK 100 MHz, min MDIO clk 2.5 MHz.  */
++	unregister_netdev(ndev);
+ 
+-	err = register_netdev(dev);
+-	if (err) {
+-		dev_err(&pdev->dev, "Failed to register netdev\n");
+-		goto err_out;
+-	}
++	free_irq(ndev->irq, ndev);
+ 
+-	printk(KERN_INFO "%s: ep93xx on-chip ethernet, IRQ %d, "
+-			 "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x.\n", dev->name,
+-			ep->irq, data->dev_addr[0], data->dev_addr[1],
+-			data->dev_addr[2], data->dev_addr[3],
+-			data->dev_addr[4], data->dev_addr[5]);
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	release_mem_region(res->start, 0x10000);
+ 
+-	return 0;
++	free_netdev(ndev);
+ 
+-err_out:
+-	ep93xx_eth_remove(pdev);
+-	return err;
++	return 0;
+ }
+ 
+-
+ static struct platform_driver ep93xx_eth_driver = {
+-	.probe		= ep93xx_eth_probe,
+-	.remove		= ep93xx_eth_remove,
++	.probe		= ep93xxEth_drv_probe,
++	.remove		= ep93xxEth_drv_remove,
+ 	.driver		= {
+-		.name	= "ep93xx-eth",
++		.name	= cardname,
++		.owner	= THIS_MODULE,
+ 	},
+ };
+ 
+-static int __init ep93xx_eth_init_module(void)
++static int __init ep93xxEth_init(void)
+ {
+-	printk(KERN_INFO DRV_MODULE_NAME " version " DRV_MODULE_VERSION " loading\n");
++	PRINTK("ep93xxEth_init\n");
+ 	return platform_driver_register(&ep93xx_eth_driver);
+ }
+ 
+-static void __exit ep93xx_eth_cleanup_module(void)
++static void __exit ep93xxEth_cleanup(void)
+ {
+ 	platform_driver_unregister(&ep93xx_eth_driver);
+ }
+ 
+-module_init(ep93xx_eth_init_module);
+-module_exit(ep93xx_eth_cleanup_module);
++module_init(ep93xxEth_init);
++module_exit(ep93xxEth_cleanup);
++
++MODULE_AUTHOR("Cirrus Logic");
++MODULE_DESCRIPTION("EP93xx ethernet driver");
+ MODULE_LICENSE("GPL");
+Index: linux-2.6.24.7/drivers/net/arm/ep93xx_eth.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.24.7/drivers/net/arm/ep93xx_eth.h	2009-09-16 17:37:41.000000000 +0100
+@@ -0,0 +1,402 @@
++/*------------------------------------------------------------------------
++ * ep93xx_eth.h
++ * : header file of Ethernet Device Driver for Cirrus Logic EP93xx.
++ *
++ * Copyright (C) 2003 by Cirrus Logic www.cirrus.com
++ * This software may be used and distributed according to the terms
++ * of the GNU Public License.
++ *
++ * This file contains device related information like register info
++ * and register access method macros for the Ethernet device
++ * embedded within Cirrus Logic's EP93xx SOC chip.
++ *
++ * Information contained in this file was obtained from
++ * the EP9312 Manual Revision 0.12 and 0.14 from Cirrus Logic.
++ *
++ * History
++ * 05/18/01  Sungwook Kim  Initial release
++ * 03/25/2003  Melody Modified for EP92xx
++ *--------------------------------------------------------------------------*/
++
++
++#ifndef _EP9213_ETH_H_
++#define _EP9213_ETH_H_
++
++
++/*---------------------------------------------------------------
++ *  Definition of H/W Defects and Their Workarounds
++ *-------------------------------------------------------------*/
++
++
++
++/*---------------------------------------------------------------
++ *  Data types used in this driver
++ *-------------------------------------------------------------*/
++typedef  unsigned char   U8;
++typedef  unsigned short  U16;
++typedef  unsigned long   U32;
++typedef  unsigned int    UINT;
++
++
++
++/*---------------------------------------------------------------
++ * Definition of the registers.
++ * For details, refer to the datasheet  .
++ *
++ * Basically, most registers are 32 bits width register.
++ * But some are 16 bits and some are 6 or 8 bytes long.
++ *-------------------------------------------------------------*/
++
++#define  REG_RxCTL  0x0000  /*offset to Receiver Control Reg*/
++#define  RxCTL_PauseA  (1<<20)
++#define  RxCTL_RxFCE1  (1<<19)
++#define  RxCTL_RxFCE0  (1<<18)
++#define  RxCTL_BCRC    (1<<17)
++#define  RxCTL_SRxON   (1<<16)
++#define  RxCTL_RCRCA   (1<<13)
++#define  RxCTL_RA      (1<<12)
++#define  RxCTL_PA      (1<<11)
++#define  RxCTL_BA      (1<<10)
++#define  RxCTL_MA      (1<<9)
++#define  RxCTL_IAHA    (1<<8)
++#define  RxCTL_IA3     (1<<3)
++#define  RxCTL_IA2     (1<<2)
++#define  RxCTL_IA1     (1<<1)
++#define  RxCTL_IA0     (1<<0)
++
++#define  REG_TxCTL  0x0004  /*offset to Transmit Control Reg*/
++#define  TxCTL_DefDis  (1<<7)
++#define  TxCTL_MBE     (1<<6)
++#define  TxCTL_ICRC    (1<<5)
++#define  TxCTL_TxPD    (1<<5)
++#define  TxCTL_OColl   (1<<3)
++#define  TxCTL_SP      (1<<2)
++#define  TxCTL_PB      (1<<1)
++#define  TxCTL_STxON   (1<<0)
++
++#define  REG_TestCTL   0x0008  /*Test Control Reg, R/W*/
++#define  TestCTL_MACF  (1<<7)
++#define  TestCTL_MFDX  (1<<6)
++#define  TestCTL_DB    (1<<5)
++#define  TestCTL_MIIF  (1<<4)
++
++#define  REG_MIICmd  0x0010  /*offset to MII Command Reg, R/W*/
++#define  MIICmd_OP     (0x03<<14)
++#define  MIICmd_OP_RD  (2<<14)
++#define  MIICmd_OP_WR  (1<<14)
++#define  MIICmd_PHYAD  (0x1f<<5)
++#define  MIICmd_REGAD  (0x1f<<0)
++
++#define  REG_MIIData  0x0014  /*offset to MII Data Reg, R/W*/
++#define  MIIData_MIIData  (0xffff<<0)
++
++#define  REG_MIISts  0x0018  /*offset to MII Status Reg, R*/
++#define  MIISts_Busy  (1<<0)
++
++#define  REG_SelfCTL  0x0020  /*offset to Self Control Reg*/
++#define  SelfCTL_RWP    (1<<7)    /*Remote Wake Pin*/
++#define  SelfCTL_GPO0   (1<<5)
++#define  SelfCTL_PUWE   (1<<4)
++#define  SelfCTL_PDWE   (1<<3)
++#define  SelfCTL_MIIL   (1<<2)
++#define  SelfCTL_RESET  (1<<0)
++
++#define  REG_IntEn   0x0024  /*Interrupt Enable Reg, R/W*/
++#define  IntEn_RWIE    (1<<30)
++#define  IntEn_RxMIE   (1<<29)
++#define  IntEn_RxBIE   (1<<28)
++#define  IntEn_RxSQIE  (1<<27)
++#define  IntEn_TxLEIE  (1<<26)
++#define  IntEn_ECIE    (1<<25)
++#define  IntEn_TxUHIE  (1<<24)
++#define  IntEn_MOIE    (1<<18)
++#define  IntEn_TxCOIE  (1<<17)
++#define  IntEn_RxROIE  (1<<16)
++#define  IntEn_MIIIE   (1<<12)
++#define  IntEn_PHYSIE  (1<<11)
++#define  IntEn_TIE     (1<<10)
++#define  IntEn_SWIE    (1<<8)
++#define  IntEn_TxSQIE   (1<<3)
++#define  IntEn_RxEOFIE  (1<<2)
++#define  IntEn_RxEOBIE  (1<<1)
++#define  IntEn_RxHDRIE  (1<<0)
++
++#define  REG_IntStsP  0x0028  /*offset to Interrupt Status Preserve Reg, R/W*/
++#define  REG_IntStsC  0x002c  /*offset to Interrupt Status Clear Reg, R*/
++#define  IntSts_RWI    (1<<30)
++#define  IntSts_RxMI   (1<<29)
++#define  IntSts_RxBI   (1<<28)
++#define  IntSts_RxSQI  (1<<27)
++#define  IntSts_TxLEI  (1<<26)
++#define  IntSts_ECI    (1<<25)
++#define  IntSts_TxUHI  (1<<24)
++#define  IntSts_MOI    (1<<18)
++#define  IntSts_TxCOI  (1<<17)
++#define  IntSts_RxROI  (1<<16)
++#define  IntSts_MIII   (1<<12)
++#define  IntSts_PHYSI  (1<<11)
++#define  IntSts_TI     (1<<10)
++#define  IntSts_AHBE   (1<<9)
++#define  IntSts_SWI    (1<<8)
++#define  IntSts_OTHER  (1<<4)
++#define  IntSts_TxSQ   (1<<3)
++#define  IntSts_RxSQ   (1<<2)
++
++#define  REG_GT  0x0040  /*offset to General Timer Reg*/
++#define  GT_GTC  (0xffff<<16)
++#define  GT_GTP  (0xffff<<0)
++
++#define  REG_FCT  0x0044  /*offset to Flow Control Timer Reg*/
++#define  FCT_FCT  (0x00ffffff<<0)
++
++#define  REG_FCF  0x0048  /*offset to Flow Control Format Reg*/
++#define  FCF_MACCT  (0xffff<<16)
++#define  FCF_TPT    (0xffff<<0)
++
++#define  REG_AFP  0x004c  /*offset to Address Filter Pointer Reg*/
++#define  AFP_AFP  (0x07<<0)  /*Address Filter Pointer (bank control for REG_IndAD)*/
++#define  AFP_AFP_IA0   0       /*Primary Individual Address (MAC Addr)*/
++#define  AFP_AFP_IA1   1       /*Individual Address 1*/
++#define  AFP_AFP_IA2   2       /*Individual Address 2*/
++#define  AFP_AFP_IA3   3       /*Individual Address 3*/
++#define  AFP_AFP_DTxP  6       /*Destination Address of Tx Pause Frame*/
++#define  AFP_AFP_HASH  7       /*Hash Table*/
++
++#define  REG_IndAD      0x0050  /*offset to Individual Address Reg, n bytes, R/W*/
++
++#define  REG_GIntSts    0x0060  /*offset to Global Interrupt Status Reg (writing 1 will clear)*/
++#define  REG_GIntROS    0x0068  /*offset to Global Interrupt Status Read Only Reg*/
++#define  GIntSts_INT  (1<<15)     /*Global Interrupt Request Status*/
++
++#define  REG_GIntMsk    0x0064  /*offset to Global Interrupt Mask Reg*/
++#define  GIntMsk_IntEn  (1<<15)   /*Global Interrupt Enable*/
++
++#define  REG_GIntFrc    0x006c  /*offset to Global Interrupt Force Reg*/
++#define  GIntFrc_INT  (1<<15)     /*Force to set GIntSts*/
++
++#define  REG_TxCollCnt  0x0070  /*Transmit Collision Count Reg, R*/
++#define  REG_RxMissCnt  0x0074  /*Receive Miss Count Reg, R*/
++#define  REG_RxRntCnt   0x0078  /*Receive Runt Count Reg, R*/
++
++#define  REG_BMCtl  0x0080  /*offset to Bus Master Control Reg, R/W*/
++#define  BMCtl_MT     (1<<13)
++#define  BMCtl_TT     (1<<12)
++#define  BMCtl_UnH    (1<<11)
++#define  BMCtl_TxChR  (1<<10)
++#define  BMCtl_TxDis  (1<<9)
++#define  BMCtl_TxEn   (1<<8)
++#define  BMCtl_EH2    (1<<6)
++#define  BMCtl_EH1    (1<<5)
++#define  BMCtl_EEOB   (1<<4)
++#define  BMCtl_RxChR  (1<<2)
++#define  BMCtl_RxDis  (1<<1)
++#define  BMCtl_RxEn   (1<<0)
++
++#define  REG_BMSts  0x0084  /*offset to Bus Master Status Reg, R*/
++#define  BMSts_TxAct  (1<<7)
++#define  BMSts_TP     (1<<4)
++#define  BMSts_RxAct  (1<<3)
++#define  BMSts_QID    (0x07<<0)
++#define  BMSts_QID_RxDt   (0<<0)
++#define  BMSts_QID_TxDt   (1<<0)
++#define  BMSts_QID_RxSts  (2<<0)
++#define  BMSts_QID_TxSts  (3<<0)
++#define  BMSts_QID_RxDesc (4<<0)
++#define  BMSts_QID_TxDesc (5<<0)
++
++#define  REG_RBCA   0x0088  /*offset to Receive Buffer Current Address Reg, R*/
++#define  REG_TBCA   0x008c  /*offset to Transmit Buffer Current Address Reg, R*/
++
++#define  REG_RxDBA  0x0090  /*offset to Receive Descriptor Queue Base Address Reg, R/W*/
++#define  REG_RxDBL  0x0094  /*offset to Receive Descriptor Queue Base Length Reg, R/W, 16bits*/
++#define  REG_RxDCL  0x0096  /*offset to Receive Descriptor Queue Current Length Reg, R/W, 16bits*/
++#define  REG_RxDCA  0x0098  /*offset to Receive Descriptor Queue Current Address Reg, R/W*/
++
++#define  REG_RxDEQ  0x009c  /*offset to Receive Descriptor Enqueue Reg, R/W*/
++#define  RxDEQ_RDV  (0xffff<<16)  /*R 16bit; Receive Descriptor Value*/
++#define  RxDEQ_RDI  (0xff<<0)     /*W 8bit; Receive Descriptor Increment*/
++
++#define  REG_RxSBA  0x00a0  /*offset to Receive Status Queue Base Address Reg, R/W*/
++#define  REG_RxSBL  0x00a4  /*offset to Receive Status Queue Base Length Reg, R/W, 16bits*/
++#define  REG_RxSCL  0x00a6  /*offset to Receive Status Queue Current Length Reg, R/W, 16bits*/
++#define  REG_RxSCA  0x00a8  /*offset to Receive Status Queue Current Address Reg, R/W*/
++
++#define  REG_RxSEQ  0x00ac  /*offset to Receive Status Queue Current Address Reg, R/W*/
++#define  RxSEQ_RSV  (0xffff<<16)
++#define  RxSEQ_RSI  (0xff<<0)
++
++#define  REG_TxDBA  0x00b0  /*offset to Transmit Descriptor Queue Base Address Reg, R/W*/
++#define  REG_TxDBL  0x00b4  /*offset to Transmit Descriptor Queue Base Length Reg, R/W, 16bits*/
++#define  REG_TxDCL  0x00b6  /*offset to Transmit Descriptor Queue Current Length Reg, R/W, 16bits*/
++#define  REG_TxDCA  0x00b8  /*offset to Transmit Descriptor Queue Current Address Reg, R/W*/
++
++#define  REG_TxDEQ  0x00bc  /*offset to Transmit Descriptor Queue Current Address Reg, R/W*/
++#define  TxDEQ_TDV  (0xffff<<16)
++#define  TxDEQ_TDI  (0xff<<0)
++
++#define  REG_TxSBA  0x00c0  /*offset to Transmit Status Queue Base Address Reg, R/W*/
++#define  REG_TxSBL  0x00c4  /*offset to Transmit Status Queue Base Length Reg, R/W, 16bits*/
++#define  REG_TxSCL  0x00c6  /*offset to Transmit Status Queue Current Length Reg, R/W, 16bits*/
++#define  REG_TxSCA  0x00c8  /*offset to Transmit Status Queue Current Address Reg, R/W*/
++
++#define  REG_RxBTH  0x00d0  /*offset to Receive Buffer Threshold Reg, R/W*/
++#define  RxBTH_RDHT  (0x03ff<<16)
++#define  RxBTH_RDST  (0x03ff<<0)
++
++#define  REG_TxBTH  0x00d4  /*offset to Transmit Buffer Threshold Reg, R/W*/
++#define  TxBTH_TDHT  (0x03ff<<16)
++#define  TxBTH_TDST  (0x03ff<<0)
++
++#define  REG_RxSTH  0x00d8  /*offset to Receive Status Threshold Reg, R/W*/
++#define  RxSTH_RSHT  (0x003f<<16)
++#define  RxSTH_RSST  (0x003f<<0)
++
++#define  REG_TxSTH  0x00dc  /*offset to Transmit Status Threshold Reg, R/W*/
++#define  TxSTH_TSHT  (0x003f<<16)
++#define  TxSTH_TSST  (0x003f<<0)
++
++#define  REG_RxDTH  0x00e0  /*offset to Receive Descriptor Threshold Reg, R/W*/
++#define  RxDTH_RDHT  (0x003f<<16)
++#define  RxDTH_RDST  (0x003f<<0)
++
++#define  REG_TxDTH  0x00e4  /*offset to Transmit Descriptor Threshold Reg, R/W*/
++#define  TxDTH_TDHT  (0x003f<<16)
++#define  TxDTH_TDST  (0x003f<<0)
++
++#define  REG_MaxFL  0x00e8  /*offset to Max Frame Length Reg, R/W*/
++#define  MaxFL_MFL  (0x07ff<<16)
++#define  MaxFL_TST  (0x07ff<<0)
++
++#define  REG_RxHL  0x00ec  /*offset to Receive Header Length Reg, R/W*/
++#define  RxHL_RHL2  (0x07ff<<16)
++#define  RxHL_RHL1  (0x03ff<<0)
++
++#define  REG_MACCFG0  0x0100  /*offset to Test Reg #0, R/W*/
++#define  MACCFG0_DbgSel  (1<<7)
++#define  MACCFG0_LCKEN   (1<<6)
++#define  MACCFG0_LRATE   (1<<5)
++#define  MACCFG0_RXERR   (1<<4)
++#define  MACCFG0_BIT33   (1<<2)
++#define  MACCFG0_PMEEN   (1<<1)
++#define  MACCFG0_PMEST   (1<<0)
++
++#define  REG_MACCFG1  0x0104  /*offset to Test Reg #1, R/W*/
++#define  REG_MACCFG2  0x0108  /*offset to Test Reg #2, R*/
++#define  REG_MACCFG3  0x010c  /*offset to Test Reg #3, R*/
++
++
++
++/*---------------------------------------------------------------
++ * Definition of Descriptor/Status Queue Entry
++ *-------------------------------------------------------------*/
++
++typedef  union receiveDescriptor  {  /*data structure of Receive Descriptor Queue Entry*/
++    struct {        /*whole value*/
++        U32  e0,      /*1st dword entry*/
++             e1;      /*2nd dword entry*/
++    }  w;
++    struct {        /*bit field definitions*/
++        U32  ba:32,   /*Buffer Address (keep in mind this is physical address)*/
++             bl:16,   /*b15-0; Buffer Length*/
++             bi:15,   /*b30-16; Buffer Index*/
++             nsof:1;  /*b31; Not Start Of Frame*/
++    }  f;
++}  receiveDescriptor;
++
++
++typedef  union receiveStatus  {  /*data structure of Receive Status Queue Entry*/
++    struct {         /*whole word*/
++        U32  e0,       /*1st dword entry*/
++             e1;       /*2nd dword entry*/
++    }  w;
++    struct {         /*bit field*/
++        U32  rsrv1:8,  /*b7-0: reserved*/
++             hti:6,    /*b13-8: Hash Table Index*/
++             rsrv2:1,  /*b14: reserved*/
++             crci:1,   /*b15: CRC Included*/
++             crce:1,   /*b16: CRC Error*/
++             edata:1,  /*b17: Extra Data*/
++             runt:1,   /*b18: Runt Frame*/
++             fe:1,     /*b19: Framing Error*/
++             oe:1,     /*b20: Overrun Error*/
++             rxerr:1,  /*b21: Rx Error*/
++             am:2,     /*b23-22: Address Match*/
++             rsrv3:4,  /*b27-24: reserved*/
++             eob:1,    /*b28: End Of Buffer*/
++             eof:1,    /*b29: End Of Frame*/
++             rwe:1,    /*b30: Received Without Error*/
++             rfp:1,    /*b31: Receive Frame Processed*/
++             fl:16,    /*b15-0: frame length*/
++             bi:15,    /*b30-16: Buffer Index*/
++             rfp2:1;   /*b31: Receive Frame Processed at 2nd word*/
++    }  f;
++}  receiveStatus;
++
++
++typedef  union transmitDescriptor  {  /*data structure of Transmit Descriptor Queue Entry*/
++    struct {         /*whole value*/
++        U32  e0,       /*1st dword entry*/
++             e1;       /*2nd dword entry*/
++    }  w;
++    struct {         /*bit field*/
++        U32  ba:32,    /*b31-0: Buffer Address (keep in mind this is physical address)*/
++             bl:12,    /*b11-0: Buffer Length*/
++             rsrv1:3,  /*b14-12: reserved*/
++             af:1,     /*b15: Abort Frame*/
++             bi:15,    /*b30-16: Buffer Index*/
++             eof:1;    /*b31: End Of Frame*/
++
++    }  f;
++}  transmitDescriptor;
++
++
++typedef  union transmitStatus  {  /*data structure of Transmit Status Queue Entry*/
++    struct {         /*whole word*/
++        U32  e0;       /*1st dword entry*/
++    }  w;
++    struct {         /*bit field*/
++        U32  bi:15,    /*b14-0: Buffer Index*/
++             rsrv3:1,  /*b15: reserved*/
++             ncoll:5,  /*b20-16: Number of Collisions*/
++             rsrv2:3,  /*b23-21: reserved*/
++             ecoll:1,  /*b24: Excess Collisions*/
++             txu:1,    /*b25: Tx Underrun*/
++             ow:1,     /*b26: Out of Window*/
++             rsrv1:1,  /*b27: reserved*/
++             lcrs:1,   /*b28: Loss of CRS*/
++             fa:1,     /*b29: Frame Abort*/
++             txwe:1,   /*b30: Transmitted Without Error*/
++             txfp:1;   /*b31: Transmit Frame Processed*/
++    }  f;
++}  transmitStatus;
++
++
++
++/*---------------------------------------------------------------
++ *  Size of device registers occupied in memory/IO address map
++ *-------------------------------------------------------------*/
++#define  DEV_REG_SPACE  0x00010000
++
++/*
++#define U8 unsigned char
++#define U16 unsigned short
++#define U32 unsigned long
++*/
++
++/*---------------------------------------------------------------
++ * A definition of register access macros
++ *-------------------------------------------------------------*/
++#define  _RegRd(type,ofs)     (*(volatile type*)(ofs))
++#define  _RegWr(type,ofs,dt)  *(volatile type*)(ofs)=((type)(dt))
++
++#define  RegRd8(ofs)   _RegRd(U8,(char*)pD->base_addr+(ofs))
++#define  RegRd16(ofs)  _RegRd(U16,(char*)pD->base_addr+(ofs))
++#define  RegRd32(ofs)  _RegRd(U32,(char*)pD->base_addr+(ofs))
++#define  RegWr8(ofs,dt)   _RegWr(U8,(char*)pD->base_addr+(ofs),(dt))
++#define  RegWr16(ofs,dt)  _RegWr(U16,(char*)pD->base_addr+(ofs),(dt))
++#define  RegWr32(ofs,dt)  _RegWr(U32,(char*)pD->base_addr+(ofs),(dt))
++
++
++
++#endif  /* _EP9213_ETH_H_ */
++

@@ -1,0 +1,17 @@
+Copyright (c) 2009 MontaVista Software, Inc.  All rights reserved.
+
+---
+ etc/udev/rules.d/60-persistent-storage.rules |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- udev-100.orig/etc/udev/rules.d/60-persistent-storage.rules
++++ udev-100/etc/udev/rules.d/60-persistent-storage.rules
+@@ -5,7 +5,7 @@ ACTION!="add", GOTO="persistent_storage_
+ SUBSYSTEM!="block", GOTO="persistent_storage_end"
+ 
+ # skip rules for inappropriate block devices
+-KERNEL=="ram*|loop*|fd*|nbd*|dm-*", GOTO="persistent_storage_end"
++KERNEL=="ram*|loop*|fd*|mtd*|nbd*|dm-*", GOTO="persistent_storage_end"
+ 
+ # never access non-cdrom removable ide devices, the drivers are causing event loops on open()
+ KERNEL=="hd*[!0-9]", ATTRS{removable}=="1", DRIVERS=="ide-cs|ide-floppy", GOTO="persistent_storage_end"

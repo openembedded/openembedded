@@ -3,7 +3,7 @@ HOMEPAGE = "http://tslib.berlios.de/"
 AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
-INC_PR = "r22"
+INC_PR = "r23"
 
 SRC_URI += "\
   file://ts.conf \
@@ -61,6 +61,7 @@ PACKAGE_ARCH_tslib-conf_jornada7xx = "${MACHINE_ARCH}"
 PACKAGE_ARCH_tslib-conf_netbook-pro = "${MACHINE_ARCH}"
 PACKAGE_ARCH_tslib-conf_omap1610h2 = "${MACHINE_ARCH}"
 PACKAGE_ARCH_tslib-conf_omap5912osk = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_omap3-pandora = "${MACHINE_ARCH}"
 PACKAGE_ARCH_tslib-conf_simpad = "${MACHINE_ARCH}"
 
 PACKAGES =+ "tslib-conf libts-dev tslib-tests tslib-calibrate"
@@ -78,3 +79,4 @@ FILES_${PN} = "${libdir}/*.so.* ${libdir}/ts/*.so*"
 FILES_libts-dev = "${FILES_tslib-dev} ${libdir}/ts/*.la"
 FILES_tslib-calibrate += "${bindir}/ts_calibrate"
 FILES_tslib-tests = "${bindir}/ts_harvest ${bindir}/ts_print ${bindir}/ts_print_raw ${bindir}/ts_test"
+

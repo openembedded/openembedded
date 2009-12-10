@@ -1,0 +1,63 @@
+Index: ./python/src/eightball.py
+===================================================================
+--- ./python/src/eightball.py	(revision 45)
++++ ./python/src/eightball.py	(working copy)
+@@ -47,12 +47,6 @@
+ 	shakeTimer = None
+ 
+ 	def __init__( self, size ):
+-		# Check if we can use accelerated rendering
+-		if ecore.evas.engine_type_supported_get("software_x11_16"):
+-			self.engine = ecore.evas.SoftwareX11_16
+-   		else:
+-			print "warning: x11-16 is not supported, fallback to x11"
+-			self.engine = ecore.evas.SoftwareX11
+ 
+ 		self.size = size
+ 		
+@@ -63,7 +57,12 @@
+ 		self.accel.addListener( "shake", self.onShake )		
+ 
+ 		# Initialize the renderer and set all initial properties
+-		self.ee = self.engine( w = size[0], h = size[1] )
++		try:
++			self.engine = ecore.evas.SoftwareX11_16
++			self.ee = self.engine( w = size[0], h = size[1] )
++   		except e:
++			self.engine = ecore.evas.SoftwareX11
++			self.ee = self.engine( w = size[0], h = size[1] )
+ 		self.ee.title = "Moko Eightball"
+ 		self.ee.name_class = ( "MOKO_EIGHTBALL", "MOKO_EIGHTBALL" )
+ #		self.ee.fullscreen = True
+Index: ./python/src/Accelerometer/__init__.py
+===================================================================
+--- ./python/src/Accelerometer/__init__.py	(revision 45)
++++ ./python/src/Accelerometer/__init__.py	(working copy)
+@@ -30,7 +30,7 @@
+ 
+ class EventManager(object):
+ 	movementTolerance = 30
+-	shakeTolerance    = 2100
++	shakeTolerance    = 100
+ 
+ 	listeners = dict( 
+ 		shake = [],
+@@ -82,15 +82,15 @@
+ 					# Inform all listeners
+ 					self.informListeners()
+ 					break
+-				if ( type == 2 and code == 0 ):
++				if ( type == 3 and code == 0 ):
+ 					# Update x
+ 					x = value
+ 					continue
+-				if ( type == 2 and code == 1 ):
++				if ( type == 3 and code == 1 ):
+ 					# Update y
+ 					y = value
+ 					continue
+-				if ( type == 2 and code == 2 ):
++				if ( type == 3 and code == 2 ):
+ 					# Update z
+ 					z = value
+ 					continue					
