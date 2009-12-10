@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 
 PR = "r1"
 
-DEPENDS = "intltool libosip2 speex libogg alsa-lib readline libexosip2"
+DEPENDS = "intltool libosip2 speex libogg alsa-lib readline libexosip2 gtk+"
 DEPENDS_${PN} = "liblinphone"
 DEPENDS_${PN}c = "liblinphone readline"
 DEPENDS_liblinphone = "libmediastreamer libortp libosip2"
