@@ -2,7 +2,7 @@ DESCRIPTION = "DES-SERT (DES Simple and Extensible Routing-Framework for Testbed
 HOMEPAGE = "http://www.des-testbed.net/DES-SERT"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "net-snmp libpcap libcli"
 

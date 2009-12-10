@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES_${PN} = "hotplug"
 
-PR = "r24"
+PR = "r25"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -11,6 +11,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz 
 	   file://udevsynthesize.patch;patch=1 \
 	   file://udevsynthesize.sh \
            file://arm_inotify_fix.patch;patch=1 \
+	   file://mtd-exclude-persistent.patch;patch=1 \
 	   file://mount.blacklist \
 	   "
 

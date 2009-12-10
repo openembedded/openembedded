@@ -1,0 +1,30 @@
+From 8a2cbbaa60ea06370d2a6d9303b1aab54cdb8a69 Mon Sep 17 00:00:00 2001
+From: Mike Rapoport <mike@compulab.co.il>
+Date: Tue, 24 Nov 2009 10:09:35 +0200
+Subject: [PATCH] backlight: tdo24m: ensure chip select changes between transfers
+
+Some SPI host drivers do not change chip select betwen transfers unless
+.cs_chnage field is explicitly set. The LCD spec requires chip select
+change between consecuitive transfers, so ensure it at the SPI driver
+level.
+
+Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+---
+ drivers/video/backlight/tdo24m.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/backlight/tdo24m.c b/drivers/video/backlight/tdo24m.c
+index bbfb502..4a3d46e 100644
+--- a/drivers/video/backlight/tdo24m.c
++++ b/drivers/video/backlight/tdo24m.c
+@@ -367,6 +367,7 @@ static int __devinit tdo24m_probe(struct spi_device *spi)
+ 
+ 	spi_message_init(m);
+ 
++	x->cs_change = 1;
+ 	x->tx_buf = &lcd->buf[0];
+ 	spi_message_add_tail(x, m);
+ 
+-- 
+1.6.4.4
+

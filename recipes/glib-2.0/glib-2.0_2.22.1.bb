@@ -1,5 +1,5 @@
 require glib.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.22/glib-${PV}.tar.bz2 \
@@ -7,6 +7,7 @@ SRC_URI = "\
   file://configure-libtool.patch;patch=1 \
   file://bug-556515.patch;patch=1 \
   file://g_once_init_enter.patch;patch=1 \
+  file://uclibc-res_query.patch;patch=1 \
 "
 
 
