@@ -12,6 +12,8 @@ DEPENDS = "intltool virtual/libgl freeglut virtual/libx11 gtk+ libxml2 libglade"
 LDFLAGS_append = " -Wl,--export-dynamic"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
+INC_PR = "r4"
+
 inherit autotools
 
 export INTLTOOL_PERL="/usr/bin/env perl"
