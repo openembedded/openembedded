@@ -1,10 +1,12 @@
 require php.inc
 
-DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql"
+DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql \
+           libc-client openssl"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 \
+            file://imap-fix-autofoo.patch;patch=1 \
             "
 export THREADS="pthread"
 export LIBS=" -lpthread "
@@ -20,6 +22,8 @@ EXTRA_OECONF = "    --without-iconv \
                     --enable-embedded-mysqli \
                     --enable-magic-quotes \
                     --enable-fastcgi \
+                    --with-imap=${STAGING_DIR_HOST} \
+                    --with-imap-ssl=${STAGING_DIR_HOST} \
                     --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
                     --with-libxml-dir=${STAGING_BINDIR_CROSS} \
                     --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
