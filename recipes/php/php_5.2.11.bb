@@ -1,9 +1,9 @@
 require php.inc
 
-DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql \
+DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql5 \
            libc-client openssl"
 
-PR = "r2"
+PR = "r4"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 \
             file://imap-fix-autofoo.patch;patch=1 \
@@ -19,7 +19,7 @@ EXTRA_OECONF = "    --without-iconv \
                     --enable-pcntl \
                     --enable-memory-limit \
                     --enable-wddx \
-                    --enable-embedded-mysqli \
+                    --disable-embedded-mysqli \
                     --enable-magic-quotes \
                     --enable-fastcgi \
                     --with-imap=${STAGING_DIR_HOST} \
@@ -27,13 +27,16 @@ EXTRA_OECONF = "    --without-iconv \
                     --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
                     --with-libxml-dir=${STAGING_BINDIR_CROSS} \
                     --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
-#                   --with-mysqli = "${STAGING_BINDIR_NATIVE}/mysql_config" \
+                    --with-mysqli="${STAGING_BINDIR_CROSS}/mysql_config" \
+                    --with-pdo-mysql="${STAGING_BINDIR_CROSS}/mysql_config" \
                     --without-pdo-sqlite \
                "
 
 export LD_LIBRARY_PATH = "${STAGING_LIBDIR}"
 export PHP_NATIVE_DIR = "${STAGING_BINDIR_NATIVE}"
 export PHP_PEAR_PHP_BIN = "${bindir}/php"
+
+#LDFLAGS += "-lstdc++"
 
 do_configure_append() {
     find ${S} -type f | xargs sed -i 's:I/usr/include:I${STAGING_INCDIR}:g'

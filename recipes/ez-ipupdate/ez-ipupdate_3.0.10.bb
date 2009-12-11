@@ -4,14 +4,15 @@ HOMEPAGE = "http://www.ez-ipupdate.com/"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.ez-ipupdate.com/dist/ez-ipupdate-${PV}.tar.gz"
-SRC_URI += "file://configure.patch;patch=1"
-SRC_URI += "file://conffile.patch;patch=1"
-SRC_URI += "file://zoneedit.patch;patch=1"
-SRC_URI += "file://init"
-SRC_URI += "file://ipupdate.conf"
+SRC_URI = "http://www.ez-ipupdate.com/dist/ez-ipupdate-${PV}.tar.gz \
+	   file://configure.patch;patch=1 \
+	   file://conffile.patch;patch=1 \
+	   file://zoneedit.patch;patch=1 \
+	   file://init \
+	   file://ipupdate.conf \
+	  "
 
 INITSCRIPT_NAME = "ipupdate"
 # No dependencies, so just go in at the standard level (20)
@@ -21,8 +22,6 @@ INITSCRIPT_PARAMS = "defaults"
 CONFFILES_${PN} = "${sysconfdir}/ipupdate.conf"
 
 inherit autotools update-rc.d
-
-PACKAGES += "ez-ipupdate"
 
 do_install_append() {
 	install -d "${D}${sysconfdir}/init.d"
