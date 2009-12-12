@@ -3,7 +3,7 @@ require libsdl.inc
 # extra-keys.patch is missing
 DEFAULT_PREFERENCE = "-1" 
 
-PR = "r8"
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \

@@ -6,11 +6,13 @@ DESCRIPTION = "*The* screensaver package for X11"
 HOMEPAGE = "http://www.jwz.org/xscreensaver/"
 SECTION = "x11-misc"
 LICENSE = "BSD"
-DEPENDS = "intltool mesa freeglut virtual/libx11 gtk+ libxml2 libglade"
+DEPENDS = "intltool virtual/libgl freeglut virtual/libx11 gtk+ libxml2 libglade"
 
 # xscreensaver-demo is a glade app
 LDFLAGS_append = " -Wl,--export-dynamic"
 TARGET_CC_ARCH += "${LDFLAGS}"
+
+INC_PR = "r4"
 
 inherit autotools
 

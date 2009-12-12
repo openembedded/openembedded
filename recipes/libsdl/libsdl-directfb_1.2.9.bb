@@ -3,6 +3,8 @@ require libsdl.inc
 DEPENDS = "alsa-lib directfb"
 DEFAULT_PREFERENCE = "-1"
 
+PR = "${INC_PR}.0"
+
 SRC_URI += "\
   file://explicit-extern-C.patch;patch=1 \
   file://acinclude.m4 \

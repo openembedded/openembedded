@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.jwz.org/xscreensaver/"
 SECTION = "x11-misc"
 LICENSE = "BSD"
 DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
-PR = "r1"
+PR = "${INC_PR}.0"
 
 BROKEN = "1"
 # upstream is at 4.22 now - patches do not apply

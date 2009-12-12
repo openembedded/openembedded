@@ -2,9 +2,9 @@ DESCRIPTION = "The OpenGL Extension Wrangler Library (GLEW) is a cross-platform 
 SECTION = "libs"
 LICENSE = "Modified BSD License, Mesa 3-D License, Khronos License"
 
-DEPENDS = "virtual/libx11 mesa libxext libxi libxmu"
+DEPENDS = "virtual/libx11 virtual/libgl libxext libxi libxmu"
 
-PR = "r0"
+PR = "r1"
 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/project/glew/glew/1.5.1/glew-1.5.1-src.tgz \

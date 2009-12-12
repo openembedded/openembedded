@@ -12,6 +12,11 @@ DEFAULT_PREFERENCE_spitz = "-1"
 DEFAULT_PREFERENCE_tosa = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+           file://v3-1-4-Add-support-for-LZO-compressed-kernels.patch;patch=1;status=pending \
+           file://v3-2-4-Add-support-for-LZO-compressed-kernels-for-ARM.patch;patch=1;status=pending \
+           file://v3-3-4-Add-support-for-LZO-compressed-kernels-on-x86.patch;patch=1;status=pending \
+           file://v3-4-4-Add-LZO-compression-support-for-initramfs-and-old-style-initrd.patch;patch=1;status=pending \
+           file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;patch=1;status=pending \
            file://defconfig"
 
 SRC_URI[kernel.md5sum] = "260551284ac224c3a43c4adac7df4879"
