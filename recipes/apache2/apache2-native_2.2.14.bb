@@ -14,7 +14,6 @@ do_configure () {
 
 do_stage () {
 	install -d ${STAGING_BINDIR_NATIVE}
-	cp srclib/pcre/dftables ${STAGING_BINDIR_NATIVE}
 	cp server/gen_test_char ${STAGING_BINDIR_NATIVE}
 	cp srclib/apr/apr-1-config ${STAGING_BINDIR_NATIVE}
 	cp srclib/apr-util/apu-1-config ${STAGING_BINDIR_NATIVE}
