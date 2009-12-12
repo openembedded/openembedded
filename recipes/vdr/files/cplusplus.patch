@@ -1,0 +1,54 @@
+Index: vdr-1.7.10/tools.c
+===================================================================
+--- vdr-1.7.10.orig/tools.c	2010-01-03 16:34:41.162295450 +0100
++++ vdr-1.7.10/tools.c	2010-01-03 17:07:03.318358420 +0100
+@@ -8,9 +8,12 @@
+  */
+ 
+ #include "tools.h"
+-#include <ctype.h>
++#include <cctype>
+ #include <dirent.h>
+-#include <errno.h>
++#include <cerrno>
++#include <cstdarg>
++#include <ctime>
++
+ extern "C" {
+ #ifdef boolean
+ #define HAVE_BOOLEAN
+@@ -18,11 +21,10 @@
+ #include <jpeglib.h>
+ #undef boolean
+ }
+-#include <stdarg.h>
++
+ #include <stdlib.h>
+ #include <sys/time.h>
+ #include <sys/vfs.h>
+-#include <time.h>
+ #include <unistd.h>
+ #include <utime.h>
+ #include "i18n.h"
+@@ -484,7 +486,7 @@
+ {
+   if (!FileName)
+      return NULL;
+-  char *TargetName = canonicalize_file_name(FileName);
++  char *TargetName = realpath(FileName,NULL);
+   if (!TargetName) {
+      if (errno == ENOENT) // file doesn't exist
+         TargetName = strdup(FileName);
+Index: vdr-1.7.10/tools.h
+===================================================================
+--- vdr-1.7.10.orig/tools.h	2010-01-03 16:30:20.441906815 +0100
++++ vdr-1.7.10/tools.h	2010-01-03 16:30:57.168575048 +0100
+@@ -24,6 +24,8 @@
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ 
++#include <cstdarg>
++
+ typedef unsigned char uchar;
+ 
+ extern int SysLogLevel;

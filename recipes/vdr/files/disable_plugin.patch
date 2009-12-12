@@ -1,0 +1,18 @@
+Index: vdr-1.7.10/Makefile
+===================================================================
+--- vdr-1.7.10.orig/Makefile	2010-01-03 18:19:12.915007986 +0100
++++ vdr-1.7.10/Makefile	2010-01-03 18:29:47.598277455 +0100
+@@ -142,11 +142,12 @@
+ 	noapiv="";\
+ 	for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
+ 	    echo "Plugin $$i:";\
+-	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile" ; then\
++	    if ! grep -q "\$$(LIBDIR)/.*\$$(APIVERSION)" "$(PLUGINDIR)/src/$$i/Makefile";  then \
+ 	       echo "ERROR: plugin $$i doesn't honor APIVERSION - not compiled!";\
+ 	       noapiv="$$noapiv $$i";\
+ 	       continue;\
+ 	       fi;\
++	    if [ "$$i" = "skincurses" ]; then echo; echo "*** $$i plugin disbabled "; echo; continue; fi;\
+ 	    $(MAKE) -C "$(PLUGINDIR)/src/$$i" all || failed="$$failed $$i";\
+ 	    done;\
+ 	if [ -n "$$noapiv" ] ; then echo; echo "*** plugins without APIVERSION:$$noapiv"; echo; fi;\
