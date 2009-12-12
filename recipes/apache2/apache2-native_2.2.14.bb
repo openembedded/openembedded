@@ -3,7 +3,7 @@ DEPENDS = "expat pcre"
 
 inherit native 
 
-PR ="r0"
+PR ="r1"
 SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.bz2"
 
 S = "${WORKDIR}/httpd-${PV}"
