@@ -238,6 +238,7 @@ do
                       mplayer \
                       mtd-utils \
                       mutt \
+                      mysql5 \
                       mythtv \
                       nautilus \
                       nbench-byte \
