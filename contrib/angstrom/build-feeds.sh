@@ -267,6 +267,7 @@ do
                       pciutils \
                       pdamaze \
                       perl \
+                      php \
                       pidgin \
                       pine \
                       pingus \
