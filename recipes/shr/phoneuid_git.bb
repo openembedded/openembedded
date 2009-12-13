@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += " dbus-glib libframeworkd-glib libphone-ui sqlite3 shr-specs"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "git://git.shr-project.org/repo/phoneuid.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
@@ -17,4 +17,6 @@ EXTRA_OECONF = "\
 
 
 FILES_${PN} += "${datadir}"
+
+CONFFILES_${PN} = "${sysconfdir}/phoneuid.conf"
 

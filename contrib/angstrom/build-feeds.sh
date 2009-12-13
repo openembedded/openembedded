@@ -238,6 +238,7 @@ do
                       mplayer \
                       mtd-utils \
                       mutt \
+                      mysql5 \
                       mythtv \
                       nautilus \
                       nbench-byte \
@@ -267,6 +268,7 @@ do
                       pciutils \
                       pdamaze \
                       perl \
+                      php \
                       pidgin \
                       pine \
                       pingus \

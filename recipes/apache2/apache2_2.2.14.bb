@@ -3,10 +3,9 @@ DESCRIPTION = "The apache v2 web server"
 DEPENDS = "apache2-native openssl expat pcre"
 RDEPENDS += "openssl"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-${PV}.tar.bz2 \
-	   file://dftables-makefile-patch;patch=1 \
 	   file://apr-sockets-patch;patch=1 \
 	   file://configure-patch;patch=1 \
 	   file://server-makefile-patch;patch=1 \
@@ -74,6 +73,7 @@ CFLAGS_prepend = "-I${STAGING_INCDIR}/openssl "
 EXTRA_OECONF = "--enable-ssl \
 		--with-ssl=${STAGING_LIBDIR}/.. \
 		--with-expat=${STAGING_LIBDIR}/.. \
+		--with-pcre=${STAGING_LIBDIR}/.. \
 		--enable-info \
 		--enable-rewrite \
 		--with-dbm=sdbm \
