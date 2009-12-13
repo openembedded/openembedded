@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r18"
+PR = "r19"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -136,7 +136,6 @@ RDEPENDS_${PN}-apps = "\
   ffalarms \
   shr-settings \
   shr-theme \
-  shr-today \
   calc \
 "
 
