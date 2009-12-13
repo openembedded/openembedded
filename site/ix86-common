@@ -247,3 +247,8 @@ ac_cv_libiconv_utf8=${ac_cv_libiconv_utf8=yes}
 
 #dbus
 ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=yes}
+
+# socat
+ac_cv_ispeed_offset=${ac_cv_ispeed_offset=13}
+sc_cv_termios_ispeed=${sc_cv_termios_ispeed=yes}
+

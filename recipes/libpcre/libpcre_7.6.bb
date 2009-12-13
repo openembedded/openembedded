@@ -5,7 +5,7 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r4"
+PR = "r5"
 LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2 \
            file://pcre-cross.patch;patch=1"
@@ -36,12 +36,6 @@ do_compile () {
 	# attempt to build dftables inside make will actually work (foo_FOR_BUILD is
 	# only used for this).
 	oe_runmake CC_FOR_BUILD="${BUILD_CC}" CFLAGS_FOR_BUILD="-DLINK_SIZE=2 -I${S}/include" LINK_FOR_BUILD="${BUILD_CC} -L${S}/lib"
-}
-
-do_stage () {
-	autotools_stage_all
-	install -d ${STAGING_BINDIR_NATIVE}
-	install -m 0755 ${S}/dftables ${STAGING_BINDIR_NATIVE}/
 }
 
 python populate_packages_prepend () {
