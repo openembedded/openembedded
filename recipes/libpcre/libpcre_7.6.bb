@@ -5,7 +5,7 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r5"
+PR = "r6"
 LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2 \
            file://pcre-cross.patch;patch=1"
@@ -38,6 +38,11 @@ do_compile () {
 	oe_runmake CC_FOR_BUILD="${BUILD_CC}" CFLAGS_FOR_BUILD="-DLINK_SIZE=2 -I${S}/include" LINK_FOR_BUILD="${BUILD_CC} -L${S}/lib"
 }
 
+do_stage () {
+        autotools_stage_all
+        install -d ${STAGING_BINDIR}
+        install -m 0755 ${D}${bindir}/pcre-config ${STAGING_BINDIR}/
+}
 python populate_packages_prepend () {
 	pcre_libdir = bb.data.expand('${libdir}', d)
 	pcre_libdir_dbg = bb.data.expand('${libdir}/.debug', d)
