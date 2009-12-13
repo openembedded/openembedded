@@ -3,8 +3,8 @@ HOMEPAGE = "http://www.fltk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "jpeg libpng mesa zlib"
-PR = "r1"
+DEPENDS = "jpeg libpng virtual/libgl zlib"
+PR = "r2"
 
 SRC_URI = "ftp://ftp-fourier.ujf-grenoble.fr/xcas/devel/sources/fltk-${PV}-device.tar.gz"
 

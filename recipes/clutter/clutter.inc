@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "(zylonite|mx31litekit|omap-3430ldp|omap-3430sdp|mx31ads|qe
 STDDEPENDS = "virtual/libx11 gtk-doc-native pango glib-2.0 libxfixes gtk+"
 BASE_CONF = "--disable-gtk-doc ${@get_clutter_fpu_setting(bb, d)}"
 
-DEPENDS = "${STDDEPENDS} mesa"
+DEPENDS = "${STDDEPENDS} virtual/libgl"
 EXTRA_OECONF = "${BASE_CONF} --with-flavour=glx"
 
 DEPENDS_zylonite = "${STDDEPENDS} libgles-zylonite tslib"
@@ -36,6 +36,8 @@ DEPENDS_mx31ads = "${STDDEPENDS} libgles-mx31 tslib"
 EXTRA_OECONF_mx31ads = "${BASE_CONF} --with-flavour=eglnative"
 PACKAGE_ARCH_mx31ads = "${MACHINE_ARCH}"
 LDFLAGS_append_mx31ads = " -lpvrNULLWSEGL -lstdc++ "
+
+INC_PR = "r1"
 
 inherit autotools pkgconfig gtk-doc
 

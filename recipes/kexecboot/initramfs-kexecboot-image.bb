@@ -1,8 +1,9 @@
-#initramfs image which mounts the rootfilesystem and kexecs a kernel from there
-PR = "r1"
+# Initramfs image providing kexecboot
+# a linux as bootloader implementation
+PR = "r2"
 
 ONLINE_PACKAGE_MANAGEMENT = "none"
-IMAGE_FSTYPES = "cpio.gz"
+IMAGE_FSTYPES = "cpio.gz cpio.lzma"
 
 # Deprecated: device nodes are populated by kexecboot now
 # These devices need mmcblk* to be 254 instead of 179

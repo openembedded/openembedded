@@ -6,8 +6,8 @@ COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "h1940"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.14.tar.bz2 \
-	   http://rtpnet.nerim.net/ipaq/patches/2.6.14-3/v2.6.14-gitcurrent.patch;patch=1 \
-           http://rtpnet.nerim.net/ipaq/patches/2.6.14-3/full.patch;patch=1 \
+	   http://rtp-net.org/ipaq/patches/2.6.14-3/v2.6.14-gitcurrent.patch;patch=1 \
+           http://rtp-net.org/ipaq/patches/2.6.14-3/full.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.14"
