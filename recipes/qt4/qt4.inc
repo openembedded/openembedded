@@ -245,6 +245,7 @@ do_install() {
            -e s#-L${STAGING_LIBDIR}##g \
            -e s#-L${libdir}##g \
            -e s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g \
+           -e s#"-Wl,-rpath-link,${S}/lib"##g \
            ${D}${libdir}/*.la ${D}${libdir}/*.prl ${D}${libdir}/pkgconfig/*.pc
 
     # fix pkgconfig files
