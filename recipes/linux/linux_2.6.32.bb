@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -15,6 +15,7 @@ DEFAULT_PREFERENCE_spitz = "-1"
 DEFAULT_PREFERENCE_tosa = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.1.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI[kernel.md5sum] = "260551284ac224c3a43c4adac7df4879"
