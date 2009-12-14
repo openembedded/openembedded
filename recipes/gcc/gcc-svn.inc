@@ -1,10 +1,10 @@
 # No armeb and thumb patches - really needs checking 
-DEFAULT_PREFERENCE = "-999"
+DEFAULT_PREFERENCE = "1"
 ARM_INSTRUCTION_SET = "arm"
 
 require gcc-common.inc
 
-DEPENDS = "mpfr gmp"
+DEPENDS = "mpfr gmp mpc"
 
 GCC_BASE ?= "4.5"
 PV = "${GCC_BASE}+svnr${SRCPV}"
