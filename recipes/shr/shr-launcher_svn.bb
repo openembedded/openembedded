@@ -8,15 +8,9 @@ DEPENDS = "elementary eina edbus"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r4"
 
-SRC_URI = "svn://shr-launcher.googlecode.com/svn/trunk;module=.;proto=http"
+SRC_URI = "svn://shr-launcher.googlecode.com/svn;module=trunk;proto=http"
 
-do_configure_prepend() {
-  # all links to /usr/share/automake-1.10/
-  rm -f ${S}/depcomp ${S}/config.guess ${S}/config.sub ${S}/INSTALL ${S}/install-sh ${S}/missing
-  touch ${S}/INSTALL
-}
-
-S = "${WORKDIR}"
+S = "${WORKDIR}/trunk"
 
 inherit autotools
 
