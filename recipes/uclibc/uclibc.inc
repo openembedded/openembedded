@@ -181,3 +181,6 @@ do_install() {
 	chmod +x ${D}/${base_libdir}/*
 }
 
+get_monotonic_srcrev () {
+    	(cd ${S}; eval `git rev-list HEAD|wc -l`)
+}

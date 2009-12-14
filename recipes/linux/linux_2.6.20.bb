@@ -9,6 +9,8 @@ DEFAULT_PREFERENCE_nhk15 = "1"
 PR = "r10"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.21.bz2;patch=1 \
+	   file://0001-kbuild-include-limits.h-in-sumversion.c-for-PATH_MAX.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_n2100 = "\

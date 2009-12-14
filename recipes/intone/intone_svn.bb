@@ -9,17 +9,11 @@ RDEPENDS = "mplayer lame libxv libsdl-x11"
 PV = "0.66+svnr${SRCPV}"
 PR = "r2"
 
-SRC_URI = "svn://intone.googlecode.com/svn/trunk;module=.;proto=http \
+SRC_URI = "svn://intone.googlecode.com/svn;module=trunk;proto=http \
 file://vorbis-include-id3tag.patch;pnum=1;patch=1;maxrev=18"
-S = "${WORKDIR}"
+S = "${WORKDIR}/trunk"
 
 inherit autotools
-
-do_configure_prepend() {
-	rm -f "${S}/INSTALL"
-	touch "${S}/INSTALL"
-	sed -i 's/{prefix}\/doc\/intone$/{prefix}\/share\/doc\/intone/g' ${S}/Makefile.am
-}
 
 do_install_append() {
 	mkdir -p "${D}/${datadir}/pixmaps"

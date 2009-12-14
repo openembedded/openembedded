@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r6"
+PR = "r8"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -16,7 +16,7 @@ DEFAULT_PREFERENCE_ben-nanonote = "1"
 
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.5.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.8.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI += "file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;patch=1 \
