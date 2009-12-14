@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# usb gadget configuration:
+# there already different configurations on the palm pre defined,
+# we choose nr 5 cause it provides the usbnet, novacom
+# and storage gadget
+if [ -e /sys/class/usb_gadget/config_num ]; then
+	echo 5 > /sys/class/usb_gadget/config_num
+fi
+
