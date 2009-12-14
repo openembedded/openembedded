@@ -1,11 +1,9 @@
-# the binaries are statical linked against klibc
+# the binaries are statical linked against dietlibc
 require kexec-tools2.inc
 
 SRC_URI += "file://dietlibc.patch;patch=1"
 
 inherit dietlibc
-
-#DEFAULT_PREFERENCE = "-1"
 
 PR = "r0"
 
