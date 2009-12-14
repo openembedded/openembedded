@@ -14,10 +14,12 @@ SRC_URI += "file://logo-img.h \
 
 export CC=${TARGET_PREFIX}klcc
 
-# standard oe cflags don't work with klcc
-export CFLAGS = ""
-export CPPFLAGS = ""
-export LDFLAGS = ""
+# for output on serial console: --enable-debug
+EXTRA_OECONF_akita = "--with-zaurus"
+EXTRA_OECONF_c7x0 = "--with-zaurus"
+EXTRA_OECONF_spitz = "--with-zaurus"
+EXTRA_OECONF_poodle = "--with-zaurus"
+EXTRA_OECONF_tosa = "--with-zaurus"
 
 do_configure_prepend () {
     install -m 0644 ${WORKDIR}/logo-img.h ${S}/res/
