@@ -9,7 +9,7 @@ KERNEL_RELEASE = "2.6.22-rc1"
 PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.22-rc1.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.22/patch-2.6.22-rc1.bz2;patch=1 \
            file://defconfig \
 	   "
 

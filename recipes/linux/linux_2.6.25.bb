@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r6"
+PR = "r8"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -13,8 +13,11 @@ DEFAULT_PREFERENCE_alix = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_at91-l9260 = "1"
 DEFAULT_PREFERENCE_m8050 = "1"
+DEFAULT_PREFERENCE_ronetix-pm9263 = "1"
+DEFAULT_PREFERENCE_ronetix-pm9261 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.20.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI_append_mpc8313e-rdb = "\
@@ -39,6 +42,18 @@ SRC_URI_append_at32stk1000 = " \
 
 SRC_URI_append_at91-l9260 = " \
 	http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1 \
+"
+
+SRC_URI_append_ronetix-pm9263 = " \
+        http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1 \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/linux-2.6.25.4-ronetix-08-11-02.2228.patch;patch=1 \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/socketcan-driver-at91.patch;patch=1 \
+"
+
+SRC_URI_append_ronetix-pm9261 = " \
+        http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1 \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/linux-2.6.25.4-ronetix-08-11-02.2228.patch;patch=1 \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/socketcan-driver-at91.patch;patch=1 \
 "
 
 SRC_URI_append_m8050 = " file://m8050.diff;patch=1 file://update-mach-types.diff;patch=1"

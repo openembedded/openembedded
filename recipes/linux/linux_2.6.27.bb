@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r8"
+PR = "r11"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -9,6 +9,7 @@ DEFAULT_PREFERENCE_progear = "1"
 DEFAULT_PREFERENCE_simpad = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.41.bz2;patch=1 \
            file://defconfig "
 
 SRC_URI_append_boc01 = "\
