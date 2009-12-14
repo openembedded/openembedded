@@ -27,6 +27,7 @@ RDEPENDS_${PN} += "\
 		gpe-timesheet \
 		gpe-contacts \
 		gtkmm \
+		guitartune \
 		mc \
 		mplayer \
 		navit \
