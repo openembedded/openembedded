@@ -1,7 +1,5 @@
 DEFAULT_PREFERENCE = "-1"
 
-require qt4-embedded.inc
-
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
            file://0002-fix-resinit-declaration.patch;patch=1 \

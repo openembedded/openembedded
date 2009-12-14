@@ -1,0 +1,53 @@
+Patch to tc/Makefile is from 
+http://bugs.gentoo.org/236861
+
+configure patch is based on suggestion from
+PR 5117
+
+http://bugs.openembedded.org/show_bug.cgi?id=5147
+
+-Khem
+Index: iproute2-2.6.29/configure
+===================================================================
+--- iproute2-2.6.29.orig/configure	2009-12-14 11:07:42.000000000 -0800
++++ iproute2-2.6.29/configure	2009-12-14 11:08:38.000000000 -0800
+@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
+ 	return 0;
+ }
+ EOF
+-gcc -I$INCLUDE -o /tmp/atmtest /tmp/atmtest.c -latm >/dev/null 2>&1 
++$CC -I$INCLUDE -o /tmp/atmtest /tmp/atmtest.c -latm >/dev/null 2>&1
+ if [ $? -eq 0 ]
+ then
+     echo "TC_CONFIG_ATM:=y" >>Config
+@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
+ }
+ 
+ EOF
+-gcc -I$INCLUDE $IPTC -o /tmp/ipttest /tmp/ipttest.c $IPTL -ldl >/dev/null 2>&1
++$CC -I$INCLUDE $IPTC -o /tmp/ipttest /tmp/ipttest.c $IPTL -ldl >/dev/null 2>&1
+ 
+ if [ $? -eq 0 ]
+ then
+@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
+ }
+ 
+ EOF
+-gcc -I$INCLUDE $IPTC -o /tmp/ipttest /tmp/ipttest.c $IPTL -ldl >/dev/null 2>&1
++$CC -I$INCLUDE $IPTC -o /tmp/ipttest /tmp/ipttest.c $IPTL -ldl >/dev/null 2>&1
+ 
+ if [ $? -eq 0 ]
+ then
+Index: iproute2-2.6.29/tc/Makefile
+===================================================================
+--- iproute2-2.6.29.orig/tc/Makefile	2009-12-14 11:10:27.000000000 -0800
++++ iproute2-2.6.29/tc/Makefile	2009-12-14 11:11:39.000000000 -0800
+@@ -100,7 +100,7 @@ clean:
+ 	rm -f emp_ematch.yacc.output
+ 
+ q_atm.so: q_atm.c
+-	$(CC) $(CFLAGS) -shared -fpic -o q_atm.so q_atm.c -latm
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -fpic -o q_atm.so q_atm.c -latm
+ 
+ %.yacc.c: %.y
+ 	$(YACC) $(YACCFLAGS) -o $@ $<
