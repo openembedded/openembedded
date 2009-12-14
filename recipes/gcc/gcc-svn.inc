@@ -1,5 +1,5 @@
 # No armeb and thumb patches - really needs checking 
-DEFAULT_PREFERENCE = "1"
+DEFAULT_PREFERENCE = "-999"
 ARM_INSTRUCTION_SET = "arm"
 
 require gcc-common.inc
