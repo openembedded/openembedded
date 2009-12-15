@@ -50,8 +50,12 @@ PV_da850-omapl138-evm      = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
 PV_hawkboard               = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
 
 SRC_URI_append_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH}"
-SRC_URI_append_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH}"
+SRC_URI_append_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} \
+                                     file://logo_linux_clut224.ppm \
+                                     file://da850_omapl138_opp456mhz.patch;patch=1"
 SRC_URI_append_hawkboard          = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} \
-                              file://patch_hawk.diff;patch=1"
+                                     file://logo_linux_clut224.ppm \
+                                     file://da850_omapl138_opp456mhz.patch;patch=1 \
+                                     file://patch_hawk.diff;patch=1"
 
 S = "${WORKDIR}/git"
