@@ -1,7 +1,7 @@
 # the binaries are statical linked against klibc
 require kexec-tools.inc
 
-PR = "r6"
+PR = "r7"
 DEPENDS = "klibc"
 
 SRC_URI += "file://kexec-static.patch;patch=1 \
@@ -12,11 +12,6 @@ S = "${WORKDIR}/kexec-tools-${PV}"
 EXTRA_OECONF = " --without-zlib"
 
 export CC=${TARGET_PREFIX}klcc
-
-# standart oe cflags don't work with klcc
-export CFLAGS=""
-export CPPFLAGS=""
-export LDFLAGS=""
 
 PACKAGES =+ "kexec-klibc-static kdump-klibc-static"
 

@@ -4,7 +4,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 require gcc-common.inc
 
-DEPENDS = "mpfr gmp"
+DEPENDS = "mpfr gmp mpc"
 
 GCC_BASE ?= "4.5"
 PV = "${GCC_BASE}+svnr${SRCPV}"
