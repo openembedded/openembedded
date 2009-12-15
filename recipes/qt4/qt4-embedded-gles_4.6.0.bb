@@ -1,4 +1,4 @@
-
+require qt4-embedded.inc
 PR = "${INC_PR}.0"
 
 QT_GLFLAGS = "-opengl es2 -openvg"

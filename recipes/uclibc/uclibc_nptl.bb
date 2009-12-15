@@ -34,7 +34,6 @@ SRC_URI = "git://uclibc.org/uClibc.git;protocol=git;branch=nptl \
 	file://uclibc-arm-ftruncate64.patch;patch=1 \
 	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
 	file://uclibc_arm_remove_duplicate_sysdep_defs.patch;patch=1 \
-	file://uclibc_rpc_thread.patch;patch=1 \
 	file://installfix.patch;patch=1 \
 	"
 

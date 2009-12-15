@@ -1,8 +1,8 @@
 PV = "0.5"
-PR = "r8+gitr${SRCREV}"
+PR = "r9+gitr${SRCREV}"
 
 SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git "
-SRCREV = "456e052144f58d3c1116a38cbb5caa44c070bce8"
+SRCREV = "daa68b5aaa56a036c24c7929e239ebd5edf8fdfe"
 
 S = "${WORKDIR}/git"
 

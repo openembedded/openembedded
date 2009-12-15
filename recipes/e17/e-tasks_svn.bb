@@ -10,14 +10,8 @@ inherit autotools
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r1"
 
-SRC_URI = "svn://e-tasks.googlecode.com/svn/trunk;module=.;proto=http"
-S = "${WORKDIR}"
-
-do_configure_prepend() {
-  # all links to /usr/share/automake-1.10/
-  rm -f ${S}/depcomp ${S}/config.guess ${S}/config.sub ${S}/INSTALL ${S}/install-sh ${S}/missing
-  touch ${S}/INSTALL
-}
+SRC_URI = "svn://e-tasks.googlecode.com/svn;module=trunk;proto=http"
+S = "${WORKDIR}/trunk"
 
 do_install_append() {
         install -d "${D}/${datadir}/pixmaps"

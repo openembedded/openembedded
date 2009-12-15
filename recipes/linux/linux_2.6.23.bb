@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 DEFAULT_PREFERENCE_avr32 = "1"
 
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
@@ -15,13 +15,15 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   "
 
 # Bug fixes on the 2.6.23.x stable branch
-SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.12.bz2;patch=1"
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.17.bz2;patch=1"
 # Real-time preemption (includes CFS). This is experimental and requires a different defconfig.
 #SRC_URI += "file://patch-2.6.23.12-rt14;patch=1"
-# Only the Completely Fair Scheduler (CFS), the official backport from 2.6.24
-SRC_URI += "http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
+# Only the Completely Fair Scheduler (CFS), the official backport from 2.6.24 (adapted for 2.6.23.17)
+SRC_URI += "file://sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
 # Add support for squashfs-lzma (a highly compressed read-only filesystem)
 SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;patch=1"
+
+SRC_URI += "file://time.h.patch;patch=1"
 
 # The Atmel patch doesn't apply against 2.6.23.12  :( 
 SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
@@ -29,8 +31,7 @@ SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 
                  http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1 \
                 "
 SRC_URI_append_em-x270 = "\
-	file://em-x270.patch;patch=1 \
-	file://01-prevent_loop_timespec_add_ns.patch;patch=1"
+	file://em-x270.patch;patch=1 "
 
 SRC_URI_append_cm-x270 = "\
 	file://0001-cm-x270-base2.patch;patch=1 \
@@ -90,5 +91,5 @@ python do_compulab_image() {
 }
 
 
-addtask compulab_image after do_deploy before do_package
+addtask compulab_image after do_package before do_build
 
