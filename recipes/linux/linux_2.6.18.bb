@@ -6,11 +6,12 @@ require linux.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_avr32 = "1"
 
-PR = "r0"
+PR = "r1"
 
 PARALLEL_MAKE=""
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.8.bz2;patch=1 \
            file://defconfig \
            " 
 

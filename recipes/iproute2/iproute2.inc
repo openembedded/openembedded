@@ -4,6 +4,8 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "flex-native bison-native"
 
+INC_PR = "r3"
+
 # Set the DATE in the .bb file
 SRC_URI = "http://developer.osdl.org/dev/iproute2/download/${P}-${DATE}.tar.gz"
 

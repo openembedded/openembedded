@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "${INC_PR}.0"
 
 require iproute2.inc
 

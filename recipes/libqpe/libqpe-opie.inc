@@ -6,10 +6,11 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native virtual/libqte2"
 PROVIDES = "virtual/libqpe1"
-
+INC_PR = "r7"
 S = "${WORKDIR}/library"
 
 inherit palmtop
+inherit opie
 
 OE_QMAKE_CXXFLAGS := "${@oe_filter_out('-fno-rtti', '${OE_QMAKE_CXXFLAGS}', d)}"
 QMAKE_PROFILES = "library.pro"

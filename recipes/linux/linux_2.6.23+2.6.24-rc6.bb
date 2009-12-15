@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE = "-1"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
-	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.24-rc6.bz2;patch=1 \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.24/patch-2.6.24-rc6.bz2;patch=1 \
            file://defconfig \
 	   "
 

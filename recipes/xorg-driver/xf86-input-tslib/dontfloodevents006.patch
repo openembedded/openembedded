@@ -1,0 +1,22 @@
+Index: xf86-input-tslib-0.0.6/src/tslib.c
+===================================================================
+--- xf86-input-tslib-0.0.6.orig/src/tslib.c	2009-11-29 20:03:29.734794324 +0000
++++ xf86-input-tslib-0.0.6/src/tslib.c	2009-11-29 20:29:24.066794215 +0000
+@@ -205,7 +205,7 @@
+ 		 */
+ 		switch (priv->state) {
+ 			 case BUTTON_EMULATION_OFF :
+-				 if(priv->lastp != samp.pressure) {
++				 if(!!priv->lastp != !!samp.pressure) {
+ 					 priv->lastp = samp.pressure;
+ 					 xf86PostButtonEvent(local->dev, TRUE,
+ 						 1, !!samp.pressure, 0, 2,
+@@ -512,7 +512,7 @@
+  	s = xf86CheckStrOption(dev->commonOptions, "path", NULL);
+   	if (!s)
+ 		s = xf86CheckStrOption(dev->commonOptions, "Device", NULL);
+- 
++
+ 	priv->ts = ts_open(s, 1);
+ 	xfree(s);
+ 

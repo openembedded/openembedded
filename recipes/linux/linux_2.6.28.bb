@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r12"
+PR = "r13"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -14,6 +14,7 @@ DEFAULT_PREFERENCE_wrap = "1"
 DEFAULT_PREFERENCE_tx27 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI_append_at91sam9263ek = " \
