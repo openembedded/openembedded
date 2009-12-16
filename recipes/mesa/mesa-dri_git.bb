@@ -5,9 +5,8 @@ LIB_DEPS = "libdrm virtual/libx11 libxext libxxf86vm libxdamage libxfixes expat"
 
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
-PV = "7.6.1+gitr${SRCREV}"
+PV = "7.6.1+gitr${SRCPV}"
 PR = "${INC_PR}.3"
-PE = "1"
 
 DEFAULT_PREFERENCE = "-2"
 DEFAULT_PREFERENCE_om-gta02 = "2"
