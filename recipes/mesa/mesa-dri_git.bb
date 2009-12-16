@@ -5,8 +5,9 @@ LIB_DEPS = "libdrm virtual/libx11 libxext libxxf86vm libxdamage libxfixes expat"
 
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
-PV = "7.6.1+gitr${SRCPV}"
+PV = "7.6.1+gitr${SRCREV}"
 PR = "${INC_PR}.3"
+PE = "1"
 
 DEFAULT_PREFERENCE = "-2"
 DEFAULT_PREFERENCE_om-gta02 = "2"
@@ -23,5 +24,4 @@ FILES_${PN} += "${libdir}/dri/*.so"
 FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
 FILES_mesa-utils = "${bindir}/*"
 
-EXTRA_OECONF += "--with-driver=dri --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
-EXTRA_OECONF_append_om-gta02 = " --disable-glx-tls --disable-gallium-intel "
+EXTRA_OECONF += "--with-driver=dri --disable-glx-tls --disable-gallium-intel --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
