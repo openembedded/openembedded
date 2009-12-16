@@ -6,7 +6,7 @@ INC_PR = "r13"
 
 PROVIDES = "virtual/xserver"
 
-DEPENDS = "hal fontconfig freetype flex-native kbproto \ 
+DEPENDS = "hal fontconfig freetype flex-native lbxutil kbproto \ 
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
