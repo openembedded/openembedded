@@ -21,5 +21,4 @@ S = "${WORKDIR}/module-init-tools-${PV}"
 
 EXTRA_OECONF = "--disable-manpages"
 
-
 inherit autotools
