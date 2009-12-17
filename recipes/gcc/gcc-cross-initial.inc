@@ -19,6 +19,3 @@ EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${target_prefix} \
 		${@get_gcc_fpu_setting(bb, d)} \
 		${@get_gcc_mips_plt_setting(bb, d)}"
 
-do_install () {
-	:
-}
