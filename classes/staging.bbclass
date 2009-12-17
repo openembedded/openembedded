@@ -68,6 +68,7 @@ sysroot_stage_dirs() {
 		sysroot_stage_dir $from${base_bindir} $to${STAGING_DIR_HOST}${base_bindir}
 		sysroot_stage_dir $from${base_sbindir} $to${STAGING_DIR_HOST}${base_sbindir}
 		sysroot_stage_dir $from${libexecdir} $to${STAGING_DIR_HOST}${libexecdir}
+		sysroot_stage_dir $from${sysconfdir} $to${STAGING_DIR_HOST}${sysconfdir}
 		if [ "${prefix}/lib" != "${libdir}" ]; then
 			# python puts its files in here, make sure they are staged as well
 			autotools_stage_dir $from/${prefix}/lib $to${STAGING_DIR_HOST}${prefix}/lib
@@ -93,6 +94,8 @@ def is_legacy_staging(d):
     stagefunc = bb.data.getVar('do_stage', d, True)
     legacy = True
     if stagefunc is None:
+        legacy = False
+    elif stagefunc.strip() == "use_do_install_for_stage":
         legacy = False
     elif stagefunc.strip() == "autotools_stage_all":
         legacy = False

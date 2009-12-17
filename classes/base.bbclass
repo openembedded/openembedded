@@ -340,7 +340,6 @@ base_do_compile() {
 	fi
 }
 
-
 addtask install after do_compile
 do_install[dirs] = "${D} ${S} ${B}"
 # Remove and re-create ${D} so that is it guaranteed to be empty
