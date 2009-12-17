@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# We start a system wide gstd daemon
+gstd &
+   
+amixer -q sset 'HP DAC' 127 
+
+#If we detect a mouse, use it, otherwise configure the touchcreen
+if [ ! -c /dev/input/mice ] && [ ! -c /dev/input/mouse0 ] ; then
+    if [ -c /dev/input/touchscreen0 ] ; then
+         export TSLIB_TSDEVICE=/dev/input/touchscreen0
+         if [ ! -f /etc/pointercal ] ; then
+             # We need to calibrate the screen
+             ts_calibrate
+         fi
+         export QWS_MOUSE_PROTO=tslib
+    fi
+fi
+
+/usr/libexec/FreonDemo -qws &
