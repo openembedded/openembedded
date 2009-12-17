@@ -20,6 +20,10 @@ def get_gcc_mips_plt_setting(bb, d):
         return "--with-mips-plt"
     return ""
 
+EXTRA_OECONF_append_x86_64	= " --disable-multilib"
+EXTRA_OECONF_append_mips64	= " --disable-multilib"
+EXTRA_OECONF_append_powerpc64	= " --disable-multilib"
+
 # We really need HOST_SYS here for some packages and TARGET_SYS for others.
 # For now, libgcc is most important so we fix for that - RP.
 SHLIBSDIR = "${STAGING_DIR_TARGET}/shlibs"
