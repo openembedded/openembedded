@@ -206,3 +206,6 @@ OESTATS_SERVER      ?= "tinderbox.openembedded.org"
 
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci pam"
+
+# Use-like features
+DISTRO_FEATURES += "tk"
