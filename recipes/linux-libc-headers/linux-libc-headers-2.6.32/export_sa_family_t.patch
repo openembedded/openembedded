@@ -1,0 +1,22 @@
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index 7b3aae2..ade87cf 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -16,6 +16,8 @@ struct __kernel_sockaddr_storage {
+ 				/* _SS_MAXSIZE value minus size of ss_family */
+ } __attribute__ ((aligned(_K_SS_ALIGNSIZE)));	/* force desired alignment */
+ 
++typedef unsigned short	sa_family_t;
++
+ #ifdef __KERNEL__
+ 
+ #include <asm/socket.h>			/* arch-dependent defines	*/
+@@ -34,8 +36,6 @@ extern void socket_seq_show(struct seq_file *seq);
+ # endif
+ #endif /* __KERNEL__ */
+ 
+-typedef unsigned short	sa_family_t;
+-
+ /*
+  *	1003.1g requires sa_family_t and that sa_data is char.
+  */
