@@ -9,8 +9,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
 
 SRC_URI_append_acern30 = "\
-           http://lechat.rtp-net.org/ipaq/patches/2.6.14-3/v2.6.14-gitcurrent.patch;patch=1 \
-           http://lechat.rtp-net.org/ipaq/patches/2.6.14-3/full.patch;patch=1 \
+           http://rtp-net.org/ipaq/patches/2.6.14-3/v2.6.14-gitcurrent.patch;patch=1 \
+           http://rtp-net.org/ipaq/patches/2.6.14-3/full.patch;patch=1 \
            file://n30-cleanup.patch;patch=1 \
            file://n35.patch;patch=1 \
            file://n30-lcd.patch;patch=1 \

@@ -23,5 +23,4 @@ FILES_${PN} += "${libdir}/dri/*.so"
 FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
 FILES_mesa-utils = "${bindir}/*"
 
-EXTRA_OECONF += "--with-driver=dri --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
-EXTRA_OECONF_append_om-gta02 = " --disable-glx-tls --disable-gallium-intel "
+EXTRA_OECONF += "--with-driver=dri --disable-glx-tls --disable-gallium-intel --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"

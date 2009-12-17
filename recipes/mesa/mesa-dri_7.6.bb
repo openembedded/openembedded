@@ -13,6 +13,8 @@ PR = "${INC_PR}.0"
 # most of our targets do not have DRI so will use mesa-xlib
 DEFAULT_PREFERENCE = "-1"
 
+DEFAULT_PREFERENCE_om-gta01 = "2"
+
 # ASUS EeePC 901 has DRI support so use mesa-dri by default
 DEFAULT_PREFERENCE_eee901 = "1"
 

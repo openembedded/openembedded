@@ -5,6 +5,12 @@
 PKGD    = "${WORKDIR}/package"
 PKGDEST = "${WORKDIR}/packages-split"
 
+PKGV	?= "${PV}"
+PKGR	?= "${PR}${DISTRO_PR}"
+
+EXTENDPKGEVER = "${@['','${PKGE\x7d:'][bb.data.getVar('PKGE',d,1) > 0]}"
+EXTENDPKGV ?= "${EXTENDPKGEVER}${PKGV}-${PKGR}"
+
 def legitimize_package_name(s):
 	"""
 	Make sure package names are legitimate strings
@@ -489,7 +495,7 @@ python populate_packages () {
 	for pkg in package_list:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
 
-		remstr = "${PN} (= ${EXTENDPV})"
+		remstr = "${PN} (= ${EXTENDPKGV})"
 		if main_is_empty and remstr in rdepends:
 			rdepends.remove(remstr)
 		for l in dangling_links[pkg]:
@@ -551,6 +557,8 @@ python emit_pkgdata() {
 		write_if_exists(sf, pkg, 'PN')
 		write_if_exists(sf, pkg, 'PV')
 		write_if_exists(sf, pkg, 'PR')
+		write_if_exists(sf, pkg, 'PKGV')
+		write_if_exists(sf, pkg, 'PKGR')
 		write_if_exists(sf, pkg, 'DESCRIPTION')
 		write_if_exists(sf, pkg, 'RDEPENDS')
 		write_if_exists(sf, pkg, 'RPROVIDES')
@@ -611,9 +619,9 @@ python package_do_shlibs() {
 
 	workdir = bb.data.getVar('WORKDIR', d, True)
 
-	ver = bb.data.getVar('PV', d, True)
+	ver = bb.data.getVar('PKGV', d, True)
 	if not ver:
-		bb.error("PV not defined")
+		bb.error("PKGV not defined")
 		return
 
 	pkgdest = bb.data.getVar('PKGDEST', d, True)
@@ -641,7 +649,9 @@ python package_do_shlibs() {
 		needs_ldconfig = False
 		bb.debug(2, "calculating shlib provides for %s" % pkg)
 
-		pkgver = bb.data.getVar('PV_' + pkg, d, True)
+		pkgver = bb.data.getVar('PKGV_' + pkg, d, True)
+		if not pkgver:
+			pkgver = bb.data.getVar('PV_' + pkg, d, True)
 		if not pkgver:
 			pkgver = ver
 

@@ -6,16 +6,25 @@ SECTION = "e/apps"
 DEPENDS = "elementary eina edbus"
 
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r0"
+PR = "r4"
 
-SRC_URI = "svn://shr-launcher.googlecode.com/svn/trunk;module=.;proto=http"
+SRC_URI = "svn://shr-launcher.googlecode.com/svn;module=trunk;proto=http"
 
-do_configure_prepend() {
-  rm -f ${S}/config.log
-  rm -f ${S}/config.status
-}
-
-S = "${WORKDIR}"
+S = "${WORKDIR}/trunk"
 
 inherit autotools
 
+do_install_append() {
+        install -d "${D}/${datadir}/pixmaps"
+        install -m 0644 "${S}/resources/launcher.png" "${D}/${datadir}/pixmaps"
+        install -d "${D}/${datadir}/applications"
+        install -m 0644 "${S}/resources/launcher.desktop" "${D}/${datadir}/applications"
+        install -d "${D}/${datadir}/launcher"
+        for ico in "${S}/resources/"*.png; do
+                if [ "$(basename $ico)" != "launcher.png" ]; then
+                        install -m 0644 $ico "${D}/${datadir}/launcher"
+                fi
+        done
+}
+
+FILES_${PN} += "/usr/share/launcher/* /usr/share/applications/* /usr/share/pixmaps/*"

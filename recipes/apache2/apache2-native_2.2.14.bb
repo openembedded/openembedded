@@ -3,7 +3,7 @@ DEPENDS = "expat pcre"
 
 inherit native 
 
-PR ="r0"
+PR ="r1"
 SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.bz2"
 
 S = "${WORKDIR}/httpd-${PV}"
@@ -14,7 +14,6 @@ do_configure () {
 
 do_stage () {
 	install -d ${STAGING_BINDIR_NATIVE}
-	cp srclib/pcre/dftables ${STAGING_BINDIR_NATIVE}
 	cp server/gen_test_char ${STAGING_BINDIR_NATIVE}
 	cp srclib/apr/apr-1-config ${STAGING_BINDIR_NATIVE}
 	cp srclib/apr-util/apu-1-config ${STAGING_BINDIR_NATIVE}

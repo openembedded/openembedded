@@ -1,0 +1,27 @@
+From 48e2b3d0ee8d637d83b88bf29c6d417f61aaa0e4 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@canonical.com>
+Date: Sat, 10 Oct 2009 12:28:28 +0000
+Subject: Use conservative default for malloc(0) when cross-compiling #24460
+
+When cross-compiling, AC_RUN_IFELSE can't run test programs.
+MALLOC_ZERO_RETURNS_NULL=yes is a conservative default in this case.
+
+Signed-off-by: Colin Watson <cjwatson@canonical.com>
+Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+---
+diff --git a/xorg-macros.m4.in b/xorg-macros.m4.in
+index 6f9635f..393186f 100644
+--- a/xorg-macros.m4.in
++++ b/xorg-macros.m4.in
+@@ -339,7 +339,8 @@ main() {
+     exit(m0 == 0 || r0 == 0 || c0 == 0 ? 0 : 1);
+ }],
+ 		[MALLOC_ZERO_RETURNS_NULL=yes],
+-		[MALLOC_ZERO_RETURNS_NULL=no])
++		[MALLOC_ZERO_RETURNS_NULL=no],
++		[MALLOC_ZERO_RETURNS_NULL=yes])
+ fi
+ AC_MSG_RESULT([$MALLOC_ZERO_RETURNS_NULL])
+ 
+--
+cgit v0.8.3-6-g21f6

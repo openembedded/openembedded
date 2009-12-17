@@ -6,10 +6,11 @@ inherit module
 # compile and run time dependencies
 DEPENDS 	+= "virtual/kernel perl-native ti-dspbios-native ti-cgt6x-native update-modules ti-xdctools-native"
 
-# tconf from xdctools dislikes '.' in pwd :/
 #This is a kernel module, don't set PR directly
 MACHINE_KERNEL_PR_append = "b"                                                  
-PV = "1613"
+
+# tconf from xdctools dislikes '.' in pwd :/
+PV = "1_61_03"
 
 SRC_URI = "http://install.source.dir.local/dsplink_1_61_03.tar.gz \
 		   file://loadmodules-ti-dsplink-apps.sh \
@@ -20,16 +21,16 @@ S = "${WORKDIR}/dsplink_1_61_03"
 	
 # DSPLINK - Config Variable for different platform
 DSPLINKPLATFORM            			?= "DAVINCI"
-DSPLINKPLATFORM_dm6446-evm 			?= "DAVINCI"
-DSPLINKPLATFORM_da830-omapl137-evm 	?= "OMAPL1XX"
+DSPLINKPLATFORM_dm6446 			?= "DAVINCI"
+DSPLINKPLATFORM_omapl137 	?= "OMAPL1XX"
 
 DSPLINKDSPCFG            			?= "DM6446GEMSHMEM"
-DSPLINKDSPCFG_dm6446-evm 			?= "DM6446GEMSHMEM"
-DSPLINKDSPCFG_da830-omapl137-evm 	?= "OMAPL1XXGEMSHMEM"
+DSPLINKDSPCFG_dm6446 			?= "DM6446GEMSHMEM"
+DSPLINKDSPCFG_omapl137 	?= "OMAPL1XXGEMSHMEM"
 
 DSPLINKGPPOS             			?= "MVL5G"
-DSPLINKGPPOS_dm6446-evm  			?= "MVL5G"
-DSPLINKGPPOS_da830-omapl137-evm  	?= "MVL5G"
+DSPLINKGPPOS_dm6446  			?= "MVL5G"
+DSPLINKGPPOS_omapl137  	?= "MVL5G"
 
 DSPLINK = "${S}/dsplink"
 export DSPLINK
@@ -65,7 +66,7 @@ do_compile() {
     
     # Build the gpp user space library
     cd ${DSPLINK}/gpp/src/api
-    ${STAGING_TI_XDCTOOL_INSTALL_DIR}/gmake \
+    make \
       CROSS_COMPILE="${TARGET_PREFIX}" \
       CC="${KERNEL_CC}" \
       AR="${KERNEL_AR}" \
@@ -77,7 +78,7 @@ do_compile() {
 
     # Build the gpp kernel space (debug and release)
     cd ${DSPLINK}/gpp/src
-    ${STAGING_TI_XDCTOOL_INSTALL_DIR}/gmake \
+    make \
       OBJDUMP="${TARGET_PREFIX}objdump" \
       CROSS_COMPILE="${TARGET_PREFIX}" \
       CC="${KERNEL_CC}" \
@@ -90,7 +91,7 @@ do_compile() {
 
     # Build the gpp samples
     cd ${DSPLINK}/gpp/src/samples
-    ${STAGING_TI_XDCTOOL_INSTALL_DIR}/gmake \
+    make \
       BASE_TOOLCHAIN="${CROSS_DIR}" \
       BASE_CGTOOLS="${BASE_TOOLCHAIN}/bin" \
       OSINC_PLATFORM="${CROSS_DIR}/lib/gcc/${TARGET_SYS}/$(${TARGET_PREFIX}gcc -dumpversion)/include" \
@@ -107,14 +108,14 @@ do_compile() {
 
     # Build the dsp library (debug and release)
     cd ${DSPLINK}/dsp/src
-    ${STAGING_TI_XDCTOOL_INSTALL_DIR}/gmake \
+    make \
       BASE_CGTOOLS="${STAGING_TI_CGT6x_DIR}" \
       BASE_SABIOS="${STAGING_TI_DSPBIOS_DIR}" \
       clean all
 
     # Build the dsp samples (debug and release)
     cd ${DSPLINK}/dsp/src/samples
-    ${STAGING_TI_XDCTOOL_INSTALL_DIR}/gmake \
+    make \
       BASE_CGTOOLS="${STAGING_TI_CGT6x_DIR}" \
       BASE_SABIOS="${STAGING_TI_DSPBIOS_DIR}" \
       clean all
@@ -148,22 +149,9 @@ do_stage () {
     cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/packages
 }
 
-pkg_postrm () {
-    update-modules || true
-}
-
-pkg_postinst () {
-    if [ -n "$D" ]; then
-        exit 1
-    fi
-    depmod -a
-    update-modules || true
-}
-
 INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGES += " ti-dsplink-apps" 
-FILES_${PN} = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*"
 FILES_ti-dsplink-apps = "${installdir}/dsplink/*"
 
 # Disable QA check untils we figure out how to pass LDFLAGS in build

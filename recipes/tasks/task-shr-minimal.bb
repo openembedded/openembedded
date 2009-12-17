@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r18.1"
+PR = "r19"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -115,8 +115,7 @@ RDEPENDS_${PN}-x = "\
   glibc-utils \
   glibc-charmap-utf-8 \
   e-wm-menu-shr \
-#Not yet ready to go in
-#  shr-wizard \
+  shr-wizard \
   shr-theme-gry \
   etk-theme-shr \
   ${@get_rdepends(bb, d)} \
@@ -137,7 +136,6 @@ RDEPENDS_${PN}-apps = "\
   ffalarms \
   shr-settings \
   shr-theme \
-  shr-today \
   calc \
 "
 

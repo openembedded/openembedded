@@ -27,6 +27,7 @@ RDEPENDS_${PN} += "\
 		gpe-timesheet \
 		gpe-contacts \
 		gtkmm \
+		guitartune \
 		mc \
 		mplayer \
 		navit \
@@ -212,7 +213,6 @@ RDEPENDS_${PN} += "\
 		elmdentica \
 		shr-installer \
 		eject \
-		illume-keyboard-german \
 		illume-keyboard-arabic \
 		illume-keyboard-browse \
 		illume-keyboard-danish \
@@ -220,10 +220,11 @@ RDEPENDS_${PN} += "\
 		illume-keyboard-dutch \
 		illume-keyboard-dvorak \
 		illume-keyboard-french \
+		illume-keyboard-german \
 		illume-keyboard-hebrew \
 		illume-keyboard-numeric-alt \
-		illume-keyboard-russian-terminal \
 		illume-keyboard-russian \
+		illume-keyboard-russian-terminal \
 		python-xlib \
 		xcompmgr \
 		man \

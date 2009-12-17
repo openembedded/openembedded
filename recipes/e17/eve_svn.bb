@@ -2,7 +2,7 @@ DESCRIPTION = " Enlightenment webbrowser"
 LICENSE = "GPL"
 DEPENDS = "webkit-efl evas ecore edje"
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 LDFLAGS += "-lstdc++"
 

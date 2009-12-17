@@ -5,7 +5,7 @@ mysql5-server mysql5-client"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
 PV = "0.22"
-PR = "r0"
+PR = "r1"
 # REALPV is here to support release candidates
 # OE in that case has as PV something like 0.21+0.22rc1
 # but for packaging the real PV is needed
@@ -59,38 +59,6 @@ do_install() {
         install -d ${D}${datadir}/mythtv
         install -d ${D}${datadir}/mythtv/sql
         install -m 0644 ${S}/database/mc.sql ${D}${datadir}/mythtv/sql
-}
-do_stage() {
-        install -d ${STAGING_INCDIR}
-        install -d ${STAGING_INCDIR}/${PN}
-        install -d ${STAGING_INCDIR}/${PN}/dvdnav
-        install -d ${STAGING_INCDIR}/${PN}/dvdread
-        install -d ${STAGING_INCDIR}/${PN}/libavcodec
-        install -d ${STAGING_INCDIR}/${PN}/libavformat
-        install -d ${STAGING_INCDIR}/${PN}/libavutil
-        install -d ${STAGING_INCDIR}/${PN}/libmyth
-        install -d ${STAGING_INCDIR}/${PN}/libmythdb
-        install -d ${STAGING_INCDIR}/${PN}/libmythui
-        install -d ${STAGING_INCDIR}/${PN}/libswscale
-        install -d ${STAGING_INCDIR}/${PN}/mpeg2dec
-        install -d ${STAGING_INCDIR}/${PN}/upnp
-        install -m 0644 ${D}/${includedir}/${PN}/*.h ${STAGING_INCDIR}/${PN}
-        install -m 0644 ${D}/${includedir}/${PN}/mythconfig.mak ${STAGING_INCDIR}/${PN}
-        install -m 0644 ${D}/${includedir}/${PN}/dvdnav/*.h ${STAGING_INCDIR}/${PN}/dvdnav
-        install -m 0644 ${D}/${includedir}/${PN}/dvdread/*.h ${STAGING_INCDIR}/${PN}/dvdread
-        install -m 0644 ${D}/${includedir}/${PN}/libavcodec/*.h ${STAGING_INCDIR}/${PN}/libavcodec
-        install -m 0644 ${D}/${includedir}/${PN}/libavformat/*.h ${STAGING_INCDIR}/${PN}/libavformat
-        install -m 0644 ${D}/${includedir}/${PN}/libavutil/*.h ${STAGING_INCDIR}/${PN}/libavutil
-        install -m 0644 ${D}/${includedir}/${PN}/libmyth/*.h ${STAGING_INCDIR}/${PN}/libmyth
-        install -m 0644 ${D}/${includedir}/${PN}/libmythdb/*.h ${STAGING_INCDIR}/${PN}/libmythdb
-        install -m 0644 ${D}/${includedir}/${PN}/libmythui/*.h ${STAGING_INCDIR}/${PN}/libmythui
-        install -m 0644 ${D}/${includedir}/${PN}/libswscale/*.h ${STAGING_INCDIR}/${PN}/libswscale
-        install -m 0644 ${D}/${includedir}/${PN}/mpeg2dec/*.h ${STAGING_INCDIR}/${PN}/mpeg2dec
-        install -m 0644 ${D}/${includedir}/${PN}/upnp/*.h ${STAGING_INCDIR}/${PN}/upnp
-        # next part may need to be done better
-        cp -R ${D}/${libdir}/* ${STAGING_LIBDIR}
-        # ugly chmod ahead
-        chmod -R ugo+r ${STAGING_LIBDIR}
 }
 
 PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database"

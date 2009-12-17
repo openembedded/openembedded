@@ -1,4 +1,4 @@
 require klibc_1.5.15.inc
-PR = "r4"
+PR = "r5"
 
 KLIBC_FETCHDIR = "Testing"

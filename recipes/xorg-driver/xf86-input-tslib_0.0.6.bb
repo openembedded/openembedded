@@ -4,7 +4,10 @@ DESCRIPTION = "X.Org X server -- tslib input driver"
 RRECOMMENDS += "hal tslib-calibrate"
 DEPENDS += "tslib"
 
+PR = "r2"
+
 SRC_URI = "http://www.pengutronix.de/software/xf86-input-tslib/download/xf86-input-tslib-${PV}.tar.bz2 \
+           file://dontfloodevents006.patch;patch=1 \
            file://10-x11-input-tslib.fdi"
 
 do_configure_prepend() {
@@ -17,4 +20,3 @@ do_install_append() {
 }
 
 FILES_${PN} += "${datadir}/hal"
-

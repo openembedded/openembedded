@@ -18,7 +18,7 @@ PE = "1"
 PV = "2.6.30+2.6.31-rc7-${OEV}"
 PR_append = "+gitr${SRCREV}"
 
-SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=${LOBRANCH};protocol=git \
+SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=${LOBRANCH};protocol=http \
 	   file://defconfig"
 
 SRC_URI_append = " \
