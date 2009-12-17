@@ -1,5 +1,5 @@
 HOMEPAGE = "http://linux.duke.edu/projects/yum/"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://linux.duke.edu/projects/yum/download/3.2/yum-${PV}.tar.gz \
            file://paths.patch;patch=1 \
@@ -10,7 +10,7 @@ SRC_URI = "http://linux.duke.edu/projects/yum/download/3.2/yum-${PV}.tar.gz \
 RDEPENDS = "python-rpm python-core python-iniparse python-urlgrabber \
             python-shell python-re python-logging python-pickle \
 	    python-netserver python-compression \
-	    python-bzip2 python-unixadmin python-xml python-sqlite3 \
+	    python-unixadmin python-xml python-sqlite3 \
 	    python-textutils python-fcntl python-email \
 	    yum-metadata-parser"
 
