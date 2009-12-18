@@ -11,5 +11,4 @@ do_stage() {
         chmod 755 -R  ${S}
 }
 
-AUTOTOOLS_NATIVE_STAGE_INSTALL="1"
 

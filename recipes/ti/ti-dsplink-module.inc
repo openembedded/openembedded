@@ -1,6 +1,10 @@
 DESCRIPTION = "DSPLINK module for TI ARM/DSP processors"
 
 require ti-paths.inc
+
+#This is a kernel module, don't set PR directly
+MACHINE_KERNEL_PR_append = "a"
+
 inherit module
 
 # compile and run time dependencies

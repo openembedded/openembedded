@@ -2,8 +2,6 @@ DESCRIPTION = "Low level 2D blitting/blending graphics acceleration services sup
 
 require ti-paths.inc
 
-inherit autotools
-
 DEPENDS = "ti-codec-engine ti-dmai"
 
 # Fetch source from svn repo

@@ -3,12 +3,16 @@ DESCRIPTION = "LPM module for TI OMAP3 processors"
 DEPENDS = "ti-linuxutils"
 
 # tconf breaks with '.' in PWD
-PV = "2_24_01"
+PV = "1_24_01"
+PE = "1"
 
-SRC_URI = "http://install.source.dir.local/local_power_manager_1_24.tar.gz"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/lpm/${PV}/exports/local_power_manager_linux_${PV}.tar.gz;name=lpmtarball"
+
+SRC_URI[lpmtarball.md5sum] = "6699861c8d0195654c539798ec428124"
+SRC_URI[lpmtarball.sha256sum] = "052b31b09e6d85bc1e980f5e3d2350019c2d8d7430d24db60854dc926df9a1f2"
 
 # Set the source directory
-S = "${WORKDIR}/local_power_manager_1_24"
+S = "${WORKDIR}/local_power_manager_linux_${PV}"
 
 require ti-paths.inc
 
@@ -31,6 +35,12 @@ do_install () {
     # LPM/CMEM/SDMA drivers - kernel modules
     install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
           install -m 0755 ${S}/packages/ti/bios/power/modules/${LPMDSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
+}
+
+# stage tree - other packages may need this
+do_stage() {
+    install -d ${LPM_INSTALL_DIR}
+    cp -pPrf ${S}/* ${LPM_INSTALL_DIR}
 }
 
 RDEPENDS_${PN} += " ti-dsplink-module"

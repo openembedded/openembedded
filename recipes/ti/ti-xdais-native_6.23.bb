@@ -9,5 +9,4 @@ do_stage() {
     cp -pPrf ${S}/* ${STAGING_DIR_NATIVE}/ti-xdais
 }
 
-AUTOTOOLS_NATIVE_STAGE_INSTALL="1"
 

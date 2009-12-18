@@ -1,4 +1,7 @@
 ANGSTROM_QT_VERSION ?= "4.6.2"
+CE_VERSION ?= "2.25.01"
+
+require conf/distro/include/angstrom-codec-engine-${CE_VERSION}-preferred-versions.inc
 
 PREFERRED_VERSION_autoconf = "2.65"
 PREFERRED_VERSION_autoconf-native = "2.65"
@@ -71,6 +74,4 @@ SRCREV_pn-mozilla-headless-services ?= "c7873654894af6c7c6c01194d6185db46667b81f
 SRCREV_pn-mutter ?= "aff4cf110307e149d3497d20543cde27b9699758"
 SRCREV_pn-twitter-glib ?= "849bec29292df88590e0b2898b50b9b8d766817e"
 SRCREV_pn-xf86-video-psb ?= "b6b3bba06fe5a3fe0b1bd6e31a7369dd83812bab"
-
-
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "Framework Components for TI ARM/DSP processors"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/fc/${PV}/exports/framework_components_${PV}.tar.gz"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/fc/${PV}/exports/framework_components_${PV},lite.tar.gz;name=fctarball"
 
 require ti-paths.inc
 

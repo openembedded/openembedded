@@ -14,5 +14,4 @@ do_stage() {
     chmod 755 -R ${BIOS_INSTALL_DIR}/*
 }
 
-AUTOTOOLS_NATIVE_STAGE_INSTALL="1"
 
