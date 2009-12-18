@@ -7,7 +7,7 @@ inherit native
 DEPENDS = ""
 PROVIDES = ""
 
-M4 = "\
+M4_FILES = "\
 lib-ld.m4 \
 lib-link.m4 \
 lib-prefix.m4 \
@@ -39,7 +39,7 @@ xsize.m4 \
 "
 
 do_stage_append() {
-	for i in ${M4}; do
+	for i in ${M4_FILES}; do
 		src="gettext-runtime/m4/$i"
 		if [ ! -f $src ]; then
 			src="gettext-tools/m4/$i"
