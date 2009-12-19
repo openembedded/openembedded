@@ -13,6 +13,8 @@ OBJC_linux-uclibceabi ?= ""
 OBJC_linux-uclibc ?= ""
 OBJC_avr ?= ""
 OBJC_nylon ?= ""
+OBJC_mips ?= ""
+OBJC_mipsel ?= ""
 OBJC ?= ",objc"
 
 # gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
@@ -36,7 +38,8 @@ EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d,
                 --program-prefix=${TARGET_PREFIX} \
                 ${EXTRA_OECONF_BASE} \
                 ${EXTRA_OECONF_FPU} \
-                ${EXTRA_OECONF_PATHS}"
+                ${EXTRA_OECONF_PATHS} \
+		${@get_gcc_mips_plt_setting(bb, d)}"
 
 # Build uclibc compilers without cxa_atexit support
 EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
