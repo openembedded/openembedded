@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r30"
+PR = "r31"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -260,4 +260,5 @@ RDEPENDS_${PN} += "\
 		mokoeightball \
 		babiloo-efl \
 		make \
+		dnsmasq \
 "
