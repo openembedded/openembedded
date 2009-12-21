@@ -4,12 +4,14 @@ SECTION = "openmoko/base"
 LICENSE = "GPL"
 
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 inherit autotools pkgconfig
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target/OM-2007.2/artwork/;module=icons;proto=http"
 S = "${WORKDIR}/icons"
+
+FILES_${PN} += "${datadir}/icons"
 
 pkg_postinst_${PN} () {
     if [ "x$D" != "x" ]; then
