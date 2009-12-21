@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r31"
+PR = "r32"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -261,4 +261,5 @@ RDEPENDS_${PN} += "\
 		babiloo-efl \
 		make \
 		dnsmasq \
+		libsyncml \
 "
