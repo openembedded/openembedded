@@ -1,6 +1,6 @@
 require gcc-common.inc
 
-INC_PR = "r18"
+INC_PR = "r19"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc34-reverse-compare.patch;patch=1 \

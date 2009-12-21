@@ -1,6 +1,6 @@
 require gcc-common.inc
 
-INC_PR = "r9"
+INC_PR = "r10"
 
 DEFAULT_PREFERENCE = "-1"
 
