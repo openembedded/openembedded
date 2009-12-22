@@ -1,6 +1,6 @@
 require portmap.inc
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/portmap-6.0.tgz \
            file://destdir-no-strip.patch;patch=1 \
@@ -11,7 +11,7 @@ SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/portmap-6.
 S = "${WORKDIR}/${PN}_${PV}/"
 
 CPPFLAGS += "-DFACILITY=LOG_DAEMON -DENABLE_DNS"
-CFLAGS += "-O2 -Wall -Wstrict-prototypes -fpie"
+CFLAGS += "-Wall -Wstrict-prototypes -fPIC"
 
 fakeroot do_install() {
     install -d ${D}${mandir}/man8/ ${D}${base_sbindir} ${D}${sysconfdir}/init.d

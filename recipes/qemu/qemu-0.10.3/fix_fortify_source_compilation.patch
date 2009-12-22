@@ -1,0 +1,13 @@
+--- qemu-0.10.3/block-vvfat.c.orig	2009-05-01 21:02:44 +0400
++++ qemu-0.10.3/block-vvfat.c	2009-12-15 22:06:04 +0300
+@@ -865,7 +865,9 @@
+     {
+ 	direntry_t* entry=array_get_next(&(s->directory));
+ 	entry->attributes=0x28; /* archive | volume label */
+-	snprintf((char*)entry->name,11,"QEMU VVFAT");
++	/* snprintf((char*)entry->name,11,"QEMU VVFAT"); */
++	snprintf(entry->name, sizeof(entry->name), "QEMU VV");
++	snprintf(entry->extension, sizeof(entry->extension), "FAT");
+     }
+ 
+     /* Now build FAT, and write back information into directory */

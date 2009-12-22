@@ -13,7 +13,7 @@ libdir_jni ?= ${libdir}/jni
 # JVM bundle location on target
 libdir_jvm ?= ${libdir}/jvm
 
-STAGING_DATADIR_JAVA ?= ${STAGING_DATADIR}/java
+STAGING_DATADIR_JAVA ?= ${STAGING_DIR_JAVA}
 STAGING_LIBDIR_JNI ?= ${STAGING_LIBDIR}/jni
 STAGING_LIBDIR_JVM ?= ${STAGING_LIBDIR}/jvm
 

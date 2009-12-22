@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r29"
+PR = "r32"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -63,6 +63,7 @@ RDEPENDS_${PN} += "\
 		edje-viewer \
 #		obexpush \
 #		obexftp \
+		obex-data-server \
 		mtpaint \
 		telepathy-python \
 		intone-video \
@@ -259,4 +260,6 @@ RDEPENDS_${PN} += "\
 		mokoeightball \
 		babiloo-efl \
 		make \
+		dnsmasq \
+		libsyncml \
 "

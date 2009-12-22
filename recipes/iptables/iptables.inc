@@ -6,24 +6,27 @@ LICENSE = "GPL"
 SRC_URI = "http://netfilter.org/projects/iptables/files/iptables-${PV}.tar.bz2"
 S = "${WORKDIR}/iptables-${PV}"
 
+INC_PR = "r5"
+
 PARALLEL_MAKE = ""
 
 export COPT_FLAGS = "${CFLAGS}"
 export KERNEL_DIR = "${STAGING_INCDIR}"
 
-do_compile () {
-	unset CFLAGS
-	oe_runmake BINDIR=${D}${sbindir} LIBDIR=${D}${libdir} MANDIR=${D}${mandir} NO_SHARED_LIBS=1
-}
+inherit autotools
 
-do_install () {
-	unset CFLAGS
-	oe_runmake BINDIR=${D}${sbindir} LIBDIR=${D}${libdir} MANDIR=${D}${mandir} install NO_SHARED_LIBS=1
-}
+#do_compile () {
+#	oe_runmake DESTDIR=${D} NO_SHARED_LIBS=1
+#}
+
+#do_install () {
+#	oe_runmake DESTDIR=${D} install NO_SHARED_LIBS=1
+#}
 
 PACKAGES =+ "${PN}-utils"
 FILES_${PN}-utils = "${sbindir}/iptables-save ${sbindir}/iptables-restore"
 FILES_${PN}-doc += "${mandir}"
+FILES_${PN}-dbg += "${libexecdir}/xtables"
 
 RRECOMMENDS = "\
   kernel-module-ip-tables \

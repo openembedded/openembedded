@@ -22,6 +22,7 @@ SRC_URI = "\
     file://fix_segfault.patch;patch=1 \
     file://no-strip.patch;patch=1 \
     file://fix_baum_c_compilation.patch;patch=1 \
+    file://fix_fortify_source_compilation.patch;patch=1 \
     "
 
 S = "${WORKDIR}/qemu-${PV}"

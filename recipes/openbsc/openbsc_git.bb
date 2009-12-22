@@ -1,13 +1,8 @@
-DESCRITOPN = "OpenBSC a Free Software GSM BaseStationController"
-DEPENDS = "libdbi"
-HOMEPAGE = "http://openbsc.gnumonks.org"
-
-RDEPENDS = "libdbd-sqlite3"
-
-SRC_URI = "git://bs11-abis.gnumonks.org/openbsc.git;protocol=git"
-PV = "0.0.1.0+gitr${SRCPV}"
-PE = "1"
+require ${PN}.inc
 
 S = "${WORKDIR}/git/openbsc"
+SRC_URI = "git://bs11-abis.gnumonks.org/openbsc.git;protocol=git"
+PE = "1"
+PV = "0.0.1.1+gitr${SRCPV}"
+PR = "${INC_PR}.1"
 
-inherit autotools

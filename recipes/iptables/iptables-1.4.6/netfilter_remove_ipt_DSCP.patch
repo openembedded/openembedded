@@ -1,0 +1,28 @@
+Index: iptables-1.4.6/include/linux/netfilter_ipv4/ipt_ECN.h
+===================================================================
+--- iptables-1.4.6.orig/include/linux/netfilter_ipv4/ipt_ECN.h	2009-12-15 22:05:04.713075521 -0800
++++ iptables-1.4.6/include/linux/netfilter_ipv4/ipt_ECN.h	2009-12-15 22:08:43.875470318 -0800
+@@ -8,9 +8,6 @@
+ */
+ #ifndef _IPT_ECN_TARGET_H
+ #define _IPT_ECN_TARGET_H
+-#include <linux/netfilter_ipv4/ipt_DSCP.h>
+-
+-#define IPT_ECN_IP_MASK	(~IPT_DSCP_MASK)
+ 
+ #define IPT_ECN_OP_SET_IP	0x01	/* set ECN bits of IPv4 header */
+ #define IPT_ECN_OP_SET_ECE	0x10	/* set ECE bit of TCP header */
+Index: iptables-1.4.6/include/linux/netfilter_ipv4/ipt_ecn.h
+===================================================================
+--- iptables-1.4.6.orig/include/linux/netfilter_ipv4/ipt_ecn.h	2009-12-15 22:09:44.415445160 -0800
++++ iptables-1.4.6/include/linux/netfilter_ipv4/ipt_ecn.h	2009-12-15 22:09:58.523715835 -0800
+@@ -8,9 +8,6 @@
+ */
+ #ifndef _IPT_ECN_H
+ #define _IPT_ECN_H
+-#include <linux/netfilter_ipv4/ipt_dscp.h>
+-
+-#define IPT_ECN_IP_MASK	(~IPT_DSCP_MASK)
+ 
+ #define IPT_ECN_OP_MATCH_IP	0x01
+ #define IPT_ECN_OP_MATCH_ECE	0x10

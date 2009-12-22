@@ -23,6 +23,7 @@ file://cm-t35/0001-OMAP-DSS2-add-Toppoly-TDO35S-panel.patch;patch=1 \
 file://cm-t35/0002-omap3-cm-t35-add-DSS2-display-support.patch;patch=1 \
 file://cm-t35/0003-omap3-cm-t35-update-defconfig-for-DSS2.patch;patch=1 \
 file://cm-t35/0006-omap3-cm-t35-update-defconfig.patch;patch=1 \
+file://dss2/beagle-dss2-support.diff;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
