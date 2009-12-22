@@ -12,6 +12,11 @@ if [ ! -d $SYSFS_CALIBRATION_DIR ]; then
   SYSFS_CALIBRATION_DIR=/sys/devices/platform/s3c2440-i2c/i2c-adapter/i2c-0/0-0073/s3c2410-ts/calibration
 fi
 
+if [ ! -d $SYSFS_CALIBRATION_DIR ]; then
+  # moved in 2.6.32
+  SYSFS_CALIBRATION_DIR=/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/s3c2410-ts/calibration
+fi
+
 if [ -d $SYSFS_CALIBRATION_DIR ]; then
   echo 0 > $SYSFS_CALIBRATION_DIR/0
   echo 80000 > $SYSFS_CALIBRATION_DIR/1
