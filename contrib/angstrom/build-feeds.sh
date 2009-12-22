@@ -355,6 +355,7 @@ do
                       wscan \
                       wt \
                       wt3 \
+                      wvdial \
                       x11vnc \
                       xclip \
                       xf86-input-evdev \

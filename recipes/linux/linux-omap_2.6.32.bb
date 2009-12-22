@@ -23,7 +23,20 @@ file://cm-t35/0001-OMAP-DSS2-add-Toppoly-TDO35S-panel.patch;patch=1 \
 file://cm-t35/0002-omap3-cm-t35-add-DSS2-display-support.patch;patch=1 \
 file://cm-t35/0003-omap3-cm-t35-update-defconfig-for-DSS2.patch;patch=1 \
 file://cm-t35/0006-omap3-cm-t35-update-defconfig.patch;patch=1 \
-file://dss2/beagle-dss2-support.diff;patch=1 \
+file://0001-ARM-OMAP-Overo-Add-support-for-second-ethernet-po.patch;patch=1 \
+file://0003-drivers-net-smsc911x-return-ENODEV-if-device-is-n.patch;patch=1 \
+file://0004-drivers-input-touchscreen-ads7846-return-ENODEV.patch;patch=1 \
+file://0005-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board.patch;patch=1 \
+file://0006-ARM-OMAP-Make-beagle-u-boot-partition-writable.patch;patch=1 \
+file://0007-ASoC-enable-audio-capture-by-default-for-twl4030.patch;patch=1 \
+file://madc/0009-drivers-mfd-add-twl4030-madc-driver.patch;patch=1 \
+file://madc/0010-ARM-OMAP-Add-twl4030-madc-support-to-Overo.patch;patch=1 \
+file://madc/0011-ARM-OMAP-Add-twl4030-madc-support-to-Beagle.patch;patch=1 \
+file://madc/0013-ARM-OMAP-Add-missing-twl4030-madc-header-file.patch;patch=1 \
+file://dss2/0012-OMAP-DSS2-Add-support-for-LG-Philips-LB035Q02-pane.patch;patch=1 \
+#file://dss2/0014-OMAP-DSS-Add-DSS2-support-for-Overo.patch;patch=1 \
+file://dss2/0015-OMAP-DSS-Add-DSS2-support-for-Beagle.patch;patch=1 \
+file://dss2/0016-video-add-timings-for-hd720.patch;patch=1 \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
