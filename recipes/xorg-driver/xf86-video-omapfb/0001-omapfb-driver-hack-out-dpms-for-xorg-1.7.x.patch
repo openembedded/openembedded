@@ -1,0 +1,51 @@
+From 7bfdb731125e2bd18975a3a0f35e424076d55366 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 22 Dec 2009 21:35:00 +0100
+Subject: [PATCH] omapfb-driver: hack out dpms for xorg 1.7.x
+
+---
+ src/omapfb-driver.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/src/omapfb-driver.c b/src/omapfb-driver.c
+index a9d5fbc..ef92ce4 100644
+--- a/src/omapfb-driver.c
++++ b/src/omapfb-driver.c
+@@ -41,9 +41,6 @@
+ 
+ #include "exa.h"
+ 
+-#define DPMS_SERVER
+-#include <X11/extensions/dpms.h>
+-
+ #include <linux/fb.h>
+ 
+ /* TODO: we'd like this to come from kernel headers, but that's not a good
+@@ -581,7 +578,7 @@ OMAPFBScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
+ 	pScreen->SaveScreen = OMAPFBSaveScreen;
+ 	
+ 	/* Setup DPMS support */
+-	xf86DPMSInit(pScreen, OMAPFBDPMSSet, 0);
++	//xf86DPMSInit(pScreen, fbdevHWDPMSSetWeak(), 0);
+ 	
+ #ifdef USE_EXA
+ 	/* EXA init */
+@@ -723,6 +720,7 @@ static Bool OMAPFBSwitchMode(int scrnIndex, DisplayModePtr mode, int flags)
+ 	return TRUE;
+ }
+ 
++#if 0
+ static void
+ OMAPFBDPMSSet(ScrnInfoPtr pScrn, int mode, int flags)
+ {
+@@ -754,6 +752,7 @@ OMAPFBDPMSSet(ScrnInfoPtr pScrn, int mode, int flags)
+ 	}
+ 
+ }
++#endif
+ 
+ void
+ OMAPFBPrintCapabilities(ScrnInfoPtr pScrn,
+-- 
+1.6.2.4
+
