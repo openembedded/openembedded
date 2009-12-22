@@ -98,12 +98,6 @@ shr_rootfs_postprocess() {
     #set up a nice gentoo-like PS1
     echo "export PS1=\"\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] \"">> ./etc/profile
 
-    #load modules on boot
-    [ -d ./etc/modutils ] || mkdir ./etc/modutils
-    # FIXME: do load those modules through module_autoload in 
-    # machine config or distro config
-    echo "ppp_generic" > ./etc/modutils/ppp_generic
-
     #set up some variables to improve default settings
     echo "if [ \"\$DISPLAY\" = \"\" ]" >> ./etc/profile
     echo "then" >> ./etc/profile

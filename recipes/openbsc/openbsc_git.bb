@@ -2,6 +2,7 @@ require ${PN}.inc
 
 S = "${WORKDIR}/git/openbsc"
 SRC_URI = "git://bs11-abis.gnumonks.org/openbsc.git;protocol=git"
+PE = "1"
 PV = "0.0.1.1+gitr${SRCPV}"
 PR = "${INC_PR}.1"
 
