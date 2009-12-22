@@ -7,7 +7,7 @@ PROVIDES = "drm"
 DEPENDS = "libpthread-stubs virtual/kernel"
 
 PE = "1"
-PV = "2.4.15+gitr${SRCREV}"
+PV = "2.4.15+gitr${SRCPV}"
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
