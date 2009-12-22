@@ -1,5 +1,6 @@
 require python.inc
-DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
+DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl zlib\
+           ${@base_contains('DISTRO_FEATURES', 'tk', 'tk', '', d)}"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
 # set to .0 on every increase of INC_PR
 PR = "${INC_PR}.0"

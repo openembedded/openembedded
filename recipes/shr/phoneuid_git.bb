@@ -4,9 +4,10 @@ LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += " dbus-glib libframeworkd-glib libphone-ui sqlite3 shr-specs"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 RREPLACES_${PN} = "shr-today"
+RCONFLICTS_${PN} = "shr-today"
 
 SRC_URI = "git://git.shr-project.org/repo/phoneuid.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
