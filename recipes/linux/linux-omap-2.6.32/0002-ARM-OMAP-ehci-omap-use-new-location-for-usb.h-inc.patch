@@ -1,0 +1,25 @@
+From 06e97c7ea488e350b7aae5f3864a1bbe0666db87 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Tue, 15 Dec 2009 15:12:54 -0800
+Subject: [PATCH 02/16] ARM: OMAP: ehci-omap: use new location for usb.h include
+
+---
+ drivers/usb/host/ehci-omap.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/usb/host/ehci-omap.c b/drivers/usb/host/ehci-omap.c
+index 7ba8df3..5cfed78 100644
+--- a/drivers/usb/host/ehci-omap.c
++++ b/drivers/usb/host/ehci-omap.c
+@@ -37,7 +37,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
+ #include <linux/gpio.h>
+-#include <mach/usb.h>
++#include <plat/usb.h>
+ 
+ /*
+  * OMAP USBHOST Register addresses: VIRTUAL ADDRESSES
+-- 
+1.6.2.4
+

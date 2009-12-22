@@ -13,6 +13,8 @@ PR = "r2"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base"
 
+DEPENDS = "gst-plugins-ugly"
+
 RDEPENDS_task-gnome-apps = " \
   abiword \
   cheese \
