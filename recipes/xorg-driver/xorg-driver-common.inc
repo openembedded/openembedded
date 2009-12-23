@@ -2,7 +2,7 @@ DESCRIPTION = "X driver"
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/drivers"
 LICENSE = "MIT-X"
-PR = "r8"
+PR = "r9"
 
 DEPENDS = "randrproto xorg-server xproto"
 
