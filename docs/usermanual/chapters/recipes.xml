@@ -201,7 +201,7 @@ VAR1 ?= "New value"</screen></para>
           which results in the actions only being performed for the specified
           target or machine: [TODO: Link to section on overrides]<screen>SRC_URI_append_sh4 = " file://fix-makefile.patch;patch=1"</screen>Note
           that the appended information is a variable itself, and therefore
-          it's possible to used <emphasis>+=</emphasis> or
+          it's possible to use <emphasis>+=</emphasis> or
           <emphasis>=+</emphasis> to assign variables to the
           <emphasis>_append</emphasis> information:<screen>SRC_URI_append = " file://fix-makefile.patch;patch=1"
 SRC_URI_append += "file://fix-install.patch;patch=1"</screen></para>
@@ -225,7 +225,7 @@ SRC_URI_append += "file://fix-install.patch;patch=1"</screen></para>
           specified target or machine: [TODO: Link to section on
           overrides]<screen>CFLAGS_prepend_sh4 = " file://fix-makefile.patch;patch=1"</screen>Note
           that the appended information is a variable itself, and therefore
-          it's possible to used <emphasis>+=</emphasis> or
+          it's possible to use <emphasis>+=</emphasis> or
           <emphasis>=+</emphasis> to assign variables to the
           <emphasis>_prepend</emphasis> information:<screen>CFLAGS_prepend = "-I${S}/myincludes "
 CFLAGS_prepend += "-I${S}/myincludes2 "</screen>Note also the lack of a space
