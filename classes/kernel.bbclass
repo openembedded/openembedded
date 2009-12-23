@@ -95,13 +95,18 @@ kernel_do_compile() {
 kernel_do_compile[depends] = "${INITRAMFS_TASK}"
 
 kernel_do_stage() {
-	ASMDIR=`readlink include/asm`
+	if [ -e include/asm ] ; then
+		# This link is generated only in kernel before 2.6.33-rc1, don't stage it for newer kernels
+		ASMDIR=`readlink include/asm`
 
-	mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
-	cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
+		cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+	fi
 	# Kernel 2.6.27 moved headers from includes/asm-${ARCH} to arch/${ARCH}/include/asm	
 	if [ -e arch/${ARCH}/include/asm/ ] ; then 
-		cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		if [ -e include/asm ] ; then
+			cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		fi
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}/include
 		cp -fR arch/${ARCH}/* ${STAGING_KERNEL_DIR}/arch/${ARCH}/	
 
@@ -112,8 +117,10 @@ kernel_do_stage() {
 		cp -fR arch/x86/* ${STAGING_KERNEL_DIR}/arch/x86/
 	fi
 
-	rm -f ${STAGING_KERNEL_DIR}/include/asm
-	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
+	if [ -e include/asm ] ; then
+		rm -f ${STAGING_KERNEL_DIR}/include/asm
+		ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
+	fi
 
 	mkdir -p ${STAGING_KERNEL_DIR}/include/asm-generic
 	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
