@@ -100,7 +100,7 @@ UsePrivilegeSeparation yes
 Compression no
 ClientAliveInterval 15
 ClientAliveCountMax 4
-UseDNS yes
+UseDNS no
 #PidFile /var/run/sshd.pid
 #MaxStartups 10
 #PermitTunnel no
