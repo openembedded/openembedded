@@ -19,7 +19,7 @@ S = "${WORKDIR}/git"
 ARAGO_DM_REV = "c2aeffe9e835c5b6b275edc416951ce4a348b0fd"
 ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCREV}"
 ARAGO_DM_BR  = "r30"
-ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH}"
+ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_dm355-evm           = ${ARAGO_DM_REV}
 SRCREV_dm365-evm           = ${ARAGO_DM_REV}
@@ -51,7 +51,7 @@ SRC_URI_append_dm6467t-evm = ${ARAGO_DM_URI}
 
 ARAGO_L1_REV = "e3939e092ce59a6906bf8869a3c7d40314c02eef"
 ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
-ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH}"
+ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}
 SRCREV_da850-omapl138-evm         = ${ARAGO_L1_REV}
