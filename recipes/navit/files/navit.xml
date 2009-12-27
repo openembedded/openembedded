@@ -4,7 +4,7 @@
 	<xi:include href="/usr/share/navit/navit.default.xml" xpointer="xpointer(/config/plugins)"/>
 	<xi:include href="/usr/share/navit/navit.default.xml" xpointer="xpointer(/config/debug)"/>
 
-	<navit center="4808 N 1134 E" zoom="256" tracking="1" orientation="-1" recent_dest="10">
+	<navit center="4808 N 1134 E" zoom="256" tracking="1" orientation="-1" recent_dest="10" drag_bitmap="1">
 		<graphics type="gtk_drawing_area"/>
 		<gui type="gtk" enabled="no" menubar="1" toolbar="1" statusbar="1"/>
 		<xi:include href="/usr/share/navit/navit.default.xml" xpointer="xpointer(/config/navit/gui[@type='internal'])"/>
