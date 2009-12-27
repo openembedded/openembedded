@@ -69,8 +69,10 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
            "
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
+SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1 \
+		file://glibc-2.9-sh-fix.patch;patch=1"
+SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1 \
+		file://glibc-2.9-sh-fix.patch;patch=1"
 
 #powerpc patches to add support for soft-float
 SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff;patch=1"

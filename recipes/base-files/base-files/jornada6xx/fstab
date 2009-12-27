@@ -1,8 +1,8 @@
 proc		/proc	proc	defaults	        0  0
-/dev/hda2       /       ext2    defaults                0  0
 /dev/hda1	/mnt/cf	auto	defaults,sync,noauto	0  0
+/dev/hda2       /       ext2    defaults                0  0
 /dev/hda3       none    swap    sw                      0  0
-tmpfs		/var/volatiles	tmpfs	defaults	        0  0
+tmpfs		/var/volatile	tmpfs	defaults	0  0
 tmpfs		/mnt/ram	tmpfs	defaults	0  0
-tmpfs                /dev/shm             tmpfs      mode=0777             0  0
+tmpfs		/dev/shm	tmpfs	mode=0777	0  0
 devpts		/dev/pts	devpts	defaults	0  0
