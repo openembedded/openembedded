@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/development/keyview "
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=development/keyview "

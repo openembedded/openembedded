@@ -1,7 +1,7 @@
 require opie-securityplugin-pin.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/securityplugins/pin \
-           ${HANDHELDS_CVS};module=opie/pics "
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=noncore/securityplugins/pin \
+           ${OPIE_GIT};protocol=git;subpath=pics "
 

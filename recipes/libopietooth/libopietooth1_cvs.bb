@@ -1,5 +1,5 @@
-SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/net/opietooth/lib"
-PV = "${OPIE_CVS_PV}"
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=noncore/net/opietooth/lib"
+PV = "${OPIE_GIT_PV}"
 PR = "r2"
 
 require libopietooth1.inc

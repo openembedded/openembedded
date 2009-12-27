@@ -1,15 +1,15 @@
---- launcher/server.pro	2009-07-13 23:55:07.000000000 +0100
-+++ launcher/server.pro	2009-07-17 00:03:40.000000000 +0100
-@@ -2,7 +2,7 @@
+--- launcher/server.pro
++++ launcher/server.pro
+@@ -2,7 +2,7 @@ TEMPLATE	= app
  
  CONFIG		+= qt warn_on 
  
 -DESTDIR		= $$(OPIEDIR)/bin
-+DESTDIR		= 
++DESTDIR		=
  
  HEADERS		+= server.h \
  		  qrr.h \
-@@ -20,7 +20,7 @@
+@@ -20,7 +20,7 @@ HEADERS		+= server.h \
  		  shutdownimpl.h \
  		  launcher.h \
  		  launcherview.h \
@@ -18,16 +18,16 @@
  		  startmenu.h \
  		  transferserver.h \
  		  qcopbridge.h \
-@@ -31,7 +31,7 @@
+@@ -31,7 +31,7 @@ HEADERS		+= server.h \
  		  serverapp.h \
  		  qprocess.h \
  		  screensaver.h \
 -		  $$(OPIEDIR)/noncore/settings/mediummount/mediumwidget.h \
 +		  mediummount/mediumwidget.h \
                    mediadlg.h \
- 		  virtualfs.h
- 
-@@ -51,7 +51,7 @@
+ 		  virtualfs.h \
+           syncaccessmanager.h
+@@ -52,7 +52,7 @@ SOURCES		+= server.cpp \
  		  shutdownimpl.cpp \
  		  launcher.cpp \
  		  launcherview.cpp \
@@ -36,14 +36,15 @@
  		  transferserver.cpp \
  		  packageslave.cpp \
     		  irserver.cpp \
-@@ -64,21 +64,21 @@
+@@ -65,22 +65,22 @@ SOURCES		+= server.cpp \
  		  qprocess.cpp \
  		  qprocess_unix.cpp \
  		  screensaver.cpp \
 -		  $$(OPIEDIR)/noncore/settings/mediummount/mediumwidget.cc \
 +		  mediummount/mediumwidget.cc \
                    mediadlg.cpp \
- 		  virtualfs.cpp
+ 		  virtualfs.cpp \
+           syncaccessmanager.cpp
  
  
 -INCLUDEPATH += $(OPIEDIR)/core/apps/calibrate
@@ -59,7 +60,7 @@
 -INCLUDEPATH += $(OPIEDIR)/noncore/settings/mediummount
 -DEPENDPATH  += $(OPIEDIR)/noncore/settings/mediummount
 +INCLUDEPATH += mediummount
-+DEPENDPATH	+= mediummount
++DEPENDPATH  += mediummount
  
 -LIBS        += -lqpe -lopiecore2 -lopieui2 -lopiesecurity2 -lqrsync
 +LIBS         = -lqpe -lopiecore2 -lopieui2 -lopiesecurity2 -lqrsync

@@ -1,12 +1,14 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 PR = "r13"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=libopie2 \
            file://include.pro"
+
+PRIVATE += " opimmemosortvector.h"
 
 # FIXME remove this!
 SRC_URI_append_poodle = " file://poodle-2.6-hotkeys.patch"

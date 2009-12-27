@@ -1,7 +1,7 @@
 require libopieobex0.inc
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 PR = "r7"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/core/obex \
-           ${HANDHELDS_CVS};module=opie/pics \
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/obex \
+           ${OPIE_GIT};protocol=git;subpath=pics \
            file://disable-bt-check.patch"

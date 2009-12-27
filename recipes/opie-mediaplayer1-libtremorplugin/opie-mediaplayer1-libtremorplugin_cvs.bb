@@ -1,7 +1,7 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 PR = "r3"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/core/multimedia/opieplayer \
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/multimedia/opieplayer \
 	   file://vorbis.pro "

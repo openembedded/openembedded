@@ -2,11 +2,11 @@ DESCRIPTION = "Restart Applet"
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 APPNAME = "restartapplet"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/core/applets/restartapplet2 \
-           ${HANDHELDS_CVS};module=opie/apps"
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/applets/restartapplet2 \
+           ${OPIE_GIT};protocol=git;subpath=apps"
 
 S = "${WORKDIR}/restartapplet2"
 

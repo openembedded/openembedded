@@ -1,11 +1,11 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/core/settings/security \
-           ${HANDHELDS_CVS};module=opie/pics \
-           ${HANDHELDS_CVS};module=opie/apps"
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/settings/security \
+           ${OPIE_GIT};protocol=git;subpath=pics \
+           ${OPIE_GIT};protocol=git;subpath=apps"
 
 # FILES plugins/application/libsecurity.so* bin/security apps/Settings/Security.desktop pics/security
 do_install() {

@@ -1,0 +1,11 @@
+--- launcher/server.cpp
++++ launcher/server.cpp
+@@ -1111,6 +1111,8 @@ void Server::finishedQueuedRequests()
+ 
+ void Server::startSoundServer()
+ {
++    owarn << "Sound server (qss) now needs to be started standalone" << oendl;
++    return;
+     if ( !process ) {
+         process = new Opie::Core::OProcess( this );
+         connect(process, SIGNAL(processExited(Opie::Core::OProcess*)),

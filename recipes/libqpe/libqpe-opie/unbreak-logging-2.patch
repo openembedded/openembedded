@@ -1,0 +1,21 @@
+--- library/qpeapplication.cpp
++++ library/qpeapplication.cpp
+@@ -803,14 +803,14 @@ static void qtopiaMsgHandler(QtMsgType type, const char* msg)
+ {
+     switch ( type ) {
+         case QtDebugMsg:
+-#ifdef QT_DEBUG
++//#ifdef QT_DEBUG
+             fprintf( stderr, "Debug: %s\n", msg );
+-#endif
++//#endif
+             break;
+         case QtWarningMsg:
+-#ifdef QT_DEBUG
++//#ifdef QT_DEBUG
+             fprintf( stderr, "Warning: %s\n", msg );
+-#endif
++//#endif
+             break;
+         case QtFatalMsg:
+             fprintf( stderr, "Fatal: %s\n", msg );
