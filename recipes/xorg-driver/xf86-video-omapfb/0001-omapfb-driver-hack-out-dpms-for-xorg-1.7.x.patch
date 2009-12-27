@@ -46,6 +46,12 @@ index a9d5fbc..ef92ce4 100644
  
  void
  OMAPFBPrintCapabilities(ScrnInfoPtr pScrn,
--- 
-1.6.2.4
-
+@@ -879,7 +878,7 @@ OMAPFBSetup(pointer module, pointer opts, int *errmaj, int *errmin)
+ 	if (!setupDone) {
+ 		setupDone = TRUE;
+ 		xf86AddDriver(&OMAPFB, module, HaveDriverFuncs);
+-		LoaderRefSymLists(fbSymbols, NULL);
++		//LoaderRefSymLists(fbSymbols, NULL);
+ 		return (pointer)1;
+ 	} else {
+ 		if (errmaj) *errmaj = LDR_ONCEONLY;

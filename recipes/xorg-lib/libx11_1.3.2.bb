@@ -20,8 +20,8 @@ do_compile() {
 		unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
 		cd src/util; 
 		mv makekeys.c.orig makekeys.c || true
-		touch makekeys-makekeys.o ; gcc makekeys.c -o makekeys
-		mv to stop it getting rebuilt
+		touch makekeys-makekeys.o ; ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR_NATIVE} makekeys.c -o makekeys
+		# mv to stop it getting rebuilt
 		mv makekeys.c makekeys.c.orig
 		cd ../../
 	) || exit 1
