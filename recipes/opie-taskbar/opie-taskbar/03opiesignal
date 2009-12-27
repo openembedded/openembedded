@@ -1,0 +1,11 @@
+#!/bin/sh
+
+export QTDIR=/usr/lib/opie
+if [ "$1" = "suspend" ]; then
+	/usr/bin/qcop QPE/System systemSuspend\(\)
+elif [ "$1" = "resume" ] && [ "$2" != "standby" ]; then
+	/usr/bin/qcop QPE/System systemResume\(\)
+fi
+
+: exit 0
+

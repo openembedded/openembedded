@@ -1,10 +1,10 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 PR = "r5"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/inputmethods/multikey \
-           ${HANDHELDS_CVS};module=opie/share \
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=inputmethods/multikey \
+           ${OPIE_GIT};protocol=git;subpath=share \
            file://fix-rpath.patch"
 
 #           file://friendly-button-names.patch"

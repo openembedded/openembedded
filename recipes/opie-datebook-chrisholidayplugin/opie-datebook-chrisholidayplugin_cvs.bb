@@ -1,5 +1,5 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/core/pim/datebook/holiday/christian "
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/pim/datebook/plugins/christian "

@@ -4,11 +4,11 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opieplayer2"
 RPROVIDES_${PN} = "opie-mediaplayer2-skin"
-OPIE_CVS_PV ?= "1.2.2+cvs${SRCDATE}"
-PV = "${OPIE_CVS_PV}"
-PR = "r2"
+OPIE_GIT_PV ?= "1.2.2+cvs${SRCDATE}"
+PV = "${OPIE_GIT_PV}"
+PR = "r3"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/pics"
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=pics"
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/skins/default_landscape/

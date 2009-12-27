@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "${OPIE_GIT_PV}"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/settings/sound \
-           ${HANDHELDS_CVS};module=opie/apps"
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=noncore/settings/sound \
+           ${OPIE_GIT};protocol=git;subpath=apps"
