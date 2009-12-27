@@ -1,14 +1,14 @@
-SECTION = "kernel"
 DESCRIPTION = "JLime Linux kernel for SuperH based Jornada 6xx"
+SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r0"
 
-COMPATIBLE_HOST = "sh.*-linux"
-#COMPATIBLE_MACHINE = "jornada6xx"
+COMPATIBLE_MACHINE = "jornada6xx"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            file://defconfig_jlime \
 	   file://LinuxSH-2.6.17.patch;patch=0 \
+	   file://alsa_hp6xx_2.6.17.patch;patch=0 \
+	   file://rtc-2.6.17.patch;patch=0 \
 	   file://unexpected-int-fix.patch;patch=0 \
 	   file://keymap-fix.patch;patch=0 \
 	   file://io.h-fix.patch;patch=0 \

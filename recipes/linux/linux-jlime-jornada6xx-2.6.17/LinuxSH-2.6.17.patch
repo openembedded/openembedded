@@ -9965,8 +9965,8 @@ diff -ruN linux-2.6.17-vanilla/arch/sh/boards/hp6xx/hp6xx_apm.c linux-2.6.17/arc
 +#define APM_CRITICAL			10
 +#define APM_LOW				30
 +
-+#define HP680_BATTERY_MAX		875
-+#define HP680_BATTERY_MIN		600
++#define HP680_BATTERY_MAX		896
++#define HP680_BATTERY_MIN		628
 +#define HP680_BATTERY_AC_ON		900
 +
 +#define MODNAME "hp6x0_apm"
@@ -56277,3 +56277,14 @@ diff -ruN linux-2.6.17-vanilla/sound/sh/aica.h linux-2.6.17/sound/sh/aica.h
 +
 +#endif
 +
+--- linux-2.6.17-vanilla/scripts/mod/sumversion.c	2006-06-18 04:49:35.000000000 +0300
++++ linux-2.6.17/scripts/mod/sumversion.c	2009-12-21 14:43:12.396274319 +0200
+@@ -36,6 +36,8 @@
+ #define MD4_BLOCK_WORDS		16
+ #define MD4_HASH_WORDS		4
+
++#define PATH_MAX		4096	/* # chars in a path name including nul */
++
+ struct md4_ctx {
+ 	uint32_t hash[MD4_HASH_WORDS];
+ 	uint32_t block[MD4_BLOCK_WORDS];
