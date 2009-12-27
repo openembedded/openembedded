@@ -1,11 +1,11 @@
 DESCRIPTION = "Native tools for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "zlib-native dbus-native"
+DEPENDS = "zlib-native dbus-native libsm-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 inherit native
 
