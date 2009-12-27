@@ -24,7 +24,7 @@ python __anonymous () {
 ENABLE_BINARY_LOCALE_GENERATION ?= "0"
 
 # BINARY_LOCALE_ARCHES is a space separated list of regular expressions
-BINARY_LOCALE_ARCHES ?= "arm.* i[3-6]86 x86_64 powerpc"
+BINARY_LOCALE_ARCHES ?= "arm.* sh3.* i[3-6]86 x86_64 powerpc"
 
 # Set this to zero if you don't want ldconfig in the output package
 USE_LDCONFIG ?= "1"

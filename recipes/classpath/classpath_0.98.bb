@@ -5,9 +5,10 @@ SRC_URI += "\
   file://ecj_java_dir.patch;patch=1 \
   file://autotools.patch;patch=1 \
   file://fix-gmp.patch;patch=1 \
+  file://toolwrapper-exithook.patch;patch=1 \
   "
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS += "gtk+ gconf libxtst"
 

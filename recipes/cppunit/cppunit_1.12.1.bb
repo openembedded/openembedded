@@ -6,15 +6,11 @@ DESCRIPTION = "Unit Testing Library for C++"
 HOMEPAGE = "http://cppunit.sourceforge.net/"
 LICENSE = "LGPL"
 SECTION = "devel"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cppunit/cppunit-${PV}.tar.gz"
 
-inherit autotools binconfig
+inherit autotools_stage binconfig
 
 CXXFLAGS_powerpc += "-lstdc++"
 
-do_stage () {
-	autotools_stage_includes
-	cd ./src/cppunit/.libs/
-	oe_libinstall -a -so libcppunit ${STAGING_LIBDIR}
-}

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r18"
+PR = "r19"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -28,6 +28,14 @@ SRC_URI += " \
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
+
+#buglabs's bug device
+SRC_URI_append_bug = " \
+       file://30-BUG.rules \
+       file://10-mx31.rules \
+       file://bmi_eventpipe.sh "
+
+PACKAGE_ARCH_bug = "bug"
 
 inherit update-rc.d autotools_stage
 
@@ -96,6 +104,12 @@ do_install () {
 
 do_install_append_h2200() {
 	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
+}
+
+do_install_append_bug() {
+	install -m 0644 ${WORKDIR}/30-BUG.rules ${D}${sysconfdir}/udev/rules.d/30-BUG.rules
+	install -m 0644 ${WORKDIR}/10-mx31.rules ${D}${sysconfdir}/udev/rules.d/10-mx31.rules
+	install -m 0644 ${WORKDIR}/bmi_eventpipe.sh ${D}${sysconfdir}/udev/scripts/bmi_eventpipe.sh
 }
 
 pkg_postinst_${PN}_append() {
