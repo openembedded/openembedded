@@ -5,6 +5,7 @@
 require nvidia-drivers.inc
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_ion = "1"
 
 PKG_BASENAME="NVIDIA-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}"
 
