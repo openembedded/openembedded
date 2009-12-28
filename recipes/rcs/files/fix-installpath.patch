@@ -1,0 +1,33 @@
+diff -Naur a/man/Makefile.in b/man/Makefile.in
+--- a/man/Makefile.in	1995-06-16 08:19:24.000000000 +0200
++++ b/man/Makefile.in	2009-02-06 01:08:20.000000000 +0100
+@@ -33,9 +33,9 @@
+ INSTALL_DATA = @INSTALL_DATA@
+ PIC = @PIC@
+ 
+-prefix = @prefix@
+-man1dir = $(prefix)/man/man1
+-man5dir = $(prefix)/man/man5
++mandir = @mandir@
++man1dir = $(DESTDIR)$(mandir)/man1
++man5dir = $(DESTDIR)$(mandir)/man5
+ man1ext = .1
+ man5ext = .5
+ 
+diff -Naur a/src/Makefile.in b/src/Makefile.in
+--- a/src/Makefile.in	1995-06-16 08:19:24.000000000 +0200
++++ b/src/Makefile.in	2009-02-06 00:43:23.000000000 +0100
+@@ -110,11 +110,11 @@
+ 	$(CC) -c $(ALL_CFLAGS) $<
+ 
+ installdirs :: ../mkinstalldirs
+-	$(srcdir)/../mkinstalldirs $(bindir)
++	$(srcdir)/../mkinstalldirs $(DESTDIR)$(bindir)
+ 
+ install :: all installdirs
+ 	for p in $(PROGRAMS); do \
+-	  $(INSTALL_PROGRAM) $$p $(bindir)/$$p; \
++	  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$p; \
+ 	done
+ 
+ uninstall ::
