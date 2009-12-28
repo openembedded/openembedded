@@ -27,7 +27,7 @@ EXTRA_OECONF = " \
   --disable-video-xbios --disable-video-gem --disable-video-dummy \
   --enable-video-opengl --enable-input-events --enable-pthreads \
   --disable-video-picogui --disable-video-qtopia --enable-dlopen \
-  --enable-input-tslib \
+  --enable-input-tslib --disable-video-ps3 \
 "
 
 do_configure() { 

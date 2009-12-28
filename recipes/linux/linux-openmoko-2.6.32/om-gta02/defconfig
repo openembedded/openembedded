@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.32
-# Tue Dec 22 15:58:31 2009
+# Linux kernel version: 2.6.32.2
+# Mon Dec 28 12:30:05 2009
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -1044,6 +1044,7 @@ CONFIG_REGULATOR_PCF50633=y
 # Graphics support
 #
 CONFIG_DRM=y
+CONFIG_DRM_KMS_HELPER=y
 # CONFIG_DRM_MGA is not set
 # CONFIG_DRM_VIA is not set
 # CONFIG_DRM_SAVAGE is not set
@@ -1453,6 +1454,9 @@ CONFIG_RTC_DRV_S3C=y
 # TI VLYNQ
 #
 # CONFIG_STAGING is not set
+CONFIG_AR6000_WLAN=m
+# CONFIG_AR6000_WLAN_DEBUG is not set
+# CONFIG_AR6000_WLAN_RESET is not set
 
 #
 # File systems
