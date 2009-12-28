@@ -6,7 +6,9 @@ S = "${WORKDIR}/linux-${PV}"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_ion = "1"
 DEFAULT_PREFERENCE_simone = "1"
+
 DEFAULT_PREFERENCE_akita = "-1"
 DEFAULT_PREFERENCE_c7x0 = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
