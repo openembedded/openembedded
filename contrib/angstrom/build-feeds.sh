@@ -242,6 +242,7 @@ do
                       mythtv \
                       mythplugins \
                       myththemes \
+                      nano \
                       nautilus \
                       nbench-byte \
                       navit \
