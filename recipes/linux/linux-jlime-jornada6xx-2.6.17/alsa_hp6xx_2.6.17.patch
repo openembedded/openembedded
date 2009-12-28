@@ -1,0 +1,636 @@
+diff -up linux-2.6.17/sound/sh/Kconfig linux-2.6.17.alsa/sound/sh/Kconfig
+--- linux-2.6.17/sound/sh/Kconfig	2009-04-05 12:58:14.000000000 -0300
++++ linux-2.6.17.alsa/sound/sh/Kconfig	2009-04-05 11:41:34.000000000 -0300
+@@ -12,4 +12,13 @@ config SND_AICA
+          To compile this driver as a module, choose M here: the module
+          will be called snd-aica.
+
++config SND_SH_DAC_AUDIO
++        tristate "SuperH DAC audio support"
++        depends on SND
++        depends on CPU_SH3
++        select SND_PCM
++        help
++          Alsa Sound driver for the HP Jornada 680/690 and
++          HP Palmtop 620lx/660lx.
++
+ endmenu
+diff -up linux-2.6.17/sound/sh/Makefile linux-2.6.17.alsa/sound/sh/Makefile
+--- linux-2.6.17/sound/sh/Makefile	2009-04-05 12:58:14.000000000 -0300
++++ linux-2.6.17.alsa/sound/sh/Makefile	2009-04-05 11:41:34.000000000 -0300
+@@ -1,4 +1,4 @@
+
+ snd-aica-objs := aica.o
+ obj-$(CONFIG_SND_AICA) += snd-aica.o
+-
++obj-$(CONFIG_SND_SH_DAC_AUDIO) += snd_sh_dac_audio.o
+diff -up linux-2.6.17/sound/sh/snd_sh_dac_audio.c linux-2.6.17.alsa/sound/sh/snd_sh_dac_audio.c
+--- linux-2.6.17/sound/sh/snd_sh_dac_audio.c	2009-04-05 13:00:51.000000000 -0300
++++ linux-2.6.17.alsa/sound/sh/snd_sh_dac_audio.c	2009-04-05 12:24:23.000000000 -0300
+@@ -0,0 +1,606 @@
++/*
++ * snd_sh_dac_audio.c - SuperH DAC audio driver for ALSA
++ *
++ * Copyright (c) 2007 by Rafael Ignacio Zurita <rizurita@yahoo.com>
++ *
++ *
++ * Based completely on sh_dac_audio.c (Copyright (C) 2004,2005 by Andriy
++ * Skulysh) and "Writing an ALSA driver" (Copyright (c) 2002-2005 by Takashi
++ * Iwai <tiwai@suse.de>).
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ *
++ */
++
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <asm/io.h>
++#include <asm/clock.h>
++#include <asm/cpu-sh3/dac.h>
++#include <asm/hp6xx/hp6xx.h>
++#include <asm/irq.h>
++#include <asm/hd64461.h>
++
++MODULE_AUTHOR("Rafael Ignacio Zurita <rizurita@yahoo.com>");
++MODULE_DESCRIPTION("SuperH DAC audio driver");
++MODULE_LICENSE("GPL");
++MODULE_SUPPORTED_DEVICE("{{SuperH DAC audio support}}");
++
++/* Module Parameters */
++static int index = SNDRV_DEFAULT_IDX1;
++static char *id = SNDRV_DEFAULT_STR1;
++module_param(index, int, 0444);
++MODULE_PARM_DESC(index, "Index value for SuperH DAC audio.");
++module_param(id, charp, 0444);
++MODULE_PARM_DESC(id, "ID string for SuperH DAC audio.");
++
++/* Simple platform device */
++static struct platform_device *pd;
++
++#define SND_SH_DAC_DRIVER "SH_DAC"
++#define BUFFER_SIZE	64000
++#define SH_DAC_AUDIO_CHANNEL 1
++
++#define HD64461_TMU_TIMR_TMU0 0x01
++#define HD64461_TMU_TIDR      (CONFIG_HD64461_IOBASE + 0x600e)
++#define HD64461_TMU_TIRR_TMU0 0x01
++#define HD64461_TMU_TIRR      (CONFIG_HD64461_IOBASE + 0x600c)
++#define HD64461_TMU_TCVR0     (CONFIG_HD64461_IOBASE + 0x6002)
++#define PKDR_SPEAKER            0x20
++#define PKDR    0xa4000132
++#define HD64461_GPADR_SPEAKER   0x01
++#define HD64461_TMU_TCR0      (CONFIG_HD64461_IOBASE + 0x600a)
++#define HD64461_TMU_TCR_STRT  0x01    /* Start Counting */
++
++
++/* main struct */
++struct snd_sh_dac {
++	struct snd_card *card;
++	struct snd_pcm_substream *substream;
++	int irq;
++
++	int rate;
++	int empty;
++	char *data_buffer, *buffer_begin, *buffer_end;
++	int processed; /* bytes proccesed, to compare with period_size */
++	int buffer_size;
++};
++
++
++/*
++ * Hardware functions (timer, DAC, speaker)
++ * Note: The driver uses a hd64461 timer
++ */
++
++static void dac_audio_start_timer(void)
++{
++	u16 tmu_tcr;
++
++	/*printk("dac_audio_start_timer\n"); */
++	/* Start HD64461 timer 0 countdown */
++	tmu_tcr = inb(HD64461_TMU_TCR0);
++	tmu_tcr |= HD64461_TMU_TCR_STRT;
++	outb(tmu_tcr, HD64461_TMU_TCR0);
++}
++
++static void dac_audio_stop_timer(void)
++{
++	u16 tmu_tcr;
++
++	/*printk("dac_audio_stop_timer\n"); */
++	/* Stop HD64461 timer 0 countdown */
++	tmu_tcr = inb(HD64461_TMU_TCR0);
++	tmu_tcr &= ~HD64461_TMU_TCR_STRT;
++	outb(tmu_tcr, HD64461_TMU_TCR0);
++}
++
++static void dac_audio_reset(struct snd_sh_dac *chip)
++{
++	/*printk("dac_audio_reset\n"); */
++	dac_audio_stop_timer();
++
++	chip->buffer_begin = chip->buffer_end = chip->data_buffer;
++	chip->processed = 0;
++	chip->empty = 1;
++}
++
++static void dac_audio_sync(struct snd_sh_dac *chip)
++{
++	/*printk("dac_audio_sync\n"); */
++	while (!chip->empty)
++		schedule();
++}
++
++static void dac_audio_start(void)
++{
++	u16 v;
++	u8 v8;
++
++	/*printk("dac_audio_start\n"); */
++	if (mach_is_hp6xx()) {
++		/* HP Jornada 680/690 speaker on */
++		v = inw(HD64461_GPADR);
++		v &= ~HD64461_GPADR_SPEAKER;
++		outw(v, HD64461_GPADR);
++
++		/* HP Palmtop 620lx/660lx speaker on */
++		v8 = inb(PKDR);
++		v8 &= ~PKDR_SPEAKER;
++		outb(v8, PKDR);
++	}
++
++	sh_dac_enable(SH_DAC_AUDIO_CHANNEL);
++}
++
++static void dac_audio_stop(void)
++{
++	u16 v;
++	u8 v8;
++
++	/*printk("dac_audio_stop\n"); */
++	dac_audio_stop_timer();
++
++	if (mach_is_hp6xx()) {
++		/* HP Jornada 680/690 speaker off */
++		v = inw(HD64461_GPADR);
++		v |= HD64461_GPADR_SPEAKER;
++		outw(v, HD64461_GPADR);
++
++		/* HP Palmtop 620lx/660lx speaker off */
++		v8 = inb(PKDR);
++		v8 |= PKDR_SPEAKER;
++		outb(v8, PKDR);
++	}
++
++	sh_dac_output(0, SH_DAC_AUDIO_CHANNEL);
++	sh_dac_disable(SH_DAC_AUDIO_CHANNEL);
++}
++
++static void dac_audio_set_rate(int rate)
++{
++	unsigned long interval;
++	struct clk *clk;
++
++	/*printk("dac_audio_set_rate\n"); */
++	/*
++	 * Constant is autoloaded once zero is reached
++	 * We need 8K interrupts per second
++	 */
++	/* clk = clk_get(NULL, "module_clk"); */
++	clk = clk_get("module_clk");
++	interval = (clk_get_rate(clk) / 16) / rate;
++	ctrl_outl(interval, HD64461_TMU_TCVR0);
++}
++
++/* end of the hardware functions */
++
++
++/* PCM INTERFACE */
++
++static struct snd_pcm_hardware snd_sh_dac_pcm_hw = {
++	.info			= (SNDRV_PCM_INFO_MMAP |
++					SNDRV_PCM_INFO_MMAP_VALID |
++					SNDRV_PCM_INFO_INTERLEAVED |
++					SNDRV_PCM_INFO_HALF_DUPLEX),
++	.formats		= SNDRV_PCM_FMTBIT_U8,
++	.rates			= SNDRV_PCM_RATE_8000,
++	.rate_min		= 8000,
++	.rate_max		= 8000,
++	.channels_min		= 1,
++	.channels_max		= 1,
++	.buffer_bytes_max	= (48*1024),
++	.period_bytes_min	= 1,
++	.period_bytes_max	= (48*1024),
++	.periods_min		= 1,
++	.periods_max		= 1024,
++};
++
++static int snd_sh_dac_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	/*printk("snd_sh_dac_pcm_open\n"); */
++	runtime->hw = snd_sh_dac_pcm_hw;
++
++	chip->substream = substream;
++	chip->buffer_begin = chip->buffer_end = chip->data_buffer;
++	chip->processed = 0;
++	chip->empty = 1;
++
++	dac_audio_start();
++
++	return 0;
++}
++
++static int snd_sh_dac_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
++
++	/*printk("snd_sh_dac_pcm_close\n"); */
++	dac_audio_sync(chip);
++	dac_audio_stop();
++
++	return 0;
++}
++
++static int snd_sh_dac_pcm_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *hw_params)
++{
++	/*printk("snd_sh_dac_pcm_hw_params\n"); */
++	return
++	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
++}
++
++static int snd_sh_dac_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	/*printk("snd_sh_dac_pcm_hw_free\n"); */
++	/* Free the buffer */
++	return snd_pcm_lib_free_pages(substream);
++}
++
++static int snd_sh_dac_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = chip->substream->runtime;
++	/*printk("snd_sh_dac_pcm_prepare\n"); */
++	chip->buffer_size = runtime->buffer_size;
++	memset(chip->data_buffer, 0, BUFFER_SIZE);
++	return 0;
++}
++
++static int snd_sh_dac_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
++	/*printk("snd_sh_dac_pcm_trigger\n"); */
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		dac_audio_start_timer();
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		chip->buffer_begin = chip->buffer_end = chip->data_buffer;
++		chip->processed = 0;
++		chip->empty = 1;
++		dac_audio_stop_timer();
++		break;
++	default:
++		 return -EINVAL;
++	}
++	return 0;
++}
++
++static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream, int channel,
++	snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
++{
++	/* channel is not used (interleaved data) */
++	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	ssize_t b_count = frames_to_bytes(runtime , count);
++	ssize_t b_pos = frames_to_bytes(runtime , pos);
++
++	/*printk("snd_sh_dac_pcm_copy\n"); */
++	if (count < 0)
++		return -EINVAL;
++
++	if (!count) {
++		dac_audio_sync(chip);
++		return 0;
++	}
++
++	memcpy_toio(chip->data_buffer + b_pos, src, b_count);
++	chip->buffer_end = chip->data_buffer + b_pos + b_count;
++
++	if (chip->empty) {
++		chip->empty = 0;
++		dac_audio_start_timer();
++	}
++
++	return 0;
++}
++
++static int snd_sh_dac_pcm_silence(struct snd_pcm_substream *substream,
++				  int channel, snd_pcm_uframes_t pos,
++				  snd_pcm_uframes_t count)
++{
++	/* channel is not used (interleaved data) */
++	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	ssize_t b_count = frames_to_bytes(runtime , count);
++	ssize_t b_pos = frames_to_bytes(runtime , pos);
++
++	/*printk("snd_sh_dac_pcm_silence\n"); */
++	if (count < 0)
++		return -EINVAL;
++
++	if (!count) {
++		dac_audio_sync(chip);
++		return 0;
++	}
++
++	memset_io(chip->data_buffer + b_pos, 0, b_count);
++	chip->buffer_end = chip->data_buffer + b_pos + b_count;
++
++	if (chip->empty) {
++		chip->empty = 0;
++		dac_audio_start_timer();
++	}
++	return 0;
++}
++
++static snd_pcm_uframes_t snd_sh_dac_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
++	int pointer = chip->buffer_begin - chip->data_buffer;
++
++	/*printk("snd_pcm_uframes_t \n"); */
++	return pointer;
++}
++
++/* pcm ops */
++static struct snd_pcm_ops snd_sh_dac_pcm_ops = {
++	.open		= snd_sh_dac_pcm_open,
++	.close		= snd_sh_dac_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= snd_sh_dac_pcm_hw_params,
++	.hw_free	= snd_sh_dac_pcm_hw_free,
++	.prepare	= snd_sh_dac_pcm_prepare,
++	.trigger	= snd_sh_dac_pcm_trigger,
++	.pointer	= snd_sh_dac_pcm_pointer,
++	.copy		= snd_sh_dac_pcm_copy,
++	.silence	= snd_sh_dac_pcm_silence,
++	.mmap		= snd_pcm_lib_mmap_iomem,
++};
++
++static int __devinit snd_sh_dac_pcm(struct snd_sh_dac *chip, int device)
++{
++	int err;
++	struct snd_pcm *pcm;
++	/*printk("snd_sh_dac_pcm\n"); */
++	/* device should be always 0 for us */
++	err = snd_pcm_new(chip->card, "SH_DAC PCM", device, 1, 0, &pcm);
++	if (err < 0)
++		return err;
++	pcm->private_data = chip;
++	strcpy(pcm->name, "SH_DAC PCM");
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sh_dac_pcm_ops);
++
++	/* buffer size=48K */
++	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
++					  snd_dma_continuous_data(GFP_KERNEL),
++							48 * 1024,
++							48 * 1024);
++	return 0;
++}
++/* END OF PCM INTERFACE */
++
++
++/* driver .remove  --  destructor */
++static int snd_sh_dac_remove(struct platform_device *devptr)
++{
++	/*printk("snd_sh_dac_remove\n"); */
++	snd_card_free(platform_get_drvdata(devptr));
++	platform_set_drvdata(devptr, NULL);
++	return 0;
++}
++
++/* free -- it has been defined by create */
++static int snd_sh_dac_free(struct snd_sh_dac *chip)
++{
++	/*printk("snd_sh_dac_free\n"); */
++	/* release the irq */
++	free_irq(chip->irq, (void *)chip);
++
++	/* release the data */
++	kfree(chip->data_buffer);
++	kfree(chip);
++
++	return 0;
++}
++
++static int snd_sh_dac_dev_free(struct snd_device *device)
++{
++	struct snd_sh_dac *chip = device->device_data;
++	/*printk("snd_sh_dac_dev_free\n"); */
++	return snd_sh_dac_free(chip);
++}
++
++static irqreturn_t snd_sh_dac_interrupt(int irq, void *pdev, struct pt_regs *regs)
++{
++	u16 timer_status;
++	struct snd_sh_dac *chip = (struct snd_sh_dac *) pdev;
++	struct snd_pcm_runtime *runtime = chip->substream->runtime;
++	ssize_t b_ps = frames_to_bytes(runtime, runtime->period_size);
++
++/*	printk("snd_sh_dac_interrupt\n"); */
++	/* HD64461_TMU0 mask interrupt */
++	timer_status = inw(HD64461_TMU_TIRR);
++	timer_status &= ~HD64461_TMU_TIRR_TMU0;
++	outw(timer_status, HD64461_TMU_TIRR);
++
++	if (!chip->empty) {
++		sh_dac_output(*chip->buffer_begin, SH_DAC_AUDIO_CHANNEL);
++		chip->buffer_begin++;
++		chip->processed++;
++
++		if (chip->processed >= b_ps) {
++			 chip->processed -= b_ps;
++			 snd_pcm_period_elapsed(chip->substream);
++		}
++
++		if (chip->buffer_begin == (chip->data_buffer +
++					   chip->buffer_size - 1))
++			chip->buffer_begin = chip->data_buffer;
++
++		if (chip->buffer_begin == chip->buffer_end) {
++			chip->empty = 1;
++			dac_audio_stop_timer();
++		}
++
++	}
++	return IRQ_HANDLED;
++}
++
++/* create  --  chip-specific constructor for the cards components */
++static int __devinit snd_sh_dac_create(struct snd_card *card,
++				       struct platform_device *devptr,
++				       struct snd_sh_dac **rchip)
++{
++	struct snd_sh_dac *chip;
++	int err;
++	u16 timer_status;
++	u16 hd64461_stbcr;
++
++	static struct snd_device_ops ops = {
++		   .dev_free = snd_sh_dac_dev_free,
++	};
++
++	/*printk("snd_sh_dac_create\n"); */
++	*rchip = NULL;
++
++	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
++	if (chip == NULL)
++		return -ENOMEM;
++
++	/* initialize the stuff */
++	chip->card = card;
++	chip->irq = -1;
++
++	/* Hardware Initialization */
++	/* get standby status of all devices */
++	hd64461_stbcr = inw(HD64461_STBCR);
++	/* remove standby mode for timer 0 */
++	hd64461_stbcr &= ~HD64461_STBCR_STM0ST;
++	outw(hd64461_stbcr, HD64461_STBCR);
++
++	dac_audio_reset(chip);
++	chip->rate = 8000;
++	dac_audio_set_rate(chip->rate);
++
++	/* set bit interrupt service request */
++	timer_status = inw(HD64461_TMU_TIRR);
++	timer_status &= ~HD64461_TMU_TIRR_TMU0;
++	outw(timer_status, HD64461_TMU_TIRR);
++
++	/* set interrupt service request mask bit */
++	timer_status = inw(HD64461_TMU_TIDR);
++	timer_status &= ~HD64461_TMU_TIMR_TMU0;
++	outw(timer_status, HD64461_TMU_TIDR);
++
++	chip->data_buffer = kmalloc(BUFFER_SIZE, GFP_KERNEL);
++	if (chip->data_buffer == NULL)
++		return -ENOMEM;
++
++	/* if (request_irq(HD64461_IRQ_TMU0, snd_sh_dac_interrupt, IRQF_DISABLED, */
++	if (request_irq(HD64461_IRQ_TMU0, snd_sh_dac_interrupt, SA_INTERRUPT,
++			"snd_sh_dac", (void *)chip)) {
++		snd_sh_dac_free(chip);
++		printk(KERN_ERR "cannot grab irq\n");
++		return -EBUSY;
++	}
++	chip->irq = HD64461_IRQ_TMU0;
++
++	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
++		snd_sh_dac_free(chip);
++		return err;
++	}
++	*rchip = chip;
++
++	return 0;
++}
++
++/* driver .probe  --  constructor */
++static int __devinit snd_sh_dac_probe(struct platform_device *devptr)
++{
++	struct snd_sh_dac *chip;
++	struct snd_card *card;
++	int err;
++
++	card = snd_card_new(index, id, THIS_MODULE, 0);
++	if (card == NULL)
++		return -ENOMEM;
++
++	err = snd_sh_dac_create(card, devptr, &chip);
++	if (err < 0)
++		goto probe_error;
++
++	err = snd_sh_dac_pcm(chip, 0);
++	if (err < 0)
++		goto probe_error;
++
++	strcpy(card->driver, "snd_sh_dac");
++	strcpy(card->shortname, "SuperH DAC audio driver");
++	/* sprintk(card->longname, "%s at HD64461 irq %i", card->shortname, */
++	printk("%s %s at HD64461 irq %i", card->longname, card->shortname,
++		chip->irq);
++
++	err = snd_card_register(card);
++	if (err < 0)
++		goto probe_error;
++
++	snd_printk("ALSA driver for SuperH DAC audio");
++
++	platform_set_drvdata(devptr, card);
++	return 0;
++
++probe_error:
++	snd_card_free(card);
++	return err;
++}
++
++/*
++ * "driver" definition
++ */
++static struct platform_driver driver = {
++	.probe	= snd_sh_dac_probe,
++	.remove = snd_sh_dac_remove,
++	.driver = {
++		.name = SND_SH_DAC_DRIVER,
++	},
++};
++
++/* clean up the module */
++static void __exit sh_dac_exit(void)
++{
++	/*printk("sh_dac_exit\n"); */
++	platform_device_unregister(pd);
++	platform_driver_unregister(&driver);
++
++	free_irq(HD64461_IRQ_TMU0, 0);
++}
++
++
++static int __init sh_dac_init(void)
++{
++	int err;
++	/*printk("sh_dac_init\n"); */
++	err = platform_driver_register(&driver);
++	if (unlikely(err < 0))
++		return err;
++
++	pd = platform_device_register_simple(SND_SH_DAC_DRIVER, -1, NULL, 0);
++	if (unlikely(IS_ERR(pd))) {
++		platform_driver_unregister(&driver);
++		return PTR_ERR(pd);
++	}
++
++	return 0;
++}
++
++module_init(sh_dac_init);
++module_exit(sh_dac_exit);

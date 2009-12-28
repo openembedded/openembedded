@@ -240,6 +240,9 @@ do
                       mutt \
                       mysql5 \
                       mythtv \
+                      mythplugins \
+                      myththemes \
+                      nano \
                       nautilus \
                       nbench-byte \
                       navit \
