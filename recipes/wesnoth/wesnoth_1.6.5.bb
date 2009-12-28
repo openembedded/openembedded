@@ -14,18 +14,15 @@ ARM_INSTRUCTION_SET = "arm"
 
 inherit cmake
 
-SCREENCONFIG = "\
-        -DGUI=tiny \
-        -DENABLE_LOW_MEM=ON \
-        "
-SCREENCONFIG_eee701 =  ""
-
 EXTRA_OECMAKE = "\
+	-DGUI=tiny \
 	-DENABLE_EDITOR=ON \
+	-DENABLE_LOW_MEM=ON \
 	-DENABLE_FRIBIDI=OFF \
+	\
 	-DCMAKE_BUILD_TYPE=Debug \
-	${SCREENCONFIG} \
 	"
+	
 PACKAGES = "wesnoth-editor wesnoth-doc wesnoth-music wesnoth-sounds \
 	wesnoth-aoi wesnoth-did wesnoth-ei wesnoth-httt wesnoth-l \
 	wesnoth-nr wesnoth-sof wesnoth-sotbe wesnoth-thot wesnoth-trow \
