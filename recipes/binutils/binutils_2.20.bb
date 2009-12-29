@@ -2,7 +2,7 @@ require binutils.inc
 LICENSE = "GPLv3"
 
 INC_PR = "r1"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 SRC_URI = "\
      ${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
@@ -17,4 +17,7 @@ SRC_URI = "\
      "
 
 # powerpc patches
-SRC_URI += "file://binutils-2.16.1-e300c2c3.patch;patch=1"
+SRC_URI += "\
+     file://binutils-2.16.1-e300c2c3.patch;patch=1 \
+     file://binutils-powerpc-pr11088.patch;patch=1 \
+     "
