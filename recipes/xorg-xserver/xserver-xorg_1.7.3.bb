@@ -11,6 +11,7 @@ SRC_URI += "file://sysroot_fix.patch;patch=1 \
            "
 
 SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch;patch=1"
+SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch;patch=1"
 
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts
