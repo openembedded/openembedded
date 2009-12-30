@@ -147,6 +147,7 @@ do
                       gdb \
                       gdbserver \
                       gdm \
+                      geany \
                       geda \
                       geda-docs \
                       geda-examples \
