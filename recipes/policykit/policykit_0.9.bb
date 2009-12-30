@@ -1,7 +1,7 @@
 HOMEPAGE = "http://www.packagekit.org/"
 DEPENDS = "libpam expat dbus-glib intltool-native"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://hal.freedesktop.org/releases/PolicyKit-${PV}.tar.gz \
            file://PolicyKit.conf \
@@ -15,6 +15,7 @@ inherit autotools pkgconfig
 
 do_install_append () {
 	install -m 0644 ${WORKDIR}/PolicyKit.conf ${D}${sysconfdir}/PolicyKit/PolicyKit.conf
+	install -d ${D}${localstatedir}/run/PolicyKit
 }
 
 do_stage() {
