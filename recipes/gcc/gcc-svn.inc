@@ -1,22 +1,25 @@
-# No armeb and thumb patches - really needs checking 
 DEFAULT_PREFERENCE = "-999"
 ARM_INSTRUCTION_SET = "arm"
+
+SRCREV="155514"
 
 require gcc-common.inc
 
 DEPENDS = "mpfr gmp mpc"
 
 GCC_BASE ?= "4.5"
-PV = "${GCC_BASE}+svnr${SRCPV}"
+PV = "${GCC_BASE}+svnr${SRCREV}"
 PR = "r0"
-#DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
-# precedence.
 
 FILESPATHPKG .= ":gcc-svn"
 
 SRC_URI = "svn://gcc.gnu.org/svn/gcc;module=trunk \
 	   file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
+	   file://100-uclibc-conf.patch;patch=1 \
+           file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
+	   file://cache-amnesia.patch;patch=1 \
 	  "
+
 # Language Overrides
 FORTRAN = ""
 JAVA = ""

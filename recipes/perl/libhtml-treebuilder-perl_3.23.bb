@@ -1,10 +1,9 @@
 DESCRIPTION = "HTML::TreeBUilder - Class is for HTML syntax trees that get built out of HTML source"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r1"
+PR = "r2"
 
-DEPENDS = "libextutils-makemaker-perl-native"
-#RDEPENDS = "libextutils-makemaker-perl"
+RDEPENDS = "perl-module-extutils-makemaker"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PE/PETEK/HTML-Tree-${PV}.tar.gz"
 
