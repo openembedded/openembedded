@@ -2,7 +2,7 @@ DESCRIPTION = "Arora is a lightweight cross-platform web browser"
 LICENE = "GPLv2"
 HOMEPAGE = "http://code.google.com/p/arora/"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://arora.googlecode.com/files/arora-${PV}.tar.gz"
 
