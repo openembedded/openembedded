@@ -3,8 +3,8 @@ DEPENDS = "enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu lib
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
-SRCREV = "50081"
-PV = "1.1.16+svnr${SRCPV}"
+SRCREV = "52207"
+PV = "1.1.18+svnr${SRCPV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -32,9 +32,7 @@ EXTRA_OECONF = "\
                 --enable-debug=no \
                 --enable-svg \
                 --enable-icon-database=yes \
-                --with-http-backend=soup \
 #                --with-unicode-backend=glib \
-                --with-libsoup-gnome=yes \
 "
 
 EXTRA_AUTORECONF = " -I autotools "
