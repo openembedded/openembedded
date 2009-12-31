@@ -7,7 +7,7 @@ require gcc-cross-sdk.inc
 require gcc-configure-sdk.inc
 require gcc-package-sdk.inc
 
-DEPENDS += "mpc-native gmp-native mpfr-native"
+DEPENDS += "libmpc-native gmp-native mpfr-native"
 
 EXTRA_OECONF += "--disable-libunwind-exceptions --disable-libssp \
 		--disable-libgomp --disable-libmudflap \
