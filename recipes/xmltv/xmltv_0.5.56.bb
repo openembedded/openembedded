@@ -15,7 +15,7 @@ DEPENDS = "perl libxml-parser-perl-native libwww-perl-native libdate-manip-perl-
 		libdate-manip-perl-native \
                 libhtml-treebuilder-perl-native libwww-mechanize-perl-native"
 
-PR = "r1"
+PR = "r2"
 
 # cpan does not work, it installs things in the perl work dir iso the xmltv work dir
 # root cause are bad definitions in perl/config.sh, but I don't know what they should be
@@ -27,8 +27,11 @@ PR = "r1"
 FILES_${PN} += "${libdir}"
 
 do_configure() {
-	perl Makefile.PL PREFIX=/usr 
+        perl Makefile.PL PREFIX=/usr
+        sed -i -e 's,$(FIXIN),echo,g' \
+               -e 's,^FIXIN.*,,g' Makefile
 }
+
 
 do_install() {
 	oe_runmake install DESTDIR=${D}
