@@ -1,4 +1,4 @@
-require mpc.inc
+require libmpc.inc
 
 DEPENDS = "gmp mpfr"
 
