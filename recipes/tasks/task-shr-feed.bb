@@ -251,6 +251,7 @@ RDEPENDS_${PN} += "\
 		mpg123 \
 		zile \
 		speex \
+		podpooch \
 		fltkclock \
 		fltkhackdiet \
 		fltkwwpointcal \
