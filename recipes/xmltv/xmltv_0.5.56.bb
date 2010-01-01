@@ -4,18 +4,49 @@ PARALLEL_MAKE = ""
 SRC_URI="http://downloads.sourceforge.net/xmltv/xmltv-${PV}.tar.bz2 \
          file://Makefile.PL.patch;patch=1"
 
-RDEPENDS = "perl libxml-parser-perl libwww-perl libdate-manip-perl \
-		libxml-twig-perl libxml-writer-perl libfile-slurp-perl \
-		libtermreadkey-perl libarchive-zip-perl libio-zlib-perl \
-		libdate-manip-perl \
-                libhtml-treebuilder-perl libwww-mechanize-perl"
-DEPENDS = "perl libxml-parser-perl-native libwww-perl-native libdate-manip-perl-native \
-		libxml-twig-perl-native libxml-writer-perl-native libfile-slurp-perl-native \
-		libtermreadkey-perl-native libarchive-zip-perl-native libio-zlib-perl-native \
-		libdate-manip-perl-native \
-                libhtml-treebuilder-perl-native libwww-mechanize-perl-native"
+RDEPENDS = "perl \
+            libarchive-zip-perl \
+            libdate-manip-perl \
+            libdatetime-format-strptime-perl \
+            libfile-slurp-perl \
+            libhtml-parser-perl \
+            libhtml-treebuilder-perl \
+            libio-stringy-perl libxml-dom-perl \
+            libio-zlib-perl \
+            libsoap-lite-perl \
+            libtermreadkey-perl \
+            libtimedate-perl \
+            libwww-mechanize-perl \
+            libwww-perl \
+            libxml-parser-perl \
+            libxml-twig-perl \
+            libxml-writer-perl \
+            perl-module-exporter-heavy \
+            perl-module-file-glob \
+            perl-module-getopt-long \
+            "
 
-PR = "r2"
+DEPENDS = "perl \
+           libarchive-zip-perl-native \
+           libdate-manip-perl-native \
+           libdatetime-format-strptime-perl-native \
+           libfile-slurp-perl-native \
+           libhtml-parser-perl-native \
+           libhtml-treebuilder-perl-native \
+           libio-stringy-perl-native \
+           libio-zlib-perl-native \
+           libsoap-lite-perl-native \
+           libtermreadkey-perl-native \
+           libtimedate-perl-native \
+           libwww-mechanize-perl-native \
+           libwww-perl-native \
+           libxml-dom-perl-native \
+           libxml-parser-perl-native \
+           libxml-twig-perl-native \
+           libxml-writer-perl-native \
+           "
+
+PR = "r3"
 
 # cpan does not work, it installs things in the perl work dir iso the xmltv work dir
 # root cause are bad definitions in perl/config.sh, but I don't know what they should be
