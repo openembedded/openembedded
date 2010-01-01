@@ -1,6 +1,6 @@
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR= "r1"
+PR= "r2"
 
 SRC_URI = "http://www.cpan.org/authors/id/G/GU/GUIDO/libintl-perl-${PV}.tar.gz"
 DEPENDS = "perl"
@@ -11,7 +11,3 @@ S = "${WORKDIR}/libintl-perl-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
-
-do_compile() {
-	make CC="${CC}" LD="${LD}"
-}
