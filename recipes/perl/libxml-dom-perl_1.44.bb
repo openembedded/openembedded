@@ -1,6 +1,7 @@
 DESCRIPTION = "XML::DOM - A perl module for building DOM Level 1 compliant document structures"
 SECTION = "libs"
 LICENSE = "unknown"
+PR= "r1"
 
 RDEPENDS += "libxml-parser-perl-native libxml-regexp-perl-native \
 	libhtml-parser-perl-native libhtml-tagset-perl-native \
@@ -16,3 +17,5 @@ SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TJ/TJMATHER/XML-DOM-${PV}.ta
 S = "${WORKDIR}/XML-DOM-${PV}"
 
 inherit cpan
+
+BBCLASSEXTEND="native"
