@@ -1,5 +1,7 @@
 DEPENDS += "cairo"
 
+PR = "r2"
+
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}.source.tar.bz2 \
 	file://jsautocfg.h \
 	file://security-cross.patch;patch=1 \
@@ -21,7 +23,7 @@ S = "${WORKDIR}/mozilla-1.9.1"
 inherit mozilla
 require firefox.inc
 
-EXTRA_OECONF += " --enable-official-branding "
+EXTRA_OECONF += " --enable-official-branding --disable-crashreporter"
 
 
 export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
