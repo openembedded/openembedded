@@ -1,4 +1,4 @@
-DESCRIPTION="prerequisites for xmltv"
+DESCRIPTION="xmltv; epg grabbers for e.g. mythtv"
 
 PARALLEL_MAKE = ""
 SRC_URI="http://downloads.sourceforge.net/xmltv/xmltv-${PV}.tar.bz2 \
@@ -11,11 +11,17 @@ RDEPENDS = "perl \
             libfile-slurp-perl \
             libhtml-parser-perl \
             libhtml-treebuilder-perl \
+	    libhttp-cache-transparent-perl \
             libio-stringy-perl libxml-dom-perl \
             libio-zlib-perl \
+	    liblingua-en-numbers-ordinate \
+	    liblinux-dvb-perl \
             libsoap-lite-perl \
+            libterm-progressbar-perl \
             libtermreadkey-perl \
             libtimedate-perl \
+	    libunicode-string-perl \
+	    libunicode-utf8simple-perl \
             libwww-mechanize-perl \
             libwww-perl \
             libxml-parser-perl \
@@ -33,11 +39,17 @@ DEPENDS = "perl \
            libfile-slurp-perl-native \
            libhtml-parser-perl-native \
            libhtml-treebuilder-perl-native \
+	   libhttp-cache-transparent-perl-native \
            libio-stringy-perl-native \
            libio-zlib-perl-native \
+	   liblingua-en-numbers-ordinate-native \
+	   liblinux-dvb-perl-native \
            libsoap-lite-perl-native \
+           libterm-progressbar-perl-native \
            libtermreadkey-perl-native \
            libtimedate-perl-native \
+	   libunicode-string-perl-native \
+	   libunicode-utf8simple-perl-native \
            libwww-mechanize-perl-native \
            libwww-perl-native \
            libxml-dom-perl-native \
@@ -46,7 +58,7 @@ DEPENDS = "perl \
            libxml-writer-perl-native \
            "
 
-PR = "r3"
+PR = "r4"
 
 # cpan does not work, it installs things in the perl work dir iso the xmltv work dir
 # root cause are bad definitions in perl/config.sh, but I don't know what they should be
