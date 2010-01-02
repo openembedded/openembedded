@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r1"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/B/BO/BOBTFISH/PHP-Serialization-0.30.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/B/BO/BOBTFISH/PHP-Serialization-${PV}.tar.gz"
 
 S = "${WORKDIR}/PHP-Serialization-${PV}"
 

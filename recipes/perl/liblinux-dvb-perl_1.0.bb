@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "unknown"
 PR = "r0"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/Linux-DVB-1.0.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/Linux-DVB-${PV}.tar.gz"
 
 S = "${WORKDIR}/Linux-DVB-${PV}"
 
