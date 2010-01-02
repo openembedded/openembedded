@@ -1,8 +1,10 @@
 require abiword-2.5.inc
 
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
+SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
+           file://autogen-common.sh \
+	   file://nodolt.patch;patch=1"
 
 do_configure() {
 	autotools_do_configure
@@ -13,8 +15,9 @@ EXTRA_OECONF = " --disable-static  \
                  --enable-collab-backend-xmpp \
                  --enable-collab-backend-tcp \
                  --enable-collab-backend-service \
+                 --with-libwmf-config=${STAGING_DIR} \
 "
-
+DEPENDS += " libwmf-native "
 RCONFLICTS = "abiword-embedded"
 
 FILES_${PN} 			+= "${libdir}/libabiword-*.so ${datadir}/mime-info ${datadir}/abiword-${SHRT_VER}/certs ${datadir}/abiword-${SHRT_VER}/ui ${datadir}/abiword-${SHRT_VER}/xsl* ${datadir}/abiword-${SHRT_VER}/mime-info ${datadir}/abiword-${SHRT_VER}/Pr*.xml"
@@ -22,6 +25,12 @@ FILES_abiword-strings           += "${datadir}/abiword-${SHRT_VER}/strings"
 FILES_abiword-systemprofiles    += "${datadir}/abiword-${SHRT_VER}/system.profile*"
 
 PACKAGES_DYNAMIC = "abiword-meta abiword-plugin-*"
+
+do_configure_prepend () {
+	install -m 0755 ${WORKDIR}/autogen-common.sh ${S}/autogen-common.sh
+	cd ${S}
+	./autogen-common.sh
+}
 
 python populate_packages_prepend () {
 	abiword_libdir    = bb.data.expand('${libdir}/abiword-2.8/plugins', d)

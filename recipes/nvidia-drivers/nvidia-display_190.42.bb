@@ -4,7 +4,10 @@
 
 require nvidia-drivers.inc
 
+PR = "r2"
+
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_ion = "1"
 
 PKG_BASENAME="NVIDIA-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}"
 
@@ -42,5 +45,9 @@ do_install() {
 	install -d ${D}/usr/lib/xorg/
 	cp ${WORKDIR}/${PKG_BASENAME}/usr/X11R6/lib/lib* ${D}/usr/lib/
 	cp -pPR ${WORKDIR}/${PKG_BASENAME}/usr/X11R6/lib/modules ${D}/usr/lib/xorg/
-	ln -s libglx.so.1.0.8756 ${D}/usr/lib/xorg/modules/extensions/libglx.so
+	ln -s libglx.so.${PV} ${D}/usr/lib/xorg/modules/extensions/libglx.so
+	ln -s libGL.so.${PV} ${D}/usr/lib/libGL.so
+	ln -s libGL.so.${PV} ${D}/usr/lib/libGL.so.1
+	ln -s libGLcore.so.${PV} ${D}/usr/lib/libGLcore.so
+	ln -s libGLcore.so.${PV} ${D}/usr/lib/libGLcore.so.1
 }

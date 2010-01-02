@@ -1,25 +1,33 @@
 require mythtv.inc
 
+DEPENDS_{PN} += "libmyth"
+DEPENDS_libmyth = "libmythdb libmythavutil libmythavcodec libmythavformat libmythswscale libmythhdhomerun \
+	libmythtv libmythui libmythfreemheg libmythupnp libmythlivemedia"
+
 RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
-mysql5-server mysql5-client"
+mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
+PR = "${SRCREV}+r6"
 PV = "0.22"
-PR = "r1"
+
 # REALPV is here to support release candidates
 # OE in that case has as PV something like 0.21+0.22rc1
 # but for packaging the real PV is needed
 REALPV = "0.22"
 
+SRCREV = "23062"
+SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=mythtv;proto=http"
+
+S = "${WORKDIR}/mythtv"
+
 ALLOW_EMPTY_${PN} = "1"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22.tar.bz2 \
+SRC_URI += " \
         file://configure.patch;patch=1 \
         "
-
-S = "${WORKDIR}/mythtv-0.22"
 
 inherit qmake2 qt4x11
 
@@ -54,6 +62,7 @@ do_configure_prepend() {
                         --without-bindings=perl,python \
                         ${EXTRA_OECONF}
 }
+
 do_install() {
 	oe_runmake INSTALL_ROOT=${D} install
         install -d ${D}${datadir}/mythtv

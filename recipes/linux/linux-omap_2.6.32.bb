@@ -29,6 +29,7 @@ file://0004-drivers-input-touchscreen-ads7846-return-ENODEV.patch;patch=1 \
 file://0005-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board.patch;patch=1 \
 file://0006-ARM-OMAP-Make-beagle-u-boot-partition-writable.patch;patch=1 \
 file://0007-ASoC-enable-audio-capture-by-default-for-twl4030.patch;patch=1 \
+file://0009-MTD-NAND-omap2-proper-fix-for-subpage-read-ECC-error.patch;patch=1 \
 file://madc/0009-drivers-mfd-add-twl4030-madc-driver.patch;patch=1 \
 file://madc/0010-ARM-OMAP-Add-twl4030-madc-support-to-Overo.patch;patch=1 \
 file://madc/0011-ARM-OMAP-Add-twl4030-madc-support-to-Beagle.patch;patch=1 \

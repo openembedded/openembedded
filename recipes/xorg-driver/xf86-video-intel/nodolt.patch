@@ -1,0 +1,12 @@
+Index: xf86-video-intel-2.9.1/configure.ac
+===================================================================
+--- xf86-video-intel-2.9.1.orig/configure.ac
++++ xf86-video-intel-2.9.1/configure.ac
+@@ -42,7 +42,6 @@ AC_CONFIG_FILES([
+ # Checks for programs.
+ AC_DISABLE_STATIC
+ AC_PROG_LIBTOOL
+-DOLT
+ AC_PROG_CC
+ AM_PROG_CC_C_O
+ 
