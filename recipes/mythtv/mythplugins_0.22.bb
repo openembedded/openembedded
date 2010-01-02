@@ -1,8 +1,18 @@
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
 RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery mythgame \
-                  mythmusic mythmovies mythnews mythvideo mythweather mythweb mythzoneminder"
+                  mythmusic mythmovies mythnews mythvideo mythweather mythzoneminder"
+RRECOMMENDS_${PN} = "mythweb_lighttpd"
+
+# the apache variant does not work yet, too many issues with apache+php+mysql"
+DEPENDS_mythweb_apache = "mythweb"
+RDEPENDS_mythweb_apache = "apache2"
+
+DEPENDS_mythweb_lighttpd = "mythweb"
+RDEPENDS_mythweb_lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcgi \
+        lighttpd-module-rewrite php-cgi lighttpd-module-auth"
+
 PV = "0.22"
-PR = "r0"
+PR = "r1"
 
 QMAKE_PROFILES = "mythplugins.pro"
 
@@ -27,13 +37,13 @@ EXTRA_OECONF = " \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-cxxflags="${TARGET_CXXFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-ldflags="${TARGET_LDFLAGS}" \
-        ${EXTRA_MYTHTVCONF} \
 "
 
 do_configure() {
         ${S}/configure --qmake=qmake2 ${EXTRA_OECONF}
 }
-do_install () {
+
+do_install_mythweb_apache () {
         oe_runmake install INSTALL_ROOT="${D}"
 	install -d  ${D}${datadir}/apache2
 	install -d  ${D}${datadir}/apache2/htdocs
@@ -44,16 +54,32 @@ do_install () {
 	sed -i -e s:/var/www/html:/usr/share/apache2/htdocs:g ${D}/etc/apache2/extra/mythweb.conf
 }
 
-pkg_postinst_${PN}() {
+do_install_mythweb_lighttpd () {
+        oe_runmake install INSTALL_ROOT="${D}"
+	install -d  ${D}/www
+	install -d  ${D}/www/pages
+	cp -r ${S}/mythweb/* ${D}www/pages/
+	cp -r ${S}/mythweb/mythweb.conf.lighttpd ${D}/etc/mythweb.conf
+	sed -i -e s:/var/www/html:/www/pages:g ${D}/etc/mythweb.conf
+}
+
+pkg_postinst_mythweb_apache () {
         chgrp -R apache /usr/share/apache2/htdocs/data
         chmod g+rw /usr/share/apache2/htdocs/data
         grep mythweb.conf /etc/apache2/httpd.conf || \
               echo "Include /etc/apache2/extra/mythweb.conf" >>/etc/apache2/httpd.conf
-
 }
 
+pkg_postinst_mythweb_lighttpd () {
+        chgrp -R www-data /usr/share/apache2/htdocs/data
+        chmod g+rw /var/www/pages
+        grep mythweb.conf /etc/lighttpd.conf || \
+                echo "Include /etc/mythweb.conf" >>/etc/lighttpd.conf
+}
 
-PACKAGES =+ "mytharchive mytharchive-dbg \
+PACKAGES =+ " \
+        mythweb_apache mythweb_lighttpd \
+        mytharchive mytharchive-dbg \
         mythbrowser mythbrowser-dbg \
         mythflix mythflix-dbg \
         mythgallery mythgallery-dbg \
@@ -63,8 +89,13 @@ PACKAGES =+ "mytharchive mytharchive-dbg \
         mythnews mythnews-dbg \
         mythvideo mythvideo-dbg \
         mythweather mythweather-dbg \
-        mythweb \
         mythzoneminder mythzoneminder-dbg"
+
+FILES_mythweb_apache = "${datadir}/apache2/htdocs \
+        /etc/apache2/extra/mythweb.conf"
+
+FILES_mythweb_lighttpd = "${datadir}/www/pages \
+        /etc/mythweb.conf"
 
 FILES_mytharchive = "${libdir}/mythtv/plugins/libmytharchive.so \
         ${bindir}/mytharchivehelper \
@@ -85,6 +116,7 @@ FILES_mytharchive = "${libdir}/mythtv/plugins/libmytharchive.so \
         "
 FILES_mytharchive-dbg = "${bindir}/.debug/mytharchivehelper \
         ${libdir}/mythtv/plugins/.debug/libmytharchive.so"
+
 FILES_mythbrowser = "${libdir}/mythtv/plugins/libmythbrowser.so \
         ${bindir}/mythbrowser \
         ${datadir}/mythtv/i18n/mythbrowser* \
@@ -92,6 +124,7 @@ FILES_mythbrowser = "${libdir}/mythtv/plugins/libmythbrowser.so \
         ${datadir}/mythtv/themes/default-wide/browser-ui.xml \
         "
 FILES_mythbrowser-dbg = "${libdir}/mythtv/plugins/.debug/libmythbrowser.so"
+
 FILES_mythflix = "${libdir}/mythtv/plugins/libmythflix.so \
         ${datadir}/mythtv/i18n/mythflix* \
         ${datadir}/mythtv/mythflix/* \
@@ -103,6 +136,7 @@ FILES_mythflix = "${libdir}/mythtv/plugins/libmythflix.so \
         ${datadir}/mythtv/themes/default-wide/netflix-bg.png \
         "
 FILES_mythflix-dbg = "${libdir}/mythtv/plugins/.debug/libmythflix.so"
+
 FILES_mythgallery = "${libdir}/mythtv/plugins/libmythgallery.so \
         ${datadir}/mythtv/i18n/mythgallery* \
         ${datadir}/mythtv/themes/default/gallery*.png \
@@ -110,6 +144,7 @@ FILES_mythgallery = "${libdir}/mythtv/plugins/libmythgallery.so \
         ${datadir}/mythtv/themes/default-wide/gallery-ui.xml \
         "
 FILES_mythgallery-dbg = "${libdir}/mythtv/plugins/.debug/libmythgallery.so"
+
 FILES_mythgame = "${libdir}/mythtv/plugins/libmythgame.so \
         ${datadir}/mythtv/i18n/mythgame* \
         ${datadir}/mythtv/game_settings.xml \
@@ -117,6 +152,7 @@ FILES_mythgame = "${libdir}/mythtv/plugins/libmythgame.so \
         ${datadir}/mythtv/themes/default-wide/game-ui.xml \
         "
 FILES_mythgame-dbg = "${libdir}/mythtv/plugins/.debug/libmythgame.so"
+
 FILES_mythmovies = "${libdir}/mythtv/plugins/libmythmovies.so \
         ${bindir}/ignyte \
         ${datadir}/mythtv/mythmovies/* \
@@ -126,6 +162,7 @@ FILES_mythmovies = "${libdir}/mythtv/plugins/libmythmovies.so \
         "
 FILES_mythmovies-dbg = "${bindir}/.debug/ignyte \
         ${libdir}/mythtv/plugins/.debug/libmythmovies.so"
+
 FILES_mythmusic = "${libdir}/mythtv/plugins/libmythmusic.so \
         ${datadir}/mythtv/mythmusic/* \
         ${datadir}/mythtv/i18n/mythmusic* \
@@ -192,6 +229,7 @@ FILES_mythmusic = "${libdir}/mythtv/plugins/libmythmusic.so \
         ${datadir}/mythtv/themes/default-wide/music-ui.xml \
         "
 FILES_mythmusic-dbg = "${libdir}/mythtv/plugins/.debug/libmythmusic.so"
+
 FILES_mythnews = "${libdir}/mythtv/plugins/libmythnews.so \
         ${datadir}/mythtv/mythnews/* \
         ${datadir}/mythtv/i18n/mythnews* \
@@ -203,6 +241,7 @@ FILES_mythnews = "${libdir}/mythtv/plugins/libmythnews.so \
         ${datadir}/mythtv/themes/default-wide/news-ui.xml \
         "
 FILES_mythnews-dbg = "${libdir}/mythtv/plugins/.debug/libmythnews.so"
+
 FILES_mythvideo = "${libdir}/mythtv/plugins/libmythvideo.so \
         ${bindir}/mtd \
         ${datadir}/mythtv/mythvideo/* \
@@ -235,6 +274,7 @@ FILES_mythvideo = "${libdir}/mythtv/plugins/libmythvideo.so \
         "
 FILES_mythvideo-dbg = "${bindir}/.debug/mtd \
         ${libdir}/mythtv/plugins/.debug/libmythvideo.so"
+
 FILES_mythweather = "${libdir}/mythtv/plugins/libmythweather.so \
         ${datadir}/mythtv/mythweather/* \
         ${datadir}/mythtv/i18n/mythweather* \
@@ -273,9 +313,6 @@ FILES_mythweather = "${libdir}/mythtv/plugins/libmythweather.so \
         ${datadir}/mythtv/weather_settings.xml \
         "
 FILES_mythweather-dbg = "${libdir}/mythtv/plugins/.debug/libmythweather.so"
-
-FILES_mythweb = "${datadir}/apache2/htdocs \
-        /etc/apache2/extra/mythweb.conf"
 
 FILES_mythzoneminder = "${libdir}/mythtv/plugins/libmythzoneminder.so \
         ${datadir}/mythtv/zonemindermenu.xml \
