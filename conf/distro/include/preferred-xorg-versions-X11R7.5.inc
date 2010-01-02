@@ -77,7 +77,6 @@ PREFERRED_VERSION_xvinfo ?= "1.1.0"
 PREFERRED_VERSION_xwd ?= "1.0.3"
 PREFERRED_VERSION_xwininfo ?= "1.0.5"
 PREFERRED_VERSION_xwud ?= "1.0.2"
-#driver
 
 # data
 PREFERRED_VERSION_xbitmaps ?= "1.1.0"
@@ -91,7 +90,7 @@ PREFERRED_VERSION_xorg-sgml-doctools ?= "1.3"
 PREFERRED_VERSION_xf86-input-acecad ?= "1.4.0"
 PREFERRED_VERSION_xf86-input-aiptek ?= "1.3.0"
 PREFERRED_VERSION_xf86-input-evdev ?= "2.3.0"
-PREFERRED_VERSION_xf86-input-joystick ?= "1.4.99.2"
+PREFERRED_VERSION_xf86-input-joystick ?= "1.5.0"
 PREFERRED_VERSION_xf86-input-keyboard ?= "1.4.0"
 PREFERRED_VERSION_xf86-input-mouse ?= "1.5.0"
 PREFERRED_VERSION_xf86-input-synaptics ?= "1.2.0"

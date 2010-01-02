@@ -1,5 +1,5 @@
 # We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "file://defconfig"
 
@@ -31,12 +31,18 @@ TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}"
 
+#
+# default lzma compressor for kernels >= 2.6.30
+INITRAMFS_COMPRESSION = '${@base_version_less_or_equal("PV", "2.6.30", "", "CONFIG_INITRAMFS_COMPRESSION_LZMA=y", d)}'
+INITRAMFS_COMPRESSION_SUFFIX = '${@base_version_less_or_equal("PV", "2.6.30", "gz", "lzma", d)}'
+
 do_configure[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
 
 do_configure_append() {
 sed -i -e /CONFIG_BLK_DEV_INITRD/d \
        -e /CONFIG_KEXEC/d \
        -e /CONFIG_INITRAMFS_SOURCE/d \
+       -e /CONFIG_INITRAMFS_COMPRESSION/d \
        -e /=m/d \
        -e /CONFIG_MODULES/d \
        -e /CONFIG_DEBUG_ERRORS/d \
@@ -50,7 +56,8 @@ sed -i -e /CONFIG_CMDLINE/s/debug/loglevel=3/1 ${S}/.config
 
 echo 'CONFIG_BLK_DEV_INITRD=y
 CONFIG_KEXEC=y
-CONFIG_INITRAMFS_SOURCE="initramfs.cpio.gz"
+${INITRAMFS_COMPRESSION}
+CONFIG_INITRAMFS_SOURCE="initramfs.cpio.${INITRAMFS_COMPRESSION_SUFFIX}"
 CONFIG_MODULES=n' >> ${S}/.config
 
         yes '' | oe_runmake oldconfig

@@ -1,11 +1,15 @@
 require mythtv.inc
 
+DEPENDS_{PN} += "libmyth"
+DEPENDS_libmyth = "libmythdb libmythavutil libmythavcodec libmythavformat libmythswscale libmythhdhomerun \
+	libmythtv libmythui libmythfreemheg libmythupnp libmythlivemedia"
+
 RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
-mysql5-server mysql5-client"
+mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
 PV = "0.22"
-PR = "r1"
+PR = "r2"
 # REALPV is here to support release candidates
 # OE in that case has as PV something like 0.21+0.22rc1
 # but for packaging the real PV is needed
@@ -54,6 +58,7 @@ do_configure_prepend() {
                         --without-bindings=perl,python \
                         ${EXTRA_OECONF}
 }
+
 do_install() {
 	oe_runmake INSTALL_ROOT=${D} install
         install -d ${D}${datadir}/mythtv

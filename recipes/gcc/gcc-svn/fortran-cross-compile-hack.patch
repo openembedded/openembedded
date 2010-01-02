@@ -2,24 +2,24 @@
   used gfortan. For gcc_4.2.2.bb we want to use the gfortran compiler from our cross
   directory.
 
-diff --git a/libgfortran/configure b/libgfortran/configure
-index f7d86fb..d0966ec 100755
---- a/libgfortran/configure
-+++ b/libgfortran/configure
-@@ -4475,6 +4475,6 @@ exec 5>>./config.log
+Index: gcc-4.5+svnr155514/libgfortran/configure
+===================================================================
+--- gcc-4.5+svnr155514.orig/libgfortran/configure	2009-12-29 22:02:01.000000000 -0800
++++ gcc-4.5+svnr155514/libgfortran/configure	2009-12-30 08:12:40.889091657 -0800
+@@ -11655,7 +11655,7 @@ CC="$lt_save_CC"
  
  # We need gfortran to compile parts of the library
  #AC_PROG_FC(gfortran)
 -FC="$GFORTRAN"
 +#FC="$GFORTRAN"
- ac_ext=${FC_SRCEXT-f}
- ac_compile='$FC -c $FCFLAGS $FCFLAGS_SRCEXT conftest.$ac_ext >&5'
-\ No newline at end of file
-diff --git a/libgfortran/configure.ac b/libgfortran/configure.ac
-index 4661306..9f83e55 100644
---- a/libgfortran/configure.ac
-+++ b/libgfortran/configure.ac
-@@ -140,7 +140,7 @@ AC_SUBST(enable_static)
+ ac_ext=${ac_fc_srcext-f}
+ ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+Index: gcc-4.5+svnr155514/libgfortran/configure.ac
+===================================================================
+--- gcc-4.5+svnr155514.orig/libgfortran/configure.ac	2009-12-29 22:02:01.000000000 -0800
++++ gcc-4.5+svnr155514/libgfortran/configure.ac	2009-12-30 08:12:13.453094218 -0800
+@@ -187,7 +187,7 @@ AC_SUBST(enable_static)
  
  # We need gfortran to compile parts of the library
  #AC_PROG_FC(gfortran)

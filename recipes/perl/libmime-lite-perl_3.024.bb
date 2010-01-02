@@ -1,7 +1,7 @@
 DESCRIPTION = "Simple standalone module for generating MIME messages."
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r0"
+PR = "r1"
 
 RDEPENDS = "perl-module-file-spec \
             libemail-date-format-perl \
@@ -13,3 +13,5 @@ SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/MIME-Lite-3.024.tar.
 S = "${WORKDIR}/MIME-Lite-${PV}"
 
 inherit cpan
+
+BBCLASSEXTEND="native"

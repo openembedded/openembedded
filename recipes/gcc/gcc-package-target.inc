@@ -88,6 +88,8 @@ FILES_libgfortran-dev = "${libdir}/libgfortran.a \
                          ${libdir}/libgfortran.so \
                          ${libdir}/libgfortranbegin.a"
 
+# We don't care about GNU_HASH in objc, so mask all errors
+INSANE_SKIP_objc = "True"
 FILES_objc = "${libdir}/libobjc*.so.* \
 "
 FILES_objc-dev = "${libdir}/libobjc*.so \
