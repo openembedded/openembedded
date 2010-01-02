@@ -1,3 +1,4 @@
+DEPENDS = "mythtv"
 inherit qmake2
 
 PV = "0.22"
