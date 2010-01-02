@@ -7,7 +7,8 @@ DEPENDS="glib-2.0 gtk+ pango cairo libgnomeprint libgsf libglade libpcre libxml2
 
 inherit gnome pkgconfig
 
-SRC_URI += "file://c99math.patch;patch=1"
+SRC_URI += " file://c99math.patch;patch=1 \
+             file://nodolt.patch;patch=1 "
 
 do_stage() {
 	autotools_stage_all

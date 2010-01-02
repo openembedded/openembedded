@@ -1,6 +1,7 @@
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "expat expat-native"
+PR = "r0"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/Digest/Digest-SHA-${PV}.tar.gz"
 

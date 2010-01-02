@@ -1,6 +1,7 @@
 SECTION = "libs"
 LICENSE = "GPLv2"
 DEPENDS += "expat expat-native"
+PR = "r0"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/Crypt/Crypt-Rijndael-${PV}.tar.gz"
 
