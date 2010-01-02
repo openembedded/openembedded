@@ -1,3 +1,4 @@
+DESCRIPTION = "Crypt::Rijndael - Crypt::CBC compliant Rijndael encryption module"
 SECTION = "libs"
 LICENSE = "GPLv2"
 DEPENDS += "expat expat-native"

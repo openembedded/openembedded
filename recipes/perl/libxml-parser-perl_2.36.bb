@@ -1,3 +1,4 @@
+DESCRIPTION = "XML::Parser - A perl module for parsing XML documents"
 SECTION = "libs"
 LICENSE = "Artistic"
 DEPENDS += "expat expat-native"

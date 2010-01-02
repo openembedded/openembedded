@@ -1,3 +1,4 @@
+DESCRIPTION = "IO-stringy - I/O on in-core objects like strings and arrays"
 SECTION = "libs"
 LICENSE = "unknown"
 PR = "r1"

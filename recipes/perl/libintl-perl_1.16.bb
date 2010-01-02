@@ -1,3 +1,4 @@
+DESCRIPTION = "libintl-perl is an internationalization library for Perl"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 RDEPENDS = "perl-module-vars perl-module-locale perl-module-io-handle \

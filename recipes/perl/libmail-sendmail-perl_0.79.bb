@@ -1,3 +1,4 @@
+DESCRIPTION = "Mail::Sendmail - Simple platform independent mailer"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r4"
