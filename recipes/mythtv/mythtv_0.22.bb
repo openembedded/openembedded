@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mytht
 mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
-PR = "svnr${SRCPV}+r6"
+PR = "svnr${SRCPV}+r7"
 PV = "0.22"
 
 # REALPV is here to support release candidates
@@ -79,6 +79,8 @@ FILES_mythtv-frontend = "${bindir}/mythfrontend ${datadir}/mythtv/i18n/mythfront
 FILES_mythtv-bin = "${bindir}/*"
 FILES_mythtv-filters = "${libdir}/mythtv/filters/*"
 FILES_mythtv-database = "${datadir}/mythtv/sql/"
+
+RRECOMMENDS_mythtv-frontend += "mythtv-theme-defaultmenu mythtv-theme-terra"
 
 mythlibs = "mythdb mythavutil mythavcodec mythavformat mythswscale mythhdhomerun myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 
