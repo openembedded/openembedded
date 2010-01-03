@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r1"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SW/SWALTERS/Sys-Mmap-0.13.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SW/SWALTERS/Sys-Mmap-${PV}.tar.gz"
 
 S = "${WORKDIR}/Sys-Mmap-${PV}"
 

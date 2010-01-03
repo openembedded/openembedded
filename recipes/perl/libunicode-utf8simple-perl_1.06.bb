@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "unknown"
 PR = "r0"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/G/GU/GUS/Unicode-UTF8simple-1.06.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/G/GU/GUS/Unicode-UTF8simple-${PV}.tar.gz"
 
 S = "${WORKDIR}/Unicode-UTF8simple-${PV}"
 

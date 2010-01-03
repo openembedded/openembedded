@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r0"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SB/SBURKE/Lingua-EN-Numbers-Ordinate-1.02.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SB/SBURKE/Lingua-EN-Numbers-Ordinate-${PV}.tar.gz"
 
 S = "${WORKDIR}/Lingua-EN-Numbers-Ordinate-${PV}"
 

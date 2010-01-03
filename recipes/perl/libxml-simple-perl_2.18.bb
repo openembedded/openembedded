@@ -1,3 +1,4 @@
+DESCRIPTION = "XML::Simple - Easy API to maintain XML (esp config files)"
 SECTION = "libs"
 LICENSE = "Artistic"
 DEPENDS += "libxml-parser-perl"

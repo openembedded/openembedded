@@ -1,3 +1,4 @@
+DESCRIPTION = "Compress::Zlib - Interface to zlib compression library"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "expat expat-native"

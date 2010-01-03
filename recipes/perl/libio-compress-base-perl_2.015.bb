@@ -1,3 +1,4 @@
+DESCRIPTION = "IO::Compress::Base - Base Class for IO::Compress modules"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "expat expat-native"

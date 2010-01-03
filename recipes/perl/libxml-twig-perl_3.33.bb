@@ -1,3 +1,4 @@
+DESCRIPTION = "XML::Twig - A perl module for processing huge XML documents in tree mode."
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 HOMEPAGE = "http://www.xmltwig.com/"

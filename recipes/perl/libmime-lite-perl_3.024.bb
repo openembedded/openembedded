@@ -8,7 +8,7 @@ RDEPENDS = "perl-module-file-spec \
             perl-module-test-more \
             perl-module-time-local"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/MIME-Lite-3.024.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/MIME-Lite-${PV}.tar.gz"
 
 S = "${WORKDIR}/MIME-Lite-${PV}"
 
