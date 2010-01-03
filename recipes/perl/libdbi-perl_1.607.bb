@@ -8,7 +8,7 @@ RDEPENDS = "perl-module-scalar-util \
             perl-module-storable \
             perl-module-test-simple"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TI/TIMB/DBI-1.607.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TI/TIMB/DBI-${PV}.tar.gz"
 
 S = "${WORKDIR}/DBI-${PV}"
 

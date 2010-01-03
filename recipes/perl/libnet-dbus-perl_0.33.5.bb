@@ -1,3 +1,4 @@
+DESCRIPTION = "Net::DBus - Perl extension for the DBus message system"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r0"

@@ -1,3 +1,4 @@
+DESCRIPTION = "XML::Writer - Perl extension for writing XML documents."
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 HOMEPAGE = "http://search.cpan.org/dist/XML-Writer/"

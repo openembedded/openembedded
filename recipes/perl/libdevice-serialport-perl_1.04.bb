@@ -1,3 +1,4 @@
+DESCRIPTION = "Device::SerialPort - Linux/POSIX emulation of Win32::SerialPort functions."
 SECTION = "libs"
 LICENSE = "GPL"
 RDEPENDS += "perl-module-carp perl-module-posix perl-module-io-handle \
