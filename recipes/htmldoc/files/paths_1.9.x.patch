@@ -1,0 +1,109 @@
+diff -Naur a/data/Makefile b/data/Makefile
+--- a/data/Makefile	2008-01-06 02:55:59.000000000 +0100
++++ b/data/Makefile	2008-11-16 20:02:56.000000000 +0100
+@@ -51,11 +51,11 @@
+ #
+ 
+ install:
+-	if [ ! -d $(datadir)/htmldoc/data ]; then\
+-		$(MKDIR) $(datadir)/htmldoc/data;\
++	if [ ! -d $(DESTDIR)$(datadir)/htmldoc/data ]; then\
++		$(MKDIR) $(DESTDIR)$(datadir)/htmldoc/data;\
+ 	fi
+-	$(CP) $(FILES) $(datadir)/htmldoc/data
+-	$(CHMOD) ugo+r $(datadir)/htmldoc/data/*
++	$(CP) $(FILES) $(DESTDIR)$(datadir)/htmldoc/data
++	$(CHMOD) ugo+r $(DESTDIR)$(datadir)/htmldoc/data/*
+ 
+ 
+ #
+diff -Naur a/doc/Makefile b/doc/Makefile
+--- a/doc/Makefile	2008-01-06 02:55:59.000000000 +0100
++++ b/doc/Makefile	2008-11-16 20:04:06.000000000 +0100
+@@ -57,7 +57,7 @@
+ DOCUMENTS =	htmldoc.html htmldoc.pdf htmldoc.ps
+ DOCFILES =	htmldoc.pdf
+ 
+-HTMLDOC	=	HTMLDOC_DATA=".." ../htmldoc/htmldoc$(EXEEXT) --strict --verbose
++HTMLDOC	=	HTMLDOC_DATA=".." htmldoc$(EXEEXT) --strict --verbose
+ 
+ 
+ #
+@@ -72,16 +72,16 @@
+ #
+ 
+ install: $(DOCUMENTS)
+-	if [ ! -d $(datadir)/doc/htmldoc ]; then\
+-		$(MKDIR) $(datadir)/doc/htmldoc;\
++	if [ ! -d $(DESTDIR)$(datadir)/doc/htmldoc ]; then\
++		$(MKDIR) $(DESTDIR)$(datadir)/doc/htmldoc;\
+ 	fi
+-	$(CP) $(DOCFILES) $(datadir)/doc/htmldoc
+-	$(CHMOD) ugo+r $(datadir)/doc/htmldoc/*
+-	if [ ! -d $(mandir)/man1 ]; then\
+-		$(MKDIR) $(mandir)/man1;\
++	$(CP) $(DOCFILES) $(DESTDIR)$(datadir)/doc/htmldoc
++	$(CHMOD) ugo+r $(DESTDIR)$(datadir)/doc/htmldoc/*
++	if [ ! -d $(DESTDIR)$(mandir)/man1 ]; then\
++		$(MKDIR) $(DESTDIR)$(mandir)/man1;\
+ 	fi
+-	$(CP) htmldoc.man $(mandir)/man1/htmldoc.1
+-	$(CHMOD) ugo+r $(mandir)/man1/htmldoc.1
++	$(CP) htmldoc.man $(DESTDIR)$(mandir)/man1/htmldoc.1
++	$(CHMOD) ugo+r $(DESTDIR)$(mandir)/man1/htmldoc.1
+ 
+ 
+ #
+diff -Naur a/fonts/Makefile b/fonts/Makefile
+--- a/fonts/Makefile	2008-01-06 02:55:59.000000000 +0100
++++ b/fonts/Makefile	2008-11-16 20:04:08.000000000 +0100
+@@ -73,14 +73,14 @@
+ 
+ install:
+ 	echo "Installing font files in $(datadir)/htmldoc/fonts..."
+-	if test ! -d $(datadir)/htmldoc/fonts; then\
+-		$(MKDIR) $(datadir)/htmldoc/fonts;\
++	if test ! -d $(DESTDIR)$(datadir)/htmldoc/fonts; then\
++		$(MKDIR) $(DESTDIR)$(datadir)/htmldoc/fonts;\
+ 	fi
+ 	for font in $(FONTS); do \
+-		$(CP) $$font.afm $(datadir)/htmldoc/fonts; \
+-		$(CP) $$font.pfa $(datadir)/htmldoc/fonts; \
++		$(CP) $$font.afm $(DESTDIR)$(datadir)/htmldoc/fonts; \
++		$(CP) $$font.pfa $(DESTDIR)$(datadir)/htmldoc/fonts; \
+ 	done
+-	$(CHMOD) ugo+r $(datadir)/htmldoc/fonts/*
++	$(CHMOD) ugo+r $(DESTDIR)$(datadir)/htmldoc/fonts/*
+ 
+ 
+ #
+diff -Naur a/htmldoc/Makefile b/htmldoc/Makefile
+--- a/htmldoc/Makefile	2008-03-01 19:18:52.000000000 +0100
++++ b/htmldoc/Makefile	2008-11-16 20:05:12.000000000 +0100
+@@ -104,11 +104,11 @@
+ #
+ 
+ install:	all
+-	if [ ! -d $(bindir) ]; then\
+-		$(MKDIR) $(bindir);\
++	if [ ! -d $(DESTDIR)$(bindir) ]; then\
++		$(MKDIR) $(DESTDIR)$(bindir);\
+ 	fi
+-	cp htmldoc$(EXEEXT) $(bindir)
+-	chmod ugo+rx $(bindir)/htmldoc$(EXEEXT)
++	cp htmldoc$(EXEEXT) $(DESTDIR)$(bindir)
++	chmod ugo+rx $(DESTDIR)$(bindir)/htmldoc$(EXEEXT)
+ 
+ 
+ #
+diff -Naur a/Makedefs.in b/Makedefs.in
+--- a/Makedefs.in	2008-03-01 19:18:52.000000000 +0100
++++ b/Makedefs.in	2008-11-16 20:00:34.000000000 +0100
+@@ -45,6 +45,7 @@
+ #
+ # Directories...
+ #
++DESTDIR = @DESTDIR@
+ 
+ bindir		=	@bindir@
+ datadir		=	@datadir@

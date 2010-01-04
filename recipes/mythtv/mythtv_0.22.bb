@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mytht
 mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
-PR = "${SRCREV}+r6"
+PR = "svnr${SRCPV}+r6"
 PV = "0.22"
 
 # REALPV is here to support release candidates

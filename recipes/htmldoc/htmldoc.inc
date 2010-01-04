@@ -1,0 +1,6 @@
+DESCRIPTION = "HTMLDOC converts HTML input files into indexed HTML, postscript or PDF files"
+HOMEPAGE = "http://www.htmldoc.org/"
+SECTION = "console/utils"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "openssl libpng jpeg zlib"
