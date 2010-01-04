@@ -1,0 +1,68 @@
+From 8fea31ca0ab98ef6fed7bb2d87d97f4f425b2078 Mon Sep 17 00:00:00 2001
+From: Rhys Weatherley <rhys.weatherley@nokia.com>
+Date: Mon, 7 Dec 2009 10:07:13 +1000
+Subject: [PATCH 0951/1244] Detect GL2 paint engine based on fragment shaders, not programs
+
+The auto-detect logic was looking for fragment programs to check
+for OpenGL2 support.  It should have been looking for fragment shaders.
+
+Task-number: QTBUG-5638
+Reviewed-by: Sarah Smith
+---
+ src/opengl/qgl.cpp |    7 +++++--
+ src/opengl/qgl_p.h |    3 ++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/src/opengl/qgl.cpp b/src/opengl/qgl.cpp
+index b376901..1ff102f 100644
+--- a/src/opengl/qgl.cpp
++++ b/src/opengl/qgl.cpp
+@@ -173,12 +173,12 @@ public:
+ #else
+             // We can't do this in the constructor for this object because it
+             // needs to be called *before* the QApplication constructor.
+-            // Also check for the FragmentProgram extension in conjunction with
++            // Also check for the FragmentShader extension in conjunction with
+             // the 2.0 version flag, to cover the case where we export the display
+             // from an old GL 1.1 server to a GL 2.x client. In that case we can't
+             // use GL 2.0.
+             if ((QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_2_0)
+-                && (QGLExtensions::glExtensions & QGLExtensions::FragmentProgram)
++                && (QGLExtensions::glExtensions & QGLExtensions::FragmentShader)
+                 && qgetenv("QT_GL_USE_OPENGL1ENGINE").isEmpty())
+                 engineType = QPaintEngine::OpenGL2;
+             else
+@@ -4832,6 +4832,8 @@ void QGLExtensions::init_extensions()
+         glExtensions |= PVRTCTextureCompression;
+     if (extensions.contains("GL_ARB_fragment_program"))
+         glExtensions |= FragmentProgram;
++    if (extensions.contains("GL_ARB_fragment_shader"))
++        glExtensions |= FragmentShader;
+     if (extensions.contains("GL_ARB_texture_mirrored_repeat"))
+         glExtensions |= MirroredRepeat;
+     if (extensions.contains("GL_EXT_framebuffer_object"))
+@@ -4849,6 +4851,7 @@ void QGLExtensions::init_extensions()
+ #if defined(QT_OPENGL_ES_2)
+     glExtensions |= FramebufferObject;
+     glExtensions |= GenerateMipmap;
++    glExtensions |= FragmentShader;
+ #endif
+ #if defined(QT_OPENGL_ES_1) || defined(QT_OPENGL_ES_1_CL)
+     if (extensions.contains("GL_OES_framebuffer_object"))
+diff --git a/src/opengl/qgl_p.h b/src/opengl/qgl_p.h
+index 0f785a5..179d69a 100644
+--- a/src/opengl/qgl_p.h
++++ b/src/opengl/qgl_p.h
+@@ -383,7 +383,8 @@ public:
+         BGRATextureFormat       = 0x00004000,
+         DDSTextureCompression   = 0x00008000,
+         ETC1TextureCompression  = 0x00010000,
+-        PVRTCTextureCompression = 0x00020000
++        PVRTCTextureCompression = 0x00020000,
++        FragmentShader          = 0x00040000
+     };
+     Q_DECLARE_FLAGS(Extensions, Extension)
+ 
+-- 
+1.6.5
+

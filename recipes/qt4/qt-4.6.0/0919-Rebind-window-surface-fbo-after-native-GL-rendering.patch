@@ -1,0 +1,95 @@
+From c0b81480b2909b18ac15bdd124a562ae005c2f41 Mon Sep 17 00:00:00 2001
+From: Rhys Weatherley <rhys.weatherley@nokia.com>
+Date: Fri, 4 Dec 2009 17:17:00 +1000
+Subject: [PATCH 0919/1244] Rebind window surface fbo after native GL rendering
+
+If the user called QGLFramebufferObject::bind()/release() during a
+beginNativePainting() callout, the release() would reset the context's
+fbo to zero, not the actual window surface fbo.
+
+Task-number: QTBUG-6204
+Reviewed-by: Tom
+---
+ src/opengl/qgl.cpp                  |    1 +
+ src/opengl/qgl_p.h                  |    1 +
+ src/opengl/qglframebufferobject.cpp |    4 ++--
+ src/opengl/qglpaintdevice.cpp       |   10 ++++++++++
+ 4 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/src/opengl/qgl.cpp b/src/opengl/qgl.cpp
+index 5ada125..94b8aa5 100644
+--- a/src/opengl/qgl.cpp
++++ b/src/opengl/qgl.cpp
+@@ -1495,6 +1495,7 @@ void QGLContextPrivate::init(QPaintDevice *dev, const QGLFormat &format)
+     version_flags_cached = false;
+     version_flags = QGLFormat::OpenGL_Version_None;
+     current_fbo = 0;
++    default_fbo = 0;
+     active_engine = 0;
+ }
+ 
+diff --git a/src/opengl/qgl_p.h b/src/opengl/qgl_p.h
+index 8e472e5..ab72c9c 100644
+--- a/src/opengl/qgl_p.h
++++ b/src/opengl/qgl_p.h
+@@ -328,6 +328,7 @@ public:
+     GLint max_texture_size;
+ 
+     GLuint current_fbo;
++    GLuint default_fbo;
+     QPaintEngine *active_engine;
+ 
+     static inline QGLContextGroup *contextGroup(const QGLContext *ctx) { return ctx->d_ptr->group; }
+diff --git a/src/opengl/qglframebufferobject.cpp b/src/opengl/qglframebufferobject.cpp
+index d79283e..d0297c9 100644
+--- a/src/opengl/qglframebufferobject.cpp
++++ b/src/opengl/qglframebufferobject.cpp
+@@ -899,8 +899,8 @@ bool QGLFramebufferObject::release()
+ #endif
+ 
+     if (current) {
+-        current->d_ptr->current_fbo = 0;
+-        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
++        current->d_ptr->current_fbo = current->d_ptr->default_fbo;
++        glBindFramebuffer(GL_FRAMEBUFFER_EXT, current->d_ptr->default_fbo);
+     }
+ 
+     return true;
+diff --git a/src/opengl/qglpaintdevice.cpp b/src/opengl/qglpaintdevice.cpp
+index 2867de5..bcd90a5 100644
+--- a/src/opengl/qglpaintdevice.cpp
++++ b/src/opengl/qglpaintdevice.cpp
+@@ -89,6 +89,12 @@ void QGLPaintDevice::beginPaint()
+         ctx->d_ptr->current_fbo = m_thisFBO;
+         glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_thisFBO);
+     }
++
++    // Set the default fbo for the context to m_thisFBO so that
++    // if some raw GL code between beginNativePainting() and
++    // endNativePainting() calls QGLFramebufferObject::release(),
++    // painting will revert to the window surface's fbo.
++    ctx->d_ptr->default_fbo = m_thisFBO;
+ }
+ 
+ void QGLPaintDevice::ensureActiveTarget()
+@@ -101,6 +107,8 @@ void QGLPaintDevice::ensureActiveTarget()
+         ctx->d_ptr->current_fbo = m_thisFBO;
+         glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_thisFBO);
+     }
++
++    ctx->d_ptr->default_fbo = m_thisFBO;
+ }
+ 
+ void QGLPaintDevice::endPaint()
+@@ -111,6 +119,8 @@ void QGLPaintDevice::endPaint()
+         ctx->d_ptr->current_fbo = m_previousFBO;
+         glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_previousFBO);
+     }
++
++    ctx->d_ptr->default_fbo = 0;
+ }
+ 
+ QGLFormat QGLPaintDevice::format() const
+-- 
+1.6.5
+

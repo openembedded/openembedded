@@ -1,5 +1,5 @@
 require qt4-embedded.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 QT_GLFLAGS = "-opengl es2 -openvg"
 

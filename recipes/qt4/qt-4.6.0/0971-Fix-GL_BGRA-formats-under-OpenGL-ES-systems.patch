@@ -1,0 +1,40 @@
+From 05d4b4c72a5089885c1515833e34177607c2c511 Mon Sep 17 00:00:00 2001
+From: Rhys Weatherley <rhys.weatherley@nokia.com>
+Date: Tue, 8 Dec 2009 11:02:46 +1000
+Subject: [PATCH 0971/1244] Fix GL_BGRA formats under OpenGL/ES systems
+
+OpenGL/ES requires that the internal and external formats be the
+same when calling glTexImage2D().  This caused problems with
+devices that had the GL_EXT_bgra extension.
+
+This change makes the formats the same just before the upload and
+also makes sure that the pixel type is GL_UNSIGNED_BYTE when
+GL_BGRA is used.  No change for desktop systems.
+
+Reviewed-by: Donald Carr
+---
+ src/opengl/qgl.cpp |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/src/opengl/qgl.cpp b/src/opengl/qgl.cpp
+index 1ff102f..967ba48 100644
+--- a/src/opengl/qgl.cpp
++++ b/src/opengl/qgl.cpp
+@@ -2234,6 +2234,14 @@ QGLTexture* QGLContextPrivate::bindTexture(const QImage &image, GLenum target, G
+             }
+         }
+     }
++#ifdef QT_OPENGL_ES
++    // OpenGL/ES requires that the internal and external formats be identical.
++    // This is typically used to convert GL_RGBA into GL_BGRA.
++    // Also, we need to use GL_UNSIGNED_BYTE when the format is GL_BGRA.
++    internalFormat = externalFormat;
++    if (pixel_type == GL_UNSIGNED_INT_8_8_8_8_REV)
++        pixel_type = GL_UNSIGNED_BYTE;
++#endif
+ #ifdef QGL_BIND_TEXTURE_DEBUG
+     printf(" - uploading, image.format=%d, externalFormat=0x%x, internalFormat=0x%x, pixel_type=0x%x\n",
+            img.format(), externalFormat, internalFormat, pixel_type);
+-- 
+1.6.5
+

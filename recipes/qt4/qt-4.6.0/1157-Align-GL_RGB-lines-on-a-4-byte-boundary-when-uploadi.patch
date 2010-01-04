@@ -1,0 +1,45 @@
+From 87777f7c0f4c3e338d23d2c3d368a8a484a35a6e Mon Sep 17 00:00:00 2001
+From: Rhys Weatherley <rhys.weatherley@nokia.com>
+Date: Fri, 18 Dec 2009 15:01:07 +1000
+Subject: [PATCH 1157/1244] Align GL_RGB lines on a 4-byte boundary when uploading pixmap textures
+
+Previous code was aligning lines on a 3-byte boundary.
+
+Task-number: QTBUG-6902
+Reviewed-by: Julian de Bhal
+---
+ src/opengl/qpixmapdata_gl.cpp |   15 ++-------------
+ 1 files changed, 2 insertions(+), 13 deletions(-)
+
+diff --git a/src/opengl/qpixmapdata_gl.cpp b/src/opengl/qpixmapdata_gl.cpp
+index 4e1d50d..92c990b 100644
+--- a/src/opengl/qpixmapdata_gl.cpp
++++ b/src/opengl/qpixmapdata_gl.cpp
+@@ -341,22 +341,11 @@ void QGLPixmapData::ensureCreated() const
+ 
+     if (!m_source.isNull()) {
+         if (external_format == GL_RGB) {
+-            QImage tx = m_source.convertToFormat(QImage::Format_RGB32);
+-
+-            QVector<uchar> pixelData(w * h * 3);
+-            uchar *p = &pixelData[0];
+-            QRgb *src = (QRgb *)tx.bits();
+-
+-            for (int i = 0; i < w * h; ++i) {
+-                *p++ = qRed(*src);
+-                *p++ = qGreen(*src);
+-                *p++ = qBlue(*src);
+-                ++src;
+-            }
++            const QImage tx = m_source.convertToFormat(QImage::Format_RGB888);
+ 
+             glBindTexture(target, m_texture.id);
+             glTexSubImage2D(target, 0, 0, 0, w, h, external_format,
+-                            GL_UNSIGNED_BYTE, &pixelData[0]);
++                            GL_UNSIGNED_BYTE, tx.bits());
+         } else {
+             const QImage tx = ctx->d_func()->convertToGLFormat(m_source, true, external_format);
+ 
+-- 
+1.6.5
+

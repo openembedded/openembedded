@@ -1,0 +1,121 @@
+From 2b4d3391fd922dfc5ac28815bbd5f36c4041b658 Mon Sep 17 00:00:00 2001
+From: Tom Cooksey <thomas.cooksey@nokia.com>
+Date: Mon, 21 Dec 2009 16:36:14 +0100
+Subject: [PATCH 1197/1244] Add GLfloat[2][2] & GLfloat[3][3] uniform setters to QGLShaderProgram
+
+Reviewed-By: Rhys Weatherley
+---
+ src/opengl/qglshaderprogram.cpp |   67 +++++++++++++++++++++++++++++++++++++++
+ src/opengl/qglshaderprogram.h   |    4 ++
+ 2 files changed, 71 insertions(+), 0 deletions(-)
+
+diff --git a/src/opengl/qglshaderprogram.cpp b/src/opengl/qglshaderprogram.cpp
+index b4191dc..f9737a5 100644
+--- a/src/opengl/qglshaderprogram.cpp
++++ b/src/opengl/qglshaderprogram.cpp
+@@ -2275,6 +2275,42 @@ void QGLShaderProgram::setUniformValue(const char *name, const QMatrix4x4& value
+     \overload
+ 
+     Sets the uniform variable at \a location in the current context
++    to a 2x2 matrix \a value.  The matrix elements must be specified
++    in column-major order.
++
++    \sa setAttributeValue()
++    \since 4.6.2
++*/
++void QGLShaderProgram::setUniformValue(int location, const GLfloat value[2][2])
++{
++    Q_D(QGLShaderProgram);
++    Q_UNUSED(d);
++    if (location != -1)
++        glUniformMatrix2fv(location, 1, GL_FALSE, value[0]);
++}
++
++/*!
++    \overload
++
++    Sets the uniform variable at \a location in the current context
++    to a 3x3 matrix \a value.  The matrix elements must be specified
++    in column-major order.
++
++    \sa setAttributeValue()
++    \since 4.6.2
++*/
++void QGLShaderProgram::setUniformValue(int location, const GLfloat value[3][3])
++{
++    Q_D(QGLShaderProgram);
++    Q_UNUSED(d);
++    if (location != -1)
++        glUniformMatrix3fv(location, 1, GL_FALSE, value[0]);
++}
++
++/*!
++    \overload
++
++    Sets the uniform variable at \a location in the current context
+     to a 4x4 matrix \a value.  The matrix elements must be specified
+     in column-major order.
+ 
+@@ -2288,6 +2324,37 @@ void QGLShaderProgram::setUniformValue(int location, const GLfloat value[4][4])
+         glUniformMatrix4fv(location, 1, GL_FALSE, value[0]);
+ }
+ 
++
++/*!
++    \overload
++
++    Sets the uniform variable called \a name in the current context
++    to a 2x2 matrix \a value.  The matrix elements must be specified
++    in column-major order.
++
++    \sa setAttributeValue()
++    \since 4.6.2
++*/
++void QGLShaderProgram::setUniformValue(const char *name, const GLfloat value[2][2])
++{
++    setUniformValue(uniformLocation(name), value);
++}
++
++/*!
++    \overload
++
++    Sets the uniform variable called \a name in the current context
++    to a 3x3 matrix \a value.  The matrix elements must be specified
++    in column-major order.
++
++    \sa setAttributeValue()
++    \since 4.6.2
++*/
++void QGLShaderProgram::setUniformValue(const char *name, const GLfloat value[3][3])
++{
++    setUniformValue(uniformLocation(name), value);
++}
++
+ /*!
+     \overload
+ 
+diff --git a/src/opengl/qglshaderprogram.h b/src/opengl/qglshaderprogram.h
+index deeaee2..4eb80dd 100644
+--- a/src/opengl/qglshaderprogram.h
++++ b/src/opengl/qglshaderprogram.h
+@@ -216,6 +216,8 @@ public:
+     void setUniformValue(int location, const QMatrix4x2& value);
+     void setUniformValue(int location, const QMatrix4x3& value);
+     void setUniformValue(int location, const QMatrix4x4& value);
++    void setUniformValue(int location, const GLfloat value[2][2]);
++    void setUniformValue(int location, const GLfloat value[3][3]);
+     void setUniformValue(int location, const GLfloat value[4][4]);
+     void setUniformValue(int location, const QTransform& value);
+ 
+@@ -242,6 +244,8 @@ public:
+     void setUniformValue(const char *name, const QMatrix4x2& value);
+     void setUniformValue(const char *name, const QMatrix4x3& value);
+     void setUniformValue(const char *name, const QMatrix4x4& value);
++    void setUniformValue(const char *name, const GLfloat value[2][2]);
++    void setUniformValue(const char *name, const GLfloat value[3][3]);
+     void setUniformValue(const char *name, const GLfloat value[4][4]);
+     void setUniformValue(const char *name, const QTransform& value);
+ 
+-- 
+1.6.5
+
