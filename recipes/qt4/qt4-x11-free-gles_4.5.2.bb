@@ -11,6 +11,7 @@ require qt4-x11-free_${PV}.bb
 PR = "${INC_PR}.3"
 
 DEPENDS += "virtual/egl"
+PROVIDES += "qt4-x11-free"
 #SRC_URI += "file://sgx-hack.patch;patch=1"
 SRC_URI += "file://hack-out-pg_config.patch;patch=1"
 
