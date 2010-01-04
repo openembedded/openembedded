@@ -1,0 +1,109 @@
+diff -Naur a/Makedefs.in b/Makedefs.in
+--- a/Makedefs.in	2005-10-28 22:32:59.000000000 +0200
++++ b/Makedefs.in	2009-03-23 23:40:35.928865178 +0100
+@@ -46,6 +46,7 @@
+ #
+ # Directories...
+ #
++DESTDIR = @DESTDIR@
+ 
+ bindir		=	@bindir@
+ datadir		=	@datadir@
+diff -Naur a/data/Makefile b/data/Makefile
+--- a/data/Makefile	2004-05-10 03:14:53.000000000 +0200
++++ b/data/Makefile	2009-03-23 23:35:27.850856359 +0100
+@@ -53,11 +53,11 @@
+ #
+ 
+ install:
+-	if [ ! -d $(datadir)/htmldoc/data ]; then\
+-		$(MKDIR) $(datadir)/htmldoc/data;\
++	if [ ! -d $(DESTDIR)$(datadir)/htmldoc/data ]; then\
++		$(MKDIR) $(DESTDIR)$(datadir)/htmldoc/data;\
+ 	fi
+-	$(CP) $(FILES) $(datadir)/htmldoc/data
+-	$(CHMOD) ugo+r $(datadir)/htmldoc/data/*
++	$(CP) $(FILES) $(DESTDIR)$(datadir)/htmldoc/data
++	$(CHMOD) ugo+r $(DESTDIR)$(datadir)/htmldoc/data/*
+ 
+ 
+ #
+diff -Naur a/doc/Makefile b/doc/Makefile
+--- a/doc/Makefile	2005-10-28 22:32:59.000000000 +0200
++++ b/doc/Makefile	2009-03-23 23:38:19.478865122 +0100
+@@ -42,7 +42,7 @@
+ DOCUMENTS =	htmldoc.html htmldoc.pdf htmldoc.ps
+ DOCFILES =	help.html htmldoc.pdf
+ 
+-HTMLDOC	=	../htmldoc/htmldoc$(EXEEXT) --datadir .. --strict --verbose
++HTMLDOC	=	htmldoc$(EXEEXT) --datadir .. --strict --verbose
+ 
+ 
+ #
+@@ -57,16 +57,16 @@
+ #
+ 
+ install: $(DOCUMENTS)
+-	if [ ! -d $(datadir)/doc/htmldoc ]; then\
+-		$(MKDIR) $(datadir)/doc/htmldoc;\
++	if [ ! -d $(DESTDIR)$(datadir)/doc/htmldoc ]; then\
++		$(MKDIR) $(DESTDIR)$(datadir)/doc/htmldoc;\
+ 	fi
+-	$(CP) $(DOCFILES) $(datadir)/doc/htmldoc
+-	$(CHMOD) ugo+r $(datadir)/doc/htmldoc/*
+-	if [ ! -d $(mandir)/man1 ]; then\
+-		$(MKDIR) $(mandir)/man1;\
++	$(CP) $(DOCFILES) $(DESTDIR)$(datadir)/doc/htmldoc
++	$(CHMOD) ugo+r $(DESTDIR)$(datadir)/doc/htmldoc/*
++	if [ ! -d $(DESTDIR)$(mandir)/man1 ]; then\
++		$(MKDIR) $(DESTDIR)$(mandir)/man1;\
+ 	fi
+-	$(CP) htmldoc.man $(mandir)/man1/htmldoc.1
+-	$(CHMOD) ugo+r $(mandir)/man1/htmldoc.1
++	$(CP) htmldoc.man $(DESTDIR)$(mandir)/man1/htmldoc.1
++	$(CHMOD) ugo+r $(DESTDIR)$(mandir)/man1/htmldoc.1
+ 
+ 
+ #
+diff -Naur a/fonts/Makefile b/fonts/Makefile
+--- a/fonts/Makefile	2005-10-28 22:32:59.000000000 +0200
++++ b/fonts/Makefile	2009-03-23 23:39:07.608863524 +0100
+@@ -75,14 +75,14 @@
+ 
+ install:
+ 	echo "Installing font files in $(datadir)/htmldoc/fonts..."
+-	if [ ! -d $(datadir)/htmldoc/fonts ]; then\
+-		$(MKDIR) $(datadir)/htmldoc/fonts;\
++	if [ ! -d $(DESTDIR)$(datadir)/htmldoc/fonts ]; then\
++		$(MKDIR) $(DESTDIR)$(datadir)/htmldoc/fonts;\
+ 	fi
+ 	for font in $(FONTS); do \
+-		$(CP) $$font.afm $(datadir)/htmldoc/fonts; \
+-		$(CP) $$font.pfa $(datadir)/htmldoc/fonts; \
++		$(CP) $$font.afm $(DESTDIR)$(datadir)/htmldoc/fonts; \
++		$(CP) $$font.pfa $(DESTDIR)$(datadir)/htmldoc/fonts; \
+ 	done
+-	$(CHMOD) ugo+r $(datadir)/htmldoc/fonts/*
++	$(CHMOD) ugo+r $(DESTDIR)$(datadir)/htmldoc/fonts/*
+ 
+ 
+ #
+diff -Naur a/htmldoc/Makefile b/htmldoc/Makefile
+--- a/htmldoc/Makefile	2005-10-28 22:32:59.000000000 +0200
++++ b/htmldoc/Makefile	2009-03-23 23:40:02.078914179 +0100
+@@ -50,11 +50,11 @@
+ #
+ 
+ install:	all
+-	if [ ! -d $(bindir) ]; then\
+-		$(MKDIR) $(bindir);\
++	if [ ! -d $(DESTDIR)$(bindir) ]; then\
++		$(MKDIR) $(DESTDIR)$(bindir);\
+ 	fi
+-	cp htmldoc$(EXEEXT) $(bindir)
+-	chmod ugo+rx $(bindir)/htmldoc$(EXEEXT)
++	cp htmldoc$(EXEEXT) $(DESTDIR)$(bindir)
++	chmod ugo+rx $(DESTDIR)$(bindir)/htmldoc$(EXEEXT)
+ 
+ 
+ #
