@@ -2,7 +2,7 @@ require binutils.inc
 LICENSE = "GPLv3"
 
 INC_PR = "r1"
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 SRC_URI = "\
      ${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
@@ -14,6 +14,7 @@ SRC_URI = "\
      file://binutils-uclibc-gas-needs-libm.patch;patch=1 \
      file://ld-stub-crash.patch;patch=1;pnum=0 \
      file://binutils-arm-non-empty-know.patch;patch=1 \
+     file://binutils_unexport_LD_LIBRARY_PATH_for_CC_FOR_BUILD.patch;patch=1 \
      "
 
 # powerpc patches
