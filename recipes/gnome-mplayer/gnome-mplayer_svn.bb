@@ -8,3 +8,5 @@ S = "${WORKDIR}/trunk"
 SRC_URI = "svn://gnome-mplayer.googlecode.com/svn/;module=trunk;proto=http \
 "
 
+#hack, should use CXX to link:
+LDFLAGS_append = " -lstdc++ "
