@@ -1,0 +1,19 @@
+--- /tmp/configure	2010-01-05 15:24:42.000000000 +0100
++++ libdlna-0.2.3/configure	2010-01-05 15:24:49.000000000 +0100
+@@ -427,7 +427,6 @@
+   *)
+   echo "Unknown option \"$opt\"."
+   echo "See $0 --help for available options."
+-  exit 1
+   ;;
+   esac
+ done
+@@ -627,7 +626,7 @@
+   return 0;
+ }
+ EOF
+-VERSION=`$TMPE`
++VERSION='0.2.3'
+ restore_flags
+ 
+ 
