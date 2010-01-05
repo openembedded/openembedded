@@ -8,6 +8,8 @@ SRC_URI = "http://libdlna.geexbox.org/releases/libdlna-${PV}.tar.bz2 \
 
 inherit autotools
 
+PARALLEL_MAKE = ""
+
 EXTRA_OECONF = " --cross-prefix=${TARGET_PREFIX} \
                  --cross-compile \
                  --disable-strip \
