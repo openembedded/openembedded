@@ -1,0 +1,39 @@
+From 472c13edc85a6c7efef1e3b904333d0c9a5f9da6 Mon Sep 17 00:00:00 2001
+From: Anders Bakken <anders.bakken@nokia.com>
+Date: Thu, 3 Dec 2009 08:55:20 -0800
+Subject: [PATCH 0998/1244] Set stacking class for stays-on-top windows in DFB
+
+For better compatibility with non-QWS DirectFB apps running in the same
+session we should set the stacking class of Windows that have the
+StaysOnTop flag set. This corresponds nicely to DWSC_UPPER.
+
+Reviewed-by: Jervey Kong <jervey.kong@nokia.com>
+---
+ .../gfxdrivers/directfb/qdirectfbwindowsurface.cpp |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/src/plugins/gfxdrivers/directfb/qdirectfbwindowsurface.cpp b/src/plugins/gfxdrivers/directfb/qdirectfbwindowsurface.cpp
+index 021d52e..b79418a 100644
+--- a/src/plugins/gfxdrivers/directfb/qdirectfbwindowsurface.cpp
++++ b/src/plugins/gfxdrivers/directfb/qdirectfbwindowsurface.cpp
+@@ -128,7 +128,6 @@ IDirectFBWindow *QDirectFBWindowSurface::directFBWindow() const
+     return (dfbWindow ? dfbWindow : (sibling ? sibling->dfbWindow : 0));
+ }
+ 
+-
+ void QDirectFBWindowSurface::createWindow(const QRect &rect)
+ {
+     IDirectFBDisplayLayer *layer = screen->dfbDisplayLayer();
+@@ -169,6 +168,9 @@ void QDirectFBWindowSurface::createWindow(const QRect &rect)
+         DirectFBErrorFatal("QDirectFBWindowSurface::createWindow", result);
+ 
+     if (window()) {
++        if (window()->windowFlags() & Qt::WindowStaysOnTopHint) {
++            dfbWindow->SetStackingClass(dfbWindow, DWSC_UPPER);
++        }
+         DFBWindowID winid;
+         result = dfbWindow->GetID(dfbWindow, &winid);
+         if (result != DFB_OK) {
+-- 
+1.6.5
+

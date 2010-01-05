@@ -3,7 +3,7 @@ AUTHOR = "Kevin DeKorte <kdekorte@gmail.com>"
 HOMEPAGE = "http://code.google.com/p/gnome-mplayer/"
 SECTION = "x11/multimedia"
 LICENSE = "GPL"
-DEPENDS = "gtk+ gconf dbus-glib libmusicbrainz libgpod"
+DEPENDS = "curl gtk+ gconf dbus-glib libmusicbrainz libgpod"
 RDEPENDS = "mplayer"
 
 inherit gnome

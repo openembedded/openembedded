@@ -1,0 +1,29 @@
+From b97aedb9e68c6fe610aff10792c92b2292da0b07 Mon Sep 17 00:00:00 2001
+From: Tom Cooksey <thomas.cooksey@nokia.com>
+Date: Tue, 22 Dec 2009 13:37:06 +0100
+Subject: [PATCH 1196/1244] Fix build with neon instructions enabled but not set in mkspec
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Reviewed-By: Samuel Rødal
+---
+ src/gui/painting/painting.pri |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/gui/painting/painting.pri b/src/gui/painting/painting.pri
+index 0b1e79a..a6cc9c7 100644
+--- a/src/gui/painting/painting.pri
++++ b/src/gui/painting/painting.pri
+@@ -383,7 +383,7 @@ neon {
+     DEFINES += QT_HAVE_NEON
+     HEADERS += painting/qdrawhelper_neon_p.h
+     SOURCES += painting/qdrawhelper_neon.cpp
+-    QMAKE.CXXFLAGS *= -mfpu=neon
++    QMAKE_CXXFLAGS *= -mfpu=neon
+ }
+ 
+ contains(QT_CONFIG, zlib) {
+-- 
+1.6.5
+

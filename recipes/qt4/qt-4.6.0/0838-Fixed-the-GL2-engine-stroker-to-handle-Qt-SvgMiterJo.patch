@@ -1,0 +1,25 @@
+From 0f61a0f1ce02bb0248cb87055240a8a474dce452 Mon Sep 17 00:00:00 2001
+From: Kim Motoyoshi Kalland <kim.kalland@nokia.com>
+Date: Fri, 27 Nov 2009 16:17:25 +0100
+Subject: [PATCH 0838/1244] Fixed the GL2 engine stroker to handle Qt::SvgMiterJoin.
+
+Reviewed-by: Trond
+---
+ .../gl2paintengineex/qtriangulatingstroker.cpp     |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/src/opengl/gl2paintengineex/qtriangulatingstroker.cpp b/src/opengl/gl2paintengineex/qtriangulatingstroker.cpp
+index c78f73f..6082f49 100644
+--- a/src/opengl/gl2paintengineex/qtriangulatingstroker.cpp
++++ b/src/opengl/gl2paintengineex/qtriangulatingstroker.cpp
+@@ -313,6 +313,7 @@ void QTriangulatingStroker::join(const qreal *pts)
+     switch (m_join_style) {
+     case Qt::BevelJoin:
+         break;
++    case Qt::SvgMiterJoin:
+     case Qt::MiterJoin: {
+         // Find out on which side the join should be.
+         int count = m_vertices.size();
+-- 
+1.6.5
+

@@ -1,0 +1,593 @@
+
+Adds new NEON configure test and -no-neon configure option. NEON
+implementations can also be turned off by setting the QT_NO_NEON
+environment variable.
+
+Performance improvements (in frames per second):
+- Blending ARGB32 on RGB32/ARGB32, mostly opaque: 71 %
+- Blending ARGB32 on RGB32/ARGB32, no opaque pixels: 108 %
+- Blending ARGB32 on RGB32/ARGB32, with 0.5 opacity: 158 %
+- Blending RGB32 on RGB32/ARGB32, with 0.5 opacity: 189 %
+
+Task-number: QTBUG-6684
+Reviewed-by: Gunnar Sletta
+Reviewed-by: Paul Olav Tvete
+---
+ config.tests/unix/neon/neon.cpp       |   51 +++++++
+ config.tests/unix/neon/neon.pro       |    2 +
+ configure                             |   22 +++-
+ src/gui/painting/painting.pri         |    7 +
+ src/gui/painting/qblendfunctions.cpp  |    2 +-
+ src/gui/painting/qdrawhelper.cpp      |   16 ++-
+ src/gui/painting/qdrawhelper_neon.cpp |  260 +++++++++++++++++++++++++++++++++
+ src/gui/painting/qdrawhelper_neon_p.h |   76 ++++++++++
+ 8 files changed, 432 insertions(+), 4 deletions(-)
+ create mode 100644 config.tests/unix/neon/neon.cpp
+ create mode 100644 config.tests/unix/neon/neon.pro
+ create mode 100644 src/gui/painting/qdrawhelper_neon.cpp
+ create mode 100644 src/gui/painting/qdrawhelper_neon_p.h
+
+diff --git a/config.tests/unix/neon/neon.cpp b/config.tests/unix/neon/neon.cpp
+new file mode 100644
+index 0000000..c31a9fd
+--- /dev/null
++++ b/config.tests/unix/neon/neon.cpp
+@@ -0,0 +1,51 @@
++/****************************************************************************
++**
++** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
++** All rights reserved.
++** Contact: Nokia Corporation (qt-info@nokia.com)
++**
++** This file is part of the config.tests of the Qt Toolkit.
++**
++** $QT_BEGIN_LICENSE:LGPL$
++** No Commercial Usage
++** This file contains pre-release code and may not be distributed.
++** You may use this file in accordance with the terms and conditions
++** contained in the Technology Preview License Agreement accompanying
++** this package.
++**
++** GNU Lesser General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU Lesser
++** General Public License version 2.1 as published by the Free Software
++** Foundation and appearing in the file LICENSE.LGPL included in the
++** packaging of this file.  Please review the following information to
++** ensure the GNU Lesser General Public License version 2.1 requirements
++** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
++**
++** In addition, as a special exception, Nokia gives you certain additional
++** rights.  These rights are described in the Nokia Qt LGPL Exception
++** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
++**
++** If you have questions regarding the use of this file, please contact
++** Nokia at qt-info@nokia.com.
++**
++**
++**
++**
++**
++**
++**
++**
++** $QT_END_LICENSE$
++**
++****************************************************************************/
++
++#include <arm_neon.h>
++
++int main(int, char**)
++{
++    int32x4_t null = vdupq_n_s32(0x0);
++
++    int result;
++    vst1q_lane_s32(&result, null, 0);
++    return result;
++}
+diff --git a/config.tests/unix/neon/neon.pro b/config.tests/unix/neon/neon.pro
+new file mode 100644
+index 0000000..de20c4e
+--- /dev/null
++++ b/config.tests/unix/neon/neon.pro
+@@ -0,0 +1,2 @@
++SOURCES = neon.cpp
++CONFIG -= x11 qt
+diff --git a/configure b/configure
+index 2114863..22e6bd4 100755
+--- a/configure
++++ b/configure
+@@ -745,6 +745,7 @@ CFG_HOST_ENDIAN=auto
+ CFG_DOUBLEFORMAT=auto
+ CFG_ARMFPA=auto
+ CFG_IWMMXT=no
++CFG_NEON=auto
+ CFG_CLOCK_GETTIME=auto
+ CFG_CLOCK_MONOTONIC=auto
+ CFG_MREMAP=auto
+@@ -1604,6 +1605,13 @@ while [ "$#" -gt 0 ]; do
+     iwmmxt)
+ 	CFG_IWMMXT="yes"
+ 	;;
++    neon)
++        if [ "$VAL" = "no" ]; then
++            CFG_NEON="$VAL"
++        else
++            UNKNOWN_OPT=yes
++        fi
++        ;;
+     reduce-relocations)
+         if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+             CFG_REDUCE_RELOCATIONS="$VAL"
+@@ -3889,6 +3897,7 @@ Qt for Embedded Linux only:
+     -iwmmxt ............ Compile using the iWMMXt instruction set
+                          (available on some XScale CPUs).
+ 
++    -no-neon ........... Do not compile with use of NEON instructions.
+ EOF
+ fi
+ 
+@@ -4509,6 +4518,15 @@ if [ "$CFG_IWMMXT" = "yes" ]; then
+     fi
+ fi
+ 
++# detect neon support
++if ([ "${CFG_ARCH}" = "arm" ] || [ "${CFG_ARCH}" = "armv6" ]) && [ "${CFG_NEON}" = "auto" ]; then
++    if "$unixtests/compile.test" "$XQMAKESPEC" "$QMAKE_CONFIG" $OPT_VERBOSE "$relpath" "$outpath" config.tests/unix/neon "neon" $L_FLAGS $I_FLAGS $l_FLAGS "-mfpu=neon"; then
++	CFG_NEON=yes
++    else
++	CFG_NEON=no
++    fi
++fi
++
+ # detect zlib
+ if [ "$CFG_ZLIB" = "no" ]; then
+     # Note: Qt no longer support builds without zlib
+@@ -6124,6 +6142,7 @@ fi
+ [ "$CFG_SSE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG sse"
+ [ "$CFG_SSE2" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG sse2"
+ [ "$CFG_IWMMXT" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG iwmmxt"
++[ "$CFG_NEON" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG neon"
+ [ "$PLATFORM_MAC" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG $CFG_MAC_ARCHS"
+ if [ "$CFG_IPV6" = "yes" ]; then
+     QT_CONFIG="$QT_CONFIG ipv6"
+@@ -7416,8 +7435,9 @@ echo "Declarative module .. $CFG_DECLARATIVE"
+ echo "STL support ......... $CFG_STL"
+ echo "PCH support ......... $CFG_PRECOMPILE"
+ echo "MMX/3DNOW/SSE/SSE2..  ${CFG_MMX}/${CFG_3DNOW}/${CFG_SSE}/${CFG_SSE2}"
+-if [ "${CFG_ARCH}" = "arm" ]; then
++if [ "${CFG_ARCH}" = "arm" ] || [ "${CFG_ARCH}" = "armv6" ]; then
+     echo "iWMMXt support ...... ${CFG_IWMMXT}"
++    echo "NEON support ........ ${CFG_NEON}"
+ fi
+ [ "${PLATFORM_QWS}" != "yes" ] && echo "Graphics System ..... $CFG_GRAPHICS_SYSTEM"
+ echo "IPv6 support ........ $CFG_IPV6"
+diff --git a/src/gui/painting/painting.pri b/src/gui/painting/painting.pri
+index 628a109..0b1e79a 100644
+--- a/src/gui/painting/painting.pri
++++ b/src/gui/painting/painting.pri
+@@ -379,6 +379,13 @@ symbian {
+         QMAKE_CXXFLAGS.ARMCC *= -O3
+ }
+ 
++neon {
++    DEFINES += QT_HAVE_NEON
++    HEADERS += painting/qdrawhelper_neon_p.h
++    SOURCES += painting/qdrawhelper_neon.cpp
++    
++}
++
+ contains(QT_CONFIG, zlib) {
+    INCLUDEPATH += ../3rdparty/zlib
+ } else:!contains(QT_CONFIG, no-zlib) {
+diff --git a/src/gui/painting/qblendfunctions.cpp b/src/gui/painting/qblendfunctions.cpp
+index 1d15dac..81d1515 100644
+--- a/src/gui/painting/qblendfunctions.cpp
++++ b/src/gui/painting/qblendfunctions.cpp
+@@ -605,7 +605,7 @@ static void qt_blend_argb32_on_argb32(uchar *destPixels, int dbpl,
+ }
+ 
+ 
+-static void qt_blend_rgb32_on_rgb32(uchar *destPixels, int dbpl,
++void qt_blend_rgb32_on_rgb32(uchar *destPixels, int dbpl,
+                              const uchar *srcPixels, int sbpl,
+                              int w, int h,
+                              int const_alpha)
+diff --git a/src/gui/painting/qdrawhelper.cpp b/src/gui/painting/qdrawhelper.cpp
+index 23236ec..84cf5cc 100644
+--- a/src/gui/painting/qdrawhelper.cpp
++++ b/src/gui/painting/qdrawhelper.cpp
+@@ -44,6 +44,7 @@
+ #include <private/qpainter_p.h>
+ #include <private/qdrawhelper_x86_p.h>
+ #include <private/qdrawhelper_armv6_p.h>
++#include <private/qdrawhelper_neon_p.h>
+ #include <private/qmath_p.h>
+ #include <qmath.h>
+ 
+@@ -7725,7 +7726,8 @@ enum CPUFeatures {
+     SSE         = 0x10,
+     SSE2        = 0x20,
+     CMOV        = 0x40,
+-    IWMMXT      = 0x80
++    IWMMXT      = 0x80,
++    NEON        = 0x100
+ };
+ 
+ static uint detectCPUFeatures()
+@@ -7751,6 +7753,9 @@ static uint detectCPUFeatures()
+     // runtime detection only available when running as a previlegied process
+     static const bool doIWMMXT = !qgetenv("QT_NO_IWMMXT").toInt();
+     return doIWMMXT ? IWMMXT : 0;
++#elif defined(QT_HAVE_NEON)
++    static const bool doNEON = !qgetenv("QT_NO_NEON").toInt();
++    return doNEON ? NEON : 0;
+ #else
+     uint features = 0;
+ #if defined(__x86_64__) || defined(Q_OS_WIN64)
+@@ -8122,7 +8127,14 @@ void qInitDrawhelperAsm()
+         qBlendFunctions[QImage::Format_ARGB32_Premultiplied][QImage::Format_RGB32] = qt_blend_rgb32_on_rgb32_armv6;
+         qBlendFunctions[QImage::Format_RGB32][QImage::Format_ARGB32_Premultiplied] = qt_blend_argb32_on_argb32_armv6;
+         qBlendFunctions[QImage::Format_ARGB32_Premultiplied][QImage::Format_ARGB32_Premultiplied] = qt_blend_argb32_on_argb32_armv6;
+-#endif // Q_CC_RVCT && QT_HAVE_ARMV6
++#elif defined(QT_HAVE_NEON)
++        if (features & NEON) {
++            qBlendFunctions[QImage::Format_RGB32][QImage::Format_RGB32] = qt_blend_rgb32_on_rgb32_neon;
++            qBlendFunctions[QImage::Format_ARGB32_Premultiplied][QImage::Format_RGB32] = qt_blend_rgb32_on_rgb32_neon;
++            qBlendFunctions[QImage::Format_RGB32][QImage::Format_ARGB32_Premultiplied] = qt_blend_argb32_on_argb32_neon;
++            qBlendFunctions[QImage::Format_ARGB32_Premultiplied][QImage::Format_ARGB32_Premultiplied] = qt_blend_argb32_on_argb32_neon;
++        }
++#endif
+ 
+     if (functionForModeSolidAsm) {
+         const int destinationMode = QPainter::CompositionMode_Destination;
+diff --git a/src/gui/painting/qdrawhelper_neon.cpp b/src/gui/painting/qdrawhelper_neon.cpp
+new file mode 100644
+index 0000000..7fe11bf
+--- /dev/null
++++ b/src/gui/painting/qdrawhelper_neon.cpp
+@@ -0,0 +1,260 @@
++/****************************************************************************
++**
++** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
++** All rights reserved.
++** Contact: Nokia Corporation (qt-info@nokia.com)
++**
++** This file is part of the QtGui module of the Qt Toolkit.
++**
++** $QT_BEGIN_LICENSE:LGPL$
++** No Commercial Usage
++** This file contains pre-release code and may not be distributed.
++** You may use this file in accordance with the terms and conditions
++** contained in the Technology Preview License Agreement accompanying
++** this package.
++**
++** GNU Lesser General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU Lesser
++** General Public License version 2.1 as published by the Free Software
++** Foundation and appearing in the file LICENSE.LGPL included in the
++** packaging of this file.  Please review the following information to
++** ensure the GNU Lesser General Public License version 2.1 requirements
++** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
++**
++** In addition, as a special exception, Nokia gives you certain additional
++** rights.  These rights are described in the Nokia Qt LGPL Exception
++** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
++**
++** If you have questions regarding the use of this file, please contact
++** Nokia at qt-info@nokia.com.
++**
++**
++**
++**
++**
++**
++**
++**
++** $QT_END_LICENSE$
++**
++****************************************************************************/
++
++#include <private/qdrawhelper_p.h>
++
++#ifdef QT_HAVE_NEON
++
++#include <private/qdrawhelper_neon_p.h>
++#include <arm_neon.h>
++
++QT_BEGIN_NAMESPACE
++
++static inline int16x8_t qvdiv_255_s16(int16x8_t x, int16x8_t half)
++{
++    // result = (x + (x >> 8) + 0x80) >> 8
++
++    const int16x8_t temp = vshrq_n_s16(x, 8); // x >> 8
++    const int16x8_t sum_part = vaddq_s16(x, half); // x + 0x80
++    const int16x8_t sum = vaddq_s16(temp, sum_part);
++
++    return vreinterpretq_s16_u16(vshrq_n_u16(vreinterpretq_u16_s16(sum), 8));
++}
++
++static inline int16x8_t qvbyte_mul_s16(int16x8_t x, int16x8_t alpha, int16x8_t half)
++{
++    // t = qRound(x * alpha / 255.0)
++
++    const int16x8_t t = vmulq_s16(x, alpha); // t
++    return qvdiv_255_s16(t, half);
++}
++
++static inline int16x8_t qvinterpolate_pixel_255(int16x8_t x, int16x8_t a, int16x8_t y, int16x8_t b, int16x8_t half)
++{
++    // t = x * a + y * b
++
++    const int16x8_t ta = vmulq_s16(x, a);
++    const int16x8_t tb = vmulq_s16(y, b);
++
++    return qvdiv_255_s16(vaddq_s16(ta, tb), half);
++}
++
++static inline int16x8_t qvsource_over_s16(int16x8_t src16, int16x8_t dst16, int16x8_t half, int16x8_t full)
++{
++    const int16x4_t alpha16_high = vdup_lane_s16(vget_high_s16(src16), 3);
++    const int16x4_t alpha16_low = vdup_lane_s16(vget_low_s16(src16), 3);
++
++    const int16x8_t alpha16 = vsubq_s16(full, vcombine_s16(alpha16_low, alpha16_high));
++
++    return vaddq_s16(src16, qvbyte_mul_s16(dst16, alpha16, half));
++}
++
++void qt_blend_argb32_on_argb32_neon(uchar *destPixels, int dbpl,
++                                    const uchar *srcPixels, int sbpl,
++                                    int w, int h,
++                                    int const_alpha)
++{
++    const uint *src = (const uint *) srcPixels;
++    uint *dst = (uint *) destPixels;
++    int16x8_t half = vdupq_n_s16(0x80);
++    int16x8_t full = vdupq_n_s16(0xff);
++    if (const_alpha == 256) {
++        for (int y = 0; y < h; ++y) {
++            int x = 0;
++            for (; x < w-3; x += 4) {
++                int32x4_t src32 = vld1q_s32((int32_t *)&src[x]);
++                if ((src[x] & src[x+1] & src[x+2] & src[x+3]) >= 0xff000000) {
++                    // all opaque
++                    vst1q_s32((int32_t *)&dst[x], src32);
++                } else if (src[x] | src[x+1] | src[x+2] | src[x+3]) {
++                    int32x4_t dst32 = vld1q_s32((int32_t *)&dst[x]);
++
++                    const uint8x16_t src8 = vreinterpretq_u8_s32(src32);
++                    const uint8x16_t dst8 = vreinterpretq_u8_s32(dst32);
++
++                    const uint8x8_t src8_low = vget_low_u8(src8);
++                    const uint8x8_t dst8_low = vget_low_u8(dst8);
++
++                    const uint8x8_t src8_high = vget_high_u8(src8);
++                    const uint8x8_t dst8_high = vget_high_u8(dst8);
++
++                    const int16x8_t src16_low = vreinterpretq_s16_u16(vmovl_u8(src8_low));
++                    const int16x8_t dst16_low = vreinterpretq_s16_u16(vmovl_u8(dst8_low));
++
++                    const int16x8_t src16_high = vreinterpretq_s16_u16(vmovl_u8(src8_high));
++                    const int16x8_t dst16_high = vreinterpretq_s16_u16(vmovl_u8(dst8_high));
++
++                    const int16x8_t result16_low = qvsource_over_s16(src16_low, dst16_low, half, full);
++                    const int16x8_t result16_high = qvsource_over_s16(src16_high, dst16_high, half, full);
++
++                    const int32x2_t result32_low = vreinterpret_s32_s8(vmovn_s16(result16_low));
++                    const int32x2_t result32_high = vreinterpret_s32_s8(vmovn_s16(result16_high));
++
++                    vst1q_s32((int32_t *)&dst[x], vcombine_s32(result32_low, result32_high));
++                }
++            }
++            for (; x<w; ++x) {
++                uint s = src[x];
++                if (s >= 0xff000000)
++                    dst[x] = s;
++                else if (s != 0)
++                    dst[x] = s + BYTE_MUL(dst[x], qAlpha(~s));
++            }
++            dst = (quint32 *)(((uchar *) dst) + dbpl);
++            src = (const quint32 *)(((const uchar *) src) + sbpl);
++        }
++    } else if (const_alpha != 0) {
++        const_alpha = (const_alpha * 255) >> 8;
++        int16x8_t const_alpha16 = vdupq_n_s16(const_alpha);
++        for (int y = 0; y < h; ++y) {
++            int x = 0;
++            for (; x < w-3; x += 4) {
++                if (src[x] | src[x+1] | src[x+2] | src[x+3]) {
++                    int32x4_t src32 = vld1q_s32((int32_t *)&src[x]);
++                    int32x4_t dst32 = vld1q_s32((int32_t *)&dst[x]);
++
++                    const uint8x16_t src8 = vreinterpretq_u8_s32(src32);
++                    const uint8x16_t dst8 = vreinterpretq_u8_s32(dst32);
++
++                    const uint8x8_t src8_low = vget_low_u8(src8);
++                    const uint8x8_t dst8_low = vget_low_u8(dst8);
++
++                    const uint8x8_t src8_high = vget_high_u8(src8);
++                    const uint8x8_t dst8_high = vget_high_u8(dst8);
++
++                    const int16x8_t src16_low = vreinterpretq_s16_u16(vmovl_u8(src8_low));
++                    const int16x8_t dst16_low = vreinterpretq_s16_u16(vmovl_u8(dst8_low));
++
++                    const int16x8_t src16_high = vreinterpretq_s16_u16(vmovl_u8(src8_high));
++                    const int16x8_t dst16_high = vreinterpretq_s16_u16(vmovl_u8(dst8_high));
++
++                    const int16x8_t srcalpha16_low = qvbyte_mul_s16(src16_low, const_alpha16, half);
++                    const int16x8_t srcalpha16_high = qvbyte_mul_s16(src16_high, const_alpha16, half);
++
++                    const int16x8_t result16_low = qvsource_over_s16(srcalpha16_low, dst16_low, half, full);
++                    const int16x8_t result16_high = qvsource_over_s16(srcalpha16_high, dst16_high, half, full);
++
++                    const int32x2_t result32_low = vreinterpret_s32_s8(vmovn_s16(result16_low));
++                    const int32x2_t result32_high = vreinterpret_s32_s8(vmovn_s16(result16_high));
++
++                    vst1q_s32((int32_t *)&dst[x], vcombine_s32(result32_low, result32_high));
++                }
++            }
++            for (; x<w; ++x) {
++                uint s = src[x];
++                if (s != 0) {
++                    s = BYTE_MUL(s, const_alpha);
++                    dst[x] = s + BYTE_MUL(dst[x], qAlpha(~s));
++                }
++            }
++            dst = (quint32 *)(((uchar *) dst) + dbpl);
++            src = (const quint32 *)(((const uchar *) src) + sbpl);
++        }
++    }
++}
++
++// qblendfunctions.cpp
++void qt_blend_rgb32_on_rgb32(uchar *destPixels, int dbpl,
++                             const uchar *srcPixels, int sbpl,
++                             int w, int h,
++                             int const_alpha);
++
++void qt_blend_rgb32_on_rgb32_neon(uchar *destPixels, int dbpl,
++                                  const uchar *srcPixels, int sbpl,
++                                  int w, int h,
++                                  int const_alpha)
++{
++    if (const_alpha != 256) {
++        if (const_alpha != 0) {
++            const uint *src = (const uint *) srcPixels;
++            uint *dst = (uint *) destPixels;
++            int16x8_t half = vdupq_n_s16(0x80);
++            const_alpha = (const_alpha * 255) >> 8;
++            int one_minus_const_alpha = 255 - const_alpha;
++            int16x8_t const_alpha16 = vdupq_n_s16(const_alpha);
++            int16x8_t one_minus_const_alpha16 = vdupq_n_s16(255 - const_alpha);
++            for (int y = 0; y < h; ++y) {
++                int x = 0;
++                for (; x < w-3; x += 4) {
++                    int32x4_t src32 = vld1q_s32((int32_t *)&src[x]);
++                    int32x4_t dst32 = vld1q_s32((int32_t *)&dst[x]);
++
++                    const uint8x16_t src8 = vreinterpretq_u8_s32(src32);
++                    const uint8x16_t dst8 = vreinterpretq_u8_s32(dst32);
++
++                    const uint8x8_t src8_low = vget_low_u8(src8);
++                    const uint8x8_t dst8_low = vget_low_u8(dst8);
++
++                    const uint8x8_t src8_high = vget_high_u8(src8);
++                    const uint8x8_t dst8_high = vget_high_u8(dst8);
++
++                    const int16x8_t src16_low = vreinterpretq_s16_u16(vmovl_u8(src8_low));
++                    const int16x8_t dst16_low = vreinterpretq_s16_u16(vmovl_u8(dst8_low));
++
++                    const int16x8_t src16_high = vreinterpretq_s16_u16(vmovl_u8(src8_high));
++                    const int16x8_t dst16_high = vreinterpretq_s16_u16(vmovl_u8(dst8_high));
++
++                    const int16x8_t result16_low = qvinterpolate_pixel_255(src16_low, const_alpha16, dst16_low, one_minus_const_alpha16, half);
++                    const int16x8_t result16_high = qvinterpolate_pixel_255(src16_high, const_alpha16, dst16_high, one_minus_const_alpha16, half);
++
++                    const int32x2_t result32_low = vreinterpret_s32_s8(vmovn_s16(result16_low));
++                    const int32x2_t result32_high = vreinterpret_s32_s8(vmovn_s16(result16_high));
++
++                    vst1q_s32((int32_t *)&dst[x], vcombine_s32(result32_low, result32_high));
++                }
++                for (; x<w; ++x) {
++                    uint s = src[x];
++                    s = BYTE_MUL(s, const_alpha);
++                    dst[x] = INTERPOLATE_PIXEL_255(src[x], const_alpha, dst[x], one_minus_const_alpha);
++                }
++                dst = (quint32 *)(((uchar *) dst) + dbpl);
++                src = (const quint32 *)(((const uchar *) src) + sbpl);
++            }
++        }
++    } else {
++        qt_blend_rgb32_on_rgb32(destPixels, dbpl, srcPixels, sbpl, w, h, const_alpha);
++    }
++}
++
++QT_END_NAMESPACE
++
++#endif // QT_HAVE_NEON
++
+diff --git a/src/gui/painting/qdrawhelper_neon_p.h b/src/gui/painting/qdrawhelper_neon_p.h
+new file mode 100644
+index 0000000..cb9a0d6
+--- /dev/null
++++ b/src/gui/painting/qdrawhelper_neon_p.h
+@@ -0,0 +1,76 @@
++/****************************************************************************
++**
++** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
++** All rights reserved.
++** Contact: Nokia Corporation (qt-info@nokia.com)
++**
++** This file is part of the QtGui module of the Qt Toolkit.
++**
++** $QT_BEGIN_LICENSE:LGPL$
++** No Commercial Usage
++** This file contains pre-release code and may not be distributed.
++** You may use this file in accordance with the terms and conditions
++** contained in the Technology Preview License Agreement accompanying
++** this package.
++**
++** GNU Lesser General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU Lesser
++** General Public License version 2.1 as published by the Free Software
++** Foundation and appearing in the file LICENSE.LGPL included in the
++** packaging of this file.  Please review the following information to
++** ensure the GNU Lesser General Public License version 2.1 requirements
++** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
++**
++** In addition, as a special exception, Nokia gives you certain additional
++** rights.  These rights are described in the Nokia Qt LGPL Exception
++** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
++**
++** If you have questions regarding the use of this file, please contact
++** Nokia at qt-info@nokia.com.
++**
++**
++**
++**
++**
++**
++**
++**
++** $QT_END_LICENSE$
++**
++****************************************************************************/
++
++#ifndef QDRAWHELPER_NEON_P_H
++#define QDRAWHELPER_NEON_P_H
++
++//
++//  W A R N I N G
++//  -------------
++//
++// This file is not part of the Qt API.  It exists purely as an
++// implementation detail.  This header file may change from version to
++// version without notice, or even be removed.
++//
++// We mean it.
++//
++
++#include <private/qdrawhelper_p.h>
++
++QT_BEGIN_NAMESPACE
++
++#ifdef QT_HAVE_NEON
++
++void qt_blend_argb32_on_argb32_neon(uchar *destPixels, int dbpl,
++                                            const uchar *srcPixels, int sbpl,
++                                            int w, int h,
++                                            int const_alpha);
++
++void qt_blend_rgb32_on_rgb32_neon(uchar *destPixels, int dbpl,
++                                  const uchar *srcPixels, int sbpl,
++                                  int w, int h,
++                                  int const_alpha);
++
++#endif // QT_HAVE_NEON
++
++QT_END_NAMESPACE
++
++#endif // QDRAWHELPER_NEON_P_H
+-- 
+1.6.5
+

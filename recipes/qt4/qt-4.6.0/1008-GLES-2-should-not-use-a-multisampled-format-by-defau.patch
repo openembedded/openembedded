@@ -1,0 +1,46 @@
+From c4d66e27ea69b84bf280209fc72239132924930d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Trond=20Kjern=C3=A5sen?= <trond@trolltech.com>
+Date: Wed, 9 Dec 2009 12:14:58 +0100
+Subject: [PATCH 1008/1244] GLES 2 should *not* use a multisampled format by default.
+
+This is a platform regression and should never have been there in the
+first place. Having this as the default format on embedded devices
+may drop the framerates with as much as 30% on selected HW.
+
+Reviewed-by: Tom Cooksey
+---
+ src/opengl/qgl.cpp |    3 +--
+ src/opengl/qgl_p.h |    3 ---
+ 2 files changed, 1 insertions(+), 5 deletions(-)
+
+diff --git a/src/opengl/qgl.cpp b/src/opengl/qgl.cpp
+index 25285b5..dcf8c00 100644
+--- a/src/opengl/qgl.cpp
++++ b/src/opengl/qgl.cpp
+@@ -397,8 +397,7 @@ static inline GLint qgluProject(GLdouble objx, GLdouble objy, GLdouble objz,
+     \i \link setDirectRendering() Direct rendering:\endlink Enabled.
+     \i \link setOverlay() Overlay:\endlink Disabled.
+     \i \link setPlane() Plane:\endlink 0 (i.e., normal plane).
+-    \i \link setSampleBuffers() Multisample buffers:\endlink Enabled on
+-       OpenGL/ES 2.0, disabled on other platforms.
++    \i \link setSampleBuffers() Multisample buffers:\endlink Disabled.
+     \endlist
+ */
+ 
+diff --git a/src/opengl/qgl_p.h b/src/opengl/qgl_p.h
+index 615fb60..8a0b31f 100644
+--- a/src/opengl/qgl_p.h
++++ b/src/opengl/qgl_p.h
+@@ -133,9 +133,6 @@ public:
+         : ref(1)
+     {
+         opts = QGL::DoubleBuffer | QGL::DepthBuffer | QGL::Rgba | QGL::DirectRendering | QGL::StencilBuffer;
+-#if defined(QT_OPENGL_ES_2)
+-        opts |= QGL::SampleBuffers;
+-#endif
+         pln = 0;
+         depthSize = accumSize = stencilSize = redSize = greenSize = blueSize = alphaSize = -1;
+         numSamples = -1;
+-- 
+1.6.5
+
