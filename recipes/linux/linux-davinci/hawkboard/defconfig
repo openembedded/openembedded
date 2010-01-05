@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.32-rc6
-# Thu Dec 17 14:57:56 2009
+# Tue Jan  5 14:21:28 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -672,7 +672,7 @@ CONFIG_SCSI_LOWLEVEL=y
 CONFIG_ATA=y
 # CONFIG_ATA_NONSTANDARD is not set
 CONFIG_ATA_VERBOSE_ERROR=y
-CONFIG_SATA_PMP=y
+# CONFIG_SATA_PMP is not set
 CONFIG_SATA_AHCI=y
 # CONFIG_ATA_SFF is not set
 # CONFIG_MD is not set
