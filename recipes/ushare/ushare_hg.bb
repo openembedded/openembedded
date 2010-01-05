@@ -5,7 +5,7 @@ DEPENDS = "gamin libdlna libupnp virtual/libiconv virtual/libintl"
 
 PV = "1.1a"
 PR = "r1"
-PR_append = "+hg${SRCPV}"
+PR_append = "+hg${NOTQUITESRCREV}"
 NOTQUITESRCREV = "2e40e513a4a0"
 
 SRC_URI = "hg://hg.geexbox.org;proto=http;module=ushare;rev=${NOTQUITESRCREV} \
