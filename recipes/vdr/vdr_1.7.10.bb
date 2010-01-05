@@ -2,7 +2,7 @@ DESCRIPTION = "Video Disk Recorder (VDR) is a digital sat-receiver program using
 AUTHOR = "Klaus Schmidinger"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://www.tvdr.de"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "fontconfig freetype gettext libcap jpeg virtual/libintl"
 
@@ -35,6 +35,6 @@ python populate_packages_prepend () {
         do_split_packages(d, plugindir, '^libvdr-(.*)\.so*', 'libvdr-%s', 'vdr plugin %s',  extra_depends='')
 }
 
-FILES_${PN} = "${bindir}/* /var/lib/vdr/conf/*"
+FILES_${PN} = "${bindir}/* /var/lib/vdr/conf/* ${sysconfdir}/*"
 FILES_${PN}-dbg += "${PLUGINDIR}/.debug/*"
 
