@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r32"
+PR = "r33"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -206,7 +206,6 @@ RDEPENDS_${PN} += "\
 		fsousaged \
 		fsodeviced \
 		fsonetworkd \
-		fsotimed \
 		opimd-utils \
 		omgps \
 		shr-launcher \
