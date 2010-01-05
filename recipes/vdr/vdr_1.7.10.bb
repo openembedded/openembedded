@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://www.tvdr.de"
 PR = "r0"
 
-DEPENDS = "fontconfig freetype gettext libcap jpeg"
+DEPENDS = "fontconfig freetype gettext libcap jpeg virtual/libintl"
 
 SRC_URI = "ftp://ftp.tvdr.de/vdr/Developer/${P}.tar.bz2 \
            file://fixpaths.patch;patch=1 \
