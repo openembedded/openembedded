@@ -70,8 +70,9 @@ fi
 for machine in ${ARCH_MACHINES}
 do
         BUILD_MACHINE=$machine
-        BUILD_CLEAN="qmake-native qmake2-native qt-x11-free iso-codes perl perl-native python python-native python-pygtk gnome-icon-theme"
+        BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free iso-codes perl perl-native python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS=" \
+                      opkg-native \
                       abiword \
                       aircrack-ng \
                       angstrom-task-gnome \

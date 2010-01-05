@@ -1,0 +1,34 @@
+From 108ab335537d20bc74aa9115d46cf91243223c4e Mon Sep 17 00:00:00 2001
+From: Rhys Weatherley <rhys.weatherley@nokia.com>
+Date: Fri, 4 Dec 2009 17:03:41 +1000
+Subject: [PATCH 0917/1244] Better check for EGL extension strings
+
+The previous code might have failed if the desired extension name
+was a prefix of another name: "EGL_foo" member of "EGL_foo_bar".
+This change introduces a more precise check.
+
+Task-number: QTBUG-6454
+Reviewed-by: Sarah Smith
+---
+ src/gui/egl/qegl.cpp |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/src/gui/egl/qegl.cpp b/src/gui/egl/qegl.cpp
+index cf28dc4..6ee4bfc 100644
+--- a/src/gui/egl/qegl.cpp
++++ b/src/gui/egl/qegl.cpp
+@@ -429,7 +429,10 @@ QString QEglContext::extensions()
+ 
+ bool QEglContext::hasExtension(const char* extensionName)
+ {
+-    return extensions().contains(QLatin1String(extensionName));
++    QList<QByteArray> extensions =
++        QByteArray(reinterpret_cast<const char *>
++            (eglQueryString(QEglContext::defaultDisplay(0), EGL_EXTENSIONS))).split(' ');
++    return extensions.contains(extensionName);
+ }
+ 
+ QEglContext *QEglContext::currentContext(QEgl::API api)
+-- 
+1.6.5
+

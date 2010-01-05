@@ -1,0 +1,83 @@
+From a8c3ed1dbe209488866e687d1a63c6143a04cfe0 Mon Sep 17 00:00:00 2001
+From: Tom Cooksey <thomas.cooksey@nokia.com>
+Date: Wed, 23 Dec 2009 10:38:56 +0100
+Subject: [PATCH 1205/1244] Fix text rendering on GL2 paint engine
+
+If you draw with a brush, then draw a pixmap, then draw with the
+same brush, the GL2 engine wouldn't update the fragment shader to
+use the brush. This is because it detected the brush hadn't changed
+and so didn't need updating. To fix this, we now set the current
+brush to noBrush when drawing an image/pixmap so the engine knows
+it needs to update the GL state for the brush.
+
+Reviewed-By: Kim
+---
+ .../gl2paintengineex/qpaintengineex_opengl2.cpp    |   15 ++++++++++-----
+ .../gl2paintengineex/qpaintengineex_opengl2_p.h    |    1 +
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/src/opengl/gl2paintengineex/qpaintengineex_opengl2.cpp b/src/opengl/gl2paintengineex/qpaintengineex_opengl2.cpp
+index f52ed92..32fa3dc 100644
+--- a/src/opengl/gl2paintengineex/qpaintengineex_opengl2.cpp
++++ b/src/opengl/gl2paintengineex/qpaintengineex_opengl2.cpp
+@@ -388,21 +388,24 @@ inline QColor qt_premultiplyColor(QColor c, GLfloat opacity)
+ 
+ void QGL2PaintEngineExPrivate::setBrush(const QBrush& brush)
+ {
+-    Q_ASSERT(brush.style() != Qt::NoBrush);
+-
+     if (qbrush_fast_equals(currentBrush, brush))
+         return;
+ 
++    const Qt::BrushStyle newStyle = qbrush_style(brush);
++    Q_ASSERT(newStyle != Qt::NoBrush);
++
+     currentBrush = brush;
++    brushUniformsDirty = true; // All brushes have at least one uniform
++
++    if (newStyle > Qt::SolidPattern)
++        brushTextureDirty = true;
+ 
+-    brushTextureDirty = true;
+-    brushUniformsDirty = true;
+     if (currentBrush.style() == Qt::TexturePattern
+         && qHasPixmapTexture(brush) && brush.texture().isQBitmap())
+     {
+         shaderManager->setSrcPixelType(QGLEngineShaderManager::TextureSrcWithPattern);
+     } else {
+-        shaderManager->setSrcPixelType(currentBrush.style());
++        shaderManager->setSrcPixelType(newStyle);
+     }
+     shaderManager->optimiseForBrushTransform(currentBrush.transform());
+ }
+@@ -700,6 +703,7 @@ static inline void setCoords(GLfloat *coords, const QGLRect &rect)
+ void QGL2PaintEngineExPrivate::drawTexture(const QGLRect& dest, const QGLRect& src, const QSize &textureSize, bool opaque, bool pattern)
+ {
+     // Setup for texture drawing
++    currentBrush = noBrush;
+     shaderManager->setSrcPixelType(pattern ? QGLEngineShaderManager::PatternSrc : QGLEngineShaderManager::ImageSrc);
+     if (prepareForDraw(opaque))
+         shaderManager->currentProgram()->setUniformValue(location(QGLEngineShaderManager::ImageTexture), QT_IMAGE_TEXTURE_UNIT);
+@@ -1782,6 +1786,7 @@ void QGL2PaintEngineEx::drawPixmaps(const QDrawPixmaps::Data *drawingData, int d
+                            state()->renderHints & QPainter::SmoothPixmapTransform, texture->id);
+ 
+     // Setup for texture drawing
++    d->currentBrush = d->noBrush;
+     d->shaderManager->setSrcPixelType(isBitmap ? QGLEngineShaderManager::PatternSrc : QGLEngineShaderManager::ImageSrc);
+     if (d->prepareForDraw(isOpaque))
+         d->shaderManager->currentProgram()->setUniformValue(d->location(QGLEngineShaderManager::ImageTexture), QT_IMAGE_TEXTURE_UNIT);
+diff --git a/src/opengl/gl2paintengineex/qpaintengineex_opengl2_p.h b/src/opengl/gl2paintengineex/qpaintengineex_opengl2_p.h
+index f1ec6e6..8de4a82 100644
+--- a/src/opengl/gl2paintengineex/qpaintengineex_opengl2_p.h
++++ b/src/opengl/gl2paintengineex/qpaintengineex_opengl2_p.h
+@@ -244,6 +244,7 @@ public:
+     uint maxClip;
+ 
+     QBrush currentBrush; // May not be the state's brush!
++    const QBrush noBrush;
+ 
+     GLfloat     inverseScale;
+ 
+-- 
+1.6.5
+

@@ -1,0 +1,146 @@
+From 60be72310c0f9469b3201b250b257473184ccf2a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Samuel=20R=C3=B8dal?= <sroedal@trolltech.com>
+Date: Thu, 3 Dec 2009 11:53:31 +0100
+Subject: [PATCH 0943/1244] Fixed OpenGL graphicssystem issues for OpenGL ES 2.0 platforms.
+
+The format and internal_format parameters to glTexImage2D need to always
+match on OpenGL ES 2.0.
+
+Reviewed-by: Tom Cooksey
+---
+ src/opengl/qgl_p.h               |    3 ++-
+ src/opengl/qpixmapdata_gl.cpp    |   38 ++++++++++++++++++++++++++++++--------
+ src/opengl/qwindowsurface_gl.cpp |    9 ++++-----
+ 3 files changed, 36 insertions(+), 14 deletions(-)
+
+diff --git a/src/opengl/qgl_p.h b/src/opengl/qgl_p.h
+index ab72c9c..b2407ba 100644
+--- a/src/opengl/qgl_p.h
++++ b/src/opengl/qgl_p.h
+@@ -518,7 +518,8 @@ bool qt_gl_preferGL2Engine();
+ 
+ inline GLenum qt_gl_preferredTextureFormat()
+ {
+-    return QSysInfo::ByteOrder == QSysInfo::BigEndian ? GL_RGBA : GL_BGRA;
++    return (QGLExtensions::glExtensions & QGLExtensions::BGRATextureFormat) && QSysInfo::ByteOrder == QSysInfo::LittleEndian
++        ? GL_BGRA : GL_RGBA;
+ }
+ 
+ inline GLenum qt_gl_preferredTextureTarget()
+diff --git a/src/opengl/qpixmapdata_gl.cpp b/src/opengl/qpixmapdata_gl.cpp
+index fb55097..ab17789 100644
+--- a/src/opengl/qpixmapdata_gl.cpp
++++ b/src/opengl/qpixmapdata_gl.cpp
+@@ -321,25 +321,47 @@ void QGLPixmapData::ensureCreated() const
+     QGLShareContextScope ctx(qt_gl_share_widget()->context());
+     m_ctx = ctx;
+ 
+-    const GLenum format = qt_gl_preferredTextureFormat();
++    const GLenum internal_format = m_hasAlpha ? GL_RGBA : GL_RGB;
++#ifdef QT_OPENGL_ES_2
++    const GLenum external_format = internal_format;
++#else
++    const GLenum external_format = qt_gl_preferredTextureFormat();
++#endif
+     const GLenum target = GL_TEXTURE_2D;
+ 
+     if (!m_texture.id) {
+         glGenTextures(1, &m_texture.id);
+         glBindTexture(target, m_texture.id);
+-        GLenum format = m_hasAlpha ? GL_RGBA : GL_RGB;
+-        glTexImage2D(target, 0, format, w, h, 0,
+-                GL_RGBA, GL_UNSIGNED_BYTE, 0);
++        glTexImage2D(target, 0, internal_format, w, h, 0, external_format, GL_UNSIGNED_BYTE, 0);
+         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+     }
+ 
+     if (!m_source.isNull()) {
+-        const QImage tx = ctx->d_func()->convertToGLFormat(m_source, true, format);
++        if (external_format == GL_RGB) {
++            QImage tx = m_source.convertToFormat(QImage::Format_RGB32);
++
++            QVector<uchar> pixelData(w * h * 3);
++            uchar *p = &pixelData[0];
++            QRgb *src = (QRgb *)tx.bits();
++
++            for (int i = 0; i < w * h; ++i) {
++                *p++ = qRed(*src);
++                *p++ = qGreen(*src);
++                *p++ = qBlue(*src);
++                ++src;
++            }
+ 
+-        glBindTexture(target, m_texture.id);
+-        glTexSubImage2D(target, 0, 0, 0, w, h, format,
+-                        GL_UNSIGNED_BYTE, tx.bits());
++            glBindTexture(target, m_texture.id);
++            glTexSubImage2D(target, 0, 0, 0, w, h, external_format,
++                            GL_UNSIGNED_BYTE, &pixelData[0]);
++        } else {
++            const QImage tx = ctx->d_func()->convertToGLFormat(m_source, true, external_format);
++
++            glBindTexture(target, m_texture.id);
++            glTexSubImage2D(target, 0, 0, 0, w, h, external_format,
++                            GL_UNSIGNED_BYTE, tx.bits());
++        }
+ 
+         if (useFramebufferObjects())
+             m_source = QImage();
+diff --git a/src/opengl/qwindowsurface_gl.cpp b/src/opengl/qwindowsurface_gl.cpp
+index e353f5d..7194f9d 100644
+--- a/src/opengl/qwindowsurface_gl.cpp
++++ b/src/opengl/qwindowsurface_gl.cpp
+@@ -493,7 +493,6 @@ void QGLWindowSurface::flush(QWidget *widget, const QRegion &rgn, const QPoint &
+             }
+ #endif
+             d_ptr->paintedRegion = QRegion();
+-
+             context()->swapBuffers();
+         } else {
+             glFlush();
+@@ -688,11 +687,13 @@ void QGLWindowSurface::updateGeometry() {
+     d_ptr->size = rect.size();
+ 
+     if (d_ptr->ctx) {
++#ifndef QT_OPENGL_ES_2
+         if (d_ptr->destructive_swap_buffers) {
+             glBindTexture(target, d_ptr->tex_id);
+             glTexImage2D(target, 0, GL_RGBA, rect.width(), rect.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+             glBindTexture(target, 0);
+         }
++#endif
+         return;
+     }
+ 
+@@ -756,11 +757,7 @@ void QGLWindowSurface::updateGeometry() {
+ 
+             glMatrixMode(GL_PROJECTION);
+             glLoadIdentity();
+-#ifndef QT_OPENGL_ES
+             glOrtho(0, d_ptr->pb->width(), d_ptr->pb->height(), 0, -999999, 999999);
+-#else
+-            glOrthof(0, d_ptr->pb->width(), d_ptr->pb->height(), 0, -999999, 999999);
+-#endif
+ 
+             d_ptr->pb->d_ptr->qctx->d_func()->internal_context = true;
+             return;
+@@ -774,6 +771,7 @@ void QGLWindowSurface::updateGeometry() {
+ 
+     ctx->makeCurrent();
+ 
++#ifndef QT_OPENGL_ES_2
+     if (d_ptr->destructive_swap_buffers) {
+         glGenTextures(1, &d_ptr->tex_id);
+         glBindTexture(target, d_ptr->tex_id);
+@@ -783,6 +781,7 @@ void QGLWindowSurface::updateGeometry() {
+         glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+         glBindTexture(target, 0);
+     }
++#endif
+ 
+     qDebug() << "QGLWindowSurface: Using plain widget as window surface" << this;;
+     d_ptr->ctx = ctx;
+-- 
+1.6.5
+

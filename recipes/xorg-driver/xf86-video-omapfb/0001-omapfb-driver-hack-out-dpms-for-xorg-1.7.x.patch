@@ -1,14 +1,14 @@
-From a0c063716101ec93dcad30028ba41489926050c9 Mon Sep 17 00:00:00 2001
+From 8dba6751950f65292c5f8a562e282045e9fe0803 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 22 Dec 2009 21:35:00 +0100
 Subject: [PATCH 1/2] omapfb-driver: hack out dpms for xorg 1.7.x
 
 ---
- src/omapfb-driver.c |   39 ---------------------------------------
- 1 files changed, 0 insertions(+), 39 deletions(-)
+ src/omapfb-driver.c |   41 -----------------------------------------
+ 1 files changed, 0 insertions(+), 41 deletions(-)
 
 diff --git a/src/omapfb-driver.c b/src/omapfb-driver.c
-index a9d5fbc..36a0d53 100644
+index a9d5fbc..ffa0df4 100644
 --- a/src/omapfb-driver.c
 +++ b/src/omapfb-driver.c
 @@ -41,9 +41,6 @@
@@ -21,7 +21,15 @@ index a9d5fbc..36a0d53 100644
  #include <linux/fb.h>
  
  /* TODO: we'd like this to come from kernel headers, but that's not a good
-@@ -580,9 +577,6 @@ OMAPFBScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
+@@ -502,7 +499,6 @@ OMAPFBScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
+ 
+ 	/* Load the fallback module */
+ 	xf86LoadSubModule(pScrn, "fb");
+-	xf86LoaderReqSymLists(fbSymbols, NULL);
+ 
+ 	/* Initialize fallbacks for the screen */
+ 	if (!fbScreenInit(pScreen, ofb->fb, pScrn->virtualX,
+@@ -580,13 +576,9 @@ OMAPFBScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
  	/* NO-OP currently */
  	pScreen->SaveScreen = OMAPFBSaveScreen;
  	
@@ -31,7 +39,11 @@ index a9d5fbc..36a0d53 100644
  #ifdef USE_EXA
  	/* EXA init */
  	xf86LoadSubModule(pScrn, "exa");
-@@ -723,38 +717,6 @@ static Bool OMAPFBSwitchMode(int scrnIndex, DisplayModePtr mode, int flags)
+-	xf86LoaderReqSymLists(exaSymbols, NULL);
+ 
+ 	/* TODO: This should depend on the AccelMethod option */
+ 	ofb->exa = exaDriverAlloc();
+@@ -723,38 +715,6 @@ static Bool OMAPFBSwitchMode(int scrnIndex, DisplayModePtr mode, int flags)
  	return TRUE;
  }
  
@@ -70,7 +82,7 @@ index a9d5fbc..36a0d53 100644
  void
  OMAPFBPrintCapabilities(ScrnInfoPtr pScrn,
                          struct omapfb_caps *caps,
-@@ -879,7 +841,6 @@ OMAPFBSetup(pointer module, pointer opts, int *errmaj, int *errmin)
+@@ -879,7 +839,6 @@ OMAPFBSetup(pointer module, pointer opts, int *errmaj, int *errmin)
  	if (!setupDone) {
  		setupDone = TRUE;
  		xf86AddDriver(&OMAPFB, module, HaveDriverFuncs);

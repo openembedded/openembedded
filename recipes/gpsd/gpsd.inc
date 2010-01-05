@@ -69,7 +69,8 @@ PACKAGES =+ "libgps python-pygps gpsd-conf gpsd-gpsctl gps-utils"
 
 PACKAGE_ARCH_gpsd-conf = "${MACHINE_ARCH}"
 
-RDEPENDS_${PN} = "gpsd-conf gpsd-gpsctl"
+RDEPENDS_${PN} = "gpsd-gpsctl"
+RRECOMMENDS_${PN} = "gpsd-conf"
 
 FILES_libgps = "${libdir}/*.so.*"
 FILES_gpsd-conf = "${sysconfdir}"

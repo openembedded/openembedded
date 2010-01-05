@@ -23,7 +23,6 @@ RDEPENDS_${PN} = "\
   fsotdld \
   fsomusicd \
   fsonetworkd \
-  fsotimed \
   fsousaged \
   \
   fso-alsa-data \

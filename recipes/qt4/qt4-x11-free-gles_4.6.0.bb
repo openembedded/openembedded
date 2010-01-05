@@ -1,5 +1,5 @@
 require qt4-x11-free.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 QT_GLFLAGS = "-opengl es2 -openvg"
 
