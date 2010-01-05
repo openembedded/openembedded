@@ -11,15 +11,6 @@ diff --git a/arch/arm/configs/gta02_drm_defconfig b/arch/arm/configs/gta02_drm_d
 index e17ddc3..7506963 100644
 --- a/arch/arm/configs/gta02_drm_defconfig
 +++ b/arch/arm/configs/gta02_drm_defconfig
-@@ -1,7 +1,7 @@
- #
- # Automatically generated make config: don't edit
- # Linux kernel version: 2.6.29-rc3
--# Sun Nov  8 10:53:31 2009
-+# Sun Nov  8 10:57:36 2009
- #
- CONFIG_ARM=y
- CONFIG_HAVE_PWM=y
 @@ -806,7 +806,30 @@ CONFIG_MTD_NAND_S3C2410_HWECC=y
  #
  # UBI - Unsorted block images
@@ -34,9 +25,9 @@ index e17ddc3..7506963 100644
 +# UBI debugging options
 +#
 +CONFIG_MTD_UBI_DEBUG=y
-+CONFIG_MTD_UBI_DEBUG_MSG=y
++# CONFIG_MTD_UBI_DEBUG_MSG is not set
 +# CONFIG_MTD_UBI_DEBUG_PARANOID is not set
-+# CONFIG_MTD_UBI_DEBUG_DISABLE_BGT is not set
++CONFIG_MTD_UBI_DEBUG_DISABLE_BGT=y
 +# CONFIG_MTD_UBI_DEBUG_USERSPACE_IO is not set
 +# CONFIG_MTD_UBI_DEBUG_EMULATE_BITFLIPS is not set
 +# CONFIG_MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES is not set
@@ -45,10 +36,10 @@ index e17ddc3..7506963 100644
 +#
 +# Additional UBI debugging messages
 +#
-+CONFIG_MTD_UBI_DEBUG_MSG_BLD=y
-+CONFIG_MTD_UBI_DEBUG_MSG_EBA=y
-+CONFIG_MTD_UBI_DEBUG_MSG_WL=y
-+CONFIG_MTD_UBI_DEBUG_MSG_IO=y
++# CONFIG_MTD_UBI_DEBUG_MSG_BLD is not set
++# CONFIG_MTD_UBI_DEBUG_MSG_EBA is not set
++# CONFIG_MTD_UBI_DEBUG_MSG_WL is not set
++# CONFIG_MTD_UBI_DEBUG_MSG_IO is not set
  # CONFIG_PARPORT is not set
  CONFIG_BLK_DEV=y
  # CONFIG_BLK_DEV_COW_COMMON is not set
