@@ -1,0 +1,116 @@
+From a40a026527e718547f32e134e7c27a561b1eba47 Mon Sep 17 00:00:00 2001
+From: Will Thompson <will.thompson@collabora.co.uk>
+Date: Wed, 29 Jul 2009 20:03:40 +0100
+Subject: [PATCH 5/6] Extract rule_list_remove_by_connection
+
+---
+ bus/signals.c |   82 +++++++++++++++++++++++++++++++-------------------------
+ 1 files changed, 45 insertions(+), 37 deletions(-)
+
+diff --git a/bus/signals.c b/bus/signals.c
+index 3cf846e..c6f122b 100644
+--- a/bus/signals.c
++++ b/bus/signals.c
+@@ -1285,11 +1285,54 @@ bus_matchmaker_remove_rule_by_value (BusMatchmaker   *matchmaker,
+   return TRUE;
+ }
+ 
++static void
++rule_list_remove_by_connection (DBusList       **rules,
++                                DBusConnection  *disconnected)
++{
++  DBusList *link;
++
++  link = _dbus_list_get_first_link (rules);
++  while (link != NULL)
++    {
++      BusMatchRule *rule;
++      DBusList *next;
++
++      rule = link->data;
++      next = _dbus_list_get_next_link (rules, link);
++
++      if (rule->matches_go_to == disconnected)
++        {
++          bus_matchmaker_remove_rule_link (rules, link);
++        }
++      else if (((rule->flags & BUS_MATCH_SENDER) && *rule->sender == ':') ||
++               ((rule->flags & BUS_MATCH_DESTINATION) && *rule->destination == ':'))
++        {
++          /* The rule matches to/from a base service, see if it's the
++           * one being disconnected, since we know this service name
++           * will never be recycled.
++           */
++          const char *name;
++
++          name = bus_connection_get_name (disconnected);
++          _dbus_assert (name != NULL); /* because we're an active connection */
++
++          if (((rule->flags & BUS_MATCH_SENDER) &&
++               strcmp (rule->sender, name) == 0) ||
++              ((rule->flags & BUS_MATCH_DESTINATION) &&
++               strcmp (rule->destination, name) == 0))
++            {
++              bus_matchmaker_remove_rule_link (rules, link);
++            }
++        }
++
++      link = next;
++    }
++}
++
+ void
+ bus_matchmaker_disconnected (BusMatchmaker   *matchmaker,
+                              DBusConnection  *disconnected)
+ {
+-  DBusList *link;
+   int i;
+ 
+   /* FIXME
+@@ -1307,42 +1350,7 @@ bus_matchmaker_disconnected (BusMatchmaker   *matchmaker,
+     {
+       DBusList **rules = bus_matchmaker_get_rules (matchmaker, i);
+ 
+-      link = _dbus_list_get_first_link (rules);
+-      while (link != NULL)
+-        {
+-          BusMatchRule *rule;
+-          DBusList *next;
+-
+-          rule = link->data;
+-          next = _dbus_list_get_next_link (rules, link);
+-
+-          if (rule->matches_go_to == disconnected)
+-            {
+-              bus_matchmaker_remove_rule_link (rules, link);
+-            }
+-          else if (((rule->flags & BUS_MATCH_SENDER) && *rule->sender == ':') ||
+-                   ((rule->flags & BUS_MATCH_DESTINATION) && *rule->destination == ':'))
+-            {
+-              /* The rule matches to/from a base service, see if it's the
+-               * one being disconnected, since we know this service name
+-               * will never be recycled.
+-               */
+-              const char *name;
+-
+-              name = bus_connection_get_name (disconnected);
+-              _dbus_assert (name != NULL); /* because we're an active connection */
+-
+-              if (((rule->flags & BUS_MATCH_SENDER) &&
+-                   strcmp (rule->sender, name) == 0) ||
+-                  ((rule->flags & BUS_MATCH_DESTINATION) &&
+-                   strcmp (rule->destination, name) == 0))
+-                {
+-                  bus_matchmaker_remove_rule_link (rules, link);
+-                }
+-            }
+-
+-          link = next;
+-        }
++      rule_list_remove_by_connection (rules, disconnected);
+     }
+ }
+ 
+-- 
+1.6.3.3
+
