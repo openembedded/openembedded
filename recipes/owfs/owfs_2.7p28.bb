@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS += "fuse virtual/libusb0"
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/owfs/owfs-${PV}.tar.gz \
            file://owhttpd \
