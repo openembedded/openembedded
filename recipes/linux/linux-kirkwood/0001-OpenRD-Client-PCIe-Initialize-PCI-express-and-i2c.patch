@@ -1,0 +1,36 @@
+From 266f0b9c7aeb95c7ad9b212b9d42a23435bbfcf6 Mon Sep 17 00:00:00 2001
+From: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
+Date: Tue, 1 Dec 2009 17:01:51 +0530
+Subject: [PATCH 1/2] OpenRD-Client: PCIe: Initialize PCI express and i2c
+
+Signed-off-by: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
+---
+ arch/arm/mach-kirkwood/openrd_client-setup.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-kirkwood/openrd_client-setup.c b/arch/arm/mach-kirkwood/openrd_client-setup.c
+index a55a1bc..63b4a2c 100644
+--- a/arch/arm/mach-kirkwood/openrd_client-setup.c
++++ b/arch/arm/mach-kirkwood/openrd_client-setup.c
+@@ -78,7 +78,18 @@ static void __init openrd_client_init(void)
+ 
+ 	kirkwood_sata_init(&openrd_client_sata_data);
+ 	kirkwood_sdio_init(&openrd_client_mvsdio_data);
++
++	kirkwood_i2c_init();
++}
++
++static int __init openrd_client_pcie_init(void)
++{
++	if (machine_is_openrd_client())
++		kirkwood_pcie_init();
++
++	return 0;
+ }
++subsys_initcall(openrd_client_pcie_init);
+ 
+ MACHINE_START(OPENRD_CLIENT, "Marvell OpenRD Client Board")
+ 	/* Maintainer: Dhaval Vasa <dhaval.vasa@einfochips.com> */
+-- 
+1.6.5.2
+
