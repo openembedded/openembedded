@@ -17,7 +17,7 @@ PREFERRED_VERSION_classpath-native = "0.98"
 PREFERRED_VERSION_linux-libc-headers = "2.6.31"
 
 # override EFL_SRCREV from sane-srcrevs.inc
-EFL_SRCREV ?= "44424"
+# EFL_SRCREV ?= "44424"
 
 # specifically set an openssh version
 # NOTE: whenever changing the version here make sure

@@ -10,9 +10,9 @@ RDEPENDS_${PN} += " \
                     lighttpd-module-staticfile \
                   "
 
-INC_PR = "r6"
+INC_PR = "r7"
 
-SRC_URI = "http://www.lighttpd.net/download/lighttpd-${PV}.tar.gz \
+SRC_URI = "http://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-${PV}.tar.gz \
 	   file://index.html \
 	   file://lighttpd.conf \
 	   file://lighttpd \

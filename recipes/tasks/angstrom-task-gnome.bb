@@ -2,6 +2,9 @@ DESCRIPTION = "Task for a GNOME based image"
 
 inherit task
 
+# Most of these tasks are arch independant
+PACKAGE_ARCH = "all"
+
 XSERVER ?= "xserver-xorg \
            xf86-input-evdev \
            xf86-input-mouse \
@@ -9,9 +12,9 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r2"
+PR = "r3"
 
-PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base"
+PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
 DEPENDS = "gst-plugins-ugly"
 
@@ -36,6 +39,7 @@ RDEPENDS_task-gnome-apps = " \
   x11vnc angstrom-x11vnc-xinit \
   xmms \
   xterm \
+  eog \
  "
 
 RDEPENDS_task-gnome-fonts = " \
@@ -168,7 +172,6 @@ RDEPENDS_task-gnome-totem = " \
  "
 
 RDEPENDS_task-gnome-xserver-base = " \
-  ${XSERVER} \
   dbus-x11 \
   desktop-file-utils \
   iso-codes \
@@ -186,8 +189,12 @@ RDEPENDS_task-gnome-xserver-base = " \
   xset \
   xvinfo \
  "
-PACKAGE_ARCH_task-gnome-xserver-base = "${MACHINE_ARCH}"
 
+task-gnome-xserver = " \
+  ${XSERVER} \
+"
+
+PACKAGE_ARCH_task-gnome-xserver = "${MACHINE_ARCH}"
 
 RDEPENDS_${PN} = " \
   task-gnome-apps \
@@ -200,5 +207,9 @@ RDEPENDS_${PN} = " \
   task-gnome-themes \
   task-gnome-totem \
   task-gnome-xserver-base \
+"
+
+RRECOMMENDS_${PN} = " \
+   task-gnome-xserver \
 "
 

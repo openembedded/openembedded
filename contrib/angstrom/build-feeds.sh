@@ -119,6 +119,7 @@ do
                       e-wm \
                       ekiga \
                       empathy \ 
+                      eog \
                       epdfview \
                       epiphany \
                       evince \
