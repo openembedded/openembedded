@@ -9,7 +9,7 @@ INC_PR = "r11"
 
 S = "${WORKDIR}/oprofile-${PV}"
 SRC_URI = "\
-	${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
+	${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz;name=tarball \
 	file://acinclude.m4 \
 	"
 
