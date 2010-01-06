@@ -10,23 +10,10 @@ INC_PR = "r6"
 
 PARALLEL_MAKE = ""
 
-export COPT_FLAGS = "${CFLAGS}"
-export KERNEL_DIR = "${STAGING_INCDIR}"
-
-inherit autotools
-
-#do_compile () {
-#	oe_runmake DESTDIR=${D} NO_SHARED_LIBS=1
-#}
-
-#do_install () {
-#	oe_runmake DESTDIR=${D} install NO_SHARED_LIBS=1
-#}
-
-PACKAGES =+ "${PN}-utils"
-FILES_${PN}-utils = "${sbindir}/iptables-save ${sbindir}/iptables-restore"
+CFLAGS += "-Du32=__u32"
+RPROVIDES_${PN} += "iptables-utils"
+FILES_${PN}-dbg += "${libexecdir}/xtables/.debug"
 FILES_${PN}-doc += "${mandir}"
-FILES_${PN}-dbg += "${libexecdir}/xtables/.debug/*"
 
 RRECOMMENDS = "\
   kernel-module-ip-tables \
