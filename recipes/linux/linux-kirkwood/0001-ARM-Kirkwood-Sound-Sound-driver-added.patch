@@ -1,4 +1,4 @@
-From f2830dc0470513c5daa22360c63129bf9f578e59 Mon Sep 17 00:00:00 2001
+From 89aa6dd15306a1ce11da0f2cb67bda74999e178e Mon Sep 17 00:00:00 2001
 From: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
 Date: Tue, 24 Nov 2009 21:49:24 +0530
 Subject: [PATCH] ARM: Kirkwood: Sound: Sound driver added
@@ -11,19 +11,19 @@ Signed-off-by: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
  arch/arm/mach-kirkwood/common.c                |   39 +
  arch/arm/mach-kirkwood/common.h                |    2 +
  arch/arm/mach-kirkwood/include/mach/kirkwood.h |    3 +
- arch/arm/mach-kirkwood/openrd_client-setup.c   |   24 +
+ arch/arm/mach-kirkwood/openrd_client-setup.c   |   27 +
  include/linux/mv88fx_audio.h                   |  111 ++
  sound/soc/Kconfig                              |    1 +
  sound/soc/Makefile                             |    1 +
- sound/soc/kirkwood/Kconfig                     |   37 +
+ sound/soc/kirkwood/Kconfig                     |   29 +
  sound/soc/kirkwood/Makefile                    |    7 +
- sound/soc/kirkwood/cs42l51.c                   |  303 +++++
- sound/soc/kirkwood/cs42l51.h                   |   54 +
+ sound/soc/kirkwood/cs42l51.c                   |  304 +++++
+ sound/soc/kirkwood/cs42l51.h                   |   59 +
  sound/soc/kirkwood/kirkwood_audio_hal.c        |  821 +++++++++++++
  sound/soc/kirkwood/kirkwood_audio_hal.h        |  109 ++
  sound/soc/kirkwood/kirkwood_audio_regs.h       |  310 +++++
- sound/soc/kirkwood/kirkwood_pcm.c              | 1495 ++++++++++++++++++++++++
- 15 files changed, 3317 insertions(+), 0 deletions(-)
+ sound/soc/kirkwood/kirkwood_pcm.c              | 1505 ++++++++++++++++++++++++
+ 15 files changed, 3328 insertions(+), 0 deletions(-)
  create mode 100644 include/linux/mv88fx_audio.h
  create mode 100644 sound/soc/kirkwood/Kconfig
  create mode 100644 sound/soc/kirkwood/Makefile
@@ -35,7 +35,7 @@ Signed-off-by: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
  create mode 100644 sound/soc/kirkwood/kirkwood_pcm.c
 
 diff --git a/arch/arm/mach-kirkwood/common.c b/arch/arm/mach-kirkwood/common.c
-index 242dd07..606514f 100644
+index 0acb61f..4d66c06 100644
 --- a/arch/arm/mach-kirkwood/common.c
 +++ b/arch/arm/mach-kirkwood/common.c
 @@ -15,6 +15,7 @@
@@ -46,7 +46,7 @@ index 242dd07..606514f 100644
  #include <linux/ata_platform.h>
  #include <linux/mtd/nand.h>
  #include <linux/spi/orion_spi.h>
-@@ -977,3 +978,41 @@ static int __init kirkwood_clock_gate(void)
+@@ -969,3 +970,41 @@ static int __init kirkwood_clock_gate(void)
  	return 0;
  }
  late_initcall(kirkwood_clock_gate);
@@ -109,10 +109,10 @@ index d7de434..b79a25c 100644
  extern int kirkwood_tclk;
  extern struct sys_timer kirkwood_timer;
 diff --git a/arch/arm/mach-kirkwood/include/mach/kirkwood.h b/arch/arm/mach-kirkwood/include/mach/kirkwood.h
-index a15cf0e..838151d 100644
+index 54c1327..90ced65 100644
 --- a/arch/arm/mach-kirkwood/include/mach/kirkwood.h
 +++ b/arch/arm/mach-kirkwood/include/mach/kirkwood.h
-@@ -96,6 +96,9 @@
+@@ -95,6 +95,9 @@
  
  #define SDIO_PHYS_BASE		(KIRKWOOD_REGS_PHYS_BASE | 0x90000)
  
@@ -123,10 +123,10 @@ index a15cf0e..838151d 100644
   * Supported devices and revisions.
   */
 diff --git a/arch/arm/mach-kirkwood/openrd_client-setup.c b/arch/arm/mach-kirkwood/openrd_client-setup.c
-index 63b4a2c..2ed080b 100644
+index a55a1bc..72acc22 100644
 --- a/arch/arm/mach-kirkwood/openrd_client-setup.c
 +++ b/arch/arm/mach-kirkwood/openrd_client-setup.c
-@@ -14,6 +14,7 @@
+@@ -14,11 +14,13 @@
  #include <linux/mtd/partitions.h>
  #include <linux/ata_platform.h>
  #include <linux/mv643xx_eth.h>
@@ -134,11 +134,16 @@ index 63b4a2c..2ed080b 100644
  #include <linux/gpio.h>
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
-@@ -59,6 +60,23 @@ static unsigned int openrd_client_mpp_config[] __initdata = {
+ #include <mach/kirkwood.h>
+ #include <plat/mvsdio.h>
++#include <linux/autoconf.h>
+ #include "common.h"
+ #include "mpp.h"
+ 
+@@ -59,6 +61,21 @@ static unsigned int openrd_client_mpp_config[] __initdata = {
  	0
  };
  
-+#if defined(CONFIG_SND_MV88FX_SOC) || defined(CONFIG_SND_MV88FX_SOC_MODULE)
 +static struct mv88fx_snd_platform_data openrd_client_audio_data = {
 +	.i2c_bus_no  = 0,
 +	.i2c_address = 0x4A,
@@ -153,15 +158,18 @@ index 63b4a2c..2ed080b 100644
 +	.dram        = &kirkwood_mbus_dram_info,
 +	.base_offset = AUDIO_PHYS_BASE - KIRKWOOD_REGS_PHYS_BASE,
 +};
-+#endif
 +
  static void __init openrd_client_init(void)
  {
  	/*
-@@ -80,6 +98,12 @@ static void __init openrd_client_init(void)
- 	kirkwood_sdio_init(&openrd_client_mvsdio_data);
+@@ -78,6 +95,16 @@ static void __init openrd_client_init(void)
  
- 	kirkwood_i2c_init();
+ 	kirkwood_sata_init(&openrd_client_sata_data);
+ 	kirkwood_sdio_init(&openrd_client_mvsdio_data);
++
++	/* initialize i2c */
++	kirkwood_i2c_init();
++
 +#if defined(CONFIG_SND_MV88FX_SOC) || defined(CONFIG_SND_MV88FX_SOC_MODULE)
 +	/* If built as a part of kernel or as a module
 +	 * initialize audio */
@@ -170,7 +178,7 @@ index 63b4a2c..2ed080b 100644
 +#endif
  }
  
- static int __init openrd_client_pcie_init(void)
+ MACHINE_START(OPENRD_CLIENT, "Marvell OpenRD Client Board")
 diff --git a/include/linux/mv88fx_audio.h b/include/linux/mv88fx_audio.h
 new file mode 100644
 index 0000000..6d36a3f
@@ -301,7 +309,7 @@ index b1749bc..9fc88d8 100644
  # Supported codecs
  source "sound/soc/codecs/Kconfig"
 diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 1470141..6c39266 100644
+index 0c5eac0..664850d 100644
 --- a/sound/soc/Makefile
 +++ b/sound/soc/Makefile
 @@ -14,3 +14,4 @@ obj-$(CONFIG_SND_SOC)	+= s3c24xx/
@@ -311,16 +319,17 @@ index 1470141..6c39266 100644
 +obj-$(CONFIG_SND_SOC)	+= kirkwood/
 diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
 new file mode 100644
-index 0000000..df4d527
+index 0000000..d6a7e2f
 --- /dev/null
 +++ b/sound/soc/kirkwood/Kconfig
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,29 @@
 +config SND_MV88FX_SOC
 +	tristate "SoC Audio for the Marvell 88FX chip"
 +	depends on ARCH_KIRKWOOD
 +	help
-+	  Say Y or M if you want to add audio support for Marvell 88FX SoCs:
-+	  88F6180, 88F6192 and 88F6281
++	  Say Y or M if you want to add support for codecs attached to
++	  the MV88FX I2S or SPD interface. You will also need
++	  to select the audio interfaces to support below.
 +
 +choice
 +	prompt "Audio Interface"
@@ -329,15 +338,9 @@ index 0000000..df4d527
 +
 +config SND_MV88FX_SOC_I2S
 +	bool "I2S"
-+	help
-+	  Select this option if your board uses I2S interface to communicate
-+	  with the audio codec
 +
 +config SND_MV88FX_SOC_SPDIF
 +	bool "SPDIF"
-+	help
-+	  Select this option if your board uses SPDIF interface to communicate
-+	  with the audio codec
 +
 +endchoice
 +
@@ -348,9 +351,6 @@ index 0000000..df4d527
 +
 +config SND_SOC_CS42L51
 +	bool "CS42L51"
-+	help
-+	  Select this option if your board has audio codec CS42L51
-+
 +endchoice
 diff --git a/sound/soc/kirkwood/Makefile b/sound/soc/kirkwood/Makefile
 new file mode 100644
@@ -367,10 +367,10 @@ index 0000000..57674ad
 +obj-$(CONFIG_SND_MV88FX_SOC) += snd-soc-kirkwood.o
 diff --git a/sound/soc/kirkwood/cs42l51.c b/sound/soc/kirkwood/cs42l51.c
 new file mode 100644
-index 0000000..08d3028
+index 0000000..f5a22f9
 --- /dev/null
 +++ b/sound/soc/kirkwood/cs42l51.c
-@@ -0,0 +1,303 @@
+@@ -0,0 +1,304 @@
 +/*
 + *
 + *	Marvell Orion Alsa Sound driver
@@ -402,7 +402,7 @@ index 0000000..08d3028
 +/* FIXME: This code is not written in driver module style. This is written as
 + *        helper for SOC driver */
 +
-+static struct i2c_client *client;
++struct i2c_client *client;
 +
 +static int cs42l51_add_i2c_device(unsigned char i2c_bus_no,
 +				  unsigned short i2c_add)
@@ -445,7 +445,7 @@ index 0000000..08d3028
 + * Returns -ve errorno else number of registers read
 + */
 +
-+static int cs42l51_reg_read(unsigned char offset, unsigned char *buf, int num)
++int cs42l51_reg_read(unsigned char offset, unsigned char *buf, int num)
 +{
 +	int ret = 0;
 +
@@ -469,7 +469,7 @@ index 0000000..08d3028
 + * Returns -ve errorno else number of registers written (=1)
 + */
 +
-+static int cs42l51_reg_write(unsigned char offset, unsigned char data)
++int cs42l51_reg_write(unsigned char offset, unsigned char data)
 +{
 +	int ret = 0;
 +	unsigned char buf[2];
@@ -483,7 +483,7 @@ index 0000000..08d3028
 +	return (ret == 2) ? 1 : ret;
 +}
 +
-+static int codec_init(int adc_mode, int digital_if_format,
++int codec_init(int adc_mode, int digital_if_format,
 +	       unsigned char i2c_bus_no, unsigned short i2c_add)
 +{
 +	unsigned char reg_data;
@@ -614,7 +614,8 @@ index 0000000..08d3028
 +}
 +
 +#define AUD_NUM_VOLUME_STEPS  (40)
-+static unsigned char auddec_volume_mapping[AUD_NUM_VOLUME_STEPS] = {
++static unsigned char auddec_volume_mapping[AUD_NUM_VOLUME_STEPS] =
++{
 +	0x19,	0xB2,	0xB7,	0xBD,	0xC3,	0xC9,	0xCF,	0xD5,
 +	0xD8,	0xE1,	0xE7,	0xED,	0xF3,	0xF9,	0xFF,	0x00,
 +	0x01,	0x02,	0x03,	0x04,	0x05,	0x06,	0x07,	0x08,
@@ -676,10 +677,10 @@ index 0000000..08d3028
 +}
 diff --git a/sound/soc/kirkwood/cs42l51.h b/sound/soc/kirkwood/cs42l51.h
 new file mode 100644
-index 0000000..fbfca94
+index 0000000..f4e7951
 --- /dev/null
 +++ b/sound/soc/kirkwood/cs42l51.h
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,59 @@
 +/*
 + * Audio codec CS42L51 data definition file
 + */
@@ -731,12 +732,17 @@ index 0000000..fbfca94
 +void cs42l51_vol_get(unsigned char *vol_list);
 +void cs42l51_vol_set(unsigned char *vol_list);
 +
++/* Function to access the Cirrus Logic CODEC registers */
++int cs42l51_reg_read(unsigned char offset, unsigned char *buf, int num);
++int cs42l51_reg_write(unsigned char offset, unsigned char data);
++
++
 +void cs42l51_del_i2c_device(void);
 +#endif  /* _CS42L51_H_ */
 +
 diff --git a/sound/soc/kirkwood/kirkwood_audio_hal.c b/sound/soc/kirkwood/kirkwood_audio_hal.c
 new file mode 100644
-index 0000000..31d5144
+index 0000000..28305e3
 --- /dev/null
 +++ b/sound/soc/kirkwood/kirkwood_audio_hal.c
 @@ -0,0 +1,821 @@
@@ -798,7 +804,7 @@ index 0000000..31d5144
 +static int mv_i2s_record_cntrl_set(struct mv_i2s_record_ctrl *ctrl,
 +				   void __iomem *base);
 +
-+static inline unsigned int audio_burst_bytes_num_get(int burst)
++static inline int audio_burst_bytes_num_get(int burst)
 +{
 +	switch (burst) {
 +	case AUDIO_32BYTE_BURST:
@@ -1994,10 +2000,10 @@ index 0000000..1d3df15
 +
 diff --git a/sound/soc/kirkwood/kirkwood_pcm.c b/sound/soc/kirkwood/kirkwood_pcm.c
 new file mode 100644
-index 0000000..5ed13bf
+index 0000000..ed35851
 --- /dev/null
 +++ b/sound/soc/kirkwood/kirkwood_pcm.c
-@@ -0,0 +1,1495 @@
+@@ -0,0 +1,1505 @@
 +/*
 + *
 + *	Marvell Orion Alsa Sound driver
@@ -2029,7 +2035,7 @@ index 0000000..5ed13bf
 +static int test_memory(struct mbus_dram_target_info *dram_info,
 +			unsigned int base, unsigned int size)
 +{
-+	int i;
++	unsigned int i;
 +
 +	for (i = 0; i <= dram_info->num_cs; i++) {
 +
@@ -2048,7 +2054,8 @@ index 0000000..5ed13bf
 +	return 0;
 +}
 +
-+static void devdma_hw_free(struct snd_pcm_substream *substream)
++static void devdma_hw_free(struct device *dev, struct snd_pcm_substream
++			   *substream)
 +{
 +	struct snd_pcm_runtime *runtime = substream->runtime;
 +	struct snd_dma_buffer *buf = runtime->dma_buffer_p;
@@ -2077,7 +2084,7 @@ index 0000000..5ed13bf
 +			snd_printd("buf->bytes >= size\n");
 +			goto out;
 +		}
-+		devdma_hw_free(substream);
++		devdma_hw_free(dev, substream);
 +	}
 +
 +	if (substream->dma_buffer.area != NULL &&
@@ -2295,7 +2302,7 @@ index 0000000..5ed13bf
 +	.put   = mv88fx_snd_spdif_default_put
 +};
 +
-+static unsigned char mv88fx_snd_vol[2];
++unsigned char mv88fx_snd_vol[2];
 +
 +static int mv88fx_snd_mixer_vol_info(struct snd_kcontrol *kcontrol,
 +				     struct snd_ctl_elem_info *uinfo)
@@ -2338,13 +2345,13 @@ index 0000000..5ed13bf
 +};
 +
 +struct mv88fx_snd_mixer_enum {
-+	char         **names; /* enum names*/
-+	int          *values; /* values to be updated*/
-+	unsigned int count;   /* number of elements */
-+	void         *rec;    /* field to be updated*/
++	char **names; /* enum names*/
++	int  *values; /* values to be updated*/
++	int  count;   /* number of elements */
++	void *rec;    /* field to be updated*/
 +};
 +
-+static int mv88fx_snd_mixer_enum_info(struct snd_kcontrol *kcontrol,
++int mv88fx_snd_mixer_enum_info(struct snd_kcontrol *kcontrol,
 +				struct snd_ctl_elem_info *uinfo)
 +{
 +	struct mv88fx_snd_mixer_enum *mixer_enum =
@@ -2363,12 +2370,13 @@ index 0000000..5ed13bf
 +	return 0;
 +}
 +
-+static int mv88fx_snd_mixer_enum_get(struct snd_kcontrol *kcontrol,
++int mv88fx_snd_mixer_enum_get(struct snd_kcontrol *kcontrol,
 +			       struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct mv88fx_snd_mixer_enum *mixer_enum =
 +	(struct mv88fx_snd_mixer_enum *)kcontrol->private_value;
-+	unsigned int val, i;
++	int i;
++	unsigned int val;
 +
 +	val = *(unsigned int *)mixer_enum->rec;
 +
@@ -2383,16 +2391,19 @@ index 0000000..5ed13bf
 +	return 0;
 +}
 +
-+static int mv88fx_snd_mixer_enum_put(struct snd_kcontrol *kcontrol,
++int mv88fx_snd_mixer_enum_put(struct snd_kcontrol *kcontrol,
 +			       struct snd_ctl_elem_value *ucontrol)
 +{
-+	unsigned int val, *rec, i;
++	unsigned int val, *rec;
 +	struct mv88fx_snd_mixer_enum *mixer_enum =
 +	(struct mv88fx_snd_mixer_enum *)kcontrol->private_value;
++	int i;
 +
 +	rec = (unsigned int *)mixer_enum->rec;
 +	val = ucontrol->value.enumerated.item[0];
 +
++	if (val < 0)
++		val = 0;
 +	if (val > mixer_enum->count)
 +		val = mixer_enum->count;
 +
@@ -2417,38 +2428,37 @@ index 0000000..5ed13bf
 +  .private_value = (unsigned long)value, \
 +}
 +
-+static char *playback_src_mixer_names[] = {"SPDIF", "I2S", "SPDIF And I2S"};
-+static int playback_src_mixer_values[] = { SPDIF, I2S, (SPDIF | I2S)};
++char *playback_src_mixer_names[] = {"SPDIF", "I2S", "SPDIF And I2S"};
++int playback_src_mixer_values[] = { SPDIF, I2S, (SPDIF | I2S)};
 +
-+static struct mv88fx_snd_mixer_enum playback_src_mixer = {
++struct mv88fx_snd_mixer_enum playback_src_mixer	= {
 +	.names	= playback_src_mixer_names,
 +	.values	= playback_src_mixer_values,
 +	.count	= 3,
 +};
 +
-+static char *playback_mono_mixer_names[] = {"Mono Both", "Mono Left",
-+						"Mono Right"};
-+static int playback_mono_mixer_values[] = { MONO_BOTH, MONO_LEFT, MONO_RIGHT};
++char *playback_mono_mixer_names[] = {"Mono Both", "Mono Left", "Mono Right"};
++int playback_mono_mixer_values[] = { MONO_BOTH, MONO_LEFT, MONO_RIGHT};
 +
-+static struct mv88fx_snd_mixer_enum playback_mono_mixer = {
++struct mv88fx_snd_mixer_enum playback_mono_mixer = {
 +	.names	= playback_mono_mixer_names,
 +	.values	= playback_mono_mixer_values,
 +	.count	= 3,
 +};
 +
-+static char *capture_src_mixer_names[] = {"SPDIF", "I2S"};
-+static int capture_src_mixer_values[] = { SPDIF, I2S};
++char *capture_src_mixer_names[] = {"SPDIF", "I2S"};
++int capture_src_mixer_values[] = { SPDIF, I2S};
 +
-+static struct mv88fx_snd_mixer_enum capture_src_mixer = {
++struct mv88fx_snd_mixer_enum capture_src_mixer = {
 +	.names	= capture_src_mixer_names,
 +	.values	= capture_src_mixer_values,
 +	.count	= 2,
 +};
 +
-+static char *capture_mono_mixer_names[] = {"Mono Left", "Mono Right"};
-+static int capture_mono_mixer_values[] = { MONO_LEFT, MONO_RIGHT};
++char *capture_mono_mixer_names[] = {"Mono Left", "Mono Right"};
++int capture_mono_mixer_values[] = { MONO_LEFT, MONO_RIGHT};
 +
-+static struct mv88fx_snd_mixer_enum capture_mono_mixer	= {
++struct mv88fx_snd_mixer_enum capture_mono_mixer	= {
 +	.names	= capture_mono_mixer_names,
 +	.values	= capture_mono_mixer_values,
 +	.count	= 2,
@@ -2635,10 +2645,13 @@ index 0000000..5ed13bf
 +
 +static int mv88fx_snd_capture_hw_free(struct snd_pcm_substream *substream)
 +{
++	struct mv88fx_snd_stream *audio_stream =
++				 snd_pcm_substream_chip(substream);
++
 +	/*
 +	 * Clear out the DMA and any allocated buffers.
 +	 */
-+	devdma_hw_free(substream);
++	devdma_hw_free(audio_stream->dev, substream);
 +	return 0;
 +}
 +
@@ -2684,7 +2697,7 @@ index 0000000..5ed13bf
 +	int result = 0;
 +	unsigned int reg_data;
 +
-+	spin_lock(&chip->reg_lock);
++	spin_lock(chip->reg_lock);
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
 +		/* FIXME: should check if busy before */
@@ -2765,7 +2778,7 @@ index 0000000..5ed13bf
 +	(ssize_t)readl(chip->base + MV_AUDIO_RECORD_BUF_BYTE_CNTR_REG));
 +}
 +
-+static int mv88fx_snd_capture_mmap(struct snd_pcm_substream *substream,
++int mv88fx_snd_capture_mmap(struct snd_pcm_substream *substream,
 +			    struct vm_area_struct *vma)
 +{
 +	return devdma_mmap(NULL, substream, vma);
@@ -2783,7 +2796,7 @@ index 0000000..5ed13bf
 +	.mmap      = mv88fx_snd_capture_mmap,
 +};
 +
-+static struct snd_pcm_hardware mv88fx_snd_playback_hw = {
++struct snd_pcm_hardware mv88fx_snd_playback_hw = {
 +	.info = (SNDRV_PCM_INFO_INTERLEAVED |
 +		 SNDRV_PCM_INFO_MMAP |
 +		 SNDRV_PCM_INFO_MMAP_VALID |
@@ -2808,7 +2821,7 @@ index 0000000..5ed13bf
 +	.fifo_size = 0,
 +};
 +
-+static int mv88fx_snd_playback_open(struct snd_pcm_substream *substream)
++int mv88fx_snd_playback_open(struct snd_pcm_substream *substream)
 +{
 +	int err = 0;
 +
@@ -2871,7 +2884,7 @@ index 0000000..5ed13bf
 +	return 0;
 +}
 +
-+static int mv88fx_snd_playback_close(struct snd_pcm_substream *substream)
++int mv88fx_snd_playback_close(struct snd_pcm_substream *substream)
 +{
 +	int i;
 +
@@ -2893,7 +2906,7 @@ index 0000000..5ed13bf
 +	return 0;
 +}
 +
-+static int mv88fx_snd_playback_hw_params(struct snd_pcm_substream *substream,
++int mv88fx_snd_playback_hw_params(struct snd_pcm_substream *substream,
 +					 struct snd_pcm_hw_params *params)
 +{
 +	struct mv88fx_snd_stream *audio_stream =
@@ -2903,16 +2916,19 @@ index 0000000..5ed13bf
 +			params_buffer_bytes(params));
 +}
 +
-+static int mv88fx_snd_playback_hw_free(struct snd_pcm_substream *substream)
++int mv88fx_snd_playback_hw_free(struct snd_pcm_substream *substream)
 +{
++	struct mv88fx_snd_stream *audio_stream =
++				 snd_pcm_substream_chip(substream);
++
 +	/*
 +	 * Clear out the DMA and any allocated buffers.
 +	 */
-+	devdma_hw_free(substream);
++	devdma_hw_free(audio_stream->dev, substream);
 +	return 0;
 +}
 +
-+static int mv88fx_snd_playback_prepare(struct snd_pcm_substream *substream)
++int mv88fx_snd_playback_prepare(struct snd_pcm_substream *substream)
 +{
 +	struct snd_pcm_runtime *runtime = substream->runtime;
 +
@@ -2950,7 +2966,7 @@ index 0000000..5ed13bf
 +	return mv88fx_snd_hw_playback_set(chip);
 +}
 +
-+static int mv88fx_snd_playback_trigger(struct snd_pcm_substream *substream,
++int mv88fx_snd_playback_trigger(struct snd_pcm_substream *substream,
 +				       int cmd)
 +{
 +	struct mv88fx_snd_stream *audio_stream =
@@ -2958,7 +2974,7 @@ index 0000000..5ed13bf
 +	int result = 0;
 +	unsigned int reg_data;
 +
-+	spin_lock(&chip->reg_lock);
++	spin_lock(chip->reg_lock);
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
 +		/* enable interrupt */
@@ -3042,21 +3058,21 @@ index 0000000..5ed13bf
 +}
 +
 +
-+static snd_pcm_uframes_t mv88fx_snd_playback_pointer(struct snd_pcm_substream
++snd_pcm_uframes_t mv88fx_snd_playback_pointer(struct snd_pcm_substream
 +						     *substream)
 +{
 +	return bytes_to_frames(substream->runtime,
 +	(ssize_t)readl(chip->base + MV_AUDIO_PLAYBACK_BUFF_BYTE_CNTR_REG));
 +}
 +
-+static int mv88fx_snd_playback_mmap(struct snd_pcm_substream *substream,
++int mv88fx_snd_playback_mmap(struct snd_pcm_substream *substream,
 +			     struct vm_area_struct *vma)
 +{
 +	return devdma_mmap(NULL, substream, vma);
 +}
 +
 +
-+static struct snd_pcm_ops mv88fx_snd_playback_ops = {
++struct snd_pcm_ops mv88fx_snd_playback_ops = {
 +	.open      = mv88fx_snd_playback_open,
 +	.close     = mv88fx_snd_playback_close,
 +	.ioctl     = snd_pcm_lib_ioctl,
@@ -3068,7 +3084,7 @@ index 0000000..5ed13bf
 +	.mmap      = mv88fx_snd_playback_mmap,
 +};
 +
-+static int __init mv88fx_snd_pcm_new(struct snd_card *card)
++int __init mv88fx_snd_pcm_new(struct snd_card *card)
 +{
 +	struct snd_pcm *pcm;
 +	struct mv88fx_snd_platform_data *pdata = card->dev->platform_data;
@@ -3137,7 +3153,7 @@ index 0000000..5ed13bf
 +	return 0;
 +}
 +
-+static irqreturn_t mv88fx_snd_interrupt(int irq, void *dev_id)
++irqreturn_t mv88fx_snd_interrupt(int irq, void *dev_id)
 +{
 +	struct mv88fx_snd_chip *chip = dev_id;
 +	struct mv88fx_snd_stream *play_stream = chip->stream_defaults[PLAYBACK];
@@ -3180,7 +3196,7 @@ index 0000000..5ed13bf
 +	return IRQ_HANDLED;
 +}
 +
-+static void mv88fx_snd_free(struct snd_card *card)
++void mv88fx_snd_free(struct snd_card *card)
 +{
 +	struct mv88fx_snd_chip *chip = card->private_data;
 +
@@ -3225,7 +3241,7 @@ index 0000000..5ed13bf
 +	chip = NULL;
 +}
 +
-+static int mv88fx_snd_probe(struct platform_device *dev)
++int mv88fx_snd_probe(struct platform_device *dev)
 +{
 +	int err = 0, irq = NO_IRQ;
 +	struct snd_card *card = NULL;
@@ -3450,7 +3466,7 @@ index 0000000..5ed13bf
 +	return err;
 +}
 +
-+static int mv88fx_snd_remove(struct platform_device *dev)
++int mv88fx_snd_remove(struct platform_device *dev)
 +{
 +	struct snd_card *card = platform_get_drvdata(dev);
 +
@@ -3468,7 +3484,7 @@ index 0000000..5ed13bf
 +#define mv88fx_snd_resume     NULL
 +#define mv88fx_snd_suspend    NULL
 +
-+static struct platform_driver mv88fx_snd_driver = {
++struct platform_driver mv88fx_snd_driver = {
 +	.probe   = mv88fx_snd_probe,
 +	.remove  = mv88fx_snd_remove,
 +	.suspend = mv88fx_snd_suspend,
@@ -3476,12 +3492,12 @@ index 0000000..5ed13bf
 +	.driver  = { .name = MV88FX_AUDIO_NAME,},
 +};
 +
-+static int __init mv88fx_snd_init(void)
++int __init mv88fx_snd_init(void)
 +{
 +	return platform_driver_register(&mv88fx_snd_driver);
 +}
 +
-+static void __exit mv88fx_snd_exit(void)
++void __exit mv88fx_snd_exit(void)
 +{
 +	platform_driver_unregister(&mv88fx_snd_driver);
 +}
