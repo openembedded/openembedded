@@ -4,7 +4,6 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 DEPENDS += "virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor"
-PROVIDES = "qt4x11"
 
 INC_PR = "r14"
 
