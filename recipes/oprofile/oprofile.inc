@@ -3,8 +3,15 @@ DESCRIPTION = "OProfile is a system-wide profiler for Linux systems, capable \
 of profiling all running code at low overhead."
 LICENSE = "GPL"
 DEPENDS = "popt binutils"
+RDEPENDS += "binutils-symlinks"
+RRECOMMENDS += "kernel-vmlinux"
+INC_PR = "r11"
 
 S = "${WORKDIR}/oprofile-${PV}"
+SRC_URI = "\
+	${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz;name=tarball \
+	file://acinclude.m4 \
+	"
 
 inherit autotools
 
@@ -35,6 +42,11 @@ do_configure () {
 #  --with-qt-includes      where the Qt includes are.
 #  --with-qt-libraries     where the Qt library is installed.
 
+do_stage () {
+	# As of 0.9.4 there is a libopagent library to compile and link against.
+	autotools_stage_all
+}
+
 OPROFILE_ARCH = "${TARGET_ARCH}"
 OPROFILE_ARCH_i586 = "i386"
 # note this excludes the ppc64 directory 
@@ -42,3 +54,12 @@ OPROFILE_ARCH_i586 = "i386"
 OPROFILE_ARCH_powerpc = "ppc"
 
 FILES_${PN} = "${bindir} ${datadir}/oprofile/rtc ${datadir}/oprofile/stl.pat ${datadir}/oprofile/${OPROFILE_ARCH}"
+FILES_${PN} += "\
+	${libdir}/oprofile/libopagent.so.* \
+"
+
+FILES_${PN}-dev += "\
+	${libdir}/oprofile/lib*.so \
+	${libdir}/oprofile/lib*.a \
+	${libdir}/oprofile/lib*.la \
+"

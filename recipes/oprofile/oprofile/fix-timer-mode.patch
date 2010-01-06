@@ -1,0 +1,32 @@
+Fix opcontrol in timer mode...
+
+http://oprofile.cvs.sourceforge.net/viewvc/oprofile/oprofile/utils/opcontrol?r1=1.164&r2=1.165&view=patch
+
+Index: oprofile-0.9.5/utils/opcontrol
+===================================================================
+--- oprofile-0.9.5.orig/utils/opcontrol	2010-01-06 13:22:57.703663191 +0800
++++ oprofile-0.9.5/utils/opcontrol	2010-01-06 13:23:18.113667904 +0800
+@@ -586,7 +587,7 @@
+ # setup any needed default value in chosen events
+ normalise_events()
+ {
+-	if test "$NR_CHOSEN" -le 0; then
++	if test "$NR_CHOSEN" -le 0 || test "$IS_TIMER" = 1; then
+ 		return
+ 	fi
+ 
+@@ -1449,8 +1450,12 @@
+ 		--separate-thread=$SEPARATE_THREAD \
+ 		--separate-cpu=$SEPARATE_CPU"
+ 
+-	if ! test -z "$OPROFILED_EVENTS"; then
+-		OPD_ARGS="$OPD_ARGS --events=$OPROFILED_EVENTS"
++	if test "$IS_TIMER" = 1; then
++		OPD_ARGS="$OPD_ARGS --events="
++	else
++		if ! test -z "$OPROFILED_EVENTS"; then
++			OPD_ARGS="$OPD_ARGS --events=$OPROFILED_EVENTS"
++		fi
+ 	fi
+ 
+ 	if test "$VMLINUX" = "none"; then
