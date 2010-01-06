@@ -1,0 +1,28 @@
+From 843dbaa59d56b7c042662f48ed68bd41960635dd Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 5 Jan 2010 12:44:25 +0100
+Subject: [PATCH 2/2] gta02: add kernel params to boot from ubifs ubi0:om-gta02-rootfs
+
+---
+ src/cpu/s3c2442/gta02.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/cpu/s3c2442/gta02.c b/src/cpu/s3c2442/gta02.c
+index 0347f61..48ee245 100644
+--- a/src/cpu/s3c2442/gta02.c
++++ b/src/cpu/s3c2442/gta02.c
+@@ -733,8 +733,9 @@ const struct board_api board_api_gta02 = {
+ 			/* NOTE offset below is replaced at runtime */
+ 			.offset_blocks512_if_no_partition = 0x80000 / 512,
+ 			.filesystem = FS_RAW,
+-			.commandline_append = " rootfstype=jffs2 "
+-					      "root=/dev/mtdblock6 ",
++			.commandline_append = " rootfstype=ubifs " \
++			                      " ubi.mtd=6,2048 " \
++			                      " root=ubi0:om-gta02-rootfs ",
+ 		},
+ 	},
+ };
+-- 
+1.6.6
+

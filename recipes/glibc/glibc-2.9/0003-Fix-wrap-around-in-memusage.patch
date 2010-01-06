@@ -1,0 +1,37 @@
+From 22bc5239e1c7d97b0642af6c135af994586f8e82 Mon Sep 17 00:00:00 2001
+From: Andreas Schwab <schwab@redhat.com>
+Date: Thu, 29 Oct 2009 11:25:20 -0700
+Subject: [PATCH 3/3] Fix wrap-around in memusage.
+
+---
+ malloc/memusage.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/malloc/memusage.c b/malloc/memusage.c
+index fcd58dc..382261c 100644
+--- a/malloc/memusage.c
++++ b/malloc/memusage.c
+@@ -163,15 +163,16 @@ update_data (struct header *result, size_t len, size_t old_len)
+   if (fd != -1)
+     {
+       uatomic32_t idx = catomic_exchange_and_add (&buffer_cnt, 1);
+-      if (idx >= 2 * buffer_size)
++      if (idx + 1 >= 2 * buffer_size)
+ 	{
+ 	  /* We try to reset the counter to the correct range.  If
+ 	     this fails because of another thread increasing the
+ 	     counter it does not matter since that thread will take
+ 	     care of the correction.  */
+-	  uatomic32_t reset = idx % (2 * buffer_size);
+-	  catomic_compare_and_exchange_val_acq (&buffer_cnt, reset, idx);
+-	  idx = reset;
++	  uatomic32_t reset = (idx + 1) % (2 * buffer_size);
++	  catomic_compare_and_exchange_val_acq (&buffer_cnt, reset, idx + 1);
++	  if (idx >= 2 * buffer_size)
++	    idx = reset - 1;
+ 	}
+       assert (idx < 2 * DEFAULT_BUFFER_SIZE);
+ 
+-- 
+1.6.3.3
+

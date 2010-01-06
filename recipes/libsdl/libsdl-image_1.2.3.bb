@@ -1,6 +1,6 @@
 require libsdl-image.inc
 
-PR = "r2"
+PR = "${INC_PR}.2"
 
 SRC_URI += "\
   file://autotools.patch;patch=1 \

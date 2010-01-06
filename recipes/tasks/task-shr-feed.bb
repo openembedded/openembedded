@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r33"
+PR = "r34"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -263,4 +263,6 @@ RDEPENDS_${PN} += "\
 		make \
 		dnsmasq \
 		libsyncml \
+		qi \
+		qi-ubi \
 "

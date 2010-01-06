@@ -2,8 +2,7 @@ DESCRIPTION = "Qi bootloader w/ Openmoko GTA01, GTA02, and GTA03 support"
 LICENSE = "GPL"
 SECTION = "bootloader"
 PROVIDES = "virtual/bootloader"
-LOCALVERSION = "gitr${SRCREV}"
-PV = "1.0.2+${LOCALVERSION}"
+PV = "1.0.2"
 
 EXTRA_OEMAKE = ""
 PARALLEL_MAKE = ""
@@ -15,7 +14,7 @@ do_configure() {
 	cat >config.mk <<EOF
 
 BUILD_HOST=\$(shell hostname)
-BUILD_VERSION=${PV}
+BUILD_VERSION=${PV}-${PR}
 BUILD_DATE=\$(shell date --iso-8601=seconds)
 
 # NOTE: The following depends on the fact that only one version of the cross-compiler
