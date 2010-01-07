@@ -1,13 +1,9 @@
 DESCRIPTION = "Package for the different scenarios used by Openmoko"
 SECTION = "openmoko/base"
 PV = "1.0+svnr${SRCPV}"
-<<<<<<< HEAD
-PR = "r1"
-=======
 PR = "r2"
 
 PROVIDES = "virtual/alsa-scenarios"
->>>>>>> origin/org.openembedded.dev
 
 COMPATIBLE_MACHINE = "(om-gta01|om-gta02)"
 
