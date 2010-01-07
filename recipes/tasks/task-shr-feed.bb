@@ -80,7 +80,6 @@ RDEPENDS_${PN} += "\
 		sms-sentry \
 		cellhunter \
 		dillo2 \
-		usbmode \
 		pyefl-sudoku \
 		tasks \
 		dates \
