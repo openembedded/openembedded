@@ -9,6 +9,7 @@ require qt4-embedded_${PV}.bb
 LICENSE = "LGPLv2.1 GPLv3"
 
 DEPENDS += "virtual/egl"
+PROVIDES += "qt4-embedded"
 SRC_URI += "file://sgx-hack.patch;patch=1"
 
 export EXTRA_QMAKE_MUNGE = " glmunge "
