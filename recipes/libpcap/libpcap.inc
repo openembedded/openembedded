@@ -2,7 +2,7 @@ DESCRIPTION = "Network Packet Capture Library"
 HOMEPAGE = "http://www.tcpdump.org/"
 SECTION = "libs/network"
 LICENSE = "BSD"
-DEPENDS = "bluez4 flex-native bison-native"
+DEPENDS = "bluez-libs flex-native bison-native"
 
 PR = "r1"
 

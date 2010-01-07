@@ -3,7 +3,7 @@ HOMEPAGE = "http://opie.handhelds.org"
 SECTION = "opie/libs"
 LICENSE = "LGPL"
 I18N_FILES = "libopiecore2.ts libopiesecurity2.ts"
-DEPENDS = "libqpe-opie libpcap sqlite3 bluez4"
+DEPENDS = "libqpe-opie libpcap sqlite3 bluez-libs"
 PROVIDES = "libopiecore2 libopiedb2 libopiemm2 libopiesecurity2 libopienet2 libopiepim2 libopieui2"
 
 S = "${WORKDIR}/libopie2"

@@ -20,7 +20,6 @@ SERIAL_CONSOLE_collie = "115200 ttySA0"
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 PREFERRED_PROVIDER_virtual/xserver_c7x0 = "xserver-kdrive-imageon"
 PREFERRED_PROVIDER_virtual/xserver_collie = "xserver-kdrive-fbdev"
-PREFERRED_PROVIDER_virtual/libgl = "mesa-dri"
 
 PCMCIA_MANAGER ?= "pcmciautils"
 

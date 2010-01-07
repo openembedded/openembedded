@@ -14,7 +14,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= ""
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= ""
 
 # Make sure we build the kernel
-DEPENDS = "virtual/kernel virtual/update-alternatives-native"
+DEPENDS = "virtual/kernel"
 
 #
 # minimal set of packages - needed to boot
