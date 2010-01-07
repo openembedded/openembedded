@@ -16,6 +16,8 @@ SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd \
            file://frameworkd.conf \
 	   "
+SRC_URI_append_shr = "file://oeventsd-use-opimd-signals.patch;patch=1"
+
 S = "${WORKDIR}/git"
 
 do_configure_append() {
@@ -55,6 +57,8 @@ RDEPENDS_${PN} += "\
 RRECOMMENDS_${PN} += "\
   alsa-utils-amixer \
   python-gst \
+  python-phoneutils \
+  python-vobject \
   ppp \
 "
 
