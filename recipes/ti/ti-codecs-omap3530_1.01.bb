@@ -11,6 +11,7 @@ require ti-eula-unpack.inc
 S = "${WORKDIR}/dvsdk_3_00_01_42/cs1omap3530_1_00_01"
 
 DEPENDS="ti-codec-engine ti-linuxutils"
+RREPLACES_${PN} = "ti-cs1-omap3530"
 
 export CODEGEN_INSTALL_DIR
 

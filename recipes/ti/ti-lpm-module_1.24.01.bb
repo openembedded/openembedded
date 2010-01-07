@@ -1,6 +1,6 @@
 DESCRIPTION = "LPM module for TI OMAP3 processors"
 
-DEPENDS = "ti-linuxutils"
+DEPENDS = "ti-linuxutils ti-dsplink-module"
 
 # tconf breaks with '.' in PWD
 PV = "1_24_01"
@@ -25,7 +25,7 @@ do_compile () {
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
     cd ${S}/packages/ti/bios/power/modules/${LPMDSPPOWERSOC}/lpm
     make \
-      DSPLINK_REPO="${DSPLINK}/.." \
+      DSPLINK_REPO="${LINK_INSTALL_DIR}" \
       LINUXKERNEL_INSTALL_DIR="${STAGING_KERNEL_DIR}" \
       MVTOOL_PREFIX="${TARGET_PREFIX}" \
       clean default

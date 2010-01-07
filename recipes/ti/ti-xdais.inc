@@ -9,4 +9,11 @@ SRC_URI	= "${BASE_SRC_URI}/xdais_${PV}${PVEXTENSION}.tar.gz;name=xdaisgz"
 
 S = "${WORKDIR}/xdais_${PV}${PVEXTENSION}"
 
+require ti-paths.inc
+require ti-staging.inc
+
+do_install() {
+    install -d ${D}${XDAIS_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${D}${XDAIS_INSTALL_DIR_RECIPE}
+} 
 

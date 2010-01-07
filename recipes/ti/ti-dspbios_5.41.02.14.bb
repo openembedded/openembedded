@@ -1,4 +1,4 @@
-require ti-dspbios-native.inc
+require ti-dspbios.inc
 
 DEFAULT_FREFERENCE_omapl138 = "2"
 

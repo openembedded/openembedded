@@ -61,8 +61,8 @@ do_install () {
 
 # stage tree - other packages may need this
 do_stage() {
-    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}
-    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/
+    install -d ${LINUXUTILS_INSTALL_DIR}
+    cp -pPrf ${S}/* ${LINUXUTILS_INSTALL_DIR}
 }
 
 PACKAGES =+ " ti-cmem-module \

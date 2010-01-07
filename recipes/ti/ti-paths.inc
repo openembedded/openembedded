@@ -46,7 +46,7 @@ DSPPOWERSOC ?= "dm6446"
 
 export CODEC ?= "${CODEC_INSTALL_DIR}"
 
-export DSPLINK = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dsplink-module/packages/dsplink/"
+export DSPLINK = "${LINK_INSTALL_DIR}/dsplink"
 
 installdir = "${datadir}/ti"
 

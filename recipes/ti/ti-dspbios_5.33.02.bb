@@ -1,5 +1,4 @@
 require ti-dspbios.inc
-inherit native
 
 # download bios_setuplinux_5_33_02.bin from https://www-a.ti.com/downloads/sds_support/targetcontent/bios/bios_5_33/bios_5_33_02/index_external.html and copy in Arago/OE installation directory
 
@@ -12,9 +11,9 @@ S = "${WORKDIR}/bios_5_33_02"
 PV = "5_33_02"
 PR = "r14"
 
-do_stage() {
-    install -d ${STAGING_DIR_NATIVE}/${PN}
-    cp -pPrf ${S}/* ${STAGING_DIR_NATIVE}/${PN}/ 
+do_install() {
+    install -d ${BIOS_INSTALL_DIR}
+    cp -pPrf ${S}/* ${BIOS_INSTALL_DIR}
 }
 
 

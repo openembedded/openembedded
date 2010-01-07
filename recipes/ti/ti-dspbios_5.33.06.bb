@@ -1,4 +1,4 @@
-require ti-dspbios-native.inc
+require ti-dspbios.inc
 
 DEFAULT_PREFERENCE = "-1"
 

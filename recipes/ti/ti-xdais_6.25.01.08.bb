@@ -5,11 +5,5 @@ SRC_URI[xdaisgz.sha256sum] = "88866b1bbd3992141f47f7a672cd4a2fbeef729d582312a06a
 
 PV = "6_25_01_08"
 
-inherit native
-
-do_stage() {
-    install -d ${STAGING_DIR_NATIVE}/ti-xdais
-    cp -pPrf ${S}/* ${STAGING_DIR_NATIVE}/ti-xdais
-}
 
 

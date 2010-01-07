@@ -6,11 +6,5 @@ SRC_URI[biosutilstarball.sha256sum] = "df486500bdc8dbe3800fc7efe4241e6fa5b1827ba
 PV = "1_02_02"
 PVsuffix = "_02"
 
-inherit native
-
-do_stage() {
-    install -d ${STAGING_DIR_NATIVE}/ti-biosutils
-    cp -pPrf ${S}/* ${STAGING_DIR_NATIVE}/ti-biosutils
-}
 
 

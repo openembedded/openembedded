@@ -8,4 +8,12 @@ SRC_URI = "${BASE_SRC_URI}/${PV}${PVsuffix}/exports/biosutils_${PV}.tar.gz;name=
 
 S = "${WORKDIR}/biosutils_${PV}"
 
+require ti-paths.inc
+require ti-staging.inc
+
+do_install() {
+    install -d ${D}${BIOSUTILS_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${D}${BIOSUTILS_INSTALL_DIR_RECIPE}
+}
+
 

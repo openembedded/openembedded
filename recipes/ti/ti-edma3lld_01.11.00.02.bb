@@ -1,4 +1,4 @@
-require ti-edma3lld-native.inc
+require ti-edma3lld.inc
 
 #SRC_URI[edma3lldbin.md5sum] = "fa15c104cfe03227bf181ecf4094c0d9"
 #SRC_URI[edma3lldbin.sha256sum] = "9650d1fc8b441d46095a8b4e70dab5d7438351f38e03918d30bed0e4ffc50e66"

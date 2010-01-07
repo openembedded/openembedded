@@ -44,6 +44,10 @@ export DECODE_COMBO = "${installdir}/codec-combo/decodeCombo.x64P"
 
 CPPFLAGS_append = " -DPlatform_${PLATFORM}"
 
+do_configure_prepend() {
+	sed -i -e 's:(LINK_INSTALL_DIR)/packages:(LINK_INSTALL_DIR):g' ${S}/src/Makefile.am
+}
+
 do_install_prepend () {
         # install gstreamer demo scripts
         install -d ${D}/${installdir}/gst

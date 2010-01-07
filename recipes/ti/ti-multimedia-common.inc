@@ -13,21 +13,39 @@ export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
 export CODEC_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codecs"
 
 export LINUXLIBS_INSTALL_DIR  = "${STAGING_DIR_HOST}/usr"
-export CODEGEN_INSTALL_DIR    = "${STAGING_DIR_NATIVE}/ti-cgt6x-native"
-export XDC_INSTALL_DIR        = "${STAGING_DIR_NATIVE}/ti-xdctools-native"
-export XDAIS_INSTALL_DIR      = "${STAGING_DIR_NATIVE}/ti-xdais"
-export BIOS_INSTALL_DIR       = "${STAGING_DIR_NATIVE}/ti-dspbios-native"
-export BIOSUTILS_INSTALL_DIR  = "${STAGING_DIR_NATIVE}/ti-biosutils"
-export EDMA3_LLD_INSTALL_DIR  = "${STAGING_DIR_NATIVE}/ti-edma3lld"
-
-export CE_INSTALL_DIR         = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine"
-export FC_INSTALL_DIR         = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-framework-components"
 export LINUXKERNEL_INSTALL_DIR = "${STAGING_KERNEL_DIR}"
-export LINUXUTILS_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-linuxutils"
-export CMEM_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-linuxutils"
-export LINK_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dsplink-module"
-export LPM_INSTALL_DIR        = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-local-power-manager"
-export DMAI_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dmai"
+
+# This is where do_install will put it
+export CODEGEN_INSTALL_DIR_RECIPE    = "${installdir}/ti-cgt6x"
+export XDC_INSTALL_DIR_RECIPE        = "${installdir}/ti-xdctools"
+export XDAIS_INSTALL_DIR_RECIPE      = "${installdir}/ti-xdais"
+export BIOS_INSTALL_DIR_RECIPE       = "${installdir}/ti-dspbios"
+export BIOSUTILS_INSTALL_DIR_RECIPE  = "${installdir}/ti-biosutils"
+export FC_INSTALL_DIR_RECIPE         = "${installdir}/ti-framework-components"
+
+export CE_INSTALL_DIR_RECIPE         = "${installdir}/ti-codec-engine-tree"
+export EDMA3_LLD_INSTALL_DIR_RECIPE  = "${installdir}/ti-edma3lld-tree"
+export LINUXUTILS_INSTALL_DIR_RECIPE = "${installdir}/ti-linuxutils-tree"
+export CMEM_INSTALL_DIR_RECIPE       = "${installdir}/ti-linuxutils-tree"
+export LINK_INSTALL_DIR_RECIPE       = "${installdir}/ti-dsplink-module-tree/packages"
+export LPM_INSTALL_DIR_RECIPE        = "${installdir}/ti-local-power-manager-tree"
+export DMAI_INSTALL_DIR_RECIPE       = "${installdir}/ti-dmai-tree"
+
+# This is where the tools will end up in staging provided PACKAGE_ARCH = ${MACHINE_ARCH} is set
+export CODEGEN_INSTALL_DIR    = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CODEGEN_INSTALL_DIR_RECIPE}"
+export XDC_INSTALL_DIR        = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${XDC_INSTALL_DIR_RECIPE}"
+export XDAIS_INSTALL_DIR      = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${XDAIS_INSTALL_DIR_RECIPE}"
+export BIOS_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${BIOS_INSTALL_DIR_RECIPE}"
+export BIOSUTILS_INSTALL_DIR  = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${BIOSUTILS_INSTALL_DIR_RECIPE}"
+export FC_INSTALL_DIR         = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${FC_INSTALL_DIR_RECIPE}"
+
+export CE_INSTALL_DIR         = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CE_INSTALL_DIR_RECIPE}"
+export EDMA3_LLD_INSTALL_DIR  = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${EDMA3_LLD_INSTALL_DIR_RECIPE}"
+export LINUXUTILS_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${LINUXUTILS_INSTALL_DIR_RECIPE}"
+export CMEM_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CMEM_INSTALL_DIR_RECIPE}"
+export LINK_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${LINK_INSTALL_DIR_RECIPE}"
+export LPM_INSTALL_DIR        = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${LPM_INSTALL_DIR_RECIPE}"
+export DMAI_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${DMAI_INSTALL_DIR_RECIPE}"
 
 export USER_XDC_PATH    = "${CE_INSTALL_DIR}/examples"
 export XDC_TARGET       = gnu.targets.arm.GCArmv5T

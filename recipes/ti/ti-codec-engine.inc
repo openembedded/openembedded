@@ -3,11 +3,11 @@ DESCRIPTION = "Codec Engine for TI ARM/DSP processors"
 require ti-paths.inc
 
 # compile time dependencies
-DEPENDS = "ti-framework-components ti-xdais-native ti-xdctools-native ti-cgt6x-native ti-biosutils-native ti-edma3lld-native"
+DEPENDS = "ti-framework-components ti-xdais ti-xdctools ti-cgt6x ti-biosutils ti-edma3lld"
 
-DEPENDS_append_dm6446 	= " ti-dspbios-native ti-linuxutils ti-dsplink-module"
-DEPENDS_append_omap3   	= " ti-dspbios-native ti-linuxutils ti-dsplink-module"
-DEPENDS_append_omapl138 = " ti-dspbios-native ti-linuxutils ti-dsplink-module"
+DEPENDS_append_dm6446 	= " ti-dspbios ti-linuxutils ti-dsplink-module"
+DEPENDS_append_omap3   	= " ti-dspbios ti-linuxutils ti-dsplink-module ti-lpm-module"
+DEPENDS_append_omapl138 = " ti-dspbios ti-linuxutils ti-dsplink-module"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/ce/${PV}/exports/codec_engine_${PV},lite.tar.gz;name=cetarball"
 
@@ -25,9 +25,8 @@ DEVICES_omapl138 ?= "OMAPL138"
 PROGRAMS        ?= "APP_CLIENT DSP_SERVER"
 PROGRAMS_dm355   = "APP_LOCAL"
 
-LINK_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-dsplink-module/packages"
-CGT6x_DIR = "${STAGING_DIR_NATIVE}/ti-cgt6x-native"
-XDCTOOLS_DIR = "${STAGING_DIR_NATIVE}/ti-xdctools-native"
+CGT6x_DIR = "${CODEGEN_INSTALL_DIR}"
+XDCTOOLS_DIR = "${XDC_INSTALL_DIR}"
 CE_INSTALL_DIR = "${S}"
 
 do_compile () {
@@ -121,13 +120,17 @@ do_install() {
 }
 
 
-# stage tree - other packages may need this
+# We can't use CE_INSTALL_DIR directly since we redefined it earlier on
 do_stage() {
-    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}
-    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/ 
+    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CE_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CE_INSTALL_DIR_RECIPE}
 }
 
-RDEPENDS_ti-codec-engine-apps = "ti-cmem-module ti-dsplink-module"
+
+RDEPENDS_ti-codec-engine-apps = "ti-cmem-module"
+RDEPENDS_append_dm6446   = " ti-dsplink-module"
+RDEPENDS_append_omap3    = " ti-dsplink-module"
+RDEPENDS_append_omapl138 = " ti-dsplink-module"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 INHIBIT_PACKAGE_STRIP = "1"

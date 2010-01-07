@@ -8,7 +8,7 @@ MACHINE_KERNEL_PR_append = "a"
 inherit module
 
 # compile and run time dependencies
-DEPENDS 	+= "virtual/kernel perl-native ti-dspbios-native ti-cgt6x-native update-modules ti-xdctools-native"
+DEPENDS 	+= "virtual/kernel perl-native ti-dspbios ti-cgt6x update-modules ti-xdctools"
 
 SRC_URI = "http://install.source.dir.local/dsplink_${PV}.tar.gz \
 		   file://loadmodules-ti-dsplink-apps.sh \
@@ -29,7 +29,8 @@ DSPLINKDSPCFG_omapl137  = "OMAPL1XXGEMSHMEM"
 DSPLINKDSPCFG_omapl138  = "OMAPL138GEMSHMEM"
 DSPLINKDSPCFG          ?= "DM6446GEMSHMEM"
 
-
+DSPLINKGPPOS_dm355      = "LINUX_GCC"
+DSPLINKGPPOS_dm365      = "LINUX_GCC"
 DSPLINKGPPOS_dm6446     = "MVL5G"
 DSPLINKGPPOS_omapl137   = "ARM"
 DSPLINKGPPOS_omapl138   = "ARM"
@@ -39,9 +40,9 @@ DSPLINKGPPOS           ?= "ARM"
 DSPLINK = "${S}/dsplink"
 export DSPLINK
 
-STAGING_TI_DSPBIOS_DIR="${STAGING_DIR_NATIVE}/ti-dspbios-native"
-STAGING_TI_CGT6x_DIR="${STAGING_DIR_NATIVE}/ti-cgt6x-native"
-STAGING_TI_XDCTOOL_INSTALL_DIR="${STAGING_DIR_NATIVE}/ti-xdctools-native"
+STAGING_TI_DSPBIOS_DIR="${BIOS_INSTALL_DIR}"
+STAGING_TI_CGT6x_DIR="${CODEGEN_INSTALL_DIR}"
+STAGING_TI_XDCTOOL_INSTALL_DIR="${XDC_INSTALL_DIR}"
 
 do_configure() {
 
@@ -151,8 +152,8 @@ do_install () {
 }
 
 do_stage () {
-    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/packages
-    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/packages
+    install -d ${LINK_INSTALL_DIR}
+    cp -pPrf ${S}/* ${LINK_INSTALL_DIR}
 }
 
 INHIBIT_PACKAGE_STRIP = "1"

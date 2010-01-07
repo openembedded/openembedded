@@ -8,6 +8,7 @@ SRC_URI[dsplinktarball.md5sum] = "90223da7c88af57d12936adeba1a0661"
 SRC_URI[dsplinktarball.sha256sum] = "32b6fbae2b61f5f71ab3eae9d2f5ad6b75d682ad8bde9963152830be1f8d286b"
 
 # tconf from xdctools dislikes '.' in pwd :/
+PE = "1"
 PV = "1_64"
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
