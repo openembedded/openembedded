@@ -1,10 +1,8 @@
 # We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
 PR = "r17"
 
-SRC_URI = "file://defconfig"
-
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
-SRC_URI += "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
+SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
 
 require ../linux/linux.inc
 
