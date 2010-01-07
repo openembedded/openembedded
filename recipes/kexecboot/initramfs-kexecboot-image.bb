@@ -4,6 +4,7 @@ PR = "r2"
 
 ONLINE_PACKAGE_MANAGEMENT = "none"
 IMAGE_FSTYPES = "cpio.gz cpio.lzma"
+DEPENDS = "lzma-native"
 
 # Deprecated: device nodes are populated by kexecboot now
 # These devices need mmcblk* to be 254 instead of 179
