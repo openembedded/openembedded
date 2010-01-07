@@ -2,17 +2,19 @@ DESCRIPTION = "Video Disk Recorder (VDR) is a digital sat-receiver program using
 AUTHOR = "Klaus Schmidinger"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://www.tvdr.de"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "fontconfig freetype gettext libcap jpeg virtual/libintl"
 
 SRC_URI = "ftp://ftp.tvdr.de/vdr/Developer/${P}.tar.bz2 \
            file://fixpaths.patch;patch=1 \
            file://cplusplus.patch;patch=1 \
-           file://libintl.patch;patch=1 \
            file://disable_plugin.patch;patch=1 \
            file://linkerflags.patch;patch=1 \
           "
+
+SRC_URI_append_linux-uclibceabi = " file://libintl.patch;patch=1 "
+SRC_URI_append_uclinux-uclibc = " file://libintl.patch;patch=1 "
 
 CFLAGS_append += " -I${STAGING_INCDIR}/freetype2"
 
