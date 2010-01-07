@@ -3,7 +3,6 @@
 #------------------------------------------------------
 
 require fso-image.inc
-require conf/distro/include/fso-autorev.inc
 
 PV = "1.1"
 PR = "r1"
