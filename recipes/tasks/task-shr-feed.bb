@@ -269,4 +269,5 @@ RDEPENDS_${PN} += "\
 		stopwatch \
 		rtmom \
 		ventura \
+		emtooth \
 "
