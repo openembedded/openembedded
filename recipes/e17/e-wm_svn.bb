@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r9"
+PR = "r10"
 
 inherit e update-alternatives
 
@@ -125,7 +125,9 @@ FILES_${PN} = "\
   ${datadir}/enlightenment/COPYING \
   ${datadir}/xsessions/enlightenment.desktop \
   ${sysconfdir}/xdg \
+  ${datadir}/enlightenment/data/config/illume-home \
 "
+
 FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"
 FILES_${PN}-config-illume = "${datadir}/enlightenment/data/config/illume"
 FILES_${PN}-config-minimalist = "${datadir}/enlightenment/data/config/minimalist"
