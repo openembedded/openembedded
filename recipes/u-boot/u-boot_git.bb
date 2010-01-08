@@ -19,9 +19,14 @@ SRC_URI_append_cm-t35 = "file://cm-t35/cm-t35.patch;patch=1"
 SRC_URI_beagleboard = "git://git.denx.de/u-boot-ti.git;protocol=git \
                  file://fw_env.config \
                  file://new-pinmux.patch;patch=1 \
+file://revision-detection.patch;patch=1 \
+file://i2c.patch;patch=1 \
+file://720MHz.patch;patch=1 \
+file://dss.patch;patch=1 \
 "
-SRCREV_beagleboard = "1590f84007e2b50ad346a482fff89195cb04ff4e"
-PV_beagleboard = "2009.08+${PR}+gitr${SRCREV}"
+
+SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
+PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCREV}"
 
 SRCREV_calamari = "f67066b6b0740b826ed862615c5ab022aaf4779a"
 PV_calamari = "2009.08+${PR}+gitr${SRCREV}"
