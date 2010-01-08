@@ -1,15 +1,16 @@
 require navit.inc
 
 PV = "0.1.0+svnr${SRCPV}"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
 
 S = "${WORKDIR}/navit"
 
-# use espeak instead speechd
-RRECOMMENDS = "gpsd espeak flite"
+# override navit.inc RRECOMMENDS, we only suggest a text2speech app
+RRECOMMENDS = "gpsd"
+RSUGGESTS   = "flite espeak
 
 DEPENDS_shr += " librsvg-native"
 RDEPENDS = " navit-icons"

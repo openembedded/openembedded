@@ -1,13 +1,13 @@
 Index: vdr-1.7.10/Makefile
 ===================================================================
---- vdr-1.7.10.orig/Makefile	2010-01-03 17:37:34.481503866 +0100
-+++ vdr-1.7.10/Makefile	2010-01-03 17:37:46.708168016 +0100
+--- vdr-1.7.10.orig/Makefile	2010-01-07 22:02:32.000000000 +0100
++++ vdr-1.7.10/Makefile	2010-01-07 22:03:01.803824516 +0100
 @@ -20,7 +20,7 @@
  MANDIR   = $(PREFIX)/share/man
  BINDIR   = $(PREFIX)/bin
  LOCDIR   = ./locale
--LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig
-+LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig -lintl
+-LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig ${LDFLAGS}
++LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig -lintl ${LDFLAGS}
  INCLUDES = ${CFLAGS}
  
  PLUGINDIR= ./PLUGINS
