@@ -2,7 +2,7 @@ SECTION = "gpe"
 RDEPENDS += "gdk-pixbuf-loader-png"
 
 INHERIT = "gpe"
-INHERIT_shr = "update-alternatives"
+INHERIT_shr = "gpe update-alternatives"
 inherit ${INHERIT}
 
 INC_PR = "r4"
