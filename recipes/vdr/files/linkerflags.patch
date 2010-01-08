@@ -1,20 +1,20 @@
 Index: vdr-1.7.10/Makefile
 ===================================================================
---- vdr-1.7.10.orig/Makefile	2010-01-03 18:32:17.621590237 +0100
-+++ vdr-1.7.10/Makefile	2010-01-03 18:32:35.494511992 +0100
+--- vdr-1.7.10.orig/Makefile	2010-01-07 22:01:54.000000000 +0100
++++ vdr-1.7.10/Makefile	2010-01-07 22:02:32.167165564 +0100
 @@ -20,7 +20,7 @@
  MANDIR   = $(PREFIX)/share/man
  BINDIR   = $(PREFIX)/bin
  LOCDIR   = ./locale
--LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig -lintl
-+LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig -lintl ${LDFLAGS}
+-LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig
++LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig ${LDFLAGS}
  INCLUDES = ${CFLAGS}
  
  PLUGINDIR= ./PLUGINS
 Index: vdr-1.7.10/PLUGINS/src/hello/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/hello/Makefile	2010-01-03 18:36:04.434906531 +0100
-+++ vdr-1.7.10/PLUGINS/src/hello/Makefile	2010-01-03 18:36:53.764486295 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/hello/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/hello/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -19,6 +19,7 @@
  
  CXX      ?= g++
@@ -34,8 +34,8 @@ Index: vdr-1.7.10/PLUGINS/src/hello/Makefile
  dist: clean
 Index: vdr-1.7.10/PLUGINS/src/osddemo/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/osddemo/Makefile	2010-01-03 18:37:03.264901094 +0100
-+++ vdr-1.7.10/PLUGINS/src/osddemo/Makefile	2010-01-03 18:37:50.811562295 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/osddemo/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/osddemo/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -17,6 +17,7 @@
  
  CXX      ?= g++
@@ -55,8 +55,8 @@ Index: vdr-1.7.10/PLUGINS/src/osddemo/Makefile
  dist: clean
 Index: vdr-1.7.10/PLUGINS/src/pictures/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/pictures/Makefile	2010-01-03 18:38:04.324891989 +0100
-+++ vdr-1.7.10/PLUGINS/src/pictures/Makefile	2010-01-03 18:38:28.857810076 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/pictures/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/pictures/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -19,6 +19,7 @@
  
  CXX      ?= g++
@@ -76,8 +76,8 @@ Index: vdr-1.7.10/PLUGINS/src/pictures/Makefile
  dist: clean
 Index: vdr-1.7.10/PLUGINS/src/servicedemo/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/servicedemo/Makefile	2010-01-03 18:38:35.431552371 +0100
-+++ vdr-1.7.10/PLUGINS/src/servicedemo/Makefile	2010-01-03 18:39:08.001139005 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/servicedemo/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/servicedemo/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -19,6 +19,7 @@
  
  CXX      ?= g++
@@ -102,8 +102,8 @@ Index: vdr-1.7.10/PLUGINS/src/servicedemo/Makefile
  dist: clean
 Index: vdr-1.7.10/PLUGINS/src/skincurses/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/skincurses/Makefile	2010-01-03 18:39:17.038217922 +0100
-+++ vdr-1.7.10/PLUGINS/src/skincurses/Makefile	2010-01-03 18:40:01.821133352 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/skincurses/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/skincurses/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -19,6 +19,7 @@
  
  CXX      ?= g++
@@ -123,8 +123,8 @@ Index: vdr-1.7.10/PLUGINS/src/skincurses/Makefile
  dist: clean
 Index: vdr-1.7.10/PLUGINS/src/sky/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/sky/Makefile	2010-01-03 18:40:08.738209760 +0100
-+++ vdr-1.7.10/PLUGINS/src/sky/Makefile	2010-01-03 18:40:20.694465450 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/sky/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/sky/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -17,6 +17,7 @@
  
  CXX      ?= g++
@@ -144,8 +144,8 @@ Index: vdr-1.7.10/PLUGINS/src/sky/Makefile
  dist: clean
 Index: vdr-1.7.10/PLUGINS/src/status/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/status/Makefile	2010-01-03 18:40:27.841126169 +0100
-+++ vdr-1.7.10/PLUGINS/src/status/Makefile	2010-01-03 18:40:41.844457953 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/status/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/status/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -17,6 +17,7 @@
  
  CXX      ?= g++
@@ -165,8 +165,8 @@ Index: vdr-1.7.10/PLUGINS/src/status/Makefile
  dist: clean
 Index: vdr-1.7.10/PLUGINS/src/svdrpdemo/Makefile
 ===================================================================
---- vdr-1.7.10.orig/PLUGINS/src/svdrpdemo/Makefile	2010-01-03 18:40:50.818205559 +0100
-+++ vdr-1.7.10/PLUGINS/src/svdrpdemo/Makefile	2010-01-03 18:41:01.831121904 +0100
+--- vdr-1.7.10.orig/PLUGINS/src/svdrpdemo/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/svdrpdemo/Makefile	2010-01-07 22:02:02.240496954 +0100
 @@ -17,6 +17,7 @@
  
  CXX      ?= g++

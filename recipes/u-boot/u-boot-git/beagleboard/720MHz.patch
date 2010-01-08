@@ -1,0 +1,262 @@
+Delivered-To: koen@beagleboard.org
+Received: by 10.216.36.75 with SMTP id v53cs218072wea;
+        Fri, 8 Jan 2010 07:40:21 -0800 (PST)
+Received: by 10.142.4.39 with SMTP id 39mr2584681wfd.128.1262965220278;
+        Fri, 08 Jan 2010 07:40:20 -0800 (PST)
+Return-Path: <33FFHSwYPC8Aqngyoshkgmrkhugxj.uxmhkgmrkhugxjmuumrkmxu0vy.ius@listserv.bounces.google.com>
+Received: from mail-pw0-f72.google.com (mail-pw0-f72.google.com [209.85.160.72])
+        by mx.google.com with ESMTP id 38si23195897pzk.46.2010.01.08.07.40.18;
+        Fri, 08 Jan 2010 07:40:19 -0800 (PST)
+Received-SPF: pass (google.com: domain of 33FFHSwYPC8Aqngyoshkgmrkhugxj.uxmhkgmrkhugxjmuumrkmxu0vy.ius@listserv.bounces.google.com designates 209.85.160.72 as permitted sender) client-ip=209.85.160.72;
+Authentication-Results: mx.google.com; spf=pass (google.com: domain of 33FFHSwYPC8Aqngyoshkgmrkhugxj.uxmhkgmrkhugxjmuumrkmxu0vy.ius@listserv.bounces.google.com designates 209.85.160.72 as permitted sender) smtp.mail=33FFHSwYPC8Aqngyoshkgmrkhugxj.uxmhkgmrkhugxjmuumrkmxu0vy.ius@listserv.bounces.google.com; dkim=pass (test mode) header.i=@googlegroups.com
+Received: by pwj4 with SMTP id 4sf2565630pwj.11
+        for <multiple recipients>; Fri, 08 Jan 2010 07:40:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlegroups.com; s=beta;
+        h=domainkey-signature:received:x-beenthere:received:received:received
+         :received:received-spf:received:mime-version:received:date
+         :message-id:subject:from:to:x-original-authentication-results
+         :x-original-sender:reply-to:precedence:mailing-list:list-id
+         :list-post:list-help:list-archive:x-thread-url:x-message-url:sender
+         :list-unsubscribe:list-subscribe:content-type;
+        bh=sLkJYeKXFIX8TOTxLWasbW6XSWbNbihsEqHqajWruOU=;
+        b=hNYYuHunIzWspBNr+rsCpj+cl3TfrJP/qRi2OR8S8fvW1ATmUGwE3UcFxBx/cz4C47
+         rPcDSOVMOKJn2ybeb7z12kDUV7FLPbzI26BjmBUXoLC4yYdCeiwS+pR/gCEP/CZsVNam
+         0/sgZd6Zfnui2nrHnqHFA/eBwvBmNr8njjhzc=
+DomainKey-Signature: a=rsa-sha1; c=nofws;
+        d=googlegroups.com; s=beta;
+        h=x-beenthere:received-spf:mime-version:date:message-id:subject:from
+         :to:x-original-authentication-results:x-original-sender:reply-to
+         :precedence:mailing-list:list-id:list-post:list-help:list-archive
+         :x-thread-url:x-message-url:sender:list-unsubscribe:list-subscribe
+         :content-type;
+        b=kvIhKL3OOVUlwb+XfiZuzkLNRQqtf4QLC8FZStrd2J1zfvTSjTuxtFrU2bqN6OVn+6
+         s9CW3qnGQKNfIuBNUfuQirfG7O/QkdVxGx8nXYPwcm1xL9mJa70CGUoNA4gnwZSFXEmA
+         v3N+BsCQs8InO9VHQxTmTP1pW4DH9HIPqIjFs=
+Received: by 10.115.67.15 with SMTP id u15mr3692522wak.15.1262965212711;
+        Fri, 08 Jan 2010 07:40:12 -0800 (PST)
+X-BeenThere: beagleboard@googlegroups.com
+Received: by 10.114.19.19 with SMTP id 19ls485387was.0.p; Fri, 08 Jan 2010 
+	07:40:07 -0800 (PST)
+Received: by 10.114.3.19 with SMTP id 19mr7029424wac.17.1262965207675;
+        Fri, 08 Jan 2010 07:40:07 -0800 (PST)
+Received: by 10.114.3.19 with SMTP id 19mr7029423wac.17.1262965207655;
+        Fri, 08 Jan 2010 07:40:07 -0800 (PST)
+Return-Path: <khasim@beagleboard.org>
+Received: from mail-px0-f196.google.com (mail-px0-f196.google.com [209.85.216.196])
+        by gmr-mx.google.com with ESMTP id 23si8245940pxi.8.2010.01.08.07.40.07;
+        Fri, 08 Jan 2010 07:40:07 -0800 (PST)
+Received-SPF: neutral (google.com: 209.85.216.196 is neither permitted nor denied by best guess record for domain of khasim@beagleboard.org) client-ip=209.85.216.196;
+Received: by pxi34 with SMTP id 34so11355653pxi.8
+        for <beagleboard@googlegroups.com>; Fri, 08 Jan 2010 07:40:07 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.142.75.10 with SMTP id x10mr1272361wfa.153.1262965205948; Fri, 
+	08 Jan 2010 07:40:05 -0800 (PST)
+Date: Fri, 8 Jan 2010 21:10:05 +0530
+Message-ID: <a8ca84ad1001080740l63fdac79y6b478863b0a5e316@mail.gmail.com>
+Subject: [beagleboard] TI:OMAP: [PATCH 3/4] Support 720Mhz configuration for 
+	OMAP35xx
+From: Khasim Syed Mohammed <khasim@beagleboard.org>
+To: u-boot@lists.denx.de, beagleboard@googlegroups.com
+X-Original-Authentication-Results: gmr-mx.google.com; spf=neutral (google.com: 
+	209.85.216.196 is neither permitted nor denied by best guess record for 
+	domain of khasim@beagleboard.org) smtp.mail=khasim@beagleboard.org
+X-Original-Sender: khasim@beagleboard.org
+Reply-To: beagleboard@googlegroups.com
+Precedence: list
+Mailing-list: list beagleboard@googlegroups.com; contact beagleboard+owners@googlegroups.com
+List-ID: <beagleboard.googlegroups.com>
+List-Post: <http://groups.google.com/group/beagleboard/post?hl=>, 
+	<mailto:beagleboard@googlegroups.com>
+List-Help: <http://groups.google.com/support/?hl=>, <mailto:beagleboard+help@googlegroups.com>
+List-Archive: <http://groups.google.com/group/beagleboard?hl=>
+X-Thread-Url: http://groups.google.com/group/beagleboard/t/1d8e4b923e126fcb
+X-Message-Url: http://groups.google.com/group/beagleboard/msg/b8825bed3084009a
+Sender: beagleboard@googlegroups.com
+List-Unsubscribe: <http://groups.google.com/group/beagleboard/subscribe?hl=>, 
+	<mailto:beagleboard+unsubscribe@googlegroups.com>
+List-Subscribe: <http://groups.google.com/group/beagleboard/subscribe?hl=>, 
+	<mailto:beagleboard+subscribe@googlegroups.com>
+Content-Type: multipart/mixed; boundary=001636b2ac6d98250e047ca900e4
+
+--001636b2ac6d98250e047ca900e4
+Content-Type: text/plain; charset=ISO-8859-1
+
+From bba669562fa208d12f4c7cd8188446e8576cd6ee Mon Sep 17 00:00:00 2001
+From: Syed Mohammed Khasim <khasim@ti.com>
+Date: Fri, 8 Jan 2010 20:34:37 +0530
+Subject: [PATCH] Support 720Mhz configuration for OMAP35xx
+
+Adds a new API "twl4030_pmrecv_vsel_cfg" to select voltage and group
+Adds support for 720Mhz in clock.c
+Board file modified to use these new APIs and boot at 720Mhz
+
+Signed-off-by: Syed Mohammed Khasim <khasim@ti.com>
+---
+ board/ti/beagle/beagle.c       |   20 ++++++++++++++++++--
+ cpu/arm_cortexa8/omap3/clock.c |   21 +++++++++++++++++++++
+ drivers/power/twl4030.c        |   24 +++++++++++++++---------
+ include/twl4030.h              |   16 ++++++++++++++++
+ 4 files changed, 70 insertions(+), 11 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 0def5a6..7985ee9 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -122,9 +122,27 @@ int misc_init_r(void)
+ 	struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
+ 	struct gpio *gpio6_base = (struct gpio *)OMAP34XX_GPIO6_BASE;
+
++	beagle_identify();
++
+ 	twl4030_power_init();
+ 	twl4030_led_init();
+
++	if (beagle_revision == REVISION_C4) {
++
++		/* Select TWL4030 VSEL to support 720Mhz */
++		twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VAUX2_DEDICATED,
++					VAUX2_VSEL_18,
++					TWL4030_PM_RECEIVER_VAUX2_DEV_GRP,
++					DEV_GRP_P1);
++
++		twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VDD1_VSEL,
++					VDD1_VSEL_14,
++					TWL4030_PM_RECEIVER_VDD1_DEV_GRP,
++					DEV_GRP_P1);
++
++		prcm_config_720mhz();
++	}
++
+ 	/* Configure GPIOs to output */
+ 	writel(~(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1), &gpio6_base->oe);
+ 	writel(~(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
+@@ -136,8 +154,6 @@ int misc_init_r(void)
+ 	writel(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
+ 		GPIO15 | GPIO14 | GPIO13 | GPIO12, &gpio5_base->setdataout);
+
+-	beagle_identify();
+-
+ 	dieid_num_r();
+
+ 	return 0;
+diff --git a/cpu/arm_cortexa8/omap3/clock.c b/cpu/arm_cortexa8/omap3/clock.c
+index 174c453..d67517a 100644
+--- a/cpu/arm_cortexa8/omap3/clock.c
++++ b/cpu/arm_cortexa8/omap3/clock.c
+@@ -402,3 +402,24 @@ void per_clocks_enable(void)
+
+ 	sdelay(1000);
+ }
++
++/*
++ * Configure PRCM registers to get 720 Mhz
++ *
++ * NOTE: N value doesn't change, only M gets affected
++ */
++void prcm_config_720mhz(void)
++{
++	struct prcm *prcm_base = (struct prcm *)PRCM_BASE;
++
++	/* Unlock MPU DPLL (slows things down, and needed later) */
++	sr32(&prcm_base->clken_pll_mpu, 0, 3, PLL_LOW_POWER_BYPASS);
++	wait_on_value(ST_MPU_CLK, 0, &prcm_base->idlest_pll_mpu, LDELAY);
++
++	/* Set M */
++	sr32(&prcm_base->clksel1_pll_mpu, 8, 11, 0x2D0);
++
++	/* lock mode */
++	sr32(&prcm_base->clken_pll_mpu, 0, 3, PLL_LOCK);
++	wait_on_value(ST_MPU_CLK, 1, &prcm_base->idlest_pll_mpu, LDELAY);
++}
+diff --git a/drivers/power/twl4030.c b/drivers/power/twl4030.c
+index eb066cb..d68e515 100644
+--- a/drivers/power/twl4030.c
++++ b/drivers/power/twl4030.c
+@@ -59,16 +59,9 @@ void twl4030_power_reset_init(void)
+ 	}
+ }
+
+-
+ /*
+  * Power Init
+  */
+-#define DEV_GRP_P1		0x20
+-#define VAUX3_VSEL_28		0x03
+-#define DEV_GRP_ALL		0xE0
+-#define VPLL2_VSEL_18		0x05
+-#define VDAC_VSEL_18		0x03
+-
+ void twl4030_power_init(void)
+ {
+ 	unsigned char byte;
+@@ -98,8 +91,6 @@ void twl4030_power_init(void)
+ 			     TWL4030_PM_RECEIVER_VDAC_DEDICATED);
+ }
+
+-#define VMMC1_VSEL_30		0x02
+-
+ void twl4030_power_mmc_init(void)
+ {
+ 	unsigned char byte;
+@@ -113,3 +104,18 @@ void twl4030_power_mmc_init(void)
+ 	twl4030_i2c_write_u8(TWL4030_CHIP_PM_RECEIVER, byte,
+ 			     TWL4030_PM_RECEIVER_VMMC1_DEDICATED);
+ }
++
++/*
++ * Generic function to select Device Group and Voltage
++ */
++void twl4030_pmrecv_vsel_cfg(u8 vsel_reg, u8 vsel_val,
++				u8 dev_grp, u8 dev_grp_sel)
++{
++	/* Select the Device Group */
++	twl4030_i2c_write_u8(TWL4030_CHIP_PM_RECEIVER, dev_grp_sel,
++				dev_grp);
++
++	/* Select the Voltage */
++	twl4030_i2c_write_u8(TWL4030_CHIP_PM_RECEIVER, vsel_val,
++				vsel_reg);
++}
+diff --git a/include/twl4030.h b/include/twl4030.h
+index f260ecb..b96c96c 100644
+--- a/include/twl4030.h
++++ b/include/twl4030.h
+@@ -359,6 +359,22 @@
+ #define TWL4030_USB_PHY_DPLL_CLK			(1 << 0)
+
+ /*
++ * Voltage Selection in PM Receiver Module
++ */
++#define VAUX2_VSEL_18		0x05
++#define VDD1_VSEL_14		0x40
++#define VAUX3_VSEL_28		0x03
++#define VPLL2_VSEL_18		0x05
++#define VDAC_VSEL_18		0x03
++#define VMMC1_VSEL_30		0x02
++
++/*
++ * Device Selection
++ */
++#define DEV_GRP_P1		0x20
++#define DEV_GRP_ALL		0xE0
++
++/*
+  * Convience functions to read and write from TWL4030
+  *
+  * chip_no is the i2c address, it must be one of the chip addresses
+-- 
+1.5.6.3
+
+--001636b2ac6d98250e047ca900e4
+Content-Type: text/plain; charset=ISO-8859-1
+
+-- 
+You received this message because you are subscribed to the Google Groups "Beagle Board" group.
+To post to this group, send email to beagleboard@googlegroups.com.
+To unsubscribe from this group, send email to beagleboard+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/beagleboard?hl=en.
+
+
+
+--001636b2ac6d98250e047ca900e4--

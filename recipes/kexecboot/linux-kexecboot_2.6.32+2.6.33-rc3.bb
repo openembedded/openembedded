@@ -16,7 +16,7 @@ DEFAULT_PREFERENCE_poodle = "-1"
 DEFAULT_PREFERENCE_spitz = "1"
 DEFAULT_PREFERENCE_tosa = "-1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}.tar.bz2;name=kernel \
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KERNEL_RELEASE}.bz2;name=rc3;patch=1 \
 	   file://0001-pxafb-fix-regression-from-d2a34c13e7ccec5d06eafd60e6.patch;patch=1 \
            file://defconfig"

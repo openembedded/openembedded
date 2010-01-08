@@ -6,7 +6,7 @@ RDEPENDS = "gdk-pixbuf-loader-png gpe-filemanager gpe-sketchbook"
 RRECOMMENDS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
-PV = "0.2-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.2-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "${INC_PR}.0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

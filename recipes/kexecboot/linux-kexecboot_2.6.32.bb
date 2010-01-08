@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE_poodle = "-1"
 DEFAULT_PREFERENCE_spitz = "-1"
 DEFAULT_PREFERENCE_tosa = "-1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
 #           file://v3-1-4-Add-support-for-LZO-compressed-kernels.patch;patch=1;status=pending \
 #           file://v3-2-4-Add-support-for-LZO-compressed-kernels-for-ARM.patch;patch=1;status=pending \
 #           file://v3-3-4-Add-support-for-LZO-compressed-kernels-on-x86.patch;patch=1;status=pending \

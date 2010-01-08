@@ -17,6 +17,7 @@ ac_cv_path_PERL=${bindir}/perl \
 ac_cv_path_ZIP=${bindir}/zip \
 ac_cv_path_UNZIP=${bindir}/unzip \
 "
+EXTRA_OEMAKE = 'GLIB_CFLAGS_FOR_BUILD="$GLIB_CFLAGS_FOR_BUILD" GLIB_LIBS_FOR_BUILD="$GLIB_LIBS_FOR_BUILD" CC_FOR_BUILD="$CC_FOR_BUILD"'
 
 PACKAGES += "${PN}-extfs ${PN}-hilite"
 FILES_${PN} = "${bindir}/ ${libexecdir}/mc ${datadir}/mc/*.charsets ${datadir}/mc/*.ext ${datadir}/mc/*.hint ${datadir}/mc/*.hlp ${datadir}/mc/*.lib ${datadir}/mc/*.menu ${datadir}/mc/*.rc ${datadir}/mc/bin /etc/profile.d"
@@ -33,8 +34,10 @@ export CC_FOR_BUILD = "${BUILD_CC}"
 export CFLAGS_FOR_BUILD = "${BUILD_CFLAGS}"
 export LD_FOR_BUILD = "${BUILD_CC}"
 do_compile_prepend() {
-	export GLIB_CFLAGS_FOR_BUILD="`${STAGING_BINDIR_NATIVE}/pkg-config --cflags glib-2.0`"
-	export GLIB_LIBS_FOR_BUILD="`${STAGING_BINDIR_NATIVE}/pkg-config --libs glib-2.0`"
+	# FIXME: Ugly! Should be done globally with respect to the host system (in classes) instead of NATIVE_PKGCONFIG_PATH:
+	export HOST_PKG_CONFIG_PATH=
+	export GLIB_CFLAGS_FOR_BUILD="`PKG_CONFIG_PATH="$HOST_PKG_CONFIG_PATH" PKG_CONFIG_SYSROOT_DIR="" pkg-config --cflags glib-2.0`"
+	export GLIB_LIBS_FOR_BUILD="`PKG_CONFIG_PATH="$HOST_PKG_CONFIG_PATH" PKG_CONFIG_SYSROOT_DIR="" pkg-config --libs glib-2.0`"
 }
 
 do_install_append() {
