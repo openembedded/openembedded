@@ -1,7 +1,16 @@
 require cornucopia.inc
 inherit fso-plugin
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 PV = "0.0.0+gitr${SRCPV}"
 PE = "1"
 
 DEPENDS += "libfsotransport libfsoresource"
+
+SRC_URI += "file://fsotdld.conf"
+
+do_install_append() {
+	install -d ${D}${sysconfdir}/freesmartphone/
+	install -m 0644 ${WORKDIR}/fsotdld.conf ${D}${sysconfdir}/freesmartphone/
+}
+
+FILES_${PN} += "${sysconfdir}/freesmartphone/fsotdld.conf"
