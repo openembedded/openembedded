@@ -1,5 +1,5 @@
 require vdr.inc
-PR = "r2"
+PR = "r3"
 
 SRC_URI += " file://fixpaths.patch;patch=1 \
            file://cplusplus.patch;patch=1 \
