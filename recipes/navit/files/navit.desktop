@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Navit
 Comment=GPS Navigation
-Exec=navit
+Exec=unset LC_ALL && navit
 Icon=navit
 Terminal=false
 Type=Application
