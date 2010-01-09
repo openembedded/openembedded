@@ -1,9 +1,6 @@
 require busybox.inc
 PR = "${INC_PR}.0"
 
-# Temporary block this upgrade until our u-a problem is resolved
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   \
