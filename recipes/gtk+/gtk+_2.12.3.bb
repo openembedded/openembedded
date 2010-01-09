@@ -2,9 +2,6 @@ require gtk+.inc
 
 PR = "${INC_PR}.0"
 
-# disable per default - untested and not all patches included.
-DEFAULT_PREFERENCE = "-1" 
-
 SRC_URI += "file://cellrenderer-cairo.patch;patch=1;pnum=0 \
            file://entry-cairo.patch;patch=1;pnum=0 \
            file://scrolled-placement.patch;patch=1;pnum=0"

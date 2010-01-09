@@ -2,9 +2,6 @@ require gtk+.inc
 
 PR = "${INC_PR}.0"
 
-# disabled per default - this uses as little patches as possible
-DEFAULT_PREFERENCE = "-1" 
-
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
