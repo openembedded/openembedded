@@ -39,6 +39,3 @@ UDEV_GE_141 = "1"
 # Downgraded
 # python-pygtk_2.16.0 is accessing non-existent /usr/share/pygobject/2.0/codegen/codegen.py
 PREFERRED_VERSION_python-pygtk = "2.10.4"
-
-# 2.0.9 tries to use /usr/include/SDL from buildhost and fails with QA Cross Compile Badness
-PREFERRED_VERSION_libsdl-ttf = "2.0.3"
