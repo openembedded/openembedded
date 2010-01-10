@@ -2,11 +2,10 @@ DESCRIPTION = "Robust and configurable e-mail client for GNOME"
 HOMEPAGE = "http://pawsa.fedorapeople.org/balsa/"
 SECTION = "x11/network"
 LICENSE = "GPL"
-SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2 \
-	   file://gnome-icon-theme.patch;patch=1"
-PR = "r1"
+SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2"
+PR = "r0"
 
-DEPENDS = "glib-2.0 libgmime-2.4 gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native"
+DEPENDS = "glib-2.0 gmime gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native"
 RDEPENDS_${PN} = "gnome-icon-theme"
 # FIXME: It is possible to build several variants of balsa: lite (SSL, gqlite/GPE, maybe HTML),
 # standard (GNOME, spell checking, HTML), full (Kerberos, LDAP, PGP, Rubrica, X-Face)
@@ -22,6 +21,9 @@ DEPENDS += "webkit-gtk"
 
 # Optional dependencies (missing in OE): Spell checking
 #DEPENDS += "gtkspell"
+
+# Optional dependencies: desktop notification:
+DEPENDS += "libnotify"
 
 # Optional dependencies: SSL support:
 DEPENDS += "openssl"
@@ -45,6 +47,9 @@ DEPENDS += "gconf libgnome libgnomeui"
 # Options for optional Kerberos 5: heimdal (not in OE) krb5
 #DEPENDS += "krb5"
 
+# Optional dependencies: automatic online/offline with NetworkManager:
+#DEPENDS += "networkmanager"
+
 # Optional dependencies: Rubrica addressbook:
 #DEPENDS += "libxml2"
 
@@ -67,6 +72,7 @@ EXTRA_OECONF="--with-ssl \
 	      --with-webkit \
 	      --with-unique \
 	      --without-gtkspell \
+	      --without-nm \
 "
 # Broken (does not compile, crashes after symbol fix):
 #	      --enable-touch-ui \
