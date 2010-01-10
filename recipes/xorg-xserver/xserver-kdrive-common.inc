@@ -1,6 +1,7 @@
 LICENSE = "MIT"
 DEPENDS = "compositeproto damageproto fixesproto recordproto resourceproto scrnsaverproto xineramaproto videoproto xextproto xproto \
-	libxau libxext libxdmcp libxfont libxrandr tslib virtual/libx11 xtrans"
+	libxau libxext libxdmcp libxfont libxrandr tslib virtual/libx11 xtrans xextproto-70-includes"
+INC_PR = "r28"
 
 PKGN ?= "xserver-kdrive"
 
@@ -93,6 +94,8 @@ PACKAGE_ARCH_qemux86 = "${MACHINE_ARCH}"
 inherit autotools pkgconfig
 
 ARM_INSTRUCTION_SET = "arm"
+
+CFLAGS_prepend = "-I${STAGING_INCDIR}/xextproto-70 "
 
 EXTRA_OECONF = "--enable-composite --enable-kdrive \
                 --disable-dga --disable-dri --disable-xinerama \

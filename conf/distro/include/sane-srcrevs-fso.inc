@@ -13,7 +13,7 @@ SRCREV_pn-fsotimed ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsotdld ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsousaged ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsobasics ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-libfsoframework ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-libfsoframework ?= "c227502c59f4d1de3b3097b3329c2461d6cfa2a2"
 SRCREV_pn-libfsotransport ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
 

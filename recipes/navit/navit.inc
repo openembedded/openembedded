@@ -5,11 +5,22 @@ DEPENDS = "glib-2.0 gtk+"
 RRECOMMENDS = "gpsd speechd flite"
 
 PE = "1"
-INC_PR = "r4"
+INC_PR = "r5"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned"
+EXTRA_OECONF = " \
+  --disable-binding-python \
+  --disable-gui-sdl \
+  --disable-samplemap \
+  --enable-avoid-unaligned \
+  --disable-graphics-qt-qpainter \
+"
+
+#  --enable-avoid-float \
+#check for TARGET_FPU=soft and inform configure of the result so it can disable some floating points
+require navit-fpu.inc
+EXTRA_OECONF += "${@get_navit_fpu_setting(bb, d)}"
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
 

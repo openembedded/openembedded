@@ -203,6 +203,13 @@ Machines:   ronetix-pm9263, vortex86sx, at91sam9g20ek
 Distros:    KaeilOS, Ångström
 Interests:  x86, ARM, wxWidgets
 
+Person:     Martin 'JaMa' Jansa
+Mail:       Martin.Jansa@gmail.com
+Machines:   spitz, om-gta02
+Distros:    SHR, Ångström
+Interests:  xorg
+Recipes:    shr/*, xorg-*/*, linux/*openmoko*
+
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net
 Distros:    Sonkei
