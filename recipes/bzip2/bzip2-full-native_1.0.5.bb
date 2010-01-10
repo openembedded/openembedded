@@ -1,24 +1,16 @@
-DESCRIPTION = "Very high-quality data compression program."
+DESCRIPTION = "Very high-quality data compression program"
 SECTION = "console/utils"
-PR = "r0"
+PR = "r1"
 
 LICENSE = "bzip2"
-SRC_URI = "http://www.bzip.org/1.0.5/bzip2-1.0.5.tar.gz \
-           file://configure.ac \
-	   file://Makefile.am"
+FILESPATH =. "${FILE_DIRNAME}/bzip2-${PV}:"
+SRC_URI = "http://www.bzip.org/${PV}/bzip2-${PV}.tar.gz \
+	   file://bzip2-1.0.5-autoconfiscated.patch;patch=1"
 
 S = "${WORKDIR}/bzip2-${PV}"
 
-CFLAGS_append = " -fPIC -fpic -Winline -fno-strength-reduce -D_FILE_OFFSET_BITS=64"
-
-inherit autotools native
+inherit autotools_stage pkgconfig native
 
 do_configure_prepend () {
-	cp ${WORKDIR}/configure.ac ${S}/
-	cp ${WORKDIR}/Makefile.am ${S}/
-}
-
-do_stage () {
-	install -m 0644 bzlib.h ${STAGING_INCDIR}/
-	oe_libinstall -a -so libbz2 ${STAGING_LIBDIR}
+	if test -f LICENSE ; then sh ./autogen.sh ; fi
 }
