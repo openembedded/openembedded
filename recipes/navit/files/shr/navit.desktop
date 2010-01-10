@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Navit
 Comment=GPS Navigation
-Exec=unset LC_ALL && fsoraw -r CPU,GPS -- navit
+Exec=unset LC_ALL && fsoraw -rf CPU,GPS -- navit
 Icon=navit
 Terminal=false
 Type=Application

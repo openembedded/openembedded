@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE config SYSTEM "navit.dtd">
 <config xmlns:xi="http://www.w3.org/2001/XInclude">
-	<xi:include href="/usr/share/navit/navit.default.xml" xpointer="xpointer(/config/plugins)"/>
+	<xi:include href="/usr/share/navit/plugins.xml"/>
 	<xi:include href="/usr/share/navit/navit.default.xml" xpointer="xpointer(/config/debug)"/>
 
 	<navit center="4808 N 1134 E" zoom="256" tracking="1" orientation="-1" recent_dest="10" drag_bitmap="1">
