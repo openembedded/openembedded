@@ -1,7 +1,7 @@
 require navit.inc
 
 PV = "0.1.0+svnr${SRCPV}"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
@@ -27,12 +27,14 @@ CONFFILES_${PN} += "${datadir}/navit/navit.default.xml \
                     ${datadir}/navit/maps.xml \
                     ${datadir}/navit/osd.xml \
                     ${datadir}/navit/speech.xml \
+                    ${datadir}/navit/plugins.xml \
                    "
 
 SRC_URI += "file://navit.xml \
             file://maps.xml \
             file://osd.xml \
             file://speech.xml \
+            file://plugins.xml \
 	   "
 
 #Second launcher for shr
@@ -55,6 +57,7 @@ do_install_append() {
         install -m 0644 ${WORKDIR}/maps.xml ${D}${datadir}/navit/maps.xml
         install -m 0644 ${WORKDIR}/osd.xml ${D}${datadir}/navit/osd.xml
         install -m 0644 ${WORKDIR}/speech.xml ${D}${datadir}/navit/speech.xml
+        install -m 0644 ${WORKDIR}/plugins.xml ${D}${datadir}/navit/plugins.xml
 }
 
 do_install_append_shr() {
