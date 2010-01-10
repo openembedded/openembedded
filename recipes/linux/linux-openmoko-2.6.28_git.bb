@@ -18,7 +18,6 @@ S = "${WORKDIR}/git"
 
 CONFIG_NAME_om-gta01 = "gta01_moredrivers_defconfig"
 CONFIG_NAME_om-gta02 = "gta02_packaging_defconfig"
-CONFIG_NAME_om-gta03 = "gta03_defconfig"
 
 do_configure_prepend() {
 	install -m 644 ./arch/arm/configs/${CONFIG_NAME} ${WORKDIR}/defconfig-oe

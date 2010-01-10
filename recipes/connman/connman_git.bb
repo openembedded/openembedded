@@ -20,12 +20,14 @@ EXTRA_OECONF = " \
   --enable-fake \
 "
 
+EXTRA_OECONF_append_shr += "--disable-tools"
+
 require connman.inc
 
 SRCREV = "1a94db417ecaba20a609ff4b4431a3f67c5dcbc6" 
 
 PV = "0.42+git"
-PR = "r0"
+PR = "r2"
 PR_append = ".gitr${SRCREV}"
 
 DEFAULT_PREFERENCE = "-1"

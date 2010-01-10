@@ -8,6 +8,7 @@ PR = "r0"
 SRC_URI = "http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-${PV}.tar.gz"
 
 S = "${WORKDIR}/SDL_ttf-${PV}"
+EXTRA_OECONF += "SDL_CONFIG=${STAGING_BINDIR_CROSS}/sdl-config "
 
 inherit autotools
 

@@ -26,3 +26,6 @@ SRC_URI_append = " \
 
 S = "${WORKDIR}/git"
 
+PACKAGES =+ "omap-dss-doc"
+FILES_omap-dss-doc = "/boot/DSS"
+
