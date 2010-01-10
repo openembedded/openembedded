@@ -29,7 +29,7 @@ SRC_URI_append_armv7a = " \
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
 
-SRCREV_om-gta02 = "5519d0dfd3f9504f24aa9fe154f831bb718cbfc3"
+SRCREV_om-gta02 = "18ae04330acaa9212b422e71eee239eacd475805"
 SRCREV = "e5bcd70bc5b0557635ae51c7093f0e887493d4ba"
 
 PACKAGE_ARCH_collie = "collie"

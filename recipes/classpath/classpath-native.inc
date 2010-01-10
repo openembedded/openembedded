@@ -30,6 +30,7 @@ EXTRA_OECONF = "\
   --disable-gtk-peer \
   --disable-plugin \
   --disable-dssi \
+  --disable-gjdoc \
   --enable-examples \
   --enable-tools \
   --includedir=${STAGING_INCDIR}/classpath \
