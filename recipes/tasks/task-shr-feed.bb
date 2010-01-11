@@ -231,7 +231,7 @@ RDEPENDS_${PN} += "\
 		aceofpenguins-launcher \
 		om-neon \
 		ipython \
-		phoneme-advanced-foundation \
+#		phoneme-advanced-foundation \
 		eve \
 #		python-pybluez \
 		x11perf \
