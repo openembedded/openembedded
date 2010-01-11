@@ -36,7 +36,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCPV}"
-PR = "r14"
+PR = "r15"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
@@ -132,7 +132,7 @@ EXTRA_OECONF = " \
 	--disable-dxr2 \
 	--disable-dxr3 \
 	--disable-dvb \
-	--disable-dvbhead \
+	--enable-dvbhead \
 	--disable-mga \
 	--disable-xmga \
 	--enable-xv \
