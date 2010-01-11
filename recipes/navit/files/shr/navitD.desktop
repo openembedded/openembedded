@@ -8,3 +8,4 @@ Type=Application
 Categories=GTK;
 MimeType=text/x-vcard;
 StartupNotify=true
+SingleInstance=true
