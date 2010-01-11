@@ -2,7 +2,7 @@ require cornucopia.inc
 inherit fso-plugin
 PV = "0.9.0.1+gitr${SRCPV}"
 PE = "1"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI += "file://fsousaged.conf"
 
@@ -12,3 +12,4 @@ do_install_append() {
 }
 
 FILES_${PN} += "${sysconfdir}/freesmartphone/fsousaged.conf"
+CONFFILES_${PN} += "${sysconfdir}/freesmartphone/fsousaged.conf"

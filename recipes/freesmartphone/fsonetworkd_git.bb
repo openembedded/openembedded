@@ -3,7 +3,7 @@ inherit fso-plugin
 DEPENDS += "libnl2"
 PV = "0.1.0.0+gitr${SRCPV}"
 PE = "1"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI += "file://fsonetworkd.conf"
 
@@ -13,3 +13,4 @@ do_install_append() {
 }
 
 FILES_${PN} += "${sysconfdir}/freesmartphone/fsonetworkd.conf"
+CONFFILES_${PN} += "${sysconfdir}/freesmartphone/fsonetworkd.conf"
