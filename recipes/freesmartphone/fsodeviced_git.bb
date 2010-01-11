@@ -6,7 +6,7 @@ RDEPENDS += "libcanberra-alsa"
 RRECOMMENDS += "fso-alsa-data"
 PV = "0.9.0+gitr${SRCREV}"
 PE = "1"
-PR = "${INC_PR}.7"
+PR = "${INC_PR}.8"
 
 EXTRA_OECONF = "\
   --enable-kernel26-rfkill \
@@ -28,3 +28,4 @@ do_install_append() {
 }
 
 FILES_${PN} += "${sysconfdir}/init.d/fsodeviced ${sysconfdir}/freesmartphone/fsodeviced.conf"
+CONFFILES_${PN} += "${sysconfdir}/freesmartphone/fsodeviced.conf"
