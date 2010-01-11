@@ -2,8 +2,9 @@ DESCRIPTION = "Robust and configurable e-mail client for GNOME"
 HOMEPAGE = "http://pawsa.fedorapeople.org/balsa/"
 SECTION = "x11/network"
 LICENSE = "GPL"
-SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2"
-PR = "r0"
+SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2 \
+	   file://libbalsa-gpe-corruption.patch;patch=1"
+PR = "r1"
 
 DEPENDS = "glib-2.0 gmime gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native"
 RDEPENDS_${PN} = "gnome-icon-theme"
@@ -61,7 +62,7 @@ DEPENDS += "gconf libgnome libgnomeui"
 
 # FIXME: doc build requires docbook4 and gnome-doc-utils
 
-inherit autotools
+inherit autotools gtk-icon-cache
 
 EXTRA_OECONF="--with-ssl \
 	      --without-gnome \
