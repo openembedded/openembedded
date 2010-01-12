@@ -1,5 +1,7 @@
 require gpe-clock.inc
 
+PR = "${INC_PR}.0"
+
 inherit autotools
 
 SRC_URI = "${GPE_SVN} \
