@@ -4,7 +4,7 @@
 PREFERRED_VERSION_ti-codec-engine = "2_25_01_06"
  
 PREFERRED_VERSION_ti-biosutils = "1_02_02"
-PREFERRED_VERSION_ti-cgt6x = "6190"
+PREFERRED_VERSION_ti-cgt6x = "6_1_9"
 PREFERRED_VERSION_ti-dspbios = "5_41_02_14"
 PREFERRED_VERSION_ti-dsplink-module = "1_64"
 PREFERRED_VERSION_ti-edma3lld = "01_11_00_03"
