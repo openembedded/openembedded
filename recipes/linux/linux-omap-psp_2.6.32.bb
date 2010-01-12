@@ -18,6 +18,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://dss2/0015-OMAP-DSS-Add-DSS2-support-for-Beagle.patch;patch=1 \
            file://dss2/0016-video-add-timings-for-hd720.patch;patch=1 \
            file://holes.patch;patch=1 \
+           file://no-mmc-spew.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
