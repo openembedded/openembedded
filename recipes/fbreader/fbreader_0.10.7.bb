@@ -4,6 +4,7 @@ SECTION = "x11/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv liblinebreak libfribidi"
+PR = "r1"
 
 SRC_URI = "http://www.fbreader.org/fbreader-sources-${PV}.tgz file://help.patch;patch=1"
 	   

@@ -1,0 +1,145 @@
+From 10cd78db62cbda2f9db1c53d459ee03a35b84662 Mon Sep 17 00:00:00 2001
+From: Mike Rapoport <mike@compulab.co.il>
+Date: Tue, 1 Dec 2009 13:16:02 +0200
+Subject: [PATCH 3/6] omap3: cm-t35: update defconfig for DSS2
+
+Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+---
+ arch/arm/configs/cm_t35_defconfig |   82 +++++++++++++++++++++++++++++++++++--
+ 1 files changed, 78 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/configs/cm_t35_defconfig b/arch/arm/configs/cm_t35_defconfig
+index e42c5c8..bd6f882 100644
+--- a/arch/arm/configs/cm_t35_defconfig
++++ b/arch/arm/configs/cm_t35_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+-# Linux kernel version: 2.6.32-rc4
+-# Tue Oct 13 17:10:40 2009
++# Linux kernel version: 2.6.32-rc8
++# Tue Dec  1 12:08:44 2009
+ #
+ CONFIG_ARM=y
+ CONFIG_SYS_SUPPORTS_APM_EMULATION=y
+@@ -215,6 +215,7 @@ CONFIG_OMAP_DM_TIMER=y
+ # CONFIG_OMAP_LL_DEBUG_UART1 is not set
+ # CONFIG_OMAP_LL_DEBUG_UART2 is not set
+ CONFIG_OMAP_LL_DEBUG_UART3=y
++# CONFIG_OMAP_LL_DEBUG_NONE is not set
+ # CONFIG_OMAP_PM_NONE is not set
+ CONFIG_OMAP_PM_NOOP=y
+ CONFIG_ARCH_OMAP34XX=y
+@@ -227,11 +228,15 @@ CONFIG_ARCH_OMAP3430=y
+ # CONFIG_MACH_OMAP_LDP is not set
+ # CONFIG_MACH_OVERO is not set
+ # CONFIG_MACH_OMAP3EVM is not set
++# CONFIG_MACH_OMAP3517EVM is not set
+ # CONFIG_MACH_OMAP3_PANDORA is not set
+ # CONFIG_MACH_OMAP_3430SDP is not set
+ # CONFIG_MACH_NOKIA_RX51 is not set
+ # CONFIG_MACH_OMAP_ZOOM2 is not set
++# CONFIG_MACH_OMAP_ZOOM3 is not set
+ CONFIG_MACH_CM_T35=y
++# CONFIG_MACH_IGEP0020 is not set
++# CONFIG_MACH_OMAP_3630SDP is not set
+ 
+ #
+ # Processor Type
+@@ -963,6 +968,7 @@ CONFIG_SSB_POSSIBLE=y
+ # CONFIG_TPS65010 is not set
+ CONFIG_TWL4030_CORE=y
+ # CONFIG_TWL4030_POWER is not set
++# CONFIG_TWL4030_CODEC is not set
+ # CONFIG_MFD_TMIO is not set
+ # CONFIG_MFD_T7L66XB is not set
+ # CONFIG_MFD_TC6387XB is not set
+@@ -993,8 +999,66 @@ CONFIG_REGULATOR_TWL4030=y
+ #
+ # CONFIG_VGASTATE is not set
+ # CONFIG_VIDEO_OUTPUT_CONTROL is not set
+-# CONFIG_FB is not set
+-# CONFIG_BACKLIGHT_LCD_SUPPORT is not set
++CONFIG_FB=y
++# CONFIG_FIRMWARE_EDID is not set
++# CONFIG_FB_DDC is not set
++# CONFIG_FB_BOOT_VESA_SUPPORT is not set
++CONFIG_FB_CFB_FILLRECT=y
++CONFIG_FB_CFB_COPYAREA=y
++CONFIG_FB_CFB_IMAGEBLIT=y
++# CONFIG_FB_CFB_REV_PIXELS_IN_BYTE is not set
++# CONFIG_FB_SYS_FILLRECT is not set
++# CONFIG_FB_SYS_COPYAREA is not set
++# CONFIG_FB_SYS_IMAGEBLIT is not set
++# CONFIG_FB_FOREIGN_ENDIAN is not set
++# CONFIG_FB_SYS_FOPS is not set
++# CONFIG_FB_SVGALIB is not set
++# CONFIG_FB_MACMODES is not set
++# CONFIG_FB_BACKLIGHT is not set
++# CONFIG_FB_MODE_HELPERS is not set
++# CONFIG_FB_TILEBLITTING is not set
++
++#
++# Frame buffer hardware drivers
++#
++# CONFIG_FB_S1D13XXX is not set
++# CONFIG_FB_VIRTUAL is not set
++# CONFIG_FB_METRONOME is not set
++# CONFIG_FB_MB862XX is not set
++# CONFIG_FB_BROADSHEET is not set
++# CONFIG_FB_OMAP_BOOTLOADER_INIT is not set
++CONFIG_OMAP2_VRAM=y
++CONFIG_OMAP2_VRFB=y
++CONFIG_OMAP2_DSS=y
++CONFIG_OMAP2_VRAM_SIZE=4
++CONFIG_OMAP2_DSS_DEBUG_SUPPORT=y
++# CONFIG_OMAP2_DSS_RFBI is not set
++CONFIG_OMAP2_DSS_VENC=y
++# CONFIG_OMAP2_DSS_SDI is not set
++# CONFIG_OMAP2_DSS_DSI is not set
++# CONFIG_OMAP2_DSS_FAKE_VSYNC is not set
++CONFIG_OMAP2_DSS_MIN_FCK_PER_PCK=0
++CONFIG_FB_OMAP2=y
++CONFIG_FB_OMAP2_DEBUG_SUPPORT=y
++# CONFIG_FB_OMAP2_FORCE_AUTO_UPDATE is not set
++CONFIG_FB_OMAP2_NUM_FBS=3
++
++#
++# OMAP2/3 Display Device Drivers
++#
++CONFIG_PANEL_GENERIC=y
++# CONFIG_PANEL_SAMSUNG_LTE430WQ_F0C is not set
++# CONFIG_PANEL_SHARP_LS037V7DW01 is not set
++CONFIG_PANEL_TOPPOLY_TDO35S=y
++CONFIG_BACKLIGHT_LCD_SUPPORT=y
++CONFIG_LCD_CLASS_DEVICE=y
++# CONFIG_LCD_LMS283GF05 is not set
++# CONFIG_LCD_LTV350QV is not set
++# CONFIG_LCD_ILI9320 is not set
++CONFIG_LCD_TDO24M=y
++# CONFIG_LCD_VGG2432A4 is not set
++# CONFIG_LCD_PLATFORM is not set
++# CONFIG_BACKLIGHT_CLASS_DEVICE is not set
+ 
+ #
+ # Display device support
+@@ -1006,6 +1070,16 @@ CONFIG_REGULATOR_TWL4030=y
+ #
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_DUMMY_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE=y
++# CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY is not set
++# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
++# CONFIG_FONTS is not set
++CONFIG_FONT_8x8=y
++CONFIG_FONT_8x16=y
++CONFIG_LOGO=y
++CONFIG_LOGO_LINUX_MONO=y
++CONFIG_LOGO_LINUX_VGA16=y
++CONFIG_LOGO_LINUX_CLUT224=y
+ # CONFIG_SOUND is not set
+ CONFIG_HID_SUPPORT=y
+ CONFIG_HID=y
+-- 
+1.6.4.4
+

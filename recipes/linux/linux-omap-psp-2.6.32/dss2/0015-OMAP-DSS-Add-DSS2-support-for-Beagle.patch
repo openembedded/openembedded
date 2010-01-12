@@ -1,0 +1,186 @@
+--- /tmp/board-omap3beagle.c	2009-12-22 10:47:35.000000000 +0100
++++ git/arch/arm/mach-omap2/board-omap3beagle.c	2009-12-22 10:59:53.000000000 +0100
+@@ -40,6 +40,7 @@
+ 
+ #include <plat/board.h>
+ #include <plat/common.h>
++#include <plat/display.h>
+ #include <plat/gpmc.h>
+ #include <plat/nand.h>
+ #include <plat/usb.h>
+@@ -149,6 +150,105 @@
+ 	.resource	= &omap3beagle_nand_resource,
+ };
+ 
++/* DSS */
++
++static int beagle_enable_dvi(struct omap_dss_device *dssdev)
++{
++	if (dssdev->reset_gpio != -1)
++		gpio_set_value(dssdev->reset_gpio, 1);
++
++	return 0;
++}
++
++static void beagle_disable_dvi(struct omap_dss_device *dssdev)
++{
++	if (dssdev->reset_gpio != -1)
++		gpio_set_value(dssdev->reset_gpio, 0);
++}
++
++static struct omap_dss_device beagle_dvi_device = {
++	.type = OMAP_DISPLAY_TYPE_DPI,
++	.name = "dvi",
++	.driver_name = "generic_panel",
++	.phy.dpi.data_lines = 24,
++	.reset_gpio = 170,
++	.platform_enable = beagle_enable_dvi,
++	.platform_disable = beagle_disable_dvi,
++};
++
++static int beagle_panel_enable_tv(struct omap_dss_device *dssdev)
++{
++#define ENABLE_VDAC_DEDICATED           0x03
++#define ENABLE_VDAC_DEV_GRP             0x20
++
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEDICATED,
++			TWL4030_VDAC_DEDICATED);
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEV_GRP, TWL4030_VDAC_DEV_GRP);
++
++	return 0;
++}
++
++static void beagle_panel_disable_tv(struct omap_dss_device *dssdev)
++{
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEDICATED);
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEV_GRP);
++}
++
++static struct omap_dss_device beagle_tv_device = {
++	.name = "tv",
++	.driver_name = "venc",
++	.type = OMAP_DISPLAY_TYPE_VENC,
++	.phy.venc.type = OMAP_DSS_VENC_TYPE_SVIDEO,
++	.platform_enable = beagle_panel_enable_tv,
++	.platform_disable = beagle_panel_disable_tv,
++};
++
++static struct omap_dss_device *beagle_dss_devices[] = {
++	&beagle_dvi_device,
++	&beagle_tv_device,
++};
++
++static struct omap_dss_board_info beagle_dss_data = {
++	.num_devices = ARRAY_SIZE(beagle_dss_devices),
++	.devices = beagle_dss_devices,
++	.default_device = &beagle_dvi_device,
++};
++
++static struct platform_device beagle_dss_device = {
++	.name          = "omapdss",
++	.id            = -1,
++	.dev            = {
++		.platform_data = &beagle_dss_data,
++	},
++};
++
++static struct regulator_consumer_supply beagle_vdac_supply = {
++	.supply		= "vdda_dac",
++	.dev		= &beagle_dss_device.dev,
++};
++
++static struct regulator_consumer_supply beagle_vdvi_supply = {
++	.supply		= "vdds_dsi",
++	.dev		= &beagle_dss_device.dev,
++};
++
++static void __init beagle_display_init(void)
++{
++	int r;
++
++	r = gpio_request(beagle_dvi_device.reset_gpio, "DVI reset");
++	if (r < 0) {
++		printk(KERN_ERR "Unable to get DVI reset GPIO\n");
++		return;
++	}
++
++	gpio_direction_output(beagle_dvi_device.reset_gpio, 0);
++}
++
+ #include "sdram-micron-mt46h32m32lf-6.h"
+ 
+ static struct twl4030_hsmmc_info mmc[] = {
+@@ -168,15 +268,6 @@
+ 	{}	/* Terminator */
+ };
+ 
+-static struct platform_device omap3_beagle_lcd_device = {
+-	.name		= "omap3beagle_lcd",
+-	.id		= -1,
+-};
+-
+-static struct omap_lcd_config omap3_beagle_lcd_config __initdata = {
+-	.ctrl_name	= "internal",
+-};
+-
+ static struct regulator_consumer_supply beagle_vmmc1_supply = {
+ 	.supply			= "vmmc",
+ };
+@@ -232,16 +323,6 @@
+ 	.setup		= beagle_twl_gpio_setup,
+ };
+ 
+-static struct regulator_consumer_supply beagle_vdac_supply = {
+-	.supply		= "vdac",
+-	.dev		= &omap3_beagle_lcd_device.dev,
+-};
+-
+-static struct regulator_consumer_supply beagle_vdvi_supply = {
+-	.supply		= "vdvi",
+-	.dev		= &omap3_beagle_lcd_device.dev,
+-};
+-
+ /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
+ static struct regulator_init_data beagle_vmmc1 = {
+ 	.constraints = {
+@@ -419,14 +500,8 @@
+ 	},
+ };
+ 
+-static struct omap_board_config_kernel omap3_beagle_config[] __initdata = {
+-	{ OMAP_TAG_LCD,		&omap3_beagle_lcd_config },
+-};
+-
+ static void __init omap3_beagle_init_irq(void)
+ {
+-	omap_board_config = omap3_beagle_config;
+-	omap_board_config_size = ARRAY_SIZE(omap3_beagle_config);
+ 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
+ 			     mt46h32m32lf6_sdrc_params);
+ 	omap_init_irq();
+@@ -437,9 +512,9 @@
+ }
+ 
+ static struct platform_device *omap3_beagle_devices[] __initdata = {
+-	&omap3_beagle_lcd_device,
+ 	&leds_gpio,
+ 	&keys_gpio,
++	&beagle_dss_device,
+ };
+ 
+ static void __init omap3beagle_flash_init(void)
+@@ -522,8 +597,9 @@
+ 	/* Ensure SDRC pins are mux'd for self-refresh */
+ 	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
+ 	omap_mux_init_signal("sdrc_cke1", OMAP_PIN_OUTPUT);
+-}
+ 
++	beagle_display_init();
++}
+ static void __init omap3_beagle_map_io(void)
+ {
+ 	omap2_set_globals_343x();

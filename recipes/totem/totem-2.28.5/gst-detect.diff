@@ -1,0 +1,46 @@
+--- /tmp/configure.in	2009-10-21 11:43:19.000000000 +0200
++++ totem-2.28.1/configure.in	2009-10-21 11:47:21.000000000 +0200
+@@ -110,10 +110,6 @@
+ 	AC_MSG_RESULT([yes])
+ else
+ 	AC_MSG_RESULT([no])
+-	AC_MSG_ERROR([
+-		Cannot find required GStreamer-0.10 tool 'gst-inspect-0.10'.
+-		It should be part of gstreamer-0_10-utils. Please install it.
+-	])
+ fi
+ 
+ dnl Check for elements from gst-plugins-base
+@@ -124,10 +120,6 @@
+ 		AC_MSG_RESULT([yes])
+ 	else
+ 		AC_MSG_RESULT([no])
+-		AC_MSG_ERROR([
+-			Cannot find required GStreamer-0.10 plugin '$base_element'.
+-			It should be part of gst-plugins-base. Please install it.
+-		])
+ 	fi
+ done
+ 
+@@ -139,10 +131,6 @@
+ 		AC_MSG_RESULT([yes])
+ 	else
+ 		AC_MSG_RESULT([no])
+-		AC_MSG_ERROR([
+-			Cannot find required GStreamer-0.10 plugin '$good_element'.
+-			It should be part of gst-plugins-good. Please install it.
+-		])
+ 	fi
+ done
+ 
+@@ -570,10 +558,6 @@
+ 				AC_MSG_RESULT([yes])
+ 			else
+ 				AC_MSG_RESULT([no])
+-				AC_MSG_ERROR([
+-					Cannot find required GStreamer-0.10 plugin 'souphttpsrc'.
+-					It should be part of gst-plugins-good. Please install it.
+-				])
+ 			fi
+ 		;;
+ 	esac
