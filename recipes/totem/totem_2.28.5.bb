@@ -6,7 +6,9 @@ DESCRIPTION = "A GTK2 based media player"
 HOMEPAGE = "http://www.gnome.org/projects/totem/"
 LICENSE = "GPL"
 
-DEPENDS = " libunique libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
+PR = "r1"
+
+DEPENDS = " nautilus tracker gnome-doc-utils libunique libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
 RDEPENDS_${PN} += "iso-codes"
 RRECOMMENDS_${PN} += "gst-plugin-playbin \
                       gst-plugin-gconfelements \
@@ -33,12 +35,11 @@ inherit gnome
 
 SRC_URI += "file://gst-detect.diff;patch=1"
 
-EXTRA_OECONF=" --disable-schemas-install \
-               --enable-gtk \
+EXTRA_OECONF=" --enable-shared \
+           --disable-schemas-install \
 	       --disable-iso-codes \
 	       --disable-debug \
-               --enable-gstreamer \
-               --enable-browser-plugins \
+           --enable-browser-plugins \
 	       --disable-run-in-source-tree \
 	       --disable-vala \
 	       --with-dbus \
