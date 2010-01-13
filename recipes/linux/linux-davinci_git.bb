@@ -50,6 +50,7 @@ SRC_URI_append_dm6467t-evm = ${ARAGO_DM_URI}
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
 ARAGO_L1_REV = "e3939e092ce59a6906bf8869a3c7d40314c02eef"
+ARAGO_L1_BR  = "DAVINCIPSP_03.20.00.08"
 ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
 ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
@@ -60,6 +61,10 @@ SRCREV_hawkboard                  = ${ARAGO_L1_REV}
 PV_da830-omapl137-evm             = ${ARAGO_L1_PV}
 PV_da850-omapl138-evm             = ${ARAGO_L1_PV}
 PV_hawkboard                      = ${ARAGO_L1_PV}
+
+BRANCH_da830-omapl137-evm         = ${ARAGO_L1_BR}
+BRANCH_da850-omapl138-evm         = ${ARAGO_L1_BR}
+BRANCH_hawkboard                  = ${ARAGO_L1_BR}
 
 SRC_URI_append_da830-omapl137-evm = ${ARAGO_L1_URI}
 SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
