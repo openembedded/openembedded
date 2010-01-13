@@ -1,9 +1,9 @@
-DESCRIPTION = "libnl is a library for applications dealing with netlink sockets"
+DESCRIPTION = "libnl2 is a library for applications dealing with netlink sockets"
 SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://people.suug.ch/~tgr/libnl"
 PV = "1.9+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 
@@ -15,7 +15,8 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-PACKAGES =+ "${PN}-route ${PN}-nf ${PN}-genl"
+PACKAGES =+ "${PN}-route ${PN}-nf ${PN}-genl ${PN}-cli"
 FILES_${PN}-route = "${libdir}/libnl-route.so.*"
 FILES_${PN}-nf    = "${libdir}/libnl-nf.so.*"
 FILES_${PN}-genl  = "${libdir}/libnl-genl.so.*"
+FILES_${PN}-cli   = "${libdir}/libnl-cli.so.*"
