@@ -1,6 +1,6 @@
 --- old/arch/arm/mach-davinci/board-da850-evm.c		2010-01-11 14:49:21.000000000 +0000
 +++ new/arch/arm/mach-davinci/board-da850-evm.c		2010-01-11 14:47:44.000000000 +0000
-@@ -606,7 +606,7 @@
+@@ -609,7 +609,7 @@
  	{
  		.constraints = {
  			.min_uV = 950000,
