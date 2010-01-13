@@ -1,11 +1,11 @@
 DESCRIPTION = "Graphical login manager"
 LICENSE = "GPL"
 
-DEPENDS = "tcp-wrappers libcanberra libxklavier grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl xrdb"
+DEPENDS = "xinput gnome-panel tcp-wrappers libcanberra libxklavier grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl xrdb"
 
 inherit gnome update-rc.d
 
-RDEPENDS_${PN} += "grep"
+RDEPENDS_${PN} += "grep dbus-x11 shadow libpam-base-files"
 
 SRC_URI += " \
             file://cross-xdetection.diff;patch=1 \
@@ -13,7 +13,6 @@ SRC_URI += " \
             file://gdm \
             file://gdm.conf \
             file://gdm-pam \
-            file://other \
            "
 
 EXTRA_OECONF = " --enable-authentication-scheme=shadow \
@@ -35,7 +34,6 @@ do_install_append() {
 
 	install -d ${D}/${sysconfdir}/pam.d
 	install -m 0755 ${WORKDIR}/gdm-pam       ${D}/${sysconfdir}/pam.d/gdm
-	install -m 0755 ${WORKDIR}/other         ${D}/${sysconfdir}/pam.d/
 }
 
 FILES_${PN} += "${datadir}/icon* \
