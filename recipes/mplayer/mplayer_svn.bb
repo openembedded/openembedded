@@ -11,6 +11,7 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://makefile-nostrip-svn.patch;patch=1 \
 	   file://mplayer-arm-pld.patch;patch=1 \
 	   file://mplayer-lavc-arm.patch;patch=1 \
+       file://fix-exp.diff;patch=1;pnum=0;maxrev=30291 \
 	   "
 
 SRCREV = "30247"
@@ -36,7 +37,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCPV}"
-PR = "r15"
+PR = "r16"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
