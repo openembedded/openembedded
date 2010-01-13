@@ -4,7 +4,16 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opie-reader"
 APPTYPE = "binary"
+DEPENDS = "flite"
+RRECOMMENDS_PN = "opie-reader-filter-htmlfilter, opie-reader-codec-weasel, opie-reader-codec-reb, \
+  opie-reader-codec-isilo, opie-reader-codec-aportis, opie-reader-codec-ppms, opie-reader-codec-chm, \
+  opie-reader-codec-plucker, opie-reader-codec-arrierego"
+RSUGGESTS_PN = "opie-reader-output-flitedyn16, opie-reader-output-flitecmd, opie-reader-output-flitedyn"
+INC_PR = "r3"
 
+SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/apps/opie-reader \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps"
 S = "${WORKDIR}/opie-reader"
 
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
@@ -12,7 +21,6 @@ PARALLEL_MAKE = ""
 
 inherit opie
 
-DEPENDS += " flite "
 EXTRA_QMAKEVARS_POST += " SUBDIRS+=FliteDyn SUBDIRS+=FliteDyn16 INCLUDEPATH+=${STAGING_INCDIR}/flite"
 
 do_install() {
@@ -56,16 +64,4 @@ python populate_packages_prepend () {
                               'Opie reader %s ' + type,
                               prepend=True)
 
-        # input codes are small and should be installed together with opie-reader,
-        # flite output pulls in libflite and thus should only be installed if
-        # really wanted by the user
-        suggests=[]
-        recommends=[]
-        for package in bb.data.getVar('PACKAGES', d).split():
-            if 'flite' in package:
-                suggests.append(package)
-            else:
-                recommends.append(package)
-        bb.data.setVar('RRECOMMENDS_opie-reader', " ".join( recommends ), d)
-        bb.data.setVar('RSUGGESTS_opie-reader', " ".join( suggests ), d)
 }

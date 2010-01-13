@@ -5,23 +5,19 @@ DEPENDS = "sdlpango libsdl-mixer perl"
 RDEPENDS_${PN} = "${PN}-data perl sdl-perl \
 		  perl-module-strict perl-module-vars \
 		  perl-module-getopt-long perl-module-exporter-heavy \
-	          perl-module-data-dumper \
+		  perl-module-data-dumper \
 		  perl-module-bytes liblocale-gettext-perl \
 		  perl-module-dynaloader perl-module-posix \
-		  perl-module-math-trig \
+		  perl-module-autoloader perl-module-math-trig \
 		  perl-module-io-file perl-module-io \
-                  perl-module-file-spec-unix perl-module-time-hires \
-                  perl-module-io-socket perl-module-io-select \
-                  perl-module-file-glob \
+		  perl-module-file-spec-unix perl-module-time-hires \
+		  perl-module-io-socket perl-module-io-select \
+		  perl-module-file-glob \
 		 "
 
-PR="r0"
-
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 inherit cpan-base
-
-S=${WORKDIR}/frozen-bubble-2.2.0/
 
 PERL_VERSION = ${@get_perl_version(d)}
 
@@ -36,7 +32,6 @@ SRC_URI = "http://www.frozen-bubble.org/data/frozen-bubble-${PV}.tar.bz2 \
 
 # The Makefile needs to be patched to look in STAGING_LIBDIR/perl/... - It's looking in i686-linux/lib at the moment, regardless of arch
 BROKEN = "1"
-
 
 do_compile() {
         oe_runmake OPTIMIZE="${CFLAGS}" PREFIX="${prefix}" INSTALLSITELIB="${D}/${libdir}/perl/${PERL_VERSION}/" LOCALEDIR="${datadir}/locale"

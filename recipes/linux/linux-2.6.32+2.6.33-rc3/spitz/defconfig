@@ -765,7 +765,7 @@ CONFIG_MTD_ROM=y
 # Mapping drivers for chip access
 #
 CONFIG_MTD_COMPLEX_MAPPINGS=y
-# CONFIG_MTD_PHYSMAP is not set
+CONFIG_MTD_PHYSMAP=y
 # CONFIG_MTD_GPIO_ADDR is not set
 # CONFIG_MTD_PLATRAM is not set
 

@@ -1,7 +1,8 @@
 DESCRIPTION = "DMI (Desktop Management Interface) table related utilities"
+SECTION = "console/utils"
 HOMEPAGE = "http://www.nongnu.org/dmidecode/"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://savannah.nongnu.org/download/dmidecode/${P}.tar.bz2"
 

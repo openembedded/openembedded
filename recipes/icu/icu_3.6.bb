@@ -7,9 +7,10 @@ SRC_URI += "file://use-g++-for-linking.patch;patch=1 \
             file://rematch-gcc-bug.patch;patch=1"
 
 do_configure_append() {
-        for i in */Makefile */*.inc */*/Makefile */*/*.inc ; do
+        for i in */Makefile */*.inc */*/Makefile */*/*.inc icudefs.mk ; do
 		sed -i -e 's:$(INVOKE) $(BINDIR)/:$(INVOKE) :g' $i 
 		sed -i -e 's:$(BINDIR)/::g' $i 
+		sed -i -e 's:LD_LIBRARY_PATH:LD_LIBRARY_PATH_FAKE:g' $i
         done
 	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc || true
 	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc.in || true

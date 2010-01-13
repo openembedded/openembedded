@@ -1,0 +1,47 @@
+From patchwork Tue Dec  8 19:52:09 2009
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: net/sctp/sysctl.c: Remove dead strategy handler
+Date: Tue, 08 Dec 2009 19:52:09 -0000
+From: Ingo Molnar <mingo@elte.hu>
+X-Patchwork-Id: 65744
+
+* Ingo Molnar <mingo@elte.hu> wrote:
+
+> hi Dave,
+> 
+> i just switched to today's -git tree and there's this new build failure 
+> on x86:
+> 
+>  net/sctp/sysctl.c:251: error: unknown field 'strategy' specified in initializer
+>  net/sctp/sysctl.c:251: error: 'sysctl_intvec' undeclared here (not in a function)
+> 
+> havent looked into it yet - config attached.
+
+That's interaction with the strategy handler removal from Eric. I think 
+the patch below will do the trick - the callsites have been updated 
+already to use proc_handler, so ->handler was a dead field.
+
+	Ingo
+
+Signed-off-by: Ingo Molnar <mingo@elte.hu>
+
+---
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
+diff --git a/net/sctp/sysctl.c b/net/sctp/sysctl.c
+index 419e1e9..832590b 100644
+--- a/net/sctp/sysctl.c
++++ b/net/sctp/sysctl.c
+@@ -248,7 +248,6 @@ static ctl_table sctp_table[] = {
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+ 		.proc_handler	= &proc_dointvec_minmax,
+-		.strategy	= &sysctl_intvec,
+ 		.extra1		= &one,
+ 		.extra2		= &rwnd_scale_max,
+ 	},
