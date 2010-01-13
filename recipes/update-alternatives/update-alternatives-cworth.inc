@@ -7,5 +7,3 @@ S = "${WORKDIR}/ipkg/C"
 PACKAGE_ARCH = "all"
 
 INC_PR = "r4"
-
-require ../opkg/update-alternatives-merge.inc

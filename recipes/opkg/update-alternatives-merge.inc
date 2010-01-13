@@ -1,13 +1,13 @@
 # Moves all entries from /usr/lib/ipkg/alternatives to /usr/lib/opkg/alternatives
 # If it exists in both it use file with more lines
 
-pkg_postinst_append () {
+pkg_postinst_${PN}_append () {
         alternatives_dir_old="${prefix}/lib/ipkg/alternatives"
         alternatives_dir_new="${prefix}/lib/opkg/alternatives"
         if [ -e "${alternatives_dir_old}" ] ; then
-        	if [ ! -e "${alternatives_dir_new}" ] ; then
-			mkdir -p "${alternatives_dir_new}";
-		fi
+                if [ ! -e "${alternatives_dir_new}" ] ; then
+                        mkdir -p "${alternatives_dir_new}";
+                fi
                 echo "Old alternatives directory ${alternatives_dir_old} exists, moving entries to new one ${alternatives_dir_new}"
                 echo "Creating backup copy of both ${alternatives_dir_old}-backup and ${alternatives_dir_new}-backup"
                 cp -ra "${alternatives_dir_old}" "${alternatives_dir_old}-backup"
@@ -35,7 +35,7 @@ pkg_postinst_append () {
                                 fi
                         fi
                 done
-		rm -rf ${alternatives_dir_old}
-		echo "Merge finished, old directory '${alternatives_dir_old}' is removed"
+                rm -rf ${alternatives_dir_old}
+                echo "Merge finished, old directory '${alternatives_dir_old}' is removed"
         fi
 }

@@ -17,6 +17,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc;module=trunk \
 	   file://100-uclibc-conf.patch;patch=1 \
            file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
 	   file://cache-amnesia.patch;patch=1 \
+	   file://gcc-flags-for-build.patch;patch=1 \
 	  "
 
 # Language Overrides

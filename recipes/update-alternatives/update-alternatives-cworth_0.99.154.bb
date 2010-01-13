@@ -11,3 +11,5 @@ do_install () {
 
     install -m 0755 update-alternatives ${D}${sbindir}/update-alternatives
 }
+
+require ../opkg/update-alternatives-merge.inc
