@@ -8,12 +8,12 @@ KERNEL_VERSION = "2.6.29-rc3"
 
 OMV = "oe11"
 PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCPV}"
-PR = "r6"
+PR = "r6.1"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
   file://fix-install.patch;patch=1 \
-  file://0007-Enable-UBI-UBIFS.patch;patch=1 \
+  file://0001-defconfig-shr-testing-kernel-config.patch;patch=1 \
 "
 S = "${WORKDIR}/git"
 
