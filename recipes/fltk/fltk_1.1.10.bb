@@ -5,15 +5,18 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "alsa-lib zlib jpeg libpng libxext libxft"
 
+PR = "r1"
+
 SRC_URI = "ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/${PV}/fltk-${PV}-source.tar.bz2 \
 	   file://disable_test.patch;patch=1 \
+#       http://ftp.de.debian.org/debian/pool/main/f/fltk1.1/fltk1.1_1.1.10-2.diff.gz;patch=1 \
 	  "
 
 S = "${WORKDIR}/fltk-${PV}"
 
 inherit lib_package autotools_stage binconfig
 
-TARGET_CC_ARCH += "${LDFLAGS}"
+TARGET_CC_ARCH += "${LDFLAGS} -DXFT_MAJOR=2"
 
 EXTRA_OECONF = "--enable-shared \
 		--enable-threads \
