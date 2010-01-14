@@ -1,0 +1,14 @@
+https://bugzilla.gnome.org/show_bug.cgi?id=606676
+Index: balsa-2.4.2/libbalsa/address-book-gpe.c
+===================================================================
+--- balsa-2.4.2.orig/libbalsa/address-book-gpe.c
++++ balsa-2.4.2/libbalsa/address-book-gpe.c
+@@ -792,7 +792,7 @@ libbalsa_address_book_gpe_alias_complete
+ #endif                          /* HAVE_SQLITE3 */
+     if(err) {
+         printf("r=%d err=%s\n", r, err);
+-        free(err);
++        sqlite3_free(err);
+     }
+     return gcc.res;
+ }

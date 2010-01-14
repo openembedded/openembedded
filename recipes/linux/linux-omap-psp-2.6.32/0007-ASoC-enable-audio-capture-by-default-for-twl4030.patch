@@ -1,0 +1,27 @@
+From a0cf94cd5d99280fccc29e6b7777c448f15d1c65 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Thu, 17 Dec 2009 12:45:20 -0800
+Subject: [PATCH 07/16] ASoC: enable audio capture by default for twl4030
+
+---
+ sound/soc/codecs/twl4030.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 4df7c6c..e85db73 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -46,8 +46,8 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
+ 	0xc3, /* REG_OPTION		(0x2)	*/
+ 	0x00, /* REG_UNKNOWN		(0x3)	*/
+ 	0x00, /* REG_MICBIAS_CTL	(0x4)	*/
+-	0x20, /* REG_ANAMICL		(0x5)	*/
+-	0x00, /* REG_ANAMICR		(0x6)	*/
++	0x34, /* REG_ANAMICL		(0x5)	*/
++	0x14, /* REG_ANAMICR		(0x6)	*/
+ 	0x00, /* REG_AVADC_CTL		(0x7)	*/
+ 	0x00, /* REG_ADCMICSEL		(0x8)	*/
+ 	0x00, /* REG_DIGMIXING		(0x9)	*/
+-- 
+1.6.2.4
+

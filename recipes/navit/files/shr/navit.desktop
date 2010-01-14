@@ -1,10 +1,11 @@
 [Desktop Entry]
 Name=Navit
 Comment=GPS Navigation
-Exec=fsoraw -r CPU,GPS -- navit
+Exec=unset LC_ALL && fsoraw -fr CPU,GPS -- navit
 Icon=navit
 Terminal=false
 Type=Application
 Categories=GTK;
 MimeType=text/x-vcard;
 StartupNotify=true
+SingleInstance=true

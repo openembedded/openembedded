@@ -1,0 +1,11 @@
+--- old/arch/arm/mach-davinci/board-da850-evm.c		2010-01-11 14:49:21.000000000 +0000
++++ new/arch/arm/mach-davinci/board-da850-evm.c		2010-01-11 14:47:44.000000000 +0000
+@@ -606,7 +606,7 @@
+ 	{
+ 		.constraints = {
+ 			.min_uV = 950000,
+-			.max_uV = 1320000,
++			.max_uV = 1400000,
+ 			.valid_ops_mask = (REGULATOR_CHANGE_VOLTAGE |
+ 				REGULATOR_CHANGE_STATUS),
+ 			.boot_on = 1,

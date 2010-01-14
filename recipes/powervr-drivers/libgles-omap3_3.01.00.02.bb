@@ -1,8 +1,9 @@
 BINLOCATION = "${S}/gfx_rel_es3.x"
 
+DEFAULT_PREFERENCE = "2"
+
 require libgles-omap3.inc
 
-DEFAULT_PREFERENCE = "-1"
 # download required binary distribution from:
 # http://software-dl.ti.com/dsps/forms/export.html?prod_no=/OMAP35x_Graphics_SDK_setuplinux_3_01_00_02.bin
 

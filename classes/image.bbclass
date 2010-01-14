@@ -17,6 +17,9 @@ IMAGE_INITSCRIPTS ?= "initscripts"
 #
 IMAGE_LOGIN_MANAGER ?= "tinylogin"
 
+# set sane default for the SPLASH variable
+SPLASH ?= ""
+
 IMAGE_KEEPROOTFS ?= ""
 IMAGE_KEEPROOTFS[doc] = "Set to non-empty to keep ${IMAGE_ROOTFS} around after image creation."
 

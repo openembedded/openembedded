@@ -1,0 +1,39 @@
+From patchwork Thu Jan  7 12:30:08 2010
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: ARCH OMAP : enable ARCH_HAS_HOLES_MEMORYMODEL for OMAP
+Date: Thu, 07 Jan 2010 12:30:08 -0000
+From: Sriram <srk@ti.com>
+X-Patchwork-Id: 71579
+
+From: Sriram <srk@ti.com>
+
+OMAP platforms(like OMAP3530) include DSP or other co-processors
+for media acceleration. when carving out memory for the
+accelerators we can end up creating a hole in the memory map
+of sort:
+<kernel memory><hole(memory for accelerator)><kernel memory>
+
+To handle such a memory configuration ARCH_HAS_HOLES_MEMORYMODEL
+has to be enabled. For further information refer discussion at:
+http://www.mail-archive.com/linux-omap@vger.kernl.org/msg15262.html.
+
+Signed-off-by: Sriramakrishnan <srk@ti.com>
+
+---
+arch/arm/Kconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 5e0bcc5..88f628b 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -699,6 +699,7 @@ config ARCH_OMAP
+ 	select ARCH_HAS_CPUFREQ
+ 	select GENERIC_TIME
+ 	select GENERIC_CLOCKEVENTS
++	select ARCH_HAS_HOLES_MEMORYMODEL
+ 	help
+ 	  Support for TI's OMAP platform (OMAP1 and OMAP2).
+ 

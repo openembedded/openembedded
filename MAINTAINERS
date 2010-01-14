@@ -88,7 +88,7 @@ Interests:  Multimedia in gpe and on fbdev, and gtk+ apps on PDA devices.
 Interests:  GNOME on PDA
 Recipes:    mplayer, xmms, xmms-mad, xmms-tremor, dillo, links, links-x11
 Recipes:    epdfview, sylpheed-claws, sylpheed, gqview, tightvnc
-Recipes:    epdfview, gtk+_2.10.* openmoko2/*
+Recipes:    gtk+_2.10.*
 
 Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de
@@ -202,6 +202,13 @@ Website:    http://www.koansoftware.com - http://www.embedded.it
 Machines:   ronetix-pm9263, vortex86sx, at91sam9g20ek
 Distros:    KaeilOS, Ångström
 Interests:  x86, ARM, wxWidgets
+
+Person:     Martin 'JaMa' Jansa
+Mail:       Martin.Jansa@gmail.com
+Machines:   spitz, om-gta02
+Distros:    SHR, Ångström
+Interests:  xorg
+Recipes:    shr/*, xorg-*/*, linux/*openmoko*
 
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net

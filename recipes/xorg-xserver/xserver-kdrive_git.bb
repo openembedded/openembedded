@@ -6,7 +6,7 @@ PV = "1.4+git${SRCDATE}"
 DEPENDS += "libxkbfile libxcalibrate pixman"
 
 PE = "1"
-PR = "r1"
+PR = "${INC_PR}.0"
 
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-git:${FILE_DIRNAME}/xserver-kdrive"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \

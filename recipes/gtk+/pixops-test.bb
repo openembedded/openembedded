@@ -1,7 +1,7 @@
 DESCRIPTION = "Productive gtk+ devel prodder"
 DEPENDS = "gtk+"
 
-PR = "r2"
+PR = "r3"
 
 inherit pkgconfig
 
@@ -14,7 +14,7 @@ do_configure() {
 }
 
 do_compile() {
-	${CC} `pkg-config gtk+-2.0 --libs --cflags` `pkg-config pango --libs --cflags` -lXfixes -lz -lpangoft2-1.0 -lgpg-error -lXdmcp -lXcursor -lexpat -lXau -lgcrypt -lXext -lXinerama -lXrandr -o pixops-test pixops-test.c 	
+	${CC} ${CFLAGS} ${LDFLAGS} `pkg-config gtk+-2.0 --libs --cflags` `pkg-config pango --libs --cflags` -lXfixes -lz -lpangoft2-1.0 -lgpg-error -lXdmcp -lXcursor -lexpat -lXau -lgcrypt -lXext -lXinerama -lXrandr -o pixops-test pixops-test.c
 }
 
 do_install() {

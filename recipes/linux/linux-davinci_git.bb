@@ -66,7 +66,11 @@ SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
-                                     file://da850_omapl138_opp456mhz.patch;patch=1"
+                                     file://0001-CheckRegisterForDCDC.patch;patch=1 \
+                                     file://0002-DefDcDcTiedhigh.patch;patch=1 \
+                                     file://da850_omapl138_opp456mhz.patch;patch=1 \
+                                     file://da850_omapl138_opp408mhz.patch;patch=1 \
+                                     file://da850_omapl138_opp456mhz_increaseDcDc3.patch;patch=1"
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
                                      file://da850_omapl138_opp456mhz.patch;patch=1 \
                                      file://patch_hawk.diff;patch=1"
