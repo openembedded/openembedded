@@ -12,7 +12,7 @@ require ti-multimedia-common.inc
 
 export PLATFORM
 
-export CROSS_COMPILE = "${CROSS_DIR}/bin/${TARGET_PREFIX}"
+export CROSS_COMPILE = "${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}"
 
 # This tells codec engine which targets to build
 DEVICES ?= "DM6446"

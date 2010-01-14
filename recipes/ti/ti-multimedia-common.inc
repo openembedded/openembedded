@@ -1,13 +1,13 @@
 installdir = "${datadir}/ti"
 
 # needed for configuro:
-export CGTOOLS_V5T="${CROSS_DIR}"
+export CGTOOLS_V5T="${TOOLCHAIN_PATH}"
 export CC_V5T="bin/${TARGET_PREFIX}gcc"
-export CROSS_COMPILE = "${CROSS_DIR}/bin/${TARGET_PREFIX}"
+export CROSS_COMPILE = "${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}"
 export MVTOOL_PREFIX="${TARGET_PREFIX}"
-export MVTOOL_DIR="${CROSS_DIR}"
+export MVTOOL_DIR="${TOOLCHAIN_PATH}"
 export CSTOOL_PREFIX="${TARGET_PREFIX}"
-export CSTOOL_DIR="${CROSS_DIR}"
+export CSTOOL_DIR="${TOOLCHAIN_PATH}"
 export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
 
 export CODEC_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codecs"

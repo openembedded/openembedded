@@ -60,7 +60,7 @@ endif/g' \
                      CMEM_INSTALL_DIR="${CMEM_INSTALL_DIR}" \
                      LPM_INSTALL_DIR="${LPM_INSTALL_DIR}" \
                      EDMA3_LLD_INSTALL_DIR="${EDMA3_LLD_INSTALL_DIR}" \
-                     CGTOOLS_V5T="${CROSS_DIR}" \
+                     CGTOOLS_V5T="${TOOLCHAIN_PATH}" \
                      CGTOOLS_C64P="${CGT6x_DIR}" \
                      CGTOOLS_C674="${CGT6x_DIR}" \
                      clean all
