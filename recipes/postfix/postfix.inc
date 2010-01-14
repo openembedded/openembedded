@@ -3,8 +3,8 @@ DEPENDS = "virtual/db libpcre postfix-native"
 LICENSE = "IPL"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
-	   file://${FILESDIR}/makedefs.patch;patch=1 \
-	   file://${FILESDIR}/install.patch;patch=1 \
+	   file://makedefs.patch;patch=1 \
+	   file://install.patch;patch=1 \
 	   file://main.cf_2.0 \
 	   file://volatiles \
 	   file://postfix \
