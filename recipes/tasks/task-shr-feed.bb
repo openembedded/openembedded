@@ -104,7 +104,7 @@ RDEPENDS_${PN} += "\
 		libpurple-protocol-icq \
 		vagalume \
 		ppp \
-#		bluez-hcidump \
+		bluez-hcidump \
 		kbdd \
 		kexec-tools \
 		mc \
