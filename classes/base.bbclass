@@ -76,23 +76,26 @@ def base_chk_file_vars(parser, localpath, params, data):
         raise Exception("The path does not exist '%s'" % localpath)
 
     if want_md5sum:
-        try:
-	    md5pipe = os.popen('PATH=%s md5sum %s' % (bb.data.getVar('PATH', data, True), localpath))
-            md5data = (md5pipe.readline().split() or [ "" ])[0]
-            md5pipe.close()
-        except OSError, e:
-            raise Exception("Executing md5sum failed")
+        md5data = bb.utils.md5_file(localpath)
+
         if want_md5sum != md5data:
             bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (want_md5sum, md5data))
             raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (want_md5sum, md5data))
 
     if want_sha256sum:
-        try:
-            shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
-            sha256data = (shapipe.readline().split() or [ "" ])[0]
-            shapipe.close()
-        except OSError, e:
-            raise Exception("Executing shasum failed")
+        shadata = bb.utils.sha256_file(localpath)
+
+        # sha256_file() can return None if we are running on Python 2.4 (hashlib is
+        # 2.5 onwards, sha in 2.4 is 160-bit only), so check for this and call the
+        # standalone shasum binary if required.
+        if shadata is None:
+            try:
+                shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+                shadata = (shapipe.readline().split() or [ "" ])[0]
+                shapipe.close()
+            except OSError:
+                raise Exception("Executing shasum failed, please build shasum-native")
+
         if want_sha256sum != sha256data:
             bb.note("The SHA256Sums did not match. Wanted: '%s' and Got: '%s'" % (want_sha256sum, sha256data))
             raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (want_sha256sum, sha256data))
