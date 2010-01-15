@@ -2,7 +2,7 @@ DESCRIPTION = "The illume default keyboards"
 SECTION = "x11/data"
 SRCNAME = "e/src/modules/illume/keyboards"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
 S = "${WORKDIR}/${SRCNAME}"
@@ -26,7 +26,7 @@ FILES_${PN}-alpha = "\
   ${libdir}${INSTPATH}/alpha.png \
 "
 FILES_${PN}-numeric = "\
-  ${libdir}${INSTPATH}/Numeric.kbd \
+  ${libdir}${INSTPATH}/Numbers.kbd \
   ${libdir}${INSTPATH}/numeric.png \
 "
 FILES_${PN}-terminal = "\
