@@ -1,0 +1,38 @@
+From da70ef3840dff5972ca5d10c387d58c126eee94c Mon Sep 17 00:00:00 2001
+From: reimar <reimar@b3059339-0415-0410-9bf9-f77b7e298cf2>
+Date: Tue, 12 Jan 2010 19:41:44 +0000
+Subject: Add checks for exp2, exp2 and log2f required by FFmpeg.
+
+git-svn-id: svn://svn.mplayerhq.hu/mplayer/trunk@30291 b3059339-0415-0410-9bf9-f77b7e298cf2
+---
+diff --git a/configure b/configure
+index fb69ac8..23da910 100755
+--- a/configure
++++ b/configure
+@@ -3006,7 +3006,7 @@ if test "$_posix4" = yes ; then
+ fi
+ echores "$_posix4"
+ 
+-for func in llrint log2 lrint lrintf round roundf truncf; do
++for func in exp2 exp2f llrint log2 log2f lrint lrintf round roundf truncf; do
+ echocheck $func
+ cat > $TMPC << EOF
+ #include <math.h>
+@@ -8682,12 +8682,15 @@ $def_winsock2_h
+ 
+ 
+ /* system functions */
++$def_exp2
++$def_exp2f
+ $def_gethostbyname2
+ $def_gettimeofday
+ $def_glob
+ $def_langinfo
+ $def_llrint
+ $def_log2
++$def_log2f
+ $def_lrint
+ $def_lrintf
+ $def_map_memalign
+--
+cgit v0.8.2.1-10-g45e7

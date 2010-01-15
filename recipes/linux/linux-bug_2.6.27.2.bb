@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux kernel for bug"
 
-PV_append = "+svnr${SRCREV}"
+PV_append = "+svnr${SRCPV}"
 KV = "2.6.27.2"
 PR = "r31"
 

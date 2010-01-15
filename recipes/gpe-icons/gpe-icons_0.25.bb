@@ -1,13 +1,10 @@
 DESCRIPTION = "Common icons for GPE"
 LICENSE = "GPL"
-SECTION = "gpe"
-
-RDEPENDS = "gdk-pixbuf-loader-png"
 
 PR = "${INC_PR}.0"
 
-#only icons present in the package
-PACKAGE_ARCH = "all"
+inherit gpe
+
 FILES_${PN} = "${datadir}/gpe"
 
 #Only SHR is using u-a for gpe-icons

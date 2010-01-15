@@ -26,10 +26,10 @@ file://dss.patch;patch=1 \
 "
 
 SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
-PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCREV}"
+PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCPV}"
 
 SRCREV_calamari = "f67066b6b0740b826ed862615c5ab022aaf4779a"
-PV_calamari = "2009.08+${PR}+gitr${SRCREV}"
+PV_calamari = "2009.08+${PR}+gitr${SRCPV}"
 SRC_URI_append_calamari = " file://buggy-gcc-really-no-spe.patch;patch=1"
 
 SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
@@ -46,12 +46,12 @@ SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=
                  file://touchbook-config.patch;patch=1 \
 "
 SRCREV_omap3-touchbook = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
-PV_omap3-touchbook = "2009.05+${PR}+gitr${SRCREV}"
+PV_omap3-touchbook = "2009.05+${PR}+gitr${SRCPV}"
 
 
 SRC_URI_omap3evm = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git"
 SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
-PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
+PV_omap3evm = "2009.03+${PR}+gitr${SRCPV}"
 
 
 SRCREV_am3517-evm = "e60beb13cf0"
@@ -73,65 +73,65 @@ file://omap3evm/0014-EMAC-driver-cleanup-removed-debug-prints.patch;patch=1 \
 file://omap3evm/0015-EMAC-driver-Check-for-link-status-in-packet-send-lo.patch;patch=1 \
 file://omap3evm/0016-Config-option-and-name-changed-to-omap3517_evm.patch;patch=1 \
 "
-PV_am3517-evm = "2009.03+${PR}+gitr${SRCREV}"
+PV_am3517-evm = "2009.03+${PR}+gitr${SRCPV}"
 
 SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
-PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"
+PV_omapzoom = "2009.01+${PR}+gitr${SRCPV}"
 
 SRCREV_omapzoom2 = "3672cd5c3b53d219d33345eebad4e25ad5bf6d52"
-PV_omapzoom2 = "2009.05+${PR}+gitr${SRCREV}"
+PV_omapzoom2 = "2009.05+${PR}+gitr${SRCPV}"
 
 SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw-env.patch;patch=1 \
                  file://dss2.patch;patch=1 \
 "
 SRCREV_overo = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
-PV_overo = "2009.03+${PR}+gitr${SRCREV}"
+PV_overo = "2009.03+${PR}+gitr${SRCPV}"
 
 # Davinci dm355-evm/dm365-evm/dm6446-evm - PSP.03.01.00.28 (Phase 3 build 28)
 
 SRC_URI_dm355-evm    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git"
 SRCREV_dm355-evm     = "f8d047c84137ab331c0ee2c3e94c3f1ec4228298"
-PV_dm355-evm         = "2009.10+2009.11-rc1+${PR}+gitr${SRCREV}"
+PV_dm355-evm         = "2009.10+2009.11-rc1+${PR}+gitr${SRCPV}"
 
 SRC_URI_dm365-evm    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git"
 SRCREV_dm365-evm     = "f8d047c84137ab331c0ee2c3e94c3f1ec4228298"
-PV_dm365-evm         = "2009.10+2009.11-rc1+${PR}+gitr${SRCREV}"
+PV_dm365-evm         = "2009.10+2009.11-rc1+${PR}+gitr${SRCPV}"
 
 SRC_URI_dm6446-evm   = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git"
 SRCREV_dm6446-evm    = "f8d047c84137ab331c0ee2c3e94c3f1ec4228298"
-PV_dm6446-evm        = "2009.10+2009.11-rc1+${PR}+gitr${SRCREV}"
+PV_dm6446-evm        = "2009.10+2009.11-rc1+${PR}+gitr${SRCPV}"
 
 # Davinci dm6467-evm/dm6467-evm - PSP.03.02.00 (DM6467 Beta)
 
 SRC_URI_dm6467-evm   = "git://arago-project.org/git/people/hemant/u-boot-dm646x.git;protocol=git"
 SRCREV_dm6467-evm    = "b037106746e5b942d7ef06bfcd776a7cdfe32f68"
-PV_dm6467-evm        = "1.3.4+${PR}+gitr${SRCREV}"
+PV_dm6467-evm        = "1.3.4+${PR}+gitr${SRCPV}"
 
 SRC_URI_dm6467t-evm  = "git://arago-project.org/git/people/hemant/u-boot-dm646x.git;protocol=git"
 SRCREV_dm6467t-evm   = "b037106746e5b942d7ef06bfcd776a7cdfe32f68"
-PV_dm6467t-evm       = "1.3.4+${PR}+gitr${SRCREV}"
+PV_dm6467t-evm       = "1.3.4+${PR}+gitr${SRCPV}"
 
 # OMAPL da380-omapl137/da850-omapl138-evm/hawkboard - PSP 3.20.00.07 (Beta)
 
 SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
 SRCREV_da830-omapl137-evm  = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
-PV_da830-omapl137-evm      = "2009.08+gitr${SRCREV}"
+PV_da830-omapl137-evm      = "2009.08+gitr${SRCPV}"
 
 SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
 SRCREV_da850-omapl138-evm  = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
-PV_da850-omapl138-evm      = "2009.08+gitr${SRCREV}"
+PV_da850-omapl138-evm      = "2009.08+gitr${SRCPV}"
 
 SRC_URI_hawkboard          = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
 SRCREV_hawkboard           = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
-PV_hawkboard               = "2009.08+gitr${SRCREV}"
+PV_hawkboard               = "2009.08+gitr${SRCPV}"
 
 SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
                         file://leopardboard-support.patch;patch=1 \
 "
 SRCREV_dm355-leopard = "86d5c98d3d97d631b1d3a5f5e6a17e87c99b42cf"
-PV_dm355-leopard = "2009.05+2009.06-rc2+gitr${SRCREV}"
+PV_dm355-leopard = "2009.05+2009.06-rc2+gitr${SRCPV}"
 
 SRC_URI_neuros-osd2 = "git://github.com/neuros/u-boot.git;protocol=git;branch=neuros"
 SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"

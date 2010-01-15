@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r19"
+PR = "r20"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -24,7 +24,9 @@ SRC_URI += " \
        file://network.sh \
        file://local.rules \
        file://default \
-       file://init"
+       file://init \
+       file://cache \
+"
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
@@ -70,6 +72,7 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
+	install -m 0755 ${WORKDIR}/cache ${D}${sysconfdir}/init.d/udev-cache
 
 	install -d ${D}${sysconfdir}/default
 	install -m 0755 ${WORKDIR}/default ${D}${sysconfdir}/default/udev
@@ -112,7 +115,10 @@ do_install_append_bug() {
 	install -m 0644 ${WORKDIR}/bmi_eventpipe.sh ${D}${sysconfdir}/udev/scripts/bmi_eventpipe.sh
 }
 
+# Create the cache after checkroot has run
 pkg_postinst_${PN}_append() {
+update-rc.d $OPT udev-cache start 12 S .
+
 if [ -d $D/lib/udev/rules.d ] ; then
 	echo "$D/lib/udev/rules.d is not a symlink, fixing that"
 	mv $D/lib/udev/rules.d/* $D${sysconfdir}/udev/rules.d/

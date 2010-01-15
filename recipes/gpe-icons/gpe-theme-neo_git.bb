@@ -1,12 +1,12 @@
 DESCRIPTION = "nEo GPE theme - a very fast, high contrast GPE theme"
-SECTION = "gpe"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
-RDEPENDS = "gdk-pixbuf-loader-png gpe-filemanager gpe-sketchbook"
+RDEPENDS = "gpe-filemanager gpe-sketchbook"
 RRECOMMENDS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
-PV = "0.2-${EFL_SRCREV}+gitr${SRCREV}"
+PV = "0.2-${EFL_SRCREV}+gitr${SRCPV}"
+PE = "1"
 PR = "${INC_PR}.0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
@@ -15,6 +15,9 @@ S = "${WORKDIR}/git/gpe/theme-neo/pixmaps"
 
 require gpe-icons.inc
 
+ALTERNATIVE_PRIORITY = 10
+
+#installed to /usr/share/gpe/pixmaps.gpe-theme-neo by default as we don't want to overwrite default icons from gpe-icons package
 do_install() {
         install -d ${D}${datadir}/gpe/
         install -d ${D}${datadir}/gpe/pixmaps.${PN}/
@@ -22,4 +25,3 @@ do_install() {
 }
 
 FILES_${PN} = "${datadir}/gpe/pixmaps.${PN}/"
-

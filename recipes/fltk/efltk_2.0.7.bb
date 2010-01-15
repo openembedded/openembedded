@@ -6,7 +6,8 @@ LICENSE = "LGPL"
 DEPENDS = "zlib jpeg libpng libxext libxft"
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/ede/efltk-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/ede/efltk-${PV}.tar.gz \
+           file://fix.void.cast.patch;patch=1"
 S = "${WORKDIR}/efltk"
 
 inherit autotools binconfig

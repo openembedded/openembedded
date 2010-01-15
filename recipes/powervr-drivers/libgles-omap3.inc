@@ -75,6 +75,10 @@ INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 
 
 do_compile() {
+    for i in $(find ${S} -name "*.h") $(find ${S} -name "*.c") $(find ${S} -name "Make*") ; do
+        chmod 0644 $i
+    done 
+
     for sofile in $(find ${S} -name "lib*Open*.so") $(find ${S} -name "lib*srv*.so")   $(find ${S} -name "lib*gl*.so") $(find ${S} -name "libpvr*.so") $(find ${S} -name "lib*GL*.so"); do
         if [ "$(readlink -n ${sofile})" = "" ] ; then
             mv $sofile ${sofile}.${IMGPV}

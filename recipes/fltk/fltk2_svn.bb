@@ -6,6 +6,7 @@ LICENSE = "LGPL"
 DEPENDS = "zlib jpeg libpng libxext libxft xinput"
 
 PV = "1.9.9+svnr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "\
   svn://svn.easysw.com/public/fltk/fltk;proto=http;module=trunk \
@@ -29,6 +30,8 @@ do_configure() {
 	oe_runconf
 }
 
+TARGET_CC_ARCH += "-DXFT_MAJOR=2"
+
 do_install () {
 	sed -i "s|^STRIP.*=.*$|STRIP = ${STRIP}|" makeinclude
 	sed -i "s|^bindir.*=.*$|bindir = ${D}${bindir}|" makeinclude
@@ -47,5 +50,5 @@ do_install () {
 PACKAGES =+ "${PN}-fluid ${PN}-images"
 FILES_${PN}-fluid = "${bindir}/fluid2"
 FILES_${PN} = "${libdir}/lib*.so.*"
-FILES_${PN}-images = "${libdir}/libfltk2_images*.so.*"
+FILES_${PN}-images = "${libdir}/libfltk2_images*.so*"
 FILES_${PN}-dev += "${bindir}/fltk2-config"
