@@ -10,5 +10,3 @@ PV = "2_25_00_04"
 SRC_URI[fctarball.md5sum] = "9b186aa6b431be08bd8b91926cd91c95"
 SRC_URI[fctarball.sha256sum] = "733737f5a0d0ca251993d8c7138378fb9481867a5d6c77ffa7d133673916c30f"
 
-
-

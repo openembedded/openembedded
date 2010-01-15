@@ -1,16 +1,12 @@
-DESCRIPTION = "TI DSP Algorithm Interface Standard specification"
-
-# Have a look at http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/xdais/index.html
-
-PVEXTENSION  ?= ""
-BASE_SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/xdais/${PV}/exports"
-
-SRC_URI	= "${BASE_SRC_URI}/xdais_${PV}${PVEXTENSION}.tar.gz;name=xdaisgz"
-
-S = "${WORKDIR}/xdais_${PV}${PVEXTENSION}"
+DESCRIPTION = "TI eXpress DSP Algorithm Interface Standard (XDAIS) specification"
+HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/xdais"
 
 require ti-paths.inc
 require ti-staging.inc
+
+S = "${WORKDIR}/xdais_${PV}"
+
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/xdais/${PV}/exports/xdais_${PV}.tar.gz;name=xdaisgz"
 
 do_install() {
     install -d ${D}${XDAIS_INSTALL_DIR_RECIPE}

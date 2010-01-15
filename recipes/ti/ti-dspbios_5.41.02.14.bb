@@ -1,7 +1,5 @@
 require ti-dspbios.inc
 
-DEFAULT_FREFERENCE_omapl138 = "2"
-
 PV = "5_41_02_14"
 
 SRC_URI[biosbin.md5sum] = "2a0c4ea4cc57801f666a2664e0510af9"

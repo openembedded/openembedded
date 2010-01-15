@@ -1,16 +1,10 @@
 require ti-cgt6x.inc
 
-# download ti_cgt_c6000_6.0.21_setup_linux_x86.bin from https://www-a.ti.com/downloads/sds_support/TICodegenerationTools/download.htm and copy in Arago (or OE) download directory.
-
-SRC_URI	= "http://install.source.dir.local/ti_cgt_c6000_6.0.21_setup_linux_x86.bin"
-
-BINFILE="ti_cgt_c6000_6.0.21_setup_linux_x86.bin"
-
-S = "${WORKDIR}/cgt"
-
-# Yes, the xdc stuff still breaks with a '.' in PWD
 PE = "1"
 PV = "6_0_21"
+PVwithdots = "6.0.21"
 PR = "r3"
 
+SRC_URI[cgt6xbin.md5sum] = "5bfeaacb628b56005a8865a177af01e4"
+SRC_URI[cgt6xbin.sha256sum] = "fcfa98e2c8ff18e8e6d5b2ff5e94f20b719150fe7bb4a130cfa360e02df2156a"
 

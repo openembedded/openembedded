@@ -1,7 +1,5 @@
 require ti-dspbios.inc
 
-DEFAULT_PREFERENCE = "-1"
-
 PV = "5_33_06"
 
 SRC_URI[biosbin.md5sum] = "757b35272a894864e463086565056cd7"

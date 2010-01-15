@@ -2,15 +2,6 @@ DESCRIPTION = "LPM module for TI OMAP3 processors"
 
 DEPENDS = "ti-linuxutils ti-dsplink-module"
 
-# tconf breaks with '.' in PWD
-PV = "1_24_01"
-PE = "1"
-
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/lpm/${PV}/exports/local_power_manager_linux_${PV}.tar.gz;name=lpmtarball"
-
-SRC_URI[lpmtarball.md5sum] = "6699861c8d0195654c539798ec428124"
-SRC_URI[lpmtarball.sha256sum] = "052b31b09e6d85bc1e980f5e3d2350019c2d8d7430d24db60854dc926df9a1f2"
-
 # Set the source directory
 S = "${WORKDIR}/local_power_manager_linux_${PV}"
 
