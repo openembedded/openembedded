@@ -1,16 +1,22 @@
 SECTION = "gpe"
 RDEPENDS += "gdk-pixbuf-loader-png"
 
-INHERIT = "gpe"
-INHERIT_shr = "gpe update-alternatives"
-inherit ${INHERIT}
+#only icons present in the package
+PACKAGE_ARCH = "all"
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 ALTERNATIVE_NAME = "gpe-pixmaps"
 ALTERNATIVE_LINK = "${datadir}/gpe/pixmaps"
 ALTERNATIVE_PATH = "${datadir}/gpe/pixmaps.${PN}"
 ALTERNATIVE_PRIORITY ?= 1
+
+# copy icons from other alternatives if they are not provided by current alternative
+# ie gpe-sketchbook install own icon to pixmaps dir even before gpe-icons_*.bb is installed
+# so if we switch pixmaps link to neo theme, there would be no icon for gpe-sketchbook 
+# unless we copy it to neo theme in postinst too
+# inherit update-alternatives is not used, because not all distributions want to use it 
+# and conditional inherit is a bit difficult to use (inherit ${GPE_INHERIT} works, but only if we always want at least 1 bbclass)
 
 pkg_postinst_shr() {
         if [[ -e ${ALTERNATIVE_LINK} && ! -h ${ALTERNATIVE_LINK} ]] ; then
@@ -35,4 +41,9 @@ pkg_postinst_shr() {
                           fi; 
                 done
         done
+        update-alternatives --install ${ALTERNATIVE_LINK} ${ALTERNATIVE_NAME} ${ALTERNATIVE_PATH} ${ALTERNATIVE_PRIORITY}
+}
+
+pkg_postrm_shr() {
+        update-alternatives --remove ${ALTERNATIVE_NAME} ${ALTERNATIVE_PATH}
 }

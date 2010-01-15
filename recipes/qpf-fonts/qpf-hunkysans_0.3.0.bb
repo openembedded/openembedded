@@ -5,6 +5,6 @@ HOMEPAGE = "http://www.yoper.com/ariszlo/hunky.html http://sourceforge.net/proje
 LICENSE = "LGPL"
 PR = "r6"
 
-SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/${PN}-${PV}-r4.tar.bz2"
+SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/${PN}-${PV}-r4.tar.bz2"
 
 S = "${WORKDIR}/${PN}"

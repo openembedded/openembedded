@@ -68,14 +68,6 @@ kill_udevd > "/dev/null" 2>&1
 		else
 			/sbin/udevadm trigger
 			/sbin/udevadm settle
-			if [ "$DEVCACHE" != "" ]; then
-				echo -n "Populating dev cache"
-				(cd /; tar cf $DEVCACHE dev)
-				mv /tmp/uname /etc/udev/saved.uname
-				mv /tmp/cmdline /etc/udev/saved.cmdline
-				mv /tmp/atags /etc/udev/saved.atags
-				echo
-			fi
 		fi
 
 exit 0

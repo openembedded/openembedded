@@ -36,6 +36,15 @@ PREFERRED_VERSION_usbutils = "0.82"
 PREFERRED_VERSION_wpa-supplicant = "0.6.9"
 UDEV_GE_141 = "1"
 
+ANGSTROM_QT_VERSION ?= "4.6.0"
+PREFERRED_VERSION_qt4-tools-native = "${ANGSTROM_QT_VERSION}"
+PREFERRED_VERSION_qt4-tools-sdk = "${ANGSTROM_QT_VERSION}"
+PREFERRED_VERSION_qt4-embedded = "${ANGSTROM_QT_VERSION}"
+PREFERRED_VERSION_qt4-embedded-gles = "${ANGSTROM_QT_VERSION}"
+PREFERRED_VERSION_qt4-x11-free = "${ANGSTROM_QT_VERSION}"
+PREFERRED_VERSION_qt4-x11-free-gles = "${ANGSTROM_QT_VERSION}"
+
+
 # Downgraded
 # python-pygtk_2.16.0 is accessing non-existent /usr/share/pygobject/2.0/codegen/codegen.py
 PREFERRED_VERSION_python-pygtk = "2.10.4"

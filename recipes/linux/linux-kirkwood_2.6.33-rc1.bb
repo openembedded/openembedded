@@ -15,12 +15,15 @@ SRC_URI = "git://repo.or.cz/linux-2.6/linux-2.6-openrd.git;protocol=git \
            file://defconfig"
 
 SRC_URI_append_openrd-base += " \
-	file://openrd-base/openrd-base-enable-pcie.patch;patch=1"
+	 file://openrd-base/openrd-base-enable-pcie.patch;patch=1 \
+	 file://0004-ARM-Kirkwood-OpenRD-SD-UART1-selection.patch;patch=1 \
+	"
 
 SRC_URI_append_openrd-client += " \
 	 file://0001-OpenRD-Client-PCIe-Initialize-PCI-express-and-i2c.patch;patch=1 \
 	 file://0002-OpenRD-Client-Volari-Z11-driver-added.patch;patch=1 \
 	 file://0003-ARM-Kirkwood-Sound-Sound-driver-added.patch;patch=1 \
+	 file://0004-ARM-Kirkwood-OpenRD-SD-UART1-selection.patch;patch=1 \
 	"
 
 # update machine types list for ARM architecture, only for machines that need it

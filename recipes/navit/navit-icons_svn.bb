@@ -4,8 +4,11 @@ SECTION = "x11/applications"
 DEPENDS = "glib-2.0 gtk+"
 RRECOMMENDS = "gpsd espeak flite"
 
+#only icons present in the package
+PACKAGE_ARCH = "all"
+
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 DEPENDS_shr += " librsvg-native"
 EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher"
