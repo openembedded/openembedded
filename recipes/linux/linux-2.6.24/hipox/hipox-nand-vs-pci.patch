@@ -1,0 +1,212 @@
+diff -Nurd linux-2.6.24.orig//drivers/mtd/nand/hipox_nand.c linux-2.6.24/drivers/mtd/nand/hipox_nand.c
+--- linux-2.6.24.orig//drivers/mtd/nand/hipox_nand.c	2010-01-08 10:57:15.000000000 +0100
++++ linux-2.6.24/drivers/mtd/nand/hipox_nand.c	2010-01-08 10:58:33.000000000 +0100
+@@ -21,6 +21,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/delay.h>
++#include <linux/jiffies.h>
+ #include <asm/io.h>
+ #include <asm/arch/hardware.h>
+ #include <asm/sizes.h>
+@@ -58,9 +59,52 @@
+ };
+ #endif
+ 
++static unsigned int timestamp = 0;
++/*
++ * Request PCI_ARB to grant access to the STATIC core.
++ */
++static void request_bus(void)
++{
++	unsigned maxtries = 10; /* wait for maxtries jiffies at maximum */
++
++	/* set PCI_ARB request bit in Sysctrl_PCI_Ctrl1 */
++	writel(readl(SYS_CTRL_PCI_CTRL1) | (1UL << SYSCTL_PCI_CTRL1_SYSPCI_STATIC_REQ), SYS_CTRL_PCI_CTRL1);
++
++	/* check if STATIC core has been granted access to the PCI bus
++	   and can use PCI_AD[31:0] pins */
++	for (;maxtries > 0; maxtries--)
++	{
++		if (readl(SYS_CTRL_PCI_STAT) & (1UL << SYSCTL_PCI_STAT_SYSPCI_STATIC_GNT))
++			break;
++		udelay(10);
++	}
++
++	/* check for timeout granting access */
++	if (!(readl(SYS_CTRL_PCI_STAT) & (1UL << SYSCTL_PCI_STAT_SYSPCI_STATIC_GNT)))
++		printk(KERN_WARNING "%s: timeout requesting access to PCI bus for static memory interface\n",  __func__);
++
++	timestamp = jiffies_to_msecs(get_jiffies_64());
++}
+ 
+ /*
+- *	hardware specific access to control-lines
++ * Release access to PCI bus.
++ */
++static void release_bus(void)
++{
++	const unsigned int timeout = 100; /* ms */  
++	unsigned int delta = jiffies_to_msecs(get_jiffies_64()) - timestamp;
++
++	/* set PCI_ARB request bit in Sysctrl_PCI_Ctrl1 */
++	writel(readl(SYS_CTRL_PCI_CTRL1) & ~(1UL << SYSCTL_PCI_CTRL1_SYSPCI_STATIC_REQ), SYS_CTRL_PCI_CTRL1);
++
++	if (delta > timeout)
++	{
++		printk(KERN_WARNING "%s: static memory interface blocked PCI bus for %u ms\n",  __func__, delta);
++	}
++}
++
++/*
++ * Hardware specific access to control-lines
+  */
+ static void hipox_nand_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
+@@ -85,30 +129,110 @@
+ 	}
+ 
+ 	if (cmd != NAND_CMD_NONE)
++	{
++		request_bus();
+ 		writeb(cmd, this->IO_ADDR_W);
++		release_bus();
++	}
+ }
+ 
+-static void hipox_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
++/**
++ * hipox_nand_read_byte - read one byte from the chip
++ * @mtd:	MTD device structure
++ *
++ * Read function for 8bit buswith
++ */
++static uint8_t hipox_nand_read_byte(struct mtd_info *mtd)
+ {
+-   struct nand_chip *chip = mtd->priv;
+-   volatile uint8_t *io = chip->IO_ADDR_R;
++	struct nand_chip *chip = mtd->priv;
++	uint8_t res;
++	request_bus();
++	res = readb(chip->IO_ADDR_R);
++	release_bus();
++	return res;
++}
+ 
+-	if((((int)buf) & 1) || (len & 1))
+-	{
+-		while(len-- > 0)
+-			*buf++ = *io;
++/**
++ * hipox_nand_read_word - read one word from the chip
++ * @mtd:	MTD device structure
++ *
++ * Read function for 16bit buswith without
++ * endianess conversion
++ */
++static u16 hipox_nand_read_word(struct mtd_info *mtd)
++{
++	struct nand_chip *chip = mtd->priv;
++	u16 res;
++	request_bus();
++	res = readw(chip->IO_ADDR_R);
++	release_bus();
++	return res;
++}
+ 
+-		return;
+-	}
++/**
++ * hipox_nand_read_buf - read chip data into buffer
++ * @mtd:	MTD device structure
++ * @buf:	buffer to store date
++ * @len:	number of bytes to read
++ *
++ * Read function for 8bit buswith
++ */
++static void hipox_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
++{
++	int i;
++	struct nand_chip *chip = mtd->priv;
+ 
+-	// now it's aligned, group to 16 bit access
++	request_bus();
++	for (i = 0; i < len; i++)
++		buf[i] = readb(chip->IO_ADDR_R);
++	release_bus();
++}
++
++/**
++ * hipox_nand_write_buf - write buffer to chip
++ * @mtd:	MTD device structure
++ * @buf:	data buffer
++ * @len:	number of bytes to write
++ *
++ * Write function for 8bit buswith
++ */
++static void hipox_nand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
++{
++	int i;
++	struct nand_chip *chip = mtd->priv;
++
++	request_bus();
++	for (i = 0; i < len; i++)
++		writeb(buf[i], chip->IO_ADDR_W);
++	release_bus();
++}
++
++/**
++ * hipox_nand_verify_buf - Verify chip data against buffer
++ * @mtd:	MTD device structure
++ * @buf:	buffer containing the data to compare
++ * @len:	number of bytes to compare
++ *
++ * Verify function for 8bit buswith
++ */
++static int hipox_nand_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
++{
++	int i;
++	int ret = 0;
++	struct nand_chip *chip = mtd->priv;
++
++	request_bus();
++	for (i = 0; i < len; i++)
+ 	{
+-		uint16_t *ptr16 = (uint16_t *)buf;
+-		len >>= 1;
+- 
+-		while(len-- > 0)
+-			*ptr16++ = *io | (*io << 8);
++		if (buf[i] != readb(chip->IO_ADDR_R))
++		{
++			ret = 0;
++			break;
++		}
+ 	}
++	release_bus();
++
++	return ret;
+ }
+ 
+ /*
+@@ -175,10 +299,18 @@
+ 	/* insert callbacks */
+ 	this->IO_ADDR_R = (void *)CONFIG_SYS_NAND_BASE;
+ 	this->IO_ADDR_W = (void *)CONFIG_SYS_NAND_BASE;
+-	this->cmd_ctrl = hipox_nand_hwcontrol;
+-	this->read_buf = hipox_read_buf;
+ 	this->chip_delay = 25; // 23 still worked on our EvalBoard
+ 	this->ecc.mode = NAND_ECC_SOFT;
++	/* we overwrite these funcs because we need a special lock
++	   handling for use of data pins shared between PCI and
++	   static memory interface of OXE810 cpu */
++	this->cmd_ctrl = hipox_nand_hwcontrol;
++	this->read_byte = hipox_nand_read_byte;
++	this->read_word = hipox_nand_read_word;
++	this->read_buf = hipox_nand_read_buf;
++	this->write_buf = hipox_nand_write_buf;
++	this->verify_buf = hipox_nand_verify_buf;
++
+ 	printk("Searching for NAND flash...\n");
+ 
+ 	/* Scan to find existence of the device */
