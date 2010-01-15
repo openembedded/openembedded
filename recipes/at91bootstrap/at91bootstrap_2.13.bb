@@ -1,0 +1,8 @@
+require at91bootstrap.inc
+PR = "r0"
+DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_at91sam9g45ek = "1"
+DEFAULT_PREFERENCE_at91sam9g45ekes = "1"
+DEFAULT_PREFERENCE_at91sam9m10ek = "1"
+
+

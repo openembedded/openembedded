@@ -1,0 +1,11 @@
+--- wpa_gui-qt4/wpa_gui.desktop	2009-03-23 15:06:28.000000000 +0100
++++ wpa_gui-qt4/wpa_gui.desktop	2009-11-14 18:46:09.000000000 +0100
+@@ -2,7 +2,7 @@
+ Version=1.0
+ Name=wpa_gui
+ Comment=Graphical user interface for wpa_supplicant
+-Exec=wpa_gui
++Exec=wpa_gui -stylesheet /usr/share/wpa_gui/style
+ Icon=wpa_gui
+ GenericName=wpa_supplicant user interface
+ Terminal=false
