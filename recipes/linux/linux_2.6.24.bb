@@ -106,6 +106,7 @@ SRC_URI_append_hipox = " \
 	file://hipox-sata-module.patch;patch=1 \
 	file://hipox-OXE-INT2.patch;patch=1 \
 	file://hipox-rtc.patch;patch=1 \
+	file://hipox-nand-vs-pci.patch;patch=1 \
 	"
 
 EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"
