@@ -1,0 +1,72 @@
+diff -rup wpa_supplicant-0.6.9_orig/wpa_supplicant/wpa_gui-qt4/main.cpp wpa_supplicant-0.6.9/wpa_supplicant/wpa_gui-qt4/main.cpp
+--- wpa_gui-qt4/main.cpp	2009-03-23 15:06:28.000000000 +0100
++++ wpa_gui-qt4/main.cpp	2009-11-14 17:55:47.000000000 +0100
+@@ -24,7 +24,9 @@ class WpaGuiApp : public QApplication
+ public:
+ 	WpaGuiApp(int &argc, char **argv);
+ 
++#ifndef QT_NO_SESSIONMANAGER
+ 	virtual void saveState(QSessionManager &manager);
++#endif
+ 
+ 	WpaGui *w;
+ };
+@@ -33,11 +35,13 @@ WpaGuiApp::WpaGuiApp(int &argc, char **a
+ {
+ }
+ 
++#ifndef QT_NO_SESSIONMANAGER
+ void WpaGuiApp::saveState(QSessionManager &manager)
+ {
+ 	QApplication::saveState(manager);
+ 	w->saveState();
+ }
++#endif
+ 
+ 
+ int main(int argc, char *argv[])
+diff -rup wpa_supplicant-0.6.9_orig/wpa_supplicant/wpa_gui-qt4/wpagui.cpp wpa_supplicant-0.6.9/wpa_supplicant/wpa_gui-qt4/wpagui.cpp
+--- wpa_gui-qt4/wpagui.cpp	2009-03-23 15:06:28.000000000 +0100
++++ wpa_gui-qt4/wpagui.cpp	2009-11-14 17:55:47.000000000 +0100
+@@ -145,6 +145,7 @@ WpaGui::WpaGui(QApplication *_app, QWidg
+ 
+ 	parse_argv();
+ 
++#ifndef QT_NO_SESSIONMANAGER
+ 	if (app->isSessionRestored()) {
+ 		QSettings settings("wpa_supplicant", "wpa_gui");
+ 		settings.beginGroup("state");
+@@ -153,6 +154,7 @@ WpaGui::WpaGui(QApplication *_app, QWidg
+ 			startInTray = settings.value("in_tray").toBool();
+ 		settings.endGroup();
+ 	}
++#endif
+ 
+ 	if (QSystemTrayIcon::isSystemTrayAvailable())
+ 		createTrayIcon(startInTray);
+@@ -1689,6 +1691,7 @@ void WpaGui::addInterface()
+ }
+ 
+ 
++#ifndef QT_NO_SESSIONMANAGER
+ void WpaGui::saveState()
+ {
+ 	QSettings settings("wpa_supplicant", "wpa_gui");
+@@ -1697,3 +1700,4 @@ void WpaGui::saveState()
+ 	settings.setValue("in_tray", inTray);
+ 	settings.endGroup();
+ }
++#endif
+diff -rup wpa_supplicant-0.6.9_orig/wpa_supplicant/wpa_gui-qt4/wpagui.h wpa_supplicant-0.6.9/wpa_supplicant/wpa_gui-qt4/wpagui.h
+--- wpa_gui-qt4/wpagui.h	2009-03-23 15:06:28.000000000 +0100
++++ wpa_gui-qt4/wpagui.h	2009-11-14 17:55:47.000000000 +0100
+@@ -40,7 +40,9 @@ public:
+ 	virtual void disableNetwork(const QString &sel);
+ 	virtual int getNetworkDisabled(const QString &sel);
+ 	void setBssFromScan(const QString &bssid);
++#ifndef QT_NO_SESSIONMANAGER
+ 	void saveState();
++#endif
+ 
+ public slots:
+ 	virtual void parse_argv();

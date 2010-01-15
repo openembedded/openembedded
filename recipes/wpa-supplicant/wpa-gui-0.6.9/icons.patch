@@ -1,0 +1,19 @@
+diff -rup wpa_supplicant-0.6.9_orig/wpa_supplicant/wpa_gui-qt4/icons/Makefile wpa_supplicant-0.6.9/wpa_supplicant/wpa_gui-qt4/icons/Makefile
+--- wpa_gui-qt4/icons/Makefile	2009-03-23 15:06:28.000000000 +0100
++++ wpa_gui-qt4/icons/Makefile	2010-01-13 18:36:33.000000000 +0100
+@@ -10,10 +10,11 @@ all: $(ICONS)
+ 
+ %.png:
+ 	mkdir -p hicolor/$(@:.png=)/apps/
+-	inkscape $(SVG) --without-gui \
+-		--export-width=$(word 1,$(subst x, ,$(@:.png=)))  \
+-	        --export-height=$(word 2,$(subst x, ,$(@:.png=))) \
+-		--export-png=hicolor/$(@:.png=)/apps/$(NAME).png
++	rsvg-convert $(SVG) \
++		--width=$(word 1,$(subst x, ,$(@:.png=)))  \
++	        --height=$(word 2,$(subst x, ,$(@:.png=))) \
++		--format=png \
++		--output=hicolor/$(@:.png=)/apps/$(NAME).png
+ 
+ $(NAME).xpm:
+ 	mkdir -p pixmaps/

@@ -264,4 +264,5 @@ RDEPENDS_${PN} += "\
 		libsyncml \
 		qi \
 		qi-ubi \
+		wpa-gui \
 "

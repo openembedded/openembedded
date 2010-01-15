@@ -1,9 +1,9 @@
 LICENSE = "GPL"
-DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer"
+DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer virtual/libsdl"
 
 inherit gnome distutils-base gconf
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
            "
