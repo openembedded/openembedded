@@ -244,14 +244,17 @@ def base_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
         return falsevalue
 
 def base_contains(variable, checkvalues, truevalue, falsevalue, d):
+	val = bb.data.getVar(variable,d,1)
+	if not val:
+		return falsevalue
 	matches = 0
 	if type(checkvalues).__name__ == "str":
 		checkvalues = [checkvalues]
 	for value in checkvalues:
-		if bb.data.getVar(variable,d,1).find(value) != -1:	
+		if val.find(value) != -1:
 			matches = matches + 1
 	if matches == len(checkvalues):
-		return truevalue		
+		return truevalue
 	return falsevalue
 
 def base_both_contain(variable1, variable2, checkvalue, d):
