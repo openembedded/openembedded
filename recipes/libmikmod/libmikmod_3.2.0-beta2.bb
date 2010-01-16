@@ -3,6 +3,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "\
