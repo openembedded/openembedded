@@ -19,9 +19,6 @@ SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
 
 S = "${WORKDIR}/ipkg-utils"
 
-# Workaround QA issue
-TARGET_CC_ARCH += "${LDFLAGS}"
-
 INSTALL = "ipkg-build ipkg-deb-unbuild ipkg-unbuild ipkg-compare-versions ipkg-upload ipkg-make-index ipkg-link ipkg.py ipkg-list-fields"
 
 do_compile() {

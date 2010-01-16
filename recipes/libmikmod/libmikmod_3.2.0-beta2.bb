@@ -26,10 +26,6 @@ EXTRA_OECONF = "\
   --enable-threads \
 "
 
-# Workaround QA issue
-TARGET_CC_ARCH += "${LDFLAGS}"
-
-
 do_stage() {
 	oe_libinstall -a -so -C libmikmod libmikmod ${STAGING_LIBDIR}
 	install -m 0644 ${S}/include/mikmod.h ${STAGING_INCDIR}/

@@ -7,9 +7,6 @@ PR = "r2"
 
 ARM_INSTRUCTION_SET = "arm"
 
-# Workaround QA issue
-TARGET_CC_ARCH += "${LDFLAGS}"
-
 inherit scons
 
 SRC_URI = "\
