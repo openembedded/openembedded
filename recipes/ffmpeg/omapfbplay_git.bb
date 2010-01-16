@@ -4,7 +4,8 @@ LICENSE = "MIT"
 
 PR = "r18"
 
-PV = "0.0+${PR}+gitr${SRCREV}"
+PV = "0.0+${PR}+gitr${SRCPV}"
+PE = "1"
 
 SRCREV = "26df4208b57ccb0f0ca101ae4ddb92c956a0ecc0"
 SRC_URI = "git://git.mansr.com/${PN};protocol=git \

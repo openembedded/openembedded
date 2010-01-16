@@ -9,7 +9,7 @@ DEPENDS += " gsl "
 SRCREV = "bf7ad4d17514aba9fc5209bc916ce37482f77eaa"
 
 PR = "${INC_PR}.2"
-PV = "3.2.1-${PR}+gitr${SRCREV}"
+PV = "3.2.1-${PR}+gitr${SRCPV}"
 
 EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable-usrp2 --disable-usrp2-firmware --with-fusb-tech=libusb1"
 

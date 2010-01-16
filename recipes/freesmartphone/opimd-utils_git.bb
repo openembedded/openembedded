@@ -4,8 +4,9 @@ SHR_RELEASE ?= "shr"
 LICENSE ?= "GPL"
 RDEPENDS = "python-elementary python-dbus python-codecs python-shell python python-core python-edbus frameworkd"
 SECTION = "x11/application"
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.3+gitr${SRCPV}"
 PR = "r0"
+PE = "1"
 
 inherit setuptools
 

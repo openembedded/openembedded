@@ -15,9 +15,10 @@ S = "${WORKDIR}/git"
 # DaVinci DM3xx/DM6xxx
 # dm355-evm/dm365-evm/dm6446-evm/dm6467-evm/dm6467t-evm Davinci PSP 03.01.00/03.02.00 (build r30)
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
+PE = "1"
 
 ARAGO_DM_REV = "c2aeffe9e835c5b6b275edc416951ce4a348b0fd"
-ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCREV}"
+ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
 ARAGO_DM_BR  = "r30"
 ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH} "
 
@@ -50,7 +51,7 @@ SRC_URI_append_dm6467t-evm = ${ARAGO_DM_URI}
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
 ARAGO_L1_REV = "e3939e092ce59a6906bf8869a3c7d40314c02eef"
-ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
+ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCPV}"
 ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}

@@ -5,7 +5,7 @@ INC_PR = "r1"
 
 SRC_URI = "git://gitorious.org/qtwebkit/performance.git;protocol=git"
 S = "${WORKDIR}/git"
-PV = "0.1+gitr${SRCREV}"
+PV = "0.1+gitr${SRCPV}"
 
 EXTRA_QMAKEVARS_PRE += "INSTALL_DIR=${bindir}"
 

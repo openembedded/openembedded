@@ -3,7 +3,8 @@ DESCRIPTION = "LiPS voice call library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libglade libgsmd"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
+PE = "1"
 PR          = "r0"
 
 inherit gpephone pkgconfig autotools

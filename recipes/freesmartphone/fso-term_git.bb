@@ -4,7 +4,8 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "dbus dbus-glib readline libfsoframework"
 LICENSE = "GPL"
-PV = "0.0.0.0+gitr${SRCREV}"
+PV = "0.0.0.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "\

@@ -5,7 +5,7 @@ LICENSE ?= "GPL"
 RDEPENDS = "python-elementary python-dbus python-core python-edbus packagekit"
 SECTION = "x11/application"
 
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCPV}"
 PR = "r0"
 
 inherit setuptools

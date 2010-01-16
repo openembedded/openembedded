@@ -1,6 +1,6 @@
 require linux.inc
 
-PV = "2.6.27+${PR}+gitr${SRCREV}"
+PV = "2.6.27+${PR}+gitr${SRCPV}"
 PR = "r13"
 
 COMPATIBLE_MACHINE = "htckaiser|htcpolaris|htcvogue|htctitan|htcnike|htcraphael|htcdiamond|htcblackstone|htcdream"

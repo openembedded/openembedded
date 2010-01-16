@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.freesmartphone.org"
 AUTHOR = "Simon Busch <morphis@gravedo.de>"
 SECTION = "console/network"
 LICENSE = "GPL"
-PV = "0.1.0+gitr${SRCREV}"
+PV = "0.1.0+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/msmcomm.git;protocol=git;branch=master"

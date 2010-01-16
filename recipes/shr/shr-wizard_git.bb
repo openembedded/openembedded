@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org"
 LICENSE = "GPL"
 RDEPENDS = "python-elementary shr-settings python-phoneutils e-wm python-dbus python-edbus"
 SECTION = "x11/application"
-PV = "0.0.0+gitr${SRCREV}"
+PV = "0.0.0+gitr${SRCPV}"
 PR = "r1"
 
 inherit autotools

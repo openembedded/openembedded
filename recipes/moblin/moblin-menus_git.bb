@@ -1,7 +1,8 @@
 
 SRC_URI = "git://git.moblin.org/${PN}.git;protocol=git \
            file://configurefix.patch;patch=1"
-PV = "0.0+git${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
+PE = "1"
 PR = "r1"
 
 S = "${WORKDIR}/git"

@@ -3,7 +3,8 @@ DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
 SRCREV = "459"
 # Again, no '.' in PWD allowed :(
-PV = "svnr${SRCREV}"
+PE = "1"
+PV = "svnr${SRCPV}"
 PR = "r37"
 
 GST_TI_RC_SCRIPT_omap3 = "gstreamer-ti-omap3530-rc.sh"

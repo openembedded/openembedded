@@ -4,7 +4,8 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 librecord liblipsevent libim sqlite3"
 PR          = "r0"
-PV = "0.1+svnr-${SRCREV}"
+PV = "0.1+svnr${SRCPV}"
+PE = "1"
 
 DEFAULT_PREFERENCE = "-1"
 

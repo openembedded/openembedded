@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ ptim-headers"
 PR = "r1"
+PE = "1"
 
 inherit gpephone pkgconfig autotools
 

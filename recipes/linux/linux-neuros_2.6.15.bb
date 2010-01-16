@@ -2,6 +2,7 @@
 
 PV = "2.6.15-torfu"
 PR = "r5"
+PE = "2"
 
 COMPATIBLE_MACHINE = "(neuros-osd)"
 

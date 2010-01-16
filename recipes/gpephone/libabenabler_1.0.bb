@@ -4,6 +4,7 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 librecord liblipsevent libim sqlite3"
 PR          = "r1"
+PE          = "1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

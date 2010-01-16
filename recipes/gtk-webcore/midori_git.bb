@@ -4,7 +4,7 @@ DEPENDS += "python-native python-docutils-native"
 
 # increment PR every time SRCREV is updated!
 PR = "r2"
-PV = "0.1.7+${PR}+gitr${SRCREV}"
+PV = "0.1.7+${PR}+gitr${SRCPV}"
 
 SRC_URI = "git://git.xfce.org/apps/midori;protocol=git \
            file://waf \

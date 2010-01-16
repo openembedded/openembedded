@@ -1,7 +1,8 @@
 DESCRIPTION = "Neuros photoalbum app"
 LICENSE = "GPL"
 
-PV = "0.0+${PR}+gitr${SRCREV}"
+PV = "0.0+${PR}+gitr${SRCPV}"
+PE = "1"
 PR = "r1"
 
 inherit qt4e

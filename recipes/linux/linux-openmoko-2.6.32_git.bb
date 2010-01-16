@@ -6,7 +6,7 @@ DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Sma
 KERNEL_RELEASE="2.6.32.3"
 
 OEV = "oe1"
-PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
+PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 PR = "r4"
 
 SRC_URI = "\

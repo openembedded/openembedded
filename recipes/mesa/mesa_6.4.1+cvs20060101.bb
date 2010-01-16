@@ -2,6 +2,7 @@ SECTION = "unknown"
 
 SRCDATE = "20060101"
 PV = "6.4.1+cvs${SRCDATE}"
+PE = "2"
 
 SRC_URI = "${FREEDESKTOP_CVS}/mesa;module=Mesa;method=pserver;date=${SRCDATE} \
 	file://mklib-rpath-link.patch;patch=1"

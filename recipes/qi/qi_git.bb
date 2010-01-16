@@ -1,6 +1,6 @@
 require qi.inc
 PR = "r0"
-PR_append = "+gitr${SRCREV}"
+PR_append = "+gitr${SRCPV}"
 
 SRC_URI = "\
   git://git.openmoko.org/git/qi.git;protocol=git;branch=master \

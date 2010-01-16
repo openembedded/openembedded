@@ -3,7 +3,8 @@ DESCRIPTION = "Quickdial application and backend"
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
+PE = "1"
 
 DEFAULT_PREFERENCE = "-1"
 

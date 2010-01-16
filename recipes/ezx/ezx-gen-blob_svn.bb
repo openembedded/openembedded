@@ -5,7 +5,8 @@ HOMEPAGE = "http://people.openezx.org/wyrm/gen-blob"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
 DEPENDS = "virtual/kernel"
-PV = "1.0.0+${SRCREV}"
+PV = "1.0.0+svnr${SRCPV}"
+PE = "1"
 PR = "r1"
 
 SRC_URI = "\

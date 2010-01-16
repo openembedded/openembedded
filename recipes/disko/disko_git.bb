@@ -1,6 +1,7 @@
 DESCRIPTION = "Disko is an application framework, that can be used to develop GUI applications for embedded devices. It is closely connected to the DirectFB"
 LICENSE = "GPL"
-PV = "1.6.1+gitr${SRCREV}"
+PV = "1.6.1+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"

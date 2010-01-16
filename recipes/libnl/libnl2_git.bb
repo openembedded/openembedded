@@ -2,7 +2,8 @@ DESCRIPTION = "libnl2 is a library for applications dealing with netlink sockets
 SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://people.suug.ch/~tgr/libnl"
-PV = "1.9+gitr${SRCREV}"
+PV = "1.9+gitr${SRCPV}"
+PE = "1"
 PR = "r1"
 
 inherit autotools

@@ -2,7 +2,7 @@ DESCRIPTION = "A generic framework for phone ui"
 HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "libs"
-PV = "0.0.0+gitr${SRCREV}"
+PV = "0.0.0+gitr${SRCPV}"
 PR = "r0"
 
 DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libphone-utils alsa-lib"
