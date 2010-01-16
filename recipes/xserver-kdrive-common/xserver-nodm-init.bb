@@ -1,9 +1,9 @@
-DESCRIPTION = "Simple Xserver Init Script (no dm)"
+#DESCRIPTION = "Simple Xserver Init Script (no dm)"
 LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
 PR = "r11"
-RDEPENDS = "procps"
+RDEPENDS_${PN} = "procps"
 
 SRC_URI = "file://xserver-nodm"
 S = ${WORKDIR}
