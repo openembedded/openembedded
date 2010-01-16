@@ -2,7 +2,7 @@ DESCRIPTION = "C library for embedded systems"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-INC_PR = "r32"
+INC_PR = "r33"
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
 # and our build is not a uclibc one, and we skip a glibc one if our build
@@ -52,7 +52,7 @@ uclibc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so \
 FILES_${PN} = "${sysconfdir} ${uclibc_baselibs} /sbin/ldconfig \
 	       ${libexecdir} ${datadir}/zoneinfo ${libdir}/locale"
 FILES_ldd = "${bindir}/ldd"
-FILES_uclibc-dev += "${libdir}/*.o"
+FILES_uclibc-dev_append = " ${libdir}/*.o ${libdir}/*_nonshared.a"
 FILES_uclibc-utils = "${bindir} ${sbindir}"
 FILES_uclibc-utils-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_uclibc-gconv = "${libdir}/gconv"
