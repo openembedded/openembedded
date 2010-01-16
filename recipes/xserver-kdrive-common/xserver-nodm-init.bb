@@ -1,4 +1,4 @@
-#DESCRIPTION = "Simple Xserver Init Script (no dm)"
+DESCRIPTION = "Simple Xserver Init Script (no dm)"
 LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
