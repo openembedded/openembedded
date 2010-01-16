@@ -2,7 +2,7 @@ DESCRIPTION = " Client libraries for GamingZone"
 LICENSE = "LGPLv2"
 DEPENDS = "libggz" 
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.belnet.be/packages/ggzgamingzone/ggz/${PV}/${PN}-${PV}.tar.gz \
            file://ggz-unbreak-m4.patch;patch=1 \
@@ -21,10 +21,7 @@ do_configure_append() {
 	done
 }
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
+FILES_${PN} += "${libdir}/ggz/ggzwrap ${datadir}/desktop-directories"
 
-do_stage() {
-        autotools_stage_all
-}
 
 
