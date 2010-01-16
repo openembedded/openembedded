@@ -9,7 +9,7 @@
 
 for patchnumber in $@;
 do
-	wget -nv http://patchwork.openembedded.org/patch/$patchnumber/mbox/ -O pw-am-$patchnumber.patch
+	wget -nv http://patchwork.dev.bearstech.com/patch/$patchnumber/mbox/ -O pw-am-$patchnumber.patch
 	git am -s pw-am-$patchnumber.patch
 	rm pw-am-$patchnumber.patch
 done
