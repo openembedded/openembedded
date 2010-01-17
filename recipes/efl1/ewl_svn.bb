@@ -18,6 +18,10 @@ EXTRA_OECONF = "\
   --disable-opengl-glew \
 "
 
+do_configure_prepend() {
+	autopoint
+}
+
 # TODO package engines more granular
 PACKAGES += "${PN}-plugins ${PN}-engines"
 
