@@ -253,6 +253,7 @@ do
                       netkit-ftp \
                       netsurf \
                       news \
+		      nfs-utils \
                       nmap \
                       nmm \
                       notecase \
