@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPEND = "libpam"
 RDEPEND = "${DEPEND}"
 
-PR = "r5"
+PR = "r6"
 
 EXTRA_OECONF += " --enable-shared  --enable-static --with-libpam --without-libcrack"
 
@@ -24,6 +24,7 @@ SRC_URI_append = " \
            file://pam.d/newusers \
            file://pam.d/passwd \
            file://pam.d/su \
+           file://securetty \
 "
 
 S = "${WORKDIR}/shadow-${PV}"
@@ -49,4 +50,6 @@ do_install_append() {
   # The system MDA will set this later anyway.
   sed -i 's/MAIL_DIR/#MAIL_DIR/g' ${D}${sysconfdir}/login.defs 
   sed -i 's/#MAIL_FILE/MAIL_FILE/g' ${D}${sysconfdir}/login.defs 
+
+  install -m 0644 ${WORKDIR}/securetty ${D}${sysconfdir}/securetty
 }
