@@ -2,7 +2,7 @@ DESCRIPTION = "Archiver for .zip files"
 SECTION = "console/utils"
 LICENSE = "Info-ZIP"
 
-SRC_URI = "http://ftp.info-zip.org/pub/infozip/src/zip${@bb.data.getVar('PV',d,1).replace('.', '')}.tar.gz"
+SRC_URI = "ftp://ftp.info-zip.org/pub/infozip/src/zip${@bb.data.getVar('PV',d,1).replace('.', '')}.tar.gz"
 
 EXTRA_OEMAKE = "'CC=${CC}' 'BIND=${CC} ${LDFLAGS}' 'AS=${CC} -c' 'CPP=${CPP}' \
 		'CFLAGS=-I. -DUNIX ${CFLAGS} ${LDFLAGS}' 'LFLAGS1=${LDFLAGS}' 'INSTALL=install' \

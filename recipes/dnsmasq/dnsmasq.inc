@@ -1,13 +1,12 @@
-SECTION = "console/network"
 DESCRIPTION = "Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server."
 HOMEPAGE = "http://www.thekelleys.org.uk/dnsmasq/doc.html"
+SECTION = "console/network"
 LICENSE = "GPL"
 
-SRC_URI = "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-${PV}.tar.gz \
+#at least versions 2.15 and prior are moved to the archive folder on the server
+SRC_URI = "http://www.thekelleys.org.uk/dnsmasq/${@['archive/', ''][float(bb.data.getVar('PV',d,1).split('.')[1]) > 15]}dnsmasq-${PV}.tar.gz \
            file://init \
            file://dnsmasq.conf"
-
-S = "${WORKDIR}/dnsmasq-${PV}"
 
 inherit update-rc.d
 

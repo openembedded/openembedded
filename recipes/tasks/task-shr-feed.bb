@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r34"
+PR = "r35"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -265,4 +265,5 @@ RDEPENDS_${PN} += "\
 		qi \
 		qi-ubi \
 		wpa-gui \
+		gabriel \
 "
