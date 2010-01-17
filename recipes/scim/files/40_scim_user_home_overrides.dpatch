@@ -1,0 +1,35 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 40_scim_user_home_overrides.dpatch by Colin Watson <cjwatson@ubuntu.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Allow home directory and user name detection to be overridden using
+## DP: SCIM_HOME and SCIM_USER environment variables respectively.
+
+@DPATCH@
+diff -urNad scim-1.4.7~/src/scim_utility.cpp scim-1.4.7/src/scim_utility.cpp
+--- scim-1.4.7~/src/scim_utility.cpp	2007-06-26 15:31:38.000000000 +0100
++++ scim-1.4.7/src/scim_utility.cpp	2008-07-26 11:28:49.000000000 +0100
+@@ -547,6 +547,11 @@
+
+     struct passwd *pw;
+
++    home_dir = getenv ("SCIM_HOME");
++    if (home_dir && *home_dir) {
++        return String (home_dir);
++    }
++
+     setpwent ();
+     pw = getpwuid (getuid ());
+     endpwent ();
+@@ -568,6 +573,11 @@
+     struct passwd *pw;
+     const char *user_name;
+
++    user_name = getenv ("SCIM_USER");
++    if (user_name && *user_name) {
++        return String (user_name);
++    }
++
+     setpwent ();
+     pw = getpwuid (getuid ());
+     endpwent ();

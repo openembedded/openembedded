@@ -1,0 +1,26 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 54_scim-1.4.7-xim-wrong-format.dpatch by Ikuya Awashiro <ikuya@fruitsbasket.info>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix incorrect XIM_QUERY_EXTENSION_REPLY message
+## DP: https://bugzilla.redhat.com/show_bug.cgi?id=457566
+
+@DPATCH@
+diff -urNad scim-1.4.9~/modules/FrontEnd/IMdkit/i18nIMProto.c scim-1.4.9/modules/FrontEnd/IMdkit/i18nIMProto.c
+--- scim-1.4.9~/modules/FrontEnd/IMdkit/i18nIMProto.c	2008-11-02 06:42:13.000000000 +0000
++++ scim-1.4.9/modules/FrontEnd/IMdkit/i18nIMProto.c	2009-07-20 11:55:05.000000000 +0000
+@@ -106,11 +106,11 @@
+
+ static XimFrameRec ext_fr[] =
+ {
+-    _FRAME(BIT16), 		/* extension major-opcode */
+-    _FRAME(BIT16), 		/* extension minor-opcode */
++    _FRAME(BIT8), 		/* extension major-opcode */
++    _FRAME(BIT8), 		/* extension minor-opcode */
+     _FRAME(BIT16), 		/* length of extension name */
+     _FRAME(BARRAY), 		/* extension name */
+-    _PAD4(2),
++    _PAD4(1),
+     _FRAME(EOL),
+ };
+

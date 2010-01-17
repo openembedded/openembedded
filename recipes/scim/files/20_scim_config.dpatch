@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 20_scim_config.dpatch by  <egon@localhost.localdomain>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: update the default config (see malone #37687)
+
+@DPATCH@
+diff -urNad scim-1.4.7~/configs/config scim-1.4.7/configs/config
+--- scim-1.4.7~/configs/config	2007-06-26 22:31:56.000000000 +0800
++++ scim-1.4.7/configs/config	2008-04-07 15:12:54.000000000 +0800
+@@ -10,7 +10,7 @@
+ /Hotkeys/FrontEnd/NextFactory = Control+Alt+Down,Shift+Control+KeyRelease+Shift_L,Shift+Control+KeyRelease+Shift_R
+ /Hotkeys/FrontEnd/PreviousFactory = Control+Alt+Up,Shift+Control+KeyRelease+Control_L,Shift+Control+KeyRelease+Control_R
+ /Hotkeys/FrontEnd/ShowFactoryMenu = Control+Alt+Right
+-/Hotkeys/FrontEnd/Trigger = Control+space
++/Hotkeys/FrontEnd/Trigger = Control+space,Zenkaku_Hankaku,Hangul
+ /Hotkeys/FrontEnd/ValidKeyMask = Shift+Control+Alt+Meta+QuirkKanaRo
+ /Panel/Gtk/Color/ActiveBackground = light sky blue
+ /Panel/Gtk/Color/ActiveText = black
+

@@ -1,0 +1,29 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 50_validate-desktop-entry.dpatch by Ming Hua <minghua-guest@users.alioth.debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+##
+## DP: Update to conform Desktop Entry Specification version 1.0.  The "Icon"
+## DP: key uses a hardcoded path because scim-setup.desktop is generated
+## DP: without any variable substitution.  Maybe it can use a name without
+## DP: path or extension instead, needs more investigation.
+
+@DPATCH@
+diff -urNad scim-1.4.7~/extras/setup/scim-setup.desktop.in scim-1.4.7/extras/setup/scim-setup.desktop.in
+--- scim-1.4.7~/extras/setup/scim-setup.desktop.in	2007-06-26 09:31:50.000000000 -0500
++++ scim-1.4.7/extras/setup/scim-setup.desktop.in	2008-01-28 09:33:48.000000000 -0600
+@@ -1,10 +1,9 @@
+ [Desktop Entry]
+-Encoding=UTF-8
+ _Name=SCIM Input Method Setup
+ _Comment=Setup utility for Smart Common Input Method platform
+ Exec=scim-setup
+-Icon=scim-setup.png
++Icon=scim-setup
+ Terminal=false
+ Type=Application
+ StartupNotify=true
+-Categories=Applications;Settings;
++Categories=Settings;
++NotShowIn=KDE;
++X-Ubuntu-Gettext-Domain=scim
