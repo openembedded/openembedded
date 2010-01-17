@@ -1,6 +1,6 @@
 require opkg.inc
 
-DEPENDS = "curl-native"
+DEPENDS = "curl-native openssl-native"
 PR = "${INC_PR}"
 PROVIDES =+ "virtual/update-alternatives-native"
 

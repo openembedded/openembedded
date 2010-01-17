@@ -1,0 +1,61 @@
+Index: scim-1.4.7/src/Makefile.am
+===================================================================
+--- scim-1.4.7.orig/src/Makefile.am
++++ scim-1.4.7/src/Makefile.am
+@@ -33,7 +33,7 @@ INCLUDES		= -I$(top_builddir) \
+ 			  -DSCIM_MODULE_PATH=\"@SCIM_MODULE_PATH@\"
+
+
+-noinst_HEADERS		= ltdl.h \
++noinst_HEADERS		= \
+ 			  scim_private.h \
+ 			  scim_compose_key_data.h \
+ 			  scim_keyboard_layout_data.h \
+@@ -84,11 +84,6 @@ libsciminclude_HEADERS 	= scim.h \
+ 			  scim_utility.h
+
+
+-noinst_LTLIBRARIES	= libltdlc.la
+-
+-libltdlc_la_SOURCES	= ltdl.cpp
+-libltdlc_la_LIBADD	= $(LIBADD_DL)
+-
+ if SCIM_LD_VERSION_SCRIPT
+ LD_VERSION_SCRIPT_OPTION="-Wl,--version-script=$(srcdir)/libscim.version-script"
+ endif
+@@ -137,7 +132,7 @@ libscim@SCIM_EPOCH@_la_LDFLAGS= -version
+ 			  @LTLIBINTL@ \
+ 			  -lstdc++
+
+-libscim@SCIM_EPOCH@_la_LIBADD	= libltdlc.la
++libscim@SCIM_EPOCH@_la_LIBADD	= -lltdl
+
+
+ bin_PROGRAMS		= scim scim-config-agent
+Index: scim-1.4.7/src/scim_module.cpp
+===================================================================
+--- scim-1.4.7.orig/src/scim_module.cpp
++++ scim-1.4.7/src/scim_module.cpp
+@@ -27,7 +27,9 @@
+ #define Uses_STL_ALGORITHM
+ #include "scim_private.h"
+ #include "scim.h"
+-#include "ltdl.h"
++extern "C" {
++  #include <ltdl.h>
++}
+ #include <dirent.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+Index: scim-1.4.7/configure.ac
+===================================================================
+--- scim-1.4.7.orig/configure.ac
++++ scim-1.4.7/configure.ac
+@@ -71,7 +71,6 @@ AM_GNU_GETTEXT
+ # Init libtool
+ AC_LIBTOOL_DLOPEN
+ AC_PROG_LIBTOOL
+-AC_LIB_LTDL
+ AC_SUBST(LIBTOOL_DEPS)
+
+ # libtool option to control which symbols are exported

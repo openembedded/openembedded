@@ -1,0 +1,53 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 51_scim-1.4.7-fix-capslock.dpatch by Ikuya Awashiro <ikuya@fruitsbasket.info>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Ignore caps lock to enable switcing input methods with it on
+## DP: https://bugzilla.redhat.com/show_bug.cgi?id=431222
+
+@DPATCH@
+diff -urNad scim-1.4.9~/utils/scimkeyselection.cpp scim-1.4.9/utils/scimkeyselection.cpp
+--- scim-1.4.9~/utils/scimkeyselection.cpp	2008-11-02 06:42:49.000000000 +0000
++++ scim-1.4.9/utils/scimkeyselection.cpp	2009-07-20 11:47:28.000000000 +0000
+@@ -267,6 +267,11 @@
+     gtk_widget_show (keyselection->toggle_hyper);
+     gtk_box_pack_start (GTK_BOX (hbox), keyselection->toggle_hyper, TRUE, TRUE, 2);
+
++
++    keyselection->toggle_capslock = gtk_check_button_new_with_mnemonic (_("Ca_psLock"));
++    gtk_widget_show (keyselection->toggle_capslock);
++    gtk_box_pack_start (GTK_BOX (hbox), keyselection->toggle_capslock, TRUE, TRUE, 2);
++   
+     hbox = gtk_hbox_new (TRUE, 0);
+     gtk_widget_show (hbox);
+     gtk_box_pack_start (GTK_BOX (keyselection), hbox, FALSE, FALSE, 4);
+@@ -319,6 +324,8 @@
+         key += String ("Super+");
+     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (keyselection->toggle_hyper)))
+         key += String ("Hyper+");
++    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (keyselection->toggle_capslock)))
++        key += String ("CapsLock+");
+
+     key_code = String (gtk_entry_get_text (GTK_ENTRY (keyselection->key_code)));
+     if (!key_code.length ()){
+@@ -572,6 +579,9 @@
+         GTK_TOGGLE_BUTTON (keyselection->toggle_hyper),
+         event.is_hyper_down ());
+     gtk_toggle_button_set_active (
++        GTK_TOGGLE_BUTTON (keyselection->toggle_capslock),
++        event.is_caps_lock_down ());
++    gtk_toggle_button_set_active (
+         GTK_TOGGLE_BUTTON (keyselection->toggle_release),
+         event.is_key_release ());
+
+diff -urNad scim-1.4.9~/utils/scimkeyselection.h scim-1.4.9/utils/scimkeyselection.h
+--- scim-1.4.9~/utils/scimkeyselection.h	2008-11-02 06:42:49.000000000 +0000
++++ scim-1.4.9/utils/scimkeyselection.h	2009-07-20 11:47:28.000000000 +0000
+@@ -36,6 +36,7 @@
+     GtkWidget *toggle_meta;
+     GtkWidget *toggle_super;
+     GtkWidget *toggle_hyper;
++    GtkWidget *toggle_capslock;
+     GtkWidget *toggle_release;
+     GtkWidget *key_code;
+

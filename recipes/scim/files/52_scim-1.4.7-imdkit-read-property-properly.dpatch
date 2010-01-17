@@ -1,0 +1,108 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 52_scim-1.4.7-imdkit-read-property-properly.dpatch by Ikuya Awashiro <ikuya@fruitsbasket.info>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Correctly read XIM_FORWARD_EVENT, triggered when rapidly typing keys
+## DP: https://bugzilla.redhat.com/show_bug.cgi?id=466657
+
+@DPATCH@
+diff -urNad scim-1.4.9~/modules/FrontEnd/IMdkit/Xi18n.h scim-1.4.9/modules/FrontEnd/IMdkit/Xi18n.h
+--- scim-1.4.9~/modules/FrontEnd/IMdkit/Xi18n.h	2008-11-02 06:42:13.000000000 +0000
++++ scim-1.4.9/modules/FrontEnd/IMdkit/Xi18n.h	2009-07-20 11:48:01.000000000 +0000
+@@ -149,6 +149,8 @@
+      */
+     int		sync;
+     XIMPending  *pending;
++    /* property offset to read next data */
++    long        property_offset;
+     void *trans_rec;		/* contains transport specific data  */
+     struct _Xi18nClient *next;
+ } Xi18nClient;
+diff -urNad scim-1.4.9~/modules/FrontEnd/IMdkit/i18nUtil.c scim-1.4.9/modules/FrontEnd/IMdkit/i18nUtil.c
+--- scim-1.4.9~/modules/FrontEnd/IMdkit/i18nUtil.c	2008-11-02 06:42:13.000000000 +0000
++++ scim-1.4.9/modules/FrontEnd/IMdkit/i18nUtil.c	2009-07-20 11:48:01.000000000 +0000
+@@ -70,6 +70,7 @@
+     client->sync = False;
+     client->byte_order = '?'; 	/* initial value */
+     memset (&client->pending, 0, sizeof (XIMPending *));
++    client->property_offset = 0;
+     client->next = i18n_core->address.clients;
+     i18n_core->address.clients = client;
+
+diff -urNad scim-1.4.9~/modules/FrontEnd/IMdkit/i18nX.c scim-1.4.9/modules/FrontEnd/IMdkit/i18nX.c
+--- scim-1.4.9~/modules/FrontEnd/IMdkit/i18nX.c	2008-11-02 06:42:12.000000000 +0000
++++ scim-1.4.9/modules/FrontEnd/IMdkit/i18nX.c	2009-07-20 11:48:01.000000000 +0000
+@@ -29,6 +29,7 @@
+ 
+ ******************************************************************/
+
++#include <limits.h>
+ #include <X11/Xlib.h>
+ #include <X11/Xatom.h>
+ #include "FrameMgr.h"
+@@ -128,6 +129,7 @@
+     else if (ev->format == 32) {
+         /* ClientMessage and WindowProperty */
+         unsigned long length = (unsigned long) ev->data.l[0];
++	unsigned long get_length;
+         Atom atom = (Atom) ev->data.l[1];
+         int	return_code;
+         Atom	actual_type_ret;
+@@ -136,11 +138,20 @@
+         unsigned char *prop;
+         unsigned long nitems;
+
++	/* Round up length to next 4 byte value. */
++	get_length = length + 3;
++	if (get_length > LONG_MAX)
++		get_length = LONG_MAX;
++	get_length /= 4;
++	if (get_length == 0) {
++		fprintf(stderr, "%s: invalid length 0\n", __FUNCTION__);
++		return NULL;
++	}
+         return_code = XGetWindowProperty (i18n_core->address.dpy,
+                                           x_client->accept_win,
+                                           atom,
+-                                          0L,
+-                                          length,
++                                          client->property_offset / 4,
++                                          get_length,
+                                           True,
+                                           AnyPropertyType,
+                                           &actual_type_ret,
+@@ -151,15 +162,27 @@
+         if (return_code != Success || actual_format_ret == 0 || nitems == 0) {
+             if (return_code == Success)
+                 XFree (prop);
++	    client->property_offset = 0;
+             return (unsigned char *) NULL;
+         }
+-        if (length != nitems)
+-            length = nitems;
+-	if (actual_format_ret == 16)
+-	    length *= 2;
+-	else if (actual_format_ret == 32)
+-	    length *= 4;
+-
++	/* Update the offset to read next time as needed */
++	if (bytes_after_ret > 0)
++		client->property_offset += length;
++	else
++		client->property_offset = 0;
++	switch (actual_format_ret) {
++	    case 8:
++	    case 16:
++	    case 32:
++		    length = nitems * actual_format_ret / 8;
++		    break;
++	    default:
++		    fprintf(stderr, "%s: unknown property return format: %d\n",
++			    __FUNCTION__, actual_format_ret);
++		    XFree(prop);
++		    client->property_offset = 0;
++		    return NULL;
++	}
+         /* if hit, it might be an error */
+         if ((p = (unsigned char *) malloc (length)) == NULL)
+             return (unsigned char *) NULL;
