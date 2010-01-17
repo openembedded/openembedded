@@ -23,7 +23,8 @@ SRC_URI = "\
   file://0004-gta02_defconfig-Enable-UBI-support.patch;patch=1 \
   file://0005-gta02_defconfig-Enable-UBI-debug.patch;patch=1 \
   file://0001-gta02_defconfig-Enable-GLAMO_DRM.patch;patch=1 \
-  file://0006-gta02-defconfig-enable-NFS-and-INOTIFY_USER.patch \
+  file://0006-gta02-defconfig-enable-NFS-and-INOTIFY_USER.patch;patch=1 \
+  file://0007-gta02_defconfig-disable-LEDS_GTA02_VIBRATOR.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"
