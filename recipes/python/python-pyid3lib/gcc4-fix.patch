@@ -1,0 +1,13 @@
+Index: pyid3lib-0.5.1/pyid3lib.cc
+===================================================================
+--- pyid3lib-0.5.1.orig/pyid3lib.cc
++++ pyid3lib-0.5.1/pyid3lib.cc
+@@ -1013,7 +1013,7 @@
+     {
+         ID3_Frame* frame;
+ 	const char* str;
+-	char* slash;
++	const char* slash;
+         ID3_Field* fld;
+ 	int i;
+ 

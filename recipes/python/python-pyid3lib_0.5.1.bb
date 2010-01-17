@@ -4,11 +4,12 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "id3lib"
 SRCNAME = "pyid3lib"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/pyid3lib/${SRCNAME}-${PV}.tar.bz2"
+SRC_URI = "\
+  ${SOURCEFORGE_MIRROR}/pyid3lib/${SRCNAME}-${PV}.tar.bz2\
+  file://gcc4-fix.patch;patch=1 \
+"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
-
-
