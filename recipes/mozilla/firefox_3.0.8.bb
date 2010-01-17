@@ -5,7 +5,7 @@ PR = "r1"
 # /OE/angstrom-dev/cross/armv7a/lib/gcc/arm-angstrom-linux-gnueabi/4.3.1/../../../../arm-angstrom-linux-gnueabi/bin/ld: ERROR: mozilla-xremote-client.o: Conflicting definitions of wchar_t
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
+SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \
 	file://security-cross.patch;patch=1 \
 	file://jsautocfg-dontoverwrite.patch;patch=1 \

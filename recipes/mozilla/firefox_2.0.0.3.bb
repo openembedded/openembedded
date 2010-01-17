@@ -1,7 +1,7 @@
 DEPENDS += "cairo"
 PR = "r3"
 
-SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
+SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://xptcstubs.patch;patch=1 \
 	file://no-xmb.patch;patch=1 \
 	file://jsautocfg.h \
