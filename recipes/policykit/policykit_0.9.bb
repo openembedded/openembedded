@@ -1,7 +1,7 @@
 HOMEPAGE = "http://www.packagekit.org/"
 DEPENDS = "libpam expat dbus-glib intltool-native"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://hal.freedesktop.org/releases/PolicyKit-${PV}.tar.gz \
            file://PolicyKit.conf \
@@ -18,13 +18,10 @@ do_install_append () {
 	install -d ${D}${localstatedir}/run/PolicyKit
 }
 
-do_stage() {
-        autotools_stage_all
-}
-
 FILES_${PN} += " ${datadir}/dbus-1 \
                  ${datadir}/PolicyKit \
-               "
+                 ${localstatedir}/run/PolicyKit \
+"
 
 pkg_postinst_${PN} () {
     # can't do this offline
