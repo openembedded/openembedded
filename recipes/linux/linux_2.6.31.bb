@@ -12,8 +12,6 @@ DEFAULT_PREFERENCE_db1200 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
-DEFAULT_PREFERENCE_ben-nanonote = "1"
-
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.9.bz2;patch=1 \
@@ -67,29 +65,6 @@ SRC_URI_append_collie = "\
 SRC_URI_append_ep93xx = " \
            file://edb9301-fix-machine-id.patch;patch=1 \
            "
-
-SRC_URI_append_ben-nanonote = " \
-	   file://files.patch;patch=1 \
-	   file://001-core.patch;patch=1 \
-	   file://050-nand.patch;patch=1 \
-	   file://051-fb.patch;patch=1 \
-	   file://052-rtc.patch;patch=1 \
-	   file://053-adc.patch;patch=1 \
-	   file://100-battery.patch;patch=1 \
-	   file://101-mmc.patch;patch=1 \
-	   file://102-video.patch;patch=1 \
-	   file://103-lcm.patch;patch=1 \
-	   file://103-serial.patch;patch=1 \
-	   file://104-usb.patch;patch=1 \
-	   file://105-sound.patch;patch=1 \
-	   file://220-add-2gb-nand-support.patch;patch=1 \
-	   file://300-jffs2-summery-vmalloc.patch;patch=1 \
-	   file://400-spi-gpio-3wire.patch;patch=1 \
-	   file://410-soc-32bit-regs.patch;patch=1 \
-	   file://500-modifier-keys.patch;patch=1 \
-	   file://900-add-openwrt-logo.patch;patch=1 \
-	   file://fix_mips_vmlinux.lds.patch;patch=1 \
-	   "
 
 do_devicetree_image_append_boc01() {
 	dtc -I dts -O dtb ${KERNEL_DEVICETREE_FLAGS} -o devicetree.v1 ${KERNEL_DEVICETREE}.v1
