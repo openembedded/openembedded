@@ -1,0 +1,16 @@
+---
+ configure.ac |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- rygel-0.4.8.orig/configure.ac
++++ rygel-0.4.8/configure.ac
+@@ -1,8 +1,8 @@
+ AC_PREREQ(2.53)
+ AC_INIT([rygel],
+-	m4_esyscmd([GNOME_TAG_PATTERN=RYGEL build-aux/git-version-gen .tarball-version]),
++	0.4.8,
+ 	[http://live.gnome.org/Rygel])
+ AC_CONFIG_AUX_DIR([build-aux])
+ 
+ # require automake-1.11 for vala support
+ AM_INIT_AUTOMAKE([1.11])
