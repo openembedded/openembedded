@@ -342,6 +342,7 @@ do
                       task-xqtlauncher \
                       tasks \
                       texinfo \
+                      tgt \
                       thttpd \
                       thunar \
                       tightvnc \
