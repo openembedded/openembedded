@@ -1,9 +1,9 @@
-require bluez-utils3.inc
+require bluez-utils.inc
 
 
 DEPENDS += "cups"
 
-# see bluez-utils3.inc for the explanation of these option
+# see bluez-utils.inc for the explanation of these option
 EXTRA_OECONF = " \
                  --enable-bccmd \
 		 --enable-hid2hci \

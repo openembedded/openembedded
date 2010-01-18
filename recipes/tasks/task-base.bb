@@ -69,7 +69,6 @@ DISTRO_APM ?= "apm"
 DISTRO_BLUETOOTH_MANAGER ?= "\
 	blueprobe \
 	bluez-utils \
-	bluez-utils-compat \
 	"
 
 #
@@ -243,8 +242,6 @@ task-base-pcmcia24 = "\
 task-base-pcmcia26 = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-hostap-cs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-spectrum-cs', '',d)}"
-
-# Provide bluez-utils-compat utils for the time being, the binaries in that package will vanish soon from upstream releases, so beware! 
 
 RDEPENDS_task-base-bluetooth = "\
     ${DISTRO_BLUETOOTH_MANAGER} \

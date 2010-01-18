@@ -1,0 +1,251 @@
+From d21829b9140ccb7c24046dcd600a748ebc1cfe12 Mon Sep 17 00:00:00 2001
+From: Chris Larson <clarson@mvista.com>
+Date: Fri, 15 Jan 2010 13:51:44 -0700
+Subject: [PATCH] Build against external libbluetooth.
+
+Signed-off-by: Chris Larson <clarson@mvista.com>
+---
+ Makefile.am    |   12 +++++++-----
+ Makefile.tools |   52 ++++++++++++++++++++++++++--------------------------
+ acinclude.m4   |   11 +++++++++++
+ configure.ac   |    1 +
+ 4 files changed, 45 insertions(+), 31 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index d360acb..74e136b 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -49,12 +49,14 @@ local_headers = $(foreach file,$(lib_headers), lib/bluetooth/$(notdir $(file)))
+ 
+ include_HEADERS += $(lib_headers)
+ 
++if !EXTERNAL_BTLIB
+ lib_LTLIBRARIES += lib/libbluetooth.la
+ 
+ lib_libbluetooth_la_SOURCES = $(lib_headers) \
+ 					lib/bluetooth.c lib/hci.c lib/sdp.c
+ lib_libbluetooth_la_LDFLAGS = -version-info 7:2:4
+ lib_libbluetooth_la_DEPENDENCIES = $(local_headers)
++endif
+ 
+ CLEANFILES += $(local_headers)
+ 
+@@ -191,7 +193,7 @@ src_bluetoothd_SOURCES = $(gdbus_sources) $(builtin_sources) \
+ 			src/device.h src/device.c \
+ 			src/dbus-common.c src/dbus-common.h \
+ 			src/dbus-hci.h src/dbus-hci.c
+-src_bluetoothd_LDADD = lib/libbluetooth.la @GLIB_LIBS@ @DBUS_LIBS@ \
++src_bluetoothd_LDADD = @BLUEZ_LIBS@ @GLIB_LIBS@ @DBUS_LIBS@ \
+ 							@CAPNG_LIBS@ -ldl
+ src_bluetoothd_LDFLAGS = -Wl,--export-dynamic \
+ 					-Wl,--version-script=src/bluetooth.ver
+@@ -226,13 +228,13 @@ audio_libasound_module_pcm_bluetooth_la_SOURCES = audio/pcm_bluetooth.c \
+ 					audio/rtp.h audio/ipc.h audio/ipc.c
+ audio_libasound_module_pcm_bluetooth_la_LDFLAGS = -module -avoid-version #-export-symbols-regex [_]*snd_pcm_.*
+ audio_libasound_module_pcm_bluetooth_la_LIBADD = sbc/libsbc.la \
+-						lib/libbluetooth.la @ALSA_LIBS@
++						@BLUEZ_LIBS@ @ALSA_LIBS@
+ audio_libasound_module_pcm_bluetooth_la_CFLAGS = @ALSA_CFLAGS@
+ 
+ audio_libasound_module_ctl_bluetooth_la_SOURCES = audio/ctl_bluetooth.c \
+ 					audio/rtp.h audio/ipc.h audio/ipc.c
+ audio_libasound_module_ctl_bluetooth_la_LDFLAGS = -module -avoid-version #-export-symbols-regex [_]*snd_ctl_.*
+-audio_libasound_module_ctl_bluetooth_la_LIBADD = lib/libbluetooth.la @ALSA_LIBS@
++audio_libasound_module_ctl_bluetooth_la_LIBADD = @BLUEZ_LIBS@ @ALSA_LIBS@
+ audio_libasound_module_ctl_bluetooth_la_CFLAGS = @ALSA_CFLAGS@
+ 
+ if CONFIGFILES
+@@ -258,7 +260,7 @@ audio_libgstbluetooth_la_SOURCES = audio/gstbluetooth.c \
+ 				audio/gstrtpsbcpay.h audio/gstrtpsbcpay.c \
+ 				audio/rtp.h audio/ipc.h audio/ipc.c
+ audio_libgstbluetooth_la_LDFLAGS = -module -avoid-version
+-audio_libgstbluetooth_la_LIBADD = sbc/libsbc.la lib/libbluetooth.la \
++audio_libgstbluetooth_la_LIBADD = sbc/libsbc.la @BLUEZ_LIBS@ \
+ 				@GSTREAMER_LIBS@ -lgstaudio-0.10 -lgstrtp-0.10
+ audio_libgstbluetooth_la_CFLAGS = -fvisibility=hidden -fno-strict-aliasing \
+ 						$(AM_CFLAGS) @GSTREAMER_CFLAGS@
+@@ -308,7 +310,7 @@ AM_YFLAGS = -d
+ AM_CFLAGS = @DBUS_CFLAGS@ @GLIB_CFLAGS@ @CAPNG_CFLAGS@ \
+ 		-DBLUETOOTH_PLUGIN_BUILTIN -DPLUGINDIR=\""$(plugindir)"\"
+ 
+-INCLUDES = -I$(builddir)/lib -I$(builddir)/src -I$(srcdir)/src \
++INCLUDES = @BLUEZ_CFLAGS@ -I$(builddir)/src -I$(srcdir)/src \
+ 			-I$(srcdir)/audio -I$(srcdir)/sbc -I$(srcdir)/gdbus
+ 
+ 
+diff --git a/Makefile.tools b/Makefile.tools
+index 70bfb1b..d2696cd 100644
+--- a/Makefile.tools
++++ b/Makefile.tools
+@@ -16,34 +16,34 @@ tools_rfcomm_SOURCES = tools/main.c tools/parser.y tools/lexer.l \
+ 					tools/kword.h tools/kword.c
+ EXTRA_tools_rfcomm_SOURCES = tools/parser.h tools/parser.c \
+ 							tools/lexer.c
+-tools_rfcomm_LDADD = lib/libbluetooth.la
++tools_rfcomm_LDADD = @BLUEZ_LIBS@
+ 
+-tools_l2ping_LDADD = lib/libbluetooth.la
++tools_l2ping_LDADD = @BLUEZ_LIBS@
+ 
+ tools_hciattach_SOURCES = tools/hciattach.c tools/hciattach.h \
+ 						tools/hciattach_st.c \
+ 						tools/hciattach_ti.c \
+ 						tools/hciattach_tialt.c
+-tools_hciattach_LDADD = lib/libbluetooth.la
++tools_hciattach_LDADD = @BLUEZ_LIBS@
+ 
+ tools_hciconfig_SOURCES = tools/hciconfig.c tools/csr.h tools/csr.c \
+ 						src/textfile.h src/textfile.c
+-tools_hciconfig_LDADD = lib/libbluetooth.la
++tools_hciconfig_LDADD = @BLUEZ_LIBS@
+ 
+ tools_hcitool_SOURCES = tools/hcitool.c src/oui.h src/oui.c \
+ 						src/textfile.h src/textfile.c
+-tools_hcitool_LDADD = lib/libbluetooth.la
++tools_hcitool_LDADD = @BLUEZ_LIBS@
+ 
+ tools_sdptool_SOURCES = tools/sdptool.c src/sdp-xml.h src/sdp-xml.c
+-tools_sdptool_LDADD = lib/libbluetooth.la
++tools_sdptool_LDADD = @BLUEZ_LIBS@
+ 
+-tools_ciptool_LDADD = lib/libbluetooth.la
++tools_ciptool_LDADD = @BLUEZ_LIBS@
+ 
+-tools_avinfo_LDADD = lib/libbluetooth.la
++tools_avinfo_LDADD = @BLUEZ_LIBS@
+ 
+-tools_ppporc_LDADD = lib/libbluetooth.la
++tools_ppporc_LDADD = @BLUEZ_LIBS@
+ 
+-tools_hcieventmask_LDADD = lib/libbluetooth.la
++tools_hcieventmask_LDADD = @BLUEZ_LIBS@
+ 
+ dist_man_MANS += tools/rfcomm.1 tools/l2ping.8 \
+ 			tools/hciattach.8 tools/hciconfig.8 \
+@@ -65,7 +65,7 @@ sbin_PROGRAMS += tools/bccmd
+ tools_bccmd_SOURCES = tools/bccmd.c tools/csr.h tools/csr.c \
+ 			tools/csr_hci.c tools/csr_h4.c tools/csr_3wire.c \
+ 			tools/csr_bcsp.c tools/ubcsp.h tools/ubcsp.c
+-tools_bccmd_LDADD = lib/libbluetooth.la
++tools_bccmd_LDADD = @BLUEZ_LIBS@
+ 
+ if USB
+ tools_bccmd_SOURCES += tools/csr_usb.c
+@@ -118,7 +118,7 @@ cups_PROGRAMS = cups/bluetooth
+ cups_bluetooth_SOURCES = $(gdbus_sources) cups/main.c cups/cups.h \
+ 					cups/sdp.c cups/spp.c cups/hcrp.c
+ 
+-cups_bluetooth_LDADD = @GLIB_LIBS@ @DBUS_LIBS@ lib/libbluetooth.la
++cups_bluetooth_LDADD = @GLIB_LIBS@ @DBUS_LIBS@ @BLUEZ_LIBS@
+ endif
+ 
+ 
+@@ -132,36 +132,36 @@ noinst_PROGRAMS += test/gaptest test/sdptest test/scotest \
+ 					test/lmptest test/bdaddr test/agent \
+ 					test/btiotest test/test-textfile
+ 
+-test_hciemu_LDADD = @GLIB_LIBS@ lib/libbluetooth.la
++test_hciemu_LDADD = @GLIB_LIBS@ @BLUEZ_LIBS@
+ 
+-test_l2test_LDADD = lib/libbluetooth.la
++test_l2test_LDADD = @BLUEZ_LIBS@
+ 
+-test_rctest_LDADD = lib/libbluetooth.la
++test_rctest_LDADD = @BLUEZ_LIBS@
+ 
+ test_gaptest_LDADD = @DBUS_LIBS@
+ 
+-test_sdptest_LDADD = lib/libbluetooth.la
++test_sdptest_LDADD = @BLUEZ_LIBS@
+ 
+-test_scotest_LDADD = lib/libbluetooth.la
++test_scotest_LDADD = @BLUEZ_LIBS@
+ 
+-test_attest_LDADD = lib/libbluetooth.la
++test_attest_LDADD = @BLUEZ_LIBS@
+ 
+-test_hstest_LDADD = lib/libbluetooth.la
++test_hstest_LDADD = @BLUEZ_LIBS@
+ 
+-test_avtest_LDADD = lib/libbluetooth.la
++test_avtest_LDADD = @BLUEZ_LIBS@
+ 
+-test_lmptest_LDADD = lib/libbluetooth.la
++test_lmptest_LDADD = @BLUEZ_LIBS@
+ 
+ test_ipctest_SOURCES = test/ipctest.c audio/ipc.h audio/ipc.c
+ test_ipctest_LDADD= @GLIB_LIBS@ sbc/libsbc.la
+ 
+ test_bdaddr_SOURCES = test/bdaddr.c src/oui.h src/oui.c
+-test_bdaddr_LDADD = lib/libbluetooth.la
++test_bdaddr_LDADD = @BLUEZ_LIBS@
+ 
+ test_agent_LDADD = @DBUS_LIBS@
+ 
+ test_btiotest_SOURCES = test/btiotest.c src/btio.h src/btio.c
+-test_btiotest_LDADD = @GLIB_LIBS@ lib/libbluetooth.la
++test_btiotest_LDADD = @GLIB_LIBS@ @BLUEZ_LIBS@
+ 
+ test_test_textfile_SOURCES = test/test-textfile.c src/textfile.h src/textfile.c
+ 
+@@ -187,7 +187,7 @@ bin_PROGRAMS += compat/hidd
+ compat_hidd_SOURCES = compat/hidd.c compat/hidd.h src/uinput.h \
+ 				compat/sdp.h compat/sdp.c compat/fakehid.c \
+ 						src/textfile.h src/textfile.c
+-compat_hidd_LDADD = -lm lib/libbluetooth.la
++compat_hidd_LDADD = -lm @BLUEZ_LIBS@
+ 
+ dist_man_MANS += compat/hidd.1
+ else
+@@ -200,7 +200,7 @@ bin_PROGRAMS += compat/pand
+ compat_pand_SOURCES = compat/pand.c compat/pand.h \
+ 				compat/bnep.c compat/sdp.h compat/sdp.c \
+ 						src/textfile.h src/textfile.c
+-compat_pand_LDADD = lib/libbluetooth.la
++compat_pand_LDADD = @BLUEZ_LIBS@
+ 
+ dist_man_MANS += compat/pand.1
+ else
+@@ -213,7 +213,7 @@ bin_PROGRAMS += compat/dund
+ compat_dund_SOURCES = compat/dund.c compat/dund.h compat/lib.h \
+ 			compat/sdp.h compat/sdp.c compat/dun.c compat/msdun.c \
+ 						src/textfile.h src/textfile.c
+-compat_dund_LDADD = lib/libbluetooth.la
++compat_dund_LDADD = @BLUEZ_LIBS@
+ 
+ dist_man_MANS += compat/dund.1
+ else
+diff --git a/acinclude.m4 b/acinclude.m4
+index e7d1c32..bd46d47 100644
+--- a/acinclude.m4
++++ b/acinclude.m4
+@@ -351,3 +351,14 @@ AC_DEFUN([AC_ARG_BLUEZ], [
+ 	AM_CONDITIONAL(UDEVRULES, test "${udevrules_enable}" = "yes")
+ 	AM_CONDITIONAL(CONFIGFILES, test "${configfiles_enable}" = "yes")
+ ])
++
++AC_DEFUN([AC_PATH_BLUEZ], [
++	PKG_CHECK_MODULES(BLUEZ, bluez = $PACKAGE_VERSION, [found_bluez=yes], [found_bluez=no])
++	if test "${found_bluez}" = "no"; then
++		BLUEZ_CFLAGS="-I\$(builddir)/lib"
++		BLUEZ_LIBS="-Llib -lbluetooth"
++	fi
++	AC_SUBST(BLUEZ_CFLAGS)
++	AC_SUBST(BLUEZ_LIBS)
++	AM_CONDITIONAL(EXTERNAL_BTLIB, test "${found_bluez}" = "yes")
++])
+diff --git a/configure.ac b/configure.ac
+index 8284104..85d78e9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -35,6 +35,7 @@ AC_FUNC_PPOLL
+ AC_CHECK_LIB(dl, dlopen, dummy=yes,
+ 			AC_MSG_ERROR(dynamic linking loader is required))
+ 
++AC_PATH_BLUEZ
+ AC_PATH_DBUS
+ AC_PATH_GLIB
+ AC_PATH_ALSA
+-- 
+1.6.4.339.g527d
+

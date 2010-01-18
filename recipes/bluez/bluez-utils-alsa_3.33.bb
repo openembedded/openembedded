@@ -1,4 +1,4 @@
-require bluez-utils3.inc
+require bluez-utils.inc
 
 PR = "r1"
 
@@ -8,7 +8,7 @@ DEPENDS += "alsa-lib"
 # albeit in a somewhat different form
 SRC_URI += "file://hciattach-ti-bts.patch;patch=1" 
 
-# see bluez-utils3.inc for the explanation of these option
+# see bluez-utils.inc for the explanation of these option
 EXTRA_OECONF = " \
                  --enable-bccmd \
 		 --disable-hid2hci \

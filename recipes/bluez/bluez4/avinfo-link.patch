@@ -1,8 +1,3 @@
-upstream: not applicable
-comment from pb: not needed upstream, it's just a consequence of splitting the
- package into -libs and -apps. But, equally, it wouldn't do any harm upstream
- either.  I might send it to them and see what they say.
-
 --- tools/Makefile.am.old	2009-05-22 11:27:06.000000000 +0100
 +++ tools/Makefile.am	2009-05-22 11:27:29.000000000 +0100
 @@ -1,8 +1,10 @@

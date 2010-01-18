@@ -1,0 +1,22 @@
+--- a/acinclude.m4	2009-05-22 16:38:04.000000000 +0100
++++ b/acinclude.m4	2009-05-22 16:38:24.000000000 +0100
+@@ -324,9 +324,6 @@
+ 		AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 if you have USB library.])
+ 	fi
+ 
+-	AC_SUBST([BLUEZ_CFLAGS], ['-I$(top_builddir)/include'])
+-	AC_SUBST([BLUEZ_LIBS], ['$(top_builddir)/lib/libbluetooth.la'])
+-
+ 	AC_SUBST([GDBUS_CFLAGS], ['-I$(top_srcdir)/gdbus'])
+ 	AC_SUBST([GDBUS_LIBS], ['$(top_builddir)/gdbus/libgdbus.la'])
+ 
+--- a/configure.ac	2009-05-22 16:38:30.000000000 +0100
++++ b/configure.ac	2009-05-22 16:38:35.000000000 +0100
+@@ -7,6 +7,7 @@
+ AM_MAINTAINER_MODE
+ 
+ AC_INIT_BLUEZ
++AM_PATH_BLUEZ
+ 
+ COMPILER_FLAGS
+ 

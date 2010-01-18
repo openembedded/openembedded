@@ -1,0 +1,22 @@
+--- tools/Makefile.am
++++ tools/Makefile.am
+@@ -1,8 +1,10 @@
+ 
+ if TOOLS
++avinfo_programs = avinfo
+ tools_programs = hcitool l2ping sdptool ciptool
+ tools_manfiles = hcitool.1 l2ping.1 sdptool.1 ciptool.1
+ else
++avinfo_programs =
+ tools_programs =
+ tools_manfiles =
+ endif
+@@ -41,7 +43,7 @@ sbin_PROGRAMS = hciattach hciconfig $(bccmd_programs) $(avctrl_programs) $(hid2h
+ 
+ bin_PROGRAMS = $(tools_programs) $(dfutool_programs) $(dfubabel_programs)
+ 
+-noinst_PROGRAMS = hcisecfilter ppporc avinfo $(usb_programs)
++noinst_PROGRAMS = hcisecfilter ppporc $(avinfo_programs) $(usb_programs)
+ 
+ hciattach_SOURCES = hciattach.c hciattach.h \
+ 			hciattach_st.c hciattach_ti.c hciattach_tialt.c

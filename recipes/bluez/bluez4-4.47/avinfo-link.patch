@@ -1,0 +1,26 @@
+---
+ tools/Makefile.am |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- tools/Makefile.am.orig
++++ tools/Makefile.am
+@@ -1,8 +1,10 @@
+ 
+ if TOOLS
++avinfo_programs = avinfo
+ tools_programs = l2ping hcitool sdptool ciptool
+ tools_manfiles = l2ping.8 hcitool.1 sdptool.1 ciptool.1
+ else
++avinfo_programs =
+ tools_programs =
+ tools_manfiles =
+ endif
+@@ -41,7 +43,7 @@ sbin_PROGRAMS = hciattach hciconfig $(bc
+ 
+ bin_PROGRAMS = $(tools_programs) $(dfutool_programs) $(dfubabel_programs)
+ 
+-noinst_PROGRAMS = hcieventmask hcisecfilter ppporc avinfo $(usb_programs)
++noinst_PROGRAMS = hcieventmask hcisecfilter ppporc $(avinfo_programs) $(usb_programs)
+ 
+ hcieventmask_LDADD = @BLUEZ_LIBS@
+ 

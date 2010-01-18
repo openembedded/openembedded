@@ -5,13 +5,14 @@ HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 INC_PR = "r1"
 
-SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
-        file://avinfo-link.patch;patch=1;pnum=0"
+FILESPATHPKG .= ":bluez4-${PV}:bluez4"
+
+SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz"
 
 S = "${WORKDIR}/bluez-${PV}"
 
+#inherit autotools_stage pkgconfig
 inherit autotools_stage
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 EXTRA_OECONF = "\
   --disable-tools \
@@ -23,3 +24,8 @@ EXTRA_OECONF = "\
 "
 
 FILES_${PN} = "${libdir}/libbluetooth.so.*"
+FILES_${PN}-dev += "\
+  ${libdir}/bluetooth/plugins/*.la \
+  ${libdir}/alsa-lib/*.la \
+  ${libdir}/gstreamer-0.10/*.la \
+"
