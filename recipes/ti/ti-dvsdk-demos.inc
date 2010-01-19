@@ -3,7 +3,7 @@ DESCRIPTION = "DVSDK Demo applications for TI ARM/DSP processors"
 DEPENDS += "ti-dmai"
 DEPENDS += "alsa-lib libpng freetype jpeg"
 
-SRC_URI = "${BASE_SRC_URI}/dvsdk_demos_${PV}.tar.gz "
+SRC_URI = "${BASE_SRC_URI}/dvsdk_demos_${PV}.tar.gz;name=dvsdkdemostarball"
 
 S = "${WORKDIR}/dvsdk_demos_${PV}"
 
@@ -13,7 +13,8 @@ require ti-multimedia-common.inc
 # Should go into machine config
 TARGET           ?= "all"
 TARGET_dm355 ?= "dm355"
-TARGET_dm365-evm ?= "dm365"
+TARGET_dm365 ?= "dm365"
+TARGET_dm6467 ?= "dm6467"
 
 VERBOSE = "true"
 
