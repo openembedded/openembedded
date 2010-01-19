@@ -11,6 +11,7 @@ DEPENDS = "alsa-lib ti-framework-components ti-codec-engine ti-xdctools"
 
 DEPENDS_append_omap3    = " ti-dspbios ti-cgt6x ti-codecs-omap3530 virtual/kernel ti-linuxutils"
 DEPENDS_append_dm6446 	= " ti-dspbios ti-cgt6x ti-codecs-dm6446 virtual/kernel ti-linuxutils"
+DEPENDS_append_dm6467 	= " ti-dspbios ti-cgt6x ti-codecs-dm6467 virtual/kernel ti-linuxutils"
 DEPENDS_append_dm355  	= " ti-codecs-dm355 virtual/kernel"
 DEPENDS_append_dm365    = " ti-codecs-dm365 virtual/kernel"
 DEPENDS_append_omapl137 = " ti-dspbios ti-cgt6x ti-codecs-omapl137 virtual/kernel ti-linuxutils"
@@ -19,6 +20,7 @@ DEPENDS_append_omapl138 = " ti-dspbios ti-cgt6x ti-codecs-omapl138 virtual/kerne
 # Define DMAI build time variables
 TARGET_omap3     = "o3530_al"
 TARGET_dm6446    = "dm6446_al"
+TARGET_dm6467    = "dm6467_al"
 TARGET_omapl137 = "ol137_al"
 TARGET_omapl138 = "ol138_al"
 TARGET_dm355     = "dm355_al"
@@ -107,7 +109,9 @@ FILES_ti-dmai-tests = "${installdir}/dmai-tests/*"
 
 # run time dependencies 
 RDEPENDS_ti-dmai-apps_dm355 += "ti-dm355mm-module ti-cmem-module ti-codecs-dm355"
+RDEPENDS_ti-dmai-apps_dm365 += "ti-dm365mm-module ti-cmem-module ti-codecs-dm365"
 RDEPENDS_ti-dmai-apps_dm6446 += "ti-cmem-module ti-dsplink-module ti-codecs-dm6446"
+RDEPENDS_ti-dmai-apps_dm6467 += "ti-cmem-module ti-dsplink-module ti-codecs-dm6467"
 RDEPENDS_ti-dmai-apps_omap3 += "ti-cmem-module ti-dsplink-module ti-codecs-omap3530 ti-lpm-module ti-sdma-module"
 RDEPENDS_ti-dmai-apps_omapl137 += "ti-cmem-module ti-dsplink-module ti-codecs-omapl137"
 RDEPENDS_ti-dmai-apps_omapl138 += "ti-cmem-module ti-dsplink-module ti-codecs-omapl138"

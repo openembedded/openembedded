@@ -3,7 +3,7 @@ DESCRIPTION = "DMAI for TI ARM/DSP processors"
 BRANCH = "branches/BRANCH_BRIJESH_DMAI_DEV_2_xx"
 BRANCH_omapl138 = "trunk"
 BRANCH_omapl137 = "trunk"
-BRANCH_6467 = "branches/GITPSP_INT_101009"
+BRANCH_dm6467 = "branches/GITPSP_INT_101009"
 
 SRCREV = "423"
 
