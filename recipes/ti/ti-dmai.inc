@@ -11,6 +11,7 @@ SRC_URI = "svn://gforge.ti.com/svn/dmai/;module=${BRANCH};proto=https;user=anony
 		file://loadmodules-ti-dmai-dm355_al.sh \
 		file://loadmodules-ti-dmai-dm365_al.sh \
 		file://loadmodules-ti-dmai-dm6446_al.sh \
+		file://loadmodules-ti-dmai-dm6467_al.sh \
 		file://loadmodules-ti-dmai-o3530_al.sh \
 		file://loadmodules-ti-dmai-ol138_al.sh \
 	"
