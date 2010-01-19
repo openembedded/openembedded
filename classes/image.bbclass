@@ -28,11 +28,10 @@ ${IMAGE_DEV_MANAGER} \
 ${IMAGE_INIT_MANAGER} \
 ${IMAGE_LOGIN_MANAGER} "
 
-RDEPENDS += "${IMAGE_INSTALL} ${IMAGE_BOOT}"
+RDEPENDS += "${__PACKAGE_INSTALL}"
 
 # "export IMAGE_BASENAME" not supported at this time
 IMAGE_BASENAME[export] = "1"
-export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
 do_rootfs[recrdeptask] += "do_deploy do_populate_staging"
@@ -60,6 +59,7 @@ python () {
     bb.data.setVarFlag('do_rootfs', 'depends', deps, d)
 
     runtime_mapping_rename("PACKAGE_INSTALL", d)
+    runtime_mapping_rename("PACKAGE_INSTALL_ATTEMPTONLY", d)
 }
 
 #
@@ -105,6 +105,102 @@ ROOTFS_POSTPROCESS_COMMAND ?= ""
 IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
 
 LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVar('IMAGE_LINGUAS', d, 1).split()))}"
+
+def __pkgmap(d):
+    from os import listdir
+    from os.path import isdir, join, dirname
+
+    os = d.getVar("TARGET_OS", True)
+    vendor = d.getVar("TARGET_VENDOR", True)
+    basedir = dirname(d.getVar("PKGDATA_DIR", True))
+
+    dirs = ("%s%s-%s" % (arch, vendor, os)
+            for arch in d.getVar("PACKAGE_ARCHS", True).split())
+
+    for pkgdatadir in (join(basedir, sys) for sys in dirs):
+        try:
+            files = listdir(pkgdatadir)
+        except OSError:
+            continue
+
+        for pn in filter(lambda f: not isdir(join(pkgdatadir, f)), files):
+            try:
+                pkgdata = read_pkgdatafile(join(pkgdatadir, pn))
+            except OSError:
+                continue
+
+            for pkg in pkgdata["PACKAGES"].split():
+                yield pkg, pn
+
+def pkgmap(d):
+    pkgmap_data = d.getVar("__pkgmap_data", False)
+    if pkgmap_data is None:
+        pkgmap_data = dict(__pkgmap(d))
+        d.setVar("__pkgmap_data", pkgmap_data)
+
+    return pkgmap_data
+
+def recipename(pkg, d):
+    return pkgmap(d).get(pkg)
+
+def pkgjoin(l):
+    return ' '.join(set(l))
+
+def pkgsplit(var, d):
+    return (d.getVar(var, True) or "").split()
+
+def __packages(features, d):
+    for feature in features:
+        for pkg in pkgsplit('IMAGE_FEATURE_%s' % feature, d):
+            yield pkg
+
+def required_packages(features, d):
+    for pkg in __packages((f for f in features if not d.getVar("IMAGE_FEATURE_%s_OPTIONAL" % f, True)), d):
+        yield pkg
+
+def optional_packages(features, d):
+    for pkg in __packages((f for f in features if d.getVar("IMAGE_FEATURE_%s_OPTIONAL" % f, True)), d):
+        yield pkg
+
+def active_packages(features, d):
+    from itertools import chain
+
+    for pkg in chain(required_packages(features, d), optional_packages(features, d)):
+        yield pkg
+
+def active_recipes(features, d):
+    for pkg in active_packages(features, d):
+        recipe = recipename(pkg, d)
+        if recipe:
+            yield recipe
+
+def image_features_noextras(d):
+    for f in d.getVar("IMAGE_FEATURES", True).split():
+        if not f in ('dbg', 'dev', 'doc'):
+            yield f
+
+def dbg_packages(d):
+    from itertools import chain
+
+    features = image_features_noextras(d)
+    return pkgjoin("%s-dbg" % pkg for pkg in chain(active_packages(features, d), active_recipes(features, d)))
+
+__PACKAGE_INSTALL = "${@' '.join(required_packages(d.getVar('IMAGE_FEATURES', True).split(), d))}"
+PACKAGE_INSTALL = "${__PACKAGE_INSTALL}"
+PACKAGE_INSTALL_ATTEMPTONLY = "${@' '.join(optional_packages(d.getVar('IMAGE_FEATURES', True).split(), d))}"
+
+IMAGE_FEATURES ?= "base"
+
+# Define our default available image features
+IMAGE_FEATURE_base = "${IMAGE_INSTALL} ${IMAGE_VARS}"
+IMAGE_FEATURE_vmlinux = "kernel-vmlinux"
+
+IMAGE_FEATURE_dbg = "${@dbg_packages(d)}"
+IMAGE_FEATURE_dbg_OPTIONAL = "1"
+IMAGE_FEATURE_dev = "${@pkgjoin('%s-dev' % pn for pn in active_recipes(image_features_noextras(d), d))}"
+IMAGE_FEATURE_dev_OPTIONAL = "1"
+IMAGE_FEATURE_doc = "${@pkgjoin('%s-doc' % pn for pn in active_recipes(image_features_noextras(d), d))}"
+IMAGE_FEATURE_doc_OPTIONAL = "1"
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
