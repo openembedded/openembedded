@@ -1,3 +1,33 @@
+def subprocess_setup():
+   import signal
+   # Python installs a SIGPIPE handler by default. This is usually not what
+   # non-Python subprocesses expect.
+   signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
+def oe_popen(d, cmd, **kwargs):
+    """ Convenience function to call out processes with our exported
+    variables in the environment.
+    """
+    from subprocess import Popen
+
+    if kwargs.get("env") is None:
+        env = d.getVar("__oe_popen_env", False)
+        if env is None:
+            env = {}
+            for v in d.keys():
+                if d.getVarFlag(v, "export"):
+                    env[v] = d.getVar(v, True) or ""
+            d.setVar("__oe_popen_env", env)
+        kwargs["env"] = env
+
+    kwargs["preexec_fn"] = subprocess_setup
+
+    return Popen(cmd, **kwargs)
+
+def oe_system(d, cmd):
+    """ Popen based version of os.system. """
+    return oe_popen(d, cmd, shell=True).wait()
+
 # like os.path.join but doesn't treat absolute RHS specially
 def base_path_join(a, *p):
     path = a

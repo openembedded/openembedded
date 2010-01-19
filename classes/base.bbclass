@@ -154,12 +154,6 @@ python base_do_fetch() {
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
 
-def subprocess_setup():
-	import signal
-	# Python installs a SIGPIPE handler by default. This is usually not what
-	# non-Python subprocesses expect.
-	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-
 def oe_unpack_file(file, data, url = None):
 	import subprocess
 	if not url:
