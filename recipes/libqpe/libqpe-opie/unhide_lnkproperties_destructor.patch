@@ -1,0 +1,24 @@
+Dont hide destructor, if we do then in moc_lnkproperties.cpp its not
+seen and compiler puts in a default one and inlines it which is then
+hidden as we ask it to use -fvisibility-inlines-hidden
+
+Now linker can merge the symbol visivility  and promotes the most
+restrictive visivility in output which means that the library will have
+the destructor but it will be hidden 
+
+-Khem
+
+Index: library/lnkproperties.h
+===================================================================
+--- library.orig/lnkproperties.h	2010-01-19 10:49:36.771348810 -0800
++++ library/lnkproperties.h	2010-01-19 10:49:59.318857574 -0800
+@@ -45,8 +45,8 @@
+ //      have this class.
+ #ifdef QTOPIA_INTERNAL_FSLP
+     LnkProperties( AppLnk* lnk, QWidget* parent = 0 );
+-    ~LnkProperties();
+ #endif
++    ~LnkProperties();
+ 
+     void done(int);
+ private slots:
