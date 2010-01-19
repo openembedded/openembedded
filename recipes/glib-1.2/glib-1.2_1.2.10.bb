@@ -42,4 +42,4 @@ do_stage () {
 	install -m 0644 ${S}/glib.m4 ${STAGING_DATADIR}/aclocal/glib-1.2.m4
 }
 
-FILES_${PN}-dev += "${libdir}/glib/include/glibconfig.h
+FILES_${PN}-dev += "${libdir}/glib/include/glibconfig.h"
