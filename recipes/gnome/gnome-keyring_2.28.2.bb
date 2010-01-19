@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 DEPENDS = " libpam gconf gtk+ libtasn1 libtasn1-native libgcrypt"
 
-inherit autotools gnome pkgconfig
+inherit gnome pkgconfig
 
 EXTRA_OECONF = "--disable-gtk-doc --enable-pam --with-pam-dir=${libdir}/security/"
 
@@ -23,6 +23,3 @@ PACKAGES =+ "gnome-keyring-pam-plugin"
 FILES_gnome-keyring-pam-plugin = "${libdir}/security/*.so"
 FILES_${PN}-dbg += "${libdir}/gnome-keyring/*/.debug ${libdir}/security/.debug"
 
-do_stage() {
-        autotools_stage_all
-}
