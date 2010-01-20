@@ -1,7 +1,7 @@
 DESCRIPTION = "Gstreamer plugin for TI Davinci and OMAP processors"
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
-SRCREV = "563"
+SRCREV = "573"
 # Again, no '.' in PWD allowed :(
 PV = "svnr${SRCREV}"
 PR = "r40"

@@ -1,15 +1,3 @@
-Index: ticodecplugin/ChangeLog
-===================================================================
---- ticodecplugin.orig/ChangeLog	2010-01-07 15:15:37.000000000 -0600
-+++ ticodecplugin/ChangeLog	2010-01-08 09:27:23.529399692 -0600
-@@ -1,3 +1,7 @@
-+20010-01-06 Jorge Hidalgo, RidgeRun.
-+	* src/{gstticodecplugin_omapl138.cfg,gstticodecs_omapl138.c,gsttividenc1.c}:
-+	Add build support for OMAP-L138.
-+
- 2009-12-28: Brijesh Singh, Texas Instruments, Inc.
- 	* src/{gsttiquicktime_mpeg4.{c,h}, gsttividdec2.{c,h}, gsttividdec.{c,h},
- 	Makefile.am}:
 Index: ticodecplugin/src/gstticodecplugin_omapl138.cfg
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
