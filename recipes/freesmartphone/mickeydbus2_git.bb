@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 
 DEPENDS = "vala-native glib-2.0 dbus dbus-glib"
 
-PV = "2.0.0+gitr${SRCREV}"
+PV = "2.0.0+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
