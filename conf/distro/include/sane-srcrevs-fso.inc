@@ -16,6 +16,7 @@ SRCREV_pn-libfsobasics ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoframework ?= "c227502c59f4d1de3b3097b3329c2461d6cfa2a2"
 SRCREV_pn-libfsotransport ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-mickeydbus2 ?= "${FSO_CORNUCOPIA_SRCREV}"
 
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"
