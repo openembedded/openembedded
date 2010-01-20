@@ -8,10 +8,11 @@ LICENSE = "LGPL"
 DEPENDS = "alsa-lib virtual/libgl virtual/libx11 libxext tslib"
 DEPENDS_avr32 = "alsa-lib virtual/libx11 libxext tslib"
 PROVIDES = "virtual/libsdl"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = " \
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
+  file://sdl.m4 \
 "
 
 S = "${WORKDIR}/SDL-${PV}"
@@ -40,6 +41,9 @@ do_configure_append () {
   # prevent libtool from linking libs against libstdc++, libgcc, ...
   cat ${TARGET_PREFIX}libtool | sed -e 's/postdeps=".*"/postdeps=""/' > ${TARGET_PREFIX}libtool.tmp
   mv ${TARGET_PREFIX}libtool.tmp ${TARGET_PREFIX}libtool
+
+  # copy new sdl.m4 macrofile to the dir for installing
+  cp ${WORKDIR}/sdl.m4 ${S}/
 }
 
 do_stage() {

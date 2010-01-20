@@ -84,6 +84,7 @@ do
                       atomic \
                       autoconf \
                       automake \
+                      balsa \
                       binutils \
                       bison \
                       blueman \
@@ -100,6 +101,7 @@ do
                       connman \
                       connman-gnome \
                       contacts \
+                      cpufrequtils \
                       cron \
                       cvs \
                       cwiid \
@@ -159,11 +161,13 @@ do
                       geda-gsymcheck \
                       geda-symbols \
                       geda-utils \
+                      giac \
                       gimp \
                       glider \
                       gksu \
                       gmp \
                       gmpc \
+                      gnome-dvb-daemon \
                       gnome-games \
                       gnome-mplayer \
                       gnome-panel \
@@ -338,6 +342,7 @@ do
                       task-xqtlauncher \
                       tasks \
                       texinfo \
+                      tgt \
                       thttpd \
                       thunar \
                       tightvnc \
@@ -353,6 +358,7 @@ do
                       usbutils \
                       usbview \
                       ushare \
+                      vdr \
                       viking \
                       vlc \
                       vpnc \

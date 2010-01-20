@@ -1,5 +1,5 @@
-*** linux-powerpc-fsl-2.6.30-r4/git/arch/powerpc/boot/dts/mpc8536ds.dts.orig	2009-12-17 12:12:40.000000000 +0100
---- linux-powerpc-fsl-2.6.30-r4/git/arch/powerpc/boot/dts/mpc8536ds.dts	2009-12-17 12:15:00.000000000 +0100
+*** a/arch/powerpc/boot/dts/mpc8536ds.dts.orig	2009-12-17 12:12:40.000000000 +0100
+--- b/arch/powerpc/boot/dts/mpc8536ds.dts	2009-12-17 12:15:00.000000000 +0100
 ***************
 *** 45,50 ****
 --- 45,106 ----

@@ -1,0 +1,81 @@
+From: Guillaume Desmottes <guillaume.desmottes@collabora.co.uk>
+Date: Wed, 13 Jan 2010 10:28:29 +0000 (+0000)
+Subject: Call xmlCleanupParser() only once when exiting (#600693)
+X-Git-Url: http://git.collabora.co.uk/?p=user%2Fcassidy%2Fempathy;a=commitdiff_plain;h=9ab430b106fb724e63a201eff3d391214650f279
+
+Call xmlCleanupParser() only once when exiting (#600693)
+
+This function should only be called when exiting the application as it cleans
+up the memory allocated by the library itself.
+
+Thanks to Lennart for pointing this out.
+---
+
+diff --git a/libempathy-gtk/empathy-plist.c b/libempathy-gtk/empathy-plist.c
+index 4cc392b..73d3146 100644
+--- a/libempathy-gtk/empathy-plist.c
++++ b/libempathy-gtk/empathy-plist.c
+@@ -294,7 +294,6 @@ empathy_plist_parse_from_file (const char *filename)
+ 	parsed_doc = empathy_plist_parse (root_element);
+ 
+ 	xmlFreeDoc (doc);
+-	xmlCleanupParser ();
+ 
+ 	return parsed_doc;
+ }
+@@ -329,7 +328,6 @@ empathy_plist_parse_from_memory (const char *data, gsize len)
+ 	parsed_doc = empathy_plist_parse (root_element);
+ 
+ 	xmlFreeDoc (doc);
+-	xmlCleanupParser ();
+ 
+ 	return parsed_doc;
+ }
+diff --git a/libempathy/empathy-chatroom-manager.c b/libempathy/empathy-chatroom-manager.c
+index 7d80b94..0f06132 100644
+--- a/libempathy/empathy-chatroom-manager.c
++++ b/libempathy/empathy-chatroom-manager.c
+@@ -123,7 +123,6 @@ chatroom_manager_file_save (EmpathyChatroomManager *manager)
+ 	xmlSaveFormatFileEnc (priv->file, doc, "utf-8", 1);
+ 	xmlFreeDoc (doc);
+ 
+-	xmlCleanupParser ();
+ 	xmlMemoryDump ();
+ 
+ 	return TRUE;
+diff --git a/libempathy/empathy-contact-groups.c b/libempathy/empathy-contact-groups.c
+index 22d81d0..9ddc562 100644
+--- a/libempathy/empathy-contact-groups.c
++++ b/libempathy/empathy-contact-groups.c
+@@ -220,7 +220,6 @@ contact_groups_file_save (void)
+ 	xmlSaveFormatFileEnc (file, doc, "utf-8", 1);
+ 	xmlFreeDoc (doc);
+ 
+-	xmlCleanupParser ();
+ 	xmlMemoryDump ();
+ 
+ 	g_free (file);
+diff --git a/libempathy/empathy-irc-network-manager.c b/libempathy/empathy-irc-network-manager.c
+index ad72680..8170a5f 100644
+--- a/libempathy/empathy-irc-network-manager.c
++++ b/libempathy/empathy-irc-network-manager.c
+@@ -712,7 +712,6 @@ irc_network_manager_file_save (EmpathyIrcNetworkManager *self)
+   xmlSaveFormatFileEnc (priv->user_file, doc, "utf-8", 1);
+   xmlFreeDoc (doc);
+ 
+-  xmlCleanupParser ();
+   xmlMemoryDump ();
+ 
+   priv->have_to_save = FALSE;
+diff --git a/src/empathy.c b/src/empathy.c
+index 82f62dd..9665405 100644
+--- a/src/empathy.c
++++ b/src/empathy.c
+@@ -1005,6 +1005,7 @@ main (int argc, char *argv[])
+   g_object_unref (unique_app);
+ 
+   notify_uninit ();
++  xmlCleanupParser ();
+ 
+   return EXIT_SUCCESS;
+ }
