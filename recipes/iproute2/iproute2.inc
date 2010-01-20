@@ -22,6 +22,9 @@ EXTRA_OEMAKE = "CC='${CC}' \
 do_install () {
         oe_runmake DESTDIR=${D} install
         mv ${D}${base_sbindir}/ip ${D}${base_sbindir}/ip.iproute2
+        install -d ${D}${datadir}
+        mv ${D}/share/* ${D}${datadir}/ || true
+	rm ${D}/share -rf || true
 }
 
 FILES_${PN} += "/usr/lib/tc/*"
