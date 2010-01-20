@@ -1,0 +1,178 @@
+From 364406e03f9651aacb1bc684de6c00a27f9df66d Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Mon, 19 Oct 2009 20:32:55 +0300
+Subject: [PATCH 2/6] Test program for pixman_blt function
+
+It can do some basic correctness tests and also check whether
+overlapping of source and destination images is supported.
+---
+ test/Makefile.am           |    2 +
+ test/overlapped-blt-test.c |  136 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 138 insertions(+), 0 deletions(-)
+ create mode 100644 test/overlapped-blt-test.c
+
+diff --git a/test/Makefile.am b/test/Makefile.am
+index 89d32e9..40c305f 100644
+--- a/test/Makefile.am
++++ b/test/Makefile.am
+@@ -6,6 +6,7 @@
+ 	fetch-test		\
+ 	oob-test		\
+ 	window-test		\
++	overlapped-blt-test     \
+ 	trap-crasher		\
+ 	alphamap		\
+ 	blitters-test		\
+@@ -18,6 +19,7 @@
+ trap_crasher_LDADD = $(TEST_LDADD)
+ oob_test_LDADD = $(TEST_LDADD)
+ window_test_LDADD = $(TEST_LDADD)
++overlapped_blt_test_LDADD = $(TEST_LDADD)
+ 
+ blitters_test_LDADD = $(TEST_LDADD)
+ blitters_test_SOURCES = blitters-test.c utils.c utils.h
+diff --git a/test/overlapped-blt-test.c b/test/overlapped-blt-test.c
+new file mode 100644
+index 0000000..95fbc54
+--- /dev/null
++++ b/test/overlapped-blt-test.c
+@@ -0,0 +1,136 @@
++/*
++ * A small test program which can check whether pixman_blt function
++ * can support overlapping of source and destination images.
++ * Efficient blit with overlapping is useful for scrolling.
++ */
++
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "pixman.h"
++
++/* reference implementation (slow) */
++static void
++trivial_copy8_2d (
++    uint8_t *dst, int dst_stride,
++    uint8_t *src, int src_stride,
++    int dx, int dy, int sx, int sy,
++    int w, int h)
++{
++    int x, y;
++    uint8_t *tmp = malloc (src_stride * (sy + h));
++    memcpy (tmp, src, src_stride * (sy + h));
++    for (y = 0; y < h; y++)
++    {
++	for (x = 0; x < w; x++)
++	{
++	    *(dst + (dy + y) * dst_stride + dx + x) =
++				*(tmp + (sy + y) * src_stride + sx + x);
++	}
++    }
++    free (tmp);
++}
++
++static void
++trivial_copy_2d (
++    uint8_t *dst, int dst_stride,
++    uint8_t *src, int src_stride,
++    int dx, int dy, int sx, int sy,
++    int w, int h, int bpp)
++{
++    trivial_copy8_2d (dst, dst_stride, src, src_stride,
++	dx * (bpp / 8), dy, sx * (bpp / 8), sy, w * (bpp / 8), h);
++}
++
++/* now the test itself */
++
++#define ST_UNSUPPORTED		1
++#define ST_NORMAL_BUG		2
++#define ST_OVERLAPPED_BUG	4
++
++#define MAX_SIZE_X		64
++#define MAX_SIZE_Y		64
++
++static void print_result(int bpp, int flags)
++{
++    printf("bpp=%d, supported=%d, normal_ok=%d, overlapped_ok=%d\n",
++	bpp,
++	!(flags & ST_UNSUPPORTED),
++	!(flags & ST_NORMAL_BUG),
++	!(flags & ST_OVERLAPPED_BUG));
++}
++
++int main()
++{
++    int c = 100000, r;
++    int bpp_st[33] = {0};
++    srand(0);
++    while (c-- > 0)
++    {
++	uint8_t *src1, *src2, *src3;
++	int i;
++	int sizex = rand() % MAX_SIZE_X + 1;
++	int sizey = rand() % MAX_SIZE_Y + 1;
++	int sx = rand() % sizex;
++	int sy = rand() % sizey;
++	int dx = rand() % sizex;
++	int dy = rand() % sizey;
++	int w = rand() % sizex;
++	int h = rand() % sizex;
++	int bpp = 8 * (1 << (rand() % 3));
++	int stride_delta = rand() % 8;
++	int bufsize;
++	if ((sizex + stride_delta) % 4)
++	    stride_delta += 4 - ((sizex + stride_delta) % 4);
++	bufsize = (sizex + stride_delta) * sizey * bpp / 8;
++	src1 = malloc (bufsize);
++	src2 = malloc (bufsize);
++	src3 = malloc (bufsize);
++	for (i = 0; i < bufsize; i++)
++	    src1[i] = rand();
++	memcpy (src2, src1, bufsize);
++	memcpy (src3, src1, bufsize);
++	if (sx + w > sizex)
++	    w = sizex - sx;
++	if (dx + w > sizex)
++	    w = sizex - dx;
++	if (sy + h > sizey)
++	    h = sizey - sy;
++	if (dy + h > sizey)
++	    h = sizey - dy;
++	/* get reference result */
++	trivial_copy_2d (src1, (sizex + stride_delta) * bpp / 8,
++	                 src1, (sizex + stride_delta) * bpp / 8,
++	                 dx, dy, sx, sy, w, h, bpp);
++	/* check nonoverlapped pixman result */
++	r = pixman_blt ((uint32_t *)src3, (uint32_t *)src2,
++	                (sizex + stride_delta) * bpp / 8 / 4,
++	                (sizex + stride_delta) * bpp / 8 / 4,
++	                bpp, bpp, sx, sy, dx, dy, w, h);
++	if (!r)
++	    bpp_st[bpp] |= ST_UNSUPPORTED;
++	if (memcmp (src1, src2, bufsize) != 0)
++	    bpp_st[bpp] |= ST_NORMAL_BUG;
++	/* check overlapped pixman result */
++	r = pixman_blt ((uint32_t *)src3, (uint32_t *)src3,
++	                (sizex + stride_delta) * bpp / 8 / 4,
++	                (sizex + stride_delta) * bpp / 8 / 4,
++	                bpp, bpp, sx, sy, dx, dy, w, h);
++	if (!r)
++	    bpp_st[bpp] |= ST_UNSUPPORTED;
++	if (memcmp (src1, src3, bufsize) != 0)
++	    bpp_st[bpp] |= ST_OVERLAPPED_BUG;
++	/* free buffers */
++	free (src1);
++	free (src2);
++	free (src3);
++    }
++
++    /* report results */
++    print_result (8, bpp_st[8]);
++    print_result (16, bpp_st[16]);
++    print_result (32, bpp_st[32]);
++
++    return 0;
++}
+-- 
+1.6.2.4
+
