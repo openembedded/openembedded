@@ -5,7 +5,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://git.senfdax.de"
 LICENSE = "GPL QPL"
 DEPENDS = "qt4-x11-free"
-PV = "1.3.1+gitr${SRCREV}"
+PV = "1.3.1+gitr${SRCPV}"
 PR = "r0"
 
 inherit qt4x11
