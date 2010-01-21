@@ -74,3 +74,10 @@ SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
                                      file://da850_omapl138_opp456mhz.patch;patch=1 \
                                      file://patch_hawk.diff;patch=1"
+
+
+do_configure_prepend_hawkboard() {
+	sed -i s:2157:2495:g ${S}/arch/arm/tools/mach-types
+}
+
+
