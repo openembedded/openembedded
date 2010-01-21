@@ -1,0 +1,26 @@
+From: Gupta, Ajay Kumar
+Sent: 21 January, 2010 06:23
+To: Kooi, Koen
+
+Koen,
+
+Enabling USB Audio Gadget is showing this issue. I tested with
+File storage and CDC gadget and didn’t observe this.
+
+Please use below patch to fix it,
+
+-------------------------------- 
+diff --git a/drivers/usb/gadget/gadget_chips.h b/drivers/usb/gadget/gadget_chips.h
+index c75f777..2868d3c 100644
+--- a/drivers/usb/gadget/gadget_chips.h
++++ b/drivers/usb/gadget/gadget_chips.h
+@@ -15,6 +15,8 @@
+ #ifndef __GADGET_CHIPS_H
+ #define __GADGET_CHIPS_H
+
++#include <plat/cpu.h>
++
+ #ifdef CONFIG_USB_GADGET_NET2280
+ #define        gadget_is_net2280(g)    !strcmp("net2280", (g)->name)
+ #else
+
