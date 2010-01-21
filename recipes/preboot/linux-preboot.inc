@@ -1,8 +1,6 @@
 # We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
 PR = "r15"
 
-SRC_URI = "file://defconfig"
-
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 
 require ../linux/linux.inc
