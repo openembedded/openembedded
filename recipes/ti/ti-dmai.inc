@@ -4,8 +4,13 @@ BRANCH = "branches/BRANCH_BRIJESH_DMAI_DEV_2_xx"
 BRANCH_omapl138 = "trunk"
 BRANCH_omapl137 = "trunk"
 BRANCH_dm6467 = "branches/GITPSP_INT_101009"
+BRANCH_dm355 = "branches/GITPSP_INT_101009"
+BRANCH_dm365 = "branches/GITPSP_INT_101009"
 
 SRCREV = "423"
+SRCREV_dm6467 = "424"
+SRCREV_dm355 = "424"
+SRCREV_dm365 = "424"
 
 SRC_URI = "svn://gforge.ti.com/svn/dmai/;module=${BRANCH};proto=https;user=anonymous;pswd='' \
 		file://loadmodules-ti-dmai-dm355_al.sh \

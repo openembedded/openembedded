@@ -78,10 +78,12 @@ do_compile () {
 do_install () {
 	unset DMAI_INSTALL_DIR
 	# install dmai apps on target
+    install -d ${D}/${installdir}/dmai-apps
     cd ${S}/dmai
     make PLATFORM="${TARGET}" EXEC_DIR=${D}/${installdir}/dmai-apps install 
 	install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-apps/loadmodule.sh 
 
+    install -d ${D}/${installdir}/dmai-tests
     cd ${S}/tests
     make PLATFORM="${TARGET}" EXEC_DIR=${D}/${installdir}/dmai-tests install 
 	install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-tests/loadmodule.sh 
