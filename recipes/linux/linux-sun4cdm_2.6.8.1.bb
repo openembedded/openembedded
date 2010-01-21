@@ -7,7 +7,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://sun4c_defconfig"
 S = "${WORKDIR}/linux-${PV}"
 
-COMPATIBLE_HOST = 'sparc-linux'
+COMPATIBLE_HOST = 'sparc.*-linux'
 
 inherit kernel
 
