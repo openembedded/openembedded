@@ -266,4 +266,6 @@ RDEPENDS_${PN} += "\
 		qi-ubi \
 		wpa-gui \
 		gabriel \
+		stopwatch \
+		rtmom \
 "
