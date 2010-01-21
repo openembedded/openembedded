@@ -1,0 +1,19 @@
+---
+ math.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- ruby-1.8.5.orig/math.c
++++ ruby-1.8.5/math.c
+@@ -32,11 +32,11 @@ domain_check(x, msg)
+ 	    rb_sys_fail(msg);
+ 	}
+ 	if (isnan(x)) {
+ #if defined(EDOM)
+ 	    errno = EDOM;
+-#elif define(ERANGE)
++#elif defined(ERANGE)
+ 	    errno = ERANGE;
+ #endif
+ 	    continue;
+ 	}
+ 	break;
