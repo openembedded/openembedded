@@ -1,10 +1,40 @@
-require ti-dmai.inc
-require ti-paths.inc
+DESCRIPTION = "DMAI for TI ARM/DSP processors"
 
+require ti-paths.inc
 inherit module-base
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "c"
+MACHINE_KERNEL_PR_append = "d"
+
+# Yes, the xdc stuff still breaks with a '.' in PWD
+PE = "1"
+PV = "1.0+svnr${SRCPV}"
+
+BRANCH = "branches/BRANCH_BRIJESH_DMAI_DEV_2_xx"
+BRANCH_omapl138 = "trunk"
+BRANCH_omapl137 = "trunk"
+BRANCH_dm6467 = "branches/GITPSP_INT_101009"
+BRANCH_dm355 = "branches/GITPSP_INT_101009"
+BRANCH_dm365 = "branches/GITPSP_INT_101009"
+BRANCH_omap3 = "trunk"
+
+SRCREV = "423"
+SRCREV_dm6467 = "424"
+SRCREV_dm355 = "424"
+SRCREV_dm365 = "424"
+
+SRC_URI = "svn://gforge.ti.com/svn/dmai/;module=${BRANCH};proto=https;user=anonymous;pswd='' \
+		file://loadmodules-ti-dmai-dm355_al.sh \
+		file://loadmodules-ti-dmai-dm365_al.sh \
+		file://loadmodules-ti-dmai-dm6446_al.sh \
+#		file://loadmodules-ti-dmai-dm6467_al.sh \
+		file://loadmodules-ti-dmai-o3530_al.sh \
+		file://loadmodules-ti-dmai-ol138_al.sh \
+	"
+
+S = "${WORKDIR}/${BRANCH}/davinci_multimedia_application_interface"
+
+INHIBIT_PACKAGE_STRIP = "1"
 
 # compile time dependencies
 DEPENDS = "alsa-lib ti-framework-components ti-codec-engine ti-xdctools"
