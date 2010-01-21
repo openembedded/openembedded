@@ -1,8 +1,8 @@
-DEPENDS += "cairo"
+DEPENDS += "cairo sqlite"
 
 PV = "3.0.1+3.5b4"
 MOZPV = "3.5b4"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/${MOZPV}-candidates/build1/source/firefox-${MOZPV}-source.tar.bz2 \
 	file://jsautocfg.h \
