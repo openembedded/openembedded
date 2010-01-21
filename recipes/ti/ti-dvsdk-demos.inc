@@ -30,8 +30,8 @@ do_install () {
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RDEPENDS_ti-dvsdk-demos_dm355 += "ti-dm355mm-module ti-linuxutils alsa-lib libpng freetype jpeg"
-RDEPENDS_ti-dvsdk-demos_dm365-evm += "ti-dm365mm-module ti-linuxutils alsa-lib libpng freetype jpeg"
+RDEPENDS_ti-dvsdk-demos_dm355 += "ti-dm355mm-module ti-cmem-module alsa-lib libpng freetype jpeg"
+RDEPENDS_ti-dvsdk-demos_dm365 += "ti-dm365mm-module ti-cmem-module alsa-lib libpng freetype jpeg"
 
 FILES_${PN} = "${installdir}/dvsdk-demos/*"
 
