@@ -1,0 +1,13 @@
+Index: irdadump/configure.in
+===================================================================
+--- irdadump.orig/configure.in
++++ irdadump/configure.in
+@@ -9,7 +9,7 @@ AC_PROG_MAKE_SET
+ 
+ dnl Checks for libraries.
+ AM_PROG_LIBTOOL
+-AM_PATH_GLIB(1.2.0)
++AM_PATH_GLIB_2_0
+ 
+ dnl Checks for header files.
+ AC_HEADER_STDC

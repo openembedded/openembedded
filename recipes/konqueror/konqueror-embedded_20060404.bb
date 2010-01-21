@@ -21,7 +21,7 @@ S = "${WORKDIR}/kdenox"
 export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"
 export MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export UIC = "${STAGING_BINDIR_NATIVE}/uic"
-export exec_prefix = "${palmtopdir}"
+#export exec_prefix = "${palmtopdir}"
 export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DQT_NO_DOM -DENABLE_BOOKMARKS"
 export PCRE_CONFIG = "invalid"
 # uncomment this for a static build

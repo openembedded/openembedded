@@ -1,5 +1,5 @@
-DEPENDS += "cairo"
-PR = "r2"
+DEPENDS += "cairo sqlite3"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \
