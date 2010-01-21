@@ -3,7 +3,7 @@ HOMEPAGE = "http://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/"
 SECTION = "libs"
 LICENSE = "LGPL"
 
-PR = "r3"
+PR = "r5"
 PROVIDES = "virtual/libintl"
 
 SRC_URI = " \
@@ -19,6 +19,8 @@ FILES_${PN} = "${libdir}/libintl.so"
 
 CFLAGS_append = " -Wall -I ../../include ${@['-DSTUB_ONLY', ''][bb.data.getVar('USE_NLS', d, 1) != 'no']}"
 TARGET_CC_ARCH += "${LDFLAGS}"
+CFLAGS_append_mips = " -fPIC"
+CFLAGS_append_mipsel = " -fPIC"
 
 do_compile() {
     cd ${WORKDIR}/src/proxy-libintl
@@ -26,16 +28,10 @@ do_compile() {
 }
 
 do_install() {
-    install -d ${D}/usr/include
-    install -d ${D}/usr/lib
-    
+    install -d ${D}/${includedir}
     install -m 0644 ${WORKDIR}/include/libintl.h ${D}/${includedir}
-    install -m 0644 ${WORKDIR}/lib/libintl.so ${D}/${libdir}
-    install -m 0644 ${WORKDIR}/lib/libintl.a ${D}/${libdir}
-}
 
-do_stage() {
-    install -m 0644 ${WORKDIR}/include/libintl.h ${STAGING_INCDIR}
-    oe_libinstall -a -so -C lib libintl ${STAGING_LIBDIR}
+    install -d ${D}/${libdir}
+    oe_libinstall -a -so -C lib libintl ${D}/${libdir}
 }
 

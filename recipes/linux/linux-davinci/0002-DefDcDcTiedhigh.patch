@@ -1,0 +1,40 @@
+From: Sekhar Nori <nsekhar@ti.com>
+Date: Mon, 21 Dec 2009 09:13:49 +0000 (+0530)
+Subject: davinci: da850/omap-l138 evm: account for defdcdc{2,3} being tied high
+X-Git-Url: http://arago-project.org/git/people/?p=sekhar%2Flinux-omapl1.git;a=commitdiff_plain;h=2aa1058a4db0681929ba09f50da89f4fe283e0bd
+
+davinci: da850/omap-l138 evm: account for defdcdc{2,3} being tied high
+
+Per the da850/omap-l138 Beta EVM SOM schematic, the defdcdc2 and
+defdcdc3 lines are tied high by default. This leads to a 3.3V IO
+and 1.2V CVDD voltage.
+
+For the TPS6507x driver, it means that the DEFDCDC_HIGH registers
+need to be read/written instead of DEFDCDC_LOW register. The tps6507x
+driver added this functionality recently. This patch passes the right
+platform data to the TPS6507x which tells it that the HIGH register
+needs to be read instead of the LOW register.
+
+Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+---
+
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index 607dd2d..9ed07d6 100755
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -599,6 +599,7 @@ struct regulator_init_data tps65070_regulator_data[] = {
+ 		},
+ 		.num_consumer_supplies = ARRAY_SIZE(tps65070_dcdc2_consumers),
+ 		.consumer_supplies = tps65070_dcdc2_consumers,
++		.driver_data = (void *) 1,
+ 	},
+ 
+ 	/* dcdc3 */
+@@ -612,6 +613,7 @@ struct regulator_init_data tps65070_regulator_data[] = {
+ 		},
+ 		.num_consumer_supplies = ARRAY_SIZE(tps65070_dcdc3_consumers),
+ 		.consumer_supplies = tps65070_dcdc3_consumers,
++		.driver_data = (void *) 1,
+ 	},
+ 
+ 	/* ldo1 */

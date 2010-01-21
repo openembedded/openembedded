@@ -1,0 +1,17 @@
+Copyright (c) 2009 MontaVista Software, Inc.  All rights reserved.
+
+---
+ etc/udev/60-persistent-storage.rules |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- udev-092.orig/etc/udev/60-persistent-storage.rules
++++ udev-092/etc/udev/60-persistent-storage.rules
+@@ -5,7 +5,7 @@ ACTION!="add", GOTO="persistent_storage_
+ SUBSYSTEM!="block", GOTO="persistent_storage_end"
+ 
+ # skip rules for inappropriate block devices
+-KERNEL=="ram*|loop*|fd*|nbd*", GOTO="persistent_storage_end"
++KERNEL=="ram*|loop*|fd*|mtd*|nbd*", GOTO="persistent_storage_end"
+ 
+ # never access removable ide devices, the drivers are causing event loops on open()
+ KERNEL=="hd*[!0-9]", SYSFS{removable}=="1", DRIVER=="ide-cs|ide-floppy", GOTO="persistent_storage_end"

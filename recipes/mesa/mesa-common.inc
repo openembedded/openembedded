@@ -24,11 +24,13 @@ inherit glx-use-tls
 # Package contents vary according to ${MACHINE_DRI_MODULES}.
 PACKAGE_ARCH = "${MACHINE}"
 
-PACKAGES =+ "libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev"
+PACKAGES =+ "libegl libegl-dev libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev"
+FILES_libegl = "${libdir}/libEGL.so.*"
 FILES_libgl = "${libdir}/libGL.so.*"
 FILES_libglu = "${libdir}/libGLU.so.*"
 FILES_libosmesa = "${libdir}/libOSMesa.so.*"
 
+FILES_libegl-dev = "${libdir}/libEGL.* ${includedir}/EGL"
 FILES_libgl-dev = "${libdir}/libGL.* ${includedir}/GL"
 FILES_libglu-dev = "${libdir}/libGLU.* ${includedir}/GL/glu*.h"
 FILES_libosmesa-dev = "${libdir}/libOSMesa.* ${includedir}/osmesa.h"

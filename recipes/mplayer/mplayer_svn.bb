@@ -11,9 +11,11 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://makefile-nostrip-svn.patch;patch=1 \
 	   file://mplayer-arm-pld.patch;patch=1 \
 	   file://mplayer-lavc-arm.patch;patch=1 \
-	   "
+       file://fix-exp.diff;patch=1;maxrev=30291 \
+	   file://fix-addrinfo.patch;patch=1;maxrev=30302 \
+"
 
-SRCREV = "29934"
+SRCREV = "30345"
 SRC_URI_append_armv7a = " \
 		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
@@ -36,7 +38,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCPV}"
-PR = "r14"
+PR = "r17"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
@@ -132,7 +134,7 @@ EXTRA_OECONF = " \
 	--disable-dxr2 \
 	--disable-dxr3 \
 	--disable-dvb \
-	--disable-dvbhead \
+	--enable-dvbhead \
 	--disable-mga \
 	--disable-xmga \
 	--enable-xv \

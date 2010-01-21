@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Web browser
-Comment=Dillo
-Exec=dillo
-Terminal=0
-Type=Application
-Icon=dillo.png
-Categories=Application;PIM;GPE
-StartupNotify=True

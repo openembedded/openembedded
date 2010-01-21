@@ -12,6 +12,7 @@ inherit autotools
 EXTRA_OECONF = "--disable-oggtest --disable-id3libtest \
 		--with-ogg-libraries=${STAGING_LIBDIR} \
 		--with-ogg-includes=${STAGING_INCDIR} \
+                --disable-xmms-plugin \
 		--without-xmms-prefix \
 		--without-xmms-exec-prefix \
 		--without-libiconv-prefix \
@@ -24,10 +25,6 @@ do_configure () {
 	# removes '-read-only-relocs' which is enabled for PowerPC builds.
 	# It makes the build fail, other archs are not affected. Fixes #1775.
 	sed -i 's/-Wl,-read_only_relocs,warning//g' src/libFLAC/Makefile
-}
-
-do_stage () {
-	autotools_stage_all
 }
 
 PACKAGES += "libflac libflac++ liboggflac liboggflac++"

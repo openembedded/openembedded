@@ -1,0 +1,2624 @@
+From 002a069a3a52b8a2286e8c559a2d3d9a0a954501 Mon Sep 17 00:00:00 2001
+From: Carsten V. Munk <carsten.munk@gmail.com>
+Date: Thu, 6 Aug 2009 11:32:58 +0000
+Subject: [PATCH 06/13] tv encoder
+
+---
+ drivers/media/video/Kconfig                |   16 +
+ drivers/media/video/samsung/Makefile       |    2 +
+ drivers/media/video/samsung/s3c-tvenc.c    | 1479 ++++++++++++++++++++++++++++
+ drivers/media/video/samsung/s3c-tvenc.h    |  165 +++
+ drivers/media/video/samsung/s3c-tvscaler.c |  802 +++++++++++++++
+ drivers/media/video/samsung/s3c-tvscaler.h |   96 ++
+ 6 files changed, 2560 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/media/video/samsung/s3c-tvenc.c
+ create mode 100644 drivers/media/video/samsung/s3c-tvenc.h
+ create mode 100644 drivers/media/video/samsung/s3c-tvscaler.c
+ create mode 100644 drivers/media/video/samsung/s3c-tvscaler.h
+
+diff --git a/drivers/media/video/Kconfig b/drivers/media/video/Kconfig
+index 6506263..8797184 100644
+--- a/drivers/media/video/Kconfig
++++ b/drivers/media/video/Kconfig
+@@ -545,6 +545,22 @@ config VIDEO_ADV7180
+ 
+ endchoice
+ 
++config VIDEO_SAMSUNG_TVENC
++	tristate "Samsung TV encoder"
++	depends on I2C && VIDEO_V4L2
++	help
++	  Samsung encoder
++
++	  To compile this driver as a module, choose M here
++
++config VIDEO_SAMSUNG_TVSCALER
++	tristate "Samsung TV scaler"
++	depends on I2C && VIDEO_V4L2
++	help
++	  Samsung TV scaler
++
++	  To compile this driver as a module, choose M here
++
+ 
+ config VIDEO_VINO
+ 	tristate "SGI Vino Video For Linux (EXPERIMENTAL)"
+diff --git a/drivers/media/video/samsung/Makefile b/drivers/media/video/samsung/Makefile
+index 885512c..ede0269 100644
+--- a/drivers/media/video/samsung/Makefile
++++ b/drivers/media/video/samsung/Makefile
+@@ -7,3 +7,5 @@ obj-$(CONFIG_VIDEO_SAMSUNG_S5K4BA) += 4xa_sensor.o
+ obj-$(CONFIG_VIDEO_ADV7180) += adv7180.o
+ obj-$(CONFIG_VIDEO_APTINA_MT9P012) += mt9p012.o
+ 
++obj-$(CONFIG_VIDEO_SAMSUNG_TVENC) += s3c_tvenc.o
++obj-$(CONFIG_VIDEO_SAMSUNG_TVSCALER) += s3c_tvenc.o
+diff --git a/drivers/media/video/samsung/s3c-tvenc.c b/drivers/media/video/samsung/s3c-tvenc.c
+new file mode 100644
+index 0000000..11dfd37
+--- /dev/null
++++ b/drivers/media/video/samsung/s3c-tvenc.c
+@@ -0,0 +1,1479 @@
++
++/*
++ * linux/drivers/tvenc/s3c-tvenc.c
++ *
++ * Revision 1.0  
++ *
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive for
++ * more details.
++ *
++ *	    S3C TV Encoder driver 
++ *
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/types.h>
++#include <linux/timer.h>
++#include <linux/kernel.h>
++#include <linux/fs.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <asm/uaccess.h>
++#include <linux/errno.h> /* error codes */
++#include <asm/div64.h>
++#include <linux/mm.h>
++#include <linux/tty.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <asm/hardware.h>
++#include <asm/uaccess.h>
++#include <asm/arch/map.h>
++
++#include <linux/version.h>
++#if LINUX_VERSION_CODE == KERNEL_VERSION(2,6,16)
++#include <linux/config.h>
++#include <asm/arch/registers.h>
++#include <linux/videodev2.h>
++#else
++#include <asm/arch/regs-tvenc.h>
++#include <asm/arch/regs-lcd.h>
++#include <media/v4l2-common.h>
++#endif
++
++#include "s3c-tvenc.h"
++
++#define PFX "s3c_tvenc"
++
++static struct clk *tvenc_clock;
++static struct clk *h_clk;
++static int s3c_tvenc_irq = NO_IRQ;
++static struct resource *s3c_tvenc_mem;
++static void __iomem *base;
++static wait_queue_head_t waitq;
++static tv_out_params_t tv_param = {0,};
++
++/* Backup SFR value */
++static u32 backup_reg[2];
++
++
++/* Structure that declares the access functions*/
++
++static void s3c_tvenc_switch(tv_enc_switch_t sw)
++{
++	if(sw == OFF) {
++		__raw_writel(__raw_readl(base + S3C_TVCTRL)
++			&~ S3C_TVCTRL_ON, base + S3C_TVCTRL);
++	} else if(sw == ON) {
++		__raw_writel(__raw_readl(base + S3C_TVCTRL)
++			| S3C_TVCTRL_ON, base + S3C_TVCTRL);
++	} else
++		printk("Error func:%s line:%d\n", __FUNCTION__, __LINE__);
++}
++
++static void s3c_tvenc_set_image_size(u32 width, u32 height)
++{
++	__raw_writel(IIS_WIDTH(width)| IIS_HEIGHT(height), 
++		base + S3C_INIMAGESIZE);
++}
++
++#if 0
++static void s3c_tvenc_enable_macrovision(tv_standard_t tvmode, macro_pattern_t pattern)
++{
++	switch(pattern) {
++	case AGC4L :
++		break;
++	case AGC2L :
++		break;
++	case N01 :
++		break;
++	case N02 :
++		break;
++	case P01 :
++		break;
++	case P02 :	
++		break;
++	default :
++		break;
++	}
++}
++
++static void s3c_tvenc_disable_macrovision(void)
++{
++	__raw_writel(__raw_readl(base + S3C_MACROVISION0) 
++		&~0xff, base + S3C_MACROVISION0);
++}
++#endif
++
++static void s3c_tvenc_set_tv_mode(tv_standard_t mode, tv_conn_type_t out)
++{
++	u32 signal_type = 0, output_type = 0;
++	
++	switch(mode) {
++	case PAL_N :
++		__raw_writel(VBP_VEFBPD_PAL|VBP_VOFBPD_PAL, 
++			base + S3C_VBPORCH);
++		__raw_writel(HBP_HSPW_PAL|HBP_HBPD_PAL, 
++			base + S3C_HBPORCH);
++		__raw_writel(HEO_DTO_PAL|HEO_HEOV_PAL, 
++			base + S3C_HENHOFFSET);
++		__raw_writel(EPC_PED_ON, 
++			base + S3C_PEDCTRL);
++		__raw_writel(YFB_YBW_26|YFB_CBW_06,
++			base + S3C_YCFILTERBW);
++		__raw_writel(SSC_HSYNC_PAL, 
++			base + S3C_SYNCSIZECTRL);
++		__raw_writel(BSC_BEND_PAL|BSC_BSTART_PAL, 
++			base + S3C_BURSTCTRL);
++		__raw_writel(MBS_BSTART_PAL, 
++			base + S3C_MACROBURSTCTRL);
++		__raw_writel(AVP_AVEND_PAL|AVP_AVSTART_PAL, 
++			base + S3C_ACTVIDPOCTRL);
++		break;
++	case PAL_NC :
++	case PAL_BGHID :
++		__raw_writel(VBP_VEFBPD_PAL|VBP_VOFBPD_PAL, 
++			base + S3C_VBPORCH);
++		__raw_writel(HBP_HSPW_PAL|HBP_HBPD_PAL, 
++			base + S3C_HBPORCH);
++		__raw_writel(HEO_DTO_PAL|HEO_HEOV_PAL, 
++			base + S3C_HENHOFFSET);
++		__raw_writel(EPC_PED_OFF, 
++			base + S3C_PEDCTRL);
++		__raw_writel(YFB_YBW_26|YFB_CBW_06,
++			base + S3C_YCFILTERBW);
++		__raw_writel(SSC_HSYNC_PAL, 
++			base + S3C_SYNCSIZECTRL);
++		__raw_writel(BSC_BEND_PAL|BSC_BSTART_PAL, 
++			base + S3C_BURSTCTRL);
++		__raw_writel(MBS_BSTART_PAL, 
++			base + S3C_MACROBURSTCTRL);
++		__raw_writel(AVP_AVEND_PAL|AVP_AVSTART_PAL, 
++			base + S3C_ACTVIDPOCTRL);
++		break;
++	case NTSC_443 :
++		__raw_writel(VBP_VEFBPD_NTSC|VBP_VOFBPD_NTSC, 
++			base + S3C_VBPORCH);
++		__raw_writel(HBP_HSPW_NTSC|HBP_HBPD_NTSC, 
++			base + S3C_HBPORCH);
++		__raw_writel(HEO_DTO_NTSC|HEO_HEOV_NTSC, 
++			base + S3C_HENHOFFSET);
++		__raw_writel(EPC_PED_ON, 
++			base + S3C_PEDCTRL);
++		__raw_writel(YFB_YBW_26|YFB_CBW_06, 
++			base + S3C_YCFILTERBW);
++		__raw_writel(SSC_HSYNC_NTSC, 
++			base + S3C_SYNCSIZECTRL);
++		__raw_writel(BSC_BEND_NTSC|BSC_BSTART_NTSC, 
++			base + S3C_BURSTCTRL);
++		__raw_writel(MBS_BSTART_NTSC, 
++			base + S3C_MACROBURSTCTRL);
++		__raw_writel(AVP_AVEND_NTSC|AVP_AVSTART_NTSC, 
++			base + S3C_ACTVIDPOCTRL);
++		break;
++	case NTSC_J :
++		__raw_writel(VBP_VEFBPD_NTSC|VBP_VOFBPD_NTSC, 
++			base + S3C_VBPORCH);
++		__raw_writel(HBP_HSPW_NTSC|HBP_HBPD_NTSC, 
++			base + S3C_HBPORCH);
++		__raw_writel(HEO_DTO_NTSC|HEO_HEOV_NTSC, 
++			base + S3C_HENHOFFSET);
++		__raw_writel(EPC_PED_OFF, 
++			base + S3C_PEDCTRL);
++		__raw_writel(YFB_YBW_21|YFB_CBW_06, 
++			base + S3C_YCFILTERBW);
++		__raw_writel(SSC_HSYNC_NTSC, 
++			base + S3C_SYNCSIZECTRL);
++		__raw_writel(BSC_BEND_NTSC|BSC_BSTART_NTSC, 
++			base + S3C_BURSTCTRL);
++		__raw_writel(MBS_BSTART_NTSC, 
++			base + S3C_MACROBURSTCTRL);
++		__raw_writel(AVP_AVEND_NTSC|AVP_AVSTART_NTSC, 
++			base + S3C_ACTVIDPOCTRL);
++		break;
++	case PAL_M 	:	
++	case NTSC_M	:
++	default :			
++		__raw_writel(VBP_VEFBPD_NTSC|VBP_VOFBPD_NTSC, 
++			base + S3C_VBPORCH);
++		__raw_writel(HBP_HSPW_NTSC|HBP_HBPD_NTSC, 
++			base + S3C_HBPORCH);
++		__raw_writel(HEO_DTO_NTSC|HEO_HEOV_NTSC, 
++			base + S3C_HENHOFFSET);
++		__raw_writel(EPC_PED_ON, 
++			base + S3C_PEDCTRL);
++		__raw_writel(YFB_YBW_21|YFB_CBW_06, 
++			base + S3C_YCFILTERBW);
++		__raw_writel(SSC_HSYNC_NTSC, 
++			base + S3C_SYNCSIZECTRL);
++		__raw_writel(BSC_BEND_NTSC|BSC_BSTART_NTSC, 
++			base + S3C_BURSTCTRL);
++		__raw_writel(MBS_BSTART_NTSC, 
++			base + S3C_MACROBURSTCTRL);
++		__raw_writel(AVP_AVEND_NTSC|AVP_AVSTART_NTSC, 
++			base + S3C_ACTVIDPOCTRL);
++		break;			
++	}
++
++	if(out == S_VIDEO) {
++		__raw_writel(YFB_YBW_60|YFB_CBW_06, 
++			base + S3C_YCFILTERBW);
++		output_type = S3C_TVCTRL_OUTTYPE_S;
++	} else
++		output_type = S3C_TVCTRL_OUTTYPE_C;
++
++	switch(mode) {
++	case NTSC_M :
++		signal_type = S3C_TVCTRL_OUTFMT_NTSC_M;
++		break;
++	case NTSC_J :
++		signal_type = S3C_TVCTRL_OUTFMT_NTSC_J;
++		break;
++	case PAL_BGHID :
++		signal_type = S3C_TVCTRL_OUTFMT_PAL_BDG;
++		break;
++	case PAL_M :
++		signal_type = S3C_TVCTRL_OUTFMT_PAL_M;
++		break;
++	case PAL_NC :
++		signal_type = S3C_TVCTRL_OUTFMT_PAL_NC;
++		break;
++	default:
++		printk("s3c_tvenc_set_tv_mode : No matching signal_type!\n");
++		break;
++	}
++
++	__raw_writel((__raw_readl(base + S3C_TVCTRL)
++		&~(0x1f<<4))| output_type | signal_type, 
++		base + S3C_TVCTRL);
++
++	__raw_writel(0x01, base + S3C_FSCAUXCTRL);
++}
++
++#if 0
++static void s3c_tvenc_set_pedestal(tv_enc_switch_t sw)
++{
++	if(sw)
++		__raw_writel(EPC_PED_ON, base + S3C_PEDCTRL);
++	else
++		__raw_writel(EPC_PED_OFF, base + S3C_PEDCTRL);
++}
++
++static void s3c_tvenc_set_sub_carrier_freq(u32 freq)
++{
++	__raw_writel(FSC_CTRL(freq), base + S3C_FSCCTRL);
++}
++
++static void s3c_tvenc_set_fsc_dto(u32 val)
++{
++	unsigned int temp;
++
++	temp = (0x1<<31)|(val&0x7fffffff);
++	__raw_writel(temp, base + S3C_FSCDTOMANCTRL);
++}
++
++static void s3c_tvenc_disable_fsc_dto(void)
++{
++	__raw_writel(__raw_readl(base + S3C_FSCDTOMANCTRL)&~(1<<31), 
++		base + S3C_FSCDTOMANCTRL);
++}
++
++static void s3c_tvenc_set_bg(u32 soft_mix, u32 color, u32 lum_offset)
++{
++	unsigned int bg_color;
++	switch(color) {
++	case 0 :
++		bg_color = BGC_BGCS_BLACK;
++		break;
++	case 1 :
++		bg_color = BGC_BGCS_BLUE;
++		break;
++	case 2 :
++		bg_color = BGC_BGCS_RED;
++		break;
++	case 3 :
++		bg_color = BGC_BGCS_MAGENTA;
++		break;
++	case 4 :
++		bg_color = BGC_BGCS_GREEN;
++		break;
++	case 5 :
++		bg_color = BGC_BGCS_CYAN;
++		break;
++	case 6 :
++		bg_color = BGC_BGCS_YELLOW;
++		break;
++	case 7 :
++		bg_color = BGC_BGCS_WHITE;
++		break;	
++	}
++	if(soft_mix)
++		__raw_writel(BGC_SME_ENA|bg_color|BGC_BGYOFS(lum_offset), 
++		base + S3C_BGCTRL);
++	else
++		__raw_writel(BGC_SME_DIS|bg_color|BGC_BGYOFS(lum_offset), 
++		base + S3C_BGCTRL);
++		
++}
++
++static void s3c_tvenc_set_bg_vav_hav(u32 hav_len, u32 vav_len, u32 hav_st, u32 vav_st)
++{
++	__raw_writel(BVH_BG_HL(hav_len)|BVH_BG_HS(hav_st)|BVH_BG_VL(vav_len)|BVH_BG_VS(vav_st), 
++		base + S3C_BGHVAVCTRL);
++}
++#endif
++
++static void s3c_tvenc_set_hue_phase(u32 phase_val)
++{
++	__raw_writel(HUE_CTRL(phase_val), 
++		base + S3C_HUECTRL);
++}
++
++#if 0
++static u32 s3c_tvenc_get_hue_phase(void)
++{
++	return __raw_readl(base + S3C_HUECTRL)&0xff;
++}
++#endif
++
++static void s3c_tvenc_set_contrast(u32 contrast)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_CONTRABRIGHT);
++
++	__raw_writel((temp &~0xff)|contrast, 
++		base + S3C_CONTRABRIGHT);
++}
++
++#if 0
++static u32 s3c_tvenc_get_contrast(void)
++{
++	return (__raw_readl(base + S3C_CONTRABRIGHT)&0xff);
++}
++#endif
++
++static void s3c_tvenc_set_bright(u32 bright)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_CONTRABRIGHT);
++
++	__raw_writel((temp &~(0xff<<16))| (bright<<16), 
++		base + S3C_CONTRABRIGHT);
++}
++
++#if 0
++static u32 s3c_tvenc_get_bright(void)
++{
++	return ((__raw_readl(base + S3C_CONTRABRIGHT)&(0xff<<16))>>16);
++}
++
++
++static void s3c_tvenc_set_cbgain(u32 cbgain)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_CBCRGAINCTRL);
++
++	__raw_writel((temp &~0xff)|cbgain, 
++		base + S3C_CBCRGAINCTRL);
++}
++
++
++static u32 s3c_tvenc_get_cbgain(void)
++{
++	return (__raw_readl(base + S3C_CBCRGAINCTRL)&0xff);
++}
++
++static void s3c_tvenc_set_crgain(u32 crgain)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_CBCRGAINCTRL);
++
++	__raw_writel((temp &~(0xff<<16))| (crgain<<16), 
++		base + S3C_CBCRGAINCTRL);
++}
++
++static u32 s3c_tvenc_get_crgain(void)
++{
++	return ((__raw_readl(base + S3C_CBCRGAINCTRL)&(0xff<<16))>>16);
++}
++#endif
++
++static void s3c_tvenc_enable_gamma_control(tv_enc_switch_t enable)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_GAMMACTRL);
++	if(enable == ON)
++		temp |= (1<<12);
++	else
++		temp &= ~(1<<12);
++
++	__raw_writel(temp, base + S3C_GAMMACTRL);
++}
++
++static void s3c_tvenc_set_gamma_gain(u32 ggain)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_GAMMACTRL);
++
++	__raw_writel((temp &~(0x7<<8))| (ggain<<8), 
++		base + S3C_GAMMACTRL);
++}
++
++#if 0
++static u32 s3c_tvenc_get_gamma_gain(void)
++{
++	return ((__raw_readl(base + S3C_GAMMACTRL)&(0x7<<8))>>8);
++}
++
++static void s3c_tvenc_enable_mute_control(tv_enc_switch_t enable)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_GAMMACTRL);
++	if(enable == ON)
++		temp |= (1<<12);
++	else
++		temp &= ~(1<<12);
++
++	__raw_writel(temp, base + S3C_GAMMACTRL);
++}
++
++static void s3c_tvenc_set_mute(u32 y, u32 cb, u32 cr)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_MUTECTRL);
++
++	temp &=~(0xffffff<<8);
++	temp |= (cr & 0xff)<<24;
++	temp |= (cb & 0xff)<<16;
++	temp |= (y & 0xff)<<8;
++
++	__raw_writel(temp, base + S3C_MUTECTRL);
++}
++
++static void s3c_tvenc_get_mute(u32 *y, u32 *cb, u32 *cr)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_MUTECTRL);
++
++	*y = (temp&(0xff<<8))>>8;	
++	*cb = (temp&(0xff<<16))>>16;	
++	*cr = (temp&(0xff<<24))>>24;	
++}
++#endif
++
++static void s3c_tvenc_get_active_win_center(u32 *vert, u32 *horz)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_HENHOFFSET);
++
++	*vert = (temp&(0x3f<<24))>>24;
++	*horz = (temp&(0xff<<16))>>16;
++}
++
++static void s3c_tvenc_set_active_win_center(u32 vert, u32 horz)
++{
++	u32 temp;
++
++	temp = __raw_readl(base + S3C_HENHOFFSET);
++
++	temp &=~(0x3ffff<<16);
++	temp |= (vert&0x3f)<<24;
++	temp |= (horz&0xff)<<16;
++
++	__raw_writel(temp, base + S3C_HENHOFFSET);
++}
++
++// LCD display controller configuration functions
++static void s3c_lcd_set_output_path(lcd_local_output_t out)
++{
++#if 0	// peter for 2.6.21 kernel	
++	s3c_fb_set_output_path(out);
++#else	// peter for 2.6.24 kernel
++	s3cfb_set_output_path(out);
++#endif
++}
++
++static void s3c_lcd_set_clkval(u32 clkval)
++{
++#if 0	// peter for 2.6.21 kernel	
++	s3c_fb_set_clkval(clkval);
++#else	// peter for 2.6.24 kernel
++	s3cfb_set_clock(clkval);
++#endif
++}
++
++static void s3c_lcd_enable_rgbport(u32 on_off)
++{
++#if 0	// peter for 2.6.21 kernel	
++	s3c_fb_enable_rgbport(on_off);
++#else	// peter for 2.6.24 kernel
++	s3cfb_enable_rgbport(on_off);
++#endif
++}
++
++static void s3c_lcd_start(void)
++{
++#if 0	// peter for 2.6.21 kernel	
++	s3c_fb_start_lcd();
++#else	// peter for 2.6.24 kernel
++	s3cfb_start_lcd();
++#endif
++}
++
++static void s3c_lcd_stop(void)
++{
++#if 0	// peter for 2.6.21 kernel		
++	s3c_fb_stop_lcd();
++#else	// peter for 2.6.24 kernel
++	s3cfb_stop_lcd();
++#endif
++}
++
++
++static void s3c_lcd_set_config(void)
++{
++	backup_reg[0] = __raw_readl(S3C_VIDCON0);
++	backup_reg[1] = __raw_readl(S3C_VIDCON2);
++
++	s3c_lcd_set_output_path(LCD_TVRGB);
++	tv_param.lcd_output_mode = LCD_TVRGB;
++	
++	s3c_lcd_set_clkval(4);
++	s3c_lcd_enable_rgbport(1);	
++}
++
++static void s3c_lcd_exit_config(void)
++{
++	__raw_writel(backup_reg[0], S3C_VIDCON0);
++	__raw_writel(backup_reg[1], S3C_VIDCON2);
++	tv_param.lcd_output_mode = LCD_RGB;
++}
++
++static int scaler_test_start(void)
++{
++	tv_param.sp.DstFullWidth = 640;
++	tv_param.sp.DstFullHeight= 480;
++	tv_param.sp.DstCSpace = RGB16;
++	
++	s3c_tvscaler_config(&tv_param.sp);
++
++	s3c_tvscaler_int_enable(1);
++
++	s3c_tvscaler_start();
++
++	return 0;
++}
++
++static int scaler_test_stop(void)
++{
++	s3c_tvscaler_int_disable();
++
++	return 0;
++}
++
++
++static int tvout_start(void)
++{
++	u32 width, height;
++	tv_standard_t type;
++	tv_conn_type_t conn;
++
++	tv_param.sp.DstFullWidth *= 2;		// For TV OUT
++	
++	width = tv_param.sp.DstFullWidth;
++	height = tv_param.sp.DstFullHeight;
++	type = tv_param.sig_type;
++	conn = tv_param.connect;
++
++	/* Set TV-SCALER parameter */
++	switch(tv_param.v2.input->type) {
++	case V4L2_INPUT_TYPE_FIFO:		// LCD FIFO-OUT
++		tv_param.sp.Mode = FREE_RUN;
++		tv_param.sp.DstCSpace = YCBYCR;
++		/* Display controller setting */
++		s3c_lcd_stop();
++		s3c_lcd_set_config();
++		break;
++	case V4L2_INPUT_TYPE_MSDMA:		// MSDMA		
++		tv_param.sp.Mode = FREE_RUN;		
++		tv_param.sp.DstCSpace = YCBYCR;			
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	s3c_tvenc_set_tv_mode(type, conn);	
++	s3c_tvenc_set_image_size(width, height);	
++	s3c_tvenc_switch(ON);
++	
++	s3c_tvscaler_config(&tv_param.sp);	// for setting DstStartX/Y, DstWidth/Height
++	s3c_tvscaler_set_interlace(1);
++	if(tv_param.v2.input->type == V4L2_INPUT_TYPE_FIFO)
++		s3c_tvscaler_int_disable();
++	else
++		s3c_tvscaler_int_enable(1);
++	s3c_tvscaler_start();
++
++	if(tv_param.v2.input->type == V4L2_INPUT_TYPE_FIFO)
++		s3c_lcd_start();
++	
++	return 0;
++}
++
++static int tvout_stop(void)
++{
++
++	s3c_tvscaler_set_interlace(0);
++	s3c_tvscaler_stop_freerun();
++	s3c_tvscaler_int_disable();
++	s3c_tvenc_switch(OFF);
++	
++	switch(tv_param.v2.input->type) {
++	case V4L2_INPUT_TYPE_FIFO:	// LCD FIFO-OUT
++		/* Display controller setting */
++		s3c_lcd_stop();
++		s3c_lcd_exit_config();
++		s3c_lcd_start();
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++/* ------------------------------------------ V4L2 SUPPORT ----------------------------------------------*/
++/* ------------- In FIFO and MSDMA, v4l2_input supported by S3C TVENC controller ------------------*/
++static struct v4l2_input tvenc_inputs[] = {
++	{
++		.index		= 0,
++		.name		= "LCD FIFO_OUT",
++		.type		= V4L2_INPUT_TYPE_FIFO,
++		.audioset		= 1,
++		.tuner		= 0, /* ignored */
++		.std			= 0,
++		.status		= 0,
++	}, 
++	{
++		.index		= 1,
++		.name		= "Memory input (MSDMA)",
++		.type		= V4L2_INPUT_TYPE_MSDMA,
++		.audioset		= 2,
++		.tuner		= 0,
++		.std			= 0,
++		.status		= 0,
++	} 
++};
++
++/* ------------ Out FIFO and MADMA, v4l2_output supported by S3C TVENC controller ----------------*/
++static struct v4l2_output tvenc_outputs[] = {
++	{
++		.index		= 0,
++		.name		= "TV-OUT",
++		.type		= V4L2_OUTPUT_TYPE_ANALOG,
++		.audioset		= 0,
++		.modulator	= 0,
++		.std			= V4L2_STD_PAL | V4L2_STD_NTSC_M,
++	}, 
++	{
++		.index		= 1,
++		.name		= "Memory output (MSDMA)",
++		.type		= V4L2_OUTPUT_TYPE_MSDMA,
++		.audioset		= 0,
++		.modulator	= 0, 
++		.std			= 0,
++	}, 
++
++};
++
++const struct v4l2_fmtdesc tvenc_input_formats[] = {
++	{
++		.index    = 0,
++		.type     = V4L2_BUF_TYPE_VIDEO_CAPTURE,
++		.description = "16 bpp RGB, le",
++		.pixelformat   = V4L2_PIX_FMT_RGB565,
++		.flags    = FORMAT_FLAGS_PACKED,
++	},
++	{
++		.index    = 1,
++		.type     = V4L2_BUF_TYPE_VIDEO_CAPTURE,
++		.flags    = FORMAT_FLAGS_PACKED,
++		.description = "24 bpp RGB, le",
++		.pixelformat   = V4L2_PIX_FMT_RGB24,
++	},
++	{
++		.index     = 2,
++		.type      = V4L2_BUF_TYPE_VIDEO_CAPTURE,
++		.flags     = FORMAT_FLAGS_PLANAR,
++		.description = "4:2:2, planar, Y-Cb-Cr",
++		.pixelformat = V4L2_PIX_FMT_YUV422P,
++
++	},
++	{
++		.index    = 3,
++		.type     = V4L2_BUF_TYPE_VIDEO_CAPTURE,
++		.flags    = FORMAT_FLAGS_PLANAR,
++		.description     = "4:2:0, planar, Y-Cb-Cr",
++		.pixelformat   = V4L2_PIX_FMT_YUV420,
++	}
++};
++
++
++const struct v4l2_fmtdesc tvenc_output_formats[] = {
++	{
++		.index    = 0,
++		.type     = V4L2_BUF_TYPE_VIDEO_OUTPUT,
++		.description = "16 bpp RGB, le",
++		.pixelformat   = V4L2_PIX_FMT_RGB565,
++		.flags    = FORMAT_FLAGS_PACKED,
++	},
++	{
++		.index    = 1,
++		.type     = V4L2_BUF_TYPE_VIDEO_OUTPUT,
++		.flags    = FORMAT_FLAGS_PACKED,
++		.description = "24 bpp RGB, le",
++		.pixelformat   = V4L2_PIX_FMT_RGB24,
++	},
++	{
++		.index     = 2,
++		.type      = V4L2_BUF_TYPE_VIDEO_OUTPUT,
++		.flags     = FORMAT_FLAGS_PLANAR,
++		.description = "4:2:2, planar, Y-Cb-Cr",
++		.pixelformat = V4L2_PIX_FMT_YUV422P,
++
++	},
++	{
++		.index    = 3,
++		.type     = V4L2_BUF_TYPE_VIDEO_OUTPUT,
++		.flags    = FORMAT_FLAGS_PLANAR,
++		.description     = "4:2:0, planar, Y-Cb-Cr",
++		.pixelformat   = V4L2_PIX_FMT_YUV420,
++	}
++};
++
++const struct v4l2_standard tvout_standards[] = {
++	{
++		.index    = 0,
++		.id     = V4L2_STD_NTSC_M,
++		.name = "NTSC type",
++	},
++	{
++		.index    = 1,
++		.id     = V4L2_STD_PAL,
++		.name = "PAL type",
++	}	
++};
++
++#define NUMBER_OF_INPUT_FORMATS  	ARRAY_SIZE(tvenc_input_formats)
++#define NUMBER_OF_OUTPUT_FORMATS  	ARRAY_SIZE(tvenc_output_formats)
++#define NUMBER_OF_INPUTS	        ARRAY_SIZE(tvenc_inputs)
++#define NUMBER_OF_OUTPUTS	        ARRAY_SIZE(tvenc_outputs)
++#define NUMBER_OF_STANDARDS	        ARRAY_SIZE(tvout_standards)
++
++static int s3c_tvenc_g_fmt(struct v4l2_format *f)
++{
++	int size = sizeof(struct v4l2_pix_format);
++
++	memset(&f->fmt.pix, 0, size);
++	memcpy(&f->fmt.pix, &tv_param.v2.pixfmt, size);
++
++	return 0;	
++}
++
++static int s3c_tvenc_s_fmt(struct v4l2_format *f)
++{	
++	/* update our state informations */
++	tv_param.v2.pixfmt= f->fmt.pix;
++
++	// peter LCD output related operation
++	if (tv_param.v2.pixfmt.pixelformat == V4L2_PIX_FMT_RGB565 ) {	
++	
++	tv_param.sp.SrcFullWidth = tv_param.v2.pixfmt.width;
++	tv_param.sp.SrcFullHeight = tv_param.v2.pixfmt.height;
++	tv_param.sp.SrcStartX = 0;
++	tv_param.sp.SrcStartY = 0;	
++	tv_param.sp.SrcWidth = tv_param.sp.SrcFullWidth;
++	tv_param.sp.SrcHeight = tv_param.sp.SrcFullHeight;	
++	
++	printk("TV-OUT: LCD path operation set\n");
++
++	// peter for padded data of mfc output		
++	} else if (tv_param.v2.pixfmt.pixelformat == V4L2_PIX_FMT_YUV420) { 	
++	
++#ifdef DIVX_TEST		// padded output 	
++	tv_param.sp.SrcFullWidth = tv_param.v2.pixfmt.width + 2*16;
++	tv_param.sp.SrcFullHeight = tv_param.v2.pixfmt.height + 2*16;
++	tv_param.sp.SrcStartX = 16;
++	tv_param.sp.SrcStartY = 16;
++	tv_param.sp.SrcWidth = tv_param.sp.SrcFullWidth - 2*tv_param.sp.SrcStartX;
++	tv_param.sp.SrcHeight = tv_param.sp.SrcFullHeight - 2*tv_param.sp.SrcStartY;
++#else	// not padded output 		
++	tv_param.sp.SrcFullWidth = tv_param.v2.pixfmt.width;
++	tv_param.sp.SrcFullHeight = tv_param.v2.pixfmt.height;
++	tv_param.sp.SrcStartX = 0;
++	tv_param.sp.SrcStartY = 0;
++	tv_param.sp.SrcWidth = tv_param.sp.SrcFullWidth;
++	tv_param.sp.SrcHeight = tv_param.sp.SrcFullHeight;
++#endif	
++	
++	printk("TV-OUT: MFC path operation set\n");
++	
++	}	
++	
++	switch(tv_param.v2.pixfmt.pixelformat) {
++	case V4L2_PIX_FMT_RGB565:
++		tv_param.sp.SrcCSpace = RGB16;
++		break;
++	case V4L2_PIX_FMT_RGB24:
++		tv_param.sp.SrcCSpace = RGB24;
++		break;
++	case V4L2_PIX_FMT_YUV420:
++		tv_param.sp.SrcCSpace = YC420;
++		break;
++	case V4L2_PIX_FMT_YUV422P:
++		tv_param.sp.SrcCSpace = YC422;
++		break;
++	default:
++		return -EINVAL;
++	}
++	
++//	camif_convert_into_camif_cfg_t(cfg, 1);
++	return 0;
++}
++
++static int s3c_tvenc_s_input(int index)
++{
++	
++	tv_param.v2.input = &tvenc_inputs[index];	
++	switch(tv_param.v2.input->type) {
++	case V4L2_INPUT_TYPE_FIFO:		// LCD FIFO-OUT
++		tv_param.sp.InPath = POST_FIFO;
++		break;
++	case V4L2_INPUT_TYPE_MSDMA:		// MSDMA
++		tv_param.sp.InPath = POST_DMA;
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int s3c_tvenc_s_output(int index)
++{
++	tv_param.v2.output = &tvenc_outputs[index];
++	switch(tv_param.v2.output->type) {
++	case V4L2_OUTPUT_TYPE_ANALOG:	// TV-OUT (FIFO-OUT)
++		tv_param.sp.OutPath = POST_FIFO;
++		break;
++	case V4L2_OUTPUT_TYPE_MSDMA:	// MSDMA
++		tv_param.sp.OutPath = POST_DMA;
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int s3c_tvenc_s_std(v4l2_std_id *id)
++{
++//	printk("s3c_tvenc_s_std: *id=0x%x",*id);
++	switch(*id) {
++	case V4L2_STD_NTSC_M:
++		tv_param.sig_type = NTSC_M;		
++		tv_param.sp.DstFullWidth = 720;		
++		tv_param.sp.DstFullHeight = 480;					
++		break;
++	case V4L2_STD_PAL:
++		tv_param.sig_type = PAL_M;
++		tv_param.sp.DstFullWidth = 720;
++		tv_param.sp.DstFullHeight = 576;		
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int s3c_tvenc_v4l2_control(struct v4l2_control *ctrl)
++{
++	switch(ctrl->id) {
++		
++	// peter added for MFC related op.
++	case V4L2_CID_MPEG_STREAM_PID_VIDEO:
++	{
++		tv_param.sp.SrcFrmSt = ctrl->value;
++		return 0;
++	}
++	
++	case V4L2_CID_CONNECT_TYPE:
++	{
++		if(ctrl->value == 0) { // COMPOSITE
++			tv_param.connect = COMPOSITE;
++		} else if(ctrl->value == 1) {	//S-VIDEO
++			tv_param.connect = S_VIDEO;
++		} else {
++			return -EINVAL;
++		}
++		return 0;
++	}
++
++	case V4L2_CID_BRIGHTNESS:
++	{
++		s32 val = ctrl->value;	
++		if((val > 0xff)||(val < 0))
++			return -EINVAL;
++		else
++			s3c_tvenc_set_bright(val);
++
++		return 0;
++	}
++
++	case V4L2_CID_CONTRAST:
++	{
++		s32 val = ctrl->value;	
++		if((val > 0xff)||(val < 0))
++			return -EINVAL;
++		else
++			s3c_tvenc_set_contrast(val);
++
++		return 0;
++	}
++
++	case V4L2_CID_GAMMA:
++	{
++		s32 val = ctrl->value;	
++		if((val > 0x3)||(val < 0)) {
++			return -EINVAL;
++		} else {
++			s3c_tvenc_enable_gamma_control(ON);
++			s3c_tvenc_set_gamma_gain(val);
++			s3c_tvenc_enable_gamma_control(OFF);
++		}
++		return 0;
++	}		
++
++	case V4L2_CID_HUE:
++	{
++		s32 val = ctrl->value;	
++		if((val > 0xff)||(val < 0))
++			return -EINVAL;
++		else
++			s3c_tvenc_set_hue_phase(val);
++
++		return 0;		
++	}
++
++	case V4L2_CID_HCENTER:
++	{
++		s32 val = ctrl->value;
++		u32 curr_horz, curr_vert;
++		
++		if((val > 0xff)||(val < 0)) {
++			return -EINVAL;
++		} else {
++			s3c_tvenc_get_active_win_center(&curr_vert, &curr_horz);
++			s3c_tvenc_set_active_win_center(curr_vert, val);
++		}
++
++		return 0;				
++	}
++
++	case V4L2_CID_VCENTER:
++	{
++		s32 val = ctrl->value;
++		u32 curr_horz, curr_vert;
++		
++		if((val > 0x3f)||(val < 0)) {
++			return -EINVAL;
++		} else {
++			s3c_tvenc_get_active_win_center(&curr_vert, &curr_horz);
++			s3c_tvenc_set_active_win_center(val, curr_horz);
++		}
++
++		return 0;				
++	}
++	
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++int s3c_tvenc_open(struct inode *inode, struct file *filp) 
++{ 
++	int err;
++
++	err = video_exclusive_open(inode, filp);	// One function of V4l2 driver
++
++	if(err < 0) 
++		return err;
++	filp->private_data = &tv_param;
++
++	s3c_tvscaler_init();
++	
++	/* Success */
++	return 0;
++}
++
++int s3c_tvenc_release(struct inode *inode, struct file *filp) 
++{
++	video_exclusive_release(inode, filp);
++	
++	/* Success */
++	return 0;
++}
++
++static int s3c_tvenc_do_ioctl(struct inode *inode,struct file *filp,unsigned int cmd,void *arg)
++{
++	int ret;
++	
++	switch(cmd){
++	case VIDIOC_QUERYCAP:
++		{
++			struct v4l2_capability *cap = arg;
++			strcpy(cap->driver, "S3C TV-OUT driver");
++			strlcpy(cap->card, tv_param.v->name, sizeof(cap->card));
++			sprintf(cap->bus_info, "ARM AHB BUS");
++			cap->version = 0;
++			cap->capabilities = tv_param.v->type2;
++			return 0;
++		}
++	
++	case VIDIOC_OVERLAY:
++		{
++			int on = *(int *)arg;
++			
++			printk("TV-OUT: VIDIOC_OVERLAY on:%d\n", on);
++			if (on != 0) {
++				ret = tvout_start();
++			} else {
++				ret = tvout_stop();
++			}
++			return ret;
++		}	
++
++	case VIDIOC_ENUMINPUT:
++		{
++			struct v4l2_input *i = arg;
++			printk("TV-OUT: VIDIOC_ENUMINPUT : index = %d\n", i->index);
++			
++			if ((i->index) >= NUMBER_OF_INPUTS) {
++				return -EINVAL;
++			}
++			memcpy(i, &tvenc_inputs[i->index], sizeof(struct v4l2_input));
++			return 0;
++		}
++
++	case VIDIOC_S_INPUT:	// 0 -> LCD FIFO-OUT, 1 -> MSDMA
++		{
++			int index = *((int *)arg);
++			printk("TV-OUT: VIDIOC_S_INPUT \n");
++				
++			if (index >= NUMBER_OF_INPUTS) {
++				return -EINVAL;
++			}
++			else {
++				s3c_tvenc_s_input(index);
++				return 0;
++			}
++		}
++	
++	case VIDIOC_G_INPUT:
++		{
++			u32 *i = arg;
++			printk("TV-OUT: VIDIOC_G_INPUT \n");
++			*i = tv_param.v2.input->type;
++			return 0;
++		}	
++	
++	case VIDIOC_ENUMOUTPUT:
++		{
++			struct v4l2_output *i = arg;
++			printk("TV-OUT: VIDIOC_ENUMOUTPUT : index = %d\n", i->index);
++			
++			if ((i->index) >= NUMBER_OF_OUTPUTS) {
++				return -EINVAL;
++			}
++			memcpy(i, &tvenc_outputs[i->index], sizeof(struct v4l2_output));
++			return 0;
++		}	
++
++	case VIDIOC_S_OUTPUT:	// 0 -> TV / FIFO , 1 -> MSDMA
++		{
++			int index = *((int *)arg);
++			printk("TV-OUT: VIDIOC_S_OUTPUT \n");
++		
++			if (index >= NUMBER_OF_OUTPUTS) {
++				return -EINVAL;
++			}
++			else {
++				s3c_tvenc_s_output(index);
++				return 0;
++			}
++		}
++
++	case VIDIOC_G_OUTPUT:
++		{
++			u32 *i = arg;
++			printk("VIDIOC_G_OUTPUT \n");
++			*i = tv_param.v2.output->type;
++			return 0;
++		}
++
++	case VIDIOC_ENUM_FMT:
++		{	struct v4l2_fmtdesc *f = arg;
++			enum v4l2_buf_type type = f->type;
++			int index = f->index;
++
++			printk("C: VIDIOC_ENUM_FMT : index = %d\n", index);
++			if (index >= NUMBER_OF_INPUT_FORMATS) 
++				return -EINVAL;
++			
++			switch (type) {
++				case V4L2_BUF_TYPE_VIDEO_CAPTURE:
++					break;
++				case V4L2_BUF_TYPE_VIDEO_OUTPUT:
++				default:
++					return -EINVAL;
++			}
++			memset(f, 0, sizeof(*f));
++			memcpy(f, tv_param.v2.fmtdesc+index, sizeof(*f));			
++			return 0;
++		}	
++	
++	case VIDIOC_G_FMT:
++		{
++			struct v4l2_format *f = arg;
++			printk("C: VIDIOC_G_FMT \n");
++			ret = s3c_tvenc_g_fmt(f);
++			return ret;		
++		}
++	
++	case VIDIOC_S_FMT:
++		{	
++			struct v4l2_format *f = arg;
++			printk("C: VIDIOC_S_FMT \n");
++			ret = s3c_tvenc_s_fmt(f);
++			if(ret != 0) {
++				printk("s3c_tvenc_set_fmt() failed !\n");
++				return -EINVAL;
++			}
++			return ret;
++		}
++	
++	case VIDIOC_S_CTRL:
++		{
++			struct v4l2_control *ctrl = arg;
++			//printk("P: VIDIOC_S_CTRL \n");
++			ret = s3c_tvenc_v4l2_control(ctrl);
++			return ret;
++		}
++
++	case VIDIOC_ENUMSTD:
++		{
++			struct v4l2_standard *e = arg;
++			unsigned int index = e->index;
++
++			if (index >= NUMBER_OF_STANDARDS)
++				return -EINVAL;
++			v4l2_video_std_construct(e, tvout_standards[e->index].id,
++						 &tvout_standards[e->index].name);
++			e->index = index;
++			return 0;
++		}
++	
++	case VIDIOC_G_STD:
++		{
++			v4l2_std_id *id = arg;
++			*id = tvout_standards[0].id;
++			return 0;
++		}
++	
++	case VIDIOC_S_STD:
++		{
++			v4l2_std_id *id = arg;
++			unsigned int i;
++
++			for (i = 0; i < NUMBER_OF_STANDARDS; i++) {
++				//printk("P: *id = %d,  tvout_standards[i].id = %d\n", *id, tvout_standards[i].id);
++				if (*id & tvout_standards[i].id)
++					break;
++			}
++			if (i == NUMBER_OF_STANDARDS)
++				return -EINVAL;
++
++			ret = s3c_tvenc_s_std(id);
++			return ret;
++		}
++
++	case VIDIOC_S_TVOUT_ON:
++		{
++			//int *SrcFrmSt = arg;
++			//printk("---peter VIDIOC_S_TVOUT_ON : SrcFrmSt = 0x%08x\n", *SrcFrmSt);
++			ret = tvout_start();
++			return ret;
++		}
++
++	case VIDIOC_S_TVOUT_OFF:
++		{
++			ret = tvout_stop();
++			return ret;
++		}
++	
++	case VIDIOC_S_SCALER_TEST:
++		{
++			ret = scaler_test_start();
++			mdelay(1);
++			ret = scaler_test_stop();
++			return ret;
++		}
++
++	default:
++ 		return -EINVAL;
++	}
++	return 0;
++}
++
++static int s3c_tvenc_ioctl_v4l2(struct inode *inode, struct file *filp, unsigned int cmd,
++		    unsigned long arg)
++{
++	return video_usercopy(inode, filp, cmd, arg, s3c_tvenc_do_ioctl);
++}
++
++int s3c_tvenc_read(struct file *filp, char *buf, size_t count,
++			loff_t *f_pos)
++{
++	return 0;
++}
++
++int s3c_tvenc_write(struct file *filp, const char *buf, size_t 
++			count, loff_t *f_pos)
++{
++	return 0;
++}
++
++int s3c_tvenc_mmap(struct file *filp, struct vm_area_struct *vma)
++{
++	u32 size = vma->vm_end - vma->vm_start;
++	u32 max_size;
++	u32 page_frame_no;
++
++	page_frame_no = __phys_to_pfn(POST_BUFF_BASE_ADDR);
++
++	max_size = RESERVE_POST_MEM + PAGE_SIZE - (RESERVE_POST_MEM % PAGE_SIZE);
++
++	if(size > max_size) {
++		return -EINVAL;
++	}
++
++	vma->vm_flags |= VM_RESERVED;
++
++	if( remap_pfn_range(vma, vma->vm_start, page_frame_no,
++		size, vma->vm_page_prot)) {
++		printk(KERN_ERR "%s: mmap_error\n", __FUNCTION__);
++		return -EAGAIN;
++
++	}
++
++	return 0;
++}
++
++struct file_operations s3c_tvenc_fops = {
++	.owner = THIS_MODULE,
++	.open = s3c_tvenc_open,
++	.ioctl = s3c_tvenc_ioctl_v4l2,
++	.release = s3c_tvenc_release,
++	.read = s3c_tvenc_read,
++	.write = s3c_tvenc_write,
++	.mmap = s3c_tvenc_mmap,
++};
++
++void s3c_tvenc_vdev_release (struct video_device *vdev) {
++	kfree(vdev);
++}
++
++struct video_device tvencoder = {
++	.name = "TVENCODER",
++	.type = VID_TYPE_OVERLAY | VID_TYPE_CAPTURE | VID_TYPE_SCALES,
++	.type2 = V4L2_CAP_VIDEO_OUTPUT| V4L2_CAP_VIDEO_CAPTURE,		/* V4L2 */
++	//.hardware = 0x01,	// peter for 2.6.24 kernel
++	.fops = &s3c_tvenc_fops,
++	.release  = s3c_tvenc_vdev_release,
++	.minor = TVENC_MINOR,
++};
++
++irqreturn_t s3c_tvenc_isr(int irq, void *dev_id,
++				struct pt_regs *regs)
++{
++	u32 mode;
++
++	mode = __raw_readl(base + S3C_TVCTRL);
++
++	// Clear FIFO under-run status pending bit
++	mode |= (1<<12);
++
++	__raw_writel(mode, base + S3C_TVCTRL);
++
++	wake_up_interruptible(&waitq);
++	return IRQ_HANDLED;
++}
++
++static int s3c_tvenc_probe(struct platform_device *pdev)
++{
++   
++	struct resource *res;
++
++        int ret;
++
++	/* find the IRQs */
++	s3c_tvenc_irq = platform_get_irq(pdev, 0);
++	if(s3c_tvenc_irq <= 0) {
++		printk(KERN_ERR PFX "failed to get irq resouce\n");
++                return -ENOENT;
++	}
++
++        /* get the memory region for the tv scaler driver */
++
++        res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++        if(res == NULL) {
++                printk(KERN_ERR PFX "failed to get memory region resouce\n");
++                return -ENOENT;
++        }
++
++	s3c_tvenc_mem = request_mem_region(res->start, res->end-res->start+1, pdev->name);
++	if(s3c_tvenc_mem == NULL) {
++		printk(KERN_ERR PFX "failed to reserve memory region\n");
++                return -ENOENT;
++	}
++
++
++	base = ioremap(s3c_tvenc_mem->start, s3c_tvenc_mem->end - res->start + 1);
++	if(s3c_tvenc_mem == NULL) {
++		printk(KERN_ERR PFX "failed ioremap\n");
++                return -ENOENT;
++	}
++
++	tvenc_clock = clk_get(&pdev->dev, "tv_encoder");
++        if(tvenc_clock == NULL) {
++                printk(KERN_ERR PFX "failed to find tvenc clock source\n");
++                return -ENOENT;
++        }
++
++        clk_enable(tvenc_clock);
++
++	h_clk = clk_get(&pdev->dev, "hclk");
++        if(h_clk == NULL) {
++                printk(KERN_ERR PFX "failed to find h_clk clock source\n");
++                return -ENOENT;
++        }
++
++	init_waitqueue_head(&waitq);
++
++	tv_param.v = video_device_alloc();
++	if(!tv_param.v) {
++		printk(KERN_ERR "s3c-tvenc: video_device_alloc() failed\n");
++		return -ENOMEM;
++	}
++	memcpy(tv_param.v, &tvencoder, sizeof(tvencoder));
++	if(video_register_device(tv_param.v, VFL_TYPE_GRABBER, TVENC_MINOR) != 0) {
++		printk("s3c_camera_driver.c : Couldn't register this codec driver.\n");
++		return 0;
++	}
++
++	ret = request_irq(s3c_tvenc_irq, s3c_tvenc_isr, SA_INTERRUPT,
++			"TV_ENCODER", NULL);
++	if (ret) {
++		printk("request_irq(TV_ENCODER) failed.\n");
++		return ret;
++	}
++	
++	printk(" Success\n");
++        return 0;
++}
++
++static int s3c_tvenc_remove(struct platform_device *dev)
++{
++	printk(KERN_INFO "s3c_tvenc_remove called !\n");
++        clk_disable(tvenc_clock);
++	free_irq(s3c_tvenc_irq, NULL);
++	if (s3c_tvenc_mem != NULL) {
++		pr_debug("s3-tvenc: releasing s3c_tvenc_mem\n");
++		iounmap(base);
++		release_resource(s3c_tvenc_mem);
++		kfree(s3c_tvenc_mem);
++	}
++//	video_unregister_device(tv_param.v);
++	return 0;
++}
++
++static int s3c_tvenc_suspend(struct platform_device *dev, pm_message_t state)
++{
++       clk_disable(tvenc_clock);
++	return 0;
++}
++
++static int s3c_tvenc_resume(struct platform_device *pdev)
++{
++	clk_enable(tvenc_clock);
++	return 0;
++}
++
++static struct platform_driver s3c_tvenc_driver = {
++       .probe           	= s3c_tvenc_probe,
++       .remove        	= s3c_tvenc_remove,
++       .suspend       	= s3c_tvenc_suspend,
++       .resume         = s3c_tvenc_resume,
++       .driver		= {
++		.owner	= THIS_MODULE,
++		.name	= "s3c-tvenc",
++	},
++};
++
++static char banner[] __initdata = KERN_INFO "S3C6410 TV encoder Driver, (c) 2008 Samsung Electronics\n";
++
++static int __init  s3c_tvenc_init(void)
++{
++
++	printk(banner);
++	
++ 	if(platform_driver_register(&s3c_tvenc_driver) != 0)
++  	{
++   		printk("Platform Device Register Failed \n");
++   		return -1;
++  	}
++	
++	printk(" S3C6410 TV encoder Driver module init OK. \n");
++      	return 0;
++}
++
++static void __exit  s3c_tvenc_exit(void)
++{
++
++	video_unregister_device(tv_param.v);
++       platform_driver_unregister(&s3c_tvenc_driver);
++	   
++ 	printk("S3C6410 TV encoder Driver module exit. \n");
++}
++
++
++module_init(s3c_tvenc_init);
++module_exit(s3c_tvenc_exit);
++
++
++MODULE_AUTHOR("Peter, Oh");
++MODULE_DESCRIPTION("S3C TV Encoder Device Driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/media/video/samsung/s3c-tvenc.h b/drivers/media/video/samsung/s3c-tvenc.h
+new file mode 100644
+index 0000000..30a66a2
+--- /dev/null
++++ b/drivers/media/video/samsung/s3c-tvenc.h
+@@ -0,0 +1,165 @@
++#ifndef __S3CTVENC_H_
++#define __S3CTVENC_H_
++
++#include "s3c-tvscaler.h"
++
++
++#define TVENC_IOCTL_MAGIC 'T'
++
++typedef struct {
++
++} s3c_tvenc_info;
++
++#define TV_ON			_IO(TVENC_IOCTL_MAGIC, 0)
++#define TV_OFF			_IO(TVENC_IOCTL_MAGIC, 1)
++#define SELECT_TV_OUT_FORMAT	_IO(TVENC_IOCTL_MAGIC, 2)
++
++#define TVENC_IOCTL_MAXNR	6
++
++#define TVENC_MINOR  14                     // Just some number
++
++typedef enum {
++	OFF,
++	ON
++} tv_enc_switch_t;
++
++typedef enum {
++	NTSC_M,
++	PAL_M,
++	PAL_BGHID,
++	PAL_N,
++	PAL_NC,
++	PAL_60,
++	NTSC_443,
++	NTSC_J
++} tv_standard_t;
++
++typedef enum {
++	QCIF, CIF/*352x288*/, 
++	QQVGA, QVGA, VGA, SVGA/*800x600*/, SXGA/*1280x1024*/, UXGA/*1600x1200*/, QXGA/*2048x1536*/,
++	WVGA/*854x480*/, HD720/*1280x720*/, HD1080/*1920x1080*/
++} img_size_t;
++
++typedef enum {
++	BLACKSTRETCH, WHITESTRETCH, BLUESTRETCH
++} stretch_color_t;
++
++typedef enum {
++	COMPOSITE, S_VIDEO
++} tv_conn_type_t;
++
++typedef enum {
++	BLACK, BLUE, RED, MAGENTA, GREEN, CYAN, YELLOW, WHITE
++} bg_color_t;
++
++typedef enum {
++	MUTE_Y, MUTE_CB, MUTE_CR
++} mute_type_t;
++
++typedef enum {
++	AGC4L, AGC2L, N01, N02, P01, P02
++} macro_pattern_t;
++
++typedef enum {
++	LCD_RGB, LCD_TV, LCD_I80F, LCD_I80S,
++	LCD_TVRGB, LCD_TVI80F, LCD_TVI80S	
++} lcd_local_output_t;
++
++/* when  App want to change v4l2 parameter,
++ * we instantly store it into v4l2_t v2 
++ * and then reflect it to hardware
++ */	
++typedef struct v4l2 {
++	struct v4l2_fmtdesc     *fmtdesc;
++//	struct v4l2_framebuffer  frmbuf; /* current frame buffer */
++	struct v4l2_pix_format	pixfmt;
++	struct v4l2_input        *input;
++	struct v4l2_output        *output;
++//	enum v4l2_status         status;
++} v4l2_t;
++
++
++typedef struct {
++	tv_standard_t sig_type;
++	tv_conn_type_t connect;
++	/* Width of input image. The input value is twice original output image
++	*  width. For example, you must set 1440 when the image width is 720.
++	*  Max value is 1440
++	*/
++	unsigned int in_width;
++	/* Height of input image
++	*  Max value is 576
++	*/
++	unsigned int in_height;
++
++	// Setting value of VIDOUT[28:26] in Display
++	// controller(VIDCON0)
++	lcd_local_output_t lcd_output_mode;
++	// Set CLKVAL_F[13:6] of VIDCON0 with
++	// this value
++	unsigned int lcd_clkval_f;
++
++	// Flag of lcd rgb port
++	// 0 : disable, 1 : enable
++	unsigned int lcd_rgb_port_flag;
++
++	scaler_params_t sp;
++
++	struct video_device      *v;
++	v4l2_t v2;
++		
++} tv_out_params_t;
++
++#define V4L2_INPUT_TYPE_MSDMA		3
++#define V4L2_INPUT_TYPE_FIFO		4
++#define V4L2_OUTPUT_TYPE_MSDMA		4
++
++#define FORMAT_FLAGS_DITHER       0x01
++#define FORMAT_FLAGS_PACKED       0x02
++#define FORMAT_FLAGS_PLANAR       0x04
++#define FORMAT_FLAGS_RAW          0x08
++#define FORMAT_FLAGS_CrCb         0x10
++
++/****************************************************************
++* struct v4l2_control
++* Control IDs defined by S3C
++*****************************************************************/
++
++/* TV-OUT connector type */
++#define V4L2_CID_CONNECT_TYPE		(V4L2_CID_PRIVATE_BASE+0)
++
++/****************************************************************
++*	I O C T L   C O D E S   F O R   V I D E O   D E V I C E S
++*    	 It's only for S3C
++*****************************************************************/
++#define VIDIOC_S_TVOUT_ON 		_IO ('V', BASE_VIDIOC_PRIVATE+0)
++#define VIDIOC_S_TVOUT_OFF		_IO ('V', BASE_VIDIOC_PRIVATE+1)
++#define VIDIOC_S_SCALER_TEST 		_IO ('V', BASE_VIDIOC_PRIVATE+3)
++
++
++extern void s3c_tvscaler_config(scaler_params_t * sp);
++extern void s3c_tvscaler_int_enable(unsigned int int_type);
++extern void s3c_tvscaler_int_disable(void);
++extern void s3c_tvscaler_start(void);
++extern void s3c_tvscaler_stop_freerun(void);
++extern void s3c_tvscaler_init(void);
++extern void s3c_tvscaler_set_interlace(unsigned int on_off);
++extern int video_exclusive_release(struct inode * inode, struct file * file);
++extern int video_exclusive_open(struct inode * inode, struct file * file);
++
++#if 0	// peter for 2.6.21 kernel
++extern void s3c_fb_start_lcd(void);
++extern void s3c_fb_stop_lcd(void);
++extern void s3c_fb_set_output_path(int out);
++extern void s3c_fb_set_clkval(unsigned int clkval);
++extern void s3c_fb_enable_rgbport(unsigned int on_off);
++#else	// peter for 2.6.24 kernel
++extern void s3cfb_start_lcd(void);
++extern void s3cfb_stop_lcd(void);
++extern void s3cfb_set_output_path(int out);
++extern void s3cfb_set_clock(unsigned int clkval);
++extern void s3cfb_enable_rgbport(unsigned int on_off);
++#endif
++
++
++#endif // __S3CTVENC_H_
+diff --git a/drivers/media/video/samsung/s3c-tvscaler.c b/drivers/media/video/samsung/s3c-tvscaler.c
+new file mode 100644
+index 0000000..376c866
+--- /dev/null
++++ b/drivers/media/video/samsung/s3c-tvscaler.c
+@@ -0,0 +1,802 @@
++
++/*
++ * linux/drivers/tvenc/s3c-tvscaler.c
++ *
++ * Revision 1.0  
++ *
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive for
++ * more details.
++ *
++ *	    S3C TV Scaler driver 
++ *
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/types.h>
++#include <linux/timer.h>
++#include <linux/kernel.h>
++#include <linux/fs.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <asm/uaccess.h>
++#include <linux/errno.h> /* error codes */
++#include <asm/div64.h>
++#include <linux/mm.h>
++#include <linux/tty.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <asm/hardware.h>
++#include <asm/uaccess.h>
++#include <asm/arch/map.h>
++#include <linux/miscdevice.h>
++
++#include <linux/version.h>
++#if LINUX_VERSION_CODE == KERNEL_VERSION(2,6,16)
++#include <linux/config.h>
++#include <asm/arch/registers.h>
++#else
++#include <asm/arch/regs-tvscaler.h>
++#include <asm/arch/regs-s3c6400-clock.h>
++#endif
++
++#include "s3c-tvscaler.h"
++
++#define PFX "s3c_tv_scaler"
++
++#define SINGLE_BUF	1		// Single buffer mode
++
++
++static struct clk *h_clk;
++static struct clk *tvscaler_clock;
++static void __iomem *base;
++static int s3c_tvscaler_irq = NO_IRQ;
++static struct resource *s3c_tvscaler_mem;
++
++
++//static unsigned char *addr_start_y;
++//static unsigned char *addr_start_rgb;
++
++static wait_queue_head_t waitq;
++
++irqreturn_t s3c_tvscaler_isr(int irq, void *dev_id,
++				struct pt_regs *regs)
++{
++	u32 mode;
++	mode = __raw_readl(base + S3C_MODE);
++	mode &= ~(1 << 6);			/* Clear Source in POST Processor */
++	__raw_writel(mode, base + S3C_MODE);
++
++//	wake_up_interruptible(&waitq);
++	return IRQ_HANDLED;
++}
++
++#if 0
++static buff_addr_t buf_addr = { NULL };
++
++
++static u32 post_alloc_pre_buff(scaler_params_t *sp)
++{
++	u32 size;
++
++#ifdef USE_DEDICATED_MEM
++	
++	buf_addr.pre_phy_addr = PHYS_OFFSET + (SYSTEM_RAM - RESERVE_POST_MEM);
++	buf_addr.pre_virt_addr = ioremap_nocache(buf_addr.pre_phy_addr, PRE_BUFF_SIZE);
++	if( !buf_addr.pre_virt_addr ) {
++		printk(KERN_ERR "%s: Failed to allocate pre buffer \n",__FUNCTION__);
++		return -ENOMEM;
++	}
++
++	sp->SrcFrmSt = buf_addr.pre_phy_addr;
++#else
++	size = sp->SrcWidth * sp->SrcHeight * 2;
++	addr_start_y = kmalloc(size, GFP_DMA);
++	if(addr_start_y != NULL) return -ENOMEM;
++#endif
++	return 0;
++}
++
++static u32 post_alloc_post_buff(scaler_params_t *sp)
++{
++	u32 size;
++	
++#ifdef USE_DEDICATED_MEM
++	
++	buf_addr.post_phy_addr = PHYS_OFFSET + (SYSTEM_RAM - RESERVE_POST_MEM + PRE_BUFF_SIZE);
++	buf_addr.post_virt_addr = ioremap_nocache(buf_addr.post_phy_addr, POST_BUFF_SIZE);
++	if( !buf_addr.post_virt_addr ) {
++		printk(KERN_ERR "%s: Failed to allocate post buffer \n",__FUNCTION__);
++		return -ENOMEM;
++	}
++
++	sp->DstFrmSt = buf_addr.post_phy_addr;
++#else
++	size = sp->DstWidth * sp->DstHeight * 2;
++	addr_start_rgb = kmalloc(size, GFP_DMA);
++	if(addr_start_rgb != NULL) return -ENOMEM;
++#endif
++	return 0;
++}
++
++static u32 post_free_all_buffer(void)
++{
++#ifdef USE_DEDICATED_MEM	
++	if( buf_addr.pre_virt_addr ) {
++		iounmap(buf_addr.pre_virt_addr);
++	}
++	if( buf_addr.post_virt_addr ) {
++		iounmap(buf_addr.post_virt_addr);
++	}
++#endif	
++	return 0;
++}
++#endif
++
++static void s3c_tvscaler_set_clk_src(scaler_clk_src_t clk_src)
++{
++	u32 tmp, rate;
++
++	tmp = __raw_readl(base + S3C_MODE);
++
++	h_clk = clk_get(NULL, "hclk");
++
++	rate = clk_get_rate(h_clk);
++	
++	if(clk_src == HCLK) {
++		if(rate > 66000000) {
++			tmp &= ~(0x7f<<23);
++			tmp |= (1<<24);
++			tmp |= (1<<23);
++		} else {
++			tmp &=~ (0x7f<<23);
++		}
++		
++	} else if(clk_src == PLL_EXT) {
++	} else {
++		tmp &=~(0x7f<<23);
++	}
++
++	tmp = (tmp &~ (0x3<<21)) | (clk_src<<21);
++
++	__raw_writel(tmp, base + S3C_MODE);
++}
++
++static void s3c_tvscaler_set_fmt(cspace_t src, cspace_t dst, s3c_scaler_path_t in,
++				s3c_scaler_path_t out, u32 *in_pixel_size,
++				u32 *out_pixel_size)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);
++	tmp |= (0x1<<16);
++	tmp |= (0x2<<10);
++
++	if(in == POST_DMA) {
++
++		switch(src) {
++		case YC420:
++			tmp &=~((0x1<<3)|(0x1<<2));
++			tmp |= (0x1<<8)|(0x1<<1);
++			*in_pixel_size = 1;
++			break;
++		case CRYCBY:
++			tmp &= ~((0x1<<15)|(0x1<<8)|(0x1<<3)|(0x1<<0));
++			tmp |= (0x1<<2)|(0x1<<1);
++			*in_pixel_size = 2;		
++			break;
++		case CBYCRY:
++			tmp &= ~((0x1<<8)|(0x1<<3)|(0x1<<0));
++			tmp |= (0x1<<15)|(0x1<<2)|(0x1<<1);
++			*in_pixel_size = 2;	
++			break;
++		case YCRYCB:
++			tmp &= ~((0x1<<15)|(0x1<<8)|(0x1<<3));
++			tmp |= (0x1<<2)|(0x1<<1)|(0x1<<0);
++			*in_pixel_size = 2;			
++			break;
++		case YCBYCR:
++			tmp &= ~((0x1<<8)|(0x1<<3));
++			tmp |= (0x1<<15)|(0x1<<2)|(0x1<<1)|(0x1<<0);	
++			*in_pixel_size = 2;			
++			break;
++		case RGB24:
++			tmp &= ~(0x1<<8);
++			tmp |=  (0x1<<3)|(0x1<<2)|(0x1<<1);
++			*in_pixel_size = 4;
++			break;
++		case RGB16:
++			tmp &= ~((0x1<<8)|(0x1<<1));
++			tmp |=  (0x1<<3)|(0x1<<2);
++			*in_pixel_size = 2;			
++			break;
++		default:
++			break;
++		}
++
++	} 
++	else if(in == POST_FIFO) {
++	}
++
++	if(out == POST_DMA) {
++		switch(dst) {
++		case YC420:
++			tmp &= ~(0x1<<18);
++			tmp |= (0x1<<17);
++			*out_pixel_size = 1;			
++			break;
++		case CRYCBY:
++			tmp &= ~((0x1<<20)|(0x1<<19)|(0x1<<18)|(0x1<<17));
++			*out_pixel_size = 2;
++			break;
++		case CBYCRY:
++			tmp &= ~((0x1<<19)|(0x1<<18)|(0x1<<17));
++			tmp |= (0x1<<20);
++			*out_pixel_size = 2;			
++			break;
++		case YCRYCB:
++			tmp &= ~((0x1<<20)|(0x1<<18)|(0x1<<17));
++			tmp |= (0x1<<19);
++			*out_pixel_size = 2;			
++			break;
++		case YCBYCR:
++			tmp &= ~((0x1<<18)|(0x1<<17));
++			tmp |= (0x1<<20)|(0x1<<19);	
++			*out_pixel_size = 2;			
++			break;
++		case RGB24:
++			tmp |= (0x1<<18)|(0x1<<4);
++			*out_pixel_size = 4;			
++			break;
++		case RGB16:
++			tmp &= ~(0x1<<4);
++			tmp |= (0x1<<18);
++			*out_pixel_size = 2;			
++			break;
++		default:
++			break;
++		}
++	}
++	else if(out == POST_FIFO) {
++		if(dst == RGB24) {
++			tmp |= (0x1<<18)|(0x1<<13); 
++			
++		} else if(dst == YCBYCR) {
++			tmp |= (0x1<<13);
++			tmp &= ~(0x1<<18)|(0x1<<17);
++		} else {
++		}
++	}
++
++	__raw_writel(tmp, base + S3C_MODE);
++}
++
++static void s3c_tvscaler_set_path(s3c_scaler_path_t in, s3c_scaler_path_t out)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);	
++	
++	tmp &=~(0x1<<12);	// 0: progressive mode, 1: interlace mode
++
++	if(in == POST_FIFO) {
++		tmp |= (0x1<<31);
++	} else if(in == POST_DMA) {
++		tmp &=~(0x1<<31);
++	}
++
++	if(out == POST_FIFO) {
++		tmp |= (0x1<<13);
++	} else if(out == POST_DMA) {
++		tmp &=~(0x1<<13);
++	}
++
++	__raw_writel(tmp, base + S3C_MODE);
++}
++
++static void s3c_tvscaler_set_addr(scaler_params_t *sp, u32 in_pixel_size, u32 out_pixel_size)
++{
++	u32 offset_y, offset_cb, offset_cr;
++	u32 src_start_y, src_start_cb, src_start_cr;
++	u32 src_end_y, src_end_cb, src_end_cr;
++	u32 start_pos_y, end_pos_y;
++	u32 start_pos_cb, end_pos_cb;
++	u32 start_pos_cr, end_pos_cr;
++	u32 start_pos_rgb, end_pos_rgb;
++	u32 dst_start_rgb, dst_end_rgb;
++	u32 src_frm_start_addr;
++	
++	u32 offset_rgb, out_offset_cb, out_offset_cr;
++	u32 out_start_pos_cb, out_start_pos_cr;
++	u32 out_end_pos_cb, out_end_pos_cr;
++	u32 out_src_start_cb, out_src_start_cr;
++	u32 out_src_end_cb, out_src_end_cr;
++
++	if(sp->InPath == POST_DMA) {
++		offset_y = (sp->SrcFullWidth - sp->SrcWidth) * in_pixel_size;
++		start_pos_y = (sp->SrcFullWidth*sp->SrcStartY+sp->SrcStartX)*in_pixel_size;
++		end_pos_y = sp->SrcWidth*sp->SrcHeight*in_pixel_size + offset_y*(sp->SrcHeight-1);
++		src_frm_start_addr = sp->SrcFrmSt;
++		src_start_y = sp->SrcFrmSt + start_pos_y;
++		src_end_y = src_start_y + end_pos_y;
++
++		__raw_writel(src_start_y, base + S3C_ADDRSTART_Y);
++		__raw_writel(offset_y, base + S3C_OFFSET_Y);
++		__raw_writel(src_end_y, base + S3C_ADDREND_Y);	
++
++		if(sp->SrcCSpace == YC420) {
++			offset_cb = offset_cr = ((sp->SrcFullWidth - sp->SrcWidth) / 2) * in_pixel_size;
++			start_pos_cb = sp->SrcFullWidth * sp->SrcFullHeight * 1 \
++					+ (sp->SrcFullWidth * sp->SrcStartY / 2 + sp->SrcStartX) /2 * 1;
++					
++			end_pos_cb = sp->SrcWidth/2*sp->SrcHeight/2*in_pixel_size \
++					+ (sp->SrcHeight/2 -1)*offset_cb;
++			start_pos_cr = sp->SrcFullWidth * sp->SrcFullHeight *1 \
++					+ sp->SrcFullWidth*sp->SrcFullHeight/4 *1 \
++					+ (sp->SrcFullWidth*sp->SrcStartY/2 + sp->SrcStartX)/2*1;
++			end_pos_cr = sp->SrcWidth/2*sp->SrcHeight/2*in_pixel_size \
++					+ (sp->SrcHeight/2-1)*offset_cr;
++
++			src_start_cb = sp->SrcFrmSt + start_pos_cb;
++			src_end_cb = src_start_cb + end_pos_cb;
++
++			src_start_cr = sp->SrcFrmSt + start_pos_cr;
++			src_end_cr = src_start_cr + end_pos_cr;
++
++			__raw_writel(src_start_cb, base + S3C_ADDRSTART_CB);
++			__raw_writel(offset_cr, base + S3C_OFFSET_CB);
++			__raw_writel(src_end_cb, base + S3C_ADDREND_CB);
++			__raw_writel(src_start_cr, base + S3C_ADDRSTART_CR);
++			__raw_writel(offset_cb, base + S3C_OFFSET_CR);
++			__raw_writel(src_end_cr, base + S3C_ADDREND_CR);		
++		}
++	}
++	if(sp->OutPath == POST_DMA) {
++		offset_rgb = (sp->DstFullWidth - sp->DstWidth)*out_pixel_size;
++		start_pos_rgb = (sp->DstFullWidth*sp->DstStartY + sp->DstStartX)*out_pixel_size;
++		end_pos_rgb = sp->DstWidth*sp->DstHeight*out_pixel_size + offset_rgb*(sp->DstHeight - 1);
++		dst_start_rgb = sp->DstFrmSt + start_pos_rgb;
++		dst_end_rgb = dst_start_rgb + end_pos_rgb;
++
++		__raw_writel(dst_start_rgb, base + S3C_ADDRSTART_RGB);
++		__raw_writel(offset_rgb, base + S3C_OFFSET_RGB);
++		__raw_writel(dst_end_rgb, base + S3C_ADDREND_RGB);
++
++		if(sp->DstCSpace == YC420) {
++			out_offset_cb = out_offset_cr = ((sp->DstFullWidth - sp->DstWidth)/2)*out_pixel_size;
++			out_start_pos_cb = sp->DstFullWidth*sp->DstFullHeight*1 \
++					+ (sp->DstFullWidth*sp->DstStartY/2 + sp->DstStartX)/2*1;
++			out_end_pos_cb = sp->DstWidth/2*sp->DstHeight/2*out_pixel_size \
++					+ (sp->DstHeight/2 -1)*out_offset_cr;
++
++			out_start_pos_cr = sp->DstFullWidth*sp->DstFullHeight*1 \
++					+ (sp->DstFullWidth*sp->DstFullHeight/4)*1 \
++					+ (sp->DstFullWidth*sp->DstStartY/2 +sp->DstStartX)/2*1;
++			out_end_pos_cr = sp->DstWidth/2*sp->DstHeight/2*out_pixel_size \
++					+ (sp->DstHeight/2 -1)*out_offset_cb;
++
++			out_src_start_cb = sp->DstFrmSt + out_start_pos_cb;
++			out_src_end_cb = out_src_start_cb + out_end_pos_cb;
++			out_src_start_cr = sp->DstFrmSt + out_start_pos_cr;
++			out_src_end_cr = out_src_start_cr + out_end_pos_cr;
++
++			__raw_writel(out_src_start_cb, base + S3C_ADDRSTART_OCB);
++			__raw_writel(out_offset_cb, base + S3C_OFFSET_OCB);
++			__raw_writel(out_src_end_cb, base + S3C_ADDREND_OCB);
++			__raw_writel(out_src_start_cr, base + S3C_ADDRSTART_OCR);
++			__raw_writel(out_offset_cr, base + S3C_OFFSET_OCR);
++			__raw_writel(out_src_end_cr, base + S3C_ADDREND_OCR);
++			
++		}
++	}
++
++	
++}
++
++#if 0
++static void s3c_tvscaler_set_fifo_in(s3c_scaler_path_t in_path)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);
++
++	if(in_path == POST_FIFO) tmp |= (0x1<<31);
++	else tmp &=~(0x1<<31);
++	
++	__raw_writel(tmp, base + S3C_MODE);
++	
++}
++#endif
++
++void s3c_tvscaler_set_interlace(u32 on_off)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);
++
++	if(on_off == 1) tmp |=(1<<12);
++	else tmp &=~(1<<12);
++
++	__raw_writel(tmp, base + S3C_MODE);
++}
++EXPORT_SYMBOL(s3c_tvscaler_set_interlace);
++
++static void s3c_tvscaler_set_size(scaler_params_t *sp)
++{
++	u32 pre_h_ratio, pre_v_ratio, h_shift, v_shift, sh_factor;
++	u32 pre_dst_width, pre_dst_height, dx, dy;
++
++	if (sp->SrcWidth >= (sp->DstWidth<<6)) {
++		printk("Out of PreScalar range !!!\n");
++		return;
++	}
++	if(sp->SrcWidth >= (sp->DstWidth<<5)) {
++		pre_h_ratio = 32;
++		h_shift = 5;		
++	} else if(sp->SrcWidth >= (sp->DstWidth<<4)) {
++		pre_h_ratio = 16;
++		h_shift = 4;		
++	} else if(sp->SrcWidth >= (sp->DstWidth<<3)) {
++		pre_h_ratio = 8;
++		h_shift = 3;		
++	} else if(sp->SrcWidth >= (sp->DstWidth<<2)) {
++		pre_h_ratio = 4;
++		h_shift = 2;		
++	} else if(sp->SrcWidth >= (sp->DstWidth<<1)) {
++		pre_h_ratio = 2;
++		h_shift = 1;		
++	} else {
++		pre_h_ratio = 1;
++		h_shift = 0;		
++	}
++
++	pre_dst_width = sp->SrcWidth / pre_h_ratio;
++	dx = (sp->SrcWidth<<8) / (sp->DstWidth<<h_shift);
++
++
++	if (sp->SrcHeight >= (sp->DstHeight<<6)) {
++		printk("Out of PreScalar range !!!\n");
++		return;
++	}
++	if(sp->SrcHeight>= (sp->DstHeight<<5)) {
++		pre_v_ratio = 32;
++		v_shift = 5;		
++	} else if(sp->SrcHeight >= (sp->DstHeight<<4)) {
++		pre_v_ratio = 16;
++		v_shift = 4;		
++	} else if(sp->SrcHeight >= (sp->DstHeight<<3)) {
++		pre_v_ratio = 8;
++		v_shift = 3;		
++	} else if(sp->SrcHeight >= (sp->DstHeight<<2)) {
++		pre_v_ratio = 4;
++		v_shift = 2;		
++	} else if(sp->SrcHeight >= (sp->DstHeight<<1)) {
++		pre_v_ratio = 2;
++		v_shift = 1;		
++	} else {
++		pre_v_ratio = 1;
++		v_shift = 0;		
++	}	
++
++	pre_dst_height = sp->SrcHeight / pre_v_ratio;
++	dy = (sp->SrcHeight<<8) / (sp->DstHeight<<v_shift);
++	sh_factor = 10 - (h_shift + v_shift);
++
++	__raw_writel((pre_v_ratio<<7)|(pre_h_ratio<<0), base + S3C_PRESCALE_RATIO);
++	__raw_writel((pre_dst_height<<12)|(pre_dst_width<<0), base + S3C_PRESCALEIMGSIZE);
++	__raw_writel(sh_factor, base + S3C_PRESCALE_SHFACTOR);
++	__raw_writel(dx, base + S3C_MAINSCALE_H_RATIO);
++	__raw_writel(dy, base + S3C_MAINSCALE_V_RATIO);
++	__raw_writel((sp->SrcHeight<<12)|(sp->SrcWidth), base + S3C_SRCIMGSIZE);
++	__raw_writel((sp->DstHeight<<12)|(sp->DstWidth), base + S3C_DSTIMGSIZE);
++
++}
++
++
++static void s3c_tvscaler_set_auto_load(scaler_params_t *sp)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);
++
++	if(sp->Mode == FREE_RUN) {
++		tmp |= (1<<14);
++	} else if(sp->Mode == ONE_SHOT) {
++		tmp &=~(1<<14);
++	}
++
++	__raw_writel(tmp, base + S3C_MODE);
++	
++}
++
++void s3c_tvscaler_set_base_addr(void __iomem * base_addr)
++{
++	base = base_addr;
++}
++EXPORT_SYMBOL(s3c_tvscaler_set_base_addr);
++
++void s3c_tvscaler_free_base_addr(void)
++{
++	base = NULL;
++}
++EXPORT_SYMBOL(s3c_tvscaler_free_base_addr);
++
++void s3c_tvscaler_int_enable(u32 int_type)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);
++
++	if(int_type == 0) {		//Edge triggering
++		tmp &= ~(S3C_MODE_IRQ_LEVEL);
++	} else if(int_type == 1) {	//level triggering
++		tmp |= S3C_MODE_IRQ_LEVEL;
++	}
++
++	tmp |= S3C_MODE_POST_INT_ENABLE;
++
++	__raw_writel(tmp, base + S3C_MODE);
++}
++EXPORT_SYMBOL(s3c_tvscaler_int_enable);
++
++void s3c_tvscaler_int_disable(void)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);
++
++	tmp &=~ (S3C_MODE_POST_INT_ENABLE);
++
++	__raw_writel(tmp, base + S3C_MODE);
++
++}
++EXPORT_SYMBOL(s3c_tvscaler_int_disable);
++
++
++void s3c_tvscaler_start(void)
++{
++	__raw_writel(S3C_POSTENVID_ENABLE, base + S3C_POSTENVID);
++
++}
++EXPORT_SYMBOL(s3c_tvscaler_start);
++
++void s3c_tvscaler_stop_freerun(void)
++{
++	u32 tmp;
++
++	tmp = __raw_readl(base + S3C_MODE);
++
++	tmp &=~(1<<14);
++
++	__raw_writel(tmp, base + S3C_MODE);
++}
++EXPORT_SYMBOL(s3c_tvscaler_stop_freerun);
++
++
++void s3c_tvscaler_config(scaler_params_t *sp)
++{
++	u32 tmp = 0; 
++	u32 in_pixel_size = 0; 
++	u32 out_pixel_size = 0;
++	u32 loop = 0;
++
++	tmp = __raw_readl(base + S3C_POSTENVID);
++	tmp &= ~S3C_POSTENVID_ENABLE;
++	__raw_writel(tmp, base + S3C_POSTENVID);
++#ifdef SINGLE_BUF
++	tmp = S3C_MODE2_ADDR_CHANGE_DISABLE |S3C_MODE2_CHANGE_AT_FRAME_END |S3C_MODE2_SOFTWARE_TRIGGER;
++#else
++	tmp = S3C_MODE2_ADDR_CHANGE_ENABLE |S3C_MODE2_CHANGE_AT_FRAME_END |S3C_MODE2_SOFTWARE_TRIGGER;
++#endif
++	__raw_writel(tmp, base + S3C_MODE2);
++
++// peter mod.	start	
++	sp->DstStartX = sp->DstStartY = 0;	
++	sp->DstWidth = sp->DstFullWidth;
++	sp->DstHeight = sp->DstFullHeight;	
++// peter mod. end		
++
++	sp->DstFrmSt = ( POST_BUFF_BASE_ADDR + PRE_BUFF_SIZE );
++	//printk("\n---peter s3c_tvscaler_config : SrcFrmSt = 0x%08x\n", sp->SrcFrmSt);
++	//printk("---peter s3c_tvscaler_config : DstFrmSt = 0x%08x\n", sp->DstFrmSt);
++
++	s3c_tvscaler_set_clk_src(HCLK);
++
++	s3c_tvscaler_set_path(sp->InPath, sp->OutPath);
++
++	s3c_tvscaler_set_fmt(sp->SrcCSpace, sp->DstCSpace, sp->InPath, 
++						sp->OutPath, &in_pixel_size, &out_pixel_size);
++
++	s3c_tvscaler_set_size(sp);
++
++	s3c_tvscaler_set_addr(sp, in_pixel_size, out_pixel_size);
++
++	s3c_tvscaler_set_auto_load(sp);
++
++}
++EXPORT_SYMBOL(s3c_tvscaler_config);
++
++void s3c_tvscaler_set_param(scaler_params_t *sp)
++{
++#if 0	
++	param.SrcFullWidth	= sp->SrcFullWidth;
++	param.SrcFullHeight	= sp->SrcFullHeight;
++	param.SrcStartX		= sp->SrcStartX;	
++	param.SrcStartY		= sp->SrcStartY;
++	param.SrcWidth		= sp->SrcWidth;
++	param.SrcHeight		= sp->SrcHeight;
++	param.SrcFrmSt		= sp->SrcFrmSt;
++	param.SrcCSpace		= sp->SrcCSpace;
++	param.DstFullWidth	= sp->DstFullWidth;
++	param.DstFullHeight	= sp->DstFullHeight;
++	param.DstStartX		= sp->DstStartX;
++	param.DstStartY		= sp->DstStartY;
++	param.DstWidth		= sp->DstWidth;
++	param.DstHeight		= sp->DstHeight;
++	param.DstFrmSt		= sp->DstFrmSt;
++	param.DstCSpace		= sp->DstCSpace;
++	param.SrcFrmBufNum	= sp->SrcFrmBufNum;
++	param.DstFrmSt		= sp->DstFrmSt;
++	param.Mode		= sp->Mode;	
++	param.InPath		= sp->InPath;
++	param.OutPath		= sp->OutPath;
++#endif	
++}
++EXPORT_SYMBOL(s3c_tvscaler_set_param);
++
++void s3c_tvscaler_init(void)
++{
++
++	int tmp;
++
++	// Use DOUTmpll source clock as a scaler clock
++	tmp = __raw_readl(S3C_CLK_SRC);
++
++	tmp &=~(0x3<<28);
++	tmp |= (0x1<<28);
++	__raw_writel(tmp, S3C_CLK_SRC);
++ 
++       	printk(" %s \n", __FUNCTION__);
++
++}
++EXPORT_SYMBOL(s3c_tvscaler_init);
++
++
++static int s3c_tvscaler_probe(struct platform_device *pdev)
++{
++   
++	struct resource *res;
++
++        int ret;
++
++	/* find the IRQs */
++	s3c_tvscaler_irq = platform_get_irq(pdev, 0);
++	if(s3c_tvscaler_irq <= 0) {
++		printk(KERN_ERR PFX "failed to get irq resouce\n");
++              return -ENOENT;
++	}
++
++        /* get the memory region for the tv scaler driver */
++       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++       if(res == NULL) {
++               printk(KERN_ERR PFX "failed to get memory region resouce\n");
++               return -ENOENT;
++       }
++
++	s3c_tvscaler_mem = request_mem_region(res->start, res->end-res->start+1, pdev->name);
++	if(s3c_tvscaler_mem == NULL) {
++		printk(KERN_ERR PFX "failed to reserve memory region\n");
++              return -ENOENT;
++	}
++
++	base = ioremap(s3c_tvscaler_mem->start, s3c_tvscaler_mem->end - res->start + 1);
++	if(s3c_tvscaler_mem == NULL) {
++		printk(KERN_ERR PFX "failed ioremap\n");
++                return -ENOENT;
++	}
++
++	tvscaler_clock = clk_get(&pdev->dev, "tv_encoder");
++        if(tvscaler_clock == NULL) {
++                printk(KERN_ERR PFX "failed to find tvscaler clock source\n");
++                return -ENOENT;
++        }
++
++        clk_enable(tvscaler_clock);
++
++	h_clk = clk_get(&pdev->dev, "hclk");
++        if(h_clk == NULL) {
++                printk(KERN_ERR PFX "failed to find h_clk clock source\n");
++                return -ENOENT;
++        }
++
++	init_waitqueue_head(&waitq);
++
++	ret = request_irq(s3c_tvscaler_irq, s3c_tvscaler_isr, SA_INTERRUPT,
++			"TV_SCALER", NULL);
++	if (ret) {
++		printk("request_irq(TV_SCALER) failed.\n");
++		return ret;
++	}
++	
++	printk(" Success\n");
++
++       return 0;
++}
++
++static int s3c_tvscaler_remove(struct platform_device *dev)
++{
++	printk(KERN_INFO "s3c_tvscaler_remove called !\n");
++       clk_disable(tvscaler_clock);
++	free_irq(s3c_tvscaler_irq, NULL);
++	if (s3c_tvscaler_mem != NULL) {
++		pr_debug("s3-tvscaler: releasing s3c_tvscaler_mem\n");
++		iounmap(base);
++		release_resource(s3c_tvscaler_mem);
++		kfree(s3c_tvscaler_mem);
++	}
++
++	return 0;
++}
++
++static int s3c_tvscaler_suspend(struct platform_device *dev, pm_message_t state)
++{
++       clk_disable(tvscaler_clock);
++	return 0;
++}
++
++static int s3c_tvscaler_resume(struct platform_device *pdev)
++{
++       clk_enable(tvscaler_clock);
++	return 0;
++}
++
++static struct platform_driver s3c_tvscaler_driver = {
++       .probe          = s3c_tvscaler_probe,
++       .remove         = s3c_tvscaler_remove,
++       .suspend        = s3c_tvscaler_suspend,
++       .resume         = s3c_tvscaler_resume,
++       .driver		= {
++		.owner	= THIS_MODULE,
++		.name	= "s3c-tvscaler",
++	},
++};
++
++static char banner[] __initdata = KERN_INFO "S3C6410 TV scaler Driver, (c) 2008 Samsung Electronics\n";
++
++
++int __init  s3c_tvscaler_pre_init(void)
++{
++
++	printk(banner);
++	
++ 	if(platform_driver_register(&s3c_tvscaler_driver) != 0)
++  	{
++   		printk("platform device register Failed \n");
++   		return -1;
++  	}
++	
++	printk(" S3C6410 TV scaler Driver module init OK. \n");
++
++       return 0;
++}
++
++void  s3c_tvscaler_exit(void)
++{
++       platform_driver_unregister(&s3c_tvscaler_driver);
++ 	printk("S3C: tvscaler module exit\n");
++}
++
++module_init(s3c_tvscaler_pre_init);
++module_exit(s3c_tvscaler_exit);
++
++
++MODULE_AUTHOR("Peter, Oh");
++MODULE_DESCRIPTION("S3C TV Controller Device Driver");
++MODULE_LICENSE("GPL");
++
++
+diff --git a/drivers/media/video/samsung/s3c-tvscaler.h b/drivers/media/video/samsung/s3c-tvscaler.h
+new file mode 100644
+index 0000000..d8079a3
+--- /dev/null
++++ b/drivers/media/video/samsung/s3c-tvscaler.h
+@@ -0,0 +1,96 @@
++#ifndef __S3CTVSCALER_H_
++#define __S3CTVSCALER_H_
++
++#include <asm-arm/arch-s3c2410/reserved_mem.h>
++
++#define TVSCALER_IOCTL_MAGIC 'S'
++
++#define PPROC_SET_PARAMS	_IO(TVSCALER_IOCTL_MAGIC, 0)
++#define PPROC_START		_IO(TVSCALER_IOCTL_MAGIC, 1)
++#define PPROC_STOP		_IO(TVSCALER_IOCTL_MAGIC, 2)
++#define PPROC_INTERLACE_MODE	_IO(TVSCALER_IOCTL_MAGIC, 3)
++#define PPROC_PROGRESSIVE_MODE	_IO(TVSCALER_IOCTL_MAGIC, 4)
++
++
++#define QVGA_XSIZE      320
++#define QVGA_YSIZE      240
++
++#define LCD_XSIZE       320
++#define LCD_YSIZE       240
++
++#define SCALER_MINOR  251                     // Just some number
++
++
++//#define SYSTEM_RAM		0x08000000	// 128mb
++#define SYSTEM_RAM		0x07800000	// 120mb
++#define RESERVE_POST_MEM	8*1024*1024	// 8mb
++#define PRE_BUFF_SIZE		4*1024*1024	//4 // 4mb
++#define POST_BUFF_SIZE		( RESERVE_POST_MEM - PRE_BUFF_SIZE )
++#if 0
++#define POST_BUFF_BASE_ADDR	(0x50000000 + (SYSTEM_RAM - RESERVE_POST_MEM))
++#else	// TV_RESERVED_MEM_START is defined in the s3c-linux-2.6.21_dev_4_4_15
++#define POST_BUFF_BASE_ADDR	TV_RESERVED_MEM_START
++#endif
++
++#define USE_DEDICATED_MEM	1
++
++typedef enum {
++	INTERLACE_MODE,
++	PROGRESSIVE_MODE
++} s3c_scaler_scan_mode_t;
++
++typedef enum {
++	POST_DMA, POST_FIFO
++} s3c_scaler_path_t;
++
++typedef enum {
++	ONE_SHOT, FREE_RUN
++} s3c_scaler_run_mode_t;
++
++typedef enum {
++	PAL1, PAL2, PAL4, PAL8,
++	RGB8, ARGB8, RGB16, ARGB16, RGB18, RGB24, RGB30, ARGB24,
++	YC420, YC422, // Non-interleave
++	CRYCBY, CBYCRY, YCRYCB, YCBYCR, YUV444 // Interleave
++} cspace_t;
++
++typedef enum
++{
++	HCLK = 0, PLL_EXT = 1, EXT_27MHZ = 3
++} scaler_clk_src_t;
++
++typedef struct{
++	unsigned int SrcFullWidth; 		// Source Image Full Width(Virtual screen size)
++	unsigned int SrcFullHeight; 		// Source Image Full Height(Virtual screen size)
++	unsigned int SrcStartX; 			// Source Image Start width offset
++	unsigned int SrcStartY; 			// Source Image Start height offset
++	unsigned int SrcWidth;			// Source Image Width
++	unsigned int SrcHeight; 			// Source Image Height
++	unsigned int SrcFrmSt; 			// Base Address of the Source Image : Physical Address
++	cspace_t SrcCSpace; 		// Color Space ot the Source Image
++	
++	unsigned int DstFullWidth; 		// Source Image Full Width(Virtual screen size)
++	unsigned int DstFullHeight; 		// Source Image Full Height(Virtual screen size)
++	unsigned int DstStartX; 			// Source Image Start width offset
++	unsigned int DstStartY; 			// Source Image Start height offset
++	unsigned int DstWidth; 			// Source Image Width
++	unsigned int DstHeight; 			// Source Image Height
++	unsigned int DstFrmSt; 			// Base Address of the Source Image : Physical Address
++	cspace_t DstCSpace; 		// Color Space ot the Source Image
++	
++	unsigned int SrcFrmBufNum; 		// Frame buffer number
++	s3c_scaler_run_mode_t Mode; 	// POST running mode(PER_FRAME or FREE_RUN)
++	s3c_scaler_path_t InPath; 	// Data path of the source image
++	s3c_scaler_path_t OutPath; 	// Data path of the desitination image
++
++}scaler_params_t;
++
++typedef struct{
++	unsigned int pre_phy_addr;
++	unsigned char *pre_virt_addr;
++
++	unsigned int post_phy_addr;
++	unsigned char *post_virt_addr;
++} buff_addr_t;
++
++#endif //__S3CTVSCALER_H_
+-- 
+1.6.2.4
+

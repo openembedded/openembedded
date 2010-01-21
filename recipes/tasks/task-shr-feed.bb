@@ -1,41 +1,23 @@
 DESCRIPTION = "SHR Feed"
-PR = "r25"
+PR = "r35"
 PV = "1.0"
 LICENSE = "GPL"
 
 inherit task
 
 RDEPENDS_${PN} += "\
-		python-elementary \
-		openmoko-agpsui \
-		mc \
-		mplayer \
-		x11vnc \
-		omview \
-		openvpn \
-		navit \
-		pythm \
-		fbreader \
-		omoney \
+		babiloo-efl \
+		claws-mail \
+		claws-plugin-mailmbox \
+#		claws-plugin-gtkhtml2-viewer \
+		claws-plugin-rssyl \
+		di \
+		dictator \
+		dosbox \
 		enotes \
 		epdfview \
-		pyphonelog \
-		pingus \
-		openmoocow \
-		dosbox \
-		vagalume \
-		python-pygame \
-		mokoko \
-		exhibit \
-		edje-viewer \
-#		obexpush \
-#		obexftp \
-		mtpaint \
-		telepathy-python \
-		intone-video \
-		ipkg-link \
-		ipkg-utils \
-		mysql \
+		fbreader \
+		ffalarms \
 		gpe-calendar \
 		gpe-todo \
 		gpe-scap \
@@ -44,8 +26,20 @@ RDEPENDS_${PN} += "\
 		gpe-gallery \
 		gpe-timesheet \
 		gpe-contacts \
-		fltk-chess \
-		remoko \
+		gtkmm \
+		guitartune \
+		mc \
+		mplayer \
+		navit \
+		omview \
+		orrery \
+		python-elementary \
+		pythm \
+		python-wifi \
+		omoney \
+		openmoko-agpsui \
+		openvpn \
+		pyphonelog \
 #		shr-config \
 		shr-today \
                 shr-theme-neo \
@@ -57,16 +51,35 @@ RDEPENDS_${PN} += "\
 		shr-splash-theme-simple \
 		shr-splash-theme-dontpanic \
 		shr-splash-theme-handy \
+		vagalume \
+		wireshark \
+		x11vnc \
+
+		pingus \
+		openmoocow \
+		python-pygame \
+		mokoko \
+		exhibit \
+		edje-viewer \
+#		obexpush \
+#		obexftp \
+		obex-data-server \
+		mtpaint \
+		telepathy-python \
+		intone-video \
+		ipkg-link \
+		ipkg-utils \
+		mysql \
+		fltk-chess \
+		remoko \
 		openbmap-logger \
 		pisi \
-		ffalarms \
 		libnotify \
 		accelges \
 		ebrainy \
 		sms-sentry \
 		cellhunter \
 		dillo2 \
-		usbmode \
 		pyefl-sudoku \
 		tasks \
 		dates \
@@ -84,7 +97,6 @@ RDEPENDS_${PN} += "\
 		links-x11 \
 		e-wm-illume-dict-pl \
 		callrec \
-		dictator \
 		midori \
 		numptyphysics \
 		pidgin \
@@ -92,13 +104,9 @@ RDEPENDS_${PN} += "\
 		libpurple-protocol-icq \
 		vagalume \
 		ppp \
-#		bluez-hcidump \
+		bluez-hcidump \
 		kbdd \
 		kexec-tools \
-		claws-mail \
-		claws-plugin-mailmbox \
-#		claws-plugin-gtkhtml2-viewer \
-		claws-plugin-rssyl \
 		mc \
 		iotop \
 		xprop \
@@ -135,7 +143,6 @@ RDEPENDS_${PN} += "\
 #		asterisk \
 		git \
 		ruby \
-		orrery \
 		synergy \
 		irssi \
 		zhone \
@@ -192,14 +199,12 @@ RDEPENDS_${PN} += "\
 		font-winitzki-cyrillic \
 #		font-xfree86-type1 \
 #		msn-pecan \
-		erminig \
 		qwo \
 		fso-apm \
 		fso-abyss \
 		fsousaged \
 		fsodeviced \
 		fsonetworkd \
-		fsotimed \
 		opimd-utils \
 		omgps \
 		shr-launcher \
@@ -207,7 +212,6 @@ RDEPENDS_${PN} += "\
 		elmdentica \
 		shr-installer \
 		eject \
-		illume-keyboard-german \
 		illume-keyboard-arabic \
 		illume-keyboard-browse \
 		illume-keyboard-danish \
@@ -215,10 +219,11 @@ RDEPENDS_${PN} += "\
 		illume-keyboard-dutch \
 		illume-keyboard-dvorak \
 		illume-keyboard-french \
+		illume-keyboard-german \
 		illume-keyboard-hebrew \
 		illume-keyboard-numeric-alt \
-		illume-keyboard-russian-terminal \
 		illume-keyboard-russian \
+		illume-keyboard-russian-terminal \
 		python-xlib \
 		xcompmgr \
 		man \
@@ -226,7 +231,7 @@ RDEPENDS_${PN} += "\
 		aceofpenguins-launcher \
 		om-neon \
 		ipython \
-		phoneme-advanced-foundation \
+#		phoneme-advanced-foundation \
 		eve \
 #		python-pybluez \
 		x11perf \
@@ -235,6 +240,7 @@ RDEPENDS_${PN} += "\
 		bt-gps \
 		advancedcaching \
 		glamo-dri-tests \
+		bonnie++ \
 		reiserfsprogs \
 		blipomoko \
 		imagemagick \
@@ -242,4 +248,24 @@ RDEPENDS_${PN} += "\
 		sox \
 		mpg123 \
 		zile \
+		speex \
+		podpooch \
+		fltkclock \
+		fltkhackdiet \
+		fltkwwpointcal \
+		transmission \
+		xf86-input-tslib \
+		fltkcocktailbar \
+		fltkcurrency \
+		mokoeightball \
+		babiloo-efl \
+		make \
+		dnsmasq \
+		libsyncml \
+		qi \
+		qi-ubi \
+		wpa-gui \
+		gabriel \
+		stopwatch \
+		rtmom \
 "

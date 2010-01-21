@@ -8,7 +8,8 @@ SRC_URI = "http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-10.2.src
          file://Makefile.in.patch;patch=1 \
          file://interface_Makefile.in.patch;patch=1 \
          file://paranoia_Makefile.in.patch;patch=1 \
-         file://cdparanoia-III-10.2-privatefix.patch;patch=1 "
+         file://cdparanoia-III-10.2-privatefix.patch;patch=1 \
+	 file://configure.in.patch;patch=1"
 
 S = "${WORKDIR}/cdparanoia-III-10.2"
 

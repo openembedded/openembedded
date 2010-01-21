@@ -1,0 +1,25 @@
+From f0acf76b4f0f16f0e5934daaccbfbec67b875bdd Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sun, 17 Jan 2010 19:08:17 +0100
+Subject: [PATCH] gta02_defconfig: disable LEDS_GTA02_VIBRATOR
+
+---
+ arch/arm/configs/gta02_defconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/configs/gta02_defconfig b/arch/arm/configs/gta02_defconfig
+index acf225e..fec7b03 100644
+--- a/arch/arm/configs/gta02_defconfig
++++ b/arch/arm/configs/gta02_defconfig
+@@ -1338,7 +1338,7 @@ CONFIG_LEDS_GPIO_PLATFORM=y
+ # CONFIG_LEDS_DAC124S085 is not set
+ # CONFIG_LEDS_PWM is not set
+ # CONFIG_LEDS_BD2802 is not set
+-CONFIG_LEDS_GTA02_VIBRATOR=y
++# CONFIG_LEDS_GTA02_VIBRATOR is not set
+ 
+ #
+ # LED Triggers
+-- 
+1.6.6
+

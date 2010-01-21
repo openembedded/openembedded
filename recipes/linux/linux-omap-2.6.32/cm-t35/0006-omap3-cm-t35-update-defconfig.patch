@@ -1,0 +1,87 @@
+From 88f7dc4c115c57b12de7ab4170bdaaeba145283b Mon Sep 17 00:00:00 2001
+From: Mike Rapoport <mike@compulab.co.il>
+Date: Mon, 7 Dec 2009 11:07:55 +0200
+Subject: [PATCH 6/6] omap3: cm-t35: update defconfig
+
+Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+---
+ arch/arm/configs/cm_t35_defconfig |   28 ++++++++++++++++++++++------
+ 1 files changed, 22 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/configs/cm_t35_defconfig b/arch/arm/configs/cm_t35_defconfig
+index bd6f882..78eeb66 100644
+--- a/arch/arm/configs/cm_t35_defconfig
++++ b/arch/arm/configs/cm_t35_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+-# Linux kernel version: 2.6.32-rc8
+-# Tue Dec  1 12:08:44 2009
++# Linux kernel version: 2.6.32
++# Mon Dec  7 10:43:46 2009
+ #
+ CONFIG_ARM=y
+ CONFIG_SYS_SUPPORTS_APM_EMULATION=y
+@@ -572,7 +572,15 @@ CONFIG_MTD_NAND_IDS=y
+ #
+ # UBI - Unsorted block images
+ #
+-# CONFIG_MTD_UBI is not set
++CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_WL_THRESHOLD=4096
++CONFIG_MTD_UBI_BEB_RESERVE=1
++# CONFIG_MTD_UBI_GLUEBI is not set
++
++#
++# UBI debugging options
++#
++# CONFIG_MTD_UBI_DEBUG is not set
+ # CONFIG_PARPORT is not set
+ CONFIG_BLK_DEV=y
+ # CONFIG_BLK_DEV_COW_COMMON is not set
+@@ -1506,6 +1514,12 @@ CONFIG_JFFS2_RTIME=y
+ CONFIG_JFFS2_CMODE_PRIORITY=y
+ # CONFIG_JFFS2_CMODE_SIZE is not set
+ # CONFIG_JFFS2_CMODE_FAVOURLZO is not set
++CONFIG_UBIFS_FS=y
++# CONFIG_UBIFS_FS_XATTR is not set
++# CONFIG_UBIFS_FS_ADVANCED_COMPR is not set
++CONFIG_UBIFS_FS_LZO=y
++CONFIG_UBIFS_FS_ZLIB=y
++# CONFIG_UBIFS_FS_DEBUG is not set
+ # CONFIG_CRAMFS is not set
+ # CONFIG_SQUASHFS is not set
+ # CONFIG_VXFS_FS is not set
+@@ -1775,9 +1789,9 @@ CONFIG_CRYPTO_DES=y
+ #
+ # Compression
+ #
+-# CONFIG_CRYPTO_DEFLATE is not set
++CONFIG_CRYPTO_DEFLATE=y
+ # CONFIG_CRYPTO_ZLIB is not set
+-# CONFIG_CRYPTO_LZO is not set
++CONFIG_CRYPTO_LZO=y
+ 
+ #
+ # Random Number Generation
+@@ -1792,7 +1806,7 @@ CONFIG_CRYPTO_HW=y
+ CONFIG_BITREVERSE=y
+ CONFIG_GENERIC_FIND_LAST_BIT=y
+ CONFIG_CRC_CCITT=y
+-# CONFIG_CRC16 is not set
++CONFIG_CRC16=y
+ # CONFIG_CRC_T10DIF is not set
+ # CONFIG_CRC_ITU_T is not set
+ CONFIG_CRC32=y
+@@ -1800,6 +1814,8 @@ CONFIG_CRC32=y
+ CONFIG_LIBCRC32C=y
+ CONFIG_ZLIB_INFLATE=y
+ CONFIG_ZLIB_DEFLATE=y
++CONFIG_LZO_COMPRESS=y
++CONFIG_LZO_DECOMPRESS=y
+ CONFIG_DECOMPRESS_GZIP=y
+ CONFIG_HAS_IOMEM=y
+ CONFIG_HAS_IOPORT=y
+-- 
+1.6.4.4
+

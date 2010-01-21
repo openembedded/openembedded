@@ -1,0 +1,508 @@
+This patch modifies the NAND partitions of Atmel SAM9 Evaluation Kits.
+The size of the System partition is configured using KConfig
+
+The new partition sizes is will become
+
+Bootstrap partition:	4MB
+System partition:	Programmable Size (default 124 MB)
+Data partition:		Rest of NAND flash
+
+It modifies the following Atmel SAM9 development boards.
+
+* cap9adk
+* sam9260ek
+* sam9261ek
+* sam9263ek
+* sam9g20ek-2slot-mmc
+* sam9g20ek
+* sam9m10g45ek
+* sam9rlek
+
+The KConfig configuration is implemented so that each board supporting
+this function selects "MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE".
+which enables the MTD_NAND_ATMEL_ROOTFS_SIZE configuration item.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/at91_nand_partitions.h linux-2.6.32/arch/arm/mach-at91/at91_nand_partitions.h
+--- linux-2.6.32-0rig/arch/arm/mach-at91/at91_nand_partitions.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/at91_nand_partitions.h	2009-12-13 11:32:51.000000000 +0100
+@@ -0,0 +1,45 @@
++/*
++ * linux/arch/arm/mach-at91/at91_nand_partitions.h
++ *
++ *  Copyright (C) 2005 SAN People
++ *  Copyright (C) 2006 Atmel
++ *  Copyright (C) 2009 Ulf Samuelsson, Atmel
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++
++/*
++ * NAND flash
++ */
++static struct mtd_partition __initdata at91_nand_partition[] = {
++	{
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
++	},
++	{
++		.name	= "System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= MTDPART_SIZ_FULL,
++	},
++};
++
++
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-cap9adk.c linux-2.6.32/arch/arm/mach-at91/board-cap9adk.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-cap9adk.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-cap9adk.c	2009-12-13 11:35:57.000000000 +0100
+@@ -47,7 +47,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
+-
++#include "at91_nand_partitions.h"
+ 
+ static void __init cap9adk_map_io(void)
+ {
+@@ -162,22 +162,10 @@
+ 	.is_rmii	= 1,
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata cap9adk_nand_partitions[] = {
+-	{
+-		.name	= "NAND partition",
+-		.offset	= 0,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(cap9adk_nand_partitions);
+-	return cap9adk_nand_partitions;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ static struct atmel_nand_data __initdata cap9adk_nand_data = {
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9260ek.c linux-2.6.32/arch/arm/mach-at91/board-sam9260ek.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9260ek.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-sam9260ek.c	2009-12-13 11:35:21.000000000 +0100
+@@ -47,6 +47,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
++#include "at91_nand_partitions.h"
+ 
+ 
+ static void __init ek_map_io(void)
+@@ -161,27 +162,10 @@
+ 	.is_rmii	= 1,
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata ek_nand_partition[] = {
+-	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_256K,
+-	},
+-	{
+-		.name	= "Partition 2",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+-	return ek_nand_partition;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ static struct atmel_nand_data __initdata ek_nand_data = {
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9261ek.c linux-2.6.32/arch/arm/mach-at91/board-sam9261ek.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9261ek.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-sam9261ek.c	2009-12-13 11:35:13.000000000 +0100
+@@ -51,6 +51,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
++#include "at91_nand_partitions.h"
+ 
+ 
+ static void __init ek_map_io(void)
+@@ -177,27 +178,10 @@
+ //	.vcc_pin	= ... not connected
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata ek_nand_partition[] = {
+-	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_256K,
+-	},
+-	{
+-		.name	= "Partition 2",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+-	return ek_nand_partition;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ static struct atmel_nand_data __initdata ek_nand_data = {
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9263ek.c linux-2.6.32/arch/arm/mach-at91/board-sam9263ek.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9263ek.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-sam9263ek.c	2009-12-13 11:34:43.000000000 +0100
+@@ -50,6 +50,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
++#include "at91_nand_partitions.h"
+ 
+ 
+ static void __init ek_map_io(void)
+@@ -168,27 +169,10 @@
+ 	.is_rmii	= 1,
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata ek_nand_partition[] = {
+-	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_64M,
+-	},
+-	{
+-		.name	= "Partition 2",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+-	return ek_nand_partition;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ static struct atmel_nand_data __initdata ek_nand_data = {
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c linux-2.6.32/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c	2009-12-13 11:35:44.000000000 +0100
+@@ -42,6 +42,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
++#include "at91_nand_partitions.h"
+ 
+ 
+ static void __init ek_map_io(void)
+@@ -117,32 +118,10 @@
+ 	.is_rmii	= 1,
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata ek_nand_partition[] = {
+-	{
+-		.name   = "Bootstrap",
+-		.offset = 0,
+-		.size   = 4 * SZ_1M,
+-	},
+-	{
+-		.name	= "Partition 1",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= 60 * SZ_1M,
+-	},
+-	{
+-		.name	= "Partition 2",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+-	return ek_nand_partition;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ /* det_pin is not connected */
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9g20ek.c linux-2.6.32/arch/arm/mach-at91/board-sam9g20ek.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9g20ek.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-sam9g20ek.c	2009-12-13 11:35:50.000000000 +0100
+@@ -43,6 +43,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
++#include "at91_nand_partitions.h"
+ 
+ 
+ static void __init ek_map_io(void)
+@@ -118,32 +119,10 @@
+ 	.is_rmii	= 1,
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata ek_nand_partition[] = {
+-	{
+-		.name   = "Bootstrap",
+-		.offset = 0,
+-		.size   = 4 * SZ_1M,
+-	},
+-	{
+-		.name	= "Partition 1",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= 60 * SZ_1M,
+-	},
+-	{
+-		.name	= "Partition 2",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+-	return ek_nand_partition;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ /* det_pin is not connected */
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9m10g45ek.c linux-2.6.32/arch/arm/mach-at91/board-sam9m10g45ek.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9m10g45ek.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-sam9m10g45ek.c	2009-12-13 11:35:37.000000000 +0100
+@@ -44,6 +44,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
++#include "at91_nand_partitions.h"
+ 
+ 
+ static void __init ek_map_io(void)
+@@ -106,27 +107,10 @@
+ 	.is_rmii	= 1,
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata ek_nand_partition[] = {
+-	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_64M,
+-	},
+-	{
+-		.name	= "Partition 2",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+-	return ek_nand_partition;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ /* det_pin is not connected */
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9rlek.c linux-2.6.32/arch/arm/mach-at91/board-sam9rlek.c
+--- linux-2.6.32-0rig/arch/arm/mach-at91/board-sam9rlek.c	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/board-sam9rlek.c	2009-12-13 11:35:27.000000000 +0100
+@@ -36,6 +36,7 @@
+ 
+ #include "sam9_smc.h"
+ #include "generic.h"
++#include "at91_nand_partitions.h"
+ 
+ 
+ static void __init ek_map_io(void)
+@@ -77,27 +78,10 @@
+ //	.vcc_pin	= ... not connected
+ };
+ 
+-
+-/*
+- * NAND flash
+- */
+-static struct mtd_partition __initdata ek_nand_partition[] = {
+-	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_256K,
+-	},
+-	{
+-		.name	= "Partition 2",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+ {
+-	*num_partitions = ARRAY_SIZE(ek_nand_partition);
+-	return ek_nand_partition;
++	*num_partitions = ARRAY_SIZE(at91_nand_partition);
++	return at91_nand_partition;
+ }
+ 
+ static struct atmel_nand_data __initdata ek_nand_data = {
+diff -urN linux-2.6.32-0rig/arch/arm/mach-at91/Kconfig linux-2.6.32/arch/arm/mach-at91/Kconfig
+--- linux-2.6.32-0rig/arch/arm/mach-at91/Kconfig	2009-12-13 10:32:25.000000000 +0100
++++ linux-2.6.32/arch/arm/mach-at91/Kconfig	2009-12-13 11:01:29.000000000 +0100
+@@ -183,6 +183,7 @@
+ config MACH_AT91SAM9260EK
+ 	bool "Atmel AT91SAM9260-EK / AT91SAM9XE Evaluation Kit"
+ 	depends on ARCH_AT91SAM9260
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9260-EK or AT91SAM9XE Evaluation Kit
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3933>
+@@ -242,6 +243,7 @@
+ config MACH_AT91SAM9261EK
+ 	bool "Atmel AT91SAM9261-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9261
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9261-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3820>
+@@ -257,6 +259,7 @@
+ config MACH_AT91SAM9G10EK
+ 	bool "Atmel AT91SAM9G10-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G10
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G10-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4588>
+@@ -272,6 +275,7 @@
+ config MACH_AT91SAM9263EK
+ 	bool "Atmel AT91SAM9263-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9263
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9263-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4057>
+@@ -300,6 +304,7 @@
+ config MACH_AT91SAM9RLEK
+ 	bool "Atmel AT91SAM9RL-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9RL
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9RL-EK Evaluation Kit.
+ 
+@@ -314,6 +319,7 @@
+ config MACH_AT91SAM9G20EK
+ 	bool "Atmel AT91SAM9G20-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G20
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G20-EK Evaluation Kit
+ 	  that embeds only one SD/MMC slot.
+@@ -321,6 +327,7 @@
+ config MACH_AT91SAM9G20EK_2MMC
+ 	bool "Atmel AT91SAM9G20-EK Evaluation Kit with 2 SD/MMC Slots"
+ 	depends on ARCH_AT91SAM9G20
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using an Atmel AT91SAM9G20-EK Evaluation Kit
+ 	  with 2 SD/MMC Slots. This is the case for AT91SAM9G20-EK rev. C and
+@@ -344,6 +351,7 @@
+ config MACH_AT91SAM9G45EKES
+ 	bool "Atmel AT91SAM9G45-EKES Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G45
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G45-EKES Evaluation Kit.
+ 	  "ES" at the end of the name means that this board is an
+@@ -360,6 +368,7 @@
+ config MACH_AT91CAP9ADK
+ 	bool "Atmel AT91CAP9A-DK Evaluation Kit"
+ 	depends on ARCH_AT91CAP9
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91CAP9A-DK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4138>
+@@ -399,6 +408,24 @@
+ 	  On AT91SAM926x boards both types of NAND flash can be present
+ 	  (8 and 16 bit data bus width).
+ 
++config MTD_NAND_ATMEL_ROOTFS_SIZE
++	int "Size NAND rootfs in MB"
++	range 8 250
++	depends on MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	default "124"
++	help
++	  Many Atmel development boards has a NAND Flash, 
++	  divided into three partitions.
++          1) Boot partition (4 MB)
++	  2) Root FS
++	  3) Data partition
++	  This allows you to configure the size of the root fs
++	  with the remainder ending up in the data partition.
++	  The legal values are between 8 and 250
++
++config MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	bool
++
+ # ----------------------------------------------------------
+ 
+ comment "AT91 Feature Selections"

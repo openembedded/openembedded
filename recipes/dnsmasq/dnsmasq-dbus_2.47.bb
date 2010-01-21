@@ -2,6 +2,8 @@
 
 require dnsmasq.inc
 
+S = "${WORKDIR}/dnsmasq-${PV}"
+
 DEPENDS = "dbus"
 EXTRA_OEMAKE = "COPTS=-DHAVE_DBUS"
 

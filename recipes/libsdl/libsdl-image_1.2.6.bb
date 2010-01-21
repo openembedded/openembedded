@@ -1,5 +1,6 @@
 require libsdl-image.inc
-PR = "r1"
+
+PR = "${INC_PR}.1"
 
 DEPENDS += "tiff"
 

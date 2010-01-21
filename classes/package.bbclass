@@ -5,6 +5,12 @@
 PKGD    = "${WORKDIR}/package"
 PKGDEST = "${WORKDIR}/packages-split"
 
+PKGV	?= "${PV}"
+PKGR	?= "${PR}${DISTRO_PR}"
+
+EXTENDPKGEVER = "${@['','${PKGE\x7d:'][bb.data.getVar('PKGE',d,1) > 0]}"
+EXTENDPKGV ?= "${EXTENDPKGEVER}${PKGV}-${PKGR}"
+
 def legitimize_package_name(s):
 	"""
 	Make sure package names are legitimate strings
@@ -201,6 +207,26 @@ def runstrip(file, d):
 
     return 1
 
+PACKAGESTRIPFUNCS += "do_runstrip"
+python do_runstrip() {
+	import stat
+
+	dvar = bb.data.getVar('PKGD', d, True)
+	def isexec(path):
+		try:
+			s = os.stat(path)
+		except (os.error, AttributeError):
+			return 0
+		return (s[stat.ST_MODE] & stat.S_IEXEC)
+
+	for root, dirs, files in os.walk(dvar):
+		for f in files:
+			file = os.path.join(root, f)
+			if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
+				runstrip(file, d)
+}
+
+
 def write_package_md5sums (root, outfile, ignorepaths):
     # For each regular file under root, writes an md5sum to outfile.
     # With thanks to patch.bbclass.
@@ -334,11 +360,12 @@ python perform_packagecopy () {
 
 	# Start by package population by taking a copy of the installed 
 	# files to operate on
+	os.system('rm -rf %s/*' % (dvar))
 	os.system('cp -pPR %s/* %s/' % (dest, dvar))
 }
 
 python populate_packages () {
-	import glob, stat, errno, re,os
+	import glob, errno, re,os
 
 	workdir = bb.data.getVar('WORKDIR', d, True)
 	outdir = bb.data.getVar('DEPLOY_DIR', d, True)
@@ -348,13 +375,6 @@ python populate_packages () {
 
 	bb.mkdirhier(outdir)
 	os.chdir(dvar)
-
-	def isexec(path):
-		try:
-			s = os.stat(path)
-		except (os.error, AttributeError):
-			return 0
-		return (s[stat.ST_MODE] & stat.S_IEXEC)
 
 	# Sanity check PACKAGES for duplicates - should be moved to 
 	# sanity.bbclass once we have the infrastucture
@@ -368,12 +388,10 @@ python populate_packages () {
 		else:
 			package_list.append(pkg)
 
+
 	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, True) != '1'):
-		for root, dirs, files in os.walk(dvar):
-			for f in files:
-				file = os.path.join(root, f)
-				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
-					runstrip(file, d)
+		for f in (bb.data.getVar('PACKAGESTRIPFUNCS', d, True) or '').split():
+			bb.build.exec_func(f, d)
 
 	pkgdest = bb.data.getVar('PKGDEST', d, True)
 	os.system('rm -rf %s' % pkgdest)
@@ -477,7 +495,7 @@ python populate_packages () {
 	for pkg in package_list:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
 
-		remstr = "${PN} (= ${EXTENDPV})"
+		remstr = "${PN} (= ${EXTENDPKGV})"
 		if main_is_empty and remstr in rdepends:
 			rdepends.remove(remstr)
 		for l in dangling_links[pkg]:
@@ -539,6 +557,8 @@ python emit_pkgdata() {
 		write_if_exists(sf, pkg, 'PN')
 		write_if_exists(sf, pkg, 'PV')
 		write_if_exists(sf, pkg, 'PR')
+		write_if_exists(sf, pkg, 'PKGV')
+		write_if_exists(sf, pkg, 'PKGR')
 		write_if_exists(sf, pkg, 'DESCRIPTION')
 		write_if_exists(sf, pkg, 'RDEPENDS')
 		write_if_exists(sf, pkg, 'RPROVIDES')
@@ -599,9 +619,9 @@ python package_do_shlibs() {
 
 	workdir = bb.data.getVar('WORKDIR', d, True)
 
-	ver = bb.data.getVar('PV', d, True)
+	ver = bb.data.getVar('PKGV', d, True)
 	if not ver:
-		bb.error("PV not defined")
+		bb.error("PKGV not defined")
 		return
 
 	pkgdest = bb.data.getVar('PKGDEST', d, True)
@@ -629,7 +649,9 @@ python package_do_shlibs() {
 		needs_ldconfig = False
 		bb.debug(2, "calculating shlib provides for %s" % pkg)
 
-		pkgver = bb.data.getVar('PV_' + pkg, d, True)
+		pkgver = bb.data.getVar('PKGV_' + pkg, d, True)
+		if not pkgver:
+			pkgver = bb.data.getVar('PV_' + pkg, d, True)
 		if not pkgver:
 			pkgver = ver
 

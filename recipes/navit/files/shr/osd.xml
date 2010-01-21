@@ -1,0 +1,44 @@
+        <!-- FreeRunner Layout 3 -->
+          <osd enabled="yes" type="text" label="${navigation.item.street_name} ${navigation.item[1].street_name_systematic}" x="0" y="0" w="480" h="30" align="0" background_color="#000000cc" font_size="300" />
+          <osd enabled="yes" type="gps_status" x="430" y="0" w="65" h="30" align="0" background_color="#000000cc" font_size="300" />
+          <osd enabled="yes" type="compass" align="0" font_size="350" x="0" y="30" w="150" h="150"  background_color="#000000cc" />
+          <osd enabled="yes" type="navigation_next_turn" x="-150" y="30" w="150" h="60"  background_color="#000000cc" />
+          <osd enabled="yes" type="text" label="${navigation.item[1].length[named]}" x="-150" y="90" w="150" h="40" align="0" background_color="#000000cc" font_size="450"/>
+          <osd enabled="yes" type="button" x="-55" y="-90" command="zoom_in()" src="gui_zoom_in.svg"/>
+          <osd enabled="yes" type="button" x="5" y="-90" command="zoom_out()" src="gui_zoom_out.svg"/>
+          <osd enabled="yes" type="text" label="${vehicle.position_speed}" x="120" y="-50" w="240" h="25" align="0" background_color="#000000cc" font_size="280"/>
+          <osd enabled="yes" type="text" label="ETA:${navigation.item.destination_time[arrival]}" x="0" y="-25" w="160" h="25" align="4" background_color="#000000cc" font_size="350" />
+          <osd enabled="yes" type="text" label="TL:${navigation.item.destination_time[remaining]}" x="160" y="-25" w="160" h="25" align="4" background_color="#000000cc" font_size="350" />
+          <osd enabled="yes" type="text" label="Dist:${navigation.item.destination_length[named]}" x="320" y="-25" w="160" h="25" align="4" background_color="#000000cc" font_size="350" />
+        <!-- / FreeRunner Layout 3 -->
+
+        <!-- Mineque's OSD 003 Layout -->
+          <!--osd enabled="yes" type="text" label="Currently On ${navigation.item.street_name} ${navigation.item[1].street_name_systematic}" x="0" y="0" w="735" h="35" align="16" background_color="#a60c0f00" font_size="430" src="gui_fullscreen.svg" />
+          <osd enabled="yes" type="gps_status" x="735" y="0" w="65" h="30" align="0" background_color="#a60c0f00" font_size="300" />
+          <osd enabled="yes" type="text" label="ETA:${navigation.item.destination_time[arrival]}" x="50" y="-100" w="275" h="70" align="4" background_color="#a60c0f01" font_size="500" />
+          <osd enabled="yes" type="text" label="TL:${navigation.item.destination_time[remaining]}" x="475" y="-100" w="275" h="70"align="4" background_color="#a60c0f00" font_size="500" />
+          <osd enabled="yes" type="text" label="Dist:${navigation.item.destination_length[named]}" x="50" y="-60" w="275" h="70" align="4" background_color="#a60c0f00" font_size="500" />
+          <osd enabled="yes" type="text" label="${vehicle.position_speed} / ${tracking.item.route_speed}" x="475" y="-60" w="275" h="70" align="4" background_color="#a60c0f00" font_size="500"/>
+          <osd enabled="yes" type="text" label="${navigation.item[1].length[named]}" x="325" y="-40" w="150" h="40" align="0" background_color="#a60c0f00" font_size="500"/>
+          <osd enabled="yes" type="navigation_next_turn" x="325" y="-135"  w="150" h="100" align="15" background_color="#a60c0f00" />
+          <osd enabled="yes" type="button" x="0" y="-120" w="800" h="120" command="" src="/home/mineque/.navit/skins/Mineque_003/M_003_01.png" />
+          <osd enabled="yes" type="button" x="0" y="0" w="800" h="35" command="" src="/home/mineque/.navit/skins/Mineque_003/M_003_02.png" />
+          <osd enabled="yes"  type="button" x="5" y="35" command="gui.fullscreen()" src="gui_fullscreen.svg"/>
+          <osd enabled="no"  type="button" x="300" y="100" command="gui.menu()" src="menu.xpm"/>
+          <osd enabled="yes"  type="button" x="5" y="475" command="zoom_in()" src="gui_zoom_in.svg"/>
+          <osd enabled="yes"  type="button" x="-53" y="475" command="zoom_out()" src="gui_zoom_out.svg"/-->
+        <!-- / Mineque's OSD 003 Layout -->
+
+        <!-- Default -->
+        <!-- osd items allow to position display and control items directly on top of the map: -->
+          <!-- osd enabled="no" type="compass"/>
+          <osd enabled="no" type="eta"/>
+          <osd enabled="no" type="navigation_distance_to_target"/>
+          <osd enabled="no" type="navigation"/>
+          <osd enabled="no" type="navigation_distance_to_next"/>
+          <osd enabled="no" type="navigation_next_turn"/>
+          <osd enabled="no" type="button" x="0" y="0" command="gui.fullscreen()" src="toggle_fullscreen.xpm"/>
+          <osd enabled="no" type="button" x="-96" y="0" command="gui.menu()" src="menu.xpm"/>
+          <osd enabled="no" type="button" x="-96" y="-96" command="zoom_in()" src="zoom_in.xpm"/>
+          <osd enabled="no" type="button" x="0" y="-96" command="zoom_out()" src="zoom_out.xpm"/-->
+        <!-- Default -->

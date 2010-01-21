@@ -6,7 +6,9 @@ DESCRIPTION = "A GTK2 based media player"
 HOMEPAGE = "http://www.gnome.org/projects/totem/"
 LICENSE = "GPL"
 
-DEPENDS = " libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
+PR = "r2"
+
+DEPENDS = " libunique libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
 RDEPENDS_${PN} += "iso-codes"
 RRECOMMENDS_${PN} += "gst-plugin-playbin \
                       gst-plugin-gconfelements \
@@ -40,13 +42,13 @@ EXTRA_OECONF=" --disable-schemas-install \
                --enable-gstreamer \
                --enable-browser-plugins \
 	       --disable-run-in-source-tree \
-	       --disable-python \
 	       --disable-vala \
 	       --with-dbus \
 	       "
 
 do_configure_prepend() {
 	sed -i -e s:help::g ${S}/Makefile.am
+	sed -i -e s:PYTHON_CFLAGS="-I$PY_PREFIX/include/python$PYTHON_VERSION":PYTHON_CFLAGS="-I${STAGING_INCDIR}/python$PYTHON_VERSION":g ${S}/configure.in
 }
 
 PACKAGES_DYNAMIC += " totem-plugin-* "

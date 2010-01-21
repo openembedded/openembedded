@@ -1,25 +1,33 @@
 require mythtv.inc
 
+DEPENDS_{PN} += "libmyth"
+DEPENDS_libmyth = "libmythdb libmythavutil libmythavcodec libmythavformat libmythswscale libmythhdhomerun \
+	libmythtv libmythui libmythfreemheg libmythupnp libmythlivemedia"
+
 RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
-mysql5-server mysql5-client"
+mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
+PR = "svnr${SRCPV}+r7"
 PV = "0.22"
-PR = "r0"
+
 # REALPV is here to support release candidates
 # OE in that case has as PV something like 0.21+0.22rc1
 # but for packaging the real PV is needed
 REALPV = "0.22"
 
+SRCREV = "23062"
+SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=mythtv;proto=http"
+
+S = "${WORKDIR}/mythtv"
+
 ALLOW_EMPTY_${PN} = "1"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-SRC_URI = "ftp://ftp.osuosl.org/pub/mythtv/mythtv-0.22.tar.bz2 \
+SRC_URI += " \
         file://configure.patch;patch=1 \
         "
-
-S = "${WORKDIR}/mythtv-0.22"
 
 inherit qmake2 qt4x11
 
@@ -54,43 +62,12 @@ do_configure_prepend() {
                         --without-bindings=perl,python \
                         ${EXTRA_OECONF}
 }
+
 do_install() {
 	oe_runmake INSTALL_ROOT=${D} install
         install -d ${D}${datadir}/mythtv
         install -d ${D}${datadir}/mythtv/sql
         install -m 0644 ${S}/database/mc.sql ${D}${datadir}/mythtv/sql
-}
-do_stage() {
-        install -d ${STAGING_INCDIR}
-        install -d ${STAGING_INCDIR}/${PN}
-        install -d ${STAGING_INCDIR}/${PN}/dvdnav
-        install -d ${STAGING_INCDIR}/${PN}/dvdread
-        install -d ${STAGING_INCDIR}/${PN}/libavcodec
-        install -d ${STAGING_INCDIR}/${PN}/libavformat
-        install -d ${STAGING_INCDIR}/${PN}/libavutil
-        install -d ${STAGING_INCDIR}/${PN}/libmyth
-        install -d ${STAGING_INCDIR}/${PN}/libmythdb
-        install -d ${STAGING_INCDIR}/${PN}/libmythui
-        install -d ${STAGING_INCDIR}/${PN}/libswscale
-        install -d ${STAGING_INCDIR}/${PN}/mpeg2dec
-        install -d ${STAGING_INCDIR}/${PN}/upnp
-        install -m 0644 ${D}/${includedir}/${PN}/*.h ${STAGING_INCDIR}/${PN}
-        install -m 0644 ${D}/${includedir}/${PN}/mythconfig.mak ${STAGING_INCDIR}/${PN}
-        install -m 0644 ${D}/${includedir}/${PN}/dvdnav/*.h ${STAGING_INCDIR}/${PN}/dvdnav
-        install -m 0644 ${D}/${includedir}/${PN}/dvdread/*.h ${STAGING_INCDIR}/${PN}/dvdread
-        install -m 0644 ${D}/${includedir}/${PN}/libavcodec/*.h ${STAGING_INCDIR}/${PN}/libavcodec
-        install -m 0644 ${D}/${includedir}/${PN}/libavformat/*.h ${STAGING_INCDIR}/${PN}/libavformat
-        install -m 0644 ${D}/${includedir}/${PN}/libavutil/*.h ${STAGING_INCDIR}/${PN}/libavutil
-        install -m 0644 ${D}/${includedir}/${PN}/libmyth/*.h ${STAGING_INCDIR}/${PN}/libmyth
-        install -m 0644 ${D}/${includedir}/${PN}/libmythdb/*.h ${STAGING_INCDIR}/${PN}/libmythdb
-        install -m 0644 ${D}/${includedir}/${PN}/libmythui/*.h ${STAGING_INCDIR}/${PN}/libmythui
-        install -m 0644 ${D}/${includedir}/${PN}/libswscale/*.h ${STAGING_INCDIR}/${PN}/libswscale
-        install -m 0644 ${D}/${includedir}/${PN}/mpeg2dec/*.h ${STAGING_INCDIR}/${PN}/mpeg2dec
-        install -m 0644 ${D}/${includedir}/${PN}/upnp/*.h ${STAGING_INCDIR}/${PN}/upnp
-        # next part may need to be done better
-        cp -R ${D}/${libdir}/* ${STAGING_LIBDIR}
-        # ugly chmod ahead
-        chmod -R ugo+r ${STAGING_LIBDIR}
 }
 
 PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database"
@@ -102,6 +79,8 @@ FILES_mythtv-frontend = "${bindir}/mythfrontend ${datadir}/mythtv/i18n/mythfront
 FILES_mythtv-bin = "${bindir}/*"
 FILES_mythtv-filters = "${libdir}/mythtv/filters/*"
 FILES_mythtv-database = "${datadir}/mythtv/sql/"
+
+RRECOMMENDS_mythtv-frontend += "mythtv-theme-defaultmenu mythtv-theme-terra"
 
 mythlibs = "mythdb mythavutil mythavcodec mythavformat mythswscale mythhdhomerun myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 

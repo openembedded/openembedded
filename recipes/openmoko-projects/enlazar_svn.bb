@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "evas edje ecore edbus"
 RDEPENDS = "networkmanager"
 PV = "0.1+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 PE = "2"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/enlazar;module=trunk;proto=http"

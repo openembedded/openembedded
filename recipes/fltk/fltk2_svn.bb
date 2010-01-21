@@ -3,16 +3,16 @@ HOMEPAGE = "http://www.fltk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "zlib jpeg libpng libxext libxft"
+DEPENDS = "zlib jpeg libpng libxext libxft xinput"
 
-SVNREL = "6671"
-PV = "1.9.9+svnr${SVNREL}"
+PV = "1.9.9+svnr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "\
-  http://ftp.easysw.com/pub/fltk/snapshots/fltk-2.0.x-r6671.tar.bz2 \
+  svn://svn.easysw.com/public/fltk/fltk;proto=http;module=trunk \
   file://fix-it-damnit.patch;patch=1 \
 "
-S = "${WORKDIR}/fltk-2.0.x-r6671"
+S = "${WORKDIR}/trunk"
 
 inherit autotools_stage binconfig
 
@@ -26,9 +26,11 @@ EXTRA_OECONF = "\
 "
 
 do_configure() {
-	gnu-configize
+	autoconf
 	oe_runconf
 }
+
+TARGET_CC_ARCH += "-DXFT_MAJOR=2"
 
 do_install () {
 	sed -i "s|^STRIP.*=.*$|STRIP = ${STRIP}|" makeinclude
@@ -48,5 +50,5 @@ do_install () {
 PACKAGES =+ "${PN}-fluid ${PN}-images"
 FILES_${PN}-fluid = "${bindir}/fluid2"
 FILES_${PN} = "${libdir}/lib*.so.*"
-FILES_${PN}-images = "${libdir}/libfltk2_images*.so.*"
+FILES_${PN}-images = "${libdir}/libfltk2_images*.so*"
 FILES_${PN}-dev += "${bindir}/fltk2-config"

@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
@@ -14,6 +14,8 @@ S = "${WORKDIR}/tcl${PV}/unix"
 inherit autotools
 
 EXTRA_OECONF = "--enable-threads"
+
+FILES_${PN} += "${prefix}/lib"
 
 do_configure() {
 	gnu-configize

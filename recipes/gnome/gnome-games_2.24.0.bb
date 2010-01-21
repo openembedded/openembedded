@@ -1,9 +1,9 @@
 LICENSE = "GPL"
-DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer"
+DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer virtual/libsdl libsdl-mixer"
 
 inherit gnome distutils-base gconf
 
-PR = "r5"
+PR = "r7"
 
 SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
            "
@@ -16,19 +16,14 @@ EXTRA_OECONF = "--with-libggz-includes=${STAGING_INCDIR} \
 		INTLTOOL_PERL=${STAGING_BINDIR_NATIVE}/perl \
 	       "
 
+# disable help dir and crappy old sdl-macro
 do_configure_prepend() {
+        if [ -e m4/sdl.m4 ]; then
+	   rm m4/sdl.m4
+        fi
 	for i in $(find ${S} -name "Makefile.am") ; do
 		sed -i -e s:help::g $i
 	done
-}
-
-do_configure_append() {
-	for i in $(find ${S} -name "Makefile") ; do
-		sed -i \
-			-e s:'-I/usr/include/SDL':'-I${STAGING_INCDIR}/SDL':g \
-			-e s:'-I/usr/local/include/SDL':'-I${STAGING_INCDIR}/SDL':g \
-			$i
-	done	
 }
 
 # copy matchbox icons

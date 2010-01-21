@@ -4,12 +4,13 @@ HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console"
 LICENSE = "GPLv2"
 DEPENDS = "vala-native"
+RCONFLICTS = "apm"
 PV = "2.0.0+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/tools/apm2"
 
 inherit autotools
 
-RCONFLICTS_${PN} = "apm"
+

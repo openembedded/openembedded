@@ -23,7 +23,7 @@ EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after \
 export QT_CONF_PATH="${WORKDIR}/qt.conf"
 
 # Library packages
-QT_LIB_NAMES = "Qt3Support QtAssistantClient QtCLucene QtCore QtDBus QtDesigner QtDesignerComponents QtGui QtHelp QtNetwork QtOpenGL QtScript QtScriptTools QtSql QtSvg QtTest QtUiTools QtWebKit QtXml phonon"
+QT_LIB_NAMES = "Qt3Support QtAssistantClient QtCLucene QtCore QtDBus QtDesigner QtDesignerComponents QtGui QtHelp QtNetwork QtOpenGL QtScript QtScriptTools QtSql QtSvg QtTest QtUiTools QtWebKit QtXml phonon QtMultimedia QtOpenVG"
 
 QT_EXTRA_LIBS = "pvrQWSWSEGL"
 
@@ -71,6 +71,7 @@ python __anonymous () {
 }
 
 OTHER_PACKAGES = "\
+             ${QT_BASE_NAME}-tools \
              ${QT_BASE_NAME}-assistant \
              ${QT_BASE_NAME}-common \
              ${QT_BASE_NAME}-dbus \
@@ -95,6 +96,7 @@ RRECOMMENDS_${PN} = "${LIB_PACKAGES} ${OTHER_PACKAGES}"
 RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
 RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
 
+FILES_${QT_BASE_NAME}-tools                = "${bindir}/uic* ${bindir}/moc ${bindir}/rcc ${bindir}/qttracereplay"
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant* ${bindir}/qcollectiongenerator ${bindir}/qhelpconverter ${bindir}/qhelpgenerator"
 FILES_${QT_BASE_NAME}-assistant-dbg        = "${bindir}/.debug/*assistant* ${bindir}/.debug/qcollectiongenerator ${bindir}/.debug/qhelpconverter ${bindir}/.debug/qhelpgenerator"
 FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
@@ -243,6 +245,7 @@ do_install() {
            -e s#-L${STAGING_LIBDIR}##g \
            -e s#-L${libdir}##g \
            -e s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g \
+           -e s#"-Wl,-rpath-link,${S}/lib"##g \
            ${D}${libdir}/*.la ${D}${libdir}/*.prl ${D}${libdir}/pkgconfig/*.pc
 
     # fix pkgconfig files
@@ -257,58 +260,4 @@ do_install() {
     touch ${D}/${libdir}/fonts/fontdir
 }
 
-STAGE_TEMP = "${WORKDIR}/temp-staging"
-do_stage() {
-    rm -rf ${STAGE_TEMP}
-    mkdir -p ${STAGE_TEMP}
-    oe_runmake install INSTALL_ROOT=${STAGE_TEMP}
-
-    # fix pkgconfig, libtool and prl files
-    sed -i -e s#-L${S}/lib##g \
-           -e s#-L${STAGING_LIBDIR}##g \
-           -e s#-L${libdir}##g \
-           -e s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g \
-           ${STAGE_TEMP}${libdir}/*.la ${STAGE_TEMP}${libdir}/*.prl ${STAGE_TEMP}${libdir}/pkgconfig/*.pc
-
-    # fix pkgconfig files
-    sed -i -e s#"moc_location=.*$"## \
-           -e s#"uic_location=.*$"## \
-           ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc
-    for name in ${QT_LIB_NAMES}; do
-           sed -i -e "/Requires/s#${name}#${name}${QT_LIBINFIX}#"g ${D}${libdir}/pkgconfig/*.pc
-    done
-
-    # fix libtool files
-    sed -i -e s#installed=yes#installed=no#g ${STAGE_TEMP}/${libdir}/*.la
-
-    # install headers
-    install -d ${STAGING_INCDIR}
-    cp -pPRf ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}/
-
-    # install libraries
-    install -d ${STAGING_LIBDIR}
-    for i in ${STAGE_TEMP}/${libdir}/*.prl; do
-        cp -pPRf $i ${STAGING_LIBDIR}
-        cp -pPRf ${STAGE_TEMP}/${libdir}/$(basename $i .prl).la ${STAGING_LIBDIR} || true
-        oe_libinstall -C ${STAGE_TEMP}/${libdir} -a $(basename $i .prl) ${STAGING_LIBDIR} || true
-        oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .prl) ${STAGING_LIBDIR} || true
-    done
-
-    # install pkgconfig files
-    install -d ${STAGING_LIBDIR}/pkgconfig
-    cp -pPRf ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
-
-    # install mkspecs
-    install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/mkspecs
-    cp -pPRf ${STAGE_TEMP}/${datadir}/${QT_DIR_NAME}/mkspecs/* ${STAGING_DATADIR}/${QT_DIR_NAME}/mkspecs/
-
-    rm -rf ${STAGE_TEMP}
-
-    # FIXME: install symlinks to tools?
-    #install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/bin
-    #ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/qmake
-    #for qttool in moc uic uic3 rcc lrelease lupdate; do
-    #     ln -sf ${STAGING_BINDIR_NATIVE}/${qttool}4 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/${qttool}
-    #done
-}
 

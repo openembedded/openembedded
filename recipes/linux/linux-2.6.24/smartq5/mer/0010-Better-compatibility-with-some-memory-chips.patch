@@ -1,0 +1,77 @@
+From 112a485fecdaeabe2b5fc7c1eea0832d2da26c0d Mon Sep 17 00:00:00 2001
+From: YouSheng <david.ysh@gmail.com>
+Date: Thu, 20 Aug 2009 13:59:22 +0800
+Subject: [PATCH 10/13] Better compatibility with some memory chips
+
+---
+ arch/arm/mach-s3c6410/pm.c    |   21 ++++++++++++++++++++-
+ arch/arm/plat-s3c64xx/clock.c |    1 +
+ 2 files changed, 21 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-s3c6410/pm.c b/arch/arm/mach-s3c6410/pm.c
+index af53fdc..4d4ef08 100644
+--- a/arch/arm/mach-s3c6410/pm.c
++++ b/arch/arm/mach-s3c6410/pm.c
+@@ -25,6 +25,7 @@
+ #include <linux/errno.h>
+ #include <linux/time.h>
+ #include <linux/sysdev.h>
++#include <linux/delay.h>
+ 
+ #include <asm/hardware.h>
+ #include <asm/io.h>
+@@ -84,20 +85,38 @@ static struct sleep_save s3c6410_sleep[] = {
+ 
+ static int s3c6410_pm_suspend(struct sys_device *dev, pm_message_t state)
+ {
++	u32 apll_con;
+ 	s3c2410_pm_do_save(s3c6410_sleep, ARRAY_SIZE(s3c6410_sleep));
++
++	/* CPU speed set to 532MHZ */
++	apll_con = __raw_readl(S3C_APLL_CON);
++	apll_con &= ~(0x3FF << 16);
++	apll_con |= 266 << 16;
++	__raw_writel(apll_con, S3C_APLL_CON);
++	udelay(200);
++	/* CPU into sync mode. System clock from APLL */
++	__raw_writel(__raw_readl(S3C_OTHERS) | 0xC0, S3C_OTHERS);
++	/* Wait sync finish */
++	while ((__raw_readl(S3C_OTHERS) & 0xF00) != 0xF00);
++
+ 	return 0;
+ }
+ 
+ static int s3c6410_pm_resume(struct sys_device *dev)
+ {
+-	unsigned long tmp;
+ #if 0
++	unsigned long tmp;
+ 	tmp = __raw_readl(S3C_PWR_CFG);
+ 	tmp &= ~(0x60<<0);
+ 	tmp |= (0x1<<5);
+ 	__raw_writel(tmp, S3C_PWR_CFG);
+ #endif
++	/* CPU into async mode. System clock from MPLL */
++	__raw_writel(__raw_readl(S3C_OTHERS) & 0xFF3F, S3C_OTHERS);
++	/* Wait async finish */
++	while (__raw_readl(S3C_OTHERS) & 0xF00);
+ 	s3c2410_pm_do_restore(s3c6410_sleep, ARRAY_SIZE(s3c6410_sleep));
++
+ 	return 0;
+ }
+ 
+diff --git a/arch/arm/plat-s3c64xx/clock.c b/arch/arm/plat-s3c64xx/clock.c
+index 1cb7fd4..2eb7e99 100644
+--- a/arch/arm/plat-s3c64xx/clock.c
++++ b/arch/arm/plat-s3c64xx/clock.c
+@@ -308,6 +308,7 @@ int s3c_fclk_set_rate(struct clk *clk, unsigned long rate)
+ 	apll_con_tmp = __raw_readl(S3C_APLL_CON) & ~(APLL_MDIV_MASK);
+ 	apll_con_tmp |= (round_tmp / 2000000) << 16;
+ 	__raw_writel(apll_con_tmp, S3C_APLL_CON);
++	udelay(200);
+ 	if (__raw_readl(S3C_APLL_CON) == apll_con_tmp)
+ 		ret = 0;
+ 
+-- 
+1.6.2.4
+

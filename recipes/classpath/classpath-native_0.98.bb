@@ -3,7 +3,7 @@ require classpath-native.inc
 # Deadlocks occur on at least amd64 hosts.
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r1"
+PR = "r3"
 
 # The code affected by the javanet-local patch
 # is usually not compiled. However if someone changes
@@ -14,6 +14,7 @@ SRC_URI += "\
   file://ecj_java_dir.patch;patch=1 \
   file://autotools.patch;patch=1 \
   file://miscompilation.patch;patch=1 \
+  file://toolwrapper-exithook.patch;patch=1 \
   "
 
 do_unpackpost() {

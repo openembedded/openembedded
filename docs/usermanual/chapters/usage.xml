@@ -1097,7 +1097,7 @@ BB&gt;&gt; build net-snmp</screen>Note that you can use wildcards in the
 
       <para>This is the newer method of obtaining a devshell and is the
       recommended way for most users now. The newer method requires that the
-      devshell class be added to you configuration by inheriting it. This is
+      devshell class be added to your configuration by inheriting it. This is
       usually done in your <emphasis role="bold">local.conf</emphasis> or your
       distributions conf file:<screen><emphasis role="bold">INHERIT +=</emphasis> "src_distribute_local insane multimachine <emphasis
             role="bold">devshell</emphasis>"</screen></para>

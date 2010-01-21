@@ -2,8 +2,7 @@ DESCRIPTION = "Qi bootloader w/ Openmoko GTA01, GTA02, and GTA03 support"
 LICENSE = "GPL"
 SECTION = "bootloader"
 PROVIDES = "virtual/bootloader"
-LOCALVERSION = "gitr${SRCREV}"
-PV = "1.0.2+${LOCALVERSION}"
+PV = "1.0.2"
 
 EXTRA_OEMAKE = ""
 PARALLEL_MAKE = ""
@@ -15,8 +14,8 @@ do_configure() {
 	cat >config.mk <<EOF
 
 BUILD_HOST=\$(shell hostname)
-BUILD_VERSION=${PV}
-BUILD_DATE=\$(shell date)
+BUILD_VERSION=${PV}-${PR}
+BUILD_DATE=\$(shell date --iso-8601=seconds)
 
 # NOTE: The following depends on the fact that only one version of the cross-compiler
 # has been built. If it bails out with something like: "| arm-linux-ld: 4.3.3: No such file or directory"
@@ -51,6 +50,6 @@ do_deploy () {
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_deploy[dirs] = "${S}"
-addtask deploy before do_package after do_install
+addtask deploy before do_build after do_package
 addtask quilt before do_patch after do_unpack
 addtask svnrev before do_patch after do_quilt

@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native virtual/libqte2"
 PROVIDES = "virtual/libqpe1"
-
+INC_PR = "r7"
 S = "${WORKDIR}/library"
 
 inherit palmtop

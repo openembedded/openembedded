@@ -88,7 +88,7 @@ Interests:  Multimedia in gpe and on fbdev, and gtk+ apps on PDA devices.
 Interests:  GNOME on PDA
 Recipes:    mplayer, xmms, xmms-mad, xmms-tremor, dillo, links, links-x11
 Recipes:    epdfview, sylpheed-claws, sylpheed, gqview, tightvnc
-Recipes:    epdfview, gtk+_2.10.* openmoko2/*
+Recipes:    gtk+_2.10.*
 
 Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de
@@ -128,6 +128,10 @@ Recipes:    u-boot, qt4/*
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    gtk+, gtkmm
+
+Person:     John Willis 'DJWillis'
+Mail:       source@distant-earth.com
+Machines:   omap3-pandora
 
 Person:     Junqian Gordon Xu 'xjqian'
 Mail:       xjqian@gmail.com
@@ -176,10 +180,13 @@ Interests:  Small read-only Linux based firmware, deterministic builds.
 Recipes:    lighttpd, fastcgi, squashfs-tools, rt-tests, linux-rt, linux
 Machines:   mpc8313e-rdb, mpc8315e-rdb, canyonlands, calamari, openrd-base
 
-Person:	    Liam Girdwoord
-Mail:       liam.girdwood@wolfsonmicro.com
+Person:	    Liam Girdwood
+Mail:       lrg@slimlogic.co.uk
+Website:    http://www.slimlogic.co.uk
+Interests:  Mobile and embedded Linux within commercial environments.
+Interests:  Kernel development, userspace development, audio, power management.
 Machines:   mx31ads
-Recipes:    mx31ads-kernel*	
+Recipes:    mx31ads-kernel*, glibc-2.10.1, some pulseaudio versions	
 
 Person:     Lynn Lin
 Mail:       Lin_Lynn@emc.com
@@ -198,6 +205,13 @@ Website:    http://www.koansoftware.com - http://www.embedded.it
 Machines:   ronetix-pm9263, vortex86sx, at91sam9g20ek
 Distros:    KaeilOS, Ångström
 Interests:  x86, ARM, wxWidgets
+
+Person:     Martin 'JaMa' Jansa
+Mail:       Martin.Jansa@gmail.com
+Machines:   spitz, om-gta02
+Distros:    SHR, Ångström
+Interests:  xorg
+Recipes:    shr/*, xorg-*/*, linux/*openmoko*
 
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net

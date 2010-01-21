@@ -1,40 +1,12 @@
 DESCRIPTION = "TI XDC tool"
 
-# This file defines function used for extracting .bin file
+SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/rtsc/xdctools_${BASE_PV}/exports/xdctools_setuplinux_${PV}.bin"
+BINFILE="xdctools_setuplinux_${PV}.bin"
 
-python do_unpack () {
-    bb.build.exec_func('base_do_unpack', d)
-    bb.build.exec_func('ti_bin_do_unpack', d)
-}
+S = "${WORKDIR}/xdctools_${PV}"
 
-python ti_bin_do_unpack() {
+TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
 
-    import os
+require ti-eula-unpack.inc
 
-    localdata = bb.data.createCopy(d)
-    bb.data.update_data(localdata)
-
-    binfile  = bb.data.getVar('BINFILE', localdata)
-
-    # Change to the working directory
-    save_cwd = os.getcwd()
-    workdir  = bb.data.getVar('WORKDIR', localdata)
-    workdir  = bb.data.expand(workdir, localdata)
-    os.chdir(workdir)
-
-    # Make the InstallJammer binary executable so we can run it
-    os.chmod(binfile, 0755)
-
-    # Run the InstallJammer binary and accept the EULA
-    filename = "HOME=%s ./%s" % (workdir, binfile)
-    f = os.popen(filename,'w')
-    print >>f, "Y\n"
-    print >>f, " qY\n"
-    print >>f, "%s\n" % workdir
-    print >>f, "Y\n"
-    f.close()
-
-    # Return to the previous directory
-    os.chdir(save_cwd)
-}
 

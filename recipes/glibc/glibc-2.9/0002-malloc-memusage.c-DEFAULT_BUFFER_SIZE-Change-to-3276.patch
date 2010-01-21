@@ -1,0 +1,26 @@
+From e2e390fad8271da33a51075cc2bf27c9fe78861b Mon Sep 17 00:00:00 2001
+From: Ulrich Drepper <drepper@redhat.com>
+Date: Fri, 6 Feb 2009 18:27:08 +0000
+Subject: [PATCH 2/3] * malloc/memusage.c (DEFAULT_BUFFER_SIZE): Change to 32768.
+
+	(update_data): Fix handling of wrapping back
+---
+ malloc/memusage.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/malloc/memusage.c b/malloc/memusage.c
+index 6c67a8c..fcd58dc 100644
+--- a/malloc/memusage.c
++++ b/malloc/memusage.c
+@@ -93,7 +93,7 @@ static __thread uintptr_t start_sp;
+ #define peak_stack	peak_use[1]
+ #define peak_total	peak_use[2]
+ 
+-#define DEFAULT_BUFFER_SIZE	1024
++#define DEFAULT_BUFFER_SIZE	32768
+ static size_t buffer_size;
+ 
+ static int fd = -1;
+-- 
+1.6.3.3
+

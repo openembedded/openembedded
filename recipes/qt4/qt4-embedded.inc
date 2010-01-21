@@ -4,7 +4,7 @@ LICENSE = "GPL QPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "directfb tslib"
-INC_PR = "r14"
+INC_PR = "r15"
 
 QT_BASE_NAME ?= "qt4-embedded"
 QT_BASE_LIB  ?= "libqt-embedded"
@@ -31,7 +31,7 @@ QT_CONFIG_FLAGS += " \
     -qt-decoration-styled -plugin-decoration-default -plugin-decoration-windows \
     -plugin-gfx-transformed -plugin-gfx-qvfb -plugin-gfx-vnc -plugin-gfx-directfb \
     -plugin-mouse-tslib -qt-mouse-pc -qt-mouse-qvfb \
-    -qt-kbd-tty -qt-kbd-usb -qt-kbd-qvfb \
+    -qt-kbd-tty \
     -DQT_KEYPAD_NAVIGATION \
     "
 

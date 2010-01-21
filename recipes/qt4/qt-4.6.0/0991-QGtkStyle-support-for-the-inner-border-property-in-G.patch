@@ -1,0 +1,92 @@
+From f3c37838ab149a8a570b7f1df987705815ae45c0 Mon Sep 17 00:00:00 2001
+From: Robert Griebl <rgriebl@trolltech.com>
+Date: Tue, 8 Dec 2009 17:10:57 +0100
+Subject: [PATCH 0991/1244] QGtkStyle: support for the inner-border property in GtkButtons
+
+This additional padding was not taken into account up to now. It didn't
+matter for desktop themes, but Maemo5 uses a large (8pix) padding that can
+not be ignored.
+
+Reviewed-by: jbache
+---
+ src/gui/styles/qgtkstyle.cpp   |   16 ++++++++++++++++
+ src/gui/styles/qgtkstyle_p.cpp |    2 ++
+ src/gui/styles/qgtkstyle_p.h   |    2 ++
+ 3 files changed, 20 insertions(+), 0 deletions(-)
+
+diff --git a/src/gui/styles/qgtkstyle.cpp b/src/gui/styles/qgtkstyle.cpp
+index afa3325..097a2b5 100644
+--- a/src/gui/styles/qgtkstyle.cpp
++++ b/src/gui/styles/qgtkstyle.cpp
+@@ -3375,12 +3375,28 @@ QIcon QGtkStyle::standardIconImplementation(StandardPixmap standardIcon,
+ /*! \reimp */
+ QRect QGtkStyle::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
+ {
++    Q_D(const QGtkStyle);
++
+     QRect r = QCleanlooksStyle::subElementRect(element, option, widget);
+     switch (element) {
+     case SE_ProgressBarLabel:
+     case SE_ProgressBarContents:
+     case SE_ProgressBarGroove:
+         return option->rect;
++    case SE_PushButtonContents:
++        if (!d->gtk_check_version(2, 10, 0)) {
++            GtkWidget *gtkButton = d->gtkWidget(QLS("GtkButton"));
++            GtkBorder *border = 0;
++            d->gtk_widget_style_get(gtkButton, "inner-border", &border, NULL);
++            if (border) {
++                r = option->rect.adjusted(border->left, border->top, -border->right, -border->top);
++                d->gtk_border_free(border);
++            } else {
++                r = option->rect.adjusted(1, 1, -1, -1);
++            }
++            r = visualRect(option->direction, option->rect, r);
++        }
++        break;
+     default:
+         break;
+     }
+diff --git a/src/gui/styles/qgtkstyle_p.cpp b/src/gui/styles/qgtkstyle_p.cpp
+index 22dfc62..a644a5b 100644
+--- a/src/gui/styles/qgtkstyle_p.cpp
++++ b/src/gui/styles/qgtkstyle_p.cpp
+@@ -158,6 +158,7 @@ Ptr_gtk_window_get_type QGtkStylePrivate::gtk_window_get_type = 0;
+ Ptr_gtk_widget_get_type QGtkStylePrivate::gtk_widget_get_type = 0;
+ Ptr_gtk_rc_get_style_by_paths QGtkStylePrivate::gtk_rc_get_style_by_paths = 0;
+ Ptr_gtk_check_version QGtkStylePrivate::gtk_check_version = 0;
++Ptr_gtk_border_free QGtkStylePrivate::gtk_border_free = 0;
+ 
+ Ptr_pango_font_description_get_size QGtkStylePrivate::pango_font_description_get_size = 0;
+ Ptr_pango_font_description_get_weight QGtkStylePrivate::pango_font_description_get_weight = 0;
+@@ -416,6 +417,7 @@ void QGtkStylePrivate::resolveGtk() const
+     gtk_widget_get_type =(Ptr_gtk_widget_get_type)libgtk.resolve("gtk_widget_get_type");
+     gtk_rc_get_style_by_paths =(Ptr_gtk_rc_get_style_by_paths)libgtk.resolve("gtk_rc_get_style_by_paths");
+     gtk_check_version =(Ptr_gtk_check_version)libgtk.resolve("gtk_check_version");
++    gtk_border_free =(Ptr_gtk_border_free)libgtk.resolve("gtk_border_free");
+     pango_font_description_get_size = (Ptr_pango_font_description_get_size)libgtk.resolve("pango_font_description_get_size");
+     pango_font_description_get_weight = (Ptr_pango_font_description_get_weight)libgtk.resolve("pango_font_description_get_weight");
+     pango_font_description_get_family = (Ptr_pango_font_description_get_family)libgtk.resolve("pango_font_description_get_family");
+diff --git a/src/gui/styles/qgtkstyle_p.h b/src/gui/styles/qgtkstyle_p.h
+index f6ab8a3..c27308f 100644
+--- a/src/gui/styles/qgtkstyle_p.h
++++ b/src/gui/styles/qgtkstyle_p.h
+@@ -176,6 +176,7 @@ typedef GtkWidget* (*Ptr_gtk_file_chooser_dialog_new)(const gchar *title,
+ typedef void (*Ptr_gtk_file_chooser_set_current_name) (GtkFileChooser *, const gchar *);
+ typedef gboolean (*Ptr_gtk_file_chooser_set_filename) (GtkFileChooser *chooser, const gchar *name);
+ typedef gint (*Ptr_gtk_dialog_run) (GtkDialog*);
++typedef void (*Ptr_gtk_border_free)(GtkBorder *);
+ 
+ typedef guchar* (*Ptr_gdk_pixbuf_get_pixels) (const GdkPixbuf *pixbuf);
+ typedef int (*Ptr_gdk_pixbuf_get_width) (const GdkPixbuf *pixbuf);
+@@ -371,6 +372,7 @@ public:
+     static Ptr_gtk_widget_get_type gtk_widget_get_type;
+     static Ptr_gtk_rc_get_style_by_paths gtk_rc_get_style_by_paths;
+     static Ptr_gtk_check_version gtk_check_version;
++    static Ptr_gtk_border_free gtk_border_free;
+ 
+     static Ptr_pango_font_description_get_size pango_font_description_get_size;
+     static Ptr_pango_font_description_get_weight pango_font_description_get_weight;
+-- 
+1.6.5
+

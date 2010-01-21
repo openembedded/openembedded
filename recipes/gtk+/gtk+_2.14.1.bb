@@ -2,22 +2,7 @@ require gtk+.inc
 
 PR = "${INC_PR}.0"
 
-DEPENDS += "cairo jasper"
-
-# disable per default - this uses as little patches as possible
-DEFAULT_PREFERENCE = "-1" 
-
-SRC_URI = "http://download.gnome.org/sources/gtk+/2.14/gtk+-${PV}.tar.bz2 \
-           file://xsettings.patch;patch=1 \
-           file://run-iconcache.patch;patch=1 \
-           file://hardcoded_libtool.patch;patch=1 \
-           file://no-demos.patch;patch=1 \
-           file://toggle-font.diff;patch=1;pnum=0 \
-          "
-
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"
-
-LIBV = "2.10.0"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 

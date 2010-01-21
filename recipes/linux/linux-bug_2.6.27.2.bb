@@ -2,12 +2,12 @@ DESCRIPTION = "Linux kernel for bug"
 
 PV_append = "+svnr${SRCREV}"
 KV = "2.6.27.2"
-PR = "r30"
+PR = "r32"
 
 COMPATIBLE_MACHINE = "bug"
 
 SVN_PRJ = "bug-linux-${KV}"
-SRCREV = "10371"
+SRCREV = "10746"
 
 SRC_URI = "svn://svn.buglabs.net/bug/branches/R1.4/qa;module=${SVN_PRJ};proto=svn \
            file://defconfig \
@@ -46,5 +46,6 @@ module_autoload_bugpm = "bugpm"
 module_autoload_bugpm_apm = "bugpm_apm"
 module_autoload_rtc-isl12026 = "rtc-isl12026"
 module_autoload_bug_v4l2_capture = "bug_v4l2_capture"
+module_autoload_libertas_sdio = "libertas_sdio"
 # bmi_lcd_core loaded to ensure xserver device nodes are created on boot.
 module_autoload_bmi_lcd_core = "bmi_lcd_core"

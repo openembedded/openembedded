@@ -1,6 +1,6 @@
 require gcc-common.inc
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://arm-gotoff.dpatch;patch=1;pnum=0 \

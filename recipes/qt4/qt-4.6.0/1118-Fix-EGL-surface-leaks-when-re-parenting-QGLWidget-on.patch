@@ -1,0 +1,116 @@
+From 9f3ae04fae52cd37855b135a0f2f519d1c5b969c Mon Sep 17 00:00:00 2001
+From: Tom Cooksey <thomas.cooksey@nokia.com>
+Date: Tue, 15 Dec 2009 18:11:05 +0100
+Subject: [PATCH 1118/1244] Fix EGL surface leaks when re-parenting QGLWidget on X11/EGL
+
+When a QGLWidget is re-parented, it's native X11 window usually
+gets destroyed and re-created. This also happens when you set a
+window attribute or flag. On EGL, we must destroy the surface
+for the window before destroying the window itself, otherwise
+we can leak the surface. This also fixes lots of BadDrawable
+errors when running the autotests (which were due to surface
+leaks!).
+
+Reviewed-By: TrustMe
+---
+ src/opengl/qgl.cpp     |    5 +++++
+ src/opengl/qgl.h       |    1 +
+ src/opengl/qgl_egl.cpp |   34 +++++++++++++++++++++-------------
+ src/opengl/qgl_p.h     |    1 +
+ 4 files changed, 28 insertions(+), 13 deletions(-)
+
+diff --git a/src/opengl/qgl.cpp b/src/opengl/qgl.cpp
+index 2a3ce54..32534aa 100644
+--- a/src/opengl/qgl.cpp
++++ b/src/opengl/qgl.cpp
+@@ -3810,6 +3810,11 @@ bool QGLWidget::event(QEvent *e)
+     }
+ 
+ #if defined(QT_OPENGL_ES)
++    // A re-parent is likely to destroy the X11 window and re-create it. It is important
++    // that we free the EGL surface _before_ the winID changes - otherwise we can leak.
++    if (e->type() == QEvent::ParentAboutToChange)
++        d->glcx->d_func()->destroyEglSurfaceForDevice();
++
+     if ((e->type() == QEvent::ParentChange) || (e->type() == QEvent::WindowStateChange)) {
+         // The window may have been re-created during re-parent or state change - if so, the EGL
+         // surface will need to be re-created.
+diff --git a/src/opengl/qgl.h b/src/opengl/qgl.h
+index 079953f..2076c46 100644
+--- a/src/opengl/qgl.h
++++ b/src/opengl/qgl.h
+@@ -546,6 +546,7 @@ private:
+     friend class QGLPixelBuffer;
+     friend class QGLPixelBufferPrivate;
+     friend class QGLContext;
++    friend class QGLContextPrivate;
+     friend class QGLOverlayWidget;
+     friend class QOpenGLPaintEngine;
+     friend class QGLPaintDevice;
+diff --git a/src/opengl/qgl_egl.cpp b/src/opengl/qgl_egl.cpp
+index fbf0349..839e8eb 100644
+--- a/src/opengl/qgl_egl.cpp
++++ b/src/opengl/qgl_egl.cpp
+@@ -142,19 +142,7 @@ void QGLContext::reset()
+     d->cleanup();
+     doneCurrent();
+     if (d->eglContext) {
+-        if (d->eglSurface != EGL_NO_SURFACE) {
+-#ifdef Q_WS_X11
+-            // Make sure we don't call eglDestroySurface on a surface which
+-            // was created for a different winId:
+-            if (d->paintDevice->devType() == QInternal::Widget) {
+-                QGLWidget* w = static_cast<QGLWidget*>(d->paintDevice);
+-
+-                if (w->d_func()->eglSurfaceWindowId == w->winId())
+-                    eglDestroySurface(d->eglContext->display(), d->eglSurface);
+-            } else
+-#endif
+-                eglDestroySurface(d->eglContext->display(), d->eglSurface);
+-        }
++        d->destroyEglSurfaceForDevice();
+         delete d->eglContext;
+     }
+     d->eglContext = 0;
+@@ -198,6 +186,26 @@ void QGLContext::swapBuffers() const
+     d->eglContext->swapBuffers(d->eglSurface);
+ }
+ 
++void QGLContextPrivate::destroyEglSurfaceForDevice()
++{
++    if (eglSurface != EGL_NO_SURFACE) {
++#ifdef Q_WS_X11
++        // Make sure we don't call eglDestroySurface on a surface which
++        // was created for a different winId:
++        if (paintDevice->devType() == QInternal::Widget) {
++            QGLWidget* w = static_cast<QGLWidget*>(paintDevice);
++
++            if (w->d_func()->eglSurfaceWindowId == w->winId())
++                eglDestroySurface(eglContext->display(), eglSurface);
++            else
++                qWarning("WARNING: Potential EGL surface leak!");
++        } else
++#endif
++            eglDestroySurface(eglContext->display(), eglSurface);
++        eglSurface = EGL_NO_SURFACE;
++    }
++}
++
+ void QGLWidget::setMouseTracking(bool enable)
+ {
+     QWidget::setMouseTracking(enable);
+diff --git a/src/opengl/qgl_p.h b/src/opengl/qgl_p.h
+index 11770d3..99c0f33 100644
+--- a/src/opengl/qgl_p.h
++++ b/src/opengl/qgl_p.h
+@@ -288,6 +288,7 @@ public:
+ #if defined(QT_OPENGL_ES)
+     QEglContext *eglContext;
+     EGLSurface eglSurface;
++    void destroyEglSurfaceForDevice();
+ #elif defined(Q_WS_X11) || defined(Q_WS_MAC)
+     void* cx;
+ #endif
+-- 
+1.6.5
+

@@ -3,10 +3,12 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "libcompress-zlib-perl-native"
 RDEPENDS += "libcompress-zlib-perl"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TO/TOMHUGHES/IO-Zlib-${PV}.tar.gz"
 
 S = "${WORKDIR}/IO-Zlib-${PV}"
 
 inherit cpan
+
+BBCLASSEXTEND="native"

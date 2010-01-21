@@ -1,0 +1,41 @@
+From 941c6637a83f765c028f40973bb7bcca0ecbafb5 Mon Sep 17 00:00:00 2001
+From: Anders Bakken <anders.bakken@nokia.com>
+Date: Tue, 8 Dec 2009 08:19:58 -0800
+Subject: [PATCH 0999/1244] Enable customizing of DirectFB layer to use
+
+This patch enables you to use a different layer for Qt apps by
+specifying:
+
+E.g.
+
+QWS_DISPLAY=directfb:layerid=2
+
+Reviewed-by: Donald Carr <donald.carr@nokia.com>
+---
+ .../gfxdrivers/directfb/qdirectfbscreen.cpp        |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/plugins/gfxdrivers/directfb/qdirectfbscreen.cpp b/src/plugins/gfxdrivers/directfb/qdirectfbscreen.cpp
+index 4cb0184..d3fe183 100644
+--- a/src/plugins/gfxdrivers/directfb/qdirectfbscreen.cpp
++++ b/src/plugins/gfxdrivers/directfb/qdirectfbscreen.cpp
+@@ -1259,11 +1259,14 @@ bool QDirectFBScreen::connect(const QString &displaySpec)
+     setIntOption(displayArgs, QLatin1String("height"), &h);
+ 
+ #ifndef QT_NO_DIRECTFB_LAYER
+-    result = d_ptr->dfb->GetDisplayLayer(d_ptr->dfb, DLID_PRIMARY,
++    int layerId = DLID_PRIMARY;
++    setIntOption(displayArgs, QLatin1String("layerid"), &layerId);
++
++    result = d_ptr->dfb->GetDisplayLayer(d_ptr->dfb, static_cast<DFBDisplayLayerID>(layerId),
+                                          &d_ptr->dfbLayer);
+     if (result != DFB_OK) {
+         DirectFBError("QDirectFBScreen::connect: "
+-                      "Unable to get primary display layer!", result);
++                      "Unable to get display layer!", result);
+         return false;
+     }
+     result = d_ptr->dfbLayer->GetScreen(d_ptr->dfbLayer, &d_ptr->dfbScreen);
+-- 
+1.6.5
+

@@ -1,7 +1,7 @@
 DESCRIPTION = "Client and server side SOAP implementation"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.cpan.org/authors/id/M/MK/MKUTTER/SOAP-Lite-${PV}.tar.gz"
 
@@ -12,3 +12,5 @@ inherit cpan
 do_configure_prepend () {
 	sed -i '/^use diagnostics;$/d' Makefile.PL
 }
+
+BBCLASSEXTEND="native"

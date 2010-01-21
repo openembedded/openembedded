@@ -1,0 +1,127 @@
+Index: pulseaudio-0.9.19/configure.ac
+===================================================================
+--- pulseaudio-0.9.19.orig/configure.ac	2009-11-26 14:05:11.000000000 +0100
++++ pulseaudio-0.9.19/configure.ac	2009-11-26 14:06:28.304369265 +0100
+@@ -483,15 +483,15 @@
+ # Check for open64 to know if the current system does have open64() and similar functions
+ AC_CHECK_FUNCS_ONCE([open64])
+ 
+-#### [lib]iconv ####
++#### localization support ####
+ 
+ AM_ICONV
+-
+-IT_PROG_INTLTOOL([0.35.0])
+-GETTEXT_PACKAGE=pulseaudio
++IT_PROG_INTLTOOL([0.37.0])
++GETTEXT_PACKAGE=$PACKAGE
+ AC_SUBST([GETTEXT_PACKAGE])
+ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],["$GETTEXT_PACKAGE"],[Gettext package])
+-AM_GLIB_GNU_GETTEXT
++AM_GNU_GETTEXT([external])
++AM_GNU_GETTEXT_VERSION([0.17])
+ 
+ pulselocaledir='${prefix}/${DATADIRNAME}/locale'
+ AC_SUBST(pulselocaledir)
+Index: pulseaudio-0.9.19/src/pulse/i18n.h
+===================================================================
+--- pulseaudio-0.9.19.orig/src/pulse/i18n.h	2009-01-28 04:25:54.000000000 +0100
++++ pulseaudio-0.9.19/src/pulse/i18n.h	2009-11-26 14:06:28.304369265 +0100
+@@ -28,15 +28,13 @@
+ 
+ PA_C_DECL_BEGIN
+ 
+-#if !defined(GETTEXT_PACKAGE)
+-#error "Something is very wrong here, config.h needs to be included first"
+-#endif
++
+ 
+ #ifdef ENABLE_NLS
+ 
+ #include <libintl.h>
+ 
+-#define _(String) dgettext(GETTEXT_PACKAGE, String)
++#define _(String) dgettext(PACKAGE, String)
+ #ifdef gettext_noop
+ #define N_(String) gettext_noop(String)
+ #else
+Index: pulseaudio-0.9.19/src/pulse/i18n.c
+===================================================================
+--- pulseaudio-0.9.19.orig/src/pulse/i18n.c	2008-10-19 22:25:20.000000000 +0200
++++ pulseaudio-0.9.19/src/pulse/i18n.c	2009-11-26 14:06:28.304369265 +0100
+@@ -31,8 +31,8 @@
+ 
+     PA_ONCE_BEGIN {
+ 
+-        bindtextdomain(GETTEXT_PACKAGE, PULSE_LOCALEDIR);
+-        bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
++        bindtextdomain(PACKAGE, PULSE_LOCALEDIR);
++        bind_textdomain_codeset(PACKAGE, "UTF-8");
+ 
+     } PA_ONCE_END;
+ }
+Index: pulseaudio-0.9.19/src/utils/pacat.c
+===================================================================
+--- pulseaudio-0.9.19.orig/src/utils/pacat.c	2009-09-18 22:21:44.000000000 +0200
++++ pulseaudio-0.9.19/src/utils/pacat.c	2009-11-26 14:06:28.304369265 +0100
+@@ -699,7 +699,7 @@
+     };
+ 
+     setlocale(LC_ALL, "");
+-    bindtextdomain(GETTEXT_PACKAGE, PULSE_LOCALEDIR);
++    bindtextdomain(PACKAGE, PULSE_LOCALEDIR);
+ 
+     bn = pa_path_get_filename(argv[0]);
+ 
+Index: pulseaudio-0.9.19/src/utils/pacmd.c
+===================================================================
+--- pulseaudio-0.9.19.orig/src/utils/pacmd.c	2009-08-19 04:17:06.000000000 +0200
++++ pulseaudio-0.9.19/src/utils/pacmd.c	2009-11-26 14:06:28.307708271 +0100
+@@ -63,7 +63,7 @@
+     struct pollfd pollfd[N_WATCH];
+ 
+     setlocale(LC_ALL, "");
+-    bindtextdomain(GETTEXT_PACKAGE, PULSE_LOCALEDIR);
++    bindtextdomain(PACKAGE, PULSE_LOCALEDIR);
+ 
+     if (pa_pid_file_check_running(&pid, "pulseaudio") < 0) {
+         pa_log(_("No PulseAudio daemon running, or not running as session daemon."));
+Index: pulseaudio-0.9.19/src/utils/pactl.c
+===================================================================
+--- pulseaudio-0.9.19.orig/src/utils/pactl.c	2009-09-10 02:04:58.000000000 +0200
++++ pulseaudio-0.9.19/src/utils/pactl.c	2009-11-26 14:06:28.307708271 +0100
+@@ -916,7 +916,7 @@
+     };
+ 
+     setlocale(LC_ALL, "");
+-    bindtextdomain(GETTEXT_PACKAGE, PULSE_LOCALEDIR);
++    bindtextdomain(PACKAGE, PULSE_LOCALEDIR);
+ 
+     bn = pa_path_get_filename(argv[0]);
+ 
+Index: pulseaudio-0.9.19/src/utils/pasuspender.c
+===================================================================
+--- pulseaudio-0.9.19.orig/src/utils/pasuspender.c	2009-06-08 00:35:57.000000000 +0200
++++ pulseaudio-0.9.19/src/utils/pasuspender.c	2009-11-26 14:06:28.307708271 +0100
+@@ -233,7 +233,7 @@
+     };
+ 
+     setlocale(LC_ALL, "");
+-    bindtextdomain(GETTEXT_PACKAGE, PULSE_LOCALEDIR);
++    bindtextdomain(PACKAGE, PULSE_LOCALEDIR);
+ 
+     bn = pa_path_get_filename(argv[0]);
+ 
+Index: pulseaudio-0.9.19/src/utils/pax11publish.c
+===================================================================
+--- pulseaudio-0.9.19.orig/src/utils/pax11publish.c	2009-03-05 12:28:10.000000000 +0100
++++ pulseaudio-0.9.19/src/utils/pax11publish.c	2009-11-26 14:06:28.307708271 +0100
+@@ -50,7 +50,7 @@
+     enum { DUMP, EXPORT, IMPORT, REMOVE } mode = DUMP;
+ 
+     setlocale(LC_ALL, "");
+-    bindtextdomain(GETTEXT_PACKAGE, PULSE_LOCALEDIR);
++    bindtextdomain(PACKAGE, PULSE_LOCALEDIR);
+ 
+     while ((c = getopt(argc, argv, "deiD:S:O:I:c:hr")) != -1) {
+         switch (c) {

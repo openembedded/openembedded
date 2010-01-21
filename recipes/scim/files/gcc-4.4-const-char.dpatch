@@ -1,0 +1,17 @@
+upstream: http://scim.svn.sourceforge.net/viewvc/scim?view=rev&revision=259
+origin: the original patch was prepared by Jari Aalto <jari.aalto@cante.net> for the Debian distribution
+        http://bugs.debian.org/560486
+
+Index: scim-1.4.9/src/ltdl.cpp
+===================================================================
+--- scim-1.4.9.orig/src/ltdl.cpp	2010-01-17 02:39:44.000000000 +0100
++++ scim-1.4.9/src/ltdl.cpp	2010-01-17 02:39:54.000000000 +0100
+@@ -3361,7 +3361,7 @@
+ {
+   lt_dlhandle	handle		= 0;
+   char *	tmp		= 0;
+-  char *	ext		= 0;
++  const char *	ext		= 0;
+   size_t	len;
+   int		errors		= 0;
+

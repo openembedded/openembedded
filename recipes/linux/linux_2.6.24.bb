@@ -11,13 +11,14 @@ DEFAULT_PREFERENCE_ts72xx = "1"
 DEFAULT_PREFERENCE_oxnas = "1"
 DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
+DEFAULT_PREFERENCE_smartq5 = "1"
 
-PR = "r33"
+PR = "r34"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;patch=1 \
            file://squashfs-lzma-2.6.24.patch;patch=1 \
            file://ubifs-v2.6.24.patch;patch=1 \
-	   file://time.h.patch;patch=1 \
            file://defconfig"
 
 # Moved away temporarely until committed properly (work in progress).
@@ -103,7 +104,32 @@ SRC_URI_append_hipox = " \
 	file://hipox-ubifs.patch;patch=1 \
 	file://hipox-kconfig.patch;patch=1 \
 	file://hipox-sata-module.patch;patch=1 \
+	file://hipox-OXE-INT2.patch;patch=1 \
+	file://hipox-rtc.patch;patch=1 \
+	file://hipox-nand-vs-pci.patch;patch=1 \
 	"
+
+EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"
+SRC_URI_smartq5 = " ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
+    http://ftp.kernel.org/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1 \
+    file://smartq-gitupdate.diff;patch=1 \
+    file://base/0001-Apply-samsung-kernel-patch.patch;patch=1 \
+    file://base/0002-Apply-smartq-patch.patch;patch=1 \
+    file://mer/0001-Mer-keymappings-change.patch;patch=1 \
+    file://mer/0002-no-DM9000.patch;patch=1 \
+    file://mer/0003-Mer-WPA-fix.patch;patch=1 \
+    file://mer/0004-Mer-hardwire-USB-OTG-gadget-type.patch;patch=1 \
+    file://mer/0005-backlight-parameter-and-fixes.patch;patch=1 \
+    file://mer/0006-tv-encoder.patch;patch=1 \
+    file://mer/0007-make-tv-encoder-scaler-compile.patch;patch=1 \
+    file://mer/0008-build-TV-by-default.patch;patch=1 \
+    file://mer/0009-Apply-cpufreq-patch-from-gqwang.patch;patch=1 \
+    file://mer/0010-Better-compatibility-with-some-memory-chips.patch;patch=1 \
+    file://mer/0011-Only-reserve-memory-for-TV-if-CONFIG_VIDEO_SAMSUNG_T.patch;patch=1 \
+    file://mer/0012-Disable-TV-out-to-save-RAM.patch;patch=1 \
+    file://defconfig \
+"
+
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
@@ -145,5 +171,5 @@ python do_compulab_image() {
 }
 
 
-addtask compulab_image after do_deploy before do_package
+addtask compulab_image after do_deploy before do_package_write
 

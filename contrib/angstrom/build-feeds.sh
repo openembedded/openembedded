@@ -70,20 +70,24 @@ fi
 for machine in ${ARCH_MACHINES}
 do
         BUILD_MACHINE=$machine
-        BUILD_CLEAN="qmake-native qmake2-native qt-x11-free iso-codes perl perl-native python python-native python-pygtk gnome-icon-theme"
+        BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free iso-codes perl perl-native python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS=" \
+                      opkg-native \
                       abiword \
                       aircrack-ng \
                       angstrom-task-gnome \
                       angstrom-zeroconf-audio \
                       apache2 \
                       artoolkit \
+                      asciidoc \
                       asterisk \
                       atomic \
                       autoconf \
                       automake \
+                      balsa \
                       binutils \
                       bison \
+                      blueman \
                       bluez-gnome \
                       bluez-hcidump \
                       boa \
@@ -97,6 +101,7 @@ do
                       connman \
                       connman-gnome \
                       contacts \
+                      cpufrequtils \
                       cron \
                       cvs \
                       cwiid \
@@ -116,9 +121,12 @@ do
                       e-wm \
                       ekiga \
                       empathy \ 
+                      eog \
                       epdfview \
                       epiphany \
                       evince \
+                      exalt \
+                      exalt-client \
                       exo \
                       fakeroot \
                       fennec \
@@ -143,6 +151,7 @@ do
                       gdb \
                       gdbserver \
                       gdm \
+                      geany \
                       geda \
                       geda-docs \
                       geda-examples \
@@ -152,10 +161,13 @@ do
                       geda-gsymcheck \
                       geda-symbols \
                       geda-utils \
+                      giac \
                       gimp \
                       glider \
+                      gksu \
                       gmp \
                       gmpc \
+                      gnome-dvb-daemon \
                       gnome-games \
                       gnome-mplayer \
                       gnome-panel \
@@ -188,6 +200,7 @@ do
                       iaimaster \
                       icebloxx \
                       imagemagick \
+                      inkscape \
                       inkwp \
                       ioquake3 \
                       ipaq-sleep \
@@ -232,19 +245,26 @@ do
                       mplayer \
                       mtd-utils \
                       mutt \
+                      mysql5 \
                       mythtv \
+                      mythplugins \
+                      myththemes \
+                      nano \
                       nautilus \
                       nbench-byte \
                       navit \
+                      netbook-launcher-efl \
                       netkit-ftp \
                       netsurf \
                       news \
+		      nfs-utils \
                       nmap \
                       nmm \
                       notecase \
                       ntfs-3g \
                       numptyphysics \
                       octave \
+                      openbox \
                       opencv \
                       opencv-samples \
                       openmoko-browser2 \
@@ -256,9 +276,11 @@ do
                       pavucontrol \
                       palantir \
                       pairs \
+                      paprefs \
                       pciutils \
                       pdamaze \
                       perl \
+                      php \
                       pidgin \
                       pine \
                       pingus \
@@ -295,6 +317,7 @@ do
                       screen \
                       scummvm \
                       sdlquake \
+                      sdrshell \
                       sensors-applet \
                       setserial \
                       shisensho \
@@ -307,6 +330,7 @@ do
                       subversion \
                       sugar \
                       sylpheed \
+                      sysstat \
                       systray \
                       task-beagleboard-demo \
                       task-gpe-pim \
@@ -318,6 +342,7 @@ do
                       task-xqtlauncher \
                       tasks \
                       texinfo \
+                      tgt \
                       thttpd \
                       thunar \
                       tightvnc \
@@ -333,6 +358,7 @@ do
                       usbutils \
                       usbview \
                       ushare \
+                      vdr \
                       viking \
                       vlc \
                       vpnc \
@@ -344,7 +370,9 @@ do
                       wscan \
                       wt \
                       wt3 \
+                      wvdial \
                       x11vnc \
+                      xclip \
                       xf86-input-evdev \
                       xf86-input-evtouch \
                       xf86-input-keyboard \

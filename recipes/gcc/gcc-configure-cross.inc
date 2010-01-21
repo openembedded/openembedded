@@ -36,9 +36,6 @@ do_stage_append () {
 			${STAGING_INCDIR}/
 	fi
 
-	# We use libiberty from binutils
-	rm -f ${CROSS_DIR}/lib/libiberty.a
-
 	# We probably don't need these
 	rmdir ${CROSS_DIR}/include || :
 

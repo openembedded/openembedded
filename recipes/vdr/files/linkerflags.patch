@@ -1,0 +1,186 @@
+Index: vdr-1.7.10/Makefile
+===================================================================
+--- vdr-1.7.10.orig/Makefile	2010-01-07 22:01:54.000000000 +0100
++++ vdr-1.7.10/Makefile	2010-01-07 22:02:32.167165564 +0100
+@@ -20,7 +20,7 @@
+ MANDIR   = $(PREFIX)/share/man
+ BINDIR   = $(PREFIX)/bin
+ LOCDIR   = ./locale
+-LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig
++LIBS     = -ljpeg -lpthread -ldl -lcap -lrt -lfreetype -lfontconfig ${LDFLAGS}
+ INCLUDES = ${CFLAGS}
+ 
+ PLUGINDIR= ./PLUGINS
+Index: vdr-1.7.10/PLUGINS/src/hello/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/hello/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/hello/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -19,6 +19,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -95,7 +96,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+Index: vdr-1.7.10/PLUGINS/src/osddemo/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/osddemo/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/osddemo/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -17,6 +17,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -68,7 +69,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+Index: vdr-1.7.10/PLUGINS/src/pictures/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/pictures/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/pictures/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -19,6 +19,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -95,7 +96,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+Index: vdr-1.7.10/PLUGINS/src/servicedemo/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/servicedemo/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/servicedemo/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -19,6 +19,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -70,11 +71,11 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN1).so: $(PLUGIN1).o
+-	$(CXX) $(CXXFLAGS) -shared $(PLUGIN1).o -o $@
++	$(CXX) $(CXXFLAGS) -shared $(PLUGIN1).o -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ libvdr-$(PLUGIN2).so: $(PLUGIN2).o
+-	$(CXX) $(CXXFLAGS) -shared $(PLUGIN2).o -o $@
++	$(CXX) $(CXXFLAGS) -shared $(PLUGIN2).o -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+Index: vdr-1.7.10/PLUGINS/src/skincurses/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/skincurses/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/skincurses/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -19,6 +19,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -95,7 +96,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -lncursesw -o $@
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -lncursesw -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+Index: vdr-1.7.10/PLUGINS/src/sky/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/sky/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/sky/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -17,6 +17,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -68,7 +69,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+Index: vdr-1.7.10/PLUGINS/src/status/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/status/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/status/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -17,6 +17,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -68,7 +69,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+Index: vdr-1.7.10/PLUGINS/src/svdrpdemo/Makefile
+===================================================================
+--- vdr-1.7.10.orig/PLUGINS/src/svdrpdemo/Makefile	2010-01-07 22:01:07.000000000 +0100
++++ vdr-1.7.10/PLUGINS/src/svdrpdemo/Makefile	2010-01-07 22:02:02.240496954 +0100
+@@ -17,6 +17,7 @@
+ 
+ CXX      ?= g++
+ CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
++LIBS     ?= ${LDFLAGS}
+ 
+ ### The directory environment:
+ 
+@@ -68,7 +69,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@ $(LIBS)
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean

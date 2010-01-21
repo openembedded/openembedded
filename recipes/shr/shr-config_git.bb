@@ -5,7 +5,7 @@ LICENSE  = "GPLv2"
 DEPENDS = "vala-native elementary libeflvala"
 SECTION = "x11/application"
 PV = "0.0.2+gitr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 EXTRA_OECONF="--enable-vapidir=${STAGING_DATADIR}/vala/vapi"
 inherit autotools

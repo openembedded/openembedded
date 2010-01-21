@@ -46,7 +46,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r13"
+PR = "r14"
 
 PARALLEL_MAKE = ""
 
@@ -60,8 +60,7 @@ FILES_mencoder = "${bindir}/mencoder"
 inherit autotools pkgconfig
 
 EXTRA_OECONF = " \
-        --prefix=/usr \
-	--mandir=${mandir} \
+        --prefix=${prefix} \
         --target=${TARGET_SYS} \
 	\
 	--enable-mencoder \

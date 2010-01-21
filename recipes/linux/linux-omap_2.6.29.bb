@@ -169,6 +169,10 @@ SRC_URI_append = " \
            file://cache/copy-page-tweak.patch;patch=1 \
            file://2.6.29_relocation_1.patch;patch=1 \
            file://2.6.29_relocation_2.patch;patch=1 \
+           file://smsc/smsc911x-1.patch;patch=1 \
+           file://smsc/smsc911x-2.patch;patch=1 \
+           file://smsc/smsc911x-3.patch;patch=1 \
+           file://smsc/smsc911x-4.patch;patch=1 \
 "
 
 

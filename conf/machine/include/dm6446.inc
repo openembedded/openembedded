@@ -1,0 +1,13 @@
+SOC_FAMILY = "dm6446"
+
+# TI DVSDK stuff:
+DSPCFG            ?= "DM6446GEMSHMEM"
+DSPLINKDSPCFG     ?= "DM6446GEMSHMEM"
+DSPLINKGPPOS      ?= "MVL5G"
+DSPLINKPLATFORM   ?= "DAVINCI"
+DSPLINKSOC        ?= "DM6446"
+DSPPOWERSOC       ?= "DM6446"
+GPPOS             ?= "LINUX_GCC"
+PLATFORM          ?= "dm6446"
+XDC_PLATFORM      ?= "ti.platforms.evmDM6446"
+

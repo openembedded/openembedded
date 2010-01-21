@@ -1,0 +1,12 @@
+diff -rup ImageMagick-6.3.5.orig/magick/delegate.c ImageMagick-6.3.5/magick/delegate.c
+--- ImageMagick-6.3.5.orig/magick/delegate.c	2009-10-15 18:40:06.000000000 +0200
++++ ImageMagick-6.3.5/magick/delegate.c	2009-10-15 18:23:10.000000000 +0200
+@@ -769,7 +769,7 @@ static void CopyDelegateFile(const char 
+   /*
+     Copy source file to destination.
+   */
+-  destination_file=open(destination,O_WRONLY | O_BINARY | O_CREAT);
++  destination_file=open(destination, O_BINARY | O_CREAT, O_WRONLY);
+   if (destination_file == -1)
+     return;
+   source_file=open(source,O_RDONLY | O_BINARY);

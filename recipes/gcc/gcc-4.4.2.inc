@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r0"
+INC_PR = "r2"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -33,4 +33,7 @@ EXTRA_OECONF_BASE = " --enable-libssp \
 		      --disable-bootstrap --disable-libgomp \
 		      --disable-libmudflap"
 
-EXTRA_OECONF_append_linux-uclibc = " ${@base_contains('TARGET_ARCH', 'powerpc', '--disable-decimal-float --without-long-double-128', '',d)}"
+EXTRA_OECONF_append_linux-uclibc = " --disable-decimal-float "
+EXTRA_OECONF_append_linux-uclibceabi = " --disable-decimal-float "
+EXTRA_OECONF_append_linux-uclibcspe = " --disable-decimal-float "
+EXTRA_OECONF_append_linux-uclibc = " ${@base_contains('TARGET_ARCH', 'powerpc', '--without-long-double-128', '',d)}"

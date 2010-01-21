@@ -2,7 +2,7 @@
 Name=Navit
 Comment=GPS Navigation
 Exec=navit
-Icon=navit.png
+Icon=navit
 Terminal=false
 Type=Application
 Categories=GTK;

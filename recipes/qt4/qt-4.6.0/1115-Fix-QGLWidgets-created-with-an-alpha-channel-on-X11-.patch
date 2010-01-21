@@ -1,0 +1,30 @@
+From 6b29466ed7b5328ee61c1751bd4efb72f70946d3 Mon Sep 17 00:00:00 2001
+From: Tom Cooksey <thomas.cooksey@nokia.com>
+Date: Tue, 15 Dec 2009 17:26:37 +0100
+Subject: [PATCH 1115/1244] Fix QGLWidgets created with an alpha channel on X11/EGL
+
+If the QGLWidget's QGLFormat says it should have an alpha
+channel, try to find an ARGB Visual.
+
+Reviewed-By: Trond
+Task-number: QT-2602
+---
+ src/opengl/qgl_x11egl.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/opengl/qgl_x11egl.cpp b/src/opengl/qgl_x11egl.cpp
+index b10e7e9..19026b3 100644
+--- a/src/opengl/qgl_x11egl.cpp
++++ b/src/opengl/qgl_x11egl.cpp
+@@ -336,7 +336,7 @@ void QGLWidget::setContext(QGLContext *context, const QGLContext* shareContext,
+     // If the application has set WA_TranslucentBackground and not explicitly set
+     // the alpha buffer size to zero, modify the format so it have an alpha channel
+     QGLFormat& fmt = d->glcx->d_func()->glFormat;
+-    const bool tryArgbVisual = testAttribute(Qt::WA_TranslucentBackground);
++    const bool tryArgbVisual = testAttribute(Qt::WA_TranslucentBackground) || fmt.alpha();
+     if (tryArgbVisual && fmt.alphaBufferSize() == -1)
+         fmt.setAlphaBufferSize(1);
+ 
+-- 
+1.6.5
+

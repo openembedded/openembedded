@@ -1,0 +1,66 @@
+From 8dd9e60b445d8e002fdf3b4da5199a54ac87c422 Mon Sep 17 00:00:00 2001
+From: Carsten V. Munk <carsten.munk@gmail.com>
+Date: Thu, 6 Aug 2009 09:24:12 +0000
+Subject: [PATCH 01/13] Mer: keymappings change
+
+---
+ arch/arm/mach-s3c6410/mach-smdk6410.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/mach-s3c6410/mach-smdk6410.c b/arch/arm/mach-s3c6410/mach-smdk6410.c
+index 74dadd1..bdcfc59 100644
+--- a/arch/arm/mach-s3c6410/mach-smdk6410.c
++++ b/arch/arm/mach-s3c6410/mach-smdk6410.c
+@@ -299,21 +299,21 @@ static struct gpio_keys_button hhmid_buttons[] = {
+ #if defined (CONFIG_LCD_4)
+         {
+                 .gpio           = S3C_GPN2,			//32*16 + 2
+-                .code		= KEY_PAGEDOWN,
++                .code		= 196,
+                 .desc           = "Button 0",
+                 .active_low     = 1,
+                 .debounce_interval = 5,
+         },
+ 	{
+                 .gpio           = S3C_GPN12,
+-                .code		= KEY_PAGEUP,
++                .code		= 197,
+                 .desc           = "Button 3",
+                 .active_low     = 1,
+                 .debounce_interval = 5,
+         },
+ 	{
+                 .gpio           = S3C_GPN15,
+-                .code		= KEY_LEFTALT,
++                .code		= 195,
+                 .desc           = "Button 4",
+                 .active_low     = 1,
+                 .debounce_interval = 5,
+@@ -321,21 +321,21 @@ static struct gpio_keys_button hhmid_buttons[] = {
+ #else
+ 	{
+                 .gpio           = S3C_GPN4,
+-                .code		= KEY_PAGEUP,
++                .code		= KEY_F7,
+                 .desc           = "Button 0",
+                 .active_low     = 1,
+                 .debounce_interval = 5,
+         },
+ 	{
+                 .gpio           = S3C_GPN3,
+-                .code		= KEY_PAGEDOWN,
++                .code		= KEY_F8,
+                 .desc           = "Button 1",
+                 .active_low     = 1,
+                 .debounce_interval = 5,
+         },
+         {
+                 .gpio           = S3C_GPN2,			//32*16 + 2
+-                .code		= KEY_LEFTALT,
++                .code		= KEY_F6,
+                 .desc           = "Button 2",
+                 .active_low     = 1,
+                 .debounce_interval = 5,
+-- 
+1.6.2.4
+

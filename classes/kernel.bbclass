@@ -95,25 +95,34 @@ kernel_do_compile() {
 kernel_do_compile[depends] = "${INITRAMFS_TASK}"
 
 kernel_do_stage() {
-	ASMDIR=`readlink include/asm`
+	if [ -e include/asm ] ; then
+		# This link is generated only in kernel before 2.6.33-rc1, don't stage it for newer kernels
+		ASMDIR=`readlink include/asm`
 
-	mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
-	cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
+		cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+	fi
 	# Kernel 2.6.27 moved headers from includes/asm-${ARCH} to arch/${ARCH}/include/asm	
 	if [ -e arch/${ARCH}/include/asm/ ] ; then 
-		cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		if [ -e include/asm ] ; then
+			cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		fi
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}/include
 		cp -fR arch/${ARCH}/* ${STAGING_KERNEL_DIR}/arch/${ARCH}/	
 
 	# Check for arch/x86 on i386
 	elif [ -d arch/x86/include/asm/ ]; then
-		cp -fR arch/x86/include/asm/* ${STAGING_KERNEL_DIR}/include/asm-x86/
+		if [ -e include/asm ] ; then
+			cp -fR arch/x86/include/asm/* ${STAGING_KERNEL_DIR}/include/asm-x86/
+		fi
 		install -d ${STAGING_KERNEL_DIR}/arch/x86/include
 		cp -fR arch/x86/* ${STAGING_KERNEL_DIR}/arch/x86/
 	fi
 
-	rm -f ${STAGING_KERNEL_DIR}/include/asm
-	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
+	if [ -e include/asm ] ; then
+		rm -f ${STAGING_KERNEL_DIR}/include/asm
+		ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
+	fi
 
 	mkdir -p ${STAGING_KERNEL_DIR}/include/asm-generic
 	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
@@ -201,8 +210,12 @@ kernel_do_install() {
 kernel_do_configure() {
 	yes '' | oe_runmake oldconfig
 	if [ ! -z "${INITRAMFS_IMAGE}" ]; then
-		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" initramfs.cpio.gz
-	fi 
+		for img in cpio.gz cpio.lzo cpio.lzma; do
+		if [ -e "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.$img" ]; then
+			cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.$img" initramfs.$img
+		fi
+		done
+	fi
 }
 
 do_menuconfig() {
@@ -527,8 +540,8 @@ do_deploy() {
 	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
 
-	if [ -d "${D}/lib" ]; then
-		fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz -C ${D} lib
+	if [ -d "${PKGD}/lib" ]; then
+		fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz -C ${PKGD} lib
 	fi
 
 	cd ${DEPLOY_DIR_IMAGE}
@@ -540,4 +553,4 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 do_deploy[depends] += "fakeroot-native:do_populate_staging"
 
-addtask deploy before do_package after do_install
+addtask deploy before do_build after do_package

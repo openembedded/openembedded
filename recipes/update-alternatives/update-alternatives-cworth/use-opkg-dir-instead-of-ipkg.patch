@@ -1,0 +1,11 @@
+--- C.orig/update-alternatives	2010-01-08 15:40:20.000000000 +0100
++++ C/update-alternatives	2010-01-08 15:40:47.000000000 +0100
+@@ -21,7 +21,7 @@
+ set -e
+ 
+ # admin dir
+-ad="$IPKG_OFFLINE_ROOT/usr/lib/ipkg/alternatives"
++ad="$IPKG_OFFLINE_ROOT/usr/lib/opkg/alternatives"
+ 
+ usage() {
+ 	echo "update-alternatives: $*

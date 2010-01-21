@@ -1,7 +1,7 @@
 DESCRIPTION = "EFL FSO wrapper library"
 SECTION = "e/libs"
 LICENSE = "GPLv2"
-DEPENDS = "ecore edbus"
+DEPENDS = "ecore edbus efreet"
 PV = "0.0.1+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.om.vptt.ch/trunk/;proto=http;module=libefso"

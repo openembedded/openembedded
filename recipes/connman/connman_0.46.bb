@@ -1,6 +1,5 @@
 require connman.inc
-
-PR = "r1"
+PR = "r5"
 
 EXTRA_OECONF += "\
   --disable-gtk-doc \
@@ -15,6 +14,7 @@ EXTRA_OECONF += "\
   --enable-dhclient \
   --enable-resolvconf \
   --enable-dnsproxy \
+  --enable-tools \
   --disable-novatel \
   --disable-huawei \
   --disable-hso \
@@ -32,6 +32,7 @@ EXTRA_OECONF += "\
 
 SRC_URI  = "\
   http://www.kernel.org/pub/linux/network/connman/connman-${PV}.tar.gz \
+  file://link-against-libnl2.patch;patch=1 \
+  file://no_system_user_perms.patch;patch=1 \
   file://connman \
 "
-

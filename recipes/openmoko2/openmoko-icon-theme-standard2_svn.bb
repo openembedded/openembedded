@@ -1,12 +1,17 @@
 DESCRIPTION = "Standard Gtk+ icon theme for the Openmoko framework"
+HOMEPAGE = "http://www.openmoko.org"
 SECTION = "openmoko/base"
-PV = "0.1.0+svnr${SRCPV}"
-PR = "r1"
+LICENSE = "GPL"
 
-inherit openmoko2
+PV = "0.1.0+svnr${SRCPV}"
+PR = "r3"
+
+inherit autotools pkgconfig
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target/OM-2007.2/artwork/;module=icons;proto=http"
 S = "${WORKDIR}/icons"
+
+FILES_${PN} += "${datadir}/icons"
 
 pkg_postinst_${PN} () {
     if [ "x$D" != "x" ]; then

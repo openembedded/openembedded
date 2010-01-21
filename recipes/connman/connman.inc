@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SECTION = "libs/network"
 LICENSE = "GPL"
 # we need to define the depends here, the dynamic stuff is too late
-DEPENDS  = "libnl wpa-supplicant dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
+DEPENDS  = "libnl2 wpa-supplicant dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
 
 EXTRA_OECONF += "\
     ac_cv_path_WPASUPPLICANT=/usr/sbin/wpa_supplicant \
@@ -54,7 +54,7 @@ python populate_packages_prepend() {
 
 PACKAGES_DYNAMIC = "${PN}-plugin-*"
 
-PACKAGES += "${PN}-scripts"
+PACKAGES += "${PN}-scripts ${PN}-test-utils"
 
 FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
             ${sysconfdir} ${sharedstatedir} ${localstatedir} \
@@ -63,6 +63,8 @@ FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
             ${datadir}/idl ${datadir}/omf ${datadir}/sounds \
             ${libdir}/bonobo/servers \
             ${datadir}/dbus-1/system-services/*"
+
+FILES_${PN}-test-utils += "${libdir}/connman/test/*"
 
 FILES_${PN}-scripts += "${libdir}/connman/scripts"
 FILES_${PN}-dbg += "${libdir}/connman/*/.debug"

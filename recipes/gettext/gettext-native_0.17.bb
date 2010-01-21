@@ -9,7 +9,7 @@ inherit native
 S = "${WORKDIR}/gettext-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gettext-${PV}"
 
-M4 = "\
+M4_FILES = "\
 ansi-c++.m4 \
 codeset.m4 \
 gettext.m4 \
@@ -43,7 +43,7 @@ lib-prefix.m4 \
 "
 
 do_stage_append() {
-	for i in ${M4}; do
+	for i in ${M4_FILES}; do
 		src="gettext-runtime/m4/$i"
 		if [ ! -f $src ]; then
 			src="gettext-tools/m4/$i"

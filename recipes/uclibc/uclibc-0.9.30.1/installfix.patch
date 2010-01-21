@@ -1,0 +1,33 @@
+Index: uClibc-0.9.30.1/Makefile.in
+===================================================================
+--- uClibc-0.9.30.1.orig/Makefile.in	2009-11-20 22:51:12.544261346 +0100
++++ uClibc-0.9.30.1/Makefile.in	2009-11-20 22:52:59.980922849 +0100
+@@ -369,7 +369,7 @@
+ endif
+ 
+ # Installs development library links.
+-install_dev: install_headers all
++install_dev: install_headers install_runtime
+ 	$(INSTALL) -d $(PREFIX)$(DEVEL_PREFIX)lib
+ 	-$(INSTALL) -m 644 lib/*.[ao] $(PREFIX)$(DEVEL_PREFIX)lib/
+ ifeq ($(HAVE_SHARED),y)
+Index: uClibc-0.9.30.1/utils/Makefile.in
+===================================================================
+--- uClibc-0.9.30.1.orig/utils/Makefile.in	2009-11-20 22:54:00.352165960 +0100
++++ uClibc-0.9.30.1/utils/Makefile.in	2009-11-20 22:54:47.754245713 +0100
+@@ -89,12 +89,12 @@
+ utils_install: utils
+ 	#$(Q)$(INSTALL) -D -m 755 $(utils_OUT)/readelf $(PREFIX)$(RUNTIME_PREFIX)usr/bin/readelf
+ ifeq ($(HAVE_SHARED),y)
+-	$(Q)$(INSTALL) -D -m 755 $(utils_OUT)/ldd $(PREFIX)$(RUNTIME_PREFIX)usr/bin/ldd
++	$(Q)$(INSTALL) -D -m 755 $(utils_OUT)/ldd $(PREFIX)$(RUNTIME_PREFIX)bin/ldd
+ 	$(Q)$(INSTALL) -D -m 755 $(utils_OUT)/ldconfig $(PREFIX)$(RUNTIME_PREFIX)sbin/ldconfig
+ endif
+ ifeq ($(UCLIBC_HAS_LOCALE),y)
+-	$(Q)$(INSTALL) -D -m 755 $(utils_OUT)/iconv $(PREFIX)$(RUNTIME_PREFIX)usr/bin/iconv
+-	$(Q)$(INSTALL) -m 755 $(utils_OUT)/locale $(PREFIX)$(RUNTIME_PREFIX)usr/bin/locale
++	$(Q)$(INSTALL) -D -m 755 $(utils_OUT)/iconv $(PREFIX)$(RUNTIME_PREFIX)bin/iconv
++	$(Q)$(INSTALL) -m 755 $(utils_OUT)/locale $(PREFIX)$(RUNTIME_PREFIX)bin/locale
+ endif
+ 
+ objclean-y += utils_clean

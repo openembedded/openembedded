@@ -20,7 +20,8 @@ SRC_URI_append_htcuniversal = " file://keymap-2.6.map"
 SRC_URI_append_qemux86      = " file://keymap-2.6.map"
 SRC_URI_append_omap3-pandora = " file://keymap-extension-2.6.map"
 
-SRC_URI_append_jornada6xx   = " file://keymap-620lx-660lx \
+SRC_URI_append_jornada6xx   = " file://keymap-uk-620-660.map \
+				file://keymap-dr_en.map \
 				file://keymap-br.map \
 				file://keymap-de.map \
 				file://keymap-sp.map \

@@ -1,4 +1,5 @@
 DESCRIPTION ?= "Browser made by mozilla"
+DEPENDS += "alsa-lib"
 SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
 PARALLEL_MAKE = ""

@@ -9,6 +9,7 @@ SRC_URI += " file://scummvm.desktop \
 	file://no-strip.patch;patch=1"
 
 SRC_URI_append_openmoko = " file://openmoko-scummvm "
+SRC_URI_append_shr = " file://openmoko-scummvm "
 
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"

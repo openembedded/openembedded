@@ -1,0 +1,36 @@
+From 62fac41edfff5e42e4c3308376cb08e5d9a10afe Mon Sep 17 00:00:00 2001
+From: Rhys Weatherley <rhys.weatherley@nokia.com>
+Date: Wed, 9 Dec 2009 09:10:11 +1000
+Subject: [PATCH 0993/1244] Fix upside down PVR compressed textures.
+
+The "vertical flip" flag in the PVR format is the inverse of the
+"inverted y" state that we use in Qt.
+
+Reviewed-by: trustme
+---
+ src/opengl/qgl.cpp |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/src/opengl/qgl.cpp b/src/opengl/qgl.cpp
+index 967ba48..8003a29 100644
+--- a/src/opengl/qgl.cpp
++++ b/src/opengl/qgl.cpp
+@@ -5363,11 +5363,12 @@ QSize QGLTexture::bindCompressedTexturePVR(const char *buf, int len)
+     // Restore the default pixel alignment for later texture uploads.
+     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+ 
+-    // Set the invert flag for the texture.
++    // Set the invert flag for the texture.  The "vertical flip"
++    // flag in PVR is the opposite sense to our sense of inversion.
+     if ((pvrHeader->flags & PVR_VERTICAL_FLIP) != 0)
+-        options |= QGLContext::InvertedYBindOption;
+-    else
+         options &= ~QGLContext::InvertedYBindOption;
++    else
++        options |= QGLContext::InvertedYBindOption;
+ 
+     return QSize(pvrHeader->width, pvrHeader->height);
+ }
+-- 
+1.6.5
+

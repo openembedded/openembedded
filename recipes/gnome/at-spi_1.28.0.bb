@@ -6,7 +6,15 @@ LICENSE = "LGPL"
 DEPENDS = "gtk+ atk libbonobo orbit2 orbit2-native"
 RDEPENDS_${PN} = "libgail-gnome gtk-module-gail"
 
+PR = "r1"
+
 inherit gnome
+
+do_configure_prepend () {
+	sed -i "s|ORBIT_IDL=.*|ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2|" ${S}/configure.in
+	sed -i "s|BONOBO_ACTIVATION_IDL_DIR=.*|BONOBO_ACTIVATION_IDL_DIR=${STAGING_DATADIR}/idl/bonobo-activation-2.0|" ${S}/configure.in
+	sed -i "s|LIBBONOBO_IDL_DIR=.*|LIBBONOBO_IDL_DIR=${STAGING_DATADIR}/idl//bonobo-2.0|" ${S}/configure.in
+}
 
 do_stage () {
 	autotools_stage_all

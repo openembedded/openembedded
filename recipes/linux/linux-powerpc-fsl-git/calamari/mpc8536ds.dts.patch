@@ -1,0 +1,67 @@
+*** a/arch/powerpc/boot/dts/mpc8536ds.dts.orig	2009-12-17 12:12:40.000000000 +0100
+--- b/arch/powerpc/boot/dts/mpc8536ds.dts	2009-12-17 12:15:00.000000000 +0100
+***************
+*** 45,50 ****
+--- 45,106 ----
+  		reg = <00000000 00000000>;	// Filled by U-Boot
+  	};
+  
++ 	localbus@ffe05000 {
++ 		#address-cells = <2>;
++ 		#size-cells = <1>;
++ 		compatible = "fsl,mpc8536-elbc", "fsl,elbc", "simple-bus";
++ 		reg = <0xffe05000 0x1000>;
++ 		interrupts = <19 2>;
++ 		interrupt-parent = <&mpic>;
++ 
++ 		ranges = <0x0 0x0 0xe8000000 0x08000000
++ 			  0x2 0x0 0xffa00000 0x00040000
++ 			  0x4 0x0 0xffa40000 0x00040000
++ 			  0x5 0x0 0xffa80000 0x00040000
++ 			  0x6 0x0 0xffac0000 0x00040000
++ 			  >;
++ 
++ 		flash@0,0 {
++ 			compatible = "cfi-flash";
++                         bank-width = <2>;
++                         device-width = <1>;
++ 
++ 			reg = <0 0 0x08000000>;
++ 			#address-cells = <1>;
++ 			#size-cells = <1>;
++ 		};
++ 		nand@2,0 {
++ 			#address-cells = <1>;
++ 			#size-cells = <1>;
++ 			compatible = "fsl,mpc8536-fcm-nand",
++ 				     "fsl,elbc-fcm-nand";
++ 			reg = <0x2 0x0 0x40000>;
++ 		};
++ 
++ 		nand@4,0 {
++ 			compatible = "fsl,mpc8536-fcm-nand",
++ 				     "fsl,elbc-fcm-nand";
++ 			reg = <0x4 0x0 0x40000>;
++ 		};
++ 
++ 		nand@5,0 {
++ 			compatible = "fsl,mpc8536-fcm-nand",
++ 				     "fsl,elbc-fcm-nand";
++ 			reg = <0x5 0x0 0x40000>;
++ 		};
++ 
++ 		nand@6,0 {
++ 			compatible = "fsl,mpc8536-fcm-nand",
++ 				     "fsl,elbc-fcm-nand";
++ 			reg = <0x6 0x0 0x40000>;
++ 		};
++ 
++ 		board-control@3,0 {
++ 			compatible = "fsl,mpc8536ds-fpga-pixis";
++ 			reg = <0x3 0x0 0x8000>;
++ 		};
++ 	};
++ 
+  	soc@ffe00000 {
+  		#address-cells = <1>;
+  		#size-cells = <1>;

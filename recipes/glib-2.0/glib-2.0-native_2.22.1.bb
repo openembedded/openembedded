@@ -1,6 +1,5 @@
 require glib-2.0_${PV}.bb
 
-FILESPATH = "${FILE_DIRNAME}/glib-2.0-${PV}:${FILE_DIRNAME}/files"
 DEPENDS = "gettext-native gtk-doc-native"
 EXTRA_OECONF = ""
 

@@ -5,6 +5,7 @@ FILESPATHPKG =. "qt4-x11-free-${PV}:qt4-x11-free:"
 QT_GLFLAGS = "-opengl es1 -openvg" 
 
 require qt4-x11-free.inc
+PROVIDES = "qt4-x11-free"
 LICENSE = "LGPLv2.1 GPLv3"
 PR = "${INC_PR}.0+gitr${SRCREV}"
 

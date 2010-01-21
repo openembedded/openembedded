@@ -1,0 +1,26 @@
+--- old/arch/arm/mach-davinci/da850.c	2010-01-11 15:02:02.000000000 +0000
++++ new/arch/arm/mach-davinci/da850.c	2010-01-11 15:00:28.000000000 +0000
+@@ -974,6 +974,15 @@
+ 	.cvdd_max       = 1375000,
+ };
+ 
++static const struct da850_opp da850_opp_408 = {
++	.freq           = 408000,
++	.prediv         = 1,
++	.mult           = 17,
++	.postdiv        = 1,
++	.cvdd_min       = 1300000,
++	.cvdd_max       = 1325000,
++};
++
+ static const struct da850_opp da850_opp_300 = {
+ 	.freq		= 300000,
+ 	.prediv		= 1,
+@@ -1009,6 +1018,7 @@
+ 
+ static struct cpufreq_frequency_table da850_freq_table[] = {
+ 	OPP(456),
++	OPP(408),
+ 	OPP(300),
+ 	OPP(200),
+ 	OPP(96),

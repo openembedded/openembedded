@@ -20,6 +20,8 @@ inherit autotools distutils-base pkgconfig
 export BUILD_SYS
 export HOST_SYS
 
+export GOBJECT_INTROSPECTION_CFLAGS="-pthread -I${STAGING_INCDIR}/gobject-introspection-1.0 -I${STAGING_INCDIR}/glib-2.0 -I${STAGING_LIBDIR}/glib-2.0/include"
+
 do_stage() {
 	autotools_stage_all
 	install -d ${STAGING_LIBDIR}/../share/pygobject/

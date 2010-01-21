@@ -38,4 +38,4 @@ CONFFILES_${PN} = "${sysconfdir}/pptpd.conf \
                    ${sysconfdir}/ppp/options.pptpd"
 
 INITSCRIPT_NAME = "pptpd"
-INITSCRIPT_PARAMS = "defaults 92 08"
+INITSCRIPT_PARAMS = "defaults 92 8"

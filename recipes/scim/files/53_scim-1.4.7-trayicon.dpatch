@@ -1,0 +1,279 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 53_scim-1.4.7-trayicon.dpatch by Ikuya Awashiro <ikuya@fruitsbasket.info>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Use better tray icon
+## DP: https://bugzilla.redhat.com/show_bug.cgi?id=447848
+
+@DPATCH@
+diff -urNad scim-1.4.9~/extras/panel/scim_panel_gtk.cpp scim-1.4.9/extras/panel/scim_panel_gtk.cpp
+--- scim-1.4.9~/extras/panel/scim_panel_gtk.cpp	2008-11-02 06:43:13.000000000 +0000
++++ scim-1.4.9/extras/panel/scim_panel_gtk.cpp	2009-07-20 11:54:40.000000000 +0000
+@@ -60,7 +60,7 @@
+ #include "scimstringview.h"
+ 
+ #if ENABLE_TRAY_ICON
+-  #include "scimtrayicon.h"
++//  #include "scimtrayicon.h"
+ #endif
+ 
+ using namespace scim;
+@@ -276,6 +276,13 @@
+ #if ENABLE_TRAY_ICON
+ static void       ui_tray_icon_destroy_cb              (GtkObject      *object,
+                                                         gpointer        user_data);
++static void       ui_tray_icon_popup_menu_cb           (GtkStatusIcon  *status_icon,
++                                                        guint           button, 
++                                                        guint           activate_time,
++                                                        gpointer        user_data);
++
++static void       ui_tray_icon_activate_cb             (GtkStatusIcon  *status_icon,
++                                                        gpointer        user_data);
+ #endif
+ 
+ // Client Property Callback
+@@ -399,9 +406,9 @@
+ static PangoFontDescription *_default_font_desc        = 0;
+ 
+ #if ENABLE_TRAY_ICON
+-static ScimTrayIcon      *_tray_icon                   = 0;
+-static GtkWidget         *_tray_icon_factory_button    = 0;
+-static gulong             _tray_icon_destroy_signal_id = 0;
++static GtkStatusIcon     *_tray_icon                   = 0;
++// static GtkWidget         *_tray_icon_factory_button    = 0;
++// static gulong             _tray_icon_destroy_signal_id = 0;
+ #endif
+ 
+ static gboolean           _input_window_draging        = FALSE;
+@@ -647,9 +654,9 @@
+ 
+ #if ENABLE_TRAY_ICON
+     if (_tray_icon) {
+-        g_signal_handler_disconnect (G_OBJECT (_tray_icon),
+-                                     _tray_icon_destroy_signal_id);
+-        gtk_widget_destroy (GTK_WIDGET (_tray_icon));
++        // g_signal_handler_disconnect (G_OBJECT (_tray_icon),
++        //                             _tray_icon_destroy_signal_id);
++        g_object_unref (_tray_icon);
+     }
+     _tray_icon = 0;
+ #endif
+@@ -1312,9 +1319,9 @@
+         }
+ 
+ #if ENABLE_TRAY_ICON
+-        if (_tray_icon) {
+-            gtk_window_set_screen (GTK_WINDOW (_tray_icon), screen);
+-        }
++        // if (_tray_icon) {
++        //     gtk_window_set_screen (GTK_WINDOW (_tray_icon), screen);
++        // }
+ #endif
+ 
+         if (_help_dialog) {
+@@ -1337,65 +1344,75 @@
+ #endif
+ 
+ #if ENABLE_TRAY_ICON
+-static gboolean
+-ui_tray_icon_expose_event_cb (GtkWidget *widget, GdkEventExpose *event)
+-{
+-    gdk_window_clear_area (widget->window, event->area.x, event->area.y,
+-                           event->area.width, event->area.height);
+-    return FALSE;
+-}
+-
+-static void
+-ui_tray_icon_style_set_cb (GtkWidget *widget, GtkStyle *previous_style)
+-{
+-    gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
+-}
+-
+-static void
+-ui_tray_icon_realize_cb (GtkWidget *widget)
+-{
+-    if (GTK_WIDGET_NO_WINDOW (widget) || GTK_WIDGET_APP_PAINTABLE (widget))
+-        return;
+-
+-    gtk_widget_set_app_paintable (widget, TRUE);
+-    gtk_widget_set_double_buffered (widget, FALSE);
+-    gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
+-    g_signal_connect (widget, "expose_event",
+-                      G_CALLBACK (ui_tray_icon_expose_event_cb), NULL);
+-    g_signal_connect_after (widget, "style_set",
+-                            G_CALLBACK (ui_tray_icon_style_set_cb), NULL);
+-}
++// static gboolean
++// ui_tray_icon_expose_event_cb (GtkWidget *widget, GdkEventExpose *event)
++// {
++//     gdk_window_clear_area (widget->window, event->area.x, event->area.y,
++//                            event->area.width, event->area.height);
++//     return FALSE;
++// }
++// 
++// static void
++// ui_tray_icon_style_set_cb (GtkWidget *widget, GtkStyle *previous_style)
++// {
++//     gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
++// }
++// 
++// static void
++// ui_tray_icon_realize_cb (GtkWidget *widget)
++// {
++//     if (GTK_WIDGET_NO_WINDOW (widget) || GTK_WIDGET_APP_PAINTABLE (widget))
++//         return;
++// 
++//     gtk_widget_set_app_paintable (widget, TRUE);
++//     gtk_widget_set_double_buffered (widget, FALSE);
++//     gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
++//     g_signal_connect (widget, "expose_event",
++//                       G_CALLBACK (ui_tray_icon_expose_event_cb), NULL);
++//     g_signal_connect_after (widget, "style_set",
++//                             G_CALLBACK (ui_tray_icon_style_set_cb), NULL);
++// }
+ 
+ static gboolean
+ ui_create_tray_icon_when_idle (gpointer data)
+ {
+     GtkWidget *image;
+ 
+-    _tray_icon = scim_tray_icon_new ("SCIM Tray Icon");
+-    g_signal_connect (G_OBJECT (_tray_icon), "realize",
+-                      G_CALLBACK (ui_tray_icon_realize_cb), NULL);
++    _tray_icon = gtk_status_icon_new_from_file (SCIM_KEYBOARD_ICON_FILE);
++    // g_signal_connect (G_OBJECT (_tray_icon), "realize",
++    //                   G_CALLBACK (ui_tray_icon_realize_cb), NULL);
+ 
+-    _tray_icon_destroy_signal_id = 
+-    g_signal_connect (G_OBJECT (_tray_icon), "destroy",
+-                      G_CALLBACK (ui_tray_icon_destroy_cb),
+-                      0);
++    // _tray_icon_destroy_signal_id = 
++    // g_signal_connect (G_OBJECT (_tray_icon), "destroy",
++    //                   G_CALLBACK (ui_tray_icon_destroy_cb),
++    //                   0);
+ 
+-    image = ui_create_icon (SCIM_KEYBOARD_ICON_FILE,
+-                            NULL,
+-                            TRAY_ICON_SIZE,
+-                            TRAY_ICON_SIZE,
+-                            true);
++    // image = ui_create_icon (SCIM_KEYBOARD_ICON_FILE,
++    //                         NULL,
++    //                         TRAY_ICON_SIZE,
++    //                         TRAY_ICON_SIZE,
++    //                         true);
+ 
+-    _tray_icon_factory_button = gtk_event_box_new ();
+-    g_signal_connect (G_OBJECT (_tray_icon_factory_button), "realize",
+-                      G_CALLBACK (ui_tray_icon_realize_cb), NULL);
+-    gtk_container_add (GTK_CONTAINER (_tray_icon_factory_button), image);
+-    gtk_container_add (GTK_CONTAINER (_tray_icon), _tray_icon_factory_button);
+-    g_signal_connect (G_OBJECT (_tray_icon_factory_button), "button-release-event",
+-                      G_CALLBACK (ui_factory_button_click_cb),
++    // _tray_icon_factory_button = gtk_event_box_new ();
++    // g_signal_connect (G_OBJECT (_tray_icon_factory_button), "realize",
++    //                   G_CALLBACK (ui_tray_icon_realize_cb), NULL);
++    // gtk_container_add (GTK_CONTAINER (_tray_icon_factory_button), image);
++    // gtk_container_add (GTK_CONTAINER (_tray_icon), _tray_icon_factory_button);
++
++    
++    // g_signal_connect (G_OBJECT (_tray_icon_factory_button), "button-release-event",
++    //                   G_CALLBACK (ui_factory_button_click_cb),
++    //                   0);
++    
++    g_signal_connect (G_OBJECT (_tray_icon), "popup-menu",
++                      G_CALLBACK (ui_tray_icon_popup_menu_cb),
++                      0);
++    
++    g_signal_connect (G_OBJECT (_tray_icon), "activate",
++                      G_CALLBACK (ui_tray_icon_activate_cb),
+                       0);
+ 
+-    gtk_widget_show_all (GTK_WIDGET (_tray_icon));
++    gtk_status_icon_set_visible (_tray_icon, TRUE);
+ 
+     return FALSE;
+ }
+@@ -1686,6 +1703,19 @@
+ }
+ 
+ static void
++ui_tray_icon_popup_menu_cb (GtkStatusIcon *status_icon, guint button, 
++    guint activate_time, gpointer user_data)
++{
++    action_show_command_menu ();
++}
++
++static void
++ui_tray_icon_activate_cb (GtkStatusIcon *status_icon, gpointer user_data)
++{
++    _panel_agent->request_factory_menu ();
++}
++
++static void
+ ui_factory_menu_activate_cb (GtkMenuItem *item,
+                              gpointer     user_data)
+ {
+@@ -2243,19 +2273,19 @@
+ }
+ 
+ #if ENABLE_TRAY_ICON
+-static void
+-ui_tray_icon_destroy_cb (GtkObject      *object,
+-                         gpointer        user_data)
+-{
+-    SCIM_DEBUG_MAIN (1) << "Tray Icon destroyed!\n";
+-
+-    gtk_widget_destroy (GTK_WIDGET (object));
+-
+-    _tray_icon = 0;
+-    _tray_icon_factory_button = 0;
+-
+-    g_idle_add (ui_create_tray_icon_when_idle, NULL);
+-}
++// static void
++// ui_tray_icon_destroy_cb (GtkObject      *object,
++//                          gpointer        user_data)
++// {
++//     SCIM_DEBUG_MAIN (1) << "Tray Icon destroyed!\n";
++// 
++//     gtk_widget_destroy (GTK_WIDGET (object));
++// 
++//     _tray_icon = 0;
++//     _tray_icon_factory_button = 0;
++// 
++//     g_idle_add (ui_create_tray_icon_when_idle, NULL);
++// }
+ #endif
+ 
+ static void
+@@ -2685,18 +2715,21 @@
+     }
+ 
+ #if ENABLE_TRAY_ICON
+-    if (_tray_icon_factory_button) {
+-        GtkWidget *icon = gtk_bin_get_child (GTK_BIN (_tray_icon_factory_button));
++    // if (_tray_icon_factory_button) {
++    //     GtkWidget *icon = gtk_bin_get_child (GTK_BIN (_tray_icon_factory_button));
+ 
+-        if (icon)
+-            gtk_container_remove (GTK_CONTAINER (_tray_icon_factory_button), icon);
++    //     if (icon)
++    //         gtk_container_remove (GTK_CONTAINER (_tray_icon_factory_button), icon);
+ 
+-        icon = ui_create_icon (info.icon, NULL, TRAY_ICON_SIZE, TRAY_ICON_SIZE, true);
++    //     icon = ui_create_icon (info.icon, NULL, TRAY_ICON_SIZE, TRAY_ICON_SIZE, true);
+ 
+-        gtk_container_add (GTK_CONTAINER (_tray_icon_factory_button), icon);
++    //     gtk_container_add (GTK_CONTAINER (_tray_icon_factory_button), icon);
+ 
+-        if (_tooltips)
+-            gtk_tooltips_set_tip (_tooltips, _tray_icon_factory_button, info.name.c_str (), NULL);
++    //     if (_tooltips)
++    //         gtk_tooltips_set_tip (_tooltips, _tray_icon_factory_button, info.name.c_str (), NULL);
++    // }
++    if (_tray_icon) {
++        gtk_status_icon_set_from_file (_tray_icon, info.icon.c_str());
+     }
+ #endif

@@ -1,0 +1,7 @@
+#%PAM-1.0
+
+auth       include      common-auth
+account    include      common-account
+
+session required pam_permit.so
+session required pam_limits.so

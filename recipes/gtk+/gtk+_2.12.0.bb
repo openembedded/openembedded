@@ -2,20 +2,9 @@ require gtk+.inc
 
 PR = "${INC_PR}.0"
 
-DEPENDS += "cairo"
-
-# disable per default - untested and not all patches included.
-DEFAULT_PREFERENCE = "-1" 
-
-SRC_URI = "http://download.gnome.org/sources/gtk+/2.12/gtk+-${PV}.tar.bz2 \
-           file://xsettings.patch;patch=1 \
-           file://run-iconcache.patch;patch=1 \
-           file://disable-print.patch;patch=1 \
-           file://hardcoded_libtool.patch;patch=1 \
-           file://no-demos.patch;patch=1 \
+SRC_URI += "file://disable-print.patch;patch=1 \
            file://cellrenderer-cairo.patch;patch=1;pnum=0 \
            file://entry-cairo.patch;patch=1;pnum=0 \
-           file://toggle-font.diff;patch=1;pnum=0 \
            file://scrolled-placement.patch;patch=1;pnum=0"
 # temporary
 #           file://gtklabel-resize-patch;patch=1 \
@@ -25,8 +14,6 @@ SRC_URI = "http://download.gnome.org/sources/gtk+/2.12/gtk+-${PV}.tar.bz2 \
 #           file://pangoxft2.10.6.diff;patch=1"
 
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
-
-LIBV = "2.10.0"
 
 PACKAGES_DYNAMIC = "gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 

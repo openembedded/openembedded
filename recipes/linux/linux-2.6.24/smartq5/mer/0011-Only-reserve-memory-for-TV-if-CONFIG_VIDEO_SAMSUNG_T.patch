@@ -1,0 +1,32 @@
+From d4c0c216128feee090df41f81552cca7ff3f44bc Mon Sep 17 00:00:00 2001
+From: David Greaves <david@dgreaves.com>
+Date: Mon, 21 Sep 2009 23:19:36 +0100
+Subject: [PATCH 11/13] Only reserve memory for TV if CONFIG_VIDEO_SAMSUNG_TVENC/TVSCALER are defined
+
+---
+ include/asm-arm/arch-s3c2410/reserved_mem.h |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/include/asm-arm/arch-s3c2410/reserved_mem.h b/include/asm-arm/arch-s3c2410/reserved_mem.h
+index e6c029d..9ac227b 100644
+--- a/include/asm-arm/arch-s3c2410/reserved_mem.h
++++ b/include/asm-arm/arch-s3c2410/reserved_mem.h
+@@ -26,7 +26,15 @@
+ //#define CONFIG_RESERVED_MEM_JPEG_MFC_POST_CAMERA
+ //#define CONFIG_RESERVED_MEM_CMM_MFC_POST
+ //#define CONFIG_RESERVED_MEM_CMM_JPEG_MFC_POST_CAMERA
++//#define CONFIG_RESERVED_MEM_TV_MFC_POST_CAMERA
++
++// Should do a full config logic here...
++#if defined(CONFIG_VIDEO_SAMSUNG_TVENC) || defined(CONFIG_VIDEO_SAMSUNG_TVSCALER)
+ #define CONFIG_RESERVED_MEM_TV_MFC_POST_CAMERA
++#else
++#define CONFIG_RESERVED_MEM_MFC_POST
++#endif
++
+ 
+ #if defined(CONFIG_RESERVED_MEM_JPEG)
+ #define JPEG_RESERVED_MEM_START		0x57800000
+-- 
+1.6.2.4
+

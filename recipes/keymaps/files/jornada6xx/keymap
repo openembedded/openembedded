@@ -1,0 +1,19 @@
+#!/bin/sh
+
+echo "Loading Keymap..."
+
+if [ ! -f "/etc/keymap-default.map" ]
+then
+	# User has not set a default.
+	# Note that 620/660 machines need a different keymap.
+	cat /proc/cpuinfo | grep SH7708 >/dev/null
+	if [ $? = 0 ]
+	then
+		loadkeys /etc/keymap-uk-620-660.map
+	else
+		loadkeys /etc/keymap-uk.map
+	fi
+else
+	# User has set a default
+	loadkeys /etc/keymap-default.map
+fi

@@ -1,0 +1,35 @@
+From 64e4fc11b960da97728e0d87dcf4c1e98f808501 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Thu, 31 Dec 2009 07:05:02 -0800
+Subject: [PATCH] MTD: NAND: omap2: proper fix for subpage read ECC errors
+
+---
+ drivers/mtd/nand/omap2.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 1bb799f..75004fe 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -295,11 +295,14 @@ static void omap_read_buf_pref(struct mtd_info *mtd, u_char *buf, int len)
+ 	u32 *p = (u32 *)buf;
+ 
+ 	/* take care of subpage reads */
+-	for (; len % 4 != 0; ) {
+-		*buf++ = __raw_readb(info->nand.IO_ADDR_R);
+-		len--;
++	if (len % 4) {
++		if (info->nand.options & NAND_BUSWIDTH_16)
++			omap_read_buf16(mtd, buf, len % 4);
++		else
++			omap_read_buf8(mtd, buf, len % 4);
++		p = (u32 *) (buf + len % 4);
++		len -= len % 4;
+ 	}
+-	p = (u32 *) buf;
+ 
+ 	/* configure and start prefetch transfer */
+ 	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
+-- 
+1.6.5
+

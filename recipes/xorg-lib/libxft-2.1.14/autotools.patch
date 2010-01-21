@@ -1,0 +1,54 @@
+Index: libXft-2.1.14/configure.ac
+===================================================================
+--- libXft-2.1.14.orig/configure.ac	2009-10-10 01:44:49.000000000 +0200
++++ libXft-2.1.14/configure.ac	2009-12-23 20:56:25.759695121 +0100
+@@ -37,26 +37,14 @@
+ # Require xorg-macros: XORG_DEFAULT_OPTIONS
+ m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.3 or later before running autoconf/autogen])])
+ XORG_MACROS_VERSION(1.3)
+-AM_CONFIG_HEADER(config.h)
++AC_CONFIG_HEADERS([config.h])
++AC_CONFIG_HEADERS([include/X11/Xft/Xft.h])
+ 
+ # checks for progs
+ AC_PROG_CC
+ AC_PROG_LIBTOOL
+ XORG_DEFAULT_OPTIONS
+ 
+-# Set library version for Xft.h from package version set in AC_INIT
+-# copied from PACKAGE_VERSION_* settings in XORG_VERSION
+-AC_CONFIG_HEADERS([include/X11/Xft/Xft.h])
+-AC_DEFINE_UNQUOTED([XFT_MAJOR],
+-                [`echo $PACKAGE_VERSION | cut -d . -f 1`],
+-                [Major version of Xft])
+-AC_DEFINE_UNQUOTED([XFT_MINOR],
+-                [`echo $PACKAGE_VERSION | cut -d . -f 2 | cut -d - -f 1`],
+-                [Minor version of Xft])
+-AC_DEFINE_UNQUOTED([XFT_REVISION],
+-                [`echo $PACKAGE_VERSION | cut -d . -f 3 | cut -d - -f 1`],
+-                [Micro revision of Xft])
+-
+ #
+ # Check for Xrender
+ #
+Index: libXft-2.1.14/include/X11/Xft/Xft.h.in
+===================================================================
+--- libXft-2.1.14.orig/include/X11/Xft/Xft.h.in	2009-10-06 09:36:40.000000000 +0200
++++ libXft-2.1.14/include/X11/Xft/Xft.h.in	2009-12-23 20:55:52.063859518 +0100
+@@ -27,11 +27,12 @@
+  * Current Xft version number, set from version in the Xft configure.ac file.
+  */
+ 
+-#undef XFT_MAJOR	/* Will be substituted by configure */
+-#undef XFT_MINOR	/* Will be substituted by configure */
+-#undef XFT_REVISION	/* Will be substituted by configure */
++/* Will be substituted by configure */
++#undef PACKAGE_VERSION_MAJOR
++#undef PACKAGE_VERSION_MINOR
++#undef PACKAGE_VERSION_PATCHLEVEL
+ 
+-#define XFT_VERSION	((XFT_MAJOR * 10000) + (XFT_MINOR * 100) + (XFT_REVISION))
++#define XFT_VERSION	((PACKAGE_VERSION_MAJOR * 10000) + (PACKAGE_VERSION_MINOR * 100) + (PACKAGE_VERSION_PATCHLEVEL))
+ #define XftVersion	XFT_VERSION
+ 
+ #include <stdarg.h>

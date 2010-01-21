@@ -1,6 +1,7 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
 
+COMPATIBLE_MACHINE = "(am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 RDEPENDS_${PN} += "devmem2"
 
 #HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
@@ -48,6 +49,9 @@ SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
 
 S = "${WORKDIR}/OMAP35x_Graphics_SDK_${SGXPV}"
 
+TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
+require ../ti/ti-eula-unpack.inc
+
 BINLOCATION ?= "${S}/gfx_rel"
 
 PACKAGES += " xserver-kdrive-powervrsgx ${PN}-tests ${PN}-demos"
@@ -69,9 +73,12 @@ inherit update-rc.d
 INITSCRIPT_NAME = "pvr-init"
 INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 
-require ../ti/ti-dspbios.inc
 
 do_compile() {
+    for i in $(find ${S} -name "*.h") $(find ${S} -name "*.c") $(find ${S} -name "Make*") ; do
+        chmod 0644 $i
+    done 
+
     for sofile in $(find ${S} -name "lib*Open*.so") $(find ${S} -name "lib*srv*.so")   $(find ${S} -name "lib*gl*.so") $(find ${S} -name "libpvr*.so") $(find ${S} -name "lib*GL*.so"); do
         if [ "$(readlink -n ${sofile})" = "" ] ; then
             mv $sofile ${sofile}.${IMGPV}

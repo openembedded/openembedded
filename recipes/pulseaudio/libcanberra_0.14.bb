@@ -5,12 +5,13 @@ DEPENDS = "alsa-lib gstreamer gtk+ libvorbis pulseaudio"
 SECTION = "libs/multimedia"
 AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
-PR = "r1"
+PR = "r2"
 
 inherit autotools_stage
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
-SRC_URI = "http://0pointer.de/lennart/projects/libcanberra/libcanberra-${PV}.tar.gz"
+SRC_URI = "http://0pointer.de/lennart/projects/libcanberra/libcanberra-${PV}.tar.gz \
+           file://libcanberra-increase-buffer-size.patch;patch=1"
 
 EXTRA_OECONF = "\
   --enable-alsa \

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r15"
+PR = "r20"
 
 # needed for init.d script
 RDEPENDS_${PN} += "udev-utils"
@@ -24,10 +24,20 @@ SRC_URI += " \
        file://network.sh \
        file://local.rules \
        file://default \
-       file://init"
+       file://init \
+       file://cache \
+"
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
+
+#buglabs's bug device
+SRC_URI_append_bug = " \
+       file://30-BUG.rules \
+       file://10-mx31.rules \
+       file://bmi_eventpipe.sh "
+
+PACKAGE_ARCH_bug = "bug"
 
 inherit update-rc.d autotools_stage
 
@@ -62,6 +72,7 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
+	install -m 0755 ${WORKDIR}/cache ${D}${sysconfdir}/init.d/udev-cache
 
 	install -d ${D}${sysconfdir}/default
 	install -m 0755 ${WORKDIR}/default ${D}${sysconfdir}/default/udev
@@ -70,7 +81,6 @@ do_install () {
 	# This is hardcoded to $(udev_prefix)/lib/udev/rules.d in the
 	# Makefile, even if libdir is lib64.
 	mv ${D}/lib/udev/rules.d ${D}${sysconfdir}/udev/
-	ln -sf ${sysconfdir}/udev/rules.d ${D}/lib/udev/
 
  	cp ${S}/rules/rules.d/* ${D}${sysconfdir}/udev/rules.d/
 	cp ${S}/rules/packages/* ${D}${sysconfdir}/udev/rules.d/
@@ -99,6 +109,23 @@ do_install_append_h2200() {
 	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
 }
 
+do_install_append_bug() {
+	install -m 0644 ${WORKDIR}/30-BUG.rules ${D}${sysconfdir}/udev/rules.d/30-BUG.rules
+	install -m 0644 ${WORKDIR}/10-mx31.rules ${D}${sysconfdir}/udev/rules.d/10-mx31.rules
+	install -m 0644 ${WORKDIR}/bmi_eventpipe.sh ${D}${sysconfdir}/udev/scripts/bmi_eventpipe.sh
+}
+
+# Create the cache after checkroot has run
+pkg_postinst_${PN}_append() {
+update-rc.d $OPT udev-cache start 12 S .
+
+if [ -d $D/lib/udev/rules.d ] ; then
+	echo "$D/lib/udev/rules.d is not a symlink, fixing that"
+	mv $D/lib/udev/rules.d/* $D${sysconfdir}/udev/rules.d/
+	rm -rf $D/lib/udev/rules.d
+	ln -sf ${sysconfdir}/udev/rules.d $D/lib/udev/
+fi
+}
 
 do_stage_append() {
         install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}

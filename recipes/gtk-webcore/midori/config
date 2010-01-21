@@ -1,4 +1,13 @@
 
 [settings]
 enforce-96-dpi=true
-toolbar-items=Back,Forward,ReloadStop,Fullscreen,Location,Panel,
+toolbar-items=Back,Forward,ReloadStop,Fullscreen,Location,
+show-menubar=true
+show-navigationbar=true
+show-bookmarkbar=false
+show-panel=false
+show-transferbar=false
+show-statusbar=false
+zoom-text-and-images=true
+open-new-pages-in=MIDORI_NEW_PAGE_WINDOW
+open-external-pages-in=MIDORI_NEW_PAGE_WINDOW

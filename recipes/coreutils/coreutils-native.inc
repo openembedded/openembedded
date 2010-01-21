@@ -6,3 +6,8 @@ PATCHTOOL = "patch"
 do_configure() {
 	oe_runconf
 }
+
+do_install() {
+	autotools_do_install
+}
+

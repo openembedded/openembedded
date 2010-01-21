@@ -1,8 +1,8 @@
-DEPENDS += "cairo"
+DEPENDS += "cairo sqlite3"
 
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}.source.tar.bz2 \
+SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}.source.tar.bz2 \
 	file://jsautocfg.h \
 	file://security-cross.patch;patch=1 \
 	file://jsautocfg-dontoverwrite.patch;patch=1 \

@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r8"
+PR = "r10"
 
 
 DEPENDS += "task-shr-minimal"
@@ -66,13 +66,6 @@ shr_rootfs_postprocess() {
     echo >>./etc/fstab
     echo "# NFS Host" >>./etc/fstab
     echo "192.168.0.200:/local/pkg /local/pkg nfs noauto,nolock,soft,rsize=32768,wsize=32768 0 0" >>./etc/fstab
-    # fix .desktop files for illume
-    #desktop=`find ./usr/share/applications -name "*.desktop"`
-    #for file in $desktop; do
-    #    echo "Categories=Office;" >>$file
-    #done
-
-    echo "Exec=vala-terminal -e htop" >> ./usr/share/applications/htop.desktop
 
     # minimal gtk theme foo
     # this should be set in postinst phase of installed gtk-theme package
@@ -104,14 +97,6 @@ shr_rootfs_postprocess() {
 
     #set up a nice gentoo-like PS1
     echo "export PS1=\"\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] \"">> ./etc/profile
-
-    #load modules on boot
-    [ -d ./etc/modutils ] || mkdir ./etc/modutils
-    echo "g_ether" > ./etc/modutils/g_ether
-    echo "ppp_generic" > ./etc/modutils/ppp_generic
-    # FIXME: Only do this for GTA02
-    # FIXME: investigate why module_autoload in machine config doesn't work
-    echo "snd-soc-neo1973-gta02-wm8753" > ./etc/modutils/snd-soc-neo
 
     #set up some variables to improve default settings
     echo "if [ \"\$DISPLAY\" = \"\" ]" >> ./etc/profile

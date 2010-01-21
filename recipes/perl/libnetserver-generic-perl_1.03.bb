@@ -1,3 +1,4 @@
+DESCRIPTION = "NetServer::Generic is a perl module that implements an object-oriented interface for developing internet servers."
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r4"

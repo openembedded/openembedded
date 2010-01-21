@@ -1,0 +1,56 @@
+From 9da8cbb9d9155bce885e0cfb39ba18a22ee6a76d Mon Sep 17 00:00:00 2001
+From: Will Thompson <will.thompson@collabora.co.uk>
+Date: Wed, 29 Jul 2009 18:52:28 +0100
+Subject: [PATCH 4/6] Extract freeing a DBusList<BusMatchRule>
+
+---
+ bus/signals.c |   26 ++++++++++++++------------
+ 1 files changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/bus/signals.c b/bus/signals.c
+index 0509dd5..3cf846e 100644
+--- a/bus/signals.c
++++ b/bus/signals.c
+@@ -1029,6 +1029,19 @@ struct BusMatchmaker
+   DBusList *rules_by_type[DBUS_NUM_MESSAGE_TYPES];
+ };
+ 
++static void
++rule_list_free (DBusList **rules)
++{
++  while (*rules != NULL)
++    {
++      BusMatchRule *rule;
++
++      rule = (*rules)->data;
++      bus_match_rule_unref (rule);
++      _dbus_list_remove_link (rules, *rules);
++    }
++}
++
+ BusMatchmaker*
+ bus_matchmaker_new (void)
+ {
+@@ -1074,18 +1087,7 @@ bus_matchmaker_unref (BusMatchmaker *matchmaker)
+       int i;
+ 
+       for (i = DBUS_MESSAGE_TYPE_INVALID; i < DBUS_NUM_MESSAGE_TYPES; i++)
+-        {
+-          DBusList **rules = bus_matchmaker_get_rules (matchmaker, i);
+-
+-          while (*rules != NULL)
+-            {
+-              BusMatchRule *rule;
+-
+-              rule = (*rules)->data;
+-              bus_match_rule_unref (rule);
+-              _dbus_list_remove_link (rules, *rules);
+-            }
+-        }
++        rule_list_free (bus_matchmaker_get_rules (matchmaker, i));
+ 
+       dbus_free (matchmaker);
+     }
+-- 
+1.6.3.3
+

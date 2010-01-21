@@ -1,14 +1,16 @@
 DESCRIPTION = "Utility to dump IrDA traffic."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "glib-1.2"
+DEPENDS = "glib-2.0 pkgconfig"
+PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
+	   file://glib2.patch;patch=1"
 
 S="${WORKDIR}/irda-utils-${PV}/irdadump"
 
-EXTRA_CFLAGS += "-I${STAGING_INCDIR}/glib-1.2/"
-EXTRA_LDFLAGS += "-lglib"
+EXTRA_CFLAGS += "`pkg-config --cflags glib-2.0`"
+EXTRA_LDFLAGS += "`pkg-config --libs glib-2.0`"
 
 inherit autotools
 

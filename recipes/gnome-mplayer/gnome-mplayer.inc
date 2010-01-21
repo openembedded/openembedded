@@ -3,7 +3,7 @@ AUTHOR = "Kevin DeKorte <kdekorte@gmail.com>"
 HOMEPAGE = "http://code.google.com/p/gnome-mplayer/"
 SECTION = "x11/multimedia"
 LICENSE = "GPL"
-DEPENDS = "gtk+ gconf dbus-glib"
+DEPENDS = "curl gtk+ gconf dbus-glib libmusicbrainz libgpod"
 RDEPENDS = "mplayer"
 
 inherit gnome
@@ -15,7 +15,7 @@ FILES_${PN}-nautilus-extension = "${libdir}/nautilus/extension*/*.so"
 
 FILES_${PN}-dbg += "${libdir}/nautilus/*/.debug"
 
-FILES_${PN} += "${datadir}/icons"
+FILES_${PN} += "${datadir}/icons  ${datadir}/gnome-control-center/"
 
 do_install_append() {
     sed -i "s/OnlyShowIn=GNOME;//" ${D}${datadir}/applications/gnome-mplayer.desktop
