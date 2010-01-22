@@ -1,0 +1,13 @@
+Index: uClibc-0.9.30.2/Makefile.in
+===================================================================
+--- uClibc-0.9.30.2.orig/Makefile.in	2010-01-13 13:22:31.000000000 -0800
++++ uClibc-0.9.30.2/Makefile.in	2010-01-21 19:39:43.693122984 -0800
+@@ -370,7 +370,7 @@
+ endif
+ 
+ # Installs development library links.
+-install_dev: install_headers all
++install_dev: install_headers install_runtime
+ 	$(INSTALL) -d $(PREFIX)$(DEVEL_PREFIX)lib
+ 	-$(INSTALL) -m 644 lib/*.[ao] $(PREFIX)$(DEVEL_PREFIX)lib/
+ ifeq ($(HAVE_SHARED),y)

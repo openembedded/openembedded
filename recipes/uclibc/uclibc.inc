@@ -71,7 +71,7 @@ UCLIBC_LOCALE_URI_arm = "http://wiki.openembedded.net/dl/uclibc-locale/${UCLIBC_
 
 SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
 	   file://uClibc.config \
-           http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2 \
+           http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2;name=uClibc-${PV} \
           "
 
 # do_stage barfs on a CC with whitepspace, therefore put the 'HOST_CC_ARCH' in
