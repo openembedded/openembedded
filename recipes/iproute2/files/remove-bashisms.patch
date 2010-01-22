@@ -1,0 +1,59 @@
+From ddf7948f9a088f26e7ed9ba01479029cd4e6f060 Mon Sep 17 00:00:00 2001
+From: Marc Olzheim <marc@iphion.nl>
+Date: Wed, 18 Nov 2009 10:43:53 +0100
+Subject: [PATCH] Get rid of bashisms.
+
+---
+ ip/ifcfg |   12 ++++++------
+ ip/rtpr  |    2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/ip/ifcfg b/ip/ifcfg
+index 083d9df..cd78d61 100644
+--- a/ip/ifcfg
++++ b/ip/ifcfg
+@@ -1,4 +1,4 @@
+-#! /bin/bash
++#! /bin/sh
+ 
+ CheckForwarding () {
+   local sbase fwd
+@@ -6,7 +6,7 @@ CheckForwarding () {
+   fwd=0
+   if [ -d $sbase ]; then
+     for dir in $sbase/*/forwarding; do
+-      fwd=$[$fwd + `cat $dir`]
++      fwd=$(($fwd + `cat $dir`))
+     done
+   else
+     fwd=2
+@@ -127,12 +127,12 @@ fi
+ arping -q -A -c 1 -I $dev $ipaddr
+ noarp=$?
+ ( sleep 2 ;
+-  arping -q -U -c 1 -I $dev $ipaddr ) >& /dev/null </dev/null &
++  arping -q -U -c 1 -I $dev $ipaddr ) >/dev/null 2>&1 </dev/null &
+ 
+-ip route add unreachable 224.0.0.0/24 >& /dev/null
+-ip route add unreachable 255.255.255.255 >& /dev/null
++ip route add unreachable 224.0.0.0/24 >/dev/null 2>&1
++ip route add unreachable 255.255.255.255 >/dev/null 2>&1
+ if [ `ip link ls $dev | grep -c MULTICAST` -ge 1 ]; then
+-  ip route add 224.0.0.0/4 dev $dev scope global >& /dev/null
++  ip route add 224.0.0.0/4 dev $dev scope global >/dev/null 2>&1
+ fi
+ 
+ if [ $fwd -eq 0 ]; then
+diff --git a/ip/rtpr b/ip/rtpr
+index c3629fd..674198d 100644
+--- a/ip/rtpr
++++ b/ip/rtpr
+@@ -1,4 +1,4 @@
+-#! /bin/bash
++#! /bin/sh
+ 
+ exec tr "[\\\\]" "[
+ ]"
+-- 
+1.6.3.3
+
