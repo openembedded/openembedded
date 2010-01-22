@@ -1,0 +1,59 @@
+--- a/Makefile	2010-01-19 14:01:15.264703049 -0800
++++ b/Makefile	2010-01-19 14:10:38.765700100 -0800
+@@ -103,9 +103,8 @@ uberclean:	clean clean_libs
+ install: install_olsrd
+ 
+ install_bin:
+-		mkdir -p $(SBINDIR)
+-		install -m 755 $(EXENAME) $(SBINDIR)
+-		$(STRIP) $(SBINDIR)/$(EXENAME)
++		mkdir -p $(INSTALL_PREFIX)$(SBINDIR)
++		install -m 755 $(EXENAME) $(INSTALL_PREFIX)$(SBINDIR)
+ 
+ install_olsrd:	install_bin
+ 		@echo ========= C O N F I G U R A T I O N - F I L E ============
+@@ -117,17 +116,16 @@ install_olsrd:	install_bin
+ 		@echo per default.
+ 		@echo can be found at files/olsrd.conf.default.lq
+ 		@echo ==========================================================
+-		mkdir -p $(ETCDIR)
+-		-cp -i files/olsrd.conf.default.lq $(CFGFILE)
++		mkdir -p $(INSTALL_PREFIX)$(ETCDIR)
+ 		@echo -------------------------------------------
+ 		@echo Edit $(CFGFILE) before running olsrd!!
+ 		@echo -------------------------------------------
+ 		@echo Installing manpages $(EXENAME)\(8\) and $(CFGNAME)\(5\)
+ ifneq ($(MANDIR),)
+-		mkdir -p $(MANDIR)/man8/
+-		cp files/olsrd.8.gz $(MANDIR)/man8/$(EXENAME).8.gz
+-		mkdir -p $(MANDIR)/man5/
+-		cp files/olsrd.conf.5.gz $(MANDIR)/man5/$(CFGNAME).5.gz
++		mkdir -p $(INSTALL_PREFIX)$(MANDIR)/man8/
++		cp files/olsrd.8.gz $(INSTALL_PREFIX)$(MANDIR)/man8/$(EXENAME).8.gz
++		mkdir -p $(INSTALL_PREFIX)$(MANDIR)/man5/
++		cp files/olsrd.conf.5.gz $(INSTALL_PREFIX)$(MANDIR)/man5/$(CFGNAME).5.gz
+ endif
+ 
+ tags:
+@@ -160,10 +158,10 @@ endif
+ endif
+ 
+ libs:
+-		set -e;for dir in $(SUBDIRS);do $(MAKECMD) -C lib/$$dir LIBDIR=$(LIBDIR);done
++		set -e;for dir in $(SUBDIRS);do $(MAKECMD) -C lib/$$dir LIBDIR=$(INSTALL_PREFIX)$(LIBDIR);done
+ 
+ libs_clean clean_libs:
+-		-for dir in $(SUBDIRS);do $(MAKECMD) -C lib/$$dir LIBDIR=$(LIBDIR) clean;done
++		-for dir in $(SUBDIRS);do $(MAKECMD) -C lib/$$dir LIBDIR=$(INSTALL_PREFIX)$(LIBDIR) clean;done
+ ifeq ($(OS), win32)
+ 		-rm -f lib/pgraph/olsrd_pgraph.dll
+ 		-rm -f lib/txtinfo/olsrd_txtinfo.dll
+@@ -174,7 +172,7 @@ ifeq ($(OS), win32)
+ endif
+ 
+ libs_install install_libs:
+-		set -e;for dir in $(SUBDIRS);do $(MAKECMD) -C lib/$$dir LIBDIR=$(LIBDIR) install;done
++		set -e;for dir in $(SUBDIRS);do $(MAKECMD) -C lib/$$dir LIBDIR=$(INSTALL_PREFIX)$(LIBDIR) install;done
+ 
+ httpinfo:
+ 		$(MAKECMD) -C lib/httpinfo clean
