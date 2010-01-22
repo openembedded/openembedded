@@ -8,10 +8,6 @@
 inherit package
 
 
-PACKAGE_DBG_DIRS = "${bindir} ${sbindir} \
-                    ${libexecdir} ${libdir} \
-                    ${base_bindir} ${base_sbindir} \
-                    ${base_libdir}"
 PACKAGE_DBG_DESC = "Debugging files for %s"
 PACKAGE_DBG_EXCLUDE = "${PN}-locale* ${PN}-doc ${PN}-dev *-dbg"
 
@@ -101,15 +97,13 @@ python package_do_dbg() {
     add_dbg_packages(d)
     packages = d.getVar("PACKAGES", True).split()
     desc = d.getVar("PACKAGE_DBG_DESC", True)
-    debug_dirs = d.getVar("PACKAGE_DBG_DIRS", True).split()
 
     done = []
     for pkgname in tuple(packages):
         files = tuple(__package_get_files(pkgname, d))
         dbg = [join(dirname(file), ".debug", basename(file))
                for file in files
-               if not file in done and
-                  any(file.startswith(dir) for dir in debug_dirs)]
+               if not file in done]
         done.extend(files)
 
         if dbg:
