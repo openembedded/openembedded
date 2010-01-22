@@ -2,6 +2,9 @@ require ti-codec-engine.inc
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_omapl138 = "1"
+DEFAULT_PREFERENCE_dm355 = "1"
+DEFAULT_PREFERENCE_dm365 = "1"
+DEFAULT_PREFERENCE_dm6467 = "1"
 
 # tconf from xdctools dislikes '.' in pwd :/
 PV = "2_25_01_06"
