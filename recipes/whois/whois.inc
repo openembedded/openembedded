@@ -4,6 +4,14 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.linux.it/~md/software/"
 SECTION = "network"
 
+INC_PR  = "r1"
+
+SRC_URI = "${DEBIAN_MIRROR}/main/w/whois/whois_${PV}.tar.gz;name=whois"
+
+S = "${WORKDIR}/whois-${PV}"
+
+inherit gettext
+
 def whois_intl(bb, d):
 	# FIXME: This is ugly.. we already have the virtual for this,
 	# but there's no way to ask bb who the current selected provider of

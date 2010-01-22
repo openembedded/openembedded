@@ -112,7 +112,9 @@ kernel_do_stage() {
 
 	# Check for arch/x86 on i386
 	elif [ -d arch/x86/include/asm/ ]; then
-		cp -fR arch/x86/include/asm/* ${STAGING_KERNEL_DIR}/include/asm-x86/
+		if [ -e include/asm ] ; then
+			cp -fR arch/x86/include/asm/* ${STAGING_KERNEL_DIR}/include/asm-x86/
+		fi
 		install -d ${STAGING_KERNEL_DIR}/arch/x86/include
 		cp -fR arch/x86/* ${STAGING_KERNEL_DIR}/arch/x86/
 	fi

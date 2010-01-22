@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r19"
+PR = "r20"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -122,6 +122,7 @@ RDEPENDS_${PN}-x = "\
   libx11-locale \
   libmokoui2 \
   xcursor-transparent-theme \
+  xinput-calibrator \
 "
 
 RDEPENDS_${PN}-apps = "\

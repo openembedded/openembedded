@@ -8,7 +8,7 @@ RDEPENDS="ttf-liberation-mono libpng"
 
 RDEPENDS_shr += "fsoraw"
 
-PR="r1"
+PR="r2"
 PV="0.5.5+git8"
 
 
