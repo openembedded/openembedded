@@ -10,6 +10,10 @@ FILES_gdbserver = "${bindir}/gdbserver"
 RRECOMMENDS_gdb_append_linux = " glibc-thread-db "
 RRECOMMENDS_gdb_append_linux-gnueabi = " glibc-thread-db "
 
+RRECOMMENDS_gdb_append_linux-uclibc = " uclibc-thread-db "
+RRECOMMENDS_gdb_append_linux-uclibceabi = " uclibc-thread-db "
+RRECOMMENDS_gdb_append_linux-spe = " uclibc-thread-db "
+
 inherit gettext
 
 SRC_URI += "file://kill_arm_map_symbols.patch;patch=1 \
@@ -43,5 +47,3 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 gdb/gdbserver/gdbserver ${D}${bindir}
 }
-
-

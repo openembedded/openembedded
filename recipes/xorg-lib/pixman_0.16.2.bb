@@ -3,7 +3,9 @@ PRIORITY = "optional"
 DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
+
+BBCLASSEXTEND="native"
 
 SRC_URI = "http://cairographics.org/releases/pixman-${PV}.tar.gz \
 	  "

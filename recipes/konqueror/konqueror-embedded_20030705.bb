@@ -31,7 +31,6 @@ FILES_${PN} = "${palmtopdir}"
 export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"
 export MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export UIC = "${STAGING_BINDIR_NATIVE}/uic"
-export exec_prefix = "${STAGING_LIBDIR}/.."
 
 EXTRA_OECONF = '--prefix=${palmtopdir} --exec-prefix=${palmtopdir}                              \
                 --enable-static --disable-shared --disable-debug                                \

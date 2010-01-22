@@ -180,10 +180,13 @@ Interests:  Small read-only Linux based firmware, deterministic builds.
 Recipes:    lighttpd, fastcgi, squashfs-tools, rt-tests, linux-rt, linux
 Machines:   mpc8313e-rdb, mpc8315e-rdb, canyonlands, calamari, openrd-base
 
-Person:	    Liam Girdwoord
-Mail:       liam.girdwood@wolfsonmicro.com
+Person:	    Liam Girdwood
+Mail:       lrg@slimlogic.co.uk
+Website:    http://www.slimlogic.co.uk
+Interests:  Mobile and embedded Linux within commercial environments.
+Interests:  Kernel development, userspace development, audio, power management.
 Machines:   mx31ads
-Recipes:    mx31ads-kernel*	
+Recipes:    mx31ads-kernel*, glibc-2.10.1, some pulseaudio versions	
 
 Person:     Lynn Lin
 Mail:       Lin_Lynn@emc.com

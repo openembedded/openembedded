@@ -1,0 +1,249 @@
+Index: git/ldso/ldso/mips/dl-sysdep.h
+===================================================================
+--- git.orig/ldso/ldso/mips/dl-sysdep.h	2010-01-21 13:33:18.000000000 -0800
++++ git/ldso/ldso/mips/dl-sysdep.h	2010-01-21 13:39:02.389689911 -0800
+@@ -8,6 +8,7 @@
+ /* Define this if the system uses RELOCA.  */
+ #undef ELF_USES_RELOCA
+ #include <elf.h>
++#include <tls.h>
+ 
+ #ifdef __mips64	/* from glibc sysdeps/mips/elf/ldsodefs.h 1.4 */
+ /* The 64-bit MIPS ELF ABI uses an unusual reloc format.  Each
+@@ -163,9 +164,25 @@ void _dl_perform_mips_global_got_relocat
+ #define OFFS_ALIGN (0x10000000000UL-0x1000)
+ #endif	/* O32 || N32 */
+ 
+-#define elf_machine_type_class(type) \
+-  ((((type) == R_MIPS_JUMP_SLOT) * ELF_RTYPE_CLASS_PLT)	\
++#if defined USE_TLS
++# if _MIPS_SIM == _MIPS_SIM_ABI64
++# define elf_machine_type_class(type) 					\
++  ((((type) == R_MIPS_JUMP_SLOT || (type) == R_MIPS_TLS_DTPMOD64	\
++     || (type) == R_MIPS_TLS_DTPREL64 || (type) == R_MIPS_TLS_TPREL64)	\
++    * ELF_RTYPE_CLASS_PLT)						\
+    | (((type) == R_MIPS_COPY) * ELF_RTYPE_CLASS_COPY))
++# else
++# define elf_machine_type_class(type)					\
++  ((((type) == R_MIPS_JUMP_SLOT || (type) == R_MIPS_TLS_DTPMOD32	\
++     || (type) == R_MIPS_TLS_DTPREL32 || (type) == R_MIPS_TLS_TPREL32)	\
++    * ELF_RTYPE_CLASS_PLT)						\
++   | (((type) == R_MIPS_COPY) * ELF_RTYPE_CLASS_COPY))
++# endif /* _MIPS_SIM == _MIPS_SIM_ABI64 */
++#else
++#define elf_machine_type_class(type)					\
++  ((((type) == R_MIPS_JUMP_SLOT) * ELF_RTYPE_CLASS_PLT)			\
++   | (((type) == R_MIPS_COPY) * ELF_RTYPE_CLASS_COPY))
++#endif /* USE_TLS */
+ 
+ #define OFFSET_GP_GOT 0x7ff0
+ 
+Index: git/ldso/ldso/mips/elfinterp.c
+===================================================================
+--- git.orig/ldso/ldso/mips/elfinterp.c	2010-01-21 13:33:18.000000000 -0800
++++ git/ldso/ldso/mips/elfinterp.c	2010-01-21 13:39:02.389689911 -0800
+@@ -156,6 +156,7 @@ int _dl_parse_relocation_information(str
+ 	unsigned long symbol_addr;
+ 	int reloc_type, symtab_index;
+ 	struct elf_resolve *tpnt = xpnt->dyn;
++	char *symname = NULL;
+ #if defined (__SUPPORT_LD_DEBUG__)
+ 	unsigned long old_val=0;
+ #endif
+@@ -169,7 +170,6 @@ int _dl_parse_relocation_information(str
+ 	got = (unsigned long *) tpnt->dynamic_info[DT_PLTGOT];
+ 
+ 	for (i = 0; i < rel_size; i++, rpnt++) {
+-		char *symname = NULL;
+ 		reloc_addr = (unsigned long *) (tpnt->loadaddr +
+ 			(unsigned long) rpnt->r_offset);
+ 		reloc_type = ELF32_R_TYPE(rpnt->r_info);
+@@ -178,13 +178,13 @@ int _dl_parse_relocation_information(str
+ 
+ 		debug_sym(symtab,strtab,symtab_index);
+ 		debug_reloc(symtab,strtab,rpnt);
++		symname = strtab + symtab[symtab_index].st_name;
+ #if defined (__SUPPORT_LD_DEBUG__)
+ 		if (reloc_addr)
+ 			old_val = *reloc_addr;
+ #endif
+ 
+ 		if (reloc_type == R_MIPS_JUMP_SLOT || reloc_type == R_MIPS_COPY) {
+-			symname = strtab + symtab[symtab_index].st_name;
+ 			symbol_addr = (unsigned long)_dl_find_hash(symname,
+ 								   tpnt->symbol_scope,
+ 								   tpnt,
+@@ -192,6 +192,13 @@ int _dl_parse_relocation_information(str
+ 			if (unlikely(!symbol_addr && ELF32_ST_BIND(symtab[symtab_index].st_info) != STB_WEAK))
+ 				return 1;
+ 		}
++		if (!symtab_index) {
++        	/* Relocs against STN_UNDEF are usually treated as using a
++         	* symbol value of zero, and using the module containing the
++         	* reloc itself.
++         	*/
++        	symbol_addr = symtab[symtab_index].st_value;
++		}
+ 
+ 		switch (reloc_type) {
+ #if USE_TLS
+@@ -205,21 +212,17 @@ int _dl_parse_relocation_information(str
+ 		case R_MIPS_TLS_TPREL32:
+ # endif
+ 			{
+-				ElfW(Sym) *sym_tls = &symtab[symtab_index];
+ 				struct elf_resolve *tpnt_tls = NULL;
+ 
+ 				if (ELF32_ST_BIND(symtab[symtab_index].st_info) != STB_LOCAL) {
+-					_dl_find_hash((strtab + symtab[symtab_index].st_name),
+-							_dl_symbol_tables, tpnt,
+-							elf_machine_type_class(reloc_type), &tpnt_tls);
++					symbol_addr = (unsigned long) _dl_find_hash(symname, tpnt->symbol_scope,
++						   	tpnt, elf_machine_type_class(reloc_type), &tpnt_tls);
+ 				}
+-#if USE_TLS
+ 			    /* In case of a TLS reloc, tpnt_tls NULL means we have an 'anonymous'
+ 			       symbol.  This is the case for a static tls variable, so the lookup
+ 			       module is just that one is referencing the tls variable. */
+ 			    if (!tpnt_tls)
+ 			        tpnt_tls = tpnt;
+-#endif
+ 
+ 				switch (reloc_type) {
+ 					case R_MIPS_TLS_DTPMOD64:
+@@ -228,17 +231,17 @@ int _dl_parse_relocation_information(str
+ 							*(ElfW(Word) *)reloc_addr = tpnt_tls->l_tls_modid;
+ #ifdef __SUPPORT_LD_DEBUG__
+ 						_dl_dprintf(2, "TLS_DTPMOD : %s, %d, %d\n",
+-							(strtab + symtab[symtab_index].st_name), old_val, *((unsigned int *)reloc_addr));
++							symname, old_val, *((unsigned int *)reloc_addr));
+ #endif
+ 						break;
+ 
+ 					case R_MIPS_TLS_DTPREL64:
+ 					case R_MIPS_TLS_DTPREL32:
+ 						*(ElfW(Word) *)reloc_addr +=
+-							TLS_DTPREL_VALUE (sym_tls);
++							TLS_DTPREL_VALUE (symbol_addr);
+ #ifdef __SUPPORT_LD_DEBUG__
+ 						_dl_dprintf(2, "TLS_DTPREL : %s, %x, %x\n",
+-							(strtab + symtab[symtab_index].st_name), old_val, *((unsigned int *)reloc_addr));
++							symname, old_val, *((unsigned int *)reloc_addr));
+ #endif
+ 						break;
+ 
+@@ -246,10 +249,10 @@ int _dl_parse_relocation_information(str
+ 					case R_MIPS_TLS_TPREL64:
+ 						CHECK_STATIC_TLS((struct link_map *)tpnt_tls);
+ 						*(ElfW(Word) *)reloc_addr +=
+-							TLS_TPREL_VALUE (tpnt_tls, sym_tls);
++							TLS_TPREL_VALUE (tpnt_tls, symbol_addr);
+ #ifdef __SUPPORT_LD_DEBUG__
+ 						_dl_dprintf(2, "TLS_TPREL  : %s, %x, %x\n",
+-							(strtab + symtab[symtab_index].st_name), old_val, *((unsigned int *)reloc_addr));
++							symname, old_val, *((unsigned int *)reloc_addr));
+ #endif
+ 						break;
+ 				}
+@@ -301,7 +304,7 @@ int _dl_parse_relocation_information(str
+ 				_dl_dprintf(2, "\n%s: ",_dl_progname);
+ 
+ 				if (symtab_index)
+-					_dl_dprintf(2, "symbol '%s': ", strtab + symtab[symtab_index].st_name);
++					_dl_dprintf(2, "symbol '%s': ", symname);
+ 
+ #if defined (__SUPPORT_LD_DEBUG__)
+ 				_dl_dprintf(2, "can't handle reloc type '%s' in lib '%s'\n", _dl_reltypes(reloc_type), tpnt->libname);
+Index: git/ldso/libdl/libdl.c
+===================================================================
+--- git.orig/ldso/libdl/libdl.c	2010-01-21 13:33:18.000000000 -0800
++++ git/ldso/libdl/libdl.c	2010-01-21 13:39:02.393687926 -0800
+@@ -37,6 +37,7 @@
+ 
+ #ifdef __UCLIBC_HAS_TLS__
+ #include <tls.h>
++#include <dl-tls.h>
+ #endif
+ 
+ #if defined(USE_TLS) && USE_TLS
+Index: git/libc/inet/resolv.c
+===================================================================
+--- git.orig/libc/inet/resolv.c	2010-01-21 13:33:18.000000000 -0800
++++ git/libc/inet/resolv.c	2010-01-21 13:39:02.393687926 -0800
+@@ -3016,7 +3016,7 @@ __thread struct __res_state *__resp = &_
+  *        relocations.
+  */
+ extern __thread struct __res_state *__libc_resp
+-       __attribute__ ((alias ("__resp")));
++       __attribute__ ((alias ("__resp"))) attribute_hidden;
+ # else
+ #  undef __resp
+ struct __res_state *__resp = &_res;
+Index: git/libc/misc/internals/errno.c
+===================================================================
+--- git.orig/libc/misc/internals/errno.c	2010-01-21 13:33:18.000000000 -0800
++++ git/libc/misc/internals/errno.c	2010-01-21 13:39:02.393687926 -0800
+@@ -4,15 +4,14 @@
+ __thread int errno;
+ __thread int h_errno;
+ 
+-extern __thread int __libc_errno __attribute__ ((alias ("errno")));
+-extern __thread int __libc_h_errno __attribute__ ((alias ("h_errno")));
++extern __thread int __libc_errno __attribute__ ((alias ("errno"))) attribute_hidden;
++extern __thread int __libc_h_errno __attribute__ ((alias ("h_errno"))) attribute_hidden;
+ #define h_errno __libc_h_errno
+ 
+ #else
+ #include "internal_errno.h"
+ int errno = 0;
+ int h_errno = 0;
+-
+ #ifdef __UCLIBC_HAS_THREADS__
+ libc_hidden_def(errno)
+ weak_alias(errno, _errno)
+Index: git/libpthread/nptl/sysdeps/mips/dl-tls.h
+===================================================================
+--- git.orig/libpthread/nptl/sysdeps/mips/dl-tls.h	2010-01-21 13:33:18.000000000 -0800
++++ git/libpthread/nptl/sysdeps/mips/dl-tls.h	2010-01-21 13:39:02.393687926 -0800
+@@ -17,6 +17,8 @@
+    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+    02111-1307 USA.  */
+ 
++#ifndef _DL_TLS_H
++#define _DL_TLS_H  1
+ 
+ /* Type used for the representation of TLS information in the GOT.  */
+ typedef struct
+@@ -33,14 +35,16 @@ typedef struct
+ #define TLS_DTV_OFFSET		0x8000
+ 
+ /* Compute the value for a GOTTPREL reloc.  */
+-#define TLS_TPREL_VALUE(sym_map, sym) \
+-  ((sym_map)->l_tls_offset + (sym)->st_value - TLS_TP_OFFSET)
++#define TLS_TPREL_VALUE(sym_map, sym_val) \
++  ((sym_map)->l_tls_offset + sym_val - TLS_TP_OFFSET)
+ 
+ /* Compute the value for a DTPREL reloc.  */
+-#define TLS_DTPREL_VALUE(sym) \
+-  ((sym)->st_value - TLS_DTV_OFFSET)
++#define TLS_DTPREL_VALUE(sym_val) \
++  (sym_val - TLS_DTV_OFFSET)
+ 
+ extern void *__tls_get_addr (tls_index *ti);
+ 
+ # define GET_ADDR_OFFSET	(ti->ti_offset + TLS_DTV_OFFSET)
+ # define __TLS_GET_ADDR(__ti)	(__tls_get_addr (__ti) - TLS_DTV_OFFSET)
++
++#endif /* _DL_TLS_H */
+Index: git/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch
+===================================================================
+--- git.orig/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch	2010-01-21 13:33:18.000000000 -0800
++++ git/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch	2010-01-21 13:39:02.393687926 -0800
+@@ -15,6 +15,7 @@ ifeq ($(UCLIBC_HAS_STDIO_FUTEXES),y)
+ CFLAGS-fork.c = -D__USE_STDIO_FUTEXES__
+ endif
+ CFLAGS-pthread_once.c = -DNOT_IN_libc=1 -DIS_IN_libpthread=1
++CFLAGS-pt-__syscall_rt_sigaction.c = -DNOT_IN_libc=1 -DIS_IN_libpthread=1
+ 
+ ASFLAGS-pt-vfork.S = -DNOT_IN_libc=1 -DIS_IN_libpthread=1
+ 
