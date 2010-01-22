@@ -11,7 +11,7 @@ LICENSE = "BSD"
 SECTION = "base"
 DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \

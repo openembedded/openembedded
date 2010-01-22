@@ -44,7 +44,7 @@ session       required   pam_env.so readenv=1
 session       required   pam_env.so readenv=1 envfile=/etc/default/locale
 
 # Standard Un*x authentication.
-@include common-auth
+auth       include      common-auth
 
 # This allows certain extra groups to be granted to a user
 # based on things like time of day, tty, service, and user.
