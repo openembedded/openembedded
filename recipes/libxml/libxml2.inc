@@ -9,7 +9,7 @@ PR = "r1"
 
 inherit autotools pkgconfig binconfig
 
-EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --with-c14n"
+EXTRA_OECONF = "--without-python --without-debug --without-legacy --with-catalog --with-docbook --with-c14n"
 
 export LDFLAGS += "-ldl"
 
