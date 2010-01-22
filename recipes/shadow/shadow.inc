@@ -11,7 +11,7 @@ LICENSE = "BSD"
 SECTION = "base"
 DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \
@@ -23,6 +23,7 @@ PAM_SRC_URI = " \
            file://pam.d/passwd \
            file://pam.d/su \
 "
+
 SRC_URI = "ftp://pkg-shadow.alioth.debian.org/pub/pkg-shadow/shadow-${PV}.tar.bz2 \
            file://login_defs_pam.sed \
            ${@base_contains('DISTRO_FEATURES', 'pam', '${PAM_SRC_URI}', '', d)} \
@@ -53,6 +54,10 @@ END
 }
 
 do_install_append() {
+  # Ensure that /etc/skel is created so any default files that we want copied into new users home
+  # dirs can be put in there later (ideal for .xinitrc for example).
+  install -d ${D}${sysconfdir}/skel/  
+  
   # Ensure that the image has as /var/spool/mail dir so shadow can put mailboxes there if the user
   # reconfigures Shadow to default (see sed below).
   install -d ${D}${SHADOW_MAILDIR}
@@ -77,7 +82,8 @@ do_install_append() {
   mv ${D}${sbindir}/chpasswd ${D}${sbindir}/chpasswd.${PN}
   mv ${D}${bindir}/passwd ${D}${bindir}/chpasswd.${PN}
 
-  install -m 0644 ${WORKDIR}/securetty ${D}${sysconfdir}/securetty
+  # Ensure we add a suitable securetty file to the package that has most common embedded TTYs defined.
+  install -m 0400 ${WORKDIR}/securetty ${D}${sysconfdir}/securetty 
 }
 
 pkg_postinst_${PN} () {
