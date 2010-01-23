@@ -1,0 +1,98 @@
+--- socat-1.7.1.2/configure.in.orig	2010-01-10 05:29:50.000000000 -0800
++++ socat-1.7.1.2/configure.in	2010-01-21 09:41:42.959191482 -0800
+@@ -1286,10 +1286,13 @@ AC_CACHE_CHECK(shift offset of $1, $2,
+  ],
+  [$2=`cat $conftestoffset`],
+  [$2=-1],
+- [AC_MSG_RESULT(please determine $1_SHIFT manually)]
++ [$2=-1]
+ )
+  LIBS="$LIBS1"])
+ AC_DEFINE_UNQUOTED($1_SHIFT, ${$2})
++if test "$2" = -1; then
++AC_MSG_WARN(please determine $1_SHIFT manually)
++fi
+ ])
+
+ AC_SHIFT_OFFSET(CRDLY,  sc_cv_sys_crdly_shift)
+--- socat-1.7.1.2/configure.orig	2010-01-10 05:39:29.000000000 -0800
++++ socat-1.7.1.2/configure	2010-01-21 10:01:27.463190768 -0800
+@@ -13596,6 +13596,7 @@ else
+  if test "$cross_compiling" = yes; then
+   { echo "$as_me:$LINENO: result: please determine CRDLY_SHIFT manually" >&5
+ echo "${ECHO_T}please determine CRDLY_SHIFT manually" >&6; }
++	sc_cv_sys_crdly_shift=-1
+
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+@@ -13680,6 +13681,7 @@ else
+  if test "$cross_compiling" = yes; then
+   { echo "$as_me:$LINENO: result: please determine TABDLY_SHIFT manually" >&5
+ echo "${ECHO_T}please determine TABDLY_SHIFT manually" >&6; }
++	sc_cv_sys_tabdly_shift=-1
+
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+@@ -13764,6 +13766,7 @@ else
+  if test "$cross_compiling" = yes; then
+   { echo "$as_me:$LINENO: result: please determine CSIZE_SHIFT manually" >&5
+ echo "${ECHO_T}please determine CSIZE_SHIFT manually" >&6; }
++	sc_cv_sys_csize_shift=-1
+
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+--- socat-1.7.1.2/xioopts.c.orig	2010-01-04 04:29:36.000000000 -0800
++++ socat-1.7.1.2/xioopts.c	2010-01-21 10:54:03.561742501 -0800
+@@ -763,7 +763,7 @@ const struct optname optionnames[] = {
+ 	IF_IP6    ("ipv6only",	&opt_ipv6_v6only)
+ #endif
+ 	IF_TERMIOS("isig",	&opt_isig)
+-#ifdef HAVE_TERMIOS_ISPEED
++#if defined(HAVE_TERMIOS_ISPEED) && defined(ISPEED_OFFSET) && (ISPEED_OFFSET != -1)
+ 	IF_TERMIOS("ispeed",	&opt_ispeed)
+ #endif
+ 	IF_TERMIOS("istrip",	&opt_istrip)
+@@ -1077,7 +1077,7 @@ const struct optname optionnames[] = {
+ 	IF_OPENSSL("openssl-pseudo",	&opt_openssl_pseudo)
+ 	IF_OPENSSL("openssl-verify",	&opt_openssl_verify)
+ 	IF_TERMIOS("opost",	&opt_opost)
+-#ifdef HAVE_TERMIOS_ISPEED
++#if defined(HAVE_TERMIOS_ISPEED) && defined(OSPEED_OFFSET) && (OSPEED_OFFSET != -1)
+ 	IF_TERMIOS("ospeed",	&opt_ospeed)
+ #endif
+ 	IF_ANY    ("owner",	&opt_user)
+--- socat-1.7.1.2/xio-termios.c.orig	2009-04-02 00:32:48.000000000 -0700
++++ socat-1.7.1.2/xio-termios.c	2010-01-21 10:51:46.627690848 -0800
+@@ -270,8 +270,12 @@ const struct optdesc opt_raw      = { "r
+ const struct optdesc opt_sane     = { "sane",   NULL,    OPT_SANE,     GROUP_TERMIOS, PH_FD, TYPE_CONST, OFUNC_TERMIOS_SPEC };
+
+ #ifdef HAVE_TERMIOS_ISPEED
++#if defined(ISPEED_OFFSET) && (ISPEED_OFFSET != -1)
++#if defined(OSPEED_OFFSET) && (OSPEED_OFFSET != -1)
+ const struct optdesc opt_ispeed = { "ispeed", NULL, OPT_ISPEED, GROUP_TERMIOS, PH_FD, TYPE_UINT, OFUNC_TERMIOS_SPEED, ISPEED_OFFSET };
+ const struct optdesc opt_ospeed = { "ospeed", NULL, OPT_OSPEED, GROUP_TERMIOS, PH_FD, TYPE_UINT, OFUNC_TERMIOS_SPEED, OSPEED_OFFSET };
++#endif
++#endif
+ #endif /* HAVE_TERMIOS_ISPEED */
+
+
+--- socat-1.7.1.2/xioinitialize.c.orig	2009-04-02 00:32:48.000000000 -0700
++++ socat-1.7.1.2/xioinitialize.c	2010-01-21 10:46:50.620191091 -0800
+@@ -62,12 +62,16 @@ int xioinitialize(void) {
+       assert(tdata.termarg.c_oflag == tdata.flags[1]);
+       assert(tdata.termarg.c_cflag == tdata.flags[2]);
+       assert(tdata.termarg.c_lflag == tdata.flags[3]);
+-#if HAVE_TERMIOS_ISPEED
++#if HAVE_TERMIOS_ISPEED && (ISPEED_OFFSET != -1) && (OSPEED_OFFSET != -1)
++#if defined(ISPEED_OFFSET) && (ISPEED_OFFSET != -1)
++#if defined(OSPEED_OFFSET) && (OSPEED_OFFSET != -1)
+       tdata.termarg.c_ispeed = 0x56789abc;
+       tdata.termarg.c_ospeed = 0x6789abcd;
+       assert(tdata.termarg.c_ispeed == tdata.speeds[ISPEED_OFFSET]);
+       assert(tdata.termarg.c_ospeed == tdata.speeds[OSPEED_OFFSET]);
+ #endif
++#endif
++#endif
+    }
+ #endif
+
