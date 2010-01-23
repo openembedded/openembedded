@@ -1,6 +1,6 @@
-require linux-kexecboot.inc
+require linux.inc
 
-KERNEL_RELEASE = "2.6.33-rc4"
+KERNEL_RELEASE = "2.6.33-rc5"
 OLD_KERNEL_RELEASE = "2.6.32"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}"
 PR = "r1"
@@ -9,19 +9,20 @@ S = "${WORKDIR}/linux-${OLD_KERNEL_RELEASE}"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_simone = "-1"
 DEFAULT_PREFERENCE_akita = "-1"
 DEFAULT_PREFERENCE_c7x0 = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
 DEFAULT_PREFERENCE_poodle = "-1"
-DEFAULT_PREFERENCE_spitz = "1"
+DEFAULT_PREFERENCE_spitz = "-1"
 DEFAULT_PREFERENCE_tosa = "-1"
 
-SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KERNEL_RELEASE}.bz2;name=rc4;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KERNEL_RELEASE}.bz2;name=rc5;patch=1 \
            file://defconfig"
 
-SRC_URI[rc4.md5sum] = "19c491f5ec00dbc96309044c784cde65"
-SRC_URI[rc4.sha256sum] = "5ba62a8903a88e35ebe1f39354e1fd490ae7ebdc7dde4beedb8ac4f35dcdcd85"
+SRC_URI[rc5.md5sum] = "3185d51085c89139cca7ce78a8e8a7f8"
+SRC_URI[rc5.sha256sum] = "d92affbaf0216387b33407c1fab70c444f337984b02e6137bf7338fc49d94283"
 SRC_URI[kernel.md5sum] = "260551284ac224c3a43c4adac7df4879"
 SRC_URI[kernel.sha256sum] = "5099786d80b8407d98a619df00209c2353517f22d804fdd9533b362adcb4504e"
 
