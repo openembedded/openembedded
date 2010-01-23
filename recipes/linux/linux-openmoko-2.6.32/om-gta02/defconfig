@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.32.2
-# Mon Dec 28 12:30:05 2009
+# Linux kernel version: 2.6.32.5
+# Sat Jan 23 23:17:52 2010
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -339,7 +339,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="unused -- bootloader passes ATAG list debug "
+CONFIG_CMDLINE="unused -- bootloader passes ATAG list quiet "
 # CONFIG_XIP_KERNEL is not set
 # CONFIG_KEXEC is not set
 
@@ -949,6 +949,7 @@ CONFIG_GPIO_SYSFS=y
 # CONFIG_GPIO_MAX732X is not set
 # CONFIG_GPIO_PCA953X is not set
 # CONFIG_GPIO_PCF857X is not set
+CONFIG_GPIO_PCF50633=y
 
 #
 # PCI GPIO expanders:
@@ -1019,7 +1020,6 @@ CONFIG_MFD_CORE=y
 CONFIG_MFD_PCF50633=y
 # CONFIG_MFD_MC13783 is not set
 CONFIG_PCF50633_ADC=y
-CONFIG_PCF50633_GPIO=y
 # CONFIG_AB3100_CORE is not set
 # CONFIG_EZX_PCAP is not set
 CONFIG_MFD_GLAMO=y
