@@ -3,7 +3,7 @@ require linux-kexecboot.inc
 KERNEL_RELEASE = "2.6.33-rc5"
 OLD_KERNEL_RELEASE = "2.6.32"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/linux-${OLD_KERNEL_RELEASE}"
 
@@ -18,6 +18,7 @@ DEFAULT_PREFERENCE_tosa = "-1"
 
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KERNEL_RELEASE}.bz2;name=rc5;patch=1 \
+           file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;patch=1;status=pending \
            file://defconfig"
 
 SRC_URI[rc5.md5sum] = "3185d51085c89139cca7ce78a8e8a7f8"
