@@ -3,11 +3,11 @@ require linux-openmoko.inc
 
 DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Smartphones"
 
-KERNEL_RELEASE="2.6.32.3"
+KERNEL_RELEASE="2.6.32.5"
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r4"
+PR = "r0"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
@@ -26,8 +26,8 @@ SRC_URI = "\
   file://0002-glamo-drm-select-DRM_KMS_HELPER-for-crtc-functions.patch;patch=1 \
 "
 
-SRC_URI[stablepatch.md5sum] = "6bd3c5fea1e88bb4d0948ec3688bd8f6"
-SRC_URI[stablepatch.sha256sum] = "e7526a7ae7210bc7c4f4837e9d8a666f9b126d59bee16015c41c5850d29c841f"
+SRC_URI[stablepatch.md5sum] = "49e6bc73c7a7f690fe7ddf09fe2b5d06"
+SRC_URI[stablepatch.sha256sum] = "b4d0d667db5094fd430ed58955f4f9ed71d278d5ce70e63d287c53f8db028ac3"
 
 S = "${WORKDIR}/git"
 
