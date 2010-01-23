@@ -5,7 +5,7 @@ DEPENDS = "liblauncher libxau dbus-glib gtk+ libgnome libgnomeui edje edje-nativ
 
 inherit gnome
 
-SRC_URI = "http://launchpad.net/launch-lite-proj/trunk/${PV}/+download/netbook-launcher-efl-${PV}.tar.gz"
+SRC_URI = "http://launchpad.net/launch-lite-proj/0.2/${PV}/+download/netbook-launcher-efl-${PV}.tar.gz"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
