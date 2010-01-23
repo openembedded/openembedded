@@ -9,7 +9,7 @@ SECTION = "libs"
 DEPENDS = "boost-jam-native zlib"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-PR = "r1"
+INC_PR = "r8"
 
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
