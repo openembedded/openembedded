@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- configuration for ET&T TC5UH touchscreen controller -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="usb.product_id" int="0x309">
+     <match key="usb.vendor_id" int="0x664">
+      <match key="info.linux.driver" contains="usbtouchscreen">
+        <merge key="input.x11_driver" type="string">evtouch</merge>
+        <merge key="input.x11_options.reportingmode" type="string">raw</merge>
+        <merge key="input.x11_options.emulate3buttons" type="string">true</merge>
+        <merge key="input.x11_options.emulate3timeout" type="string">50</merge>
+        <merge key="input.x11_options.sendcoreevents" type="string">on</merge>
+      </match>
+    </match>
+   </match>
+  </device>
+</deviceinfo>

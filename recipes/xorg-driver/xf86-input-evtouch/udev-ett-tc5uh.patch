@@ -1,0 +1,10 @@
+Index: xf86-input-evtouch-0.8.8/69-touchscreen.rules
+===================================================================
+--- xf86-input-evtouch-0.8.8.orig/69-touchscreen.rules	2009-11-28 22:03:37.000000000 +0100
++++ xf86-input-evtouch-0.8.8/69-touchscreen.rules	2009-11-28 22:04:19.000000000 +0100
+@@ -50,3 +50,5 @@
+ KERNEL=="event*", SUBSYSTEM=="input", ATTRS{name}=="LBPS/2 Fujitsu Lifebook TouchScreen", SYMLINK+="input/evtouch_event"
+ # Elo Touchscreen
+ KERNEL=="event*", SUBSYSTEM=="input", ATTRS{idVendor}=="04e7", ATTRS{idProduct}=="0020", SYMLINK+="input/evtouch_event"
++# ET&T TC5UH
++KERNEL=="event*", SUBSYSTEM=="input", SYSFS{idVendor}=="0664", SYSFS{idProduct}=="0309", SYMLINK+="input/evtouch_event"

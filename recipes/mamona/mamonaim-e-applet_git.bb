@@ -5,15 +5,18 @@ DESCRIPTION = "Mamona-IM Enlightenment Applet"
 HOMEPAGE = "http://dev.openbossa.org/trac/mamona/wiki"
 LICENSE = "MIT BSD"
 DEPENDS = "mamona-input-methods e-wm"
-PR = "r0"
+PV = "0.1-${PR}+gitr${SRCREV}"
+PR = "r1"
+PE = "1"
 
-PV = "0.1+git"
+SRC_URI = "git://dev.openbossa.org/mamona/projects/mamonaim_e_applet.git;protocol=http"
+S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 
-SRC_URI = "git://dev.openbossa.org/mamona/projects/mamonaim_e_applet.git;protocol=http"
-
-S = "${WORKDIR}/git"
+do_configure_prepend() {
+        ./autogen.sh
+}
 
 # E Applet
 FILES_${PN} = "\
@@ -30,7 +33,3 @@ FILES_${PN}-dev = "\
 FILES_${PN}-dbg = "\
             ${libdir}/enlightenment/modules/mamonaim/*/.debug \
         "
-
-do_configure_prepend() {
-    ./autogen.sh
-}
