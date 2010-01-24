@@ -189,18 +189,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
     except OSError:
         raise Exception("Executing shasum failed")
 
-    if no_checksum == True:	# we do not have conf/checksums.ini entry
-        try:
-            file = open("%s/checksums.ini" % bb.data.getVar("TMPDIR", data, 1), "a")
-        except:
-            return False
-
-        if not file:
-            raise Exception("Creating checksums.ini failed")
-        
-        file.write("[%s]\nmd5=%s\nsha256=%s\n\n" % (src_uri, md5data, shadata))
-        file.close()
-
+    if no_checksum == True:	# we do not have SRC_URI checksums
         from string import maketrans
         trtable = maketrans("", "")
         uname = src_uri.split("/")[-1].translate(trtable, "-+._")
@@ -217,8 +206,6 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
         ufile.close()
 
         if not bb.data.getVar("OE_STRICT_CHECKSUMS",data, True):
-            bb.note("This package has no entry in checksums.ini, please add one")
-            bb.note("\n[%s]\nmd5=%s\nsha256=%s" % (src_uri, md5data, shadata))
             bb.note("This package has no checksums in corresponding recipe, please add")
             bb.note("SRC_URI = \"%s;name=%s\"\nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (src_uri, uname, uname, md5data, uname, shadata))
             return True
