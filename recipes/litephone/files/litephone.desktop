@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Litephone
+Comment=Ligthweight Qt telephony app
+Exec=litephone
+Icon=litephone-mobile
+Terminal=false
+Type=Application
+Categories=Applications;
+StartupNotify=true
