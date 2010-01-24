@@ -35,7 +35,7 @@ AC_CONFIG_SRCDIR([WebCore/config.h])
 
 dnl # Libtool library version, not to confuse with API version
 dnl # see http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html#Libtool-versioning
-LIBWEBKITGTK_VERSION=15:0:13
+LIBWEBKITGTK_VERSION=16:0:14
 AC_SUBST([LIBWEBKITGTK_VERSION])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects tar-ustar])
@@ -190,7 +190,7 @@ if test "$with_hildon" = "yes"; then
 fi
 
 # minimum base dependencies
-LIBSOUP_REQUIRED_VERSION=2.27.91
+LIBSOUP_REQUIRED_VERSION=2.28.2
 CAIRO_REQUIRED_VERSION=1.6
 FONTCONFIG_REQUIRED_VERSION=2.4
 FREETYPE2_REQUIRED_VERSION=9.0
@@ -291,14 +291,6 @@ AC_ARG_ENABLE(optimizations,
               [if test "$enable_debug" = "yes"; then enable_optimizations="no"; else enable_optimizations="yes"; fi])
 AC_MSG_RESULT([$enable_optimizations])
 
-# check whether to enable dashboard support
-AC_MSG_CHECKING([whether to enable Dashboard support])
-AC_ARG_ENABLE(dashboard_support,
-              AC_HELP_STRING([--enable-dashboard-support],
-                             [enable Dashboard support [default=yes]]),
-              [],[enable_dashboard_support="yes"])
-AC_MSG_RESULT([$enable_dashboard_support])
-
 # check whether to enable 3D transforms support
 AC_MSG_CHECKING([whether to enable support for 3D Transforms])
 AC_ARG_ENABLE(3D_transforms,
@@ -378,6 +370,14 @@ AC_ARG_ENABLE(video,
                              [enable HTML5 video support [default=yes]]),
               [],[enable_video="yes"])
 AC_MSG_RESULT([$enable_video])
+
+# check whether to enable XHTML-MP support
+AC_MSG_CHECKING([whether to enable XHTML-MP support])
+AC_ARG_ENABLE(xhtmlmp,
+              AC_HELP_STRING([--enable-xhtmlmp],
+                             [enable support for XHTML-MP [default=no]]),
+              [],[enable_xhtmlmp="no"])
+AC_MSG_RESULT([$enable_xhtmlmp])
 
 # check whether to enable XPath support
 AC_MSG_CHECKING([whether to enable XPath support])
@@ -742,7 +742,6 @@ AM_CONDITIONAL([USE_PANGO], [test "$with_font_backend" = "pango"])
 
 # WebKit feature conditionals
 AM_CONDITIONAL([ENABLE_DEBUG],[test "$enable_debug" = "yes"])
-AM_CONDITIONAL([ENABLE_DASHBOARD_SUPPORT],[test "$enable_dashboard_support" = "yes"])
 AM_CONDITIONAL([ENABLE_3D_TRANSFORMS],[test "$enable_3D_transforms" = "yes"])
 AM_CONDITIONAL([ENABLE_CHANNEL_MESSAGING],[test "$enable_channel_messaging" = "yes"])
 AM_CONDITIONAL([ENABLE_JAVASCRIPT_DEBUGGER],[test "$enable_javascript_debugger" = "yes"])
@@ -752,6 +751,7 @@ AM_CONDITIONAL([ENABLE_DATABASE],[test "$enable_database" = "yes"])
 AM_CONDITIONAL([ENABLE_DATALIST],[test "$enable_datalist" = "yes"])
 AM_CONDITIONAL([ENABLE_EVENTSOURCE],[test "$enable_eventsource" = "yes"])
 AM_CONDITIONAL([ENABLE_ICONDATABASE],[test "$enable_icon_database" = "yes"])
+AM_CONDITIONAL([ENABLE_XHTMLMP],[test "$enable_xhtmlmp" = "yes"])
 AM_CONDITIONAL([ENABLE_XPATH],[test "$enable_xpath" = "yes"])
 AM_CONDITIONAL([ENABLE_XSLT],[test "$enable_xslt" = "yes"])
 AM_CONDITIONAL([ENABLE_FILTERS],[test "$enable_filters" = "yes"])
@@ -803,7 +803,6 @@ Build configuration:
 Features:
  3D Transforms                                            : $enable_3D_transforms
  JIT compilation                                          : $enable_jit
- Dashboard support                                        : $enable_dashboard_support
  Filters support                                          : $enable_filters
  Geolocation support                                      : $enable_geolocation
  JavaScript debugger/profiler support                     : $enable_javascript_debugger
@@ -825,6 +824,7 @@ Features:
  WML support                                              : $enable_wml
  Web Sockets support                                      : $enable_web_sockets
  Web Workers support                                      : $enable_workers
+ XHTML-MP support                                         : $enable_xhtmlmp
  XPATH support                                            : $enable_xpath
  XSLT support                                             : $enable_xslt
 GTK+ configuration:

@@ -1,9 +1,12 @@
+DESCRIPTION = "GNOME Games"
+HOMEPAGE = "http://live.gnome.org/GnomeGames/"
+SECTION = "x11/gnome"
 LICENSE = "GPL"
 DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer virtual/libsdl libsdl-mixer"
 
 inherit gnome distutils-base gconf
 
-PR = "r7"
+PR = "r2"
 
 SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
            "
