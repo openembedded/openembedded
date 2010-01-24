@@ -1,13 +1,7 @@
-DESCRIPTION = "Video Disk Recorder (VDR) is a digital sat-receiver program using Linux and DVB technologies. It allows one to record MPEG2 streams, as well as output the stream to TV. It is also possible to watch DVDs (hardware accelerated) with some comfort and use an IR remote control."
-AUTHOR = "Klaus Schmidinger"
-LICENSE = "GPLv2"
-HOMEPAGE = "http://www.tvdr.de"
+require vdr.inc
 PR = "r2"
 
-DEPENDS = "fontconfig freetype gettext libcap jpeg virtual/libintl"
-
-SRC_URI = "ftp://ftp.tvdr.de/vdr/Developer/${P}.tar.bz2 \
-           file://fixpaths.patch;patch=1 \
+SRC_URI += " file://fixpaths.patch;patch=1 \
            file://cplusplus.patch;patch=1 \
            file://disable_plugin.patch;patch=1 \
            file://linkerflags.patch;patch=1 \
@@ -27,7 +21,7 @@ do_install () {
                  'VIDEODIR=/var/lib/vdr/video' \
                  'PLUGINLIBDIR=${PLUGINDIR}' \
                  'LOCDIR=${datadir}/locale' \
-                 install 
+                 install
 }
 
 PACKAGES_DYNAMIC += "vdr-plugin-*"
@@ -39,4 +33,3 @@ python populate_packages_prepend () {
 
 FILES_${PN} = "${bindir}/* /var/lib/vdr/conf/* ${sysconfdir}/*"
 FILES_${PN}-dbg += "${PLUGINDIR}/.debug/*"
-
