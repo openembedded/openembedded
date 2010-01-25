@@ -4,5 +4,8 @@
     <match key="info.capabilities" contains="input.touchpad">
       <merge key="input.x11_driver" type="string">tslib</merge>
     </match>
+    <match key="info.capabilities" contains="input.touchscreen">
+      <merge key="input.x11_driver" type="string">tslib</merge>
+    </match>
   </device>
 </deviceinfo>
