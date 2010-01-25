@@ -1,6 +1,6 @@
 require boost-14x.inc
 
-PR = "{INC_PR}.1"
+PR = "${INC_PR}.1"
 
 SRC_URI = "http://sodium.resophonic.com/boost-cmake/1.41.0.cmake0/boost-1.41.0.cmake0.tar.gz;name=tarball \
            file://1.41.0_uclibc.patch;patch=1 \
