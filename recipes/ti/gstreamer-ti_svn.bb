@@ -4,7 +4,7 @@ DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 SRCREV = "573"
 # Again, no '.' in PWD allowed :(
 PV = "svnr${SRCREV}"
-PR = "r41"
+PR = "r43"
 
 GST_TI_RC_SCRIPT_omap3 = "gstreamer-ti-omap3530-rc.sh"
 GST_TI_RC_SCRIPT_dm6446="gstreamer-ti-dm6446-rc.sh"
@@ -77,6 +77,8 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 PACKAGES += "gstreamer-ti-demo-script"
 
 RDEPENDS_gstreamer-ti-demo-script = "${PN}"
+
+RRECOMMENDS_${PN}_append_omap3 = " ti-codecs-omap3530 ti-sdma-module ti-cmem-module ti-lpm-module ti-dsplink-module"
 
 FILES_gstreamer-ti-demo-script = "${installdir}/gst/*"
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so ${sysconfdir}"
