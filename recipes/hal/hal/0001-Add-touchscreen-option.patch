@@ -1,0 +1,28 @@
+From e2614c85992663c006184141e552f8b6920a9873 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Mon, 25 Jan 2010 10:58:14 +0100
+Subject: [PATCH] Add touchscreen option
+
+If a device sets the ABS_PRESSURE bit mark it as a touchscreen
+---
+ hald/linux/device.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/hald/linux/device.c b/hald/linux/device.c
+index e7c9d4f..a4ff96f 100644
+--- a/hald/linux/device.c
++++ b/hald/linux/device.c
+@@ -1181,6 +1181,10 @@ input_test_abs (HalDevice *d, const char *sysfs_path)
+ 				goto out;
+ 			}
+ 		}
++		if (test_bit (ABS_PRESSURE, bitmask_abs)) {
++			hal_device_add_capability (d, "input.touchscreen");
++			goto out;
++		}
+ 	}
+ out:
+ 	;
+-- 
+1.6.5
+
