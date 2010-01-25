@@ -1,0 +1,49 @@
+From b1ab3c351b8715e1228ec4b9d602c04296d758ea Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Mon, 25 Jan 2010 15:11:05 -0800
+Subject: [PATCH] errno: hide __libc_resp, __libc_errno, and __libc_h_errno
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ libc/inet/resolv.c          |    2 +-
+ libc/misc/internals/errno.c |    5 ++---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/libc/inet/resolv.c b/libc/inet/resolv.c
+index 4087f8d..ee1323e 100644
+--- a/libc/inet/resolv.c
++++ b/libc/inet/resolv.c
+@@ -3018,7 +3018,7 @@ __thread struct __res_state *__resp = &_res;
+  *        relocations.
+  */
+ extern __thread struct __res_state *__libc_resp
+-       __attribute__ ((alias ("__resp")));
++       __attribute__ ((alias ("__resp"))) attribute_hidden;
+ # else
+ #  undef __resp
+ struct __res_state *__resp = &_res;
+diff --git a/libc/misc/internals/errno.c b/libc/misc/internals/errno.c
+index e1b5d7e..11d19ee 100644
+--- a/libc/misc/internals/errno.c
++++ b/libc/misc/internals/errno.c
+@@ -4,15 +4,14 @@
+ __thread int errno;
+ __thread int h_errno;
+ 
+-extern __thread int __libc_errno __attribute__ ((alias ("errno")));
+-extern __thread int __libc_h_errno __attribute__ ((alias ("h_errno")));
++extern __thread int __libc_errno __attribute__ ((alias ("errno"))) attribute_hidden;
++extern __thread int __libc_h_errno __attribute__ ((alias ("h_errno"))) attribute_hidden;
+ #define h_errno __libc_h_errno
+ 
+ #else
+ #include "internal_errno.h"
+ int errno = 0;
+ int h_errno = 0;
+-
+ #ifdef __UCLIBC_HAS_THREADS__
+ libc_hidden_def(errno)
+ weak_alias(errno, _errno)
+-- 
+1.6.3.3
+

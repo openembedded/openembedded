@@ -1,0 +1,35 @@
+Index: git/libc/inet/resolv.c
+===================================================================
+--- git.orig/libc/inet/resolv.c	2010-01-25 13:35:30.395472730 -0800
++++ git/libc/inet/resolv.c	2010-01-25 13:40:18.727455693 -0800
+@@ -3016,7 +3016,7 @@ __thread struct __res_state *__resp = &_
+  *        relocations.
+  */
+ extern __thread struct __res_state *__libc_resp
+-       __attribute__ ((alias ("__resp")));
++       __attribute__ ((alias ("__resp"))) attribute_hidden;
+ # else
+ #  undef __resp
+ struct __res_state *__resp = &_res;
+Index: git/libc/misc/internals/errno.c
+===================================================================
+--- git.orig/libc/misc/internals/errno.c	2010-01-25 13:35:30.411454765 -0800
++++ git/libc/misc/internals/errno.c	2010-01-25 13:40:18.727455693 -0800
+@@ -4,15 +4,14 @@
+ __thread int errno;
+ __thread int h_errno;
+ 
+-extern __thread int __libc_errno __attribute__ ((alias ("errno")));
+-extern __thread int __libc_h_errno __attribute__ ((alias ("h_errno")));
++extern __thread int __libc_errno __attribute__ ((alias ("errno"))) attribute_hidden;
++extern __thread int __libc_h_errno __attribute__ ((alias ("h_errno"))) attribute_hidden;
+ #define h_errno __libc_h_errno
+ 
+ #else
+ #include "internal_errno.h"
+ int errno = 0;
+ int h_errno = 0;
+-
+ #ifdef __UCLIBC_HAS_THREADS__
+ libc_hidden_def(errno)
+ weak_alias(errno, _errno)
