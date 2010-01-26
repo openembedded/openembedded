@@ -1,0 +1,99 @@
+diff --git a/gobject/gobject.c b/gobject/gobject.c
+index 454d8c2..60c502b 100644
+--- a/gobject/gobject.c
++++ b/gobject/gobject.c
+@@ -182,7 +182,7 @@ static GQuark	            quark_closure_array = 0;
+ static GQuark	            quark_weak_refs = 0;
+ static GQuark	            quark_toggle_refs = 0;
+ static GParamSpecPool      *pspec_pool = NULL;
+-static GObjectNotifyContext property_notify_context = { 0, };
++static GObjectNotifyContext property_notify_context = { G_STATIC_PRIVATE_INIT, };
+ static gulong	            gobject_signals[LAST_SIGNAL] = { 0, };
+ static guint (*floating_flag_handler) (GObject*, gint) = object_floating_flag_handler;
+ G_LOCK_DEFINE_STATIC (construction_mutex);
+@@ -321,7 +321,6 @@ g_object_do_class_init (GObjectClass *class)
+   quark_weak_refs = g_quark_from_static_string ("GObject-weak-references");
+   quark_toggle_refs = g_quark_from_static_string ("GObject-toggle-references");
+   pspec_pool = g_param_spec_pool_new (TRUE);
+-  property_notify_context.quark_notify_queue = g_quark_from_static_string ("GObject-notify-queue");
+   property_notify_context.dispatcher = g_object_notify_dispatcher;
+   
+   class->constructor = g_object_constructor;
+diff --git a/gobject/gobjectnotifyqueue.c b/gobject/gobjectnotifyqueue.c
+index 1d5787b..173a8ed 100644
+--- a/gobject/gobjectnotifyqueue.c
++++ b/gobject/gobjectnotifyqueue.c
+@@ -38,7 +38,7 @@ typedef void (*GObjectNotifyQueueDispatcher) (GObject     *object,
+ /* --- structures --- */
+ struct _GObjectNotifyContext
+ {
+-  GQuark                       quark_notify_queue;
++  GStaticPrivate               key_notify_objects;
+   GObjectNotifyQueueDispatcher dispatcher;
+   GTrashStack                 *_nqueue_trash; /* unused */
+ };
+@@ -68,16 +68,27 @@ static inline GObjectNotifyQueue*
+ g_object_notify_queue_freeze (GObject		   *object,
+ 			      GObjectNotifyContext *context)
+ {
++  GHashTable *objects;
+   GObjectNotifyQueue *nqueue;
+ 
+-  nqueue = g_datalist_id_get_data (&object->qdata, context->quark_notify_queue);
++  objects = g_static_private_get (&context->key_notify_objects);
++  if (!objects)
++    {
++      objects = g_hash_table_new_full (g_direct_hash, g_direct_equal,
++	  NULL, g_object_notify_queue_free);
++
++      g_static_private_set (&context->key_notify_objects, objects,
++	  (GDestroyNotify) g_hash_table_unref);
++    }
++
++  nqueue = g_hash_table_lookup (objects, object);
+   if (!nqueue)
+     {
+       nqueue = (void*) g_list_alloc ();
+       memset (nqueue, 0, sizeof (*nqueue));
+       nqueue->context = context;
+-      g_datalist_id_set_data_full (&object->qdata, context->quark_notify_queue,
+-				   nqueue, g_object_notify_queue_free);
++
++      g_hash_table_insert (objects, object, nqueue);
+     }
+ 
+   g_return_val_if_fail (nqueue->freeze_count < 65535, nqueue);
+@@ -94,6 +105,7 @@ g_object_notify_queue_thaw (GObject            *object,
+   GParamSpec *pspecs_mem[16], **pspecs, **free_me = NULL;
+   GSList *slist;
+   guint n_pspecs = 0;
++  GHashTable *objects;
+ 
+   g_return_if_fail (nqueue->freeze_count > 0);
+ 
+@@ -119,7 +131,10 @@ g_object_notify_queue_thaw (GObject            *object,
+ 
+       pspecs[n_pspecs++] = pspec;
+     }
+-  g_datalist_id_set_data (&object->qdata, context->quark_notify_queue, NULL);
++  objects = g_static_private_get (&context->key_notify_objects);
++  g_hash_table_remove (objects, object);
++  if (g_hash_table_size (objects) == 0)
++    g_static_private_set (&context->key_notify_objects, NULL, NULL);
+ 
+   if (n_pspecs)
+     context->dispatcher (object, n_pspecs, pspecs);
+@@ -162,7 +177,13 @@ static inline GObjectNotifyQueue*
+ g_object_notify_queue_from_object (GObject              *object,
+ 				   GObjectNotifyContext *context)
+ {
+-  return g_datalist_id_get_data (&object->qdata, context->quark_notify_queue);
++  GHashTable *objects;
++
++  objects = g_static_private_get (&context->key_notify_objects);
++  if (objects == NULL)
++    return NULL;
++
++  return g_hash_table_lookup (objects, object);
+ }
+ 

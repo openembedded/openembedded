@@ -1,0 +1,11 @@
+--- glib-2.22.1/glib/gthread.h.orig	2009-10-13 22:53:23.000000000 +0200
++++ glib-2.22.1/glib/gthread.h	2009-10-13 23:34:59.000000000 +0200
+@@ -341,7 +341,7 @@
+ G_INLINE_FUNC gboolean
+ g_once_init_enter (volatile gsize *value_location)
+ {
+-  if G_LIKELY ((gpointer) g_atomic_pointer_get (value_location) != NULL)
++  if G_LIKELY ((gpointer) g_atomic_pointer_get ((volatile gpointer *)value_location) != NULL)
+     return FALSE;
+   else
+     return g_once_init_enter_impl (value_location);
