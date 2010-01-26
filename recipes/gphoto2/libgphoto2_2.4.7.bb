@@ -22,6 +22,12 @@ OE_LT_RPATH_ALLOW[export]="1"
 
 EXTRA_OECONF = " --with-drivers=all ac_cv_lib_ltdl_lt_dlcaller_register=yes"
 
+do_configure_append() {
+	cd ${S}/libgphoto2_port/
+	autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
+	cd ${S}
+}
+
 do_install_append() {
     install -d ${D}${datadir}/hal/fdi/information/20thirdparty
     install -m 0644 ${WORKDIR}/*.fdi ${D}${datadir}/hal/fdi/information/20thirdparty/
