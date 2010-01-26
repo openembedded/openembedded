@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.9.5.9+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 inherit distutils update-rc.d
 
@@ -28,6 +28,12 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/frameworkd ${D}${sysconfdir}/init.d/
 	install -m 0644 ${WORKDIR}/frameworkd.conf ${D}${sysconfdir}
+}
+
+pkg_postinst_${PN} () {
+	echo "NOTE: if you have old contacts without field types and the"
+	echo "      tel: prefix instead please use the remove-tel script"
+	echo "      from http://wiki.shr-project.org/trac/wiki/new-opimd"
 }
 
 RDEPENDS_${PN} += "\
