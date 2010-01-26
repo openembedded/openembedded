@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -22,7 +22,7 @@ DEFAULT_PREFERENCE_jornada6xx = "-1"
 DEFAULT_PREFERENCE_jornada7xx = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.2.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.5.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI[kernel.md5sum] = "260551284ac224c3a43c4adac7df4879"
