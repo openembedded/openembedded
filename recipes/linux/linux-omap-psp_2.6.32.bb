@@ -3,12 +3,12 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm"
+COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook"
 
-SRCREV = "2b94bb77b4d5364b4294210ad5ca96bad1b67dba"
+SRCREV = "5f98f4d71c5835c406aa8014842b04a7ad1c9b06"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PR_append = "+gitr${SRCREV}"
+MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=master \
            file://0005-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board.patch;patch=1 \
@@ -19,7 +19,8 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://dss2/0016-video-add-timings-for-hd720.patch;patch=1 \
            file://holes.patch;patch=1 \
            file://no-mmc-spew.patch;patch=1 \
-           file://fix-usbgadgets.diff;patch=1 \
+           file://beagleboard/0001-beagleboard-omap3_-foo-_rate_table-omap35x_-foo.patch;patch=1 \
+           file://0001-board-omap3touchbook-make-it-build-against-TI-linux.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
