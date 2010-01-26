@@ -1,8 +1,9 @@
 require gst-plugins.inc
 
-PR = "r6"
+SRC_URI += "file://flvdemux-ecma.diff;patch=1 \
+"
 
-SRC_URI += "file://fix-unit-scale-asseration.patch;patch=1"
+PR = "r1"
 
 inherit gconf 
 
