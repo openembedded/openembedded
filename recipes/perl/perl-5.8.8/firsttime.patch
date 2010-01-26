@@ -1,0 +1,15 @@
+Index: perl-5.8.8/lib/CPAN/FirstTime.pm
+===================================================================
+--- perl-5.8.8.orig/lib/CPAN/FirstTime.pm
++++ perl-5.8.8/lib/CPAN/FirstTime.pm
+@@ -68,9 +68,7 @@ dialog anytime later by typing 'o conf i
+ 
+ ];
+ 
+-    my $manual_conf =
+-	ExtUtils::MakeMaker::prompt("Are you ready for manual configuration?",
+-				    "yes");
++    my $manual_conf = "no";
+     my $fastread;
+     {
+       local $^W;

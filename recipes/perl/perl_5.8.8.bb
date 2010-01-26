@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r31"
+PR = "r32"
 
 # Major part of version
 PVM = "5.8"
@@ -30,6 +30,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://64_debian_enc2xs_inc.patch;patch=1 \
         file://asm-pageh-fix.patch;patch=1 \
         file://shared-ldflags.patch;patch=1 \
+        file://firsttime.patch;patch=1 \
         file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \
