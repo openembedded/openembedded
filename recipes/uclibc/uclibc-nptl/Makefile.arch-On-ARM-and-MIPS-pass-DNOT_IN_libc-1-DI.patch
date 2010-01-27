@@ -12,22 +12,24 @@ Signed-off-by: Khem Raj <raj.khem@gmail.com>
  .../sysdeps/unix/sysv/linux/mips/Makefile.arch     |    1 +
  2 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/libpthread/nptl/sysdeps/unix/sysv/linux/arm/Makefile.arch b/libpthread/nptl/sysdeps/unix/sysv/linux/arm/Makefile.arch
-index 2256d6b..8dcc82c 100644
---- a/libpthread/nptl/sysdeps/unix/sysv/linux/arm/Makefile.arch
-+++ b/libpthread/nptl/sysdeps/unix/sysv/linux/arm/Makefile.arch
-@@ -16,6 +16,7 @@ ifeq ($(UCLIBC_HAS_STDIO_FUTEXES),y)
+Index: git/libpthread/nptl/sysdeps/unix/sysv/linux/arm/Makefile.arch
+===================================================================
+--- git.orig/libpthread/nptl/sysdeps/unix/sysv/linux/arm/Makefile.arch	2010-01-26 20:38:45.000000000 -0800
++++ git/libpthread/nptl/sysdeps/unix/sysv/linux/arm/Makefile.arch	2010-01-26 21:13:54.215450487 -0800
+@@ -16,7 +16,9 @@ ifeq ($(UCLIBC_HAS_STDIO_FUTEXES),y)
  CFLAGS-fork.c = -D__USE_STDIO_FUTEXES__
  endif
  CFLAGS-pthread_once.c = -DNOT_IN_libc=1 -DIS_IN_libpthread=1
 +CFLAGS-pt-__syscall_rt_sigaction.c = -DNOT_IN_libc=1 -DIS_IN_libpthread=1
  CFLAGS-lowlevellock.c = -DNOT_IN_libc=1 -DIS_IN_libpthread=1
++CFLAGS-pt-__syscall_error.c =  -DNOT_IN_libc=1 -DIS_IN_libpthread=1
  
  ASFLAGS-pt-vfork.S = -DNOT_IN_libc=1 -DIS_IN_libpthread=1 -marm
-diff --git a/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch b/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch
-index a7de215..8e7917b 100644
---- a/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch
-+++ b/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch
+ # We always compile it in arm mode because of SAVE_PID macro
+Index: git/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch
+===================================================================
+--- git.orig/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch	2010-01-26 20:38:45.000000000 -0800
++++ git/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch	2010-01-26 20:41:19.455424645 -0800
 @@ -15,6 +15,7 @@ ifeq ($(UCLIBC_HAS_STDIO_FUTEXES),y)
  CFLAGS-fork.c = -D__USE_STDIO_FUTEXES__
  endif
@@ -36,6 +38,3 @@ index a7de215..8e7917b 100644
  
  ASFLAGS-pt-vfork.S = -DNOT_IN_libc=1 -DIS_IN_libpthread=1
  
--- 
-1.6.3.3
-
