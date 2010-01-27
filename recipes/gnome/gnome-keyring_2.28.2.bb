@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME security credential management"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-DEPENDS = " libpam gconf gtk+ libtasn1 libtasn1-native libgcrypt"
+DEPENDS = " gtk+-native libpam gconf gtk+ libtasn1 libtasn1-native libgcrypt"
 
 inherit gnome pkgconfig
 
