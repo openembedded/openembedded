@@ -11,7 +11,7 @@ SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
 SRCREV = "6dccf8e3ad181e8f56b1d2a994ec50a1953a1c2d"
 
 PV = "0.5.14"
-PR = "r1"
+PR = "r2"
 PR_append = "+gitr${SRCREV}"
 
 S = "${WORKDIR}/git"
