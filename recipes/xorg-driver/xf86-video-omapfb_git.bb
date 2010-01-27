@@ -2,14 +2,13 @@ require xorg-driver-video.inc
 
 DESCRIPTION = "X.Org X server -- OMAP display driver"
 
-PR_append = "c"
+PR_append = "d"
 
-SRCREV = "5317aae587a2bf48f07a8c06bfaf7bcbfd23bafc"
+SRCREV = "2ae9a57ebc3236cd0aec6534067b91a5c6916a3a"
 PV = "0.1.1+${PR}+gitr${SRCREV}"
 PE = "1"
 
 SRC_URI = "git://git.pingu.fi/xf86-video-omapfb.git;protocol=http \
-file://0001-omapfb-driver-hack-out-dpms-for-xorg-1.7.x.patch;patch=1 \
           "
 
 S = "${WORKDIR}/git"
