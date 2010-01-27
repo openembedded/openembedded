@@ -1,0 +1,242 @@
+From 8000c07da38b5d0a5571542fa04abd63939e698c Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 27 Jan 2010 08:58:42 +0100
+Subject: [PATCH] powertop: add support for TI OMAP cstates
+
+* based on a TI patch found in a wiki, rediffed against svn
+---
+ Makefile       |    2 +-
+ cpufreqstats.c |    2 +-
+ display.c      |   17 ++++++++------
+ omapcstates.c  |   65 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ powertop.c     |   12 +++++++--
+ powertop.h     |   18 +++++++++++++-
+ 6 files changed, 102 insertions(+), 14 deletions(-)
+ create mode 100644 omapcstates.c
+
+diff --git a/Makefile b/Makefile
+index 68a0cb7..05f73aa 100644
+--- a/Makefile
++++ b/Makefile
+@@ -16,7 +16,7 @@ CC?=gcc
+ #
+ 
+ OBJS = powertop.o config.o process.o misctips.o bluetooth.o display.o suggestions.o wireless.o cpufreq.o \
+-	sata.o xrandr.o ethernet.o cpufreqstats.o usb.o urbnum.o intelcstates.o wifi-new.o
++	sata.o xrandr.o ethernet.o cpufreqstats.o usb.o urbnum.o intelcstates.o omapcstates.o wifi-new.o
+ 	
+ 
+ powertop: $(OBJS) Makefile powertop.h
+diff --git a/cpufreqstats.c b/cpufreqstats.c
+index 7529037..a101362 100644
+--- a/cpufreqstats.c
++++ b/cpufreqstats.c
+@@ -42,7 +42,7 @@ struct cpufreqdata oldfreqs[16];
+ 
+ struct cpufreqdata delta[16];
+ 
+-char cpufreqstrings[6][80];
++char cpufreqstrings[MAX_NUM_PSTATES][80];
+ int topfreq = -1;
+ 
+ static void zap(void)
+diff --git a/display.c b/display.c
+index 3ae27d6..3547ad1 100644
+--- a/display.c
++++ b/display.c
+@@ -91,15 +91,18 @@ int maxwidth = 200;
+ 
+ void setup_windows(void) 
+ {
++        int yline = MAX_NUM_CSTATES;
++
+ 	getmaxyx(stdscr, maxy, maxx);
+ 
+ 	zap_windows();	
+ 
+ 	title_bar_window = subwin(stdscr, 1, maxx, 0, 0);
+-	cstate_window = subwin(stdscr, 7, maxx, 2, 0);
+-	wakeup_window = subwin(stdscr, 1, maxx, 9, 0);
+-	battery_power_window = subwin(stdscr, 2, maxx, 10, 0);
+-	timerstat_window = subwin(stdscr, maxy-16, maxx, 12, 0);
++
++	cstate_window = subwin(stdscr, (yline + 2), maxx, 2, 0);
++	wakeup_window = subwin(stdscr, 1, maxx, (yline + 5), 0);
++	battery_power_window = subwin(stdscr, 2, maxx, (yline + 6), 0);
++	timerstat_window = subwin(stdscr, maxy-16, maxx, (yline + 8), 0);
+ 	maxtimerstats = maxy-16  -2;
+ 	maxwidth = maxx - 18;
+ 	suggestion_window = subwin(stdscr, 3, maxx, maxy-4, 0);	
+@@ -166,18 +169,18 @@ void show_cstates(void)
+ 	int i, count = 0;
+ 	werase(cstate_window);
+ 
+-	for (i=0; i < 10; i++) {
++	for (i=0; i < MAX_CSTATE_LINES; i++) {
+ 		if (i == topcstate+1)
+ 			wattron(cstate_window, A_BOLD);
+ 		else
+ 			wattroff(cstate_window, A_BOLD);			
+-		if (strlen(cstate_lines[i]) && count <= 6) {
++		if (strlen(cstate_lines[i]) && count <= MAX_CSTATE_LINES) {
+ 			print(cstate_window, count, 0, "%s", cstate_lines[i]);
+ 			count++;
+ 		}
+ 	}
+ 
+-	for (i=0; i<6; i++) {
++	for (i=0; i<MAX_NUM_PSTATES; i++) {
+ 		if (i == topfreq+1)
+ 			wattron(cstate_window, A_BOLD);
+ 		else
+diff --git a/omapcstates.c b/omapcstates.c
+new file mode 100644
+index 0000000..b062449
+--- /dev/null
++++ b/omapcstates.c
+@@ -0,0 +1,65 @@
++/*
++ *  * Copyright 2008, Texas Instruments Incorporated.
++ *   *
++ *    * This file prints the C states supported by the OMAP processor.
++ *     * (Based on intelcstates.c)
++ *      *
++ *       * This program file is free software; you can redistribute it and/or modify it
++ *        * under the terms of the GNU General Public License as published by the
++ *         * Free Software Foundation; version 2 of the License.
++ *          *
++ *           * This program is distributed in the hope that it will be useful, but WITHOUT
++ *            * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ *             * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++ *              * for more details.
++ *               *
++ *                * You should have received a copy of the GNU General Public License
++ *                 * along with this program in a file named COPYING; if not, write to the
++ *                  * Free Software Foundation, Inc.,
++ *                   * 51 Franklin Street, Fifth Floor,
++ *                    * Boston, MA 02110-1301 USA
++ *                     */
++
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdint.h>
++#include <sys/types.h>
++#include <dirent.h>
++#include <ctype.h>
++
++#include "powertop.h"
++
++
++#if defined(OMAP3)
++/**
++ *  * print_omap3_cstates() - Prints the list of supported C-states.
++ *   *
++ *    * This functions uses standard sysfs interface of the cpuidle framework
++ *     * to extract the information of the C-states supported by the Linux
++ *      * kernel. 
++ *       **/
++void print_omap3_cstates(void)
++{
++	DIR *dir;
++	struct dirent *entry;
++
++	dir = opendir("/sys/devices/system/cpu/cpu0/cpuidle");
++
++	if (dir) {
++		printf(_("Supported C-states : "));
++
++		while ((entry = readdir(dir))) {
++			if (strlen(entry->d_name) < 3)
++				continue;
++
++			printf("C%s ", entry->d_name);
++		}
++		printf("\n");
++
++		closedir(dir);
++	}
++}
++#endif
++
+diff --git a/powertop.c b/powertop.c
+index 1a81cb4..92b6157 100644
+--- a/powertop.c
++++ b/powertop.c
+@@ -813,7 +813,7 @@ void print_battery_sysfs(void)
+ 	show_acpi_power_line(rate, cap, prev_bat_cap - cap, time(NULL) - prev_bat_time);
+ }
+ 
+-char cstate_lines[12][200];
++char cstate_lines[MAX_CSTATE_LINES][200];
+ 
+ void usage()
+ {
+@@ -955,7 +955,7 @@ int main(int argc, char **argv)
+ 		}
+ 
+ 		memset(&cstate_lines, 0, sizeof(cstate_lines));
+-		topcstate = -4;
++		topcstate = -(MAX_NUM_CSTATES);
+ 		if (totalevents == 0 && maxcstate <= 1) {
+ 			sprintf(cstate_lines[5],_("< Detailed C-state information is not available.>\n"));
+ 		} else {
+@@ -969,7 +969,7 @@ int main(int argc, char **argv)
+ 			sprintf(cstate_lines[1], _("C0 (cpu running)        (%4.1f%%)\n"), percentage);
+ 			if (percentage > 50)
+ 				topcstate = 0;
+-			for (i = 0; i < 8; i++)
++			for (i = 0; i < MAX_NUM_CSTATES; i++)
+ 				if (cur_usage[i]) {
+ 					sleept = (cur_duration[i] - last_duration[i]) / (cur_usage[i] - last_usage[i]
+ 											+ 0.1) / FREQ;
+@@ -1236,3 +1236,9 @@ int main(int argc, char **argv)
+ 
+ 	return 0;
+ }
++
++#if defined (__I386__)
++ 	print_intel_cstates();
++#elif defined (OMAP3)
++	print_omap3_cstates();
++#endif
+diff --git a/powertop.h b/powertop.h
+index 8732ce9..a281183 100644
+--- a/powertop.h
++++ b/powertop.h
+@@ -30,6 +30,20 @@
+ 
+ #define VERSION "1.12"
+ 
++#if defined(__I386__)
++#define MAX_NUM_CSTATES 4
++#define MAX_NUM_PSTATES 5
++
++#elif defined(OMAP3)
++#define MAX_NUM_CSTATES 7
++#define MAX_NUM_PSTATES 5
++
++#else
++#error "No valid architecture is defined."
++#endif
++
++#define MAX_CSTATE_LINES (MAX_NUM_CSTATES + 3)
++
+ struct line {
+ 	char	*string;
+ 	int	count;
+@@ -67,8 +81,8 @@ void usb_activity_hint(void);
+ 
+ 
+ 
+-extern char cstate_lines[12][200];
+-extern char cpufreqstrings[6][80];
++extern char cstate_lines[MAX_CSTATE_LINES][200];
++extern char cpufreqstrings[MAX_NUM_PSTATES][80];
+ 
+ extern int topcstate;
+ extern int topfreq;  
+-- 
+1.6.5
+
