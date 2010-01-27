@@ -1,8 +1,12 @@
 require gtk+.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
-EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"
+# Enable xkb selectively
+XKBTOGGLE = " --disable-xkb"
+XKBTOGGLE_angstrom = ""
+
+EXTRA_OECONF = "--with-libtiff ${XKBTOGGLE} --disable-glibtest gio_can_sniff=yes"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 
