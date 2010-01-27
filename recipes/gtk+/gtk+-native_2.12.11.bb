@@ -8,9 +8,9 @@ PROVIDES = "gtk+-native"
 
 EXTRA_OECONF += "--without-libtiff --disable-modules"
 
-PR = "r1"
+PR = "r2"
 
-do_insrtall_append() {
+do_install_append() {
 
     # this tool is required by gnome-keyring 2.26.0 to get built
     # it is written in Python and use only Python xml
