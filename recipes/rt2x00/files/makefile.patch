@@ -1,0 +1,18 @@
+Index: 2009_1110_RT3070_Linux_STA_v2.1.2.0/Makefile
+===================================================================
+--- 2009_1110_RT3070_Linux_STA_v2.1.2.0.orig/Makefile	2010-01-23 23:07:42.000000000 +0100
++++ 2009_1110_RT3070_Linux_STA_v2.1.2.0/Makefile	2010-01-23 23:08:02.000000000 +0100
+@@ -149,11 +149,11 @@
+ ifneq (,$(findstring 2.4,$(LINUX_SRC)))
+ 	cp -f os/linux/Makefile.4 $(RT28xx_DIR)/os/linux/Makefile
+ 	make -C $(RT28xx_DIR)/os/linux/
+-	cp -f $(RT28xx_DIR)/os/linux/rt$(CHIPSET)sta.o /tftpboot
++	cp -f $(RT28xx_DIR)/os/linux/rt$(CHIPSET)sta.o $(RT28xx_DIR)
+ else
+ 	cp -f os/linux/Makefile.6 $(RT28xx_DIR)/os/linux/Makefile
+ 	make  -C  $(LINUX_SRC) SUBDIRS=$(RT28xx_DIR)/os/linux modules
+-	cp -f $(RT28xx_DIR)/os/linux/rt$(CHIPSET)sta.ko /tftpboot
++	cp -f $(RT28xx_DIR)/os/linux/rt$(CHIPSET)sta.ko $(RT28xx_DIR)
+ endif	
+ 
+ clean:
