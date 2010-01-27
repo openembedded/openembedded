@@ -152,14 +152,13 @@ do_install () {
     # DSPLINK test app module un/load scripts
     install ${WORKDIR}/loadmodules-ti-dsplink-apps.sh ${D}/${installdir}/dsplink/apps
     install ${WORKDIR}/unloadmodules-ti-dsplink-apps.sh ${D}/${installdir}/dsplink/apps
+    
+    # install the complete tree as well
+    install -d ${D}${LINK_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${D}${LINK_INSTALL_DIR_RECIPE}
 }
 
-do_stage () {
-    install -d ${LINK_INSTALL_DIR}
-    cp -pPrf ${S}/* ${LINK_INSTALL_DIR}
-}
-
-INHIBIT_PACKAGE_STRIP = "1"
+require ti-staging.inc
 
 PACKAGES += " ti-dsplink-apps" 
 FILES_ti-dsplink-apps = "${installdir}/dsplink/*"

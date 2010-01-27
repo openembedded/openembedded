@@ -110,15 +110,13 @@ do_install() {
 		fi
 		}
 	done
+
+    # Stage the complete tree as well
+    install -d ${D}${CE_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${D}${CE_INSTALL_DIR_RECIPE}
 }
 
-
-# We can't use CE_INSTALL_DIR directly since we redefined it earlier on
-do_stage() {
-    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CE_INSTALL_DIR_RECIPE}
-    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CE_INSTALL_DIR_RECIPE}
-}
-
+require ti-staging.inc
 
 RDEPENDS_ti-codec-engine-apps = "ti-cmem-module"
 RDEPENDS_append_dm6446   = " ti-dsplink-module"
@@ -126,7 +124,6 @@ RDEPENDS_append_omap3    = " ti-dsplink-module"
 RDEPENDS_append_omapl138 = " ti-dsplink-module"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-INHIBIT_PACKAGE_STRIP = "1"
 PACKAGES += "ti-codec-engine-apps"
 FILES_ti-codec-engine-apps = "${installdir}/codec-engine-apps/*"
 INSANE_SKIP_ti-codec-engine-apps = True
