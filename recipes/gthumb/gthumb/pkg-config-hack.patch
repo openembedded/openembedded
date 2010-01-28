@@ -1,0 +1,7 @@
+Index: gthumb-2.10.11/add-include-prefix
+===================================================================
+--- gthumb-2.10.11.orig/add-include-prefix
++++ gthumb-2.10.11/add-include-prefix
+@@ -1 +1 @@
+-sed -e 's/^/ /' -e 's/ \+$//' -e 's/ / -I /g' -e 's/^ \+//'
++sed -e 's|^| |' -e 's| \+$||' -e 's| | -I HACK_STAGING_DIR_HOST|g' -e 's|^ \+||'
