@@ -50,3 +50,4 @@ PREFERRED_VERSION_qt4-x11-free-gles = "${ANGSTROM_QT_VERSION}"
 # Downgraded
 # python-pygtk_2.16.0 is accessing non-existent /usr/share/pygobject/2.0/codegen/codegen.py
 PREFERRED_VERSION_python-pygtk = "2.10.4"
+PREFERRED_VERSION_pulseaudio = "0.9.15"
