@@ -9,10 +9,10 @@ DEPENDS = "dbus gstd"
 RDEPENDS_${PN} = "gstd alsa-utils-amixer"
 RRECOMMENDS_${PN} = "qt4-embedded-plugin-mousedriver-tslib"
 
-SRCREV = "ed01b199780912423644f3f05f9c796f66d9209f"
+SRCREV = "b5c93e9d017d14c945c30b0cb47fb00cbf41b12b"
 
 PV = "1.0"
-PR = "r5"
+PR = "r6"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://freondemo.git.sourceforge.net/gitroot/freondemo/freondemo;protocol=git \
