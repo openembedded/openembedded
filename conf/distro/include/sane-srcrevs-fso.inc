@@ -20,7 +20,7 @@ SRCREV_pn-mickeydbus2 ?= "${FSO_CORNUCOPIA_SRCREV}"
 
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"
-SRCREV_pn-frameworkd ?= "439300083459fe66cb93aca20cee185f6fcc52f5"
+SRCREV_pn-frameworkd ?= "e3d6339c5d69e0791c4633f86363159e56126075"
 SRCREV_pn-frameworkd-config-shr_FSO_REV ?= ${SRCREV_pn-frameworkd}
 SRCREV_pn-fso-abyss ?= "aaa3c48296c8589d845f2b6e4314b794750d91cc"
 SRCREV_pn-fso-term ?= "aa0b9c26dee3918a5e9d2809bb36335bda276a0d"
