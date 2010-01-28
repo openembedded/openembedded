@@ -2,7 +2,7 @@ DESCRIPTION = "ConsoleKit is a framework for defining and tracking users, login 
 LICENSE = "GPLv2"
 DEPENDS = "policykit libpam dbus"
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome
 
@@ -19,6 +19,6 @@ PACKAGES += "pam-plugin-ck-connector"
 FILES_${PN} += "${libdir}/ConsoleKit ${datadir}/dbus-1 ${datadir}/PolicyKit"
 FILES_${PN}-dbg += ""${libdir}/security/.debug/*.so"
 FILES_pam-plugin-ck-connector += "${libdir}/security/*.so"
-
+RDEPENDS_pam-plugin-ck-connector += "${PN}"
 
 
