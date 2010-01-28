@@ -270,4 +270,5 @@ RDEPENDS_${PN} += "\
 		rtmom \
 		ventura \
 		emtooth \
+		podboy \
 "

@@ -3,6 +3,8 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ZPL"
 
+RPROVIDES_${PN} += " zope-interfaces"
+
 inherit distutils
 
 PR = "r1"
