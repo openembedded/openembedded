@@ -5,12 +5,12 @@ SECTION = "x11/applications"
 LICENSE = "GPLv2"
 DEPENDS = "elementary eina edbus"
 
-SRCREV = "41"
+SRCREV = "43"
 PV = "0.1+svnr${SRCPV}"
 PR = "r0"
 
-SRC_URI = "svn://emtooth.googlecode.com/svn;module=trunk;proto=http"
+SRC_URI = "svn://emtooth.googlecode.com/svn/trunk;module=app;proto=http"
 
-S = "${WORKDIR}/trunk"
+S = "${WORKDIR}/app"
 
 inherit pkgconfig autotools
