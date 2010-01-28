@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r4"
+PR = "r5"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -145,6 +145,7 @@ RDEPENDS_task-gnome-pulseaudio = " \
  "
 
 RDEPENDS_task-gnome-themes = " \
+  angstrom-gnome-icon-theme-enable \
   gnome-icon-theme \
   gnome-themes \
   gtk-engine-clearlooks \
