@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.caside.lancs.ac.uk/java_bt.php"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 openobex bluez-libs"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://www.caside.lancs.ac.uk/bt/obexpush.tar.gz \
            file://add-obextool.patch;patch=1 \
@@ -16,7 +16,7 @@ inherit update-rc.d
 INITSCRIPT_NAME = "opd"
 INITSCRIPT_PARAMS = "defaults 33 9"
 
-export GLIBINC = "-I${STAGING_INCDIR}/glib-2.0"
+export GLIBINC = "-I${STAGING_INCDIR}/glib-2.0 -I${STAGING_LIBDIR}/glib-2.0/include"
 export GLIBLIB = "-I${STAGING_LIBDIR} -lglib-2.0"
 export OBEXINC = "-I${STAGING_INCDIR}"
 export OBEXLIB = "${LDFLAGS} -lopenobex"

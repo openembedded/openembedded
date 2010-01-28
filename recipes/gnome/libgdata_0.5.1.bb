@@ -8,6 +8,8 @@ SRC_URI += " \
            file://gtk-doc.make \
 "
 
+PARALLEL_MAKE = ""
+
 do_configure_prepend() {
     cp ${WORKDIR}/gtk-doc.make ${S}/
     sed -i -e s:docs::g ${S}/Makefile.am

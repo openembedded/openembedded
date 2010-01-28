@@ -10,5 +10,5 @@ EXTRA_OEMAKE = "CC='${CC}' CFLAGS='${CFLAGS}' LD='${CC}'"
 
 do_install () {
         install -d ${D}${bindir}
-        install -m 755 ${PN} ${D}${bindir}
+        install -m 755 ${BPN} ${D}${bindir}
 }

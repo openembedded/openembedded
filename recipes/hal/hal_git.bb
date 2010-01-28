@@ -13,7 +13,7 @@ SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
         file://99_hal"
 
 PV = "0.5.9.1+git${SRCDATE}"
-PR = "r7"
+PR = "r8"
 
 S = "${WORKDIR}/git"
 

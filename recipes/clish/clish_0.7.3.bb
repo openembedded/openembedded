@@ -5,7 +5,8 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 PR ="r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/clish/clish-0.7.1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/clish/clish-${PV}.tar.gz \
+           file://configure.patch;patch=1"
 
 PARALLEL_MAKE=""
 

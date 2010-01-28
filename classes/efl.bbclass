@@ -45,7 +45,9 @@ FILES_${PN}-dev   += "${bindir}/${PN}-config \
                       ${libdir}/lib*.la \
                       ${libdir}/*.so \
                       ${libdir}/${PN}/*.la \
-                      ${libdir}/${PN}/*/*.la"
+                      ${libdir}/${PN}/*/*.la \
+                      ${datadir}/${PN}/edje_externals \
+"
 
 FILES_${PN}-static += "${libdir}/${PN}/*.a \
                        ${libdir}/${PN}/*/*.a \

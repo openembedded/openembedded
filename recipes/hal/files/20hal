@@ -11,6 +11,7 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/hald
+CACHEDIR=/var/cache/hald
 PIDDIR=/var/run/hald
 PIDFILE=$PIDDIR/pid
 NAME=hald
@@ -25,6 +26,10 @@ do_start() {
   if [ ! -d $PIDDIR ]; then
     mkdir -p $PIDDIR
     chown $DAEMONUSER:$DAEMONUSER $PIDDIR
+  fi
+  if [ ! -d $CACHEDIR ]; then
+    mkdir -p $CACHEDIR
+    chown $DAEMONUSER:$DAEMONUSER $CACHEDIR
   fi
 	echo "Starting $DESC" "$NAME"
 	start-stop-daemon --start --pidfile $PIDFILE \

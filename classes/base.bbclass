@@ -151,9 +151,27 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
         
         file.write("[%s]\nmd5=%s\nsha256=%s\n\n" % (src_uri, md5data, shadata))
         file.close()
+
+        from string import maketrans
+        trtable = maketrans("", "")
+        uname = src_uri.split("/")[-1].translate(trtable, "-+._")
+
+        try:
+            ufile = open("%s/%s.sum" % (bb.data.getVar("TMPDIR", data, 1), uname), "wt")
+        except:
+            return False
+
+        if not ufile:
+            raise Exception("Creating %s.sum failed" % uname)
+
+        ufile.write("SRC_URI = \"%s;name=%s\"\nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (src_uri, uname, uname, md5data, uname, shadata))
+        ufile.close()
+
         if not bb.data.getVar("OE_STRICT_CHECKSUMS",data, True):
             bb.note("This package has no entry in checksums.ini, please add one")
             bb.note("\n[%s]\nmd5=%s\nsha256=%s" % (src_uri, md5data, shadata))
+            bb.note("This package has no checksums in corresponding recipe, please add")
+            bb.note("SRC_URI = \"%s;name=%s\"\nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (src_uri, uname, uname, md5data, uname, shadata))
             return True
         else:
             bb.note("Missing checksum")

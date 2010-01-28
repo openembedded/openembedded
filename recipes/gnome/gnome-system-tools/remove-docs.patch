@@ -1,0 +1,12 @@
+Index: gnome-system-tools-2.27.1/Makefile.am
+===================================================================
+--- gnome-system-tools-2.27.1.orig/Makefile.am
++++ gnome-system-tools-2.27.1/Makefile.am
+@@ -1,6 +1,6 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-SUBDIRS = doc icons interfaces pixmaps src po
++SUBDIRS = icons interfaces pixmaps src po
+ 
+ distuninstallcheck_listfiles = find . -type f -print | grep -v scrollkeeper
+ 
