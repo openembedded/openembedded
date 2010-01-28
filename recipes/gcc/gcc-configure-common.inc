@@ -22,6 +22,7 @@ OBJC ?= ",objc"
 # when linking shared libraries further in the build like (gnutls)
 
 OPTSPACE_linux-gnuspe ?= ""
+OPTSPACE_linux-uclibcspe ?= ""
 OPTSPACE ?= "--enable-target-optspace"
 
 # gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
