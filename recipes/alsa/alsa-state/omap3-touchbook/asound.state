@@ -1,0 +1,323 @@
+state.omap3beagle {
+	control.1 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		comment.dbmin -6300
+		comment.dbmax 0
+		iface MIXER
+		name 'DAC1 Digital Fine Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		comment.dbmin -6300
+		comment.dbmax 0
+		iface MIXER
+		name 'DAC2 Digital Fine Playback Volume'
+		value.0 63
+		value.1 63
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 2'
+		comment.dbmin 0
+		comment.dbmax 1200
+		iface MIXER
+		name 'DAC1 Digital Coarse Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 2'
+		comment.dbmin 0
+		comment.dbmax 1200
+		iface MIXER
+		name 'DAC2 Digital Coarse Playback Volume'
+		value.0 2
+		value.1 2
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 18'
+		comment.dbmin -2400
+		comment.dbmax 1200
+		iface MIXER
+		name 'DAC1 Analog Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 18'
+		comment.dbmin -2400
+		comment.dbmax 1200
+		iface MIXER
+		name 'DAC2 Analog Playback Volume'
+		value.0 12
+		value.1 12
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'DAC1 Analog Playback Switch'
+		value.0 false
+		value.1 false
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'DAC2 Analog Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 3'
+		comment.dbmin -1200
+		comment.dbmax 600
+		iface MIXER
+		name 'PreDriv Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 3'
+		comment.dbmin -1200
+		comment.dbmax 600
+		iface MIXER
+		name 'Headset Playback Volume'
+		value.0 2
+		value.1 2
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 3'
+		comment.dbmin -1200
+		comment.dbmax 600
+		iface MIXER
+		name 'Carkit Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.12 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 3'
+		comment.dbmin -1200
+		comment.dbmax 600
+		iface MIXER
+		name 'Earpiece Playback Volume'
+		value 0
+	}
+	control.13 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin 0
+		comment.dbmax 3100
+		iface MIXER
+		name 'TX1 Digital Capture Volume'
+		value.0 12
+		value.1 12
+	}
+	control.14 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin 0
+		comment.dbmax 3100
+		iface MIXER
+		name 'TX2 Digital Capture Volume'
+		value.0 0
+		value.1 0
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 5'
+		comment.dbmin 0
+		comment.dbmax 3000
+		iface MIXER
+		name 'Analog Capture Volume'
+		value.0 0
+		value.1 0
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 'Sub mic'
+		comment.item.2 AUXR
+		iface MIXER
+		name 'Analog Right Capture Route'
+		value AUXR
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 'Main mic'
+		comment.item.2 'Headset mic'
+		comment.item.3 AUXL
+		comment.item.4 'Carkit mic'
+		iface MIXER
+		name 'Analog Left Capture Route'
+		value AUXL
+	}
+	control.18 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Analog
+		comment.item.1 Digimic1
+		iface MIXER
+		name 'TX2 Capture Route'
+		value Analog
+	}
+	control.19 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Analog
+		comment.item.1 Digimic0
+		iface MIXER
+		name 'TX1 Capture Route'
+		value Analog
+	}
+	control.20 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Voice
+		comment.item.1 DACR1
+		comment.item.2 DACR2
+		comment.item.3 DACL2
+		iface MIXER
+		name 'HandsfreeR Mux'
+		value DACR2
+	}
+	control.21 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Voice
+		comment.item.1 DACL1
+		comment.item.2 DACL2
+		comment.item.3 DACR2
+		iface MIXER
+		name 'HandsfreeL Mux'
+		value DACL2
+	}
+	control.22 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 DACR1
+		comment.item.2 DACR2
+		iface MIXER
+		name 'CarkitR Mux'
+		value Off
+	}
+	control.23 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 DACL1
+		comment.item.2 DACL2
+		iface MIXER
+		name 'CarkitL Mux'
+		value Off
+	}
+	control.24 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 DACR1
+		comment.item.2 DACR2
+		iface MIXER
+		name 'HeadsetR Mux'
+		value DACR2
+	}
+	control.25 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 DACL1
+		comment.item.2 DACL2
+		iface MIXER
+		name 'HeadsetL Mux'
+		value DACL2
+	}
+	control.26 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 DACR1
+		comment.item.2 DACR2
+		comment.item.3 DACL2
+		iface MIXER
+		name 'PredriveR Mux'
+		value Off
+	}
+	control.27 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 DACL1
+		comment.item.2 DACL2
+		comment.item.3 DACR2
+		iface MIXER
+		name 'PredriveL Mux'
+		value Off
+	}
+	control.28 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 DACL1
+		comment.item.2 DACL2
+		comment.item.3 DACR1
+		iface MIXER
+		name 'Earpiece Mux'
+		value Off
+	}
+}
