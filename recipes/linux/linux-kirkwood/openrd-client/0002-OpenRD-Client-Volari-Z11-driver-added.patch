@@ -1,4 +1,4 @@
-From 2ef775d5351693d62e45eefb78408f5a20b2c0ba Mon Sep 17 00:00:00 2001
+From 6b2cdbe52ff2e459d0469f30f9e2f4a15f95bd3b Mon Sep 17 00:00:00 2001
 From: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
 Date: Wed, 2 Dec 2009 10:54:13 +0530
 Subject: [PATCH] OpenRD-Client: Volari Z11 driver added
@@ -16,7 +16,7 @@ Signed-off-by: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
  drivers/video/xgi/XGI_accel.c    |  596 +++
  drivers/video/xgi/XGI_accel.h    |  511 ++
  drivers/video/xgi/XGI_main.h     | 1042 ++++
- drivers/video/xgi/XGI_main_26.c  | 3789 +++++++++++++
+ drivers/video/xgi/XGI_main_26.c  | 3790 +++++++++++++
  drivers/video/xgi/XGIfb.h        |  215 +
  drivers/video/xgi/floatlib.c     |  946 ++++
  drivers/video/xgi/osdef.h        |  153 +
@@ -26,14 +26,14 @@ Signed-off-by: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
  drivers/video/xgi/vb_init.c      | 3376 ++++++++++++
  drivers/video/xgi/vb_init.h      |    7 +
  drivers/video/xgi/vb_release.txt |   44 +
- drivers/video/xgi/vb_setmode.c   |10828 ++++++++++++++++++++++++++++++++++++++
+ drivers/video/xgi/vb_setmode.c   |10829 ++++++++++++++++++++++++++++++++++++++
  drivers/video/xgi/vb_setmode.h   |   40 +
  drivers/video/xgi/vb_struct.h    |  518 ++
  drivers/video/xgi/vb_table.h     | 4406 ++++++++++++++++
  drivers/video/xgi/vb_util.c      |  287 +
  drivers/video/xgi/vb_util.h      |   16 +
  drivers/video/xgi/vgatypes.h     |  325 ++
- 24 files changed, 29550 insertions(+), 0 deletions(-)
+ 24 files changed, 29552 insertions(+), 0 deletions(-)
  create mode 100644 drivers/video/xgi/Makefile
  create mode 100644 drivers/video/xgi/XGI.h
  create mode 100644 drivers/video/xgi/XGI_accel.c
@@ -2287,10 +2287,10 @@ index 0000000..1d73cd5
 +#endif
 diff --git a/drivers/video/xgi/XGI_main_26.c b/drivers/video/xgi/XGI_main_26.c
 new file mode 100644
-index 0000000..53b1d32
+index 0000000..c243d60
 --- /dev/null
 +++ b/drivers/video/xgi/XGI_main_26.c
-@@ -0,0 +1,3789 @@
+@@ -0,0 +1,3790 @@
 +/*
 + * XG20, XG21, XG40, XG42 frame buffer device
 + * for Linux kernels  2.5.x, 2.6.x
@@ -3385,6 +3385,7 @@ index 0000000..53b1d32
 +	}
 +	XGIfb_bpp_to_var(var); /*update ARGB info*/
 +	DEBUGPRN("End of do_set_var");
++
 +//	dumpVGAReg();
 +	return 0;
 +}
@@ -13302,10 +13303,10 @@ index 0000000..b5d6e34
 \ No newline at end of file
 diff --git a/drivers/video/xgi/vb_setmode.c b/drivers/video/xgi/vb_setmode.c
 new file mode 100644
-index 0000000..83a0d92
+index 0000000..eb127c1
 --- /dev/null
 +++ b/drivers/video/xgi/vb_setmode.c
-@@ -0,0 +1,10828 @@
+@@ -0,0 +1,10829 @@
 +#include "osdef.h"
 +
 +#ifdef TC
@@ -17876,6 +17877,7 @@ index 0000000..83a0d92
 +
 +    /* [2004/05/11] Vicent */
 +    XGINew_SetReg1( pVBInfo->P3d4 , 0x53 , ( UCHAR )( XGINew_GetReg1( pVBInfo->P3d4 , 0x53 ) & 0xFD ) ) ;
++    XGINew_SetReg1( pVBInfo->P3c4 , 0x1F , ( UCHAR ) SR1F ) ;
 +}
 +
 +
@@ -24706,7 +24708,7 @@ index 0000000..d29efd2
 +#endif /* _VB_STRUCT_ */
 diff --git a/drivers/video/xgi/vb_table.h b/drivers/video/xgi/vb_table.h
 new file mode 100644
-index 0000000..f073b4b
+index 0000000..973888c
 --- /dev/null
 +++ b/drivers/video/xgi/vb_table.h
 @@ -0,0 +1,4406 @@
@@ -24813,12 +24815,12 @@ index 0000000..f073b4b
 +UCHAR XGI27_cr41[24][8]=
 +{
 +{0x20,0x40,0x60,0x00,0x00,0x00,0x00,0x00},/* 0 CR41 */
-+{0xC4,0x44,0x84,0x00,0x00,0x00,0x00,0x00},/* 1 CR8A */
++{0xC4,0x40,0x84,0x00,0x00,0x00,0x00,0x00},/* 1 CR8A */
 +{0xC4,0x40,0x84,0x00,0x00,0x00,0x00,0x00},/* 2 CR8B */
 +{0xB5,0x13,0xa4,0x00,0x00,0x00,0x00,0x00},/* 3 CR40[7],CR99[2:0],CR45[3:0]*/
 +{0xf0,0xf5,0xf0,0x00,0x00,0x00,0x00,0x00},/* 4 CR59 */
-+{0x90,0x1C,0x24,0x00,0x00,0x00,0x00,0x00},/* 5 CR68 */
-+{0x77,0x77,0x44,0x00,0x00,0x00,0x00,0x00},/* 6 CR69 */
++{0x90,0x90,0x24,0x00,0x00,0x00,0x00,0x00},/* 5 CR68 */
++{0x77,0x67,0x44,0x00,0x00,0x00,0x00,0x00},/* 6 CR69 */
 +{0x77,0x77,0x44,0x00,0x00,0x00,0x00,0x00},/* 7 CR6A */
 +{0xff,0xff,0xff,0x00,0x00,0x00,0x00,0x00},/* 8 CR6D */
 +{0x55,0x55,0x55,0x00,0x00,0x00,0x00,0x00},/* 9 CR80 */
@@ -28236,7 +28238,7 @@ index 0000000..f073b4b
 +
 +UCHAR XG27_CR97 = 0xC1 ;
 +UCHAR XG27_SR36 = 0x30 ;
-+UCHAR XG27_CR8F = 0x09 ;
++UCHAR XG27_CR8F = 0x0C ;
 +UCHAR XG27_CRD0[] = {0,0,0,0,0,0,0,0x82,0x00,0x66,0x01,0x00} ;
 +UCHAR XG27_CRDE[] = {0,0} ;
 +UCHAR XG27_SR40 = 0x04 ;
@@ -29763,5 +29765,5 @@ index 0000000..295ea86
 +#endif
 +
 -- 
-1.6.5.2
+1.6.5.1
 
