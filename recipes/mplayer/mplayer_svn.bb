@@ -13,9 +13,10 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://mplayer-lavc-arm.patch;patch=1 \
        file://fix-exp.diff;patch=1;maxrev=30291 \
 	   file://fix-addrinfo.patch;patch=1;maxrev=30302 \
+       file://fix-avconfig.diff;patch=1;maxrev=30376 \
 "
 
-SRCREV = "30432"
+SRCREV = "30165"
 SRC_URI_append_armv7a = " \
 		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
