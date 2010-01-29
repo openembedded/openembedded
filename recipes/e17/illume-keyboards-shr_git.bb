@@ -21,7 +21,7 @@ illume-keyboard-hebrew \
 illume-keyboard-numeric-alt \
 illume-keyboard-russian \
 illume-keyboard-russian-terminal \
-illume-keyboard-persian"
+illume-keyboard-persian \
 "
 
 PACKAGE_ARCH = "all"
@@ -73,7 +73,7 @@ AUTHOR_illume-keyboard-russian-terminal = "lucky"
 DESCRIPTION_illume-keyboard-russian-terminal = "Illume keyboard with russian layout for the Terminal"
 FILES_illume-keyboard-russian-terminal = "${libdir}/enlightenment/modules/illume/keyboards/russian-terminal"
 
-AUTHOR_illume-keyboard-persian = "alabd"
+AUTHOR_illume-keyboard-persian = "slave"
 DESCRIPTION_illume-keyboard-persian = "Illume keyboard with persian layout"
 FILES_illume-keyboard-persian = "${libdir}/enlightenment/modules/illume/keyboards/persian"
 
