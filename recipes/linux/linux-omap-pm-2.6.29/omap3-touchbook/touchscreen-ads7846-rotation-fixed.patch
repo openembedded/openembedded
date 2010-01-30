@@ -1,0 +1,21 @@
+--- a/drivers/input/touchscreen/ads7846.c	2009-12-21 02:43:57.000000000 -0800
++++ b/drivers/input/touchscreen/ads7846.c	2009-12-21 02:56:03.000000000 -0800
+@@ -596,6 +596,7 @@
+ {
+ 	struct ads7846		*ts = ads;
+ 	struct ads7846_packet	*packet = ts->packet;
++	struct ads7846_platform_data *pdata = ts->spi->dev.platform_data;
+ 	unsigned		Rt;
+ 	u16			x, y, z1, z2;
+ 
+@@ -666,8 +667,8 @@
+ 			dev_dbg(&ts->spi->dev, "DOWN\n");
+ #endif
+ 		}
+-		input_report_abs(input, ABS_X, x);
+-		input_report_abs(input, ABS_Y, y);
++		input_report_abs(input, ABS_X, pdata->x_max - x + pdata->x_min);
++		input_report_abs(input, ABS_Y, pdata->y_max - y + pdata->y_min);
+ 		input_report_abs(input, ABS_PRESSURE, Rt);
+ 
+ 		input_sync(input);
