@@ -70,8 +70,11 @@
 
 #define OMAP3_AC_GPIO		136 //Int1 DRDY
 #define OMAP3_TS_GPIO		162
+#define OMAP3_CHACHA_GPIO	154
 #define TB_BL_PWM_TIMER		9
 #define TB_KILL_POWER_GPIO	168
+
+unsigned int ai_revision = 2;
 
 static struct mtd_partition omap3touchbook_nand_partitions[] = {
 	/* All the partition sizes are listed in terms of NAND block size */
@@ -298,6 +301,10 @@ static struct twl4030_bci_platform_data touchbook_bci_data = {
 	.no_backup_battery	= 1,
 };
 
+static struct twl4030_madc_platform_data touchbook_madc_data = {
+	.irq_line	= 1,
+};
+
 static struct twl4030_platform_data touchbook_twldata = {
 	.irq_base	= TWL4030_IRQ_BASE,
 	.irq_end	= TWL4030_IRQ_END,
@@ -313,6 +320,7 @@ static struct twl4030_platform_data touchbook_twldata = {
 
 	/* TouchBook BCI */
 	.bci		= &touchbook_bci_data,
+	.madc		= &touchbook_madc_data,
 };
 
 static struct i2c_board_info __initdata touchbook_i2c_boardinfo[] = {
@@ -328,10 +336,16 @@ static struct i2c_board_info __initdata touchBook_i2c_boardinfo[] = {
 	{
 		I2C_BOARD_INFO("bq27200", 0x55),
 	},
+//	{
+//		I2C_BOARD_INFO("chacha_mt8c", 0x40),
+//		.irq = OMAP_GPIO_IRQ(OMAP3_CHACHA_GPIO),
+//	},
 };
 
-static int __init omap3_touchbook_i2c_init(void)
+static void __init omap3_touchbook_i2c_init(void)
 {
+	int ret;
+
 	/* Standard TouchBook bus */
 	omap_register_i2c_bus(1, 2600, touchbook_i2c_boardinfo,
 			ARRAY_SIZE(touchbook_i2c_boardinfo));
@@ -340,7 +354,14 @@ static int __init omap3_touchbook_i2c_init(void)
 	omap_register_i2c_bus(3, 100, touchBook_i2c_boardinfo,
 			ARRAY_SIZE(touchBook_i2c_boardinfo));
 
-	return 0;
+/*	ret = gpio_request(OMAP3_CHACHA_GPIO, "chacha_mt8c");
+	if (ret < 0) {
+		printk(KERN_ERR "Failed to request GPIO %d for chacha_mt8c IRQ\n", OMAP3_CHACHA_GPIO);
+		return;
+	}
+
+	gpio_direction_input(OMAP3_CHACHA_GPIO);*/
+	return;
 }
 
 static void __init omap3_ads7846_init(void)
@@ -438,6 +459,7 @@ static struct gpio_keys_button gpio_buttons[] = {
 		.gpio			= 183,
 		.desc			= "power",
 		.wakeup			= 1,
+		.active_low		= 1,
 	},
 };
 
@@ -643,14 +665,25 @@ static int touchbook_backlight_update(struct backlight_device *bd)
 	   - You have (164*0.85) => ~140 levels of brightness.
 	*/
 
-	/* Convert from 0-100 range to 0-140 range */
-	value = (value * 14) / 10 / 2;
+	/* Halve input brightness */
+	value /= 2;
 
 	/* For maximum brightness, just stop the timer... */
 	if(value != bd->props.max_brightness)
 	{
-		omap_dm_timer_set_load(touchbook_backlight_pwm, 1, -164);
-		omap_dm_timer_set_match(touchbook_backlight_pwm, 1, -24 - value);
+		/* Load the appropriate value for 200Hz PWM */
+		u32 period = clk_get_rate(omap_dm_timer_get_fclk(touchbook_backlight_pwm)) / 200;
+
+		/* Minimum duty cycle is 15% */
+		u32 minimum = (period * 3) / 20;
+		u32 maximum = (period * 17) / 20;
+
+		/* Work out match value */
+		u32 match = (maximum * value) / 100;
+
+		/* Start... */
+		omap_dm_timer_set_load(touchbook_backlight_pwm, 1, 0xFFFFFFFF - period - 1);
+		omap_dm_timer_set_match(touchbook_backlight_pwm, 1, 0xFFFFFFFF - minimum - match);
 		omap_dm_timer_write_counter(touchbook_backlight_pwm, -1);
 		//omap_dm_timer_stop(touchbook_backlight_pwm);
 		omap_dm_timer_start(touchbook_backlight_pwm);
@@ -676,7 +709,7 @@ static void __init omap3_touchbook_backlight_init(void)
 	{
 		touchbook_backlight_pwm = omap_dm_timer_request_specific(TB_BL_PWM_TIMER);
 		omap_dm_timer_enable(touchbook_backlight_pwm);
-		omap_dm_timer_set_source(touchbook_backlight_pwm, OMAP_TIMER_SRC_32_KHZ);
+		omap_dm_timer_set_source(touchbook_backlight_pwm, OMAP_TIMER_SRC_SYS_CLK);
 		omap_dm_timer_set_pwm(touchbook_backlight_pwm, 1, 1, OMAP_TIMER_TRIGGER_OVERFLOW_AND_COMPARE);
 
 		bd->props.max_brightness = 100;
@@ -697,6 +730,16 @@ static void omap3_touchbook_poweroff(void)
 	}
 
 	gpio_direction_output(TB_KILL_POWER_GPIO, 0);
+}
+
+static int __init ai_revision_instance(char *str)
+{
+	if (!str)
+		return -EINVAL;
+
+	ai_revision = simple_strtoul(str, NULL, 10);
+
+	return 0;
 }
 
 static void __init omap3_touchbook_init(void)
@@ -732,6 +775,8 @@ static void __init omap3_touchbook_map_io(void)
 	omap2_set_globals_343x();
 	omap2_map_common_io();
 }
+
+early_param("air", ai_revision_instance);
 
 MACHINE_START(OMAP3_TOUCHBOOK, "OMAP3 Touch Book")
 	/* Maintainer: Gregoire Gentil - http://www.alwaysinnovating.com */
