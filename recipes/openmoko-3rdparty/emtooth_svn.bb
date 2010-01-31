@@ -5,7 +5,7 @@ SECTION = "x11/applications"
 LICENSE = "GPLv2"
 DEPENDS = "elementary eina edbus"
 
-SRCREV = "45"
+SRCREV = "46"
 PV = "0.1+svnr${SRCPV}"
 PR = "r0"
 
