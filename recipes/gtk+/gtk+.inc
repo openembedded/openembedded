@@ -51,26 +51,14 @@ RRECOMMENDS_${PN} = " ${NEATSTUFF} "
 RRECOMMENDS_${PN}_linux = " ${NEATSTUFF} glibc-gconv-iso8859-1 "
 RRECOMMENDS_${PN}_linux-gnueabi = " ${NEATSTUFF} glibc-gconv-iso8859-1"
 
-do_stage () {
-	oe_libinstall -so -C gtk libgtk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gdk libgdk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C contrib/gdk-pixbuf-xlib libgdk_pixbuf_xlib-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
-	if test -d modules/other/gail/libgail-util ; then
-		oe_libinstall -so -C modules/other/gail/libgail-util libgailutil ${STAGING_LIBDIR}
-	fi
-
-	autotools_stage_includes
-
-	mkdir -p ${STAGING_LIBDIR}/gtk-2.0/include
-	install -m 0644 gdk/gdkconfig.h ${STAGING_LIBDIR}/gtk-2.0/include/gdkconfig.h
+do_install_append () {
+	mkdir -p ${D}${libdir}/gtk-2.0/include
+	install -m 0644 gdk/gdkconfig.h ${D}${libdir}/gtk-2.0/include/gdkconfig.h
 	# Copy over all headers, since the maemo stuff needs access to the private api. *sigh*
-	cp gtk/*.h ${STAGING_INCDIR}/gtk-2.0/gtk/
+	cp gtk/*.h ${D}${includedir}/gtk-2.0/gtk/
 
 	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
-}
 
-do_install_append () {
 	install -d ${D}${sysconfdir}/gtk-2.0
 	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
 }
