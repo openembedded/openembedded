@@ -1,0 +1,110 @@
+From 3423306f9b0aa3f9f4b41338565e18d9c3bf0bb2 Mon Sep 17 00:00:00 2001
+From: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
+Date: Fri, 25 Dec 2009 15:02:12 +0530
+Subject: [PATCH] ARM: Kirkwood: OpenRD: SD/UART1 selection
+
+To select UART1, pass "uart=232" (for RS232) OR "uart=485" (for RS485) in the
+boot argument. To select SDIO lines pass "uart=no". SDIO lines will be selected
+by default in absence of this parameter.
+
+Signed-off-by: Tanmay Upadhyay <tanmay.upadhyay@einfochips.com>
+---
+ arch/arm/mach-kirkwood/openrd_base-setup.c   |   61 +++++++++++++++++++++++++-
+ arch/arm/mach-kirkwood/openrd_client-setup.c |   59 ++++++++++++++++++++++++-
+ 2 files changed, 117 insertions(+), 3 deletions(-)
+
+Index: git/arch/arm/mach-kirkwood/openrd_base-setup.c
+===================================================================
+--- git.orig/arch/arm/mach-kirkwood/openrd_base-setup.c
++++ git/arch/arm/mach-kirkwood/openrd_base-setup.c
+@@ -15,6 +15,7 @@
+ #include <linux/ata_platform.h>
+ #include <linux/mv643xx_eth.h>
+ #include <linux/gpio.h>
++#include <linux/io.h>
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+ #include <mach/kirkwood.h>
+@@ -51,16 +52,53 @@ static struct mvsdio_platform_data openr
+ };
+ 
+ static unsigned int openrd_base_mpp_config[] __initdata = {
+-	MPP29_GPIO,	
++	MPP12_SD_CLK,
++	MPP13_SD_CMD,
++	MPP14_SD_D0,
++	MPP15_SD_D1,
++	MPP16_SD_D2,
++	MPP17_SD_D3,
++	MPP29_GPIO,
+ 	0
+ };
+ 
++static int uart1;
++
++static void sd_uart_selection(void)
++{
++	char *ptr = NULL;
++
++	/* Parse boot_command_line string uart=no/232/485 */
++	ptr = strstr(boot_command_line, "uart=");
++
++	/* Default is SD. Change if required, for UART */
++	if (ptr != NULL) {
++		if (!strncmp(ptr + 5, "232", 3)) {
++			/* Configure MPP for UART */
++			openrd_base_mpp_config[1] = MPP13_UART1_TXD;
++			openrd_base_mpp_config[2] = MPP14_UART1_RXD;
++
++			uart1 = 232;
++		} else if (!strncmp(ptr + 5, "485", 3)) {
++			/* Configure MPP for UART */
++			openrd_base_mpp_config[1] = MPP13_UART1_TXD;
++			openrd_base_mpp_config[2] = MPP14_UART1_RXD;
++
++			uart1 = 485;
++		}
++	}
++}
++
+ static void __init openrd_base_init(void)
+ {
+ 	/*
+ 	 * Basic setup. Needs to be called early.
+ 	 */
+ 	kirkwood_init();
++
++	/* This function modifies MPP config according to boot argument */
++	sd_uart_selection();
++
+ 	kirkwood_mpp_conf(openrd_base_mpp_config);
+ 
+ 	kirkwood_uart0_init();
+@@ -70,7 +108,26 @@ static void __init openrd_base_init(void
+ 
+ 	kirkwood_ge00_init(&openrd_base_ge00_data);
+ 	kirkwood_sata_init(&openrd_base_sata_data);
+-	kirkwood_sdio_init(&openrd_base_mvsdio_data);
++
++	if (!uart1) {
++		/* Select SD
++		 * Pin # 34: 0 => UART1, 1 => SD */
++		writel(readl(GPIO_OUT(34)) | 4, GPIO_OUT(34));
++
++		kirkwood_sdio_init(&openrd_base_mvsdio_data);
++	} else {
++		/* Select UART1
++		 * Pin # 34: 0 => UART1, 1 => SD */
++		writel(readl(GPIO_OUT(34)) & ~(4), GPIO_OUT(34));
++
++		/* Select RS232 OR RS485
++		 * Pin # 28: 0 => RS232, 1 => RS485 */
++		if (uart1 == 232)
++			writel(readl(GPIO_OUT(28)) & ~(0x10000000),
++				GPIO_OUT(28));
++		else
++			writel(readl(GPIO_OUT(28)) | 0x10000000, GPIO_OUT(28));
++	}
+ 
+ 	kirkwood_i2c_init();
+ }
