@@ -121,6 +121,7 @@ do
                       e-wm \
                       ekiga \
                       empathy \ 
+                      emtooth \
                       eog \
                       epdfview \
                       epiphany \
@@ -288,6 +289,7 @@ do
                       pkgconfig \
                       places \
                       pmount \
+                      pngcrush \
                       pocketcellar \
                       povray \
                       prboom \
@@ -398,6 +400,8 @@ do
                       xfprint \
                       xfwm4 \
                       xfwm4-themes \
+                      xinput \
+                      xinput-calibrator \
                       xmame \
                       xmms \
                       xrefresh \
