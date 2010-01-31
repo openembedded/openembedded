@@ -27,5 +27,12 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/fsodeviced.conf ${D}${sysconfdir}/freesmartphone/
 }
 
-FILES_${PN} += "${sysconfdir}/init.d/fsodeviced ${sysconfdir}/freesmartphone/fsodeviced.conf"
-CONFFILES_${PN} += "${sysconfdir}/freesmartphone/fsodeviced.conf"
+FILES_${PN} += "\
+  ${sysconfdir}/init.d/fsodeviced \
+  ${sysconfdir}/freesmartphone \
+"
+
+CONFFILES_${PN} += "\
+  ${sysconfdir}/freesmartphone/fsodeviced.conf \
+"
+

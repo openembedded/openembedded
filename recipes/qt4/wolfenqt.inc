@@ -1,4 +1,5 @@
 
+PR = "r1"
 PE = "1"
 PV = "0.0"
 PR_append = "+gitr${SRCREV}"

@@ -15,8 +15,7 @@ SRC_URI = "git://repo.or.cz/linux-2.6/linux-2.6-openrd.git;protocol=git \
            file://defconfig"
 
 SRC_URI_append_openrd-base += " \
-	 file://openrd-base/openrd-base-enable-pcie.patch;patch=1 \
-	 file://0004-ARM-Kirkwood-OpenRD-SD-UART1-selection.patch;patch=1 \
+	 file://0004-ARM-Kirkwood-OpenRD-base-SD-UART1-selection.patch;patch=1 \
 	"
 
 SRC_URI_append_openrd-client += " \
