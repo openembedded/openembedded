@@ -118,7 +118,7 @@ case `module_id` in
                      fi
                      DPI=142
                 fi 
-                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" ;;
+                ARGS="$ARGS -dpi ${DPI} vt1"
        "GTA02")
                 if [ `screen_width` -gt 330 ] ; then
                      if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
