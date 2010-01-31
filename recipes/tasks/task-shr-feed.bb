@@ -61,8 +61,8 @@ RDEPENDS_${PN} += "\
 		mokoko \
 		exhibit \
 		edje-viewer \
-#		obexpush \
-#		obexftp \
+		obexpush \
+		obexftp \
 		obex-data-server \
 		mtpaint \
 		telepathy-python \
@@ -233,7 +233,7 @@ RDEPENDS_${PN} += "\
 		ipython \
 #		phoneme-advanced-foundation \
 		eve \
-#		python-pybluez \
+		python-pybluez \
 		x11perf \
 		pyring \
 		bt-configure \
