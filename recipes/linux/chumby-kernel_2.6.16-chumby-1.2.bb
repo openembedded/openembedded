@@ -9,6 +9,7 @@ SRC_URI = "http://files.chumby.com/source/ironforge/build396/linux-2.6.16-chumby
            http://files.chumby.com/source/ironforge/build396/align.pl \
            file://chumby-override-cmdline.patch;patch=1 \
            file://disable-fbchanging.patch;patch=1 \
+           file://Makefile-remove-hard-setting-CROSS_COMPILE.patch;patch=1 \
            file://defconfig \
            "
 
