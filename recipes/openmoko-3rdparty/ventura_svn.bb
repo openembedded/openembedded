@@ -1,10 +1,10 @@
-DESCRIPTION = "elementary based web browser for openmoko phones named ventura"
-HOMEPAGE = "http://code.google.com/p/elm-browser"
+DESCRIPTION = "ventura is a web browser for openmoko phones"
+HOMEPAGE = "http://code.google.com/p/elm-browser/"
 AUTHOR = "cchandel"
 LICENSE = "GPLv2"
 SECTION = "e/apps"
-DEPENDS = "elementary webkit-efl libglade sqlite3"
-SRCREV = "7"
+DEPENDS = "elementary webkit-efl sqlite3"
+SRCREV = "10"
 PV = "0.01+svnr${SRCPV}"
 
 SRC_URI = "svn://elm-browser.googlecode.com/svn;module=trunk;proto=http"
@@ -23,6 +23,8 @@ do_install_append() {
                         install -m 0644 $ico "${D}/${datadir}/ventura"
                 fi
         done
+        install -m 0644 "${S}/resources/ventura.edj" "${D}/${datadir}/ventura"
+        install -m 0644 "${S}/resources/default.edj" "${D}/${datadir}/ventura"
 }
 
 FILES_${PN} += "/usr/share/ventura/* /usr/share/applications/* /usr/share/pixmaps/*"
