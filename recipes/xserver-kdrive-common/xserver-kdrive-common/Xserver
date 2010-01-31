@@ -119,6 +119,7 @@ case `module_id` in
                      DPI=142
                 fi 
                 ARGS="$ARGS -dpi ${DPI} vt1"
+		;;
        "GTA02")
                 if [ `screen_width` -gt 330 ] ; then
                      if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then

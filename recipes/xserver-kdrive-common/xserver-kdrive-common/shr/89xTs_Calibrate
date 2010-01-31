@@ -3,18 +3,7 @@
 while [ ! -z $TSLIB_TSDEVICE ] && [ ! -f /etc/pointercal ]
 do
    /usr/bin/xtscal
-   exit
 done
-
-if [ -e /usr/bin/xinput_calibrator_once.sh ] ; then
-    if [ -e /usr/bin/fsoraw ] ; then
-      # because ts tap to unblank will be used as first calibration click and then store invalid calibration
-      fsoraw -fr CPU,Display -- /usr/bin/xinput_calibrator_once.sh
-    else
-      /usr/bin/xinput_calibrator_once.sh
-    fi
-    exit
-fi
 
 SYSFS_CALIBRATION_DIR=/sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration
 
@@ -36,4 +25,14 @@ if [ -d $SYSFS_CALIBRATION_DIR ]; then
   echo 0 > $SYSFS_CALIBRATION_DIR/4
   echo 75000000 > $SYSFS_CALIBRATION_DIR/5
   echo 65536 > $SYSFS_CALIBRATION_DIR/6
+fi
+
+if [ -e /usr/bin/xinput_calibrator_once.sh ] ; then
+    if [ -e /usr/bin/fsoraw ] ; then
+      # because ts tap to unblank will be used as first calibration click and then store invalid calibration
+      fsoraw -fr CPU,Display -- /usr/bin/xinput_calibrator_once.sh
+    else
+      /usr/bin/xinput_calibrator_once.sh
+    fi
+    exit
 fi
