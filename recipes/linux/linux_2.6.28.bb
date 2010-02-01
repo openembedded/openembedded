@@ -12,6 +12,7 @@ DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_gamecube = "1"
 DEFAULT_PREFERENCE_wrap = "1"
 DEFAULT_PREFERENCE_tx27 = "1"
+DEFAULT_PREFERENCE_nokia900 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;patch=1 \
@@ -70,5 +71,7 @@ SRC_URI_append_tx27 = " \
 	file://linux-2.6.28-karo4.diff;patch=1 \
 	"
 
+SRC_URI_nokia900 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
+		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20094803.3+0m5.diff.gz;patch=1;name=nokia"
 
 S = "${WORKDIR}/linux-2.6.28/"

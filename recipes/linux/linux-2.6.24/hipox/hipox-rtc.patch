@@ -376,7 +376,7 @@ diff -Nurd linux-2.6.24.orig//drivers/rtc/rtc-drbcc.c linux-2.6.24/drivers/rtc/r
 +	PDEBUG(1, "opening %s", devpath);
 +	filp = filp_open(devpath, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY, 0);
 +	if (IS_ERR(filp)) {
-+		PERROR("unable to open serial device to BCTRL: %s", devpath);
++		PERROR("unable to open serial device to BCTRL: %s (%d)", devpath, filp);
 +		ret = PTR_ERR(filp);
 +		goto end2;
 +	}
@@ -452,7 +452,7 @@ diff -Nurd linux-2.6.24.orig//drivers/rtc/rtc-drbcc.c linux-2.6.24/drivers/rtc/r
 +	PDEBUG(1, "opening %s", devpath);
 +	filp = filp_open(devpath, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY, 0);
 +	if (IS_ERR(filp)) {
-+		PERROR("unable to open serial device to BCTRL: %s", devpath);
++		PERROR("unable to open serial device to BCTRL: %s (%d)", devpath, filp);
 +		ret = PTR_ERR(filp);
 +		goto end2;
 +	}
