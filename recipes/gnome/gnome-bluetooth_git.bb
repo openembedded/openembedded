@@ -11,8 +11,8 @@ SRC_URI = "git://git.gnome.org/gnome-bluetooth;branch=gnome-2-28;protocol=git \
 
 S = "${WORKDIR}/git"
 
-SRCREV = "0622ea93f4e42d1599f2467e6bef5dca49cd99fd"
-PV = "2.28.1"
+SRCREV = "2d23ec20fa8f8299e93beea849bc8670aa2c7c69"
+PV = "2.28.6"
 PR = "r0"
 PR_append = "+gitr${SRCREV}"
 
