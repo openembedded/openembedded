@@ -1,0 +1,21 @@
+DESCRIPTION = "Target packages for TI DVSDK"
+LICENSE = "MIT"
+ALLOW_EMPTY = "1"
+
+PR = "r1"
+
+RDEPENDS_${PN} += " \
+        task-sdk-bare \
+        gstreamer-ti-dev \
+        ti-biosutils-sdk \
+        ti-cgt6x-sdk \
+        ti-codec-engine-sdk \
+        ti-dmai-sdk \
+        ti-dspbios-sdk \
+        ti-dsplink-module-sdk \
+        ti-framework-components-sdk \
+        ti-linuxutils-sdk \
+        ti-xdais-sdk \
+        ti-xdctools-sdk \
+        "
+

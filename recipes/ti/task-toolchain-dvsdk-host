@@ -1,0 +1,9 @@
+require ../tasks/task-sdk-host.bb
+
+PR = "r2"
+
+DESCRIPTION = "Host packages for  TI DVSDK"
+LICENSE = "MIT"
+ALLOW_EMPTY = "1"
+
+RDEPENDS_${PN} += ""
