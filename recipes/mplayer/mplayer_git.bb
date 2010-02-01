@@ -29,7 +29,7 @@ SRC_URI_append_armv7a = " \
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
 
-SRCREV_om-gta02 = "18ae04330acaa9212b422e71eee239eacd475805"
+SRCREV_om-gta02 = "71807fcbb1eb35c337ef03f4f62d181963173550"
 SRCREV = "e5bcd70bc5b0557635ae51c7093f0e887493d4ba"
 
 PACKAGE_ARCH_collie = "collie"
@@ -41,8 +41,8 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+gitr${SRCREV}"
-PR = "r15"
+PV = "0.0+1.0rc3+gitr${SRCREV}"
+PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_om-gta02 = "1"
 
