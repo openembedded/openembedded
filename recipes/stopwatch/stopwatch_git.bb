@@ -4,13 +4,13 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 HOMEPAGE = "http://git.senfdax.de"
 LICENSE = "GPL QPL"
-DEPENDS = "qt4-x11-free"
+DEFAULT_PREFERRENCE = "-1"
 PV = "1.3.1+gitr${SRCREV}"
 PR = "r0"
 
 inherit qt4x11
 
-SRC_URI = "git://git.senfdax.de/git/stopwatch;protocol=http;tag=master;branch=master"
+SRC_URI = "git://git.senfdax.de/git/stopwatch;protocol=http"
 S = "${WORKDIR}/git/"
 
 do_configure() {
