@@ -51,3 +51,13 @@
  #include <popt.h>
  
  // needed for old versions of GCC, must come before String.hh!
+--- gtkmathview-0.8.0.orig/src/common/AbstractLogger.cc	2007-08-17 12:02:45.000000000 +0200
++++ gtkmathview-0.8.0/src/common/AbstractLogger.cc	2010-02-01 10:19:46.000000000 +0100
+@@ -19,6 +19,7 @@
+ #include <config.h>
+ 
+ #include <stdarg.h>
++#include <stdio.h>
+ 
+ #include "AbstractLogger.hh"
+ 
