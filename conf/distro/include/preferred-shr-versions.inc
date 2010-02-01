@@ -25,7 +25,8 @@ PREFERRED_VERSION_linux-libc-headers = "2.6.31"
 PREFERRED_VERSION_openssh = "5.2p1"
 
 # upgrades used in Angstrom
-PREFERRED_VERSION_gtk+          = "2.18.3"
+PREFERRED_VERSION_gtk+          = "2.18.6"
+PREFERRED_VERSION_gtk+-native   = "2.18.6"
 PREFERRED_VERSION_hal           = "0.5.13"
 PREFERRED_VERSION_libtool       = "2.2.6b"
 PREFERRED_VERSION_libtool-native = "2.2.6b"
