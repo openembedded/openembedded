@@ -268,6 +268,7 @@ RDEPENDS_${PN} += "\
 		gabriel \
 		stopwatch \
 		qgpslog \
+		litephone \
 		rtmom \
 		ventura \
 		emtooth \
