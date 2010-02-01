@@ -14,8 +14,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 inherit autotools pkgconfig
 
-do_stage() {
-	autotools_stage_all
-}	
+# Allow empty package to fix SDK depchains
+ALLOW_EMPTY_${PN} = "1"
 
 FILES_${PN}-doc += "${datadir}/libatomic_ops/COPYING ${datadir}/libatomic_ops/*.txt"
