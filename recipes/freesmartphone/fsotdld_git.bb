@@ -5,13 +5,3 @@ PV = "0.0.0+gitr${SRCPV}"
 PE = "1"
 
 DEPENDS += "libfsotransport libfsoresource"
-
-SRC_URI += "file://fsotdld.conf"
-
-do_install_append() {
-	install -d ${D}${sysconfdir}/freesmartphone/
-	install -m 0644 ${WORKDIR}/fsotdld.conf ${D}${sysconfdir}/freesmartphone/
-}
-
-FILES_${PN} += "${sysconfdir}/freesmartphone/fsotdld.conf"
-CONFFILES_${PN} += "${sysconfdir}/freesmartphone/fsotdld.conf"
