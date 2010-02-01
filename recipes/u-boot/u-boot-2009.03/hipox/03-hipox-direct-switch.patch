@@ -1,0 +1,45 @@
+--- u-boot-2009.03.orig/board/hipox/eth.c	2010-01-29 15:26:12.000000000 +0000
++++ u-boot-2009.03/board/hipox/eth.c	2010-01-29 15:35:01.000000000 +0000
+@@ -1356,8 +1356,11 @@
+ 	}
+ }
+ 
+-int detect_link_speed(void)
++static int detect_link_speed(void)
+ {
++#ifdef CONFIG_HIPOX
++	priv->link_is_1000M = 0;
++#else
+ 	u32 lpa2 = phy_read(priv->phy_id, MII_STAT1000);
+ 
+ 	if (((lpa2 & LPA_1000FULL)) ||
+@@ -1366,18 +1369,26 @@
+ 	} else {
+ 		priv->link_is_1000M = 0;
+ 	}
+-
++#endif
+ 	return 0;
+ }
+ 
+-int is_autoneg_complete(void)
++static int is_autoneg_complete(void)
+ {
++#ifdef CONFIG_HIPOX
++	return 1;
++#else
+     return phy_read(priv->phy_addr, MII_BMSR) & BMSR_ANEGCOMPLETE;
++#endif
+ }
+ 
+-int is_link_ok(void)
++static int is_link_ok(void)
+ {
++#ifdef CONFIG_HIPOX
++	return 1;
++#else
+ 	return phy_read(priv->phy_id, MII_BMSR) & BMSR_LSTATUS;
++#endif
+ }
+ 
+ int eth_init(bd_t *bd)
