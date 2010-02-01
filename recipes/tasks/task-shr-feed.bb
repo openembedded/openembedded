@@ -59,7 +59,7 @@ RDEPENDS_${PN} += "\
 		openmoocow \
 		python-pygame \
 		mokoko \
-		exhibit \
+#		exhibit \
 		edje-viewer \
 		obexpush \
 		obexftp \
@@ -81,7 +81,7 @@ RDEPENDS_${PN} += "\
 		cellhunter \
 		dillo2 \
 		pyefl-sudoku \
-		tasks \
+#		tasks \
 		dates \
 		omnewrotate \
 		xchat \
@@ -90,7 +90,7 @@ RDEPENDS_${PN} += "\
 		intone \
 		vim \
 		vpnc \
-		emacs \
+#		emacs \
 		mcabber \
 		gdb \
 		oh-puzzles \
@@ -246,7 +246,7 @@ RDEPENDS_${PN} += "\
 		imagemagick \
 		xboard \
 		sox \
-		mpg123 \
+#		mpg123 \
 		zile \
 		speex \
 		podpooch \
