@@ -6,9 +6,10 @@ SRC_URI = "${BASE_SRC_URI}/linuxutils_${PV}.tar.gz "
 S = "${WORKDIR}/linuxutils_${PV}"
 
 require ti-multimedia-common.inc
+require ti-staging.inc
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "a"
+MACHINE_KERNEL_PR_append = "b"
 
 inherit module
 
@@ -57,13 +58,14 @@ do_install () {
          EXEC_DIR="${D}${installdir}/ti-linuxutils-app/edma-app" \
          install
     fi
+
+    # stage tree - other packages may need this
+    install -d ${D}${LINUXUTILS_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${D}${LINUXUTILS_INSTALL_DIR_RECIPE}
 }
 
-# stage tree - other packages may need this
-do_stage() {
-    install -d ${LINUXUTILS_INSTALL_DIR}
-    cp -pPrf ${S}/* ${LINUXUTILS_INSTALL_DIR}
-}
+
+
 
 PACKAGES =+ " ti-cmem-module \
               ti-sdma-module \

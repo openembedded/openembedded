@@ -1,10 +1,11 @@
 DESCRIPTION = "DMAI for TI ARM/DSP processors"
 
 require ti-paths.inc
+require ti-staging.inc
 inherit module-base
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "d"
+MACHINE_KERNEL_PR_append = "e"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PE = "1"
@@ -106,26 +107,24 @@ do_compile () {
 }
 
 do_install () {
-	unset DMAI_INSTALL_DIR
-	# install dmai apps on target
+    unset DMAI_INSTALL_DIR
+    # install dmai apps on target
     install -d ${D}/${installdir}/dmai-apps
     cd ${S}/dmai
     make PLATFORM="${TARGET}" EXEC_DIR=${D}/${installdir}/dmai-apps install 
-	install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-apps/loadmodule.sh 
+    install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-apps/loadmodule.sh 
 
     install -d ${D}/${installdir}/dmai-tests
     cd ${S}/tests
     make PLATFORM="${TARGET}" EXEC_DIR=${D}/${installdir}/dmai-tests install 
-	install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-tests/loadmodule.sh 
+    install -m 0755 ${WORKDIR}/loadmodules-ti-dmai-${TARGET}.sh ${D}/${installdir}/dmai-tests/loadmodule.sh 
+
+    install -d ${D}${DMAI_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/dmai/* ${D}${DMAI_INSTALL_DIR_RECIPE}
 }
 
 pkg_postinst_ti-dmai-apps () {
 	ln -sf ${installdir}/codec-combo/* ${installdir}/dmai-apps/
-}
-
-do_stage () {
-	install -d ${DMAI_INSTALL_DIR}
-	cp -pPrf ${S}/dmai/* ${DMAI_INSTALL_DIR}
 }
 
 # Disable QA check untils we figure out how to pass LDFLAGS in build
