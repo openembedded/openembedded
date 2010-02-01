@@ -18,21 +18,9 @@ inherit update-rc.d
 INITSCRIPT_NAME = "fsodeviced"
 INITSCRIPT_PARAMS = "defaults 27"
 
-SRC_URI += "file://fsodeviced file://fsodeviced.conf"
+SRC_URI += "file://fsodeviced"
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/fsodeviced ${D}${sysconfdir}/init.d/
-	install -d ${D}${sysconfdir}/freesmartphone/
-	install -m 0644 ${WORKDIR}/fsodeviced.conf ${D}${sysconfdir}/freesmartphone/
 }
-
-FILES_${PN} += "\
-  ${sysconfdir}/init.d/fsodeviced \
-  ${sysconfdir}/freesmartphone \
-"
-
-CONFFILES_${PN} += "\
-  ${sysconfdir}/freesmartphone/fsodeviced.conf \
-"
-
