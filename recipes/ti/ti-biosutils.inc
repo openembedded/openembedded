@@ -4,6 +4,8 @@ HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/B
 require ti-paths.inc
 require ti-staging.inc
 
+PR = "r1"
+
 S = "${WORKDIR}/biosutils_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/Bios_Utils/${PV}${PVsuffix}/exports/biosutils_${PV}.tar.gz;name=biosutilstarball"

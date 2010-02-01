@@ -16,12 +16,12 @@ export LINUXLIBS_INSTALL_DIR  = "${STAGING_DIR_HOST}/usr"
 export LINUXKERNEL_INSTALL_DIR = "${STAGING_KERNEL_DIR}"
 
 # This is where do_install will put it
-export CODEGEN_INSTALL_DIR_RECIPE    = "${installdir}/ti-cgt6x"
-export XDC_INSTALL_DIR_RECIPE        = "${installdir}/ti-xdctools"
-export XDAIS_INSTALL_DIR_RECIPE      = "${installdir}/ti-xdais"
-export BIOS_INSTALL_DIR_RECIPE       = "${installdir}/ti-dspbios"
-export BIOSUTILS_INSTALL_DIR_RECIPE  = "${installdir}/ti-biosutils"
-export FC_INSTALL_DIR_RECIPE         = "${installdir}/ti-framework-components"
+export CODEGEN_INSTALL_DIR_RECIPE    = "${installdir}/ti-cgt6x-tree"
+export XDC_INSTALL_DIR_RECIPE        = "${installdir}/ti-xdctools-tree"
+export XDAIS_INSTALL_DIR_RECIPE      = "${installdir}/ti-xdais-tree"
+export BIOS_INSTALL_DIR_RECIPE       = "${installdir}/ti-dspbios-tree"
+export BIOSUTILS_INSTALL_DIR_RECIPE  = "${installdir}/ti-biosutils-tree"
+export FC_INSTALL_DIR_RECIPE         = "${installdir}/ti-framework-components-tree"
 
 export CE_INSTALL_DIR_RECIPE         = "${installdir}/ti-codec-engine-tree"
 export EDMA3_LLD_INSTALL_DIR_RECIPE  = "${installdir}/ti-edma3lld-tree"

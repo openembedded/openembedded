@@ -4,6 +4,8 @@ HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/f
 require ti-paths.inc
 require ti-staging.inc
 
+PR = "r1"
+
 S = "${WORKDIR}/framework_components_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/fc/${PV}/exports/framework_components_${PV},lite.tar.gz;name=fctarball"

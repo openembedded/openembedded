@@ -1,6 +1,8 @@
 DESCRIPTION = "TI XDCtools (RTSC - Real Time Software Components - http://rtsc.eclipse.org)"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/rtsc"
 
+PR = "r1"
+
 require ti-paths.inc
 require ti-staging.inc
 require ti-eula-unpack.inc
