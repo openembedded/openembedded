@@ -5,7 +5,7 @@ INHIBIT_PACKAGE_STRIP = "1"
 ALLOW_EMPTY_${PN} = "1"
 ALLOW_EMPTY_${PN}-dev = "1"
 
-PACKAGES =+ "${PN}-sdk"
-FILES_${PN}-sdk = "${installdir}/*-tree"
-INSANE_SKIP_${PN}-sdk = "True"
+PACKAGES =+ "${PN}-sourcetree"
+FILES_${PN}-sourcetree = "${installdir}/*-tree"
+INSANE_SKIP_${PN}-sourcetree = "True"
 
