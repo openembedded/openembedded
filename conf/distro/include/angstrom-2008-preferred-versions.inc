@@ -26,7 +26,7 @@ PREFERRED_VERSION_libtool-sdk	= "2.2.6b"
 PREFERRED_VERSION_mesa          = "7.6"
 PREFERRED_VERSION_mesa-dri      = "7.6"
 PREFERRED_VERSION_mesa-xlib     = "7.6"
-PREFERRED_VERSION_mplayer       = "0.0+1.0rc2+svnr30432"
+PREFERRED_VERSION_mplayer       = "0.0+1.0rc3+svnr30165"
 PREFERRED_VERSION_pango 	= "1.24.4"
 #PREFERRED_VERSION_pixman	= "0.13.2"
 PREFERRED_VERSION_pkgconfig	= "0.23"
@@ -48,6 +48,7 @@ UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_usbutils = "0.82"
 PREFERRED_VERSION_wpa-supplicant = "0.6.9"
+PREFERRED_VERSION_xserver-common = "1.32"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
 
 #

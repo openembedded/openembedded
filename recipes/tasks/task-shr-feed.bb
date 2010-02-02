@@ -267,6 +267,8 @@ RDEPENDS_${PN} += "\
 		wpa-gui \
 		gabriel \
 		stopwatch \
+		qgpslog \
+		litephone \
 		rtmom \
 		ventura \
 		emtooth \
