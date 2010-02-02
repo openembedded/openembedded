@@ -21,7 +21,7 @@ diff -Nur a/board/omap3/beagle/beagle.c b/board/omap3/beagle/beagle.c
 +
 +	/* Fill up to the logo */
 +	for (i = 0; i < 2 * (LOGO_SCREEN_WIDTH * ((LOGO_SCREEN_HEIGHT/2) - (height/2))); i += 2) {
-+		*((unsigned short *)(0x80500000 + i)) = LOGO_FILL_COLOUR;
++		*((unsigned short *)(0x85000000 + i)) = LOGO_FILL_COLOUR;
 +	}
 +	offset += i;
 +
@@ -29,10 +29,10 @@ diff -Nur a/board/omap3/beagle/beagle.c b/board/omap3/beagle/beagle.c
 +	for (i = 0; i < height; i++) {
 +		for (k = 0; k < LOGO_SCREEN_WIDTH; k++) {
 +			if(k < (LOGO_SCREEN_WIDTH / 2 - width / 2) || k >= (LOGO_SCREEN_WIDTH / 2 + width / 2))
-+				*((unsigned short *)(0x80500000 + offset + 2*k)) = LOGO_FILL_COLOUR;
++				*((unsigned short *)(0x85000000 + offset + 2*k)) = LOGO_FILL_COLOUR;
 +			else {
 +				HEADER_PIXEL(header_data, pixel);
-+				*((unsigned short *)(0x80500000 + offset + 2*k)) =
++				*((unsigned short *)(0x85000000 + offset + 2*k)) =
 +					((((pixel[0])&0xf8) << 8) |
 +					 (((pixel[1])&0xfc) << 3) |
 +					 (((pixel[2])&0xf8) >> 3));
@@ -44,7 +44,7 @@ diff -Nur a/board/omap3/beagle/beagle.c b/board/omap3/beagle/beagle.c
 +
 +	/* Fill the rest */
 +	for (i = 0; i < 2 * (LOGO_SCREEN_WIDTH * ((LOGO_SCREEN_HEIGHT/2) - (height/2))); i += 2) {
-+		*((unsigned short *)(0x80500000 + offset + i)) = LOGO_FILL_COLOUR;
++		*((unsigned short *)(0x85000000 + offset + i)) = LOGO_FILL_COLOUR;
 +	}	
 +
 +	*((uint *) 0x48310034) = 0xfefffedf;
@@ -123,8 +123,8 @@ diff -Nur a/board/omap3/beagle/beagle.c b/board/omap3/beagle/beagle.c
 +	*((uint *) 0x48050470) = 0x00010007;
 +	*((uint *) 0x48050478) = 0x00ef027f;
 +	*((uint *) 0x4805047c) = 0x02ff03ff;
-+	*((uint *) 0x48050480) = 0x80500000;
-+	*((uint *) 0x48050484) = 0x80500000;
++	*((uint *) 0x48050480) = 0x85000000;
++	*((uint *) 0x48050484) = 0x85000000;
 +	*((uint *) 0x48050488) = 0x00000000;
 +	*((uint *) 0x4805048c) = 0x02ff03ff;
 +	*((uint *) 0x480504a0) = 0x0000008d;
