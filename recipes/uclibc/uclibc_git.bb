@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.30"
-SRCREV="37e26d6e19558d9f149722e513cb29c4374b8d8d"
+SRCREV="22de495da40d7649eb28fdfc70ce1d5f3b6572ea"
 PV = "${UCLIBC_BASE}+gitr${SRCREV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
@@ -33,6 +33,5 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://uclibc-arm-ftruncate64.patch;patch=1 \
 	file://uclibc_enable_log2_test.patch;patch=1 \
 	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
-	file://hide-__libc-symbols.patch;patch=1 \
 	"
 S = "${WORKDIR}/git"
