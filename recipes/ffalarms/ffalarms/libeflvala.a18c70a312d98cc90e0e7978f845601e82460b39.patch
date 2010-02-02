@@ -1,7 +1,7 @@
-Index: ffalarms.vala
+Index: a/ffalarms.vala
 ===================================================================
---- ffalarms.vala	(revision 67)
-+++ ffalarms.vala	(working copy)
+--- a/ffalarms.vala	(revision 67)
++++ b/ffalarms.vala	(working copy)
 @@ -1407,7 +1407,6 @@
  	bx.pack_end(bt);
  	bx.pack_end(frame("pad_small"));
