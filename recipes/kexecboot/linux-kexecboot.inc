@@ -39,16 +39,11 @@ def kernel_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d)
     else:
         return falsevalue
 
-# force lzma compression for kernels >= 2.6.30
-#
-# kernel
-# CONFIG_HAVE_KERNEL_GZIP=y
-# CONFIG_HAVE_KERNEL_LZMA=y
-# CONFIG_HAVE_KERNEL_LZO=y
+# force lzma compression for kernel (linux-kexecboot >= 2.6.32)
+# force lzma compression for initramfs (linux-kexecboot >= 2.6.30)
 
-KERNEL_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_KERNEL_LZMA=y", d)}'
-#
-# initramfs
+KERNEL_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.32", "", "CONFIG_KERNEL_LZMA=y", d)}'
+
 INITRAMFS_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_INITRAMFS_COMPRESSION_LZMA=y", d)}'
 INITRAMFS_COMPRESSION_SUFFIX = '${@kernel_version_less_or_equal("PV", "2.6.30", "gz", "lzma", d)}'
 RD_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_RD_LZMA=y", d)}'
