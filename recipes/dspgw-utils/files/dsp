@@ -1,0 +1,96 @@
+#!/bin/sh
+# DSP Gateway init script
+# Copyright (C) 2007 INdT.
+# @author Abner Jose de Faria Silva <abner.silva@indt.org.br>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+set -e
+
+DESC="DSP Gateway"
+
+DAEMON=/usr/sbin/dsp_dld
+DSPCTL=/usr/sbin/dspctl
+DSPCONF=/lib/dsp/dsp_dld_avs.conf
+
+DAEMONPARAM="-p --disable-restart -c $DSPCONF"
+
+KMEMRESERVE=360000
+
+PIDDIR=/var/run/dsp
+PIDFILE=$PIDDIR/pid
+
+test -x "$DAEMON" || exit 0
+test -x "$DSPCTL" || exit 0
+test -e "$DSPCONF" || exit 0
+
+start_dsp()
+{
+    if [ ! -d "$PIDDIR" ]; then
+        mkdir -p "$PIDDIR"
+    fi
+
+    if [ -e "$PIDFILE" ]; then
+        TMP=/proc/$(cat $PIDFILE)
+        if [ -d "$TMP" -a "$(readlink -f $TMP/exe)" = "$DAEMON" ]; then
+            echo "$DESC is already running."
+            return
+        else
+            echo "Removing old PID file $PIDFILE."
+            rm -f "$PIDFILE"
+        fi
+    fi
+
+    echo -n "Starting $DESC: "
+
+    $DSPCTL kmem_reserve $KMEMRESERVE
+    start-stop-daemon --start --quiet -b --make-pidfile --pidfile "$PIDFILE" \
+    --exec "$DAEMON" -- $DAEMONPARAM
+
+    echo "done."
+}
+
+stop_dsp()
+{
+    echo -n "Stopping $DESC: "
+
+    $DSPCTL kmem_release
+    start-stop-daemon --stop --quiet --name $(basename "$DAEMON") \
+    --pidfile "$PIDFILE"
+    rm -f "$PIDFILE"
+
+    echo "done."
+}
+
+case "$1" in
+    start)
+        start_dsp
+        ;;
+    stop)
+        stop_dsp
+        ;;
+    restart|force-reload)
+        stop_dsp
+        start_dsp
+        ;;
+    *)
+        echo "Usage: $(basename $0) {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+echo ""
+
+exit 0

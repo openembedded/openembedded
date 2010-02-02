@@ -1,0 +1,11 @@
+--- utils/dsp_dld/arm/dld_cmd_spec.l	2006-09-08 02:57:22.000000000 -0300
++++ utils/dsp_dld/arm/dld_cmd_spec.l.fixed	2007-10-09 16:46:28.000000000 -0300
+@@ -180,6 +180,8 @@
+ 	return(1);
+ }
+ 
++#define yytext_ptr yytext
++
+ void comment(void)
+ {
+ 	char c, c1;
