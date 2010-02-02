@@ -48,6 +48,7 @@ UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_usbutils = "0.82"
 PREFERRED_VERSION_wpa-supplicant = "0.6.9"
+PREFERRED_VERSION_xserver-common = "1.32"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
 
 #

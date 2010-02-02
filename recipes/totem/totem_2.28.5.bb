@@ -6,7 +6,7 @@ DESCRIPTION = "A GTK2 based media player"
 HOMEPAGE = "http://www.gnome.org/projects/totem/"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r4"
 
 DEPENDS = " nautilus tracker gnome-doc-utils libunique libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
 RDEPENDS_${PN} += "iso-codes"
@@ -21,7 +21,7 @@ RRECOMMENDS_${PN} += "gst-plugin-playbin \
 		      gst-plugin-alsa \
 		      gst-plugin-avi \
 		      gst-plugin-ffmpegcolorspace \
-		      gst-plugin-flvdemux \
+		      gst-plugin-flv \
 		      gst-plugin-nuvdemux \
 		      gst-plugin-videoscale \
 		      gst-plugin-a52dec \
@@ -29,25 +29,36 @@ RRECOMMENDS_${PN} += "gst-plugin-playbin \
 		      gst-plugin-ossaudio \
 		      gst-plugin-pulse \
 		      gst-plugin-autodetect \
-		      totem-plugin-youtube totem-plugin-thumbnail totem-plugin-dbus totem-plugin-screensaver"
+		      totem-plugin-thumbnail totem-plugin-dbus "
 
 inherit gnome
 
 SRC_URI += "file://gst-detect.diff;patch=1"
 
 EXTRA_OECONF=" --enable-shared \
+           --disable-static \
            --disable-schemas-install \
 	       --disable-iso-codes \
 	       --disable-debug \
            --enable-browser-plugins \
 	       --disable-run-in-source-tree \
 	       --disable-vala \
-	       --with-dbus \
+	       --enable-python \
+           --with-dbus \
 	       "
 
 do_configure_prepend() {
-	sed -i -e s:help::g ${S}/Makefile.am
-	sed -i -e s:PYTHON_CFLAGS="-I$PY_PREFIX/include/python$PYTHON_VERSION":PYTHON_CFLAGS="-I${STAGING_INCDIR}/python$PYTHON_VERSION":g ${S}/configure.in
+    sed -i -e s:help::g ${S}/Makefile.am
+    sed -i \
+        -e s:'`$PKG_CONFIG --variable defsdir pygobject-2.0`':\"${STAGING_DATADIR}/pygobject/2.0/defs\":g \
+        -e s:'`$PKG_CONFIG --variable=defsdir pygtk-2.0`':\"${STAGING_DATADIR}/pygtk/2.0/defs\":g \
+        -e s:'`$PKG_CONFIG --variable=pygtkincludedir pygobject-2.0`':\"${STAGING_INCDIR}/pygtk-2.0\":g \
+        -e s:'`$PKG_CONFIG --variable=datadir pygobject-2.0`':\"${STAGING_DATADIR}\":g \
+        -e s:'`$PKG_CONFIG --variable codegendir pygobject-2.0`':\"${STAGING_DATADIR}/pygobject/2.0/codegen\":g \
+        -e s:'`$PKG_CONFIG --variable=codegendir pygtk-2.0`':\"${STAGING_DATADIR}/pygobject/2.0/codegen\":g \
+        -e s:'`$PKG_CONFIG --variable=fixxref pygobject-2.0`':\"${STAGING_DATADIR}/pygobject/xsl/fixxref.py\":g \
+        -e 's:PYTHON_CFLAGS="-I$PY_PREFIX/include/python$PYTHON_VERSION":PYTHON_CFLAGS="-I${STAGING_INCDIR}/python$PYTHON_VERSION":g' \
+        ${S}/configure.in
 }
 
 PACKAGES_DYNAMIC += " totem-plugin-* "
@@ -60,6 +71,10 @@ python populate_packages_prepend () {
 
 FILES_${PN} = "${bindir}/* ${sysconfdir} ${libdir}/lib*.so.* ${libexecdir} ${datadir}/icons ${datadir}/totem ${datadir}/applications \
 "
+
+RDEPENDS_totem-plugin-iplayer_append = "python-pygtk"
+RDEPENDS_totem-plugin-youtube_append = "python-pygtk"
+
 
 PACKAGES =+ "totem-nautilus-extension totem-browser-plugin-dbg totem-browser-plugin"
 
