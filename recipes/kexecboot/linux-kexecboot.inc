@@ -1,5 +1,5 @@
 # We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-PR = "r17"
+PR = "r18"
 
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
@@ -39,7 +39,16 @@ def kernel_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d)
     else:
         return falsevalue
 
-# default lzma compressor for kernels >= 2.6.30
+# force lzma compression for kernels >= 2.6.30
+#
+# kernel
+# CONFIG_HAVE_KERNEL_GZIP=y
+# CONFIG_HAVE_KERNEL_LZMA=y
+# CONFIG_HAVE_KERNEL_LZO=y
+
+KERNEL_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_KERNEL_LZMA=y", d)}'
+#
+# initramfs
 INITRAMFS_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_INITRAMFS_COMPRESSION_LZMA=y", d)}'
 INITRAMFS_COMPRESSION_SUFFIX = '${@kernel_version_less_or_equal("PV", "2.6.30", "gz", "lzma", d)}'
 RD_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_RD_LZMA=y", d)}'
@@ -50,6 +59,7 @@ do_configure[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
 do_configure_append() {
 sed -i -e /CONFIG_BLK_DEV_INITRD/d \
        -e /CONFIG_KEXEC/d \
+       -e /CONFIG_KERNEL/d \
        -e /CONFIG_INITRAMFS_SOURCE/d \
        -e /CONFIG_INITRAMFS_COMPRESSION/d \
        -e /CONFIG_RD/d \
@@ -66,6 +76,7 @@ sed -i -e /CONFIG_CMDLINE/s/debug/loglevel=3/1 ${S}/.config
 
 echo 'CONFIG_BLK_DEV_INITRD=y
 CONFIG_KEXEC=y
+${KERNEL_COMPRESSION}
 ${INITRAMFS_COMPRESSION}
 CONFIG_INITRAMFS_SOURCE="initramfs.cpio.${INITRAMFS_COMPRESSION_SUFFIX}"
 ${RD_COMPRESSION}
