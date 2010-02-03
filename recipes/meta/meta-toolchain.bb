@@ -14,6 +14,7 @@ IPKG_TARGET = "opkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${SDKPATH}/${TARGE
 
 TOOLCHAIN_HOST_TASK ?= "task-sdk-host"
 TOOLCHAIN_TARGET_TASK ?= "task-sdk-bare"
+TOOLCHAIN_TARGET_EXCLUDE ?= ""
 FEED_ARCH ?= "${TARGET_ARCH}"
 SDK_SUFFIX = "toolchain"
 TOOLCHAIN_OUTPUTNAME ?= "${DISTRO}-${DISTRO_VERSION}-${FEED_ARCH}-${TARGET_OS}-${SDK_SUFFIX}"
@@ -56,9 +57,17 @@ do_populate_sdk() {
 	${IPKG_TARGET} update
 	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
 
+	# Remove packages in the exclude list which were installed by dependencies
+	if [ ! -z "${TOOLCHAIN_TARGET_EXCLUDE}" ]; then
+		${IPKG_TARGET} remove -force-depends ${TOOLCHAIN_TARGET_EXCLUDE}
+	fi
+
 	install -d ${SDK_OUTPUT}/${SDKPATH}/usr/lib/opkg
 	mv ${SDK_OUTPUT}/usr/lib/opkg/* ${SDK_OUTPUT}/${SDKPATH}/usr/lib/opkg/
 	rm -Rf ${SDK_OUTPUT}/usr/lib
+
+	# Clean up empty directories from excluded packages
+	find ${SDK_OUTPUT} -depth -type d -empty -print0 | xargs -0 /bin/rmdir
 
 	install -d ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}
 	install -m 0644 ${IPKGCONF_TARGET} ${IPKGCONF_SDK} ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}/
