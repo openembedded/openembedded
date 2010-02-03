@@ -47,10 +47,6 @@ SRC_URI_append_avr32= "\
 	file://fix-mmc-data-timeout.patch;patch=1 \
 "
 
-SRC_URI_append_openrd-client = "\
-        file://0001-OpenRD-Support-Uboot.patch;pach=1 \
-"
-
 EXTRA_OEMAKE_gumstix = "CROSS_COMPILE=${TARGET_PREFIX} GUMSTIX_400MHZ=${GUMSTIX_400MHZ}"
 TARGET_LDFLAGS = ""
 
