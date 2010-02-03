@@ -7,7 +7,7 @@ DEPENDS = "alsa-lib ncurses"
 PR = "r0"
 PE = "1"
 
-SRC_URI = "http://slimlogic.co.uk/pub/downloads/libscenario/scenario-lib-0.2.0.tar.bz2"
+SRC_URI = "http://sources.slimlogic.co.uk/libscenario/scenario-lib-0.2.0.tar.bz2"
 
 S = "${WORKDIR}/scenario-lib-0.2.0"
 
