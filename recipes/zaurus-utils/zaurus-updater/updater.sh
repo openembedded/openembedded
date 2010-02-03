@@ -45,6 +45,12 @@
 #
 # 2008.11.23 Dmitry 'lumag' Baryshkov
 # - Add support for reflashing home partitions
+#
+# 2010.02.02 Andrea 'ant' Adami
+# - Fix nandlogical writing of kernel
+#   Bug in Sharp original line...
+#   /sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
+#   didn't use correctly determined block size
 
 # Set to "yes" to enable
 ENABLE_UBOOT_UPDATER="no"
@@ -267,7 +273,7 @@ do_flashing()
                                 fi
                                 ADDR=$next_addr
                         else
-                                /sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
+                                /sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $TMPSIZE $TMPDATA > /dev/null 2>&1
                                 ADDR=`expr $ADDR + $TMPSIZE`
                         fi
 
