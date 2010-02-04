@@ -1,8 +1,7 @@
 DESCRIPTION = "Open-iSCSI project is a high performance, transport independent, multi-platform implementation of RFC3720."
 HOMEPAGE = "http://www.open-iscsi.org/"
 LICENSE = "GPL"
-PR = "r1"
-RRECOMMENDS = "open-iscsi-user"
+PR = "r2"
 
 SRC_URI = "http://www.open-iscsi.org/bits/open-iscsi-${PV}.tar.gz"
 S = "${WORKDIR}/open-iscsi-${PV}"

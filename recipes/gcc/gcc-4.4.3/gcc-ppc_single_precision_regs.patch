@@ -1,0 +1,60 @@
+Index: gcc-4.4.1/gcc/config/rs6000/rs6000.c
+===================================================================
+--- gcc-4.4.1.orig/gcc/config/rs6000/rs6000.c	2009-10-06 13:51:50.427316302 -0700
++++ gcc-4.4.1/gcc/config/rs6000/rs6000.c	2009-10-06 14:09:04.737313663 -0700
+@@ -22580,7 +22580,8 @@ rs6000_function_value (const_tree valtyp
+   if (DECIMAL_FLOAT_MODE_P (mode) && TARGET_HARD_FLOAT && TARGET_FPRS)
+     /* _Decimal128 must use an even/odd register pair.  */
+     regno = (mode == TDmode) ? FP_ARG_RETURN + 1 : FP_ARG_RETURN;
+-  else if (SCALAR_FLOAT_TYPE_P (valtype) && TARGET_HARD_FLOAT && TARGET_FPRS)
++  else if (SCALAR_FLOAT_TYPE_P (valtype) && TARGET_HARD_FLOAT && TARGET_FPRS
++	   && ((TARGET_SINGLE_FLOAT && (mode == SFmode)) || TARGET_DOUBLE_FLOAT))
+     regno = FP_ARG_RETURN;
+   else if (TREE_CODE (valtype) == COMPLEX_TYPE
+ 	   && targetm.calls.split_complex_arg)
+Index: gcc-4.4.1/gcc/config/rs6000/rs6000.md
+===================================================================
+--- gcc-4.4.1.orig/gcc/config/rs6000/rs6000.md	2009-10-06 14:08:35.827340958 -0700
++++ gcc-4.4.1/gcc/config/rs6000/rs6000.md	2009-10-06 14:09:04.737313663 -0700
+@@ -8143,8 +8143,8 @@
+ (define_insn "*movsi_internal1"
+   [(set (match_operand:SI 0 "rs6000_nonimmediate_operand" "=r,r,r,m,r,r,r,r,r,*q,*c*l,*h,*h")
+ 	(match_operand:SI 1 "input_operand" "r,U,m,r,I,L,n,R,*h,r,r,r,0"))]
+-  "gpc_reg_operand (operands[0], SImode)
+-   || gpc_reg_operand (operands[1], SImode)"
++  "!TARGET_SINGLE_FPU &&
++   gpc_reg_operand (operands[0], SImode) || gpc_reg_operand (operands[1], SImode)"
+   "@
+    mr %0,%1
+    {cal|la} %0,%a1
+@@ -8162,6 +8162,30 @@
+   [(set_attr "type" "*,*,load,store,*,*,*,*,mfjmpr,*,mtjmpr,*,*")
+    (set_attr "length" "4,4,4,4,4,4,8,4,4,4,4,4,4")])
+ 
++(define_insn "*movsi_internal1_single"
++  [(set (match_operand:SI 0 "rs6000_nonimmediate_operand" "=r,r,r,m,r,r,r,r,r,*q,*c*l,*h,*h,m,*f")
++        (match_operand:SI 1 "input_operand" "r,U,m,r,I,L,n,R,*h,r,r,r,0,f,m"))]
++  "TARGET_SINGLE_FPU &&
++   gpc_reg_operand (operands[0], SImode) || gpc_reg_operand (operands[1], SImode)"
++  "@
++   mr %0,%1
++   {cal|la} %0,%a1
++   {l%U1%X1|lwz%U1%X1} %0,%1
++   {st%U0%X0|stw%U0%X0} %1,%0
++   {lil|li} %0,%1
++   {liu|lis} %0,%v1
++   #
++   {cal|la} %0,%a1
++   mf%1 %0
++   mt%0 %1
++   mt%0 %1
++   mt%0 %1
++   {cror 0,0,0|nop}
++   stfs%U0%X0 %1, %0
++   lfs%U1%X1 %0, %1"
++  [(set_attr "type" "*,*,load,store,*,*,*,*,mfjmpr,*,mtjmpr,*,*,*,*")
++   (set_attr "length" "4,4,4,4,4,4,8,4,4,4,4,4,4,4,4")])
++
+ ;; Split a load of a large constant into the appropriate two-insn
+ ;; sequence.
+ 
