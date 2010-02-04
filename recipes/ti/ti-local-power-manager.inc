@@ -9,7 +9,7 @@ PROVIDES = "ti-lpm-module"
 inherit module
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "a"
+MACHINE_KERNEL_PR_append = "b"
 
 S = "${WORKDIR}/local_power_manager_linux_${PV}"
 
@@ -39,7 +39,7 @@ do_stage() {
     cp -pPrf ${S}/* ${LPM_INSTALL_DIR}
 }
 
-PACKAGES += " ti-lpm-module"
+PACKAGES =+ "ti-lpm-module "
 FILES_ti-lpm-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*lpm*ko"
 RDEPENDS_ti-lpm-module += " ti-dsplink-module"
 
