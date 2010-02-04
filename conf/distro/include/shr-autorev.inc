@@ -16,3 +16,5 @@ SRCREV_pn-opimd-utils = "${AUTOREV}"
 SRCREV_pn-shr-installer = "${AUTOREV}"
 SRCREV_pn-shr-wizard = "${AUTOREV}"
 
+SRCREV_pn-ventura = "${AUTOREV}"
+SRCREV_pn-emtooth = "${AUTOREV}"
