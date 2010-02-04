@@ -5,8 +5,8 @@ AUTHOR = "Valéry Febvre <vfebvre@easter-eggs.com>"
 SECTION = "x11/applications"
 PRIORITY = "optional"
 
-SRCREV = "100"
-PV = "1.3.1+svnr${SRCPV}"
+SRCREV = "105"
+PV = "1.3.3+svnr${SRCPV}"
 
 PACKAGE_ARCH = "all"
 

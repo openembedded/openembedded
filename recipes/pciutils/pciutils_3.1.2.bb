@@ -12,7 +12,7 @@ SRC_URI_append_nylon = "file://gcc-3-compatibility.patch;patch=1 "
 
 PARALLEL_MAKE = ""
 
-PR = "r5"
+PR = "r6"
 
 EXTRA_OEMAKE += "'STRIP = ' PREFIX=${prefix} LIBDIR=${libdir}"
 export SHARED=yes
@@ -38,14 +38,6 @@ do_install () {
 	# We install it in a separate package, pciutils-ids-uncompressed.
 	install -m 0644 ${S}/pci.ids ${D}/${datadir}
 }
-
-do_stage () {
-	oe_runmake install-lib DESTDIR=${STAGING_DIR_HOST}
-
-	# "make install-lib" misses the symlink libpci.so.3
-	oe_libinstall -so -C lib libpci ${STAGING_LIBDIR}
-}
-
 
 PACKAGES =+ "${PN}-ids ${PN}-ids-uncompressed"
 FILES_${PN}-ids = "${datadir}/pci.ids.gz"

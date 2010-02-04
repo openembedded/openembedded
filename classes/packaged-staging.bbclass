@@ -288,8 +288,8 @@ packagedstaging_fastpath () {
 	if [ "$PSTAGING_ACTIVE" = "1" ]; then
 		mkdir -p ${PSTAGE_TMPDIR_STAGE}/staging/
 		mkdir -p ${PSTAGE_TMPDIR_STAGE}/cross/
-		cp -fpPR ${SYSROOT_DESTDIR}/${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/staging/ || /bin/true
-		cp -fpPR ${SYSROOT_DESTDIR}/${CROSS_DIR}/* ${PSTAGE_TMPDIR_STAGE}/cross/ || /bin/true
+		cp -fpPR ${SYSROOT_DESTDIR}${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/staging/ || /bin/true
+		cp -fpPR ${SYSROOT_DESTDIR}${CROSS_DIR}/* ${PSTAGE_TMPDIR_STAGE}/cross/ || /bin/true
 	fi
 }
 
@@ -377,18 +377,19 @@ python do_package_stage () {
             if not packaged(pkg, d):
                 continue
             if bb.data.inherits_class('package_ipk', d):
-                srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_" + arch + ".ipk", d)
+                srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "${DISTRO_PR}" + "_" + arch + ".ipk", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_IPK}/" + arch + "/" + srcname, d)
                 if os.path.exists(srcfile):
                     destpath = ipkpath + "/" + arch + "/"
                     bb.mkdirhier(destpath)
+		    print destpath
                     bb.copyfile(srcfile, destpath + srcname)
 
             if bb.data.inherits_class('package_deb', d):
                 if arch == 'all':
-                    srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_all.deb", d)
+                    srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "${DISTRO_PR}" + "_all.deb", d)
                 else:
-                    srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_${DPKG_ARCH}.deb", d)
+                    srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "${DISTRO_PR}" + "_${DPKG_ARCH}.deb", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_DEB}/" + arch + "/" + srcname, d)
                 if os.path.exists(srcfile):
                     destpath = debpath + "/" + arch + "/" 
@@ -399,7 +400,7 @@ python do_package_stage () {
 		version = bb.data.getVar('PV', d, 1)
 		version = version.replace('-', '+')
 		bb.data.setVar('RPMPV', version, d)
-                srcname = bb.data.expand(pkgname + "-${RPMPV}-" + pr + ".${TARGET_ARCH}.rpm", d)
+                srcname = bb.data.expand(pkgname + "-${RPMPV}-" + pr + "${DISTRO_PR}" + ".${TARGET_ARCH}.rpm", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_RPM}/" + arch + "/" + srcname, d)
                 if os.path.exists(srcfile):
                     destpath = rpmpath + "/" + arch + "/" 
