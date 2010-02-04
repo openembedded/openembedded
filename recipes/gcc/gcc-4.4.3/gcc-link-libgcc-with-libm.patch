@@ -1,0 +1,261 @@
+
+<tches-return-228648-listarch-gcc-patches=gcc dot gnu dot org at gcc dot gnu dot org Tue Oct 07 18:11:15 2008
+Return-Path: <gcc-patches-return-228648-listarch-gcc-patches=gcc dot gnu dot org at gcc dot gnu dot org>
+Delivered-To: listarch-gcc-patches at gcc dot gnu dot org
+Received: (qmail 27356 invoked by alias); 7 Oct 2008 18:11:15 -0000
+Received: (qmail 27347 invoked by uid 22791); 7 Oct 2008 18:11:13 -0000
+X-Spam-Check-By: sourceware.org
+Received: from fg-out-1718.google.com (HELO fg-out-1718.google.com) (72.14.220.154)     by sourceware.org (qpsmtpd/0.31) with ESMTP; Tue, 07 Oct 2008 18:10:20 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so2412591fga.28         for <gcc-patches@gcc.gnu.org>; Tue, 07 Oct 2008 11:10:15 -0700 (PDT)
+Received: by 10.181.25.18 with SMTP id c18mr5278303bkj.61.1223403015435;         Tue, 07 Oct 2008 11:10:15 -0700 (PDT)
+Received: from s42.loc (85-127-249-102.dynamic.xdsl-line.inode.at [85.127.249.102])         by mx.google.com with ESMTPS id b17sm14173957fka.7.2008.10.07.11.10.13         (version=TLSv1/SSLv3 cipher=RC4-MD5);         Tue, 07 Oct 2008 11:10:14 -0700 (PDT)
+Received: from cow by s42.loc with local (Exim 4.69) 	(envelope-from <rep.dot.nop@gmail.com>) 	id 1KnH0l-00050F-7O; Tue, 07 Oct 2008 20:10:19 +0200
+Date: Tue, 7 Oct 2008 20:10:19 +0200
+From: Bernhard Reutner-Fischer <rep dot dot dot nop at gmail dot com>
+To: Ian Lance Taylor <iant at google dot com>
+Cc: gcc-patches at gcc dot gnu dot org
+Subject: Re: [PATCH] link libgcc_s.so against a lib containing copysignl on 	powerpc-*-linux-uclibc
+Message-ID: <20081007181019.GB5178@mx.loc>
+References: <20081007141721.GG9250@mx.loc> <m33aj82wcc.fsf@google.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
+In-Reply-To: <m33aj82wcc dot fsf at google dot com>
+User-Agent: Mutt/1.5.18 (2008-05-17)
+Mailing-List: contact gcc-patches-help at gcc dot gnu dot org; run by ezmlm
+Precedence: bulk
+List-Id: <gcc-patches.gcc.gnu.org>
+List-Archive: <http://gcc.gnu.org/ml/gcc-patches/>
+List-Post: <mailto:gcc-patches at gcc dot gnu dot org>
+List-Help: <mailto:gcc-patches-help at gcc dot gnu dot org>
+Sender: gcc-patches-owner at gcc dot gnu dot org
+Delivered-To: mailing list gcc-patches at gcc dot gnu dot org
+
+
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Oct 07, 2008 at 09:39:31AM -0700, Ian Lance Taylor wrote:
+>Bernhard Reutner-Fischer <rep.dot.nop@gmail.com> writes:
+>
+>> gcc/ChangeLog:
+>>
+>> 2008-10-07  Bernhard Reutner-Fischer  <>
+>>
+>> 	* config/t-slibgcc-elf-ver (SHLIB_LC): Also link against
+>> 	@libgcc_libm@.
+>>
+>> libgcc/ChangeLog:
+>>
+>> 2008-10-07  Bernhard Reutner-Fischer  <>
+>>
+>> 	* configure.ac (libgcc_cv_copysignl_lib, LIBGCC_LIBM): New
+>> 	variables to denote if we are on powerpc-uclibc where libm
+>> 	functions live in libm.
+>> 	* Makefile.in (LIBGCC_LIBM): Set.
+>> 	(libgcc_s$(SHLIB_EXT)): Substitute @libgcc_libm@ with
+>> 	$(LIBGCC_LIBM).
+>> 	* (configure): Regenerate.
+>
+>
+>> +# On powerpc libgcc_s references copysignl which is a libm function but
+>> +# glibc apparently also provides it via libc as opposed to uClibc where
+>> +# it lives in libm.
+>> +dnl save_LIBS="$LIBS"
+>> +dnl LIBS=
+>> +dnl AC_SEARCH_LIBS(copysignl, m)
+>> +dnl LIBGCC_LIBS="$LIBS"
+>> +dnl LIBS="$save_LIBS"
+>> +dnl AC_SUBST(LIBGCC_LIBS)
+>
+>Why don't you run these commands listed as dnl?
+
+I don't have a working compiler here yet and GCC_NO_EXECUTABLES. I can
+only assemble, not link (we're about to build the libgcc for the
+compiler here).
+>
+>> +AC_CACHE_CHECK([for library containing copysignl],
+>> +  libgcc_cv_copysignl_lib, [
+>> +    echo '#include <features.h>' > conftest.c
+>> +    case $target_alias in
+>> +    *powerpc*)
+>> +	echo 'int the_libc = __UCLIBC__;' >> conftest.c
+>> +	;;
+>> +    *)
+>> +	echo 'int the_libc; /* dummy */' >> conftest.c
+>> +	;;
+>> +    esac
+>> +    libgcc_cv_copysignl_lib="-lc"
+>> +    if AC_TRY_COMMAND(${CC-cc} -S conftest.c -o conftest.s 1>&AS_MESSAGE_LOG_FD)
+>> +    then
+>> +	libgcc_cv_copysignl_lib="-lm"
+>> +    fi
+>
+>AC_TRY_COMMAND is not part of the documented set of autoconf
+>commands.  And this test seems reversed: shouldn't you add -lm if
+>AC_TRY_COMMAND fails?
+
+AC_TRY_COMMAND is used in the same file to check visibility support.
+An alternative would be to run nm(1), but for that i need to know the
+location of libc and libm so AC_TRY_COMMAND was easier.
+
+The test is supposed to
+- pass only on powerpc-*-*-uclibc*
+- fail otherwise
+so yes, that isn't quite right and should drop the case statement and
+check something like __UCLIBC__ + __powerpc__ instead (or use #if
+!defined\n#else\n#error glibm\n#endif but that would be more echo
+invocations).
+
+
+>I don't see any reason to write shell code that tests $target_alias
+
+true.
+
+>(and shouldn't it be $host_alias anyhow)?  Just write C code that does
+>"#ifdef PPC"?
+
+It can't be the host_alias, we can as well build either a
+build=host=i386,target=ppc (cross-compiler) or a
+build=i386,host=target=ppc ("native" compiler, cross-compiled).
+>
+>The basic idea seems fine, though.
+
+Thanks. I'm attaching an updated patch, ChangeLog remains the same.
+Ok for trunk?
+
+--rwEMma7ioTxnRzrJ
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="820-powerpc-softfloat-libm_for_copysignl.patch"
+
+Index: gcc-4.4.3/gcc/config/t-slibgcc-elf-ver
+===================================================================
+--- gcc-4.4.3.orig/gcc/config/t-slibgcc-elf-ver	2010-01-04 07:13:08.000000000 -0800
++++ gcc-4.4.3/gcc/config/t-slibgcc-elf-ver	2010-02-03 12:03:53.424789774 -0800
+@@ -9,7 +9,7 @@ SHLIB_MAP = @shlib_map_file@
+ SHLIB_OBJS = @shlib_objs@
+ SHLIB_DIR = @multilib_dir@
+ SHLIB_SLIBDIR_QUAL = @shlib_slibdir_qual@
+-SHLIB_LC = -lc
++SHLIB_LC = @libgcc_libm@ -lc
+ SHLIB_MAKE_SOLINK = $(LN_S) $(SHLIB_SONAME) $(SHLIB_DIR)/$(SHLIB_SOLINK)
+ SHLIB_INSTALL_SOLINK = $(LN_S) $(SHLIB_SONAME) \
+ 	$$(DESTDIR)$$(slibdir)$(SHLIB_SLIBDIR_QUAL)/$(SHLIB_SOLINK)
+Index: gcc-4.4.3/libgcc/configure
+===================================================================
+--- gcc-4.4.3.orig/libgcc/configure	2008-11-20 09:13:01.000000000 -0800
++++ gcc-4.4.3/libgcc/configure	2010-02-03 12:02:35.727326054 -0800
+@@ -272,7 +272,7 @@ PACKAGE_STRING='GNU C Runtime Library 1.
+ PACKAGE_BUGREPORT=''
+ 
+ ac_unique_file="static-object.mk"
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS libgcc_topdir enable_shared slibdir INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AWK build build_cpu build_vendor build_os host host_cpu host_vendor host_os host_noncanonical build_libsubdir build_subdir host_subdir target_subdir AR ac_ct_AR LIPO ac_ct_LIPO NM ac_ct_NM RANLIB ac_ct_RANLIB STRIP ac_ct_STRIP LN_S CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP decimal_float enable_decimal_float fixed_point vis_hide set_have_cc_tls tmake_file extra_parts asm_hidden_op LIBOBJS LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS libgcc_topdir enable_shared slibdir INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AWK build build_cpu build_vendor build_os host host_cpu host_vendor host_os host_noncanonical build_libsubdir build_subdir host_subdir target_subdir AR ac_ct_AR LIPO ac_ct_LIPO NM ac_ct_NM RANLIB ac_ct_RANLIB STRIP ac_ct_STRIP LN_S CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP decimal_float enable_decimal_float fixed_point vis_hide set_have_cc_tls LIBGCC_LIBM tmake_file extra_parts asm_hidden_op LIBOBJS LTLIBOBJS'
+ ac_subst_files=''
+ ac_pwd=`pwd`
+ 
+@@ -3547,6 +3547,39 @@ if test "$enable_tls $gcc_cv_have_cc_tls
+ fi
+ 
+ 
++# On powerpc libgcc_s references copysignl which is a libm function but
++# glibc apparently also provides it via libc as opposed to uClibc where
++# it lives in libm.
++echo "$as_me:$LINENO: checking for library containing copysignl" >&5
++echo $ECHO_N "checking for library containing copysignl... $ECHO_C" >&6
++if test "${libgcc_cv_copysignl_lib+set}" = set; then
++  echo $ECHO_N "(cached) $ECHO_C" >&6
++else
++
++    echo '#include <features.h>' > conftest.c
++    echo 'int the_libc = __UCLIBC__ + __powerpc__;' >> conftest.c
++    libgcc_cv_copysignl_lib="-lc"
++    if { ac_try='${CC-cc} -S conftest.c -o conftest.s 1>&5'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }
++    then
++	libgcc_cv_copysignl_lib="-lm"
++    fi
++    rm -f conftest.*
++
++fi
++echo "$as_me:$LINENO: result: $libgcc_cv_copysignl_lib" >&5
++echo "${ECHO_T}$libgcc_cv_copysignl_lib" >&6
++
++case /${libgcc_cv_copysignl_lib}/ in
++  /-lm/) LIBGCC_LIBM="$LIBGCC_LIBM -lm" ;;
++  *) LIBGCC_LIBM= ;;
++esac
++
++
+ # Conditionalize the makefile for this target machine.
+ tmake_file_=
+ for f in ${tmake_file}
+@@ -4267,6 +4300,7 @@ s,@enable_decimal_float@,$enable_decimal
+ s,@fixed_point@,$fixed_point,;t t
+ s,@vis_hide@,$vis_hide,;t t
+ s,@set_have_cc_tls@,$set_have_cc_tls,;t t
++s,@LIBGCC_LIBM@,$LIBGCC_LIBM,;t t
+ s,@tmake_file@,$tmake_file,;t t
+ s,@extra_parts@,$extra_parts,;t t
+ s,@asm_hidden_op@,$asm_hidden_op,;t t
+Index: gcc-4.4.3/libgcc/configure.ac
+===================================================================
+--- gcc-4.4.3.orig/libgcc/configure.ac	2008-11-20 09:13:01.000000000 -0800
++++ gcc-4.4.3/libgcc/configure.ac	2010-02-03 12:02:35.727326054 -0800
+@@ -223,6 +223,27 @@ if test "$enable_tls $gcc_cv_have_cc_tls
+ fi
+ AC_SUBST(set_have_cc_tls)
+ 
++# On powerpc libgcc_s references copysignl which is a libm function but
++# glibc apparently also provides it via libc as opposed to uClibc where
++# it lives in libm.
++AC_CACHE_CHECK([for library containing copysignl],
++  libgcc_cv_copysignl_lib, [
++    echo '#include <features.h>' > conftest.c
++    echo 'int the_libc = __UCLIBC__ + __powerpc__;' >> conftest.c
++    libgcc_cv_copysignl_lib="-lc"
++    if AC_TRY_COMMAND(${CC-cc} -S conftest.c -o conftest.s 1>&AS_MESSAGE_LOG_FD)
++    then
++	libgcc_cv_copysignl_lib="-lm"
++    fi
++    rm -f conftest.*
++  ])
++
++case /${libgcc_cv_copysignl_lib}/ in
++  /-lm/) LIBGCC_LIBM="$LIBGCC_LIBM -lm" ;;
++  *) LIBGCC_LIBM= ;;
++esac
++AC_SUBST(LIBGCC_LIBM)
++
+ # Conditionalize the makefile for this target machine.
+ tmake_file_=
+ for f in ${tmake_file}
+Index: gcc-4.4.3/libgcc/Makefile.in
+===================================================================
+--- gcc-4.4.3.orig/libgcc/Makefile.in	2009-04-09 16:23:07.000000000 -0700
++++ gcc-4.4.3/libgcc/Makefile.in	2010-02-03 12:02:35.727326054 -0800
+@@ -39,6 +39,7 @@ enable_shared = @enable_shared@
+ decimal_float = @decimal_float@
+ enable_decimal_float = @enable_decimal_float@
+ fixed_point = @fixed_point@
++LIBGCC_LIBM = @LIBGCC_LIBM@
+ 
+ host_noncanonical = @host_noncanonical@
+ 
+@@ -787,9 +788,10 @@ libgcc_s$(SHLIB_EXT): $(libgcc-s-objects
+ 		@multilib_dir@,$(MULTIDIR),$(subst \
+ 		@shlib_objs@,$(objects),$(subst \
+ 		@shlib_base_name@,libgcc_s,$(subst \
++		@libgcc_libm@,$(LIBGCC_LIBM),$(subst \
+ 		@shlib_map_file@,$(mapfile),$(subst \
+ 		@shlib_slibdir_qual@,$(MULTIOSSUBDIR),$(subst \
+-		@shlib_slibdir@,$(shlib_slibdir),$(SHLIB_LINK))))))))
++		@shlib_slibdir@,$(shlib_slibdir),$(SHLIB_LINK)))))))))
+ 
+ libunwind$(SHLIB_EXT): $(libunwind-s-objects) $(extra-parts)
+ 	# @multilib_flags@ is still needed because this may use
