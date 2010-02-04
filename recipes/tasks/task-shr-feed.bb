@@ -257,6 +257,7 @@ RDEPENDS_${PN} += "\
 		xf86-input-tslib \
 		fltkcocktailbar \
 		fltkcurrency \
+		fltkspacetrader \
 		mokoeightball \
 		babiloo-efl \
 		make \
