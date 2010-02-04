@@ -14,7 +14,7 @@ SRCREV_pn-fsotdld ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsousaged ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsobasics ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoframework ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-libfsotransport ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-libfsotransport ?= "0c1e8c057b4110b1d8d2c24fd93744c03c304cc8"
 SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-mickeydbus2 ?= "${FSO_CORNUCOPIA_SRCREV}"
 
