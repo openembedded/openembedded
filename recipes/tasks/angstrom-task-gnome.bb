@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r5"
+PR = "r6"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -30,6 +30,7 @@ RDEPENDS_task-gnome-apps = " \
   gimp \
   gnome-games \
   gnome-mplayer \
+  gecko-mediaplayer-firefox-hack \
   gnumeric \
   gphoto2 \
   gthumb \
