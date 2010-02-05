@@ -1,6 +1,6 @@
 require gnome-mplayer.inc
 
-SRCREV = "1610"
+SRCREV = "1634"
 PV = "0.9.8+svnr${SRCPV}"
 PR = "r1"
 S = "${WORKDIR}/trunk"
