@@ -3,9 +3,10 @@
 # FSO Projects -- Cornucopia
 FSO_CORNUCOPIA_SRCREV ?= "429a3d190016b7516b57703faa777c398d843d6c"
 SRCREV_pn-fso-apm ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-fso-boot ?= "241e9212db9f22d3cb0491723a1c41309f4bf486"
 SRCREV_pn-fsodatad ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-fsodeviced ?= "4c7979f5c19ab74c7c161d1d393677cb98f560d4"
-SRCREV_pn-fsogsmd ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-fsodeviced ?= "c5094450745643b1b4410a79d7cb72e3f7df28a6"
+SRCREV_pn-fsogsmd ?= "42b94a43ef1dce1225c1f26301c0f4b8aab669e8"
 SRCREV_pn-fsolocationd ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsomusicd ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fsonetworkd ?= "${FSO_CORNUCOPIA_SRCREV}"
@@ -16,7 +17,7 @@ SRCREV_pn-libfsobasics ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoframework ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsotransport ?= "0c1e8c057b4110b1d8d2c24fd93744c03c304cc8"
 SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-mickeydbus2 ?= "${FSO_CORNUCOPIA_SRCREV}"
+SRCREV_pn-mickeydbus2 ?= "3e75d0ab3e334e303fa1f64b5d87465150c0b58c"
 
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"
