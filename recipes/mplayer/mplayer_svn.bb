@@ -13,9 +13,10 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://mplayer-lavc-arm.patch;patch=1 \
        file://fix-exp.diff;patch=1;maxrev=30291 \
 	   file://fix-addrinfo.patch;patch=1;maxrev=30302 \
+       file://fix-avconfig.diff;patch=1;maxrev=30376 \
 "
 
-SRCREV = "30345"
+SRCREV = "30165"
 SRC_URI_append_armv7a = " \
 		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
@@ -37,7 +38,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+svnr${SRCPV}"
+PV = "0.0+1.0rc3+svnr${SRCPV}"
 PR = "r17"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"

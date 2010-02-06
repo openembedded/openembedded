@@ -1,0 +1,77 @@
+Index: linux-2.6.23/arch/arm/mach-pxa/hx2750.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/hx2750.c	2009-08-12 10:37:26.000000000 -0400
++++ linux-2.6.23/arch/arm/mach-pxa/hx2750.c	2009-08-12 10:38:53.000000000 -0400
+@@ -443,7 +443,7 @@
+ 	.io_pg_offst	= (io_p2v(0x40000000) >> 18) & 0xfffc,
+ 	.boot_params	= 0xa0000100,
+ 	.map_io		= pxa_map_io,
+-        .init_irq 	= pxa_init_irq,
++        .init_irq 	= pxa27x_init_irq,
+         .timer		= &pxa_timer,
+ 	.init_machine 	= hx2750_init,
+ MACHINE_END
+Index: linux-2.6.23/arch/arm/mach-pxa/hx2750_test.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/hx2750_test.c	2009-08-12 10:37:26.000000000 -0400
++++ linux-2.6.23/arch/arm/mach-pxa/hx2750_test.c	2009-08-12 10:40:35.000000000 -0400
+@@ -203,14 +203,15 @@
+ 
+ static DEVICE_ATTR(ssp2write, 0200, NULL, ssp2write_store);
+ 
+-+static ssize_t sspr_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
++static ssize_t sspr_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+ {
+-	unsigned long val,ret;
++	unsigned long val;
++	int ret;
+ 	val = simple_strtoul(buf, NULL, 0);
+ 
+ 	hx2750_tsc2101_send(1<<15,val,&ret,1);
+ 
+-	printk("Response: %lx\n",ret);
++	printk("Response: %x\n",ret);
+ 
+ 	return count;
+ }
+@@ -219,8 +220,9 @@
+ 
+ static ssize_t sspw_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+ {
+-	unsigned long val,ret;
+-	sscanf(buf, "%lx %lx", &val, &ret);
++	unsigned long val;
++	int ret;
++	sscanf(buf, "%lx %x", &val, &ret);
+ 
+ 	hx2750_tsc2101_send(0,val,&ret,1);
+ 
+@@ -336,10 +338,10 @@
+ }
+ 
+ static struct pm_ops hx2750_pm_ops = {
+-	.pm_disk_mode	= PM_DISK_FIRMWARE,
+-	.prepare	= pxa_pm_prepare,
++	/* .pm_disk_mode	= PM_DISK_FIRMWARE,  ** not sure why this element doesn't exist anymore and what replaced it **  */
++	/* .prepare	= pxa_pm_prepare, */
+ 	.enter		= hx2750_pxa_pm_enter,
+-	.finish		= pxa_pm_finish,
++	/* .finish		= pxa_pm_finish, */
+ };
+ 
+ 
+Index: linux-2.6.23/include/asm/arch/hx2750.h
+===================================================================
+--- linux-2.6.23.orig/include/asm/arch/hx2750.h	2009-08-12 10:42:15.000000000 -0400
++++ linux-2.6.23/include/asm/arch/hx2750.h	2009-08-12 10:42:24.000000000 -0400
+@@ -85,6 +85,10 @@
+ void hx2750_set_egpio(unsigned int gpio);
+ void hx2750_clear_egpio(unsigned int gpio);
+ 
++/* for _test.c */
++void hx2750_ssp_init2(void);
++void hx2750_tsc2101_send(int read, int command, int *values, int numval);
++
+ 
+ #endif /* __ASM_ARCH_HX2750_H  */
+ 

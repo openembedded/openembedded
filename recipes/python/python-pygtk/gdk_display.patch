@@ -1,0 +1,46 @@
+Index: gtk/gdk.override
+===================================================================
+--- gtk/gdk.override	(revision 2816)
++++ gtk/gdk.override	(working copy)
+@@ -922,6 +922,23 @@ _wrap_gdk_display_manager_list_displays(
+     return py_list;
+ }
+ %%
++override gdk_screen_new noargs
++static int
++_wrap_gdk_screen_new (PyGObject *self)
++{
++    self->obj = (GObject *)gdk_screen_get_default();
++    if (!self->obj) {
++	PyErr_SetString(PyExc_RuntimeError,
++			"could not get default display");
++	return -1;
++    }
++
++    g_object_ref(self->obj);
++
++    pygobject_register_wrapper((PyObject *)self);
++    return 0;
++}
++%%
+ override gdk_screen_list_visuals noargs
+ static PyObject *
+ _wrap_gdk_screen_list_visuals(PyGObject *self)
+Index: gtk/gdk-base.defs
+===================================================================
+--- gtk/gdk-base.defs	(revision 2816)
++++ gtk/gdk-base.defs	(working copy)
+@@ -3866,6 +3866,13 @@
+   (return-type "GdkScreen*")
+ )
+ 
++;; dummy, overridden to return gdk_screen_get_default()
++(define-function gdk_screen_new
++  (c-name "gdk_screen_new")
++  (return-type "GdkScreen*")
++  (is-constructor-of "GdkScreen")
++)
++
+ (define-method get_setting
+   (of-object "GdkScreen")
+   (c-name "gdk_screen_get_setting")

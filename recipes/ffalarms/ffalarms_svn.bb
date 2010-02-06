@@ -8,7 +8,7 @@ PRIORITY = "optional"
 DEPENDS = "elementary libeflvala libical"
 
 PV = "0.3.1+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 # needed because there is do_stage_append in vala.bbclass and do_stage() was removed..
 do_stage() {
@@ -17,7 +17,8 @@ do_stage() {
 
 inherit vala
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/ffalarms;module=trunk;proto=https"
+SRC_URI = "svn://svn.projects.openmoko.org/svnroot/ffalarms;module=trunk;proto=https \
+           file://libeflvala.a18c70a312d98cc90e0e7978f845601e82460b39.patch;patch=1"
 
 S = "${WORKDIR}/trunk"
 

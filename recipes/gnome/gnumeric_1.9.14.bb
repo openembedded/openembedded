@@ -7,6 +7,8 @@ PARALLEL_MAKE = ""
 
 inherit gnome flow-lossage
 
+SRC_URI += " file://nodolt.patch;patch=1 "
+
 EXTRA_OECONF=" --without-perl "
 
 PACKAGES_DYNAMIC += "gnumeric-plugin-*"

@@ -6,7 +6,7 @@ LICENSE = "GPL LGPL AFL"
 DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat virtual/libusb0"
 RDEPENDS_${PN} += "udev-utils hal-info"
 
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
            file://configure_fix.patch;patch=1 \

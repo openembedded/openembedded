@@ -71,7 +71,7 @@ case "$arch" in
 	"i586")
 			machines="epia qemux86" ;;
 	"i686")
-			machines="guinness progear" ;;
+			machines="eee701 guinness progear" ;;
 	"iwmmxt")
 			machines="" ;;
 	"ppc405")	
@@ -95,7 +95,7 @@ fi
 echo "Sorting $arch"
 
 mkdir -p ../$archdir/base/ || true
-for i in `find . -name  "*.ipk"| grep $arch` ; do mv $i ../$archdir/base/ ; done
+for i in `find . -name  "*_$arch.ipk"` ; do mv $i ../$archdir/base/ ; done
         for machine in $machines ; do
                 for i in `find . -name  "*_$machine.ipk"| grep $machine` ; do mkdir -p ../$archdir/machine/$machine || true ;mv $i ../$archdir/machine/$machine ; done
 	done
@@ -165,7 +165,7 @@ for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i
 mkdir -p ../sdk ; mv *sdk.ipk ../sdk/ || true
  (mkdir -p ../sdk ; cd ../sdk && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
 
-for arch in armv4 armv4t armv5teb armv5te armv6-novfp armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e ppce300c3 ppce500 sparc x86_64 ; do
+for arch in armv4t armv4 armv5teb armv5te armv6-novfp armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e ppce300c3 ppce500 sparc x86_64 ; do
 	do_sort
 done
 

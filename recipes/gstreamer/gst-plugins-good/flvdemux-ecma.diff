@@ -1,0 +1,26 @@
+From dd82612340001e7ff821725ac257a0a36ab1fea7 Mon Sep 17 00:00:00 2001
+From: Jan Urbański <wulczer@wulczer.org>
+Date: Mon, 09 Nov 2009 11:17:34 +0000
+Subject: flvmux: properly finish the ECMA array
+
+The ECMA array with the file index was missing a mandatory end marker.
+Fixes bug #601242.
+---
+diff --git a/gst/flv/gstflvmux.c b/gst/flv/gstflvmux.c
+index 89e8279..e1cb143 100644
+--- a/gst/flv/gstflvmux.c
++++ b/gst/flv/gstflvmux.c
+@@ -1060,6 +1060,11 @@ gst_flv_mux_write_index (GstFlvMux * mux)
+   }
+   script_tag = gst_buffer_join (script_tag, tmp);
+ 
++  tmp = gst_buffer_new_and_alloc (3);
++  data = GST_BUFFER_DATA (tmp);
++  GST_WRITE_UINT24_BE (data, 9);        /* finish the ECMA array */
++  script_tag = gst_buffer_join (script_tag, tmp);
++
+   tmp = gst_buffer_new_and_alloc (4);
+   data = GST_BUFFER_DATA (tmp);
+   GST_WRITE_UINT32_BE (data, GST_BUFFER_SIZE (script_tag));
+--
+cgit v0.8.3-6-g21f6

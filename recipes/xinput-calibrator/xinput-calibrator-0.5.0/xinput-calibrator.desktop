@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Calibrate Xinput Touchscreen
+Name[de]=Xinput Touchscreen Kalibrieren
+Comment=Run the calibration tool for Xinput touchscreens
+Encoding=UTF-8
+Exec=/usr/bin/xinput_calibrator
+Terminal=false
+Type=Application
+Icon=calibrate
+StartupNotify=true
+Categories=System;Settings;

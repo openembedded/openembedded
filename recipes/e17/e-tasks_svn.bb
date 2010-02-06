@@ -7,6 +7,7 @@ DEPENDS = "elementary eina edbus sqlite3"
 
 inherit autotools
 
+SRCREV = "24"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r1"
 

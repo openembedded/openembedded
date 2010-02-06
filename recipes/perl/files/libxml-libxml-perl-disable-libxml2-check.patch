@@ -1,0 +1,39 @@
+--- a/Makefile.PL	2010-01-21 15:31:53.000000000 +0100
++++ b/Makefile.PL	2010-01-21 15:32:51.000000000 +0100
+@@ -291,21 +291,21 @@
+ 
+ # -------------------------------------------------------------------------- #
+ # test if the libraries are really installed!
+-unless (have_library("xml2") or have_library("libxml2")) {
+-    print STDERR <<DEATH;
+-libxml2 not found
+-Try setting LIBS and INC values on the command line
+-Or get libxml2 from 
+-  http://xmlsoft.org/
+-If you install via RPMs, make sure you also install the -devel
+-RPMs, as this is where the headers (.h files) are.
+-
+-Also, you may try to run perl Makefile.PL with the DEBUG=1 parameter
+-to see the exact reason why the detection of libxml2 installation
+-failed or why Makefile.PL was not able to compile a test program.
+-DEATH
+-exit 0; # 0 recommended by http://cpantest.grango.org (Notes for CPAN Authors)
+-}
++#unless (have_library("xml2") or have_library("libxml2")) {
++#    print STDERR <<DEATH;
++#libxml2 not found
++#Try setting LIBS and INC values on the command line
++#Or get libxml2 from 
++#  http://xmlsoft.org/
++#If you install via RPMs, make sure you also install the -devel
++#RPMs, as this is where the headers (.h files) are.
++#
++#Also, you may try to run perl Makefile.PL with the DEBUG=1 parameter
++#to see the exact reason why the detection of libxml2 installation
++#failed or why Makefile.PL was not able to compile a test program.
++#DEATH
++#exit 0; # 0 recommended by http://cpantest.grango.org (Notes for CPAN Authors)
++#}
+ # -------------------------------------------------------------------------- #
+ 
+ # -------------------------------------------------------------------------- #

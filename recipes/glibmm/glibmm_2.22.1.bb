@@ -1,9 +1,8 @@
 require glibmm.inc
 
-do_configure() {
-	libtoolize --force
-	gnu-configize
-	oe_runconf
-}
+DEPENDS += "mm-common"
 
+SRC_URI += " file://remove-examples.patch;patch=1"
+
+PR = "r1"
 

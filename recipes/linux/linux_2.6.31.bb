@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r9"
+PR = "r10"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -14,7 +14,7 @@ DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.9.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI += "file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;patch=1 \

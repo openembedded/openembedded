@@ -3,7 +3,7 @@ SECTION = "base"
 DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."
-PR = "r4"
+PR = "r5"
 RDEPENDS_${PN} = "less groff"
 
 # Note: The default man.conf uses wrong names for GNU eqn and troff,
@@ -14,7 +14,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/man/man-${PV}.tar.bz2 \
 # Disable parallel make or it tries to link objects before they are built
 PARALLEL_MAKE = ""
 
-EXTRA_OEMAKE = 'LFDLAGS="${LDFLAGS}"'
+EXTRA_OEMAKE = 'LDFLAGS="${LDFLAGS}"'
 GS = "-DGREPSILENT=\"q\""
 DEFS = "-DUSG -DDO_COMPRESS ${GS}"
 

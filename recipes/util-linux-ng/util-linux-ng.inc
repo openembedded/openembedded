@@ -3,8 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "udev zlib ncurses virtual/libintl"
 
-inherit autotools_stage
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
+inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 

@@ -5,11 +5,19 @@ console
 # Standard serial ports
 ttyS0
 ttyS1
+ttyS2
+ttyS3
 
 # USB dongles
 ttyUSB0
 ttyUSB1
 ttyUSB2
+
+# PowerMac
+ttyPZ0
+ttyPZ1
+ttyPZ2
+ttyPZ3
 
 # Embedded MPC platforms
 ttyPSC0
@@ -94,8 +102,27 @@ tty61
 tty62
 tty63
 
-# devfs consoles
-# Note: On kernels greater than 2.6.12, this is not needed.
+# Local X displays (allows empty passwords with pam_unix's nullok_secure)
+:0
+:0.0
+:0.1
+:1
+:1.0
+:1.1
+:2
+:2.0
+:2.1
+:3
+:3.0
+:3.1
+
+# Embedded Freescale i.MX ports
+ttymxc0
+ttymxc1
+ttymxc2
+ttymxc3
+ttymxc4
+ttymxc5
 
 # Standard serial ports, with devfs
 tts/0

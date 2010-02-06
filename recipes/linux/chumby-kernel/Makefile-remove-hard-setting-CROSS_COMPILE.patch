@@ -1,0 +1,18 @@
+Makefile: remove hard setting CROSS_COMPILE
+
+* linux-2.6.16-chumby-1.2.tar.gz set CROSS_COMPILE as arm-linux- hardly
+* It causes the AR used to compiling linux kernel is arm-linux-ar, which doesn't exist in openembedded at all
+Index: linux-2.6.16/Makefile
+===================================================================
+--- linux-2.6.16.orig/Makefile	2010-02-01 16:19:36.000000000 +0800
++++ linux-2.6.16/Makefile	2010-02-01 16:20:02.000000000 +0800
+@@ -173,8 +173,7 @@
+ # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
+ 
+ ARCH		?= $(SUBARCH)
+-#CROSS_COMPILE	?=
+-CROSS_COMPILE = arm-linux-
++CROSS_COMPILE	?=
+ 
+ # Architecture as present in compile.h
+ UTS_MACHINE := $(ARCH)

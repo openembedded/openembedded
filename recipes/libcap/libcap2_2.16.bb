@@ -5,8 +5,9 @@ LICENSE = "GPL"
 DEPENDS = "bison-native flex-native libattr"
 PR = "r0"
 
-CFLAGS_append = " -I${S}/libcap/include"
-LDFLAGS_prepend = "-L../libcap"
+BUILD_CFLAGS += "-I${S}/libcap/include"
+CFLAGS += "-I${S}/libcap/include"
+LDFLAGS =+ "-L../libcap"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
 	   file://make.patch;patch=1 \

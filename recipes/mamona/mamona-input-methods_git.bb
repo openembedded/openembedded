@@ -3,21 +3,30 @@
 
 DESCRIPTION = "Mamona input methods"
 HOMEPAGE = "http://dev.openbossa.org/trac/mamona/wiki"
-LICENSE = "GPL"
 SECTION = "libs/inputmethods"
+LICENSE = "GPL"
 DEPENDS = "ecore gtk+"
-PR = "r4"
-
-PV = "0.1+git"
-
-inherit autotools pkgconfig lib_package
+RPROVIDES_${PN} = "libmamona-im0"
+RPROVIDES_${PN}-ecore = "libmamona-im-ecore"
+RPROVIDES_${PN}-gtk = "libmamona-im-gtk"
+PV = "0.1-${PR}+gitr${SRCREV}"
+PR = "r5"
+PE = "1"
 
 SRC_URI = "git://dev.openbossa.org/mamona/projects/mamona_input_methods.git;protocol=http"
 
 S = "${WORKDIR}/git"
 
-# Mamona IM
-RPROVIDES_${PN} = "libmamona-im0"
+inherit autotools_stage pkgconfig lib_package
+
+EXTRA_OECONF = "\
+        --enable-ecore-im \
+        --enable-gtk-im \
+        "
+
+do_configure_prepend() {
+        ./autogen.sh
+}
 
 # Ecore
 PACKAGES += "\
@@ -25,10 +34,13 @@ PACKAGES += "\
             ${PN}-ecore-dev \
             ${PN}-ecore-dbg \
         "
-RPROVIDES_${PN}-ecore = "libmamona-im-ecore"
-EXTRA_OECONF = "\
-            --enable-ecore-im \
+# GTK
+PACKAGES += "\
+            ${PN}-gtk \
+            ${PN}-gtk-dev \
+            ${PN}-gtk-dbg \
         "
+
 FILES_${PN}-ecore = "\
             ${libdir}/ecore/immodules/mamona-im-ecore-module.so \
         "
@@ -38,17 +50,6 @@ FILES_${PN}-ecore-dev = "\
         "
 FILES_${PN}-ecore-dbg = "\
             ${libdir}/ecore/immodules/.debug \
-        "
-
-# GTK
-PACKAGES += "\
-            ${PN}-gtk \
-            ${PN}-gtk-dev \
-            ${PN}-gtk-dbg \
-        "
-RPROVIDES_${PN}-gtk = "libmamona-im-gtk"
-EXTRA_OECONF += "\
-            --enable-gtk-im \
         "
 FILES_${PN}-gtk = "\
             ${libdir}/gtk-2.0/*/immodules/mamona-im-gtk-module.so \
@@ -61,18 +62,9 @@ FILES_${PN}-gtk-dbg = "\
             ${libdir}/gtk-2.0/*/immodules/.debug \
         "
 
-do_configure_prepend() {
-    ./autogen.sh
-}
-
-do_stage() {
-    autotools_stage_all
-}
-
 pkg_postinst_${PN}-gtk() {
-    gtk-query-immodules-2.0 > ${sysconfdir}/gtk-2.0/gtk.immodules
+        gtk-query-immodules-2.0 > ${sysconfdir}/gtk-2.0/gtk.immodules
 }
-
 pkg_postrm_${PN}-gtk() {
-    gtk-query-immodules-2.0 > ${sysconfdir}/gtk-2.0/gtk.immodules
+        gtk-query-immodules-2.0 > ${sysconfdir}/gtk-2.0/gtk.immodules
 }

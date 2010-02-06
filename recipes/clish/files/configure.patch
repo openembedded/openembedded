@@ -1,0 +1,19 @@
+--- a/configure.ac   2009-10-22 08:41:30.000000000 +0300
++++ b/configure.ac        2009-10-22 08:40:26.000000000 +0300
+@@ -13,7 +13,6 @@
+ 
+ AC_CONFIG_HEADERS([config.h])
+ AM_INIT_AUTOMAKE(subdir-objects)
+-AM_PROG_CC_C_O
+ 
+ # Checks for programs.
+ AC_PROG_CC
+@@ -20,6 +21,8 @@
+ AC_LIBTOOL_WIN32_DLL
+ AC_PROG_LIBTOOL
+ 
++AM_PROG_CC_C_O
++
+ # needed to handle 64-bit architecture
+ AC_CHECK_SIZEOF(int)
+ AC_CHECK_SIZEOF(long)

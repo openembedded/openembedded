@@ -1,0 +1,26 @@
+From 0fe6b6e8abb131471d5bd04d7f7e27ca98a67659 Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <brijesh.ksingh@gmail.com>
+Date: Wed, 13 Jan 2010 08:39:54 +0000
+Subject: playsink: Fix handling of the native audio/video flags
+
+Fixes bug #606687.
+---
+
+--- /tmp/gstplaysink.c	2010-01-23 12:23:20.000000000 +0100
++++ gst-plugins-base-0.10.25/gst/playback/gstplaysink.c	2010-01-23 12:27:51.000000000 +0100
+@@ -1880,12 +1880,13 @@
+      * pick one and ignore the other then instead of erroring out?) */
+     if (need_text && need_subp)
+       goto subs_and_text;
+-  } else if (flags & GST_PLAY_FLAG_VIDEO && playsink->video_pad) {
++  } else if (((flags & GST_PLAY_FLAG_VIDEO)
++          || (flags & GST_PLAY_FLAG_NATIVE_VIDEO)) && playsink->video_pad) {
+     /* we have video and we are requested to show it */
+     need_video = TRUE;
+   }
+   if (playsink->audio_pad) {
+-    if (flags & GST_PLAY_FLAG_AUDIO) {
++    if ((flags & GST_PLAY_FLAG_AUDIO) || (flags & GST_PLAY_FLAG_NATIVE_AUDIO)) {
+       need_audio = TRUE;
+     }
+     if (playsink->audio_pad_raw) {

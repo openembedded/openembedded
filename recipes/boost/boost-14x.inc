@@ -9,7 +9,7 @@ SECTION = "libs"
 DEPENDS = "zlib bzip2 python expat"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-PR = "r0"
+INC_PR = "r8"
 
 ARM_INSTRUCTION_SET = "arm"
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"

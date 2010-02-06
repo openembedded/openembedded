@@ -1,0 +1,35 @@
+Backport this patch
+
+2009-04-02  Andrew Stubbs  <ams@codesourcery.com>
+
+	* config/sh/linux-unwind.h: Disable when inhibit_libc is defined.
+
+
+http://gcc.gnu.org/viewcvs?view=rev&revision=145442
+
+To get gcc compiled for SH
+
+-Khem
+Index: gcc-4.4.1/gcc/config/sh/linux-unwind.h
+===================================================================
+--- gcc-4.4.1.orig/gcc/config/sh/linux-unwind.h	2009-08-08 10:21:35.943210469 -0700
++++ gcc-4.4.1/gcc/config/sh/linux-unwind.h	2009-08-08 10:22:18.643210817 -0700
+@@ -24,7 +24,11 @@
+ 
+ 
+ /* Do code reading to identify a signal frame, and set the frame
+-   state data appropriately.  See unwind-dw2.c for the structs.  */
++   state data appropriately.  See unwind-dw2.c for the structs.
++   Don't use this at all if inhibit_libc is used.  */
++
++#ifndef inhibit_libc
++
+ 
+ #include <signal.h>
+ #include <sys/ucontext.h>
+@@ -248,3 +252,5 @@
+   return _URC_NO_REASON;
+ }
+ #endif /* defined (__SH5__) */
++
++#endif /* inhibit_libc */

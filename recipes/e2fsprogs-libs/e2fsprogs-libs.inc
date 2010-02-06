@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "util-linux-ng"
 
-inherit autotools_stage gettext pkgconfig
+inherit autotools_stage gettext
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
            file://configure.patch;patch=1 \

@@ -4,7 +4,7 @@ def gnome_verdir(v):
 	return "%s.%s" % (m.group(1), m.group(2))
 
 SECTION ?= "x11/gnome"
-SRC_URI = "${GNOME_MIRROR}/${PN}/${@gnome_verdir("${PV}")}/${PN}-${PV}.tar.bz2"
+SRC_URI = "${GNOME_MIRROR}/${BPN}/${@gnome_verdir("${PV}")}/${BPN}-${PV}.tar.bz2;name=archive"
 
 DEPENDS += "gnome-common"
 

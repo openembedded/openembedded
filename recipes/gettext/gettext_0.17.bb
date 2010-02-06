@@ -2,9 +2,14 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPLv3"
-PR = "r3"
+PR = "r5"
 DEPENDS = "gettext-native virtual/libiconv ncurses expat"
+DEPENDS_virtclass-native = ""
 PROVIDES = "virtual/libintl"
+PROVIDES_virtclass-native = ""
+RCONFLICTS_gettext-libintl = "proxy-libintl"
+
+BBCLASSEXTEND = "native nativesdk"
 
 SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 	   file://autotools.patch;patch=1 \
@@ -45,10 +50,9 @@ acpaths = '-I ${S}/autoconf-lib-link/m4/ \
 # 140     KiB /armv4t/gettext-dev_0.14.1-r6_armv4t.ipk
 # 4       KiB /ep93xx/libgcc-s-dev_4.2.2-r2_ep93xx.ipk
 
-PACKAGES =+ "libgettextlib libgettextsrc"
+PACKAGES =+ "gettext-libintl libgettextlib libgettextsrc"
+
+FILES_gettext-libintl = "${libdir}/libintl*.so.*"
 FILES_libgettextlib = "${libdir}/libgettextlib-*.so*"
 FILES_libgettextsrc = "${libdir}/libgettextsrc-*.so*"
 
-do_stage () {
-	autotools_stage_all
-}

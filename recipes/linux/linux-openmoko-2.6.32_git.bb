@@ -3,11 +3,11 @@ require linux-openmoko.inc
 
 DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Smartphones"
 
-KERNEL_RELEASE="2.6.32.3"
+KERNEL_RELEASE="2.6.32.7"
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r4"
+PR = "r0"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
@@ -16,6 +16,8 @@ SRC_URI = "\
   file://defconfig \
 # build fix
   file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch;patch=1 \
+# needed only for 2.6.32.7+
+  file://fix.compilation.if.no.GENERIC_TIME.patch;patch=1 \
 # patches from Weiss's gdrm-2.6.31 branch
   file://0001-DRM-for-platform-devices.patch;patch=1 \
   file://0002-Glamo-DRM-and-KMS-driver.patch;patch=1 \
@@ -26,8 +28,8 @@ SRC_URI = "\
   file://0002-glamo-drm-select-DRM_KMS_HELPER-for-crtc-functions.patch;patch=1 \
 "
 
-SRC_URI[stablepatch.md5sum] = "6bd3c5fea1e88bb4d0948ec3688bd8f6"
-SRC_URI[stablepatch.sha256sum] = "e7526a7ae7210bc7c4f4837e9d8a666f9b126d59bee16015c41c5850d29c841f"
+SRC_URI[stablepatch.md5sum] = "a68305d3e77dddc9555ba58f678a1ce2"
+SRC_URI[stablepatch.sha256sum] = "b3382d02ec25e3ae86fac7852ba540e59af770a76604d317b39df57505b376bf"
 
 S = "${WORKDIR}/git"
 

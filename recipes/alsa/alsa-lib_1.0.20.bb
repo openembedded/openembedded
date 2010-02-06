@@ -2,7 +2,7 @@ DESCRIPTION = "Alsa sound library"
 HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r3"
 
 # configure.in sets -D__arm__ on the command line for any arm system
 # (not just those with the ARM instruction set), this should be removed,
@@ -18,7 +18,7 @@ SRC_URI = "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2 \
 inherit autotools pkgconfig
 
 
-EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes --disable-python"
+EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes --disable-python --enable-shared --enable-static"
 
 
 require alsa-fpu.inc
@@ -28,10 +28,6 @@ EXTRA_OECONF += "${@get_alsa_fpu_setting(bb, d)} "
 require alsa-versym.inc
 EXTRA_OECONF += "${@get_alsa_versym_setting(bb, d)} "
 
-
-do_stage () {
-	autotools_stage_all
-}
 
 PACKAGES =+ "alsa-server libasound alsa-conf-base alsa-conf alsa-doc alsa-dev"
 FILES_${PN}-dbg += "${libdir}/alsa-lib/*/.debu*"

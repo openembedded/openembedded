@@ -60,7 +60,6 @@ def create_cross_env(bb,d):
         os.stat(os.path.join(ice_dir, target_sys, 'lib', 'libstdc++.so'))
         os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
     except: # no cross compiler built yet
-        bb.error('no cross compiler built yet?')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,target_sys,"bin","g++") )
@@ -157,7 +156,6 @@ def create_cross_kernel_env(bb,d):
     try:
         os.stat(os.path.join(ice_dir, 'bin', kernel_cc))
     except: # no cross compiler built yet
-        bb.error('no kernel cross compiler built yet')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,"bin",kernel_cc) )
@@ -259,7 +257,8 @@ def icc_path(bb,d):
     for black in package_blacklist:
         if black in package_tmp:
             bb.note(package_tmp, ' found in blacklist, disable icecc')
-            bb.data.setVar("PARALLEL_MAKE" , "", d) 
+            fallback_parallel = bb.data.getVar('ICECC_FALLBACK_PARALLEL', d) or ""
+            bb.data.setVar("PARALLEL_MAKE", fallback_parallel, d)
             return ""
 
     prefix = bb.data.expand('${HOST_PREFIX}', d)

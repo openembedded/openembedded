@@ -1,0 +1,15 @@
+Looks like X_ShmAttach is considered private to the library and has been removed from its headers.
+Just hardcode the value, it's only usd to print some help in case of an shm attach error.
+--- x11vnc-0.9.8/x11vnc/cleanup.c
++++ x11vnc-0.9.8/x11vnc/cleanup.c
+@@ -276,6 +276,10 @@
+	return 0;
+ }
+
++#ifndef X_ShmAttach
++#define X_ShmAttach 1
++#endif
++
+ static int Xerror(Display *d, XErrorEvent *error) {
+	X_UNLOCK;
+

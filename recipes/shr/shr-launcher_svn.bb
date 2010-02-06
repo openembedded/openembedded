@@ -6,7 +6,7 @@ SECTION = "e/apps"
 DEPENDS = "elementary eina edbus"
 
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "svn://shr-launcher.googlecode.com/svn;module=trunk;proto=http"
 

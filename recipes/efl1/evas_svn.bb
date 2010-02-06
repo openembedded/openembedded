@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r4"
+PR = "r5"
 
 EVAS_CPU_TWEAKS = ""
 EVAS_CPU_TWEAKS_armv7a = "--enable-cpu-neon"
@@ -29,7 +29,7 @@ EXTRA_OECONF = "\
 		--enable-image-loader-jpeg	\
 		--enable-image-loader-tiff	\
 		--enable-image-loader-xpm	\
-		--disable-image-loader-svg	\
+		--enable-image-loader-svg	\
 		--enable-cpu-c				\
 		--enable-fontconfig			\
 		--enable-font-loader-eet	\

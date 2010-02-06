@@ -26,3 +26,13 @@ if [ -d $SYSFS_CALIBRATION_DIR ]; then
   echo 75000000 > $SYSFS_CALIBRATION_DIR/5
   echo 65536 > $SYSFS_CALIBRATION_DIR/6
 fi
+
+if [ -e /usr/bin/xinput_calibrator_once.sh ] ; then
+    if [ -e /usr/bin/fsoraw ] ; then
+      # because ts tap to unblank will be used as first calibration click and then store invalid calibration
+      fsoraw -fr CPU,Display -- /usr/bin/xinput_calibrator_once.sh
+    else
+      /usr/bin/xinput_calibrator_once.sh
+    fi
+    exit
+fi

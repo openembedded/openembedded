@@ -28,6 +28,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/hx2750_base-r29.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r9.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
+           ${RPSRC}/hx2750_make.patch;patch=1 \
            ${RPSRC}/pxa_keys-r7.patch;patch=1 \
            ${RPSRC}/tsc2101-r16.patch;patch=1 \
            ${RPSRC}/hx2750_test1-r7.patch;patch=1 \

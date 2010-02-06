@@ -44,7 +44,7 @@ if [ "$DEVCACHE" != "" ]; then
 	   cmp -s /tmp/uname /etc/udev/saved.uname && \
 	   cmp -s /tmp/cmdline /etc/udev/saved.cmdline && \
 	   cmp -s /tmp/atags /etc/udev/saved.atags; then
-		(cd /; tar xf $DEVCACHE)
+		(cd /; tar xf $DEVCACHE > /dev/null 2>&1)
 		not_first_boot=1
 	fi
 fi

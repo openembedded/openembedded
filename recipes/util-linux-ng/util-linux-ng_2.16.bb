@@ -1,6 +1,6 @@
 require util-linux-ng.inc
 
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 SRC_URI += "file://uclibc-compile.patch;patch=1 \
             file://tls.patch;patch=1 \

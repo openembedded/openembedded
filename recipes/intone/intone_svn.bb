@@ -7,7 +7,7 @@ DEPENDS = "elementary eina sqlite3 edbus libvorbis id3lib"
 RDEPENDS = "mplayer lame libxv libsdl-x11"
 
 PV = "0.66+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "svn://intone.googlecode.com/svn;module=trunk;proto=http \
 file://vorbis-include-id3tag.patch;pnum=1;patch=1;maxrev=18"

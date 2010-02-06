@@ -1,0 +1,29 @@
+diff -pru wxsqlite3-1.9.7.orig/include/wx/wxsqlite3.h wxsqlite3-1.9.7/include/wx/wxsqlite3.h
+--- wxsqlite3-1.9.7.orig/include/wx/wxsqlite3.h	2009-11-09 20:59:38.000000000 +0100
++++ wxsqlite3-1.9.7/include/wx/wxsqlite3.h	2009-12-06 17:19:58.000000000 +0100
+@@ -94,7 +94,7 @@ public:
+   int GetExtendedErrorCode() const { return m_errorCode; }
+ 
+   /// Get error message associated with the exception
+-  const wxString GetMessage() const { return m_errorMessage; }
++  const wxString GetMessage() const;
+ 
+   /// Convert error code to error message
+   static const wxString ErrorCodeAsString(int errorCode);
+Only in wxsqlite3-1.9.7: patches
+diff -pru wxsqlite3-1.9.7.orig/src/wxsqlite3.cpp wxsqlite3-1.9.7/src/wxsqlite3.cpp
+--- wxsqlite3-1.9.7.orig/src/wxsqlite3.cpp	2009-11-09 20:59:38.000000000 +0100
++++ wxsqlite3-1.9.7/src/wxsqlite3.cpp	2009-12-06 17:58:01.000000000 +0100
+@@ -263,6 +263,11 @@ wxSQLite3Exception::~wxSQLite3Exception(
+ {
+ }
+ 
++const wxString wxSQLite3Exception::GetMessage() const
++{
++	return m_errorMessage;
++}
++
+ // ----------------------------------------------------------------------------
+ // wxSQLite3StatementBuffer: class providing a statement buffer
+ //                           for use with the SQLite3 vmprintf function
+Only in wxsqlite3-1.9.7/src: .wxsqlite3.cpp.swp

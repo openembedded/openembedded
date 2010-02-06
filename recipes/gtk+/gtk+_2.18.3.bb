@@ -1,8 +1,12 @@
 require gtk+.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
-EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"
+# Enable xkb selectively
+XKBTOGGLE = " --disable-xkb"
+XKBTOGGLE_angstrom = ""
+
+EXTRA_OECONF = "--with-libtiff ${XKBTOGGLE} --disable-glibtest gio_can_sniff=yes"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 
@@ -42,11 +46,3 @@ RCONFLICTS_${PN}-dbg = "libgailutil-dbg"
 RREPLACES_${PN}-dbg = "libgailutil-dbg"
 # FIXME: replace locales as well
 
-do_stage_append() {
-
-	# this tool is required by gnome-keyring 2.26.0 to get built
-	# it is written in Python and use only Python xml
-	install -d ${STAGING_BINDIR_NATIVE}
-	install -m 0755 ${S}/gtk/gtk-builder-convert ${STAGING_BINDIR_NATIVE}
-
-}

@@ -1,0 +1,18 @@
+diff -ru xserver-common-1.25.orig/X11/Xserver xserver-common-1.25/X11/Xserver
+--- xserver-common-1.25.orig/X11/Xserver	2010-01-12 12:04:52.000000000 +0100
++++ xserver-common-1.25/X11/Xserver	2010-01-12 12:15:32.000000000 +0100
+@@ -104,8 +104,12 @@
+ 		ARGS="$ARGS -dpi 100 -screen 480x640@270" ;;
+ 	"HTC Tornado")
+ 		ARGS="$ARGS -dpi 100 -hide-cursor" ;;
+-	"Atmel AT91SAM9261-EK" | "Atmel AT91SAM9263-EK")
+-		ARGS="$ARGS -dpi 100 -rgba bgr -screen 240x320" ;;	
++	"Atmel AT91SAM9261-EK" | "Atmel AT91SAM9263-EK" | "Atmel AT91CAP9A-DK" | "Atmel AT91CAP9-STK")
++		ARGS="$ARGS -dpi 100 -rgba bgr -screen ${SCREEN_SIZE} " ;;
++	"Atmel AT91SAM9RL-EK" | "Atmel AT91SAM9G10-EK" )
++		ARGS="$ARGS -dpi 100 -rgba rgb -screen ${SCREEN_SIZE} " ;;
++	"Atmel AT91SAM9M10-EKES" | "Atmel AT91SAM9G45-EKES" | "Atmel AT91SAM9M10G45-EK")
++		ARGS="$ARGS -rgba rgb -screen 480x272 " ;;
+ 	"Generic OMAP1510/1610/1710" | "Nokia N770")
+ 		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} " ;;
+ 	"Nokia N800")

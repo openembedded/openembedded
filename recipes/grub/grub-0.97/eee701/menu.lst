@@ -1,0 +1,7 @@
+# menu.lst
+default 0
+timeout 5
+title   OpenEmbedded Linux (sda1)
+root    (hd0,0)
+kernel  /boot/bzImage root=/dev/sda1 rw
+

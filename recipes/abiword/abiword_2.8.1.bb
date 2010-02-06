@@ -1,6 +1,6 @@
 require abiword-2.5.inc
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
            file://autogen-common.sh \
@@ -17,7 +17,7 @@ EXTRA_OECONF = " --disable-static  \
                  --enable-collab-backend-service \
                  --with-libwmf-config=${STAGING_DIR} \
 "
-DEPENDS += " libwmf-native "
+DEPENDS += " libwmf-native gtkmathview "
 RCONFLICTS = "abiword-embedded"
 
 FILES_${PN} 			+= "${libdir}/libabiword-*.so ${datadir}/mime-info ${datadir}/abiword-${SHRT_VER}/certs ${datadir}/abiword-${SHRT_VER}/ui ${datadir}/abiword-${SHRT_VER}/xsl* ${datadir}/abiword-${SHRT_VER}/mime-info ${datadir}/abiword-${SHRT_VER}/Pr*.xml"

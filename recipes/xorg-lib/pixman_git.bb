@@ -4,7 +4,7 @@ DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
 PV = "0.17.3"
-PR = "r5"
+PR = "r6"
 PR_append = "+gitr${SRCREV}"
 
 BBCLASSEXTEND="native"
@@ -32,7 +32,7 @@ inherit autotools_stage
 NEON = " --disable-arm-neon "
 NEON_armv7a = ""
 
-EXTRA_OECONF = "${NEON}"
+EXTRA_OECONF = "${NEON} --disable-gtk"
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 

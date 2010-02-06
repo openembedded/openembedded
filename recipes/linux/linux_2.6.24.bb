@@ -8,7 +8,6 @@ DEFAULT_PREFERENCE_simpad = "1"
 DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_ts72xx = "1"
-DEFAULT_PREFERENCE_oxnas = "1"
 DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 DEFAULT_PREFERENCE_smartq5 = "1"
@@ -87,13 +86,6 @@ SRC_URI_append_ts72xx = "\
 	file://ts72xx-use-cpld-reset.patch;patch=1 \
 	file://ts72xx-rs485.patch;patch=1"
 
-SRC_URI_append_oxnas = " \
-	file://oxnas.diff;patch=1 \
-	file://oxnas-uart.patch;patch=1 \
-	file://oxnas-pci-config-delay.patch;patch=1 \
-	file://oxnas-pci-max-size.patch;patch=1 \
-	"
-
 SRC_URI_append_hipox = " \
 	file://hipox-mach-type.patch;patch=1 \
 	file://hipox.patch;patch=1 \
@@ -107,6 +99,7 @@ SRC_URI_append_hipox = " \
 	file://hipox-OXE-INT2.patch;patch=1 \
 	file://hipox-rtc.patch;patch=1 \
 	file://hipox-nand-vs-pci.patch;patch=1 \
+	file://hipox-nand-vs-nor.patch;patch=1 \
 	"
 
 EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"

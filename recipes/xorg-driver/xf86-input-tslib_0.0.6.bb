@@ -4,7 +4,7 @@ DESCRIPTION = "X.Org X server -- tslib input driver"
 RRECOMMENDS += "hal tslib-calibrate"
 DEPENDS += "tslib"
 
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "http://www.pengutronix.de/software/xf86-input-tslib/download/xf86-input-tslib-${PV}.tar.bz2 \
 	   file://double-free-crash.patch;patch=1 \

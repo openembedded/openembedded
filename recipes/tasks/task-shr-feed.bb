@@ -59,10 +59,10 @@ RDEPENDS_${PN} += "\
 		openmoocow \
 		python-pygame \
 		mokoko \
-		exhibit \
+#		exhibit \
 		edje-viewer \
-#		obexpush \
-#		obexftp \
+		obexpush \
+		obexftp \
 		obex-data-server \
 		mtpaint \
 		telepathy-python \
@@ -81,7 +81,7 @@ RDEPENDS_${PN} += "\
 		cellhunter \
 		dillo2 \
 		pyefl-sudoku \
-		tasks \
+#		tasks \
 		dates \
 		omnewrotate \
 		xchat \
@@ -90,7 +90,7 @@ RDEPENDS_${PN} += "\
 		intone \
 		vim \
 		vpnc \
-		emacs \
+#		emacs \
 		mcabber \
 		gdb \
 		oh-puzzles \
@@ -233,7 +233,7 @@ RDEPENDS_${PN} += "\
 		ipython \
 #		phoneme-advanced-foundation \
 		eve \
-#		python-pybluez \
+		python-pybluez \
 		x11perf \
 		pyring \
 		bt-configure \
@@ -246,7 +246,7 @@ RDEPENDS_${PN} += "\
 		imagemagick \
 		xboard \
 		sox \
-		mpg123 \
+#		mpg123 \
 		zile \
 		speex \
 		podpooch \
@@ -257,6 +257,7 @@ RDEPENDS_${PN} += "\
 		xf86-input-tslib \
 		fltkcocktailbar \
 		fltkcurrency \
+		fltkspacetrader \
 		mokoeightball \
 		babiloo-efl \
 		make \
@@ -267,5 +268,10 @@ RDEPENDS_${PN} += "\
 		wpa-gui \
 		gabriel \
 		stopwatch \
+		qgpslog \
+		litephone \
 		rtmom \
+		ventura \
+		emtooth \
+		podboy \
 "

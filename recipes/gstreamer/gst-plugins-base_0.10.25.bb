@@ -1,6 +1,9 @@
 require gst-plugins.inc
 
-PR = "${INC_PR}.1"
+SRC_URI += "file://fix-playbin2.patch;patch=1 \
+"
+
+PR = "${INC_PR}.2"
 
 PROVIDES += "gst-plugins"
 

@@ -1,0 +1,24 @@
+--- u-boot-2009.03.orig/include/configs/hipox.h	2010-02-02 10:26:50.000000000 +0000
++++ u-boot-2009.03/include/configs/hipox.h	2010-02-02 12:03:59.000000000 +0000
+@@ -424,8 +424,19 @@
+ #define CONFIG_ENV_SIZE        CONFIG_ENV_SECT_SIZE
+ /* Second parameter block for backup environment */
+ #define CONFIG_ENV_SIZE_REDUND (CONFIG_ENV_SIZE)
+-/* Main environment occupies first parameter block */
+-#define CONFIG_ENV_ADDR        ((CONFIG_SYS_FLASH_BASE)+(NUM_FLASH_MAIN_BLOCKS)*(FLASH_MAIN_BLOCK_SIZE))
++/** Main environment occupies parameter block at offset 32k, 
++ *  there are two 8k blocks in both flashs. 
++ *
++ * Flash AT49BV163DT:
++ *  -      0 - 1F0000: 31 block 64k (10000)
++ *  - 1F0000 - 200000:  8 block  8k ( 2000)
++ *  Flash A29L160ATG:
++ *  -      0 - 1F0000: 31 block 64k (10000)
++ *  - 1F0000 - 1F8000:  1 block 32k ( 8000)
++ *  - 1F8000 - 1FC000:  2 block  8k ( 2000)
++ *  - 1FC000 - 200000:  1 block 16k ( 4000)
++ */
++#define CONFIG_ENV_ADDR        ((CONFIG_SYS_FLASH_BASE)+(NUM_FLASH_MAIN_BLOCKS)*(FLASH_MAIN_BLOCK_SIZE) + (4 * (CONFIG_ENV_SECT_SIZE)))
+ /* Backup environment occupies second parameter block */
+ #define CONFIG_ENV_ADDR_REDUND ((CONFIG_ENV_ADDR)+(CONFIG_ENV_SECT_SIZE))
+ #endif

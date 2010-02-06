@@ -13,7 +13,6 @@ SRC_URI_append_mnci   = "file://mnci.patch;patch=1 \
                          file://command-names.patch;patch=1"
 
 SRC_URI_append_magicbox  = "file://u-boot-emetec.patch;patch=1 "
-SRC_URI_append_oxnas     = "file://oxnas.patch;patch=1 "
 
 
 # TODO: SRC_URI_append_rt3000
@@ -23,7 +22,6 @@ TARGET_LDFLAGS = ""
 UBOOT_MACHINE_mnci   = "mnci_config"
 UBOOT_MACHINE_vibren = "pxa255_idp_config"
 UBOOT_MACHINE_magicbox = "EMETEC405_config"
-UBOOT_MACHINE_oxnas  = "oxnas_config"
 
 inherit base
 

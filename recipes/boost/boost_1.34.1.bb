@@ -7,10 +7,9 @@ HOMEPAGE = "http://www.boost.org/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-
 DEPENDS = "python boost-jam-native zlib bzip2"
 
-PR = "r4"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
