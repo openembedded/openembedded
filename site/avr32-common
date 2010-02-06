@@ -59,3 +59,6 @@ ac_cv_alignof_CORBA_long_double=4
 ac_cv_alignof_CORBA_struct=1
 ac_cv_alignof_CORBA_pointer=4
 
+# vim
+ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+
