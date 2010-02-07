@@ -41,7 +41,7 @@ do_install_append() {
 	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums || true
 }
 
-DEPENDS_virtclass-native = "gettext-native gtk-doc-native libpcre-native \
+DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
                             pkgconfig-native"
 EXTRA_OECONF_virtclass-native = ""
 
