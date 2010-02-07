@@ -6,7 +6,7 @@ DESCRIPTION = "A GTK2 based media player"
 HOMEPAGE = "http://www.gnome.org/projects/totem/"
 LICENSE = "GPL"
 
-PR = "r4"
+PR = "r5"
 
 DEPENDS = " nautilus tracker gnome-doc-utils libunique libgdata totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
 RDEPENDS_${PN} += "iso-codes"
@@ -72,8 +72,8 @@ python populate_packages_prepend () {
 FILES_${PN} = "${bindir}/* ${sysconfdir} ${libdir}/lib*.so.* ${libexecdir} ${datadir}/icons ${datadir}/totem ${datadir}/applications \
 "
 
-RDEPENDS_totem-plugin-iplayer_append = "python-pygtk"
-RDEPENDS_totem-plugin-youtube_append = "python-pygtk"
+RDEPENDS_totem-plugin-iplayer_append = "python-pygtk gst-plugin-flv"
+RDEPENDS_totem-plugin-youtube_append = "python-pygtk gnome-vfs-plugin-http gst-plugin-gnomevfs gst-plugin-flv"
 
 
 PACKAGES =+ "totem-nautilus-extension totem-browser-plugin-dbg totem-browser-plugin"

@@ -1,6 +1,6 @@
 require clutter-gst.inc
 
-DEPENDS += "clutter-0.9"
+DEPENDS = "clutter-0.9 gstreamer gst-plugins-base"
 
 SRCREV = "379b63b013af463210e54470693aedfa9009f4dc"
 PV = "0.9.0"
