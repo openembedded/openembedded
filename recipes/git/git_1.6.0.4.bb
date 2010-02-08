@@ -1,6 +1,7 @@
 require git.inc
 
-SRC_URI += "file://snprintf-returns-bogus.patch;patch=1"
+SRC_URI += "file://autotools.patch;patch=1 \
+            file://snprintf-returns-bogus.patch;patch=1"
 
 DEPENDS = "openssl curl zlib expat"
 RDEPENDS = "perl perl-module-file-path cpio findutils sed"
