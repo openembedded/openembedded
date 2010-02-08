@@ -1,4 +1,4 @@
-# UCLIBC_BASE should be the latest released revision of uclibc (that way
+# UCLIBC_BASE should be the latest released version of uclibc (that way
 # the config files will typically be correct!)  uclibc-svn takes precedence
 # over uclibc-${UCLIBC_BASE}, if a config file in uclibc-snv is out of date
 # try removing it
