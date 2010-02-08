@@ -5,10 +5,10 @@ require ti-paths.inc
 # compile time dependencies
 DEPENDS = "ti-framework-components ti-xdais ti-xdctools ti-cgt6x ti-biosutils ti-edma3lld ti-linuxutils"
 
-DEPENDS_append_dm6446 	= " ti-dspbios ti-dsplink-module"
-DEPENDS_append_dm6467 	= " ti-dspbios ti-dsplink-module"
-DEPENDS_append_omap3   	= " ti-dspbios ti-dsplink-module ti-lpm-module"
-DEPENDS_append_omapl138 = " ti-dspbios ti-dsplink-module"
+DEPENDS_append_dm6446 	= " ti-dspbios ti-dsplink ti-local-power-manager"
+DEPENDS_append_dm6467 	= " ti-dspbios ti-dsplink"
+DEPENDS_append_omap3   	= " ti-dspbios ti-dsplink ti-local-power-manager"
+DEPENDS_append_omapl138 = " ti-dspbios ti-dsplink"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/ce/${PV}/exports/codec_engine_${PV},lite.tar.gz;name=cetarball"
 

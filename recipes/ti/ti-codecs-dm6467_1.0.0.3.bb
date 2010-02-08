@@ -13,7 +13,7 @@ SRC_URI[dm6467codecs.sha256sum] = "ab9115477f52814f4f0e860f89ca56bfd9ed0e8b89a3c
 S = "${WORKDIR}/cs${CSVER}dm6467_${PV}"
 
 # compile time dependencies
-DEPENDS="ti-codec-engine ti-biosutils ti-dsplink-module"
+DEPENDS="ti-codec-engine ti-biosutils ti-dsplink"
 
 do_compile() {
 	make CE_INSTALL_DIR=${CE_INSTALL_DIR} \

@@ -13,10 +13,3 @@ UBOOT_LOADADDRESS = "0x80008000"
 # Only build u-boot, xload is optional
 EXTRA_IMAGEDEPENDS += "u-boot"
 
-# TI DVSDK stuff:
-# DSPLink rebuild
-DSPLINKDSPCFG     ?= "OMAP3530SHMEM"
-DSPLINKPLATFORM   ?= "OMAP3530"
-DSPLINKSOC        ?= "3530"
-
-
