@@ -22,8 +22,12 @@ do_unpackpost() {
   unzip -o ../src.zip
   cp ../Makefile .
 
+  # Sets version numbers for native libraries.
   sed -i -e "s|RELEASE=OE_SWT_RELEASE|RELEASE=${PV}|" Makefile
   sed -i -e "s|SONAME_VERSION=OE_SWT_API_VERSION|SONAME_VERSION=${SWT_API_VERSION}|" Makefile
+
+  # Properly applies OE's LDFLAGS to linking step.
+  sed -i -e "s|LIBS = -shared -fPIC|LIBS = -shared ${LDFLAGS}|" make_linux.mak
 }
 
 do_compile() {
