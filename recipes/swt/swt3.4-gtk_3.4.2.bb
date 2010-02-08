@@ -1,6 +1,6 @@
 require swt-gtk.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://ftp.wh2.tu-dresden.de/pub/mirrors/eclipse/eclipse/downloads/drops/R-3.4.2-200902111700/swt-3.4.2-gtk-linux-x86.zip \
            file://Makefile"
