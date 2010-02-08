@@ -5,7 +5,7 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook"
 
-SRCREV = "5f98f4d71c5835c406aa8014842b04a7ad1c9b06"
+SRCREV = "06733a907b777f7dca21b2d44e36b6c4afbe01fe"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
@@ -20,6 +20,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://holes.patch;patch=1 \
            file://no-mmc-spew.patch;patch=1 \
            file://beagleboard/0001-beagleboard-omap3_-foo-_rate_table-omap35x_-foo.patch;patch=1 \
+           file://beagleboard/0001-board-omap3beagle-prepare-for-DM3730-based-Beaglebo.patch;patch=1 \
            file://0001-board-omap3touchbook-make-it-build-against-TI-linux.patch;patch=1 \
            file://defconfig"
 
