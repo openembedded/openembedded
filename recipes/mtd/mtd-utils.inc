@@ -11,18 +11,6 @@ S = "${WORKDIR}/mtd-utils-${PV}"
 
 EXTRA_OEMAKE = "'CC=${CC}' 'CFLAGS=${CFLAGS} -I${S}/include -DWITHOUT_XATTR'"
 
-do_stage () {
-	install -d ${STAGING_INCDIR}/mtd
-	for f in ${S}/include/mtd/*.h; do
-		install -m 0644 $f ${STAGING_INCDIR}/mtd/
-	done
-	for binary in ${mtd_utils}; do
-		if [ -f $binary ]; then
-			install -m 0755 $binary ${STAGING_BINDIR}
-		fi
-	done
-}
-
 do_install () {
 	install -d ${D}${bindir}
 	install -d ${D}${includedir}/mtd
@@ -79,7 +67,19 @@ mtd_utils = " docfdisk \
 	ubi-utils/new-utils/ubinfo \
 	ubi-utils/new-utils/ubinize \
 	ubi-utils/new-utils/ubirmvol \
-	ubi-utils/new-utils/ubiupdatevol"
+    ubi-utils/new-utils/ubirsvol \
+	ubi-utils/new-utils/ubiupdatevol \
+    ubi-utils/ubiattach \
+    ubi-utils/ubicrc32 \
+    ubi-utils/ubidetach \
+    ubi-utils/ubiformat \
+    ubi-utils/ubimkvol \
+    ubi-utils/ubinfo \
+    ubi-utils/ubinize \
+    ubi-utils/ubirmvol \
+    ubi-utils/ubirsvol \
+    ubi-utils/ubiupdatevol \
+"
 
 PACKAGES =+ "mkfs-jffs mkfs-jffs2 mkfs-ubifs"
 FILES_mkfs-jffs = "${bindir}/mkfs.jffs"
