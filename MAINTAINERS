@@ -202,9 +202,10 @@ Distros:    Poky, Ångström
 Person:     Marco Cavallini
 Mail:       m.cavallini@koansoftware.com
 Website:    http://www.koansoftware.com - http://www.embedded.it
-Machines:   ronetix-pm9263, vortex86sx, at91sam9g20ek
+Machines:   ronetix-pm9263, vortex86sx, at91sam9g20ek, at91sam9263ek, at91sam9g45ek
 Distros:    KaeilOS, Ångström
-Interests:  x86, ARM, wxWidgets
+Interests:  OE Eclipse plugins, x86, ARM, wxWidgets, xorg, xinput, xinput-calibrator
+Recipes:    xinput-calibrator
 
 Person:     Martin 'JaMa' Jansa
 Mail:       Martin.Jansa@gmail.com
