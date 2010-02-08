@@ -18,44 +18,6 @@ FILES_libstdc++ = "${target_libdir}/libstdc++.so.*"
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 
-	# Move libgcc_s into /lib
-        mkdir -p ${D}${target_base_libdir}
-        if [ -f ${D}${target_base_libdir}/libgcc_s.so.? ]; then
-                # Already in the right location
-                :
-        elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
-                mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir} || true
-
-        elif [  -f ${D}${prefix}/*/lib/nof/libgcc_s.so.? ]; then
-                mv -f ${D}${prefix}/*/lib/nof/libgcc_s.so* ${D}${target_base_libdir}
-        else
-                # Look for .../${TARGET_SYS}/lib/libgcc_s*
-                # (or /lib64/, on x86_64)
-                mv -f ${D}${prefix}/*/${target_base_libdir}/libgcc_s.so* ${D}${target_base_libdir} || true 
-        fi
-
-
-
-	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
-        mkdir -p ${D}${target_libdir}
-
-        if [ -f ${D}${prefix}/*/lib/nof/libstdc++.so ]; then
-
-           mv -f ${D}${prefix}/*/lib/nof/libstdc++.so* ${D}${target_libdir} || true
-           mv -f ${D}${prefix}/*/lib/nof/libg2c.so* ${D}${target_libdir} || true
-           mv -f ${D}${prefix}/*/lib/nof/libgfortran*.so* ${D}${target_libdir} || true
-           mv -f ${D}${prefix}/*/lib/nof/libssp*.so* ${D}${target_libdir} || true 	
-
-        else
-           # Look for .../${TARGET_SYS}/lib/lib* (or /lib64/ on x86_64)
-           mv -f ${D}${prefix}/*/${target_base_libdir}/libstdc++.so* ${D}${target_libdir} || true
-           mv -f ${D}${prefix}/*/${target_base_libdir}/libg2c.so* ${D}${target_libdir} || true
-           mv -f ${D}${prefix}/*/${target_base_libdir}/libgfortran*.so* ${D}${target_libdir} || true
-           mv -f ${D}${prefix}/*/${target_base_libdir}/libssp*.so* ${D}${target_libdir} || true
-        fi
-
-
-
        # Manually run the target stripper since we won't get it run by
        # the packaging.
        if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
