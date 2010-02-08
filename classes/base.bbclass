@@ -1076,6 +1076,9 @@ sysroot_stage_dirs() {
 			# python puts its files in here, make sure they are staged as well
 			autotools_stage_dir $from/${prefix}/lib $to${STAGING_DIR_HOST}${prefix}/lib
 		fi
+	
+		# cross tools install into here
+		sysroot_stage_dir $from/${TARGET_SYS} $to${STAGING_DIR_HOST}/${TARGET_SYS}
 	fi
 	if [ -d $from${libdir} ]
 	then
