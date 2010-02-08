@@ -9,7 +9,7 @@ INHIBIT_AUTOTOOLS_DEPS = "1"
 inherit autotools native
 
 PATCHTOOL = "patch"
-EXTRA_OECONF = "--disable-nls"
+EXTRA_OECONF = "--disable-nls --without-date"
 
 do_configure () {
 	oe_runconf
