@@ -33,27 +33,27 @@ PREFERRED_VERSION_linux-libc-headers ?= "2.6.31"
 
 # Binutils
 PREFERRED_VERSION_binutils           ?= "${PREFERRED_BINUTILS}"
-PREFERRED_VERSION_binutils-cross     ?= "${PREFERRED_BINUTILS}"
-PREFERRED_VERSION_binutils-cross-sdk ?= "${PREFERRED_BINUTILS}"
+PREFERRED_VERSION_binutils-cross-${TARGET_SYS}     ?= "${PREFERRED_BINUTILS}"
+PREFERRED_VERSION_binutils-cross-sdk-${TARGET_SYS} ?= "${PREFERRED_BINUTILS}"
 
 # Avr32 only has patches for binutils 2.17 in OE
 PREFERRED_VERSION_binutils_avr32 =           "2.17"
-PREFERRED_VERSION_binutils-cross_avr32 =     "2.17"
-PREFERRED_VERSION_binutils-cross-sdk_avr32 = "2.17"
+PREFERRED_VERSION_binutils-cross-${TARGET_SYS}_avr32 =     "2.17"
+PREFERRED_VERSION_binutils-cross-sdk-${TARGET_SYS}_avr32 = "2.17"
 
 # Compiler versions
 PREFERRED_VERSION_gcc                    ?= "${PREFERRED_GCC_VERSION}"
-PREFERRED_VERSION_gcc-cross              ?= "${PREFERRED_GCC_VERSION}"
-PREFERRED_VERSION_gcc-cross-sdk          ?= "${PREFERRED_GCC_VERSION}"
-PREFERRED_VERSION_gcc-cross-initial      ?= "${PREFERRED_GCC_VERSION}"
-PREFERRED_VERSION_gcc-cross-intermediate ?= "${PREFERRED_GCC_VERSION}"
+PREFERRED_VERSION_gcc-cross-${TARGET_SYS}              ?= "${PREFERRED_GCC_VERSION}"
+PREFERRED_VERSION_gcc-cross-sdk-${TARGET_SYS}          ?= "${PREFERRED_GCC_VERSION}"
+PREFERRED_VERSION_gcc-cross-initial-${TARGET_SYS}      ?= "${PREFERRED_GCC_VERSION}"
+PREFERRED_VERSION_gcc-cross-intermediate-${TARGET_SYS} ?= "${PREFERRED_GCC_VERSION}"
 
 # Compiler selection
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils         = "binutils-cross"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial      = "gcc-cross-initial"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-intermediate"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc              = "gcc-cross"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++              = "gcc-cross"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils         = "binutils-cross-${TARGET_SYS}"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial      = "gcc-cross-initial-${TARGET_SYS}"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-intermediate-${TARGET_SYS}"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc              = "gcc-cross-${TARGET_SYS}"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++              = "gcc-cross-${TARGET_SYS}"
 
 # Others
 PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
