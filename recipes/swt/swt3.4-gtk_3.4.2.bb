@@ -11,4 +11,4 @@ SWT_API_VERSION = "3.4"
 
 PROVIDES = "swt3.4-gtk"
 
-RCONFLICTS = "libswt3.3-gtk-java"
+RCONFLICTS = "libswt3.5-gtk-java"
