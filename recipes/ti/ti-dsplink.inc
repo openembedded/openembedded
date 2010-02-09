@@ -14,13 +14,13 @@ PROVIDES += "ti-dsplink-examples"
 
 # This package builds a kernel module, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "b"
+PR_append = "c"
 
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/DSPLink/${PV}/exports/dsplink_linux_${PV}.tar.gz;name=dsplinktarball \
            file://loadmodules-ti-dsplink-apps.sh \
-           file://unloadmodules-ti-dsplink-apps.sh"
+           file://unloadmodules-ti-dsplink-apps.sh "
 
 DEPENDS = "ti-dspbios ti-xdctools ti-cgt6x" 
 DEPENDS += "virtual/kernel perl-native" 
@@ -70,9 +70,10 @@ do_configure() {
 
 do_prepsources () {
 	
-    # Prepare the tree for rebuiling - generate makefiles and clean
+    # Prepare the tree for rebuiling - clean and generate interfaces
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc .make -PR .
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc clean -PR .
+    XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc .interfaces -PR .
 
     # Clean the gpp user space library
     cd ${DSPLINK}/gpp/src/api && make \
@@ -214,6 +215,7 @@ do_install () {
     # Install/Stage the Source Tree
     install -d ${D}${LINK_INSTALL_DIR_RECIPE}
     cp -pPrf ${S}/* ${D}${LINK_INSTALL_DIR_RECIPE}
+    chmod -R +w ${D}${LINK_INSTALL_DIR_RECIPE}
 }
 
 PACKAGES += "ti-dsplink-module"
