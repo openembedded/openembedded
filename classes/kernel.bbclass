@@ -127,16 +127,7 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/asm-generic
 	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
 
-	mkdir -p ${STAGING_KERNEL_DIR}/include/linux
-	cp -fR include/linux/* ${STAGING_KERNEL_DIR}/include/linux/
-
-	mkdir -p ${STAGING_KERNEL_DIR}/include/net
-	cp -fR include/net/* ${STAGING_KERNEL_DIR}/include/net/
-
-	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
-	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
-
-	for entry in drivers/crypto drivers/media include/media include/acpi include/sound include/video include/scsi include/trace; do
+	for entry in drivers/crypto drivers/media include/generated include/linux include/net include/pcmcia include/media include/acpi include/sound include/video include/scsi include/trace; do
 		if [ -d $entry ]; then
 			mkdir -p ${STAGING_KERNEL_DIR}/$entry
 			cp -fR $entry/* ${STAGING_KERNEL_DIR}/$entry/
