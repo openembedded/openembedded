@@ -1,7 +1,7 @@
-Index: git/drivers/regulator/tps6507x-regulator.c
+Index: kernel/drivers/regulator/tps6507x-regulator.c
 ===================================================================
---- git.orig/drivers/regulator/tps6507x-regulator.c	2010-01-11 02:59:57.000000000 -0700
-+++ git/drivers/regulator/tps6507x-regulator.c	2010-01-11 02:59:59.000000000 -0700
+--- kernel.orig/drivers/regulator/tps6507x-regulator.c	2010-01-26 14:28:42.000000000 -0700
++++ kernel/drivers/regulator/tps6507x-regulator.c	2010-01-26 14:32:05.000000000 -0700
 @@ -24,65 +24,7 @@
  #include <linux/regulator/machine.h>
  #include <linux/i2c.h>
@@ -69,11 +69,11 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  
  /* DCDC's */
  #define TPS6507X_DCDC_1				0
-Index: git/drivers/regulator/Kconfig
+Index: kernel/drivers/regulator/Kconfig
 ===================================================================
---- git.orig/drivers/regulator/Kconfig	2010-01-11 02:59:57.000000000 -0700
-+++ git/drivers/regulator/Kconfig	2010-01-11 02:59:59.000000000 -0700
-@@ -152,6 +152,7 @@
+--- kernel.orig/drivers/regulator/Kconfig	2010-01-26 14:28:42.000000000 -0700
++++ kernel/drivers/regulator/Kconfig	2010-01-26 14:32:05.000000000 -0700
+@@ -159,6 +159,7 @@
  config REGULATOR_TPS6507X
  	tristate "TI TPS6507X Power regulators"
  	depends on I2C
@@ -81,10 +81,10 @@ Index: git/drivers/regulator/Kconfig
  	help
  	  This driver supports TPS6507X voltage regulator chips. TPS6507X provides
  	  three step-down converters and two general-purpose LDO voltage regulators.
-Index: git/include/linux/mfd/tps6507x.h
+Index: kernel/include/linux/mfd/tps6507x.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ git/include/linux/mfd/tps6507x.h	2010-01-11 03:00:38.000000000 -0700
++++ kernel/include/linux/mfd/tps6507x.h	2010-01-26 14:32:05.000000000 -0700
 @@ -0,0 +1,134 @@
 +/* linux/mfd/tps6507x.h
 + *

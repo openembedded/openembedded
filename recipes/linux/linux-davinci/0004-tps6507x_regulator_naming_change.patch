@@ -1,7 +1,7 @@
-Index: git/drivers/regulator/tps6507x-regulator.c
+Index: kernel/drivers/regulator/tps6507x-regulator.c
 ===================================================================
---- git.orig/drivers/regulator/tps6507x-regulator.c	2010-01-09 17:30:10.000000000 -0700
-+++ git/drivers/regulator/tps6507x-regulator.c	2010-01-09 17:31:39.000000000 -0700
+--- kernel.orig/drivers/regulator/tps6507x-regulator.c	2010-01-26 14:33:36.000000000 -0700
++++ kernel/drivers/regulator/tps6507x-regulator.c	2010-01-26 14:34:00.000000000 -0700
 @@ -113,23 +113,23 @@
  	struct mutex io_lock;
  };
@@ -154,12 +154,13 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
  	int dcdc = rdev_get_id(dev);
-@@ -256,10 +256,10 @@
+@@ -256,10 +256,11 @@
  		return -EINVAL;
  
  	shift = TPS6507X_MAX_REG_ID - dcdc;
 -	return tps_6507x_clear_bits(tps, TPS6507X_REG_CON_CTRL1, 1 << shift);
-+	return tps6507x_pmic_clear_bits(tps, TPS6507X_REG_CON_CTRL1, 1 << shift);
++	return tps6507x_pmic_clear_bits(tps, TPS6507X_REG_CON_CTRL1,
++					1 << shift);
  }
  
 -static int tps6507x_ldo_enable(struct regulator_dev *dev)
@@ -167,7 +168,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
  	int ldo = rdev_get_id(dev);
-@@ -269,10 +269,10 @@
+@@ -269,10 +270,10 @@
  		return -EINVAL;
  
  	shift = TPS6507X_MAX_REG_ID - ldo;
@@ -180,12 +181,13 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
  	int ldo = rdev_get_id(dev);
-@@ -282,10 +282,10 @@
+@@ -282,10 +283,11 @@
  		return -EINVAL;
  
  	shift = TPS6507X_MAX_REG_ID - ldo;
 -	return tps_6507x_clear_bits(tps, TPS6507X_REG_CON_CTRL1, 1 << shift);
-+	return tps6507x_pmic_clear_bits(tps, TPS6507X_REG_CON_CTRL1, 1 << shift);
++	return tps6507x_pmic_clear_bits(tps, TPS6507X_REG_CON_CTRL1,
++					1 << shift);
  }
  
 -static int tps6507x_dcdc_get_voltage(struct regulator_dev *dev)
@@ -193,7 +195,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
  	int data, dcdc = rdev_get_id(dev);
-@@ -311,7 +311,7 @@
+@@ -311,7 +313,7 @@
  		return -EINVAL;
  	}
  
@@ -202,7 +204,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  	if (data < 0)
  		return data;
  
-@@ -319,7 +319,7 @@
+@@ -319,7 +321,7 @@
  	return tps->info[dcdc]->table[data] * 1000;
  }
  
@@ -211,7 +213,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  				int min_uV, int max_uV)
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
-@@ -366,17 +366,17 @@
+@@ -366,17 +368,17 @@
  	if (vsel == tps->info[dcdc]->table_len)
  		return -EINVAL;
  
@@ -232,7 +234,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
  	int data, ldo = rdev_get_id(dev);
-@@ -392,7 +392,7 @@
+@@ -392,7 +394,7 @@
  				TPS6507X_REG_DEFLDO2_LDO2_MASK);
  	}
  
@@ -241,7 +243,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  	if (data < 0)
  		return data;
  
-@@ -400,7 +400,7 @@
+@@ -400,7 +402,7 @@
  	return tps->info[ldo]->table[data] * 1000;
  }
  
@@ -250,7 +252,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  				int min_uV, int max_uV)
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
-@@ -434,17 +434,17 @@
+@@ -434,17 +436,17 @@
  	if (vsel == tps->info[ldo]->table_len)
  		return -EINVAL;
  
@@ -271,7 +273,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  					unsigned selector)
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
-@@ -459,7 +459,7 @@
+@@ -459,7 +461,7 @@
  		return tps->info[dcdc]->table[selector] * 1000;
  }
  
@@ -280,7 +282,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  					unsigned selector)
  {
  	struct tps_pmic *tps = rdev_get_drvdata(dev);
-@@ -475,27 +475,27 @@
+@@ -475,27 +477,28 @@
  }
  
  /* Operations permitted on VDCDCx */
@@ -319,11 +321,12 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  
  static
 -int tps_6507x_probe(struct i2c_client *client, const struct i2c_device_id *id)
-+int tps6507x_pmic_probe(struct i2c_client *client, const struct i2c_device_id *id)
++int tps6507x_pmic_probe(struct i2c_client *client,
++			const struct i2c_device_id *id)
  {
  	static int desc_id;
  	struct tps_info *info = (void *)id->driver_data;
-@@ -546,7 +546,7 @@
+@@ -546,7 +549,7 @@
  		tps->desc[i].id = desc_id++;
  		tps->desc[i].n_voltages = num_voltages[i];
  		tps->desc[i].ops = (i > TPS6507X_DCDC_3 ?
@@ -332,7 +335,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  		tps->desc[i].type = REGULATOR_VOLTAGE;
  		tps->desc[i].owner = THIS_MODULE;
  
-@@ -579,12 +579,12 @@
+@@ -579,12 +582,12 @@
  }
  
  /**
@@ -347,7 +350,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  {
  	struct tps_pmic *tps = i2c_get_clientdata(client);
  	int i;
-@@ -601,7 +601,7 @@
+@@ -601,7 +604,7 @@
  	return 0;
  }
  
@@ -356,7 +359,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  	{
  		.name = "VDCDC1",
  		.min_uV = 725000,
-@@ -639,44 +639,44 @@
+@@ -639,44 +642,44 @@
  	},
  };
  

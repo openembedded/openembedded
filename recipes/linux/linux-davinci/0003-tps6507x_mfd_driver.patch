@@ -1,8 +1,8 @@
-Index: git/drivers/mfd/Kconfig
+Index: kernel/drivers/mfd/Kconfig
 ===================================================================
---- git.orig/drivers/mfd/Kconfig	2010-01-06 16:23:19.000000000 -0600
-+++ git/drivers/mfd/Kconfig	2010-01-12 08:43:00.961383768 -0600
-@@ -84,6 +84,17 @@
+--- kernel.orig/drivers/mfd/Kconfig	2010-01-26 14:28:36.000000000 -0700
++++ kernel/drivers/mfd/Kconfig	2010-01-26 14:33:54.000000000 -0700
+@@ -92,6 +92,17 @@
  	  This driver can also be built as a module.  If so, the module
  	  will be called tps65010.
  
@@ -20,23 +20,23 @@ Index: git/drivers/mfd/Kconfig
  config MENELAUS
  	bool "Texas Instruments TWL92330/Menelaus PM chip"
  	depends on I2C=y && ARCH_OMAP24XX
-Index: git/drivers/mfd/Makefile
+Index: kernel/drivers/mfd/Makefile
 ===================================================================
---- git.orig/drivers/mfd/Makefile	2010-01-06 16:23:19.000000000 -0600
-+++ git/drivers/mfd/Makefile	2010-01-12 08:43:00.961383768 -0600
-@@ -22,6 +22,7 @@
+--- kernel.orig/drivers/mfd/Makefile	2010-01-26 14:28:36.000000000 -0700
++++ kernel/drivers/mfd/Makefile	2010-01-26 14:33:54.000000000 -0700
+@@ -24,6 +24,7 @@
  obj-$(CONFIG_MFD_WM8350_I2C)	+= wm8350-i2c.o
  
  obj-$(CONFIG_TPS65010)		+= tps65010.o
 +obj-$(CONFIG_TPS6507x)		+= tps6507x.o
  obj-$(CONFIG_MENELAUS)		+= menelaus.o
  
- obj-$(CONFIG_TWL4030_CORE)	+= twl4030-core.o twl4030-irq.o
-Index: git/drivers/mfd/tps6507x.c
+ obj-$(CONFIG_TWL4030_CORE)	+= twl-core.o twl4030-irq.o twl6030-irq.o
+Index: kernel/drivers/mfd/tps6507x.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ git/drivers/mfd/tps6507x.c	2010-01-12 08:53:53.009504942 -0600
-@@ -0,0 +1,139 @@
++++ kernel/drivers/mfd/tps6507x.c	2010-01-26 14:33:54.000000000 -0700
+@@ -0,0 +1,185 @@
 +/*
 + * tps6507x.c  --  TPS6507x chip family multi-function driver
 + *
@@ -59,6 +59,15 @@ Index: git/drivers/mfd/tps6507x.c
 +#include <linux/i2c.h>
 +#include <linux/platform_device.h>
 +#include <linux/mfd/tps6507x.h>
++
++struct tps_sub_devices {
++	const char *name;
++	struct platform_device *pdev;
++};
++
++static struct tps_sub_devices tps6507x_sub_devices[] = {
++	{ NULL, NULL }
++};
 +
 +static int tps6507x_i2c_read_device(struct tps6507x_dev *tps6507x, char reg,
 +				  int bytes, void *dest)
@@ -96,11 +105,42 @@ Index: git/drivers/mfd/tps6507x.c
 +	return 0;
 +}
 +
++/*
++ * Register a client device.  This is non-fatal since there is no need to
++ * fail the entire device init due to a single platform device failing.
++ */
++static void tps6507x_client_dev_register(struct tps6507x_dev *tps6507x,
++					 const char *name,
++					 struct platform_device **pdev)
++{
++	int ret;
++
++	*pdev = platform_device_alloc(name, -1);
++	if (*pdev == NULL) {
++		dev_err(tps6507x->dev, "Failed to allocate %s\n", name);
++		return;
++	}
++
++	(*pdev)->dev.parent = tps6507x->dev;
++	platform_set_drvdata(*pdev, tps6507x);
++	ret = platform_device_add(*pdev);
++	if (ret != 0) {
++		dev_err(tps6507x->dev, "Failed to register %s: %d\n", name, ret);
++		platform_device_put(*pdev);
++		*pdev = NULL;
++	}
++}
 +
 +int tps6507x_device_init(struct tps6507x_dev *tps6507x, int irq,
 +		       struct tps6507x_board *pdata)
 +{
 +	int ret = 0;
++	struct tps_sub_devices *d = &tps6507x_sub_devices[0];
++
++	while (d->name) {
++		tps6507x_client_dev_register(tps6507x, d->name, &(d->pdev));
++		d++;
++	}
 +
 +	return ret;
 +}
@@ -138,6 +178,12 @@ Index: git/drivers/mfd/tps6507x.c
 +static int tps6507x_i2c_remove(struct i2c_client *i2c)
 +{
 +	struct tps6507x_dev *tps6507x = i2c_get_clientdata(i2c);
++	struct tps_sub_devices *d = &tps6507x_sub_devices[0];
++
++	while (d->name) {
++		platform_device_unregister(d->pdev);
++		d++;
++	}
 +
 +	kfree(tps6507x);
 +
@@ -176,10 +222,10 @@ Index: git/drivers/mfd/tps6507x.c
 +
 +MODULE_DESCRIPTION("TPS6507x chip family multi-function driver")
 +MODULE_LICENSE("GPL");
-Index: git/include/linux/mfd/tps6507x.h
+Index: kernel/include/linux/mfd/tps6507x.h
 ===================================================================
---- git.orig/include/linux/mfd/tps6507x.h	2010-01-12 08:43:00.797384396 -0600
-+++ git/include/linux/mfd/tps6507x.h	2010-01-12 08:53:28.437624848 -0600
+--- kernel.orig/include/linux/mfd/tps6507x.h	2010-01-26 14:33:36.000000000 -0700
++++ kernel/include/linux/mfd/tps6507x.h	2010-01-26 14:33:54.000000000 -0700
 @@ -131,6 +131,8 @@
  /* VDCDC MASK */
  #define TPS6507X_DEFDCDCX_DCDC_MASK		0X3F
@@ -205,9 +251,9 @@ Index: git/include/linux/mfd/tps6507x.h
 +	struct device *dev;
 +	struct i2c_client *i2c_client;
 +	int (*read_dev)(struct tps6507x_dev *tps6507x, char reg, int size,
-+                        void *dest);
++			void *dest);
 +	int (*write_dev)(struct tps6507x_dev *tps6507x, char reg, int size,
-+                         void *src);
++			 void *src);
 +	struct mutex adc_mutex;
 +};
 +

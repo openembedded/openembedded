@@ -1,60 +1,7 @@
-Index: git/drivers/mfd/tps6507x.c
+Index: kernel/drivers/regulator/tps6507x-regulator.c
 ===================================================================
---- git.orig/drivers/mfd/tps6507x.c	2010-01-12 08:43:00.961383768 -0600
-+++ git/drivers/mfd/tps6507x.c	2010-01-12 08:52:41.725819096 -0600
-@@ -57,12 +57,40 @@
- 	return 0;
- }
- 
-+/*
-+ * Register a client device.  This is non-fatal since there is no need to
-+ * fail the entire device init due to a single platform device failing.
-+ */
-+static void tps6507x_client_dev_register(struct tps6507x_dev *tps6507x,
-+                                         const char *name,
-+                                         struct platform_device **pdev)
-+{
-+	int ret;
-+
-+	*pdev = platform_device_alloc(name, -1);
-+	if (*pdev == NULL) {
-+		dev_err(tps6507x->dev, "Failed to allocate %s\n", name);
-+		return;
-+	}
-+
-+	(*pdev)->dev.parent = tps6507x->dev;
-+	platform_set_drvdata(*pdev, tps6507x);
-+	ret = platform_device_add(*pdev);
-+	if (ret != 0) {
-+		dev_err(tps6507x->dev, "Failed to register %s: %d\n", name, ret);
-+		platform_device_put(*pdev);
-+		*pdev = NULL;
-+	}
-+}
- 
- int tps6507x_device_init(struct tps6507x_dev *tps6507x, int irq,
- 		       struct tps6507x_board *pdata)
- {
- 	int ret = 0;
-+	struct platform_device *pdev;
- 
-+	tps6507x_client_dev_register(tps6507x, "tps6507x-pmic",
-+  				     &pdev);
- 	return ret;
- }
- 
-@@ -71,7 +99,6 @@
- {
- 	struct tps6507x_dev *tps6507x;
- 	int ret = 0;
--
- 	tps6507x = kzalloc(sizeof(struct tps6507x_dev), GFP_KERNEL);
- 	if (tps6507x == NULL) {
- 		kfree(i2c);
-Index: git/drivers/regulator/tps6507x-regulator.c
-===================================================================
---- git.orig/drivers/regulator/tps6507x-regulator.c	2010-01-12 08:43:01.125399079 -0600
-+++ git/drivers/regulator/tps6507x-regulator.c	2010-01-12 08:53:16.586248235 -0600
+--- kernel.orig/drivers/regulator/tps6507x-regulator.c	2010-01-26 14:34:00.000000000 -0700
++++ kernel/drivers/regulator/tps6507x-regulator.c	2010-01-26 14:39:22.000000000 -0700
 @@ -22,7 +22,6 @@
  #include <linux/platform_device.h>
  #include <linux/regulator/driver.h>
@@ -190,24 +137,24 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  
  	mutex_unlock(&tps->io_lock);
  	return err;
-@@ -494,27 +540,24 @@
+@@ -496,29 +542,24 @@
  	.list_voltage = tps6507x_pmic_ldo_list_voltage,
  };
  
 -static
--int tps6507x_pmic_probe(struct i2c_client *client, const struct i2c_device_id *id)
+-int tps6507x_pmic_probe(struct i2c_client *client,
+-			const struct i2c_device_id *id)
 +static __devinit
 +int tps6507x_pmic_probe(struct platform_device *pdev)
  {
 +	struct tps6507x_dev *tps6507x_dev = platform_get_drvdata(pdev);
  	static int desc_id;
 -	struct tps_info *info = (void *)id->driver_data;
-+	struct tps_info *info = &tps6507x_pmic_regs[0];
++	const struct tps_info *info = &tps6507x_pmic_regs[0];
  	struct regulator_init_data *init_data;
  	struct regulator_dev *rdev;
  	struct tps_pmic *tps;
--        struct tps6507x_board *tps_board;
-+	struct tps6507x_board *tps_board;
+ 	struct tps6507x_board *tps_board;
  	int i;
  
 -	if (!i2c_check_functionality(client->adapter,
@@ -220,12 +167,13 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  	 * coming from the board-evm file.
  	 */
  
--        tps_board = (struct tps6507x_board *)client->dev.platform_data;
+-	tps_board = (struct tps6507x_board *)client->dev.platform_data;
+-
 +	tps_board = (struct tps6507x_board *)tps6507x_dev->dev->platform_data;
- 
  	if (!tps_board)
  		return -EIO;
-@@ -536,7 +579,7 @@
+ 
+@@ -539,7 +580,7 @@
  	mutex_init(&tps->io_lock);
  
  	/* common for all regulators */
@@ -234,7 +182,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  
  	for (i = 0; i < TPS6507X_NUM_REGULATOR; i++, info++, init_data++) {
  		/* Register the regulators */
-@@ -551,19 +594,16 @@
+@@ -554,19 +595,16 @@
  		tps->desc[i].owner = THIS_MODULE;
  
  		rdev = regulator_register(&tps->desc[i],
@@ -258,7 +206,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  
  			kfree(tps);
  			return PTR_ERR(rdev);
-@@ -573,87 +613,34 @@
+@@ -576,87 +614,34 @@
  		tps->rdev[i] = rdev;
  	}
  
@@ -353,7 +301,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  };
  
  /**
-@@ -663,7 +650,7 @@
+@@ -666,7 +651,7 @@
   */
  static int __init tps6507x_pmic_init(void)
  {
@@ -362,7 +310,7 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  }
  subsys_initcall(tps6507x_pmic_init);
  
-@@ -674,10 +661,11 @@
+@@ -677,10 +662,11 @@
   */
  static void __exit tps6507x_pmic_cleanup(void)
  {
@@ -375,23 +323,15 @@ Index: git/drivers/regulator/tps6507x-regulator.c
  MODULE_DESCRIPTION("TPS6507x voltage regulator driver");
  MODULE_LICENSE("GPL v2");
 +MODULE_ALIAS("platform:tps6507x-pmic");
-Index: git/include/linux/mfd/tps6507x.h
+Index: kernel/drivers/mfd/tps6507x.c
 ===================================================================
---- git.orig/include/linux/mfd/tps6507x.h	2010-01-12 08:43:00.961383768 -0600
-+++ git/include/linux/mfd/tps6507x.h	2010-01-12 08:52:41.753688570 -0600
-@@ -156,10 +156,13 @@
- 	struct device *dev;
- 	struct i2c_client *i2c_client;
- 	int (*read_dev)(struct tps6507x_dev *tps6507x, char reg, int size,
--                        void *dest);
-+			void *dest);
- 	int (*write_dev)(struct tps6507x_dev *tps6507x, char reg, int size,
--                         void *src);
-+			 void *src);
- 	struct mutex adc_mutex;
-+
-+	/* Client devices */
-+	struct tps6507x_pmic *pmic;
+--- kernel.orig/drivers/mfd/tps6507x.c	2010-01-26 14:33:54.000000000 -0700
++++ kernel/drivers/mfd/tps6507x.c	2010-01-26 14:35:00.000000000 -0700
+@@ -27,6 +27,7 @@
  };
  
- #endif /*  __LINUX_MFD_TPS6507X_H */
+ static struct tps_sub_devices tps6507x_sub_devices[] = {
++	{ "tps6507x-pmic", NULL },
+ 	{ NULL, NULL }
+ };
+ 

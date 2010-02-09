@@ -1,8 +1,8 @@
-Index: git/drivers/input/touchscreen/Kconfig
+Index: kernel/drivers/input/touchscreen/Kconfig
 ===================================================================
---- git.orig/drivers/input/touchscreen/Kconfig	2010-01-06 16:23:19.000000000 -0600
-+++ git/drivers/input/touchscreen/Kconfig	2010-01-12 08:46:20.229418722 -0600
-@@ -530,4 +530,17 @@
+--- kernel.orig/drivers/input/touchscreen/Kconfig	2010-01-26 14:28:33.000000000 -0700
++++ kernel/drivers/input/touchscreen/Kconfig	2010-01-26 14:45:26.000000000 -0700
+@@ -577,4 +577,17 @@
  
  	  To compile this driver as a module, choose M here: the
  	  module will be called pcap_ts.
@@ -20,19 +20,19 @@ Index: git/drivers/input/touchscreen/Kconfig
 +	  module will be called tps6507x_ts.
 +
  endif
-Index: git/drivers/input/touchscreen/Makefile
+Index: kernel/drivers/input/touchscreen/Makefile
 ===================================================================
---- git.orig/drivers/input/touchscreen/Makefile	2010-01-06 16:23:19.000000000 -0600
-+++ git/drivers/input/touchscreen/Makefile	2010-01-12 08:46:57.705432438 -0600
-@@ -42,3 +42,4 @@
+--- kernel.orig/drivers/input/touchscreen/Makefile	2010-01-26 14:28:33.000000000 -0700
++++ kernel/drivers/input/touchscreen/Makefile	2010-01-26 14:46:38.000000000 -0700
+@@ -45,3 +45,4 @@
+ obj-$(CONFIG_TOUCHSCREEN_WM97XX_MAINSTONE)	+= mainstone-wm97xx.o
  obj-$(CONFIG_TOUCHSCREEN_WM97XX_ZYLONITE)	+= zylonite-wm97xx.o
  obj-$(CONFIG_TOUCHSCREEN_W90X900)	+= w90p910_ts.o
- obj-$(CONFIG_TOUCHSCREEN_PCAP)		+= pcap_ts.o
 +obj-$(CONFIG_TOUCHSCREEN_TPS6507X)	+= tps6507x-ts.o
-Index: git/drivers/input/touchscreen/tps6507x-ts.c
+Index: kernel/drivers/input/touchscreen/tps6507x-ts.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ git/drivers/input/touchscreen/tps6507x-ts.c	2010-01-12 08:51:49.781765078 -0600
++++ kernel/drivers/input/touchscreen/tps6507x-ts.c	2010-01-26 14:45:26.000000000 -0700
 @@ -0,0 +1,403 @@
 +/*
 + * drivers/input/touchscreen/tps6507x_ts.c
@@ -254,6 +254,7 @@ Index: git/drivers/input/touchscreen/tps6507x-ts.c
 +		poll = 1;
 +	}
 +
++done:
 +	/* always poll if not using interrupts */
 +	poll = 1;
 +
@@ -269,7 +270,6 @@ Index: git/drivers/input/touchscreen/tps6507x-ts.c
 +	} else
 +		tsc->polling = 0;
 +
-+done:
 +	ret = tps6507x_adc_standby(tsc);
 +}
 +
@@ -437,10 +437,10 @@ Index: git/drivers/input/touchscreen/tps6507x-ts.c
 +MODULE_DESCRIPTION("TPS6507x - TouchScreen driver");
 +MODULE_LICENSE("GPL v2");
 +MODULE_ALIAS("platform:tps6507x-tsc");
-Index: git/include/linux/i2c/tps6507x-ts.h
+Index: kernel/include/linux/i2c/tps6507x-ts.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ git/include/linux/i2c/tps6507x-ts.h	2010-01-12 08:46:00.745554017 -0600
++++ kernel/include/linux/i2c/tps6507x-ts.h	2010-01-26 14:45:26.000000000 -0700
 @@ -0,0 +1,24 @@
 +/* linux/i2c/tps6507x-ts.h
 + *
@@ -466,10 +466,10 @@ Index: git/include/linux/i2c/tps6507x-ts.h
 +};
 +
 +#endif /*  __LINUX_I2C_TPS6507X_TS_H */
-Index: git/include/linux/mfd/tps6507x.h
+Index: kernel/include/linux/mfd/tps6507x.h
 ===================================================================
---- git.orig/include/linux/mfd/tps6507x.h	2010-01-12 08:43:01.000000000 -0600
-+++ git/include/linux/mfd/tps6507x.h	2010-01-12 08:46:00.745554017 -0600
+--- kernel.orig/include/linux/mfd/tps6507x.h	2010-01-26 14:33:54.000000000 -0700
++++ kernel/include/linux/mfd/tps6507x.h	2010-01-26 14:45:26.000000000 -0700
 @@ -142,6 +142,7 @@
  
  struct tps6507x_board {
@@ -478,28 +478,30 @@ Index: git/include/linux/mfd/tps6507x.h
  };
  
  /**
-@@ -163,6 +164,7 @@
- 
- 	/* Client devices */
- 	struct tps6507x_pmic *pmic;
+@@ -160,6 +161,9 @@
+ 	int (*write_dev)(struct tps6507x_dev *tps6507x, char reg, int size,
+ 			 void *src);
+ 	struct mutex adc_mutex;
++
++	/* Client devices */
 +	struct tps6507x_ts *ts;
  };
  
  #endif /*  __LINUX_MFD_TPS6507X_H */
-Index: git/arch/arm/mach-davinci/board-da850-evm.c
+Index: kernel/arch/arm/mach-davinci/board-da850-evm.c
 ===================================================================
---- git.orig/arch/arm/mach-davinci/board-da850-evm.c	2010-01-12 08:43:00.000000000 -0600
-+++ git/arch/arm/mach-davinci/board-da850-evm.c	2010-01-12 08:47:55.901370217 -0600
+--- kernel.orig/arch/arm/mach-davinci/board-da850-evm.c	2010-01-26 14:33:36.000000000 -0700
++++ kernel/arch/arm/mach-davinci/board-da850-evm.c	2010-01-26 14:45:26.000000000 -0700
 @@ -25,6 +25,8 @@
+ #include <linux/mtd/nand.h>
  #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
  #include <linux/regulator/machine.h>
 +#include <linux/mfd/tps6507x.h>
 +#include <linux/i2c/tps6507x-ts.h>
  #include <linux/spi/spi.h>
  #include <linux/spi/flash.h>
- #include <linux/spi/davinci_spi_master.h>
-@@ -644,8 +646,18 @@
+ 
+@@ -634,8 +636,18 @@
  	},
  };
  
@@ -518,24 +520,15 @@ Index: git/arch/arm/mach-davinci/board-da850-evm.c
  };
  
  static struct i2c_board_info __initdata da850evm_tps65070_info[] = {
-Index: git/drivers/mfd/tps6507x.c
+Index: kernel/drivers/mfd/tps6507x.c
 ===================================================================
---- git.orig/drivers/mfd/tps6507x.c	2010-01-12 08:43:01.000000000 -0600
-+++ git/drivers/mfd/tps6507x.c	2010-01-12 08:51:03.997870214 -0600
-@@ -91,6 +91,8 @@
+--- kernel.orig/drivers/mfd/tps6507x.c	2010-01-26 14:35:00.000000000 -0700
++++ kernel/drivers/mfd/tps6507x.c	2010-01-26 14:45:26.000000000 -0700
+@@ -28,6 +28,7 @@
  
- 	tps6507x_client_dev_register(tps6507x, "tps6507x-pmic",
-   				     &pdev);
-+	tps6507x_client_dev_register(tps6507x, "tps6507x-ts",
-+				     &pdev);
- 	return ret;
- }
+ static struct tps_sub_devices tps6507x_sub_devices[] = {
+ 	{ "tps6507x-pmic", NULL },
++	{ "tps6507x-ts", NULL },
+ 	{ NULL, NULL }
+ };
  
-@@ -99,6 +101,7 @@
- {
- 	struct tps6507x_dev *tps6507x;
- 	int ret = 0;
-+
- 	tps6507x = kzalloc(sizeof(struct tps6507x_dev), GFP_KERNEL);
- 	if (tps6507x == NULL) {
- 		kfree(i2c);

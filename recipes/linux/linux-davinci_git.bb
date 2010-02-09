@@ -46,7 +46,10 @@ SRC_URI_append_dm6467-evm  = ${ARAGO_DM_URI}
 SRC_URI_append_dm6467t-evm = ${ARAGO_DM_URI}
 
 # OMAPL1 DA8xx/L1xx
-# da830-omapl137-evm/da850-omapl138-evm/hawkboard OMAPL1 PSP 03.20.00.08 (Beta)
+# da830-omapl137-evm/hawkboard OMAPL1 PSP 03.20.00.08 (Beta)
+# da850-omapl138-evm using 'master' branch
+#  - defconfig is psp defconfig + MMC unsafe (for deep-sleep) + tps/mfd/touchscreen configs 
+
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
 ARAGO_L1_REV = "e3939e092ce59a6906bf8869a3c7d40314c02eef"
@@ -55,15 +58,15 @@ ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
 ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}
-SRCREV_da850-omapl138-evm         = ${ARAGO_L1_REV}
+SRCREV_da850-omapl138-evm         = "c4c048fa6de7ca7f1b971d013b806ab809259697"
 SRCREV_hawkboard                  = ${ARAGO_L1_REV}
 
 PV_da830-omapl137-evm             = ${ARAGO_L1_PV}
-PV_da850-omapl138-evm             = ${ARAGO_L1_PV}
+PV_da850-omapl138-evm             = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
 PV_hawkboard                      = ${ARAGO_L1_PV}
 
 BRANCH_da830-omapl137-evm         = ${ARAGO_L1_BR}
-BRANCH_da850-omapl138-evm         = ${ARAGO_L1_BR}
+BRANCH_da850-omapl138-evm         = "master"
 BRANCH_hawkboard                  = ${ARAGO_L1_BR}
 
 SRC_URI_append_da830-omapl137-evm = ${ARAGO_L1_URI}
@@ -71,17 +74,12 @@ SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
-                                     file://0001-CheckRegisterForDCDC.patch;patch=1 \
-                                     file://0002-DefDcDcTiedhigh.patch;patch=1 \
                                      file://0001-tps6507x_regulator_refactor.patch;patch=1 \
                                      file://0002-tps6507x_regulator_da850_integration.patch;patch=1 \
                                      file://0003-tps6507x_mfd_driver.patch;patch=1 \
                                      file://0004-tps6507x_regulator_naming_change.patch;patch=1 \
                                      file://0005-tps6507x_regulator_mfd_integration.patch;patch=1 \
-                                     file://0006-tps6507x_touchscreen_driver.patch;patch=1 \
-                                     file://da850_omapl138_opp456mhz.patch;patch=1 \
-                                     file://da850_omapl138_opp408mhz.patch;patch=1 \
-                                     file://da850_omapl138_opp456mhz_increaseDcDc3.patch;patch=1"
+                                     file://0006-tps6507x_touchscreen_driver.patch;patch=1 "
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
                                      file://da850_omapl138_opp456mhz.patch;patch=1 \
                                      file://patch_hawk.diff;patch=1"
