@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r15"
+PR = "r16"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
@@ -69,6 +69,8 @@ do_stage_append() {
         install -d ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
                    ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
         install config.sh ${STAGING_LIBDIR}/perl
+	# Fix Errno.pm for target builds
+	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Errno.pm
 	# target configuration
         install lib/Config.pm       ${STAGING_LIBDIR_NATIVE}/perl/${PV}/
 	install lib/ExtUtils/typemap ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
