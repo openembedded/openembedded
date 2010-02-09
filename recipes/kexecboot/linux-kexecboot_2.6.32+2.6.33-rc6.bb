@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE_akita = "-1"
 DEFAULT_PREFERENCE_c7x0 = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
 DEFAULT_PREFERENCE_poodle = "-1"
-DEFAULT_PREFERENCE_spitz = "1"
+DEFAULT_PREFERENCE_spitz = "-1"
 DEFAULT_PREFERENCE_tosa = "-1"
 
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}.tar.bz2;name=kernel \
