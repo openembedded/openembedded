@@ -1,6 +1,6 @@
-require flex.inc
+require flex_${PV}.bb
 inherit native
-PR = "r2"
+PR = "r3"
 
 do_stage () {
 	install -m 0755 flex ${STAGING_BINDIR}
