@@ -1,0 +1,892 @@
+diff -uNr gitorg/arch/arm/mach-davinci/board-da850-hawk.c git/arch/arm/mach-davinci/board-da850-hawk.c
+--- gitorg/arch/arm/mach-davinci/board-da850-hawk.c	1970-01-01 01:00:00.000000000 +0100
++++ git/arch/arm/mach-davinci/board-da850-hawk.c	2010-02-20 15:01:19.000000000 +0000
+@@ -0,0 +1,726 @@
++/*
++ * TI DA850/OMAP-L138 Hawkboard board
++ *
++ * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Derived from: arch/arm/mach-davinci/board-da830-hawk.c
++ * Original Copyrights follow:
++ *
++ * 2007, 2009 (c) MontaVista Software, Inc. This file is licensed under
++ * the terms of the GNU General Public License version 2. This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/console.h>
++#include <linux/i2c.h>
++#include <linux/i2c/at24.h>
++#include <linux/i2c/pca953x.h>
++#include <linux/mfd/tps6507x.h>
++#include <linux/gpio.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/regulator/machine.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/flash.h>
++#include <linux/usb/musb.h>
++#include <linux/i2c-gpio.h>
++
++#include <asm/mach-types.h>
++#include <asm/mach/arch.h>
++
++#include <mach/cp_intc.h>
++#include <mach/da8xx.h>
++#include <mach/nand.h>
++#include <mach/mux.h>
++#include <mach/flash.h>
++#include <mach/vpif.h>
++
++#include <media/tvp514x.h>
++
++// TODO - check - why is this different from EVM? - default modes - check DS
++#define DA850_HAWK_PHY_MASK		0x1 << 7
++#define DA850_HAWK_MDIO_FREQUENCY	2200000 /* PHY bus frequency */
++
++#define DA850_HAWK_MMCSD_CD_PIN		GPIO_TO_PIN(3, 12)
++#define DA850_HAWK_MMCSD_WP_PIN		GPIO_TO_PIN(3, 13)
++
++#define DA8XX_MSTPRI2_REG	0x118
++
++#define TVP5147_CH0		"tvp514x-0"
++
++#define VPIF_STATUS	(0x002C)
++#define VPIF_STATUS_CLR	(0x0030)
++
++#if 0
++static struct davinci_pm_config da850_pm_pdata = {
++	.sleepcount = 128,
++};
++
++static struct platform_device da850_pm_device = {
++	.name           = "pm-davinci",
++	.dev = {
++		.platform_data	= &da850_pm_pdata,
++	},
++	.id             = -1,
++};
++#endif
++
++/* DA850/OMAP-L138 Hawkboard includes a 128 MByte large-page NAND flash
++ * (128K blocks) /?? TODO?
++ */
++struct mtd_partition da850_hawk_nandflash_partition[] = {
++	{
++		.name		= "u-boot env",
++		.offset		= 0,
++		.size		= SZ_128K,
++		.mask_flags	= MTD_WRITEABLE,
++	 },
++	{
++		.name		= "UBL",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= SZ_128K,
++		.mask_flags	= MTD_WRITEABLE,
++	},
++	{
++		.name		= "u-boot",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= 4 * SZ_128K,
++		.mask_flags	= MTD_WRITEABLE,
++	},
++	{
++		.name		= "kernel",
++		.offset		= 0x200000,
++		.size		= SZ_4M,
++		.mask_flags	= 0,
++	},
++	{
++		.name		= "filesystem",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= MTDPART_SIZ_FULL,
++		.mask_flags	= 0,
++	},
++};
++
++// TODO - check timings with Data Sheet
++static struct davinci_aemif_timing da850_hawk_nandflash_timing = {
++	.wsetup		= 0,
++	.wstrobe	= 30,
++	.whold		= 30,
++	.rsetup		= 20,
++	.rstrobe	= 40,
++	.rhold		= 0,
++	.ta		= 0,
++};
++
++static struct davinci_nand_pdata da850_hawk_nandflash_data = {
++	.parts		= da850_hawk_nandflash_partition,
++	.nr_parts	= ARRAY_SIZE(da850_hawk_nandflash_partition),
++	.ecc_mode	= NAND_ECC_HW,
++	.ecc_bits	= 4,
++	.options	= NAND_USE_FLASH_BBT,
++	.timing		= &da850_hawk_nandflash_timing,
++};
++
++static struct resource da850_hawk_nandflash_resource[] = {
++	{
++		.start	= DA8XX_AEMIF_CS3_BASE,
++		.end	= DA8XX_AEMIF_CS3_BASE + SZ_512K + 2 * SZ_1K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	{
++		.start	= DA8XX_AEMIF_CTL_BASE,
++		.end	= DA8XX_AEMIF_CTL_BASE + SZ_32K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++#if 1
++static struct platform_device da850_hawk_nandflash_device = {
++	.name		= "davinci_nand",
++	.id		= 1,
++	.dev		= {
++		.platform_data	= &da850_hawk_nandflash_data,
++	},
++	.num_resources	= ARRAY_SIZE(da850_hawk_nandflash_resource),
++	.resource	= da850_hawk_nandflash_resource,
++};
++
++static struct platform_device *da850_hawk_devices[] __initdata = {
++	&da850_hawk_nandflash_device,
++};
++#endif
++
++#if defined(CONFIG_MMC_DAVINCI) || \
++    defined(CONFIG_MMC_DAVINCI_MODULE)
++#define HAS_MMC 1
++#else
++#define HAS_MMC 0
++#endif
++
++static struct i2c_board_info __initdata da850_hawk_i2c_devices[] = {
++	{
++		I2C_BOARD_INFO("tlv320aic3x", 0x18),
++	},
++// TODO - DDC VGA device I2C?
++};
++
++static struct davinci_uart_config da850_hawk_uart_config __initdata = {
++	.enabled_uarts = 0x7,
++};
++
++/* davinci da850 hawk audio machine driver */
++static u8 da850_iis_serializer_direction[] = {
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	TX_MODE,	RX_MODE,	INACTIVE_MODE,
++};
++
++static struct snd_platform_data da850_hawk_snd_data = {
++	.tx_dma_offset	= 0x2000,
++	.rx_dma_offset	= 0x2000,
++	.op_mode	= DAVINCI_MCASP_IIS_MODE,
++	.num_serializer	= ARRAY_SIZE(da850_iis_serializer_direction),
++	.tdm_slots	= 2,
++	.serial_dir	= da850_iis_serializer_direction,
++	.eventq_no	= EVENTQ_1,
++	.version	= MCASP_VERSION_2,
++	.txnumevt	= 1,
++	.rxnumevt	= 1,
++};
++
++static struct davinci_mcbsp_platform_data da850_mcbsp0_config = {
++	.inst	= 0,
++};
++
++static struct davinci_mcbsp_platform_data da850_mcbsp1_config = {
++	.inst	= 1,
++};
++
++static int da850_hawk_mmc_get_ro(int index)
++{
++	return gpio_get_value(DA850_HAWK_MMCSD_WP_PIN);
++}
++
++static int da850_hawk_mmc_get_cd(int index)
++{
++	return !gpio_get_value(DA850_HAWK_MMCSD_CD_PIN);
++}
++
++static struct davinci_mmc_config da850_mmc_config = {
++	.get_ro		= da850_hawk_mmc_get_ro,
++	.get_cd		= da850_hawk_mmc_get_cd,
++	.wires		= 4,
++	.max_freq	= 50000000,
++	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
++	.version	= MMC_CTLR_VERSION_2,
++};
++
++static int da850_lcd_hw_init(void)
++{
++	void __iomem *cfg_mstpri2_base;
++	u32 val;
++
++	/*
++	 * Reconfigure the LCDC priority to the highest to ensure that
++	 * the throughput/latency requirements for the LCDC are met.
++	 */
++	cfg_mstpri2_base = DA8XX_SYSCFG0_VIRT(DA8XX_MSTPRI2_REG);
++
++	val = __raw_readl(cfg_mstpri2_base);
++	val &= 0x0fffffff;
++	__raw_writel(val, cfg_mstpri2_base);
++
++	return 0;
++}
++
++static int __init da850_hawk_config_emac(void)
++{
++	void __iomem *cfg_chip3_base;
++	int ret;
++	u32 val;
++	struct davinci_soc_info *soc_info = &davinci_soc_info;
++
++	if (!machine_is_omapl138_hawkboard())
++		return 0;
++
++	cfg_chip3_base = DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
++
++	val = __raw_readl(cfg_chip3_base);
++
++	val &= ~BIT(8);
++	ret = da8xx_pinmux_setup(da850_cpgmac_pins);
++	if (ret)
++		pr_warning("da850_evm_init: cpgmac/rmii mux setup failed: %d\n",
++				ret);
++
++	/* configure the CFGCHIP3 register for MII */
++	__raw_writel(val, cfg_chip3_base);
++
++	soc_info->emac_pdata->phy_mask = DA850_HAWK_PHY_MASK;
++	soc_info->emac_pdata->mdio_max_freq = DA850_HAWK_MDIO_FREQUENCY;
++
++	ret = da8xx_register_emac();
++	if (ret)
++		pr_warning("da850_hawk_init: emac registration failed: %d\n",
++				ret);
++
++	return 0;
++}
++device_initcall(da850_hawk_config_emac);
++
++static int da850_setup_vpif_input_channel_mode(int mux_mode)
++{
++	return 0;
++}
++
++static int da850_vpif_intr_status(void __iomem *vpif_base, int channel)
++{
++	int status = 0;
++	int mask;
++
++	// TODO - only one channel active on hawk?
++	if (channel < 0 || channel > 3)
++		return 0;
++
++	mask = 1 << channel;
++	status = __raw_readl((vpif_base + VPIF_STATUS)) & mask;
++	__raw_writel(status, (vpif_base + VPIF_STATUS_CLR));
++
++	return status;
++}
++
++/* VPIF capture configuration */
++static struct tvp514x_platform_data tvp5146_pdata = {
++	.clk_polarity = 0,
++	.hs_polarity = 1,
++	.vs_polarity = 1
++};
++
++#define TVP514X_STD_ALL (V4L2_STD_NTSC | V4L2_STD_PAL)
++
++static struct vpif_subdev_info da850_vpif_capture_sdev_info[] = {
++	{
++		.name	= TVP5147_CH0,
++		.board_info = {
++			I2C_BOARD_INFO("tvp5146", 0x5d),
++			.platform_data = &tvp5146_pdata,
++		},
++		.input = INPUT_CVBS_VI2B,
++		.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		.can_route = 1,
++		.vpif_if = {
++			.if_type = VPIF_IF_BT656,
++			.hd_pol = 1,
++			.vd_pol = 1,
++			.fid_pol = 0,
++		},
++	},
++};
++
++static const struct vpif_input da850_ch0_inputs[] = {
++	{
++		.input = {
++			.index = 0,
++			.name = "Composite",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.subdev_name = TVP5147_CH0,
++	},
++};
++
++// TODO - V4L2 device creates 2 device nodes for 2 channels - why?
++// - do we need to set .chan_config[1] to NULL?
++static struct vpif_capture_config da850_vpif_capture_config = {
++	.setup_input_channel_mode = da850_setup_vpif_input_channel_mode,
++	.intr_status = da850_vpif_intr_status,
++	.subdev_info = da850_vpif_capture_sdev_info,
++	.subdev_count = ARRAY_SIZE(da850_vpif_capture_sdev_info),
++	.chan_config[0] = {
++		.inputs = da850_ch0_inputs,
++		.input_count = ARRAY_SIZE(da850_ch0_inputs),
++	},
++};
++
++// TODO - fix all these references to _UI
++
++#if defined(CONFIG_DAVINCI_MCBSP0)
++#define HAS_MCBSP0 1
++#else
++#define HAS_MCBSP0 0
++#endif
++
++#if defined(CONFIG_DAVINCI_MCBSP1)
++#define HAS_MCBSP1 1
++#else
++#define HAS_MCBSP1 0
++#endif
++
++#if defined(CONFIG_TI_DAVINCI_EMAC) || \
++	defined(CONFIG_TI_DAVINCI_EMAC_MODULE)
++#define HAS_EMAC 1
++#else
++#define HAS_EMAC 0
++#endif
++
++//TODO - fix dependence on _EVM
++#if defined(CONFIG_SND_DA850_SOC_EVM) || \
++	defined(CONFIG_SND_DA850_SOC_EVM_MODULE)
++#define HAS_MCASP 1
++#else
++#define HAS_MCASP 0
++#endif
++
++#if defined(CONFIG_DA850_UI_RMII) && (HAS_EMAC)
++#define HAS_RMII 1
++#else
++#define HAS_RMII 0
++#endif
++
++#if defined(CONFIG_DA850_UI_LCD) && defined(CONFIG_FB_DA8XX) ||\
++		defined(CONFIG_FB_DA8XX_MODULE)
++#define HAS_GLCD 1
++#else
++#define HAS_GLCD 0
++#endif
++
++#if defined(CONFIG_VIDEO_DAVINCI_VPIF_DISPLAY) ||\
++		defined(CONFIG_VIDEO_DAVINCI_VPIF_DISPLAY_MODULE)
++#define HAS_VPIF_DISPLAY 1
++#else
++#define HAS_VPIF_DISPLAY 0
++#endif
++
++#if defined(CONFIG_VIDEO_DAVINCI_VPIF_CAPTURE) ||\
++		defined(CONFIG_VIDEO_DAVINCI_VPIF_CAPTURE_MODULE)
++#define HAS_VPIF_CAPTURE 1
++#else
++#define HAS_VPIF_CAPTURE 0
++#endif
++
++#if 0
++static da8xx_ocic_handler_t da850_hawk_usb_ocic_handler;
++
++static int da850_hawk_usb_set_power(unsigned port, int on)
++{
++	gpio_set_value(DA850_HAWK_USB1_VBUS_PIN, on);
++	return 0;
++}
++
++static int da850_hawk_usb_get_power(unsigned port)
++{
++	return gpio_get_value(DA850_HAWK_USB1_VBUS_PIN);
++}
++
++static int da850_hawk_usb_get_oci(unsigned port)
++{
++	return !gpio_get_value(DA850_HAWK_USB1_OC_PIN);
++}
++
++static irqreturn_t da850_hawk_usb_ocic_irq(int, void *);
++
++static int da850_hawk_usb_ocic_notify(da8xx_ocic_handler_t handler)
++{
++	int irq 	= gpio_to_irq(DA850_HAWK_USB1_OC_PIN);
++	int error	= 0;
++
++	if (handler != NULL) {
++		da850_hawk_usb_ocic_handler = handler;
++
++		error = request_irq(irq, da850_hawk_usb_ocic_irq, IRQF_DISABLED |
++				    IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
++				    "OHCI over-current indicator", NULL);
++		if (error)
++			printk(KERN_ERR "%s: could not request IRQ to watch "
++			       "over-current indicator changes\n", __func__);
++	} else
++		free_irq(irq, NULL);
++
++	return error;
++}
++#endif
++
++static struct da8xx_ohci_root_hub da850_hawk_usb11_pdata = {
++#if 0
++// No OC (Over Current) Circuitry hooked up on hawkboard - remove?
++	.set_power	= da850_hawk_usb_set_power,
++	.get_power	= da850_hawk_usb_get_power,
++	.get_oci	= da850_hawk_usb_get_oci,
++	.ocic_notify	= da850_hawk_usb_ocic_notify,
++#endif
++
++// TODO - check this?
++	/* TPS2065 switch @ 5V */
++	.potpgt		= (3 + 1) / 2,	/* 3 ms max */
++};
++
++#if 0
++static irqreturn_t da850_hawk_usb_ocic_irq(int irq, void *dev_id)
++{
++	da850_hawk_usb_ocic_handler(&da850_hawk_usb11_pdata, 1);
++	return IRQ_HANDLED;
++}
++#endif
++
++static struct musb_hdrc_platform_data usb_hawk_data[] = {
++	{
++#ifdef CONFIG_USB_MUSB_OTG
++		.mode = MUSB_OTG,
++#elif defined(CONFIG_USB_MUSB_DUAL_ROLE)
++		.mode = MUSB_DUAL_ROLE,
++#elif defined(CONFIG_USB_MUSB_PERIPHERAL)
++		.mode =  MUSB_PERIPHERAL,
++#elif defined(CONFIG_USB_MUSB_HOST)
++		.mode = MUSB_HOST,
++#endif
++		.power = 255,
++		.potpgt = 8,
++		.set_vbus = NULL, /* VBUs is directly controlled by the IP */
++	}
++};
++
++static __init void da850_hawk_usb_init(void)
++{
++	int ret;
++	u32 cfgchip2;
++
++	/*
++	 * Setup the Ref. clock frequency for the HAWK at 24 MHz.
++	 */
++	cfgchip2 = __raw_readl(DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
++	cfgchip2 &= ~CFGCHIP2_REFFREQ;
++	cfgchip2 |=  CFGCHIP2_REFFREQ_24MHZ;
++	__raw_writel(cfgchip2, DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
++
++	da8xx_usb20_configure(usb_hawk_data, ARRAY_SIZE(usb_hawk_data));
++
++	ret = da8xx_register_usb11(&da850_hawk_usb11_pdata);
++	if (ret)
++		pr_warning("%s: USB 1.1 registration failed: %d\n",
++			   __func__, ret);
++}
++
++static struct i2c_gpio_platform_data da850_gpio_i2c_pdata = {
++	.sda_pin	= GPIO_TO_PIN(1, 4),
++	.scl_pin	= GPIO_TO_PIN(1, 5),
++	.udelay		= 2,			/* 250 KHz */
++};
++
++static struct platform_device da850_gpio_i2c = {
++	.name		= "i2c-gpio",
++	.id		= 1,
++	.dev		= {
++	.platform_data	= &da850_gpio_i2c_pdata,
++	},
++};
++
++static __init void da850_hawk_init(void)
++{
++	int ret;
++
++	ret = da8xx_register_edma();
++	if (ret)
++		pr_warning("da850_hawk_init: edma registration failed: %d\n",
++				ret);
++
++	// TODO - check safe to enable alongside MMC
++	ret = da8xx_pinmux_setup(da850_nand_pins);
++	if (ret)
++		pr_warning("da850_hawk_init: nand mux setup failed: "
++				"%d\n", ret);
++
++	platform_add_devices(da850_hawk_devices,
++				ARRAY_SIZE(da850_hawk_devices));
++
++	ret = da8xx_pinmux_setup(da850_i2c0_pins);
++	if (ret)
++		pr_warning("da850_hawk_init: i2c0 mux setup failed: %d\n",
++				ret);
++
++	platform_device_register(&da850_gpio_i2c);
++
++	ret = da8xx_register_watchdog();
++	if (ret)
++		pr_warning("da830_hawk_init: watchdog registration failed: %d\n",
++				ret);
++
++	if (HAS_MMC) {
++		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
++		if (ret)
++			pr_warning("da850_hawk_init: mmcsd0 mux setup failed:"
++					" %d\n", ret);
++
++		ret = gpio_request(DA850_HAWK_MMCSD_CD_PIN, "MMC CD\n");
++		if (ret)
++			pr_warning("da850_hawk_init: can not open GPIO %d\n",
++					DA850_HAWK_MMCSD_CD_PIN);
++		gpio_direction_input(DA850_HAWK_MMCSD_CD_PIN);
++
++		ret = gpio_request(DA850_HAWK_MMCSD_WP_PIN, "MMC WP\n");
++		if (ret)
++			pr_warning("da850_hawk_init: can not open GPIO %d\n",
++					DA850_HAWK_MMCSD_WP_PIN);
++		gpio_direction_input(DA850_HAWK_MMCSD_WP_PIN);
++
++		ret = da8xx_register_mmcsd0(&da850_mmc_config);
++		if (ret)
++			pr_warning("da850_hawk_init: mmcsd0 registration failed:"
++					" %d\n", ret);
++	}
++
++	davinci_serial_init(&da850_hawk_uart_config);
++
++	i2c_register_board_info(1, da850_hawk_i2c_devices,
++			ARRAY_SIZE(da850_hawk_i2c_devices));
++
++	/*
++	 * shut down uart 0 and 1; they are not used on the board and
++	 * accessing them causes endless "too much work in irq53" messages
++	 * with arago fs
++	 */
++	__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
++	__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
++
++	if (HAS_MCBSP0) {
++		if (HAS_EMAC)
++			pr_warning("WARNING: both MCBSP0 and EMAC are "
++				"enabled, but they share pins.\n"
++				"\tDisable one of them.\n");
++
++		ret = da8xx_pinmux_setup(da850_mcbsp0_pins);
++		if (ret)
++			pr_warning("da850_hawk_init: mcbsp0 mux setup failed:"
++					" %d\n", ret);
++
++		ret = da850_init_mcbsp(&da850_mcbsp0_config);
++		if (ret)
++			pr_warning("da850_hawk_init: mcbsp0 registration"
++					"failed: %d\n",	ret);
++	}
++
++	if (HAS_MCBSP1) {
++		ret = da8xx_pinmux_setup(da850_mcbsp1_pins);
++		if (ret)
++			pr_warning("da850_hawl_init: mcbsp1 mux setup failed:"
++					" %d\n", ret);
++
++		ret = da850_init_mcbsp(&da850_mcbsp1_config);
++		if (ret)
++			pr_warning("da850_hawk_init: mcbsp1 registration"
++					" failed: %d\n", ret);
++	}
++
++	if (HAS_MCASP) {
++		if ((HAS_MCBSP0 || HAS_MCBSP1))
++			pr_warning("WARNING: both McASP and McBSP are enabled, "
++					"but they share pins.\n"
++					"\tDisable one of them.\n");
++
++		ret = da8xx_pinmux_setup(da850_mcasp_pins);
++		if (ret)
++			pr_warning("da850_hawk_init: mcasp mux setup failed:"
++					"%d\n", ret);
++
++		da8xx_register_mcasp(0, &da850_hawk_snd_data);
++	}
++
++	ret = da8xx_pinmux_setup(da850_lcdcntl_pins);
++	if (ret)
++		pr_warning("da850_evm_init: lcdcntl mux setup failed: %d\n",
++				ret);
++
++	ret = da850_lcd_hw_init();
++	if (ret)
++		pr_warning("da850_hawk_init: lcd initialization failed: %d\n",
++				ret);
++
++	ret = da8xx_register_lcdc(&vga_monitor_pdata);
++	if (ret)
++		pr_warning("da850_hawk_init: lcdc registration failed: %d\n",
++				ret);
++
++        __raw_writel(0, IO_ADDRESS(0x01E13028));
++
++
++#if 0
++	// TODO - why RTC hangs at startup?
++	ret = da8xx_register_rtc();
++	if (ret)
++		pr_warning("da850_hawk_init: rtc setup failed: %d\n", ret);
++
++	// TODO - understand PM support
++	ret = da850_register_cpufreq();
++	if (ret)
++		pr_warning("da850_hawk_init: cpufreq registration failed: %d\n",
++				ret);
++
++	ret = da8xx_register_cpuidle();
++	if (ret)
++		pr_warning("da850_hawk_init: cpuidle registration failed: %d\n",
++				ret);
++
++	ret = da850_register_pm(&da850_pm_device);
++	if (ret)
++		pr_warning("da850_hawk_init: suspend registration failed: %d\n",
++				ret);
++#endif
++
++	da850_hawk_usb_init();
++
++	ret = da8xx_register_sata();
++	if (ret)
++		pr_warning("da850_hawk_init: SATA registration failed: %d\n",
++						ret);
++
++	ret = da850_register_vpif();
++	if (ret)
++		pr_warning("da850_hawk_init: VPIF registration failed: "
++					"%d\n",	ret);
++
++	ret = da8xx_pinmux_setup(da850_vpif_capture_pins);
++	if (ret)
++		pr_warning("da850_hawk_init: vpif capture mux failed: "
++					"%d\n",	ret);
++
++	ret = da850_register_vpif_capture(&da850_vpif_capture_config);
++	if (ret)
++		pr_warning("da850_hawk_init: VPIF registration failed: "
++					"%d\n",	ret);
++}
++
++#ifdef CONFIG_SERIAL_8250_CONSOLE
++static int __init da850_hawk_console_init(void)
++{
++	return add_preferred_console("ttyS", 2, "115200");
++}
++console_initcall(da850_hawk_console_init);
++#endif
++
++static __init void da850_hawk_irq_init(void)
++{
++	struct davinci_soc_info *soc_info = &davinci_soc_info;
++
++	cp_intc_init((void __iomem *)DA8XX_CP_INTC_VIRT, DA850_N_CP_INTC_IRQ,
++			soc_info->intc_irq_prios);
++}
++
++static void __init da850_hawk_map_io(void)
++{
++	da850_init();
++}
++
++MACHINE_START(OMAPL138_HAWKBOARD, "DaVinci DA850/OMAP-L138/AM18xx Hawkboard(.org)")
++	.phys_io	= IO_PHYS,
++	.io_pg_offst	= (__IO_ADDRESS(IO_PHYS) >> 18) & 0xfffc,
++	.boot_params	= (DA8XX_DDR_BASE + 0x100),
++	.map_io		= da850_hawk_map_io,
++	.init_irq	= da850_hawk_irq_init,
++	.timer		= &davinci_timer,
++	.init_machine	= da850_hawk_init,
++MACHINE_END
+diff -uNr gitorg/arch/arm/mach-davinci/da850.c git/arch/arm/mach-davinci/da850.c
+--- gitorg/arch/arm/mach-davinci/da850.c	2010-02-18 11:36:19.000000000 +0000
++++ git/arch/arm/mach-davinci/da850.c	2010-02-19 14:59:39.000000000 +0000
+@@ -720,7 +720,7 @@
+ const short da850_mcasp_pins[] __initdata = {
+ 	DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
+ 	DA850_AHCLKR, DA850_ACLKR, DA850_AFSR, DA850_AMUTE,
+-	DA850_AXR_11, DA850_AXR_12,
++	DA850_AXR_11, DA850_AXR_12, DA850_AXR_13, DA850_AXR_14,
+ 	-1
+ };
+ 
+diff -uNr gitorg/arch/arm/mach-davinci/devices-da8xx.c git/arch/arm/mach-davinci/devices-da8xx.c
+--- gitorg/arch/arm/mach-davinci/devices-da8xx.c	2010-02-18 11:36:19.000000000 +0000
++++ git/arch/arm/mach-davinci/devices-da8xx.c	2010-02-19 17:38:57.000000000 +0000
+@@ -560,6 +560,12 @@
+ 	.type			= "Sharp_LK043T1DG01",
+ };
+ 
++struct da8xx_lcdc_platform_data vga_monitor_pdata = {
++	.manu_name		= "vga_monitor",
++	.controller_data	= &lcd_cfg,
++	.type			= "VGA_Monitor",
++};
++
+ #if !defined(CONFIG_FB_DA8XX) && !defined(CONFIG_FB_DA8XX_MODULE)
+ static struct da8xx_clcd_platform_data da8xx_evm_clcd_pdata = {
+ 	.version = CONFIG_SPACE_1,
+diff -uNr gitorg/arch/arm/mach-davinci/include/mach/da8xx.h git/arch/arm/mach-davinci/include/mach/da8xx.h
+--- gitorg/arch/arm/mach-davinci/include/mach/da8xx.h	2010-02-18 11:36:19.000000000 +0000
++++ git/arch/arm/mach-davinci/include/mach/da8xx.h	2010-02-19 17:06:58.000000000 +0000
+@@ -167,6 +167,8 @@
+ extern struct emac_platform_data da8xx_emac_pdata;
+ extern struct da8xx_lcdc_platform_data sharp_lcd035q3dg01_pdata;
+ extern struct da8xx_lcdc_platform_data sharp_lk043t1dg01_pdata;
++extern struct da8xx_lcdc_platform_data vga_monitor_pdata;
++
+ void da8xx_usb20_configure(struct musb_hdrc_platform_data *pdata, u8 num_inst);
+ 
+ extern const short da830_emif25_pins[];
+diff -uNr gitorg/arch/arm/mach-davinci/include/mach/debug-macro.S git/arch/arm/mach-davinci/include/mach/debug-macro.S
+--- gitorg/arch/arm/mach-davinci/include/mach/debug-macro.S	2010-02-18 11:36:19.000000000 +0000
++++ git/arch/arm/mach-davinci/include/mach/debug-macro.S	2010-02-20 15:10:41.000000000 +0000
+@@ -27,7 +27,8 @@
+ #if defined(CONFIG_ARCH_DAVINCI_DA8XX) && defined(CONFIG_ARCH_DAVINCI_DMx)
+ #error Cannot enable DaVinci and DA8XX platforms concurrently
+ #elif defined(CONFIG_MACH_DAVINCI_DA830_EVM) || \
+-	defined(CONFIG_MACH_DAVINCI_DA850_EVM)
++	defined(CONFIG_MACH_DAVINCI_DA850_EVM) || \
++		defined(CONFIG_MACH_OMAPL138_HAWKBOARD)
+ 		orr	\rx, \rx, #0x00d00000	@ physical base address
+ 		orr	\rx, \rx, #0x0000d000	@ of UART 2
+ #else
+diff -uNr gitorg/arch/arm/mach-davinci/Kconfig git/arch/arm/mach-davinci/Kconfig
+--- gitorg/arch/arm/mach-davinci/Kconfig	2010-02-18 11:36:19.000000000 +0000
++++ git/arch/arm/mach-davinci/Kconfig	2010-02-19 16:36:25.000000000 +0000
+@@ -205,6 +205,13 @@
+ 	  select Video Port Interface.
+ endchoice
+ 
++config MACH_OMAPL138_HAWKBOARD
++	bool "TI DA850/OMAP-L138/AM18xx Hawkboard(.org) Platform"
++	default ARCH_DAVINCI_DA850
++	depends on ARCH_DAVINCI_DA850
++	help
++	  Say Y here to select the TI DA850/OMAP-L138/AM18xx Hawkboard.
++
+ config DAVINCI_MUX
+ 	bool "DAVINCI multiplexing support"
+ 	depends on ARCH_DAVINCI
+diff -uNr gitorg/arch/arm/mach-davinci/Makefile git/arch/arm/mach-davinci/Makefile
+--- gitorg/arch/arm/mach-davinci/Makefile	2010-02-18 11:36:19.000000000 +0000
++++ git/arch/arm/mach-davinci/Makefile	2010-02-19 16:37:22.000000000 +0000
+@@ -30,6 +30,7 @@
+ obj-$(CONFIG_MACH_DAVINCI_DM365_EVM)	+= board-dm365-evm.o
+ obj-$(CONFIG_MACH_DAVINCI_DA830_EVM)	+= board-da830-evm.o
+ obj-$(CONFIG_MACH_DAVINCI_DA850_EVM)	+= board-da850-evm.o
++obj-$(CONFIG_MACH_OMAPL138_HAWKBOARD)	+= board-da850-hawk.o
+ 
+ # Power Management
+ obj-$(CONFIG_CPU_FREQ)			+= cpufreq.o
+diff -uNr gitorg/drivers/media/video/Kconfig git/drivers/media/video/Kconfig
+--- gitorg/drivers/media/video/Kconfig	2010-02-18 11:36:34.000000000 +0000
++++ git/drivers/media/video/Kconfig	2010-02-20 14:26:53.000000000 +0000
+@@ -513,11 +513,11 @@
+ 
+ config VIDEO_DAVINCI_VPIF_CAPTURE
+ 	tristate "DaVinci Video VPIF Capture"
+-	depends on VIDEO_DEV && (MACH_DAVINCI_DM6467_EVM || MACH_DAVINCI_DA850_EVM)
++	depends on VIDEO_DEV && (MACH_DAVINCI_DM6467_EVM || MACH_DAVINCI_DA850_EVM || MACH_OMAPL138_HAWKBOARD)
+ 	select VIDEOBUF_DMA_CONTIG
+ 	select VIDEO_DAVINCI_VPIF
+ 	help
+-	  Support for DaVinci VPIF Capture on DM6467 EVM and/or DA850/OMAP-L138/AM18xx EVM.
++	  Support for DaVinci VPIF Capture on DM6467 EVM and/or DA850/OMAP-L138/AM18xx EVM/Hawkboard.
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called vpif_capture.
+diff -uNr gitorg/drivers/video/da8xx-fb.c git/drivers/video/da8xx-fb.c
+--- gitorg/drivers/video/da8xx-fb.c	2010-02-18 11:36:43.000000000 +0000
++++ git/drivers/video/da8xx-fb.c	2010-02-20 12:46:13.000000000 +0000
+@@ -196,6 +196,20 @@
+ 		.pxl_clk = 7833600,
+ 		.invert_pxl_clk = 0,
+ 	},
++	/* CRT Monitor or LCD Screen */
++	[2] = {
++		.name = "VGA_Monitor",
++		.width = 640,
++		.height = 480,
++		.hfp = 48,
++		.hbp = 48,
++		.hsw = 63,
++		.vfp = 11,
++		.vbp = 31,
++		.vsw = 1,
++		.pxl_clk = 25000000,
++		.invert_pxl_clk = 1,
++	},
+ };
+ 
+ /* Enable the Raster Engine of the LCD Controller */
+diff -uNr gitorg/sound/soc/davinci/davinci-evm.c git/sound/soc/davinci/davinci-evm.c
+--- gitorg/sound/soc/davinci/davinci-evm.c	2010-02-18 11:36:50.000000000 +0000
++++ git/sound/soc/davinci/davinci-evm.c	2010-02-19 15:34:45.000000000 +0000
+@@ -57,7 +57,8 @@
+ 		sysclk = 12288000;
+ 
+ 	else if (machine_is_davinci_da830_evm() ||
+-				machine_is_davinci_da850_evm())
++				machine_is_davinci_da850_evm() ||
++				machine_is_omapl138_hawkboard() )
+ 		sysclk = 24576000;
+ 
+ 	else
+@@ -256,7 +257,7 @@
+ 	} else if (machine_is_davinci_da830_evm()) {
+ 		evm_snd_dev_data = &da830_evm_snd_devdata;
+ 		index = 1;
+-	} else if (machine_is_davinci_da850_evm()) {
++	} else if (machine_is_davinci_da850_evm() || machine_is_omapl138_hawkboard()) {
+ 		evm_snd_dev_data = &da850_evm_snd_devdata;
+ 		index = 0;
+ 	} else
+diff -uNr gitorg/sound/soc/davinci/Kconfig git/sound/soc/davinci/Kconfig
+--- gitorg/sound/soc/davinci/Kconfig	2010-02-18 11:36:50.000000000 +0000
++++ git/sound/soc/davinci/Kconfig	2010-02-20 14:28:15.000000000 +0000
+@@ -53,11 +53,11 @@
+ 	  DA830/OMAP-L137/AM17xx EVM
+ 
+ config  SND_DA850_SOC_EVM
+-	tristate "SoC Audio support for DA850/OMAP-L138/AM18xx EVM"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
++	tristate "SoC Audio support for DA850/OMAP-L138/AM18xx EVM / Hawkboard"
++	depends on SND_DAVINCI_SOC && (MACH_DAVINCI_DA850_EVM || MACH_OMAPL138_HAWKBOARD)
+ 	select SND_DAVINCI_SOC_MCASP
+ 	select SND_SOC_TLV320AIC3X
+ 	help
+ 	  Say Y if you want to add support for SoC audio on TI
+-	  DA850/OMAP-L138/AM18xx EVM
++	  DA850/OMAP-L138/AM18xx EVM/Hawkboard
+ 

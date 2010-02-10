@@ -1,4 +1,4 @@
-require linux.inc
+require multi-kernel.inc
 
 DESCRIPTION = "Linux kernel for DaVinci processors"
 KERNEL_IMAGETYPE = "uImage"
@@ -16,34 +16,30 @@ S = "${WORKDIR}/git"
 # dm355-evm/dm365-evm/dm6446-evm/dm6467-evm/dm6467t-evm Davinci PSP 03.01.00/03.02.00 (build r30)
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
-ARAGO_DM_REV = "e87a8397d2830db11ce1518bd2abc4e8815763f1"
+ARAGO_DM_REV = "c2aeffe9e835c5b6b275edc416951ce4a348b0fd"
 ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCREV}"
-ARAGO_DM_BR  = "r32"
+ARAGO_DM_BR  = "r30"
 ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH} "
 
-SRCREV_dm355-evm           = ${ARAGO_DM_REV}
-SRCREV_dm365-evm           = ${ARAGO_DM_REV}
-SRCREV_dm6446-evm          = ${ARAGO_DM_REV}
-SRCREV_dm6467-evm          = ${ARAGO_DM_REV}
-SRCREV_dm6467t-evm         = ${ARAGO_DM_REV}
+SRCREV_dm355           = ${ARAGO_DM_REV}
+SRCREV_dm365           = ${ARAGO_DM_REV}
+SRCREV_dm6446          = ${ARAGO_DM_REV}
+SRCREV_dm6467          = ${ARAGO_DM_REV}
 
-PV_dm355-evm               = ${ARAGO_DM_PV}
-PV_dm365-evm               = ${ARAGO_DM_PV}
-PV_dm6446-evm              = ${ARAGO_DM_PV}
-PV_dm6467-evm              = ${ARAGO_DM_PV}
-PV_dm6467t-evm             = ${ARAGO_DM_PV}
+PV_dm355               = ${ARAGO_DM_PV}
+PV_dm365               = ${ARAGO_DM_PV}
+PV_dm6446              = ${ARAGO_DM_PV}
+PV_dm6467              = ${ARAGO_DM_PV}
 
-BRANCH_dm355-evm           = ${ARAGO_DM_BR}
-BRANCH_dm365-evm           = ${ARAGO_DM_BR}
-BRANCH_dm6446-evm          = ${ARAGO_DM_BR}
-BRANCH_dm6467-evm          = ${ARAGO_DM_BR}
-BRANCH_dm6467t-evm         = ${ARAGO_DM_BR}
+BRANCH_dm355           = ${ARAGO_DM_BR}
+BRANCH_dm365           = ${ARAGO_DM_BR}
+BRANCH_dm6446          = ${ARAGO_DM_BR}
+BRANCH_dm6467          = ${ARAGO_DM_BR}
 
-SRC_URI_append_dm355-evm   = ${ARAGO_DM_URI}
-SRC_URI_append_dm365-evm   = ${ARAGO_DM_URI}
-SRC_URI_append_dm6446-evm  = ${ARAGO_DM_URI}
-SRC_URI_append_dm6467-evm  = ${ARAGO_DM_URI}
-SRC_URI_append_dm6467t-evm = ${ARAGO_DM_URI}
+SRC_URI_append_dm355   = ${ARAGO_DM_URI}
+SRC_URI_append_dm365   = ${ARAGO_DM_URI}
+SRC_URI_append_dm6446  = ${ARAGO_DM_URI}
+SRC_URI_append_dm6467  = ${ARAGO_DM_URI}
 
 # OMAPL1 DA8xx/L1xx
 # da830-omapl137-evm/hawkboard OMAPL1 PSP 03.20.00.08 (Beta)
@@ -58,32 +54,23 @@ ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
 ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}
-SRCREV_da850-omapl138-evm         = "c4c048fa6de7ca7f1b971d013b806ab809259697"
-SRCREV_hawkboard                  = ${ARAGO_L1_REV}
+SRCREV_da850-omapl138-evm         = "ecdfc1ffd890a7f9d5af96152f84effda2494d47"
+SRCREV_hawkboard                  = "ecdfc1ffd890a7f9d5af96152f84effda2494d47"
 
 PV_da830-omapl137-evm             = ${ARAGO_L1_PV}
 PV_da850-omapl138-evm             = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
-PV_hawkboard                      = ${ARAGO_L1_PV}
+PV_hawkboard                      = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
 
 BRANCH_da830-omapl137-evm         = ${ARAGO_L1_BR}
 BRANCH_da850-omapl138-evm         = "master"
-BRANCH_hawkboard                  = ${ARAGO_L1_BR}
+BRANCH_hawkboard                  = "master"
 
 SRC_URI_append_da830-omapl137-evm = ${ARAGO_L1_URI}
 SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
-                                     file://0001-tps6507x_regulator_refactor.patch;patch=1 \
-                                     file://0002-tps6507x_regulator_da850_integration.patch;patch=1 \
-                                     file://0003-tps6507x_mfd_driver.patch;patch=1 \
-                                     file://0004-tps6507x_regulator_naming_change.patch;patch=1 \
-                                     file://0005-tps6507x_regulator_mfd_integration.patch;patch=1 \
-                                     file://0006-tps6507x_touchscreen_driver.patch;patch=1 "
-SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
-                                     file://da850_omapl138_opp456mhz.patch;patch=1 \
-                                     file://patch_hawk.diff;patch=1"
+                                    "
 
-do_configure_prepend_hawkboard() {
-	sed -i s:2157:2495:g ${S}/arch/arm/tools/mach-types
-}
+SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
+                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch;patch=1"
