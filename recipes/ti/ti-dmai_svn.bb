@@ -1,4 +1,5 @@
 DESCRIPTION = "DMAI for TI ARM/DSP processors"
+SECTION = "multimedia"
 
 require ti-paths.inc
 require ti-staging.inc

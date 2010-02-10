@@ -1,4 +1,5 @@
 DESCRIPTION = "User space DMA module for DM365"
+SECTION = "devel"
 
 BASE_SRC_URI = "http://install.source.dir.local"
 

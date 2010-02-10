@@ -1,4 +1,5 @@
 DESCRIPTION = "User space DMA module for DM355"
+SECTION = "devel"
 
 require ti-codecs-dm355.inc
 inherit module

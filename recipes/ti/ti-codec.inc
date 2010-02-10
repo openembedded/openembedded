@@ -1,4 +1,5 @@
 DESCRIPTION = "TI Codec for ${MACHINE_ARCH}"
+SECTION = "multimedia"
 
 require ti-paths.inc
 

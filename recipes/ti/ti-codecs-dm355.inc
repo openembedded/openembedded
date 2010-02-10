@@ -1,4 +1,5 @@
 DESCRIPTION = "DM355 Codecs"
+SECTION = "multimedia"
 
 BASE_SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/codecs"
 SRC_URI = "${BASE_SRC_URI}/dm355_codecs_setuplinux_${PV}.bin \

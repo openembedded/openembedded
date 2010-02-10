@@ -1,5 +1,6 @@
 DESCRIPTION = "TI EDMA3 Low Level Driver (LLD)"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/rtsc"
+SECTION = "devel"
 
 require ti-paths.inc
 require ti-staging.inc

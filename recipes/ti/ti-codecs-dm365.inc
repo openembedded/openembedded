@@ -1,4 +1,5 @@
 DESCRIPTION = "DM365 Codecs"
+SECTION = "multimedia"
 
 BASE_SRC_URI = "http://install.source.dir.local"
 SRC_URI	= "${BASE_SRC_URI}/dm365_codecs_${PV}.tar.gz"

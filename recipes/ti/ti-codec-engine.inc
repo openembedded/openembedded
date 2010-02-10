@@ -1,4 +1,5 @@
 DESCRIPTION = "Codec Engine for TI ARM/DSP processors"
+SECTION = "devel"
 
 require ti-paths.inc
 

@@ -1,4 +1,6 @@
 DESCRIPTION = "Gstreamer plugin for TI Davinci and OMAP processors"
+SECTION = "multimedia"
+
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
 
 SRCREV = "573"

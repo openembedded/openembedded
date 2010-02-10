@@ -1,5 +1,6 @@
 DESCRIPTION = "TI DSP/BIOS Utilities"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/Bios_Utils"
+SECTION = "devel"
 
 require ti-paths.inc
 require ti-staging.inc

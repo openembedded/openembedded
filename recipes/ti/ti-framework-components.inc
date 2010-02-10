@@ -1,5 +1,6 @@
 DESCRIPTION = "TI Framework Components"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/fc"
+SECTION = "devel"
 
 require ti-paths.inc
 require ti-staging.inc
