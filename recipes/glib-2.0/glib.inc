@@ -10,7 +10,7 @@ DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "gobject-2.0 gmodule-2.0 gthread-2.0 gio-2.0 glib-2.0-utils "
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
@@ -28,6 +28,10 @@ FILES_gthread-2.0_chinook-compat = ""
 FILES_gmodule-2.0_chinook-compat = ""
 FILES_gobject-2.0_chinook-compat = ""
 FILES_gio-2.0_chinook-compat = ""
+FILES_gthread-2.0_maemo5-compat = ""
+FILES_gmodule-2.0_maemo5-compat = ""
+FILES_gobject-2.0_maemo5-compat = ""
+FILES_gio-2.0_maemo5-compat = ""
 
 EXTRA_OECONF = "--disable-debug "
 
