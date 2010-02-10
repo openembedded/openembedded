@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r38"
+PR ="r39"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -24,6 +24,7 @@ file://i2c.patch;patch=1 \
 file://720MHz.patch;patch=1 \
 file://dss.patch;patch=1 \
 "
+SRC_URI_beagleboard += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 
 SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
 PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCREV}"
@@ -45,11 +46,13 @@ SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=
                  file://mmcinit.patch;patch=1 \
                  file://touchbook-config.patch;patch=1 \
 "
+SRC_URI_omap3-touchbook += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_omap3-touchbook = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
 PV_omap3-touchbook = "2009.05+${PR}+gitr${SRCREV}"
 
 
 SRC_URI_omap3evm = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git"
+SRC_URI_omap3evm += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
 
@@ -76,6 +79,7 @@ file://omap3evm/0016-Config-option-and-name-changed-to-omap3517_evm.patch;patch=
 PV_am3517-evm = "2009.03+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
+SRC_URI_omapzoom += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
 PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"
 
@@ -98,65 +102,79 @@ SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;
                  file://fw-env.patch;patch=1 \
                  file://dss2.patch;patch=1 \
 "
+SRC_URI_overo += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_overo = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_overo = "2009.03+${PR}+gitr${SRCREV}"
 
 # Davinci dm355-evm/dm365-evm/dm6446-evm - PSP.03.01.00.28 (Phase 3 build 28)
 
 SRC_URI_dm355-evm    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git"
+SRC_URI_dm355-evm   += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_dm355-evm     = "f8d047c84137ab331c0ee2c3e94c3f1ec4228298"
 PV_dm355-evm         = "2009.10+2009.11-rc1+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm365-evm    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git"
+SRC_URI_dm365-evm    += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_dm365-evm     = "f8d047c84137ab331c0ee2c3e94c3f1ec4228298"
 PV_dm365-evm         = "2009.10+2009.11-rc1+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm6446-evm   = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git"
+SRC_URI_dm6446-evm   += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_dm6446-evm    = "f8d047c84137ab331c0ee2c3e94c3f1ec4228298"
 PV_dm6446-evm        = "2009.10+2009.11-rc1+${PR}+gitr${SRCREV}"
 
 # Davinci dm6467-evm/dm6467-evm - PSP.03.02.00 (DM6467 Beta)
 
 SRC_URI_dm6467-evm   = "git://arago-project.org/git/people/hemant/u-boot-dm646x.git;protocol=git"
+SRC_URI_dm6467-evm   += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_dm6467-evm    = "b037106746e5b942d7ef06bfcd776a7cdfe32f68"
 PV_dm6467-evm        = "1.3.4+${PR}+gitr${SRCREV}"
 
 SRC_URI_dm6467t-evm  = "git://arago-project.org/git/people/hemant/u-boot-dm646x.git;protocol=git"
+SRC_URI_dm6467t-evm  += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_dm6467t-evm   = "b037106746e5b942d7ef06bfcd776a7cdfe32f68"
 PV_dm6467t-evm       = "1.3.4+${PR}+gitr${SRCREV}"
 
 # OMAPL da380-omapl137/da850-omapl138-evm/hawkboard - PSP 3.20.00.07 (Beta)
 
 SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRC_URI_da830-omap1137-evm += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_da830-omapl137-evm  = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
 PV_da830-omapl137-evm      = "2009.08+gitr${SRCREV}"
 
 SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRC_URI_da830-omap1138-evm += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_da850-omapl138-evm  = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
 PV_da850-omapl138-evm      = "2009.08+gitr${SRCREV}"
 
 SRC_URI_hawkboard          = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRC_URI_hawkboard          += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_hawkboard           = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
 PV_hawkboard               = "2009.08+gitr${SRCREV}"
 
 SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
                         file://leopardboard-support.patch;patch=1 \
 "
+SRC_URI_dm355-leopard += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_dm355-leopard = "86d5c98d3d97d631b1d3a5f5e6a17e87c99b42cf"
 PV_dm355-leopard = "2009.05+2009.06-rc2+gitr${SRCREV}"
 
 SRC_URI_neuros-osd2 = "git://github.com/neuros/u-boot.git;protocol=git;branch=neuros"
+SRC_URI_neuros-osd2 += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"
 
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git"
 SRCREV_sequoa = "cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093"
 
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git;tag=cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093 "
+SRC_URI_sequoia += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 
 SRC_URI_mini2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"
+SRC_URI_mini2440 += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_mini2440 = "3516c35fb777ca959e5cadf2156a792ca10e1cff"
 
 SRC_URI_micro2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"
+SRC_URI_micro2440 += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 SRCREV_micro2440 = "3516c35fb777ca959e5cadf2156a792ca10e1cff"
 
 SRC_URI_neuros-osd2 += "file://Makefile-fix.patch;patch=1"
@@ -176,7 +194,6 @@ SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=t
 SRCREV_sheevaplug = "119b9942da2e450d4e525fc004208dd7f7d062e0"
 
 S = "${WORKDIR}/git"
-
 
 do_configure_prepend_akita() {
         sed -i s:ROOT_FLASH_SIZE:${ROOT_FLASH_SIZE}:g ${S}/include/configs/akita.h
