@@ -2,7 +2,7 @@ inherit native
 
 PV = "7.7.999"
 PR = "0"
-PR_append = "+gitr${SRCREV}"
+PR_append = "+gitr${SRCPV}"
 
 DEPENDS = "makedepend-native"
 
