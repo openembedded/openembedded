@@ -72,6 +72,7 @@ SRC_URI_append_tx27 = " \
 	"
 
 SRC_URI_nokia900 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
-		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20094803.3+0m5.diff.gz;patch=1;name=nokia"
+		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20094803.3+0m5.diff.gz;patch=1 \
+		    file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.28/"
