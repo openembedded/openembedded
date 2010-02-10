@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r35"
+PR = "r36"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -31,7 +31,8 @@ RDEPENDS_${PN} += "\
 		mc \
 		mplayer \
 		navit \
-		omview \
+# omview depends on deprecated (now broken) epsilon
+#		omview \
 		orrery \
 		python-elementary \
 		pythm \
