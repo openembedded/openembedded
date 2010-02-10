@@ -1,21 +1,21 @@
-From 50c9919c9bc7d3e1db72dcbdd62d73efad409720 Mon Sep 17 00:00:00 2001
+From eb0614d6a8a879bd3ac69050b3f5b012ef562b9e Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 17 Nov 2009 23:45:29 +0100
-Subject: [PATCH 3/4] Work on Glamo-core for DRM
+Subject: [PATCH 4/9] Work on Glamo-core for DRM
 
 This adds modifications to the core of the Glamo driver to expose functionality
 to support DRM and KMS.
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
- drivers/mfd/glamo/glamo-core.c |   85 +++++++++++++++++++++++++++++++++++++---
- drivers/mfd/glamo/glamo-core.h |   45 ++++++++++++++++-----
- drivers/mfd/glamo/glamo-regs.h |   24 +++++++++++
- include/linux/mfd/glamo.h      |    7 +--
- 4 files changed, 140 insertions(+), 21 deletions(-)
+ drivers/mfd/glamo/glamo-core.c |   33 +++++++++++++++++++++++++++------
+ drivers/mfd/glamo/glamo-core.h |   35 +++++++++++++++++++++++++----------
+ drivers/mfd/glamo/glamo-regs.h |   24 ++++++++++++++++++++++++
+ include/linux/mfd/glamo.h      |    7 ++-----
+ 4 files changed, 78 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/mfd/glamo/glamo-core.c b/drivers/mfd/glamo/glamo-core.c
-index e0e3940..32aeff1 100644
+index 82a906a..a614d44 100644
 --- a/drivers/mfd/glamo/glamo-core.c
 +++ b/drivers/mfd/glamo/glamo-core.c
 @@ -221,10 +221,31 @@ static struct resource glamo_fb_resources[] = {
@@ -66,74 +66,8 @@ index e0e3940..32aeff1 100644
  		.flags	= IORESOURCE_MEM
  	}, {
  		.start	= GLAMO_IRQ_MMC,
-@@ -354,6 +375,24 @@ static void glamo_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
- sysfs
- */
- 
-+void glamo_clear_irq(struct glamo_core *glamo, unsigned int irq)
-+{
-+	/* set interrupt source */
-+	__reg_write(glamo, GLAMO_REG_IRQ_CLEAR, irq);
-+}
-+
-+
-+void glamo_enable_irq(struct glamo_core *glamo, unsigned int irq)
-+{
-+	u_int16_t tmp;
-+
-+	/* set bit in enable register */
-+	tmp = __reg_read(glamo, GLAMO_REG_IRQ_ENABLE);
-+	tmp |= irq;
-+	__reg_write(glamo, GLAMO_REG_IRQ_ENABLE, tmp);
-+}
-+
-+
- static ssize_t regs_write(struct device *dev, struct device_attribute *attr,
- 				const char *buf, size_t count)
- {
-@@ -579,6 +618,40 @@ int glamo_engine_disable(struct glamo_core *glamo, enum glamo_engine engine)
- }
- EXPORT_SYMBOL_GPL(glamo_engine_disable);
- 
-+
-+static const u_int16_t engine_clock_regs[__NUM_GLAMO_ENGINES] = {
-+	[GLAMO_ENGINE_LCD]	= GLAMO_REG_CLOCK_LCD,
-+	[GLAMO_ENGINE_MMC]	= GLAMO_REG_CLOCK_MMC,
-+	[GLAMO_ENGINE_ISP]	= GLAMO_REG_CLOCK_ISP,
-+	[GLAMO_ENGINE_JPEG]	= GLAMO_REG_CLOCK_JPEG,
-+	[GLAMO_ENGINE_3D]	= GLAMO_REG_CLOCK_3D,
-+	[GLAMO_ENGINE_2D]	= GLAMO_REG_CLOCK_2D,
-+	[GLAMO_ENGINE_MPEG_ENC] = GLAMO_REG_CLOCK_MPEG,
-+	[GLAMO_ENGINE_MPEG_DEC] = GLAMO_REG_CLOCK_MPEG,
-+};
-+
-+void glamo_engine_clkreg_set(struct glamo_core *glamo,
-+			     enum glamo_engine engine,
-+			     u_int16_t mask, u_int16_t val)
-+{
-+	reg_set_bit_mask(glamo, engine_clock_regs[engine], mask, val);
-+}
-+EXPORT_SYMBOL_GPL(glamo_engine_clkreg_set);
-+
-+u_int16_t glamo_engine_clkreg_get(struct glamo_core *glamo,
-+				  enum glamo_engine engine)
-+{
-+	u_int16_t val;
-+
-+	spin_lock(&glamo->lock);
-+	val = __reg_read(glamo, engine_clock_regs[engine]);
-+	spin_unlock(&glamo->lock);
-+
-+	return val;
-+}
-+EXPORT_SYMBOL_GPL(glamo_engine_clkreg_get);
-+
-+
- int __glamo_engine_suspend(struct glamo_core *glamo, enum glamo_engine engine)
- {
- 	int i;
 diff --git a/drivers/mfd/glamo/glamo-core.h b/drivers/mfd/glamo/glamo-core.h
-index e5b1a35..ea6caa3 100644
+index 17017b0..d21bdc4 100644
 --- a/drivers/mfd/glamo/glamo-core.h
 +++ b/drivers/mfd/glamo/glamo-core.h
 @@ -3,18 +3,33 @@
@@ -180,21 +114,6 @@ index e5b1a35..ea6caa3 100644
  
  enum glamo_pll {
      GLAMO_PLL1,
-@@ -57,4 +72,14 @@ void glamo_reg_read_batch(struct glamo_core *glamo, uint16_t reg,
- 				uint16_t count, uint16_t *values);
- void glamo_reg_write_batch(struct glamo_core *glamo, uint16_t reg,
- 				uint16_t count, uint16_t *values);
-+void glamo_engine_clkreg_set(struct glamo_core *glamo,
-+			     enum glamo_engine engine,
-+			     u_int16_t mask, u_int16_t val);
-+
-+extern void glamo_clear_irq(struct glamo_core *glamo, unsigned int irq);
-+extern void glamo_enable_irq(struct glamo_core *glamo, unsigned int irq);
-+
-+u_int16_t glamo_engine_clkreg_get(struct glamo_core *glamo,
-+				  enum glamo_engine engine);
-+
- #endif /* __GLAMO_CORE_H */
 diff --git a/drivers/mfd/glamo/glamo-regs.h b/drivers/mfd/glamo/glamo-regs.h
 index 59848e1..8b2fd47 100644
 --- a/drivers/mfd/glamo/glamo-regs.h
@@ -248,5 +167,5 @@ index 529d4f0..ea91a06 100644
 +
  #endif
 -- 
-1.6.5.3
+1.6.6.1
 

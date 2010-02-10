@@ -7,7 +7,7 @@ KERNEL_RELEASE="2.6.32.8"
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \

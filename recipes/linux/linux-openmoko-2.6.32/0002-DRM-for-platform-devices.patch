@@ -1,7 +1,7 @@
-From da270cf61e67d912b38e314719511efc4c2ea085 Mon Sep 17 00:00:00 2001
+From 660570997a5c998aaecc94798b6ea8d60b0da053 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 20 Oct 2009 15:52:30 +0200
-Subject: [PATCH 1/4] DRM for platform devices
+Subject: [PATCH 2/9] DRM for platform devices
 
 This modifies the DRM core in a small number of places to allow platform
 devices to be used for direct rendering, alongside PCI devices.
@@ -19,7 +19,7 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  8 files changed, 224 insertions(+), 47 deletions(-)
 
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 39b393d..cef3d2c 100644
+index 96eddd1..8b050ad 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
 @@ -6,7 +6,7 @@
@@ -32,7 +32,7 @@ index 39b393d..cef3d2c 100644
  	select I2C_ALGOBIT
  	help
 diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
-index 6246e3f..b9f15bf 100644
+index 8417cc4..5a3b203 100644
 --- a/drivers/gpu/drm/drm_bufs.c
 +++ b/drivers/gpu/drm/drm_bufs.c
 @@ -188,7 +188,7 @@ static int drm_addmap_core(struct drm_device * dev, resource_size_t offset,
@@ -45,7 +45,7 @@ index 6246e3f..b9f15bf 100644
  		    map->offset < virt_to_phys(high_memory)) {
  			kfree(map);
 diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-index b39d7bf..a7861e8 100644
+index a75ca63..26005d9 100644
 --- a/drivers/gpu/drm/drm_drv.c
 +++ b/drivers/gpu/drm/drm_drv.c
 @@ -247,6 +247,7 @@ int drm_lastclose(struct drm_device * dev)
@@ -285,7 +285,7 @@ index 9b9ff46..133ef29 100644
  	return 0;
  }
 diff --git a/drivers/gpu/drm/drm_stub.c b/drivers/gpu/drm/drm_stub.c
-index 55bb8a8..a7069ad 100644
+index 55bb8a8..5e3d65a 100644
 --- a/drivers/gpu/drm/drm_stub.c
 +++ b/drivers/gpu/drm/drm_stub.c
 @@ -230,8 +230,10 @@ static int drm_fill_in_dev(struct drm_device * dev, struct pci_dev *pdev,
@@ -325,7 +325,7 @@ index 55bb8a8..a7069ad 100644
 +	int ret;
 +	DRM_DEBUG("\n");
 +
-+	dev = kmalloc(sizeof(*dev), GFP_KERNEL);
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 +	if (!dev)
 +		return -ENOMEM;
 +	dev->dev_private = priv;
@@ -379,10 +379,10 @@ index 55bb8a8..a7069ad 100644
   *
   * \param sec_minor - structure to be released
 diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
-index f7a615b..fea2b71 100644
+index 7e42b7e..c08e7b7 100644
 --- a/drivers/gpu/drm/drm_sysfs.c
 +++ b/drivers/gpu/drm/drm_sysfs.c
-@@ -482,7 +482,11 @@ int drm_sysfs_device_add(struct drm_minor *minor)
+@@ -486,7 +486,11 @@ int drm_sysfs_device_add(struct drm_minor *minor)
  	int err;
  	char *minor_str;
  
@@ -396,7 +396,7 @@ index f7a615b..fea2b71 100644
  	minor->kdev.release = drm_sysfs_device_release;
  	minor->kdev.devt = minor->device;
 diff --git a/include/drm/drmP.h b/include/drm/drmP.h
-index 45b67d9..66253f9 100644
+index 7ad3faa..1d9a229 100644
 --- a/include/drm/drmP.h
 +++ b/include/drm/drmP.h
 @@ -55,6 +55,7 @@
@@ -407,7 +407,7 @@ index 45b67d9..66253f9 100644
  #if defined(__alpha__) || defined(__powerpc__)
  #include <asm/pgtable.h>	/* For pte_wrprotect */
  #endif
-@@ -113,6 +114,7 @@ extern void drm_ut_debug_printk(unsigned int request_level,
+@@ -143,6 +144,7 @@ extern void drm_ut_debug_printk(unsigned int request_level,
  #define DRIVER_IRQ_VBL2    0x800
  #define DRIVER_GEM         0x1000
  #define DRIVER_MODESET     0x2000
@@ -415,7 +415,7 @@ index 45b67d9..66253f9 100644
  
  /***********************************************************************/
  /** \name Begin the DRM... */
-@@ -981,6 +983,7 @@ struct drm_device {
+@@ -1008,6 +1010,7 @@ struct drm_device {
  	wait_queue_head_t buf_writers;	/**< Processes waiting to ctx switch */
  
  	struct drm_agp_head *agp;	/**< AGP data */
@@ -423,7 +423,7 @@ index 45b67d9..66253f9 100644
  
  	struct pci_dev *pdev;		/**< PCI device structure */
  	int pci_vendor;			/**< PCI vendor id */
-@@ -1091,12 +1094,20 @@ static inline int drm_mtrr_del(int handle, unsigned long offset,
+@@ -1118,12 +1121,20 @@ static inline int drm_mtrr_del(int handle, unsigned long offset,
  }
  #endif
  
@@ -444,7 +444,7 @@ index 45b67d9..66253f9 100644
  extern void drm_exit(struct drm_driver *driver);
  extern int drm_ioctl(struct inode *inode, struct file *filp,
  		     unsigned int cmd, unsigned long arg);
-@@ -1314,6 +1325,8 @@ extern int drm_dropmaster_ioctl(struct drm_device *dev, void *data,
+@@ -1342,6 +1353,8 @@ extern int drm_dropmaster_ioctl(struct drm_device *dev, void *data,
  				struct drm_file *file_priv);
  struct drm_master *drm_master_create(struct drm_minor *minor);
  extern struct drm_master *drm_master_get(struct drm_master *master);
@@ -454,5 +454,5 @@ index 45b67d9..66253f9 100644
  extern int drm_get_dev(struct pci_dev *pdev, const struct pci_device_id *ent,
  		       struct drm_driver *driver);
 -- 
-1.6.5.3
+1.6.6.1
 
