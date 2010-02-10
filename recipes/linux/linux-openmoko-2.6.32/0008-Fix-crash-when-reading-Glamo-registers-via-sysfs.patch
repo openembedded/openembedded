@@ -1,0 +1,38 @@
+From f6debba05c9f6d0337324dc0eaa8e892d2d3142b Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Thu, 4 Feb 2010 00:07:25 +0100
+Subject: [PATCH 8/9] Fix crash when reading Glamo registers via sysfs
+
+glamo-core didn't ioremap() some areas, so don't try to read them.
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ drivers/mfd/glamo/glamo-core.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mfd/glamo/glamo-core.c b/drivers/mfd/glamo/glamo-core.c
+index a614d44..faaf269 100644
+--- a/drivers/mfd/glamo/glamo-core.c
++++ b/drivers/mfd/glamo/glamo-core.c
+@@ -90,14 +90,14 @@ static const struct reg_range reg_range[] = {
+ /*	{ 0x0500, 0x300,	"ISP",		0 }, */
+ /*	{ 0x0800, 0x400,	"JPEG",		0 }, */
+ /*	{ 0x0c00, 0xcc,		"MPEG",		0 }, */
+-	{ 0x1100, 0xb2,		"LCD 1",	1 },
+-	{ 0x1200, 0x64,		"LCD 2",	1 },
+-	{ 0x1400, 0x42,		"MMC",		1 },
++	{ 0x1100, 0xb2,		"LCD 1",	0 },
++	{ 0x1200, 0x64,		"LCD 2",	0 },
++	{ 0x1400, 0x42,		"MMC",		0 },
+ /*	{ 0x1500, 0x080,	"MPU 0",	0 },
+ 	{ 0x1580, 0x080,	"MPU 1",	0 },
+ 	{ 0x1600, 0x080,	"Cmd Queue",	0 },
+ 	{ 0x1680, 0x080,	"RISC CPU",	0 },*/
+-	{ 0x1700, 0x400,	"2D Unit",	1 },
++	{ 0x1700, 0x400,	"2D Unit",	0 },
+ /*	{ 0x1b00, 0x900,	"3D Unit",	0 }, */
+ };
+ 
+-- 
+1.6.6.1
+

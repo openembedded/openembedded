@@ -1,31 +1,30 @@
-From 01435b6f8fba2031e6941756a6a4e42be553f4a0 Mon Sep 17 00:00:00 2001
+From eff70b6d14cc372944bbeda0dd0afe8599327f96 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 20 Oct 2009 16:14:55 +0200
-Subject: [PATCH 2/4] Glamo DRM and KMS driver
+Subject: [PATCH 3/9] Glamo DRM and KMS driver
 
 This adds the Glamo DRM and KMS driver, but not the modifications needed
 elsewhere to support it.
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
- drivers/gpu/drm/drm_stub.c            |    2 +-
  drivers/mfd/glamo/Kconfig             |   15 +
  drivers/mfd/glamo/Makefile            |    5 +-
  drivers/mfd/glamo/glamo-buffer.c      |  372 ++++++++++++++
  drivers/mfd/glamo/glamo-buffer.h      |   60 +++
  drivers/mfd/glamo/glamo-cmdq.c        |  528 ++++++++++++++++++++
  drivers/mfd/glamo/glamo-cmdq.h        |   49 ++
- drivers/mfd/glamo/glamo-display.c     |  875 +++++++++++++++++++++++++++++++++
+ drivers/mfd/glamo/glamo-display.c     |  869 +++++++++++++++++++++++++++++++++
  drivers/mfd/glamo/glamo-display.h     |   39 ++
- drivers/mfd/glamo/glamo-drm-drv.c     |  453 +++++++++++++++++
+ drivers/mfd/glamo/glamo-drm-drv.c     |  444 +++++++++++++++++
  drivers/mfd/glamo/glamo-drm-private.h |  156 ++++++
- drivers/mfd/glamo/glamo-fence.c       |  329 +++++++++++++
- drivers/mfd/glamo/glamo-fence.h       |   36 ++
+ drivers/mfd/glamo/glamo-fence.c       |  330 +++++++++++++
+ drivers/mfd/glamo/glamo-fence.h       |   34 ++
  drivers/mfd/glamo/glamo-kms-fb.c      |  540 ++++++++++++++++++++
  drivers/mfd/glamo/glamo-kms-fb.h      |   41 ++
  include/drm/Kbuild                    |    1 +
  include/drm/glamo_drm.h               |  153 ++++++
- 17 files changed, 3652 insertions(+), 2 deletions(-)
+ 16 files changed, 3635 insertions(+), 1 deletions(-)
  create mode 100644 drivers/mfd/glamo/glamo-buffer.c
  create mode 100644 drivers/mfd/glamo/glamo-buffer.h
  create mode 100644 drivers/mfd/glamo/glamo-cmdq.c
@@ -40,24 +39,11 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  create mode 100644 drivers/mfd/glamo/glamo-kms-fb.h
  create mode 100644 include/drm/glamo_drm.h
 
-diff --git a/drivers/gpu/drm/drm_stub.c b/drivers/gpu/drm/drm_stub.c
-index a7069ad..5e3d65a 100644
---- a/drivers/gpu/drm/drm_stub.c
-+++ b/drivers/gpu/drm/drm_stub.c
-@@ -471,7 +471,7 @@ int drm_get_platform_dev(struct platform_device *pdev,
- 	int ret;
- 	DRM_DEBUG("\n");
- 
--	dev = kmalloc(sizeof(*dev), GFP_KERNEL);
-+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
- 	if (!dev)
- 		return -ENOMEM;
- 	dev->dev_private = priv;
 diff --git a/drivers/mfd/glamo/Kconfig b/drivers/mfd/glamo/Kconfig
-index 8c93bcb..375e5db 100644
+index 3aa4831..214c70e 100644
 --- a/drivers/mfd/glamo/Kconfig
 +++ b/drivers/mfd/glamo/Kconfig
-@@ -39,3 +39,18 @@ config MFD_GLAMO_MCI
+@@ -40,3 +40,18 @@ config MFD_GLAMO_MCI
  	  neo1973 GTA-02.
  
  	  If unsure, say N.
@@ -1130,10 +1116,10 @@ index 0000000..510d195
 +#endif /* __GLAMO_CMDQ_H */
 diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
 new file mode 100644
-index 0000000..93aa917
+index 0000000..34a665a
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-display.c
-@@ -0,0 +1,875 @@
+@@ -0,0 +1,869 @@
 +/*
 + * SMedia Glamo 336x/337x display
 + *
@@ -1967,12 +1953,6 @@ index 0000000..93aa917
 +	glamo_run_lcd_script(gdrm, lcd_init_script,
 +	                           ARRAY_SIZE(lcd_init_script));
 +
-+	/* Enable pixel clock */
-+	glamo_engine_clkreg_set(gdrm->glamo_core,
-+	                        GLAMO_ENGINE_LCD,
-+	                        GLAMO_CLOCK_LCD_EN_DCLK,
-+	                        GLAMO_CLOCK_LCD_EN_DCLK);
-+
 +	/* Restore timings */
 +	glamo_lcd_cmd_mode(gdrm, 1);
 +	glamo_engine_reclock(gdrm->glamo_core, GLAMO_ENGINE_LCD,
@@ -2056,10 +2036,10 @@ index 0000000..d6f21bc
 +#endif /* __GLAMO_DISPLAY_H */
 diff --git a/drivers/mfd/glamo/glamo-drm-drv.c b/drivers/mfd/glamo/glamo-drm-drv.c
 new file mode 100644
-index 0000000..81215f4
+index 0000000..f30097e
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-drm-drv.c
-@@ -0,0 +1,453 @@
+@@ -0,0 +1,444 @@
 +/* Smedia Glamo 336x/337x Graphics Driver
 + *
 + * Copyright (C) 2009 Openmoko, Inc. Jorge Luis Zapata <turran@openmoko.com>
@@ -2379,12 +2359,6 @@ index 0000000..81215f4
 +
 +	/* Hook up IRQ handle for fence processing */
 +	gdrm->twod_irq = platform_get_irq_byname(pdev, "glamo-2d-irq");
-+	rc = request_irq(gdrm->twod_irq, glamo_fence_irq_handler,
-+	                 IRQF_SHARED, pdev->name, gdrm);
-+	if ( rc ) {
-+		dev_err(&pdev->dev, "failed to register irq.\n");
-+		goto out_unmap_2d;
-+	}
 +
 +	gdrm->vram_size = GLAMO_FB_SIZE;
 +	printk(KERN_INFO "[glamo-drm] %lli bytes of VRAM\n",
@@ -2395,8 +2369,6 @@ index 0000000..81215f4
 +
 +	return 0;
 +
-+out_unmap_2d:
-+	iounmap(gdrm->twod_base);
 +out_release_2d:
 +	release_mem_region(gdrm->twod_regs->start,
 +	                   resource_size(gdrm->twod_regs));
@@ -2445,7 +2417,6 @@ index 0000000..81215f4
 +	release_mem_region(gdrm->cmdq->start, resource_size(gdrm->cmdq));
 +
 +	/* Release 2D engine  */
-+	free_irq(gdrm->twod_irq, gdrm);
 +	iounmap(gdrm->twod_base);
 +	release_mem_region(gdrm->twod_regs->start,
 +	                   resource_size(gdrm->twod_regs));
@@ -2677,10 +2648,10 @@ index 0000000..7949a2e
 +#endif /* __GLAMO_DRMPRIV_H */
 diff --git a/drivers/mfd/glamo/glamo-fence.c b/drivers/mfd/glamo/glamo-fence.c
 new file mode 100644
-index 0000000..ab77241
+index 0000000..9119675
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-fence.c
-@@ -0,0 +1,329 @@
+@@ -0,0 +1,330 @@
 +/*
 + * SMedia Glamo 336x/337x fence objects
 + *
@@ -2781,7 +2752,7 @@ index 0000000..ab77241
 +
 +static void glamo_fence_enable(struct glamodrm_handle *gdrm)
 +{
-+	glamo_enable_irq(gdrm->glamo_core, GLAMO_IRQ_2D);
++	enable_irq( GLAMO_IRQ_2D);
 +}
 +
 +
@@ -2833,18 +2804,11 @@ index 0000000..ab77241
 +}
 +
 +
-+irqreturn_t glamo_fence_irq_handler(unsigned int irq, void *data)
++static irqreturn_t glamo_fence_irq_handler(int irq, void *data)
 +{
 +	struct glamodrm_handle *gdrm = data;
-+
-+	if (!gdrm) {
-+		printk(KERN_ERR "[glamo-drm] 2D IRQ called with no data\n");
-+		return IRQ_NONE;
-+	}
-+	glamo_clear_irq(gdrm->glamo_core, GLAMO_IRQ_2D);
-+
++	if (!gdrm) return IRQ_NONE;
 +	tasklet_schedule(&gdrm->fence_tl);
-+
 +	return IRQ_HANDLED;
 +}
 +
@@ -2982,10 +2946,10 @@ index 0000000..ab77241
 +void glamo_fence_init(struct glamodrm_handle *gdrm)
 +{
 +	unsigned long irq_flags;
++	int r;
 +
 +	if ( gdrm->twod_irq == 0 ) {
-+		printk(KERN_ERR "[glamo-drm] Attempted to initialise fence"
-+		                " system before 2D IRQ registered\n");
++		printk(KERN_ERR "[glamo-drm] Don't know which IRQ to use!\n");
 +		return;
 +	}
 +
@@ -3001,21 +2965,29 @@ index 0000000..ab77241
 +
 +	tasklet_init(&gdrm->fence_tl, glamo_fence_tl, (unsigned long)gdrm);
 +
++	r = request_irq(gdrm->twod_irq, glamo_fence_irq_handler,
++	                IRQF_SHARED, "glamo-fence", gdrm);
++	if ( r ) {
++		printk(KERN_ERR "[glamo-drm] Failed to register irq.\n");
++		return;
++	}
++
 +	glamo_fence_enable(gdrm);
 +}
 +
 +
 +void glamo_fence_shutdown(struct glamodrm_handle *gdrm)
 +{
++	free_irq(gdrm->twod_irq, gdrm);
 +	wake_up_all(&gdrm->fence_queue);
 +	tasklet_kill(&gdrm->fence_tl);
 +}
 diff --git a/drivers/mfd/glamo/glamo-fence.h b/drivers/mfd/glamo/glamo-fence.h
 new file mode 100644
-index 0000000..948fae3
+index 0000000..deda995
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-fence.h
-@@ -0,0 +1,36 @@
+@@ -0,0 +1,34 @@
 +/*
 + * SMedia Glamo 336x/337x fence objects
 + *
@@ -3042,8 +3014,6 @@ index 0000000..948fae3
 +#include <drm/drmP.h>
 +
 +#include "glamo-drm-private.h"
-+
-+extern void glamo_fence_irq_handler(unsigned int irq, struct irq_desc *desc);
 +
 +extern void glamo_fence_init(struct glamodrm_handle *gdrm);
 +extern void glamo_fence_shutdown(struct glamodrm_handle *gdrm);
@@ -3814,5 +3784,5 @@ index 0000000..4c194dc
 +
 +#endif
 -- 
-1.6.5.3
+1.6.6.1
 
