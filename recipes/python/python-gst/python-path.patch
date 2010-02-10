@@ -2,7 +2,7 @@ Index: gst-python-0.10.10/acinclude.m4
 ===================================================================
 --- gst-python-0.10.10.orig/acinclude.m4
 +++ gst-python-0.10.10/acinclude.m4
-@@ -43,16 +43,20 @@ AC_DEFUN([AM_CHECK_PYTHON_HEADERS],
+@@ -43,16 +43,21 @@ AC_DEFUN([AM_CHECK_PYTHON_HEADERS],
  [AC_REQUIRE([AM_PATH_PYTHON])
  AC_MSG_CHECKING(for headers required to compile python extensions)
  dnl deduce PYTHON_INCLUDES
@@ -15,6 +15,7 @@ Index: gst-python-0.10.10/acinclude.m4
 +       [  --with-python-includes=DIR  path to Python includes], py_exec_prefix=$withval)
 +if test x$py_exec_prefix != x; then
 + PYTHON_INCLUDES="-I${py_exec_prefix}/include/python${PYTHON_VERSION}"
++ py_prefix=`$PYTHON -c "import sys; print sys.prefix"`
  else
 -  PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
 -  if test "$py_prefix" != "$py_exec_prefix"; then
@@ -23,7 +24,7 @@ Index: gst-python-0.10.10/acinclude.m4
 + py_prefix=`$PYTHON -c "import sys; print sys.prefix"`
 + py_exec_prefix=`$PYTHON -c "import sys; print sys.exec_prefix"`
 + PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
-+if test "$py_prefix" != "$py_exec_prefix"; then
++ if test "$py_prefix" != "$py_exec_prefix"; then
 +   PYTHON_INCLUDES="$PYTHON_INCLUDES -I${py_exec_prefix}/include/python${PYTHON_VERSION}"
 + fi
  fi
