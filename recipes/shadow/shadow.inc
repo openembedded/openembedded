@@ -11,7 +11,7 @@ LICENSE = "BSD"
 SECTION = "base"
 DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
-INC_PR = "r9"
+INC_PR = "r10"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \
@@ -89,6 +89,11 @@ do_install_append() {
 pkg_postinst_${PN} () {
     update-alternatives --install ${bindir}/passwd passwd passwd.${PN} 100
     update-alternatives --install ${sbindir}/chpasswd chpasswd chpasswd.${PN} 100
+    if [ "x$D" != "x" ]; then
+        exit 1
+    fi  
+	pwconv
+	grpconv
 }
 
 pkg_prerm_${PN} () {

@@ -5,15 +5,16 @@ DEPENDS += "bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
             libxdmcp xf86bigfontproto kbproto inputproto xproto-native"
 PROVIDES = "virtual/libx11"
 PE = "1"
-PR = "r6"
+PR = "r7"
 
 XORG_PN = "libX11"
 
 SRC_URI += "file://x11_disable_makekeys.patch;patch=1 \
             file://dolt-fix.patch;patch=1 \
-            file://keysymdef_include.patch;patch=1 \
+            ${@['file://keysymdef_include.patch;patch=1', ''][(bb.data.inherits_class('native', d))]} \
 "
 
+# --with-keysymdef has intentionally no effect in native build without without keysymdef_include.patch
 EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
 
 do_compile() {
