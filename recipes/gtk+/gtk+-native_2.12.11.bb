@@ -3,12 +3,12 @@ require gtk+_2.12.11.bb
 
 inherit native
 
-DEPENDS += "atk-native pango-native cairo-native"
+DEPENDS += "atk-native pango-native cairo-native libx11-native libxext-native libxrender-native"
 PROVIDES = "gtk+-native"
 
-EXTRA_OECONF += "--without-libtiff --disable-modules"
+EXTRA_OECONF += "--without-libtiff --disable-modules --disable-cups"
 
-PR = "r2"
+PR = "r3"
 
 do_install_append() {
 
