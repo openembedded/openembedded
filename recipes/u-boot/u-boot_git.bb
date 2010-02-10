@@ -79,8 +79,20 @@ SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
 PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"
 
-SRCREV_omapzoom2 = "3672cd5c3b53d219d33345eebad4e25ad5bf6d52"
-PV_omapzoom2 = "2009.05+${PR}+gitr${SRCREV}"
+SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git \
+                     file://0001-OMAP3-set-L1NEON-bit-in-aux-control-register.patch;patch=1"
+SRCREV_omapzoom2 = "78e778e0ea884306841c6499851a1e35177d81d0"
+PV_omapzoom2 = "1.1.4+${PR}+gitr${SRCREV}"
+PE_omapzoom2 = "1"
+
+do_compile_omapzoom2 () {
+        unset LDFLAGS
+        unset CFLAGS
+        unset CPPFLAGS
+        oe_runmake ${UBOOT_MACHINE}
+        oe_runmake all
+        oe_runmake tools
+}
 
 SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw-env.patch;patch=1 \
