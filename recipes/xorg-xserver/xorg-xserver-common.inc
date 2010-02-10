@@ -19,7 +19,7 @@ libxv"
 RECOMMENDS_${PN} = "hal libpciaccess"
 
 XORG_PN = "xorg-server"
-SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2;name=archive"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
