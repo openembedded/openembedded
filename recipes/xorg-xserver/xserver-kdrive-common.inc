@@ -72,7 +72,7 @@ FILES_${PKGN}-smi = "${bindir}/Xsmi"
 FILES_${PKGN}-vesa = "${bindir}/Xvesa"
 FILES_${PKGN}-via = "${bindir}/Xvia"
 
-SRC_URI ?= "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
+SRC_URI ?= "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2;name=archive \
 	${KDRIVE_COMMON_PATCHES}"
 KDRIVE_COMMON_PATCHES = " \
 	file://kmode.patch;patch=1 \

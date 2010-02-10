@@ -4,7 +4,7 @@ LICENSE = "MIT-X"
 
 XORG_PN = "${PN}"
 
-SRC_URI = "${XORG_MIRROR}/individual/util/${XORG_PN}-${PV}.tar.gz"
+SRC_URI = "${XORG_MIRROR}/individual/util/${XORG_PN}-${PV}.tar.gz;name=archive"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 

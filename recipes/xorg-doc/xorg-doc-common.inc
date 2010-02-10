@@ -4,7 +4,7 @@ SECTION = "x11/docs"
 LICENSE = "MIT-X"
 
 XORG_PN = "${PN}"
-SRC_URI = "${XORG_MIRROR}/individual/doc/${XORG_PN}-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/doc/${XORG_PN}-${PV}.tar.bz2;name=archive"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
