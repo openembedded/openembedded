@@ -1,0 +1,20 @@
+--- freetype-2.3.6/builds/unix/unix-cc.in	
++++ freetype-2.3.6/builds/unix/unix-cc.in	
+@@ -88,7 +88,7 @@ 
+ #
+ #
+ CCraw := $(CC)
+-CC    := $(LIBTOOL) --mode=compile $(CCraw)
++CC    := $(LIBTOOL) --tag=CC --mode=compile $(CCraw)
+ 
+ # Linker flags.
+ #
+@@ -105,7 +105,7 @@ 
+ 
+ # Library linking
+ #
+-LINK_LIBRARY = $(LIBTOOL) --mode=link $(CCraw) -o $@ $(OBJECTS_LIST) \
++LINK_LIBRARY = $(LIBTOOL) --tag=CC --mode=link $(CCraw) -o $@ $(OBJECTS_LIST) \
+                           -rpath $(libdir) -version-info $(version_info) \
+                           $(LDFLAGS) -no-undefined \
+                           # -export-symbols $(EXPORTS_LIST)
