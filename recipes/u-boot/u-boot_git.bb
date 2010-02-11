@@ -24,8 +24,6 @@ file://i2c.patch;patch=1 \
 file://720MHz.patch;patch=1 \
 file://dss.patch;patch=1 \
 "
-SRC_URI_beagleboard += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
-
 SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
 PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCREV}"
 
