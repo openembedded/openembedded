@@ -16,5 +16,7 @@ SRCREV_pn-opimd-utils = "${AUTOREV}"
 SRCREV_pn-shr-installer = "${AUTOREV}"
 SRCREV_pn-shr-wizard = "${AUTOREV}"
 
+# additional package (built only with task-shr-feed) with live development
 SRCREV_pn-ventura = "${AUTOREV}"
 SRCREV_pn-emtooth = "${AUTOREV}"
+SRCREV_pn-fltkspacetrader = "${AUTOREV}"
