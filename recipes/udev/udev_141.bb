@@ -115,6 +115,11 @@ do_install_append_bug() {
 	install -m 0644 ${WORKDIR}/bmi_eventpipe.sh ${D}${sysconfdir}/udev/scripts/bmi_eventpipe.sh
 }
 
+do_install_append_hipox() {
+	# we don't like persistent net if rules at hipox machine
+	rm -f ${D}${sysconfdir}/udev/rules.d/75-persistent-net-generator.rules
+}
+
 # Create the cache after checkroot has run
 pkg_postinst_${PN}_append() {
 update-rc.d $OPT udev-cache start 12 S .
