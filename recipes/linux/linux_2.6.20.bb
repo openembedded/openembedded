@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE_at91sam9261ek = "20"
 DEFAULT_PREFERENCE_at91sam9260ek = "20"
 DEFAULT_PREFERENCE_nhk15 = "1"
 
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.21.bz2;patch=1 \
@@ -37,7 +37,6 @@ SRC_URI_append_nhk15 = " \
 		file://linux-2.6.20_01_dec_2.patch;patch=1 \
 		file://patch_classdamp_pm_v_audio_codec_patch.patch;patch=1 \
 		file://patch_audiocodec_glitch.patch;patch=1 \
-                file://0001-kbuild-include-limits.h-in-sumversion.c-for-path_max.patch;patch=1 \
 		file://hrw-saa-fix.diff;patch=1 \
 		file://hrw-make-create-kconfig-executable.patch;patch=1 \
 "

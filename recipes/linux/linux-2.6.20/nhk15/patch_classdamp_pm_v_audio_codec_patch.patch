@@ -1,6 +1,12 @@
---- linux-2.6.20/sound/nomadik_stw5095.c	2008-11-26 18:36:04.000000000 +0530
-+++ ../new/linux-2.6.20/sound/nomadik_stw5095.c	2008-12-02 19:24:57.059205000 +0530
-@@ -1993,6 +1993,16 @@ t_codec_error nomadik_acodec_enable_audi
+---
+ sound/nomadik_stw5095.c |   42 +++++++++++++++++++++++++++++++-----------
+ 1 file changed, 31 insertions(+), 11 deletions(-)
+
+--- linux-2.6.20.orig/sound/nomadik_stw5095.c
++++ linux-2.6.20/sound/nomadik_stw5095.c
+@@ -1991,10 +1991,20 @@ t_codec_error nomadik_acodec_enable_audi
+ 			return CODEC_ERROR;
+ 		}
  
  	break;
  	case 0:
@@ -17,7 +23,11 @@
  		codec_error = nomadik_acodec_select_output(CODEC_DEST_LOUDSPEAKER,user);
  		if (CODEC_OK != codec_error) {
  			printk("AUDIOCODEC: ERROR: select output failed\n");
-@@ -2222,6 +2232,16 @@ t_codec_error nomadik_acodec_enable_voic
+ 			return CODEC_ERROR;
+ 		}
+@@ -2220,10 +2230,20 @@ t_codec_error nomadik_acodec_enable_voic
+ 			return CODEC_ERROR;
+ 		}
  
  	break;
  	case 0:
@@ -34,7 +44,11 @@
  		codec_error = nomadik_acodec_select_output(CODEC_DEST_LOUDSPEAKER,user);
  		if (CODEC_OK != codec_error) {
  			printk("AUDIOCODEC: ERROR: select output failed\n");
-@@ -2525,11 +2545,22 @@ t_codec_error nomadik_acodec_set_volume(
+ 			return CODEC_ERROR;
+ 		}
+@@ -2523,15 +2543,26 @@ t_codec_error nomadik_acodec_set_volume(
+ * will be achieved in power management
+ */
  
  t_codec_error nomadik_acodec_powerdown(__u8 flag)
  {
@@ -57,7 +71,11 @@
  
  	DEBUG(1, "leaving nomadik_acodec_powerdown() \n");
  	return (error_status);
-@@ -3345,17 +3376,6 @@ static void codec_callback1(void *user)
+ }
+ 
+@@ -3343,21 +3374,10 @@ static void codec_callback1(void *user)
+ }
+ /*initialize the 5095 codec's amplifier */
  void codec_hd_amp_init(t_acodec_user user)
  {
  	int err = 0;
@@ -75,3 +93,5 @@
  	/**/
  	err = STMPE2401_SetGpioAltFunction(STMPE0,EGPIO_PIN_7,STMPE2401_PRIMARY_FUNCTION);
  	if (err != STMPE2401_OK)
+                 printk("Couldn't set STMPE0 %d as  primary function\n",EGPIO_PIN_7);
+ 
