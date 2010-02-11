@@ -12,6 +12,6 @@
  	@echo "Generating $(TOPDIR)/arch/arm/mach-nomadik/Kconfig"
 +	@chmod 755 ./create_kconfig.pl
  	@./create_kconfig.pl $(TOPDIR)/arch/arm/mach-nomadik
- endif	
+ endif
  
  # end of Auto board configuration/dependency resolution

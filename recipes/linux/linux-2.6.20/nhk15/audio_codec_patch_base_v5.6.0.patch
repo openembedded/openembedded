@@ -1,7 +1,14 @@
-diff -Nauprw linux-2.6.20/drivers/media/nomadik_mm/saa/nomadik-saa.c ../new/linux-2.6.20/drivers/media/nomadik_mm/saa/nomadik-saa.c
---- linux-2.6.20/drivers/media/nomadik_mm/saa/nomadik-saa.c	2008-11-24 14:06:25.000000000 +0530
-+++ ../new/linux-2.6.20/drivers/media/nomadik_mm/saa/nomadik-saa.c	2008-11-26 18:37:16.000000000 +0530
-@@ -1292,12 +1292,14 @@ static int link_msp (struct instance_des
+---
+ drivers/media/nomadik_mm/saa/nomadik-saa.c |    4 +++-
+ sound/arm/nomadik_alsa.c                   |    4 ++++
+ sound/nomadik_stw5095.c                    |   17 +++++++++++++++++
+ 3 files changed, 24 insertions(+), 1 deletion(-)
+
+--- linux-2.6.20.orig/drivers/media/nomadik_mm/saa/nomadik-saa.c
++++ linux-2.6.20/drivers/media/nomadik_mm/saa/nomadik-saa.c
+@@ -1290,16 +1290,18 @@ static int link_msp (struct instance_des
+ 
+ 	}
  	else
  	{
  		/*Configure Output sink for audiocodec*/
@@ -17,15 +24,18 @@ diff -Nauprw linux-2.6.20/drivers/media/nomadik_mm/saa/nomadik-saa.c ../new/linu
  		down(&saa_desc->open_lock);
  		if(saa_desc->msp_out_flag != 0){
  			printk ("SAA_DRV ERROR : MSP OUT already used \n");
-diff -Nauprw linux-2.6.20/sound/arm/nomadik_alsa.c ../new/linux-2.6.20/sound/arm/nomadik_alsa.c
---- linux-2.6.20/sound/arm/nomadik_alsa.c	2008-11-24 14:06:29.000000000 +0530
-+++ ../new/linux-2.6.20/sound/arm/nomadik_alsa.c	2008-11-26 18:36:26.000000000 +0530
-@@ -568,10 +568,14 @@ static int snd_nomadik_alsa_pcm_open(snd
+ 			up(&saa_desc->open_lock);
+ 			return -EBUSY;
+--- linux-2.6.20.orig/sound/arm/nomadik_alsa.c
++++ linux-2.6.20/sound/arm/nomadik_alsa.c
+@@ -566,14 +566,18 @@ static int snd_nomadik_alsa_pcm_open(snd
+ 	/* Set the hardware configuration */
+ 	stream_id = substream->pstr->stream;
  	if (stream_id == SNDRV_PCM_STREAM_PLAYBACK) {
  		runtime->hw = snd_nomadik_playback_hw;
  		/* configure the output sink for the acodec */
 +		#if 0
-+		if(codec_conf.codec_output != chip->output_device){			
++		if(codec_conf.codec_output != chip->output_device){
  		if ((error = nomadik_acodec_select_output(chip->output_device, USER_ALSA))) {
  			printk("ALSA: ERROR: select output failed\n");
  			return error;
@@ -35,10 +45,13 @@ diff -Nauprw linux-2.6.20/sound/arm/nomadik_alsa.c ../new/linux-2.6.20/sound/arm
  	} else {
  		runtime->hw = snd_nomadik_capture_hw;
  		/* configure the input source for the acodec */
-diff -Nauprw linux-2.6.20/sound/nomadik_stw5095.c ../new/linux-2.6.20/sound/nomadik_stw5095.c
---- linux-2.6.20/sound/nomadik_stw5095.c	2008-11-24 14:06:29.000000000 +0530
-+++ ../new/linux-2.6.20/sound/nomadik_stw5095.c	2008-11-26 18:36:04.000000000 +0530
-@@ -3237,6 +3237,7 @@ t_codec_error nomadik_acodec_setuser(t_a
+ 		if ((error = nomadik_acodec_select_input(chip->input_device, USER_ALSA))) {
+ 			printk("ALSA: ERROR: select input failed\n");
+--- linux-2.6.20.orig/sound/nomadik_stw5095.c
++++ linux-2.6.20/sound/nomadik_stw5095.c
+@@ -3235,19 +3235,32 @@ t_codec_error nomadik_acodec_setuser(t_a
+  * Unset the current user for acodec.
+  */
  
  t_codec_error nomadik_acodec_unsetuser(t_acodec_user user)
  {
@@ -46,11 +59,13 @@ diff -Nauprw linux-2.6.20/sound/nomadik_stw5095.c ../new/linux-2.6.20/sound/noma
  	t_codec_error codec_error = CODEC_OK;
  
  	if(g_codec_system_context.cur_user != user){
-@@ -3246,6 +3247,18 @@ t_codec_error nomadik_acodec_unsetuser(t
+ 		printk
+ 			("ERROR : Trying to free audiocodec already in use by other user %d\n", g_codec_system_context.cur_user);
+ 		return CODEC_ERROR;
  	}
  	else {
  		g_codec_system_context.cur_user = NO_USER;
-+		
++
 +		err = STMPE2401_Install_Callback(STMPE0, EGPIO_PIN_7 ,NULL,(void*)user);
 +		if (err != STMPE2401_OK)
 +		{
@@ -65,7 +80,11 @@ diff -Nauprw linux-2.6.20/sound/nomadik_stw5095.c ../new/linux-2.6.20/sound/noma
                  nomadik_acodec_powerdown(0);
          }
  
-@@ -3282,6 +3295,10 @@ static void codec_callback1(void *user)
+ 	return (codec_error);
+ }
+@@ -3280,10 +3293,14 @@ static void codec_callback1(void *user)
+ {
+ 	int err,codec_error;
  	uint8 byte_value;
  	t_acodec_user t;
  	t = (t_acodec_user) user;
@@ -76,3 +95,5 @@ diff -Nauprw linux-2.6.20/sound/nomadik_stw5095.c ../new/linux-2.6.20/sound/noma
  	err = STMPE2401_GetGpioVal(STMPE0,EGPIO_PIN_7,&byte_value);
  	switch(byte_value)	{
  
+ 	case 0:
+ 		err = STMPE2401_SetGpioAltFunction(STMPE0,EGPIO_PIN_12,STMPE2401_PRIMARY_FUNCTION);

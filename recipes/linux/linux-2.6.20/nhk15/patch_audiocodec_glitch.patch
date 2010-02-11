@@ -1,6 +1,12 @@
---- linux-2.6.20/sound/nomadik_stw5095.c	2008-12-02 19:24:57.059205000 +0530
-+++ ../new/linux-2.6.20/sound/nomadik_stw5095.c	2008-12-04 10:41:34.474339000 +0530
-@@ -2577,13 +2577,65 @@ t_codec_error nomadik_acodec_powerup(voi
+---
+ sound/nomadik_stw5095.c |   54 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 53 insertions(+), 1 deletion(-)
+
+--- linux-2.6.20.orig/sound/nomadik_stw5095.c
++++ linux-2.6.20/sound/nomadik_stw5095.c
+@@ -2575,17 +2575,69 @@ t_codec_error nomadik_acodec_powerdown(_
+ 
+ t_codec_error nomadik_acodec_powerup(void)
  {
  	t_codec_error error_status = CODEC_OK;
  
@@ -16,7 +22,7 @@
 +	error_status = codec_stw5095_update_cr0();
 +	if (CODEC_OK != error_status)
 +		return (error_status);
-+	
++
 +	//CR2 conf
 +	codec_stw5095_i2cwrite(CODEC_STW5095_CR2, 0x0);
 +	//CR19 conf
@@ -34,7 +40,7 @@
 +	//CR0 conf
  	g_codec_system_context.codec_configuration.cr0_powerup =
  	    CODEC_STW5095_CR0_POWERUP_ON;
-+	
++
  	error_status = codec_stw5095_update_cr0();
 +	if (CODEC_OK != error_status)
 +		return (error_status);
@@ -67,3 +73,5 @@
  	return (error_status);
  }
  
+ /**
+ * nomadik_acodec_enable_bypassmode
