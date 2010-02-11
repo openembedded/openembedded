@@ -6,7 +6,7 @@ PR = "r5"
 
 inherit efl
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http \
+SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${SRCNAME};proto=http \
 file://mkinstalldirs"
 
 RRECOMMENDS_${PN} = "\
