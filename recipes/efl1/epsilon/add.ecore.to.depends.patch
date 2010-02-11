@@ -1,0 +1,20 @@
+diff -uNr epsilon.orig/configure.ac epsilon/configure.ac
+--- epsilon.orig/configure.ac	2010-02-11 13:17:14.000000000 +0100
++++ epsilon/configure.ac	2010-02-11 13:16:53.000000000 +0100
+@@ -31,6 +31,7 @@
+     ecore-evas >= 0.9.9
+     ecore-file >= 0.9.9
+     ecore-ipc >= 0.9.9
++    ecore-data >= 0.9.9
+   ]
+ )
+ 
+@@ -78,7 +79,7 @@
+ fi
+ AM_CONDITIONAL(HAVE_XINE, test $xine = "xine")
+ 
+-requirements="evas ecore-evas ecore-file ecore-ipc edje"
++requirements="evas ecore-evas ecore-file ecore-ipc ecore-data edje"
+ AC_SUBST(requirements)
+ 
+ #####################################################################

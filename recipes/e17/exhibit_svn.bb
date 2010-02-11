@@ -6,4 +6,4 @@ PR = "r2"
 
 inherit e
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${SRCNAME};proto=http"

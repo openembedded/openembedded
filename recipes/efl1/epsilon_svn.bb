@@ -8,7 +8,8 @@ PR = "r4"
 
 inherit efl
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${SRCNAME};proto=http \
+           file://add.ecore.to.depends.patch;patch=1"
 
 # a gstreamer thumbnailer would be nice now that we have emotion using gstreamer as well
 EXTRA_OECONF = "--disable-xine"

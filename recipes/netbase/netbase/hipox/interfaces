@@ -1,0 +1,17 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# the loopback interface
+auto lo
+iface lo inet loopback
+
+# interfaces to bring up at boot time
+auto eth0 eth1
+
+# the onboard NIC
+iface eth0 inet dhcp
+
+# interfaces to bring up when hotplugging
+allow-hotplug eth1
+
+# additional USB-NIC's
+iface eth1 inet dhcp
