@@ -3,12 +3,12 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-native glib-2.0 dbus dbus-glib eina eet evas ecore edje elementary"
-PV = "0.0.1.0+gitr${SRCPV}"
+PV = "0.5.0+svnr${SRCPV}"
 PR = "r0"
 PE = "1"
 
-SRC_URI = "${FREESMARTPHONE_GIT}/libeflvala;protocol=git;branch=master"
-S = "${WORKDIR}/git"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=vala;proto=http"
+S = "${WORKDIR}/vala"
 
 inherit autotools_stage pkgconfig vala
 

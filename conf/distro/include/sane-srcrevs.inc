@@ -371,6 +371,7 @@ SRCREV_pn-imlib2 ?= "${EFL_SRCREV}"
 SRCREV_pn-libeweather ?= "${EFL_SRCREV}"
 
 # Enlightenment Bindings
+SRCREV_pn-libeflvala ?= "${EFL_SRCREV}"
 SRCREV_pn-eflpp ?= "${EFL_SRCREV}"
 SRCREV_pn-python-evas ?= "${EFL_SRCREV}"
 SRCREV_pn-python-ecore ?= "${EFL_SRCREV}"

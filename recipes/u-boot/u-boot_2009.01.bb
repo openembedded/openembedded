@@ -14,10 +14,9 @@ DEFAULT_PREFERENCE_at91cap9adk	 = "1"
 DEFAULT_PREFERENCE_atngw100	 = "1"
 DEFAULT_PREFERENCE_atstk1000	 = "1"
 
-PR = "r2"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
-SRC_URI += "file://u-boot-remove-inline-of-weak-functions.patch;patch=1"
 
 SRC_URI_append_at91sam9263ek = "\
 	   file://u-boot-2009.01-exp-002-at91sam9g20ek.patch;patch=1 \
