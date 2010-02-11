@@ -10,7 +10,7 @@ PR = "r31"
 # Major part of version
 PVM = "5.8"
 
-SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/5.0/perl-${PV}.tar.gz \
         file://Makefile.patch;patch=1 \
         file://Makefile.SH.patch;patch=1 \
         file://makedepend-dash.patch;patch=1 \

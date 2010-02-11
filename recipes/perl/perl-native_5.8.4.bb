@@ -8,7 +8,7 @@ inherit native
 
 DEPENDS = "virtual/db-native gdbm-native"
 
-SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz"
+SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/5.0/perl-${PV}.tar.gz"
 S = "${WORKDIR}/perl-${PV}"
 
 do_configure () {
