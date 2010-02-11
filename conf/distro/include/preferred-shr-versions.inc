@@ -47,6 +47,8 @@ PREFERRED_VERSION_qt4-embedded-gles = "${ANGSTROM_QT_VERSION}"
 PREFERRED_VERSION_qt4-x11-free = "${ANGSTROM_QT_VERSION}"
 PREFERRED_VERSION_qt4-x11-free-gles = "${ANGSTROM_QT_VERSION}"
 
+# epdf needs > 0.12, but recipes have D_P = -1
+PREFERRED_VERSION_poppler = "0.12.3"
 
 # Downgraded
 PREFERRED_VERSION_pulseaudio = "0.9.15"
