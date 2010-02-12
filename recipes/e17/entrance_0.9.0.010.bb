@@ -23,6 +23,10 @@ EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
 
 FILES_${PN}-dbg += "${libexecdir}/entrance/.debug/*"
 
+do_configure_prepend() {
+	autopoint
+}
+
 do_install_append() {
 	install -d ${D}/etc/X11/Xsession.d
 	install -d ${D}/etc/X11/Sessions
