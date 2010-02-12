@@ -26,7 +26,7 @@ EXTRA_OECMAKE = "\
 PACKAGES = "wesnoth-editor wesnoth-doc wesnoth-music wesnoth-sounds \
 	wesnoth-aoi wesnoth-did wesnoth-ei wesnoth-httt wesnoth-l \
 	wesnoth-nr wesnoth-sof wesnoth-sotbe wesnoth-thot wesnoth-trow \
-	wesnoth-tsg wesnoth-tb wesnoth-utbs \
+	wesnoth-tsg wesnoth-tb wesnoth-utbs wesnoth-low\
 	wesnoth-data \
 	wesnoth-all-campaigns \
 	wesnoth-all \
@@ -66,7 +66,7 @@ RDEPENDS_wesnoth-editor = "wesnoth-data"
 RDEPENDS_wesnoth-all-campaigns = "wesnoth \
 	wesnoth-aoi wesnoth-did wesnoth-ei wesnoth-httt wesnoth-l \
 	wesnoth-nr wesnoth-sof wesnoth-sotbe wesnoth-thot wesnoth-trow \
-	wesnoth-tsg wesnoth-tb wesnoth-utbs"
+	wesnoth-tsg wesnoth-tb wesnoth-utbs wesnoth-low"
 
 # Installing wesnoth-all should pull everything in (like in Debian).
 RDEPENDS_wesnoth-all = "wesnoth wesnoth-sounds wesnoth-music"
@@ -98,6 +98,11 @@ FILES_${PN} = "\
 
 FILES_wesnothd = "\
 	${bindir}/wesnothd \
+"
+
+FILES_wesnoth-low ="\
+       ${datadir}/wesnoth/data/campaigns/Legend_of_Wesmere \
+       ${datadir}/wesnoth/translations/*/LC_MESSAGES/wesnoth-aoi.mo \
 "
 
 FILES_wesnoth-editor = "\
