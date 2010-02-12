@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r36"
+PR = "r37"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -29,6 +29,7 @@ RDEPENDS_${PN} += "\
 		gtkmm \
 		guitartune \
 		mc \
+		mpd \
 		mplayer \
 		navit \
 # omview depends on deprecated (now broken) epsilon
