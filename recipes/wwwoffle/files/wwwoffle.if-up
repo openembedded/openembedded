@@ -16,10 +16,8 @@ case "$IFACE" in
     ;;
 esac
 
-# wwwoffle caches old network configuration and it may cause resolve failures
-/usr/bin/wwwoffle -kill
-/usr/sbin/wwwoffled >/dev/null 2>&1
-
+# wwwoffle caches old resolv.conf. It may cause resolve failures. -config forces its re-read.
+/usr/bin/wwwoffle -config
 /usr/bin/wwwoffle -online
 
 # Don't fetch over ppp*, which is typically expensive dial-up.

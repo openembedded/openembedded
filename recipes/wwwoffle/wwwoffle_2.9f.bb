@@ -16,7 +16,6 @@ inherit autotools gettext update-rc.d
 EXTRA_OEMAKE = "docdir=${datadir}/doc"
 
 do_configure() {
-	pwd
 	mv aclocal.m4 acinclude.m4
 	autotools_do_configure
 }
