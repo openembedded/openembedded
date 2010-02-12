@@ -7,17 +7,20 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r13"
+INC_PR = "r15"
 
 # allows for a release candidate
 RC ?= ""
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2;name=archive"
 
 SRC_URI_append_chinook-compat = " file://chinook_libtool.patch;patch=1 "
 
-PACKAGES =+ "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-swaponoff util-linux-ng-losetup util-linux-ng-umount util-linux-ng-mount util-linux-ng-readprofile "
-PACKAGES_DYNAMIC = "libblkid*"
+PACKAGES =+ "${PN}-fdisk ${PN}-cfdisk ${PN}-sfdisk ${PN}-swaponoff \
+	     ${PN}-losetup ${PN}-umount ${PN}-mount ${PN}-readprofile \
+	     ${PN}-fsck ${PN}-blkid ${PN}-mountall"
+
+PACKAGES_DYNAMIC = "libblkid* libuuid*"
 
 # Provide old util-linux names (several recipes still use DEPENDS or RDEPENDS = "util-linux"):
 PROVIDES = "util-linux"
@@ -30,6 +33,8 @@ RPROVIDES_util-linux-ng-losetup = "util-linux-losetup"
 RPROVIDES_util-linux-ng-umount = "util-linux-umount"
 RPROVIDES_util-linux-ng-mount = "util-linux-mount"
 RPROVIDES_util-linux-ng-readprofile = "util-linux-readprofile"
+RPROVIDES_util-linux-ng-fsck = "e2fsprogs-fsck"
+RPROVIDES_util-linux-ng-blkid = "e2fsprogs-blkid"
 
 FILES_${PN}-doc += "/usr/share/misc/getopt/getopt-*.*"
 FILES_${PN} = "${bindir} ${sbindir} ${base_bindir} ${base_sbindir}"
@@ -44,18 +49,23 @@ FILES_util-linux-ng-mount = "${base_bindir}/mount.${PN} ${sysconfdir}/default/mo
 FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
 # Moved to ${base_sbindir} by do_install:
 FILES_util-linux-ng-readprofile = "${base_sbindir}/readprofile.${PN}"
-
-PACKAGES =+ "${PN}-mountall"
+FILES_util-linux-ng-fsck = "${base_sbindir}/fsck.${PN}"
+FILES_util-linux-ng-blkid = "${sbindir}/blkid"
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
+
+RREPLACES_util-linux-ng-blkid = "e2fsprogs-blkid"
 RREPLACES_${PN}-mountall = "busybox-mountall"
 
-RRECOMMENDS_${PN} = "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-mount util-linux-ng-readprofile "
-RDEPENDS_${PN} = "${PN}-mountall util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-losetup"
+RRECOMMENDS_${PN} = "${PN}-fdisk ${PN}-cfdisk ${PN}-sfdisk ${PN}-mount ${PN}-readprofile"
+RDEPENDS_${PN} = "${PN}-mountall ${PN}-umount ${PN}-swaponoff ${PN}-losetup ${PN}-fsck ${PN}-blkid"
 
 EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
 --enable-arch --enable-init --enable-partx --enable-schedutils \
---with-fsprobe=builtin"
+--with-fsprobe=builtin --enable-libuuid --enable-libblkid \
+--enable-fsck"
+
+LDFLAGS_append_libc-uclibc = " -lintl"
 
 S = "${WORKDIR}/util-linux-ng-${PV}${RC}"
 
@@ -69,10 +79,6 @@ do_configure_prepend_chinook-compat () {
 
 do_compile () {
 	set -e
-#	install ${WORKDIR}/MCONFIG ${S}/MCONFIG
-#	install ${WORKDIR}/make_include ${S}/make_include
-#	install ${WORKDIR}/swapargs.h ${S}/mount/swapargs.h
-#	install ${WORKDIR}/defines.h ${S}/defines.h
 	oe_runmake ARCH=${TARGET_ARCH} CPU= CPUOPT= \
 		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
 		'LDFLAGS=${LDFLAGS}'
@@ -111,7 +117,7 @@ do_install () {
 	mkdir -p ${D}${base_bindir}
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk vipw vigr"
-        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile"
+        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck"
         usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall"
         binprogs_a="dmesg kill more umount mount login"
 
@@ -269,3 +275,10 @@ pkg_prerm_util-linux-ng-mountall () {
         update-alternatives --remove default_mountall mountall.${PN}
 }
 
+pkg_postinst_util-linux-ng-fsck () {
+	update-alternatives --install ${base_sbindir}/fsck fsck fsck.${PN} 100
+}
+
+pkg_prerm_util-linux-ng-fsck () {
+	update-alternatives --remove fsck fsck.${PN}
+}
