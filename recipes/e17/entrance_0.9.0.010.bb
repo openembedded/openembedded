@@ -8,7 +8,7 @@ PR = "r2"
 inherit e
 
 SRC_URI += "\
-           file://config-db.patch;patch=1 \
+           file://rebased_config-db.patch;patch=1 \
            file://allow-missing-xsession.patch;patch=1 \
            file://run-Xinit.patch;patch=1 \
            file://fix-auth-mode.patch;patch=1 \
