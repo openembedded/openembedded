@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r20"
+PR = "r21"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -67,11 +67,8 @@ RDEPENDS_${PN}-base = "\
   sysfsutils \
   modutils-initscripts \
   module-init-tools-depmod \
-  rsync \
-  screen \
   fbset \
   fbset-modes \
-  openssh-sftp-server \
   cron \
   logrotate\
   util-linux-ng-fdisk \
@@ -79,13 +76,8 @@ RDEPENDS_${PN}-base = "\
 "
 
 RDEPENDS_${PN}-cli = "\
-  screen \
   nano \
-  iptables \
   mtd-utils \
-  s3c24xx-gpio \
-  mickeydbus \
-  mickeyterm \
 "
 
 RDEPENDS_${PN}-fso = "\
@@ -112,15 +104,9 @@ RDEPENDS_${PN}-audio_append_om-gta02 =  "\
 "
 
 RDEPENDS_${PN}-x = "\
-  glibc-utils \
-  glibc-charmap-utf-8 \
   e-wm-menu-shr \
   shr-wizard \
   shr-theme-gry \
-  etk-theme-shr \
-  ${@get_rdepends(bb, d)} \
-  libx11-locale \
-  libmokoui2 \
   xcursor-transparent-theme \
   xinput-calibrator \
 "
@@ -145,7 +131,6 @@ RDEPENDS_${PN}-gtk = "\
   openmoko-icon-theme-standard2 \
   shr-theme-gtk-e17lookalike \
   vala-terminal \
-  tangogps \
   pyphonelog \
   matchbox-keyboard-im \
 "
