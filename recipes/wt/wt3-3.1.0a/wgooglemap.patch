@@ -1,0 +1,17 @@
+Index: wt-3.0.0/src/Wt/WGoogleMap.C
+===================================================================
+--- wt-3.0.0.orig/src/Wt/WGoogleMap.C	2009-09-01 17:46:54.000000000 +0200
++++ wt-3.0.0/src/Wt/WGoogleMap.C	2009-11-12 16:23:39.614976154 +0100
+@@ -26,6 +26,12 @@
+ using std::min;
+ using std::max;
+ 
++#if not defined(_GLIBCXX_HAVE__SINL) && not defined(acosl)
++#define cosl cos
++#define acosl acos
++#define sinl sin
++#endif
++
+ #ifndef M_PI
+ #define M_PI 3.14159265358979323846
+ #endif
