@@ -17,14 +17,14 @@ SRCREV_pn-libfsobasics ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoframework ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsotransport ?= "0c1e8c057b4110b1d8d2c24fd93744c03c304cc8"
 SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-mickeydbus2 ?= "3e75d0ab3e334e303fa1f64b5d87465150c0b58c"
+SRCREV_pn-mdbus2 ?= "a8b99e5b7e2805adc494296dfdda478f0d2fb46c"
+SRCREV_pn-mterm2 ?= "a8b99e5b7e2805adc494296dfdda478f0d2fb46c"
 
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"
 SRCREV_pn-frameworkd ?= "e3d6339c5d69e0791c4633f86363159e56126075"
 SRCREV_pn-frameworkd-config-shr_FSO_REV ?= ${SRCREV_pn-frameworkd}
 SRCREV_pn-fso-abyss ?= "aaa3c48296c8589d845f2b6e4314b794750d91cc"
-SRCREV_pn-fso-term ?= "aa0b9c26dee3918a5e9d2809bb36335bda276a0d"
 SRCREV_pn-fso-gpsd ?= "39e810899110a9bb302cf2064e1c0f73541fb4e6"
 SRCREV_pn-fso-gsm0710muxd ?= "abcbcd7cc532a8834906de3fc24c8f8fe7643cd4"
 SRCREV_pn-fso-monitord ?= "b4ae1e9b10e710042624c2cf1a15b91a7d5b1d44"
