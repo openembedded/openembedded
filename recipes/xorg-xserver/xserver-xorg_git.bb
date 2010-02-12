@@ -4,7 +4,7 @@ DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts"
 PV = "1.7.999"
 PR = "r0"
-PR_append = "+gitr${SRCREV}"
+PR_append = "+gitr${SRCPV}"
 PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
