@@ -7,12 +7,14 @@ RDEPENDS += "\
     task-shr-apps \
     task-shr-games \
     task-shr-gtk \
+    task-shr-cli \
 "
 
 IMAGE_INSTALL += "\
   task-shr-apps \
   task-shr-games \
   task-shr-gtk \
+  task-shr-cli \
 "
 
 # perform some SHR convenience tweaks to the rootfs

@@ -57,14 +57,14 @@ PYTHON_NOX_INSTALL = "\
 # This list should be edited -- in particular, s3c24xx-gpio is large
 # and statically linked.  If not needed, we can save some flash on the
 # GTA01 by getting rid of it in the base image.  Other candidates
-# might include nano, mickeydbus, powertop, sysstat, and tcpdump.
+# might include nano, mdbus, powertop, sysstat, and tcpdump.
 
 TOOLS_NOX_INSTALL = "\
   dosfstools \
   htop \
   iptables \
   lsof \
-  mickeydbus \
+  mdbus \
   mtd-utils \
   nano \
   powertop \

@@ -77,7 +77,7 @@ DEV_INSTALL = "\
 TOOLS_INSTALL = "\
   dosfstools \
   lsof \
-  mickeydbus \
+  mdbus \
   mtd-utils \
   nano \
   powertop \

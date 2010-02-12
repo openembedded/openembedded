@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r10"
+PR = "r11"
 
 
 DEPENDS += "task-shr-minimal"
@@ -130,7 +130,6 @@ shr_rootfs_gta02_postprocess() {
     cd ${IMAGE_ROOTFS}/boot
     ln -s uImage uImage-GTA02.bin
     cd $curdir
-    #sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${IMAGE_ROOTFS}/etc/bluetooth/audio.conf
 }
 
 shr_rootfs_gta01_postprocess() {
@@ -139,14 +138,9 @@ shr_rootfs_gta01_postprocess() {
     cd ${IMAGE_ROOTFS}/boot
     ln -s uImage uImage-GTA01.bin
     cd $curdir
-    #sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${IMAGE_ROOTFS}/etc/bluetooth/audio.conf
 }
 
 ROOTFS_POSTPROCESS_COMMAND += " shr_rootfs_postprocess"
 
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta02 = ";shr_rootfs_gta02_postprocess"
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta01 = ";shr_rootfs_gta01_postprocess"
-
-#do_testlab() {
-#	:
-#}

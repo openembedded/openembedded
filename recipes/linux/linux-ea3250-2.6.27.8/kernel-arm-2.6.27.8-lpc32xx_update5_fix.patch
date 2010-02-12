@@ -1,0 +1,21 @@
+diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/board-ea3250.c linux-2.6.27.8-new/arch/arm/mach-lpc32xx/board-ea3250.c
+--- linux-2.6.27.8/arch/arm/mach-lpc32xx/board-ea3250.c	2010-01-05 12:06:37.000000000 +0100
++++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/board-ea3250.c	2010-01-05 12:08:50.000000000 +0100
+@@ -429,7 +429,7 @@
+ 	.width		= -1,
+ 	.height		= -1,
+ 	.tim2		= (CLCDC_LCDTIMING2_IVS | CLCDC_LCDTIMING2_IHS |
+-				CLCD_LCDTIMING2_IPC),
++				CLCDC_LCDTIMING2_IPC),
+ 	.cntl		= (CNTL_BGR | CLCDC_LCDCTRL_TFT | CNTL_LCDVCOMP(1) |
+ 				CLCDC_LCDCTRL_BPP16_565),
+ 	.bpp		= 16,
+@@ -460,7 +460,7 @@
+ 	.width		= -1,
+ 	.height		= -1,
+ 	.tim2		= (CLCDC_LCDTIMING2_IVS | CLCDC_LCDTIMING2_IHS |
+-				CLCD_LCDTIMING2_IPC),
++				CLCDC_LCDTIMING2_IPC),
+ 	.cntl		= (CNTL_BGR | CLCDC_LCDCTRL_TFT | CNTL_LCDVCOMP(1) |
+ 				CLCDC_LCDCTRL_BPP16_565),
+ 	.bpp		= 16,
