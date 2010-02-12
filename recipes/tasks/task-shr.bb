@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Fat Image Feed"
-PR = "r4"
+PR = "r5"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -33,8 +33,8 @@ RDEPENDS_${PN}-apps += "\
    task-shr-minimal-cli \
         screen \
         rsync \
-        mickeydbus \
-        mickeyterm \
+        mdbus2 \
+        mterm2 \
 	openssh-sftp-server \
 "
 
