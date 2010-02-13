@@ -152,7 +152,9 @@ autotools_prepackage_lamangler () {
                 sed -i -e s:${CROSS_DIR}/${HOST_SYS}::g $i
                 sed -i -e s:${CROSS_DIR}::g $i
                 sed -i -e s:${STAGING_LIBDIR}:${libdir}:g $i
-                sed -i -e s:${STAGING_DIR_HOST}::g $i
+                if [ -n "${STAGING_DIR_HOST}" ]; then
+                        sed -i -e s:${STAGING_DIR_HOST}::g $i
+                fi
                 sed -i -e s:${STAGING_DIR}::g $i
                 sed -i -e s:${S}::g $i
                 sed -i -e s:${T}::g $i

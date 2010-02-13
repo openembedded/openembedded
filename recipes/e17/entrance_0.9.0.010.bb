@@ -8,7 +8,7 @@ PR = "r2"
 inherit e
 
 SRC_URI += "\
-           file://config-db.patch;patch=1 \
+           file://rebased_config-db.patch;patch=1 \
            file://allow-missing-xsession.patch;patch=1 \
            file://run-Xinit.patch;patch=1 \
            file://fix-auth-mode.patch;patch=1 \
@@ -22,6 +22,10 @@ EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
                 --with-auth-mode=0"
 
 FILES_${PN}-dbg += "${libexecdir}/entrance/.debug/*"
+
+do_configure_prepend() {
+	autopoint
+}
 
 do_install_append() {
 	install -d ${D}/etc/X11/Xsession.d
