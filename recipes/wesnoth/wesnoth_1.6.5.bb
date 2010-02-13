@@ -3,8 +3,7 @@ HOMEPAGE = "http://www.wesnoth.org/"
 SECTION = "games"
 LICENSE = "GPL"
 
-DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost pango libpng \
-${@base_ifelse(( int(bb.data.getVar('MACHINE_DISPLAY_WIDTH_PIXELS', d, 1) ) < 800 ) or ( int(bb.data.getVar('MACHINE_DISPLAY_HEIGHT_PIXELS',d,1) )< 480 ),"imagemagick-native","")}"
+DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost imagemagick-native pango libpng"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wesnoth/${PN}-${PV}.tar.bz2;name=tarball"
@@ -16,7 +15,7 @@ ARM_INSTRUCTION_SET = "arm"
 inherit cmake
 
 EXTRA_OECMAKE = "\
-	${@base_ifelse( ( ( int(bb.data.getVar('MACHINE_DISPLAY_WIDTH_PIXELS', d, 1) ) < 800 ) or (  int(bb.data.getVar('MACHINE_DISPLAY_HEIGHT_PIXELS',d,1) ) < 480 ) ),"-DGUI=tiny","")} \
+	-DGUI=tiny \
 	-DENABLE_EDITOR=ON \
 	-DENABLE_LOW_MEM=ON \
 	-DENABLE_FRIBIDI=OFF \
