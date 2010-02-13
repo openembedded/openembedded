@@ -15,6 +15,7 @@ RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
            file://lircd.init file://lircmd.init file://lircexec.init"
@@ -33,12 +34,6 @@ INITSCRIPT_PARAMS_lirc-exec = "defaults 21"
 require lirc-config.inc
 
 EXTRA_OEMAKE = 'SUBDIRS="daemons tools"'
-
-do_stage() {
-        oe_libinstall -so -C tools liblirc_client ${STAGING_LIBDIR}
-	install -d ${STAGING_INCDIR}/lirc/
-	install -m 0644 tools/lirc_client.h ${STAGING_INCDIR}/lirc/
-}
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
