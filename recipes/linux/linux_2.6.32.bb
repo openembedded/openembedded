@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r6"
+PR = "r7"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -58,3 +58,6 @@ SRC_URI_append_collie = "${ZAURUSPATCHES}"
 SRC_URI_append_poodle = "${ZAURUSPATCHES}"
 SRC_URI_append_spitz = "${ZAURUSPATCHES}"
 SRC_URI_append_tosa = "${ZAURUSPATCHES}"
+
+SRC_URI_append_eee701 = " \
+	file://intelfb.patch;patch=1 "

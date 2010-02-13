@@ -1,0 +1,16 @@
+t a/drivers/gpu/drm/i915/intel_fb.c b/drivers/gpu/drm/i915/intel_fb.c
+index 371d753..aaabbcb 100644
+--- a/drivers/gpu/drm/i915/intel_fb.c
++++ b/drivers/gpu/drm/i915/intel_fb.c
+@@ -148,7 +148,7 @@ static int intelfb_create(struct drm_device *dev, uint32_t fb_width,
+ 
+ 	mutex_lock(&dev->struct_mutex);
+ 
+-	ret = i915_gem_object_pin(fbo, PAGE_SIZE);
++	ret = i915_gem_object_pin(fbo, 64*1024);
+ 	if (ret) {
+ 		DRM_ERROR("failed to pin fb: %d\n", ret);
+ 		goto out_unref;
+-- 
+1.6.6.1
+
