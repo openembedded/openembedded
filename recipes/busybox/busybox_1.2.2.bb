@@ -4,8 +4,13 @@ PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "file://wget-long-options.patch;patch=1 \
+SRC_URI = "\
+	   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
+	   \
+	   file://wget-long-options.patch;patch=1 \
            file://defconfig"
+SRC_URI[tarball.md5sum] = "ae8a4c65b9464c8ece3483a3d3b9544c"
+SRC_URI[tarball.sha256sum] = "4de9fb2bb018e381e64199b38d90cb25e71366c37a8995e9ab5ed206ebcb972f"
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config.oe
