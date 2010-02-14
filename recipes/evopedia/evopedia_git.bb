@@ -6,12 +6,12 @@ LICENSE = "GPL"
 RDEPENDS = "python python-xml python-shell python-netclient python-mime python-netserver \
              python-io kernel-module-squashfs"
 RRECOMMENDS = "midori"
-PV = "0.2.99+gitr${SRCPV}"
+PV = "0.3.0-rc3+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "git://github.com/crei/evopedia.git;protocol=http;branch=master"
 
-SRCREV = "51fd346f635d5715fdd3504ea4a4aa5453a1bfaa"
+SRCREV = "014e6ba17997552963ef41692e838c48749488cd"
 S = "${WORKDIR}/git/evopedia"
 
 inherit distutils

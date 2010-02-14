@@ -2,9 +2,14 @@ require busybox.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://wget-long-options.patch;patch=1 \
+SRC_URI += "\
+	   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
+	   \
+	   file://wget-long-options.patch;patch=1 \
 	   file://df_rootfs.patch;patch=1 \
            file://defconfig"
+SRC_URI[tarball.md5sum] = "362b3dc0f2023ddfda901dc1f1a74391"
+SRC_URI[tarball.sha256sum] = "c6f955c7feafdb7c40645b3dc4c4a3c945477a2429633eef7b2a34ef01827410"
 SRC_URI_append_avr32 = " file://install-should-unlink-dest-if-it-exists.patch;patch=1"
 
 do_configure () {
