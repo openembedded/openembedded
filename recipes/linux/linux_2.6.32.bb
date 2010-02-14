@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r7"
+PR = "r8"
 
 S = "${WORKDIR}/linux-${PV}"
 
