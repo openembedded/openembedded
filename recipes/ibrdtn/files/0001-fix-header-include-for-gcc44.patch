@@ -1,0 +1,22 @@
+ibrdtn: Fix include for stricter GCC 4.4 header handling
+
+GCC 4.4 is stricter on its headers so we need to make sure the uint64_t is
+really available or the compiler errors out:
+src/data/BlockFactory.cpp:101: error: ‘uint64_t’ was not declared in this scope
+src/data/BlockFactory.cpp:101: error: expected ‘;’ before ‘i’
+src/data/BlockFactory.cpp:101: error: ‘i’ was not declared in this scope
+
+--
+
+Index: ibrdtn-0.1.1/src/data/BlockFactory.cpp
+===================================================================
+--- ibrdtn-0.1.1.orig/src/data/BlockFactory.cpp	2010-02-12 13:25:37.000000000 +0100
++++ ibrdtn-0.1.1/src/data/BlockFactory.cpp	2010-02-12 13:25:49.000000000 +0100
+@@ -5,6 +5,7 @@
+  *      Author: morgenro
+  */
+
++#include <stdint.h>
+ #include "data/BlockFactory.h"
+ #include "data/SDNV.h"
+ #include "data/Exceptions.h"
