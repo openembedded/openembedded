@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 # We call 'moc' during the build 
 DEPENDS = "uicmoc4-native"
@@ -19,10 +19,18 @@ S = "${WORKDIR}/${QTVER}"
 
 inherit autotools  
 
+CROSSHACK = "true"
+CROSSHACK_virtclass-native = ""
+CROSSHACK_virtclass-nativesdk = ""
+
+export CROSSHACK
 export QTDIR = "${S}"
 EXTRA_OEMAKE = "-e"
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_configure() {
+
     # Make sure we regenerate all Makefiles 
     find ${S} -name "Makefile" | xargs rm
     # Install the OE build templates
@@ -58,10 +66,4 @@ do_compile() {
     :
 }
 
-do_stage() {
-	install -d ${STAGING_BINDIR_NATIVE}	
-	install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
-	install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake-qt4
-	install -d ${STAGING_DATADIR_NATIVE}/qt4
-	cp -PfR mkspecs ${STAGING_DATADIR_NATIVE}/qt4/
-}
+FILES_${PN} += "${datadir}/qt4/"

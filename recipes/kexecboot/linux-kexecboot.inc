@@ -6,7 +6,6 @@ SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
 
 require ../linux/linux.inc
 
-DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-kexecboot-image"
 
 # here we set master console on serial
@@ -25,6 +24,9 @@ JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files"
 BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
 TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
+
+KERNEL_IMAGE_MAXSIZE = "1294336"
+KERNEL_IMAGE_MAXSIZE_collie = "1048576"
 
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}"
