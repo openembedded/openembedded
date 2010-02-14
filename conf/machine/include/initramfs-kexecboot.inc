@@ -1,10 +1,9 @@
 # initramfs-kexecboot specific config options
 
+# If set here, each image will also build linux-kexecboot.
+# Usually the machine-installer recipe already DEPENDS on it
+#
+# EXTRA_IMAGEDEPENDS += "linux-kexecboot"
+
 MACHINE_FEATURES_append = " kexecboot "
-
-EXTRA_IMAGEDEPENDS += "linux-kexecboot"
-
-# Include kernel in the rootfs (to be launched by kexec)
-RDEPENDS_kernel-base = "kernel-image"
-
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS_append = " kexecboot-cfg"
+MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS_append = " kexecboot-cfg "
