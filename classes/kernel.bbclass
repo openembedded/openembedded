@@ -497,7 +497,7 @@ python populate_packages_prepend () {
 # Support checking the kernel size since some kernels need to reside in partitions
 # with a fixed length or there is a limit in transferring the kernel to memory
 do_sizecheck() {
-	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" -a -z "${DONT_CHECK_KERNELSIZE}" ]; then
+	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" ]; then
         	size=`ls -l ${KERNEL_OUTPUT} | awk '{ print $5}'`
         	if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
                 	rm ${KERNEL_OUTPUT}

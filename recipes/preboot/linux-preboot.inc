@@ -5,7 +5,6 @@ LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga"
 
 require ../linux/linux.inc
 
-DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-preboot-image"
 
 # here we set master console on serial
