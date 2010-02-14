@@ -10,7 +10,7 @@ PR = "r0"
 SRC_URI = "http://vagalume.igalia.com/files/source/vagalume_${PV}.orig.tar.gz\
 	   file://index.theme \
 	  "
-
+S = "${WORKDIR}/${P}.orig"
 inherit autotools
 
 FILES_${PN} += "${datadir}/icons ${datadir}/dbus-1"
