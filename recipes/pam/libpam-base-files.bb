@@ -7,7 +7,7 @@ DEPENDS = ""
 RDEPENDS = "libpam"
 RRECOMMENDS = "libpam-meta"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = " \
            file://pam.d/* \
