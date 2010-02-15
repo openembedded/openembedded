@@ -27,6 +27,9 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
 "
 
+SRC_URI_append_am3517-evm = " file://am3517-ehci-mux.patch;patch=1 \
+"
+
 addtask quiltfixup before do_patch after do_unpack
 do_quiltfixup() {
 	rm ${S}/.pc -rf
