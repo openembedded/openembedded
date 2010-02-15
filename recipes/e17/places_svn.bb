@@ -10,7 +10,6 @@ SRC_URI += "file://fix-api.diff;patch=1;maxrev=39830;pnum=3"
 do_configure_prepend() {
        sed -i -e /po/d -e /AM_GNU_GETTEXT/d configure.ac 
        sed -i -e s:\ po::g Makefile.am
-       touch ${S}/config.rpath
 }
 
 # Calls /usr/bin/eject for media

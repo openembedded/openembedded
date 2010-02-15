@@ -10,10 +10,9 @@ XSERVER ?= "xserver-xorg \
 "
 
 DEPENDS = "virtual/xserver ${MACHINE_TASK_PROVIDER} task-xfce46-base task-xfce46-extras  \
-           xinit dbus"
+"
 
 IMAGE_INSTALL = "${XSERVER} ${MACHINE_TASK_PROVIDER} task-xfce46-base task-xfce46-extras \
-           xinit dbus-x11 xserver-xorg-extension-dri server-xorg-extension-dri2 \
-	   xserver-xorg-extension-glx"
+"
 
 inherit image
