@@ -28,7 +28,7 @@ do_stage () {
 # Work around dbus permission problems since we lack a proper at_console
 do_install_prepend() {
 		sed -i -e s:deny:allow:g ${S}/src/NetworkManager.conf
-		sed -i -e s:deny:allow:g ${S}/system-settings/src/nm-system-settings.conf
+		sed -i -e s:deny:allow:g ${S}/system-settings/src/nm-system-settings.conf || true
 		sed -i -e s:deny:allow:g ${S}/callouts/nm-dispatcher.conf
 }
 
@@ -38,7 +38,7 @@ do_install_append () {
         # Test binaries
         install -d ${D}/usr/bin
         install -m 0755 ${S}/test/.libs/nm-tool ${D}/usr/bin
-        install -m 0755 ${S}/test/.libs/libnm_glib_test ${D}/usr/bin
+        install -m 0755 ${S}/test/.libs/libnm* ${D}/usr/bin
         install -m 0755 ${S}/test/.libs/nm-online ${D}/usr/bin
 }
 
