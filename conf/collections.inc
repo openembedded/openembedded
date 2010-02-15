@@ -166,7 +166,9 @@ def collections_setup(d):
         import sys
         bb.debug(1, "Re-executing bitbake with BBPATH of %s" % d.getVar("BBPATH", 0))
         os.environ["BBPATH"] = d.getVar("BBPATH", 0)
-        os.environ["PYTHONPATH"] = ":".join(sys.path)
+        # FIXME: This exports a bogus PYTHONPATH to OE recipes resulting in massive breakages: 
+        # http://thread.gmane.org/gmane.comp.handhelds.openembedded/30163
+        # os.environ["PYTHONPATH"] = ":".join(sys.path)
         sys.argv.insert(0, sys.executable)
         os.execvpe(sys.executable, sys.argv, os.environ)
 
