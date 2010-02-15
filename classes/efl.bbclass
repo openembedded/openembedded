@@ -17,7 +17,7 @@ inherit autotools
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_configure_prepend() {
-	touch config.rpath
+	autopoint || touch config.rpath
 }
 
 do_install_prepend () {
