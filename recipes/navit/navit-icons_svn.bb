@@ -1,7 +1,7 @@
 DESCRIPTION = "Navit is a car navigation system with routing engine."
 LICENSE = "GPL"
 SECTION = "x11/applications"
-DEPENDS = "glib-2.0 gtk+"
+DEPENDS = "glib-2.0 gtk+ imagemagick-native librsvg-native"
 RRECOMMENDS = "gpsd espeak flite"
 
 #only icons present in the package
@@ -10,7 +10,6 @@ PACKAGE_ARCH = "all"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r1"
 
-DEPENDS_shr += " librsvg-native"
 EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher"
 
 S = "${WORKDIR}/xpm"
