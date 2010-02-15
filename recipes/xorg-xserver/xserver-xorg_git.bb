@@ -9,9 +9,8 @@ PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "db687f718f760ba254ab51994769db101dc9ca3a"
+SRCREV = "84905007702da2c05a4f7446b3fc5ff52be49655"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
-           file://ac_check_file.cross.patch;patch=1 \
            file://dolt-fix-1.7.0.patch;patch=1 \
            file://randr-support-1.7.0.patch;patch=1 \
            "
