@@ -12,4 +12,15 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
 
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
+EXTRA_OECONF = "-prefix ${prefix} \
+                -qt-libjpeg -qt-gif -system-zlib \
+                -no-libjpeg -no-libpng \
+                -no-accessibility \
+                -no-cups \
+                -no-exceptions  \
+                -no-nas-sound \
+                -no-nis \
+                -verbose -release -no-fast -static \
+                -qt3support -silent -no-rpath"
+
 TOBUILD := "src/tools/bootstrap ${TOBUILD}"

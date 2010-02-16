@@ -96,7 +96,7 @@ RRECOMMENDS_${PN} = "${LIB_PACKAGES} ${OTHER_PACKAGES}"
 RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
 RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
 
-FILES_${QT_BASE_NAME}-tools                = "${bindir}/uic* ${bindir}/moc ${bindir}/rcc ${bindir}/qttracereplay"
+FILES_${QT_BASE_NAME}-tools                = "${bindir}/uic* ${bindir}/moc ${bindir}/rcc ${bindir}/qttracereplay ${bindir}/qdoc*"
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant* ${bindir}/qcollectiongenerator ${bindir}/qhelpconverter ${bindir}/qhelpgenerator"
 FILES_${QT_BASE_NAME}-assistant-dbg        = "${bindir}/.debug/*assistant* ${bindir}/.debug/qcollectiongenerator ${bindir}/.debug/qhelpconverter ${bindir}/.debug/qhelpgenerator"
 FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
@@ -164,9 +164,9 @@ do_configure() {
             -demosdir ${bindir}/${QT_DIR_NAME}/demos \
             -platform ${TARGET_OS}-oe-g++ \
             -xplatform ${TARGET_OS}-oe-g++ \
-            -embedded ${QT_ARCH} ${QT_ENDIAN} -fast \
+            -embedded ${QT_ARCH} ${QT_ENDIAN} \
             -crossarch ${QT_ARCH} \
-            ${QT_CONFIG_FLAGS} -fast \
+            ${QT_CONFIG_FLAGS} -no-fast \
             -L${STAGING_LIBDIR} -I${STAGING_INCDIR} \
             -I${STAGING_INCDIR}/freetype2 \
             -I${STAGING_INCDIR}/mysql \
