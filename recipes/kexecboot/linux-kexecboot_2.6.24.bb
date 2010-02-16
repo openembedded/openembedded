@@ -1,5 +1,7 @@
 require linux-kexecboot.inc
 
+PR = "${INC_PR}.0"
+
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
 DEFAULT_PREFERENCE_poodle = "1"

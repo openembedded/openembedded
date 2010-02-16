@@ -1,5 +1,7 @@
 require linux-kexecboot.inc
 
+PR = "${INC_PR}.0"
+
 KERNEL_RELEASE = "2.6.33-rc8"
 OLD_KERNEL_RELEASE = "2.6.32"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}"
