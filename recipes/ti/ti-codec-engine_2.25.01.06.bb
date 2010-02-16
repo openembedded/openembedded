@@ -8,7 +8,7 @@ DEFAULT_PREFERENCE_dm6467 = "1"
 
 # tconf from xdctools dislikes '.' in pwd :/
 PV = "2_25_01_06"
-PR = "r1"
+PR = "r2"
 
 # Full-CE
 #SRC_URI[cetarball.md5sum] = "729ede0fd24210d3c5439511fa859d51"
