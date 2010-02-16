@@ -1,5 +1,7 @@
 require linux-kexecboot.inc
 
+PR = "${INC_PR}.0"
+
 S = "${WORKDIR}/linux-${PV}"
 S_omap3 = "${WORKDIR}/git"
 
