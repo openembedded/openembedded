@@ -17,7 +17,7 @@ SRCREV_pn-libfsobasics ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoframework ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsotransport ?= "0c1e8c057b4110b1d8d2c24fd93744c03c304cc8"
 SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-mdbus2 ?= "a8b99e5b7e2805adc494296dfdda478f0d2fb46c"
+SRCREV_pn-mdbus2 ?= "df6a5c9a9d99c75dee6bbdcdc39081e810cf4d10"
 SRCREV_pn-mterm2 ?= "ecf01ff1f0415a74362492fdf42ae9aacd65187f"
 
 # FSO Projects -- Misc
