@@ -1,6 +1,8 @@
 DESCRIPTION = "ConsoleKit is a framework for defining and tracking users, login sessions, and seats."
 LICENSE = "GPLv2"
-DEPENDS = "policykit libpam dbus"
+DEPENDS = "policykit dbus ${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
+
+PR = "r1"
 
 inherit gnome
 
@@ -10,8 +12,9 @@ SRC_URI[archive.sha256sum] = "f032adc6146d745034315054c5822a7a09f30e20a40d6e8022
 
 S = "${WORKDIR}/ConsoleKit-${PV}"
 
+EXTRA_OECONF = " ${@base_contains('DISTRO_FEATURES', 'pam', '--enable-pam-module --with-pam-module-dir=${libdir}/security', '--disable-pam-module', d)} "
 
-FILES_${PN} += "${libdir}/ConsoleKit ${datadir}/dbus-1 ${datadir}/PolicyKit ${datadir}/polkit*"
+FILES_${PN} += "${libdir}/ConsoleKit ${datadir}/dbus-1 ${datadir}/PolicyKit ${datadir}/polkit* ${libdir}/security/pam_ck_connector.so"
 
 
 
