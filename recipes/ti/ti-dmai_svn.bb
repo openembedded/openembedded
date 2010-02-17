@@ -59,6 +59,10 @@ TARGET_dm355     = "dm355_al"
 TARGET_dm365     = "dm365_al"
 TARGET          ?= "all"
 
+# Need to set this for other platforms as well
+GPPOS_dm355      = "LINUX_GCC"
+GPPOS_dm365      = "LINUX_GCC"
+
 USER_XDC_PATH = "${CE_INSTALL_DIR}/examples"
 
 PARALLEL_MAKE = ""
