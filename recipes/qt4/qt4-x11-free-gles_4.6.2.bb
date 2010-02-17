@@ -3,7 +3,7 @@ PR = "${INC_PR}.3"
 
 QT_GLFLAGS = "-opengl es2 -openvg"
 
-require qt-4.6.0.inc
+require qt-${PV}.inc
 
 QT_CONFIG_FLAGS += " \
  -no-embedded \

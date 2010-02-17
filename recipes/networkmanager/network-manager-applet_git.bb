@@ -5,8 +5,8 @@ RDEPENDS = "networkmanager"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "efa170820623e7c1d6c161bfc8a37db0d074d09e"
-PV = "0.7.1+git"
+SRCREV = "447befc06fcfcb13322deb66bcdc9067bda0915b"
+PV = "0.7.999+git"
 PR_append = ".gitr${SRCREV}"
 
 inherit gnome
@@ -18,7 +18,7 @@ S = "${WORKDIR}/git"
 
 # Hack around dbus a_console problems
 do_install_append() {
-	install -m 0644 ${WORKDIR}/nm-applet.conf ${D}${sysconfdir}/dbus-1/system.d/
+   install -m 0644 ${WORKDIR}/nm-applet.conf ${D}${sysconfdir}/dbus-1/system.d/
 }
 
 FILES_${PN} += "${datadir}/nm-applet/ \

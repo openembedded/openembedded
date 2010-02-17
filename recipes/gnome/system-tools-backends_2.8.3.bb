@@ -3,11 +3,18 @@ LICENSE = "GPL"
 
 DEPENDS = "dbus dbus-glib glib-2.0 policykit"
 
+# Shadow added so there is a full adduser/deluser
+# (Gnome images tend to pull in shadow anyway)
+RDEPENDS = "shadow"
+
 inherit gnome pkgconfig update-rc.d
 
 SRC_URI += " \
-            file://angstrom.patch;patch=1 \
             file://system-tools-backends \
+           "
+
+SRC_URI_append_angstrom = " \
+            file://add-angstrom-distro.patch;patch=1 \
            "
 
 do_configure_prepend() {

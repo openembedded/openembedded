@@ -18,6 +18,10 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
 do_configure_prepend() {
+    for pro in $(find ${S} -name "*.pro") ; do
+        sed -i 's:$$QT_BUILD_TREE/bin/lrelease:${OE_QMAKE_LRELEASE}:g' $pro
+    done
+
     sed -i s:SEDME:${S}: ${WORKDIR}/linux.conf
     sed -i \
     -e /QMAKE_MOC\ /d \
@@ -27,8 +31,12 @@ do_configure_prepend() {
     ${S}/configure
 }
 
+do_configure_append() {
+    sed -e '/QMAKE_TARGET /d' -e '/TARGET /d' -i ${S}/translations/Makefile
+}
+
 QT_GLFLAGS ?= ""
-QT_CONFIG_FLAGS += "${QT_GLFLAGS}"
+QT_CONFIG_FLAGS += " -no-rpath -qt3support -reduce-relocations -silent ${QT_GLFLAGS}"
 
 do_compile() {
     unset CFLAGS CXXFLAGS

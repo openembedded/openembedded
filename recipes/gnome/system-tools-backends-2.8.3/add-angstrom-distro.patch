@@ -1,0 +1,28 @@
+Index: system-tools-backends-2.8.3/Utils/Platform.pm
+===================================================================
+--- system-tools-backends-2.8.3.orig/Utils/Platform.pm	2010-01-17 16:05:55.794914937 +0000
++++ system-tools-backends-2.8.3/Utils/Platform.pm	2010-01-17 16:13:07.271917106 +0000
+@@ -91,6 +91,7 @@
+   "nexenta-1.0"     => [ "Nexenta GNU/Solaris", "1.0", "Ellate" ],
+   "yellowdog-4.1"   => [ "Yellow Dog Linux", "4.1", "Sagitta" ],
+   "guadalinex-v4"   => [ "Guadalinex", "v4", "Toro" ],
++  "angstrom"        => [ "Angstrom", "", "" ],
+ };
+ 
+ sub get_platform_info
+@@ -141,6 +142,7 @@
+      "vine-3.1"         => "vine-3.0",
+      "vlos-1.2"         => "gentoo",
+      "nexenta-1.0"      => "solaris-2.11",
++     "angstrom"         => "debian-3.0",
+      );
+ 
+   return $metamap{$distro} if ($metamap{$distro});
+@@ -373,6 +375,7 @@
+                   [ \&check_ark ],
+                   [ \&check_yoper ],
+                   [ \&check_distro_file, "/etc/yellowdog-release", "yellowdog", "^Yellow Dog Linux release (\\S+)" ],
++                  [ \&check_file_exists, "/etc/angstrom-version", "angstrom" ],
+                  ],
+     "FreeBSD" => [[ \&check_freebsd ]],
+     "SunOS"   => [[ \&check_solaris ]]

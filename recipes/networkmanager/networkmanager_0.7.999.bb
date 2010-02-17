@@ -2,7 +2,7 @@ require networkmanager-0.7.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += " \
     file://remove-gtk-doc-make.patch;patch=1 \
@@ -19,6 +19,7 @@ do_configure_prepend() {
     sed -i -e /^docs/d ${S}/configure.ac
 }
 
+FILES_${PN} += "  ${datadir}/polkit-1/"
 
 S = "${WORKDIR}/NetworkManager-${PV}"
 
