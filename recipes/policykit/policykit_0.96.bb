@@ -1,6 +1,8 @@
 HOMEPAGE = "http://www.packagekit.org/"
 DEPENDS = "eggdbus libpam expat dbus-glib intltool-native"
 
+PR = "r1"
+
 SRC_URI = "http://hal.freedesktop.org/releases/polkit-${PV}.tar.gz;name=polkit \
           "
 
