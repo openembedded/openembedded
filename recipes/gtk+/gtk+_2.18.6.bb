@@ -4,7 +4,7 @@ PR = "${INC_PR}.1"
 
 BBCLASSEXTEND = "native"
 
-DEPENDS_virtclass-native = "atk-native pango-native cairo-native"
+DEPENDS_virtclass-native = "atk-native pango-native cairo-native libxrender-native"
 
 # Enable xkb selectively
 XKBTOGGLE = " --disable-xkb"
