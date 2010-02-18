@@ -1,0 +1,356 @@
+From c4ce33821e2340ff95e30fce5758013287172d52 Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Wed, 21 Oct 2009 23:48:43 +0000
+Subject: Dropped delegation support for 'pixman_blt'
+
+Function 'pixman_blt' is too simple and hardly needs any
+delegation. This reduces call overhead somewhat. The saving
+is minor, but every little bit helps.
+---
+diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
+index efeabeb..c8c5579 100644
+--- a/pixman/pixman-arm-neon.c
++++ b/pixman/pixman-arm-neon.c
+@@ -470,35 +470,6 @@ arm_neon_composite (pixman_implementation_t *imp,
+ }
+ 
+ static pixman_bool_t
+-arm_neon_blt (pixman_implementation_t *imp,
+-              uint32_t *               src_bits,
+-              uint32_t *               dst_bits,
+-              int                      src_stride,
+-              int                      dst_stride,
+-              int                      src_bpp,
+-              int                      dst_bpp,
+-              int                      src_x,
+-              int                      src_y,
+-              int                      dst_x,
+-              int                      dst_y,
+-              int                      width,
+-              int                      height)
+-{
+-    if (!pixman_blt_neon (
+-            src_bits, dst_bits, src_stride, dst_stride, src_bpp, dst_bpp,
+-            src_x, src_y, dst_x, dst_y, width, height))
+-
+-    {
+-	return _pixman_implementation_blt (
+-	    imp->delegate,
+-	    src_bits, dst_bits, src_stride, dst_stride, src_bpp, dst_bpp,
+-	    src_x, src_y, dst_x, dst_y, width, height);
+-    }
+-
+-    return TRUE;
+-}
+-
+-static pixman_bool_t
+ arm_neon_fill (pixman_implementation_t *imp,
+                uint32_t *               bits,
+                int                      stride,
+@@ -556,7 +527,7 @@ _pixman_implementation_create_arm_neon (void)
+     imp->combine_32[PIXMAN_OP_ADD] = neon_combine_add_u;
+ 
+     imp->composite = arm_neon_composite;
+-    imp->blt = arm_neon_blt;
++    imp->blt = pixman_blt_neon;
+     imp->fill = arm_neon_fill;
+ 
+     return imp;
+diff --git a/pixman/pixman-arm-simd.c b/pixman/pixman-arm-simd.c
+index 4795246..11c5f1b 100644
+--- a/pixman/pixman-arm-simd.c
++++ b/pixman/pixman-arm-simd.c
+@@ -480,6 +480,7 @@ _pixman_implementation_create_arm_simd (void)
+     pixman_implementation_t *imp = _pixman_implementation_create (general);
+ 
+     imp->composite = arm_simd_composite;
++    imp->blt = general->blt;
+ 
+     return imp;
+ }
+diff --git a/pixman/pixman-fast-path.c b/pixman/pixman-fast-path.c
+index 75a0c1e..8da6b1f 100644
+--- a/pixman/pixman-fast-path.c
++++ b/pixman/pixman-fast-path.c
+@@ -1690,6 +1690,7 @@ _pixman_implementation_create_fast_path (void)
+     pixman_implementation_t *imp = _pixman_implementation_create (general);
+ 
+     imp->composite = fast_path_composite;
++    imp->blt = general->blt;
+     imp->fill = fast_path_fill;
+ 
+     return imp;
+diff --git a/pixman/pixman-general.c b/pixman/pixman-general.c
+index c96a3f9..c3f96f9 100644
+--- a/pixman/pixman-general.c
++++ b/pixman/pixman-general.c
+@@ -286,8 +286,7 @@ general_composite (pixman_implementation_t * imp,
+ }
+ 
+ static pixman_bool_t
+-general_blt (pixman_implementation_t *imp,
+-             uint32_t *               src_bits,
++general_blt (uint32_t *               src_bits,
+              uint32_t *               dst_bits,
+              int                      src_stride,
+              int                      dst_stride,
+diff --git a/pixman/pixman-implementation.c b/pixman/pixman-implementation.c
+index 6488332..0520e36 100644
+--- a/pixman/pixman-implementation.c
++++ b/pixman/pixman-implementation.c
+@@ -100,27 +100,6 @@ delegate_combine_64_ca (pixman_implementation_t * imp,
+ }
+ 
+ static pixman_bool_t
+-delegate_blt (pixman_implementation_t * imp,
+-              uint32_t *                src_bits,
+-              uint32_t *                dst_bits,
+-              int                       src_stride,
+-              int                       dst_stride,
+-              int                       src_bpp,
+-              int                       dst_bpp,
+-              int                       src_x,
+-              int                       src_y,
+-              int                       dst_x,
+-              int                       dst_y,
+-              int                       width,
+-              int                       height)
+-{
+-    return _pixman_implementation_blt (
+-	imp->delegate, src_bits, dst_bits, src_stride, dst_stride,
+-	src_bpp, dst_bpp, src_x, src_y, dst_x, dst_y,
+-	width, height);
+-}
+-
+-static pixman_bool_t
+ delegate_fill (pixman_implementation_t *imp,
+                uint32_t *               bits,
+                int                      stride,
+@@ -153,7 +132,7 @@ _pixman_implementation_create (pixman_implementation_t *delegate)
+     /* Fill out function pointers with ones that just delegate
+      */
+     imp->composite = delegate_composite;
+-    imp->blt = delegate_blt;
++    imp->blt = NULL;
+     imp->fill = delegate_fill;
+ 
+     for (i = 0; i < PIXMAN_N_OPERATORS; ++i)
+@@ -233,26 +212,6 @@ _pixman_implementation_composite (pixman_implementation_t * imp,
+ }
+ 
+ pixman_bool_t
+-_pixman_implementation_blt (pixman_implementation_t * imp,
+-                            uint32_t *                src_bits,
+-                            uint32_t *                dst_bits,
+-                            int                       src_stride,
+-                            int                       dst_stride,
+-                            int                       src_bpp,
+-                            int                       dst_bpp,
+-                            int                       src_x,
+-                            int                       src_y,
+-                            int                       dst_x,
+-                            int                       dst_y,
+-                            int                       width,
+-                            int                       height)
+-{
+-    return (*imp->blt) (imp, src_bits, dst_bits, src_stride, dst_stride,
+-			src_bpp, dst_bpp, src_x, src_y, dst_x, dst_y,
+-			width, height);
+-}
+-
+-pixman_bool_t
+ _pixman_implementation_fill (pixman_implementation_t *imp,
+                              uint32_t *               bits,
+                              int                      stride,
+diff --git a/pixman/pixman-mmx.c b/pixman/pixman-mmx.c
+index b1591d9..a3080b6 100644
+--- a/pixman/pixman-mmx.c
++++ b/pixman/pixman-mmx.c
+@@ -3318,35 +3318,6 @@ mmx_composite (pixman_implementation_t *imp,
+ }
+ 
+ static pixman_bool_t
+-mmx_blt (pixman_implementation_t *imp,
+-         uint32_t *               src_bits,
+-         uint32_t *               dst_bits,
+-         int                      src_stride,
+-         int                      dst_stride,
+-         int                      src_bpp,
+-         int                      dst_bpp,
+-         int                      src_x,
+-         int                      src_y,
+-         int                      dst_x,
+-         int                      dst_y,
+-         int                      width,
+-         int                      height)
+-{
+-    if (!pixman_blt_mmx (
+-            src_bits, dst_bits, src_stride, dst_stride, src_bpp, dst_bpp,
+-            src_x, src_y, dst_x, dst_y, width, height))
+-
+-    {
+-	return _pixman_implementation_blt (
+-	    imp->delegate,
+-	    src_bits, dst_bits, src_stride, dst_stride, src_bpp, dst_bpp,
+-	    src_x, src_y, dst_x, dst_y, width, height);
+-    }
+-
+-    return TRUE;
+-}
+-
+-static pixman_bool_t
+ mmx_fill (pixman_implementation_t *imp,
+           uint32_t *               bits,
+           int                      stride,
+@@ -3397,7 +3368,7 @@ _pixman_implementation_create_mmx (void)
+     imp->combine_32_ca[PIXMAN_OP_ADD] = mmx_combine_add_ca;
+ 
+     imp->composite = mmx_composite;
+-    imp->blt = mmx_blt;
++    imp->blt = pixman_blt_mmx;
+     imp->fill = mmx_fill;
+ 
+     return imp;
+diff --git a/pixman/pixman-private.h b/pixman/pixman-private.h
+index c99f2a2..209cba4 100644
+--- a/pixman/pixman-private.h
++++ b/pixman/pixman-private.h
+@@ -399,8 +399,7 @@ typedef void (*pixman_composite_func_t) (pixman_implementation_t *imp,
+ 					 int32_t                  dest_y,
+ 					 int32_t                  width,
+ 					 int32_t                  height);
+-typedef pixman_bool_t (*pixman_blt_func_t) (pixman_implementation_t *imp,
+-					    uint32_t *               src_bits,
++typedef pixman_bool_t (*pixman_blt_func_t) (uint32_t *               src_bits,
+ 					    uint32_t *               dst_bits,
+ 					    int                      src_stride,
+ 					    int                      dst_stride,
+diff --git a/pixman/pixman-sse2.c b/pixman/pixman-sse2.c
+index 1f8aa6e..8c2e114 100644
+--- a/pixman/pixman-sse2.c
++++ b/pixman/pixman-sse2.c
+@@ -5893,8 +5893,7 @@ sse2_composite (pixman_implementation_t *imp,
+ __attribute__((__force_align_arg_pointer__))
+ #endif
+ static pixman_bool_t
+-sse2_blt (pixman_implementation_t *imp,
+-          uint32_t *               src_bits,
++sse2_blt (uint32_t *               src_bits,
+           uint32_t *               dst_bits,
+           int                      src_stride,
+           int                      dst_stride,
+@@ -5907,18 +5906,9 @@ sse2_blt (pixman_implementation_t *imp,
+           int                      width,
+           int                      height)
+ {
+-    if (!pixman_blt_sse2 (
++    return pixman_blt_sse2 (
+             src_bits, dst_bits, src_stride, dst_stride, src_bpp, dst_bpp,
+-            src_x, src_y, dst_x, dst_y, width, height))
+-
+-    {
+-	return _pixman_implementation_blt (
+-	    imp->delegate,
+-	    src_bits, dst_bits, src_stride, dst_stride, src_bpp, dst_bpp,
+-	    src_x, src_y, dst_x, dst_y, width, height);
+-    }
+-
+-    return TRUE;
++            src_x, src_y, dst_x, dst_y, width, height);
+ }
+ 
+ #if defined(__GNUC__) && !defined(__x86_64__) && !defined(__amd64__)
+diff --git a/pixman/pixman-vmx.c b/pixman/pixman-vmx.c
+index 06325a7..e31bcb3 100644
+--- a/pixman/pixman-vmx.c
++++ b/pixman/pixman-vmx.c
+@@ -1615,6 +1615,8 @@ _pixman_implementation_create_vmx (void)
+ 
+     /* Set up function pointers */
+ 
++    imp->blt = fast->blt;
++
+     imp->combine_32[PIXMAN_OP_OVER] = vmx_combine_over_u;
+     imp->combine_32[PIXMAN_OP_OVER_REVERSE] = vmx_combine_over_reverse_u;
+     imp->combine_32[PIXMAN_OP_IN] = vmx_combine_in_u;
+diff --git a/pixman/pixman.c b/pixman/pixman.c
+index 0edd967..07ad767 100644
+--- a/pixman/pixman.c
++++ b/pixman/pixman.c
+@@ -57,6 +57,22 @@ static const optimized_operator_info_t optimized_operators[] =
+ 
+ static pixman_implementation_t *imp;
+ 
++static pixman_bool_t
++pixman_blt_stub (uint32_t *src_bits,
++                 uint32_t *dst_bits,
++                 int       src_stride,
++                 int       dst_stride,
++                 int       src_bpp,
++                 int       dst_bpp,
++                 int       src_x,
++                 int       src_y,
++                 int       dst_x,
++                 int       dst_y,
++                 int       width,
++                 int       height);
++
++static pixman_blt_func_t pixman_blt_imp = pixman_blt_stub;
++
+ /*
+  * Check if the current operator could be optimized
+  */
+@@ -216,6 +232,31 @@ pixman_image_composite (pixman_op_t      op,
+ 	unapply_workaround (dest, dest_bits, dest_dx, dest_dy);
+ }
+ 
++static pixman_bool_t
++pixman_blt_stub (uint32_t *src_bits,
++                 uint32_t *dst_bits,
++                 int       src_stride,
++                 int       dst_stride,
++                 int       src_bpp,
++                 int       dst_bpp,
++                 int       src_x,
++                 int       src_y,
++                 int       dst_x,
++                 int       dst_y,
++                 int       width,
++                 int       height)
++{
++    if (!imp)
++	imp = _pixman_choose_implementation ();
++
++    pixman_blt_imp = imp->blt;
++    return pixman_blt_imp (src_bits, dst_bits, src_stride, dst_stride,
++                           src_bpp, dst_bpp,
++                           src_x, src_y,
++                           dst_x, dst_y,
++                           width, height);
++}
++
+ PIXMAN_EXPORT pixman_bool_t
+ pixman_blt (uint32_t *src_bits,
+             uint32_t *dst_bits,
+@@ -230,14 +271,11 @@ pixman_blt (uint32_t *src_bits,
+             int       width,
+             int       height)
+ {
+-    if (!imp)
+-	imp = _pixman_choose_implementation ();
+-
+-    return _pixman_implementation_blt (imp, src_bits, dst_bits, src_stride, dst_stride,
+-                                       src_bpp, dst_bpp,
+-                                       src_x, src_y,
+-                                       dst_x, dst_y,
+-                                       width, height);
++    return pixman_blt_imp (src_bits, dst_bits, src_stride, dst_stride,
++                           src_bpp, dst_bpp,
++                           src_x, src_y,
++                           dst_x, dst_y,
++                           width, height);
+ }
+ 
+ PIXMAN_EXPORT pixman_bool_t
+--
+cgit v0.8.3-6-g21f6
