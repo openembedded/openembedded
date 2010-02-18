@@ -1,4 +1,4 @@
-#Wed Feb 10 09:53:18 CET 2010
+#Thu Feb 18 13:10:13 CET 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -292,7 +292,7 @@ PREFERRED_VERSION_libpciaccess ?= "0.11.0"
 PREFERRED_VERSION_libxkbfile ?= "1.0.6"
 PREFERRED_VERSION_libxkbfile-native ?= "1.0.6"
 PREFERRED_VERSION_libxkbui ?= "1.0.2"
-PREFERRED_VERSION_pixman ?= "0.17.4"
+PREFERRED_VERSION_pixman ?= "0.17.6"
 PREFERRED_VERSION_xtrans ?= "1.2.5"
 PREFERRED_VERSION_xtrans-native ?= "1.2.5"
 #proto
@@ -302,7 +302,7 @@ PREFERRED_VERSION_bigreqsproto-native ?= "1.1.0"
 PREFERRED_VERSION_compositeproto ?= "0.4.1"
 PREFERRED_VERSION_damageproto ?= "1.2.0"
 PREFERRED_VERSION_dmxproto ?= "2.3"
-PREFERRED_VERSION_dri2proto ?= "2.2"
+PREFERRED_VERSION_dri2proto ?= "2.3"
 PREFERRED_VERSION_evieext ?= "1.1.0"
 PREFERRED_VERSION_fixesproto ?= "4.1.1"
 PREFERRED_VERSION_fixesproto-native ?= "4.1.1"
