@@ -1,13 +1,14 @@
-DESCRIPTION = "nEo elementary theme - a very fast, high contrast etk theme"
+DESCRIPTION = "nEo elementary theme - a very fast, high contrast elementary theme"
 SECTION = "e/utils"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
-RRECOMMENDS = "e-wm-theme-illume-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
+RSUGGESTS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
-PV = "0.2.1-${EFL_SRCREV}+gitr${SRCREV}"
-PR = "r3"
+SRCREV = "f847105c5ef5d488a4bce0c0a85d572c3509d56f"
+PV = "0.5-${EFL_SRCREV}+gitr${SRCREV}"
+PR = "r0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master \
           "

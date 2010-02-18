@@ -4,9 +4,10 @@ HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
 RDEPENDS = "e-wm"
-RRECOMMENDS = "elementary-theme-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
+RSUGGESTS = "elementary-theme-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENCE = "unknown"
 
+SRCREV = "f847105c5ef5d488a4bce0c0a85d572c3509d56f"
 PV = "0.1-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r1"
 
