@@ -316,7 +316,6 @@ SRCREV_pn-wesnoth ?= "39828"
 SRCREV_pn-wlan-ng-modules ?= "1859"
 SRCREV_pn-wlan-ng-utils ?= "1859"
 SRCREV_pn-wmiconfig ?= "5394"
-SRCREV_pn-xf86-video-glamo ?= "9918e082104340da42eb92b6bdefce4d9266a6a4"
 SRCREV_pn-xoo ?= "1971"
 SRCREV_pn-xserver-kdrive-glamo ?= "9b28d998424c77fbc057dd3a022ccbb122793a52"
 
