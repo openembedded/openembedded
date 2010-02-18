@@ -1,87 +1,3 @@
-Delivered-To: koen@beagleboard.org
-Received: by 10.216.36.75 with SMTP id v53cs217947wea;
-        Fri, 8 Jan 2010 07:38:03 -0800 (PST)
-Received: by 10.141.214.24 with SMTP id r24mr6834000rvq.27.1262965082475;
-        Fri, 08 Jan 2010 07:38:02 -0800 (PST)
-Return-Path: <3UlFHSwYPCzYcZSkaeTWSYdWTgSjV.gjYTWSYdWTgSjVYggYdWYjgmhk.Uge@listserv.bounces.google.com>
-Received: from mail-pw0-f72.google.com (mail-pw0-f72.google.com [209.85.160.72])
-        by mx.google.com with ESMTP id 31si42836225pzk.96.2010.01.08.07.38.00;
-        Fri, 08 Jan 2010 07:38:01 -0800 (PST)
-Received-SPF: pass (google.com: domain of 3UlFHSwYPCzYcZSkaeTWSYdWTgSjV.gjYTWSYdWTgSjVYggYdWYjgmhk.Uge@listserv.bounces.google.com designates 209.85.160.72 as permitted sender) client-ip=209.85.160.72;
-Authentication-Results: mx.google.com; spf=pass (google.com: domain of 3UlFHSwYPCzYcZSkaeTWSYdWTgSjV.gjYTWSYdWTgSjVYggYdWYjgmhk.Uge@listserv.bounces.google.com designates 209.85.160.72 as permitted sender) smtp.mail=3UlFHSwYPCzYcZSkaeTWSYdWTgSjV.gjYTWSYdWTgSjVYggYdWYjgmhk.Uge@listserv.bounces.google.com; dkim=pass (test mode) header.i=@googlegroups.com
-Received: by pwj4 with SMTP id 4sf2565182pwj.11
-        for <multiple recipients>; Fri, 08 Jan 2010 07:38:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlegroups.com; s=beta;
-        h=domainkey-signature:received:x-beenthere:received:received:received
-         :received:received-spf:received:mime-version:received:date
-         :message-id:subject:from:to:x-original-authentication-results
-         :x-original-sender:reply-to:precedence:mailing-list:list-id
-         :list-post:list-help:list-archive:x-thread-url:x-message-url:sender
-         :list-unsubscribe:list-subscribe:content-type;
-        bh=XdDWC3Pjbe6mfVpRg0Nyb4elMKzFUcLRQ+7/Tb3fHMQ=;
-        b=NiM6Z+/ubLFaxomCEKnZjYyFgB7ZbE4xWWwqF6i/H8BQiedPp1rBmQSdQ2EH4qDFgm
-         D3DR5jXVjtOALhgh/9cxU/S46ltiM5rtGnwtcjgV+Gv9r5/sfqhze9c81t7bzIo+bpqn
-         cg8yNHOFjwkPSWdSidIhKnZJGQRj/ZIgxJxCw=
-DomainKey-Signature: a=rsa-sha1; c=nofws;
-        d=googlegroups.com; s=beta;
-        h=x-beenthere:received-spf:mime-version:date:message-id:subject:from
-         :to:x-original-authentication-results:x-original-sender:reply-to
-         :precedence:mailing-list:list-id:list-post:list-help:list-archive
-         :x-thread-url:x-message-url:sender:list-unsubscribe:list-subscribe
-         :content-type;
-        b=0jHA96QBedAxJl8vWrKHetbULCj+FIcyXTmI01rlbnfXOm8WuPhJDLyj7Qo34LiQXE
-         dYkeQ2RNv3L03nbVuPezNfUKHuKLONUQKVvAfxRDset7eLpsYuKQZADZ+loSfkeVlwDW
-         ai/7Z937On5tliSGUDPp+73oUNfje1ReYx+dc=
-Received: by 10.115.87.31 with SMTP id p31mr3273178wal.7.1262965074762;
-        Fri, 08 Jan 2010 07:37:54 -0800 (PST)
-X-BeenThere: beagleboard@googlegroups.com
-Received: by 10.115.116.23 with SMTP id t23ls485636wam.1.p; Fri, 08 Jan 2010 
-	07:37:51 -0800 (PST)
-Received: by 10.114.3.19 with SMTP id 19mr7028808wac.17.1262965071286;
-        Fri, 08 Jan 2010 07:37:51 -0800 (PST)
-Received: by 10.114.3.19 with SMTP id 19mr7028807wac.17.1262965071261;
-        Fri, 08 Jan 2010 07:37:51 -0800 (PST)
-Return-Path: <khasim@beagleboard.org>
-Received: from mail-px0-f174.google.com (mail-px0-f174.google.com [209.85.216.174])
-        by gmr-mx.google.com with ESMTP id 16si3405423pxi.11.2010.01.08.07.37.51;
-        Fri, 08 Jan 2010 07:37:51 -0800 (PST)
-Received-SPF: neutral (google.com: 209.85.216.174 is neither permitted nor denied by best guess record for domain of khasim@beagleboard.org) client-ip=209.85.216.174;
-Received: by mail-px0-f174.google.com with SMTP id 4so2127527pxi.33
-        for <beagleboard@googlegroups.com>; Fri, 08 Jan 2010 07:37:51 -0800 (PST)
-MIME-Version: 1.0
-Received: by 10.142.66.15 with SMTP id o15mr4287776wfa.145.1262965071051; Fri, 
-	08 Jan 2010 07:37:51 -0800 (PST)
-Date: Fri, 8 Jan 2010 21:07:50 +0530
-Message-ID: <a8ca84ad1001080737r2312270ao80aa04ce60cc780@mail.gmail.com>
-Subject: [beagleboard] TI:OMAP: [PATCH 1/4] OMAP3 Beagle Update revision 
-	detection
-From: Khasim Syed Mohammed <khasim@beagleboard.org>
-To: u-boot@lists.denx.de, beagleboard@googlegroups.com
-X-Original-Authentication-Results: gmr-mx.google.com; spf=neutral (google.com: 
-	209.85.216.174 is neither permitted nor denied by best guess record for 
-	domain of khasim@beagleboard.org) smtp.mail=khasim@beagleboard.org
-X-Original-Sender: khasim@beagleboard.org
-Reply-To: beagleboard@googlegroups.com
-Precedence: list
-Mailing-list: list beagleboard@googlegroups.com; contact beagleboard+owners@googlegroups.com
-List-ID: <beagleboard.googlegroups.com>
-List-Post: <http://groups.google.com/group/beagleboard/post?hl=>, 
-	<mailto:beagleboard@googlegroups.com>
-List-Help: <http://groups.google.com/support/?hl=>, <mailto:beagleboard+help@googlegroups.com>
-List-Archive: <http://groups.google.com/group/beagleboard?hl=>
-X-Thread-Url: http://groups.google.com/group/beagleboard/t/1d4ac362a651981d
-X-Message-Url: http://groups.google.com/group/beagleboard/msg/8a2d1aa3c9c40beb
-Sender: beagleboard@googlegroups.com
-List-Unsubscribe: <http://groups.google.com/group/beagleboard/subscribe?hl=>, 
-	<mailto:beagleboard+unsubscribe@googlegroups.com>
-List-Subscribe: <http://groups.google.com/group/beagleboard/subscribe?hl=>, 
-	<mailto:beagleboard+subscribe@googlegroups.com>
-Content-Type: multipart/mixed; boundary=0016e64cc3d4779e0f047ca8f8bb
-
---0016e64cc3d4779e0f047ca8f8bb
-Content-Type: text/plain; charset=ISO-8859-1
-
 From 15fbe5ff9ee2fd2f8da4c16805d6c7ccf7244bae Mon Sep 17 00:00:00 2001
 From: Syed Mohammed Khasim <khasim@ti.com>
 Date: Fri, 8 Jan 2010 20:13:47 +0530
@@ -134,7 +50,7 @@ index 32d501e..0def5a6 100644
 + *		GPIO173, GPIO172, GPIO171: 1 1 1 => Ax/Bx
 + *		GPIO173, GPIO172, GPIO171: 1 1 0 => C1/2/3
 + *		GPIO173, GPIO172, GPIO171: 1 0 1 => C4
-+ *		GPIO173, GPIO172, GPIO171: 0 0 0 => D
++ *		GPIO173, GPIO172, GPIO171: 0 0 0 => XM
   */
  void beagle_identify(void)
  {
@@ -180,8 +96,8 @@ index 32d501e..0def5a6 100644
 +	case REVISION_C4:
 +		printf("C4\n");
 +		break;
-+	case REVISION_D:
-+		printf("D\n");
++	case REVISION_XM:
++		printf("XM\n");
 +		break;
 +	default:
 +		printf("unknown 0x%02x\n", beagle_revision);
@@ -211,7 +127,7 @@ index 7fe6275..b1720c9 100644
 +#define REVISION_AXBX 	0x7
 +#define REVISION_CX 	0x6
 +#define REVISION_C4 	0x5
-+#define REVISION_D 	0x0
++#define REVISION_XM 	0x0
 
  /*
   * IEN  - Input Enable
@@ -226,16 +142,3 @@ index 7fe6275..b1720c9 100644
  	MUX_VAL(CP(MCSPI1_CS2),		(IDIS | PTD | DIS | M4)) /*GPIO_176*/\
 -- 
 1.5.6.3
-
---0016e64cc3d4779e0f047ca8f8bb
-Content-Type: text/plain; charset=ISO-8859-1
-
--- 
-You received this message because you are subscribed to the Google Groups "Beagle Board" group.
-To post to this group, send email to beagleboard@googlegroups.com.
-To unsubscribe from this group, send email to beagleboard+unsubscribe@googlegroups.com.
-For more options, visit this group at http://groups.google.com/group/beagleboard?hl=en.
-
-
-
---0016e64cc3d4779e0f047ca8f8bb--

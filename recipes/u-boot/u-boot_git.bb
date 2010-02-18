@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r38"
+PR ="r39"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -23,6 +23,9 @@ file://revision-detection.patch;patch=1 \
 file://i2c.patch;patch=1 \
 file://720MHz.patch;patch=1 \
 file://dss.patch;patch=1 \
+file://0001-omap3-clock.c-don-t-reprogram-clocks-when-trying-to-.patch;patch=1 \
+file://0002-beagleboard-add-pinmuxing-for-beagleboard-XM.patch;patch=1 \
+file://0003-beagleboard-move-muxing-into-revision-print-switch.patch;patch=1 \
 "
 
 SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
