@@ -1,0 +1,13 @@
+diff -Nurd ace-1.2/lib/Makefile.am ace-1.2.new//lib/Makefile.am
+--- ace-1.2/lib/Makefile.am	2010-02-18 12:21:30.000000000 +0100
++++ ace-1.2.new//lib/Makefile.am	2010-02-18 12:21:30.000000000 +0100
+@@ -22,7 +22,7 @@
+ 	./make-imglib -n cards -i $(srcdir)/png -d images.d $(srcdir)/images.in images.c
+ 
+ make-imglib : make-imglib.c
+-	$(BUILD_CC) $(srcdir)/make-imglib.c -o make-imglib -lpng -lz
++	$(BUILD_CC) $(srcdir)/make-imglib.c -o make-imglib $(BUILD_CFLAGS) $(BUILD_LDFLAGS) -lpng -lz
+ 
+ text2c : text2c.c
+-	$(BUILD_CC) $(srcdir)/text2c.c -o text2c -lpng -lz
++	$(BUILD_CC) $(srcdir)/text2c.c -o text2c $(BUILD_CFLAGS) $(BUILD_LDFLAGS) -lpng -lz
