@@ -8,6 +8,11 @@ PV = "1.0.0+gitr${SRCREV}"
 PE = "1"
 PR = "r3"
 
+do_configure_prepend() {
+  # pedantic emits warning about GCC extension used in xserver header file edid.h (from version 1.8) and because of -Werror it fill fail
+  sed -i 's/ -pedantic / /g' ${S}/src/Makefile.am
+}
+
 RDEPENDS = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"
 DEPENDS += "libdrm"
 
