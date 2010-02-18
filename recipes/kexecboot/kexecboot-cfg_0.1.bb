@@ -18,7 +18,7 @@ CMDLINE_ROTATE_akita = "fbcon=rotate:1"
 CMDLINE_ROTATE_collie = "fbcon=rotate:1"
 CMDLINE_ROTATE_poodle = "fbcon=rotate:1"
 
-#CMDLINE_OTHER = "dyntick=enable" 
+#CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_OTHER = ""
 
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
@@ -37,28 +37,24 @@ do_configure_prepend () {
 
 do_install_prepend () {
 
-        echo "# Show this label in kexecboot menu." >> ${S}/boot.cfg
-        echo "LABEL=${DISTRO}" >> ${S}/boot.cfg
-        echo "#" >> ${S}/boot.cfg
-
-        echo "# Specify full path to the kernel." >> ${S}/boot.cfg
-        echo "KERNEL=/boot/${KERNEL_IMAGETYPE}" >> ${S}/boot.cfg
-        echo "#" >> ${S}/boot.cfg
-
-        echo "# Append this tags to the kernel cmdline." >> ${S}/boot.cfg
-        echo "APPEND=${CMDLINE}" >> ${S}/boot.cfg
-        echo "#" >> ${S}/boot.cfg
-
-        echo "# Specify full path for a custom distro-icon for the menu-item." >> ${S}/boot.cfg
-        echo "# If not set, use device-icons as default (NAND, SD, CF, ...)." >> ${S}/boot.cfg
-        echo "#ICON=/boot/icon.xpm" >> ${S}/boot.cfg
-        echo "#" >> ${S}/boot.cfg
-
-        echo "# Priority of item in kexecboot menu." >> ${S}/boot.cfg
-        echo "# Items with highest priority will be shown at top of menu." >> ${S}/boot.cfg
-        echo "# Default: 0 (lowest, ordered by device ordering)" >> ${S}/boot.cfg
-        echo "#PRIORITY=10" >> ${S}/boot.cfg
-        echo "#" >> ${S}/boot.cfg
+echo '# Show this label in kexecboot menu.
+LABEL=${DISTRO}
+#
+# Specify full kernel path on target.
+KERNEL=/boot/${KERNEL_IMAGETYPE}
+#
+# Append this tags to the kernel cmdline.
+APPEND=${CMDLINE}
+#
+# Specify full path for a custom distro-icon for the menu-item.
+# If not set, use device-icons as default (NAND, SD, CF, ...).
+# ICON=/boot/icon.xpm
+#
+# Priority of item in kexecboot menu.
+# Items with highest priority will be shown at top of menu.
+# Default: 0 (lowest, ordered by device ordering)
+# PRIORITY=10
+#' >> ${S}/boot.cfg
 }
 
 do_install () {
