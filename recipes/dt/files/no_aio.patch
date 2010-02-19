@@ -1,0 +1,17 @@
+---
+ Makefile.linux |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: dt.d-WIP/Makefile.linux
+===================================================================
+--- dt.d-WIP/Makefile.linux
++++ dt.d-WIP/Makefile.linux
+@@ -68,7 +68,7 @@ LINTLIBS=
+ 
+ PORG      = -O3
+ 
+-CFLAGS= $(PORG) -DAIO -DFIFO -DMMAP -DTTY -D__linux__ -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
++CFLAGS= $(PORG) -DFIFO -DMMAP -DTTY -D__linux__ -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
+ CPP=	/lib/cpp
+ CPPOPTS= -D__GNUC__ -DFIFO -DMMAP -D__linux__ -D_GNU_SOURCE
+ LDFLAGS=
