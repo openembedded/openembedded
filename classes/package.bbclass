@@ -155,12 +155,11 @@ def runstrip(file, d):
     import commands, stat
 
     pathprefix = "export PATH=%s; " % bb.data.getVar('PATH', d, True)
-    magicfile = "%s/file/magic" % bb.data.getVar('STAGING_DATADIR_NATIVE', d, True) 
 
-    ret, result = commands.getstatusoutput("%sfile -m %s '%s'" % (pathprefix, magicfile, file))
+    ret, result = commands.getstatusoutput("%sfile '%s'" % (pathprefix, file))
 
     if ret:
-        bb.error("runstrip: 'file -m %s %s' failed (forced strip)" % (magicfile, file))
+        bb.error("runstrip: 'file %s' failed (forced strip)" % file)
 
     if "not stripped" not in result:
         bb.debug(1, "runstrip: skip %s" % file)
