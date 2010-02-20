@@ -1,0 +1,88 @@
+From b4bad5be5fa41416bf67fa1fba0624a0c541ea39 Mon Sep 17 00:00:00 2001
+From: Aron Griffis <agriffis@n01se.net>
+Date: Sun, 21 Jun 2009 22:40:17 -0400
+Subject: [PATCH] ipconfig: omit zero-length DHCP vendor_class_identifier
+
+If ipconfig is executed with -i "", omit the vendor class
+identifier from the DHCP discover/request rather than
+sending it empty.  This patch paves the way for more
+flexibility in the DHCP packet, particularly hostname
+request.
+
+Signed-off-by: Aron Griffis <agriffis@n01se.net>
+Signed-off-by: H. Peter Anvin <hpa@zytor.com>
+---
+ usr/kinit/ipconfig/dhcp_proto.c |   31 +++++++++++++++++++++----------
+ 1 files changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/usr/kinit/ipconfig/dhcp_proto.c b/usr/kinit/ipconfig/dhcp_proto.c
+index d4f2c09..c127d39 100644
+--- a/usr/kinit/ipconfig/dhcp_proto.c
++++ b/usr/kinit/ipconfig/dhcp_proto.c
+@@ -51,22 +51,22 @@ static uint8_t dhcp_end[] = {
+    pokes at the internals */
+ #define DHCP_IOV_LEN 6
+ 
+-static struct iovec dhcp_discover_iov[] = {
++static struct iovec dhcp_discover_iov[DHCP_IOV_LEN] = {
+ 	/* [0] = ip + udp header */
+ 	/* [1] = bootp header */
+ 	[2] = {dhcp_discover_hdr, sizeof(dhcp_discover_hdr)},
+ 	[3] = {dhcp_params, sizeof(dhcp_params)},
+-	/* [4] = DHCP vendor class */
+-	[5] = {dhcp_end, sizeof(dhcp_end)}
++	/* [4] = optional vendor class */
++	/* [5] = {dhcp_end, sizeof(dhcp_end)} */
+ };
+ 
+-static struct iovec dhcp_request_iov[] = {
++static struct iovec dhcp_request_iov[DHCP_IOV_LEN] = {
+ 	/* [0] = ip + udp header */
+ 	/* [1] = bootp header */
+ 	[2] = {dhcp_request_hdr, sizeof(dhcp_request_hdr)},
+ 	[3] = {dhcp_params, sizeof(dhcp_params)},
+-	/* [4] = DHCP vendor class */
+-	[5] = {dhcp_end, sizeof(dhcp_end)}
++	/* [4] = optional vendor class */
++	/* [5] = {dhcp_end, sizeof(dhcp_end)} */
+ };
+ 
+ /*
+@@ -164,6 +164,7 @@ static int dhcp_recv(struct netdev *dev)
+ static int dhcp_send(struct netdev *dev, struct iovec *vec)
+ {
+ 	struct bootp_hdr bootp;
++	int i = 4;
+ 
+ 	memset(&bootp, 0, sizeof(struct bootp_hdr));
+ 
+@@ -179,12 +180,22 @@ static int dhcp_send(struct netdev *dev, struct iovec *vec)
+ 	vec[1].iov_base	= &bootp;
+ 	vec[1].iov_len	= sizeof(struct bootp_hdr);
+ 
+-	vec[4].iov_base = vendor_class_identifier;
+-	vec[4].iov_len  = vendor_class_identifier_len;
+-
+ 	DEBUG(("xid %08x secs %d ", bootp.xid, ntohs(bootp.secs)));
+ 
+-	return packet_send(dev, vec, DHCP_IOV_LEN);
++	if (vendor_class_identifier_len > 2) {
++		vec[i].iov_base = vendor_class_identifier;
++		vec[i].iov_len  = vendor_class_identifier_len;
++		i++;
++
++		DEBUG(("vendor_class_identifier \"%.*s\" ", 
++		       vendor_class_identifier_len-2, 
++		       vendor_class_identifier+2));
++	}
++
++	vec[i].iov_base = dhcp_end;
++	vec[i].iov_len  = sizeof(dhcp_end);
++
++	return packet_send(dev, vec, i);
+ }
+ 
+ /*
+-- 
+1.7.0
+

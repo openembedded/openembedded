@@ -1,0 +1,114 @@
+From 1f2b4e044a6a0fde32bc976e5ad6436035c84cec Mon Sep 17 00:00:00 2001
+From: Aron Griffis <agriffis@n01se.net>
+Date: Sun, 21 Jun 2009 22:40:17 -0400
+Subject: [PATCH] ipconfig: send requested hostname in DHCP discover/request
+
+If a hostname is requested, for example -d ::::foo::dhcp,
+then include the hostname in the DHCP discover/request.
+
+Signed-off-by: Aron Griffis <agriffis@n01se.net>
+Signed-off-by: H. Peter Anvin <hpa@zytor.com>
+---
+ usr/kinit/ipconfig/dhcp_proto.c |   22 +++++++++++++++++++---
+ usr/kinit/ipconfig/main.c       |    4 ++++
+ usr/kinit/ipconfig/netdev.h     |    1 +
+ 3 files changed, 24 insertions(+), 3 deletions(-)
+
+diff --git a/usr/kinit/ipconfig/dhcp_proto.c b/usr/kinit/ipconfig/dhcp_proto.c
+index c127d39..775a5ca 100644
+--- a/usr/kinit/ipconfig/dhcp_proto.c
++++ b/usr/kinit/ipconfig/dhcp_proto.c
+@@ -49,7 +49,7 @@ static uint8_t dhcp_end[] = {
+ 
+ /* Both iovecs below have to have the same structure, since dhcp_send()
+    pokes at the internals */
+-#define DHCP_IOV_LEN 6
++#define DHCP_IOV_LEN 7
+ 
+ static struct iovec dhcp_discover_iov[DHCP_IOV_LEN] = {
+ 	/* [0] = ip + udp header */
+@@ -57,7 +57,8 @@ static struct iovec dhcp_discover_iov[DHCP_IOV_LEN] = {
+ 	[2] = {dhcp_discover_hdr, sizeof(dhcp_discover_hdr)},
+ 	[3] = {dhcp_params, sizeof(dhcp_params)},
+ 	/* [4] = optional vendor class */
+-	/* [5] = {dhcp_end, sizeof(dhcp_end)} */
++	/* [5] = optional hostname */
++	/* [6] = {dhcp_end, sizeof(dhcp_end)} */
+ };
+ 
+ static struct iovec dhcp_request_iov[DHCP_IOV_LEN] = {
+@@ -66,7 +67,8 @@ static struct iovec dhcp_request_iov[DHCP_IOV_LEN] = {
+ 	[2] = {dhcp_request_hdr, sizeof(dhcp_request_hdr)},
+ 	[3] = {dhcp_params, sizeof(dhcp_params)},
+ 	/* [4] = optional vendor class */
+-	/* [5] = {dhcp_end, sizeof(dhcp_end)} */
++	/* [5] = optional hostname */
++	/* [6] = {dhcp_end, sizeof(dhcp_end)} */
+ };
+ 
+ /*
+@@ -164,6 +166,7 @@ static int dhcp_recv(struct netdev *dev)
+ static int dhcp_send(struct netdev *dev, struct iovec *vec)
+ {
+ 	struct bootp_hdr bootp;
++	char dhcp_hostname[SYS_NMLN+2];
+ 	int i = 4;
+ 
+ 	memset(&bootp, 0, sizeof(struct bootp_hdr));
+@@ -192,6 +195,19 @@ static int dhcp_send(struct netdev *dev, struct iovec *vec)
+ 		       vendor_class_identifier+2));
+ 	}
+ 
++	if (dev->reqhostname[0] != '\0') {
++		int len = strlen(dev->reqhostname);
++		dhcp_hostname[0] = 12;
++		dhcp_hostname[1] = len;
++		memcpy(dhcp_hostname+2, dev->reqhostname, len);
++
++		vec[i].iov_base = dhcp_hostname;
++		vec[i].iov_len  = len+2;
++		i++;
++
++		DEBUG(("hostname %.*s ", len, dhcp_hostname+2));
++	}
++
+ 	vec[i].iov_base = dhcp_end;
+ 	vec[i].iov_len  = sizeof(dhcp_end);
+ 
+diff --git a/usr/kinit/ipconfig/main.c b/usr/kinit/ipconfig/main.c
+index 2ded0f3..619edf7 100644
+--- a/usr/kinit/ipconfig/main.c
++++ b/usr/kinit/ipconfig/main.c
+@@ -522,6 +522,8 @@ static int parse_device(struct netdev *dev, const char *ip)
+ 			case 4:
+ 				strncpy(dev->hostname, ip, SYS_NMLN - 1);
+ 				dev->hostname[SYS_NMLN - 1] = '\0';
++				memcpy(dev->reqhostname, dev->hostname, 
++				       SYS_NMLN);
+ 				break;
+ 			case 5:
+ 				dev->name = ip;
+@@ -569,6 +571,8 @@ static void bringup_one_dev(struct netdev *template, struct netdev *dev)
+ 		dev->ip_nameserver[1] = template->ip_nameserver[1];
+ 	if (template->hostname[0] != '\0')
+ 		strcpy(dev->hostname, template->hostname);
++	if (template->reqhostname[0] != '\0')
++		strcpy(dev->reqhostname, template->reqhostname);
+ 	dev->caps &= template->caps;
+ 
+ 	bringup_device(dev);
+diff --git a/usr/kinit/ipconfig/netdev.h b/usr/kinit/ipconfig/netdev.h
+index fb6640a..a25a544 100644
+--- a/usr/kinit/ipconfig/netdev.h
++++ b/usr/kinit/ipconfig/netdev.h
+@@ -35,6 +35,7 @@ struct netdev {
+ 	uint32_t ip_gateway;	/* my gateway           */
+ 	uint32_t ip_nameserver[2];	/* two nameservers      */
+ 	uint32_t serverid;		/* dhcp serverid        */
++	char reqhostname[SYS_NMLN];	/* requested hostname   */
+ 	char hostname[SYS_NMLN];	/* hostname             */
+ 	char dnsdomainname[SYS_NMLN];	/* dns domain name      */
+ 	char nisdomainname[SYS_NMLN];	/* nis domain name      */
+-- 
+1.7.0
+

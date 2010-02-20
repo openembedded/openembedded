@@ -1,0 +1,41 @@
+From dc5aff1731bc4708d3391311074f026690212f8d Mon Sep 17 00:00:00 2001
+From: Jon Ringle <jon@ringle.org>
+Date: Thu, 16 Jul 2009 21:33:37 -0400
+Subject: [PATCH] [klibc] use headers_install to install headers
+
+Use headers_install to install headers.
+arch include directory has moved and it's better
+to ask the kernel Makefile to install the headers
+for us.
+
+Signed-off-by: Jon Ringle <jon@ringle.org>
+Signed-off-by: H. Peter Anvin <hpa@zytor.com>
+---
+ scripts/Kbuild.install |   11 +----------
+ 1 files changed, 1 insertions(+), 10 deletions(-)
+
+diff --git a/scripts/Kbuild.install b/scripts/Kbuild.install
+index 44c8f76..de918f0 100644
+--- a/scripts/Kbuild.install
++++ b/scripts/Kbuild.install
+@@ -95,16 +95,7 @@ header:
+ 	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include
+ 	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)lib
+ 	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)bin
+-	$(Q)set -e ; for d in linux asm asm-$(KLIBCARCH) asm-generic $(ASMKLIBCARCH); do \
+-	  for r in $(KLIBCKERNELSRC)/include $(KLIBCKERNELOBJ)/include \
+-	           $(KLIBCKERNELOBJ)/include2 ; do \
+-	    [ ! -d $$r/$$d ] && continue; \
+-	    mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KLIBCCROSS)include/$$d ; \
+-	    cp -rfL $$r/$$d/. \
+-	          $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include/$$d/. ; \
+-	  done ; \
+-	done
+-	$(Q)cd $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include && ln -sf asm-$(KLIBCARCH) asm
++	$(Q)make -C $(KLIBCKERNELSRC) ARCH=$(KLIBCARCH) INSTALL_HDR_PATH=$(INSTALLROOT)$(INSTALLDIR)/$(KCROSS) headers_install
+ 	$(Q)cp -rf usr/include/. $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include/.
+ 	$(Q)$(install-data) $(srctree)/klcc/klcc.1 $(INSTALLROOT)$(mandir)/man1/$(KCROSS)klcc.1
+ 	$(Q)$(install-bin) $(objtree)/klcc/$(KCROSS)klcc $(INSTALLROOT)$(bindir)
+-- 
+1.7.0
+

@@ -1,0 +1,36 @@
+From 63237c6e7037a6058deadc92ddcbcb41c5d4c2f8 Mon Sep 17 00:00:00 2001
+From: Jon Ringle <jon@ringle.org>
+Date: Wed, 22 Jul 2009 03:09:29 -0400
+Subject: [PATCH] [klibc] fix must_inline macro in klibc/compiler.h for gcc-4.3
+
+Add __gnu_inline__ if we find __GNUC_STDC_INLINE__.
+
+See http://gcc.gnu.org/gcc-4.3/porting_to.html for details.
+
+Signed-off-by: Jon Ringle <jon@ringle.org>
+Signed-off-by: H. Peter Anvin <hpa@zytor.com>
+---
+ usr/include/klibc/compiler.h |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/usr/include/klibc/compiler.h b/usr/include/klibc/compiler.h
+index 816a4ee..9dee742 100644
+--- a/usr/include/klibc/compiler.h
++++ b/usr/include/klibc/compiler.h
+@@ -24,7 +24,12 @@
+ /* Use "extern inline" even in the gcc3+ case to avoid warnings in ctype.h */
+ #ifdef __GNUC__
+ # if __GNUC__ >= 3
+-#  define __must_inline extern __inline__ __attribute__((always_inline))
++#  ifdef __GNUC_STDC_INLINE__
++#   define __must_inline extern __inline__ \
++	__attribute__((__gnu_inline__,__always_inline__))
++#  else
++#   define __must_inline extern __inline__ __attribute__((__always_inline__))
++#  endif
+ # else
+ #  define __must_inline extern __inline__
+ # endif
+-- 
+1.7.0
+
