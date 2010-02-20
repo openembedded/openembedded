@@ -4,7 +4,7 @@ DEPENDS += "hal libxkbfile libxcalibrate pixman"
 RDEPENDS += "hal"
 
 PE = "1"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
@@ -25,6 +25,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://xorg-avr32-support.diff;patch=1 \
 	file://pkgconfig_fix.patch;patch=1 \
         file://no_xkb.patch;patch=1;pnum=0 \
+	file://vm86_masks.patch;patch=1 \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"
