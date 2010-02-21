@@ -1,5 +1,28 @@
 require klibc-common.inc
 
+# temporary override here in the recipe
+# until 1.5.16 is released
+
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-1.5.15.tar.bz2 \
+            file://1.5.15+1.5.16.patch;patch=1 \
+            "
+
+SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
+            file://modprobe.patch;patch=1 \
+            file://losetup.patch;patch=1 \
+            file://dash_readopt.patch;patch=1 \
+            file://wc.patch;patch=1 \
+            file://staging.patch;patch=1 \
+            file://klibc_kexecsyscall.patch;patch=1 \
+            file://mntproc-definitions.patch;patch=1 \
+            file://signal-cleanup.patch;patch=1 \
+            file://isystem.patch;patch=1 \
+            "
+
+S = "${WORKDIR}/klibc-1.5.15"
+
+# end temporary overrides
+
 # we want only the shared programms and the lib so we chose them manually
 do_install() {
         install -d ${D}${base_bindir}

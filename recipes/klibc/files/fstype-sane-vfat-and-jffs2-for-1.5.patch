@@ -9,12 +9,12 @@ Index: klibc-1.5/usr/kinit/fstype/fstype.c
 -
 +#include <linux/types.h>
  #define cpu_to_be32(x) __cpu_to_be32(x)	/* Needed by romfs_fs.h */
- 
+
  #include "romfs_fs.h"
 @@ -37,6 +37,12 @@
  #include "ocfs2_fs.h"
  #include "nilfs_fs.h"
- 
+
 +#if __BYTE_ORDER == __BIG_ENDIAN
 +#include <linux/byteorder/big_endian.h>
 +#else
@@ -27,7 +27,7 @@ Index: klibc-1.5/usr/kinit/fstype/fstype.c
 @@ -59,6 +65,27 @@
  /* Swap needs the definition of block size */
  #include "swap_fs.h"
- 
+
 +static int jffs2_image(const unsigned char *buf, unsigned long *blocks)
 +{
 +       // Very sloppy! ;-E
@@ -51,13 +51,13 @@ Index: klibc-1.5/usr/kinit/fstype/fstype.c
 +
  static int gzip_image(const void *buf, unsigned long long *bytes)
  {277 304
- 	const unsigned char *p = buf;
+	const unsigned char *p = buf;
 @@ -490,6 +517,8 @@
- 	{1, "ext3", ext3_image},
- 	{1, "ext2", ext2_image},
- 	{1, "minix", minix_image},
+	{1, "ext3", ext3_image},
+	{1, "ext2", ext2_image},
+	{1, "minix", minix_image},
 +	{0, "jffs2", jffs2_image},
 +	{0, "vfat", vfat_image},
 	{1, "nilfs2", nilfs2_image},
 	{2, "ocfs2", ocfs2_image},
- 	{8, "reiserfs", reiserfs_image},
+	{8, "reiserfs", reiserfs_image},

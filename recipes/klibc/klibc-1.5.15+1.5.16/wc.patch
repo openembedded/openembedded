@@ -6,8 +6,8 @@ Index: klibc-1.5/usr/utils/Kbuild
  #
  
  progs := chroot dd mkdir mkfifo mknod mount pivot_root umount
--progs += true false sleep ln nuke minips cat losetup
-+progs += true false sleep ln nuke minips cat losetup wc
+-progs += true false sleep ln nuke minips cat ls losetup
++progs += true false sleep ln nuke minips cat ls losetup wc
  progs += uname halt kill readlink cpio sync dmesg modprobe
  
  static-y := $(addprefix static/, $(progs))
