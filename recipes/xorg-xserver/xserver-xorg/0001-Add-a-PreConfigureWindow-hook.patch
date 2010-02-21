@@ -1,0 +1,80 @@
+From 653153e878ed568ce085ce6386d5c7f6ec4cb18e Mon Sep 17 00:00:00 2001
+From: Francisco Jerez <currojerez@riseup.net>
+Date: Fri, 22 Jan 2010 06:29:34 -0800
+Subject: [PATCH 1/5] Add a PreConfigureWindow hook.
+
+Executed from the ConfigureWindow request, right before sending
+ConfigureNotify to the clients.
+
+This commit breaks the ScreenRec ABI.
+
+Signed-off-by: Francisco Jerez <currojerez@riseup.net>
+---
+ dix/window.c                   |    4 ++++
+ hw/xfree86/common/xf86Module.h |    6 +++---
+ include/scrnintstr.h           |   10 ++++++++++
+ 3 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/dix/window.c b/dix/window.c
+index 2676a54..980436a 100644
+--- a/dix/window.c
++++ b/dix/window.c
+@@ -2303,6 +2303,10 @@ ConfigureWindow(WindowPtr pWin, Mask mask, XID *vlist, ClientPtr client)
+     return(Success);
+ 
+ ActuallyDoSomething:
++    if (pWin->drawable.pScreen->PreConfigureWindow)
++	    (*pWin->drawable.pScreen->PreConfigureWindow)(pWin, x, y,
++							  w, h, bw, pSib);
++
+     if (SubStrSend(pWin, pParent))
+     {
+ 	memset(&event, 0, sizeof(xEvent));
+diff --git a/hw/xfree86/common/xf86Module.h b/hw/xfree86/common/xf86Module.h
+index bbf5786..d61758f 100644
+--- a/hw/xfree86/common/xf86Module.h
++++ b/hw/xfree86/common/xf86Module.h
+@@ -82,9 +82,9 @@ typedef enum {
+  * mask is 0xFFFF0000.
+  */
+ #define ABI_ANSIC_VERSION	SET_ABI_VERSION(0, 4)
+-#define ABI_VIDEODRV_VERSION	SET_ABI_VERSION(7, 0)
+-#define ABI_XINPUT_VERSION	SET_ABI_VERSION(9, 0)
+-#define ABI_EXTENSION_VERSION	SET_ABI_VERSION(3, 0)
++#define ABI_VIDEODRV_VERSION	SET_ABI_VERSION(8, 0)
++#define ABI_XINPUT_VERSION	SET_ABI_VERSION(10, 0)
++#define ABI_EXTENSION_VERSION	SET_ABI_VERSION(4, 0)
+ #define ABI_FONT_VERSION	SET_ABI_VERSION(0, 6)
+ 
+ #define MODINFOSTRING1	0xef23fdc5
+diff --git a/include/scrnintstr.h b/include/scrnintstr.h
+index ab50e7a..467b61c 100644
+--- a/include/scrnintstr.h
++++ b/include/scrnintstr.h
+@@ -399,6 +399,15 @@ typedef    void (* PostChangeSaveUnderProcPtr)(
+ 	WindowPtr /*pLayerWin*/,
+ 	WindowPtr /*firstChild*/);
+ 
++typedef    void (* PreConfigureWindowProcPtr)(
++	WindowPtr /*pWin*/,
++	int /*x*/,
++	int /*y*/,
++	int /*w*/,
++	int /*h*/,
++	int /*bw*/,
++	WindowPtr /*pSib*/);
++
+ typedef    void (* MoveWindowProcPtr)(
+ 	WindowPtr /*pWin*/,
+ 	int /*x*/,
+@@ -581,6 +590,7 @@ typedef struct _Screen {
+     MarkOverlappedWindowsProcPtr MarkOverlappedWindows;
+     ChangeSaveUnderProcPtr	ChangeSaveUnder;
+     PostChangeSaveUnderProcPtr	PostChangeSaveUnder;
++    PreConfigureWindowProcPtr	PreConfigureWindow;
+     MoveWindowProcPtr		MoveWindow;
+     ResizeWindowProcPtr		ResizeWindow;
+     GetLayerWindowProcPtr	GetLayerWindow;
+-- 
+1.7.0
+
