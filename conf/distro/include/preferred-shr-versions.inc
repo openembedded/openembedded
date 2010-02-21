@@ -7,6 +7,7 @@ PREFERRED_VERSION_autoconf-native = "2.63"
 PREFERRED_VERSION_libmikmod = "3.2.0-beta2"
 PREFERRED_VERSION_mtd-utils-native = "1.2.0+git"
 PREFERRED_VERSION_strace = "4.5.15"
+PREFERRED_VERSION_mesa-dri     = "7.7.999"
 
 # We need this for jamvm
 PREFERRED_VERSION_classpath = "0.98"
