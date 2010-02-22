@@ -1,7 +1,21 @@
 require klibc-common.inc
-PR = "r3"
+PR = "r1"
 
 KLIBC_FETCHDIR = "Testing"
+
+DEFAULT_PREFERENCE = "-1"
+
+# temporary override here in the recipe
+# until 1.5.16 is released
+
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-1.5.15.tar.bz2 \
+            file://1.5.15+1.5.16.patch;patch=1 \
+            "
+
+S = "${WORKDIR}/klibc-1.5.15"
+
+#
+# end override
 
 SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
             file://modprobe.patch;patch=1 \
@@ -56,6 +70,7 @@ do_install() {
         install -m 755 usr/utils/static/modprobe ${D}${base_sbindir}
         install -m 755 usr/utils/static/losetup ${D}${base_bindir}
         install -m 755 usr/utils/static/wc ${D}${base_bindir}
+        install -m 755 usr/utils/static/ls ${D}${base_bindir}
         cd ${D}${base_bindir}
         ln -s gzip gunzip
         ln -s gzip zcat
@@ -79,7 +94,8 @@ PACKAGES = "klibc-utils-static-sh klibc-utils-static-gzip \
         klibc-utils-static-sync \
         klibc-utils-static-true klibc-utils-static-umount \
         klibc-utils-static-uname klibc-utils-static-modprobe \
-        klibc-utils-static-losetup klibc-utils-static-wc"
+        klibc-utils-static-losetup klibc-utils-static-wc \
+        klibc-utils-static-ls"
 
 FILES_klibc-utils-static-sh = "${base_bindir}/sh"
 FILES_klibc-utils-static-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
@@ -116,3 +132,4 @@ FILES_klibc-utils-static-uname = "${base_bindir}/uname"
 FILES_klibc-utils-static-modprobe = "${base_sbindir}/modprobe"
 FILES_klibc-utils-static-losetup = "${base_bindir}/losetup"
 FILES_klibc-utils-static-wc = "${base_bindir}/wc"
+FILES_klibc-utils-static-ls = "${base_bindir}/ls"

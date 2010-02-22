@@ -8,14 +8,14 @@ Index: klibc-1.5.15/usr/include/arch/i386/klibc/archsignal.h
 @@ -96,7 +96,12 @@ typedef struct {
  #define MINSIGSTKSZ	2048
  #define SIGSTKSZ	8192
- 
+
 +#include <linux/version.h>
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,31)
 +#include <asm-generic/signal-defs.h>
 +#else
  #include <asm-generic/signal.h>
 +#endif
- 
+
  /* This uses gcc anonymous union support... */
  struct siginfo;
 Index: klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h
@@ -25,7 +25,7 @@ Index: klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h
 @@ -11,13 +11,6 @@
  #define __WANT_POSIX1B_SIGNALS__
  #include <asm/signal.h>
- 
+
 -struct sigaction {
 -	__sighandler_t	sa_handler;
 -	unsigned long	sa_flags;
@@ -35,4 +35,4 @@ Index: klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h
 -
  /* Not actually used by the kernel... */
  #define SA_RESTORER	0x80000000
- 
+

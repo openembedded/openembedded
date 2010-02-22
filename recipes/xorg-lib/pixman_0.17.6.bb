@@ -6,6 +6,8 @@ LICENSE = "X11"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
 
+PR = "r1"
+
 BBCLASSEXTEND="native"
 
 SRC_URI = "http://cairographics.org/releases/pixman-${PV}.tar.gz;name=archive \
@@ -24,7 +26,7 @@ inherit autotools_stage
 NEON = " --disable-arm-neon "
 NEON_armv7a = ""
 
-EXTRA_OECONF = "${NEON}"
+EXTRA_OECONF = "${NEON} --disable-gtk"
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 

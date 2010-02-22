@@ -1,22 +1,31 @@
 require klibc-common.inc
-
-PR = "r12"
+PR = "r13"
 
 KLIBC_FETCHDIR = "Stable"
+
+SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
+            file://modprobe.patch;patch=1 \
+            file://losetup.patch;patch=1 \
+            file://dash_readopt.patch;patch=1 \
+            file://wc.patch;patch=1 \
+            file://staging.patch;patch=1 \
+            file://klibc_kexecsyscall.patch;patch=1 \
+            "
+
 FILESPATHPKG =. "klibc-${PV}:"
 
-# We only want the static utils. klibc build both. So we install only what we want.				
+# We only want the static utils. klibc build both. So we install only what we want.
 do_install() {
         install -d ${D}${base_bindir}
         install -d ${D}${base_sbindir}
         install -m 755 usr/dash/sh ${D}${base_bindir}
         install -m 755 usr/gzip/gzip ${D}${base_bindir}
-	install -m 755 usr/kinit/kinit ${D}${base_bindir}
-	install -m 755 usr/kinit/fstype/static/fstype ${D}${base_bindir}
-	install -m 755 usr/kinit/ipconfig/static/ipconfig ${D}${base_bindir}
-	install -m 755 usr/kinit/nfsmount/static/nfsmount ${D}${base_bindir}
-	install -m 755 usr/kinit/resume/static/resume ${D}${base_bindir}
-	install -m 755 usr/kinit/run-init/static/run-init ${D}${base_bindir}
+        install -m 755 usr/kinit/kinit ${D}${base_bindir}
+        install -m 755 usr/kinit/fstype/static/fstype ${D}${base_bindir}
+        install -m 755 usr/kinit/ipconfig/static/ipconfig ${D}${base_bindir}
+        install -m 755 usr/kinit/nfsmount/static/nfsmount ${D}${base_bindir}
+        install -m 755 usr/kinit/resume/static/resume ${D}${base_bindir}
+        install -m 755 usr/kinit/run-init/static/run-init ${D}${base_bindir}
         install -m 755 usr/utils/static/cat ${D}${base_bindir}
         install -m 755 usr/utils/static/chroot ${D}${base_bindir}
         install -m 755 usr/utils/static/cpio ${D}${base_bindir}
@@ -40,41 +49,41 @@ do_install() {
         install -m 755 usr/utils/static/true ${D}${base_bindir}
         install -m 755 usr/utils/static/umount ${D}${base_bindir}
         install -m 755 usr/utils/static/uname ${D}${base_bindir}
-	install -m 755 usr/utils/static/modprobe ${D}${base_sbindir}
-	install -m 755 usr/utils/static/losetup ${D}${base_bindir}
-	install -m 755 usr/utils/static/wc ${D}${base_bindir}
+        install -m 755 usr/utils/static/modprobe ${D}${base_sbindir}
+        install -m 755 usr/utils/static/losetup ${D}${base_bindir}
+        install -m 755 usr/utils/static/wc ${D}${base_bindir}
         cd ${D}${base_bindir}
-	ln -s gzip gunzip
+        ln -s gzip gunzip
         ln -s gzip zcat
-	cd -
+        cd -
 }
 
 PACKAGES = "klibc-utils-static-sh klibc-utils-static-gzip \
         klibc-utils-static-kinit klibc-utils-static-fstype \
-	klibc-utils-static-ipconfig klibc-utils-static-nfsmount \
-	klibc-utils-static-resume klibc-utils-static-run-init \
-	klibc-utils-static-cat klibc-utils-static-chroot \
+        klibc-utils-static-ipconfig klibc-utils-static-nfsmount \
+        klibc-utils-static-resume klibc-utils-static-run-init \
+        klibc-utils-static-cat klibc-utils-static-chroot \
         klibc-utils-static-cpio klibc-utils-static-dd \
         klibc-utils-static-false klibc-utils-static-halt \
         klibc-utils-static-insmod klibc-utils-static-kill \
         klibc-utils-static-ln klibc-utils-static-minips \
         klibc-utils-static-mkdir klibc-utils-static-mkfifo \
-	klibc-utils-static-mknod klibc-utils-static-mount \
-	klibc-utils-static-nuke klibc-utils-static-pivot-root \
-	klibc-utils-static-poweroff klibc-utils-static-readlink \
-	klibc-utils-static-reboot klibc-utils-static-sleep \
-	klibc-utils-static-true klibc-utils-static-umount \
-	klibc-utils-static-uname klibc-utils-static-modprobe \
-	klibc-utils-static-losetup klibc-utils-static-wc"
+        klibc-utils-static-mknod klibc-utils-static-mount \
+        klibc-utils-static-nuke klibc-utils-static-pivot-root \
+        klibc-utils-static-poweroff klibc-utils-static-readlink \
+        klibc-utils-static-reboot klibc-utils-static-sleep \
+        klibc-utils-static-true klibc-utils-static-umount \
+        klibc-utils-static-uname klibc-utils-static-modprobe \
+        klibc-utils-static-losetup klibc-utils-static-wc"
 
 FILES_klibc-utils-static-sh = "${base_bindir}/sh"
 FILES_klibc-utils-static-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
-FILES_klibc-utils-static-kinit = "${base_bindir}/kinit"	
-FILES_klibc-utils-static-fstype = "${base_bindir}/fstype"	
-FILES_klibc-utils-static-ipconfig = "${base_bindir}/ipconfig"	
-FILES_klibc-utils-static-nfsmount = "${base_bindir}/nfsmount"	
-FILES_klibc-utils-static-resume = "${base_bindir}/resume"	
-FILES_klibc-utils-static-run-init = "${base_bindir}/run-init"	
+FILES_klibc-utils-static-kinit = "${base_bindir}/kinit"
+FILES_klibc-utils-static-fstype = "${base_bindir}/fstype"
+FILES_klibc-utils-static-ipconfig = "${base_bindir}/ipconfig"
+FILES_klibc-utils-static-nfsmount = "${base_bindir}/nfsmount"
+FILES_klibc-utils-static-resume = "${base_bindir}/resume"
+FILES_klibc-utils-static-run-init = "${base_bindir}/run-init"
 FILES_klibc-utils-static-cat = "${base_bindir}/cat"
 FILES_klibc-utils-static-chroot = "${base_bindir}/chroot"
 FILES_klibc-utils-static-cpio = "${base_bindir}/cpio"
