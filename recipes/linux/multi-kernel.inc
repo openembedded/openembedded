@@ -77,8 +77,8 @@ do_deploy_append () {
 
     # add symlink
     cd ${DEPLOY_DIR_IMAGE}    
-    rm -f ${DEPLOY_DIR_IMAGE}/config-${MACHINE}.config
-    ln -s ${DEPLOY_DIR_IMAGE}/config-${PV}-${PR}-${MACHINE}.config ${DEPLOY_DIR_IMAGE}/config-${MACHINE}.config
+    rm -f config-${MACHINE}.config
+    ln -s config-${PV}-${PR}-${MACHINE}.config config-${MACHINE}.config
 
     rm -f modules-${MACHINE}.tgz
     ln -sf ${MODULES_IMAGE_BASE_NAME}.tgz modules-${MACHINE}.tgz
