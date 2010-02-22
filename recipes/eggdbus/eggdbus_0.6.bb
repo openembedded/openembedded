@@ -24,3 +24,4 @@ EXTRA_OECONF = " --disable-man-pages --disable-gtk-doc-html "
 
 BBCLASSEXTEND = "native"
 
+PARALLEL_MAKE = ""
