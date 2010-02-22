@@ -2,7 +2,7 @@ DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
 
 COMPATIBLE_MACHINE = "(am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
-RDEPENDS_${PN} += "devmem2"
+RDEPENDS_${PN} += "devmem2 fbset"
 
 #HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
 INSANE_SKIP_${PN} = True

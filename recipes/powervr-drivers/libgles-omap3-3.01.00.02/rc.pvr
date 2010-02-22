@@ -1,4 +1,8 @@
 #!/bin/sh
+PATH=$PATH:/usr/sbin
+
+BITSPERPIXEL="$(fbset | grep geom | awk '{print $6}')"
+YRES="$(fbset | grep geom | awk '{print $3}')"
 
 CPUTYPE="$(cputype)"
 
@@ -17,6 +21,12 @@ fi
 if [ "$1" = "stop" ]; then
 	exit 0
 fi
+
+if [ $BITSPERPIXEL = "32" ] ; then
+	fbset -rgba 8/16,8/8,8/0,8/24
+fi
+
+fbset -vyres $(expr $YRES \* 3) 
 
 if [ $CPUTYPE = "OMAP3530" ]; then
 	echo Starting PVR
