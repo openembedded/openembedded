@@ -15,7 +15,7 @@
 
 # workaround for devices which do not report media changes
 SUBSYSTEMS=="ide", KERNEL=="hd[a-z]", ATTR{removable}=="1", \
-	ENV{ID_MODEL}=="IOMEGA_ZIP*",	NAME="%k", OPTIONS+="all_partitions"
+	ENV{ID_MODEL}=="IOMEGA_ZIP*", OPTIONS+="all_partitions"
 SUBSYSTEMS=="ide", KERNEL=="hd[a-z]", ATTRS{media}=="floppy", \
 	OPTIONS+="all_partitions"
 
@@ -103,7 +103,7 @@ SUBSYSTEM=="aoe", KERNEL=="revalidate",	NAME="etherd/%k"
 KERNEL=="dm-[0-9]*",		OPTIONS+="ignore_device"
 KERNEL=="device-mapper",	NAME="mapper/control"
 
-KERNEL=="rfcomm[0-9]*", NAME="%k", GROUP="users", MODE="0660"
+KERNEL=="rfcomm[0-9]*", GROUP="users", MODE="0660"
 
 # Firmware Helper
 ACTION=="add", SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware.sh"
