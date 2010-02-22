@@ -11,7 +11,7 @@ XKBTOGGLE = " --disable-xkb"
 XKBTOGGLE_angstrom = ""
 
 EXTRA_OECONF = "--with-libtiff ${XKBTOGGLE} --disable-glibtest gio_can_sniff=yes"
-EXTRA_OECONF_append_virtclass-native = " --without-libtiff --disable-modules"
+EXTRA_OECONF_append_virtclass-native = " --without-libtiff --without-libjpeg --disable-modules"
 
 do_install_virtclass-native () {
 	autotools_do_install
