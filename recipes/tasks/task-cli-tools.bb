@@ -2,7 +2,7 @@ DESCRIPTION = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r9"
+PR = "r12"
 
 inherit task
 
@@ -13,7 +13,10 @@ RDEPENDS_${PN} = "\
   htop \
   iptables \
   lsof \
+  mbuffer \
+  mdbus2 \
   mtd-utils \
+  mterm2 \
   nano \
   nfs-utils-client \
   powertop \

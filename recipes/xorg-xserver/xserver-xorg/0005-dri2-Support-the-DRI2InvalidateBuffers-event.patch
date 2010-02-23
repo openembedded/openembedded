@@ -1,0 +1,319 @@
+From 2b9b1327984cb1f3588e77b1bdb2e7641de2ffb9 Mon Sep 17 00:00:00 2001
+From: Francisco Jerez <currojerez@riseup.net>
+Date: Fri, 22 Jan 2010 06:29:38 -0800
+Subject: [PATCH 5/5] dri2: Support the DRI2InvalidateBuffers event.
+
+Bumps the supported DRI2 protocol version.
+
+Signed-off-by: Francisco Jerez <currojerez@riseup.net>
+---
+ configure.ac                |    2 +-
+ hw/xfree86/dri2/dri2.c      |  110 +++++++++++++++++++++++++++++++++++++++++++
+ hw/xfree86/dri2/dri2.h      |    5 ++
+ hw/xfree86/dri2/dri2ext.c   |   35 ++++++++++++--
+ include/protocol-versions.h |    2 +-
+ 5 files changed, 148 insertions(+), 6 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index de252f3..e9ca45a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -759,7 +759,7 @@ RECORDPROTO="recordproto >= 1.13.99.1"
+ SCRNSAVERPROTO="scrnsaverproto >= 1.1"
+ RESOURCEPROTO="resourceproto"
+ DRIPROTO="xf86driproto >= 2.1.0"
+-DRI2PROTO="dri2proto >= 2.2"
++DRI2PROTO="dri2proto >= 2.3"
+ XINERAMAPROTO="xineramaproto"
+ BIGFONTPROTO="xf86bigfontproto >= 1.2.0"
+ XCALIBRATEPROTO="xcalibrateproto"
+diff --git a/hw/xfree86/dri2/dri2.c b/hw/xfree86/dri2/dri2.c
+index 48618e1..51040d4 100644
+--- a/hw/xfree86/dri2/dri2.c
++++ b/hw/xfree86/dri2/dri2.c
+@@ -52,6 +52,13 @@ static DevPrivateKey dri2WindowPrivateKey = &dri2WindowPrivateKeyIndex;
+ static int dri2PixmapPrivateKeyIndex;
+ static DevPrivateKey dri2PixmapPrivateKey = &dri2PixmapPrivateKeyIndex;
+ 
++typedef struct _DRI2ClientRef *DRI2ClientRefPtr;
++
++struct _DRI2ClientRef {
++    DRI2ClientRefPtr	 next;
++    XID			 resource;
++};
++
+ typedef struct _DRI2Drawable {
+     unsigned int	 refCount;
+     int			 width;
+@@ -65,6 +72,8 @@ typedef struct _DRI2Drawable {
+     CARD64		 target_sbc; /* -1 means no SBC wait outstanding */
+     CARD64		 last_swap_target; /* most recently queued swap target */
+     int			 swap_limit; /* for N-buffering */
++    DRI2ClientRefPtr	 track_clients; /* Clients to notify on drawable changes. */
++
+ } DRI2DrawableRec, *DRI2DrawablePtr;
+ 
+ typedef struct _DRI2Screen *DRI2ScreenPtr;
+@@ -84,6 +93,8 @@ typedef struct _DRI2Screen {
+     DRI2ScheduleWaitMSCProcPtr	 ScheduleWaitMSC;
+ 
+     HandleExposuresProcPtr       HandleExposures;
++
++    PreConfigureWindowProcPtr    PreConfigureWindow;
+ } DRI2ScreenRec;
+ 
+ static DRI2ScreenPtr
+@@ -143,6 +154,7 @@ DRI2CreateDrawable(DrawablePtr pDraw)
+     pPriv->swap_interval = 1;
+     pPriv->last_swap_target = -1;
+     pPriv->swap_limit = 1; /* default to double buffering */
++    pPriv->track_clients = NULL;
+ 
+     if (pDraw->type == DRAWABLE_WINDOW)
+     {
+@@ -405,6 +417,78 @@ DRI2BlockClient(ClientPtr client, DrawablePtr pDraw)
+     }
+ }
+ 
++extern RESTYPE dri2DrawableRes;
++
++int
++DRI2TrackClient(DrawablePtr pDraw, int id)
++{
++    DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
++    DRI2ClientRefPtr ref;
++
++    if (pPriv == NULL)
++	return BadDrawable;
++
++    /* Check if the client is already in. */
++    for (ref = pPriv->track_clients; ref; ref = ref->next) {
++	if (CLIENT_ID(ref->resource) == id)
++	    return Success;
++    }
++
++    /* Allocate a client ref. */
++    ref = xalloc(sizeof(*ref));
++    if (ref == NULL)
++	return BadAlloc;
++
++    ref->next = pPriv->track_clients;
++    pPriv->track_clients = ref;
++
++    /* Allocate a resource for it. */
++    ref->resource = FakeClientID(id);
++    if (!AddResource(ref->resource, dri2DrawableRes, pDraw))
++	return BadAlloc;
++
++    return Success;
++}
++
++void
++DRI2UntrackClient(DrawablePtr pDraw, int id)
++{
++    DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
++    DRI2ClientRefPtr ref, *prev;
++
++    if (pPriv == NULL)
++	return;
++
++    prev = &pPriv->track_clients;
++
++    for (ref = *prev; ref; prev = &ref->next, ref = ref->next) {
++	if (CLIENT_ID(ref->resource) == id) {
++	    *prev = ref->next;
++	    xfree(ref);
++	    break;
++	}
++    }
++}
++
++void
++DRI2InvalidateDrawable(DrawablePtr pDraw)
++{
++    DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
++    DRI2ClientRefPtr ref;
++
++    if (pPriv == NULL)
++	return;
++
++    while ((ref = pPriv->track_clients)) {
++	ClientPtr client = clients[CLIENT_ID(ref->resource)];
++
++	FreeResource(ref->resource, RT_NONE);
++
++	if (client && !client->clientGone)
++	    DRI2InvalidateBuffersEvent(pDraw, client);
++    }
++}
++
+ int
+ DRI2CopyRegion(DrawablePtr pDraw, RegionPtr pRegion,
+ 	       unsigned int dest, unsigned int src)
+@@ -759,6 +843,8 @@ DRI2DestroyDrawable(DrawablePtr pDraw)
+     DRI2ScreenPtr   ds = DRI2GetScreen(pDraw->pScreen);
+     DRI2DrawablePtr pPriv;
+ 
++    DRI2ClientRefPtr ref;
++
+     pPriv = DRI2GetDrawable(pDraw);
+     if (pPriv == NULL)
+ 	return;
+@@ -776,6 +862,9 @@ DRI2DestroyDrawable(DrawablePtr pDraw)
+ 	xfree(pPriv->buffers);
+     }
+ 
++    while ((ref = pPriv->track_clients))
++	FreeResource(ref->resource, RT_NONE);
++
+     /* If the window is destroyed while we have a swap pending, don't
+      * actually free the priv yet.  We'll need it in the DRI2SwapComplete()
+      * callback and we'll free it there once we're done. */
+@@ -811,6 +900,24 @@ DRI2Authenticate(ScreenPtr pScreen, drm_magic_t magic)
+     return TRUE;
+ }
+ 
++static void
++DRI2PreConfigureWindow(WindowPtr pWin, int x, int y, int w, int h, int bw,
++		       WindowPtr pSib)
++{
++    DrawablePtr pDraw = (DrawablePtr)pWin;
++    ScreenPtr pScreen = pDraw->pScreen;
++    DRI2ScreenPtr ds = DRI2GetScreen(pScreen);
++    DRI2DrawablePtr dd = DRI2GetDrawable(pDraw);
++
++    if (ds->PreConfigureWindow)
++	(*ds->PreConfigureWindow)(pWin, x, y, w, h, bw, pSib);
++
++    if (!dd || (dd->width == w && dd->height == h))
++	return;
++
++    DRI2InvalidateDrawable(pDraw);
++}
++
+ Bool
+ DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info)
+ {
+@@ -869,6 +976,9 @@ DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info)
+ 
+     dixSetPrivate(&pScreen->devPrivates, dri2ScreenPrivateKey, ds);
+ 
++    ds->PreConfigureWindow = pScreen->PreConfigureWindow;
++    pScreen->PreConfigureWindow = DRI2PreConfigureWindow;
++
+     xf86DrvMsg(pScreen->myNum, X_INFO, "[DRI2] Setup complete\n");
+     for (i = 0; i < sizeof(driverTypeNames) / sizeof(driverTypeNames[0]); i++) {
+ 	if (i < ds->numDrivers && ds->driverNames[i]) {
+diff --git a/hw/xfree86/dri2/dri2.h b/hw/xfree86/dri2/dri2.h
+index 1c8626b..59bab70 100644
+--- a/hw/xfree86/dri2/dri2.h
++++ b/hw/xfree86/dri2/dri2.h
+@@ -265,4 +265,9 @@ extern _X_EXPORT void DRI2WaitMSCComplete(ClientPtr client, DrawablePtr pDraw,
+ 					  int frame, unsigned int tv_sec,
+ 					  unsigned int tv_usec);
+ 
++extern _X_EXPORT int DRI2TrackClient(DrawablePtr pDraw, int id);
++extern _X_EXPORT void DRI2UntrackClient(DrawablePtr pDraw, int id);
++extern _X_EXPORT void DRI2InvalidateBuffersEvent(DrawablePtr pDraw, ClientPtr client);
++extern _X_EXPORT void DRI2InvalidateDrawable(DrawablePtr pDraw);
++
+ #endif
+diff --git a/hw/xfree86/dri2/dri2ext.c b/hw/xfree86/dri2/dri2ext.c
+index 3e6b03e..713c82e 100644
+--- a/hw/xfree86/dri2/dri2ext.c
++++ b/hw/xfree86/dri2/dri2ext.c
+@@ -51,7 +51,7 @@
+ #include "xf86Module.h"
+ 
+ static ExtensionEntry	*dri2Extension;
+-static RESTYPE		 dri2DrawableRes;
++RESTYPE			 dri2DrawableRes;
+ 
+ static Bool
+ validDrawable(ClientPtr client, XID drawable, Mask access_mode,
+@@ -266,6 +266,9 @@ ProcDRI2GetBuffers(ClientPtr client)
+     buffers = DRI2GetBuffers(pDrawable, &width, &height,
+ 			     attachments, stuff->count, &count);
+ 
++    status = DRI2TrackClient(pDrawable, client->index);
++    if (status)
++	return status;
+ 
+     send_buffers_reply(client, pDrawable, buffers, count, width, height);
+ 
+@@ -293,6 +296,10 @@ ProcDRI2GetBuffersWithFormat(ClientPtr client)
+     buffers = DRI2GetBuffersWithFormat(pDrawable, &width, &height,
+ 				       attachments, stuff->count, &count);
+ 
++    status = DRI2TrackClient(pDrawable, client->index);
++    if (status)
++	return status;
++
+     send_buffers_reply(client, pDrawable, buffers, count, width, height);
+ 
+     return client->noClientException;
+@@ -367,6 +374,18 @@ DRI2SwapEvent(ClientPtr client, void *data, int type, CARD64 ust, CARD64 msc,
+     WriteEventsToClient(client, 1, (xEvent *)&event);
+ }
+ 
++void
++DRI2InvalidateBuffersEvent(DrawablePtr pDraw, ClientPtr client)
++{
++    xDRI2InvalidateBuffers event;
++
++    event.type = DRI2EventBase + DRI2_InvalidateBuffers;
++    event.sequenceNumber = client->sequence;
++    event.drawable = pDraw->id;
++
++    WriteEventsToClient(client, 1, (xEvent *)&event);
++}
++
+ static int
+ ProcDRI2SwapBuffers(ClientPtr client)
+ {
+@@ -391,6 +410,8 @@ ProcDRI2SwapBuffers(ClientPtr client)
+     if (status != Success)
+ 	return BadDrawable;
+ 
++    DRI2InvalidateDrawable(pDrawable);
++
+     rep.type = X_Reply;
+     rep.length = 0;
+     rep.sequenceNumber = client->sequence;
+@@ -618,11 +639,17 @@ SProcDRI2Dispatch (ClientPtr client)
+     }
+ }
+ 
+-static int DRI2DrawableGone(pointer p, XID id)
++static int
++DRI2DrawableGone(pointer p, XID id)
+ {
+-    DrawablePtr pDrawable = p;
++    DrawablePtr pDraw = p;
+ 
+-    DRI2DestroyDrawable(pDrawable);
++    if (pDraw->id != id) {
++	/* Secondary reference. */
++	DRI2UntrackClient(pDraw, CLIENT_ID(id));
++    } else {
++	DRI2DestroyDrawable(pDraw);
++    }
+ 
+     return Success;
+ }
+diff --git a/include/protocol-versions.h b/include/protocol-versions.h
+index c74b7fa..c425eef 100644
+--- a/include/protocol-versions.h
++++ b/include/protocol-versions.h
+@@ -53,7 +53,7 @@
+ 
+ /* DRI2 */
+ #define SERVER_DRI2_MAJOR_VERSION		1
+-#define SERVER_DRI2_MINOR_VERSION		2
++#define SERVER_DRI2_MINOR_VERSION		3
+ 
+ /* Generic event extension */
+ #define SERVER_GE_MAJOR_VERSION                 1
+-- 
+1.7.0
+
