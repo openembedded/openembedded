@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=EvilSkull Demo
-Comment=OGLES Demo
-Exec=/usr/demos/OGLES/EvilSkull/OGLESEvilSkull
-Icon=star
-Type=Application
-Categories=Demos;
-

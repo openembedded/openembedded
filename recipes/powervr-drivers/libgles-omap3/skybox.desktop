@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Skybox Demo
-Comment=OGLES Demo
-Exec=/usr/demos/OGLES/Skybox/OGLESSkybox
-Icon=star
-Type=Application
-Categories=Demos;
-
