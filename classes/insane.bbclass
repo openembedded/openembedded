@@ -279,7 +279,7 @@ def package_qa_check_dbg(path, name,d, elf):
     sane = True
 
     if not "-dbg" in name:
-        if '.debug' in path:
+        if '.debug' in path.split(os.path.sep):
             error_msg = "non debug package contains .debug directory: %s path %s" % \
                      (name, package_qa_clean_path(path,d))
             sane = package_qa_handle_error(3, error_msg, name, path, d)

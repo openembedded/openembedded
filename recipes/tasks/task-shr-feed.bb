@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r39"
+PR = "r40"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -276,6 +276,7 @@ RDEPENDS_${PN} += "\
 		ventura \
 		emtooth \
 		podboy \
+		mcnavi \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
