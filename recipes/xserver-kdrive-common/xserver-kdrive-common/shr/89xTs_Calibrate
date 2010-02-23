@@ -28,6 +28,7 @@ if [ -d $SYSFS_CALIBRATION_DIR ]; then
 fi
 
 if [ -e /usr/bin/xinput_calibrator_once.sh ] ; then
+  if [ -e /etc/pointercal.xinput ] ; then
     if [ -e /usr/bin/fsoraw ] ; then
       # because ts tap to unblank will be used as first calibration click and then store invalid calibration
       fsoraw -fr CPU,Display -- /usr/bin/xinput_calibrator_once.sh
@@ -35,4 +36,5 @@ if [ -e /usr/bin/xinput_calibrator_once.sh ] ; then
       /usr/bin/xinput_calibrator_once.sh
     fi
     exit
+  fi
 fi
