@@ -7,8 +7,9 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 DEPENDS = "elementary libeflvala libical"
 
-PV = "0.3.1+svnr${SRCPV}"
-PR = "r2"
+SRCREV = "b054defaaa5a09a83e1ddbd5b43229bdd1ab107e"
+PV = "0.3.2+gitr${SRCPV}"
+PR = "r0"
 
 # needed because there is do_stage_append in vala.bbclass and do_stage() was removed..
 do_stage() {
@@ -17,10 +18,9 @@ do_stage() {
 
 inherit vala
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/ffalarms;module=trunk;proto=https \
-           file://libeflvala.a18c70a312d98cc90e0e7978f845601e82460b39.patch;patch=1"
+SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master"
 
-S = "${WORKDIR}/trunk"
+S = "${WORKDIR}/git"
 
 FILES_${PN} += "${datadir}/${PN} ${datadir}/applications ${datadir}/pixmaps"
 
