@@ -6,13 +6,13 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 
 DEPENDS = "dbus gstd"
-RDEPENDS_${PN} = "gstd alsa-utils-amixer"
-RRECOMMENDS_${PN} = "qt4-embedded-plugin-mousedriver-tslib"
+RDEPENDS_${PN} = "gstd alsa-utils-amixer gst-ipcsink"
+RRECOMMENDS_${PN} = "qt4-embedded-plugin-mousedriver-tslib gstreamer-ti"
 
-SRCREV = "b5c93e9d017d14c945c30b0cb47fb00cbf41b12b"
+SRCREV = "19c4e201aa978d2b40793b9fa76cc4ddbff50016"
 
 PV = "1.0"
-PR = "r6"
+PR = "r7"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://freondemo.git.sourceforge.net/gitroot/freondemo/freondemo;protocol=git \
