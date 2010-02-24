@@ -11,10 +11,10 @@ DEPENDS_mythweb_lighttpd = "mythweb"
 RDEPENDS_mythweb_lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcgi \
         lighttpd-module-rewrite php-cgi lighttpd-module-auth"
 
-PR = "svnr${SRCPV}+r1"
+PR = "svnr${SRCPV}+r2"
 PV = "0.22"
 
-SRCREV = "23062"
+SRCREV = "23565"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=mythplugins;proto=http \
         file://sysroot.patch;patch=1 \
         file://mythplugins_wo_qtopengl.diff;patch=1 \
