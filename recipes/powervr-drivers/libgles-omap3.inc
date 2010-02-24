@@ -3,7 +3,7 @@ LICENCE = "proprietary-binary"
 
 COMPATIBLE_MACHINE = "(am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 
-DEPENDS = "virtual/libx11 libxau libxdmcpdev"
+DEPENDS = "virtual/libx11 libxau libxdmcp"
 
 PROVIDES += "virtual/egl"
 
