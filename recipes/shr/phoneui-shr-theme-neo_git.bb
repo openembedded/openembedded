@@ -6,7 +6,7 @@ LICENSE = "unknown"
 DEPENDS = "edje-native"
 RDEPENDS = "libphone-ui-shr"
 RSUGGESTS = "e-wm-theme-illume-neo gtk-theme-neo icon-theme-neo elementary-theme-neo"
-SRCREV = "768e6fd9d75bbe48dccd86eba1981d59e14ec9b9"
+SRCREV = "27e2247d7dce9496ee0ea9438b2a4fe8c16819ab"
 PV = "0.1+gitr${SRCREV}"
 PR = "r0"
 
@@ -16,10 +16,12 @@ S = "${WORKDIR}/git/phoneui-shr/${PN}"
 
 do_compile() {
         ${STAGING_BINDIR_NATIVE}/edje_cc -id ${S}/. -fd ${S}/. ${S}/neo.edc -o ${S}/neo.edj
+        ${STAGING_BINDIR_NATIVE}/edje_cc -id ${S}/idle_screen -fd ${S}/idle_screen ${S}/neo.edc -o ${S}/idle_screen.edj.neo
 }
 do_install() {
         install -d ${D}${datadir}/libphone-ui-shr/
         install -m 0644 ${S}/neo.edj ${D}${datadir}/libphone-ui-shr/
+        install -m 0644 ${S}/idle_screen.edj.neo ${D}${datadir}/libphone-ui-shr/
         install -m 0644 ${S}/config ${D}${datadir}/libphone-ui-shr/
 }
 

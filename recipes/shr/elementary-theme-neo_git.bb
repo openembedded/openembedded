@@ -6,7 +6,7 @@ DEPENDS = "edje-native"
 RSUGGESTS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
-SRCREV = "f847105c5ef5d488a4bce0c0a85d572c3509d56f"
+SRCREV = "fb377425e69ce1fc13f5094801b96836203e8154"
 PV = "0.5-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r0"
 
