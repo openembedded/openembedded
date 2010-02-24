@@ -3,7 +3,7 @@ HOMEPAGE = "http://sofia-sip.sourceforge.net/"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 openssl"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz;name=archive"
 
 inherit autotools pkgconfig
 

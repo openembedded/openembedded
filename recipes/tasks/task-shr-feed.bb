@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r41"
+PR = "r42"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -235,7 +235,7 @@ RDEPENDS_${PN} += "\
 		om-neon \
 		ipython \
 #		phoneme-advanced-foundation \
-		eve \
+#		eve was killed in svnr45979
 		python-pybluez \
 		x11perf \
 		pyring \
