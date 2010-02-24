@@ -2,7 +2,7 @@ require gdb-cross.inc
 
 inherit sdk
 
-DEPENDS = "ncurses-sdk"
+DEPENDS = "ncurses-sdk zlib-sdk"
 
 PR = "r3"
 
