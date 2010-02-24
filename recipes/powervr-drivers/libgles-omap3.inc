@@ -3,7 +3,7 @@ LICENCE = "proprietary-binary"
 
 COMPATIBLE_MACHINE = "(am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 
-DEPENDS = "virtual/libx11  libxau libxdmcpdev"
+DEPENDS = "virtual/libx11 libxau libxdmcpdev"
 
 PROVIDES += "virtual/egl"
 
@@ -113,7 +113,7 @@ do_compile() {
 
 do_install () {
 	install -d ${D}${libdir}
-	install -m 0755 ${BINLOCATION}/*.so* ${D}${libdir}
+	cp -pPR ${BINLOCATION}/*.so* ${D}${libdir}
 	install -m 0644 ${BINLOCATION}/*.a ${D}${libdir}
 
 	install -d ${D}${bindir}/
@@ -152,10 +152,10 @@ do_install () {
 	install -d ${D}${bindir}/ES3.0
 	install -d ${D}${bindir}/ES2.0
 
-	cp ${S}/gfx_rel_es2.x/lib* ${D}${libdir}/ES2.0/
+	cp -pPR ${S}/gfx_rel_es2.x/lib* ${D}${libdir}/ES2.0/
 	cp ${S}/gfx_rel_es2.x//p[dv]* ${D}${bindir}/ES2.0/
 
-	cp ${D}${libdir}/lib*${IMGPV} ${D}${libdir}/ES3.0/
+	cp -pPR ${D}${libdir}/lib*${IMGPV} ${D}${libdir}/ES3.0/
 	cp ${D}${bindir}/p[dv]* ${D}${bindir}/ES3.0
 
 	install -d ${D}${prefix}/share/applications
@@ -202,8 +202,8 @@ FILES_${PN}-x11trainingcourses = "${bindir}/SGX/trainingcourses/X11/*"
 # The libs need the kernel-modules
 RRECOMMENDS_${PN} = "omap3-sgx-modules"
 
-# The initscript calls fbset
-RDEPENDS_${PN} += "fbset"
+# The initscript calls fbset, cputype calls devmem2
+RDEPENDS_${PN} += "fbset devmem2"
 
 #HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
 INSANE_SKIP_${PN} = True
