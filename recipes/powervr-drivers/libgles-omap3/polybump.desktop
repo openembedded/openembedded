@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=PolyBump Demo
-Comment=OGLES Demo
-Exec=/usr/demos/OGLES/PolyBump/OGLESPolyBump
-Icon=star
-Type=Application
-Categories=Demos;
-

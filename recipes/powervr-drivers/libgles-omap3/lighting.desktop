@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Lighting Demo
-Comment=OGLES Demo
-Exec=/usr/demos/OGLES/Lighting/OGLESLighting
-Icon=star
-Type=Application
-Categories=Demos;
-

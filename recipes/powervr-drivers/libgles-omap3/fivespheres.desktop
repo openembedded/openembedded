@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=FiveSpheres Demo
-Comment=OGLES Demo
-Exec=/usr/demos/OGLES/FiveSpheres/OGLESFiveSpheres
-Icon=star
-Type=Application
-Categories=Demos;
-
