@@ -1,15 +1,15 @@
-From cf5c8721705bcbac27986e5a29a37d2a1686570a Mon Sep 17 00:00:00 2001
+From bc57de2551b792f49a92c90f6cf8a4890ede038f Mon Sep 17 00:00:00 2001
 From: Francisco Jerez <currojerez@riseup.net>
 Date: Fri, 22 Jan 2010 06:29:37 -0800
 Subject: [PATCH 4/5] glx/dri2: Notify the driver when its buffers become invalid.
 
 Signed-off-by: Francisco Jerez <currojerez@riseup.net>
 ---
- glx/glxdri2.c |   31 ++++++++++++++++++++++++++++---
- 1 files changed, 28 insertions(+), 3 deletions(-)
+ glx/glxdri2.c |   30 ++++++++++++++++++++++++++----
+ 1 files changed, 26 insertions(+), 4 deletions(-)
 
 diff --git a/glx/glxdri2.c b/glx/glxdri2.c
-index 0f998de..e4f2d60 100644
+index edd29b0..5c617d9 100644
 --- a/glx/glxdri2.c
 +++ b/glx/glxdri2.c
 @@ -67,6 +67,7 @@ struct __GLXDRIscreen {
@@ -20,27 +20,29 @@ index 0f998de..e4f2d60 100644
  
      const __DRIcoreExtension *core;
      const __DRIdri2Extension *dri2;
-@@ -217,13 +218,16 @@ __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable *drawable)
+@@ -217,6 +218,10 @@ __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable *drawable)
      __GLXDRIscreen *screen = priv->screen;
      CARD64 unused;
  
--    if (screen->flush)
--	(*screen->flush->flushInvalidate)(priv->driDrawable);
--
-     if (DRI2SwapBuffers(client, drawable->pDraw, 0, 0, 0, &unused,
- 			__glXdriSwapEvent, drawable->pDraw) != Success)
- 	return FALSE;
++    if (DRI2SwapBuffers(client, drawable->pDraw, 0, 0, 0, &unused,
++			__glXdriSwapEvent, drawable->pDraw) != Success)
++	return FALSE;
++
+ #if __DRI2_FLUSH_VERSION >= 3
+     if (screen->flush) {
+ 	(*screen->flush->flush)(priv->driDrawable);
+@@ -227,10 +232,6 @@ __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable *drawable)
+ 	(*screen->flush->flushInvalidate)(priv->driDrawable);
+ #endif
  
-+    if (screen->flush)
-+	(*screen->flush->invalidate)(priv->driDrawable);
-+
-+    if (screen->flush && screen->flush->flushInvalidate)
-+	(*screen->flush->flushInvalidate)(priv->driDrawable);
-+
+-    if (DRI2SwapBuffers(client, drawable->pDraw, 0, 0, 0, &unused,
+-			__glXdriSwapEvent, drawable->pDraw) != Success)
+-	return FALSE;
+-
      return TRUE;
  }
  
-@@ -607,6 +611,24 @@ glxDRILeaveVT (int index, int flags)
+@@ -614,6 +615,24 @@ glxDRILeaveVT (int index, int flags)
  }
  
  static void
@@ -65,7 +67,7 @@ index 0f998de..e4f2d60 100644
  initializeExtensions(__GLXDRIscreen *screen)
  {
      const __DRIextension **extensions;
-@@ -782,6 +804,9 @@ __glXDRIscreenProbe(ScreenPtr pScreen)
+@@ -789,6 +808,9 @@ __glXDRIscreenProbe(ScreenPtr pScreen)
      screen->leaveVT = pScrn->LeaveVT;
      pScrn->LeaveVT = glxDRILeaveVT;
  
