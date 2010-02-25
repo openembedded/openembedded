@@ -1,4 +1,4 @@
-#Thu Feb 18 13:10:13 CET 2010
+#Thu Feb 25 10:36:35 CET 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -292,7 +292,7 @@ PREFERRED_VERSION_libpciaccess ?= "0.11.0"
 PREFERRED_VERSION_libxkbfile ?= "1.0.6"
 PREFERRED_VERSION_libxkbfile-native ?= "1.0.6"
 PREFERRED_VERSION_libxkbui ?= "1.0.2"
-PREFERRED_VERSION_pixman ?= "0.17.6"
+PREFERRED_VERSION_pixman ?= "0.17.8"
 PREFERRED_VERSION_xtrans ?= "1.2.5"
 PREFERRED_VERSION_xtrans-native ?= "1.2.5"
 #proto
