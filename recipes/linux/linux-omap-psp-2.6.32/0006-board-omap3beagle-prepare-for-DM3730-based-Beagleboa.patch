@@ -1,9 +1,9 @@
-From 99669461e2ddd9947c30bbd5e49561609cee1367 Mon Sep 17 00:00:00 2001
-From: OpenEmbedded User <oe@OE-builder.(none)>
+From d9a0bb7553b59a0ecdd2cfdc8f26666492f298a9 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
 Date: Mon, 8 Feb 2010 16:30:59 +0100
-Subject: [PATCH] board-omap3beagle: prepare for DM3730 based BeagleboardXM
+Subject: [PATCH 06/30] board-omap3beagle: prepare for DM3730 based BeagleboardXM
 
-	* OPP changes copy/pasted from board-omap3evm.c
+* OPP changes copy/pasted from board-omap3evm.c
 	* EHCI changes copy/pasted from Steve Kipisz' 2.6.33rcX work
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |   57 ++++++++++++++++++++++++++----
@@ -93,5 +93,5 @@ index 1caaa01..accf80d 100644
  #ifdef CONFIG_OMAP_32K_TIMER
  	omap2_gp_clockevent_set_gptimer(12);
 -- 
-1.5.4.3
+1.6.6.1
 

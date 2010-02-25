@@ -1,5 +1,16 @@
---- /tmp/board-omap3beagle.c	2009-12-22 10:47:35.000000000 +0100
-+++ git/arch/arm/mach-omap2/board-omap3beagle.c	2009-12-22 10:59:53.000000000 +0100
+From 98c074253ee9ca49b145b81843cceedbf7aebc55 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 10 Feb 2010 15:07:36 +0100
+Subject: [PATCH 04/30] board-omap3-beagle: add DSS2 support
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |  130 ++++++++++++++++++++++++-------
+ 1 files changed, 103 insertions(+), 27 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 9f72c7a..3b7f6ec 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -40,6 +40,7 @@
  
  #include <plat/board.h>
@@ -8,7 +19,7 @@
  #include <plat/gpmc.h>
  #include <plat/nand.h>
  #include <plat/usb.h>
-@@ -149,6 +150,105 @@
+@@ -153,6 +154,105 @@ static struct platform_device omap3beagle_nand_device = {
  	.resource	= &omap3beagle_nand_resource,
  };
  
@@ -114,7 +125,7 @@
  #include "sdram-micron-mt46h32m32lf-6.h"
  
  static struct twl4030_hsmmc_info mmc[] = {
-@@ -168,15 +268,6 @@
+@@ -172,15 +272,6 @@ static struct twl4030_hsmmc_info mmc[] = {
  	{}	/* Terminator */
  };
  
@@ -130,7 +141,7 @@
  static struct regulator_consumer_supply beagle_vmmc1_supply = {
  	.supply			= "vmmc",
  };
-@@ -232,16 +323,6 @@
+@@ -236,16 +327,6 @@ static struct twl4030_gpio_platform_data beagle_gpio_data = {
  	.setup		= beagle_twl_gpio_setup,
  };
  
@@ -147,7 +158,7 @@
  /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
  static struct regulator_init_data beagle_vmmc1 = {
  	.constraints = {
-@@ -419,14 +500,8 @@
+@@ -418,14 +499,8 @@ static struct platform_device keys_gpio = {
  	},
  };
  
@@ -160,9 +171,9 @@
 -	omap_board_config = omap3_beagle_config;
 -	omap_board_config_size = ARRAY_SIZE(omap3_beagle_config);
  	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-@@ -437,9 +512,9 @@
+ 			     mt46h32m32lf6_sdrc_params, omap3_mpu_rate_table,
+ 			     omap3_dsp_rate_table, omap3_l3_rate_table);
+@@ -437,9 +512,9 @@ static void __init omap3_beagle_init_irq(void)
  }
  
  static struct platform_device *omap3_beagle_devices[] __initdata = {
@@ -173,7 +184,7 @@
  };
  
  static void __init omap3beagle_flash_init(void)
-@@ -522,8 +597,9 @@
+@@ -522,8 +597,9 @@ static void __init omap3_beagle_init(void)
  	/* Ensure SDRC pins are mux'd for self-refresh */
  	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
  	omap_mux_init_signal("sdrc_cke1", OMAP_PIN_OUTPUT);
@@ -184,3 +195,6 @@
  static void __init omap3_beagle_map_io(void)
  {
  	omap2_set_globals_343x();
+-- 
+1.6.6.1
+

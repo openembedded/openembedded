@@ -5,29 +5,47 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook"
 
-SRCREV = "06733a907b777f7dca21b2d44e36b6c4afbe01fe"
+SRCREV = "ac07af55554567b6226ba8dd623756c630e93103"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=master \
-           file://0005-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board.patch;patch=1 \
-           file://0006-ARM-OMAP-Make-beagle-u-boot-partition-writable.patch;patch=1 \
-           file://0007-ASoC-enable-audio-capture-by-default-for-twl4030.patch;patch=1 \
-           file://0009-MTD-NAND-omap2-proper-fix-for-subpage-read-ECC-error.patch;patch=1 \
-           file://dss2/0015-OMAP-DSS-Add-DSS2-support-for-Beagle.patch;patch=1 \
-           file://dss2/0016-video-add-timings-for-hd720.patch;patch=1 \
-           file://holes.patch;patch=1 \
-           file://no-mmc-spew.patch;patch=1 \
-           file://beagleboard/0001-beagleboard-omap3_-foo-_rate_table-omap35x_-foo.patch;patch=1 \
-           file://beagleboard/0001-board-omap3beagle-prepare-for-DM3730-based-Beaglebo.patch;patch=1 \
-           file://0001-board-omap3touchbook-make-it-build-against-TI-linux.patch;patch=1 \
+           file://0001-board-omap3touchbook-make-it-build-against-TI-linux-.patch;patch=1 \
+           file://0002-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board-f.patch;patch=1 \
+           file://0003-ARM-OMAP-Make-beagle-u-boot-partition-writable.patch;patch=1 \
+           file://0004-board-omap3-beagle-add-DSS2-support.patch;patch=1 \
+           file://0005-beagleboard-omap3_-foo-_rate_table-omap35x_-foo-_rat.patch;patch=1 \
+           file://0006-board-omap3beagle-prepare-for-DM3730-based-Beagleboa.patch;patch=1 \
+           file://0007-mt9t111-first-stab-at-merging-sensor-driver-based-on.patch;patch=1 \
+           file://0008-board-omap3beagle-ugly-copy-paste-job-to-get-mt9p111.patch;patch=1 \
+           file://0009-board-omap3beagle-turn-on-power-to-camera-on-boot-an.patch;patch=1 \
+           file://0010-board-omap3beagle-update-omap34xxcam-to-more-recent-.patch;patch=1 \
+           file://0011-ASoC-enable-audio-capture-by-default-for-twl4030.patch;patch=1 \
+           file://0012-MTD-NAND-omap2-proper-fix-for-subpage-read-ECC-error.patch;patch=1 \
+           file://0013-OMAP3630-DSS2-Enable-Pre-Multiplied-Alpha-Support.patch;patch=1 \
+           file://0014-DSS2-add-bootarg-for-selecting-svideo-or-composite-f.patch;patch=1 \
+           file://0015-ISP-add-some-more-from-Leopard-imaging-patch.patch;patch=1 \
+           file://0016-ARM-OMAP-Overo-Add-support-for-second-ethernet-port.patch;patch=1 \
+           file://0017-drivers-net-smsc911x-return-ENODEV-if-device-is-not-.patch;patch=1 \
+           file://0018-drivers-input-touchscreen-ads7846-return-ENODEV-if-d.patch;patch=1 \
+           file://0019-drivers-mfd-add-twl4030-madc-driver.patch;patch=1 \
+           file://0020-ARM-OMAP-Add-missing-twl4030-madc-header-file.patch;patch=1 \
+           file://0021-ARM-OMAP-Add-twl4030-madc-support-to-Overo.patch;patch=1 \
+           file://0022-ARM-OMAP-Add-twl4030-madc-support-to-Beagle.patch;patch=1 \
+           file://0023-netdev-rt73usb-add-vendor-device-ID-for-Ceiva-Wirele.patch;patch=1 \
+           file://0024-mmc-don-t-display-single-block-read-console-messages.patch;patch=1 \
+           file://0025-ARM-OMAP2-mmc-twl4030-move-clock-input-selection-pri.patch;patch=1 \
+           file://0026-board-overo-add-PM-code-and-sync-with-http-www.sakom.patch;patch=1 \
+           file://0027-twl4030-madc-adjust-for-twl4030-twl-api-changes.patch;patch=1 \
+           file://0028-OMAP-DSS2-Re-add-support-for-Samsung-lte430wq-f0c-pa.patch;patch=1 \
+           file://0029-OMAP-DSS2-Add-support-for-LG-Philips-LB035Q02-panel.patch;patch=1 \
+           file://0030-Fix-for-bus-width-which-improves-SD-card-s-peformanc.patch;patch=1 \
+           file://0031-ARM-VFP-add-support-to-sync-the-VFP-state-of-the-cur.patch;patch=1 \
+           file://0032-ARM-VFP-preserve-the-HW-context-when-calling-signal-.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
-"
-
-SRC_URI_append_am3517-evm = " file://am3517-ehci-mux.patch;patch=1 \
 "
 
 addtask quiltfixup before do_patch after do_unpack

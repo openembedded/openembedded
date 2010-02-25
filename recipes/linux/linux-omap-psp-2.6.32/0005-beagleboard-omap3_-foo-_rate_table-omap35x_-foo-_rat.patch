@@ -1,7 +1,7 @@
-From 3f0c5ac9e0724a77adc7cd8f9ef058d8d7973ff6 Mon Sep 17 00:00:00 2001
-From: OpenEmbedded User <oe@OE-builder.(none)>
+From 04dc08419ca56f03dd01e54a064cb17342165e02 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
 Date: Wed, 27 Jan 2010 21:57:13 +0100
-Subject: [PATCH] beagleboard: omap3_<foo>_rate_table -> omap35x_<foo>_rate_table
+Subject: [PATCH 05/30] beagleboard: omap3_<foo>_rate_table -> omap35x_<foo>_rate_table
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    4 ++--
@@ -23,5 +23,5 @@ index 3b7f6ec..1caaa01 100644
  #ifdef CONFIG_OMAP_32K_TIMER
  	omap2_gp_clockevent_set_gptimer(12);
 -- 
-1.5.4.3
+1.6.6.1
 

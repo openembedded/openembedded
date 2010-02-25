@@ -1,7 +1,7 @@
-From e09abf20005e9abf41e44e712bc600d2cb346cb5 Mon Sep 17 00:00:00 2001
+From 29fb8d970cf88080881269f99b886fd53534603c Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 15:05:30 -0800
-Subject: [PATCH 12/16] OMAP: DSS2: Add support for LG Philips LB035Q02 panel
+Subject: [PATCH 29/30] OMAP: DSS2: Add support for LG Philips LB035Q02 panel
 
 ---
  drivers/video/omap2/displays/Kconfig               |    6 +
@@ -11,7 +11,7 @@ Subject: [PATCH 12/16] OMAP: DSS2: Add support for LG Philips LB035Q02 panel
  create mode 100644 drivers/video/omap2/displays/panel-lgphilips-lb035q02.c
 
 diff --git a/drivers/video/omap2/displays/Kconfig b/drivers/video/omap2/displays/Kconfig
-index 79d2861..050f29c 100644
+index 4229a28..875250a 100644
 --- a/drivers/video/omap2/displays/Kconfig
 +++ b/drivers/video/omap2/displays/Kconfig
 @@ -7,6 +7,12 @@ config PANEL_GENERIC
@@ -28,7 +28,7 @@ index 79d2861..050f29c 100644
          tristate "Samsung LTE430WQ-F0C LCD Panel"
          depends on OMAP2_DSS
 diff --git a/drivers/video/omap2/displays/Makefile b/drivers/video/omap2/displays/Makefile
-index d44e765..28f6f9b 100644
+index 9317445..f8e6c52 100644
 --- a/drivers/video/omap2/displays/Makefile
 +++ b/drivers/video/omap2/displays/Makefile
 @@ -1,4 +1,5 @@
@@ -36,7 +36,7 @@ index d44e765..28f6f9b 100644
 +obj-$(CONFIG_PANEL_LGPHILIPS_LB035Q02) += panel-lgphilips-lb035q02.o
  obj-$(CONFIG_PANEL_SAMSUNG_LTE430WQ_F0C) += panel-samsung-lte430wq-f0c.o
  obj-$(CONFIG_PANEL_SHARP_LS037V7DW01) += panel-sharp-ls037v7dw01.o
- 
+ obj-$(CONFIG_PANEL_SHARP_LQ043T1DG01) += panel-sharp-lq043t1dg01.o
 diff --git a/drivers/video/omap2/displays/panel-lgphilips-lb035q02.c b/drivers/video/omap2/displays/panel-lgphilips-lb035q02.c
 new file mode 100644
 index 0000000..22dc865
@@ -250,5 +250,5 @@ index 0000000..22dc865
 +module_exit(lb035q02_panel_drv_exit);
 +MODULE_LICENSE("GPL");
 -- 
-1.6.2.4
+1.6.6.1
 

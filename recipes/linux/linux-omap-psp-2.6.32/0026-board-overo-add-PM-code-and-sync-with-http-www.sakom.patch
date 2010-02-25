@@ -1,25 +1,25 @@
-From 6b135653505a2a5da42c92cfa31c3ab22e2b130f Mon Sep 17 00:00:00 2001
-From: Steve Sakoman <steve@sakoman.com>
-Date: Fri, 18 Dec 2009 06:39:24 -0800
-Subject: [PATCH 14/16] OMAP: DSS: Add DSS2 support for Overo
+From 854cb25abd08485f4b2c127112cf621471347040 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sun, 14 Feb 2010 12:52:02 +0100
+Subject: [PATCH 26/30] board-overo: add PM code and sync with http://www.sakoman.com/cgi-bin/gitweb.cgi?p=linux-omap-2.6.git;a=shortlog;h=refs/heads/omap3-2.6.32
 
 ---
- arch/arm/mach-omap2/board-overo.c |  233 +++++++++++++++++++++++++++++++-----
- 1 files changed, 200 insertions(+), 33 deletions(-)
+ arch/arm/mach-omap2/board-overo.c |  274 ++++++++++++++++++++++++++++++++-----
+ 1 files changed, 242 insertions(+), 32 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
-index d0394d9..b90b140 100644
+index 9c76588..2595f81 100644
 --- a/arch/arm/mach-omap2/board-overo.c
 +++ b/arch/arm/mach-omap2/board-overo.c
 @@ -28,6 +28,7 @@
  #include <linux/platform_device.h>
- #include <linux/i2c/twl4030.h>
+ #include <linux/i2c/twl.h>
  #include <linux/regulator/machine.h>
 +#include <linux/spi/spi.h>
  
  #include <linux/mtd/mtd.h>
  #include <linux/mtd/nand.h>
-@@ -40,10 +41,12 @@
+@@ -40,16 +41,24 @@
  
  #include <plat/board.h>
  #include <plat/common.h>
@@ -29,19 +29,24 @@ index d0394d9..b90b140 100644
  #include <mach/hardware.h>
  #include <plat/nand.h>
 +#include <plat/mcspi.h>
- #include <plat/mux.h>
  #include <plat/usb.h>
+-
+-#include "mux.h"
++#include <plat/clock.h>
++#include <plat/omap-pm.h>
++ 
+ #include "sdram-micron-mt46h32m32lf-6.h"
+ #include "mmc-twl4030.h"
  
-@@ -69,8 +72,6 @@
- #if defined(CONFIG_TOUCHSCREEN_ADS7846) || \
- 	defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
- 
--#include <plat/mcspi.h>
--#include <linux/spi/spi.h>
- #include <linux/spi/ads7846.h>
- 
- static struct omap2_mcspi_device_config ads7846_mcspi_config = {
-@@ -95,18 +96,6 @@ static struct ads7846_platform_data ads7846_config = {
++#include "mux.h"
++
++#include "pm.h"
++#include "omap3-opp.h"
++
+ #define OVERO_GPIO_BT_XGATE	15
+ #define OVERO_GPIO_W2W_NRESET	16
+ #define OVERO_GPIO_PENDOWN	114
+@@ -95,18 +104,6 @@ static struct ads7846_platform_data ads7846_config = {
  	.keep_vref_on		= 1,
  };
  
@@ -60,7 +65,7 @@ index d0394d9..b90b140 100644
  static void __init overo_ads7846_init(void)
  {
  	if ((gpio_request(OVERO_GPIO_PENDOWN, "ADS7846_PENDOWN") == 0) &&
-@@ -116,9 +105,6 @@ static void __init overo_ads7846_init(void)
+@@ -116,9 +113,6 @@ static void __init overo_ads7846_init(void)
  		printk(KERN_ERR "could not obtain gpio for ADS7846_PENDOWN\n");
  		return;
  	}
@@ -70,7 +75,7 @@ index d0394d9..b90b140 100644
  }
  
  #else
-@@ -234,6 +220,137 @@ static inline void __init overo_init_smsc911x(void)
+@@ -234,6 +228,169 @@ static inline void __init overo_init_smsc911x(void)
  static inline void __init overo_init_smsc911x(void) { return; }
  #endif
  
@@ -123,6 +128,37 @@ index d0394d9..b90b140 100644
 +	.platform_disable	= overo_panel_disable_dvi,
 +};
 +
++static int overo_panel_enable_tv(struct omap_dss_device *dssdev)
++{
++#define ENABLE_VDAC_DEDICATED           0x03
++#define ENABLE_VDAC_DEV_GRP             0x20
++
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEDICATED,
++			TWL4030_VDAC_DEDICATED);
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEV_GRP, TWL4030_VDAC_DEV_GRP);
++
++	return 0;
++}
++
++static void overo_panel_disable_tv(struct omap_dss_device *dssdev)
++{
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEDICATED);
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEV_GRP);
++}
++
++static struct omap_dss_device overo_tv_device = {
++	.name = "tv",
++	.driver_name = "venc",
++	.type = OMAP_DISPLAY_TYPE_VENC,
++	.phy.venc.type = OMAP_DSS_VENC_TYPE_SVIDEO,
++	.platform_enable = overo_panel_enable_tv,
++	.platform_disable = overo_panel_disable_tv,
++};
++
 +static int overo_panel_enable_lcd(struct omap_dss_device *dssdev)
 +{
 +	if (dvi_enabled) {
@@ -171,6 +207,7 @@ index d0394d9..b90b140 100644
 +
 +static struct omap_dss_device *overo_dss_devices[] = {
 +	&overo_dvi_device,
++	&overo_tv_device,
 +#if defined(CONFIG_PANEL_LGPHILIPS_LB035Q02) || \
 +	defined(CONFIG_PANEL_LGPHILIPS_LB035Q02_MODULE)
 +	&overo_lcd35_device,
@@ -208,7 +245,7 @@ index d0394d9..b90b140 100644
  static struct mtd_partition overo_nand_partitions[] = {
  	{
  		.name           = "xloader",
-@@ -379,6 +496,37 @@ static struct regulator_init_data overo_vmmc1 = {
+@@ -379,6 +536,37 @@ static struct regulator_init_data overo_vmmc1 = {
  	.consumer_supplies	= &overo_vmmc1_supply,
  };
  
@@ -246,16 +283,7 @@ index d0394d9..b90b140 100644
  static struct twl4030_codec_audio_data overo_audio_data = {
  	.audio_mclk = 26000000,
  };
-@@ -388,8 +536,6 @@ static struct twl4030_codec_data overo_codec_data = {
- 	.audio = &overo_audio_data,
- };
- 
--/* mmc2 (WLAN) and Bluetooth don't use twl4030 regulators */
--
- static struct twl4030_madc_platform_data overo_madc_data = {
- 	.irq_line	= 1,
- };
-@@ -402,6 +548,8 @@ static struct twl4030_platform_data overo_twldata = {
+@@ -402,6 +590,8 @@ static struct twl4030_platform_data overo_twldata = {
  	.usb		= &overo_usb_data,
  	.codec		= &overo_codec_data,
  	.vmmc1		= &overo_vmmc1,
@@ -264,7 +292,7 @@ index d0394d9..b90b140 100644
  };
  
  static struct i2c_board_info __initdata overo_i2c_boardinfo[] = {
-@@ -422,23 +570,41 @@ static int __init overo_i2c_init(void)
+@@ -422,31 +612,50 @@ static int __init overo_i2c_init(void)
  	return 0;
  }
  
@@ -316,9 +344,11 @@ index d0394d9..b90b140 100644
 -	omap_board_config = overo_config;
 -	omap_board_config_size = ARRAY_SIZE(overo_config);
  	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
+-			     mt46h32m32lf6_sdrc_params, NULL, NULL, NULL);
++			     NULL, omap35x_mpu_rate_table,
++			     omap35x_dsp_rate_table, omap35x_l3_rate_table);
  	omap_init_irq();
-@@ -446,7 +612,7 @@ static void __init overo_init_irq(void)
+ 	omap_gpio_init();
  }
  
  static struct platform_device *overo_devices[] __initdata = {
@@ -327,7 +357,7 @@ index d0394d9..b90b140 100644
  };
  
  static struct ehci_hcd_omap_platform_data ehci_pdata __initconst = {
-@@ -469,8 +635,9 @@ static void __init overo_init(void)
+@@ -477,8 +686,9 @@ static void __init overo_init(void)
  	overo_flash_init();
  	usb_musb_init();
  	usb_ehci_init(&ehci_pdata);
@@ -337,7 +367,7 @@ index d0394d9..b90b140 100644
 +	overo_display_init();
  
  	/* Ensure SDRC pins are mux'd for self-refresh */
- 	omap_cfg_reg(H16_34XX_SDRC_CKE0);
+ 	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
 -- 
-1.6.2.4
+1.6.6.1
 

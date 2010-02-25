@@ -1,7 +1,7 @@
-From 190c75031e65008425dbdd74c3e3237beed18460 Mon Sep 17 00:00:00 2001
+From e98c43b693a4893bbe52ed1874e31961d36a4116 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <sakoman@gmail.com>
 Date: Tue, 15 Dec 2009 14:59:42 -0800
-Subject: [PATCH 01/16] ARM: OMAP: Overo: Add support for second ethernet port
+Subject: [PATCH 16/30] ARM: OMAP: Overo: Add support for second ethernet port
 
 Signed-off-by: Steve Sakoman <sakoman@gmail.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Steve Sakoman <sakoman@gmail.com>
  1 files changed, 53 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
-index 52dfd51..1b94f2c 100644
+index e0aebc3..6204b8c 100644
 --- a/arch/arm/mach-omap2/board-overo.c
 +++ b/arch/arm/mach-omap2/board-overo.c
 @@ -63,6 +63,8 @@
@@ -106,5 +106,5 @@ index 52dfd51..1b94f2c 100644
  
  #else
 -- 
-1.6.2.4
+1.6.6.1
 

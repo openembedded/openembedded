@@ -1,7 +1,7 @@
-From deb568b94c448aa7ffcc9e6788bcf9069fd3b864 Mon Sep 17 00:00:00 2001
+From 7e5f28ca06be8efdbe2c03a252e09a2d5a1b8384 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <sakoman@gmail.com>
 Date: Tue, 15 Dec 2009 15:24:10 -0800
-Subject: [PATCH 04/16] drivers: input: touchscreen: ads7846: return ENODEV if device is not found
+Subject: [PATCH 18/30] drivers: input: touchscreen: ads7846: return ENODEV if device is not found
 
 Signed-off-by: Steve Sakoman <sakoman@gmail.com>
 ---
@@ -9,10 +9,10 @@ Signed-off-by: Steve Sakoman <sakoman@gmail.com>
  1 files changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index 09c8109..7cc9973 100644
+index 52d2ca1..ce12c63 100644
 --- a/drivers/input/touchscreen/ads7846.c
 +++ b/drivers/input/touchscreen/ads7846.c
-@@ -1170,9 +1170,16 @@ static int __devinit ads7846_probe(struct spi_device *spi)
+@@ -1161,9 +1161,16 @@ static int __devinit ads7846_probe(struct spi_device *spi)
  	/* take a first sample, leaving nPENIRQ active and vREF off; avoid
  	 * the touchscreen, in case it's not connected.
  	 */
@@ -30,7 +30,7 @@ index 09c8109..7cc9973 100644
  	err = sysfs_create_group(&spi->dev.kobj, &ads784x_attr_group);
  	if (err)
  		goto err_remove_hwmon;
-@@ -1190,7 +1197,7 @@ static int __devinit ads7846_probe(struct spi_device *spi)
+@@ -1181,7 +1188,7 @@ static int __devinit ads7846_probe(struct spi_device *spi)
   err_free_irq:
  	free_irq(spi->irq, ts);
   err_free_gpio:
@@ -39,7 +39,7 @@ index 09c8109..7cc9973 100644
  		gpio_free(ts->gpio_pendown);
   err_cleanup_filter:
  	if (ts->filter_cleanup)
-@@ -1217,7 +1224,7 @@ static int __devexit ads7846_remove(struct spi_device *spi)
+@@ -1208,7 +1215,7 @@ static int __devexit ads7846_remove(struct spi_device *spi)
  	/* suspend left the IRQ disabled */
  	enable_irq(ts->spi->irq);
  
@@ -49,5 +49,5 @@ index 09c8109..7cc9973 100644
  
  	if (ts->filter_cleanup)
 -- 
-1.6.2.4
+1.6.6.1
 
