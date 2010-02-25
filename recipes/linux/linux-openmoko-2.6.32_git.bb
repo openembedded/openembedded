@@ -3,8 +3,9 @@ require linux-openmoko.inc
 
 DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Smartphones"
 
-KERNEL_RELEASE="2.6.32.8"
+KERNEL_RELEASE="2.6.32.9"
 
+SRCREV = "14be1091928fcce66812a85129768fb253b36420"
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
 PR = "r1"
@@ -27,8 +28,8 @@ SRC_URI = "\
   file://0009-A-couple-of-GEM-refcounting-fixes.patch;patch=1 \
 "
 
-SRC_URI[stablepatch.md5sum] = "eabf01da4c72f7ea5b4e4bf8e8535e5f"
-SRC_URI[stablepatch.sha256sum] = "50c08a7ffcad1e7cd2e7c2c906795896dd36ce71249d816914c306dcc5875fd2"
+SRC_URI[stablepatch.md5sum] = "7f615dd3b4a3b19fb86e479996a2deb5"
+SRC_URI[stablepatch.sha256sum] = "8aeb15c31fb09c769f004c8dc51e29aa26be8e84d70db418af70ecefc463459a"
 
 S = "${WORKDIR}/git"
 
