@@ -1,0 +1,40 @@
+Subject: [PATCH 2/2] cmd_itest.c: fix pointer dereferencing
+Date: Mon, 22 Feb 2010 22:49:06 +0100
+Message-Id: <1266875346-17025-1-git-send-email-fransmeulenbroeks@gmail.com>
+X-Mailer: git-send-email 1.6.4.2
+
+fix pointer dereferencing
+if the size is .b and .w an 8 or 16 bit access is done.
+
+Signed-off-by: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
+---
+ common/cmd_itest.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/common/cmd_itest.c b/common/cmd_itest.c
+index 5b301bf..58c5e7b 100644
+--- a/common/cmd_itest.c
++++ b/common/cmd_itest.c
+@@ -66,12 +66,17 @@ op_tbl_t op_table [] = {
+ 
+ static long evalexp(char *s, int w)
+ {
+-	long l, *p;
++	long l = 0;
++	long *p;
+ 
+ 	/* if the parameter starts with a * then assume is a pointer to the value we want */
+ 	if (s[0] == '*') {
+ 		p = (long *)simple_strtoul(&s[1], NULL, 16);
+-		l = *p;
++		switch (w) {
++		case 1: return((long)(*(unsigned char *)p));
++		case 2: return((long)(*(unsigned short *)p));
++		case 4: return(*p);
++		}
+ 	} else {
+ 		l = simple_strtoul(s, NULL, 16);
+ 	}
+-- 
+1.6.4.2
+
