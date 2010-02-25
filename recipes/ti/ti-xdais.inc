@@ -9,7 +9,7 @@ PR = "r1"
 
 S = "${WORKDIR}/xdais_${PV}"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/xdais/${PV}/exports/xdais_${PV}.tar.gz;name=xdaisgz"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/xdais/${PV}/exports/xdais_${PV}.tar.gz;name=xdaistarball"
 
 do_install() {
     install -d ${D}${XDAIS_INSTALL_DIR_RECIPE}

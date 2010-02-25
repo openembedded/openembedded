@@ -25,7 +25,10 @@ DEPENDS += "virtual/kernel"
 
 LPMDSPPOWERSOC_omap3  = "omap3530"
 LPMDSPPOWERSOC_dm6446 = "dm6446"
-LPMDSPPOWERSOC        ?= "<UNDEFINED_LPMDSPPOWERSOC>"
+LPMDSPPOWERSOC       ?= "<UNDEFINED_LPMDSPPOWERSOC>"
+
+XDC_PLATFORM_omap3    = "ti.platforms.evm3530"
+XDC_PLATFORM         ?= "<UNDEFINED_XDC_PLATFORM>"
 
 do_configure () {
 

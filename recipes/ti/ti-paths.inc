@@ -1,13 +1,11 @@
 require ti-multimedia-common.inc
 
-export CROSS_COMPILE = "${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}"
+#export CROSS_COMPILE = "${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}"
 
-PLATFORM ?= "dm6446"
-PLATFORM_dm6446 = "dm6446"
-PLATFORM_dm6467 = "dm6467"
-export PLATFORM
+#PLATFORM ?= "dm6446"
+#PLATFORM_dm6446 = "dm6446"
+#PLATFORM_dm6467 = "dm6467"
+#export PLATFORM
 
-export CODEC ?= "${CODEC_INSTALL_DIR}"
-
-installdir = "${datadir}/ti"
+#installdir = "${datadir}/ti"
 

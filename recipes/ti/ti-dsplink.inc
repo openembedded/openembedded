@@ -15,13 +15,14 @@ PROVIDES += "ti-dsplink-examples"
 
 # This package builds a kernel module, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "c"
+PR_append = "d"
 
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/DSPLink/${PV}/exports/dsplink_linux_${PV}.tar.gz;name=dsplinktarball \
-           file://loadmodules-ti-dsplink-apps.sh \
-           file://unloadmodules-ti-dsplink-apps.sh "
+           file://ti-dsplink-examples-run.sh \
+           file://ti-dsplink-examples-loadmodules.sh \
+           file://ti-dsplink-examples-unloadmodules.sh "
 
 DEPENDS = "ti-dspbios ti-xdctools ti-cgt6x" 
 DEPENDS += "virtual/kernel perl-native" 
@@ -44,7 +45,7 @@ DSPLINKDSPCFG            ?= "<UNDEFINED_DSPLINKDSPCFG>"
 
 DSPLINKGPPOS_dm6446       = "MVL5G"
 DSPLINKGPPOS_dm6467       = "DM6467LSP"
-DSPLINKGPPOS_omapl137     = "ARM"
+DSPLINKGPPOS_omapl137     = "MVL5G"
 DSPLINKGPPOS_omapl138     = "ARM"
 DSPLINKGPPOS_omap3        = "OMAPLSP"
 DSPLINKGPPOS             ?= "<DEFINED_DSPLINKGPPOS>" 
@@ -59,6 +60,9 @@ do_configure() {
     # We can safely sed it out since it has been empty for the past 2 years
     sed -i /page.h/d ${S}/dsplink/gpp/src/api/Linux/drv_api.c || true 
 
+    # Makefile passes hardcoded CROSS_COMPILE - rename so this doesnt get passed to kbuild
+    sed -i -e s:CROSS_COMPILE:BOGUS_CROSS_COMPILE:g ${S}/dsplink/gpp/src/Rules.mk
+
     # Run perl script to create appropriate makefiles (v1.60 and up)
     (
     cd ${DSPLINK}
@@ -66,7 +70,6 @@ do_configure() {
 	--dspcfg_0=${DSPLINKDSPCFG} --dspos_0=DSPBIOS5XX \
 	--gppos=${DSPLINKGPPOS} --comps=ponslrmc
     )
-
 }
 
 do_prepsources () {
@@ -210,9 +213,10 @@ do_install () {
     done
 
     # Install the example apps module un/load scripts
-    install ${WORKDIR}/loadmodules-ti-dsplink-apps.sh ${D}/${installdir}/ti-dsplink-examples
-    install ${WORKDIR}/unloadmodules-ti-dsplink-apps.sh ${D}/${installdir}/ti-dsplink-examples
-    
+    install ${WORKDIR}/ti-dsplink-examples-loadmodules.sh ${D}/${installdir}/ti-dsplink-examples
+    install ${WORKDIR}/ti-dsplink-examples-unloadmodules.sh ${D}/${installdir}/ti-dsplink-examples
+    install ${WORKDIR}/ti-dsplink-examples-run.sh ${D}/${installdir}/ti-dsplink-examples   
+ 
     # Install/Stage the Source Tree
     install -d ${D}${LINK_INSTALL_DIR_RECIPE}
     cp -pPrf ${S}/* ${D}${LINK_INSTALL_DIR_RECIPE}
@@ -236,7 +240,7 @@ pkg_postrm_ti-dsplink-module_append () {
 }
 
 PACKAGES += "ti-dsplink-examples"
-RDEPENDS_ti-dsplink-examples += "ti-dsplink-module"
-RDEPENDS_ti-dsplink-examples_omap3 += "ti-lpm-module"
+RDEPENDS_ti-dsplink-examples_append = " ti-dsplink-module"
+RDEPENDS_ti-dsplink-examples_append_omap3 += " ti-lpm-module"
 FILES_ti-dsplink-examples = "${installdir}/ti-dsplink-examples/*"
 INSANE_SKIP_ti-dsplink-examples = True

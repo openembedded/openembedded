@@ -1,34 +1,34 @@
-DESCRIPTION = "TI Codecs (and Server Combo) for OMAP3530"
+DESCRIPTION = "TI Codecs (and Server Combo) for DM6446"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent"
 SECTION = "multimedia"
 
 # TODO :: Move to common .inc (omap3 and omapl ready)
+# TODO :: XDCARGS = eval in this server?
 
-PV = "1_00_01_44"
+PV = "2_05_00_00"
 
-SRC_URI[omap3codecsbin.md5sum] = "4db567252e6c43119e1c0aafe401a679"
-SRC_URI[omap3codecsbin.sha256sum] = "e042e1aad42a6728adf5c955dc38e4f8331fc0eacd833f1cd75d9cbb4faff0b5"
+SRC_URI[dm6446codecsbin.md5sum] = "4db567252e6c43119e1c0aafe401a679"
+SRC_URI[dm6446codecsbin.sha256sum] = "e042e1aad42a6728adf5c955dc38e4f8331fc0eacd833f1cd75d9cbb4faff0b5"
 
-PR = "r7"
+PR = "r17"
 
 require ti-paths.inc
 require ti-staging.inc
 require ti-eula-unpack.inc
 
-PROVIDES += "ti-codecs-omap3530-server"
-RREPLACES_${PN} = "ti-cs1-omap3530"
+PROVIDES += "ti-codecs-dm6446-server"
 
-S = "${WORKDIR}/dvsdk_3_00_02_44/cs1omap3530_1_00_01"
+S = "${WORKDIR}/dvsdk_2_00_00_22/dm6446_dvsdk_combos_2_05"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/3_00_02_44/exports/cs1omap3530_setuplinux_1_00_01-44.bin;name=omap3codecsbin"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/S1SDKLNX/DVSDK_2_00/exports/dm6446_codecs_setuplinux_2_00_00_22.bin;name=dm6446codecsbin"
 
-BINFILE = "cs1omap3530_setuplinux_1_00_01-44.bin"
-TI_BIN_UNPK_CMDS = "Y:Y: qY:workdir"
+BINFILE = "dm6446_codecs_setuplinux_2_00_00_22.bin"
+TI_BIN_UNPK_CMDS = "Y: qY:workdir:Y"
 
 DEPENDS = "ti-cgt6x ti-xdctools ti-dspbios ti-codec-engine ti-linuxutils"
 
 #generic codec
-DSPSUFFIX_omap3 = "x64P"
+DSPSUFFIX_dm6446 = "x64P"
 
 do_prepsources() {
 
@@ -42,7 +42,7 @@ do_prepsources() {
              CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
              XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
              CODEC_INSTALL_DIR="${S}" \
-             XDCARGS="prod" \
+             XDCARGS="eval" \
              clean
 }
 
@@ -60,7 +60,7 @@ do_compile() {
              CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
              XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
              CODEC_INSTALL_DIR="${S}" \
-             XDCARGS="prod" \
+             XDCARGS="eval" \
              all
 }
 
@@ -83,5 +83,6 @@ do_install() {
     cp -pPrf ${S}/* ${D}${CODEC_INSTALL_DIR_RECIPE}
 }
 
-PACKAGES += "ti-codecs-omap3530-server"
-FILES_ti-codecs-omap3530-server = "${installdir}/ti-codecs-server/*"
+PACKAGES += "ti-codecs-dm6446-server"
+FILES_ti-codecs-dm6446-server = "${installdir}/ti-codecs-server/*"
+
