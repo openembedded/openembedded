@@ -28,6 +28,7 @@ RDEPENDS_${PN} += "\
 		gpe-contacts \
 		gtkmm \
 		guitartune \
+		jefliks \
 		mc \
 		mpd \
 		mplayer \
