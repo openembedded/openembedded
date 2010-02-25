@@ -3,13 +3,13 @@ require xorg-xserver-common.inc
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
 PV = "1.7.999"
-PR = "r3"
+PR = "r4"
 PR_append = "+gitr${SRCREV}"
 PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "db4f676f25c6d8e58263d5151942be730592d444"
+SRCREV = "780c95caf9888fa4548dfe4c1c78a7e7ce99a9ed"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
 # pending changes http://lists.x.org/archives/xorg-devel/2010-January/005127.html
            file://0001-Add-a-PreConfigureWindow-hook.patch;patch=1 \
@@ -17,8 +17,6 @@ SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master
            file://0003-glx-Enforce-a-1-1-correspondence-between-GLX-and-X11.patch;patch=1 \
            file://0004-glx-dri2-Notify-the-driver-when-its-buffers-become-i.patch;patch=1 \
            file://0005-dri2-Support-the-DRI2InvalidateBuffers-event.patch;patch=1 \
-# flushInvalidate version removed in latest mesa	   
-	   file://0006-glxdri2-remove-flushInvalidate.patch;patch=1 \
            file://dolt-fix-1.7.0.patch;patch=1 \
            file://randr-support-1.7.0.patch;patch=1 \
 	   file://hack-fbdev-ignore-return-mode.patch;patch=1 \
