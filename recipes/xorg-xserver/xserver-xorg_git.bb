@@ -3,7 +3,7 @@ require xorg-xserver-common.inc
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
 PV = "1.7.999"
-PR = "r4"
+PR = "${INC_PR}.0"
 PR_append = "+gitr${SRCPV}"
 PE = "2"
 
@@ -31,10 +31,6 @@ do_install_prepend() {
 # The NVidia driver requires Xinerama support in the X server. Ion uses it.
 XINERAMA = "${@['--disable-xinerama','--enable-xinerama'][bb.data.getVar('MACHINE',d) in ['ion']]}"
 
-# hal, udev or disable both
-DISTRO_XORG_CONFIG_MANAGER ?= "--enable-config-hal --disable-config-udev"
-DISTRO_XORG_CONFIG_MANAGER_shr ?= "--disable-config-udev --disable-config-hal"
-
-EXTRA_OECONF += " ${DISTRO_XORG_CONFIG_MANAGER} ${XINERAMA} --disable-kdrive --disable-xephyr --disable-xsdl --disable-xfake --disable-xfbdev --disable-dmx"
+EXTRA_OECONF += " ${CONFIG_MANAGER_OPTION} ${XINERAMA} --disable-kdrive --disable-xephyr --disable-xsdl --disable-xfake --disable-xfbdev --disable-dmx"
 
 export LDFLAGS += " -ldl "

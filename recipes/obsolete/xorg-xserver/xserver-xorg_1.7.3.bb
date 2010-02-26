@@ -3,7 +3,7 @@ require xorg-xserver-common.inc
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts"
 PE = "2"
-PR = "r5"
+PR = "${INC_PR}.0"
 
 SRC_URI += "file://sysroot_fix.patch;patch=1 \
             file://dolt-fix-1.7.0.patch;patch=1 \
