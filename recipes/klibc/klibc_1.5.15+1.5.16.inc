@@ -17,6 +17,7 @@ SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
             file://mntproc-definitions.patch;patch=1 \
             file://signal-cleanup.patch;patch=1 \
             file://isystem.patch;patch=1 \
+            file://socket.h.patch;patch=1 \
             "
 
 S = "${WORKDIR}/klibc-1.5.15"
