@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r21"
+PR = "r22"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -63,6 +63,8 @@ PACKAGES += "\
 
 
 RDEPENDS_${PN}-base = "\
+  ${MACHINE_TASK_PROVIDER} \
+  task-base \
   netbase \
   sysfsutils \
   modutils-initscripts \
@@ -104,6 +106,8 @@ RDEPENDS_${PN}-audio_append_om-gta02 =  "\
 "
 
 RDEPENDS_${PN}-x = "\
+  task-x11-illume \
+  task-fonts-truetype-core \
   e-wm-menu-shr \
   shr-wizard \
   shr-theme-gry \
@@ -112,7 +116,7 @@ RDEPENDS_${PN}-x = "\
 "
 
 RDEPENDS_${PN}-apps = "\
-  fso-abyss \
+  task-fso2-compliance \
   phoneui-apps-messages \
   phoneui-apps-contacts \
   phoneui-apps-dialer \
