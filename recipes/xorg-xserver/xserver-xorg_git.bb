@@ -3,7 +3,7 @@ require xorg-xserver-common.inc
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
 PV = "1.7.999"
-PR = "r4"
+PR = "${INC_PR}.0"
 PR_append = "+gitr${SRCREV}"
 PE = "2"
 
