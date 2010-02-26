@@ -4,7 +4,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib libgsm0710mux"
 LICENSE = "GPL"
-PV = "0.9.0+gitr${SRCPV}"
+PV = "0.9.1+gitr${SRCPV}"
 PE = "1"
 PR = "r0"
 
