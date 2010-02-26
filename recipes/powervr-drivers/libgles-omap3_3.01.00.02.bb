@@ -2,7 +2,7 @@ BINLOCATION = "${S}/gfx_rel_es3.x"
 
 require libgles-omap3.inc
 
-PR = "r4"
+PR = "r5"
 
 # download required binary distribution from:
 # http://software-dl.ti.com/dsps/forms/export.html?prod_no=/OMAP35x_Graphics_SDK_setuplinux_3_01_00_02.bin

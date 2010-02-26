@@ -76,15 +76,25 @@ do_compile() {
 
 	# Rebuild demos for both Raw and X11
 	for X11BUILD in 0 1 ; do
-		for demo in ${S}/GFX_Linux_SDK/OGLES*/SDKPackage/Demos/* ; do
-			cd $demo/OGLES*/Build/LinuxGeneric
+		for demo in ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Demos/* ; do
+			cd $demo/OGLES/Build/LinuxGeneric
 			oe_runmake Common=1 PLATFORM=$PLATFORM X11BUILD=$X11BUILD  
-			rm $demo/OGLES*/Build/LinuxOMAP3/Release*/*.o
-			install -m 0755 $demo/OGLES*/Build/LinuxOMAP3/ReleaseX11/* ${S}/demos/x11 || true
-			sed -e s:NAME:$(basename $demo/OGLES*/Build/LinuxOMAP3/ReleaseX11/*): \
-			    -e s:EXEC:${bindir}/SGX/demos/X11/$(basename $demo/OGLES*/Build/LinuxOMAP3/ReleaseX11/*): \
-			     ${WORKDIR}/sample.desktop > ${WORKDIR}/$(basename $demo/OGLES*/Build/LinuxOMAP3/ReleaseX11/*).desktop
-			install -m 0755 $demo/OGLES*/Build/LinuxOMAP3/ReleaseRaw/* ${S}/demos/raw || true	
+			rm $demo/OGLES/Build/LinuxOMAP3/Release*/*.o
+			install -m 0755 $demo/OGLES/Build/LinuxOMAP3/ReleaseX11/* ${S}/demos/x11 || true
+			sed -e s:NAME:$(basename $demo): \
+			    -e s:EXEC:${bindir}/SGX/demos/X11/$(basename $demo/OGLES/Build/LinuxOMAP3/ReleaseX11/*): \
+			     ${WORKDIR}/sample.desktop > ${WORKDIR}/$(basename $demo).desktop
+			install -m 0755 $demo/OGLES/Build/LinuxOMAP3/ReleaseRaw/* ${S}/demos/raw || true	
+		done
+		for demo in ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Demos/* ; do
+			cd $demo/OGLES2/Build/LinuxGeneric
+			oe_runmake Common=1 PLATFORM=$PLATFORM X11BUILD=$X11BUILD  
+			rm $demo/OGLES2/Build/LinuxOMAP3/Release*/*.o
+			install -m 0755 $demo/OGLES2/Build/LinuxOMAP3/ReleaseX11/* ${S}/demos/x11 || true
+			sed -e s:NAME:$(basename $demo): \
+			    -e s:EXEC:${bindir}/SGX/demos/X11/$(basename $demo/OGLES2/Build/LinuxOMAP3/ReleaseX11/*): \
+			     ${WORKDIR}/sample.desktop > ${WORKDIR}/$(basename $demo).desktop
+			install -m 0755 $demo/OGLES2/Build/LinuxOMAP3/ReleaseRaw/* ${S}/demos/raw || true	
 		done
 	done
 
@@ -94,18 +104,18 @@ do_compile() {
 	# Build OGLES2 Trainingcourses for both Raw and X11
 	for X11BUILD in 0 1 ; do
 		for training in ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/TrainingCourse/* ; do
-			if [ -e $training/OGLES*/Build/LinuxGeneric/Makefile ] ; then
-				cd $training/OGLES*/Build/LinuxGeneric
+			if [ -e $training/OGLES2/Build/LinuxGeneric/Makefile ] ; then
+				cd $training/OGLES2/Build/LinuxGeneric
 			fi
 
-			if [ -e $training/OGLES*/Build/LinuxOMAP3/Makefile ] ; then
-				cd $training/OGLES*/Build/LinuxOMAP3
+			if [ -e $training/OGLES2/Build/LinuxOMAP3/Makefile ] ; then
+				cd $training/OGLES2/Build/LinuxOMAP3
 			fi			
 
 			oe_runmake Common=1 PLATFORM=$PLATFORM X11BUILD=$X11BUILD  
-			rm $training/OGLES*/Build/LinuxOMAP3/Release*/*.o
-			install -m 0755 $training/OGLES*/Build/LinuxOMAP3/ReleaseX11/* ${S}/trainingcourses/x11 || true
-			install -m 0755 $training/OGLES*/Build/LinuxOMAP3/ReleaseRaw/* ${S}/trainingcourses/raw || true	
+			rm $training/OGLES2/Build/LinuxOMAP3/Release*/*.o
+			install -m 0755 $training/OGLES2/Build/LinuxOMAP3/ReleaseX11/* ${S}/trainingcourses/x11 || true
+			install -m 0755 $training/OGLES2/Build/LinuxOMAP3/ReleaseRaw/* ${S}/trainingcourses/raw || true	
 		done
 	done
 
