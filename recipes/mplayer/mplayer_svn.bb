@@ -42,6 +42,7 @@ PV = "0.0+1.0rc3+svnr${SRCPV}"
 PR = "r17"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
+DEFAULT_PREFERENCE_shr = "1"
 
 PARALLEL_MAKE = ""
 
