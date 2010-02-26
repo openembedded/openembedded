@@ -9,9 +9,32 @@ PR = "r0"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-abyss.git;protocol=git;branch=master \
+  file://fso-abyss.conf \
 "
 S = "${WORKDIR}/git"
 
 inherit autotools
 
-FILES_${PN} += "${datadir}"
+do_install_append() {
+	install -d ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/fso-abyss.conf ${D}${sysconfdir}/
+}
+
+PACKAGES =+ "${PN}-config"
+
+FILES_${PN} += "${sysconfdir} ${datadir}"
+
+RRECOMMENDS_${PN} = "${PN}-config"
+
+FILES_${PN}-config = "\
+  ${sysconfdir}/fso-abyss.conf \
+"
+
+CONFFILES_${PN}-config = "\
+  ${sysconfdir}/fso-abyss.conf \
+"
+
+PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
+
+
+
