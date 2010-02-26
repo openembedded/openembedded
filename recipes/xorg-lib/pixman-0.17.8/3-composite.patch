@@ -1,4 +1,4 @@
-From 80b75405277bacc0df0ef7d91f1a2eabefb97901 Mon Sep 17 00:00:00 2001
+From 19fc0c4c8d28796f0fbc2c8f47edc130851ae3a5 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Wed, 24 Feb 2010 02:14:45 +0000
 Subject: ARM: added 'neon_composite_over_reverse_n_8888' fast path
@@ -6,6 +6,8 @@ Subject: ARM: added 'neon_composite_over_reverse_n_8888' fast path
 This fast path function improves performance of 'poppler' cairo-perf trace.
 
 Benchmark from ARM Cortex-A8 @720MHz
+
+before:
 
 [ # ]  backend                         test   min(s) median(s) stddev. count
 [  0]    image                      poppler   38.986   39.158   0.23%    6/6
@@ -16,7 +18,7 @@ after:
 [  0]    image                      poppler   24.981   25.136   0.28%    6/6
 ---
 diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
-index 42ac1cb..272da27 100644
+index f2643de..eb8cc4c 100644
 --- a/pixman/pixman-arm-neon-asm.S
 +++ b/pixman/pixman-arm-neon-asm.S
 @@ -680,6 +680,61 @@ generate_composite_function \
@@ -82,7 +84,7 @@ index 42ac1cb..272da27 100644
      /* in */
      vmull.u8    q0, d24, d8
 diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
-index 12d92a2..417ce5a 100644
+index 0a7ac31..30c5056 100644
 --- a/pixman/pixman-arm-neon.c
 +++ b/pixman/pixman-arm-neon.c
 @@ -264,6 +264,7 @@ BIND_SRC_NULL_DST(add_8888_8888, uint32_t, 1, uint32_t, 1)
@@ -93,11 +95,12 @@ index 12d92a2..417ce5a 100644
  
  BIND_SRC_NULL_DST(over_8888_0565, uint32_t, 1, uint16_t, 1)
  BIND_SRC_NULL_DST(over_8888_8888, uint32_t, 1, uint32_t, 1)
-@@ -438,6 +439,7 @@ static const pixman_fast_path_t arm_neon_fast_paths[] =
+@@ -442,6 +443,8 @@ static const pixman_fast_path_t arm_neon_fast_paths[] =
      PIXMAN_STD_FAST_PATH (ADD,  a8,       null,     a8,       neon_composite_add_8000_8000),
      PIXMAN_STD_FAST_PATH (ADD,  a8r8g8b8, null,     a8r8g8b8, neon_composite_add_8888_8888),
      PIXMAN_STD_FAST_PATH (ADD,  a8b8g8r8, null,     a8b8g8r8, neon_composite_add_8888_8888),
 +    PIXMAN_STD_FAST_PATH (OVER_REVERSE, solid, null, a8r8g8b8, neon_composite_over_reverse_n_8888),
++    PIXMAN_STD_FAST_PATH (OVER_REVERSE, solid, null, a8b8g8r8, neon_composite_over_reverse_n_8888),
  
      { PIXMAN_OP_NONE },
  };

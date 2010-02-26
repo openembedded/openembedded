@@ -3,6 +3,8 @@ PRIORITY = "optional"
 DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "2"
 DEFAULT_PREFERENCE_shr = "2"
@@ -22,13 +24,10 @@ SRC_URI = "http://cairographics.org/releases/pixman-${PV}.tar.gz;name=archive \
 SRC_URI[archive.md5sum] = "a7deb2ff6b286b676d67aa6ae91317ae"
 SRC_URI[archive.sha256sum] = "ea24e9003455a0881bd43bf7e4169f2b34c90c8521405103e3490553876a81b4"
 
-
-inherit autotools_stage
+inherit autotools
 
 NEON = " --disable-arm-neon "
 NEON_armv7a = ""
 
 EXTRA_OECONF = "${NEON} --disable-gtk"
-
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
