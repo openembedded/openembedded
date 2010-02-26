@@ -5,9 +5,10 @@ DEPENDS = "icu flex gst-plugins-base gstreamer jpeg libpng libxml2 pango \
            sqlite3 libxslt gperf-native libxt"
 
 PV = "1.1.11+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
-SRC_URI = "git://gitorious.org/webkit-efl/webkit-efl.git;protocol=git;branch=master"
+SRC_URI = "git://gitorious.org/webkit-efl/webkit-efl.git;protocol=git;branch=master \
+           file://fix-build-with-newer-evas.patch;patch=1"
 
 S = "${WORKDIR}/git"
 
