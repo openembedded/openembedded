@@ -28,6 +28,7 @@ FILES_mesa-utils = "${bindir}/*"
 
 EXTRA_OECONF += "--with-driver=dri --disable-glx-tls --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
 EXTRA_OECONF_om-gta02 += "--with-driver=dri --disable-glx-tls --disable-gallium --disable-gallium-intel --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
+EXTRA_OECONF_om-gta01 += "--with-driver=dri --disable-glx-tls --disable-gallium --disable-gallium-intel --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
 
 # We need glsl-compile built for buildhost arch instead of target (is provided by mesa-dri-glsl-native)"
 do_configure_prepend() {
