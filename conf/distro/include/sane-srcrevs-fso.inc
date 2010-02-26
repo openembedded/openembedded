@@ -17,8 +17,8 @@ SRCREV_pn-libfsobasics ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsoframework ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-libfsotransport ?= "0c1e8c057b4110b1d8d2c24fd93744c03c304cc8"
 SRCREV_pn-libfsoresource ?= "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV_pn-mdbus2 ?= "df6a5c9a9d99c75dee6bbdcdc39081e810cf4d10"
-SRCREV_pn-mterm2 ?= "ecf01ff1f0415a74362492fdf42ae9aacd65187f"
+SRCREV_pn-mdbus2 ?= "50cf4ff2198589a8db369789fc038604a892a54d"
+SRCREV_pn-mterm2 ?= "50cf4ff2198589a8db369789fc038604a892a54d"
 
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"

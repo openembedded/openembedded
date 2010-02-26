@@ -22,6 +22,6 @@ do_configure (){
 	autotools_do_configure ${EXTRA_LIBXML2_OECONF}
 }
 
-do_stage () {
-	oe_runmake install
+do_install_append() {
+	:
 }

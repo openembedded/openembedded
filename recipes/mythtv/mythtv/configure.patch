@@ -1,148 +1,61 @@
---- /tmp/configure	2008-07-22 10:27:56.000000000 +0200
-+++ mythtv/configure	2008-07-22 17:53:20.000000000 +0200
-@@ -476,12 +476,13 @@
- }
- 
- check_cmd(){
--    log "$@"
-+   	echo "Checking $@" 
-+	log "$@"
-     "$@" >>$logfile 2>&1
- }
- 
- check_cc(){
--    log check_cc "$@"
-+	log check_cc "$@"
-     cat >$TMPC
-     log_file $TMPC
-     check_cmd $cc $CFLAGS $ECFLAGS $OPTFLAGS "$@" -c -o $TMPO $TMPC
-@@ -1117,11 +1118,11 @@
- fi
- 
- # machine
--arch=`uname -m`
-+disabled cross_compile && arch=`uname -m`
- arch_raw="$arch"
- cpu="generic"
- cpu_override="no"
--processor=`uname -p 2>/dev/null`
-+disabled cross_compile && processor=`uname -p 2>/dev/null`
- processor_flags=""
- tune="generic"
- 
-@@ -1185,7 +1186,7 @@
- lamemp3="yes"
- lirc="yes"
- mac_bundle="no"
--opengl="yes"
-+opengl="no"
- v4l="yes"
- x11="yes"
- x11_include_path="/usr/X11R6/include"
-@@ -1214,7 +1215,7 @@
- # build settings
- SHFLAGS='-shared -Wl,-soname,$@'
- VHOOKSHFLAGS='$(SHFLAGS)'
--LDLATEFLAGS='-Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil'
-+#LDLATEFLAGS='-Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil'
- FFSERVERLDFLAGS=-Wl,-E
- LDCONFIG="ldconfig"
- LIBPREF="lib"
-@@ -1714,7 +1715,7 @@
- 
+Index: mythtv/configure
+===================================================================
+--- mythtv/configure	(revision 22430)
++++ mythtv/configure	(working copy)
+@@ -919,27 +919,27 @@
+ #deprecated, use check_lib or check_lib2 instead
  has_library()
  {
 -    if test -f /etc/ld.so.conf ; then
-+	if test -f /etc/ld.so.conf && disabled cross_compile ; then
-         LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
-     else
-         LIBPATHS=''
-@@ -1725,7 +1726,7 @@
-     LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+-        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
+-    else
+-        LIBPATHS=''
+-    fi
++    LIBPATHS=''
++    if test "x${sysroot}" = "x" ; then
++        if test -f /etc/ld.so.conf ; then
++            LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
++        fi
++        LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
++        # Mac OS X has a different variable for this:
++        LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
  
-     # recurse down just one level, should be enough in most cases
+-    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
+-    # Mac OS X has a different variable for this:
+-    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+-
+-    # recurse down just one level, should be enough in most cases
 -    if test -f /etc/ld.so.conf ; then
-+    if test -f /etc/ld.so.conf && disabled cross_compile ; then
-         INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
-         SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
-         for x in $SRCH ; do
-@@ -1734,29 +1735,31 @@
-         done
+-        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
+-        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
+-        for x in $SRCH ; do
+-            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
+-            LIBPATHS="$LIBPATHS $LP_APPEND"
+-        done
++        # recurse down just one level, should be enough in most cases
++        if test -f /etc/ld.so.conf ; then
++            INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
++            SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
++            for x in $SRCH ; do
++                LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
++                LIBPATHS="$LIBPATHS $LP_APPEND"
++            done
++        fi
      fi
  
 -    LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
-+    enabled cross_compile || LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo $LIBPATHS $sysroot/$libdir_name $sysroot/usr/$libdir_name $sysroot/usr/local/$libdir_name $sysroot/usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
  
--    HAS_IT="no"
-+    HAS_IT="yes"
+     HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
-         if test x`ls $LIBPATH/$1* 2> /dev/null | head -n 1` != x"" ; then
-             HAS_IT="yes"
-         fi
-     done
-+    echo "$1: $HAS_IT"
-     expr $HAS_IT : "yes" > /dev/null
- }
- 
- has_header()
- {
--    HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
-+    enabled cross_compile || HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
-     INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
-     HPATHS="$HPATHS "$(echo $INCL | sed "s/$libdir_name/include/g")
- 
--    HAS_IT="no"
-+    HAS_IT="yes"
-     for HPATH in $HPATHS ; do
-         if test x`ls $HPATH/$1* 2> /dev/null | head -n 1` != x"" ; then
-             HAS_IT="yes"
-         fi
-     done
-+    echo "$1: $HAS_IT" 
-     expr $HAS_IT : "yes" > /dev/null
- }
- 
-@@ -1863,13 +1866,15 @@
- if test x"$cmov" = x"default"; then
-     disable cmov
-     if enabled cpu_override; then
--        is_x86_cmov_cpu "$cpu" && enable cmov
-+        disabled cross_compile && is_x86_cmov_cpu "$cpu" && enable cmov
-         disabled cmov || is_x86_slow_cmov_cpu "$cpu" || enable fast_cmov
-     elif expr "$processor_flags" : ".*cmov" > /dev/null ; then
--        enable cmov
-+        disabled cross_compile && enable cmov
-     fi
- fi
- 
-+enabled cross_compile && disable cmov
-+
- # use different default ARCHFLAGS for CPU missing cmov (Via C3 ...)
- if test x"$arch" = x"x86_32" && disabled cmov && disabled cpu_override; then
-     ARCHFLAGS="-march=i586"
-@@ -2254,7 +2259,7 @@
+@@ -4252,8 +4252,8 @@
+ #       -L from early in the link line, to ignore any old installed libmyth*
+ # Note: Qt uses QMAKE_INCDIR_QT to build an absolute path for include
+ #       directories, it cannot be modified.
+-QMAKE_LIBDIR_QT -= $libdir
+-LATE_LIBS            += -L$libdir
++QMAKE_LIBDIR_QT -= ${sysroot}${libdir}
++LATE_LIBS            += -L${sysroot}${libdir}
  EOF
  
- if $cc $CFLAGS $ECFLAGS -o $TMPE $TMPC 2>/dev/null ; then
--$TMPE && cpuclipspositive="yes"
-+enabled cross_compile || $TMPE && cpuclipspositive="yes"
- fi
- 
- # test negative wrap
-@@ -2269,7 +2274,7 @@
- EOF
- 
- if $cc $CFLAGS $ECFLAGS -o $TMPE $TMPC 2>/dev/null ; then
--$TMPE && cpuclipsnegative="yes"
-+enabled cross_compile || $TMPE && cpuclipsnegative="yes"
- fi
- 
- # test for distcc
-@@ -2718,6 +2723,7 @@
- 
- check_header GL/gl.h
- has_library libGL || has_library libopengl32 || disable opengl
-+enabled cross_compile && disable opengl
- 
- VENDOR_XVMC_LIBS=""
- check_header X11/extensions/XvMClib.h
+ diff $TMPH $MYTH_CONFIG_H >/dev/null 2>&1

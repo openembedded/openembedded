@@ -1,0 +1,66 @@
+From 609d8536cd125793fe52b393e854dd7df238c954 Mon Sep 17 00:00:00 2001
+From: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
+Date: Wed, 24 Feb 2010 09:23:00 +0100
+Subject: [PATCH 1/5] cmd_i2c.c: reduced subaddress length to 3 bytes
+
+according to some of the comments the subaddress length is 1 or 2, but we are being
+prepared for the case it becomes 3. However the code also accepted 4.
+This repairs this by changing the constand 4 to 3.
+
+Signed-off-by: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
+---
+ common/cmd_i2c.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/common/cmd_i2c.c b/common/cmd_i2c.c
+index 62cbd33..7531702 100644
+--- a/common/cmd_i2c.c
++++ b/common/cmd_i2c.c
+@@ -193,7 +193,7 @@ int do_i2c_md ( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+ 		for (j = 0; j < 8; j++) {
+ 			if (argv[2][j] == '.') {
+ 				alen = argv[2][j+1] - '0';
+-				if (alen > 4) {
++				if (alen > 3) {
+ 					cmd_usage(cmdtp);
+ 					return 1;
+ 				}
+@@ -287,7 +287,7 @@ int do_i2c_mw ( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+ 	for (j = 0; j < 8; j++) {
+ 		if (argv[2][j] == '.') {
+ 			alen = argv[2][j+1] - '0';
+-			if (alen > 4) {
++			if (alen > 3) {
+ 				cmd_usage(cmdtp);
+ 				return 1;
+ 			}
+@@ -361,7 +361,7 @@ int do_i2c_crc (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+ 	for (j = 0; j < 8; j++) {
+ 		if (argv[2][j] == '.') {
+ 			alen = argv[2][j+1] - '0';
+-			if (alen > 4) {
++			if (alen > 3) {
+ 				cmd_usage(cmdtp);
+ 				return 1;
+ 			}
+@@ -451,7 +451,7 @@ mod_i2c_mem(cmd_tbl_t *cmdtp, int incrflag, int flag, int argc, char *argv[])
+ 		for (j = 0; j < 8; j++) {
+ 			if (argv[2][j] == '.') {
+ 				alen = argv[2][j+1] - '0';
+-				if (alen > 4) {
++				if (alen > 3) {
+ 					cmd_usage(cmdtp);
+ 					return 1;
+ 				}
+@@ -607,7 +607,7 @@ int do_i2c_loop(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+ 	for (j = 0; j < 8; j++) {
+ 		if (argv[2][j] == '.') {
+ 			alen = argv[2][j+1] - '0';
+-			if (alen > 4) {
++			if (alen > 3) {
+ 				cmd_usage(cmdtp);
+ 				return 1;
+ 			}
+-- 
+1.7.0
+

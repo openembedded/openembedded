@@ -177,16 +177,18 @@ do_install () {
 	find ${D} -name "*.o.cmd" -delete
 }
 
-PACKAGES =+ "xserver-kdrive-powervrsgx \
-             ${PN}-rawdemos \
+PACKAGES =+ "${PN}-rawdemos \
              ${PN}-x11demos \
              ${PN}-rawtrainingcourses \
              ${PN}-x11trainingcourses \
+"
+
+PACKAGES += "xserver-kdrive-powervrsgx \
              ${PN}-tests "
 
 FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${libdir}/ES*/* ${bindir}/pvrsrvinit ${bindir}/cputype ${bindir}/*/*"
 FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
-FILES_${PN}-tests = "${bindir}"
+FILES_${PN}-tests = "${bindir}/*"
 FILES_${PN}-dbg = "${libdir}/.debug/* ${bindir}/.debug/* \
                    ${libdir}/ES*/.debug ${bindir}/*/.debug\
                    ${bindir}/SGX/demos/*/.debug/* \
