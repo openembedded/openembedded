@@ -1,0 +1,16 @@
+Index: iscsitarget-1.4.19/patches/compat-2.6.31.patch
+===================================================================
+--- /dev/null
++++ iscsitarget-1.4.19/patches/compat-2.6.31.patch
+@@ -0,0 +1,11 @@
++--- sync/kernel/file-io.c       2009-12-10 17:43:36.000000000 -0500
+++++ trunk/kernel/file-io.c      2008-12-04 17:35:21.000000000 -0500
++@@ -88,7 +88,7 @@
++                count = lu->blk_cnt << lu->blk_shift;
++        }
++ 
++-       res = filemap_write_and_wait_range(mapping, ppos, ppos + count - 1);
+++       res = sync_page_range(inode, mapping, ppos, count);
++        if (res) {
++                eprintk("I/O error: syncing pages failed: %d\n", res);
++                return -EIO;

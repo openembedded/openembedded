@@ -94,17 +94,11 @@ RDEPENDS_${PN}-fso = "\
 
 #FIXME: libcanberra-alsa should be pulled in by fsodeviced but isn't
 RDEPENDS_${PN}-audio = "\
+  alsa-utils-alsactl \
+  alsa-utils-alsamixer \
   alsa-utils-aplay \
   alsa-utils-amixer \
   libcanberra-alsa \
-"
-
-RDEPENDS_${PN}-audio_append_om-gta01 = "\
-  alsa-scenarii-shr \
-"
-
-RDEPENDS_${PN}-audio_append_om-gta02 =  "\
-  alsa-scenarii-shr \
 "
 
 RDEPENDS_${PN}-x = "\
@@ -115,6 +109,8 @@ RDEPENDS_${PN}-x = "\
   shr-theme-gry \
   xcursor-transparent-theme \
   xinput-calibrator \
+# Make sure it's available for those who want's to play with illume2  
+  e-wm-config-illume2-shr \
 "
 
 RDEPENDS_${PN}-apps = "\
@@ -134,7 +130,6 @@ RDEPENDS_${PN}-apps = "\
 
 
 RDEPENDS_${PN}-gtk = "\
-  openmoko-icon-theme-standard2 \
   shr-theme-gtk-e17lookalike \
   vala-terminal \
   pyphonelog \
