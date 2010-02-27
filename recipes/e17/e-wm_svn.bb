@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r11"
+PR = "r12"
 
 inherit e update-alternatives
 
@@ -21,6 +21,7 @@ SRC_URI_append_shr = " \
   file://illume-disable-screensaver.patch;patch=1 \
   file://wizard-module-skipping.patch;patch=1 \
   file://illume-flaunch-fix.patch;patch=1 \
+  file://illume-keyboard-flow.patch;patch=1 \
 "
 
 EXTRA_OECONF = "\

@@ -1,0 +1,76 @@
+Index: e/src/modules/illume-keyboard/e_kbd_int.c
+===================================================================
+--- e/src/modules/illume-keyboard/e_kbd_int.c	(revision 46510)
++++ e/src/modules/illume-keyboard/e_kbd_int.c	(working copy)
+@@ -434,6 +434,16 @@
+ static void
+ _e/src/modules/illume-keyboard/e_kbd_int_stroke_handle(E_Kbd_Int *ki, int dir)
+ {
++   /* If the keyboard direction is RTL switch dir 3 and 1
++    * i.e, make forward backwards and the other way around */
++   if (ki->layout.direction == E_KBD_INT_DIRECTION_RTL)
++     {
++        if (dir == 3)
++		dir = 1;
++	else if (dir == 1)
++		dir = 3;
++     }
++     
+    if (dir == 4) // up
+      _e/src/modules/illume-keyboard/e_kbd_int_layout_next(ki);
+    else if (dir == 3) // left
+@@ -886,6 +896,10 @@
+    if (!f) return;
+    ki->layout.directory = ecore_file_dir_get(layout);
+    ki->layout.file = eina_stringshare_add(layout);
++
++   /* Make the default direction LTR */
++   ki->layout.direction = E_KBD_INT_DIRECTION_LTR;
++   
+    while (fgets(buf, sizeof(buf), f))
+      {
+ 	int len;
+@@ -913,6 +927,17 @@
+ 	     sscanf(buf, "%*s %i\n", &(ki->layout.fuzz));
+ 	     continue;
+ 	  }
++	if (!strcmp(str, "direction"))
++	  {
++	     char direction[4];
++	     sscanf(buf, "%*s %3s\n", direction);
++	     /* If rtl mark as rtl, otherwise make it ltr */
++	     if (!strcmp(direction, "rtl"))
++	     	ki->layout.direction = E_KBD_INT_DIRECTION_RTL;
++	     else
++	     	ki->layout.direction = E_KBD_INT_DIRECTION_LTR;
++	     continue;
++	  }
+ 	if (!strcmp(str, "key"))
+ 	  {
+ 	     ky = calloc(1, sizeof(E_Kbd_Int_Key));
+Index: e/src/modules/illume-keyboard/e_kbd_int.h
+===================================================================
+--- e/src/modules/illume-keyboard/e_kbd_int.h	(revision 46510)
++++ e/src/modules/illume-keyboard/e_kbd_int.h	(working copy)
+@@ -15,6 +15,13 @@
+    E_KBD_INT_TYPE_PASSWORD = (1 << 6)
+ } E_Kbd_Int_Type;
+ 
++/* The natural text direction of the keyboard */
++typedef enum _E_kbd_Int_Direction
++{
++	E_KBD_INT_DIRECTION_LTR = (1 << 0),
++	E_KBD_INT_DIRECTION_RTL = (1 << 1)
++} E_Kbd_Int_Direction;
++
+ typedef struct _E_Kbd_Int           E_Kbd_Int;
+ typedef struct _E_Kbd_Int_Key       E_Kbd_Int_Key;
+ typedef struct _E_Kbd_Int_Key_State E_Kbd_Int_Key_State;
+@@ -35,6 +42,7 @@
+       const char       *file;
+       int               w, h;
+       int               fuzz;
++      int		direction;
+       E_Kbd_Int_Type    type;
+       Eina_List        *keys;
+       E_Kbd_Int_Key    *pressed;
