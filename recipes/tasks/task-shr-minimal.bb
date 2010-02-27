@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r22"
+PR = "r23"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -65,6 +65,8 @@ PACKAGES += "\
 RDEPENDS_${PN}-base = "\
   ${MACHINE_TASK_PROVIDER} \
   task-base \
+  glibc-utils \
+  glibc-charmap-utf-8 \
   netbase \
   sysfsutils \
   modutils-initscripts \
