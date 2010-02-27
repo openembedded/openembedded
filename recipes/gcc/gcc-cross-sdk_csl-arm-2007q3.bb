@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 
 inherit sdk
 
@@ -13,7 +13,6 @@ EXTRA_OECONF += " \
 		--disable-libgomp \
 		--disable-libunwind-exceptions \
 		--disable-libmudflap \
-		--with-mpfr=${STAGING_DIR_NATIVE}${prefix_native} \
 		"
 
 #We don't want i686 linux ending up in the CFLAGS_FOR_TARGET like this: -isystem/OE/angstrom-tmp/staging/i686-linux/usr/include

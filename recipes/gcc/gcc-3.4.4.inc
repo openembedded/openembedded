@@ -1,9 +1,8 @@
 require gcc-common.inc
 
-INC_PR = "r15"
+INC_PR = "r16"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
-	   file://gcc34-reverse-compare.patch;patch=1 \
+SRC_URI += "file://gcc34-reverse-compare.patch;patch=1 \
 	   file://gcc34-arm-ldm.patch;patch=1 \
 	   file://gcc34-arm-ldm-peephole.patch;patch=1 \
 	   file://gcc34-arm-tune.patch;patch=1 \

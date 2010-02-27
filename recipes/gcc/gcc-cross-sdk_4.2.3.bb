@@ -1,4 +1,4 @@
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 inherit sdk
 
@@ -7,8 +7,5 @@ require gcc-cross-sdk.inc
 require gcc-configure-sdk.inc
 require gcc-package-sdk.inc
 
-DEPENDS += "gmp-native mpfr-native"
-
 EXTRA_OECONF += "--disable-libunwind-exceptions --disable-libssp \
-		--disable-libgomp --disable-libmudflap \
-		--with-mpfr=${STAGING_DIR_NATIVE}${prefix_native}"
+		--disable-libgomp --disable-libmudflap"

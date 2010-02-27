@@ -3,6 +3,14 @@ HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 
+# In case sane-toolchain.inc is not used.
+PREFERRED_GMP_VERSION                ?= "4.2.4"
+PREFERRED_MPFR_VERSION               ?= "2.3.2"
+
+SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2;name=gcctbz2 \
+           ${GNU_MIRROR}/gmp/gmp-${PREFERRED_GMP_VERSION}.tar.bz2 \
+           http://www.mpfr.org/mpfr-${PREFERRED_MPFR_VERSION}/mpfr-${PREFERRED_MPFR_VERSION}.tar.bz2"
+
 inherit autotools gettext
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
@@ -41,3 +49,10 @@ BINV = "${PV}"
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
+do_unpack2() {
+	cd ${WORKDIR}
+	mv gmp-${PREFERRED_GMP_VERSION} gcc-${PV}/gmp
+	mv mpfr-${PREFERRED_MPFR_VERSION} gcc-${PV}/mpfr
+}
+
+addtask unpack2 after do_unpack before do_patch

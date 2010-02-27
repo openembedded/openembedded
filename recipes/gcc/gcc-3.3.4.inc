@@ -1,9 +1,8 @@
 require gcc-common.inc
 
-INC_PR = "r11"
+INC_PR = "r12"
 
-SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
-	   file://arm-gotoff.dpatch;patch=1;pnum=0 \
+SRC_URI += "file://arm-gotoff.dpatch;patch=1;pnum=0 \
 	   file://arm-ldm.dpatch;patch=1;pnum=0 \
 	   file://arm-tune.patch;patch=1;pnum=0 \
 	   file://arm-ldm-peephole.patch;patch=1;pnum=0 \

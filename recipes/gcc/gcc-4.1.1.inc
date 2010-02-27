@@ -1,11 +1,10 @@
 require gcc-common.inc
 
-DEPENDS = "mpfr gmp"
+DEPENDS = ""
 
-INC_PR = "r1"
+INC_PR = "r2"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
-	file://100-uclibc-conf.patch;patch=1 \
+SRC_URI += "file://100-uclibc-conf.patch;patch=1 \
 	file://110-arm-eabi.patch;patch=1 \
 	file://200-uclibc-locale.patch;patch=1 \
 	file://300-libstdc++-pic.patch;patch=1 \
