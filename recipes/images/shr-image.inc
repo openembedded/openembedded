@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r12"
+PR = "r13"
 
 
 DEPENDS += "task-shr-minimal"
@@ -21,6 +21,7 @@ RDEPENDS += "\
 IMAGE_INSTALL += "\
   task-shr-minimal-base \
   task-shr-minimal-cli \
+  task-shr-minimal-fso \
   task-shr-minimal-apps \
   task-shr-minimal-audio \
   task-shr-minimal-gtk \
