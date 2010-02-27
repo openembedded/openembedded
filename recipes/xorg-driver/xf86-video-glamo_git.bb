@@ -3,7 +3,7 @@ SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=m
 
 S = "${WORKDIR}/git"
 
-SRCREV = "9918e082104340da42eb92b6bdefce4d9266a6a4"
+SRCREV = "c9b0bd77ea232b8ccd6cdabf25b0686d83bcb3a4"
 PV = "1.0.0+gitr${SRCREV}"
 PE = "1"
 PR = "r3"
