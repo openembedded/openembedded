@@ -3,10 +3,12 @@ inherit fso-plugin
 
 DEPENDS += "alsa-lib libcanberra libfsoresource"
 RDEPENDS += "libcanberra-alsa"
-RRECOMMENDS += "fso-alsa-data"
+# Included in fsodeviced itself now
+# RRECOMMENDS += "fso-alsa-data"
+RPROVIDES_${PN} = "openmoko-alsa-scenarios virtual/alsa-scenarios"
 PV = "0.9.0+gitr${SRCREV}"
 PE = "1"
-PR = "${INC_PR}.9"
+PR = "${INC_PR}.10"
 
 EXTRA_OECONF = "\
   --enable-kernel26-rfkill \
