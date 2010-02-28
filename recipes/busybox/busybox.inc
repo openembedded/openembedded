@@ -11,10 +11,9 @@ LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r24"
+INC_PR = "r25"
 
 SRC_URI = "\
-  http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
@@ -97,7 +96,11 @@ do_install () {
 	# Install /bin/busybox, and the /bin/sh link so the postinst script
 	# can run. Let update-alternatives handle the rest.
 	install -d ${D}${base_bindir}
-	install -m 0755 ${S}/busybox ${D}${base_bindir}
+	if grep -q "CONFIG_FEATURE_SUID=y" ${WORKDIR}/defconfig; then
+		install -m 4755 ${S}/busybox ${D}${base_bindir}
+	else
+		install -m 0755 ${S}/busybox ${D}${base_bindir}
+	fi
 	ln -sf busybox ${D}${base_bindir}/sh
 
 	if grep -q "CONFIG_SYSLOGD=y" ${WORKDIR}/defconfig; then

@@ -1,0 +1,139 @@
+upstream: http://www.zytor.com/pipermail/klibc/2010-February/002486.html,http://www.zytor.com/pipermail/klibc/2010-February/002487.html,http://www.zytor.com/pipermail/klibc/2010-February/002488.html
+status: pending
+comment: squashed 3 commits togheter
+
+Subject: Add relevant socket.h definitions
+From: maximilian attems <max@stro.at>
+Date: Tue Feb 23 06:02:42 PST 2010
+
+
+linux-2.6 9c501935a3cdcf6b1d35aaee3aa11c7a7051a305 cleaned
+<linux/socket.h> from allmost any userspace export.
+
+thus define the stuff that used to be there in klibc socket.h
+
+Signed-off-by: maximilian attems <max@stro.at>
+---
+
+diff --git a/usr/include/sys/socket.h b/usr/include/sys/socket.h
+index 7d47087..a6357d1 100644
+--- a/usr/include/sys/socket.h
++++ b/usr/include/sys/socket.h
+@@ -9,6 +9,9 @@
+ #include <klibc/compiler.h>
+ #include <klibc/sysconfig.h>
+ #include <linux/socket.h>
++#include <linux/sockios.h>		/* the SIOCxxx I/O controls     */
++#include <linux/uio.h>			/* iovec support                */
++#include <asm/socket.h>			/* arch-dependent defines       */
+ #if _KLIBC_HAS_ARCHSOCKET_H
+ #include <klibc/archsocket.h>
+ #endif
+@@ -27,6 +30,40 @@
+ # define SOCK_PACKET    10
+ #endif
+ 
++
++typedef unsigned short	sa_family_t;
++
++struct sockaddr {
++	sa_family_t	sa_family;	/* address family, AF_xxx	*/
++	char		sa_data[14];	/* 14 bytes of protocol address	*/
++};
++
++
++/*
++ *	As we do 4.4BSD message passing we use a 4.4BSD message passing
++ *	system, not 4.3. Thus msg_accrights(len) are now missing. They
++ *	belong in an obscure libc emulation or the bin.
++ */
++ 
++struct msghdr {
++	void	*	msg_name;	/* Socket name			*/
++	int		msg_namelen;	/* Length of name		*/
++	struct iovec *	msg_iov;	/* Data blocks			*/
++	size_t		msg_iovlen;	/* Number of blocks		*/
++	void 	*	msg_control;	/* Per protocol magic (eg BSD file descriptor passing) */
++	size_t		msg_controllen;	/* Length of cmsg list */
++	unsigned	msg_flags;
++};
++
++
++/* address families */
++#define AF_INET		2	/* Internet IP Protocol 	*/
++#define AF_INET6	10	/* IP version 6			*/
++#define AF_PACKET	17	/* Packet family		*/
++
++/* Flags we can use with send/ and recv. */
++#define MSG_PEEK	2
++
+ typedef int socklen_t;
+ 
+ __extern int socket(int, int, int);
+diff --git a/usr/kinit/nfsmount/nfsmount.h b/usr/kinit/nfsmount/nfsmount.h
+index 6d958bc..59c20cb 100644
+--- a/usr/kinit/nfsmount/nfsmount.h
++++ b/usr/kinit/nfsmount/nfsmount.h
+@@ -3,6 +3,9 @@
+ 
+ #include <linux/nfs_mount.h>
+ 
++#define MNTPROC_MNT            1
++#define MNTPROC_UMNT           3
++
+ extern int nfs_port;
+ 
+ extern int nfsmount_main(int argc, char *argv[]);
+diff --git a/usr/kinit/nfsmount/dummypmap.c b/usr/kinit/nfsmount/dummypmap.c
+index 43abe37..481e23b 100644
+--- a/usr/kinit/nfsmount/dummypmap.c
++++ b/usr/kinit/nfsmount/dummypmap.c
+@@ -39,7 +39,7 @@ struct portmap_reply {
+ 
+ static int bind_portmap(void)
+ {
+-	int sock = socket(PF_INET, SOCK_DGRAM, 0);
++	int sock = socket(AF_INET, SOCK_DGRAM, 0);
+ 	struct sockaddr_in sin;
+ 
+ 	if (sock < 0)
+diff --git a/usr/kinit/nfsmount/mount.c b/usr/kinit/nfsmount/mount.c
+index a55af91..f18cffa 100644
+--- a/usr/kinit/nfsmount/mount.c
++++ b/usr/kinit/nfsmount/mount.c
+@@ -290,9 +290,9 @@ int nfs_mount(const char *pathname, const char *hostname,
+ 	mounted = 1;
+ 
+ 	if (data->flags & NFS_MOUNT_TCP) {
+-		sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
++		sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+ 	} else {
+-		sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
++		sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+ 	}
+ 
+ 	if (sock == -1) {
+diff --git a/usr/kinit/nfsmount/sunrpc.c b/usr/kinit/nfsmount/sunrpc.c
+index 6607cf7..6fb81a1 100644
+--- a/usr/kinit/nfsmount/sunrpc.c
++++ b/usr/kinit/nfsmount/sunrpc.c
+@@ -152,7 +152,7 @@ struct client *tcp_client(uint32_t server, uint16_t port, uint32_t flags)
+ 
+ 	memset(clnt, 0, sizeof(clnt));
+ 
+-	if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
++	if ((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
+ 		perror("socket");
+ 		goto bail;
+ 	}
+@@ -197,7 +197,7 @@ struct client *udp_client(uint32_t server, uint16_t port, uint32_t flags)
+ 
+ 	memset(clnt, 0, sizeof(clnt));
+ 
+-	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
++	if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
+ 		perror("socket");
+ 		goto bail;
+ 	}
+-- 
+1.6.6.1

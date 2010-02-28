@@ -44,7 +44,7 @@ RREPLACES_${PN} = "mplayer-atty"
 PV = "0.0+1.0rc3+gitr${SRCREV}"
 PR = "r0"
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_om-gta02 = "1"
+DEFAULT_PREFERENCE_om-gta02 = "2"
 
 PARALLEL_MAKE = ""
 

@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r38"
+PR ="r41"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -23,14 +23,31 @@ file://revision-detection.patch;patch=1 \
 file://i2c.patch;patch=1 \
 file://720MHz.patch;patch=1 \
 file://dss.patch;patch=1 \
+file://0001-omap3-clock.c-don-t-reprogram-clocks-when-trying-to-.patch;patch=1 \
+file://0002-beagleboard-add-pinmuxing-for-beagleboard-XM.patch;patch=1 \
+file://0003-beagleboard-move-muxing-into-revision-print-switch.patch;patch=1 \
+file://Cortex-A8-erratum-725233.diff;patch=1 \
 "
 
 SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
 PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCREV}"
 
-SRCREV_calamari = "f67066b6b0740b826ed862615c5ab022aaf4779a"
-PV_calamari = "2009.08+${PR}+gitr${SRCREV}"
-SRC_URI_append_calamari = " file://buggy-gcc-really-no-spe.patch;patch=1"
+SRCREV_calamari = "533cf3a024947aaf74c16573a6d951cd0c3d0a7d"
+
+PV_calamari = "2009.11+${PR}+gitr${SRCREV}"
+SRC_URI_calamari = " \
+        git://git.denx.de/u-boot-mpc85xx.git;protocol=git \
+	file://0002-cmd_itest.c-fix-pointer-dereferencing.patch;patch=1 \
+	file://0001-cmd_i2c.c-reduced-subaddress-length-to-3-bytes.patch;patch=1 \
+	file://0002-cmd_bootm.c-made-subcommand-array-static.patch;patch=1 \
+	file://0003-cmd_i2c.c-reworked-subcommand-handling.patch;patch=1 \
+	file://0004-cmd_i2c.c-sorted-commands-alphabetically.patch;patch=1 \
+	file://0005-cmd_i2c.c-added-i2c-read-to-memory-function.patch;patch=1 \
+	file://0006-cmd_itest.c-also-support-environment-variables-as-a.patch;patch=1 \
+	file://0007-cmd_setexpr-allow-memory-addresses-and-env-vars-in-e.patch;patch=1 \
+        "
+
+UBOOT_MACHINE_calamari = "MPC8536DS_config"
 
 SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw_env.config \

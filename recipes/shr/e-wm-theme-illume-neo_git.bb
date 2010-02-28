@@ -4,11 +4,12 @@ HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
 RDEPENDS = "e-wm"
-RRECOMMENDS = "elementary-theme-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
+RSUGGESTS = "elementary-theme-neo gtk-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENCE = "unknown"
 
+SRCREV = "820f4d41531ad6f790615b6a7312a60e30e99fdc"
 PV = "0.1-${EFL_SRCREV}+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

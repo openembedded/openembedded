@@ -1,0 +1,116 @@
+Index: entrance/data/config/build_config.sh.in
+===================================================================
+--- entrance.orig/data/config/build_config.sh.in
++++ entrance/data/config/build_config.sh.in
+@@ -1,45 +1,45 @@
+ #!/bin/sh -e
+ 
+-usage() {
+-	cat <<-EOF
+-	Usage: $0 [options]
+-
+-	Options:
+-	  -d, --dir     Session directory to scan
+-	  -c, --file    Config file (default: $DB)
+-	  -h, --help    This help output :p
+-	EOF
+-
+-	if [ "$1" = "1" ] ; then
+-		echo ""
+-		echo "ERROR: $2"
+-	fi
+-
+-	exit $1
+-}
+-
+-SESSION_DIR=""
++#usage() {
++#	cat <<-EOF
++#	Usage: $0 [options]
++#
++#	Options:
++#	  -d, --dir     Session directory to scan
++#	  -c, --file    Config file (default: $DB)
++#	  -h, --help    This help output :p
++#	EOF
++#
++#	if [ "$1" = "1" ] ; then
++#		echo ""
++#		echo "ERROR: $2"
++#	fi
++#
++#	exit $1
++#}
++#
++#SESSION_DIR=""
+ DB="./entrance_config.cfg"
+ 
+-while [ -n "$1" ] ; do
+-	case $1 in
+-		-d) shift; SESSION_DIR=$1;;
+-		-c) shift; DB=$1;;
+-		-h) usage 0;;
+-		*)  usage 1 "Unknown option: $1";;
+-	esac
+-	shift
+-done
+-
+-if [ -z "$DB" ] || [ -d "$DB" ] ; then
+-	usage 1 "Invalid DB argument"
+-fi
+-
+-FROM=$SESSION_DIR
+-if [ -z "$FROM" ] ; then
+-	FROM="defaults"
+-fi
+-echo "Generating config file '$DB' from '$FROM' ..."
++#while [ -n "$1" ] ; do
++#	case $1 in
++#		-d) shift; SESSION_DIR=$1;;
++#		-c) shift; DB=$1;;
++#		-h) usage 0;;
++#		*)  usage 1 "Unknown option: $1";;
++#	esac
++#	shift
++#done
++#
++#if [ -z "$DB" ] || [ -d "$DB" ] ; then
++#	usage 1 "Invalid DB argument"
++#fi
++#
++#FROM=$SESSION_DIR
++#if [ -z "$FROM" ] ; then
++#	FROM="defaults"
++#fi
++#echo "Generating config file '$DB' from '$FROM' ..."
+ 
+ rm -f $DB || exit 1
+ 
+@@ -60,9 +60,9 @@ ecore_config -c $DB -k /entrance/time_fo
+ #ecore_config -c $DB -k /entrance/fonts/1/-s -s "/usr/X11R6/lib/X11/fonts/Truetype/"
+ ecore_config -c $DB -k /entrance/greeting/use_default -i 1
+ ecore_config -c $DB -k /entrance/greeting/before -s "Welcome to"
+-ecore_config -c $DB -k /entrance/greeting/after -s ""
++ecore_config -c $DB -k /entrance/greeting/after -s " e17/OE"
+ 
+-ecore_config -c $DB -k /entrance/session/session -s "default"
++ecore_config -c $DB -k /entrance/session/session -s "/etc/X11/Sessions/Enlightenment"
+ ecore_config -c $DB -k /entrance/session/title -s "Default"
+ ecore_config -c $DB -k /entrance/session/icon -s "default.png"
+ #if [ -z "$SESSION_DIR" ] ; then
+@@ -92,7 +92,7 @@ ecore_config -c $DB -k /entrance/session
+ #	done
+ #fi
+ count=0
+-ecore_config -c $DB -k /entrance/session/$count/session -s "failsafe"
++ecore_config -c $DB -k /entrance/session/$count/session -s "/etc/X11/Sessions/Enlightenment"
+ ecore_config -c $DB -k /entrance/session/$count/title -s "Failsafe"
+ ecore_config -c $DB -k /entrance/session/$count/icon -s "failsafe.png"
+ count=`(expr $count + 1)`
+@@ -107,5 +107,5 @@ ecore_config -c $DB -k /entrance/autolog
+ ecore_config -c $DB -k /entrance/presel/mode -i 0
+ 
+ # for Entranced
+-ecore_config -c $DB -k /entranced/xserver -s "@xbin@/X -quiet -br -nolisten tcp@ENTRANCE_VT_ARG@"
++ecore_config -c $DB -k /entranced/xserver -s "/etc/X11/Xserver"
+ ecore_config -c $DB -k /entranced/attempts -i 5

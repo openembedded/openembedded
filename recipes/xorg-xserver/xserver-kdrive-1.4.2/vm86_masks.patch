@@ -1,0 +1,20 @@
+See https://bugs.gentoo.org/show_bug.cgi?id=235789
+2008-09-09 Martin von Gagern
+
+--- xorg-server-1.5.0.orig/hw/kdrive/vesa/vm86.h	2008-09-09 17:24:59.000000000 +0200
++++ xorg-server-1.5.0/hw/kdrive/vesa/vm86.h	2008-09-09 18:01:53.000000000 +0200
+@@ -67,6 +67,13 @@
+ #include "os.h"
+ #endif
+ 
++#ifndef IF_MASK
++#define IF_MASK X86_EFLAGS_IF
++#endif
++#ifndef IOPL_MASK
++#define IOPL_MASK X86_EFLAGS_IOPL
++#endif
++
+ typedef unsigned char	U8;
+ typedef unsigned short	U16;
+ typedef unsigned int	U32;
+

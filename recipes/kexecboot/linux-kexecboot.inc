@@ -1,12 +1,11 @@
-# We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-PR = "r18"
+# We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
+INC_PR = "r19"
 
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
 
 require ../linux/linux.inc
 
-DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-kexecboot-image"
 
 # here we set master console on serial
@@ -26,6 +25,9 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
 TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 
+KERNEL_IMAGE_MAXSIZE = "1294336"
+KERNEL_IMAGE_MAXSIZE_collie = "1048576"
+
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}"
 
@@ -42,11 +44,11 @@ def kernel_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d)
 # force lzma compression for kernel (linux-kexecboot >= 2.6.32)
 # force lzma compression for initramfs (linux-kexecboot >= 2.6.30)
 
-KERNEL_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.32", "", "CONFIG_KERNEL_LZMA=y", d)}'
+KERNEL_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.31", "", "CONFIG_KERNEL_LZMA=y", d)}'
 
-INITRAMFS_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_INITRAMFS_COMPRESSION_LZMA=y", d)}'
-INITRAMFS_COMPRESSION_SUFFIX = '${@kernel_version_less_or_equal("PV", "2.6.30", "gz", "lzma", d)}'
-RD_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.30", "", "CONFIG_RD_LZMA=y", d)}'
+INITRAMFS_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.29", "", "CONFIG_INITRAMFS_COMPRESSION_LZMA=y", d)}'
+INITRAMFS_COMPRESSION_SUFFIX = '${@kernel_version_less_or_equal("PV", "2.6.29", "gz", "lzma", d)}'
+RD_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.29", "", "CONFIG_RD_LZMA=y", d)}'
 
 do_configure[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
 

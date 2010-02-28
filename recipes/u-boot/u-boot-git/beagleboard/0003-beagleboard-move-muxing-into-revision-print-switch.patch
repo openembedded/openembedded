@@ -1,0 +1,53 @@
+From 24e335a1457da32a1d79621d3a24462d6fb96853 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Thu, 18 Feb 2010 11:55:26 +0100
+Subject: [PATCH] beagleboard: move muxing into revision print switch()
+
+---
+ board/ti/beagle/beagle.c |   19 ++++---------------
+ 1 files changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 8b5243b..8fac6b2 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -101,12 +101,16 @@ void beagle_identify(void)
+ 		break;
+ 	case REVISION_CX:
+ 		printf("C1/C2/C3\n");
++		MUX_BEAGLE_C();
+ 		break;
+ 	case REVISION_C4:
+ 		printf("C4\n");
++		MUX_BEAGLE_C();
+ 		break;
+ 	case REVISION_XM:
+ 		printf("XM\n");
++		MUX_BEAGLE_C();
++		MUX_BEAGLE_XM();
+ 		break;
+ 	default:
+ 		printf("unknown 0x%02x\n", beagle_revision);
+@@ -181,19 +185,4 @@ int misc_init_r(void)
+ void set_muxconf_regs(void)
+ {
+ 	MUX_BEAGLE();
+-
+-	switch(beagle_revision) {
+-	case REVISION_AXBX:
+-			break;
+-	case REVISION_CX:
+-			MUX_BEAGLE_C();
+-			break;
+-	case REVISION_C4:
+-			MUX_BEAGLE_C();
+-			break;
+-	case REVISION_XM:
+-			MUX_BEAGLE_C();
+-			MUX_BEAGLE_XM();
+-			break;
+-	}
+ }
+-- 
+1.6.6.1
+

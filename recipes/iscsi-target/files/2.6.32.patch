@@ -1,0 +1,107 @@
+Index: x/kernel/file-io.c
+===================================================================
+--- x/kernel/file-io.c	(revision 276)
++++ x/kernel/file-io.c	(working copy)
+@@ -88,7 +88,7 @@
+ 		count = lu->blk_cnt << lu->blk_shift;
+ 	}
+ 
+-	res = sync_page_range(inode, mapping, ppos, count);
++	res = filemap_write_and_wait_range(mapping, ppos, ppos + count - 1);
+ 	if (res) {
+ 		eprintk("I/O error: syncing pages failed: %d\n", res);
+ 		return -EIO;
+Index: x/dkms.conf
+===================================================================
+--- x/dkms.conf	(revision 276)
++++ x/dkms.conf	(working copy)
+@@ -20,33 +20,36 @@
+ # Patches newest - oldest, distro spec at bottom
+ #
+ 
+-PATCH[0]="compat-2.6.29.patch"
+-PATCH_MATCH[0]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29)"
++PATCH[0]="compat-2.6.31.patch"
++PATCH_MATCH[0]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)"
+ 
+-PATCH[1]="compat-2.6.28.patch"
+-PATCH_MATCH[1]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28)"
++PATCH[1]="compat-2.6.29.patch"
++PATCH_MATCH[1]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29)"
+ 
+-PATCH[2]="compat-2.6.25-2.6.27.patch"
+-PATCH_MATCH[2]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24|25|26|27)"
++PATCH[2]="compat-2.6.28.patch"
++PATCH_MATCH[2]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28)"
+ 
+-PATCH[3]="compat-2.6.24.patch"
+-PATCH_MATCH[3]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24)"
++PATCH[3]="compat-2.6.25-2.6.27.patch"
++PATCH_MATCH[3]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24|25|26|27)"
+ 
+-PATCH[4]="compat-2.6.23.patch"
+-PATCH_MATCH[4]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23)"
++PATCH[4]="compat-2.6.24.patch"
++PATCH_MATCH[4]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23|24)"
+ 
+-PATCH[5]="compat-2.6.22.patch"
+-PATCH_MATCH[5]="2\.6\.(9|14|15|16|17|18|19|20|21|22)"
++PATCH[5]="compat-2.6.23.patch"
++PATCH_MATCH[5]="2\.6\.(9|14|15|16|17|18|19|20|21|22|23)"
+ 
+-PATCH[6]="compat-2.6.19-2.6.21.patch"
+-PATCH_MATCH[6]="2\.6\.(9|14|15|16|17|18|19|20|21)"
++PATCH[6]="compat-2.6.22.patch"
++PATCH_MATCH[6]="2\.6\.(9|14|15|16|17|18|19|20|21|22)"
+ 
+-PATCH[7]="compat-2.6.14-2.6.18.patch"
+-PATCH_MATCH[7]="2\.6\.(9|14|15|16|17|18)"
++PATCH[7]="compat-2.6.19-2.6.21.patch"
++PATCH_MATCH[7]="2\.6\.(9|14|15|16|17|18|19|20|21)"
+ 
+-PATCH[8]="compat-sles10sp2.patch"
+-PATCH_MATCH[8]="2\.6\.16\.60-.*"
++PATCH[8]="compat-2.6.14-2.6.18.patch"
++PATCH_MATCH[8]="2\.6\.(9|14|15|16|17|18)"
+ 
+-PATCH[9]="compat-rhel4.patch"
+-PATCH_MATCH[9]="2\.6\.9-.*\.(el|plus\.c4)"
++PATCH[9]="compat-sles10sp2.patch"
++PATCH_MATCH[9]="2\.6\.16\.60-.*"
+ 
++PATCH[10]="compat-rhel4.patch"
++PATCH_MATCH[10]="2\.6\.9-.*\.(el|plus\.c4)"
++
+Index: x/patches/compat-2.6.31.patch
+===================================================================
+--- x/patches/compat-2.6.31.patch	(revision 0)
++++ x/patches/compat-2.6.31.patch	(revision 0)
+@@ -0,0 +1,11 @@
++--- sync/kernel/file-io.c	2009-12-10 17:43:36.000000000 -0500
+++++ trunk/kernel/file-io.c	2008-12-04 17:35:21.000000000 -0500
++@@ -88,7 +88,7 @@
++ 		count = lu->blk_cnt << lu->blk_shift;
++ 	}
++ 
++-	res = filemap_write_and_wait_range(mapping, ppos, ppos + count - 1);
+++	res = sync_page_range(inode, mapping, ppos, count);
++ 	if (res) {
++ 		eprintk("I/O error: syncing pages failed: %d\n", res);
++ 		return -EIO;
+Index: x/Makefile
+===================================================================
+--- x/Makefile	(revision 276)
++++ x/Makefile	(working copy)
+@@ -51,6 +51,11 @@
+ # base first the earlier patch sets will not need to be modified.
+ #
+ 
++# Compatibility patch for kernels <= 2.6.31
++ifeq ($(call kver_le,2,6,31),1)
++	PATCHES := $(PATCHES) compat-2.6.31.patch
++endif
++
+ # Compatibility patch for kernels <= 2.6.29
+ ifeq ($(call kver_le,2,6,29),1)
+ 	PATCHES := $(PATCHES) compat-2.6.29.patch
+

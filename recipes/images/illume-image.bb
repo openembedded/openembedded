@@ -77,7 +77,7 @@ DEV_INSTALL = "\
 TOOLS_INSTALL = "\
   dosfstools \
   lsof \
-  mickeydbus \
+  mdbus \
   mtd-utils \
   nano \
   powertop \
@@ -94,7 +94,7 @@ AUDIO_INSTALL = "\
   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
   gst-plugin-modplug \
   gst-plugin-sid \
-  fso-sounds \
+#  fso-sounds \
 "
 
 GTK_INSTALL = "\
@@ -138,9 +138,9 @@ APPS_INSTALL = "\
    elementary-alarm \
    expedite \
    expedite-themes \
-   libefso \
-   essential-dialer \
-   elementary-sms \
+#   libefso \
+#   essential-dialer \
+#   elementary-sms \
 "
 
 IMAGE_INSTALL = "\

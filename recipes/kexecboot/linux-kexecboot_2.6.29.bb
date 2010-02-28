@@ -1,5 +1,7 @@
 require linux-kexecboot.inc
 
+PR = "${INC_PR}.0"
+
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom"
 
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"

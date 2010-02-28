@@ -1,7 +1,7 @@
 require busybox.inc
 PR = "${INC_PR}.1"
 
-SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
+SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
            file://busybox-cron \
            file://busybox-httpd \
            file://busybox-udhcpd \
@@ -15,6 +15,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://busybox-appletlib-dependency.patch;patch=1 \
            file://umount.busybox \
            file://run_parts.c"
+SRC_URI[tarball.md5sum] = "c91ec9756e2000073a9dd8fa9fc3f89e"
+SRC_URI[tarball.sha256sum] = "83c4cc813124a43f13e2ebb83cea9da9909d63891b824bf4bc7006f0567db7cf"
 
 SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;patch=1 \
             http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-iptun.patch;patch=1 \

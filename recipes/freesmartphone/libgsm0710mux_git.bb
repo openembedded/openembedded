@@ -8,29 +8,7 @@ PR = "r0"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/libgsm0710mux;protocol=git;branch=master \
-  file://abyss.conf \
 "
 S = "${WORKDIR}/git"
 
 inherit autotools_stage pkgconfig vala
-
-do_install_append() {
-	install -d ${D}${sysconfdir}
-	install -m 0644 ${WORKDIR}/abyss.conf ${D}${sysconfdir}/
-}
-
-PACKAGES =+ "${PN}-config"
-
-FILES_${PN} += "${sysconfdir} ${datadir}"
-
-RRECOMMENDS_${PN} = "${PN}-config"
-
-FILES_${PN}-config = "\
-  ${sysconfdir}/abyss.conf \
-"
-
-CONFFILES_${PN}-config = "\
-  ${sysconfdir}/abyss.conf \
-"
-
-PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"

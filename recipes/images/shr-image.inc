@@ -3,14 +3,12 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r10"
+PR = "r13"
 
 
 DEPENDS += "task-shr-minimal"
 
 RDEPENDS += "\
-  ${MACHINE_TASK_PROVIDER} \
-  task-base \
   task-shr-minimal-base \
   task-shr-minimal-cli \
   task-shr-minimal-fso \
@@ -18,23 +16,16 @@ RDEPENDS += "\
   task-shr-minimal-audio \
   task-shr-minimal-gtk \
   task-shr-minimal-x \
-  task-x11-illume \
-  task-fso2-compliance \
-  task-fonts-truetype-core \
 "
 
 IMAGE_INSTALL += "\
-  ${MACHINE_TASK_PROVIDER} \
-  task-base \
   task-shr-minimal-base \
   task-shr-minimal-cli \
+  task-shr-minimal-fso \
   task-shr-minimal-apps \
   task-shr-minimal-audio \
   task-shr-minimal-gtk \
   task-shr-minimal-x \
-  task-x11-illume \
-  task-fso2-compliance \
-  task-fonts-truetype-core \
 "
 
 inherit image
@@ -130,7 +121,6 @@ shr_rootfs_gta02_postprocess() {
     cd ${IMAGE_ROOTFS}/boot
     ln -s uImage uImage-GTA02.bin
     cd $curdir
-    #sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${IMAGE_ROOTFS}/etc/bluetooth/audio.conf
 }
 
 shr_rootfs_gta01_postprocess() {
@@ -139,14 +129,14 @@ shr_rootfs_gta01_postprocess() {
     cd ${IMAGE_ROOTFS}/boot
     ln -s uImage uImage-GTA01.bin
     cd $curdir
-    #sed -i 's/#SCORouting=PCM/SCORouting=PCM/' ${IMAGE_ROOTFS}/etc/bluetooth/audio.conf
 }
+
+# We don't want /boot directory in jffs2/ubi/ubifs images
+IMAGE_CMD_jffs2 = "mv ${IMAGE_ROOTFS}/boot ${IMAGE_ROOTFS}-boot && mkfs.jffs2 -x lzo --root=${IMAGE_ROOTFS} --faketime --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${EXTRA_IMAGECMD} && mv ${IMAGE_ROOTFS}-boot ${IMAGE_ROOTFS}/boot"
+IMAGE_CMD_ubi = "mv ${IMAGE_ROOTFS}/boot ${IMAGE_ROOTFS}-boot && echo \[ubifs\] > ubinize.cfg ; echo mode=ubi >> ubinize.cfg ; echo image=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ubifs >> ubinize.cfg ; echo vol_id=0 >> ubinize.cfg ; echo vol_type=dynamic >> ubinize.cfg ; echo vol_name=${UBI_VOLNAME} >> ubinize.cfg ; echo vol_flags=autoresize >> ubinize.cfg;mkfs.ubifs -r ${IMAGE_ROOTFS} -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ubifs ${MKUBIFS_ARGS} && ubinize -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ubi ${UBINIZE_ARGS} ubinize.cfg && mv ${IMAGE_ROOTFS}-boot ${IMAGE_ROOTFS}/boot"
+IMAGE_CMD_ubifs = "mv ${IMAGE_ROOTFS}/boot ${IMAGE_ROOTFS}-boot && mkfs.ubifs -r ${IMAGE_ROOTFS} -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.ubifs.img ${MKUBIFS_ARGS} && mv ${IMAGE_ROOTFS}-boot ${IMAGE_ROOTFS}/boot"
 
 ROOTFS_POSTPROCESS_COMMAND += " shr_rootfs_postprocess"
 
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta02 = ";shr_rootfs_gta02_postprocess"
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta01 = ";shr_rootfs_gta01_postprocess"
-
-#do_testlab() {
-#	:
-#}

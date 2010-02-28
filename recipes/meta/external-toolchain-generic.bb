@@ -22,8 +22,8 @@ PR = "r2"
 inherit sdk
 
 do_stage() {
-	if [ ! -e  ${prefix}/package-status ]; then
-		echo "The external toolchain could not be found in ${prefix}!"
+	if [ ! -e ${prefix}/package-status -a ! -e ${prefix}/usr/lib/opkg/status ]; then
+		echo "The package status file of the external toolchain could not be found in ${prefix}!"
 		exit 1
 	fi
 	

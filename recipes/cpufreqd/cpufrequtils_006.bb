@@ -1,7 +1,11 @@
 LICENSE = "GPLv2"
 DESCRIPTION = "To make access to the Linux kernel cpufreq subsystem easier for users and cpufreq userspace tools, a cpufrequtils package was created"
 
-SRC_URI = "http://www.kernel.org/pub/linux/utils/kernel/cpufreq/cpufrequtils-${PV}.tar.bz2"
+PR = "r1"
+
+SRC_URI = "http://www.kernel.org/pub/linux/utils/kernel/cpufreq/cpufrequtils-${PV}.tar.bz2 \
+           file://fix-proc-stat-reading.patch;patch=1 \
+"
 
 export CROSS = "${TARGET_PREFIX}"
 export LIBTOOL = "${TARGET_PREFIX}libtool --tag cc"

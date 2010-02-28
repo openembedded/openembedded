@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r36"
+PR = "r42"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -28,7 +28,9 @@ RDEPENDS_${PN} += "\
 		gpe-contacts \
 		gtkmm \
 		guitartune \
+		jefliks \
 		mc \
+		mpd \
 		mplayer \
 		navit \
 # omview depends on deprecated (now broken) epsilon
@@ -205,6 +207,8 @@ RDEPENDS_${PN} += "\
 		fsousaged \
 		fsodeviced \
 		fsonetworkd \
+		mdbus \
+		mickeyterm \
 		opimd-utils \
 		omgps \
 		shr-launcher \
@@ -232,7 +236,7 @@ RDEPENDS_${PN} += "\
 		om-neon \
 		ipython \
 #		phoneme-advanced-foundation \
-		eve \
+#		eve was killed in svnr45979
 		python-pybluez \
 		x11perf \
 		pyring \
@@ -273,7 +277,8 @@ RDEPENDS_${PN} += "\
 		ventura \
 		emtooth \
 		podboy \
+		mcnavi \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
-RDEPENDS_${PN}_om-gta02 += "glamo-dri-tests"
+RDEPENDS_${PN}_append_om-gta02 = "glamo-dri-tests"

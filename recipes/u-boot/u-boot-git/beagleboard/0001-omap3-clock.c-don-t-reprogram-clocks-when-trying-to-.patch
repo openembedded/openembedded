@@ -1,0 +1,50 @@
+From 0c597fe20bab64deca7d71e7da6c0a7e553a2a7b Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Thu, 18 Feb 2010 11:05:49 +0100
+Subject: [PATCH 1/2] omap3 clock.c: don't reprogram clocks when trying to find out clock divider
+
+---
+ cpu/arm_cortexa8/omap3/clock.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/cpu/arm_cortexa8/omap3/clock.c b/cpu/arm_cortexa8/omap3/clock.c
+index d67517a..40bd679 100644
+--- a/cpu/arm_cortexa8/omap3/clock.c
++++ b/cpu/arm_cortexa8/omap3/clock.c
+@@ -40,17 +40,19 @@
+  *****************************************************************************/
+ u32 get_osc_clk_speed(void)
+ {
+-	u32 start, cstart, cend, cdiff, val;
++	u32 start, cstart, cend, cdiff, cdiv, val;
+ 	struct prcm *prcm_base = (struct prcm *)PRCM_BASE;
+ 	struct prm *prm_base = (struct prm *)PRM_BASE;
+ 	struct gptimer *gpt1_base = (struct gptimer *)OMAP34XX_GPT1;
+ 	struct s32ktimer *s32k_base = (struct s32ktimer *)SYNC_32KTIMER_BASE;
+ 
+ 	val = readl(&prm_base->clksrc_ctrl);
+-
+-	/* If SYS_CLK is being divided by 2, remove for now */
+-	val = (val & (~SYSCLKDIV_2)) | SYSCLKDIV_1;
+-	writel(val, &prm_base->clksrc_ctrl);
++	if (val & SYSCLKDIV_2)
++		cdiv = 2;
++	else if (val & SYSCLKDIV_1)
++		cdiv = 1;
++	else
++		cdiv = 1;
+ 
+ 	/* enable timer2 */
+ 	val = readl(&prcm_base->clksel_wkup) | CLKSEL_GPT1;
+@@ -83,6 +85,8 @@ u32 get_osc_clk_speed(void)
+ 	cend = readl(&gpt1_base->tcrr);		/* get end sys_clk count */
+ 	cdiff = cend - cstart;			/* get elapsed ticks */
+ 
++	cdiff *= cdiv;
++
+ 	/* based on number of ticks assign speed */
+ 	if (cdiff > 19000)
+ 		return S38_4M;
+-- 
+1.6.6.1
+

@@ -5,7 +5,7 @@ LICENSE = "MIT"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 inherit autotools pkgconfig binconfig
 
@@ -13,11 +13,7 @@ EXTRA_OECONF = "--without-python --without-debug --without-legacy --with-catalog
 
 export LDFLAGS += "-ldl"
 
-do_stage() {
-	autotools_stage_all
-	install -d ${STAGING_DATADIR}/aclocal/
-	install -d ${STAGING_BINDIR_CROSS}
-
+do_install_append() {
  	install -m 0644 libxml.m4 ${STAGING_DATADIR}/aclocal/
 	#this is need it by php during its install
 	install -m 0755 xml2-config ${STAGING_BINDIR_CROSS}

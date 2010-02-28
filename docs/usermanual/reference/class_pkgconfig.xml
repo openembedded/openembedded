@@ -4,7 +4,7 @@
 
   <para>The pkgconfig class is for packages that install
   <command>&lt;pkg&gt;.pc</command> files. These files provide information
-  about the build settings for the package vwhich are then made available by
+  about the build settings for the package which are then made available by
   the <command>pkg-config</command> command.</para>
 
   <para>Since the contents of the <command>.pc</command> files are used at

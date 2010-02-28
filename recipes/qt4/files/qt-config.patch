@@ -14,7 +14,7 @@
          qtconfig = qmake_libraryInfoFile();
 +    if (!QFile::exists(qtconfig)) {
 +        QByteArray config = getenv("QT_CONF_PATH");
-+        qtconfig = config;
++        qtconfig = QFile::decodeName(config);
 +    }
  #else
      if (!QFile::exists(qtconfig) && QCoreApplication::instance()) {

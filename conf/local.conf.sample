@@ -30,9 +30,6 @@ BBFILES := "${@bb.fatal('Edit your conf/local.conf: BBFILES')}"
 # This is a regulary expression, so be sure to get your parenthesis balanced.
 BBMASK = ""
 
-# Proxy settings:
-# BB_ENV_EXTRAWHITE="http_proxy ftp_proxy no_proxy"
-
 # Uncomment this if you want to use a prebuilt toolchain. You will need to
 # provide packages for toolchain and additional libraries yourself. You also
 # have to set PATH in your environment to make sure BitBake finds additional binaries.

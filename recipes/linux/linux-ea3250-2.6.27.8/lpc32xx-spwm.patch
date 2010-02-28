@@ -1,0 +1,227 @@
+diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c linux-2.6.27.8-new/arch/arm/mach-lpc32xx/arch-lpc32xx.c
+--- linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2009-11-24 15:42:39.000000000 +0100
++++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2009-11-24 15:52:40.000000000 +0100
+@@ -342,6 +342,9 @@
+ 	tmp |= UART_UART6_IRDAMOD_BYPASS;
+ #endif
+ 	__raw_writel(tmp, UARTCTL_CTRL(io_p2v(UART_CTRL_BASE)));
++#if defined(CONFIG_SPWM_LPC32XX)
++	lpc32xx_spwm_init();
++#endif
+ }
+ 
+ static struct map_desc lpc32xx_io_desc[] __initdata = {
+diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h linux-2.6.27.8-new/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
+--- linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h	2009-11-24 15:54:09.000000000 +0100
+@@ -0,0 +1,31 @@
++/*
++ *  linux/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
++ *
++ *  Copyright (C) 2009 Fontys University of Applied Sciences, Eindhoven
++ *                     Laurens Timmermans <l.timmermans@fontys.nl>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef LPC32XX_PWM_H
++#define LPC32XX_PWM_H
++
++#define PWM1	0
++#define PWM2	1
++
++#define RTC_CLK		0x00
++#define PERIPH_CLK	0x01
++
++#endif
+diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Kconfig
+--- linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig	2009-11-24 15:42:39.000000000 +0100
++++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Kconfig	2009-11-24 16:01:16.000000000 +0100
+@@ -185,6 +185,12 @@
+ 	  which support is selected, the ethernet interface driver needs to be
+ 	  selected in the device driver networking section.
+ 
++config SPWM_LPC32XX
++	bool "SPWM"
++	default FALSE
++	help
++	  Enable simple-PWM support
++
+ menu "Standard UARTS"
+ 
+ config MACH_LPC32XX_UART5_ENABLE
+diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Makefile
+--- linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile	2009-11-24 15:42:39.000000000 +0100
++++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Makefile	2009-11-24 16:01:39.000000000 +0100
+@@ -7,6 +7,7 @@
+ obj-y				:= timer-lpc32xx.o irq-lpc32xx.o arch-lpc32xx.o
+ obj-y				+= serial-lpc32xx.o clocks-lpc32xx.o
+ obj-y				+= dma-lpc32xx.o uid-lpc32xx.o
++obj-y				+= spwm-lpc32xx.o
+ obj-m				:= 
+ obj-n				:=
+ obj-				:=
+diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c linux-2.6.27.8-new/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
+--- linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/spwm-lpc32xx.c	2009-11-24 16:07:20.000000000 +0100
+@@ -0,0 +1,126 @@
++/*
++ *  linux/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
++ *
++ *  Copyright (C) 2009 Fontys University of Applied Sciences, Eindhoven
++ *                     Laurens Timmermans <l.timmermans@fontys.nl>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++
++#include <mach/lpc32xx_clkpwr.h>
++#include <mach/lpc32xx_pwm.h>
++#include "sys-lpc32xx.h"
++
++#define MAX_PWM			1
++
++/* sets bits in w at position x of width y to value z */
++#define _BITS(w,x,y,z) (w = (w & ~(((0x01 << y)-1) << ((x+1)-y))) | ((z & ((0x01 << y)-1)) << ((x+1)-y)))
++
++#define PWM_IOBASE(x)	io_p2v(PWM1_BASE + (x*4))
++
++void lpc32xx_spwm_enable(u32 ch)
++{
++	u32 pwm_ctrl;
++
++	if(ch > MAX_PWM)
++		return;
++
++	pwm_ctrl = __raw_readl(PWM_IOBASE(ch));
++	_BITS(pwm_ctrl, 31, 0x01, 0x01);
++	__raw_writel(pwm_ctrl, PWM_IOBASE(ch));
++}
++EXPORT_SYMBOL(lpc32xx_spwm_enable);
++
++void lpc32xx_spwm_disable(u32 ch)
++{
++	u32 pwm_ctrl;
++
++	if(ch > MAX_PWM)
++		return;
++
++	pwm_ctrl = __raw_readl(PWM_IOBASE(ch));
++	_BITS(pwm_ctrl, 31, 0x01, 0x00);
++	__raw_writel(pwm_ctrl, PWM_IOBASE(ch));
++}
++EXPORT_SYMBOL(lpc32xx_spwm_disable);
++
++void lpc32xx_spwm_set_dutycycle(u32 ch, u32 dutycycle)
++{
++	u32 pwm_ctrl;
++
++	if(ch > MAX_PWM)
++		return;
++
++	pwm_ctrl = __raw_readl(PWM_IOBASE(ch));
++	_BITS(pwm_ctrl, 0x07, 0x08, dutycycle);
++	__raw_writel(pwm_ctrl, PWM_IOBASE(ch));
++}
++EXPORT_SYMBOL(lpc32xx_spwm_set_dutycycle);
++
++void lpc32xx_spwm_set_reloadv(u32 ch, u32 reloadv)
++{
++	u32 pwm_ctrl;
++
++	if(ch > MAX_PWM)
++		return;
++
++	pwm_ctrl = __raw_readl(PWM_IOBASE(ch));
++	_BITS(pwm_ctrl, 0x0F, 0x08, reloadv);
++	__raw_writel(pwm_ctrl, PWM_IOBASE(ch));
++}
++EXPORT_SYMBOL(lpc32xx_spwm_set_reloadv);
++
++void lpc32xx_spwm_set_clocksource(u32 ch, u32 clk)
++{
++	u32 clk_ctrl;
++
++	if(ch > MAX_PWM)
++		return;
++
++	clk_ctrl = __raw_readl(CLKPWR_PWM_CLK_CTRL(CLKPWR_IOBASE));
++	_BITS(clk_ctrl, (ch*2 + 1), 0x01, clk);
++	__raw_writel(clk_ctrl, CLKPWR_PWM_CLK_CTRL(CLKPWR_IOBASE));
++}
++EXPORT_SYMBOL(lpc32xx_spwm_set_clocksource);
++
++void lpc32xx_spwm_set_clockdiv(u32 ch, u32 div)
++{
++	u32 clk_ctrl;
++
++	if(ch > MAX_PWM)
++		return;
++
++	clk_ctrl = __raw_readl(CLKPWR_PWM_CLK_CTRL(CLKPWR_IOBASE));
++	_BITS(clk_ctrl, (ch*4 + 7), 0x04, div);
++	__raw_writel(clk_ctrl, CLKPWR_PWM_CLK_CTRL(CLKPWR_IOBASE));
++}
++EXPORT_SYMBOL(lpc32xx_spwm_set_clockdiv);
++
++void __init lpc32xx_spwm_init(void)
++{
++	u32 clk_ctrl;
++
++	/* enable the clock */
++	clk_ctrl = __raw_readl(CLKPWR_PWM_CLK_CTRL(CLKPWR_IOBASE));
++	clk_ctrl |= (0x05);
++	__raw_writel(clk_ctrl, CLKPWR_PWM_CLK_CTRL(CLKPWR_IOBASE));
++
++	/* initially set clockdiv to 1 */
++	lpc32xx_spwm_set_clockdiv(PWM1, 1);
++	lpc32xx_spwm_set_clockdiv(PWM2, 1);
++}
+diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h linux-2.6.27.8-new/arch/arm/mach-lpc32xx/sys-lpc32xx.h
+--- linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2009-11-24 15:42:39.000000000 +0100
++++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2009-11-24 16:08:24.000000000 +0100
+@@ -83,14 +83,17 @@
+ #endif
+ 
+ /* Chip specific structures and functions */
+-extern struct platform_device serial_std_platform_device;
+-extern struct platform_device serial_hspd_platform_device;
++extern struct platform_device serial_std_platform_device;
++extern struct platform_device serial_hspd_platform_device;
+ extern struct sys_timer lpc32xx_timer;
+ extern void lpc32xx_init_irq (void);
+ extern void serial_init(void);
+ extern void __init lpc32xx_init (void);
+ extern void __init lpc32xx_map_io(void);
+ extern int __init clk_init(void);
++#if defined(CONFIG_SPWM_LPC32XX)
++extern void lpc32xx_spwm_init(void);
++#endif
+ 
+ #endif

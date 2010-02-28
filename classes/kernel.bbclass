@@ -127,16 +127,7 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/asm-generic
 	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
 
-	mkdir -p ${STAGING_KERNEL_DIR}/include/linux
-	cp -fR include/linux/* ${STAGING_KERNEL_DIR}/include/linux/
-
-	mkdir -p ${STAGING_KERNEL_DIR}/include/net
-	cp -fR include/net/* ${STAGING_KERNEL_DIR}/include/net/
-
-	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
-	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
-
-	for entry in drivers/crypto drivers/media include/media include/acpi include/sound include/video include/scsi include/trace; do
+	for entry in drivers/crypto drivers/media include/generated include/linux include/net include/pcmcia include/media include/acpi include/sound include/video include/scsi include/trace; do
 		if [ -d $entry ]; then
 			mkdir -p ${STAGING_KERNEL_DIR}/$entry
 			cp -fR $entry/* ${STAGING_KERNEL_DIR}/$entry/
@@ -497,7 +488,7 @@ python populate_packages_prepend () {
 # Support checking the kernel size since some kernels need to reside in partitions
 # with a fixed length or there is a limit in transferring the kernel to memory
 do_sizecheck() {
-	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" -a -z "${DONT_CHECK_KERNELSIZE}" ]; then
+	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" ]; then
         	size=`ls -l ${KERNEL_OUTPUT} | awk '{ print $5}'`
         	if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
                 	rm ${KERNEL_OUTPUT}

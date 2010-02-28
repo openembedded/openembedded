@@ -48,7 +48,7 @@ FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "${base_libdir}/libSegFault*"
 FILES_eglibc-extra-nss = "${base_libdir}/libnss*"
 FILES_sln = "/sbin/sln"
-FILES_eglibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen ${libdir}/libc_nonshared.a"
+FILES_eglibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen ${libdir}/libc_nonshared.a ${libdir}/libpthread_nonshared.a"
 FILES_nscd = "${sbindir}/nscd*"
 FILES_eglibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_eglibc-gconv = "${libdir}/gconv/*"
@@ -75,6 +75,10 @@ def get_eglibc_fpu_setting(bb, d):
 EXTRA_OECONF += "${@get_eglibc_fpu_setting(bb, d)}"
 
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
+
+do_configure_prepend() {
+        sed -e "s#@BASH@#/bin/sh#" -i ${S}/elf/ldd.bash.in
+}
 
 do_install() {
 	oe_runmake install_root=${D} install

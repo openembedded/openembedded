@@ -2,6 +2,7 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_angstrom = "1"
 
 inherit autotools gnome pkgconfig
 

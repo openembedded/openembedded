@@ -69,9 +69,9 @@ case "$arch" in
 	"i486")
 			machines="x86" ;;
 	"i586")
-			machines="epia qemux86" ;;
+			machines="epia" ;;
 	"i686")
-			machines="eee701 guinness progear" ;;
+			machines="eee701 qemux86 guinness progear" ;;
 	"iwmmxt")
 			machines="" ;;
 	"ppc405")	

@@ -9,7 +9,7 @@ S = "${WORKDIR}/hal-${PV}"
 
 inherit autotools pkgconfig
 
-DEPENDS = "virtual/kernel util-linux-ng dbus-glib udev intltool intltool-native expat virtual/libusb0 gperf-native"
+DEPENDS = "consolekit virtual/kernel util-linux-ng dbus-glib udev intltool intltool-native expat virtual/libusb0 gperf-native"
 RDEPENDS += "hal-info udev-utils"
 RRECOMMENDS += "eject"
 

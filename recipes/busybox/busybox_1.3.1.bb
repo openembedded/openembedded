@@ -4,7 +4,11 @@ PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "file://defconfig"
+SRC_URI = "\
+	http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
+	file://defconfig"
+SRC_URI[tarball.md5sum] = "571531cfa83726947ccb566de017ad4f"
+SRC_URI[tarball.sha256sum] = "5bf9ead9cca99620d2e56ddf79fdf5fb306fd7f30087b5556e0956e3b1948206"
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config.oe

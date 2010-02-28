@@ -1,8 +1,13 @@
 require klibc-common.inc
 
-SRC_URI += "file://staging.patch;patch=1 \
-	    file://klibc_kexecsyscall.patch;patch=1 \
-	    "
+SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
+            file://modprobe.patch;patch=1 \
+            file://losetup.patch;patch=1 \
+            file://dash_readopt.patch;patch=1 \
+            file://wc.patch;patch=1 \
+            file://staging.patch;patch=1 \
+            file://klibc_kexecsyscall.patch;patch=1 \
+            "
 
 # we want only the shared programms and the lib so we chose them manually
 do_install() {
@@ -15,7 +20,7 @@ do_install() {
         install -m 755 usr/kinit/nfsmount/shared/nfsmount ${D}${base_bindir}
         install -m 755 usr/kinit/resume/shared/resume ${D}${base_bindir}
         install -m 755 usr/kinit/run-init/shared/run-init ${D}${base_bindir}
-	install -m 755 usr/utils/shared/cat ${D}${base_bindir}
+        install -m 755 usr/utils/shared/cat ${D}${base_bindir}
         install -m 755 usr/utils/shared/chroot ${D}${base_bindir}
         install -m 755 usr/utils/shared/cpio ${D}${base_bindir}
         install -m 755 usr/utils/shared/dd ${D}${base_bindir}
@@ -38,48 +43,48 @@ do_install() {
         install -m 755 usr/utils/shared/true ${D}${base_bindir}
         install -m 755 usr/utils/shared/umount ${D}${base_bindir}
         install -m 755 usr/utils/shared/uname ${D}${base_bindir}
-	install -m 755 usr/utils/shared/modprobe ${D}${base_bindir}
-	install -m 755 usr/utils/shared/losetup ${D}${base_bindir}
-	install -m 755 usr/utils/shared/wc	${D}${base_bindir}
+        install -m 755 usr/utils/shared/modprobe ${D}${base_bindir}
+        install -m 755 usr/utils/shared/losetup ${D}${base_bindir}
+        install -m 755 usr/utils/shared/wc ${D}${base_bindir}
 
-	install -d ${D}${base_libdir}
-	install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
-	cd ${D}${base_libdir}
-	ln -s klibc-*.so klibc.so
-	cd -	
+        install -d ${D}${base_libdir}
+        install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
+        cd ${D}${base_libdir}
+        ln -s klibc-*.so klibc.so
+        cd -
         cd ${D}${base_bindir}
-	ln -s gzip gunzip
+        ln -s gzip gunzip
         ln -s gzip zcat
-	cd -
+        cd -
 }
 
 export INST=${STAGING_DIR_TARGET}
 do_stage() {
-	oe_runmake  install
+        oe_runmake  install
         cp '${STAGING_DIR_TARGET}/bin/klcc'  '${CROSS_DIR}/bin/${TARGET_PREFIX}klcc'
 }
 
 PACKAGES = "${PN} ${PN}-dev klibc-utils-sh klibc-utils-kinit \
-	klibc-utils-fstype klibc-utils-ipconfig \
-    	klibc-utils-nfsmount klibc-utils-resume \
-	klibc-utils-run-init klibc-utils-cat \
-	klibc-utils-chroot klibc-utils-cpio \
-	klibc-utils-dd klibc-utils-false \
-	klibc-utils-halt klibc-utils-insmod \
-	klibc-utils-kill klibc-utils-ln \
-	klibc-utils-minips klibc-utils-mkdir \
-	klibc-utils-mkfifo klibc-utils-mknod \
+        klibc-utils-fstype klibc-utils-ipconfig \
+        klibc-utils-nfsmount klibc-utils-resume \
+        klibc-utils-run-init klibc-utils-cat \
+        klibc-utils-chroot klibc-utils-cpio \
+        klibc-utils-dd klibc-utils-false \
+        klibc-utils-halt klibc-utils-insmod \
+        klibc-utils-kill klibc-utils-ln \
+        klibc-utils-minips klibc-utils-mkdir \
+        klibc-utils-mkfifo klibc-utils-mknod \
         klibc-utils-mount klibc-utils-nuke \
         klibc-utils-pivot-root klibc-utils-poweroff \
-	klibc-utils-readlink klibc-utils-reboot \
+        klibc-utils-readlink klibc-utils-reboot \
         klibc-utils-sleep klibc-utils-true \
         klibc-utils-umount klibc-utils-uname \
         klibc-utils-gzip klibc-utils-modprobe \
-	klibc-utils-losetup klibc-utils-wc"
+        klibc-utils-losetup klibc-utils-wc"
 
 FILES_${PN} = "${base_libdir}/klibc-*.so"
 FILES_${PN}-dev = "${base_libdir}/klibc.so"
-FILES_klibc-utils-sh = "${base_bindir}/so"
+FILES_klibc-utils-sh = "${base_bindir}/sh"
 FILES_klibc-utils-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
 FILES_klibc-utils-kinit = "${base_bindir}/kinit"
 FILES_klibc-utils-fstype = "${base_bindir}/fstype"

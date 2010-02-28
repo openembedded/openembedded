@@ -3,15 +3,15 @@ SECTION = "x11/gnome"
 LICENSE = "LGPL"
 DEPENDS = "gtk+ orbit2 glib-2.0 libxml2 policykit"
 ORBIT_IDL_SRC = "${STAGING_BINDIR_NATIVE}/orbit-idl-2"
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/GConf-${PV}"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/GConf/2.26/GConf-${PV}.tar.bz2"
 
-EXTRA_OECONF = "--disable-gtk-doc POLKIT_POLICY_FILE_VALIDATE=true"
+EXTRA_OECONF = "--disable-gtk-doc --enable-gtk POLKIT_POLICY_FILE_VALIDATE=true"
 
-inherit autotools pkgconfig gettext
+inherit autotools gettext
 
 EXTRA_OEMAKE = 'ORBIT_IDL="${ORBIT_IDL_SRC}"'
 
