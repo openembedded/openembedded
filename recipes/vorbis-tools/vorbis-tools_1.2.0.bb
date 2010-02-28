@@ -5,8 +5,10 @@ LICENSE = "GPL"
 DEPENDS = "libogg libvorbis libao curl"
 SECTION = "console/multimedia"
 
-SRC_URI = "http://downloads.xiph.org/releases/vorbis/vorbis-tools-${PV}.tar.gz \
-           file://remove-deprecated-curl-option.patch;patch=1"
+SRC_URI = "http://downloads.xiph.org/releases/vorbis/vorbis-tools-${PV}.tar.gz;name=src"
+
+SRC_URI[src.md5sum] = "df976d24e51ef3d87cd462edf747bf9a"
+SRC_URI[src.sha256sum] = "dbe753ce0ae0797f25117720bb2ba0d848388d3f47af8db31ebc35552c3de07b"
 
 inherit autotools
 
