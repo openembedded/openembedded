@@ -1,4 +1,4 @@
-DEPENDS += "cairo sqlite"
+DEPENDS += "cairo sqlite alsa-lib"
 
 PV = "3.0.1+3.5b4"
 MOZPV = "3.5b4"

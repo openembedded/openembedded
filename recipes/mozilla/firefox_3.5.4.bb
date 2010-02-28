@@ -1,4 +1,4 @@
-DEPENDS += "cairo sqlite3"
+DEPENDS += "cairo sqlite3 alsa-lib"
 
 PR = "r2"
 
