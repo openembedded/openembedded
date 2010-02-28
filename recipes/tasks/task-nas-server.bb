@@ -15,7 +15,7 @@ NAS_SERVER_PACKAGES = "\
 	task-nas-server-samba \
 	task-nas-server-dnsmasq \
 	task-nas-server-iptables \
-	task-nas-server-openmoko \
+#	task-nas-server-openmoko \
 	task-nas-server-tzdata \
 	task-nas-server-nfs \
 	task-nas-server-vfat \
