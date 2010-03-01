@@ -1,9 +1,11 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r24"
+PR = "r25"
 PV = "2.0"
 LICENSE = "GPL"
 
 inherit task
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 def get_rdepends(bb, d):
     enabled = bb.data.getVar("ENABLE_BINARY_LOCALE_GENERATION", d, 1)
@@ -116,6 +118,7 @@ RDEPENDS_${PN}-x = "\
 "
 
 RDEPENDS_${PN}-apps = "\
+  fso-abyss \
   task-fso2-compliance \
   phoneui-apps-messages \
   phoneui-apps-contacts \
