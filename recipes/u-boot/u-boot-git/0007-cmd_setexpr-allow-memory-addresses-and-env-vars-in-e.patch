@@ -32,7 +32,7 @@ diff --git a/common/cmd_setexpr.c b/common/cmd_setexpr.c
 index f8b5d4d..a7c6f53 100644
 --- a/common/cmd_setexpr.c
 +++ b/common/cmd_setexpr.c
-@@ -28,10 +28,32 @@
+@@ -28,10 +28,28 @@
  #include <config.h>
  #include <command.h>
  
@@ -40,10 +40,6 @@ index f8b5d4d..a7c6f53 100644
 +{
 +	ulong *p;
 +
-+	/* if the parameter starts with a $ replace it with the environment value */
-+	if (s[0] == '$') {
-+		s = getenv(&s[1]);
-+	}
 +	/* if the parameter starts with a * then assume is a pointer to the value we want */
 +	if (s[0] == '*') {
 +		p = (ulong *)simple_strtoul(&s[1], NULL, 16);
