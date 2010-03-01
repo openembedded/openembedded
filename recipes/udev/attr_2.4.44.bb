@@ -1,13 +1,15 @@
 DESCRIPTION = "Commands for Manipulating Filesystem Extended Attributes"
 LICENSE = "GPLv2"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/attr/attr-${PV}.src.tar.gz"
 
 inherit gettext autotools lib_package
 
 EXTRA_OECONF = " --enable-gettext=yes ac_cv_path_XGETTEXT=${STAGING_BINDIR_NATIVE}/xgettext"
+
+LDFLAGS_append_libc-uclibc += " -lintl"
 
 do_configure_append() {
 	# gettext hack
