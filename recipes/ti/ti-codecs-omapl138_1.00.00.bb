@@ -9,7 +9,7 @@ PV = "1_00_00"
 SRC_URI[l138codecsbin.md5sum] = "64a53cd55bc63d3a6f4db742aff90de9"
 SRC_URI[l138codecsbin.sha256sum] = "4fb1075ad83f6017616410eff35ada7d567f1ee1b5b23624a817e8fc7dda3f8a"
 
-PR = "r3"
+PR = "r4"
 
 require ti-paths.inc
 require ti-staging.inc
@@ -19,7 +19,8 @@ PROVIDES += "ti-codecs-omapl138-server"
 
 S = "${WORKDIR}/OMAP_L138_arm_1_00_00_08/cs1omapl138_${PV}"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/sdk/omap_l138/1_00/latest/exports/${BINFILE};name=l138codecsbin"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/sdk/omap_l138/1_00/latest/exports/${BINFILE};name=l138codecsbin \
+           file://ti-codecs-omapl138-1-00-00-fixDman3Config.patch;patch=1"
 
 BINFILE = "cs1omapl138_${PV}-v2_setup_linux.bin"
 TI_BIN_UNPK_CMDS = "y:Y: qY:workdir"
