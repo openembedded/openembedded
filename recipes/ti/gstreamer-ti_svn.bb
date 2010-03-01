@@ -6,6 +6,7 @@ SECTION = "multimedia"
 # TODO :: Codec Server Environment Variables shouldn't be required
 # TODO :: Add (and check) rc scripts for all targets (just copied for now) (365,6467,omapl137)
 # TODO :: Check if CPPFLAGS_append is still required
+# TODO :: Remove ENCODE/DECODE combo exports - these are not used anymore (check?)
 
 inherit autotools
 inherit update-rc.d
@@ -46,6 +47,10 @@ SRC_URI_append_omapl137 = " \
 
 SRC_URI_append_omapl138 = " \
            file://gstreamer-ti-omapl138.patch;patch=1 \
+"
+
+SRC_URI_append_dm6467 = " \
+           file://gstreamer-ti-dm6467-usesinglecsserver.patch;patch=1 \
 "
 
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"
@@ -90,6 +95,8 @@ export LINUXKERNEL_INSTALL_DIR = ${STAGING_KERNEL_DIR}
 
 export HMJCP_COMBO     = "${installdir}/ti-codecs-server/hmjcp.accel"
 export CODEC_SERVER    = "${installdir}/ti-codecs-server/cs.x64P"
+
+# TODO :: These 2 can be removed now since dm6467 uses single CS server (like omap/omapl)
 export ENCODE_COMBO    = "${installdir}/ti-codecs-server/encodeCombo.x64P"
 export DECODE_COMBO    = "${installdir}/ti-codecs-server/decodeCombo.x64P"
 
