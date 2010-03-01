@@ -25,9 +25,5 @@ do_install_append() {
 	install -m 0644 org.e.Exalt.service ${D}${datadir}/dbus-1/system-services/
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/dbus-1"
 
