@@ -2,6 +2,8 @@ DESCRIPTION = "A tool for automatically generating Makefiles."
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gnu.org/software/automake/"
 SECTION = "devel"
+DEPENDS_virtclass-native = "autoconf-native"
+RDEPENDS_automake-native = "autoconf-native perl-native-runtime"
 RDEPENDS_automake += "\
     autoconf \
     perl \
@@ -27,7 +29,7 @@ RDEPENDS_automake += "\
     perl-module-text-parsewords \
     perl-module-vars "
 SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2"
-INC_PR = "r2"
+INC_PR = "r3"
 AUTOMAKE_API = "${@".".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
 
 inherit autotools
@@ -47,3 +49,5 @@ do_install_append () {
 	ln -sf automake-${AUTOMAKE_API} ${D}${bindir}/automake
 	install -d ${D}${datadir}/aclocal
 }
+
+BBCLASSEXTEND = "native"
