@@ -22,7 +22,7 @@ VERBOSE = "true"
 do_compile () {
         cd ${S}
         make -e clean
-        make -e ${PLATFORM}
+        make -e ${TARGET}
 }
 do_install () {
         cd ${S}
