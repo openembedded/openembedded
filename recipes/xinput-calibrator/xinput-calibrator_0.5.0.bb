@@ -1,11 +1,4 @@
-DESCRIPTION = "A generic touchscreen calibration program for X.Org"
-HOMEPAGE = "http://github.com/tias/xinput_calibrator"
-
-LICENSE = "MIT/X11"
-
-DEPENDS = "virtual/libx11 libxi"
-
-RDEPENDS_${PN} = "xinput"
+require xinput-calibrator.inc
 
 PR = "r6"
 
@@ -16,8 +9,6 @@ SRC_URI = "git://github.com/tias/xinput_calibrator.git;protocol=git \
 
 SRCREV = "1c715824334c5d33085dba02f195c9720c2883b5"
 S = "${WORKDIR}/git/"
-
-inherit autotools
 
 do_install() {
         install -d ${D}${bindir}
