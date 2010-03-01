@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r25"
+PR = "r26"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -123,6 +123,7 @@ RDEPENDS_${PN}-apps = "\
   phoneui-apps-messages \
   phoneui-apps-contacts \
   phoneui-apps-dialer \
+  phoneui-apps-quick-settings \
   phonefsod \
   phoneuid \
   libphone-ui \
