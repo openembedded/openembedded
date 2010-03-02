@@ -1155,6 +1155,14 @@ python do_populate_staging () {
     if legacy:
         bb.data.setVar("SYSROOT_DESTDIR", "", d)
         bb.note("Legacy staging mode for %s" % bb.data.getVar("FILE", d, True))
+
+        try:
+            file = open("%s/legacy-staging.log" % bb.data.getVar("TMPDIR", d, 1), "a")
+	    file.write("%s\n" % bb.data.getVar("FILE", d, True))
+	    file.close()
+        except:
+            pass
+
         if bb.data.getVarFlags('do_stage', d) is None:
             bb.fatal("This recipe (%s) has a do_stage_prepend or do_stage_append and do_stage now doesn't exist. Please rename this to do_stage()" % bb.data.getVar("FILE", d, True))
         lock = bb.utils.lockfile(lockfile)
