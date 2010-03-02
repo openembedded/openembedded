@@ -5,7 +5,7 @@ LICENSE = "BSD-ADV"
 DEPENDS = "file-native"
 DEPENDS_virtclass-native = ""
 
-INC_PR = "r0"
+INCPR = "r0"
 
 SRC_URI = "ftp://ftp.astron.com/pub/file/file-${PV}.tar.gz"
 
