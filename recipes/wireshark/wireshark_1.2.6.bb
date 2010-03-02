@@ -3,13 +3,16 @@ HOMEPAGE = "http://www.wireshark.org"
 SECTION = "network"
 LICENSE = "GPL"
 DEPENDS = "perl-native gnutls libpcap pcre expat glib-2.0 libsmi gtk+"
-EXTRA_OECONF = "--disable-usrlocal --with-pcap=${STAGING_DIR_HOST}${layout_prefix} \
+EXTRA_OECONF = "--enable-usr-local=no --with-pcap=${STAGING_DIR_HOST}${layout_prefix} \
                 --with-libsmi=${STAGING_DIR_HOST}${layout_prefix} --enable-tshark --enable-wireshark"
 
 PR = "r5"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/wireshark/wireshark-${PV}.tar.bz2 \
-           file://ieee80215.4.patch;patch=1"
+SRC_URI = "${SOURCEFORGE_MIRROR}/wireshark/wireshark-${PV}.tar.bz2;name=src \
+           file://ieee80215.4.patch;patch=1 \
+           file://fix-configure.patch;patch=1 "
+SRC_URI[src.md5sum] = "f3e0917ed393366bbf96c53b58cb0931"
+SRC_URI[src.sha256sum]= "72c8178dd0614d963173d667d5ecb39bc7102453ea09da7ef3302daee7733f3c"
 
 ARM_INSTRUCTION_SET = "arm"
 
@@ -63,7 +66,6 @@ do_compile_prepend() {
                           -e 's@-I/usr/local/include @@g' \
                           -e "s@-I${includedir} @@g" -i '{}' ';'
 
-         ${BUILD_CC} ${BUILD_CFLAGS} -o rdps rdps.c
          oe_runmake -C tools/lemon CC="${BUILD_CC} ${BUILD_CFLAGS}" \
          CC_FOR_BUILD="${BUILD_CC} ${BUILD_CFLAGS}" LDFLAGS="${BUILD_LDFLAGS}"
 }

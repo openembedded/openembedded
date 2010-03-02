@@ -6,13 +6,13 @@ INC_PR = "r14"
 
 PROVIDES = "virtual/xserver"
 
-# Config manager for xserver, options are: hal, libudev, empty (for configuration in xorg.conf)
+# Config manager for xserver, options are: hal, udev, empty (for configuration in xorg.conf)
 DISTRO_XORG_CONFIG_MANAGER ?= "hal"
 DISTRO_XORG_CONFIG_MANAGER_shr ?= ""
 
 # default none, enabled by DISTRO_XORG_CONFIG_MANAGER setting
 CONFIG_MANAGER_OPTION += "${@['--disable-config-hal','--enable-config-hal',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['hal']]}"
-CONFIG_MANAGER_OPTION += "${@['--disable-config-udev','--enable-config-udev',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['libudev']]}"
+CONFIG_MANAGER_OPTION += "${@['--disable-config-udev','--enable-config-udev',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['udev']]}"
 
 DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \ 
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
@@ -22,9 +22,7 @@ xf86dgaproto videoproto compositeproto trapproto recordproto dmxproto \
 resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres virtual/libgl libxcalibrate \
-libxv"
-
-RDEPENDS = "${DISTRO_XORG_CONFIG_MANAGER}"
+libxv ${DISTRO_XORG_CONFIG_MANAGER}"
 
 RRECOMMENDS_${PN} = "libpciaccess"
 

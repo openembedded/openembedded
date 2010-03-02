@@ -8,7 +8,7 @@ KERNEL_RELEASE="2.6.32.9"
 SRCREV = "14be1091928fcce66812a85129768fb253b36420"
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
@@ -26,6 +26,8 @@ SRC_URI = "\
   file://0007-glamo-drm-select-DRM_KMS_HELPER-for-crtc-functions.patch;patch=1 \
   file://0008-Fix-crash-when-reading-Glamo-registers-via-sysfs.patch;patch=1 \
   file://0009-A-couple-of-GEM-refcounting-fixes.patch;patch=1 \
+  file://0010-Simplify-the-JBT6k74-driver.patch;patch=1 \
+  file://0011-Don-t-choke-if-userspace-provides-a-pixel-clock-valu.patch;patch=1 \
 "
 
 SRC_URI[stablepatch.md5sum] = "7f615dd3b4a3b19fb86e479996a2deb5"

@@ -4,7 +4,8 @@
 pkg_postinst_${PN}_append () {
         alternatives_dir_old="${prefix}/lib/ipkg/alternatives"
         alternatives_dir_new="${prefix}/lib/opkg/alternatives"
-        if [ -e "${alternatives_dir_old}" ] ; then
+	# if ${prefix}/lib/ipkg is already link (probably to ${prefix}/lib/opkg), then nothing needs to be merged and definitely we don't want "rm -rf ${alternatives_dir_old}" to happen
+        if [ ! -h ${prefix}/lib/ipkg -a -e "${alternatives_dir_old}" ] ; then
                 if [ ! -e "${alternatives_dir_new}" ] ; then
                         mkdir -p "${alternatives_dir_new}";
                 fi

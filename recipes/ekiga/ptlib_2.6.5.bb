@@ -1,11 +1,15 @@
 DESCRIPTION = "Portable Tools Libary"
 LICENSE = "MPL"
 
+PR = "r1"
+
 inherit gnome
 
 DEPENDS += "libgsm openldap openssl expat virtual/libsdl alsa-lib"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/opalvoip/ptlib-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/opalvoip/ptlib-${PV}.tar.bz2 \
+           file://rgb16.patch;patch=1 \
+"
 
 do_configure() {
     libtoolize --force
@@ -24,11 +28,5 @@ do_install_append() {
 }
 
 FILES_${PN} += "${libdir}/ptlib-${PV}/*/*/*.so"
-
-do_stage() {
-	autotools_stage_all
-}
-
-
 
 

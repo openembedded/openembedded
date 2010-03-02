@@ -243,9 +243,13 @@ do_install() {
     # fix pkgconfig, libtool and prl files
     sed -i -e s#-L${S}/lib##g \
            -e s#-L${STAGING_LIBDIR}##g \
+           -e 's#STAGING_LIBDIR}#libdir}'#g \ 
            -e s#-L${libdir}##g \
            -e s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g \
-           -e s#"-Wl,-rpath-link,${S}/lib"##g \
+           -e s#" -Wl,-rpath-link,${S}/lib"##g \
+           -e s#" -Wl,-rpath-link,${libdir}"##g \
+           -e 's#I/usr/include#Iincludedir}#g' \ 
+           -e 's#Iin#I${in#g' \
            ${D}${libdir}/*.la ${D}${libdir}/*.prl ${D}${libdir}/pkgconfig/*.pc
 
     # fix pkgconfig files
