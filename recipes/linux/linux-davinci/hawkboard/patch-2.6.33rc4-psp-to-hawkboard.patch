@@ -350,8 +350,8 @@ diff -uNr gitorg/arch/arm/mach-davinci/board-da850-hawk.c git/arch/arm/mach-davi
 +		.inputs = da850_ch0_inputs,
 +		.input_count = ARRAY_SIZE(da850_ch0_inputs),
 +	},
++	.card_name	= "Hawkboard video Capture",
 +};
-+
 +// TODO - fix all these references to _UI
 +
 +#if defined(CONFIG_DAVINCI_MCBSP0)
