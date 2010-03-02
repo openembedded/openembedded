@@ -9,7 +9,7 @@
 
 GLIBC_INTERNAL_USE_BINARY_LOCALE ?= "ondevice"
 
-PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-static glibc-doc glibc-locale libcidn libmemusage libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
+PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-pic glibc-dev glibc-static glibc-doc glibc-locale libcidn libmemusage libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* locale-base-* glibc-binary-localedata-*"
 
 INSANE_SKIP_glibc-dbg = True
@@ -23,6 +23,7 @@ glibcfiles = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_condi
 glibcdbgfiles = "${bindir}/.debug ${sbindir}/.debug ${libdir}/.debug \
                   ${base_bindir}/.debug ${base_sbindir}/.debug ${base_libdir}/.debug \
                   ${libdir}/gconv/.debug ${libexecdir}/*/.debug"
+glibcpicfiles = "${libdir}/*_pic.a ${libdir}/*_pic.map ${libdir}/libc_pic/"
 glibcdevfiles = "${bindir}/rpcgen ${includedir} ${libdir}/lib*${SOLIBSDEV} ${libdir}/*.la \
                 ${libdir}/*.a ${libdir}/*.o ${libdir}/pkgconfig ${libdir}/*nonshared.a \
                 ${base_libdir}/*.a ${base_libdir}/*.o ${datadir}/aclocal"
@@ -35,6 +36,8 @@ FILES_libcidn = "${base_libdir}/libcidn*.so"
 FILES_libmemusage = "${base_libdir}/libmemusage.so"
 FILES_glibc-extra-nss = "${base_libdir}/libnss*"
 FILES_sln = "${base_sbindir}/sln"
+FILES_glibc-pic = "${glibcpicfiles}"
+FILES_${PN}-pic = "${glibcpicfiles}"
 FILES_glibc-dev = "${glibcdevfiles}"
 FILES_${PN}-dev = "${glibcdevfiles}"
 FILES_glibc-dbg = "${glibcdbgfiles}"
