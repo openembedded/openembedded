@@ -1,0 +1,29 @@
+From 3f1154d1b763f981791ad54987e61d31bde43ec7 Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Mon, 1 Mar 2010 22:07:57 +0100
+Subject: [PATCH 13/13] Change connector type to LVDS
+
+Not certain that this exactly describes what it is, and too lazy to check, but for sure
+it's a better description than "Unknown".
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ drivers/mfd/glamo/glamo-display.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
+index bc3a2ea..5f04697 100644
+--- a/drivers/mfd/glamo/glamo-display.c
++++ b/drivers/mfd/glamo/glamo-display.c
+@@ -795,7 +795,7 @@ int glamo_display_init(struct drm_device *dev)
+ 
+ 	/* Initialise the connector */
+ 	drm_connector_init(dev, connector, &glamo_connector_funcs,
+-	                   DRM_MODE_CONNECTOR_Unknown);
++	                   DRM_MODE_CONNECTOR_LVDS);
+ 	drm_sysfs_connector_add(connector);
+ 	connector->interlace_allowed = 0;
+ 	connector->doublescan_allowed = 0;
+-- 
+1.7.0
+
