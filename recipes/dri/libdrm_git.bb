@@ -18,8 +18,7 @@ DEFAULT_PREFERENCE_shr = "1"
 
 S = "${WORKDIR}/git"
 
-EXTRA_OECONF_append_om-gta02 = " --enable-glamo-experimental-api --disable-radeon --disable-intel"
-EXTRA_OECONF_append_om-gta01 = " --disable-radeon --disable-intel"
+EXTRA_OECONF_append_shr = " --enable-glamo-experimental-api --disable-radeon --disable-intel"
 
 inherit autotools pkgconfig
 
