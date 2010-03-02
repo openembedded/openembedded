@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r41"
+PR ="r42"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -43,7 +43,6 @@ SRC_URI_calamari = " \
 	file://0003-cmd_i2c.c-reworked-subcommand-handling.patch;patch=1 \
 	file://0004-cmd_i2c.c-sorted-commands-alphabetically.patch;patch=1 \
 	file://0005-cmd_i2c.c-added-i2c-read-to-memory-function.patch;patch=1 \
-	file://0006-cmd_itest.c-also-support-environment-variables-as-a.patch;patch=1 \
 	file://0007-cmd_setexpr-allow-memory-addresses-and-env-vars-in-e.patch;patch=1 \
         "
 

@@ -1,0 +1,72 @@
+* Make sure to not include -I/usr/include and such
+* Claim that our inet_pton is working...
+
+Index: wireshark-1.2.6/acinclude.m4
+===================================================================
+--- wireshark-1.2.6.orig/acinclude.m4	2010-01-27 17:12:51.000000000 +0100
++++ wireshark-1.2.6/acinclude.m4	2010-02-28 23:46:12.000000000 +0100
+@@ -343,9 +343,9 @@
+ 	    #
+ 	    AC_MSG_CHECKING(for extraneous pcap header directories)
+ 	    found_pcap_dir=""
+-	    pcap_dir_list="/usr/include/pcap $prefix/include/pcap $prefix/include"
++	    pcap_dir_list="$prefix/include/pcap $prefix/include"
+ 	    if test "x$ac_cv_enable_usr_local" = "xyes" ; then
+-	      pcap_dir_list="$pcap_dir_list /usr/local/include/pcap"
++	      pcap_dir_list="$pcap_dir_list"
+ 	    fi
+ 	    for pcap_dir in $pcap_dir_list
+ 	    do
+Index: wireshark-1.2.6/configure.in
+===================================================================
+--- wireshark-1.2.6.orig/configure.in	2010-01-27 17:12:50.000000000 +0100
++++ wireshark-1.2.6/configure.in	2010-03-01 00:28:21.000000000 +0100
+@@ -451,22 +451,22 @@
+ #
+ if test "x$prefix" != "x" ; then
+ 	AC_MSG_CHECKING(whether to use $prefix for headers and libraries)
+-	if test -d $prefix/include ; then
+-		AC_MSG_RESULT(yes)
+-		#
+-		# Arrange that we search for header files in "$prefix/include", as
+-		# various packages we use may have been installed under "$prefix/include".
+-		#
+-		CFLAGS="$CFLAGS -I$prefix/include"
+-		CPPFLAGS="$CPPFLAGS -I$prefix/include"
+-
+-		#
+-		# Arrange that we search for libraries in "$prefix/lib".
+-		#
+-		AC_WIRESHARK_ADD_DASH_L(LDFLAGS, $prefix/lib)
+-	else
++	#if test -d $prefix/include ; then
++	#	AC_MSG_RESULT(yes)
++	#	#
++	#	# Arrange that we search for header files in "$prefix/include", as
++	#	# various packages we use may have been installed under "$prefix/include".
++	#	#
++	#	CFLAGS="$CFLAGS -I$prefix/include"
++	#	CPPFLAGS="$CPPFLAGS -I$prefix/include"
++        #
++	#	#
++	#	# Arrange that we search for libraries in "$prefix/lib".
++	#	#
++	#	AC_WIRESHARK_ADD_DASH_L(LDFLAGS, $prefix/lib)
++	#else
+ 		AC_MSG_RESULT(no)
+-	fi
++	#fi
+ fi
+ 
+ dnl Look in /usr/local for header files and libraries ?
+@@ -1469,8 +1469,8 @@
+ #endif
+ }], [AC_MSG_RESULT(ok);
+ have_inet_pton=yes], [AC_MSG_RESULT(broken);
+-have_inet_pton=no], [AC_MSG_RESULT(cross compiling, assume it is broken);
+-have_inet_pton=no])],
++have_inet_pton=no], [AC_MSG_RESULT(cross compiling, assume it is broken... no here);
++have_inet_pton=yes])],
+ have_inet_pton=no)
+ if test "$have_inet_pton" = no; then
+   INET_PTON_C="inet_pton.c"

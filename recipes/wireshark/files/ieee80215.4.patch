@@ -1,9 +1,13 @@
---- wireshark-1.0.5.orig/epan/dissectors/packet-ieee802154.c
-+++ wireshark-1.0.5/epan/dissectors/packet-ieee802154.c
-@@ -1696,7 +1696,7 @@
-     dissector_handle_t  ieee802154_handle;
+Index: wireshark-1.2.6/epan/dissectors/packet-ieee802154.c
+===================================================================
+--- wireshark-1.2.6.orig/epan/dissectors/packet-ieee802154.c	2010-01-27 17:12:34.000000000 +0100
++++ wireshark-1.2.6/epan/dissectors/packet-ieee802154.c	2010-02-28 22:25:50.000000000 +0100
+@@ -1821,7 +1821,7 @@
  
-     /* Get the dissector handles. */
--    ieee802154_handle   = find_dissector("wpan");
-+    ieee802154_handle   = find_dissector("wpan_nofcs");
-     data_handle         = find_dissector("data");
+     if (!prefs_initialized){
+         /* Get the dissector handles. */
+-        ieee802154_handle   = find_dissector("wpan");
++        ieee802154_handle   = find_dissector("wpan_nofcs");
+         ieee802154_nonask_phy_handle = find_dissector("wpan-nonask-phy");
+         data_handle         = find_dissector("data");
+ 
