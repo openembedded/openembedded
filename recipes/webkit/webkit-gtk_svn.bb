@@ -3,6 +3,7 @@ DEPENDS = "enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu lib
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
+PR = "r1"
 SRCREV = "53071"
 PV = "1.1.18+svnr${SRCPV}"
 
