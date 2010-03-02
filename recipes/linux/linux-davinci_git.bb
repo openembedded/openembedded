@@ -41,36 +41,35 @@ SRC_URI_append_dm365   = ${ARAGO_DM_URI}
 SRC_URI_append_dm6446  = ${ARAGO_DM_URI}
 SRC_URI_append_dm6467  = ${ARAGO_DM_URI}
 
-# OMAPL1 DA8xx/L1xx
-# da830-omapl137-evm/hawkboard OMAPL1 PSP 03.20.00.08 (Beta)
-# da850-omapl138-evm using 'master' branch
-#  - defconfig is psp defconfig + MMC unsafe (for deep-sleep) + tps/mfd/touchscreen configs 
 
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
-ARAGO_L1_REV = "e3939e092ce59a6906bf8869a3c7d40314c02eef"
-ARAGO_L1_BR  = "DAVINCIPSP_03.20.00.08"
-ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCREV}"
+# OMAPL tracking master branch
+
+ARAGO_L1_REV = "79903eb1d3a98b241530306b03edd28d7fa91ddd"
+ARAGO_L1_BR  = "master"
+ARAGO_L1_PV  = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
 ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}
-SRCREV_da850-omapl138-evm         = "ecdfc1ffd890a7f9d5af96152f84effda2494d47"
-SRCREV_hawkboard                  = "ecdfc1ffd890a7f9d5af96152f84effda2494d47"
+SRCREV_da850-omapl138-evm         = ${ARAGO_L1_REV}
+SRCREV_hawkboard                  = ${ARAGO_L1_REV}
 
 PV_da830-omapl137-evm             = ${ARAGO_L1_PV}
-PV_da850-omapl138-evm             = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
-PV_hawkboard                      = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
+PV_da850-omapl138-evm             = ${ARAGO_L1_PV}
+PV_hawkboard                      = ${ARAGO_L1_PV}
 
 BRANCH_da830-omapl137-evm         = ${ARAGO_L1_BR}
-BRANCH_da850-omapl138-evm         = "master"
-BRANCH_hawkboard                  = "master"
+BRANCH_da850-omapl138-evm         = ${ARAGO_L1_BR}
+BRANCH_hawkboard                  = ${ARAGO_L1_BR}
 
 SRC_URI_append_da830-omapl137-evm = ${ARAGO_L1_URI}
 SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
-                                    "
+                                     file://patch-2.6.33rc4-psp-to-fix-regulator.patch;patch=1 "
 
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
-                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch;patch=1"
+                                     file://patch-2.6.33rc4-psp-to-fix-regulator.patch;patch=1 \
+                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch;patch=1 "
