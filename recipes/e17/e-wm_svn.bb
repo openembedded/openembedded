@@ -21,7 +21,7 @@ SRC_URI_append_shr = " \
   file://illume-disable-screensaver.patch;patch=1 \
   file://wizard-module-skipping.patch;patch=1 \
   file://illume-flaunch-fix.patch;patch=1 \
-  file://illume-keyboard-flow.patch;patch=1 \
+  file://illume-keyboard-flow.patch;patch=1;maxrev=46549 \
 "
 
 EXTRA_OECONF = "\
