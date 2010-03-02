@@ -1,7 +1,10 @@
 DESCRIPTION = "User space DMA module for DM355"
 SECTION = "devel"
 
-require ti-codecs-dm355.inc
+require ti-paths.inc
+require ti-staging.inc
+require ti-eula-unpack.inc
+
 inherit module
 
 PV = "1_13_000"
