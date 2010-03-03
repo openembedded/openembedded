@@ -7,6 +7,8 @@
 #  "precompiled" - The binary locale files are pregenerated and already present
 #  "ondevice" - The device will build the locale files upon first boot through the postinst
 
+inherit qemu
+
 GLIBC_INTERNAL_USE_BINARY_LOCALE ?= "ondevice"
 
 PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-pic glibc-dev glibc-static glibc-doc glibc-locale libcidn libmemusage libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
@@ -215,12 +217,6 @@ python package_do_split_gconvs () {
 		bb.data.setVar('RDEPENDS_%s' % pkgname, legitimize_package_name('glibc-binary-localedata-%s' % glibc_name), d)
 
 	def output_locale_binary(name, pkgname, locale, encoding):
-		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-		if target_arch in ("i486", "i586", "i686"):
-			target_arch = "i386"
-		elif target_arch == "powerpc":
-			target_arch = "ppc"
-
 		# This is a hack till linux-libc-headers gets patched for the missing arm syscalls and all arm device kernels as well
 		if bb.data.getVar("DISTRO_NAME", d, 1) == "Angstrom":
 			kernel_ver = "2.6.24"
@@ -229,10 +225,9 @@ python package_do_split_gconvs () {
 		else:
 			kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
 
-		if kernel_ver is None:
-			qemu = "qemu-%s  -s 1048576" % target_arch
-		else:
-			qemu = "qemu-%s  -s 1048576 -r %s" % (target_arch, kernel_ver)
+		qemu = qemu_target_binary(d) + " -s 1048576"
+		if kernel_ver:
+			qemu += " -r %s" % (kernel_ver)
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 
 		treedir = base_path_join(bb.data.getVar("WORKDIR", d, 1), "locale-tree")

@@ -6,6 +6,8 @@
 # See the note in gcc/gcc_3.4.0.oe
 #
 
+inherit qemu
+
 python __anonymous () {
     import bb, re
     uc_os = (re.match('.*uclibc*', bb.data.getVar('TARGET_OS', d, 1)) != None)
@@ -296,16 +298,10 @@ python package_do_split_gconvs () {
 		bb.data.setVar('pkg_postrm_%s' % pkgname, bb.data.getVar('locale_base_postrm', d, 1) % (locale, encoding, locale), d)
 
 	def output_locale_binary(name, locale, encoding):
-		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-		if target_arch in ("i486", "i586", "i686"):
-			target_arch = "i386"
-		elif target_arch == "powerpc":
-			target_arch = "ppc"
+		qemu = qemu_target_binary(d) + " -s 1048576"
 		kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
-		if kernel_ver is None:
-			qemu = "qemu-%s  -s 1048576" % target_arch
-		else:
-			qemu = "qemu-%s  -s 1048576 -r %s" % (target_arch, kernel_ver)
+		if kernel_ver:
+			qemu += " -r %s" % (kernel_ver)
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 		m = re.match("(.*)\.(.*)", name)
 		if m:
