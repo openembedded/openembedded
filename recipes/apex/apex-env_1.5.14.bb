@@ -3,7 +3,7 @@ SECTION = "misc"
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	file://find-apex-partition.patch;patch=1 \
@@ -22,3 +22,7 @@ do_install() {
 	install -d ${D}/${sbindir}
 	install -m 755 ${S}/apex-env ${D}/${sbindir}
 }
+
+# Adding proper LDFLAGS support takes too much of my time, so hack around it
+INSANE_SKIP_${PN} = True
+
