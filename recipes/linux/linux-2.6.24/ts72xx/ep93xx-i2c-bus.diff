@@ -3,13 +3,13 @@ I2C bus driver using ep93xx GPIOs.
 
 Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-Index: linux-2.6.22/drivers/i2c/busses/Kconfig
+Index: linux-2.6.24/drivers/i2c/busses/Kconfig
 ===================================================================
---- linux-2.6.22.orig/drivers/i2c/busses/Kconfig	2007-08-30 00:42:45.000000000 +0200
-+++ linux-2.6.22/drivers/i2c/busses/Kconfig	2007-08-30 00:42:52.000000000 +0200
-@@ -635,4 +635,16 @@
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called i2c-pnx.
+--- linux-2.6.24.orig/drivers/i2c/busses/Kconfig	2010-02-07 14:53:59.000000000 +0100
++++ linux-2.6.24/drivers/i2c/busses/Kconfig	2010-02-07 14:54:23.000000000 +0100
+@@ -675,4 +675,16 @@
+ 	  This driver can also be built as module. If so, the module
+ 	  will be called i2c-pmcmsp.
  
 +config I2C_EP93XX
 +	tristate "Cirrus Logic EP93XX GPIO-based I2C interface"
@@ -24,11 +24,11 @@ Index: linux-2.6.22/drivers/i2c/busses/Kconfig
 +
 +
  endmenu
-Index: linux-2.6.22/drivers/i2c/busses/Makefile
+Index: linux-2.6.24/drivers/i2c/busses/Makefile
 ===================================================================
---- linux-2.6.22.orig/drivers/i2c/busses/Makefile	2007-08-30 00:42:45.000000000 +0200
-+++ linux-2.6.22/drivers/i2c/busses/Makefile	2007-08-30 00:42:52.000000000 +0200
-@@ -52,6 +52,7 @@
+--- linux-2.6.24.orig/drivers/i2c/busses/Makefile	2010-02-07 14:53:59.000000000 +0100
++++ linux-2.6.24/drivers/i2c/busses/Makefile	2010-02-07 14:54:23.000000000 +0100
+@@ -53,6 +53,7 @@
  obj-$(CONFIG_I2C_VOODOO3)	+= i2c-voodoo3.o
  obj-$(CONFIG_SCx200_ACB)	+= scx200_acb.o
  obj-$(CONFIG_SCx200_I2C)	+= scx200_i2c.o
@@ -36,10 +36,10 @@ Index: linux-2.6.22/drivers/i2c/busses/Makefile
  
  ifeq ($(CONFIG_I2C_DEBUG_BUS),y)
  EXTRA_CFLAGS += -DDEBUG
-Index: linux-2.6.22/drivers/i2c/busses/i2c-ep93xx.c
+Index: linux-2.6.24/drivers/i2c/busses/i2c-ep93xx.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.22/drivers/i2c/busses/i2c-ep93xx.c	2007-08-30 00:42:52.000000000 +0200
++++ linux-2.6.24/drivers/i2c/busses/i2c-ep93xx.c	2010-02-07 14:54:23.000000000 +0100
 @@ -0,0 +1,159 @@
 +/*
 + * EP93XX I2C bus driver.
@@ -200,10 +200,10 @@ Index: linux-2.6.22/drivers/i2c/busses/i2c-ep93xx.c
 +MODULE_AUTHOR("Lennert Buytenhek <buytenh@wantstofly.org>");
 +MODULE_DESCRIPTION("GPIO-based I2C adapter for EP93XX systems");
 +MODULE_LICENSE("GPL");
-Index: linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h
+Index: linux-2.6.24/include/asm-arm/arch-ep93xx/platform.h
 ===================================================================
---- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:42:45.000000000 +0200
-+++ linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:42:52.000000000 +0200
+--- linux-2.6.24.orig/include/asm-arm/arch-ep93xx/platform.h	2010-02-07 14:53:59.000000000 +0100
++++ linux-2.6.24/include/asm-arm/arch-ep93xx/platform.h	2010-02-07 14:54:23.000000000 +0100
 @@ -16,5 +16,13 @@
  	unsigned char	phy_id;
  };
