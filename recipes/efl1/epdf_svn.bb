@@ -1,8 +1,8 @@
 DESCRIPTION = "Epdf is the glue between EFL and libpoppler"
 LICENSE = "MIT BSD"
-DEPENDS = "poppler evas ecore etk ewl"
+DEPENDS = "poppler evas ecore"
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 inherit efl
 
@@ -12,7 +12,6 @@ SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/PROTO;module=epdf;proto=http"
 # recognize epsilon and doesn't build everything. The next one actually using
 # this package is welcome to fix it.
 
-EXTRA_OECONF = "--enable-etk --enable-ewl"
 
 # add ewl additions
 FILES_${PN}-dev += "${libdir}/ewl/tests/*.a ${libdir}/ewl/tests/*.la"
