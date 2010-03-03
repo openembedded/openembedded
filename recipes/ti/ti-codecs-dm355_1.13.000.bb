@@ -6,8 +6,8 @@ SECTION = "multimedia"
 
 PV = "1_13_000"
 
-SRC_URI[dm355codecsbin.md5sum] = "64a53cd55bc63d3a6f4db742aff90de9"
-SRC_URI[dm355codecsbin.sha256sum] = "4fb1075ad83f6017616410eff35ada7d567f1ee1b5b23624a817e8fc7dda3f8a"
+SRC_URI[dm355codecsbin.md5sum] = "f6221188bea76b7aaf0c45e9bcf26329"
+SRC_URI[dm355codecsbin.sha256sum] = "f1a6dea51be9798903a0543fb50f463b0594b1f11b897bc50e40825fb7527c61"
 
 PR = "r17"
 
