@@ -1,0 +1,32 @@
+The USBFS_URB_SHORT_NOT_OK flag is valid for IN urbs only.  When USB
+debugging is enabled in the linux kernel its usb_submit_urb() function
+will validate and reject OUT urbs where this flag is set.
+
+E.g. you will see something like
+
+  usb 1-1.4: BOGUS urb flags, 1 --> 0
+
+when sending bulk urbs.
+
+This patch sets USBFS_URB_SHORT_NOT_OK only for IN urbs.
+
+
+Index: libusb-1.0.6/libusb/os/linux_usbfs.c
+===================================================================
+--- libusb-1.0.6.orig/libusb/os/linux_usbfs.c
++++ libusb-1.0.6/libusb/os/linux_usbfs.c
+@@ -1360,11 +1360,13 @@ static int submit_bulk_transfer(struct u
+ 
+ 	for (i = 0; i < num_urbs; i++) {
+ 		struct usbfs_urb *urb = &urbs[i];
++		int is_out = ((transfer->endpoint & LIBUSB_ENDPOINT_DIR_MASK)
++			      == LIBUSB_ENDPOINT_OUT);
+ 		urb->usercontext = itransfer;
+ 		urb->type = urb_type;
+ 		urb->endpoint = transfer->endpoint;
+ 		urb->buffer = transfer->buffer + (i * MAX_BULK_BUFFER_LENGTH);
+-		if (supports_flag_bulk_continuation)
++		if (supports_flag_bulk_continuation && !is_out)
+ 			urb->flags = USBFS_URB_SHORT_NOT_OK;
+ 		if (i == num_urbs - 1 && last_urb_partial)
+ 			urb->buffer_length = transfer->length % MAX_BULK_BUFFER_LENGTH;
