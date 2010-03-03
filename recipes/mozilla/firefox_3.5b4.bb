@@ -1,8 +1,8 @@
-DEPENDS += "cairo sqlite"
+DEPENDS += "cairo sqlite libnotify"
 
 PV = "3.0.1+3.5b4"
 MOZPV = "3.5b4"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/${MOZPV}-candidates/build1/source/firefox-${MOZPV}-source.tar.bz2 \
 	file://jsautocfg.h \
@@ -16,7 +16,6 @@ DEFAULT_PREFERENCE = "-10"
 inherit mozilla
 require firefox.inc
 
-export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 do_configure_prepend() {

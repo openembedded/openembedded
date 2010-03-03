@@ -6,10 +6,12 @@ SRC_URI += "file://mozconfig"
 
 inherit gettext pkgconfig
 
+# Parallel make is special in mozilla.
+OLD_PARALLEL_MAKE := "${PARALLEL_MAKE}"
+PARALLEL_MAKE = ""
+
 EXTRA_OECONF = "--target=${TARGET_SYS} --host=${BUILD_SYS} \
 		--build=${BUILD_SYS} --prefix=${prefix}"
-EXTRA_OEMAKE = "'HOST_LIBIDL_LIBS=${HOST_LIBIDL_LIBS}' \
-		'HOST_LIBIDL_CFLAGS=${HOST_LIBIDL_CFLAGS}'"
 SELECTED_OPTIMIZATION = "-Os -fsigned-char -fno-strict-aliasing"
 
 export CROSS_COMPILE = "1"
@@ -17,9 +19,6 @@ export MOZCONFIG = "${WORKDIR}/mozconfig"
 export MOZ_OBJDIR = "${S}"
 
 export CONFIGURE_ARGS = "${EXTRA_OECONF}"
-export HOST_LIBIDL_CFLAGS = "`${HOST_LIBIDL_CONFIG} --cflags`"
-export HOST_LIBIDL_LIBS = "`${HOST_LIBIDL_CONFIG} --libs`"
-export HOST_LIBIDL_CONFIG = "PKG_CONFIG_PATH=${STAGING_LIBDIR_NATIVE}/pkgconfig pkg-config libIDL-2.0"
 export HOST_CC = "${BUILD_CC}"
 export HOST_CXX = "${BUILD_CXX}"
 export HOST_CFLAGS = "${BUILD_CFLAGS}"
@@ -38,7 +37,22 @@ mozilla_do_configure() {
 			`dirname $cg`/
 		done
 	)
-	if [ -e ${MOZ_OBJDIR}/Makefile ] ; then 
+
+	# Put PARALLEL_MAKE into mozconfig
+	if [ ! -z "${OLD_PARALLEL_MAKE}" ] ; then
+		echo mk_add_options MOZ_MAKE_FLAGS=\"${OLD_PARALLEL_MAKE}\" \
+			>> ${MOZCONFIG}
+	fi
+
+	# Set the host libIDL stuff correctly.
+	export HOST_LIBIDL_CONFIG="PKG_CONFIG_PATH=${STAGING_LIBDIR_NATIVE}/pkgconfig pkg-config libIDL-2.0"
+	# Due to sysroot we need to sed out references to the target staging
+	# when building the native version of xpidl Symptons of the failure
+	# include "gthread.h:344: error: size of array 'type name' is negative"
+	export HOST_LIBIDL_CFLAGS="`${HOST_LIBIDL_CONFIG} --cflags | sed -e s:${STAGING_DIR_TARGET}:${STAGING_DIR_NATIVE}:g`"
+	export HOST_LIBIDL_LIBS="`${HOST_LIBIDL_CONFIG} --libs`"
+
+	if [ -e ${MOZ_OBJDIR}/Makefile ] ; then
 		oe_runmake -f client.mk ${MOZ_OBJDIR}/Makefile \
 					${MOZ_OBJDIR}/config.status
 	fi
