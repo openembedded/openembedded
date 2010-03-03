@@ -1,0 +1,71 @@
+From c74060501ec81a28f288a6d82ecf532320dae361 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 01:41:44 +0100
+Subject: [PATCH] EP93xx GPIO I2C
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/core.c |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index 88afbe6..f689531 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -34,6 +34,8 @@
+ #include <linux/amba/serial.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/leds.h>
++#include <linux/i2c.h>
++#include <linux/i2c-gpio.h>
+ 
+ #include <asm/types.h>
+ #include <asm/setup.h>
+@@ -509,6 +511,30 @@ static struct platform_device ep93xx_gpio_leds = {
+   }
+ };
+ 
++#ifdef CONFIG_MACH_TS72XX
++static struct i2c_gpio_platform_data ep93xx_i2c_data = {
++  .sda_pin		= EP93XX_GPIO_LINE_EGPIO14, // DIO_6 (TS72XX DIO 2x8 header)
++  .sda_is_open_drain	= 0,
++  .scl_pin		= EP93XX_GPIO_LINE_EGPIO15, // DIO_7 (TS72XX DIO 2x8 header)
++  .scl_is_open_drain	= 0,
++  .udelay			= 2,
++};
++#else
++static struct i2c_gpio_platform_data ep93xx_i2c_data = {
++  .sda_pin		= EP93XX_GPIO_LINE_EEDAT,
++  .sda_is_open_drain	= 0,
++  .scl_pin		= EP93XX_GPIO_LINE_EECLK,
++  .scl_is_open_drain	= 0,
++  .udelay			= 2,
++};
++#endif
++
++static struct platform_device ep93xx_i2c_device = {
++  .name			= "i2c-gpio",
++  .id			= 0,
++  .dev.platform_data	= &ep93xx_i2c_data,
++};
++
+ 
+ extern void ep93xx_gpio_init(void);
+ 
+@@ -530,6 +556,10 @@ void __init ep93xx_init_devices(void)
+ 	amba_device_register(&uart2_device, &iomem_resource);
+ 	amba_device_register(&uart3_device, &iomem_resource);
+ 
++	/* We have no specific I2C slave devices to register,
++	   so we do not have to call i2c_register_board_info. */
++	platform_device_register(&ep93xx_i2c_device);
++
+ 	platform_device_register(&ep93xx_gpio_leds);
+ 	platform_device_register(&ep93xx_rtc_device);
+ 	platform_device_register(&ep93xx_ohci_device);
+-- 
+1.6.0.4
+

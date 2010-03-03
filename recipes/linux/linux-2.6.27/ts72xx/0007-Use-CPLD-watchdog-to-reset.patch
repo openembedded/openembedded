@@ -1,0 +1,54 @@
+From fca24d7cd93b7282d139cb91c0f4d62b1a95a985 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sat, 3 Jan 2009 21:36:36 +0100
+Subject: [PATCH] Use CPLD watchdog to reset
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Use CPLD watchdog to reset the machine instead of buggy ep93xx one, which
+sometimes get stuck...
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/system.h |   17 ++++++++++++-----
+ 1 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/system.h b/arch/arm/mach-ep93xx/include/mach/system.h
+index 67789d0..5d85094 100644
+--- a/arch/arm/mach-ep93xx/include/mach/system.h
++++ b/arch/arm/mach-ep93xx/include/mach/system.h
+@@ -3,6 +3,7 @@
+  */
+ 
+ #include <mach/hardware.h>
++#include <asm/mach-types.h>
+ 
+ static inline void arch_idle(void)
+ {
+@@ -15,11 +16,17 @@ static inline void arch_reset(char mode)
+ 
+ 	local_irq_disable();
+ 
+-	devicecfg = __raw_readl(EP93XX_SYSCON_DEVICE_CONFIG);
+-	__raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
+-	__raw_writel(devicecfg | 0x80000000, EP93XX_SYSCON_DEVICE_CONFIG);
+-	__raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
+-	__raw_writel(devicecfg & ~0x80000000, EP93XX_SYSCON_DEVICE_CONFIG);
++	if (machine_is_ts72xx()) {
++		__raw_writeb(0x5, TS72XX_WATCHDOG_FEED_PHYS_BASE);
++		__raw_writeb(0x1, TS72XX_WATCHDOG_CONTROL_PHYS_BASE);
++	} else {
++		devicecfg = __raw_readl(EP93XX_SYSCON_DEVICE_CONFIG);
++		__raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
++		__raw_writel(devicecfg | 0x80000000, EP93XX_SYSCON_DEVICE_CONFIG);
++		__raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
++		__raw_writel(devicecfg & ~0x80000000, EP93XX_SYSCON_DEVICE_CONFIG);
++	}
++
+ 
+ 	while (1)
+ 		;
+-- 
+1.6.0.4
+

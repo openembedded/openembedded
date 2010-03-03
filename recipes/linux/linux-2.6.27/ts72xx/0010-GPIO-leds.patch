@@ -1,0 +1,72 @@
+From 11158bb59b2d848f1827d4ed59d4ca20d1f91d11 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 00:58:03 +0100
+Subject: [PATCH] GPIO leds
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/core.c |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index 24b24c7..88afbe6 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -33,6 +33,7 @@
+ #include <linux/amba/bus.h>
+ #include <linux/amba/serial.h>
+ #include <linux/dma-mapping.h>
++#include <linux/leds.h>
+ 
+ #include <asm/types.h>
+ #include <asm/setup.h>
+@@ -480,6 +481,35 @@ static struct platform_device ep93xx_ohci_device = {
+ 	.resource	= ep93xx_ohci_resources,
+ };
+ 
++
++static const struct gpio_led ep93xx_led_pins[] = {
++  {
++    .name = "green",
++    .gpio = EP93XX_GPIO_LINE_GRLED,
++    .active_low = 0,
++    .default_trigger = "heartbeat",
++  },
++  {
++    .name = "red",
++    .gpio = EP93XX_GPIO_LINE_RDLED,
++    .active_low = 0,
++  }
++};
++
++static const struct gpio_led_platform_data ep93xx_led_data = {
++  .num_leds = ARRAY_SIZE(ep93xx_led_pins),
++  .leds = (void *)ep93xx_led_pins,
++};
++
++static struct platform_device ep93xx_gpio_leds = {
++  .name = "leds-gpio",
++  .id = -1,
++  .dev = {
++    .platform_data = (void *)&ep93xx_led_data,
++  }
++};
++
++
+ extern void ep93xx_gpio_init(void);
+ 
+ void __init ep93xx_init_devices(void)
+@@ -500,6 +530,7 @@ void __init ep93xx_init_devices(void)
+ 	amba_device_register(&uart2_device, &iomem_resource);
+ 	amba_device_register(&uart3_device, &iomem_resource);
+ 
++	platform_device_register(&ep93xx_gpio_leds);
+ 	platform_device_register(&ep93xx_rtc_device);
+ 	platform_device_register(&ep93xx_ohci_device);
+ }
+-- 
+1.6.0.4
+
