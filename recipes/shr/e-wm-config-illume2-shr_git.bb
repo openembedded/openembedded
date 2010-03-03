@@ -4,7 +4,7 @@ DEPENDS = "eet"
 LICENSE = "MIT BSD"
 SRCREV = "868999443054da51b198860459b92734a3b16d42"
 PV = "1.1-${EFL_SRCREV}+gitr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 inherit e
 
@@ -22,7 +22,7 @@ RRECOMMENDS_${PN} = "\
   e-wm-sysactions-shr \
   e-wm-menu-shr \
   illume-keyboard-default-alpha \
-  illume-keyboard-default-numeric \
+  illume-keyboard-numeric-alt \
   illume-keyboard-default-terminal \
 "
 
