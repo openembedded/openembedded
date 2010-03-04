@@ -1,13 +1,16 @@
 DESCRIPTION = "ventura is a web browser for openmoko phones"
-HOMEPAGE = "http://code.google.com/p/elm-browser/"
 AUTHOR = "cchandel"
-LICENSE = "GPLv2"
+HOMEPAGE = "http://code.google.com/p/elm-browser/"
 SECTION = "e/apps"
+LICENSE = "GPLv2"
 DEPENDS = "elementary webkit-efl sqlite3"
-SRCREV = "11"
+RRECOMMENDS = "ca-certificates"
 PV = "0.2+svnr${SRCPV}"
+PR = "1"
 
 SRC_URI = "svn://elm-browser.googlecode.com/svn;module=trunk;proto=http"
+
+SRCREV = "11"
 S = "${WORKDIR}/trunk"
 
 inherit autotools
