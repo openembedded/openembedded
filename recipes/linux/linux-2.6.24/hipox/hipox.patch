@@ -32006,10 +32006,10 @@ diff -Nurd linux-2.6.24.4/drivers/ata/ox800sata.c linux-2.6.24/drivers/ata/ox800
 +EXPORT_SYMBOL( hipoxsata_RAID_faults );
 +EXPORT_SYMBOL( hipoxsata_get_port_no );
 +EXPORT_SYMBOL( hipoxsata_LBA_schemes_compatible );
-diff -Nurd linux-2.6.24.4/drivers/ata/ox810sata.c linux-2.6.24/drivers/ata/ox810sata.c
---- linux-2.6.24.4/drivers/ata/ox810sata.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.24/drivers/ata/ox810sata.c	2010-01-14 14:01:15.000000000 +0100
-@@ -0,0 +1,2423 @@
+diff -Nurd linux-2.6.24/drivers/ata/ox810sata.c linux-2.6.24-oxe810/drivers/ata/ox810sata.c
+--- linux-2.6.24/drivers/ata/ox810sata.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.24-oxe810/drivers/ata/ox810sata.c	2008-06-11 17:50:32.000000000 +0200
+@@ -0,0 +1,2441 @@
 +/**************************************************************************
 + *
 + *  Copyright (c) 2007 Oxford Semiconductor Ltd.
@@ -32447,12 +32447,30 @@ diff -Nurd linux-2.6.24.4/drivers/ata/ox810sata.c linux-2.6.24/drivers/ata/ox810
 +{
 +    struct ata_host *host_set = dev_get_drvdata( &(pdev->dev) );
 +    struct ata_port *ap;
-+    unsigned int i;
++    unsigned int i,j;
 +    
++    /* tfm: detach host driver */
++    ata_host_detach(host_set);
++
 +    for (i = 0; i < host_set->n_ports; i++) 
 +    {
++       struct ata_port *p=NULL;
 +        ap = host_set->ports[i];
 +        scsi_remove_host( ap->scsi_host );
++
++        /* tfm: NULL the static local handle just to be sure. */
++        for (j=0; j<2; j++) {
++            if (ox810sata_driver.ap[j] == ap) {
++                p = ap;
++                break;
++            }
++        }
++        if (p) {
++            printk(KERN_DEBUG "tfm host at %p: NULLing ap pointer #%d @%p\n", host_set, j, ap);
++            ox810sata_driver.ap[j] = NULL;
++        } else {
++            printk(KERN_ERR "tfm host at %p: orphan ap pointer %p\n", host_set, ap);
++        }
 +    }
 +    
 +    /** @TODO etc. */
