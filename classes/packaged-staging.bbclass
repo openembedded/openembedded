@@ -298,7 +298,7 @@ packagedstaging_fastpath () {
 		mkdir -p ${PSTAGE_TMPDIR_STAGE}/staging/
 		mkdir -p ${PSTAGE_TMPDIR_STAGE}/cross/
 		cp -fpPR ${SYSROOT_DESTDIR}${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/staging/ || /bin/true
-		cp -fpPR ${SYSROOT_DESTDIR}${CROSS_DIR}/* ${PSTAGE_TMPDIR_STAGE}/cross/ || /bin/true
+		cp -fpPR ${SYSROOT_DESTDIR}${CROSS_DIR}/* ${PSTAGE_TMPDIR_STAGE}/cross/${BASE_PACKAGE_ARCH}/ || /bin/true
 	fi
 }
 
