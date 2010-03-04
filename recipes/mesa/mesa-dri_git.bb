@@ -18,6 +18,9 @@ SRCREV_pn-mesa-dri_shr ?= "1ac166895fef47806c9e9286d2a6356b4db8398d"
 
 SRC_URI = "git://anongit.freedesktop.org/git/mesa/mesa;protocol=git"
 SRC_URI_shr = "git://git.bitwiz.org.uk/mesa.git;protocol=git;branch=glamo"
+SRC_URI_append = " file://fix-progs-makefile.patch;patch=1"
+SRC_URI_shr_append = " file://fix-progs-makefile.patch;patch=1"
+
 S = "${WORKDIR}/git"
 
 PACKAGES =+ " mesa-utils "
