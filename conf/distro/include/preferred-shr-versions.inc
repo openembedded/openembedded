@@ -15,7 +15,7 @@ PREFERRED_VERSION_classpath-native = "0.98"
 
 # we need new headers for libc, now OLDEST_KERNEL_linux-gnueabi = "2.6.24"
 # and 2.6.31 for fsodeviced
-PREFERRED_VERSION_linux-libc-headers = "2.6.31"
+PREFERRED_VERSION_linux-libc-headers = "2.6.32"
 
 # override EFL_SRCREV from sane-srcrevs.inc
 # EFL_SRCREV ?= "44424"
