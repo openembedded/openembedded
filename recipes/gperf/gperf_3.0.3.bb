@@ -6,3 +6,6 @@ SRC_URI  = "${GNU_MIRROR}/gperf/gperf-${PV}.tar.gz \
             file://autoreconf.patch;patch=1"
 
 inherit autotools
+
+NATIVE_INSTALL_WORKS = "1"
+BBCLASSEXTEND = "native"

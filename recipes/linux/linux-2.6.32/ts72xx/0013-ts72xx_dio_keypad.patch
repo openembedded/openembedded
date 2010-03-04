@@ -1,0 +1,567 @@
+From f00550cd73030bc2033e4482f31722d83a09b2a8 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 17 Jan 2010 18:49:25 +0100
+Subject: [PATCH] ts72xx_dio_keypad
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/ts72xx-keypad.h |   30 ++
+ drivers/input/keyboard/Kconfig                    |   42 +++
+ drivers/input/keyboard/Makefile                   |    4 +
+ drivers/input/keyboard/ts72xx_dio_3x4.c           |   65 +++++
+ drivers/input/keyboard/ts72xx_dio_4x4.c           |   65 +++++
+ drivers/input/keyboard/ts72xx_keypad.c            |  292 +++++++++++++++++++++
+ 6 files changed, 498 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-ep93xx/include/mach/ts72xx-keypad.h
+ create mode 100644 drivers/input/keyboard/ts72xx_dio_3x4.c
+ create mode 100644 drivers/input/keyboard/ts72xx_dio_4x4.c
+ create mode 100644 drivers/input/keyboard/ts72xx_keypad.c
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx-keypad.h b/arch/arm/mach-ep93xx/include/mach/ts72xx-keypad.h
+new file mode 100644
+index 0000000..bf44759
+--- /dev/null
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx-keypad.h
+@@ -0,0 +1,30 @@
++/*
++ *  TS-72xx "GPIO Port X" input keypad driver
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on OMAP Keypad Driver (omap-keypad.c)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ */
++
++#ifndef __ASM_ARCH_TS72XX_KEYPAD_H
++#define __ASM_ARCH_TS72XX_KEYPAD_H
++
++#define EP93XX_PORTX_MAXROW 4
++#define EP93XX_PORTX_MAXCOL 4
++
++/* Example: Port X bit 0..7 = C0,..Cx,R0..Ry
++ * Cols are outputs
++ * Rows are inputs
++ */
++struct ep93xx_gpio_portx_keypad_platform_data {
++  int nr_rows, nr_cols;
++  int keycodes[EP93XX_PORTX_MAXROW][EP93XX_PORTX_MAXCOL]; /* Left to right, from top to bottom */
++  int gpio_rows[EP93XX_PORTX_MAXROW];                     /* R0, R1, .., R_{MAXROW-1} */
++  int gpio_cols[EP93XX_PORTX_MAXCOL];                     /* C0, C1, .., C_{MAXCOL-1} */
++};
++
++#endif	/* __ASM_ARCH_TS72XX_KEYPAD_H */
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+index ee98b1b..3c5c421 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -164,6 +164,48 @@ config KEYBOARD_EP93XX
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called ep93xx_keypad.
++ 
++config KEYBOARD_TS72XX
++	tristate "TS72XX matrix keypad support"
++	depends on MACH_TS72XX
++	help
++	  This driver implements supports for a matrix keypad connected
++	  to EP93XX GPIO port B (aka DIO of TS-72XX SBCs).
++	  Maximum of 4 rows and 4 cols are supported (using up to 4 interrupts).
++	  This is implemented as a platform driver.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called ep93xx-keypad.
++
++if KEYBOARD_TS72XX
++	
++choice
++	prompt "Keypad type"
++	default TS72XX_DIO_4X4_KEYPAD
++
++config TS72XX_DIO_3X4_KEYPAD
++	tristate "TS-72xx 3x4 matrix keypad"
++	depends on MACH_TS72XX
++	help
++	  This a 12 keys (4 rows, 3 cols using DIO_0-6) keypad with the following layout:
++	  1 2 3
++	  4 5 6
++	  7 8 9
++	  * 0 #
++
++config TS72XX_DIO_4X4_KEYPAD
++	tristate "TS-72xx 4x4 matrix keypad"
++	depends on MACH_TS72XX
++	help
++	  This a 16 keys (4 rows, 4 cols using DIO_0-7) keypad with the following layout:
++	  7 8 9 F
++	  4 5 6 E
++	  1 2 3 D
++	  A 0 B C
++
++endchoice
++
++endif # KEYBOARD_TS72XX
+ 
+ config KEYBOARD_GPIO
+ 	tristate "GPIO Buttons"
+diff --git a/drivers/input/keyboard/Makefile b/drivers/input/keyboard/Makefile
+index babad5e..1a96733 100644
+--- a/drivers/input/keyboard/Makefile
++++ b/drivers/input/keyboard/Makefile
+@@ -37,3 +37,7 @@ obj-$(CONFIG_KEYBOARD_TOSA)		+= tosakbd.o
+ obj-$(CONFIG_KEYBOARD_TWL4030)		+= twl4030_keypad.o
+ obj-$(CONFIG_KEYBOARD_XTKBD)		+= xtkbd.o
+ obj-$(CONFIG_KEYBOARD_W90P910)		+= w90p910_keypad.o
++
++obj-$(CONFIG_KEYBOARD_TS72XX)		+= ts72xx_keypad.o
++obj-$(CONFIG_TS72XX_DIO_3X4_KEYPAD)	+= ts72xx_dio_3x4.o
++obj-$(CONFIG_TS72XX_DIO_4X4_KEYPAD)	+= ts72xx_dio_4x4.o
+diff --git a/drivers/input/keyboard/ts72xx_dio_3x4.c b/drivers/input/keyboard/ts72xx_dio_3x4.c
+new file mode 100644
+index 0000000..b149a7a
+--- /dev/null
++++ b/drivers/input/keyboard/ts72xx_dio_3x4.c
+@@ -0,0 +1,65 @@
++/*
++ *  TS-72xx keypad device driver for DIO1 header (DIO_0 thru DIO_7 are using port B)
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/input.h>
++
++#include <mach/ts72xx-keypad.h>
++
++/* Port B = XX R0 R1 R2 R3 C0 C1 C2
++ * (i.e. col2 is bit 0, row0 is bit 6, ...)
++ */
++static struct ep93xx_gpio_portx_keypad_platform_data kp_portb_3x4 = {
++  .nr_rows = 4,
++  .nr_cols = 3,
++  { { KEY_1, KEY_2, KEY_3 },
++    { KEY_4, KEY_5, KEY_6 },
++    { KEY_7, KEY_8, KEY_9 },
++    { KEY_KPASTERISK, KEY_0, KEY_ENTER }
++  },
++  .gpio_rows = { 6, 5, 4, 3 },
++  .gpio_cols = { 2, 1, 0 },
++};
++
++
++static void ts72xx_dio_release(struct device *dev)
++{
++  // nothing to do (no kfree) because we have static struct
++}
++
++static struct platform_device kp_portb_3x4_device = {
++  .name = "ep93xx-gpio-keypad",
++  .id   = -1, // one instance only
++  .dev    = {
++    .platform_data = &kp_portb_3x4,
++    .release = ts72xx_dio_release,
++  },
++};
++
++static int __init ts72xx_dio_init(void)
++{
++  return platform_device_register(&kp_portb_3x4_device);
++}
++
++static void __exit ts72xx_dio_exit(void)
++{
++  platform_device_unregister(&kp_portb_3x4_device);
++}
++
++module_init(ts72xx_dio_init);
++module_exit(ts72xx_dio_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("Platform device 3x4 keypad");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/input/keyboard/ts72xx_dio_4x4.c b/drivers/input/keyboard/ts72xx_dio_4x4.c
+new file mode 100644
+index 0000000..2d8089a
+--- /dev/null
++++ b/drivers/input/keyboard/ts72xx_dio_4x4.c
+@@ -0,0 +1,65 @@
++/*
++ *  TS-72xx keypad device driver for DIO1 header (DIO_0 thru DIO_7 are using port B)
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/input.h>
++
++#include <mach/ts72xx-keypad.h>
++
++/* Port B = C0 R3 C1 R2 C2 C3 R1 R0
++ * (i.e. row0 is bit 0, row1 is bit 1, ...)
++ */
++static struct ep93xx_gpio_portx_keypad_platform_data kp_portb_4x4 = {
++  .nr_rows = 4,
++  .nr_cols = 4,
++  { { KEY_7, KEY_8, KEY_9, KEY_F },
++    { KEY_4, KEY_5, KEY_6, KEY_E },
++    { KEY_1, KEY_2, KEY_3, KEY_D },
++    { KEY_A, KEY_0, KEY_B, KEY_C }
++  },
++  .gpio_rows = { 0, 1, 4, 6 },
++  .gpio_cols = { 7, 5, 3, 2 },
++};
++
++
++static void ts72xx_dio_release(struct device *dev)
++{
++  // nothing to do (no kfree) because we have static struct
++}
++
++static struct platform_device kp_portb_4x4_device = {
++  .name = "ep93xx-gpio-keypad",
++  .id   = -1, // one instance only
++  .dev    = {
++    .platform_data = &kp_portb_4x4,
++    .release = ts72xx_dio_release,
++  },
++};
++
++static int __init ts72xx_dio_init(void)
++{
++  return platform_device_register(&kp_portb_4x4_device);
++}
++
++static void __exit ts72xx_dio_exit(void)
++{
++  platform_device_unregister(&kp_portb_4x4_device);
++}
++
++module_init(ts72xx_dio_init);
++module_exit(ts72xx_dio_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("Platform device 4x4 keypad");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/input/keyboard/ts72xx_keypad.c b/drivers/input/keyboard/ts72xx_keypad.c
+new file mode 100644
+index 0000000..6979689
+--- /dev/null
++++ b/drivers/input/keyboard/ts72xx_keypad.c
+@@ -0,0 +1,292 @@
++/*
++ *  TS-72xx "GPIO Port B" input keypad driver
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on OMAP Keypad Driver (omap-keypad.c)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/delay.h>
++#include <linux/input.h>
++#include <linux/platform_device.h>
++#include <linux/irq.h>
++#include <linux/io.h>
++#include <mach/hardware.h>
++#include <mach/gpio.h>
++
++#include <mach/ts72xx-keypad.h>
++
++#define DRV_NAME_PREFIX "ts72xx_keypad: "
++#define DRV_VERSION "2.0"
++
++/* We choose port B */
++#define EP93XX_GPIO_X_DATA      EP93XX_GPIO_B_DATA
++#define EP93XX_GPIO_LINE_X      EP93XX_GPIO_LINE_B
++
++struct ep93xx_gpio_portx_keypad {
++	u8 rows;
++	u8 cols;
++	int irqs[EP93XX_PORTX_MAXROW];
++	u8 mask_input;
++	u8 mask_output;
++	u8 row_trigger, col_trigger;
++	u8 mask_input_trigger;
++	struct timer_list timer;
++	struct input_dev *input;
++	struct ep93xx_gpio_portx_keypad_platform_data *rsc;
++};
++
++static void ep93xx_gpio_portx_tasklet(unsigned long);
++static void ep93xx_gpio_portx_timer(unsigned long);
++
++DECLARE_TASKLET_DISABLED(kp_tasklet, ep93xx_gpio_portx_tasklet, 0);
++
++
++static void ep93xx_gpio_portx_timer(unsigned long data)
++{
++  struct ep93xx_gpio_portx_keypad *ctx = (struct ep93xx_gpio_portx_keypad *)data;
++  int i;
++
++  for (i = 0; i < ctx->rows; i++)
++    enable_irq(ctx->irqs[i]);
++}
++
++
++static void ep93xx_gpio_portx_tasklet(unsigned long data)
++{
++  struct ep93xx_gpio_portx_keypad *ctx = (struct ep93xx_gpio_portx_keypad *)data;
++  int i, j;
++  u8 save;
++
++  /* Save data register */
++  save = __raw_readb(EP93XX_GPIO_X_DATA);
++
++  /* Make sure row is still 0 */
++  if (!(save & ctx->mask_input_trigger)) {
++
++    for (i = 0; i < ctx->cols; i++) {
++      for (j = 0; j < ctx->cols; j++) {
++        if (i == j)
++          gpio_set_value(EP93XX_GPIO_LINE_X(ctx->rsc->gpio_cols[j]), 1); //high
++        else
++          gpio_set_value(EP93XX_GPIO_LINE_X(ctx->rsc->gpio_cols[j]), 0); //low
++      }
++
++      if (__raw_readb(EP93XX_GPIO_X_DATA) & ctx->mask_input_trigger) {
++        ctx->col_trigger = i;
++        //printk("=>key col=%d, row=%d |%x\n", i, ctx->row_trigger, ctx->rsc->keycodes[ctx->row_trigger][i]);
++        input_report_key(ctx->input, ctx->rsc->keycodes[ctx->row_trigger][ctx->col_trigger], 1);
++        input_sync(ctx->input);
++      }
++    }
++
++  } else { // key released
++    input_report_key(ctx->input, ctx->rsc->keycodes[ctx->row_trigger][ctx->col_trigger], 0);
++    input_sync(ctx->input);
++  }
++
++  /* Restore all outputs to 0 */
++  __raw_writeb(save, EP93XX_GPIO_X_DATA);
++
++  /* Wait a little before enabling IRQ again */
++  mod_timer(&ctx->timer, jiffies + HZ/10);
++}
++
++
++/* Interrupt handler */
++static irqreturn_t ep93xx_gpio_portx_key_int(int irq, void *dev_id)
++{
++  struct ep93xx_gpio_portx_keypad *ctx = dev_id;
++  int i;
++
++  for (i = 0; i < ctx->rows; i++)
++    disable_irq(ctx->irqs[i]);
++
++  ctx->mask_input_trigger = 0;
++  for (i = 0; i < ctx->rows; i++) {
++    if (gpio_to_irq(EP93XX_GPIO_LINE_X(ctx->rsc->gpio_rows[i])) == irq) {
++      ctx->row_trigger = i;
++      ctx->mask_input_trigger = (1 << ctx->rsc->gpio_rows[i]);
++      break;
++    }
++  }
++
++  // deferred-execution method
++  tasklet_schedule(&kp_tasklet);
++
++  return IRQ_HANDLED;
++}
++
++
++static int __devinit ep93xx_keypad_probe(struct platform_device *pdev)
++{
++  struct ep93xx_gpio_portx_keypad *ctx;
++  struct input_dev *input_dev;
++  int i, j, ret, irq_idx;
++  struct ep93xx_gpio_portx_keypad_platform_data *pdata =  pdev->dev.platform_data;
++
++  const char *irq_names[EP93XX_PORTX_MAXROW] = {
++    "kp-row0", "kp-row1", "kp-row2", "kp-row3" };
++
++  if (pdata == NULL) {
++    return -EINVAL;
++  }
++
++  if (!pdata->nr_rows || !pdata->nr_cols ||
++      (pdata->nr_rows > EP93XX_PORTX_MAXROW) ||
++      (pdata->nr_cols > EP93XX_PORTX_MAXCOL)) {
++    printk(KERN_ERR DRV_NAME_PREFIX "No rows, cols from pdata\n");
++    return -EINVAL;
++  }
++
++  ctx = kzalloc(sizeof(struct ep93xx_gpio_portx_keypad), GFP_KERNEL);
++  if (!ctx) {
++    return -ENOMEM;
++  }
++
++  input_dev = input_allocate_device();
++  if (!input_dev) {
++    kfree(ctx);
++    return -ENOMEM;
++  }
++
++  platform_set_drvdata(pdev, ctx);
++
++  ctx->input = input_dev;
++  ctx->rsc   = pdata;
++  ctx->rows  = pdata->nr_rows;
++  ctx->cols  = pdata->nr_cols;
++
++  input_dev->evbit[0] = BIT(EV_KEY); // | BIT(EV_REP);
++
++  for (i = 0; i < pdata->nr_rows; i++) {
++    for (j = 0; j < pdata->nr_cols; j++) {
++      int code = pdata->keycodes[i][j];
++      if (code > 0)
++        set_bit(code, input_dev->keybit);
++    }
++  }
++  __clear_bit(KEY_RESERVED, input_dev->keybit);
++
++  input_dev->name = "GPIO keypad";
++  input_dev->phys = "ep93xx-keypad/input0";
++  input_dev->dev.parent = &pdev->dev;
++
++  input_dev->id.bustype = BUS_HOST;
++  input_dev->id.vendor  = 0x0001;
++  input_dev->id.product = 0x0001;
++  input_dev->id.version = 0x0100;
++
++  ret = input_register_device(ctx->input);
++  if (ret < 0) {
++    printk(KERN_ERR DRV_NAME_PREFIX "Unable to register input device\n");
++    goto err1;
++  }
++
++  ctx->mask_output = 0;
++  for (i = 0; i < pdata->nr_cols; i++) {
++    ctx->mask_output |= (1 << pdata->gpio_cols[i]);
++    gpio_direction_output(EP93XX_GPIO_LINE_X(pdata->gpio_cols[i]), 0); // low
++  }
++
++  ctx->mask_input = 0;
++  for (i = 0; i < pdata->nr_rows; i++) {
++    ctx->mask_input |= (1 << pdata->gpio_rows[i]);
++    gpio_direction_input(EP93XX_GPIO_LINE_X(pdata->gpio_rows[i]));
++  }
++
++  for (i = 0; i < pdata->nr_rows; i++) {
++    ctx->irqs[i] = gpio_to_irq(EP93XX_GPIO_LINE_X(pdata->gpio_rows[i]));
++    set_irq_type(ctx->irqs[i], IRQ_TYPE_EDGE_FALLING);
++    ep93xx_gpio_int_debounce(ctx->irqs[i], 1); // TODO: create IRQ_TYPE_DEBOUNCE
++
++    ret = request_irq(ctx->irqs[i], ep93xx_gpio_portx_key_int, 0, irq_names[i], ctx);
++    if (ret < 0) {
++      irq_idx = i;
++      printk(KERN_ERR DRV_NAME_PREFIX "request_irq (%d)\n", ctx->irqs[i]);
++      goto err2;
++    }
++  }
++
++  tasklet_enable(&kp_tasklet);
++  kp_tasklet.data = (unsigned long)ctx;
++
++  setup_timer(&ctx->timer, ep93xx_gpio_portx_timer, (unsigned long)ctx);
++
++  return 0;
++
++err2:
++  for (i = 0; i <= irq_idx; i++)
++    free_irq(ctx->irqs[i], ctx);
++  input_unregister_device(input_dev);
++  input_dev = NULL;
++err1:
++  kfree(ctx);
++  input_free_device(input_dev);
++
++  return -EINVAL;
++}
++
++
++static int __devexit ep93xx_keypad_remove(struct platform_device *pdev)
++{
++  struct ep93xx_gpio_portx_keypad *ctx = platform_get_drvdata(pdev);
++  int i;
++
++  for (i = 0; i < ctx->rows; i++) {
++    disable_irq(ctx->irqs[i]);
++    free_irq(ctx->irqs[i], ctx);
++  }
++
++  del_timer_sync(&ctx->timer);
++
++  tasklet_disable(&kp_tasklet);
++  tasklet_kill(&kp_tasklet);
++
++  input_unregister_device(ctx->input);
++  kfree(ctx);
++
++  return 0;
++}
++
++
++#define ep93xx_keypad_suspend NULL
++#define ep93xx_keypad_resume  NULL
++
++static struct platform_driver ep93xx_keypad_driver = {
++  .driver   = {
++    .name = "ep93xx-gpio-keypad",
++    .owner  = THIS_MODULE,
++  },
++  .probe    = ep93xx_keypad_probe,
++  .remove   = __devexit_p(ep93xx_keypad_remove),
++  .suspend  = ep93xx_keypad_suspend,
++  .resume   = ep93xx_keypad_resume,
++};
++
++static int __init ep93xx_keypad_init(void)
++{
++  printk(KERN_INFO DRV_NAME_PREFIX "platform driver v" DRV_VERSION "\n");
++  return platform_driver_register(&ep93xx_keypad_driver);
++}
++
++static void __exit ep93xx_keypad_exit(void)
++{
++  platform_driver_unregister(&ep93xx_keypad_driver);
++}
++
++module_init(ep93xx_keypad_init);
++module_exit(ep93xx_keypad_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("EP93xx GPIO port B keypad driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);
+-- 
+1.6.0.4
+

@@ -2,6 +2,8 @@
 # Sanity check the users setup for common misconfigurations
 #
 
+inherit qemu
+
 def raise_sanity_error(msg):
 	import bb
 	bb.fatal(""" Openembedded's config sanity checker detected a potential misconfiguration.
@@ -83,8 +85,10 @@ def check_sanity(e):
 
 	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum"
 
-	if data.getVar('TARGET_ARCH', e.data, True) == "arm":
-		# qemu-native needs gcc 3.x
+	# If we'll be running qemu, perform some sanity checks
+	if data.getVar('ENABLE_BINARY_LOCALE_GENERATION', e.data, True):
+		# Some versions of qemu-native needs gcc 3.x.  Do a special
+		# check here to allow for host 'gcc' is 3.x.
 		if "qemu-native" not in assume_provided and "gcc3-native" in assume_provided:
 			gcc_version = commands.getoutput("${BUILD_PREFIX}gcc --version | head -n 1 | cut -f 3 -d ' '")
 
@@ -93,8 +97,7 @@ def check_sanity(e):
 				missing = missing + "gcc-3.x (needed for qemu-native),"
 
 		if "qemu-native" in assume_provided:
-			if not check_app_exists("qemu-arm", e.data):
-				messages = messages + "qemu-native was in ASSUME_PROVIDED but the QEMU binaries (qemu-arm) can't be found in PATH"
+			required_utilities += " %s" % (qemu_target_binary(e.data))
 
 		try:
 			if os.path.exists("/proc/sys/vm/mmap_min_addr"):

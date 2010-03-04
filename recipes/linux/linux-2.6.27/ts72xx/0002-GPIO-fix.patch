@@ -1,0 +1,47 @@
+From 9c7b38ef5e6843521c71eadefdba8cfa0aa607b4 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 00:41:38 +0100
+Subject: [PATCH] GPIO fix
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/core.c |    2 +-
+ arch/arm/mach-ep93xx/gpio.c |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index f99f436..d6967de 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -157,7 +157,7 @@ static unsigned char gpio_int_type2[3];
+ static const u8 int_type1_register_offset[3]	= { 0x90, 0xac, 0x4c };
+ static const u8 int_type2_register_offset[3]	= { 0x94, 0xb0, 0x50 };
+ static const u8 eoi_register_offset[3]		= { 0x98, 0xb4, 0x54 };
+-static const u8 int_en_register_offset[3]	= { 0x9c, 0xb8, 0x5c };
++static const u8 int_en_register_offset[3]	= { 0x9c, 0xb8, 0x58 };
+ 
+ void ep93xx_gpio_update_int_params(unsigned port)
+ {
+diff --git a/arch/arm/mach-ep93xx/gpio.c b/arch/arm/mach-ep93xx/gpio.c
+index 0f3fb87..468d523 100644
+--- a/arch/arm/mach-ep93xx/gpio.c
++++ b/arch/arm/mach-ep93xx/gpio.c
+@@ -141,10 +141,10 @@ static void ep93xx_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
+ static struct ep93xx_gpio_chip ep93xx_gpio_banks[] = {
+ 	EP93XX_GPIO_BANK("A", 0x00, 0x10, 0),
+ 	EP93XX_GPIO_BANK("B", 0x04, 0x14, 8),
+-	EP93XX_GPIO_BANK("C", 0x30, 0x34, 40),
++	EP93XX_GPIO_BANK("C", 0x08, 0x18, 40),
+ 	EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 24),
+ 	EP93XX_GPIO_BANK("E", 0x20, 0x24, 32),
+-	EP93XX_GPIO_BANK("F", 0x08, 0x18, 16),
++	EP93XX_GPIO_BANK("F", 0x30, 0x34, 16),
+ 	EP93XX_GPIO_BANK("G", 0x38, 0x3c, 48),
+ 	EP93XX_GPIO_BANK("H", 0x40, 0x44, 56),
+ };
+-- 
+1.6.0.4
+

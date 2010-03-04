@@ -1,0 +1,39 @@
+From 06e0fdf41288a6d54b821671593195ea27deba8b Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 00:54:35 +0100
+Subject: [PATCH] OHCI fix
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/core.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index 1928c93..24b24c7 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -32,6 +32,7 @@
+ #include <linux/termios.h>
+ #include <linux/amba/bus.h>
+ #include <linux/amba/serial.h>
++#include <linux/dma-mapping.h>
+ 
+ #include <asm/types.h>
+ #include <asm/setup.h>
+@@ -472,8 +473,8 @@ static struct platform_device ep93xx_ohci_device = {
+ 	.name		= "ep93xx-ohci",
+ 	.id		= -1,
+ 	.dev		= {
+-		.dma_mask		= (void *)0xffffffff,
+-		.coherent_dma_mask	= 0xffffffff,
++		.dma_mask = &ep93xx_ohci_device.dev.coherent_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
+ 	},
+ 	.num_resources	= ARRAY_SIZE(ep93xx_ohci_resources),
+ 	.resource	= ep93xx_ohci_resources,
+-- 
+1.6.0.4
+

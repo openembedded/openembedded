@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "firefox gtk+ gconf dbus-glib"
 RDEPENDS = "firefox gnome-mplayer"
 
-PR = "r7"
+PR = "r8"
 
 inherit autotools
 

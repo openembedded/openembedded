@@ -1,0 +1,63 @@
+From 6983bb07df054687038f1dac74644ae1408d4f28 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 17 Jan 2010 18:44:11 +0100
+Subject: [PATCH] ts72xx_gpio_i2c
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/ts72xx.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index 2c0af20..6b0ddd9 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -16,6 +16,9 @@
+ #include <linux/io.h>
+ #include <linux/m48t86.h>
+ #include <linux/mtd/physmap.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/i2c-gpio.h>
+ 
+ #include <mach/hardware.h>
+ #include <mach/ts72xx.h>
+@@ -210,12 +213,31 @@ static struct ep93xx_eth_data ts72xx_eth_data = {
+ 	.phy_id		= 1,
+ };
+ 
++/*************************************************************************
++ * i2c peripheral handling
++ *************************************************************************/
++static struct i2c_gpio_platform_data ts72xx_i2c_gpio_data = {
++	.sda_pin		= EP93XX_GPIO_LINE_EGPIO14, // DIO_6 (TS72XX DIO 2x8 header)
++	.sda_is_open_drain      = 0,
++	.scl_pin		= EP93XX_GPIO_LINE_EGPIO15, // DIO_7 (TS72XX DIO 2x8 header)
++	.scl_is_open_drain      = 0,
++	.udelay                 = 0,    /* default to 100 kHz */
++	.timeout                = 0,    /* default to 100 ms */
++};
++
++static struct i2c_board_info __initdata ts72xx_i2c_board_info[] = {
++};
++
++
+ static void __init ts72xx_init_machine(void)
+ {
+ 	ep93xx_init_devices();
+ 	ts72xx_register_flash();
+ 	platform_device_register(&ts72xx_rtc_device);
+ 
++	ep93xx_register_i2c(&ts72xx_i2c_gpio_data,
++			ts72xx_i2c_board_info,
++			ARRAY_SIZE(ts72xx_i2c_board_info));
+ 	ep93xx_register_eth(&ts72xx_eth_data, 1);
+ 
+ 	/* PWM1 is DIO_6 on TS-72xx header */
+-- 
+1.6.0.4
+

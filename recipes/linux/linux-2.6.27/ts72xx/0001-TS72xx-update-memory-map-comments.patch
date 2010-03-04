@@ -1,0 +1,45 @@
+From dd631acb622a6c7c6355945c446bd07085ade99f Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 14:02:33 +0100
+Subject: [PATCH] TS72xx update memory map comments
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+index 30b318a..99c4e48 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+@@ -8,12 +8,23 @@
+  * virt		phys		size
+  * febff000	22000000	4K	model number register
+  * febfe000	22400000	4K	options register
+- * febfd000	22800000	4K	options register #2
++ * febfd000	22800000	4K	options register #2 (JP6 and TS-9420 flags)
+  * febfc000	[67]0000000	4K	NAND data register
+  * febfb000	[67]0400000	4K	NAND control register
+  * febfa000	[67]0800000	4K	NAND busy register
+  * febf9000	10800000	4K	TS-5620 RTC index register
+  * febf8000	11700000	4K	TS-5620 RTC data register
++ * febf7000	23800000	4K	CPLD watchdog (control register)
++ * febf6000	23c00000	4K	CPLD watchdog (feed register)
++ * febf5000	23400000	4K	PLD version (3 bits)
++ * febf4000	22c00000	4K	RS-485 control register
++ * febf3000	23000000	4K	RS-485 mode register
++ * febf2000	10800000	4K	jumpers/max197 busy bit/COM1 dcd register (8-bit, read only)
++ * febf1000	10f00000	4K	max197 sample/control register (16-bit read/8-bit write)
++ * febf0000	11e00000	4K	PC/104 8-bit I/O
++ * febef000	21e00000	4K	PC/104 16-bit I/O
++ * fea00000	11a00000	1MB	PC/104 8-bit memory
++ * fe900000	21a00000	1MB	PC/104 16-bit memory
+  */
+ 
+ #define TS72XX_MODEL_PHYS_BASE		0x22000000
+-- 
+1.6.0.4
+

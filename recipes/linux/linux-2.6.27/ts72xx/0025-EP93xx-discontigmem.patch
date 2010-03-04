@@ -1,0 +1,481 @@
+From 87a1d8dda4dc8fe5ba67c8534ad6d7db7dbd8835 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 14:22:55 +0100
+Subject: [PATCH] EP93xx discontigmem
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/Kconfig                           |    2 +
+ arch/arm/include/asm/memory.h              |    3 +-
+ arch/arm/mach-ep93xx/include/mach/memory.h |  220 +++++++++++++++++++++++++++-
+ arch/arm/mm/discontig.c                    |  100 +++++++++++++-
+ arch/arm/mm/init.c                         |   32 ++--
+ 5 files changed, 334 insertions(+), 23 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 70dba16..d196fe8 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -267,6 +267,7 @@ config ARCH_EP93XX
+ 	bool "EP93xx-based"
+ 	select ARM_AMBA
+ 	select ARM_VIC
++	select ARCH_DISCONTIGMEM_ENABLE
+ 	select GENERIC_GPIO
+ 	select HAVE_CLK
+ 	select ARCH_REQUIRE_GPIOLIB
+@@ -832,6 +833,7 @@ config ARCH_SELECT_MEMORY_MODEL
+ 
+ config NODES_SHIFT
+ 	int
++	default "5" if ARCH_EP93XX
+ 	default "4" if ARCH_LH7A40X
+ 	default "2"
+ 	depends on NEED_MULTIPLE_NODES
+diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
+index bf7c737..acf566c 100644
+--- a/arch/arm/include/asm/memory.h
++++ b/arch/arm/include/asm/memory.h
+@@ -273,7 +273,8 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
+  * Given a kaddr, ADDR_TO_MAPBASE finds the owning node of the memory
+  * and returns the mem_map of that node.
+  */
+-#define ADDR_TO_MAPBASE(kaddr)	NODE_MEM_MAP(KVADDR_TO_NID(kaddr))
++// Crude hack: see arch/arm/mach-ep93xx/include/mach/memory.h
++//#define ADDR_TO_MAPBASE(kaddr)	NODE_MEM_MAP(KVADDR_TO_NID(kaddr))
+ 
+ /*
+  * Given a page frame number, find the owning node of the memory
+diff --git a/arch/arm/mach-ep93xx/include/mach/memory.h b/arch/arm/mach-ep93xx/include/mach/memory.h
+index f1b6335..b202d93 100644
+--- a/arch/arm/mach-ep93xx/include/mach/memory.h
++++ b/arch/arm/mach-ep93xx/include/mach/memory.h
+@@ -1,14 +1,224 @@
+ /*
+- * arch/arm/mach-ep93xx/include/mach/memory.h
++ *  arch/arm/mach-ep93xx/include/mach/memory.h
++ *
++ *  ******************************************************
++ *	*    CONFUSED?  Read Documentation/IO-mapping.txt	 *
++ *  ******************************************************
++ *
++ *
++ *  Copyright (C) 1999 ARM Limited
++ *  Copyright (C) 2002-2003 Cirrus Logic Corp.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  */
+-
+ #ifndef __ASM_ARCH_MEMORY_H
+ #define __ASM_ARCH_MEMORY_H
+ 
+-#define PHYS_OFFSET		UL(0x00000000)
++/*
++ * For EP93xx, SDRAM can be discontiguous, in a set number of blocks
++ * of equal size and (usually) equal spacing.  The 9301 spacing isn't equal.
++ *
++ * SDRAM_START is the physical address of the start of SDRAM.
++ * SDRAM_NUMBER_OF_BLOCKS = # of blocks of SDRAM.
++ * Each block is of size SDRAM_BLOCK_SIZE and starts at a boundary
++ * of SDRAM_BLOCK_START_BOUNDARY.
++ *
++ * So memory blocks are at:
++ *  SDRAM_START
++ *  SDRAM_START + SDRAM_BLOCK_START_BOUNDARY
++ *  SDRAM_START + (SDRAM_BLOCK_START_BOUNDARY * 2)
++ *  SDRAM_START + (SDRAM_BLOCK_START_BOUNDARY * 3)
++ *  so on
++ */
++
++#ifndef CONFIG_DISCONTIGMEM
++
++/*
++ * Single 32Meg block of physical memory physically located at 0 .
++ */
++#define SDRAM_START                         0x00000000
++#define SDRAM_NUMBER_OF_BLOCKS              1
++#define SDRAM_BLOCK_SIZE                    0x02000000
++#define SDRAM_BLOCK_START_BOUNDARY          0x00000000
++
++#else /* CONFIG_DISCONTIGMEM */
++
++#ifdef CONFIG_ARCH_EP9301
++
++/*
++ * The 9301 memory map doesn't have regular gaps because two
++ * address pins aren't connected - see asm-arm/mach-ep93xx/arch.c to
++ * see how it is.
++ */
++#define SDRAM_START                         0x00000000
++#define SDRAM_NUMBER_OF_BLOCKS              4
++#define SDRAM_BLOCK_SIZE                    0x00800000
++#define SDRAM_BLOCK_START_BOUNDARY          0x01000000
++
++#else /* CONFIG_ARCH_EP9312 or CONFIG_ARCH_EP9315 */
++
++/*
++ * 2 32Meg blocks that are located physically at 0 and 64Meg.
++ */
++#define SDRAM_START                         0x00000000
++#define SDRAM_NUMBER_OF_BLOCKS              2
++#define SDRAM_BLOCK_SIZE                    0x02000000
++#define SDRAM_BLOCK_START_BOUNDARY          0x04000000
++
++#endif
++
++/*
++ * Here we are assuming EP93xx is configured to have two 32MB SDRAM
++ * areas with 32MB of empty space between them.  So use 24 for the node
++ * max shift to get 64MB node sizes.
++ */
++#define NODE_MAX_MEM_SHIFT	26
++#define NODE_MAX_MEM_SIZE	(1<<NODE_MAX_MEM_SHIFT)
++
++#endif /* CONFIG_DISCONTIGMEM */
++
++
++/*
++ * MEM_SIZE and PHYS_OFFSET are used to set size of SDRAM for
++ * initial page table in arch/arm/kernel/setup.c
++ * For ep93xx, PHYS_OFFSET is set to be SDRAM_START.
++ */
++#define MEM_SIZE                            (SDRAM_BLOCK_SIZE)
++
++/*
++ * Task size: 2GB (from 0 to base of IO in virtual space)
++ */
++#define TASK_SIZE		UL(0x80000000)
++/*  HASH define TASK_SIZE_26	(0x04000000UL) */
++
++/*
++ * This decides where the kernel will search for a free chunk of vm
++ * space during mmap's.
++ */
++#define TASK_UNMAPPED_BASE (TASK_SIZE / 3)
++
++/*
++ * Page offset: 3GB (start of kernel memory in virtual space)
++ * Phys offset: 0   (start of kernel memory in physical space)
++ */
++#define PAGE_OFFSET		UL(0xC0000000)
++#define PHYS_OFFSET		(SDRAM_START)
++
++#ifndef __ASSEMBLY__
++/*
++ * Given a page frame number, convert it to a node id.
++ */
++static inline unsigned long PFN_TO_NID(unsigned long pfn) {
++	unsigned long block = (pfn >> 12);
++
++	switch(block) {
++	case 0x0:
++		return 0;
++	case 0x1:
++		return 1;
++	case 0x2:
++		return 2;
++	case 0x3:
++		return 3;
++	case 0x4:
++		return 4;
++	case 0x5:
++		return 5;
++	case 0x6:
++		return 6;
++	case 0x7:
++		return 7;
++	case 0xc0:
++		return 8;
++	case 0xc1:
++		return 9;
++	case 0xc4:
++		return 10;
++	case 0xc5:
++		return 11;
++	case 0xd0:
++		return 12;
++	case 0xd1:
++		return 13;
++	case 0xd4:
++		return 14;
++	case 0xd5:
++		return 15;
++	case 0xe0:
++		return 16;
++	case 0xe1:
++		return 17;
++	case 0xe4:
++		return 18;
++	case 0xe5:
++		return 19;
++	default:
++		return 0xff;
++	}
++}
++#endif
++
++/*
++ * Virtual view <-> DMA view memory address translations
++ * virt_to_bus: Used to translate the virtual address to an
++ *              address suitable to be passed to set_dma_addr
++ * bus_to_virt: Used to convert an address for DMA operations
++ *              to an address that the kernel can use.
++ */
++#define __virt_to_bus__is_a_macro
++#define __virt_to_bus(x)	 __virt_to_phys(x)
++
++#define __bus_to_virt__is_a_macro
++#define __bus_to_virt(x)	 __phys_to_virt(x)
++
++
++/*
++ * Note that this file is included by include/asm-arm/memory.h so
++ * the macros in this file have to play nice with those.
++ */
++#ifdef CONFIG_DISCONTIGMEM
++
++/*
++ * Given a kernel address, find the home node of the underlying memory.
++ */
++#define KVADDR_TO_NID(addr) \
++		((unsigned long)(PFN_TO_NID(__virt_to_phys((unsigned long)addr) >> PAGE_SHIFT)))
++
++/*
++ * Given a kaddr, ADDR_TO_MAPBASE finds the owning node of the memory
++ * and returns the mem_map of that node.
++ */
++#define ADDR_TO_MAPBASE(kaddr) NODE_MEM_MAP(KVADDR_TO_NID((unsigned long)(kaddr)))
++
++#define PFN_TO_MAPBASE(pfn)	NODE_MEM_MAP(PFN_TO_NID(pfn))
++
++/*
++ * Given a kaddr, LOCAL_MAR_NR finds the owning node of the memory
++ * and returns the index corresponding to the appropriate page in the
++ * node's mem_map.
++ */
++
++
++#define LOCAL_MAP_NR(kaddr)					\
++	(((unsigned long)(kaddr) & (0xffffffUL)) >> PAGE_SHIFT)
++
++
++
++
+ 
+-#define __bus_to_virt(x)	__phys_to_virt(x)
+-#define __virt_to_bus(x)	__virt_to_phys(x)
+ 
++#endif /* CONFIG_DISCONTIGMEM */
+ 
+ #endif
+diff --git a/arch/arm/mm/discontig.c b/arch/arm/mm/discontig.c
+index c8c0c4b..f336eb1 100644
+--- a/arch/arm/mm/discontig.c
++++ b/arch/arm/mm/discontig.c
+@@ -13,7 +13,7 @@
+ #include <linux/mmzone.h>
+ #include <linux/bootmem.h>
+ 
+-#if MAX_NUMNODES != 4 && MAX_NUMNODES != 16
++#if MAX_NUMNODES != 4 && MAX_NUMNODES != 16 && MAX_NUMNODES != 64 && MAX_NUMNODES != 32
+ # error Fix Me Please
+ #endif
+ 
+@@ -40,6 +40,104 @@ pg_data_t discontig_node_data[MAX_NUMNODES] = {
+   { .bdata = &bootmem_node_data[14] },
+   { .bdata = &bootmem_node_data[15] },
+ #endif
++
++#if MAX_NUMNODES == 32
++  { .bdata = &bootmem_node_data[4] },
++  { .bdata = &bootmem_node_data[5] },
++  { .bdata = &bootmem_node_data[6] },
++  { .bdata = &bootmem_node_data[7] },
++  { .bdata = &bootmem_node_data[8] },
++  { .bdata = &bootmem_node_data[9] },
++  { .bdata = &bootmem_node_data[10] },
++  { .bdata = &bootmem_node_data[11] },
++  { .bdata = &bootmem_node_data[12] },
++  { .bdata = &bootmem_node_data[13] },
++  { .bdata = &bootmem_node_data[14] },
++  { .bdata = &bootmem_node_data[15] },
++
++  { .bdata = &bootmem_node_data[16] },
++  { .bdata = &bootmem_node_data[17] },
++  { .bdata = &bootmem_node_data[18] },
++  { .bdata = &bootmem_node_data[19] },
++  { .bdata = &bootmem_node_data[20] },
++  { .bdata = &bootmem_node_data[21] },
++  { .bdata = &bootmem_node_data[22] },
++  { .bdata = &bootmem_node_data[23] },
++  { .bdata = &bootmem_node_data[24] },
++  { .bdata = &bootmem_node_data[25] },
++  { .bdata = &bootmem_node_data[26] },
++  { .bdata = &bootmem_node_data[27] },
++  { .bdata = &bootmem_node_data[28] },
++  { .bdata = &bootmem_node_data[29] },
++  { .bdata = &bootmem_node_data[30] },
++  { .bdata = &bootmem_node_data[31] },
++#endif
++
++#if MAX_NUMNODES == 64
++  { .bdata = &bootmem_node_data[4] },
++  { .bdata = &bootmem_node_data[5] },
++  { .bdata = &bootmem_node_data[6] },
++  { .bdata = &bootmem_node_data[7] },
++  { .bdata = &bootmem_node_data[8] },
++  { .bdata = &bootmem_node_data[9] },
++  { .bdata = &bootmem_node_data[10] },
++  { .bdata = &bootmem_node_data[11] },
++  { .bdata = &bootmem_node_data[12] },
++  { .bdata = &bootmem_node_data[13] },
++  { .bdata = &bootmem_node_data[14] },
++  { .bdata = &bootmem_node_data[15] },
++
++  { .bdata = &bootmem_node_data[16] },
++  { .bdata = &bootmem_node_data[17] },
++  { .bdata = &bootmem_node_data[18] },
++  { .bdata = &bootmem_node_data[19] },
++  { .bdata = &bootmem_node_data[20] },
++  { .bdata = &bootmem_node_data[21] },
++  { .bdata = &bootmem_node_data[22] },
++  { .bdata = &bootmem_node_data[23] },
++  { .bdata = &bootmem_node_data[24] },
++  { .bdata = &bootmem_node_data[25] },
++  { .bdata = &bootmem_node_data[26] },
++  { .bdata = &bootmem_node_data[27] },
++  { .bdata = &bootmem_node_data[28] },
++  { .bdata = &bootmem_node_data[29] },
++  { .bdata = &bootmem_node_data[30] },
++  { .bdata = &bootmem_node_data[31] },
++
++  { .bdata = &bootmem_node_data[32] },
++  { .bdata = &bootmem_node_data[33] },
++  { .bdata = &bootmem_node_data[34] },
++  { .bdata = &bootmem_node_data[35] },
++  { .bdata = &bootmem_node_data[36] },
++  { .bdata = &bootmem_node_data[37] },
++  { .bdata = &bootmem_node_data[38] },
++  { .bdata = &bootmem_node_data[39] },
++  { .bdata = &bootmem_node_data[40] },
++  { .bdata = &bootmem_node_data[41] },
++  { .bdata = &bootmem_node_data[42] },
++  { .bdata = &bootmem_node_data[43] },
++  { .bdata = &bootmem_node_data[44] },
++  { .bdata = &bootmem_node_data[45] },
++  { .bdata = &bootmem_node_data[46] },
++  { .bdata = &bootmem_node_data[47] },
++
++  { .bdata = &bootmem_node_data[48] },
++  { .bdata = &bootmem_node_data[49] },
++  { .bdata = &bootmem_node_data[50] },
++  { .bdata = &bootmem_node_data[51] },
++  { .bdata = &bootmem_node_data[52] },
++  { .bdata = &bootmem_node_data[53] },
++  { .bdata = &bootmem_node_data[54] },
++  { .bdata = &bootmem_node_data[55] },
++  { .bdata = &bootmem_node_data[56] },
++  { .bdata = &bootmem_node_data[57] },
++  { .bdata = &bootmem_node_data[58] },
++  { .bdata = &bootmem_node_data[59] },
++  { .bdata = &bootmem_node_data[60] },
++  { .bdata = &bootmem_node_data[61] },
++  { .bdata = &bootmem_node_data[62] },
++  { .bdata = &bootmem_node_data[63] },
++#endif
+ };
+ 
+ EXPORT_SYMBOL(discontig_node_data);
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 30a69d6..a38c66f 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -43,26 +43,18 @@ static struct meminfo meminfo = { 0, };
+ void show_mem(void)
+ {
+ 	int free = 0, total = 0, reserved = 0;
+-	int shared = 0, cached = 0, slab = 0, node, i;
++	int shared = 0, cached = 0, slab = 0, node, i, k;
+ 	struct meminfo * mi = &meminfo;
+ 
+ 	printk("Mem-info:\n");
+ 	show_free_areas();
+ 	for_each_online_node(node) {
+-		pg_data_t *n = NODE_DATA(node);
+-		struct page *map = n->node_mem_map - n->node_start_pfn;
+-
+ 		for_each_nodebank (i,mi,node) {
+-			unsigned int pfn1, pfn2;
+-			struct page *page, *end;
+-
+-			pfn1 = __phys_to_pfn(mi->bank[i].start);
+-			pfn2 = __phys_to_pfn(mi->bank[i].size + mi->bank[i].start);
++			struct page *page;
+ 
+-			page = map + pfn1;
+-			end  = map + pfn2;
++      page = NODE_MEM_MAP(node);
+ 
+-			do {
++      for (k=0; k<NODE_DATA(node)->node_present_pages; k++) {
+ 				total++;
+ 				if (PageReserved(page))
+ 					reserved++;
+@@ -75,7 +67,7 @@ void show_mem(void)
+ 				else
+ 					shared += page_count(page) - 1;
+ 				page++;
+-			} while (page < end);
++			};
+ 		}
+ 	}
+ 
+@@ -94,11 +86,19 @@ void show_mem(void)
+  * the end, we won't clash.
+  */
+ static unsigned int __init
+-find_bootmap_pfn(int node, struct meminfo *mi, unsigned int bootmap_pages)
++find_bootmap_pfn(int node, struct meminfo *mi, unsigned int bootmap_pages, int initrd_node)
+ {
+ 	unsigned int start_pfn, bank, bootmap_pfn;
+ 
+-	start_pfn   = PAGE_ALIGN(__pa(&_end)) >> PAGE_SHIFT;
++	if (node == initrd_node) {
++	  /* push start_pfn past the ramdisk */
++	  start_pfn = (phys_initrd_start + phys_initrd_size) >> PAGE_SHIFT;
++	  /* if (unlikely) not an even page length, round up by a page */
++	  start_pfn = ((phys_initrd_start + phys_initrd_size) & PAGE_MASK ? start_pfn+1 : start_pfn);
++	} else {
++	  start_pfn   = PAGE_ALIGN(__pa(&_end)) >> PAGE_SHIFT;
++	}
++
+ 	bootmap_pfn = 0;
+ 
+ 	for_each_nodebank(bank, mi, node) {
+@@ -220,7 +220,7 @@ bootmem_init_node(int node, int initrd_node, struct meminfo *mi)
+ 	 * Allocate the bootmem bitmap page.
+ 	 */
+ 	boot_pages = bootmem_bootmap_pages(end_pfn - start_pfn);
+-	boot_pfn = find_bootmap_pfn(node, mi, boot_pages);
++	boot_pfn = find_bootmap_pfn(node, mi, boot_pages, initrd_node);
+ 
+ 	/*
+ 	 * Initialise the bootmem allocator for this node, handing the
+-- 
+1.6.0.4
+

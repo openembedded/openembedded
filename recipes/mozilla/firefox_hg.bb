@@ -17,8 +17,6 @@ S = "${WORKDIR}/mozilla-central"
 inherit mozilla
 require firefox.inc
 
-PARALLEL_MAKE = ""
-export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 export LIBXUL_DIST="${S}/objdir/xulrunner/dist/"

@@ -2,7 +2,6 @@ DESCRIPTION ?= "Browser made by mozilla"
 DEPENDS += "alsa-lib"
 SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
-PARALLEL_MAKE = ""
 ARM_INSTRUCTION_SET = "arm"
 
 MOZPV ?= "${PV}"
@@ -31,13 +30,6 @@ FILES_${PN}-dbg += "	${libdir}/${PN}-*/.debug \
 			${bindir}/.debug \
 			"
 
-export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
-
-# Due to sysroot we need to sed out references to the target staging when building the native version of xpidl
-# Symptons of the failure include "gthread.h:344: error: size of array 'type name' is negative"
-export HOST_LIBIDL_CFLAGS = "`${HOST_LIBIDL_CONFIG} --cflags | sed -e s:${STAGING_DIR_TARGET}:${STAGING_DIR_NATIVE}:g`"
-
-
 do_install() {
 	oe_runmake DESTDIR="${D}" destdir="${D}" install
 	install -d ${D}${datadir}/applications
@@ -56,15 +48,20 @@ do_install() {
 	grep -Rl app.update.enabled ${D}${libdir}/${PN}-*/ \
 	   | grep '.js$' \
 	   | xargs -n 1 sed -i 's/\(pref("app.update.enabled",\s*\)true)/\1false)/g'
+
+        for pc in ${WORKDIR}/*.pc ; do
+            sed -i s:3.5.2:${PV}:g $pc
+        done
+
+        install -d ${D}${libdir}/pkgconfig
+        install -m 0644 ${WORKDIR}/firefox-plugin.pc ${D}${libdir}/pkgconfig
+        install -m 0644 ${WORKDIR}/firefox-xpcom.pc ${D}${libdir}/pkgconfig
+        install -m 0644 ${WORKDIR}/nspr.pc ${D}${libdir}/pkgconfig
 }
 
 pkg_postinst_${PN}() {
 	# work around requirement for root access on first startup
 	chmod -R a+w ${libdir}/${PN}* ||true 
-}
-
-do_stage() {
-	autotools_stage_all
 }
 
 # Force feed mozilla our ldflags

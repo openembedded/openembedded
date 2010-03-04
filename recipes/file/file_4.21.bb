@@ -1,18 +1,13 @@
-DESCRIPTION = "File attempts to classify files depending \
-on their contents and prints a description if a match is found."
-SECTION = "console/utils"
-LICENSE = "BSD-ADV"
-DEPENDS = "file-native"
+require file.inc
+
+DEPENDS_virtclass-native += "zlib-native"
+
+PR = "${INCPR}.0"
 
 SRC_URI = "ftp://ftp.fi.debian.org/pub/gentoo/distfiles/file-${PV}.tar.gz"
-S = "${WORKDIR}/file-${PV}"
 
-inherit autotools
+SRC_URI_append_virtclass-native = " file://native-fix.diff;patch=1"
 
 do_configure_prepend() {
 	sed -i -e 's,$(top_builddir)/src/file,file,' ${S}/magic/Makefile.am
-}
-
-do_stage() {
-	autotools_stage_all
 }

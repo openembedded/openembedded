@@ -1,3 +1,5 @@
+inherit qemu
+
 python __anonymous() {
     from bb import which, data
 

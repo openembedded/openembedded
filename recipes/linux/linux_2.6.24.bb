@@ -7,7 +7,6 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_simpad = "1"
 DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
-DEFAULT_PREFERENCE_ts72xx = "1"
 DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 DEFAULT_PREFERENCE_smartq5 = "1"
@@ -164,5 +163,5 @@ python do_compulab_image() {
 }
 
 
-addtask compulab_image after do_deploy before do_package_write
+addtask compulab_image after do_deploy before do_build
 

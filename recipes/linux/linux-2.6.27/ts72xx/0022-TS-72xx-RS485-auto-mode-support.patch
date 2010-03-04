@@ -1,0 +1,218 @@
+From 41163459c76f0540aee9d60e13059ba31f684e15 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sun, 4 Jan 2009 16:07:51 +0100
+Subject: [PATCH] TS-72xx RS485 auto mode support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/include/asm/ioctls.h              |    3 +
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h |    8 ++
+ drivers/serial/amba-pl010.c                |  121 ++++++++++++++++++++++++++++
+ 3 files changed, 132 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/include/asm/ioctls.h b/arch/arm/include/asm/ioctls.h
+index a91d8a1..a4b60ae 100644
+--- a/arch/arm/include/asm/ioctls.h
++++ b/arch/arm/include/asm/ioctls.h
+@@ -70,6 +70,9 @@
+ #define TIOCGICOUNT	0x545D	/* read serial port inline interrupt counts */
+ #define FIOQSIZE	0x545E
+ 
++#define TIOC_SBCC485	0x545F /* TS72xx RTS/485 mode clear */
++#define TIOC_SBCS485	0x5460 /* TS72xx RTS/485 mode set */
++
+ /* Used for packet mode */
+ #define TIOCPKT_DATA		 0
+ #define TIOCPKT_FLUSHREAD	 1
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+index 601d0a3..1262e2b 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+@@ -70,6 +70,14 @@
+ #define TS72XX_NAND_BUSY_VIRT_BASE	0xfebfa000
+ #define TS72XX_NAND_BUSY_SIZE		0x00001000
+ 
++#define TS72XX_RS485_AUTO485FD		1
++#define TS72XX_RS485_AUTO485HD		2
++#define TS72XX_RS485_MODE_RS232	0x00
++#define TS72XX_RS485_MODE_FD		0x01
++#define TS72XX_RS485_MODE_9600_HD	0x04
++#define TS72XX_RS485_MODE_19200_HD	0x05
++#define TS72XX_RS485_MODE_57600_HD	0x06
++#define TS72XX_RS485_MODE_115200_HD	0x07
+ 
+ #define TS72XX_RTC_INDEX_VIRT_BASE	0xfebf9000
+ #define TS72XX_RTC_INDEX_PHYS_BASE	0x10800000
+diff --git a/drivers/serial/amba-pl010.c b/drivers/serial/amba-pl010.c
+index 90b56c2..d609666 100644
+--- a/drivers/serial/amba-pl010.c
++++ b/drivers/serial/amba-pl010.c
+@@ -49,6 +49,7 @@
+ #include <linux/clk.h>
+ 
+ #include <asm/io.h>
++#include <mach/ts72xx.h>
+ 
+ #define UART_NR		8
+ 
+@@ -64,6 +65,11 @@
+ #define UART_DUMMY_RSR_RX	256
+ #define UART_PORT_SIZE		64
+ 
++#ifdef CONFIG_MACH_TS72XX
++static void __iomem *ts_rs485_data9_register;
++static void __iomem *ts_rs485_control_register;
++#endif
++
+ /*
+  * We wrap our port structure around the generic uart_port.
+  */
+@@ -519,6 +525,107 @@ static int pl010_verify_port(struct uart_port *port, struct serial_struct *ser)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_MACH_TS72XX
++static int ts72xx_rs485_init(void)
++{
++	ts_rs485_data9_register = ioremap(TS72XX_RS485_MODE_PHYS_BASE, 4096);
++	if (ts_rs485_data9_register == NULL) {
++		return -1;
++	}
++
++	ts_rs485_control_register = ioremap(TS72XX_RS485_CONTROL_PHYS_BASE, 4096);
++	if (ts_rs485_control_register == NULL) {
++		iounmap(ts_rs485_data9_register);
++		return -1;
++	}
++
++	return 0;
++}
++
++static int ts72xx_auto485(struct uart_port *port, unsigned int cmd, unsigned long *arg)
++{
++	int baud, cflag, mode;
++	int datalength;
++
++	mode = (int)*arg;
++	if (!is_rs485_installed()) {
++		printk("amba-pl010.c: this board does not support RS485 auto mode\n");
++		return -EINVAL;
++	}
++
++	if (port->line != 1) {
++		printk("amba-pl010.c: auto RS485 mode is only supported on second port (/dev/ttyAM1)\n");
++		return -EINVAL;
++	}
++
++	datalength = 8;
++	cflag = port->info->port.tty->termios->c_cflag ;
++	if (cflag & PARENB)
++		datalength++;
++
++	if (cflag & CSTOPB)
++		datalength++;
++
++	baud = tty_get_baud_rate(port->info->port.tty);
++
++	switch (cmd) {
++		case TIOC_SBCC485:
++			if ((mode & TS72XX_RS485_AUTO485FD) || (mode & TS72XX_RS485_AUTO485HD)) {
++				printk("amba-pl010.c: unsetting auto RS485 mode\n");
++				__raw_writew(TS72XX_RS485_MODE_RS232, ts_rs485_control_register);
++				__raw_writew(TS72XX_RS485_MODE_RS232, ts_rs485_data9_register);
++			}
++			break;
++		case TIOC_SBCS485:
++			if (mode & TS72XX_RS485_AUTO485FD) {
++				printk ("amba-pl010.c: setting FULL duplex auto RS485 mode\n");
++				__raw_writew(TS72XX_RS485_MODE_FD, ts_rs485_control_register);
++				if (datalength > 8)
++					__raw_writew(TS72XX_RS485_MODE_FD, ts_rs485_data9_register);
++			} else if (mode & TS72XX_RS485_AUTO485HD) {
++				printk("amba-pl010.c: setting HALF DUPLEX auto RS485 mode\n");
++				switch (baud) {
++					case 9600:
++						__raw_writew(TS72XX_RS485_MODE_9600_HD, ts_rs485_control_register);
++						break;
++					case 19200:
++						__raw_writew(TS72XX_RS485_MODE_19200_HD, ts_rs485_control_register);
++						break;
++					case 57600:
++						__raw_writew(TS72XX_RS485_MODE_57600_HD, ts_rs485_control_register);
++						break;
++					case 115200:
++						__raw_writew(TS72XX_RS485_MODE_115200_HD, ts_rs485_control_register);
++						break;
++					default:
++					printk("amba-pl010.c: %d baud rate is not supported for auto RS485 mode\n", baud);
++					return -1;
++				}
++				if (datalength > 8)
++					__raw_writew(TS72XX_RS485_MODE_FD, ts_rs485_data9_register);
++			}
++			break;
++	}
++
++	return 0;
++}
++#endif
++
++int pl010_ioctl(struct uart_port *port, unsigned int cmd, unsigned long arg)
++{
++#ifdef CONFIG_MACH_TS72XX
++	switch (cmd) {
++		case TIOC_SBCC485:
++		case TIOC_SBCS485:
++			return ts72xx_auto485(port, cmd, (unsigned long *)arg);
++			break;
++		default:
++			return -ENOIOCTLCMD;
++	}
++#endif
++	return -ENOIOCTLCMD;
++}
++
+ static struct uart_ops amba_pl010_pops = {
+ 	.tx_empty	= pl010_tx_empty,
+ 	.set_mctrl	= pl010_set_mctrl,
+@@ -536,6 +643,7 @@ static struct uart_ops amba_pl010_pops = {
+ 	.request_port	= pl010_request_port,
+ 	.config_port	= pl010_config_port,
+ 	.verify_port	= pl010_verify_port,
++	.ioctl		= pl010_ioctl,
+ };
+ 
+ static struct uart_amba_port *amba_ports[UART_NR];
+@@ -794,6 +902,15 @@ static int __init pl010_init(void)
+ 	ret = uart_register_driver(&amba_reg);
+ 	if (ret == 0) {
+ 		ret = amba_driver_register(&pl010_driver);
++#ifdef CONFIG_MACH_TS72XX
++		if (!ret && is_rs485_installed()) {
++			ret = ts72xx_rs485_init();
++			if (ret)
++				printk("amba-pl010.c: ts72xx_rs485_init() failed\n");
++			else
++				printk("amba-pl010.c: auto RS485 mode initialized\n");
++		}
++#endif
+ 		if (ret)
+ 			uart_unregister_driver(&amba_reg);
+ 	}
+@@ -804,6 +921,10 @@ static void __exit pl010_exit(void)
+ {
+ 	amba_driver_unregister(&pl010_driver);
+ 	uart_unregister_driver(&amba_reg);
++#ifdef CONFIG_MACH_TS72XX
++	iounmap(ts_rs485_data9_register);
++	iounmap(ts_rs485_control_register);
++#endif
+ }
+ 
+ module_init(pl010_init);
+-- 
+1.6.0.4
+

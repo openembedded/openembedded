@@ -19,8 +19,6 @@ require firefox.inc
 
 DEPENDS += "libnotify autoconf213-native cairo alsa-lib sqlite3"
 
-PARALLEL_MAKE = ""
-
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 export LIBXUL_DIST="${S}/objdir/xulrunner/dist/"

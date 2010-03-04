@@ -1,0 +1,40 @@
+From ac8f2f5aab52ae0c38e8069de939763ea204776b Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 14:17:15 +0100
+Subject: [PATCH] PC/104 I/O and memory mappings
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+index 1262e2b..1a21a86 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+@@ -51,6 +51,19 @@
+ #define TS72XX_OPTIONS2_TS9420		0x04
+ #define TS72XX_OPTIONS2_TS9420_BOOT	0x02
+ 
++#define TS72XX_PC104_8BIT_IO_VIRT_BASE  0xfebf0000
++#define TS72XX_PC104_8BIT_IO_PHYS_BASE  0x11e00000
++#define TS72XX_PC104_8BIT_IO_SIZE       0x00001000
++#define TS72XX_PC104_8BIT_MEM_VIRT_BASE 0xfea00000
++#define TS72XX_PC104_8BIT_MEM_PHYS_BASE 0x11a00000
++#define TS72XX_PC104_8BIT_MEM_SIZE      0x00100000
++
++#define TS72XX_PC104_16BIT_IO_VIRT_BASE  0xfebef000
++#define TS72XX_PC104_16BIT_IO_PHYS_BASE  0x21e00000
++#define TS72XX_PC104_16BIT_IO_SIZE       0x00001000
++#define TS72XX_PC104_16BIT_MEM_VIRT_BASE 0xfe900000
++#define TS72XX_PC104_16BIT_MEM_PHYS_BASE 0x21a00000
++#define TS72XX_PC104_16BIT_MEM_SIZE      0x00100000
+ 
+ #define TS72XX_NOR_PHYS_BASE		0x60000000
+ #define TS72XX_NOR2_PHYS_BASE		0x62000000
+-- 
+1.6.0.4
+
