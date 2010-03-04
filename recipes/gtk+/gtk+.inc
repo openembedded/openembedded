@@ -11,18 +11,21 @@ PROVIDES = "gdk-pixbuf"
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "http://download.gnome.org/sources/gtk+/${MAJ_VER}/gtk+-${PV}.tar.bz2 \
 	file://hardcoded_libtool.patch;patch=1 \
-	file://no-demos.patch;patch=1 \
 	file://run-iconcache.patch;patch=1 \
 	file://toggle-font.diff;patch=1;pnum=0 \
 	file://xsettings.patch;patch=1 \
 	"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 inherit autotools pkgconfig
 
 LEAD_SONAME = "libgtk-x11-2.0.so"
 LIBV = "2.10.0"
+
+PACKAGES =+ "${PN}-demo ${PN}-demo-source"
+FILES_${PN}-demo = "${bindir}/gtk-demo"
+FILES_${PN}-demo-source = "${datadir}/gtk-2.0/demo"
 
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-update-icon-cache \
