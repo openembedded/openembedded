@@ -13,7 +13,3 @@ EXTRA_OECONF = " --disable-tld"
 do_configure_prepend () {
 	autoreconf -f -i -s
 }
-
-do_stage () {
-	autotools_stage_all
-}
