@@ -44,3 +44,4 @@ do_install() {
 PACKAGES += "ti-codecs-dm355-server"
 FILES_ti-codecs-dm355-server = "${installdir}/ti-codecs-server/*"
 
+INSANE_SKIP_ti-codecs-dm355-server = True
