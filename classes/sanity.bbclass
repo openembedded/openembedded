@@ -2,6 +2,8 @@
 # Sanity check the users setup for common misconfigurations
 #
 
+inherit qemu
+
 def raise_sanity_error(msg):
 	import bb
 	bb.fatal(""" Openembedded's config sanity checker detected a potential misconfiguration.
@@ -95,7 +97,7 @@ def check_sanity(e):
 				missing = missing + "gcc-3.x (needed for qemu-native),"
 
 		if "qemu-native" in assume_provided:
-			required_utilities += "qemu"
+			required_utilities += " %s" % (qemu_target_binary(e.data))
 
 		try:
 			if os.path.exists("/proc/sys/vm/mmap_min_addr"):

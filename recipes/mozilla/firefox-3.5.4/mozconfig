@@ -26,6 +26,7 @@ ac_add_options --disable-jsd
 ac_add_options --disable-installer
 ac_add_options --disable-xprint
 ac_add_options --disable-necko-disk-cache
+ac_add_options --disable-necko-wifi
 ac_add_options --disable-updater
 
 # configure necko to allocate smaller network buffers

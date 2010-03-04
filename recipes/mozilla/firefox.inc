@@ -2,7 +2,6 @@ DESCRIPTION ?= "Browser made by mozilla"
 DEPENDS += "alsa-lib"
 SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
-PARALLEL_MAKE = ""
 ARM_INSTRUCTION_SET = "arm"
 
 MOZPV ?= "${PV}"
@@ -30,13 +29,6 @@ FILES_${PN}-dbg += "	${libdir}/${PN}-*/.debug \
 			${libdir}/${PN}-*/*/*/*/.debug \
 			${bindir}/.debug \
 			"
-
-export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
-
-# Due to sysroot we need to sed out references to the target staging when building the native version of xpidl
-# Symptons of the failure include "gthread.h:344: error: size of array 'type name' is negative"
-export HOST_LIBIDL_CFLAGS = "`${HOST_LIBIDL_CONFIG} --cflags | sed -e s:${STAGING_DIR_TARGET}:${STAGING_DIR_NATIVE}:g`"
-
 
 do_install() {
 	oe_runmake DESTDIR="${D}" destdir="${D}" install
