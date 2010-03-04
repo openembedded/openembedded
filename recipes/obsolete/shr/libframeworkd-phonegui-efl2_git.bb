@@ -4,6 +4,7 @@ DEPENDS += " dbus-glib libframeworkd-glib libframeworkd-phonegui etk evas ecore 
 PV = "0.0.1+gitr${SRCREV}"
 PR = "r2"
 
+SRCREV = "917226025c67b75def91e98ea923c2e550474a5b"
 SRC_URI = "git://shr.bearstech.com/repo/libframeworkd-phonegui-efl2.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
 
