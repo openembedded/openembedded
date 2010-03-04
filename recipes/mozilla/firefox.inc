@@ -48,15 +48,20 @@ do_install() {
 	grep -Rl app.update.enabled ${D}${libdir}/${PN}-*/ \
 	   | grep '.js$' \
 	   | xargs -n 1 sed -i 's/\(pref("app.update.enabled",\s*\)true)/\1false)/g'
+
+        for pc in ${WORKDIR}/*.pc ; do
+            sed -i s:3.5.2:${PV}:g $pc
+        done
+
+        install -d ${D}${libdir}/pkgconfig
+        install -m 0644 ${WORKDIR}/firefox-plugin.pc ${D}${libdir}/pkgconfig
+        install -m 0644 ${WORKDIR}/firefox-xpcom.pc ${D}${libdir}/pkgconfig
+        install -m 0644 ${WORKDIR}/nspr.pc ${D}${libdir}/pkgconfig
 }
 
 pkg_postinst_${PN}() {
 	# work around requirement for root access on first startup
 	chmod -R a+w ${libdir}/${PN}* ||true 
-}
-
-do_stage() {
-	autotools_stage_all
 }
 
 # Force feed mozilla our ldflags
