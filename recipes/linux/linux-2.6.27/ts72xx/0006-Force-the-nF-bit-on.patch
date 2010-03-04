@@ -1,0 +1,33 @@
+From 9852d9654b25b396cf5f31de376a2c211805db8b Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sat, 3 Jan 2009 21:35:03 +0100
+Subject: [PATCH] Force the nF bit on
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Usually this is set by the bootrom.  If it is not set, then the CPU core will
+run from HCLK instead of FCLK, and performance will suffer. If you see
+BogoMIPS of about 1/4 of your CPU clock, try turning this on; your performance
+should double.
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mm/proc-arm920.S |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mm/proc-arm920.S b/arch/arm/mm/proc-arm920.S
+index 28cdb06..12f59db 100644
+--- a/arch/arm/mm/proc-arm920.S
++++ b/arch/arm/mm/proc-arm920.S
+@@ -395,6 +395,7 @@ __arm920_setup:
+ 	mrc	p15, 0, r0, c1, c0		@ get control register v4
+ 	bic	r0, r0, r5
+ 	orr	r0, r0, r6
++	orr     r0, r0, #0x40000000
+ 	mov	pc, lr
+ 	.size	__arm920_setup, . - __arm920_setup
+ 
+-- 
+1.6.0.4
+

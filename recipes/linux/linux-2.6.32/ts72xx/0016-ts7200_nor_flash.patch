@@ -1,0 +1,163 @@
+From 3c225a7077a7e9f0575fdfe6209342b5eb073b60 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 17 Jan 2010 19:50:34 +0100
+Subject: [PATCH] ts7200_nor_flash
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/mtd/maps/Kconfig        |    8 +++
+ drivers/mtd/maps/Makefile       |    1 +
+ drivers/mtd/maps/ts7200_flash.c |  106 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 115 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/ts7200_flash.c
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 14be075..bc20ac9 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -445,6 +445,14 @@ config MTD_OMAP_NOR
+ 	  These boards include the Innovator, H2, H3, OSK, Perseus2, and
+ 	  more.  If you have such a board, say 'Y'.
+ 
++config MTD_TS7200_NOR
++	tristate "Technologic Systems TS-7200 flash 8Mb"
++	depends on MTD_CFI && ARCH_EP93XX
++	help
++	  This provides a map driver for the on-board flash of the Technologic
++	  System's TS-7200 board. The 8MB flash is splitted into 3 partitions
++	  which are accessed as separate MTD devices.
++
+ # This needs CFI or JEDEC, depending on the cards found.
+ config MTD_PCI
+ 	tristate "PCI MTD driver"
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index ae2f6db..fb04757 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
+ obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
++obj-$(CONFIG_MTD_TS7200_NOR)	+= ts7200_flash.o
+ obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
+ obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
+diff --git a/drivers/mtd/maps/ts7200_flash.c b/drivers/mtd/maps/ts7200_flash.c
+new file mode 100644
+index 0000000..efc5f00
+--- /dev/null
++++ b/drivers/mtd/maps/ts7200_flash.c
+@@ -0,0 +1,106 @@
++/*
++ * ts7200_flash.c - mapping for TS-7200 SBCs (8mb NOR flash)
++ * No platform_device resource is used here. All is hardcoded.
++ *
++ * (c) Copyright 2006  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on ts5500_flash.c by Sean Young <sean@mess.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <asm/io.h>
++#include <asm/sizes.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++
++#define WINDOW_ADDR          0x60000000
++#define WINDOW_SIZE          SZ_8M
++#define WINDOW_READABLE_SIZE (WINDOW_SIZE/SZ_1M)
++
++
++static struct mtd_info *mymtd;
++
++static struct map_info ts7200nor_map = {
++  .name = "Full TS-7200 NOR flash",
++  .size = WINDOW_SIZE,
++  .bankwidth = 2,
++  .phys = WINDOW_ADDR,
++};
++
++/*
++ * MTD partitioning stuff
++ */
++#ifdef CONFIG_MTD_PARTITIONS
++static struct mtd_partition static_partitions[] =
++{
++  {
++    .name   = "TS-BOOTROM",
++    .offset = 0,
++    .size   = 0x20000,
++    .mask_flags = MTD_WRITEABLE,  /* force read-only */
++  },
++  {
++    .name   = "RootFS",
++    .offset = 0x20000,
++    .size   = 0x600000,
++  },
++  {
++    .name   = "Redboot",
++    .offset = 0x620000,
++    .size   = MTDPART_SIZ_FULL,   /* up to the end */
++  },
++};
++#endif
++
++int __init init_ts7200nor(void)
++{
++  printk(KERN_NOTICE "TS-7200 flash mapping: %dmo at 0x%x\n", WINDOW_READABLE_SIZE, WINDOW_ADDR);
++
++  ts7200nor_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
++  if (!ts7200nor_map.virt) {
++    printk("ts7200_flash: failed to ioremap\n");
++    return -EIO;
++  }
++
++  simple_map_init(&ts7200nor_map);
++  mymtd = do_map_probe("cfi_probe", &ts7200nor_map);
++  if (mymtd) {
++    mymtd->owner = THIS_MODULE;
++    add_mtd_device(mymtd);
++#ifdef CONFIG_MTD_PARTITIONS
++    return add_mtd_partitions(mymtd, static_partitions, ARRAY_SIZE(static_partitions));
++#else
++    return 0;
++#endif
++  }
++
++  iounmap((void *)ts7200nor_map.virt);
++  return -ENXIO;
++}
++
++static void __exit cleanup_ts7200nor(void)
++{
++  if (mymtd) {
++    del_mtd_device(mymtd);
++    map_destroy(mymtd);
++  }
++  if (ts7200nor_map.virt) {
++    iounmap((void *)ts7200nor_map.virt);
++    ts7200nor_map.virt = 0;
++  }
++}
++
++module_init(init_ts7200nor);
++module_exit(cleanup_ts7200nor);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("MTD map driver for TS-7200 board (" __MODULE_STRING(WINDOW_READABLE_SIZE) "MB flash version)");
+-- 
+1.6.0.4
+

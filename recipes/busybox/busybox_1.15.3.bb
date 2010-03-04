@@ -9,6 +9,7 @@ SRC_URI = "\
   file://B921600.patch;patch=1 \
   file://get_header_tar.patch;patch=1 \
   file://busybox-appletlib-dependency.patch;patch=1 \
+  file://0000-wget-no-check-certificate.patch;patch=1 \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \

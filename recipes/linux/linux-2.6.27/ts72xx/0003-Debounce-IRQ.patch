@@ -1,0 +1,97 @@
+From 51bba77f0953f87a88a8fce9fb8827bdba57a2c5 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 00:42:43 +0100
+Subject: [PATCH] Debounce IRQ
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/core.c                     |   18 ++++++++++++++++++
+ arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |    3 +++
+ arch/arm/mach-ep93xx/include/mach/gpio.h        |    2 ++
+ 3 files changed, 23 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index d6967de..1928c93 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -152,12 +152,14 @@ static unsigned char gpio_int_unmasked[3];
+ static unsigned char gpio_int_enabled[3];
+ static unsigned char gpio_int_type1[3];
+ static unsigned char gpio_int_type2[3];
++static unsigned char gpio_int_debouce[3];
+ 
+ /* Port ordering is: A B F */
+ static const u8 int_type1_register_offset[3]	= { 0x90, 0xac, 0x4c };
+ static const u8 int_type2_register_offset[3]	= { 0x94, 0xb0, 0x50 };
+ static const u8 eoi_register_offset[3]		= { 0x98, 0xb4, 0x54 };
+ static const u8 int_en_register_offset[3]	= { 0x9c, 0xb8, 0x58 };
++static const u8 int_debounce_register_offset[3]	= { 0xa8, 0xc4, 0x64 };
+ 
+ void ep93xx_gpio_update_int_params(unsigned port)
+ {
+@@ -180,6 +182,22 @@ void ep93xx_gpio_int_mask(unsigned line)
+ 	gpio_int_unmasked[line >> 3] &= ~(1 << (line & 7));
+ }
+ 
++void ep93xx_gpio_int_debounce(unsigned int irq, int enable)
++{
++	int line = irq_to_gpio(irq);
++	int port = line >> 3;
++	int port_mask = 1 << (line & 7);
++
++	if (enable)
++		gpio_int_debouce[port] |= port_mask;
++	else
++		gpio_int_debouce[port] &= ~port_mask;
++
++	__raw_writeb(gpio_int_debouce[port],
++		EP93XX_GPIO_REG(int_debounce_register_offset[port]));
++}
++EXPORT_SYMBOL(ep93xx_gpio_int_debounce);
++
+ /*************************************************************************
+  * EP93xx IRQ handling
+  *************************************************************************/
+diff --git a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+index 9f4458c..5582138 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
++++ b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+@@ -78,16 +78,19 @@
+ #define EP93XX_GPIO_F_INT_ACK		EP93XX_GPIO_REG(0x54)
+ #define EP93XX_GPIO_F_INT_ENABLE	EP93XX_GPIO_REG(0x58)
+ #define EP93XX_GPIO_F_INT_STATUS	EP93XX_GPIO_REG(0x5c)
++#define EP93XX_GPIO_F_INT_DEBOUNCE	EP93XX_GPIO_REG(0x64)
+ #define EP93XX_GPIO_A_INT_TYPE1		EP93XX_GPIO_REG(0x90)
+ #define EP93XX_GPIO_A_INT_TYPE2		EP93XX_GPIO_REG(0x94)
+ #define EP93XX_GPIO_A_INT_ACK		EP93XX_GPIO_REG(0x98)
+ #define EP93XX_GPIO_A_INT_ENABLE	EP93XX_GPIO_REG(0x9c)
+ #define EP93XX_GPIO_A_INT_STATUS	EP93XX_GPIO_REG(0xa0)
++#define EP93XX_GPIO_A_INT_DEBOUNCE	EP93XX_GPIO_REG(0xa8)
+ #define EP93XX_GPIO_B_INT_TYPE1		EP93XX_GPIO_REG(0xac)
+ #define EP93XX_GPIO_B_INT_TYPE2		EP93XX_GPIO_REG(0xb0)
+ #define EP93XX_GPIO_B_INT_ACK		EP93XX_GPIO_REG(0xb4)
+ #define EP93XX_GPIO_B_INT_ENABLE	EP93XX_GPIO_REG(0xb8)
+ #define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
++#define EP93XX_GPIO_B_INT_DEBOUNCE	EP93XX_GPIO_REG(0xc4)
+ 
+ #define EP93XX_AAC_BASE			(EP93XX_APB_VIRT_BASE + 0x00080000)
+ 
+diff --git a/arch/arm/mach-ep93xx/include/mach/gpio.h b/arch/arm/mach-ep93xx/include/mach/gpio.h
+index f702041..0a1498a 100644
+--- a/arch/arm/mach-ep93xx/include/mach/gpio.h
++++ b/arch/arm/mach-ep93xx/include/mach/gpio.h
+@@ -99,6 +99,8 @@
+ /* maximum value for irq capable line identifiers */
+ #define EP93XX_GPIO_LINE_MAX_IRQ	EP93XX_GPIO_LINE_F(7)
+ 
++extern void ep93xx_gpio_int_debounce(unsigned int irq, int enable);
++
+ /* new generic GPIO API - see Documentation/gpio.txt */
+ 
+ #include <asm-generic/gpio.h>
+-- 
+1.6.0.4
+

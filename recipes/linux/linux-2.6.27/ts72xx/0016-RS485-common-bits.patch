@@ -1,0 +1,46 @@
+From 6a097aa79ca6bd502cf84394912f5ca0ddaeda15 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sun, 4 Jan 2009 15:48:54 +0100
+Subject: [PATCH] RS485 common bits
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+index 28372df..cf9544c 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+@@ -95,6 +95,14 @@
+ #define TS72XX_MAX197_SAMPLE_PHYS_BASE	0x10f00000
+ #define TS72XX_MAX197_SAMPLE_SIZE	0x00001000
+ 
++#define TS72XX_RS485_CONTROL_VIRT_BASE	0xfebf4000
++#define TS72XX_RS485_CONTROL_PHYS_BASE	0x22c00000
++#define TS72XX_RS485_CONTROL_SIZE	0x00001000
++
++#define TS72XX_RS485_MODE_VIRT_BASE	0xfebf3000
++#define TS72XX_RS485_MODE_PHYS_BASE	0x23000000
++#define TS72XX_RS485_MODE_SIZE	0x00001000
++
+ #ifndef __ASSEMBLY__
+ #include <asm/io.h>
+ 
+@@ -124,4 +132,10 @@ static inline int is_ts9420_installed(void)
+ 	return !!(__raw_readb(TS72XX_OPTIONS2_VIRT_BASE) &
+ 					TS72XX_OPTIONS2_TS9420);
+ }
++
++static inline int is_rs485_installed(void)
++{
++	return !!(__raw_readb(TS72XX_OPTIONS_VIRT_BASE) &
++					TS72XX_OPTIONS_COM2_RS485);
++}
+ #endif
+-- 
+1.6.0.4
+

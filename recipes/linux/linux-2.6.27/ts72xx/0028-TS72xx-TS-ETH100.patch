@@ -1,0 +1,259 @@
+From 08d05de078e923857288f5dc629ac4a51354e035 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 14:34:59 +0100
+Subject: [PATCH] TS72xx TS-ETH100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/net/Kconfig             |   10 ++
+ drivers/net/Makefile            |    1 +
+ drivers/net/ax88796.c           |    4 +
+ drivers/net/ax88796_ts_eth100.c |  184 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 199 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/net/ax88796_ts_eth100.c
+
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 60a0453..b0fec06 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -236,6 +236,16 @@ config AX88796_93CX6
+ 	help
+ 	  Select this if your platform comes with an external 93CX6 eeprom.
+ 
++config AX88796_TS_ETH100
++	tristate "Support for TS-ETH100 (TS-72XX SBC)"
++	depends on AX88796 && MACH_TS72XX
++	help
++	  Say Y here if you have a TS-ETH100 PC/104 peripheral.
++	  IRQ numbers and I/O address will be configurated automaticaly.
++	  
++	  To compile this driver as a module, choose M here: the module
++	  will be called ax88796_ts_eth100.     
++
+ config MACE
+ 	tristate "MACE (Power Mac ethernet) support"
+ 	depends on PPC_PMAC && PPC32
+diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+index 7629c90..0be3739 100644
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -124,6 +124,7 @@ obj-$(CONFIG_B44) += b44.o
+ obj-$(CONFIG_FORCEDETH) += forcedeth.o
+ obj-$(CONFIG_NE_H8300) += ne-h8300.o
+ obj-$(CONFIG_AX88796) += ax88796.o
++obj-$(CONFIG_AX88796_TS_ETH100) += ax88796_ts_eth100.o
+ 
+ obj-$(CONFIG_TSI108_ETH) += tsi108_eth.o
+ obj-$(CONFIG_MV643XX_ETH) += mv643xx_eth.o
+diff --git a/drivers/net/ax88796.c b/drivers/net/ax88796.c
+index a886a4b..f96d9eb 100644
+--- a/drivers/net/ax88796.c
++++ b/drivers/net/ax88796.c
+@@ -911,7 +911,11 @@ static int ax_probe(struct platform_device *pdev)
+ 			goto exit_mem2;
+ 		}
+ 
++    #ifdef CONFIG_AX88796_TS_ETH100
++    ei_status.reg_offset[0x10] = ax->map2 - ei_status.mem + 0x10;
++    #else
+ 		ei_status.reg_offset[0x1f] = ax->map2 - ei_status.mem;
++    #endif
+ 	}
+ 
+ 	/* got resources, now initialise and register device */
+diff --git a/drivers/net/ax88796_ts_eth100.c b/drivers/net/ax88796_ts_eth100.c
+new file mode 100644
+index 0000000..19746c3
+--- /dev/null
++++ b/drivers/net/ax88796_ts_eth100.c
+@@ -0,0 +1,184 @@
++/*
++ *  linux/drivers/net/ax88796_ts_eth100.c
++ *  Technologic Systems TS-ETH100 support.
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/irq.h>
++#include <net/ax88796.h>
++#include <mach/hardware.h>
++#include <mach/gpio.h>
++
++#define TS72XX_ETH100_IO8_PHYS_BASE  (TS72XX_PC104_8BIT_IO_PHYS_BASE)
++#define TS72XX_ETH100_IO8_SIZE       (TS72XX_PC104_8BIT_IO_SIZE)
++#define TS72XX_ETH100_IO16_PHYS_BASE (TS72XX_PC104_16BIT_IO_PHYS_BASE)
++#define TS72XX_ETH100_IO16_SIZE      (TS72XX_PC104_16BIT_IO_SIZE)
++
++/* Technologic systems I/O space */
++#define TS_ETH100_PLD_0 0x100
++#define TS_ETH100_PLD_1 0x110
++#define TS_ETH100_PLD_2 0x120
++#define TS_ETH100_PLD_3 0x130
++
++/* NE2000 I/O space */
++#define TS_ETH100_MAC_0 0x200
++#define TS_ETH100_MAC_1 0x240
++#define TS_ETH100_MAC_2 0x300
++#define TS_ETH100_MAC_3 0x340
++
++/* Board identifier must be 5 ; PLD revision should be 1 */
++#define is_eth100_present(__iomem, __offset) \
++  (((__raw_readb(__iomem + __offset) & 0xF) == 0x5) && \
++   ((__raw_readb(__iomem + __offset + 4) & 0xF) == 0x1))
++
++/* Jumpers status (SRAM control register) */
++#define read_irq(__iomem, __offset) \
++  (__raw_readb(__iomem + __offset + 8) & 0xE)
++
++
++static u32 offsets[0x20] = {
++  0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
++  0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
++  0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
++  0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F
++};
++
++static struct ax_plat_data ts72xx_eth100_asix_data = {
++  .flags = AXFLG_HAS_93CX6,
++  .wordlength = 2,
++  .dcr_val  = 0x48,
++  .rcr_val  = 0x40,
++  .reg_offsets = offsets,
++};
++
++static struct resource ts72xx_eth100_resource[] = {
++  [0] = {
++    .start = TS72XX_ETH100_IO8_PHYS_BASE,
++    .end   = TS72XX_ETH100_IO8_PHYS_BASE + 0x3ff, //0x20 -1,
++    .flags = IORESOURCE_MEM
++  },
++  [1] = { /* 0x10 is NE_DATAPORT is 16-bit access */
++    .start = TS72XX_ETH100_IO16_PHYS_BASE,
++    .end   = TS72XX_ETH100_IO16_PHYS_BASE + 0x3ff, //0x20 -1,
++    .flags = IORESOURCE_MEM
++  },
++  [2] = {
++    .start = IRQ_EP93XX_EXT1,
++    .end   = IRQ_EP93XX_EXT1,
++    .flags = IORESOURCE_IRQ
++  }
++};
++
++
++static void ts72xx_eth100_release(struct device *dev)
++{
++  // nothing to do (no kfree) because we have static struct
++}
++
++
++static struct platform_device ts72xx_eth100_device_asix = {
++  .name   = "ax88796",
++  .id   = 0,
++  .num_resources  = ARRAY_SIZE(ts72xx_eth100_resource),
++  .resource = ts72xx_eth100_resource,
++  .dev    = {
++    .platform_data = &ts72xx_eth100_asix_data,
++    .release = ts72xx_eth100_release,
++  }
++};
++
++
++static int __init ts_eth100_init(void)
++{
++  void __iomem *iomem;
++  static struct platform_device *ethX = NULL;
++
++  iomem = ioremap(TS72XX_ETH100_IO8_PHYS_BASE, TS72XX_ETH100_IO8_SIZE);
++  if (iomem != NULL) {
++    int irq = 0;
++
++    ethX = &ts72xx_eth100_device_asix;
++
++    if (is_eth100_present(iomem, TS_ETH100_PLD_0)) {
++      ethX->resource[0].start += TS_ETH100_MAC_0;
++      ethX->resource[0].end   += TS_ETH100_MAC_0;
++      ethX->resource[1].start += TS_ETH100_MAC_0;
++      ethX->resource[1].end   += TS_ETH100_MAC_0;
++      irq = read_irq(iomem, TS_ETH100_PLD_0);
++    } else if(is_eth100_present(iomem, TS_ETH100_PLD_1)) {
++      ethX->resource[0].start += TS_ETH100_MAC_1;
++      ethX->resource[0].end   += TS_ETH100_MAC_1;
++      ethX->resource[1].start += TS_ETH100_MAC_1;
++      ethX->resource[1].end   += TS_ETH100_MAC_1;
++      irq = read_irq(iomem, TS_ETH100_PLD_1);
++    } else if(is_eth100_present(iomem, TS_ETH100_PLD_2)) {
++      ethX->resource[0].start += TS_ETH100_MAC_2;
++      ethX->resource[0].end   += TS_ETH100_MAC_2;
++      ethX->resource[1].start += TS_ETH100_MAC_2;
++      ethX->resource[1].end   += TS_ETH100_MAC_2;
++      irq = read_irq(iomem, TS_ETH100_PLD_2);
++    } else if(is_eth100_present(iomem, TS_ETH100_PLD_3)) {
++      ethX->resource[0].start += TS_ETH100_MAC_3;
++      ethX->resource[0].end   += TS_ETH100_MAC_3;
++      ethX->resource[1].start += TS_ETH100_MAC_3;
++      ethX->resource[1].end   += TS_ETH100_MAC_3;
++      irq = read_irq(iomem, TS_ETH100_PLD_3);
++    } else {
++      ethX = NULL;
++    }
++
++    /* Translate IRQ number */
++    if (ethX != NULL) {
++      switch (irq) {
++        case 0x2: /* IRQ5 */
++          ethX->resource[2].start = gpio_to_irq(EP93XX_GPIO_LINE_F(3)); // 83
++          ethX->resource[2].end   = gpio_to_irq(EP93XX_GPIO_LINE_F(3));
++          gpio_direction_input(EP93XX_GPIO_LINE_F(3));
++          set_irq_type(ethX->resource[2].start, IRQ_TYPE_EDGE_RISING);
++          break;
++        case 0x4: /* IRQ6 */
++          ethX->resource[2].start = IRQ_EP93XX_EXT1;
++          ethX->resource[2].end   = IRQ_EP93XX_EXT1;
++          break;
++        case 0x8: /* IRQ7 */
++        default:
++          ethX->resource[2].start = IRQ_EP93XX_EXT3;
++          ethX->resource[2].end   = IRQ_EP93XX_EXT3;
++          break;
++      }
++    }
++
++    iounmap(iomem);
++  }
++
++  return ((ethX == NULL) ? -ENODEV :
++      platform_device_register(&ts72xx_eth100_device_asix));
++}
++
++
++static void __exit ts_eth100_exit(void)
++{
++  platform_device_unregister(&ts72xx_eth100_device_asix);
++}
++
++module_init(ts_eth100_init);
++module_exit(ts_eth100_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("Asix 88796 ethernet probe module for TS-ETH100 (TS-72xx)");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("0.2");
+-- 
+1.6.0.4
+

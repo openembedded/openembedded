@@ -1,0 +1,28 @@
+From 22ce7d90cb3c58be44ebb0fcb3f1f5ca8af83d59 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sat, 3 Jan 2009 21:33:53 +0100
+Subject: [PATCH] Fix wrong machine ID passed from RedBoot
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/kernel/head.S |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+index bff4c6e..bda4eb4 100644
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -83,6 +83,7 @@ ENTRY(stext)
+ 	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid
+ 	movs	r10, r5				@ invalid processor (r5=0)?
+ 	beq	__error_p			@ yes, error 'p'
++	ldr	r1, =0x000002a1			@ mach-type = TS-7250
+ 	bl	__lookup_machine_type		@ r5=machinfo
+ 	movs	r8, r5				@ invalid machine (r5=0)?
+ 	beq	__error_a			@ yes, error 'a'
+-- 
+1.6.0.4
+

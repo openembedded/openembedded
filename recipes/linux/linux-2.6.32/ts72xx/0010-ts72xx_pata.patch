@@ -1,0 +1,414 @@
+From caec39562afb6755f47dace8cdc46a0451034c3d Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 17 Jan 2010 18:05:25 +0100
+Subject: [PATCH] ts72xx_pata
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/ata/Kconfig          |   20 ++++++
+ drivers/ata/Makefile         |    3 +
+ drivers/ata/pata_ts7200_cf.c |   85 +++++++++++++++++++++++
+ drivers/ata/pata_ts72xx.c    |  155 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/ata/pata_ts9600.c    |   88 ++++++++++++++++++++++++
+ 5 files changed, 351 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/ata/pata_ts7200_cf.c
+ create mode 100644 drivers/ata/pata_ts72xx.c
+ create mode 100644 drivers/ata/pata_ts9600.c
+
+diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
+index f2df6e2..0a310b4 100644
+--- a/drivers/ata/Kconfig
++++ b/drivers/ata/Kconfig
+@@ -781,5 +781,25 @@ config PATA_BF54X
+ 
+ 	  If unsure, say N.
+ 
++config PATA_TS72XX
++	bool "TS72XX ATA support"
++	depends on ARCH_EP93XX && MACH_TS72XX
++	help
++	  This option enables support for ATA devices on Technologic Systems SBC.
++
++config PATA_TS7200_CF
++	tristate "TS7200 Compact Flash support"
++	depends on PATA_TS72XX
++	help
++	  This option enables support for the compact flash control on
++	  Technologic System TS-7200 SBC.
++
++config PATA_TS9600
++	tristate "TS9600 IDE interface support"
++	depends on PATA_TS72XX && BLK_DEV_IDE_TS9600 != y
++	help
++	  This option enables support for Technologic Systems TS-9600 PC/104 IDE interface.
++
+ endif # ATA_SFF
++
+ endif # ATA
+diff --git a/drivers/ata/Makefile b/drivers/ata/Makefile
+index 01e126f..f784f0e 100644
+--- a/drivers/ata/Makefile
++++ b/drivers/ata/Makefile
+@@ -77,6 +77,9 @@ obj-$(CONFIG_PATA_PLATFORM)	+= pata_platform.o
+ obj-$(CONFIG_PATA_AT91)	+= pata_at91.o
+ obj-$(CONFIG_PATA_OF_PLATFORM)	+= pata_of_platform.o
+ obj-$(CONFIG_PATA_ICSIDE)	+= pata_icside.o
++obj-$(CONFIG_PATA_TS72XX)	+= pata_ts72xx.o
++obj-$(CONFIG_PATA_TS7200_CF)	+= pata_ts7200_cf.o
++obj-$(CONFIG_PATA_TS9600)	+= pata_ts9600.o
+ # Should be last but two libata driver
+ obj-$(CONFIG_PATA_ACPI)		+= pata_acpi.o
+ # Should be last but one libata driver
+diff --git a/drivers/ata/pata_ts7200_cf.c b/drivers/ata/pata_ts7200_cf.c
+new file mode 100644
+index 0000000..cc884b5
+--- /dev/null
++++ b/drivers/ata/pata_ts7200_cf.c
+@@ -0,0 +1,85 @@
++/*
++ *  Technologic Systems TS-7200 Compact Flash PATA device driver.
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/libata.h>
++#include <scsi/scsi_host.h>
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <mach/ts72xx.h>
++
++#define DRV_NAME  "pata_ts7200_cf"
++#define DRV_VERSION "0.2"
++
++static struct resource ts7200_cf_resources[] = {
++  [0] = {
++    .start = TS7200_CF_CMD_PHYS_BASE,
++    .end   = TS7200_CF_CMD_PHYS_BASE + 8,
++    .flags = IORESOURCE_MEM,
++  },
++  [1] = {
++    .start = TS7200_CF_AUX_PHYS_BASE,
++    .end   = TS7200_CF_AUX_PHYS_BASE + 1,
++    .flags = IORESOURCE_MEM,
++  },
++  [2] = {
++    .start = TS7200_CF_DATA_PHYS_BASE,
++    .end   = TS7200_CF_DATA_PHYS_BASE + 2,
++    .flags = IORESOURCE_MEM,
++  },
++  [3] = {
++    .start = IRQ_EP93XX_EXT0, /* pin 103 of EP9301 */
++    .end   = IRQ_EP93XX_EXT0,
++    .flags = IORESOURCE_IRQ,
++  }
++};
++
++
++static struct platform_device ts7200_cf_device = {
++  .name = "ts72xx-ide",
++  .id = 0,
++  .dev  = {
++		.dma_mask = &ts7200_cf_device.dev.coherent_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++  },
++  .num_resources  = ARRAY_SIZE(ts7200_cf_resources),
++  .resource = ts7200_cf_resources,
++};
++
++
++static __init int pata_ts7200_cf_init(void)
++{
++  return (board_is_ts7200()) ? \
++    platform_device_register(&ts7200_cf_device) : -ENODEV;
++}
++
++static __exit void pata_ts7200_cf_exit(void)
++{
++  platform_device_unregister(&ts7200_cf_device);
++}
++
++module_init(pata_ts7200_cf_init);
++module_exit(pata_ts7200_cf_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("TS-7200 CF PATA device driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);
+diff --git a/drivers/ata/pata_ts72xx.c b/drivers/ata/pata_ts72xx.c
+new file mode 100644
+index 0000000..e96cee3
+--- /dev/null
++++ b/drivers/ata/pata_ts72xx.c
+@@ -0,0 +1,155 @@
++/*
++ *  TS-72XX PATA driver for Technologic Systems boards.
++ *
++ *  Based on pata_platform.c by Paul Mundt &
++ *      Alessandro Zummo <a.zummo@towertech.it>
++ *  and old pata-ts72xx.c by Alessandro Zummo <a.zummo@towertech.it>
++ *
++ *	(c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
++#include <scsi/scsi_host.h>
++#include <linux/ata.h>
++#include <linux/libata.h>
++
++#define DRV_NAME  "pata_ts72xx"
++#define DRV_VERSION "2.01"
++
++
++/*
++ * Provide our own set_mode() as we don't want to change anything that has
++ * already been configured..
++ */
++static int ts72xx_set_mode(struct ata_link *link, struct ata_device **unused)
++{
++  struct ata_device *dev;
++
++  ata_for_each_dev(dev, link, ENABLED) {
++    if (ata_dev_enabled(dev)) {
++      /* We don't really care */
++      dev->pio_mode = dev->xfer_mode = XFER_PIO_0;
++      dev->xfer_shift = ATA_SHIFT_PIO;
++      dev->flags |= ATA_DFLAG_PIO;
++      ata_dev_printk(dev, KERN_INFO, "configured for PIO\n");
++    }
++  }
++  return 0;
++}
++
++static struct scsi_host_template ts72xx_sht = {
++  ATA_PIO_SHT(DRV_NAME),
++};
++
++static struct ata_port_operations ts72xx_port_ops = {
++  .inherits     = &ata_sff_port_ops,
++  .set_mode     = ts72xx_set_mode,
++};
++
++static __devinit int ts72xx_pata_probe(struct platform_device *pdev)
++{
++  struct ata_host *host;
++  struct ata_port *ap;
++  int irq;
++
++  struct resource *pata_cmd  = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++  struct resource *pata_aux  = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++  struct resource *pata_data = platform_get_resource(pdev, IORESOURCE_MEM, 2);
++
++  if (!pata_cmd || !pata_aux || !pata_data) {
++    dev_err(&pdev->dev, "missing resource(s)\n");
++    return -EINVAL;
++  }
++
++  irq = platform_get_irq(pdev, 0);
++  if (irq < 0)
++    irq = 0;  /* no irq */
++
++  /*
++   * Now that that's out of the way, wire up the port
++   */
++  host = ata_host_alloc(&pdev->dev, 1);
++  if (!host)
++    return -ENOMEM;
++  ap = host->ports[0];
++
++  ap->ops = &ts72xx_port_ops;
++  ap->pio_mask = 0x1f; /* PIO0-4 */
++  ap->flags |= ATA_FLAG_SLAVE_POSS;
++
++  /*
++   * Use polling mode if there's no IRQ
++   */
++  if (!irq) {
++    ap->flags |= ATA_FLAG_PIO_POLLING;
++    ata_port_desc(ap, "no IRQ, using PIO polling");
++  }
++
++  ap->ioaddr.cmd_addr = devm_ioremap(&pdev->dev, pata_cmd->start,
++      pata_cmd->end - pata_cmd->start + 1);
++  ap->ioaddr.ctl_addr = devm_ioremap(&pdev->dev, pata_aux->start,
++      pata_aux->end - pata_aux->start + 1);
++
++  if (!ap->ioaddr.cmd_addr || !ap->ioaddr.ctl_addr) {
++    dev_err(&pdev->dev, "failed to map IO/CTL base\n");
++    return -ENOMEM;
++  }
++
++  ap->ioaddr.altstatus_addr = ap->ioaddr.ctl_addr;
++
++  ata_sff_std_ports(&ap->ioaddr);
++  ap->ioaddr.data_addr = devm_ioremap(&pdev->dev, pata_data->start,
++      pata_data->end - pata_data->start + 1);
++
++  ata_port_desc(ap, "mmio cmd 0x%llx ctl 0x%llx",
++      (unsigned long long)pata_cmd->start,
++      (unsigned long long)pata_aux->start);
++
++  return ata_host_activate(host, irq, irq ? ata_sff_interrupt : NULL,
++      0 /* irq flags */, &ts72xx_sht);
++}
++
++static __devexit int ts72xx_pata_remove(struct platform_device *pdev)
++{
++  struct device *dev = &pdev->dev;
++  struct ata_host *host = dev_get_drvdata(dev);
++
++  ata_host_detach(host);
++
++  return 0;
++}
++
++static struct platform_driver ts72xx_pata_platform_driver = {
++  .probe    = ts72xx_pata_probe,
++  .remove   = __devexit_p(ts72xx_pata_remove),
++  .driver = {
++    .name   = "ts72xx-ide",
++    .owner  = THIS_MODULE,
++  },
++};
++
++static int __init ts72xx_pata_init(void)
++{
++  return platform_driver_register(&ts72xx_pata_platform_driver);
++}
++
++static void __exit ts72xx_pata_exit(void)
++{
++  platform_driver_unregister(&ts72xx_pata_platform_driver);
++}
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("low-level driver for TS-72xx device PATA");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);
++
++module_init(ts72xx_pata_init);
++module_exit(ts72xx_pata_exit);
+diff --git a/drivers/ata/pata_ts9600.c b/drivers/ata/pata_ts9600.c
+new file mode 100644
+index 0000000..0eb485a
+--- /dev/null
++++ b/drivers/ata/pata_ts9600.c
+@@ -0,0 +1,88 @@
++/*
++ *  Technologic Systems TS-9600 PATA device driver.
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/libata.h>
++#include <scsi/scsi_host.h>
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <mach/ts72xx.h>
++
++#define DRV_NAME  "pata_ts9600"
++#define DRV_VERSION "0.2"
++
++#define TS9600_IDE_IO   (TS72XX_PC104_8BIT_IO_PHYS_BASE + 0x1F0)
++#define TS9600_IDE_DATA (TS72XX_PC104_16BIT_IO_PHYS_BASE + 0x1F0)
++#define TS9600_IDE_IRQ  IRQ_EP93XX_EXT3  // IRQ7 (no other possibility for arm)
++
++static struct resource ts9600_resources[] = {
++  [0] = {
++    .start = TS9600_IDE_IO,
++    .end   = TS9600_IDE_IO + 8,
++    .flags = IORESOURCE_MEM,
++  },
++  [1] = {
++    .start = TS9600_IDE_IO + 0x206,
++    .end   = TS9600_IDE_IO + 0x206 + 1,
++    .flags = IORESOURCE_MEM,
++  },
++  [2] = {
++    .start = TS9600_IDE_DATA,
++    .end   = TS9600_IDE_DATA + 2,
++    .flags = IORESOURCE_MEM,
++  },
++  [3] = {
++    .start = TS9600_IDE_IRQ,
++    .end   = TS9600_IDE_IRQ,
++    .flags = IORESOURCE_IRQ,
++  }
++};
++
++
++static struct platform_device ts9600_device = {
++  .name = "ts72xx-ide",
++  .id = 9600,
++  .dev  = {
++		.dma_mask = &ts9600_device.dev.coherent_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++  },
++  .num_resources  = ARRAY_SIZE(ts9600_resources),
++  .resource = ts9600_resources,
++};
++
++
++static __init int pata_ts9600_init(void)
++{
++  return platform_device_register(&ts9600_device);
++}
++
++static __exit void pata_ts9600_exit(void)
++{
++  platform_device_unregister(&ts9600_device);
++}
++
++module_init(pata_ts9600_init);
++module_exit(pata_ts9600_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("TS-9600 PATA device driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);
+-- 
+1.6.0.4
+

@@ -1,0 +1,114 @@
+From d4b791d23b63acc50213dc679eb2bd2d10aa697d Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 17 Jan 2010 18:28:27 +0100
+Subject: [PATCH] ep93xx_pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/Makefile |    3 ++
+ arch/arm/mach-ep93xx/pm.c     |   78 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 81 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-ep93xx/pm.c
+
+diff --git a/arch/arm/mach-ep93xx/Makefile b/arch/arm/mach-ep93xx/Makefile
+index c2451e6..8624d62 100644
+--- a/arch/arm/mach-ep93xx/Makefile
++++ b/arch/arm/mach-ep93xx/Makefile
+@@ -12,3 +12,6 @@ obj-$(CONFIG_MACH_GESBC9312)	+= gesbc9312.o
+ obj-$(CONFIG_MACH_MICRO9)	+= micro9.o
+ obj-$(CONFIG_MACH_TS72XX)	+= ts72xx.o
+ obj-$(CONFIG_MACH_TS72XX_SBCINFO)	+= ts72xx_sbcinfo.o
++
++# Power Management
++obj-$(CONFIG_PM) += pm.o
+diff --git a/arch/arm/mach-ep93xx/pm.c b/arch/arm/mach-ep93xx/pm.c
+new file mode 100644
+index 0000000..d3714c8
+--- /dev/null
++++ b/arch/arm/mach-ep93xx/pm.c
+@@ -0,0 +1,78 @@
++/*
++ *  arch/arm/mach-ep93xx/pm.c
++ *
++ *  EP93xx Power Management Routines
++ *
++ *  Based on pm.c from Andre Renaud, Bluewater Systems Ltd.
++ *
++ *  (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ *  This program is free software; you can redistribute it and/or
++ *  modify it under the terms of the GNU General Public License
++ *  as published by the Free Software Foundation; either version
++ *  2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/suspend.h>
++#include <linux/sched.h>
++#include <linux/proc_fs.h>
++#include <linux/interrupt.h>
++#include <linux/sysfs.h>
++#include <linux/module.h>
++#include <linux/io.h>
++#include <mach/hardware.h>
++
++
++static inline void ep93xx_standby(void)
++{
++  u32 v;
++  v = __raw_readl(EP93XX_SYSCON_DEVCFG);
++  v |= EP93XX_SYSCON_DEVCFG_SHENA;
++  __raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
++  __raw_writel(v, EP93XX_SYSCON_DEVCFG);
++
++  v = __raw_readl(EP93XX_SYSCON_STANDBY);
++
++  asm("nop; nop; nop; nop; nop");
++}
++
++static inline void ep93xx_resume(void)
++{
++  u32 v;
++
++  v = __raw_readl(EP93XX_SYSCON_DEVCFG);
++  v &= ~EP93XX_SYSCON_DEVCFG_SHENA;
++  __raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
++  __raw_writel(v, EP93XX_SYSCON_DEVCFG);
++}
++
++static int suspend_ep93xx_enter(suspend_state_t state)
++{
++  switch (state) {
++    case PM_SUSPEND_STANDBY:
++    case PM_SUSPEND_MEM:
++      ep93xx_standby(); /* go zzz */
++      ep93xx_resume();
++  }
++  return 0;
++}
++
++static int suspend_ep93xx_valid(suspend_state_t state)
++{
++  return (state == PM_SUSPEND_STANDBY) ||
++    (state == PM_SUSPEND_MEM);
++}
++
++
++static struct platform_suspend_ops ep93xx_suspend_ops = {
++  .enter	= suspend_ep93xx_enter,
++  .valid	= suspend_ep93xx_valid,
++};
++
++static int __init ep93xx_pm_init(void)
++{
++  pr_info("ep93xx: Power Management\n");
++  suspend_set_ops(&ep93xx_suspend_ops);
++  return 0;
++}
++__initcall(ep93xx_pm_init);
+-- 
+1.6.0.4
+

@@ -1,0 +1,81 @@
+From e03daf13a562414f07230c17998edd39564b5f1b Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Thu, 4 Mar 2010 14:16:27 +0100
+Subject: [PATCH] fix libs
+
+---
+ progs/demos/Makefile   |    2 +-
+ progs/glsl/Makefile    |    2 +-
+ progs/redbook/Makefile |    2 +-
+ progs/samples/Makefile |    2 +-
+ progs/xdemos/Makefile  |    2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/progs/demos/Makefile b/progs/demos/Makefile
+index 5b1d2a0..121b862 100644
+--- a/progs/demos/Makefile
++++ b/progs/demos/Makefile
+@@ -8,7 +8,7 @@ INCDIR = $(TOP)/include
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) \
+ 	$(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) -l$(GL_LIB) \
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lstdc++ \
+ 	$(APP_LIB_DEPS)
+ 
+ PROGS = \
+diff --git a/progs/glsl/Makefile b/progs/glsl/Makefile
+index 3b5a595..836c4ac 100644
+--- a/progs/glsl/Makefile
++++ b/progs/glsl/Makefile
+@@ -10,7 +10,7 @@ LIB_DEP = \
+ 	$(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) \
+ 	$(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) \
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) -lstdc++ \
+ 	-l$(GL_LIB) $(APP_LIB_DEPS)
+ 
+ # using : to avoid APP_CC pointing to CC loop
+diff --git a/progs/redbook/Makefile b/progs/redbook/Makefile
+index b41e488..95ed746 100644
+--- a/progs/redbook/Makefile
++++ b/progs/redbook/Makefile
+@@ -7,7 +7,7 @@ INCDIR = $(TOP)/include
+ 
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lstdc++ $(APP_LIB_DEPS)
+ 
+ PROGS = aaindex \
+ 	aapoly \
+diff --git a/progs/samples/Makefile b/progs/samples/Makefile
+index 64fa47a..9f72c8b 100644
+--- a/progs/samples/Makefile
++++ b/progs/samples/Makefile
+@@ -7,7 +7,7 @@ INCDIR = $(TOP)/include
+ 
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLEW_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lstdc++ $(APP_LIB_DEPS)
+ 
+ PROGS = accum bitmap1 bitmap2 blendeq blendxor copy cursor depth eval fog \
+ 	font line logo nurb olympic overlay point prim rgbtoppm quad select \
+diff --git a/progs/xdemos/Makefile b/progs/xdemos/Makefile
+index f866a32..c0f4e06 100644
+--- a/progs/xdemos/Makefile
++++ b/progs/xdemos/Makefile
+@@ -11,7 +11,7 @@ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME)
+ # Add X11 and pthread libs to satisfy GNU gold.
+ APP_LIB_DEPS += -lX11 -lpthread
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lstdc++ $(APP_LIB_DEPS)
+ 
+ PROGS = \
+ 	corender \
+-- 
+1.7.0
+
