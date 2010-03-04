@@ -137,6 +137,7 @@ IMAGE_CMD_ubi = "mv ${IMAGE_ROOTFS}/boot ${IMAGE_ROOTFS}-boot && echo \[ubifs\] 
 IMAGE_CMD_ubifs = "mv ${IMAGE_ROOTFS}/boot ${IMAGE_ROOTFS}-boot && mkfs.ubifs -r ${IMAGE_ROOTFS} -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.ubifs.img ${MKUBIFS_ARGS} && mv ${IMAGE_ROOTFS}-boot ${IMAGE_ROOTFS}/boot"
 
 ROOTFS_POSTPROCESS_COMMAND += " shr_rootfs_postprocess"
+ROOTFS_POSTPROCESS_COMMAND += " install_linguas"
 
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta02 = ";shr_rootfs_gta02_postprocess"
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta01 = ";shr_rootfs_gta01_postprocess"
