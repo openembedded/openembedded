@@ -7,15 +7,9 @@ SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2;name=gnutls"
 
 inherit autotools binconfig pkgconfig
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 EXTRA_OECONF = "--with-included-opencdk --with-included-libtasn1"
-do_install_append() {
-
-    install -d ${D}${datadir}/aclocal
-    install -m 0644 ${S}/lib/libgnutls.m4 ${D}${datadir}/aclocal/ || true
-    install -m 0644 ${S}/libextra/libgnutls-extra.m4 ${D}${datadir}/aclocal/ || true
-}
 
 PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin ${PN}-xx"
 
