@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r31"
+PR = "r32"
 
 # Major part of version
 PVM = "5.8"
@@ -70,6 +70,7 @@ do_configure() {
         # Fixups for uclibc
         if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibceabi" ]; then
                 sed -i -e "s,\(d_crypt_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_futimes=\)'define',\1'undef',g" \
                        -e "s,\(crypt_r_proto=\)'\w+',\1'0',g" \
                        -e "s,\(d_getnetbyname_r=\)'define',\1'undef',g" \
                        -e "s,\(getnetbyname_r_proto=\)'\w+',\1'0',g" \
