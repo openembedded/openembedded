@@ -8,4 +8,11 @@ SRC_URI += "\
 	file://gnutls-replace-siginterrupt.patch;patch=1 \
 	"
 
-PR = "r4"
+PR = "${INC_PR}.0"
+
+do_install_append() {
+
+    install -d ${D}${datadir}/aclocal
+    install -m 0644 ${S}/lib/libgnutls.m4 ${D}${datadir}/aclocal/
+    install -m 0644 ${S}/libextra/libgnutls-extra.m4 ${D}${datadir}/aclocal/
+}

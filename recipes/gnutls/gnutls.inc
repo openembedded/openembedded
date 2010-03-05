@@ -1,23 +1,20 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 HOMEPAGE = "http://www.gnu.org/software/gnutls/"
-DEPENDS = "zlib libgcrypt lzo guile-native"
+DEPENDS = "zlib libgcrypt lzo guile-native gettext"
 LICENSE = "LGPL"
 
-SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2;name=gnutls"
 
 inherit autotools binconfig pkgconfig
 
+INC_PR = "r7"
+
 EXTRA_OECONF = "--with-included-opencdk --with-included-libtasn1"
+do_install_append() {
 
-do_stage() {
-    oe_libinstall -C lib/.libs -so -a libgnutls ${STAGING_LIBDIR}
-    oe_libinstall -C libextra/.libs -so -a libgnutls-extra ${STAGING_LIBDIR}
-    oe_libinstall -C libextra/.libs -so -a libgnutls-openssl ${STAGING_LIBDIR}
-    autotools_stage_includes
-
-    install -d ${STAGING_DATADIR}/aclocal
-    cp ${S}/lib/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
-    cp ${S}/libextra/libgnutls-extra.m4 ${STAGING_DATADIR}/aclocal/
+    install -d ${D}${datadir}/aclocal
+    install -m 0644 ${S}/lib/libgnutls.m4 ${D}${datadir}/aclocal/
+    install -m 0644 ${S}/libextra/libgnutls-extra.m4 ${D}${datadir}/aclocal/
 }
 
 PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin ${PN}-xx"
