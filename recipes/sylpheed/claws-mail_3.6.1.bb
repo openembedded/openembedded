@@ -2,7 +2,7 @@ SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ libetpan openssl aspell"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig
 
@@ -50,6 +50,3 @@ do_install_append() {
 	sed -i 's/Icon=[^.]*$/&.png/' ${D}${datadir}/applications/claws-mail.desktop
 }
 
-do_stage() {
-	autotools_stage_includes
-}
