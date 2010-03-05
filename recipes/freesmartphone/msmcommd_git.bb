@@ -7,6 +7,13 @@ PV = "0.1.0+gitr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/msmcomm.git;protocol=git;branch=master"
-S = "${WORKDIR}/git/msmcommd"
+S = "${WORKDIR}/git"
 
-inherit autotools
+inherit autotools_stage vala
+
+PARALLEL_MAKE = ""
+
+PACKAGES =+ "${PN}-lib ${PN}-term"
+FILES_${PN}-lib = "${libdir}/lib*.so.*"
+FILES_${PN}-term = "${sbindir}/msmvterm"
+
