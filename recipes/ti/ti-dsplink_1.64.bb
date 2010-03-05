@@ -6,7 +6,8 @@ PV = "1_64"
 SRC_URI[dsplinktarball.md5sum] = "90223da7c88af57d12936adeba1a0661"
 SRC_URI[dsplinktarball.sha256sum] = "32b6fbae2b61f5f71ab3eae9d2f5ad6b75d682ad8bde9963152830be1f8d286b"
 
-SRC_URI_append = "file://dsplink_1_64_kernel_2_6_33_autoconf.patch;patch=1 "
+SRC_URI_append = "file://dsplink_1_64_kernel_2_6_33_autoconf.patch;patch=1 \
+                  file://dsplink_1_64_add_dm6446_build_support.patch;patch=1 "
 
 # Cheat a bit with includes
 # SZ_1k = 0x00000400
