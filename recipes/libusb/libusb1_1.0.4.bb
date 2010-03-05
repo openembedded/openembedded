@@ -3,7 +3,12 @@ HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2"
+PR = "r1"
+
+SRC_URI = " \
+           ${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2 \
+           file://libusb-shortok.patch;patch=1 \
+          "
 S = "${WORKDIR}/libusb-${PV}"
 
 inherit autotools

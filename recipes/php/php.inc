@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.php.net"
 SECTION = "console/network"
 LICENSE = "PHP"
 
-SRC_URI =     "http://us2.php.net/distributions/php-${PV}.tar.bz2\
+SRC_URI =     "http://us2.php.net/distributions/php-${PV}.tar.bz2;name=src\
                file://acinclude-xml2-config.patch;patch=1"
 
 S = "${WORKDIR}/php-${PV}"

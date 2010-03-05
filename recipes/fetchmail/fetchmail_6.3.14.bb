@@ -8,13 +8,15 @@ LICENSE = "GPL"
 
 PR = "r2"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/f/${PN}/${PN}_${PV}.orig.tar.gz \
-	   file://CVE-2007-4565.patch;patch=1 \
+SRC_URI = "http://download.berlios.de/fetchmail/${PN}-${PV}.tar.bz2;name=src \
 	   "
+
+SRC_URI[src.md5sum] = "86d3cfbce151881d8bf76a1efd5bda6a"
+SRC_URI[src.sha256sum] = "8657f786f5af1857ddb3b50203e6cde2efad43f49828973cbb22f6d431208607"
 
 inherit autotools gettext
 
 FILES_${PN} = "${bindir}/fetchmail"
 PACKAGES += "${PN}conf"
-FILES_${PN}conf = "${libdir}/python2.5/site-packages/fetchmailconf.py* ${bindir}/fetchmailconf"
+FILES_${PN}conf = "${libdir}/python*/site-packages/fetchmailconf.py* ${bindir}/fetchmailconf"
 rdepends_${PN}conf = "${PN}"

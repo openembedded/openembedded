@@ -1,0 +1,13 @@
+diff -aur --recursive omniorb_native_org/configure.ac omniorb_native_cop/configure.ac
+--- omniorb_native_org/configure.ac	2010-02-19 14:00:06.905777529 +0100
++++ omniorb_native_cop/configure.ac	2010-02-19 13:38:20.000000000 +0100
+@@ -10,6 +10,7 @@
+ 
+ AC_CONFIG_HEADERS(include/omniORB4/acconfig.h)
+
++m4_pattern_allow(PKG_CONFIG_LIBDIR)
+ dnl ** CFLAGS / CXXFLAGS
+ 
+ if test "${CFLAGS+set}" != set; then
+ #############################################################################
+ #

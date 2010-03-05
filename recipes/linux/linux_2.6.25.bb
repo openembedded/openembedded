@@ -98,5 +98,5 @@ python do_compulab_image() {
 }
 
 
-addtask compulab_image after do_deploy before do_package
+addtask compulab_image after do_deploy before do_build
 

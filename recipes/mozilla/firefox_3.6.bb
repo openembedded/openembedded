@@ -1,7 +1,8 @@
 DEPENDS += "cairo sqlite3 libnotify"
 
-PR = "r2"
+PR = "r4"
 
+# The .pc files below have "3.6" hardcoded, fix that before using them in a newer FF version!
 SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}.source.tar.bz2;name=archive \
 	file://jsautocfg.h \
 	file://security-cross.patch;patch=1 \

@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Fat Image Feed"
-PR = "r5"
+PR = "r6"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -29,12 +29,11 @@ RDEPENDS_${PN}-apps += "\
 	midori \
 	intone \
 "
-RDEPENDS_${PN}-apps += "\
+RDEPENDS_${PN}-cli += "\
+   task-cli-tools \
+   task-cli-tools-debug \
    task-shr-minimal-cli \
-        screen \
         rsync \
-        mdbus2 \
-        mterm2 \
 	openssh-sftp-server \
 "
 
