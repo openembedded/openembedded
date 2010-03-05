@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib libgsm0710mux"
 LICENSE = "GPL"
 PV = "0.9.1+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-abyss.git;protocol=git;branch=master \
