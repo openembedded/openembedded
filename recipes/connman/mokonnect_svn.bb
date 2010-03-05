@@ -6,7 +6,7 @@ SECTION = "e/apps"
 RDEPENDS = "python-elementary connman connman-plugin-wifi connman-plugin-udhcp"
 
 PV = "0.4+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http"
 
