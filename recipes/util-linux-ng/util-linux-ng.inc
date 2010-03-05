@@ -7,7 +7,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r9"
+INC_PR = "r12"
 
 # allows for a release candidate
 RC ?= ""
@@ -110,10 +110,10 @@ do_install () {
 		'LDFLAGS=${LDFLAGS}' 'DESTDIR=${D}' install
 	mkdir -p ${D}${base_bindir}
 
-        sbinprogs="agetty blockdev ctrlaltdel cfdisk"
+        sbinprogs="agetty blockdev ctrlaltdel cfdisk vipw vigr"
         sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile"
-        usrbinprogs_a="hexdump last logger mesg renice wall"
-        binprogs_a="dmesg kill more umount mount"
+        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall"
+        binprogs_a="dmesg kill more umount mount login"
 
         if [ "${base_sbindir}" != "${sbindir}" ]; then
         	mkdir -p ${D}${base_sbindir}
@@ -188,6 +188,12 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${bindir}/mesg mesg mesg.${PN} 100
 	update-alternatives --install ${bindir}/renice renice renice.${PN} 100
 	update-alternatives --install ${bindir}/wall wall wall.${PN} 100
+	update-alternatives --install ${bindir}/chfn chfn chfn.${PN} 100
+	update-alternatives --install ${bindir}/newgrp newgrp newgrp.${PN} 100
+	update-alternatives --install ${bindir}/chsh chsh chsh.${PN} 100
+	update-alternatives --install ${base_bindir}/login login login.${PN} 100
+	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
+	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
 	
 	# There seems to be problem, atleast on nslu2, with these, until they are
 	# fixed the busybox ones have higher priority
@@ -199,24 +205,11 @@ pkg_postinst_${PN} () {
 
 pkg_prerm_${PN} () {
 	test -x ${base_sbindir}/pivot_root.${PN} && \
-	update-alternatives --remove pivot_root pivot_root.${PN}
-	update-alternatives --remove dmesg dmesg.${PN}
-	update-alternatives --remove kill kill.${PN}
-	update-alternatives --remove more more.${PN}
-	update-alternatives --remove halt halt.${PN}
-	update-alternatives --remove hwclock hwclock.${PN}
-	update-alternatives --remove mkswap mkswap.${PN}
-	update-alternatives --remove reboot reboot.${PN}
-	update-alternatives --remove shutdown shutdown.${PN}
-	update-alternatives --remove sln sln.${PN}
-	update-alternatives --remove mkfs.minix mkfs.minix.${PN}
-	update-alternatives --remove fsck.minix fsck.minix.${PN}
-	update-alternatives --remove hexdump hexdump.${PN}
-	update-alternatives --remove last last.${PN}
-	update-alternatives --remove logger logger.${PN}
-	update-alternatives --remove mesg mesg.${PN}
-	update-alternatives --remove renice renice.${PN}
-	update-alternatives --remove wall wall.${PN}
+	update-alternatives --remove pivot_root pivot_root.${PN}i
+
+	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hecdump last logger mesg renice wall vipw vigr chfn newgrp chsh login ; do
+		update-alternatives --remove $i $i.${PN}
+	done
 }
 
 pkg_postinst_util-linux-ng-fdisk () {
