@@ -1,5 +1,5 @@
 DESCRIPTION = "Additional desktop applications package for GPE Palmtop Environment"
-PR = "r6"
+PR = "r7"
 LICENSE = "MIT"
 
 inherit task
@@ -9,6 +9,5 @@ RDEPENDS_${PN} = "\
     firefox \
     thunderbird \
     galculator \
-    gnumeric \
-    gpdf"
+    gnumeric"
 
