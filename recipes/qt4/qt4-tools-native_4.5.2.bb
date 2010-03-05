@@ -9,13 +9,13 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${
 
 S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 
-EXTRA_OECONF += " -fast"
+EXTRA_OECONF += " -fast -qt-freetype"
 
 do_configure() {
    (echo o; echo yes) | LFLAGS="-L${STAGING_LIBDIR_NATIVE}" ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 LICENSE = "LGPLv2.1 GPLv3"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 TOBUILD := "src/tools/bootstrap ${TOBUILD}"
