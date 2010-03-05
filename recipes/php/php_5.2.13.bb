@@ -8,8 +8,8 @@ PR = "r4"
 SRC_URI += "file://pear-makefile.patch;patch=1 \
             file://imap-fix-autofoo.patch;patch=1 \
             "
-SRC_URI[src.md5sum] = "5b7077e366c7eeab34da31dd860a1923"
-SRC_URI[src.sha256sum] = "e65756a8412726a491ca48da1e0693eaeb3f38f19fb6cbc8f53005cab1f2491a"
+SRC_URI[src.md5sum] = "eb4d0766dc4fb9667f05a68b6041e7d1"
+SRC_URI[src.sha256sum] = "2b50a2535e3bb9a98cd4d1633f9452d877276c40b385915261f040d535c7eadb"
 
 export THREADS="pthread"
 export LIBS=" -lpthread "
