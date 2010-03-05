@@ -1,0 +1,13 @@
+Index: ulogd-1.24/Rules.make.in
+===================================================================
+--- ulogd-1.24.orig/Rules.make.in	2010-03-05 14:09:27.000000000 +0300
++++ ulogd-1.24/Rules.make.in	2010-03-05 14:09:39.000000000 +0300
+@@ -22,7 +22,7 @@
+ CFLAGS+=-DULOGD_CONFIGFILE=\"$(ULOGD_CONFIGFILE)\"
+ # doesn't work for subdirs
+ #CFLAGS+=$(INCIPULOG) $(INCCONFFILE)
+-CFLAGS+=-I/lib/modules/`uname -r`/build/include
++#CFLAGS+=-I/lib/modules/`uname -r`/build/include
+ #CFLAGS+=@DEFS@
+ #CFLAGS+=-g -DDEBUG -DDEBUG_MYSQL -DDEBUG_PGSQL
+ 
