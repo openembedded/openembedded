@@ -3,9 +3,12 @@ PR = "r3"
 DEPENDS = "libpam"
 RDEPENDS = "libpam libpam-meta"
 
-SRC_URI = "http://ftp.sudo.ws/sudo/dist/sudo-${PV}.tar.gz \
+SRC_URI = "http://ftp.sudo.ws/sudo/dist/sudo-${PV}.tar.gz;name=src \
   file://sudo.pamd \
 "
+
+SRC_URI[src.md5sum] = "3989e5a00538247d7dcef8b514076752"
+SRC_URI[src.sha256sum] = "57d9adbdffa881e32894231079da7d68ffe99f46942818b63baadf6c795b7bdd"
 
 EXTRA_OECONF += " --with-pam "
 

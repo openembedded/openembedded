@@ -45,15 +45,6 @@ do_install_append() {
 	rm -rf ${D}/${sysconfdir}/rc.d || true
 }
 
-do_stage() {
-        oe_libinstall -C libhal -a -so libhal ${STAGING_LIBDIR}
-        oe_libinstall -C libhal-storage -a -so libhal-storage ${STAGING_LIBDIR}
-
-        install -d ${STAGING_INCDIR}/hal
-        install -m 0644 libhal/libhal.h ${STAGING_INCDIR}/hal
-        install -m 0644 libhal-storage/libhal-storage.h ${STAGING_INCDIR}/hal
-}
-
 # At the time the postinst runs, dbus might not be setup so only restart if running
 pkg_postinst_hal () {
 	# can't do this offline

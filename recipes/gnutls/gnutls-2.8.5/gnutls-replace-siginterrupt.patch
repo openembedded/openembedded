@@ -1,0 +1,51 @@
+---
+ src/tests.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+--- gnutls-2.8.5.orig/src/tests.c
++++ gnutls-2.8.5/src/tests.c
+@@ -491,10 +491,11 @@ test_bye (gnutls_session_t session)
+   int ret;
+   char data[20];
+   int old, secs = 6;
+ 
+ #ifndef _WIN32
++  struct sigaction act;
+   signal (SIGALRM, got_alarm);
+ #endif
+ 
+   ADD_ALL_CIPHERS (session);
+   ADD_ALL_COMP (session);
+@@ -511,11 +512,13 @@ test_bye (gnutls_session_t session)
+   ret = gnutls_bye (session, GNUTLS_SHUT_WR);
+   if (ret < 0)
+     return TEST_FAILED;
+ 
+ #ifndef _WIN32
+-  old = siginterrupt (SIGALRM, 1);
++  (void) sigaction(SIGALRM, NULL, &act);
++  act.sa_flags &= ~SA_RESTART;
++  old = sigaction(SIGALRM, &act, NULL);
+   alarm (secs);
+ #else
+   setsockopt ((int) gnutls_transport_get_ptr (session), SOL_SOCKET,
+ 	      SO_RCVTIMEO, (char *) &secs, sizeof (int));
+ #endif
+@@ -525,11 +528,16 @@ test_bye (gnutls_session_t session)
+       ret = gnutls_record_recv (session, data, sizeof (data));
+     }
+   while (ret > 0);
+ 
+ #ifndef _WIN32
+-  siginterrupt (SIGALRM, old);
++  (void) sigaction(SIGALRM, NULL, &act);
++  if (old)
++    act.sa_flags &= ~SA_RESTART;
++  else
++    act.sa_flags |= SA_RESTART;
++  sigaction(SIGALRM, &act, NULL);
+ #else
+   if (WSAGetLastError () == WSAETIMEDOUT ||
+       WSAGetLastError () == WSAECONNABORTED)
+     alrm = 1;
+ #endif
