@@ -11,7 +11,7 @@ LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r25"
+INC_PR = "r26"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -39,7 +39,7 @@ PACKAGES =+ "${PN}-mountall ${PN}-httpd ${PN}-syslog ${PN}-udhcpd"
 # listed in the NEEDED field.
 RRECOMMENDS += "libgcc"
 
-FILES_${PN}-mountall = "${sysconfdir}/default/mountall"
+FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
 RDEPENDS_${PN} += "${PN}-mountall"
 
 # Make busybox recommend busybox-syslog for those images that expect it
@@ -128,7 +128,7 @@ do_install () {
 	fi
 	if grep "CONFIG_FEATURE_MOUNT_FSTAB=y" ${WORKDIR}/defconfig; then
 		install -d ${D}${sysconfdir}/default
-		install -m 644 ${WORKDIR}/mountall ${D}${sysconfdir}/default/
+		install -m 644 ${WORKDIR}/mountall ${D}${sysconfdir}/default/mountall.${PN}
 	fi
 
 	install -m 0644 ${S}/busybox.links ${D}${sysconfdir}
@@ -143,6 +143,13 @@ pkg_postinst_${PN} () {
 
 	# This adds the links, remember that this has to work when building an image too, hence the $D
 	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 50; done <$D/etc/busybox.links
+}
+
+pkg_postinst_${PN}-mountall () {
+	update-alternatives --install ${sysconfdir}/default/mountall default_mountall mountall.${PN} 50
+}
+pkg_prerm_${PN}-mountall () {
+	update-alternatives --remove default_mountall mountall.${PN}
 }
 
 pkg_prerm_${PN} () {

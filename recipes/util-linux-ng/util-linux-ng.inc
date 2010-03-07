@@ -7,7 +7,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r12"
+INC_PR = "r13"
 
 # allows for a release candidate
 RC ?= ""
@@ -46,7 +46,7 @@ FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
 FILES_util-linux-ng-readprofile = "${base_sbindir}/readprofile.${PN}"
 
 PACKAGES =+ "${PN}-mountall"
-FILES_${PN}-mountall = "${sysconfdir}/default/mountall"
+FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
 RREPLACES_${PN}-mountall = "busybox-mountall"
 
 RRECOMMENDS_${PN} = "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-mount util-linux-ng-readprofile "
@@ -152,7 +152,7 @@ do_install () {
         done
 
 	install -d ${D}${sysconfdir}/default/
-	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
+	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall.${PN}
 
 	rm ${D}${sbindir}/swapoff -f
 	ln -sf ${base_sbindir}/swapon.${PN} ${D}${base_sbindir}/swapoff.${PN}
@@ -260,5 +260,12 @@ pkg_postinst_util-linux-ng-readprofile() {
 
 pkg_prerm_util-linux-ng-readprofile () {
     update-alternatives --remove readprofile readprofile.${PN} 100
+}
+
+pkg_postinst_util-linux-ng-mountall () {
+        update-alternatives --install ${sysconfdir}/default/mountall default_mountall mountall.${PN} 100
+}
+pkg_prerm_util-linux-ng-mountall () {
+        update-alternatives --remove default_mountall mountall.${PN}
 }
 
