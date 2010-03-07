@@ -35,7 +35,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=k
 #           ${RPSRC}/pxa27x_overlay-r8.patch;patch=1;name=rppatch11 \
            ${RPSRC}/w100_extaccel-r2.patch;patch=1;name=rppatch12 \
            ${RPSRC}/w100_extmem-r1.patch;patch=1;name=rppatch13 \
-           ${RPSRC}/poodle_pm-r6.patch;patch=1;name=rppatch14 \
+#           ${RPSRC}/poodle_pm-r6.patch;patch=1;name=rppatch14 \
+           ${RPSRC}/poodle_pm-r7.patch;patch=1;name=rppatch14 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1;name=rppatch15 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1;name=rppatch16 \
            file://zaurus-i2c-init.patch;patch=1;status=upstream \
@@ -63,10 +64,10 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=k
            file://defconfig-bootcdx86 \
            file://defconfig-htcuniversal \
            file://defconfig-collie \
+           file://defconfig-poodle \
            file://defconfig-zylonite"
 # Disabled until the patchset is updated:
 #           file://defconfig-tosa
-#           file://defconfig-poodle
 
 
 # FIXMEs before made default	   
@@ -88,9 +89,9 @@ SRC_URI_append_collie = "\
 "
 
 SRC_URI_append_poodle = "\
-           ${RPSRC}/poodle_serial_vcc-r0.patch;patch=1;name=rppatch53 \
-           file://poodle_ts.patch;patch=1 \
-           file://pxafb.patch;patch=1 \
+           file://poodle_serial_vcc-r1.patch;patch=1 \
+#           file://poodle_ts.patch;patch=1 \
+#           file://pxafb.patch;patch=1 \
 "
 
 SRC_URI_append_tosa = "\
