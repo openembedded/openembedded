@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r44"
+PR = "r45"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -17,6 +17,7 @@ RDEPENDS_${PN} += "\
 		enotes \
 		epdfview \
 		estardict \
+		evopedia \
 		fbreader \
 		ffalarms \
 		gpe-calendar \
