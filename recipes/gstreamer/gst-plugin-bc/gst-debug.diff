@@ -5,7 +5,7 @@
  gst_player_seek (GstPlayer * self, gint value)
  {
 -  GST_DEBUG ("seek: %lu", value);
-+//  GST_DEBUG ("seek: %lu", value);
++  GST_DEBUG ("seek: %d", value);
    gst_element_seek (self->pipeline, 1.0,
        GST_FORMAT_TIME,
        SEEK_FLAGS,
@@ -14,7 +14,7 @@
  gst_player_seek_absolute (GstPlayer * self, guint64 value)
  {
 -  GST_DEBUG ("absolute: %lu", value);
-+//  GST_DEBUG ("absolute: %lu", value);
++  GST_DEBUG ("absolute: %"G_GUINT64_FORMAT, value);
    gst_element_seek (self->pipeline, 1.0,
        GST_FORMAT_TIME,
        SEEK_FLAGS,
