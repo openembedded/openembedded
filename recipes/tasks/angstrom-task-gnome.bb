@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r6"
+PR = "r7"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -67,7 +67,7 @@ RDEPENDS_task-gnome = " \
   gnome-bluetooth \
   gnome-desktop \
   gnome-doc-utils \
-  gnome-keyring gnome-keyring-pam-plugin libpam-meta \
+  gnome-keyring gnome-keyring-pam-plugin libpam-meta pam-plugin-ck-connector \
   gnome-media \
   gnome-menus \
   gnome-mime-data \
