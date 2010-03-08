@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.9.5.9+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit distutils update-rc.d
 
@@ -35,7 +35,7 @@ pkg_postinst_${PN} () {
 	echo "  This change is not backwards compatible so a conversion is needed, furthermore, since new opimd does not (and will not) support working with SIM, importing your SIM data is also required."
 	echo "  In order to import SIM contacts, please use PISI."
 	echo "  If you still have old contacts with 'tel:' prefix instead of field types (i.e you haven't upgraded since 26.1.2010) please run the 'remove-tel' script first."
-	echo "  For the database conversion:
+	echo "  For the database conversion:"
 	echo "    1) stop frameworkd '/etc/init.d/frameworkd stop'"
 	echo "    2) use the conversion script, called: 'opimd_convert_db' which is already installed in your system"
 	echo "    3) restart your device"
