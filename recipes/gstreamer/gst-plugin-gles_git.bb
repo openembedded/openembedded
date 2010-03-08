@@ -1,9 +1,9 @@
 DESCRIPTION = "GStreamer OpenGL/GLES2 plugins"
 LICENSE = "LGPL"
 
-SRCREV = "18f5c4875006606b28aa9aa366abbc5dd1e16b60"
+SRCREV = "3d5ba149ee8c290bf9995cd2f6826b0ff2920adf"
 
-PR = "r1"
+PR = "r2"
 PR_append = "+gitr${SRCREV}"
 PV = "0.10"
 
@@ -12,7 +12,6 @@ DEPENDS = "virtual/libsdl libgles-omap3 gstreamer gst-plugins-base"
 
 SRC_URI = "git://anongit.freedesktop.org/gstreamer/gst-plugins-gl;protocol=git \
            http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.23.tar.bz2 \
-           file://omap3_fix_renderbuffer_storage.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"
@@ -24,6 +23,7 @@ EXTRA_OECONF = "--disable-tests --disable-examples"
 do_configure_prepend () {
 	cp -rf ${WORKDIR}/gstreamer-0.10.23/common/* ${S}/common/
 	cp -rf ${WORKDIR}/gstreamer-0.10.23/po/* ${S}/po/
+	autopoint --force
 	sed -i -e '/po /d' ${S}/Makefile.am
 }
 
