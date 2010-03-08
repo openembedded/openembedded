@@ -1,13 +1,6 @@
-DESCRIPTION = "GNU m4 is an implementation of the traditional Unix macro \
-processor."
-LICENSE = "GPLv3"
-SRC_URI = "${GNU_MIRROR}/m4/m4-${PV}.tar.gz"
-S = "${WORKDIR}/m4-${PV}"
+require m4.inc
 
-inherit autotools
+PR = "${INC_PR}.0"
 
-EXTRA_OEMAKE += "'infodir=${infodir}'"
-
-do_configure() {
-	oe_runconf
-}
+SRC_URI[archive.md5sum] = "b3587c993523dd320c318ec456876839"
+SRC_URI[archive.sha256sum] = "855217de304616931844f54bd00a1e03e92452f85de6caeec47b0e8244881ba3"

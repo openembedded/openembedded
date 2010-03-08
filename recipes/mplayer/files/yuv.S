@@ -22,6 +22,11 @@
     DEALINGS IN THE SOFTWARE.
  */
 
+        .macro mov32    rd, val
+        movw            \rd, #:lower16:\val
+        movt            \rd, #:upper16:\val
+        .endm
+
         .fpu neon
         .text
 
@@ -49,8 +54,9 @@
 yuv420_to_yuv422:
         push            {r4-r11,lr}
         add             r4,  sp,  #36
+.Ldo_conv:
         ldm             r4, {r4-r8}
-        dmb
+        push            {r4}
 1:
         mov             tu,   u
         mov             tv,   v
@@ -102,7 +108,7 @@ yuv420_to_yuv422:
         add             v,    tv,   #8
         bgt             1b
 
-        ldr             w,    [sp, #36]
+        ldr             w,    [sp]
         subs            h,    h,    #16
         add             yuv,  yuv,  dw, lsl #4
         sub             yuv,  yuv,  w,  lsl #1
@@ -114,6 +120,51 @@ yuv420_to_yuv422:
         sub             v,    v,    w,  asr #1
         bgt             1b
 
-        pop             {r4-r11,pc}
+        pop             {r3-r11,pc}
         .endfunc
 
+        .func   neon_open
+neon_open:
+        push            {r4-r8,lr}
+        ldrd            r4,  r5,  [r0, #16]
+        ldrd            r6,  r7,  [r0, #24]
+        lsl             r8,  r4,  #1
+        mov32           r0,  conv_params
+        stm             r0,  {r4-r8}
+        mov             r0,  #0
+        pop             {r4-r8,pc}
+        .endfunc
+
+        .func   neon_convert
+neon_convert:
+        push            {r4-r11,lr}
+        ldr             r0,  [r0]
+        mov32           r4,  conv_params
+        ldm             r1,  {r1-r3}
+        b               .Ldo_conv
+        .endfunc
+
+        .func   neon_nop
+neon_nop:
+        bx              lr
+        .endfunc
+
+        .section .bss
+conv_params:
+        .skip           5*4
+        .size           conv_params, . - conv_params
+
+        .section        .rodata
+.Lname: .asciz          "neon"
+ofb_pixconv_neon:
+        .word           .Lname
+        .word           0               @ flags
+        .word           neon_open
+        .word           neon_convert
+        .word           neon_nop        @ finish
+        .word           neon_nop        @ close
+        .size           ofb_pixconv_neon, . - ofb_pixconv_neon
+
+        .section        .ofb_pixconv, "a"
+ofb_pixconv_neon_p:
+        .word           ofb_pixconv_neon

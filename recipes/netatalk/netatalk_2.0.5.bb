@@ -4,12 +4,12 @@ LICENSE = "GPL"
 
 DEPENDS = "cups db openssl"
 
-SRC_URI = "http://ovh.dl.sourceforge.net/sourceforge/netatalk/netatalk-${PV}.tar.gz \
-	   file://netatalk-2.0.3-db43.patch;patch=1 \
-	   file://netatalk-2.0.3-newerdb.patch;patch=1 \
-	   file://netatalk-2.0.3-xfs.patch;patch=1 \
+SRC_URI = "http://ovh.dl.sourceforge.net/sourceforge/netatalk/netatalk-${PV}.tar.gz;name=src \
+	   file://netatalk-dbd.patch;patch=1 \
 	   file://netatalk.conf \
 	   file://init"
+SRC_URI[src.md5sum] = "f35cd7a4ce26c780de380cd2bcae5ce6"
+SRC_URI[src.sha256sum] = "7e02b0d2849ec83459c65d240809ff95ee4a857a3ba38af2cafbbe3717d0c672"
 
 inherit autotools update-rc.d
 

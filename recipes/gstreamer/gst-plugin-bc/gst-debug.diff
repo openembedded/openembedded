@@ -1,0 +1,20 @@
+--- /tmp/gstplayer.c	2010-03-08 12:42:37.000000000 +0100
++++ git/bc-app/gstplayer.c	2010-03-08 12:42:45.000000000 +0100
+@@ -237,7 +237,7 @@
+ void
+ gst_player_seek (GstPlayer * self, gint value)
+ {
+-  GST_DEBUG ("seek: %lu", value);
++  GST_DEBUG ("seek: %d", value);
+   gst_element_seek (self->pipeline, 1.0,
+       GST_FORMAT_TIME,
+       SEEK_FLAGS,
+@@ -251,7 +251,7 @@
+ void
+ gst_player_seek_absolute (GstPlayer * self, guint64 value)
+ {
+-  GST_DEBUG ("absolute: %lu", value);
++  GST_DEBUG ("absolute: %"G_GUINT64_FORMAT, value);
+   gst_element_seek (self->pipeline, 1.0,
+       GST_FORMAT_TIME,
+       SEEK_FLAGS,
