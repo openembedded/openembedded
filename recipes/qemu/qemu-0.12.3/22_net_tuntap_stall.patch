@@ -1,0 +1,25 @@
+Index: qemu-0.12.3/net/tap-linux.c
+===================================================================
+--- qemu-0.12.3.orig/net/tap-linux.c
++++ qemu-0.12.3/net/tap-linux.c
+@@ -43,7 +43,7 @@ int tap_open(char *ifname, int ifname_si
+         return -1;
+     }
+     memset(&ifr, 0, sizeof(ifr));
+-    ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
++    ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_ONE_QUEUE;
+ 
+     if (*vnet_hdr) {
+         unsigned int features;
+Index: qemu-0.12.3/net/tap-linux.h
+===================================================================
+--- qemu-0.12.3.orig/net/tap-linux.h
++++ qemu-0.12.3/net/tap-linux.h
+@@ -33,6 +33,7 @@
+ /* TUNSETIFF ifr flags */
+ #define IFF_TAP		0x0002
+ #define IFF_NO_PI	0x1000
++#define IFF_ONE_QUEUE	0x2000
+ #define IFF_VNET_HDR	0x4000
+ 
+ /* Features for GSO (TUNSETOFFLOAD). */
