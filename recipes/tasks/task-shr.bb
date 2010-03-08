@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Fat Image Feed"
-PR = "r6"
+PR = "r7"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -26,7 +26,7 @@ RDEPENDS_${PN}-apps += "\
    task-shr-minimal-apps \
 	opimd-utils-notes \
 	mokonnect \
-	midori \
+	ventura \
 	intone \
 "
 RDEPENDS_${PN}-cli += "\
