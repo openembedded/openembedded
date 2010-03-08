@@ -35,8 +35,10 @@ if [ $CPUTYPE = "OMAP3530" ]; then
 	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
 	#modprobe bc_example
 	modprobe omaplfb
+	modprobe bufferclass_ti
 
 	pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
+        bc_maj=`grep "bc" /proc/devices | cut -b1,2,3`
 
 	if [ -e /dev/pvrsrvkm ] ; then 
 		rm -f /dev/pvrsrvkm
@@ -44,6 +46,9 @@ if [ $CPUTYPE = "OMAP3530" ]; then
 
 	mknod /dev/pvrsrvkm c $pvr_maj 0 
 	chmod 666 /dev/pvrsrvkm
+
+	mknod /dev/bc_cat c $bc_maj 0
+	chmod 666 /dev/bc_cat
 
 	touch /etc/powervr-esrev
 
