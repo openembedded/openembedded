@@ -14,6 +14,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2;name=gcctbz2 \
 inherit autotools gettext
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
+FILESPATHPKG .= ":gcc-${PV}"
 
 # When making a Canadian SDK, we use these files too to make the compiler
 # for building for the new host part.  So only obey TARGET_FPU for the
