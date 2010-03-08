@@ -8,7 +8,6 @@ SRC_URI += "file://config-lfs.patch;patch=1 \
             file://configure-3.3.0.patch;patch=1 \
             file://config-h.patch;patch=1 \
             file://mtab.patch;patch=1 \
-            file://wbstatic.patch;patch=1 \
 	        "
 
 do_compile () {
