@@ -13,7 +13,7 @@ require linux-libc-headers.inc
 # since we assume GPL for linux i think we can also assume it here
 DEFAULT_PREFERENCE = "-1"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-${PV}.tar.bz2 \
 	file://keyboard.patch;patch=1 \
@@ -53,14 +53,6 @@ do_configure () {
 	elif test "$ARCH" = "sh"; then
 		cp -pPR include/asm/cpu-${TARGET_ARCH} include/asm/cpu || die "unable to create include/asm/cpu"
 	fi
-}
-
-do_stage () {
-	install -d ${STAGING_INCDIR}
-	rm -rf ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm ${STAGING_INCDIR}/asm-generic
-	cp -pfLR include/linux ${STAGING_INCDIR}/
-	cp -pfLR include/asm ${STAGING_INCDIR}/
-	cp -pfLR include/asm-generic ${STAGING_INCDIR}/
 }
 
 do_install() {

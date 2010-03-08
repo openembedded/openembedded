@@ -7,7 +7,7 @@ HOMEPAGE = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/"
 #   standard linux kernel license applies.
 # since we assume GPL for linux i think we can also assume it here
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
 	file://keyboard.patch;patch=1"
@@ -43,16 +43,8 @@ do_configure () {
 	fi
 }
 
-do_stage () {
-	install -d ${STAGING_INCDIR}
-	rm -rf ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm
-	cp -pfLR include/linux ${STAGING_INCDIR}/
-	cp -pfLR include/asm ${STAGING_INCDIR}/
-}
-
 do_install() {
 	install -d ${D}${includedir}
 	cp -pfLR include/linux ${D}${includedir}/
 	cp -pfLR include/asm ${D}${includedir}/
 }
-
