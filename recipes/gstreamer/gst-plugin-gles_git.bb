@@ -1,9 +1,11 @@
+require gst-plugins-package.inc
+
 DESCRIPTION = "GStreamer OpenGL/GLES2 plugins"
 LICENSE = "LGPL"
 
 SRCREV = "3d5ba149ee8c290bf9995cd2f6826b0ff2920adf"
 
-PR = "r2"
+PR = "r3"
 PR_append = "+gitr${SRCREV}"
 PV = "0.10"
 
@@ -18,7 +20,7 @@ S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--disable-tests --disable-examples"
+EXTRA_OECONF = "   --disable-rpath --disable-tests --disable-examples"
 
 do_configure_prepend () {
 	cp -rf ${WORKDIR}/gstreamer-0.10.23/common/* ${S}/common/
@@ -36,7 +38,6 @@ do_configure () {
 		sed -i -e 's:-Wl,-rpath-link,${STAGING_LIBDIR}::g' -e s:\Werror\:\Wno-error\:g $i
 	done
 }
-
 GST_LIBV = 0.10
 
 do_install() {
@@ -45,15 +46,6 @@ do_install() {
 	install -m 0755 gst-libs/gst/gl/.libs/libgstgl-0.10.so.0.0.0 ${D}${libdir}/libgstgl-0.10.so.0
 }
 
-
-FILES_${PN} = "${libdir}/gstreamer-0.10/libgstopengl.so \
-               ${libdir}/libgstgl-0.10.so.0"
-
-FILES_${PN}-dev += "\
-  ${libdir}/gstreamer-0.10/libgstopengl.* \
-"
-
-FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
-
-INSANE_SKIP_${PN} = True
+# bad rpaths we can't get rid off..
+INSANE_SKIP_gst-plugin-opengl = True
 
