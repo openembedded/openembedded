@@ -1,0 +1,20 @@
+More details about this patch are on http://bugs.debian.org/529838
+The bug and the patch were forwarded to upstream, please see 
+http://bugs.mutt.org/3239
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -690,10 +690,10 @@
+   then
+     AC_MSG_WARN([SSL support is only useful with POP, IMAP or SMTP support])
+   else
+-    MUTT_AM_PATH_GNUTLS([$gnutls_prefix],
++    PKG_CHECK_MODULES(GNUTLS, gnutls,
+       [dnl GNUTLS found
+-      CPPFLAGS="$CPPFLAGS $LIBGNUTLS_CFLAGS"
+-      MUTTLIBS="$MUTTLIBS $LIBGNUTLS_LIBS"
++      CPPFLAGS="$CPPFLAGS $GNUTLS_CFLAGS"
++      MUTTLIBS="$MUTTLIBS $GNUTLS_LIBS"
+ 
+       AC_DEFINE(USE_SSL,1,[ Define if you want support for SSL. ])
+       AC_DEFINE(USE_SSL_GNUTLS,1,[ Define if you want support for SSL via GNUTLS. ])
