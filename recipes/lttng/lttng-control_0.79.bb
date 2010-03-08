@@ -4,9 +4,9 @@ extract program execution details from the Linux operating system and  \
 interpret them."
 LICENSE = "GPL"
 
-SRC_URI = "http://ltt.polymtl.ca/lttng/ltt-control-${PV}-21062006.tar.gz"
+SRC_URI = "http://lttng.org/files/lttng/ltt-control-${PV}-01022010.tar.gz"
 
-S = "${WORKDIR}/ltt-control-${PV}-21062006"
+S = "${WORKDIR}/ltt-control-${PV}-01022010"
 
 inherit autotools
 
