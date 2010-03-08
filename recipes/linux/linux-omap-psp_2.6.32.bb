@@ -44,6 +44,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://0031-ARM-VFP-add-support-to-sync-the-VFP-state-of-the-cur.patch;patch=1 \
            file://0032-ARM-VFP-preserve-the-HW-context-when-calling-signal-.patch;patch=1 \
            file://0033-Switch-SGX-clocks-to-200MHz-on-DM37xx-OMAP36xx.patch;patch=1 \
+           file://0034-modedb.c-add-proper-720p60-mode.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
