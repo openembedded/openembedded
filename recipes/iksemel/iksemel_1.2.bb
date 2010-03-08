@@ -2,7 +2,7 @@ LICENSE     = "LGPL"
 DESCRIPTION = "A simple, powerful XML-parsing library written in C."
 SECTION = "libs"
 PRIORITY    = "optional"
-DEPENDS     = "glibc gnutls"
+DEPENDS     = "gnutls"
 PR          = "r0"
 
 inherit pkgconfig autotools
