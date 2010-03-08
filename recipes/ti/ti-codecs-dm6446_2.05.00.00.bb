@@ -7,8 +7,8 @@ SECTION = "multimedia"
 
 PV = "2_05_00_00"
 
-SRC_URI[dm6446codecsbin.md5sum] = "4db567252e6c43119e1c0aafe401a679"
-SRC_URI[dm6446codecsbin.sha256sum] = "e042e1aad42a6728adf5c955dc38e4f8331fc0eacd833f1cd75d9cbb4faff0b5"
+SRC_URI[dm6446codecsbin.md5sum] = "2ce99015bb1ed1df0491403c5e8d99fb"
+SRC_URI[dm6446codecsbin.sha256sum] = "6467ea4854abbff3cbc224df1f163d01c7fb387f15483129a40a1f68e6742b62"
 
 PR = "r17"
 
@@ -25,13 +25,17 @@ SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/S1SDKLNX/DVSDK_2
 BINFILE = "dm6446_codecs_setuplinux_2_00_00_22.bin"
 TI_BIN_UNPK_CMDS = "Y: qY:workdir:Y"
 
-DEPENDS = "ti-cgt6x ti-xdctools ti-dspbios ti-codec-engine ti-linuxutils"
+DEPENDS = "ti-xdais ti-cgt6x ti-xdctools ti-dspbios ti-codec-engine ti-linuxutils"
 
 #generic codec
 DSPSUFFIX_dm6446 = "x64P"
 
-do_prepsources() {
+# LINK_INSTALL_DIR already has 'packages' at the end
+do_configure() {
+         sed -i -e 's:(LINK_INSTALL_DIR)/packages:(LINK_INSTALL_DIR):g' ${S}/Makefile
+}
 
+do_prepsources() {
 	make \
              CE_INSTALL_DIR=${CE_INSTALL_DIR} \
              FC_INSTALL_DIR=${FC_INSTALL_DIR} \
@@ -42,6 +46,8 @@ do_prepsources() {
              CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
              XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
              CODEC_INSTALL_DIR="${S}" \
+             XDAIS_INSTALL_DIR="${XDAIS_INSTALL_DIR}" \
+             BIOSUTILS_INSTALL_DIR="${BIOSUTILS_INSTALL_DIR}" \
              XDCARGS="eval" \
              clean
 }
@@ -49,7 +55,6 @@ do_prepsources() {
 addtask prepsources after do_configure before do_compile
 
 do_compile() {
-
 	make \
              CE_INSTALL_DIR=${CE_INSTALL_DIR} \
              FC_INSTALL_DIR=${FC_INSTALL_DIR} \
@@ -60,6 +65,8 @@ do_compile() {
              CODEGEN_INSTALL_DIR=${CODEGEN_INSTALL_DIR} \
              XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
              CODEC_INSTALL_DIR="${S}" \
+             XDAIS_INSTALL_DIR="${XDAIS_INSTALL_DIR}" \
+             BIOSUTILS_INSTALL_DIR="${BIOSUTILS_INSTALL_DIR}" \
              XDCARGS="eval" \
              all
 }
