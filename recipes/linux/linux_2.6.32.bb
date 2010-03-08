@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r9"
+PR = "r10"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -45,6 +45,8 @@ SRC_URI_append_simone = " \
 			file://ep93xx/ep93xx-touchscreen.patch;patch=1 \
 			file://ep93xx/ep93xx-spi.patch;patch=1 \
 			file://ep93xx/ep93xx-cpuinfo.patch;patch=1 "
+
+FILES_kernel-image_simone = ""
 
 SRC_URI_append_ts72xx = " \
                         file://0001-ts72xx_base.patch;patch=1 \
