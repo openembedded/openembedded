@@ -6,6 +6,8 @@ SECTION = "libs/network"
 SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz;name=src"
 S = "${WORKDIR}/openssl-${PV}"
 
+inherit siteinfo
+
 INC_PR = "r11"
 
 AR_append = " r"

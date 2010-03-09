@@ -9,7 +9,7 @@ PR = "r6"
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2 \
           "
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig siteinfo
 
 EXTRA_OECONF = "--enable-gui=gtk \
                 --enable-renderer=cairo \

@@ -11,7 +11,7 @@ SRC_URI = "svn://ogre.svn.sourceforge.net/svnroot/ogre;module=trunk;proto=https 
            file://ogre-egl-update.diff;patch=1;pnum=0 \
           "
 
-inherit autotools_stage
+inherit autotools_stage siteinfo
 
 # This is the EGL version
 EXTRA_OECONF = " --with-gui=gtk --disable-freetypetest --enable-ogre-demos --with-allocator=std --enable-threading=no --disable-cg --enable-gles "
