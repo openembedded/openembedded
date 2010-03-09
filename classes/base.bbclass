@@ -61,10 +61,14 @@ def base_chk_file_vars(parser, localpath, params, data):
         name = params["name"]
     except KeyError:
         return False
-    flagName = "%s.md5sum" % name
-    want_md5sum = bb.data.getVarFlag("SRC_URI", flagName, data)
-    flagName = "%s.sha256sum" % name
-    want_sha256sum = bb.data.getVarFlag("SRC_URI", flagName, data)
+    if name:
+        md5flag = "%s.md5sum" % name
+        sha256flag = "%s.sha256sum" % name
+    else:
+        md5flag = "md5sum"
+        sha256flag = "sha256sum"
+    want_md5sum = bb.data.getVarFlag("SRC_URI", md5flag, data)
+    want_sha256sum = bb.data.getVarFlag("SRC_URI", sha256flag, data)
 
     if (want_sha256sum == None and want_md5sum == None):
         # no checksums to check, nothing to do
@@ -702,12 +706,18 @@ python base_do_fetch() {
 	pn = bb.data.getVar('PN', d, True)
 
 	# Check each URI
+	first_uri = True
 	for url in src_uri.split():
 		localpath = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
 		(type,host,path,_,_,params) = bb.decodeurl(url)
 		uri = "%s://%s%s" % (type,host,path)
 		try:
 			if type in [ "http", "https", "ftp", "ftps" ]:
+				# We provide a default shortcut of plain [] for the first fetch uri
+				# Explicit names in any uri overrides this default.
+				if not "name" in params and first_uri:
+					first_uri = False
+					params["name"] = ""
 				if not (base_chk_file_vars(parser, localpath, params, d) or base_chk_file(parser, pn, pv,uri, localpath, d)):
 					if not bb.data.getVar("OE_ALLOW_INSECURE_DOWNLOADS", d, True):
 						bb.fatal("%s-%s: %s has no checksum defined, cannot check archive integrity" % (pn,pv,uri))

@@ -2,6 +2,7 @@ require linux-libc-headers.inc
 
 DEFAULT_PREFERENCE = "-1"
 INHIBIT_DEFAULT_DEPS = "1"
+PR = "r1"
 
 SRC_URI = " \
 	${KERNELORG_MIRROR}/pub/linux/kernel/people/dwmw2/kernel-headers/snapshot/linux-kernel-headers-2.6.19-rc1.tar.bz2 \
@@ -38,23 +39,3 @@ do_install() {
 	cp -pfLR ${S}${includedir}/asm-${ARCH} ${D}${includedir}/asm
 	cp -pfLR ${S}${includedir}/asm-generic ${D}${includedir}/
 }
-
-do_stage () {
-	set_arch
-	install -d ${STAGING_INCDIR}
-	rm -rf ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm ${STAGING_INCDIR}/asm-generic
-	cp -pfLR ${S}${includedir}/linux ${STAGING_INCDIR}/
-	cp -pfLR ${S}${includedir}/asm-${ARCH} ${STAGING_INCDIR}/asm
-	cp -pfLR ${S}${includedir}/asm-generic ${STAGING_INCDIR}/
-}
-
-do_stage_append_nylon () {
-	install -d ${STAGING_INCDIR}/asm/
-	cp -vpPR include/asm-${ARCH}/* ${STAGING_INCDIR}/asm/
-	install -d ${CROSS_DIR}/${TARGET_SYS}/include/asm/
-	cp -vpPR include/asm-${ARCH}/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
-	cp -vpPR include/linux/* ${STAGING_INCDIR}/linux/
-	install -d ${CROSS_DIR}/${TARGET_SYS}/include/linux/
-	cp -vpPR include/linux/* ${CROSS_DIR}/${TARGET_SYS}/include/linux/
-}
-
