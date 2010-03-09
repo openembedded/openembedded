@@ -26,9 +26,6 @@ do_install_prepend() {
         install -m 0755 ${WORKDIR}/owhttpd ${D}${sysconfdir}/init.d/owhttpd
         install -m 0755 ${WORKDIR}/owserver ${D}${sysconfdir}/init.d/owserver
 }
-do_stage() {
-        autotools_stage_all
-}
 
 PACKAGES =+ "owftpd owhttpd owserver owshell libowcapi libow libownet owmon owtap"
 
@@ -60,5 +57,5 @@ INITSCRIPT_NAME_owhttpd = "owhttpd"
 INITSCRIPT_PARAMS_owserver = "defaults 20"
 INITSCRIPT_PARAMS_owhttpd = "defaults 21"
 
-SRC_URI[md5sum] = "2d6a4311f7275eb04466e36678bacabe"
-SRC_URI[sha256sum] = "3b35a5c2d6fa0814d3c689dd490e829d3dd7729d09ae95f9205757cbb3ee52f0"
+SRC_URI[md5sum] = "16de38f99206024b0ac32176f4f1afcb"
+SRC_URI[sha256sum] = "1b972d5f01ad8890fc6c8c96dcb9235f448cafba32664b3fcc6caecc62fd105d"
