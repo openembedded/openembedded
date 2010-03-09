@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r24"
+PR = "r25"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug)"
 ALLOW_EMPTY = "1"
@@ -34,10 +34,10 @@ cpio \
 # file system.
 SLUGOS_STANDARD_RRECOMMENDS += "\
 e2fsprogs-mke2fs \
-e2fsprogs-fsck \
+util-linux-ng-fsck \
 e2fsprogs-e2fsck \
 e2fsprogs-badblocks \
-e2fsprogs-blkid \
+util-linux-ng-blkid \
 "
 
 # Filesystem selection.  Adding entries here adds the module to the
