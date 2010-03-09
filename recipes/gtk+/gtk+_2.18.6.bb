@@ -8,20 +8,14 @@ PR = "${INC_PR}.3"
 BBCLASSEXTEND = "native"
 
 DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native"
+PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
 
 # Enable xkb selectively
 XKBTOGGLE = " --disable-xkb"
 XKBTOGGLE_angstrom = ""
 
 EXTRA_OECONF = "--with-libtiff ${XKBTOGGLE} --disable-glibtest gio_can_sniff=yes"
-EXTRA_OECONF_append_virtclass-native = " --without-libtiff --without-libjpeg --disable-modules"
-
-do_install_virtclass-native () {
-	autotools_do_install
-	find ${D}${libdir} -name "libpixbufloader-*.la" -exec rm \{\} \;
-	rm ${D}${bindir}/gdk-pixbuf-csource
-	echo "going native!"
-}
+EXTRA_OECONF_append_virtclass-native = " --without-libtiff --without-libjpeg"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 
