@@ -1,0 +1,15 @@
+Index: qemu-0.12.3/block/vvfat.c
+===================================================================
+--- qemu-0.12.3.orig/block/vvfat.c
++++ qemu-0.12.3/block/vvfat.c
+@@ -868,7 +868,9 @@ static int init_directories(BDRVVVFATSta
+     {
+ 	direntry_t* entry=array_get_next(&(s->directory));
+ 	entry->attributes=0x28; /* archive | volume label */
+-	snprintf((char*)entry->name,11,"QEMU VVFAT");
++	// snprintf((char*)entry->name,11,"QEMU VVFAT");
++	snprintf(entry->name, sizeof(entry->name), "QEMU VV");
++	snprintf(entry->extension, sizeof(entry->extension), "FAT");
+     }
+ 
+     /* Now build FAT, and write back information into directory */

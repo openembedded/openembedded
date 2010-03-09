@@ -35,12 +35,6 @@ BBMASK = ""
 # have to set PATH in your environment to make sure BitBake finds additional binaries.
 # ASSUME_PROVIDED += "virtual/${TARGET_PREFIX}gcc virtual/libc"
 
-# Uncomment this if you're building for an arch that uses emulated locale 
-# generation under qemu (mainly arm glibc) and have an external gcc 3.x compiler
-# that OE recognises. This will mean the gcc-native build is skipped, speeding 
-# builds up.
-# ASSUME_PROVIDED += "gcc3-native"
-
 # Uncomment this if you are building Linux 2.4 Embedix kernels.
 # i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18 - and don't forget
 # to rename the binaries as instructed in the Wiki.

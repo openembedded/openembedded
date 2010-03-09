@@ -17,9 +17,9 @@ S = "${WORKDIR}/git"
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 PE = "1"
 
-ARAGO_DM_REV = "c2aeffe9e835c5b6b275edc416951ce4a348b0fd"
+ARAGO_DM_REV = "e87a8397d2830db11ce1518bd2abc4e8815763f1"
 ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
-ARAGO_DM_BR  = "r30"
+ARAGO_DM_BR  = "r32"
 ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_dm355-evm           = ${ARAGO_DM_REV}
@@ -76,9 +76,6 @@ SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
                                      file://da850_omapl138_opp456mhz.patch;patch=1 \
                                      file://patch_hawk.diff;patch=1"
 
-
 do_configure_prepend_hawkboard() {
 	sed -i s:2157:2495:g ${S}/arch/arm/tools/mach-types
 }
-
-

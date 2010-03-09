@@ -1,6 +1,6 @@
 DESCRIPTION = "task mamona base"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
@@ -16,7 +16,6 @@ RDEPENDS = "\
   dpkg \
   e2fsprogs \
   e2fsprogs-badblocks \
-  e2fsprogs-blkid \
   e2fsprogs-uuidgen \
   file \
   gawk \
@@ -44,5 +43,6 @@ RDEPENDS = "\
   util-linux-losetup \
   util-linux-swaponoff \
   util-linux-umount \
+  util-linux-ng-blkid \
   zlib \
 "

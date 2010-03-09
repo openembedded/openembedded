@@ -1,7 +1,7 @@
 DESCRIPTION = "Basic image for openprotium"
 HOMEPAGE = "http://www.openprotium.org"
 ALLOW_EMPTY = "1"
-PR = "r1"
+PR = "r2"
 
 inherit task
 
@@ -35,7 +35,7 @@ RDEPENDS = " kernel \
 	modutils-initscripts \
 	ipkg-collateral ipkg ipkg-link \
 	portmap \
-	e2fsprogs-blkid \
+	util-linux-ng-blkid \
 	mdadm \
 	hdparm \
 	mtd-utils \
