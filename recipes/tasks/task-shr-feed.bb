@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r45"
+PR = "r46"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -7,6 +7,7 @@ inherit task
 
 RDEPENDS_${PN} += "\
 		babiloo-efl \
+		bootchart-lite \
 		claws-mail \
 		claws-plugin-mailmbox \
 #		claws-plugin-gtkhtml2-viewer \

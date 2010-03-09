@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r26"
+PR = "r27"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -111,6 +111,8 @@ RDEPENDS_${PN}-x = "\
   shr-theme-gry \
   xcursor-transparent-theme \
   xinput-calibrator \
+# Needed for proper input support in efl based apps  
+  libx11-locale \
 # All localedata based on IMAGE_LINGUAS
   ${@get_rdepends(bb, d)} \
 # Make sure it's available for those who want's to play with illume2  
