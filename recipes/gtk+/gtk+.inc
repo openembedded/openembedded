@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cups \
-	   libxrandr libxdamage libxrender libxcomposite cairo jasper"
+	   libxrandr libxdamage libxrender libxcomposite cairo jasper gtk+-native"
 PROVIDES = "gdk-pixbuf"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
