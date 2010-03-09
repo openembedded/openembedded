@@ -16,9 +16,9 @@ S = "${WORKDIR}/git"
 # dm355-evm/dm365-evm/dm6446-evm/dm6467-evm/dm6467t-evm Davinci PSP 03.01.00/03.02.00 (build r30)
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
-ARAGO_DM_REV = "c2aeffe9e835c5b6b275edc416951ce4a348b0fd"
+ARAGO_DM_REV = "e87a8397d2830db11ce1518bd2abc4e8815763f1"
 ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCREV}"
-ARAGO_DM_BR  = "r30"
+ARAGO_DM_BR  = "r32"
 ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_dm355           = ${ARAGO_DM_REV}
