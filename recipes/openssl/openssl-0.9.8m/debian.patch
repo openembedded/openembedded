@@ -1,7 +1,7 @@
-Index: openssl-0.9.8j/Makefile
+Index: openssl-0.9.8m/Makefile
 ===================================================================
---- openssl-0.9.8j.orig/Makefile	2009-01-07 12:57:01.000000000 +0100
-+++ openssl-0.9.8j/Makefile	2009-01-12 14:59:15.000000000 +0100
+--- openssl-0.9.8m.orig/Makefile	2010-02-26 01:21:14.000000000 +0800
++++ openssl-0.9.8m/Makefile	2010-03-09 20:17:26.515664333 +0800
 @@ -26,10 +26,10 @@
  # for, say, /usr/ and yet have everything installed to /tmp/somedir/usr/.
  # Normally it is left empty.
@@ -15,7 +15,7 @@ Index: openssl-0.9.8j/Makefile
  
  # NO_IDEA - Define to build without the IDEA algorithm
  # NO_RC4  - Define to build without the RC4 algorithm
-@@ -154,10 +154,11 @@
+@@ -155,10 +155,11 @@
  
  MAKEFILE= Makefile
  
@@ -29,7 +29,7 @@ Index: openssl-0.9.8j/Makefile
  SHELL=/bin/sh
  
  TOP=    .
-@@ -169,8 +170,8 @@
+@@ -170,8 +171,8 @@
  SHARED_SSL=libssl$(SHLIB_EXT)
  SHARED_FIPS=
  SHARED_LIBS=
@@ -40,7 +40,7 @@ Index: openssl-0.9.8j/Makefile
  
  GENERAL=        Makefile
  BASENAME=       openssl
-@@ -445,7 +446,8 @@
+@@ -447,7 +448,8 @@
  	    echo 'Description: OpenSSL cryptography library'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -50,7 +50,7 @@ Index: openssl-0.9.8j/Makefile
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
  
  libssl.pc: Makefile
-@@ -458,7 +460,8 @@
+@@ -460,7 +462,8 @@
  	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -60,7 +60,7 @@ Index: openssl-0.9.8j/Makefile
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
  
  openssl.pc: Makefile
-@@ -471,7 +474,8 @@
+@@ -473,7 +476,8 @@
  	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -70,16 +70,16 @@ Index: openssl-0.9.8j/Makefile
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
  
  Makefile: Makefile.org Configure config
-@@ -615,7 +619,7 @@
+@@ -622,7 +626,7 @@
  install_sw:
  	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
- 		$(INSTALL_PREFIX)$(INSTALLTOP)/lib \
--		$(INSTALL_PREFIX)$(INSTALLTOP)/lib/engines \
-+		$(INSTALL_PREFIX)$(INSTALLTOP)/lib/ssl/engines \
- 		$(INSTALL_PREFIX)$(INSTALLTOP)/lib/pkgconfig \
+ 		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR) \
+-		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/engines \
++		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/ssl/engines \
+ 		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/pkgconfig \
  		$(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl \
  		$(INSTALL_PREFIX)$(OPENSSLDIR)/misc \
-@@ -693,7 +697,7 @@
+@@ -700,7 +704,7 @@
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -88,7 +88,7 @@ Index: openssl-0.9.8j/Makefile
  			--release=$(VERSION) `basename $$i`") \
  			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
  		$(PERL) util/extract-names.pl < $$i | \
-@@ -710,7 +714,7 @@
+@@ -717,7 +721,7 @@
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -97,17 +97,17 @@ Index: openssl-0.9.8j/Makefile
  			--release=$(VERSION) `basename $$i`") \
  			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
  		$(PERL) util/extract-names.pl < $$i | \
-Index: openssl-0.9.8j/Configure
+Index: openssl-0.9.8m/Configure
 ===================================================================
---- openssl-0.9.8j.orig/Configure	2009-01-12 14:57:20.000000000 +0100
-+++ openssl-0.9.8j/Configure	2009-01-12 14:59:15.000000000 +0100
+--- openssl-0.9.8m.orig/Configure	2010-03-09 16:15:42.000000000 +0800
++++ openssl-0.9.8m/Configure	2010-03-09 20:18:16.566914027 +0800
 @@ -1,4 +1,4 @@
 -:
 +#!/usr/local/bin/perl
  eval 'exec perl -S $0 ${1+"$@"}'
      if $running_under_some_shell;
  ##
-@@ -315,6 +315,47 @@
+@@ -326,6 +326,47 @@
  "osf1-alpha-cc",  "cc:-std1 -tune host -O4 -readonly_strings::(unknown):::SIXTY_FOUR_BIT_LONG RC4_CHUNK:${no_asm}:dlfcn:alpha-osf1-shared:::.so",
  "tru64-alpha-cc", "cc:-std1 -tune host -fast -readonly_strings::-pthread:::SIXTY_FOUR_BIT_LONG RC4_CHUNK:${no_asm}:dlfcn:alpha-osf1-shared::-msym:.so",
  
@@ -155,7 +155,7 @@ Index: openssl-0.9.8j/Configure
  ####
  #### Variety of LINUX:-)
  ####
-@@ -493,7 +534,7 @@
+@@ -505,7 +546,7 @@
  # Cygwin
  "Cygwin-pre1.3", "gcc:-DTERMIOS -DL_ENDIAN -fomit-frame-pointer -O3 -m486 -Wall::(unknown):CYGWIN32::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${no_asm}:win32",
  "Cygwin", "gcc:-DTERMIOS -DL_ENDIAN -fomit-frame-pointer -O3 -march=i486 -Wall:::CYGWIN32::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_coff_asm}:dlfcn:cygwin-shared:-D_WINDLL:-shared:.dll.a",
@@ -164,8 +164,8 @@ Index: openssl-0.9.8j/Configure
  
  # NetWare from David Ward (dsward@novell.com)
  # requires either MetroWerks NLM development tools, or gcc / nlmconv
-@@ -1436,6 +1477,8 @@
- 	$shlib_minor=$2;
+@@ -1477,6 +1518,8 @@
+ 		}
  	}
  
 +$shared_ldflag .= " -Wl,--version-script=openssl.ld";
@@ -173,7 +173,7 @@ Index: openssl-0.9.8j/Configure
  open(IN,'<Makefile.org') || die "unable to read Makefile.org:$!\n";
  unlink("$Makefile.new") || die "unable to remove old $Makefile.new:$!\n" if -e "$Makefile.new";
  open(OUT,">$Makefile.new") || die "unable to create $Makefile.new:$!\n";
-@@ -1523,7 +1566,8 @@
+@@ -1576,7 +1619,8 @@
  	elsif ($shared_extension ne "" && $shared_extension =~ /^\.s([ol])\.[^\.]*\.[^\.]*$/)
  		{
  		my $sotmp = $1;
@@ -183,19 +183,19 @@ Index: openssl-0.9.8j/Configure
  		}
  	elsif ($shared_extension ne "" && $shared_extension =~ /^\.[^\.]*\.[^\.]*\.dylib$/)
  		{
-@@ -1645,7 +1689,7 @@
- 	if	(/^#define\s+OPENSSLDIR/)
- 		{ print OUT "#define OPENSSLDIR \"$openssldir\"\n"; }
- 	elsif	(/^#define\s+ENGINESDIR/)
--		{ print OUT "#define ENGINESDIR \"$prefix/lib/engines\"\n"; }
-+		{ print OUT "#define ENGINESDIR \"$prefix/lib/ssl/engines\"\n"; }
- 	elsif	(/^#((define)|(undef))\s+OPENSSL_EXPORT_VAR_AS_FUNCTION/)
- 		{ printf OUT "#undef OPENSSL_EXPORT_VAR_AS_FUNCTION\n"
- 			if $export_var_as_fn;
-Index: openssl-0.9.8j/config
+@@ -1706,7 +1750,7 @@
+ 		# $foo is to become "$prefix/lib$multilib/engines";
+ 		# as Makefile.org and engines/Makefile are adapted for
+ 		# $multilib suffix.
+-		my $foo = "$prefix/lib/engines";
++		my $foo = "$prefix/lib/ssl/engines";
+ 		$foo =~ s/\\/\\\\/g;
+ 		print OUT "#define ENGINESDIR \"$foo\"\n";
+ 		}
+Index: openssl-0.9.8m/config
 ===================================================================
---- openssl-0.9.8j.orig/config	2007-08-01 13:21:35.000000000 +0200
-+++ openssl-0.9.8j/config	2009-01-12 14:59:15.000000000 +0100
+--- openssl-0.9.8m.orig/config	2009-10-15 20:58:00.000000000 +0800
++++ openssl-0.9.8m/config	2010-03-09 20:16:50.506902007 +0800
 @@ -162,8 +162,8 @@
  	echo "${MACHINE}-whatever-linux1"; exit 0
  	;;
@@ -207,11 +207,11 @@ Index: openssl-0.9.8j/config
  	;;
  
      LynxOS:*)
-Index: openssl-0.9.8j/Makefile.org
+Index: openssl-0.9.8m/Makefile.org
 ===================================================================
---- openssl-0.9.8j.orig/Makefile.org	2009-01-12 14:56:55.000000000 +0100
-+++ openssl-0.9.8j/Makefile.org	2009-01-12 14:59:15.000000000 +0100
-@@ -152,10 +152,11 @@
+--- openssl-0.9.8m.orig/Makefile.org	2010-03-09 16:15:42.000000000 +0800
++++ openssl-0.9.8m/Makefile.org	2010-03-09 20:18:44.095663922 +0800
+@@ -153,10 +153,11 @@
  
  MAKEFILE= Makefile
  
@@ -225,7 +225,7 @@ Index: openssl-0.9.8j/Makefile.org
  SHELL=/bin/sh
  
  TOP=    .
-@@ -443,7 +444,8 @@
+@@ -445,7 +446,8 @@
  	    echo 'Description: OpenSSL cryptography library'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -235,7 +235,7 @@ Index: openssl-0.9.8j/Makefile.org
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
  
  libssl.pc: Makefile
-@@ -456,7 +458,8 @@
+@@ -458,7 +460,8 @@
  	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -245,7 +245,7 @@ Index: openssl-0.9.8j/Makefile.org
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
  
  openssl.pc: Makefile
-@@ -469,7 +472,8 @@
+@@ -471,7 +474,8 @@
  	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -255,16 +255,16 @@ Index: openssl-0.9.8j/Makefile.org
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
  
  Makefile: Makefile.org Configure config
-@@ -613,7 +617,7 @@
+@@ -620,7 +624,7 @@
  install_sw:
  	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
- 		$(INSTALL_PREFIX)$(INSTALLTOP)/lib \
--		$(INSTALL_PREFIX)$(INSTALLTOP)/lib/engines \
-+		$(INSTALL_PREFIX)$(INSTALLTOP)/lib/ssl/engines \
- 		$(INSTALL_PREFIX)$(INSTALLTOP)/lib/pkgconfig \
+ 		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR) \
+-		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/engines \
++		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/ssl/engines \
+ 		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/pkgconfig \
  		$(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl \
  		$(INSTALL_PREFIX)$(OPENSSLDIR)/misc \
-@@ -691,7 +695,7 @@
+@@ -698,7 +702,7 @@
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -273,7 +273,7 @@ Index: openssl-0.9.8j/Makefile.org
  			--release=$(VERSION) `basename $$i`") \
  			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
  		$(PERL) util/extract-names.pl < $$i | \
-@@ -708,7 +712,7 @@
+@@ -715,7 +719,7 @@
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -282,20 +282,20 @@ Index: openssl-0.9.8j/Makefile.org
  			--release=$(VERSION) `basename $$i`") \
  			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
  		$(PERL) util/extract-names.pl < $$i | \
-Index: openssl-0.9.8j/openssl.ld
+Index: openssl-0.9.8m/openssl.ld
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-0.9.8j/openssl.ld	2009-01-12 14:59:15.000000000 +0100
++++ openssl-0.9.8m/openssl.ld	2010-03-09 20:16:50.506902007 +0800
 @@ -0,0 +1,5 @@
 +OPENSSL_0.9.8 {
 +	 global:
 +		 *;
 +};
 +
-Index: openssl-0.9.8j/apps/s_time.c
+Index: openssl-0.9.8m/apps/s_time.c
 ===================================================================
---- openssl-0.9.8j.orig/apps/s_time.c	2003-12-27 15:40:17.000000000 +0100
-+++ openssl-0.9.8j/apps/s_time.c	2009-01-12 14:59:15.000000000 +0100
+--- openssl-0.9.8m.orig/apps/s_time.c	2003-12-27 22:40:17.000000000 +0800
++++ openssl-0.9.8m/apps/s_time.c	2010-03-09 20:16:50.516901237 +0800
 @@ -117,6 +117,7 @@
  
  /* The following if from times(3) man page.  It may need to be changed
@@ -304,20 +304,20 @@ Index: openssl-0.9.8j/apps/s_time.c
  #ifndef HZ
  # ifdef _SC_CLK_TCK
  #  define HZ ((double)sysconf(_SC_CLK_TCK))
-Index: openssl-0.9.8j/engines/openssl.ld
+Index: openssl-0.9.8m/engines/openssl.ld
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-0.9.8j/engines/openssl.ld	2009-01-12 14:59:15.000000000 +0100
++++ openssl-0.9.8m/engines/openssl.ld	2010-03-09 20:16:50.516901237 +0800
 @@ -0,0 +1,5 @@
 +OPENSSL_0.9.8 {
 +	 global:
 +		 *;
 +};
 +
-Index: openssl-0.9.8j/doc/Makefile
+Index: openssl-0.9.8m/doc/Makefile
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-0.9.8j/doc/Makefile	2009-01-12 14:59:15.000000000 +0100
++++ openssl-0.9.8m/doc/Makefile	2010-03-09 20:16:50.516901237 +0800
 @@ -0,0 +1,40 @@
 +VERSION =
 +
@@ -359,10 +359,10 @@ Index: openssl-0.9.8j/doc/Makefile
 +.PHONY: realclean
 +realclean:
 +	-$(MAKE) clean
-Index: openssl-0.9.8j/doc/apps/c_rehash.pod
+Index: openssl-0.9.8m/doc/apps/c_rehash.pod
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-0.9.8j/doc/apps/c_rehash.pod	2009-01-12 14:59:15.000000000 +0100
++++ openssl-0.9.8m/doc/apps/c_rehash.pod	2010-03-09 20:16:50.516901237 +0800
 @@ -0,0 +1,55 @@
 +
 +=pod
@@ -419,10 +419,10 @@ Index: openssl-0.9.8j/doc/apps/c_rehash.pod
 +No known bugs
 +
 +=cut
-Index: openssl-0.9.8j/crypto/Makefile
+Index: openssl-0.9.8m/crypto/Makefile
 ===================================================================
---- openssl-0.9.8j.orig/crypto/Makefile	2009-01-12 14:56:55.000000000 +0100
-+++ openssl-0.9.8j/crypto/Makefile	2009-01-12 14:59:15.000000000 +0100
+--- openssl-0.9.8m.orig/crypto/Makefile	2010-03-09 16:15:42.000000000 +0800
++++ openssl-0.9.8m/crypto/Makefile	2010-03-09 20:16:50.516901237 +0800
 @@ -57,7 +57,7 @@
  	echo "  #define DATE \"`LC_ALL=C LC_TIME=C date`\""; \
  	echo '#endif' ) >buildinf.h
@@ -441,10 +441,10 @@ Index: openssl-0.9.8j/crypto/Makefile
  	$(PERL) x86_64cpuid.pl $@
  ia64cpuid.s: ia64cpuid.S
  	$(CC) $(CFLAGS) -E ia64cpuid.S > $@
-Index: openssl-0.9.8j/crypto/opensslconf.h
+Index: openssl-0.9.8m/crypto/opensslconf.h
 ===================================================================
---- openssl-0.9.8j.orig/crypto/opensslconf.h	2009-01-07 12:57:01.000000000 +0100
-+++ openssl-0.9.8j/crypto/opensslconf.h	2009-01-12 14:59:15.000000000 +0100
+--- openssl-0.9.8m.orig/crypto/opensslconf.h	2010-02-26 01:21:14.000000000 +0800
++++ openssl-0.9.8m/crypto/opensslconf.h	2010-03-09 20:16:50.516901237 +0800
 @@ -20,6 +20,9 @@
  #ifndef OPENSSL_NO_JPAKE
  # define OPENSSL_NO_JPAKE
@@ -532,10 +532,10 @@ Index: openssl-0.9.8j/crypto/opensslconf.h
  #endif
  
  /* These default values were supplied by
-Index: openssl-0.9.8j/crypto/sha/sha.h
+Index: openssl-0.9.8m/crypto/sha/sha.h
 ===================================================================
---- openssl-0.9.8j.orig/crypto/sha/sha.h	2008-09-16 12:47:28.000000000 +0200
-+++ openssl-0.9.8j/crypto/sha/sha.h	2009-01-12 14:59:15.000000000 +0100
+--- openssl-0.9.8m.orig/crypto/sha/sha.h	2008-09-16 18:47:28.000000000 +0800
++++ openssl-0.9.8m/crypto/sha/sha.h	2010-03-09 20:16:50.516901237 +0800
 @@ -59,6 +59,7 @@
  #ifndef HEADER_SHA_H
  #define HEADER_SHA_H
@@ -544,18 +544,3 @@ Index: openssl-0.9.8j/crypto/sha/sha.h
  #include <openssl/e_os2.h>
  #include <stddef.h>
  
-Index: openssl-0.9.8j/crypto/pkcs7/pk7_mime.c
-===================================================================
---- openssl-0.9.8j.orig/crypto/pkcs7/pk7_mime.c	2008-11-05 19:36:48.000000000 +0100
-+++ openssl-0.9.8j/crypto/pkcs7/pk7_mime.c	2009-01-12 14:59:15.000000000 +0100
-@@ -335,9 +335,9 @@
- 
- 		if(strcmp(hdr->value, "application/x-pkcs7-signature") &&
- 			strcmp(hdr->value, "application/pkcs7-signature")) {
--			sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
- 			PKCS7err(PKCS7_F_SMIME_READ_PKCS7,PKCS7_R_SIG_INVALID_MIME_TYPE);
- 			ERR_add_error_data(2, "type: ", hdr->value);
-+			sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
- 			sk_BIO_pop_free(parts, BIO_vfree);
- 			return NULL;
- 		}
