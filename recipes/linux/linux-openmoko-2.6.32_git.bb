@@ -8,7 +8,7 @@ KERNEL_RELEASE="2.6.32.9"
 SRCREV = "14be1091928fcce66812a85129768fb253b36420"
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
@@ -30,6 +30,8 @@ SRC_URI = "\
   file://0011-Don-t-choke-if-userspace-provides-a-pixel-clock-valu.patch;patch=1 \
   file://0012-Report-all-FB-modes-given-by-the-lower-levels.patch;patch=1 \
   file://0013-Change-connector-type-to-LVDS.patch;patch=1 \
+  file://0014-Clean-up-JBT-hooks-and-allow-resolution-switching.patch;patch=1 \
+  file://0015-ar6000-send-userspace-an-event-on-disconnection.patch;patch=1 \
 "
 
 SRC_URI[stablepatch.md5sum] = "7f615dd3b4a3b19fb86e479996a2deb5"
