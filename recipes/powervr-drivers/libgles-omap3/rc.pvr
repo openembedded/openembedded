@@ -53,19 +53,18 @@ if [ $CPUTYPE = "OMAP3530" ]; then
 	touch /etc/powervr-esrev
 
 	SAVED_ESREVISION="$(cat /etc/powervr-esrev)"
-	ES_REVISION="$(cat /proc/cpuinfo | grep "CPU revision" | awk -F: '{print $2}')"
+
+	devmem2 0x48004B48 w 0x2 > /dev/null
+	devmem2 0x48004B10 w 0x1 > /dev/null
+	devmem2 0x48004B00 w 0x2 > /dev/null
+
+	ES_REVISION="$(devmem2 0x50000014 | sed -e s:0x10205:5: -e s:0x10201:3: -e s:0x10003:2: | tail -n1 | awk -F': ' '{print $2}')"
 
 	if [ "${ES_REVISION}" != "${SAVED_ESREVISION}" ] ; then
 		echo -n "Starting SGX fixup for"
-		if [ "${ES_REVISION}" = " 3" ] ; then
-			echo " ES3.x"
-			cp -a /usr/lib/ES3.0/* /usr/lib
-			cp -a /usr/bin/ES3.0/* /usr/bin	
-		else
-			echo "ES 2.x"
-			cp -a /usr/lib/ES2.0/* /usr/lib
-			cp -a /usr/bin/ES2.0/* /usr/bin	
-		fi
+		echo " ES${ES_REVISION}.x"
+		cp -a /usr/lib/ES${ES_REVISION}.0/* /usr/lib
+		cp -a /usr/bin/ES${ES_REVISION}.0/* /usr/bin	
 		echo "${ES_REVISION}" > /etc/powervr-esrev
 	fi
 	/usr/bin/pvrsrvinit
