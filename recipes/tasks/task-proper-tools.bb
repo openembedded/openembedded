@@ -1,5 +1,5 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-PR = "r10"
+PR = "r11"
 
 inherit task
 
@@ -10,7 +10,6 @@ RDEPENDS_${PN} = "\
 		debianutils \
 		diffutils \
 		e2fsprogs \
-		e2fsprogs-fsck \
 		fbset \
 		findutils \
 		gawk \
