@@ -2,7 +2,7 @@ AC_PREREQ(2.59)
 
 m4_define([webkit_major_version], [1])
 m4_define([webkit_minor_version], [1])
-m4_define([webkit_micro_version], [18])
+m4_define([webkit_micro_version], [22])
 
 # This is the version we'll be using as part of our User-Agent string
 # e.g., AppleWebKit/$(webkit_user_agent_version) ...
@@ -35,7 +35,7 @@ AC_CONFIG_SRCDIR([WebCore/config.h])
 
 dnl # Libtool library version, not to confuse with API version
 dnl # see http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html#Libtool-versioning
-LIBWEBKITGTK_VERSION=16:0:14
+LIBWEBKITGTK_VERSION=18:0:16
 AC_SUBST([LIBWEBKITGTK_VERSION])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects tar-ustar])
@@ -131,12 +131,19 @@ fi
 AC_SUBST([JPEG_LIBS])
 
 # Check for libpng the way Gtk+ does it
-AC_MSG_CHECKING(for libpng12)
-if $PKG_CONFIG --exists libpng12 ; then
+for l in libpng libpng14 libpng12; do
+  AC_MSG_CHECKING(for $l)
+  if $PKG_CONFIG --exists $l ; then
     AC_MSG_RESULT(yes)
-    PNG_LIBS=`$PKG_CONFIG --libs libpng12`
-else
-  AC_MSG_RESULT(no)
+    PNG_LIBS=`$PKG_CONFIG --libs $l`
+    png_ok=yes
+    break
+  else
+    AC_MSG_RESULT(no)
+    png_ok=no
+  fi
+done
+if test "$png_ok" != yes; then
   AC_CHECK_LIB(png, png_read_info,
     [AC_CHECK_HEADER(png.h,
       png_ok=yes,
@@ -155,7 +162,7 @@ else
       AC_MSG_ERROR([PNG library (libpng) not found])
     fi
   else
-   AC_MSG_ERROR([PNG library (libpng) not found])
+    AC_MSG_ERROR([PNG library (libpng) not found])
   fi
 fi
 AC_SUBST([PNG_LIBS])
@@ -204,6 +211,7 @@ GTK_REQUIRED_VERSION=2.10
 LIBXSLT_REQUIRED_VERSION=1.1.7
 SQLITE_REQUIRED_VERSION=3.0
 GSTREAMER_REQUIRED_VERSION=0.10
+GSTREAMER_PLUGINS_BASE_REQUIRED_VERSION=0.10.25
 ENCHANT_REQUIRED_VERSION=0.22
 GAIL_REQUIRED_VERSION=1.8
 
@@ -331,6 +339,14 @@ AC_ARG_ENABLE(dom_storage,
               [],[enable_dom_storage="yes"])
 AC_MSG_RESULT([$enable_dom_storage])
 
+# check whether to enable the indexed database API
+AC_MSG_CHECKING([whether to enable the indexed database API])
+AC_ARG_ENABLE(indexed_database,
+              AC_HELP_STRING([--enable-indexeddb],
+                             [enable the indexed database API [default=no]]),
+              [],[enable_indexed_database="no"])
+AC_MSG_RESULT([$enable_indexed_database])
+
 # check whether to build with database support
 AC_MSG_CHECKING([whether to enable HTML5 client-side database storage support])
 AC_ARG_ENABLE(database,
@@ -362,6 +378,22 @@ AC_ARG_ENABLE(datalist,
                              [enable HTML5 datalist support [default=yes]]),
               [],[enable_datalist="yes"])
 AC_MSG_RESULT([$enable_datalist])
+
+# check whether to enable HTML5 ruby support
+AC_MSG_CHECKING([whether to enable HTML5 ruby support])
+AC_ARG_ENABLE(ruby,
+              AC_HELP_STRING([--enable-ruby],
+                             [enable HTML5 ruby support [default=yes]]),
+              [],[enable_ruby="yes"])
+AC_MSG_RESULT([$enable_ruby])
+
+# check whether to enable HTML5 sandbox iframe support
+AC_MSG_CHECKING([whether to enable HTML5 sandboxed iframe support])
+AC_ARG_ENABLE(ruby,
+              AC_HELP_STRING([--enable-sandbox],
+                             [enable HTML5 sandboxed iframe support [default=yes]]),
+              [],[enable_sandbox="yes"])
+AC_MSG_RESULT([$enable_sandbox])
 
 # check whether to enable HTML5 audio/video support
 AC_MSG_CHECKING([whether to enable HTML5 video support])
@@ -431,8 +463,8 @@ AC_MSG_RESULT([$enable_wml])
 AC_MSG_CHECKING([whether to enable SharedWorkers support])
 AC_ARG_ENABLE(shared_workers,
               AC_HELP_STRING([--enable-shared-workers],
-                             [enable support for SharedWorkers [default=no]]),
-              [],[enable_shared_workers="no"])
+                             [enable support for SharedWorkers [default=yes]]),
+              [],[enable_shared_workers="yes"])
 AC_MSG_RESULT([$enable_shared_workers])
 
 # check whether to enable Web Workers support
@@ -520,6 +552,14 @@ AC_ARG_ENABLE(web_sockets,
                              [enable support for Web Sockets [default=no]]),
               [],[enable_web_sockets="no"])
 AC_MSG_RESULT([$enable_web_sockets])
+
+# check whether to enable Blob.slice support
+AC_MSG_CHECKING([whether to enable Blob.slice support])
+AC_ARG_ENABLE(blob_slice,
+              AC_HELP_STRING([--enable-blob-slice],
+                             [enable support for Blob.slice [default=no]]),
+              [],[enable_blob_slice="no"])
+AC_MSG_RESULT([$enable_blob_slice])
 
 # check whether to enable code coverage
 AC_MSG_CHECKING([whether to enable code coverage support])
@@ -635,13 +675,13 @@ PKG_CHECK_MODULES([LIBSOUP],
 AC_SUBST([LIBSOUP_CFLAGS])
 AC_SUBST([LIBSOUP_LIBS])
 
-# check if we can use libSoup 2.29.3 features
-PKG_CHECK_MODULES([LIBSOUP_2_29_3],
-                  [libsoup-2.4 >= 2.29.3],
-                  [have_libsoup_2_29_3=yes],
-                  [have_libsoup_2_29_3=no])
-if test "$have_libsoup_2_29_3" = "yes"; then
-   AC_DEFINE([HAVE_LIBSOUP_2_29_3], 1, [Whether libSoup 2.29.3 features are available])
+# check if we can use libSoup 2.29.90 features
+PKG_CHECK_MODULES([LIBSOUP_2_29_90],
+                  [libsoup-2.4 >= 2.29.90],
+                  [have_libsoup_2_29_90=yes],
+                  [have_libsoup_2_29_90=no])
+if test "$have_libsoup_2_29_90" = "yes"; then
+   AC_DEFINE([HAVE_LIBSOUP_2_29_90], 1, [Whether libSoup 2.29.90 features are available])
 fi
 
 # check if FreeType/FontConfig are available
@@ -696,9 +736,10 @@ fi
 if test "$enable_video" = "yes"; then
    PKG_CHECK_MODULES([GSTREAMER],
                      [gstreamer-0.10 >= $GSTREAMER_REQUIRED_VERSION
+                     gstreamer-app-0.10
                      gstreamer-base-0.10
                      gstreamer-pbutils-0.10
-                     gstreamer-plugins-base-0.10
+                     gstreamer-plugins-base-0.10 >= $GSTREAMER_PLUGINS_BASE_REQUIRED_VERSION
                      gstreamer-video-0.10])
    AC_SUBST([GSTREAMER_CFLAGS])
    AC_SUBST([GSTREAMER_LIBS])
@@ -743,6 +784,7 @@ AM_CONDITIONAL([USE_PANGO], [test "$with_font_backend" = "pango"])
 # WebKit feature conditionals
 AM_CONDITIONAL([ENABLE_DEBUG],[test "$enable_debug" = "yes"])
 AM_CONDITIONAL([ENABLE_3D_TRANSFORMS],[test "$enable_3D_transforms" = "yes"])
+AM_CONDITIONAL([ENABLE_BLOB_SLICE],[test "$enable_blob_slice" = "yes"])
 AM_CONDITIONAL([ENABLE_CHANNEL_MESSAGING],[test "$enable_channel_messaging" = "yes"])
 AM_CONDITIONAL([ENABLE_JAVASCRIPT_DEBUGGER],[test "$enable_javascript_debugger" = "yes"])
 AM_CONDITIONAL([ENABLE_OFFLINE_WEB_APPLICATIONS],[test "$enable_offline_web_applications" = "yes"])
@@ -751,12 +793,15 @@ AM_CONDITIONAL([ENABLE_DATABASE],[test "$enable_database" = "yes"])
 AM_CONDITIONAL([ENABLE_DATALIST],[test "$enable_datalist" = "yes"])
 AM_CONDITIONAL([ENABLE_EVENTSOURCE],[test "$enable_eventsource" = "yes"])
 AM_CONDITIONAL([ENABLE_ICONDATABASE],[test "$enable_icon_database" = "yes"])
+AM_CONDITIONAL([ENABLE_INDEXED_DATABASE],[test "$enable_indexed_database" = "yes"])
 AM_CONDITIONAL([ENABLE_XHTMLMP],[test "$enable_xhtmlmp" = "yes"])
 AM_CONDITIONAL([ENABLE_XPATH],[test "$enable_xpath" = "yes"])
 AM_CONDITIONAL([ENABLE_XSLT],[test "$enable_xslt" = "yes"])
 AM_CONDITIONAL([ENABLE_FILTERS],[test "$enable_filters" = "yes"])
 AM_CONDITIONAL([ENABLE_GEOLOCATION], [test "$enable_geolocation" = "yes"])
 AM_CONDITIONAL([ENABLE_MATHML], [test "$enable_mathml" = "yes"])
+AM_CONDITIONAL([ENABLE_RUBY],[test "$enable_ruby" = "yes"])
+AM_CONDITIONAL([ENABLE_SANDBOX],[test "$enable_sandbox" = "yes"])
 AM_CONDITIONAL([ENABLE_VIDEO],[test "$enable_video" = "yes"])
 AM_CONDITIONAL([ENABLE_NOTIFICATIONS],[test "$enable_notifications" = "yes"])
 AM_CONDITIONAL([ENABLE_ORIENTATION_EVENTS],[test "$enable_orientation_events" = "yes"])
@@ -802,6 +847,7 @@ Build configuration:
  Optimized memory allocator                               : $enable_fast_malloc
 Features:
  3D Transforms                                            : $enable_3D_transforms
+ Blob.slice support                                       : $enable_blob_slice
  JIT compilation                                          : $enable_jit
  Filters support                                          : $enable_filters
  Geolocation support                                      : $enable_geolocation
@@ -811,6 +857,8 @@ Features:
  HTML5 channel messaging support                          : $enable_channel_messaging
  HTML5 client-side session and persistent storage support : $enable_dom_storage
  HTML5 client-side database storage support               : $enable_database
+ HTML5 ruby support                                       : $enable_ruby
+ HTML5 sandboxed iframe support                           : $enable_sandbox
  HTML5 server-sent events support                         : $enable_eventsource
  HTML5 video element support                              : $enable_video
  Icon database support                                    : $enable_icon_database

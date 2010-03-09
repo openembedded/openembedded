@@ -1,11 +1,11 @@
 DESCRIPTION = "WebKit browser engine, GTK+ edition"
-DEPENDS = "enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs bison-native flex-native gperf-native perl-native sqlite3"
+DEPENDS = "geoclue enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs bison-native flex-native gperf-native perl-native sqlite3"
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
 PR = "r1"
-SRCREV = "53071"
-PV = "1.1.18+svnr${SRCPV}"
+SRCREV = "55715"
+PV = "1.1.22+svnr${SRCPV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -33,6 +33,7 @@ EXTRA_OECONF = "\
                 --enable-debug=no \
                 --enable-svg \
                 --enable-icon-database=yes \
+                --enable-geolocation=yes \
 #                --with-unicode-backend=glib \
 "
 
