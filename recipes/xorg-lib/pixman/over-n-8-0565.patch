@@ -1,0 +1,231 @@
+From de2221a32d0b6628116565563f7b4ccd0a44e8b6 Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Thu, 04 Mar 2010 23:20:25 +0000
+Subject: ARM: added 'armv6_composite_over_n_8_0565' fast path
+
+Provides ~3x performance improvement when working with
+data in L1 cache and memory. This fast path is important
+for fonts rendering when using 16bpp desktop.
+
+Microbenchmark from N800 (ARM11 @ 400MHz), measured in MPix/s:
+
+before:
+
+ over_n_8_0565 = L1:   2.99 M:  2.86
+
+after:
+
+ over_n_8_0565 = L1:   9.07 M:  8.05
+---
+diff --git a/pixman/pixman-arm-simd.c b/pixman/pixman-arm-simd.c
+index 09a2888..c375c01 100644
+--- a/pixman/pixman-arm-simd.c
++++ b/pixman/pixman-arm-simd.c
+@@ -419,6 +419,193 @@ arm_composite_over_n_8_8888 (pixman_implementation_t * impl,
+     }
+ }
+ 
++#if defined(__ARM_EABI__) && defined(__linux__)
++/*
++ * ARMv6 assembly optimized version of 'composite_over_n_8_0565'. It is
++ * a bare metal 'naked' function which uses all the available CPU registers
++ * and is compatible with ARM EABI. It might (or might not) break when used
++ * with a different ABI, anyway it is better to be safe than sorry.
++ */
++static void __attribute__((naked)) armv6_composite_over_n_8_0565_asm (
++    uint16_t *dst, uint8_t *mask, uint32_t src, int w,
++    int dst_stride_delta, int mask_stride_delta, int h)
++{
++    asm volatile (
++        ".macro composite_internal_armv6_asm opaque_flag\n"
++            /* save all registers (8 words) to stack */
++            "stmdb   sp!, {r4-r11, ip, lr}\n"
++            /* some register aliases for better readability */
++            "DST     .req  r0\n"
++            "MASK    .req  r1\n"
++            "S       .req  r2\n"
++            "W       .req  r3\n"
++            "A       .req  r8\n"
++            "D       .req  r10\n"
++            "C0000FF .req  r11\n"
++            "C00001F .req  r9\n"
++            "C800080 .req  ip\n"
++            "CE000E0 .req  lr\n"
++            /* precalculate some stuff and put it on stack */
++            "mov     r6, #0xF8\n"
++            "mov     r7, #0xFC\n"
++
++            "str     W, [sp, #-8]!\n"
++
++            ".if \\opaque_flag\n"
++                /* precalculate and save it to stack for later use:
++                 * ((src >> 3) & 0x001F) |
++                 * ((src >> 5) & 0x07E0) |
++                 * ((src >> 8) & 0xF800)
++                 */
++                "mov     A, #0x1F\n"
++                "and     D, A, S, lsr #3\n"
++                "and     r4, S, #0xF80000\n"
++                "and     r5, S, #0xFC00\n"
++                "orr     D, r4, lsr #8\n"
++                "orr     D, r5, lsr #5\n"
++                "str     D, [sp, #4]\n"
++            ".endif\n"
++
++            "ldr     D, [sp, #(8 + 10*4 + 8)]\n" /* h */
++            "ldr     A, =0xFF00FF\n"
++            "ldr     C800080, =0x800080\n"
++            "ldr     CE000E0, =0xE000E0\n"
++            "ldr     C0000FF, =0xFF\n"
++            "ldr     C00001F, =0x1F\n"
++            "and     r4, A, S\n"           /* r4 = src & 0x00FF00FF */
++            "and     r5, A, S, lsr #8\n"   /* r5 = (src >> 8) & 0x00FF00FF */
++            "stmdb   sp!, {r4, r5, r6, r7}\n"
++        "0:\n"
++            "subs    D, D, #1\n"
++            "blt     6f\n"
++        "1:\n"
++            "subs    W, W, #1\n"
++            "blt     5f\n"
++        "2:\n"
++            "ldrb    A, [MASK], #1\n"
++            "ldmia   sp, {r4, r5, r6, r7}\n" /* load constants from stack */
++            "add     DST, DST, #2\n"
++            "cmp     A, #0\n"
++            "beq     1b\n"
++
++            ".if \\opaque_flag\n"
++                "cmp     A, #0xFF\n"
++                "bne     3f\n"
++                "ldr     D, [sp, #(4*4 + 4)]\n" /* load precalculated value */
++                "subs    W, #1\n"
++                "strh    D, [DST, #-2]\n"
++                "bge     2b\n"
++            ".endif\n"
++
++        "3:\n"
++            "ldrh    D, [DST, #-2]\n"
++            "mla     r4, A, r4, C800080\n"
++            "mla     r5, A, r5, C800080\n"
++            "and     r6, r6, D, lsl #3\n" /* & 0xF8 */
++            "and     r7, r7, D, lsr #3\n" /* & 0xFC */
++            "and     D, D, #0xF800\n"
++            "bic     S, r4, #0xFF0000\n"
++            "bic     A, r5, #0xFF0000\n"
++            "add     r4, r4, S, lsr #8\n"
++            "add     r5, r5, A, lsr #8\n"
++
++            "and     S, r7, #0xC0\n"
++            "orr     r6, r6, D, lsl #8\n"
++            "and     D, r6, CE000E0\n"
++            "eor     A, C0000FF, r5, lsr #24\n"
++            "orr     r6, D, lsr #5\n"
++            "orr     r7, S, lsr #6\n"
++
++            "mla     r6, A, r6, C800080\n"
++            "mla     r7, A, r7, C800080\n"
++            "subs    W, #1\n"
++            "bic     D, r6, #0xFF0000\n"
++            "bic     A, r7, #0xFF0000\n"
++            "add     r6, r6, D, lsr #8\n"
++            "uqadd8  r4, r4, r6\n"
++            "add     r7, r7, A, lsr #8\n"
++            "uqadd8  r5, r5, r7\n"
++            "and     D, C00001F, r4, lsr #11\n"
++            "and     r4, r4, #0xF8000000\n"
++            "and     r5, r5, #0xFC00\n"
++            "orr     D, r4, lsr #16\n"
++            "orr     D, r5, lsr #5\n"
++            "strh    D, [DST, #-2]\n"
++            "bge     2b\n"
++        "5:\n"
++            "ldr     r6, [sp, #(4*4 + 8 + 10*4 + 8)]\n" /* h */
++            "ldr     r4, [sp, #(4*4 + 8 + 10*4 + 4)]\n" /* mask stride */
++            "ldr     r5, [sp, #(4*4 + 8 + 10*4 + 0)]\n" /* dst stride */
++            "ldr     W, [sp, #(4*4)]\n"
++            "subs    r6, r6, #1\n" /* h */
++            "str     r6, [sp, #(4*4 + 8 + 10*4 + 8)]\n" /* h */
++            "add     MASK, MASK, r4\n"
++            "add     DST, DST, r5, lsl #1\n"
++            "bgt     1b\n"
++        "6:\n"
++            "add     sp, sp, #(4*4 + 8)\n"
++            /* restore all registers and return */
++            "ldmia   sp!, {r4-r11, ip, pc}\n"
++            ".unreq DST\n"
++            ".unreq MASK\n"
++            ".unreq S\n"
++            ".unreq W\n"
++            ".unreq A\n"
++            ".unreq D\n"
++            ".unreq C0000FF\n"
++            ".unreq C00001F\n"
++            ".unreq C800080\n"
++            ".unreq CE000E0\n"
++        ".endm\n"
++
++        "mov     ip, r2, lsr #24\n"
++        "cmp     ip, #0xFF\n"
++        "beq     9f\n"
++        "composite_internal_armv6_asm 0\n"
++    "9:\n"
++        "composite_internal_armv6_asm 1\n"
++        ".ltorg\n"
++        ".purgem composite_internal_armv6_asm\n"
++    );
++}
++
++static void
++armv6_composite_over_n_8_0565 (pixman_implementation_t * impl,
++			       pixman_op_t               op,
++			       pixman_image_t *          src_image,
++			       pixman_image_t *          mask_image,
++			       pixman_image_t *          dst_image,
++			       int32_t                   src_x,
++			       int32_t                   src_y,
++			       int32_t                   mask_x,
++			       int32_t                   mask_y,
++			       int32_t                   dest_x,
++			       int32_t                   dest_y,
++			       int32_t                   width,
++			       int32_t                   height)
++{
++    uint32_t src;
++    uint16_t *dst;
++    uint8_t  *mask;
++    int dst_stride, mask_stride;
++
++    src = _pixman_image_get_solid (src_image, dst_image->bits.format);
++
++    /* bail out if fully transparent */
++    if (src == 0)
++	return;
++
++    PIXMAN_IMAGE_GET_LINE (dst_image, dest_x, dest_y, uint16_t,
++			   dst_stride, dst, 1);
++    PIXMAN_IMAGE_GET_LINE (mask_image, mask_x, mask_y, uint8_t,
++			   mask_stride, mask, 1);
++
++    armv6_composite_over_n_8_0565_asm (dst, mask, src, width,
++	dst_stride - width, mask_stride - width, height);
++}
++
++#endif
++
+ static const pixman_fast_path_t arm_simd_fast_paths[] =
+ {
+     PIXMAN_STD_FAST_PATH (OVER, a8r8g8b8, null, a8r8g8b8, arm_composite_over_8888_8888),
+@@ -434,7 +621,10 @@ static const pixman_fast_path_t arm_simd_fast_paths[] =
+     PIXMAN_STD_FAST_PATH (OVER, solid, a8, x8r8g8b8, arm_composite_over_n_8_8888),
+     PIXMAN_STD_FAST_PATH (OVER, solid, a8, a8b8g8r8, arm_composite_over_n_8_8888),
+     PIXMAN_STD_FAST_PATH (OVER, solid, a8, x8b8g8r8, arm_composite_over_n_8_8888),
+-
++#if defined(__ARM_EABI__) && defined(__linux__)
++    PIXMAN_STD_FAST_PATH (OVER, solid, a8, r5g6b5, armv6_composite_over_n_8_0565),
++    PIXMAN_STD_FAST_PATH (OVER, solid, a8, b5g6r5, armv6_composite_over_n_8_0565),
++#endif
+     { PIXMAN_OP_NONE },
+ };
+ 
+--
+cgit v0.8.3-6-g21f6
