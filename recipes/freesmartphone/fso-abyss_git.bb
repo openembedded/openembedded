@@ -4,16 +4,17 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib libgsm0710mux"
 LICENSE = "GPL"
-PV = "0.9.1+gitr${SRCREV}"
-PR = "r1"
+SRCREV = "4d7edda0efec7836612c8c64bb1b90695ca07a53"
+PV = "0.9.2+gitr${SRCREV}"
+PR = "r0"
 
 SRC_URI = "\
-  ${FREESMARTPHONE_GIT}/fso-abyss.git;protocol=git;branch=master \
+  ${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master \
   file://fso-abyss.conf \
 "
-S = "${WORKDIR}/git"
+S = "${WORKDIR}/git/tools/fso-abyss"
 
-inherit autotools
+inherit autotools_stage
 
 do_install_append() {
 	install -d ${D}${sysconfdir}
@@ -35,6 +36,3 @@ CONFFILES_${PN}-config = "\
 "
 
 PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
-
-
-
