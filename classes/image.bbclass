@@ -1,4 +1,5 @@
 inherit rootfs_${IMAGE_PKGTYPE}
+inherit kernel-arch
 
 LICENSE = "MIT"
 PACKAGES = ""
