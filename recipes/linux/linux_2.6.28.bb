@@ -6,7 +6,7 @@ PR = "r13"
 DEFAULT_PREFERENCE = "-1"
 
 DEFAULT_PREFERENCE_at91sam9263ek = "28"
-DEFAULT_PREFERENCE_ronetix-pm9263 = "28"
+DEFAULT_PREFERENCE_ronetix-pm9263 = "29"
 DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_gamecube = "1"
@@ -25,7 +25,7 @@ SRC_URI_append_at91sam9263ek = " \
 SRC_URI_append_ronetix-pm9263 = " \
            file://linux-2.6.28-at91.patch.bz2;patch=1 \
            file://linux-2.6.28-exp.patch.bz2;patch=1 \
-           file://linux-2.6.28-at91-ronetix-12012009.patch;patch=1 "
+           http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch;patch=1 "
 
 SRC_URI_append_stb225 = " \
            file://uImage.patch;patch=1 \
