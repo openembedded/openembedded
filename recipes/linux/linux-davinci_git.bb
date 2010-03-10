@@ -46,10 +46,10 @@ SRC_URI_append_dm6467  = ${ARAGO_DM_URI}
 
 # OMAPL tracking master branch
 
-ARAGO_L1_REV = "79903eb1d3a98b241530306b03edd28d7fa91ddd"
+ARAGO_L1_REV = "76fcecb83d562608bcebba44774f92b6c62d3593"
 ARAGO_L1_BR  = "master"
 ARAGO_L1_PV  = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
-ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
+ARAGO_L1_URI = "git://arago-project.org/git/projects/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}
 SRCREV_da850-omapl138-evm         = ${ARAGO_L1_REV}
@@ -68,8 +68,7 @@ SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
-                                     file://patch-2.6.33rc4-psp-to-fix-regulator.patch;patch=1 "
+                                     "
 
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
-                                     file://patch-2.6.33rc4-psp-to-fix-regulator.patch;patch=1 \
                                      file://patch-2.6.33rc4-psp-to-hawkboard.patch;patch=1 "
