@@ -7,7 +7,7 @@ PR = "${INC_PR}.3"
 
 BBCLASSEXTEND = "native"
 
-DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native"
+DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native"
 PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
 
 # Enable xkb selectively
