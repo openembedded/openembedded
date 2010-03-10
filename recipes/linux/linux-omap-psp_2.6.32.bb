@@ -5,7 +5,7 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook"
 
-SRCREV = "c2aae3e0e6d03a5716965cb504589cb2d918b904"
+SRCREV = "227037c2b6c28a632e0bffd2681445a61c7f84bc"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
