@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r1"
 
 require gcc-csl-arm-2008q3.inc
 require gcc-cross4.inc
@@ -7,7 +7,7 @@ require gcc-package-cross.inc
 
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
-EXTRA_OECONF += "--disable-multilib --disable-libunwind-exceptions"
+EXTRA_OECONF += "--disable-multilib --disable-libunwind-exceptions --with-mpfr=${STAGING_DIR_NATIVE}${prefix_native}"
 
 #We don't want i686 linux ending up in the CFLAGS_FOR_TARGET like this: -isystem/OE/angstrom-tmp/staging/i686-linux/usr/include
 CFLAGS = ""

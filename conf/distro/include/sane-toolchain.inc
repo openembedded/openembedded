@@ -5,8 +5,6 @@
 #############################################################################
 
 # Base line versions, good for most things
-PREFERRED_GMP_VERSION                ?= "4.2.4"
-PREFERRED_MPFR_VERSION               ?= "2.3.2"
 PREFERRED_GCC_VERSION                ?= "4.4.2"
 PREFERRED_BINUTILS                   ?= "2.20"
 

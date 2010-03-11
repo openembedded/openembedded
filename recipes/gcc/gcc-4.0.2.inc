@@ -1,8 +1,9 @@
 require gcc-common.inc
 
-DEPENDS = ""
+DEPENDS = "mpfr gmp"
 
-SRC_URI += "file://gcc-posix-open-fix.patch;patch=1 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+	file://gcc-posix-open-fix.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
 	file://GCOV_PREFIX_STRIP-cross-profile_4.1.patch;patch=1 \

@@ -5,11 +5,14 @@ ARM_INSTRUCTION_SET = "arm"
 require gcc-common.inc
 LICENSE = "GPLv3"
 
-DEPENDS = ""
+DEPENDS = "mpfr gmp"
 
-INC_PR = "r9"
+INC_PR = "r8"
 
-SRC_URI += "file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
+FILESPATHPKG .= ":gcc-$PV"
+
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+        file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
 	file://gcc-disable-linux-unwind-with-libc-inhibit.patch;patch=1 \
@@ -22,9 +25,6 @@ SRC_URI += "file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://gcc-pr41175.patch;patch=1 \
 	file://gcc-armv4-pass-fix-v4bx-to-ld.patch;patch=1 \
 	"
-SRC_URI[gcctbz2.md5sum] = "927eaac3d44b22f31f9c83df82f26436"
-SRC_URI[gcctbz2.sha256sum] = "cbefa9abd4adac0931e1b556072dcd8b32a360d4b95a94d7822c86bded803d5b"
-
 # Language Overrides
 FORTRAN = ""
 JAVA = ""
