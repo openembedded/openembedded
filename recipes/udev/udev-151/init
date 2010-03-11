@@ -49,6 +49,11 @@ if [ "$DEVCACHE" != "" ]; then
 	fi
 fi
 
+if [ ! -e "/lib/modules/$(uname -r)"/modules.dep ] ; then
+	mkdir -p /lib/modules/$(uname -r)
+	depmod -ae
+fi
+
 # make_extra_nodes
 kill_udevd > "/dev/null" 2>&1
 
