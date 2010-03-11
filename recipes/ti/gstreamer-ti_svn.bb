@@ -17,7 +17,8 @@ require ti-staging.inc
 PROVIDES += "gstreamer-ti-demo-script"
 
 PV = "svnr${SRCREV}"
-PR = "r45"
+# Rebuild on kernel change since it links statically to ti-dmai, ti-codec-engine, etc
+PR = "r46+${MACHINE_KERNEL_PR}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
 
