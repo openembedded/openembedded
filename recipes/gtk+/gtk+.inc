@@ -66,6 +66,23 @@ do_install_append () {
 	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
 }
 
+do_install_virtclass-native () {
+        autotools_do_install
+
+	mkdir -p ${D}${libdir}/gtk-2.0/include
+	install -m 0644 gdk/gdkconfig.h ${D}${libdir}/gtk-2.0/include/gdkconfig.h
+	# Copy over all headers, since the maemo stuff needs access to the private api. *sigh*
+	cp gtk/*.h ${D}${includedir}/gtk-2.0/gtk/
+
+	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
+
+	install -d ${D}${sysconfdir}/gtk-2.0
+	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
+
+	mkdir -p "${D}${sysconfdir}/gtk-2.0"
+	${B}/gdk-pixbuf/gdk-pixbuf-query-loaders ${B}/gdk-pixbuf/.libs/*.so | sed 's:${B}/gdk-pixbuf/.libs:${STAGING_LIBDIR}/gtk-2.0/${LIBV}/loaders:' > "${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"
+}
+
 postinst_prologue() {
 if [ "x$D" != "x" ]; then
   exit 1

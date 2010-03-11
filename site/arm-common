@@ -126,6 +126,10 @@ ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
 # libpcap
 ac_cv_linux_vers=${ac_cv_linux_vers=2}
 
+# libsndfile
+ac_cv_sys_largefile_source=${ac_cv_sys_largefile_source=1}
+ac_cv_sys_file_offset_bits=${ac_cv_sys_file_offset_bits=64}
+
 # libxfce4util
 with_broken_putenv=${with_broken_putenv=no}
 
