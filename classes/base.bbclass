@@ -1100,6 +1100,7 @@ sysroot_stage_dirs() {
 		sysroot_stage_libdir $from${base_libdir} $to${STAGING_DIR_HOST}${base_libdir}
 	fi
 	sysroot_stage_dir $from${datadir} $to${STAGING_DATADIR}
+	sysroot_stage_dir $from${sysconfdir} $to${sysconfdir}
 }
 
 sysroot_stage_all() {
