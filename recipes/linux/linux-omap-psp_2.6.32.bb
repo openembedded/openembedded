@@ -3,7 +3,7 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook"
+COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook|overo"
 
 SRCREV = "227037c2b6c28a632e0bffd2681445a61c7f84bc"
 
