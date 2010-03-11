@@ -1,0 +1,45 @@
+From 9313360da422929181bfb3339137caaa4400195f Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 5 Jan 2010 12:44:25 +0100
+Subject: [PATCH 1/2] gta02|gta01: add kernel params to boot from ubifs ubi0:rootfs
+
+---
+ src/cpu/s3c2410/gta01.c |    5 +++--
+ src/cpu/s3c2442/gta02.c |    5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/cpu/s3c2410/gta01.c b/src/cpu/s3c2410/gta01.c
+index 4686fa2..a2fce11 100644
+--- a/src/cpu/s3c2410/gta01.c
++++ b/src/cpu/s3c2410/gta01.c
+@@ -305,8 +305,9 @@ const struct board_api board_api_gta01 = {
+ 			.block_read = nand_read_ll,
+ 			.offset_blocks512_if_no_partition = 0x44000 / 512,
+ 			.filesystem = FS_RAW,
+-			.commandline_append = "rootfstype=jffs2 "
+-				       "root=/dev/mtdblock4 ",
++			.commandline_append = " rootfstype=ubifs " \
++				       " ubi.mtd=4,512 " \
++				       " root=ubi0:om-gta01-rootfs ",
+ 		},
+ 	},
+ };
+diff --git a/src/cpu/s3c2442/gta02.c b/src/cpu/s3c2442/gta02.c
+index 0347f61..48ee245 100644
+--- a/src/cpu/s3c2442/gta02.c
++++ b/src/cpu/s3c2442/gta02.c
+@@ -733,8 +733,9 @@ const struct board_api board_api_gta02 = {
+ 			/* NOTE offset below is replaced at runtime */
+ 			.offset_blocks512_if_no_partition = 0x80000 / 512,
+ 			.filesystem = FS_RAW,
+-			.commandline_append = " rootfstype=jffs2 "
+-					      "root=/dev/mtdblock6 ",
++			.commandline_append = " rootfstype=ubifs " \
++			                      " ubi.mtd=6,2048 " \
++			                      " root=ubi0:om-gta02-rootfs ",
+ 		},
+ 	},
+ };
+-- 
+1.7.0.2
+

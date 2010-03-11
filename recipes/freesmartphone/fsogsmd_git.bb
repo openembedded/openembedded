@@ -4,8 +4,12 @@ PR = "${INC_PR}.0"
 PV = "0.5.0+gitr${SRCPV}"
 PE = "1"
 
-DEPENDS += "libfsoresource libgsm0710mux"
-EXTRA_OECONF_append = "--enable-libgsm0710mux"
+DEPENDS += "libfsoresource libgsm0710mux ppp msmcommd"
+
+EXTRA_OECONF_append = "\
+  --enable-libgsm0710mux \
+  --enable-modem-qualcomm-palm \
+"
 
 do_install_append_shr() {
 	# remove .service file to disable fsogsmd autostart

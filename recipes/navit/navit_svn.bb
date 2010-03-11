@@ -3,9 +3,6 @@ require navit.inc
 PV = "0.1.0+svnr${SRCPV}"
 PR = "${INC_PR}.5"
 
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_shr = "1"
-
 S = "${WORKDIR}/navit"
 
 # override navit.inc RRECOMMENDS, we only suggest a text2speech app

@@ -3,14 +3,12 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
 DEPENDS = "glib-2.0 libgsm0710 libfsotransport"
-SRCREV  = "05d990fce7427f15c985932721deb05012d779bd"
-PV = "0.9.1+gitr${SRCPV}"
+SRCREV  = "4d7edda0efec7836612c8c64bb1b90695ca07a53"
+PV = "0.9.2+gitr${SRCPV}"
 PE = "1"
 PR = "r0"
 
-SRC_URI = "\
-  ${FREESMARTPHONE_GIT}/libgsm0710mux;protocol=git;branch=master \
-"
-S = "${WORKDIR}/git"
+SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
+S = "${WORKDIR}/git/libgsm0710mux"
 
 inherit autotools_stage pkgconfig vala

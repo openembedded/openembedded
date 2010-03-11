@@ -1,0 +1,42 @@
+From 505ed5ebe6b5a296c83881e91fa7e8dd0ef021aa Mon Sep 17 00:00:00 2001
+From: Paul Fertser <fercerpav@gmail.com>
+Date: Sun, 21 Feb 2010 12:52:58 +0300
+Subject: [PATCH 15/15] ar6000: send userspace an event on disconnection
+
+Without this userspace gets confused and might fail to obtain a DHCP
+lease, bring the interface up etc etc.
+
+This place is definetely not the best or most intuitive to add this code
+but when added to the real disconnect callback it messes wpa_supplicant
+completely because hardware signals disconnection right after it was
+asked to associate (and signals association the next moment).
+
+The particular problem this patch solves is lack of DISCONNECTED event
+during suspend/resume; because of it "wpa_cli -a" doesn't relaunch its
+script and the interface is not brought up automatically after resume.
+
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+---
+ drivers/ar6000/ar6000/ar6000_drv.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/ar6000/ar6000/ar6000_drv.c b/drivers/ar6000/ar6000/ar6000_drv.c
+index 90533ab..4e0ae72 100644
+--- a/drivers/ar6000/ar6000/ar6000_drv.c
++++ b/drivers/ar6000/ar6000/ar6000_drv.c
+@@ -934,6 +934,12 @@ static void
+ ar6000_unavail_ev(void *Instance)
+ {
+     AR_SOFTC_T *ar = (AR_SOFTC_T *)Instance;
++    union iwreq_data wrqu;
++
++    A_MEMZERO(&wrqu, sizeof(wrqu));
++    wrqu.ap_addr.sa_family = ARPHRD_ETHER;
++    wireless_send_event(ar->arNetDev, SIOCGIWAP, &wrqu, NULL);
++
+         /* NULL out it's entry in the global list */
+     ar6000_devices[ar->arDeviceIndex] = NULL;
+     ar6000_destroy(ar->arNetDev, 1);
+-- 
+1.7.0.2
+
