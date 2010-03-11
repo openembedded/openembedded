@@ -3,12 +3,16 @@ Its name stands for LiSt Open Files, and it does just that."
 SECTION = "devel"
 LICENSE = "BSD"
 
-PR = "r4"
+PR = "r0"
 
-SRC_URI = "ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_${PV}.tar.bz2"
+SRC_URI = "ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_${PV}.tar.bz2;name=lsof483tarbz2"
+SRC_URI[lsof483tarbz2.md5sum] = "8f731a6251b8c0143d585df0d5ca779e"
+SRC_URI[lsof483tarbz2.sha256sum] = "b89f930bbe36b970e3cd070b9860ee701d8c7285ffedf2fbcec0e5fa3cb1f544"
+
 LOCALSRC = "file://${WORKDIR}/lsof_${PV}/lsof_${PV}_src.tar"
 S = "${WORKDIR}/lsof_${PV}_src"
 
+# the tar.bz2 file contains another tar, cde below unpacks it
 python do_unpack () {
 	bb.build.exec_func('base_do_unpack', d)
 	src_uri = bb.data.getVar('SRC_URI', d)
