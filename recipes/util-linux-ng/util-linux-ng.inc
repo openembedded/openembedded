@@ -7,7 +7,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r15"
+INC_PR = "r16"
 
 # allows for a release candidate
 RC ?= ""
@@ -211,7 +211,7 @@ pkg_postinst_${PN} () {
 
 pkg_prerm_${PN} () {
 	test -x ${base_sbindir}/pivot_root.${PN} && \
-	update-alternatives --remove pivot_root pivot_root.${PN}i
+	update-alternatives --remove pivot_root pivot_root.${PN}
 
 	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hecdump last logger mesg renice wall vipw vigr chfn newgrp chsh login ; do
 		update-alternatives --remove $i $i.${PN}

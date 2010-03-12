@@ -7,7 +7,7 @@ DEPENDS_virtclass-native = "python-native"
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz;name=archive"
 S = "${WORKDIR}/${BPN}-${PV}"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 BBCLASSEXTEND = "native"
 
@@ -28,7 +28,8 @@ export LDFLAGS += "-ldl"
 do_install_append() {
  	install -m 0644 libxml.m4 ${STAGING_DATADIR}/aclocal/
 	#this is need it by php during its install
-	install -m 0755 xml2-config ${STAGING_BINDIR_CROSS}
+	install -d ${STAGING_BINDIR_CROSS}
+	install -m 0755 xml2-config ${STAGING_BINDIR_CROSS}/
 }
 do_install_append_virtclass-native() {
 	:

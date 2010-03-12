@@ -3,7 +3,7 @@ DEPENDS = "virtual/libiconv virtual/libsdl libsdl-image libsdl-mixer boost libpn
 LICENSE = "GPL"
 HOMEPAGE = "http://pingus.seul.org/"
 SECTION = "x11/games"
-PR = "r2"
+PR = "r3"
 
 ARM_INSTRUCTION_SET = "arm"
 
