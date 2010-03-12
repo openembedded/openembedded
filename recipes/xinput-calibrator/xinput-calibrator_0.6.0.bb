@@ -1,11 +1,12 @@
 require xinput-calibrator.inc
 
-SRC_URI = "git://github.com/tias/xinput_calibrator.git;protocol=git"
+SRC_URI = "git://github.com/tias/xinput_calibrator.git;protocol=git \
+           file://0001-calibratorXorgPrint.cpp-fix-miny-and-maxx-printing-o.patch;patch=1"
 
 SRCREV = "d6e01d780001948f55006698e8e9e48c12894810"
 S = "${WORKDIR}/git/"
 
-PR = "r1"
+PR = "r2"
 
 do_install_append() {
         install -d ${D}${bindir}
