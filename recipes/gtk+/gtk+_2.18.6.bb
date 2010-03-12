@@ -3,11 +3,12 @@ require gtk+.inc
 SRC_URI_append_virtclass-native = " file://no-demos.patch;patch=1 \
 "
 
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 BBCLASSEXTEND = "native"
 
 DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native"
+RRECOMMENDS_${PN}_virtclass-native = ""
 PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
 
 # Enable xkb selectively
