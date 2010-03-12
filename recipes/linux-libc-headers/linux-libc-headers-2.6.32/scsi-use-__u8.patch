@@ -1,0 +1,26 @@
+This patch is from 
+http://patchwork.kernel.org/patch/38102/
+It seems its still under discussion and it will involve glibc to get it fixed correctly.
+for now OE uses scsi headers from kernel and not from glibc.
+
+-Khem
+
+Index: linux-2.6.31/include/scsi/scsi.h
+===================================================================
+--- linux-2.6.31.orig/include/scsi/scsi.h	2010-03-11 19:44:49.134590561 -0800
++++ linux-2.6.31/include/scsi/scsi.h	2010-03-11 19:45:12.744466326 -0800
+@@ -142,10 +142,10 @@ struct scsi_cmnd;
+ 
+ /* defined in T10 SCSI Primary Commands-2 (SPC2) */
+ struct scsi_varlen_cdb_hdr {
+-	u8 opcode;        /* opcode always == VARIABLE_LENGTH_CMD */
+-	u8 control;
+-	u8 misc[5];
+-	u8 additional_cdb_length;         /* total cdb length - 8 */
++	__u8 opcode;        /* opcode always == VARIABLE_LENGTH_CMD */
++	__u8 control;
++	__u8 misc[5];
++	__u8 additional_cdb_length;         /* total cdb length - 8 */
+ 	__be16 service_action;
+ 	/* service specific data follows */
+ };

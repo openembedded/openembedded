@@ -80,7 +80,7 @@ do_install_virtclass-native () {
 	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
 
 	mkdir -p "${D}${sysconfdir}/gtk-2.0"
-	${B}/gdk-pixbuf/gdk-pixbuf-query-loaders > "${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"
+	${B}/gdk-pixbuf/gdk-pixbuf-query-loaders ${B}/gdk-pixbuf/.libs/*.so | sed 's:${B}/gdk-pixbuf/.libs:${STAGING_LIBDIR}/gtk-2.0/${LIBV}/loaders:' > "${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"
 }
 
 postinst_prologue() {
