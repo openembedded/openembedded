@@ -2,12 +2,13 @@ require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+           file://scsi-use-__u8.patch;patch=1 \
 	  "
 S = "${WORKDIR}/linux-${PV}"
 

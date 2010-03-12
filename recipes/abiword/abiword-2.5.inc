@@ -1,5 +1,5 @@
 DESCRIPTION = "AbiWord is free word processing program similar to Microsoft(r) Word"
-HOMEPAGE = "http://www.abiword.org""
+HOMEPAGE = "http://www.abiword.org"
 SECTION = "x11/office"
 LICENSE = "GPLv2"
 DEPENDS     = "asio goffice perl-native wv libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng libxml2"
