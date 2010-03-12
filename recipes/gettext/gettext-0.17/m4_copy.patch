@@ -1,0 +1,53 @@
+@ -0,0 +1,52 @@
+Re: _AC_LANG_OPENMP and m4_copy
+
+Bruno Haible
+Wed, 03 Dec 2008 16:33:38 -0800
+
+Hello Ralf,
+
+Thanks for the report and fix.
+
+Eric Blake wrote:
+> Looks fine to me, but let Bruno chime in before committing.  I agree with
+> your approach of fixing gnulib to avoid the problem by not competing when
+> a new-enough autoconf provides the macro
+
+I agree with this approach. But the patch introduces the use of another
+undocumented macro, namely 'm4_version_prereq'. I prefer to get away without
+it, and am committing this:
+
+
+2008-12-03  Ralf Wildenhues  <[EMAIL PROTECTED]>
+            Bruno Haible  <[EMAIL PROTECTED]>
+
+        * m4/openmp.m4 (AC_OPENMP): Do not define with Autoconf 2.62 or newer.
+
+
+--- gettext-0.17.old/gettext-tools/gnulib-m4/openmp.m4	2007-05-27 21:50:22.000000000 +0200
++++ gettext-0.17/gettext-tools/gnulib-m4/openmp.m4	2010-02-10 16:48:58.000000000 +0100
+@@ -1,11 +1,15 @@
+-# openmp.m4 serial 4
+-dnl Copyright (C) 2006-2007 Free Software Foundation, Inc.
++# openmp.m4 serial 5
++dnl Copyright (C) 2006-2008 Free Software Foundation, Inc.
+ dnl This file is free software; the Free Software Foundation
+ dnl gives unlimited permission to copy and/or distribute it,
+ dnl with or without modifications, as long as this notice is preserved.
+ 
+ dnl This file can be removed once we assume autoconf >= 2.62.
+ 
++dnl Expand to nothing in autoconf >= 2.62. m4_copy has a different
++dnl semantic in autoconf > 2.63.
++m4_ifdef([AC_OPENMP], [], [
++
+ # _AC_LANG_OPENMP
+ # ---------------
+ # Expands to some language dependent source code for testing the presence of
+@@ -90,3 +94,6 @@
+   fi
+   AC_SUBST([OPENMP_]_AC_LANG_PREFIX[FLAGS])
+ ])
++
++])
++
