@@ -1406,7 +1406,7 @@ inherit autotools</screen></para>
     </section>
   </section>
 
-  <section id="recipes_depenencies" xreflabel="dependencies">
+  <section id="recipes_dependencies" xreflabel="dependencies">
     <title>Dependencies: What's needed to build and/or run the
     package?</title>
 

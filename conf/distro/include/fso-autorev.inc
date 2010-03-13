@@ -45,3 +45,5 @@ SRCREV_pn-vala-dbus-binding-tool = "${AUTOREV}"
 SRCREV_pn-vala-native = "${AUTOREV}"
 SRCREV_pn-vala = "${AUTOREV}"
 SRCREV_pn-zhone = "${AUTOREV}"
+SRCREV_pn-zhone2 = "${AUTOREV}"
+

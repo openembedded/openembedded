@@ -1,0 +1,38 @@
+From ae95a0ff9651a774cd983436d7e656c62492659c Mon Sep 17 00:00:00 2001
+From: Michael Meeks <michael.meeks@novell.com>
+Date: Fri, 12 Mar 2010 16:50:27 +0000
+Subject: [DBusConnection] When handling a watch, return if another thread is doing I/O
+
+http://lists.freedesktop.org/archives/dbus/2010-March/012337.html
+
+Previously, the watch handler would block until the I/O path was available.
+However, if another non-main thread was doing a synchronous call, this would
+cause the main thread to block on that thread, a highly undesirable
+thing because it's important for the main thread to remain responsive
+for user interfaces.
+
+Signed-off-by: Colin Walters <walters@verbum.org>
+Signed-off-by: Thiago Macieira <thiago@kde.org>
+---
+diff --git a/dbus/dbus-connection.c b/dbus/dbus-connection.c
+index 5fb234d..69fdf53 100644
+--- a/dbus/dbus-connection.c
++++ b/dbus/dbus-connection.c
+@@ -1435,7 +1435,14 @@ _dbus_connection_handle_watch (DBusWatch                   *watch,
+   _dbus_verbose ("%s start\n", _DBUS_FUNCTION_NAME);
+   
+   CONNECTION_LOCK (connection);
+-  _dbus_connection_acquire_io_path (connection, -1);
++
++  if (!_dbus_connection_acquire_io_path (connection, 1))
++    {
++      /* another thread is handling the message */
++      CONNECTION_UNLOCK (connection);
++      return TRUE;
++    }
++
+   HAVE_LOCK_CHECK (connection);
+   retval = _dbus_transport_handle_watch (connection->transport,
+                                          watch, condition);
+--
+cgit v0.8.3-6-g21f6
