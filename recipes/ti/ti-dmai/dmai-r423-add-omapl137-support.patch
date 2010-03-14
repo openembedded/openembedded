@@ -1,0 +1,12 @@
+diff -uNr davinci_multimedia_application_interface/dmai/packages/ti/sdo/dmai/linux/Display_fbdev.c davinci_multimedia_application_interfaceb/dmai/packages/ti/sdo/dmai/linux/Display_fbdev.c
+--- davinci_multimedia_application_interface/dmai/packages/ti/sdo/dmai/linux/Display_fbdev.c	2010-03-14 22:43:20.000000000 +0000
++++ davinci_multimedia_application_interfaceb/dmai/packages/ti/sdo/dmai/linux/Display_fbdev.c	2010-03-14 23:19:41.000000000 +0000
+@@ -43,7 +43,7 @@
+ 
+ #ifdef Dmai_Device_omap3530
+ #include <linux/omapfb.h>
+-#elif defined Dmai_Device_omapl138
++#elif defined (Dmai_Device_omapl137) || defined (Dmai_Device_omapl138)
+ #include <video/davincifb.h>
+ #else
+ #include <video/davincifb_ioctl.h>

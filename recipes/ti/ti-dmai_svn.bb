@@ -14,7 +14,7 @@ PV = "1.0+svnr${SRCPV}"
 
 # This package has high dependence on kernel, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "f"
+PR_append = "g"
 
 S = "${WORKDIR}/${DMAIBRANCH}/davinci_multimedia_application_interface"
 
@@ -45,6 +45,8 @@ SRC_URI = "svn://gforge.ti.com/svn/dmai/;module=${DMAIBRANCH};proto=https;user=a
 		file://loadmodules-ti-dmai-ol137_al.sh \
 		file://loadmodules-ti-dmai-ol138_al.sh \
 	"
+
+SRC_URI_append_omapl137 = " file://dmai-r423-add-omapl137-support.patch;patch=1 "
 
 DEPENDS = "virtual/kernel alsa-lib ti-framework-components ti-codec-engine ti-xdctools"
 
