@@ -1,6 +1,7 @@
 DESCRIPTION = "Codec Engine for TI ARM/DSP processors"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/ce"
 SECTION = "devel"
+LICENSE = "BSD"
 
 # TODO :: Add Codec Engine Library Rebuild
 # TODO :: Add Examples APP_LOCAL build as well?

@@ -1,6 +1,7 @@
 DESCRIPTION = "TI DSP/BIOS v5 Kernel"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/bios/dspbios"
 SECTION = "devel"
+LICENSE = "TI"
 
 require ti-paths.inc
 require ti-staging.inc

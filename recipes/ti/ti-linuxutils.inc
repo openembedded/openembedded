@@ -1,5 +1,6 @@
 DESCRIPTION = "MFP Linux utils for TI ARM/DSP processors"
 SECTION = "devel"
+LICENSE = "GPLv2,BSD"
 
 BASE_SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/linuxutils/${PV}/exports"
 SRC_URI = "${BASE_SRC_URI}/linuxutils_${PV}.tar.gz "

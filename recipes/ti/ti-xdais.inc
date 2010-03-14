@@ -1,5 +1,6 @@
 DESCRIPTION = "TI eXpress DSP Algorithm Interface Standard (XDAIS) specification"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/xdais"
+LICENSE = "GPLv2"
 SECTION = "devel"
 
 require ti-paths.inc

@@ -1,6 +1,7 @@
 DESCRIPTION = "DSPLINK Inter-Processor Communications (IPC) for TI ARM/DSP processors"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/DSPLink"
 SECTION = "devel"
+LICENSE = "GPLv2"
 
 # TODO :: KERNEL_CC, should use for kernel cc for module build?
 # TODO :: Need to understand why OBJDUMP is required for kernel module

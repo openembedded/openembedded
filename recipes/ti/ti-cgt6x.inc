@@ -1,6 +1,7 @@
 DESCRIPTION = "TI DSP Code Generation Tools"
 HOMEPAGE = "https://www-a.ti.com/downloads/sds_support/TICodegenerationTools/download.htm"
 SECTION = "devel"
+LICENSE = "TI"
 
 require ti-paths.inc
 require ti-staging.inc

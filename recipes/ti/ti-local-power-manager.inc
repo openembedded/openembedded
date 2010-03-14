@@ -1,6 +1,7 @@
 DESCRIPTION = "TI Local Power Manager (LPM)"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/lpm"
 SECTION = "devel"
+LICENSE = "GPLv2"
 
 # TODO : Hardcoded path to evm3530 - need to fix when adding omap24xx/dm6446 (other lpm targets)
 

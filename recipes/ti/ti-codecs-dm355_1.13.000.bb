@@ -1,6 +1,7 @@
 DESCRIPTION = "TI Codecs for DM355"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent"
 SECTION = "multimedia"
+LICENSE = "TI"
 
 # TODO :: Move to common .inc
 

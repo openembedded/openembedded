@@ -1,6 +1,7 @@
 DESCRIPTION = "Davinci Multimedia Application Interface (DMAI) for TI ARM/DSP processors"
 HOMEPAGE = "https://gforge.ti.com/gf/project/dmai/"
 SECTION = "multimedia"
+LICENSE = "BSD"
 
 # TODO :: 
 

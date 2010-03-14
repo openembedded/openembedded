@@ -1,5 +1,6 @@
 DESCRIPTION = "User space DMA module for DM365"
 SECTION = "devel"
+LICENSE = "GPLv2"
 
 BASE_SRC_URI = "http://install.source.dir.local"
 
