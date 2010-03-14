@@ -1,22 +1,5 @@
 installdir = "${datadir}/ti"
 
-# needed for configuro:
-#export CGTOOLS_V5T="${TOOLCHAIN_PATH}"
-
-# hmmmm
-#export CC_V5T="bin/${TARGET_PREFIX}gcc"
-
-#export CROSS_COMPILE = "${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}"
-
-#export MVTOOL_PREFIX="${TARGET_PREFIX}"
-#export MVTOOL_DIR="${TOOLCHAIN_PATH}"
-#export CSTOOL_PREFIX="${TARGET_PREFIX}"
-#export CSTOOL_DIR="${TOOLCHAIN_PATH}"
-
-#export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
-#export LINUXLIBS_INSTALL_DIR  = "${STAGING_DIR_HOST}/usr"
-#export LINUXKERNEL_INSTALL_DIR = "${STAGING_KERNEL_DIR}"
-
 # This is where do_install will put it
 export CODEGEN_INSTALL_DIR_RECIPE    = "${installdir}/ti-cgt6x-tree"
 export XDC_INSTALL_DIR_RECIPE        = "${installdir}/ti-xdctools-tree"
@@ -53,30 +36,7 @@ export DMAI_INSTALL_DIR       = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${DMAI_IN
 export CODEC_INSTALL_DIR      = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CODEC_INSTALL_DIR_RECIPE}"
 export DSPLIB_INSTALL_DIR     = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${DSPLIB_INSTALL_DIR_RECIPE}"
 
-#export USER_XDC_PATH    = "${CE_INSTALL_DIR}/examples"
-
-#export XDC_TARGET       = gnu.targets.arm.GCArmv5T
-#XDC_PLATFORM_dm355   = ti.platforms.evmDM355
-#XDC_PLATFORM_dm365   = ti.platforms.evmDM365
-#XDC_PLATFORM_dm6446  = ti.platforms.evmDM6446
-#XDC_PLATFORM_dm6467  = ti.platforms.evmDM6467
-#XDC_PLATFORM_omap3   = ti.platforms.evm3530
-#XDC_PLATFORM_omapl137 = ti.platforms.evmOMAPL137
-#XDC_PLATFORM_omapl138 = ti.platforms.evmOMAPL138
-#export XDC_PLATFORM
-
-#export PLATFORM_XDC = ${XDC_PLATFORM}
-
 DSPSUFFIX_omapl137 = "x674"
 DSPSUFFIX_omapl138 = "x674"
 DSPSUFFIX ?= "x64P"
-
-#PLATFORM_dm355   = "dm355"
-#PLATFORM_dm365   = "dm365"
-#PLATFORM_dm6446  = "dm6446"
-#PLATFORM_dm6467  = "dm6467"
-#PLATFORM_omap3   = "omap3530"
-#PLATFORM_omapl137 = "ol137"
-#PLATFORM_omapl138 = "ol138"
-#export PLATFORM
 
