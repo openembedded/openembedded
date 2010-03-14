@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mytht
 mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
-PR = "svnr${SRCPV}+r8"
+PR = "svnr${SRCPV}+r0"
 PV = "0.22"
 
 # REALPV is here to support release candidates
@@ -16,7 +16,7 @@ PV = "0.22"
 # but for packaging the real PV is needed
 REALPV = "0.22"
 
-SRCREV = "23565"
+SRCREV = "23710"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=mythtv;proto=http"
 
 S = "${WORKDIR}/mythtv"
