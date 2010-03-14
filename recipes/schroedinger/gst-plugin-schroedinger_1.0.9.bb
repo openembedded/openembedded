@@ -1,9 +1,10 @@
 require schroedinger.inc
-PR = "r2"
+PR = "r0"
 
 DEPENDS += "gstreamer gst-plugins-base"
 
-SRC_URI = "http://www.diracvideo.org/download/schroedinger/schroedinger-${PV}.tar.gz"
+SRC_URI[schroedingertargz.md5sum] = "d67ec48b7c506db8c8b49156bf409e60"
+SRC_URI[schroedingertargz.sha256sum] = "345abcaa72ff0f2e9c1075e22f7141475ee4e6eea23a7f568b69ffc13cc1c723"
 
 S = "${WORKDIR}/schroedinger-${PV}"
 
