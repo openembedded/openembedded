@@ -20,6 +20,6 @@ do_deploy_append() {
     touch -f empty
     mkbootimg --kernel ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin \
               --ramdisk empty \
-              --cmdline '"${CMDLINE}"' \
+              --cmdline "${CMDLINE}" \
               --output ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.fastboot
 }
