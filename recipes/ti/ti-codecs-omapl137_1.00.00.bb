@@ -3,14 +3,14 @@ HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent"
 SECTION = "multimedia"
 
 # TODO :: Move to common .inc (omap3 and omapl ready)
+# TODO :: Rename to generic OMAPL codecs (instead of omapl137/138)
 
 PV = "1_00_00"
 
-# This is invalid checksum
 SRC_URI[l137codecsbin.md5sum] = "64a53cd55bc63d3a6f4db742aff90de9"
 SRC_URI[l137codecsbin.sha256sum] = "4fb1075ad83f6017616410eff35ada7d567f1ee1b5b23624a817e8fc7dda3f8a"
 
-PR = "r2"
+PR = "r4"
 
 require ti-paths.inc
 require ti-staging.inc
@@ -18,17 +18,26 @@ require ti-eula-unpack.inc
 
 PROVIDES += "ti-codecs-omapl137-server"
 
-S = "${WORKDIR}/omapl137_dvsdk_combos_1_0"
+S = "${WORKDIR}/OMAP_L138_arm_1_00_00_08/cs1omapl138_${PV}"
 
-SRC_URI = "http://install.source.dir.local/omapl137_dvsdk_combos_1_0.tar.gz;name=l137codecsbin"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/sdk/omap_l138/1_00/latest/exports/${BINFILE};name=l137codecsbin \
+           file://ti-codecs-omapl138-1-00-00-fixDman3Config.patch;patch=1"
 
-#BINFILE = "cs1omapl138_${PV}-v2_setup_linux.bin"
-#TI_BIN_UNPK_CMDS = "y:Y: qY:workdir"
+BINFILE = "cs1omapl138_${PV}-v2_setup_linux.bin"
+TI_BIN_UNPK_CMDS = "y:Y: qY:workdir"
 
 DEPENDS = "ti-cgt6x ti-xdctools ti-dspbios ti-codec-engine ti-linuxutils"
 
 #generic codec
 DSPSUFFIX_omapl137 = "x64P"
+
+do_configure() {
+
+        # Reconfig this package for L137
+        sed -i 's/L138/L137/g' config.bld
+        sed -i 's/L138/L137/g' packages/ti/sdo/server/cs/package.bld
+        sed -i 's/L138/L137/g' packages/ti/sdo/server/cs/server.tcf
+}
 
 do_prepsources() {
 
