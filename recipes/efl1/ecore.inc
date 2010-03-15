@@ -5,9 +5,11 @@ DEPENDS = "gettext-native virtual/libiconv curl eet evas tslib glib-2.0 \
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
 PV = "0.9.9.060+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 inherit efl
+
+SRC_URI += "file://fix-ecore-fb-initialization.patch;patch=1"
 
 do_configure_prepend() {
 	touch ${S}/po/Makefile.in.in || true
@@ -70,6 +72,4 @@ FILES_${PN}-job = "${libdir}/libecore_job*.so.*"
 FILES_${PN}-txt = "${libdir}/libecore_txt*.so.*"
 FILES_${PN}-x = "${libdir}/libecore_x*.so.*"
 FILES_${PN}-input = "${libdir}/libecore_input*.so.*"
-
-
 

@@ -1,10 +1,11 @@
 require ecore.inc
-PR = "r7"
+PR = "r8"
 
-SRC_URI += "file://iconv.patch;patch=1;maxrev=43996 \
-            file://exit_uclibc_dns.patch;patch=1;maxrev=47076 \
-            file://exit_uclibc.patch;patch=1 \
-           "
+SRC_URI += "\
+  file://iconv.patch;patch=1;maxrev=43996 \
+  file://exit_uclibc_dns.patch;patch=1;maxrev=47076 \
+  file://exit_uclibc.patch;patch=1 \
+"
 
 EXTRA_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \

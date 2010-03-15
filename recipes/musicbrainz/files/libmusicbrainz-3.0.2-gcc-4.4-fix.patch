@@ -1,0 +1,12 @@
+upstream: http://bugs.musicbrainz.org/ticket/4301
+
+--- libmusicbrainz-3.0.2/src/utils_private.cpp.orig	2008-07-02 08:57:10.000000000 +0200
++++ libmusicbrainz-3.0.2/src/utils_private.cpp	2010-03-14 22:50:02.000000000 +0100
+@@ -20,6 +20,7 @@
+  * $Id: utils_private.cpp 9934 2008-07-02 06:57:10Z luks $
+  */
+  
++#include <cstdio>
+ #include <cstdlib>
+ #include <cstring>
+ #include <cstdarg>
