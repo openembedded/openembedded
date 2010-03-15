@@ -43,7 +43,7 @@ SRC_URI_append_omap3 = " \
 "
 
 SRC_URI_append_omapl137 = " \
-           file://gstreamer-ti-omapl138.patch;patch=1 \
+           file://gstreamer-ti-omapl137.patch;patch=1 \
 "
 
 SRC_URI_append_omapl138 = " \
@@ -67,7 +67,7 @@ PLATFORM_dm6467        = "dm6467"
 PLATFORM_omap3         = "omap3530"
 PLATFORM_dm355         = "dm355"
 PLATFORM_dm365         = "dm365"
-PLATFORM_omapl137      = "omapl138"
+PLATFORM_omapl137      = "omapl137"
 PLATFORM_omapl138      = "omapl138"
 PLATFORM              ?= "<UNDEFINED_PLATFORM>"
 
@@ -76,7 +76,7 @@ XDC_PLATFORM_dm6467    = "ti.platforms.evmDM6467"
 XDC_PLATFORM_omap3     = "ti.platforms.evm3530"
 XDC_PLATFORM_dm355     = "ti.platforms.evmDM355"
 XDC_PLATFORM_dm365     = "ti.platforms.evmDM365"
-XDC_PLATFORM_omapl137  = "ti.platforms.evmOMAPL138"
+XDC_PLATFORM_omapl137  = "ti.platforms.evmOMAPL137"
 XDC_PLATFORM_omapl138  = "ti.platforms.evmOMAPL138"
 XDC_PLATFORM          ?= "<UNDEFINED_XDC_PLATFORM>"
 
