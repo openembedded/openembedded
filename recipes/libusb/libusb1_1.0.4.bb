@@ -1,7 +1,7 @@
 DESCRIPTION = "library to provide userspace access to USB devices"
 HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
 
 PR = "r1"
 
