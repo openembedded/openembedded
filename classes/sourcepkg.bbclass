@@ -1,5 +1,5 @@
 DEPLOY_DIR_SRC ?= "${DEPLOY_DIR}/sources"
-EXCLUDE_FROM ?= ".pc autom4te.cache"
+EXCLUDE_FROM ?= ".pc patches autom4te.cache"
 
 # used as part of a path. make sure it's set
 DISTRO ?= "openembedded"
