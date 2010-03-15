@@ -36,7 +36,7 @@ sourcepkg_do_create_orig_tgz(){
 		echo $i >> temp/exclude-from-file
 	done
 
-	src_tree=${@get_src_tree(d)}
+	src_tree=$(basename ${S})
 	
 	echo $src_tree
 	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${PN}/${P}.orig.tar.gz"
@@ -46,7 +46,7 @@ sourcepkg_do_create_orig_tgz(){
 
 sourcepkg_do_archive_bb() {
 
-	src_tree=${@get_src_tree(d)}
+	src_tree=$(basename ${S})
 	dest=${WORKDIR}/$src_tree/${DISTRO}
 	mkdir -p $dest
 
@@ -86,7 +86,7 @@ sourcepkg_do_create_diff_gz(){
 	done
 
 
-	src_tree=${@get_src_tree(d)}
+	src_tree=$(basename ${S})
 
 	for i in `find . -maxdepth 1 -type f`; do
 		mkdir -p $src_tree/${DISTRO}/files
