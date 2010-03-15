@@ -1,7 +1,7 @@
 DESCRIPTION = "Opkg Package Manager"
 DESCRIPTION_libopkg = "Opkg Package Manager Library"
 SECTION = "base"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "curl gpgme"
 PV = "0.1.6+svnr${SRCPV}"
 INC_PR = "r20"
