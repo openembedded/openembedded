@@ -1,7 +1,7 @@
 ANGSTROM_QT_VERSION ?= "4.6.2"
 
-PREFERRED_VERSION_autoconf = "2.63"
-PREFERRED_VERSION_autoconf-native = "2.63"
+PREFERRED_VERSION_autoconf = "2.65"
+PREFERRED_VERSION_autoconf-native = "2.65"
 PREFERRED_VERSION_automake-native = "1.10.2"
 PREFERRED_VERSION_busybox 	= "1.13.2"
 PREFERRED_VERSION_cairo		= "1.8.10"
