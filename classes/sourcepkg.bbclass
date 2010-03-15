@@ -30,7 +30,7 @@ def get_src_tree(d):
 
 sourcepkg_do_create_orig_tgz(){
 
-	mkdir -p ${DEPLOY_DIR_SRC}
+	mkdir -p ${DEPLOY_DIR_SRC}/${PN}
 	cd ${WORKDIR}
 	for i in ${EXCLUDE_FROM}; do
 		echo $i >> temp/exclude-from-file
@@ -39,8 +39,8 @@ sourcepkg_do_create_orig_tgz(){
 	src_tree=${@get_src_tree(d)}
 	
 	echo $src_tree
-	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${P}.orig.tar.gz"
-	tar cvzf ${DEPLOY_DIR_SRC}/${P}.orig.tar.gz --exclude-from temp/exclude-from-file $src_tree
+	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${PN}/${P}.orig.tar.gz"
+	tar cvzf ${DEPLOY_DIR_SRC}/${PN}/${P}.orig.tar.gz --exclude-from temp/exclude-from-file $src_tree
 	cp -pPR $src_tree $src_tree.orig
 }
 
@@ -93,20 +93,20 @@ sourcepkg_do_create_diff_gz(){
 		cp $i $src_tree/${DISTRO}/files
 	done
 	
-	oenote "Creating .diff.gz in ${DEPLOY_DIR_SRC}/${P}-${PR}.diff.gz"
-	LC_ALL=C TZ=UTC0 diff --exclude-from=temp/exclude-from-file -Naur $src_tree.orig $src_tree | gzip -c > ${DEPLOY_DIR_SRC}/${P}-${PR}.diff.gz
+	oenote "Creating .diff.gz in ${DEPLOY_DIR_SRC}/${PN}/${P}-${PR}.diff.gz"
+	LC_ALL=C TZ=UTC0 diff --exclude-from=temp/exclude-from-file -Naur $src_tree.orig $src_tree | gzip -c > ${DEPLOY_DIR_SRC}/${PN}/${P}-${PR}.diff.gz
 	rm -rf $src_tree.orig
 }
 
 EXPORT_FUNCTIONS do_create_orig_tgz do_archive_bb do_dumpdata do_create_diff_gz
 
 do_create_orig_tgz[deptask] = "do_unpack"
-do_create_diff_gz[deptask] = "do_patch"
+do_create_diff_gz[deptask] = "do_configure"
 do_archive_bb[deptask] = "do_patch"
 do_dumpdata[deptask] = "do_unpack"
 
 addtask create_orig_tgz after do_unpack before do_patch
 addtask archive_bb after do_patch before do_dumpdata
 addtask dumpdata after do_archive_bb before do_create_diff_gz
-addtask create_diff_gz after do_dumpdata before do_configure
+addtask create_diff_gz after do_configure before do_compile
 
