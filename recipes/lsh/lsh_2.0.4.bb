@@ -5,7 +5,9 @@ DESCRIPTION = "lsh is a GNU GPL-licensed implementation of the SSH \
 utility programs."
 DEPENDS = "zlib gmp liboop"
 
-SRC_URI = "http://www.lysator.liu.se/~nisse/archive/lsh-${PV}.tar.gz"
+SRC_URI = "http://www.lysator.liu.se/~nisse/archive/lsh-${PV}.tar.gz;name=src"
+SRC_URI[src.md5sum] = "621f4442332bb772b92d397d17ccaf02"
+SRC_URI[src.sha256sum] = "614b9d63e13ad3e162c82b6405d1f67713fc622a8bc11337e72949d613713091"
 S = "${WORKDIR}/lsh-${PV}"
 
 inherit autotools
