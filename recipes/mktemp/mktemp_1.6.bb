@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mktemp.org/"
 SECTION = "console/utils"
 LICENSE = "GPLv2 BSD"
 
-inherit autotools
+inherit autotools update-alternatives
 
 EXTRA_OECONF = "--with-libc"
 
@@ -12,6 +12,13 @@ SRC_URI = "\
   file://add_destdir.patch;patch=1 \
   file://disable-strip.patch;patch=1 \
 "
-	 	 	
-# FIXME should rather use update-alternatives
-RCONFLICTS_${PN} = "coreutils"
+
+do_install_append () {
+	mkdir ${D}${base_bindir}
+	mv ${D}${bindir}/mktemp ${D}${base_bindir}/mktemp.${PN}
+}
+
+ALTERNATIVE_NAME = "mktemp"
+ALTERNATIVE_LINK = "${base_bindir}/mktemp"
+ALTERNATIVE_PATH = "${base_bindir}/mktemp.${PN}"
+ALTERNATIVE_PRIORITY = "100"
