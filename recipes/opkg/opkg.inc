@@ -2,9 +2,9 @@ DESCRIPTION = "Opkg Package Manager"
 DESCRIPTION_libopkg = "Opkg Package Manager Library"
 SECTION = "base"
 LICENSE = "GPLv2"
-DEPENDS = "curl gpgme"
+DEPENDS = "curl gpgme openssl"
 PV = "0.1.6+svnr${SRCPV}"
-INC_PR = "r20"
+INC_PR = "r21"
 
 FILESPATHPKG =. "opkg:"
 
