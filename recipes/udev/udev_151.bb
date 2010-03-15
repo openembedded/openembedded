@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPL"
 
-PR = "r4"
+PR = "r5"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -69,7 +69,7 @@ FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 
 # udev installs binaries under $(udev_prefix)/lib/udev, even if ${libdir}
 # is ${prefix}/lib64
-FILES_${PN} += "/lib/udev/* ${libdir}/ConsoleKit"
+FILES_${PN} += "/lib/udev* ${libdir}/ConsoleKit"
 FILES_${PN}-dbg += "/lib/udev/.debug"
 
 do_install () {
@@ -104,6 +104,9 @@ do_install () {
 
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
+
+	mkdir -p ${D}${base_libdir}
+	ln -sf ${libdir}/udev ${D}${base_libdir}/
 }
 
 do_install_append_h2200() {
