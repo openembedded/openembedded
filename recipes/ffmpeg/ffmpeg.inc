@@ -10,6 +10,8 @@ ARM_INSTRUCTION_SET = "arm"
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 
+INC_PR = "r9"
+
 inherit autotools pkgconfig
 
 LEAD_SONAME = "libavcodec.so"
