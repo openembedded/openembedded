@@ -1,7 +1,7 @@
 DESCRIPTION = "ALSA Utilities"
 HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "alsa-lib ncurses"
 PR = "r1"
 
