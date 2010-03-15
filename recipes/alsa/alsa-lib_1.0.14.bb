@@ -1,7 +1,7 @@
 DESCRIPTION = "Alsa sound library"
 HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
 
 PR = "r2"
 
