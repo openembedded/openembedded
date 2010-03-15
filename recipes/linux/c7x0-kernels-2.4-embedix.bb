@@ -1,6 +1,6 @@
 DESCRIPTION = "Build all c7x0 kernels in one go"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PROVIDES = "virtual/kernel"
 PR = "r1"
 

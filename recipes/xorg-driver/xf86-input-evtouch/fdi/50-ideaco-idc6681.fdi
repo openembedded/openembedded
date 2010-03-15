@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- SGML -*- -->
+
+<deviceinfo version="0.2">
+  <device>
+    <match key="info.product" contains="IDEACO"> 
+      <match key="info.product" contains="IDC 6681"> 
+        <match key="info.capabilities" contains="input.touchpad">
+          <merge key="input.x11_driver" type="string">evtouch</merge>
+          <merge key="input.x11_options.reportingmode" type="string">raw</merge>
+          <merge key="input.x11_options.taptimer" type="string">50</merge>
+          <merge key="input.x11_options.longtouchtimer" type="string">30</merge>
+          <merge key="input.x11_options.movelimit" type="string">15</merge>
+          <merge key="input.x11_options.emulate3buttons" type="string">true</merge>
+          <merge key="input.x11_options.emulate3timeout" type="string">50</merge>
+          <merge key="input.x11_options.maxx" type="string">1100</merge>
+          <merge key="input.x11_options.maxy" type="string">1650</merge>
+          <merge key="input.x11_options.minx" type="string">7220</merge>
+          <merge key="input.x11_options.miny" type="string">6560</merge>
+        </match>
+      </match> 
+    </match>
+  </device>
+</deviceinfo>

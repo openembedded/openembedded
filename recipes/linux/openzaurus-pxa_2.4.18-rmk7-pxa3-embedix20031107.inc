@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PV = "2.4.18-rmk7-pxa3-embedix"
 PR = "r46"
 KV = "2.4.18"

@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "JLime Linux kernel for SuperH based Jornada 6xx"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 
 COMPATIBLE_HOST = "sh.*-linux"

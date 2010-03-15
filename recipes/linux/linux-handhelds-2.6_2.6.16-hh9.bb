@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer handheld devices."
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 
 # Override where to look for defconfigs and patches,

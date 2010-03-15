@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux kernel for OpenZaurus StrongArm processor based devices."
 SECTION = "kernel"
 PV = "2.4.18-rmk7-pxa3-embedix"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"

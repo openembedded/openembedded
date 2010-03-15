@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for MNCI device"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "modutils-cross virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX}"
 COMPATIBLE_MACHINE = "mnci"
 KV = "2.4.21"

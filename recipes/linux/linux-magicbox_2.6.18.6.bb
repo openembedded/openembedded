@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Magicbox ver 1.1 and 2.0 router boards"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r2"
 DEPENDS = "u-boot"
 

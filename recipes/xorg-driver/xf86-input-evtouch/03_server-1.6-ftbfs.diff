@@ -1,0 +1,61 @@
+From: Julien Cristau <jcristau@debian.org>
+Date: Sun, 17 May 2009 18:54:59 +0200
+Subject: Fix build with server 1.6
+
+* uninclude xf86Version.h
+* fix InitValuatorClassDeviceStruct usage
+* fix input ABI check
+
+Index: xserver-xorg-input-evtouch/evtouch.c
+===================================================================
+--- xserver-xorg-input-evtouch.orig/evtouch.c
++++ xserver-xorg-input-evtouch/evtouch.c
+@@ -30,10 +30,8 @@
+ 
+ #define _evdev_touch_C_
+ 
+-#include <xf86Version.h>
+-#if XF86_VERSION_CURRENT >= XF86_VERSION_NUMERIC(3,9,0,0,0)
++#include <xorgVersion.h>
+ #define XFREE86_V4
+-#endif
+ 
+ /*****************************************************************************
+  *        Standard Headers
+@@ -74,7 +72,6 @@
+ #include "xf86_OSproc.h"
+ #include "xf86Xinput.h"
+ #include "exevents.h"
+-#include "xf86OSmouse.h"
+ #include "randrstr.h"
+ 
+ #ifndef NEED_XF86_TYPES
+@@ -139,7 +136,7 @@
+         "Kenan Esau",
+         MODINFOSTRING1,
+         MODINFOSTRING2,
+-        XF86_VERSION_CURRENT,
++        XORG_VERSION_CURRENT,
+         0, 8, 8,
+         ABI_CLASS_XINPUT,
+         ABI_XINPUT_VERSION,
+@@ -652,14 +649,17 @@
+          * Device reports motions on 2 axes in absolute coordinates.
+          * Axes min and max values are reported in raw coordinates.
+          */
+-        if (InitValuatorClassDeviceStruct(dev, 2, xf86GetMotionEvents,
++        if (InitValuatorClassDeviceStruct(dev, 2,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
++                                          xf86GetMotionEvents,
++#endif
+                                           local->history_size, Absolute) == FALSE)
+         {
+                 ErrorF ("Unable to allocate EVTouch touchscreen ValuatorClassDeviceStruct\n");
+                 return !Success;
+         }
+ 
+-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 2
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 2
+         xf86InitValuatorAxisStruct(dev, 0, 0, priv->screen_width,
+                                    1024,
+                                    EV_AXIS_MIN_RES /* min_res */ ,

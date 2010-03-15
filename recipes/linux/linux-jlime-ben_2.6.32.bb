@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux 2.6.32 kernel for the ben nanonote"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 SRCREV = "${AUTOREV}"
 

@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the LogicPD Zoom(PXA270 ref design)"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.19.2.tar.bz2 \

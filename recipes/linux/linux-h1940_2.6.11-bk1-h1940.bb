@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux kernel for h1940 devices."
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "h1940"

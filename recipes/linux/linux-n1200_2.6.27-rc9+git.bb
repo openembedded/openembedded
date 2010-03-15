@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for the Thecus n1200"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r3"
 DEPENDS = "u-boot-mkimage-native"
 COMPATIBLE_MACHINE = "n1200"
