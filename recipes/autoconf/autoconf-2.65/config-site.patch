@@ -1,0 +1,11 @@
+--- /tmp/general.m4	2009-06-02 15:14:15.000000000 +0200
++++ autoconf-2.63/lib/autoconf/general.m4	2009-06-02 15:14:42.000000000 +0200
+@@ -1848,7 +1848,7 @@
+   ac_site_file1=$ac_default_prefix/share/config.site
+   ac_site_file2=$ac_default_prefix/etc/config.site
+ fi
+-for ac_site_file in "$ac_site_file1" "$ac_site_file2"
++for ac_site_file in $ac_site_file1 "$ac_site_file2"
+ do
+   test "x$ac_site_file" = xNONE && continue
+   if test -r "$ac_site_file"; then
