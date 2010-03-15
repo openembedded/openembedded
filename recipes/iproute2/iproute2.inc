@@ -1,7 +1,7 @@
 DESCRIPTION = "kernel routing and traffic control utilities"
 HOMEPAGE = "http://linux-net.osdl.org/index.php/Iproute2"
 SECTION = "base"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "flex-native bison-native"
 
 INC_PR = "r3"
