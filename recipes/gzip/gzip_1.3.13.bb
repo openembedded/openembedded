@@ -6,8 +6,10 @@ to be a replacement for 'compress'. The GNU Project uses it as \
 the standard compression program for its system."
 PR = "r1"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/g/gzip/gzip_${PV}.orig.tar.gz \
+SRC_URI = "${GNU_MIRROR}/gzip/gzip-${PV}.tar.gz;name=src \
 	   file://configure.patch;patch=1"
+SRC_URI[src.md5sum] = "c54a31b93e865f6a4410b2dc64662706"
+SRC_URI[src.sha256sum] = "1d06ff9f5c523651bed3dcde6e6aa8118eee48b22534a157a2588705fa517ca3"
 
 S = "${WORKDIR}/gzip-${PV}"
 

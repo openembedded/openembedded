@@ -1,0 +1,15 @@
+Index: gzip-1.3.13/configure.ac
+===================================================================
+--- gzip-1.3.13.orig/configure.ac	2010-03-15 13:15:37.457912205 +0800
++++ gzip-1.3.13/configure.ac	2010-03-15 13:17:46.497912101 +0800
+@@ -27,8 +27,8 @@
+ AC_CONFIG_SRCDIR(gzip.c)
+ AC_CONFIG_AUX_DIR(build-aux)
+ AC_CONFIG_HEADERS([lib/config.h:lib/config.hin])
+-AM_INIT_AUTOMAKE([1.11 dist-xz])
+-AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
++AM_INIT_AUTOMAKE([1.10])
++m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+ 
+ AC_PROG_CC_STDC
+ AM_PROG_CC_C_O
