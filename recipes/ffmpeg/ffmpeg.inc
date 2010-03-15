@@ -10,7 +10,7 @@ ARM_INSTRUCTION_SET = "arm"
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 inherit autotools pkgconfig
 
@@ -61,6 +61,8 @@ do_stage() {
            install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/ffmpeg/$h
            install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/libavutil/$h 
         done
+        install -m 0644 ${B}/libavutil/avconfig.h ${STAGING_INCDIR}/ffmpeg/
+        install -m 0644 ${B}/libavutil/avconfig.h ${STAGING_INCDIR}/libavutil/
 
         install -d ${STAGING_INCDIR}/libswscale/ 
         install -m 0644 ${S}/libswscale/*.h ${STAGING_INCDIR}/ffmpeg/
