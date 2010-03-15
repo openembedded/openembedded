@@ -3,7 +3,7 @@ require php.inc
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql5 \
            libc-client openssl"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 \
             file://imap-fix-autofoo.patch;patch=1 \
