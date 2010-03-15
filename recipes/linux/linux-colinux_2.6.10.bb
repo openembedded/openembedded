@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "User Mode Linux Kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 COLV = "0.6.2"
 
 COMPATIBLE_MACHINE = "colinux"

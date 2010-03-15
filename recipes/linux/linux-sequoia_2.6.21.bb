@@ -2,7 +2,7 @@
 # Released under the MIT license (see packages/COPYING)
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for AMCC's Sequoia dev board"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 #DEPENDS = "u-boot"
 

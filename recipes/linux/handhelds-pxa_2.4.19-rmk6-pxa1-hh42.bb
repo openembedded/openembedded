@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 #PR = "r1"
 
 

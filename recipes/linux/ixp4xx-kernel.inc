@@ -24,7 +24,7 @@
 #
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 DEPENDS = "arm-kernel-shim devio-native"
 

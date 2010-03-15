@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for the IOMega StorCenter"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r2"
 
 DEPENDS = "dtc-native"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for mini2440 / micro2440 development boards"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 
 require linux.inc

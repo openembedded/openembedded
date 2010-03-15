@@ -6,7 +6,7 @@ COMPATIBLE_MACHINE = "geodelx"
 
 DESCRIPTION = "Linux kernel for the AMD Geode GX5535/LX5536"
 HOMEPAGE = "http://www.amd.com/embedded"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 PR = "r0"
 AMD_DRIVER_VERSION = "02.03.0100"

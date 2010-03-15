@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the BSQUARE PXA255 DevKitIDP"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r4"
 DEPENDS = "u-boot"
 

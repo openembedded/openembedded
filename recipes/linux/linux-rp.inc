@@ -1,6 +1,6 @@
 DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices and iPAQ hx2750."
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 inherit kernel
 

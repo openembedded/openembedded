@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux 2.6.32 kernel for the Samsung Omnia SGH-i900."
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 RDEPENDS += "marvell-gspi-fw"
 

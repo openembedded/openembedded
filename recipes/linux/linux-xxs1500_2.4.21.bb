@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for mycable xxs1500"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 KV = "2.4.21"
 PV = "${KV}"
 

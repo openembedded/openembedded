@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 inherit kernel
 
