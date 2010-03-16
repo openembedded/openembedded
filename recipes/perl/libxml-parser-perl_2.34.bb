@@ -2,7 +2,7 @@ DESCRIPTION = "XML::Parser - A perl module for parsing XML documents"
 SECTION = "libs"
 LICENSE = "Artistic"
 DEPENDS += "expat expat-native"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/XML/XML-Parser-${PV}.tar.gz"
 
