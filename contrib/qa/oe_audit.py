@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import bb
+
 def read_available(filename):
     """
     Parses the output of bitbake -s
@@ -39,6 +41,43 @@ def map_names(str):
         "qemu-devel" : "qemu",
         "krb5-beta" : "krb5",
         "freeciv-gtk2": "freeciv",
+        "gtk" : "gtk+",
+        "wget+ipv6" : "wget",
+        "ja-gd" : "gd",
+        "openvpn-devel" : "openvpn",
+        "mpeg123-esound" : "mpeg123",
+        "mpeg123-nas" : "mpeg123",
+        "cdrtools-cjk" : "cdrtools",
+        "apache+mod_ssl+mod_deflate" : "apache2",
+        "apache+mod_ssl*" : "apache2",
+        "vim-gtk2" : "vim",
+        "zh-emacs" : "emacs",
+        "{ja-,}bugzilla" : "bugzilla",
+        "zh-tin" : "tin",
+        "mozilla+ipv6": "mozilla",
+        "mozilla-embeddded" : "mozilla",
+        "rar" : "unrar",
+        "libsndfile" : "libsndfile1",
+        "sylpheed-gtk2": "sylpheed",
+        "cdrtools-devel": "cdrtools",
+        "pine4-ssl": "pine",
+        "apache" : "apache2",
+        "ghostscript-gpl" : "gs",
+        "ghostscript-gnu-nox11" : "gs",
+        "ghostscript8" : "gs",
+        "ghostscript-afpl-nox11" : "gs",
+        "ghostscript-afpl" : "gs",
+        "isc-dhcp" : "dhcp",
+        "mplayer-gtk" : "mplayer",
+        "xerces-c2" : "xerces-c",
+        "libxml" : "libxml2",
+        "vim+ruby" : "vim",
+        "mplayer{,-gtk}{,-esound}" : "mplayer",
+        "proftpd-devel": "proftpd",
+        "neon28" : "neon",
+        "php4-dba" : "php",
+        "php5-{cgi,cli}" : "php",
+
     }
 
     try:
@@ -49,9 +88,22 @@ def map_names(str):
 def is_not_in_oe(name):
     """Method to reject packages not in OE"""
     not_in = [
-        "openoffice.org-2-devel",
+        # packages that we will never have...
         "linux-firefox", "fr-linux-netscape", "linux-netscape-{communicator,navigator}",
-        "linux_base", "ja-netscape7", "{ja,ko}-netscape-{communicator,navigator}-linux",
+        "linux_base", "ja-netscape7", "{ja,ko}-netscape-{communicator,navigator}-linux", "zhTW-linux-mozillafirebird", "ja-linux-mozillafirebird-gtk1", "el-linux-mozillafirebird", "mozilla-firebird", "netscape7",
+        "acroread4", "acroread7", "acroread5",
+        "linux-openmotif", "linux-flock", "linux-jdk", "linux-curl", "linux-png", "linux-firefox-devel",
+
+        # packages that we don't have now but maybe will have in
+        # the future and blacklisting them here might be a problem
+        "openoffice.org-2-devel", "openoffice.org-2", "it-openoffice", "ca-openoffice","sl-openoffice-SI", "ja-openoffice",
+        "drupal4", "drupal5", "drupal6", "drupal-pubcookie",
+        "gpdf",
+        "nagios",
+        "kdenetwork", "ja-kdelibs", "kdegraphics", "kdepim", "kdebase4-runtime",
+        "xemacs-devel", "xemacs-devel-21.5", "xemacs-mule", "zh-xemacs", "zh-xemacs-mule",
+        "geeklog", "apach13-ssl", "nvidia-driver", "eGroupWare", "varnish", "heimdal",
+        "bugzilla", "agenda-snow-libs", "mozilla",
     ]
 
     return name in not_in
@@ -61,18 +113,10 @@ class freebsd_info:
     Handles an entry like the one below:
     vulnerability-test-port>=2000<2010.02.26|http://cvsweb.freebsd.org/ports/security/vulnerability-test-port/|Not vulnerable, just a test port (database: 2010-02-26)
     """
-    def __init__(self, line):
-        split = line.split("|")
-        for i in range(0, len(split[0])):
-            c = split[0][i]
-            if c != '<' and c != '=' and c != '>':
-                continue
-            self.name = map_names(split[0][0:i])
-            self.versions = self.split_versions(split[0][i:])
-            break
-
-        self.link = split[1]
-        self.kind = split[2]
+    def __init__(self, name, versions, link, kind):
+        self.name = name
+        self.versions = versions
+        self.link = link
 
     @classmethod
     def split_versions(self, input):
@@ -114,6 +158,24 @@ class freebsd_info:
     def __repr__(self):
         return "%s: %s" % (self.name, self.versions)
 
+def create_infos(line):
+    split = line.split("|")
+    for i in range(0, len(split[0])):
+        c = split[0][i]
+        if c != '<' and c != '=' and c != '>':
+                continue
+        name = map_names(split[0][0:i])
+        versions = freebsd_info.split_versions(split[0][i:])
+        break
+
+    if is_not_in_oe(name):
+        print "Not in oe %s" % name
+        return []
+
+    link = split[1]
+    kind = split[2]
+    return [freebsd_info(name, versions, link, kind)]
+
 def read_auditfile(filename):
     """
     Read an uncompressed audit file from freebsd
@@ -124,12 +186,13 @@ def read_auditfile(filename):
         if line.startswith("#"):
             continue
 
-        info = freebsd_info(line)
-        try:
-            packages[info.name].append(info)
-        except:
-            packages[info.name] = []
-            packages[info.name].append(info)
+        infos = create_infos(line)
+        for info in infos:
+            try:
+                packages[info.name].append(info)
+            except:
+                packages[info.name] = []
+                packages[info.name].append(info)
     return packages
 
 
@@ -151,6 +214,8 @@ def strip_bsd_version(bsd_version):
     FreeBSD is adding ,1 for revisions.. remove that
     """
     split = bsd_version.rsplit(',', 1)
+    split = split[0]
+    split = split.rsplit('_', 1)
     return split[0]
 
 def compare_versions(oe, freebsd, not_known):
@@ -162,11 +227,37 @@ def compare_versions(oe, freebsd, not_known):
 
         oe_version = strip_oe_version(oe[oe_name])
         for ver in freebsd[bsd_name]:
+            affected = True
             str = []
             for (cmp, vers) in ver.versions:
                 bsd_ver = strip_bsd_version(vers)
+                cmp_res = bb.utils.vercmp(('0', oe_version, 'r0'), ('0', bsd_ver, 'r0'))
+                if cmp == '<':
+                    if cmp_res >= 0:
+                        affected = False
+                    pass
+                elif cmp == '<=':
+                    if cmp_res > 0:
+                        affected = False
+                    pass
+                elif cmp == '>':
+                    if cmp_res <= 0:
+                        affected = False
+                    pass
+                elif cmp == '>=':
+                    if cmp_res < 0:
+                        affected = False
+                    pass
+                elif cmp == '=':
+                    if cmp_res > 0:
+                        affected = False
+                else:
+                    print cmp
+                    assert True
+
                 str.append("%s %s %s %s" % (oe_name, oe_version, cmp, bsd_ver))
-            print " && ".join(str), ver.link
+            if affected:
+                print " && ".join(str), ver.link
 
     for package in freebsd.keys():
         # handle the various versions of OE packages
