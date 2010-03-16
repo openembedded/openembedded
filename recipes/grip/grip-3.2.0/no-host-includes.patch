@@ -1,0 +1,10 @@
+Index: grip-3.2.0/src/Makefile.am
+===================================================================
+--- grip-3.2.0.orig/src/Makefile.am	2010-03-16 14:46:01.651553829 +0800
++++ grip-3.2.0/src/Makefile.am	2010-03-16 14:46:05.240303128 +0800
+@@ -1,4 +1,4 @@
+-INCLUDES = -I$(top_srcdir) -I$(includedir) \
++INCLUDES = -I$(top_srcdir) \
+ 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" \
+          -DG_LOG_DOMAIN=\"grip\" -DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+         -I../intl -I$(top_srcdir)/intl \
