@@ -1,0 +1,53 @@
+From 6e80b9148a7f43b7b40235a57c1066fe64e371e5 Mon Sep 17 00:00:00 2001
+From: Alexander Larsson <alexl@redhat.com>
+Date: Fri, 12 Mar 2010 15:40:07 +0100
+Subject: [PATCH 3/9] Add FAST_PATH_NO_NONE_REPEAT flag
+
+---
+ pixman/pixman-image.c   |   10 +++++++---
+ pixman/pixman-private.h |    1 +
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/pixman/pixman-image.c b/pixman/pixman-image.c
+index d09d193..df5b457 100644
+--- a/pixman/pixman-image.c
++++ b/pixman/pixman-image.c
+@@ -335,16 +335,20 @@ compute_image_info (pixman_image_t *image)
+     /* Repeat mode */
+     switch (image->common.repeat)
+     {
++    case PIXMAN_REPEAT_NONE:
++	flags |= FAST_PATH_NO_REFLECT_REPEAT | FAST_PATH_NO_PAD_REPEAT;
++	break;
++
+     case PIXMAN_REPEAT_REFLECT:
+-	flags |= FAST_PATH_NO_PAD_REPEAT;
++	flags |= FAST_PATH_NO_PAD_REPEAT | FAST_PATH_NO_NONE_REPEAT;
+ 	break;
+ 
+     case PIXMAN_REPEAT_PAD:
+-	flags |= FAST_PATH_NO_REFLECT_REPEAT;
++	flags |= FAST_PATH_NO_REFLECT_REPEAT | FAST_PATH_NO_NONE_REPEAT;
+ 	break;
+ 
+     default:
+-	flags |= (FAST_PATH_NO_REFLECT_REPEAT | FAST_PATH_NO_PAD_REPEAT);
++	flags |= FAST_PATH_NO_REFLECT_REPEAT | FAST_PATH_NO_PAD_REPEAT | FAST_PATH_NO_NONE_REPEAT;
+ 	break;
+     }
+ 
+diff --git a/pixman/pixman-private.h b/pixman/pixman-private.h
+index bc41249..65314b9 100644
+--- a/pixman/pixman-private.h
++++ b/pixman/pixman-private.h
+@@ -579,6 +579,7 @@ _pixman_choose_implementation (void);
+ #define FAST_PATH_SIMPLE_REPEAT			(1 << 12)
+ #define FAST_PATH_IS_OPAQUE			(1 << 13)
+ #define FAST_PATH_NEEDS_WORKAROUND		(1 << 14)
++#define FAST_PATH_NO_NONE_REPEAT		(1 << 15)
+ 
+ #define _FAST_PATH_STANDARD_FLAGS					\
+     (FAST_PATH_ID_TRANSFORM		|				\
+-- 
+1.6.6.1
+
