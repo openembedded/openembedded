@@ -10,7 +10,7 @@
 # supported format will be unpacked into COLLECTIONS_UNPACKDIR and used from
 # there.
 
-COLLECTIONS = "${@' '.join(d.getVar('BBPATH', 1).split(':'))}"
+COLLECTIONS ?= "${@' '.join(d.getVar('BBPATH', 1).split(':'))}"
 COLLECTIONS_UNPACKDIR = "${TMPDIR}/collections"
 
 COLLECTIONINFO = "${@get_collection(d.getVar('FILE', 1), d)}"
