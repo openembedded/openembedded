@@ -39,6 +39,14 @@ def map_names(str):
         "qemu-devel" : "qemu",
         "krb5-beta" : "krb5",
         "freeciv-gtk2": "freeciv",
+        "gtk" : "gtk+",
+        "wget+ipv6" : "wget",
+        "ja-gd" : "gd",
+        "openvpn-devel" : "openvpn",
+        "mpeg123-esound" : "mpeg123",
+        "mpeg123-nas" : "mpeg123",
+        "cdrtools-cjk" : "cdrtools",
+        "apache+mod_ssl+mod_deflate" : "apache2",
     }
 
     try:
@@ -49,9 +57,20 @@ def map_names(str):
 def is_not_in_oe(name):
     """Method to reject packages not in OE"""
     not_in = [
-        "openoffice.org-2-devel",
+        # packages that we will never have...
         "linux-firefox", "fr-linux-netscape", "linux-netscape-{communicator,navigator}",
-        "linux_base", "ja-netscape7", "{ja,ko}-netscape-{communicator,navigator}-linux",
+        "linux_base", "ja-netscape7", "{ja,ko}-netscape-{communicator,navigator}-linux", "zhTW-linux-mozillafirebird", "ja-linux-mozillafirebird-gtk1", "el-linux-mozillafirebird", 
+        "acroread4", "acroread7",
+        "linux-openmotif", "linux-flock", "linux-jdk", "linux-curl",
+
+        # packages that we don't have now but maybe will have in
+        # the future and blacklisting them here might be a problem
+        "openoffice.org-2-devel", "openoffice.org-2", "it-openoffice", "ca-openoffice","sl-openoffice-SI"
+        "drupal4", "drupal5", "drupal6",
+        "gpdf",
+        "nagios",
+        "kdenetwork", "ja-kdelibs",
+        "xemacs-devel", "xemacs-devel-21.5", "xemacs-mule", "zh-xemacs",
     ]
 
     return name in not_in
@@ -61,18 +80,10 @@ class freebsd_info:
     Handles an entry like the one below:
     vulnerability-test-port>=2000<2010.02.26|http://cvsweb.freebsd.org/ports/security/vulnerability-test-port/|Not vulnerable, just a test port (database: 2010-02-26)
     """
-    def __init__(self, line):
-        split = line.split("|")
-        for i in range(0, len(split[0])):
-            c = split[0][i]
-            if c != '<' and c != '=' and c != '>':
-                continue
-            self.name = map_names(split[0][0:i])
-            self.versions = self.split_versions(split[0][i:])
-            break
-
-        self.link = split[1]
-        self.kind = split[2]
+    def __init__(self, name, versions, link, kind):
+        self.name = name
+        self.versions = versions
+        self.link = link
 
     @classmethod
     def split_versions(self, input):
@@ -114,6 +125,24 @@ class freebsd_info:
     def __repr__(self):
         return "%s: %s" % (self.name, self.versions)
 
+def create_infos(line):
+    split = line.split("|")
+    for i in range(0, len(split[0])):
+        c = split[0][i]
+        if c != '<' and c != '=' and c != '>':
+                continue
+        name = map_names(split[0][0:i])
+        versions = freebsd_info.split_versions(split[0][i:])
+        break
+
+    if is_not_in_oe(name):
+        print "Not in oe %s" % name
+        return []
+
+    link = split[1]
+    kind = split[2]
+    return [freebsd_info(name, versions, link, kind)]
+
 def read_auditfile(filename):
     """
     Read an uncompressed audit file from freebsd
@@ -124,12 +153,13 @@ def read_auditfile(filename):
         if line.startswith("#"):
             continue
 
-        info = freebsd_info(line)
-        try:
-            packages[info.name].append(info)
-        except:
-            packages[info.name] = []
-            packages[info.name].append(info)
+        infos = create_infos(line)
+        for info in infos:
+            try:
+                packages[info.name].append(info)
+            except:
+                packages[info.name] = []
+                packages[info.name].append(info)
     return packages
 
 
