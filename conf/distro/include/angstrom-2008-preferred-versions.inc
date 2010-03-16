@@ -44,7 +44,7 @@ PREFERRED_VERSION_qt4-x11-free = "${ANGSTROM_QT_VERSION}"
 PREFERRED_VERSION_qt4-x11-free-gles = "${ANGSTROM_QT_VERSION}"
 
 PREFERRED_VERSION_samba		= "3.3.9"
-PREFERRED_VERSION_tiff 		= "3.8.2+4.0.0beta2"
+PREFERRED_VERSION_tiff 		= "3.9.2+4.0.0beta5"
 
 PREFERRED_VERSION_udev 		= "151"
 PREFERRED_VERSION_udev_libc-uclibc = "141"
@@ -52,6 +52,7 @@ UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_usbutils = "0.86"
 PREFERRED_VERSION_wpa-supplicant = "0.6.9"
+PREFERRED_VERSION_wget = "1.11.4"
 PREFERRED_VERSION_xserver-common = "1.32"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
 

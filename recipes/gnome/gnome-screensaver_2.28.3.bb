@@ -15,6 +15,8 @@ EXTRA_OECONF = " \
 do_configure () {
 	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}
 	sed -i -e 's:$CPPFLAGS -I$includedir:$CPPFLAGS:g' configure.ac
+	sed -i -e 's:$CPPFLAGS -I$includedir:$CPPFLAGS:g' configure
+
 	gnu-configize
 	oe_runconf
 }

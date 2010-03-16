@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+      <match key="info.product" contains="HID TOUCH HID Touch Panel">
+        <match key="info.capabilities" contains="input">
+          <merge key="input.x11_driver" type="string">evtouch</merge>
+          <merge key="input.x11_options.reportingmode" type="string">raw</merge>
+          <merge key="input.x11_options.emulate3buttons" type="string">false</merge>
+          <merge key="input.x11_options.emulate3timeout" type="string">50</merge>
+          <merge key="input.x11_options.sendcoreevents" type="string">true</merge>
+	  <merge key="input.x11_options.maxx" type="string">4095</merge>
+	  <merge key="input.x11_options.maxy" type="string">4095</merge>
+	  <merge key="input.x11_options.minx" type="string">21</merge>
+	  <merge key="input.x11_options.miny" type="string">0</merge>
+	  <merge key="input.x11_options.Rotate" type="string">false</merge>
+	  <merge key="input.x11_options.Swapx" type="string">false</merge>
+	  <merge key="input.x11_options.Swapy" type="string">false</merge>
+          <merge key="input.x11_options.taptimer" type="string">30</merge>
+          <merge key="input.x11_options.longtouchtimer" type="string">750</merge>
+          <merge key="input.x11_options.longtouched_action" type="string">click</merge>
+          <merge key="input.x11_options.longtouched_button" type="string">3</merge>
+          <merge key="input.x11_options.oneandhalftap_button" type="string">2</merge>
+          <merge key="input.x11_options.movelimit" type="string">10</merge>
+          <merge key="input.x11_options.touched_drag" type="string">1</merge>
+          <merge key="input.x11_options.maybetapped_action" type="string">click</merge>
+          <merge key="input.x11_options.maybetapped_button" type="string">1</merge>
+        </match>
+    </match>
+  </device>
+</deviceinfo>

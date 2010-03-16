@@ -1,4 +1,5 @@
 require gdb-cross.inc
+LICENSE = "GPLv2"
 
 inherit cross
 

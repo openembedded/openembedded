@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux kernel for MTX-3 (Surfbox3)"
 HOMEPAGE = "http://meshcube.org/meshwiki/"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 KV = "${PV}"
 PR = "r11"
 

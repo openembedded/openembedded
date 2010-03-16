@@ -1,0 +1,29 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# Ethernet/RNDIS gadget (g_ether)
+# usbnet and static hwaddr for mac users
+auto usb0
+iface usb0 inet static
+	hwaddress ether A2:80:F4:8A:3C:91
+	address 10.10.10.10 
+	netmask 255.255.255.0
+	gateway 10.10.10.1 
+
+# Wired interface
+# BUGbase Ethernet which is built into kernel
+# It is on USB but we rename it by udev rule
+auto eth0
+iface eth0 inet dhcp
+
+#
+# wireless interface
+auto eth1
+iface eth1 inet dhcp
+	wireless_mode managed
+	wireless_essid any
+	wpa-driver wext
+	wpa-conf /etc/wpa_supplicant.conf

@@ -1,7 +1,7 @@
 DESCRIPTION = "2.6 Linux Kernel for Boundary Devices NEON Board"
 SECTION = "kernel"
 HOMEPAGE = "N/A"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 COMPATIBLE_MACHINE = "bd-neon"
 DEPENDS += "u-boot-utils-native"
 

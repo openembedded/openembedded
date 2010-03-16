@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Liux As Bootloader kernelm"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 
 #!BIG FAT WARNING:

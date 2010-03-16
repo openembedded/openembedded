@@ -7,7 +7,7 @@ functionality and behave very much like their GNU counterparts. BusyBox \
 provides a fairly complete POSIX environment for any small or embedded \
 system."
 HOMEPAGE = "http://www.busybox.net"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 

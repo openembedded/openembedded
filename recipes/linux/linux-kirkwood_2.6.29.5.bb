@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for Marvell Kirkwood based devices"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 COMPATIBLE_MACHINE = "sheevaplug"
 
 require linux.inc

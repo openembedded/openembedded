@@ -1,6 +1,6 @@
 DESCRIPTION = "Set of i2c tools for linux"
 SECTION = "base"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 PR = "r1"
 
