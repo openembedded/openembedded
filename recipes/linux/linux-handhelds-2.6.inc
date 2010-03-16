@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer handheld devices."
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE ?= "(asus620|asus730|aximx50|aximx50v|eseries|h1910|h2200|h3600|h3800|h3900|h4000|h5000|htcalpine|htcapache|htcblueangel|htchermes|htchimalaya|htcsable|htcuniversal|htcwallaby|hx4700|ghi270|looxc550|jornada56x|magician|rx1950|rx3000)"

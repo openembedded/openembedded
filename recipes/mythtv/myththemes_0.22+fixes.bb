@@ -1,10 +1,10 @@
 DEPENDS = "mythtv"
 inherit qmake2
 
-PR = "svnr${SRCPV}+r2"
+PR = "svnr${SRCPV}+r0"
 PV = "0.22"
 
-SRCREV = "23565"
+SRCREV = "23710"
 SRC_URI = \
 "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=myththemes;proto=http"
 

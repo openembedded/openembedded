@@ -1,6 +1,6 @@
 DESCRIPTION = "JLime Linux kernel for SuperH based Jornada 6xx"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 COMPATIBLE_MACHINE = "jornada6xx"
 

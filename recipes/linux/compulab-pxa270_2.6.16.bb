@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r6"
 do_unpack[depends] += "unzip-native:do_populate_staging"
 

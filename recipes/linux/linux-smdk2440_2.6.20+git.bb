@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for smdk2440 compatible machines"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r1"
 
 GGSRC = "http://www.xora.org.uk/oe/patches/"

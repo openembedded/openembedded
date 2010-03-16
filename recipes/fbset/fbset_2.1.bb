@@ -6,7 +6,7 @@
 # Date: 28-May-06
 
 DESCRIPTION = "The fbset console tool"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 RRECOMMENDS = "fbset-modes"
 
 PR = "r2"

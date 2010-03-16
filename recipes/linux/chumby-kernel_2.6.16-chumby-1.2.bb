@@ -2,7 +2,7 @@ require linux.inc
 
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Chumby"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r4"
 
 SRC_URI = "http://files.chumby.com/source/ironforge/build396/linux-2.6.16-chumby-1.2.tar.gz \

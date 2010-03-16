@@ -1,0 +1,21 @@
+diff -urN JavaScriptCore-0rig/kjs/protected_values.cpp JavaScriptCore/kjs/protected_values.cpp
+--- JavaScriptCore-0rig/kjs/protected_values.cpp	2010-02-26 12:57:50.000000000 +0100
++++ JavaScriptCore/kjs/protected_values.cpp	2010-02-26 12:59:13.000000000 +0100
+@@ -195,7 +195,7 @@
+ 
+ template <int size> static unsigned hash(ValueImp *pointer);
+ 
+-template <> static inline unsigned hash<4>(ValueImp *pointer) 
++template <> inline unsigned hash<4>(ValueImp *pointer)
+ {
+   int a = (int)(intptr_t)PHI;
+   int b = (int)(intptr_t)pointer;
+@@ -214,7 +214,7 @@
+   return (unsigned)c;
+ }
+ 
+-template <> static inline unsigned hash<8>(ValueImp *pointer)
++template <> inline unsigned hash<8>(ValueImp *pointer)
+ {
+   int a = (int)PHI;
+   int b = (int)(intptr_t)pointer;

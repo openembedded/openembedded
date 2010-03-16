@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Ipods"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 KV = "2.4.24"
 PV = "${KV}-ipod0"
 

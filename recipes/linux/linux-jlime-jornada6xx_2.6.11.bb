@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Hitachi SH3 based Jornada 6xx"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 
 

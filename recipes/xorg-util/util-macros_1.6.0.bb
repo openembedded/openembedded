@@ -1,6 +1,7 @@
 require xorg-util-common.inc
 
 DESCRIPTION = "X autotools macros"
+PR = "r1"
 PE = "1"
 
 ALLOW_EMPTY = "1"

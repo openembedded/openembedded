@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for Marvell Orion based devices"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 COMPATIBLE_MACHINE = "(dns323|mv2120|kuropro|lspro|tsx09|ts409)"
 

@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Linksys WRT54 devices"
 HOMEPAGE = "http://openwrt.org"
 DEPENDS = "lzma-native"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2 \

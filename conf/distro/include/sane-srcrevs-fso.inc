@@ -24,7 +24,7 @@ SRCREV_pn-mterm2 ?= "${FSO_CORNUCOPIA_SRCREV}"
 
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"
-SRCREV_pn-frameworkd ?= "aaca0006f07eb4b76f38e1cb8df1c968a32db989"
+SRCREV_pn-frameworkd ?= "0039f8cd21ce007ac20de8f4525ad7c6e96804c0"
 SRCREV_pn-frameworkd-config-shr_FSO_REV ?= ${SRCREV_pn-frameworkd}
 SRCREV_pn-fso-gpsd ?= "39e810899110a9bb302cf2064e1c0f73541fb4e6"
 SRCREV_pn-fso-gsm0710muxd ?= "1d69fb5b666ac2a9e54e46978c7afa8fe5dfc3c9"
@@ -33,7 +33,7 @@ SRCREV_pn-fso-sounds ?= "3a4767ec01988bd0fd8f72f0c35d6d36e5fbc815"
 SRCREV_pn-fso-specs ?= "bd8a5d1cf461c6633ddc8f4c91a1101ec835faad"
 SRCREV_pn-gsmd2 ?= "c16883a079aeff8780e5d461ec4e8348537ab4d8"
 SRCREV_pn-libfso-glib ?= "a1f2f14946ad154c5fb842fadf081fe377bd9924"
-SRCREV_pn-libframeworkd-glib ?= "67e300e32f4b546ba23163109cbab68be8c70ce9"
+SRCREV_pn-libframeworkd-glib ?= "1b4c0e21a6fec2c1952deb2bfeb2d85b924c3c36"
 SRCREV_pn-libgsm0710 ?= "52eea64bdbb79c09002b46e98a5e656509884f72"
 SRCREV_pn-libpersistence ?= "217ad803745f8ac1f3c72c6715e2c0faefb3fd06"
 FSO_PYTHONHELPERS_SRCREV ?= "63b1dff1bc8ac22efabcee8a90e957c3b2423317"

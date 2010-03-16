@@ -1,5 +1,5 @@
-require at91bootstrap.inc
-PR = "r0"
+require at91bootstrap_2.0.inc
+PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_at91sam9g45ek = "1"
 DEFAULT_PREFERENCE_at91sam9g45ekes = "1"
