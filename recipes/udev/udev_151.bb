@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r5"
+PR = "r6"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -105,8 +105,9 @@ do_install () {
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
 
-	mkdir -p ${D}${base_libdir}
-	ln -sf ${libdir}/udev ${D}${base_libdir}/
+	mkdir -p ${base_libdir}/udev
+	mkdir -p ${D}${libdir}
+	ln -sf ${base_libdir}/udev ${D}${libdir}/
 }
 
 do_install_append_h2200() {
