@@ -7,7 +7,7 @@ SRC_URI += "file://fc-glyphname.patch;patch=1 \
            file://one-j-too-many.patch;patch=1 \
            file://local.conf"
 
-PR = "r3"
+PR = "r4"
 
 do_stage () {
 	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}
