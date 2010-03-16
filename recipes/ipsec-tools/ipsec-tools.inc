@@ -9,6 +9,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ipsec-tools/ipsec-tools-${PV}.tar.bz2 \
            file://racoon-search-missing.patch;patch=1 \
            file://gcc-4.2.patch;patch=1"
 
+INC_PR = "r1"
+
 inherit autotools
 
 # Options:
