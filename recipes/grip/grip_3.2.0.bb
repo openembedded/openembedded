@@ -5,7 +5,10 @@
 HOMEPAGE="http://www.nostatic.org/grip/"
 LICENSE="GPL"
 
-SRC_URI="${SOURCEFORGE_MIRROR}/grip/grip-${PV}.tar.gz"
+SRC_URI="${SOURCEFORGE_MIRROR}/grip/grip-${PV}.tar.gz \
+         file://patch-src::discdb;patch=1;pnum=0 "
 DEPENDS="libgnomeui vte curl cdparanoia id3lib"
+
+PR = "r1"
 
 inherit autotools
