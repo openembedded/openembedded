@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import bb
+
 def read_available(filename):
     """
     Parses the output of bitbake -s
@@ -212,6 +214,8 @@ def strip_bsd_version(bsd_version):
     FreeBSD is adding ,1 for revisions.. remove that
     """
     split = bsd_version.rsplit(',', 1)
+    split = split[0]
+    split = split.rsplit('_', 1)
     return split[0]
 
 def compare_versions(oe, freebsd, not_known):
@@ -223,11 +227,37 @@ def compare_versions(oe, freebsd, not_known):
 
         oe_version = strip_oe_version(oe[oe_name])
         for ver in freebsd[bsd_name]:
+            affected = True
             str = []
             for (cmp, vers) in ver.versions:
                 bsd_ver = strip_bsd_version(vers)
+                cmp_res = bb.utils.vercmp(('0', oe_version, 'r0'), ('0', bsd_ver, 'r0'))
+                if cmp == '<':
+                    if cmp_res >= 0:
+                        affected = False
+                    pass
+                elif cmp == '<=':
+                    if cmp_res > 0:
+                        affected = False
+                    pass
+                elif cmp == '>':
+                    if cmp_res <= 0:
+                        affected = False
+                    pass
+                elif cmp == '>=':
+                    if cmp_res < 0:
+                        affected = False
+                    pass
+                elif cmp == '=':
+                    if cmp_res > 0:
+                        affected = False
+                else:
+                    print cmp
+                    assert True
+
                 str.append("%s %s %s %s" % (oe_name, oe_version, cmp, bsd_ver))
-            print " && ".join(str), ver.link
+            if affected:
+                print " && ".join(str), ver.link
 
     for package in freebsd.keys():
         # handle the various versions of OE packages
