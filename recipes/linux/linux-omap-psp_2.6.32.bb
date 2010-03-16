@@ -1,10 +1,11 @@
-require linux.inc
+require multi-kernel.inc
 
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook|overo"
 
+# This tag is v2.6.32_OMAPPSP_03.00.00.05
 SRCREV = "227037c2b6c28a632e0bffd2681445a61c7f84bc"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
