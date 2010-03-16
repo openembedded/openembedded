@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
 
-INC_PR = "r17"
+INC_PR = "r18"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz;name=dbus \
