@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "schroedinger libgsm"
 
 PV = "0.5.0+${PR}+gitr${SRCPV}"
-PR = "r0"
+PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE = "-1"
 

@@ -9,7 +9,10 @@ SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/acl/acl-${PV}.src.tar.gz"
 
 inherit autotools lib_package
 
-EXTRA_OECONF = " --enable-gettext=yes ac_cv_path_XGETTEXT=${STAGING_BINDIR_NATIVE}/xgettext"
+EXTRA_OECONF = " --enable-gettext=yes \
+                ac_cv_path_XGETTEXT=${STAGING_BINDIR_NATIVE}/xgettext \
+                ac_cv_path_MSGFMT=${STAGING_BINDIR_NATIVE}/msgfmt \
+                ac_cv_path_MSGMERGE=${STAGING_BINDIR_NATIVE}/msgmerge "
 
 do_configure_append() {
     # gettext hack

@@ -12,6 +12,8 @@ PE = "2"
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 
+INC_PR = "r10"
+
 inherit autotools pkgconfig
 
 LEAD_SONAME = "libavcodec.so"
@@ -53,8 +55,8 @@ do_stage() {
            install -m 0644 ${S}/libavformat/$h  ${STAGING_INCDIR}/libavformat/$h	
 	done
 
-		for h in adler32.h avstring.h avutil.h base64.h bswap.h \
-                 common.h crc.h fifo.h integer.h intfloat_readwrite.h \
+		for h in adler32.h attributes.h avstring.h avutil.h base64.h \
+                 bswap.h common.h crc.h fifo.h integer.h intfloat_readwrite.h \
                  log.h lzo.h mathematics.h md5.h mem.h pixfmt.h random*.h \
                  rational.h sha1.h
 		do

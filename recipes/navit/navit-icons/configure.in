@@ -60,6 +60,7 @@ AM_CONDITIONAL(USE_SVG2PNG_SCALES_FLAG, test "x${SVG2PNG_SCALES_FLAG}" != "xyes"
 AM_CONDITIONAL(USE_SVG2PNG_SCALES_NAV, test "x${SVG2PNG_SCALES_NAV}" != "xyes" -a "x${SVG2PNG_SCALES_NAV}" != "x")
 AM_CONDITIONAL(USE_SVG2PNG, test "x${enable_svg2png}" = "xyes")
 AM_CONDITIONAL(USE_SVG, test "x${enable_svg}" = "xyes")
+AM_CONDITIONAL(SUPPORT_WIN32, [test "x$win32" = "xyes"])
 
 AC_CONFIG_FILES([
 Makefile
