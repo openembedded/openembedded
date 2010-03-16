@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r5"
+PR = "r6"
 
 EVAS_CPU_TWEAKS = ""
 EVAS_CPU_TWEAKS_armv7a = "--enable-cpu-neon"
