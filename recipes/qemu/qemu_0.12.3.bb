@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-DEPENDS = "zlib-native"
+DEPENDS = "zlib"
 
 PR = "r0"
 
@@ -32,6 +32,5 @@ EXTRA_OECONF += "--disable-sdl --disable-strip"
 inherit autotools
 
 do_configure() {
-	export QEMU_CFLAGS="-I${STAGING_INCDIR_NATIVE} ${QEMU_CFLAGS}"
 	${S}/configure --prefix=${prefix} ${EXTRA_OECONF}
 }
