@@ -1,0 +1,14 @@
+Index: gftp-2.0.18/po/Makefile.in.in
+===================================================================
+--- gftp-2.0.18.orig/po/Makefile.in.in	2010-03-16 14:07:50.311553658 +0800
++++ gftp-2.0.18/po/Makefile.in.in	2010-03-16 14:08:08.977119831 +0800
+@@ -28,8 +28,7 @@
+ 
+ INSTALL = @INSTALL@
+ INSTALL_DATA = @INSTALL_DATA@
+-MKINSTALLDIRS = @MKINSTALLDIRS@
+-mkinstalldirs = $(SHELL) $(MKINSTALLDIRS)
++mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+ 
+ GMSGFMT = @GMSGFMT@
+ MSGFMT = @MSGFMT@
