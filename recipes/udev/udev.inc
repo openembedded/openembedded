@@ -1,6 +1,6 @@
 DESCRIPTION ?= "udev is a program which dynamically creates and removes device nodes from \
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
 SRC_URI += " \
 	   file://udev.rules \
