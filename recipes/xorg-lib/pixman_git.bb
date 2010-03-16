@@ -4,7 +4,7 @@ DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
 PV = "0.17.10"
-PR = "r0"
+PR = "r1"
 PR_append = "+gitr${SRCREV}"
 
 BBCLASSEXTEND="native"
