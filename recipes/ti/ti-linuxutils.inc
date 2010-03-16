@@ -11,7 +11,7 @@ require ti-multimedia-common.inc
 require ti-staging.inc
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "b"
+MACHINE_KERNEL_PR_append = "c"
 
 inherit module
 
@@ -20,7 +20,7 @@ do_compile() {
 
     case ${SOC_FAMILY} in 
     dm365)
-            modules="cmem edma";;
+            modules="cmem edma irq";;
     omap3)
             modules="cmem sdma";;
     *)
