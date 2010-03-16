@@ -47,6 +47,35 @@ def map_names(str):
         "mpeg123-nas" : "mpeg123",
         "cdrtools-cjk" : "cdrtools",
         "apache+mod_ssl+mod_deflate" : "apache2",
+        "apache+mod_ssl*" : "apache2",
+        "vim-gtk2" : "vim",
+        "zh-emacs" : "emacs",
+        "{ja-,}bugzilla" : "bugzilla",
+        "zh-tin" : "tin",
+        "mozilla+ipv6": "mozilla",
+        "mozilla-embeddded" : "mozilla",
+        "rar" : "unrar",
+        "libsndfile" : "libsndfile1",
+        "sylpheed-gtk2": "sylpheed",
+        "cdrtools-devel": "cdrtools",
+        "pine4-ssl": "pine",
+        "apache" : "apache2",
+        "ghostscript-gpl" : "gs",
+        "ghostscript-gnu-nox11" : "gs",
+        "ghostscript8" : "gs",
+        "ghostscript-afpl-nox11" : "gs",
+        "ghostscript-afpl" : "gs",
+        "isc-dhcp" : "dhcp",
+        "mplayer-gtk" : "mplayer",
+        "xerces-c2" : "xerces-c",
+        "libxml" : "libxml2",
+        "vim+ruby" : "vim",
+        "mplayer{,-gtk}{,-esound}" : "mplayer",
+        "proftpd-devel": "proftpd",
+        "neon28" : "neon",
+        "php4-dba" : "php",
+        "php5-{cgi,cli}" : "php",
+
     }
 
     try:
@@ -59,18 +88,20 @@ def is_not_in_oe(name):
     not_in = [
         # packages that we will never have...
         "linux-firefox", "fr-linux-netscape", "linux-netscape-{communicator,navigator}",
-        "linux_base", "ja-netscape7", "{ja,ko}-netscape-{communicator,navigator}-linux", "zhTW-linux-mozillafirebird", "ja-linux-mozillafirebird-gtk1", "el-linux-mozillafirebird", 
-        "acroread4", "acroread7",
-        "linux-openmotif", "linux-flock", "linux-jdk", "linux-curl",
+        "linux_base", "ja-netscape7", "{ja,ko}-netscape-{communicator,navigator}-linux", "zhTW-linux-mozillafirebird", "ja-linux-mozillafirebird-gtk1", "el-linux-mozillafirebird", "mozilla-firebird", "netscape7",
+        "acroread4", "acroread7", "acroread5",
+        "linux-openmotif", "linux-flock", "linux-jdk", "linux-curl", "linux-png", "linux-firefox-devel",
 
         # packages that we don't have now but maybe will have in
         # the future and blacklisting them here might be a problem
-        "openoffice.org-2-devel", "openoffice.org-2", "it-openoffice", "ca-openoffice","sl-openoffice-SI"
-        "drupal4", "drupal5", "drupal6",
+        "openoffice.org-2-devel", "openoffice.org-2", "it-openoffice", "ca-openoffice","sl-openoffice-SI", "ja-openoffice",
+        "drupal4", "drupal5", "drupal6", "drupal-pubcookie",
         "gpdf",
         "nagios",
-        "kdenetwork", "ja-kdelibs",
-        "xemacs-devel", "xemacs-devel-21.5", "xemacs-mule", "zh-xemacs",
+        "kdenetwork", "ja-kdelibs", "kdegraphics", "kdepim", "kdebase4-runtime",
+        "xemacs-devel", "xemacs-devel-21.5", "xemacs-mule", "zh-xemacs", "zh-xemacs-mule",
+        "geeklog", "apach13-ssl", "nvidia-driver", "eGroupWare", "varnish", "heimdal",
+        "bugzilla", "agenda-snow-libs", "mozilla",
     ]
 
     return name in not_in
