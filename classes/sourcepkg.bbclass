@@ -30,7 +30,7 @@ def get_src_tree(d):
 
 sourcepkg_do_create_orig_tgz(){
 
-	mkdir -p ${DEPLOY_DIR_SRC}/${PN}
+	mkdir -p ${DEPLOY_DIR_SRC}/${PN}/${PACKAGE_ARCH}
 	cd ${WORKDIR}
 	for i in ${EXCLUDE_FROM}; do
 		echo $i >> temp/exclude-from-file
@@ -39,8 +39,8 @@ sourcepkg_do_create_orig_tgz(){
 	src_tree=$(basename ${S})
 	
 	echo $src_tree
-	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${PN}/${P}.orig.tar.gz"
-	tar cvzf ${DEPLOY_DIR_SRC}/${PN}/${P}.orig.tar.gz --exclude-from temp/exclude-from-file $src_tree
+	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${PN}/${PACKAGE_ARCH}/${P}.orig.tar.gz"
+	tar cvzf ${DEPLOY_DIR_SRC}/${PN}/${PACKAGE_ARCH}/${P}.orig.tar.gz --exclude-from temp/exclude-from-file $src_tree
 	cp -pPR $src_tree $src_tree.orig
 }
 
@@ -93,8 +93,8 @@ sourcepkg_do_create_diff_gz(){
 		cp $i $src_tree/${DISTRO}/files
 	done
 	
-	oenote "Creating .diff.gz in ${DEPLOY_DIR_SRC}/${PN}/${P}-${PR}.diff.gz"
-	LC_ALL=C TZ=UTC0 diff --exclude-from=temp/exclude-from-file -Naur $src_tree.orig $src_tree | gzip -c > ${DEPLOY_DIR_SRC}/${PN}/${P}-${PR}.diff.gz
+	oenote "Creating .diff.gz in ${DEPLOY_DIR_SRC}/${PN}/${PACKAGE_ARCH}/${P}-${PR}.diff.gz"
+	LC_ALL=C TZ=UTC0 diff --exclude-from=temp/exclude-from-file -Naur $src_tree.orig $src_tree | gzip -c > ${DEPLOY_DIR_SRC}/${PN}/${PACKAGE_ARCH}/${P}-${PR}.diff.gz
 	rm -rf $src_tree.orig
 }
 
