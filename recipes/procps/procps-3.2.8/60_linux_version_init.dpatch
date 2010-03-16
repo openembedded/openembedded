@@ -1,0 +1,61 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 60_linux_init.dpatch by  <david.sugar@canonical.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix Linux version detection which relied on elf loader side-effect.
+## DP: This patch also depends on 40_gnu-kbsd-version, which modified
+## DP: init_Linux_version().
+
+@DPATCH@
+---
+ proc/sysinfo.c |    1 +
+ proc/version.c |    5 +++--
+ proc/version.h |    1 +
+ 3 files changed, 5 insertions(+), 2 deletions(-)
+
+--- procps-3.2.8.orig/proc/sysinfo.c
++++ procps-3.2.8/proc/sysinfo.c
+@@ -210,10 +210,11 @@ static int check_for_privs(void){
+ }
+ 
+ static void init_libproc(void) __attribute__((constructor));
+ static void init_libproc(void){
+   have_privs = check_for_privs();
++  init_Linux_version(); // make sure we have version before continuing...
+   // ought to count CPUs in /proc/stat instead of relying
+   // on glibc, which foolishly tries to parse /proc/cpuinfo
+   //
+   // SourceForge has an old Alpha running Linux 2.2.20 that
+   // appears to have a non-SMP kernel on a 2-way SMP box.
+--- procps-3.2.8.orig/proc/version.c
++++ procps-3.2.8/proc/version.c
+@@ -31,12 +31,13 @@ void display_version(void) {
+ 
+ #define LINUX_VERSION(x,y,z)   (0x10000*(x) + 0x100*(y) + z)
+ 
+ int linux_version_code;
+ 
+-static void init_Linux_version(void) __attribute__((constructor));
+-static void init_Linux_version(void) {
++// cannot depend on this auto-running before libproc init...
++//static void init_Linux_version(void) __attribute__((constructor));
++void init_Linux_version(void) {
+     static struct utsname uts;
+     int x = 0, y = 0, z = 0;	/* cleared in case sscanf() < 3 */
+     
+     if (uname(&uts) == -1)	/* failure implies impending death */
+ 	exit(1);
+--- procps-3.2.8.orig/proc/version.h
++++ procps-3.2.8/proc/version.h
+@@ -12,10 +12,11 @@
+  * Copyright 2002 Albert Cahalan
+  */
+ 
+ EXTERN_C_BEGIN
+ 
++extern void init_Linux_version(void);	/* initialize linux version */
+ extern void display_version(void);	/* display suite version */
+ extern const char procps_version[];		/* global buf for suite version */
+ 
+ extern int linux_version_code;		/* runtime version of LINUX_VERSION_CODE
+ 					   in /usr/include/linux/version.h */
