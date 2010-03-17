@@ -10,6 +10,7 @@ def base_path_join(a, *p):
             path += '/' + b
     return path
 
+# Note: Python 2.6+ has os.path.relpath, no need for this there
 def base_path_relative(src, dest):
     """ Return a relative path from src to dest.
 
