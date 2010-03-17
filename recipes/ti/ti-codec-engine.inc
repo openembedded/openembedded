@@ -12,7 +12,7 @@ require ti-staging.inc
 
 PROVIDES += "ti-codec-engine-examples"
 
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/codec_engine_${PV}"
 
@@ -120,6 +120,8 @@ do_install() {
 	install -d ${D}/${installdir}/ti-codec-engine-examples
 	if [ -e ${S}/examples/apps/system_files/${CEEXAMPLESDEVICES}/loadmodules.sh ]; then
 		cp ${S}/examples/apps/system_files/${CEEXAMPLESDEVICES}/loadmodules.sh ${D}/${installdir}/ti-codec-engine-examples
+	elif [ -e ${WORKDIR}/loadmodules.sh ]; then
+		cp ${WORKDIR}/loadmodules.sh ${D}/${installdir}/ti-codec-engine-examples
 	fi
 
 	cd ${S}/examples/ti/sdo/ce/examples
