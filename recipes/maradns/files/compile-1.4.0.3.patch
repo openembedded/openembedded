@@ -1,0 +1,61 @@
+Index: maradns-1.4.03/server/Makefile.recursive
+===================================================================
+--- maradns-1.4.03.orig/server/Makefile.recursive	2010-03-17 13:04:16.831313185 +0800
++++ maradns-1.4.03/server/Makefile.recursive	2010-03-17 13:04:31.304869993 +0800
+@@ -52,8 +52,8 @@
+ 	$(CC) -c $(FLAGS) -o udpsuccess.o udpsuccess.c
+ 
+ maradns: MaraDNS.c $(OBJECTS) MaraDNS_locale.h
+-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o maradns MaraDNS.c $(OBJECTS) -lpthread
++	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o maradns MaraDNS.c $(OBJECTS) -lpthread $(LDFLAGS)
+ 
+ simple: simple.c $(XOBJECTS) MaraDNS_locale.h
+-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o simple $(OBJECTS) simple.c 
++	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o simple $(OBJECTS) simple.c $(LDFLAGS)
+ 
+Index: maradns-1.4.03/tcp/Makefile.recursive
+===================================================================
+--- maradns-1.4.03.orig/tcp/Makefile.recursive	2010-03-17 13:20:21.270078031 +0800
++++ maradns-1.4.03/tcp/Makefile.recursive	2010-03-17 13:20:37.020069979 +0800
+@@ -26,11 +26,11 @@
+ 	rm -f core $(EXECS) $(TCPOBJS) *.exe
+ 
+ getzone: getzone.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o getzone getzone.c $(OBJECTS)
++	$(CC) $(FLAGS) -o getzone getzone.c $(OBJECTS) $(LDFLAGS)
+ 
+ fetchzone: fetchzone.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o fetchzone fetchzone.c $(OBJECTS) 
++	$(CC) $(FLAGS) -o fetchzone fetchzone.c $(OBJECTS) $(LDFLAGS)
+ 
+ zoneserver: zoneserver.c zoneserver_en.h $(OBJECTS)
+-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -o zoneserver zoneserver.c $(OBJECTS) $(RNGOBJS)
++	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -o zoneserver zoneserver.c $(OBJECTS) $(RNGOBJS) $(LDFLAGS)
+ 
+Index: maradns-1.4.03/tools/Makefile.recursive
+===================================================================
+--- maradns-1.4.03.orig/tools/Makefile.recursive	2010-03-17 13:05:46.600079208 +0800
++++ maradns-1.4.03/tools/Makefile.recursive	2010-03-17 13:10:39.090763025 +0800
+@@ -18,17 +18,17 @@
+ 	rm -f core $(EXECS) *.exe
+ 
+ askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
+-	$(CC) $(FLAGS) -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
++	$(CC) $(FLAGS) -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ) $(LDFLAGS)
+ 
+ askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+-	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS) $(LDFLAGS)
+ 
+ benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
+-	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
++	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS) $(LDFLAGS)
+ 
+ duende: duende.c 
+-	$(CC) $(FLAGS) -o duende duende.c
++	$(CC) $(FLAGS) -o duende duende.c $(LDFLAGS)
+ 
+ strip.control: strip.control.c
+-	$(CC) $(FLAGS) -o strip.control strip.control.c
++	$(CC) $(FLAGS) -o strip.control strip.control.c $(LDFLAGS)
+ 

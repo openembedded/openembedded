@@ -2,6 +2,7 @@ DESCRIPTION = "JTAG utility to interface w/ a S3C2410 device"
 SECTION = "devel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
+SRCREV = "4268"
 PV = "0.1+svnr${SRCPV}"
 PR = "r0"
 

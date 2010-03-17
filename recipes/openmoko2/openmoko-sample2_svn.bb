@@ -1,6 +1,7 @@
 DESCRIPTION = "The Openmoko Sample Project"
 SECTION = "openmoko/applications"
 DEPENDS = "libmokoui2 intltool gconf"
+SRCREV = "3537"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r0"
 

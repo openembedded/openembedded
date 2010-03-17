@@ -1,5 +1,6 @@
 DESCRIPTION = "Moko GTK+ theme engine"
 SECTION = "openmoko/libs"
+SRCREV = "4734"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r0"
 

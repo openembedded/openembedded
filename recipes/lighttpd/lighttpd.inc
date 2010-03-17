@@ -12,7 +12,7 @@ RDEPENDS_${PN} += " \
 
 INC_PR = "r7"
 
-SRC_URI = "http://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-${PV}.tar.gz \
+SRC_URI = "http://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-${PV}.tar.gz;name=src \
 	   file://index.html \
 	   file://lighttpd.conf \
 	   file://lighttpd \

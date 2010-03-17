@@ -2,6 +2,7 @@ DESCRIPTION = "Legacy Om address book application."
 SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 libmokojournal2 dbus-glib"
 RDEPENDS = "libedata-book"
+SRCREV = "419"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r6"
 

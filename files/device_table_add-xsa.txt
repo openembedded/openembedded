@@ -1,0 +1,5 @@
+# Add nodes for xilinx system ace
+/dev/xsa    b   640     0   0   125     0   0   0   -
+/dev/xsa1   b   640     0   1   125     0   0   0   -
+/dev/xsa2   b   640     0   2   125     0   0   0   -
+/dev/xsa3   b   640     0   3   125     0   0   0   -

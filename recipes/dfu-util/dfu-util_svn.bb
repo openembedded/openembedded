@@ -2,6 +2,7 @@ DESCRIPTION = "USB Device Firmware Upgrade utility"
 SECTION = "devel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
+SRCREV = "4160"
 PV = "0.1+svnr${SRCPV}"
 PR = "r2"
 

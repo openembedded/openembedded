@@ -6,7 +6,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 DEPENDS = "edje-native python-native"
 
-SRCREV = ${AUTOREV}
+SRCREV = "68"
 PV = "1.0.0+svnr${SRCPV}"
 PR = "r2"
 

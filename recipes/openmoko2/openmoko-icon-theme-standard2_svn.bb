@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.openmoko.org"
 SECTION = "openmoko/base"
 LICENSE = "GPL"
 
+SRCREV = "4232"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r3"
 

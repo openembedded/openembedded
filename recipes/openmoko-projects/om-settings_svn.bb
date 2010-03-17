@@ -1,6 +1,7 @@
 DESCRIPTION = "Exposure all devices on neo1973"
 DEPENDS = "python-etk python-edbus"
 RDEPENDS = "python-etk python-re python-codecs python-edbus python-pyxdg"
+SRCREV = "74"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r3"
 PE = "1"

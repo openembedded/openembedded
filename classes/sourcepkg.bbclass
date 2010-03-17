@@ -39,8 +39,8 @@ sourcepkg_do_create_orig_tgz(){
 	src_tree=$(basename ${S})
 	
 	echo $src_tree
-	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${PN}/${PACKAGE_ARCH}/${P}.orig.tar.gz"
-	tar cvzf ${DEPLOY_DIR_SRC}/${PN}/${PACKAGE_ARCH}/${P}.orig.tar.gz --exclude-from temp/exclude-from-file $src_tree
+	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${PN}/${P}.orig.tar.gz"
+	tar cvzf ${DEPLOY_DIR_SRC}/${PN}/${P}.orig.tar.gz --exclude-from temp/exclude-from-file $src_tree
 	cp -pPR $src_tree $src_tree.orig
 }
 

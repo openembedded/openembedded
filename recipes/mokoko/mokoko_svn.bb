@@ -5,6 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "gstreamer"
 RDEPENDS = "gstreamer"
 
+SRCREV = "127"
 PV = "0.1+svnr${SRCPV}"
 PR = "r1"
 

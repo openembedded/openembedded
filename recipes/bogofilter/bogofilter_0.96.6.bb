@@ -8,12 +8,14 @@ LICENSE = "GPL"
 PR = "r8"
 PRIORITY = "optional"
 
-SRC_URI = "http://download.sourceforge.net/bogofilter/bogofilter-${PV}.tar.bz2 \
+SRC_URI = "http://launchpad.net/bogofilter/main/0.96.6/+download/bogofilter-0.96.6.tar.gz;name=src \
            file://configure.ac.patch;patch=1 \
 	   file://volatiles \
 	   file://postfix-filter.sh \
-	   file://bogohelper.sh \
-	   "
+	   file://bogohelper.sh "
+SRC_URI[src.md5sum] = "7e8e9593662f6394a56f99f12f525d6e"
+SRC_URI[src.sha256sum] = "0b12fdd5b0bc50b582327764ee5cd415809db6d7adc233f1801bc0d0bf435a6d"
+
 
 inherit autotools
 

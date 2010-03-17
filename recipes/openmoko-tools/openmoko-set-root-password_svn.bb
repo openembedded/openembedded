@@ -6,6 +6,7 @@ DEPENDS = "gtk+"
 
 SRC_URI = "svn://svn.openmoko.org/developers/zecke/;module=root-password;proto=http"
 S = "${WORKDIR}/root-password"
+SRCREV = "4590"
 PV = "1.0+svnr${SRCPV}"
 PE = "1"
 PR = "r1"

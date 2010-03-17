@@ -1,5 +1,6 @@
 DESCRIPTION = "Convenient scripts to be used with openmoko toolchain."
 
+SRCREV = "4913"
 PV = "0.0+svnr${SRCPV}"
 PE = "1"
 PR = "r1"

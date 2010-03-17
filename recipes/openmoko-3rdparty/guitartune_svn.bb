@@ -5,6 +5,7 @@ LICENSE = "GPLv2"
 SECTION = "e/apps"
 DEPENDS = "gtk+ libglade fftw sqlite3"
 
+SRCREV = "11"
 PV = "0.36+svnr${SRCPV}"
 
 SRC_URI = "svn://guitartune.googlecode.com/svn;module=trunk;proto=http"

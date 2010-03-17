@@ -4,6 +4,7 @@ SECTION = "network/misc"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 dbus dbus-glib eds-dbus libjana curl"
 RDEPENDS_${PN} = "eds-dbus"
+SRCREV = "571"
 PV = "0.0+svnr${SRCPV}"
 PR = "r3"
 

@@ -3,9 +3,12 @@ SECTION = "console/network"
 HOMEPAGE = "http://www.maradns.org"
 LICENSE = "PD"
 
-SRC_URI = "http://www.maradns.org/download/1.0/maradns-${PV}.tar.bz2 \
+SRC_URI = "http://www.maradns.org/download/1.4/${PV}/maradns-${PV}.tar.bz2;name=src \
            file://init \
-           file://rng-makefile-build-cc.patch;patch=1;pnum=0"
+           file://rng-makefile-build-cc.patch;patch=1;pnum=0 \
+           file://compile-1.4.0.3.patch;patch=1 "
+SRC_URI[src.md5sum] = "071b3a3df07e18855a7edf9a6281641a"
+SRC_URI[src.sha256sum] = "a611b6ac0f3abee62c227b128c1773be4a2a41de75a37ca123d684db33793b23"
 
 do_install() {
 	install -d ${D}${bindir}
