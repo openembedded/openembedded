@@ -10,7 +10,7 @@ ARM_INSTRUCTION_SET = "arm"
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 
-INC_PR = "r11"
+INC_PR = "r12"
 
 inherit autotools pkgconfig
 
@@ -53,10 +53,7 @@ do_stage() {
            install -m 0644 ${S}/libavformat/$h  ${STAGING_INCDIR}/libavformat/$h	
 	done
 
-		for h in adler32.h attributes.h avstring.h avutil.h base64.h \
-                 bswap.h common.h crc.h fifo.h integer.h intfloat_readwrite.h \
-                 log.h lzo.h mathematics.h md5.h mem.h pixfmt.h random*.h \
-                 rational.h sha1.h
+		for h in adler32.h aes.h attributes.h avstring.h avutil.h base64.h bswap.h common.h crc_data.h crc.h des.h error.h fifo.h integer.h internal.h intfloat_readwrite.h intmath.h intreadwrite.h lfg.h libm.h lls.h log.h lzo.h mathematics.h md5.h mem.h pca.h pixdesc.h pixfmt.h random_seed.h rational.h rc4.h sha1.h sha.h softfloat.h timer.h tree.h x86_cpu.h
 		do
            install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/ffmpeg/$h
            install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/libavutil/$h 
