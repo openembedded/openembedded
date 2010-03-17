@@ -6,6 +6,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 DEPENDS = "python-native"
 
+SRCREV = "4"
 PV = "1.0.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/trunk"

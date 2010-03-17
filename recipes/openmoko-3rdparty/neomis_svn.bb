@@ -6,6 +6,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 DEPENDS = "python-native"
 
+SRCREV = "6"
 PV = "1.1.0+svnr${SRCPV}"
 PR = "r1"
 

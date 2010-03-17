@@ -4,6 +4,7 @@ SECTION = "openmoko/applications"
 LICENSE = "GPL"
 DEPENDS = "python-evas python-edje python-ecore"
 RDEPENDS = "python-evas python-edje python-ecore"
+SRCREV = "49"
 PV = "0.0.2+svnr${SRCPV}"
 PR = "r3"
 

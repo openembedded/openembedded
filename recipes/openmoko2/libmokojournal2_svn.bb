@@ -1,5 +1,6 @@
 SECTION = "openmoko/libs"
 DEPENDS = "eds-dbus"
+SRCREV = "3473"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r2"
 

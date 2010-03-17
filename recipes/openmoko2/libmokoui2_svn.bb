@@ -1,6 +1,7 @@
 SECTION = "openmoko/libs"
 DEPENDS = "gtk+ python-pygtk"
 
+SRCREV = "4695"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r5"
 

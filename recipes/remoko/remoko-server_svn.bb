@@ -3,6 +3,7 @@ HOMEPAGE = "http://code.google.com/p/remoko/"
 AUTHOR = "Valério Valério"
 LICENSE = "GPL"
 SECTION = "console/network"
+SRCREV = "121"
 PV = "0.2.1+svnr${SRCPV}"
 PE = "1"
 

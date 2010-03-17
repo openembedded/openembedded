@@ -4,6 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://noko.sourceforge.net"
 LICENSE = "GPL"
 DEPENDS = "dbus"
+SRCREV = "20"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r0"
 

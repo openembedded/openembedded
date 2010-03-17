@@ -2,6 +2,7 @@ DESCRIPTION = "A user-space tool to show and modify the state of GPIOs on the S3
 SECTION = "console/utils"
 AUTHOR = "Werner Almesberger <werner@openmoko.org>"
 LICENSE = "GPL"
+SRCREV = "4949"
 PV = "1.0+svnr${SRCPV}"
 PR = "r0"
 

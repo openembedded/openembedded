@@ -1,6 +1,7 @@
 DESCRIPTION = "Atheros 6K Wifi configuration utility"
 LICENSE = "GPL"
 SECTION = "console/network"
+SRCREV = "5394"
 PV = "0.0.0+svnr${SRCPV}"
 PR = "r1"
 

@@ -4,6 +4,7 @@ DEPENDS = "virtual/libx11"
 
 SRC_URI="svn://svn.openmoko.org/developers/zecke/;module=app_restarter;proto=http"
 S = "${WORKDIR}/app_restarter"
+SRCREV = "4552"
 PV = "1.0+svnr${SRCPV}"
 PE = "2"
 
