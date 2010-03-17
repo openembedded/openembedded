@@ -54,7 +54,7 @@ case "$arch" in
 	"armv6-novfp")
 			machines="htcdiamond htckaiser htcpolaris htcraphael htcvogue" ;;	
 	"armv6")	
-			machines="smartq5 bug mx31ads nokia800 " ;;
+			machines="smdk6410 smartq5 bug mx31ads nokia800 " ;;
 	"armv7")
 			machines="" ;;
 	"armv7a")
