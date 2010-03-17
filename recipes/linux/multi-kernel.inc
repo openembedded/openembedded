@@ -15,6 +15,8 @@ require linux.inc
 SRC_URI_append = " \
            file://configs/ "
 
+MULTI_CONFIG_BASE_SUFFIX = "multi-config-"
+
 do_compileconfigs () {
 
   # Compile and Install additional kernel configs if found
@@ -43,23 +45,23 @@ do_compileconfigs () {
 
         # Drop the resulting images in the deploy dir
         install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.multi-config-$(basename $config).bin
+        install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).bin
 
         if [ -d "${D}/lib" ]; then
-            fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.multi-config-$(basename $config).tgz -C ${D} lib
+            fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).tgz -C ${D} lib
         fi
  
         # Install the final config alongside the images
-        cp .config ${DEPLOY_DIR_IMAGE}/config-${PV}-${PR}-${MACHINE}.multi-config-$(basename $config).config
+        cp .config ${DEPLOY_DIR_IMAGE}/config-${PV}-${PR}-${MACHINE}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).config
 
         # Create symlinks
         cd ${DEPLOY_DIR_IMAGE}
-        rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.multi-config-$(basename $config).bin
-        ln -sf ${KERNEL_IMAGE_BASE_NAME}.multi-config-$(basename $config).bin ${KERNEL_IMAGE_SYMLINK_NAME}.multi-config-$(basename $config).bin
-        rm -f modules-${MACHINE}.multi-config-$(basename $config).tgz
-        ln -sf ${MODULES_IMAGE_BASE_NAME}.multi-config-$(basename $config).tgz modules-${MACHINE}.multi-config-$(basename $config).tgz
-        rm -f config-${MACHINE}.multi-config-$(basename $config).config
-        ln -sf config-${PV}-${PR}-${MACHINE}.multi-config-$(basename $config).config config-${MACHINE}.multi-config-$(basename $config).config
+        rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).bin
+        ln -sf ${KERNEL_IMAGE_BASE_NAME}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).bin ${KERNEL_IMAGE_SYMLINK_NAME}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).bin
+        rm -f modules-${MACHINE}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).tgz
+        ln -sf ${MODULES_IMAGE_BASE_NAME}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).tgz modules-${MACHINE}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).tgz
+        rm -f config-${MACHINE}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).config
+        ln -sf config-${PV}-${PR}-${MACHINE}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).config config-${MACHINE}.${MULTI_CONFIG_BASE_SUFFIX}$(basename $config).config
 
       done
 
