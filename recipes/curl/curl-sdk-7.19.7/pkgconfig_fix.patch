@@ -1,0 +1,13 @@
+Index: curl-7.16.4/libcurl.pc.in
+===================================================================
+--- curl-7.16.4.orig/libcurl.pc.in	2007-02-18 09:41:27.000000000 +0000
++++ curl-7.16.4/libcurl.pc.in	2008-03-18 11:42:43.000000000 +0000
+@@ -33,6 +33,6 @@
+ URL: http://curl.haxx.se/
+ Description: Library to transfer files with ftp, http, etc.
+ Version: @VERSION@
+-Libs: -L${libdir} -lcurl @LDFLAGS@ @LIBS@
+-Libs.private: @LIBCURL_LIBS@ @LIBS@
++Libs: -L${libdir} -lcurl
++Libs.private: -ldl -lz
+ Cflags: -I${includedir}
