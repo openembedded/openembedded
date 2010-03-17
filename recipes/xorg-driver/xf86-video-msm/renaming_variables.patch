@@ -1,0 +1,116 @@
+commit cc83ba5835d5b55347fd0c0775156493b0cf3a15
+Author: David Lanzendörfer <david.lanzendoerfer@o2s.ch>
+Date:   Thu Feb 11 16:26:52 2010 +0100
+
+    Renaming variables for getting Xorg (xf86-video-msm) work
+    under linux-leviathan (htcdream):
+    cd src
+    sed 's/fixed_info/fix/' -i *.h
+    sed 's/fixed_info/fix/' -i *.c
+
+diff --git git/src/msm-dri.c git/src/msm-dri.c
+index a51d3bd..a74368b 100644
+--- git/src/msm-dri.c
++++ git/src/msm-dri.c
+@@ -151,10 +151,10 @@ MSMDRIScreenInit(ScreenPtr pScreen)
+    pDRIInfo->ddxDriverMinorVersion = 0;
+    pDRIInfo->ddxDriverPatchVersion = 0;
+ 
+-   pDRIInfo->frameBufferPhysicalAddress = (void *)pMsm->fixed_info.smem_start;
++   pDRIInfo->frameBufferPhysicalAddress = (void *)pMsm->fix.smem_start;
+ 
+-   pDRIInfo->frameBufferSize = pMsm->fixed_info.smem_len;
+-   pDRIInfo->frameBufferStride = pMsm->fixed_info.line_length;
++   pDRIInfo->frameBufferSize = pMsm->fix.smem_len;
++   pDRIInfo->frameBufferStride = pMsm->fix.line_length;
+ 
+    /* FIXME: How many drawables can we do (should we do)? */
+ 
+diff --git git/src/msm-driver.c git/src/msm-driver.c
+index 803197f..15378f8 100755
+--- git/src/msm-driver.c
++++ git/src/msm-driver.c
+@@ -399,7 +399,7 @@ MSMPreInit(ScrnInfoPtr pScrn, int flags)
+ 
+    /* Get the fixed info (par) structure */
+ 
+-   if (ioctl(pMsm->fd, FBIOGET_FSCREENINFO, &pMsm->fixed_info)) {
++   if (ioctl(pMsm->fd, FBIOGET_FSCREENINFO, &pMsm->fix)) {
+       xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
+ 		 "Unable to read hardware info from %s: %s\n",
+ 		 dev, strerror(errno));
+@@ -410,7 +410,7 @@ MSMPreInit(ScrnInfoPtr pScrn, int flags)
+    /* Parse the ID and figure out what version of the MDP and what
+     * panel ID we have */
+ 
+-   if (sscanf(pMsm->fixed_info.id, "msmfb%d_%x", &mdpver, &panelid) < 2) {
++   if (sscanf(pMsm->fix.id, "msmfb%d_%x", &mdpver, &panelid) < 2) {
+ 
+       xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
+ 		 "Unable to determine the MDP and panel type\n");
+@@ -435,7 +435,7 @@ MSMPreInit(ScrnInfoPtr pScrn, int flags)
+     * the fbdev driver to allocate memory.   In the mean time, we
+     * just reuse the framebuffer memory */
+ 
+-   pScrn->videoRam = pMsm->fixed_info.smem_len;
++   pScrn->videoRam = pMsm->fix.smem_len;
+ 
+    /* Get the current screen setting */
+    if (ioctl(pMsm->fd, FBIOGET_VSCREENINFO, &pMsm->mode_info)) {
+@@ -671,8 +671,8 @@ MSMPreInit(ScrnInfoPtr pScrn, int flags)
+    /* The framebuffer driver should always report the line length,
+     * but in case it doesn't, we can calculate it ourselves */
+ 
+-   if (pMsm->fixed_info.line_length) {
+-      pScrn->displayWidth = pMsm->fixed_info.line_length;
++   if (pMsm->fix.line_length) {
++      pScrn->displayWidth = pMsm->fix.line_length;
+    } else {
+       pScrn->displayWidth = pMsm->mode_info.xres_virtual *
+ 	    pMsm->mode_info.bits_per_pixel / 8;
+@@ -811,7 +811,7 @@ MSMCloseScreen(int scrnIndex, ScreenPtr pScreen)
+ #endif
+ 
+    /* Unmap the framebuffer memory */
+-   munmap(pMsm->fbmem, pMsm->fixed_info.smem_len);
++   munmap(pMsm->fbmem, pMsm->fix.smem_len);
+ 
+    pScreen->CloseScreen = pMsm->CloseScreen;
+ 
+@@ -857,7 +857,7 @@ MSMScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
+ #endif // defined (MSMFB_GET_PAGE_PROTECTION) && defined (MSMFB_SET_PAGE_PROTECTION)
+ 
+    /* Map the framebuffer memory */
+-   pMsm->fbmem = mmap(NULL, pMsm->fixed_info.smem_len,
++   pMsm->fbmem = mmap(NULL, pMsm->fix.smem_len,
+ 		      PROT_READ | PROT_WRITE, MAP_SHARED, pMsm->fd, 0);
+ 
+    /* If we can't map the memory, then this is a short trip */
+diff --git git/src/msm-exa.c git/src/msm-exa.c
+index 301923f..ce16a93 100755
+--- git/src/msm-exa.c
++++ git/src/msm-exa.c
+@@ -740,8 +740,8 @@ MSMSetupExa(ScreenPtr pScreen)
+    pExa->flags = EXA_OFFSCREEN_PIXMAPS;
+ 
+    pExa->offScreenBase =
+-       (pMsm->fixed_info.line_length * pMsm->mode_info.yres);
+-   pExa->memorySize = pMsm->fixed_info.smem_len;
++       (pMsm->fix.line_length * pMsm->mode_info.yres);
++   pExa->memorySize = pMsm->fix.smem_len;
+ 
+    /* Align pixmap offsets along page boundaries */
+    pExa->pixmapOffsetAlign = 4096;
+diff --git git/src/msm.h git/src/msm.h
+index e1e2bc7..520d390 100755
+--- git/src/msm.h
++++ git/src/msm.h
+@@ -85,7 +85,7 @@ typedef struct _MSMRec
+    int fd;
+ 
+    /* Fixed and var strutures from the framebuffer */
+-   struct fb_fix_screeninfo fixed_info;
++   struct fb_fix_screeninfo fix;
+    struct fb_var_screeninfo mode_info;
+ 
+    /* Pointer to the mapped framebuffer memory */
