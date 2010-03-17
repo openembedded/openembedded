@@ -8,19 +8,17 @@ FILESPATHPKG_prepend = "${PN}-2.6.32:"
 COMPATIBLE_MACHINE = "omapzoom2"
 
 DEFAULT_PREFERENCE = "-1"
-#DEFAULT_PREFERENCE_omapzoom2 = "1"
+DEFAULT_PREFERENCE_omapzoom2 = "1"
 
-LOBRANCH?= "master"
-
-SRCREV = "69eb2b26cc8b4d0a0db963a100c02d1acbfd90eb"
-OEV = "oe1"
+SRCREV = "015cbaf1035cd9a61d33a27de2a22902555db3c5"
+OEV = "oe2"
 PE = "1"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PV = "2.6.31+2.6.32-rc7-${OEV}"
+PV = "2.6.32.7-${OEV}"
 PR_append = "+gitr${SRCREV}"
 
-SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=${LOBRANCH};protocol=http \
+SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append = " \
