@@ -130,8 +130,11 @@ fso_rootfs_postprocess() {
     # set sensible default DNS entries
     echo "nameserver 208.67.222.222" > ./etc/resolv.conf
     echo "nameserver 208.67.220.220" >> ./etc/resolv.conf
-    # remove autostart of gspd (if installed), we have fso-gpsd and this conflicts
+    # remove autostart of certain packages which we rather want to start on demand
     rm -f ./etc/init.d/gpsd
+    rm -f ./etc/init.d/*blue*
+    rm -f ./etc/init.d/*connman*
+    rm -f ./etc/init.d/*avahi*
     # silence printk
     mkdir -p ./etc/profile.d/
     echo "echo 0 0 0 0 >/proc/sys/kernel/printk" >./etc/profile.d/printk.sh
