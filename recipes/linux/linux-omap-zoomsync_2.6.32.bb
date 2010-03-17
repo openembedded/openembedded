@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_omapzoom2 = "1"
 
 SRCREV = "015cbaf1035cd9a61d33a27de2a22902555db3c5"
-OEV = "oe2"
+OEV = "oe3"
 PE = "1"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
@@ -19,6 +19,7 @@ PV = "2.6.32.7-${OEV}"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;protocol=git \
+	   file://logo_linux_clut224.ppm \
 	   file://defconfig"
 
 SRC_URI_append = " \
