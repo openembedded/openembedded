@@ -1,6 +1,7 @@
 DESCRIPTION = "TI Codecs (and Server Combo) for DM6446"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent"
 SECTION = "multimedia"
+LICENSE = "TI"
 
 # TODO :: Move to common .inc (omap3 and omapl ready)
 # TODO :: XDCARGS = eval in this server?
@@ -10,7 +11,7 @@ PV = "2_05_00_00"
 SRC_URI[dm6446codecsbin.md5sum] = "2ce99015bb1ed1df0491403c5e8d99fb"
 SRC_URI[dm6446codecsbin.sha256sum] = "6467ea4854abbff3cbc224df1f163d01c7fb387f15483129a40a1f68e6742b62"
 
-PR = "r17"
+PR = "r18"
 
 require ti-paths.inc
 require ti-staging.inc
