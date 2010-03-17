@@ -1,8 +1,3 @@
-require xorg-util-common.inc
-
-DESCRIPTION = "X autotools macros"
-PE = "1"
-
+require util-macros.inc
 SRC_URI += " file://malloc_zero_returns_null.patch;patch=1"
-
-ALLOW_EMPTY = "1"
+PR = "${INC_PR}.0"
