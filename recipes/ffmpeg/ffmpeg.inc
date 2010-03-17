@@ -10,7 +10,7 @@ ARM_INSTRUCTION_SET = "arm"
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 
-INC_PR = "r12"
+INC_PR = "r13"
 
 inherit autotools pkgconfig
 
@@ -30,45 +30,26 @@ EXTRA_OECONF = "\
         \
 "
 
-do_stage() {
-        for lib in libavcodec libavdevice libavformat \
-                   libavutil libpostproc libswscale
-        do
-            oe_libinstall -a -so -C $lib $lib ${STAGING_LIBDIR} || true
-            install -d ${STAGING_INCDIR}/$lib 
-        done 
+FFMPEG_LIBS = "libavcodec libavdevice libavformat \
+               libavutil libpostproc libswscale"
 
-        install -d ${STAGING_INCDIR}/ffmpeg
+SYSROOT_PREPROCESS_FUNCS = " \
+  ffmpeg_stage_cleanup \
+  ffmpeg_create_compat_links"
 
-        install -m 0644 ${S}/libavcodec/avcodec.h ${STAGING_INCDIR}/ffmpeg/avcodec.h
-        install -m 0644 ${S}/libavcodec/opt.h ${STAGING_INCDIR}/ffmpeg/opt.h
-        install -m 0644 ${S}/libavcodec/avcodec.h ${STAGING_INCDIR}/libavcodec/avcodec.h
-        install -m 0644 ${S}/libavcodec/opt.h ${STAGING_INCDIR}/libavcodec/opt.h
+ffmpeg_create_compat_links() {
+        rm -rf ${SYSROOT_DESTDIR}${STAGING_INCDIR}/ffmpeg
+        mkdir -m 0755 ${SYSROOT_DESTDIR}${STAGING_INCDIR}/ffmpeg
+        cd ${SYSROOT_DESTDIR}${STAGING_INCDIR}/ffmpeg
 
-        install -m 0644 ${S}/libavdevice/avdevice.h  ${STAGING_INCDIR}/ffmpeg/avdevice.h
-        
-        for h in avformat.h avio.h rtp.h rtsp.h rtspcodes.h
-        do
-           install -m 0644 ${S}/libavformat/$h  ${STAGING_INCDIR}/ffmpeg/$h
-           install -m 0644 ${S}/libavformat/$h  ${STAGING_INCDIR}/libavformat/$h	
-	done
-
-		for h in adler32.h aes.h attributes.h avstring.h avutil.h base64.h bswap.h common.h crc_data.h crc.h des.h error.h fifo.h integer.h internal.h intfloat_readwrite.h intmath.h intreadwrite.h lfg.h libm.h lls.h log.h lzo.h mathematics.h md5.h mem.h pca.h pixdesc.h pixfmt.h random_seed.h rational.h rc4.h sha1.h sha.h softfloat.h timer.h tree.h x86_cpu.h
-		do
-           install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/ffmpeg/$h
-           install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/libavutil/$h 
+        for lib in ${FFMPEG_LIBS}; do
+                ln -s ../$lib/*.h '.'
         done
-        install -m 0644 ${B}/libavutil/avconfig.h ${STAGING_INCDIR}/ffmpeg/
-        install -m 0644 ${B}/libavutil/avconfig.h ${STAGING_INCDIR}/libavutil/
+}
 
-        install -d ${STAGING_INCDIR}/libswscale/ 
-        install -m 0644 ${S}/libswscale/*.h ${STAGING_INCDIR}/ffmpeg/
-        install -m 0644 ${S}/libswscale/*.h ${STAGING_INCDIR}/libswscale/
-
-        install -d ${STAGING_INCDIR}/libpostproc
-        install -d ${STAGING_INCDIR}/postproc 
-        install -m 0644 ${S}/libpostproc/postprocess.h ${STAGING_INCDIR}/libpostproc/postprocess.h
-        install -m 0644 ${S}/libpostproc/postprocess.h ${STAGING_INCDIR}/postproc/postprocess.h
+ffmpeg_stage_cleanup() {
+        rm -rf ${SYSROOT_DESTDIR}${STAGING_LIBDIR}/vhook \
+        ${SYSROOT_DESTDIR}${STAGING_DATADIR}
 }
 
 
