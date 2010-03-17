@@ -12,18 +12,18 @@ require ti-staging.inc
 
 PROVIDES += "ti-codec-engine-examples"
 
-PR = "r3"
+PR = "r4"
 
 S = "${WORKDIR}/codec_engine_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/ce/${PV}/exports/codec_engine_${PV},lite.tar.gz;name=cetarball"
 
-DEPENDS = "ti-framework-components ti-xdais ti-xdctools ti-cgt6x ti-biosutils ti-edma3lld ti-linuxutils"
-DEPENDS_append_dm6446 	= " ti-dspbios ti-dsplink ti-local-power-manager"
-DEPENDS_append_dm6467 	= " ti-dspbios ti-dsplink"
-DEPENDS_append_omap3   	= " ti-dspbios ti-dsplink ti-local-power-manager"
-DEPENDS_append_omapl137 = " ti-dspbios ti-dsplink"
-DEPENDS_append_omapl138 = " ti-dspbios ti-dsplink"
+DEPENDS = "ti-framework-components ti-xdais ti-xdctools ti-linuxutils"
+DEPENDS_append_dm6446 	= " ti-dspbios ti-dsplink ti-local-power-manager ti-cgt6x ti-biosutils ti-edma3lld"
+DEPENDS_append_dm6467 	= " ti-dspbios ti-dsplink ti-cgt6x ti-biosutils ti-edma3lld"
+DEPENDS_append_omap3	= " ti-dspbios ti-dsplink ti-local-power-manager ti-cgt6x ti-biosutils ti-edma3lld"
+DEPENDS_append_omapl137 = " ti-dspbios ti-dsplink ti-cgt6x ti-biosutils ti-edma3lld"
+DEPENDS_append_omapl138 = " ti-dspbios ti-dsplink ti-cgt6x ti-biosutils ti-edma3lld"
 
 # SOC_FAMILY configuration
 
