@@ -1,7 +1,7 @@
-From 41572ca5aa9e50e4d1000b3da1e6ee43c6f4088a Mon Sep 17 00:00:00 2001
+From 6d52bc4c8f4f29643a3353deb9cb06769e2f0186 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Wed, 18 Nov 2009 06:08:48 +0200
-Subject: [PATCH 9/9] Support of overlapping src/dst for pixman_blt_neon
+Subject: [PATCH 4/4] Support of overlapping src/dst for pixman_blt_neon
 
 ---
  pixman/pixman-arm-neon.c |   62 +++++++++++++++++++++++++++++++++++++--------
