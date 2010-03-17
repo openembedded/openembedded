@@ -33,6 +33,9 @@ TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
 require ../ti/ti-eula-unpack.inc
 
 BINLOCATION ?= "${S}/gfx_rel"
+ES2LOCATION ?= "${S}/gfx_rel_es2.x"
+ES3LOCATION ?= "${S}/gfx_rel_es3.x"
+ES5LOCATION ?= "${S}/gfx_rel_es5.x"
 
 do_configure() {
 	# Attempt to fix up the worst offenders for file permissions
@@ -155,18 +158,27 @@ do_install () {
 	echo "[default]" > ${D}${sysconfdir}/powervr.ini
 	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
 
-	# The ES2.x and ES3.x CPUs have different SGX hardware, so we need to install 2 sets of userspace
+	# The ES2.x, ES3.x and ES5.x CPUs have different SGX hardware, so we need to install 2 sets of userspace
 
+	install -d ${D}${libdir}/ES5.0
 	install -d ${D}${libdir}/ES3.0
 	install -d ${D}${libdir}/ES2.0
+
+	install -d ${D}${bindir}/ES5.0
 	install -d ${D}${bindir}/ES3.0
 	install -d ${D}${bindir}/ES2.0
 
-	cp -pPR ${S}/gfx_rel_es2.x/lib* ${D}${libdir}/ES2.0/
-	cp ${S}/gfx_rel_es2.x//p[dv]* ${D}${bindir}/ES2.0/
+
+	cp -pPR ${ES2LOCATION}/lib*${IMGPV} ${D}${libdir}/ES2.0/
+	cp ${ES2LOCATION}/p[dv]* ${D}${bindir}/ES2.0/
 
 	cp -pPR ${D}${libdir}/lib*${IMGPV} ${D}${libdir}/ES3.0/
 	cp ${D}${bindir}/p[dv]* ${D}${bindir}/ES3.0
+
+	if [ -e ${ES5LOCATION} ] ; then 
+		cp -pPR ${ES5LOCATION}/lib*${IMGPV} ${D}${libdir}/ES5.0/
+		cp ${ES3LOCATION}/p[dv]* ${D}${bindir}/ES5.0/
+	fi
 
 	install -d ${D}${prefix}/share/applications
 	cp ${WORKDIR}/*.desktop ${D}${prefix}/share/applications
