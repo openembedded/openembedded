@@ -4,7 +4,7 @@ SECTION = "devel"
 DEPENDS = "glib-2.0 dbus"
 HOMEPAGE = "http://vala-project.org"
 LICENSE = "LGPL"
-INC_PR = "r2"
+INC_PR = "r0"
 
 SRC_URI = "http://downloads.freesmartphone.org/sources/vala-${PV}.tar.bz2"
 
