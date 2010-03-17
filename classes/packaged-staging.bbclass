@@ -189,11 +189,20 @@ python packagestage_scenefunc () {
             bb.fatal("Couldn't install the staging package to a temp directory")
 
         #
+        # Grab the staging lock now so that we don't have other threads try and
+        # validate or install based on these stamps being valid.  This is a
+        # potential issue for certain BB_STAMP_POLICY values and enough
+        # concurrent threads.
+        #
+        lf = bb.utils.lockfile(bb.data.expand("${SYSROOT_LOCK}", d))
+
+        #
         # Copy the stamp files into the main stamps directoy
         #
         cmd = bb.data.expand("cp -dpR ${WORKDIR}/tstage/stamps/* ${TMPDIR}/stamps/", d)
         ret = os.system(cmd)
         if ret != 0:
+            bb.utils.unlockfile(lf)
             bb.fatal("Couldn't copy the staging package stamp files")
 
         #
@@ -213,6 +222,7 @@ python packagestage_scenefunc () {
                 stageok = bb.runqueue.check_stamp_fn(file, task, d)
                 bb.debug(1, "Result %s" % (stageok))
                 if not stageok:
+                    bb.utils.unlockfile(lf)
                     break
 
         # Remove the stamps and files we added above
@@ -223,7 +233,6 @@ python packagestage_scenefunc () {
         if stageok:
             bb.note("Staging package found, using it for %s." % file)
             installcmd = bb.data.getVar("PSTAGE_INSTALL_CMD", d, 1)
-            lf = bb.utils.lockfile(bb.data.expand("${SYSROOT_LOCK}", d))
             ret = os.system("PATH=\"%s\" %s %s" % (path, installcmd, stagepkg))
             bb.utils.unlockfile(lf)
             if ret != 0:
