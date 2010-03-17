@@ -3,13 +3,11 @@ Install this task to make your distribution FSO 2.0-compliant."
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.9.0"
-PR = "r6"
+PR = "r7"
 
 inherit task
 
 RDEPENDS_${PN} = "\
-  dbus-hlid \
-  \
   libfsobasics \
   libfsotransport \
   libfsoframework \
@@ -23,11 +21,7 @@ RDEPENDS_${PN} = "\
   fsonetworkd \
   fsousaged \
   \
-# included in fsodeviced now
-#  fso-alsa-data \
   fso-apm \
-  fso-gpsd \
-#  fso-monitord \
 #  connman \
 #  connman-scripts \
 #  connman-plugin-bluetooth \
@@ -44,7 +38,6 @@ RDEPENDS_${PN} = "\
 "
 
 RRECOMMENDS_${PN} = "\
-#  fso-abyss \
   wmiconfig \
   tzdata \
   tzdata-africa \
