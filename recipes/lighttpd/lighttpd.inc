@@ -10,7 +10,7 @@ RDEPENDS_${PN} += " \
                lighttpd-module-staticfile \
 "
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 SRC_URI = "http://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-${PV}.tar.gz;name=src \
         file://index.html \
@@ -43,6 +43,8 @@ do_install_append() {
 }
 
 FILES_${PN} += "${sysconfdir} /www"
+
+CONFFILES_${PN} = "${sysconfdir}/lighttpd.conf"
 
 PACKAGES_DYNAMIC = "lighttpd-module-*"
 
