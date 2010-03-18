@@ -11,6 +11,9 @@ def read_available(filename):
     packages = {}
 
     for line in f:
+        if line.startswith("NOTE: ") or line.startswith("Parsing .bb"):
+            continue
+
         # str.split can not be used as we have multiple whitespace
         first_space = line.find(" ")
         package = line[0:first_space]
