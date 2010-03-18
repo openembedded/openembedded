@@ -4,13 +4,7 @@ LICENSE = "GPLv3+"
 SECTION = "e/apps"
 HOMEPAGE = "http://elmdentica.googlecode.com"
 AUTHOR = "seabra"
-SRCREV = "215"
-PV = "0.7.0+svnr${SRCPV}"
-PR = "r1"
- 
- 
-SRC_URI = "svn://elmdentica.googlecode.com/svn;module=trunk;proto=http"
- 
-S = "${WORKDIR}/trunk"
- 
-inherit autotools pkgconfig
+
+inherit e
+
+PV = "0.9.0+svnr${SRCPV}"
