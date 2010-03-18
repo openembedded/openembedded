@@ -169,7 +169,7 @@ def create_infos(line):
         break
 
     if is_not_in_oe(name):
-        print "Not in oe %s" % name
+        #print "Not in oe %s" % name
         return []
 
     link = split[1]
@@ -213,6 +213,7 @@ def strip_bsd_version(bsd_version):
     """
     FreeBSD is adding ,1 for revisions.. remove that
     """
+    # FIXME return a tuple with a revision...
     split = bsd_version.rsplit(',', 1)
     split = split[0]
     split = split.rsplit('_', 1)
