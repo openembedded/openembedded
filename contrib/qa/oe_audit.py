@@ -11,16 +11,22 @@ def read_available(filename):
     packages = {}
 
     for line in f:
-        if line.startswith("NOTE: ") or line.startswith("Parsing .bb"):
+        if line.startswith("NOTE: ") or line.startswith("Parsing .bb") or line.startswith("done."):
             continue
 
         # str.split can not be used as we have multiple whitespace
-        first_space = line.find(" ")
-        package = line[0:first_space]
-        rest = line[first_space+1:]
-        pv = rest.strip().split(" ")[0]
+        split = line.split(" ", 1)
+        package = split[0]
+        rest = split[1].strip()
 
-        packages[package] = pv
+        # we might have a latest package...
+        split = rest.split(" ", 1)
+        if len(split) == 2:
+            version = split[1].strip()
+        else:
+            version = split[0]
+
+        packages[package] = version
     return packages
 
 
