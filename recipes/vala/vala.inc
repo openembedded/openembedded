@@ -6,7 +6,7 @@ HOMEPAGE = "http://vala-project.org"
 LICENSE = "LGPL"
 INC_PR = "r0"
 
-SRC_URI = "http://downloads.freesmartphone.org/sources/vala-${PV}.tar.bz2"
+SRC_URI = "http://downloads.freesmartphone.org/sources/vala-${PV}.tar.bz2;name=archive"
 
 inherit autotools_stage
 
