@@ -275,6 +275,7 @@ SRCREV_pn-edje-player ?= "${EFL_SRCREV}"
 SRCREV_pn-edje-viewer ?= "${EFL_SRCREV}"
 SRCREV_pn-elementary-alarm ?= "${EFL_SRCREV}"
 SRCREV_pn-elementary-sms ?= "${EFL_SRCREV}"
+SRCREV_pn-elmdentica ?= "${EFL_SRCREV}"
 SRCREV_pn-emphasis ?= "${EFL_SRCREV}"
 SRCREV_pn-ephoto ?= "${EFL_SRCREV}"
 SRCREV_pn-eve ?= "${EFL_SRCREV}"
@@ -300,5 +301,6 @@ SRCREV_pn-illume-keyboard-default ?= "${EFL_SRCREV}"
 #exalt
 SRCREV_pn-exalt ?= "${EFL_SRCREV}"
 SRCREV_pn-exalt-client ?= "${EFL_SRCREV}"
+
 
 require conf/distro/include/sane-srcrevs-fso.inc
