@@ -1,0 +1,12 @@
+diff -uNr base/ext/vorbis.orig//gstvorbisdeclib.c base/ext/vorbis/gstvorbisdeclib.c
+--- base/ext/vorbis.orig//gstvorbisdeclib.c	2010-02-15 13:03:13.000000000 +0100
++++ base/ext/vorbis/gstvorbisdeclib.c	2010-03-18 18:48:10.000000000 +0100
+@@ -56,7 +56,7 @@
+ #else
+ 
+ /* Taken from Tremor, misc.h */
+-#ifdef _ARM_ASSEM_
++#if defined(_ARM_ASSEM_) && !defined(__thumb__)
+ static inline ogg_int32_t
+ CLIP_TO_15 (ogg_int32_t x)
+ {
