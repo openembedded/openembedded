@@ -1,0 +1,24 @@
+From cc8c1160a690a1eafc35e745da5f24e258436bda Mon Sep 17 00:00:00 2001
+From: Mike Lundy <mike@fluffypenguin.org>
+Date: Fri, 2 Oct 2009 12:28:13 -0700
+Subject: [PATCH] fix libffi for autoconf-2.64
+
+---
+ libffi-3.0.8/configure.ac |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git libffi-3.0.8/configure.ac libffi-3.0.8/configure.ac
+index 6a7e7fb..4c3f190 100644
+--- libffi-3.0.8/configure.ac
++++ libffi-3.0.8/configure.ac
+@@ -20,6 +20,7 @@ AM_INIT_AUTOMAKE
+ m4_rename([_AC_ARG_VAR_PRECIOUS],[real_PRECIOUS])
+ m4_define([_AC_ARG_VAR_PRECIOUS],[])
+ AC_PROG_CC
++m4_undefine([_AC_ARG_VAR_PRECIOUS])
+ m4_rename([real_PRECIOUS],[_AC_ARG_VAR_PRECIOUS])
+ 
+ AC_SUBST(CFLAGS)
+-- 
+1.6.4
+
