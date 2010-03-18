@@ -60,6 +60,10 @@ fi
 
 # start off server in conventional location.
 case `module_id` in
+	"trout")
+		ARGS="$ARGS -mouse tslib"
+		XSERVER=/usr/bin/Xfbdev
+		;;
         "AML M8050")
                 ARGS="$ARGS -dpi 100 -screen 320x240@270" ;;
         "HP iPAQ H3100" | "HP iPAQ H3800")
