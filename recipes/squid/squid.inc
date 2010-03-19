@@ -1,7 +1,7 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
 LICENSE = "GPLv2"
-INC_PR = "r6"
-DEPENDS = "squid-native-${PV} openssl"
+INC_PR = "r7"
+DEPENDS = "squid-native-${PV} openssl openldap"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
            file://fix_epoll_check.patch;patch=1 \
@@ -11,7 +11,7 @@ SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar
 
 inherit autotools update-rc.d
 
-EXTRA_OECONF = "--disable-epoll --disable-nls --enable-ssl --enable-storeio=null,ufs"
+EXTRA_OECONF = "--disable-epoll --disable-nls --enable-ssl --enable-storeio=null,ufs --enable-digest-auth-helpers=ldap --enable-basic-auth-helpers=LDAP"
 
 logdir = ${localstatedir}/log/squid
 EXTRA_OEMAKE = "\
@@ -48,8 +48,12 @@ do_install_append() {
 # this packages the languages better and saves some space, installs
 # English as errors default and the others in locale package
 
+PACKAGES =+ "${PN}-auth-ldap"
+RDEPENDS_${PN}-auth-ldap += "${PN}"
+
 FILES_${PN} += " ${datadir}/errors/English/* \
                  ${datadir}/icons/* \
                  ${datadir}/mib.txt"
 
 FILES_${PN}-locale += " ${datadir}/errors/* " 
+FILES_${PN}-auth-ldap = "${libexecdir}/digest_ldap_auth ${libexecdir}/squid_ldap_auth"
