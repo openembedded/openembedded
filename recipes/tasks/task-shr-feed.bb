@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r47"
+PR = "r48"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -49,6 +49,7 @@ RDEPENDS_${PN} += "\
 #		shr-config \
 		shr-today \
                 shr-theme-neo \
+                shr-theme-o2 \
 		shr-theme-niebiee \
 		shr-theme-sixteen \
 # gry should be in image already
