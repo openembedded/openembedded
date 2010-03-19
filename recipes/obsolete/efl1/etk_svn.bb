@@ -6,6 +6,7 @@ PR = "r5"
 
 inherit efl
 
+SRCREV = "${EFL_SRCREV}"
 SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${SRCNAME};proto=http \
 file://mkinstalldirs"
 
