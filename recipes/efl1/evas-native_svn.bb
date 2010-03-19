@@ -1,7 +1,7 @@
 require evas.inc
 inherit native
 DEPENDS = "freetype-native libxext-native libpng-native jpeg-native eet-native eina-native libfribidi-native"
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
@@ -62,57 +62,3 @@ EXTRA_OECONF = "\
 		--disable-convert-32-rgb-rot-270"
 
 
-# evas needs a different oe_libinstall, so copy/paste autotools_stage_all
-do_oldstage() {
-        rm -rf ${STAGE_TEMP}
-        mkdir -p ${STAGE_TEMP}
-        oe_runmake DESTDIR="${STAGE_TEMP}" install
-        autotools_stage_dir ${STAGE_TEMP}/${includedir} ${STAGING_INCDIR}
-        if [ "${BUILD_SYS}" = "${HOST_SYS}" ]; then
-                autotools_stage_dir ${STAGE_TEMP}/${bindir} ${STAGING_DIR_HOST}${layout_bindir}
-                autotools_stage_dir ${STAGE_TEMP}/${sbindir} ${STAGING_DIR_HOST}${layout_sbindir}
-                autotools_stage_dir ${STAGE_TEMP}/${base_bindir} ${STAGING_DIR_HOST}${layout_base_bindir}
-                autotools_stage_dir ${STAGE_TEMP}/${base_sbindir} ${STAGING_DIR_HOST}${layout_base_sbindir}
-                autotools_stage_dir ${STAGE_TEMP}/${libexecdir} ${STAGING_DIR_HOST}${layout_libexecdir}
-        fi
-        if [ -d ${STAGE_TEMP}/${libdir} ]
-        then
-                olddir=`pwd`
-                cd ${STAGE_TEMP}/${libdir}
-                las=$(find . -name \*.la -type f)
-                cd $olddir
-                echo "Found la files: $las"
-                if [ -n "$las" ]; then
-                        # If there are .la files then libtool was used in the
-                        # build, so install them with magic mangling.
-                        for i in $las
-                        do
-                                dir=$(dirname $i)
-                                echo "oe_libinstall -C ${STAGE_TEMP}/${libdir}/${dir} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}"
-                                oe_libinstall -C ${STAGE_TEMP}/${libdir}/${dir} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}
-                        done
-                else
-                        # Otherwise libtool wasn't used, and lib/ can be copied
-                        # directly.
-                        echo "cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}"
-                        cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
-                fi
-
-        fi
-        # Ok, this is nasty. pkgconfig.bbclass is usually used to install .pc files,
-        # however some packages rely on the presence of .pc files to enable/disable
-        # their configurataions in which case we better should not install everything
-        # unconditionally, but rather depend on the actual results of make install.
-        # The good news though: a) there are not many packages doing this and
-        # b) packaged staging will fix that anyways. :M:
-        if [ "${AUTOTOOLS_STAGE_PKGCONFIG}" = "1" ]
-        then
-                echo "cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/"
-                cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
-        fi
-        rm -rf ${STAGE_TEMP}/${mandir} || true
-        rm -rf ${STAGE_TEMP}/${infodir} || true
-        autotools_stage_dir ${STAGE_TEMP}/${datadir} ${STAGING_DATADIR}
-        rm -rf ${STAGE_TEMP}
-
-}

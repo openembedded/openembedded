@@ -8,6 +8,9 @@ S = "${WORKDIR}/liboop-${PV}"
 
 inherit autotools  pkgconfig
 
+EXTRA_OECONF = "--without-tcl --without-glib \
+                --without-readline --without-adns"
+
 headers = "oop.h oop-adns.h oop-glib.h \
 	  oop-tcl.h oop-www.h oop-rl.h \
 	  oop-read.h"

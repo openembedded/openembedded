@@ -1,6 +1,6 @@
 DESCRIPTION = "System-V like init."
 SECTION = "base"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
 PR = "r57"
 

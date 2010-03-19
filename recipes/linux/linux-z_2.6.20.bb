@@ -1,6 +1,6 @@
 DESCRIPTION = "2.6 Linux Development Kernel for the DNARD/Shark, SIMpad."
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 inherit kernel
 

@@ -2,7 +2,7 @@ require fontconfig.inc
 
 SRC_URI += "file://one-j-too-many.patch;patch=1"
 
-PR = "r2"
+PR = "r3"
 
 do_stage () {
 	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}

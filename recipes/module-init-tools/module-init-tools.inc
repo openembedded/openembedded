@@ -1,7 +1,7 @@
 DESCRIPTION = "This package contains a set of programs for loading, inserting, and \
 removing kernel modules for Linux (versions 2.5.48 and above). It serves \
 the same function that the modutils package serves for Linux 2.4."
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 SECTION = "base"
 PR = "r5"
 

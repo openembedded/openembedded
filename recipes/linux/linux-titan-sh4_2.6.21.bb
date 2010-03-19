@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for SH4 based TITAN (NP51R/LinkGear Series 100) router appliance"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \

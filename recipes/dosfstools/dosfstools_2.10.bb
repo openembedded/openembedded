@@ -6,7 +6,7 @@ DESCRIPTION = "DOS FAT Filesystem Utilities"
 
 SECTION = "base"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 PR = "r2"
 

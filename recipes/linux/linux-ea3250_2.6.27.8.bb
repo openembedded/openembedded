@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the EmbeddedArtists LPC3250 development board"
 HOMEPAGE = "http://embeddedartists.com"
 # DEPENDS = ""
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 
 # Location of the base kernel and NXP's patches

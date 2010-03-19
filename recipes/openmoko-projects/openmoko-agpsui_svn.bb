@@ -3,6 +3,7 @@ HOMEPAGE = "http://openmoko-agpsui.projects.openmoko.org/"
 SECTION = "openmoko/apps"
 LICENSE = "GPL"
 DEPENDS = "gtk+"
+SRCREV = "7"
 PV = "0.1+svnr${SRCPV}"
 PR = "r1"
 

@@ -1,7 +1,5 @@
 require opkg.inc
 
-DEPENDS_append = " openssl"
-
 PR = "${INC_PR}"
 
 PROVIDES =+ "virtual/update-alternatives"

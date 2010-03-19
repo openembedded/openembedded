@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "opkg"
 
@@ -10,4 +10,5 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/${APPNAME};c
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics;cvsdate=${SRCDATE} \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
            file://split-config.patch;patch=1 \
-           file://opkg.patch;patch=1"
+           file://opkg.patch;patch=1 \
+           file://opkg_update.patch;patch=1"

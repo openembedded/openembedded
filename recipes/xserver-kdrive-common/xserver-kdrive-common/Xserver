@@ -60,6 +60,10 @@ fi
 
 # start off server in conventional location.
 case `module_id` in
+	"trout")
+		ARGS="$ARGS -mouse tslib"
+		XSERVER=/usr/bin/Xfbdev
+		;;
         "AML M8050")
                 ARGS="$ARGS -dpi 100 -screen 320x240@270" ;;
         "HP iPAQ H3100" | "HP iPAQ H3800")
@@ -106,44 +110,25 @@ case `module_id` in
         "Compulab CM-x270")
                 modprobe mbxfb
                 ARGS="$ARGS -fb /dev/fb1" ;;
-        "GTA01")
+        "GTA01" | "GTA02")
                 if [ `screen_width` -gt 330 ] ; then
                      if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
                           PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
                      fi
-                     DPI=285
+                     DPI=280
                 else
                      if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
                           PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
                      fi
                      DPI=142
                 fi 
-                ARGS="$ARGS -dpi ${DPI} vt1"
-		;;
-       "GTA02")
-                if [ `screen_width` -gt 330 ] ; then
-                     if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
-                          PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
-                     fi
-                     DPI=285
-                else 
-                     if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
-                          PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
-                     fi
-                     DPI=142
-                fi 
-
                 if [ "$XSERVER" = "/usr/bin/Xorg" ]; then
-                     if [ "$DPI" = "285" ]; then
-                         # Fix for only 3 columns of icons in illume desktop
-                         DPI=280
-                     fi
                      if [ -z "${USB_MOUSE}" ]; then
                          # Fix for segfault while typing on illume keyboard
                          ARGS="$ARGS -nocursor"
                      fi
                      ARGS="$ARGS -dpi ${DPI} vt1"
-                else
+                elif [ `module_id` == "GTA02" ] ; then
                      ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" 
                      XSERVER=/usr/bin/Xglamo 
                 fi

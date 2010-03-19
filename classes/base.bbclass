@@ -81,7 +81,7 @@ def base_chk_file_vars(parser, localpath, params, data):
 
     if want_md5sum:
         try:
-	    md5pipe = os.popen('PATH=%s md5sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+	    md5pipe = os.popen('PATH=%s md5sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
             md5data = (md5pipe.readline().split() or [ "" ])[0]
             md5pipe.close()
         except OSError, e:
@@ -92,7 +92,7 @@ def base_chk_file_vars(parser, localpath, params, data):
 
     if want_sha256sum:
         try:
-            shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+            shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
             sha256data = (shapipe.readline().split() or [ "" ])[0]
             shapipe.close()
         except OSError, e:
@@ -131,14 +131,14 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
 
     # call md5(sum) and shasum
     try:
-	md5pipe = os.popen('PATH=%s md5sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+	md5pipe = os.popen('PATH=%s md5sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
         md5data = (md5pipe.readline().split() or [ "" ])[0]
         md5pipe.close()
     except OSError:
         raise Exception("Executing md5sum failed")
 
     try:
-        shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+        shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
         shadata = (shapipe.readline().split() or [ "" ])[0]
         shapipe.close()
     except OSError:
@@ -813,7 +813,7 @@ def oe_unpack_file(file, data, url = None):
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
 		if 'dos' in parm:
 			cmd = '%s -a' % cmd
-		cmd = '%s %s' % (cmd, file)
+		cmd = "%s '%s'" % (cmd, file)
 	elif os.path.isdir(file):
 		destdir = "."
 		filespath = bb.data.getVar("FILESPATH", data, 1).split(":")

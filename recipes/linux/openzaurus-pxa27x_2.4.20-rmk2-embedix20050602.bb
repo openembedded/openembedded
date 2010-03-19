@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel 2.4.20-embedix for Sharp Zaurus SL-C1000 and SL-C300
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa27x-2.4.20-rmk2-embedix20050602"
 SECTION = "kernel"
 PV = "2.4.20-rmk2-embedix"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 KV = "2.4.20"
 PR = "r18"
 

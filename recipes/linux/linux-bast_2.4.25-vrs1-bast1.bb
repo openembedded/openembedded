@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Simtec EB2410ITX"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 KV = "2.4.25"
 
 KERNEL_CCSUFFIX = "-3.3.3"

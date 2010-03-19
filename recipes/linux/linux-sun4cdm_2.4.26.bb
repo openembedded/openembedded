@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for sparc32/sun4c"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 DEPENDS += "elftoaout-native"
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- SGML -*- -->
+<deviceinfo version="0.2">
+  <device>
+    <match key="info.product" contains="Elo TouchSystems, Inc. Elo TouchSystems 2700 IntelliTouch(r) USB Touchmonitor Interface">
+      <match key="info.capabilities" contains="input">
+        <merge key="input.x11_driver" type="string">evtouch</merge>
+        <merge key="input.x11_options.minx" type="string">130</merge>
+        <merge key="input.x11_options.miny" type="string">197</merge>
+        <merge key="input.x11_options.maxx" type="string">3945</merge>
+        <merge key="input.x11_options.maxy" type="string">3894</merge>
+        <merge key="input.x11_options.swapx" type="string">1</merge>
+        <merge key="input.x11_options.swapy" type="string">1</merge>
+      </match>
+    </match>
+  </device>
+</deviceinfo>

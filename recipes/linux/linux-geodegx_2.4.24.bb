@@ -6,7 +6,7 @@ COMPATIBLE_MACHINE = "geodegx"
 
 KV = "2.4.24"
 DESCRIPTION = "Linux kernel for the AMD Geode GX processor"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 	http://www.amd.com/files/connectivitysolutions/geode/Patches_Linux_${KV}_1.00.tar.gz \

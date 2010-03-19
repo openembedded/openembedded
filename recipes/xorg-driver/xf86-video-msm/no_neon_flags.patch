@@ -1,0 +1,36 @@
+commit 18515a56822fcd9c0a71240edce97ea5623b0448
+Author: David Lanzendörfer <david.lanzendoerfer@o2s.ch>
+Date:   Wed Feb 10 16:29:55 2010 +0100
+
+    Modify Makefile.am
+    Removed depencies for neon
+
+diff --git git/src/Makefile.am git/src/Makefile.am
+index 8ab1856..08da5a5 100755
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -12,13 +12,7 @@ MSM_DRI_SRCS += msm-drm.c msm-dri2.c
+ msm_drv_la_LIBADD += $(DRI2_LIBS)
+ endif
+ 
+-NEON_CFLAGS=-march=armv7-a -mfpu=neon -mfloat-abi=softfp
+-NEON_CCASFLAGS=$(NEON_CFLAGS) -mthumb-interwork
+-NEON_ASFLAGS=-k -mcpu=cortex-a8 $(NEON_CCASFLAGS)
+-
+-AM_CFLAGS = @XORG_CFLAGS@ @DRI_CFLAGS@ @DRI2_CFLAGS@ $(NEON_CFLAGS) -Wall -Werror
+-AM_ASFLAGS = $(NEON_ASFLAGS)
+-AM_CCASFLAGS = $(NEON_CCASFLAGS)
++AM_CFLAGS = @XORG_CFLAGS@ @DRI_CFLAGS@ @DRI2_CFLAGS@ -Wall -Werror
+ 
+ msm_drv_la_LTLIBRARIES = msm_drv.la
+ msm_drv_la_LDFLAGS = -module -avoid-version
+@@ -37,9 +31,6 @@ msm_drv_la_SOURCES = \
+ 	 msm-swfill.c \
+ 	 msm-hwrender.c \
+ 	 msm-pixmap.c \
+-	 neon_memsets.c \
+-	 neon_memcpy.S \
+-	 neon_memmove.S \
+ 	$(MSM_DRI_SRCS)
+ 
+ 

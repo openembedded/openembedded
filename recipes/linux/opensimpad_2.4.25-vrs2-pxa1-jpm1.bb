@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux kernel for the SIEMENS SIMpad family of devices."
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"

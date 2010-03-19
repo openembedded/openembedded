@@ -1,15 +1,15 @@
 require xorg-driver-input.inc
 
-PR = "r11"
+PR = "r12"
 
 DESCRIPTION = "X.Org X server -- evtouch input driver"
 
-SRC_URI = "http://www.conan.de/touchscreen/xf86-input-evtouch-${PV}.tar.bz2 \
-           file://xf86-input-evtouch_0.8.8-0ubuntu6.diff;patch=1 \
-           file://20_fix_calibrate_submission_directions.patch;patch=1 \
-           file://21_more_calibration_fixups.patch;patch=1 \
+SRC_URI = "http://www.conan.de/touchscreen/xf86-input-evtouch-${PV}.tar.bz2;name=archive \
            file://fdi/*.fdi \
            file://udev-ett-tc5uh.patch;patch=1 \
+           file://02_calibration_1.6.patch;patch=1 \
+           file://03_server-1.6-ftbfs.diff;patch=1 \
+           file://04_server-1.7-ftbfs.diff;patch=1 \
 "
 
 EXTRA_OECONF = "--enable-evcalibrate \
@@ -22,3 +22,5 @@ do_install_append() {
 }
 
 FILES_${PN} += "${datadir}/hal"
+SRC_URI[archive.md5sum] = "4d8e092356d8353002f60a4907046c13"
+SRC_URI[archive.sha256sum] = "eafc4a09729a4b2b6120430c71e1954c5cac299ad6adf2f9a40aee8a7b51e476"

@@ -1,7 +1,7 @@
 DESCRIPTION = "ALSA Utilities"
 HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "alsa-lib ncurses"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \

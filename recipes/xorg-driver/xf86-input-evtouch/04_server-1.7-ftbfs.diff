@@ -1,0 +1,516 @@
+commit f88ce643a4d343cc27ef6ef7e0bf148f885043ab
+Author: Mattia Dongili <malattia@linux.it>
+Date:   Sun Jan 24 15:45:51 2010 +0900
+
+    04
+    
+    Build with 1.7. Also add some more probing taken from evdev.
+    
+    Signed-off-by: Mattia Dongili <malattia@linux.it>
+
+Index: xserver-xorg-input-evtouch/evtouch.c
+===================================================================
+--- xserver-xorg-input-evtouch.orig/evtouch.c	2010-02-14 14:08:33.000000000 +0900
++++ xserver-xorg-input-evtouch/evtouch.c	2010-02-14 14:13:51.000000000 +0900
+@@ -57,6 +57,7 @@
+ #define NEED_EVENTS
+ #include <X11/X.h>
+ #include <X11/Xproto.h>
++#include <xserver-properties.h>
+ 
+ #include "xf86.h"
+ 
+@@ -129,7 +130,6 @@
+         0
+ };
+ 
+-#ifdef XFree86LOADER
+ static XF86ModuleVersionInfo VersionRec =
+ {
+         "evtouch",
+@@ -164,9 +164,7 @@
+ }
+ 
+ 
+-XF86ModuleData evtouchModuleData = {&VersionRec, Plug, Unplug };
+-
+-#endif /* XFree86LOADER */
++_X_EXPORT XF86ModuleData evtouchModuleData = {&VersionRec, Plug, Unplug };
+ 
+ 
+ static const char *default_options[] =
+@@ -239,7 +237,7 @@
+ 
+         priv->emulate3_timer_expired = TRUE;
+         xf86UnblockSIGIO(sigstate);
+-             
++
+         return 0;
+ }
+ 
+@@ -339,7 +337,7 @@
+ 						     priv->cur_x, 
+ 						     priv->cur_y);
+ 			}
+-		}			
++		}
+ 	}
+ }
+ 
+@@ -372,7 +370,7 @@
+                     0, 0, 0, 0,
+                     &priv->cur_x, &priv->cur_y);
+ #endif
+-	
++
+         libtouchSetPos(priv->libtouch, priv->cur_x, priv->cur_y);
+ }
+ 
+@@ -394,7 +392,7 @@
+                                                         priv->emulate3_timeout,
+                                                         emulate3Timer,
+                                                         local);
+-                
++
+                 if ( (ev->value == 1) && (ev->code == BTN_LEFT) ) {
+                         priv->touch_flags |= LB_STAT;
+                 }
+@@ -419,7 +417,7 @@
+                         DBGOUT(2, "EVTouch: Right Release\n");
+                         priv->touch_flags &= ~RB_STAT;
+                         SetBtnAction(priv, 3, BTN_RELEASE);
+-                }                                
++                }
+         } else {
+                 if (ev->code == BTN_LEFT) {
+                         SetBtnAction(priv, 1, ev->value);
+@@ -478,26 +476,98 @@
+         return;
+ }
+ 
+-
+-
++#define TestBit(bit, array) ((array[(bit) / LONG_BITS]) & (1L << ((bit) % LONG_BITS)))
++#define ArrayLength(a) (sizeof(a) / (sizeof((a)[0])))
+ 
+ static Bool
+ QueryHardware (LocalDevicePtr local)
+ {
+-        DBGOUT(2, "EVTouch: %s\n", __FUNCTION__);
+-
+-        return Success;
++    EVTouchPrivatePtr priv = (EVTouchPrivatePtr) (local->private);
++    size_t len;
++    int i, num_buttons;
++
++    DBGOUT(2, "EVTouch: %s\n", __FUNCTION__);
++
++    if (ioctl(local->fd, EVIOCGNAME(sizeof(priv->name) - 1), priv->name) < 0) {
++	    xf86Msg(X_ERROR, "ioctl EVIOCGNAME failed: %s\n", strerror(errno));
++	    goto error;
++    }
++
++    len = ioctl(local->fd, EVIOCGBIT(0, sizeof(priv->bitmask)), priv->bitmask);
++    if (len < 0) {
++	    xf86Msg(X_ERROR, "%s: ioctl EVIOCGBIT failed: %s\n",
++			    local->name, strerror(errno));
++	    goto error;
++    }
++
++    len = ioctl(local->fd, EVIOCGBIT(EV_REL, sizeof(priv->rel_bitmask)), priv->rel_bitmask);
++    if (len < 0) {
++	    xf86Msg(X_ERROR, "%s: ioctl EVIOCGBIT failed: %s\n",
++			    local->name, strerror(errno));
++	    goto error;
++    }
++
++    len = ioctl(local->fd, EVIOCGBIT(EV_ABS, sizeof(priv->abs_bitmask)), priv->abs_bitmask);
++    if (len < 0) {
++	    xf86Msg(X_ERROR, "%s: ioctl EVIOCGBIT failed: %s\n",
++			    local->name, strerror(errno));
++	    goto error;
++    }
++
++    len = ioctl(local->fd, EVIOCGBIT(EV_KEY, sizeof(priv->key_bitmask)), priv->key_bitmask);
++    if (len < 0) {
++	    xf86Msg(X_ERROR, "%s: ioctl EVIOCGBIT failed: %s\n",
++			    local->name, strerror(errno));
++	    goto error;
++    }
++
++    num_buttons = 0;
++
++    /* count all buttons */
++    for (i = BTN_MISC; i < BTN_JOYSTICK; i++)
++    {
++        if (TestBit(i, priv->key_bitmask))
++        {
++            if (i > num_buttons)
++                num_buttons = i;
++        }
++    }
++    if (num_buttons)
++    {
++        priv->flags |= EVTOUCH_BUTTON_EVENTS;
++        priv->num_buttons = num_buttons;
++        xf86Msg(X_INFO, "%s: Found %d mouse buttons\n", local->name,
++                num_buttons);
++    }
++
++    for (i = 0; i < REL_MAX; i++) {
++        if (TestBit(i, priv->rel_bitmask)) {
++            xf86Msg(X_INFO, "%s: Found relative axes\n", local->name);
++            priv->flags |= EVTOUCH_RELATIVE_EVENTS;
++            break;
++        }
++    }
++
++    for (i = 0; i < ABS_MAX; i++) {
++        if (TestBit(i, priv->abs_bitmask)) {
++            xf86Msg(X_INFO, "%s: Found absolute axes\n", local->name);
++            priv->flags |= EVTOUCH_ABSOLUTE_EVENTS;
++            break;
++        }
++    }
++
++    return Success;
++error:
++    return (!Success);
+ }
+ 
+ 
+-
+-
+ static Bool
+ DeviceOn (DeviceIntPtr dev)
+ {
+         LocalDevicePtr local = (LocalDevicePtr) dev->public.devicePrivate;
+         EVTouchPrivatePtr priv = (EVTouchPrivatePtr) (local->private);
+-        
++
+         local->fd = xf86OpenSerial(local->options);
+ 
+         DBGOUT(2, "EVTouch: %s\n", __FUNCTION__ );
+@@ -512,8 +582,7 @@
+ 
+         DBG (9, XisbTrace (priv->buffer, 1));
+ 
+-
+-        if (!priv->buffer) 
++        if (!priv->buffer)
+         {
+                 xf86CloseSerial(local->fd);
+                 local->fd = -1;
+@@ -531,7 +600,6 @@
+         if (ioctl(local->fd, EVIOCGRAB, (void *)1))
+                 xf86Msg(X_ERROR, "%s: Unable to grab device (%s).\n", local->name, strerror(errno));
+ 
+-
+ #ifndef XFREE86_V4
+         xf86AddEnabledDevice(local);
+ #else
+@@ -544,8 +612,6 @@
+ }
+ 
+ 
+-
+-
+ static Bool
+ DeviceOff (DeviceIntPtr dev)
+ {
+@@ -555,7 +621,7 @@
+         DBGOUT(2, "EVTouch: %s\n", __FUNCTION__ );
+ 
+         if (local->fd != -1)
+-        { 
++        {
+                 ioctl(local->fd, EVIOCGRAB, (void *)0);
+                 xf86RemoveEnabledDevice (local);
+                 if (priv->buffer)
+@@ -577,6 +643,73 @@
+ }
+ 
+ 
++static Atom *EvtouchInitButtonLabels(void)
++{
++#ifdef HAVE_LABELS
++    Atom *labels = xalloc(EV_MAX_BUTTONS * sizeof(Atom));
++
++    /* initialize the 5 button labels used by this driver */
++    labels[0] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_LEFT);
++    labels[1] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_MIDDLE);
++    labels[2] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_RIGHT);
++    labels[3] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_WHEEL_UP);
++    labels[4] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_WHEEL_DOWN);
++
++    return labels;
++#endif
++}
++
++static char* abs_labels[] = {
++    AXIS_LABEL_PROP_ABS_X,
++    AXIS_LABEL_PROP_ABS_Y,
++    AXIS_LABEL_PROP_ABS_Z,
++    AXIS_LABEL_PROP_ABS_WHEEL
++};
++static char* rel_labels[] = {
++    AXIS_LABEL_PROP_REL_X,
++    AXIS_LABEL_PROP_REL_Y,
++    AXIS_LABEL_PROP_REL_Z,
++    AXIS_LABEL_PROP_REL_WHEEL
++};
++
++static void
++EvtouchInitAxesLabels(EVTouchPrivatePtr pEVTouch, int natoms, Atom *atoms)
++{
++#ifdef HAVE_LABELS
++    Atom atom;
++    int axis;
++    char **labels;
++    int labels_len = 0;
++    char *misc_label;
++
++    if (pEVTouch->flags & EVTOUCH_ABSOLUTE_EVENTS)
++    {
++        labels     = abs_labels;
++        labels_len = ArrayLength(abs_labels);
++        misc_label = AXIS_LABEL_PROP_ABS_MISC;
++    } else if ((pEVTouch->flags & EVTOUCH_RELATIVE_EVENTS))
++    {
++        labels     = rel_labels;
++        labels_len = ArrayLength(rel_labels);
++        misc_label = AXIS_LABEL_PROP_REL_MISC;
++    }
++
++    memset(atoms, 0, natoms * sizeof(Atom));
++
++    /* Now fill the ones we know */
++    for (axis = 0; axis < labels_len; axis++)
++    {
++        if (pEVTouch->axis_map[axis] == -1)
++            continue;
++
++        atom = XIGetKnownProperty(labels[axis]);
++        if (!atom) /* Should not happen */
++            continue;
++
++        atoms[pEVTouch->axis_map[axis]] = atom;
++    }
++#endif
++}
+ 
+ 
+ static Bool
+@@ -585,6 +718,7 @@
+         DBGOUT(2, "EVTouch: %s\n", __FUNCTION__);
+         LocalDevicePtr local = (LocalDevicePtr) dev->public.devicePrivate;
+         EVTouchPrivatePtr priv = (EVTouchPrivatePtr) (local->private);
++	Atom *labels, *atoms;
+         unsigned char map[EV_MAX_BUTTONS];
+         int i;
+ 
+@@ -593,7 +727,7 @@
+ 
+         priv->btn_count = EV_MAX_BUTTONS;
+ 
+-        /* 
++        /*
+          * these have to be here instead of in the SetupProc, because when the
+          * SetupProc is run at server startup, screenInfo is not setup yet
+          */
+@@ -603,9 +737,9 @@
+         priv->screen_height = pScrn->virtualY;
+         priv->pViewPort_X0  = &(pScrn->frameX0);   /* initialize the pointers to the viewport coords */
+         if ( (priv->screen_width != priv->phys_width) ||
+-             (priv->screen_height != priv->phys_height) ) 
++             (priv->screen_height != priv->phys_height) )
+               priv->virtual = 1;
+-        else  
++        else
+                 priv->virtual = 0;
+ 
+         priv->pViewPort_Y0  = &(pScrn->frameY0);
+@@ -620,24 +754,29 @@
+         DBGOUT(2, "EVTouch: MaxValue H,V: %d %d\n", pScrn->maxHValue, pScrn->maxVValue);
+ 
+         priv->screen_width = screenInfo.screens[priv->screen_num]->width;
+-        priv->screen_height = screenInfo.screens[priv->screen_num]->height;        
++        priv->screen_height = screenInfo.screens[priv->screen_num]->height;
+ 
+-        /* 
++        /*
+          * Device reports button press for 5 buttons.
+          */
+-        if (InitButtonClassDeviceStruct (dev, EV_MAX_BUTTONS, map) == FALSE)
++	labels = EvtouchInitButtonLabels();
++        if (InitButtonClassDeviceStruct (dev, EV_MAX_BUTTONS,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++				labels,
++#endif
++				map) == FALSE)
+         {
+                 ErrorF("Unable to allocate EVTouch touchscreen ButtonClassDeviceStruct\n");
+                 return BadAlloc;
+-        } 
++        }
+ 
+-        DBGOUT(2, "EVTouch: %s btn_count=%d\n", __FUNCTION__, 
++        DBGOUT(2, "EVTouch: %s btn_count=%d\n", __FUNCTION__,
+                priv->btn_count);
+         priv->btn_actions = xcalloc(priv->btn_count, sizeof(BtnAction));
+-        memset(priv->btn_actions, 0, 
++        memset(priv->btn_actions, 0,
+                priv->btn_count * sizeof(BtnAction));
+-        
+-        DBGOUT(2, "EVTouch: %s btn_count=%d\n", __FUNCTION__, 
++
++        DBGOUT(2, "EVTouch: %s btn_count=%d\n", __FUNCTION__,
+                priv->btn_count);
+ 
+         if (InitFocusClassDeviceStruct(dev) == FALSE) {
+@@ -645,13 +784,18 @@
+                 return !Success;
+         }
+ 
+-        /* 
++        /*
+          * Device reports motions on 2 axes in absolute coordinates.
+          * Axes min and max values are reported in raw coordinates.
+          */
++	atoms = xalloc(2 * sizeof(Atom));
++	EvtouchInitAxesLabels(priv, 2, atoms);
++
+         if (InitValuatorClassDeviceStruct(dev, 2,
+ #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
+                                           xf86GetMotionEvents,
++#elif GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++					  atoms,
+ #endif
+                                           local->history_size, Absolute) == FALSE)
+         {
+@@ -660,12 +804,20 @@
+         }
+ 
+ #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 2
+-        xf86InitValuatorAxisStruct(dev, 0, 0, priv->screen_width,
++        xf86InitValuatorAxisStruct(dev, 0,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++			           atoms[0],
++#endif
++			           0, priv->screen_width,
+                                    1024,
+                                    EV_AXIS_MIN_RES /* min_res */ ,
+                                    EV_AXIS_MAX_RES /* max_res */ );
+         xf86InitValuatorDefaults(dev, 0);
+-        xf86InitValuatorAxisStruct(dev, 1, 0, priv->screen_height,
++        xf86InitValuatorAxisStruct(dev, 1,
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
++			           atoms[1],
++#endif
++                                   0, priv->screen_height,
+                                    1024,
+                                    EV_AXIS_MIN_RES /* min_res */ ,
+                                    EV_AXIS_MAX_RES /* max_res */ );
+@@ -682,7 +834,6 @@
+ 	priv->raw_y=priv->cur_y;
+         libtouchSetPos(priv->libtouch, priv->cur_x, priv->cur_y);
+ 
+-        
+         if (InitProximityClassDeviceStruct (dev) == FALSE)
+         {
+                 ErrorF ("Unable to allocate EVTouch touchscreen ProximityClassDeviceStruct\n");
+@@ -695,7 +846,7 @@
+                 return !Success;
+         }
+ 
+-        /* 
++        /*
+          * Allocate the motion events buffer.
+          */
+         xf86MotionHistoryAllocate (local);
+@@ -765,7 +916,7 @@
+                 if (sizeof(priv->ev) == count) {
+                         count = 0;
+                         EVTouchDumpPacketToLog(priv);
+-                        
++
+                         return Success;
+                 }
+         }
+Index: xserver-xorg-input-evtouch/evtouch.h
+===================================================================
+--- xserver-xorg-input-evtouch.orig/evtouch.h	2010-02-14 14:01:43.000000000 +0900
++++ xserver-xorg-input-evtouch/evtouch.h	2010-02-14 14:08:34.000000000 +0900
+@@ -35,6 +35,22 @@
+ #define DBGOUT(lvl, ...)
+ #endif
+ 
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 3
++#define HAVE_PROPERTIES 1
++
++/* 1.6 has properties, but no labels */
++#ifdef AXIS_LABEL_PROP
++#define HAVE_LABELS
++#else
++#undef HAVE_LABELS
++#endif
++
++#endif
++
++#define LONG_BITS (sizeof(long) * 8)
++/* Number of longs needed to hold the given number of bits */
++#define NLONGS(x) (((x) + LONG_BITS - 1) / LONG_BITS)
++
+ /******************************************************************************
+  *  Definitions
+  *  structs, typedefs, #defines, enums
+@@ -52,6 +68,10 @@
+ 
+ #define EV_MAX_BUTTONS        5
+ 
++#define EVTOUCH_BUTTON_EVENTS		0x01
++#define EVTOUCH_RELATIVE_EVENTS		0x02
++#define EVTOUCH_ABSOLUTE_EVENTS		0x04
++
+ #define TOUCHED 0x01
+ #define X_COORD 0x02
+ #define Y_COORD 0x04
+@@ -80,6 +100,8 @@
+         int min_rel_y;  /* Minimum y reported by calibration        */
+         int max_rel_y;  /* Maximum y                    */
+ 
++	int axis_map[max(ABS_CNT, REL_CNT)]; /* Map evtouch <axis> to index */
++
+         int drag_timer;
+         Bool emulate3;
+         int emulate3_timeout;
+@@ -129,10 +151,10 @@
+         int screen_num;    /* Screen associated with the device */
+         int screen_width;   /* Width of the associated X screen  */
+         int screen_height;   /* Height of the screen              */
+-        
++
+         XISBuffer *buffer;
+         struct input_event ev; /* packet being/just read */
+-        
++
+         int packeti;    /* index into packet */
+         Bool cs7flag;
+         Bool binary_pkt;   /* indicates packet was a binary touch */
+@@ -141,6 +163,16 @@
+ 
+         LibTouchRecPtr libtouch;
+         LocalDevicePtr local;
++
++	/* Cached info from device. */
++	int flags;
++	int num_buttons;
++	char name[1024];
++	unsigned long bitmask[NLONGS(EV_CNT)];
++	unsigned long key_bitmask[NLONGS(KEY_CNT)];
++	unsigned long rel_bitmask[NLONGS(REL_CNT)];
++	unsigned long abs_bitmask[NLONGS(ABS_CNT)];
++
+ } EVTouchPrivateRec, *EVTouchPrivatePtr;
+ 
+ 

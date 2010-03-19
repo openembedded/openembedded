@@ -1,7 +1,7 @@
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.12."
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"

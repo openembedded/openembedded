@@ -1,6 +1,7 @@
 DESCRIPTION = "A simple example panel plugin for Openmoko"
 SECTION = "openmoko/examples"
 DEPENDS += "libmatchbox"
+SRCREV = "1328"
 PV = "0.0.1+svnr${SRCPV}"
 
 PR = "r1"

@@ -4,6 +4,7 @@ SECTION = "openmoko/daemons"
 DISTRO_APM ?= "apm"
 DEPENDS = "gtk+ pulseaudio apmd"
 RDEPENDS = "gpe-scap xrandr alsa-utils-amixer ${DISTRO_APM} dbus"
+SRCREV = "4617"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r7"
 

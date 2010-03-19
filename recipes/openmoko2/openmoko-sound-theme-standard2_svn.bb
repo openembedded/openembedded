@@ -2,6 +2,7 @@ DESCRIPTION = "Standard sound theme for the Openmoko framework"
 SECTION = "openmoko/base"
 RREPLACES = "openmoko-sound-theme-standard"
 RPROVIDES = "openmoko-sound-theme-standard"
+SRCREV = "4271"
 PV = "0.1+svnr${SRCPV}"
 PR = "r3"
 

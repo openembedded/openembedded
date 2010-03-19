@@ -2,8 +2,8 @@
 # use newer version then preferred by default
 PREFERRED_VERSION_boost = "1.40.0"
 PREFERRED_VERSION_dbus = "1.3.0"
-PREFERRED_VERSION_autoconf = "2.63"
-PREFERRED_VERSION_autoconf-native = "2.63"
+PREFERRED_VERSION_autoconf = "2.65"
+PREFERRED_VERSION_autoconf-native = "2.65"
 PREFERRED_VERSION_libmikmod = "3.2.0-beta2"
 PREFERRED_VERSION_mtd-utils-native = "1.2.0+git"
 PREFERRED_VERSION_strace = "4.5.15"

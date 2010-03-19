@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz;name=qemu-${PV} \
@@ -30,6 +30,10 @@ S = "${WORKDIR}/qemu-${PV}"
 EXTRA_OECONF += "--disable-sdl --disable-strip"
 
 inherit autotools
+
+do_configure_prepend_virtclass-native() {
+	export QEMU_CFLAGS="-I${STAGING_INCDIR_NATIVE} ${QEMU_CFLAGS}"
+}
 
 do_configure() {
 	${S}/configure --prefix=${prefix} ${EXTRA_OECONF}

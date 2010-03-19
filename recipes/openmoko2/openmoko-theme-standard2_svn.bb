@@ -1,6 +1,7 @@
 DESCRIPTION = "Standard Gtk+ theme for the Openmoko framework"
 SECTION = "openmoko/base"
 RCONFLICTS = "openmoko-theme-standard"
+SRCREV = "4338"
 PV = "0.1.1+svnr${SRCPV}"
 PR = "r5"
 

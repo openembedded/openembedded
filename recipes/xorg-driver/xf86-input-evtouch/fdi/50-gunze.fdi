@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<deviceinfo version="0.2">
+  <device>
+    <match key="info.product" contains="GUNZE USB Touch Panel">
+      <merge key="input.x11_driver" type="string">evtouch</merge>
+      <merge key="input.x11_options.ReportingMode" type="string">Raw</merge>
+      <merge key="input.x11_options.Emulate3Buttons" type="string">false</merge>
+      <merge key="input.x11_options.Emulate3Timeout" type="string">1</merge>
+      <merge key="input.x11_options.MinX" type="string">35</merge>
+      <merge key="input.x11_options.MinY" type="string">37</merge>
+      <merge key="input.x11_options.MaxX" type="string">990</merge>
+      <merge key="input.x11_options.MaxY" type="string">986</merge>
+    </match>
+  </device>
+</deviceinfo>

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=GNU Chess
+Comment=Chess game of the GNU Project
+Encoding=UTF-8
+Version=4.2.7
+Type=Application
+Exec=/usr/bin/gnuchess.sh 
+Terminal=false
+Categories=Game;
+X-MB-SingleInstance=true
+Icon=gnuchess
+

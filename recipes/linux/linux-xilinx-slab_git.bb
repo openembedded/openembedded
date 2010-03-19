@@ -3,7 +3,7 @@
 # Released under the MIT license (see packages/COPYING)
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Xilinx ML403 Virtex 4 fpga board"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 SRCREV = "d7ed933b578d9c4dec0e23a5a6f78c464b31c47c"
 
