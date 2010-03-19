@@ -33,6 +33,9 @@ SRCREV_omapzoom2 = "599c6cb87ee0c01fd6632b24f6d7e0a2b3ea5d0a"
 SRC_URI[uboot.md5sum] = "e68b30714d22ce2f926d2dd19f94a2be"
 SRC_URI[uboot.sha256sum] = "e7e5c87d939cc4c1f14d17ea0814b0bed97021c7afca3ef9053c896c2b5bdd6f"
 
+SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/bootloader/x-loader.git;protocol=git"
+SRCREV_omapzoom36x = "251d92815500143aefdbe3b3558a0ce6daeaebdc"
+
 S = "${WORKDIR}/git"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
