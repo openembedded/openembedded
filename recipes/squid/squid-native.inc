@@ -1,6 +1,6 @@
 inherit native autotools
 
-SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2"
+SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV}"
 S = "${WORKDIR}/squid-${PV}"
 
 do_stage() {

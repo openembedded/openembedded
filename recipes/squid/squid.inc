@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 INC_PR = "r2"
 DEPENDS = "squid-native-${PV}"
 
-SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2 \
+SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
            file://fix_epoll_check.patch;patch=1 \
            file://squid.init"
 
