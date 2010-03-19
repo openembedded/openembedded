@@ -1,11 +1,13 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
 LICENSE = "GPLv2"
-INC_PR = "r2"
+INC_PR = "r3"
 DEPENDS = "squid-native-${PV}"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
            file://fix_epoll_check.patch;patch=1 \
-           file://squid.init"
+           file://squid.init \
+	   file://squid-volatiles \
+	   "
 
 inherit autotools update-rc.d
 
@@ -35,9 +37,11 @@ do_install_prepend() {
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/default/volatiles
 	install -m 755 ${WORKDIR}/squid.init ${D}${sysconfdir}/init.d/squid
 	mv ${D}${sysconfdir}/mime.conf.default ${D}${sysconfdir}/squid/
 	mv ${D}${sysconfdir}/squid.conf.default ${D}${sysconfdir}/squid/
+	install -m 0644 ${WORKDIR}/squid-volatiles ${D}${sysconfdir}/default/volatiles/squid
 }
 
 # this packages the languages better and saves some space, installs
