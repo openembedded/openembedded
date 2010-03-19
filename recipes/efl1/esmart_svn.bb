@@ -6,6 +6,8 @@ PR = "r2"
 
 inherit efl
 
+SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${PN};proto=http"
+
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
 PACKAGES =+ "${PN}-textentry \
