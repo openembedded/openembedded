@@ -1,7 +1,7 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
 LICENSE = "GPLv2"
-INC_PR = "r4"
-DEPENDS = "squid-native-${PV}"
+INC_PR = "r5"
+DEPENDS = "squid-native-${PV} openssl"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
            file://fix_epoll_check.patch;patch=1 \
@@ -11,7 +11,7 @@ SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar
 
 inherit autotools update-rc.d
 
-EXTRA_OECONF = "--disable-epoll --disable-nls"
+EXTRA_OECONF = "--disable-epoll --disable-nls --enable-ssl"
 
 logdir = ${localstatedir}/log/squid
 EXTRA_OEMAKE = "\
