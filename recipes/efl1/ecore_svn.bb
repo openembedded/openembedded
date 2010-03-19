@@ -35,3 +35,13 @@ EXTRA_OECONF = "\
   --disable-openssl \
   --disable-poll \
 "
+
+# List of options which were different in ecore-native, 
+# I know it's SCM, but with missing -native.bb is much easier to check here
+#EXTRA_OECONF_virtclass-native = "\
+#                --disable-ecore-x \
+#                --enable-ecore-evas-fb \
+#                --disable-ecore-evas-x11-gl \
+#                --disable-curl \
+#                --disable-ecore-imf \
+#                --disable-ecore-imf_evas \
