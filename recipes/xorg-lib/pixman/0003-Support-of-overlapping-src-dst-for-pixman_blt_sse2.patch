@@ -1,7 +1,7 @@
-From 1a29e4029250b4adb52061a68e94c84523e785e2 Mon Sep 17 00:00:00 2001
+From f07cd58c643b490dcb1ef7be2642926cfeca1e69 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Thu, 22 Oct 2009 05:45:54 +0300
-Subject: [PATCH 3/4] Support of overlapping src/dst for pixman_blt_sse2
+Subject: [PATCH 3/5] Support of overlapping src/dst for pixman_blt_sse2
 
 ---
  pixman/pixman-sse2.c |   55 +++++++++++++++++++++++++++++--------------------
