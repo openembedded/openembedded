@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.24.7
-# Thu Feb  4 08:14:16 2010
+# Fri Mar 19 15:45:44 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1047,7 +1047,7 @@ CONFIG_USB_SERIAL_GENERIC=y
 # CONFIG_USB_SERIAL_CP2101 is not set
 # CONFIG_USB_SERIAL_CYPRESS_M8 is not set
 # CONFIG_USB_SERIAL_EMPEG is not set
-# CONFIG_USB_SERIAL_FTDI_SIO is not set
+CONFIG_USB_SERIAL_FTDI_SIO=m
 # CONFIG_USB_SERIAL_FUNSOFT is not set
 # CONFIG_USB_SERIAL_VISOR is not set
 # CONFIG_USB_SERIAL_IPAQ is not set

@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r48"
+PR = "r49"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -36,13 +36,10 @@ RDEPENDS_${PN} += "\
 		mpd \
 		mplayer \
 		navit \
-# omview depends on deprecated (now broken) epsilon
-#		omview \
 		orrery \
 		python-elementary \
 		pythm \
 		python-wifi \
-		omoney \
 		openmoko-agpsui \
 		openvpn \
 		pyphonelog \
@@ -67,7 +64,6 @@ RDEPENDS_${PN} += "\
 		python-pygame \
 		mokoko \
 #		exhibit \
-		edje-viewer \
 		obexpush \
 		obexftp \
 		obex-data-server \
