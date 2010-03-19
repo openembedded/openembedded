@@ -1,6 +1,6 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
 LICENSE = "GPLv2"
-INC_PR = "r3"
+INC_PR = "r4"
 DEPENDS = "squid-native-${PV}"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
@@ -42,6 +42,7 @@ do_install_append() {
 	mv ${D}${sysconfdir}/mime.conf.default ${D}${sysconfdir}/squid/
 	mv ${D}${sysconfdir}/squid.conf.default ${D}${sysconfdir}/squid/
 	install -m 0644 ${WORKDIR}/squid-volatiles ${D}${sysconfdir}/default/volatiles/squid
+	sed -ri "s,^\#?\ *(pid_filename.+)$,\1," ${D}${sysconfdir}/squid/squid.conf
 }
 
 # this packages the languages better and saves some space, installs
