@@ -1,0 +1,57 @@
+--- test/main.c.0.1.0	2009-10-26 11:26:30.000000000 -0500
++++ test/main.c	2010-03-15 11:30:18.000000000 -0500
+@@ -580,15 +580,15 @@
+     if (frame_init(&buf_param))
+         return -1;
+ 
+-    if ((bcfd = open("/dev/bc_cat", O_RDWR|O_NDELAY)) == -1) {
+-        printf("ERROR: open '/dev/bc_cat' failed\n");
++    if ((bcfd = open("/dev/bccat0", O_RDWR|O_NDELAY)) == -1) {
++        printf("ERROR: open '/dev/bccat0' failed\n");
+         goto err_ret;
+     }
+ 
+     frame_w = buf_param.width;
+     frame_h = buf_param.height;
+ 
+-    if (min_w > 0 && !(min_w % 32))
++    if (min_w > 0 && !(min_w % 8))
+         buf_param.width = min_w;
+ 
+     if (min_h > 0)
+--- test/capture.c.0.1.0	2009-10-26 11:26:30.000000000 -0500
++++ test/capture.c	2010-03-15 11:32:54.000000000 -0500
+@@ -43,8 +43,6 @@
+ #include <sys/mman.h>
+ #include <linux/videodev2.h>
+ #include <errno.h>
+-#include <img_defs.h>
+-#include <servicesext.h>
+ #include <bc_cat.h>
+ 
+ 
+@@ -58,13 +56,13 @@
+ #define FALSE               0
+ 
+ #define NUM_BUFFERS         3
+-#define CAPTURE_DEVICE      "/dev/video0"
++#define CAPTURE_DEVICE      "/dev/video0"
+ #define CAPTURE_NAME        "Capture"
+ 
+ #define USBCAM_WIDTH        320
+ #define USBCAM_HEIGHT       240
+ #define USBCAM_DEF_PIX_FMT  V4L2_PIX_FMT_YUYV
+-#define YUV_PIXEL_FMT       PVRSRV_PIXEL_FORMAT_FOURCC_ORG_YUYV
++#define YUV_PIXEL_FMT       BC_PIX_FMT_YUYV
+ 
+ #define CLEAR(x)            memset(&(x), 0, sizeof(x))
+ 
+@@ -218,7 +216,7 @@
+         p->count = 1;
+         p->width = USBCAM_WIDTH;
+         p->height = USBCAM_HEIGHT;
+-        p->pixel_fmt = YUV_PIXEL_FMT;
++        p->fourcc = YUV_PIXEL_FMT;
+         p->type = BC_MEMORY_MMAP;      
+     }
+     return 0;
