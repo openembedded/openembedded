@@ -177,7 +177,7 @@ do_install () {
 
 	if [ -e ${ES5LOCATION} ] ; then 
 		cp -pPR ${ES5LOCATION}/lib*${IMGPV} ${D}${libdir}/ES5.0/
-		cp ${ES3LOCATION}/p[dv]* ${D}${bindir}/ES5.0/
+		cp ${ES5LOCATION}/p[dv]* ${D}${bindir}/ES5.0/
 	fi
 
 	install -d ${D}${prefix}/share/applications
@@ -245,6 +245,8 @@ INITSCRIPT_PARAMS = "start 30 5 2 . stop 40 0 1 6 ."
 
 # Append to update-rc.d postinst
 pkg_postinst_${PN}_append() {
+rm -f /etc/powervr-esrev
+
 ln -sf /usr/lib/libXdmcp.so.6.0.0 /usr/lib/libXdmcp.so.0 
 ln -sf /usr/lib/libXau.so.6.0.0 /usr/lib/libXau.so.0
 }
