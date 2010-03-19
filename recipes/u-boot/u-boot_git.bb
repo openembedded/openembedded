@@ -112,6 +112,20 @@ do_compile_omapzoom2 () {
         oe_runmake tools
 }
 
+SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git"
+SRCREV_omapzoom36x = "ab45d2a787a9674bed30542139175d8e090e0749"
+PV_omapzoom36x = "1.1.4+${PR}+gitr${SRCREV}"
+PE_omapzoom36x = "1"
+
+do_compile_omapzoom36x () {
+        unset LDFLAGS
+        unset CFLAGS
+        unset CPPFLAGS
+        oe_runmake ${UBOOT_MACHINE}
+        oe_runmake all
+        oe_runmake tools
+}
+
 SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw-env.patch;patch=1 \
                  file://dss2.patch;patch=1 \
