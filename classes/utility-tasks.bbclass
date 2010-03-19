@@ -13,7 +13,7 @@ python do_listtasks() {
 addtask clean
 do_clean[dirs] = "${TOPDIR}"
 do_clean[nostamp] = "1"
-python base_do_clean() {
+python do_clean() {
 	"""clear the build and temp directories"""
 	dir = bb.data.expand("${WORKDIR}", d)
 	if dir == '//': raise bb.build.FuncFailed("wrong DATADIR")
@@ -34,14 +34,14 @@ addtask cleanall after do_clean
 addtask rebuild after do_${BB_DEFAULT_TASK}
 do_rebuild[dirs] = "${TOPDIR}"
 do_rebuild[nostamp] = "1"
-python base_do_rebuild() {
+python do_rebuild() {
 	"""rebuild a package"""
 }
 
 addtask mrproper
 do_mrproper[dirs] = "${TOPDIR}"
 do_mrproper[nostamp] = "1"
-python base_do_mrproper() {
+python do_mrproper() {
 	"""clear downloaded sources, build and temp directories"""
 	dir = bb.data.expand("${DL_DIR}", d)
 	if dir == '/': bb.build.FuncFailed("wrong DATADIR")
@@ -53,7 +53,7 @@ python base_do_mrproper() {
 addtask distclean
 do_distclean[dirs] = "${TOPDIR}"
 do_distclean[nostamp] = "1"
-python base_do_distclean() {
+python do_distclean() {
 	"""clear downloaded sources, build and temp directories"""
 
 	bb.build.exec_func('do_clean', d)
