@@ -7,7 +7,7 @@ SRC_URI = "${BASE_SRC_URI}/linuxutils_${PV}.tar.gz "
 
 S = "${WORKDIR}/linuxutils_${PV}"
 
-require ti-multimedia-common.inc
+require ti-paths.inc
 require ti-staging.inc
 
 #This is a kernel module, don't set PR directly

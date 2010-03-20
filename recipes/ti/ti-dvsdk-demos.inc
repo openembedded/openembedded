@@ -11,7 +11,7 @@ SRC_URI = "${BASE_SRC_URI}/dvsdk_demos_${PV}.tar.gz;name=dvsdkdemostarball"
 
 S = "${WORKDIR}/dvsdk_demos_${PV}"
 
-require ti-multimedia-common.inc
+require ti-paths.inc
 
 DEMOSPLATFORM_dm355    = "dm355"
 DEMOSPLATFORM_dm365    = "dm365"
