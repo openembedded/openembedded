@@ -444,4 +444,4 @@ python () {
     bb.data.setVar('MULTIMACH_ARCH', multiarch, d)
 }
 
-EXPORT_FUNCTIONS do_fetch do_unpack do_configure do_compile do_install do_package
+EXPORT_FUNCTIONS do_setscene do_fetch do_unpack do_configure do_compile do_install do_package

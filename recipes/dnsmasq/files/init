@@ -20,6 +20,18 @@ case "$1" in
 	start-stop-daemon -K -x $DAEMON
 	echo "done."
 	;;
+    status)
+	echo -n "dnsmasq "
+	start-stop-daemon -q -K -t -x $DAEMON
+	RET=$?
+	if [ "$RET" == "0" ]; then
+		PID=`cat /var/run/dnsmasq.pid`
+		echo "($PID) is running"
+	else
+		echo "is not running"
+		exit $RET
+	fi
+	;;
     restart)
         echo "restarting $DESC: $NAME... "
  	$0 stop
@@ -32,7 +44,7 @@ case "$1" in
 	echo "done."
 	;;
     *)
-	echo "Usage: $0 {start|stop|restart|reload}"
+	echo "Usage: $0 {start|stop|status|restart|reload}"
 	exit 1
 	;;
 esac
