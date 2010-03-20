@@ -4,12 +4,13 @@ SECTION = "multimedia"
 
 # TODO :: Move to common .inc (omap3 and omapl ready)
 
-PV = "1_00_01_44"
+PV = "1_00_01"
 
 SRC_URI[omap3codecsbin.md5sum] = "4db567252e6c43119e1c0aafe401a679"
 SRC_URI[omap3codecsbin.sha256sum] = "e042e1aad42a6728adf5c955dc38e4f8331fc0eacd833f1cd75d9cbb4faff0b5"
 
-PR = "r7"
+PE = "1"
+PR = "r8"
 
 require ti-paths.inc
 require ti-staging.inc
@@ -20,9 +21,9 @@ RREPLACES_${PN} = "ti-cs1-omap3530"
 
 S = "${WORKDIR}/dvsdk_3_00_02_44/cs1omap3530_1_00_01"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/3_00_02_44/exports/cs1omap3530_setuplinux_1_00_01-44.bin;name=omap3codecsbin"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/3_00_02_44/exports/cs1omap3530_setuplinux_1_00_01.bin;name=omap3codecsbin"
 
-BINFILE = "cs1omap3530_setuplinux_1_00_01-44.bin"
+BINFILE = "cs1omap3530_setuplinux_1_00_01.bin"
 TI_BIN_UNPK_CMDS = "Y:Y: qY:workdir"
 
 DEPENDS = "ti-cgt6x ti-xdctools ti-dspbios ti-codec-engine ti-linuxutils"
