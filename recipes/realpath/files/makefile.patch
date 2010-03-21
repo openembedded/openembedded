@@ -1,0 +1,12 @@
+diff -urN realpath-1.10.orig/Makefile realpath-1.10/Makefile
+--- realpath-1.10.orig/Makefile	2009-07-28 16:04:11.000000000 +0100
++++ realpath-1.10/Makefile	2009-07-28 16:08:44.000000000 +0100
+@@ -3,7 +3,7 @@
+ # "@(#)realpath:$Id: Makefile,v 1.30 2006-05-07 19:41:41 robert Exp $"
+ #
+ 
+-VERSION	= $(shell dpkg-parsechangelog | sed -ne 's/^Version: *//p')
++#VERSION	= $(shell dpkg-parsechangelog | sed -ne 's/^Version: *//p')
+ 
+ CC	= gcc
+ CFLAGS	= -Wall -Wstrict-prototypes -Wmissing-prototypes -DVERSION='"$(VERSION)"' 
