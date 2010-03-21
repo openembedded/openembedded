@@ -1,6 +1,7 @@
 DESCRIPTION = "TI Codecs (and Server Combo) for DM6467"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent"
 SECTION = "multimedia"
+LICENSE = "TI"
 
 # TODO :: Move to common .inc (omap3 and omapl ready)
 
@@ -9,7 +10,7 @@ PV = "1_00_00_03"
 SRC_URI[dm6467codecsbin.md5sum] = "c15085bd613a1df4f3634cc3ed0e04a5"
 SRC_URI[dm6467codecsbin.sha256sum] = "d10e221e53ca4420d72e13496ceabce9b2d0be8c08a5d622bee691ccfa98b8bd"
 
-PR = "r2"
+PR = "r3"
 
 require ti-paths.inc
 require ti-staging.inc
