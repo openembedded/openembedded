@@ -1,6 +1,7 @@
 DESCRIPTION = "TI Codecs (and Server Combo) for OMAPL137"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent"
 SECTION = "multimedia"
+LICENSE = "TI"
 
 # TODO :: Move to common .inc (omap3 and omapl ready)
 # TODO :: Rename to generic OMAPL codecs (instead of omapl137/138)
@@ -10,7 +11,7 @@ PV = "1_00_00"
 SRC_URI[l137codecsbin.md5sum] = "64a53cd55bc63d3a6f4db742aff90de9"
 SRC_URI[l137codecsbin.sha256sum] = "4fb1075ad83f6017616410eff35ada7d567f1ee1b5b23624a817e8fc7dda3f8a"
 
-PR = "r4"
+PR = "r5"
 
 require ti-paths.inc
 require ti-staging.inc
