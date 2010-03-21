@@ -31,7 +31,8 @@ SRCREV_pn-opkg-sdk    = "160"
 ### alphabetically.  Note that the main slugos.inc file
 ### may include preferred versions for toolchain components.
 
-PREFERRED_VERSION_automake-native		?= "1.10.2"
+PREFERRED_VERSION_automake-native		?= "1.10.3"
+PREFERRED_VERSION_automake			?= "1.10.3"
 PREFERRED_VERSION_binutils			?= "2.18.50.0.7"
 PREFERRED_VERSION_binutils-cross		?= "2.18.50.0.7"
 PREFERRED_VERSION_binutils-cross-sdk		?= "2.18.50.0.7"
