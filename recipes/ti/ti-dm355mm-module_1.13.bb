@@ -1,5 +1,6 @@
 DESCRIPTION = "User space DMA module for DM355"
 SECTION = "devel"
+LICENSE = "GPLv2"
 
 require ti-paths.inc
 require ti-staging.inc
@@ -17,7 +18,7 @@ BINFILE="dm355_codecs_setuplinux_${PV}.bin"
 TI_BIN_UNPK_CMDS = "y:Y: qY:workdir"
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "a"
+MACHINE_KERNEL_PR_append = "b"
 
 do_configure() {
 	find ${S} -name "*.ko" -exec rm {} \; || true
