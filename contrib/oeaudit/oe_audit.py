@@ -24,17 +24,7 @@ def strip_oe_version(oe_version):
     ver = split[0]
     return ver
 
-def strip_bsd_version(bsd_version):
-    """
-    FreeBSD is adding ,1 for revisions.. remove that
-    """
-    # FIXME return a tuple with a revision...
-    split = bsd_version.rsplit(',', 1)
-    split = split[0]
-    split = split.rsplit('_', 1)
-    return split[0]
-
-def compare_versions(oe, freebsd, not_known):
+def compare_versions(oe, freebsd_dict, not_known):
     def handle_package(oe_name, bsd_name):
         if not oe_name in oe:
             if oe_name == bsd_name:
@@ -42,12 +32,12 @@ def compare_versions(oe, freebsd, not_known):
             return
 
         oe_version = strip_oe_version(oe[oe_name])
-        for ver in freebsd[bsd_name]:
+        for ver in freebsd_dict[bsd_name]:
             affected = True
             str = []
             for (cmp, vers) in ver.versions:
-                bsd_ver = strip_bsd_version(vers)
-                cmp_res = bb.utils.vercmp(('0', oe_version, 'r0'), ('0', bsd_ver, 'r0'))
+                (bsd_ver, bsd_pr) = freebsd.prepare_version(vers)
+                cmp_res = bb.utils.vercmp(('0', oe_version, 'r0'), ('0', bsd_ver, bsd_pr))
                 if cmp == '<':
                     if cmp_res >= 0:
                         affected = False
@@ -75,7 +65,7 @@ def compare_versions(oe, freebsd, not_known):
             if affected:
                 print " && ".join(str), ver.link
 
-    for package in freebsd.keys():
+    for package in freebsd_dict.keys():
         # handle the various versions of OE packages
         handle_package(package, package)
         handle_package("%s-native" % package, package)
@@ -103,4 +93,4 @@ oe_packages = oe.read_available(opts.oe_available)
 freebsd_vuln = freebsd.read_auditfile(opts.freebsd_auditfile)
 buggy = open(opts.buggy, "w+")
 
-compare_versions(oe=oe_packages, freebsd=freebsd_vuln, not_known=buggy)
+compare_versions(oe=oe_packages, freebsd_dict=freebsd_vuln, not_known=buggy)

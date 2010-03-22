@@ -179,3 +179,14 @@ def read_auditfile(filename):
     return packages
 
 
+def prepare_version(bsd_version):
+    """
+    FreeBSD is adding ,1 for revisions.. remove that
+    """
+    # FIXME return a tuple with a revision...
+    rev = "r0"
+    split = bsd_version.rsplit(',', 1)
+    split = split[0]
+    split = split.rsplit('_', 1)
+    return (split[0], rev)
+
