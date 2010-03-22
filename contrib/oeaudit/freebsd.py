@@ -188,5 +188,7 @@ def prepare_version(bsd_version):
     split = bsd_version.rsplit(',', 1)
     split = split[0]
     split = split.rsplit('_', 1)
+    if len(split) == 2:
+        rev = "r%s" % split[1]
     return (split[0], rev)
 
