@@ -19,7 +19,4 @@ do_install_append() {
 	cp ${S}/src/*.pc ${D}/${libdir}/pkgconfig/
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
+BBCLASSEXTEND = "native"

@@ -1,9 +1,11 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r20"
+PR = "r28"
 PV = "2.0"
 LICENSE = "GPL"
 
 inherit task
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 def get_rdepends(bb, d):
     enabled = bb.data.getVar("ENABLE_BINARY_LOCALE_GENERATION", d, 1)
@@ -63,15 +65,16 @@ PACKAGES += "\
 
 
 RDEPENDS_${PN}-base = "\
+  ${MACHINE_TASK_PROVIDER} \
+  task-base \
+  glibc-utils \
+  glibc-charmap-utf-8 \
   netbase \
   sysfsutils \
   modutils-initscripts \
   module-init-tools-depmod \
-  rsync \
-  screen \
   fbset \
   fbset-modes \
-  openssh-sftp-server \
   cron \
   logrotate\
   util-linux-ng-fdisk \
@@ -79,13 +82,8 @@ RDEPENDS_${PN}-base = "\
 "
 
 RDEPENDS_${PN}-cli = "\
-  screen \
   nano \
-  iptables \
   mtd-utils \
-  s3c24xx-gpio \
-  mickeydbus \
-  mickeyterm \
 "
 
 RDEPENDS_${PN}-fso = "\
@@ -98,38 +96,38 @@ RDEPENDS_${PN}-fso = "\
 
 #FIXME: libcanberra-alsa should be pulled in by fsodeviced but isn't
 RDEPENDS_${PN}-audio = "\
+  alsa-utils-alsactl \
+  alsa-utils-alsamixer \
   alsa-utils-aplay \
   alsa-utils-amixer \
   libcanberra-alsa \
 "
 
-RDEPENDS_${PN}-audio_append_om-gta01 = "\
-  alsa-scenarii-shr \
-"
-
-RDEPENDS_${PN}-audio_append_om-gta02 =  "\
-  alsa-scenarii-shr \
-"
-
 RDEPENDS_${PN}-x = "\
-  glibc-utils \
-  glibc-charmap-utf-8 \
+  task-x11-illume \
+  task-fonts-truetype-core \
   e-wm-menu-shr \
   shr-wizard \
   shr-theme-gry \
-  etk-theme-shr \
-  ${@get_rdepends(bb, d)} \
-  libx11-locale \
-  libmokoui2 \
   xcursor-transparent-theme \
   xinput-calibrator \
+# Needed for proper input support in efl based apps  
+  libx11-locale \
+# All localedata based on IMAGE_LINGUAS
+  ${@get_rdepends(bb, d)} \
+# Make sure it's available for those who want's to play with illume2  
+  e-wm-config-illume2-shr \
 "
 
 RDEPENDS_${PN}-apps = "\
+# because of new opimd doesn't support SIM contacts itself
+  pisi \
   fso-abyss \
+  task-fso2-compliance \
   phoneui-apps-messages \
   phoneui-apps-contacts \
   phoneui-apps-dialer \
+  phoneui-apps-quick-settings \
   phonefsod \
   phoneuid \
   libphone-ui \
@@ -142,10 +140,8 @@ RDEPENDS_${PN}-apps = "\
 
 
 RDEPENDS_${PN}-gtk = "\
-  openmoko-icon-theme-standard2 \
   shr-theme-gtk-e17lookalike \
   vala-terminal \
-  tangogps \
   pyphonelog \
   matchbox-keyboard-im \
 "

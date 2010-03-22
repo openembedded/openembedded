@@ -3,11 +3,11 @@ Adds support for SoC's unique ID (Maverick Key) in /proc/cpuinfo
 
 Signed-off-by: Petr Stetiar <ynezz@true.cz>
 
-Index: linux-2.6.22/arch/arm/kernel/setup.c
+Index: linux-2.6.24/arch/arm/kernel/setup.c
 ===================================================================
---- linux-2.6.22.orig/arch/arm/kernel/setup.c	2007-09-02 23:08:51.000000000 +0200
-+++ linux-2.6.22/arch/arm/kernel/setup.c	2007-09-02 23:10:24.000000000 +0200
-@@ -959,8 +959,15 @@
+--- linux-2.6.24.orig/arch/arm/kernel/setup.c	2010-02-07 14:53:58.000000000 +0100
++++ linux-2.6.24/arch/arm/kernel/setup.c	2010-02-07 14:54:35.000000000 +0100
+@@ -1007,8 +1007,15 @@
  
  	seq_printf(m, "Hardware\t: %s\n", machine_name);
  	seq_printf(m, "Revision\t: %04x\n", system_rev);
@@ -23,10 +23,10 @@ Index: linux-2.6.22/arch/arm/kernel/setup.c
  
  	return 0;
  }
-Index: linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h
+Index: linux-2.6.24/include/asm-arm/arch-ep93xx/ep93xx-regs.h
 ===================================================================
---- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-09-02 23:06:45.000000000 +0200
-+++ linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-09-02 23:08:34.000000000 +0200
+--- linux-2.6.24.orig/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2010-02-07 14:54:29.000000000 +0100
++++ linux-2.6.24/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2010-02-07 14:54:35.000000000 +0100
 @@ -70,6 +70,8 @@
  #define EP93XX_I2S_BASE			(EP93XX_APB_VIRT_BASE + 0x00020000)
  

@@ -5,6 +5,11 @@ SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz"
 SRC_URI += "file://aclocal.patch;patch=1"
 SRC_URI += "file://ieee80215-arphrd.patch;patch=1"
 SRC_URI += "file://ldflags.patch;patch=1"
+SRC_URI += "file://0001-Fix-some-problems-that-show-up-in-autoconf-2.64-and-.patch;patch=1"
+
+do_configure_prepend() {
+	cat ${S}/aclocal.m4 >>${S}/acinclude.m4
+}
 
 do_compile () {
     oe_runmake

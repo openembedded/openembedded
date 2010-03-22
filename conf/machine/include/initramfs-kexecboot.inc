@@ -1,13 +1,18 @@
-# initramfs-kexecboot specific config options
+# Initramfs-kexecboot extra config
 
-MACHINE_FEATURES_append = " kexecboot "
 
+# If set here, each image will also build linux-kexecboot.
+# Usually the machine-installer recipe already DEPENDS on it
+#
 EXTRA_IMAGEDEPENDS += "linux-kexecboot"
 
-# Include kernel image in kexecboot enabled images
-RDEPENDS_kernel-base = "kernel-image" 
 
-# we store kernel images in rootfs and only a minimal initramfs kernel in nand for booting other kernels
-DONT_CHECK_KERNELSIZE ?= "1"
+# Force inclusion of kernel in target images
+# (done by default)
+#
+RDEPENDS_kernel-base = "kernel-image"
 
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS_append = " kexecboot-cfg"
+
+# Install /boot/boot.cfg in target images
+#
+MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS_append = " kexecboot-cfg "

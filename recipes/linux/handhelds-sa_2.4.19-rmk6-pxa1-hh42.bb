@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 

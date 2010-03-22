@@ -2,12 +2,13 @@ require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
-PR = "r0"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	   file://export_sa_family_t.patch;patch=1 \
+           file://scsi-use-__u8.patch;patch=1 \
 	  "
 S = "${WORKDIR}/linux-${PV}"
 
@@ -43,9 +44,4 @@ do_compile () {
 do_install() {
 	set_arch
 	oe_runmake headers_install INSTALL_HDR_PATH=${D}${exec_prefix} ARCH=$ARCH
-}
-
-do_stage () {
-	set_arch
-	oe_runmake headers_install INSTALL_HDR_PATH=${STAGING_DIR_HOST}${layout_prefix} ARCH=$ARCH
 }

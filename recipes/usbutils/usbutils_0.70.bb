@@ -1,7 +1,7 @@
 DESCRIPTION = "Host side USB console utilities."
 SECTION = "base"
 DEPENDS += "virtual/libusb0"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEFAULT_PREFERENCE = "1"
 

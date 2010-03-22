@@ -2,6 +2,8 @@
 # Sanity check the users setup for common misconfigurations
 #
 
+inherit qemu
+
 def raise_sanity_error(msg):
 	import bb
 	bb.fatal(""" Openembedded's config sanity checker detected a potential misconfiguration.
@@ -83,27 +85,10 @@ def check_sanity(e):
 
 	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum"
 
-	if data.getVar('TARGET_ARCH', e.data, True) == "arm":
-		# qemu-native needs gcc 3.x
-		if "qemu-native" not in assume_provided and "gcc3-native" in assume_provided:
-			gcc_version = commands.getoutput("${BUILD_PREFIX}gcc --version | head -n 1 | cut -f 3 -d ' '")
-
-			if not check_gcc3(e.data) and gcc_version[0] != '3':
-				messages = messages + "gcc3-native was in ASSUME_PROVIDED but the gcc-3.x binary can't be found in PATH"
-				missing = missing + "gcc-3.x (needed for qemu-native),"
-
+	# If we'll be running qemu, perform some sanity checks
+	if data.getVar('ENABLE_BINARY_LOCALE_GENERATION', e.data, True):
 		if "qemu-native" in assume_provided:
-			if not check_app_exists("qemu-arm", e.data):
-				messages = messages + "qemu-native was in ASSUME_PROVIDED but the QEMU binaries (qemu-arm) can't be found in PATH"
-
-		try:
-			if os.path.exists("/proc/sys/vm/mmap_min_addr"):
-				f = file("/proc/sys/vm/mmap_min_addr", "r")
-				if (f.read().strip() != "0"):
-					messages = messages + "/proc/sys/vm/mmap_min_addr is not 0. This will cause problems with qemu so please fix the value (as root).\n\nTo fix this in later reboots, set vm.mmap_min_addr = 0 in /etc/sysctl.conf.\n"
-				f.close()
-		except:
-			pass
+			required_utilities += " %s" % (qemu_target_binary(e.data))
 
 	for util in required_utilities.split():
 		if not check_app_exists( util, e.data ):
@@ -135,8 +120,9 @@ def check_sanity(e):
 	checkfile = os.path.join(tmpdir, "saved_tmpdir")
 	if os.path.exists(checkfile):
 		f = file(checkfile, "r")
-		if (f.read().strip() != tmpdir):
-			messages = messages + "Error, TMPDIR has changed location. You need to either move it back to %s or rebuild\n" % tmpdir
+		oldpath = f.read().strip()
+		if (oldpath != tmpdir):
+			messages = messages + "Error, TMPDIR has changed location. You need to either move it back to %s or rebuild\n" % oldpath
 	else:
 		import bb
 		bb.mkdirhier(tmpdir)

@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for the Buffalo Linkstation HD/HG"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 
 DEPENDS = "dtc-native u-boot-mkimage-native"

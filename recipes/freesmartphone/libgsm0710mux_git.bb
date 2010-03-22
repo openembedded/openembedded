@@ -3,34 +3,11 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
 DEPENDS = "glib-2.0 libgsm0710 libfsotransport"
-PV = "0.9.0+gitr${SRCREV}"
+SRCREV  = "4d7edda0efec7836612c8c64bb1b90695ca07a53"
+PV = "0.9.2+gitr${SRCREV}"
 PR = "r0"
 
-SRC_URI = "\
-  ${FREESMARTPHONE_GIT}/libgsm0710mux;protocol=git;branch=master \
-  file://abyss.conf \
-"
-S = "${WORKDIR}/git"
+SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
+S = "${WORKDIR}/git/libgsm0710mux"
 
 inherit autotools_stage pkgconfig vala
-
-do_install_append() {
-	install -d ${D}${sysconfdir}
-	install -m 0644 ${WORKDIR}/abyss.conf ${D}${sysconfdir}/
-}
-
-PACKAGES =+ "${PN}-config"
-
-FILES_${PN} += "${sysconfdir} ${datadir}"
-
-RRECOMMENDS_${PN} = "${PN}-config"
-
-FILES_${PN}-config = "\
-  ${sysconfdir}/abyss.conf \
-"
-
-CONFFILES_${PN}-config = "\
-  ${sysconfdir}/abyss.conf \
-"
-
-PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"

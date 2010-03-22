@@ -6,5 +6,5 @@ do_configure_prepend() {
 }
 
 SRC_URI_append = "\
-  file://0002-gta02-add-kernel-params-to-boot-from-ubifs-ubi0-om-g.patch;patch=1 \
+  file://rootfstype.ubifs.patch;patch=1 \
 "

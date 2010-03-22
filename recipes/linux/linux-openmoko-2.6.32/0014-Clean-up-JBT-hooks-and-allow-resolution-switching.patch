@@ -1,0 +1,223 @@
+From 644aab63501ebff3e819fd25d23c63da6b6e1cf5 Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Mon, 8 Mar 2010 23:51:09 +0100
+Subject: [PATCH 14/15] Clean up JBT hooks, and allow resolution switching
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ arch/arm/mach-s3c2442/mach-gta02.c |    2 +-
+ drivers/mfd/glamo/glamo-display.c  |   17 ++++++----
+ drivers/video/backlight/jbt6k74.c  |   57 +++++++++++++++++++----------------
+ include/linux/jbt6k74.h            |   14 +++++++++
+ 4 files changed, 56 insertions(+), 34 deletions(-)
+
+diff --git a/arch/arm/mach-s3c2442/mach-gta02.c b/arch/arm/mach-s3c2442/mach-gta02.c
+index a969037..b580b1b 100644
+--- a/arch/arm/mach-s3c2442/mach-gta02.c
++++ b/arch/arm/mach-s3c2442/mach-gta02.c
+@@ -229,7 +229,7 @@ static struct fb_videomode gta02_glamo_modes[] = {
+ 		.name = "240x320",
+ 		.xres = 240,
+ 		.yres = 320,
+-		.pixclock	= 40816,
++		.pixclock	= 100000,
+ 		.left_margin	= 8,
+ 		.right_margin	= 16,
+ 		.upper_margin	= 2,
+diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
+index 5f04697..e56cdb4 100644
+--- a/drivers/mfd/glamo/glamo-display.c
++++ b/drivers/mfd/glamo/glamo-display.c
+@@ -52,19 +52,18 @@
+  *
+  */
+ 
+-#define DEBUG 1
+-
+ #include <drm/drmP.h>
+ #include <drm/glamo_drm.h>
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_crtc.h>
++#include <linux/glamofb.h>
++#include <linux/jbt6k74.h>
+ 
+ #include "glamo-core.h"
+ #include "glamo-drm-private.h"
+ #include "glamo-regs.h"
+ #include "glamo-kms-fb.h"
+ #include "glamo-display.h"
+-#include <linux/glamofb.h>
+ 
+ 
+ #define GLAMO_LCD_WIDTH_MASK 0x03FF
+@@ -356,6 +355,12 @@ static int glamo_crtc_mode_set(struct drm_crtc *crtc,
+ 
+ 	glamo_lcd_cmd_mode(gdrm, 0);
+ 
++	if ( mode->hdisplay == 240 ) {
++		jbt6k74_setresolution(JBT_RESOLUTION_QVGA);
++	} else {
++		jbt6k74_setresolution(JBT_RESOLUTION_VGA);
++	}
++
+ 	glamo_crtc_mode_set_base(crtc, 0, 0, old_fb);
+ 
+ 	gcrtc->current_mode = *mode;
+@@ -366,8 +371,6 @@ static int glamo_crtc_mode_set(struct drm_crtc *crtc,
+ }
+ 
+ 
+-extern void jbt6k74_action(int val);
+-
+ /* This is not the right place to switch power on/off, because the helper
+  * stuff ends up calling this before/after setting the mode.  We can't
+  * set modes with the display off (although backlight off would be OK) */
+@@ -385,14 +388,14 @@ void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode)
+ 	if ( mode ) {
+ 		glamo_engine_enable(gdrm->glamo_core, GLAMO_ENGINE_LCD);
+ 		gcrtc->pixel_clock_on = 1;
+-		jbt6k74_action(1);
++		jbt6k74_setpower(JBT_POWER_MODE_NORMAL);
+ 		if ( gcrtc->current_mode_set ) {
+ 			glamo_crtc_mode_set(crtc, &gcrtc->current_mode,
+ 			                    &gcrtc->current_mode, 0, 0,
+ 			                    gcrtc->current_fb);
+ 		}
+ 	} else {
+-		jbt6k74_action(0);
++		jbt6k74_setpower(JBT_POWER_MODE_OFF);
+ 		glamo_engine_suspend(gdrm->glamo_core, GLAMO_ENGINE_LCD);
+ 		gcrtc->pixel_clock_on = 0;
+ 	}
+diff --git a/drivers/video/backlight/jbt6k74.c b/drivers/video/backlight/jbt6k74.c
+index 9554cb3..40c31f6 100644
+--- a/drivers/video/backlight/jbt6k74.c
++++ b/drivers/video/backlight/jbt6k74.c
+@@ -101,15 +101,6 @@ enum jbt_register {
+ 	JBT_REG_HCLOCK_QVGA		= 0xed,
+ };
+ 
+-enum jbt_resolution {
+-	JBT_RESOLUTION_VGA,
+-	JBT_RESOLUTION_QVGA,
+-};
+-
+-enum jbt_power_mode {
+-	JBT_POWER_MODE_OFF,
+-	JBT_POWER_MODE_NORMAL,
+-};
+ 
+ static const char *jbt_power_mode_names[] = {
+ 	[JBT_POWER_MODE_OFF]		= "off",
+@@ -121,6 +112,7 @@ static const char *jbt_resolution_names[] = {
+ 	[JBT_RESOLUTION_QVGA] = "qvga",
+ };
+ 
++
+ struct jbt_info {
+ 	struct mutex lock;		/* protects this structure */
+ 	enum jbt_resolution resolution;
+@@ -139,6 +131,8 @@ struct jbt_info {
+ 	uint16_t reg_cache[0xEE];
+ };
+ 
++struct jbt_info *jbt_global;
++
+ #define JBT_COMMAND	0x000
+ #define JBT_DATA	0x100
+ 
+@@ -401,8 +395,9 @@ static int jbt6k74_set_resolution(struct jbt_info *jbt,
+ 
+ 	if (jbt->power_mode == JBT_POWER_MODE_NORMAL) {
+ 
+-		/* first transition into sleep */
++		/* "Reboot" the LCM */
+ 		ret = jbt_normal_to_off(jbt);
++		mdelay(1000);
+ 		ret |= jbt_off_to_normal(jbt);
+ 
+ 		if (ret) {
+@@ -609,22 +604,6 @@ static int jbt6k74_get_power(struct lcd_device *ld)
+ 	}
+ }
+ 
+-/* This is utterly, totally horrible.  I'm REALLY sorry... */
+-struct jbt_info *jbt_global;
+-void jbt6k74_action(int val)
+-{
+-	if ( !jbt_global ) {
+-		printk(KERN_CRIT "JBT not initialised!!!\n");
+-		return;
+-	}
+-	if ( val == 0 ) {
+-		jbt6k74_enter_power_mode(jbt_global, JBT_POWER_MODE_OFF);
+-	} else {
+-		jbt6k74_enter_power_mode(jbt_global, JBT_POWER_MODE_NORMAL);
+-	}
+-}
+-EXPORT_SYMBOL_GPL(jbt6k74_action);
+-
+ struct lcd_ops jbt6k74_lcd_ops = {
+ 	.set_power = jbt6k74_set_power,
+ 	.get_power = jbt6k74_get_power,
+@@ -758,6 +737,32 @@ static int __devexit jbt_remove(struct spi_device *spi)
+ 	return 0;
+ }
+ 
++/* Begin horrible layering violations (in the interest of making stuff work) */
++
++int jbt6k74_setresolution(enum jbt_resolution new_resolution)
++{
++	if ( !jbt_global ) {
++		printk(KERN_CRIT "JBT not initialised!!!\n");
++		return -1;
++	}
++	jbt6k74_set_resolution(jbt_global, new_resolution);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(jbt6k74_setresolution);
++
++/* This is utterly, totally horrible.  I'm REALLY sorry... */
++void jbt6k74_setpower(enum jbt_power_mode new_power)
++{
++	if ( !jbt_global ) {
++		printk(KERN_CRIT "JBT not initialised!!!\n");
++		return;
++	}
++	jbt6k74_enter_power_mode(jbt_global, new_power);
++}
++EXPORT_SYMBOL_GPL(jbt6k74_setpower);
++
++/* End horrible layering violations */
++
+ #ifdef CONFIG_PM
+ static int jbt_suspend(struct spi_device *spi, pm_message_t state)
+ {
+diff --git a/include/linux/jbt6k74.h b/include/linux/jbt6k74.h
+index 4cf760c..f430e5a 100644
+--- a/include/linux/jbt6k74.h
++++ b/include/linux/jbt6k74.h
+@@ -3,6 +3,20 @@
+ 
+ #include <linux/spi/spi.h>
+ 
++enum jbt_resolution {
++	JBT_RESOLUTION_VGA,
++	JBT_RESOLUTION_QVGA,
++};
++
++enum jbt_power_mode {
++	JBT_POWER_MODE_OFF,
++	JBT_POWER_MODE_NORMAL,
++};
++
++extern void jbt6k74_setpower(enum jbt_power_mode new_power);
++extern int jbt6k74_setresolution(enum jbt_resolution new_resolution);
++
++
+ /*
+  *  struct jbt6k74_platform_data - Platform data for jbt6k74 driver
+  *  @probe_completed: Callback to be called when the driver has been
+-- 
+1.7.0.2
+

@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 #DEPENDS = "u-boot"
 

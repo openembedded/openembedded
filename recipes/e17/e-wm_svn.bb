@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r10"
+PR = "r13"
 
 inherit e update-alternatives
 
@@ -20,6 +20,8 @@ SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
 SRC_URI_append_shr = " \
   file://illume-disable-screensaver.patch;patch=1 \
   file://wizard-module-skipping.patch;patch=1 \
+  file://illume-flaunch-fix.patch;patch=1 \
+  file://illume-keyboard-flow.patch;patch=1;maxrev=46549 \
 "
 
 EXTRA_OECONF = "\
@@ -32,14 +34,6 @@ EXTRA_OECONF = "\
 
 do_configure_prepend() {
 	autopoint
-}
-
-do_stage() {
-    autotools_stage_all
-    for I in `find ${STAGING_LIBDIR}/enlightenment -name "*.la" -print`; do rm -f $I; done
-    for I in `find ${STAGING_LIBDIR}/enlightenment -name "*.a" -print`; do rm -f $I; done
-    for I in `find ${STAGING_LIBDIR_CROSS}/enlightenment -name "*.la" -print`; do rm -f $I; done
-    for I in `find ${STAGING_LIBDIR_CROSS}/enlightenment -name "*.a" -print`; do rm -f $I; done
 }
 
 do_install_append() {

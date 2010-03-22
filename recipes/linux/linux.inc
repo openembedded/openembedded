@@ -1,8 +1,8 @@
 DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
-inherit kernel
+inherit kernel siteinfo
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
@@ -38,6 +38,9 @@ KERNEL_DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
 KERNEL_DEVICETREE_mpc8315e-rdb = "arch/${ARCH}/boot/dts/mpc8315erdb.dts"
 KERNEL_DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
 KERNEL_DEVICETREE_sequoia = "arch/${ARCH}/boot/dts/sequoia.dts"
+KERNEL_DEVICETREE_mpc8641-hpcn = "arch/${ARCH}/boot/dts/mpc8641_hpcn.dts"
+KERNEL_DEVICETREE_p2020ds = "arch/${ARCH}/boot/dts/p2020ds.dts"
+KERNEL_DEVICETREE_xilinx-ml507 = "arch/${ARCH}/boot/dts/virtex440-ml507.dts"
 
 KERNEL_DEVICETREE_FLAGS = "-R 8 -S 0x3000"
 
@@ -116,9 +119,32 @@ do_configure_prepend() {
         if [ "${UDEV_GE_141}" = "1" ] ; then
             sed -e /CONFIG_SYSFS_DEPRECATED/d \
                 -e /CONFIG_SYSFS_DEPRECATED_V2/d \
+                -e /CONFIG_HOTPLUG/d \
+                -e /CONFIG_UEVENT_HELPER_PATH/d \
+                -e /CONFIG_UNIX/d \
+                -e /CONFIG_SYSFS/d \
+                -e /CONFIG_PROC_FS/d \
+                -e /CONFIG_TMPFS/d \
+                -e /CONFIG_INOTIFY_USER/d \
+                -e /CONFIG_SIGNALFD/d \
+                -e /CONFIG_TMPFS_POSIX_ACL/d \
+                -e /CONFIG_BLK_DEV_BSG/d \
                 -i '${S}/.config'
+
             echo '# CONFIG_SYSFS_DEPRECATED is not set' >> ${S}/.config
             echo '# CONFIG_SYSFS_DEPRECATED_V2 is not set' >> ${S}/.config
+            echo 'CONFIG_HOTPLUG=y' >> ${S}/.config
+            echo 'CONFIG_UEVENT_HELPER_PATH=""' >> ${S}/.config
+            echo 'CONFIG_UNIX=y' >> ${S}/.config
+            echo 'CONFIG_SYSFS=y' >> ${S}/.config
+            echo 'CONFIG_PROC_FS=y' >> ${S}/.config
+            echo 'CONFIG_TMPFS=y' >> ${S}/.config
+            echo 'CONFIG_INOTIFY_USER=y' >> ${S}/.config
+            echo 'CONFIG_SIGNALFD=y' >> ${S}/.config
+            echo 'CONFIG_TMPFS_POSIX_ACL=y' >> ${S}/.config
+            echo 'CONFIG_BLK_DEV_BSG=y' >> ${S}/.config
+            echo 'CONFIG_DEVTMPFS=y' >> ${S}/.config
+            echo 'CONFIG_DEVTMPFS_MOUNT=y' >> ${S}/.config
         fi
 
         #
@@ -164,9 +190,11 @@ do_devicetree_image() {
         install -m 0644 devicetree ${D}/boot/devicetree-${KERNEL_VERSION}
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 devicetree ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb
+        package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb
         cd ${DEPLOY_DIR_IMAGE}
         rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
         ln -sf ${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
+        package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_SYMLINK_NAME}.dtb
     fi
 }
 

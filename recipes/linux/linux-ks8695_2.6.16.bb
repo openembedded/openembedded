@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux kernel for Micrel KS8695(P) based devices"
 SECTION = "kernel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \

@@ -81,7 +81,7 @@ do_utf8_conversion() {
 
 do_configure_prepend() {
 
-AUTOFOO="config.guess config.rpath config.sub depcomp install-sh missing mkinstalldirs"
+AUTOFOO="config.guess config.sub depcomp install-sh missing mkinstalldirs"
 
          for i in ${AUTOFOO}; do
            rm config/${i}

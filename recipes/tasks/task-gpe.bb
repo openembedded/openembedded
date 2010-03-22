@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
-PR = "r7"
+PR = "r8"
 LICENSE = "MIT"
 
 inherit task
@@ -120,8 +120,7 @@ RDEPENDS_gpe-task-desktopapps = "\
     firefox \
     thunderbird \
     galculator \
-    gnumeric \
-    gpdf"
+    gnumeric"
 #    totem"
 
 RDEPENDS_gpe-task-sectest = "\

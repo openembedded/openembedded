@@ -1,0 +1,99 @@
+From 1a86fa006baad26dcb70645e9d2a965f956a7189 Mon Sep 17 00:00:00 2001
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+Date: Sat, 3 Jan 2009 21:51:11 +0100
+Subject: [PATCH] Fix UART clocks
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Hackishly enable all UART clocks before uncompressing the kernel,
+so that using ttyAM1 or ttyAM2 as console can work. Force UARTBAUD
+on before uncompressing.
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/uncompress.h |   65 ++++++++++++++++++++++++
+ 1 files changed, 65 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/uncompress.h b/arch/arm/mach-ep93xx/include/mach/uncompress.h
+index 1fd2f17..ecdfd64 100644
+--- a/arch/arm/mach-ep93xx/include/mach/uncompress.h
++++ b/arch/arm/mach-ep93xx/include/mach/uncompress.h
+@@ -77,9 +77,74 @@ static void ethernet_reset(void)
+ }
+ 
+ 
++/*
++ * We don't have clock management for the UARTs (amba-pl010)
++ * yet, so hackily enable all UART clocks here for now.
++ */
++#define PHYS_SYSCON_DEVICE_CONFIG	0x80930080
++#define PHYS_SYSCON_SWLOCK		0x809300c0
++
++static void enable_all_uart_clocks(void)
++{
++	unsigned int v;
++
++	v = __raw_readl(PHYS_SYSCON_DEVICE_CONFIG);
++	__raw_writel(0xaa, PHYS_SYSCON_SWLOCK);
++	__raw_writel(v | 0x01140000, PHYS_SYSCON_DEVICE_CONFIG);
++}
++
++
++/*
++ * Some bootloaders don't turn on the UARTBAUD bit, which means that
++ * the UARTs will be running off a divided 7.3728 MHz clock instead of
++ * the 14.7456 MHz peripheral clock when linux boots.
++ *
++ * We detect that condition here and fix it by turning on UARTBAUD, and
++ * then reprogramming the divisors on all enabled UARTs to twice what
++ * they were before we turned UARTBAUD on, to preserve the programmed
++ * baud rate.
++ */
++#define PHYS_SYSCON_CLOCK_CONTROL	0x80930004
++#define SYSCON_CLOCK_UARTBAUD		0x20000000
++#define PHYS_UART1_BASE			0x808c0000
++#define PHYS_UART2_BASE			0x808d0000
++#define PHYS_UART3_BASE			0x808e0000
++
++static void uart_divisor_times_two(unsigned int base)
++{
++	u16 divisor;
++
++	divisor = __raw_readb(base + 0x0c) << 8;
++	divisor |= __raw_readb(base + 0x10);
++	if (divisor) {
++		divisor = (2 * (divisor + 1)) - 1;
++		__raw_writeb(divisor >> 8, base + 0x0c);
++		__raw_writeb(divisor & 0xff, base + 0x10);
++		__raw_writeb(__raw_readb(base + 0x08), base + 0x08);
++	}
++}
++
++static void fix_uart_base(void)
++{
++	unsigned int v;
++
++	v = __raw_readl(PHYS_SYSCON_CLOCK_CONTROL);
++	if ((v & SYSCON_CLOCK_UARTBAUD) == 0) {
++		v |= SYSCON_CLOCK_UARTBAUD;
++		__raw_writel(v, PHYS_SYSCON_CLOCK_CONTROL);
++
++		uart_divisor_times_two(PHYS_UART1_BASE);
++		uart_divisor_times_two(PHYS_UART2_BASE);
++		uart_divisor_times_two(PHYS_UART3_BASE);
++	}
++}
++
++
+ static void arch_decomp_setup(void)
+ {
+ 	ethernet_reset();
++	enable_all_uart_clocks();
++	fix_uart_base();
+ }
+ 
+ #define arch_decomp_wdog()
+-- 
+1.6.0.4
+

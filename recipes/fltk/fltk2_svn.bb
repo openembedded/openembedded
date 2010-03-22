@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "zlib jpeg libpng libxext libxft xinput"
 
+SRCREV = "6916"
 PV = "1.9.9+svnr${SRCPV}"
 PR = "r1"
 

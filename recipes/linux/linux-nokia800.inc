@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Nokia 770/800"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 inherit kernel
 

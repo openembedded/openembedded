@@ -5,24 +5,27 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cups \
-	   libxrandr libxdamage libxrender libxcomposite cairo jasper"
+	   libxrandr libxdamage libxrender libxcomposite cairo jasper gtk+-native"
 PROVIDES = "gdk-pixbuf"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "http://download.gnome.org/sources/gtk+/${MAJ_VER}/gtk+-${PV}.tar.bz2 \
 	file://hardcoded_libtool.patch;patch=1 \
-	file://no-demos.patch;patch=1 \
 	file://run-iconcache.patch;patch=1 \
 	file://toggle-font.diff;patch=1;pnum=0 \
 	file://xsettings.patch;patch=1 \
 	"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 inherit autotools pkgconfig
 
 LEAD_SONAME = "libgtk-x11-2.0.so"
 LIBV = "2.10.0"
+
+PACKAGES =+ "${PN}-demo ${PN}-demo-source"
+FILES_${PN}-demo = "${bindir}/gtk-demo"
+FILES_${PN}-demo-source = "${datadir}/gtk-2.0/demo"
 
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-update-icon-cache \
@@ -61,6 +64,23 @@ do_install_append () {
 
 	install -d ${D}${sysconfdir}/gtk-2.0
 	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
+}
+
+do_install_virtclass-native () {
+        autotools_do_install
+
+	mkdir -p ${D}${libdir}/gtk-2.0/include
+	install -m 0644 gdk/gdkconfig.h ${D}${libdir}/gtk-2.0/include/gdkconfig.h
+	# Copy over all headers, since the maemo stuff needs access to the private api. *sigh*
+	cp gtk/*.h ${D}${includedir}/gtk-2.0/gtk/
+
+	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
+
+	install -d ${D}${sysconfdir}/gtk-2.0
+	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
+
+	mkdir -p "${D}${sysconfdir}/gtk-2.0"
+	${B}/gdk-pixbuf/gdk-pixbuf-query-loaders ${B}/gdk-pixbuf/.libs/*.so | sed 's:${B}/gdk-pixbuf/.libs:${STAGING_LIBDIR}/gtk-2.0/${LIBV}/loaders:' > "${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"
 }
 
 postinst_prologue() {

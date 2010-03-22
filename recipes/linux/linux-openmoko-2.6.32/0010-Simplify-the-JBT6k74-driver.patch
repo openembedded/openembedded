@@ -1,0 +1,667 @@
+From cb84d543b9465a8ea48b504b1dfb745c6682a50e Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Sun, 28 Feb 2010 15:20:57 +0100
+Subject: [PATCH 1/2] Simplify the JBT6k74 driver
+
+Simplify the JBT6k74 driver
+
+We don't need all the native sleep states - they just complicate things.  Instead, just
+use the LDO "power switch" to send it firmly to sleep and wake it up in a virgin state
+each time.
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ drivers/mfd/glamo/glamo-display.c     |  116 ++++++++++++------------
+ drivers/mfd/glamo/glamo-display.h     |    2 +
+ drivers/mfd/glamo/glamo-drm-private.h |   10 ++
+ drivers/mfd/glamo/glamo-kms-fb.c      |   54 ++----------
+ drivers/video/backlight/jbt6k74.c     |  160 ++++++++-------------------------
+ include/linux/jbt6k74.h               |    1 -
+ 6 files changed, 115 insertions(+), 228 deletions(-)
+
+diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
+index 34a665a..a384c8b 100644
+--- a/drivers/mfd/glamo/glamo-display.c
++++ b/drivers/mfd/glamo/glamo-display.c
+@@ -239,14 +239,6 @@ static int glamo_run_lcd_script(struct glamodrm_handle *gdrm,
+ }
+ 
+ 
+-extern void jbt6k74_action(int val);
+-
+-/* Power on/off */
+-static void glamo_crtc_dpms(struct drm_crtc *crtc, int mode)
+-{
+-}
+-
+-
+ static bool glamo_crtc_mode_fixup(struct drm_crtc *crtc,
+                                   struct drm_display_mode *mode,
+                                   struct drm_display_mode *adjusted_mode)
+@@ -275,6 +267,12 @@ static int glamo_crtc_mode_set_base(struct drm_crtc *crtc, int x, int y,
+ 	gcrtc = to_glamo_crtc(crtc);
+ 	gdrm = gcrtc->gdrm;	/* Here it is! */
+ 
++	if ( !gcrtc->pixel_clock_on ) {
++		printk(KERN_WARNING "[glamo-drm] Refusing to set base while "
++		                    "pixel clock is off.\n");
++		return -EBUSY;
++	}
++
+ 	gfb = to_glamo_framebuffer(crtc->fb);
+ 	obj = gfb->obj;
+ 	gobj = obj->driver_private;
+@@ -306,6 +304,12 @@ static int glamo_crtc_mode_set(struct drm_crtc *crtc,
+ 	gcrtc = to_glamo_crtc(crtc);
+ 	gdrm = gcrtc->gdrm;	/* Here it is! */
+ 
++	if ( !gcrtc->pixel_clock_on ) {
++		printk(KERN_WARNING "[glamo-drm] Refusing to set mode while "
++		                    "pixel clock is off.\n");
++		return -EBUSY;
++	}
++
+ 	glamo_lcd_cmd_mode(gdrm, 1);
+ 
+ 	glamo_engine_reclock(gdrm->glamo_core, GLAMO_ENGINE_LCD, mode->clock);
+@@ -354,10 +358,47 @@ static int glamo_crtc_mode_set(struct drm_crtc *crtc,
+ 
+ 	glamo_crtc_mode_set_base(crtc, 0, 0, old_fb);
+ 
++	gcrtc->current_mode = *mode;
++	gcrtc->current_mode_set = 1;
++	gcrtc->current_fb = old_fb;
++
+ 	return 0;
+ }
+ 
+ 
++extern void jbt6k74_action(int val);
++
++/* This is not the right place to switch power on/off, because the helper
++ * stuff ends up calling this before/after setting the mode.  We can't
++ * set modes with the display off (although backlight off would be OK) */
++static void glamo_crtc_dpms(struct drm_crtc *crtc, int mode)
++{
++	/* do nothing */
++}
++
++
++void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode)
++{
++	struct drm_crtc *crtc = gdrm->crtc;
++	struct glamo_crtc *gcrtc = to_glamo_crtc(crtc);
++
++	if ( mode ) {
++		glamo_engine_enable(gdrm->glamo_core, GLAMO_ENGINE_LCD);
++		gcrtc->pixel_clock_on = 1;
++		jbt6k74_action(1);
++		if ( gcrtc->current_mode_set ) {
++			glamo_crtc_mode_set(crtc, &gcrtc->current_mode,
++			                    &gcrtc->current_mode, 0, 0,
++			                    gcrtc->current_fb);
++		}
++	} else {
++		jbt6k74_action(0);
++		glamo_engine_suspend(gdrm->glamo_core, GLAMO_ENGINE_LCD);
++		gcrtc->pixel_clock_on = 0;
++	}
++}
++
++
+ static void glamo_crtc_prepare(struct drm_crtc *crtc)
+ {
+ }
+@@ -725,6 +766,8 @@ int glamo_display_init(struct drm_device *dev)
+ 	                   + sizeof(struct drm_connector *), GFP_KERNEL);
+ 	if (glamo_crtc == NULL) return 1;
+ 	glamo_crtc->gdrm = gdrm;
++	gdrm->crtc = (struct drm_crtc *)glamo_crtc;
++	glamo_crtc->pixel_clock_on = 1;
+ 	glamo_crtc->blank_mode = DRM_MODE_DPMS_OFF;
+ 	drm_crtc_init(dev, &glamo_crtc->base, &glamo_crtc_funcs);
+ 	drm_crtc_helper_add(&glamo_crtc->base, &glamo_crtc_helper_funcs);
+@@ -808,62 +851,23 @@ int glamo_display_init(struct drm_device *dev)
+ 
+ void glamo_display_suspend(struct glamodrm_handle *gdrm)
+ {
+-	gdrm->saved_width = reg_read_lcd(gdrm, GLAMO_REG_LCD_WIDTH);
+-	gdrm->saved_height = reg_read_lcd(gdrm, GLAMO_REG_LCD_HEIGHT);
+-	gdrm->saved_pitch = reg_read_lcd(gdrm, GLAMO_REG_LCD_PITCH);
+-	gdrm->saved_htotal = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_TOTAL);
+-	gdrm->saved_hrtrst = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_START);
+-	gdrm->saved_hrtren = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_END);
+-	gdrm->saved_hdspst = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_START);
+-	gdrm->saved_hdspen = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_END);
+-	gdrm->saved_vtotal = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_TOTAL);
+-	gdrm->saved_vrtrst = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_START);
+-	gdrm->saved_vrtren = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_END);
+-	gdrm->saved_vdspst = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_START);
+-	gdrm->saved_vdspen = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_END);
++	/* do nothing */
+ }
+ 
+ 
+ void glamo_display_resume(struct glamodrm_handle *gdrm)
+ {
++	struct drm_crtc *crtc = gdrm->crtc;
++	struct glamo_crtc *gcrtc = to_glamo_crtc(crtc);
++
+ 	glamo_engine_enable(gdrm->glamo_core, GLAMO_ENGINE_LCD);
+ 	glamo_engine_reset(gdrm->glamo_core, GLAMO_ENGINE_LCD);
+ 	glamo_run_lcd_script(gdrm, lcd_init_script,
+ 	                           ARRAY_SIZE(lcd_init_script));
+ 
+-	/* Restore timings */
+-	glamo_lcd_cmd_mode(gdrm, 1);
+-	glamo_engine_reclock(gdrm->glamo_core, GLAMO_ENGINE_LCD,
+-	                     gdrm->saved_clock);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_WIDTH, GLAMO_LCD_WIDTH_MASK,
+-	                     gdrm->saved_width);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HEIGHT, GLAMO_LCD_HEIGHT_MASK,
+-	                     gdrm->saved_height);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_PITCH, GLAMO_LCD_PITCH_MASK,
+-	                     gdrm->saved_pitch);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_TOTAL,
+-	                     GLAMO_LCD_HV_TOTAL_MASK, gdrm->saved_htotal);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_START,
+-	                     GLAMO_LCD_HV_RETR_START_MASK, gdrm->saved_hrtrst);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_END,
+-	                     GLAMO_LCD_HV_RETR_END_MASK, gdrm->saved_hrtren);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_START,
+-	                     GLAMO_LCD_HV_RETR_DISP_START_MASK,
+-	                     gdrm->saved_hdspst);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_END,
+-	                     GLAMO_LCD_HV_RETR_DISP_END_MASK,
+-	                     gdrm->saved_hdspen);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_TOTAL,
+-	                     GLAMO_LCD_HV_TOTAL_MASK, gdrm->saved_vtotal);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_START,
+-	                     GLAMO_LCD_HV_RETR_START_MASK, gdrm->saved_vrtrst);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_END,
+-	                     GLAMO_LCD_HV_RETR_END_MASK, gdrm->saved_vrtren);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_START,
+-	                     GLAMO_LCD_HV_RETR_DISP_START_MASK,
+-	                     gdrm->saved_vdspst);
+-	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_END,
+-	                     GLAMO_LCD_HV_RETR_DISP_END_MASK,
+-	                     gdrm->saved_vdspen);
+-	glamo_lcd_cmd_mode(gdrm, 0);
++	if ( gcrtc->current_mode_set ) {
++		glamo_crtc_mode_set(crtc, &gcrtc->current_mode,
++		                    &gcrtc->current_mode, 0, 0,
++		                    gcrtc->current_fb);
++	}
+ }
+diff --git a/drivers/mfd/glamo/glamo-display.h b/drivers/mfd/glamo/glamo-display.h
+index d6f21bc..728bba5 100644
+--- a/drivers/mfd/glamo/glamo-display.h
++++ b/drivers/mfd/glamo/glamo-display.h
+@@ -36,4 +36,6 @@ extern int glamo_framebuffer_create(struct drm_device *dev,
+ extern void glamo_display_suspend(struct glamodrm_handle *gdrm);
+ extern void glamo_display_resume(struct glamodrm_handle *gdrm);
+ 
++extern void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode);
++
+ #endif /* __GLAMO_DISPLAY_H */
+diff --git a/drivers/mfd/glamo/glamo-drm-private.h b/drivers/mfd/glamo/glamo-drm-private.h
+index 7949a2e..4e24019 100644
+--- a/drivers/mfd/glamo/glamo-drm-private.h
++++ b/drivers/mfd/glamo/glamo-drm-private.h
+@@ -106,6 +106,9 @@ struct glamodrm_handle {
+ 
+ 	/* A scratch block */
+ 	struct drm_mm_node *scratch;
++
++	/* We only have one */
++	struct drm_crtc *crtc;
+ };
+ 
+ 
+@@ -118,11 +121,18 @@ struct drm_glamo_gem_object {
+ 
+ 
+ struct glamo_crtc {
++
+ 	struct drm_crtc base;
+ 	struct glamodrm_handle *gdrm;
+ 	/* a mode_set for fbdev users on this crtc */
+ 	struct drm_mode_set mode_set;
+ 	int blank_mode;
++
++	int pixel_clock_on;
++
++	int current_mode_set;
++	struct drm_display_mode current_mode;
++	struct drm_framebuffer *current_fb;
+ };
+ 
+ 
+diff --git a/drivers/mfd/glamo/glamo-kms-fb.c b/drivers/mfd/glamo/glamo-kms-fb.c
+index 61cd605..57680ed 100644
+--- a/drivers/mfd/glamo/glamo-kms-fb.c
++++ b/drivers/mfd/glamo/glamo-kms-fb.c
+@@ -253,64 +253,24 @@ static void glamofb_on(struct fb_info *info)
+ {
+ 	struct glamofb_par *par = info->par;
+ 	struct drm_device *dev = par->dev;
+-	struct drm_crtc *crtc;
+-	struct drm_encoder *encoder;
+-	int i;
++	struct glamodrm_handle *gdrm = dev->dev_private;
+ 
+-	/*
+-	 * For each CRTC in this fb, find all associated encoders
+-	 * and turn them off, then turn off the CRTC.
+-	 */
+-	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
+-		struct drm_crtc_helper_funcs *crtc_funcs = crtc->helper_private;
++	printk(KERN_CRIT "Turning on display...\n");
+ 
+-		for (i = 0; i < par->crtc_count; i++)
+-			if (crtc->base.id == par->crtc_ids[i])
+-				break;
+-
+-		crtc_funcs->dpms(crtc, DRM_MODE_DPMS_ON);
++	gdrm = dev->dev_private;
+ 
+-		/* Found a CRTC on this fb, now find encoders */
+-		list_for_each_entry(encoder, &dev->mode_config.encoder_list, head) {
+-			if (encoder->crtc == crtc) {
+-				struct drm_encoder_helper_funcs *encoder_funcs;
+-				encoder_funcs = encoder->helper_private;
+-				encoder_funcs->dpms(encoder, DRM_MODE_DPMS_ON);
+-			}
+-		}
+-	}
++	glamo_lcd_power(gdrm, 1);
+ }
+ 
+ static void glamofb_off(struct fb_info *info, int dpms_mode)
+ {
+ 	struct glamofb_par *par = info->par;
+ 	struct drm_device *dev = par->dev;
+-	struct drm_crtc *crtc;
+-	struct drm_encoder *encoder;
+-	int i;
++	struct glamodrm_handle *gdrm = dev->dev_private;
+ 
+-	/*
+-	 * For each CRTC in this fb, find all associated encoders
+-	 * and turn them off, then turn off the CRTC.
+-	 */
+-	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
+-		struct drm_crtc_helper_funcs *crtc_funcs = crtc->helper_private;
+-
+-		for (i = 0; i < par->crtc_count; i++)
+-			if (crtc->base.id == par->crtc_ids[i])
+-				break;
++	printk(KERN_CRIT "Turning off display...\n");
+ 
+-		/* Found a CRTC on this fb, now find encoders */
+-		list_for_each_entry(encoder, &dev->mode_config.encoder_list, head) {
+-			if (encoder->crtc == crtc) {
+-				struct drm_encoder_helper_funcs *encoder_funcs;
+-				encoder_funcs = encoder->helper_private;
+-				encoder_funcs->dpms(encoder, dpms_mode);
+-			}
+-		}
+-		if (dpms_mode == DRM_MODE_DPMS_OFF)
+-			crtc_funcs->dpms(crtc, dpms_mode);
+-	}
++	glamo_lcd_power(gdrm, 0);
+ }
+ 
+ static int glamofb_blank(int blank, struct fb_info *info)
+diff --git a/drivers/video/backlight/jbt6k74.c b/drivers/video/backlight/jbt6k74.c
+index 95ca4cf..9554cb3 100644
+--- a/drivers/video/backlight/jbt6k74.c
++++ b/drivers/video/backlight/jbt6k74.c
+@@ -107,14 +107,12 @@ enum jbt_resolution {
+ };
+ 
+ enum jbt_power_mode {
+-	JBT_POWER_MODE_DEEP_STANDBY,
+-	JBT_POWER_MODE_SLEEP,
++	JBT_POWER_MODE_OFF,
+ 	JBT_POWER_MODE_NORMAL,
+ };
+ 
+ static const char *jbt_power_mode_names[] = {
+-	[JBT_POWER_MODE_DEEP_STANDBY]	= "deep-standby",
+-	[JBT_POWER_MODE_SLEEP]		= "sleep",
++	[JBT_POWER_MODE_OFF]		= "off",
+ 	[JBT_POWER_MODE_NORMAL]		= "normal",
+ };
+ 
+@@ -260,14 +258,18 @@ static int jbt_init_regs(struct jbt_info *jbt)
+ 	return ret ? -EIO : 0;
+ }
+ 
+-static int jbt_standby_to_sleep(struct jbt_info *jbt)
++
++static int jbt_off_to_normal(struct jbt_info *jbt)
+ {
+ 	int ret;
++
+ 	struct jbt6k74_platform_data *pdata = jbt->spi->dev.platform_data;
+ 
+ 	gpio_set_value_cansleep(pdata->gpio_reset, 1);
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(jbt->supplies), jbt->supplies);
+ 
++	mdelay(30);
++
+ 	/* three times command zero */
+ 	ret |= jbt_reg_write_nodata(jbt, 0x00);
+ 	mdelay(1);
+@@ -279,18 +281,11 @@ static int jbt_standby_to_sleep(struct jbt_info *jbt)
+ 	/* deep standby out */
+ 	ret |= jbt_reg_write(jbt, JBT_REG_POWER_ON_OFF, 0x11);
+ 	mdelay(1);
+-	ret = jbt_reg_write(jbt, JBT_REG_DISPLAY_MODE, 0x28);
++	ret |= jbt_reg_write(jbt, JBT_REG_DISPLAY_MODE, 0x28);
+ 
+ 	/* (re)initialize register set */
+ 	ret |= jbt_init_regs(jbt);
+ 
+-	return ret ? -EIO : 0;
+-}
+-
+-static int jbt_sleep_to_normal(struct jbt_info *jbt)
+-{
+-	int ret;
+-
+ 	/* Make sure we are 120 ms after SLEEP_OUT */
+ 	if (time_before(jiffies, jbt->next_sleep))
+ 		mdelay(jiffies_to_msecs(jbt->next_sleep - jiffies));
+@@ -320,53 +315,34 @@ static int jbt_sleep_to_normal(struct jbt_info *jbt)
+ 
+ 	/* Sleep mode off */
+ 	ret |= jbt_reg_write_nodata(jbt, JBT_REG_SLEEP_OUT);
+-	jbt->next_sleep = jiffies + msecs_to_jiffies(120);
+ 
+-	/* Allow the booster and display controller to restart stably */
+-	mdelay(5);
+-
+-	return ret ? -EIO : 0;
+-}
+-
+-static int jbt_normal_to_sleep(struct jbt_info *jbt)
+-{
+-	int ret;
+-
+-	/* Make sure we are 120 ms after SLEEP_OUT */
+-	while (time_before(jiffies, jbt->next_sleep))
+-		cpu_relax();
+-
+-	ret = jbt_reg_write_nodata(jbt, JBT_REG_DISPLAY_OFF);
+-	ret |= jbt_reg_write16(jbt, JBT_REG_OUTPUT_CONTROL, 0x8000 | 1 << 3);
+-	ret |= jbt_reg_write_nodata(jbt, JBT_REG_SLEEP_IN);
+ 	jbt->next_sleep = jiffies + msecs_to_jiffies(120);
+ 
+-	/* Allow the internal circuits to stop automatically */
++	/* Allow the booster and display controller to restart stably */
+ 	mdelay(5);
+ 
+ 	return ret ? -EIO : 0;
+ }
+ 
+-static int jbt_sleep_to_standby(struct jbt_info *jbt)
++static int jbt_normal_to_off(struct jbt_info *jbt)
+ {
+ 	int ret;
+ 	struct jbt6k74_platform_data *pdata = jbt->spi->dev.platform_data;
+ 
+-	ret = jbt_reg_write(jbt, JBT_REG_POWER_ON_OFF, 0x00);
+-
+-	if (!ret)
+-		ret = regulator_bulk_disable(ARRAY_SIZE(jbt->supplies), jbt->supplies);
++	/* Pull the plug! */
++	ret = regulator_bulk_disable(ARRAY_SIZE(jbt->supplies),
++	                             jbt->supplies);
+ 
+ 	if (!ret)
+ 		gpio_set_value_cansleep(pdata->gpio_reset, 0);
+ 
+-	return ret;
++	return ret ? -EIO : 0;
+ }
+ 
++
+ static int jbt6k74_enter_power_mode(struct jbt_info *jbt,
+ 					enum jbt_power_mode new_mode)
+ {
+-	struct jbt6k74_platform_data *pdata = jbt->spi->dev.platform_data;
+ 	int ret = -EINVAL;
+ 
+ 	dev_dbg(&jbt->spi->dev, "entering (old_state=%s, new_state=%s)\n",
+@@ -375,49 +351,14 @@ static int jbt6k74_enter_power_mode(struct jbt_info *jbt,
+ 
+ 	mutex_lock(&jbt->lock);
+ 
+-	if (jbt->suspended) {
+-		switch (new_mode) {
+-		case JBT_POWER_MODE_DEEP_STANDBY:
+-		case JBT_POWER_MODE_SLEEP:
+-		case JBT_POWER_MODE_NORMAL:
+-			ret = 0;
+-			jbt->suspend_mode = new_mode;
+-			break;
+-		default:
+-			break;
+-		}
+-	} else if (new_mode == JBT_POWER_MODE_NORMAL &&
+-			pdata->enable_pixel_clock) {
+-		pdata->enable_pixel_clock(&jbt->spi->dev, 1);
+-	}
+-
+ 	switch (jbt->power_mode) {
+-	case JBT_POWER_MODE_DEEP_STANDBY:
+-		switch (new_mode) {
+-		case JBT_POWER_MODE_DEEP_STANDBY:
+-			ret = 0;
+-			break;
+-		case JBT_POWER_MODE_SLEEP:
+-			ret = jbt_standby_to_sleep(jbt);
+-			break;
+-		case JBT_POWER_MODE_NORMAL:
+-			/* first transition into sleep */
+-			ret = jbt_standby_to_sleep(jbt);
+-			/* then transition into normal */
+-			ret |= jbt_sleep_to_normal(jbt);
+-			break;
+-		}
+-		break;
+-	case JBT_POWER_MODE_SLEEP:
++	case JBT_POWER_MODE_OFF:
+ 		switch (new_mode) {
+-		case JBT_POWER_MODE_SLEEP:
++		case JBT_POWER_MODE_OFF:
+ 			ret = 0;
+ 			break;
+-		case JBT_POWER_MODE_DEEP_STANDBY:
+-			ret = jbt_sleep_to_standby(jbt);
+-			break;
+ 		case JBT_POWER_MODE_NORMAL:
+-			ret = jbt_sleep_to_normal(jbt);
++			ret = jbt_off_to_normal(jbt);
+ 			break;
+ 		}
+ 		break;
+@@ -426,25 +367,16 @@ static int jbt6k74_enter_power_mode(struct jbt_info *jbt,
+ 		case JBT_POWER_MODE_NORMAL:
+ 			ret = 0;
+ 			break;
+-		case JBT_POWER_MODE_DEEP_STANDBY:
+-			/* first transition into sleep */
+-			ret = jbt_normal_to_sleep(jbt);
+-			/* then transition into deep standby */
+-			ret |= jbt_sleep_to_standby(jbt);
+-			break;
+-		case JBT_POWER_MODE_SLEEP:
+-			ret = jbt_normal_to_sleep(jbt);
++		case JBT_POWER_MODE_OFF:
++			ret = jbt_normal_to_off(jbt);
+ 			break;
+ 		}
+ 	}
+ 
+ 	if (ret == 0) {
+ 		jbt->power_mode = new_mode;
+-		if (new_mode != JBT_POWER_MODE_NORMAL &&
+-			pdata->enable_pixel_clock)
+-			pdata->enable_pixel_clock(&jbt->spi->dev, 0);
+ 	} else {
+-		dev_err(&jbt->spi->dev, "Failed enter state '%s': %d\n",
++		dev_err(&jbt->spi->dev, "Failed to enter state '%s': %d\n",
+ 				jbt_power_mode_names[new_mode], ret);
+ 	}
+ 
+@@ -470,8 +402,8 @@ static int jbt6k74_set_resolution(struct jbt_info *jbt,
+ 	if (jbt->power_mode == JBT_POWER_MODE_NORMAL) {
+ 
+ 		/* first transition into sleep */
+-		ret = jbt_normal_to_sleep(jbt);
+-		ret |= jbt_sleep_to_normal(jbt);
++		ret = jbt_normal_to_off(jbt);
++		ret |= jbt_off_to_normal(jbt);
+ 
+ 		if (ret) {
+ 			jbt->resolution = old_resolution;
+@@ -589,7 +521,7 @@ static ssize_t reset_write(struct device *dev, struct device_attribute *attr,
+ 
+ 	mutex_unlock(&jbt->lock);
+ 
+-	jbt->power_mode = JBT_POWER_MODE_DEEP_STANDBY;
++	jbt->power_mode = JBT_POWER_MODE_OFF;
+ 	jbt6k74_enter_power_mode(jbt, old_power_mode);
+ 
+ 	return count;
+@@ -616,27 +548,6 @@ static struct attribute_group jbt_attr_group = {
+ 	.attrs	= jbt_sysfs_entries,
+ };
+ 
+-/* FIXME: This in an ugly hack to delay display blanking.
+-  When the jbt is in sleep mode it displays an all white screen and thus one
+-  will a see a short flash.
+-  By delaying the blanking we will give the backlight a chance to turn off and
+-  thus avoid getting the flash */
+-static void jbt_blank_worker(struct work_struct *work)
+-{
+-	struct jbt_info *jbt  = container_of(work, struct jbt_info,
+-						blank_work.work);
+-
+-	switch (jbt->blank_mode) {
+-	case FB_BLANK_NORMAL:
+-		jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_SLEEP);
+-		break;
+-	case FB_BLANK_POWERDOWN:
+-		jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_DEEP_STANDBY);
+-		break;
+-	default:
+-		break;
+-	}
+-}
+ 
+ static int jbt6k74_set_mode(struct lcd_device *ld, struct fb_videomode *m)
+ {
+@@ -649,7 +560,7 @@ static int jbt6k74_set_mode(struct lcd_device *ld, struct fb_videomode *m)
+ 		ret = jbt6k74_set_resolution(jbt, JBT_RESOLUTION_VGA);
+ 	} else {
+ 		dev_err(&jbt->spi->dev, "Unknown resolution.\n");
+-		jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_SLEEP);
++		jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_OFF);
+ 	}
+ 
+ 	return ret;
+@@ -671,11 +582,11 @@ static int jbt6k74_set_power(struct lcd_device *ld, int power)
+ 		break;
+ 	case FB_BLANK_NORMAL:
+ 		dev_dbg(&jbt->spi->dev, "blank\n");
+-		ret = schedule_delayed_work(&jbt->blank_work, HZ);
++		ret = jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_OFF);
+ 		break;
+ 	case FB_BLANK_POWERDOWN:
+ 		dev_dbg(&jbt->spi->dev, "powerdown\n");
+-		ret = schedule_delayed_work(&jbt->blank_work, HZ);
++		ret = jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_OFF);
+ 		break;
+ 	default:
+ 		break;
+@@ -691,10 +602,10 @@ static int jbt6k74_get_power(struct lcd_device *ld)
+ 	switch (jbt->power_mode) {
+ 	case JBT_POWER_MODE_NORMAL:
+ 		return FB_BLANK_UNBLANK;
+-	case JBT_POWER_MODE_SLEEP:
++	case JBT_POWER_MODE_OFF:
+ 		return FB_BLANK_NORMAL;
+ 	default:
+-		return JBT_POWER_MODE_DEEP_STANDBY;
++		return JBT_POWER_MODE_OFF;
+ 	}
+ }
+ 
+@@ -707,7 +618,7 @@ void jbt6k74_action(int val)
+ 		return;
+ 	}
+ 	if ( val == 0 ) {
+-		jbt6k74_enter_power_mode(jbt_global, JBT_POWER_MODE_SLEEP);
++		jbt6k74_enter_power_mode(jbt_global, JBT_POWER_MODE_OFF);
+ 	} else {
+ 		jbt6k74_enter_power_mode(jbt_global, JBT_POWER_MODE_NORMAL);
+ 	}
+@@ -756,11 +667,9 @@ static int __devinit jbt_probe(struct spi_device *spi)
+ 		goto err_free_drvdata;
+ 	}
+ 
+-	INIT_DELAYED_WORK(&jbt->blank_work, jbt_blank_worker);
+-
+ 	jbt->resolution = JBT_RESOLUTION_VGA;
+-	jbt->power_mode = JBT_POWER_MODE_DEEP_STANDBY;
+ 	jbt->next_sleep = jiffies + msecs_to_jiffies(120);
++	jbt->power_mode = JBT_POWER_MODE_OFF;
+ 	mutex_init(&jbt->lock);
+ 
+ 	dev_set_drvdata(&spi->dev, jbt);
+@@ -856,9 +765,10 @@ static int jbt_suspend(struct spi_device *spi, pm_message_t state)
+ 
+ 	jbt->suspend_mode = jbt->power_mode;
+ 
+-	jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_DEEP_STANDBY);
+-	jbt->suspended = 1;
++	printk(KERN_CRIT "[jbt] powering off for suspend\n");
++	jbt6k74_enter_power_mode(jbt, JBT_POWER_MODE_OFF);
+ 
++	printk(KERN_CRIT "[jbt] done\n");
+ 	dev_info(&spi->dev, "suspended\n");
+ 
+ 	return 0;
+@@ -869,11 +779,13 @@ int jbt6k74_resume(struct spi_device *spi)
+ 	struct jbt_info *jbt = dev_get_drvdata(&spi->dev);
+ 	dev_info(&spi->dev, "starting resume: %d\n", jbt->suspend_mode);
+ 
++	printk(KERN_CRIT "[jbt] powering on for resume\n");
+ 	mdelay(20);
+ 
+ 	jbt->suspended = 0;
+ 	jbt6k74_enter_power_mode(jbt, jbt->suspend_mode);
+ 
++	printk(KERN_CRIT "[jbt] done\n");
+ 	dev_info(&spi->dev, "resumed: %d\n", jbt->suspend_mode);
+ 
+ 	return 0;
+diff --git a/include/linux/jbt6k74.h b/include/linux/jbt6k74.h
+index 75488c4..4cf760c 100644
+--- a/include/linux/jbt6k74.h
++++ b/include/linux/jbt6k74.h
+@@ -13,7 +13,6 @@
+  */
+ struct jbt6k74_platform_data {
+ 	void (*probe_completed)(struct device *dev);
+-	void (*enable_pixel_clock)(struct device *dev, int enable);
+ 
+ 	int gpio_reset;
+ };
+-- 
+1.7.0
+

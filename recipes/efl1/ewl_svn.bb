@@ -1,8 +1,8 @@
 DESCRIPTION = "The Enlightened Widget Library"
-DEPENDS = "evas ecore edje emotion efreet epsilon"
+DEPENDS = "evas ecore edje emotion efreet"
 LICENSE = "MIT BSD"
 PV = "0.5.3.050+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 inherit efl
 

@@ -4,7 +4,7 @@ PR = "${INC_PR}.0"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "\
-  http://www.busybox.net/downloads/busybox-${PV}.tar.gz;name=tarball \
+  http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
 \
   file://udhcpscript.patch;patch=1 \
   file://udhcpc-fix-nfsroot.patch;patch=1 \
@@ -27,8 +27,8 @@ SRC_URI = "\
   file://mdev.conf \
 "
 
-SRC_URI[tarball.md5sum] = "dfb197b8de260ff284f7222ed23614fe"
-SRC_URI[tarball.sha256sum] = "b5a0c76d414cca97fb21622a5d09fa5a58f59890f5c9ce4f8b851c4e8b73a163"
+SRC_URI[tarball.md5sum] = "d170bf5f97a41aec3a505eab690d5699"
+SRC_URI[tarball.sha256sum] = "e94df4f9063a1951b4e94e76148ed80e921737a89d97bc2c310a2a8927982e90"
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 

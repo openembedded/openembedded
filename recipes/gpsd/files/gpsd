@@ -1,87 +1,135 @@
 #!/bin/sh
+### BEGIN INIT INFO
+# Provides:          gpsd
+# Required-Start:    $remote_fs $network
+# Should-Start:      bluetooth dbus udev
+# Required-Stop:     $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: GPS (Global Positioning System) daemon start/stop script
+# Description:       Start/Stop script for the gpsd service daemon,
+#                    which is able to monitor one or more GPS devices
+#                    connected to a host computer, making all data on
+#                    the location and movements of the sensors available
+#                    to be queried on TCP port 2947.
+### END INIT INFO
+
+# Author: Bernd Zeimetz <bzed@debian.org>
 #
-# gpsd	This shell script starts and stops gpsd.
+# Please remove the "Author" lines above and replace them
+# with your own name if you copy and modify this script.
+
+# Do NOT "set -e"
+
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="GPS (Global Positioning System) daemon"
+NAME=gpsd
+DAEMON=/usr/sbin/$NAME
+PIDFILE=/var/run/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+
+# Exit if the package is not installed
+[ -x "$DAEMON" ] || exit 0
+
+# Read configuration, if present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+if [ -z "$GPSD_SOCKET" ] && [ -z "$DEVICES" ]; then
+	GPSD_SOCKET=/var/run/gpsd.sock
+fi
+
+if [ -n "$GPSD_SOCKET" ]; then
+        GPSD_OPTIONS="$GPSD_OPTIONS -F $GPSD_SOCKET"
+fi
+
 #
-# chkconfig: 345 90 40
-# description: Gpsd manages access to a serial- or USB-connected GPS
-# processname: gpsd
-
-# Source function library.
-#. /etc/rc.d/init.d/functions
-
-RETVAL=0
-DAEMON=/usr/sbin/gpsd
-prog="gpsd"
-
-test -f /etc/default/$prog && . /etc/default/$prog
-
-start() {
-	# Start daemons.
-	echo -n "Starting $prog: "
-	# We don't use the daemon function here because of a known bug
-	# in initlog -- it spuriously returns a nonzero status when 
-	# starting daemons that fork themselves.  See
-	# http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=130629
-	# for discussion.  Fortunately:
-	#
-	# 1. gpsd startup can't fail, or at least not in the absence of
-	# much larger resource-exhaustion problems that would be very obvious.
-	#
-	# 2. We don't need all the logging crud that daemon/initlog sets
-	# up -- gpsd does its own syslog calls.
-	#
-	
-	if test -x /etc/init.d/gps-hardware
-	then
-		if ! ( /etc/init.d/gps-hardware status | grep -q "ready" )
-		then
-			/etc/init.d/gps-hardware start
-		fi
-	fi
-	
-	if [ -e "${GPS_DEV}" ]
-	then
-	    start-stop-daemon -S -x ${DAEMON} -- ${GPSD_OPTS} ${GPS_DEV}
-	    echo "success"
-	else
-	    # User needs to symlink ${GPS_DEV} to the right thing
-	    echo "No ${GPS_DEV} GPS device, aborting gpsd startup. Check /etc/default/$prog"
-	fi
-	RETVAL=$?
-	echo
-	return $RETVAL
+# Function that starts the daemon/service
+#
+do_start()
+{
+	# Return
+	#   0 if daemon has been started
+	#   1 if daemon was already running
+	#   2 if daemon could not be started
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
+		|| return 1
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
+		$GPSD_OPTIONS -P $PIDFILE $GPS_DEVICES \
+		|| return 2
 }
 
-stop() {
-	# Stop daemons.
-	echo -n "Shutting down $prog: "
-        start-stop-daemon -K -x ${DAEMON}
-#        killproc gpsd
-	RETVAL=$?
-	echo
-	return $RETVAL
+#
+# Function that stops the daemon/service
+#
+do_stop()
+{
+	# Return
+	#   0 if daemon has been stopped
+	#   1 if daemon was already stopped
+	#   2 if daemon could not be stopped
+	#   other if a failure occurred
+	start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --name $NAME
+	RETVAL="$?"
+	[ "$RETVAL" = 2 ] && return 2
+	# Many daemons don't delete their pidfiles when they exit.
+	rm -f $PIDFILE
+	return "$RETVAL"
 }
 
-# See how we were called.
+#
+# Function that sends a SIGHUP to the daemon/service
+#
+do_reload() {
+	#
+	# If the daemon can reload its configuration without
+	# restarting (for example, when it is sent a SIGHUP),
+	# then implement that here.
+	#
+	start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name $NAME
+	return 0
+}
+
 case "$1" in
   start)
-	start
+		echo "Starting $DESC" "$NAME"
+		do_start
+		return $?
 	;;
   stop)
-	stop
-	;;
-  restart|reload)
-	stop
-	start
-	RETVAL=$?
+	echo "Stopping $DESC" "$NAME"
+	do_stop
+	return $?
 	;;
   status)
-#	status gpsd
-#	RETVAL=$?
+       ;;
+  reload|force-reload)
+	echo "Reloading $DESC" "$NAME"
+	do_reload
+	return $?
+	;;
+  restart)
+	#
+	# If the "reload" option is implemented then remove the
+	# 'force-reload' alias
+	#
+	echo "Restarting $DESC" "$NAME"
+	do_stop
+	case "$?" in
+	  0|1)
+		do_start
+		return $?
+		;;
+	  *)
+	 	# Failed to stop
+		return 1
+		;;
+	esac
 	;;
   *)
-	echo "Usage: $0 {start|stop|restart|status}"
-	exit 1
+	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
+	exit 3
+	;;
 esac
 
-exit $RETVAL
+:

@@ -1,4 +1,6 @@
 require gdb-cross.inc
+LICENSE = "GPLv3"
+
 inherit cross
 
 DEFAULT_PREFERENCE_avr32 = "99"

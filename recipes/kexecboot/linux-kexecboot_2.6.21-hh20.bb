@@ -1,5 +1,7 @@
 require linux-kexecboot.inc
 
+PR = "${INC_PR}.0"
+
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_hx4700 = "1"
 DEFAULT_PREFERENCE_h2200 = "1"

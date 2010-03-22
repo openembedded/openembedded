@@ -1,0 +1,19 @@
+Index: wt-3.0.0/CMakeLists.txt
+===================================================================
+--- wt-3.0.0.orig/CMakeLists.txt	2009-11-12 18:50:12.087842114 +0100
++++ wt-3.0.0/CMakeLists.txt	2009-11-12 18:50:42.023261611 +0100
+@@ -111,10 +111,10 @@
+ INCLUDE(cmake/WtFindSsl.txt)
+ INCLUDE(cmake/WtFindMysqlpp.txt)
+ 
+-FIND_PACKAGE(Qt4)
+-IF(QT_FOUND)
+-  INCLUDE(${QT_USE_FILE})
+-ENDIF(QT_FOUND)
++#FIND_PACKAGE(Qt4)
++#IF(QT_FOUND)
++#  INCLUDE(${QT_USE_FILE})
++#ENDIF(QT_FOUND)
+ 
+ # Boost is used nearly everywhere, so we can put these here
+ INCLUDE_DIRECTORIES(${BOOST_INCLUDE_DIRS})

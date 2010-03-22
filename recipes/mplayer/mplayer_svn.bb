@@ -39,9 +39,10 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc3+svnr${SRCPV}"
-PR = "r17"
+PR = "r19"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
+DEFAULT_PREFERENCE_shr = "1"
 
 PARALLEL_MAKE = ""
 

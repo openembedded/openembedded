@@ -3,11 +3,11 @@ Fix wrong machine ID passed from RedBoot
 
 Signed-off-by: Petr Stetiar <ynezz@true.cz>
 
-Index: linux-2.6.22/arch/arm/kernel/head.S
+Index: linux-2.6.24/arch/arm/kernel/head.S
 ===================================================================
---- linux-2.6.22.orig/arch/arm/kernel/head.S	2007-08-30 00:42:45.000000000 +0200
-+++ linux-2.6.22/arch/arm/kernel/head.S	2007-08-30 00:43:13.000000000 +0200
-@@ -82,6 +82,7 @@
+--- linux-2.6.24.orig/arch/arm/kernel/head.S	2010-02-07 14:53:58.000000000 +0100
++++ linux-2.6.24/arch/arm/kernel/head.S	2010-02-07 14:54:39.000000000 +0100
+@@ -86,6 +86,7 @@
  	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid
  	movs	r10, r5				@ invalid processor (r5=0)?
  	beq	__error_p			@ yes, error 'p'

@@ -1,6 +1,6 @@
 DESCRIPTION = "Base system password/group files."
 SECTION = "base"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "\

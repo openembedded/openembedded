@@ -1,0 +1,509 @@
+From 21b42402132b32de5ba249a8ae5024228be1b7f0 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 13:01:07 +0100
+Subject: [PATCH] TS-72XX LCD console driver
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |    4 +
+ drivers/video/console/Kconfig                   |   21 ++
+ drivers/video/console/Makefile                  |    2 +
+ drivers/video/console/ts72xx_con.c              |  423 +++++++++++++++++++++++
+ 4 files changed, 450 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/video/console/ts72xx_con.c
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+index be0b9d4..c0a8a95 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
++++ b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+@@ -94,6 +94,10 @@
+ #define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
+ #define EP93XX_GPIO_B_INT_DEBOUNCE	EP93XX_GPIO_REG(0xc4)
+ 
++#define EP93XX_GPIO_A_DATA		EP93XX_GPIO_REG(0x00)
++#define EP93XX_GPIO_A_DIRECTION		EP93XX_GPIO_REG(0x10)
++#define EP93XX_GPIO_B_DATA		EP93XX_GPIO_REG(0x04)
++
+ #define EP93XX_AAC_BASE			(EP93XX_APB_VIRT_BASE + 0x00080000)
+ 
+ #define EP93XX_SPI_BASE			(EP93XX_APB_VIRT_BASE + 0x000a0000)
+diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
+index 06f87b0..66cc833 100644
+--- a/drivers/video/console/Kconfig
++++ b/drivers/video/console/Kconfig
+@@ -111,6 +111,27 @@ config DUMMY_CONSOLE_ROWS
+           The default value is 64, which should fit a 1280x1024 monitor.
+           Select 25 if you use a 640x480 resolution by default.
+ 
++config TS72XX_CONSOLE
++	tristate "TS-72xx text LCD console"
++	depends on ARCH_EP93XX && MACH_TS72XX
++	help
++	  Say Y to build a console driver for TS-72xx LCD (2x7) header.
++	  LCD display must be compatible with HD44780 controller.
++
++config TS72XX_CONSOLE_COLUMNS
++        int "Initial number of console screen columns"
++        depends on TS72XX_CONSOLE
++        default "20"
++        help
++          Dependant to your text LCD, 16 or 20 are legacy values.
++
++config TS72XX_CONSOLE_ROWS
++        int "Initial number of console screen rows"
++        depends on TS72XX_CONSOLE
++        default "4"
++        help
++          Dependant to your text LCD, 2 or 4 are legacy values.
++
+ config FRAMEBUFFER_CONSOLE
+ 	tristate "Framebuffer Console support"
+ 	depends on FB
+diff --git a/drivers/video/console/Makefile b/drivers/video/console/Makefile
+index ac46cc3..4244b5e 100644
+--- a/drivers/video/console/Makefile
++++ b/drivers/video/console/Makefile
+@@ -26,6 +26,8 @@ obj-$(CONFIG_PROM_CONSOLE)        += promcon.o promcon_tbl.o
+ obj-$(CONFIG_STI_CONSOLE)         += sticon.o sticore.o font.o
+ obj-$(CONFIG_VGA_CONSOLE)         += vgacon.o
+ obj-$(CONFIG_MDA_CONSOLE)         += mdacon.o
++obj-$(CONFIG_TS72XX_CONSOLE)      += ts72xx_con.o
++
+ obj-$(CONFIG_FRAMEBUFFER_CONSOLE) += fbcon.o bitblit.o font.o softcursor.o
+ ifeq ($(CONFIG_FB_TILEBLITTING),y)
+ obj-$(CONFIG_FRAMEBUFFER_CONSOLE)     += tileblit.o
+diff --git a/drivers/video/console/ts72xx_con.c b/drivers/video/console/ts72xx_con.c
+new file mode 100644
+index 0000000..726085f
+--- /dev/null
++++ b/drivers/video/console/ts72xx_con.c
+@@ -0,0 +1,423 @@
++/*
++ *  TS-72XX lcd console driver for Technologic Systems boards.
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on linux/drivers/video/console/dummycon.c
++ * Thanks to Jim Jackson (lcdd-0.2beta)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ *
++ * Note: Port H (LCD_EN, LCD_RS, LCD_WR) uses the new generic GPIO API.
++ *       Port A is used manually used. To fix in future.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/console.h>
++#include <linux/vt_kern.h>
++#include <mach/hardware.h>
++#include <mach/gpio.h>
++
++#define DRV_VERSION "0.2"
++#define PFX "ts72xx_con: "
++
++#define LCD_COLUMNS  CONFIG_TS72XX_CONSOLE_COLUMNS
++#define LCD_ROWS     CONFIG_TS72XX_CONSOLE_ROWS
++
++/* HD44780 instruction set */
++#define CMD_CLEAR                                        (0x01)
++#define CMD_CURSOR_HOME                                  (0x02)
++#define CMD_ENTRY_MODE(cursor_dir, display_shift)        (0x04|(2*cursor_dir)|display_shift)
++#define CMD_DISPLAY_ONOFF(dis_on, cur_on, cur_blink_on)  (0x08|(4*dis_on)|(2*cur_on)|cur_blink_on)
++#define CMD_FUNCTION_SET(intf_8bit, n, f)                (0x20|(16*intf_8bit)|(8*n)|(4*f))
++#define CMD_DDRAM_ADDR(a)                                (0x80|(a))
++
++/* Port H, bit 3:5 */
++#define LCD_EN   EP93XX_GPIO_LINE_H(3)
++#define LCD_RS   EP93XX_GPIO_LINE_H(4)
++#define LCD_WR   EP93XX_GPIO_LINE_H(5)
++
++/* Timings */
++#define SETUP_TIME   15
++#define ENABLE_TIME  36
++#define HOLD_TIME    22
++
++#define hd44780_delay(x) asm volatile ( \
++  "1:\n"\
++  "subs %1, %1, #1;\n"\
++  "bne 1b;\n"\
++  : "=r" ((x)) : "r" ((x)) \
++);
++
++
++/* Prototypes */
++static void hd44780_wait(void);
++static void hd44780_send_data(unsigned char data);
++static void hd44780_send_command(unsigned char command);
++static void hd44780_init(void);
++static int hd44780_gotoxy(int x, int y);
++
++
++/* HD44780 controller */
++
++static void hd44780_wait(void)
++{
++  int i;
++  unsigned char c;
++
++  __raw_writeb(0x00, EP93XX_GPIO_A_DIRECTION);   // bus input
++  gpio_set_value(LCD_RS, 0);                     // low for control registers
++  gpio_set_value(LCD_WR, 1);                     // read command
++
++  do {
++    i = SETUP_TIME;
++    hd44780_delay(i);
++
++    gpio_set_value(LCD_EN, 1);
++
++    i = ENABLE_TIME;
++    hd44780_delay(i);
++
++    c = __raw_readb(EP93XX_GPIO_A_DATA);
++    gpio_set_value(LCD_EN, 0);
++  } while (c & 0x80); // busy flag
++
++  i = HOLD_TIME;
++  hd44780_delay(i);
++}
++
++
++static void hd44780_send_data(unsigned char data)
++{
++  int i;
++
++  __raw_writeb(0xFF, EP93XX_GPIO_A_DIRECTION);   // bus output
++  gpio_set_value(LCD_RS, 1);                     // high for data
++  gpio_set_value(LCD_WR, 0);                     // write data
++
++  i = SETUP_TIME;
++  hd44780_delay(i);
++
++  __raw_writeb(data, EP93XX_GPIO_A_DATA);
++  gpio_set_value(LCD_EN, 1);
++
++  i = ENABLE_TIME;
++  hd44780_delay(i);
++
++  gpio_set_value(LCD_EN, 0);
++
++  i = HOLD_TIME;
++  hd44780_delay(i);
++}
++
++
++static void hd44780_send_command(unsigned char command)
++{
++  int i;
++
++  __raw_writeb(0xFF, EP93XX_GPIO_A_DIRECTION);   // bus output
++  gpio_set_value(LCD_RS, 0);                     // low for control registers
++  gpio_set_value(LCD_WR, 0);                     // write command
++
++  i = SETUP_TIME;
++  hd44780_delay(i);
++
++  __raw_writeb(command, EP93XX_GPIO_A_DATA);
++  gpio_set_value(LCD_EN, 1);
++
++  i = ENABLE_TIME;
++  hd44780_delay(i);
++
++  gpio_set_value(LCD_EN, 0);
++
++  i = HOLD_TIME;
++  hd44780_delay(i);
++}
++
++
++static void hd44780_init(void)
++{
++  int i;
++
++  gpio_direction_output(LCD_EN, 0);
++  gpio_direction_output(LCD_RS, 0);
++  gpio_direction_output(LCD_WR, 0);
++
++  /* Port A (8 bits) is data bus */
++  __raw_writeb(0x00, EP93XX_GPIO_A_DATA);
++  __raw_writeb(0x00, EP93XX_GPIO_A_DIRECTION);
++
++  /* 8-bit mode, double line, 5x7 dot character format */
++  hd44780_send_command(CMD_FUNCTION_SET(1,1,1));
++  i = 5000;
++  hd44780_delay(i);
++
++  /* Display on and blink cursor on */
++  hd44780_send_command(CMD_DISPLAY_ONOFF(1,1,1));
++  hd44780_wait();
++
++  /* Cursor in increment position and shift is invisible */
++  hd44780_send_command(CMD_ENTRY_MODE(0,0));
++  hd44780_wait();
++
++  /* Clean display and return cursor to home position */
++  hd44780_send_command(CMD_CLEAR);
++  hd44780_wait();
++}
++
++
++static int hd44780_gotoxy(int x, int y)
++{
++  const unsigned char lines[4] = { 0x00, 0x40, 0x14, 0x54 };
++
++  if ((x == 0) && (y == 0)) {
++    hd44780_send_command(CMD_CURSOR_HOME);
++    hd44780_wait();
++  } else if (y < 4) {
++    hd44780_send_command(CMD_DDRAM_ADDR(lines[y]+x));
++    hd44780_wait();
++  }
++
++  return 0;
++}
++
++
++/* Console operation functions */
++
++static const char *lcdcon_startup(void)
++{
++  return "ts72xx lcd console";
++}
++
++
++static void lcdcon_init(struct vc_data *vc, int init)
++{
++  hd44780_init();
++
++  vc->vc_can_do_color = 0;
++  vc->vc_video_erase_char = 0x20;
++
++  if (init) {
++    vc->vc_cols = LCD_COLUMNS;
++    vc->vc_rows = LCD_ROWS;
++  } else
++    vc_resize(vc, LCD_COLUMNS, LCD_ROWS);
++
++}
++
++
++static void lcdcon_deinit(struct vc_data *vc)
++{
++}
++
++
++static void lcdcon_clear(struct vc_data *vc, int sy, int sx,
++    int height, int width)
++{
++  int i, j;
++
++  if (!height || !width)
++    return;
++
++  for (i = 0; i < height; i++) {
++    hd44780_gotoxy(sx, sy + i);
++    for (j = 0; j < width; j++) {
++      hd44780_send_data((unsigned char)vc->vc_video_erase_char);
++      hd44780_wait();
++    }
++  }
++
++}
++
++
++static int lcdcon_blank(struct vc_data *vc, int blank, int mode_switch)
++{
++  unsigned char c;
++
++  if (blank == 0) {
++    c = CMD_DISPLAY_ONOFF(1,1,1);    /* Display on */
++  } else {
++    c = CMD_DISPLAY_ONOFF(0,1,1);    /* Display off */
++  }
++
++  hd44780_send_command(c);
++  hd44780_wait();
++
++  return 1;
++}
++
++
++static int lcdcon_set_palette(struct vc_data *vc, unsigned char *table)
++{
++  return -EINVAL;
++}
++
++
++static void lcdcon_putc(struct vc_data *vc, int c, int y, int x)
++{
++  if (vc->vc_mode != KD_TEXT)
++    return;
++
++  hd44780_gotoxy(x, y);
++  hd44780_send_data((unsigned char)c);
++  hd44780_wait();
++}
++
++
++static void lcdcon_putcs(struct vc_data *vc, const unsigned short *s,
++    int count, int y, int x)
++{
++  if (vc->vc_mode != KD_TEXT)
++    return;
++
++  hd44780_gotoxy(x, y);
++  while (count--) {
++    hd44780_send_data((unsigned char)(*s));
++    hd44780_wait();
++    s++;
++  }
++
++}
++
++
++static void lcdcon_cursor(struct vc_data *vc, int mode)
++{
++  hd44780_gotoxy(vc->vc_x, vc->vc_y);
++
++  switch (mode) {
++    case CM_ERASE:
++      hd44780_send_command(CMD_DISPLAY_ONOFF(1,0,0)); // Cursor off
++      hd44780_wait();
++      break;
++
++    case CM_DRAW:
++      hd44780_send_command(CMD_DISPLAY_ONOFF(1,1,1)); // Cursor on, Blinking on
++      hd44780_wait();
++      break;
++
++    case CM_MOVE:
++      printk("lcdcon_cursor CM_MOVE not implemented\n");
++      break;
++  }
++
++}
++
++
++static int lcdcon_scroll(struct vc_data *vc, int t, int b, int dir, int count)
++{
++  int i;
++
++  if (!count)
++    return 0;
++
++  /* Special case */
++  //if (t || b != vc->vc_rows)
++  // scroll area
++
++  switch (dir) {
++    case SM_UP:
++      if (count > vc->vc_rows)
++        count = vc->vc_rows;
++
++      for (i = 0; i < (vc->vc_rows - count); i++) {
++        lcdcon_putcs(vc, vc->vc_screenbuf + (vc->vc_y - i)*vc->vc_cols,
++            vc->vc_cols, vc->vc_y - i -1, 0);
++      }
++
++      /* Clear last line */
++      hd44780_gotoxy(0, vc->vc_y);
++      for (i = 0; i < vc->vc_cols; i++) {
++        hd44780_send_data((unsigned char)vc->vc_video_erase_char);
++        hd44780_wait();
++      }
++      break;
++
++    case SM_DOWN:
++      printk("lcdcon_scroll DOWN (t=%d b=%d count=%d) not implemtented\n", t,b,count);
++      break;
++  }
++
++  return 0;
++}
++
++
++static void lcdcon_bmove(struct vc_data *vc, int sy, int sx,
++    int dy, int dx, int height, int width)
++{
++  int i, j;
++
++  if (!height || !width)
++    return;
++
++  for (i = 0; i < height; i++) {
++    hd44780_gotoxy(dx, dy + i);
++    for (j = 0; j < width; j++) {
++      hd44780_send_data((unsigned char)(*(vc->vc_screenbuf +
++              (sy+i)*vc->vc_cols + (sx+j) )));
++      hd44780_wait();
++    }
++  }
++}
++
++
++static int lcdcon_dummy(void)
++{
++  return 0;
++}
++
++#define DUMMY (void *)lcdcon_dummy
++
++
++/* Main structure */
++const struct consw ts72xx_lcd_con = {
++  .owner =    THIS_MODULE,
++  .con_startup = lcdcon_startup,
++  .con_init    = lcdcon_init,
++  .con_deinit  = lcdcon_deinit,
++  .con_clear   = lcdcon_clear,
++  .con_putc    = lcdcon_putc,
++  .con_putcs   = lcdcon_putcs,
++  .con_cursor  = lcdcon_cursor,
++  .con_scroll  = lcdcon_scroll,
++  .con_bmove   = lcdcon_bmove,
++  .con_switch  = DUMMY,
++  .con_blank   = lcdcon_blank,
++
++  /* We cannot change color, fonts on character LCD */
++  .con_font_set     = DUMMY,
++  .con_font_get     = DUMMY,
++  .con_font_default = DUMMY,
++  .con_font_copy    = DUMMY,
++  .con_set_palette  = lcdcon_set_palette,
++
++  //.con_scrolldelta   = lcdcon_scrolldelta,
++  //.con_set_origin    = DUMMY,
++  //.con_save_screen   = lcdcon_save_screen,
++  //.con_build_attr    = lcdcon_build_attr,
++  //.con_invert_region = lcdcon_invert_region,
++  //.con_screen_pos    = lcdcon_screen_pos,
++  //.con_getxy         = lcdcon_getxy,
++};
++
++/* Module functions */
++
++static int __init ts72xx_lcd_init(void)
++{
++  return take_over_console(&ts72xx_lcd_con, 0, MAX_NR_CONSOLES-1, 1);
++}
++
++static void __exit ts72xx_lcd_exit(void)
++{
++  unregister_con_driver(&ts72xx_lcd_con);
++}
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("TS-72xx lcd console driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);
++
++module_init(ts72xx_lcd_init);
++module_exit(ts72xx_lcd_exit);
+-- 
+1.6.0.4
+

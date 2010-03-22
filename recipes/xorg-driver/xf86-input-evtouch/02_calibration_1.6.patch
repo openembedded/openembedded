@@ -1,0 +1,41 @@
+From: Thomas Jaeger <ThJaeger@gmail.com>
+Date: Sun, 22 Mar 2009 20:58:58 -0400
+Subject: Make calibration work on xserver-1.6
+
+Stolen from Ubuntu.
+
+Index: xserver-xorg-input-evtouch/ev_calibrate.c
+===================================================================
+--- xserver-xorg-input-evtouch.orig/ev_calibrate.c
++++ xserver-xorg-input-evtouch/ev_calibrate.c
+@@ -218,7 +218,7 @@
+         int cap_style = CapButt;        /* style of the line's edje and */
+         int join_style = JoinBevel;        /*  joined lines.                */
+ 
+-        int event_mask = ExposureMask | ButtonReleaseMask | PointerMotionMask | KeyPressMask;
++        int event_mask = ExposureMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask | KeyPressMask;
+ 
+         int depth;
+         int screen_num;
+Index: xserver-xorg-input-evtouch/evtouch.c
+===================================================================
+--- xserver-xorg-input-evtouch.orig/evtouch.c
++++ xserver-xorg-input-evtouch/evtouch.c
+@@ -306,7 +306,7 @@
+ 	}
+ 
+         if (pos_changed == 1) {
+-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 2
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 2
+                 ConvertProc(priv->local, 0, 2, 
+                             priv->raw_x, priv->raw_y,
+                             0, 0, 0, 0, 
+@@ -369,7 +369,7 @@
+                         priv->raw_y = priv->min_y;
+         }
+ 
+-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 2
++#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 2
+         ConvertProc(priv->local, 0, 2,
+                     priv->raw_x, priv->raw_y,
+                     0, 0, 0, 0,

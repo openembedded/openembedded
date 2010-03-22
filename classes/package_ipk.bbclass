@@ -159,11 +159,14 @@ python do_package_ipk () {
 	if os.access(os.path.join(tmpdir, "stamps", "IPK_PACKAGE_INDEX_CLEAN"), os.R_OK):
 		os.unlink(os.path.join(tmpdir, "stamps", "IPK_PACKAGE_INDEX_CLEAN"))
 
+	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+	bb.mkdirhier(pkgdest)
+
 	packages = bb.data.getVar('PACKAGES', d, True)
 	for pkg in packages.split():
 		localdata = bb.data.createCopy(d)
-		pkgdest = bb.data.getVar('PKGDEST', d, 1)
 		root = "%s/%s" % (pkgdest, pkg)
+		bb.mkdirhier(root)
 
 		lf = bb.utils.lockfile(root + ".lock")
 

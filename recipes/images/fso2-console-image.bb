@@ -5,7 +5,7 @@
 require fso-image.inc
 
 PV = "1.1"
-PR = "r1"
+PR = "r3"
 
 IMAGE_INSTALL = "\
   task-base \

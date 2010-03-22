@@ -1,0 +1,82 @@
+From bc57de2551b792f49a92c90f6cf8a4890ede038f Mon Sep 17 00:00:00 2001
+From: Francisco Jerez <currojerez@riseup.net>
+Date: Fri, 22 Jan 2010 06:29:37 -0800
+Subject: [PATCH 4/5] glx/dri2: Notify the driver when its buffers become invalid.
+
+Signed-off-by: Francisco Jerez <currojerez@riseup.net>
+---
+ glx/glxdri2.c |   30 ++++++++++++++++++++++++++----
+ 1 files changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/glx/glxdri2.c b/glx/glxdri2.c
+index edd29b0..5c617d9 100644
+--- a/glx/glxdri2.c
++++ b/glx/glxdri2.c
+@@ -67,6 +67,7 @@ struct __GLXDRIscreen {
+ 
+     xf86EnterVTProc	*enterVT;
+     xf86LeaveVTProc	*leaveVT;
++    PreConfigureWindowProcPtr PreConfigureWindow;
+ 
+     const __DRIcoreExtension *core;
+     const __DRIdri2Extension *dri2;
+@@ -217,6 +218,10 @@ __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable *drawable)
+     __GLXDRIscreen *screen = priv->screen;
+     CARD64 unused;
+ 
++    if (DRI2SwapBuffers(client, drawable->pDraw, 0, 0, 0, &unused,
++			__glXdriSwapEvent, drawable->pDraw) != Success)
++	return FALSE;
++
+ #if __DRI2_FLUSH_VERSION >= 3
+     if (screen->flush) {
+ 	(*screen->flush->flush)(priv->driDrawable);
+@@ -227,10 +232,6 @@ __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable *drawable)
+ 	(*screen->flush->flushInvalidate)(priv->driDrawable);
+ #endif
+ 
+-    if (DRI2SwapBuffers(client, drawable->pDraw, 0, 0, 0, &unused,
+-			__glXdriSwapEvent, drawable->pDraw) != Success)
+-	return FALSE;
+-
+     return TRUE;
+ }
+ 
+@@ -614,6 +615,24 @@ glxDRILeaveVT (int index, int flags)
+ }
+ 
+ static void
++glxDRIPreConfigureWindow(WindowPtr pWin, int x, int y, int w, int h, int bw,
++			 WindowPtr pSib)
++{
++    ScreenPtr pScreen = pWin->drawable.pScreen;
++    __GLXDRIscreen *screen = (__GLXDRIscreen *)glxGetScreen(pScreen);
++    __GLXDRIdrawable *draw = (__GLXDRIdrawable *)glxGetDrawableFromWindow(pWin);
++
++    if (screen->PreConfigureWindow)
++	    (*screen->PreConfigureWindow)(pWin, x, y, w, h, bw, pSib);
++
++    if (!draw || (draw->height == h && draw->width == w))
++	    return;
++
++    if (screen->flush)
++	    screen->flush->invalidate(draw->driDrawable);
++}
++
++static void
+ initializeExtensions(__GLXDRIscreen *screen)
+ {
+     const __DRIextension **extensions;
+@@ -789,6 +808,9 @@ __glXDRIscreenProbe(ScreenPtr pScreen)
+     screen->leaveVT = pScrn->LeaveVT;
+     pScrn->LeaveVT = glxDRILeaveVT;
+ 
++    screen->PreConfigureWindow = pScreen->PreConfigureWindow;
++    pScreen->PreConfigureWindow = glxDRIPreConfigureWindow;
++
+     LogMessage(X_INFO,
+ 	       "AIGLX: Loaded and initialized %s\n", filename);
+ 
+-- 
+1.7.0
+

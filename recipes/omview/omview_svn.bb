@@ -3,6 +3,7 @@ SECTION = "x11/graphics"
 PKG_TAGS_${PN} = "group::communication"
 DEPENDS += " evas ewl epsilon"
 RDEPENDS += " epsilon-thumbd"
+SRCREV = "34"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r2"
 

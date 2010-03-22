@@ -2,9 +2,9 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPLv3"
-PR = "r5"
+PR = "r6"
 DEPENDS = "gettext-native virtual/libiconv ncurses expat"
-DEPENDS_virtclass-native = ""
+DEPENDS_virtclass-native = "libxml2-native"
 PROVIDES = "virtual/libintl"
 PROVIDES_virtclass-native = ""
 RCONFLICTS_gettext-libintl = "proxy-libintl"
@@ -16,6 +16,7 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 	   file://wchar-uclibc.patch;patch=1 \
 	   file://use_open_properly.patch;patch=1 \
 	   file://gettext-autoconf-lib-link-no-L.patch;patch=1 \
+	   file://m4_copy.patch;patch=1 \
 	  "
 
 SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch;patch=1"

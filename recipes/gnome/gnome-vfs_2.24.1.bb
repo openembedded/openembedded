@@ -3,12 +3,13 @@ DEPENDS = "libxml2 gconf gnutls avahi dbus dbus-glib bzip2 gnome-mime-data zlib 
 RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 # Some legacy packages will require gnome-mime-data to be installed, but use of
 # it is deprecated.
-PR = "r1"
+PR = "r2"
 
 inherit gnome
 
 SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1 \
-	    file://gnome-vfs-no-kerberos.patch;patch=1;pnum=0"
+	    file://gnome-vfs-no-kerberos.patch;patch=1;pnum=0 \
+	    file://03_gnutls27.patch;patch=1"
 
 # This is to provide compatibility with the gnome-vfs DBus fork
 PROVIDES = "gnome-vfs-plugin-dbus"

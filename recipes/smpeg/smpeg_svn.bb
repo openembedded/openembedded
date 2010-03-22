@@ -6,41 +6,31 @@ DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
 PV = "0.4.5+svnr${SRCPV}"
 PE = "1"
-SRCREV = "370"
+SRCREV = "387"
 
-SRC_URI = "svn://svn.icculus.org/smpeg/;module=trunk  \
-	   file://m4.patch;patch=1 \
-	   file://as-fix.patch;patch=1"
+SRC_URI = "svn://svn.icculus.org/smpeg/;module=trunk"
 
 S = "${WORKDIR}/trunk"
 
-inherit autotools
+inherit autotools binconfig
 
-export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
-
-CFLAGS_append = " -I${STAGING_INCDIR}/SDL"
 EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x \
 		--without-gtk --disable-gtk-player"
 
 do_configure_prepend () {
 	touch NEWS AUTHORS ChangeLog
-	rm -f acinclude.m4
-}
-
-do_stage() {
-	oe_libinstall -so -C .libs libsmpeg-0.4 ${STAGING_LIBDIR}
-	ln -sf libsmpeg-0.4.so ${STAGING_LIBDIR}/libsmpeg.so
-
-	for f in "*.h"
-	do
-		install -m 0644 ${f} ${STAGING_INCDIR}/SDL
-	done
-
-        cat smpeg-config | sed -e "s,-I/usr/include/SDL,-I${STAGING_INCDIR}/SDL," \
-                         | sed -e "s,-I/usr/include/smpeg, ," \
-                         | sed -e "s,libdirs ,mickey_is_cool ," \
-                         | sed -e "s,-lSDL ,-lSDL-1.2 , "> ${STAGING_BINDIR_CROSS}/smpeg-config
-        chmod a+rx ${STAGING_BINDIR_CROSS}/smpeg-config
+	# drop all .m4 which are available in staging
+	rm -f acinclude/gtk-2.0.m4 \
+	      acinclude/libtool.m4 \
+	      acinclude/ltdl.m4 \
+	      acinclude/ltoptions.m4 \
+	      acinclude/ltsugar.m4 \
+	      acinclude/ltversion.m4 \
+	      acinclude/lt~obsolete.m4 \
+	      acinclude/pkg.m4 \
+	      acinclude/sdl.m4 \
+	      aclocal.m4 \
+	      acinclude.m4
 }
 
 PACKAGES =+ "plaympeg "

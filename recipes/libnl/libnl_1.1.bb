@@ -2,7 +2,11 @@ DESCRIPTION = "libnl is a library for applications dealing with netlink sockets"
 SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://people.suug.ch/~tgr/libnl"
-PR = "r2"
+
+# If you get errors like : undefined reference to `nl_handle_alloc
+# do a bitbake -c clean libnl2
+
+PR = "r3"
 
 inherit autotools pkgconfig
 
@@ -16,6 +20,3 @@ SRC_URI = "\
   file://netlink-local-fix.patch;patch=1 \
 "
 
-do_stage () {
-	autotools_stage_all prefix=${prefix}
-}

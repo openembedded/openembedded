@@ -155,6 +155,14 @@ $feeds = array(
 				'url'=>'ppc603e/gstreamer',
 			),
 
+			array(  
+				'name'=>'Beagleboard machine feed',
+				'url'=>'armv7a/machine/beagleboard',
+			),
+			array(  
+				'name'=>'Hawkoard machine feed',
+				'url'=>'armv5te/machine/hawkboard',
+			),
 			array(
 				'name'=>'Motorola A780',
 				'url'=>'armv5te/machine/a780',

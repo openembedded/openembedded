@@ -1,0 +1,2860 @@
+diff -Nur linux-2.6.28.10-at91/arch/arm/configs/mh355_defconfig linux-2.6.28.10-at91-mh/arch/arm/configs/mh355_defconfig
+--- linux-2.6.28.10-at91/arch/arm/configs/mh355_defconfig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.28.10-at91-mh/arch/arm/configs/mh355_defconfig	2010-03-20 22:22:57.000000000 +0100
+@@ -0,0 +1,1419 @@
++#
++# Automatically generated make config: don't edit
++# Linux kernel version: 2.6.28.10
++# Sat Mar 20 22:09:33 2010
++#
++CONFIG_ARM=y
++CONFIG_SYS_SUPPORTS_APM_EMULATION=y
++CONFIG_GENERIC_GPIO=y
++CONFIG_GENERIC_TIME=y
++CONFIG_GENERIC_CLOCKEVENTS=y
++CONFIG_MMU=y
++# CONFIG_NO_IOPORT is not set
++CONFIG_GENERIC_HARDIRQS=y
++CONFIG_STACKTRACE_SUPPORT=y
++CONFIG_HAVE_LATENCYTOP_SUPPORT=y
++CONFIG_LOCKDEP_SUPPORT=y
++CONFIG_TRACE_IRQFLAGS_SUPPORT=y
++CONFIG_HARDIRQS_SW_RESEND=y
++CONFIG_GENERIC_IRQ_PROBE=y
++CONFIG_RWSEM_GENERIC_SPINLOCK=y
++# CONFIG_ARCH_HAS_ILOG2_U32 is not set
++# CONFIG_ARCH_HAS_ILOG2_U64 is not set
++CONFIG_GENERIC_HWEIGHT=y
++CONFIG_GENERIC_CALIBRATE_DELAY=y
++CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ=y
++CONFIG_VECTORS_BASE=0xffff0000
++CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
++
++#
++# General setup
++#
++CONFIG_EXPERIMENTAL=y
++CONFIG_BROKEN_ON_SMP=y
++CONFIG_INIT_ENV_ARG_LIMIT=32
++CONFIG_LOCALVERSION="-mh355"
++# CONFIG_LOCALVERSION_AUTO is not set
++# CONFIG_SWAP is not set
++CONFIG_SYSVIPC=y
++CONFIG_SYSVIPC_SYSCTL=y
++# CONFIG_POSIX_MQUEUE is not set
++# CONFIG_BSD_PROCESS_ACCT is not set
++# CONFIG_TASKSTATS is not set
++# CONFIG_AUDIT is not set
++# CONFIG_IKCONFIG is not set
++CONFIG_LOG_BUF_SHIFT=14
++# CONFIG_CGROUPS is not set
++# CONFIG_GROUP_SCHED is not set
++CONFIG_SYSFS_DEPRECATED=y
++CONFIG_SYSFS_DEPRECATED_V2=y
++# CONFIG_RELAY is not set
++CONFIG_NAMESPACES=y
++# CONFIG_UTS_NS is not set
++# CONFIG_IPC_NS is not set
++# CONFIG_USER_NS is not set
++# CONFIG_PID_NS is not set
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE=""
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++CONFIG_SYSCTL=y
++CONFIG_ANON_INODES=y
++# CONFIG_EMBEDDED is not set
++CONFIG_UID16=y
++CONFIG_SYSCTL_SYSCALL=y
++CONFIG_KALLSYMS=y
++# CONFIG_KALLSYMS_ALL is not set
++# CONFIG_KALLSYMS_EXTRA_PASS is not set
++CONFIG_HOTPLUG=y
++CONFIG_PRINTK=y
++CONFIG_BUG=y
++CONFIG_ELF_CORE=y
++CONFIG_BASE_FULL=y
++CONFIG_FUTEX=y
++CONFIG_EPOLL=y
++CONFIG_SIGNALFD=y
++CONFIG_TIMERFD=y
++CONFIG_EVENTFD=y
++CONFIG_SHMEM=y
++CONFIG_AIO=y
++CONFIG_VM_EVENT_COUNTERS=y
++CONFIG_COMPAT_BRK=y
++CONFIG_SLAB=y
++# CONFIG_SLUB is not set
++# CONFIG_SLOB is not set
++# CONFIG_PROFILING is not set
++# CONFIG_MARKERS is not set
++CONFIG_HAVE_OPROFILE=y
++# CONFIG_KPROBES is not set
++CONFIG_HAVE_KPROBES=y
++CONFIG_HAVE_KRETPROBES=y
++CONFIG_HAVE_CLK=y
++CONFIG_HAVE_GENERIC_DMA_COHERENT=y
++CONFIG_SLABINFO=y
++CONFIG_RT_MUTEXES=y
++# CONFIG_TINY_SHMEM is not set
++CONFIG_BASE_SMALL=0
++CONFIG_MODULES=y
++# CONFIG_MODULE_FORCE_LOAD is not set
++CONFIG_MODULE_UNLOAD=y
++# CONFIG_MODULE_FORCE_UNLOAD is not set
++# CONFIG_MODVERSIONS is not set
++# CONFIG_MODULE_SRCVERSION_ALL is not set
++CONFIG_KMOD=y
++CONFIG_BLOCK=y
++# CONFIG_LBD is not set
++# CONFIG_BLK_DEV_IO_TRACE is not set
++# CONFIG_LSF is not set
++# CONFIG_BLK_DEV_BSG is not set
++# CONFIG_BLK_DEV_INTEGRITY is not set
++
++#
++# IO Schedulers
++#
++CONFIG_IOSCHED_NOOP=y
++CONFIG_IOSCHED_AS=y
++# CONFIG_IOSCHED_DEADLINE is not set
++# CONFIG_IOSCHED_CFQ is not set
++CONFIG_DEFAULT_AS=y
++# CONFIG_DEFAULT_DEADLINE is not set
++# CONFIG_DEFAULT_CFQ is not set
++# CONFIG_DEFAULT_NOOP is not set
++CONFIG_DEFAULT_IOSCHED="anticipatory"
++CONFIG_CLASSIC_RCU=y
++# CONFIG_FREEZER is not set
++
++#
++# System Type
++#
++# CONFIG_ARCH_AAEC2000 is not set
++# CONFIG_ARCH_INTEGRATOR is not set
++# CONFIG_ARCH_REALVIEW is not set
++# CONFIG_ARCH_VERSATILE is not set
++CONFIG_ARCH_AT91=y
++# CONFIG_ARCH_CLPS7500 is not set
++# CONFIG_ARCH_CLPS711X is not set
++# CONFIG_ARCH_EBSA110 is not set
++# CONFIG_ARCH_EP93XX is not set
++# CONFIG_ARCH_FOOTBRIDGE is not set
++# CONFIG_ARCH_NETX is not set
++# CONFIG_ARCH_H720X is not set
++# CONFIG_ARCH_IMX is not set
++# CONFIG_ARCH_IOP13XX is not set
++# CONFIG_ARCH_IOP32X is not set
++# CONFIG_ARCH_IOP33X is not set
++# CONFIG_ARCH_IXP23XX is not set
++# CONFIG_ARCH_IXP2000 is not set
++# CONFIG_ARCH_IXP4XX is not set
++# CONFIG_ARCH_L7200 is not set
++# CONFIG_ARCH_KIRKWOOD is not set
++# CONFIG_ARCH_KS8695 is not set
++# CONFIG_ARCH_NS9XXX is not set
++# CONFIG_ARCH_LOKI is not set
++# CONFIG_ARCH_MV78XX0 is not set
++# CONFIG_ARCH_MXC is not set
++# CONFIG_ARCH_ORION5X is not set
++# CONFIG_ARCH_PNX4008 is not set
++# CONFIG_ARCH_PXA is not set
++# CONFIG_ARCH_RPC is not set
++# CONFIG_ARCH_SA1100 is not set
++# CONFIG_ARCH_S3C2410 is not set
++# CONFIG_ARCH_SHARK is not set
++# CONFIG_ARCH_LH7A40X is not set
++# CONFIG_ARCH_DAVINCI is not set
++# CONFIG_ARCH_OMAP is not set
++# CONFIG_ARCH_MSM is not set
++
++#
++# Boot options
++#
++
++#
++# Power management
++#
++
++#
++# Atmel AT91 System-on-Chip
++#
++# CONFIG_ARCH_AT91RM9200 is not set
++# CONFIG_ARCH_AT91SAM9260 is not set
++# CONFIG_ARCH_AT91SAM9261 is not set
++CONFIG_ARCH_AT91SAM9263=y
++# CONFIG_ARCH_AT91SAM9RL is not set
++# CONFIG_ARCH_AT91SAM9G20 is not set
++# CONFIG_ARCH_AT91CAP9 is not set
++# CONFIG_ARCH_AT91X40 is not set
++CONFIG_AT91_PMC_UNIT=y
++
++#
++# AT91SAM9263 Board Type
++#
++# CONFIG_MACH_AT91SAM9263EK is not set
++# CONFIG_MACH_USB_A9263 is not set
++# CONFIG_MACH_CSB737 is not set
++# CONFIG_MACH_TOTEMNOVA is not set
++# CONFIG_MACH_NEOCORE926 is not set
++CONFIG_MACH_MH355=y
++# CONFIG_MH355_LCD_TX09D70 is not set
++CONFIG_MH355_LCD_FG0700K2DSSWBG01=y
++
++#
++# AT91 Board Options
++#
++# CONFIG_MTD_AT91_DATAFLASH_CARD is not set
++# CONFIG_MTD_NAND_ATMEL_BUSWIDTH_16 is not set
++
++#
++# AT91 Feature Selections
++#
++# CONFIG_AT91_PROGRAMMABLE_CLOCKS is not set
++CONFIG_AT91_TIMER_HZ=100
++CONFIG_AT91_EARLY_DBGU=y
++# CONFIG_AT91_EARLY_USART0 is not set
++# CONFIG_AT91_EARLY_USART1 is not set
++# CONFIG_AT91_EARLY_USART2 is not set
++# CONFIG_AT91_EARLY_USART3 is not set
++# CONFIG_AT91_EARLY_USART4 is not set
++# CONFIG_AT91_EARLY_USART5 is not set
++
++#
++# Processor Type
++#
++CONFIG_CPU_32=y
++CONFIG_CPU_ARM926T=y
++CONFIG_CPU_32v5=y
++CONFIG_CPU_ABRT_EV5TJ=y
++CONFIG_CPU_PABRT_NOIFAR=y
++CONFIG_CPU_CACHE_VIVT=y
++CONFIG_CPU_COPY_V4WB=y
++CONFIG_CPU_TLB_V4WBI=y
++CONFIG_CPU_CP15=y
++CONFIG_CPU_CP15_MMU=y
++
++#
++# Processor Features
++#
++# CONFIG_ARM_THUMB is not set
++# CONFIG_CPU_ICACHE_DISABLE is not set
++# CONFIG_CPU_DCACHE_DISABLE is not set
++# CONFIG_CPU_DCACHE_WRITETHROUGH is not set
++# CONFIG_CPU_CACHE_ROUND_ROBIN is not set
++# CONFIG_OUTER_CACHE is not set
++
++#
++# Bus support
++#
++# CONFIG_PCI_SYSCALL is not set
++# CONFIG_ARCH_SUPPORTS_MSI is not set
++# CONFIG_PCCARD is not set
++
++#
++# Kernel Features
++#
++# CONFIG_NO_HZ is not set
++# CONFIG_HIGH_RES_TIMERS is not set
++CONFIG_GENERIC_CLOCKEVENTS_BUILD=y
++CONFIG_VMSPLIT_3G=y
++# CONFIG_VMSPLIT_2G is not set
++# CONFIG_VMSPLIT_1G is not set
++CONFIG_PAGE_OFFSET=0xC0000000
++# CONFIG_PREEMPT is not set
++CONFIG_HZ=100
++# CONFIG_AEABI is not set
++CONFIG_ARCH_FLATMEM_HAS_HOLES=y
++# CONFIG_ARCH_SPARSEMEM_DEFAULT is not set
++# CONFIG_ARCH_SELECT_MEMORY_MODEL is not set
++CONFIG_SELECT_MEMORY_MODEL=y
++CONFIG_FLATMEM_MANUAL=y
++# CONFIG_DISCONTIGMEM_MANUAL is not set
++# CONFIG_SPARSEMEM_MANUAL is not set
++CONFIG_FLATMEM=y
++CONFIG_FLAT_NODE_MEM_MAP=y
++CONFIG_PAGEFLAGS_EXTENDED=y
++CONFIG_SPLIT_PTLOCK_CPUS=4096
++# CONFIG_RESOURCES_64BIT is not set
++# CONFIG_PHYS_ADDR_T_64BIT is not set
++CONFIG_ZONE_DMA_FLAG=0
++CONFIG_VIRT_TO_BUS=y
++CONFIG_UNEVICTABLE_LRU=y
++# CONFIG_LEDS is not set
++CONFIG_ALIGNMENT_TRAP=y
++
++#
++# Boot options
++#
++CONFIG_ZBOOT_ROM_TEXT=0x0
++CONFIG_ZBOOT_ROM_BSS=0x0
++CONFIG_CMDLINE="mem=64M console=ttyS0,115200 initrd=0x21100000,3145728 root=/dev/mtdblock5 rootfstype=jffs2 fbcon=rotate:3"
++# CONFIG_XIP_KERNEL is not set
++# CONFIG_KEXEC is not set
++
++#
++# CPU Power Management
++#
++# CONFIG_CPU_IDLE is not set
++
++#
++# Floating point emulation
++#
++
++#
++# At least one emulation must be selected
++#
++CONFIG_FPE_NWFPE=y
++# CONFIG_FPE_NWFPE_XP is not set
++# CONFIG_FPE_FASTFPE is not set
++# CONFIG_VFP is not set
++
++#
++# Userspace binary formats
++#
++CONFIG_BINFMT_ELF=y
++# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
++CONFIG_HAVE_AOUT=y
++# CONFIG_BINFMT_AOUT is not set
++# CONFIG_BINFMT_MISC is not set
++# CONFIG_ARTHUR is not set
++
++#
++# Power management options
++#
++# CONFIG_PM is not set
++CONFIG_ARCH_SUSPEND_POSSIBLE=y
++CONFIG_NET=y
++
++#
++# Networking options
++#
++CONFIG_PACKET=y
++# CONFIG_PACKET_MMAP is not set
++CONFIG_UNIX=y
++# CONFIG_NET_KEY is not set
++CONFIG_INET=y
++# CONFIG_IP_MULTICAST is not set
++# CONFIG_IP_ADVANCED_ROUTER is not set
++CONFIG_IP_FIB_HASH=y
++CONFIG_IP_PNP=y
++# CONFIG_IP_PNP_DHCP is not set
++CONFIG_IP_PNP_BOOTP=y
++CONFIG_IP_PNP_RARP=y
++# CONFIG_NET_IPIP is not set
++# CONFIG_NET_IPGRE is not set
++# CONFIG_ARPD is not set
++# CONFIG_SYN_COOKIES is not set
++# CONFIG_INET_AH is not set
++# CONFIG_INET_ESP is not set
++# CONFIG_INET_IPCOMP is not set
++# CONFIG_INET_XFRM_TUNNEL is not set
++# CONFIG_INET_TUNNEL is not set
++# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
++# CONFIG_INET_XFRM_MODE_TUNNEL is not set
++# CONFIG_INET_XFRM_MODE_BEET is not set
++# CONFIG_INET_LRO is not set
++# CONFIG_INET_DIAG is not set
++# CONFIG_TCP_CONG_ADVANCED is not set
++CONFIG_TCP_CONG_CUBIC=y
++CONFIG_DEFAULT_TCP_CONG="cubic"
++# CONFIG_TCP_MD5SIG is not set
++# CONFIG_IPV6 is not set
++# CONFIG_NETWORK_SECMARK is not set
++# CONFIG_NETFILTER is not set
++# CONFIG_IP_DCCP is not set
++# CONFIG_IP_SCTP is not set
++# CONFIG_TIPC is not set
++# CONFIG_ATM is not set
++# CONFIG_BRIDGE is not set
++# CONFIG_NET_DSA is not set
++# CONFIG_VLAN_8021Q is not set
++# CONFIG_DECNET is not set
++# CONFIG_LLC2 is not set
++# CONFIG_IPX is not set
++# CONFIG_ATALK is not set
++# CONFIG_X25 is not set
++# CONFIG_LAPB is not set
++# CONFIG_ECONET is not set
++# CONFIG_WAN_ROUTER is not set
++# CONFIG_NET_SCHED is not set
++
++#
++# Network testing
++#
++# CONFIG_NET_PKTGEN is not set
++# CONFIG_HAMRADIO is not set
++# CONFIG_CAN is not set
++# CONFIG_IRDA is not set
++# CONFIG_BT is not set
++# CONFIG_AF_RXRPC is not set
++# CONFIG_PHONET is not set
++CONFIG_WIRELESS=y
++# CONFIG_CFG80211 is not set
++CONFIG_WIRELESS_OLD_REGULATORY=y
++# CONFIG_WIRELESS_EXT is not set
++# CONFIG_MAC80211 is not set
++# CONFIG_IEEE80211 is not set
++# CONFIG_RFKILL is not set
++# CONFIG_NET_9P is not set
++
++#
++# Device Drivers
++#
++
++#
++# Generic Driver Options
++#
++CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_STANDALONE=y
++CONFIG_PREVENT_FIRMWARE_BUILD=y
++CONFIG_FW_LOADER=y
++CONFIG_FIRMWARE_IN_KERNEL=y
++CONFIG_EXTRA_FIRMWARE=""
++# CONFIG_DEBUG_DRIVER is not set
++# CONFIG_DEBUG_DEVRES is not set
++# CONFIG_SYS_HYPERVISOR is not set
++# CONFIG_CONNECTOR is not set
++CONFIG_MTD=y
++# CONFIG_MTD_DEBUG is not set
++# CONFIG_MTD_CONCAT is not set
++CONFIG_MTD_PARTITIONS=y
++# CONFIG_MTD_REDBOOT_PARTS is not set
++CONFIG_MTD_CMDLINE_PARTS=y
++# CONFIG_MTD_AFS_PARTS is not set
++# CONFIG_MTD_AR7_PARTS is not set
++
++#
++# User Modules And Translation Layers
++#
++CONFIG_MTD_CHAR=y
++CONFIG_MTD_BLKDEVS=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_FTL is not set
++# CONFIG_NFTL is not set
++# CONFIG_INFTL is not set
++# CONFIG_RFD_FTL is not set
++# CONFIG_SSFDC is not set
++# CONFIG_MTD_OOPS is not set
++
++#
++# RAM/ROM/Flash chip drivers
++#
++CONFIG_MTD_CFI=y
++CONFIG_MTD_JEDECPROBE=y
++CONFIG_MTD_GEN_PROBE=y
++# CONFIG_MTD_CFI_ADV_OPTIONS is not set
++CONFIG_MTD_MAP_BANK_WIDTH_1=y
++CONFIG_MTD_MAP_BANK_WIDTH_2=y
++CONFIG_MTD_MAP_BANK_WIDTH_4=y
++# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
++CONFIG_MTD_CFI_I1=y
++CONFIG_MTD_CFI_I2=y
++# CONFIG_MTD_CFI_I4 is not set
++# CONFIG_MTD_CFI_I8 is not set
++CONFIG_MTD_CFI_INTELEXT=y
++CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_CFI_STAA=y
++CONFIG_MTD_CFI_UTIL=y
++CONFIG_MTD_RAM=y
++CONFIG_MTD_ROM=y
++CONFIG_MTD_ABSENT=y
++
++#
++# Mapping drivers for chip access
++#
++CONFIG_MTD_COMPLEX_MAPPINGS=y
++CONFIG_MTD_PHYSMAP=y
++CONFIG_MTD_PHYSMAP_START=0x10000000
++CONFIG_MTD_PHYSMAP_LEN=0x400000
++CONFIG_MTD_PHYSMAP_BANKWIDTH=2
++# CONFIG_MTD_ARM_INTEGRATOR is not set
++# CONFIG_MTD_IMPA7 is not set
++# CONFIG_MTD_PLATRAM is not set
++
++#
++# Self-contained MTD device drivers
++#
++CONFIG_MTD_DATAFLASH=y
++# CONFIG_MTD_DATAFLASH_WRITE_VERIFY is not set
++# CONFIG_MTD_DATAFLASH_OTP is not set
++# CONFIG_MTD_M25P80 is not set
++# CONFIG_MTD_SLRAM is not set
++# CONFIG_MTD_PHRAM is not set
++# CONFIG_MTD_MTDRAM is not set
++# CONFIG_MTD_BLOCK2MTD is not set
++
++#
++# Disk-On-Chip Device Drivers
++#
++# CONFIG_MTD_DOC2000 is not set
++# CONFIG_MTD_DOC2001 is not set
++# CONFIG_MTD_DOC2001PLUS is not set
++CONFIG_MTD_NAND=y
++CONFIG_MTD_NAND_VERIFY_WRITE=y
++# CONFIG_MTD_NAND_ECC_SMC is not set
++# CONFIG_MTD_NAND_MUSEUM_IDS is not set
++# CONFIG_MTD_NAND_GPIO is not set
++CONFIG_MTD_NAND_IDS=y
++# CONFIG_MTD_NAND_DISKONCHIP is not set
++CONFIG_MTD_NAND_ATMEL=y
++# CONFIG_MTD_NAND_ATMEL_ECC_HW is not set
++# CONFIG_MTD_NAND_ATMEL_ECC_HW_HSIAO is not set
++CONFIG_MTD_NAND_ATMEL_ECC_SOFT=y
++# CONFIG_MTD_NAND_ATMEL_ECC_NONE is not set
++# CONFIG_MTD_NAND_NANDSIM is not set
++# CONFIG_MTD_NAND_PLATFORM is not set
++# CONFIG_MTD_ALAUDA is not set
++# CONFIG_MTD_ONENAND is not set
++
++#
++# UBI - Unsorted block images
++#
++# CONFIG_MTD_UBI is not set
++# CONFIG_PARPORT is not set
++CONFIG_BLK_DEV=y
++# CONFIG_BLK_DEV_COW_COMMON is not set
++CONFIG_BLK_DEV_LOOP=y
++# CONFIG_BLK_DEV_CRYPTOLOOP is not set
++# CONFIG_BLK_DEV_NBD is not set
++# CONFIG_BLK_DEV_UB is not set
++CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_RAM_COUNT=16
++CONFIG_BLK_DEV_RAM_SIZE=8192
++# CONFIG_BLK_DEV_XIP is not set
++# CONFIG_CDROM_PKTCDVD is not set
++# CONFIG_ATA_OVER_ETH is not set
++CONFIG_MISC_DEVICES=y
++CONFIG_ATMEL_PWM=y
++# CONFIG_ATMEL_TCLIB is not set
++# CONFIG_EEPROM_93CX6 is not set
++CONFIG_ATMEL_SSC=y
++# CONFIG_ENCLOSURE_SERVICES is not set
++# CONFIG_C2PORT is not set
++CONFIG_HAVE_IDE=y
++CONFIG_IDE=y
++
++#
++# Please see Documentation/ide/ide.txt for help/info on IDE drives
++#
++# CONFIG_BLK_DEV_IDE_SATA is not set
++CONFIG_IDE_GD=y
++CONFIG_IDE_GD_ATA=y
++# CONFIG_IDE_GD_ATAPI is not set
++# CONFIG_BLK_DEV_IDECD is not set
++# CONFIG_BLK_DEV_IDETAPE is not set
++# CONFIG_BLK_DEV_IDESCSI is not set
++# CONFIG_IDE_TASK_IOCTL is not set
++CONFIG_IDE_PROC_FS=y
++
++#
++# IDE chipset support/bugfixes
++#
++# CONFIG_BLK_DEV_PLATFORM is not set
++# CONFIG_BLK_DEV_IDEDMA is not set
++
++#
++# SCSI device support
++#
++# CONFIG_RAID_ATTRS is not set
++CONFIG_SCSI=y
++CONFIG_SCSI_DMA=y
++# CONFIG_SCSI_TGT is not set
++# CONFIG_SCSI_NETLINK is not set
++CONFIG_SCSI_PROC_FS=y
++
++#
++# SCSI support type (disk, tape, CD-ROM)
++#
++CONFIG_BLK_DEV_SD=y
++# CONFIG_CHR_DEV_ST is not set
++# CONFIG_CHR_DEV_OSST is not set
++CONFIG_BLK_DEV_SR=y
++# CONFIG_BLK_DEV_SR_VENDOR is not set
++# CONFIG_CHR_DEV_SG is not set
++# CONFIG_CHR_DEV_SCH is not set
++
++#
++# Some SCSI devices (e.g. CD jukebox) support multiple LUNs
++#
++CONFIG_SCSI_MULTI_LUN=y
++# CONFIG_SCSI_CONSTANTS is not set
++# CONFIG_SCSI_LOGGING is not set
++# CONFIG_SCSI_SCAN_ASYNC is not set
++CONFIG_SCSI_WAIT_SCAN=m
++
++#
++# SCSI Transports
++#
++# CONFIG_SCSI_SPI_ATTRS is not set
++# CONFIG_SCSI_FC_ATTRS is not set
++# CONFIG_SCSI_ISCSI_ATTRS is not set
++# CONFIG_SCSI_SAS_LIBSAS is not set
++# CONFIG_SCSI_SRP_ATTRS is not set
++CONFIG_SCSI_LOWLEVEL=y
++# CONFIG_ISCSI_TCP is not set
++# CONFIG_SCSI_DEBUG is not set
++# CONFIG_SCSI_DH is not set
++# CONFIG_ATA is not set
++# CONFIG_MD is not set
++CONFIG_NETDEVICES=y
++# CONFIG_DUMMY is not set
++# CONFIG_BONDING is not set
++# CONFIG_MACVLAN is not set
++# CONFIG_EQUALIZER is not set
++# CONFIG_TUN is not set
++# CONFIG_VETH is not set
++CONFIG_PHYLIB=y
++
++#
++# MII PHY device drivers
++#
++# CONFIG_MARVELL_PHY is not set
++# CONFIG_DAVICOM_PHY is not set
++# CONFIG_QSEMI_PHY is not set
++# CONFIG_LXT_PHY is not set
++# CONFIG_CICADA_PHY is not set
++# CONFIG_VITESSE_PHY is not set
++# CONFIG_SMSC_PHY is not set
++# CONFIG_BROADCOM_PHY is not set
++# CONFIG_ICPLUS_PHY is not set
++# CONFIG_REALTEK_PHY is not set
++# CONFIG_FIXED_PHY is not set
++# CONFIG_MDIO_BITBANG is not set
++CONFIG_NET_ETHERNET=y
++CONFIG_MII=y
++CONFIG_MACB=y
++# CONFIG_MACB_TX_SRAM is not set
++# CONFIG_AX88796 is not set
++# CONFIG_SMC91X is not set
++# CONFIG_DM9000 is not set
++# CONFIG_ENC28J60 is not set
++# CONFIG_SMC911X is not set
++# CONFIG_IBM_NEW_EMAC_ZMII is not set
++# CONFIG_IBM_NEW_EMAC_RGMII is not set
++# CONFIG_IBM_NEW_EMAC_TAH is not set
++# CONFIG_IBM_NEW_EMAC_EMAC4 is not set
++# CONFIG_IBM_NEW_EMAC_NO_FLOW_CTRL is not set
++# CONFIG_IBM_NEW_EMAC_MAL_CLR_ICINTSTAT is not set
++# CONFIG_IBM_NEW_EMAC_MAL_COMMON_ERR is not set
++# CONFIG_B44 is not set
++# CONFIG_NETDEV_1000 is not set
++# CONFIG_NETDEV_10000 is not set
++
++#
++# Wireless LAN
++#
++# CONFIG_WLAN_PRE80211 is not set
++# CONFIG_WLAN_80211 is not set
++# CONFIG_IWLWIFI_LEDS is not set
++
++#
++# USB Network Adapters
++#
++# CONFIG_USB_CATC is not set
++# CONFIG_USB_KAWETH is not set
++# CONFIG_USB_PEGASUS is not set
++# CONFIG_USB_RTL8150 is not set
++# CONFIG_USB_USBNET is not set
++# CONFIG_WAN is not set
++# CONFIG_PPP is not set
++# CONFIG_SLIP is not set
++# CONFIG_NETCONSOLE is not set
++# CONFIG_NETPOLL is not set
++# CONFIG_NET_POLL_CONTROLLER is not set
++# CONFIG_ISDN is not set
++
++#
++# Input device support
++#
++CONFIG_INPUT=y
++# CONFIG_INPUT_FF_MEMLESS is not set
++# CONFIG_INPUT_POLLDEV is not set
++
++#
++# Userland interfaces
++#
++CONFIG_INPUT_MOUSEDEV=y
++# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
++CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
++CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
++# CONFIG_INPUT_JOYDEV is not set
++CONFIG_INPUT_EVDEV=y
++# CONFIG_INPUT_EVBUG is not set
++
++#
++# Input Device Drivers
++#
++CONFIG_INPUT_KEYBOARD=y
++# CONFIG_KEYBOARD_ATKBD is not set
++# CONFIG_KEYBOARD_SUNKBD is not set
++# CONFIG_KEYBOARD_LKKBD is not set
++# CONFIG_KEYBOARD_XTKBD is not set
++# CONFIG_KEYBOARD_NEWTON is not set
++# CONFIG_KEYBOARD_STOWAWAY is not set
++CONFIG_KEYBOARD_GPIO=y
++# CONFIG_INPUT_MOUSE is not set
++# CONFIG_INPUT_JOYSTICK is not set
++# CONFIG_INPUT_TABLET is not set
++CONFIG_INPUT_TOUCHSCREEN=y
++CONFIG_TOUCHSCREEN_ADS7846=y
++# CONFIG_TOUCHSCREEN_FUJITSU is not set
++# CONFIG_TOUCHSCREEN_GUNZE is not set
++# CONFIG_TOUCHSCREEN_ELO is not set
++# CONFIG_TOUCHSCREEN_MTOUCH is not set
++# CONFIG_TOUCHSCREEN_INEXIO is not set
++# CONFIG_TOUCHSCREEN_MK712 is not set
++# CONFIG_TOUCHSCREEN_PENMOUNT is not set
++# CONFIG_TOUCHSCREEN_TOUCHRIGHT is not set
++# CONFIG_TOUCHSCREEN_TOUCHWIN is not set
++# CONFIG_TOUCHSCREEN_WM97XX is not set
++# CONFIG_TOUCHSCREEN_USB_COMPOSITE is not set
++# CONFIG_TOUCHSCREEN_TOUCHIT213 is not set
++# CONFIG_INPUT_MISC is not set
++
++#
++# Hardware I/O ports
++#
++# CONFIG_SERIO is not set
++# CONFIG_GAMEPORT is not set
++
++#
++# Character devices
++#
++CONFIG_VT=y
++CONFIG_CONSOLE_TRANSLATIONS=y
++CONFIG_VT_CONSOLE=y
++CONFIG_HW_CONSOLE=y
++# CONFIG_VT_HW_CONSOLE_BINDING is not set
++CONFIG_DEVKMEM=y
++# CONFIG_SERIAL_NONSTANDARD is not set
++
++#
++# Serial drivers
++#
++# CONFIG_SERIAL_8250 is not set
++
++#
++# Non-8250 serial port support
++#
++CONFIG_SERIAL_ATMEL=y
++CONFIG_SERIAL_ATMEL_CONSOLE=y
++CONFIG_SERIAL_ATMEL_PDC=y
++# CONFIG_SERIAL_ATMEL_TTYAT is not set
++CONFIG_SERIAL_CORE=y
++CONFIG_SERIAL_CORE_CONSOLE=y
++CONFIG_UNIX98_PTYS=y
++CONFIG_LEGACY_PTYS=y
++CONFIG_LEGACY_PTY_COUNT=256
++# CONFIG_IPMI_HANDLER is not set
++CONFIG_HW_RANDOM=y
++# CONFIG_NVRAM is not set
++# CONFIG_R3964 is not set
++# CONFIG_RAW_DRIVER is not set
++# CONFIG_TCG_TPM is not set
++# CONFIG_I2C is not set
++CONFIG_SPI=y
++# CONFIG_SPI_DEBUG is not set
++CONFIG_SPI_MASTER=y
++
++#
++# SPI Master Controller Drivers
++#
++CONFIG_SPI_ATMEL=y
++# CONFIG_SPI_BITBANG is not set
++
++#
++# SPI Protocol Masters
++#
++# CONFIG_SPI_AT25 is not set
++# CONFIG_SPI_SPIDEV is not set
++# CONFIG_SPI_TLE62X0 is not set
++CONFIG_W1=y
++
++#
++# 1-wire Bus Masters
++#
++# CONFIG_W1_MASTER_DS2490 is not set
++# CONFIG_W1_MASTER_DS1WM is not set
++CONFIG_W1_MASTER_GPIO=y
++
++#
++# 1-wire Slaves
++#
++# CONFIG_W1_SLAVE_THERM is not set
++CONFIG_W1_SLAVE_SMEM=y
++# CONFIG_W1_SLAVE_DS2433 is not set
++# CONFIG_W1_SLAVE_DS2760 is not set
++# CONFIG_W1_SLAVE_BQ27000 is not set
++# CONFIG_POWER_SUPPLY is not set
++# CONFIG_HWMON is not set
++# CONFIG_THERMAL is not set
++# CONFIG_THERMAL_HWMON is not set
++CONFIG_WATCHDOG=y
++CONFIG_WATCHDOG_NOWAYOUT=y
++
++#
++# Watchdog Device Drivers
++#
++# CONFIG_SOFT_WATCHDOG is not set
++CONFIG_AT91SAM9X_WATCHDOG=y
++
++#
++# USB-based Watchdog Cards
++#
++# CONFIG_USBPCWATCHDOG is not set
++CONFIG_SSB_POSSIBLE=y
++
++#
++# Sonics Silicon Backplane
++#
++# CONFIG_SSB is not set
++
++#
++# Multifunction device drivers
++#
++# CONFIG_MFD_CORE is not set
++# CONFIG_MFD_SM501 is not set
++# CONFIG_HTC_PASIC3 is not set
++# CONFIG_MFD_TMIO is not set
++# CONFIG_MFD_T7L66XB is not set
++# CONFIG_MFD_TC6387XB is not set
++
++#
++# Multimedia devices
++#
++
++#
++# Multimedia core support
++#
++# CONFIG_VIDEO_DEV is not set
++# CONFIG_DVB_CORE is not set
++# CONFIG_VIDEO_MEDIA is not set
++
++#
++# Multimedia drivers
++#
++# CONFIG_DAB is not set
++
++#
++# Graphics support
++#
++# CONFIG_VGASTATE is not set
++# CONFIG_VIDEO_OUTPUT_CONTROL is not set
++CONFIG_FB=y
++# CONFIG_FIRMWARE_EDID is not set
++# CONFIG_FB_DDC is not set
++# CONFIG_FB_BOOT_VESA_SUPPORT is not set
++CONFIG_FB_CFB_FILLRECT=y
++CONFIG_FB_CFB_COPYAREA=y
++CONFIG_FB_CFB_IMAGEBLIT=y
++# CONFIG_FB_CFB_REV_PIXELS_IN_BYTE is not set
++# CONFIG_FB_SYS_FILLRECT is not set
++# CONFIG_FB_SYS_COPYAREA is not set
++# CONFIG_FB_SYS_IMAGEBLIT is not set
++# CONFIG_FB_FOREIGN_ENDIAN is not set
++# CONFIG_FB_SYS_FOPS is not set
++# CONFIG_FB_SVGALIB is not set
++# CONFIG_FB_MACMODES is not set
++# CONFIG_FB_BACKLIGHT is not set
++# CONFIG_FB_MODE_HELPERS is not set
++# CONFIG_FB_TILEBLITTING is not set
++
++#
++# Frame buffer hardware drivers
++#
++# CONFIG_FB_S1D15605 is not set
++# CONFIG_FB_S1D13XXX is not set
++CONFIG_FB_ATMEL=y
++# CONFIG_FB_VIRTUAL is not set
++# CONFIG_FB_METRONOME is not set
++# CONFIG_FB_MB862XX is not set
++# CONFIG_BACKLIGHT_LCD_SUPPORT is not set
++
++#
++# Display device support
++#
++# CONFIG_DISPLAY_SUPPORT is not set
++
++#
++# Console display driver support
++#
++# CONFIG_VGA_CONSOLE is not set
++CONFIG_DUMMY_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE=y
++# CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY is not set
++CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
++# CONFIG_FONTS is not set
++CONFIG_FONT_8x8=y
++CONFIG_FONT_8x16=y
++CONFIG_LOGO=y
++CONFIG_LOGO_LINUX_MONO=y
++CONFIG_LOGO_LINUX_VGA16=y
++CONFIG_LOGO_LINUX_CLUT224=y
++CONFIG_SOUND=y
++CONFIG_SOUND_OSS_CORE=y
++CONFIG_SND=y
++CONFIG_SND_TIMER=y
++CONFIG_SND_PCM=y
++# CONFIG_SND_SEQUENCER is not set
++CONFIG_SND_OSSEMUL=y
++CONFIG_SND_MIXER_OSS=y
++CONFIG_SND_PCM_OSS=y
++CONFIG_SND_PCM_OSS_PLUGINS=y
++# CONFIG_SND_DYNAMIC_MINORS is not set
++CONFIG_SND_SUPPORT_OLD_API=y
++CONFIG_SND_VERBOSE_PROCFS=y
++# CONFIG_SND_VERBOSE_PRINTK is not set
++# CONFIG_SND_DEBUG is not set
++CONFIG_SND_VMASTER=y
++CONFIG_SND_AC97_CODEC=y
++CONFIG_SND_DRIVERS=y
++# CONFIG_SND_DUMMY is not set
++# CONFIG_SND_MTPAV is not set
++# CONFIG_SND_SERIAL_U16550 is not set
++# CONFIG_SND_MPU401 is not set
++# CONFIG_SND_AC97_POWER_SAVE is not set
++CONFIG_SND_ARM=y
++CONFIG_SND_AT91_AC97=y
++CONFIG_SND_SPI=y
++# CONFIG_SND_AT73C213 is not set
++CONFIG_SND_USB=y
++# CONFIG_SND_USB_AUDIO is not set
++# CONFIG_SND_USB_CAIAQ is not set
++# CONFIG_SND_SOC is not set
++# CONFIG_SOUND_PRIME is not set
++CONFIG_AC97_BUS=y
++CONFIG_HID_SUPPORT=y
++CONFIG_HID=y
++# CONFIG_HID_DEBUG is not set
++# CONFIG_HIDRAW is not set
++
++#
++# USB Input Devices
++#
++CONFIG_USB_HID=y
++# CONFIG_HID_PID is not set
++# CONFIG_USB_HIDDEV is not set
++
++#
++# Special HID drivers
++#
++CONFIG_HID_COMPAT=y
++CONFIG_HID_A4TECH=y
++CONFIG_HID_APPLE=y
++CONFIG_HID_BELKIN=y
++CONFIG_HID_BRIGHT=y
++CONFIG_HID_CHERRY=y
++CONFIG_HID_CHICONY=y
++CONFIG_HID_CYPRESS=y
++CONFIG_HID_DELL=y
++CONFIG_HID_EZKEY=y
++CONFIG_HID_GYRATION=y
++CONFIG_HID_LOGITECH=y
++# CONFIG_LOGITECH_FF is not set
++# CONFIG_LOGIRUMBLEPAD2_FF is not set
++CONFIG_HID_MICROSOFT=y
++CONFIG_HID_MONTEREY=y
++CONFIG_HID_PANTHERLORD=y
++# CONFIG_PANTHERLORD_FF is not set
++CONFIG_HID_PETALYNX=y
++CONFIG_HID_SAMSUNG=y
++CONFIG_HID_SONY=y
++CONFIG_HID_SUNPLUS=y
++# CONFIG_THRUSTMASTER_FF is not set
++# CONFIG_ZEROPLUS_FF is not set
++CONFIG_USB_SUPPORT=y
++CONFIG_USB_ARCH_HAS_HCD=y
++CONFIG_USB_ARCH_HAS_OHCI=y
++# CONFIG_USB_ARCH_HAS_EHCI is not set
++CONFIG_USB=y
++# CONFIG_USB_DEBUG is not set
++# CONFIG_USB_ANNOUNCE_NEW_DEVICES is not set
++
++#
++# Miscellaneous USB options
++#
++CONFIG_USB_DEVICEFS=y
++CONFIG_USB_DEVICE_CLASS=y
++# CONFIG_USB_DYNAMIC_MINORS is not set
++# CONFIG_USB_OTG is not set
++CONFIG_USB_MON=y
++# CONFIG_USB_WUSB is not set
++# CONFIG_USB_WUSB_CBAF is not set
++
++#
++# USB Host Controller Drivers
++#
++# CONFIG_USB_C67X00_HCD is not set
++# CONFIG_USB_ISP116X_HCD is not set
++CONFIG_USB_OHCI_HCD=y
++# CONFIG_USB_OHCI_BIG_ENDIAN_DESC is not set
++# CONFIG_USB_OHCI_BIG_ENDIAN_MMIO is not set
++CONFIG_USB_OHCI_LITTLE_ENDIAN=y
++# CONFIG_USB_SL811_HCD is not set
++# CONFIG_USB_R8A66597_HCD is not set
++# CONFIG_USB_HWA_HCD is not set
++# CONFIG_USB_MUSB_HDRC is not set
++# CONFIG_USB_GADGET_MUSB_HDRC is not set
++
++#
++# USB Device Class drivers
++#
++# CONFIG_USB_ACM is not set
++# CONFIG_USB_PRINTER is not set
++# CONFIG_USB_WDM is not set
++# CONFIG_USB_TMC is not set
++
++#
++# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may also be needed;
++#
++
++#
++# see USB_STORAGE Help for more information
++#
++CONFIG_USB_STORAGE=y
++# CONFIG_USB_STORAGE_DEBUG is not set
++# CONFIG_USB_STORAGE_DATAFAB is not set
++# CONFIG_USB_STORAGE_FREECOM is not set
++# CONFIG_USB_STORAGE_ISD200 is not set
++# CONFIG_USB_STORAGE_DPCM is not set
++# CONFIG_USB_STORAGE_USBAT is not set
++# CONFIG_USB_STORAGE_SDDR09 is not set
++# CONFIG_USB_STORAGE_SDDR55 is not set
++# CONFIG_USB_STORAGE_JUMPSHOT is not set
++# CONFIG_USB_STORAGE_ALAUDA is not set
++# CONFIG_USB_STORAGE_ONETOUCH is not set
++# CONFIG_USB_STORAGE_KARMA is not set
++# CONFIG_USB_STORAGE_CYPRESS_ATACB is not set
++CONFIG_USB_LIBUSUAL=y
++
++#
++# USB Imaging devices
++#
++# CONFIG_USB_MDC800 is not set
++# CONFIG_USB_MICROTEK is not set
++
++#
++# USB port drivers
++#
++# CONFIG_USB_SERIAL is not set
++
++#
++# USB Miscellaneous drivers
++#
++# CONFIG_USB_EMI62 is not set
++# CONFIG_USB_EMI26 is not set
++# CONFIG_USB_ADUTUX is not set
++# CONFIG_USB_SEVSEG is not set
++# CONFIG_USB_RIO500 is not set
++# CONFIG_USB_LEGOTOWER is not set
++# CONFIG_USB_LCD is not set
++# CONFIG_USB_BERRY_CHARGE is not set
++# CONFIG_USB_LED is not set
++# CONFIG_USB_CYPRESS_CY7C63 is not set
++# CONFIG_USB_CYTHERM is not set
++# CONFIG_USB_PHIDGET is not set
++# CONFIG_USB_IDMOUSE is not set
++# CONFIG_USB_FTDI_ELAN is not set
++# CONFIG_USB_APPLEDISPLAY is not set
++# CONFIG_USB_LD is not set
++# CONFIG_USB_TRANCEVIBRATOR is not set
++# CONFIG_USB_IOWARRIOR is not set
++# CONFIG_USB_TEST is not set
++# CONFIG_USB_ISIGHTFW is not set
++# CONFIG_USB_VST is not set
++CONFIG_USB_GADGET=y
++# CONFIG_USB_GADGET_DEBUG is not set
++# CONFIG_USB_GADGET_DEBUG_FILES is not set
++CONFIG_USB_GADGET_VBUS_DRAW=2
++CONFIG_USB_GADGET_SELECTED=y
++CONFIG_USB_GADGET_AT91=y
++CONFIG_USB_AT91=y
++# CONFIG_USB_GADGET_ATMEL_USBA is not set
++# CONFIG_USB_GADGET_FSL_USB2 is not set
++# CONFIG_USB_GADGET_LH7A40X is not set
++# CONFIG_USB_GADGET_OMAP is not set
++# CONFIG_USB_GADGET_PXA25X is not set
++# CONFIG_USB_GADGET_PXA27X is not set
++# CONFIG_USB_GADGET_S3C2410 is not set
++# CONFIG_USB_GADGET_M66592 is not set
++# CONFIG_USB_GADGET_AMD5536UDC is not set
++# CONFIG_USB_GADGET_FSL_QE is not set
++# CONFIG_USB_GADGET_NET2280 is not set
++# CONFIG_USB_GADGET_GOKU is not set
++# CONFIG_USB_GADGET_DUMMY_HCD is not set
++# CONFIG_USB_GADGET_DUALSPEED is not set
++CONFIG_USB_ZERO=m
++CONFIG_USB_ETH=m
++CONFIG_USB_ETH_RNDIS=y
++CONFIG_USB_GADGETFS=m
++CONFIG_USB_FILE_STORAGE=m
++# CONFIG_USB_FILE_STORAGE_TEST is not set
++CONFIG_USB_G_SERIAL=m
++# CONFIG_USB_MIDI_GADGET is not set
++# CONFIG_USB_G_PRINTER is not set
++CONFIG_USB_CDC_COMPOSITE=m
++CONFIG_MMC=y
++# CONFIG_MMC_DEBUG is not set
++# CONFIG_MMC_UNSAFE_RESUME is not set
++
++#
++# MMC/SD/SDIO Card Drivers
++#
++CONFIG_MMC_BLOCK=y
++CONFIG_MMC_BLOCK_BOUNCE=y
++# CONFIG_SDIO_UART is not set
++# CONFIG_MMC_TEST is not set
++
++#
++# MMC/SD/SDIO Host Controller Drivers
++#
++# CONFIG_MMC_SDHCI is not set
++CONFIG_MMC_AT91=y
++# CONFIG_MMC_SPI is not set
++# CONFIG_MEMSTICK is not set
++# CONFIG_ACCESSIBILITY is not set
++CONFIG_NEW_LEDS=y
++CONFIG_LEDS_CLASS=y
++
++#
++# LED drivers
++#
++CONFIG_LEDS_ATMEL_PWM=y
++CONFIG_LEDS_GPIO=y
++
++#
++# LED Triggers
++#
++CONFIG_LEDS_TRIGGERS=y
++CONFIG_LEDS_TRIGGER_TIMER=y
++CONFIG_LEDS_TRIGGER_IDE_DISK=y
++CONFIG_LEDS_TRIGGER_HEARTBEAT=y
++CONFIG_LEDS_TRIGGER_BACKLIGHT=y
++CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
++CONFIG_RTC_LIB=y
++CONFIG_RTC_CLASS=y
++CONFIG_RTC_HCTOSYS=y
++CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
++# CONFIG_RTC_DEBUG is not set
++
++#
++# RTC interfaces
++#
++CONFIG_RTC_INTF_SYSFS=y
++CONFIG_RTC_INTF_PROC=y
++CONFIG_RTC_INTF_DEV=y
++# CONFIG_RTC_INTF_DEV_UIE_EMUL is not set
++# CONFIG_RTC_DRV_TEST is not set
++
++#
++# SPI RTC drivers
++#
++# CONFIG_RTC_DRV_M41T94 is not set
++# CONFIG_RTC_DRV_DS1305 is not set
++# CONFIG_RTC_DRV_DS1390 is not set
++# CONFIG_RTC_DRV_MAX6902 is not set
++# CONFIG_RTC_DRV_R9701 is not set
++# CONFIG_RTC_DRV_RS5C348 is not set
++# CONFIG_RTC_DRV_DS3234 is not set
++
++#
++# Platform RTC drivers
++#
++# CONFIG_RTC_DRV_CMOS is not set
++# CONFIG_RTC_DRV_DS1286 is not set
++# CONFIG_RTC_DRV_DS1511 is not set
++# CONFIG_RTC_DRV_DS1553 is not set
++# CONFIG_RTC_DRV_DS1742 is not set
++# CONFIG_RTC_DRV_STK17TA8 is not set
++# CONFIG_RTC_DRV_M48T86 is not set
++# CONFIG_RTC_DRV_M48T35 is not set
++# CONFIG_RTC_DRV_M48T59 is not set
++# CONFIG_RTC_DRV_BQ4802 is not set
++# CONFIG_RTC_DRV_V3020 is not set
++
++#
++# on-CPU RTC drivers
++#
++CONFIG_RTC_DRV_AT91SAM9=y
++CONFIG_RTC_DRV_AT91SAM9_RTT=0
++CONFIG_RTC_DRV_AT91SAM9_GPBR=0
++# CONFIG_DMADEVICES is not set
++# CONFIG_REGULATOR is not set
++# CONFIG_UIO is not set
++
++#
++# File systems
++#
++# CONFIG_EXT2_FS is not set
++# CONFIG_EXT3_FS is not set
++# CONFIG_EXT4_FS is not set
++# CONFIG_REISERFS_FS is not set
++# CONFIG_JFS_FS is not set
++# CONFIG_FS_POSIX_ACL is not set
++CONFIG_FILE_LOCKING=y
++# CONFIG_XFS_FS is not set
++# CONFIG_OCFS2_FS is not set
++CONFIG_DNOTIFY=y
++CONFIG_INOTIFY=y
++CONFIG_INOTIFY_USER=y
++# CONFIG_QUOTA is not set
++# CONFIG_AUTOFS_FS is not set
++# CONFIG_AUTOFS4_FS is not set
++# CONFIG_FUSE_FS is not set
++
++#
++# CD-ROM/DVD Filesystems
++#
++# CONFIG_ISO9660_FS is not set
++# CONFIG_UDF_FS is not set
++
++#
++# DOS/FAT/NT Filesystems
++#
++CONFIG_FAT_FS=y
++# CONFIG_MSDOS_FS is not set
++CONFIG_VFAT_FS=y
++CONFIG_FAT_DEFAULT_CODEPAGE=437
++CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
++# CONFIG_NTFS_FS is not set
++
++#
++# Pseudo filesystems
++#
++CONFIG_PROC_FS=y
++CONFIG_PROC_SYSCTL=y
++CONFIG_PROC_PAGE_MONITOR=y
++CONFIG_SYSFS=y
++CONFIG_TMPFS=y
++# CONFIG_TMPFS_POSIX_ACL is not set
++# CONFIG_HUGETLB_PAGE is not set
++# CONFIG_CONFIGFS_FS is not set
++
++#
++# Miscellaneous filesystems
++#
++# CONFIG_ADFS_FS is not set
++# CONFIG_AFFS_FS is not set
++# CONFIG_HFS_FS is not set
++# CONFIG_HFSPLUS_FS is not set
++# CONFIG_BEFS_FS is not set
++# CONFIG_BFS_FS is not set
++# CONFIG_EFS_FS is not set
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_FS_DEBUG=0
++CONFIG_JFFS2_FS_WRITEBUFFER=y
++# CONFIG_JFFS2_FS_WBUF_VERIFY is not set
++# CONFIG_JFFS2_SUMMARY is not set
++# CONFIG_JFFS2_FS_XATTR is not set
++# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
++CONFIG_JFFS2_ZLIB=y
++# CONFIG_JFFS2_LZO is not set
++CONFIG_JFFS2_RTIME=y
++# CONFIG_JFFS2_RUBIN is not set
++CONFIG_CRAMFS=y
++# CONFIG_VXFS_FS is not set
++# CONFIG_MINIX_FS is not set
++# CONFIG_OMFS_FS is not set
++# CONFIG_HPFS_FS is not set
++# CONFIG_QNX4FS_FS is not set
++# CONFIG_ROMFS_FS is not set
++# CONFIG_SYSV_FS is not set
++# CONFIG_UFS_FS is not set
++CONFIG_NETWORK_FILESYSTEMS=y
++CONFIG_NFS_FS=y
++# CONFIG_NFS_V3 is not set
++# CONFIG_NFS_V4 is not set
++CONFIG_ROOT_NFS=y
++# CONFIG_NFSD is not set
++CONFIG_LOCKD=y
++CONFIG_NFS_COMMON=y
++CONFIG_SUNRPC=y
++# CONFIG_SUNRPC_REGISTER_V4 is not set
++# CONFIG_RPCSEC_GSS_KRB5 is not set
++# CONFIG_RPCSEC_GSS_SPKM3 is not set
++# CONFIG_SMB_FS is not set
++# CONFIG_CIFS is not set
++# CONFIG_NCP_FS is not set
++# CONFIG_CODA_FS is not set
++# CONFIG_AFS_FS is not set
++
++#
++# Partition Types
++#
++# CONFIG_PARTITION_ADVANCED is not set
++CONFIG_MSDOS_PARTITION=y
++CONFIG_NLS=y
++CONFIG_NLS_DEFAULT="iso8859-1"
++CONFIG_NLS_CODEPAGE_437=y
++# CONFIG_NLS_CODEPAGE_737 is not set
++# CONFIG_NLS_CODEPAGE_775 is not set
++CONFIG_NLS_CODEPAGE_850=y
++# CONFIG_NLS_CODEPAGE_852 is not set
++# CONFIG_NLS_CODEPAGE_855 is not set
++# CONFIG_NLS_CODEPAGE_857 is not set
++# CONFIG_NLS_CODEPAGE_860 is not set
++# CONFIG_NLS_CODEPAGE_861 is not set
++# CONFIG_NLS_CODEPAGE_862 is not set
++# CONFIG_NLS_CODEPAGE_863 is not set
++# CONFIG_NLS_CODEPAGE_864 is not set
++# CONFIG_NLS_CODEPAGE_865 is not set
++# CONFIG_NLS_CODEPAGE_866 is not set
++# CONFIG_NLS_CODEPAGE_869 is not set
++# CONFIG_NLS_CODEPAGE_936 is not set
++# CONFIG_NLS_CODEPAGE_950 is not set
++# CONFIG_NLS_CODEPAGE_932 is not set
++# CONFIG_NLS_CODEPAGE_949 is not set
++# CONFIG_NLS_CODEPAGE_874 is not set
++# CONFIG_NLS_ISO8859_8 is not set
++# CONFIG_NLS_CODEPAGE_1250 is not set
++# CONFIG_NLS_CODEPAGE_1251 is not set
++# CONFIG_NLS_ASCII is not set
++CONFIG_NLS_ISO8859_1=y
++# CONFIG_NLS_ISO8859_2 is not set
++# CONFIG_NLS_ISO8859_3 is not set
++# CONFIG_NLS_ISO8859_4 is not set
++# CONFIG_NLS_ISO8859_5 is not set
++# CONFIG_NLS_ISO8859_6 is not set
++# CONFIG_NLS_ISO8859_7 is not set
++# CONFIG_NLS_ISO8859_9 is not set
++# CONFIG_NLS_ISO8859_13 is not set
++# CONFIG_NLS_ISO8859_14 is not set
++# CONFIG_NLS_ISO8859_15 is not set
++# CONFIG_NLS_KOI8_R is not set
++# CONFIG_NLS_KOI8_U is not set
++# CONFIG_NLS_UTF8 is not set
++# CONFIG_DLM is not set
++
++#
++# Kernel hacking
++#
++# CONFIG_PRINTK_TIME is not set
++CONFIG_ENABLE_WARN_DEPRECATED=y
++CONFIG_ENABLE_MUST_CHECK=y
++CONFIG_FRAME_WARN=1024
++# CONFIG_MAGIC_SYSRQ is not set
++# CONFIG_UNUSED_SYMBOLS is not set
++# CONFIG_DEBUG_FS is not set
++# CONFIG_HEADERS_CHECK is not set
++CONFIG_DEBUG_KERNEL=y
++# CONFIG_DEBUG_SHIRQ is not set
++CONFIG_DETECT_SOFTLOCKUP=y
++# CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
++CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=0
++CONFIG_SCHED_DEBUG=y
++# CONFIG_SCHEDSTATS is not set
++# CONFIG_TIMER_STATS is not set
++# CONFIG_DEBUG_OBJECTS is not set
++# CONFIG_DEBUG_SLAB is not set
++# CONFIG_DEBUG_RT_MUTEXES is not set
++# CONFIG_RT_MUTEX_TESTER is not set
++# CONFIG_DEBUG_SPINLOCK is not set
++# CONFIG_DEBUG_MUTEXES is not set
++# CONFIG_DEBUG_LOCK_ALLOC is not set
++# CONFIG_PROVE_LOCKING is not set
++# CONFIG_LOCK_STAT is not set
++# CONFIG_DEBUG_SPINLOCK_SLEEP is not set
++# CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
++# CONFIG_DEBUG_KOBJECT is not set
++CONFIG_DEBUG_BUGVERBOSE=y
++# CONFIG_DEBUG_INFO is not set
++# CONFIG_DEBUG_VM is not set
++# CONFIG_DEBUG_WRITECOUNT is not set
++CONFIG_DEBUG_MEMORY_INIT=y
++# CONFIG_DEBUG_LIST is not set
++# CONFIG_DEBUG_SG is not set
++CONFIG_FRAME_POINTER=y
++# CONFIG_BOOT_PRINTK_DELAY is not set
++# CONFIG_RCU_TORTURE_TEST is not set
++# CONFIG_RCU_CPU_STALL_DETECTOR is not set
++# CONFIG_BACKTRACE_SELF_TEST is not set
++# CONFIG_DEBUG_BLOCK_EXT_DEVT is not set
++# CONFIG_FAULT_INJECTION is not set
++# CONFIG_LATENCYTOP is not set
++# CONFIG_SYSCTL_SYSCALL_CHECK is not set
++CONFIG_HAVE_FUNCTION_TRACER=y
++
++#
++# Tracers
++#
++# CONFIG_FUNCTION_TRACER is not set
++# CONFIG_IRQSOFF_TRACER is not set
++# CONFIG_SCHED_TRACER is not set
++# CONFIG_CONTEXT_SWITCH_TRACER is not set
++# CONFIG_BOOT_TRACER is not set
++# CONFIG_STACK_TRACER is not set
++# CONFIG_DYNAMIC_PRINTK_DEBUG is not set
++# CONFIG_SAMPLES is not set
++CONFIG_HAVE_ARCH_KGDB=y
++# CONFIG_KGDB is not set
++CONFIG_DEBUG_USER=y
++# CONFIG_DEBUG_ERRORS is not set
++# CONFIG_DEBUG_STACK_USAGE is not set
++CONFIG_DEBUG_LL=y
++# CONFIG_DEBUG_ICEDCC is not set
++
++#
++# Security options
++#
++# CONFIG_KEYS is not set
++# CONFIG_SECURITY is not set
++# CONFIG_SECURITYFS is not set
++# CONFIG_SECURITY_FILE_CAPABILITIES is not set
++# CONFIG_CRYPTO is not set
++
++#
++# Library routines
++#
++CONFIG_BITREVERSE=y
++# CONFIG_CRC_CCITT is not set
++# CONFIG_CRC16 is not set
++# CONFIG_CRC_T10DIF is not set
++# CONFIG_CRC_ITU_T is not set
++CONFIG_CRC32=y
++# CONFIG_CRC7 is not set
++# CONFIG_LIBCRC32C is not set
++CONFIG_ZLIB_INFLATE=y
++CONFIG_ZLIB_DEFLATE=y
++CONFIG_PLIST=y
++CONFIG_HAS_IOMEM=y
++CONFIG_HAS_IOPORT=y
++CONFIG_HAS_DMA=y
+diff -Nur linux-2.6.28.10-at91/arch/arm/mach-at91/board-mh355.c linux-2.6.28.10-at91-mh/arch/arm/mach-at91/board-mh355.c
+--- linux-2.6.28.10-at91/arch/arm/mach-at91/board-mh355.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.28.10-at91-mh/arch/arm/mach-at91/board-mh355.c	2010-03-20 20:40:35.000000000 +0100
+@@ -0,0 +1,692 @@
++/*
++ * linux/arch/arm/mach-at91/board-mh355.c
++ *
++ *  Copyright (C) 2009 Microhard
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/ads7846.h>
++#include <linux/i2c/at24.h>
++#include <linux/fb.h>
++#include <linux/gpio_keys.h>
++#include <linux/input.h>
++#include <linux/leds.h>
++#include <linux/w1-gpio.h>
++
++#include <video/atmel_lcdc.h>
++
++#include <asm/setup.h>
++#include <asm/mach-types.h>
++#include <asm/irq.h>
++
++#include <asm/mach/arch.h>
++#include <asm/mach/map.h>
++#include <asm/mach/irq.h>
++
++#include <mach/hardware.h>
++#include <mach/board.h>
++#include <mach/gpio.h>
++#include <mach/at91sam9_smc.h>
++#include <mach/at91_shdwc.h>
++#include <mach/at91sam9263_matrix.h>
++
++#include "sam9_smc.h"
++#include "generic.h"
++
++
++static void __init mh355_map_io(void)
++{
++	/* Initialize processor: 18.432 MHz crystal */
++	at91sam9263_initialize(18432000);
++
++	/* DGBU on ttyS0. (Rx & Tx only) */
++	at91_register_uart(0, 0, 0);
++
++	/* USART0 on ttyS1. (Rx, Tx, RTS, CTS) */
++	at91_register_uart(AT91SAM9263_ID_US0, 1, ATMEL_UART_CTS | ATMEL_UART_RTS);
++
++	/* USART1 on ttyS2. (Rx, Tx, RTS, CTS) */
++	at91_register_uart(AT91SAM9263_ID_US1, 2, ATMEL_UART_CTS | ATMEL_UART_RTS);
++
++	/* USART2 on ttyS3. (Rx, Tx, RTS, CTS) */
++	at91_register_uart(AT91SAM9263_ID_US2, 3, ATMEL_UART_CTS | ATMEL_UART_RTS);
++
++
++	/* set serial console to ttyS0 (ie, DBGU) */
++	at91_set_serial_console(0);
++}
++
++static void __init mh355_init_irq(void)
++{
++	at91sam9263_init_interrupts(NULL);
++}
++
++
++/*
++ * USB Host port
++ */
++static struct at91_usbh_data __initdata mh355_usbh_data = {
++	.ports		= 2,
++	.vbus_pin	= { 0, 0 },
++};
++
++/*
++ * USB Device port
++k
++*/
++static struct at91_udc_data __initdata mh355_udc_data = {
++	.vbus_pin	= AT91_PIN_PA25,
++	.pullup_pin	= 0,		/* pull-up driven by UDC */
++};
++
++
++/*
++ * ADS7846 Touchscreen
++ */
++#if defined(CONFIG_TOUCHSCREEN_ADS7846) || defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
++static int ads7843_pendown_state(void)
++{
++	return !at91_get_gpio_value(AT91_PIN_PA15);	/* Touchscreen PENIRQ */
++}
++
++static struct ads7846_platform_data ads_info = {
++	.model			= 7843,
++	.x_min			= 150,
++	.x_max			= 3830,
++	.y_min			= 190,
++	.y_max			= 3830,
++	.vref_delay_usecs	= 100,
++	.x_plate_ohms		= 450,
++	.y_plate_ohms		= 250,
++	.pressure_max		= 15000,
++	.debounce_max		= 1,
++	.debounce_rep		= 0,
++	.debounce_tol		= (~0),
++	.get_pendown_state	= ads7843_pendown_state,
++};
++
++static void __init mh355_add_device_ts(void)
++{
++	at91_set_B_periph(AT91_PIN_PA15, 1);	/* External IRQ1, with pullup */
++	at91_set_gpio_input(AT91_PIN_PA31, 1);	/* Touchscreen BUSY signal */
++}
++#else
++static void __init mh355_add_device_ts(void) {}
++#endif
++
++/*
++ * SPI devices.
++ */
++static struct spi_board_info mh355_spi_devices[] = {
++#if defined(CONFIG_MTD_AT91_DATAFLASH_CARD)
++	{	/* DataFlash card */
++		.modalias	= "mtd_dataflash",
++		.chip_select	= 0,
++		.max_speed_hz	= 15 * 1000 * 1000,
++		.bus_num	= 0,
++	},
++#endif
++#if defined(CONFIG_TOUCHSCREEN_ADS7846) || defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
++	{
++		.modalias	= "ads7846",
++		.chip_select	= 0,
++		.max_speed_hz	= 125000 * 16,	/* max sample rate * clocks per sample */
++		.bus_num	= 1,
++		.platform_data	= &ads_info,
++		.irq		= AT91SAM9263_ID_IRQ1,
++	},
++#endif
++};
++
++
++/*
++ * MCI (SD/MMC)
++ */
++static struct at91_mmc_data __initdata mh355_mmc_data = {
++	.wire4		= 1,
++	.det_pin	= AT91_PIN_PA21,
++	.wp_pin		= AT91_PIN_PA16,
++//	.vcc_pin	= ... not connected
++};
++
++
++/*
++ * MACB Ethernet device
++ */
++static struct at91_eth_data __initdata mh355_macb_data = {
++	.phy_irq_pin	= AT91_PIN_PE31,
++	.is_rmii	= 1,
++};
++
++
++/*
++ * NAND flash
++ */
++static struct mtd_partition __initdata mh355_nand_partition[] = {
++	{
++		.name	= "Bootstrap",
++		.offset	= 0,
++		.size	= 0x20000,
++	},
++
++	{
++		.name	= "U-Boot",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= 0x40000,
++	},
++
++	{
++		.name	= "U-Boot-env",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= 0x40000,
++	},
++	{
++		.name	= "Kernel",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= 0x360000,
++	},
++
++//	{
++//		.name	= "Splash",
++//		.offset	= MTDPART_OFS_NXTBLK,
++//		.size	= 0x160000,
++//	},
++	
++	{
++		.name	= "Root-FS",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= MTDPART_SIZ_FULL,
++	}
++};
++
++static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
++{
++	*num_partitions = ARRAY_SIZE(mh355_nand_partition);
++	return mh355_nand_partition;
++}
++
++static struct atmel_nand_data __initdata mh355_nand_data = {
++	.ale		= 21,
++	.cle		= 22,
++//	.det_pin	= ... not connected
++
++	/*
++	** Modificato RDY da PB30 in PA22 per renderlo compatibile con sistemi ATMEL.
++	*/
++//	.rdy_pin	= AT91_PIN_PB30,
++	.rdy_pin	= AT91_PIN_PA22,
++	.enable_pin	= AT91_PIN_PD15,
++	.partition_info	= nand_partitions,
++#if defined(CONFIG_MTD_NAND_ATMEL_BUSWIDTH_16)
++	.bus_width_16	= 1,
++#else
++	.bus_width_16	= 0,
++#endif
++};
++
++static struct sam9_smc_config __initdata mh355_nand_smc_config = {
++	.ncs_read_setup		= 0,
++	.nrd_setup		= 1,
++	.ncs_write_setup	= 0,
++	.nwe_setup		= 1,
++
++	.ncs_read_pulse		= 3,
++	.nrd_pulse		= 3,
++	.ncs_write_pulse	= 3,
++	.nwe_pulse		= 3,
++
++	.read_cycle		= 5,
++	.write_cycle		= 5,
++
++	.mode			= AT91_SMC_READMODE | AT91_SMC_WRITEMODE | AT91_SMC_EXNWMODE_DISABLE,
++	.tdf_cycles		= 2,
++};
++
++static void __init mh355_add_device_nand(void)
++{
++	/* setup bus-width (8 or 16) */
++	if (mh355_nand_data.bus_width_16)
++		mh355_nand_smc_config.mode |= AT91_SMC_DBW_16;
++	else
++		mh355_nand_smc_config.mode |= AT91_SMC_DBW_8;
++
++	/* configure chip-select 3 (NAND) */
++	sam9_smc_configure(3, &mh355_nand_smc_config);
++
++	at91_add_device_nand(&mh355_nand_data);
++}
++
++
++/*
++ * LCD Controller
++ */
++#if defined(CONFIG_FB_ATMEL) || defined(CONFIG_FB_ATMEL_MODULE)
++
++#define AT91SAM9263_DEFAULT_LCDCON2 	(ATMEL_LCDC_MEMOR_LITTLE \
++					| ATMEL_LCDC_DISTYPE_TFT \
++					| ATMEL_LCDC_CLKMOD_ALWAYSACTIVE)
++
++
++static void at91_lcdc_power_control(int on)
++{
++	/*
++	** Commentato per non interagire con il PA22 utilizzato dalla NAND flash. Da rimettere in un posto giusto.
++	*/
++//	at91_set_gpio_value(AT91_PIN_PA22, on);
++}
++
++static u64 lcdc_dmamask = 0xffffffffUL;
++static struct atmel_lcdfb_info lcdc_data;
++
++static struct resource lcdc_resources[] = {
++	[0] = {
++		.start	= AT91SAM9263_LCDC_BASE,
++		.end	= AT91SAM9263_LCDC_BASE + SZ_4K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= AT91_CHIPSELECT_6,
++		.end	= AT91_CHIPSELECT_6 + SZ_4M - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	[2] = {
++		.start	= AT91SAM9263_ID_LCDC,
++		.end	= AT91SAM9263_ID_LCDC,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device at91_lcdc_device = {
++	.name		= "atmel_lcdfb",
++	.id		= 0,
++	.dev		= {
++				.dma_mask		= &lcdc_dmamask,
++				.coherent_dma_mask	= 0xffffffffUL,
++				.platform_data		= &lcdc_data,
++	},
++	.resource	= lcdc_resources,
++	.num_resources	= ARRAY_SIZE(lcdc_resources),
++};
++
++static void __init mh355_add_device_lcdc(struct atmel_lcdfb_info *data)
++{
++	if (!data)
++		return;
++
++	at91_set_A_periph(AT91_PIN_PC0, 0);	/* LCDVSYNC */
++	at91_set_A_periph(AT91_PIN_PC1, 0);	/* LCDHSYNC */
++	at91_set_A_periph(AT91_PIN_PC2, 0);	/* LCDDOTCK */
++	at91_set_A_periph(AT91_PIN_PC3, 0);	/* LCDDEN */
++	at91_set_B_periph(AT91_PIN_PB9, 0);	/* LCDCC */
++	at91_set_A_periph(AT91_PIN_PC6, 0);	/* LCDD2 */
++	at91_set_A_periph(AT91_PIN_PC7, 0);	/* LCDD3 */
++	at91_set_A_periph(AT91_PIN_PC8, 0);	/* LCDD4 */
++	at91_set_A_periph(AT91_PIN_PC9, 0);	/* LCDD5 */
++	at91_set_A_periph(AT91_PIN_PC10, 0);	/* LCDD6 */
++	at91_set_A_periph(AT91_PIN_PC11, 0);	/* LCDD7 */
++	at91_set_A_periph(AT91_PIN_PC14, 0);	/* LCDD10 */
++	at91_set_A_periph(AT91_PIN_PC15, 0);	/* LCDD11 */
++	at91_set_A_periph(AT91_PIN_PC16, 0);	/* LCDD12 */
++	at91_set_B_periph(AT91_PIN_PC12, 0);	/* LCDD13 */
++	at91_set_A_periph(AT91_PIN_PC18, 0);	/* LCDD14 */
++	at91_set_A_periph(AT91_PIN_PC19, 0);	/* LCDD15 */
++	at91_set_A_periph(AT91_PIN_PC22, 0);	/* LCDD18 */
++	at91_set_A_periph(AT91_PIN_PC23, 0);	/* LCDD19 */
++	at91_set_A_periph(AT91_PIN_PC24, 0);	/* LCDD20 */
++	at91_set_B_periph(AT91_PIN_PC17, 0);	/* LCDD21 */
++	at91_set_A_periph(AT91_PIN_PC26, 0);	/* LCDD22 */
++	at91_set_A_periph(AT91_PIN_PC27, 0);	/* LCDD23 */
++
++	lcdc_data = *data;
++	platform_device_register(&at91_lcdc_device);
++}
++
++
++#if defined(CONFIG_MH355_LCD_TX09D70)
++/* Hitachi TX09D70VM1CCA - 3.5", 320x240 */
++static struct fb_videomode at91_tft_vga_modes[] = {
++	{
++		.name			= "TX09D50VM1CCA @ 60",
++		.refresh		= 60,
++		.xres			= 240,
++		.yres			= 320,
++		.pixclock		= KHZ2PICOS(4965),
++		.left_margin	= 1,
++		.right_margin	= 33,
++		.upper_margin	= 1,
++		.lower_margin	= 0,
++		.hsync_len		= 5,
++		.vsync_len		= 1,
++		.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++		.vmode			= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs at91fb_default_monspecs = {
++	.manufacturer	= "HIT",
++	.monitor	= "TX09D70VM1CCA",
++	.modedb		= at91_tft_vga_modes,
++	.modedb_len	= ARRAY_SIZE(at91_tft_vga_modes),
++	.hfmin		= 15000,
++	.hfmax		= 64000,
++	.vfmin		= 50,
++	.vfmax		= 150,
++};
++
++/* Driver datas */
++static struct atmel_lcdfb_info __initdata mh355_lcdc_data = {
++	.lcdcon_is_backlight	= true,
++	.default_bpp			= 16,
++	.default_dmacon			= ATMEL_LCDC_DMAEN,
++	.default_lcdcon2		= AT91SAM9263_DEFAULT_LCDCON2,
++	.default_monspecs		= &at91fb_default_monspecs,
++	.atmel_lcdfb_power_control	= at91_lcdc_power_control,
++	.guard_time			= 1,
++};
++
++#elif defined(CONFIG_MH355_LCD_FG0700K2DSSWBG01)
++/* DataImage FG0700K2 - 7.0", 800x480, 350cd */
++static struct fb_videomode __initdata tft_modes[] = {
++	{
++		.name			= "DataImage 800x480 @ 60",
++		.refresh		= 60,
++		.xres			= 800,
++		.yres			= 480,
++		.pixclock		= KHZ2PICOS(15000),
++
++		.left_margin	= 256,
++		.right_margin	= 0,
++		.upper_margin	= 45,
++		.lower_margin	= 0,
++
++		.hsync_len		= 5,
++		.vsync_len		= 1,
++		.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++		.vmode			= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs __initdata tft_default_monspecs = {
++	.manufacturer	= "DataImage",
++	.monitor		= "FG0700K2",
++	.modedb			= tft_modes,
++	.modedb_len		= ARRAY_SIZE(tft_modes),
++	.hfmin			= 10000,
++	.hfmax			= 35000,
++	.vfmin			= 40,
++	.vfmax			= 90,
++	.dclkmax		= 35000000,
++};
++
++static struct atmel_lcdfb_info __initdata mh355_lcdc_data = {
++	.default_bpp		= 16,
++	.default_dmacon		= ATMEL_LCDC_DMAEN,
++	.default_lcdcon2	= AT91SAM9263_DEFAULT_LCDCON2,
++	.default_monspecs	= &tft_default_monspecs,
++	.guard_time			= 2,
++	.lcd_wiring_mode	= ATMEL_LCDC_WIRING_RGB,
++};
++
++#else
++#error "Undefined LCD display!"
++#endif
++
++#else
++static struct atmel_lcdfb_info __initdata mh355_lcdc_data;
++#endif
++
++
++/*
++ * GPIO Buttons
++ */
++#if defined(CONFIG_KEYBOARD_GPIO) || defined(CONFIG_KEYBOARD_GPIO_MODULE)
++static struct gpio_keys_button mh355_buttons[] = {
++	{	/* SW3 */
++		.code		= BTN_LEFT,
++		.gpio		= AT91_PIN_PC5,
++		.active_low	= 1,
++		.desc		= "SW3",
++		.wakeup		= 1,
++	},
++	{	/* SW4 */
++		.code		= BTN_RIGHT,
++		.gpio		= AT91_PIN_PC4,
++		.active_low	= 1,
++		.desc		= "SW4",
++		.wakeup		= 1,
++	}
++};
++
++static struct gpio_keys_platform_data mh355_button_data = {
++	.buttons	= mh355_buttons,
++	.nbuttons	= ARRAY_SIZE(mh355_buttons),
++};
++
++static struct platform_device mh355_button_device = {
++	.name		= "gpio-keys",
++	.id		= -1,
++	.num_resources	= 0,
++	.dev		= {
++		.platform_data	= &mh355_button_data,
++	}
++};
++
++static void __init mh355_add_device_buttons(void)
++{
++	int i;
++
++	for (i = 0; i < mh355_button_data.nbuttons; i ++) {
++		at91_set_gpio_input(mh355_buttons[i].gpio, 1);
++		at91_set_deglitch(mh355_buttons[i].gpio, 1);
++	}
++
++//	platform_device_register(&mh355_button_device);
++}
++#else
++static void __init mh355_add_device_buttons(void) {}
++#endif
++
++
++/*
++ * AC97
++ */
++static struct atmel_ac97_data mh355_ac97_data = {
++	.reset_pin	= 0,
++};
++
++
++/*
++ * LEDs ... these could all be PWM-driven, for variable brightness
++ */
++static struct gpio_led mh355_leds[] = {
++	{	/* "right" led, green, userled2 (could be driven by pwm2) */
++		.name			= "led0",
++		.gpio			= AT91_PIN_PB7,
++		.active_low		= 1,
++		.default_trigger	= "nand-disk",
++	},
++	{	/* "power" led, yellow (could be driven by pwm0) */
++		.name			= "led1",
++		.gpio			= AT91_PIN_PB8,
++		.active_low		= 1,
++		.default_trigger	= "heartbeat",
++	}
++};
++
++#if defined(CONFIG_W1_MASTER_GPIO) || defined(CONFIG_W1_MASTER_GPIO_MODULE)
++struct w1_gpio_platform_data pm926x_w1_platdata = {
++        .pin          = AT91_PIN_PB31,
++	.is_open_drain = 0,
++};
++
++static struct platform_device pm926x_w1_device = {
++	.name		= "w1-gpio",
++	.id		= 0,
++	.dev		= {
++		.platform_data 	= &pm926x_w1_platdata,
++	},
++};
++#endif
++
++#if defined(CONFIG_AT91_CF) || defined(CONFIG_AT91_CF_MODULE)
++static struct at91_cf_data mh355_cf_data = {
++	.det_pin	= AT91_PIN_PA30,
++	.rst_pin	= AT91_PIN_PA23,
++	.irq_pin	= AT91_PIN_PA24,
++	// .vcc_pin	= ... always powered
++	.chipselect	= 4,
++};
++
++static struct resource mh355_cf_resources[] = {
++	[0] = {
++		.start	= AT91_CHIPSELECT_4,
++		.end	= AT91_CHIPSELECT_4 + (0x10000000 - 1),
++		.flags	= IORESOURCE_MEM | IORESOURCE_MEM_8AND16BIT,
++	},
++};
++
++static struct platform_device mh355_cf_device = {
++	.name		= "at91_cf",
++	.id		= -1,
++	.dev		= {
++		.platform_data	= &mh355_cf_data,
++	},
++	.resource	= mh355_cf_resources,
++	.num_resources	= ARRAY_SIZE(mh355_cf_resources),
++};
++
++#define CF_NWE_SETUP	(9 << 0)
++#define CF_NCS_WR_SETUP	(2 << 8)
++#define CF_NRD_SETUP	(9 << 16)
++#define CF_NCS_RD_SETUP	(2 << 24)
++
++#define CF_NWE_PULSE 	(17 << 0)
++#define CF_NCS_WR_PULSE	(27 << 8)
++#define CF_NRD_PULSE	(17 << 16)
++#define CF_NCS_RD_PULSE	(27 << 24)
++
++#define CF_NWE_CYCLE 	(40 << 0)
++#define CF_NRD_CYCLE	(40 << 16)
++
++#define CF_TDF		(1 << 16)
++
++static void __init mh355_add_device_cf(void) {
++struct at91_cf_data *data = & mh355_cf_data;
++unsigned int csa;
++
++	// Setup Compact flash, first enable the address range of
++	// CS4 in HMATRIX user interface
++	csa = at91_sys_read(AT91_MATRIX_EBI0CSA);
++	at91_sys_write(AT91_MATRIX_EBI0CSA, csa | AT91_MATRIX_EBI0_CS4A_SMC_CF1);
++
++	/* Configure SMC CS4 */
++	at91_sys_write(AT91_SMC_SETUP(4),
++				(CF_NWE_SETUP |
++				CF_NCS_WR_SETUP |
++				CF_NRD_SETUP |
++				CF_NCS_RD_SETUP));
++
++	at91_sys_write(AT91_SMC_PULSE(4), (CF_NWE_PULSE |
++					CF_NCS_WR_PULSE |
++					CF_NRD_PULSE |
++					CF_NCS_RD_PULSE));
++	at91_sys_write(AT91_SMC_CYCLE(4), (CF_NWE_CYCLE | CF_NRD_CYCLE));
++	// 16 bit
++	at91_sys_write (AT91_SMC_MODE(4), (AT91_SMC_READMODE |
++					AT91_SMC_WRITEMODE |
++					AT91_SMC_EXNWMODE_DISABLE |
++					AT91_SMC_DBW_16 |
++					CF_TDF));
++
++	/* input/irq */
++	if (data->irq_pin) {
++		at91_set_gpio_input(data->irq_pin, 0);
++		at91_set_deglitch(data->irq_pin, 1);
++	}
++	at91_set_gpio_input(data->det_pin, 0);
++	at91_set_deglitch(data->det_pin, 1);
++
++	/* outputs, initially off */
++	if (data->vcc_pin)
++		at91_set_gpio_output(data->vcc_pin, 0);
++	if (data->rst_pin)
++		at91_set_gpio_output(data->rst_pin, 0);
++
++	/* force poweron defaults for these pins ... */
++	at91_set_A_periph(AT91_PIN_PD5, 0);	/* PD5/CF_NWAIT */
++	at91_set_A_periph(AT91_PIN_PD14, 0);	/* A25/CFRNW */
++	at91_set_A_periph(AT91_PIN_PD6, 0);	/* NCS4/CFCS0 */
++	at91_set_A_periph(AT91_PIN_PD8, 0);	/* PD8/CFCE1 */
++	at91_set_A_periph(AT91_PIN_PD9, 0);	/* PD9/CFCE2 */
++
++	platform_device_register(&mh355_cf_device);
++}
++#else
++void __init mh355_add_device_cf(void) {}
++#endif
++
++static void __init mh355_board_init(void)
++{
++	/* Serial */
++	at91_add_device_serial();
++	/* USB Host */
++	at91_add_device_usbh(&mh355_usbh_data);
++	/* USB Device */
++	at91_add_device_udc(&mh355_udc_data);
++	/* SPI */
++	at91_add_device_spi(mh355_spi_devices, ARRAY_SIZE(mh355_spi_devices));
++	/* Touchscreen */
++	mh355_add_device_ts();
++	/* MMC */
++	at91_add_device_mmc(1, &mh355_mmc_data);
++	/* Ethernet */
++	at91_add_device_eth(&mh355_macb_data);
++	/* NAND */
++	mh355_add_device_nand();
++	/* LCD Controller */
++	mh355_add_device_lcdc(&mh355_lcdc_data);
++	/* Push Buttons */
++	mh355_add_device_buttons();
++	/* AC97 */
++	at91_add_device_ac97(&mh355_ac97_data);
++#if defined(CONFIG_W1_MASTER_GPIO) || defined(CONFIG_W1_MASTER_GPIO_MODULE)
++	platform_device_register(&pm926x_w1_device);
++#endif
++	/* Compact flash */
++	mh355_add_device_cf();
++	/* LEDs */
++	at91_gpio_leds(mh355_leds, ARRAY_SIZE(mh355_leds));
++	/* shutdown controller, wakeup button (5 msec low) */
++	at91_sys_write(AT91_SHDW_MR, AT91_SHDW_CPTWK0_(10) | AT91_SHDW_WKMODE0_LOW
++				| AT91_SHDW_RTTWKEN);
++}
++
++MACHINE_START(MH355, "Microhard mh355")
++	/* Maintainer: Atmel */
++	.phys_io	= AT91_BASE_SYS,
++	.io_pg_offst	= (AT91_VA_BASE_SYS >> 18) & 0xfffc,
++	.boot_params	= AT91_SDRAM_BASE + 0x100,
++	.timer		= &at91sam926x_timer,
++	.map_io		= mh355_map_io,
++	.init_irq	= mh355_init_irq,
++	.init_machine	= mh355_board_init,
++MACHINE_END
+diff -Nur linux-2.6.28.10-at91/arch/arm/mach-at91/Kconfig linux-2.6.28.10-at91-mh/arch/arm/mach-at91/Kconfig
+--- linux-2.6.28.10-at91/arch/arm/mach-at91/Kconfig	2010-03-20 20:20:31.000000000 +0100
++++ linux-2.6.28.10-at91-mh/arch/arm/mach-at91/Kconfig	2010-03-20 22:18:02.000000000 +0100
+@@ -280,6 +280,28 @@
+ 	help
+ 	  Select this if you are using the Adeneo Neocore 926 board.
+ 
++config MACH_MH355
++	bool "Microhard MH355 Board"
++	depends on ARCH_AT91SAM9263
++	help
++	  Select this if you are using Microhard MH355 board.
++	  <http://www.microhard.biz>
++
++choice
++	prompt "LCD Display"
++
++config MH355_LCD_TX09D70
++	bool "3.5\", 320x240 Hitachi TX09D70"
++	depends on MACH_MH355
++
++config MH355_LCD_FG0700K2DSSWBG01
++	bool "7.0\", 800x480 DataImage FG0700K2"
++	depends on MACH_MH355
++	
++	
++endchoice
++	  
++	  
+ endif
+ 
+ # ----------------------------------------------------------
+@@ -347,13 +369,13 @@
+ 
+ config MTD_AT91_DATAFLASH_CARD
+ 	bool "Enable DataFlash Card support"
+-	depends on (ARCH_AT91RM9200DK || MACH_AT91RM9200EK || MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_ECBAT91 || MACH_SAM9_L9260 || MACH_AT91CAP9ADK || MACH_TOTEMNOVA || MACH_NEOCORE926)
++	depends on (ARCH_AT91RM9200DK || MACH_AT91RM9200EK || MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_ECBAT91 || MACH_SAM9_L9260 || MACH_AT91CAP9ADK || MACH_TOTEMNOVA || MACH_NEOCORE926 || MACH_MH355)
+ 	help
+ 	  Enable support for the DataFlash card.
+ 
+ config MTD_NAND_ATMEL_BUSWIDTH_16
+ 	bool "Enable 16-bit data bus interface to NAND flash"
+-	depends on (MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_AT91CAP9ADK)
++	depends on (MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_AT91CAP9ADK || MACH_MH355)
+ 	help
+ 	  On AT91SAM926x boards both types of NAND flash can be present
+ 	  (8 and 16 bit data bus width).
+diff -Nur linux-2.6.28.10-at91/arch/arm/mach-at91/Makefile linux-2.6.28.10-at91-mh/arch/arm/mach-at91/Makefile
+--- linux-2.6.28.10-at91/arch/arm/mach-at91/Makefile	2010-03-20 20:20:31.000000000 +0100
++++ linux-2.6.28.10-at91-mh/arch/arm/mach-at91/Makefile	2010-03-20 21:30:16.000000000 +0100
+@@ -54,6 +54,7 @@
+ obj-$(CONFIG_MACH_CSB737)	+= board-csb737.o
+ obj-$(CONFIG_MACH_TOTEMNOVA)	+= board-totemnova.o
+ obj-$(CONFIG_MACH_NEOCORE926)	+= board-neocore926.o
++obj-$(CONFIG_MACH_MH355)        += board-mh355.o
+ 
+ # AT91SAM9RL board-specific support
+ obj-$(CONFIG_MACH_AT91SAM9RLEK)	+= board-sam9rlek.o
+diff -Nur linux-2.6.28.10-at91/arch/arm/tools/mach-types linux-2.6.28.10-at91-mh/arch/arm/tools/mach-types
+--- linux-2.6.28.10-at91/arch/arm/tools/mach-types	2008-12-25 00:26:37.000000000 +0100
++++ linux-2.6.28.10-at91-mh/arch/arm/tools/mach-types	2010-03-20 21:12:39.000000000 +0100
+@@ -12,7 +12,7 @@
+ #
+ #   http://www.arm.linux.org.uk/developer/machines/?action=new
+ #
+-# Last update: Thu Sep 25 10:10:50 2008
++# Last update: Thu Sep 17 09:50:24 2009
+ #
+ # machine_is_xxx	CONFIG_xxxx		MACH_TYPE_xxx		number
+ #
+@@ -916,7 +916,7 @@
+ apf9328			MACH_APF9328		APF9328			906
+ omap_wipoq		MACH_OMAP_WIPOQ		OMAP_WIPOQ		907
+ omap_twip		MACH_OMAP_TWIP		OMAP_TWIP		908
+-palmt650		MACH_PALMT650		PALMT650		909
++treo650			MACH_TREO650		TREO650			909
+ acumen			MACH_ACUMEN		ACUMEN			910
+ xp100			MACH_XP100		XP100			911
+ fs2410			MACH_FS2410		FS2410			912
+@@ -1232,7 +1232,7 @@
+ vpac270			MACH_VPAC270		VPAC270			1227
+ rd129			MACH_RD129		RD129			1228
+ htcwizard		MACH_HTCWIZARD		HTCWIZARD		1229
+-xscale_treo680		MACH_XSCALE_TREO680	XSCALE_TREO680		1230
++treo680			MACH_TREO680		TREO680			1230
+ tecon_tmezon		MACH_TECON_TMEZON	TECON_TMEZON		1231
+ zylonite		MACH_ZYLONITE		ZYLONITE		1233
+ gene1270		MACH_GENE1270		GENE1270		1234
+@@ -1380,7 +1380,7 @@
+ olip8			MACH_OLIP8		OLIP8			1378
+ ghi270hg		MACH_GHI270HG		GHI270HG		1379
+ davinci_dm6467_evm	MACH_DAVINCI_DM6467_EVM	DAVINCI_DM6467_EVM	1380
+-davinci_dm355_evm	MACH_DAVINCI_DM350_EVM	DAVINCI_DM350_EVM	1381
++davinci_dm355_evm	MACH_DAVINCI_DM355_EVM	DAVINCI_DM355_EVM	1381
+ blackriver		MACH_BLACKRIVER		BLACKRIVER		1383
+ sandgate_wp		MACH_SANDGATEWP		SANDGATEWP		1384
+ cdotbwsg		MACH_CDOTBWSG		CDOTBWSG		1385
+@@ -1418,10 +1418,10 @@
+ cnty_titan		MACH_CNTY_TITAN		CNTY_TITAN		1418
+ app3xx			MACH_APP3XX		APP3XX			1419
+ sideoatsgrama		MACH_SIDEOATSGRAMA	SIDEOATSGRAMA		1420
+-palmtreo700p		MACH_PALMTREO700P	PALMTREO700P		1421
+-palmtreo700w		MACH_PALMTREO700W	PALMTREO700W		1422
+-palmtreo750		MACH_PALMTREO750	PALMTREO750		1423
+-palmtreo755p		MACH_PALMTREO755P	PALMTREO755P		1424
++treo700p		MACH_TREO700P		TREO700P		1421
++treo700w		MACH_TREO700W		TREO700W		1422
++treo750			MACH_TREO750		TREO750			1423
++treo755p		MACH_TREO755P		TREO755P		1424
+ ezreganut9200		MACH_EZREGANUT9200	EZREGANUT9200		1425
+ sarge			MACH_SARGE		SARGE			1426
+ a696			MACH_A696		A696			1427
+@@ -1455,7 +1455,7 @@
+ h6044			MACH_H6044		H6044			1458
+ app			MACH_APP		APP			1459
+ tct_hammer		MACH_TCT_HAMMER		TCT_HAMMER		1460
+-herald			MACH_HERMES		HERMES			1461
++herald			MACH_HERALD		HERALD			1461
+ artemis			MACH_ARTEMIS		ARTEMIS			1462
+ htctitan		MACH_HTCTITAN		HTCTITAN		1463
+ qranium			MACH_QRANIUM		QRANIUM			1464
+@@ -1638,7 +1638,7 @@
+ aml_m8050		MACH_AML_M8050		AML_M8050		1644
+ mx35_3ds		MACH_MX35_3DS		MX35_3DS		1645
+ mars			MACH_MARS		MARS			1646
+-ntosd_644xa		MACH_NTOSD_644XA	NTOSD_644XA		1647
++neuros_osd2		MACH_NEUROS_OSD2	NEUROS_OSD2		1647
+ badger			MACH_BADGER		BADGER			1648
+ trizeps4wl		MACH_TRIZEPS4WL		TRIZEPS4WL		1649
+ trizeps5		MACH_TRIZEPS5		TRIZEPS5		1650
+@@ -1721,7 +1721,7 @@
+ csb637xo		MACH_CSB637XO		CSB637XO		1730
+ evisiong		MACH_EVISIONG		EVISIONG		1731
+ stmp37xx		MACH_STMP37XX		STMP37XX		1732
+-stmp378x		MACH_STMP38XX		STMP38XX		1733
++stmp378x		MACH_STMP378X		STMP378X		1733
+ tnt			MACH_TNT		TNT			1734
+ tbxt			MACH_TBXT		TBXT			1735
+ playmate		MACH_PLAYMATE		PLAYMATE		1736
+@@ -1769,9 +1769,9 @@
+ mi424wr			MACH_MI424WR		MI424WR			1778
+ axs_ultrax		MACH_AXS_ULTRAX		AXS_ULTRAX		1779
+ at572d940deb		MACH_AT572D940DEB	AT572D940DEB		1780
+-davinci_da8xx_evm	MACH_DAVINCI_DA8XX_EVM	DAVINCI_DA8XX_EVM	1781
++davinci_da830_evm	MACH_DAVINCI_DA830_EVM	DAVINCI_DA830_EVM	1781
+ ep9302			MACH_EP9302		EP9302			1782
+-at572d940hfeb		MACH_AT572D940HFEB	AT572D940HFEB		1783
++at572d940hfek		MACH_AT572D940HFEB	AT572D940HFEB		1783
+ cybook3			MACH_CYBOOK3		CYBOOK3			1784
+ wdg002			MACH_WDG002		WDG002			1785
+ sg560adsl		MACH_SG560ADSL		SG560ADSL		1786
+@@ -1811,13 +1811,13 @@
+ jade			MACH_JADE		JADE			1821
+ ks8695_softplc		MACH_KS8695_SOFTPLC	KS8695_SOFTPLC		1822
+ gprisc3			MACH_GPRISC3		GPRISC3			1823
+-stamp9260		MACH_STAMP9260		STAMP9260		1824
++stamp9g20		MACH_STAMP9G20		STAMP9G20		1824
+ smdk6430		MACH_SMDK6430		SMDK6430		1825
+ smdkc100		MACH_SMDKC100		SMDKC100		1826
+ tavorevb		MACH_TAVOREVB		TAVOREVB		1827
+ saar			MACH_SAAR		SAAR			1828
+ deister_eyecam		MACH_DEISTER_EYECAM	DEISTER_EYECAM		1829
+-at91sam9m10ek		MACH_AT91SAM9M10EK	AT91SAM9M10EK		1830
++at91sam9m10g45ek	MACH_AT91SAM9M10G45EK	AT91SAM9M10G45EK	1830
+ linkstation_produo	MACH_LINKSTATION_PRODUO	LINKSTATION_PRODUO	1831
+ hit_b0			MACH_HIT_B0		HIT_B0			1832
+ adx_rmu			MACH_ADX_RMU		ADX_RMU			1833
+@@ -1899,3 +1899,524 @@
+ asusp535		MACH_ASUSP535		ASUSP535		1909
+ htcraphael		MACH_HTCRAPHAEL		HTCRAPHAEL		1910
+ sygdg1			MACH_SYGDG1		SYGDG1			1911
++sygdg2			MACH_SYGDG2		SYGDG2			1912
++seoul			MACH_SEOUL		SEOUL			1913
++salerno			MACH_SALERNO		SALERNO			1914
++ucn_s3c64xx		MACH_UCN_S3C64XX	UCN_S3C64XX		1915
++msm7201a		MACH_MSM7201A		MSM7201A		1916
++lpr1			MACH_LPR1		LPR1			1917
++armadillo500fx		MACH_ARMADILLO500FX	ARMADILLO500FX		1918
++g3evm			MACH_G3EVM		G3EVM			1919
++z3_dm355		MACH_Z3_DM355		Z3_DM355		1920
++w90p910evb		MACH_W90P910EVB		W90P910EVB		1921
++w90p920evb		MACH_W90P920EVB		W90P920EVB		1922
++w90p950evb		MACH_W90P950EVB		W90P950EVB		1923
++w90n960evb		MACH_W90N960EVB		W90N960EVB		1924
++camhd			MACH_CAMHD		CAMHD			1925
++mvc100			MACH_MVC100		MVC100			1926
++electrum_200		MACH_ELECTRUM_200	ELECTRUM_200		1927
++htcjade			MACH_HTCJADE		HTCJADE			1928
++memphis			MACH_MEMPHIS		MEMPHIS			1929
++imx27sbc		MACH_IMX27SBC		IMX27SBC		1930
++lextar			MACH_LEXTAR		LEXTAR			1931
++mv88f6281gtw_ge		MACH_MV88F6281GTW_GE	MV88F6281GTW_GE		1932
++ncp			MACH_NCP		NCP			1933
++z32an_series		MACH_Z32AN		Z32AN			1934
++tmq_capd		MACH_TMQ_CAPD		TMQ_CAPD		1935
++omap3_wl		MACH_OMAP3_WL		OMAP3_WL		1936
++chumby			MACH_CHUMBY		CHUMBY			1937
++atsarm9			MACH_ATSARM9		ATSARM9			1938
++davinci_dm365_evm	MACH_DAVINCI_DM365_EVM	DAVINCI_DM365_EVM	1939
++bahamas			MACH_BAHAMAS		BAHAMAS			1940
++das			MACH_DAS		DAS			1941
++minidas			MACH_MINIDAS		MINIDAS			1942
++vk1000			MACH_VK1000		VK1000			1943
++centro			MACH_CENTRO		CENTRO			1944
++ctera_2bay		MACH_CTERA_2BAY		CTERA_2BAY		1945
++edgeconnect		MACH_EDGECONNECT	EDGECONNECT		1946
++nd27000			MACH_ND27000		ND27000			1947
++cobra			MACH_GEMALTO_COBRA	GEMALTO_COBRA		1948
++ingelabs_comet		MACH_INGELABS_COMET	INGELABS_COMET		1949
++pollux_wiz		MACH_POLLUX_WIZ		POLLUX_WIZ		1950
++blackstone		MACH_BLACKSTONE		BLACKSTONE		1951
++topaz			MACH_TOPAZ		TOPAZ			1952
++aixle			MACH_AIXLE		AIXLE			1953
++mw998			MACH_MW998		MW998			1954
++nokia_rx51		MACH_NOKIA_RX51		NOKIA_RX51		1955
++vsc5605ev		MACH_VSC5605EV		VSC5605EV		1956
++nt98700dk		MACH_NT98700DK		NT98700DK		1957
++icontact		MACH_ICONTACT		ICONTACT		1958
++swarco_frcpu		MACH_SWARCO_FRCPU	SWARCO_FRCPU		1959
++swarco_scpu		MACH_SWARCO_SCPU	SWARCO_SCPU		1960
++bbox_p16		MACH_BBOX_P16		BBOX_P16		1961
++bstd			MACH_BSTD		BSTD			1962
++sbc2440ii		MACH_SBC2440II		SBC2440II		1963
++pcm034			MACH_PCM034		PCM034			1964
++neso			MACH_NESO		NESO			1965
++wlnx_9g20		MACH_WLNX_9G20		WLNX_9G20		1966
++omap_zoom2		MACH_OMAP_ZOOM2		OMAP_ZOOM2		1967
++totemnova		MACH_TOTEMNOVA		TOTEMNOVA		1968
++c5000			MACH_C5000		C5000			1969
++unipo_at91sam9263	MACH_UNIPO_AT91SAM9263	UNIPO_AT91SAM9263	1970
++ethernut5		MACH_ETHERNUT5		ETHERNUT5		1971
++arm11			MACH_ARM11		ARM11			1972
++cpuat9260		MACH_CPUAT9260		CPUAT9260		1973
++cpupxa255		MACH_CPUPXA255		CPUPXA255		1974
++eukrea_cpuimx27		MACH_CPUIMX27		CPUIMX27		1975
++cheflux			MACH_CHEFLUX		CHEFLUX			1976
++eb_cpux9k2		MACH_EB_CPUX9K2		EB_CPUX9K2		1977
++opcotec			MACH_OPCOTEC		OPCOTEC			1978
++yt			MACH_YT			YT			1979
++motoq			MACH_MOTOQ		MOTOQ			1980
++bsb1			MACH_BSB1		BSB1			1981
++acs5k			MACH_ACS5K		ACS5K			1982
++milan			MACH_MILAN		MILAN			1983
++quartzv2		MACH_QUARTZV2		QUARTZV2		1984
++rsvp			MACH_RSVP		RSVP			1985
++rmp200			MACH_RMP200		RMP200			1986
++snapper_9260		MACH_SNAPPER_9260	SNAPPER_9260		1987
++dsm320			MACH_DSM320		DSM320			1988
++adsgcm			MACH_ADSGCM		ADSGCM			1989
++ase2_400		MACH_ASE2_400		ASE2_400		1990
++pizza			MACH_PIZZA		PIZZA			1991
++spot_ngpl		MACH_SPOT_NGPL		SPOT_NGPL		1992
++armata			MACH_ARMATA		ARMATA			1993
++exeda			MACH_EXEDA		EXEDA			1994
++mx31sf005		MACH_MX31SF005		MX31SF005		1995
++f5d8231_4_v2		MACH_F5D8231_4_V2	F5D8231_4_V2		1996
++q2440			MACH_Q2440		Q2440			1997
++qq2440			MACH_QQ2440		QQ2440			1998
++mini2440		MACH_MINI2440		MINI2440		1999
++colibri300		MACH_COLIBRI300		COLIBRI300		2000
++jades			MACH_JADES		JADES			2001
++spark			MACH_SPARK		SPARK			2002
++benzina			MACH_BENZINA		BENZINA			2003
++blaze			MACH_BLAZE		BLAZE			2004
++linkstation_ls_hgl	MACH_LINKSTATION_LS_HGL	LINKSTATION_LS_HGL	2005
++htckovsky		MACH_HTCVENUS		HTCVENUS		2006
++sony_prs505		MACH_SONY_PRS505	SONY_PRS505		2007
++hanlin_v3		MACH_HANLIN_V3		HANLIN_V3		2008
++sapphira		MACH_SAPPHIRA		SAPPHIRA		2009
++dack_sda_01		MACH_DACK_SDA_01	DACK_SDA_01		2010
++armbox			MACH_ARMBOX		ARMBOX			2011
++harris_rvp		MACH_HARRIS_RVP		HARRIS_RVP		2012
++ribaldo			MACH_RIBALDO		RIBALDO			2013
++agora			MACH_AGORA		AGORA			2014
++omap3_mini		MACH_OMAP3_MINI		OMAP3_MINI		2015
++a9sam6432_b		MACH_A9SAM6432_B	A9SAM6432_B		2016
++usg2410			MACH_USG2410		USG2410			2017
++pc72052_i10_revb	MACH_PC72052_I10_REVB	PC72052_I10_REVB	2018
++mx35_exm32		MACH_MX35_EXM32		MX35_EXM32		2019
++topas910		MACH_TOPAS910		TOPAS910		2020
++hyena			MACH_HYENA		HYENA			2021
++pospax			MACH_POSPAX		POSPAX			2022
++hdl_gx			MACH_HDL_GX		HDL_GX			2023
++ctera_4bay		MACH_CTERA_4BAY		CTERA_4BAY		2024
++ctera_plug_c		MACH_CTERA_PLUG_C	CTERA_PLUG_C		2025
++crwea_plug_i		MACH_CRWEA_PLUG_I	CRWEA_PLUG_I		2026
++egauge2			MACH_EGAUGE2		EGAUGE2			2027
++didj			MACH_DIDJ		DIDJ			2028
++m_s3c2443		MACH_MEISTER		MEISTER			2029
++htcblackstone		MACH_HTCBLACKSTONE	HTCBLACKSTONE		2030
++cpuat9g20		MACH_CPUAT9G20		CPUAT9G20		2031
++smdk6440		MACH_SMDK6440		SMDK6440		2032
++omap_35xx_mvp		MACH_OMAP_35XX_MVP	OMAP_35XX_MVP		2033
++ctera_plug_i		MACH_CTERA_PLUG_I	CTERA_PLUG_I		2034
++pvg610_100		MACH_PVG610		PVG610			2035
++hprw6815		MACH_HPRW6815		HPRW6815		2036
++omap3_oswald		MACH_OMAP3_OSWALD	OMAP3_OSWALD		2037
++nas4220b		MACH_NAS4220B		NAS4220B		2038
++htcraphael_cdma		MACH_HTCRAPHAEL_CDMA	HTCRAPHAEL_CDMA		2039
++htcdiamond_cdma		MACH_HTCDIAMOND_CDMA	HTCDIAMOND_CDMA		2040
++scaler			MACH_SCALER		SCALER			2041
++zylonite2		MACH_ZYLONITE2		ZYLONITE2		2042
++aspenite		MACH_ASPENITE		ASPENITE		2043
++teton			MACH_TETON		TETON			2044
++ttc_dkb			MACH_TTC_DKB		TTC_DKB			2045
++bishop2			MACH_BISHOP2		BISHOP2			2046
++ippv5			MACH_IPPV5		IPPV5			2047
++farm926			MACH_FARM926		FARM926			2048
++mmccpu			MACH_MMCCPU		MMCCPU			2049
++sgmsfl			MACH_SGMSFL		SGMSFL			2050
++tt8000			MACH_TT8000		TT8000			2051
++zrn4300lp		MACH_ZRN4300LP		ZRN4300LP		2052
++mptc			MACH_MPTC		MPTC			2053
++h6051			MACH_H6051		H6051			2054
++pvg610_101		MACH_PVG610_101		PVG610_101		2055
++stamp9261_pc_evb	MACH_STAMP9261_PC_EVB	STAMP9261_PC_EVB	2056
++pelco_odysseus		MACH_PELCO_ODYSSEUS	PELCO_ODYSSEUS		2057
++tny_a9260		MACH_TNY_A9260		TNY_A9260		2058
++tny_a9g20		MACH_TNY_A9G20		TNY_A9G20		2059
++aesop_mp2530f		MACH_AESOP_MP2530F	AESOP_MP2530F		2060
++dx900			MACH_DX900		DX900			2061
++cpodc2			MACH_CPODC2		CPODC2			2062
++tilt_8925		MACH_TILT_8925		TILT_8925		2063
++davinci_dm357_evm	MACH_DAVINCI_DM357_EVM	DAVINCI_DM357_EVM	2064
++swordfish		MACH_SWORDFISH		SWORDFISH		2065
++corvus			MACH_CORVUS		CORVUS			2066
++taurus			MACH_TAURUS		TAURUS			2067
++axm			MACH_AXM		AXM			2068
++axc			MACH_AXC		AXC			2069
++baby			MACH_BABY		BABY			2070
++mp200			MACH_MP200		MP200			2071
++pcm043			MACH_PCM043		PCM043			2072
++hanlin_v3c		MACH_HANLIN_V3C		HANLIN_V3C		2073
++kbk9g20			MACH_KBK9G20		KBK9G20			2074
++adsturbog5		MACH_ADSTURBOG5		ADSTURBOG5		2075
++avenger_lite1		MACH_AVENGER_LITE1	AVENGER_LITE1		2076
++suc82x			MACH_SUC		SUC			2077
++at91sam7s256		MACH_AT91SAM7S256	AT91SAM7S256		2078
++mendoza			MACH_MENDOZA		MENDOZA			2079
++kira			MACH_KIRA		KIRA			2080
++mx1hbm			MACH_MX1HBM		MX1HBM			2081
++quatro43xx		MACH_QUATRO43XX		QUATRO43XX		2082
++quatro4230		MACH_QUATRO4230		QUATRO4230		2083
++nsb400			MACH_NSB400		NSB400			2084
++drp255			MACH_DRP255		DRP255			2085
++thoth			MACH_THOTH		THOTH			2086
++firestone		MACH_FIRESTONE		FIRESTONE		2087
++asusp750		MACH_ASUSP750		ASUSP750		2088
++ctera_dl		MACH_CTERA_DL		CTERA_DL		2089
++socr			MACH_SOCR		SOCR			2090
++htcoxygen		MACH_HTCOXYGEN		HTCOXYGEN		2091
++heroc			MACH_HEROC		HEROC			2092
++zeno6800		MACH_ZENO6800		ZENO6800		2093
++sc2mcs			MACH_SC2MCS		SC2MCS			2094
++gene100			MACH_GENE100		GENE100			2095
++as353x			MACH_AS353X		AS353X			2096
++sheevaplug		MACH_SHEEVAPLUG		SHEEVAPLUG		2097
++at91sam9g20		MACH_AT91SAM9G20	AT91SAM9G20		2098
++mv88f6192gtw_fe		MACH_MV88F6192GTW_FE	MV88F6192GTW_FE		2099
++cc9200			MACH_CC9200		CC9200			2100
++sm9200			MACH_SM9200		SM9200			2101
++tp9200			MACH_TP9200		TP9200			2102
++snapperdv		MACH_SNAPPERDV		SNAPPERDV		2103
++avengers_lite		MACH_AVENGERS_LITE	AVENGERS_LITE		2104
++avengers_lite1		MACH_AVENGERS_LITE1	AVENGERS_LITE1		2105
++omap3axon		MACH_OMAP3AXON		OMAP3AXON		2106
++ma8xx			MACH_MA8XX		MA8XX			2107
++mp201ek			MACH_MP201EK		MP201EK			2108
++davinci_tux		MACH_DAVINCI_TUX	DAVINCI_TUX		2109
++mpa1600			MACH_MPA1600		MPA1600			2110
++pelco_troy		MACH_PELCO_TROY		PELCO_TROY		2111
++nsb667			MACH_NSB667		NSB667			2112
++rovers5_4mpix		MACH_ROVERS5_4MPIX	ROVERS5_4MPIX		2113
++twocom			MACH_TWOCOM		TWOCOM			2114
++ubisys_p9_rcu3r2	MACH_UBISYS_P9_RCU3R2	UBISYS_P9_RCU3R2	2115
++hero_espresso		MACH_HERO_ESPRESSO	HERO_ESPRESSO		2116
++afeusb			MACH_AFEUSB		AFEUSB			2117
++t830			MACH_T830		T830			2118
++spd8020_cc		MACH_SPD8020_CC		SPD8020_CC		2119
++om_3d7k			MACH_OM_3D7K		OM_3D7K			2120
++picocom2		MACH_PICOCOM2		PICOCOM2		2121
++uwg4mx27		MACH_UWG4MX27		UWG4MX27		2122
++uwg4mx31		MACH_UWG4MX31		UWG4MX31		2123
++cherry			MACH_CHERRY		CHERRY			2124
++mx51_babbage		MACH_MX51_BABBAGE	MX51_BABBAGE		2125
++s3c2440turkiye		MACH_S3C2440TURKIYE	S3C2440TURKIYE		2126
++tx37			MACH_TX37		TX37			2127
++sbc2800_9g20		MACH_SBC2800_9G20	SBC2800_9G20		2128
++benzglb			MACH_BENZGLB		BENZGLB			2129
++benztd			MACH_BENZTD		BENZTD			2130
++cartesio_plus		MACH_CARTESIO_PLUS	CARTESIO_PLUS		2131
++solrad_g20		MACH_SOLRAD_G20		SOLRAD_G20		2132
++mx27wallace		MACH_MX27WALLACE	MX27WALLACE		2133
++fmzwebmodul		MACH_FMZWEBMODUL	FMZWEBMODUL		2134
++rd78x00_masa		MACH_RD78X00_MASA	RD78X00_MASA		2135
++smallogger		MACH_SMALLOGGER		SMALLOGGER		2136
++ccw9p9215		MACH_CCW9P9215		CCW9P9215		2137
++dm355_leopard		MACH_DM355_LEOPARD	DM355_LEOPARD		2138
++ts219			MACH_TS219		TS219			2139
++tny_a9263		MACH_TNY_A9263		TNY_A9263		2140
++apollo			MACH_APOLLO		APOLLO			2141
++at91cap9stk		MACH_AT91CAP9STK	AT91CAP9STK		2142
++spc300			MACH_SPC300		SPC300			2143
++eko			MACH_EKO		EKO			2144
++ccw9m2443		MACH_CCW9M2443		CCW9M2443		2145
++ccw9m2443js		MACH_CCW9M2443JS	CCW9M2443JS		2146
++m2m_router_device	MACH_M2M_ROUTER_DEVICE	M2M_ROUTER_DEVICE	2147
++str9104nas		MACH_STAR9104NAS	STAR9104NAS		2148
++pca100			MACH_PCA100		PCA100			2149
++z3_dm365_mod_01		MACH_Z3_DM365_MOD_01	Z3_DM365_MOD_01		2150
++hipox			MACH_HIPOX		HIPOX			2151
++omap3_piteds		MACH_OMAP3_PITEDS	OMAP3_PITEDS		2152
++bm150r			MACH_BM150R		BM150R			2153
++tbone			MACH_TBONE		TBONE			2154
++merlin			MACH_MERLIN		MERLIN			2155
++falcon			MACH_FALCON		FALCON			2156
++davinci_da850_evm	MACH_DAVINCI_DA850_EVM	DAVINCI_DA850_EVM	2157
++s5p6440			MACH_S5P6440		S5P6440			2158
++at91sam9g10ek		MACH_AT91SAM9G10EK	AT91SAM9G10EK		2159
++omap_4430sdp		MACH_OMAP_4430SDP	OMAP_4430SDP		2160
++lpc313x			MACH_LPC313X		LPC313X			2161
++magx_zn5		MACH_MAGX_ZN5		MAGX_ZN5		2162
++magx_em30		MACH_MAGX_EM30		MAGX_EM30		2163
++magx_ve66		MACH_MAGX_VE66		MAGX_VE66		2164
++meesc			MACH_MEESC		MEESC			2165
++otc570			MACH_OTC570		OTC570			2166
++bcu2412			MACH_BCU2412		BCU2412			2167
++beacon			MACH_BEACON		BEACON			2168
++actia_tgw		MACH_ACTIA_TGW		ACTIA_TGW		2169
++e4430			MACH_E4430		E4430			2170
++ql300			MACH_QL300		QL300			2171
++btmavb101		MACH_BTMAVB101		BTMAVB101		2172
++btmawb101		MACH_BTMAWB101		BTMAWB101		2173
++sq201			MACH_SQ201		SQ201			2174
++quatro45xx		MACH_QUATRO45XX		QUATRO45XX		2175
++openpad			MACH_OPENPAD		OPENPAD			2176
++tx25			MACH_TX25		TX25			2177
++omap3_torpedo		MACH_OMAP3_TORPEDO	OMAP3_TORPEDO		2178
++htcraphael_k		MACH_HTCRAPHAEL_K	HTCRAPHAEL_K		2179
++lal43			MACH_LAL43		LAL43			2181
++htcraphael_cdma500	MACH_HTCRAPHAEL_CDMA500	HTCRAPHAEL_CDMA500	2182
++anw6410			MACH_ANW6410		ANW6410			2183
++htcprophet		MACH_HTCPROPHET		HTCPROPHET		2185
++cfa_10022		MACH_CFA_10022		CFA_10022		2186
++imx27_visstrim_m10	MACH_IMX27_VISSTRIM_M10	IMX27_VISSTRIM_M10	2187
++px2imx27		MACH_PX2IMX27		PX2IMX27		2188
++stm3210e_eval		MACH_STM3210E_EVAL	STM3210E_EVAL		2189
++dvs10			MACH_DVS10		DVS10			2190
++portuxg20		MACH_PORTUXG20		PORTUXG20		2191
++arm_spv			MACH_ARM_SPV		ARM_SPV			2192
++smdkc110		MACH_SMDKC110		SMDKC110		2193
++cabespresso		MACH_CABESPRESSO	CABESPRESSO		2194
++hmc800			MACH_HMC800		HMC800			2195
++sholes			MACH_SHOLES		SHOLES			2196
++btmxc31			MACH_BTMXC31		BTMXC31			2197
++dt501			MACH_DT501		DT501			2198
++ktx			MACH_KTX		KTX			2199
++omap3517evm		MACH_OMAP3517EVM	OMAP3517EVM		2200
++netspace_v2		MACH_NETSPACE_V2	NETSPACE_V2		2201
++netspace_max_v2		MACH_NETSPACE_MAX_V2	NETSPACE_MAX_V2		2202
++d2net_v2		MACH_D2NET_V2		D2NET_V2		2203
++net2big_v2		MACH_NET2BIG_V2		NET2BIG_V2		2204
++net4big_v2		MACH_NET4BIG_V2		NET4BIG_V2		2205
++net5big_v2		MACH_NET5BIG_V2		NET5BIG_V2		2206
++endb2443		MACH_ENDB2443		ENDB2443		2207
++inetspace_v2		MACH_INETSPACE_V2	INETSPACE_V2		2208
++tros			MACH_TROS		TROS			2209
++pelco_homer		MACH_PELCO_HOMER	PELCO_HOMER		2210
++ofsp8			MACH_OFSP8		OFSP8			2211
++at91sam9g45ekes		MACH_AT91SAM9G45EKES	AT91SAM9G45EKES		2212
++guf_cupid		MACH_GUF_CUPID		GUF_CUPID		2213
++eab1r			MACH_EAB1R		EAB1R			2214
++desirec			MACH_DESIREC		DESIREC			2215
++cordoba			MACH_CORDOBA		CORDOBA			2216
++irvine			MACH_IRVINE		IRVINE			2217
++sff772			MACH_SFF772		SFF772			2218
++pelco_milano		MACH_PELCO_MILANO	PELCO_MILANO		2219
++pc7302			MACH_PC7302		PC7302			2220
++bip6000			MACH_BIP6000		BIP6000			2221
++silvermoon		MACH_SILVERMOON		SILVERMOON		2222
++vc0830			MACH_VC0830		VC0830			2223
++dt430			MACH_DT430		DT430			2224
++ji42pf			MACH_JI42PF		JI42PF			2225
++gnet_ksm		MACH_GNET_KSM		GNET_KSM		2226
++gnet_sgm		MACH_GNET_SGM		GNET_SGM		2227
++gnet_sgr		MACH_GNET_SGR		GNET_SGR		2228
++omap3_icetekevm		MACH_OMAP3_ICETEKEVM	OMAP3_ICETEKEVM		2229
++pnp			MACH_PNP		PNP			2230
++ctera_2bay_k		MACH_CTERA_2BAY_K	CTERA_2BAY_K		2231
++ctera_2bay_u		MACH_CTERA_2BAY_U	CTERA_2BAY_U		2232
++sas_c			MACH_SAS_C		SAS_C			2233
++vma2315			MACH_VMA2315		VMA2315			2234
++vcs			MACH_VCS		VCS			2235
++spear600		MACH_SPEAR600		SPEAR600		2236
++spear300		MACH_SPEAR300		SPEAR300		2237
++spear1300		MACH_SPEAR1300		SPEAR1300		2238
++lilly1131		MACH_LILLY1131		LILLY1131		2239
++arvoo_ax301		MACH_ARVOO_AX301	ARVOO_AX301		2240
++mapphone		MACH_MAPPHONE		MAPPHONE		2241
++legend			MACH_LEGEND		LEGEND			2242
++salsa			MACH_SALSA		SALSA			2243
++lounge			MACH_LOUNGE		LOUNGE			2244
++vision			MACH_VISION		VISION			2245
++vmb20			MACH_VMB20		VMB20			2246
++hy2410			MACH_HY2410		HY2410			2247
++hy9315			MACH_HY9315		HY9315			2248
++bullwinkle		MACH_BULLWINKLE		BULLWINKLE		2249
++arm_ultimator2		MACH_ARM_ULTIMATOR2	ARM_ULTIMATOR2		2250
++vs_v210			MACH_VS_V210		VS_V210			2252
++vs_v212			MACH_VS_V212		VS_V212			2253
++hmt			MACH_HMT		HMT			2254
++suen3			MACH_SUEN3		SUEN3			2255
++vesper			MACH_VESPER		VESPER			2256
++str9			MACH_STR9		STR9			2257
++omap3_wl_ff		MACH_OMAP3_WL_FF	OMAP3_WL_FF		2258
++simcom			MACH_SIMCOM		SIMCOM			2259
++mcwebio			MACH_MCWEBIO		MCWEBIO			2260
++omap3_phrazer		MACH_OMAP3_PHRAZER	OMAP3_PHRAZER		2261
++darwin			MACH_DARWIN		DARWIN			2262
++oratiscomu		MACH_ORATISCOMU		ORATISCOMU		2263
++rtsbc20			MACH_RTSBC20		RTSBC20			2264
++sgh_i780		MACH_I780		I780			2265
++gemini324		MACH_GEMINI324		GEMINI324		2266
++oratislan		MACH_ORATISLAN		ORATISLAN		2267
++oratisalog		MACH_ORATISALOG		ORATISALOG		2268
++oratismadi		MACH_ORATISMADI		ORATISMADI		2269
++oratisot16		MACH_ORATISOT16		ORATISOT16		2270
++oratisdesk		MACH_ORATISDESK		ORATISDESK		2271
++v2_ca9			MACH_V2P_CA9		V2P_CA9			2272
++sintexo			MACH_SINTEXO		SINTEXO			2273
++cm3389			MACH_CM3389		CM3389			2274
++omap3_cio		MACH_OMAP3_CIO		OMAP3_CIO		2275
++sgh_i900		MACH_SGH_I900		SGH_I900		2276
++bst100			MACH_BST100		BST100			2277
++passion			MACH_PASSION		PASSION			2278
++indesign_at91sam	MACH_INDESIGN_AT91SAM	INDESIGN_AT91SAM	2279
++c4_badger		MACH_C4_BADGER		C4_BADGER		2280
++c4_viper		MACH_C4_VIPER		C4_VIPER		2281
++d2net			MACH_D2NET		D2NET			2282
++bigdisk			MACH_BIGDISK		BIGDISK			2283
++notalvision		MACH_NOTALVISION	NOTALVISION		2284
++omap3_kboc		MACH_OMAP3_KBOC		OMAP3_KBOC		2285
++cyclone			MACH_CYCLONE		CYCLONE			2286
++ninja			MACH_NINJA		NINJA			2287
++at91sam9g20ek_2mmc	MACH_AT91SAM9G20EK_2MMC	AT91SAM9G20EK_2MMC	2288
++bcmring			MACH_BCMRING		BCMRING			2289
++resol_dl2		MACH_RESOL_DL2		RESOL_DL2		2290
++ifosw			MACH_IFOSW		IFOSW			2291
++htcrhodium		MACH_HTCRHODIUM		HTCRHODIUM		2292
++htctopaz		MACH_HTCTOPAZ		HTCTOPAZ		2293
++matrix504		MACH_MATRIX504		MATRIX504		2294
++mrfsa			MACH_MRFSA		MRFSA			2295
++sc_p270			MACH_SC_P270		SC_P270			2296
++atlas5_evb		MACH_ATLAS5_EVB		ATLAS5_EVB		2297
++pelco_lobox		MACH_PELCO_LOBOX	PELCO_LOBOX		2298
++dilax_pcu200		MACH_DILAX_PCU200	DILAX_PCU200		2299
++leonardo		MACH_LEONARDO		LEONARDO		2300
++zoran_approach7		MACH_ZORAN_APPROACH7	ZORAN_APPROACH7		2301
++dp6xx			MACH_DP6XX		DP6XX			2302
++bcm2153_vesper		MACH_BCM2153_VESPER	BCM2153_VESPER		2303
++mahimahi		MACH_MAHIMAHI		MAHIMAHI		2304
++clickc			MACH_CLICKC		CLICKC			2305
++zb_gateway		MACH_ZB_GATEWAY		ZB_GATEWAY		2306
++tazcard			MACH_TAZCARD		TAZCARD			2307
++tazdev			MACH_TAZDEV		TAZDEV			2308
++annax_cb_arm		MACH_ANNAX_CB_ARM	ANNAX_CB_ARM		2309
++annax_dm3		MACH_ANNAX_DM3		ANNAX_DM3		2310
++cerebric		MACH_CEREBRIC		CEREBRIC		2311
++orca			MACH_ORCA		ORCA			2312
++pc9260			MACH_PC9260		PC9260			2313
++ems285a			MACH_EMS285A		EMS285A			2314
++gec2410			MACH_GEC2410		GEC2410			2315
++gec2440			MACH_GEC2440		GEC2440			2316
++mw903			MACH_ARCH_MW903		ARCH_MW903		2317
++mw2440			MACH_MW2440		MW2440			2318
++ecac2378		MACH_ECAC2378		ECAC2378		2319
++tazkiosk		MACH_TAZKIOSK		TAZKIOSK		2320
++whiterabbit_mch		MACH_WHITERABBIT_MCH	WHITERABBIT_MCH		2321
++sbox9263		MACH_SBOX9263		SBOX9263		2322
++oreo			MACH_OREO		OREO			2323
++smdk6442		MACH_SMDK6442		SMDK6442		2324
++openrd_base		MACH_OPENRD_BASE	OPENRD_BASE		2325
++incredible		MACH_INCREDIBLE		INCREDIBLE		2326
++incrediblec		MACH_INCREDIBLEC	INCREDIBLEC		2327
++heroct			MACH_HEROCT		HEROCT			2328
++mmnet1000		MACH_MMNET1000		MMNET1000		2329
++devkit8000		MACH_DEVKIT8000		DEVKIT8000		2330
++devkit9000		MACH_DEVKIT9000		DEVKIT9000		2331
++mx31txtr		MACH_MX31TXTR		MX31TXTR		2332
++u380			MACH_U380		U380			2333
++oamp3_hualu		MACH_HUALU_BOARD	HUALU_BOARD		2334
++npcmx50			MACH_NPCMX50		NPCMX50			2335
++mx51_lange51		MACH_MX51_LANGE51	MX51_LANGE51		2336
++mx51_lange52		MACH_MX51_LANGE52	MX51_LANGE52		2337
++riom			MACH_RIOM		RIOM			2338
++comcas			MACH_COMCAS		COMCAS			2339
++wsi_mx27		MACH_WSI_MX27		WSI_MX27		2340
++cm_t35			MACH_CM_T35		CM_T35			2341
++net2big			MACH_NET2BIG		NET2BIG			2342
++motorola_a1600		MACH_MOTOROLA_A1600	MOTOROLA_A1600		2343
++igep0020		MACH_IGEP0020		IGEP0020		2344
++igep0010		MACH_IGEP0010		IGEP0010		2345
++mv6281gtwge2		MACH_MV6281GTWGE2	MV6281GTWGE2		2346
++scat100			MACH_SCAT100		SCAT100			2347
++sanmina			MACH_SANMINA		SANMINA			2348
++momento			MACH_MOMENTO		MOMENTO			2349
++nuc9xx			MACH_NUC9XX		NUC9XX			2350
++nuc910evb		MACH_NUC910EVB		NUC910EVB		2351
++nuc920evb		MACH_NUC920EVB		NUC920EVB		2352
++nuc950evb		MACH_NUC950EVB		NUC950EVB		2353
++nuc945evb		MACH_NUC945EVB		NUC945EVB		2354
++nuc960evb		MACH_NUC960EVB		NUC960EVB		2355
++nuc932evb		MACH_NUC932EVB		NUC932EVB		2356
++nuc900			MACH_NUC900		NUC900			2357
++sd1soc			MACH_SD1SOC		SD1SOC			2358
++ln2440bc		MACH_LN2440BC		LN2440BC		2359
++rsbc			MACH_RSBC		RSBC			2360
++openrd_client		MACH_OPENRD_CLIENT	OPENRD_CLIENT		2361
++hpipaq11x		MACH_HPIPAQ11X		HPIPAQ11X		2362
++wayland			MACH_WAYLAND		WAYLAND			2363
++acnbsx102		MACH_ACNBSX102		ACNBSX102		2364
++hwat91			MACH_HWAT91		HWAT91			2365
++at91sam9263cs		MACH_AT91SAM9263CS	AT91SAM9263CS		2366
++csb732			MACH_CSB732		CSB732			2367
++u8500			MACH_U8500		U8500			2368
++huqiu			MACH_HUQIU		HUQIU			2369
++mx51_kunlun		MACH_MX51_KUNLUN	MX51_KUNLUN		2370
++pmt1g			MACH_PMT1G		PMT1G			2371
++htcelf			MACH_HTCELF		HTCELF			2372
++armadillo420		MACH_ARMADILLO420	ARMADILLO420		2373
++armadillo440		MACH_ARMADILLO440	ARMADILLO440		2374
++u_chip_dual_arm		MACH_U_CHIP_DUAL_ARM	U_CHIP_DUAL_ARM		2375
++csr_bdb3		MACH_CSR_BDB3		CSR_BDB3		2376
++dolby_cat1018		MACH_DOLBY_CAT1018	DOLBY_CAT1018		2377
++hy9307			MACH_HY9307		HY9307			2378
++aspire_easystore	MACH_A_ES		A_ES			2379
++davinci_irif		MACH_DAVINCI_IRIF	DAVINCI_IRIF		2380
++agama9263		MACH_AGAMA9263		AGAMA9263		2381
++marvell_jasper		MACH_MARVELL_JASPER	MARVELL_JASPER		2382
++flint			MACH_FLINT		FLINT			2383
++tavorevb3		MACH_TAVOREVB3		TAVOREVB3		2384
++sch_m490		MACH_SCH_M490		SCH_M490		2386
++rbl01			MACH_RBL01		RBL01			2387
++omnifi			MACH_OMNIFI		OMNIFI			2388
++otavalo			MACH_OTAVALO		OTAVALO			2389
++sienna			MACH_SIENNA		SIENNA			2390
++htc_excalibur_s620	MACH_HTC_EXCALIBUR_S620	HTC_EXCALIBUR_S620	2391
++htc_opal		MACH_HTC_OPAL		HTC_OPAL		2392
++touchbook		MACH_TOUCHBOOK		TOUCHBOOK		2393
++latte			MACH_LATTE		LATTE			2394
++xa200			MACH_XA200		XA200			2395
++nimrod			MACH_NIMROD		NIMROD			2396
++cc9p9215_3g		MACH_CC9P9215_3G	CC9P9215_3G		2397
++cc9p9215_3gjs		MACH_CC9P9215_3GJS	CC9P9215_3GJS		2398
++tk71			MACH_TK71		TK71			2399
++comham3525		MACH_COMHAM3525		COMHAM3525		2400
++mx31erebus		MACH_MX31EREBUS		MX31EREBUS		2401
++mcardmx27		MACH_MCARDMX27		MCARDMX27		2402
++paradise		MACH_PARADISE		PARADISE		2403
++tide			MACH_TIDE		TIDE			2404
++wzl2440			MACH_WZL2440		WZL2440			2405
++sdrdemo			MACH_SDRDEMO		SDRDEMO			2406
++ethercan2		MACH_ETHERCAN2		ETHERCAN2		2407
++ecmimg20		MACH_ECMIMG20		ECMIMG20		2408
++omap_dragon		MACH_OMAP_DRAGON	OMAP_DRAGON		2409
++halo			MACH_HALO		HALO			2410
++huangshan		MACH_HUANGSHAN		HUANGSHAN		2411
++vl_ma2sc		MACH_VL_MA2SC		VL_MA2SC		2412
++raumfeld_rc		MACH_RAUMFELD_RC	RAUMFELD_RC		2413
++raumfeld_connector	MACH_RAUMFELD_CONNECTOR	RAUMFELD_CONNECTOR	2414
++raumfeld_speaker	MACH_RAUMFELD_SPEAKER	RAUMFELD_SPEAKER	2415
++multibus_master		MACH_MULTIBUS_MASTER	MULTIBUS_MASTER		2416
++multibus_pbk		MACH_MULTIBUS_PBK	MULTIBUS_PBK		2417
++tnetv107x		MACH_TNETV107X		TNETV107X		2418
++snake			MACH_SNAKE		SNAKE			2419
++cwmx27			MACH_CWMX27		CWMX27			2420
++sch_m480		MACH_SCH_M480		SCH_M480		2421
++platypus		MACH_PLATYPUS		PLATYPUS		2422
++pss2			MACH_PSS2		PSS2			2423
++davinci_apm150		MACH_DAVINCI_APM150	DAVINCI_APM150		2424
++str9100			MACH_STR9100		STR9100			2425
++net5big			MACH_NET5BIG		NET5BIG			2426
++seabed9263		MACH_SEABED9263		SEABED9263		2427
++mx51_m2id		MACH_MX51_M2ID		MX51_M2ID		2428
++octvocplus_eb		MACH_OCTVOCPLUS_EB	OCTVOCPLUS_EB		2429
++klk_firefox		MACH_KLK_FIREFOX	KLK_FIREFOX		2430
++klk_wirma_module	MACH_KLK_WIRMA_MODULE	KLK_WIRMA_MODULE	2431
++klk_wirma_mmi		MACH_KLK_WIRMA_MMI	KLK_WIRMA_MMI		2432
++supersonic		MACH_SUPERSONIC		SUPERSONIC		2433
++liberty			MACH_LIBERTY		LIBERTY			2434
++mh355			MACH_MH355		MH355			2435
++
+diff -Nur linux-2.6.28.10-at91/drivers/video/atmel_lcdfb.c linux-2.6.28.10-at91-mh/drivers/video/atmel_lcdfb.c
+--- linux-2.6.28.10-at91/drivers/video/atmel_lcdfb.c	2008-12-25 00:26:37.000000000 +0100
++++ linux-2.6.28.10-at91-mh/drivers/video/atmel_lcdfb.c	2010-03-20 20:51:11.000000000 +0100
+@@ -2,6 +2,7 @@
+  *  Driver for AT91/AT32 LCD Controller
+  *
+  *  Copyright (C) 2007 Atmel Corporation
++ *  Modifications: March 2010, Modified for mh355
+  *
+  * This file is subject to the terms and conditions of the GNU General Public
+  * License.  See the file COPYING in the main directory of this archive for
+@@ -29,7 +30,7 @@
+ 
+ /* configurable parameters */
+ #define ATMEL_LCDC_CVAL_DEFAULT		0xc8
+-#define ATMEL_LCDC_DMA_BURST_LEN	8
++#define ATMEL_LCDC_DMA_BURST_LEN	16   // was 8
+ 
+ #if defined(CONFIG_ARCH_AT91SAM9263) || defined(CONFIG_ARCH_AT91CAP9) || \
+ 	defined(CONFIG_ARCH_AT91SAM9RL)
+@@ -216,7 +217,7 @@
+ 
+ 	/* Wait for the LCDC core to become idle */
+ 	while (lcdc_readl(sinfo, ATMEL_LCDC_PWRCON) & ATMEL_LCDC_BUSY)
+-		msleep(10);
++		msleep(1);		// msleep(10);
+ 
+ 	lcdc_writel(sinfo, ATMEL_LCDC_DMACON, 0);
+ }
+@@ -227,7 +228,7 @@
+ 
+ 	/* Wait for DMA engine to become idle... */
+ 	while (lcdc_readl(sinfo, ATMEL_LCDC_DMACON) & ATMEL_LCDC_DMABUSY)
+-		msleep(10);
++		msleep(1);		// msleep(10);
+ }
+ 
+ static void atmel_lcdfb_start(struct atmel_lcdfb_info *sinfo)
+@@ -352,7 +353,8 @@
+ 	dev_dbg(dev, "  clk:        %lu KHz\n", clk_value_khz);
+ 
+ 	if ((PICOS2KHZ(var->pixclock) * var->bits_per_pixel / 8) > clk_value_khz) {
+-		dev_err(dev, "%lu KHz pixel clock is too fast\n", PICOS2KHZ(var->pixclock));
++		dev_err(dev, "%lu KHz pixel clock is too fast, bits_per_pixel=%lu\n", PICOS2KHZ(var->pixclock), var->bits_per_pixel);
++//		dev_err(dev, "%lu KHz pixel clock is too fast\n", PICOS2KHZ(var->pixclock));
+ 		return -EINVAL;
+ 	}
+ 

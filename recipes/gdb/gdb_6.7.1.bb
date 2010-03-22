@@ -1,4 +1,5 @@
 require gdb.inc
+LICENSE = "GPLv3"
 
 PR = "r1"
 

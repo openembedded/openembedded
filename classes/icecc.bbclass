@@ -250,7 +250,7 @@ def icc_path(bb,d):
 
     #"system" package blacklist contains a list of packages that can not distribute compile tasks
     #for one reason or the other
-    system_package_blacklist = [ "uclibc", "glibc", "gcc", "qemu", "bind", "u-boot", "dhcp-forwarder", "enchant", "connman" ]
+    system_package_blacklist = [ "uclibc", "glibc", "gcc", "bind", "u-boot", "dhcp-forwarder", "enchant", "connman" ]
     user_package_blacklist = (bb.data.getVar('ICECC_USER_PACKAGE_BL', d) or "").split()
     package_blacklist = system_package_blacklist + user_package_blacklist
 

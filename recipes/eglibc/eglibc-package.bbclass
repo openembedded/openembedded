@@ -6,6 +6,8 @@
 # See the note in gcc/gcc_3.4.0.oe
 #
 
+inherit qemu
+
 python __anonymous () {
     import bb, re
     uc_os = (re.match('.*uclibc*', bb.data.getVar('TARGET_OS', d, 1)) != None)
@@ -29,11 +31,12 @@ BINARY_LOCALE_ARCHES ?= "arm.* i[3-6]86 x86_64 powerpc"
 # Set this to zero if you don't want ldconfig in the output package
 USE_LDCONFIG ?= "1"
 
-PACKAGES = "eglibc-dbg eglibc catchsegv sln nscd ldd localedef eglibc-utils eglibc-dev eglibc-doc eglibc-locale libsegfault eglibc-extra-nss eglibc-thread-db eglibc-pcprofile"
+PACKAGES = "eglibc-dbg eglibc catchsegv sln nscd ldd localedef eglibc-utils eglibc-pic eglibc-dev eglibc-doc eglibc-locale libcidn libmemusage libsegfault eglibc-extra-nss eglibc-thread-db eglibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* glibc-binary-localedata-* eglibc-gconv-* eglibc-charmap-* eglibc-localedata-* eglibc-binary-localedata-* locale-base-*"
 
 RPROVIDES_eglibc = "glibc"
 RPROVIDES_eglibc-utils = "glibc-utils"
+RPROVIDES_eglibc-pic = "glibc-pic"
 RPROVIDES_eglibc-dev = "glibc-dev"
 RPROVIDES_eglibc-doc = "glibc-doc"
 RPROVIDES_eglibc-locale = "glibc-locale"
@@ -46,9 +49,13 @@ libc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so ${ba
 FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${@base_conditional('USE_LDCONFIG', '1', '${base_sbindir}/ldconfig', '', d)}"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "${base_libdir}/libSegFault*"
+FILES_libcidn = "${base_libdir}/libcidn*.so"
+FILES_libmemusage = "${base_libdir}/libmemusage.so"
 FILES_eglibc-extra-nss = "${base_libdir}/libnss*"
 FILES_sln = "/sbin/sln"
-FILES_eglibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen ${libdir}/libc_nonshared.a"
+FILES_eglibc-pic = "${libdir}/*_pic.a ${libdir}/*_pic.map ${libdir}/libc_pic/"
+FILES_eglibc-dev_append += "${bindir}/rpcgen ${libdir}/*.a \
+	${base_libdir}/*.a ${base_libdir}/*.o ${datadir}/aclocal"
 FILES_nscd = "${sbindir}/nscd*"
 FILES_eglibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_eglibc-gconv = "${libdir}/gconv/*"
@@ -75,6 +82,10 @@ def get_eglibc_fpu_setting(bb, d):
 EXTRA_OECONF += "${@get_eglibc_fpu_setting(bb, d)}"
 
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
+
+do_configure_prepend() {
+        sed -e "s#@BASH@#/bin/sh#" -i ${S}/elf/ldd.bash.in
+}
 
 do_install() {
 	oe_runmake install_root=${D} install
@@ -287,16 +298,10 @@ python package_do_split_gconvs () {
 		bb.data.setVar('pkg_postrm_%s' % pkgname, bb.data.getVar('locale_base_postrm', d, 1) % (locale, encoding, locale), d)
 
 	def output_locale_binary(name, locale, encoding):
-		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-		if target_arch in ("i486", "i586", "i686"):
-			target_arch = "i386"
-		elif target_arch == "powerpc":
-			target_arch = "ppc"
+		qemu = qemu_target_binary(d) + " -s 1048576"
 		kernel_ver = bb.data.getVar("OLDEST_KERNEL", d, 1)
-		if kernel_ver is None:
-			qemu = "qemu-%s  -s 1048576" % target_arch
-		else:
-			qemu = "qemu-%s  -s 1048576 -r %s" % (target_arch, kernel_ver)
+		if kernel_ver:
+			qemu += " -r %s" % (kernel_ver)
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 		m = re.match("(.*)\.(.*)", name)
 		if m:

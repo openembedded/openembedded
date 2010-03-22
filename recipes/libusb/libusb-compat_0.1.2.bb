@@ -1,7 +1,7 @@
 DESCRIPTION = "libusb-0 compatibility library using libusb-1"
 HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
 PROVIDES = "virtual/libusb0"
 PE = "1"
 PR = "r0"

@@ -1,2 +1,0 @@
-require bc-cat.inc
-

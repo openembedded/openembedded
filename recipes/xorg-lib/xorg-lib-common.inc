@@ -5,7 +5,7 @@ DEPENDS = "util-macros xorg-headers-native"
 
 XORG_PN = "${PN}"
 
-SRC_URI = "${XORG_MIRROR}/individual/lib/${XORG_PN}-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/lib/${XORG_PN}-${PV}.tar.bz2;name=archive"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 

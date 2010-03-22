@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r38"
+PR ="r42"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -12,6 +12,8 @@ SRCREV_afeb9260 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRCREV_afeb9260-180 = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRCREV_palmpre = "6b8edfde22acc574b5532e9f086e6a7287a9bc78"
 SRCREV_cm-t35 = "3c014f1586d5bfe30dca7549396915c83f31cd30"
+SRCREV_mpc8641-hpcn = "f20393c5e787b3776c179d20f82a86bda124d651"
+SRCREV_p2020ds = "f20393c5e787b3776c179d20f82a86bda124d651"
 SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_cm-t35 = "file://cm-t35/cm-t35.patch;patch=1"
@@ -23,14 +25,30 @@ file://revision-detection.patch;patch=1 \
 file://i2c.patch;patch=1 \
 file://720MHz.patch;patch=1 \
 file://dss.patch;patch=1 \
+file://0001-omap3-clock.c-don-t-reprogram-clocks-when-trying-to-.patch;patch=1 \
+file://0002-beagleboard-add-pinmuxing-for-beagleboard-XM.patch;patch=1 \
+file://0003-beagleboard-move-muxing-into-revision-print-switch.patch;patch=1 \
+file://Cortex-A8-erratum-725233.diff;patch=1 \
 "
 
 SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
 PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCREV}"
 
-SRCREV_calamari = "f67066b6b0740b826ed862615c5ab022aaf4779a"
-PV_calamari = "2009.08+${PR}+gitr${SRCREV}"
-SRC_URI_append_calamari = " file://buggy-gcc-really-no-spe.patch;patch=1"
+SRCREV_calamari = "533cf3a024947aaf74c16573a6d951cd0c3d0a7d"
+
+PV_calamari = "2009.11+${PR}+gitr${SRCREV}"
+SRC_URI_calamari = " \
+        git://git.denx.de/u-boot-mpc85xx.git;protocol=git \
+	file://0002-cmd_itest.c-fix-pointer-dereferencing.patch;patch=1 \
+	file://0001-cmd_i2c.c-reduced-subaddress-length-to-3-bytes.patch;patch=1 \
+	file://0002-cmd_bootm.c-made-subcommand-array-static.patch;patch=1 \
+	file://0003-cmd_i2c.c-reworked-subcommand-handling.patch;patch=1 \
+	file://0004-cmd_i2c.c-sorted-commands-alphabetically.patch;patch=1 \
+	file://0005-cmd_i2c.c-added-i2c-read-to-memory-function.patch;patch=1 \
+	file://0007-cmd_setexpr-allow-memory-addresses-and-env-vars-in-e.patch;patch=1 \
+        "
+
+UBOOT_MACHINE_calamari = "MPC8536DS_config"
 
 SRC_URI_omap3-touchbook = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw_env.config \
@@ -79,8 +97,34 @@ SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
 PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"
 
-SRCREV_omapzoom2 = "3672cd5c3b53d219d33345eebad4e25ad5bf6d52"
-PV_omapzoom2 = "2009.05+${PR}+gitr${SRCREV}"
+SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git \
+                     file://0001-OMAP3-set-L1NEON-bit-in-aux-control-register.patch;patch=1"
+SRCREV_omapzoom2 = "78e778e0ea884306841c6499851a1e35177d81d0"
+PV_omapzoom2 = "1.1.4+${PR}+gitr${SRCREV}"
+PE_omapzoom2 = "1"
+
+do_compile_omapzoom2 () {
+        unset LDFLAGS
+        unset CFLAGS
+        unset CPPFLAGS
+        oe_runmake ${UBOOT_MACHINE}
+        oe_runmake all
+        oe_runmake tools
+}
+
+SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git"
+SRCREV_omapzoom36x = "ab45d2a787a9674bed30542139175d8e090e0749"
+PV_omapzoom36x = "1.1.4+${PR}+gitr${SRCREV}"
+PE_omapzoom36x = "1"
+
+do_compile_omapzoom36x () {
+        unset LDFLAGS
+        unset CFLAGS
+        unset CPPFLAGS
+        oe_runmake ${UBOOT_MACHINE}
+        oe_runmake all
+        oe_runmake tools
+}
 
 SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
                  file://fw-env.patch;patch=1 \

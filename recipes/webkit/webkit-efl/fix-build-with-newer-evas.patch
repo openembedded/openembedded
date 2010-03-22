@@ -1,0 +1,26 @@
+--- git/WebCore/platform/graphics/IntPoint.h	2009-11-16 19:14:36.000000000 +0100
++++ webkit-efl/WebCore/platform/graphics/IntPoint.h	2010-02-26 10:32:48.000000000 +0100
+@@ -33,6 +33,10 @@
+ #include <QDataStream>
+ #endif
+ 
++#if PLATFORM(EFL)
++#include <Evas.h>
++#endif
++
+ #if PLATFORM(CG)
+ typedef struct CGPoint CGPoint;
+ #endif
+@@ -55,12 +59,6 @@
+ QT_END_NAMESPACE
+ #elif PLATFORM(GTK)
+ typedef struct _GdkPoint GdkPoint;
+-#elif PLATFORM(EFL)
+-typedef struct _Evas_Point Evas_Point;
+-struct _Evas_Point{
+-    int x;
+-    int y;
+-};
+ #endif
+ 
+ #if PLATFORM(WX)

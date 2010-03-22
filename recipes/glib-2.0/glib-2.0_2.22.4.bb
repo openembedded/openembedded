@@ -22,7 +22,7 @@ SRC_URI_append_arm = " file://atomic-thumb.patch;patch=1"
 SRC_URI_append_armv6 = " file://gatomic_armv6.patch;patch=1"
 SRC_URI_append_armv7a = " file://gatomic_armv6.patch;patch=1" 
 
-PR = "r0"
+PR = "r1"
 
 inherit autotools gettext
 
@@ -41,7 +41,8 @@ do_install_append() {
 	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums || true
 }
 
-DEPENDS_virtclass-native = "gettext-native gtk-doc-native"
+DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
+                            pkgconfig-native"
 EXTRA_OECONF_virtclass-native = ""
 
 do_configure_prepend_virtclass-native() {

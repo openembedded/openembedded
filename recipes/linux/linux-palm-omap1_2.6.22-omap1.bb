@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP1-based Palm devicess"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 COMPATIBLE_MACHINE = "(palmz71|palmtt|palmtt2)"
 

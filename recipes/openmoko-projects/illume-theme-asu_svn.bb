@@ -4,6 +4,7 @@ LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
 RPROVIDES_${PN} = "illume-theme"
 RCONFLICTS = "illume-config"
+SRCREV = "4881"
 PV = "0.0+svnr${SRCPV}"
 PR = "r9"
 

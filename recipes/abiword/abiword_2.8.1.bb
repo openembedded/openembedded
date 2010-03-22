@@ -1,6 +1,6 @@
 require abiword-2.5.inc
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
            file://autogen-common.sh \

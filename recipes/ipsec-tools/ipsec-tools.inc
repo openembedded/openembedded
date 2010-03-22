@@ -5,9 +5,9 @@ SECTION = "console/network"
 LICENSE = "BSD"
 DEPENDS = "virtual/kernel openssl readline flex"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/ipsec-tools/ipsec-tools-${PV}.tar.bz2 \
-           file://racoon-search-missing.patch;patch=1 \
-           file://gcc-4.2.patch;patch=1"
+SRC_URI = "${SOURCEFORGE_MIRROR}/ipsec-tools/ipsec-tools-${PV}.tar.bz2;name=ipsec-tools-${PV}"
+
+INC_PR = "r2"
 
 inherit autotools
 

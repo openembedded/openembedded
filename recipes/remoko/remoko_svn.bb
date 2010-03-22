@@ -4,6 +4,7 @@ AUTHOR = "Valério Valério"
 LICENSE = "GPL"
 SECTION = "console/network"
 DEPENDS = "edje-native"
+SRCREV = "121"
 PV = "0.3.2+svnr${SRCPV}"
 PE = "1"
 

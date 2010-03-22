@@ -96,7 +96,7 @@ RRECOMMENDS_${PN} = "${LIB_PACKAGES} ${OTHER_PACKAGES}"
 RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
 RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
 
-FILES_${QT_BASE_NAME}-tools                = "${bindir}/uic* ${bindir}/moc ${bindir}/rcc ${bindir}/qttracereplay"
+FILES_${QT_BASE_NAME}-tools                = "${bindir}/uic* ${bindir}/moc ${bindir}/rcc ${bindir}/qttracereplay ${bindir}/qdoc*"
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant* ${bindir}/qcollectiongenerator ${bindir}/qhelpconverter ${bindir}/qhelpgenerator"
 FILES_${QT_BASE_NAME}-assistant-dbg        = "${bindir}/.debug/*assistant* ${bindir}/.debug/qcollectiongenerator ${bindir}/.debug/qhelpconverter ${bindir}/.debug/qhelpgenerator"
 FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
@@ -164,9 +164,9 @@ do_configure() {
             -demosdir ${bindir}/${QT_DIR_NAME}/demos \
             -platform ${TARGET_OS}-oe-g++ \
             -xplatform ${TARGET_OS}-oe-g++ \
-            -embedded ${QT_ARCH} ${QT_ENDIAN} -fast \
+            -embedded ${QT_ARCH} ${QT_ENDIAN} \
             -crossarch ${QT_ARCH} \
-            ${QT_CONFIG_FLAGS} -fast \
+            ${QT_CONFIG_FLAGS} -no-fast \
             -L${STAGING_LIBDIR} -I${STAGING_INCDIR} \
             -I${STAGING_INCDIR}/freetype2 \
             -I${STAGING_INCDIR}/mysql \
@@ -243,9 +243,13 @@ do_install() {
     # fix pkgconfig, libtool and prl files
     sed -i -e s#-L${S}/lib##g \
            -e s#-L${STAGING_LIBDIR}##g \
+           -e 's#STAGING_LIBDIR}#libdir}'#g \ 
            -e s#-L${libdir}##g \
            -e s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g \
-           -e s#"-Wl,-rpath-link,${S}/lib"##g \
+           -e s#" -Wl,-rpath-link,${S}/lib"##g \
+           -e s#" -Wl,-rpath-link,${libdir}"##g \
+           -e 's#I/usr/include#Iincludedir}#g' \ 
+           -e 's#Iin#I${in#g' \
            ${D}${libdir}/*.la ${D}${libdir}/*.prl ${D}${libdir}/pkgconfig/*.pc
 
     # fix pkgconfig files
@@ -255,6 +259,13 @@ do_install() {
     for name in ${QT_LIB_NAMES}; do
            sed -i -e /Requires/s#"${name}"#"${name}${QT_LIBINFIX}"#g ${D}${libdir}/pkgconfig/*.pc
     done
+
+	# QT abuses $includedir to point to its headers, which breaks pkgconfig sysroot, so manually fix it up here:
+	for pc in ${D}${libdir}/pkgconfig/*.pc ; do
+		sed -i -e "s:prefix}include/${QT_BASE_NAME}/$(basename $pc .pc):includedir}:" \
+		       -e "s,Cflags: ,Cflags: -IP{includedir}/${QT_BASE_NAME}/$(basename $pc .pc) ," \
+		       -e 's:IP{:I${:g' $pc
+	done
 
     install -d ${D}/${libdir}/fonts
     touch ${D}/${libdir}/fonts/fontdir

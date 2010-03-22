@@ -1,24 +1,22 @@
 require gtk+.inc
 
-PR = "${INC_PR}.1"
+SRC_URI_append_virtclass-native = " file://no-demos.patch;patch=1 \
+"
+
+PR = "${INC_PR}.4"
 
 BBCLASSEXTEND = "native"
 
-DEPENDS_virtclass-native = "atk-native pango-native cairo-native"
+DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native"
+RRECOMMENDS_${PN}_virtclass-native = ""
+PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
 
 # Enable xkb selectively
 XKBTOGGLE = " --disable-xkb"
 XKBTOGGLE_angstrom = ""
 
 EXTRA_OECONF = "--with-libtiff ${XKBTOGGLE} --disable-glibtest gio_can_sniff=yes"
-EXTRA_OECONF_append_virtclass-native = " --without-libtiff --disable-modules"
-
-do_install_virtclass-native () {
-	autotools_do_install
-	find ${D}${libdir} -name "libpixbufloader-*.la" -exec rm \{\} \;
-	rm ${D}${bindir}/gdk-pixbuf-csource
-	echo "going native!"
-}
+EXTRA_OECONF_append_virtclass-native = " --without-libtiff --without-libjpeg"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 

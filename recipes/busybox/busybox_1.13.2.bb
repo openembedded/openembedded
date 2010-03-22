@@ -2,7 +2,7 @@ require busybox.inc
 PR = "${INC_PR}.1"
 
 SRC_URI = "\
-  http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
+  http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
   file://busybox-1.13.2-awk.patch;patch=1 \
   file://busybox-1.13.2-depmod.patch;patch=1 \
   file://busybox-1.13.2-init.patch;patch=1 \
@@ -36,6 +36,8 @@ SRC_URI = "\
   file://mdev \
   file://mdev.conf \
 "
+SRC_URI[tarball.md5sum] = "9e2a604d18bef219a5a6bf3acf78b9e1"
+SRC_URI[tarball.sha256sum] = "927774408bd982dd246fb716bb2e646ab0708ce321b42c5e271dc98c1f5d1dc8"
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 

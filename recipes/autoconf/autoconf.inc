@@ -5,9 +5,12 @@ HOMEPAGE = "http://www.gnu.org/software/autoconf/"
 SECTION = "devel"
 DEPENDS += "m4-native"
 RDEPENDS_${PN} = "m4 perl gnu-config"
-INC_PR = "r8"
+DEPENDS_virtclass-native = "m4-native gnu-config-native"
+RDEPENDS_${PN}_virtclass-native = "m4-native gnu-config-native"
 
-SRC_URI = "${GNU_MIRROR}/autoconf/autoconf-${PV}.tar.bz2 \
+INC_PR = "r9"
+
+SRC_URI = "${GNU_MIRROR}/autoconf/autoconf-${PV}.tar.bz2;name=autoconf \
 	   file://program_prefix.patch;patch=1"
 
 inherit autotools
@@ -20,3 +23,6 @@ do_configure_prepend () {
 		export ac_cv_prog_gnu_m4="${ac_cv_prog_gnu_m4=yes}"
 	fi
 }
+
+PARALLEL_MAKE = ""
+BBCLASSEXTEND = "native"

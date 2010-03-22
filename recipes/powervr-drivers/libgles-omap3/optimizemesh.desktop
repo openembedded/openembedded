@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=OptimizeMesh Demo
-Comment=OGLES Demo
-Exec=/usr/demos/OGLES/OptimizeMesh/OGLESOptimizeMesh
-Icon=star
-Type=Application
-Categories=Demos;
-

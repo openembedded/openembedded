@@ -1,0 +1,249 @@
+From f64468d71fee788dde67d80ad2cb0d7bf9d514bc Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 15:50:45 +0100
+Subject: [PATCH] TS-72xx SBC proc info
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Technologic Systems TS-72XX sbc /proc/driver/sbcinfo entry.
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/Kconfig               |    7 ++
+ arch/arm/mach-ep93xx/Makefile              |    1 +
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h |   14 +++
+ arch/arm/mach-ep93xx/ts72xx.c              |    5 +
+ arch/arm/mach-ep93xx/ts72xx_sbcinfo.c      |  147 ++++++++++++++++++++++++++++
+ 5 files changed, 174 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-ep93xx/ts72xx_sbcinfo.c
+
+diff --git a/arch/arm/mach-ep93xx/Kconfig b/arch/arm/mach-ep93xx/Kconfig
+index ea8549b..3d3ec7e 100644
+--- a/arch/arm/mach-ep93xx/Kconfig
++++ b/arch/arm/mach-ep93xx/Kconfig
+@@ -88,6 +88,13 @@ config MACH_TS72XX
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  Technologic Systems TS-72xx board.
+ 
++config MACH_TS72XX_SBCINFO
++	tristate "Add procfs /proc/driver/sbcinfo"
++	depends on MACH_TS72XX
++	help
++	  Say 'Y' to add a procfs entry containing some information
++	  related to Technologic Systems TS-72xx SBC.
++
+ endmenu
+ 
+ endif
+diff --git a/arch/arm/mach-ep93xx/Makefile b/arch/arm/mach-ep93xx/Makefile
+index c1252ca..bbf8f9a 100644
+--- a/arch/arm/mach-ep93xx/Makefile
++++ b/arch/arm/mach-ep93xx/Makefile
+@@ -16,3 +16,4 @@ obj-$(CONFIG_MACH_EDB9315A)	+= edb9315a.o
+ obj-$(CONFIG_MACH_GESBC9312)	+= gesbc9312.o
+ obj-$(CONFIG_MACH_MICRO9)	+= micro9.o
+ obj-$(CONFIG_MACH_TS72XX)	+= ts72xx.o
++obj-$(CONFIG_MACH_TS72XX_SBCINFO)	+= ts72xx_sbcinfo.o
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+index cf9544c..601d0a3 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+@@ -103,6 +103,10 @@
+ #define TS72XX_RS485_MODE_PHYS_BASE	0x23000000
+ #define TS72XX_RS485_MODE_SIZE	0x00001000
+ 
++#define TS72XX_PLD_VERSION_VIRT_BASE	0xfebf5000
++#define TS72XX_PLD_VERSION_PHYS_BASE	0x23400000
++#define TS72XX_PLD_VERSION_SIZE	0x00001000
++
+ #ifndef __ASSEMBLY__
+ #include <asm/io.h>
+ 
+@@ -138,4 +142,14 @@ static inline int is_rs485_installed(void)
+ 	return !!(__raw_readb(TS72XX_OPTIONS_VIRT_BASE) &
+ 					TS72XX_OPTIONS_COM2_RS485);
+ }
++
++static inline int get_ts72xx_pld_version(void)
++{
++	return (__raw_readb(TS72XX_PLD_VERSION_VIRT_BASE) & 0x7);
++}
++
++static inline int is_jp6_set(void)
++{
++	return (__raw_readb(TS72XX_OPTIONS2_VIRT_BASE) & 0x1);
++}
+ #endif
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index ea3deeb..9835b05 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -31,6 +31,11 @@ static struct map_desc ts72xx_io_desc[] __initdata = {
+ 		.pfn		= __phys_to_pfn(TS72XX_MODEL_PHYS_BASE),
+ 		.length		= TS72XX_MODEL_SIZE,
+ 		.type		= MT_DEVICE,
++  }, {
++    .virtual  = TS72XX_PLD_VERSION_VIRT_BASE,
++    .pfn    = __phys_to_pfn(TS72XX_PLD_VERSION_PHYS_BASE),
++    .length   = TS72XX_PLD_VERSION_SIZE,
++    .type   = MT_DEVICE,
+ 	}, {
+ 		.virtual	= TS72XX_OPTIONS_VIRT_BASE,
+ 		.pfn		= __phys_to_pfn(TS72XX_OPTIONS_PHYS_BASE),
+diff --git a/arch/arm/mach-ep93xx/ts72xx_sbcinfo.c b/arch/arm/mach-ep93xx/ts72xx_sbcinfo.c
+new file mode 100644
+index 0000000..7fe4e77
+--- /dev/null
++++ b/arch/arm/mach-ep93xx/ts72xx_sbcinfo.c
+@@ -0,0 +1,147 @@
++/*
++ *  Technologic Systems TS-72XX sbc /proc/driver/sbcinfo entry.
++ *
++ *  Original idea by Liberty Young (Technologic Systems).
++ *
++ *	(c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/proc_fs.h>
++#include <mach/ts72xx.h>
++
++
++struct infos {
++  int model, pld;
++  int option_ad;
++  int option_rs485;
++  unsigned char jumpers[6]; // 0=off,1=on,2=error
++};
++
++static void get_sbcinfo(struct infos *data)
++{
++  void __iomem *p;
++
++  /* Board model */
++  switch (__raw_readb(TS72XX_MODEL_VIRT_BASE)) {
++    case TS72XX_MODEL_TS7200:
++      data->model = 7200;
++      break;
++    case  TS72XX_MODEL_TS7250:
++      data->model = 7250;
++      break;
++    case  TS72XX_MODEL_TS7260:
++      data->model = 7260;
++      break;
++    default:
++      data->model = 0;
++  }
++
++  data->pld = get_ts72xx_pld_version();
++
++  /* A/D converter (8 x 12-bit channels) */
++  if ((data->model == 7200) || (data->model = 7250)) {
++    data->option_ad = is_max197_installed();
++  } else {
++    data->option_ad = 0;
++  }
++
++  /* COM2 RS-485 */
++  if (is_rs485_installed()) {
++    data->option_rs485 = 1;
++  } else {
++    data->option_rs485 = 0;
++  }
++
++  /* jumpers */
++  p = ioremap(TS72XX_JUMPERS_MAX197_PHYS_BASE, TS72XX_JUMPERS_MAX197_SIZE);
++  if (p) {
++    unsigned char c = __raw_readb(p);
++
++    data->jumpers[0] = 2;                // JP1 (bootstrap)
++    data->jumpers[1] = !!(c & 0x01);     // JP2 (enable serial console)
++    data->jumpers[2] = !!(c & 0x02);     // JP3 (flash write enable)
++    data->jumpers[3] = !(c & 0x08);      // JP4 (console on COM2)
++    data->jumpers[4] = !(c & 0x10);      // JP5 (test)
++    data->jumpers[5] = !!(is_jp6_set()); // JP6 (user jumper)
++
++    iounmap(p);
++  } else {
++    data->jumpers[0] = data->jumpers[1] = data->jumpers[2] = 2;
++    data->jumpers[3] = data->jumpers[4] = data->jumpers[5] = 2;
++  }
++
++}
++
++
++static int ts72xx_sbcinfo_read_proc(char *buffer, char **start, off_t offset,
++    int count, int *eof, void *data)
++{
++  int len, size = count;
++  char *p = buffer;
++  struct infos nfo;
++  const char jpc[3] = { 'n', 'y', '?' };
++
++  get_sbcinfo(&nfo);
++  len = scnprintf(p, size,
++      "Model             : TS-%d (PLD rev %c)\n"
++      "Option max197 A/D : %s\n"
++      "Option RS-485     : %s\n"
++      "Jumpers           : JP2=%c JP3=%c JP4=%c JP5=%c JP6=%c\n",
++      nfo.model, nfo.pld + 0x40,
++      (nfo.option_ad ? "yes" : "no"),
++      (nfo.option_rs485 ? "yes" : "no"),
++      jpc[nfo.jumpers[1]], jpc[nfo.jumpers[2]], jpc[nfo.jumpers[3]], jpc[nfo.jumpers[4]],
++      jpc[nfo.jumpers[5]]);
++
++  if (len <= offset + count)
++    *eof = 1;
++
++  *start = buffer + offset;
++  len -= offset;
++
++  if (len > count)
++    len = count;
++  if (len < 0)
++    len = 0;
++
++  return len;
++}
++
++
++static int __init ts72xx_sbcinfo_init(void)
++{
++  struct proc_dir_entry *entry;
++  int ret = 0;
++
++  entry = create_proc_read_entry("driver/sbcinfo", 0,
++      NULL, ts72xx_sbcinfo_read_proc, NULL);
++
++  if (!entry) {
++    printk(KERN_ERR "sbcinfo: can't create /proc/driver/sbcinfo\n");
++    ret = -ENOMEM;
++  }
++
++  return ret;
++}
++
++static void __exit ts72xx_sbcinfo_exit(void)
++{
++  remove_proc_entry("driver/sbcinfo", NULL);
++  return;
++}
++
++module_init(ts72xx_sbcinfo_init);
++module_exit(ts72xx_sbcinfo_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("Show information of Technologic Systems TS-72XX sbc");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("1.0");
+-- 
+1.6.0.4
+

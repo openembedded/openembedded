@@ -1,7 +1,7 @@
 require busybox.inc
 PR = "${INC_PR}.1"
 
-SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
+SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
            file://udhcpscript.patch;patch=1 \
            file://adduser-longops.patch;patch=1 \
            file://sort-z-nul.patch;patch=1;status=upstream \
@@ -18,6 +18,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://syslog.conf \
            file://umount.busybox \
            file://defconfig"
+SRC_URI[tarball.md5sum] = "7e26c56012dd5811251c2f87786b9a77"
+SRC_URI[tarball.sha256sum] = "a14ca1104242953672807f5b5223de5615c237a27140f36d625b3067daaf11dc"
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 

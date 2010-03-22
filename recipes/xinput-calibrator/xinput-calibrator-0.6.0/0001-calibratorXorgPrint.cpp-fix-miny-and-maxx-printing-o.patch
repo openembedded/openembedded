@@ -1,0 +1,36 @@
+From 383a3a8523814d1b108d2dc1ed812f80d6c9f050 Mon Sep 17 00:00:00 2001
+From: Mario Domenech Goulart <mario@ossystems.com.br>
+Date: Thu, 11 Mar 2010 11:05:18 -0300
+Subject: [PATCH] calibratorXorgPrint.cpp: fix miny and maxx printing order for UDEV and HAL
+
+
+Signed-off-by: Mario Domenech Goulart <mario@ossystems.com.br>
+---
+ src/calibrator/calibratorXorgPrint.cpp |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/calibrator/calibratorXorgPrint.cpp b/src/calibrator/calibratorXorgPrint.cpp
+index 92d297a..1f74de0 100644
+--- a/src/calibrator/calibratorXorgPrint.cpp
++++ b/src/calibrator/calibratorXorgPrint.cpp
+@@ -69,7 +69,7 @@ bool CalibratorXorgPrint::finish_data(const XYinfo new_axys, int swap_xy)
+ \tENV{x11_options.miny}=\"%d\"\n\
+ \tENV{x11_options.maxx}=\"%d\"\n\
+ \tENV{x11_options.maxy}=\"%d\"\n"
+-         , new_axys.x_min, new_axys.x_max, new_axys.y_min, new_axys.y_max);
++         , new_axys.x_min, new_axys.y_min, new_axys.x_max, new_axys.y_max);
+     if (swap_xy != 0)
+         printf("\tENV{x11_options.swapxy}=\"%d\"\n", swap_xy);
+     printf("\tLABEL=\"xorg_touchscreen_end\"\n");
+@@ -81,7 +81,7 @@ bool CalibratorXorgPrint::finish_data(const XYinfo new_axys, int swap_xy)
+ \t  <merge key=\"input.x11_options.miny\" type=\"string\">%d</merge>\n\
+ \t  <merge key=\"input.x11_options.maxx\" type=\"string\">%d</merge>\n\
+ \t  <merge key=\"input.x11_options.maxy\" type=\"string\">%d</merge>\n"
+-         , new_axys.x_min, new_axys.x_max, new_axys.y_min, new_axys.y_max);
++         , new_axys.x_min, new_axys.y_min, new_axys.x_max, new_axys.y_max);
+     if (swap_xy != 0)
+         printf("\t  <merge key=\"input.x11_options.swapxy\" type=\"string\">%d</merge>\n", swap_xy);
+     printf("\t</match>\n");
+-- 
+1.6.3.3.444.g4ecbc
+

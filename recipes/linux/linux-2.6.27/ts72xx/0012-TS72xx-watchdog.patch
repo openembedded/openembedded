@@ -1,0 +1,451 @@
+From 0e804ab442879a1d9c70695e5a5c0ffc87cbca8b Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 01:15:14 +0100
+Subject: [PATCH] TS72xx watchdog
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h |    7 +
+ arch/arm/mach-ep93xx/ts72xx.c              |   21 ++
+ drivers/watchdog/Kconfig                   |   12 +
+ drivers/watchdog/Makefile                  |    1 +
+ drivers/watchdog/ts72xx_wdt.c              |  332 ++++++++++++++++++++++++++++
+ 5 files changed, 373 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/watchdog/ts72xx_wdt.c
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+index 99c4e48..bb67506 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+@@ -79,6 +79,13 @@
+ #define TS72XX_RTC_DATA_PHYS_BASE	0x11700000
+ #define TS72XX_RTC_DATA_SIZE		0x00001000
+ 
++#define TS72XX_WATCHDOG_CONTROL_VIRT_BASE	0xfebf7000
++#define TS72XX_WATCHDOG_CONTROL_PHYS_BASE	0x23800000
++#define TS72XX_WATCHDOG_CONTROL_SIZE	0x00001000
++
++#define TS72XX_WATCHDOG_FEED_VIRT_BASE	0xfebf6000
++#define TS72XX_WATCHDOG_FEED_PHYS_BASE	0x23c00000
++#define TS72XX_WATCHDOG_FEED_SIZE	0x00001000
+ 
+ #ifndef __ASSEMBLY__
+ #include <asm/io.h>
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index c3cbff1..1e933bc 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -183,6 +183,26 @@ static struct platform_device ts72xx_eth_device = {
+ 	.resource	= ts72xx_eth_resource,
+ };
+ 
++static struct resource ts72xx_watchdog_resources[] = {
++	[0] = {
++		.start  = TS72XX_WATCHDOG_CONTROL_PHYS_BASE,
++		.end  = TS72XX_WATCHDOG_CONTROL_PHYS_BASE + 0x0fff,
++		.flags  = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start  = TS72XX_WATCHDOG_FEED_PHYS_BASE,
++		.end  = TS72XX_WATCHDOG_FEED_PHYS_BASE + 0x0fff,
++		.flags  = IORESOURCE_MEM,
++	},
++};
++
++static struct platform_device ts72xx_watchdog_device = {
++	.name = "ts72xx-wdt",
++	.id   = -1,
++	.num_resources  = ARRAY_SIZE(ts72xx_watchdog_resources),
++	.resource = ts72xx_watchdog_resources,
++};
++
+ static void __init ts72xx_init_machine(void)
+ {
+ 	ep93xx_init_devices();
+@@ -193,6 +213,7 @@ static void __init ts72xx_init_machine(void)
+ 	memcpy(ts72xx_eth_data.dev_addr,
+ 		(void *)(EP93XX_ETHERNET_BASE + 0x50), 6);
+ 	platform_device_register(&ts72xx_eth_device);
++	platform_device_register(&ts72xx_watchdog_device);
+ }
+ 
+ MACHINE_START(TS72XX, "Technologic Systems TS-72xx SBC")
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index c510367..fac3093 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -217,6 +217,18 @@ config DAVINCI_WATCHDOG
+ 	  NOTE: once enabled, this timer cannot be disabled.
+ 	  Say N if you are unsure.
+ 
++config TS72XX_WATCHDOG
++	tristate "TS-72xx Watchdog"
++	depends on WATCHDOG && ARCH_EP93XX && MACH_TS72XX
++	help
++	  Say Y here if to include support for the CPLD watchdog
++	  included on Technologic Systems SBC.
++
++	  NOTE: timeout value is given in milliseconds, not in seconds.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called ts72xx_wdt.
++
+ # ARM26 Architecture
+ 
+ # AVR32 Architecture
+diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+index e0ef123..890024b 100644
+--- a/drivers/watchdog/Makefile
++++ b/drivers/watchdog/Makefile
+@@ -39,6 +39,7 @@ obj-$(CONFIG_EP93XX_WATCHDOG) += ep93xx_wdt.o
+ obj-$(CONFIG_PNX4008_WATCHDOG) += pnx4008_wdt.o
+ obj-$(CONFIG_IOP_WATCHDOG) += iop_wdt.o
+ obj-$(CONFIG_DAVINCI_WATCHDOG) += davinci_wdt.o
++obj-$(CONFIG_TS72XX_WATCHDOG) += ts72xx_wdt.o
+ 
+ # ARM26 Architecture
+ 
+diff --git a/drivers/watchdog/ts72xx_wdt.c b/drivers/watchdog/ts72xx_wdt.c
+new file mode 100644
+index 0000000..7cbac78
+--- /dev/null
++++ b/drivers/watchdog/ts72xx_wdt.c
+@@ -0,0 +1,332 @@
++/*
++ *	TS-72xx Watchdog Driver for Technologic Systems boards.
++ *
++ *  Based on ep93xx_wdt.c by Lehtiniemi <rayl@mail.com> &
++ *      Alessandro Zummo <a.zummo@towertech.it>
++ *  and ib700wdt.c by Charles Howes <chowes@vsol.net>
++ *  and mpc83xx_wdt.c by Dave Updegraff <dave@cray.org> &
++ *      Kumar Gala <galak@kernel.crashing.org>
++ *
++ *	(c) Copyright 2006  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ *
++ * This driver only deals with native timeout provided by CPLD :
++ * 1/4s, 1/2s, 1s, 2s, 4s and 8s. No external timer is used.
++ * Notice that we must ping before modifying the control register.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/fs.h>
++#include <linux/miscdevice.h>
++#include <linux/platform_device.h>
++#include <linux/init.h>
++#include <linux/watchdog.h>
++#include <asm/io.h>
++#include <asm/uaccess.h>
++#include <asm/system.h>
++#include <asm/mach-types.h>
++
++#define WATCHDOG_VERSION "0.2"
++#define PFX "ts72xx_wdt: "
++
++#define WATCHDOG_TIMEOUT 8000 /* 8 seconds */
++#define WDT_IN_USE      0
++#define WDT_OK_TO_CLOSE 1
++
++static unsigned long ts72xx_wdt_status;
++static unsigned char ts72xx_wdt_cpld_value = 0x7;
++static int nowayout = WATCHDOG_NOWAYOUT;
++static int timeout = WATCHDOG_TIMEOUT;
++
++static int ts72xx_wdt_times[12] = {
++	6000, 3000, 1500, 750, 275, 0,
++	8000, 4000, 2000, 1000, 500, 250
++};
++
++static void __iomem *control_register;
++static void __iomem *feed_register;
++
++
++/*
++ *	Kernel methods.
++ */
++
++static inline void ts72xx_wdt_ping(void)
++{
++	__raw_writew(0x05, feed_register);
++}
++
++static inline void ts72xx_wdt_enable(void)
++{
++	__raw_writew(0x05, feed_register);
++	__raw_writew(ts72xx_wdt_cpld_value, control_register);
++}
++
++static inline void ts72xx_wdt_disable(void)
++{
++	__raw_writew(0x05, feed_register);
++	__raw_writew(0, control_register);
++}
++
++static inline void ts72xx_parse_timeout(int value)
++{
++	unsigned char cpld_value = 0x7;
++	int i;
++
++	if ((value > 8000) || (value < 250)) {
++		timeout = WATCHDOG_TIMEOUT;
++		printk(KERN_INFO PFX "Timeout value out of range, set to %d\n", timeout);
++	} else {
++		for (i = 0; i < 6; i++) {
++			if (value >= ts72xx_wdt_times[i]) {
++				timeout = ts72xx_wdt_times[i+6];
++
++				if (value != timeout)
++					printk(KERN_INFO PFX "Timeout value rounded to %d\n", timeout);
++
++				if (i >= 3) /* cpld_value can't be 4 */
++					i++;
++
++				cpld_value = 7 - i;
++				break;
++			}
++		}
++	}
++
++	ts72xx_wdt_cpld_value = cpld_value;
++}
++
++static ssize_t ts72xx_wdt_write(struct file *file, const char __user *buf,
++				 size_t count, loff_t *ppos)
++{
++	/* Can't seek (pwrite) on this device */
++	if (*ppos != file->f_pos)
++		return -ESPIPE;
++
++	if (count) {
++		if (!nowayout) {
++			size_t i;
++
++			clear_bit(WDT_OK_TO_CLOSE, &ts72xx_wdt_status);
++
++			for (i = 0; i != count; i++) {
++				char c;
++
++				if (get_user(c, buf + i))
++					return -EFAULT;
++
++				if (c == 'V')
++					set_bit(WDT_OK_TO_CLOSE, &ts72xx_wdt_status);
++				else
++					clear_bit(WDT_OK_TO_CLOSE, &ts72xx_wdt_status);
++			}
++		}
++		ts72xx_wdt_ping();
++	}
++
++	return count;
++}
++
++static int ts72xx_wdt_ioctl(struct inode *inode, struct file *file,
++			     unsigned int cmd, unsigned long arg)
++{
++	int new_margin;
++	int ret = -ENOIOCTLCMD;
++
++	static struct watchdog_info ident = {
++		.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
++		.firmware_version = 1,
++		.identity = "TS-72xx Watchdog",
++	};
++
++	switch (cmd) {
++		case WDIOC_GETSUPPORT:
++			ret = copy_to_user((struct watchdog_info __user *)arg, &ident,
++			sizeof(ident)) ? -EFAULT : 0;
++			break;
++
++		case WDIOC_GETSTATUS:
++		case WDIOC_GETBOOTSTATUS:
++			ret = put_user(0, (int __user *)arg);
++			break;
++
++		case WDIOC_KEEPALIVE:
++			ts72xx_wdt_ping();
++			ret = 0;
++			break;
++
++		case WDIOC_SETTIMEOUT:
++			if (get_user(new_margin, (int __user *)arg))
++				return -EFAULT;
++
++			ts72xx_parse_timeout(new_margin);
++			ts72xx_wdt_enable();
++			/* Fall */
++
++		case WDIOC_GETTIMEOUT:
++			ret = put_user(timeout, (int __user *)arg);
++			break;
++	}
++
++	return ret;
++}
++
++static int ts72xx_wdt_open(struct inode *inode, struct file *file)
++{
++	if (test_and_set_bit(WDT_IN_USE, &ts72xx_wdt_status))
++		return -EBUSY;
++
++	if (nowayout) {
++		__module_get(THIS_MODULE);
++	}
++
++	ts72xx_wdt_enable();
++	ts72xx_wdt_ping();
++
++	return nonseekable_open(inode, file);
++}
++
++static int ts72xx_wdt_close(struct inode *inode, struct file *file)
++{
++	if (test_bit(WDT_OK_TO_CLOSE, &ts72xx_wdt_status))
++		ts72xx_wdt_disable();
++	else
++		printk(KERN_CRIT PFX "Device file closed unexpectedly. "
++		       "Will not stop the WDT!\n");
++
++	clear_bit(WDT_IN_USE, &ts72xx_wdt_status);
++
++	return 0;
++}
++
++/*
++ *	Kernel Interfaces
++ */
++
++static struct file_operations ts72xx_wdt_fops = {
++	.owner		= THIS_MODULE,
++	.llseek		= no_llseek,
++	.write		= ts72xx_wdt_write,
++	.ioctl		= ts72xx_wdt_ioctl,
++	.open		= ts72xx_wdt_open,
++	.release	= ts72xx_wdt_close,
++};
++
++static struct miscdevice ts72xx_wdt_miscdev = {
++	.minor = WATCHDOG_MINOR,
++	.name = "watchdog",
++	.fops = &ts72xx_wdt_fops,
++};
++
++static void ts72xx_wdt_shutdown(struct platform_device *dev)
++{
++	ts72xx_wdt_disable();
++}
++
++static int __devinit ts72xx_wdt_probe(struct platform_device *dev)
++{
++	struct resource *r;
++	int ret;
++
++	if (!machine_is_ts72xx())
++		return -ENODEV;
++
++	r = platform_get_resource(dev, IORESOURCE_MEM, 0);
++
++	if (!r) {
++		ret = -ENODEV;
++		goto err_out;
++	}
++
++	control_register = ioremap(r->start, r->end - r->start + 1);
++
++	if (control_register == NULL) {
++		ret = -ENOMEM;
++		goto err_out;
++	}
++
++	r = platform_get_resource(dev, IORESOURCE_MEM, 1);
++
++	if (!r) {
++		ret = -ENODEV;
++		goto err_unmap1;
++	}
++
++	feed_register = ioremap(r->start, r->end - r->start + 1);
++
++	if (feed_register == NULL) {
++		ret = -ENOMEM;
++		goto err_unmap1;
++	}
++
++	ret = misc_register(&ts72xx_wdt_miscdev);
++	if (ret) {
++		printk(KERN_ERR PFX "cannot register miscdev on minor=%d "
++		       "(err=%d)\n", WATCHDOG_MINOR, ret);
++		goto err_unmap2;
++	}
++
++	printk(KERN_INFO PFX "TS-72xx watchdog driver, v%s\n", WATCHDOG_VERSION);
++	ts72xx_parse_timeout(timeout);
++
++	return 0;
++
++err_unmap2:
++	iounmap(feed_register);
++err_unmap1:
++	iounmap(control_register);
++err_out:
++	return ret;
++}
++
++static int __devexit ts72xx_wdt_remove(struct platform_device *dev)
++{
++	misc_deregister(&ts72xx_wdt_miscdev);
++	iounmap(feed_register);
++	iounmap(control_register);
++
++	return 0;
++}
++
++static struct platform_driver ts72xx_wdt_driver = {
++	.probe		= ts72xx_wdt_probe,
++	.remove		= __devexit_p(ts72xx_wdt_remove),
++	.shutdown	= ts72xx_wdt_shutdown,
++	.driver	= {
++		.owner	= THIS_MODULE,
++		.name	= "ts72xx-wdt",
++	},
++};
++
++static int __init ts72xx_wdt_init(void)
++{
++	return platform_driver_register(&ts72xx_wdt_driver);
++}
++
++static void __exit ts72xx_wdt_exit(void)
++{
++	platform_driver_unregister(&ts72xx_wdt_driver);
++}
++
++module_init(ts72xx_wdt_init);
++module_exit(ts72xx_wdt_exit);
++
++#ifdef CONFIG_WATCHDOG_NOWAYOUT
++module_param(nowayout, int, 0);
++MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default=CONFIG_WATCHDOG_NOWAYOUT)");
++#endif
++
++module_param(timeout, int, 0);
++MODULE_PARM_DESC(timeout,"Watchdog timeout in milliseconds (250..8000, default=" __MODULE_STRING(WATCHDOG_TIMEOUT) ")");
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("TS-72xx watchdog driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+-- 
+1.6.0.4
+

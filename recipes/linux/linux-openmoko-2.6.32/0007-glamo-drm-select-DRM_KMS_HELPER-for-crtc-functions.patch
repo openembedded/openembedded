@@ -1,0 +1,24 @@
+From 8bb128ce2474ef10c71ea681fa01e574c1ec3114 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 22 Dec 2009 16:32:57 +0100
+Subject: [PATCH 7/9] glamo-drm: select DRM_KMS_HELPER for crtc functions
+
+---
+ drivers/mfd/glamo/Kconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mfd/glamo/Kconfig b/drivers/mfd/glamo/Kconfig
+index 214c70e..a12ebf6 100644
+--- a/drivers/mfd/glamo/Kconfig
++++ b/drivers/mfd/glamo/Kconfig
+@@ -47,6 +47,7 @@ config MFD_GLAMO_DRM
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+ 	select FB_CFB_IMAGEBLIT
++	select DRM_KMS_HELPER
+ 	help
+ 	  Direct Rendering Manager interface for the S-Media Glamo chip, as
+ 	  used in Openmoko FreeRunner (GTA02).
+-- 
+1.6.6.1
+

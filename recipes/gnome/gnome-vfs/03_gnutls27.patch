@@ -1,0 +1,33 @@
+Debian #529827
+GNOME #574589
+Gentoo #253729
+Patch by Gilles Dartiguelongue, fixed for correctly setting have_ssl
+
+Allow gnome-vfs-2.24 to build with gnutls >= 2.7.0
+Use pkg-config in place of gnutls own macro since it's not present anymore.
+
+Index: gnome-vfs-2.24.2/configure.in
+===================================================================
+--- gnome-vfs-2.24.2.orig/configure.in	2009-04-20 12:46:46.000000000 +0200
++++ gnome-vfs-2.24.2/configure.in	2010-02-06 11:55:45.497282437 +0100
+@@ -668,14 +668,14 @@
+     AC_MSG_ERROR([*** Can't use both openssl and gnutls at the same time. Please pick one only. ***])
+   else
+     AC_CHECK_HEADER(gcrypt.h,, AC_MSG_ERROR([*** Need gcrypt.h to compile with GnuTLS support ***]))
+-    AM_PATH_LIBGNUTLS(1.0.0, [AC_DEFINE(HAVE_GNUTLS, 1, [Define to 1 if GnuTLS is available])
+-			      have_ssl=true])
++    PKG_CHECK_MODULES(LIBGNUTLS, gnutls >= 1.0.0, [AC_DEFINE(HAVE_GNUTLS, 1, [Define to 1 if GnuTLS is available])
++    				 	   	  have_ssl=true])
+ 
+     if test "x${LIBGNUTLS_LIBS}" = "x"; then
+-      AM_PATH_LIBGNUTLS(0.5.1, [AC_DEFINE(HAVE_GNUTLS, 1, [Define to 1 if GnuTLS is available])
+-                                 AC_DEFINE(GNUTLS_COMPAT, 1, [FIXME])
+-				 have_ssl=true],
+-                                 AC_MSG_ERROR([Unable to find GNUTLS]))
++      PKG_CHECK_MODULES(LIBGNUTLS, gnutls >= 0.5.1, [AC_DEFINE(HAVE_GNUTLS, 1, [Define to 1 if GnuTLS is available])
++      				   	     	    AC_DEFINE(GNUTLS_COMPAT, 1, [FIXME])
++						    have_ssl=true],
++						    AC_MSG_ERROR([Unable to find GNUTLS]))
+     fi
+   fi
+ fi

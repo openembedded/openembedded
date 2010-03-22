@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Particles Demo
-Comment=OGLES Demo
-Exec=/usr/demos/OGLES/Particles/OGLESParticles
-Icon=star
-Type=Application
-Categories=Demos;
-

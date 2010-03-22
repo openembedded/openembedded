@@ -6,4 +6,4 @@ PR = "r1"
 
 inherit efl
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=edb;proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=edb;proto=http"

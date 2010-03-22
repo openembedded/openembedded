@@ -5,7 +5,7 @@ DEPENDS += "fontconfig-native"
 SRC_URI += "file://fc-glyphname.patch;patch=1 \
            file://fc-lang.patch;patch=1 \
 	   file://local.conf"
-PR = "r8"
+PR = "r9"
 
 do_stage () {
 	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}

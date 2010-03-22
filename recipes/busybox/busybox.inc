@@ -7,14 +7,13 @@ functionality and behave very much like their GNU counterparts. BusyBox \
 provides a fairly complete POSIX environment for any small or embedded \
 system."
 HOMEPAGE = "http://www.busybox.net"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r24"
+INC_PR = "r26"
 
 SRC_URI = "\
-  http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
@@ -40,7 +39,7 @@ PACKAGES =+ "${PN}-mountall ${PN}-httpd ${PN}-syslog ${PN}-udhcpd"
 # listed in the NEEDED field.
 RRECOMMENDS += "libgcc"
 
-FILES_${PN}-mountall = "${sysconfdir}/default/mountall"
+FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
 RDEPENDS_${PN} += "${PN}-mountall"
 
 # Make busybox recommend busybox-syslog for those images that expect it
@@ -55,7 +54,7 @@ FILES_${PN} += "${datadir}/udhcpc"
 INITSCRIPT_PACKAGES = "${PN}-httpd ${PN}-syslog ${PN}-udhcpd"
 INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
 INITSCRIPT_NAME_${PN}-syslog = "syslog"
-INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd" 
+INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd"
 CONFFILES_${PN}-syslog = "${sysconfdir}/syslog.conf"
 
 # This disables the syslog startup links in slugos (see slugos-init)
@@ -97,7 +96,11 @@ do_install () {
 	# Install /bin/busybox, and the /bin/sh link so the postinst script
 	# can run. Let update-alternatives handle the rest.
 	install -d ${D}${base_bindir}
-	install -m 0755 ${S}/busybox ${D}${base_bindir}
+	if grep -q "CONFIG_FEATURE_SUID=y" ${WORKDIR}/defconfig; then
+		install -m 4755 ${S}/busybox ${D}${base_bindir}
+	else
+		install -m 0755 ${S}/busybox ${D}${base_bindir}
+	fi
 	ln -sf busybox ${D}${base_bindir}/sh
 
 	if grep -q "CONFIG_SYSLOGD=y" ${WORKDIR}/defconfig; then
@@ -125,7 +128,7 @@ do_install () {
 	fi
 	if grep "CONFIG_FEATURE_MOUNT_FSTAB=y" ${WORKDIR}/defconfig; then
 		install -d ${D}${sysconfdir}/default
-		install -m 644 ${WORKDIR}/mountall ${D}${sysconfdir}/default/
+		install -m 644 ${WORKDIR}/mountall ${D}${sysconfdir}/default/mountall.${PN}
 	fi
 
 	install -m 0644 ${S}/busybox.links ${D}${sysconfdir}
@@ -137,9 +140,16 @@ pkg_postinst_${PN} () {
 	# (update-alternatives have no problem replacing links later anyway)
 	test -n 2> /dev/null || alias test='busybox test'
 	if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; busybox ln -s $to $link; fi; done </etc/busybox.links; fi
-	
+
 	# This adds the links, remember that this has to work when building an image too, hence the $D
 	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 50; done <$D/etc/busybox.links
+}
+
+pkg_postinst_${PN}-mountall () {
+	update-alternatives --install ${sysconfdir}/default/mountall default_mountall mountall.${PN} 50
+}
+pkg_prerm_${PN}-mountall () {
+	update-alternatives --remove default_mountall mountall.${PN}
 }
 
 pkg_prerm_${PN} () {
@@ -167,7 +177,7 @@ pkg_prerm_${PN} () {
 			/*/*/*) to="../../bin/busybox";;
 			/bin/*) to="busybox";;
 			/*/*) to="../bin/busybox";;
-			/*) to="/bin/busybox";;		
+			/*) to="/bin/busybox";;
 		esac
 		bn=`basename $link`
 		sh /usr/bin/update-alternatives --remove $bn $to

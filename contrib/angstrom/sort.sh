@@ -48,17 +48,17 @@ case "$arch" in
 	"armv4t")
 			machines="micro2440 mini2440 ep93xx h6300 om-gta01 om-gta02 fic-gta01 fic-gta02" ;;
 	"armv5te")
-			machines="hawkboard da850-omapl138-evm da830-omapl137-evm htcalpine dm6446-evm dm6467-evm dm6467t-evm dm355-evm dm365-evm dm357-evm topas910 sheevaplug openrd-client openrd-base dm355-leopard n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa mx27ads at91sam9g20ek mainstone" ;;
+			machines="hawkboard da850-omapl138-evm da830-omapl137-evm htcalpine dm6446-evm dm6467-evm dm6467t-evm dm355-evm dm365-evm dm357-evm topas910 sheevaplug openrd-client openrd-base dm355-leopard n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa mx27ads at91sam9g20ek mainstone hipox" ;;
 	"armv5teb")
 			machines="ixp4xxbe nslu2be" ;;
 	"armv6-novfp")
 			machines="htcdiamond htckaiser htcpolaris htcraphael htcvogue" ;;	
 	"armv6")	
-			machines="smartq5 bug mx31ads nokia800 " ;;
+			machines="smdk6410 smartq5 bug mx31ads nokia800 " ;;
 	"armv7")
 			machines="" ;;
 	"armv7a")
-			machines="archos5 palmpre cm-t35 igep0020 omap3-touchbook beagleboard omap3evm am3517-evm omap3517-evm omap3-pandora omapzoom omapzoom2 overo" ;;
+			machines="archos5 archos5it palmpre cm-t35 igep0020 omap3-touchbook beagleboard omap3evm am3517-evm omap3517-evm omap3-pandora omapzoom omapzoom2 omapzoom36x overo" ;;
 	"avr32")
 			machines="atngw100 at32stk1000" ;;
 	"bfin")
@@ -69,9 +69,9 @@ case "$arch" in
 	"i486")
 			machines="x86" ;;
 	"i586")
-			machines="epia qemux86" ;;
+			machines="epia" ;;
 	"i686")
-			machines="eee701 guinness progear" ;;
+			machines="eee701 qemux86 guinness progear" ;;
 	"iwmmxt")
 			machines="" ;;
 	"ppc405")	

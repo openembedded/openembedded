@@ -1,0 +1,29 @@
+From be2d944c2b29b19b4cee7c64b00bd75cf7209724 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 22 Dec 2009 16:11:27 +0100
+Subject: [PATCH 6/9] glamo-drm: use dev_set_drvdata instead of setting driver_data directly
+
+* driver_data is private since 2.6.32
+  http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=b4028437876866aba4747a655ede00f892089e14
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ drivers/mfd/glamo/glamo-drm-drv.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mfd/glamo/glamo-drm-drv.c b/drivers/mfd/glamo/glamo-drm-drv.c
+index f30097e..1907a47 100644
+--- a/drivers/mfd/glamo/glamo-drm-drv.c
++++ b/drivers/mfd/glamo/glamo-drm-drv.c
+@@ -347,7 +347,7 @@ out_release_regs:
+ 	release_mem_region(gdrm->reg->start, resource_size(gdrm->reg));
+ out_free:
+ 	kfree(gdrm);
+-	pdev->dev.driver_data = NULL;
++	dev_set_drvdata(&pdev->dev, NULL);
+ 	return rc;
+ }
+ 
+-- 
+1.6.6.1
+

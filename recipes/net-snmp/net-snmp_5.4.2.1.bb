@@ -1,8 +1,9 @@
 require net-snmp.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
         file://configure-tail.patch;patch=1 \
+        file://CVE-2008-6123.patch;patch=1 \
         file://init \
         file://snmpd.conf \
         file://snmptrapd.conf"

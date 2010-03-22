@@ -1,5 +1,6 @@
 DESCRIPTION = "Common files for the Openmoko framework"
 SECTION = "openmoko/base"
+SRCREV = "3259"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r0"
 

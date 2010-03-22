@@ -6,7 +6,7 @@
 # Parts of the procudure base on the work of Denys Dmytriyenko
 # http://wiki.omap.com/index.php/MMC_Boot_Format
 
-LC_ALL=C
+export LC_ALL=C
 
 if [ $# -ne 1 ]; then
 	echo "Usage: $0 <drive>"
@@ -17,7 +17,7 @@ DRIVE=$1
 
 dd if=/dev/zero of=$DRIVE bs=1024 count=1024
 
-SIZE=`fdisk -l $DRIVE | grep Disk | awk '{print $5}'`
+SIZE=`fdisk -l $DRIVE | grep Disk | grep bytes | awk '{print $5}'`
 
 echo DISK SIZE - $SIZE bytes
 

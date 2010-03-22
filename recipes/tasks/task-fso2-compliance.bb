@@ -3,15 +3,11 @@ Install this task to make your distribution FSO 2.0-compliant."
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.9.0"
-PR = "r5"
+PR = "r7"
 
 inherit task
 
 RDEPENDS_${PN} = "\
-  dbus-hlid \
-# TODO: remove when fso2 is finished
-  frameworkd \
-  \
   libfsobasics \
   libfsotransport \
   libfsoframework \
@@ -21,31 +17,27 @@ RDEPENDS_${PN} = "\
   fsodeviced \
   fsogsmd \
   fsotdld \
-  fsomusicd \
+#  fsomusicd \
   fsonetworkd \
   fsousaged \
   \
-  fso-alsa-data \
   fso-apm \
-  fso-gpsd \
-#  fso-monitord \
-  connman \
+#  connman \
 #  connman-scripts \
-  connman-plugin-bluetooth \
+#  connman-plugin-bluetooth \
 #  connman-plugin-dhclient \
 #  connman-plugin-dnsproxy \
 #  connman-plugin-ethernet \
 #  connman-plugin-fake \
-  connman-plugin-loopback \
-  connman-plugin-pppd \
+#  connman-plugin-loopback \
+#  connman-plugin-pppd \
 #  connman-plugin-resolvconf \
-  connman-plugin-udhcp \
-  connman-plugin-wifi \
+#  connman-plugin-udhcp \
+#  connman-plugin-wifi \
 #  connman-test-utils \
 "
 
 RRECOMMENDS_${PN} = "\
-  fso-abyss \
   wmiconfig \
   tzdata \
   tzdata-africa \

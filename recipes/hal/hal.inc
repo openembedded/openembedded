@@ -9,7 +9,7 @@ S = "${WORKDIR}/hal-${PV}"
 
 inherit autotools pkgconfig
 
-DEPENDS = "virtual/kernel util-linux-ng dbus-glib udev intltool intltool-native expat virtual/libusb0 gperf-native"
+DEPENDS = "consolekit virtual/kernel util-linux-ng dbus-glib udev intltool intltool-native expat virtual/libusb0 gperf-native"
 RDEPENDS += "hal-info udev-utils"
 RRECOMMENDS += "eject"
 
@@ -43,15 +43,6 @@ do_install_append() {
         install -d ${D}/${sysconfdir}/dbus-1/event.d
         install -m 0755 ${WORKDIR}/20hal ${D}/${sysconfdir}/dbus-1/event.d
 	rm -rf ${D}/${sysconfdir}/rc.d || true
-}
-
-do_stage() {
-        oe_libinstall -C libhal -a -so libhal ${STAGING_LIBDIR}
-        oe_libinstall -C libhal-storage -a -so libhal-storage ${STAGING_LIBDIR}
-
-        install -d ${STAGING_INCDIR}/hal
-        install -m 0644 libhal/libhal.h ${STAGING_INCDIR}/hal
-        install -m 0644 libhal-storage/libhal-storage.h ${STAGING_INCDIR}/hal
 }
 
 # At the time the postinst runs, dbus might not be setup so only restart if running

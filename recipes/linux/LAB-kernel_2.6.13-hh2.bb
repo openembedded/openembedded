@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Liux As Bootloader kernelm"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "h2200"

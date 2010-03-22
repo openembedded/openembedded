@@ -1,17 +1,44 @@
 #!/bin/sh
+PATH=$PATH:/usr/sbin
+
+BITSPERPIXEL="$(fbset | grep geom | awk '{print $6}')"
+YRES="$(fbset | grep geom | awk '{print $3}')"
 
 CPUTYPE="$(cputype)"
 
+if [ "$1" = "" ]; then
+	echo PVR-INIT: Please use start, stop, or restart.
+	exit 1
+fi
+
+if [ "$1" = "stop" -o  "$1" = "restart" ]; then
+	echo Stopping PVR
+	#rmmod bc_example
+	rmmod omaplfb 2>/dev/null
+	rmmod pvrsrvkm 2>/dev/null
+fi
+
+if [ "$1" = "stop" ]; then
+	exit 0
+fi
+
+# Set RGBA ordering to something the drivers like
+if [ "$BITSPERPIXEL" = "32" ] ; then
+	fbset -rgba 8/16,8/8,8/0,8/24
+fi
+
+# Try to enable triple buffering when there's enough VRAM
+fbset -vyres $(expr $YRES \* 3) 
+
 if [ $CPUTYPE = "OMAP3530" ]; then
-
-	rmmod omaplfb
-	rmmod pvrsrvkm
-
+	echo Starting PVR
 	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
-
+	#modprobe bc_example
 	modprobe omaplfb
+	modprobe bufferclass_ti
 
 	pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
+        bc_maj=`grep "bc" /proc/devices | cut -b1,2,3`
 
 	if [ -e /dev/pvrsrvkm ] ; then 
 		rm -f /dev/pvrsrvkm
@@ -20,11 +47,28 @@ if [ $CPUTYPE = "OMAP3530" ]; then
 	mknod /dev/pvrsrvkm c $pvr_maj 0 
 	chmod 666 /dev/pvrsrvkm
 
-	/usr/bin/pvrsrvinit
+	mknod /dev/bc_cat c $bc_maj 0
+	chmod 666 /dev/bc_cat
 
-	# Set SGX to full speed
-	devmem2 0x48004b40 w 0
+	touch /etc/powervr-esrev
+
+	SAVED_ESREVISION="$(cat /etc/powervr-esrev)"
+
+	devmem2 0x48004B48 w 0x2 > /dev/null
+	devmem2 0x48004B10 w 0x1 > /dev/null
+	devmem2 0x48004B00 w 0x2 > /dev/null
+
+	ES_REVISION="$(devmem2 0x50000014 | sed -e s:0x10205:5: -e s:0x10201:3: -e s:0x10003:2: | tail -n1 | awk -F': ' '{print $2}')"
+
+	if [ "${ES_REVISION}" != "${SAVED_ESREVISION}" ] ; then
+		echo -n "Starting SGX fixup for"
+		echo " ES${ES_REVISION}.x"
+		cp -a /usr/lib/ES${ES_REVISION}.0/* /usr/lib
+		cp -a /usr/bin/ES${ES_REVISION}.0/* /usr/bin	
+		echo "${ES_REVISION}" > /etc/powervr-esrev
+	fi
+	/usr/bin/pvrsrvinit
 else
-	echo No SGX hardware, not starting pvrsinit
+	echo No SGX hardware, not starting PVR
 fi
 

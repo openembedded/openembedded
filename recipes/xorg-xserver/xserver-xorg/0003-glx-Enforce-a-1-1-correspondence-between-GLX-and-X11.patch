@@ -1,0 +1,161 @@
+From b629ae3db6a87fa91e5b2fd5deb4ccc6075ad243 Mon Sep 17 00:00:00 2001
+From: Francisco Jerez <currojerez@riseup.net>
+Date: Fri, 22 Jan 2010 06:29:36 -0800
+Subject: [PATCH 3/5] glx: Enforce a 1:1 correspondence between GLX and X11 windows.
+
+The spec says (regarding glXCreateWindow): "If there is already a
+GLXFBConfig associated with win (as a result of a previous
+glXCreateWindow call), then a BadAlloc error is generated.". It will
+also come useful to implement DRI2InvalidateBuffers for the indirect
+case.
+
+Signed-off-by: Francisco Jerez <currojerez@riseup.net>
+---
+ glx/glxcmds.c   |   51 +++++++++++++++++++++++++++++++++++++++++++++------
+ glx/glxserver.h |    1 +
+ 2 files changed, 46 insertions(+), 6 deletions(-)
+
+diff --git a/glx/glxcmds.c b/glx/glxcmds.c
+index 77afbf4..0e1c89c 100644
+--- a/glx/glxcmds.c
++++ b/glx/glxcmds.c
+@@ -51,6 +51,15 @@
+ #include "indirect_table.h"
+ #include "indirect_util.h"
+ 
++static int glxWindowPrivateKeyIndex;
++static DevPrivateKey glxWindowPrivateKey = &glxWindowPrivateKeyIndex;
++
++__GLXdrawable *
++glxGetDrawableFromWindow(WindowPtr pWin)
++{
++	return dixLookupPrivate(&pWin->devPrivates, glxWindowPrivateKey);
++}
++
+ static int
+ validGlxScreen(ClientPtr client, int screen, __GLXscreen **pGlxScreen, int *err)
+ {
+@@ -473,6 +482,7 @@ __glXGetDrawable(__GLXcontext *glxc, GLXDrawable drawId, ClientPtr client,
+ 		 int *error)
+ {
+     DrawablePtr pDraw;
++    WindowPtr pWin;
+     __GLXdrawable *pGlxDraw;
+     int rc;
+ 
+@@ -499,6 +509,12 @@ __glXGetDrawable(__GLXcontext *glxc, GLXDrawable drawId, ClientPtr client,
+ 	return NULL;
+     }
+ 
++    pWin = (WindowPtr)pDraw;
++
++    pGlxDraw = glxGetDrawableFromWindow(pWin);
++    if (pGlxDraw)
++	    return pGlxDraw;
++
+     if (pDraw->pScreen != glxc->pGlxScreen->pScreen) {
+ 	client->errorValue = pDraw->pScreen->myNum;
+ 	*error = BadMatch;
+@@ -519,6 +535,8 @@ __glXGetDrawable(__GLXcontext *glxc, GLXDrawable drawId, ClientPtr client,
+ 	return NULL;
+     }
+ 
++    dixSetPrivate(&pWin->devPrivates, glxWindowPrivateKey, pGlxDraw);
++
+     return pGlxDraw;
+ }
+ 
+@@ -1107,9 +1125,10 @@ __glXDrawableRelease(__GLXdrawable *drawable)
+     }
+ }
+ 
+-static int 
++static int
+ DoCreateGLXDrawable(ClientPtr client, __GLXscreen *pGlxScreen, __GLXconfig *config,
+-		    DrawablePtr pDraw, XID glxDrawableId, int type)
++		    DrawablePtr pDraw, XID glxDrawableId, int type,
++		    __GLXdrawable **ret)
+ {
+     __GLXdrawable *pGlxDraw;
+ 
+@@ -1128,6 +1147,9 @@ DoCreateGLXDrawable(ClientPtr client, __GLXscreen *pGlxScreen, __GLXconfig *conf
+ 	return BadAlloc;
+     }
+ 
++    if (ret)
++	*ret = pGlxDraw;
++
+     return Success;
+ }
+ 
+@@ -1149,7 +1171,7 @@ DoCreateGLXPixmap(ClientPtr client, __GLXscreen *pGlxScreen, __GLXconfig *config
+     }
+ 
+     err = DoCreateGLXDrawable(client, pGlxScreen, config, pDraw,
+-			      glxDrawableId, GLX_DRAWABLE_PIXMAP);
++			      glxDrawableId, GLX_DRAWABLE_PIXMAP, NULL);
+ 
+     if (err == Success)
+ 	((PixmapPtr) pDraw)->refcnt++;
+@@ -1305,7 +1327,7 @@ DoCreatePbuffer(ClientPtr client, int screenNum, XID fbconfigId,
+     __glXleaveServer(GL_FALSE);
+ 
+     return DoCreateGLXDrawable(client, pGlxScreen, config, &pPixmap->drawable,
+-			       glxDrawableId, GLX_DRAWABLE_PBUFFER);
++			       glxDrawableId, GLX_DRAWABLE_PBUFFER, NULL);
+ }
+ 
+ int __glXDisp_CreatePbuffer(__GLXclientState *cl, GLbyte *pc)
+@@ -1409,6 +1431,8 @@ int __glXDisp_CreateWindow(__GLXclientState *cl, GLbyte *pc)
+     __GLXscreen		*pGlxScreen;
+     ClientPtr		 client = cl->client;
+     DrawablePtr		 pDraw;
++    WindowPtr		 pWin;
++    __GLXdrawable	*pGlxDraw;
+     int			 err;
+ 
+     if (!validGlxScreen(client, req->screen, &pGlxScreen, &err))
+@@ -1422,11 +1446,26 @@ int __glXDisp_CreateWindow(__GLXclientState *cl, GLbyte *pc)
+ 	return BadWindow;
+     }
+ 
++    pWin = (WindowPtr)pDraw;
++
++    /* Make sure there're no already associated GLX drawables. */
++    if (glxGetDrawableFromWindow(pWin)) {
++	client->errorValue = req->window;
++	return BadAlloc;
++    }
++
+     if (!validGlxFBConfigForWindow(client, config, pDraw, &err))
+ 	return err;
+ 
+-    return DoCreateGLXDrawable(client, pGlxScreen, config,
+-			       pDraw, req->glxwindow, GLX_DRAWABLE_WINDOW);
++    err = DoCreateGLXDrawable(client, pGlxScreen, config,
++			      pDraw, req->glxwindow,
++			      GLX_DRAWABLE_WINDOW, &pGlxDraw);
++    if (err)
++	return err;
++
++    dixSetPrivate(&pWin->devPrivates, glxWindowPrivateKey, pGlxDraw);
++
++    return Success;
+ }
+ 
+ int __glXDisp_DestroyWindow(__GLXclientState *cl, GLbyte *pc)
+diff --git a/glx/glxserver.h b/glx/glxserver.h
+index 1daf977..3c49b5e 100644
+--- a/glx/glxserver.h
++++ b/glx/glxserver.h
+@@ -80,6 +80,7 @@ typedef struct __GLXcontext __GLXcontext;
+ 
+ extern __GLXscreen *glxGetScreen(ScreenPtr pScreen);
+ extern __GLXclientState *glxGetClient(ClientPtr pClient);
++extern __GLXdrawable *glxGetDrawableFromWindow(WindowPtr pWin);
+ 
+ /************************************************************************/
+ 
+-- 
+1.7.0
+

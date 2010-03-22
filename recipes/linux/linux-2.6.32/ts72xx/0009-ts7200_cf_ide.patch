@@ -1,0 +1,120 @@
+From 77d609ddb4485126aff3239050a0ce908c00ee71 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 17 Jan 2010 18:02:58 +0100
+Subject: [PATCH] ts7200_cf_ide
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/ide/Kconfig         |    7 +++++
+ drivers/ide/Makefile        |    1 +
+ drivers/ide/ide_ts7200_cf.c |   64 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 72 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/ide/ide_ts7200_cf.c
+
+diff --git a/drivers/ide/Kconfig b/drivers/ide/Kconfig
+index 9a5d0aa..2c5182b 100644
+--- a/drivers/ide/Kconfig
++++ b/drivers/ide/Kconfig
+@@ -732,6 +732,13 @@ config BLK_DEV_IDE_AT91
+ 	depends on ARM && ARCH_AT91 && !ARCH_AT91RM9200 && !ARCH_AT91X40
+ 	select IDE_TIMINGS
+ 
++config BLK_DEV_TS7200_CF
++	tristate "TS-7200 IDE (CompactFlash) interface support"
++	depends on ARM && ARCH_EP93XX
++	help
++	  Say Y here if you want to support the TS-7200 Compact Flash IDE controller
++	  (manufactured by Technologic Systems).
++
+ config BLK_DEV_IDE_ICSIDE
+ 	tristate "ICS IDE interface support"
+ 	depends on ARM && ARCH_ACORN
+diff --git a/drivers/ide/Makefile b/drivers/ide/Makefile
+index 81df925..4bef198 100644
+--- a/drivers/ide/Makefile
++++ b/drivers/ide/Makefile
+@@ -111,6 +111,7 @@ obj-$(CONFIG_BLK_DEV_PLATFORM)		+= ide_platform.o
+ obj-$(CONFIG_BLK_DEV_IDE_ICSIDE)	+= icside.o
+ obj-$(CONFIG_BLK_DEV_IDE_RAPIDE)	+= rapide.o
+ obj-$(CONFIG_BLK_DEV_PALMCHIP_BK3710)	+= palm_bk3710.o
++obj-$(CONFIG_BLK_DEV_TS7200_CF)		+= ide_ts7200_cf.o
+ 
+ obj-$(CONFIG_BLK_DEV_IDE_AU1XXX)	+= au1xxx-ide.o
+ 
+diff --git a/drivers/ide/ide_ts7200_cf.c b/drivers/ide/ide_ts7200_cf.c
+new file mode 100644
+index 0000000..14c9765
+--- /dev/null
++++ b/drivers/ide/ide_ts7200_cf.c
+@@ -0,0 +1,64 @@
++/*
++ *  Technologic Systems TS-7200 Compact Flash IDE device driver.
++ *
++ * (c) Copyright 2009  Matthieu Crapet <mcrapet@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/ide.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <mach/ts72xx.h>
++
++
++static const struct ide_port_info ts7200_cf_ide_port_info = {
++	.host_flags		= IDE_HFLAG_NO_DMA, // IDE_HFLAG_MMIO
++	.chipset		= ide_generic,
++};
++
++static __init int ide_ts7200_cf_init(void)
++{
++  struct ide_hw hw, *hws[] = { &hw };
++  void __iomem *base, *ctl, *data;
++  struct ide_host *host;
++
++  base = ioremap(TS7200_CF_CMD_PHYS_BASE, 0x10);  // 8-bit access
++  ctl  = ioremap(TS7200_CF_AUX_PHYS_BASE, 0x10);  // 8-bit access (usually base+0x206)
++  data = ioremap(TS7200_CF_DATA_PHYS_BASE, 0x10); // 16-bit access
++
++  if ((base != NULL) && (ctl != NULL) && (data != NULL)) {
++    memset(&hw, 0, sizeof(hw));
++
++    ide_std_init_ports(&hw, (unsigned long)base, (unsigned long)ctl);
++    hw.io_ports.data_addr = (unsigned long)data;
++    hw.irq = IRQ_EP93XX_EXT0;
++
++    return ide_host_add(&ts7200_cf_ide_port_info, hws, 1, &host);
++  }
++
++  if (base) iounmap(base);
++  if (ctl)  iounmap(ctl);
++  if (data) iounmap(data);
++
++  return -ENODEV;
++}
++
++
++module_init(ide_ts7200_cf_init);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("TS-7200 Compact Flash IDE driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("0.2");
+-- 
+1.6.0.4
+

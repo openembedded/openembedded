@@ -1,0 +1,985 @@
+From 2caff4e73854c56387d00ccd8b379b77288d8faa Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 17 Jan 2010 19:10:30 +0100
+Subject: [PATCH] ep93xx_spi
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Å tetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/clock.c            |    4 +
+ arch/arm/mach-ep93xx/core.c             |   30 ++
+ arch/arm/mach-ep93xx/include/mach/spi.h |   18 ++
+ arch/arm/mach-ep93xx/ts72xx.c           |   40 +++
+ drivers/spi/Kconfig                     |   13 +
+ drivers/spi/Makefile                    |    2 +
+ drivers/spi/spi_ep93xx.c                |  500 +++++++++++++++++++++++++++++++
+ drivers/spi/spi_ep93xx.h                |   61 ++++
+ drivers/spi/tmp124.c                    |  158 ++++++++++
+ 9 files changed, 826 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-ep93xx/include/mach/spi.h
+ create mode 100644 drivers/spi/spi_ep93xx.c
+ create mode 100644 drivers/spi/spi_ep93xx.h
+ create mode 100644 drivers/spi/tmp124.c
+
+diff --git a/arch/arm/mach-ep93xx/clock.c b/arch/arm/mach-ep93xx/clock.c
+index 1d0f9d8..d952910 100644
+--- a/arch/arm/mach-ep93xx/clock.c
++++ b/arch/arm/mach-ep93xx/clock.c
+@@ -98,6 +98,9 @@ static struct clk clk_pwm = {
+ 	.parent		= &clk_xtali,
+ 	.rate		= EP93XX_EXT_CLK_RATE,
+ };
++static struct clk clk_ssp = {
++	.rate		= EP93XX_EXT_CLK_RATE / 2,
++};
+ 
+ static struct clk clk_video = {
+ 	.sw_locked	= 1,
+@@ -185,6 +188,7 @@ static struct clk_lookup clocks[] = {
+ 	INIT_CK("ep93xx-keypad",	NULL,		&clk_keypad),
+ 	INIT_CK("ep93xx-fb",		NULL,		&clk_video),
+ 	INIT_CK(NULL,			"pwm_clk",	&clk_pwm),
++	INIT_CK(NULL,			"sspclk",	&clk_ssp),
+ 	INIT_CK(NULL,			"m2p0",		&clk_m2p0),
+ 	INIT_CK(NULL,			"m2p1",		&clk_m2p1),
+ 	INIT_CK(NULL,			"m2p2",		&clk_m2p2),
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index b4357c3..e9abf81 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -31,6 +31,7 @@
+ 
+ #include <mach/hardware.h>
+ #include <mach/fb.h>
++#include <mach/spi.h>
+ 
+ #include <asm/mach/map.h>
+ #include <asm/mach/time.h>
+@@ -611,6 +612,34 @@ static struct platform_device ep93xx_leds = {
+ 	},
+ };
+ 
++/*************************************************************************
++ * EP93xx ssp peripheral handling
++ *************************************************************************/
++static struct resource ep93xx_ssp_resources[] = {
++       {
++               .start = EP93XX_SPI_PHYS_BASE,
++               .end   = EP93XX_SPI_PHYS_BASE + 0x14,
++               .flags = IORESOURCE_MEM,
++       }, {
++               .start = IRQ_EP93XX_SSP, // overrun in receive fifo
++               .end   = IRQ_EP93XX_SSP,
++               .flags = IORESOURCE_IRQ,
++       }
++};
++
++static struct ep93xx_spi_data ep93xx_ssp_data = {
++       .chip_select_num = 4,
++};
++
++static struct platform_device ep93xx_ssp_device = {
++       .name           = "ep93xx-spi",
++       .id             = 1,
++       .resource       = ep93xx_ssp_resources,
++       .num_resources  = ARRAY_SIZE(ep93xx_ssp_resources),
++       .dev = {
++               .platform_data = &ep93xx_ssp_data,
++       }
++};
+ 
+ /*************************************************************************
+  * EP93xx pwm peripheral handling
+@@ -743,5 +772,6 @@ void __init ep93xx_init_devices(void)
+ 
+ 	platform_device_register(&ep93xx_rtc_device);
+ 	platform_device_register(&ep93xx_ohci_device);
++	platform_device_register(&ep93xx_ssp_device);
+ 	platform_device_register(&ep93xx_leds);
+ }
+diff --git a/arch/arm/mach-ep93xx/include/mach/spi.h b/arch/arm/mach-ep93xx/include/mach/spi.h
+new file mode 100644
+index 0000000..0e07fc9
+--- /dev/null
++++ b/arch/arm/mach-ep93xx/include/mach/spi.h
+@@ -0,0 +1,18 @@
++/*
++ * arch/arm/mach-ep93xx/include/mach/spi.h
++ */
++
++struct ep93xx_spi_data {
++	u16 chip_select_num;
++};
++
++
++/* spi_board_info.controller_data for SPI slave devices */
++struct ep93xx_spi_chip {
++	void (*cs_control)(u32 command);
++};
++
++/* Chip-select state */
++#define SPI_CS_ASSERT    0x1
++#define SPI_CS_DEASSERT  0x2
++#define SPI_CS_INIT      0x4
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index 6b0ddd9..6c61965 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -19,9 +19,11 @@
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/i2c-gpio.h>
++#include <linux/spi/spi.h>
+ 
+ #include <mach/hardware.h>
+ #include <mach/ts72xx.h>
++#include <mach/spi.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/map.h>
+@@ -207,6 +209,39 @@ static struct platform_device ts72xx_rtc_device = {
+ };
+ 
+ /*************************************************************************
++ * SPI
++ *************************************************************************/
++
++#if defined(CONFIG_SPI_TMP124) || defined(CONFIG_SPI_TMP124_MODULE)
++void tmp124_spi_cs(u32 command) // FGPIO[2]
++{
++	if (command & SPI_CS_ASSERT) {
++		gpio_set_value(EP93XX_GPIO_LINE_MCCD2, 0);
++	} else if (command & SPI_CS_DEASSERT) {
++		gpio_set_value(EP93XX_GPIO_LINE_MCCD2, 1);
++	} else if (command & SPI_CS_INIT) {
++		gpio_request(EP93XX_GPIO_LINE_MCCD2, "TMP124 cs");
++		gpio_direction_output(EP93XX_GPIO_LINE_MCCD2, 1);
++	}
++}
++
++static struct ep93xx_spi_chip tmp124_hw = {
++	.cs_control = tmp124_spi_cs,
++};
++
++static struct spi_board_info ts72xx_spi_bus[] __initdata = {
++	{
++		/* TMP124 */
++		.modalias		= "tmp124",
++		.controller_data	= &tmp124_hw,
++		.bus_num		= 1,
++		.chip_select		= 0,
++		.max_speed_hz		= 2 * 1000 * 1000,
++	}
++};
++#endif
++
++/*************************************************************************
+  * Ethernet
+  *************************************************************************/
+ static struct ep93xx_eth_data ts72xx_eth_data = {
+@@ -240,6 +275,11 @@ static void __init ts72xx_init_machine(void)
+ 			ARRAY_SIZE(ts72xx_i2c_board_info));
+ 	ep93xx_register_eth(&ts72xx_eth_data, 1);
+ 
++	#if defined(CONFIG_SPI_TMP124) || defined(CONFIG_SPI_TMP124_MODULE)
++	spi_register_board_info(ts72xx_spi_bus,
++			ARRAY_SIZE(ts72xx_spi_bus));
++	#endif
++
+ 	/* PWM1 is DIO_6 on TS-72xx header */
+ 	ep93xx_register_pwm(0, 1);
+ }
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 4b6f7cb..e71e2ea 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -244,6 +244,12 @@ config SPI_XILINX
+ 	  See the "OPB Serial Peripheral Interface (SPI) (v1.00e)"
+ 	  Product Specification document (DS464) for hardware details.
+ 
++config SPI_EP93XX
++	tristate "EP93XX SPI controller"
++	depends on SPI_MASTER
++	help
++	  Simple SPI driver for EP93xx.
++
+ #
+ # Add new SPI master controllers in alphabetical order above this line
+ #
+@@ -272,6 +278,13 @@ config SPI_TLE62X0
+ 	  sysfs interface, with each line presented as a kind of GPIO
+ 	  exposing both switch control and diagnostic feedback.
+ 
++config SPI_TMP124
++	tristate "Texas Instruments TMP1224, TMP124"
++	depends on SPI_MASTER && SYSFS
++	help
++	  SPI driver for TMP12X temperature sensor chips.
++	  This provides a sysfs entry for temperature reading (2°C accurate).
++
+ #
+ # Add new SPI protocol masters in alphabetical order above this line
+ #
+diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+index 21a1182..ccc9075 100644
+--- a/drivers/spi/Makefile
++++ b/drivers/spi/Makefile
+@@ -31,6 +31,7 @@ obj-$(CONFIG_SPI_S3C24XX_GPIO)		+= spi_s3c24xx_gpio.o
+ obj-$(CONFIG_SPI_S3C24XX)		+= spi_s3c24xx.o
+ obj-$(CONFIG_SPI_TXX9)			+= spi_txx9.o
+ obj-$(CONFIG_SPI_XILINX)		+= xilinx_spi.o
++obj-$(CONFIG_SPI_EP93XX)		+= spi_ep93xx.o
+ obj-$(CONFIG_SPI_SH_SCI)		+= spi_sh_sci.o
+ obj-$(CONFIG_SPI_STMP3XXX)		+= spi_stmp.o
+ # 	... add above this line ...
+@@ -38,6 +39,7 @@ obj-$(CONFIG_SPI_STMP3XXX)		+= spi_stmp.o
+ # SPI protocol drivers (device/link on bus)
+ obj-$(CONFIG_SPI_SPIDEV)	+= spidev.o
+ obj-$(CONFIG_SPI_TLE62X0)	+= tle62x0.o
++obj-$(CONFIG_SPI_TMP124)	+= tmp124.o
+ # 	... add above this line ...
+ 
+ # SPI slave controller drivers (upstream link)
+diff --git a/drivers/spi/spi_ep93xx.c b/drivers/spi/spi_ep93xx.c
+new file mode 100644
+index 0000000..0e86b38
+--- /dev/null
++++ b/drivers/spi/spi_ep93xx.c
+@@ -0,0 +1,500 @@
++/*
++ *  EP93xx SPI driver
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on pxa2xx_spi.c by Stephen Street / StreetFire Sound Labs
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * Notes:
++ *  - Uses SSP IP of processor
++ *  - Restricted to SPI master mode
++ *  - No DMA transfer
++ *  - No power management support
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/clk.h>
++#include <linux/io.h>
++#include <asm/irq.h>
++#include <mach/hardware.h>
++#include <mach/spi.h>
++
++#include <linux/sched.h>
++#include <linux/spinlock.h>
++#include <linux/workqueue.h>
++
++#include "spi_ep93xx.h"
++
++
++struct ep93xx_spi {
++  struct spi_master *master;    /* SPI framework hookup */
++  void __iomem *ioaddr;         /* Virtual base address to SSP registers */
++  u32 freq_max;
++  u32 freq_min;
++  struct clk *clk;
++
++  struct workqueue_struct *workqueue;
++  struct work_struct work;
++  spinlock_t lock;
++  struct list_head queue;
++
++  struct ep93xx_spi_chip *cs_chip; /* Chip Select function */
++};
++
++static inline u16 read_reg(void __iomem *base, off_t offset)
++{
++	return __raw_readw(base + offset);
++}
++
++static inline void write_reg(u16 v, void __iomem *base, off_t offset)
++{
++	__raw_writew(v, base + offset);
++}
++
++/*
++ *  compute SCR and CPSDVR bits to setup spi clock based on main input clock rate
++ *  that was specified in platform data structure
++ *  according to datasheet:
++ *    tempclk = sspclk / cpsdvr
++ *    spiclk = tempclk / (scr + 1)
++ *    SCR valid range is 0..255
++ *    CPSDVR valid range is 2..254
++ */
++static int spi_speed_set(struct ep93xx_spi *drv_data, unsigned speed_hz)
++{
++	unsigned long mainclk_hz = clk_get_rate(drv_data->clk);
++	u32 cpsdvr, scr;
++	u16 ssp_cr0;
++
++	for (cpsdvr = 2; cpsdvr <= 254; cpsdvr+=2) {
++		scr = DIV_ROUND_UP(mainclk_hz / speed_hz, cpsdvr);
++		/* now we have SCR+1 in scr, so count with that */
++		if (scr == 0) { 	/* speed_hz too big */
++			return -EINVAL;
++		}
++		if (scr <= (255 + 1))
++			break;		/* we have valid scr and cpsdvr */
++	}
++	if (cpsdvr > 254) {
++		/* speed_hz is too small, set to minimum speed */
++		scr = 256;
++		cpsdvr = 254;
++	}
++	scr--;
++	write_reg(cpsdvr, drv_data->ioaddr, SSPCPSR);
++	ssp_cr0 = read_reg(drv_data->ioaddr, SSPCR0);
++	ssp_cr0 &= ~(SSP_CONTROL_SCR(0xff));
++	write_reg((ssp_cr0 | SSP_CONTROL_SCR(scr)), drv_data->ioaddr, SSPCR0);
++
++	return 0;
++}
++
++static irqreturn_t ssp_int(int irq, void *dev_id)
++{
++	struct ep93xx_spi *drv_data = dev_id;
++	write_reg(SSP_SSPIxx_RORIS, drv_data->ioaddr, SSPIxR); /* clear it */
++
++	printk(KERN_WARNING "SSP overrun\n");
++	return IRQ_HANDLED;
++}
++
++static int transfer_one_work(struct ep93xx_spi *drv_data, struct spi_message *msg)
++{
++	struct spi_device *spi = msg->spi;
++	struct spi_transfer *xfer;
++	int i;
++	u8 *p;
++
++	drv_data->cs_chip->cs_control(SPI_CS_ASSERT);
++
++	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
++		if (!(xfer->tx_buf || xfer->rx_buf)) {
++			dev_dbg(&spi->dev, "missing rx or tx buf\n");
++			drv_data->cs_chip->cs_control(SPI_CS_DEASSERT);
++			return -EINVAL;
++		}
++
++		if (xfer->bits_per_word) {
++			u16 v = read_reg(drv_data->ioaddr, SSPCR0);
++			v = v & SSP_CONTROL_DSS_MASK;
++			v = v | ((xfer->bits_per_word - 1) & SSP_CONTROL_DSS_MASK);
++			write_reg(v, drv_data->ioaddr, SSPCR0);
++		}
++
++		if (xfer->speed_hz) {
++			if (spi_speed_set(drv_data,xfer->speed_hz) != 0){
++				dev_err(&spi->dev, "xfer speed hz invalid\n");
++				return -EINVAL;
++			}
++		}
++
++		if (xfer->tx_buf) {
++			p = (u8 *)xfer->tx_buf;
++
++			if ((spi->bits_per_word == 16 && xfer->bits_per_word == 0) ||
++			    (xfer->bits_per_word == 16)) {
++				for (i = 0; i < xfer->len; i+=2)
++					write_reg((p[i] << 8) + p[i+1], drv_data->ioaddr, SSPDR);
++			} else {
++				for (i = 0; i < xfer->len; i++)
++					write_reg(p[i], drv_data->ioaddr, SSPDR);
++			}
++		}
++
++		if (xfer->rx_buf) {
++			u16 v;
++			p = xfer->rx_buf;
++
++			if ((spi->bits_per_word == 16 && xfer->bits_per_word == 0) ||
++			    (xfer->bits_per_word == 16)) {
++					for (i = 0; i < xfer->len; i+=2) {
++						  v = read_reg(drv_data->ioaddr, SSPDR);
++						  p[i] = v >> 8;
++						  p[i+1] = v & 0xFF;
++					}
++			} else {
++					for (i = 0; i < xfer->len; i++)
++						  p[i] = read_reg(drv_data->ioaddr, SSPDR);
++			}
++		}
++
++		/* restore device bits_per_word */
++		if (xfer->bits_per_word) {
++			u16 v = read_reg(drv_data->ioaddr, SSPCR0);
++			v = v & SSP_CONTROL_DSS_MASK;
++			v |= spi->bits_per_word - 1;
++			write_reg(v, drv_data->ioaddr, SSPCR0);
++		}
++
++		/* restore device speed_hz */
++		if (xfer->speed_hz) {
++			if (spi_speed_set(drv_data,spi->max_speed_hz) != 0)
++				return -EINVAL;
++		}
++
++		dev_dbg(&spi->dev, "transfer: len=%u, tx_buf=%p, rx_buf=%p\n", xfer->len, xfer->tx_buf, xfer->rx_buf);
++	}
++
++	if (xfer->delay_usecs)
++		udelay(xfer->delay_usecs);
++	drv_data->cs_chip->cs_control(SPI_CS_DEASSERT);
++
++	msg->actual_length = 0;
++	msg->status = 0;
++
++	if (msg->complete)
++		msg->complete(msg->context);
++
++	return 0;
++}
++
++
++static void ssp_work(struct work_struct *work)
++{
++	struct ep93xx_spi *drv_data = container_of(work, struct ep93xx_spi, work);
++	unsigned long flags;
++
++	spin_lock_irqsave(&drv_data->lock, flags);
++	while (!list_empty(&drv_data->queue)) {
++		struct spi_message *m;
++
++		m = container_of(drv_data->queue.next, struct spi_message, queue);
++		list_del_init(&m->queue);
++		spin_unlock_irqrestore(&drv_data->lock, flags);
++
++		transfer_one_work(drv_data, m);
++
++		spin_lock_irqsave(&drv_data->lock, flags);
++	}
++	spin_unlock_irqrestore(&drv_data->lock, flags);
++}
++
++
++static int ssp_transfer(struct spi_device *spi, struct spi_message *m)
++{
++	struct spi_master *master = spi->master;
++	struct ep93xx_spi *drv_data = spi_master_get_devdata(master);
++	struct spi_transfer *t;
++	unsigned long flags;
++
++	m->actual_length = 0;
++
++	/* check each transfer's parameters */
++	list_for_each_entry (t, &m->transfers, transfer_list) {
++		u32 speed_hz = t->speed_hz ? t->speed_hz : spi->max_speed_hz;
++		u8 bits_per_word = t->bits_per_word ? t->bits_per_word : spi->bits_per_word;
++
++		if (!t->tx_buf && !t->rx_buf && t->len)
++			return -EINVAL;
++		if (bits_per_word < 4 || bits_per_word > 16)
++			return -EINVAL;
++		/*if (t->len & ((bits_per_word >> 3) - 1))
++			return -EINVAL;*/
++		if (speed_hz < drv_data->freq_min || speed_hz > drv_data->freq_max)
++			return -EINVAL;
++	}
++
++	spin_lock_irqsave(&drv_data->lock, flags);
++	list_add_tail(&m->queue, &drv_data->queue);
++	queue_work(drv_data->workqueue, &drv_data->work);
++	spin_unlock_irqrestore(&drv_data->lock, flags);
++
++	return 0;
++
++}
++
++/* the spi->mode bits understood by this driver: */
++#define MODEBITS (SPI_CPOL | SPI_CPHA)
++
++static int ssp_setup(struct spi_device *spi)
++{
++	struct ep93xx_spi *drv_data = spi_master_get_devdata(spi->master);
++	struct ep93xx_spi_chip *chip_info;
++	u16 v;
++
++	/* Get controller data */
++	chip_info = spi->controller_data;
++	if (!chip_info) {
++		dev_err(&spi->dev, "setup: controller data required\n");
++		return -EINVAL;
++	}
++	drv_data->cs_chip = chip_info;
++	drv_data->cs_chip->cs_control(SPI_CS_INIT);
++
++	if (!spi->bits_per_word) {
++		spi->bits_per_word = 8;
++	}
++
++	if (spi->bits_per_word < 4 || spi->bits_per_word > 16) {
++		  dev_dbg(&spi->dev, "setup: unsupported %d bit words\n",
++		  spi->bits_per_word);
++		  return -EINVAL;
++	}
++
++	if (spi->chip_select > spi->master->num_chipselect) {
++		  dev_dbg(&spi->dev, "setup: invalid chipselect %u (%u defined)\n",
++		  spi->chip_select,  spi->master->num_chipselect);
++		  return -EINVAL;
++	}
++
++	if (spi->mode & ~MODEBITS) {
++		 dev_dbg(&spi->dev, "setup: unsupported mode bits %x\n",
++		 spi->mode & ~MODEBITS);
++		 return -EINVAL;
++	}
++
++	v = read_reg(drv_data->ioaddr, SSPCR0);
++
++	if (spi->mode & SPI_CPOL)
++		v |= SSP_CONTROL_SPO;
++	else
++		v &= ~SSP_CONTROL_SPO;
++
++	if (spi->mode & SPI_CPHA)
++		v |= SSP_CONTROL_SPH;
++	else
++		v &= ~SSP_CONTROL_SPH;
++
++	v = v & SSP_CONTROL_DSS_MASK;
++	v |= spi->bits_per_word - 1;
++
++	write_reg(v, drv_data->ioaddr, SSPCR0);
++
++	if (!spi->max_speed_hz) {
++		spi->max_speed_hz = drv_data->freq_min;
++	} else if (spi->max_speed_hz > drv_data->freq_max ||
++			spi->max_speed_hz < drv_data->freq_min){
++		return -EINVAL;
++	}
++
++	if (spi_speed_set(drv_data,spi->max_speed_hz) != 0){
++		dev_dbg(&spi->dev, "setup: unsupported speed %u\n", spi->max_speed_hz);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++
++static void ssp_cleanup(struct spi_device *spi)
++{
++	struct ep93xx_spi *drv_data = spi_master_get_devdata(spi->master);
++	drv_data->cs_chip = NULL;
++}
++
++
++static int __init spi_ep93xx_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct spi_master *master;
++	struct ep93xx_spi_data *spi_data = pdev->dev.platform_data;
++	struct ep93xx_spi *drv_data = NULL;
++	struct resource *memory_resource;
++	int irq, status = 0, min_div = 2, max_div = 254*(255+1);
++
++	/* Check I2SonSSP bit (ssp pins and i2s pins are multiplexed)
++	   We could force with ep93xx_devcfg_clear_bits */
++	if (readl(EP93XX_SYSCON_DEVCFG) & EP93XX_SYSCON_DEVCFG_I2SONSSP)
++		return -ENODEV;
++
++	/* Allocate master with space for drv_data */
++	master = spi_alloc_master(dev, sizeof(struct ep93xx_spi));
++	if (!master) {
++		dev_err(&pdev->dev, "can not alloc spi_master\n");
++		return -ENOMEM;
++	}
++
++	/* Setup register addresses */
++	memory_resource = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!memory_resource) {
++		dev_err(&pdev->dev, "memory resources not defined\n");
++		status = -ENODEV;
++		goto out_error_master_alloc;
++	}
++
++	drv_data = spi_master_get_devdata(master);
++	drv_data->master = master;
++	drv_data->ioaddr = ioremap(memory_resource->start, memory_resource->end - memory_resource->start + 1);
++	drv_data->clk = clk_get(&pdev->dev, "sspclk");
++	drv_data->freq_max = clk_get_rate(drv_data->clk) / min_div;
++	drv_data->freq_min = clk_get_rate(drv_data->clk) / max_div + 1;
++
++	INIT_WORK(&drv_data->work, ssp_work);
++	spin_lock_init(&drv_data->lock);
++	INIT_LIST_HEAD(&drv_data->queue);
++
++	drv_data->workqueue = create_singlethread_workqueue(dev_name(master->dev.parent));
++	if (!drv_data->workqueue) {
++		status = -EBUSY;
++		goto out_error_master_alloc;
++	}
++
++	master->bus_num = pdev->id;
++	master->num_chipselect = spi_data->chip_select_num;
++	master->cleanup = ssp_cleanup;
++	master->setup = ssp_setup;
++	master->transfer = ssp_transfer;
++
++	/* Attach to IRQ */
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
++		dev_err(&pdev->dev, "irq resource not defined\n");
++		status = -ENODEV;
++		goto out_error_master_alloc;
++	}
++
++	status = request_irq(irq, ssp_int, 0, dev_name(dev), drv_data);
++	if (status < 0) {
++		dev_err(&pdev->dev, "can not get IRQ\n");
++		goto out_error_master_alloc;
++	}
++
++	/* Load default SSP configuration */
++	write_reg(SSP_CONTROL_SSE, drv_data->ioaddr, SSPCR1);
++	write_reg(SPI_DEFAULT0, drv_data->ioaddr, SSPCR0);
++	write_reg(SPI_DEFAULT_DIVISOR, drv_data->ioaddr, SSPCPSR);
++	write_reg(0x00, drv_data->ioaddr, SSPCR1);
++
++	/* Register with the SPI framework */
++	platform_set_drvdata(pdev, drv_data);
++	status = spi_register_master(master);
++	if (status != 0) {
++		dev_err(&pdev->dev, "problem registering spi master\n");
++		goto out_error_irq_alloc;
++	}
++
++	write_reg(SPI_DEFAULT1, drv_data->ioaddr, SSPCR1);
++	return status;
++
++out_error_irq_alloc:
++	free_irq(irq, drv_data);
++
++out_error_master_alloc:
++	spi_master_put(master);
++	return status;
++}
++
++static int spi_ep93xx_remove(struct platform_device *pdev)
++{
++	struct ep93xx_spi *drv_data = platform_get_drvdata(pdev);
++	int irq;
++
++	if (!drv_data)
++		return 0;
++
++	/* Disable SSP (clear SSE bit) */
++	write_reg(0x00, drv_data->ioaddr, SSPCR1);
++
++	/* Release IRQ */
++	irq = platform_get_irq(pdev, 0);
++
++	if (irq >= 0)
++		free_irq(irq, drv_data);
++
++	/* Disconnect from the SPI framework */
++	spi_unregister_master(drv_data->master);
++
++	/* Remove the workqueue */
++	destroy_workqueue(drv_data->workqueue);
++
++	iounmap(drv_data->ioaddr);
++
++	/* Prevent double remove */
++	platform_set_drvdata(pdev, NULL);
++
++	clk_put(drv_data->clk);
++	spi_master_put(drv_data->master);
++
++	return 0;
++}
++
++static void spi_ep93xx_shutdown(struct platform_device *pdev)
++{
++	int status = 0;
++
++	if ((status = spi_ep93xx_remove(pdev)) != 0)
++		dev_err(&pdev->dev, "shutdown failed with %d\n", status);
++}
++
++static struct platform_driver ep93xx_spi_platform_driver = {
++	.driver = {
++		.name = "ep93xx-spi",
++		.bus = &platform_bus_type,
++		.owner = THIS_MODULE,
++	},
++	.remove = __exit_p(spi_ep93xx_remove),
++	.shutdown = spi_ep93xx_shutdown,
++};
++
++static int __init spi_ep93xx_init(void)
++{
++	return platform_driver_probe(&ep93xx_spi_platform_driver, spi_ep93xx_probe);
++}
++
++static void __exit spi_ep93xx_exit(void)
++{
++	platform_driver_unregister(&ep93xx_spi_platform_driver);
++}
++
++module_init(spi_ep93xx_init);
++module_exit(spi_ep93xx_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("EP93xx SPI Controller Driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("0.25");
+diff --git a/drivers/spi/spi_ep93xx.h b/drivers/spi/spi_ep93xx.h
+new file mode 100644
+index 0000000..6fad735
+--- /dev/null
++++ b/drivers/spi/spi_ep93xx.h
+@@ -0,0 +1,61 @@
++/*
++ *  EP93xx SPI (simple) include
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on pxa2xx_spi.c by Stephen Street / StreetFire Sound Labs
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++/* SSP Registers */
++#define SSPCR0   0x00 /* Control register 0 */
++#define SSPCR1   0x04 /* Control register 1 */
++#define SSPDR    0x08 /* Receice FIFO data register (16-bit read) */
++                      /* Transmit FIFO data register (16-bit write) */
++#define SSPSR    0x0C /* Status register */
++#define SSPCPSR  0x10 /* Clock prescale register (from 2 to 254, even number) */
++#define SSPIxR   0x14 /* Interrupt identification register (read) */
++                      /* Interrupt clear register (write) */
++
++/* SSP control registers bit fields & masks */
++#define SSP_CONTROL_SCR(x)         (((x) & 0xFF) << 8) /* Serial clock rate = SCLKOUT / CPSDVR / (1+SCR) */
++#define SSP_CONTROL_SPH            (1 << 7)            /* SCLKOUT phase (for SPI only) */
++#define SSP_CONTROL_SPO            (1 << 6)            /* SCLKOUT polarity (for SPI only) */
++#define SSP_CONTROL_FRF(x)         (((x) & 3) << 4)    /* Frame format (0=SPI) */
++#define SSP_CONTROL_DSS_4BIT_DATA   3
++#define SSP_CONTROL_DSS_8BIT_DATA   7
++#define SSP_CONTROL_DSS_15BIT_DATA 14
++#define SSP_CONTROL_DSS_16BIT_DATA 15
++#define SSP_CONTROL_DSS_MASK        0xF
++#define SSP_CONTROL_MS              (1 << 5)           /* 0=master, 1=slave (can be modified when SSE=0) */
++#define SSP_CONTROL_SSE             (1 << 4)           /* SSP operation enable (=1), disable (=0) */
++#define SSP_CONTROL_LBM             (1 << 3)           /* Loop back mode */
++#define SSP_CONTROL_RORIE           (1 << 2)           /* Interrupt enable : overrun condition */
++#define SSP_CONTROL_TIE             (1 << 1)           /* Interrupt enable : transmit fifo */
++#define SSP_CONTROL_RIE             (1 << 0)           /* Interrupt enable : receive fifo */
++
++/* SSP status register (read only) */
++#define SSP_STATUS_BUSY             (1 << 4)           /* Busy flag (0: SSP is idle) */
++#define SSP_STATUS_RFF              (1 << 3)           /* Receive fifo full ? (1=full) */
++#define SSP_STATUS_RNE              (1 << 2)           /* Receive fifo not empty ? (0=empty) */
++#define SSP_STATUS_TNF              (1 << 1)           /* Transmit fifo not full ? (0=full) */
++#define SSP_STATUS_TFE              (1 << 0)           /* Transmit fifo empty ? (1=empty) */
++
++/* SSP SSPIIR/SSPICR register (write 1 to clear interrupt) */
++#define SSP_SSPIxx_RORIS            (1 << 2)           /* Receive fifo overrun interrupt status */
++#define SSP_SSPIxx_TIS              (1 << 1)           /* Transmit fifo service request interrupt status */
++#define SSP_SSPIxx_RIS              (1 << 0)           /* Receive fifo service request interrupt status */
++
++/* Default configuration values */
++#define SPI_DEFAULT0 (SSP_CONTROL_DSS_16BIT_DATA | SSP_CONTROL_FRF(0) | SSP_CONTROL_SCR(0))
++#define SPI_DEFAULT1 (SSP_CONTROL_SSE | SSP_CONTROL_RORIE)
++#define SPI_DEFAULT_DIVISOR 254
+diff --git a/drivers/spi/tmp124.c b/drivers/spi/tmp124.c
+new file mode 100644
+index 0000000..d3600f7
+--- /dev/null
++++ b/drivers/spi/tmp124.c
+@@ -0,0 +1,158 @@
++/*
++ *  TMP124 SPI protocol driver
++ *
++ * (c) Copyright 2008  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on tle62x0.c by Ben Dooks, <ben@simtec.co.uk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * Note: The chip uses a '3-wire SPI' (miso and mosi are the same pin).
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/spi/spi.h>
++
++struct tmp124_state {
++  struct spi_device *bus;
++  u8 tx_buff[2];
++  u8 rx_buff[2];
++};
++
++
++static inline int tmp124_write_then_read(struct tmp124_state *st)
++{
++  struct spi_message msg;
++  struct spi_transfer xfer[2] = {
++    {
++      .tx_buf      = st->tx_buff,
++      .rx_buf      = NULL,
++      .len         = 2,
++      .delay_usecs = 1000,
++    }, {
++      .tx_buf = NULL,
++      .rx_buf = st->rx_buff,
++      .len    = 2,
++    }
++  };
++
++  spi_message_init(&msg);
++  spi_message_add_tail(&xfer[0], &msg);
++  spi_message_add_tail(&xfer[1], &msg);
++
++  return spi_sync(st->bus, &msg);
++}
++
++
++static ssize_t tmp124_temperature_show(struct device *dev,
++    struct device_attribute *attr, char *buf)
++{
++  struct tmp124_state *st = dev_get_drvdata(dev);
++  int ret;
++
++  st->tx_buff[0] = 0x80;
++  st->tx_buff[1] = 0x00;
++
++  ret = tmp124_write_then_read(st);
++  if (ret < 0) {
++    dev_err(&st->bus->dev, "tmp124_write_then_read\n");
++    ret = 0;
++  } else {
++    signed short v = (st->rx_buff[0] << 8) + st->rx_buff[1];
++    signed long val;
++
++    val = v >> 3;
++
++    /* 2 digit precision (0.0625*100) */
++    val = (val * 50) / 8;
++    ret = snprintf(buf, PAGE_SIZE, "%ld.%02ld\n", val/100, abs(val%100));
++  }
++  return ret;
++}
++
++
++static DEVICE_ATTR(temperature, S_IRUGO, tmp124_temperature_show, NULL);
++
++
++static int __devinit tmp124_probe(struct spi_device *spi)
++{
++  struct tmp124_state *st;
++  int ret;
++
++  st = kzalloc(sizeof(struct tmp124_state), GFP_KERNEL);
++  if (st == NULL) {
++    dev_err(&spi->dev, "no memory for device state\n");
++    return -ENOMEM;
++  }
++
++  /* required config */
++  spi->bits_per_word = 16;
++
++  st->bus = spi;
++
++  ret = spi_setup(spi);
++  if (ret) {
++    dev_err(&spi->dev, "setup device\n");
++    goto err;
++  }
++
++  ret = device_create_file(&spi->dev, &dev_attr_temperature);
++  if (ret) {
++    dev_err(&spi->dev, "cannot create temperature attribute\n");
++    goto err;
++  }
++
++  spi_set_drvdata(spi, st);
++  return 0;
++
++err:
++  kfree(st);
++  return ret;
++}
++
++
++static int __devexit tmp124_remove(struct spi_device *spi)
++{
++  struct tmp124_state *st = spi_get_drvdata(spi);
++
++  device_remove_file(&spi->dev, &dev_attr_temperature);
++  kfree(st);
++
++  return 0;
++}
++
++
++static struct spi_driver tmp124_driver = {
++  .driver = {
++    .name = "tmp124",
++    .owner  = THIS_MODULE,
++  },
++  .probe    = tmp124_probe,
++  .remove   = __devexit_p(tmp124_remove),
++};
++
++static __init int tmp124_init(void)
++{
++  return spi_register_driver(&tmp124_driver);
++}
++
++static __exit void tmp124_exit(void)
++{
++  spi_unregister_driver(&tmp124_driver);
++}
++
++module_init(tmp124_init);
++module_exit(tmp124_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("TMP124 SPI Protocol Driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("0.1");
+-- 
+1.6.0.4
+

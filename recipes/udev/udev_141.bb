@@ -1,7 +1,7 @@
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.12."
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -113,6 +113,11 @@ do_install_append_bug() {
 	install -m 0644 ${WORKDIR}/30-BUG.rules ${D}${sysconfdir}/udev/rules.d/30-BUG.rules
 	install -m 0644 ${WORKDIR}/10-mx31.rules ${D}${sysconfdir}/udev/rules.d/10-mx31.rules
 	install -m 0644 ${WORKDIR}/bmi_eventpipe.sh ${D}${sysconfdir}/udev/scripts/bmi_eventpipe.sh
+}
+
+do_install_append_hipox() {
+	# we don't like persistent net if rules at hipox machine
+	rm -f ${D}${sysconfdir}/udev/rules.d/75-persistent-net-generator.rules
 }
 
 # Create the cache after checkroot has run

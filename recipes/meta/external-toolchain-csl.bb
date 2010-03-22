@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r3"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -6,6 +6,8 @@ INSANE_SKIP_libgcc = True
 INSANE_SKIP_libstdc++ = True
 INSANE_SKIP_nscd = True
 INSANE_SKIP_glibc-utils = True
+
+SRC_URI = "file://SUPPORTED"
 
 PROVIDES = "\
 	virtual/${TARGET_PREFIX}gcc \
@@ -22,10 +24,10 @@ PROVIDES = "\
 	linux-libc-headers \
 "
 
-#	virtual/linux-libc-headers \
-
 RPROVIDES = "glibc-utils libsegfault glibc-thread-db"
 RPROVIDES_glibc-dev += "libc-dev"
+PACKAGES_DYNAMIC += "glibc-gconv-*"
+PACKAGES_DYNAMIC += "glibc-locale-*"
 
 LEAD_SONAME = "libc.so.6"
 
@@ -44,6 +46,7 @@ PACKAGES = "\
 	localedef \
 	glibc-utils \
 	glibc-dev \
+	glibc-locale \
 	libsegfault \
 	glibc-extra-nss \
 	glibc-thread-db \
@@ -164,30 +167,27 @@ CSL_VER_GCC := "${@csl_get_gcc_version(d)}"
 CSL_VER_LIBC := "${@csl_get_libc_version(d)}"
 CSL_VER_KERNEL := "${@csl_get_kernel_version(d)}"
 
-PV = ${CSL_VER_MAIN}
-PV_libgcc = ${CSL_VER_GCC}
-PV_libgcc-dev = ${CSL_VER_GCC}
-PV_libstdc++ = ${CSL_VER_GCC}
-PV_libstdc++-dev = ${CSL_VER_GCC}
-PV_libc = ${CSL_VER_LIBC}
-PV_glibc = ${CSL_VER_LIBC}
-PV_glibc-dev = ${CSL_VER_LIBC}
-PV_glibc-dbg = ${CSL_VER_LIBC}
-PV_glibc-utils = ${CSL_VER_LIBC}
-PV_glibc-extra-nss = ${CSL_VER_LIBC}
-PV_glibc-thread-db = ${CSL_VER_LIBC}
-PV_glibc-pcprofile = ${CSL_VER_LIBC}
-PV_catchsegv = ${CSL_VER_LIBC}
-PV_sln = ${CSL_VER_LIBC}
-PV_nscd = ${CSL_VER_LIBC}
-PV_ldd = ${CSL_VER_LIBC}
-PV_localedef = ${CSL_VER_LIBC}
-PV_libsegfault = ${CSL_VER_LIBC}
-PV_linux-libc-headers = ${CSL_VER_KERNEL}
-
-do_unpack() {
-	:
-}
+PKGV = ${CSL_VER_MAIN}
+PKGV_libgcc = ${CSL_VER_GCC}
+PKGV_libgcc-dev = ${CSL_VER_GCC}
+PKGV_libstdc++ = ${CSL_VER_GCC}
+PKGV_libstdc++-dev = ${CSL_VER_GCC}
+PKGV_libc = ${CSL_VER_LIBC}
+PKGV_glibc = ${CSL_VER_LIBC}
+PKGV_glibc-dev = ${CSL_VER_LIBC}
+PKGV_glibc-dbg = ${CSL_VER_LIBC}
+PKGV_glibc-utils = ${CSL_VER_LIBC}
+PKGV_glibc-gconv = ${CSL_VER_LIBC}
+PKGV_glibc-extra-nss = ${CSL_VER_LIBC}
+PKGV_glibc-thread-db = ${CSL_VER_LIBC}
+PKGV_glibc-pcprofile = ${CSL_VER_LIBC}
+PKGV_catchsegv = ${CSL_VER_LIBC}
+PKGV_sln = ${CSL_VER_LIBC}
+PKGV_nscd = ${CSL_VER_LIBC}
+PKGV_ldd = ${CSL_VER_LIBC}
+PKGV_localedef = ${CSL_VER_LIBC}
+PKGV_libsegfault = ${CSL_VER_LIBC}
+PKGV_linux-libc-headers = ${CSL_VER_KERNEL}
 
 do_install() {
 	install -d ${D}${sysconfdir}
@@ -204,10 +204,6 @@ do_install() {
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/sbin/* ${D}${base_sbindir}
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/usr/* ${D}/usr
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/include/* ${D}/usr/include
-	rm -rf ${D}${datadir}/locale
-	rm -rf ${D}${datadir}/i18n
-	rm -rf ${D}${libdir}/locale
-	rm -rf ${D}${libdir}/gconv
 	rm -rf ${D}${bindir}/gdbserver
 	rm -rf ${D}${sysconfdir}/rpc
 	rm -rf ${D}${datadir}/zoneinfo
@@ -230,10 +226,219 @@ do_stage() {
 	mv ${STAGING_LIBDIR}/temp ${STAGING_LIBDIR}/libpthread.so
 }
 
+TMP_LOCALE="/tmp/locale${libdir}/locale"
+
+locale_base_postinst() {
+#!/bin/sh
+
+if [ "x$D" != "x" ]; then
+  exit 1
+fi
+
+rm -rf ${TMP_LOCALE}
+mkdir -p ${TMP_LOCALE}
+if [ -f ${libdir}/locale/locale-archive ]; then
+        cp ${libdir}/locale/locale-archive ${TMP_LOCALE}/
+fi
+localedef --inputfile=${datadir}/i18n/locales/%s --charmap=%s --prefix=/tmp/locale %s
+mkdir -p ${libdir}/locale/
+mv ${TMP_LOCALE}/locale-archive ${libdir}/locale/
+rm -rf ${TMP_LOCALE}
+}
+
+locale_base_postrm() {
+#!/bin/sh
+
+rm -rf ${TMP_LOCALE}
+mkdir -p ${TMP_LOCALE}
+if [ -f ${libdir}/locale/locale-archive ]; then
+	cp ${libdir}/locale/locale-archive ${TMP_LOCALE}/
+fi
+localedef --delete-from-archive --inputfile=${datadir}/locales/%s --charmap=%s --prefix=/tmp/locale %s
+mv ${TMP_LOCALE}/locale-archive ${libdir}/locale/
+rm -rf ${TMP_LOCALE}
+}
+
+python package_do_split_gconvs () {
+	import os, re
+	if (bb.data.getVar('PACKAGE_NO_GCONV', d, 1) == '1'):
+		bb.note("package requested not splitting gconvs")
+		return
+
+	if not bb.data.getVar('PACKAGES', d, 1):
+		return
+
+	libdir = bb.data.getVar('libdir', d, 1)
+	if not libdir:
+		bb.error("libdir not defined")
+		return
+	datadir = bb.data.getVar('datadir', d, 1)
+	if not datadir:
+		bb.error("datadir not defined")
+		return
+
+	libcver = bb.data.getVar('CSL_VER_LIBC', d, 1)
+	if not libcver:
+		bb.error("CSL_VER_LIBC not defined")
+		return
+
+	gconv_libdir = os.path.join(libdir, "gconv")
+	charmap_dir = os.path.join(datadir, "i18n", "charmaps")
+	locales_dir = os.path.join(datadir, "i18n", "locales")
+	binary_locales_dir = os.path.join(libdir, "locale")
+
+	def set_pkg_ver(fn, pkg, file_regex, output_pattern, group):
+		bb.data.setVar('PKGV_' + pkg, libcver, d)
+
+	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='glibc-gconv-%s', description='gconv module for character set %s', hook=set_pkg_ver, extra_depends='glibc-gconv')
+
+	do_split_packages(d, charmap_dir, file_regex='^(.*)\.gz$', output_pattern='glibc-charmap-%s', description='character map for %s encoding', hook=set_pkg_ver, extra_depends='')
+
+	def calc_locale_deps(fn, pkg, file_regex, output_pattern, group):
+		deps = []
+		f = open(fn, "r")
+		c_re = re.compile('^copy "(.*)"')
+		i_re = re.compile('^include "(\w+)".*')
+		for l in f.readlines():
+			m = c_re.match(l) or i_re.match(l)
+			if m:
+				dp = legitimize_package_name('glibc-localedata-%s' % m.group(1))
+				if not dp in deps:
+					deps.append(dp)
+		f.close()
+		if deps != []:
+			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
+		bb.data.setVar('PKGV_' + pkg, libcver, d)
+
+	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
+	bb.data.setVar('PACKAGES', bb.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
+
+	f = open(os.path.join(bb.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
+	supported = f.readlines()
+	f.close()
+
+	dot_re = re.compile("(.*)\.(.*)")
+
+	# Collate the locales by base and encoding
+	encodings = {}
+	for l in supported:
+		l = l[:-1]
+		(locale, charset) = l.split(" ")
+		m = dot_re.match(locale)
+		if m:
+			locale = m.group(1)
+		if not encodings.has_key(locale):
+			encodings[locale] = []
+		encodings[locale].append(charset)
+
+	def output_locale_source(name, locale, encoding):
+		pkgname = 'locale-base-' + legitimize_package_name(name)
+
+		bb.data.setVar('RDEPENDS_%s' % pkgname, 'localedef glibc-localedata-%s glibc-charmap-%s' % (legitimize_package_name(locale), legitimize_package_name(encoding)), d)
+		rprovides = 'virtual-locale-%s' % legitimize_package_name(name)
+		m = re.match("(.*)_(.*)", name)
+		if m:
+			rprovides += ' virtual-locale-%s' % m.group(1)
+		bb.data.setVar('RPROVIDES_%s' % pkgname, rprovides, d)
+		bb.data.setVar('PACKAGES', '%s %s' % (pkgname, bb.data.getVar('PACKAGES', d, 1)), d)
+		bb.data.setVar('ALLOW_EMPTY_%s' % pkgname, '1', d)
+		bb.data.setVar('pkg_postinst_%s' % pkgname, bb.data.getVar('locale_base_postinst', d, 1) % (locale, encoding, locale), d)
+		bb.data.setVar('pkg_postrm_%s' % pkgname, bb.data.getVar('locale_base_postrm', d, 1) % (locale, encoding, locale), d)
+		bb.data.setVar('PKGV_' + pkgname, libcver, d)
+
+	def output_locale_binary(name, locale, encoding):
+		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
+		qemu = "qemu-%s" % target_arch
+		pkgname = 'locale-base-' + legitimize_package_name(name)
+		m = re.match("(.*)\.(.*)", name)
+		if m:
+			glibc_name = "%s.%s" % (m.group(1), m.group(2).lower().replace("-",""))
+		else:
+			glibc_name = name
+		bb.data.setVar('RDEPENDS_%s' % pkgname, legitimize_package_name('glibc-binary-localedata-%s' % glibc_name), d)
+		rprovides = 'virtual-locale-%s' % legitimize_package_name(name)
+		m = re.match("(.*)_(.*)", name)
+		if m:
+			rprovides += ' virtual-locale-%s' % m.group(1)
+		bb.data.setVar('RPROVIDES_%s' % pkgname, rprovides, d)
+		bb.data.setVar('ALLOW_EMPTY_%s' % pkgname, '1', d)
+		bb.data.setVar('PACKAGES', '%s %s' % (pkgname, bb.data.getVar('PACKAGES', d, 1)), d)
+		bb.data.setVar('PKGV_' + pkgname, libcver, d)
+
+		treedir = os.path.join(bb.data.getVar("WORKDIR", d, 1), "locale-tree")
+		path = bb.data.getVar("PATH", d, 1)
+		i18npath = os.path.join(treedir, datadir, "i18n")
+
+		localedef_opts = "--force --old-style --no-archive --prefix=%s --inputfile=%s/i18n/locales/%s --charmap=%s %s" % (treedir, datadir, locale, encoding, name)
+		cmd = "PATH=\"%s\" I18NPATH=\"%s\" %s -L %s %s/bin/localedef %s" % (path, i18npath, qemu, treedir, treedir, localedef_opts)
+		bb.note("generating locale %s (%s)" % (locale, encoding))
+		if os.system(cmd):
+			raise bb.build.FuncFailed("localedef returned an error (command was %s)." % cmd)
+
+	def output_locale(name, locale, encoding):
+		output_locale_source(name, locale, encoding)
+
+	# Reshuffle names so that UTF-8 is preferred over other encodings
+	non_utf8 = []
+	for l in encodings.keys():
+		if len(encodings[l]) == 1:
+			output_locale(l, l, encodings[l][0])
+			if encodings[l][0] != "UTF-8":
+				non_utf8.append(l)
+		else:
+			if "UTF-8" in encodings[l]:
+				output_locale(l, l, "UTF-8")
+				encodings[l].remove("UTF-8")
+			else:
+				non_utf8.append(l)
+			for e in encodings[l]:
+				output_locale('%s.%s' % (l, e), l, e)
+
+	if non_utf8 != []:
+		bb.note("the following locales are supported only in legacy encodings:")
+		bb.note("  " + " ".join(non_utf8))
+}
+
+python package_do_split_locales() {
+	if (bb.data.getVar('PACKAGE_NO_LOCALE', d, True) == '1'):
+		bb.debug(1, "package requested not splitting locales")
+		return
+
+	packages = (bb.data.getVar('PACKAGES', d, True) or "").split()
+
+	datadir = bb.data.getVar('datadir', d, True)
+	if not datadir:
+		bb.note("datadir not defined")
+		return
+
+	if 'glibc-locale' in packages:
+		packages.remove('glibc-locale')
+
+	localedir = os.path.join(datadir, 'locale')
+
+	if not os.path.isdir(localedir):
+		bb.debug(1, "No locale files in this package")
+		return
+
+	locales = os.listdir(localedir)
+	for l in locales:
+		ln = legitimize_package_name(l)
+		pkg = 'glibc-locale-' + ln
+		packages.append(pkg)
+		bb.data.setVar('FILES_' + pkg, os.path.join(datadir, 'locale', l), d)
+		bb.data.setVar('RDEPENDS_' + pkg, 'glibc virtual-locale-%s' % ln, d)
+		bb.data.setVar('RPROVIDES_' + pkg, 'glibc-locale %s-translation' % ln, d)
+		bb.data.setVar('DESCRIPTION_' + pkg, '%s translation for glibc' % l, d)
+		bb.data.setVar('PKGV_' + pkg, bb.data.getVar('CSL_VER_LIBC', d, 1), d)
+
+	bb.data.setVar('PACKAGES', ' '.join(packages), d)
+}
+
 python populate_packages_prepend () {
 	if bb.data.getVar('DEBIAN_NAMES', d, 1):
 		bb.data.setVar('PKG_glibc', 'libc6', d)
 		bb.data.setVar('PKG_glibc-dev', 'libc6-dev', d)
 		bb.data.setVar('PKG_libgcc', 'libgcc1', d)
 		bb.data.setVar('PKG_libgcc-dev', 'libgcc1-dev', d)
+	bb.build.exec_func('package_do_split_gconvs', d)
 }

@@ -1,12 +1,12 @@
 DESCRIPTION = "nEo GPE theme - a very fast, high contrast GPE theme"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
-RDEPENDS = "gpe-filemanager gpe-sketchbook"
-RRECOMMENDS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo libframeworkd-phonegui-efl-theme-neo etk-theme-neo icon-theme-neo"
+RSUGGESTS = "gpe-filemanager gpe-sketchbook elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo etk-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 
+SRCREV = "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
 PV = "0.2-${EFL_SRCREV}+gitr${SRCREV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.2"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

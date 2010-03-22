@@ -1,8 +1,9 @@
 require gdb-cross.inc
+LICENSE = "GPLv2"
 
 inherit sdk
 
-DEPENDS = "ncurses-sdk"
+DEPENDS = "ncurses-sdk zlib-sdk"
 
 PR = "r3"
 

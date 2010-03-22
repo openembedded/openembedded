@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r5"
+PR = "r10"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -20,9 +20,10 @@ DEFAULT_PREFERENCE_tosa = "-1"
 DEFAULT_PREFERENCE_ben-nanonote = "-1"
 DEFAULT_PREFERENCE_jornada6xx = "-1"
 DEFAULT_PREFERENCE_jornada7xx = "-1"
+DEFAULT_PREFERENCE_ts72xx = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.5.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.9.bz2;patch=1 \
            file://defconfig"
 
 SRC_URI[kernel.md5sum] = "260551284ac224c3a43c4adac7df4879"
@@ -45,6 +46,27 @@ SRC_URI_append_simone = " \
 			file://ep93xx/ep93xx-spi.patch;patch=1 \
 			file://ep93xx/ep93xx-cpuinfo.patch;patch=1 "
 
+FILES_kernel-image_simone = ""
+
+SRC_URI_append_ts72xx = " \
+                        file://0001-ts72xx_base.patch;patch=1 \
+                        file://0002-ts72xx_force_machine-id.patch;patch=1 \
+                        file://0003-ep93xx_cpuinfo.patch;patch=1 \
+                        file://0004-ts72xx_sbcinfo.patch;patch=1 \
+                        file://0005-ep93xx_eth.patch;patch=1 \
+                        file://0006-ts72xx_ts_ser1.patch;patch=1 \
+                        file://0007-ts72xx_rs485.patch;patch=1 \
+                        file://0008-ts72xx_ts_eth100.patch;patch=1 \
+                        file://0009-ts7200_cf_ide.patch;patch=1 \
+                        file://0010-ts72xx_pata.patch;patch=1 \
+                        file://0011-ep93xx_pm.patch;patch=1 \
+                        file://0012-ts72xx_gpio_i2c.patch;patch=1 \
+                        file://0013-ts72xx_dio_keypad.patch;patch=1 \
+                        file://0014-ep93xx_spi.patch;patch=1 \
+                        file://0015-ep93xx_cpufreq.patch;patch=1 \
+                        file://0016-ts7200_nor_flash.patch;patch=1 \
+                        "
+
 # Zaurus family bootloader patches
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 ZAURUSPATCHES = " ${RPSRC}/pxa-linking-bug-r1.patch;patch=1;status=unmergable;name=pxa-linking-bug-r1 "
@@ -58,3 +80,6 @@ SRC_URI_append_collie = "${ZAURUSPATCHES}"
 SRC_URI_append_poodle = "${ZAURUSPATCHES}"
 SRC_URI_append_spitz = "${ZAURUSPATCHES}"
 SRC_URI_append_tosa = "${ZAURUSPATCHES}"
+
+SRC_URI_append_eee701 = " \
+	file://intelfb.patch;patch=1 "

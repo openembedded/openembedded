@@ -11,10 +11,6 @@ do_configure_prepend() {
 	sed -i -e s:-nonet:\:g ${S}/doc/man/Makefile.am
 }	
 
-do_stage() {
-        autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/dbus-1/ \
                 ${datadir}/PolicyKit \
                 ${base_libdir}/udev/* \

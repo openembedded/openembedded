@@ -1,0 +1,142 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 10_RGB565.patch.dpatch by Ying-Chun Liu (PaulLiu) <paulliu@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Add support of bpp 16 mode
+
+@DPATCH@
+diff -urNad ptlib-2.6.5~/src/ptlib/common/vconvert.cxx ptlib-2.6.5/src/ptlib/common/vconvert.cxx
+--- ptlib-2.6.5~/src/ptlib/common/vconvert.cxx	2010-02-26 03:25:23.000000000 -0500
++++ ptlib-2.6.5/src/ptlib/common/vconvert.cxx	2010-02-26 03:54:32.000000000 -0500
+@@ -135,6 +135,11 @@
+       unsigned redOffset,
+       unsigned blueOffset
+     ) const;
++    PBoolean YUV420PtoRGB565(
++      const BYTE * yuv,
++      BYTE * rgb,
++      PINDEX * bytesReturned
++    ) const;
+     PBoolean SwapRedAndBlue(
+       const BYTE * src,
+       BYTE * dst,
+@@ -1657,6 +1662,92 @@
+   return PTrue;
+ }
+ 
++PBoolean PStandardColourConverter::YUV420PtoRGB565(const BYTE * srcFrameBuffer,
++                                            BYTE * dstFrameBuffer,
++                                            PINDEX * bytesReturned) const
++{
++  if (srcFrameBuffer == dstFrameBuffer)
++    return PFalse; // Cannot do in-place conversion
++  static const unsigned rgbIncrement = 2;
++
++  unsigned height = PMIN(srcFrameHeight, dstFrameHeight)&(UINT_MAX-1); // Must be even
++  unsigned width = PMIN(srcFrameWidth, dstFrameWidth)&(UINT_MAX-1);
++
++  unsigned    yplanesize = srcFrameWidth*srcFrameHeight;
++  const BYTE *yplane     = srcFrameBuffer;        // 1 byte Y (luminance) for each pixel
++  const BYTE *uplane     = yplane+yplanesize;     // 1 byte U for a block of 4 pixels
++  const BYTE *vplane     = uplane+(yplanesize/4); // 1 byte V for a block of 4 pixels
++
++  BYTE * dstScanLine   = dstFrameBuffer;
++
++  unsigned int srcPixpos[4] = { 0, 1, srcFrameWidth, srcFrameWidth + 1 };
++  unsigned int dstPixpos[4] = { 0, rgbIncrement, dstFrameWidth*rgbIncrement, (dstFrameWidth+1)*rgbIncrement };
++
++  if (verticalFlip) {
++    dstScanLine += (dstFrameHeight - 2) * dstFrameWidth * rgbIncrement;
++    dstPixpos[0] = dstFrameWidth*rgbIncrement;
++    dstPixpos[1] = (dstFrameWidth +1)*rgbIncrement;
++    dstPixpos[2] = 0;
++    dstPixpos[3] = 1*rgbIncrement;
++  }
++
++  for (unsigned y = 0; y < height; y += 2)
++  {
++    BYTE * dstPixelGroup = dstScanLine;
++    for (unsigned x = 0; x < width; x += 2)
++    {
++      // The RGB value without luminance
++      long cb = *uplane-128;
++      long cr = *vplane-128;
++      long rd = FIX(1.40200) * cr + ONE_HALF;
++      long gd = -FIX(0.34414) * cb -FIX(0.71414) * cr + ONE_HALF;
++      long bd = FIX(1.77200) * cb + ONE_HALF;
++
++      // Add luminance to each of the 4 pixels
++
++      for (unsigned p = 0; p < 4; p++)
++      {
++        int yvalue = *(yplane + srcPixpos[p]);
++
++        int l = yvalue << SCALEBITS;
++
++        int r = (l+rd)>>SCALEBITS;
++        int g = (l+gd)>>SCALEBITS;
++        int b = (l+bd)>>SCALEBITS;
++
++        BYTE * rgpPtr = dstPixelGroup + dstPixpos[p];
++	WORD r16,g16,b16;
++	WORD color;
++	WORD *colorptr=NULL;
++
++	r16 = ( (LIMIT(r)) >> 3) & 0x001f;
++	g16 = ( (LIMIT(g)) >> 2) & 0x003f;
++	b16 = ( (LIMIT(b)) >> 3) & 0x001f;
++	color = ((r16 << 11) & (0xf800))
++	  | ((g16 << 5 ) & (0x07e0))
++	  | ((b16 ) & (0x001f));
++	colorptr = (WORD *)(rgpPtr);
++	*colorptr = color;
++      }
++
++      yplane += 2;
++      dstPixelGroup += rgbIncrement*2;
++
++      uplane++;
++      vplane++;
++    }
++ 
++    yplane += srcFrameWidth;
++
++    dstScanLine += (verticalFlip?-2:2)*rgbIncrement*dstFrameWidth;
++  }
++
++  if (bytesReturned != NULL)
++    *bytesReturned = dstFrameBytes;
++
++  return PTrue;
++}
++
+ PSTANDARD_COLOUR_CONVERTER(SBGGR8,RGB24)
+ {
+   return SBGGR8toRGB(srcFrameBuffer, dstFrameBuffer, bytesReturned);
+@@ -1687,6 +1778,15 @@
+   return YUV420PtoRGB(srcFrameBuffer, dstFrameBuffer, bytesReturned, 4, 2, 0);
+ }
+ 
++PSTANDARD_COLOUR_CONVERTER(YUV420P,RGB565)
++{
++  return YUV420PtoRGB565(srcFrameBuffer, dstFrameBuffer, bytesReturned);
++}
++
++PSTANDARD_COLOUR_CONVERTER(YUV420P,RGB16)
++{
++  return YUV420PtoRGB565(srcFrameBuffer, dstFrameBuffer, bytesReturned);
++}
+ 
+ static void SwapRedAndBlueRow(const BYTE * srcRowPtr,
+                               BYTE * dstRowPtr,
+diff -urNad ptlib-2.6.5~/src/ptlib/common/videoio.cxx ptlib-2.6.5/src/ptlib/common/videoio.cxx
+--- ptlib-2.6.5~/src/ptlib/common/videoio.cxx	2010-02-26 03:25:23.000000000 -0500
++++ ptlib-2.6.5/src/ptlib/common/videoio.cxx	2010-02-26 03:52:10.000000000 -0500
+@@ -99,6 +99,7 @@
+   { "YUV411P", 12 },
+   { "RGB565",  16 },
+   { "RGB555",  16 },
++  { "RGB16",   16 },
+   { "YUV410",  10 },
+   { "YUV410P", 10 },
+   { "Grey",     8 },

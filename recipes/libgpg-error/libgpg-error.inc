@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
 
 DEPENDS += "virtual/libiconv"
+DEPENDS_virtclass-native = ""
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-${PV}.tar.gz \
 	   file://pkgconfig.patch;patch=1"
@@ -30,3 +31,5 @@ do_stage() {
 	install -d ${STAGING_DATADIR}/aclocal
 	install -m 0644 src/gpg-error.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+BBCLASSEXTEND = "native"

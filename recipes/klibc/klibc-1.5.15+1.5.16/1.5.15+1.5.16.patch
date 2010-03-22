@@ -1,0 +1,721 @@
+diff --git a/scripts/Kbuild.install b/scripts/Kbuild.install
+index 44c8f76..de918f0 100644
+--- a/scripts/Kbuild.install
++++ b/scripts/Kbuild.install
+@@ -95,16 +95,7 @@ header:
+	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include
+	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)lib
+	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)bin
+-	$(Q)set -e ; for d in linux asm asm-$(KLIBCARCH) asm-generic $(ASMKLIBCARCH); do \
+-	  for r in $(KLIBCKERNELSRC)/include $(KLIBCKERNELOBJ)/include \
+-	           $(KLIBCKERNELOBJ)/include2 ; do \
+-	    [ ! -d $$r/$$d ] && continue; \
+-	    mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KLIBCCROSS)include/$$d ; \
+-	    cp -rfL $$r/$$d/. \
+-	          $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include/$$d/. ; \
+-	  done ; \
+-	done
+-	$(Q)cd $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include && ln -sf asm-$(KLIBCARCH) asm
++	$(Q)make -C $(KLIBCKERNELSRC) ARCH=$(KLIBCARCH) INSTALL_HDR_PATH=$(INSTALLROOT)$(INSTALLDIR)/$(KCROSS) headers_install
+	$(Q)cp -rf usr/include/. $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include/.
+	$(Q)$(install-data) $(srctree)/klcc/klcc.1 $(INSTALLROOT)$(mandir)/man1/$(KCROSS)klcc.1
+	$(Q)$(install-bin) $(objtree)/klcc/$(KCROSS)klcc $(INSTALLROOT)$(bindir)
+diff --git a/usr/include/klibc/compiler.h b/usr/include/klibc/compiler.h
+index 816a4ee..9dee742 100644
+--- a/usr/include/klibc/compiler.h
++++ b/usr/include/klibc/compiler.h
+@@ -24,7 +24,12 @@
+ /* Use "extern inline" even in the gcc3+ case to avoid warnings in ctype.h */
+ #ifdef __GNUC__
+ # if __GNUC__ >= 3
+-#  define __must_inline extern __inline__ __attribute__((always_inline))
++#  ifdef __GNUC_STDC_INLINE__
++#   define __must_inline extern __inline__ \
++	__attribute__((__gnu_inline__,__always_inline__))
++#  else
++#   define __must_inline extern __inline__ __attribute__((__always_inline__))
++#  endif
+ # else
+ #  define __must_inline extern __inline__
+ # endif
+diff --git a/usr/include/mntent.h b/usr/include/mntent.h
+new file mode 100644
+index 0000000..210610c
+--- /dev/null
++++ b/usr/include/mntent.h
+@@ -0,0 +1,19 @@
++#ifndef _MNTENT_H
++#define _MNTENT_H       1
++
++struct mntent {
++	char *mnt_fsname;	/* name of mounted file system */
++	char *mnt_dir;		/* file system path prefix */
++	char *mnt_type;		/* mount type (see mntent.h) */
++	char *mnt_opts;		/* mount options (see mntent.h) */
++	int   mnt_freq;		/* dump frequency in days */
++	int   mnt_passno;	/* pass number on parallel fsck */
++};
++
++extern FILE *setmntent(const char *, const char *);
++
++extern struct mntent *getmntent(FILE *);
++
++extern int endmntent(FILE *fp);
++
++#endif  /* mntent.h */
+diff --git a/usr/include/string.h b/usr/include/string.h
+index ae8270e..0c8c046 100644
+--- a/usr/include/string.h
++++ b/usr/include/string.h
+@@ -44,5 +44,6 @@ __extern char *strsep(char **, const char *);
+ __extern size_t strspn(const char *, const char *);
+ __extern char *strstr(const char *, const char *);
+ __extern char *strtok(char *, const char *);
++__extern char *strtok_r(char *, const char *, char **);
+
+ #endif				/* _STRING_H */
+diff --git a/usr/kinit/ipconfig/dhcp_proto.c b/usr/kinit/ipconfig/dhcp_proto.c
+index d4f2c09..f3cfd52 100644
+--- a/usr/kinit/ipconfig/dhcp_proto.c
++++ b/usr/kinit/ipconfig/dhcp_proto.c
+@@ -49,24 +49,26 @@ static uint8_t dhcp_end[] = {
+
+ /* Both iovecs below have to have the same structure, since dhcp_send()
+    pokes at the internals */
+-#define DHCP_IOV_LEN 6
++#define DHCP_IOV_LEN 7
+
+-static struct iovec dhcp_discover_iov[] = {
++static struct iovec dhcp_discover_iov[DHCP_IOV_LEN] = {
+	/* [0] = ip + udp header */
+	/* [1] = bootp header */
+	[2] = {dhcp_discover_hdr, sizeof(dhcp_discover_hdr)},
+	[3] = {dhcp_params, sizeof(dhcp_params)},
+-	/* [4] = DHCP vendor class */
+-	[5] = {dhcp_end, sizeof(dhcp_end)}
++	/* [4] = optional vendor class */
++	/* [5] = optional hostname */
++	/* [6] = {dhcp_end, sizeof(dhcp_end)} */
+ };
+
+-static struct iovec dhcp_request_iov[] = {
++static struct iovec dhcp_request_iov[DHCP_IOV_LEN] = {
+	/* [0] = ip + udp header */
+	/* [1] = bootp header */
+	[2] = {dhcp_request_hdr, sizeof(dhcp_request_hdr)},
+	[3] = {dhcp_params, sizeof(dhcp_params)},
+-	/* [4] = DHCP vendor class */
+-	[5] = {dhcp_end, sizeof(dhcp_end)}
++	/* [4] = optional vendor class */
++	/* [5] = optional hostname */
++	/* [6] = {dhcp_end, sizeof(dhcp_end)} */
+ };
+
+ /*
+@@ -164,6 +166,8 @@ static int dhcp_recv(struct netdev *dev)
+ static int dhcp_send(struct netdev *dev, struct iovec *vec)
+ {
+	struct bootp_hdr bootp;
++	char dhcp_hostname[SYS_NMLN+2];
++	int i = 4;
+
+	memset(&bootp, 0, sizeof(struct bootp_hdr));
+
+@@ -171,7 +175,8 @@ static int dhcp_send(struct netdev *dev, struct iovec *vec)
+	bootp.htype	= dev->hwtype;
+	bootp.hlen	= dev->hwlen;
+	bootp.xid	= dev->bootp.xid;
+-	bootp.ciaddr	= dev->ip_addr;
++	bootp.ciaddr	= INADDR_NONE;
++	bootp.yiaddr	= dev->ip_addr;
+	bootp.giaddr	= INADDR_ANY;
+	bootp.secs	= htons(time(NULL) - dev->open_time);
+	memcpy(bootp.chaddr, dev->hwaddr, 16);
+@@ -179,12 +184,35 @@ static int dhcp_send(struct netdev *dev, struct iovec *vec)
+	vec[1].iov_base	= &bootp;
+	vec[1].iov_len	= sizeof(struct bootp_hdr);
+
+-	vec[4].iov_base = vendor_class_identifier;
+-	vec[4].iov_len  = vendor_class_identifier_len;
+-
+	DEBUG(("xid %08x secs %d ", bootp.xid, ntohs(bootp.secs)));
+
+-	return packet_send(dev, vec, DHCP_IOV_LEN);
++	if (vendor_class_identifier_len > 2) {
++		vec[i].iov_base = vendor_class_identifier;
++		vec[i].iov_len  = vendor_class_identifier_len;
++		i++;
++
++		DEBUG(("vendor_class_identifier \"%.*s\" ",
++		       vendor_class_identifier_len-2,
++		       vendor_class_identifier+2));
++	}
++
++	if (dev->reqhostname[0] != '\0') {
++		int len = strlen(dev->reqhostname);
++		dhcp_hostname[0] = 12;
++		dhcp_hostname[1] = len;
++		memcpy(dhcp_hostname+2, dev->reqhostname, len);
++
++		vec[i].iov_base = dhcp_hostname;
++		vec[i].iov_len  = len+2;
++		i++;
++
++		DEBUG(("hostname %.*s ", len, dhcp_hostname+2));
++	}
++
++	vec[i].iov_base = dhcp_end;
++	vec[i].iov_len  = sizeof(dhcp_end);
++
++	return packet_send(dev, vec, i);
+ }
+
+ /*
+diff --git a/usr/kinit/ipconfig/main.c b/usr/kinit/ipconfig/main.c
+index 2ded0f3..619edf7 100644
+--- a/usr/kinit/ipconfig/main.c
++++ b/usr/kinit/ipconfig/main.c
+@@ -522,6 +522,8 @@ static int parse_device(struct netdev *dev, const char *ip)
+			case 4:
+				strncpy(dev->hostname, ip, SYS_NMLN - 1);
+				dev->hostname[SYS_NMLN - 1] = '\0';
++				memcpy(dev->reqhostname, dev->hostname,
++				       SYS_NMLN);
+				break;
+			case 5:
+				dev->name = ip;
+@@ -569,6 +571,8 @@ static void bringup_one_dev(struct netdev *template, struct netdev *dev)
+		dev->ip_nameserver[1] = template->ip_nameserver[1];
+	if (template->hostname[0] != '\0')
+		strcpy(dev->hostname, template->hostname);
++	if (template->reqhostname[0] != '\0')
++		strcpy(dev->reqhostname, template->reqhostname);
+	dev->caps &= template->caps;
+
+	bringup_device(dev);
+diff --git a/usr/kinit/ipconfig/netdev.h b/usr/kinit/ipconfig/netdev.h
+index fb6640a..26d076a 100644
+--- a/usr/kinit/ipconfig/netdev.h
++++ b/usr/kinit/ipconfig/netdev.h
+@@ -4,7 +4,7 @@
+ #include <sys/utsname.h>
+ #include <net/if.h>
+
+-#define BPLEN		40
++#define BPLEN		256
+ #define FNLEN		128			/* from DHCP  RFC 2131 */
+
+ struct netdev {
+@@ -35,6 +35,7 @@ struct netdev {
+	uint32_t ip_gateway;	/* my gateway           */
+	uint32_t ip_nameserver[2];	/* two nameservers      */
+	uint32_t serverid;		/* dhcp serverid        */
++	char reqhostname[SYS_NMLN];	/* requested hostname   */
+	char hostname[SYS_NMLN];	/* hostname             */
+	char dnsdomainname[SYS_NMLN];	/* dns domain name      */
+	char nisdomainname[SYS_NMLN];	/* nis domain name      */
+diff --git a/usr/klibc/Kbuild b/usr/klibc/Kbuild
+index 20890c5..ab5212b 100644
+--- a/usr/klibc/Kbuild
++++ b/usr/klibc/Kbuild
+@@ -36,6 +36,7 @@ klib-y := vsnprintf.o snprintf.o vsprintf.o sprintf.o \
+	  strncat.o strlcpy.o strlcat.o \
+	  strstr.o strncmp.o strncpy.o strrchr.o \
+	  strxspn.o strspn.o strcspn.o strpbrk.o strsep.o strtok.o \
++	  strtok_r.o \
+	  fnmatch.o \
+	  gethostname.o getdomainname.o getcwd.o \
+	  seteuid.o setegid.o \
+@@ -55,7 +56,8 @@ klib-y := vsnprintf.o snprintf.o vsprintf.o sprintf.o \
+	  ctype/ispunct.o ctype/isspace.o ctype/isupper.o \
+	  ctype/isxdigit.o ctype/tolower.o ctype/toupper.o \
+	  userdb/getgrgid.o userdb/getgrnam.o userdb/getpwnam.o \
+-	  userdb/getpwuid.o userdb/root_group.o userdb/root_user.o
++	  userdb/getpwuid.o userdb/root_group.o userdb/root_user.o \
++	  setmntent.o endmntent.o getmntent.o
+
+ klib-$(CONFIG_KLIBC_ERRLIST) += errlist.o
+
+diff --git a/usr/klibc/endmntent.c b/usr/klibc/endmntent.c
+new file mode 100644
+index 0000000..419c317
+--- /dev/null
++++ b/usr/klibc/endmntent.c
+@@ -0,0 +1,9 @@
++#include <stdio.h>
++#include <mntent.h>
++
++int endmntent(FILE *fp)
++{
++	if (fp)
++		fclose(fp);
++	return 1;
++}
+diff --git a/usr/klibc/getmntent.c b/usr/klibc/getmntent.c
+new file mode 100644
+index 0000000..8af27f3
+--- /dev/null
++++ b/usr/klibc/getmntent.c
+@@ -0,0 +1,61 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <mntent.h>
++
++#define BUFLEN 1024
++
++struct mntent *getmntent_r(FILE *fp, struct mntent *mntbuf, char *buf,
++		int buflen)
++{
++	char *line = NULL, *saveptr = NULL;
++	const char *sep = " \t\n";
++
++	if (!fp || !mntbuf || !buf)
++		return NULL;
++
++	while ((line = fgets(buf, buflen, fp)) != NULL) {
++		if (buf[0] == '#' || buf[0] == '\n')
++			continue;
++		break;
++	}
++
++	if (!line)
++		return NULL;
++
++	mntbuf->mnt_fsname = strtok_r(buf, sep, &saveptr);
++	if (!mntbuf->mnt_fsname)
++		return NULL;
++
++	mntbuf->mnt_dir = strtok_r(NULL, sep, &saveptr);
++	if (!mntbuf->mnt_fsname)
++		return NULL;
++
++	mntbuf->mnt_type = strtok_r(NULL, sep, &saveptr);
++	if (!mntbuf->mnt_type)
++		return NULL;
++
++	mntbuf->mnt_opts = strtok_r(NULL, sep, &saveptr);
++	if (!mntbuf->mnt_opts)
++		mntbuf->mnt_opts = "";
++
++	line = strtok_r(NULL, sep, &saveptr);
++	mntbuf->mnt_freq = !line ? 0 : atoi(line);
++
++	line = strtok_r(NULL, sep, &saveptr);
++	mntbuf->mnt_passno = !line ? 0 : atoi(line);
++
++	return mntbuf;
++}
++
++struct mntent *getmntent(FILE *fp)
++{
++	static char *buf = NULL;
++	static struct mntent mntbuf;
++
++	buf = malloc(BUFLEN);
++	if (!buf)
++		perror("malloc");
++
++	return getmntent_r(fp, &mntbuf, buf, BUFLEN);
++}
+diff --git a/usr/klibc/setmntent.c b/usr/klibc/setmntent.c
+new file mode 100644
+index 0000000..d23e141
+--- /dev/null
++++ b/usr/klibc/setmntent.c
+@@ -0,0 +1,7 @@
++#include <stdio.h>
++#include <mntent.h>
++
++FILE *setmntent(const char *filename, const char *type)
++{
++	return fopen(filename, type);
++}
+diff --git a/usr/klibc/strtok.c b/usr/klibc/strtok.c
+index c2671af..6b169a1 100644
+--- a/usr/klibc/strtok.c
++++ b/usr/klibc/strtok.c
+@@ -8,12 +8,5 @@ char *strtok(char *s, const char *delim)
+ {
+	static char *holder;
+
+-	if (s)
+-		holder = s;
+-
+-	do {
+-		s = strsep(&holder, delim);
+-	} while (s && !*s);
+-
+-	return s;
++	return strtok_r(s, delim, &holder);
+ }
+diff --git a/usr/klibc/strtok_r.c b/usr/klibc/strtok_r.c
+new file mode 100644
+index 0000000..695d516
+--- /dev/null
++++ b/usr/klibc/strtok_r.c
+@@ -0,0 +1,13 @@
++#include <string.h>
++
++char *strtok_r(char *s, const char *delim, char **holder)
++{
++	if (s)
++		*holder = s;
++
++	do {
++		s = strsep(holder, delim);
++	} while (s && !*s);
++
++	return s;
++}
+diff --git a/usr/klibc/version b/usr/klibc/version
+index f6ed435..0ed0610 100644
+--- a/usr/klibc/version
++++ b/usr/klibc/version
+@@ -1 +1 @@
+-1.5.15
++1.5.16
+diff --git a/usr/utils/Kbuild b/usr/utils/Kbuild
+index 5b6dc28..354a364 100644
+--- a/usr/utils/Kbuild
++++ b/usr/utils/Kbuild
+@@ -3,7 +3,7 @@
+ #
+
+ progs := chroot dd mkdir mkfifo mknod mount pivot_root umount
+-progs += true false sleep ln nuke minips cat
++progs += true false sleep ln nuke minips cat ls
+ progs += uname halt kill readlink cpio sync dmesg
+
+ static-y := $(addprefix static/, $(progs))
+@@ -36,6 +36,8 @@ static/sleep-y      := sleep.o
+ shared/sleep-y      := sleep.o
+ static/ln-y         := ln.o
+ shared/ln-y         := ln.o
++static/ls-y         := ls.o
++shared/ls-y         := ls.o
+ static/nuke-y       := nuke.o
+ shared/nuke-y       := nuke.o
+ static/minips-y     := minips.o
+diff --git a/usr/utils/ls.c b/usr/utils/ls.c
+new file mode 100644
+index 0000000..859142a
+--- /dev/null
++++ b/usr/utils/ls.c
+@@ -0,0 +1,202 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <dirent.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/sysmacros.h>
++
++#define STAT_ISSET(mode, mask) (((mode) & mask) == mask)
++
++static size_t max_linksiz = 128;
++static int max_nlinks = 1;
++static int max_size = 1;
++static int max_uid = 1;
++static int max_gid = 1;
++static int max_min = 1;
++static int max_maj = 1;
++
++static void do_preformat(const struct stat *st)
++{
++	int bytes;
++
++	if ((bytes = snprintf(NULL, 0, "%ju", (uintmax_t) st->st_nlink)) > max_nlinks)
++		max_nlinks = bytes;
++
++	if ((bytes = snprintf(NULL, 0, "%ju", (uintmax_t) st->st_uid)) > max_uid)
++		max_uid = bytes;
++
++	if ((bytes = snprintf(NULL, 0, "%ju", (uintmax_t) st->st_gid)) > max_gid)
++		max_gid = bytes;
++
++	if (S_ISCHR(st->st_mode) || S_ISBLK(st->st_mode)) {
++		if ((bytes = snprintf(NULL, 0, "%u", major(st->st_rdev))) > max_maj)
++			max_maj = bytes;
++
++		if ((bytes = snprintf(NULL, 0, "%u", minor(st->st_rdev))) > max_min)
++			max_min = bytes;
++
++		max_size = max_maj + max_min + 1;
++	}
++	else {
++		if ((bytes = snprintf(NULL, 0, "%ju", (uintmax_t) st->st_size)) > max_size)
++			max_size = bytes;
++	}
++	return;
++}
++
++static void do_stat(const struct stat *st, const char *path)
++{
++	char *fmt, *link_name;
++	int rc;
++
++	switch (st->st_mode & S_IFMT) {
++		case S_IFBLK:  putchar('b'); break;
++		case S_IFCHR:  putchar('c'); break;
++		case S_IFDIR:  putchar('d'); break;
++		case S_IFIFO:  putchar('p'); break;
++		case S_IFLNK:  putchar('l'); break;
++		case S_IFSOCK: putchar('s'); break;
++		case S_IFREG:  putchar('-'); break;
++		default:       putchar('?'); break;
++	}
++	putchar(STAT_ISSET(st->st_mode, S_IRUSR) ? 'r' : '-');
++	putchar(STAT_ISSET(st->st_mode, S_IWUSR) ? 'w' : '-');
++
++	!STAT_ISSET(st->st_mode, S_ISUID) ?
++		putchar(STAT_ISSET(st->st_mode, S_IXUSR) ? 'x' : '-') :
++		putchar('S');
++
++	putchar(STAT_ISSET(st->st_mode, S_IRGRP) ? 'r' : '-');
++	putchar(STAT_ISSET(st->st_mode, S_IWGRP) ? 'w' : '-');
++
++	!STAT_ISSET(st->st_mode, S_ISGID) ?
++		putchar(STAT_ISSET(st->st_mode, S_IXGRP) ? 'x' : '-') :
++		putchar('S');
++
++	putchar(STAT_ISSET(st->st_mode, S_IROTH) ? 'r' : '-');
++	putchar(STAT_ISSET(st->st_mode, S_IWOTH) ? 'w' : '-');
++
++	!STAT_ISSET(st->st_mode, S_ISVTX) ?
++		putchar(STAT_ISSET(st->st_mode, S_IXOTH) ? 'x' : '-') :
++		putchar(S_ISDIR(st->st_mode) ? 't' : 'T');
++
++	if (S_ISCHR(st->st_mode) || S_ISBLK(st->st_mode)) {
++		rc = asprintf(&fmt," %%%dju %%%dju %%%dju %%%du,%%%du %%s",
++		              max_nlinks, max_uid, max_gid, max_maj, max_min);
++		if (rc == -1) {
++			perror("asprintf");
++			exit(1);
++		}
++		fprintf(stdout, fmt,
++			(uintmax_t) st->st_nlink,
++			(uintmax_t) st->st_uid,
++			(uintmax_t) st->st_gid,
++			major(st->st_rdev),
++			minor(st->st_rdev),
++			path);
++	}
++	else {
++		rc = asprintf(&fmt," %%%dju %%%dju %%%dju %%%dju %%s",
++		              max_nlinks, max_uid, max_gid, max_size);
++		if (rc == -1) {
++			perror("asprintf");
++			exit(1);
++		}
++		fprintf(stdout, fmt,
++			(uintmax_t) st->st_nlink,
++			(uintmax_t) st->st_uid,
++			(uintmax_t) st->st_gid,
++			(uintmax_t) st->st_size,
++			path);
++	}
++	free(fmt);
++
++	if (S_ISLNK(st->st_mode)) {
++		if ((link_name = malloc(max_linksiz)) == NULL) {
++			perror("malloc");
++			exit(1);
++		}
++		if ((rc = readlink(path, link_name, max_linksiz)) == -1) {
++			free(link_name);
++			perror("readlink");
++			exit(1);
++		}
++		link_name[rc] = '\0';
++		fprintf(stdout, " -> %s", link_name);
++		free(link_name);
++	}
++
++	putchar('\n');
++	return;
++}
++
++static void do_dir(const char *path, int preformat)
++{
++	DIR *dir;
++	struct dirent *dent;
++	struct stat st;
++
++	if (chdir(path) == -1) {
++		perror(path);
++		exit(1);
++	}
++
++	if ((dir = opendir(path)) == NULL) {
++		perror(path);
++		exit(1);
++	}
++
++	while ((dent = readdir(dir)) != NULL) {
++		if (lstat(dent->d_name, &st)) {
++			perror(dent->d_name);
++			exit(1);
++		}
++		(preformat) ?
++			do_preformat(&st) :
++			do_stat(&st, dent->d_name);
++	}
++
++	closedir(dir);
++}
++
++int main(int argc, char *argv[])
++{
++	int i;
++	struct stat st;
++
++	if (argc == 1) {
++		do_dir(".", 1);
++		do_dir(".", 0);
++		return 0;
++	}
++
++	for (i = 1; i < argc; i++) {
++		if (argv[i][0] == '-' && argv[i][1] == 'h') {
++			fprintf(stdout, "Usage: ls [-h] [FILE ...]\n");
++			return 0;
++		}
++
++		if (lstat(argv[i], &st)) {
++			perror(argv[i]);
++			exit(1);
++		}
++
++		S_ISDIR(st.st_mode) ?
++			do_dir(argv[i], 1) :
++			do_preformat(&st);
++	}
++
++	for (i = 1; i < argc; i++) {
++		if (lstat(argv[i], &st)) {
++			perror(argv[i]);
++			exit(1);
++		}
++
++		S_ISDIR(st.st_mode) ?
++			do_dir(argv[i], 0) :
++			do_stat(&st, argv[i]);
++	}
++
++	return 0;
++}
+diff --git a/usr/utils/mount_main.c b/usr/utils/mount_main.c
+index b5993cc..ee08720 100644
+--- a/usr/utils/mount_main.c
++++ b/usr/utils/mount_main.c
+@@ -7,14 +7,52 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <mntent.h>
+
+ #include "mount_opts.h"
+
++#define _PATH_MOUNTED		"/etc/mtab"
++#define _PATH_PROC_MOUNTS	"/proc/mounts"
++
+ char *progname;
+
+ static struct extra_opts extra;
+ static unsigned long rwflag;
+
++static __noreturn usage(void)
++{
++	fprintf(stderr, "Usage: %s [-r] [-w] [-o options] [-t type] [-f] [-i] "
++		"[-n] device directory\n", progname);
++	exit(1);
++}
++
++static __noreturn print_mount(char *type)
++{
++	FILE *mfp;
++	struct mntent *mnt;
++
++	mfp = setmntent(_PATH_PROC_MOUNTS, "r");
++	if (!mfp)
++		mfp = setmntent(_PATH_MOUNTED, "r");
++	if (!mfp)
++		perror("setmntent");
++
++	while ((mnt = getmntent(mfp)) != NULL) {
++		if (mnt->mnt_fsname && !strncmp(mnt->mnt_fsname, "no", 2))
++			continue;
++		if (type && mnt->mnt_type && strcmp(type, mnt->mnt_type))
++			continue;
++		printf("%s on %s", mnt->mnt_fsname, mnt->mnt_dir);
++		if (mnt->mnt_type != NULL && mnt->mnt_type != '\0')
++			printf (" type %s", mnt->mnt_type);
++		if (mnt->mnt_opts != NULL && mnt->mnt_opts != '\0')
++			printf (" (%s)", mnt->mnt_opts);
++		printf("\n");
++	}
++	endmntent(mfp);
++	exit(0);
++}
++
+ static int
+ do_mount(char *dev, char *dir, char *type, unsigned long rwflag, void *data)
+ {
+@@ -66,10 +104,18 @@ int main(int argc, char *argv[])
+	rwflag = MS_VERBOSE;
+
+	do {
+-		c = getopt(argc, argv, "no:rt:wfi");
++		c = getopt(argc, argv, "fhino:rt:w");
+		if (c == EOF)
+			break;
+		switch (c) {
++		case 'f':
++			/* we can't edit /etc/mtab yet anyway; exit */
++			exit(0);
++		case 'i':
++			/* ignore for now; no support for mount helpers */
++			break;
++		case 'h':
++			usage();
+		case 'n':
+			/* no mtab writing */
+			break;
+@@ -85,12 +131,6 @@ int main(int argc, char *argv[])
+		case 'w':
+			rwflag &= ~MS_RDONLY;
+			break;
+-		case 'f':
+-			/* we can't edit /etc/mtab yet anyway; exit */
+-			exit(0);
+-		case 'i':
+-			/* ignore for now; no support for mount helpers */
+-			break;
+		case '?':
+			fprintf(stderr, "%s: invalid option -%c\n",
+				progname, optopt);
+@@ -98,6 +138,9 @@ int main(int argc, char *argv[])
+		}
+	} while (1);
+
++	if (optind == argc)
++		print_mount(type);
++
+	/*
+	 * If remount, bind or move was specified, then we don't
+	 * have a "type" as such.  Use the dummy "none" type.
+@@ -105,11 +148,8 @@ int main(int argc, char *argv[])
+	if (rwflag & MS_TYPE)
+		type = "none";
+
+-	if (optind + 2 != argc || type == NULL) {
+-		fprintf(stderr, "Usage: %s [-r] [-w] [-o options] [-t type] [-f] [-i] "
+-			"[-n] device directory\n", progname);
+-		exit(1);
+-	}
++	if (optind + 2 != argc || type == NULL)
++		usage();
+
+	return do_mount(argv[optind], argv[optind + 1], type, rwflag,
+			extra.str);

@@ -9,7 +9,7 @@ inherit autotools gettext
 MIRRORS_prepend () {
 ftp://ftp.gnupg.org/gcrypt	http://mirrors.rootmode.com/ftp.gnupg.org
 }
-SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-${PV}.tar.bz2;name=src"
 S = "${WORKDIR}/gnupg-${PV}"
 
 #   --with-egd-socket=NAME  use NAME for the EGD socket

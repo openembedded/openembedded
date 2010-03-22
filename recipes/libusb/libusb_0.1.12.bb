@@ -1,9 +1,9 @@
 DESCRIPTION = "libusb is a library to provide userspace access to USB devices."
 HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
 PROVIDES = "virtual/libusb0"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
 	   file://configure_fix.patch;patch=1"

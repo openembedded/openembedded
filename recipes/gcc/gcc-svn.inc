@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "-999"
 ARM_INSTRUCTION_SET = "arm"
 
-SRCREV = "156268"
+SRCREV = "156750"
 
 require gcc-common.inc
 

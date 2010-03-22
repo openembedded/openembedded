@@ -11,7 +11,7 @@ LICENSE = "BSD"
 SECTION = "base"
 DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
-INC_PR = "r9"
+INC_PR = "r13"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \
@@ -79,19 +79,39 @@ do_install_append() {
   sed -i 's/MAIL_DIR/#MAIL_DIR/g' ${D}${sysconfdir}/login.defs
   sed -i 's/#MAIL_FILE/MAIL_FILE/g' ${D}${sysconfdir}/login.defs
 
-  mv ${D}${bindir}/passwd ${D}${bindir}/passwd.${PN}
+  install -d ${D}${sbindir} ${D}${base_sbindir} ${D}${base_bindir} 
+  for i in passwd chfn newgrp chsh ; do
+    mv ${D}${bindir}/$i ${D}${bindir}/$i.${PN}
+  done
+
   mv ${D}${sbindir}/chpasswd ${D}${sbindir}/chpasswd.${PN}
+  mv ${D}${sbindir}/vigr ${D}${base_sbindir}/vigr.${PN}
+  mv ${D}${sbindir}/vipw ${D}${base_sbindir}/vipw.${PN}
+  mv ${D}${bindir}/login ${D}${base_bindir}/login.${PN}
 
   # Ensure we add a suitable securetty file to the package that has most common embedded TTYs defined.
   install -m 0400 ${WORKDIR}/securetty ${D}${sysconfdir}/securetty 
+
 }
 
 pkg_postinst_${PN} () {
-    update-alternatives --install ${bindir}/passwd passwd passwd.${PN} 100
-    update-alternatives --install ${sbindir}/chpasswd chpasswd chpasswd.${PN} 100
+    update-alternatives --install ${bindir}/passwd passwd passwd.${PN} 200
+    update-alternatives --install ${sbindir}/chpasswd chpasswd chpasswd.${PN} 200
+    update-alternatives --install ${bindir}/chfn chfn chfn.${PN} 200
+    update-alternatives --install ${bindir}/newgrp newgrp newgrp.${PN} 200
+    update-alternatives --install ${bindir}/chsh chsh chsh.${PN} 200
+    update-alternatives --install ${base_bindir}/login login login.${PN} 200
+    update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 200
+    update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 200
+    if [ "x$D" != "x" ]; then
+        exit 1
+    fi  
+	pwconv
+	grpconv
 }
 
 pkg_prerm_${PN} () {
-    update-alternatives --remove passwd passwd.${PN}
-    update-alternatives --remove chpasswd chpasswd.${PN}
+    for i in passwd chpasswd chfn newgrp chsh login vipw vigr ; do
+        update-alternatives --remove $i $i.${PN}
+    done
 }

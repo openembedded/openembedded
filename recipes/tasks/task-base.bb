@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r87"
+PR = "r89"
 
 inherit task
 
@@ -136,7 +136,9 @@ python __anonymous () {
 
     import bb
 
-    if not hasattr(__builtins__, 'set'):
+    try:
+	set
+    except NameError:
 	from sets import Set as set
 
     distro_features = set(bb.data.getVar("DISTRO_FEATURES", d, 1).split())

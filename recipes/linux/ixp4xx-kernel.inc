@@ -24,7 +24,7 @@
 #
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 DEPENDS = "arm-kernel-shim devio-native"
 
@@ -153,7 +153,7 @@ SRC_URI += "${IXP4XX_PATCHES}"
 COMPATIBLE_HOST = 'arm.*-linux.*'
 COMPATIBLE_MACHINE = '(ixp4xx|nslu2|fsg3)'
 
-inherit kernel
+inherit kernel siteinfo
 
 ARCH = "arm"
 

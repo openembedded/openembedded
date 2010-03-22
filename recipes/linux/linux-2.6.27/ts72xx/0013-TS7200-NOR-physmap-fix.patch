@@ -1,0 +1,58 @@
+From bd9ea2dfdce02b9c941073bf5d51d5f18a28d101 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sun, 4 Jan 2009 01:21:24 +0100
+Subject: [PATCH] TS7200 NOR physmap fix
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/ts72xx.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index 1e933bc..a9d3939 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -111,13 +111,14 @@ static void __init ts72xx_map_io(void)
+ 	}
+ }
+ 
++#if defined(CONFIG_MTD_PHYSMAP) || defined(CONFIG_MTD_PHYSMAP_MODULE)
+ static struct physmap_flash_data ts72xx_flash_data = {
+-	.width		= 1,
++	.width		= 2,
+ };
+ 
+ static struct resource ts72xx_flash_resource = {
+ 	.start		= TS72XX_NOR_PHYS_BASE,
+-	.end		= TS72XX_NOR_PHYS_BASE + 0x00ffffff,
++	.end		= TS72XX_NOR_PHYS_BASE + SZ_16M - 1,   /* SZ_8M for 8mb flash */
+ 	.flags		= IORESOURCE_MEM,
+ };
+ 
+@@ -130,6 +131,7 @@ static struct platform_device ts72xx_flash = {
+ 	.num_resources	= 1,
+ 	.resource	= &ts72xx_flash_resource,
+ };
++#endif
+ 
+ static unsigned char ts72xx_rtc_readbyte(unsigned long addr)
+ {
+@@ -206,8 +208,12 @@ static struct platform_device ts72xx_watchdog_device = {
+ static void __init ts72xx_init_machine(void)
+ {
+ 	ep93xx_init_devices();
++
++	#if defined(CONFIG_MTD_PHYSMAP) || defined(CONFIG_MTD_PHYSMAP_MODULE)
+ 	if (board_is_ts7200())
+ 		platform_device_register(&ts72xx_flash);
++	#endif
++
+ 	platform_device_register(&ts72xx_rtc_device);
+ 
+ 	memcpy(ts72xx_eth_data.dev_addr,
+-- 
+1.6.0.4
+

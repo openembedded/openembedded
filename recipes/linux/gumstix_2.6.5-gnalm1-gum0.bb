@@ -3,7 +3,7 @@ BROKEN = "1"
 
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 COMPATIBLE_MACHINE = "gumstix"
 

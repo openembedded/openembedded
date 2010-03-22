@@ -1,0 +1,17 @@
+Patch to fix compilation on systems not debian. Taken from
+
+http://wiki.navit-project.org/index.php/Navit_on_OpenEmbedded_for_n810#libgpsmgr_patch
+
+Index: libgpsmgr-0.1/configure.ac
+===================================================================
+--- libgpsmgr-0.1.orig/configure.ac
++++ libgpsmgr-0.1/configure.ac
+@@ -1,6 +1,5 @@
+-AC_INIT(Makefile.am)
+-AM_INIT_AUTOMAKE(libgpsmgr, patsubst(esyscmd([dpkg-parsechangelog | sed -n '/^Version: \(.*\)$/ {s//\1/;p}']), [
+-]))
++AC_INIT(Makefile.am, [0.1])
++AM_INIT_AUTOMAKE(libgpsmgr, [0.1])
+ AM_CONFIG_HEADER(config.h)
+ 
+ AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug],[Debug (default=no)])])

@@ -28,6 +28,12 @@ DEPENDS_prepend = "${@autotools_dep_prepend(d)}"
 DEPENDS_virtclass-native_prepend = "${@autotools_dep_prepend(d)}"
 DEPENDS_virtclass-nativesdk_prepend = "${@autotools_dep_prepend(d)}"
 
+inherit siteinfo
+
+# Space separated list of shell scripts with variables defined to supply test
+# results for autoconf tests we cannot run at build time.
+export CONFIG_SITE = "${@siteinfo_get_files(d)}"
+
 acpaths = "default"
 EXTRA_AUTORECONF = "--exclude=autopoint"
 
@@ -152,7 +158,9 @@ autotools_prepackage_lamangler () {
                 sed -i -e s:${CROSS_DIR}/${HOST_SYS}::g $i
                 sed -i -e s:${CROSS_DIR}::g $i
                 sed -i -e s:${STAGING_LIBDIR}:${libdir}:g $i
-                sed -i -e s:${STAGING_DIR_HOST}::g $i
+                if [ -n "${STAGING_DIR_HOST}" ]; then
+                        sed -i -e s:${STAGING_DIR_HOST}::g $i
+                fi
                 sed -i -e s:${STAGING_DIR}::g $i
                 sed -i -e s:${S}::g $i
                 sed -i -e s:${T}::g $i

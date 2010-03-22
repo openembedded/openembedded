@@ -1,0 +1,13 @@
+Index: readline-5.2/rltypedefs.h
+===================================================================
+--- readline-5.2.orig/rltypedefs.h
++++ readline-5.2/rltypedefs.h
+@@ -23,6 +23,8 @@
+ #ifndef _RL_TYPEDEFS_H_
+ #define _RL_TYPEDEFS_H_
+ 
++#include <stdio.h>
++
+ #ifdef __cplusplus
+ extern "C" {
+ #endif

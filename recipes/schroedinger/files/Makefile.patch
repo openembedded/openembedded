@@ -1,0 +1,15 @@
+Index: schroedinger-1.0.5/schroedinger/Makefile.am
+===================================================================
+--- schroedinger-1.0.5.orig/schroedinger/Makefile.am
++++ schroedinger-1.0.5/schroedinger/Makefile.am
+@@ -53,9 +53,7 @@ pkginclude_HEADERS = \
+ 	schroutils.h \
+ 	schrovideoformat.h \
+ 	schrovirtframe.h \
+-	schrowavelet.h \
+-	schrobitstream.h \
+-	schromotion.h
++	schrowavelet.h
+ 
+ noinst_HEADERS = \
+ 	schrooil.h \

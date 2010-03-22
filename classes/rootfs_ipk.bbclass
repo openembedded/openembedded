@@ -7,7 +7,8 @@
 
 do_rootfs[depends] += "opkg-native:do_populate_staging"
 
-IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
+IPKG_TMP_DIR = "${IMAGE_ROOTFS}-tmp"
+IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} -t ${IPKG_TMP_DIR} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
 PACKAGE_INSTALL_NO_DEPS ?= "0"
 
@@ -31,6 +32,7 @@ fakeroot rootfs_ipk_do_rootfs () {
 	package_generate_ipkg_conf
 
 	mkdir -p ${T}
+	mkdir -p ${IPKG_TMP_DIR}
 	mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg/
 
 	STATUS=${IMAGE_ROOTFS}${libdir}/opkg/status
@@ -80,6 +82,8 @@ fakeroot rootfs_ipk_do_rootfs () {
 
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
+	
+	${ROOTFS_POSTPROCESS_COMMAND}
 
 	if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
 		if [ "${ONLINE_PACKAGE_MANAGEMENT}" == "add" ]; then
@@ -97,9 +101,8 @@ fakeroot rootfs_ipk_do_rootfs () {
 		rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
 	fi
 	
-	${ROOTFS_POSTPROCESS_COMMAND}
-	
 	log_check rootfs 	
+	rm -rf ${IPKG_TMP_DIR}
 }
 
 rootfs_ipk_log_check() {

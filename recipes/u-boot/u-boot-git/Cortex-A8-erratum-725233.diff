@@ -1,0 +1,45 @@
+From: Siarhei Siamashka <siarhei.siamashka@gmail.com>
+Date: Wed, 24 Feb 2010 04:56:36 +0000 (-0500)
+Subject: OMAP3: workaround for ARM Cortex-A8 erratum 725233
+X-Git-Url: http://git.denx.de/?p=u-boot%2Fu-boot-arm.git;a=commitdiff_plain;h=42d97d08838d4e010d80c92ad1300c426320dd18
+
+OMAP3: workaround for ARM Cortex-A8 erratum 725233
+
+725233: PLD instructions executed with PLD data forwarding
+enabled can result in a processor deadlock
+
+This deadlock can happen when NEON load instructions are used together
+with cache preload instructions (PLD). The problematic conditions
+can be triggered in-the-wild by NEON optimized functions from pixman
+library (http://cgit.freedesktop.org/pixman), which perform dynamic
+adjustment of prefetch distance.
+
+The workaround disables PLD data forwarding by setting PLD_FWD bit
+in L2 Cache Auxiliary Control Register as recommended in ARM Cortex-A8
+errata list.
+
+The deadlock can only happen on r1pX revisions of Cortex-A8 (used in
+OMAP34xx/OMAP35xx). Performance impact of the workaround is practically
+non-existant.
+
+Signed-off-by: Siarhei Siamashka <siarhei.siamashka@gmail.com>
+Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
+---
+
+diff --git a/cpu/arm_cortexa8/omap3/board.c b/cpu/arm_cortexa8/omap3/board.c
+index 2aa69b3..7b78fa4 100644
+--- a/cpu/arm_cortexa8/omap3/board.c
++++ b/cpu/arm_cortexa8/omap3/board.c
+@@ -146,6 +146,12 @@ void setup_auxcr()
+ 	__asm__ __volatile__("orr r0, r0, #1 << 5");
+ 	/* SMI instruction to call ROM Code API */
+ 	__asm__ __volatile__(".word 0xE1600070");
++	/* Set PLD_FWD bit in L2AUXCR (Cortex-A8 erratum 725233 workaround) */
++	__asm__ __volatile__("mov r12, #0x2");
++	__asm__ __volatile__("mrc p15, 1, r0, c9, c0, 2");
++	__asm__ __volatile__("orr r0, r0, #1 << 27");
++	/* SMI instruction to call ROM Code API */
++	__asm__ __volatile__(".word 0xE1600070");
+ 	__asm__ __volatile__("mov r0, %0":"=r"(i));
+ 	__asm__ __volatile__("mov r12, %0":"=r"(j));
+ }

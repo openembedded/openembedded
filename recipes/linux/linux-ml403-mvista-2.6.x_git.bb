@@ -2,7 +2,7 @@
 # Released under the MIT license (see packages/COPYING)
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Xilinx ML403 Virtex 4 fpga board"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "git-native"
 PR = "r1"
 DEFAULT_PREFERENCE = "-1"

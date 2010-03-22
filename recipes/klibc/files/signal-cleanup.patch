@@ -1,0 +1,38 @@
+Description: Cope with header changes in kernel commit
+ 63b852a6b67d0820d388b0ecd0da83ccb4048b8d.
+
+Index: klibc-1.5.15/usr/include/arch/i386/klibc/archsignal.h
+===================================================================
+--- klibc-1.5.15.orig/usr/include/arch/i386/klibc/archsignal.h	2009-01-04 11:28:03.000000000 -0800
++++ klibc-1.5.15/usr/include/arch/i386/klibc/archsignal.h	2009-11-11 14:21:10.000000000 -0800
+@@ -96,7 +96,12 @@ typedef struct {
+ #define MINSIGSTKSZ	2048
+ #define SIGSTKSZ	8192
+
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,31)
++#include <asm-generic/signal-defs.h>
++#else
+ #include <asm-generic/signal.h>
++#endif
+
+ /* This uses gcc anonymous union support... */
+ struct siginfo;
+Index: klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h
+===================================================================
+--- klibc-1.5.15.orig/usr/include/arch/sparc/klibc/archsignal.h	2009-01-04 11:28:03.000000000 -0800
++++ klibc-1.5.15/usr/include/arch/sparc/klibc/archsignal.h	2009-11-09 15:06:29.000000000 -0800
+@@ -11,13 +11,6 @@
+ #define __WANT_POSIX1B_SIGNALS__
+ #include <asm/signal.h>
+
+-struct sigaction {
+-	__sighandler_t	sa_handler;
+-	unsigned long	sa_flags;
+-	void		(*sa_restorer)(void);	/* Not used by Linux/SPARC */
+-	sigset_t	sa_mask;
+-};
+-
+ /* Not actually used by the kernel... */
+ #define SA_RESTORER	0x80000000
+

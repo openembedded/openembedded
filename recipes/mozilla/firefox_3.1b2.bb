@@ -16,7 +16,6 @@ DEFAULT_PREFERENCE = "-1"
 inherit mozilla
 require firefox.inc
 
-export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 do_configure_prepend() {

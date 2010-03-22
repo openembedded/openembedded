@@ -2,11 +2,19 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
-INC_PR = "r13"
+INC_PR = "r14"
 
 PROVIDES = "virtual/xserver"
 
-DEPENDS = "hal fontconfig freetype flex-native lbxutil kbproto \ 
+# Config manager for xserver, options are: hal, udev, empty (for configuration in xorg.conf)
+DISTRO_XORG_CONFIG_MANAGER ?= "hal"
+DISTRO_XORG_CONFIG_MANAGER_shr ?= ""
+
+# default none, enabled by DISTRO_XORG_CONFIG_MANAGER setting
+CONFIG_MANAGER_OPTION += "${@['--disable-config-hal','--enable-config-hal',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['hal']]}"
+CONFIG_MANAGER_OPTION += "${@['--disable-config-udev','--enable-config-udev',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['udev']]}"
+
+DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \ 
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
@@ -14,12 +22,12 @@ xf86dgaproto videoproto compositeproto trapproto recordproto dmxproto \
 resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres virtual/libgl libxcalibrate \
-libxv"
+libxv ${DISTRO_XORG_CONFIG_MANAGER}"
 
-RECOMMENDS_${PN} = "hal libpciaccess"
+RRECOMMENDS_${PN} = "libpciaccess"
 
 XORG_PN = "xorg-server"
-SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2;name=archive"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
@@ -33,6 +41,8 @@ EXTRA_OECONF += " --enable-xcalibrate \
                   --disable-kdrive-vesa \
                   --with-default-font-path="/usr/share/fonts/X11/misc" \
                   ac_cv_file__usr_share_sgml_X11_defs_ent=no"
+
+# CONFIG_MANAGER_OPTION is used only in recipes which support those options
 
 EXTRA_OECONF_append_arm = " ac_cv_header_linux_apm_bios_h=no "
 

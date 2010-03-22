@@ -29,7 +29,12 @@
   be used in preference to retrieving a new version . Any source that is
   retrieved from a remote URI will be stored in the download source directory
   and an appropriate md5 sum generated and stored alongside it.</para>
-
+  <para>Checksums for http/https/ftp/ftps uris are stored in each recipe in
+  the form of<screen>SRC_URI[md5sum] = &quot;9a7a11ffd52d9c4553ea8c0134a6fa86&quot;
+SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31701921b9434&quot;</screen>
+  for the first remote SRC_URI that has <emphasis>no</emphasis> explicit <command>name=foo</command>
+  associated with it. Following <emphasis>unnamed</emphasis> SRC_URIs without
+  a checksum will throw errors.</para>
   <para>Each URI supports a set of additional options. These options are
   tag/value pairs of the form <command>"a=b"</command> and are semi-colon
   separated from each other and from the URI. The follow examples shows two

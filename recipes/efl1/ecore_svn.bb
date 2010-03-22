@@ -1,9 +1,11 @@
 require ecore.inc
-PR = "r7"
+PR = "r9"
 
-SRC_URI += "file://iconv.patch;patch=1;maxrev=43996 \
-            file://exit_uclibc.patch;patch=1 \
-           "
+SRC_URI += "\
+  file://iconv.patch;patch=1;maxrev=43996 \
+  file://exit_uclibc_dns.patch;patch=1;maxrev=47076 \
+  file://exit_uclibc.patch;patch=1 \
+"
 
 EXTRA_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \
@@ -33,3 +35,13 @@ EXTRA_OECONF = "\
   --disable-openssl \
   --disable-poll \
 "
+
+# List of options which were different in ecore-native, 
+# I know it's SCM, but with missing -native.bb is much easier to check here
+#EXTRA_OECONF_virtclass-native = "\
+#                --disable-ecore-x \
+#                --enable-ecore-evas-fb \
+#                --disable-ecore-evas-x11-gl \
+#                --disable-curl \
+#                --disable-ecore-imf \
+#                --disable-ecore-imf_evas \

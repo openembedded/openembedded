@@ -1,7 +1,7 @@
 DESCRIPTION = "Tasks for a Network Attached Storage server"
 LICENSE = "MIT"
 PROVIDES = "task-nas-server-everything"
-PR = "r1"
+PR = "r2"
 
 inherit task
 
@@ -15,7 +15,6 @@ NAS_SERVER_PACKAGES = "\
 	task-nas-server-samba \
 	task-nas-server-dnsmasq \
 	task-nas-server-iptables \
-	task-nas-server-openmoko \
 	task-nas-server-tzdata \
 	task-nas-server-nfs \
 	task-nas-server-vfat \
@@ -54,13 +53,6 @@ RRECOMMENDS_task-nas-server-iptables = "\
 	kernel-module-iptable-nat \
 	kernel-module-iptable-mangle \
 	kernel-module-ipt-masquerade \
-"
-
-DESCRIPTION_task-nas-server-openmoko = "NAS-Server: Openmoko Support"
-RDEPENDS_task-nas-server-openmoko = "\
-	dfu-util \
-"
-RRECOMMENDS_task-nas-server-openmoko = "\
 "
 
 DESCRIPTION_task-nas-server-tzdata = "NAS-Server: Timezone Support"

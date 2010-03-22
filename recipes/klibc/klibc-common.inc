@@ -5,13 +5,7 @@ use with initramfs.  It is deliberately written for small size, \
 minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-${PV}.tar.bz2 \
-	   file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
-	   file://modprobe.patch;patch=1 \
-	   file://losetup.patch;patch=1 \
-	   file://dash_readopt.patch;patch=1 \
-	   file://wc.patch;patch=1 \
-	   "
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-${PV}.tar.bz2"
 
 S = "${WORKDIR}/klibc-${PV}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -29,16 +23,13 @@ KLIBC_ARCH_pentium = 'i386'
 # could be fixed, but for the moment:
 ARM_INSTRUCTION_SET = "arm"
 
-SRC_URI_append_linux-gnueabi = "file://klibc-config-eabi.patch;patch=1 \
-				"
-SRC_URI_append_linux-uclibceabi = "file://klibc-config-eabi.patch;patch=1 \
-				      "
+SRC_URI_append_linux-gnueabi = "file://klibc-config-eabi.patch;patch=1"
+SRC_URI_append_linux-uclibceabi = "file://klibc-config-eabi.patch;patch=1"
 
 EXTRA_OEMAKE = "'KLIBCARCH=${KLIBC_ARCH}' \
                 'CROSS_COMPILE=${TARGET_PREFIX}' \
                 "
 
 do_configure () {
-	ln -sf ${STAGING_KERNEL_DIR} linux
+        ln -sf ${STAGING_KERNEL_DIR} linux
 }
-

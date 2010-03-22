@@ -17,7 +17,7 @@ TOOLCHAIN_TARGET_TASK ?= "task-sdk-bare"
 TOOLCHAIN_TARGET_EXCLUDE ?= ""
 FEED_ARCH ?= "${TARGET_ARCH}"
 SDK_SUFFIX = "toolchain"
-TOOLCHAIN_OUTPUTNAME ?= "${DISTRO}-${DISTRO_VERSION}-${FEED_ARCH}-${TARGET_OS}-${SDK_SUFFIX}"
+TOOLCHAIN_OUTPUTNAME ?= "${DISTRO}-${DISTRO_VERSION}-${SDK_SYS}-${FEED_ARCH}-${TARGET_OS}-${SDK_SUFFIX}"
 
 RDEPENDS = "${TOOLCHAIN_TARGET_TASK} ${TOOLCHAIN_HOST_TASK}"
 
@@ -67,7 +67,7 @@ do_populate_sdk() {
 	rm -Rf ${SDK_OUTPUT}/usr/lib
 
 	# Clean up empty directories from excluded packages
-	find ${SDK_OUTPUT} -depth -type d -empty -print0 | xargs -0 /bin/rmdir
+	find ${SDK_OUTPUT} -depth -type d -empty -print0 | xargs -r0 /bin/rmdir
 
 	install -d ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}
 	install -m 0644 ${IPKGCONF_TARGET} ${IPKGCONF_SDK} ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}/
@@ -119,10 +119,10 @@ do_populate_sdk() {
 
 	# Fix or remove broken .la files
 	for i in `find ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS} -name \*.la`; do
-		sed -i 	-e "/^dependency_libs=/s,\([[:space:]']\)${base_libdir},\1${SDKPATH}/${TARGET_SYS}${base_libdir},g" \
-			-e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${SDKPATH}/${TARGET_SYS}${libdir},g" \
-			-e "/^dependency_libs=/s,\-\([LR]\)${base_libdir},-\1${SDKPATH}/${TARGET_SYS}${base_libdir},g" \
-			-e "/^dependency_libs=/s,\-\([LR]\)${libdir},-\1${SDKPATH}/${TARGET_SYS}${libdir},g" \
+		sed -i 	-e "/^dependency_libs=/s,\([[:space:]']\)${base_libdir},\1\$SDK_PATH/\$TARGET_SYS${base_libdir},g" \
+			-e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1\$SDK_PATH/\$TARGET_SYS${libdir},g" \
+			-e "/^dependency_libs=/s,\-\([LR]\)${base_libdir},-\1\$SDK_PATH/\$TARGET_SYS${base_libdir},g" \
+			-e "/^dependency_libs=/s,\-\([LR]\)${libdir},-\1\$SDK_PATH/\$TARGET_SYS${libdir},g" \
 			-e 's/^installed=yes$/installed=no/' $i
 	done
 	rm -f ${SDK_OUTPUT}/${SDKPATH}/lib/*.la
@@ -137,13 +137,16 @@ do_populate_sdk() {
 	# Create environment setup script
 	script=${SDK_OUTPUT}/${SDKPATH}/environment-setup
 	touch $script
-	echo 'export PATH=${SDKPATH}/bin:$PATH' >> $script
-	echo 'export LIBTOOL_SYSROOT_PATH=${prefix}/${TARGET_SYS}' >> $script
-	echo 'export PKG_CONFIG_SYSROOT_DIR=${SDKPATH}/${TARGET_SYS}' >> $script
-	echo 'export PKG_CONFIG_PATH=${SDKPATH}/${TARGET_SYS}${libdir}/pkgconfig' >> $script
-	echo 'export CONFIG_SITE=${SDKPATH}/site-config' >> $script
-	echo "alias opkg='LD_LIBRARY_PATH=${SDKPATH}/lib ${SDKPATH}/bin/opkg-cl -f ${SDKPATH}/${sysconfdir}/opkg-sdk.conf -o ${SDKPATH}'" >> $script
-	echo "alias opkg-target='LD_LIBRARY_PATH=${SDKPATH}/lib ${SDKPATH}/bin/opkg-cl -f ${SDKPATH}/${TARGET_SYS}${sysconfdir}/opkg.conf -o ${SDKPATH}/${TARGET_SYS}'" >> $script
+	echo 'export SDK_PATH=${SDKPATH}' >> $script
+	echo 'export TARGET_SYS=${TARGET_SYS}' >> $script
+	echo 'export PATH=$SDK_PATH/bin:$PATH' >> $script
+	echo 'export CPATH=$SDK_PATH/$TARGET_SYS/usr/include:$CPATH' >> $script
+	echo 'export LIBTOOL_SYSROOT_PATH=$SDK_PATH/$TARGET_SYS' >> $script
+	echo 'export PKG_CONFIG_SYSROOT_DIR=$SDK_PATH/$TARGET_SYS' >> $script
+	echo 'export PKG_CONFIG_PATH=$SDK_PATH/$TARGET_SYS${libdir}/pkgconfig' >> $script
+	echo 'export CONFIG_SITE=$SDK_PATH/site-config' >> $script
+	echo "alias opkg='LD_LIBRARY_PATH=$SDK_PATH/lib $SDK_PATH/bin/opkg-cl -f $SDK_PATH/${sysconfdir}/opkg-sdk.conf -o $SDK_PATH'" >> $script
+	echo "alias opkg-target='LD_LIBRARY_PATH=$SDK_PATH/lib $SDK_PATH/bin/opkg-cl -f $SDK_PATH/$TARGET_SYS${sysconfdir}/opkg.conf -o $SDK_PATH/$TARGET_SYS'" >> $script
 
 	# Add version information
 	versionfile=${SDK_OUTPUT}/${SDKPATH}/version
