@@ -9,7 +9,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.netfilter.org/projects/libnfnetlink/index.html"
 INC_PR = "r0"
 
-SRC_URI = "http://www.netfilter.org/projects/libnfnetlink/files/libnfnetlink-${PV}.tar.bz2"
+SRC_URI = "http://www.netfilter.org/projects/libnfnetlink/files/libnfnetlink-${PV}.tar.bz2;name=libnfnetlink-${PV}"
 
 inherit autotools_stage pkgconfig
 
