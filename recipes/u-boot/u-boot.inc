@@ -2,7 +2,7 @@ DESCRIPTION = "U-Boot - the Universal Boot Loader"
 HOMEPAGE = "http://www.denx.de/wiki/U-Boot/WebHome"
 SECTION = "bootloaders"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PROVIDES = "virtual/bootloader"
 
 DEPENDS = "mtd-utils"

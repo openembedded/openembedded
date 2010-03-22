@@ -1,27 +1,56 @@
-#!/usr/bin/env python
+"""
+Handle FreeBSD port audit files and map the names to OpenEmbedded
+"""
 
-import bb
-
-def read_available(filename):
+class freebsd_info:
     """
-    Parses the output of bitbake -s
-    minus the first few lines
+    Handles an entry like the one below:
+    vulnerability-test-port>=2000<2010.02.26|http://cvsweb.freebsd.org/ports/security/vulnerability-test-port/|Not vulnerable, just a test port (database: 2010-02-26)
     """
-    f = open(filename)
-    packages = {}
+    def __init__(self, name, versions, link, kind):
+        self.name = name
+        self.versions = versions
+        self.link = link
 
-    for line in f:
-        if line.startswith("NOTE: ") or line.startswith("Parsing .bb"):
-            continue
+    @classmethod
+    def split_versions(self, input):
+        """
+        Split versions by <, >, >=, >=
+        """
+        versions = []
+        last_pos = 0
 
-        # str.split can not be used as we have multiple whitespace
-        first_space = line.find(" ")
-        package = line[0:first_space]
-        rest = line[first_space+1:]
-        pv = rest.strip().split(" ")[0]
+        # Try to determine <, >, >=, <=
+        # we will have to carry stuff on to find the
+        # version..
+        i = 0
+        while i < len(input) - 1:
+            c1 = input[i]
+            c2 = input[i+1]
+            if c1 != '<' and c1 != '>' and c1 != '=':
+                i = i + 1
+                continue
 
-        packages[package] = pv
-    return packages
+            # is a '=' coming behind it?
+            next = i + 1
+            if c2 == '=':
+                next = next + 1
+
+            # submit
+            if last_pos != 0:
+                versions.append((next_type, input[last_pos:i]))
+
+            # remember stuff
+            next_type = input[i:next]
+            last_pos = next
+            i = next
+
+        assert last_pos != 0
+        versions.append((next_type, input[last_pos:len(input)]))
+        return versions
+
+    def __repr__(self):
+        return "%s: %s" % (self.name, self.versions)
 
 
 def map_names(str):
@@ -111,56 +140,6 @@ def is_not_in_oe(name):
 
     return name in not_in
 
-class freebsd_info:
-    """
-    Handles an entry like the one below:
-    vulnerability-test-port>=2000<2010.02.26|http://cvsweb.freebsd.org/ports/security/vulnerability-test-port/|Not vulnerable, just a test port (database: 2010-02-26)
-    """
-    def __init__(self, name, versions, link, kind):
-        self.name = name
-        self.versions = versions
-        self.link = link
-
-    @classmethod
-    def split_versions(self, input):
-        """
-        Split versions by <, >, >=, >=
-        """
-        versions = []
-        last_pos = 0
-
-        # Try to determine <, >, >=, <=
-        # we will have to carry stuff on to find the
-        # version..
-        i = 0
-        while i < len(input) - 1:
-            c1 = input[i]
-            c2 = input[i+1]
-            if c1 != '<' and c1 != '>' and c1 != '=':
-                i = i + 1
-                continue
-
-            # is a '=' coming behind it?
-            next = i + 1
-            if c2 == '=':
-                next = next + 1
-
-            # submit
-            if last_pos != 0:
-                versions.append((next_type, input[last_pos:i]))
-
-            # remember stuff
-            next_type = input[i:next]
-            last_pos = next
-            i = next
-
-        assert last_pos != 0
-        versions.append((next_type, input[last_pos:len(input)]))
-        return versions
-
-    def __repr__(self):
-        return "%s: %s" % (self.name, self.versions)
-
 def create_infos(line):
     split = line.split("|")
     for i in range(0, len(split[0])):
@@ -178,6 +157,7 @@ def create_infos(line):
     link = split[1]
     kind = split[2]
     return [freebsd_info(name, versions, link, kind)]
+
 
 def read_auditfile(filename):
     """
@@ -199,81 +179,16 @@ def read_auditfile(filename):
     return packages
 
 
-def strip_oe_version(oe_version):
-    """
-    We need to strip the package epoch... and the PR to compare
-    it to the FreeBSD versions. Also FreeBSD seems to use _N as
-    PR so we might need to do more..
-    """
-    split = oe_version.split(':', 1)
-    ver = split[1]
-
-    split = ver.rsplit('-r', 1)
-    ver = split[0]
-    return ver
-
-def strip_bsd_version(bsd_version):
+def prepare_version(bsd_version):
     """
     FreeBSD is adding ,1 for revisions.. remove that
     """
     # FIXME return a tuple with a revision...
+    rev = "r0"
     split = bsd_version.rsplit(',', 1)
     split = split[0]
     split = split.rsplit('_', 1)
-    return split[0]
+    if len(split) == 2:
+        rev = "r%s" % split[1]
+    return (split[0], rev)
 
-def compare_versions(oe, freebsd, not_known):
-    def handle_package(oe_name, bsd_name):
-        if not oe_name in oe:
-            if oe_name == bsd_name:
-                print >> not_known, "%s is not in OE" % oe_name
-            return
-
-        oe_version = strip_oe_version(oe[oe_name])
-        for ver in freebsd[bsd_name]:
-            affected = True
-            str = []
-            for (cmp, vers) in ver.versions:
-                bsd_ver = strip_bsd_version(vers)
-                cmp_res = bb.utils.vercmp(('0', oe_version, 'r0'), ('0', bsd_ver, 'r0'))
-                if cmp == '<':
-                    if cmp_res >= 0:
-                        affected = False
-                    pass
-                elif cmp == '<=':
-                    if cmp_res > 0:
-                        affected = False
-                    pass
-                elif cmp == '>':
-                    if cmp_res <= 0:
-                        affected = False
-                    pass
-                elif cmp == '>=':
-                    if cmp_res < 0:
-                        affected = False
-                    pass
-                elif cmp == '=':
-                    if cmp_res > 0:
-                        affected = False
-                else:
-                    print cmp
-                    assert True
-
-                str.append("%s %s %s %s" % (oe_name, oe_version, cmp, bsd_ver))
-            if affected:
-                print " && ".join(str), ver.link
-
-    for package in freebsd.keys():
-        # handle the various versions of OE packages
-        handle_package(package, package)
-        handle_package("%s-native" % package, package)
-        handle_package("%s-full-native" % package, package)
-        handle_package("%s-sdk" % package, package)
-
-
-# read the input data
-oe_packages = read_available("available")
-freebsd_vuln = read_auditfile("auditfile")
-buggy = open("not_in_oe.bugs", "w+")
-
-compare_versions(oe=oe_packages, freebsd=freebsd_vuln, not_known=buggy)

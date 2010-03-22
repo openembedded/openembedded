@@ -1,5 +1,4 @@
 DESCRIPTION = "a portable and efficient C programming interface (API) to determine the call-chain of a program"
-DEPENDS = ""
 HOMEPAGE = "http://www.nongnu.org/libunwind"
 LICENSE = "MIT"
 INC_PR = "r0"

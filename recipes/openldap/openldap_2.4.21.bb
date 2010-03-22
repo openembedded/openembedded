@@ -13,9 +13,11 @@ SECTION = "libs"
 
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
 
-SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
+SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz;name=openldap-${PV}"
 SRC_URI += "file://openldap-m4-pthread.patch;patch=1"
 SRC_URI += "file://initscript"
+SRC_URI[openldap-2.4.21.md5sum] = "e7128c57b2bacd940e8906057c94ff26"
+SRC_URI[openldap-2.4.21.sha256sum] = "22eca357137c135b5561e2fa0e3336b280702acf2e5c4f40bc7aed1d1e8e9324"
 # The build tries to run a host executable, this fails.  The patch
 # causes the executable and its data to be installed instead of
 # the output - ucgendat must be run after the ipkg install!

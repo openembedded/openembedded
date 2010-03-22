@@ -19,11 +19,12 @@ SRC_DISTRIBUTECOMMAND-copy () {
 # moves the files to the SRC_DISTRIBUTEDIR and symlinks them back
 SRC_DISTRIBUTECOMMAND-move+symlink () {
     if ! [ -L ${SRC} ]; then
+        src=`basename "${SRC}"`
         mv ${SRC} .
-        ln -sf $PWD/`basename "${SRC}"` "${SRC}"
+        ln -sf $src "${SRC}"
         if [ -e ${SRC}.md5 ]; then
             mv ${SRC}.md5 .
-            ln -sf $PWD/`basename "${SRC}.md5"` "${SRC}.md5"
+            ln -sf $src "${SRC}.md5"
         fi
     fi
 }

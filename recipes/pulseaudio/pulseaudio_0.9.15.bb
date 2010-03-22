@@ -1,7 +1,7 @@
 require pulseaudio.inc
 
 DEPENDS += "gdbm speex"
-PR = "${INC_PR}.5"
+PR = "${INC_PR}.6"
 
 inherit gettext
 
@@ -16,6 +16,7 @@ SRC_URI += "\
   file://tls_m4.patch;patch=1 \
   file://sbc-thumb.patch;patch=1 \
   file://CVE-2009-1299.patch;patch=1 \
+  file://CVE-2009-1894.patch;patch=1 \
 "
 
 do_compile_prepend() {
