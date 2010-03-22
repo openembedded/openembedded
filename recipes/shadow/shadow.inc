@@ -11,7 +11,7 @@ LICENSE = "BSD"
 SECTION = "base"
 DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \
@@ -79,8 +79,8 @@ do_install_append() {
   sed -i 's/MAIL_DIR/#MAIL_DIR/g' ${D}${sysconfdir}/login.defs
   sed -i 's/#MAIL_FILE/MAIL_FILE/g' ${D}${sysconfdir}/login.defs
 
+  mv ${D}${bindir}/passwd ${D}${bindir}/passwd.${PN}
   mv ${D}${sbindir}/chpasswd ${D}${sbindir}/chpasswd.${PN}
-  mv ${D}${bindir}/passwd ${D}${bindir}/chpasswd.${PN}
 
   # Ensure we add a suitable securetty file to the package that has most common embedded TTYs defined.
   install -m 0400 ${WORKDIR}/securetty ${D}${sysconfdir}/securetty 
