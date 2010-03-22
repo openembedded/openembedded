@@ -60,7 +60,7 @@ SRCREV_pn-ezx-gen-blob ?= "2426"
 SRCREV_pn-ezxd ?= "2074"
 SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-flashrom ?= "3682"
-SRCREV_pn-frameworkd-config-shr ?= "8e89c8dbae569a08cac246a3805fca20988c0ad1"
+SRCREV_pn-frameworkd-config-shr ?= "cdf5b5f3d8f37d6d91e1eb8d9cf07d034291df87"
 SRCREV_pn-frameworkd-config-shr_SHR_REV ?= ${SRCREV_pn-frameworkd-config-shr}
 SRCREV_pn-fsod ?= "2a33e5ffe96c611e6a6b8b6c33d2a83ba656f55b"
 SRCREV_pn-fstests ?= "204"
@@ -220,7 +220,7 @@ SRCREV_pn-xserver-kdrive-glamo ?= "9b28d998424c77fbc057dd3a022ccbb122793a52"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "47344"
+EFL_SRCREV ?= "47372"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
