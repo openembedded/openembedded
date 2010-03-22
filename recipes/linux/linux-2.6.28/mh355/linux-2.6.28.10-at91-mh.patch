@@ -1794,14 +1794,14 @@ diff -Nur linux-2.6.28.10-at91/arch/arm/mach-at91/board-mh355.c linux-2.6.28.10-
 +	{
 +		.name			= "TX09D50VM1CCA @ 60",
 +		.refresh		= 60,
-+		.xres			= 240,		
++		.xres			= 240,
 +		.yres			= 320,
 +		.pixclock		= KHZ2PICOS(4965),
-+		.left_margin	= 1,		
++		.left_margin	= 1,
 +		.right_margin	= 33,
-+		.upper_margin	= 1,		
++		.upper_margin	= 1,
 +		.lower_margin	= 0,
-+		.hsync_len		= 5,		
++		.hsync_len		= 5,
 +		.vsync_len		= 1,
 +		.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
 +		.vmode			= FB_VMODE_NONINTERLACED,
@@ -1836,13 +1836,13 @@ diff -Nur linux-2.6.28.10-at91/arch/arm/mach-at91/board-mh355.c linux-2.6.28.10-
 +	{
 +		.name			= "DataImage 800x480 @ 60",
 +		.refresh		= 60,
-+		.xres			= 800,		
++		.xres			= 800,
 +		.yres			= 480,
-+		.pixclock		= KHZ2PICOS(15000),			// 4965
++		.pixclock		= KHZ2PICOS(15000),
 +
-+		.left_margin	= 256,			// 256
++		.left_margin	= 256,
 +		.right_margin	= 0,
-+		.upper_margin	= 45,			// 45
++		.upper_margin	= 45,
 +		.lower_margin	= 0,
 +
 +		.hsync_len		= 5,
