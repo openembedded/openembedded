@@ -1,9 +1,11 @@
 DESCRIPTION = "Vim is an almost fully-compatible version of the Unix editor Vi."
 SECTION = "console/utils"
 DEPENDS = "ncurses"
+# vimdiff doesn't like busybox diff
+RSUGGESTS_${PN} = "diffutils"
 LICENSE = "vim"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"
