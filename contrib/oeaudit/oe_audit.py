@@ -82,10 +82,25 @@ def compare_versions(oe, freebsd, not_known):
         handle_package("%s-full-native" % package, package)
         handle_package("%s-sdk" % package, package)
 
+def handle_options(args):
+    import optparse
+    parser = optparse.OptionParser(version = "OE Audit version 0.1",
+                                   usage = "%prog [options]")
+    parser.add_option("-a", "--auditfile", help = "FreeBSD auditfile to use",
+                      action = "store", dest = "freebsd_auditfile", default = None)
+    parser.add_option("-p", "--available", help = "Output of bitbake -s",
+                      action = "store", dest = "oe_available", default = None)
+    parser.add_option("-b", "--buggy", help = "Write out unmaped packets",
+                      action = "store", dest = "buggy", default = "not_in_oe.bugs")
+
+    options, args = parser.parse_args(args)
+    return options
 
 # read the input data
-oe_packages = oe.read_available("available")
-freebsd_vuln = freebsd.read_auditfile("auditfile")
-buggy = open("not_in_oe.bugs", "w+")
+import sys
+opts = handle_options(sys.argv)
+oe_packages = oe.read_available(opts.oe_available)
+freebsd_vuln = freebsd.read_auditfile(opts.freebsd_auditfile)
+buggy = open(opts.buggy, "w+")
 
 compare_versions(oe=oe_packages, freebsd=freebsd_vuln, not_known=buggy)
