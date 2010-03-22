@@ -6,7 +6,7 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook|overo"
 
 # This tag is v2.6.32_OMAPPSP_03.00.00.05
-SRCREV = "227037c2b6c28a632e0bffd2681445a61c7f84bc"
+SRCREV = "da0c86a8f3bd57fad0ccd05eb1b5e3326d7f36aa"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
@@ -49,6 +49,23 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
+"
+
+SRC_URI_append_omap3-touchbook = " \
+                                  file://0001-ARM-OMAP-add-spi-platform-devices.patch;patch=1 \
+                                  file://0002-MMA7455L-accelerometer-driver.patch;patch=1 \
+                                  file://0003-bq27x00_battery-remove-error-message-output.patch;patch=1 \
+                                  file://0004-bq27x00_battery-add-charged-gpio.patch;patch=1 \
+                                  file://0005-ARM-OMAP-Hack-beagle-asoc-driver-to-support-touchboo.patch;patch=1 \
+                                  file://0006-ARM-OMAP-omap3-touchbook-update-boardfile.patch;patch=1 \
+                                  file://0007-adf7846-add-more-debugging.patch;patch=1 \
+                                  file://0008-ads7846-read-max-mix-x-y-from-pdata.patch;patch=1 \
+                                  file://0009-ads7846-add-settling-delay-to-pdata.patch;patch=1 \
+                                  file://0010-Touch-Book-turn-on-off-the-class-D-amplifier-dependi.patch;patch=1 \
+                                  file://0011-DSS2-Fix-scaling-checks-when-rotation-is-90-or-270-d.patch;patch=1 \
+                                  file://0012-add-touchbook-hid-driver.patch;patch=1 \
+                                  file://0013-Make-backlight-controls-accessible-to-users.patch;patch=1 \
+                                  file://0014-ads7846-don-t-error-out-when-there-s-no-pendown-gpio.patch;patch=1 \
 "
 
 addtask quiltfixup before do_patch after do_unpack
