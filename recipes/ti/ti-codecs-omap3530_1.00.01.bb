@@ -21,9 +21,9 @@ RREPLACES_${PN} = "ti-cs1-omap3530"
 
 S = "${WORKDIR}/dvsdk_3_00_02_44/cs1omap3530_1_00_01"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/3_00_02_44/exports/cs1omap3530_setuplinux_1_00_01.bin;name=omap3codecsbin"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_00/3_00_02_44/exports/cs1omap3530_setuplinux_1_00_01-44.bin;name=omap3codecsbin"
 
-BINFILE = "cs1omap3530_setuplinux_1_00_01.bin"
+BINFILE = "cs1omap3530_setuplinux_1_00_01-44.bin"
 TI_BIN_UNPK_CMDS = "Y:Y: qY:workdir"
 
 DEPENDS = "ti-cgt6x ti-xdctools ti-dspbios ti-codec-engine ti-linuxutils"
