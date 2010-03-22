@@ -1,8 +1,7 @@
 DESCRIPTION = "login/password and account utilities"
 LICENSE = "GPL"
 
-DEPEND = "libpam"
-RDEPEND = "${DEPEND}"
+DEPENDS = "libpam"
 
 PR = "r6"
 
