@@ -1,0 +1,13 @@
+Index: iptstate-2.2.2/Makefile
+===================================================================
+--- iptstate-2.2.2.orig/Makefile
++++ iptstate-2.2.2/Makefile
+@@ -45,7 +45,7 @@ iptstate: iptstate.cc Makefile
+ 	echo "+------------------------------------------------------------+" ;\
+ 	echo "";
+ 
+-	$(CXX) $(CXXFLAGS) $(CXXFILES) -o iptstate $(LIBS) $(CPPFLAGS)
++	$(CXX) $(CXXFLAGS) $(CXXFILES) $(LDFLAGS) -o iptstate $(LIBS) $(CPPFLAGS)
+ 	@touch iptstate
+ 
+ 	@\
