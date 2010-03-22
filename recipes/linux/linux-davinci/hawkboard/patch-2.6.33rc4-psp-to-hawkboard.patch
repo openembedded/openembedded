@@ -2052,7 +2052,7 @@ index 0000000..2963836
 +	{
 +		.name		= "kernel",
 +		.offset		= 0x200000,
-+		.size		= SZ_2M,
++		.size		= SZ_4M,
 +		.mask_flags	= 0,
 +	},
 +	{
