@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 
-import freebsd, oe, bb
+import freebsd, oe
+
+try:
+    import bb
+except Exception, e:
+    import sys
+    sys.stderr.write("Set PYTHONPATH to bitbake/lib and restart.\n")
+    sys.stderr.write("The backtrace can be seen below.\n")
+    raise e
+    
 
 def strip_oe_version(oe_version):
     """
