@@ -1,6 +1,6 @@
 require procps.inc
 
-PR = "r8"
+PR = "r9"
 
 inherit update-rc.d
 
@@ -23,6 +23,9 @@ CONFFILES_${PN} = "${sysconfdir}/sysctl.conf"
 
 EXTRA_OEMAKE = "CFLAGS=-I${STAGING_INCDIR} \
                 CPPFLAGS=-I${STAGING_INCDIR} \
+		usr/bin=${D}${bindir}/ \
+		bin=${D}${base_bindir}/ \
+		usr/proc/bin=${D}${bindir}/ \
                 LDFLAGS="${LDFLAGS}" \
                 CURSES=-lncurses \
                 install='install -D' \
