@@ -1,6 +1,6 @@
 require gdb-common.inc
 
-DEPENDS = "ncurses-native"
+DEPENDS = "ncurses-native zlib-native flex-native"
 
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' LDFLAGS='${BUILD_LDFLAGS}'"
 
