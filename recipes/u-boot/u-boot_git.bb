@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r42"
+PR ="r43"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -207,6 +207,9 @@ SRC_URI_append_c7x0 = "file://pdaXrom-u-boot.patch;patch=1 \
 SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=testing"
 SRCREV_sheevaplug = "119b9942da2e450d4e525fc004208dd7f7d062e0"
 
+SRC_URI_xilinx-ml507 = "git://git.xilinx.com/u-boot-xlnx.git;protocol=git"
+SRCREV_xilinx-ml507 = "26e999650cf77c16f33c580abaadab2532f5e8b2"
+
 S = "${WORKDIR}/git"
 
 
@@ -236,4 +239,20 @@ do_deploy_prepend_mini2440() {
 
 do_deploy_prepend_micro2440() {
 	cp ${S}/u-boot-nand16k.bin ${S}/u-boot.bin
+}
+
+do_configure_prepend_xilinx-ml507() {
+if [ -e "${XILINX_BSP_PATH}/ppc440_0/include/xparameters.h" ]; then
+    cp ${XILINX_BSP_PATH}/ppc440_0/include/xparameters.h \
+    ${S}/board/xilinx/ml507
+    echo "#define XPAR_PLB_CLOCK_FREQ_HZ XPAR_CPU_PPC440_MPLB_FREQ_HZ
+#define XPAR_CORE_CLOCK_FREQ_HZ XPAR_CPU_PPC440_CORE_CLOCK_FREQ_HZ
+#define XPAR_PCI_0_CLOCK_FREQ_HZ    0" >> ${S}/board/xilinx/ml507/xparameters.h
+fi
+}
+
+do_deploy_prepend_xilinx-ml507() {
+if [ -d "${XILINX_BSP_PATH}" ]; then
+    install ${S}/u-boot ${XILINX_BSP_PATH}
+fi
 }
