@@ -2,6 +2,8 @@ SECTION = "base"
 DESCRIPTION = "A daemon for delivering ACPI events."
 LICENSE="GPL"
 
+INC_PR = "r4"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/acpid/acpid-${PV}.tar.gz \
            file://init"
 

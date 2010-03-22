@@ -1,3 +1,2 @@
 require acpid.inc
-
-PR = "r4"
+PR = "${INC_PR}.0"
