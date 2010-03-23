@@ -71,6 +71,12 @@ def compare_versions(oe, freebsd_dict, not_known):
         handle_package("%s-native" % package, package)
         handle_package("%s-full-native" % package, package)
         handle_package("%s-sdk" % package, package)
+        handle_package("%s-essential" % package, package)
+        handle_package("%s-cross" % package, package)
+        handle_package("%s-initial" % package, package)
+        handle_package("%s-trim" % package, package)
+        handle_package("%s-canadian" % package, package)
+        handle_package("%s-cross-sdk" % package, package)
 
 def handle_options(args):
     import optparse
@@ -82,6 +88,8 @@ def handle_options(args):
                       action = "store", dest = "oe_available", default = None)
     parser.add_option("-b", "--buggy", help = "Write out unmaped packets",
                       action = "store", dest = "buggy", default = "not_in_oe.bugs")
+    parser.add_option("-f", "--fetch", help = "Fetch a new auditfile",
+                     action = "store_true", dest = "fetch", default = False)
 
     options, args = parser.parse_args(args)
     return options
@@ -89,6 +97,16 @@ def handle_options(args):
 # read the input data
 import sys
 opts = handle_options(sys.argv)
+
+if opts.fetch:
+    import os
+    print "Fetching new auditfile with wget and unpacking to the local directory"
+    os.system("(rm auditfile.tbz || true) && wget -c http://ports.freebsd.org/auditfile.tbz; tar xjf auditfile.tbz auditfile && rm auditfile.tbz")
+
+if not opts.oe_available or not opts.freebsd_auditfile:
+    print "You need to specific -a and -p."
+    sys.exit(0)
+
 oe_packages = oe.read_available(opts.oe_available)
 freebsd_vuln = freebsd.read_auditfile(opts.freebsd_auditfile)
 buggy = open(opts.buggy, "w+")

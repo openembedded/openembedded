@@ -3,6 +3,8 @@ for quick and easy object-oriented programming."
 SECTION = "devel/ruby"
 PRIORITY = "optional"
 LICENSE = "GPL"
+DEPENDS = "ruby-native zlib openssl"
+DEPENDS_virtclass-native = ""
 
 INC_PR = "r1"
 

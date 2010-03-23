@@ -6,10 +6,11 @@ LICENSE = "LGPL"
 DEPENDS = "bluez4 libatomics-ops liboil avahi libsamplerate0 libsndfile1 libtool hal virtual/libx11"
 # optional
 DEPENDS += "alsa-lib glib-2.0 dbus consolekit hal openssl"
-INC_PR = "r8"
+INC_PR = "r9"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz \
            file://gcc4-compile-fix.patch;patch=1 \
+           file://configure-ac.patch;patch=1 \
            file://volatiles.04_pulse"
 
 inherit autotools pkgconfig

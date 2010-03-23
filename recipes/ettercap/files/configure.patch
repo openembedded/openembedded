@@ -1,0 +1,27 @@
+Index: ettercap-NG-0.7.3/configure.in
+===================================================================
+--- ettercap-NG-0.7.3.orig/configure.in	2010-03-23 15:41:37.021090022 +0800
++++ ettercap-NG-0.7.3/configure.in	2010-03-23 15:43:52.594188005 +0800
+@@ -198,6 +198,9 @@
+ dnl   Libtool related...
+ dnl ========================
+ 
++LT_INIT
++LTDL_INIT
++LT_CONFIG_LTDL_DIR([libltdl])
+ AC_DISABLE_STATIC
+ AC_LIBTOOL_WIN32_DLL
+ AC_LIBTOOL_DLOPEN
+Index: ettercap-NG-0.7.3/src/ec_plugins.c
+===================================================================
+--- ettercap-NG-0.7.3.orig/src/ec_plugins.c	2010-03-23 15:47:32.371100910 +0800
++++ ettercap-NG-0.7.3/src/ec_plugins.c	2010-03-23 15:48:20.644990548 +0800
+@@ -131,7 +131,7 @@
+ int plugin_filter(const struct dirent *d)
+ #endif
+ {
+-   if ( match_pattern(d->d_name, PLUGIN_PATTERN LTDL_SHLIB_EXT) )
++   if ( match_pattern(d->d_name, PLUGIN_PATTERN LT_MODULE_EXT) )
+       return 1;
+ 
+    return 0;

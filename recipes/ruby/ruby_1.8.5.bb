@@ -1,5 +1,4 @@
 require ruby.inc
-DEPENDS = "ruby-native zlib openssl"
 
 PR = "${INC_PR}.0"
 

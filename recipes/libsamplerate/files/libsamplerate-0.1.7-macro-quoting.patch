@@ -1,0 +1,21 @@
+From gentoo
+
+--- acinclude.m4.old	2009-02-16 20:40:05.000000000 +0000
++++ acinclude.m4	2009-02-16 20:43:42.000000000 +0000
+@@ -135,7 +135,6 @@
+ 	fi
+ 
+ )
+-]
+ 
+ if test $ac_cv_c_byte_order = big ; then
+ 	ac_cv_c_big_endian=1
+@@ -154,7 +153,7 @@
+ 	AC_MSG_WARN([[*****************************************************************]])
+ 	fi
+ 
+-)# AC_C_FIND_ENDIAN
++])# AC_C_FIND_ENDIAN
+ 
+ 
+ 
