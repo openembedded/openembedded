@@ -24,7 +24,7 @@ SRCREV_pn-mterm2 ?= "${FSO_CORNUCOPIA_SRCREV}"
 
 # FSO Projects -- Misc
 SRCREV_pn-dbus-hlid ?= "5df7f49fe8881804aaab544a569fd164c3e93afb"
-SRCREV_pn-frameworkd ?= "0c9251d9d3a159df261ec13b87475a565073d711"
+SRCREV_pn-frameworkd ?= "f751f2724eea23d0ca050bdf2672f9011ae09517"
 SRCREV_pn-frameworkd-config-shr_FSO_REV ?= ${SRCREV_pn-frameworkd}
 SRCREV_pn-fso-gpsd ?= "39e810899110a9bb302cf2064e1c0f73541fb4e6"
 SRCREV_pn-fso-gsm0710muxd ?= "1d69fb5b666ac2a9e54e46978c7afa8fe5dfc3c9"
