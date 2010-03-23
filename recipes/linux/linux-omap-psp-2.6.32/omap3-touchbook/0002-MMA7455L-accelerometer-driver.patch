@@ -1,14 +1,14 @@
-From cf0a1f6cecfb04240c284012a29c479adc39bbf6 Mon Sep 17 00:00:00 2001
+From dce7f7b177775843b843dcc147ac04e9a99bb60a Mon Sep 17 00:00:00 2001
 From: Tim Yamin <plasm@roo.me.uk>
-Date: Fri, 12 Mar 2010 11:39:01 +0100
+Date: Tue, 23 Mar 2010 09:52:10 +0100
 Subject: [PATCH 02/14] MMA7455L accelerometer driver
 
 ---
  drivers/input/misc/Kconfig    |    9 +
  drivers/input/misc/Makefile   |    1 +
- drivers/input/misc/mma7455l.c |  614 +++++++++++++++++++++++++++++++++++++++++
+ drivers/input/misc/mma7455l.c |  615 +++++++++++++++++++++++++++++++++++++++++
  include/linux/mma7455l.h      |   11 +
- 4 files changed, 635 insertions(+), 0 deletions(-)
+ 4 files changed, 636 insertions(+), 0 deletions(-)
  create mode 100644 drivers/input/misc/mma7455l.c
  create mode 100644 include/linux/mma7455l.h
 
@@ -42,10 +42,10 @@ index a8b8485..75b8baa 100644
  
 diff --git a/drivers/input/misc/mma7455l.c b/drivers/input/misc/mma7455l.c
 new file mode 100644
-index 0000000..3ca29ff
+index 0000000..b907cc6
 --- /dev/null
 +++ b/drivers/input/misc/mma7455l.c
-@@ -0,0 +1,614 @@
+@@ -0,0 +1,615 @@
 +/* Linux kernel driver for the Freescale MMA7455L 3-axis accelerometer
 + *
 + * Copyright (C) 2009 by Always Innovating, Inc.
@@ -285,11 +285,12 @@ index 0000000..3ca29ff
 +static irqreturn_t mma7455l_interrupt(int irq, void *_mma)
 +{
 +	struct mma7455l_info *mma = _mma;
-+	mma7455l_schedule_work(mma);
 +
 +	/* Disable any further interrupts until we have processed
 +	 * the current one */
 +	disable_irq_nosync(mma->spi_dev->irq);
++
++	mma7455l_schedule_work(mma);
 +	return IRQ_HANDLED;
 +}
 +

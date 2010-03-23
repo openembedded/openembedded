@@ -1,4 +1,4 @@
-From e17eb2539ff4bcd3704fcdf3f9a950706adee769 Mon Sep 17 00:00:00 2001
+From 45e62c073f088072ea131e5eda1446f63fc97acf Mon Sep 17 00:00:00 2001
 From: Tim Yamin <plasm@roo.me.uk>
 Date: Sat, 11 Apr 2009 13:05:21 -0700
 Subject: [PATCH 01/14] ARM: OMAP: add spi platform devices
