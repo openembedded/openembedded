@@ -1,13 +1,12 @@
---- git/Makefile-orig	2008-07-29 22:31:03.000000000 -0700
-+++ git/Makefile	2008-07-29 22:34:36.000000000 -0700
-@@ -152,9 +152,9 @@ omap3evm_config :	unconfig
+--- git/Makefile-orig	2010-03-08 06:56:36.000000000 -0800
++++ git/Makefile	2010-03-08 06:56:52.000000000 -0800
+@@ -153,8 +153,8 @@ omap3evm_config :	unconfig
  overo_config :	unconfig
  	@./mkconfig $(@:_config=) arm omap3 overo
  
 -omap3530beagle_config :    unconfig
-+beagleboard_config :    unconfig
- 
 -	@./mkconfig $(@:_config=) arm omap3 omap3530beagle
++beagleboard_config :    unconfig
 +	@./mkconfig omap3530beagle arm omap3 omap3530beagle
  
  #########################################################################

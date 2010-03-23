@@ -6,8 +6,10 @@ DEFAULT_PREFERENCE_omap3-pandora = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/x-load-git/${MACHINE}"
 
 SRCREV = "319b26586fafb86f919f514bcd175838aaab96b3"
+SRCREV_beagleboard = "dee19371019ef67cb1f6491ef91791b12feda3f2"
 
 PV = "1.42+${PR}+gitr${SRCREV}"
+PV_beagleboard = "1.44+${PR}+gitr${SRCREV}"
 PR ="r8"
 PE = "1"
 
