@@ -1,7 +1,8 @@
 DESCRIPTION = "The RPM Package Manager."
 HOMEPAGE = "http://rpm.org/"
 LICENSE = "LGPL GPL"
-PR = "r15"
+DEPENDS = "python-native"
+PR = "r16"
 
 SRC_URI = "http://www.rpm.org/releases/rpm-4.4.x/rpm-4.4.2.3.tar.gz \
            file://external-tools.patch;patch=1 \
@@ -22,6 +23,7 @@ acpaths = "-I ${S}/db/dist/aclocal -I ${S}/db/dist/aclocal_java"
 
 PACKAGES += "python-rpm"
 FILES_python-rpm = "${PYTHON_SITEPACKAGES_DIR}/rpm/_*"
+RDEPENDS_python-rpm += "${PN} python-core"
 
 # Handle the db MUTEX settings here, the POSIX library is
 # the default - "POSIX/pthreads/library".
