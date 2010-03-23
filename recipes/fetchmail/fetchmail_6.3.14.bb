@@ -3,10 +3,10 @@ well-documented remote-mail retrieval and forwarding utility \
 intended to be used over on-demand TCP/IP links \
 (such as SLIP or PPP connections)."
 SECTION = "console/network"
-
 LICENSE = "GPL"
+DEPENDS = "python-native"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://download.berlios.de/fetchmail/${PN}-${PV}.tar.bz2;name=src \
 	   "
@@ -19,4 +19,4 @@ inherit autotools gettext python-dir
 FILES_${PN} = "${bindir}/fetchmail"
 PACKAGES += "${PN}conf"
 FILES_${PN}conf = "${PYTHON_SITEPACKAGES_DIR}/fetchmailconf.py* ${bindir}/fetchmailconf"
-rdepends_${PN}conf = "${PN}"
+RDEPENDS_${PN}conf = "${PN} python-core"
