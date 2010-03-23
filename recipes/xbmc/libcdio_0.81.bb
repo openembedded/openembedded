@@ -1,5 +1,5 @@
 DESCRIPTION = "The GNU Compact Disc Input and Control library (libcdio) contains a library for CD-ROM and CD image access."
-LICENSE = "GPL"
+LICENSE = "GPLv3+"
 
 SRC_URI = "http://ftp.gnu.org/gnu/libcdio/libcdio-${PV}.tar.gz"
 
