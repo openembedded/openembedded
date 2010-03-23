@@ -22,7 +22,7 @@ EXTRA_OECONF = " \
   --enable-gr-audio-oss \
   --enable-mblock \
   --disable-html-docs \
-  --with-pythondir=/usr/lib/${PYTHON_DIR}/site-packages \
+  --with-pythondir=${PYTHON_SITEPACKAGES_DIR} \
   PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/${PYTHON_DIR} \
 "
 
@@ -99,12 +99,12 @@ FILES_libgnuradio-core = "${libdir}/libgnuradio-core.so.* ${sysconfdir}/gnuradio
 FILES_libgnuradio-core-qa = "${libdir}/libgnuradio-core-qa.so.*"
 FILES_libgromnithread = "${libdir}/libgromnithread.so*"
 
-FILES_${PN} += "${libdir}/python*/site-packages/gnuradio/*"
-FILES_${PN}-dbg += "${libdir}/python*/site-packages/gnuradio/.debug \
-                    ${libdir}/python*/site-packages/gnuradio/*/.debug \
+FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}/gnuradio/*"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/gnuradio/.debug \
+                    ${PYTHON_SITEPACKAGES_DIR}/gnuradio/*/.debug \
 		   "
 
-FILES_gnuradio-usrp = "${libdir}/python*/site-packages/usrp/* \
+FILES_gnuradio-usrp = "${PYTHON_SITEPACKAGES_DIR}/usrp/* \
                        ${bindir}/usrp* \
                        ${datadir}/usrp/*/*"
-FILES_gnuradio-usrp-dbg = "${libdir}/python*/site-packages/usrp/.debug"
+FILES_gnuradio-usrp-dbg = "${PYTHON_SITEPACKAGES_DIR}/usrp/.debug"

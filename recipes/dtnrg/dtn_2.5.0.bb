@@ -59,7 +59,7 @@ FILES_python-dtn = "${libdir}/${PYTHON_DIR}"
 RDEPENDS_python-dtn = "python-core dtn-lib"
 
 FILES_${PN}-dbg += "\
-  ${libdir}/${PYTHON_DIR}/site-packages/.debug \
+  ${PYTHON_SITEPACKAGES_DIR}/.debug \
   ${libdir}/.debug \
   ${bindir}/.debug \
 "

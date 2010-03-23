@@ -9,6 +9,6 @@ SRC_URI = "http://guichaz.free.fr/iotop/files/${PN}-${PV}.tar.bz2"
 inherit distutils
 
 do_install_append() {
-    rm -f ${D}${libdir}/${PYTHON_DIR}/site-packages/site.pyo
-    rm -f ${D}${libdir}/${PYTHON_DIR}/site-packages/site.py
+    rm -f ${D}${PYTHON_SITEPACKAGES_DIR}/site.pyo
+    rm -f ${D}${PYTHON_SITEPACKAGES_DIR}/site.py
 }

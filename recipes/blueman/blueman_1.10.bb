@@ -7,7 +7,7 @@ RDEPENDS = "python-dbus python-pygobject python dbus bluez4 python-pygtk python-
 
 PR = "r1"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig python-dir
 
 EXTRA_OECONF += "--with-no-runtime-deps-check"
 
@@ -18,7 +18,7 @@ SRC_URI = "\
 	http://download.tuxfamily.org/blueman/blueman-${PV}.tar.gz\
 	"
 
-FILES_${PN}-dbg += "${libdir}/python2.6/site-packages/.debug"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/.debug"
 FILES_${PN} += "${libdir} ${datadir}"
 
 do_configure_prepend() {

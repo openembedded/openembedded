@@ -10,12 +10,10 @@ SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2"
 
 inherit distutils-common-base cmake
 
-PYTHON_DIR = "${@python_dir(d)}"
-
 do_configure() {
     cd ${S}
     sed -i 's@^cmake [^$]*\$@cmake -DCMAKE_FIND_ROOT_PATH=${STAGING_DIR_TARGET} $@' configure
-    sed -i 's@\${PYTHON_SITEDIR}@${libdir}/${PYTHON_DIR}/site-packages@g' python/gammu/CMakeLists.txt
+    sed -i 's@\${PYTHON_SITEDIR}@${PYTHON_SITEPACKAGES_DIR}@g' python/gammu/CMakeLists.txt
     ./configure --prefix=${prefix} --enable-shared --enable-backup
 }
 
@@ -35,7 +33,7 @@ PACKAGES =+ "${PN}-smsd libgammu libgsmsd python-${PN}"
 FILES_${PN} = "${bindir}/gammu ${bindir}/jadmaker ${sysconfdir}/bash_completion.d/gammu"
 FILES_${PN}-smsd = "${bindir}/gammu-smsd*"
 FILES_${PN}-dev += "${bindir}/gammu-config ${libdir}/*.so"
-FILES_${PN}-dbg += "${bindir}/.debug ${libdir}/.debug ${libdir}/python*/site-packages/gammu/.debug"
+FILES_${PN}-dbg += "${bindir}/.debug ${libdir}/.debug ${PYTHON_SITEPACKAGES_DIR}/gammu/.debug"
 FILES_libgammu = "${libdir}/libGammu.so.*"
 FILES_libgsmsd = "${libdir}/libgsmsd.so.*"
-FILES_python-${PN} = "${libdir}/${PYTHON_DIR}/site-packages/gammu/*.??"
+FILES_python-${PN} = "${PYTHON_SITEPACKAGES_DIR}/gammu/*.??"

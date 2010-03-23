@@ -213,7 +213,7 @@ FILES_gnome-games-glchess = "${bindir}/glchess \
 				${datadir}/pixmaps/gnome-glchess.png \
 				${datadir}/applications/glchess.desktop \
 				${sysconfdir}/gconf/schemas/glchess.schemas \
-				${libdir}/python2.5/site-packages/glchess"
+				${PYTHON_SITEPACKAGES_DIR}/glchess"
 
 PACKAGES =+ "gnome-games-sudoku"
 DESCRIPTION_gnome-games-sudoku = "GNOME sudoku"
@@ -226,4 +226,4 @@ FILES_gnome-games-sudoku = "${bindir}/gnome-sudoku \
 				${datadir}/gnome-sudoku \
 				${datadir}/pixmaps/gnome-sudoku.png \
 				${datadir}/applications/gnome-sudoku.desktop \
-				${libdir}/python2.5/site-packages/gnome_sudoku"
+				${PYTHON_SITEPACKAGES_DIR}/gnome_sudoku"

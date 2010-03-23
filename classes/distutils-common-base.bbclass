@@ -12,10 +12,10 @@ FILES_${PN} = "${bindir}/* ${libdir}/* ${libdir}/${PYTHON_DIR}/*"
 FILES_${PN}-dev += "\
   ${datadir}/pkgconfig \
   ${libdir}/pkgconfig \
-  ${libdir}/${PYTHON_DIR}/site-packages/*.la \
+  ${PYTHON_SITEPACKAGES_DIR}/*.la \
 "
 FILES_${PN}-dbg += "\
-  ${libdir}/${PYTHON_DIR}/site-packages/.debug \
-  ${libdir}/${PYTHON_DIR}/site-packages/*/.debug \
-  ${libdir}/${PYTHON_DIR}/site-packages/*/*/.debug \
+  ${PYTHON_SITEPACKAGES_DIR}/.debug \
+  ${PYTHON_SITEPACKAGES_DIR}/*/.debug \
+  ${PYTHON_SITEPACKAGES_DIR}/*/*/.debug \
 "

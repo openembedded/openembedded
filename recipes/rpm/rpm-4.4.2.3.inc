@@ -12,7 +12,7 @@ SRC_URI = "http://www.rpm.org/releases/rpm-4.4.x/rpm-4.4.2.3.tar.gz \
 	   file://missingok.patch;patch=1;pnum=0 \
 	   file://extcond.patch;patch=1;pnum=0"
 
-inherit autotools
+inherit autotools python-dir
 
 S = "${WORKDIR}/rpm-${PV}"
 
@@ -21,7 +21,7 @@ ARM_INSTRUCTION_SET = "arm"
 acpaths = "-I ${S}/db/dist/aclocal -I ${S}/db/dist/aclocal_java"
 
 PACKAGES += "python-rpm"
-FILES_python-rpm = "${libdir}/python*/site-packages/rpm/_*"
+FILES_python-rpm = "${PYTHON_SITEPACKAGES_DIR}/rpm/_*"
 
 # Handle the db MUTEX settings here, the POSIX library is
 # the default - "POSIX/pthreads/library".

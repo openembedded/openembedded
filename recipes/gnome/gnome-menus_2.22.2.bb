@@ -1,7 +1,7 @@
 DEPENDS = "python gnome-vfs libxml2 gconf popt gtk+"
 LICENSE = "GPL"
 
-inherit gnome pkgconfig
+inherit gnome pkgconfig python-dir
 
 do_stage() {
 autotools_stage_all
@@ -10,6 +10,6 @@ autotools_stage_all
 PACKAGES += "${PN}-python"
 FILES_${PN} += "${datadir}/desktop-directories/"
 FILES_${PN}-python = "${libdir}/python*"
-FILES_${PN}-dbg += "${libdir}/python*/site-packages/*/.debug \
-                    ${libdir}/python*/site-packages/.debug"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/*/.debug \
+                    ${PYTHON_SITEPACKAGES_DIR}/.debug"
 

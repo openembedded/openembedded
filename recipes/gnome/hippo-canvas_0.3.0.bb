@@ -3,7 +3,7 @@ LICENSE = "LGPLv2"
 
 DEPENDS = "librsvg python-pygtk2"
 
-inherit gnome
+inherit gnome python-dir
 
 DEPENDS += "librsvg"
 
@@ -17,7 +17,7 @@ do_stage() {
         autotools_stage_all
 }
 
-FILES_${PN} += "${libdir}/python*/site-packages"
-FILES_${PN}-dbg += "${libdir}/python*/site-packages/.debug"
+FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/.debug"
 
 

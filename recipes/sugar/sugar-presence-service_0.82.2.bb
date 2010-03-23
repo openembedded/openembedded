@@ -18,9 +18,9 @@ FILES_${PN} += "${datadir}/${PN} \
 		${datadir}/xsessions \
 		${datadir}/dbus-1 \
 		${sysconfdir} \
-		${libdir}/python*/site-packages/"
+		${PYTHON_SITEPACKAGES_DIR}/"
 
-FILES_${PN}-dbg += "${libdir}/python*/site-packages/*/.debug"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/*/.debug"
 
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"

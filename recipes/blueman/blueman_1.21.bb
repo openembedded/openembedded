@@ -15,7 +15,7 @@ PR = "r1"
 
 SRC_URI = "http://download.tuxfamily.org/blueman/blueman-${PV}.tar.gz"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig python-dir
 
 EXTRA_OECONF += "--with-no-runtime-deps-check"
 
@@ -24,7 +24,7 @@ do_configure_prepend() {
     sed -i "s/py_exec_prefix=.*$/py_exec_prefix=\"${@"${STAGING_DIR_TARGET}".replace("/","\/")}\/usr\"/" ${S}/acinclude.m4
 }
 
-FILES_${PN}-dbg += "${libdir}/python2.6/site-packages/.debug"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/.debug"
 FILES_${PN} += "${libdir} ${datadir}"
 
 BLUEZ_LIBS = "-L${libdir} -lbluetooth"

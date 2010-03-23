@@ -7,7 +7,7 @@ LICENSE = "GPL"
 PV = "0.9.5.9+gitr${SRCREV}"
 PR = "r3"
 
-inherit distutils update-rc.d
+inherit distutils update-rc.d python-dir
 
 INITSCRIPT_NAME = "frameworkd"
 INITSCRIPT_PARAMS = "defaults 29"
@@ -100,4 +100,4 @@ CONFFILES_${PN}-config = "\
 
 PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
 FILES_${PN} += "${sysconfdir}/dbus-1 ${sysconfdir}/freesmartphone ${sysconfdir}/init.d ${datadir}"
-FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/framework/subsystems/*/.debug"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/framework/subsystems/*/.debug"

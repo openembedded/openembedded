@@ -33,7 +33,7 @@ do_compile() {
 # workaround for bad installation destination and removal of fake .py? files
 do_install_append() {
         mv ${D}/${STAGING_DIR_HOST}/usr/* ${D}/usr/
-        rm ${D}/usr/lib/python2.6/site-packages/xapian.py?
+        rm ${D}/${PYTHON_SITEPACKAGES_DIR}/xapian.py?
 }
 
 do_stage () {
