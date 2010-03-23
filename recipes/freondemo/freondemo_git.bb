@@ -1,18 +1,19 @@
 DESCRIPTION = "FreonDemo: a QT based demo for OMAP L138 EVM board"
 HOMEPAGE = "http://sourceforge.net/projects/freondemo"
-MAINTAINER = "http://sourceforge.net/projects/freondemo"
 LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-DEPENDS = "dbus gstd"
-RDEPENDS_${PN} = "gstd alsa-utils-amixer gst-ipcsink"
-RRECOMMENDS_${PN} = "qt4-embedded-plugin-mousedriver-tslib gstreamer-ti"
+inherit qt4e update-rc.d
 
-SRCREV = "19c4e201aa978d2b40793b9fa76cc4ddbff50016"
+DEPENDS += "dbus gstd"
+RDEPENDS_${PN} = "gstd alsa-utils-amixer gst-ipcsink dbus"
+RRECOMMENDS_${PN} = "qt4-embedded-plugin-mousedriver-tslib gstreamer-ti freondemo-media-files"
+
+SRCREV = "e652aa92a99b2aa7c9919299761499b413a348d5"
 
 PV = "1.0"
-PR = "r7"
+PR = "r18"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://freondemo.git.sourceforge.net/gitroot/freondemo/freondemo;protocol=git \
@@ -20,8 +21,6 @@ SRC_URI = "git://freondemo.git.sourceforge.net/gitroot/freondemo/freondemo;proto
            file://freondemo.init \
            "
 S = "${WORKDIR}/git"
-
-inherit qt4e update-rc.d
 
 do_install() {
     install -d ${D}/${libexecdir}

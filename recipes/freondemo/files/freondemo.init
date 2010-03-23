@@ -4,7 +4,7 @@ set -e
 
 DAEMON=/usr/bin/freondemo
 NAME=freondemo
-PIDFILE=/var/run/freondemo/pid
+PIDFILE=/var/run/freondemo.pid
 DESC="Freon Demo"
 PARAMS=""
 
@@ -22,10 +22,9 @@ start_it_up()
     fi
   fi
 
-  source $SESSIONFILE
   echo -n "Starting $DESC: "
-  start-stop-daemon --start --pidfile $PIDFILE \
-    --exec $DAEMON -- $PARAMS
+  start-stop-daemon --start --exec $DAEMON -- $PARAMS
+  pidof FreonDemo > $PIDFILE
   echo "$NAME."
 }
 

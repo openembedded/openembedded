@@ -1,25 +1,24 @@
-DESCRIPTION = "Gstd: a Gstreamer-based streaming server"
+DESCRIPTION = "gstd: a Gstreamer-based streaming server"
 HOMEPAGE = "http://sourceforge.net/projects/harrier/"
-MAINTAINER = "harrier-devel@lists.sourceforge.net"
 LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-DEPENDS = "dbus dbus-glib gstreamer"
-RDEPENDS = "gst-plugins-base"
+inherit autotools pkgconfig
 
-SRCREV = "7ba92f30db6f72531554a7b0335e757182c60020"
+DEPENDS = "dbus dbus-glib gstreamer"
+RDEPENDS_${PN} = "dbus dbus-glib gstreamer gst-plugins-base"
+RRECOMENDS_${PN} = "gstreamer-ti"
+
+SRCREV = "f3e22c93f4fd7ca47d6309b8450788127550ecb9"
 
 PV = "1.0"
-PR = "r7"
+PR = "r13"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://gstd.git.sourceforge.net/gitroot/gstd/gstd;protocol=git \
            "
-
 S = "${WORKDIR}/git"
-
-inherit autotools pkgconfig
 
 # We don't want to run autoconf or automake, unless you have 
 # automake > 1.11 with vala support
