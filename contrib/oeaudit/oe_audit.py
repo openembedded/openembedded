@@ -71,6 +71,12 @@ def compare_versions(oe, freebsd_dict, not_known):
         handle_package("%s-native" % package, package)
         handle_package("%s-full-native" % package, package)
         handle_package("%s-sdk" % package, package)
+        handle_package("%s-essential" % package, package)
+        handle_package("%s-cross" % package, package)
+        handle_package("%s-initial" % package, package)
+        handle_package("%s-trim" % package, package)
+        handle_package("%s-canadian" % package, package)
+        handle_package("%s-cross-sdk" % package, package)
 
 def handle_options(args):
     import optparse
