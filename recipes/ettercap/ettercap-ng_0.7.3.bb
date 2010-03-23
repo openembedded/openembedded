@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "virtual/libiconv libnet libpcap openssl libpcre ncurses zlib libtool"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ettercap/ettercap-NG-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
@@ -17,5 +17,5 @@ inherit autotools
 
 EXTRA_OECONF += "--disable-gtk --with-libncurses=${STAGING_INCDIR}"
 
-FILES_${PN} += "${datadir} ${libdir}/ettercap/*.so"
+FILES_${PN} += "${datadir}/ettercap ${libdir}/ettercap/*.so"
 FILES_${PN}-dbg += "${libdir}/ettercap/.debug"
