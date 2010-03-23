@@ -14,6 +14,8 @@ SRC_URI = "http://www.hping.org/hping2.0.0-rc3.tar.gz \
 	   file://hping2_configure.patch;patch=1"
 S = "${WORKDIR}/hping2-rc3"
 
+inherit siteinfo
+
 #
 # We've patched configure to accept byte order and ostype as env
 # variables Pass those values in to stop it trying to figure it out

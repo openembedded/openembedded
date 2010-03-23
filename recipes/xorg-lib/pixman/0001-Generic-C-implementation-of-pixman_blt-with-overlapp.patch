@@ -1,7 +1,7 @@
-From bf8fb2bf56478c11935dbb33e725f7a25746d347 Mon Sep 17 00:00:00 2001
+From 8ea1a333de202018a862a7b04b94479d3109274b Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Tue, 16 Mar 2010 16:55:28 +0100
-Subject: [PATCH 1/4] Generic C implementation of pixman_blt with overlapping support
+Subject: [PATCH 1/5] Generic C implementation of pixman_blt with overlapping support
 
 Uses memcpy/memmove functions to copy pixels, can handle the
 case when both source and destination areas are in the same

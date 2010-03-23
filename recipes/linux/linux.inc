@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPLv2"
 
-inherit kernel
+inherit kernel siteinfo
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 

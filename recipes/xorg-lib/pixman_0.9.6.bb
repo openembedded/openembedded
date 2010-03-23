@@ -1,14 +1,3 @@
-SECTION = "libs"
-PRIORITY = "optional"
-DESCRIPTION = "Low-level pixel manipulation library."
-LICENSE = "X11"
-
-SRC_URI = "http://cairographics.org/releases/pixman-${PV}.tar.gz"
+require pixman.inc
+PR = "${INC_PR}.0"
 S = "${WORKDIR}/pixman-${PV}"
-
-inherit autotools pkgconfig
-
-do_stage () {
- 	autotools_stage_all
-}
-

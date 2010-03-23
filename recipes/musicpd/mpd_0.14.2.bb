@@ -2,14 +2,14 @@ DESCRIPTION = "Music Player Daemon (mpd)"
 HOMEPAGE = "http://www.musicpd.org"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
-DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv faad2 pulseaudio \
-           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag lame', d)}"
+DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv faad2 pulseaudio curl lame \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
 	   file://mpd/mpd.conf \
            file://mpd/mpd.init"
 
-PR = "r3"
+PR = "r4"
 
 inherit autotools update-rc.d
 INITSCRIPT_NAME = "mpd"

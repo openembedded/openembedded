@@ -1,5 +1,5 @@
 DESCRIPTION = "U-boot bootloader mkimage tool"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 SECTION = "bootloader"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \

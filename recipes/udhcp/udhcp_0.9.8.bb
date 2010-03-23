@@ -3,7 +3,7 @@ DESCRIPTION = "Small dhcp client and dhcp server.  Designed for embedded use."
 HOMEPAGE = "http://udhcp.busybox.net/"
 LICENSE = "GPL"
 
-SRC_URI = "http://udhcp.busybox.net/source/udhcp-${PV}.tar.gz \
+SRC_URI = "http://www.mirrorservice.org/sites/ftp.locustworld.com/udhcp-${PV}.tar.gz;name=udhcp \
 	   file://install.patch;patch=1 \
 	   file://nostrip.patch;patch=1 \
 	   file://gcc3.patch;patch=1"
@@ -27,3 +27,7 @@ FILES_udhcpd = "${sbindir}/udhcpd \
 FILES_udhcpd-doc = "${mandir}/man1/dumpleases.1 \
 		    ${mandir}/man8/udhcpd.8 \
 		    ${mandir}/man5/udhcpd.conf.5"
+
+SRC_URI[udhcp.md5sum] = "2d7e548820d2ded5e183933cb701defb"
+SRC_URI[udhcp.sha256sum] = "da0ca1e821e3fa7cfbe73ddb1480b921002ee992f5e5fbc611422c103b907443"
+

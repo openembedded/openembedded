@@ -1,15 +1,4 @@
-SECTION = "libs"
-PRIORITY = "optional"
-DESCRIPTION = "Low-level pixel manipulation library."
-LICENSE = "X11"
+require pixman.inc
+PR = "${INC_PR}.1"
 
-PR = "r1"
-
-BBCLASSEXTEND="native"
-
-SRC_URI = "http://cairographics.org/releases/pixman-${PV}.tar.gz \
-	  "
-
-inherit autotools_stage
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
+EXTRA_OECONF = "--disable-gtk"

@@ -15,6 +15,8 @@ SRC_URI = "ftp://ftp.buici.com/pub/arm/arm-kernel-shim/arm-kernel-shim-${PV}.tar
 
 S = ${WORKDIR}/arm-kernel-shim-${PV}
 
+inherit siteinfo
+
 CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
 
 CMDLINE_ROOT_DSMG600 = "root=/dev/mtdblock2 rootfstype=jffs2 rootflags=noatime rw init=/linuxrc"

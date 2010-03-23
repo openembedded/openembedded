@@ -41,6 +41,8 @@ SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/5.0/perl-5.8.8.tar.gz;name=perl588ta
         file://config.sh-64-le \
         file://config.sh-64-be"
 
+inherit siteinfo
+
 # Where to find the native perl
 HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
 

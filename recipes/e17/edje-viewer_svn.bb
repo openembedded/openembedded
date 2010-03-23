@@ -1,8 +1,8 @@
 DESCRIPTION = "Edje_Viewer is just that."
-DEPENDS = "etk"
 LICENSE = "MIT BSD"
+DEPENDS = "elementary"
 PV = "0.0.0+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 inherit e
 

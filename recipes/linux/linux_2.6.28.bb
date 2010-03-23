@@ -13,6 +13,7 @@ DEFAULT_PREFERENCE_gamecube = "1"
 DEFAULT_PREFERENCE_wrap = "1"
 DEFAULT_PREFERENCE_tx27 = "1"
 DEFAULT_PREFERENCE_nokia900 = "1"
+DEFAULT_PREFERENCE_mh355 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;patch=1 \
@@ -26,6 +27,11 @@ SRC_URI_append_ronetix-pm9263 = " \
            file://linux-2.6.28-at91.patch.bz2;patch=1 \
            file://linux-2.6.28-exp.patch.bz2;patch=1 \
            http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch;patch=1 "
+
+SRC_URI_append_mh355 = " \
+           file://linux-2.6.28-at91.patch.bz2;patch=1 \
+           file://linux-2.6.28-exp.patch.bz2;patch=1 \
+           file://linux-2.6.28.10-at91-mh.patch;patch=1 "
 
 SRC_URI_append_stb225 = " \
            file://uImage.patch;patch=1 \

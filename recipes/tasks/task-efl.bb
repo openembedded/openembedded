@@ -9,13 +9,11 @@ RDEPENDS = "\
   edje \
   emotion \
   esmart \
-  epsilon \
   edbus \
   efreet \
   ewl \
-  etk \
   epdf \
 "
-PR = "r0"
+PR = "r1"
 
 ALLOW_EMPTY = "1"

@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r47"
+PR = "r49"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -36,19 +36,17 @@ RDEPENDS_${PN} += "\
 		mpd \
 		mplayer \
 		navit \
-# omview depends on deprecated (now broken) epsilon
-#		omview \
 		orrery \
 		python-elementary \
 		pythm \
 		python-wifi \
-		omoney \
 		openmoko-agpsui \
 		openvpn \
 		pyphonelog \
 #		shr-config \
 		shr-today \
                 shr-theme-neo \
+                shr-theme-o2 \
 		shr-theme-niebiee \
 		shr-theme-sixteen \
 # gry should be in image already
@@ -66,7 +64,6 @@ RDEPENDS_${PN} += "\
 		python-pygame \
 		mokoko \
 #		exhibit \
-		edje-viewer \
 		obexpush \
 		obexftp \
 		obex-data-server \
