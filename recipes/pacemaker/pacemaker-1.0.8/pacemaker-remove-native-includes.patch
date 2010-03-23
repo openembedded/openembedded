@@ -1,0 +1,22 @@
+Index: Pacemaker-1-0-Pacemaker-1.0.8/configure.ac
+===================================================================
+--- Pacemaker-1-0-Pacemaker-1.0.8.orig/configure.ac	2010-03-16 22:46:38.000000000 +0300
++++ Pacemaker-1-0-Pacemaker-1.0.8/configure.ac	2010-03-23 00:06:28.000000000 +0300
+@@ -325,7 +325,6 @@
+ 		;;
+ *linux*)	
+ 		AC_DEFINE_UNQUOTED(ON_LINUX, 1, Compiling for Linux platform)
+-  		CFLAGS="$CFLAGS -I${prefix}/include"
+  		;;
+ darwin*)	
+ 		AC_DEFINE_UNQUOTED(ON_DARWIN, 1, Compiling for Darwin platform)
+@@ -334,9 +333,6 @@
+ 		;;
+ esac
+ 
+-dnl Eventually remove this 
+-CFLAGS="$CFLAGS -I${prefix}/include/heartbeat"
+-
+ AC_SUBST(INIT_EXT)
+ AC_DEFINE_UNQUOTED(HA_LOG_FACILITY, LOG_DAEMON, Default logging facility)
+ 

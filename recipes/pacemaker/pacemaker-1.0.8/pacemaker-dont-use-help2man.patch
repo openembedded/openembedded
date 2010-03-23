@@ -1,0 +1,16 @@
+Index: Pacemaker-1-0-Pacemaker-1.0.8/configure.ac
+===================================================================
+--- Pacemaker-1-0-Pacemaker-1.0.8.orig/configure.ac	2010-03-23 12:03:29.000000000 +0300
++++ Pacemaker-1-0-Pacemaker-1.0.8/configure.ac	2010-03-23 12:06:43.000000000 +0300
+@@ -504,10 +504,7 @@
+    AC_MSG_ERROR(You need (g)make installed in order to build ${PACKAGE})
+ fi
+ 
+-AM_CONDITIONAL(BUILD_HELP, test x"${HELP2MAN}" != x"")
+-if test x"${HELP2MAN}" != x""; then
+-   PKG_FEATURES="$PKG_FEATURES manpages"
+-fi
++AM_CONDITIONAL(BUILD_HELP, test x"" != x"")
+ 
+ AM_CONDITIONAL(BUILD_ASCIIDOC, test x"${ASCIIDOC}" != x"")
+ if test x"${ASCIIDOC}" != x""; then
