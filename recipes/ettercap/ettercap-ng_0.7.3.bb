@@ -5,8 +5,11 @@ SECTION = "console/network"
 DEPENDS = "virtual/libiconv libnet libpcap openssl libpcre ncurses zlib libtool"
 LICENSE = "GPL"
 
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/ettercap/ettercap-NG-${PV}.tar.gz \
-           file://autotools.patch;patch=1"
+           file://autotools.patch;patch=1 \
+           file://configure.patch;patch=1 "
 
 S = "${WORKDIR}/ettercap-NG-${PV}"
 
