@@ -1,0 +1,22 @@
+This patch is taken from 
+http://trac.osgeo.org/geos/ticket/222
+It only applies to ARM EABI systems for now
+If its needed on other architectures then we could
+remove the ifdef part.
+
+-Khem
+
+Index: geos-3.2.0/source/inlines.cpp
+===================================================================
+--- geos-3.2.0.orig/source/inlines.cpp	2010-03-23 00:22:29.612408075 -0700
++++ geos-3.2.0/source/inlines.cpp	2010-03-23 00:25:13.399917727 -0700
+@@ -59,7 +59,9 @@
+ #include <geos/geom/CoordinateArraySequenceFactory.inl>
+ #include <geos/noding/SegmentString.inl>
+ #include <geos/noding/snapround/HotPixel.inl>
++#if ! defined(__ARM_EABI__)
+ #include <geos/noding/snapround/MCIndexSnapRounder.inl>
++#endif // !defined __ARM_EABI__
+ #include <geos/noding/MCIndexNoder.inl>
+ 
+ #endif // defined __CYGWIN__
