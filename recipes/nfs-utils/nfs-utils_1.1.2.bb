@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 PR = "r7"
 
-DEPENDS = "e2fsprogs-libs tcp-wrappers libevent"
+DEPENDS = "util-linux-ng tcp-wrappers libevent"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://nfs-utils-tools-unset-cflags.patch;patch=1 \

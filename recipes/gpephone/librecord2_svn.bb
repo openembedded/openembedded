@@ -2,7 +2,7 @@ LICENSE     = "LiPS"
 DESCRIPTION = "LiPS database API."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
-DEPENDS     = "glib-2.0 e2fsprogs-libs sqlite3"
+DEPENDS     = "glib-2.0 util-linux-ng sqlite3"
 PR          = "r0"
 PV = "0.1+svnr-${SRCREV}"
 

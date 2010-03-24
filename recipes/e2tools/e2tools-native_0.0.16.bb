@@ -2,7 +2,7 @@ SECTION = "base"
 require e2tools_${PV}.bb
 inherit native
 
-DEPENDS = "e2fsprogs-libs-native e2fsprogs-native"
+DEPENDS = "e2fsprogs-native"
 PACKAGES = ""
 
 e2links = "e2ln e2ls e2mkdir e2mv e2rm e2tail"

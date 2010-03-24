@@ -1,6 +1,6 @@
 require mtd-utils.inc
 
-DEPENDS += "e2fsprogs-libs"
+DEPENDS += "util-linux-ng"
 
 PARALLEL_MAKE = ""
 ARM_INSTRUCTION_SET = "arm"

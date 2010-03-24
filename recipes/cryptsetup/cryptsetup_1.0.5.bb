@@ -6,7 +6,7 @@ DESCRIPTION = "cryptsetup with luks support creates and manages encrypted contai
 HOMEPAGE = "http://luks.endorphin.org/"
 SECTION = "console"
 LICENSE = "GPL"
-DEPENDS = "e2fsprogs-libs device-mapper libgcrypt popt"
+DEPENDS = "util-linux-ng device-mapper libgcrypt popt"
 RRECOMMENDS = "kernel-module-aes \
                kernel-module-dm-crypt \
                kernel-module-md5 \

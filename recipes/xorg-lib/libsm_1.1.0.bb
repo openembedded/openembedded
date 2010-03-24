@@ -1,8 +1,8 @@
 require xorg-lib-common.inc
 
 DESCRIPTION = "X11 Session management library"
-DEPENDS += "libice xproto xtrans e2fsprogs-libs"
 PR = "r0"
+DEPENDS += "libice xproto xtrans util-linux-ng"
 PE = "1"
 
 XORG_PN = "libSM"

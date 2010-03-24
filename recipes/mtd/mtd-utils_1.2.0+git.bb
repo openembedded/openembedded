@@ -1,6 +1,6 @@
 require mtd-utils.inc
 
-DEPENDS += "e2fsprogs-libs"
+DEPENDS += "util-linux-ng"
 PR = "r4"
 
 ARM_INSTRUCTION_SET = "arm"
