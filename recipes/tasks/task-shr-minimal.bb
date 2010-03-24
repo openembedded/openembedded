@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r28"
+PR = "r29"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -88,6 +88,7 @@ RDEPENDS_${PN}-cli = "\
 
 RDEPENDS_${PN}-fso = "\
   fsoraw \
+  fso-gpsd \
   opimd-utils-cli \
   python-codecs \
   python-gst \
