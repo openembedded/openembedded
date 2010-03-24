@@ -2,6 +2,7 @@ DESCRIPTION = "Digest::SHA - Perl extension for SHA-1/224/256/384/512"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "expat expat-native"
+BBCLASSEXTEND = "native"
 PR = "r0"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/Digest/Digest-SHA-${PV}.tar.gz"

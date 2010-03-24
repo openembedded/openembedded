@@ -1,0 +1,11 @@
+diff -urN perl-5.8.8.orig/Cross/generate_config_sh perl-5.8.8/Cross/generate_config_sh
+--- perl-5.8.8.orig/Cross/generate_config_sh	2003-09-05 08:31:08.000000000 +0000
++++ perl-5.8.8/Cross/generate_config_sh	2009-04-02 14:59:56.000000000 +0000
+@@ -30,6 +30,7 @@
+ $callbacks->{'cppstdin'} = [\&simple_process_append, ["CC", "arm-linux-gcc -E", "-E"]];
+ $callbacks->{'full_ar'} = [\&backtick, ["AR", "which $ENV{AR}", "/usr/local/arm/2.95.3/bin/arm-linux-ar"]];
+ $callbacks->{'ld'} = [\&simple_process, ["LD", "arm-linux-ld"]];
++$callbacks->{'lddlflags'} = [\&simple_process, ["LDDLFLAGS", ""]];
+ $callbacks->{'ldflags'} = [\&simple_process, ["LDFLAGS", ""]];
+ $callbacks->{'ldflags_uselargefiles'} = [\&simple_process, ["LDFLAGS", ""]];
+ $callbacks->{'myarchname'} = [\&simple_process, ["SYS", "armv4l-linux"]];

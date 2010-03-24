@@ -3,19 +3,22 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r16"
+PR = "r0"
+
+# Not tested enough
+DEFAULT_PREFERENCE = "-1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
-SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/5.0/perl-${PV}.tar.gz \
-           file://perl-5.8.8-gcc-4.2.patch;patch=1 \
+SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
            file://Configure-multilib.patch;patch=1 \
            file://perl-configpm-switch.patch;patch=1 \
            file://native-nopacklist.patch;patch=1 \
-           file://native-no-gdbminc.patch;patch=1 \
            file://native-perlinc.patch;patch=1 \
-           file://makedepend-dash.patch;patch=1 \
-           file://asm-pageh-fix.patch;patch=1"
+	   "
+
+SRC_URI[perl-5.10.1.md5sum] = "b9b2fdb957f50ada62d73f43ee75d044"
+SRC_URI[perl-5.10.1.sha256sum] = "cb7f26ea4b2b28d6644354d87a269d01cac1b635287dae64e88eeafa24b44f35"
 
 S = "${WORKDIR}/perl-${PV}"
 
@@ -69,10 +72,9 @@ do_stage_append() {
         install -d ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
                    ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
         install config.sh ${STAGING_LIBDIR}/perl
-	# Fix Errno.pm for target builds
-	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Errno.pm
 	# target configuration
         install lib/Config.pm       ${STAGING_LIBDIR_NATIVE}/perl/${PV}/
+	install lib/ExtUtils/xsubpp ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
 	install lib/ExtUtils/typemap ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
         # perl shared library headers
         for i in av.h embed.h gv.h keywords.h op.h perlio.h pp.h regexp.h \
@@ -81,11 +83,14 @@ do_stage_append() {
                  hv.h malloc_ctl.h pad.h perlsdio.h proto.h scope.h utf8.h \
                  cop.h fakesdio.h INTERN.h mg.h patchlevel.h perlsfio.h \
                  reentr.h sv.h utfebcdic.h cv.h fakethr.h intrpvar.h \
-                 nostdio.h perlapi.h perlvars.h reentr.inc thrdvar.h util.h \
+                 nostdio.h overload.h parser.h perlapi.h perlvars.h util.h \
                  dosish.h form.h iperlsys.h opcode.h perl.h perly.h regcomp.h \
                  thread.h warnings.h; do
             install $i ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE
         done
+
+	# Fix Errno.pm for target builds
+	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Errno.pm
 }
 do_stage_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
