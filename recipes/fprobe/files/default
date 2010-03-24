@@ -1,0 +1,6 @@
+#fprobe-ulog default configuration file
+
+
+INTERFACE="eth0:100"
+FLOW_COLLECTOR="localhost:2055"	
+OTHER_ARGS=""

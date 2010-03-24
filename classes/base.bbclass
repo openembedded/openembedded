@@ -7,6 +7,7 @@ inherit packagedata
 inherit mirrors
 inherit utils
 inherit utility-tasks
+inherit metadata_scm
 
 die() {
 	oefatal "$*"

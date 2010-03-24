@@ -1,0 +1,43 @@
+Index: ulogd-1.24/extensions/Makefile.in
+===================================================================
+--- ulogd-1.24.orig/extensions/Makefile.in	2010-03-23 18:04:14.000000000 +0300
++++ ulogd-1.24/extensions/Makefile.in	2010-03-23 18:03:58.000000000 +0300
+@@ -18,10 +18,10 @@
+ 	$(CC) $(SH_CFLAGS) -o $@ -c $<
+ 
+ $(SHARED_LIBS): %.so: %_sh.o
+-	$(LD) -shared -o $@ $< -lc
++	$(LD) --hash-style=gnu -shared -o $@ $< -lc
+ 
+ ulogd_SYSLOG.so: printpkt.o ulogd_SYSLOG_sh.o 
+-	$(LD) -shared -o $@ $^ -lc
++	$(LD) --hash-style=gnu -shared -o $@ $^ -lc
+ 
+ %_sh.o: %.c
+ 	$(CC) $(SH_CFLAGS) -o $@ -c $<
+Index: ulogd-1.24/pcap/Makefile.in
+===================================================================
+--- ulogd-1.24.orig/pcap/Makefile.in	2010-03-23 18:04:28.000000000 +0300
++++ ulogd-1.24/pcap/Makefile.in	2010-03-23 18:04:47.000000000 +0300
+@@ -14,7 +14,7 @@
+ distrib:
+ 
+ $(SHARED_LIBS): %.so: %_sh.o
+-	$(LD) -shared -o $@ $< -lc -lpcap
++	$(LD) --hash-style=gnu -shared -o $@ $< -lc -lpcap
+ 
+ %_sh.o: %.c
+ 	$(CC) $(SH_CFLAGS) -o $@ -c $<
+Index: ulogd-1.24/Makefile.in
+===================================================================
+--- ulogd-1.24.orig/Makefile.in	2010-03-23 18:05:59.000000000 +0300
++++ ulogd-1.24/Makefile.in	2010-03-23 18:06:52.000000000 +0300
+@@ -63,7 +63,7 @@
+ 	@for d in $(SUBDIRS); do if ! make -C $$d; then exit 1; fi; done
+ 
+ ulogd: ulogd.c $(LIBIPULOG) include/ulogd/ulogd.h conffile/conffile.o $(LIBIPULOG)/libipulog.a ulogd.conf
+-	$(CC) $(CFLAGS) -rdynamic $< conffile/conffile.o $(LIBIPULOG)/libipulog.a -o $@ $(LIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) -rdynamic $< conffile/conffile.o $(LIBIPULOG)/libipulog.a -o $@ $(LIBS)
+ 
+ edit = sed -e 's,@libdir\@,$(ULOGD_LIB_PATH),g'
+ 

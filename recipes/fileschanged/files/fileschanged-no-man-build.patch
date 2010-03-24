@@ -1,0 +1,10 @@
+Index: fileschanged-0.6.5/Makefile.am
+===================================================================
+--- fileschanged-0.6.5.orig/Makefile.am	2009-05-08 13:51:30.111294701 +0400
++++ fileschanged-0.6.5/Makefile.am	2009-05-08 13:52:31.885545034 +0400
+@@ -1,4 +1,4 @@
+-SUBDIRS= m4 src man info debian po
++SUBDIRS= m4 src info debian po
+ 
+ dist_pkgdata_DATA=ChangeLog AUTHORS NEWS README INSTALL
+ 

@@ -1,0 +1,11 @@
+--- a/configure.in	2008-04-15 12:56:35.000000000 +0300
++++ b/configure.in.old	2008-03-20 21:17:09.000000000 +0200
+@@ -2743,7 +2743,7 @@
+ 
+     AC_CACHE_CHECK(for compiler -fshort-wchar option, 
+         ac_cv_have_usable_wchar_option_v2,
+-        [AC_TRY_LINK([#include <stddef.h>
++        [AC_TRY_COMPILE([#include <stddef.h>
+                          $configure_static_assert_macros],
+                         [CONFIGURE_STATIC_ASSERT(sizeof(wchar_t) == 2);
+                          CONFIGURE_STATIC_ASSERT((wchar_t)-1 > (wchar_t) 0)],

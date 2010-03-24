@@ -36,3 +36,6 @@ do_install() {
         install -m 0755 CPP/7zip/Compress/LZMA_Alone/lzma ${D}${bindir}
         oe_libinstall -a -C C/LzmaUtil liblzma ${D}${libdir}
 }
+
+NATIVE_INSTALL_WORKS = "1"
+BBCLASSEXTEND = "native"
