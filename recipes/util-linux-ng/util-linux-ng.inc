@@ -2,6 +2,7 @@ DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux sys
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "udev zlib ncurses virtual/libintl"
+DEPENDS_virtclass-native = "zlib-native ncurses-native"
 
 inherit autotools
 
@@ -19,6 +20,8 @@ SRC_URI_append_chinook-compat = " file://chinook_libtool.patch;patch=1 "
 PACKAGES =+ "${PN}-fdisk ${PN}-cfdisk ${PN}-sfdisk ${PN}-swaponoff \
 	     ${PN}-losetup ${PN}-umount ${PN}-mount ${PN}-readprofile \
 	     ${PN}-fsck ${PN}-blkid ${PN}-mountall"
+
+PACKAGES_virtclass-native = ""	     
 
 PACKAGES_DYNAMIC = "libblkid* libuuid*"
 
@@ -58,6 +61,9 @@ RREPLACES_${PN}-mountall = "busybox-mountall"
 
 RRECOMMENDS_${PN} = "${PN}-fdisk ${PN}-cfdisk ${PN}-sfdisk ${PN}-mount ${PN}-readprofile"
 RDEPENDS_${PN} = "${PN}-mountall ${PN}-umount ${PN}-swaponoff ${PN}-losetup ${PN}-fsck ${PN}-blkid"
+
+RRECOMMENDS_${PN}_virtclass-native = ""
+RDEPENDS_${PN}_virtclass-native = ""
 
 EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
@@ -282,3 +288,5 @@ pkg_postinst_util-linux-ng-fsck () {
 pkg_prerm_util-linux-ng-fsck () {
 	update-alternatives --remove fsck fsck.${PN}
 }
+
+BBCLASSEXTEND = "native"
