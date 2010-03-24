@@ -9,13 +9,14 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 
 S = "${WORKDIR}/e2fsprogs-${PV}"
 
-INC_PR = "r21a"
+INC_PR = "r22"
 
 inherit autotools
 
 #if uclibc ntpl is merged into trunk we can enable tls for armv4 again
 EXTRA_OECONF = "${@['','--disable-tls'][bb.data.getVar('ARM_ABI', d, 1) == 'oabi' and \
 		bb.data.getVar('TARGET_OS', d, 1).find('uclibc') >= 0 ]} \
+		--enable-elf-shlibs \
 		--enable-dynamic-e2fsck --disable-nls --sbindir=${base_sbindir} \
 		--disable-libuuid --disable-libblkid --disable-fsck"
 
@@ -26,27 +27,9 @@ do_compile_prepend () {
 	( cd util; ${BUILD_CC} subst.c -o subst )
 }
 
-e2miscbins = "mke2fs badblocks tune2fs dumpe2fs blkid logsave e2image \
-              e2undo chattr lsattr uuidgen mklost+found filefrag uuidd e2initrd_helper"
-
-ext2fsheaders = "ext2_ext_attr.h bitops.h ext2_err.h \
-		 ext2_types.h ext2_fs.h ext2_io.h \
-		 ext2fs.h"
-e2pheaders = "e2p.h"
-
 do_install_append () {
-	oe_libinstall -a -C lib libe2p    ${D}${libdir}/
-	oe_libinstall -a -C lib libext2fs ${D}${libdir}/
 
-	install -d ${D}${includedir}/e2p
-	for h in ${e2pheaders}; do
-		install -m 0644 lib/e2p/$h ${D}${includedir}/e2p/ || die "failed to install $h"
-	done
-
-	install -d ${D}${includedir}/ext2fs
-	for h in ${ext2fsheaders}; do
-		install -m 0644 lib/ext2fs/$h ${D}${includedir}/ext2fs/ || die "failed to install $h"
-	done
+    	oe_runmake install-libs DESTDIR=${D}
 
 	mv ${D}${base_sbindir}/e2fsck ${D}${base_sbindir}/e2fsck.${PN}
 	rm ${D}${base_sbindir}/fsck.ext2
@@ -129,10 +112,12 @@ RDEPENDS_e2fsprogs = "util-linux-ng e2fsprogs-badblocks"
 
 FILES_${PN} += "${libdir}/e2initrd_helper"
 
-PACKAGES =+ "e2fsprogs-e2fsck e2fsprogs-mke2fs e2fsprogs-tune2fs e2fsprogs-badblocks"
+PACKAGES =+ "e2fsprogs-e2fsck e2fsprogs-mke2fs e2fsprogs-tune2fs e2fsprogs-badblocks libcomerr libss"
 FILES_e2fsprogs-e2fsck = "${base_sbindir}/e2fsck.${PN} ${base_sbindir}/fsck.ext*.${PN}"
 FILES_e2fsprogs-mke2fs = "${base_sbindir}/mke2fs.${PN} ${base_sbindir}/mkfs.ext*.${PN}"
 FILES_e2fsprogs-tune2fs = "${base_sbindir}/tune2fs ${base_sbindir}/e2label ${base_sbindir}/findfs"
 FILES_e2fsprogs-badblocks = "${base_sbindir}/badblocks"
+FILES_libcomerr = "${libdir}/libcom_err.so.*"
+FILES_libss = "${libdir}/libss.so.*"
 
 BBCLASSEXTEND = "native"
