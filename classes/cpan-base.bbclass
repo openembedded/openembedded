@@ -35,14 +35,6 @@ def is_target(d):
         return "yes"
     return "no"
 
-def perl_get_version_suffix(d):
-	if bb.data.expand('${PACKAGE_ARCH}', d) != "all":
-		return '-' + get_perl_version(d)
-	else:
-		return ''
-
-PR .= "${@perl_get_version_suffix(d)}"
-
 PERLLIBDIRS = "${@perl_get_libdirs(d)}"
 
 FILES_${PN}-dbg += "${PERLLIBDIRS}/auto/*/.debug \
