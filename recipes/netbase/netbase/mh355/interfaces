@@ -1,0 +1,19 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# Wired or wireless interfaces
+auto eth0
+
+# Use this for DHCP
+#iface eth0 inet dhcp
+
+# Use this for static address
+iface eth0 inet static
+	address 192.168.0.184
+	netmask 255.255.255.0
+	network 192.168.0.0
+	gateway 192.168.0.1
+
