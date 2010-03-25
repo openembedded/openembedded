@@ -2,8 +2,6 @@ DESCRIPTION = "GEOS (Geometry Engine - Open Source) is a C++ port of the Java To
 HOMEPAGE = "http://geos.refractions.net/"
 LICENSE = "LGPL"
 
-DEPENDS = "boost"
-
 PR = "r1"
 
 SRC_URI = "http://download.osgeo.org/geos/geos-${PV}.tar.bz2;name=geos \
