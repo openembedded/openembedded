@@ -3,7 +3,7 @@ require linux-openmoko.inc
 
 DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Smartphones"
 
-KERNEL_RELEASE="2.6.32.9"
+KERNEL_RELEASE="2.6.32.10"
 
 SRCREV = "14be1091928fcce66812a85129768fb253b36420"
 OEV = "oe1"
@@ -32,10 +32,12 @@ SRC_URI = "\
   file://0013-Change-connector-type-to-LVDS.patch;patch=1 \
   file://0014-Clean-up-JBT-hooks-and-allow-resolution-switching.patch;patch=1 \
   file://0015-ar6000-send-userspace-an-event-on-disconnection.patch;patch=1 \
+  file://0016-Enable-display-before-trying-to-set-mode-or-base.patch;patch=1 \
 "
 
-SRC_URI[stablepatch.md5sum] = "7f615dd3b4a3b19fb86e479996a2deb5"
-SRC_URI[stablepatch.sha256sum] = "8aeb15c31fb09c769f004c8dc51e29aa26be8e84d70db418af70ecefc463459a"
+SRC_URI[stablepatch.md5sum] = "0f1863836bf96fd0aab128d61eaa5693"
+SRC_URI[stablepatch.sha256sum] = "e4b760254822dbc77ae1889d0b2078c113cb7939f8c6ee31c49a31b07b52cc18"
+
 
 S = "${WORKDIR}/git"
 
