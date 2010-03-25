@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r7"
+PR = "r8"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -51,6 +51,8 @@ EXTRA_OECONF += " --with-udev-prefix= \
                   ac_cv_file__usr_share_hwdata_pci_ids=no \
                   ac_cv_file__usr_share_misc_pci_ids=no \
                   --sbindir=${base_sbindir} \
+                  --libexecdir=${base_libdir}/udev \
+                  --with-rootlibdir=${base_libdir} \
 "
 
 INITSCRIPT_NAME = "udev"
