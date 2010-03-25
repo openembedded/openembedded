@@ -3,6 +3,8 @@ LICENSE = "GPL"
 DEPENDS = "policykit-gnome libnotify networkmanager dbus-glib libglade gconf gnome-keyring"
 RDEPENDS = "networkmanager"
 
+PR = "r1"
+
 inherit gnome
 
 SRC_URI += "file://nm-applet.conf"

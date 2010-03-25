@@ -2,7 +2,7 @@ require networkmanager-0.7.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI += " \
     file://remove-gtk-doc-make.patch;patch=1 \
