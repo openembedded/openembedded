@@ -8,7 +8,7 @@
 #    b	Block special device file
 #    p	Fifo (named pipe)
 
-/dev/mux	c	660	0	5	250	0	1	1	8
-/dev/ttyIPC	c	660	0	5	251	0	-	-	-
+/dev/mux	c	660	0	5	234	0	0	1	9
+/dev/ttyIPC0	c	660	0	5	251	0	-	-	-
 /dev/input/uinput	c	660 	0	0	10	223	-	-	-
-/dev/video	c	660	0	44	81	0	-	-	-
+/dev/video0	c	660	0	44	81	0	-	-	-
