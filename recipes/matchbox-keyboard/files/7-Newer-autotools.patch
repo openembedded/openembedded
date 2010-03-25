@@ -1,0 +1,10 @@
+--- matchbox-keyboard/gtk-im/Makefile.am	2010-03-25 11:04:40.000000000 +0100
++++ matchbox-keyboard/gtk-im/Makefile.am	2010-03-25 11:04:40.000000000 +0100
+@@ -1,6 +1,6 @@
+ AM_CFLAGS = -Wall
+ 
+-imdir = @libdir@/gtk-2.0/@GTK_VERSION@/immodules/
++imdir = @libdir@/gtk-2.0/@GTK_VERSION@/immodules
+ im_LTLIBRARIES = libmb-im-invoker.la
+ # TODO: remove lib prefix
+ 
