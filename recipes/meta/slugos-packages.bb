@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r65"
+PR = "r66"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -74,7 +74,6 @@ SLUGOS_PACKAGES = "\
 	dnsmasq \
 	dropbear \
 	e2fsprogs \
-	e2fsprogs-libs \
 	expat \
 	ez-ipupdate \
 	fconfig \
@@ -226,7 +225,7 @@ SLUGOS_PACKAGES = "\
 	upslug2 \
 	usbutils \
 	ushare \
-	util-linux \
+	util-linux-ng \
 	vim \
 	vlan \
 	vsftpd \
