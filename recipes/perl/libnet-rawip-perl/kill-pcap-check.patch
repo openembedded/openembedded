@@ -1,0 +1,14 @@
+Index: Net-RawIP-0.25/Makefile.PL
+===================================================================
+--- Net-RawIP-0.25.orig/Makefile.PL	2010-02-02 16:29:08.000000000 +0300
++++ Net-RawIP-0.25/Makefile.PL	2010-02-02 16:29:16.000000000 +0300
+@@ -57,9 +57,6 @@
+ print "Compiler: $Config{cc}\n";
+ system "$Config{cc} --version";
+ 
+-locate_pcap();
+-
+-
+ WriteMakefile(
+     NAME            => 'Net::RawIP',
+     LICENSE         => 'perl',

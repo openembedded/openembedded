@@ -4,7 +4,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.nilfs.org/"
 
 # required for libuuid
-DEPENDS = "e2fsprogs-libs"
+DEPENDS = "util-linux-ng"
 
 RRECOMMENDS_${PN} = "nilfs-utils-mkfs nilfs-utils-stats"
 

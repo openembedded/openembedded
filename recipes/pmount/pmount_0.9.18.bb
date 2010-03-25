@@ -3,7 +3,7 @@ HOMEPAGE = "http://pmount.alioth.debian.org/"
 LICENSE = "GPLv2"
 PR = "r1"
 
-DEPENDS = "hal e2fsprogs-libs sysfsutils"
+DEPENDS = "hal util-linux-ng sysfsutils"
 RDEPENDS_${PN}-hal = "${PN}"
 RRECOMMENDS_${PN}-hal = "hal"
 

@@ -3,7 +3,7 @@ HOMEPAGE = "http://oss.sgi.com/projects/xfs"
 LICENSE = "GPL"
 SECTION = "base"
 PR = "r2"
-DEPENDS = "e2fsprogs-libs"
+DEPENDS = "util-linux-ng"
 
 SRC_URI = "http://slackware.osuosl.org/slackware-12.0/source/a/xfsprogs/xfsprogs_2.8.16-1.tar.gz"
 

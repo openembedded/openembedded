@@ -3,7 +3,7 @@ HOMEPAGE = "http://web.mit.edu/Kerberos/"
 SECTION = "console/network"
 PR = "r6"
 LICENSE = "MIT"
-DEPENDS = "perl-native ncurses e2fsprogs-libs e2fsprogs-native"
+DEPENDS = "perl-native ncurses util-linux-ng e2fsprogs-native"
 
 inherit autotools binconfig
 

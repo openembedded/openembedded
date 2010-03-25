@@ -3,7 +3,7 @@
 #
 inherit cpan-base
 
-INHIBIT_NATIVE_STAGE_INSTALL = "1"
+NATIVE_INSTALL_WORKS = "1"
 
 #
 # We also need to have built libmodule-build-perl-native for
@@ -46,12 +46,8 @@ cpan_build_do_compile () {
 cpan_build_do_install () {
 	if [ ${@is_target(d)} == "yes" ]; then
 		perl Build install
-	fi
-}
-
-do_stage_append () {
-	if [ ${@is_target(d)} == "no" ]; then
-		perl Build install
+	else
+		perl Build install destdir="${WORKDIR}/image"
 	fi
 }
 

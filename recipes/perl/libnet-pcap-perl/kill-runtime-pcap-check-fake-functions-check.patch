@@ -1,0 +1,32 @@
+Index: Net-Pcap-0.16/Makefile.PL
+===================================================================
+--- Net-Pcap-0.16.orig/Makefile.PL	2010-02-02 16:50:32.000000000 +0300
++++ Net-Pcap-0.16/Makefile.PL	2010-02-02 18:14:50.000000000 +0300
+@@ -444,7 +444,7 @@
+     close($cfile);
+     my $quote = $is_Win32 ? '"' : "'";
+     xsystem("$^X Makefile.PL " . join(' ', map { "${quote}$_=$options{$_}${quote}" } keys %options));
+-    xsystem("$Config{make} test ${quote}OTHERLDFLAGS=${opt}${quote}");
++#    xsystem("$Config{make} test ${quote}OTHERLDFLAGS=${opt}${quote}");
+ } # end try_link0
+ 
+ sub try_link {
+@@ -530,14 +530,11 @@
+     my @funcs = ();
+     print "detecting available functions... ";
+ 
+-    my @paths = DynaLoader::dl_findfile(qw(-lpcap));
+-    my $libref = DynaLoader::dl_load_file($paths[0]);
+-
+-    for my $func (@_) {
+-        my $symref = DynaLoader::dl_find_symbol($libref, $func);
+-        push @funcs, $func if defined $symref
+-    }
++    my $objdump = $ENV{'OBJDUMP'};
++    my $st_libdir = $ENV{'STAGING_LIBDIR'};
++    @funcs=`$objdump -t $st_libdir/libpcap.so | grep F | grep ".text" | awk '{print \$6}' | grep "^pcap_"`;
+ 
++    chomp(@funcs);
+     print "ok\n";
+     return @funcs
+ }

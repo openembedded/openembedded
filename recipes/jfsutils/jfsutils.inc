@@ -3,7 +3,7 @@ HOMEPAGE = "http://jfs.sourceforge.net/"
 LICENSE = "GPL"
 SECTION = "base"
 PR = "r0"
-DEPENDS = "e2fsprogs-libs"
+DEPENDS = "util-linux-ng"
 
 SRC_URI = "http://jfs.sourceforge.net/project/pub/${PN}-${PV}.tar.gz"
 

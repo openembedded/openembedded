@@ -2,7 +2,7 @@ DESCRIPTION = "NetworkManager"
 SECTION = "net/misc"
 LICENSE = "GPL"
 PRIORITY = "optional"
-DEPENDS = "networkmanager libnl dbus dbus-glib hal wireless-tools policykit gnutls e2fsprogs-libs ppp"
+DEPENDS = "networkmanager libnl dbus dbus-glib hal wireless-tools policykit gnutls util-linux-ng ppp libglade gnome-keyring"
 RDEPENDS = "wpa-supplicant dhcp-client \
            ${@base_contains('COMBINED_FEATURES', '3gmodem', 'ppp', '', d)} \
            "

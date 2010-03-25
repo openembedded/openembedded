@@ -3,7 +3,7 @@ HOMEPAGE = "http://oss.sgi.com/projects/xfs"
 LICENSE = "GPL"
 SECTION = "base"
 PR = "r0"
-DEPENDS = "e2fsprogs-libs"
+DEPENDS = "util-linux-ng"
 
 SRC_URI = "ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-3.1.1.tar.gz;name=xfsprogstargz"
 SRC_URI[xfsprogstargz.md5sum] = "c2308b46ee707597ac50aae418d321b8"
