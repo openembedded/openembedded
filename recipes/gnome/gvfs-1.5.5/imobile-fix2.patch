@@ -1,0 +1,33 @@
+From b6202b86025fb7d363477a4a29620fa0198e4c56 Mon Sep 17 00:00:00 2001
+From: Bastien Nocera <hadess@hadess.net>
+Date: Mon, 22 Mar 2010 15:21:31 +0000
+Subject: Ignore gphoto2 mounts on AFC capable devices
+
+Requires a small usbmuxd udev rules change, to mark devices
+with the USBMUXD_AFC_DEVICE property.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=591009
+---
+diff --git a/monitor/gphoto2/ggphoto2volumemonitor.c b/monitor/gphoto2/ggphoto2volumemonitor.c
+index 8b87074..9fefc5d 100644
+--- a/monitor/gphoto2/ggphoto2volumemonitor.c
++++ b/monitor/gphoto2/ggphoto2volumemonitor.c
+@@ -199,6 +199,16 @@ gudev_add_camera (GGPhoto2VolumeMonitor *monitor, GUdevDevice *device, gboolean
+     int usb_bus_num;
+     int usb_device_num;
+ 
++  /* For iPhones and iPod Touches, don't mount gphoto mounts,
++   * we already have access through AFC */
++#ifdef HAVE_AFC
++    if (g_udev_device_get_property_as_boolean (device, "USBMUX_SUPPORTED"))
++      {
++	/* g_debug ("ignoring device, is AFC"); */
++	return;
++      }
++#endif /* HAVE_AFC */
++
+     property = g_udev_device_get_property (device, "BUSNUM");
+     if (property == NULL) {
+ 	g_warning("device %s has no BUSNUM property, ignoring", g_udev_device_get_device_file (device));
+--
+cgit v0.8.3.1

@@ -1,0 +1,37 @@
+From 1d1ce86222b0a34451b7fc798824e69dd0ebf93b Mon Sep 17 00:00:00 2001
+From: Bastien Nocera <hadess@hadess.net>
+Date: Mon, 22 Mar 2010 14:31:23 +0000
+Subject: Fix compilation with libimobiledevice 1.0.0
+
+AFC_E_INVALID_ARGUMENT was renamed to AFC_E_INVALID_ARG
+in http://github.com/MattColyer/libiphone/commit/36048ded8efda588a20b5cf284670a984f7cc650
+
+https://bugzilla.gnome.org/show_bug.cgi?id=613588
+---
+diff --git a/daemon/gvfsbackendafc.c b/daemon/gvfsbackendafc.c
+index ae41a04..a2ca298 100644
+--- a/daemon/gvfsbackendafc.c
++++ b/daemon/gvfsbackendafc.c
+@@ -38,6 +38,11 @@
+ #define G_VFS_BACKEND_AFC_MAX_FILE_SIZE G_MAXINT64
+ int g_blocksize = 4096; /* assume this is the default block size */
+ 
++/* AFC_E_INVALID_ARGUMENT was renamed between 0.9.7 and 1.0.0 */
++#ifndef AFC_E_INVALID_ARG
++#define AFC_E_INVALID_ARG AFC_E_INVALID_ARGUMENT
++#endif /* !AFC_E_INVALID_ARG */
++
+ struct _GVfsBackendAfc {
+   GVfsBackend backend;
+ 
+@@ -62,7 +67,7 @@ static struct afc_error_mapping afc_error_to_g_io_error[] = {
+       { AFC_E_READ_ERROR               , G_IO_ERROR_NOT_DIRECTORY },
+       { AFC_E_WRITE_ERROR              , G_IO_ERROR_FAILED },
+       { AFC_E_UNKNOWN_PACKET_TYPE      , G_IO_ERROR_FAILED },
+-      { AFC_E_INVALID_ARGUMENT         , G_IO_ERROR_INVALID_ARGUMENT },
++      { AFC_E_INVALID_ARG              , G_IO_ERROR_INVALID_ARGUMENT },
+       { AFC_E_OBJECT_NOT_FOUND         , G_IO_ERROR_NOT_FOUND },
+       { AFC_E_OBJECT_IS_DIR            , G_IO_ERROR_IS_DIRECTORY },
+       { AFC_E_DIR_NOT_EMPTY            , G_IO_ERROR_NOT_EMPTY },
+--
+cgit v0.8.3.1
