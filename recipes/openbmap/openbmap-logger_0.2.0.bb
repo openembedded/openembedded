@@ -4,9 +4,11 @@ DEPENDS = "python python-dbus python-pygobject python-pygtk libglade"
 RDEPENDS = "python-subprocess python-netclient python-math python-core python-io"
 PR = "r1"
 
+inherit python-dir
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/myposition/openbmap-logger-${PV}.tar.gz"
 
-FILES_${PN} += "${datadir}/openBmap/* ${libdir}/python2.6/site-packages/openbmap/*"
+FILES_${PN} += "${datadir}/openBmap/* ${PYTHON_SITEPACKAGES_DIR}/openbmap/*"
 
 do_configure () {
     :
@@ -19,10 +21,10 @@ do_compile () {
 do_install () {
     install -d ${D}${bindir}
     install -m 0755 openBmapGTK ${D}${bindir}/
-    install -d ${D}${libdir}/python2.6/site-packages/openbmap/
-    install -m 0644 openbmap/__init__.py ${D}${libdir}/python2.6/site-packages/openbmap/
-    install -m 0644 openbmap/logger.py ${D}${libdir}/python2.6/site-packages/openbmap/
-    install -m 0644 openbmap/Upload.py ${D}${libdir}/python2.6/site-packages/openbmap/
+    install -d ${D}${PYTHON_SITEPACKAGES_DIR}/openbmap/
+    install -m 0644 openbmap/__init__.py ${D}${PYTHON_SITEPACKAGES_DIR}/openbmap/
+    install -m 0644 openbmap/logger.py ${D}${PYTHON_SITEPACKAGES_DIR}/openbmap/
+    install -m 0644 openbmap/Upload.py ${D}${PYTHON_SITEPACKAGES_DIR}/openbmap/
     install -d ${D}${datadir}/pixmaps
     install -d ${D}${datadir}/applications
     install -d ${D}${datadir}/openBmap

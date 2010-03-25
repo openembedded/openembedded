@@ -16,7 +16,7 @@ SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz;name=gpsd \
            file://gpsd \
            file://60-gpsd.rules"
 			   
-inherit autotools_stage update-rc.d
+inherit autotools_stage update-rc.d python-dir
 
 INITSCRIPT_NAME = "gpsd"
 INITSCRIPT_PARAMS = "defaults 35"
@@ -83,6 +83,6 @@ FILES_gps-utils = "${bindir}/*"
 RDEPENDS_gps-utils = "python-pygps"
 
 DESCRIPTION_python-pygps = "Python bindings to gpsd"
-FILES_python-pygps = "${libdir}/*/site-packages/*"
+FILES_python-pygps = "${PYTHON_SITEPACKAGES_DIR}/*"
 RDEPENDS_python-pygps = "python-core python-curses gpsd"
 

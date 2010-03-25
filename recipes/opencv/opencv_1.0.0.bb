@@ -60,7 +60,7 @@ FILES_${PN}-dbg += "${libdir}/.debug"
 FILES_${PN}-dev = "${includedir} ${libdir}/pkgconfig"
 
 DESCRIPTION_python-opencv = "Python bindings to opencv"
-FILES_python-opencv = "${libdir}/*/site-packages/*"
+FILES_python-opencv = "${PYTHON_SITEPACKAGES_DIR}/*"
 RDEPENDS_python-opencv = "python-core"
 
 do_stage() {

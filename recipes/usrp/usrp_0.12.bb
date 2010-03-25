@@ -14,7 +14,7 @@ SRC_URI_append_omap5912osk = "file://usb11.patch;patch=1"
 
 S = "${WORKDIR}/usrp-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig python-dir
 
 CXXFLAGS_powerpc += "-lstdc++"
 
@@ -37,5 +37,5 @@ do_stage () {
 }
 
 PACKAGES += "python-pyusrp-dbg python-pyusrp"
-FILES_python-pyusrp-dbg += "${libdir}/python*/site-packages/.debug"
+FILES_python-pyusrp-dbg += "${PYTHON_SITEPACKAGES_DIR}/.debug"
 FILES_python-pyusrp = "${libdir}/python*"

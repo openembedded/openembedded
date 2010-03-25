@@ -5,7 +5,7 @@ SRCREV = "4695"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r5"
 
-inherit openmoko2
+inherit openmoko2 python-dir
 
 SRC_URI += "\
 	file://configure.patch;patch=1 \
@@ -22,6 +22,6 @@ do_configure_prepend() {
 do_stage() {
         autotools_stage_all
 }
-FILES_${PN} += "${libdir}/python2.6/site-packages/mokoui.*"
-FILES_${PN}-dbg += "${libdir}/python2.6/site-packages/.debug/"
+FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}/mokoui.*"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/.debug/"
 FILES_${PN}-dev += "/usr/share/vala/vapi/"

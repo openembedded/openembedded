@@ -45,7 +45,7 @@ FILES_${PN} += "${datadir}/${PN} \
 		${datadir}/dbus-1 \
 		${sysconfdir} "
 
-FILES_${PN}-dbg += "${libdir}/python*/site-packages/sugar/.debug"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/sugar/.debug"
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 

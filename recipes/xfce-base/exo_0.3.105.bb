@@ -3,7 +3,7 @@ DEPENDS = "libxfce4util hal liburi-perl-native python-native cairo"
 SECTION = "x11"
 PR = "r1"
 
-inherit xfce46
+inherit xfce46 python-dir
 
 XFCE_VERSION = "4.6.1"
 
@@ -23,8 +23,8 @@ do_stage() {
 }
 
 FILES_${PN} += "${datadir}/xfce4/ \
-                ${libdir}/python*/site-packages/* \
+                ${PYTHON_SITEPACKAGES_DIR}/* \
                 ${prefix}/share/pygtk/2.0/defs/exo-0.3/exo.defs \
 "
 
-FILES_${PN}-dbg += "${libdir}/python*/site-packages/*/.debug/*"
+FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/*/.debug/*"
