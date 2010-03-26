@@ -24,7 +24,8 @@ SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
 		   file://cputype \
 		   file://rc.pvr \
 		   file://sample.desktop \
-		  "
+		   file://99-bufferclass.rules  \
+"
 
 S = "${WORKDIR}/OMAP35x_Graphics_SDK_${SGXPV}"
 
@@ -197,6 +198,10 @@ do_install () {
 	# Delete objects and linker scripts hidden between the headers
 	find ${D} -name "*.o" -delete
 	find ${D} -name "*.o.cmd" -delete
+
+	install -d ${D}${sysconfdir}/udev/rules.d
+	install -m 0644 ${WORKDIR}/99-bufferclass.rules ${D}${sysconfdir}/udev/rules.d/
+
 }
 
 PACKAGES =+ "${PN}-rawdemos \

@@ -33,7 +33,6 @@ fbset -vyres $(expr $YRES \* 3)
 if [ $CPUTYPE = "OMAP3530" ]; then
 	echo Starting PVR
 	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
-	#modprobe bc_example
 	modprobe omaplfb
 	modprobe bufferclass_ti
 
@@ -46,13 +45,6 @@ if [ $CPUTYPE = "OMAP3530" ]; then
 
 	mknod /dev/pvrsrvkm c $pvr_maj 0 
 	chmod 666 /dev/pvrsrvkm
-
-	if [ -e /dev/bc_cat ] ; then
-		rm -f /dev/bc_cat
-	fi
-
-	mknod /dev/bc_cat c $bc_maj 0
-	chmod 666 /dev/bc_cat
 
 	touch /etc/powervr-esrev
 

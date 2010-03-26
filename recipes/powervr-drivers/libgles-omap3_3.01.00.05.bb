@@ -1,6 +1,6 @@
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r1"
+PR = "r2"
 
 BINLOCATION = "${S}/gfx_rel_es3.x"
 
