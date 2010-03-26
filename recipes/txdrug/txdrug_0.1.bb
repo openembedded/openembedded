@@ -6,7 +6,7 @@ DEPENDS = "sqlite"
 PR = "r3"
 
 SRC_URI = "http://teax.sourceforge.net/txdrug-${PV}.tar.gz \
-           file://${FILESDIR}/opt/QtPalmtop"
+           file://opt/QtPalmtop"
 S = "${WORKDIR}/txdrug-tar"
 
 inherit palmtop
