@@ -1,17 +1,10 @@
-DESCRIPTION = "GNOME XSLT library"
-SECTION = "libs"
-PRIORITY = "optional"
+require libxslt.inc
 DEPENDS = "libxml2"
-LICENSE = "MIT"
-PR = "r3"
+PR = "${INC_PR}.0"
 
-SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz \
-           file://destdir.patch;patch=1"
-S = "${WORKDIR}/libxslt-${PV}"
+SRC_URI += " file://destdir.patch;patch=1"
 
-inherit autotools pkgconfig
-
-EXTRA_OECONF = "--without-python --without-plugins --without-debug --without-mem-debug --without-crypto"
+EXTRA_OECONF += " --without-plugins"
 
 xsltheaders = "attributes.h documents.h extensions.h extra.h functions.h imports.h \
                keys.h namespaces.h numbersInternals.h pattern.h preproc.h security.h \
@@ -40,7 +33,5 @@ do_stage () {
 	install -m 0644 libxslt.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
-
-FILES_${PN}-dev += "${bindir}/xslt-config"
-FILES_${PN}-utils += "${bindir}"
+SRC_URI[archive.md5sum] = "fde6a7a93c0eb14cba628692fa3a1000"
+SRC_URI[archive.sha256sum] = "d337faebd64ddb8c52cde23df8469e1b3c65545af5f939e9bb4be9eeb9658c8a"

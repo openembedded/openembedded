@@ -1,22 +1,6 @@
-DESCRIPTION = "GNOME XSLT library"
-SECTION = "libs"
-PRIORITY = "optional"
-DEPENDS = "libxml2 (>=2.6.27)"
-LICENSE = "MIT"
-PR = "r2"
+require libxslt.inc
+PR = "${INC_PR}.0"
 
-SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz \
-           file://pkgconfig_fix.patch;patch=1"
-S = "${WORKDIR}/libxslt-${PV}"
-
-inherit autotools pkgconfig
-
-NATIVE_INSTALL_WORKS = "1"
-BBCLASSEXTEND = "native"
-
-EXTRA_OECONF = "--without-python --without-debug --without-mem-debug --without-crypto"
-
-PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
-
-FILES_${PN}-dev += "${bindir}/xslt-config"
-FILES_${PN}-utils += "${bindir}"
+SRC_URI += " file://pkgconfig_fix.patch;patch=1"
+SRC_URI[archive.md5sum] = "d6a9a020a76a3db17848d769d6c9c8a9"
+SRC_URI[archive.sha256sum] = "4e1f39ee16596fd2a83d28d6c3b065f742254f3336f93ce8ed1cae48ecbe49da"
