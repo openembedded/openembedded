@@ -162,11 +162,10 @@ SRC_URI_hawkboard          = "git://arago-project.org/git/people/sekhar/u-boot-o
 SRCREV_hawkboard           = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
 PV_hawkboard               = "2009.08+gitr${SRCREV}"
 
-SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
-                        file://leopardboard-support.patch;patch=1 \
+SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=master \
 "
-SRCREV_dm355-leopard = "86d5c98d3d97d631b1d3a5f5e6a17e87c99b42cf"
-PV_dm355-leopard = "2009.05+2009.06-rc2+gitr${SRCREV}"
+SRCREV_dm355-leopard = "d650da2dd4af99967aabc43cccbd8f160eb4cea6"
+PV_dm355-leopard = "2009.05+2010.03-rc1+gitr${SRCREV}"
 
 SRC_URI_neuros-osd2 = "git://github.com/neuros/u-boot.git;protocol=git;branch=neuros"
 SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"
