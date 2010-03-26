@@ -1,5 +1,6 @@
 DESCRIPTION = "Package for the different scenarios used by Openmoko"
 SECTION = "openmoko/base"
+SRCREV = "8e89c8dbae569a08cac246a3805fca20988c0ad1"
 PV = "1.0+gitr${SRCREV}"
 PR = "r3"
 

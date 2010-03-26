@@ -14,7 +14,6 @@
 SRCREV_pn-accelges ?= "206"
 SRCREV_pn-advancedcaching ?= "9c3661f5573d2dd712437f1590070153d12e4c02"
 SRCREV_pn-aircrack-ng ?= "802"
-SRCREV_pn-alsa-scenarii-shr ?= "8e89c8dbae569a08cac246a3805fca20988c0ad1"
 SRCREV_pn-alsa-scenario ?= "8bd7f83d847424eb44704cf1649974b2fda8d8f1"
 SRCREV_pn-aufs2-util ?= "f35ba2292fe40aa94aa83713e0b2719f35a25768"
 SRCREV_pn-bfin-uclibc ?= "1857"
