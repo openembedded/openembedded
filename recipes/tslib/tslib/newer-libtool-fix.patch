@@ -1,0 +1,11 @@
+--- tslib-1.0/configure.ac~	2010-03-25 15:59:55.000000000 +0100
++++ tslib-1.0/configure.ac	2010-03-25 15:59:55.000000000 +0100
+@@ -168,7 +168,7 @@
+         AS_HELP_STRING([--with-plugindir=ARG],
+                 [Where to look for plugins (default=${libdir}/ts)]),
+         [PLUGIN_DIR=$withval],
+-        [PLUGIN_DIR='${libdir}/ts/'])
++        [PLUGIN_DIR='${libdir}/ts'])
+ AC_MSG_RESULT($PLUGIN_DIR)
+ AC_SUBST(PLUGIN_DIR)
+ 

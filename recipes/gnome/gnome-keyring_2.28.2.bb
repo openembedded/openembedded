@@ -2,12 +2,13 @@ DESCRIPTION = "GNOME security credential management"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
 DEPENDS = " gtk+-native libpam gconf gtk+ libtasn1 libtasn1-native libgcrypt"
+PR = "r1"
 
 inherit gnome pkgconfig
 
-EXTRA_OECONF = "--disable-gtk-doc --enable-pam --with-pam-dir=${libdir}/security/"
+EXTRA_OECONF = "--disable-gtk-doc --enable-pam --with-pam-dir=${libdir}/security"
 
-SRC_URI += "file://tasn.m4 file://org.gnome.keyring.service"
+SRC_URI += "file://tasn.m4 file://org.gnome.keyring.service file://libtool.workarround.patch;patch=1"
 
 do_configure_prepend() {
 	cp ${WORKDIR}/tasn.m4 acinclude.m4

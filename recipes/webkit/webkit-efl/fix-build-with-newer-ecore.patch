@@ -1,0 +1,10 @@
+--- git.orig/WebKit/efl/EWebLauncher/main.c	2010-03-26 11:07:23.000000000 +0100
++++ git/WebKit/efl/EWebLauncher/main.c	2010-03-26 11:07:29.000000000 +0100
+@@ -28,7 +28,6 @@
+ #include "Api/EWebKit.h"
+ 
+ #include <Ecore.h>
+-#include <Ecore_Data.h>
+ #include <Ecore_Evas.h>
+ #include <Ecore_Getopt.h>
+ #include <Ecore_X.h>
