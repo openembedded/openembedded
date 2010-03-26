@@ -12,6 +12,7 @@ SRC_URI = " \
 	file://no-ipv6-tcpdump4.patch;patch=1 \
 	file://0001-minimal-IEEE802.15.4-allowed.patch;patch=1 \
 	file://ipv6-cross.patch;patch=1 \
+	file://configure.patch;patch=1 \
 "
 
 inherit autotools
