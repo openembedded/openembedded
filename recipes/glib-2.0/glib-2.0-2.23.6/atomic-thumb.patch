@@ -1,11 +1,10 @@
 # gatomic.c uses SWP, which doesn't work in Thumb mode.
 # Put that source file into a separate convenience library which is always built as ARM.
 
-Index: glib-2.18.1/glib/Makefile.am
-===================================================================
---- glib-2.18.1/glib/Makefile.am	2008-09-18 00:33:57.000000000 +0200
-+++ glib-2.18.1/glib/Makefile.am	2008-11-08 10:13:27.000000000 +0100
-@@ -80,6 +80,7 @@
+diff -uNr glib-2.23.6.orig//glib/Makefile.am glib-2.23.6/glib/Makefile.am
+--- glib-2.23.6.orig//glib/Makefile.am	2010-03-21 19:05:08.000000000 +0100
++++ glib-2.23.6/glib/Makefile.am	2010-03-26 11:52:49.000000000 +0100
+@@ -87,6 +87,7 @@
  	galiasdef.c
  
  lib_LTLIBRARIES = libglib-2.0.la
@@ -13,23 +12,23 @@ Index: glib-2.18.1/glib/Makefile.am
  
  if OS_WIN32_AND_DLL_COMPILATION
  if MS_LIB_AVAILABLE
-@@ -96,10 +97,14 @@
+@@ -103,10 +104,14 @@
  uninstall-ms-lib:
  	$(uninstall_ms_lib_cmd)
  
 +libgatomic_la_CFLAGS = $(CFLAGS) -mno-thumb
 +
 +libgatomic_la_SOURCES =                \
-+       gatomic.c
-+ 
++	${gatomic_c}
++
  libglib_2_0_la_SOURCES = 	\
  	garray.c		\
  	gasyncqueue.c		\
--	gatomic.c		\
+-	$(gatomic_c)		\
  	gbacktrace.c		\
  	gbase64.c		\
- 	gbookmarkfile.c 	\
-@@ -286,8 +291,8 @@
+ 	gbitlock.c		\
+@@ -315,8 +320,8 @@
  pcre_inc =
  endif
  
