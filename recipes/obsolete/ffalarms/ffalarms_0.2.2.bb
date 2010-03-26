@@ -10,7 +10,7 @@ DEPENDS = "edje-native python-native"
 # Pure Python plus Edje interface
 PACKAGE_ARCH = "all"
 
-SRC_URI = "http://projects.openmoko.org/frs/download.php/832/ffalarms-0.2.2.tar.gz"
+SRC_URI = "http://projects.openmoko.org/frs/download.php/832/ffalarms-0.2.2.tar.gz;name=archive"
 
 inherit distutils
 
@@ -21,3 +21,6 @@ RDEPENDS += "python-re python-datetime python-edje python-ecore \
              ttf-dejavu-sans"
 
 RSUGGESTS += "mplayer alsa-utils-aplay openmoko-alsa-scenarios"
+
+SRC_URI[archive.md5sum] = "6f03b9663245b93e8370e43cc556dba1"
+SRC_URI[archive.sha256sum] = "df0561124faa5c2e64038f5efcf39432c4795829115b86819083ae66b001899a"
