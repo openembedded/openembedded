@@ -1,10 +1,10 @@
 DESCRIPTION = "OpenEZX 2.6 Linux Development Kernel for the Motorola EZX GSM phones"
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
-KV = "2.6.29+2.6.30rc2"
+KV = "2.6.33"
 PV = "${KV}+gitr${SRCPV}"
 PE = "1"
-PR = "r3"
+PR = "r4"
 
 require linux.inc
 

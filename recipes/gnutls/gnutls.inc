@@ -1,13 +1,13 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 HOMEPAGE = "http://www.gnu.org/software/gnutls/"
-DEPENDS = "zlib libgcrypt lzo guile-native gettext"
+DEPENDS = "zlib libgcrypt lzo guile-native gettext gtk-doc"
 LICENSE = "LGPL"
 
 SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2;name=gnutls"
 
 inherit autotools binconfig pkgconfig
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 EXTRA_OECONF = "--with-included-opencdk --with-included-libtasn1"
 

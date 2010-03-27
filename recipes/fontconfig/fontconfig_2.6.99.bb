@@ -10,7 +10,7 @@ SRCREV = "96194cc3fa484837bf41598ff3f3d09b97c8dba4"
 SRC_URI = "git://anongit.freedesktop.org/~behdad/fontconfig;protocol=git \
 "
 
-PR = "r1"
+PR = "r2"
 S = "${WORKDIR}/git"
 
 PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
@@ -25,8 +25,7 @@ DEBIAN_NOAUTONAME_fontconfig-utils = "1"
 
 PARALLEL_MAKE = ""
 
-inherit autotools_stage
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
+inherit autotools
 
 export HASDOCBOOK="no"
 

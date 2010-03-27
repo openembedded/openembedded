@@ -26,9 +26,3 @@ do_install() {
 	oe_runmake INSTALLDIR="${D}${libdir}" INCDIR="${D}${includedir}" install
 }
 
-do_stage() {
-	install -d ${STAGING_LIBDIR}
-	install -d ${STAGING_INCDIR}
-	oe_runmake  INSTALLDIR="${STAGING_LIBDIR}" INCDIR="${STAGING_INCDIR}" install
-}
-

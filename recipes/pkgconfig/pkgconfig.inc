@@ -5,7 +5,7 @@ It replaces the ubiquitous *-config scripts you may have \
 seen with a single tool."
 HOMEPAGE = "http://pkg-config.freedesktop.org/wiki/"
 LICENSE = "GPL"
-INC_PR = "r7"
+INC_PR = "r8"
 
 SRC_URI = "http://pkgconfig.freedesktop.org/releases/pkg-config-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -21,6 +21,6 @@ do_configure_prepend () {
 	install -m 0644 ${WORKDIR}/glibconfig-sysdefs.h glib-1.2.*/
 }
 
-do_stage() {
-	install -d -m 0755 ${STAGING_LIBDIR}/pkgconfig
+do_install_append() {
+	install -d -m 0755 ${libdir}/pkgconfig
 }

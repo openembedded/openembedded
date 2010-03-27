@@ -392,6 +392,15 @@ python () {
         depends = depends + " git-native:do_populate_staging"
         bb.data.setVarFlag('do_fetch', 'depends', depends, d)
 
+    # unzip-native should already be staged before unpacking ZIP recipes
+    need_unzip = bb.data.getVar('NEED_UNZIP_FOR_UNPACK', d, 1)
+    src_uri = bb.data.getVar('SRC_URI', d, 1)
+
+    if ".zip" in src_uri or need_unzip == "1":
+        depends = bb.data.getVarFlag('do_unpack', 'depends', d) or ""
+        depends = depends + " unzip-native:do_populate_staging"
+        bb.data.setVarFlag('do_unpack', 'depends', depends, d)
+
     # 'multimachine' handling
     mach_arch = bb.data.getVar('MACHINE_ARCH', d, 1)
     pkg_arch = bb.data.getVar('PACKAGE_ARCH', d, 1)

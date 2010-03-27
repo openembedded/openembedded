@@ -14,7 +14,7 @@ inherit autotools native
 
 do_deploy() {
         install -d ${DEPLOY_DIR_TOOLS}
-        install -m 0755 boot_usb ${DEPLOY_DIR_TOOLS}/ezx-boot-usb-${PV}
+        install -m 0755 src/boot_usb ${DEPLOY_DIR_TOOLS}/ezx-boot-usb-${PV}
 }
 
 do_stage() {

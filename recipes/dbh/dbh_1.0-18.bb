@@ -7,7 +7,7 @@ SECTION = "libs"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dbh/dbh_${PV}.tar.bz2 \
-	   file://${FILESDIR}/configure.patch;patch=1"
+	   file://configure.patch;patch=1"
 
 S="${WORKDIR}/dbh_${PV}"
 

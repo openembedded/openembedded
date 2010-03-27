@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"
 S = "${WORKDIR}/libmad-${PV}"
@@ -19,7 +19,3 @@ do_configure_prepend () {
 	touch NEWS AUTHORS ChangeLog
 }
 
-do_stage() {
-	oe_libinstall -so libmad ${STAGING_LIBDIR}
-	install -m 0644 mad.h ${STAGING_INCDIR}
-}

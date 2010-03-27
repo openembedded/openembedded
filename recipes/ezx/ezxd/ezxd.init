@@ -37,6 +37,11 @@ start_it_up()
   fi
 
   echo -n "Starting $DESC: "
+  modprobe ohci-hcd
+  sleep 2
+  modprobe moto-usb-ipc
+  modprobe ts27010mux
+
   start-stop-daemon --start --background --quiet --pidfile $PIDFILE \
     --exec $DAEMON -- --system $PARAMS
   # We need to sleep here because opening the mux devices takes some time

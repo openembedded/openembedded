@@ -27,7 +27,7 @@ Website:    http://www.openprotium.com
 Interests:  kernels, net, storage
 Distros:    openprotium
 Machines:   storcenter
-Recipes:    apache2, apc, gallery, initscripts-openprotium, linux-storcenter*, 
+Recipes:    apache2, apc, gallery, initscripts-openprotium, linux-storcenter*,
 Recipes:    modphp, sccd, uboot-utils, xfsprogs
 
 Person:     Bernhard Guillon
@@ -71,7 +71,7 @@ Person:     Florian Boor
 Mail:       fb@kernelconcepts.de
 Website:    http://fl0rian.wordpress.com, http://www.kernelconcepts.de/~fuchs/
 Machines:   nokia770, netvista, htcuniversal, netbook-pro, htctornado, bd-neon
-Distros:  
+Distros:
 Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite, Palm TX,
 interests:  phone devices, evaluation hardware and PDAs
 Recipes:    atd
@@ -85,7 +85,7 @@ Person:     Frans Meulenbroeks
 Mail:       fransmeulenbroeks@gmail.com
 Machines:   sheevaplug, openrd-client, eeepc 701
 Distros:    Ångström
-Interests:  content sharing, media center, 
+Interests:  content sharing, media center,
 Recipes:    myth*
 
 Person:     Graeme Gregory
@@ -176,7 +176,7 @@ Mail:       Kristoffer.ericson@gmail.com
 Website:    http://www.jlime.com
 Machines:   jornada 680, jornada 720, NEC Mobilepro 900/c, Ben Nanonote
 Distros:    JLime
-Interests:  Kernels, emulation, superh/arm/mips 
+Interests:  Kernels, emulation, superh/arm/mips
 Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
@@ -193,11 +193,11 @@ Website:    http://www.slimlogic.co.uk
 Interests:  Mobile and embedded Linux within commercial environments.
 Interests:  Kernel development, userspace development, audio, power management.
 Machines:   mx31ads
-Recipes:    mx31ads-kernel*, glibc-2.10.1, some pulseaudio versions	
+Recipes:    mx31ads-kernel*, glibc-2.10.1, some pulseaudio versions
 
 Person:     Lynn Lin
 Mail:       Lin_Lynn@emc.com
-Interests:  Linux,build system,python,git 
+Interests:  Linux,build system,python,git
 Recipes:    mini-httpd,dmidecode,mktemp
 
 Person:     Marcin Juszkiewicz
@@ -265,7 +265,7 @@ Person:     Philip Balister
 Mail:       Crofton@balister.org
 Website:    http://www.balister.org
 Machines:   omap5912osk, gumstix-connex, gumstix-verdex, Efika, davinci-dvevm
-Interests:  Software Defined Radio, 
+Interests:  Software Defined Radio,
 Interests:  wireless networking (not necessarily wireless NIC's)
 Recipes:    omniorb, gnuradio
 
@@ -295,7 +295,7 @@ Website:    http://zerochaos.aircrack-ng.org
 Interests:  wifi, packet injection, security
 Distros:    Angstrom
 Machines:   akita
-Recipes:    aircrack-ng, kismet, lorcon, mdk, rfakeap, rglueap, 
+Recipes:    aircrack-ng, kismet, lorcon, mdk, rfakeap, rglueap,
 Recipes:    rt2570-k2wrlz, void11
 
 Person:     Robert Schuster 'thebohemian'
@@ -339,6 +339,12 @@ Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
 Machines:   logicpd-pxa270, at91-l9260
 Recipes:    directfb, php
+
+Person:     Stefan Schmidt
+Mail:       stefan@datenfreihafen.org
+Website:    http://www.datenfreihafen.org/
+Machines:   om-gta02, a1200, a780, rokre2, sgh-i900, palmpre, imote2
+Interest:   Linux mobile phones
 
 Person:     Steffen Sledz
 Mail:       sledz@dresearch.de
