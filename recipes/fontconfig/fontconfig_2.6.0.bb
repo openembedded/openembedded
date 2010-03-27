@@ -3,7 +3,7 @@ LICENSE = "BSD"
 DESCRIPTION = "A library for configuring and customizing font access."
 DEPENDS = "expat freetype zlib"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
            file://fix-pkgconfig.patch;patch=1"
@@ -39,12 +39,6 @@ fontconfig_do_unpack() {
 python do_unpack () {
        bb.build.exec_func('base_do_unpack', d)
        bb.build.exec_func('fontconfig_do_unpack', d)
-}
-
-do_stage () {
-	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}
-	install -d ${STAGING_INCDIR}/fontconfig
-	for i in ${S}/fontconfig/*.h; do install -m 0644 $i ${STAGING_INCDIR}/fontconfig/; done
 }
 
 BUILD_CFLAGS += " -I${STAGING_INCDIR}/freetype2"
