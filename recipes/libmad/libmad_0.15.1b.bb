@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz \
            file://add-pkgconfig.patch;patch=1 \
@@ -24,11 +24,6 @@ EXTRA_OECONF_append_arm = " --enable-fpm=arm"
 do_configure_prepend () {
 #	damn picky automake...
 	touch NEWS AUTHORS ChangeLog
-}
-
-do_stage() {
-	oe_libinstall -so libmad ${STAGING_LIBDIR}
-	install -m 0644 mad.h ${STAGING_INCDIR}
 }
 
 ARM_INSTRUCTION_SET = "arm"
