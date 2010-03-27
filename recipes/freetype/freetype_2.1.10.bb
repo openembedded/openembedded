@@ -24,10 +24,5 @@ do_configure() {
 	oe_runconf
 }
 
-do_stage() {
-	autotools_stage_includes
-	oe_libinstall -so -a -C objs libfreetype ${STAGING_LIBDIR}
-}
-
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}"

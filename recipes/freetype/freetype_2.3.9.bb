@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
@@ -29,12 +29,6 @@ do_configure() {
 
 do_compile_prepend() {
 	${BUILD_CC} -o objs/apinames src/tools/apinames.c
-}
-
-do_stage() {
-     export LIBTOOL='${LIBTOOL}'
-	 autotools_stage_all
-	 oe_libinstall -so -a -C objs libfreetype ${STAGING_LIBDIR}
 }
 
 FILES_${PN} = "${libdir}/lib*.so.*"
