@@ -1,5 +1,5 @@
 require expat.inc
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://autotools.patch;patch=1"
 SRC_URI[src.md5sum] = "ee8b492592568805593f81f8cdf2a04c"
@@ -11,12 +11,6 @@ do_configure() {
 	rm -f ${S}/conftools/libtool.m4
 	touch ${S}/conftools/libtool.m4
 	autotools_do_configure
-}
-
-do_stage() {
-	install -m 0644 ${S}/lib/expat.h ${STAGING_INCDIR}/
-	install -m 0644 ${S}/lib/expat_external.h ${STAGING_INCDIR}/
-	oe_libinstall -so libexpat ${STAGING_LIBDIR}
 }
 
 do_install() {
