@@ -17,4 +17,3 @@ EXTRA_OECONF = "-enable-speed"
 do_configure_prepend() {
     install -m 0644 ${WORKDIR}/id3tag.pc ${S}
 }
-}
