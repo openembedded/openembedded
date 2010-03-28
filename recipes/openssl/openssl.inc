@@ -95,12 +95,6 @@ do_compile () {
 	oe_runmake
 }
 
-do_stage () {
-	cp --dereference -R include/openssl ${STAGING_INCDIR}/
-	oe_libinstall -a -so libcrypto ${STAGING_LIBDIR}
-	oe_libinstall -a -so libssl ${STAGING_LIBDIR}
-}
-
 do_install () {
 	oe_runmake INSTALL_PREFIX="${D}" install
 
@@ -114,4 +108,7 @@ do_install () {
 
 	oe_libinstall -so libcrypto ${D}${libdir}
 	oe_libinstall -so libssl ${D}${libdir}
+
+	install -d ${D}${includedir}
+	cp --dereference -R include/openssl ${D}${includedir}
 }

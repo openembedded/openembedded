@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz;name=qemu-${PV} \
@@ -27,7 +27,7 @@ BBCLASSEXTEND="native"
 
 S = "${WORKDIR}/qemu-${PV}"
 
-EXTRA_OECONF += "--disable-sdl --disable-strip"
+EXTRA_OECONF += " --disable-curl --disable-sdl --disable-strip"
 
 inherit autotools
 

@@ -6,7 +6,7 @@ UNIX-like platforms, Windows, OS/2 and BeOS."
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "glib-2.0-native gtk-doc virtual/libiconv virtual/libintl"
+DEPENDS = "glib-2.0-native gtk-doc virtual/libiconv virtual/libintl zlib"
 PR = "r1"
 
 SRC_URI = "\

@@ -1,5 +1,7 @@
 #!/bin/sh
 ACTUALCONF=/var/run/resolv.conf
-if [ -f $ACTUALCONF.ppporig ] ; then
+if [ -x /sbin/resolvconf ] ; then
+	resolvconf -d $PPP_IFACE
+elif [ -f $ACTUALCONF.ppporig ] ; then
 	mv $ACTUALCONF.ppporig $ACTUALCONF
 fi

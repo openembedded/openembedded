@@ -166,6 +166,10 @@ case `module_id` in
 # 32bpp - we'll enable it once newer kernels are.. working.                 
 #                 ARGS="$ARGS -fbbpp32"
                  XSERVER=/usr/bin/Xorg ;;
+         "Bug-Labs BUG")
+                 if [ "$XSERVER" = "/usr/bin/Xorg" ];then
+                      ARGS=""
+                 fi;; #TODO: handle kdrive
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise

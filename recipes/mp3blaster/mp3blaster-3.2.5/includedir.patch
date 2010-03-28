@@ -1,0 +1,37 @@
+Index: mp3blaster-3.2.5/mpegsound/Makefile.am
+===================================================================
+--- mp3blaster-3.2.5.orig/mpegsound/Makefile.am
++++ mp3blaster-3.2.5/mpegsound/Makefile.am
+@@ -12,5 +12,5 @@ libmpegsound_a_SOURCES  = soundinputstre
+ 
+ noinst_HEADERS		= mpegsound.h mpegsound_locals.h
+ 
+-INCLUDES                = -I$(srcdir) -I$(includedir)
++INCLUDES                = -I$(srcdir)
+ AM_CXXFLAGS             = @NAS_CFLAGS@
+Index: mp3blaster-3.2.5/nmixer/Makefile.am
+===================================================================
+--- mp3blaster-3.2.5.orig/nmixer/Makefile.am
++++ mp3blaster-3.2.5/nmixer/Makefile.am
+@@ -2,7 +2,7 @@ bin_PROGRAMS	= nmixer
+ nmixer_SOURCES	= main.cc
+ nmixer_DEPENDENCIES = libnmixer.a
+ LDADD           = @NCURSES_LIBS@ @NAS_LIBS@ @LIBNMIXER@
+-INCLUDES		= -I/usr/include/ncurses -I$(srcdir) -I$(includedir)
++INCLUDES		= -I$(srcdir)
+ noinst_LIBRARIES = libnmixer.a
+ libnmixer_a_SOURCES = nmixer.cc mixers.cc ossmixer.cc nasmixer.cc nmixer.h \
+                       getopt.c getopt1.c getopt_local.h nullmixer.cc
+Index: mp3blaster-3.2.5/src/Makefile.am
+===================================================================
+--- mp3blaster-3.2.5.orig/src/Makefile.am
++++ mp3blaster-3.2.5/src/Makefile.am
+@@ -35,7 +35,7 @@ mp3tag_SOURCES = id3parse.cc mp3tag.cc i
+ mp3tag_DEPENDENCIES = ../mpegsound/libmpegsound.a ../nmixer/libnmixer.a
+ mp3tag_LDADD = @LIBMPEGSOUND@ @LIBESD@ @LIBSDL@
+ mp3blaster_DEPENDENCIES = ../mpegsound/libmpegsound.a ../nmixer/libnmixer.a
+-INCLUDES		= -I$(top_srcdir)/mpegsound -I/usr/include/ncurses -I$(top_srcdir)/nmixer -I$(includedir)
++INCLUDES		= -I$(top_srcdir)/mpegsound -I$(top_srcdir)/nmixer
+ mp3blaster_LDADD	= @LIBMPEGSOUND@ @LIBNMIXER@ @NAS_LIBS@ @SID_LIBS@ @OGG_LIBS@ @LIRC_LIBS@ @NCURSES_LIBS@ @LIBESD@ @LIBSDL@
+ EXTRA_DIST = FILES
+ AM_CXXFLAGS	= @NAS_CFLAGS@ -DMP3BLASTER_DOCDIR=\"${pkgdatadir}\"

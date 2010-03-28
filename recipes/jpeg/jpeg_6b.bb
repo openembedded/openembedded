@@ -6,7 +6,7 @@ PRIORITY = "required"
 DEPENDS = "libtool-cross"
 RPROVIDES_${PN} = "jpeg"
 
-PR = "r8"
+PR = "r9"
 
 #SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
 SRC_URI = "ftp://aeneas.mit.edu/pub/gnu/ghostscript/jpegsrc.v${PV}.tar.gz \
@@ -28,15 +28,6 @@ do_configure_prepend () {
 	rm -f ${S}/ltmain.sh
 }
 
-do_stage() {
-	install -m 644 jconfig.h ${STAGING_INCDIR}/jconfig.h
-	install -m 644 jpeglib.h ${STAGING_INCDIR}/jpeglib.h
-	install -m 644 jmorecfg.h ${STAGING_INCDIR}/jmorecfg.h
-	install -m 644 jerror.h ${STAGING_INCDIR}/jerror.h
-	install -m 644 jpegint.h ${STAGING_INCDIR}/jpegint.h
-	oe_libinstall -so libjpeg ${STAGING_LIBDIR}
-}
-
 do_install() {
 	install -d ${D}${bindir} ${D}${includedir} \
 		   ${D}${mandir}/man1 ${D}${libdir}
@@ -46,4 +37,5 @@ do_install() {
 PACKAGES =+ 		"jpeg-tools "
 FILES_jpeg-tools = 	"${bindir}/*"
 
-
+NATIVE_INSTALL_WORKS = "1"
+BBCLASSEXTEND = "native"

@@ -2,7 +2,7 @@ DESCRIPTION = "libmikmod is a module player library supporting many formats, inc
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/mikmod/libmikmod-${PV}.tar.gz \
@@ -24,14 +24,3 @@ EXTRA_OECONF = "\
   --enable-threads \
 "
 
-do_stage() {
-	oe_libinstall -a -so -C libmikmod libmikmod ${STAGING_LIBDIR}
-	install -m 0644 ${S}/include/mikmod.h ${STAGING_INCDIR}/
-
-	install -d ${STAGING_BINDIR_CROSS}
-        cat libmikmod-config | sed 's,$libdir , ,' \
-                             | sed 's,$includes , ,' > ${STAGING_BINDIR_CROSS}/libmikmod-config
-        chmod a+rx ${STAGING_BINDIR_CROSS}/libmikmod-config
-	install -d ${STAGING_DATADIR}/aclocal/
-	install -m 0644 libmikmod.m4 ${STAGING_DATADIR}/aclocal/
-}

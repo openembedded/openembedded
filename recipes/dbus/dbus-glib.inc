@@ -3,10 +3,10 @@ HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl dbus-glib-native dbus"
-INC_PR = "r0"
+INC_PR = "r1"
 
 SRC_URI = "\
-  http://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-${PV}.tar.gz \
+  http://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-${PV}.tar.gz;name=archive \
   file://no-introspect.patch;patch=1 \
   file://no-examples.patch;patch=1 \
 "
@@ -16,11 +16,6 @@ inherit autotools pkgconfig gettext
 do_configure_prepend() {
 	install -m 0644 ${STAGING_DATADIR_NATIVE}/dbus/dbus-bus-introspect.xml ${S}/tools/
 	install -m 0644 ${STAGING_DATADIR_NATIVE}/dbus/dbus-glib-bindings.h ${S}/tools/
-}
-
-do_stage() {
-	oe_libinstall -so -C dbus libdbus-glib-1 ${STAGING_LIBDIR}
-	autotools_stage_includes
 }
 
 PACKAGES += "${PN}-bash-completion"

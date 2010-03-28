@@ -4,7 +4,7 @@ HOMEPAGE = "http://code.google.com/p/arora/"
 
 PR = "r2"
 
-SRC_URI = "http://arora.googlecode.com/files/arora-${PV}.tar.gz"
+SRC_URI = "http://arora.googlecode.com/files/arora-${PV}.tar.gz;name=arora"
 
 S = "${WORKDIR}/arora-${PV}"
 

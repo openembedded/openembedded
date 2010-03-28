@@ -23,13 +23,11 @@ do_install () {
     oe_runmake install DESTDIR=${D}
     oe_runmake install-shared DESTDIR=${D}
 	oe_libinstall -a -so libpcap ${D}${libdir}
-}
 
-do_stage_append () {
-    install -d ${STAGING_INCDIR}/pcap
-    install -m 0644 pcap/pcap.h ${STAGING_INCDIR}/pcap/pcap.h
-    install -m 0644 pcap/namedb.h ${STAGING_INCDIR}/pcap/namedb.h
-    install -m 0644 pcap/bpf.h ${STAGING_INCDIR}/pcap/bpf.h
+    install -d ${D}${includedir}/pcap
+    install -m 0644 pcap/pcap.h ${D}${includedir}/pcap/pcap.h
+    install -m 0644 pcap/namedb.h ${D}${includedir}/pcap/namedb.h
+    install -m 0644 pcap/bpf.h ${D}${includedir}/pcap/bpf.h
 }
 
 

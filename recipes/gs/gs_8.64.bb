@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gnu.org/software/ghostscript/ghostscript.html"
 DEPENDS = "jpeg zlib fontconfig cups"
 PR = "r2"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/g/ghostscript/ghostscript_${PV}~dfsg.orig.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/g/ghostscript/ghostscript_${PV}~dfsg.orig.tar.gz;name=tarball \
            file://0001_svn_snapshot.patch;patch=1 \
            file://0002_svn_snapshot_jbig2dec.patch;patch=1 \
            file://1001_install_cjk_examples.patch;patch=1 \
@@ -18,11 +18,17 @@ SRC_URI = "${DEBIAN_MIRROR}/main/g/ghostscript/ghostscript_${PV}~dfsg.orig.tar.g
            file://2002_gs_man_fix_debian.patch;patch=1 \
            "
 
+SRC_URI[tarball.md5sum] = "e42706c2409815df5c959484080fd4a3"
+SRC_URI[tarball.sha256sum] = "cc856d33cb781cdc3383b8eb4e0f390997f8359fe144a906b84297b5d377f03d"
+
+
 S = "${WORKDIR}/ghostscript-${PV}~dfsg"
 
 inherit autotools
 
 EXTRA_OECONF = "--without-x --with-jasper --with-zlib=${STAGING_DIR_HOST}${layout_prefix}"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 PACKAGES += "cups-gs"
 

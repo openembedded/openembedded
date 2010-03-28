@@ -4,7 +4,7 @@ SECTION = "x11/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv liblinebreak libfribidi"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.fbreader.org/fbreader-sources-${PV}.tgz \
 file://Makefile.patch;patch=1"
@@ -16,9 +16,10 @@ READER_UI         ?= "gtk"
 READER_STATUS	  ?= "release"
 
 FILES_${PN} += "${datadir}/FBReader ${datadir}/zlibrary ${libdir}/zlibrary"
+FILES_${PN}-dbg += "${libdir}/zlibrary/ui/.debug/"
 
 CFLAGS_append = " RESOLUTION=${READER_RESOLUTION} INSTALLDIR=${prefix}"
-EXTRA_OEMAKE = "CC='${CXX}' LD='${CXX}' OE_CFLAGS='${CXXFLAGS}' INCPATH='${STAGING_INCDIR}' LIBPATH='${STAGING_LIBDIR}'"
+EXTRA_OEMAKE = "CC='${CXX}' LD='${CXX}' LDFLAGS='${LDFLAGS}' INCPATH='${STAGING_INCDIR}' LIBPATH='${STAGING_LIBDIR}'"
 
 inherit pkgconfig
 

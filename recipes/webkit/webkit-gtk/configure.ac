@@ -2,7 +2,7 @@ AC_PREREQ(2.59)
 
 m4_define([webkit_major_version], [1])
 m4_define([webkit_minor_version], [1])
-m4_define([webkit_micro_version], [22])
+m4_define([webkit_micro_version], [90])
 
 # This is the version we'll be using as part of our User-Agent string
 # e.g., AppleWebKit/$(webkit_user_agent_version) ...
@@ -35,7 +35,7 @@ AC_CONFIG_SRCDIR([WebCore/config.h])
 
 dnl # Libtool library version, not to confuse with API version
 dnl # see http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html#Libtool-versioning
-LIBWEBKITGTK_VERSION=18:0:16
+LIBWEBKITGTK_VERSION=19:1:17
 AC_SUBST([LIBWEBKITGTK_VERSION])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects tar-ustar])
@@ -561,6 +561,14 @@ AC_ARG_ENABLE(blob_slice,
               [],[enable_blob_slice="no"])
 AC_MSG_RESULT([$enable_blob_slice])
 
+# check whether to enable Fast Mobile Scrolling support
+AC_MSG_CHECKING([whether to enable Fast Mobile Scrolling])
+AC_ARG_ENABLE(fast_mobile_scrolling,
+              AC_HELP_STRING([--enable-fast-mobile-scrolling],
+                             [enable support for Fast Mobile Scrolling [default=no]]),
+              [],[enable_fast_mobile_scrolling="no"])
+AC_MSG_RESULT([$enable_fast_mobile_scrolling])
+
 # check whether to enable code coverage
 AC_MSG_CHECKING([whether to enable code coverage support])
 AC_ARG_ENABLE(coverage,
@@ -792,6 +800,7 @@ AM_CONDITIONAL([ENABLE_DOM_STORAGE],[test "$enable_dom_storage" = "yes"])
 AM_CONDITIONAL([ENABLE_DATABASE],[test "$enable_database" = "yes"])
 AM_CONDITIONAL([ENABLE_DATALIST],[test "$enable_datalist" = "yes"])
 AM_CONDITIONAL([ENABLE_EVENTSOURCE],[test "$enable_eventsource" = "yes"])
+AM_CONDITIONAL([ENABLE_FAST_MOBILE_SCROLLING],[test "$enable_fast_mobile_scrolling" = "yes"])
 AM_CONDITIONAL([ENABLE_ICONDATABASE],[test "$enable_icon_database" = "yes"])
 AM_CONDITIONAL([ENABLE_INDEXED_DATABASE],[test "$enable_indexed_database" = "yes"])
 AM_CONDITIONAL([ENABLE_XHTMLMP],[test "$enable_xhtmlmp" = "yes"])
@@ -848,6 +857,7 @@ Build configuration:
 Features:
  3D Transforms                                            : $enable_3D_transforms
  Blob.slice support                                       : $enable_blob_slice
+ Fast Mobile Scrolling                                    : $enable_fast_mobile_scrolling
  JIT compilation                                          : $enable_jit
  Filters support                                          : $enable_filters
  Geolocation support                                      : $enable_geolocation
