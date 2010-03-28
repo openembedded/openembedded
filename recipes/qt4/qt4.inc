@@ -265,7 +265,7 @@ do_install() {
 
 	# QT abuses $includedir to point to its headers, which breaks pkgconfig sysroot, so manually fix it up here:
 	for pc in ${D}${libdir}/pkgconfig/*.pc ; do
-		sed -i -e "s:prefix}include/${QT_BASE_NAME}/$(basename $pc .pc):includedir}:" \
+		sed -i -e "s:prefix}include/${QT_BASE_NAME}/$(basename $pc .pc):prefix}/include:" \
 		       -e "s,Cflags: ,Cflags: -IP{includedir}/${QT_BASE_NAME}/$(basename $pc .pc) ," \
 		       -e 's:IP{:I${:g' $pc
 	done
