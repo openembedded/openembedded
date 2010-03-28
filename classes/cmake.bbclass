@@ -4,7 +4,7 @@ DEPENDS += " cmake-native "
 CCACHE = ""
 
 # We want the staging and installing functions from autotools
-inherit autotools_stage
+inherit autotools
 
 # Use in-tree builds by default but allow this to be changed
 # since some packages do not support them (e.g. llvm 2.5).
