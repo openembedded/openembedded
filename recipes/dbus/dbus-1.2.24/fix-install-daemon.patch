@@ -7,7 +7,7 @@ Index: dbus-0.94/bus/Makefile.am
  		chmod 755 $(DESTDIR)$(DBUS_DAEMONDIR); \
  	fi
 -	$(INSTALL_PROGRAM) dbus-daemon $(DESTDIR)$(DBUS_DAEMONDIR)
-+	$(INSTALL_PROGRAM) .libs/dbus-daemon $(DESTDIR)$(DBUS_DAEMONDIR)
++	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) dbus-daemon $(DESTDIR)$(DBUS_DAEMONDIR)
  	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/run/dbus
  	$(mkinstalldirs) $(DESTDIR)$(configdir)/system.d
  	$(mkinstalldirs) $(DESTDIR)$(datadir)/dbus-1/services
