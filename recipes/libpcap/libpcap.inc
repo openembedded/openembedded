@@ -4,7 +4,7 @@ SECTION = "libs/network"
 LICENSE = "BSD"
 DEPENDS = "bluez-libs flex-native bison-native"
 
-PR = "r1"
+PR = "r2"
 
 # Don't forget to edit shared.patch to have the correct version number inside
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz \
@@ -24,12 +24,8 @@ do_configure_prepend () {
 	fi
 }
 
-do_stage () {
-	install -m 0644 pcap.h ${STAGING_INCDIR}/pcap.h
-	install -m 0644 pcap-namedb.h ${STAGING_INCDIR}/pcap-namedb.h
-	install -m 0644 pcap-bpf.h ${STAGING_INCDIR}/pcap-bpf.h
-	oe_libinstall -a -so libpcap ${STAGING_LIBDIR}
-	install -d ${STAGING_INCDIR}/net
-	ln -sf ${STAGING_INCDIR}/pcap-bpf.h ${STAGING_INCDIR}/net/bpf.h
-	install -m 0644 acinclude.m4 ${STAGING_DATADIR}/aclocal/libpcap.m4
+do_install_append () {
+	install -d ${D}${includedir}/net
+	ln -sf ../pcap-bpf.h ${D}${includedir}/net/bpf.h
+	install -m 0644 acinclude.m4 ${D}${datadir}/aclocal/libpcap.m4
 }
