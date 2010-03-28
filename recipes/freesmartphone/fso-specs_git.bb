@@ -1,22 +1,20 @@
-DESCRIPTIONS = "API Specification for freesmartphone.org"
-AUTHOR = "Michael 'Mickey' Lauer"
+DESCRIPTIONS = "freesmartphone.org DBus API files"
+AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 HOMEPAGE = "http://docs.freesmartphone.org"
 LICENSE = "BSD"
 DEPENDS = "libxslt-native"
 SECTION = "devel/specifications"
 PV = "0.5.0-gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/specs.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
-do_compile() {
-	make xml
-}
+inherit autotools pkgconfig
 
-do_stage() {
-	install -d "${STAGING_DATADIR}/fso-specs"
-	install -m 0644 xml/* "${STAGING_DATADIR}/fso-specs"
-}
+FILES_${PN}-dev += "${datadir}/freesmartphone/xml"
+PACKAGE_ARCH = "all"
 
-FILE_${PN}-dev += "${datadir}/fso-specs"
+do_compile_append() {
+	sed -i -e s,\$\{datarootdir\},${STAGING_DATADIR},g *.pc
+}
