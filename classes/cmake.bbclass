@@ -54,7 +54,16 @@ cmake_do_configure() {
     cd ${OECMAKE_BUILDPATH}
   fi
 
-  cmake ${OECMAKE_SOURCEPATH} \
+  # Just like autotools cmake can use a site file to cache result that need generated binaries to run
+  if [ -e ${WORKDIR}/site-file.cmake ] ; then
+    OECMAKE_SITEFILE=" -C ${WORKDIR}/site-file.cmake"
+  else 
+    OECMAKE_SITEFILE=""
+  fi
+
+  cmake \
+    ${OECMAKE_SITEFILE} \
+    ${OECMAKE_SOURCEPATH} \
     -DCMAKE_INSTALL_PREFIX:PATH=${prefix} \
     -DCMAKE_INSTALL_SO_NO_EXE=0 \
 	-DCMAKE_TOOLCHAIN_FILE=${WORKDIR}/toolchain.cmake \
