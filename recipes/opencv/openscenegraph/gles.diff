@@ -1,0 +1,247 @@
+ osg/State.cpp         |   58 +++++++++++++++++++++++-----------------------
+ osgUtil/ShaderGen.cpp |   63 ++++++++++++++++++++++++++++++++------------------
+ 2 files changed, 70 insertions(+), 51 deletions(-)
+
+--- OpenSceneGraph-2.9.6-old/src/osg/State.cpp	2009-11-17 16:54:20.000000000 +0100
++++ OpenSceneGraph-2.9.6/src/osg/State.cpp	2009-07-26 02:13:29.000000000 +0200
+@@ -62,9 +62,9 @@
+     bool compactAliasing = true;
+     if (compactAliasing)
+     {
+-        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
+-        setUpVertexAttribAlias(_normalAlias, 1, "gl_Normal","osg_Normal","attribute vec3 ");
+-        setUpVertexAttribAlias(_colorAlias, 2, "gl_Color","osg_Color","attribute vec4 ");
++        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute highp vec4 ");
++        setUpVertexAttribAlias(_normalAlias, 1, "gl_Normal","osg_Normal","attribute highp vec3 ");
++        setUpVertexAttribAlias(_colorAlias, 2, "gl_Color","osg_Color","attribute highp vec4 ");
+ 
+         _texCoordAliasList.resize(5);
+         for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
+@@ -74,20 +74,20 @@
+             gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
+             osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
+ 
+-            setUpVertexAttribAlias(_texCoordAliasList[i], 3+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
++            setUpVertexAttribAlias(_texCoordAliasList[i], 3+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute highp vec4 ");
+         }
+ 
+-        setUpVertexAttribAlias(_secondaryColorAlias, 6, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
+-        setUpVertexAttribAlias(_fogCoordAlias, 7, "gl_FogCoord","osg_FogCoord","attribute float ");
++        setUpVertexAttribAlias(_secondaryColorAlias, 6, "gl_SecondaryColor","osg_SecondaryColor","attribute highp vec4 ");
++        setUpVertexAttribAlias(_fogCoordAlias, 7, "gl_FogCoord","osg_FogCoord","attribute highp float ");
+ 
+     }
+     else
+     {
+-        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
+-        setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute vec3 ");
+-        setUpVertexAttribAlias(_colorAlias, 3, "gl_Color","osg_Color","attribute vec4 ");
+-        setUpVertexAttribAlias(_secondaryColorAlias, 4, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
+-        setUpVertexAttribAlias(_fogCoordAlias, 5, "gl_FogCoord","osg_FogCoord","attribute float ");
++        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute highp vec4 ");
++        setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute highp vec3 ");
++        setUpVertexAttribAlias(_colorAlias, 3, "gl_Color","osg_Color","attribute highp vec4 ");
++        setUpVertexAttribAlias(_secondaryColorAlias, 4, "gl_SecondaryColor","osg_SecondaryColor","attribute highp vec4 ");
++        setUpVertexAttribAlias(_fogCoordAlias, 5, "gl_FogCoord","osg_FogCoord","attribute highp float ");
+ 
+         _texCoordAliasList.resize(8);
+         for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
+@@ -97,7 +97,7 @@
+             gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
+             osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
+ 
+-            setUpVertexAttribAlias(_texCoordAliasList[i], 8+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
++            setUpVertexAttribAlias(_texCoordAliasList[i], 8+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute highp vec4 ");
+         }
+     }
+ 
+@@ -1240,26 +1240,26 @@
+     // replace ftransform as it only works with built-ins
+     State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
+ 
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_Normal", "osg_Normal", "attribute vec3 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_Vertex", "osg_Vertex", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_Color", "osg_Color", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_SecondaryColor", "osg_SecondaryColor", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_FogCoord", "osg_FogCoord", "attribute float ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_Normal", "osg_Normal", "attribute highp vec3 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_Vertex", "osg_Vertex", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_Color", "osg_Color", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_SecondaryColor", "osg_SecondaryColor", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_FogCoord", "osg_FogCoord", "attribute highp float ");
+ 
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord0", "osg_MultiTexCoord0", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord1", "osg_MultiTexCoord1", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord2", "osg_MultiTexCoord2", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord3", "osg_MultiTexCoord3", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord4", "osg_MultiTexCoord4", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord5", "osg_MultiTexCoord5", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord6", "osg_MultiTexCoord6", "attribute vec4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7", "attribute vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord0", "osg_MultiTexCoord0", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord1", "osg_MultiTexCoord1", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord2", "osg_MultiTexCoord2", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord3", "osg_MultiTexCoord3", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord4", "osg_MultiTexCoord4", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord5", "osg_MultiTexCoord5", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord6", "osg_MultiTexCoord6", "attribute highp vec4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7", "attribute highp vec4 ");
+ 
+     // replace built in uniform
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform mat4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
+-    State_Utils::replaceAndInsertDeclaration(source, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform highp mat4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform highp mat4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform highp mat4 ");
++    State_Utils::replaceAndInsertDeclaration(source, "gl_NormalMatrix", "osg_NormalMatrix", "uniform highp mat3 ");
+ 
+     osg::notify(osg::NOTICE)<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+ 
+--- OpenSceneGraph-2.9.6-old/src/osgUtil/ShaderGen.cpp	2009-11-18 13:15:29.000000000 +0100
++++ OpenSceneGraph-2.9.6/src/osgUtil/ShaderGen.cpp	2009-07-26 03:18:12.000000000 +0200
+@@ -134,10 +134,16 @@
+     {
+         vert << "varying vec3 viewDir;\n";
+     }
++
++    // PF: Front Color no defined. Diffuse component as a varying
++    vert <<    "varying highp vec4 glFrontColor;\n";
++    vert <<    "varying highp float diffuse;\n";
++    // PF: 
+     
+     // copy varying to fragment shader
+     frag << vert.str();
+ 
++    vert <<    "attribute highp vec4 osg_Normal;\n";
+     // write uniforms and attributes
+     int unit = 0;
+     if (stateMask & DIFFUSE_MAP)
+@@ -151,9 +157,9 @@
+     {
+         osg::Uniform *normalMap = new osg::Uniform("normalMap", unit++);
+         stateSet->addUniform(normalMap);
+-        frag << "uniform sampler2D normalMap;\n";
++        frag << "uniform highp sampler2D normalMap;\n";
+         program->addBindAttribLocation("tangent", 6);
+-        vert << "attribute vec3 tangent;\n";
++        vert << "attribute highp vec3 tangent;\n";
+     }
+ 
+     vert << "\n"\
+@@ -169,14 +175,14 @@
+     if (stateMask & NORMAL_MAP)
+     {
+         vert << 
+-            "  vec3 n = gl_NormalMatrix * gl_Normal;\n"\
+-            "  vec3 t = gl_NormalMatrix * tangent;\n"\
+-            "  vec3 b = cross(n, t);\n"\
+-            "  vec3 dir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
++            "  highp vec3 n = gl_NormalMatrix * gl_Normal;\n"\
++            "  highp vec3 t = gl_NormalMatrix * tangent;\n"\
++            "  highp vec3 b = cross(n, t);\n"\
++            "  highp vec3 dir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
+             "  viewDir.x = dot(dir, t);\n"\
+             "  viewDir.y = dot(dir, b);\n"\
+             "  viewDir.z = dot(dir, n);\n"\
+-            "  vec4 lpos = gl_LightSource[0].position;\n"\
++            "  ihighp vec4 lpos = gl_LightSource[0].position;\n"\
+             "  if (lpos.w == 0.0)\n"\
+             "    dir = lpos.xyz;\n"\
+             "  else\n"\
+@@ -189,9 +195,9 @@
+     {
+         vert << 
+             "  normalDir = gl_NormalMatrix * gl_Normal;\n"\
+-            "  vec3 dir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
++            "  highp vec3 dir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
+             "  viewDir = dir;\n"\
+-            "  vec4 lpos = gl_LightSource[0].position;\n"\
++            "  highp vec4 lpos = gl_LightSource[0].position;\n"\
+             "  if (lpos.w == 0.0)\n"\
+             "    lightDir = lpos.xyz;\n"\
+             "  else\n"\
+@@ -201,11 +207,18 @@
+     {
+         vert << 
+             "  viewDir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
+-            "  gl_FrontColor = gl_Color;\n";
++            "  glFrontColor = gl_Color;\n";
+     }
+     else
+     {
+-        vert << "  gl_FrontColor = gl_Color;\n";
++        // PF: Just tested this case so far.... No textures, etc...
++        //vert << "  gl_FrontColor = gl_Color;\n";
++	// Add a light position and color as materials seems to be ignored
++	vert << "  highp vec3 lightPosition = vec3 (50.0, 100.0, -100.0);\n";
++        //vert << "  glFrontColor = vec4 (0.5, 0.5, 0.5, 1.0);\n";
++        vert << "  glFrontColor = gl_Color;\n";
++	vert << "  diffuse = max(dot(normalize (gl_ModelViewProjectionMatrix * osg_Normal), normalize(vec4(lightPosition, 1.0))), 0.0);\n";
++	// PF:
+     }
+     
+     vert << "}\n";
+@@ -216,44 +229,50 @@
+ 
+     if (stateMask & DIFFUSE_MAP)
+     {
+-        frag << "  vec4 base = texture2D(diffuseMap, gl_TexCoord[0].st);\n";
++        frag << "  highp vec4 base = texture2D(diffuseMap, gl_TexCoord[0].st);\n";
+     }
+     else
+     {
+-        frag << "  vec4 base = vec4(1.0);\n";
++        frag << "  highp vec4 base = vec4(1.0);\n";
+     }
+ 
+     if (stateMask & NORMAL_MAP)
+     {
+-        frag << "  vec3 normalDir = texture2D(normalMap, gl_TexCoord[0].st).xyz*2.0-1.0;\n";
++        frag << "  highp vec3 normalDir = texture2D(normalMap, gl_TexCoord[0].st).xyz*2.0-1.0;\n";
+     }
+ 
+     if (stateMask & (LIGHTING | NORMAL_MAP))
+     {
+         frag << 
+-            "  vec3 nd = normalize(normalDir);\n"\
+-            "  vec3 ld = normalize(lightDir);\n"\
+-            "  vec3 vd = normalize(viewDir);\n"\
+-            "  vec4 color = gl_FrontLightModelProduct.sceneColor;\n"\
++            "  highp vec3 nd = normalize(normalDir);\n"\
++            "  highp vec3 ld = normalize(lightDir);\n"\
++            "  highp vec3 vd = normalize(viewDir);\n"\
++            "  highp vec4 color = gl_FrontLightModelProduct.sceneColor;\n"\
+             "  color += gl_FrontLightProduct[0].ambient;\n"\
+-            "  float diff = max(dot(ld, nd), 0.0);\n"\
++            "  highp float diff = max(dot(ld, nd), 0.0);\n"\
+             "  color += gl_FrontLightProduct[0].diffuse * diff;\n"\
+             "  color *= base;\n"\
+             "  if (diff > 0.0)\n"\
+             "  {\n"\
+-            "    vec3 halfDir = normalize(ld+vd);\n"\
++            "    highp vec3 ihighp halfDir = normalize(ld+vd);\n"\
+             "    color.rgb += base.a * gl_FrontLightProduct[0].specular.rgb * \n"\
+             "      pow(max(dot(halfDir, nd), 0.0), gl_FrontMaterial.shininess);\n"\
+             "  }\n";
+     }
+     else
+     {
+-        frag << "  vec4 color = base;\n";
++        frag << "  highp vec4 color = base;\n";
+     }
+ 
+     if (!(stateMask & LIGHTING))
+     {
+-        frag << "  color *= gl_Color;\n";
++        // PF: Calcula te simple fragment color with some ambient light
++        //frag << "  color *= gl_Color;\n";
++        //frag << "  color *= gFrontColor;\n";
++        //frag << "  color *= diffuse;\n";
++        frag << "  highp vec4 amb = vec4 (1.0, 1.0, 1.0, 1.0);\n";
++        frag << "  color = amb * diffuse * glFrontColor;\n";
++        // PF:
+     }
+ 
+     if (stateMask & FOG)
