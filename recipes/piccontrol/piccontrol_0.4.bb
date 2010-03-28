@@ -3,7 +3,7 @@ SECTION = "console/network"
 DEPENDS = "lua5.1"
 PR = "r1"
 LICENSE = "GPL"
-COMPATIBLE_MACHINE = "tsx09"
+#COMPATIBLE_MACHINE = "tsx09"
 
 SRC_URI = "http://byronbradley.co.uk/piccontrol/qcontrol-0.4.tar.gz \
            file://luafix-0.4.patch;patch=0 \
@@ -17,7 +17,7 @@ inherit update-rc.d
 INITSCRIPT_NAME = "piccontrol"
 INITSCRIPT_PARAMS = "defaults"
 
-LDFLAGS	+= " ${STAGING_LIBDIR}/liblua5.1.a -lpthread -lm -ldl "
+LDFLAGS	+= " ${STAGING_LIBDIR}/liblua.a -lpthread -lm -ldl "
 CFLAGS	+= " -I${STAGING_INCDIR}/lua5.1 "
 
 do_install() {
