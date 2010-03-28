@@ -4,7 +4,7 @@ LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 
 DEPENDS += "readline"
-PR = "r4"
+PR = "r5"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
            file://lua5.1.pc"
 S = "${WORKDIR}/lua-${PV}"
@@ -19,12 +19,6 @@ do_compile () {
 	oe_runmake linux
 }
 
-do_stage () {
-	oe_libinstall -C src liblua ${STAGING_LIBDIR}/
-	install -d ${STAGING_INCDIR}/
-	install -m 0644 src/lua.h src/luaconf.h src/lualib.h src/lauxlib.h ${STAGING_INCDIR}/
-}
-
 do_install () {
 	oe_runmake \
 		'INSTALL_TOP=${D}${prefix}' \
@@ -34,4 +28,5 @@ do_install () {
 		'INSTALL_SHARE=${D}${datadir}/lua' \
 		install
 }
-
+NATIVE_INSTALL_WORKS = 1
+BBCLASSEXTEND = "native"
