@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "readline ncurses"
 LICENSE = "PD"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
        file://mainmk_build_dynamic.patch;patch=1 \
@@ -33,14 +33,6 @@ do_compile() {
                    TCL_FLAGS= LIBTCL= \
                    READLINE_FLAGS="-DHAVE_READLINE=1 -I${STAGING_INCDIR}" \
                    LIBREADLINE="-L. -L${STAGING_LIBDIR} -lreadline -lncurses"
-}
-
-do_stage() {
-	install -m 0755 libsqlite.so ${STAGING_LIBDIR}/libsqlite.so.0.8.6
-        ln -sf libsqlite.so.0.8.6 ${STAGING_LIBDIR}/libsqlite.so
-        ln -sf libsqlite.so.0.8.6 ${STAGING_LIBDIR}/libsqlite.so.0
-        ln -sf libsqlite.so.0.8.6 ${STAGING_LIBDIR}/libsqlite.so.0.8
-        install -m 0644 sqlite.h ${STAGING_INCDIR}
 }
 
 do_install() {
