@@ -63,16 +63,18 @@ do_install () {
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libg2c.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libgfortran*.so* || true
-	fi
+       fi
      
        # Link gfortran to g77 to satisfy not-so-smart configure or hard coded g77
        # gfortran is fully backwards compatible. This is a safe and practical solution.
-       if [ -f ${CROSS_DIR}/bin/${TARGET_PREFIX}gfortran ]; then
+       if [ -f ${D}${CROSS_DIR}/bin/${TARGET_PREFIX}gfortran ]; then
               currdir="$PWD"
-              cd ${CROSS_DIR}/bin/
+              cd ${D}${CROSS_DIR}/bin/
               ln -sf ${TARGET_PREFIX}gfortran ${TARGET_PREFIX}g77 || true
-              cd ${CROSS_DIR}/${TARGET_SYS}/bin/
-              ln -sf gfortran g77 || true
+              if [ -d ${CROSS_DIR}/${TARGET_SYS}/bin/ ] ; then 
+                  cd ${CROSS_DIR}/${TARGET_SYS}/bin/
+                  ln -sf gfortran g77 || true
+              fi
               cd $currdir
-       fi
+        fi
 }
