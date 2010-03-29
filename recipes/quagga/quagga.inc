@@ -21,11 +21,13 @@ RDEPENDS_${PN}-watchquagga = "${PN}"
 # the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
 RDEPENDS_${PN}          += "iproute2"
 
+INC_PR = "r3"
+
 QUAGGASUBDIR = ""
 
 # ${QUAGGASUBDIR} is deal with old versions. Set to "/attic" for old
 # versions and leave it empty for recent versions.
-SRC_URI = "http://www.quagga.net/download${QUAGGASUBDIR}/quagga-${PV}.tar.gz \
+SRC_URI = "http://www.quagga.net/download${QUAGGASUBDIR}/quagga-${PV}.tar.gz;name=quagga-${PV} \
            file://fix-for-lib-inpath.patch;patch=1 \
            file://quagga.init \
            file://quagga.default \
@@ -115,11 +117,17 @@ INITSCRIPT_PARAMS_${PN}-watchquagga     = "defaults 90 10"
 
 # Add quagga's user and groups
 pkg_postinst_${PN} () {
+	set -e
         grep -q quagga: /etc/group || addgroup quagga
         grep -q quaggavty: /etc/group || addgroup quaggavty
         grep -q quagga: /etc/passwd || \
             adduser --disabled-password --home=/var/run/quagga/ --system \
-                    --ingroup quagga --no-create-home -g "Quagga routing suite" quagga                                            
+                    --ingroup quagga --no-create-home -g "Quagga routing suite" quagga
+	for f in bgpd isisd ospfd ripngd zebra ripd ospf6d; do touch /etc/quagga/$f.conf; done
+	chown quagga:quaggavty /etc/quagga
+	chown quagga:quagga /etc/quagga/*.conf
+	chmod 750 /etc/quagga
+	chown 640 /etc/quagga/*.conf
         /etc/init.d/populate-volatile.sh update
 }
 

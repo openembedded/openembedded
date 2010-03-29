@@ -8,7 +8,7 @@ BBCLASSEXTEND = "native"
 
 inherit autotools gettext
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 # diffutils assumes non-glibc compilation with uclibc and
 # this causes it to generate its own implementations of
@@ -16,6 +16,8 @@ INC_PR = "r2"
 # because it uses __mempcpy, there are other things (TBD:
 # see diffutils.mk in buildroot)
 EXTRA_OECONF_linux-uclibc += "--without-included-regex"
+
+EXTRA_OEMAKE += "SORT=${bindir}/sort"
 
 do_install_append() {
 	cd ${D}${bindir} && mv find find.findutils

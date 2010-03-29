@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "${INC_PR}.0"
 
 require quagga.inc
 

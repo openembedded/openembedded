@@ -1,0 +1,7 @@
+d hacluster haclient 0750 /var/lib/heartbeat/crm none
+d hacluster haclient 0755 /var/lib/pengine none
+d hacluster haclient 0755 /var/run/heartbeat none
+d hacluster haclient 0755 /var/run/heartbeat/rsctmp none
+d hacluster haclient 0755 /var/run/crm none
+
+

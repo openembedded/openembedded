@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r49"
+PR = "r50"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -32,6 +32,8 @@ RDEPENDS_${PN} += "\
 		gtkmm \
 		guitartune \
 		jefliks \
+		libyaml-perl \
+		libnet-dbus-perl \
 		mc \
 		mpd \
 		mplayer \
