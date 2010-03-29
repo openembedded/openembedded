@@ -307,7 +307,7 @@ populate_staging_postamble () {
 packagedstaging_fastpath () {
 	if [ "$PSTAGING_ACTIVE" = "1" ]; then
 		mkdir -p ${PSTAGE_TMPDIR_STAGE}/staging/
-		mkdir -p ${PSTAGE_TMPDIR_STAGE}/cross/
+		mkdir -p ${PSTAGE_TMPDIR_STAGE}/cross/${BASE_PACKAGE_ARCH}/
 		cp -fpPR ${SYSROOT_DESTDIR}${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/staging/ || /bin/true
 		cp -fpPR ${SYSROOT_DESTDIR}${CROSS_DIR}/* ${PSTAGE_TMPDIR_STAGE}/cross/${BASE_PACKAGE_ARCH}/ || /bin/true
 	fi
