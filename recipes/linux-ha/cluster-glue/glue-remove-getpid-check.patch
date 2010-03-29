@@ -1,0 +1,33 @@
+Index: Reusable-Cluster-Components-glue-1.0/configure.ac
+===================================================================
+--- Reusable-Cluster-Components-glue-1.0.orig/configure.ac	2009-10-20 17:16:25.000000000 +0400
++++ Reusable-Cluster-Components-glue-1.0/configure.ac	2009-10-20 17:25:00.000000000 +0400
+@@ -428,25 +428,9 @@
+ AC_MSG_RESULT($BUILD_VERSION)
+ AC_SUBST(BUILD_VERSION)
+ 
+-
+-dnl check if there are getpid() inconsistency
+-dnl	Note: reduce LIBS; in particular, ltdl can cause confusion.
+-dnl	Possibly better:  move 'LIBS="$LIBS -lltdl"' from above to beyond here.
+-dnl
+-AC_MSG_CHECKING(for getpid() consistency in multi-process/threads program)
+-ac_save_LIBS=$LIBS
+-LIBS="-lpthread"
+-AC_TRY_RUN(`cat $srcdir/config/pidtest.c`, 
+-AC_MSG_RESULT(ok), 
+-[AC_MSG_RESULT(fail); AC_DEFINE(GETPID_INCONSISTENT, 1 , [pid inconsistent])],)
+-LIBS=$ac_save_LIBS
+-
+-dnl check byte order
+-AC_MSG_CHECKING(for byteorder)
+-AC_TRY_RUN(`cat $srcdir/config/byteorder_test.c`,
+-[AC_MSG_RESULT(little-endian); AC_DEFINE(CONFIG_LITTLE_ENDIAN, 1, [little-endian])],
+-[AC_MSG_RESULT(big-endian); AC_DEFINE(CONFIG_BIG_ENDIAN, 1, [big-endian])],)
+-
++AC_C_BIGENDIAN(
++  [AC_DEFINE(CONFIG_BIG_ENDIAN, 1, [big])],
++  [AC_DEFINE(CONFIG_LITTLE_ENDIAN, 1, [little])])
+ 
+ dnl ===============================================
+ dnl Program Paths

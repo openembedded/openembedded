@@ -1,0 +1,21 @@
+Index: openais-1.1.2/services/Makefile.am
+===================================================================
+--- openais-1.1.2.orig/services/Makefile.am	2010-03-22 23:00:09.000000000 +0300
++++ openais-1.1.2/services/Makefile.am	2010-03-22 22:59:51.000000000 +0300
+@@ -78,13 +78,13 @@
+ 
+ else
+ service_amf.lcrso: $(AMF_OBJECTS)
+-	$(CC) $(CFLAGS) -shared -Wl,-soname=$@ $^ -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,-soname=$@ $^ -o $@
+ 
+ service_%.lcrso: %.o
+-	$(CC) $(CFLAGS) -shared -Wl,-soname=$@ $^ -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,-soname=$@ $^ -o $@
+ 
+ %.lcrso: %.o
+-	$(CC) $(CFLAGS) -shared -Wl,-soname=$@ $^ -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,-soname=$@ $^ -o $@
+ endif
+ 
+ %.o: %.c

@@ -1,0 +1,43 @@
+Index: corosync-1.2.0/exec/Makefile.am
+===================================================================
+--- corosync-1.2.0.orig/exec/Makefile.am	2010-03-22 22:25:00.000000000 +0300
++++ corosync-1.2.0/exec/Makefile.am	2010-03-22 22:25:40.000000000 +0300
+@@ -122,7 +122,7 @@
+ else
+ 
+ %.lcrso: %.o
+-	$(CC) $(CFLAGS) -shared -Wl,-soname=$@ $^ -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,-soname=$@ $^ -o $@
+ 
+ libtotem_pg.so.$(SONAME): $(TOTEM_OBJS)
+ 	$(CC) -shared -o $@ \
+Index: corosync-1.2.0/lcr/Makefile.am
+===================================================================
+--- corosync-1.2.0.orig/lcr/Makefile.am	2010-03-22 22:25:10.000000000 +0300
++++ corosync-1.2.0/lcr/Makefile.am	2010-03-22 22:26:02.000000000 +0300
+@@ -62,7 +62,7 @@
+ else
+ 
+ %.lcrso: %.o
+-	$(CC) $(CFLAGS) -shared -Wl,-soname,$@ $^ -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,-soname,$@ $^ -o $@
+ 
+ endif
+ 
+Index: corosync-1.2.0/services/Makefile.am
+===================================================================
+--- corosync-1.2.0.orig/services/Makefile.am	2010-03-22 22:25:15.000000000 +0300
++++ corosync-1.2.0/services/Makefile.am	2010-03-22 22:26:32.000000000 +0300
+@@ -68,10 +68,10 @@
+ 
+ else
+ quorum_%.lcrso: %.o
+-	$(CC) $(CFLAGS) -shared -Wl,-soname=$@ $^ -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,-soname=$@ $^ -o $@
+ 
+ service_%.lcrso: %.o
+-	$(CC) $(CFLAGS) -shared -Wl,-soname=$@ $^ -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,-soname=$@ $^ -o $@
+ endif
+ 
+ endif
