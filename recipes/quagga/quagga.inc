@@ -21,6 +21,8 @@ RDEPENDS_${PN}-watchquagga = "${PN}"
 # the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
 RDEPENDS_${PN}          += "iproute2"
 
+INC_PR = "r2"
+
 QUAGGASUBDIR = ""
 
 # ${QUAGGASUBDIR} is deal with old versions. Set to "/attic" for old
