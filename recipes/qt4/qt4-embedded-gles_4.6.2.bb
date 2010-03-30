@@ -1,8 +1,8 @@
 require qt4-embedded.inc
-PR = "${INC_PR}.4"
+PR = "${INC_PR}.7"
 
 PROVIDES += "qt4-embedded"
-QT_GLFLAGS = "-opengl es2 -no-openvg  -plugin-gfx-powervr"
+QT_GLFLAGS = "-opengl es2 -no-openvg  -depths 16,24,32  -plugin-gfx-powervr"
 
 require qt-${PV}.inc
 
