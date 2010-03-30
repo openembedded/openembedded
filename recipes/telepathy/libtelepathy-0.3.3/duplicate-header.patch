@@ -1,0 +1,10 @@
+--- libtelepathy-0.3.3/src/Makefile.am-orig	2008-02-04 07:35:51.000000000 -0800
++++ libtelepathy-0.3.3/src/Makefile.am	2010-03-29 15:39:23.000000000 -0700
+@@ -13,7 +13,6 @@ nodist_telepathyinc_HEADERS = \
+     tp-connmgr-gen.h \
+     tp-conn-gen.h \
+     tp-chan-gen.h \
+-    tp-conn-iface-avatars-gen.h \
+     tp-chan-iface-chat-state-gen.h \
+     tp-chan-iface-dtmf-gen.h \
+     tp-chan-iface-group-gen.h \
