@@ -7682,7 +7682,7 @@ bugs_openmoko = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr></nobr>
     </td>
-    <td>package libelf-0.8.6-r0: task do_populate_staging: failed
+    <td>package libelf-0.8.6-r0: task do_populate_sysroot: failed
     </td>
 
   </tr>

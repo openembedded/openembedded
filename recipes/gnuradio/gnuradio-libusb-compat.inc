@@ -47,7 +47,7 @@ do_buildlibusb() {
 
 addtask buildlibusb before do_configure after do_unpack
 
-do_buildlibusb[deptask] = "do_populate_staging"
+do_buildlibusb[deptask] = "do_populate_sysroot"
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/acinclude.m4 ] ; then

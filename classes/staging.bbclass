@@ -1,9 +1,9 @@
-python populate_staging_prehook () {
-       return
+python populate_sysroot_prehook () {
+	return
 }
 
-python populate_staging_posthook () {
-       return
+python populate_sysroot_posthook () {
+	return
 }
 
 packagedstaging_fastpath () {
@@ -109,21 +109,22 @@ def is_legacy_staging(d):
         legacy = True
     return legacy
 
-do_populate_staging[dirs] = "${STAGING_DIR_TARGET}/${bindir} ${STAGING_DIR_TARGET}/${libdir} \
+do_populate_sysroot[dirs] = "${STAGING_DIR_TARGET}/${bindir} ${STAGING_DIR_TARGET}/${libdir} \
 			     ${STAGING_DIR_TARGET}/${includedir} \
 			     ${STAGING_BINDIR_NATIVE} ${STAGING_LIBDIR_NATIVE} \
 			     ${STAGING_INCDIR_NATIVE} \
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-# Could be compile but populate_staging and do_install shouldn't run at the same time
-addtask populate_staging after do_install before do_build
+# Could be compile but populate_sysroot and do_install shouldn't run at the same time
+addtask populate_sysroot after do_install
 
 SYSROOT_PREPROCESS_FUNCS ?= ""
 SYSROOT_DESTDIR = "${WORKDIR}/sysroot-destdir/"
 SYSROOT_LOCK = "${STAGING_DIR}/staging.lock"
 
-python do_populate_staging () {
+
+python do_populate_sysroot () {
     #
     # if do_stage exists, we're legacy. In that case run the do_stage,
     # modify the SYSROOT_DESTDIR variable and then run the staging preprocess
@@ -150,11 +151,11 @@ python do_populate_staging () {
         if bb.data.getVarFlags('do_stage', d) is None:
             bb.fatal("This recipe (%s) has a do_stage_prepend or do_stage_append and do_stage now doesn't exist. Please rename this to do_stage()" % bb.data.getVar("FILE", d, True))
         lock = bb.utils.lockfile(lockfile)
-        bb.build.exec_func('populate_staging_prehook', d)
+        bb.build.exec_func('populate_sysroot_prehook', d)
         bb.build.exec_func('do_stage', d)
         for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
             bb.build.exec_func(f, d)
-        bb.build.exec_func('populate_staging_posthook', d)
+        bb.build.exec_func('populate_sysroot_posthook', d)
         bb.utils.unlockfile(lock)
     else:
         dest = bb.data.getVar('D', d, True)

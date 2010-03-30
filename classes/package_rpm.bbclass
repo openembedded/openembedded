@@ -209,8 +209,8 @@ python () {
        not bb.data.inherits_class('native', d) and \
        not bb.data.inherits_class('cross', d):
         deps = (bb.data.getVarFlag('do_package_write_rpm', 'depends', d) or "").split()
-        deps.append('rpm-native:do_populate_staging')
-        deps.append('fakeroot-native:do_populate_staging')
+        deps.append('rpm-native:do_populate_sysroot')
+        deps.append('fakeroot-native:do_populate_sysroot')
         bb.data.setVarFlag('do_package_write_rpm', 'depends', " ".join(deps), d)
 }
 

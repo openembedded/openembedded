@@ -11,7 +11,7 @@ DEPENDS = "ixp4xx-npe-native"
 
 SRC_URI = "http://You-Have-To-Download-The-Microcode-Manually-So-Please-Read-ixp4xx-npe_2.4.bb-For-Instructions/IPL_ixp400NpeLibrary-2_4.zip \
            file://Intel"
-do_unpack[depends] += "unzip-native:do_populate_staging"
+do_unpack[depends] += "unzip-native:do_populate_sysroot"
 S = "${WORKDIR}/ixp400_xscale_sw/src/npeDl"
 
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx|kixrp435)"

@@ -3,7 +3,7 @@
 # Point to an empty file so any user's custom settings don't break things
 QUILTRCFILE ?= "${STAGING_BINDIR_NATIVE}/quiltrc"
 
-PATCHDEPENDENCY = "${PATCHTOOL}-native:do_populate_staging"
+PATCHDEPENDENCY = "${PATCHTOOL}-native:do_populate_sysroot"
 
 python patch_do_patch() {
 	import oe.patch

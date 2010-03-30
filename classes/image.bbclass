@@ -36,7 +36,7 @@ IMAGE_BASENAME[export] = "1"
 export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
-do_rootfs[recrdeptask] += "do_deploy do_populate_staging"
+do_rootfs[recrdeptask] += "do_deploy do_populate_sysroot"
 
 # Images are generally built explicitly, do not need to be part of world.
 EXCLUDE_FROM_WORLD = "1"
@@ -47,7 +47,7 @@ PID = "${@os.getpid()}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-do_rootfs[depends] += "makedevs-native:do_populate_staging fakeroot-native:do_populate_staging"
+do_rootfs[depends] += "makedevs-native:do_populate_sysroot fakeroot-native:do_populate_sysroot"
 
 python () {
     import bb
@@ -55,9 +55,9 @@ python () {
     deps = bb.data.getVarFlag('do_rootfs', 'depends', d) or ""
     for type in (bb.data.getVar('IMAGE_FSTYPES', d, True) or "").split():
         for dep in ((bb.data.getVar('IMAGE_DEPENDS_%s' % type, d) or "").split() or []):
-            deps += " %s:do_populate_staging" % dep
+            deps += " %s:do_populate_sysroot" % dep
     for dep in (bb.data.getVar('EXTRA_IMAGEDEPENDS', d, True) or "").split():
-        deps += " %s:do_populate_staging" % dep
+        deps += " %s:do_populate_sysroot" % dep
     bb.data.setVarFlag('do_rootfs', 'depends', deps, d)
 
     runtime_mapping_rename("PACKAGE_INSTALL", d)

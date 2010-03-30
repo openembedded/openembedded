@@ -152,7 +152,7 @@ do_mono_stage() {
 		fi
 	done
 }
-addtask mono_stage after do_package before do_populate_staging
+addtask mono_stage after do_package before do_populate_sysroot
 
 def mono_after_parse(d):
 	import bb

@@ -26,8 +26,8 @@ def merge_tasks(d):
 	"""
 	merge_tasks performs two operations:
 	1) removes do_patch and its deps from the build entirely.
-	2) merges all of the operations that occur prior to do_populate_staging
-	into do_populate_staging.
+	2) merges all of the operations that occur prior to do_populate_sysroot
+	into do_populate_sysroot.
 
 	This is necessary, because of recipe variants (normal, native, cross,
 	sdk).  If a bitbake run happens to want to build more than one of
@@ -50,7 +50,7 @@ def merge_tasks(d):
 		__gather_taskdeps(task, items)
 		return items
 
-	newtask = "do_populate_staging"
+	newtask = "do_populate_sysroot"
 	mergedtasks = gather_taskdeps(newtask)
 	mergedtasks.pop()
 	deltasks = gather_taskdeps("do_patch")
@@ -86,14 +86,14 @@ def merge_tasks(d):
 	depends = (d.getVarFlag(task, "depends") or ""
 	           for task in mergedtasks[:-1]
 	           if not task in deltasks)
-	d.setVarFlag("do_populate_staging", "depends", " ".join(depends))
+	d.setVarFlag("do_populate_sysroot", "depends", " ".join(depends))
 
 python () {
     merge_tasks(d)
 }
 
 # Manually run do_install & all of its deps, then do_stage
-python do_populate_staging () {
+python do_populate_sysroot () {
 	from os.path import exists
 	from bb.build import exec_task, exec_func
 	from bb import note
@@ -112,4 +112,4 @@ python do_populate_staging () {
 	rec_exec_task("do_install", set())
 	exec_func("do_stage", d)
 }
-do_populate_staging[lockfiles] += "${S}/.lock"
+do_populate_sysroot[lockfiles] += "${S}/.lock"

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.rawmaterialsoftware.com/juce"
 AUTHOR = "Julian Stoerer"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib freetype virtual/libx11"
-do_unpack[depends] += "unzip-native:do_populate_staging"
+do_unpack[depends] += "unzip-native:do_populate_sysroot"
 PR = "r0"
 
 #FIXME the patches are a) HACKS and b) something's wrong with lineend conversion

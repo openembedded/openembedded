@@ -5,7 +5,7 @@
 # See image.bbclass for a usage of this.
 #
 
-do_rootfs[depends] += "opkg-native:do_populate_staging"
+do_rootfs[depends] += "opkg-native:do_populate_sysroot"
 
 IPKG_TMP_DIR = "${IMAGE_ROOTFS}-tmp"
 IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} -t ${IPKG_TMP_DIR} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"

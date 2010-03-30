@@ -325,7 +325,7 @@ python base_eventhandler() {
 
 addtask configure after do_unpack do_patch
 do_configure[dirs] = "${S} ${B}"
-do_configure[deptask] = "do_populate_staging"
+do_configure[deptask] = "do_populate_sysroot"
 base_do_configure() {
 	:
 }
@@ -393,7 +393,7 @@ python () {
     srcuri = bb.data.getVar('SRC_URI', d, 1)
     if "git://" in srcuri:
         depends = bb.data.getVarFlag('do_fetch', 'depends', d) or ""
-        depends = depends + " git-native:do_populate_staging"
+        depends = depends + " git-native:do_populate_sysroot"
         bb.data.setVarFlag('do_fetch', 'depends', depends, d)
 
     # unzip-native should already be staged before unpacking ZIP recipes
@@ -402,7 +402,7 @@ python () {
 
     if ".zip" in src_uri or need_unzip == "1":
         depends = bb.data.getVarFlag('do_unpack', 'depends', d) or ""
-        depends = depends + " unzip-native:do_populate_staging"
+        depends = depends + " unzip-native:do_populate_sysroot"
         bb.data.setVarFlag('do_unpack', 'depends', depends, d)
 
     # 'multimachine' handling

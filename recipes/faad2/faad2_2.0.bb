@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = ""
-do_unpack[depends] += "unzip-native:do_populate_staging"
+do_unpack[depends] += "unzip-native:do_populate_sysroot"
 PR ="r2"
 
 inherit autotools

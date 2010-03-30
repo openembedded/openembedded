@@ -24,5 +24,6 @@ do_deploy() {
         package_stagefile_shell ${DEPLOY_DIR_IMAGE}/updater.sh
 }
 
-# package_stagefile_shell needs to run before populate_staging for packaged-staging
-addtask deploy before do_populate_staging after do_compile
+# package_stagefile_shell need to run before populate_sysroot for packaged-staging
+addtask deploy before do_populate_sysroot after do_compile
+
