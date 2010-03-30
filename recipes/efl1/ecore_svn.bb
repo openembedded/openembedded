@@ -1,5 +1,5 @@
 require ecore.inc
-PR = "r10"
+PR = "r11"
 
 SRC_URI += "\
   file://iconv.patch;patch=1;maxrev=43996 \
@@ -33,6 +33,7 @@ ECORE_OECONF = "\
   --disable-ecore-evas-sdl \
   --disable-openssl \
   --disable-poll \
+  --enable-xim \
 "
 
 EXTRA_OECONF = "${ECORE_OECONF} \
