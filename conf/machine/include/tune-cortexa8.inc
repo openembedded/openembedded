@@ -3,7 +3,15 @@
 # [2] http://gcc.gnu.org/onlinedocs/gcc/ARM-Options.html 
 # [3] https://support.codesourcery.com/GNUToolchain/kbentry29
 
-TARGET_CC_ARCH = "-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp"
-FEED_ARCH = "armv7a"
-PACKAGE_EXTRA_ARCHS += "armv4 armv4t armv5te armv6 armv7 armv7a"
-BASE_PACKAGE_ARCH = "armv7a"
+# Can be 'softfp' or 'hardfp'
+ARM_FP_MODE ?= "softfp"
+
+ARM_FP_OPT = "${@['-mfloat-abi=softfp', '-mfloat-abi=hardfp'][bb.data.getVar('ARM_FP_MODE', d, 1) == 'hardfp']}"
+ARM_FP_PACKAGESUFFIX = "${@['', '-hardfp'][bb.data.getVar('ARM_FP_MODE', d, 1) == 'hardfp']}"
+
+TARGET_CC_ARCH = "-march=armv7-a -mtune=cortex-a8 -mfpu=neon ${ARM_FP_OPT}"
+
+FEED_ARCH = "armv7a${ARM_FP_PACKAGESUFFIX}"
+BASE_PACKAGE_ARCH = "armv7a${ARM_FP_PACKAGESUFFIX}"
+
+PACKAGE_EXTRA_ARCHS += "armv4 armv4t armv5te armv6 armv7 armv7a${ARM_FP_PACKAGESUFFIX}"

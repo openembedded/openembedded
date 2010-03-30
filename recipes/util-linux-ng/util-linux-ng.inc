@@ -8,7 +8,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r17"
+INC_PR = "r19"
 
 # allows for a release candidate
 RC ?= ""
@@ -69,7 +69,7 @@ EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
 --enable-arch --enable-init --enable-partx --enable-schedutils \
 --with-fsprobe=builtin --enable-libuuid --enable-libblkid \
---enable-fsck"
+--enable-fsck --enable-reset"
 
 LDFLAGS_append_libc-uclibc = " -lintl"
 
@@ -125,7 +125,7 @@ do_install () {
         sbinprogs="agetty blockdev ctrlaltdel cfdisk vipw vigr"
         sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck"
         usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall"
-        binprogs_a="dmesg kill more umount mount login"
+        binprogs_a="dmesg kill more umount mount login reset"
 
         if [ "${base_sbindir}" != "${sbindir}" ]; then
         	mkdir -p ${D}${base_sbindir}
@@ -206,6 +206,7 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/login login login.${PN} 100
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
+	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
 	
 	# There seems to be problem, atleast on nslu2, with these, until they are
 	# fixed the busybox ones have higher priority
@@ -219,7 +220,7 @@ pkg_prerm_${PN} () {
 	test -x ${base_sbindir}/pivot_root.${PN} && \
 	update-alternatives --remove pivot_root pivot_root.${PN}
 
-	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hecdump last logger mesg renice wall vipw vigr chfn newgrp chsh login ; do
+	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hecdump last logger mesg renice wall vipw vigr chfn newgrp chsh login reset; do
 		update-alternatives --remove $i $i.${PN}
 	done
 }
@@ -257,12 +258,12 @@ pkg_prerm_util-linux-ng-losetup () {
 }
 
 pkg_postinst_util-linux-ng-swaponoff () {
-	update-alternatives --install ${base_sbindir}/swapoff swapoff swapoff.${PN} 100
+	update-alternatives --install ${base_sbindir}/swapoff swapoff swapon.${PN} 100
 	update-alternatives --install ${base_sbindir}/swapon swapon swapon.${PN} 100
 }
 
 pkg_prerm_util-linux-ng-swaponoff () {
-	update-alternatives --remove swapoff swapoff.${PN}
+	update-alternatives --remove swapoff swapon.${PN}
 	update-alternatives --remove swapon swapon.${PN}
 }
 
