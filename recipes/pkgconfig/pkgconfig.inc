@@ -22,5 +22,5 @@ do_configure_prepend () {
 }
 
 do_install_append() {
-	install -d -m 0755 ${libdir}/pkgconfig
+	install -d -m 0755 ${D}${libdir}/pkgconfig
 }
