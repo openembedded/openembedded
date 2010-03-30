@@ -4,10 +4,11 @@ HOMEPAGE = "http://code.google.com/p/emtooth/"
 SECTION = "x11/applications"
 LICENSE = "GPLv2"
 DEPENDS = "elementary eina edbus"
+RDEPENDS = "bluez4 obexd"
 
-SRCREV = "46"
+SRCREV = "76"
 PV = "0.1+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://emtooth.googlecode.com/svn/trunk;module=app;proto=http"
 
