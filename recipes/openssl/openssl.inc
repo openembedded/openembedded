@@ -8,7 +8,7 @@ S = "${WORKDIR}/openssl-${PV}"
 
 inherit siteinfo
 
-INC_PR = "r11"
+INC_PR = "r12"
 
 AR_append = " r"
 CFLAG = "${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
@@ -22,9 +22,10 @@ export DIRS = "crypto ssl apps"
 export EX_LIBS = "-lgcc -ldl"
 export AS = "${CC} -c"
 
-PACKAGES =+ "libcrypto libssl"
-FILES_libcrypto = "${libdir}/libcrypto.so.*"
+PACKAGES =+ "libcrypto libssl ${PN}-misc"
+FILES_libcrypto = "${libdir}/libcrypto.so.* ${libdir}/ssl/openssl.cnf"
 FILES_libssl = "${libdir}/libssl.so.*"
+FILES_${PN}-misc = "${libdir}/ssl/misc"
 
 do_configure () {
 	cd util
