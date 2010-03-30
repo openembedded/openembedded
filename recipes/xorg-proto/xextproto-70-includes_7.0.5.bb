@@ -1,7 +1,9 @@
 # Build of xserver-kdrive is not possible with xextproto >= 7.1.
 # This package allows to install old 7.0 includes in parallel.
 FILESPATH = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xextproto-7.0:${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xextproto:${@os.path.dirname(bb.data.getVar('FILE',d,1))}/files"
-PR_append = ".0"
+PR_append = ".1"
+
+BPN = "xextproto"
 
 require xextproto_7.0.5.bb
 
