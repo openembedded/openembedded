@@ -1,0 +1,50 @@
+From: Török Edvin <edwin@clamav.net>
+Date: Thu, 1 Oct 2009 13:18:32 +0000 (+0300)
+Subject: Fix build when git is not installed and using BSD make.
+X-Git-Url: http://git.clamav.net/gitweb?p=clamav-devel.git;a=commitdiff_plain;h=6238a5ca06c07931b2f6ace62601ef43807df8e2;hp=55d97736bd289b53c93b652d88e5acd1886ec1bc
+
+Fix build when git is not installed and using BSD make.
+---
+
+diff --git a/libclamav/Makefile.am b/libclamav/Makefile.am
+index 3ced7ff..7a267a0 100644
+--- a/libclamav/Makefile.am
++++ b/libclamav/Makefile.am
+@@ -304,8 +304,8 @@ version.h: version.h.tmp
+ version.h.tmp:
+ 	@test -f version.h || touch version.h;\
+ 	rm -f $@;\
+-	REVISION="$$(LANG=C cd "$(top_srcdir)"; git describe --always 2>/dev/null)";\
+-	if test $$? -ne 0; then\
++	REVISION="$$(LANG=C cd "$(top_srcdir)"; git describe --always 2>/dev/null || echo "exported")";\
++	if test "$$REVISION" = "exported"; then\
+ 	   REVISION="r$$(LANG=C svnversion "$(top_srcdir)" 2>/dev/null || echo exported)";\
+ 	   if test "$$REVISION" = "rexported"; then\
+ 	    REVISION="";\
+diff --git a/libclamav/Makefile.in b/libclamav/Makefile.in
+index 8420601..a031c14 100644
+--- a/libclamav/Makefile.in
++++ b/libclamav/Makefile.in
+@@ -1832,8 +1832,8 @@ version.h: version.h.tmp
+ version.h.tmp:
+ 	@test -f version.h || touch version.h;\
+ 	rm -f $@;\
+-	REVISION="$$(LANG=C cd "$(top_srcdir)"; git describe --always 2>/dev/null)";\
+-	if test $$? -ne 0; then\
++	REVISION="$$(LANG=C cd "$(top_srcdir)"; git describe --always 2>/dev/null || echo "exported")";\
++	if test "$$REVISION" = "exported"; then\
+ 	   REVISION="r$$(LANG=C svnversion "$(top_srcdir)" 2>/dev/null || echo exported)";\
+ 	   if test "$$REVISION" = "rexported"; then\
+ 	    REVISION="";\
+diff --git a/libclamav/others.h b/libclamav/others.h
+index 42ca636..ed313d8 100644
+--- a/libclamav/others.h
++++ b/libclamav/others.h
+@@ -29,6 +29,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <unistd.h>
+ #include "cltypes.h"
+ 
+ #include "clamav.h"

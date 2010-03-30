@@ -20,7 +20,7 @@ RPROVIDES_${PN}-freshclam = "${PN}-data"
 
 INC_PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz;name=clamav-${PV} \
           file://clamav-daemon.init \
           file://clamav-freshclam.init \
           file://clamd.conf \
