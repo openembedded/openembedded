@@ -1,0 +1,36 @@
+Index: openssl-1.0.0/Makefile.shared
+===================================================================
+--- openssl-1.0.0.orig/Makefile.shared	Usage: date [OPTION]... [+FORMAT]
+Display the current time in the given FORMAT.
+
+  -d, --date=STRING         display time described by STRING, not `now'
+  -f, --file=DATEFILE       like --date once for each line of DATEFILE
+  -R, --rfc-822             output RFC-822 compliant date string
+  -u, --utc, --universal    print or set Coordinated Universal Time
+      --help                display this help and exit
++++ openssl-1.0.0/Makefile.shared	Usage: date [OPTION]... [+FORMAT]
+Display the current time in the given FORMAT.
+
+  -d, --date=STRING         display time described by STRING, not `now'
+  -f, --file=DATEFILE       like --date once for each line of DATEFILE
+  -R, --rfc-822             output RFC-822 compliant date string
+  -u, --utc, --universal    print or set Coordinated Universal Time
+      --help                display this help and exit
+@@ -92,7 +92,7 @@
+ LINK_APP=	\
+   ( $(SET_X);   \
+     LIBDEPS="$${LIBDEPS:-$(LIBDEPS)}"; \
+-    LDCMD="$${LDCMD:-$(CC)}"; LDFLAGS="$${LDFLAGS:-$(CFLAGS)}"; \
++    LDCMD="$${LDCMD:-$(CC)}"; LDFLAGS="$(OE_LDFLAGS) $${LDFLAGS:-$(CFLAGS)}"; \
+     LIBPATH=`for x in $$LIBDEPS; do echo $$x; done | sed -e 's/^ *-L//;t' -e d | uniq`; \
+     LIBPATH=`echo $$LIBPATH | sed -e 's/ /:/g'`; \
+     LD_LIBRARY_PATH=$$LIBPATH:$$LD_LIBRARY_PATH \
+@@ -102,7 +102,7 @@
+   ( $(SET_X);   \
+     LIBDEPS="$${LIBDEPS:-$(LIBDEPS)}"; \
+     SHAREDCMD="$${SHAREDCMD:-$(CC)}"; \
+-    SHAREDFLAGS="$${SHAREDFLAGS:-$(CFLAGS) $(SHARED_LDFLAGS)}"; \
++    SHAREDFLAGS="$(OE_LDFLAGS) $${SHAREDFLAGS:-$(CFLAGS) $(SHARED_LDFLAGS)}"; \
+     LIBPATH=`for x in $$LIBDEPS; do echo $$x; done | sed -e 's/^ *-L//;t' -e d | uniq`; \
+     LIBPATH=`echo $$LIBPATH | sed -e 's/ /:/g'`; \
+     LD_LIBRARY_PATH=$$LIBPATH:$$LD_LIBRARY_PATH \
