@@ -8,7 +8,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r17"
+INC_PR = "r18"
 
 # allows for a release candidate
 RC ?= ""
@@ -257,12 +257,12 @@ pkg_prerm_util-linux-ng-losetup () {
 }
 
 pkg_postinst_util-linux-ng-swaponoff () {
-	update-alternatives --install ${base_sbindir}/swapoff swapoff swapoff.${PN} 100
+	update-alternatives --install ${base_sbindir}/swapoff swapoff swapon.${PN} 100
 	update-alternatives --install ${base_sbindir}/swapon swapon swapon.${PN} 100
 }
 
 pkg_prerm_util-linux-ng-swaponoff () {
-	update-alternatives --remove swapoff swapoff.${PN}
+	update-alternatives --remove swapoff swapon.${PN}
 	update-alternatives --remove swapon swapon.${PN}
 }
 
