@@ -12,6 +12,7 @@ SRC_URI = "\
 	http://www.penguin.cz/~utx/ftp/claws-mail/claws-mail-${PV}-po-update.patch;patch=1 \
 	file://desktop.patch;patch=1 \
 	file://claws-mail-g_strcmp0.patch;patch=1 \
+	file://duplicate-header.patch;patch=1 \
 	"
 
 do_configure_append() {

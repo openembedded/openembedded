@@ -12,4 +12,5 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/people/horms/kexec-tools/kexec
            file://fix-arm-arch-detection.patch;patch=1 \
            file://no-getline-no-fscanf.patch;patch=1 \
            file://kexec-tools-2-arm-add-uImage.patch;patch=1 \
+           file://kexec-tools-2-autoconf-post-2.63.patch;patch=1 \
            "

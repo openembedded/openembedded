@@ -18,7 +18,9 @@ RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
 RPROVIDES_${PN}-freshclam = "${PN}-data"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
+INC_PR = "r3"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz;name=clamav-${PV} \
           file://clamav-daemon.init \
           file://clamav-freshclam.init \
           file://clamd.conf \

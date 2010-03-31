@@ -23,7 +23,8 @@ RCONFLICTS_${PN} = "bluez-gnome"
 
 do_configure_prepend() {
 	cp ${WORKDIR}/gtk-doc.make ${S}/
-    sed -i -e s:docs::g ${S}/Makefile.am
+	sed -i -e s:docs::g ${S}/Makefile.am
+	sed -i -e s:gnome-bluetooth/plugins/:gnome-bluetooth/plugins:g ${S}/lib/plugins/Makefile.am
 	echo "EXTRA_DIST = version.xml" > gnome-doc-utils.make
 }
 

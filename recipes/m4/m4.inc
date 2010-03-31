@@ -6,4 +6,4 @@ INC_PR = "r0"
 
 SRC_URI = "${GNU_MIRROR}/m4/m4-${PV}.tar.bz2;name=archive"
 
-inherit autotools_stage
+inherit autotools
