@@ -86,10 +86,6 @@ do_compile () {
 	)
 }
 
-do_stage_prepend() {
-	( cd ${S} ; patch -p1 < ${WORKDIR}/late-install-loop-break.patch )
-}
-
 require glibc-stage.inc
 
 require glibc-package.inc
