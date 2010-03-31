@@ -2,6 +2,8 @@ SECTION = "console/network"
 DEPENDS = "virtual/db libpcre postfix-native"
 LICENSE = "IPL"
 
+INC_PR = "r13"
+
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://makedefs.patch;patch=1 \
 	   file://install.patch;patch=1 \
