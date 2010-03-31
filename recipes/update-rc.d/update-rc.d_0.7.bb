@@ -6,6 +6,8 @@ S = "${WORKDIR}/update-rc.d"
 INHIBIT_DEFAULT_DEPS = "1"
 PR = "r1"
 
+BBCLASSEXTEND = "native"
+
 SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_7 \
            file://add-verbose.patch;patch=1"
 
@@ -22,3 +24,5 @@ do_install() {
 	install -d ${D}${sbindir}
 	install -m 0755 ${S}/update-rc.d ${D}${sbindir}/update-rc.d
 }
+
+NATIVE_INSTALL_WORKS = "1"

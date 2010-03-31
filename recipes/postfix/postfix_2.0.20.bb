@@ -1,3 +1,3 @@
 require postfix.inc
 
-PR = "r13"
+PR = "${INC_PR}.0"
