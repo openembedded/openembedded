@@ -72,6 +72,8 @@ JAVA = ""
 FORTRAN_linux-gnueabi = ",fortran"
 
 EXTRA_OECONF_BASE = "  --enable-cheaders=c_std --enable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"
+EXTRA_OECONF_INITIAL = "--disable-libmudflap --disable-libgomp --disable-libssp --enable-decimal-float=no"
+EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libgomp --disable-libssp"
 
 SRC_URI[archive.md5sum] = "4afa0290cc3a41ac8822666f1110de98"
 SRC_URI[archive.sha256sum] = "66596b80995f88cb66aaaf937598df7a9af10cc06799c3a7a64879e20b552fd5"

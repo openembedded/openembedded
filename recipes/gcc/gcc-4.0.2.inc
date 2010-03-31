@@ -27,6 +27,8 @@ SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 FORTRAN = ""
 
 EXTRA_OECONF_BASE = "--disable-libssp --disable-libmudflap"
+EXTRA_OECONF_INITIAL = "--disable-libmudflap --disable-libssp"
+EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libssp"
 
 SRC_URI[archive.md5sum] = "a659b8388cac9db2b13e056e574ceeb0"
 SRC_URI[archive.sha256sum] = "37b3286c2bfb68da9df983f60721f868e29897f7a426306748fee93b25c5fb61"

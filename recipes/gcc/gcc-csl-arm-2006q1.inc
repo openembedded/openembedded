@@ -17,5 +17,9 @@ do_unpack2() {
 }
 
 addtask unpack2 after do_unpack before do_patch
+
 SRC_URI[archive.md5sum] = "c0d60035d45c7f43d2ddd3c021709220"
 SRC_URI[archive.sha256sum] = "693609f59d0c0a6518a3654314aaef841305e029c8f7de4c42fbc0fd7f2dbb35"
+
+EXTRA_OECONF_INITIAL = "--disable-libmudflap --disable-libssp"
+EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libssp"

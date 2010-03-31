@@ -16,6 +16,8 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
 EXTRA_OECONF_BASE = "--disable-libssp --disable-libmudflap"
+EXTRA_OECONF_INITIAL = "--disable-libmudflap --disable-libssp"
+EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libssp"
 
 # Language Overrides
 FORTRAN = ""
