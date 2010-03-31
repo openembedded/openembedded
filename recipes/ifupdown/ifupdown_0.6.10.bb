@@ -7,7 +7,7 @@ SECTION = "base"
 PR = "r1"
 
 
-SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.tar.gz;name=ifupdown \
            file://busybox.patch;patch=1 \
            file://zeroconf.patch;patch=1 \
            file://init "
@@ -37,3 +37,6 @@ do_install () {
 
 INITSCRIPT_NAME = "ifup"
 INITSCRIPT_PARAMS = "start 39 S . stop 39 0 6 1 ."
+
+SRC_URI[ifupdown.md5sum] = "70db0d8caf06a17d65b612fa8919732b"
+SRC_URI[ifupdown.sha256sum] = "d4ada5d3f1b1f7c93cb608bfb505605b4765e0d4791ce6a1c435fe924dd67101"
