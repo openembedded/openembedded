@@ -4,7 +4,7 @@ configure (or, respectively, deconfigure) network interfaces, based on \
 the file /etc/network/interfaces."
 LICENSE = "GPL"
 SECTION = "base"
-PR = "r1"
+PR = "r2"
 
 
 SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.tar.gz;name=ifupdown \
@@ -23,7 +23,7 @@ do_compile () {
 
 do_install () {
 	install -d ${D}${sysconfdir}/init.d \
-		   ${D}${sysconfdir}/network/run/
+		   ${D}${sysconfdir}/network/run/ \
 		   ${D}${mandir}/man8 \
 		   ${D}${mandir}/man5 \
 		   ${D}${base_sbindir}
