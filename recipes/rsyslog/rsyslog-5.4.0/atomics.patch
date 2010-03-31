@@ -1,0 +1,277 @@
+diff -Nurd rsyslog-5.4.0.orig/configure.ac rsyslog-5.4.0/configure.ac
+--- rsyslog-5.4.0.orig/configure.ac	2010-03-08 13:28:35.000000000 +0000
++++ rsyslog-5.4.0/configure.ac	2010-03-16 11:30:44.000000000 +0000
+@@ -87,6 +87,7 @@
+ AC_HEADER_TIME
+ AC_STRUCT_TM
+ AC_C_VOLATILE
++AC_C_TYPEOF
+ 
+ sa_includes="\
+ $ac_includes_default
+@@ -129,7 +130,8 @@
+ # check for availability of atomic operations
+ RS_ATOMIC_OPERATIONS
+ RS_ATOMIC_OPERATIONS_64BIT
+-
++# fall back to POSIX sems for atomic operations (cpu expensive)
++AC_CHECK_HEADERS([semaphore.h])
+ 
+ # Additional module directories
+ AC_ARG_WITH(moddirs,
+diff -Nurd rsyslog-5.4.0.orig/runtime/Makefile.am rsyslog-5.4.0/runtime/Makefile.am
+--- rsyslog-5.4.0.orig/runtime/Makefile.am	2010-03-08 13:27:47.000000000 +0000
++++ rsyslog-5.4.0/runtime/Makefile.am	2010-03-15 16:43:12.000000000 +0000
+@@ -9,6 +9,7 @@
+ 	rsyslog.h \
+ 	unicode-helper.h \
+ 	atomic.h \
++	atomic-posix-sem.c \
+ 	batch.h \
+ 	syslogd-types.h \
+ 	module-template.h \
+diff -Nurd rsyslog-5.4.0.orig/runtime/atomic-posix-sem.c rsyslog-5.4.0/runtime/atomic-posix-sem.c
+--- rsyslog-5.4.0.orig/runtime/atomic-posix-sem.c	1970-01-01 00:00:00.000000000 +0000
++++ rsyslog-5.4.0/runtime/atomic-posix-sem.c	2010-03-16 13:22:27.000000000 +0000
+@@ -0,0 +1,70 @@
++/* atomic_posix_sem.c: This file supplies an emulation for atomic operations using
++ * POSIX semaphores.
++ *
++ * Copyright 2010 DResearch Digital Media Systems GmbH
++ *
++ * This file is part of the rsyslog runtime library.
++ *
++ * The rsyslog runtime library is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The rsyslog runtime library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the rsyslog runtime library.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * A copy of the GPL can be found in the file "COPYING" in this distribution.
++ * A copy of the LGPL can be found in the file "COPYING.LESSER" in this distribution.
++ */
++
++#include "config.h"
++#ifndef HAVE_ATOMIC_BUILTINS
++#ifdef HAVE_SEMAPHORE_H
++#include <semaphore.h>
++#include <errno.h>
++
++#include "atomic.h"
++#include "rsyslog.h"
++#include "srUtils.h"
++
++sem_t atomicSem;
++
++rsRetVal
++atomicSemInit(void)
++{
++	DEFiRet;
++
++	dbgprintf("init posix semaphore for atomics emulation\n");
++	if(sem_init(&atomicSem, 0, 1) == -1)
++	{
++		char errStr[1024];
++		rs_strerror_r(errno, errStr, sizeof(errStr));
++		dbgprintf("init posix semaphore for atomics emulation failed: %s\n", errStr);
++		iRet = RS_RET_SYS_ERR; /* the right error code ??? */
++	}
++
++	RETiRet;
++}
++
++void
++atomicSemExit(void)
++{
++	dbgprintf("destroy posix semaphore for atomics emulation\n");
++	if(sem_destroy(&atomicSem) == -1)
++	{
++		char errStr[1024];
++		rs_strerror_r(errno, errStr, sizeof(errStr));
++		dbgprintf("destroy posix semaphore for atomics emulation failed: %s\n", errStr);
++	}
++}
++
++#endif /* HAVE_SEMAPHORE_H */
++#endif /* !defined(HAVE_ATOMIC_BUILTINS) */
++
++/* vim:set ai:
++ */
+diff -Nurd rsyslog-5.4.0.orig/runtime/atomic.h rsyslog-5.4.0/runtime/atomic.h
+--- rsyslog-5.4.0.orig/runtime/atomic.h	2010-03-05 07:20:36.000000000 +0000
++++ rsyslog-5.4.0/runtime/atomic.h	2010-03-16 13:23:57.000000000 +0000
+@@ -54,6 +54,122 @@
+ #	define ATOMIC_CAS(data, oldVal, newVal) __sync_bool_compare_and_swap(&(data), (oldVal), (newVal));
+ #	define ATOMIC_CAS_VAL(data, oldVal, newVal) __sync_val_compare_and_swap(&(data), (oldVal), (newVal));
+ #else
++#ifdef HAVE_SEMAPHORE_H
++	/* we use POSIX semaphores instead */
++
++#include "rsyslog.h"
++#include <semaphore.h>
++
++extern sem_t atomicSem;
++rsRetVal atomicSemInit(void);
++void atomicSemExit(void);
++
++#if HAVE_TYPEOF
++#define my_typeof(x) typeof(x)
++#else /* sorry, can't determine types, using 'int' */
++#define my_typeof(x) int
++#endif
++
++#	define ATOMIC_SUB(data, val) \
++({ \
++	my_typeof(data) tmp; \
++	sem_wait(&atomicSem); \
++	tmp = data; \
++	data -= val; \
++	sem_post(&atomicSem); \
++	tmp; \
++})
++
++#	define ATOMIC_ADD(data, val) \
++({ \
++	my_typeof(data) tmp; \
++	sem_wait(&atomicSem); \
++	tmp = data; \
++	data += val; \
++	sem_post(&atomicSem); \
++	tmp; \
++})
++
++#	define ATOMIC_INC_AND_FETCH(data) \
++({ \
++	my_typeof(data) tmp; \
++	sem_wait(&atomicSem); \
++	tmp = data; \
++	data += 1; \
++	sem_post(&atomicSem); \
++	tmp; \
++})
++
++#	define ATOMIC_INC(data) ((void) ATOMIC_INC_AND_FETCH(data))
++
++#	define ATOMIC_DEC_AND_FETCH(data) \
++({ \
++	sem_wait(&atomicSem); \
++	data -= 1; \
++	sem_post(&atomicSem); \
++	data; \
++})
++
++#	define ATOMIC_DEC(data) ((void) ATOMIC_DEC_AND_FETCH(data))
++
++#	define ATOMIC_FETCH_32BIT(data) ((unsigned) ATOMIC_ADD((data), 0xffffffff))
++
++#	define ATOMIC_STORE_1_TO_32BIT(data) \
++({ \
++	my_typeof(data) tmp; \
++	sem_wait(&atomicSem); \
++	tmp = data; \
++	data = 1; \
++	sem_post(&atomicSem); \
++	tmp; \
++})
++
++#	define ATOMIC_STORE_0_TO_INT(data) \
++({ \
++	my_typeof(data) tmp; \
++	sem_wait(&atomicSem); \
++	tmp = data; \
++	data = 0; \
++	sem_post(&atomicSem); \
++	tmp; \
++})
++
++#	define ATOMIC_STORE_1_TO_INT(data) \
++({ \
++	my_typeof(data) tmp; \
++	sem_wait(&atomicSem); \
++	tmp = data; \
++	data = 1; \
++	sem_post(&atomicSem); \
++	tmp; \
++})
++
++#	define ATOMIC_CAS(data, oldVal, newVal) \
++({ \
++	int ret; \
++	sem_wait(&atomicSem); \
++	if(data != oldVal) ret = 0; \
++	else \
++	{ \
++		data = newVal; \
++		ret = 1; \
++	} \
++	sem_post(&atomicSem); \
++	ret; \
++})
++
++#	define ATOMIC_CAS_VAL(data, oldVal, newVal) \
++({ \
++	sem_wait(&atomicSem); \
++	if(data == oldVal) \
++	{ \
++		data = newVal; \
++	} \
++	sem_post(&atomicSem); \
++	data; \
++})
++
++#else /* not HAVE_SEMAPHORE_H */
+ 	/* note that we gained parctical proof that theoretical problems DO occur
+ 	 * if we do not properly address them. See this blog post for details:
+ 	 * http://blog.gerhards.net/2009/01/rsyslog-data-race-analysis.html
+@@ -68,5 +184,6 @@
+ #	define ATOMIC_FETCH_32BIT(data) (data)
+ #	define ATOMIC_STORE_1_TO_32BIT(data) (data) = 1
+ #endif
++#endif
+ 
+ #endif /* #ifndef INCLUDED_ATOMIC_H */
+diff -Nurd rsyslog-5.4.0.orig/runtime/rsyslog.c rsyslog-5.4.0/runtime/rsyslog.c
+--- rsyslog-5.4.0.orig/runtime/rsyslog.c	2010-03-05 07:20:36.000000000 +0000
++++ rsyslog-5.4.0/runtime/rsyslog.c	2010-03-16 08:30:51.000000000 +0000
+@@ -81,6 +81,7 @@
+ #include "rule.h"
+ #include "ruleset.h"
+ #include "parser.h"
++#include "atomic.h"
+ 
+ /* forward definitions */
+ static rsRetVal dfltErrLogger(int, uchar *errMsg);
+@@ -140,6 +141,12 @@
+ 		CHKiRet(objClassInit(NULL)); /* *THIS* *MUST* always be the first class initilizer being called! */
+ 		CHKiRet(objGetObjInterface(pObjIF)); /* this provides the root pointer for all other queries */
+ 
++#ifndef HAVE_ATOMIC_BUILTINS
++#ifdef HAVE_SEMAPHORE_H
++		CHKiRet(atomicSemInit());
++#endif /* HAVE_SEMAPHORE_H */
++#endif /* !defined(HAVE_ATOMIC_BUILTINS) */
++
+ 		/* initialize core classes. We must be very careful with the order of events. Some
+ 		 * classes use others and if we do not initialize them in the right order, we may end
+ 		 * up with an invalid call. The most important thing that can happen is that an error
+@@ -216,6 +223,13 @@
+ 		glblClassExit();
+ 		rulesetClassExit();
+ 		ruleClassExit();
++
++#ifndef HAVE_ATOMIC_BUILTINS
++#ifdef HAVE_SEMAPHORE_H
++		atomicSemExit();
++#endif /* HAVE_SEMAPHORE_H */
++#endif /* !defined(HAVE_ATOMIC_BUILTINS) */
++
+ 		objClassExit(); /* *THIS* *MUST/SHOULD?* always be the first class initilizer being called (except debug)! */
+ 	}
+ 
