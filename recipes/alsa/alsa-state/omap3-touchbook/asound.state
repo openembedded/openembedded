@@ -1,4 +1,4 @@
-state.omap3beagle {
+state.omap3touchbook {
 	control.1 {
 		comment.access 'read write'
 		comment.type ENUMERATED
