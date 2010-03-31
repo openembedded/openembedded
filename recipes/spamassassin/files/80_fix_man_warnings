@@ -1,0 +1,26 @@
+Index: spamassassin-3.3.1/lib/Mail/SpamAssassin/Conf.pm
+===================================================================
+--- spamassassin-3.3.1.orig/lib/Mail/SpamAssassin/Conf.pm	2010-03-21 23:14:12.000000000 -0700
++++ spamassassin-3.3.1/lib/Mail/SpamAssassin/Conf.pm	2010-03-21 23:17:37.000000000 -0700
+@@ -2958,7 +2958,7 @@
+ sprintf statement with the username as the only parameter, thus is can hold a
+ single __USERNAME__ expression. This will be replaced with the username.
+ 
+-Example: C<ldap://localhost:389/dc=koehntopp,dc=de?spamassassinconfig?uid=__USERNAME__>
++Example: C<ldap://localhost:389/dc=koehntopp,dc=de?saconfig?uid=__USERNAME__>
+ 
+ =cut
+ 
+Index: spamassassin-3.3.1/sa-learn.raw
+===================================================================
+--- spamassassin-3.3.1.orig/sa-learn.raw	2010-03-21 23:14:38.000000000 -0700
++++ spamassassin-3.3.1/sa-learn.raw	2010-03-21 23:17:37.000000000 -0700
+@@ -1326,7 +1326,7 @@
+ E<lt>http://www.paulgraham.com/E<gt>
+ Paul Graham's "A Plan For Spam" paper
+ 
+-E<lt>http://radio.weblogs.com/0101454/stories/2002/09/16/spamDetection.htmlE<gt>
++E<lt>http://www.linuxjournal.com/article/6467E<gt>
+ Gary Robinson's f(x) and combining algorithms, as used in SpamAssassin
+ 
+ E<lt>http://www.bgl.nu/~glouis/bogofilter/E<gt>

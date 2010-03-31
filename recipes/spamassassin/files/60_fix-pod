@@ -1,0 +1,22 @@
+Index: spamassassin-3.3.1/lib/Mail/SpamAssassin/Bayes.pm
+===================================================================
+--- spamassassin-3.3.1.orig/lib/Mail/SpamAssassin/Bayes.pm	2010-03-24 20:50:05.000000000 -0700
++++ spamassassin-3.3.1/lib/Mail/SpamAssassin/Bayes.pm	2010-03-24 20:50:33.000000000 -0700
+@@ -164,4 +164,3 @@
+ 
+ 1;
+ 
+-=cut
+Index: spamassassin-3.3.1/spamassassin.raw
+===================================================================
+--- spamassassin-3.3.1.orig/spamassassin.raw	2010-03-24 20:49:04.000000000 -0700
++++ spamassassin-3.3.1/spamassassin.raw	2010-03-24 20:49:16.000000000 -0700
+@@ -564,6 +564,8 @@
+ 
+ # ---------------------------------------------------------------------------
+ 
++=pod
++
+ =cut
+ 
+ =head1 NAME
