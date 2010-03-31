@@ -9,7 +9,7 @@ PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "57cb1a854a1b6d91d214b3fa250a7df2ed20d433"
+SRCREV = "67b814d9b2baea6beccfb1625a1e3f0b2ba7218b"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
            file://dolt-fix-1.7.0.patch;patch=1 \
            file://randr-support-1.7.0.patch;patch=1 \
