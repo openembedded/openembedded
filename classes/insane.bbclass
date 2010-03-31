@@ -456,6 +456,7 @@ python do_qa_staging() {
 # Check broken config.log files
 addtask qa_configure after do_configure before do_compile
 python do_qa_configure() {
+    configs = []
     bb.debug(1, "Checking sanity of the config.log file")
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
         statement = "grep 'CROSS COMPILE Badness:' %s > /dev/null" % \
@@ -464,4 +465,24 @@ python do_qa_configure() {
             if os.system(statement) == 0:
                 bb.fatal("""This autoconf log indicates errors, it looked at host includes.
 Rerun configure task after fixing this. The path was '%s'""" % root)
+
+        if "configure.ac" in files:
+            configs.append(os.path.join(root,"configure.ac"))
+        if "configure.in" in files:
+            configs.append(os.path.join(root, "configure.in"))
+
+    if "gettext" not in bb.data.getVar('P', d, True):
+       if bb.data.inherits_class('native', d) or bb.data.inherits_class('cross', d) or bb.data.inherits_class('crosssdk', d) or bb.data.inherits_class('nativesdk', d):
+          gt = "gettext-native"
+       elif bb.data.inherits_class('cross-canadian', d):
+          gt = "gettext-nativesdk"
+       else:
+          gt = "gettext"
+       deps = bb.utils.explode_deps(bb.data.getVar('DEPENDS', d, True) or "")
+       if gt not in deps:
+          for config in configs:
+              gnu = "grep \"^[[:space:]]*AM_GNU_GETTEXT\" %s >/dev/null" % config
+              if os.system(gnu) == 0:
+                 bb.note("""Gettext required but not in DEPENDS for file %s.
+Missing inherit gettext?""" % config)
 }
