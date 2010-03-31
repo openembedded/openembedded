@@ -6,6 +6,7 @@ SRCREV = "158653"
 require gcc-common.inc
 
 DEPENDS = "mpfr gmp libmpc"
+NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 BINV = "4.6.0"
 PV = "4.6+svnr${SRCPV}"

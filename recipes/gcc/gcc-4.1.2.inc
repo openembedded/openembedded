@@ -1,6 +1,7 @@
 require gcc-common.inc
 
 DEPENDS = "mpfr gmp"
+NATIVEDEPS = "mpfr-native gmp-native"
 
 INC_PR = "r22"
 

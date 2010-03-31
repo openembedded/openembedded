@@ -1,6 +1,7 @@
 require gcc-common.inc
 
 DEPENDS = "mpfr gmp"
+NATIVEDEPS = "mpfr-native gmp-native"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch;patch=1 \

@@ -1,4 +1,4 @@
-DEPENDS = "virtual/${TARGET_PREFIX}binutils"
+DEPENDS = "virtual/${TARGET_PREFIX}binutils ${NATIVEDEPS}"
 DEPENDS += "virtual/${TARGET_PREFIX}libc-initial"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-intermediate"
 PACKAGES = ""
