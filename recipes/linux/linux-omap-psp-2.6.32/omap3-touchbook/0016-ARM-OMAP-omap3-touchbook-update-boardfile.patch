@@ -1,14 +1,14 @@
-From d732dfd967b870ea5effa599d501996b620a1f60 Mon Sep 17 00:00:00 2001
+From bd54c9c7527199156f6cd16bf3e02ebf9d663feb Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 11:49:16 +0100
-Subject: [PATCH 06/14] ARM: OMAP: omap3-touchbook: update boardfile
+Subject: [PATCH 16/16] ARM: OMAP: omap3-touchbook: update boardfile
 
 ---
- arch/arm/mach-omap2/board-omap3touchbook.c |  390 +++++++++++++++++++++-------
- 1 files changed, 301 insertions(+), 89 deletions(-)
+ arch/arm/mach-omap2/board-omap3touchbook.c |  394 +++++++++++++++++++++-------
+ 1 files changed, 305 insertions(+), 89 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3touchbook.c b/arch/arm/mach-omap2/board-omap3touchbook.c
-index fc3e03c..4f89cf3 100644
+index fc3e03c..3628362 100644
 --- a/arch/arm/mach-omap2/board-omap3touchbook.c
 +++ b/arch/arm/mach-omap2/board-omap3touchbook.c
 @@ -33,6 +33,7 @@
@@ -343,7 +343,7 @@ index fc3e03c..4f89cf3 100644
  };
  
  static void __init omap3touchbook_flash_init(void)
-@@ -512,6 +559,166 @@ static struct ehci_hcd_omap_platform_data ehci_pdata __initconst = {
+@@ -512,6 +559,170 @@ static struct ehci_hcd_omap_platform_data ehci_pdata __initconst = {
  	.reset_gpio_port[2]  = -EINVAL
  };
  
@@ -455,16 +455,17 @@ index fc3e03c..4f89cf3 100644
 +	*/
 +
 +	/* Halve input brightness */
-+	value /= 2;
++	if (!bd->props.boost)
++			value /= 2;
 +
 +	/* For maximum brightness, just stop the timer... */
 +	if(value != bd->props.max_brightness)
 +	{
 +		/* Load the appropriate value for 200Hz PWM */
-+		u32 period = clk_get_rate(omap_dm_timer_get_fclk(touchbook_backlight_pwm)) / 200;
++		u32 period = clk_get_rate(omap_dm_timer_get_fclk(touchbook_backlight_pwm)) / bd->props.pwm_fq;
 +
 +		/* Minimum duty cycle is 15% */
-+		u32 minimum = (period * 3) / 20;
++		u32 minimum = (period * bd->props.min_duty) / 100;
 +		u32 maximum = (period * 17) / 20;
 +
 +		/* Work out match value */
@@ -502,6 +503,9 @@ index fc3e03c..4f89cf3 100644
 +
 +		bd->props.max_brightness = 100;
 +		bd->props.brightness = touchbook_backlight_brightness;
++		bd->props.boost = 0;
++		bd->props.min_duty = 15;
++		bd->props.pwm_fq = 200;
 +	}
 +
 +	touchbook_backlight_update(bd);
@@ -510,7 +514,7 @@ index fc3e03c..4f89cf3 100644
  static void omap3_touchbook_poweroff(void)
  {
  	int r;
-@@ -525,33 +732,27 @@ static void omap3_touchbook_poweroff(void)
+@@ -525,33 +736,27 @@ static void omap3_touchbook_poweroff(void)
  	gpio_direction_output(TB_KILL_POWER_GPIO, 0);
  }
  
@@ -548,7 +552,7 @@ index fc3e03c..4f89cf3 100644
  	usb_musb_init();
  	usb_ehci_init(&ehci_pdata);
  	omap3touchbook_flash_init();
-@@ -559,6 +760,17 @@ static void __init omap3_touchbook_init(void)
+@@ -559,6 +764,17 @@ static void __init omap3_touchbook_init(void)
  	/* Ensure SDRC pins are mux'd for self-refresh */
  	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
  	omap_mux_init_signal("sdrc_cke1", OMAP_PIN_OUTPUT);

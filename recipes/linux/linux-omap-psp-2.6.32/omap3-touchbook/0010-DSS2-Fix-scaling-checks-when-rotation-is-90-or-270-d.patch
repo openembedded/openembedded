@@ -1,14 +1,14 @@
-From 0f0b6b8dbe24f34d0442a734302b0c406bad8f74 Mon Sep 17 00:00:00 2001
+From 23ddd0dafbf79d7919aa90479dc038e1d9e7c905 Mon Sep 17 00:00:00 2001
 From: Tim Yamin <plasm@roo.me.uk>
 Date: Fri, 12 Mar 2010 13:57:38 +0100
-Subject: [PATCH 11/14] DSS2: Fix scaling checks when rotation is 90 or 270 degrees.
+Subject: [PATCH 10/16] DSS2: Fix scaling checks when rotation is 90 or 270 degrees.
 
 ---
  drivers/video/omap2/dss/dispc.c |   25 +++++++++++++++++++------
  1 files changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
-index c6d5fc5..8da571e 100644
+index 1b38c49..d648c08 100644
 --- a/drivers/video/omap2/dss/dispc.c
 +++ b/drivers/video/omap2/dss/dispc.c
 @@ -1563,16 +1563,29 @@ static int _dispc_setup_plane(enum omap_plane plane,

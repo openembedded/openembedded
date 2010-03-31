@@ -1,7 +1,7 @@
-From c109db2ee2bca2bdc3af243afda91a96bbd1726f Mon Sep 17 00:00:00 2001
+From 06e169d76148f90f500e76e646a0e595ba0048a9 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregroire@gentil.com>
 Date: Fri, 12 Mar 2010 14:41:05 +0100
-Subject: [PATCH 13/14] Make backlight controls accessible to users
+Subject: [PATCH 12/16] Make backlight controls accessible to users
 
 ---
  drivers/video/backlight/backlight.c |    2 +-

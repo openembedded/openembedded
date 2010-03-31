@@ -1,7 +1,7 @@
-From b41b53e9a9dc56a75b548e1fa73570569fe12d7e Mon Sep 17 00:00:00 2001
+From 1ced7194276074ebc9a009c9b41df27d5fdb5df9 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 14:39:07 +0100
-Subject: [PATCH 12/14] add touchbook hid driver
+Subject: [PATCH 11/16] add touchbook hid driver
 
 ---
  drivers/hid/Kconfig    |    7 ++

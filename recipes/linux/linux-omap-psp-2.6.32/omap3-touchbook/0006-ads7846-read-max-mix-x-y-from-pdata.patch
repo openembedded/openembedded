@@ -1,7 +1,7 @@
-From 95fae00f5191e445a2192a85c73b02b287eb3db6 Mon Sep 17 00:00:00 2001
+From 5b11cfec0cd8f01eba7468a76e764d526ad15bdb Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 13:50:45 +0100
-Subject: [PATCH 08/14] ads7846: read max/mix x/y from pdata
+Subject: [PATCH 06/16] ads7846: read max/mix x/y from pdata
 
 ---
  drivers/input/touchscreen/ads7846.c |    5 +++--

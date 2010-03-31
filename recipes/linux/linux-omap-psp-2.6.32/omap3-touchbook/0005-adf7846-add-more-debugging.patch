@@ -1,7 +1,7 @@
-From 1b90e477d484f666ba2224b950b2810fcaf53df2 Mon Sep 17 00:00:00 2001
+From 798baf132eac5022ce6c2da7e2d54eb0e65b0193 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 13:50:38 +0100
-Subject: [PATCH 07/14] adf7846: add more debugging
+Subject: [PATCH 05/16] adf7846: add more debugging
 
 ---
  drivers/input/touchscreen/ads7846.c |   73 +++++++++++++++++++++++++++++++++++

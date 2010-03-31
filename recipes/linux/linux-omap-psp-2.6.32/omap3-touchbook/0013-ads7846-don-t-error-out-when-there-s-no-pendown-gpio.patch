@@ -1,7 +1,7 @@
-From 6506ac2dc19a3b010078fb6a36522aba0b82f28c Mon Sep 17 00:00:00 2001
+From e5ae09d0d2c8f2bd1da7662dd551b103292a5748 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 15:04:58 +0100
-Subject: [PATCH 14/14] ads7846: don't error out when there's no pendown gpio
+Subject: [PATCH 13/16] ads7846: don't error out when there's no pendown gpio
 
 ---
  drivers/input/touchscreen/ads7846.c |    7 -------
