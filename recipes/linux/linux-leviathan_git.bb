@@ -2,7 +2,7 @@ require linux.inc
 DEPENDS = "android-image-utils-native"
 
 PV = "2.6.32+${PR}+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 COMPATIBLE_MACHINE = "htcdream"
 CMDLINE = "console=tty0 no_console_suspend=1 root=/dev/mmcblk0p1 rootdelay=8 fbcon=rotate:1 panic=30 mem=110M"
