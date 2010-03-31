@@ -1,4 +1,5 @@
 d postfix nogroup 2755 /var/spool/mail none
+d postfix nogroup 0755 /var/lib/postfix none
 d root postfix 0755 /var/spool/postfix none
 d postfix root 0700 /var/spool/postfix/active none
 d postfix root 0700 /var/spool/postfix/bounce none
