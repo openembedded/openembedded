@@ -1,0 +1,24 @@
+Index: tcpdump-4.0.0/aclocal.m4
+===================================================================
+--- tcpdump-4.0.0.orig/aclocal.m4
++++ tcpdump-4.0.0/aclocal.m4
+@@ -44,7 +44,6 @@ dnl	LBL_CFLAGS
+ dnl
+ AC_DEFUN(AC_LBL_C_INIT,
+     [AC_PREREQ(2.12)
+-    AC_BEFORE([$0], [AC_PROG_CC])
+     AC_BEFORE([$0], [AC_LBL_FIXINCLUDES])
+     AC_BEFORE([$0], [AC_LBL_DEVEL])
+     AC_ARG_WITH(gcc, [  --without-gcc           don't use gcc])
+Index: tcpdump-4.0.0/configure.in
+===================================================================
+--- tcpdump-4.0.0.orig/configure.in
++++ tcpdump-4.0.0/configure.in
+@@ -10,6 +10,7 @@ AC_REVISION($Revision: 1.196.2.6 $)
+ AC_PREREQ(2.50)
+ AC_INIT(tcpdump.c)
+ 
++AC_PROG_CC
+ AC_CANONICAL_HOST
+ 
+ AC_LBL_C_INIT(V_CCOPT, V_INCLS)
