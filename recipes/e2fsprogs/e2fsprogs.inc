@@ -3,13 +3,13 @@ HOMEPAGE = "http://e2fsprogs.sf.net"
 LICENSE = "GPL"
 SECTION = "base"
 DEPENDS = "gettext-native util-linux-ng"
-DEPENDS_virtclass-native = "gettext-native"
+DEPENDS_virtclass-native = "gettext-native util-linux-ng-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 
 S = "${WORKDIR}/e2fsprogs-${PV}"
 
-INC_PR = "r22"
+INC_PR = "r23"
 
 inherit autotools
 
