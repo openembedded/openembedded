@@ -16,6 +16,8 @@ FILES_${PN} += "${datadir}/application-registry  \
 	${datadir}/polkit* \
 "
 
+FILES_${PN}-doc += "${datadir}/devhelp"
+
 inherit autotools gtk-icon-cache pkgconfig gconf mime
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
