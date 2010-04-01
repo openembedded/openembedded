@@ -2,6 +2,7 @@ DESCRIPTION = "Sphyrna - Hammerhead Reverse Engineering"
 HOMEPAGE = "http://projects.linuxtogo.org/projects/sphyrna"
 LICENSE = "GPLv2"
 DEPENDS = "readline python-native"
+SRCREV = "45"
 PV = "0.0+svnr${SRCPV}"
 PR = "r1"
 

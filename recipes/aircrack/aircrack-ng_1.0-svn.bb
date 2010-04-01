@@ -5,6 +5,8 @@ LICENSE = "GPLv2"
 DEPENDS = "openssl zlib sqlite3"
 PV = "0.9.99+svnr${SRCPV}"
 PR = "r1"
+SRCREV = "802"
+
 SRC_URI = "svn://trac.aircrack-ng.org/svn/branch;module=1.0-dev;proto=http"
  
 S="${WORKDIR}/1.0-dev"

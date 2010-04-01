@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 PV = "1.3.2+svnr${SRCPV}"
-SRCREV = "${AUTOREV}"
+SRCREV = "8674"
 PR = "r6"
 
 SRC_URI = "\

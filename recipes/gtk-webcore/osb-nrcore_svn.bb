@@ -1,5 +1,6 @@
 require osb-nrcore.inc
 
+SRCREV = "126"
 PV = "0.5.2+svnr${SRCPV}"
 PR = "r3"
 

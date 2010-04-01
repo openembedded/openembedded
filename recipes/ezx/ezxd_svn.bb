@@ -3,6 +3,7 @@ LICENSE = "GPLv2"
 SECTION = "devel"
 AUTHOR = "Daniel Ribeiro"
 
+SRCREV = "2513"
 PV = "0.0+svnr${SRCPV}"
 PR = "r4"
 

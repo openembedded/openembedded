@@ -2,6 +2,7 @@ DESCRIPTION = "A library for displaying a TV-like on-screen display in X."
 SECTION = "libs/x11"
 DEPENDS = "virtual/libx11 libxext"
 LICENSE = "LGPL"
+SRCREV = "627"
 PV = "2.2.15+svnr${SRCPV}"
 PR = "r5"
 

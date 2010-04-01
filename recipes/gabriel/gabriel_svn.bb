@@ -4,6 +4,7 @@ a dbus daemon running on a remote machine."
 LICENSE = "GPL"
 DEPENDS = "libssh glib-2.0 dbus dbus-glib"
 SECTION = "console/network"
+SRCREV = "38"
 PV = "0.0.0+svnr${SRCPV}"
 
 SRC_URI = "svn://gabriel.svn.sourceforge.net/svnroot/gabriel;module=gabriel;proto=https"

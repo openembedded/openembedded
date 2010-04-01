@@ -1,5 +1,6 @@
 require wlan-ng-utils.inc
 
+SRCREV = "1859"
 PR = "r0"
 
 PV = "0.2.8+svnr${SRCPV}"

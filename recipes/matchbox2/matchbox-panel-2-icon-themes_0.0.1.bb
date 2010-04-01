@@ -5,6 +5,7 @@ DEPENDS = "imagemagick-native"
 RPROVIDES_${PN} = "matchbox-panel-2-icon-theme"
 PACKAGE_ARCH = "all"
 SRCREV_FORMAT = "startup"
+SRCREV = "1907"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r0"
 

@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "osb-nrcit gtk+ glib-2.0 libglade"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-ico gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png"
+SRCREV = "125"
 PV = "0.5.0+svnr${SRCPV}"
 PR = "r0"
 

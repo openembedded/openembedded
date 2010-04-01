@@ -2,6 +2,8 @@ DESCRIPTION = "Various benchmarking tests for X"
 HOMEPAGE = "http://www.o-hand.com"
 SECTION = "devel"
 LICENSE = "GPL"
+
+SRCREV = "204"
 PV = "0.0+svn${SRCDATE}"
 PR = "r2"
 

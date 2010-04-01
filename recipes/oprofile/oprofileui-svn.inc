@@ -1,5 +1,6 @@
 require oprofileui.inc
 
+SRCREV = "173"
 PV = "0.0+svnr${SRCPV}"
 PR = "r1"
 

@@ -4,6 +4,7 @@ LICENSE = "nokia"
 PRIORITY = "optional"
 SECTION = "gpe"
 
+SRCREV = "125"
 PV = "0.5.2+svnr${SRCPV}"
 PR = "r1"
 
