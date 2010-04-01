@@ -1,0 +1,10 @@
+#!/bin/sh
+echo "executing qemu-ifup"
+sudo /sbin/modprobe tun # to network QEMU
+echo "bringing up $1 for bridged mode..."
+
+sudo /sbin/ifconfig $1 0.0.0.0 up
+bridge=$(/sbin/ip route list | /usr/bin/awk '/^default / { print $5 }')
+echo "adding $1 to $bridge ..."
+sudo /usr/sbin/brctl addif ${bridge} $1
+

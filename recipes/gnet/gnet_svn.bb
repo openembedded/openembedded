@@ -3,6 +3,7 @@ LICENSE = "LGPL"
 SECTION = "libs/network"
 HOMEPAGE = "http://www.gnetlibrary.org"
 DEPENDS = "glib-2.0"
+SRCREV = "495"
 PV = "2.0.7+svnr${SRCPV}"
 PR = "r1"
 

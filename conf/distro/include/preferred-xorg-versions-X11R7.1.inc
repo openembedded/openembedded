@@ -183,9 +183,3 @@ PREFERRED_VERSION_util-macros ?= "X11R7.1-1.0.2"
 PREFERRED_VERSION_xorg-cf-files ?= "X11R7.1-1.0.2"
 PREFERRED_VERSION_xserver-kdrive ?= "X11R7.1-1.1.0"
 PREFERRED_VERSION_xserver-xorg ?= "X11R7.1-1.1.0"
-
-# Unreleased packages
-SRCREV_pn-libxcalibrate ?= "7b8e29186097170e930de634a4a68072558aa056"
-PV_pn-libxcalibrate ?= "0.0-oe1-${SRCREV}"
-SRCREV_pn-calibrateproto ?= "1da6fd1e2c7a49648245c98481fabea8b9690a8c"
-PV_pn-calibrateproto ?= "0.0-oe1-${SRCREV}"

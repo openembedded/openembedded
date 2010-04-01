@@ -20,9 +20,7 @@ PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV}"
 # be removed as soon as opkg starts to work correctly again as newer opkg
 # versions fix a number of bugs and add some desireable features.
 #
-SRCREV_pn-opkg        = "160"
-SRCREV_pn-opkg-native = "160"
-SRCREV_pn-opkg-sdk    = "160"
+OPKG_SRCREV = "160"
 #
 #===============================================================================#
 #===============================================================================#

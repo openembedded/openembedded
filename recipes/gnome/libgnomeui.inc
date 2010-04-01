@@ -19,6 +19,3 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/gnome-stock-pixbufs.h ${S}/libgnomeui/pixmaps/gnome-stock-pixbufs.h
 }
 
-do_stage() {
-    autotools_stage_all
-}

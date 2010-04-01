@@ -4,6 +4,7 @@ DEPENDS = "libfakekey expat libxft"
 RCONFLICTS = matchbox-keyboard-inputmethod
 RPROVIDES_${PN} = matchbox-keyboard-inputmethod
 SECTION = "x11"
+SRCREV = "1910"
 PV = "0.0+svnr${SRCPV}"
 PR ="r7"
 

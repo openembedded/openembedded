@@ -12,6 +12,8 @@ INC_PR = "r10"
 
 SRC_URI = "http://gnome-mplayer.googlecode.com/files/${P}.tar.gz;name=gnomemplayer"
 
+LDFLAGS_append = " -lstdc++"
+
 PACKAGES =+ "${PN}-nautilus-extension"
 FILES_${PN}-nautilus-extension = "${libdir}/nautilus/extension*/*.so"
 

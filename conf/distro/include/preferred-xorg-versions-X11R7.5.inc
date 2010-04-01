@@ -282,10 +282,4 @@ PREFERRED_VERSION_util-macros-native ?= "1.3.0"
 # xserver
 PREFERRED_VERSION_xserver-xorg ?= "1.7.1"
 
-# Unreleased packages
-SRCREV_pn-libxcalibrate ?= "7b8e29186097170e930de634a4a68072558aa056"
-PV_pn-libxcalibrate ?= "0.0-oe1-${SRCREV}"
-SRCREV_pn-calibrateproto ?= "1da6fd1e2c7a49648245c98481fabea8b9690a8c"
-PV_pn-calibrateproto ?= "0.0-oe1-${SRCREV}"
-
 require conf/distro/include/preferred-xorg-versions-X11R7.5-latest.inc

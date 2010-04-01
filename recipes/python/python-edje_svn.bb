@@ -1,4 +1,5 @@
 require python-efl.inc
+SRCREV = "${EFL_SRCREV}"
 DEPENDS += "edje python-evas"
 RDEPENDS += "python-evas"
 

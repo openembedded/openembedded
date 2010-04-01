@@ -4,6 +4,7 @@ LICENSE = "GPLv2"
 SECTION = "x11/applications"
 DEPENDS = "poppler gtk+ cups"
 
+SRCREV = "346"
 PV = "0.1.7+svnr${SRCPV}"
 PR = "r0"
 

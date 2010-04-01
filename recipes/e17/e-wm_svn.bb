@@ -4,6 +4,7 @@ LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
 PR = "r13"
+SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives
 

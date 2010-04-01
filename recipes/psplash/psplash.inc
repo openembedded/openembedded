@@ -7,6 +7,7 @@ PROVIDES = "virtual/psplash"
 RPROVIDES_${PN} = "virtual-psplash"
 RCONFLICTS_${PN} = "exquisite"
 
+SRCREV = "249"
 PV = "0.0+svnr${SRCPV}"
 PR = "r23"
 

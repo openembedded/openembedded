@@ -5,8 +5,6 @@ PROVIDES += "opkg"
 
 PR = "${INC_PR}"
 
-SRCREV = "${SRCREV_pn-opkg}"
-
 EXTRA_OECONF += " --disable-curl --enable-static --disable-shared"
 
 # The nogpg version isn't getting much love and has an unused variable which trips up -Werror

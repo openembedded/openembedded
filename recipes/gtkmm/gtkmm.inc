@@ -9,12 +9,10 @@ inherit gnome autotools pkgconfig flow-lossage
 
 LIBV = "2.4.0"
 
-do_stage () {
-        autotools_stage_all
-
-        install -d ${STAGING_INCDIR}/gtkmm-2.4
-        install -m 0644 gdk/gdkmmconfig.h ${STAGING_INCDIR}/gtkmm-2.4
-        install -m 0644 gtk/gtkmmconfig.h ${STAGING_INCDIR}/gtkmm-2.4
+do_install_append () {
+        install -d ${D}${includedir}/gtkmm-2.4
+        install -m 0644 gdk/gdkmmconfig.h ${D}${includedir}/gtkmm-2.4
+        install -m 0644 gtk/gtkmmconfig.h ${D}${includedir}/gtkmm-2.4
 }
 
 FILES_${PN} = "${libdir}/lib*.so.*"

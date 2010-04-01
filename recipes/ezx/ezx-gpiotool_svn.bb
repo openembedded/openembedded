@@ -3,9 +3,11 @@ SECTION = "devel"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.openezx.org"
 AUTHOR = "Harald Welte"
+SRCREV = "1877"
+PV = "${SRCPV}"
 PR = "r0"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=gpiotool;proto=http;rev=${PV}"
+SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=gpiotool;proto=http"
 S = "${WORKDIR}/gpiotool"
 
 do_compile() {

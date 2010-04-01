@@ -3,6 +3,7 @@ DEPENDS = "lua5.1 eet evas ecore embryo edje-native"
 LICENSE = "MIT BSD"
 PV = "0.9.92.060+svnr${SRCPV}"
 PR = "r6"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 

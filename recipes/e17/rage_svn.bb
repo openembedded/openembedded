@@ -5,5 +5,6 @@ LICENSE = "MIT BSD"
 DEPENDS = "emotion evas ecore edje"
 SECTION = "x11/multimedia"
 PV = "0.3.0.042+svnr${SRCPV}"
+SRCREV = "${EFL_SRCREV}"
 
 inherit e

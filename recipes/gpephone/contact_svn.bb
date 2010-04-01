@@ -6,6 +6,7 @@ DEPENDS = "gtk+ libgpephone dbus-glib libabenabler2 librecord2 libgemwidget"
 PV = "0.0+svnr${SRCPV}"
 PE = "1"
 PR = "r0"
+SRCREV = "1410"
 
 inherit gpephone autotools
 

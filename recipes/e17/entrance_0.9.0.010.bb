@@ -5,6 +5,9 @@ DEPENDS = "evas ecore edje esmart bash keylaunch xserver-common login-manager"
 RDEPENDS += "glibc-gconv-iso8859-1 entrance-themes"
 PR = "r2"
 
+# entrance and estickies were removed in 46590 for rewrite, move back to EFL_SRCREV when they're back
+SRCREV = "46589"
+
 inherit e
 
 SRC_URI += "\

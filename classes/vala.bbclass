@@ -1,3 +1,6 @@
+# Vala has problems with multiple concurrent invocations
+PARALLEL_MAKE = ""
+
 DEPENDS += "vala-native"
 
 FILES_${PN}-dev += "\

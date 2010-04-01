@@ -1,6 +1,7 @@
 DESCRIPTION = "EET is the Enlightenment data storage library"
 DEPENDS = "pkgconfig zlib jpeg openssl eina"
 LICENSE = "MIT BSD"
+SRCREV = "${EFL_SRCREV}"
 PV = "1.1.0+svnr${SRCPV}"
 PR = "r1"
 

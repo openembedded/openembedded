@@ -27,11 +27,6 @@ do_configure_prepend() {
 
 EXTRA_OECONF = " ac_cv_path_PYGOBJECT_CODEGEN=${STAGING_DATADIR}/pygobject/2.0/codegen/codegen.py "
 
-
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}"
 FILES_${PN}-dbg += "${libdir}/gnome-vfs-2.0/modules/.debug"
 

@@ -3,6 +3,7 @@ LICENSE = "LGPL"
 DEPENDS = "eet-native efreet evas ecore edje eet edbus"
 PV = "0.0.0+svnr${SRCPV}"
 PR = "r8"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 

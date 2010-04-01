@@ -1,0 +1,13 @@
+Index: squidGuard-1.4/src/Makefile.in
+===================================================================
+--- squidGuard-1.4.orig/src/Makefile.in	2010-02-10 12:48:28.000000000 +0300
++++ squidGuard-1.4/src/Makefile.in	2010-02-10 12:50:43.000000000 +0300
+@@ -110,6 +110,8 @@
+ 	mv -f y.tab.c y.tab.c.bison
+ 	mv -f y.tab.h y.tab.h.bison
+ 
++sg.l: y.tab.h
++
+ #
+ # Dependencies for installing
+ #

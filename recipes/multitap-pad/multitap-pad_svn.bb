@@ -3,6 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "libfakekey gtk+ matchbox-panel-2"
 RCONFLICTS = matchbox-keyboard-inputmethod
 SECTION = "x11"
+SRCREV = "373"
 PV = "0.0+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=${PN};proto=http \

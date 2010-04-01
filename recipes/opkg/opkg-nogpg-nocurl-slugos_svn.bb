@@ -26,8 +26,6 @@ SRC_URI += " \
 	   "
 PR = "${INC_PR}"
 
-SRCREV = "${SRCREV_pn-opkg}"
-
 EXTRA_OECONF += "--disable-gpg --enable-static --disable-shared"
 
 # Not sure this is needed; needs to be investigated and removed if not

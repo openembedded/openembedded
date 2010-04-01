@@ -3,6 +3,7 @@ DEPENDS = "virtual/libusb0-native virtual/kernel"
 SECTION = "devel"
 AUTHOR = "Team OpenEZX <openezx-devel@lists.openezx.org>"
 LICENSE = "GPL"
+SRCREV = "2512"
 PV = "0.3.0+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http" 

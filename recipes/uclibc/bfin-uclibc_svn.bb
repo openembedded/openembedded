@@ -11,6 +11,7 @@ PV = "${UCLIBC_BASE}+svnr${SRCPV}"
 
 require uclibc.inc
 PR = "${INC_PR}.0"
+SRCREV = "1857"
 PROVIDES_append_bfin = " virtual/${TARGET_PREFIX}libc-for-gcc "
 
 #recent versions uclibc require real kernel headers

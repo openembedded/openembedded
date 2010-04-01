@@ -3,6 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "webkit-efl evas ecore edje"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r4"
+SRCREV = "${EFL_SRCREV}"
 
 LDFLAGS += "-lstdc++"
 

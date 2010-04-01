@@ -4,6 +4,7 @@ LICENSE = "MIT/BSD"
 SECTION = "x11"
 PV = "1.0+svnr${SRCPV}"
 PR = "r6"
+SRCREV = "${EFL_SRCREV}"
 
 inherit update-alternatives
 

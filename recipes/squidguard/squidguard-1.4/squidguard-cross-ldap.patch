@@ -1,0 +1,13 @@
+Index: squidGuard-1.4/configure.in
+===================================================================
+--- squidGuard-1.4.orig/configure.in	2010-03-04 18:15:18.000000000 +0300
++++ squidGuard-1.4/configure.in	2010-03-04 18:15:32.000000000 +0300
+@@ -187,7 +187,7 @@
+ fi
+ if test "$with_ldap" = "yes"; then
+        AC_DEFINE(HAVE_LIBLDAP)
+-       AC_RUN_IFELSE([
++       AC_COMPILE_IFELSE([
+ 
+        #include <ldap.h>
+        int main()

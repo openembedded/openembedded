@@ -5,8 +5,6 @@ PROVIDES += "opkg"
 
 PR = "${INC_PR}.1"
 
-SRCREV = "${SRCREV_pn-opkg}"
-
 EXTRA_OECONF += " --disable-gpg \ 
                   --disable-openssl \ 
                   --disable-ssl-curl \

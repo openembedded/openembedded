@@ -4,7 +4,7 @@ device arrays using the "md" driver in Linux, also \
 known as Software RAID arrays."
 LICENSE = "GPL"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/raid/mdadm/${PN}-${PV}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/raid/mdadm/${PN}-${PV}.tar.bz2;name=mdadm-${PV}"
 
 CFLAGS += "-fno-strict-aliasing"
 

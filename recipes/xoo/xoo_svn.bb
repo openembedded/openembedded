@@ -4,6 +4,7 @@ It is intended for embedded developers that want to simulate a target device \
 HOMEPAGE = "http://projects.o-hand.com/xoo"
 LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxtst gtk+ libglade expat"
+SRCREV = "1971"
 PV = "0.7+svnr${SRCPV}"
 PR = "r1"
 

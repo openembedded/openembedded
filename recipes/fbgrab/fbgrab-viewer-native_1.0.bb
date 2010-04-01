@@ -3,6 +3,7 @@ HOMEPAGE = "http://svn.openezx.org/trunk/src/userspace/fbgrab/"
 LICENSE = "GPL"
 SECTION = "console/network"
 DEPENDS = "libpng-native"
+SRCREV = "1943"
 PV = "0.0+svn${SRCDATE}"
 PR = "r30"
 

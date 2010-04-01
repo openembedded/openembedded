@@ -2,6 +2,7 @@ SECTION = "libs"
 DEPENDS = "gtk+ glib-2.0 libxml2"
 DESCRIPTION = "A GTK+ HTML rendering library."
 LICENSE = "GPL"
+SRCREV = "1158"
 PV = "2.11.0+svnr${SRCPV}"
 
 SRC_URI = "svn://anonymous@svn.gnome.org/svn/gtkhtml2/;module=trunk \

@@ -5,6 +5,8 @@ SECTION = "x11/utils"
 PROVIDES = "gconf"
 RPROVIDES_${PN} = "gconf"
 RPROVIDES_${PN}-dev = "gconf-dev"
+
+SRCREV = "641"
 PV = "2.16.0+svnr${SRCPV}"
 PR = "r0"
 
