@@ -86,22 +86,6 @@ shr_rootfs_postprocess() {
     #font cache optimization, persistent cache
     sed -i "s/<cachedir>.*\/var\/cache\/\(.*\)<\/cachedir>/<cachedir>\/var\/local\/\1<\/cachedir>/g" ./etc/fonts/fonts.conf
 
-    #set up a nice gentoo-like PS1
-    echo "export PS1=\"\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] \"">> ./etc/profile
-
-    #set up some variables to improve default settings
-    echo "if [ \"\$DISPLAY\" = \"\" ]" >> ./etc/profile
-    echo "then" >> ./etc/profile
-    echo "    export DISPLAY=localhost:0" >> ./etc/profile
-    echo "fi" >> ./etc/profile
-    echo "export HISTFILESIZE=1000" >> ./etc/profile
-    echo "export HISTSIZE=1000" >> ./etc/profile
-    echo "alias rm='rm -i'; alias cp='cp -i'; alias mv='mv -i'" >> ./etc/profile
-    echo "alias la='ls $LS_OPTIONS -ltrA'; alias lh='ls $LS_OPTIONS -ltrh'; alias lr='ls $LS_OPTIONS -ltr';" >> ./etc/profile
-    echo "alias lR='ls $LS_OPTIONS -ltrR'" >> ./etc/profile
-    echo "# set your locale here:" >> ./etc/profile
-    echo "export LANG=en_US.UTF-8" >> ./etc/profile
-
     # Add some missing entries to the passwd and group file; but do so carefully
     # since this will be fixed upstream at some point.
     grep -q '^tss:' ./etc/passwd || echo 'tss:x:93:93:Linux TSS User:/bin:/bin/sh' >>./etc/passwd

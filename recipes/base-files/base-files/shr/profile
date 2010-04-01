@@ -1,0 +1,49 @@
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+
+PATH="/usr/local/bin:/usr/bin:/bin"
+EDITOR="/bin/vi"			# needed for packages like cron
+test -z "$TERM" && TERM="vt100"	# Basic terminal capab. For screen etc.
+
+if [ ! -e /etc/localtime ]; then
+	TZ="UTC"		# Time Zone. Look at http://theory.uwinnipeg.ca/gnu/glibc/libc_303.html 
+				# for an explanation of how to set this to your local timezone.
+	export TZ
+fi
+
+if [ "`id -u`" -eq 0 ]; then
+   PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin
+fi
+if [ "$PS1" ]; then
+# works for bash and ash (no other shells known to be in use here)
+   PS1='\u@\h:\w\$ '
+fi
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+export PATH PS1 OPIEDIR QPEDIR QTDIR EDITOR TERM
+
+umask 022
+
+alias pico=nano
+alias fso='cd /local/pkg/fso'
+alias ipkg='opkg'
+export PS1="\[\033[01;32m\]\u@\h\[\033[01;34m\] \w $\[\033[00m\] "
+if [ "$DISPLAY" = "" ]
+then
+    export DISPLAY=localhost:0
+fi
+export HISTFILESIZE=1000
+export HISTSIZE=1000
+alias rm='rm -i'; alias cp='cp -i'; alias mv='mv -i'
+alias la='ls  -ltrA'; alias lh='ls  -ltrh'; alias lr='ls  -ltr';
+alias lR='ls  -ltrR'
+# set your locale here:
+export LANG=en_US.UTF-8
