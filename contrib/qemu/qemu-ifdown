@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# NOTE: This script is intended to run in conjunction with qemu-ifup
+#       which uses the same logic to find your bridge/switch
+
+switch=$(/sbin/ip route list | awk '/^default / { print $5 }')
+
+sudo /usr/sbin/brctl delif $switch $1
+sudo /sbin/ifconfig $1 0.0.0.0 down
