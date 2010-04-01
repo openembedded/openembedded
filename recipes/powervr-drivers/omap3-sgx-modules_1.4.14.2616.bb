@@ -2,7 +2,7 @@ DESCRIPTION = "Kernel drivers for the PowerVR SGX chipset found in the omap3 SoC
 LICENSE = "GPLv2"
 
 #DEFAULT_PREFERENCE = "-1"
-PR_append = "a"
+PR_append = "b"
 
 # download required binary distribution from:
 # http://software-dl.ti.com/dsps/forms/export.html?prod_no=/OMAP35x_Graphics_SDK_setuplinux_3_01_00_05.bin
@@ -24,7 +24,7 @@ PVRBUILD = "release"
 
 INHIBIT_PACKAGE_STRIP = "1"
 
-MAKE_TARGETS = " BUILD=${PVRBUILD} TI_PLATFORM=omap3430"
+MAKE_TARGETS = " BUILD=${PVRBUILD} TI_PLATFORM=omap3630"
 
 do_install() {
 	mkdir -p ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/gpu/pvr
