@@ -7,7 +7,7 @@
 DESCRIPTION = "Alsa Scenario Files"
 LICENSE = "MIT"
 PV = "0.2.0"
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "\
   file://asound.conf \
@@ -35,8 +35,8 @@ do_install() {
 PACKAGES += "alsa-states"
 
 RRECOMMENDS_alsa-state = "alsa-states"
-RRECOMMENDS_${PN}_om-gta01 = "virtual/alsa-scenarios"
-RRECOMMENDS_${PN}_om-gta02 = "virtual/alsa-scenarios"
+RRECOMMENDS_${PN}_append_shr_om-gta01 = "virtual/alsa-scenarios"
+RRECOMMENDS_${PN}_append_shr_om-gta02 = "virtual/alsa-scenarios"
 
 FILES_${PN} = "${sysconfdir}/init.d ${sysconfdir}/asound.conf"
 CONFFILES_${PN} = "${sysconfdir}/asound.conf"
