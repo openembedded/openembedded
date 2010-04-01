@@ -3,10 +3,10 @@ LICENSE = "LGPL"
 DEPENDS = "libgnomeui pyorbit python-pygtk"
 RDEPENDS = "pyorbit"
 
-PR = "r2"
-
 inherit gnome distutils-base pkgconfig
 
+SRC_URI[archive.md5sum] = "a17ad952813ed86f520de8e07194a2bf"
+SRC_URI[archive.sha256sum] = "759ce9344cbf89cf7f8449d945822a0c9f317a494f56787782a901e4119b96d8"
 
 do_configure_prepend() {
     export HOST_SYS=${HOST_SYS}
