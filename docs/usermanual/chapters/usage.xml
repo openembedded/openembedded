@@ -642,10 +642,10 @@ Packaged contents of lzo-dev into /home/lenehan/devel/oe/build/titan-glibc-25/tm
 NOTE: Not creating empty archive for lzo-locale-1.08-r14
 NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_package_write</emphasis>: completed
 NOTE: package lzo-1.08: completed
-NOTE: Running task 223 of 226 (ID: 6, /home/lenehan/devel/oe/build/titan-glibc-25/recipes/lzo/lzo_1.08.bb, do_populate_staging)
+NOTE: Running task 223 of 226 (ID: 6, /home/lenehan/devel/oe/build/titan-glibc-25/recipes/lzo/lzo_1.08.bb, do_populate_sysroot)
 NOTE: package lzo-1.08: started
-NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_populate_staging</emphasis>: started
-NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_populate_staging</emphasis>: completed
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_populate_sysroot</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_populate_sysroot</emphasis>: completed
 NOTE: package lzo-1.08: completed
 NOTE: Running task 224 of 226 (ID: 9, /home/lenehan/devel/oe/build/titan-glibc-25/recipes/lzo/lzo_1.08.bb, do_qa_staging)
 NOTE: package lzo-1.08: started
@@ -734,10 +734,10 @@ NOTE: build 200705041709: completed</screen><note>
       </varlistentry>
 
       <varlistentry>
-        <term>populate_staging (stage)</term>
+        <term>populate_sysroot (stage)</term>
 
         <listitem>
-          <para>The <emphasis>populate_staging</emphasis> task (stage is an
+          <para>The <emphasis>populate_sysroot</emphasis> task (stage is an
           alternate, easier to type name, that can be used to refer to this
           task) is responsible for making available libraries and headers (if
           any) that may be required by other packages to build. For example if
@@ -820,10 +820,10 @@ NOTE: build 200705041709: completed</screen><note>
     <emphasis>qa_configure</emphasis> between the
     <emphasis>configure</emphasis> and <emphasis>compile</emphasis> tasks and
     another new task called <emphasis>qa_staging</emphasis> between
-    <emphasis>populate_staging</emphasis> and <emphasis>build</emphasis>
+    <emphasis>populate_sysroot</emphasis> and <emphasis>build</emphasis>
     tasks. The former validates the result of the
     <emphasis>configure</emphasis> task and the late the results of the
-    <emphasis>populate_staging</emphasis> task.</para>
+    <emphasis>populate_sysroot</emphasis> task.</para>
 
     <para>To determine the full list of tasks available for a specific recipe
     you can run bitbake on the recipe and asking it for the full list of
@@ -835,7 +835,7 @@ do_listtasks
 do_rebuild
 do_compile
 do_build
-do_populate_staging
+do_populate_sysroot
 do_mrproper
 do_fetch
 do_configure
@@ -1116,7 +1116,7 @@ do_mrproper
 do_fetch
 do_configure
 do_clean
-do_populate_staging
+do_populate_sysroot
 do_package
 do_unpack
 do_install

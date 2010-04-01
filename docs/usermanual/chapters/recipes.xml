@@ -1218,8 +1218,8 @@ Packaged contents of myhelloworld-doc into /home/lenehan/devel/oe/build/titan-gl
 NOTE: Not creating empty archive for myhelloworld-dev-0.1-r0
 NOTE: Not creating empty archive for myhelloworld-locale-0.1-r0
 NOTE: package myhelloworld-0.1-r0: task do_package_write: completed
-NOTE: package myhelloworld-0.1-r0: task do_populate_staging: started
-NOTE: package myhelloworld-0.1-r0: task do_populate_staging: completed
+NOTE: package myhelloworld-0.1-r0: task do_populate_sysroot: started
+NOTE: package myhelloworld-0.1-r0: task do_populate_sysroot: completed
 NOTE: package myhelloworld-0.1-r0: task do_build: started
 NOTE: package myhelloworld-0.1-r0: task do_build: completed
 NOTE: package myhelloworld-0.1: completed
