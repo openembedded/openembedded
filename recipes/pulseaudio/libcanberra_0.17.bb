@@ -5,9 +5,10 @@ DEPENDS = "alsa-lib gstreamer gtk+ libtool libvorbis"
 SECTION = "libs/multimedia"
 AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
-PR = "r5"
+PR = "r4"
 
-inherit autotools vala
+inherit autotools_stage vala
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 SRC_URI = "http://0pointer.de/lennart/projects/libcanberra/libcanberra-${PV}.tar.gz \
            file://libcanberra-increase-buffer-size.patch;patch=1"
