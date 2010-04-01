@@ -1,0 +1,270 @@
+--- a/configure.in	2009-02-06 13:41:23.015147047 +0300
++++ b/configure.in	2009-02-06 13:41:42.203146296 +0300
+@@ -118,27 +118,27 @@ dnl Checks for header files.
+ dnl
+ 
+ AC_HEADER_STDC
+-AC_CHECK_HEADERS(db.h regex.h unistd.h)
+-
+-AC_CHECK_HEADER(db.h,,[
+-	echo
+-	echo "** No db.h found"
+-	echo "   The Berkley DB library is required for squidGuard"
+-	echo "   to compile. Get it from http://www.oracle.com"
+-	echo "   use --with-db=DIR or --with-db-inc=DIR to specify"
+-	echo "   its location. (default is $dbprefix/BerkeleyDB)"
+-	echo
+-	exit 1
+-       ])
+-
+-if test $HAVE_REGEX.H = no; then
+-	echo 
+-	echo "** No regex.h found"
+-	echo "   The regexp library is required for squidGuard"
+-	echo "   to compile. Get it from http://www.gnu.org"
+-	echo
+-	exit 1
+-fi
++#AC_CHECK_HEADERS(db.h regex.h unistd.h)
++#
++#AC_CHECK_HEADER(db.h,,[
++#	echo
++#	echo "** No db.h found"
++#	echo "   The Berkley DB library is required for squidGuard"
++#	echo "   to compile. Get it from http://www.oracle.com"
++#	echo "   use --with-db=DIR or --with-db-inc=DIR to specify"
++#	echo "   its location. (default is $dbprefix/BerkeleyDB)"
++#	echo
++#	exit 1
++#       ])
++#
++#if test $HAVE_REGEX.H = no; then
++#	echo 
++#	echo "** No regex.h found"
++#	echo "   The regexp library is required for squidGuard"
++#	echo "   to compile. Get it from http://www.gnu.org"
++#	echo
++#	exit 1
++#fi
+ 
+ dnl
+ dnl Checks if runtime logmessages shall be suppressed. Is --nolog given?
+@@ -294,115 +294,115 @@ AC_CHECK_LIB(pthread,pthread_create,,[
+        echo
+        ])
+ 
+-dnl Check DB
++#dnl Check DB
+ LIBS="$LIBS -ldb"
+-AC_RUN_IFELSE([
+-	#include <db.h>
+-	int main() 
+-	{
+-		int major, minor, patch;
+-		float ver;
+-#if DB_VERSION_MAJOR
+-                major = DB_VERSION_MAJOR;
+-                minor = DB_VERSION_MINOR;
+-                patch = DB_VERSION_PATCH;
+-#else
+-                db_version(&major, &minor, &patch);
+-#endif
+-		ver = major + ((float) minor / 1000);
+-                if (ver >= 2.006)
+-			exit (0);
+-		exit (1);
+-	}	
+-	], db_ok_version=yes, db_ok_version=no, db_ok_version=no)
+-
+-if test $db_ok_version = no; then
+-	echo
+-	echo "** The Berkley DB library version 2.6.4 or newer"
+-	echo "   is required. Get it from http://www.oracle.com"
+-	echo "   use --with-db=DIR or --with-db-inc=DIR, "
+-	echo "   --with-db-lib=DIR to specify its location"
+-	echo "   (default is $dbprefix/BerkeleyDB)"
+-	echo 
+-	exit 1;
+-fi
+-
+-AC_RUN_IFELSE([
+-	#include <db.h>
+-	int main() 
+-	{
+-		int major, minor, patch;
+-		float ver;
+-#if DB_VERSION_MAJOR
+-                major = DB_VERSION_MAJOR;
+-                minor = DB_VERSION_MINOR;
+-                patch = DB_VERSION_PATCH;
++#AC_RUN_IFELSE([
++#	#include <db.h>
++#	int main() 
++#	{
++#		int major, minor, patch;
++#		float ver;
++##if DB_VERSION_MAJOR
++#                major = DB_VERSION_MAJOR;
++#                minor = DB_VERSION_MINOR;
++#                patch = DB_VERSION_PATCH;
+ #else
+-                db_version(&major, &minor, &patch);
+-#endif
+-		ver = major + ((float) minor / 1000);
+-                if (ver > 2.007 && ver < 3.002)
+-			exit (1);
+-		exit (0);
+-	}	
+-	], db_ok_version=yes, db_ok_version=no, db_ok_version=no)
+-
+-if test $db_ok_version = no; then
+-	echo
+-	echo "** The Berkley DB library version 3.2.* or newer"
+-	echo "   is required, when using 3.* versions of the library"
+-	echo "   Get it from http://www.oracle.com"
+-	echo "   use --with-db=DIR or --with-db-inc=DIR, "
+-	echo "   --with-db-lib=DIR to specify its location"
+-	echo "   (default is $dbprefix/BerkeleyDB)"
+-	echo 
+-	exit 1;
+-fi
+-
+-AC_RUN_IFELSE([
+-	#include <db.h>
+-	int main() 
+-	{
+-		int major, minor, patch;
+-		float ver;
+-#if DB_VERSION_MAJOR
+-                major = DB_VERSION_MAJOR;
+-                minor = DB_VERSION_MINOR;
+-                patch = DB_VERSION_PATCH;
+-#else
+-                db_version(&major, &minor, &patch);
+-#endif
+-		ver = major + ((float) minor / 1000);
+-                if (ver >= 3.002)
+-			exit (0);
+-		exit (1);
+-	}	
+-	], dbg2_ok_version=yes, dbg2_ok_version=no, dbg2_ok_version=no)
+-
++#                db_version(&major, &minor, &patch);
++##endif
++#		ver = major + ((float) minor / 1000);
++#                if (ver >= 2.006)
++#			exit (0);
++#		exit (1);
++#	}	
++#	], db_ok_version=yes, db_ok_version=no, db_ok_version=no)
++#
++#if test $db_ok_version = no; then
++#	echo
++#	echo "** The Berkley DB library version 2.6.4 or newer"
++#	echo "   is required. Get it from http://www.oracle.com"
++#	echo "   use --with-db=DIR or --with-db-inc=DIR, "
++#	echo "   --with-db-lib=DIR to specify its location"
++#	echo "   (default is $dbprefix/BerkeleyDB)"
++#	echo 
++#	exit 1;
++#fi
++#
++#AC_RUN_IFELSE([
++#	#include <db.h>
++#	int main() 
++#	{
++#		int major, minor, patch;
++#		float ver;
++##if DB_VERSION_MAJOR
++#                major = DB_VERSION_MAJOR;
++#                minor = DB_VERSION_MINOR;
++#                patch = DB_VERSION_PATCH;
++##else
++#                db_version(&major, &minor, &patch);
++##endif
++#		ver = major + ((float) minor / 1000);
++#                if (ver > 2.007 && ver < 3.002)
++#			exit (1);
++#		exit (0);
++#	}	
++#	], db_ok_version=yes, db_ok_version=no, db_ok_version=no)
++#
++#if test $db_ok_version = no; then
++#	echo
++#	echo "** The Berkley DB library version 3.2.* or newer"
++#	echo "   is required, when using 3.* versions of the library"
++#	echo "   Get it from http://www.oracle.com"
++#	echo "   use --with-db=DIR or --with-db-inc=DIR, "
++#	echo "   --with-db-lib=DIR to specify its location"
++#	echo "   (default is $dbprefix/BerkeleyDB)"
++#	echo 
++#	exit 1;
++#fi
++#
++#AC_RUN_IFELSE([
++#	#include <db.h>
++#	int main() 
++#	{
++#		int major, minor, patch;
++#		float ver;
++##if DB_VERSION_MAJOR
++#                major = DB_VERSION_MAJOR;
++#                minor = DB_VERSION_MINOR;
++#                patch = DB_VERSION_PATCH;
++##else
++#                db_version(&major, &minor, &patch);
++##endif
++#		ver = major + ((float) minor / 1000);
++#                if (ver >= 3.002)
++#			exit (0);
++#		exit (1);
++#	}	
++#	], dbg2_ok_version=yes, dbg2_ok_version=no, dbg2_ok_version=no)
++#
+ if test $dbg2_ok_version = yes; then
+ 	AC_DEFINE(DB_VERSION_GT2)
+ fi
+ 
+-AC_RUN_IFELSE([
+-        #include <db.h>
+-        int main()
+-        {
+-                int major, minor, patch;
+-                float ver;
+-#if DB_VERSION_MAJOR
+-                major = DB_VERSION_MAJOR;
+-                minor = DB_VERSION_MINOR;
+-                patch = DB_VERSION_PATCH;
+-#else
+-                db_version(&major, &minor, &patch);
+-#endif
+-                ver = major + ((float) minor / 1000);
+-                if (ver >= 4.002)
+-                        exit (0);
+-                exit (1);
+-        }
+-        ], dbg3_ok_version=yes, dbg3_ok_version=no, dbg3_ok_version=no)
+-
++#AC_RUN_IFELSE([
++#        #include <db.h>
++#        int main()
++#        {
++#                int major, minor, patch;
++#                float ver;
++##if DB_VERSION_MAJOR
++#                major = DB_VERSION_MAJOR;
++#                minor = DB_VERSION_MINOR;
++#                patch = DB_VERSION_PATCH;
++##else
++#                db_version(&major, &minor, &patch);
++##endif
++#                ver = major + ((float) minor / 1000);
++#                if (ver >= 4.002)
++##                        exit (0);
++#                exit (1);
++#        }
++#        ], dbg3_ok_version=yes, dbg3_ok_version=no, dbg3_ok_version=no)
++#
+ if test $dbg3_ok_version = yes; then
+         AC_DEFINE(DB_VERSION_GT3)
+ fi
