@@ -3,6 +3,7 @@ SECTION = "x11/data"
 SRCNAME = "e/src/modules/illume/keyboards"
 PV = "0.16.999.060+svnr${SRCPV}"
 PR = "r1"
+SRCREV = "${EFL_SRCREV}"
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
 S = "${WORKDIR}/${SRCNAME}"

@@ -5,6 +5,7 @@ DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
 PROVIDES = "virtual/imlib2"
 PV = "1.4.2.001+svnr${SRCPV}"
 PR = "r0"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 

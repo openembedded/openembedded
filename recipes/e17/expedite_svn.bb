@@ -4,6 +4,7 @@ RDEPENDS = "expedite-themes evas-engine-buffer evas-engine-fb evas-engine-softwa
 LICENSE = "MIT BSD"
 PV = "0.6.0+svnr${SRCPV}"
 PR = "r3"
+SRCREV = "${EFL_SRCREV}"
 
 inherit e
 

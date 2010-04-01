@@ -5,6 +5,7 @@ DEPENDS += "libmusicbrainz lightmediascanner libxml2 taglib"
 SECTION = "x11/multimedia"
 PV = "0.2.0+svnr${SRCPV}"
 PR = "r1"
+SRCREV = "${EFL_SRCREV}"
 
 inherit e
 

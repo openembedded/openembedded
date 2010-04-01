@@ -3,5 +3,6 @@ LICENSE = "MIT"
 DEPENDS = "exml"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r1"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl

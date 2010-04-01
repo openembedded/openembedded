@@ -1,4 +1,5 @@
 require ecore.inc
+SRCREV = "${EFL_SRCREV}"
 PR = "r11"
 
 SRC_URI += "\

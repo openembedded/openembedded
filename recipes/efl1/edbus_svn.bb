@@ -3,6 +3,7 @@ DEPENDS = "dbus ecore"
 LICENSE = "MIT BSD"
 PV = "0.5.0.060+svnr${SRCPV}"
 PR = "r1"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 
