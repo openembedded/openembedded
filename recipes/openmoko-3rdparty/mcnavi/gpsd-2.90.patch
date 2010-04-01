@@ -1,0 +1,12 @@
+diff -uNr mcnavi.orig//src/mcnavi/mgps.c mcnavi/src/mcnavi/mgps.c
+--- mcnavi.orig//src/mcnavi/mgps.c	2010-02-22 19:35:40.000000000 +0100
++++ mcnavi/src/mcnavi/mgps.c	2010-04-01 16:39:37.000000000 +0200
+@@ -28,7 +28,7 @@
+ #include "mcconf.h"
+ #include "gpx.h"
+ 
+-//#define GPSD_API_19 1
++#define GPSD_API_19 1
+ 
+ int mgps_lock(mgpsdata *mgps)
+ {
