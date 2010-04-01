@@ -4,9 +4,9 @@ LICENSE = "LGPL"
 
 ART_CONFIG = "${HOST_ARCH}/art_config.h"
 
-INC_PR = "r4"
+INC_PR = "r5"
 
-# can't use gnome.oeclass due to _ in filename
+# can't use gnome.bbclass due to _ in filename
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libart_lgpl/2.3/libart_lgpl-${PV}.tar.bz2 \
        file://${ART_CONFIG} \
        file://Makefile.am.patch;patch=1"
@@ -30,7 +30,3 @@ EXTRA_OECONF = "--disable-gtk-doc"
 export MKDIR_P = "mkdir -p"
 export mkdir_p = "mkdir -p"
 
-do_stage() {
-	autotools_stage_includes
-	oe_libinstall -a -so libart_lgpl_2 ${STAGING_LIBDIR}
-}

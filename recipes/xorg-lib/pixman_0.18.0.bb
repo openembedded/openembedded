@@ -2,6 +2,7 @@ require pixman.inc
 PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_shr = "2"
  
 SRC_URI += "\
            file://0001-Generic-C-implementation-of-pixman_blt-with-overlapp.patch;patch=1 \
