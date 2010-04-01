@@ -66,7 +66,7 @@ PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 # - recommend MUXer on platforms that require one
 RDEPENDS_${PN}_append_om-gta01 = " fso-abyss"
 RDEPENDS_${PN}_append_om-gta02 = " fso-abyss"
-RDEPENDS_${PN}_append-om-3d7k  = " fso-abyss"
+RDEPENDS_${PN}_append_om-3d7k  = " fso-abyss"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"
 
