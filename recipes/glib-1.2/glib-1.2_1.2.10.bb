@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "glib-1.2-native"
-PR = "r3"
+PR = "r4"
 
 LEAD_SONAME = "libglib-1.2.*"
 
@@ -31,15 +31,11 @@ do_configure_prepend () {
 	rm -f ltconfig acinclude.m4 libtool ltmain.sh
 }
 
-do_stage () {
-	oe_libinstall -so libglib ${STAGING_LIBDIR}
-	oe_libinstall -so -C gmodule libgmodule ${STAGING_LIBDIR}
-	oe_libinstall -so -C gthread libgthread ${STAGING_LIBDIR}
-	autotools_stage_includes
-	install -d ${STAGING_INCDIR}/glib-1.2
-	install -m 0644 glibconfig.h glib.h ${STAGING_INCDIR}/glib-1.2/
-	install -d ${STAGING_DATADIR}/aclocal
-	install -m 0644 ${S}/glib.m4 ${STAGING_DATADIR}/aclocal/glib-1.2.m4
+do_install_append () {
+	install -d ${D}${includedir}/glib-1.2
+	install -m 0644 glibconfig.h glib.h ${D}${includedir}/glib-1.2/
+	install -d ${D}${datadir}/aclocal
+	install -m 0644 ${S}/glib.m4 ${D}${datadir}/aclocal/glib-1.2.m4
 }
 
 FILES_${PN}-dev += "${libdir}/glib/include/glibconfig.h"
