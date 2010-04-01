@@ -1,0 +1,169 @@
+From d1410558827fce8aac354274a7150fa915881c50 Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Thu, 10 Dec 2009 00:51:50 +0200
+Subject: [PATCH 5/5] ARM: added NEON optimizations for fetch/store r5g6b5 scanline
+
+---
+ pixman/pixman-access.c       |   23 ++++++++++++++++++++++-
+ pixman/pixman-arm-neon-asm.S |   20 ++++++++++++++++++++
+ pixman/pixman-arm-neon.c     |   41 +++++++++++++++++++++++++++++++++++++++++
+ pixman/pixman-private.h      |    5 +++++
+ 4 files changed, 88 insertions(+), 1 deletions(-)
+
+diff --git a/pixman/pixman-access.c b/pixman/pixman-access.c
+index fa0a267..5bb3e09 100644
+--- a/pixman/pixman-access.c
++++ b/pixman/pixman-access.c
+@@ -2748,7 +2748,7 @@ typedef struct
+ 	    store_scanline_ ## format, store_scanline_generic_64	\
+     }
+ 
+-static const format_info_t accessors[] =
++static format_info_t accessors[] =
+ {
+ /* 32 bpp formats */
+     FORMAT_INFO (a8r8g8b8),
+@@ -2891,6 +2891,27 @@ _pixman_bits_image_setup_raw_accessors (bits_image_t *image)
+ 	setup_accessors (image);
+ }
+ 
++void
++_pixman_bits_override_accessors (pixman_format_code_t format,
++                                 fetch_scanline_t     fetch_func,
++                                 store_scanline_t     store_func)
++{
++    format_info_t *info = accessors;
++
++    while (info->format != PIXMAN_null)
++    {
++	if (info->format == format)
++	{
++	    if (fetch_func)
++		info->fetch_scanline_raw_32 = fetch_func;
++	    if (store_func)
++		info->store_scanline_raw_32 = store_func;
++	    return;
++	}
++	info++;
++    }
++}
++
+ #else
+ 
+ void
+diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
+index 51bc347..f30869e 100644
+--- a/pixman/pixman-arm-neon-asm.S
++++ b/pixman/pixman-arm-neon-asm.S
+@@ -458,6 +458,16 @@ generate_composite_function \
+     pixman_composite_src_8888_0565_process_pixblock_tail, \
+     pixman_composite_src_8888_0565_process_pixblock_tail_head
+ 
++generate_composite_function_single_scanline \
++    pixman_store_scanline_r5g6b5_asm_neon, 32, 0, 16, \
++    FLAG_DST_WRITEONLY | FLAG_DEINTERLEAVE_32BPP, \
++    8, /* number of pixels, processed in a single block */ \
++    default_init, \
++    default_cleanup, \
++    pixman_composite_src_8888_0565_process_pixblock_head, \
++    pixman_composite_src_8888_0565_process_pixblock_tail, \
++    pixman_composite_src_8888_0565_process_pixblock_tail_head
++
+ /******************************************************************************/
+ 
+ .macro pixman_composite_src_0565_8888_process_pixblock_head
+@@ -493,6 +503,16 @@ generate_composite_function \
+     pixman_composite_src_0565_8888_process_pixblock_tail, \
+     pixman_composite_src_0565_8888_process_pixblock_tail_head
+ 
++generate_composite_function_single_scanline \
++    pixman_fetch_scanline_r5g6b5_asm_neon, 16, 0, 32, \
++    FLAG_DST_WRITEONLY | FLAG_DEINTERLEAVE_32BPP, \
++    8, /* number of pixels, processed in a single block */ \
++    default_init, \
++    default_cleanup, \
++    pixman_composite_src_0565_8888_process_pixblock_head, \
++    pixman_composite_src_0565_8888_process_pixblock_tail, \
++    pixman_composite_src_0565_8888_process_pixblock_tail_head
++
+ /******************************************************************************/
+ 
+ .macro pixman_composite_add_8000_8000_process_pixblock_head
+diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
+index 7feee1d..fda7a09 100644
+--- a/pixman/pixman-arm-neon.c
++++ b/pixman/pixman-arm-neon.c
+@@ -375,6 +375,43 @@ neon_combine_##name##_u (pixman_implementation_t *imp,                   \
+ BIND_COMBINE_U (over)
+ BIND_COMBINE_U (add)
+ 
++void
++pixman_fetch_scanline_r5g6b5_asm_neon (int             width,
++                                       uint32_t       *buffer,
++                                       const uint16_t *pixel);
++void
++pixman_store_scanline_r5g6b5_asm_neon (int             width,
++                                       uint16_t       *pixel,
++                                       const uint32_t *values);
++
++static void
++neon_fetch_scanline_r5g6b5 (pixman_image_t *image,
++                            int             x,
++                            int             y,
++                            int             width,
++                            uint32_t *      buffer,
++                            const uint32_t *mask,
++                            uint32_t        mask_bits)
++{
++    const uint32_t *bits = image->bits.bits + y * image->bits.rowstride;
++    const uint16_t *pixel = (const uint16_t *)bits + x;
++
++    pixman_fetch_scanline_r5g6b5_asm_neon (width, buffer, pixel);
++}
++
++static void
++neon_store_scanline_r5g6b5 (bits_image_t *  image,
++                            int             x,
++                            int             y,
++                            int             width,
++                            const uint32_t *values)
++{
++    uint32_t *bits = image->bits + image->rowstride * y;
++    uint16_t *pixel = ((uint16_t *) bits) + x;
++
++    pixman_store_scanline_r5g6b5_asm_neon (width, pixel, values);
++}
++
+ pixman_implementation_t *
+ _pixman_implementation_create_arm_neon (void)
+ {
+@@ -385,6 +422,10 @@ _pixman_implementation_create_arm_neon (void)
+     imp->combine_32[PIXMAN_OP_OVER] = neon_combine_over_u;
+     imp->combine_32[PIXMAN_OP_ADD] = neon_combine_add_u;
+ 
++    _pixman_bits_override_accessors (PIXMAN_r5g6b5,
++                                     neon_fetch_scanline_r5g6b5,
++                                     neon_store_scanline_r5g6b5);
++
+     imp->blt = arm_neon_blt;
+     imp->fill = arm_neon_fill;
+ 
+diff --git a/pixman/pixman-private.h b/pixman/pixman-private.h
+index eeb677d..ba2d401 100644
+--- a/pixman/pixman-private.h
++++ b/pixman/pixman-private.h
+@@ -220,6 +220,11 @@ void
+ _pixman_bits_image_setup_raw_accessors (bits_image_t *image);
+ 
+ void
++_pixman_bits_override_accessors (pixman_format_code_t format,
++                                 fetch_scanline_t     fetch_func,
++                                 store_scanline_t     store_func);
++
++void
+ _pixman_image_get_scanline_generic_64  (pixman_image_t *image,
+                                         int             x,
+                                         int             y,
+-- 
+1.6.6.1
+

@@ -1,0 +1,13 @@
+Index: glib-2.23.6/glib/gatomic.h
+===================================================================
+--- glib-2.23.6.orig/glib/gatomic.h	2010-03-29 13:01:28.000000000 +0400
++++ glib-2.23.6/glib/gatomic.h	2010-03-29 13:01:35.000000000 +0400
+@@ -70,7 +70,7 @@
+   (g_atomic_int_set) ((volatile gint G_GNUC_MAY_ALIAS *) (void *) (atomic), (newval)))
+ # define g_atomic_pointer_get(atomic) \
+  ((void) sizeof (gchar [sizeof (*(atomic)) == sizeof (gpointer) ? 1 : -1]), \
+-  (g_atomic_pointer_get) ((volatile gpointer G_GNUC_MAY_ALIAS *) (void *) (atomic)))
++  (g_atomic_pointer_get) ((volatile gpointer G_GNUC_MAY_ALIAS *) (volatile void G_GNUC_MAY_ALIAS *) (atomic)))
+ # define g_atomic_pointer_set(atomic, newval) \
+  ((void) sizeof (gchar [sizeof (*(atomic)) == sizeof (gpointer) ? 1 : -1]), \
+   (g_atomic_pointer_set) ((volatile gpointer G_GNUC_MAY_ALIAS *) (void *) (atomic), (newval)))

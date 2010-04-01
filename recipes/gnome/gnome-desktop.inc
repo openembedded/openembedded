@@ -15,8 +15,4 @@ do_install_append() {
 	sed  -i 's:#!.*/usr/bin/python:#!/usr/bin/python:' ${D}${bindir}/gnome-about
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/gnome-about ${datadir}/libgnome-desktop"
