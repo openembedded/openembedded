@@ -1,7 +1,7 @@
 DESCRIPTION = "Kernel drivers for the PowerVR SGX chipset found in the omap3 SoCs"
 LICENSE = "GPLv2"
 
-DEFAULT_PREFERENCE = "-1"
+#DEFAULT_PREFERENCE = "-1"
 PR_append = "a"
 
 # download required binary distribution from:
@@ -10,7 +10,7 @@ PR_append = "a"
 TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
 require ../ti/ti-eula-unpack.inc
 
-SGXPV = "3_01_00_05"
+SGXPV = "3_01_00_06"
 IMGPV = "1.4.14.2616"
 BINFILE := "OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin"
 
