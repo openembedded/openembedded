@@ -4,7 +4,7 @@ DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
 
-PR = "r12"
+PR = "r13"
 
 PACKAGES = "${PN}-dbg \
     gst-meta-base \
@@ -34,7 +34,7 @@ RRECOMMENDS_gst-meta-base = "\
 
 RDEPENDS_gst-meta-audio = "\
     gst-meta-base \
-    gst-plugin-ivorbis \
+    gst-plugin-ivorbisdec \
     gst-plugin-ogg \
     ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
     gst-plugin-id3demux \
