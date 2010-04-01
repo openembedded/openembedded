@@ -3,13 +3,14 @@ require eglibc.inc
 DEPENDS += "gperf-native"
 FILESPATHPKG =. "eglibc-svn:"
 PV = "2.10"
-PR = "${INC_PR}.8"
+PR = "${INC_PR}.9"
 SVN_REV="10152"
 EGLIBC_BRANCH="eglibc-2_10"
 SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};rev=${SVN_REV};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
            file://armv4t-interworking.patch;patch=1 \
            file://IO-acquire-lock-fix.patch;patch=1 \
+           file://shorten-build-commands.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"
