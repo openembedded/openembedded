@@ -1,0 +1,28 @@
+diff -uNr gpsd-2.91.orig//configure.ac gpsd-2.91/configure.ac
+--- gpsd-2.91.orig//configure.ac	2010-03-01 22:56:56.000000000 +0100
++++ gpsd-2.91/configure.ac	2010-04-01 16:58:00.000000000 +0200
+@@ -974,12 +974,6 @@
+ AC_SUBST(MANTARGET)
+ AC_SUBST(MANFLAGS)
+ 
+-dnl Gentoo systems can have a problem with the Python path
+-if test -e /etc/gentoo-release; then
+-    AC_MSG_WARN([This is a Gentoo system.])
+-    AC_MSG_WARN([Adjust your PYTHONPATH to see library directories under /usr/local/lib])
+-fi 
+-
+ dnl Output the configuration summary
+ echo ""
+ echo "=========================================="
+diff -uNr gpsd-2.91.orig//Makefile.am gpsd-2.91/Makefile.am
+--- gpsd-2.91.orig//Makefile.am	2010-04-02 00:04:47.000000000 +0200
++++ gpsd-2.91/Makefile.am	2010-04-02 00:03:18.000000000 +0200
+@@ -257,7 +257,7 @@
+ 
+ # Install Python modules
+ install-exec-local:
+-	$(PYTHON) setup.py install --prefix=${prefix} # --root=$(DESTDIR)
++	$(PYTHON) setup.py install --prefix=${prefix} --root=$(DESTDIR)
+ endif
+ 
+ if LIBGPSMM_ENABLE
