@@ -6,7 +6,7 @@ DEPENDS = "virtual/libx11 libxcb mplayer gstreamer"
 
 INC_PR = "r1"
 
-SRC_URI = "http://libplayer.geexbox.org/releases/${P}.tar.bz2;name=${PN}"
+SRC_URI = "http://${PN}.geexbox.org/releases/${P}.tar.bz2;name=${PN}"
 
 inherit autotools pkgconfig
 
