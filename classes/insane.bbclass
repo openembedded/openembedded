@@ -263,11 +263,10 @@ def package_qa_check_dev(path, name,d, elf):
         if bb.data.inherits_class(s, d):
             return True
 
-    if not "-dev" in name:
-        if path[-3:] == ".so" and os.path.islink(path):
-            error_msg = "non -dev package contains symlink .so: %s path '%s'" % \
-                     (name, package_qa_clean_path(path,d))
-            sane = package_qa_handle_error(0, error_msg, name, path, d)
+    if not name.endswith("-dev") and path.endswith(".so") and os.path.islink(path):
+        error_msg = "non -dev package contains symlink .so: %s path '%s'" % \
+                 (name, package_qa_clean_path(path,d))
+        sane = package_qa_handle_error(0, error_msg, name, path, d)
 
     return sane
 
@@ -412,7 +411,7 @@ def package_qa_check_staged(path,d):
     for root, dirs, files in os.walk(path):
         for file in files:
             path = os.path.join(root,file)
-            if file[-2:] == "la":
+            if file.endswith(".la"):
                 file_content = open(path).read()
                 # Don't check installed status for native/cross packages
                 if not iscrossnative:
@@ -422,7 +421,7 @@ def package_qa_check_staged(path,d):
                 if workdir in file_content:
                     error_msg = "%s failed sanity test (workdir) in path %s" % (file,root)
                     sane = package_qa_handle_error(8, error_msg, "staging", path, d)
-            elif file[-2:] == "pc":
+            elif file.endswith(".pc"):
                 file_content = open(path).read()
                 if pkgconfigcheck in file_content:
                     error_msg = "%s failed sanity test (tmpdir) in path %s" % (file,root)
