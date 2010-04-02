@@ -1,5 +1,5 @@
 require libvalhalla.inc
-PV = "1.0.0+hg"
+PV = "1.0.1+hg"
 PR = "${INC_PR}.0"
 
 SRCREV = "a12610802732"
