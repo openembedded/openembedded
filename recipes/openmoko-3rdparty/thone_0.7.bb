@@ -6,8 +6,8 @@ RDEPENDS = "bash python python-dbus"
 PACKAGE_ARCH = "all"
 
 SRC_URI = "http://thone.googlecode.com/files/${P}.tgz;name=archive"
-SRC_URI[archive.md5sum] = "a0ab91b7ec6c4b59a9e718724497882a"
-SRC_URI[archive.sha256sum] = "93a6bad45f0a6abd66cc7529b01d159a2cd257904632d15689e658c9a0b885e9"
+SRC_URI[archive.md5sum] = "ddf90638ac279b359e9081e0271fe881"
+SRC_URI[archive.sha256sum] = "e3eadb050b29385b9ffd2347bcc6cdbc75a681aba93efff4fee954cd6e39bb1e"
 
 S = "${WORKDIR}/usr"
 
