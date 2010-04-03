@@ -2,13 +2,13 @@ require linux.inc
 DEPENDS = "android-image-utils-native"
 
 PV = "2.6.32+${PR}+gitr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 COMPATIBLE_MACHINE = "htcdream"
 CMDLINE = "console=tty1 root=/dev/mmcblk0p1 rootdelay=8 fbcon=rotate:1 panic=30 mem=110M"
 
 SRCREV_LAST_GOOD = "48afbaf19428893b7aec0a385970f300c38300c3"
-SRCREV = "4ca666904c624a54cf29a1b5b64b74c705b0eece"
+SRCREV = "00243f441ef12bd6823007759c7c1fc91ecda55d"
 
 SRC_URI = "\
   git://gitorious.org/htc-msm-2-6-32/leviathan-incoming.git;protocol=git;branch=msm-gnuconform \
