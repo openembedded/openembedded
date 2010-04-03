@@ -17,18 +17,18 @@ EXTRA_IMAGEDEPENDS += "zaurus-installer"
 SERIAL_CONSOLE = "115200 ttyS0"
 SERIAL_CONSOLE_collie = "115200 ttySA0"
 
-# FIXME: xserver-xorg is in testing
+# FIXME: xserver-xorg is in testing on spitz
 
 # deprecated defaults
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 XSERVER = "xserver-kdrive-fbdev"
 
-# c7x0 uses kdrive-imageon (W100)
+# c7x0 uses kdrive-imageon_1.2.0
 PREFERRED_PROVIDER_virtual/xserver_c7x0 = "xserver-kdrive-imageon"
 XSERVER_c7x0 = "xserver-kdrive-imageon"
 
 # collie uses kdrive-fbdev
-PREFERRED_PROVIDER_virtual/xserver_collie = "xserver-kdrive-fbdev"
+PREFERRED_PROVIDER_virtual/xserver_collie = "xserver-kdrive"
 XSERVER_collie = "xserver-kdrive-fbdev"
 
 # FIXME xserver-kdrive 1.3.0.0 is still the only working version ?
