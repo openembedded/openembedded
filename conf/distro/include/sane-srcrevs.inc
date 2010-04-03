@@ -86,6 +86,6 @@ SRCREV_pn-webkit-efl ?= "3a5ee77664c898ed51a2b2d5759822f8c0a06472"
 SRCREV_pn-xserver-kdrive-glamo ?= "9b28d998424c77fbc057dd3a022ccbb122793a52"
 
 OPKG_SRCREV ?= "527"
-EFL_SRCREV ?= "47642"
+EFL_SRCREV ?= "47713"
 
 require conf/distro/include/sane-srcrevs-fso.inc
