@@ -1,0 +1,11 @@
+--- a/Makefile.PL	2009-03-15 09:05:03.000000000 +0300
++++ b/Makefile.PL	2009-03-15 09:07:45.000000000 +0300
+@@ -1158,7 +1158,7 @@
+ LIBSPAMC_SRC    = spamc/libspamc.c spamc/utils.c
+ 
+ $(SPAMC_MAKEFILE): $(SPAMC_MAKEFILE).in $(SPAMC_MAKEFILE).win spamc/spamc.h.in
+-	$(CONFIGURE) --prefix="$(I_PREFIX)" --sysconfdir="$(I_CONFDIR)" --datadir="$(I_DATADIR)" --enable-ssl="$(ENABLE_SSL)"
++	$(CONFIGURE) --build="$(BUILD_SYS)" --host="$(HOST_SYS)" --target="$(TARGET_SYS)" --prefix="$(I_PREFIX)" --sysconfdir="$(I_CONFDIR)" --datadir="$(I_DATADIR)" --enable-ssl="$(ENABLE_SSL)"
+ 
+ spamc_has_moved:
+ 	$(NOECHO) echo "***"

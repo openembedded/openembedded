@@ -3,6 +3,7 @@ SECTION = "x11"
 LICENSE = "GPLv2"
 DEPENDS = "ecore edbus elementary libefso"
 PV = "0.1.0.0+svnr${SRCPV}"
+SRCREV = "194"
 
 SRC_URI = "svn://svn.om.vptt.ch/trunk/;proto=http;module=essential-dialer"
 S = "${WORKDIR}/essential-dialer"

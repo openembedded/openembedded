@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+case "$1" in
+	start|restart)
+		#create the network directory in the volatile /var directory
+		mkdir -p /var/run/network
+		if [ -e /var/run/network/ifstate ]; then
+			echo -n "Cleaning: /var/run/network/ifstate"
+			echo -n >/var/run/network/ifstate
+			echo "."
+		fi
+		;;
+	stop|reload|force-reload)
+		;;
+esac

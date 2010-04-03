@@ -1,0 +1,68 @@
+Index: b/lib/Mail/SpamAssassin/Plugin/OneLineBodyRuleType.pm
+===================================================================
+--- a/lib/Mail/SpamAssassin/Plugin/OneLineBodyRuleType.pm	2010-01-26 23:12:17.000000000 -0500
++++ b/lib/Mail/SpamAssassin/Plugin/OneLineBodyRuleType.pm	2010-01-26 23:16:57.000000000 -0500
+@@ -1,6 +1,6 @@
+ =head1 NAME
+ 
+-Mail::SpamAssassin::Plugin::OneLineBodyRuleType
++Mail::SpamAssassin::Plugin::OneLineBodyRuleType - spamassassin body test plugin
+ 
+ =cut
+ 
+Index: b/lib/Mail/SpamAssassin/Util/DependencyInfo.pm
+===================================================================
+--- a/lib/Mail/SpamAssassin/Util/DependencyInfo.pm	2010-01-26 23:16:57.000000000 -0500
++++ b/lib/Mail/SpamAssassin/Util/DependencyInfo.pm	2010-01-26 23:16:57.000000000 -0500
+@@ -17,6 +17,16 @@
+ # limitations under the License.
+ # </@LICENSE>
+ 
++=head1 NAME
++
++Mail::SpamAssassin::Util::DependencyInfo - spamassassin debugging helpers
++
++=head1 SYNOPSIS
++
++ loadplugin Mail::SpamAssassin::Util::DependencyInfo
++
++=cut
++
+ package Mail::SpamAssassin::Util::DependencyInfo;
+ 
+ use strict;
+@@ -218,6 +228,8 @@
+ 
+ ###########################################################################
+ 
++=head1 METHODS
++
+ =over 4
+ 
+ =item $f->debug_diagnostics ()
+Index: b/lib/Mail/SpamAssassin/Util/RegistrarBoundaries.pm
+===================================================================
+--- a/lib/Mail/SpamAssassin/Util/RegistrarBoundaries.pm	2010-01-26 23:16:57.000000000 -0500
++++ b/lib/Mail/SpamAssassin/Util/RegistrarBoundaries.pm	2010-01-26 23:16:57.000000000 -0500
+@@ -18,6 +18,12 @@
+ # limitations under the License.
+ # </@LICENSE>
+ 
++=head1 NAME
++
++Mail::SpamAssassin::Util::RegistrarBoundaries - domain delegation rules
++
++=cut
++
+ package Mail::SpamAssassin::Util::RegistrarBoundaries;
+ 
+ use strict;
+@@ -268,6 +274,8 @@
+ 
+ ###########################################################################
+ 
++=head1 METHODS
++
+ =over 4
+ 
+ =item ($hostname, $domain) = split_domain ($fqdn)

@@ -4,6 +4,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "eet evas ecore edje gstreamer gst-plugins-base"
 PV = "0.1.0.042+svnr${SRCPV}"
 PR = "r4"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 

@@ -2,6 +2,7 @@ require kismet.inc
 
 DEFAULT_PREFERENCE = "-1"
 
+SRCREV = "2285"
 PV = "0.0+svnr${SRCPV}"
 PR = "r3"
 

@@ -51,5 +51,18 @@ do_stage_append () {
 		sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-L${CROSS_DIR}/${TARGET_SYS}/$d ${LIBGCCS_VAR} -lc -lm '|" ${CROSS_DIR}/${TARGET_SYS}/$d/libsupc++.la || true
 		sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-L${CROSS_DIR}/${TARGET_SYS}/$d ${LIBGCCS_VAR} -lc -lm '|" ${CROSS_DIR}/${TARGET_SYS}/$d/libstdc++.la || true
 	done
+
+    # Link gfortran to g77 to satisfy not-so-smart configure or hard coded g77
+    # gfortran is fully backwards compatible. This is a safe and practical solution.
+    if [ -f ${CROSS_DIR}/bin/${TARGET_PREFIX}gfortran ]; then
+           currdir="$PWD"
+           cd ${CROSS_DIR}/bin/
+           ln -sf ${TARGET_PREFIX}gfortran ${TARGET_PREFIX}g77 || true
+           if [ -d ${CROSS_DIR}/${TARGET_SYS}/bin/ ] ; then 
+               cd ${CROSS_DIR}/${TARGET_SYS}/bin/
+               ln -sf gfortran g77 || true
+           fi
+           cd $currdir
+    fi
 }
 

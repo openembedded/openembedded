@@ -2,6 +2,7 @@ DESCRIPTION = "A portable audio library"
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
+SRCREV = "1387"
 PV = "v19+svnr${SRCPV}"
 PR = "r0"
 

@@ -19,6 +19,10 @@ FILES_${PN}-tickadj = "${bindir}/tickadj"
 FILES_ntp-utils = "${bindir}/*"
 FILES_ntpdate = "${bindir}/ntpdate ${sysconfdir}/network/if-up.d/ntpdate"
 
+do_configure_prepend() {
+	sed -i -e 's:dist_man_MANS=	sntp.1::g' sntp/Makefile.am
+}
+
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 644 ${WORKDIR}/ntp.conf ${D}/${sysconfdir}

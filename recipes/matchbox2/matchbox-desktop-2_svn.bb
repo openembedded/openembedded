@@ -3,6 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11/panels"
 DEPENDS = "gtk+ startup-notification"
 RDEPENDS = "matchbox-common"
+SRCREV = "2096"
 PV = "2.0+svnr${SRCPV}"
 PR = "r1"
 

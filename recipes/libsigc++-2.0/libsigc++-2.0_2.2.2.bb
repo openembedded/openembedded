@@ -7,15 +7,10 @@ SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libsigc++/2.2/libsigc++-${PV}.t
 
 S = "${WORKDIR}/libsigc++-${PV}"
 
-inherit autotools 
+inherit autotools pkgconfig 
 
 EXTRA_AUTORECONF = "--exclude=autoheader"
 
 FILES_${PN}-dev += "${libdir}/sigc++-*/"
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
-do_stage() {
-	autotools_stage_all
-}
 

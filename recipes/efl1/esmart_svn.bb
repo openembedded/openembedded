@@ -3,6 +3,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "evas ecore edje imlib2 libtool"
 PV = "0.9.0.050+svnr${SRCPV}"
 PR = "r2"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 

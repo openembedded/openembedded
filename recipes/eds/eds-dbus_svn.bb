@@ -5,6 +5,7 @@ DEPENDS = "intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common vir
 
 PV = "1.4.0+svnr${SRCPV}"
 PR = "r7"
+SRCREV = "736"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1;maxrev=659 \

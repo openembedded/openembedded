@@ -1,5 +1,7 @@
 DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
+
+SRCREV = "9900"
 PV = "0.20+svn${SRCDATE}"
 PR = "r0"
 

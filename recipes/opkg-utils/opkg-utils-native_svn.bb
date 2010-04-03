@@ -1,4 +1,5 @@
 require opkg-utils_svn.bb
+SRCREV = "4595"
 
 RDEPENDS = ""
 

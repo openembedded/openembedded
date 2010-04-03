@@ -2,6 +2,7 @@ require xorg-proto-common.inc
 
 DESCRIPTION = "Touchscreen calibration protocol"
 
+SRCREV = "1da6fd1e2c7a49648245c98481fabea8b9690a8c"
 PR = "r0"
 PV = "0.0+${PR}+gitr${SRCREV}"
 PE = "2"

@@ -1,4 +1,5 @@
 require python-efl.inc
+SRCREV = "${EFL_SRCREV}"
 DEPENDS += "edbus python-dbus"
 RDEPENDS += "python-dbus"
 

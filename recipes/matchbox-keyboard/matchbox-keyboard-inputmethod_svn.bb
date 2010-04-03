@@ -4,6 +4,7 @@ DEPENDS = "libfakekey expat libxft gtk+ matchbox-panel-2"
 RCONFLICTS_${PN} = "matchbox-keyboard"
 RPROVIDES_${PN} = "matchbox-keyboard"
 SECTION = "x11"
+SRCREV = "1910"
 PV = "0.0+svnr${SRCPV}"
 PR = "r11"
 

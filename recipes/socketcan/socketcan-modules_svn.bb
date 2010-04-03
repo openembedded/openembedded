@@ -3,6 +3,7 @@ HOMEPAGE = "http://developer.berlios.de/projects/socketcan/"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
+SRCREV = "917"
 PV = "0.0+svnr${SRCPV}"
 PR = "r1"
 

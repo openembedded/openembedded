@@ -1,4 +1,5 @@
 DEPENDS = "gtk+ startup-notification dbus dbus-glib"
+SRCREV = "2087"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r0"
 

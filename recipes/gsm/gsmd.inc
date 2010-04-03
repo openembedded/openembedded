@@ -4,6 +4,7 @@ LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 RPROVIDES_${PN} = "libgsmd0 libgsmd gsmd gsmd-devel"
+SRCREV = "4505"
 PV = "0.1+svnr${SRCPV}"
 PR = "r44"
 

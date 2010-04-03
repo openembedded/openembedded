@@ -2,6 +2,7 @@ DESCRIPTION = "C++ bindings for dbus"
 LICENSE = "LGPL"
 SECTION = "libs"
 DEPENDS = "dbus dbus-c++-native expat"
+SRCREV = "13131"
 
 SRC_URI = "svn://dev.openwengo.org/svn/openwengo/wengophone-ng/branches/wengophone-dbus-api/libs;module=dbus;proto=http"
 #           file://fix-linking.patch;patch=1"

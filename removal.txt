@@ -25,3 +25,9 @@ Maintainer:     None
 Reason:         Obsoleted by task-base
 Proposed by:    Koen Kooi
 Note:		Moved to packages/obsolete/tasks on 2006-12-22
+
+Package Name:	ClamAV, versions < 0.95
+Removal Date:	2009-04-15
+Maintainer:	Jamie Lenehan
+Reason:		http://www.clamav.net/lang/en/2009/10/05/eol-clamav-094/
+Proposed by:	Roman I Khimov <khimov@altell.ru>

@@ -4,6 +4,8 @@ LICENSE = "GPL"
 
 DEPENDS = "libxklavier libgnomekbd libgnomeui gnome-desktop gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
 
+PR = "r1"
+
 inherit gnome
 
 LDFLAGS += "-lgthread-2.0"
@@ -22,7 +24,4 @@ do_configure_prepend () {
 	sed -i 's:$CPPFLAGS -I$includedir:$CPPFLAGS:' ${S}/configure.ac
 }
 
-do_stage() {    
-	autotools_stage_all
-}
 

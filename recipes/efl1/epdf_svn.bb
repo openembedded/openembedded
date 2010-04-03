@@ -3,6 +3,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "poppler evas ecore"
 PV = "0.1.0+svnr${SRCPV}"
 PR = "r3"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 

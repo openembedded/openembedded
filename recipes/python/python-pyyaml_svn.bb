@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.pyyaml.org"
 SECTION = "devel/python"
 LICENSE = "MIT"
 DEPENDS = "libyaml python-cython-native"
+SRCREV = "344"
 PV = "3.08+svnr${SRCPV}"
 PR = "ml0"
 

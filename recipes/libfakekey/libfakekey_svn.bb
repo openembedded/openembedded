@@ -2,6 +2,7 @@ DESCRIPTION = "Matchbox keyboard"
 LICENSE = "GPL"
 DEPENDS = "libxtst"
 SECTION = "x11/wm"
+SRCREV = "1455"
 PV = "0.2+svnr${SRCPV}"
 PR = "r1"
 

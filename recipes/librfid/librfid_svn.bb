@@ -5,6 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libusb0"
 SRCNAME = "librfid"
 
+SRCREV = "2094"
 PV = "0.2.0+svnr${SRCPV}"
 PR = "r5"
 

@@ -11,6 +11,7 @@ RDEPENDS_gpe-conf-panel = "gpe-conf"
 
 inherit autotools gpe
 
+SRCREV = "9900"
 PV = "0.2.8+svnr${SRCPV}"
 PR = "r0"
 

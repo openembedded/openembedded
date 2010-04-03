@@ -2,6 +2,7 @@ DESCRIPTION = "Matchbox keyboard"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft"
 SECTION = "x11/wm"
+SRCREV = "1820"
 PV = "0.0+svnr${SRCPV}"
 
 PR ="r2"

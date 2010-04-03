@@ -3,6 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "gdbm libconic sqlite3 gtk+ libhildonfm libosso osso-ic-oss libosso-help gnome-vfs dbus bluez-libs"
 RDEPENDS = "bluez-utils"
 RRECOMMENDS = "gpsd flite"
+SRCREV = "118"
 PV = "2.0.3+svnr${SRCPV}"
 PR = "r2"
 

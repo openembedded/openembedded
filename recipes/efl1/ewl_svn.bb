@@ -3,6 +3,7 @@ DEPENDS = "evas ecore edje emotion efreet"
 LICENSE = "MIT BSD"
 PV = "0.5.3.050+svnr${SRCPV}"
 PR = "r2"
+SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 

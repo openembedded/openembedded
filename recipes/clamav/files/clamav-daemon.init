@@ -28,6 +28,12 @@ case "$1" in
   stop)
     echo -n "Stopping $DESC: "
     start-stop-daemon -K -p $PID
+    for i in `seq 1 5`; do
+	if start-stop-daemon -p $PID -t -K >/dev/null 2>&1; then
+	    break;
+	fi
+	sleep 1
+    done
     ;;
 
     restart|force-reload)

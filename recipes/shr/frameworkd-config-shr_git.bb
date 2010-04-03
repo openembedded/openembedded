@@ -4,6 +4,10 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de> et. al."
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
+
+SRCREV_pn-frameworkd-config-shr_FSO_REV ?= "f751f2724eea23d0ca050bdf2672f9011ae09517"
+SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "cdf5b5f3d8f37d6d91e1eb8d9cf07d034291df87"
+
 SRCREV_FORMAT = "FSO_REV-SHR_REV"
 PV = "0.9.5.9+gitr${SRCREV}"
 PR = "r7"
@@ -66,7 +70,7 @@ PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 # - recommend MUXer on platforms that require one
 RDEPENDS_${PN}_append_om-gta01 = " fso-abyss"
 RDEPENDS_${PN}_append_om-gta02 = " fso-abyss"
-RDEPENDS_${PN}_append-om-3d7k  = " fso-abyss"
+RDEPENDS_${PN}_append_om-3d7k  = " fso-abyss"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"
 

@@ -1,5 +1,6 @@
 SRC_URI = "svn://svn.berlios.de/tslib/trunk;module=tslib"
 S = "${WORKDIR}/tslib"
+SRCREV = "77"
 PV = "1.0+svnr${SRCPV}"
 PR = "${INC_PR}.1"
 

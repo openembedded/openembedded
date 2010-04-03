@@ -3,6 +3,7 @@ SECTION = "devel/python"
 LICENSE = "MIT"
 HOMEPAGE = "http://coherence.beebits.net/wiki"
 
+SRCREV = "1161"
 PR = "r1"
 
 PV = "0.6.0+svnr${SRCPV}"

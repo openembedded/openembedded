@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r43"
+PR ="r44"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -18,21 +18,12 @@ SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_cm-t35 = "file://cm-t35/cm-t35.patch;patch=1"
 
-SRC_URI_beagleboard = "git://git.denx.de/u-boot-ti.git;protocol=git \
-                 file://fw_env.config \
-                 file://new-pinmux.patch;patch=1 \
-file://revision-detection.patch;patch=1 \
-file://i2c.patch;patch=1 \
-file://720MHz.patch;patch=1 \
-file://dss.patch;patch=1 \
-file://0001-omap3-clock.c-don-t-reprogram-clocks-when-trying-to-.patch;patch=1 \
-file://0002-beagleboard-add-pinmuxing-for-beagleboard-XM.patch;patch=1 \
-file://0003-beagleboard-move-muxing-into-revision-print-switch.patch;patch=1 \
-file://Cortex-A8-erratum-725233.diff;patch=1 \
+SRC_URI_beagleboard = "git://www.sakoman.com/git/u-boot.git;branch=omap3-v2010.3;protocol=git \
+                       file://0001-Minimal-Display-driver-for-OMAP3.patch;patch=1 \
+                       file://fw_env.config \
 "
-
-SRCREV_beagleboard = "a5cf522a91ba479d459f8221135bdb3e9ae97479"
-PV_beagleboard = "2009.11-rc1+${PR}+gitr${SRCREV}"
+SRCREV_beagleboard = "946351081bd14e8bf5816fc38b82e004a0e6b4fe"
+PV_beagleboard = "2010.03-rc1+${PR}+gitr${SRCREV}"
 
 SRCREV_calamari = "533cf3a024947aaf74c16573a6d951cd0c3d0a7d"
 

@@ -3,7 +3,9 @@ SECTION = "gpe/libs"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "glib-2.0 sqlite3 libical libalmmgr"
-PV = "0.0+svnr-${SRCREV}"
+SRCREV = "1410"
+PV = "0.0+svnr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 

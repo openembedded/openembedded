@@ -9,14 +9,8 @@ PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "780c95caf9888fa4548dfe4c1c78a7e7ce99a9ed"
+SRCREV = "67b814d9b2baea6beccfb1625a1e3f0b2ba7218b"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
-# pending changes http://lists.x.org/archives/xorg-devel/2010-January/005127.html
-           file://0001-Add-a-PreConfigureWindow-hook.patch;patch=1 \
-           file://0002-dri2-No-need-to-blit-from-front-on-DRI2GetBuffers-if.patch;patch=1 \
-           file://0003-glx-Enforce-a-1-1-correspondence-between-GLX-and-X11.patch;patch=1 \
-           file://0004-glx-dri2-Notify-the-driver-when-its-buffers-become-i.patch;patch=1 \
-           file://0005-dri2-Support-the-DRI2InvalidateBuffers-event.patch;patch=1 \
            file://dolt-fix-1.7.0.patch;patch=1 \
            file://randr-support-1.7.0.patch;patch=1 \
 	   file://hack-fbdev-ignore-return-mode.patch;patch=1 \

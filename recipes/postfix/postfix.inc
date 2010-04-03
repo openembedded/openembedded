@@ -1,8 +1,11 @@
 SECTION = "console/network"
 DEPENDS = "virtual/db libpcre postfix-native"
+DEPENDS_virtclass-native = "virtual/db-native libpcre-native"
 LICENSE = "IPL"
 
-SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
+INC_PR = "r13"
+
+SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz;name=postfix-${PV} \
 	   file://makedefs.patch;patch=1 \
 	   file://install.patch;patch=1 \
 	   file://main.cf_2.0 \
@@ -12,6 +15,8 @@ SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV
 	   "
 
 S = "${WORKDIR}/postfix-${PV}"
+
+BBCLASSEXTEND = "native"
 
 inherit update-rc.d
 
@@ -29,7 +34,7 @@ export SYSLIBS = "-lpcre -ldb ${LIBBDB_EXTRA} -lnsl -lresolv ${LDFLAGS}"
 export EXPORT = "AUXLIBS='-lpcre' CCARGS='-DHAS_PCRE ${CFLAGS}' OPT='' DEBUG='-g'"
 export CC_append = " -DHAS_PCRE ${CFLAGS}"
 export EXTRA_OEMAKE = "-e"
-export POSTCONF = "${STAGING_BINDIR_NATIVE}/postconf"
+export POSTCONF = "${STAGING_SBINDIR_NATIVE}/postconf"
 
 do_compile () {
 	unset CFLAGS CPPFLAGS CXXFLAGS
@@ -37,8 +42,23 @@ do_compile () {
 	oe_runmake
 }
 
+do_install_prepend_virtclass-native() {
+	export POSTCONF="bin/postconf"
+}
+
 do_install () {
-	sh ./postfix-install 'install_root=${D}' -non-interactive
+	sh ./postfix-install 'install_root=${D}' \
+		'config_directory=${sysconfdir}/postfix' \
+		'daemon_directory=${libexecdir}/postfix' \
+		'command_directory=${sbindir}' \
+		'queue_directory=${localstatedir}/spool/postfix' \
+		'sendmail_path=${sbindir}/sendmail.postfix' \
+		'newaliases_path=${bindir}/newaliases' \
+		'mailq_path=${bindir}/mailq' \
+		'manpage_directory=${mandir}' \
+		'readme_directory=${datadir}/doc/postfix' \
+		'data_directory=${localstatedir}/lib/postfix' \
+		-non-interactive
 	rm -rf ${D}${localstatedir}/spool/postfix
         mv ${D}${sysconfdir}/postfix/main.cf ${D}${sysconfdir}/postfix/sample-main.cf
 	install -d ${D}${localstatedir}/tmp
@@ -48,8 +68,9 @@ do_install () {
         install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_postfix
         install -m 755 ${WORKDIR}/postfix ${D}${sysconfdir}/init.d/postfix
         install -m 644 ${WORKDIR}/internal_recipient ${D}${sysconfdir}/postfix/internal_recipient
-	mv ${D}${sbindir}/sendmail ${D}${sbindir}/sendmail.${PN}
 }
+
+NATIVE_INSTALL_WORKS = "1"
 
 pkg_postinst () {
 	update-alternatives --install ${sbindir}/sendmail sendmail sendmail.${PN} 40

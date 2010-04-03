@@ -15,6 +15,8 @@ PACKAGE_ARCH = "all"
 PR = "r0"
 
 SRC_URI = "http://projects.openmoko.org/frs/download.php/937/pisi-src-${PV}.tar.gz"
+SRC_URI[archive.md5sum] = "5311ff9ddbca49ab751ad6f526c53e8f"
+SRC_URI[archive.sha256sum] = "540a363188a51387e5296fdb3f7b885f9a0a116d106d578c14e738075e7edf42"
 
 FILES_${PN} += "/opt/pisi \
                 ${datadir}/pixmaps \

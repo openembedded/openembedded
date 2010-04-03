@@ -13,8 +13,8 @@ PE = "1"
 DEFAULT_PREFERENCE = "-2"
 DEFAULT_PREFERENCE_shr = "2"
 
-SRCREV_pn-mesa-dri ?= "196214bf2b677a83653d49f79d03752f29df44ec"
-SRCREV_pn-mesa-dri_shr ?= "1ac166895fef47806c9e9286d2a6356b4db8398d"
+SRCREV = "196214bf2b677a83653d49f79d03752f29df44ec"
+SRCREV_shr = "1ac166895fef47806c9e9286d2a6356b4db8398d"
 
 SRC_URI = "git://anongit.freedesktop.org/git/mesa/mesa;protocol=git"
 SRC_URI_shr = "git://git.bitwiz.org.uk/mesa.git;protocol=git;branch=glamo"

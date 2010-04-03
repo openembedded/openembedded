@@ -3,6 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "gconf glib-2.0 gtk+"
 RDEPENDS = "xrdb"
 SECTION = "x11"
+SRCREV = "2006"
 PV = "0.0+svnr${SRCPV}"
 
 PR = "r2"

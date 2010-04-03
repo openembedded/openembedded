@@ -2,6 +2,7 @@ require linux.inc
 
 COMPATIBLE_HOST = 'bfin.*-uclinux'
 
+SRCREV = "3758"
 PV = "2.6.22.10+svnr${SRCPV}"
 
 SRC_URI = "svn://sources.blackfin.uclinux.org/linux-kernel/;module=trunk \

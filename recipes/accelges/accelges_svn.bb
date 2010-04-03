@@ -7,6 +7,8 @@ SECTION = "openmoko/utilities"
 PV = "0.2+svnr${SRCPV}"
 PR = "r2"
 PE = "1"
+SRCREV = "206"
+
 DEPENDS = "dbus dbus-glib libxrandr libnotify notification-daemon curl gtk+"
 RDEPENDS = "dbus dbus-glib libxrandr libnotify notification-daemon libcurl gtk+"
 

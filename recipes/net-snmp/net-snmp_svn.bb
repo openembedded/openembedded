@@ -1,5 +1,6 @@
 require net-snmp.inc
 DEPENDS += "libtool libtool-native libtool-cross"
+SRCREV = "17367"
 PR = "${INC_PR}.0"
 
 S = "${WORKDIR}/net-snmp"
