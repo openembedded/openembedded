@@ -2,9 +2,9 @@ DESCRIPTION = "Package for the different scenarios used by Openmoko"
 SECTION = "openmoko/base"
 SRCREV = "8e89c8dbae569a08cac246a3805fca20988c0ad1"
 PV = "1.0+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
-COMPATIBLE_MACHINE = "(om-gta01|om-gta02|om-3d7k|htcdream)"
+COMPATIBLE_MACHINE = "(om-gta01|om-gta02|htcdream)"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

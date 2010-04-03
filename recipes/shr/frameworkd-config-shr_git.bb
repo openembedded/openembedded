@@ -10,7 +10,7 @@ SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "cdf5b5f3d8f37d6d91e1eb8d9cf07d034291
 
 SRCREV_FORMAT = "FSO_REV-SHR_REV"
 PV = "0.9.5.9+gitr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master;name=FSO_REV \
            git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master;name=SHR_REV"
@@ -70,7 +70,6 @@ PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 # - recommend MUXer on platforms that require one
 RDEPENDS_${PN}_append_om-gta01 = " fso-abyss"
 RDEPENDS_${PN}_append_om-gta02 = " fso-abyss"
-RDEPENDS_${PN}_append_om-3d7k  = " fso-abyss"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"
 
