@@ -1,7 +1,7 @@
 # To be included from sane-srcrevs.inc
 
 # FSO Projects -- Cornucopia
-FSO_CORNUCOPIA_SRCREV ?= "2619482c376880ba54389c22e3cb0305cfb87fe8"
+FSO_CORNUCOPIA_SRCREV ?= "eb075d098faa26d79b5a527b893d33eb0120f26e"
 SRCREV_pn-fso-abyss ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fso-apm ?= "${FSO_CORNUCOPIA_SRCREV}"
 SRCREV_pn-fso-boot ?= "${FSO_CORNUCOPIA_SRCREV}"
@@ -29,7 +29,7 @@ SRCREV_pn-fso-gpsd ?= "39e810899110a9bb302cf2064e1c0f73541fb4e6"
 SRCREV_pn-fso-gsm0710muxd ?= "1d69fb5b666ac2a9e54e46978c7afa8fe5dfc3c9"
 SRCREV_pn-fso-monitord ?= "b4ae1e9b10e710042624c2cf1a15b91a7d5b1d44"
 SRCREV_pn-fso-sounds ?= "3a4767ec01988bd0fd8f72f0c35d6d36e5fbc815"
-SRCREV_pn-fso-specs ?= "99e821f6eb865cd6a526baa808298275e96ab582"
+SRCREV_pn-fso-specs ?= "e3fcb57675f7f48b6848f5b8114961f9418eb17b"
 SRCREV_pn-gsmd2 ?= "c16883a079aeff8780e5d461ec4e8348537ab4d8"
 SRCREV_pn-libfso-glib ?= "f1a0b3fe2ed6e15d83ad4880b4eb7aece00f9d57"
 SRCREV_pn-libframeworkd-glib ?= "487b092dd3daa12a5beff0abe1be3f53d82f4bf0"

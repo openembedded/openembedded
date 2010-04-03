@@ -2,7 +2,7 @@ DESCRIPTION = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r13"
+PR = "r14"
 
 inherit task
 
@@ -33,6 +33,7 @@ RDEPENDS_${PN}-debug = "\
   i2c-tools \
   gdb \
   ltrace \
+  mioctl \
   procps \
   pxaregs \
   s3c24xx-gpio \
