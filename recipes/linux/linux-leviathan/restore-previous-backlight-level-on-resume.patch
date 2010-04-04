@@ -1,0 +1,61 @@
+#
+# Restore previous backlight level as set by userland on resume.
+#
+# Signed-off-by: Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+#
+diff --git a/arch/arm/mach-msm/board-trout-panel.c b/arch/arm/mach-msm/board-trout-panel.c
+index abee24d..1c896ab 100644
+--- a/arch/arm/mach-msm/board-trout-panel.c
++++ b/arch/arm/mach-msm/board-trout-panel.c
+@@ -22,11 +22,11 @@
+ #include "proc_comm.h"
+ #include "devices.h"
+ 
+-#define TROUT_DEFAULT_BACKLIGHT_BRIGHTNESS 255
++#define TROUT_DEFAULT_BACKLIGHT_BRIGHTNESS 127
+ 
+ static struct clk *gp_clk;
+ static int trout_backlight_off;
+-static int trout_backlight_brightness = TROUT_DEFAULT_BACKLIGHT_BRIGHTNESS;
++static int trout_backlight_resume_level = TROUT_DEFAULT_BACKLIGHT_BRIGHTNESS;
+ static int trout_new_backlight = 1;
+ static uint8_t trout_backlight_last_level = 33;
+ static DEFINE_MUTEX(trout_backlight_lock);
+@@ -443,7 +443,7 @@ static int trout_mddi_panel_unblank(
+ {
+ 
+ 	int panel_id, ret = 0;
+-	
++
+ 	trout_set_backlight_level(0);
+ 	client_data->auto_hibernate(client_data, 0);
+ 	trout_process_mddi_table(client_data, mddi_toshiba_panel_init_table,
+@@ -467,7 +467,7 @@ static int trout_mddi_panel_unblank(
+ 		ret = -1;
+ 	};
+ 	mutex_lock(&trout_backlight_lock);
+-	trout_set_backlight_level(trout_backlight_brightness);
++	trout_set_backlight_level(trout_backlight_resume_level);
+ 	trout_backlight_off = 0;
+ 	mutex_unlock(&trout_backlight_lock);
+ 	client_data->auto_hibernate(client_data, 1);
+@@ -517,6 +517,10 @@ static int trout_brightness_set(struct backlight_device *bd)
+ 	int intensity;
+ 	mutex_lock(&trout_backlight_lock);
+ 	intensity = bd->props.brightness;
++
++	/* remember last backlight level as requested by user */
++	trout_backlight_resume_level = intensity;
++
+ 	if(!trout_backlight_off)
+ 		trout_set_backlight_level(intensity);
+ 	mutex_unlock(&trout_backlight_lock);
+@@ -534,7 +538,7 @@ static struct backlight_ops trout_backlight_ops = {
+ };
+ 
+ static int trout_backlight_probe(struct platform_device *pdev)
+-{	
++{
+ 	struct backlight_device *bd;
+ 	bd = backlight_device_register("trout-backlight", &pdev->dev, NULL, &trout_backlight_ops);
+ 	bd->props.max_brightness = TROUT_DEFAULT_BACKLIGHT_BRIGHTNESS;
