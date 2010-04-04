@@ -225,6 +225,7 @@ RDEPENDS_${PN} += "\
 		illume-keyboard-default-alt \
 		illume-keyboard-dutch \
 		illume-keyboard-dvorak \
+		illume-keyboard-finnish \
 		illume-keyboard-french \
 		illume-keyboard-german \
 		illume-keyboard-hebrew \

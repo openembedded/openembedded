@@ -6,7 +6,7 @@ S = "${WORKDIR}/git"
 SRCREV = "ebbc388b26578f60f3d68ea5631c47a11afa49c0"
 PV = "0.0+gitr${SRCREV}"
 PE = "1"
-PR = "r2"
+PR = "r3"
 
 
 PACKAGES = "\
@@ -16,6 +16,7 @@ illume-keyboard-danish \
 illume-keyboard-default-alt \
 illume-keyboard-dutch \
 illume-keyboard-dvorak \
+illume-keyboard-finnish \
 illume-keyboard-french \
 illume-keyboard-german \
 illume-keyboard-hebrew \
@@ -51,6 +52,10 @@ FILES_illume-keyboard-dutch = "${KEYBOARDS_DIR}/capslock-negative.png ${KEYBOARD
 AUTHOR_illume-keyboard-dvorak = "Gabor Adam TOTH"
 DESCRIPTION_illume-keyboard-dvorak = "Illume keyboard with dvorak layout"
 FILES_illume-keyboard-dvorak = "${KEYBOARDS_DIR}/Dvorak.kbd ${KEYBOARDS_DIR}/dvorak.png"
+
+AUTHOR_illume-keyboard-finnish = "Olof Sjöbergh / Jussi Timperi"
+DESCRIPTION_illume-keyboard-finnish = "Illume keyboard with finnish layout"
+FILES_illume-keyboard-finnish = "${KEYBOARDS_DIR}/Finnish.kbd ${KEYBOARDS_DIR}/Finnish.png"
 
 DESCRIPTION_illume-keyboard-french = "Illume keyboard with french layout"
 FILES_illume-keyboard-french = "${KEYBOARDS_DIR}/Azerty.kbd ${KEYBOARDS_DIR}/Azerty.png"
