@@ -1,5 +1,5 @@
 require ${PN}.inc
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
@@ -14,4 +14,5 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
 	   file://restart-from-bindir.patch;patch=1 \
            file://server-pro-1.2.4.patch;patch=1 \
 	   file://firstuse-path.patch;patch=1 \
+           file://force-firstuse-calibrate.patch;patch=1 \
           "
