@@ -1,8 +1,8 @@
 SECTION = "libs"
 LICENSE = "GD"
 DESCRIPTION = "gd is a library used to create PNG, JPEG, or WBMP images."
-DEPENDS = "libpng jpeg zlib"
-PR = "r2"
+DEPENDS = "freetype libpng jpeg zlib"
+PR = "r3"
 
 SRC_URI = "http://www.libgd.org/releases/gd-2.0.36RC1.tar.gz;name=src"
 SRC_URI[src.md5sum] = "39ac48e6d5e0012a3bd2248a0102f209"
@@ -15,7 +15,7 @@ inherit autotools binconfig gettext
 EXTRA_OECONF += " --with-zlib=${STAGING_LIBDIR}/.. \
                   --with-png=${STAGING_LIBDIR}/.. \
                   --with-jpeg=${STAGING_LIBDIR}/.. \
-                  --without-freetype \
+                  --with-freetype \
                   --without-fontconfig \
                   --without-xpm \
                   --without-x"
