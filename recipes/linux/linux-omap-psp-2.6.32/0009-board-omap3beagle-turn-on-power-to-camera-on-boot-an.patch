@@ -1,7 +1,7 @@
-From 9786b91716b67411bf4f77d7023898b0bc8c92c4 Mon Sep 17 00:00:00 2001
+From 6f6264e5980b822b5853d2f6a7584aa5e3431cfd Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Thu, 11 Feb 2010 20:23:01 +0100
-Subject: [PATCH 09/30] board-omap3beagle: turn on power to camera on boot and add some comments
+Subject: [PATCH 09/42] board-omap3beagle: turn on power to camera on boot and add some comments
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    5 +++++

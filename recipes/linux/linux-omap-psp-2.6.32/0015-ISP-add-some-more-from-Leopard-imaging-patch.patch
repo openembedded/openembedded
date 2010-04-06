@@ -1,7 +1,7 @@
-From b42f1800184ddd5202d48ca0a0f166472b4f04ce Mon Sep 17 00:00:00 2001
+From 876c73557fcf9f31b4d8c23b163fd7675164033d Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Thu, 11 Feb 2010 21:34:00 +0100
-Subject: [PATCH 15/30] ISP: add some more from Leopard imaging patch
+Subject: [PATCH 15/42] ISP: add some more from Leopard imaging patch
 
 ---
  drivers/media/video/isp/isppreview.c |   16 ++++++++-

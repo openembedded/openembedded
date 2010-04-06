@@ -1,7 +1,7 @@
-From 0ea3408a0fb0cedddeea2c8f7dc887e559b1da5b Mon Sep 17 00:00:00 2001
+From 2170c42abf50a27b9aa9ed253b25312380bdc84f Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Tue, 9 Feb 2010 17:16:13 +0100
-Subject: [PATCH 07/30] mt9t111: first stab at merging sensor driver based on a patch by Leopard Imaging
+Subject: [PATCH 07/42] mt9t111: first stab at merging sensor driver based on a patch by Leopard Imaging
 
 ---
  drivers/media/video/Kconfig       |    8 +

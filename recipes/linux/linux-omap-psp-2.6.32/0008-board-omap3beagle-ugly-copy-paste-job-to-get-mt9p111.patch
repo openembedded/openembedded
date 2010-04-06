@@ -1,7 +1,7 @@
-From b1f02af6bdbf845ad928e0f046e737f9af000f11 Mon Sep 17 00:00:00 2001
+From 44c4fcfa0af82b3656e9a629a667ecf3a8fe3434 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Tue, 9 Feb 2010 20:53:56 +0100
-Subject: [PATCH 08/30] board-omap3beagle: ugly copy/paste job to get mt9p111 sensor data in (only compile tested)
+Subject: [PATCH 08/42] board-omap3beagle: ugly copy/paste job to get mt9p111 sensor data in (only compile tested)
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |  169 +++++++++++++++++++++++++++++++

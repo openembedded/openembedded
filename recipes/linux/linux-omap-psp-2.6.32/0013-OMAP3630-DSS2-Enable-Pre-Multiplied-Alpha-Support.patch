@@ -1,7 +1,7 @@
-From 3e317b58ac4299f1f537879b03ad3ef4d4837a22 Mon Sep 17 00:00:00 2001
+From 4a8af93ef5fc14877be52716794db928ce7de34a Mon Sep 17 00:00:00 2001
 From: Sudeep Basavaraj <sudeep.basavaraj@ti.com>
 Date: Tue, 5 Jan 2010 18:58:18 +0530
-Subject: [PATCH 13/30] OMAP3630:DSS2:Enable Pre-Multiplied Alpha Support
+Subject: [PATCH 13/42] OMAP3630:DSS2:Enable Pre-Multiplied Alpha Support
 
 Enables dss to process color formats with pre-mulitplied alpha values.
 With this we can have alpha values defined for each pixel
@@ -14,7 +14,7 @@ Signed-off-by: Kishore Y <kishore.y@ti.com>
  1 files changed, 8 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
-index 7a66ee8..53f2e6f 100644
+index f7acf87..c6d5fc5 100644
 --- a/drivers/video/omap2/dss/dispc.c
 +++ b/drivers/video/omap2/dss/dispc.c
 @@ -913,6 +913,11 @@ static void _dispc_set_vid_color_conv(enum omap_plane plane, bool enable)

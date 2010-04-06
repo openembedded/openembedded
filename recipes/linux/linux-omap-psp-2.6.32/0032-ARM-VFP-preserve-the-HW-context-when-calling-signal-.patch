@@ -1,7 +1,7 @@
-From fb730244df2f3bd3f51b6f052c4c0dbe2e1428f4 Mon Sep 17 00:00:00 2001
+From 11cceffa4e4c2e6971fde3ec8a978d267d5e9805 Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Thu, 4 Feb 2010 21:38:30 +0200
-Subject: [PATCH 32/32] ARM: VFP: preserve the HW context when calling signal handlers
+Subject: [PATCH 32/42] ARM: VFP: preserve the HW context when calling signal handlers
 
 ARM: VFP: preserve the HW context when calling signal handlers
 

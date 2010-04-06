@@ -1,7 +1,7 @@
-From 82cf37dd0850ede2122e1723118eb6ec3a4a7945 Mon Sep 17 00:00:00 2001
+From 336ca8edb0c011f06662e39555c3c5e6ded15183 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 12:40:24 -0800
-Subject: [PATCH 03/30] ARM: OMAP: Make beagle u-boot partition writable
+Subject: [PATCH 03/42] ARM: OMAP: Make beagle u-boot partition writable
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    1 -

@@ -1,7 +1,7 @@
-From e90a865efcda00b35e6a9a3c7efd2942d2c7d3d4 Mon Sep 17 00:00:00 2001
+From ad627c1708d8b68f6e9ca96f28ec8862ef02f760 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 8 Mar 2010 14:38:31 +0100
-Subject: [PATCH 34/34] modedb.c: add proper 720p60 mode
+Subject: [PATCH 34/42] modedb.c: add proper 720p60 mode
 
 ---
  drivers/video/modedb.c |    4 ++++

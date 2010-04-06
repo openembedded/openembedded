@@ -46,6 +46,13 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://0032-ARM-VFP-preserve-the-HW-context-when-calling-signal-.patch;patch=1 \
            file://0033-Switch-SGX-clocks-to-200MHz-on-DM37xx-OMAP36xx.patch;patch=1 \
            file://0034-modedb.c-add-proper-720p60-mode.patch;patch=1 \
+           file://0035-RTC-add-support-for-backup-battery-recharge.patch;patch=1 \
+           file://0036-ARM-Add-prompt-for-CONFIG_ALIGNMENT_TRAP.patch;patch=1 \
+           file://0037-ARM-Print-warning-on-alignment-trap-in-kernel-mode.patch;patch=1 \
+           file://0038-ARM-Expose-some-CPU-control-registers-via-sysfs.patch;patch=1 \
+           file://0039-ARM-Add-option-to-allow-userspace-PLE-access.patch;patch=1 \
+           file://0040-ARM-Add-option-to-allow-userspace-access-to-performa.patch;patch=1 \
+           file://0041-ARM-Expose-some-PMON-registers-through-sysfs.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

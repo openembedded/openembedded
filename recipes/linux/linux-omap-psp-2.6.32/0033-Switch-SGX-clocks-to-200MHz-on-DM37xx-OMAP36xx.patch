@@ -1,7 +1,7 @@
-From 249611ece1f9b5b607274ab061e5d3e3885264fd Mon Sep 17 00:00:00 2001
+From 87cc235a5e1a32cc3e68f3911641ff65493b1dc3 Mon Sep 17 00:00:00 2001
 From: Prabindh Sundareson <prabu@ti.com>
 Date: Wed, 3 Mar 2010 15:45:35 +0100
-Subject: [PATCH 33/33] Switch SGX clocks to 200MHz on DM37xx/OMAP36xx
+Subject: [PATCH 33/42] Switch SGX clocks to 200MHz on DM37xx/OMAP36xx
 
 ---
  arch/arm/mach-omap2/clock34xx_data.c |    4 ++--

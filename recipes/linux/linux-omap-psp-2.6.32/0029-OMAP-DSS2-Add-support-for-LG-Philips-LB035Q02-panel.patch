@@ -1,7 +1,7 @@
-From 29fb8d970cf88080881269f99b886fd53534603c Mon Sep 17 00:00:00 2001
+From f3743c3c16d3528d888e4315194c9eca9ba95b04 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 15:05:30 -0800
-Subject: [PATCH 29/30] OMAP: DSS2: Add support for LG Philips LB035Q02 panel
+Subject: [PATCH 29/42] OMAP: DSS2: Add support for LG Philips LB035Q02 panel
 
 ---
  drivers/video/omap2/displays/Kconfig               |    6 +

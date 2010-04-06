@@ -1,0 +1,31 @@
+From 9a23874151abb055225b8f019665e873bc7c5b5a Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Sat, 28 Mar 2009 13:21:55 +0000
+Subject: [PATCH 37/42] ARM: Print warning on alignment trap in kernel mode
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ arch/arm/mm/alignment.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mm/alignment.c b/arch/arm/mm/alignment.c
+index b270d62..5e9014b 100644
+--- a/arch/arm/mm/alignment.c
++++ b/arch/arm/mm/alignment.c
+@@ -756,6 +756,13 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 
+ 	ai_sys += 1;
+ 
++	printk("Alignment trap in kernel: %s (%d) PC=0x%08lx Instr=0x%0*lx "
++	       "Address=0x%08lx FSR 0x%03x\n", current->comm,
++	       task_pid_nr(current), instrptr,
++	       thumb_mode(regs) ? 4 : 8,
++	       thumb_mode(regs) ? tinstr : instr,
++	       addr, fsr);
++
+  fixup:
+ 
+ 	regs->ARM_pc += isize;
+-- 
+1.6.6.1
+

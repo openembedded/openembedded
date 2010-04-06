@@ -1,7 +1,7 @@
-From a58f3362585b07b0b0980f2ae0781feb66b7f827 Mon Sep 17 00:00:00 2001
+From 06188f0f2fbdfb68844585eefe68dc5b0b49499a Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 14:19:34 -0800
-Subject: [PATCH 19/30] drivers: mfd: add twl4030 madc driver
+Subject: [PATCH 19/42] drivers: mfd: add twl4030 madc driver
 
 ---
  drivers/mfd/Kconfig        |   21 ++

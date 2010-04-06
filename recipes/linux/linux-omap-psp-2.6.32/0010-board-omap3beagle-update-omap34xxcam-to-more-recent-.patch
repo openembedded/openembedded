@@ -1,7 +1,7 @@
-From dd062cb38878fa74769e2f0c92a7d6a750a229f6 Mon Sep 17 00:00:00 2001
+From 035bb20e5f119fab09686b30d9d57979462bbca6 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Thu, 11 Feb 2010 22:59:19 +0100
-Subject: [PATCH 10/30] board-omap3beagle: update omap34xxcam to more recent v4l-int-device-api
+Subject: [PATCH 10/42] board-omap3beagle: update omap34xxcam to more recent v4l-int-device-api
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |   20 +++++++++++---------
