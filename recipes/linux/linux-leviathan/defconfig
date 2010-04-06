@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.32
-# Mon Apr  5 16:18:45 2010
+# Mon Apr  5 16:42:35 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -781,7 +781,6 @@ CONFIG_BLK_DEV_LOOP=y
 # CONFIG_CDROM_PKTCDVD is not set
 # CONFIG_ATA_OVER_ETH is not set
 CONFIG_MISC_DEVICES=y
-CONFIG_ANDROID_PMEM=y
 # CONFIG_ICS932S401 is not set
 # CONFIG_ENCLOSURE_SERVICES is not set
 # CONFIG_KERNEL_DEBUGGER_CORE is not set
@@ -852,7 +851,20 @@ CONFIG_NETDEV_1000=y
 CONFIG_NETDEV_10000=y
 CONFIG_WLAN=y
 # CONFIG_WLAN_PRE80211 is not set
-# CONFIG_WLAN_80211 is not set
+CONFIG_WLAN_80211=y
+# CONFIG_LIBERTAS is not set
+# CONFIG_LIBERTAS_THINFIRM is not set
+# CONFIG_MAC80211_HWSIM is not set
+# CONFIG_P54_COMMON is not set
+# CONFIG_ATH_COMMON is not set
+# CONFIG_HOSTAP is not set
+# CONFIG_B43 is not set
+# CONFIG_B43LEGACY is not set
+# CONFIG_RT2X00 is not set
+CONFIG_WL12XX=m
+CONFIG_WL1251=m
+CONFIG_WL1251_SDIO=m
+# CONFIG_IWM is not set
 
 #
 # Enable WiMAX (Networking options) to see the WiMAX drivers
@@ -1770,7 +1782,7 @@ CONFIG_CRC16=y
 # CONFIG_CRC_T10DIF is not set
 # CONFIG_CRC_ITU_T is not set
 CONFIG_CRC32=y
-# CONFIG_CRC7 is not set
+CONFIG_CRC7=m
 CONFIG_LIBCRC32C=m
 CONFIG_ZLIB_INFLATE=y
 CONFIG_ZLIB_DEFLATE=y
