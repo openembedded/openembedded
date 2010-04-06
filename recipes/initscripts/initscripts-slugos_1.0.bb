@@ -9,9 +9,10 @@ include initscripts_${PV}.bb
 RCONFLICTS = "initscripts"
 
 # SlugOS uses the busybox makedevs, so until that dependency gets virtualized
-# the below lines serve to remove the dependency on the full makedevs package:
-DEPENDS = ""
-RDEPENDS = ""
+# the below lines serve to remove the dependency on the full makedevs package,
+# as well as adding the dependency for the update-rc.d package.
+DEPENDS = "update-rc.d-native"
+RDEPENDS = "update-rc.d"
 
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
