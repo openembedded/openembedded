@@ -21,6 +21,7 @@ CFLAGS_append = " -Wall -I ../../include ${@['-DSTUB_ONLY', ''][bb.data.getVar('
 TARGET_CC_ARCH += "${LDFLAGS}"
 CFLAGS_append_mips = " -fPIC"
 CFLAGS_append_mipsel = " -fPIC"
+CFLAGS_append_x86_64 = " -fPIC"
 
 do_compile() {
     cd ${WORKDIR}/src/proxy-libintl
