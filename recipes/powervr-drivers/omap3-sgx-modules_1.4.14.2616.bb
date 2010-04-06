@@ -1,7 +1,6 @@
 DESCRIPTION = "Kernel drivers for the PowerVR SGX chipset found in the omap3 SoCs"
 LICENSE = "GPLv2"
 
-#DEFAULT_PREFERENCE = "-1"
 PR_append = "b"
 
 # download required binary distribution from:

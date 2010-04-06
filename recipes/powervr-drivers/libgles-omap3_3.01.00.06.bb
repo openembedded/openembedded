@@ -1,4 +1,3 @@
-#DEFAULT_PREFERENCE = "-1"
 
 BINLOCATION = "${S}/gfx_rel_es3.x"
 
