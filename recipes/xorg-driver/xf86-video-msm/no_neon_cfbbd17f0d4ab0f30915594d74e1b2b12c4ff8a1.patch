@@ -1,0 +1,98 @@
+Index: git/src/Makefile.am
+===================================================================
+--- git.orig/src/Makefile.am
++++ git/src/Makefile.am
+@@ -12,13 +12,7 @@ MSM_DRI_SRCS += msm-drm.c msm-dri2.c
+ msm_drv_la_LIBADD += $(DRI2_LIBS)
+ endif
+ 
+-NEON_CFLAGS=-march=armv7-a -mfpu=neon -mfloat-abi=softfp -Wa,-mfpu=neon
+-NEON_CCASFLAGS=$(NEON_CFLAGS) -mthumb-interwork
+-NEON_ASFLAGS=-k -mcpu=cortex-a8 $(NEON_CCASFLAGS)
+-
+-AM_CFLAGS = @XORG_CFLAGS@ @DRI_CFLAGS@ @DRI2_CFLAGS@ $(NEON_CFLAGS) -Wall -Werror
+-AM_ASFLAGS = $(NEON_ASFLAGS)
+-AM_CCASFLAGS = $(NEON_CCASFLAGS)
++AM_CFLAGS = @XORG_CFLAGS@ @DRI_CFLAGS@ @DRI2_CFLAGS@ -Wall -Werror
+ 
+ msm_drv_la_LTLIBRARIES = msm_drv.la
+ msm_drv_la_LDFLAGS = -module -avoid-version
+@@ -27,7 +21,6 @@ msm_drv_ladir = @moduledir@/drivers
+ msm_drv_la_SOURCES = \
+          msm-driver.c \
+ 	 msm-exa.c \
+-	 msm-exa-neon.c \
+ 	 msm-exa-mixed.c \
+ 	 msm-video.c \
+ 	 msm-output.c \
+@@ -37,13 +30,6 @@ msm_drv_la_SOURCES = \
+ 	 msm-pixmap.c \
+ 	 msm-utils.c \
+ 	 mdp/mdp.c \
+-	 neon/neon.c \
+-	 neon/neon-alignedcopy.c \
+-	 neon/neon-fill.c \
+-	 neon/neon-memsets.c \
+-	 neon/neon-render.c \
+-	 neon/neon-memcpy.S \
+-	 neon/neon-memmove.S \
+ 	$(MSM_DRI_SRCS)
+ 
+ 
+@@ -51,4 +37,3 @@ EXTRA_DIST = \
+ 	msm.h \
+ 	msm_mdp.h \
+ 	msm-drm.h
+-	neon/neon.h
+Index: git/src/msm-exa.c
+===================================================================
+--- git.orig/src/msm-exa.c
++++ git/src/msm-exa.c
+@@ -268,29 +268,8 @@ MSMSetupExa(ScreenPtr pScreen)
+    /* The maximum acceleratable pitch is 2048 pixels */
+    pExa->maxPitchPixels = 2048;
+ 
+-   switch(pMsm->accelMode) {
+-   case ACCEL_MODE_NEON:
+-       pExa->PrepareSolid = neon_prepare_solid;
+-       pExa->Solid = neon_do_solid;
+-       pExa->DoneSolid = neon_done_solid;
+-       pExa->PrepareCopy = neon_prepare_copy;
+-       pExa->Copy = neon_do_copy;
+-       pExa->DoneCopy = neon_done_copy;
+-       break;
+-
+-   case ACCEL_MODE_MIXED:
+-       /* Mixed mode doesn't have a solid function, so re-use the
+-	  Neon function */
+-       pExa->PrepareSolid = neon_prepare_solid;
+-       pExa->Solid = neon_do_solid;
+-       pExa->DoneSolid = neon_done_solid;
+-       pExa->PrepareCopy = mixed_prepare_copy;
+-       pExa->Copy = mixed_do_copy;
+-       pExa->DoneCopy = mixed_done_copy;
+-       break;
+-    default:
+-	return FALSE;
+-   }
++   return FALSE;
++   
+ 
+    pExa->WaitMarker = MSMWaitMarker;
+    pExa->DownloadFromScreen = MSMDownloadFromScreen;
+Index: git/src/msm.h
+===================================================================
+--- git.orig/src/msm.h
++++ git/src/msm.h
+@@ -200,11 +200,4 @@ Bool mixed_prepare_copy(PixmapPtr, Pixma
+ void mixed_do_copy(PixmapPtr, int, int, int, int, int, int);
+ void mixed_done_copy(PixmapPtr);
+ 
+-Bool neon_prepare_solid(PixmapPtr, int, Pixel, Pixel);
+-void neon_do_solid(PixmapPtr, int, int, int, int);
+-void neon_done_solid(PixmapPtr);
+-Bool neon_prepare_copy(PixmapPtr, PixmapPtr, int, int, int, Pixel);
+-void neon_do_copy(PixmapPtr, int, int, int, int, int, int);
+-void neon_done_copy(PixmapPtr);
+-
+ #endif

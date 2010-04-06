@@ -1,0 +1,51 @@
+Index: git/src/mdp/mdp.c
+===================================================================
+--- git.orig/src/mdp/mdp.c
++++ git/src/mdp/mdp.c
+@@ -172,6 +172,8 @@ static void DisplayMSMBlitError(MSMPtr p
+ 
+ void mdpBlitFlush(MSMPtr pMsm)
+ {
++#ifdef MSMFB_ASYNC_BLIT
++
+    int ret;
+ 
+    if (pMsm->AsyncOp) {
+@@ -184,6 +186,7 @@ void mdpBlitFlush(MSMPtr pMsm)
+       DisplayMSMBlitError(pMsm, mdp_blit_list.count, &(mdp_blit_list.req[0]));
+ 
+     mdp_blit_list.count = 0;
++#endif
+ }
+ 
+ void mdpBlitReset(void)
+Index: git/src/msm-dri2.c
+===================================================================
+--- git.orig/src/msm-dri2.c
++++ git/src/msm-dri2.c
+@@ -87,11 +87,12 @@ MSMDRI2DoFlip(ScreenPtr pScreen, PixmapP
+     vinfo.reserved[2] = handle;
+ 
+     /* the swap interval goes into the third reserved field */
+-    vinfo.reserved[3] = pPixmap ? pScreen->swapInterval : 1;
++    //vinfo.reserved[3] = pPixmap ? pScreen->swapInterval : 1;
+ 
+     /* reserved[4] is the allocation type */
++#ifdef MDP_BLIT_SRC_GEM
+     vinfo.reserved[4] = MDP_BLIT_SRC_GEM;
+-
++#endif
+     ret = ioctl(pMsm->fd, FBIOPAN_DISPLAY, &vinfo);
+ 
+     if (ret)
+@@ -456,8 +457,8 @@ MSMDRI2ScreenInit(ScreenPtr pScreen)
+ #endif
+ 
+ #if DRI2INFOREC_VERSION >= 4
+-    info.ScheduleSwap = MSMDRI2ScheduleSwap;
+-    pScreen->swapInterval = 1;
++//    info.ScheduleSwap = MSMDRI2ScheduleSwap;
++//    pScreen->swapInterval = 1;
+ #endif
+     info.CopyRegion = MSMDRI2CopyRegion;
+ 
