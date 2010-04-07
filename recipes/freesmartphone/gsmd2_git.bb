@@ -4,6 +4,7 @@ AUTHOR = "Ixonos Team"
 SECTION = "console/network"
 DEPENDS = "dbus dbus-glib"
 LICENSE = "GPL"
+SRCREV = "c16883a079aeff8780e5d461ec4e8348537ab4d8"
 PV = "0.1.0+gitr${SRCREV}"
 PR = "r1"
 

@@ -3,6 +3,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console/network"
 LICENSE = "GPLv2"
+SRCREV = "${FSO_PYTHONHELPERS_SRCREV}"
 PV = "0.9.2+gitr${SRCREV}"
 PR = "r2"
 

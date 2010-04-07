@@ -3,6 +3,7 @@ AUTHOR = "Jan Luebbe <jluebbe@debian.org>"
 HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console/network"
 LICENSE = "GPLv2"
+SRCREV = "${FSO_PYTHONHELPERS_SRCREV}"
 PV = "0.1+gitr${SRCREV}"
 PR = "r0"
 

@@ -3,6 +3,7 @@ AUTHOR = "Didier 'Ptitjes"
 LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-native vala-dbus-binding-tool-native dbus-glib glib-2.0 fso-specs"
+SRCREV = "f1a0b3fe2ed6e15d83ad4880b4eb7aece00f9d57"
 PV = "0.2.2+gitr${SRCREV}"
 PR = "r2"
 

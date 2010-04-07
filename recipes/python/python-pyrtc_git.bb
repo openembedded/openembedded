@@ -6,6 +6,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPLv2"
 SRCNAME = "pyrtc"
 DEPENDS = "python-cython-native"
+SRCREV = "${FSO_PYTHONHELPERS_SRCREV}"
 PV = "1.0.0+gitr${SRCREV}"
 PR = "ml1"
 

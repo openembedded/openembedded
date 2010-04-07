@@ -4,6 +4,7 @@ HOMEPAGE = "http://docs.freesmartphone.org"
 LICENSE = "BSD"
 DEPENDS = "libxslt-native"
 SECTION = "devel/specifications"
+SRCREV = "e3fcb57675f7f48b6848f5b8114961f9418eb17b"
 PV = "0.5.0-gitr${SRCREV}"
 PR = "r1"
 

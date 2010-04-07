@@ -5,6 +5,7 @@ require cornucopia.inc
 # so add recipes needed for runtime dependencies manually here
 
 DEPENDS += "gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
+SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.0.1+gitr${SRCREV}"
 PR = "${INC_PR}.3"
 

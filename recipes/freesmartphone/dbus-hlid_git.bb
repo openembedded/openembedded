@@ -4,6 +4,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
+SRCREV = "5df7f49fe8881804aaab544a569fd164c3e93afb"
 PV = "1.0.1+gitr${SRCREV}"
 PR = "r0"
 

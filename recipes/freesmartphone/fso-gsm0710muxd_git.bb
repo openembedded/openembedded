@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.freesmartphone.org/mediawiki/index.php/Implementations/gs
 SECTION = "console/network"
 DEPENDS = "dbus dbus-glib"
 LICENSE = "GPL"
+SRCREV = "1d69fb5b666ac2a9e54e46978c7afa8fe5dfc3c9"
 PV = "0.9.3.1+gitr${SRCREV}"
 PR = "r0"
 

@@ -4,6 +4,7 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
+SRCREV = "f751f2724eea23d0ca050bdf2672f9011ae09517"
 PV = "0.9.5.9+gitr${SRCREV}"
 PR = "r3"
 

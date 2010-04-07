@@ -2,6 +2,7 @@ DESCRIPTION = "freesmartphone.org gpsd compatibility daemon"
 LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "dbus-glib"
+SRCREV = "39e810899110a9bb302cf2064e1c0f73541fb4e6"
 PV = "0.8+gitr${SRCREV}"
 PR = "r2"
 

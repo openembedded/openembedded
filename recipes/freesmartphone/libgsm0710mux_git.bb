@@ -3,7 +3,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
 DEPENDS = "glib-2.0 libgsm0710 libfsotransport"
-SRCREV  = "4d7edda0efec7836612c8c64bb1b90695ca07a53"
+SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.9.2+gitr${SRCREV}"
 PR = "r0"
 

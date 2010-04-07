@@ -5,6 +5,7 @@ SECTION = "console"
 LICENSE = "GPLv2"
 DEPENDS = "vala-native"
 RCONFLICTS = "apm"
+SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "2.0.0+gitr${SRCREV}"
 PR = "r1"
 

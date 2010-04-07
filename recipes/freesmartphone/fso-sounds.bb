@@ -1,6 +1,7 @@
 DESCRIPTION = "A set of notification sounds"
 LICENSE = "CC"
 SECTION = "multimedia"
+SRCREV = "3a4767ec01988bd0fd8f72f0c35d6d36e5fbc815"
 PV = "0.0.1+gitr${SRCREV}"
 PR = "r2"
 

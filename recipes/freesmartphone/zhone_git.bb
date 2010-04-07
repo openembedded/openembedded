@@ -2,6 +2,7 @@ DESCRIPTION = "A phone UI based on the freesmartphone.org framework"
 LICENSE = "GPL"
 SECTION = "x11"
 DEPENDS = "edje-native python-pyrex-native python-cython-native"
+SRCREV = "bd1e895f73a0e5beb2608ebe111d7ef32ee3adbc"
 PV = "0.0.2+gitr${SRCREV}"
 PR = "r13"
 

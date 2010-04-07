@@ -6,6 +6,7 @@ RDEPENDS += "libcanberra-alsa"
 # Included in fsodeviced itself now
 # RRECOMMENDS += "fso-alsa-data"
 RPROVIDES_${PN} = "openmoko-alsa-scenarios virtual/alsa-scenarios"
+SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.9.0+gitr${SRCREV}"
 PE = "1"
 PR = "${INC_PR}.10"
