@@ -2,7 +2,12 @@ DESCRIPTION = "OCF resource agents for use by compatible cluster managers"
 LICENSE = "GPL"
 DEPENDS = "cluster-glue"
 
-SRC_URI = "http://hg.linux-ha.org/agents/archive/agents-${PV}.tar.bz2;name=tar"
+PR = "r1"
+
+SRC_URI = " \
+	http://hg.linux-ha.org/agents/archive/agents-${PV}.tar.bz2;name=tar \
+	file://fix-header-defs-lookup.patch;patch=1 \
+	"
 SRC_URI[tar.md5sum] = "b536dea1b1f642bdc3607cb85ea0b89d"
 SRC_URI[tar.sha256sum] = "c5a1ea9a83c578672cd475ab4af5c2e40736669bae0eb70bb9bb6124074e5e5e"
 

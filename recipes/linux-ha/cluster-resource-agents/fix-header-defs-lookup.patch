@@ -1,0 +1,16 @@
+Index: Cluster-Resource-Agents-agents-1.0.2/configure.in
+===================================================================
+--- Cluster-Resource-Agents-agents-1.0.2.orig/configure.in	2010-04-06 12:51:22.000000000 +0400
++++ Cluster-Resource-Agents-agents-1.0.2/configure.in	2010-04-06 12:54:10.000000000 +0400
+@@ -91,9 +91,8 @@
+ 	  Cfile=/tmp/extract_define.$2.${$}
+ 	  printf "#include <stdio.h>\n" > ${Cfile}.c
+ 	  printf "#include <%s>\n" $1 >> ${Cfile}.c
+-	  printf "int main(int argc, char **argv) { printf(\"%%s\", %s); return 0; }\n" $2 >> ${Cfile}.c
+-	  $CC $CFLAGS ${Cfile}.c -o ${Cfile}
+-	  value=`${Cfile}`
++	  printf "\"%s\":%s\n" $2 $2 >> ${Cfile}.c
++	  value=`$CC $CFLAGS -E ${Cfile}.c | grep \"$2\" | cut -f 2 -d ':'`
+ 	  AC_MSG_RESULT($value)
+ 	  printf $value
+ 	  rm -f ${Cfile}.c ${Cfile}
