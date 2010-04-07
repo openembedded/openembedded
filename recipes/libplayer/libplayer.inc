@@ -2,11 +2,11 @@ DESCRIPTION = "libplayer is a multimedia A/V abstraction layer API. Its goal is 
 HOMEPAGE = "http://libplayer.geexbox.org/"
 SECTION = "libs/multimedia"
 LICENSE = "LGPLv2.1+"
-DEPENDS = "mplayer gstreamer"
+DEPENDS = "virtual/libx11 libxcb mplayer gstreamer"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
-SRC_URI = "http://libplayer.geexbox.org/releases/${P}.tar.bz2;name=${PN}"
+SRC_URI = "http://${PN}.geexbox.org/releases/${P}.tar.bz2;name=${PN}"
 
 inherit autotools pkgconfig
 

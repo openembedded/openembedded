@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME panel"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-DEPENDS = "gconf librsvg libgweather startup-notification libwnck orbit2 gtk+ libbonoboui libglade libgnome libgnomeui gnome-desktop libglade gnome-menus orbit2-native"
+DEPENDS = "libcanberra gconf librsvg libgweather startup-notification libwnck orbit2 gtk+ libbonoboui libglade libgnome libgnomeui gnome-desktop libglade gnome-menus orbit2-native"
 
 inherit gnome pkgconfig
 
