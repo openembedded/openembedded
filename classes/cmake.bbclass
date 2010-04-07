@@ -50,7 +50,7 @@ addtask generate_toolchain_file after do_patch before do_configure
 cmake_do_configure() {
   if [ ${OECMAKE_BUILDPATH} ]
   then
-    mkdir ${OECMAKE_BUILDPATH}
+    mkdir -p ${OECMAKE_BUILDPATH}
     cd ${OECMAKE_BUILDPATH}
   fi
 
