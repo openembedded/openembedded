@@ -6,7 +6,7 @@ DEPENDS = "edje-native"
 RRECOMMENDS = "elementary-theme-gry"
 LICENCE = "unknown"
 
-SRCREV = "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
+SRCREV = "44cd1ca438ae19d10cc843def0f783bcd879bdfc"
 PV = "0.3-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r1"
 
