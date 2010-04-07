@@ -10,7 +10,7 @@ DEPENDS = "gtk+ openssl"
 
 inherit autotools
 
-SRC_URI = "http://www.gftp.org/gftp-${PV}.tar.bz2 \
+SRC_URI = "http://www.gftp.org/gftp-${PV}.tar.bz2;name=archive \
            file://configure.patch;patch=1"
 
 SRC_URI[archive.md5sum] = "5183cb4955d94be0e03c892585547c64"

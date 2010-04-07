@@ -1,0 +1,9 @@
+TI WL1251 firmware is not redistributable. Please download from your device.
+You need the following files, which should reside in /etc/firmware or /lib/firmware.
+ * wl1251-fw.bin   (firmware)
+ * wl1251-nvs.bin  (calibration data)
+Note that the calibration data is device specific, so you are not supposed
+to just grab it from any location but your device.
+
+:M:
+
