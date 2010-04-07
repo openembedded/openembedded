@@ -3,7 +3,7 @@ require linux-openmoko.inc
 
 DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Smartphones"
 
-KERNEL_RELEASE="2.6.32.10"
+KERNEL_RELEASE="2.6.32.11"
 
 SRCREV = "14be1091928fcce66812a85129768fb253b36420"
 OEV = "oe1"
@@ -12,6 +12,7 @@ PR = "r5"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
+  file://0001-Revert-s3cmci-initialize-default-platform-data-no_wp.patch;patch=1 \
 # latest stable patch for ubi fix 943e167cb3e8fb191894bde8a4a75db78531a7c8
   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1;name=stablepatch \
   file://defconfig \
@@ -35,8 +36,8 @@ SRC_URI = "\
   file://0016-Enable-display-before-trying-to-set-mode-or-base.patch;patch=1 \
 "
 
-SRC_URI[stablepatch.md5sum] = "0f1863836bf96fd0aab128d61eaa5693"
-SRC_URI[stablepatch.sha256sum] = "e4b760254822dbc77ae1889d0b2078c113cb7939f8c6ee31c49a31b07b52cc18"
+SRC_URI[stablepatch.md5sum] = "855c248334a71ef5ca3d8cb89d51334f"
+SRC_URI[stablepatch.sha256sum] = "edb26ff62b2f95b0d6e5c434d777af2815600a990f1c7c5d2c7faad9b4e4bc2b"
 
 
 S = "${WORKDIR}/git"

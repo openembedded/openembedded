@@ -1,0 +1,26 @@
+From 58cf346d1298e885cf81c864d99a652523cda921 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Wed, 7 Apr 2010 10:08:34 +0200
+Subject: [PATCH 01/18] Revert: s3cmci: initialize default platform data no_wprotect and no_detect with 1
+
+* already applied upstream and included in stable patch 2.6.32.11
+---
+ drivers/mmc/host/s3cmci.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/s3cmci.c b/drivers/mmc/host/s3cmci.c
+index f3d1b94..99b74a3 100644
+--- a/drivers/mmc/host/s3cmci.c
++++ b/drivers/mmc/host/s3cmci.c
+@@ -1361,8 +1361,6 @@ static struct mmc_host_ops s3cmci_ops = {
+ static struct s3c24xx_mci_pdata s3cmci_def_pdata = {
+ 	/* This is currently here to avoid a number of if (host->pdata)
+ 	 * checks. Any zero fields to ensure reaonable defaults are picked. */
+-	.no_detect = 1,
+-	.no_wprotect = 1,
+ };
+ 
+ #ifdef CONFIG_CPU_FREQ
+-- 
+1.7.0.3
+
