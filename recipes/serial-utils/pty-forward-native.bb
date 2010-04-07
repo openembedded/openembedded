@@ -2,6 +2,7 @@ DESCRIPTION = "Receive a forwarded serial from serial-forward and provide a PTY"
 AUTHOR = "Holger 'Zecke' Freyther"
 LICENSE = "GPL"
 SECTION = "console/network"
+SRCREV = "4662b55fdba528bb5b3349f83055bf236af5d63b"
 PV = "1.1+gitr${SRCREV}"
 PR = "r0"
 

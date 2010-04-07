@@ -2,6 +2,7 @@ DESCRIPTION = "libnl2 is a library for applications dealing with netlink sockets
 SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://people.suug.ch/~tgr/libnl"
+SRCREV = "8808743839b0f459394ecd00cb0f7c1896c0ab7a"
 PV = "1.9+gitr${SRCREV}"
 PR = "r1"
 

@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.srcf.ucam.org/~taw27/openmoko/openmoocow/"
 AUTHOR = "Thomas White"
 LICENSE = "GPLv3"
 SECTION = "applications/games"
+SRCREV = "39648419825cddfea1cb1321e552a12b71fede14"
 PV = "0.0.3+gitr${SRCREV}"
 PR = "r1"
 

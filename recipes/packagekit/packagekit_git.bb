@@ -10,6 +10,7 @@ inherit gnome autotools_stage
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
 "
 
+SRCREV = "96823118e98515dd41748e8c7bdb9cf7b1d4a95f"
 PV = "0.4.6+git"
 PR = "r0+gitr${SRCREV}"
 PE = "1"

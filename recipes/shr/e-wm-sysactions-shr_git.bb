@@ -1,6 +1,7 @@
 DESCRIPTION = "illume SHR sysactions config"
 SECTION = "e/utils"
 LICENSE = "MIT BSD"
+SRCREV = "bbcec18f0ebd47e4f6eea88b9b774edf7400e752"
 PV = "1.1-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r4"
 

@@ -4,6 +4,7 @@ SECTION = "openmoko/applications"
 LICENSE = "GPL"
 DEPENDS = "eet evas edje ecore edbus etk"
 RDEPENDS_${PN} = "diversity-daemon"
+SRCREV = "942e88a1b689ffe3f11a2d982cce389cc965b2ec"
 PV = "0.2+gitr${SRCREV}"
 PR = "r1.04"
 

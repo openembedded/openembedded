@@ -3,6 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "BSD"
 DEPENDS = "cairo pango"
+SRCREV = "ecd1842714b5e982f3138cbdd358517d57be6aa3"
 PV = "0.0.1+gitr${SRCREV}"
 
 SRC_URI = "git://git.gitorious.org/madbutterfly/mainline.git;protocol=git \

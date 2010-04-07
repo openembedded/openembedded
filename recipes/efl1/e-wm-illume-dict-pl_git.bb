@@ -1,5 +1,6 @@
 DESCRIPTION = "Polish dictionary for Illume keyboard"
 SECTION = "x11/data"
+SRCREV = "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
 PV = "1.0-gitr${SRCREV}"
 PR = "r0"
 

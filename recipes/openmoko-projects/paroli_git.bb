@@ -1,6 +1,7 @@
 DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
+SRCREV = "bb9fb1969acdfbaa48b55902675a6d8949014c6d"
 PV = "0.2.1+gitr${SRCREV}"
 PE = "1"
 PR = "r0"

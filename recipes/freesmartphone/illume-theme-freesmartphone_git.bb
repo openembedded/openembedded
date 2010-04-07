@@ -2,6 +2,7 @@ DESCRIPTION = "Illume theme for the freesmartphone.org project"
 HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
+SRCREV = "b1b0f6adc59e6f72a3929771058e3750bf181bc5"
 PV = "0.1.0+gitr${SRCREV}"
 PR = "r0"
 

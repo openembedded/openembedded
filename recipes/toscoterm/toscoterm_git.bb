@@ -3,6 +3,7 @@ SECTION = "x11/applications"
 LICENSE = "GPLv3"
 DEPENDS = "vte"
 HOMEPAGE = "https://projetos.ossystems.com.br/projects/show/toscoterm"
+SRCREV = "f02add76f365a2fecd2dbefc230ceaab20244f96"
 PV = "0.0+gitr${SRCREV}"
 PR = "r3"
 

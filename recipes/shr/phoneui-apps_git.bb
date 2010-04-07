@@ -3,6 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += "dbus-glib"
+SRCREV = "d349e764400d7a4eaaa12f359d6c64b3ca55faaf"
 PV = "0.0.0+gitr${SRCREV}"
 PR = "r1"
 

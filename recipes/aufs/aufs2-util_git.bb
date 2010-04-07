@@ -5,6 +5,7 @@ PR = "r1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
+SRCREV = "f35ba2292fe40aa94aa83713e0b2719f35a25768"
 SRC_URI = "git://git.c3sl.ufpr.br/pub/scm/aufs/aufs2-util.git;protocol=http"
 
 S = "${WORKDIR}/git"

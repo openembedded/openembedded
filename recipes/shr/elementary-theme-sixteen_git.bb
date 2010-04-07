@@ -2,6 +2,7 @@ DESCRIPTION = "elementary SHR theme"
 SECTION = "e/utils"
 DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
+SRCREV = "2ac643cc273d144bb731a8cbb8ec6b3615de43a0"
 PV = "0.1-${EFL_SRCREV}+gitr${SRCREV}"
 PR = "r2"
 

@@ -1,5 +1,6 @@
 DEPENDS = "clutter-box2d"
 
+SRCREV = "8f2cb524fe06555182c25b4ba3202d7b368ac0ce"
 PV = "0.0+gitr${SRCREV}"
 PR = "r1"
 PE = "1"

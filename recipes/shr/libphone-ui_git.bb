@@ -2,6 +2,7 @@ DESCRIPTION = "A generic framework for phone ui"
 HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "libs"
+SRCREV = "08ccc9710b1f33c93cc8f1c20be9c658ef5040dd"
 PV = "0.0.0+gitr${SRCREV}"
 PR = "r0"
 

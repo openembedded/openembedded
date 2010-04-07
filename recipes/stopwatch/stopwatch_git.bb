@@ -5,6 +5,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://git.senfdax.de"
 LICENSE = "GPL QPL"
 DEFAULT_PREFERRENCE = "-1"
+SRCREV = "89644b91e02151fc72989755f20c1ffb144ef5e2"
 PV = "1.3.1+gitr${SRCREV}"
 PR = "r0"
 
