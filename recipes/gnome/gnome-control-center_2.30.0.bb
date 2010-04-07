@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME control center"
 LICENSE = "GPL"
 
-DEPENDS = "metacity eel gstreamer libcanberra gnome-settings-daemon libgnomeui gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl atk"
+DEPENDS = "metacity gstreamer libcanberra gnome-settings-daemon libgnomeui gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl atk"
 
 inherit gnome
 
