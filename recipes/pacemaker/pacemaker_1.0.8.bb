@@ -16,10 +16,13 @@ DEPENDS = " \
 	"
 RDEPENDS_${PN} += "openais"
 
+PR = "r1"
+
 SRC_URI = " \
 	http://hg.clusterlabs.org/pacemaker/stable-1.0/archive/Pacemaker-${PV}.tar.bz2;name=tar \
 	file://pacemaker-remove-native-includes.patch;patch=1 \
 	file://pacemaker-dont-use-help2man.patch;patch=1 \
+	file://fix-header-defs-lookup.patch;patch=1 \
 	file://volatiles \
 	"
 SRC_URI[tar.md5sum] = "088569ca893fe9f2239b68abe2856132"
@@ -31,6 +34,7 @@ S = "${WORKDIR}/Pacemaker-1-0-Pacemaker-${PV}"
 EXTRA_OECONF = "--with-ais --without-heartbeat --disable-fatal-warnings --disable-pretty"
 
 CFLAGS += "-I${STAGING_INCDIR}/heartbeat"
+CFLAGS_libc-uclibc += "-I${STAGING_INCDIR}/heartbeat -fstack-protector-all"
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/default/volatiles
