@@ -2,7 +2,7 @@ LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "Configuration file for kexecboot"
 
-PR = "r7"
+PR = "r8"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "file://icon.xpm"
@@ -11,8 +11,10 @@ CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd rw"
 CMDLINE_CON_qemuarm = "console=ttyAMA0,115200n8 console=tty1 noinitrd"
 
+CMDLINE_MEM = ""
 CMDLINE_MEM_collie = "mem=64M"
 
+CMDLINE_ROTATE = ""
 CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
 CMDLINE_ROTATE_akita = "fbcon=rotate:1"
 CMDLINE_ROTATE_collie = "fbcon=rotate:1"

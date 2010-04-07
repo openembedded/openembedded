@@ -8,7 +8,7 @@ SECTION = "network"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "ppp"
 RDEPENDS_${PN}-logwtmp-plugin = "${PN}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/poptop/pptpd-${PV}.tar.gz \
            file://fix-plugins-install.patch;patch=1 \
@@ -31,7 +31,7 @@ do_install_append() {
 	sed -ri "s,^[:space:]*logwtmp[:space:]*,# logwtmp," ${D}/${sysconfdir}/pptpd.conf
         rm -f ${D}${libdir}/pptpd/pptpd-logwtmp.so
 	# Use mppe option in OE style
-	sed -ri "s,^[[:space:]]*require-mppe-128[[:space:]]*$,mppe required,no40,no56," ${D}/${sysconfdir}/ppp/options.pptpd
+	sed -ri "s|^[[:space:]]*require-mppe-128[[:space:]]*$|mppe required,no40,no56|" ${D}/${sysconfdir}/ppp/options.pptpd
 	echo "# don't expose open port by default" >> ${D}/${sysconfdir}/pptpd.conf
 	echo "listen  127.0.0.1" >> ${D}/${sysconfdir}/pptpd.conf
 }

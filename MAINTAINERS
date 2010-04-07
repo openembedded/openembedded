@@ -229,7 +229,7 @@ Recipes:    altboot, webcam-server
 Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
 Distros:    Openmoko, Minimal
-Machines:   om-gta01, om-gta02, om-3d7k, htcraphael, a780, a1200, a910
+Machines:   om-gta01, om-gta02, htcdream, htcraphael, palmpre, a780, a1200, a910
 Interests:  Core OE infrastructure, Python, EFL, Vala, Freesmartphone.org
 Recipes:    efl1/*, busybox/*, dbus/*, dropbear/*, freesmartphone/*, gstreamer/*, *python*, vala/
 

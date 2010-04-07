@@ -1,0 +1,20 @@
+diff --git a/core/launcher/firstuse.cpp b/core/launcher/firstuse.cpp
+index 8c02ab0..cf731c2 100644
+--- launcher/firstuse.cpp
++++ launcher/firstuse.cpp
+@@ -175,10 +175,13 @@ FirstUse::FirstUse(QWidget* parent, const char * name, WFlags wf) :
+     m_calHandler = ( QWSServer::mouseHandler() && QWSServer::mouseHandler()->inherits("QCalibratedMouseHandler") ) ? true : false;
+ 
+     if ( m_calHandler) {
+-        if ( !QFile::exists("/etc/pointercal") ) {
++	// Since Angstrom is installing default pointer calibration files
++       	// that don't match everyone's devices, we need to force calibration
++        // on first use.
++//        if ( !QFile::exists("/etc/pointercal") ) {
+             needCalibrate = TRUE;
+             grabMouse();
+-        }
++//        }
+     }
+ 
+     Config config("locale");

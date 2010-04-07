@@ -8,7 +8,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r19"
+INC_PR = "r20"
 
 # allows for a release candidate
 RC ?= ""
@@ -72,6 +72,7 @@ EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-fsck --enable-reset"
 
 LDFLAGS_append_libc-uclibc = " -lintl"
+LDFLAGS_virtclass-native = "${BUILD_LDFLAGS}"
 
 S = "${WORKDIR}/util-linux-ng-${PV}${RC}"
 

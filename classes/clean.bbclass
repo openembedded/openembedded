@@ -46,6 +46,13 @@ __do_clean_make () {
 }
 
 python do_clean () {
+	if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "1":
+		removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
+		pstage_cleanpackage(removepkg, d)
+
+		stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
+		bb.note("Removing staging package %s" % base_path_out(stagepkg, d))
+		os.system('rm -rf ' + stagepkg)
 	clean_stamps(d)
 	clean_workdir(d)
 	clean_builddir(d)
