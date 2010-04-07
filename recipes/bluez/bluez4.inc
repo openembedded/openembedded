@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
-INC_PR = "r5"
+INC_PR = "r6"
 
 # temporary solution until bug 5176 is properly fixed
 PROVIDES += "bluez-utils bluez-libs bluez-utils-dbus"
@@ -57,7 +57,7 @@ PACKAGES =+ "gst-plugin-bluez libasound-module-bluez"
 
 FILES_gst-plugin-bluez = "${libdir}/gstreamer-0.10/lib*.so"
 FILES_libasound-module-bluez = "${libdir}/alsa-lib/lib*.so"
-FILES_${PN} += "${libdir}/bluetooth/plugins/*.so"
+FILES_${PN} += "${libdir}/bluetooth/plugins/*.so ${base_libdir}/udev"
 FILES_${PN}-dev += "\
   ${libdir}/bluetooth/plugins/*.la \
   ${libdir}/alsa-lib/*.la \
