@@ -7,7 +7,7 @@
 DESCRIPTION = "Alsa Scenario Files"
 LICENSE = "MIT"
 PV = "0.2.0"
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "\
   file://asound.conf \

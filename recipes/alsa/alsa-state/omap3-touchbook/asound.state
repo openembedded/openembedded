@@ -18,8 +18,8 @@ state.omap3touchbook {
 		comment.dbmax 0
 		iface MIXER
 		name 'DAC1 Digital Fine Playback Volume'
-		value.0 63
-		value.1 63
+		value.0 42
+		value.1 42
 	}
 	control.3 {
 		comment.access 'read write'
@@ -30,8 +30,8 @@ state.omap3touchbook {
 		comment.dbmax 0
 		iface MIXER
 		name 'DAC2 Digital Fine Playback Volume'
-		value.0 0
-		value.1 0
+		value.0 44
+		value.1 44
 	}
 	control.4 {
 		comment.access 'read write'
@@ -42,8 +42,8 @@ state.omap3touchbook {
 		comment.dbmax 1200
 		iface MIXER
 		name 'DAC1 Digital Coarse Playback Volume'
-		value.0 2
-		value.1 2
+		value.0 1
+		value.1 1
 	}
 	control.5 {
 		comment.access 'read write'
@@ -54,8 +54,8 @@ state.omap3touchbook {
 		comment.dbmax 1200
 		iface MIXER
 		name 'DAC2 Digital Coarse Playback Volume'
-		value.0 0
-		value.1 0
+		value.0 1
+		value.1 1
 	}
 	control.6 {
 		comment.access 'read write'
@@ -66,8 +66,8 @@ state.omap3touchbook {
 		comment.dbmax 1200
 		iface MIXER
 		name 'DAC1 Analog Playback Volume'
-		value.0 15
-		value.1 15
+		value.0 18
+		value.1 18
 	}
 	control.7 {
 		comment.access 'read write'
@@ -78,8 +78,8 @@ state.omap3touchbook {
 		comment.dbmax 1200
 		iface MIXER
 		name 'DAC2 Analog Playback Volume'
-		value.0 0
-		value.1 0
+		value.0 10
+		value.1 10
 	}
 	control.8 {
 		comment.access 'read write'
@@ -96,8 +96,8 @@ state.omap3touchbook {
 		comment.count 2
 		iface MIXER
 		name 'DAC2 Analog Playback Switch'
-		value.0 false
-		value.1 false
+		value.0 true
+		value.1 true
 	}
 	control.10 {
 		comment.access 'read write'
@@ -108,7 +108,7 @@ state.omap3touchbook {
 		comment.dbmax 1200
 		iface MIXER
 		name 'DAC Voice Digital Downlink Volume'
-		value 0
+		value 23
 	}
 	control.11 {
 		comment.access 'read write'
@@ -119,7 +119,7 @@ state.omap3touchbook {
 		comment.dbmax 1200
 		iface MIXER
 		name 'DAC Voice Analog Downlink Volume'
-		value 0
+		value 18
 	}
 	control.12 {
 		comment.access 'read write'
@@ -127,7 +127,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'DAC Voice Analog Downlink Switch'
-		value false
+		value true
 	}
 	control.13 {
 		comment.access 'read write'
@@ -138,8 +138,8 @@ state.omap3touchbook {
 		comment.dbmax 600
 		iface MIXER
 		name 'PreDriv Playback Volume'
-		value.0 0
-		value.1 0
+		value.0 2
+		value.1 2
 	}
 	control.14 {
 		comment.access 'read write'
@@ -162,8 +162,8 @@ state.omap3touchbook {
 		comment.dbmax 600
 		iface MIXER
 		name 'Carkit Playback Volume'
-		value.0 0
-		value.1 0
+		value.0 2
+		value.1 2
 	}
 	control.16 {
 		comment.access 'read write'
@@ -174,7 +174,7 @@ state.omap3touchbook {
 		comment.dbmax 1200
 		iface MIXER
 		name 'Earpiece Playback Volume'
-		value 0
+		value 2
 	}
 	control.17 {
 		comment.access 'read write'
@@ -185,8 +185,8 @@ state.omap3touchbook {
 		comment.dbmax 3100
 		iface MIXER
 		name 'TX1 Digital Capture Volume'
-		value.0 31
-		value.1 31
+		value.0 12
+		value.1 12
 	}
 	control.18 {
 		comment.access 'read write'
@@ -209,8 +209,8 @@ state.omap3touchbook {
 		comment.dbmax 3000
 		iface MIXER
 		name 'Analog Capture Volume'
-		value.0 4
-		value.1 4
+		value.0 0
+		value.1 0
 	}
 	control.20 {
 		comment.access 'read write'
@@ -236,7 +236,7 @@ state.omap3touchbook {
 		comment.item.7 '3495/2581/1748 ms'
 		iface MIXER
 		name 'HS ramp delay'
-		value '27/20/14 ms'
+		value '218/161/109 ms'
 	}
 	control.22 {
 		comment.access 'read write'
@@ -272,7 +272,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'Analog Right AUXR Capture Switch'
-		value false
+		value true
 	}
 	control.26 {
 		comment.access 'read write'
@@ -288,7 +288,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'Analog Left Headset Mic Capture Switch'
-		value true
+		value false
 	}
 	control.28 {
 		comment.access 'read write'
@@ -296,7 +296,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'Analog Left AUXL Capture Switch'
-		value false
+		value true
 	}
 	control.29 {
 		comment.access 'read write'
@@ -314,7 +314,7 @@ state.omap3touchbook {
 		comment.item.1 Digimic1
 		iface MIXER
 		name 'TX2 Capture Route'
-		value Digimic1
+		value Analog
 	}
 	control.31 {
 		comment.access 'read write'
@@ -450,7 +450,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'HeadsetR Mixer AudioR1'
-		value true
+		value false
 	}
 	control.46 {
 		comment.access 'read write'
@@ -474,7 +474,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'HeadsetL Mixer AudioL1'
-		value true
+		value false
 	}
 	control.49 {
 		comment.access 'read write'
@@ -554,7 +554,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'Earpiece Mixer Voice'
-		value false
+		value true
 	}
 	control.59 {
 		comment.access 'read write'
@@ -562,7 +562,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'Earpiece Mixer AudioL1'
-		value false
+		value true
 	}
 	control.60 {
 		comment.access 'read write'
@@ -570,7 +570,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'Earpiece Mixer AudioL2'
-		value false
+		value true
 	}
 	control.61 {
 		comment.access 'read write'
@@ -578,7 +578,7 @@ state.omap3touchbook {
 		comment.count 1
 		iface MIXER
 		name 'Earpiece Mixer AudioR1'
-		value false
+		value true
 	}
 	control.62 {
 		comment.access 'read write'
@@ -589,7 +589,7 @@ state.omap3touchbook {
 		comment.dbmax -1000
 		iface MIXER
 		name 'Voice Digital Loopback Volume'
-		value 0
+		value 25
 	}
 	control.63 {
 		comment.access 'read write'
@@ -600,7 +600,7 @@ state.omap3touchbook {
 		comment.dbmax 0
 		iface MIXER
 		name 'Right Digital Loopback Volume'
-		value 0
+		value 6
 	}
 	control.64 {
 		comment.access 'read write'
@@ -611,7 +611,7 @@ state.omap3touchbook {
 		comment.dbmax 0
 		iface MIXER
 		name 'Left Digital Loopback Volume'
-		value 0
+		value 7
 	}
 	control.65 {
 		comment.access 'read write'
