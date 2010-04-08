@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r8"
+PR = "r9"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -98,7 +98,7 @@ RDEPENDS_task-gnome = " \
   gvfs \
   metacity \
   nautilus nautilus-cd-burner desktop-file-utils gnome-mount \
-  networkmanager network-manager-applet networkmanager-openvpn \
+  networkmanager network-manager-applet networkmanager-openvpn modemmanager \
   policykit-gnome policykit \
   zenity \
  "
