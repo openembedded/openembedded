@@ -1,5 +1,3 @@
-DEFAULT_PREFERENCE = "-1"
-
 SECTION = "x11/wm"
 DESCRIPTION = "Metacity is the boring window manager for the adult in you."
 LICENSE = "GPL"

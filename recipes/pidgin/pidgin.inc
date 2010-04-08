@@ -2,12 +2,13 @@ DESCRIPTION = "multi-protocol instant messaging client"
 SECTION = "x11/network"
 LICENSE = "GPL"
 DEPENDS = "python startup-notification avahi gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
-INC_PR = "r1"
+INC_PR = "r2"
 
 inherit autotools gettext pkgconfig gconf
 
 EXTRA_OECONF = " \
-		--disable-audio \
+		--enable-audio \
+		--enable-vv \
 		--disable-perl \
 		--disable-tcl \
 		--disable-deprecated \
