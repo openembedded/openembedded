@@ -4,7 +4,7 @@ LICENSE = "GPL LGPL"
 DEPENDS = "gnutls dbus dbus-glib zlib fakeroot-native"
 PROVIDES = "cups14"
 
-SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
+SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2;name=archive \
 	  	  "
 
 LEAD_SONAME = "libcupsdriver.so"
