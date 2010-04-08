@@ -122,6 +122,7 @@ do
                       ekiga \
                       empathy \ 
                       emtooth \
+                      enna \
                       eog \
                       epdfview \
                       epiphany \
