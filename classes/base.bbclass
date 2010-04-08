@@ -112,24 +112,6 @@ python base_do_fetch() {
 		raise bb.build.FuncFailed("Unknown fetch Error: %s" % value)
 
 
-	# Verify the SHA and MD5 sums we have in OE and check what do
-	# in
-	checksum_paths = bb.data.getVar('BBPATH', d, True).split(":")
-
-	# reverse the list to give precedence to directories that
-	# appear first in BBPATH
-	checksum_paths.reverse()
-
-	checksum_files = ["%s/conf/checksums.ini" % path for path in checksum_paths]
-	try:
-		parser = base_chk_load_parser(checksum_files)
-	except ValueError:
-		bb.note("No conf/checksums.ini found, not checking checksums")
-		return
-	except:
-		bb.note("Creating the CheckSum parser failed: %s:%s" % (sys.exc_info()[0], sys.exc_info()[1]))
-		return
-
 	pv = bb.data.getVar('PV', d, True)
 	pn = bb.data.getVar('PN', d, True)
 
@@ -146,11 +128,11 @@ python base_do_fetch() {
 				if not "name" in params and first_uri:
 					first_uri = False
 					params["name"] = ""
-				if not (base_chk_file_vars(parser, localpath, params, d) or base_chk_file(parser, pn, pv,uri, localpath, d)):
+				if not base_chk_file(pn, pv, uri, localpath, params, d):
 					if not bb.data.getVar("OE_ALLOW_INSECURE_DOWNLOADS", d, True):
-						bb.fatal("%s-%s: %s has no checksum defined, cannot check archive integrity" % (pn,pv,uri))
+						bb.fatal("%s-%s: %s cannot check archive integrity" % (pn,pv,uri))
 					else:
-						bb.note("%s-%s: %s has no checksum defined, archive integrity not checked" % (pn,pv,uri))
+						bb.note("%s-%s: %s cannot check archive integrity" % (pn,pv,uri))
 		except Exception:
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
