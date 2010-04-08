@@ -1,7 +1,7 @@
 HOMEPAGE = "http://www.packagekit.org/"
 DEPENDS = "eggdbus libpam expat dbus-glib intltool-native"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://hal.freedesktop.org/releases/polkit-${PV}.tar.gz;name=polkit \
           "
@@ -22,6 +22,7 @@ inherit autotools pkgconfig
 
 do_install_append () {
 	install -d ${D}${localstatedir}/run/PolicyKit
+	sed -i -e s:system:common:g ${D}${sysconfdir}/pam.d/*
 }
 
 FILES_${PN} += " ${datadir}/dbus-1 \
