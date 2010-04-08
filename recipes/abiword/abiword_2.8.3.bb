@@ -1,6 +1,8 @@
 require abiword-2.5.inc
-DEPENDS += " libwmf-native gtkmathview "
+DEPENDS += " loudmouth libwmf-native gtkmathview "
 RCONFLICTS_${PN} = "abiword-embedded"
+
+PR = "r1"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=abiword \
            file://autogen-common.sh \
@@ -11,6 +13,7 @@ SRC_URI[abiword.sha256sum] = "b74f7ba5852e6225dd1fb52be266eaa33149fb24210b33b5d8
 
 EXTRA_OECONF = " --disable-static  \
                  --enable-plugins \
+                 --without-gnomevfs \
                  --enable-collab-backend-xmpp \
                  --enable-collab-backend-tcp \
                  --enable-collab-backend-service \
