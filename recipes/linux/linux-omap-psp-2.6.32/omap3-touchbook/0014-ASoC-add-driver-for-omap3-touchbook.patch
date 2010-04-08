@@ -1,4 +1,4 @@
-From b8c9d2b0cec0f8e6a25749f1ab50f59ad7480e8d Mon Sep 17 00:00:00 2001
+From 0abfaf3d50f7df7b7dd9462d1822e856bf306bf5 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Wed, 31 Mar 2010 11:14:04 +0200
 Subject: [PATCH 14/16] ASoC: add driver for omap3-touchbook
@@ -6,8 +6,8 @@ Subject: [PATCH 14/16] ASoC: add driver for omap3-touchbook
 ---
  sound/soc/omap/Kconfig          |    8 +
  sound/soc/omap/Makefile         |    2 +
- sound/soc/omap/omap3touchbook.c |  285 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 295 insertions(+), 0 deletions(-)
+ sound/soc/omap/omap3touchbook.c |  281 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 291 insertions(+), 0 deletions(-)
  create mode 100644 sound/soc/omap/omap3touchbook.c
 
 diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
@@ -50,10 +50,10 @@ index 19283e5..e3f172f 100644
  obj-$(CONFIG_SND_OMAP_SOC_IGEP0020) += snd-soc-igep0020.o
 diff --git a/sound/soc/omap/omap3touchbook.c b/sound/soc/omap/omap3touchbook.c
 new file mode 100644
-index 0000000..4e81f3e
+index 0000000..27924e0
 --- /dev/null
 +++ b/sound/soc/omap/omap3touchbook.c
-@@ -0,0 +1,285 @@
+@@ -0,0 +1,281 @@
 +/*
 + * omap3touchbook.c  --  SoC audio for Touch Book
 + *
@@ -160,12 +160,9 @@ index 0000000..4e81f3e
 +/* Headset jack detection DAPM pins */
 +static struct snd_soc_jack_pin hs_jack_pins[] = {
 +	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+	{
-+		.pin = "Headset Stereophone",
++		.pin = "External Speakers",
 +		.mask = SND_JACK_HEADPHONE,
++		.invert = 1,
 +	},
 +};
 +
@@ -181,30 +178,27 @@ index 0000000..4e81f3e
 +
 +/* omap3touchbook machine DAPM */
 +static const struct snd_soc_dapm_widget omap3touchbook_twl4030_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIC("Ext Mic", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
++	SND_SOC_DAPM_SPK("External Speakers", NULL),
++	SND_SOC_DAPM_HP("Headset Stereo", NULL),
++	SND_SOC_DAPM_MIC("Headset Micro", NULL),
++	SND_SOC_DAPM_LINE("Line In", NULL),
 +};
 +
 +static const struct snd_soc_dapm_route audio_map[] = {
-+	/* External Mics: MAINMIC, SUBMIC with bias*/
-+	{"MAINMIC", NULL, "Mic Bias 1"},
-+	{"SUBMIC", NULL, "Mic Bias 2"},
-+	{"Mic Bias 1", NULL, "Ext Mic"},
-+	{"Mic Bias 2", NULL, "Ext Mic"},
-+
 +	/* External Speakers: HFL, HFR */
-+	{"Ext Spk", NULL, "HFL"},
-+	{"Ext Spk", NULL, "HFR"},
++	{"External Speakers", NULL, "HFL"},
++	{"External Speakers", NULL, "HFR"},
 +
-+	/* Headset Mic: HSMIC with bias */
-+	{"HSMIC", NULL, "Headset Mic Bias"},
-+	{"Headset Mic Bias", NULL, "Headset Mic"},
++	/* Headset Stereo: HSOL, HSOR */
++	{"Headset Stereo", NULL, "HSOL"},
++	{"Headset Stereo", NULL, "HSOR"},
 +
-+	/* Headset Stereophone (Headphone): HSOL, HSOR */
-+	{"Headset Stereophone", NULL, "HSOL"},
-+	{"Headset Stereophone", NULL, "HSOR"},
++	/* Headset Micro: MAINMICL */
++	{"Headset Micro", NULL, "MAINMIC"},
++
++	/* Line In: AUXL, AUXR */
++	{"Line In", NULL, "AUXL"},
++	{"Line In", NULL, "AUXR"},
 +};
 +
 +static int omap3touchbook_twl4030_init(struct snd_soc_codec *codec)
@@ -221,13 +215,14 @@ index 0000000..4e81f3e
 +	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
 +
 +	/* omap3touchbook connected pins */
-+	snd_soc_dapm_enable_pin(codec, "Ext Mic");
-+	snd_soc_dapm_enable_pin(codec, "Ext Spk");
-+	snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+	snd_soc_dapm_disable_pin(codec, "Headset Stereophone");
++	snd_soc_dapm_enable_pin(codec, "External Speakers");
++	snd_soc_dapm_enable_pin(codec, "Headset Stereo");
++	snd_soc_dapm_enable_pin(codec, "Headset Micro");
++	snd_soc_dapm_enable_pin(codec, "Line In");
 +
 +	/* TWL4030 not connected pins */
 +	snd_soc_dapm_nc_pin(codec, "CARKITMIC");
++	snd_soc_dapm_nc_pin(codec, "SUBMIC");
 +	snd_soc_dapm_nc_pin(codec, "DIGIMIC0");
 +	snd_soc_dapm_nc_pin(codec, "DIGIMIC1");
 +	snd_soc_dapm_nc_pin(codec, "OUTL");
@@ -237,6 +232,7 @@ index 0000000..4e81f3e
 +	snd_soc_dapm_nc_pin(codec, "PREDRIVER");
 +	snd_soc_dapm_nc_pin(codec, "CARKITL");
 +	snd_soc_dapm_nc_pin(codec, "CARKITR");
++	snd_soc_dapm_nc_pin(codec, "VIBRA");
 +
 +	ret = snd_soc_dapm_sync(codec);
 +	if (ret)

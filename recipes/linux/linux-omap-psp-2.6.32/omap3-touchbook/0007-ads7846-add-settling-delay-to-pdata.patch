@@ -1,4 +1,4 @@
-From cd23f48aad0b24bc2ed8156bc578a2b2d8f2ed9f Mon Sep 17 00:00:00 2001
+From 68e4eb5c9690531fa04cc9e0621854b03369d78b Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 13:50:52 +0100
 Subject: [PATCH 07/16] ads7846: add settling delay to pdata

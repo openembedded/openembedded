@@ -1,4 +1,4 @@
-From e5ae09d0d2c8f2bd1da7662dd551b103292a5748 Mon Sep 17 00:00:00 2001
+From 55eb032a9f3d9c2a46a0e4621e6704a00ba2ab46 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 15:04:58 +0100
 Subject: [PATCH 13/16] ads7846: don't error out when there's no pendown gpio

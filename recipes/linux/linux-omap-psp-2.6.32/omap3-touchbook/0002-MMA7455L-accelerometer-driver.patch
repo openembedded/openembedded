@@ -1,4 +1,4 @@
-From 0b1495ce483319984853f09a0d51b97e119df980 Mon Sep 17 00:00:00 2001
+From f02cd8da4f4dc269b83128e2c42ab664e6619ef8 Mon Sep 17 00:00:00 2001
 From: Tim Yamin <plasm@roo.me.uk>
 Date: Tue, 23 Mar 2010 09:52:10 +0100
 Subject: [PATCH 02/16] MMA7455L accelerometer driver

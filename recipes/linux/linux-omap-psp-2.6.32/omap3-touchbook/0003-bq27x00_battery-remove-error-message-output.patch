@@ -1,4 +1,4 @@
-From 49e4563c87bce62dc4f69ad692a59e82ca0f8640 Mon Sep 17 00:00:00 2001
+From df5573b7c2ed7b0e31be60bddc6b9bc928e78bfe Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 11:41:17 +0100
 Subject: [PATCH 03/16] bq27x00_battery: remove error message output

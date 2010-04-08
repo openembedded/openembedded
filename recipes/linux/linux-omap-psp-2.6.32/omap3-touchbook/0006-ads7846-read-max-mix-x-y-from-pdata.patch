@@ -1,4 +1,4 @@
-From 5b11cfec0cd8f01eba7468a76e764d526ad15bdb Mon Sep 17 00:00:00 2001
+From 8ccf65bc56ba2f71a4420754969b522fd86945a2 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 13:50:45 +0100
 Subject: [PATCH 06/16] ads7846: read max/mix x/y from pdata

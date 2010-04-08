@@ -1,4 +1,4 @@
-From 7f0896fb74c200f0dd39c8f66cac510f511b60f7 Mon Sep 17 00:00:00 2001
+From b5fbb6c23770e496250e5cbdaad7b7b6120b86af Mon Sep 17 00:00:00 2001
 From: Tim Yamin <plasm@roo.me.uk>
 Date: Mon, 20 Apr 2009 20:29:11 -0700
 Subject: [PATCH 08/16] DSS2: OMAPFB: Translate X/Y coordinates for the video planes when rotating.

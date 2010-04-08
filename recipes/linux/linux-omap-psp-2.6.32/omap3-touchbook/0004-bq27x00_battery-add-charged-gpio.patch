@@ -1,4 +1,4 @@
-From e9ae476c0553b5f01a5f38621a4abf68deb24874 Mon Sep 17 00:00:00 2001
+From e1869b08e330d50fd0b57cf0f9ee86eb24d83ec3 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 11:42:45 +0100
 Subject: [PATCH 04/16] bq27x00_battery: add charged gpio

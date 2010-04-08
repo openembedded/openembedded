@@ -1,4 +1,4 @@
-From 3fee6c0a358921e87c9c3807148bc306641592bb Mon Sep 17 00:00:00 2001
+From d24e10c10e57875a65451f46025623f0f77cefbe Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Wed, 31 Mar 2010 11:14:04 +0200
 Subject: [PATCH 15/16] backlight: add PWM support
