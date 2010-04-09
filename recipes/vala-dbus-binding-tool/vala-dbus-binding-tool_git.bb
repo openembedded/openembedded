@@ -1,9 +1,7 @@
 require vala-dbus-binding-tool.inc
-SRCREV = "0dda9a5d7f895d67c6a778f559e929ace229e42b"
-PV = "0.1.3+gitr${SRCPV}"
+SRCREV = "8e6868c6a2fe055daf8b1cf3d68134fb83909186"
+PV = "0.1.6+gitr${SRCPV}"
 PE = "1"
-
-DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/vala-dbus-binding-tool.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
