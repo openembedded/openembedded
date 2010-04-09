@@ -66,8 +66,13 @@ RPROVIDES_uclibc-dev += "libc-dev virtual-libc-dev"
 #
 UCLIBC_LOCALE_FILE = "uClibc-locale-030818.tgz"
 UCLIBC_LOCALE_FILE_arm = "uClibc-locale-030818.arm.tgz"
-UCLIBC_LOCALE_URI = "http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE}"
-UCLIBC_LOCALE_URI_arm = "http://wiki.openembedded.net/dl/uclibc-locale/${UCLIBC_LOCALE_FILE}"
+UCLIBC_LOCALE_URI = "http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE};name=locale"
+UCLIBC_LOCALE_URI_arm = "http://wiki.openembedded.net/dl/uclibc-locale/${UCLIBC_LOCALE_FILE};name=localearm"
+
+SRC_URI[locale.md5sum] = "d75b2239b4e27c3c9cbed1c8f6eabba6"
+SRC_URI[locale.sha256sum] = "c4362be318a38f18d98dccf462d22d95bab92f05548bb93f65298fe9afaebd57"
+SRC_URI[localearm.md5sum] = "fc0b6113f2b333564d3558e241059db8"
+SRC_URI[localearm.sha256sum] = "6765f08499079207ba8c4da999d602ca75c384ff5812aa973f27b6a501b3438e"
 
 SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
 	   file://uClibc.config \

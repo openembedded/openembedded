@@ -72,3 +72,5 @@ SRC_URI_append_avr32 = " \
 #file://uClibc-0.9.28-avr32-20061019.patch;patch=1 \
 #file://uclibc-avr32-no-msoft-float.patch;patch=1 \
 
+SRC_URI[uClibc-0.9.28.md5sum] = "1ada58d919a82561061e4741fb6abd29"
+SRC_URI[uClibc-0.9.28.sha256sum] = "c8bc5383eafaa299e9874ae50acc6549f8b54bc29ed64a9a3387b3e4cd7f4bcb"
