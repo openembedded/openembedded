@@ -178,6 +178,4 @@ python collections_eh () {
 
     if getName(e) == "ConfigParsed":
         collections_setup(e.data)
-
-    return NotHandled
 }

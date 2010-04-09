@@ -279,7 +279,7 @@ python seppuku_eventhandler() {
     Report task failures to the bugzilla
     and succeeded builds to the box
     """
-    from bb.event import NotHandled, getName
+    from bb.event import getName
     from bb import data, mkdirhier, build
     import bb, os, glob
 
@@ -288,20 +288,20 @@ python seppuku_eventhandler() {
     name = getName(event)
     if name == "MsgNote":
        # avoid recursion
-       return NotHandled
+       return
 
     # Try to load our exotic libraries
     try:
         import MultipartPostHandler
     except:
         bb.note("You need to put the MultipartPostHandler into your PYTHONPATH. Download it from http://pipe.scs.fsu.edu/PostHandler/MultipartPostHandler.py")
-        return NotHandled
+        return
 
     try:
         import urllib2, cookielib
     except:
         bb.note("Failed to import the cookielib and urllib2, make sure to use python2.4")
-        return NotHandled
+        return
 
     if name == "PkgFailed":
         if not bb.data.getVar('SEPPUKU_AUTOBUILD', data, True) == "0":
@@ -331,7 +331,7 @@ python seppuku_eventhandler() {
         if not seppuku_login(opener, login, user, passw):
             bb.note("Login to bugzilla failed")
             print >> debug_file, "Login to bugzilla failed"
-            return NotHandled
+            return
         else:
             print >> debug_file, "Logged into the box"
 
@@ -364,7 +364,7 @@ python seppuku_eventhandler() {
                      print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
             else:
                      print >> debug_file, "Not trying to create an attachment for bug #%s" % bug_number
-            return NotHandled
+            return
 
         if bug_number and not bug_open:
             if not seppuku_reopen_bug(poster, reopen, product, component, bug_number, bugname, text):
@@ -390,6 +390,4 @@ python seppuku_eventhandler() {
         if bug_number:
             bb.data.setVar('OESTATS_BUG_NUMBER', bug_number, event.data)
             bb.data.setVar('OESTATS_BUG_TRACKER', "http://bugs.openembedded.net/", event.data)
-
-    return NotHandled
 }
