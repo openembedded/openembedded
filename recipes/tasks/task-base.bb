@@ -137,9 +137,9 @@ python __anonymous () {
     import bb
 
     try:
-	set
-    except NameError:
-	from sets import Set as set
+        set = __builtins__["set"]
+    except KeyError:
+        from sets import Set as set
 
     distro_features = set(bb.data.getVar("DISTRO_FEATURES", d, 1).split())
     machine_features= set(bb.data.getVar("MACHINE_FEATURES", d, 1).split())
