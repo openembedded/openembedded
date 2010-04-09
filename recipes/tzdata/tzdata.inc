@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 DEFAULT_TIMEZONE ?= "Europe/London"
 
@@ -12,7 +12,7 @@ RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-australia timezone-europe timezone-indian \
              timezone-iso3166.tab timezone-pacific timezone-zone.tab"
 
-SRC_URI = "http://bent.latency.net/bent/darcs/zoneinfo-${PV}/src/tzdata${PV}.tar.gz"
+SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz;name=tar"
 
 S = "${WORKDIR}"
 
