@@ -4,7 +4,7 @@ AUTHOR = "Simon Busch <morphis@gravedo.de>"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "libgee libfsotransport"
-SRCREV = "2ed618dd347c3245c5f62c00ce75c985ad90a0ea"
+SRCREV = "23c0cd870fc989792a20c6c662db4400129bd471"
 PV = "0.1.0+gitr${SRCREV}"
 PR = "r2"
 
