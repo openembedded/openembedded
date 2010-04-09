@@ -2,7 +2,7 @@ DESCRIPTION = "PackageKit package management abstraction"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "gtk+ python cppunit policykit dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
+DEPENDS = "gtk+ python cppunit policykit dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 ${IPKG_VARIANT} intltool intltool-native (>= 0.37.1)"
 RDEPENDS_${PN} = "${IPKG_VARIANT}"
 
 inherit gnome autotools_stage
@@ -12,7 +12,7 @@ SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
 
 SRCREV = "96823118e98515dd41748e8c7bdb9cf7b1d4a95f"
 PV = "0.4.6+git"
-PR = "r0+gitr${SRCREV}"
+PR = "r1+gitr${SRCREV}"
 PE = "1"
 
 S = "${WORKDIR}/git"
