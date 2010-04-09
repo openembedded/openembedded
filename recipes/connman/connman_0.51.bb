@@ -35,3 +35,6 @@ SRC_URI  = "\
   file://link-against-libnl2.patch;patch=1 \
   file://connman \
 "
+
+SRC_URI[md5sum] = "85c40f268ff3ad307f2da2ea6e0a9dba"
+SRC_URI[sha256sum] = "848e97174a088d3a18c7d4aa5057440970a2bf97c3c5e6f49ae6a7cdd2471638"
