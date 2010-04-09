@@ -2,8 +2,9 @@ Index: PackageKit-0.6.0/backends/opkg/pk-backend-opkg.c
 ===================================================================
 --- PackageKit-0.6.0.orig/backends/opkg/pk-backend-opkg.c	2010-01-29 09:39:33.000000000 +0000
 +++ PackageKit-0.6.0/backends/opkg/pk-backend-opkg.c	2010-01-29 11:30:51.000000000 +0000
-@@ -29,8 +29,6 @@
+@@ -29,8 +29,7 @@
  
++#include <stdio.h>
  #include <libopkg/opkg.h>
  
 -static opkg_t *opkg;

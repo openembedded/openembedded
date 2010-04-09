@@ -7,6 +7,8 @@ RDEPENDS_${PN} = "opkg"
 
 inherit gnome
 
+PE = "2"
+
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz;name=archive \
            file://configurefix.patch;patch=1 \
            file://opkgfixes.patch;patch=1"
