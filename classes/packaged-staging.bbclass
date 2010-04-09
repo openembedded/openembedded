@@ -262,8 +262,6 @@ python packagedstage_stampfixing_eventhandler() {
                         dir = "%s.do_%s" % (e.stampPrefix[fn], task)
                         os.system('rm -f ' + dir)
                     os.system('rm -f ' + stamp)
-
-    return NotHandled
 }
 
 populate_staging_preamble () {

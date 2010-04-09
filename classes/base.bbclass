@@ -263,7 +263,7 @@ python base_do_unpack() {
 addhandler base_eventhandler
 python base_eventhandler() {
 	from bb import note, error, data
-	from bb.event import Handled, NotHandled, getName
+	from bb.event import getName
 
 
 	name = getName(e)
@@ -272,7 +272,7 @@ python base_eventhandler() {
 	elif name == "UnsatisfiedDep":
 		msg = "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
 	else:
-		return NotHandled
+		return
 
 	# Only need to output when using 1.8 or lower, the UI code handles it
 	# otherwise
@@ -309,15 +309,13 @@ python base_eventhandler() {
 				os.system('touch ' + e.stampPrefix[fn] + '.needclean')
 
 	if not data in e.__dict__:
-		return NotHandled
+		return
 
 	log = data.getVar("EVENTLOG", e.data, 1)
 	if log:
 		logfile = file(log, "a")
 		logfile.write("%s\n" % msg)
 		logfile.close()
-
-	return NotHandled
 }
 
 addtask configure after do_unpack do_patch
