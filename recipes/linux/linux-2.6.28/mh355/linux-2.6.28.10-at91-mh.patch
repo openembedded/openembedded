@@ -1537,17 +1537,17 @@ diff -Nur linux-2.6.28.10-at91/arch/arm/mach-at91/board-mh355.c linux-2.6.28.10-
 +
 +static struct ads7846_platform_data ads_info = {
 +	.model			= 7843,
-+	.x_min			= 150,
-+	.x_max			= 3830,
-+	.y_min			= 190,
-+	.y_max			= 3830,
++	
++	.x_min			= 137,  .x_max			= 3941,
++	.y_min			= 127,  .y_max			= 3871,
 +	.vref_delay_usecs	= 100,
-+	.x_plate_ohms		= 450,
-+	.y_plate_ohms		= 250,
-+	.pressure_max		= 15000,
-+	.debounce_max		= 1,
-+	.debounce_rep		= 0,
-+	.debounce_tol		= (~0),
++	.x_plate_ohms		= 180,
++	.pressure_max		= 255,
++	.debounce_max		= 10,
++	.debounce_tol		= 3,
++	.debounce_rep		= 1,
++ 	.keep_vref_on		= 1,
++	.settle_delay_usecs	= 150,
 +	.get_pendown_state	= ads7843_pendown_state,
 +};
 +
