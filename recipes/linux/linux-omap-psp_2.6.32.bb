@@ -3,7 +3,7 @@ require multi-kernel.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook|overo"
+COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|dm3730-am3715-evm|omap3-touchbook|overo"
 
 # This is the v2.6.32_OMAPPSP_03.00.00.05 branch
 SRCREV = "7b8926aa626991fa087b00f6bbc1fb6b0e8269b0"
