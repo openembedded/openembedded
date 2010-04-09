@@ -150,7 +150,7 @@ python recipe_sanity_eh () {
     from bb.event import getName
 
     if getName(e) != "ConfigParsed":
-        return NotHandled
+        return
 
     d = e.data
 

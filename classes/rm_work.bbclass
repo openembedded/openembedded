@@ -44,7 +44,5 @@ python rmwork_stampfixing_eventhandler() {
                 dir = "%s.*" % e.stampPrefix[fn]
                 bb.note("Removing stamps: " + dir)
                 os.system('rm -f '+ dir)
-
-    return NotHandled
 }
 

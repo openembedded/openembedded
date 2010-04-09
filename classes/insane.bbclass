@@ -61,6 +61,7 @@ def package_qa_get_machine_dict():
                         "i486":       (   3,     0,    0,          True,          True),
                         "i586":       (   3,     0,    0,          True,          True),
                         "i686":       (   3,     0,    0,          True,          True),
+                        "x86_64":     (  62,     0,    0,          True,          False),
                         "mips":       (   8,     0,    0,          False,         True),
                         "mipsel":     (   8,     0,    0,          True,          True),
                         "avr32":      (6317,     0,    0,          False,         True),

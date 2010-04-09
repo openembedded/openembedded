@@ -1,7 +1,7 @@
 require binutils.inc
 LICENSE = "GPLv3"
 
-INC_PR = "r1"
+INC_PR = "r2"
 PR = "${INC_PR}.4"
 
 SRC_URI = "\
@@ -15,6 +15,7 @@ SRC_URI = "\
      file://ld-stub-crash.patch;patch=1;pnum=0 \
      file://binutils-arm-non-empty-know.patch;patch=1 \
      file://binutils_unexport_LD_LIBRARY_PATH_for_CC_FOR_BUILD.patch;patch=1 \
+     file://binutils-x86_64_i386_biarch.patch;patch=1 \
      "
 
 # powerpc patches

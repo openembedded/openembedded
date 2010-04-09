@@ -180,9 +180,6 @@ def check_sanity(e):
 
 addhandler check_sanity_eventhandler
 python check_sanity_eventhandler() {
-    from bb.event import Handled, NotHandled
     if bb.event.getName(e) == "ConfigParsed":
         check_sanity(e)
-
-    return NotHandled
 }

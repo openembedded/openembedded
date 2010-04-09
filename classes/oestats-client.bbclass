@@ -178,14 +178,14 @@ python oestats_eventhandler () {
 	import time
 
 	if e.data is None or getName(e) == "MsgNote":
-		return NotHandled
+		return
 
 	server = bb.data.getVar('OESTATS_SERVER', e.data, True)
 	if not server.startswith('http://') and not server.startswith('https://'):
 		server = "http://%s" %(server)
 	builder = bb.data.getVar('OESTATS_BUILDER', e.data, True)
 	if not server or not builder:
-		return NotHandled
+		return
 
 	if getName(e) == 'BuildStarted':
 		oestats_start(server, builder, e.data)
@@ -197,6 +197,4 @@ python oestats_eventhandler () {
 		oestats_task(server, e.data, e.task, 'Succeeded')
 	elif getName(e) == 'TaskFailed':
 		oestats_task(server, e.data, e.task, 'Failed')
-
-	return NotHandled
 }
