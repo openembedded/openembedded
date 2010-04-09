@@ -67,6 +67,10 @@ SRC_URI_omap3evm = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-d
 SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
 
+SRC_URI_dm3730-am3715-evm = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git"
+# This tag is v2009.11_OMAPPSP_03.00.00.05
+SRCREV_dm3730-am3715-evm = "9df15c53c9a9bc1ec9c68c33821c50dc26797d6c"
+PV_dm3730-am3715-evm = "2009.11+${PR}+gitr${SRCREV}"
 
 SRCREV_am3517-evm = "e60beb13cf0"
 SRC_URI_append_am3517-evm = " \
