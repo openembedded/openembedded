@@ -48,3 +48,6 @@ do_stage() {
 	install -d ${STAGING_DATADIR}/openh323
 	install -m 0644 openh323u.mak ${STAGING_DATADIR}/openh323
 }
+
+SRC_URI[md5sum] = "69050e8db79416f95c8d4ba5b9721318"
+SRC_URI[sha256sum] = "d7ec127ef2521bb2d123daf40fb125832de80ba0a2ad39aab907e73ad0a6a632"
