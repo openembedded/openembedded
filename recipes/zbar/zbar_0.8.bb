@@ -2,15 +2,11 @@ DESCRIPTION = "2D barcode scanner toolkit."
 SECTION = "graphics"
 LICENSE = "GPL"
 DEPENDS = "intltool-native gtk+ libpng jpeg"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.bz2"
 
 inherit autotools pkgconfig
-
-do_stage () {
-        autotools_stage_all
-}
 
 EXTRA_OECONF = " --without-imagemagick --without-qt --without-python"
 
