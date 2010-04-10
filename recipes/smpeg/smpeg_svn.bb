@@ -5,7 +5,7 @@ SECTION = "libs/multimedia"
 DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
 PV = "0.4.5+svnr${SRCPV}"
-PE = "1"
+PE = "2"
 SRCREV = "387"
 
 SRC_URI = "svn://svn.icculus.org/smpeg/;module=trunk"
@@ -31,6 +31,11 @@ do_configure_prepend () {
 	      acinclude/sdl.m4 \
 	      aclocal.m4 \
 	      acinclude.m4
+}
+
+do_install_prepend() {
+    install -d ${STAGING_DATADIR}/aclocal
+    install -m 0644 smpeg.m4 ${STAGING_DATADIR}/aclocal/smpeg.m4
 }
 
 PACKAGES =+ "plaympeg "

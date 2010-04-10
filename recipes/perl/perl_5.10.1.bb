@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r0"
+PR = "r1"
 
 # Not tested enough
 DEFAULT_PREFERENCE = "-1"
