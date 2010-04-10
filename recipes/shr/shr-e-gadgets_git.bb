@@ -5,7 +5,7 @@ DEPENDS = "e-wm"
 RDEPENDS = "e-wm"
 SECTION = "x11/application"
 
-SRCREV = "548a0a1f42c4e09f03db85509ad5c92ef491f9ca"
+SRCREV = "c23dda5f81ed3c6d785617696fb009adb5594a55"
 PV = "0.0.0+gitr${SRCREV}"
 
 inherit autotools
