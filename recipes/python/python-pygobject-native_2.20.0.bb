@@ -21,3 +21,6 @@ do_install_append() {
 	install -d ${D}${bindir}
 	install -m 0755 gobject/generate-constants ${D}${bindir}/gobject-generate-constants
 }
+
+SRC_URI[md5sum] = "10e1fb79be3d698476a28b1e1b0c5640"
+SRC_URI[sha256sum] = "41e923a3f4426a3e19f6d154c424e3dac6f39defca77af602ac6272ce270fa81"

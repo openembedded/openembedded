@@ -17,3 +17,6 @@ do_install() {
         install -m 0644 rt73${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/extra/
 }
 
+
+SRC_URI[md5sum] = "121e2ed57d01e04f82e942c502b1ca75"
+SRC_URI[sha256sum] = "e04718f3989bc567bf185cacfb27e324218cce5f5c87fca65328e49a3b56e603"

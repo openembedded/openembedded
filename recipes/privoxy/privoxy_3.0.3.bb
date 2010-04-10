@@ -61,3 +61,6 @@ pkg_postinst() {
         grep -q privoxy: /etc/passwd || adduser --disabled-password --home=/etc/privoxy \
                                                --ingroup privoxy -g "Privoxy" privoxy
 }
+
+SRC_URI[md5sum] = "b0710be8af09409bfb03f52523a17010"
+SRC_URI[sha256sum] = "4dab0049049c1ae6cfb00faea606d981535d0f0a65aab17e3179cc3d75de9f84"

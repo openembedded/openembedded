@@ -29,3 +29,6 @@ do_stage() {
 	install -m 755 fastjar/jar ${STAGING_BINDIR}/fastjar
 	install -m 755 fastjar/grepjar ${STAGING_BINDIR}
 }
+
+SRC_URI[md5sum] = "2fada3a3effd2fd791df09df1f1534b3"
+SRC_URI[sha256sum] = "522c53b92ff9096089f3074c50e17a5169952d32f4c883c6fdae350e8f1b344e"

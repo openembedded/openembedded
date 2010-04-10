@@ -70,3 +70,6 @@ for i in AlmanacStore.hpp AlmOrbit.hpp ANSITime.hpp Bancroft.hpp BasicFramework.
         do install -m 644 `find . -name $i` ${D}${includedir}/ || true
 done
 }
+
+SRC_URI[md5sum] = "541ec5a5b86cf9e56f0b23cf6c80dd6e"
+SRC_URI[sha256sum] = "c1378384b1737b2fa330f8d63d7777db311c976bb20e0c0e0fcd5dac0e78672a"

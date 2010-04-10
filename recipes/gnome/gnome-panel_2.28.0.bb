@@ -39,3 +39,6 @@ FILES_${PN} =+ "${datadir}/gnome* \
                "
 
 
+
+SRC_URI[archive.md5sum] = "9f0ea283d44bbcce67dc2e8a02fe9fad"
+SRC_URI[archive.sha256sum] = "c1168c0c8f84692002557d60870c782f4831635080d2c52cd2a3665fb7718465"

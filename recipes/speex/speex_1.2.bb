@@ -47,3 +47,6 @@ PACKAGES =+ "${PN}-utils ${PN}-dsp"
 FILES_${PN}-utils = "${bindir}/speex*"
 FILES_${PN}-dsp = "${libdir}/libspeexdsp.so.*"
 FILES_${PN} = "${libdir}/libspeex.so.*"
+
+SRC_URI[md5sum] = "c4438b22c08e5811ff10e2b06ee9b9ae"
+SRC_URI[sha256sum] = "342f30dc57bd4a6dad41398365baaa690429660b10d866b7d508e8f1179cb7a6"

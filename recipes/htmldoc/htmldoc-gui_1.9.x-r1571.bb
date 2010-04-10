@@ -22,3 +22,6 @@ FILES_${PN} += "${datadir}/htmldoc/data"
 do_install() {
 	oe_runmake 'DESTDIR=${D}' install
 }
+
+SRC_URI[md5sum] = "eda75ba1abe14ed8e71c6f40438def85"
+SRC_URI[sha256sum] = "b4c78ff6b47521e980533e52cbe46fe86874c75b3d6bc18bcc2500a2ba854c3e"

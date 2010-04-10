@@ -25,3 +25,6 @@ do_install_append() {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/bind/named.conf ${sysconfdir}/bind/named.conf.local ${sysconfdir}/bind/named.conf.options ${sysconfdir}/bind/db.0 ${sysconfdir}/bind/db.127 ${sysconfdir}/bind/db.empty ${sysconfdir}/bind/db.local ${sysconfdir}/bind/db.root"
+
+SRC_URI[md5sum] = "9ff3204eea27184ea0722f37e43fc95d"
+SRC_URI[sha256sum] = "9a9411115338d2554f2e99bc676c2e9a381a8d649bf9bd9c0b2ffa2cf74b563c"

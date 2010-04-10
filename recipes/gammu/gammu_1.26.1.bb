@@ -37,3 +37,6 @@ FILES_${PN}-dbg += "${bindir}/.debug ${libdir}/.debug ${PYTHON_SITEPACKAGES_DIR}
 FILES_libgammu = "${libdir}/libGammu.so.*"
 FILES_libgsmsd = "${libdir}/libgsmsd.so.*"
 FILES_python-${PN} = "${PYTHON_SITEPACKAGES_DIR}/gammu/*.??"
+
+SRC_URI[md5sum] = "ba8caab6b21a2ce0fa668f9403b8319a"
+SRC_URI[sha256sum] = "668eb037af6aa81cc104067dcb8e1cf44000b82a58638cfd485297eec76fda8d"

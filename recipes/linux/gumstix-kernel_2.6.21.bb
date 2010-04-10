@@ -82,3 +82,6 @@ do_configure_prepend() {
        ${@base_contains('MACHINE_FEATURES', 'cfroot','sed -i "s/CONFIG_BLK_DEV_IDECS=m/CONFIG_BLK_DEV_IDECS=y/" ${WORKDIR}/defconfig','',d)}
 
 }
+
+SRC_URI[md5sum] = "1b515f588078dfa7f4bab2634bd17e80"
+SRC_URI[sha256sum] = "f187b12d70e0a48ce81f0472dfe9504fb5f0f966be339ac9d57dd2b991a74942"

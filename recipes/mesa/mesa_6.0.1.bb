@@ -23,3 +23,6 @@ do_stage() {
         cp -pP lib/* ${STAGING_LIBDIR}/
         cp -R include/GL ${STAGING_INCDIR}/
 }
+
+SRC_URI[md5sum] = "b7f14088c5c2f14490d2739a91102112"
+SRC_URI[sha256sum] = "2de039f7abe10569b681ea1d9e21fb65fd0081c8f4db40fb62b332acb11679fb"

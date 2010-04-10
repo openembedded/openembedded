@@ -24,3 +24,6 @@ do_install () {
 	install -m 644 devlabel.8.gz ${D}${mandir}/man8/
 	install -m 644 sysconfig.devlabel ${D}${sysconfdir}/sysconfig/devlabel
 }
+
+SRC_URI[md5sum] = "1a4032b942d8b47544da1957374a9786"
+SRC_URI[sha256sum] = "1dd2cce79f93cb3483fefdc02f65ed0868754ad12360c830d5f5cbe95da8e0e4"

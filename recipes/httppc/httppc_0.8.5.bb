@@ -11,3 +11,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/httppc/httppc-${PV}.tar.gz \
 	   file://install.patch;patch=1"
 
 inherit autotools
+
+SRC_URI[md5sum] = "365684629378365de02e127f4a085628"
+SRC_URI[sha256sum] = "bedfd45364948a08ecaa212c5eda6667a83ac8bb547e2eb8478ade885898cad7"

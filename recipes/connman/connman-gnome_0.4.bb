@@ -18,3 +18,6 @@ do_install_append() {
 	install ${WORKDIR}/connman-applet.desktop ${D}${datadir}/applications/
 }
 
+
+SRC_URI[md5sum] = "c9a3b384f080ed4cdf139ce9377ef2c8"
+SRC_URI[sha256sum] = "d7acac8bc0a38dfcab098137a76f5e9f4ce30ca86e82b26540502658e6b4e4a7"

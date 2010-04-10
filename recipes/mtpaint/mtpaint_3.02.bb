@@ -24,3 +24,6 @@ do_install() {
 	install -m 0755 src/mtpaint ${D}${bindir}
 }
 
+
+SRC_URI[md5sum] = "828013176f135fc24ffdf16a011c51e6"
+SRC_URI[sha256sum] = "991a1376dc23d0663d45b3b395c0e5c5542fee3906a120889583d67f854f5206"

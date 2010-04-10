@@ -28,3 +28,6 @@ do_install () {
 		   'bin_dir=${D}${bindir}' 'lib_dir=${D}${libdir}' \
 		   'include_dir=${D}${includedir}' install
 }
+
+SRC_URI[md5sum] = "af4411ee10875b96c0d61f903018f438"
+SRC_URI[sha256sum] = "bed27a4ec5b71acc08333368e842a1248e83328018b582caf644985539967c5d"

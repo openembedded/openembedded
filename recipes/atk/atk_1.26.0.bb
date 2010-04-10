@@ -14,3 +14,6 @@ do_stage () {
 }
 
 
+
+SRC_URI[archive.md5sum] = "719229408019c548855673840679f156"
+SRC_URI[archive.sha256sum] = "f7993d26c3606a9b0e32d1eebe716f2294ac37fac014c47744e986fc0ff5e6d1"

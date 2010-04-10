@@ -27,3 +27,6 @@ do_configure_append () {
     install ${WORKDIR}/hotkeys.conf ${S}
     install ${WORKDIR}/softkeys.conf ${S}
 }
+
+SRC_URI[md5sum] = "e02616d1fbbeb441187f3e2db17517ca"
+SRC_URI[sha256sum] = "a5186b3099643f74e41e2a805489df8edc453bf1ab6eae1cef821a5b814e5035"

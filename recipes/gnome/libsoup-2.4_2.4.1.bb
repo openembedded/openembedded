@@ -17,3 +17,6 @@ do_stage() {
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${includedir}/ ${libdir}/"
 FILES_${PN}-doc = "${datadir}/"
+
+SRC_URI[md5sum] = "d0fc91ccb9da401e9e40d2f4612bdac9"
+SRC_URI[sha256sum] = "774094746748fb0c8985210de0994accdc7095c222fba42c5623e2137443b6cd"

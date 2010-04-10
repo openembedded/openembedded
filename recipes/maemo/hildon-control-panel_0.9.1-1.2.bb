@@ -17,3 +17,5 @@ do_stage() {
         install -d ${STAGING_INCDIR}/hildon-cp-plugin
         install -m 644 *.h ${STAGING_INCDIR}/hildon-cp-plugin
 }
+SRC_URI[md5sum] = "72c8b814ebeec8668cea575e08bb1548"
+SRC_URI[sha256sum] = "bbe77d297c7560d3fdad343ab49f23c9c0aa1574db77108d1b97845fb7bb26d5"

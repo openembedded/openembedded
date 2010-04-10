@@ -24,3 +24,6 @@ do_configure() {
 	gnu-configize --force
 	oe_runconf
 }
+
+SRC_URI[md5sum] = "719dae0ee675d0c16e0e89952930ed35"
+SRC_URI[sha256sum] = "a17a28569d8ed1e514915c1f12bdf4eedac506e5fbdf9a429ba97d5d42c9af32"

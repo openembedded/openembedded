@@ -24,3 +24,6 @@ do_stage() {
 
 FILES_${PN} += " ${datadir}/gtksourceview-2.0"
 
+
+SRC_URI[md5sum] = "ea30aecfbd55ebf40c6cf5a0f254f9ba"
+SRC_URI[sha256sum] = "bf4c6285683a70addedd3ae6b9d4b450d928be497834272c4cd705471333f1ec"

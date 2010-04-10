@@ -62,3 +62,6 @@ pkg_postrm_${PN} () {
 
 
 
+
+SRC_URI[archive.md5sum] = "31139d7a79096463b127b4790058b056"
+SRC_URI[archive.sha256sum] = "8869f464818a1626e481bba5c562bdb972ffb74f1a9da91d01199fa860ee040f"

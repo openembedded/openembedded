@@ -28,3 +28,6 @@ FILES_${PN}-mt = "${libdir}/libcwd_r.so*"
 FILES_${PN}-config = "${datadir}"
 RRECOMMENDS_${PN} = "${PN}-config"
 RRECOMMENDS_${PN}-mt = "${PN}-config"
+
+SRC_URI[md5sum] = "9f734d279fa7a91f81d07fb9fd5de049"
+SRC_URI[sha256sum] = "8e9bfe9838fce18bb55d41ec883be5b7330aeead265feec0347745e8e589822a"

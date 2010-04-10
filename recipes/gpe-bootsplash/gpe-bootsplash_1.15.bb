@@ -30,3 +30,6 @@ pkg_postrm() {
 	update-alternatives --remove bootsplash-l /usr/share/gpe/splash-gpe-landscape.svg
 	update-alternatives --remove bootsplash-p /usr/share/gpe/splash-gpe-portrait.svg
 }
+
+SRC_URI[md5sum] = "205b47792c4adc4e1d07d6e4ce8cc466"
+SRC_URI[sha256sum] = "586c4635a104e6566284d5edf5d64fbd6d944a92b5c1b493baf16e78db540060"

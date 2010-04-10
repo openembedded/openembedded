@@ -27,3 +27,6 @@ do_configure_prepend() {
 FILES_${PN} = "${bindir} ${datadir}/XaoS/catalogs"
 
 CFLAGS = "-L${STAGING_LIBDIR}"
+
+SRC_URI[md5sum] = "f1d9a9f3d2097906754b8824ba925e64"
+SRC_URI[sha256sum] = "b15420bcfafeca09eb29e5961cedbbe0572d0fc7912f6c545458a346188516c1"

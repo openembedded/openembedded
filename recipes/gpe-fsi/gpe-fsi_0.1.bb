@@ -25,3 +25,6 @@ do_install() {
 	install gpe-fsi.png ${D}/usr/share/pixmaps/
 }
 
+
+SRC_URI[md5sum] = "e485b0c8424dc9666078d482d22447da"
+SRC_URI[sha256sum] = "6a7455e4a066d5ecd9520feb9cd7bb1a7ecfe267faef32cd04a97b5c1738f8ec"

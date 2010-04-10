@@ -23,3 +23,6 @@ do_stage() {
 	oe_libinstall -so -C mimedir libmimedir-0.2 ${STAGING_LIBDIR}
 	ln -sf libmimedir-0.2.so ${STAGING_LIBDIR}/libmimedir.so
 }
+
+SRC_URI[md5sum] = "7c24a8ec76ad3342c642ac32976c8b04"
+SRC_URI[sha256sum] = "9841831972bebef827348a9f9b0875d8dd0f5079b0f1cb6b8283ceb43befd584"

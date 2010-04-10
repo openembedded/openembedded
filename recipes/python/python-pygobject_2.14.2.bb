@@ -30,3 +30,6 @@ do_stage() {
 
 FILES_${PN} = "${libdir}/python*"
 FILES_${PN}-dev += "${datadir}/pygobject/xsl"
+
+SRC_URI[md5sum] = "0e9e9300e81847f4f7266f49d3bebbaf"
+SRC_URI[sha256sum] = "79c5d3ab8f072f1d0b102b2bd6410b0dc383a008b5efad1750d8b6dadfde8c6e"

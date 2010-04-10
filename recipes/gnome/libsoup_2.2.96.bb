@@ -14,3 +14,6 @@ do_stage() {
 	autotools_stage_all
 	ln -s ${STAGING_DATADIR}/pkgconfig/libsoup.pc ${STAGING_DATADIR}/pkgconfig/libsoup-2.2.pc
 }
+
+SRC_URI[md5sum] = "2704961ca2b9597819f21b40d4a0e0aa"
+SRC_URI[sha256sum] = "e69f4cc9baee9be87400371cbdca1cb03428394c624640e64397089d090dbf0d"

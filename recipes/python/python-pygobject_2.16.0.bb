@@ -37,3 +37,6 @@ FILES_${PN} = "${libdir}/python*"
 FILES_${PN}-lib = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir} ${datadir}"
 FILES_${PN}-dbg += "${libdir}/.debug"
+
+SRC_URI[md5sum] = "431e7d4632163b93d1ee43cd071a389c"
+SRC_URI[sha256sum] = "db0ab6f998bc5750aba2dfa96c8932f673914d8bf804a2c1c769b4a6e3f192d2"

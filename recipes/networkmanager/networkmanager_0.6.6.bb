@@ -17,3 +17,6 @@ SRC_URI_append_mamona = " \
 SRC_URI_append_nokia770 = " file://cx3110_bring_up.patch;patch=1 "
 SRC_URI_append_nokia800 = " file://cx3110_bring_up.patch;patch=1 "
 SRC_URI_append_nokia810 = " file://cx3110_bring_up.patch;patch=1 "
+
+SRC_URI[md5sum] = "412ed4db5d2db04285799c4303ddeeed"
+SRC_URI[sha256sum] = "36d48a11957e1c4f53a685b0fcc7d060e8972b435501c92b10737bb844dd95e2"

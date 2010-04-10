@@ -39,3 +39,6 @@ do_install() {
 		install -m 0644 ${S}/${binary}.1 ${D}/usr/share/man/man1
 	done
 }
+
+SRC_URI[md5sum] = "ee74158c6c55ae16327595c70369ef83"
+SRC_URI[sha256sum] = "ef5e9bf276b65bb831f9c2554cd8784bd5b4ee65353808f82b7e2aef851587ec"

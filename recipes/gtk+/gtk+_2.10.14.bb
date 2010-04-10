@@ -31,3 +31,6 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
 require gtk-fpu.inc
 EXTRA_OECONF += "${@get_gtk_fpu_setting(bb, d)}"
 
+
+SRC_URI[md5sum] = "018d7dd0fa7de01cfdb77c7c55e7ba26"
+SRC_URI[sha256sum] = "d02344239d048390ba02fcfd7de4f9efc0dfb51e7b06dfa46a6314d666ea4de2"

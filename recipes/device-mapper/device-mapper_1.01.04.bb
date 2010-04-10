@@ -25,3 +25,6 @@ do_install() {
 	oe_runmake install_static_lib
         install -D -m 755 ${S}/scripts/${INITSCRIPT_NAME} ${D}${sysconfdir}/init.d/${INITSCRIPT_NAME}
 }
+
+SRC_URI[md5sum] = "42dd0610e24d4b4f2409a32a04e6e37f"
+SRC_URI[sha256sum] = "49c8303f58abf3a0efbbd42decdc5968688df32c154cffb20a1c3c1ae8b92048"

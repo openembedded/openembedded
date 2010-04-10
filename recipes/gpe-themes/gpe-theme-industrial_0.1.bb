@@ -15,3 +15,6 @@ cp -R ${WORKDIR}/Industrial ${D}${datadir}/themes/
 }
 
 
+
+SRC_URI[md5sum] = "75898910db553923aa312ed2b1545364"
+SRC_URI[sha256sum] = "6aeb1dd991f0e0bcc11562061148051520562c81dc6bf18c03f0cc86a72f6093"

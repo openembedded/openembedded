@@ -42,3 +42,6 @@ RCONFLICTS_${PN}-dbg = "libgailutil-dbg"
 RREPLACES_${PN}-dbg = "libgailutil-dbg"
 # FIXME: replace locales as well
 
+
+SRC_URI[gtk.md5sum] = "bb7ef5463a74a80454ced2c1d47a0192"
+SRC_URI[gtk.sha256sum] = "05fce9327dbe78a74ad4cd45383d541f96f19d40d3c03076cdf6908ad28ad241"

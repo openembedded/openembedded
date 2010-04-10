@@ -28,3 +28,6 @@ do_install () {
 		install -m 0644 ${S}/usr/share/sounds/$h ${D}/${datadir}/sounds/$h
 	done
 }
+
+SRC_URI[md5sum] = "27e905aad10d3e29f03a7d1d1180ea3a"
+SRC_URI[sha256sum] = "90c601d2ed52b2ce967e76678894e74569f59104614cf35de20dab78eb0144b5"

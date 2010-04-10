@@ -35,3 +35,6 @@ do_install() {
 }
 
 # FILES_${PN} = " ${palmtopdir}/apps/Applications/qpPhoto.desktop ${palmtopdir}/pics/qpPhoto.png ${bindir}/qpPhoto "
+
+SRC_URI[md5sum] = "c3c806bd2910e6c49617acb230eee306"
+SRC_URI[sha256sum] = "ba2d98c4fabb31a66a66a235a5bbc9cb9e8a2c6f3939e71826d8763a8e7e3c0d"

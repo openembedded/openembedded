@@ -25,3 +25,6 @@ do_install () {
 	install -d ${D}/${bindir}
 	install unix/nrlolsrd ${D}/${bindir}
 }
+
+SRC_URI[md5sum] = "46291de38362acdcd335bcf259055046"
+SRC_URI[sha256sum] = "0e6b18e3bf77dd20395881535e3e7043bcd5171c220728310215d708f44f3b1c"

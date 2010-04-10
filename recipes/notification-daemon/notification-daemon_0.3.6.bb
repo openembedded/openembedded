@@ -18,3 +18,6 @@ FILES_${PN} = "\
   ${libdir}/notification-daemon-1.0/engines/libstandard.so \
   ${sysconfdir}/gconf/schemas/notification-daemon.schemas \
 "
+
+SRC_URI[md5sum] = "a5a9aa63205e624da8468e35722b08bf"
+SRC_URI[sha256sum] = "a187976c1957a7a0e17014ed97cbb4341f6898d5f60301f1b0c37e52188ebd13"

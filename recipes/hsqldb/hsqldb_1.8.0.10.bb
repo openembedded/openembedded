@@ -34,3 +34,6 @@ do_compile() {
 
   fastjar -C classes -c -f ${JARFILENAME} .
 }
+
+SRC_URI[md5sum] = "17410483b5b5f267aa18b7e00b65e6e0"
+SRC_URI[sha256sum] = "d30b13f4ba2e3b6a2d4f020c0dee0a9fb9fc6fbcc2d561f36b78da4bf3802370"

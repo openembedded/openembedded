@@ -18,3 +18,6 @@ do_stage() {
 	oe_libinstall -a -so -C gdk_imlib libgdk_imlib ${STAGING_LIBDIR}
 }
 
+
+SRC_URI[archive.md5sum] = "7db987e6c52e4daf70d7d0f471238eae"
+SRC_URI[archive.sha256sum] = "4e6a270308a9ae16586bfc133c1a3dfb2e56f431edb66aaa3a80e36e5ed84ce0"

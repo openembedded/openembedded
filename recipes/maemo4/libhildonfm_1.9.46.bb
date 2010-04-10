@@ -7,3 +7,6 @@ SRC_URI = "\
   file://libhildonfm-gtkmaemo-ifdef.patch;patch=1 \
 	"
 
+
+SRC_URI[md5sum] = "2077191776071a94af3194dbeefdab38"
+SRC_URI[sha256sum] = "8df5de457571e93ffd9220b6c45378ffe8742f047d386a3c56e265baeb33607f"

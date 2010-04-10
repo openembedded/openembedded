@@ -42,3 +42,6 @@ PACKAGES = "${PN}"
 FILES_${PN} = "${datadir_java}/analyzer.jar ${bindir}/${PN}"
 
 PACKAGE_ARCH = "all"
+
+SRC_URI[md5sum] = "dc8f16011da37ee3114616b96dc80798"
+SRC_URI[sha256sum] = "c735f3c0b32f379020a52965e5af45fcd00330b94f94d51603ab5a05b06675fb"

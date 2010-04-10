@@ -14,3 +14,6 @@ do_install() {
 PACKAGE_ARCH = "all"
 FILES_${PN} += "/www/pages/eyeos"
 
+
+SRC_URI[md5sum] = "020b1ffd9edc3fe7af25b0d6cca430ae"
+SRC_URI[sha256sum] = "660cd2de4fbd511b767839cb5caa734ebfa9cc5935aa58604f764d7e295768d4"

@@ -21,3 +21,6 @@ do_install() {
 	install -m 0755 zgscore.png ${D}${palmtopdir}/pics/
 	install -m 0644 zgscore.desktop ${D}${palmtopdir}/apps/Applications/
 }
+
+SRC_URI[md5sum] = "98e9dd2db54015c0f5193c5427f02d50"
+SRC_URI[sha256sum] = "a2683b8a6a172017f0fe6392fb07d87a5c02fc2714fbff4c98dcae67db588636"

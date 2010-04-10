@@ -25,3 +25,6 @@ do_configure_prepend() {
 do_stage() {
     autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "d9b975952bf5feee8818d3fb18cca0b3"
+SRC_URI[archive.sha256sum] = "552c34d20f30847429e342e6c6ddeece707b69a5abe9aeeafcfeb65cec2eebd7"

@@ -39,3 +39,6 @@ TARGET_CFLAGS += " -Wno-cast-align"
 TARGET_CFLAGS += " -Wno-strict-prototypes"
 # openssl uses error as a local variable, so:
 TARGET_CFLAGS += " -Wno-shadow"
+
+SRC_URI[md5sum] = "8567328b1ad7609f8851eec57658f1a0"
+SRC_URI[sha256sum] = "19c6eeb42f2688464cf4fc7dadecf58faeebfa6a13f05974f6dad910f5fd6b98"

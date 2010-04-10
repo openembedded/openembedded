@@ -23,3 +23,6 @@ do_stage() {
 
 	chmod 0755 ${STAGING_BINDIR}/rpm2cpio.pl
 }
+
+SRC_URI[md5sum] = "07f64fa3dae6eb8b1b578d01473a5c07"
+SRC_URI[sha256sum] = "a98cb1d9903192c4fcf40d82c705e091a5c193f87327703217749a5f4cc6197d"

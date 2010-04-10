@@ -36,3 +36,6 @@ W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"
 
 EXTRA_OECONF += "--enable-builtin-fonts"
+
+SRC_URI[md5sum] = "bb16e969850dbb5d3805cb88d35656d0"
+SRC_URI[sha256sum] = "b89f2d17be5ba71e3cc25379e18155c55ea36ba94ac1abae953214f13c020ffe"

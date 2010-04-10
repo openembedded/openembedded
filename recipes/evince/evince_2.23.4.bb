@@ -17,3 +17,6 @@ EXTRA_OECONF = " --without-libgnome \
 		 "
 FILES_${PN}-dbg = "${libdir}/evince/backends/.debug"
 
+
+SRC_URI[archive.md5sum] = "4e353edd6481f67ee534a40d4b7f3b8c"
+SRC_URI[archive.sha256sum] = "c424e6dd5cc0d998a311f5c49835de9803da4dbcb74ca7fbda29c1b953bf6d6b"

@@ -108,3 +108,8 @@ SRC_URI_append_avr32 = " \
 
 S = "${WORKDIR}/linux-${PV}"
 
+
+SRC_URI[md5sum] = "296a6d150d260144639c3664d127d174"
+SRC_URI[sha256sum] = "c95280ff6c5d2a17788f7cc582d23ae8a9a7ba3f202ec6e4238eaadfce7c163d"
+SRC_URI[md5sum] = "090f582d2a0e1951d500b2e55f7df7b4"
+SRC_URI[sha256sum] = "cde777361d2a4818ea9c215e195a87da4847dafa94a10ac8c9f4bd8dc49fde3f"

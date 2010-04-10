@@ -29,3 +29,6 @@ EXTRA_OECONF = "--disable-xfree-ext \
 		--x-includes=${STAGING_INCDIR} \
 		--x-libraries=${STAGING_LIBDIR}"
 EXTRA_OEMAKE += " 'verbose=yes'"
+
+SRC_URI[md5sum] = "8d2731e6e95f173f41a0ddc875d55804"
+SRC_URI[sha256sum] = "d5e333bc74c0a534bf96f40ea89b7e700f137d46f1fdbaea13fa552ad6227af8"

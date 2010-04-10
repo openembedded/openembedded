@@ -55,3 +55,6 @@ hwctrl kernel_conf_set bootargs "`cat $A`"
 cat /dev/mtdblock/0 >/dev/null
 exit 0
 }
+
+SRC_URI[md5sum] = "f10b6954498bab5d08d0f50de381af50"
+SRC_URI[sha256sum] = "4f32cfd01f0678080f8e98009ba99ce37f1261d842e3af9a6b3add22005a80ca"

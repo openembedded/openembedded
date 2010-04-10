@@ -53,3 +53,6 @@ PACKAGES =+ "${PN}-lib"
 FILES_${PN}-lib = "${libdir}/libtcl8.4.so.*"
 FILES_${PN} += "${libdir}/tcl8.4"
 FILES_${PN}-dev += "${libdir}/tclConfig.sh"
+
+SRC_URI[md5sum] = "ade2c033a7b545ee108f3fdfeb629fcf"
+SRC_URI[sha256sum] = "1c244722fb409e8774c5d45d6a0b21edc3e4541fd016a40afdf53c94a69a3db9"

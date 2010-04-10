@@ -24,3 +24,6 @@ PACKAGES =+ "evince-nautilus-extension"
 FILES_evince-nautilus-extension = "${libdir}/nautilus/*/*so"
 
 
+
+SRC_URI[archive.md5sum] = "ad0e463ab1fe596fc52c03403a9b9f1e"
+SRC_URI[archive.sha256sum] = "d8803313e2a0b3fa3fe20fe613ac3ec85ec6848d5d446dd02e9cc5be8194f65c"

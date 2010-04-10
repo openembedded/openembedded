@@ -43,3 +43,6 @@ do_compile() {
   ln -sf ${D}${datadir_java}/xmlParserAPIs.jar jaxp-1.3.jar
 
 }
+
+SRC_URI[md5sum] = "e340cba4a2abf4f0f833488380821153"
+SRC_URI[sha256sum] = "13af0062a72a4a0d541ca5336391eafa4d580258cacf4a5e062ea584ca950592"

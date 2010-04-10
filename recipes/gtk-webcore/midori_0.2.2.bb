@@ -35,3 +35,6 @@ do_install_append_shr() {
 	install -m 0644 ${WORKDIR}/config ${D}${sysconfdir}/xdg/midori
 }
 
+
+SRC_URI[md5sum] = "14f81a7a10f80a173da1b5e88713400b"
+SRC_URI[sha256sum] = "bec38745947b79a80352374937cecb81fd21d30c35f11b11290fabdad1e4cb07"

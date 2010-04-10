@@ -25,3 +25,6 @@ do_install () {
 	oe_libinstall -a libattr ${STAGING_LIBDIR}
 }
 
+
+SRC_URI[md5sum] = "91583a14bcbd637adaa9b07ea49c5d4b"
+SRC_URI[sha256sum] = "d358b233b3e2ad235e63fd8697e337006fc7506844e424b0d9dd7a24affec5bf"

@@ -19,3 +19,6 @@ do_stage() {
 }
 
 PACKAGES = "${PN}-dbg  "
+
+SRC_URI[md5sum] = "5bcb197fd42e67d51c739b1414d514a7"
+SRC_URI[sha256sum] = "f06895c0206dada9f9e7f07ecaeb6a3651fd648f4820f49c1f76bfeaec2f2913"

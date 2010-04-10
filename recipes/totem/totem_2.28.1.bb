@@ -73,3 +73,6 @@ FILES_totem-nautilus-extension += "${libdir}/nautilus/extensions-2.0/*.so"
 
 
 
+
+SRC_URI[archive.md5sum] = "42f071fcf8ffc471beb3e1689297d647"
+SRC_URI[archive.sha256sum] = "18121f17c37faaa9cc245d46293a24f58f2bba9dc9b84af5e1ffe0ac6e697b04"

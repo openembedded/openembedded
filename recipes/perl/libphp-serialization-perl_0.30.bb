@@ -10,3 +10,6 @@ S = "${WORKDIR}/PHP-Serialization-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "210b764fca7c791f4387717185f589b5"
+SRC_URI[sha256sum] = "09917ebe3b088649f0767723a7e25ae08fb8db921a85183e2e8c3d2e79ae6d10"

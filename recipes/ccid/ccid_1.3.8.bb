@@ -19,3 +19,6 @@ do_install_append () {
 
 FILES_${PN} += "${libdir}/pcsc/"
 FILES_${PN}-dbg += "${libdir}/pcsc/drivers/*/*/*/.debug"
+
+SRC_URI[md5sum] = "ebb5fc927d73cd63737a9114481e8957"
+SRC_URI[sha256sum] = "8cb892ef36321069eff7826aa732f1481715fe54bf96346fae1d25565b44c536"

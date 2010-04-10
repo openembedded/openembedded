@@ -11,3 +11,6 @@ SRC_URI = "http://www.logarithmic.net/pfh-files/synaesthesia/synaesthesia-${PV}.
 inherit autotools
 
 
+
+SRC_URI[md5sum] = "784105cbeed3ab209231675f0e029497"
+SRC_URI[sha256sum] = "48505975e809ebadf416dc3e35a528ef87f01b117f2f1c5498d728ead8786493"

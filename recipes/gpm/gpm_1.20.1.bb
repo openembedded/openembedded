@@ -36,3 +36,6 @@ do_install () {
 	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/gpm
 	cd ${D}${libdir} && ln -sf libgpm.so.1.19.0 libgpm.so.1
 }
+
+SRC_URI[md5sum] = "2c63e827d755527950d9d13fe3d87692"
+SRC_URI[sha256sum] = "11fabe7f27a205ff1ea6aee23e1dc2bb2dc5dbfc45ff0320fca0cd559806a936"

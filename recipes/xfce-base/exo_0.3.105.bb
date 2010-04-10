@@ -28,3 +28,6 @@ FILES_${PN} += "${datadir}/xfce4/ \
 "
 
 FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/*/.debug/*"
+
+SRC_URI[md5sum] = "ba87f84894498bf23ae39d849c55f98c"
+SRC_URI[sha256sum] = "278f702d890c89bd3923ce1bdaf29bd9f2c800c2e4cfd9e902d99663bba337e5"

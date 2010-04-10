@@ -56,3 +56,6 @@ do_stage() {
 	done
 	oe_libinstall -C bonobo -a -so libbonoboui-2 ${STAGING_LIBDIR}
 }
+
+SRC_URI[archive.md5sum] = "bd4fb92f993b7fb7e660bb999465ef3b"
+SRC_URI[archive.sha256sum] = "1ba905987dacedaacec7fbea8575bf9569ad4b65c47fbca4a855630858a89afd"

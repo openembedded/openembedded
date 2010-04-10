@@ -33,3 +33,6 @@ do_stage () {
 }
 
 PACKAGES = ""
+
+SRC_URI[md5sum] = "bc192d23266b9a664ca0aba4a7794c7c"
+SRC_URI[sha256sum] = "2f329e120bee9ef42fbdd74ddd60e05e49786c5a7953a0ff4c680ae6bdf0e2bc"

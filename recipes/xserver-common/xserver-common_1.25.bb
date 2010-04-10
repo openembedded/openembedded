@@ -24,3 +24,6 @@ do_install_append() {
 	install -m 0755 "${WORKDIR}/89xdgautostart.sh" "${D}/etc/X11/Xsession.d/89xdgautostart"
 	sed -i 's:^BINDIR=.*$:BINDIR=${bindir}:' ${D}/etc/X11/Xserver
 }
+
+SRC_URI[md5sum] = "95faf3cc8c0a70352e9580fc873ca693"
+SRC_URI[sha256sum] = "f0391d08a6763598066e21d83460493973fe24fc65e3f0d2b534ef2497946a34"

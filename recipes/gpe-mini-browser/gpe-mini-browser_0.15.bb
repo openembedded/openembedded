@@ -50,3 +50,6 @@ pkg_postrm_${PN}-doc () {
                 echo not generating index for gpe-mini-browser
         fi
 }
+
+SRC_URI[md5sum] = "b048cee7254d7fe6eb1e2821ce8706df"
+SRC_URI[sha256sum] = "aa9c2dbe8d763b4461a42d46378cc49335a266a7d6dcd794ecd46fac037c8913"

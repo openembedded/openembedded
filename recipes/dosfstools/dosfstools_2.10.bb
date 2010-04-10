@@ -20,3 +20,6 @@ do_install () {
 	oe_runmake "PREFIX=${D}" "SBINDIR=${D}${sbindir}" \
 		   "MANDIR=${D}${mandir}/man8" install
 }
+
+SRC_URI[md5sum] = "59a02f311a891af8787c4c9e28c6b89b"
+SRC_URI[sha256sum] = "55a7b2f5ea4506bde935ee3145573e1773427fc72283a36796c7c2cf861dd064"

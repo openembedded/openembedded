@@ -40,3 +40,6 @@ CONFFILES_${PN} = " \
 	${sysconfdir}/bind/db.local \
 	${sysconfdir}/bind/db.root \
 	"
+
+SRC_URI[md5sum] = "58ea86efa5d20ffc282ef2e1690dc484"
+SRC_URI[sha256sum] = "275f4d19b8af8bbc93eda9d8532c21d32cd30195db82f15f10916c02416f9f03"

@@ -14,3 +14,6 @@ do_install () {
 FILES = "${bindir}/wakelan"
 
 INHIBIT_AUTO_STAGE = "1"
+
+SRC_URI[md5sum] = "4a3a31d874967cd6ac761b7d4323e0d5"
+SRC_URI[sha256sum] = "3df5eb8f877648799ab623cf1718ecc6f86eb0c2f51d344d8e860442dcc5cd6f"

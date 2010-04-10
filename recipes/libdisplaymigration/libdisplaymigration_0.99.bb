@@ -24,3 +24,6 @@ do_stage () {
 		install -m 0644 ${S}/libdisplaymigration/$h ${STAGING_INCDIR}/libdisplaymigration/${h}
 	done
 }
+
+SRC_URI[md5sum] = "181f063344a0e674e5c2546544d5e27f"
+SRC_URI[sha256sum] = "b0159537f22453fcf30d7c4d7d9a39b6996233217c1f80a49ede135cf6ed32ca"

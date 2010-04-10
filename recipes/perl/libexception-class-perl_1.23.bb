@@ -12,3 +12,6 @@ S = "${WORKDIR}/Exception-Class-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "560b42c0cf8b795bdc793459edb7ec13"
+SRC_URI[sha256sum] = "9ad5a063bac80f3e77a179c91b7ea4490181640c8c1893292fdc6f2d92f40406"

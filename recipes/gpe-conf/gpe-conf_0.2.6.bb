@@ -23,3 +23,6 @@ FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
                 ${datadir}/gpe-conf"
 FILES_gpe-conf-panel = "${datadir}/applications/gpe-conf.desktop"
 
+
+SRC_URI[md5sum] = "849e9c42564174921f9bc9a1b08722ef"
+SRC_URI[sha256sum] = "0d46c8ec7b443d37630ef0625df3ac824f590a3048c6b973be83c305ab4de079"

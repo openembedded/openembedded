@@ -22,3 +22,6 @@ do_stage () {
 	install -m 0644 ${S}/src/nids.h ${STAGING_INCDIR}/
 	oe_libinstall -a -C src libnids ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "9ee6dcdfac97bae6fe611aa27d2594a5"
+SRC_URI[sha256sum] = "b0275c914197a53c6ccf631eac756fd37ec6f2d8f09f15757061495cf9be0fcd"

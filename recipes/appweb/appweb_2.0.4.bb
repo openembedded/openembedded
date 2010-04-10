@@ -121,3 +121,6 @@ do_install () {
 #	install -m 0755 bin/${APPWEB_OS}/* ${D}${libexecdir}/appWeb/
 #	install -m 0755 lib/lib*.so* ${D}${sysconfdir}/appWeb/lib/
 #}
+
+SRC_URI[md5sum] = "f2cb79a03bf17c0f66f0a3a1dc1e2c46"
+SRC_URI[sha256sum] = "17da486f983597f28c0efadb261b76b733155be7451ef34eefc65cb4058d883d"

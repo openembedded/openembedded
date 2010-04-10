@@ -12,3 +12,6 @@ S="${WORKDIR}/ctags-${PV}"
 
 inherit native
 inherit autotools
+
+SRC_URI[md5sum] = "a84124caadd4103270e0b84596ecfe83"
+SRC_URI[sha256sum] = "7b83689a47efa627d4b5670317125de3d87ae9278cf69c3ac7e3b7be646e715d"

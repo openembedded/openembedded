@@ -20,3 +20,6 @@ do_stage() {
 do_install() {
 	oe_libinstall -so libKlimt ${D}${palmtopdir}/lib
 }
+
+SRC_URI[md5sum] = "d12f56384b4ccde11cd756db2b14065c"
+SRC_URI[sha256sum] = "48ae508d72e453e2a1f5748870362259786b475548c545feaec1aea71d2f8fdb"

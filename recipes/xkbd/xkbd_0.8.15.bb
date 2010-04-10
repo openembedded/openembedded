@@ -18,3 +18,6 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/xkbd.png ${D}${datadir}/pixmaps/
 }
 
+
+SRC_URI[md5sum] = "56271e79da101bbc31e5384a9499853d"
+SRC_URI[sha256sum] = "04bc9f6ea423f7fbd9150767cef6a1bc5c70c545eeb923539a93a549905457de"

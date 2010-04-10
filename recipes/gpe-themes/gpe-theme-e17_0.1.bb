@@ -14,3 +14,6 @@ cp -R ${WORKDIR}/usr/share/themes/e17-bling/  ${D}${datadir}/themes/
 }
 
 
+
+SRC_URI[md5sum] = "c6e9d80180861d0a744b313c59691655"
+SRC_URI[sha256sum] = "40df3e20e7c563b49ae0d5b4ff9151d0b9062815e7222f361b949cb60d9b0b59"

@@ -16,3 +16,6 @@ do_install() {
         install -m 0755 puzz-le ${D}${palmtopdir}/bin/
         cp -pPR Qtopia/puzz-le/opt/QtPalmtop/* ${D}${palmtopdir}/
 }
+
+SRC_URI[md5sum] = "76535893b779926874f618d3fbf3e92b"
+SRC_URI[sha256sum] = "e4b4217b81ab0885db11cf7e0f18afdeaa969392fc15647a10c2aab9cbf583d8"

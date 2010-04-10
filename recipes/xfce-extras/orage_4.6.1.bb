@@ -20,3 +20,6 @@ FILES_${PN} += "${datadir}/xfce4/panel-plugins/*.desktop \
 "
 
 FILES_${PN}-dbg += "${libexecdir}/xfce4/panel-plugins/.debug/"
+
+SRC_URI[md5sum] = "24fa43dd86ec5af5a4766620fd972cf2"
+SRC_URI[sha256sum] = "f1580f5f0082eff89f7a76a57da9dce7e7d5380804939771611499482523bd4d"

@@ -58,3 +58,6 @@ FILES_${PN}-gtkmodule = "${libdir}/gtk-2.0/*/*.so"
 FILES_${PN} += "${libdir}/packagekit-backend/*.so ${libdir}/pm-utils ${datadir}/dbus-1/system-services/ ${datadir}/PolicyKit ${datadir}/PackageKit"
 FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so ${libdir}/gtk-2.0/*/.debug"
 FILES_${PN}-dev += "${libdir}/packagekit-backend/*a ${libdir}/gtk-2.0/*/*a"
+
+SRC_URI[md5sum] = "e406ad5e776e31c99e70c7cf6e7bcdc4"
+SRC_URI[sha256sum] = "8defbfdfe6937fd1d4320f2c2e599b5579fec14404a4e920ff2e5ac68516744b"

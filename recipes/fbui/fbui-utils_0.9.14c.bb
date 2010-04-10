@@ -31,3 +31,6 @@ do_compile() {
 		fi
 	done
 }
+
+SRC_URI[md5sum] = "e97c609af171cceb85d08f366406374a"
+SRC_URI[sha256sum] = "112ba595859ad6e42f5ad522ada27a08da7702e3ea8c84df48ae1c5d6177ae8e"

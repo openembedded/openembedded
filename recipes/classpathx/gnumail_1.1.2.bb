@@ -40,3 +40,6 @@ do_stage() {
   java_stage
   oe_jarinstall -s ${P}-providers.jar ${PN}-providers.jar
 }
+
+SRC_URI[md5sum] = "0a94ff4328ceb6a4131be96946976a33"
+SRC_URI[sha256sum] = "5eb09597a8f81bfc943206e3e0f45b963ba605a646051c353374f1b475bb9f04"

@@ -54,3 +54,6 @@ do_install() {
 }
 
 FILES_${PN} += "${datadir}/rox/ ${datadir}/mime/packages"
+
+SRC_URI[md5sum] = "56e6a29f2dbdf11d6f4b74a3f03ff959"
+SRC_URI[sha256sum] = "d91120d78e770c9c09822560dacb42fca641d092cbe52064ca7232f089062921"

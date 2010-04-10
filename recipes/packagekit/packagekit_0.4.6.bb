@@ -59,3 +59,6 @@ FILES_${PN}-dev += "${libdir}/packagekit-backend/*a ${libdir}/gtk-2.0/*/*a"
 
 
 
+
+SRC_URI[md5sum] = "66ef4281047ad51f499ec05420028f11"
+SRC_URI[sha256sum] = "4e44eb7be990cb62e57840f4b01b6c9af06c4655869d0cb565fc45749c20b82e"

@@ -52,3 +52,6 @@ do_compile_prepend () {
 	echo '#define HAVE_XLOCALE 1' >> config.h
 }
 
+
+SRC_URI[md5sum] = "68298390375da1b34f89a0aa634c9b20"
+SRC_URI[sha256sum] = "04ecd2577ee0c210df610b4a5d870f2bda57c80962fb5b51ae9c4a94098c726c"

@@ -28,3 +28,6 @@ do_stage() {
         install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/dvb
         oe_libinstall -a -C libdvb libdvb ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "47612d2f8a4d4dee746a166d8b7f6f77"
+SRC_URI[sha256sum] = "941e8020129111377652bd7253ea85e6c133fd1c23c66bd9fc0ca9eabab1385a"

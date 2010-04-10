@@ -43,3 +43,6 @@ do_stage () {
         ln -s ${STAGING_INCDIR}/gsm/gsm.h ${STAGING_INCDIR}/gsm.h
 }
 
+
+SRC_URI[md5sum] = "8909828c601e82e842e6a0ceade60a4e"
+SRC_URI[sha256sum] = "dde4e62e4ce35af29a15d26beca2fc0f98c0219553927453425cda01f16e4de4"

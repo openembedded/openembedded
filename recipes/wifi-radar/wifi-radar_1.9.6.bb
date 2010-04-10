@@ -35,3 +35,6 @@ echo "Please edit /etc/wifi-radar.conf"
 echo "to match your wifi card name (wlan0, eth0, ...)"
 echo "*******************************************"
 }
+
+SRC_URI[md5sum] = "4ab4cc22d68dd0655ab28b75c7aa6248"
+SRC_URI[sha256sum] = "bb94acb9da36e7148dc5090f07f43c816569b0b5d671135fd661b2376f19d719"

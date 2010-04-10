@@ -40,3 +40,6 @@ do_stage() {
 PACKAGES = "${PN}"
 
 FILES_${PN}  = "${datadir}/midpath/escher-cldc.jar"
+
+SRC_URI[md5sum] = "d03cd88f51f82bbcfcfa5b65df0da5b0"
+SRC_URI[sha256sum] = "e235ca7470e7cdfb90e3806fbcc1b2c450db286276136a2523c7ae26a804a100"

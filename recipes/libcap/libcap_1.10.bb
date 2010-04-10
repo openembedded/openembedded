@@ -27,3 +27,6 @@ do_stage() {
 	install -m 0644 libcap/include/sys/capability.h ${STAGING_INCDIR}/sys/
 	oe_libinstall -s -C libcap libcap ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "4426a413128142cab89eb2e6f13d8571"
+SRC_URI[sha256sum] = "66c3f033fdc8f9ba0bd9d0ae2d1f2c11f9fa51bf0d1418e5cb75e29e6577a5bc"

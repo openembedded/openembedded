@@ -18,3 +18,6 @@ do_configure_prepend() {
 
 
 
+
+SRC_URI[archive.md5sum] = "fc9be11d2f823bb16d6e03e2a0dda85d"
+SRC_URI[archive.sha256sum] = "2b90f206063405ae6cf579ed3a090b0130e849e1ead02b2ad2ed4fc6d7f585a0"

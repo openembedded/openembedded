@@ -48,3 +48,6 @@ do_install() {
 	cp -pfLR include/linux ${D}${includedir}/
 	cp -pfLR include/asm ${D}${includedir}/
 }
+
+SRC_URI[md5sum] = "1df3e4fbf2670712cecb4953e2d24834"
+SRC_URI[sha256sum] = "8dffedf772a9f75a8cee2a603e1b14e4b7848010dcfa0e6b087afcf4f66da6de"

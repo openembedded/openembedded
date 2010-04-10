@@ -1,1 +1,4 @@
 require tar.inc
+
+SRC_URI[md5sum] = "70170208d7c1bb9ab40120579434b6a3"
+SRC_URI[sha256sum] = "44944ee0427c8e0d8dbaa0b8f900073a7456819610cc521c53630c3eb117cf5e"

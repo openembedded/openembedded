@@ -34,3 +34,6 @@ do_compile_prepend() {
 		sed -i s,-lqte\([^-]\),-lqte-mt, src/Makefile
 	fi
 }
+
+SRC_URI[md5sum] = "80919ef556425ff82a8555ff40a579a0"
+SRC_URI[sha256sum] = "d5a168968051536641ab5a3ba5fc234383511c77a8bc5ceb8bed619bdd42e5f9"

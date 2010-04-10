@@ -31,3 +31,6 @@ do_configure () {
     export CXXFLAGS="-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -fpermissive -fvisibility-inlines-hidden"
     oe_runconf
 }
+
+SRC_URI[md5sum] = "00bfa16d58e034e3c2aa27f390390d30"
+SRC_URI[sha256sum] = "26c99025b59e30779300b68adb764f824974d267a4d7cc1b347d14a2393f9fb4"

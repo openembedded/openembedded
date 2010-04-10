@@ -14,3 +14,6 @@ SRC_URI_append = " file://ti-osk.patch;patch=1 file://unbreak-simpad.patch;patch
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
 }
+
+SRC_URI[md5sum] = "72c8b5c4c4aa18abe4f29308d2726e1e"
+SRC_URI[sha256sum] = "3e198bf84fac63cd5d93521c1646cf6dc2d959b4c84a16aa9cd1d9ca94ddd212"

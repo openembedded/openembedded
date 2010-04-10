@@ -26,3 +26,6 @@ ALTERNATIVE_PATH = "${bindir}/xfce4-session"
 ALTERNATIVE_PRIORITY = "30"
 
 FILES_${PN}-dbg += "${libexecdir}/xfce4/xfwm4/.debug/*"
+
+SRC_URI[md5sum] = "538ff2554a23bf877d336e573884da9a"
+SRC_URI[sha256sum] = "0a808d19a7ddf1f5271d0b7009a5d0dc919562a85afab4071df060f51e9ee9ed"

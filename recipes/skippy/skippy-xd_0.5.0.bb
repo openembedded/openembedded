@@ -16,3 +16,6 @@ LDFLAGS_append = " -L${STAGING_LIBDIR}/X11"
 do_install() {
 	oe_runmake 'BINDIR=${D}${bindir}' install
 }
+
+SRC_URI[md5sum] = "0e847845c4cb8c16f79bc4538ae288ad"
+SRC_URI[sha256sum] = "52ff7476b3580a92c385167f1855583c2cf74ae1898a6a5e8446ce67c80bc139"

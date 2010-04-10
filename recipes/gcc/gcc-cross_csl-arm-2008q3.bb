@@ -24,3 +24,6 @@ do_compile_prepend() {
 }
 
 ARCH_FLAGS_FOR_TARGET += " -L${STAGING_DIR_TARGET}${target_libdir} -isystem${STAGING_DIR_TARGET}${target_includedir}"
+
+SRC_URI[md5sum] = "67196fcfe5c95bae1a5bb8a63a1bb74d"
+SRC_URI[sha256sum] = "68da29f515a26ca1b5722c940615ddc4b0550b2b1ad5d11129b1da636c353160"

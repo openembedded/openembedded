@@ -13,3 +13,6 @@ FILES_${PN} += "${datadir}/telepathy \
 do_stage() {
     autotools_stage_all
 }
+
+SRC_URI[md5sum] = "015611ff5cbd3b3718fcb49adc47bd13"
+SRC_URI[sha256sum] = "dfc90b2c92bc313c67d80611945823799581b5b4eb5758d6d77846d4e22666de"

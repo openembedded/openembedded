@@ -21,3 +21,6 @@ do_compile_prepend() {
 
 # Workaround QA issue
 TARGET_CC_ARCH += "${LDFLAGS}"
+
+SRC_URI[md5sum] = "03e5e7ab8ac3acc59661c6e9c09089b7"
+SRC_URI[sha256sum] = "fcda8bca508490bea642c83fcf718565bf4ed4c50f2d7b34761da61fe2e6bc9d"

@@ -45,3 +45,6 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove showkey showkey.${PN}
 }
 
+
+SRC_URI[md5sum] = "bf21564fc38b3af853ef724babddbacd"
+SRC_URI[sha256sum] = "eea6b441672dacd251079fc85ed322e196282e0e66c16303ec64c3a2b1c126c2"

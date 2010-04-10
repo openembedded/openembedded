@@ -22,3 +22,6 @@ do_compile() {
 	) || exit 1
 	oe_runmake
 }
+
+SRC_URI[archive.md5sum] = "937735f342c046db239852fec0413f6c"
+SRC_URI[archive.sha256sum] = "ec7088b2ffe8f56c177525283601fb048decaf6f175d9ee5db01e12810a4d345"

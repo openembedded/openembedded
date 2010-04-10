@@ -32,3 +32,6 @@ do_compile() {
         exit 0
 }
 
+
+SRC_URI[md5sum] = "4c21f533aebbe17105374ab0fbcfede3"
+SRC_URI[sha256sum] = "e6ea066943305025dd67e200b272f278911f474c30a4d54bb74268ea930f5130"

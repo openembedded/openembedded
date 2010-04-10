@@ -13,3 +13,6 @@ SRC_URI="http://www.kroah.com/linux-usb/${PN}-${PV}.tar.gz \
 DEPENDS="gtk+ pango glib-2.0 cairo atk"
 
 inherit autotools
+
+SRC_URI[md5sum] = "2ac1bdae03a858b965e895b211a75ad7"
+SRC_URI[sha256sum] = "7a7add52242142f37a7d220c76dfe77090f6592eacdf796e3d07fa61415340fd"

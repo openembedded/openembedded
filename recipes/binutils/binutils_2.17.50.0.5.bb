@@ -12,3 +12,6 @@ SRC_URI = \
      file://binutils-uclibc-300-006_better_file_error.patch;patch=1 \
      file://binutils-uclibc-300-012_check_ldrunpath_length.patch;patch=1 \
      "
+
+SRC_URI[md5sum] = "00eccd47e19a9f24410a137a849aa3fc"
+SRC_URI[sha256sum] = "bbfa06ee0173c5e9ae65ff14ba29502ddf4e355ac3419f88e3346299cfaf4e19"

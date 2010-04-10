@@ -46,3 +46,6 @@ ${datadir}/alsa/pcm/dmix.conf \
 ${datadir}/alsa/pcm/dsnoop.conf"
 
 RDEPENDS_libasound = "alsa-conf-base"
+
+SRC_URI[md5sum] = "9bbbdc502478cdc75074c9ba42c385b3"
+SRC_URI[sha256sum] = "bc691463af8506c1c84db0edab727ee8f8ee4ecd1777b0e264db2525d4500833"

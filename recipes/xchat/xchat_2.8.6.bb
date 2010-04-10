@@ -24,3 +24,6 @@ do_compile_prepend() {
 FILES_${PN} += "${datadir}/dbus-1"
                 
 FILES_${PN}-dbg += "${libdir}/xchat/plugins/.debug"
+
+SRC_URI[md5sum] = "1f2670865d43a23a9abc596dde999aca"
+SRC_URI[sha256sum] = "8c89dbf36304b99363a7f090d695447653102b4528ca2aa367a2abe5cff1746d"

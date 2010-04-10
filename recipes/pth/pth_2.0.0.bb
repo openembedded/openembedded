@@ -25,3 +25,6 @@ do_stage() {
 	install -d ${STAGING_DATADIR}/aclocal
 	install pth.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+SRC_URI[md5sum] = "f84a87295fef3b41499f3b728b1f0050"
+SRC_URI[sha256sum] = "1935a06368c1555d5f80329ba1e53f5b1a7dd9efb7fc9354427f2d1a583c81a3"

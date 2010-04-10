@@ -16,3 +16,6 @@ do_stage () {
 
 PACKAGES =+ "eb-utils"
 FILES_eb-utils = "/usr/bin/*"
+
+SRC_URI[md5sum] = "408bbe0f8ed45d341bc36cc4ee6184e7"
+SRC_URI[sha256sum] = "4f5f71590eafa6c3599876806c8d655c3aeff5b2222643ff0ff41a6883ee5ea0"

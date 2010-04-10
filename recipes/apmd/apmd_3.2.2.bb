@@ -64,3 +64,6 @@ PACKAGES =+ "libapm libapm-dev apm"
 FILES_libapm = "${libdir}/libapm.so.*"
 FILES_libapm-dev = "${libdir}/libapm.* ${includedir}"
 FILES_apm = "${bindir}/apm*"
+
+SRC_URI[md5sum] = "b1e6309e8331e0f4e6efd311c2d97fa8"
+SRC_URI[sha256sum] = "7f7d9f60b7766b852881d40b8ff91d8e39fccb0d1d913102a5c75a2dbb52332d"

@@ -20,3 +20,6 @@ do_stage() {
 	install -m 644 *.h ${STAGING_INCDIR}
 
 }
+
+SRC_URI[md5sum] = "b6d7ca9e9740286f0ce918da9fb8438b"
+SRC_URI[sha256sum] = "0ee6a3caee4812827b8e167d4a07dbf859cb08a00a20f09568c3baae379d6ce8"

@@ -20,3 +20,6 @@ do_stage() {
 	install -m 0755 lib/libfget.h ${STAGING_INCDIR}/
 }
 
+
+SRC_URI[md5sum] = "a556eef04aeb574ac8ab0dd8c868fcab"
+SRC_URI[sha256sum] = "ceaa67f19a1c5462f5e739fcd3b53dd42b0173d9deee579c55e5088801559e43"

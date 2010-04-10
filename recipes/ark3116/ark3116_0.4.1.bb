@@ -35,3 +35,6 @@ do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/serial
         install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/serial
 }
+
+SRC_URI[md5sum] = "fb94d863514b2fa21ecd34571099a7a3"
+SRC_URI[sha256sum] = "7016b5e53e1e24803186e2719cf735109289c0f42cfc3006d468dbf72fae09ab"

@@ -12,3 +12,6 @@ FILES_${PN} += "${libdir}/galago/eds-feed"
 
 inherit autotools pkgconfig
 
+
+SRC_URI[md5sum] = "1f6ac4910dc8bb0276549bd0308f8acb"
+SRC_URI[sha256sum] = "6b7448359284f5af75cbb7027c47616b28aca8b90f9a16b9ec954fa50e455ed3"

@@ -19,3 +19,6 @@ do_install () {
 		includedir="${D}${includedir}" \
 		install
 }
+
+SRC_URI[src.md5sum] = "2ff59c2a5cbdd21a285c5f343e214fa9"
+SRC_URI[src.sha256sum] = "c94817c67c8ff0d244092c19f5713ea8c76a9a19075ff6031d4ef93ec7b66256"

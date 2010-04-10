@@ -25,3 +25,6 @@ FILES_${PN} += "${datadir}"
 FILES_${PN}-dbg += "${libdir}/gnome-vfs-2.0/modules/.debug"
 
 
+
+SRC_URI[archive.md5sum] = "e5dcae40b2c291126843680dbed924a8"
+SRC_URI[archive.sha256sum] = "ede0203f1eec22b3ed4a91c7b769e437859e5bc4b89a8f8e80b3f7ca62317098"

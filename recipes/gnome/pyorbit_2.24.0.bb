@@ -23,3 +23,6 @@ do_stage() {
 	install -m 0644 src/pyorbit.h ${STAGING_INCDIR}/pyorbit-2
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "574593815e75ee6e98062c75d6d1581f"
+SRC_URI[archive.sha256sum] = "8754669b8220aa1f151b920360029d5ea28c42bec55769059676725fe28397b8"

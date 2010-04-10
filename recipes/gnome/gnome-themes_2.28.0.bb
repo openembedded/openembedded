@@ -20,3 +20,6 @@ FILES_gnome-theme-largeprint = "${datadir}/themes/LargePrint ${datadir}/icons/La
 FILES_gnome-theme-mist = "${datadir}/themes/Mist ${datadir}/icons/Mist"
 
 FILES_${PN} += "${datadir}/themes ${datadir}/icons"
+
+SRC_URI[archive.md5sum] = "c89c3e08e45c4e94d76a9a7d40b74214"
+SRC_URI[archive.sha256sum] = "46e8a91464843ab21cade3c470494f3f831932e2b72ca36d484f4fd6efd75a47"

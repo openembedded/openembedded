@@ -25,3 +25,12 @@ EXTRA_OECONF = "--enable-gpgme --with-curses=${STAGING_LIBDIR}/.. \
 do_compile_prepend () {
 	${BUILD_CC} makedoc.c -o makedoc
 }
+
+SRC_URI[md5sum] = "b2c1eb45fd958f6589ee52a98f2a3ce1"
+SRC_URI[sha256sum] = "03fa1f45d4743cd395b634d19aebbc2c1918cf6b683e0af51076ccc79f643a9a"
+SRC_URI[md5sum] = "f4724392ca865125bc2be80b643d175c"
+SRC_URI[sha256sum] = "ed0dc2337148ab4a884a94fd9472a76a13f74659372facef771f8b0eda5e4846"
+SRC_URI[md5sum] = "414606ce18de730d1bb6478899532644"
+SRC_URI[sha256sum] = "9385915adb106abba6f1576be58901f368688b1d55ef454e3993394828ee17e1"
+SRC_URI[md5sum] = "93276f86e544e69a0e83808279f3b175"
+SRC_URI[sha256sum] = "4afe6cc178b08ebd735d04053198f6539c87a0cdc1c5a8a51affc3598504e3a5"

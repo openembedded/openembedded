@@ -41,3 +41,6 @@ do_install() {
 	cp ${WORKDIR}/hotplug.functions ${D}/etc/hotplug.d/firmware
 	cp ${WORKDIR}/firmware.hotplug ${D}/etc/hotplug.d/firmware
 }
+
+SRC_URI[md5sum] = "52a45595560645fb36979c85f35f8578"
+SRC_URI[sha256sum] = "012882309a06987397beb3484e91467bb1be47e23850750ecaaa415be015cb79"

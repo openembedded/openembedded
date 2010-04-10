@@ -24,3 +24,6 @@ FILES_${PN}-dbg += " ${libdir}/opensync*/formats/.debug/*.so \
 do_stage() {
     autotools_stage_all
 }
+
+SRC_URI[md5sum] = "d8cc7835663566e3626e959d8fb531bf"
+SRC_URI[sha256sum] = "c686d27f0818e2d8cc6277ba123c74d7210e70fa2b320c5a828eaaedd598e908"

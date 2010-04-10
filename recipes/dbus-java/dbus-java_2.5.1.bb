@@ -87,3 +87,6 @@ FILES_dbus-java-viewer = "${datadir}/java/dbus-java-viewer*.jar ${bindir}/DBusVi
 FILES_dbus-java-viewer-doc = "${mandir}/DBusViewer*"
 FILES_dbus-java-bin = "${datadir}/java/dbus-java-bin*.jar ${bindir}"
 FILES_dbus-java-bin-doc = "${mandir} ${docdir}/${JPN}"
+
+SRC_URI[md5sum] = "1d1cb956a81be2168452cfea4912d613"
+SRC_URI[sha256sum] = "46db0d65ecadaa0bf90eb7b285609454a0b7439e09655dc722e3f61f2d01bdb2"

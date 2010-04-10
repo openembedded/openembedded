@@ -15,3 +15,6 @@ SRC_URI_append_arm = " file://atomic-thumb.patch;patch=1 \
 "
 SRC_URI_append_armv6 = " file://gatomic_armv6.patch;patch=1"
 SRC_URI_append_armv7a = " file://gatomic_armv6.patch;patch=1" 
+
+SRC_URI[md5sum] = "12297a7da577321647b38ade0593cb3c"
+SRC_URI[sha256sum] = "4898d340c830a5903115412ec5b95eb03b410efdfb1c5316d36f12f8be85577d"

@@ -24,3 +24,6 @@ FILES_${PN} += "${datadir}/nm-applet/ \
         ${datadir}/gnome-vpn-properties/ \
         ${datadir}/gnome/autostart/ \
         "
+
+SRC_URI[archive.md5sum] = "3183f5ae3553da0ce9c381dadbcc19e0"
+SRC_URI[archive.sha256sum] = "34316707a323b883f347b2566fd2dc7a3134b2bf432fb3a8b31d88829b0947e3"

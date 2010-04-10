@@ -114,3 +114,6 @@ for app in arp ifconfig ipmaddr iptunnel mii-tool nameif plipconfig rarp route s
    update-alternatives --remove $app $app.${PN}
 done
 }
+
+SRC_URI[md5sum] = "888774accab40217dde927e21979c165"
+SRC_URI[sha256sum] = "7ae4dd6d44d6715f18e10559ffd270511b6e55a8900ca54fbebafe0ae6cf7d7b"

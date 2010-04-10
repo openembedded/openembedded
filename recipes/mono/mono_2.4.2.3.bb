@@ -83,3 +83,6 @@ FILES_libmono-db2-1.0-cil-dbg = "/usr/lib/mono/gac/IBM.Data.DB2/1.0*/IBM.Data.DB
 # Move .pc files
 FILES_libmono-cairo1.0-cil-dev = "/usr/lib/pkgconfig/mono-cairo.pc"
 PACKAGES =+ " libmono-cairo1.0-cil-dev "
+
+SRC_URI[md5sum] = "696f25afc8453cd0d1c78de6e905dcf2"
+SRC_URI[sha256sum] = "1bab0d4e2906c88736ff5e242f2905f4c3535ccfc05bb5c427b72adf0e9236ae"

@@ -44,3 +44,6 @@ do_stage() {
 	install -m 0644 src/services/name/CosNaming_impl.h ${STAGING_INCDIR}/orbit-2.0/ORBitservices/
 	install -m 0644 src/services/imodule/orbit-imodule.h ${STAGING_INCDIR}/orbit-2.0/ORBitservices/
 }
+
+SRC_URI[md5sum] = "c862e3261b52a84321e89f57e5600da6"
+SRC_URI[sha256sum] = "d43ff15c23f5391850f85a7d40e4bd26f82fe2c86669664fe56eff91f14c1594"

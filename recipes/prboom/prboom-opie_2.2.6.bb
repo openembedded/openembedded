@@ -20,3 +20,6 @@ do_install_append() {
 }
 
 FILES_${PN}_append = " ${palmtopdir}"
+
+SRC_URI[md5sum] = "ef0abe0aad017514857552434b5c6aaa"
+SRC_URI[sha256sum] = "200d3c50b082ae46be8c014bb576b4e2d23b1704508fd528c47e3e2b3b04759e"

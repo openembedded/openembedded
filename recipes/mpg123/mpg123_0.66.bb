@@ -10,3 +10,6 @@ PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/mpg123/mpg123-${PV}.tar.bz2"
 
 inherit autotools
+
+SRC_URI[md5sum] = "6753c7ce5bb35bd65c535b2b6322a9aa"
+SRC_URI[sha256sum] = "2cdcb3b78412034f787ae52e213d04455132f6c94c8b7f3f4b21c21c38d9afa5"

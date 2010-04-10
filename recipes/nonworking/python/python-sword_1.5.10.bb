@@ -30,3 +30,6 @@ do_install() {
 	cd ${S}/python
 	distutils_do_install
 }
+
+SRC_URI[md5sum] = "4c920f2a3ee72040df8a8e105ad840df"
+SRC_URI[sha256sum] = "5fb3f030e9395e23a48c02bde6bc81ad42b1c4056a011d9ee15c4c85110eb847"

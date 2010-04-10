@@ -30,3 +30,6 @@ do_install_append () {
 }
 
 FILES_${PN} += "${libdir}/python* ${datadir}/yum-cli"
+
+SRC_URI[md5sum] = "711f518cb72a698ed98a21a374a4585e"
+SRC_URI[sha256sum] = "8b3f300602ce021bf5202496b98271814935f45f3bf3c6730ba4e789b2f323c8"

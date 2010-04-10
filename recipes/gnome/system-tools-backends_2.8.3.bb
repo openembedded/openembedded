@@ -42,3 +42,6 @@ FILES_${PN} += " ${datadir}/dbus-1/system-services"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/files"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/scripts"
 FILES_${PN} += " ${datadir}/polkit*"
+
+SRC_URI[archive.md5sum] = "403bf4b7c82455d995d6aa54613246c2"
+SRC_URI[archive.sha256sum] = "67629bb6502a4c5b8b639867deb40ecabd5676a4655c264c1f0dbeb97de5c98c"

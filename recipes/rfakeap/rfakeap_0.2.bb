@@ -20,3 +20,6 @@ do_install() {
         install -m 0755 ${WORKDIR}/${PN}-${PV}/rfakeap           ${D}/${sbindir}
 #	install -m 0644 ap_manuf	  ${D}/${sysconfdir}
 }
+
+SRC_URI[md5sum] = "38f159681196b566f20bf837aff1e8f8"
+SRC_URI[sha256sum] = "4e5f63d8488b0fbd1a709429feb797c8c679de48f47ef93ab4741f8506830667"

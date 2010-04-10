@@ -15,3 +15,6 @@ inherit autotools lib_package
 
 S = "${WORKDIR}/glew"
 
+
+SRC_URI[md5sum] = "759a59853dfaae4d007b414a3c1712f2"
+SRC_URI[sha256sum] = "89e63d085cb563c32a191e3cd4907a192484f10438a6679f1349456db4b9c10a"

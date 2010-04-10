@@ -34,3 +34,6 @@ do_install() {
        oe_runmake 'DESTDIR=${D}' install
        ln -sf ${libdir}/wx/config/${TARGET_PREFIX}base-ansi-release-2.8 ${D}${bindir}/wx-config
 }
+
+SRC_URI[md5sum] = "2f78233829bb8979ca31f86b6de87ee9"
+SRC_URI[sha256sum] = "5bad521a93021ee7af10127b8c9b4235c16274ad06943585022bfc23a6f4b005"

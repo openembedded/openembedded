@@ -18,3 +18,6 @@ do_install () {
        install -d ${D}${bindir}/
        install -m 0755 nxssh ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "e9bb4c1cd61c42db9626894845fcf3f7"
+SRC_URI[sha256sum] = "797dab52e18592d340c36ef6e126368bc1c9c98bbb873bef9ba9fc70911616b9"

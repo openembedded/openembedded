@@ -12,3 +12,6 @@ do_stage() {
 	oe_libinstall -C src -a libevnet ${STAGING_LIBDIR}
 	#FIXME: stage headers
 }
+
+SRC_URI[md5sum] = "65884ee4548e2d7c48b9c59acec5ba70"
+SRC_URI[sha256sum] = "3bc2b8d1cd657b2f8f8ec82168791f7b0fce8c8161ab24eee4b577d5876026e0"

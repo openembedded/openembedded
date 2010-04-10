@@ -23,3 +23,6 @@ do_install() {
 	install -m 0644 bt950.conf ${D}${sysconfdir}/pcmcia/
 }
 
+
+SRC_URI[md5sum] = "41d6a2dfe88693b5ec999d9ae4e97aac"
+SRC_URI[sha256sum] = "e3ff9a7f6dead90d55f1a4a2b1277e3bf5f0ec44ccb6ba8f375acbbedb1263c1"

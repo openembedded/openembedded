@@ -24,3 +24,6 @@ do_install_append () {
 	rm -f ${D}${libdir}/rhythmbox/plugins/*.la
 	rm -f ${D}${libdir}/rhythmbox/plugins/*/*.la
 }
+
+SRC_URI[archive.md5sum] = "f17a72465dc43d554b11cf7b18776bff"
+SRC_URI[archive.sha256sum] = "1f444b9cd74615831dab7ec8cd3c58c95d7436372df9a768bd701ab4321a8721"

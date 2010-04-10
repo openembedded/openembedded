@@ -51,3 +51,8 @@ do_install_append() {
 	sed -i 's/Icon=[^.]*$/&.png/' ${D}${datadir}/applications/claws-mail.desktop
 }
 
+
+SRC_URI[md5sum] = "761b8ae2d574588460a0fb1ea4931ccb"
+SRC_URI[sha256sum] = "67337a4a1a5a5ce09f2a38422b7a6fc481e4747f74d4ddedd130d4fb06fc3907"
+SRC_URI[md5sum] = "e8ff3fabf1ed47f3b11a9cdc36b026bd"
+SRC_URI[sha256sum] = "767258dd7c966e14ed519affe4c0da93e8fff66ee5fe9158413c8d163af72db8"

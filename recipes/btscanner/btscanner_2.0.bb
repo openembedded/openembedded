@@ -14,3 +14,6 @@ SRC_URI = "http://www.pentest.co.uk/src/btscanner-${PV}.tar.bz2 \
 FILES_${PN} += "${datadir}/oui.txt"
 
 inherit autotools
+
+SRC_URI[md5sum] = "1cb558f02bb6707fa1c160b78b490404"
+SRC_URI[sha256sum] = "017b1b022118d7dad371d65ab4b6f4d6d7be99482a4af3facd9360ce55210780"

@@ -22,3 +22,6 @@ SRC_URI_append_mpc8323e-rdb = "  file://u-boot-1.1.6-fsl-1-mpc83xx-20061206.patc
 
 
 UBOOT_MACHINE_sarge-at91 = "sarge_config"
+
+SRC_URI[md5sum] = "5b1b1f7b3b1e06f75f5bfbd79891067b"
+SRC_URI[sha256sum] = "778acb0eafe1d9b94c6f5ec5f333126c40d73704920ff8b23085c6dedecfd6e8"

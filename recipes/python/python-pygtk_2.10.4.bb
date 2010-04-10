@@ -63,3 +63,6 @@ do_stage() {
 	cp -pPr *.defs ${STAGING_DATADIR}/pygtk/2.0/defs/
 	cp -pPr gtk/*.defs ${STAGING_DATADIR}/pygtk/2.0/defs/
 }
+
+SRC_URI[md5sum] = "89afe242275a3fce57b4ffb5fadc5888"
+SRC_URI[sha256sum] = "ab9ad4481af435894db27e78010f6bbc21c62252dbe7a254121453419edde8f5"

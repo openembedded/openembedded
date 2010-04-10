@@ -39,3 +39,6 @@ FILES_${PN}-gui = "${bindir}/flumotion-admin ${bindir}/flumotion-tester \
                    ${libdir}/flumotion/python/flumotion/ui \
                    ${libdir}/flumotion/python/flumotion/wizard \
                    ${datadir}/pixmaps ${datadir}/flumotion ${datadir}/applications"
+
+SRC_URI[md5sum] = "85563f1167a3265cf61c8886c318dda7"
+SRC_URI[sha256sum] = "a24640d8ca9c485d7611880193f18e5ae62af07e3b9464904f3602277f1d4097"

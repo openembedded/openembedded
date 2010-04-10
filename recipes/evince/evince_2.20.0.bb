@@ -17,3 +17,6 @@ EXTRA_OECONF = " --without-libgnome \
 		 --enable-djvu \
 		 "
 
+
+SRC_URI[archive.md5sum] = "f9414b4dbfdff9a8f7f2f146a351e05a"
+SRC_URI[archive.sha256sum] = "30dbad09953d92e48cc27681d601d0a55e30dc8e82a89c173098187bd7b35e61"

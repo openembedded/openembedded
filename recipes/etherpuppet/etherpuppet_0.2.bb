@@ -22,3 +22,6 @@ do_install() {
 	install -m 0755 etherpuppet ${D}${sbindir}
 }
 
+
+SRC_URI[md5sum] = "6180d3a7001e528e0f87d258116ee1c9"
+SRC_URI[sha256sum] = "71416d34294c584cf9e8b9b4d72a34ed412b94f9928010891e786fe7b0cd98c9"

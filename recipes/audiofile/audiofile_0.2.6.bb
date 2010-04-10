@@ -15,3 +15,6 @@ SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz \
 "
 
 inherit autotools_stage lib_package binconfig
+
+SRC_URI[md5sum] = "9c1049876cd51c0f1b12c2886cce4d42"
+SRC_URI[sha256sum] = "4b6167b56e21556fb07c9ef06962fe32817064c62181ba47afd3322e0d0f22a9"

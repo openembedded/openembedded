@@ -12,3 +12,6 @@ PACKAGES =+ "photorec"
 
 DESCRIPTION_photorec = "Photorec is file data recovery software designed to recover lost files including video, documents and archives from Hard Disks and CDRom and lost pictures (Photo Recovery) from digital camera memory."
 FILES_photorec = "${sbindir}/photorec"
+
+SRC_URI[md5sum] = "3cc59a7e425c49dbdf76b54d85b55619"
+SRC_URI[sha256sum] = "2b472be7105eaa88e0c9cca241225c56fdcb80d34dec60ef1d865b0877be771c"

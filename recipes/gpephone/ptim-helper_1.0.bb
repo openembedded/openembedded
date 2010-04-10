@@ -26,3 +26,6 @@ pkg_postinst_${PN}() {
 pkg_postrm_${PN}() {
     gtk-query-immodules-2.0 > /etc/gtk-2.0/gtk.immodules
 }
+
+SRC_URI[md5sum] = "46616e5897a51b3935d1c683a410a0d9"
+SRC_URI[sha256sum] = "e0a4b8e21a7c8efbc4b48c53403edbe367681052d8f3079d170c0b692c735d36"

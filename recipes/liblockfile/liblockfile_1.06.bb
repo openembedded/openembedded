@@ -22,3 +22,6 @@ do_stage () {
 do_install () {
 	oe_runmake 'ROOT=${D}' INSTGRP='' install
 }
+
+SRC_URI[md5sum] = "2de88389da013488bfd31356523070c0"
+SRC_URI[sha256sum] = "14f9690328318d11f9ba13a9356a2c008bdd169b7a817f38cb7f9eb32cf7240e"

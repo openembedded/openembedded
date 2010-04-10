@@ -18,3 +18,6 @@ RDEPENDS_${PN} += "python-twisted-pair python-divmodepsilon python-nevow python-
 	python-divmodaxiom"
 
 
+
+SRC_URI[md5sum] = "feaeeaa68cae420c0c365c3c27b2a21e"
+SRC_URI[sha256sum] = "1cb99720527ea0a5906f5e75152634b1797ff44bcc31f4014285bd5da41589cc"

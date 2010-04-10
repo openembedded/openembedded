@@ -54,3 +54,6 @@ INITSCRIPT_PACKAGES            = "${PN}-server"
 INITSCRIPT_NAME_${PN}-server   = "pppoe-server"
 INITSCRIPT_PARAMS_${PN}-server = "defaults 92 8"
 
+
+SRC_URI[md5sum] = "0e32760f498f9cde44081ee6aafc823b"
+SRC_URI[sha256sum] = "d916e9cfe1e62395f63a5361936fa855f6d0f0a37dc7227b394cdb725f553479"

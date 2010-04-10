@@ -20,3 +20,6 @@ FILES_gvfsd-trash = "${libexecdir}/gvfsd-trash ${sysconfdir}/gvfs/mounts/trash.m
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "1267b82b481340eadf212cf47b735b62"
+SRC_URI[archive.sha256sum] = "7249197b75a61c36398f7458f12c0318ccf03639ae8404771fb4ff414fa17683"

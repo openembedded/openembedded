@@ -15,3 +15,8 @@ CFLAGS_append = " -D_BSD_SOURCE -DDEBIAN -I${S}/EXT"
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 }
+
+SRC_URI[md5sum] = "3ba08abd8bbd0a87ea5bad05cded3bc3"
+SRC_URI[sha256sum] = "5c578a8c573b4430358d4f6523f8acd8b2c5039579d907c88ec09dab13b226d3"
+SRC_URI[md5sum] = "38de40f8b082f4d592262c04275e2f30"
+SRC_URI[sha256sum] = "2fb891f912624766d0bef765d69cec75ad3334dda1aa58659f3c3c1d0579c2c3"

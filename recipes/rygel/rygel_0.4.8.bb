@@ -17,3 +17,6 @@ EXTRA_OECONF = "--enable-vala=no"
 
 FILES_${PN} += "${libdir}/rygel-1.0/librygel*.so ${datadir}/dbus-1/"
 FILES_${PN}-dbg += "${libdir}/rygel-1.0/.debug/"
+
+SRC_URI[md5sum] = "c3cbeb30141d9bcd13460ba5cc8acddc"
+SRC_URI[sha256sum] = "053c91b3e3f344c0eec614d38812bfdf3310b8bedaf614399322f614f71aca57"

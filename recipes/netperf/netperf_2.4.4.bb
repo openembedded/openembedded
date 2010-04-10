@@ -39,3 +39,6 @@ do_install() {
 
 INITSCRIPT_NAME="netperf"
 INITSCRIPT_PARAMS="defaults"
+
+SRC_URI[md5sum] = "0e942f22864e601406a994420231075b"
+SRC_URI[sha256sum] = "28e76af491ea3696885e4558ae2f5628a4b9ebdbefc2f1d9cf1b35db2813e497"

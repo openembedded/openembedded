@@ -46,3 +46,6 @@ FILES_${PN} += "${datadir}/cups/model ${libdir}/cups ${datadir}/cups/calibrate.p
 FILES_${PN}-dbg += "${libdir}/cups/*/.debug"
 
 
+
+SRC_URI[md5sum] = "276196ad27fa7d4b8b3ed3ca9c4af64c"
+SRC_URI[sha256sum] = "6be13b32d9f222506368bf214f8ba0a3ef08a36b1ebbed8be61cfe38ca2f35c7"

@@ -27,3 +27,6 @@ FILES_${PN} += " ${datadir}/games/performous/themes/default/* \
                  ${datadir}/games/performous/backgrounds/* \
                "
 
+
+SRC_URI[md5sum] = "d7eafad29a94e3099c849d3c7208bfac"
+SRC_URI[sha256sum] = "4688546a70b09837311e428c233bac091ce5301c7dd4efe21137ca8867af8be0"

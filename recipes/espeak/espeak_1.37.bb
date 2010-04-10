@@ -45,3 +45,6 @@ do_stage() {
         install -m 0644 ${S}/src/speak_lib.h ${STAGING_INCDIR}/espeak/
         oe_libinstall -so -C src libespeak ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "5c7b292d0537232868b4ac1317d76c02"
+SRC_URI[sha256sum] = "77f406c345362185ec4f362bf49f61d202e01ac9b9cd5c14f803195a544ce6d3"

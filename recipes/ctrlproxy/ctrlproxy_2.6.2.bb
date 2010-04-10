@@ -32,3 +32,6 @@ CFLAGS += "-L${STAGING_LIBDIR}"
 #	install -m 0755 ${WORKDIR}/foo.init ${D}${sysconfdir}/init.d/foo
 #}
 
+
+SRC_URI[md5sum] = "37570a7f018f41d701cd29cd95b45241"
+SRC_URI[sha256sum] = "c8c42cc08b9b462f9c497441dacde1eac71fd717195ddfbeac68141bd0ad95a8"

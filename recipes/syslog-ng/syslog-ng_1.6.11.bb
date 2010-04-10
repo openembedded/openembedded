@@ -32,3 +32,6 @@ CONFFILES_${PN} = "${sysconfdir}/${PN}/syslog-ng.conf"
 INITSCRIPT_NAME = "syslog-ng"
 
 INITSCRIPT_PARAMS = "defaults 05"
+
+SRC_URI[md5sum] = "8f9ca6140f428dc9adec9fa1c270a2dd"
+SRC_URI[sha256sum] = "dd37f1e280bd6c2d66c9a15aa3ee9e209a1b649e3b79e70fee58aea1cb0ea093"

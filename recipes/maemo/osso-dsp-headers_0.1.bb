@@ -18,3 +18,5 @@ do_stage () {
                 install -m 0644 ${S}/include/dsp/$h ${STAGING_INCDIR}/dsp/$h
         done
 }
+SRC_URI[md5sum] = "ebf60b7d98260aeefec24d4dc22a3c2b"
+SRC_URI[sha256sum] = "53704f6b0aace1b2f24b5366530f6df51bf4ffea7209055e9eadee541c2c221f"

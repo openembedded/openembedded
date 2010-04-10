@@ -35,3 +35,6 @@ FILES_${PN} += "${datadir}/dbus-1/"
 FILES_${PN}-dbg += "${libdir}/*/*/.debug"
 
 CONFFILES_${PN} += "${sysconfdir}/X11/Xsession.d/90tracker"
+
+SRC_URI[md5sum] = "a4edc8aa830070bd3f1d80a7df07c80c"
+SRC_URI[sha256sum] = "0fe42353117c62ccc9de3b3c9c11acf707a0702d30cd24b8d1cd1e2581dec339"

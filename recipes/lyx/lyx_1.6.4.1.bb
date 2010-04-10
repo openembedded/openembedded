@@ -26,3 +26,6 @@ do_configure_prepend() {
 EXTRA_QMAKEVARS_POST = "DEFINES+=_LIBC"
 PARALLEL_MAKE = ""
 
+
+SRC_URI[md5sum] = "c1a0da5aee3b7e1a2f74e8018805c7b1"
+SRC_URI[sha256sum] = "56f3120f814de0fc55866d92b08b2513ad0d0532fc6675aeaf36154eb73c403b"

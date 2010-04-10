@@ -19,3 +19,6 @@ do_stage() {
 	install -m644 helplib/.libs/libossohelp.so.0 ${STAGING_LIBDIR}
 	install -m644 helplib/.libs/libossohelp.so.0.0.0 ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "dbc3c68809e39bd6681aab8ad16ffe3c"
+SRC_URI[sha256sum] = "ef6f6fda31dfbf7b3186b6f1d0ffd12ee0675d9a057ad2994f81b5164213a693"

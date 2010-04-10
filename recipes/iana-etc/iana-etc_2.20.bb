@@ -16,3 +16,6 @@ do_install() {
         install -m 644 protocols ${D}${sysconfdir}/protocols.iana
         install -m 644 services ${D}${sysconfdir}/services.iana
 }
+
+SRC_URI[md5sum] = "51d584b7b6115528c21e8ea32250f2b1"
+SRC_URI[sha256sum] = "754038a9eb8f1d0d6559d5b124a68e1e530a76366cff251d79536ec89e2fda21"

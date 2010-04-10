@@ -26,3 +26,6 @@ do_install() {
     install -m 0644 ${WORKDIR}/apps/Applications/otpkeygen.desktop ${D}${palmtopdir}/apps/Applications/
     install -m 0644 ${WORKDIR}/pics/otpkeygen.png ${D}${palmtopdir}/pics/
 }
+
+SRC_URI[md5sum] = "ec1c0a93a586361298faebce4fac9dbd"
+SRC_URI[sha256sum] = "b6129acb788726ab159ed790a85a625651fff5cdff3a2cd0517f19ccd41c2a54"

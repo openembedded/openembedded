@@ -21,3 +21,6 @@ do_compile() {
 	make
 }
 
+
+SRC_URI[md5sum] = "6f15406664ef31172c68d46567569bb8"
+SRC_URI[sha256sum] = "9532b981c9b8974ceedd3d25a8f9a0e167a92c9da0dece47f34a4ec34e34b1cf"

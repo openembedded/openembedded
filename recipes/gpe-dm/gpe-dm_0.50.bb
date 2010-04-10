@@ -11,3 +11,6 @@ inherit gpe autotools update-rc.d
 
 INITSCRIPT_NAME = "gpe-dm"
 INITSCRIPT_PARAMS = "start 99 5 2 . stop 20 0 1 6 ."
+
+SRC_URI[md5sum] = "f7b53abf39bd3fa48cd3e0378bd47534"
+SRC_URI[sha256sum] = "bc656eb1846509539bbfaf9269f07588f6f3c05c847b41b351a7571a252f6fee"

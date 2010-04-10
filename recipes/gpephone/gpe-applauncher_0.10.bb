@@ -23,3 +23,6 @@ FILES_gpe-applauncher-config = '${sysconfdir}/gpe/'
 do_configure_append () {
 	install ${WORKDIR}/hotkeys.conf ${S}
 }
+
+SRC_URI[md5sum] = "466f9316024ed82ee1921b56376f04ce"
+SRC_URI[sha256sum] = "916ef522cbd2af8cc9623c2e4a34a8d1e45f9852bbb63a40ac056ba2c773eada"

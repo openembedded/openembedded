@@ -20,3 +20,8 @@ do_compile_append() {
                   gnuradio-core/gnuradio-core.pc
 }
 
+
+SRC_URI[md5sum] = "f0721c5dce7cb02c75ac4e7bb9cc0ec9"
+SRC_URI[sha256sum] = "a12b0fcd08508a85ee7ec7003ec0f3418378d479304ce85e8453d46bacc0ce9f"
+SRC_URI[md5sum] = "caf182cbc7565dac0fd72155919672e6"
+SRC_URI[sha256sum] = "37f6f7d9de74196eb5fc0bbe0aea9b5c939de7f500acba3af6fd643f3b538b44"

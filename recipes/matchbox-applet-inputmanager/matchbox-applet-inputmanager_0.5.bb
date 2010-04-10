@@ -10,3 +10,6 @@ inherit autotools pkgconfig
 
 FILES_${PN} = "${bindir} ${datadir}/applications ${datadir}/pixmaps"
 
+
+SRC_URI[md5sum] = "bf36926ac97d0419a141f9d18ffab103"
+SRC_URI[sha256sum] = "7a1298ea42a976e7a133ec160400daee055450872dcc40d671f08376fc08850a"

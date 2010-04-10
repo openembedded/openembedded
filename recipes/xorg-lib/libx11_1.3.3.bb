@@ -32,3 +32,6 @@ do_compile() {
 
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB ${libdir}/X11/Xcms.txt"
 FILES_${PN}-locale += "${datadir}/X11/locale ${libdir}/X11/locale"
+
+SRC_URI[archive.md5sum] = "5d74971360f194ce33d2bd2e4d9b066c"
+SRC_URI[archive.sha256sum] = "8c7f867918a3739dc7cabe955179539d4a7ecc52cb42becfd261e5dfbff511ac"

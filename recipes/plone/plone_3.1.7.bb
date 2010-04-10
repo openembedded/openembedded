@@ -14,3 +14,6 @@ do_install() {
 
 RDEPENDS = "zope"
 FILES_${PN} = "${libdir}/python/Products/"
+
+SRC_URI[md5sum] = "d2690e2c6d9f477ee0d3851388c0fef9"
+SRC_URI[sha256sum] = "2522ac7aaf843f23bd948b664372549362ece5973555e7565a2d0dd4bca8ce54"

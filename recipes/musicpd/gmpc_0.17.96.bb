@@ -20,3 +20,6 @@ do_configure() {
 FILES_${PN} += "${datadir}/icons"
 
 
+
+SRC_URI[md5sum] = "8876ca25ae70a379b62b6b407dc4f5ba"
+SRC_URI[sha256sum] = "c04149c5ea4325bf63a847649d9ae5e0ed9b3b6b1804856753b756782e02329c"

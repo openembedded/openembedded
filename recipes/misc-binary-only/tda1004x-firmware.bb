@@ -36,3 +36,6 @@ do_install() {
 	install -d ${D}${prefix}/lib/hotplug/firmware
 	install -m 0644 software/OEM/PCI/App/ttlcdacc.dll ${D}${prefix}/lib/hotplug/firmware/tda1004x.bin
 }
+
+SRC_URI[md5sum] = "139a1ed50a1a12e47b1f7deedf4f40c3"
+SRC_URI[sha256sum] = "4310a3a526ae5461e17f57353fc29f71d13820a215eaa62c629190cc2a026173"

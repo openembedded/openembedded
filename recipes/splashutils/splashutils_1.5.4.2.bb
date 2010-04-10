@@ -40,3 +40,6 @@ do_install_append () {
 	ln -s fbcondecor_helper ${D}${base_sbindir}/splash_helper
 
 }
+
+SRC_URI[md5sum] = "00dce0efb5e6389cacbf15c62d18e413"
+SRC_URI[sha256sum] = "05265dbc948a690dc5b5710da23eb7093fa4eaabbfebd58463a2be4ab9b848b4"

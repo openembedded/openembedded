@@ -23,3 +23,6 @@ do_install () {
 	install -d ${D}${includedir}/
 	install xsettings-client.h ${D}${includedir}/
 }
+
+SRC_URI[md5sum] = "43c0e93e2f96878856ad9475c702b2bb"
+SRC_URI[sha256sum] = "4fa21cc5118b66986f067e064971159849242662f7ad49faeff2d4e20f746bc1"

@@ -21,3 +21,6 @@ do_configure_prepend() {
 	echo "vorbis_lib_dir = ${STAGING_LIBDIR}" >>Setup
 	echo "vorbis_include_dir = ${STAGING_INCDIR}" >>Setup
 }
+
+SRC_URI[md5sum] = "b4921e792c0a74f75b9d3057df10ee7c"
+SRC_URI[sha256sum] = "a7154541cea58304feff30752243eab862131c7589d72c200c8ad722d3bf1647"

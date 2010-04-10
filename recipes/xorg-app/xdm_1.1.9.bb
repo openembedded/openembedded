@@ -12,3 +12,6 @@ EXTRA_OECONF += "\
 	"
 
 FILES_${PN}-dbg += "${libdir}/X11/xdm/.debug/*"
+
+SRC_URI[archive.md5sum] = "030ae4bd9b8d428749d68bfdf56ce8a5"
+SRC_URI[archive.sha256sum] = "e7b1db0e1b0d0113a301d94e40b0314e55f7e0006415f50a9cf06f636b11b134"

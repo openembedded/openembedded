@@ -9,3 +9,6 @@ SRC_URI = "\
   file://gcc41.patch;patch=1 \
 "
 
+
+SRC_URI[md5sum] = "2b999b2fb7798e1737d1fff8fac602ef"
+SRC_URI[sha256sum] = "6232e93205acbc8c705f44f15977aae158550c99a384f41606cff26c16393be0"

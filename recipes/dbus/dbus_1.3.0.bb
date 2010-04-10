@@ -21,3 +21,6 @@ SRC_URI = "\
 DEFAULT_PREFERENCE = "-1"
 
 PR = "r2"
+
+SRC_URI[md5sum] = "b3298d5ce0e4ad4731b1e4e1787d56bb"
+SRC_URI[sha256sum] = "fe32b49667894cf91b0a97503163be5c4814ecf67259e8feb26d1ba57cb03dae"

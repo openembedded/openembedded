@@ -11,3 +11,6 @@ inherit autotools pkgconfig
 
 FILES_${PN} += " ${datadir}/dbus-1 ${datadir}/icons"
 FILES_${PN}-dbg += " ${libdir}/ucview/plugins/.debug"
+
+SRC_URI[md5sum] = "509077240e1f8a3d865953c4224182b9"
+SRC_URI[sha256sum] = "b3e501f327ca7c762bef56ea786e1d1fcc27b2354e1b98fc4e5c9a078b870873"

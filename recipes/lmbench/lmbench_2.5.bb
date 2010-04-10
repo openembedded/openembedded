@@ -44,3 +44,6 @@ do_install () {
 	mkdir -p ${D}${mandir}
 	mv ${D}${prefix}/man/* ${D}${mandir}/
 }
+
+SRC_URI[md5sum] = "d5b05498af26d5c09b372caab82a0337"
+SRC_URI[sha256sum] = "e7431530a4cf4c44b5068e23454f95765dc0b51e7d98bc2bd70451b17d505bd9"

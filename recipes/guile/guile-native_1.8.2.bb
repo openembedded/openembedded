@@ -136,3 +136,6 @@ do_stage() {
 	oe_libinstall -C guile-readline -so -a libguilereadline-v-17 ${STAGING_LIBDIR}
 	oe_libinstall -C libguile -so -a libguile ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "a4b64a992deae0532f8015bcc6c40784"
+SRC_URI[sha256sum] = "1f7667c30228737e3cea58ff2b384bcc0eed8cb679392de827821e4d540c760e"

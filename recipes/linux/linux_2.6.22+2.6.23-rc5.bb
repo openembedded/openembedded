@@ -30,3 +30,8 @@ SRC_URI_append_ts72xx = "\
            "
 
 S = "${WORKDIR}/linux-2.6.22"
+
+SRC_URI[md5sum] = "2e230d005c002fb3d38a3ca07c0200d0"
+SRC_URI[sha256sum] = "73c10604c53f1a6ee65ef805293d23903696f8cef864f42d7de9506f0d2ba4c7"
+SRC_URI[md5sum] = "8253467313749aee6065093cd3c5fd9c"
+SRC_URI[sha256sum] = "c8c2068183aca79c46182f3d3fe6d7579cd60809681d42c52d71cf1873cd1a0e"

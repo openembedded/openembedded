@@ -27,3 +27,8 @@ do_install_prepend() {
 }
 
 
+
+SRC_URI[md5sum] = "42d9e4cfd86b15826426797a0fb6d499"
+SRC_URI[sha256sum] = "f9c86a163bd27dc4fd05abb958bb857109a556a4a58f8d06663d49ac0559ac92"
+SRC_URI[md5sum] = "c7536e907363ea1da63430b49e42931d"
+SRC_URI[sha256sum] = "d7d5a3d17f492049fceb2b9ea22c4c2af7243506219d83f7005b77ae410add29"

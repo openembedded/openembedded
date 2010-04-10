@@ -28,3 +28,6 @@ do_stage() {
 
 FILES_${PN} += "${datadir}/gtkhtml-3.8"
 
+
+SRC_URI[md5sum] = "b580590014988b02e51b66be65319570"
+SRC_URI[sha256sum] = "666849b22375efbaf2ab506b33868ac64126728a8e509f055882ae6940999847"

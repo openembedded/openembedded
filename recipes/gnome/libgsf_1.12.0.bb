@@ -44,3 +44,6 @@ do_stage() {
 		install -m 0644 gsf-gnome/$i ${STAGING_INCDIR}/libgsf-1/gsf-gnome/$i
 	done
 }
+
+SRC_URI[archive.md5sum] = "34c4672edd2e4e814fb82d7b94d71ffd"
+SRC_URI[archive.sha256sum] = "d471b74e778be690d39dad4d41758bc779fc00bba8e87e9fad0457d09d987dd1"

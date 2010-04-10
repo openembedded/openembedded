@@ -18,3 +18,6 @@ do_install() {
 	install -m 0644 copy.xpm ${D}${datadir}/pixmaps/
 	install -m 0644 paste.xpm ${D}${datadir}/pixmaps/
 }
+
+SRC_URI[md5sum] = "8bea461bf4136aedbe110b6aec184d72"
+SRC_URI[sha256sum] = "7f9c937c0f04760d215f7e7d9ca2709f8148e69be2693206d1ae81e2c88a656e"

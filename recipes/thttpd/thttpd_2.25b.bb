@@ -32,3 +32,6 @@ do_install_append () {
 	install -c -m 755 ${WORKDIR}/thttpd ${D}${sysconfdir}/init.d/thttpd
 }
 
+
+SRC_URI[md5sum] = "156b249b3b0bcd48b06badd2db0d56c5"
+SRC_URI[sha256sum] = "07719b08b1cff6a21c08697a7bcb4395425b07ee753106262fb62a03a7d32360"

@@ -18,3 +18,6 @@ do_stage_append () {
 }
 
 RDEPENDS = "util-linux-native"
+
+SRC_URI[md5sum] = "aaefede2405a40c87438e7e833d69b70"
+SRC_URI[sha256sum] = "dbcab1f495b857e67feff882e018ca59958b8d189ff1f76684d28e35463ec29d"

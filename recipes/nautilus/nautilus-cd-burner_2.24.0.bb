@@ -20,3 +20,6 @@ do_install_append() {
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "eb211dd03d0518263fa4eadccc3caa88"
+SRC_URI[archive.sha256sum] = "d4ff952115a2fca28c613ce6a2b46740ce1000b0c213c482bcf3f127ceab99ad"

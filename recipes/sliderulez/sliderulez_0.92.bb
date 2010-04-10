@@ -23,3 +23,6 @@ do_install() {
 	install -d ${D}${palmtopdir}/pics
 	install -m 0644 pkg/opt/QtPalmtop/pics/SlideRuleZ.png ${D}${palmtopdir}/pics/
 }
+
+SRC_URI[md5sum] = "9b48fc595d7291fa8edddfafba2cb7a9"
+SRC_URI[sha256sum] = "28a6af2d1490374de26084e346bbd227586c0f6232dcf4cfebf80413adc7d932"

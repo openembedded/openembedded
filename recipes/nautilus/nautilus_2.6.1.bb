@@ -45,3 +45,6 @@ do_stage() {
 	oe_libinstall -C libnautilus-private libnautilus-private ${STAGING_LIBDIR}
 	oe_libinstall -C libnautilus libnautilus ${STAGING_LIBDIR}
 }
+
+SRC_URI[archive.md5sum] = "50c5732c0c9736b7026bce1c6b0007dc"
+SRC_URI[archive.sha256sum] = "83f1d6623e142af30a9b3fa9135ecf973fbb8c89f1dc36a218de0c0fef6ddf07"

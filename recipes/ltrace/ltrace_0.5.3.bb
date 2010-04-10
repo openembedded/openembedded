@@ -67,3 +67,8 @@ do_install() {
 	esac
 	oe_runmake install ${EXTRA_OEMAKE} ARCH=${LTRACE_ARCH} DESTDIR=${D}
 }
+
+SRC_URI[md5sum] = "3fa7fe715ab879db08bd06d1d59fd90f"
+SRC_URI[sha256sum] = "5c6627d6d5a98a92ca4661cfc16378b182cc46a9ec479ebf7e6121ee3fe2be32"
+SRC_URI[md5sum] = "969baa0900646c0262b2d505b9fef154"
+SRC_URI[sha256sum] = "f647d7c2f2b0d1dbddd632f3a17fef670aed3ebf5fbe6c1633337acac1eba8e3"

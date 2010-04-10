@@ -46,3 +46,6 @@ FILES_dhcp-omshell = "${bindir}/omshell"
 CONFFILES_dhcp-server_nylon = "/etc/dhcp/dhcpd.conf"
 CONFFILES_dhcp-relay_nylon = "/etc/default/dhcp-relay"
 CONFFILES_dhcp-client_nylon = "/etc/dhcp/dhclient.conf"
+
+SRC_URI[md5sum] = "44f72d16a12acc3fbe09703157aa42d2"
+SRC_URI[sha256sum] = "043dea4144a93b26358ed73cd8fab79be76834a719f13fbb4344a26e8288fc38"

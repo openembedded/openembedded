@@ -22,3 +22,6 @@ do_install() {
 	install -d ${D}/${sbindir}
 	install -m 755 ${S}/apex-env ${D}/${sbindir}
 }
+
+SRC_URI[md5sum] = "bb96cc8d50b4f00ee653f0800643ea8a"
+SRC_URI[sha256sum] = "4ad287720b87213154fa272afee5f442b0d8d61c1f56e43d0d056ae25849a926"

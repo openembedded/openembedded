@@ -28,3 +28,8 @@ SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.22-rc1-a
 S = "${WORKDIR}/linux-2.6.21"
 
 
+
+SRC_URI[md5sum] = "1b515f588078dfa7f4bab2634bd17e80"
+SRC_URI[sha256sum] = "f187b12d70e0a48ce81f0472dfe9504fb5f0f966be339ac9d57dd2b991a74942"
+SRC_URI[md5sum] = "9bc06492dce31c87f1cdfa2ce5b0cf4c"
+SRC_URI[sha256sum] = "dd33f3e9059bed043194ee5200239f26d3ad607ab5c872e7ce92595c1eb5d0e4"

@@ -43,3 +43,6 @@ do_install() {
 	install -m 0644 etc/initiators.allow ${D}${sysconfdir}/
 	install -m 0644 etc/initiators.deny ${D}${sysconfdir}/
 }
+
+SRC_URI[md5sum] = "e79b437695fc50e7d054631855a16b1b"
+SRC_URI[sha256sum] = "bc554508174f2657c93ddb0501adad0256d1c6801a3c1ee54ff721bc92ff8778"

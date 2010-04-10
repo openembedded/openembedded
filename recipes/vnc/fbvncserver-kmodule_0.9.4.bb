@@ -23,3 +23,6 @@ do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/misc
 	install -m 0644 ${FBVNCSERVER_SYSTEM}_kbdsim.o ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/misc/kbdsim.o
 }
+
+SRC_URI[md5sum] = "01a37f17857641253541307f59dd8cc5"
+SRC_URI[sha256sum] = "e22ed10ecba059904649f344be260512fdb3cbecbd95ca965f8b5cc3ea1785b5"

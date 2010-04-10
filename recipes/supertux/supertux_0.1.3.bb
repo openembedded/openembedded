@@ -20,3 +20,6 @@ EXTRA_OECONF = "--disable-opengl"
 inherit autotools sdl
 
 DEFAULT_PREFERENCE = "-1"
+
+SRC_URI[md5sum] = "f2fc288459f33d5cd8f645fbca737a63"
+SRC_URI[sha256sum] = "0092588351776626955339caaa62d12ce5954bb80c5f6952f60a122f53c2ad97"

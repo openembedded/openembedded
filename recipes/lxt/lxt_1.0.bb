@@ -13,3 +13,6 @@ do_install() {
 	install -d ${D}${bindir}/
 	install -m 755 -D ${S}/lxt ${D}${bindir}/lxt
 }
+
+SRC_URI[md5sum] = "c703192481d94dfa3f4e24eed22c8182"
+SRC_URI[sha256sum] = "daa670b686f959ab15e457425e57c50f0b973ee4d24d6a4171c33f467961ad1d"

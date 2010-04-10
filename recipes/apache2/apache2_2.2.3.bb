@@ -106,3 +106,6 @@ do_install_append() {
 # Expat should be found in the staging area via DEPENDS...
 	rm -f ${D}/${libdir}/libexpat.*
 }
+
+SRC_URI[md5sum] = "887bf4a85505e97babe1d90635361c0d"
+SRC_URI[sha256sum] = "dd86e8221f9efb85497c46229d0f04237d4e66d293fabe98eb0745166aaf4b6c"

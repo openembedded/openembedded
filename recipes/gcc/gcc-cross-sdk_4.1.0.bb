@@ -6,3 +6,6 @@ require gcc-configure-sdk.inc
 require gcc-package-sdk.inc
 
 DEPENDS += "gmp-native mpfr-native"
+
+SRC_URI[md5sum] = "88785071f29ed0e0b6b61057a1079442"
+SRC_URI[sha256sum] = "1159457a0e4c054b709547ae21ff624aebab2033e0d9e5bf46c9cf88b1970606"

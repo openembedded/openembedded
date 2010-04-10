@@ -84,3 +84,6 @@ fi
 
 CONFFILES_openssh-sshd = "${sysconfdir}/ssh/sshd_config"
 CONFFILES_openssh-ssh = "${sysconfdir}/ssh/ssh_config"
+
+SRC_URI[md5sum] = "7861a4c0841ab69a6eec5c747daff6fb"
+SRC_URI[sha256sum] = "4304eebd70fb7e8a565fc8bb32930abb0682b274db9fca4b50f47677bf9966b6"

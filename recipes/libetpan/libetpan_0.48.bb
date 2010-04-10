@@ -21,3 +21,6 @@ do_stage() {
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${bindir} ${includedir} ${libdir}/lib*.so ${libdir}/*.la ${libdir}/*.a ${libdir}/pkgconfig"
+
+SRC_URI[md5sum] = "493de1bfc84c1e0f82fd865795e48ffb"
+SRC_URI[sha256sum] = "039861766d330b8ff2309334feb97d384e16d927dd859fdc0fad4c4a13d66b7c"

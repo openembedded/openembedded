@@ -30,3 +30,6 @@ do_install_append() {
 FILES_${PN} += "${libdir}/ptlib-${PV}/*/*/*.so"
 
 
+
+SRC_URI[md5sum] = "db7fd581b66998cd76d96f8b7c3f22a1"
+SRC_URI[sha256sum] = "78e290d3cf78d4dc15c7397b0edd138b4d29cf2ad0a7311bfc1c4dfb88f2a400"

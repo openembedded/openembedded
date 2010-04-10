@@ -18,3 +18,6 @@ FILES_${PN} += "${datadir}/icons ${datadir}/dbus-1"
 do_install_append() {
 	install -m 0644 ${WORKDIR}/index.theme ${D}${datadir}/vagalume/icons/hicolor
 }
+
+SRC_URI[md5sum] = "f6cb301fe4eec68877484b258045d0df"
+SRC_URI[sha256sum] = "aedf9efef06cd542168c0316d7696d6ba64e78d689212693264f4c5d17663f4d"

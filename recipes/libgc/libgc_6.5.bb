@@ -20,3 +20,6 @@ do_stage() {
 	install -d ${STAGING_LIBDIR}
 	install -m 755 .libs/libgc.so* ${STAGING_LIBDIR}/
 }
+
+SRC_URI[md5sum] = "00bf95cdcbedfa7321d14e0133b31cdb"
+SRC_URI[sha256sum] = "217df8b36d848a85eb81ec6fa2a411e9bf186a747c2ddb223cb82b5001e4d80b"

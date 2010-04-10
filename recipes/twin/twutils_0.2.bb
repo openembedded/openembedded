@@ -16,3 +16,6 @@ do_compile() {
 		cd ${S}/$i && oe_runmake LDFLAGS="${LDFLAGS}"
 	done
 }
+
+SRC_URI[md5sum] = "313d47ae27c3c4d51317626421c78284"
+SRC_URI[sha256sum] = "e4ac5c2a59e1c9f80b19c5703240e125592018f40972c2628171d0eeddd15e7b"

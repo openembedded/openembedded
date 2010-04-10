@@ -42,3 +42,6 @@ else
 	fi
 fi
 }
+
+SRC_URI[md5sum] = "8c19ff62ed4f7d64f8e2aa59cb11f364"
+SRC_URI[sha256sum] = "5681883ce5cd0666d73c1b907e284653964a25ad4c02a308ab11b54aca8f01c3"

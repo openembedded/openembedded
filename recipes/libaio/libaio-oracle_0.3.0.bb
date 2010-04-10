@@ -32,3 +32,6 @@ do_stage() {
 	rm -f ${STAGE_TEMP}/usr/lib/*.la
 	oe_libinstall -a -so -C ${STAGE_TEMP}/usr/lib libaio-oracle ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "165bbd6c75b8c1916e4b03988bafb372"
+SRC_URI[sha256sum] = "953e39b44b80bb89e52b00f7a7c4045fdd9c698e265bfa14a3d2291e64dffaf1"

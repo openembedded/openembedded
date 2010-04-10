@@ -64,3 +64,8 @@ jaxme_build() {
 
   fastjar -C $2 -c -f $4 .
 }
+
+SRC_URI[md5sum] = "084ebfe4a816058f8ff6bd731fa70df4"
+SRC_URI[sha256sum] = "0415d721259acf95c564fb84606bb17f6227c1cc444e89b78d1cd9903c1c88dc"
+SRC_URI[md5sum] = "0d68db4a1ada5c91bcbf53cefd0c2fd7"
+SRC_URI[sha256sum] = "4dc49a7260ef90a6dc6611b7e96b9f047d507589736d4a2ad6efbe3edfc6fba6"

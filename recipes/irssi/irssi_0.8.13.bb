@@ -59,3 +59,6 @@ do_install () {
 	autotools_do_install
 	rm -f ${D}${docdir}/irssi/faq.txt
 }
+
+SRC_URI[md5sum] = "0d6fc2203832b514eff014fffd574664"
+SRC_URI[sha256sum] = "896541ac837421290934e2658ab364d4d3f0326259489a94a0cd166e2b05d735"

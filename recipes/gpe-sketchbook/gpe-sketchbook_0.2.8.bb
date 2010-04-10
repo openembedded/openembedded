@@ -22,3 +22,6 @@ do_compile () {
 do_install () {
         oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
 }
+
+SRC_URI[md5sum] = "72d9e5468cf1a53b66a378ee2e85dc1a"
+SRC_URI[sha256sum] = "6335c48b8cf61ad49d01470354fa9e2a9ec072871cd9fbbdfd872461d012359a"

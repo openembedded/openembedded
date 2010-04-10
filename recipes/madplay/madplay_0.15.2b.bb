@@ -11,3 +11,6 @@ inherit autotools
 ARM_INSTRUCTION_SET = "arm"
 
 FILES_${PN} = "${bindir}/madplay"
+
+SRC_URI[md5sum] = "6814b47ceaa99880c754c5195aa1aac1"
+SRC_URI[sha256sum] = "5a79c7516ff7560dffc6a14399a389432bc619c905b13d3b73da22fa65acede0"

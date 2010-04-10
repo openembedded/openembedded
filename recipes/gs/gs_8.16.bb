@@ -26,3 +26,6 @@ do_install() {
 }
 
 FILES_${PN} += "${datadir}/ghostscript"
+
+SRC_URI[md5sum] = "c42dfaebc37fe81eab0b5676b124ab63"
+SRC_URI[sha256sum] = "417922d35e66ee90cf93cf3e93fdf281ec6b92de4f7436c9c1a97c0cc35b94a8"

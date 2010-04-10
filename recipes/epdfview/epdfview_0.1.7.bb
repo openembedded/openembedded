@@ -26,3 +26,5 @@ do_install_append_shr () {
 }
 
 FILES_${PN}_append_shr = "${datadir}/pixmaps/acroread.png"
+SRC_URI[md5sum] = "1919bb19c16ef0a97d48b0a8303d3c7b"
+SRC_URI[sha256sum] = "0afbb0f348d4ba916cf58da48b4749b7cca6a9038136b27dc652161913704ae8"

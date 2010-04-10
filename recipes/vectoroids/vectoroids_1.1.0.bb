@@ -28,3 +28,6 @@ do_install() {
         install -d ${D}${datadir}/vectoroids/
 	cp -pPR data/* ${D}${datadir}/vectoroids/
 }
+
+SRC_URI[md5sum] = "c63ce56b09aa7da9a6e95d804e9ee314"
+SRC_URI[sha256sum] = "8d14dd281767e994108abd77c8e67d5a17718d0ad1e34d37e026911d14697b2e"

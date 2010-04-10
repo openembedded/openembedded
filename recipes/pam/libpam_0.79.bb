@@ -69,3 +69,6 @@ python () {
     if os == "linux-uclibc":
         raise bb.parse.SkipPackage("Some PAM modules require rpcsvc/yp.h, uClibC does not provide this")
 }
+
+SRC_URI[md5sum] = "0b89b73970c7d490ad9a13718b74d27b"
+SRC_URI[sha256sum] = "5ed480cb76c91c2739ddba87f15437510e58c60dfdd7ead6f469149b2da94bb7"

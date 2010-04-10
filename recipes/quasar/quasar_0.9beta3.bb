@@ -26,3 +26,6 @@ do_install() {
 	install -m 0755 ${S}/distro/skins/default/* ${D}${datadir}/quasar/skins/default/
 }
 
+
+SRC_URI[md5sum] = "97814471766f333e8642d338406ac9c5"
+SRC_URI[sha256sum] = "8a1a1e67980fb664f12dd99851cb600b970371bf35bb5e3242ef4d341877e80f"

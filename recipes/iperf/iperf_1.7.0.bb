@@ -24,3 +24,6 @@ do_install() {
 	cd ${WORKDIR}/iperf-${PV}/src
 	oe_runmake INSTALL_DIR=${D}${bindir} install
 }
+
+SRC_URI[md5sum] = "3e4aea85822bcf10ed14040f4b26bd26"
+SRC_URI[sha256sum] = "f54fabaf344b1120e8682c7e5f1ef80d08d88f0b8640037f92e261e51c9c1672"

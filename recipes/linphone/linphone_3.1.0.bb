@@ -80,3 +80,6 @@ FILES_libmediastreamer = "${libdir}/libmediastreamer.so.* /usr/libexec/mediastre
 FILES_libortp = "${libdir}/libortp.so.*"
 FILES_${PN}-dev += "${libdir}/*.a ${libdir}/*.la ${libdir}/pkgconfig ${includedir}"
 
+
+SRC_URI[md5sum] = "ed40cf4088c306400b005bbd63ac36be"
+SRC_URI[sha256sum] = "e41e99925e8c81a9e6c7f4cf399da1d9f571927413196898af46ecbebee6a91b"

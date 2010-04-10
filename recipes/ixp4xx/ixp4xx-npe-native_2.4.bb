@@ -18,3 +18,6 @@ do_stage() {
 	install -d ${STAGING_BINDIR}/
 	install -m 0755 ${S}/IxNpeMicrocode-${PV} ${STAGING_BINDIR}/
 }
+
+SRC_URI[md5sum] = "9a6dc3846041b899edf9eff8a906fb11"
+SRC_URI[sha256sum] = "f764d0554e236357fc55d128a012cb6ac2ceb638023f4af88c8f509511f209fd"

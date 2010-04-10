@@ -56,3 +56,6 @@ FILES_${PN} += "${sysconfdir}/modutils/"
 CONFFILES_${PN} = "${sysconfdir}/modprobe.d/wifistix.conf"
 CONFFILES_${PN} += "${sysconfdir}/modutils/mcf25"
 
+
+SRC_URI[md5sum] = "348588c3e6224fc3fcbd6bc5fe2ec2c4"
+SRC_URI[sha256sum] = "08a527d6b68ab4dda7da05d69159518924ea557d71b2c65c16f66e7e6c374e8b"

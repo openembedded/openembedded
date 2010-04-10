@@ -30,3 +30,6 @@ RDEPENDS = "\
 PACKAGES =+ "${PN}-tests"
 FILES_${PN}-tests = "${libdir}/${PYTHON_DIR}/pysqlite2/test"
 RDEPENDS_${PN}-tests = "${PN}"
+
+SRC_URI[md5sum] = "46b4590c51b9fb62cd0be1439646549e"
+SRC_URI[sha256sum] = "7e66c07d3eb93035f9272d01470e531a7c9f9d9751ad06f3a9c13b4f67c0a06a"

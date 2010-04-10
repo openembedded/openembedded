@@ -85,3 +85,6 @@ FILES_${PN} = "${bindir}/vlc \
 	${datadir}/vlc/vlc*png \
 	${datadir}/vlc/vlc*xpm \
 	${datadir}/vlc/http"
+
+SRC_URI[md5sum] = "3fb3ac4ed456f092d51a00d50159790f"
+SRC_URI[sha256sum] = "9f84c8e8a2f7f5969bc771741b1db64aa44c1b919e8ddbeba37875ca089b66d9"

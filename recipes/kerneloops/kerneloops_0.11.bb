@@ -26,3 +26,6 @@ do_install() {
 
 FILES_${PN} += "${datadir}/icons"
 
+
+SRC_URI[md5sum] = "a0daa9437f0638912a91afe66f51545b"
+SRC_URI[sha256sum] = "2f23a1a2f1b928b2ad44f13a98c704c3d7abd5e3c7157f6a8915acc74c8dcd71"

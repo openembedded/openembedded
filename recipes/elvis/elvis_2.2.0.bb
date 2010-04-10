@@ -59,3 +59,6 @@ FILES_${PN}-tools = "/usr/bin/elvfmt /usr/bin/elvtags /usr/bin/ref"
 FILES_${PN} = "/usr/bin/elvis /etc/elvis /usr/share/elvis/scripts /usr/share/elvis/README /usr/share/elvis/*.*"
 
 
+
+SRC_URI[md5sum] = "6831b8df3e4a530395e66c2889783752"
+SRC_URI[sha256sum] = "9a8466b2293798441056bc279736af3a616baaba2f11940396cc60ff71924ea0"

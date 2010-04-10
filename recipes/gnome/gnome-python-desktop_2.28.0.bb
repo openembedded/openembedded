@@ -25,3 +25,6 @@ do_configure_prepend() {
 }
 
 FILES_${PN}-dev += "${datadir}/pygtk"
+
+SRC_URI[archive.md5sum] = "d97bb3d8e1adc00505be060fbc832f44"
+SRC_URI[archive.sha256sum] = "92948d2dd0d03a56abe565f3c24725242251db261bd0a12aad5a742326cb3c7f"

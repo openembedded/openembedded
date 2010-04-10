@@ -26,3 +26,6 @@ ALTERNATIVE_PATH = "${bindir}/fluxbox-wm"
 ALTERNATIVE_LINK = "x-window-manager"
 ALTERNATIVE_PRIORITY = "20"
 
+
+SRC_URI[md5sum] = "e0be927617be4ffc1ddc79513f4eb0f9"
+SRC_URI[sha256sum] = "7306ee55a8e95a4d07bee339ffb3be2d88ef8cc08b86edd6c63d7b28f559ec88"

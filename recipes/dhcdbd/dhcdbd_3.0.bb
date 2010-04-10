@@ -25,3 +25,6 @@ do_install() {
 INITSCRIPT_NAME = dhcdbd
 INITSCRIPT_PARAMS = "start 30 2 3 4 5 . stop 30 0 1 6 ."
 FILES_${PN} += "${sysconfdir} ${datadir}/dbus-1 ${base_sbindir}/*"
+
+SRC_URI[md5sum] = "5316b1a0b3a3d53e972374627546d0bf"
+SRC_URI[sha256sum] = "c62d5916dbd4d3148bd4deff355c3dfcb8092c2d9918d62dd24030e01c28361a"

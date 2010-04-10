@@ -21,3 +21,6 @@ do_compile () {
 do_configure_append () {
 	cd ${S} && mkdir build-linux
 }
+
+SRC_URI[md5sum] = "a2788c45d60ef8ce30168811d7e72334"
+SRC_URI[sha256sum] = "b3dd85e34b22cf757eafb6ef15c5505d5ec5e71803caef4b69ddc7fd5d46fabe"

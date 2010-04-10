@@ -38,3 +38,8 @@ FILES_libwvstreams-extras-dbg = "${libdir}/.debug/libwvbase.so.* ${libdir}/.debu
 do_stage() {
     autotools_stage_all
 }
+
+SRC_URI[md5sum] = "103230cb9926cb8f3f4d8dc8584f3b9c"
+SRC_URI[sha256sum] = "8fa45a6bfe4d6ac3d9a457543844873090d0c7da817991ac0cd547732f475a14"
+SRC_URI[md5sum] = "58e1df79ce031b256417ba5992cce833"
+SRC_URI[sha256sum] = "f203a843f11d53ed075a03c07a85e2b5d43dec4cff4da791a96265dfdbee1030"

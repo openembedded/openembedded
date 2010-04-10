@@ -18,3 +18,6 @@ do_stage () {
 	oe_libinstall -a -so liboop ${STAGING_LIBDIR}
 	install -m 0644 ${headers} ${STAGING_INCDIR}/
 }
+
+SRC_URI[md5sum] = "88fc8decf99fd75d2af40e0a005fa0d3"
+SRC_URI[sha256sum] = "4a973d28466fde0b689099192f9bcd081b129d90b3c5a9815e5ade73052cf8d2"

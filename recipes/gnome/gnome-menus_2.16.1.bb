@@ -15,3 +15,6 @@ FILES_${PN}-python = "${libdir}/python*"
 FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/*/.debug \
                     ${PYTHON_SITEPACKAGES_DIR}/.debug"
 
+
+SRC_URI[archive.md5sum] = "a5c467abe68003d23ec09a795ebfd29f"
+SRC_URI[archive.sha256sum] = "72238f33406ada505fde8555ff93c00e7fec055a41500339b434c5445b09c87b"

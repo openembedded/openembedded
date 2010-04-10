@@ -21,3 +21,6 @@ do_configure_prepend () {
 }
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "82c698151f934eb28c65d1838cee7d9e"
+SRC_URI[sha256sum] = "d392567cb39b4ea606c0e0acafd8ed72320311b995336ece5fcefcf9b150e9d7"

@@ -19,3 +19,6 @@ do_configure_prepend() {
 
 FILES_${PN} += "${datadir}"
 
+
+SRC_URI[md5sum] = "d6d2a16ccd1562b2ae63314f30a4ebf9"
+SRC_URI[sha256sum] = "45b73399b8affd1a81ecd370d37e066c046c49e1777b43d0affe6b520082a604"

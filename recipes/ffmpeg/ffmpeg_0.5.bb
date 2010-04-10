@@ -60,3 +60,6 @@ do_configure() {
 		sed -i -e s:Os:O4:g ${B}/config.h
 }
 
+
+SRC_URI[md5sum] = "be8503f15c3b81ba00eb8379ca8dcf33"
+SRC_URI[sha256sum] = "16de61d7426b1df7aee54b48c16aa728de1ed82f95db5fc4d8886d5d2702d90a"

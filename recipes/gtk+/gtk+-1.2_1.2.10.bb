@@ -56,3 +56,6 @@ do_install_append () {
 	install -d ${D}${sysconfdir}/gtk-1.2
 }
 
+
+SRC_URI[md5sum] = "4d5cb2fc7fb7830e4af9747a36bfce20"
+SRC_URI[sha256sum] = "3fb843ea671c89b909fd145fa09fd2276af3312e58cbab29ed1c93b462108c34"

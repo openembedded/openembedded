@@ -27,3 +27,6 @@ do_configure_prepend () {
 }
 
 ARM_INSTRUCTION_SET = "arm"
+
+SRC_URI[md5sum] = "1be543bc30c56fb6bea1d7bf6a64e66c"
+SRC_URI[sha256sum] = "bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690"

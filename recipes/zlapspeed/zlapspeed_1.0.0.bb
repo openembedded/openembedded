@@ -17,3 +17,6 @@ do_install() {
 	install -m 0755 images/zlaps.png ${D}${palmtopdir}/pics/
 	install -m 0644 zlaps.desktop ${D}${palmtopdir}/apps/Applications/
 }
+
+SRC_URI[md5sum] = "6c3d5a05da141c7d3ceac0db3d587441"
+SRC_URI[sha256sum] = "23252f3d76c863f88daae8384c0c02a93638a883048a084a0f2fcfbd804eb5ae"

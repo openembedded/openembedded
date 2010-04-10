@@ -17,3 +17,6 @@ do_configure_prepend() {
 	ln -s ${STAGING_LIBDIR}/.. ../ode
 }
 
+
+SRC_URI[md5sum] = "ab72f3acc635371fd454978e5a97591c"
+SRC_URI[sha256sum] = "117c8f06012e0c0004e69527580a56fac3d814da1051ec1aa73d97d16b60279b"

@@ -18,3 +18,6 @@ do_install() {
 	install -d ${D}${palmtopdir}/pics
 	install -m 0644 ${WORKDIR}/slcalc2.png ${D}${palmtopdir}/pics/slcalc.png
 }
+
+SRC_URI[md5sum] = "3052050235b4bc8fc14d28b8b5e13e49"
+SRC_URI[sha256sum] = "c7d7f2fb4a3903dd26a90df358f5757f2637c333cd6f6bf511f506a958349fa1"

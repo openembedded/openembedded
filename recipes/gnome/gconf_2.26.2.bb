@@ -31,3 +31,6 @@ FILES_${PN} += "${libdir}/GConf/* \
 
 FILES_${PN}-dbg += "${libdir}/*/*/.debug"
 FILES_${PN}-dev += "${datadir}/sgml/gconf/gconf-1.0.dtd"
+
+SRC_URI[md5sum] = "8b55d58dab13e821e048627aa4f92b8b"
+SRC_URI[sha256sum] = "717af270db891088394d154e3e22acc01af382306624c83679a4f8d6ba8467ed"

@@ -57,3 +57,6 @@ pkg_postinst () {
     chmod 700 ${localstatedir}/lib/bitlbee
 }
 
+
+SRC_URI[md5sum] = "b92e301930e2322a86b73b1f6c857674"
+SRC_URI[sha256sum] = "6f23f37ea641d67e56c61b70d3ac7d404243929c393302ead4758d4ffe6d5b1c"

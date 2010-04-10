@@ -18,3 +18,6 @@ inherit autotools pkgconfig
 ALLOW_EMPTY_${PN} = "1"
 
 FILES_${PN}-doc += "${datadir}/libatomic_ops/COPYING ${datadir}/libatomic_ops/*.txt"
+
+SRC_URI[md5sum] = "1b65e48271c81e3fa2d7a9a69bab7504"
+SRC_URI[sha256sum] = "a3d8768aa8fd2f6ae79be2d756b3a6b48816b3889ae906be3d5ffb2de5a5c781"

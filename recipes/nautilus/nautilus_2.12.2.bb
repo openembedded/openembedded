@@ -17,3 +17,6 @@ FILES_libnautilus = "/usr/lib/*.so*"
 do_stage() {
 autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "1c1304e458eda551da11ed8c52b1faa2"
+SRC_URI[archive.sha256sum] = "9b1a11fde474d0bc0891afeef912aaa01bf8189e453bb555b2977f60f98d5455"

@@ -20,3 +20,6 @@ do_install () {
 	install -d ${D}${sbindir}
 	install -m 755 wpa_gui ${D}${sbindir}
 }
+
+SRC_URI[md5sum] = "eb06a9a05d3916addf9451297a558aa2"
+SRC_URI[sha256sum] = "0c10e59dd079c4e5d9ec6eebe9a8ac0e1b9e472cccef49c705f87a78391e79fa"

@@ -12,3 +12,6 @@ S = "${WORKDIR}/IO-Zlib-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "1abf9e6161cc6c52ccd4c629e32e582e"
+SRC_URI[sha256sum] = "8401b31d22605e787edef75025eb048b2b3cfaee92ed8358bdcaedca5761f7ea"

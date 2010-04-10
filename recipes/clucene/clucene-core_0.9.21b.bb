@@ -22,3 +22,6 @@ do_stage() {
 }
 
 FILES_${PN}-dev += "${libdir}/CLucene"
+
+SRC_URI[md5sum] = "ba1a8f764a2ca19c66ad907dddd88352"
+SRC_URI[sha256sum] = "202ee45af747f18642ae0a088d7c4553521714a511a1a9ec99b8144cf9928317"

@@ -17,3 +17,6 @@ inherit autotools
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "f02bfa27a21b3040089026975b9dc0b8"
+SRC_URI[sha256sum] = "5677f32eff184883d7ca402234f92142f35bea7d04d503becdd104ae8343cb1c"

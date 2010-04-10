@@ -30,3 +30,6 @@ do_install() {
 	install -m 0755 handsfree ${D}${bindir}
 	install -m 0755 headset ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "488b0f2f346361bba7996b459c5d7b6f"
+SRC_URI[sha256sum] = "dbd0c389a160c9f6dcd9eac81b6c4d5a02866968a33f06201556d6860012f6c3"

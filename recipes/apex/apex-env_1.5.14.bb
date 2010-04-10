@@ -26,3 +26,6 @@ do_install() {
 # Adding proper LDFLAGS support takes too much of my time, so hack around it
 INSANE_SKIP_${PN} = True
 
+
+SRC_URI[md5sum] = "22fb46e76c8221c7bcc9734602367460"
+SRC_URI[sha256sum] = "472e12897931d9e5dcf2d1e3332acfc467aafd0f62e612896a9c71dd0d16d950"

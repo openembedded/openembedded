@@ -83,3 +83,6 @@ SRC_URI_append_tosa = "${ZAURUSPATCHES}"
 
 SRC_URI_append_eee701 = " \
 	file://intelfb.patch;patch=1 "
+
+SRC_URI[md5sum] = "7f615dd3b4a3b19fb86e479996a2deb5"
+SRC_URI[sha256sum] = "8aeb15c31fb09c769f004c8dc51e29aa26be8e84d70db418af70ecefc463459a"

@@ -29,3 +29,6 @@ python populate_packages_prepend() {
 }
 
 PACKAGES_DYNAMIC = "${PN}-plugin-*"
+
+SRC_URI[md5sum] = "73a366b9892152266b465d7d9c35bef4"
+SRC_URI[sha256sum] = "b308ddc96fcb27b3f18ed2fa20aeb3a12fb73cec7676d75914a58d1b27124b83"

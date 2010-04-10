@@ -17,3 +17,6 @@ do_install_append () {
 	install -m 0644 ${WORKDIR}/xournal.desktop ${D}${datadir}/applications/
 }
 
+
+SRC_URI[md5sum] = "e0f356e0a7b310b0d4b2976e6b7b74fd"
+SRC_URI[sha256sum] = "bb797a384b9acb8209fea572934d1b1484c5de41f062fe152ae99962f52f98ea"

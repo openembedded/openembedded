@@ -32,3 +32,6 @@ do_configure_append() {
   # Fix the executable name in the wrapper script.
   sed -i -e "s|exec cacao|exec cacao-initial|" src/scripts/java.in
 }
+
+SRC_URI[md5sum] = "8b8907c8b925761c9410bcadb9705346"
+SRC_URI[sha256sum] = "cb9363add825cedf77764fc49a223aaf43f0a9f485b711ba8c92f16b13fff188"

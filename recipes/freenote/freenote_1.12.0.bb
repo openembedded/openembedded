@@ -32,3 +32,6 @@ do_install() {
 	install -d ${D}${palmtopdir}/apps/Settings
 	install -m 0644 apps/Settings/FreeNoteSetup.desktop ${D}${palmtopdir}/apps/Settings
 }
+
+SRC_URI[md5sum] = "06b5aeb6cc97107090438a364f0ce89b"
+SRC_URI[sha256sum] = "e6a0a5b674c4803bfd1ffda9660c29f4399294623ed095b0d1c554367c7db73c"

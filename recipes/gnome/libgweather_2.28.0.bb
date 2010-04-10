@@ -21,3 +21,6 @@ FILES_${PN} += "${datadir}/gnome* \
 PACKAGES =+ "${PN}-locationdata"
 FILES_${PN}-locationdata = "${datadir}/libgweather/Locations*"
 
+
+SRC_URI[archive.md5sum] = "9f4457144d32d4004e0e045240ab51dc"
+SRC_URI[archive.sha256sum] = "65fd8e4d7b617de7aac5a5d7d9bebde63ead828bcdc3e8f73f038ce03e669654"

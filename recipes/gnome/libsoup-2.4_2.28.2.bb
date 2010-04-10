@@ -13,3 +13,6 @@ FILES_libsoup-gnome = "${libdir}/libsoup-gnome*.so.*"
 FILES_${PN} = "${libdir}/libsoup-2*.so.*"
 FILES_${PN}-dev = "${includedir}/ ${libdir}/"
 FILES_${PN}-doc = "${datadir}/"
+
+SRC_URI[md5sum] = "31d7ad416005eed4b78f07ac01b6b9f0"
+SRC_URI[sha256sum] = "9dd1fce9a051f8176e35c263fcb59b10bf4ffb572b78ca23d1f7f266a0ec5300"

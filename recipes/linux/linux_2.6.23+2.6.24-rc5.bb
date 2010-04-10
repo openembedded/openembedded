@@ -65,3 +65,6 @@ python do_compulab_image() {
 
 addtask compulab_image after do_deploy before do_build
 
+
+SRC_URI[md5sum] = "2cc2fd4d521dc5d7cfce0d8a9d1b3472"
+SRC_URI[sha256sum] = "d4e67c0935ffb2a4158234bff92cc791b83177866009fc9b2214104e0038dbdb"

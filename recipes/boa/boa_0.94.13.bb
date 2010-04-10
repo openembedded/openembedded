@@ -35,3 +35,6 @@ do_install() {
 	install -d ${D}${mandir}/man8
 	install -m 0644 ${S}/../docs/boa.8 ${D}${mandir}/man8
 }
+
+SRC_URI[md5sum] = "c8d6f46f9aa60909f171529068813fe0"
+SRC_URI[sha256sum] = "e00bb50eb859c736f2afc913976e82e8fc68a1fbe34fa294e014aa95f4d87366"

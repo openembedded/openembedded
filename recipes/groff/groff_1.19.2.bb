@@ -27,3 +27,6 @@ do_configure() {
 do_install_prepend() {
 	install -m 0755 -d ${D}
 }
+
+SRC_URI[md5sum] = "f7c9cf2e4b9967d3af167d7c9fadaae4"
+SRC_URI[sha256sum] = "d864fbd0bf6dea24e4f71736da9902a1cae86d0a1a893b5fe17118927257ec3e"

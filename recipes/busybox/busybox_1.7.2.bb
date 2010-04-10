@@ -119,3 +119,12 @@ pkg_prerm_${PN} () {
 	export PATH=$PATH:$tmpdir
 	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; bn=`basename $link`; sh /usr/bin/update-alternatives --remove $bn $to; done </etc/busybox.links
 }
+
+SRC_URI[md5sum] = "4149857c0b2c7f3d52a1f2cec5d7778d"
+SRC_URI[sha256sum] = "73706e7d77144a6270da02ede61cde3c2e3b0e716d879737ac9d478b29233ba9"
+SRC_URI[md5sum] = "6c5f498e0677fd91b5b0e85ec5ac3b23"
+SRC_URI[sha256sum] = "b80a8c173c7a7a40a504585c6af5c74396c8fdbbb1cec179de9edcc030aa6a9a"
+SRC_URI[md5sum] = "43c292e93bf92623aaa29dd0e243e9a9"
+SRC_URI[sha256sum] = "5117584a563c512b68cd9678d3cf54e6186f5a062836398791385f8ed73cca86"
+SRC_URI[md5sum] = "c211189556c59a2665af45bffe5a5878"
+SRC_URI[sha256sum] = "f44c3c2d7d9b3fc8a5f9fb6ac587ae4170d2515d72f9e76deb8c071ce9847abe"

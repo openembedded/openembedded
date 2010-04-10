@@ -25,3 +25,6 @@ autotools_stage_all
 PACKAGES += "libmimedir-utils"
 FILES_libmimedir-utils = "${bindir}"
 FILES_${PN} = "${libdir}/*.so.*"
+
+SRC_URI[md5sum] = "0ae54d1b2ddcd37f66bf60e4c034de51"
+SRC_URI[sha256sum] = "ac400327f564031b0297ea86bd1b0466ceb8ee60138ccb186791375a5d947d77"

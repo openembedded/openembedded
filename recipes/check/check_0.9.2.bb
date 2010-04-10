@@ -18,3 +18,6 @@ do_stage() {
 	oe_libinstall -a -C src libcheck ${STAGING_LIBDIR}
 }
 
+
+SRC_URI[md5sum] = "9a4d5665b8be07513f5ac4e6eec537e6"
+SRC_URI[sha256sum] = "fbd7a0595eba5cf0cb168d9893e883f5cc7a68a7d6fec23cb3688508b247fa22"

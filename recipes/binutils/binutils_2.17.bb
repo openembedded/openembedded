@@ -31,3 +31,6 @@ SRC_URI_append_avr32 = "\
 
 # Zecke's OSX fixes
 SRC_URI += " file://warning-free.patch;patch=1 "
+
+SRC_URI[md5sum] = "e26e2e06b6e4bf3acf1dc8688a94c0d1"
+SRC_URI[sha256sum] = "e2c33ce6f23c9a366f109ced295626cb2f8bd6b2f08ff9df6dafb5448505a25e"

@@ -17,3 +17,6 @@ do_configure_prepend() {
 FILES_${PN} += "${datadir}/icons ${datadir}/dbus-1"
 
 
+
+SRC_URI[archive.md5sum] = "f3354751f7e293c03ffb9f26bd00b17f"
+SRC_URI[archive.sha256sum] = "6faf0aaf8a44ad119baa921a634eb8dd2d02c4f501af176f294164f7d49dca5e"

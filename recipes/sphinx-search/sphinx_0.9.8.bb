@@ -24,3 +24,8 @@ inherit autotools
 do_configure_prepend() {
 	mv ${WORKDIR}/libstemmer_c/* libstemmer_c/
 }
+
+SRC_URI[md5sum] = "347e547b79b733778d7553ede34e0aac"
+SRC_URI[sha256sum] = "86de861550fc7b119b3cbe63a34bad32ac771f44c930d229775ac124c83571d9"
+SRC_URI[md5sum] = "8358a9ddaaffeeca7cb00725770f7cdb"
+SRC_URI[sha256sum] = "f3e93a41ad76e91f08e3115fa5065df8b69fd3f2dbdd9e982ae890b892ac6477"

@@ -35,3 +35,6 @@ do_configure_prepend () {
 do_compile_append () {
 	install -m 0644 ${WORKDIR}/sshd_config ${S}/
 }
+
+SRC_URI[md5sum] = "61cf5b059938718308836d00f6764a94"
+SRC_URI[sha256sum] = "c77c45cda120a2df844639ed9545243e9c9a436bd723e556c9ea06c15a682d06"

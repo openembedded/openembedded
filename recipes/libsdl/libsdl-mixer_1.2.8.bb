@@ -16,3 +16,6 @@ inherit autotools_stage
 EXTRA_OECONF = "--disable-music-mp3"
 # although we build smpeg... need to find out how
 # to deal with optional dependencies
+
+SRC_URI[md5sum] = "0b5b91015d0f3bd9597e094ba67c4d65"
+SRC_URI[sha256sum] = "a8222a274778ff16d0e3ee49a30db27a48a4d357169a915fc599a764e405e0b6"

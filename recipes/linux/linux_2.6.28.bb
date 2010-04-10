@@ -82,3 +82,8 @@ SRC_URI_nokia900 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.b
 		    file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.28/"
+
+SRC_URI[md5sum] = "d351e44709c9810b85e29b877f50968a"
+SRC_URI[sha256sum] = "ae0d97c55efe7fce01273c97f8152af0deff5541e3bbf5b9ad98689112b54380"
+SRC_URI[md5sum] = "64e6b226f1dc469755d82d0d8b677feb"
+SRC_URI[sha256sum] = "f4a2f97f59d272571a4977916392628642a8e4388f94417a723dc4bdb0e47dc2"

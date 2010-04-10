@@ -14,3 +14,6 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/evince/0.9/${PN}-${PV}.tar.bz2
 
 EXTRA_OECONF = "--without-libgnome --disable-thumbnailer --disable-scrollkeeper"
 
+
+SRC_URI[md5sum] = "620294cf13a7b98e966bfa64a9eec08f"
+SRC_URI[sha256sum] = "60def1544481ed99f6ecf853eddde61c5b35df9853ec9e5c487372d46bbee7c2"

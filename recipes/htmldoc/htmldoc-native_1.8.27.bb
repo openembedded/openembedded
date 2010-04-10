@@ -32,3 +32,6 @@ do_stage () {
 	install -d ${STAGING_BINDIR}
 	install -m 0755 ${S}/htmldoc/htmldoc ${STAGING_BINDIR}/
 }
+
+SRC_URI[md5sum] = "35589e7b8fe9c54e11be87cd5aec4dcc"
+SRC_URI[sha256sum] = "89ffd223734268375dc959c200622dc5f167576c5cad9d7ce4bd7567faeb9613"

@@ -29,3 +29,6 @@ do_stage() {
                 install -m 0644 ${S}/libgphoto2_port/libgphoto2_port/$X ${STAGING_INCDIR}/gphoto2/$X
         done
 }
+
+SRC_URI[md5sum] = "210844f0d88f58842917af6eaff06382"
+SRC_URI[sha256sum] = "4691bc87f567eba4938d1465e7a2ddfaf7bdea86629390830111bd03bd227ed5"

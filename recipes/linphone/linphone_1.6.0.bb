@@ -68,3 +68,8 @@ FILES_libmediastreamer = "${libdir}/libmediastreamer.so.*"
 FILES_libortp = "${libdir}/libortp.so.*"
 FILES_${PN}-dev += "${libdir}/*.a ${libdir}/*.la ${libdir}/pkgconfig ${includedir}"
 
+
+SRC_URI[md5sum] = "fb345125e23c787df0818ff7caad5515"
+SRC_URI[sha256sum] = "ba1c32207fd62d374c9397a81fb1247da93edb859e30d0d855dc65e5457f690b"
+SRC_URI[md5sum] = "e713ab5a1cda18a1bcf01fb2a199ce28"
+SRC_URI[sha256sum] = "9f141c606cc93d0550eeb3532626f26ced56687c2bc9f2b8dad387798b929340"

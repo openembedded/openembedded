@@ -59,3 +59,6 @@ do_install() {
 	oe_soinstall lib/libqt-mt.so.${PV} ${D}${libdir}/
 }
 
+
+SRC_URI[md5sum] = "05d04688c0c0230ed54e89102d689ca4"
+SRC_URI[sha256sum] = "aac89e862c74b2f3ead768e50e9fa7ada1e4225fe9d1d9e05723a3279259eb96"

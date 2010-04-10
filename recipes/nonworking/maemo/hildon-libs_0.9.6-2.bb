@@ -22,3 +22,6 @@ do_stage() {
   install -d ${STAGING_INCDIR}/hildon-widgets
   install -m 644 hildon-widgets/*.h ${STAGING_INCDIR}/hildon-widgets
 }
+
+SRC_URI[md5sum] = "cba9fb4c6d61720d03aa4a4d543e2c5b"
+SRC_URI[sha256sum] = "763bd538f0647c373383c2d91fc0c76ae4840d64158509347162b20425a4c8f9"

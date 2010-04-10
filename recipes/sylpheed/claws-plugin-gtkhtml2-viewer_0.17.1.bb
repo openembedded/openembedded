@@ -18,3 +18,6 @@ do_configure() {
 
 FILES_${PN} = "${libdir}/claws-mail/plugins/*.so"
 
+
+SRC_URI[md5sum] = "db9d27569903cf09c89c1e57765d3dcc"
+SRC_URI[sha256sum] = "aae832e99a04e49c55b0493684aeb4484dda48b5d9010c6980626dc62d6b6fdc"

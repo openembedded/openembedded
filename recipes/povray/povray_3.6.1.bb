@@ -40,3 +40,6 @@ FILES_${PN}-scripts = "${datadir}/povray-3.6/scripts"
 PACKAGE_ARCH_${PN}-includes = "all"
 FILES_${PN}-includes = "${datadir}/povray-3.6/include"
 
+
+SRC_URI[md5sum] = "b5789bb7eeaed0809c5c82d0efda571d"
+SRC_URI[sha256sum] = "4e8a7fecd44807343b6867e1f2440aa0e09613d6d69a7385ac48f4e5e7737a73"

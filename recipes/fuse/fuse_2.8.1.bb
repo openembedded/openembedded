@@ -21,3 +21,6 @@ DEBIAN_NOAUTONAME_fuse-utils-dbg = "1"
 fakeroot do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[md5sum] = "0e3505ce90155983f1bc995eb2cf6fa7"
+SRC_URI[sha256sum] = "007f1056ce329a7c9976ab7b68d3361991261e188f36364d0406f8ee457d2eaf"

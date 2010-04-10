@@ -22,3 +22,6 @@ FILES_${PN} += "${datadir}/${PN} \
                 ${datadir}/sugar/activities \
                 ${sysconfdir} "
 
+
+SRC_URI[md5sum] = "3eeb43af8c6bc0a30b46739707e27259"
+SRC_URI[sha256sum] = "8b5499c26860c8a11750e9e03b9a7d70dd8e7ffce16457e9ee9d7850d554e7ab"

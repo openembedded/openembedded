@@ -30,3 +30,6 @@ do_install () {
 }
 NATIVE_INSTALL_WORKS = 1
 BBCLASSEXTEND = "native"
+
+SRC_URI[md5sum] = "f86f7cb717ab321fe15f1bbcb058c11e"
+SRC_URI[sha256sum] = "eeaf6f050b9f515b0636e5b4f2c153f9ef78e9061ee5dd74f612fab54c77bf88"

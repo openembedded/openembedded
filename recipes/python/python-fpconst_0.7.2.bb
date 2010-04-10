@@ -13,3 +13,6 @@ SRC_URI = "http://pypi.python.org/packages/source/f/fpconst/${SRCNAME}-${PV}.tar
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+SRC_URI[md5sum] = "10ba9e04129af23108d24c22c3a698b1"
+SRC_URI[sha256sum] = "bd54e294c056c6d52b2037e91d7b2782d6805b24a74923dc80e1c9107acac707"

@@ -44,3 +44,6 @@ FILES_${PN}-perl = " \
 	${datadir}/${PN}/fvwm-script-ComExample.pl \
 "
 
+
+SRC_URI[md5sum] = "a1c225fe6497bf86a59cac561abd9064"
+SRC_URI[sha256sum] = "84aca15165f600c5c09095c94b3ad1f0bfe16ba25cf2097f76312a0fba89251d"

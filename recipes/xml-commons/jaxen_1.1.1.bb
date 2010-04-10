@@ -26,3 +26,8 @@ do_compile() {
   fastjar -C build -c -f ${JARFILENAME} .
 }
 
+
+SRC_URI[md5sum] = "b598ae6b7e765a92e13667b0a80392f4"
+SRC_URI[sha256sum] = "f24ae604a20da87e3716bb1d441c483e56479eaef4e99888f41be06059790bca"
+SRC_URI[md5sum] = "22745cbaaddb12884ed8ee09083d8fe2"
+SRC_URI[sha256sum] = "a13549087141be24ad176b659afdc2c675f1ffa5288ff999a193d6d44a282056"

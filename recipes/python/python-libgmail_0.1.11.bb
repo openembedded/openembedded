@@ -29,3 +29,6 @@ RDEPENDS = "\
   python-pickle \
 "
 
+
+SRC_URI[md5sum] = "247477ac98b39658fdcdee8d65639e51"
+SRC_URI[sha256sum] = "2d94f1230f591dfa6d1b726338063f28b89b2f82ba5b866ab077c86c598de43e"

@@ -31,3 +31,6 @@ do_compile_prepend() {
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}"
+
+SRC_URI[md5sum] = "5b331456e0357e90d57cab5943dbe560"
+SRC_URI[sha256sum] = "1b1bb146b8d2fd04ea03106da5f8abfd83e44c04a060fd7a38d06d6a224390bd"

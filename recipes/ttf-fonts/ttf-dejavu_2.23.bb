@@ -27,3 +27,6 @@ FILES_ttf-dejavu-sans-condensed  = "${datadir}/fonts/truetype/DejaVuSansCondense
 FILES_ttf-dejavu-serif           = "${datadir}/fonts/truetype/DejaVuSerif.ttf ${datadir}/fonts/truetype/DejaVuSerif-*.ttf"
 FILES_ttf-dejavu-serif-condensed = "${datadir}/fonts/truetype/DejaVuSerifCondensed*.ttf"
 FILES_ttf-dejavu-common          = "${sysconfdir}"
+
+SRC_URI[md5sum] = "ff871dff0b3e8a11cd5c54478f11073f"
+SRC_URI[sha256sum] = "243642a1c3f4b6fd00125f5772ac5c8e4d0bb6586f5abb05829ead4b83ad5233"

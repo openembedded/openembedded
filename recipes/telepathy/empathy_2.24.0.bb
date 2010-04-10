@@ -20,3 +20,6 @@ FILES_${PN} += "${datadir}/mission-control/profiles/*.profile \
 
 FILES_${PN}-dbg += "${libdir}/python*/*/.debug"
 
+
+SRC_URI[archive.md5sum] = "89e6dc430ad198c8044f261645d8bc6c"
+SRC_URI[archive.sha256sum] = "5e73cfe9bbe862391386b4d60776a22fc765c48fe9f2bfad17ebd691571da2b9"

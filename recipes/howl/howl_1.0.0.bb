@@ -26,3 +26,6 @@ do_install_append() {
 
 inherit autotools update-rc.d
 
+
+SRC_URI[md5sum] = "c389d3ffba0e69a179de2ec650f1fdcc"
+SRC_URI[sha256sum] = "6f0145ab1802092308adeb8dfa285f58e104f0822fa266e5ec97e9d27f0e1923"

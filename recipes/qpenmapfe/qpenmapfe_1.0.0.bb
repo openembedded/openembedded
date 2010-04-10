@@ -20,3 +20,6 @@ do_install () {
 	install -m 0644 ${WORKDIR}/*.png ${D}${palmtopdir}/pics/
 
 }
+
+SRC_URI[md5sum] = "6e913e436a7b0f7572ec1ac77db41fde"
+SRC_URI[sha256sum] = "ded3abdab8333aaf7f451963f32465ca1451a38afb173ef64e0f898d907a6e02"

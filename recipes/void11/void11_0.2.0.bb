@@ -24,3 +24,8 @@ do_install () {
     install -m 0755 smallsleep/smallsleep ${D}/${sbindir}
     install -m 0755 console/void11_penetration ${D}/${sbindir}
 }
+
+SRC_URI[md5sum] = "1c5b3e3e70916de74c2932c7f3e46d9e"
+SRC_URI[sha256sum] = "08d588ce0731d0c0e55a1cac35acf019e1b735d0f75f16962adfeb4fefd69441"
+SRC_URI[md5sum] = "54563fb51f143c4bf26ddec2516e8f9f"
+SRC_URI[sha256sum] = "d14b56996ba9aa9cb6c78c889831113cc55a400bd1d237cec6eec7549a358c97"

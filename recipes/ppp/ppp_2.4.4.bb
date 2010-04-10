@@ -77,3 +77,6 @@ else
 	chmod u+s ${sbindir}/pppd
 fi
 }
+
+SRC_URI[md5sum] = "183800762e266132218b204dfb428d29"
+SRC_URI[sha256sum] = "58af45fc07e5f326eea2408df770ea40e4626d1a15e7d564dd054d74880e91ea"

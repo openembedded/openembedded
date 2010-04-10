@@ -16,3 +16,6 @@ do_stage() {
 	install -m 0644 ares*.h ${STAGING_INCDIR}/ares/
 }
 
+
+SRC_URI[md5sum] = "ec202543a8cb86647f52e1ed4b5c0b37"
+SRC_URI[sha256sum] = "3037156096ea9fee7c40c771207ab8f21b862cb38b6ca62cc0ac464223f9b643"

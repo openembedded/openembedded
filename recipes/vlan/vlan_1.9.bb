@@ -32,3 +32,6 @@ do_install() {
 	install -m 0755 ${WORKDIR}/vlan-post-down ${D}/${sysconfdir}/network/if-post-down.d/vlan
 }
 
+
+SRC_URI[md5sum] = "5f0c6060b33956fb16e11a15467dd394"
+SRC_URI[sha256sum] = "3b8f0a1bf0d3642764e5f646e1f3bbc8b1eeec474a77392d9aeb4868842b4cca"

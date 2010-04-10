@@ -15,3 +15,6 @@ do_install() {
 	install -m 0755 flvstreamer rtmpsrv rtmpsuck streams ${D}${bindir}
 }
 
+
+SRC_URI[md5sum] = "7b1d1a3ab3cd0d93edd69e7b50ce6aca"
+SRC_URI[sha256sum] = "5df6649dfcfd6c4d7259a99b6cb2f031491fc88ca9b2751632e4e78105f58df5"

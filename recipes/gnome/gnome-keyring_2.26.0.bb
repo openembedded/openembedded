@@ -26,3 +26,6 @@ FILES_${PN}-dbg += "${libdir}/gnome-keyring/*/.debug ${libdir}/security/.debug"
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "0395fcf79b990465030a2795dcddacb9"
+SRC_URI[archive.sha256sum] = "7acda11db2eb07b2f68a1a506203fe95141954acb10c394850418fd04ed80a07"

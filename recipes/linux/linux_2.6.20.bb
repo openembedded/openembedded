@@ -82,3 +82,8 @@ do_stage_append_nhk15 () {
     install -D -m 666 ${S}/drivers/media/nomadik_mm/hcl/saa/ha_codec_info.h ${STAGING_KERNEL_DIR}/../multimedia/include/ha_codec_info.h
 
 }
+
+SRC_URI[md5sum] = "34b0f354819217e6a345f48ebbd8f13e"
+SRC_URI[sha256sum] = "2c14ada1ac7d272e03b430d3a530d60fc9ec69cc8252382aa049afba7d2b8558"
+SRC_URI[md5sum] = "10319d634fa66ae8a758e03a227ff79f"
+SRC_URI[sha256sum] = "1e0b8c7c5c923b396dcd0a0a1aa3108676f6ad67b35132d0c068ee59fd48408f"

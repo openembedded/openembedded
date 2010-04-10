@@ -8,7 +8,7 @@ inherit autotools gettext
 
 PARALLEL_MAKE = ""
 
-SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz"
+SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz;name=archive"
 S = "${WORKDIR}/bash-${PV}"
 
 bindir = "/bin"

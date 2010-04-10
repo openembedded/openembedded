@@ -79,3 +79,8 @@ pkg_postrm_kernel-devicetree_append_boc01 () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --remove devicetree.v1 devicetree-${KERNEL_VERSION}.v1 || true
 }
 
+
+SRC_URI[md5sum] = "84c077a37684e4cbfa67b18154390d8a"
+SRC_URI[sha256sum] = "0acd83f7b85db7ee18c2b0b7505e1ba6fd722c36f49a8870a831c851660e3512"
+SRC_URI[md5sum] = "ce365b2c72ad0855e1746a80b7abdade"
+SRC_URI[sha256sum] = "7dea28a76ca6362ad949ec1bf45fada4a6fc888b40360d90d2f56f01d18f72ae"

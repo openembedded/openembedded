@@ -25,3 +25,6 @@ FILES_${PN} += " \
 
 # NOTE:  This package takes a --with-browser for the default browser
 # NOTE:  Works with gdm also gtkhtml
+
+SRC_URI[md5sum] = "1aa2362b11e79e56d52ce0d265faf1b6"
+SRC_URI[sha256sum] = "8310ad3694567dc7cbe0d57f4283712ca9e576ca73c9dc53a576b546f0b6b571"

@@ -23,3 +23,8 @@ do_stage() {
 		install -m 0644 $f ${STAGING_INCDIR}/easysoap
 	done
 }
+
+SRC_URI[md5sum] = "b87c02bf22b6697bce9df32be40d018f"
+SRC_URI[sha256sum] = "eac200dacbde374a7c8b3830a665b9926eb82f695f593b54a3256b29e39df29e"
+SRC_URI[md5sum] = "fecfbc5272922f85635d0229d1b05260"
+SRC_URI[sha256sum] = "37e5aab00a316a22329c64848f467b0ce73bba3bcb08c4cba6d193ba8f5e9b90"

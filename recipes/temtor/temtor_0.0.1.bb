@@ -21,3 +21,6 @@ do_install () {
 	install -m 0644 src/temtor.png ${D}/${palmtopdir}/pics/
 }
 
+
+SRC_URI[md5sum] = "340bc7fa4a9cad1fe9ecc9b1df49d164"
+SRC_URI[sha256sum] = "1c76d6ac7e80de0ae88cc5cbdad7a2a564eac96788549359b001366dc52fe817"

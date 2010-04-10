@@ -61,3 +61,6 @@ RDEPENDS_alsa-utils-alsamixer += "alsa-conf"
 RDEPENDS_alsa-utils-speakertest += "alsa-conf"
 
 ALLOW_EMPTY_alsa-utils = "1"
+
+SRC_URI[md5sum] = "dfe4bb5d3217f3ec662b172ce8397cf0"
+SRC_URI[sha256sum] = "d7fe8a7995bc74331c89fbc1937a0682d239339d6659a402cd7b8e4b96c050f0"

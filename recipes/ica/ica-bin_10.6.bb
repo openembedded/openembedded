@@ -28,3 +28,6 @@ do_install () {
 		install $file ${D}/$file
 	done
 }
+
+SRC_URI[md5sum] = "f71aa1956ce18508d2438ebae2ad507c"
+SRC_URI[sha256sum] = "d3d77f54064f6b2df7ff3bf6a01e1f0b9d0e2088f31d69ba6b8e07bd587cb4f8"

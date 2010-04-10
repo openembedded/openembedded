@@ -15,3 +15,6 @@ FILES_${PN} += "${datadir}/gem"
 do_stage () {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "37916e6f12bff470fb457ad2d382789b"
+SRC_URI[sha256sum] = "b178c610fbbf2613ed1edeba2a11ed9c1ea042274465b2f3cd0a29cf1c7ebd9c"

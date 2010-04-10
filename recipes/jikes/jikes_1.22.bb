@@ -25,3 +25,6 @@ PROVIDES = "virtual/javac"
 ALTERNATIVE_NAME = "javac"
 ALTERNATIVE_LINK = "/usr/bin/javac"
 ALTERNATIVE_PATH = "${bindir}/javac.jikes"
+
+SRC_URI[md5sum] = "cda958c7fef6b43b803e1d1ef9afcb85"
+SRC_URI[sha256sum] = "0cb02c763bc441349f6d38cacd52adf762302cce3a08e269f1f75f726e6e14e3"

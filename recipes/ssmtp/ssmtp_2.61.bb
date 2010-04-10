@@ -37,3 +37,6 @@ pkg_postinst () {
 pkg_postrm () {
         update-alternatives --remove ${sbindir}/sendmail sendmail
 }
+
+SRC_URI[md5sum] = "957e6fff08625fe34f4fc33d0925bbc9"
+SRC_URI[sha256sum] = "2151ad18cb73f9a254f796dde2b48be7318b45410b59fedbb258db5a41044fb5"

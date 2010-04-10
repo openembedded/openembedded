@@ -22,3 +22,6 @@ do_stage() {
 FILES_${PN} += "${libdir}/mozilla/plugins/*.so"
 FILES_${PN}-dbg += "${libdir}/mozilla/plugins/.debug"
 
+
+SRC_URI[md5sum] = "716632e0d35b3c1582c180569ba30346"
+SRC_URI[sha256sum] = "49fd905f41b67832e7b2cfa2cf664657ab08f8fef4a2324e74202fc951396cd5"

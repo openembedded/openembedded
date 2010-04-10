@@ -22,3 +22,6 @@ EXTRA_OECONF = " --with-file \
 
 FILES_${PN}-dbg += "${libdir}/libproxy/*/plugins/.debug"
 
+
+SRC_URI[md5sum] = "86b635e1eb2d665cfbef4c6134fe6604"
+SRC_URI[sha256sum] = "59ded160b3547d29e37cc9d06359f7f37d94112214e4532430cd65e704c1339a"

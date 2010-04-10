@@ -29,3 +29,6 @@ FILES_${PN} += "${libdir} ${datadir}"
 
 BLUEZ_LIBS = "-L${libdir} -lbluetooth"
 BLUEZ_CFLAGS = "-I${includedir}"
+
+SRC_URI[md5sum] = "26b70341b3d3da28da62c917c8b20377"
+SRC_URI[sha256sum] = "86200dab50b1595c9a9537586c07de90ccfa084b954bb74f3e8732cc000fe3af"

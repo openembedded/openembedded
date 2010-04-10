@@ -31,3 +31,6 @@ pkg_postrm() {
 }
 
 
+
+SRC_URI[md5sum] = "d9f12c3edfca4a4918b8d299cce5f2b4"
+SRC_URI[sha256sum] = "99602e966e12347f2728b2153537a14195b06fe130d047e8d91b4f72b24866a0"

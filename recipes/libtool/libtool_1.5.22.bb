@@ -29,3 +29,6 @@ do_stage () {
 	oe_libinstall -a -so -C libltdl libltdl ${STAGING_LIBDIR}
 	install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
 }
+
+SRC_URI[md5sum] = "8e0ac9797b62ba4dcc8a2fb7936412b0"
+SRC_URI[sha256sum] = "88e9ffaaade21c1ddaf6297723dd2fb4ca18ccaef0499a28b6e672f02c8ceb5d"

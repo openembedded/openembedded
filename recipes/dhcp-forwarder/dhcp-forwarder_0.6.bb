@@ -24,3 +24,6 @@ do_install_append() {
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/dhcp-fwd.cfg"
+
+SRC_URI[md5sum] = "cbe60c8c904394a8e38e12ac42c02284"
+SRC_URI[sha256sum] = "45b708fb49a9fab10d814eb1e340a0960dac91f92800b3d39ddf0245ac913e30"

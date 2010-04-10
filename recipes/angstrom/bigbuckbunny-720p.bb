@@ -12,3 +12,6 @@ FILES_${PN} += "${datadir}/movies"
 PACKAGE_ARCH = "all"
 
 
+
+SRC_URI[md5sum] = "0da8fe124595f5b206d64cb1400bbefc"
+SRC_URI[sha256sum] = "b957d6e6212638441b52d3b620af157cc8d40c2a0342669294854a06edcd528c"

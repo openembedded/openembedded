@@ -65,3 +65,6 @@ do_install(){
         cp IDcheck.sh   ${D}/usr/libexec/ltp/ -p
 }
 
+
+SRC_URI[md5sum] = "5860835de7e8d6f76a856243fd5f299e"
+SRC_URI[sha256sum] = "e4c56dbbbf2d1a4d641624234b561e9402c00e47b5b253ae126aa444182310a4"

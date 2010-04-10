@@ -28,3 +28,6 @@ do_install () {
 	install -d ${D}${datadir}/fbpanel/images
 	install -m 644 config/images/* ${D}${datadir}/fbpanel/images
 }
+
+SRC_URI[md5sum] = "12528e7b2936a3548840fe01acaf39f5"
+SRC_URI[sha256sum] = "9f665777df5023e3d3c33598a0f5d81d0b79314b75a128c16c07126ef0fc607f"

@@ -15,3 +15,6 @@ EXTRA_OECONF = "--disable-gtk-doc"
 do_stage() {
 autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "d78cd3e33c656a62b5bf1f8d0b8d271f"
+SRC_URI[archive.sha256sum] = "df6c696f84bc9c2af12f3715f2703060ab1692a918fb221ea0403212c03e0b73"

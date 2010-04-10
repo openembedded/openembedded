@@ -53,3 +53,6 @@ FILES_${PN} += "${datadir}/ghostscript/8.15/lib/* \
 FILES_${PN}-doc += "${datadir}/ghostscript/8.15/doc/*"
 FILES_${PN}-examples += "${datadir}/ghostscript/8.15/examples/*"
 FILES_${PN}-resources += "${datadir}/ghostscript/8.15/Resource/*"
+
+SRC_URI[md5sum] = "4ec87a3da20c1b433ffbe0ffe3675fcd"
+SRC_URI[sha256sum] = "c1f5eefc058b08113f90bc583436399d71644b61872fa39ab4982a58a80baa62"

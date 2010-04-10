@@ -25,3 +25,6 @@ do_install_append () {
 }
 
 FILES_${PN} += "${datadir}/pixmaps/*.png"
+
+SRC_URI[md5sum] = "fe1a836eed6a42107e7d71a01a52f7ec"
+SRC_URI[sha256sum] = "87ebb12f012dc948e3c049936a14d757ac304087f662c17fb94e6c27864fe622"

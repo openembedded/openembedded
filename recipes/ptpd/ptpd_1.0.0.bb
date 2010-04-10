@@ -12,3 +12,6 @@ do_install() {
         install -m 4555 ptpd ${D}${bindir}
         install -m 644 ptpd.8 ${D}${mandir}/man8
 }
+
+SRC_URI[md5sum] = "b112b2bedc7f6e6e11a838608b9e0357"
+SRC_URI[sha256sum] = "8ac1fdcad1e246b0395097dd9af29966c6823533d7e6989aae91506048fb51bc"

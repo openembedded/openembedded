@@ -25,3 +25,6 @@ do_install_append() {
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
 FILES_gsoap-dev = "${bindir}/wsdl2h ${bindir}/soapcpp2 ${libdir}"
+
+SRC_URI[md5sum] = "a0bbbfdc135034cd778537f979121df7"
+SRC_URI[sha256sum] = "7b531f1b6481fbe1a21620a86649f42cb2de9cf086e7bdde46335137d3ca11dc"

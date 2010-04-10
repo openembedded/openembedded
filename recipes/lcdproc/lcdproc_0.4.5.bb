@@ -48,3 +48,6 @@ pkg_prerm () {
 	update-rc.d $D lcdproc remove
 	update-rc.d $D lcdd remove
 }
+
+SRC_URI[md5sum] = "c1e74364963054b26b2a77a37bd2bf36"
+SRC_URI[sha256sum] = "a2163b474d75dc87891c6a81ce9e89f0c9ceab7cbef14b50f066bf3508eec977"

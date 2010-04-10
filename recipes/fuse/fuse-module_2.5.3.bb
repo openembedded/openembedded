@@ -29,3 +29,6 @@ fakeroot do_install() {
 	oe_runmake install DESTDIR=${D}
 }
 
+
+SRC_URI[md5sum] = "9c7e8b6606b9f158ae20b8521ba2867c"
+SRC_URI[sha256sum] = "19f9e27a35e65b61c25b999c44d0c35ba858ad586379226849d097d638579057"

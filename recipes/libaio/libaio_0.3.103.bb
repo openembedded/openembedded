@@ -35,3 +35,6 @@ do_stage () {
 do_install () {
 	make install prefix='${D}/usr'
 }
+
+SRC_URI[md5sum] = "3d6ca28cb7cf73ca1d9fe902924bdc84"
+SRC_URI[sha256sum] = "9f578643db9fff6ae088a492e6a4aca3cac4c2cbc51afce551687f4f0d36465f"

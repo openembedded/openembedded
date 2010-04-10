@@ -40,3 +40,6 @@ do_install() {
 		docs/MORE-FUN-WITH-IPID docs/SPOOFED_SCAN.txt \
 		docs/AS-BACKDOOR docs/APD.txt ${D}${docdir}/hping2
 }
+
+SRC_URI[md5sum] = "029bf240f2e0545b664b2f8b9118d9e8"
+SRC_URI[sha256sum] = "f59292de39b9a4010414bd120a494226399767148efa37278bd53d9613167964"

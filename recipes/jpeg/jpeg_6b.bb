@@ -39,3 +39,6 @@ FILES_jpeg-tools = 	"${bindir}/*"
 
 NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
+
+SRC_URI[md5sum] = "dbd5f3b47ed13132f04c685d608a7547"
+SRC_URI[sha256sum] = "75c3ec241e9996504fe02a9ed4d12f16b74ade713972f3db9e65ce95cd27e35d"

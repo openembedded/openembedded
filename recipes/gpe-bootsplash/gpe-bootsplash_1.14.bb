@@ -22,3 +22,6 @@ do_install_append() {
 	mv ${D}${sysconfdir}/rcS.d/S00bootsplash ${D}${sysconfdir}/rcS.d/S03bootsplash
 }
 
+
+SRC_URI[md5sum] = "cc11d81a1772cbf5629028dd39419abf"
+SRC_URI[sha256sum] = "3926b7ef0ccd68d6bd83797ca925945673e4ca0a938302d265ed0e4b1eea5657"

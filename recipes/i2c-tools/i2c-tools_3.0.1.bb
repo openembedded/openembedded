@@ -10,3 +10,6 @@ do_compile_prepend() {
         sed -i 's_/usr/local_/usr_' Makefile
         sed -i 's_CC\t:= gcc_CC\t:= ${CC}_' Makefile
 }
+
+SRC_URI[md5sum] = "0f5c7ce5fd3c65113909db0ef3a3a8c8"
+SRC_URI[sha256sum] = "8cf39f7c447b0b8f7a24eaed243ad4d8c654c2e94a146a796dba9ed08e857209"

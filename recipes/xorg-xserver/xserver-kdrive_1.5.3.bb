@@ -29,3 +29,6 @@ EXTRA_OECONF += "--enable-builtin-fonts \
 		 --disable-glx \
          --disable-dri2 \
 		"
+
+SRC_URI[md5sum] = "308971036e25250e7fe3cccfd5a120f8"
+SRC_URI[sha256sum] = "a680174f54be7763819e5275c5d5d44fc9e9b6f8e9351dd45c150eb4c182d5bb"

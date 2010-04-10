@@ -16,3 +16,6 @@ do_install_append() {
 }
 
 FILES_${PN} += "${datadir}/units.dat"
+
+SRC_URI[md5sum] = "537f0e1fadc7715e1eb15c9aa33c8c64"
+SRC_URI[sha256sum] = "f1dc3a6e929618a1799d95e014dcb072963d13128aa8108772538b8c3e1535f8"

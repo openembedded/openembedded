@@ -25,3 +25,6 @@ do_stage() {
 
 PACKAGES =+ "${PN}-octave"
 FILES_${PN}-octave += "/usr/share/octave/site/m"
+
+SRC_URI[md5sum] = "2d126c35448503f6dbe33934d9581f6b"
+SRC_URI[sha256sum] = "1792e4e60386b450ef8ec07c756e8f3ecfe96ebda7d0b09148da5f436d065ef2"

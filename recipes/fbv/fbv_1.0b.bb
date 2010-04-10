@@ -26,3 +26,6 @@ do_install() {
 	install -m 0644 fbv.1 ${D}${mandir}/man1/fbv.1
 }
 
+
+SRC_URI[md5sum] = "3e466375b930ec22be44f1041e77b55d"
+SRC_URI[sha256sum] = "9b55b9dafd5eb01562060d860e267e309a1876e8ba5ce4d3303484b94129ab3c"

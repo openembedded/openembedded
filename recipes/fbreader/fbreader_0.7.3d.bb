@@ -21,3 +21,6 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/${PN}-${PV}/fbreader/openzaurus/gpe/fbreader.desktop ${D}${datadir}/applications/fbreader.desktop
 	install -m 0644 ${WORKDIR}/${PN}-${PV}/fbreader/icons/34x28/FBReader.png ${D}${datadir}/pixmaps/fbreader.png
 }
+
+SRC_URI[md5sum] = "705a89bb03860fb312a7afa25db0310e"
+SRC_URI[sha256sum] = "ec9f93968147526a9b2dd17e31a6d2795356b2eeed309f796f655b37b98abd83"

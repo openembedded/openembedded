@@ -169,3 +169,6 @@ CONFFILES_${PN} += "${sysconfdir}/asterisk/voicemail.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/vpb.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/zapata.conf"
 CONFFILES_${PN} += "${sysconfdir}/logrotate.d/asterisk"
+
+SRC_URI[md5sum] = "ff25f56d775858c4de619f2f59a55099"
+SRC_URI[sha256sum] = "85331e63c90370c305121f134358e76cbb06846a12c04a7825d5869f331ee00d"

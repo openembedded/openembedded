@@ -29,3 +29,6 @@ SRC_URI_append_at91sam9g20ek = "\
            file://at91sam9g20-fix-config.patch;patch=1 \
            "
 
+
+SRC_URI[md5sum] = "cb11d3d74eee4d31124523d90d8c31fa"
+SRC_URI[sha256sum] = "0c0afa2816482e087987f71958b656ff0c122032f5e3897a8d17daca5bc14115"

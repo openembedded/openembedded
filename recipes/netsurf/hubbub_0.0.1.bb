@@ -29,3 +29,6 @@ do_stage() {
 do_install() {
 	oe_runmake install
 }
+
+SRC_URI[md5sum] = "58c6e2b5a5906f3f0bf136c0c71b5403"
+SRC_URI[sha256sum] = "3ba0bdf71376429bb3ce8ae51595fc25e6a5147cdcc26e47b6da17386eb78cdf"

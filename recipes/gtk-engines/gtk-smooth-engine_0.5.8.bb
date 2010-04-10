@@ -20,3 +20,6 @@ python populate_packages_prepend() {
 	do_split_packages(d, engines_root, '^lib(.*)\.so$', 'gtk-engine-%s', 'GTK %s theme engine', extra_depends='')
 	do_split_packages(d, themes_root, '(.*)', 'gtk-theme-%s', 'GTK theme %s', allow_dirs=True, extra_depends='')
 }
+
+SRC_URI[md5sum] = "7b4aebf85040b357124de926807dc22a"
+SRC_URI[sha256sum] = "cb2b353839a7f1dcd8f93a6cb32b5c54a6fe560dee432585edb2f5eebe526c50"

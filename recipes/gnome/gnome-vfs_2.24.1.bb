@@ -48,3 +48,6 @@ FILES_${PN}-dev += "${libdir}/gnome-vfs-2.0/include \
 FILES_${PN}-doc += "${datadir}/gtk-doc"
 
 
+
+SRC_URI[archive.md5sum] = "100f9af16dc659e375ee8da45175a28d"
+SRC_URI[archive.sha256sum] = "bc59144e303b152b84b86f209347a3e87a91d5ed7172d8503ee19c232dcabeb6"

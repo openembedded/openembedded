@@ -17,3 +17,6 @@ do_stage() {
 	install -d ${STAGING_INCDIR}/snmp++
 	install -m 0644 ../include/*.h ${STAGING_INCDIR}/snmp++
 }
+
+SRC_URI[md5sum] = "6df271fd6a92d7641d7b060dedf7fec6"
+SRC_URI[sha256sum] = "7eedc4ece1c82668c06222ef85457206139253e24a50e5b5d2401a41baee28c1"

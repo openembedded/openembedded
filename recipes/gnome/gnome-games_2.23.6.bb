@@ -42,3 +42,6 @@ FILES_gnome-games-gnometris = "${bindir}/gnometris ${datadir}/pixmaps/gnometris 
 PACKAGES =+ "gnome-games-gnomine"
 FILES_gnome-games-gnomine = "${bindir}/gnomine ${datadir}/pixmaps/gnomine ${datadir}/pixmaps/gnome-gnomine.png ${datadir}/applications/gnomine.desktop ${sysconfdir}/gconf/schemas/gnomine.schemas"
 
+
+SRC_URI[archive.md5sum] = "9f13ed34427d4c19d423464cd59dba08"
+SRC_URI[archive.sha256sum] = "af2ebf32fe93817e06333b94d3fabcf72fa5675f402c1bbdb7bed3be0b3b3a3e"

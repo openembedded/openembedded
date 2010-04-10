@@ -25,3 +25,6 @@ PARALLEL_MAKE = ""
 LEAD_SONAME = "libobexftp.so"
 
 
+
+SRC_URI[md5sum] = "f20762061b68bc921e80be4aebc349eb"
+SRC_URI[sha256sum] = "44a74ff288d38c0f75354d6bc2efe7d6dec10112eaff2e7b10e292b0d2105b36"

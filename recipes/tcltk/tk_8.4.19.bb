@@ -54,3 +54,6 @@ do_install() {
 PACKAGES =+ "${PN}-lib"
 FILES_${PN}-lib = "${libdir}/libtk8.4.so.*"
 FILES_${PN} += "${libdir}"
+
+SRC_URI[md5sum] = "9b998d0456d1b956eb9da610837a9c47"
+SRC_URI[sha256sum] = "d056fe6c204ac31539616e1069522dd5864a580b64e521fe1a49bc895ca8699f"

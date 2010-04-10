@@ -22,3 +22,8 @@ SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.23-rc3-a
 S = "${WORKDIR}/linux-${BASE_KERNEL_VERSION}"
 
 
+
+SRC_URI[md5sum] = "2e230d005c002fb3d38a3ca07c0200d0"
+SRC_URI[sha256sum] = "73c10604c53f1a6ee65ef805293d23903696f8cef864f42d7de9506f0d2ba4c7"
+SRC_URI[md5sum] = "736ea68a03158c24e55aa95e0ab15ceb"
+SRC_URI[sha256sum] = "4d2c13dee5ea7bd8b5cdbf63afa9383b45f6bad1f75b163c49e086a5030a04de"

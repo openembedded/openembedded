@@ -31,3 +31,6 @@ do_install() {
 	cp -pPR data/* ${D}${datadir}/gemdropx/
 
 }
+
+SRC_URI[md5sum] = "fd0337e89778e2dba74461c555ea8e42"
+SRC_URI[sha256sum] = "e50495d292a1d456c28044efbf07c16d8865f8d95e1caba86f4c5b2e3fb1d28f"

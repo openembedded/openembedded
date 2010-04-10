@@ -56,3 +56,6 @@ do_install() {
 PACKAGES = "${PN}-dbg pico pine"
 FILES_pico = "${bindir}/pico ${bindir}/pilot"
 
+
+SRC_URI[md5sum] = "75af127948cc0c701d424d22d621f792"
+SRC_URI[sha256sum] = "62c7b97695cb486e420afbbbe21bef853dd68a71665d867ffef50cb34dfba5f4"

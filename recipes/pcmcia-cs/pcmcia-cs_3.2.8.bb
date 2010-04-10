@@ -106,3 +106,6 @@ FILES_${PN} = "${sbindir} ${sysconfdir}"
 FILES_${PN}-ftl = "/sbin/ftl_format /sbin/ftl_check /etc/pcmcia/ftl*"
 FILES_${PN}-pcinitrd = "/sbin/pcinitrd"
 
+
+SRC_URI[md5sum] = "0d6d65be8896eff081aee996049afaa5"
+SRC_URI[sha256sum] = "ef93921e8555862df4c24b1c357430ff3d5ba1d3b6b7e324862ea37b511270c0"

@@ -27,3 +27,6 @@ do_install() {
        oe_runmake 'DESTDIR=${D}' install
        ln -sf  ${libdir}/wx/config/${TARGET_PREFIX}gtk2-ansi-release-2.8 ${D}${bindir}/wx-config
 }
+
+SRC_URI[md5sum] = "0461c2085ac1ad7e648aa84c4ba51dd1"
+SRC_URI[sha256sum] = "b84617a2fd219153a6df95dc7f4aa1ba9c07af5859a3d00fc23f9aaed2a1e3d5"

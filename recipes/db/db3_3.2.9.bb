@@ -85,3 +85,6 @@ python do_package() {
 		bb.data.setVar('PKG_${PN}', 'libdb3', d)
 	bb.build.exec_func('package_do_package', d)
 }
+
+SRC_URI[md5sum] = "4df5c7051b11411e0a970f6c91613942"
+SRC_URI[sha256sum] = "3eccaec87bca4ca0f5728cf4579650da9d12e331187f1e98321e5c9e9e04b108"

@@ -17,3 +17,6 @@ do_stage() {
 	install -m 0644 lib/gif_lib.h ${STAGING_INCDIR}/
 
 }
+
+SRC_URI[md5sum] = "8c198831cc0495596c78134b8849e9ad"
+SRC_URI[sha256sum] = "59e835a57e6df03e4d2253b2357253f3d13da9473ff465563a3b9833a744fc36"

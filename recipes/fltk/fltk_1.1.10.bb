@@ -33,3 +33,6 @@ python populate_packages_prepend () {
 }
 
 LEAD_SONAME = "libfltk.so"
+
+SRC_URI[md5sum] = "a1765594bc427ff892e36089fe1fa672"
+SRC_URI[sha256sum] = "37ada22bf2586b8dd30d84209b8b58bdcb864627e5d02ae3f2c323a29261b19a"

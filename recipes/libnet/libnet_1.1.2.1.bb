@@ -36,3 +36,6 @@ FILES_${PN} = ""
 FILES_${PN}-dev += "${bindir}/libnet-config"
 
 CPPFLAGS_prepend = "-I${S}/libnet/include "
+
+SRC_URI[md5sum] = "be845c41170d72c7db524f3411b50256"
+SRC_URI[sha256sum] = "ab01882a3d0556176018c09342cd0731f7cbc8e687795009894c3326942c76ff"

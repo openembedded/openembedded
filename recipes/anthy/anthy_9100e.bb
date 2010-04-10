@@ -41,3 +41,6 @@ FILES_${PN}-el = "${datadir}/emacs/*"
 FILES_${PN} = "${datadir}/* \
                ${bindir}/* \
                ${sysconfdir}/anthy-conf"
+
+SRC_URI[md5sum] = "1c328986005e61f503adc118909e12ac"
+SRC_URI[sha256sum] = "369fd18d406783acc92e6ced2b3536999aa0d33940398af2b4fb11dba46cbfa3"

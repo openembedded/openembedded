@@ -19,3 +19,6 @@ do_stage() {
 	install -m 755 ${WORKDIR}/makebifonts ${STAGING_BINDIR_NATIVE}/
 }
 
+
+SRC_URI[md5sum] = "2384f0eb2e0d2d8f70ee292b81522619"
+SRC_URI[sha256sum] = "efddffd87681f0e8f3fc140c99ba6f4e15be4f144d2488886fb493cb3d85e990"

@@ -19,3 +19,6 @@ do_stage() {
 	gnome_stage_includes
 	oe_libinstall -C gal -so -a libgal-2.2 ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "27843dc0ad9b775c0f6bb0d173e49264"
+SRC_URI[sha256sum] = "44282f7939ce5a09cb2f0e0f0091ea27754309a605a5105a643f0c80f38094c4"

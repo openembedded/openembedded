@@ -34,3 +34,6 @@ do_install() {
 	install -m 0644 ipkg-render-freetype/opt/QtPalmtop/pics/qpdf/*.* ${D}${palmtopdir}/pics/qpdf/
 }
 
+
+SRC_URI[md5sum] = "6b94eda9bd8e2b884c753d70fee04b3f"
+SRC_URI[sha256sum] = "3378f7a92f3afbc3663cce8c99790092282eb01101ba21aed4709736cf875ad5"

@@ -27,3 +27,6 @@ FILES_${PN} += " \
 		${datadir}/icons "
 
 
+
+SRC_URI[md5sum] = "3637145716d5a2d55af0d713e4f05c68"
+SRC_URI[sha256sum] = "7c6a7b9b8c6ccf3e2fbf2431b9fb2035f99e1d78065f3344f667e2f108f38d5b"

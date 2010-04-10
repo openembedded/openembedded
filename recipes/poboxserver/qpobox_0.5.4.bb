@@ -16,3 +16,6 @@ do_install() {
         install -d ${D}${palmtopdir}/share
         install -m 644 qpobox.key ${D}${palmtopdir}/share
 }
+
+SRC_URI[md5sum] = "45a7f9baeaaf638c6fcd0aa6f1f78080"
+SRC_URI[sha256sum] = "405538793e33bf959cfc53955544615e691da8e37538e79855532d64dad5a95b"

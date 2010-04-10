@@ -85,3 +85,8 @@ SRC_URI_append_gumstix-connex = "${GUMSTIX_PATCHES}"
 do_configure_prepend() {
         cp ${WORKDIR}/tsc2003.c ${S}/drivers/i2c/chips/
 }
+
+SRC_URI[md5sum] = "1b515f588078dfa7f4bab2634bd17e80"
+SRC_URI[sha256sum] = "f187b12d70e0a48ce81f0472dfe9504fb5f0f966be339ac9d57dd2b991a74942"
+SRC_URI[md5sum] = "b9c8734471a454806c77f040fcf9869b"
+SRC_URI[sha256sum] = "5ee24e1c5636bcffed155b1c01d7d09fedb135fa2458c190a0da03a82c8c2f60"

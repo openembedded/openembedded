@@ -21,3 +21,6 @@ FILES_${PN}-dbg += " \
                 ${libexecdir}/file-roller/.debug \
                "
 
+
+SRC_URI[archive.md5sum] = "dcb0c887d5d287a28ebb5c0ea69bedfa"
+SRC_URI[archive.sha256sum] = "499fe835b297720f4e4054b4ab34a3fb619c3460c5da82b1519d9b86aa2f3ac2"

@@ -34,3 +34,6 @@ SRC_URI  = "\
   file://connman \
 "
 
+
+SRC_URI[md5sum] = "746dc6b68cb99536ed4e7f8d6125f02b"
+SRC_URI[sha256sum] = "79e7d8948e11b94ced41f030c495706baca4bd9dafdfe730cf537fd0907ed3ef"

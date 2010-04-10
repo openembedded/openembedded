@@ -15,3 +15,6 @@ do_configure_prepend() {
 	qmake -project -t lib -o qpeinputhelper.pro
 }
 
+
+SRC_URI[md5sum] = "d99128113077a9b0c8f4aebeaec38d27"
+SRC_URI[sha256sum] = "4bf2d82a434863737cb505d03c7edf4e09ae3dfb3aa2c250079b68a60aaa629f"

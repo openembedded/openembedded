@@ -20,3 +20,6 @@ do_install () {
 	install -m 0755 memtester ${D}${bindir}/
 	install -m 0755 memtester.8 ${D}${mandir}/man8/
 }
+
+SRC_URI[md5sum] = "0e6f7335075443ed0863a0df75689359"
+SRC_URI[sha256sum] = "2a4bf8bdac96d6498e323b93954099fb13a9d92ddd5704aa6553940b86a071bb"

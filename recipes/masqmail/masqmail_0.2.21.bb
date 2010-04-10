@@ -26,3 +26,6 @@ EXTRA_OECONF += "--with-user=$(id -u)"
 EXTRA_OECONF += "--with-group=$(id -g)"
 
 IPKGBUILDCMD = "ipkg-build -o ${MAIL_USER} -g ${MAIL_GROUP}"
+
+SRC_URI[md5sum] = "7e989a8b0562054aea22c654507f2cb5"
+SRC_URI[sha256sum] = "2257099c760c12daf094744c6b2269d476e3bc6b523366168ad81bdd2ebd2445"

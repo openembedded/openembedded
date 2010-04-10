@@ -126,3 +126,6 @@ do_install () {
 		ln -sf $p `echo $p | sed -e s,${TARGET_SYS}-,,`
 	done
 }
+
+SRC_URI[md5sum] = "b5b1608f7308c487c0f3af8e4592a71a"
+SRC_URI[sha256sum] = "204c2624b5712a3482d0e774bb84850c1ee6b1ccdfd885abfe1f7c23abf4f5c0"

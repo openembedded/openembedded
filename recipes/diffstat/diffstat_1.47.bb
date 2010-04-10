@@ -21,3 +21,8 @@ do_configure () {
 	fi
 	autotools_do_configure
 }
+
+SRC_URI[md5sum] = "c6d221ff4a032e1bbf227f5936a7841a"
+SRC_URI[sha256sum] = "0c398b749574b6bd54f5c5ac1d71118400cd54791e2f47a96a1ad07915d22832"
+SRC_URI[md5sum] = "b49f997897f5dfc2d2b8e0b6ea3df83c"
+SRC_URI[sha256sum] = "56dcebb128d401cd5608fcd77739b42f9cfc5af531d85822287f631ad6328dcd"

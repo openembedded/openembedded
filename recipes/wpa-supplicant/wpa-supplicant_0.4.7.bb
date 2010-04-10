@@ -36,3 +36,6 @@ do_install () {
 	install -d ${D}${docdir}/wpa_supplicant
 	install -m 644 README ${D}${docdir}/wpa_supplicant
 }
+
+SRC_URI[md5sum] = "1345730f15d5f93f2f083096ddc903eb"
+SRC_URI[sha256sum] = "002a5d52c1c8f516efe6a834227d3fe63ecf2588966e44fbde1e72a5844c334f"

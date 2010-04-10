@@ -22,3 +22,6 @@ FILES_pam-plugin-ck-connector += "${libdir}/security/*.so"
 RDEPENDS_pam-plugin-ck-connector += "${PN}"
 
 
+
+SRC_URI[md5sum] = "43b02a52212330b54cfb34c4044d9ce0"
+SRC_URI[sha256sum] = "cbcfbb3df2dc76855c99c1cdff04a257ec5270fa62e1d21b0d057b08d88c0fd4"

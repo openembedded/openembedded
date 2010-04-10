@@ -29,3 +29,6 @@ pkg_postinst_prepend() {
 }
 
 
+
+SRC_URI[md5sum] = "0de5e5f75197b4e128815867443de775"
+SRC_URI[sha256sum] = "c2e17052da282533cc10a38fcd6c4d3e5b2de43d7909f7391f9fcf34c335c921"

@@ -14,3 +14,6 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 microcom ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "c7817035dc41cb02e7cfb565cf9b7401"
+SRC_URI[sha256sum] = "d7ee2e668455f9a092418e5475f32676eb0b37c54ae38a7fcdf2d14e0fb80c91"

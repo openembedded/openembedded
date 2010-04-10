@@ -18,3 +18,6 @@ RDEPENDS = "\
   python-netclient \
   python-netserver \
 "
+
+SRC_URI[md5sum] = "953dc98dbd78fba3a80d554514581d26"
+SRC_URI[sha256sum] = "0431955a17cd687a28c9b005a6afbc11d8db9348cd4ec91c5600f4f662819e07"

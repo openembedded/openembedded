@@ -30,3 +30,6 @@ do_install () {
 		ln -sf hfsutil ${D}/${bindir}/${util}
 	done
 }
+
+SRC_URI[md5sum] = "fa572afd6da969e25c1455f728750ec4"
+SRC_URI[sha256sum] = "bc9d22d6d252b920ec9cdf18e00b7655a6189b3f34f42e58d5bb152957289840"

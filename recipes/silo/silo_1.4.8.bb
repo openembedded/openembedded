@@ -14,3 +14,6 @@ do_stage() {
 	install tilo/maketilo ${STAGING_BINDIR_NATIVE}
 	install tilo/tilo.sh ${STAGING_BINDIR_NATIVE}
 }
+
+SRC_URI[md5sum] = "badc27616dc92ad42f5e30751a6b322c"
+SRC_URI[sha256sum] = "2c5e3a832662aa962f700e64ce3c1fc8c77e801000c47b8d66feeb03e66d95de"

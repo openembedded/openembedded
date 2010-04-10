@@ -20,3 +20,6 @@ do_install() {
         install -m 755 connect ${D}/${prefix}/bin
         install -m 755 disconnect ${D}/${prefix}/bin
 }
+
+SRC_URI[md5sum] = "ef2fb8e53946387922ee9e98fb0fe94b"
+SRC_URI[sha256sum] = "fffcf07aba1ef5aef03defc88449f6ae0929813e9fcfda65c0d12d7b5c765248"

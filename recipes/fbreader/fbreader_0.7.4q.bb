@@ -20,3 +20,6 @@ do_install () {
         cd fbreader/openzaurus; oe_runmake .builddir RESOLUTION=240x320
 	cp -r data/* ${D}
 }
+
+SRC_URI[md5sum] = "17062ae0f1d7d093e61cd002e39885ae"
+SRC_URI[sha256sum] = "190e2b5ae8467d4b0c26b10e091c74509e00d4bd895c240842ee02a870caa3eb"

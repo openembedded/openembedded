@@ -15,3 +15,6 @@ inherit autotools_stage binconfig lib_package
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 EXTRA_OECONF = "--disable-build-docs"
+
+SRC_URI[md5sum] = "efcef8350b47bd63bee65d42a796e14b"
+SRC_URI[sha256sum] = "476eb0d48981ea05e2f82955d59a3445e32be41c0afeb8a2827b9361bb560560"

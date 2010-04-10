@@ -27,3 +27,6 @@ do_install () {
 	install -m 0644 ${WORKDIR}/inetd.conf ${D}${sysconfdir}
 }
 
+
+SRC_URI[md5sum] = "1f0193358e92559ec0f598b09ccbc0ec"
+SRC_URI[sha256sum] = "16dd81625ebfc8f5dcb0dfd2e6bac223aad325a9405d66a556fe349446b3c332"

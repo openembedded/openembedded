@@ -40,3 +40,6 @@ pkg_postinst_killall() {
 pkg_postrm_killall() {
 	update-alternatives --remove ${bindir}/killall killall.${PN}
 }
+
+SRC_URI[md5sum] = "f0d40e38a150ee31123362e7c50bcf9d"
+SRC_URI[sha256sum] = "e2592a857ccc2b5ad6f327ce2acc7b5a0874ec10755476aa2cf6bfa054230214"

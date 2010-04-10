@@ -29,3 +29,6 @@ do_compile_prepend() {
 # 2.) doesn't build w/ glibc TLS support (hence patched out)
 # 3.) fails with hierarchical pthread stuff w/ gst-pulse (hence patched out)
 
+
+SRC_URI[md5sum] = "fa121f8e5dd4b98d65096de1b6c84021"
+SRC_URI[sha256sum] = "6cc4aff778275f087cfbd65d2040b1587cafc588749499a452eb496329505ab0"

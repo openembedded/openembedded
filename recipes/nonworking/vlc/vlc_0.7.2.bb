@@ -108,3 +108,6 @@ EXTRA_OECONF=" \
 ##	install -m 0644 ${S}/libavformat/rtsp.h ${STAGING_INCDIR}/ffmpeg/rtsp.h
 ##	install -m 0644 ${S}/libavformat/rtspcodes.h ${STAGING_INCDIR}/ffmpeg/rtspcodes.h
 ##}
+
+SRC_URI[md5sum] = "25dfcc804cb92f46c0b64ce1466515cc"
+SRC_URI[sha256sum] = "1551c792384ae027995f498546d26c1fdd42a896a9cc2d94a8209d06af4b5874"

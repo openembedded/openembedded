@@ -40,3 +40,6 @@ python populate_packages_prepend () {
         do_split_packages(d, root=bb.data.expand('${libdir}/dri', d), file_regex='(.*)_dri\.so', output_pattern='mesa-dri-driver-%s', description='%s DRI driver', extra_depends='')
 }
 
+
+SRC_URI[md5sum] = "e6e6379d7793af40a6bc3ce1bace572e"
+SRC_URI[sha256sum] = "ebdf3448eac8abb56bbfc0b7c015efce8e5d88f10ee3123dcc62c1ff47b62d22"

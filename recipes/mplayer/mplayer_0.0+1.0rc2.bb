@@ -224,3 +224,6 @@ do_compile () {
 	oe_runmake
 }
 
+
+SRC_URI[md5sum] = "7e27e535c2d267637df34898f1b91707"
+SRC_URI[sha256sum] = "3875b7cc85e8e7df81c02a638db6b4a970d1e66a86dad6ebf29a1d19f38f5953"

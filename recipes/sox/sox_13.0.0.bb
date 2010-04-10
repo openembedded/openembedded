@@ -16,3 +16,6 @@ do_install() {
 	rm ${D}${bindir}/rec
 	ln -s /usr/bin/play ${D}${bindir}/rec
 }
+
+SRC_URI[md5sum] = "0243d62895caee558b5294d5b78cfbcb"
+SRC_URI[sha256sum] = "c66c52cfa42fe126592563c3d8974007a9858bd35d2c1136389a721eeebb9f8e"

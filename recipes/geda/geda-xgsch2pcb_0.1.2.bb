@@ -18,3 +18,6 @@ EXTRA_OECONF = "--disable-update-desktop-database"
 do_configure_prepend() {
 	sed -i -e s:\\\$\(PYTHON\):${bindir}/python:g Makefile.am
 }
+
+SRC_URI[md5sum] = "bcae4dc646440ba8129854621f56acc6"
+SRC_URI[sha256sum] = "5af6001401a6bc04c075474be5d8aeb2bdb2ca3e509022c2fc55ca7c7f310256"

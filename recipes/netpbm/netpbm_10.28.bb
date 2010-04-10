@@ -89,3 +89,6 @@ do_install() {
 		esac
 	done
 }
+
+SRC_URI[md5sum] = "18ed6d0f1adf75a748df55d5e924fabb"
+SRC_URI[sha256sum] = "e42d3b3f30de0c1ad0a86aa039b35cf2bf64c7f64c29ee333cbf934784639973"

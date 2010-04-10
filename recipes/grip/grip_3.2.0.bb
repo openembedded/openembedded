@@ -14,3 +14,6 @@ DEPENDS="libgnomeui vte curl cdparanoia id3lib"
 PR = "r3"
 
 inherit autotools
+
+SRC_URI[md5sum] = "9b51933a03dd7d7ddfbb3643fc82c2d0"
+SRC_URI[sha256sum] = "5a51a67f2828aa679a46bbb95cdc5346d6d4516f8ba74b7744b6049ccbe805ca"

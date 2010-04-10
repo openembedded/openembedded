@@ -23,3 +23,6 @@ do_install() {
 	install -d ${D}/${bindir}
 	install -m 0744 driftnet ${D}/${bindir}/
 }
+
+SRC_URI[md5sum] = "8e11d77770452f97bb3c23f510489815"
+SRC_URI[sha256sum] = "dbdf7ead3ae14b109f88c86dedeb7524be8c257aa773a781891216f013373d6d"

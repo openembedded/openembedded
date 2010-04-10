@@ -1,1 +1,4 @@
 include xapian-core.inc
+
+SRC_URI[md5sum] = "b4acff50028120852d4a8d943065f6d2"
+SRC_URI[sha256sum] = "75f2e805399ce61c423d7945f7f0d14aac53943538345425f6a1033b9fe59631"

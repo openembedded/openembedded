@@ -31,3 +31,6 @@ do_install_prepend() {
 	install ${WORKDIR}/kbdconfig ${S}/data/kbdconfig
 }
 
+
+SRC_URI[md5sum] = "2a28fdcfd6c71a5edb1618b9449b7486"
+SRC_URI[sha256sum] = "f54035309b2a4d45a90979c2b56ab2488546826862062bfc22cd7e7ed8b5ebf6"

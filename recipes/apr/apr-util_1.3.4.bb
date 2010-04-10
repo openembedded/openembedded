@@ -32,3 +32,6 @@ do_configure_append() {
 	echo LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool --tag=CC" >> ${S}/build/rules.mk
 }
 
+
+SRC_URI[md5sum] = "a10e2ca150ff07f484c724c36142211f"
+SRC_URI[sha256sum] = "3f07ffdb18fb853290c9b83e82cd5cae66b8fbc357bd391e846c0afdd24fed7e"

@@ -14,3 +14,6 @@ do_install () {
 	autotools_do_install
 }
 
+
+SRC_URI[md5sum] = "6860be35882f6d34636d52345efd5944"
+SRC_URI[sha256sum] = "3c0901c0df62e5588370cbab13cd847e056c6a4d36fb69faa303d8edd5b41c09"

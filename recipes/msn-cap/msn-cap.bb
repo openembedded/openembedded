@@ -18,3 +18,6 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 msn-cap ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "900be0beea498b18f03e2d67656d9d32"
+SRC_URI[sha256sum] = "f03c69e064f1269dfd5adbc668204d0a7e0eafb86317e293e9d6c1ce0a4f5761"

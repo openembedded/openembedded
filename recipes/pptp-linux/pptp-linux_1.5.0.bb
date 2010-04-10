@@ -31,3 +31,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/options.pptp ${D}/etc/ppp/
 
 }
+
+SRC_URI[md5sum] = "281ee37788bdf3260426eca56a9af858"
+SRC_URI[sha256sum] = "a2a10abcdfcfbd7da0ba173d2996d6555908069108d59296bf3e1c5c48b5be60"

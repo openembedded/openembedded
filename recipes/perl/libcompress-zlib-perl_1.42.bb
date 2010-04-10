@@ -13,3 +13,6 @@ FILES_${PN} = "${PERLLIBDIRS}/auto/Compress/Zlib/* \
                 ${PERLLIBDIRS}/Compress"
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "1ab76bfd6731d80f6abbd1643c90cabd"
+SRC_URI[sha256sum] = "7794d91711e8c9e526431da72c53bb08e14790f326d0e330d9e9d651f3f6fc6c"

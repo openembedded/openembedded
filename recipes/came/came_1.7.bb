@@ -18,3 +18,6 @@ do_install () {
 		   'docdir=${docdir}/${P}' \
 		   install
 }
+
+SRC_URI[md5sum] = "afdab327ca50ee15197d2d9e19491df7"
+SRC_URI[sha256sum] = "e29b73e0bf763dead4a6ed80e648aaaea683f1a5865e5c21fed31fb9428e9430"

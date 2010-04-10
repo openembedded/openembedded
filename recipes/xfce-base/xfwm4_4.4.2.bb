@@ -29,3 +29,6 @@ ALTERNATIVE_PATH = "${bindir}/xfce4-session"
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
 ALTERNATIVE_PRIORITY = "10"
+
+SRC_URI[md5sum] = "21da77e50b07e72bba784bf3418ca067"
+SRC_URI[sha256sum] = "710120122bc4acaaecdb0646656c5aa92f1d44c4c81d1a6775688abab04cca0a"

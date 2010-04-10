@@ -29,3 +29,6 @@ pkg_postinst_${PN} () {
 pkg_postrm_${PN} () {
         deluser ivman || true
 }
+
+SRC_URI[md5sum] = "ebef12559268e2c5ea932cbb5aaa789e"
+SRC_URI[sha256sum] = "62a6f9cb90999694e48528e16f427433c13a99424b5dca4cb38cda99e13d10e8"

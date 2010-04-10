@@ -19,3 +19,6 @@ do_compile_prepend() {
 }
 
 RDEPENDS = "diffutils"
+
+SRC_URI[md5sum] = "423282f0edb353296d9f3498ab683abf"
+SRC_URI[sha256sum] = "7b7d2f7f5c2bbb096d23ee6dc5590b7d0b84e16ed54694d5794b7a4a989a63ad"

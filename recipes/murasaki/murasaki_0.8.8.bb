@@ -17,3 +17,6 @@ do_install () {
 		   'INST_SCRIPT_DIR=${D}${sysconfdir}/murasaki' \
 		   'INST_FIRMWARE_DIR=${D}${sysconfdir}/firmware'
 }
+
+SRC_URI[md5sum] = "ea7afa7e0bd9cfa0df7c04a9b270df88"
+SRC_URI[sha256sum] = "2033168723ffd612336acb8a64b33fcd91f7dedeaf78949d3dfce231cb962ce9"

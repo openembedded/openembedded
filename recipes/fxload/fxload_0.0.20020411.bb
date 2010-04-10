@@ -17,3 +17,6 @@ do_install() {
 	mkdir -p ${D}/sbin/
 	cp ${S}/fxload ${D}/sbin/fxload
 }
+
+SRC_URI[md5sum] = "cafd71a5bff0c57bcd248273b2541c05"
+SRC_URI[sha256sum] = "15116da28bc90e961bd5fea454adf79272bc741f86d9636ed8b9b771d74814c3"

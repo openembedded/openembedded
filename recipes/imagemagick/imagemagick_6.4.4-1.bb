@@ -32,3 +32,6 @@ BBCLASSEXTEND = "native"
 
 LEAD_SONAME = "libMagickCore.so.*"
 
+
+SRC_URI[md5sum] = "882ff241f6ad39655541d5055596f93b"
+SRC_URI[sha256sum] = "5a5b2779707bfd9816cf17d8f53d242c05005092da192a898ac10961b3b19dda"

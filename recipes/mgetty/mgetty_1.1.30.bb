@@ -85,3 +85,6 @@ CONFFILES_${PN} = "${sysconfdir}/mgetty/mgetty.config \
 FILES_${PN} += "${libdir}/mgetty-fax"
 
 FILES_${PN}-dbg += "${libdir}/mgetty-fax/.debug"
+
+SRC_URI[md5sum] = "ff7872dbef3332dd8f550da78d387f2e"
+SRC_URI[sha256sum] = "008f0bea1fe7fd0f6484536442e660e533bad209ad7a57af3ee6f0a0300fd671"

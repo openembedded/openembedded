@@ -21,3 +21,6 @@ do_compile() {
 	# libSDL_mixer.so.
 	oe_runmake SDL_LIBS="$(pkg-config sdl --libs) -Wl,-rpath-link,${STAGING_LIBDIR}"
 }
+
+SRC_URI[md5sum] = "a357558552436b0b5ea0333b3e2327df"
+SRC_URI[sha256sum] = "75c4520cde3b1d10ae7846983bde66d114fea9479f6acef352850dae92a1100c"

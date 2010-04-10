@@ -32,3 +32,6 @@ do_install() {
 	install -m 0755 scummvm ${D}${bindir}/scummvm
 }
 
+
+SRC_URI[md5sum] = "efc4207a7f10b24e9fc5afa10ed9c455"
+SRC_URI[sha256sum] = "ac22ad70ad6f88c7c8450bc06ba38602331c7470abcafb9e7fe62bfb505b1a3b"

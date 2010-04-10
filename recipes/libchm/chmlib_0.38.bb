@@ -8,3 +8,6 @@ SRC_URI = "${DEBIAN_MIRROR}/main/c/chmlib/chmlib_0.380.orig.tar.gz \
 S = "${WORKDIR}/chmlib-0.380"
 
 inherit autotools pkgconfig
+
+SRC_URI[md5sum] = "2282c228ab3776c828e79b7b51f2ccc1"
+SRC_URI[sha256sum] = "36645bb9e89ba63c303591a4c365f1819a1dd435d46f227140640f4089bfe6f0"

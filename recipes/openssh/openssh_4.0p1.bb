@@ -106,3 +106,6 @@ fi
 
 CONFFILES_openssh-sshd = "${sysconfdir}/ssh/sshd_config"
 CONFFILES_openssh-ssh = "${sysconfdir}/ssh/ssh_config"
+
+SRC_URI[md5sum] = "7b36f28fc16e1b7f4ba3c1dca191ac92"
+SRC_URI[sha256sum] = "5adb9b2c2002650e15216bf94ed9db9541d9a17c96fcd876784861a8890bc92b"

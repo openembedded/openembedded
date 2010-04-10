@@ -20,3 +20,6 @@ do_install() {
         install -d ${D}/${sbindir}
         install -m 0755 mdk2       ${D}/${sbindir}
 }
+
+SRC_URI[md5sum] = "c02004f4588fdc19e5e861df896f5e2c"
+SRC_URI[sha256sum] = "38294fb58a3dfcc21d64f263370d039a2411dda0aa472d1e0d94b7864f1f8fc9"

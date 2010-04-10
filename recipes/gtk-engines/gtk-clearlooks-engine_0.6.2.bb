@@ -22,3 +22,6 @@ do_configure_prepend() {
 	done
 }
 
+
+SRC_URI[md5sum] = "451ef33d1bffa261c5cbe01182199f97"
+SRC_URI[sha256sum] = "be080113c9e9d137ee14eaf7f731c5ae58d24924748aaa725d0f061d59265f3b"

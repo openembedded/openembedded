@@ -20,3 +20,6 @@ do_stage () {
         install -m 0755 tools/mkimage ${STAGING_BINDIR_NATIVE}/uboot-mkimage
         ln -sf ${STAGING_BINDIR_NATIVE}/uboot-mkimage ${STAGING_BINDIR_NATIVE}/mkimage
 }
+
+SRC_URI[md5sum] = "78b1c2722d3907b5fae2cd219dbaf927"
+SRC_URI[sha256sum] = "8ab07cd758a1775642629e624f70e376fa8e84a2f879dee4544158d9c90cde2a"

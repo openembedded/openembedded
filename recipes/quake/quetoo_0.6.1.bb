@@ -36,3 +36,6 @@ do_install_append() {
 }
 
 FILES_${PN}-dbg += "${libdir}/quetoo/baseq2/.debug"
+
+SRC_URI[md5sum] = "2255c1d9857c725f6e82662593fcb51e"
+SRC_URI[sha256sum] = "f39180bbf8ca641a4a4b9a2d19fb5ef61f2e368b53729944588549b8cb9ac3c0"

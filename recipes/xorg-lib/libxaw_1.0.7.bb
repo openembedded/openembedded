@@ -22,3 +22,6 @@ EXTRA_OECONF += " --disable-docs "
 FILES_libxaw6 = "${libdir}/libXaw*.so.6*"
 FILES_libxaw7 = "${libdir}/libXaw*.so.7*"
 FILES_libxaw8 = "${libdir}/libXaw8.so.8*"
+
+SRC_URI[archive.md5sum] = "815e74de989ccda684e2baf8d12cf519"
+SRC_URI[archive.sha256sum] = "740aaee9b09586b1c80f80890381c5ee70ea11efa4b6159f707c0f3684c6f328"

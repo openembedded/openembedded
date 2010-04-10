@@ -251,3 +251,6 @@ test "${BUILD_ARCH}" = "${HOST_ARCH}" || (
 	cd "${datadir}/${PN}/ucdata" && rm ${DATFILES}
 )
 }
+
+SRC_URI[md5sum] = "6c4c72a1336aa45b463e738034c078d6"
+SRC_URI[sha256sum] = "82ed5a27d2b340826b2e10625e687627ccefc883a426314952e4a253d5a6af29"

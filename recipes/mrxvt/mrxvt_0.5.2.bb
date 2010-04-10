@@ -17,3 +17,8 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 		--x-libraries=${STAGING_LIBDIR} \
 		--enable-everything \
 		--disable-debug"
+
+SRC_URI[md5sum] = "ed87b7dd9f4fb482de0f14f085085027"
+SRC_URI[sha256sum] = "558491d1f112362780abaf7429d14216e658b7768dd30f82f102ce646d3065cf"
+SRC_URI[md5sum] = "021613030ae67c5c9868ec2a0c031172"
+SRC_URI[sha256sum] = "a41c3eb4cf94fe7b059468983a2f533e0669d0204088fa5ece365b1663b560c7"

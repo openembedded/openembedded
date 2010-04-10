@@ -64,3 +64,6 @@ do_stage() {
         oe_runmake -e install
     done
 }
+
+SRC_URI[md5sum] = "886a114b391aa1992567019213efc63e"
+SRC_URI[sha256sum] = "542c7f1042679c8484dc2f5f5536ed0c79fa79b2b9dd6cf6881278a6fdb37a84"

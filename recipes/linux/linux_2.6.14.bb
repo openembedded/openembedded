@@ -44,3 +44,6 @@ inherit kernel
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 }
+
+SRC_URI[md5sum] = "66d02cbd723876c6d69846a067875a22"
+SRC_URI[sha256sum] = "cc56285834bed461fd405c00a34d3c3095673333b94621580eeeb0c65237af15"

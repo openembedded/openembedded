@@ -23,3 +23,6 @@ do_install () {
 	oe_runmake -C irattach ROOT="${D}" install
 	oe_runmake -C irdaping ROOT="${D}" install
 }
+
+SRC_URI[md5sum] = "b69b75464d6ee72e6600a8459d9b68ac"
+SRC_URI[sha256sum] = "27df093409e65279b5cf60777c3310feb50a522bebd4f5038cfebe41a7a46809"

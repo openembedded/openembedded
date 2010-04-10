@@ -36,3 +36,6 @@ do_configure_prepend () {
 	rm -f libtool
 	cp ${STAGING_BINDIR_NATIVE}/${TARGET_SYS}-libtool libtool
 }
+
+SRC_URI[md5sum] = "1ec6055c75f1acbb5d5600492481ef85"
+SRC_URI[sha256sum] = "c50cdf2c6cf7309f88c7ec0a56158eca76c80532502b36f3378eeca433423d83"

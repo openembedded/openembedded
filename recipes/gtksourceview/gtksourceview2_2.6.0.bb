@@ -18,3 +18,6 @@ autotools_stage_all
 
 FILES_${PN} += " ${datadir}/gtksourceview-2.0"
 
+
+SRC_URI[md5sum] = "dd065ab2e96e51aade949249c5556439"
+SRC_URI[sha256sum] = "92ddd976721e26377eaa59fea07707a0caa85eb874500868c1e6fdd9a21fe0dd"

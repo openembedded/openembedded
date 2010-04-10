@@ -37,3 +37,6 @@ do_install_append() {
 		install -m 0644 ${WORKDIR}/scummvm.desktop ${D}${datadir}/applications
 	fi
 }
+
+SRC_URI[md5sum] = "11b911937e0fc73c94a7bdc374ab617c"
+SRC_URI[sha256sum] = "920932b9d0cfca019f35c2451d93d94ca3b9f981f0b82c418bfbc864fb8c00ec"

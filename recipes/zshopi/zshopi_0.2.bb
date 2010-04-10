@@ -40,3 +40,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/zshopi.png ${D}${palmtopdir}/pics/
 	install -m 0644 ${WORKDIR}/${PN}_${PV}/zshopi/zshopi.de.qm ${D}${palmtopdir}/i18n/de/zshopi.qm
 }
+
+SRC_URI[md5sum] = "1343c4de6d586a1b4ed2b5c97d53e717"
+SRC_URI[sha256sum] = "6a136cbc7fdb38c73fe5862f21913e8fe63864063bba833c149c1098d758a12f"

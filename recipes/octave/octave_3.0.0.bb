@@ -25,3 +25,6 @@ FILES_liboctinterp-dbg += "${libdir}/${PN}-${PV}/.debug/liboctinterp*"
 FILES_${PN}-oct = "${libexecdir}/${PN}/${PV}/oct/${TARGET_SYS}/*.oct"
 
 FILES_${PN}-dbg += "${libexecdir}/${PN}/${PV}/oct/${TARGET_SYS}/.debug"
+
+SRC_URI[md5sum] = "60ed361c7310eccce01395470b711a57"
+SRC_URI[sha256sum] = "b99b6e2c1a0977fbe2f0c19210694ed44ff182d17d3920c485fb6ce725b89816"

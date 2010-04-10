@@ -17,3 +17,6 @@ do_configure_prepend () {
 }
 
 require wget.inc
+
+SRC_URI[md5sum] = "e6051f1e1487ec0ebfdbda72bedc70ad"
+SRC_URI[sha256sum] = "69044b87c517b986dbc17a5f7e4de430cb56e605330c19c6bb0d384d5c37e638"

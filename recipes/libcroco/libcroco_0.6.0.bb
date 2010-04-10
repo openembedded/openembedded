@@ -14,3 +14,6 @@ do_stage() {
 	install -m 644 src/*.h ${STAGING_INCDIR}/libcroco/
 	install -m 755 src/.libs/*so* ${STAGING_LIBDIR}/
 }
+
+SRC_URI[archive.md5sum] = "78fb2bf78d469df83b1fc94ce196c1c4"
+SRC_URI[archive.sha256sum] = "39d348bc3b821f7042c4018555c3beffaf887a42e8b084c1bb521c96421c38b2"

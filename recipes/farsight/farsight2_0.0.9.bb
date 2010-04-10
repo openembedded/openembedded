@@ -20,3 +20,6 @@ FILES_${PN}-dbg += "${libdir}/*/.debug"
 
 
 
+
+SRC_URI[md5sum] = "f2d4fad95009bc7eae29f97c6f560dcd"
+SRC_URI[sha256sum] = "84553ff12c5245705806107448e85c96950b4b7a5eaf85461c89987be8ea644d"

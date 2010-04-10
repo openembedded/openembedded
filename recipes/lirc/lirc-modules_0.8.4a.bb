@@ -29,3 +29,6 @@ if [ ! -c $D/dev/lirc -a ! -f /sbin/udevd ]; then mknod $D/dev/lirc c 61 0; fi
 }
 
 FILES_${PN} = "/lib/modules"
+
+SRC_URI[md5sum] = "1101c44d542807a4f9f5e33349b5bf56"
+SRC_URI[sha256sum] = "d6e68935e69c82bba091cb102bbc4b63428eb8deb94c7d00e14ea3b673e10712"

@@ -21,3 +21,6 @@ do_configure_prepend () {
 		cat aclocal.m4 > acinclude.m4
 	fi
 }
+
+SRC_URI[md5sum] = "9956b30139edaa4f5f77c4d0dbd80225"
+SRC_URI[sha256sum] = "c18e6f23315e0a3526229bd0ba5cf8ce0d747cb5e5ba7cb952ad08c85a1cafac"

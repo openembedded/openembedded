@@ -26,3 +26,6 @@ do_stage() {
 	oe_libinstall -C common -so libgnokii ${STAGING_LIBDIR}
 }
 
+
+SRC_URI[md5sum] = "7f2a8cee97e62ebfa284363dc93b3178"
+SRC_URI[sha256sum] = "9605f7aee1b8d58cac10dd514c2bdfa340089d85b149db828816d18ac3ebaff8"

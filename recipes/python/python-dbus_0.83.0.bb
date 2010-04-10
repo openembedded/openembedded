@@ -24,3 +24,6 @@ RDEPENDS_${PN} = "\
 FILES_${PN}-dev += "\
   ${libdir}/pkgconfig \
 "
+
+SRC_URI[md5sum] = "562c78876219bf458d79a041af18293d"
+SRC_URI[sha256sum] = "89dd1d5aa5c2ba04677d1aa2616caa50274d8c08f3d6bc164e6f7b9930776191"

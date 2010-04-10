@@ -13,3 +13,6 @@ do_configure_prepend() {
 	cp ${WORKDIR}/dump ${S}/magic/Magdir/
 	cp ${WORKDIR}/filesystems ${S}/magic/Magdir/
 }
+
+SRC_URI[md5sum] = "ce1aa9b0316feb57d40a48cfe6b606e4"
+SRC_URI[sha256sum] = "5090d5123ea642842d04d3f93a821e1372e5d9e434c74c08ee2483cc150a6273"

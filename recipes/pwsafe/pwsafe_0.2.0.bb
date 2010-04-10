@@ -16,3 +16,6 @@ EXTRA_OECONF = " --with-openssl-dir=/bla/bla"
 do_configure_prepend() {
 	rm ${S}/configure
 }
+
+SRC_URI[md5sum] = "4bb36538a2772ecbf1a542bc7d4746c0"
+SRC_URI[sha256sum] = "61e91dc5114fe014a49afabd574eda5ff49b36c81a6d492c03fcb10ba6af47b7"

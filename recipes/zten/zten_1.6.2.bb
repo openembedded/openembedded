@@ -27,3 +27,6 @@ do_install() {
 	install -m 0644 Zten.png ${D}${palmtopdir}/pics
 }
 
+
+SRC_URI[md5sum] = "d24f03c8df5c98d510590bd9a63dc932"
+SRC_URI[sha256sum] = "7fa88dcb6da482bc20fc4916f191e9c35d01b3c0f45c9bcd66067029c49cc0b4"

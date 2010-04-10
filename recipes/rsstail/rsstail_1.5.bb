@@ -17,3 +17,6 @@ do_install_prepend() {
 do_stage() {
 	:
 }
+
+SRC_URI[md5sum] = "1558fc8b0c9a8cb79e421f783f1ffc40"
+SRC_URI[sha256sum] = "242b3d5807e7bd753531fb836395afe18efe948174ea1ae54a4b7baba7a058fe"

@@ -110,3 +110,8 @@ do_compile () {
 require glibc-stage.inc
 
 require glibc-package.inc
+
+SRC_URI[md5sum] = "b45c4cfa714a4688c319149c15a1e060"
+SRC_URI[sha256sum] = "0ae1b1dc1ee870d307ae6ad4546778377b04055520d3771dab1290e60ab13286"
+SRC_URI[md5sum] = "9006b8bff18beb864f6053857f25b410"
+SRC_URI[sha256sum] = "2d7af8211cda81abde3e0bb8ccedbd18924a27b244ff35d4eacafcf899038c56"

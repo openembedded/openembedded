@@ -34,3 +34,6 @@ PACKAGES = "${PN}-dbg ${PN} ${PN}-help"
 FILES_${PN} = " ${palmtopdir}${base_bindir} ${palmtopdir}/apps ${palmtopdir}/pics"
 FILES_${PN}-help = " ${palmtopdir}/help/html"
 
+
+SRC_URI[md5sum] = "0f429212fdcfd99efe6bfd3904adece8"
+SRC_URI[sha256sum] = "272ddac7f039d12938f50c281f42941d6dea7ab940f1b3b3dd5ab28572678bd4"

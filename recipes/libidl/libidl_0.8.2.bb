@@ -1,3 +1,6 @@
 require libidl.inc
 
 PR = "r1"
+
+SRC_URI[md5sum] = "a75d2dbf3a3c66b567047c94245f8b82"
+SRC_URI[sha256sum] = "1c9529f7245778a4f1422d6257d446b7c90a19c3b603b1a25db1669552c464b3"

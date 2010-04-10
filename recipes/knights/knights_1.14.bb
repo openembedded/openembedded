@@ -29,3 +29,6 @@ do_install() {
         install -d ${D}${palmtopdir}/pics
         cp -pPR pics/knights ${D}${palmtopdir}/pics/
 }
+
+SRC_URI[md5sum] = "fea3047d5501a1abea868bb661cbc0c8"
+SRC_URI[sha256sum] = "1f6d50b3602f01b852810ab1e62f3328edee5130fe3ba21fd868f376c89e66fd"

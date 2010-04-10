@@ -24,3 +24,6 @@ do_install () {
 }
 
 inherit opie
+
+SRC_URI[md5sum] = "cb5e4656fc3b13aa02d94096966ef2a9"
+SRC_URI[sha256sum] = "6d5f1f771de97e08378940070b28dd75ac394ea611965ed1751600adbd099a59"

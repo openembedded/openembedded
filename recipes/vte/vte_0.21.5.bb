@@ -31,3 +31,6 @@ FILES_libvte = "${libdir}/*.so.*"
 FILES_gnome-pty-helper = "${libexecdir}/gnome-pty-helper"
 RDEPENDS_libvte = "vte-termcap gnome-pty-helper"
 FILES_vte-termcap = "${datadir}/vte/termcap"
+
+SRC_URI[archive.md5sum] = "9b4d97dfc40e4f77b7ecf2e9e89da368"
+SRC_URI[archive.sha256sum] = "0044b7226e06752f8eefe61dce5cd84e7915bf1756b200c198eff8b7c379e2f6"

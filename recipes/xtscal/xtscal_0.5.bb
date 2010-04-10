@@ -1,1 +1,4 @@
 require xtscal.inc
+
+SRC_URI[md5sum] = "960acbb885e4de593210c680360dc234"
+SRC_URI[sha256sum] = "a3cfc867672924f27d5ed39a99bc089cc9417d193513984f0a081a92230e947b"

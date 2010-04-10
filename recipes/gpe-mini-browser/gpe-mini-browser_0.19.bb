@@ -50,3 +50,6 @@ pkg_postrm_${PN}-doc () {
         fi
 }
 
+
+SRC_URI[md5sum] = "922640f40f67d15892d9ea8ec6c8ffea"
+SRC_URI[sha256sum] = "ece034b916a7760cfb854baab474b7931246bdb078c814366bf90a9fbff246af"

@@ -19,3 +19,6 @@ do_stage() {
 	   oe_libinstall -so libclalsadrv ${STAGING_LIBDIR}
 	   install -m 0644 clalsadrv.h ${STAGING_INCDIR}
 }
+
+SRC_URI[md5sum] = "7865b6c175e457ea9cb0148ce8baa746"
+SRC_URI[sha256sum] = "0fed89dd092936b5ffa74ad7df77a72b8cbeec8cea226ff48e107e326bd36f50"

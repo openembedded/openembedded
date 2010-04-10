@@ -17,3 +17,6 @@ do_stage() {
 	oe_libinstall -C libxfce4mcs -so libxfce4mcs-manager ${STAGING_LIBDIR}	
 	oe_libinstall -C libxfce4mcs -so libxfce4mcs-client ${STAGING_LIBDIR}	
 }
+
+SRC_URI[md5sum] = "5ffe66a3eeb884839806ce929e5d2776"
+SRC_URI[sha256sum] = "192843e8fdd63e10ba431ca12265c654dbce9677ec9d330038eea462ca0e5c8e"

@@ -27,3 +27,6 @@ PACKAGES =+ "${PN}-c"
 
 FILES_${PN} = "${libdir}/libtag.so.*"
 FILES_${PN}-c = "${libdir}/libtag_c.so.*"
+
+SRC_URI[md5sum] = "7b557dde7425c6deb7bbedd65b4f2717"
+SRC_URI[sha256sum] = "ba610716ec539d4858133e008d079728953820c583b200ff0936e36fc0550ec2"

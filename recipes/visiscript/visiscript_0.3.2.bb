@@ -31,3 +31,6 @@ do_install() {
 }
 
 #FIXME: package help and translation
+
+SRC_URI[md5sum] = "c43beaef5817fe525099341620e3584b"
+SRC_URI[sha256sum] = "3ec61d179aa29811f1383bd99c529342aecea1b3b4cffaa8670aecd7486d0c94"

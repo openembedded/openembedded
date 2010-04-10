@@ -26,3 +26,6 @@ FILES_${PN} += "${datadir}/baobab \
                "
 
 
+
+SRC_URI[archive.md5sum] = "156e38fdf348bf2db4fcb7b84ddcc2aa"
+SRC_URI[archive.sha256sum] = "40c99392e6c06ff31d735c41cf285f02b7b8c0419f1954c533b7da900e7b9752"

@@ -14,3 +14,6 @@ do_stage() {
 	install -m 0644 src/libassuan.m4 ${STAGING_DATADIR}/aclocal/
 }
 
+
+SRC_URI[md5sum] = "7f8aff75d034159b84faf2358263f444"
+SRC_URI[sha256sum] = "e62ac18effcbd578f7fae14c9384795321c9a954d258f6bd9da3a620b37f4106"

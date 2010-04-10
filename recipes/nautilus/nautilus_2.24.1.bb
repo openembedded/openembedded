@@ -20,3 +20,6 @@ FILES_${PN}-dbg += "/usr/libexec/.debug"
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "ccb5497397dfba46569b6dd1d2f41cef"
+SRC_URI[archive.sha256sum] = "48f1d25af102d216fdc2ebcd6396ffce963558c119b88730dc02fb1c158fcc4c"

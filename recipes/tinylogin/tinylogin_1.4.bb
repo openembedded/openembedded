@@ -51,3 +51,6 @@ pkg_prerm_${PN} () {
     done < /etc/tinylogin.links
 }
 
+
+SRC_URI[md5sum] = "44da0ff2b727455669890b24305e351d"
+SRC_URI[sha256sum] = "5e542e4b7825305a3678bf73136c392feb0d44b8bbf926e8eda5453eea7ddd6b"

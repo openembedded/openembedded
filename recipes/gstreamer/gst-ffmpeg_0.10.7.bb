@@ -30,3 +30,6 @@ PATH_prepend="${CROSS_DIR}/${TARGET_SYS}/bin:"
 # Hack to get STAGING_LIBDIR into the linker path when building ffmpeg
 CC = "${CCACHE} ${HOST_PREFIX}gcc ${TARGET_CC_ARCH} -L${STAGING_LIBDIR}"
 
+
+SRC_URI[md5sum] = "6be89b26592f36ef631b22a68b8e06c4"
+SRC_URI[sha256sum] = "94bd5110a03837145afe5c81760f22bd7bef9ef455f4417340eeeb2b12e54fb0"

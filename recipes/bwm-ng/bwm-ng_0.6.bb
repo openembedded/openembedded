@@ -14,3 +14,6 @@ EXTRA_OECONF = " \
     --with-libstatgrab=no \
     --with-netstatlinux=no \
 "
+
+SRC_URI[md5sum] = "d3a02484fb7946371bfb4e10927cebfb"
+SRC_URI[sha256sum] = "c1134358e268329d438b0996399003b0f0b966034fb4b5b138761c2f3c62ffdd"

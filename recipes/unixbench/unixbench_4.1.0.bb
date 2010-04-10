@@ -11,3 +11,6 @@ do_install () {
 	install -d ${D}${prefix}/src
 	cp -pPR ${S} ${D}${prefix}/src/
 }
+
+SRC_URI[md5sum] = "3561ae1f067f9dfb9707c062f536acac"
+SRC_URI[sha256sum] = "4605f3f0001afd3af91ffb554dfd65c5cd313b6b9ada52ae8b2efdccf894cfa2"

@@ -24,3 +24,6 @@ do_configure_append() {
 
 FILES_${PN} += "${datadir}/dbus-1 ${datadir}/icons"
 
+
+SRC_URI[md5sum] = "616930d9ab92fb21c238c13101ce5879"
+SRC_URI[sha256sum] = "fefd63c13ca28713f7f03320c1e341430ea2d016d3ab3e49163a12f4df2123e7"

@@ -19,3 +19,6 @@ do_install() {
 	install -m 0644 rt73.bin ${D}${sysconfdir}/Wireless/RT73STA/
 }
 
+
+SRC_URI[md5sum] = "0340e1ceba72330111e6fc85679c75bf"
+SRC_URI[sha256sum] = "94beb93da6dabd16892c899f496eeec745fc69b856abd0d19896b2a4b0fb7c72"

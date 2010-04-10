@@ -45,3 +45,6 @@ python populate_packages_prepend () {
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 
+
+SRC_URI[md5sum] = "9515288826284d6c8dd569354dacc8e0"
+SRC_URI[sha256sum] = "ba75e64e1b6d5ffaa41e2063e475eca5b35ad68cb4ee6e888e0fc73bd6fa9fba"

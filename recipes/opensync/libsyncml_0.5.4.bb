@@ -28,3 +28,6 @@ do_build_prepend() {
 do_install_prepend() {
 	cd ${WORKDIR}/build
 }
+
+SRC_URI[md5sum] = "84879ed7cb94618530fbcb801a1a4f95"
+SRC_URI[sha256sum] = "05d6513637adb1300a3a58b6e29d53ab6373c8f370807d0d925bae72b2920e53"

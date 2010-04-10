@@ -12,3 +12,6 @@ S = "${WORKDIR}/Algorithm-Diff-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "ff3e17ae485f8adfb8857b183991fbce"
+SRC_URI[sha256sum] = "c8b40dbf406770c6bcbd1a26a3f2343fa1563675085b63932d06f37e60098375"

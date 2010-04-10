@@ -227,3 +227,6 @@ FILES_gnome-games-sudoku = "${bindir}/gnome-sudoku \
 				${datadir}/pixmaps/gnome-sudoku.png \
 				${datadir}/applications/gnome-sudoku.desktop \
 				${PYTHON_SITEPACKAGES_DIR}/gnome_sudoku"
+
+SRC_URI[archive.md5sum] = "e416e2922fe119c41ec224fab97f7909"
+SRC_URI[archive.sha256sum] = "6ad3c849ea10f47c76cbf9c34a5e413b2549c919c5c388be0c42c59bcf3a388d"

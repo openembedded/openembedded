@@ -26,3 +26,6 @@ do_stage() {
 	       datadir=${STAGING_DATADIR} \
 	       mandir=${STAGING_DIR_HOST}${layout_mandir}
 }
+
+SRC_URI[md5sum] = "e64ec808ed2cb687c242ebb835faeb61"
+SRC_URI[sha256sum] = "15348bf21125536b3bce1e477e50310e4b192c43c35476e949f41280bc7123d8"

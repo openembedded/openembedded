@@ -82,3 +82,6 @@ PACKAGES = "libgtk2.0-cil libgtk2.0-cil-dev libgtk2.0-cil-dbg \
 	libglade2.0-cil libglade2.0-cil-dev libglade2.0-cil-dbg \
 	gtk-sharp-gapi2 gtk-sharp-gapi2-dev \
 	gtk-sharp2-glue-dev glade-sharp2-glue-dev glib-sharp2-glue-dev"
+
+SRC_URI[md5sum] = "7d509a677c58b2e6a8c85db51d0b1451"
+SRC_URI[sha256sum] = "8dc7f6180109a529b3216b6527f34a01e1e4484e42ebbd28d551e8f6ce0c243d"

@@ -35,3 +35,6 @@ pkg_postrm_${PN} () {
 	deluser palantir || true
 }
 
+
+SRC_URI[md5sum] = "3a5b1fb340857f6d8e357bf39b77583e"
+SRC_URI[sha256sum] = "dbe9c8317e66e7239a53e9bcb68595cd31ec949474bb3d9fc15f51f3773c167b"

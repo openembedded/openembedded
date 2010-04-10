@@ -46,3 +46,6 @@ RDEPENDS_prismstumbler-frontend = "${PN}"
 do_install_append() {
   chmod a+s ${D}${bindir}/prismstumbler
 }
+
+SRC_URI[md5sum] = "5b2e91311c94579e4f5e1d4fdd9bc4fe"
+SRC_URI[sha256sum] = "81d536d5307b8d5b96587ff673e69b9e5049d11d56643b3ea6984b31baa0ab56"

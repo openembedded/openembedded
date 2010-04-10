@@ -16,3 +16,8 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ftp/ftp ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "94441610c9b86ef45c4c6ec609444060"
+SRC_URI[sha256sum] = "61c913299b81a4671ff089aac821329f7db9bc111aa812993dd585798b700349"
+SRC_URI[md5sum] = "f7c82f2f78f26dcb869eca2ed633c464"
+SRC_URI[sha256sum] = "2168b592ce254ab6f6daf04b4eafb5607b664c48d85f74698a9376e2cc4503aa"

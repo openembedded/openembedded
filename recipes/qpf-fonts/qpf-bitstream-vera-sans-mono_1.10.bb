@@ -34,3 +34,6 @@ FILES_qpf-bitstream-vera-sans-mono-large = "\
 	${palmqtdir}/lib/fonts/verasansmono_19*"
 FILES_qpf-bitstream-vera-sans-mono-larger = "${palmqtdir}/lib/fonts/verasansmono_2*"
 FILES_qpf-bitstream-vera-sans-mono-huge = "${palmqtdir}/lib/fonts/verasansmono_3*"
+
+SRC_URI[md5sum] = "890615fa4b3e6c82cd1b9807b106f042"
+SRC_URI[sha256sum] = "42c15ed555719c27f67990454cdda791cbcd26ab98712fd88ca7e20e6ce3f1fd"

@@ -64,3 +64,6 @@ DESCRIPTION_alsa-utils-alsactl      = "saves/restores ALSA-settings in /etc/asou
 DESCRIPTION_alsa-utils-alsaconf     = "a bash script that creates ALSA configuration files"
 
 ALLOW_EMPTY_alsa-utils = "1"
+
+SRC_URI[md5sum] = "5ff0379c707c1a29083233edc9ab4e06"
+SRC_URI[sha256sum] = "1f4924f5ae7857ce64a3d6ecbeb98133c74ff1ead2b0f48187623d6e4b838cad"

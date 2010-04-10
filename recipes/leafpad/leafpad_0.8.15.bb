@@ -17,3 +17,6 @@ PACKAGES =+ "${PN}-icons"
 
 FILES_${PN}-icons = "${datadir}/icons"
 FILES_${PN} += "${datadir}/applications ${datadir}/pixmaps ${datadir}/icons"
+
+SRC_URI[md5sum] = "f3570c052f4987f4122cd48d2c629f64"
+SRC_URI[sha256sum] = "f294a7894efc8eee0c0c4238f41cc97492c61dd3dcceae4fcf555e31e841d86a"

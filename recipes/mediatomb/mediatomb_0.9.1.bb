@@ -28,3 +28,6 @@ EXTRA_OECONF = "--disable-mysql \
                 --with-js-libs=${STAGING_LIBDIR} \
                 --with-id3lib-h=${STAGING_INCDIR} \
                 --with-id3lib-libs=${STAGING_LIBDIR}"
+
+SRC_URI[md5sum] = "3cb8a14b17102ec828853679d879f7bc"
+SRC_URI[sha256sum] = "64821ec2c678e5da1582ee116d919ce2beef166301586e42c547e4482fb8d945"

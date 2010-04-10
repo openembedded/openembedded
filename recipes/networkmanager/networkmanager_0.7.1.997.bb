@@ -30,3 +30,6 @@ do_install_append () {
 	install -d ${D}/etc/NetworkManager/VPN
 }
 
+
+SRC_URI[md5sum] = "12f12b2586043c21c3508b05e7994ba2"
+SRC_URI[sha256sum] = "a62a0f45d156cb190dd2ee3176aa3af4bf7b35c23a09ac65a309c9dc5af87826"

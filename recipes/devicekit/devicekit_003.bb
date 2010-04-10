@@ -13,3 +13,6 @@ do_configure_prepend() {
 
 
 FILES_${PN} += "${datadir}/dbus-1/"
+
+SRC_URI[md5sum] = "8b311547f4a2c8c6b6598e3318d66cd7"
+SRC_URI[sha256sum] = "d2d21f995d1a152ca2d8beea6d37f31e48cca034b82ceb7322f39422e849e9cf"

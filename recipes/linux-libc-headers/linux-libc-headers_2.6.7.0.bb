@@ -45,3 +45,6 @@ do_stage () {
 	cp -pfLR include/asm ${STAGING_INCDIR}/
 	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
 }
+
+SRC_URI[md5sum] = "ac14861e5fa7e52d98a6174add34084d"
+SRC_URI[sha256sum] = "455f352e2ec707e4abf02091c4c49ffa5611294eb75959c25d77967a02636577"

@@ -33,3 +33,6 @@ FILES_${PN} += " /usr/share/themes/mbmediabox/matchbox/ \
 		/usr/share/matchbox/desktop/modules/*.so"
 
 inherit autotools pkgconfig
+
+SRC_URI[md5sum] = "3805f463cbd1817c75fed5f9c4cd2f8b"
+SRC_URI[sha256sum] = "a550138cac9fcbb620a154fdf251d97e3420a5b9ac2017225b35d9df745e49f3"

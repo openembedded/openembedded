@@ -22,3 +22,6 @@ do_install () {
 		   'LOCALEDIR=${D}${datadir}/locale' \
 		   install
 }
+
+SRC_URI[md5sum] = "57ef0525c0997ac2e7720712811f5a84"
+SRC_URI[sha256sum] = "d7676d7734d4821454a840a1ef05020c9c4f4797ab96ec54f2351e26d437c88c"

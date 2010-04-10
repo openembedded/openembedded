@@ -26,3 +26,6 @@ do_configure() {
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}"
+
+SRC_URI[md5sum] = "a4012e7d1f6400df44a16743b11b8423"
+SRC_URI[sha256sum] = "fed2ed148d7d105b95493c5e95561c8b05ee7909e00f828f036d8ed1be6a5e53"

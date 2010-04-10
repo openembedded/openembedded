@@ -32,3 +32,6 @@ do_install() {
 
 FILES_${PN} += " ${libdir}/GConf/*"
 FILES_${PN}-dbg += "${libdir}/*/*/.debug"
+
+SRC_URI[md5sum] = "194fab4e2e87c7ae3c7fea926fd281bc"
+SRC_URI[sha256sum] = "31d894960e0d2eba8fa2746e4fde31983a1e49dc856a880adb59d5f251a690cf"

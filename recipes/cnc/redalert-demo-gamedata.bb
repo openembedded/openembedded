@@ -13,3 +13,6 @@ do_install() {
 PACKAGE_ARCH = "all"
 FILES_${PN} += "${datadir}/games/redalert/"
 
+
+SRC_URI[md5sum] = "b44ab9ec1bc634ea755587d1988e3722"
+SRC_URI[sha256sum] = "8c48bdb53523ea4d353a7914d9234ce4e3e6f5832eeb47b3b6b005853e8748d2"

@@ -22,3 +22,6 @@ EXTRA_OEMAKE = ' \
 #  oe_runmake install
 #}
 
+
+SRC_URI[md5sum] = "9a1e3b81df0e32189fa873fd6fc086e5"
+SRC_URI[sha256sum] = "8e63251e1599474d18912ad82b2e6b0c6c612e7eb9507958ab0f60f92d7ea454"

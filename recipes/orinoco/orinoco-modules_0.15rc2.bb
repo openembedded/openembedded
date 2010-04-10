@@ -19,3 +19,6 @@ do_install() {
 }
 
 FILES_orinoco-modules-cs = "/lib/modules/${KERNEL_VERSION}/net/*_cs${KERNEL_OBJECT_SUFFIX}"
+
+SRC_URI[md5sum] = "2246f0879439d74f7aabc7935cec90c0"
+SRC_URI[sha256sum] = "2997613ab33ad42dc8269a63b7c40a6938b3552e196780a4a269cc7340dd23bd"

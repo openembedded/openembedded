@@ -29,3 +29,6 @@ python populate_packages_prepend () {
 
 	do_split_packages(d, gnumeric_libdir, '(.*)', 'gnumeric-plugin-%s', 'Gnumeric plugin for %s', allow_dirs=True)
 }
+
+SRC_URI[archive.md5sum] = "338f0084f04a16f78797ad01f85d3251"
+SRC_URI[archive.sha256sum] = "a3c7fdbbafa6c9cfee7f16c067b043c3041cd0240292aa92b653a2221ae04503"

@@ -20,3 +20,6 @@ do_install() {
         install -m 0755 ${S}/setserial   ${D}${bindir}
         install -m 0644 ${S}/setserial.8 ${D}${mandir}/man8
 }
+
+SRC_URI[md5sum] = "c4867d72c41564318e0107745eb7a0f2"
+SRC_URI[sha256sum] = "7e4487d320ac31558563424189435d396ddf77953bb23111a17a3d1487b5794a"

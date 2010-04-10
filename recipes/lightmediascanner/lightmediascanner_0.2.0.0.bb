@@ -14,3 +14,6 @@ FILES_${PN}-dbg += "${libdir}/${PN}/plugins/.debug"
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "ee1494b6dff3a50be64a3266819056d5"
+SRC_URI[sha256sum] = "98f980e8971fa4d04a589215c3b90d2eaf317ed70fd0d4988089e0fe5808c853"

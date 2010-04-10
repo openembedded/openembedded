@@ -19,3 +19,6 @@ EXTRA_OECONF = "\
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "8478d83fda0b6e57f36550c11a693ee1"
+SRC_URI[archive.sha256sum] = "11fd8fca1bdbcfa426276a124ad083cca9632f03cf766523bcdfb2fca0b08908"

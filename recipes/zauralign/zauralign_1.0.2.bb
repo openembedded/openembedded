@@ -19,3 +19,6 @@ do_install() {
 	install -m 0644 zauralign.desktop ${D}${palmtopdir}/apps/Games/
 	cp -pPR pics/* ${D}${palmtopdir}/pics/zauralign/
 }
+
+SRC_URI[md5sum] = "c159a55ecc3ba800445d4bb73d0925e6"
+SRC_URI[sha256sum] = "f849da3eec59b22599a806d59e81729ba9234fc2318335804d45d9dce23fb532"

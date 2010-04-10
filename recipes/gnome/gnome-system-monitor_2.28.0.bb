@@ -23,3 +23,6 @@ FILES_${PN} += "${datadir}/icons \
 FILES_${PN}-doc += "${datadir}/omf \
                     ${datadir}/gnome/help "
 
+
+SRC_URI[archive.md5sum] = "341c8fda9b518729e04465705da62994"
+SRC_URI[archive.sha256sum] = "638875c6041cd2b0ad7219fecd8fe86eb9d4c8b0662166a84d7659bd6a9db1d3"

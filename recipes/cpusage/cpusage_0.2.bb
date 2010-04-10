@@ -22,3 +22,6 @@ do_install() {
 	install -d ${D}${base_sbindir}
 	install -m 0755 cpusage ${D}${base_sbindir}/cpusage
 }
+
+SRC_URI[md5sum] = "4f2662346fa8e6feeebceafc4ec18090"
+SRC_URI[sha256sum] = "f301bca2f5999cd16fec01db58d0fbba781eb659ce30d532cc9569e7950b90bf"

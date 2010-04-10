@@ -17,3 +17,6 @@ EXTRA_OECONF += "\
   --disable-nm \
   --disable-screensaver \
 "
+
+SRC_URI[md5sum] = "90847ed22ec830db5d9768748812b661"
+SRC_URI[sha256sum] = "3c459e4093fca679591e35ea34da4a0e45b15f2bb7ca00314a1486dc022f3d0e"

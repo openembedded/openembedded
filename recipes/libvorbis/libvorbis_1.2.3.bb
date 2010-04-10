@@ -14,3 +14,6 @@ SRC_URI = "http://downloads.xiph.org/releases/vorbis/libvorbis-${PV}.tar.gz \
 
 # override should be handeld by pkgconfig now
 EXTRA_OECONF = ""
+
+SRC_URI[md5sum] = "5aa77f55c0e0aab8eb8ed982335daac8"
+SRC_URI[sha256sum] = "c679d1e5e45a3ec8aceb5e71de8e3712630b7a6dec6952886c17435a65955947"

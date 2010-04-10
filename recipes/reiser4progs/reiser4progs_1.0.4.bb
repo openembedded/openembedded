@@ -27,3 +27,6 @@ EXTRA_OECONF = "${DISABLE_LIBMINIMAL}"
 LEAD_SONAME = "libreiser4"
 
 inherit autotools
+
+SRC_URI[md5sum] = "b2cbc8eb9429b50e0e99ba4eeda4801e"
+SRC_URI[sha256sum] = "4990e24f9a49588cc2d7c3646fb9b5c3946213db26e1df129d218265a88ada2e"

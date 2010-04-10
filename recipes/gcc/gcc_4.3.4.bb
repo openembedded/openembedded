@@ -11,3 +11,6 @@ FILES_${PN} += "\
 SRC_URI_append = "file://fortran-cross-compile-hack.patch;patch=1"
 
 ARCH_FLAGS_FOR_TARGET += "-isystem${STAGING_INCDIR}"
+
+SRC_URI[md5sum] = "60df63222dbffd53ca11492a2545044f"
+SRC_URI[sha256sum] = "e572453bdb74cc4ceebfab9ffb411d9678343dff5bf86e9338d42fdd0818aa65"

@@ -24,3 +24,6 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove sed sed.${PN}
 }
 
+
+SRC_URI[md5sum] = "928f0e06422f414091917401f1a834d0"
+SRC_URI[sha256sum] = "638e837ba765d5da0a30c98b57c2953cecea96827882f594612acace93ceeeab"

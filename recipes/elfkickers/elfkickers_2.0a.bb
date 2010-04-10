@@ -30,3 +30,6 @@ do_install () {
 		install -m 0755 $d/$d ${D}${bindir}/ || exit 1
 	done
 }
+
+SRC_URI[md5sum] = "3bf4d8d285591a5b7f31170f9b87aba0"
+SRC_URI[sha256sum] = "c196988f55fc6633d9f9f6d9ddc2ae9b4dfa1f300edf4cbbad865c06a8656df7"

@@ -43,3 +43,6 @@ FILES_${PN}-cups = "\
 FILES_${PN}-backend = "\
      ${libdir}/cups/backend"
 
+
+SRC_URI[md5sum] = "a9ad78c4f0d884caac6b176b3cb9bf21"
+SRC_URI[sha256sum] = "8e34e2bc5974fd0f4ab71fbb42ac76fe3074fb2a09960452e4a1a157a77e00f1"

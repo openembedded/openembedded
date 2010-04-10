@@ -195,3 +195,6 @@ FILES_${PN}-dbg += " \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/*/.debug \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/*/*/.debug \
 "
+
+SRC_URI[md5sum] = "56df2ae66db57932515a491c03bf514f"
+SRC_URI[sha256sum] = "f3b2df3f4483752a42f1a775a1163da1f9e91bf5f19d302abc93544aca20d2cd"

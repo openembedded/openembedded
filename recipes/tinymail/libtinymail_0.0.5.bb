@@ -1,1 +1,4 @@
 require libtinymail.inc
+
+SRC_URI[md5sum] = "8c8d1f7378734231fd0458569346b9d4"
+SRC_URI[sha256sum] = "9269060f1a8c36c66748520a44d6ffc5059ae736de1e282bb8b6fd65d7890813"

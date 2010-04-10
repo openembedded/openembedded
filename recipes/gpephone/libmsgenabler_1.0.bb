@@ -14,3 +14,6 @@ FILES_${PN} += "$(datadir)/libmsgenabler"
 do_stage () {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "32f04482d3905f05a4f36ac946e7f95d"
+SRC_URI[sha256sum] = "c8568dbd5d3ffa200bf81ffbc7baf94902b41998d5c65455a1fbadce15db9953"

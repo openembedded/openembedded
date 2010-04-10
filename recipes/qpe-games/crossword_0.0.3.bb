@@ -32,3 +32,6 @@ grep -q application/puz $MIMEFILE 2>/dev/null || printf "application/crossword\t
 }
 
 inherit opie
+
+SRC_URI[md5sum] = "659d5c53cbace53f44fe7acb666bfe33"
+SRC_URI[sha256sum] = "8b718c344cf19417447cbc16867d2e04434654c13b330598b96720ead146b961"

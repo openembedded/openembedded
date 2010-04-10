@@ -68,3 +68,6 @@ do_install(){
 	rm ${D}/usr/libexec/ltp/share/pkgconfig/ltp.pc
 }
 
+
+SRC_URI[md5sum] = "397b376dd659459e4a431474b42263a8"
+SRC_URI[sha256sum] = "5fa4353d826b719cc313e370dd8f4ab0793432e4d797a96cb5bb01e078ff1e10"

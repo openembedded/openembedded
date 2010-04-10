@@ -38,3 +38,6 @@ do_install() {
 }
 
 FILES_${PN} = "${libdir}/libedit.so"
+
+SRC_URI[md5sum] = "c261f059f71cef79d0f793ba944a5891"
+SRC_URI[sha256sum] = "494c19b29d2880d92361bb5bd0e02b8db9cd2dd9c1c3b330170a91e215911f89"

@@ -59,3 +59,6 @@ INITSCRIPT_NAME_owserver = "owserver"
 INITSCRIPT_NAME_owhttpd = "owhttpd"
 INITSCRIPT_PARAMS_owserver = "defaults 20"
 INITSCRIPT_PARAMS_owhttpd = "defaults 21"
+
+SRC_URI[md5sum] = "2d6a4311f7275eb04466e36678bacabe"
+SRC_URI[sha256sum] = "3b35a5c2d6fa0814d3c689dd490e829d3dd7729d09ae95f9205757cbb3ee52f0"

@@ -32,3 +32,6 @@ do_install() {
 	touch ${D}${palmtopdir}/ubahn/maps/.empty
 	install -m 0644 src/ubahnnav/images/u-logo.png ${D}${palmtopdir}/pics/ubahnnav.png
 }
+
+SRC_URI[md5sum] = "039d1215960b879d5b292e5b713ced8b"
+SRC_URI[sha256sum] = "7007261ad816938ee4824720eb08e9bff4ad6f796965ec928f56acfa3c24a1b9"

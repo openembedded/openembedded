@@ -48,3 +48,6 @@ do_stage_append() {
 
 FILES_libxpp3-xpath-java = "${datadir}/java/xpp3-xpath*"
 
+
+SRC_URI[md5sum] = "e1b6aeaad1cd06e64568aae1a507d5c6"
+SRC_URI[sha256sum] = "404c0cd332f54ecf9807dc86d365c17dcffab669994c9dcbbad31fbc4b59f811"

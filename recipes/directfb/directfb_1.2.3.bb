@@ -26,3 +26,6 @@ EXTRA_OECONF = "\
 LDFLAGS_append = ""
 
 LEAD_SONAME = "libdirectfb-1.2.so.0"
+
+SRC_URI[md5sum] = "caea8bcfc9c1d391e56d85e437005a5d"
+SRC_URI[sha256sum] = "0875e553a17fe65e920ad810a67aa6faca582c53476d8dc75880a6b3da625d0b"

@@ -1,1 +1,4 @@
 require hal-info.inc
+
+SRC_URI[md5sum] = "a391649c5d5baa1a8998b2e1c1ad6464"
+SRC_URI[sha256sum] = "120e6b8019b5d608038d8f9a5a14bb97c4162b803118bb8530d9735d65b553a9"

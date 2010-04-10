@@ -18,3 +18,6 @@ RDEPENDS = "\
   python-fcntl \
 "
 
+
+SRC_URI[md5sum] = "bf107cf54e67bc6dec5bea1f3e6a65c3"
+SRC_URI[sha256sum] = "d315e7f3a8544fd85034d7e17fd7c5854e8f0828f5791f83cf313f8fa5740b75"

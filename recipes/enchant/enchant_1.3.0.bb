@@ -23,3 +23,6 @@ export CXXFLAGS += " -L${STAGING_LIBDIR} -lstdc++ "
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "f7edafae875616b83e7a17a7e5c2d585"
+SRC_URI[sha256sum] = "e65015aa0e6ada88a001b07b092265f4cbaf377d99b4233972995cdb94e698ef"

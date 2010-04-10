@@ -14,3 +14,6 @@ inherit autotools
 
 EXTRA_OECONF = "--with-ssl=${STAGING_LIBDIR}/.."
 
+
+SRC_URI[md5sum] = "190f08ce6839aecb0fa0ce8d5ddd09ee"
+SRC_URI[sha256sum] = "b32f3d71ac540248b7643baa39d8ecfb75af493228caaeb64608e49f2f092473"

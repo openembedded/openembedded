@@ -32,3 +32,6 @@ EXTRA_OECONF += "--disable-xinerama --disable-xfree86-textprop-bug-workaround \
 		 --x-includes=${STAGING_INCDIR}"
 
 inherit autotools
+
+SRC_URI[md5sum] = "e187a0ca83642afddf3b21898b683ced"
+SRC_URI[sha256sum] = "b47388c35922bc0f3419a2b059c77b80fee1c5b6d0ffcde7442c854fac6e90d6"

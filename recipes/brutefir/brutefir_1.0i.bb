@@ -23,3 +23,6 @@ do_install() {
 	install -m 755 brutefir ${D}${bindir}
 }
 
+
+SRC_URI[md5sum] = "33fcf84a41d38f5aac24c57a66a2c3ee"
+SRC_URI[sha256sum] = "e0f3988afb0a84a89f38153fd5617615e9bcf32bb747ee981c99c44d3c4236f6"

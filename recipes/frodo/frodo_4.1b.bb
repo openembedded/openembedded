@@ -45,3 +45,6 @@ STARTER_EOF
 FILES_${PN} = "${palmtopdir} ${sysconfdir}"
 
 #FIXME: Add postinst which copies /etc/frodorc into $HOME/.frodorc
+
+SRC_URI[md5sum] = "095b9f21c03204cc13f7f249e8866cd9"
+SRC_URI[sha256sum] = "ffae146dc20458698acf5ccc384dc32317cea1df0c95b44b5d47cca8b26bc986"

@@ -290,3 +290,6 @@ pkg_prerm_${PN}-slapd () {
         fi
         update-rc.d $D openldap remove
 }
+
+SRC_URI[md5sum] = "fbde128a8421b8d2ea587a25057a281e"
+SRC_URI[sha256sum] = "63d1c60a49277a4e95dcfb7f45dbb66a902d9e9023f8aca3a01cda4ff221d6a9"

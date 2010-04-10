@@ -15,3 +15,6 @@ do_stage() {
     autotools_stage_all
 }
 
+
+SRC_URI[md5sum] = "4bc9b73d77ebd571ac834619ce0b3582"
+SRC_URI[sha256sum] = "65451d8d6f5d4ca1dbd0700f3ef2ef257b52b542b3bab4bbeddd539f1c23f859"

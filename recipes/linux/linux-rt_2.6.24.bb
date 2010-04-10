@@ -81,3 +81,8 @@ file://defconfig \
 #http://www.bitshrine.org/gpp/linux-2.6.24-Openswan-2.4.12.patch;patch=1 \
 #http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-openswan-sysctl.patch;patch=1 \
 #"
+
+SRC_URI[md5sum] = "3f23ad4b69d0a552042d1ed0f4399857"
+SRC_URI[sha256sum] = "413c64fbbcf81244cb5571be4963644a1e81166a2b0f008a016528363b65c5d3"
+SRC_URI[md5sum] = "0c1c5d6d8cd82e18d62406d2f34d1d38"
+SRC_URI[sha256sum] = "b6bbb0dea427aa733c37d58a94b819b523c8649d7605f498348de159380c28a1"

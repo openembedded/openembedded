@@ -20,3 +20,6 @@ do_install_append() {
 
 PACKAGES =+ "cu"
 FILES_cu = "${bindir}/cu /var/spool"
+
+SRC_URI[md5sum] = "64c54d43787339a7cced48390eb3e1d0"
+SRC_URI[sha256sum] = "060c15bfba6cfd1171ad81f782789032113e199a5aded8f8e0c1c5bd1385b62c"

@@ -22,3 +22,6 @@ do_install () {
 		   'SYSCONFDIR=${D}${sysconfdir}' 'mandir=${D}${mandir}' \
 		   install
 }
+
+SRC_URI[md5sum] = "384b7f01d725c89ccd30692628b3ac1b"
+SRC_URI[sha256sum] = "2ebc7b51af96cb0fa8b703c7cb995bfb46ccf5312e335270d0420e260544c376"

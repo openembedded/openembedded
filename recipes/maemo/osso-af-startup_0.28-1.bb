@@ -43,3 +43,6 @@ do_install () {
 	install -m 755 ${S}/top-scripts/af-services ${D}/${sysconfdir}/init.d/af-services
 	install -m 755 ${S}/top-scripts/af-startup ${D}/${sysconfdir}/init.d/af-startup
 }
+
+SRC_URI[md5sum] = "dc36e212d738944ded9d05bc16171523"
+SRC_URI[sha256sum] = "b14cfdcedea92cef74c58cead4981c349f8e2cc7bbc24ace5e953dd3b6e83668"

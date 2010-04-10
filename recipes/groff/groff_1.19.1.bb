@@ -21,3 +21,6 @@ do_configure () {
 #	oe_runmake 'PREFIX=${D}' install
 #}
 
+
+SRC_URI[md5sum] = "57d155378640c12a80642664dfdfc892"
+SRC_URI[sha256sum] = "e07c495a18679b79c7c6f6f475689a33ab2a8ee5af4783e915f08134d1f546d2"

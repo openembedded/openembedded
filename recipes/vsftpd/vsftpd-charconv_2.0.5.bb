@@ -48,3 +48,6 @@ pkg_postinst() {
 INITSCRIPT_NAME = "vsftpd"
 
 INITSCRIPT_PARAMS = "defaults"
+
+SRC_URI[md5sum] = "146062e8b2f93af43ff6c2c770feea94"
+SRC_URI[sha256sum] = "5462ebf0df2792dde8ea3cf5d87c715200aac388554b3f0a9ace6265edecfa5b"

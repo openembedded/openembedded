@@ -15,3 +15,6 @@ S = "${WORKDIR}/HTML-Parser-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "26ceb6357e855b9e7aad5a5fd66d493e"
+SRC_URI[sha256sum] = "7e5396568c9cf12e773802c80507b7dac1bd4635e2c6a052bd994fe62638271a"

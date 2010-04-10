@@ -19,3 +19,6 @@ require nis.inc
 # ypbind-mt now provides all the functionality of ypbind
 # and is used in place of it.
 PROVIDES += "ypbind"
+
+SRC_URI[md5sum] = "4878b742d61590501230aa8baa6a4f53"
+SRC_URI[sha256sum] = "a39753a22b1f77b1fdb8163e800ee2d4f98a9e3018693d127459b509069a23f3"

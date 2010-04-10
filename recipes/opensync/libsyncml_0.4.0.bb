@@ -32,3 +32,6 @@ FILES_${PN} = "${libdir}/*.so.*"
 
 
 
+
+SRC_URI[md5sum] = "a6b5becd4b61e246ed2ee95db9f6e746"
+SRC_URI[sha256sum] = "2be78a947bdbfd24aa4f35ae97d2b7bafa60162c5e824cf3dd085b40eddee8ff"

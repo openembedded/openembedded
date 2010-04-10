@@ -46,3 +46,6 @@ PACKAGES =+ "libgettextlib libgettextsrc"
 FILES_libgettextlib = "${libdir}/libgettextlib-*.so*"
 FILES_libgettextsrc = "${libdir}/libgettextsrc-*.so*"
 
+
+SRC_URI[md5sum] = "78f4b862510beb2e5d43223dd610e77d"
+SRC_URI[sha256sum] = "41f20c469c7759acb34cfa7e0b3cac9096d59a58ad800e471f07424a8e7adbb7"

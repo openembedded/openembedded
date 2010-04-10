@@ -76,3 +76,6 @@ pkg_postrm_${PN} () {
 	rm -f /etc/default/volatiles/98_policykit
     rm -f /etc/volatile.cache  
 }
+
+SRC_URI[md5sum] = "802fd13ae41f73d79359e5ecb0a98716"
+SRC_URI[sha256sum] = "f40c7c6bec19d7dba2335bddcffd0457494409a0dfce11d888c748dc892e80b7"

@@ -54,3 +54,6 @@ pkg_postrm_${PN}() {
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+SRC_URI[md5sum] = "774c64ed54455f1297ecbeeffdc52eed"
+SRC_URI[sha256sum] = "da051f5049d44415fff02b48368db4e3e3b6154135a50f990844d73896d18e19"

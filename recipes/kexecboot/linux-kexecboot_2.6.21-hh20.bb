@@ -23,3 +23,6 @@ do_configure_append() {
 }
 
 
+
+SRC_URI[md5sum] = "8ab51e8ff728f4155db64b9bb6ea6d71"
+SRC_URI[sha256sum] = "75d4c6ddbfc5e4fff7690a3308e2574f89a0e2709fb91caccb29067a9dad251a"

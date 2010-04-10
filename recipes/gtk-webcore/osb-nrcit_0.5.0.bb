@@ -28,3 +28,6 @@ do_stage () {
 	install -m 0644 ${S}/src/gtk/gtk-khtml.h ${STAGING_INCDIR}/osb
 	install -m 0644 ${S}/src/osb.h ${STAGING_INCDIR}/osb
 }
+
+SRC_URI[md5sum] = "b02f4a0dcaac722ad7cdc112db964df4"
+SRC_URI[sha256sum] = "8977c50529ecd51441897d675a3eca980d50e2b33fb0885f9dae1f3c9fd417c8"

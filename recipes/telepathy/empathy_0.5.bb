@@ -16,3 +16,6 @@ FILES_${PN} += "${datadir}/mission-control/profiles/*.profile \
         ${datadir}/dbus-1/services/*.service \
         ${datadir}/telepathy/managers/*.chandler \
 	${datadir}/icons"
+
+SRC_URI[md5sum] = "e363689295c78ad62d323111a0176ea5"
+SRC_URI[sha256sum] = "3807d778ea57b9a72a17d6f7c4c623f3b12546d9fc6a0b1da8c3f713fd6e4a15"

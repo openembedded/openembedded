@@ -113,3 +113,6 @@ python populate_packages_prepend () {
         if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
                 bb.data.setVar('PKG_${PN}', 'libgtk-2.0', d)
 }
+
+SRC_URI[md5sum] = "520090ef291e35ba93397060e20f5025"
+SRC_URI[sha256sum] = "d408b606c8dd414dfbf220ccc168a0bc85a419945439796792a5357a96ff02af"

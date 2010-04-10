@@ -23,3 +23,6 @@ BUILD_CFLAGS += " -I${S} -I${S}/et"
 #	rm -f xmalloc.o assert.o mkchartable.o
 #	cd ..
 #}
+
+SRC_URI[md5sum] = "ad8e3ca17b04a38c934f8c7a80c8adec"
+SRC_URI[sha256sum] = "8f3b8a3076c16f21ef2912c29033975fb6072ceb68471f15d8a53d833f2873e7"

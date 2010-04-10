@@ -30,3 +30,6 @@ FILES_x11vnc = "${bindir}/x11vnc ${bindir}/LinuxVNC"
 FILES_libvncserver-storepasswd = "${bindir}/storepasswd"
 FILES_libvncserver-javaapplet = "${datadir}/fbvncserver/classes/index.vnc \
                                  ${datadir}/fbvncserver/classes/VncViewer.jar"
+
+SRC_URI[md5sum] = "4769d70bcd9d8390afb64c5eddfcd60e"
+SRC_URI[sha256sum] = "0ef94a1857e03e826825c559b5b8f07a4b412112fb9326f5eb694d5216747071"

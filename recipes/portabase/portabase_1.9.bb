@@ -127,3 +127,6 @@ grep  $EXT $QPEDIR/etc/mime.types |
 )
 }
 
+
+SRC_URI[md5sum] = "3319e8eff133de0bc9e8fe810e052202"
+SRC_URI[sha256sum] = "6b3d91811b098fb9e1a0f91d11a6c935c2d7e41d4431f022023d606d270fe0fc"

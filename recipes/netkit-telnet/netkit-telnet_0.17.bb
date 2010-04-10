@@ -35,3 +35,6 @@ pkg_prerm_${PN} () {
    update-alternatives --remove telnet telnet.${PN} 100
 }
 
+
+SRC_URI[md5sum] = "d6beabaaf53fe6e382c42ce3faa05a36"
+SRC_URI[sha256sum] = "9c80d5c7838361a328fb6b60016d503def9ce53ad3c589f3b08ff71a2bb88e00"

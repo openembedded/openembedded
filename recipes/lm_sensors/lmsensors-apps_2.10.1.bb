@@ -45,3 +45,6 @@ FILES_libsensors = "${libdir}/libsensors.so.*"
 FILES_libsensors-dbg += "${libdir}/.debug"
 FILES_libsensors-dev = "${libdir}/libsensors.so ${libdir}/libsensors.a ${includedir}"
 FILES_libsensors-doc = "${mandir}/man3"
+
+SRC_URI[md5sum] = "cdc857b78e813b88cbf8be92441aa299"
+SRC_URI[sha256sum] = "a332cacfa9d0eed6e9158c394db714e536f38c27451d7df08b9634952118fa1b"

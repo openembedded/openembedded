@@ -11,3 +11,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/inotify-tools/inotify-tools-${PV}.tar.gz \
 
 inherit autotools
 
+
+SRC_URI[md5sum] = "35d7178297390f18bae451e083362acf"
+SRC_URI[sha256sum] = "464146acec2c118be63a6c2a090d9252fbe9689c093db85b695d0502fa229445"

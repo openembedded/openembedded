@@ -20,3 +20,6 @@ PACKAGES += "python-cupshelpers"
 
 FILES_${PN} = "" # we're not going to support it for now
 FILES_python-cupshelpers = "${libdir}"
+
+SRC_URI[md5sum] = "a77bde5adc5ee8822b0764ff786ccc09"
+SRC_URI[sha256sum] = "fdd50cb114151c66b8180c0ce90ba0e99f77a69770ac21598a87be935eec2224"

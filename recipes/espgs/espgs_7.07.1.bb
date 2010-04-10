@@ -29,3 +29,6 @@ do_install () {
 		   'datadir=${D}${datadir}' \
 		   'mandir=${D}${mandir}' install
 }
+
+SRC_URI[md5sum] = "d30bf5c09f2c7caa8291f6305cf03044"
+SRC_URI[sha256sum] = "7e0ed705da90a4c65368675d68ccecb871f89cb06d2efc61ddd0bb5fee5570f2"

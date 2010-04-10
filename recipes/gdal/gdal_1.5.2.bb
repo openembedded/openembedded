@@ -33,3 +33,6 @@ FILES_${PN}-dev += "${datadir}"
 do_compile() {
         oe_runmake default
 }
+
+SRC_URI[md5sum] = "1939de5fe43d12884d85fa5d7797e3c2"
+SRC_URI[sha256sum] = "243dabf3c45530cac8be092f9a1d838a46b46a92d4138870423006ffd6ae4001"

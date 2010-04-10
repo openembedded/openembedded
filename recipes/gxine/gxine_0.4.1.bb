@@ -42,3 +42,6 @@ LDFLAGS += "-lxine"
 
 inherit autotools pkgconfig
 
+
+SRC_URI[md5sum] = "4a04df0d971a8952fb395b6eb0bc8dab"
+SRC_URI[sha256sum] = "48d93ef10f17cffe1ecbfec3078932ae48e08e3c172437e4bdfb22ae87d25421"

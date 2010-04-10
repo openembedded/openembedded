@@ -47,3 +47,6 @@ do_install() {
 	# remove any maps that were installed
 	rm -f ${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/*.map
 }
+
+SRC_URI[md5sum] = "288882c65cc13fbe48d5c5ed69aba1a8"
+SRC_URI[sha256sum] = "dd3629e6ba6f638962f3a60035208facf6155397000c86b5f2f7ca2990ef59e1"

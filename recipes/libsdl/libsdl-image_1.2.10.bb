@@ -19,3 +19,6 @@ do_unpackpost() {
 }
 
 addtask unpackpost after do_unpack before do_patch
+
+SRC_URI[md5sum] = "6c06584b31559e2b59f2b982d0d1f628"
+SRC_URI[sha256sum] = "75e05d1e95f6277b44797157d9e25a908ba8d08a393216ffb019b0d74de11876"

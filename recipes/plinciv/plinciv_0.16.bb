@@ -16,3 +16,6 @@ S = "${WORKDIR}/freeciv-1.14.1"
 
 FILES_${PN} = "${bindir} \
                ${datadir}/freeciv"
+
+SRC_URI[md5sum] = "d328f65e7fca5252f27161f5f9e97a03"
+SRC_URI[sha256sum] = "8a963570e5c4ea432b0e31d77d3605705bda91a9f97ff377c5c3204ca768e342"

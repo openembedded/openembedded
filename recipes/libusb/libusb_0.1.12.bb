@@ -34,3 +34,6 @@ do_stage() {
 PACKAGES =+ "libusbpp"
 
 FILES_libusbpp = "${libdir}/libusbpp*.so.*"
+
+SRC_URI[md5sum] = "caf182cbc7565dac0fd72155919672e6"
+SRC_URI[sha256sum] = "37f6f7d9de74196eb5fc0bbe0aea9b5c939de7f500acba3af6fd643f3b538b44"

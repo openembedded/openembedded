@@ -21,3 +21,6 @@ do_install () {
 	install -c -m 755 ${WORKDIR}/debian-zeroconf ${D}${sysconfdir}/network/if-up.d/zeroconf
 	install -c ${WORKDIR}/zeroconf-default ${D}${sysconfdir}/default/zeroconf
 }
+
+SRC_URI[md5sum] = "bdafb16b008ebb5633e4e581f77821d2"
+SRC_URI[sha256sum] = "a8c74df127753e2310fa1e072f3c9ca44a404bb0bbce9cfec7a84c6dff8bec7b"

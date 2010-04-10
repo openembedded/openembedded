@@ -17,3 +17,6 @@ do_stage() {
 	install include/osipparser2/*.h ${STAGING_INCDIR}/osipparser2/
 	install include/osipparser2/headers/*.h ${STAGING_INCDIR}/osipparser2/headers/
 }
+
+SRC_URI[md5sum] = "40ee3ec89030f0d6dfdb2cf6100e6685"
+SRC_URI[sha256sum] = "4e13febd65a2f8f18cb55151cd10f5f0888bf1e7dc2a4c0d54f39f170255de1c"

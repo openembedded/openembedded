@@ -38,3 +38,6 @@ do_install_append () {
         cp -pRP ${S}/samples ${D}${docdir}/${PN}/examples/samples
 }
 
+
+SRC_URI[md5sum] = "c09f77e2af500b51d22e0238c0534994"
+SRC_URI[sha256sum] = "01c75ebc523b77b88d5754fa93a283eeff77bcf799536db8697b61daf42f36bd"

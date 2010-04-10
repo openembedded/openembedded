@@ -18,3 +18,6 @@ python populate_packages_prepend() {
 
 FILES_${PN}-dev += "${libdir}/alsa-lib/libasound*.a ${libdir}/alsa-lib/libasound*.la"
 FILES_${PN}-dbg += "${libdir}/alsa-lib/.debug"
+
+SRC_URI[md5sum] = "29ae9cac05423cf6a49f66eeb1a79eb6"
+SRC_URI[sha256sum] = "67be087c24af9d2a380b29d6e90b7187b337a0c484c31438a0d38ff429c71100"

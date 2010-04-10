@@ -27,3 +27,6 @@ do_install() {
 	rmdir ${D}/usr/X11R6/bin/
 }
 
+
+SRC_URI[md5sum] = "83a43006896fc270515a86f9ccec2c35"
+SRC_URI[sha256sum] = "03d2b69abb17382ead3bc796d451a61d576ff9ac2af34dcd6aba39f77e03df59"

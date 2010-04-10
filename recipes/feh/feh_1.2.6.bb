@@ -8,3 +8,6 @@ SRC_URI = "http://linuxbrit.co.uk/downloads/feh-${PV}.tar.gz \
 S = "${WORKDIR}/feh-${PV}"
 
 inherit autotools
+
+SRC_URI[md5sum] = "6d40889465181de51bb26fbbe57fbfac"
+SRC_URI[sha256sum] = "281cec4cec724b53ba501718e8010bbff0ef49415649e4e7fe6431ec62ebea7d"

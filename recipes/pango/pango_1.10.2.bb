@@ -47,3 +47,6 @@ python populate_packages_prepend () {
 
 	do_split_packages(d, modules_root, '^pango-(.*)\.so$', 'pango-module-%s', 'Pango module %s', prologue + 'pango-querymodules > /etc/pango/pango.modules')
 }
+
+SRC_URI[md5sum] = "7302220d93ac17d2c44f356d852e81dc"
+SRC_URI[sha256sum] = "677d3a943cfeedebf138024de6e4a773f7f6626236613401f3a797f82f04eba7"

@@ -17,3 +17,6 @@ do_patch_prepend() {
         bb.data.getVar('PREFERRED_VERSION_gtk+', d, 1).split('.')[1] < '18':
             SRC_URI_append = "file://gattrib-gtk218.patch;patch=1"
 }
+
+SRC_URI[md5sum] = "e1f68401e7ca5fff16292358f0dfd553"
+SRC_URI[sha256sum] = "5eb48772d374dad446bfcd69990231fa6c6b52ba9b30048991632557512a7565"

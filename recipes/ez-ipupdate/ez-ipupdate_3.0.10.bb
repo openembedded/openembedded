@@ -29,3 +29,6 @@ do_install_append() {
 	install -c -m 755 ${WORKDIR}/init "${D}${sysconfdir}/init.d/ipupdate"
 	install -c -m 644 ${WORKDIR}/ipupdate.conf "${D}${sysconfdir}/ipupdate.conf"
 }
+
+SRC_URI[md5sum] = "6505c9d18ef6b5ce13fe2a668eb5724b"
+SRC_URI[sha256sum] = "f7ff9bf972139b303616018a6937aa4c6df4e93c935ffd004b30845e2ad41ea6"

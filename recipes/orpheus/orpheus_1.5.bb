@@ -11,3 +11,6 @@ S = "${WORKDIR}/orpheus-${PV}"
 inherit autotools
 
 acpaths = "-I ${S}/m4"
+
+SRC_URI[md5sum] = "9613e6be14ba7a0ca5d42a88e6ed3516"
+SRC_URI[sha256sum] = "45145ea27333be1552624065297b4d9d76feadf2a4a89fdf0ddafc830ced3a98"

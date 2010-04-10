@@ -17,3 +17,6 @@ SRC_URI = "http://sweb.cz/tripie/utils/wmctrl/dist/wmctrl-1.07.tar.gz"
 ######################################################################################
 
 inherit autotools
+
+SRC_URI[md5sum] = "1fe3c7a2caa6071e071ba34f587e1555"
+SRC_URI[sha256sum] = "d78a1efdb62f18674298ad039c5cbdb1edb6e8e149bb3a8e3a01a4750aa3cca9"

@@ -35,3 +35,6 @@ FILES_${PN}-dev += "\
 "
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/gst-0.10/gst/.debug/"
 FILES_${PN}-examples = "${datadir}/gst-python/0.10/examples"
+
+SRC_URI[md5sum] = "6183d61e434b5d34f232248a35571627"
+SRC_URI[sha256sum] = "c875753a6cccd40a79f5824ea5ec51ee4615a4f22103e4adfc6a0221bf615d8e"

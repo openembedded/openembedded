@@ -94,3 +94,6 @@ do_install () {
 	rm ${D}${BINDIR}/kermit-sshsub
 	(cd ${D}${BINDIR} && ln -s ${BINDIR}/kermit kermit-sshusb)
 }
+
+SRC_URI[md5sum] = "5767ec5e6ff0857cbfe2d3ec1ee0e2bc"
+SRC_URI[sha256sum] = "39e7cd4892502344a635952843487d9b4bfa98e59d1e1acad5ef8aa969abba93"

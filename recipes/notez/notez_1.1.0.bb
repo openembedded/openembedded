@@ -20,3 +20,6 @@ do_install () {
 	install -m 0644 notez.png ${D}${palmtopdir}/pics/noteZ.png
 }
 
+
+SRC_URI[md5sum] = "c348a626fc09265fa74a12470c83c113"
+SRC_URI[sha256sum] = "11ee0a660faca7993a2f525d2964391d135b9552d9e94abad6cb6c5f3983f964"

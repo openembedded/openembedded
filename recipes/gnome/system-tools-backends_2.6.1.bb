@@ -34,3 +34,6 @@ FILES_${PN} += " ${datadir}/dbus-1/system-services"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/files"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/scripts"
 
+
+SRC_URI[archive.md5sum] = "c82a9d305c3a1bf924bba6b1bced3e86"
+SRC_URI[archive.sha256sum] = "7f56dd08cf5425218b697d5db82e6ce03aff4f7b57f58d3053f0a7af632b3747"

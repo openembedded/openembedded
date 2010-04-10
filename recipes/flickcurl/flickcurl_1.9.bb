@@ -20,3 +20,6 @@ do_stage() {
 LEAD_SONAME = "libflickcurl.so.1"
 
 FILES_${PN} += "${libdir}/libflickcurl.so.*"
+
+SRC_URI[md5sum] = "d701fcc8d764e634ee979f18ff9db322"
+SRC_URI[sha256sum] = "573ae52509289ed366a161facf390aa6ce530da143c760ca546868c8b0a0d034"

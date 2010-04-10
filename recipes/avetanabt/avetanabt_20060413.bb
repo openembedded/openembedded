@@ -58,3 +58,6 @@ do_install() {
   install avetanaBT.jar ${D}${datadir}/avetanabt/
 
 }
+
+SRC_URI[md5sum] = "3cb3be404950ef08e51adbe59c7b811e"
+SRC_URI[sha256sum] = "c3648f02dd7d4dc8c0ef9a48089fda4ca47b81a977c838b17f55e6abf7f51447"

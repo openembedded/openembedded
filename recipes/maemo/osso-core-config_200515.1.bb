@@ -40,3 +40,6 @@ adduser --system --home "$MAEMOHOME" --no-create-home --disabled-password --ingr
 chown -R "$MAEMOUSER"."$MAEMOUSER" "$MAEMOHOME" 2>/dev/null
 chgrp "$MAEMOUSER" "$MAEMOHOME" 2>/dev/null
 }
+
+SRC_URI[md5sum] = "efa6dc867cec4b38febab2f0fe24a4d2"
+SRC_URI[sha256sum] = "fed674a5ae64cb65328eecc752403e5e75e9ce486c19d86c5fa633afb23e0969"

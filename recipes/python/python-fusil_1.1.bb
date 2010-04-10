@@ -20,3 +20,6 @@ RDEPENDS_${PN} = "\
   python-resource \
   python-subprocess \
 "
+
+SRC_URI[md5sum] = "e7dfc39fd169e8ba72b0aeb304acb25b"
+SRC_URI[sha256sum] = "85f9a52578c9af3d2a062097144cb6dc507fff7df7e286479010e65cf6b6f23d"

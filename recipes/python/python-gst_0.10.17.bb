@@ -39,3 +39,6 @@ FILES_${PN}-dev += "\
 "
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/gst-0.10/gst/.debug/ ${libdir}/gstreamer-0.10/.debug/"
 FILES_${PN}-examples = "${datadir}/gst-python/0.10/examples"
+
+SRC_URI[md5sum] = "3998753de6500ee8c18ce1456df43df6"
+SRC_URI[sha256sum] = "70cef839b429dcea0cae342d24bc2e0e5deae01e902a8858e2c7dd76a724cde9"

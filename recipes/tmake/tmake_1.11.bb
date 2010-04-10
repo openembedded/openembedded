@@ -26,3 +26,6 @@ do_install() {
 PACKAGES = "${PN}-dbg tmake"
 FILES = ""
 FILES_tmake="${bindir} ${datadir}/tmake"
+
+SRC_URI[md5sum] = "b007a86a83483ff9bd6795f45780ddce"
+SRC_URI[sha256sum] = "6d828029e276f42fee507f58ed0bd6890ef75f0e54f45f2b1129a2426c817c61"

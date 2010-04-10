@@ -45,3 +45,6 @@ CONFFILES_${PN} = "${sysconfdir}/pptpd.conf \
 
 INITSCRIPT_NAME = "pptpd"
 INITSCRIPT_PARAMS = "defaults 92 8"
+
+SRC_URI[md5sum] = "b38df9c431041922c997c1148bedf591"
+SRC_URI[sha256sum] = "c23a9bdd219a0a36ae7ca20e7c9749f2efdcdbf108aabeeeb5066ba442ec88b6"

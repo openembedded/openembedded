@@ -43,3 +43,6 @@ EXTRA_OECONF += " --without-included-ltdl \
                   --disable-speexdsp \
                 "
 
+
+SRC_URI[md5sum] = "366f703c2eb1747e4109602b75439ff4"
+SRC_URI[sha256sum] = "16f272214eed2ab50bcd9507d6299b82ed7d20e7e8eb253ab160e594eeb210b3"

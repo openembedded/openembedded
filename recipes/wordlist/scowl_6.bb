@@ -35,3 +35,6 @@ ln -sf ${DICTNAME} words
 DICTNAME_wamerican = "american-english"
 DICTNAME_wbritish = "british-english"
 DICTNAME_wcanadian = "canadian-english"
+
+SRC_URI[md5sum] = "69d9b4b34dc85011d89115fa3cd2e011"
+SRC_URI[sha256sum] = "2468f134a2a384eec8d154c7f8bdb9212c2601036aeec29bb38fdeaad3b14912"

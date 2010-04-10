@@ -24,3 +24,6 @@ FILES_libswfdec = "${libdir}/libswfdec-0.7.so.*"
 FILES_libswfdecgtk = "${libdir}/libswfdec-gtk-0.7.so*"
 
 
+
+SRC_URI[md5sum] = "08fcda4a46454bfc66b97fba2d385f8c"
+SRC_URI[sha256sum] = "4345da2a4790125bd7205bd10a3326bf94e36f97229850b99ec9e8f050a9ab4a"

@@ -25,3 +25,6 @@ do_install_prepend() {
 	install -m 0644 ${S}/sub-projects/rzscontrol/man/rzscontrol.1 ${D}${mandir}/man1
 }
 
+
+SRC_URI[md5sum] = "0a574643c0eb857b946adcd5d5a22eb0"
+SRC_URI[sha256sum] = "e5f697be6c1b7bfb9ac9ba5b8d836ff20f880c161f998c482caba83caf443c0c"

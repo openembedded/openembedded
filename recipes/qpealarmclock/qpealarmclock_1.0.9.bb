@@ -30,3 +30,6 @@ do_install () {
   install -m 644 ${S}/dist/opt/QtPalmtop/pics/qpealarmclock/smallalarm.png ${D}${palmtopdir}/pics/qpealarmclock/smallalarm.png
   install -m 644 ${S}/dist/opt/QtPalmtop/pics/qpealarmclock/sound.png ${D}${palmtopdir}/pics/qpealarmclock/sound.png
 }
+
+SRC_URI[md5sum] = "1d338397e60b8031458019bf4b322597"
+SRC_URI[sha256sum] = "5925931a046074598009ddee5c2989330f2fce570f6590c08a55ac955d1e64a6"

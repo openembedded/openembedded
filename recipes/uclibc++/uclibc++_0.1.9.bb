@@ -55,3 +55,6 @@ PACKAGES = "g++-uc libuclibc++ libuclibc++-dev"
 FILES_g++-uc = "${bindir}/g++-uc"
 FILES_libuclibc++ = "${libdir}/*.so.*"
 FILES_libuclibc++-dev = "${FILES_uclibc++-dev}"
+
+SRC_URI[md5sum] = "ebf58e04d72eab5c131c2c9118737024"
+SRC_URI[sha256sum] = "82342a5d6088421e79699dd7af614ebecf6dd335eabce07690902a379f5ea8de"

@@ -37,3 +37,6 @@ do_install () {
     install -m 0644 Main.glade ${D}${datadir}/openBmap/Main.glade
 }
 
+
+SRC_URI[md5sum] = "5c9c1639bdff3bd35c63697d398f1a68"
+SRC_URI[sha256sum] = "3d6c58830e50373d0dc2a72f6fc65afd7ef30aabf2d1078e6878c911270dec16"

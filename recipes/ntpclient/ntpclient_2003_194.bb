@@ -30,3 +30,6 @@ do_install () {
     install -D -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/ntpclient
 }
 
+
+SRC_URI[md5sum] = "94e84d5c6023c5e1f3890b28d0a08c92"
+SRC_URI[sha256sum] = "3f515a043bcd3b778d33938da224214e727faa528256d4a1a213bc8617ac2d0b"

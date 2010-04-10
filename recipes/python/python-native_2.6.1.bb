@@ -28,3 +28,6 @@ EXTRA_OEMAKE = '\
 do_stage_append() {
 	install -m 0755 Parser/pgen ${STAGING_BINDIR_NATIVE}/pgen
 }
+
+SRC_URI[md5sum] = "e81c2f0953aa60f8062c05a4673f2be0"
+SRC_URI[sha256sum] = "cf153f10ba6312a8303ceb01bed834a2786d28aa89c7d73dba64714f691628f6"

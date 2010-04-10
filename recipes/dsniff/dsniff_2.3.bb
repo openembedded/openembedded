@@ -28,3 +28,6 @@ EXTRA_OEMAKE = "'install_prefix=${D}'"
 
 CFLAGS =+ "-I${S}/missing"
 LDFLAGS += "-lresolv"
+
+SRC_URI[md5sum] = "183e336a45e38013f3af840bddec44b4"
+SRC_URI[sha256sum] = "82e492455486e655c315f027d393dbeb49ad930804acccdc51b30d57e1294ff5"

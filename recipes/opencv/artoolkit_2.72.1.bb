@@ -51,3 +51,6 @@ FILES_${PN} += "${datadir}/ARToolKit"
 
 
 
+
+SRC_URI[md5sum] = "4328b512711529309bad4bd1d791952c"
+SRC_URI[sha256sum] = "1a49a67c6e196b0e9990e90255ce840287ac47b5a53371a68a6dd93a5425d259"

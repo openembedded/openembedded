@@ -22,3 +22,6 @@ FILES_libucil = "${libdir}/libucil*so.*"
 FILES_libucil-dev = "${libdir}/libucil*.so ${libdir}/libucil*.*a"
 FILES_unicapgtk = "${libdir}/libunicapgtk*so.*"
 FILES_unicapgtk-dev = "${libdir}/libunicapgtk*so.* ${libdir}/libunicapgtk*.*a"
+
+SRC_URI[md5sum] = "69db7c7dacb58c303d44f3b6598653ee"
+SRC_URI[sha256sum] = "bf619a4675aa4b7cec9c3a664e1fcd9d869facf393e4e9e51e52490db98d6585"

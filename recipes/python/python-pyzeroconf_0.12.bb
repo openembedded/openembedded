@@ -16,3 +16,6 @@ do_install() {
 
    install -m 0644 Zeroconf.py ${D}${libdir}/${PYTHON_DIR}/site-packages/
 }
+
+SRC_URI[md5sum] = "e7180e9440d961c6aba5056fdd7997f0"
+SRC_URI[sha256sum] = "00689fa56dd87eb47b30565ab7561c94d2cde58372e267116889d2531d880b98"

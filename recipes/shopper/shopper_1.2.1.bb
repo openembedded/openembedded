@@ -34,3 +34,6 @@ do_install() {
         install -m 0644 ${S}/Shopper.html ${D}${palmtopdir}/help/html/
         install -m 0644 ${S}/shoppinglist.xml ${D}${SHOPPER_DATADIR}/shoppinglist.xml
 }
+
+SRC_URI[md5sum] = "ed4d8ce2227abf7e68de687a8c930fa4"
+SRC_URI[sha256sum] = "0e1ab08b22742d18b9ee0288874f63ddd74591e1b9f29003fe66dd0ba2289bcf"

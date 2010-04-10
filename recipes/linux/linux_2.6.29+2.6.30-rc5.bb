@@ -22,3 +22,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.30/patch-${KERNEL_RELEASE}.bz2;patch=1 \
            file://defconfig"
 
+
+SRC_URI[md5sum] = "64921b5ff5cdadbccfcd3820f03be7d8"
+SRC_URI[sha256sum] = "58a5ea16d499fe06f90fcbf1d687d1235d2cb9bc28bf979867bd3faadf38fc3f"
+SRC_URI[md5sum] = "2f399a5e286a9fe7cb40bfd3d42a7a3d"
+SRC_URI[sha256sum] = "79a9913a74e58af6431bb952aac2cf0a1f4422287f420844f24ca6bc5ed0fdc4"

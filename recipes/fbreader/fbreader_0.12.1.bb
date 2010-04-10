@@ -35,3 +35,6 @@ do_configure() {
 do_install() {
         oe_runmake install DESTDIR=${D} RESOLUTION=${READER_RESOLUTION}
 }
+
+SRC_URI[md5sum] = "7236d094a91f26d19a3cfd3db8fcf946"
+SRC_URI[sha256sum] = "02a6a143abf3b5ab875392acef8d67f5cc991ea364e3bd250628e6a31b1f9923"

@@ -45,3 +45,6 @@ pkg_prerm_module-init-tools() {
 #!/bin/sh
 update-alternatives --remove depmod /sbin/depmod.26
 }
+
+SRC_URI[md5sum] = "29aa770c6ce92cbbc6da00161d2784d8"
+SRC_URI[sha256sum] = "f7c66e151d3d89df02c41f82cae5c384cad76ad3956519a872d98d5676bddd47"

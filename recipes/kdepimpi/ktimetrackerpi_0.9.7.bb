@@ -28,3 +28,6 @@ do_install() {
 
     install -m 0755 ${S}/dest/ktpi ${D}${palmtopdir}/bin/ktpi
 }
+
+SRC_URI[md5sum] = "c2701d7f8e094b41aa5a7c771b981393"
+SRC_URI[sha256sum] = "204156fadfdefb31f6cbd3d0d7e5cb032af40c037a0682c75651c3191de09150"

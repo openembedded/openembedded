@@ -40,3 +40,8 @@ do_install() {
 
 FILES_${PN}-dbg += "${palmtopdir}/pobox/.debug"
 FILES_${PN} += "${palmtopdir}/pobox/*"
+
+SRC_URI[md5sum] = "d1c988c2ac06d3111f80d59d30bb8bbb"
+SRC_URI[sha256sum] = "73bbc333d2a51d0e1cd73030012f2727ac26f5b1d41333994b01a47486fc16db"
+SRC_URI[md5sum] = "7afe4cb20d36b7d00002a522cbe724a8"
+SRC_URI[sha256sum] = "c64986ede63deda10a4b0aa5fd3fda1ae7fcd28d91ecc149fceec4ccffd9c620"

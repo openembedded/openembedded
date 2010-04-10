@@ -29,3 +29,6 @@ do_stage() {
 	rm -rf ${STAGE_TEMP}
 }
 
+
+SRC_URI[md5sum] = "c990186db06cf188cb267d12bc21e2da"
+SRC_URI[sha256sum] = "f91445e5e1a02ee16f0bc1eb31a1cdfa53c4bb1e1cb4f76fae33436d472e9345"

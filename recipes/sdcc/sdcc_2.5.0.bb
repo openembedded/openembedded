@@ -19,3 +19,6 @@ do_configure() {
 	oe_runconf
 }
 
+
+SRC_URI[md5sum] = "c572e7842fe36348f5b2972c1025a75a"
+SRC_URI[sha256sum] = "138d2e59569f76f1a5d35bd5d85e7006eeebc4f48cd3dac902e2824ed50c3d80"

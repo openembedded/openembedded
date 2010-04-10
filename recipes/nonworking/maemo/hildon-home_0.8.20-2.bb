@@ -11,3 +11,6 @@ S = "${WORKDIR}/hildon-home-0.8.20"
 
 inherit autotools pkgconfig
 
+
+SRC_URI[md5sum] = "dd62148b18abe1e02182abba91e1d55b"
+SRC_URI[sha256sum] = "1b62825a44d7058e56162d6fc08d06454d30889cfaad6ff0bbd9e32bf4b0ce5c"

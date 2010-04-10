@@ -55,3 +55,6 @@ FILES_${PN}-dbg += "${libdir}/${PN}-modules/.debug"
 FILES_libspeechd += "${libdir}/libspeechd.so.*"
 FILES_libspeechd-dev += "${libdir}/libspeechd* ${includedir}"
 FILES_libspeechd-dbg += "${libdir}/.debug/libspeechd*"
+
+SRC_URI[md5sum] = "bbd7ebc5b0f1b3ec4d89ad66b20d5cea"
+SRC_URI[sha256sum] = "c664ee801d1bc0500ae75739fa98bcc8ad410474c98a6757d3d1ee24a8241462"

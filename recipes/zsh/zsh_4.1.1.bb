@@ -23,3 +23,6 @@ do_configure_prepend () {
 do_install_append () {
     mv ${D}${bindir}/zsh-${PV} ${D}${bindir}/zsh
 }
+
+SRC_URI[md5sum] = "48958b1a3fc86261a26eea40a4f7d4af"
+SRC_URI[sha256sum] = "f539e6db53233fa75d5fa389b4807d54add312fc96de71b5eb7cf4f071719027"

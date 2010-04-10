@@ -22,3 +22,6 @@ do_stage() {
 	echo "NOTE: stage package ${PF} is: (${PN},${PV},${PR})"
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "bdcdb1b8ca13dba897c0a2138d1643f5"
+SRC_URI[sha256sum] = "694ea8352edf845b0a7dc0c2e0e990bcb8507f64e405edc048ad115c6578e5f7"

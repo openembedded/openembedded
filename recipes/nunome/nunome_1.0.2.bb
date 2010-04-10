@@ -42,3 +42,6 @@ do_install() {
         install -m 644 ui/nunome.qm		${D}${palmtopdir}/i18n/ja
         install -m 644 dicman/nnmDicman.qm  	${D}${palmtopdir}/i18n/ja
 }
+
+SRC_URI[md5sum] = "e5c9d2351de250aaa7abf581a1f2c0f4"
+SRC_URI[sha256sum] = "7bda9302036facd65b323d7042a809b08d55d5b61b38d4d40f22f41f27fec83c"

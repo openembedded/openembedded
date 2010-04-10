@@ -21,3 +21,6 @@ do_install() {
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/ddclient.conf"
+
+SRC_URI[md5sum] = "42a3a420e492c0111adc58ac08ff6d04"
+SRC_URI[sha256sum] = "28be7102bde3bc9b39be2732b89da9fbab79b7ac3898075ed414a45258bb3026"
