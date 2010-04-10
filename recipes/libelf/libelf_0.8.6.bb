@@ -4,8 +4,8 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PR = "r1"
 
-SRC_URI = "http://www.mr511.de/software/libelf-${PV}.tar.gz \
-           http://www.stud.uni-hannover.de/~michael/software/libelf-${PV}.tar.gz"
+SRC_URI = "http://www.mr511.de/software/libelf-${PV}.tar.gz;name=archive \
+           http://www.stud.uni-hannover.de/~michael/software/libelf-${PV}.tar.gz;name=archive"
 
 inherit autotools
 
@@ -33,3 +33,7 @@ do_stage () {
 	done
 	make includedir=${STAGING_INCDIR} install-compat
 }
+
+# both SRC_URI items are the same file
+SRC_URI[archive.md5sum] = "d444fb0068cdfed01bb1fd1e91d29270"
+SRC_URI[archive.sha256sum] = "6ff7a5dbb5ccf14995f6bde7f1fca6be5f7f91f62b2680a00d32e82b172c9499"
