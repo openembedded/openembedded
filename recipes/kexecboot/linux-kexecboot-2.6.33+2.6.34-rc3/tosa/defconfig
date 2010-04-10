@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.34-rc3
-# Fri Apr  9 01:40:22 2010
+# Sat Apr 10 01:43:49 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -123,7 +123,7 @@ CONFIG_BASE_SMALL=1
 # CONFIG_MODULES is not set
 CONFIG_BLOCK=y
 # CONFIG_LBDAF is not set
-CONFIG_BLK_DEV_BSG=y
+# CONFIG_BLK_DEV_BSG is not set
 # CONFIG_BLK_DEV_INTEGRITY is not set
 
 #
@@ -376,7 +376,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0
 CONFIG_ZBOOT_ROM_BSS=0
-CONFIG_CMDLINE="console=tty1 console=ttyS0,115200n8 loglevel=3 "
+CONFIG_CMDLINE="console=tty1 console=ttyS0,115200n8 loglevel=3"
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
 CONFIG_ATAGS_PROC=y
@@ -792,7 +792,7 @@ CONFIG_PDA_POWER=y
 CONFIG_APM_POWER=y
 # CONFIG_BATTERY_DS2760 is not set
 # CONFIG_BATTERY_DS2782 is not set
-CONFIG_BATTERY_TOSA=y
+# CONFIG_BATTERY_TOSA is not set
 # CONFIG_BATTERY_WM97XX is not set
 # CONFIG_BATTERY_BQ27x00 is not set
 # CONFIG_BATTERY_MAX17040 is not set
