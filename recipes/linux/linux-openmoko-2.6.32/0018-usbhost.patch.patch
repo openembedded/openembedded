@@ -1,0 +1,233 @@
+From d71534de6ab5e132d0798df30408042c229cbb62 Mon Sep 17 00:00:00 2001
+From: Radek Polak <psonek2@seznam.cz>
+Date: Fri, 9 Apr 2010 09:17:28 +0200
+Subject: [PATCH 18/22] usbhost.patch
+
+adds support for usb host mode and adds usb host pm sysfs node. I just copied
+and modified how modem is powered up and backported changes in ohci-s3c2410.c.
+No idea if this is the right approach, but it works - my usb keyboard is now
+working after:
+
+echo 1 > /sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-
+fixed-voltage.2/gta02-pm-usbhost.0/power_on
+echo host > /sys/devices/platform/s3c2410-ohci/usb_mode
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ arch/arm/mach-s3c2442/Makefile     |    1 +
+ arch/arm/mach-s3c2442/mach-gta02.c |   50 ++++++++++++++++++++++++++++++++++-
+ drivers/usb/host/ohci-s3c2410.c    |   48 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 97 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-s3c2442/Makefile b/arch/arm/mach-s3c2442/Makefile
+index 6247ca0..3e7145c 100644
+--- a/arch/arm/mach-s3c2442/Makefile
++++ b/arch/arm/mach-s3c2442/Makefile
+@@ -17,6 +17,7 @@ obj-$(CONFIG_MACH_NEO1973_GTA02) += mach-gta02.o \
+ 	gta02-pm-bt.o \
+ 	gta02-pm-gps.o \
+ 	gta02-pm-gsm.o \
++	gta02-pm-usbhost.o \
+ 	gta02-pm-wlan.o
+ # Machine support
+ 
+diff --git a/arch/arm/mach-s3c2442/mach-gta02.c b/arch/arm/mach-s3c2442/mach-gta02.c
+index 8e3cc91..f1d4d51 100644
+--- a/arch/arm/mach-s3c2442/mach-gta02.c
++++ b/arch/arm/mach-s3c2442/mach-gta02.c
+@@ -322,6 +322,10 @@ static struct platform_device gta02_pm_gsm_dev = {
+ 	.name = "gta02-pm-gsm",
+ };
+ 
++static struct platform_device gta02_pm_usbhost_dev = {
++	.name = "gta02-pm-usbhost",
++};
++
+ static struct platform_device gta02_pm_wlan_dev = {
+ 	.name = "gta02-pm-wlan",
+ };
+@@ -331,6 +335,11 @@ static struct regulator_consumer_supply gsm_supply_consumer = {
+ 	.supply = "GSM",
+ };
+ 
++static struct regulator_consumer_supply usbhost_supply_consumer = {
++	.dev = &gta02_pm_usbhost_dev.dev,
++	.supply = "USBHOST",
++};
++
+ static struct regulator_init_data gsm_supply_init_data = {
+ 	.constraints = {
+ 		.min_uV = 3700000,
+@@ -342,6 +351,17 @@ static struct regulator_init_data gsm_supply_init_data = {
+ 	.consumer_supplies = &gsm_supply_consumer,
+ };
+ 
++static struct regulator_init_data usbhost_supply_init_data = {
++	.constraints = {
++		.min_uV = 3700000,
++		.max_uV = 3700000,
++		.valid_modes_mask = REGULATOR_MODE_NORMAL,
++		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies = 1,
++	.consumer_supplies = &usbhost_supply_consumer,
++};
++
+ static struct fixed_voltage_config gsm_supply_config = {
+ 	.supply_name = "GSM",
+ 	.microvolts = 3700000,
+@@ -350,6 +370,14 @@ static struct fixed_voltage_config gsm_supply_config = {
+ 	.init_data = &gsm_supply_init_data,
+ };
+ 
++static struct fixed_voltage_config usbhost_supply_config = {
++	.supply_name = "USBHOST",
++	.microvolts = 3700000,
++	.gpio = GTA02_GPIO_PCF(PCF50633_GPO),
++	.enable_high = 1,
++	.init_data = &usbhost_supply_init_data,
++};
++
+ static struct platform_device gta02_gsm_supply_device = {
+ 	.name = "reg-fixed-voltage",
+ 	.id = 1,
+@@ -358,6 +386,14 @@ static struct platform_device gta02_gsm_supply_device = {
+ 	},
+ };
+ 
++static struct platform_device gta02_usbhost_supply_device = {
++	.name = "reg-fixed-voltage",
++	.id = 2,
++	.dev = {
++		.platform_data = &usbhost_supply_config,
++	},
++};
++
+ static struct regulator_bulk_data gta02_gps_consumer_supply = {
+ 	.supply = "GPS",
+ };
+@@ -1332,12 +1368,17 @@ static struct platform_device* gta02_glamo_gpio_children[] = {
+ 
+ static struct platform_device* gta02_pcf50633_gpio_children[] = {
+ 	&gta02_gsm_supply_device,
++	&gta02_usbhost_supply_device,
+ };
+ 
+ static struct platform_device* gta02_gsm_supply_children[] = {
+ 	&gta02_pm_gsm_dev,
+ };
+ 
++static struct platform_device* gta02_usbhost_supply_children[] = {
++	&gta02_pm_usbhost_dev,
++};
++
+ static struct platform_device* gta02_hdq_children[] = {
+ 	&bq27000_battery_device,
+ };
+@@ -1364,14 +1405,19 @@ static struct gta02_device_children gta02_device_children[] = {
+ 	},
+ 	{
+ 		.dev_name = "pcf50633-gpio",
+-		.num_children = 1,
++		.num_children = 2,
+ 		.children = gta02_pcf50633_gpio_children,
+ 	},
+ 	{
+ 		.dev_name = "reg-fixed-voltage.1",
+ 		.num_children = 1,
+ 		.children = gta02_gsm_supply_children,
+-	}
++	},
++	{
++		.dev_name = "reg-fixed-voltage.2",
++		.num_children = 1,
++		.children = gta02_usbhost_supply_children,
++	},
+ };
+ 
+ static int gta02_add_child_devices(struct device *parent,
+diff --git a/drivers/usb/host/ohci-s3c2410.c b/drivers/usb/host/ohci-s3c2410.c
+index a68af2d..02bd7b0 100644
+--- a/drivers/usb/host/ohci-s3c2410.c
++++ b/drivers/usb/host/ohci-s3c2410.c
+@@ -22,6 +22,10 @@
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
+ #include <plat/usb-control.h>
++#include <mach/hardware.h>
++#include <mach/gpio-fns.h>
++#include <mach/regs-gpio.h>
++#include <mach/gta02.h>
+ 
+ #define valid_port(idx) ((idx) == 1 || (idx) == 2)
+ 
+@@ -306,6 +310,42 @@ static void s3c2410_hcd_oc(struct s3c2410_hcd_info *info, int port_oc)
+ 	local_irq_restore(flags);
+ }
+ 
++/* switching of USB pads */
++static ssize_t show_usb_mode(struct device *dev, struct device_attribute *attr,
++			     char *buf)
++{
++	if (__raw_readl(S3C24XX_MISCCR) & S3C2410_MISCCR_USBHOST)
++		return sprintf(buf, "host\n");
++
++	return sprintf(buf, "device\n");
++}
++
++static ssize_t set_usb_mode(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	if (!strncmp(buf, "host", 4)) {
++		printk("s3c2410: changing usb to host\n");
++		s3c2410_modify_misccr(S3C2410_MISCCR_USBHOST,
++				      S3C2410_MISCCR_USBHOST);
++		/* FIXME:
++		 * - call machine-specific disable-pullup function i
++		 * - enable +Vbus (if hardware supports it)
++		 */
++		s3c2410_gpio_setpin(GTA02_GPIO_USB_PULLUP, 0);
++	} else if (!strncmp(buf, "device", 6)) {
++		printk("s3c2410: changing usb to device\n");
++		s3c2410_modify_misccr(S3C2410_MISCCR_USBHOST, 0);
++		s3c2410_gpio_setpin(GTA02_GPIO_USB_PULLUP, 1);
++	} else {
++		printk("s3c2410: unknown mode\n");
++		return -EINVAL;
++	}
++
++	return count;
++}
++
++static DEVICE_ATTR(usb_mode, S_IRUGO | S_IWUSR, show_usb_mode, set_usb_mode);
++
+ /* may be called without controller electrically present */
+ /* may be called with controller, bus, and devices active */
+ 
+@@ -323,6 +363,7 @@ static void s3c2410_hcd_oc(struct s3c2410_hcd_info *info, int port_oc)
+ static void
+ usb_hcd_s3c2410_remove (struct usb_hcd *hcd, struct platform_device *dev)
+ {
++	device_remove_file(&dev->dev, &dev_attr_usb_mode);
+ 	usb_remove_hcd(hcd);
+ 	s3c2410_stop_hc(dev);
+ 	iounmap(hcd->regs);
+@@ -390,8 +431,15 @@ static int usb_hcd_s3c2410_probe (const struct hc_driver *driver,
+ 	if (retval != 0)
+ 		goto err_ioremap;
+ 
++	retval = device_create_file(&dev->dev, &dev_attr_usb_mode);
++	if (retval != 0)
++		goto err_hcd;
++
+ 	return 0;
+ 
++ err_hcd:
++	usb_remove_hcd(hcd);
++
+  err_ioremap:
+ 	s3c2410_stop_hc(dev);
+ 	iounmap(hcd->regs);
+-- 
+1.7.0.4
+

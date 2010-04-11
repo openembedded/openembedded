@@ -1,0 +1,140 @@
+From a9d6c115089a0a34fbca89c539de50148a2cf34e Mon Sep 17 00:00:00 2001
+From: Radek Polak <psonek2@seznam.cz>
+Date: Fri, 9 Apr 2010 09:22:23 +0200
+Subject: [PATCH 20/22] save_regs.patch
+
+With this patch wifi can survive suspend.
+---
+ drivers/mmc/core/core.c   |    3 +-
+ drivers/mmc/host/s3cmci.c |   46 +++++++++++++++++++++++++++++++++++++++++++-
+ drivers/mmc/host/s3cmci.h |    8 +++++++
+ include/linux/mmc/core.h  |    2 +
+ 4 files changed, 56 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+index 7dab2e5..7df08dd 100644
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -59,10 +59,11 @@ static int mmc_schedule_delayed_work(struct delayed_work *work,
+ /*
+  * Internal function. Flush all scheduled work from the MMC work queue.
+  */
+-static void mmc_flush_scheduled_work(void)
++void mmc_flush_scheduled_work(void)
+ {
+ 	flush_workqueue(workqueue);
+ }
++EXPORT_SYMBOL_GPL(mmc_flush_scheduled_work);
+ 
+ /**
+  *	mmc_request_done - finish processing an MMC request
+diff --git a/drivers/mmc/host/s3cmci.c b/drivers/mmc/host/s3cmci.c
+index fba147c..06423cb 100644
+--- a/drivers/mmc/host/s3cmci.c
++++ b/drivers/mmc/host/s3cmci.c
+@@ -1879,19 +1879,61 @@ MODULE_DEVICE_TABLE(platform, s3cmci_driver_ids);
+ 
+ #ifdef CONFIG_PM
+ 
++static int save_regs(struct mmc_host *mmc)
++{
++	struct s3cmci_host *host = mmc_priv(mmc);
++	unsigned long flags;
++	unsigned from;
++	u32 *to = host->saved;
++
++	mmc_flush_scheduled_work();
++
++	local_irq_save(flags);
++	for (from = S3C2410_SDICON; from != S3C2410_SDIIMSK+4; from += 4)
++		if (from != host->sdidata)
++			*to++ = readl(host->base + from);
++	BUG_ON(to-host->saved != ARRAY_SIZE(host->saved));
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++static int restore_regs(struct mmc_host *mmc)
++{
++	struct s3cmci_host *host = mmc_priv(mmc);
++	unsigned long flags;
++	unsigned to;
++	u32 *from = host->saved;
++
++	/*
++	 * Before we begin with the necromancy, make sure we don't
++	 * inadvertently start something we'll regret microseconds later.
++	 */
++	from[S3C2410_SDICMDCON - S3C2410_SDICON] = 0;
++
++	local_irq_save(flags);
++	for (to = S3C2410_SDICON; to != S3C2410_SDIIMSK+4; to += 4)
++		if (to != host->sdidata)
++			writel(*from++, host->base + to);
++	BUG_ON(from-host->saved != ARRAY_SIZE(host->saved));
++	local_irq_restore(flags);
++
++	return 0;
++}
++
+ static int s3cmci_suspend(struct device *dev)
+ {
+ 	struct mmc_host *mmc = platform_get_drvdata(to_platform_device(dev));
+ 	struct pm_message event = { PM_EVENT_SUSPEND };
+ 
+-	return mmc_suspend_host(mmc, event);
++	return save_regs(mmc);
+ }
+ 
+ static int s3cmci_resume(struct device *dev)
+ {
+ 	struct mmc_host *mmc = platform_get_drvdata(to_platform_device(dev));
+ 
+-	return mmc_resume_host(mmc);
++	return restore_regs(mmc);
+ }
+ 
+ static struct dev_pm_ops s3cmci_pm = {
+diff --git a/drivers/mmc/host/s3cmci.h b/drivers/mmc/host/s3cmci.h
+index c76b53d..551e715 100644
+--- a/drivers/mmc/host/s3cmci.h
++++ b/drivers/mmc/host/s3cmci.h
+@@ -8,6 +8,8 @@
+  * published by the Free Software Foundation.
+  */
+ 
++#include <mach/regs-sdi.h>
++
+ enum s3cmci_waitfor {
+ 	COMPLETION_NONE,
+ 	COMPLETION_FINALIZE,
+@@ -27,6 +29,12 @@ struct s3cmci_host {
+ 	int			irq;
+ 	int			irq_cd;
+ 	int			dma;
++       /*
++        * Here's where we save the registers during suspend. Note that we skip
++        * SDIDATA, which is at different positions on 2410 and 2440, so
++        * there's no "+1" in the array size.
++        */
++	u32                     saved[(S3C2410_SDIIMSK-S3C2410_SDICON)/4];
+ 
+ 	unsigned long		clk_rate;
+ 	unsigned long		clk_div;
+diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
+index e4898e9..b49d674 100644
+--- a/include/linux/mmc/core.h
++++ b/include/linux/mmc/core.h
+@@ -129,6 +129,8 @@ struct mmc_request {
+ struct mmc_host;
+ struct mmc_card;
+ 
++extern void mmc_flush_scheduled_work(void);
++
+ extern void mmc_wait_for_req(struct mmc_host *, struct mmc_request *);
+ extern int mmc_wait_for_cmd(struct mmc_host *, struct mmc_command *, int);
+ extern int mmc_wait_for_app_cmd(struct mmc_host *, struct mmc_card *,
+-- 
+1.7.0.4
+
