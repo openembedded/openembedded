@@ -9,5 +9,6 @@ PR = "r1"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e
+SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${SRCNAME};proto=http"
 
 FILES_${PN} += "${datadir}"
