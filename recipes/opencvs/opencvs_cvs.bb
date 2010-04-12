@@ -5,6 +5,7 @@ DESCRIPTION = "BSD-licensed equivalent of the popular versioning system CVS."
 LICENSE = "BSD"
 PRIORITY = "optional"
 SECTION = "console/network"
+SRCDATE = "20060814"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r1"
 

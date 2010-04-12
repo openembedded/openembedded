@@ -1,4 +1,5 @@
 SECTION = "x11/utils"
+SRCDATE = "20090514"
 PV = "0.0+cvs${SRCDATE}"
 DEPENDS = "gtk+ libgpewidget virtual/libx11 libxrandr libxft libxtst libxext libxau \
 	   virtual/libintl"

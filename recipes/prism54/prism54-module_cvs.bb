@@ -1,4 +1,5 @@
 SECTION = "base"
+SRCDATE = "20060814"
 PV = "1.2+cvs${SRCDATE}"
 
 require prism54-module_1.2.bb

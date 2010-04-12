@@ -4,7 +4,7 @@ DESCRIPTION_olsrd-libs = "OLSR mesh routing daemon -  optional libraries"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "BSD"
-SRCDATE = "20051020"
+SRCDATE = "20060814"
 PV = "0.4.9+cvs${SRCDATE}"
 
 DEFAULT_PREFERENCE = "-1"

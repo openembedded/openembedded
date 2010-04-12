@@ -1,5 +1,6 @@
 SECTION = "base"
 LICENSE= "GPL"
+SRCDATE = "20060814"
 PV = "0.0+cvs${SRCDATE}"
 DESCRIPTION = "Command line tool for iPaq backlight control"
 

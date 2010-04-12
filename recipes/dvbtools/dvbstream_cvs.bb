@@ -2,6 +2,7 @@ SECTION = "console/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPLV2"
 DEPENDS = "libxml2"
+SRCDATE = "20090621"
 PV = "0.0+cvs${SRCDATE}"
 
 PR = "r1"

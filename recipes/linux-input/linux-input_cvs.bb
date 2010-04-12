@@ -1,4 +1,5 @@
 PR = "r2"
+SRCDATE = "20060814"
 PV = "0.0+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@linuxconsole.cvs.sourceforge.net/cvsroot/linuxconsole;module=ruby \

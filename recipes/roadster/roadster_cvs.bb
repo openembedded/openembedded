@@ -2,6 +2,7 @@ DESCRIPTION = "Roadster aims to be easy-to-use and open-source mapping software.
 LICENSE = "GPL"
 HOMEPAGE = "http://linuxadvocate.org/projects/roadster/"
 SECTION = "x11/navigation"
+SRCDATE = "20060814"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r1"
 

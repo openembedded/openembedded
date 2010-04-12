@@ -4,6 +4,7 @@ SECTION = "x11/network"
 LICENSE = "GPL"
 DEPENDS += "irssi gtk+"
 RDEPENDS_${PN} += "irssi-common"
+SRCDATE = "20060814"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r2"
 

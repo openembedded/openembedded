@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS = "python"
-SRCDATE = "20050404"
+SRCDATE = "20050930"
 PR = "r24"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \

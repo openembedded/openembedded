@@ -70,12 +70,12 @@ fakeroot rootfs_ipk_do_rootfs () {
 	fi
 
 	for i in ${IMAGE_ROOTFS}${libdir}/opkg/info/*.preinst; do
-		if [ -f $i ] && ! sh $i; then
+		if [ -f $i ] && ! sh -e $i; then
 			opkg-cl ${IPKG_ARGS} flag unpacked `basename $i .preinst`
 		fi
 	done
 	for i in ${IMAGE_ROOTFS}${libdir}/opkg/info/*.postinst; do
-		if [ -f $i ] && ! sh $i configure; then
+		if [ -f $i ] && ! sh -e $i configure; then
 			opkg-cl ${IPKG_ARGS} flag unpacked `basename $i .postinst`
 		fi
 	done

@@ -8,6 +8,7 @@ DEPENDS = "libxrender xt xft fontconfig freetype libidl dbus-glib pango atk gtk+
 
 CVSSVR="cvs-mirror.mozilla.org"
 BRTAG = "MOZILLA_1_8_BRANCH"
+#SRCDATE_minimo ?= "20050401"
 MOZDATE = "20070626"
 
 PV = "0.02+cvs${MOZDATE}"

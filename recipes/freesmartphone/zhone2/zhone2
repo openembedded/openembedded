@@ -1,0 +1,11 @@
+#!/bin/sh
+cat /usr/share/zhone2/splash > /dev/fb0
+ifconfig usb0 192.168.0.202 up
+route add default gateway 192.168.0.200 usb0
+fsogsmd &
+sleep 5
+#mioctl /dev/fb0 0x4611 0
+TSLIB_TSDEVICE=/dev/input/event1
+export TSLIB_TSDEVICE
+zhone2 >/tmp/zhone2.log 2>&1 &
+exit 0

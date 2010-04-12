@@ -3,6 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "tslib"
 RDEPENDS = "procps"
+SRCDATE = "20090501"
 PV = "0.0+svn${SRCDATE}"
 PR = "r22"
 

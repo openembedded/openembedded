@@ -6,6 +6,7 @@ HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
 DEFAULT_PREFERENCE = "-1"
 
+SRCDATE = "20060814"
 PV = "20060413+cvs${SRCDATE}"
 PR = "r5"
 

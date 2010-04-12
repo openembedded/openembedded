@@ -30,8 +30,8 @@ OPKG_SRCREV = "160"
 ### alphabetically.  Note that the main slugos.inc file
 ### may include preferred versions for toolchain components.
 
-PREFERRED_VERSION_atk				?= "1.28"
-PREFERRED_VERSION_atk-native			?= "1.28"
+PREFERRED_VERSION_atk				?= "1.28.0"
+PREFERRED_VERSION_atk-native			?= "1.28.0"
 PREFERRED_VERSION_autoconf			?= "2.61"
 PREFERRED_VERSION_autoconf-native		?= "2.61"
 PREFERRED_VERSION_automake-native		?= "1.10.3"

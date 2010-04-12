@@ -2,7 +2,6 @@ DESCRIPTION = "Reads YAMON environment-variables"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-#SRCDATE = "20050909"
 SRCDATE = "20051022"
 PV = "1.0.0+cvs${SRCDATE}"
 

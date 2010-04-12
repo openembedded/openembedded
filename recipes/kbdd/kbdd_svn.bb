@@ -4,6 +4,7 @@ SECTION = "console/utils"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/kernel"
 RRECOMMENDS_${PN} = "kernel-module-keybdev kernel-module-uinput"
+SRCDATE = "20061019"
 PV = "0.12+svn${SRCDATE}"
 PR = "r0"
 

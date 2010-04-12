@@ -2,6 +2,7 @@ DESCRIPTION = "szap, czap, tzap are command-line based tools to tune in a DVB se
 SECTION = "console/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
+SRCDATE = "20060814"
 PV = "0.0cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.linuxtv.org/cvs/linuxtv;module=dvb-apps/util/szap \

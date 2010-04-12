@@ -1,5 +1,6 @@
 require rdesktop.inc
 
+SRCDATE = "20080917"
 PV = "1.6.0+cvs${SRCDATE}"
 PR = "${INC_PR}.1"
 DEFAULT_PREFERENCE = "-1"
