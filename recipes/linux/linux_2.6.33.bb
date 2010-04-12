@@ -8,6 +8,7 @@ DEFAULT_PREFERENCE_ts72xx = "-1"
 DEFAULT_PREFERENCE_mpc8641-hpcn = "1"
 DEFAULT_PREFERENCE_p2020ds = "1"
 DEFAULT_PREFERENCE_imote2 = "1"
+DEFAULT_PREFERENCE_afeb9260 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://defconfig"
@@ -33,3 +34,15 @@ SRC_URI_append_ts72xx = " \
                         file://0015-ep93xx_cpufreq.patch;patch=1 \
                         file://0016-ts7200_nor_flash.patch;patch=1 \
                         "
+SRC_URI_append_afeb9260 = " \
+                        file://0001-RS-485-mode-of-USART1.patch;patch=1 \
+                        file://0002-SRAM-for-ethernet-TX-patch.patch;patch=1 \
+                        file://0003-SRAM-TX-buffers-implementation-from-atmel-to-fix-TX-.patch;patch=1 \
+                        file://0004-Disallowing-non-power-of-2-ring-size-proper-resource.patch;patch=1 \
+                        file://0005-Add-missing-header-file.patch;patch=1 \
+                        file://0006-Enable-SPI1.patch;patch=1 \
+                        file://0007-Adding-4th-serial-port.patch;patch=1 \
+                        "
+
+
+

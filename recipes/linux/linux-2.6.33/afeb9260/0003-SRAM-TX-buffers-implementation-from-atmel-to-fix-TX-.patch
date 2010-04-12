@@ -1,0 +1,302 @@
+From 757c3aef9b18e22c35c96982c45e3536dd9f5313 Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Sat, 30 May 2009 16:04:30 +0400
+Subject: [PATCH 3/7] SRAM TX buffers implementation from atmel to fix TX underrun errors
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ arch/arm/mach-at91/at91sam9260_devices.c |    7 ++
+ drivers/net/Kconfig                      |    6 ++
+ drivers/net/macb.c                       |  107 ++++++++++++++++++++++--------
+ drivers/net/macb.h                       |    7 ++-
+ 4 files changed, 98 insertions(+), 29 deletions(-)
+
+diff --git a/arch/arm/mach-at91/at91sam9260_devices.c b/arch/arm/mach-at91/at91sam9260_devices.c
+index 07eb7b0..6c25a68 100644
+--- a/arch/arm/mach-at91/at91sam9260_devices.c
++++ b/arch/arm/mach-at91/at91sam9260_devices.c
+@@ -141,6 +141,13 @@ static struct resource eth_resources[] = {
+ 		.end	= AT91SAM9260_ID_EMAC,
+ 		.flags	= IORESOURCE_IRQ,
+ 	},
++#if defined(CONFIG_MACB_TX_SRAM)
++	[2] = {
++		.start	= AT91SAM9260_SRAM1_BASE,
++		.end	= AT91SAM9260_SRAM1_BASE + AT91SAM9260_SRAM1_SIZE - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++#endif
+ };
+ 
+ static struct platform_device at91sam9260_eth_device = {
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index dd9a09c..0af557f 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -218,6 +218,12 @@ config MACB
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called macb.
+ 
++config MACB_TX_SRAM
++	bool "Use internal SRAM for EMAC (Ethernet) transmit buffers"
++	depends on (ARCH_AT91SAM9263 || ARCH_AT91SAM9260) && MACB
++	help
++	  Select this if you are using internal SRAM for EMAC transmit buffers.
++
+ source "drivers/net/arm/Kconfig"
+ 
+ config AX88796
+diff --git a/drivers/net/macb.c b/drivers/net/macb.c
+index 1d0d4d9..64839ad 100644
+--- a/drivers/net/macb.c
++++ b/drivers/net/macb.c
+@@ -33,22 +33,27 @@
+ /* Make the IP header word-aligned (the ethernet header is 14 bytes) */
+ #define RX_OFFSET		2
+ 
+-#define TX_RING_SIZE		128
+-#define DEF_TX_RING_PENDING	(TX_RING_SIZE - 1)
+-#define TX_RING_BYTES		(sizeof(struct dma_desc) * TX_RING_SIZE)
++#define TX_MAX_PKT_SIZE		1536
++#define TX_DEFAULT_RING_SIZE	128 
++#define DEF_TX_RING_PENDING(bp)		((bp)->tx_ring_size - 1)
++
++#define TX_RING_BYTES(bp)		(sizeof(struct dma_desc) * \
++						(bp)->tx_ring_size)
+ 
+ #define TX_RING_GAP(bp)						\
+-	(TX_RING_SIZE - (bp)->tx_pending)
++	((bp)->tx_ring_size - (bp)->tx_pending)
++
+ #define TX_BUFFS_AVAIL(bp)					\
+ 	(((bp)->tx_tail <= (bp)->tx_head) ?			\
+ 	 (bp)->tx_tail + (bp)->tx_pending - (bp)->tx_head :	\
+ 	 (bp)->tx_tail - (bp)->tx_head - TX_RING_GAP(bp))
+-#define NEXT_TX(n)		(((n) + 1) & (TX_RING_SIZE - 1))
+ 
+-#define NEXT_RX(n)		(((n) + 1) & (RX_RING_SIZE - 1))
++#define NEXT_TX(bp, n)         (((n) + 1) % ((bp)->tx_ring_size)) 
++#define NEXT_RX(n)             (((n) + 1) % (RX_RING_SIZE)) 
++ 
+ 
+ /* minimum number of free TX descriptors before waking up TX process */
+-#define MACB_TX_WAKEUP_THRESH	(TX_RING_SIZE / 4)
++#define MACB_TX_WAKEUP_THRESH(bp)	((bp)->tx_ring_size / 4)
+ 
+ #define MACB_RX_INT_FLAGS	(MACB_BIT(RCOMP) | MACB_BIT(RXUBR)	\
+ 				 | MACB_BIT(ISR_ROVR))
+@@ -329,11 +334,11 @@ static void macb_tx(struct macb *bp)
+ 		head = bp->tx_head;
+ 
+ 		/*Mark all the buffer as used to avoid sending a lost buffer*/
+-		for (i = 0; i < TX_RING_SIZE; i++)
++		for (i = 0; i < bp->tx_ring_size; i++)
+ 			bp->tx_ring[i].ctrl = MACB_BIT(TX_USED);
+ 
+ 		/* free transmit buffer in upper layer*/
+-		for (tail = bp->tx_tail; tail != head; tail = NEXT_TX(tail)) {
++		for (tail = bp->tx_tail; tail != head; tail = NEXT_TX(bp, tail)) {
+ 			struct ring_info *rp = &bp->tx_skb[tail];
+ 			struct sk_buff *skb = rp->skb;
+ 
+@@ -363,7 +368,7 @@ static void macb_tx(struct macb *bp)
+ 		return;
+ 
+ 	head = bp->tx_head;
+-	for (tail = bp->tx_tail; tail != head; tail = NEXT_TX(tail)) {
++	for (tail = bp->tx_tail; tail != head; tail = NEXT_TX(bp, tail)) {
+ 		struct ring_info *rp = &bp->tx_skb[tail];
+ 		struct sk_buff *skb = rp->skb;
+ 		u32 bufstat;
+@@ -388,7 +393,7 @@ static void macb_tx(struct macb *bp)
+ 
+ 	bp->tx_tail = tail;
+ 	if (netif_queue_stopped(bp->dev) &&
+-	    TX_BUFFS_AVAIL(bp) > MACB_TX_WAKEUP_THRESH)
++	    TX_BUFFS_AVAIL(bp) > MACB_TX_WAKEUP_THRESH(bp))
+ 		netif_wake_queue(bp->dev);
+ }
+ 
+@@ -651,8 +656,15 @@ static int macb_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ 	entry = bp->tx_head;
+ 	dev_dbg(&bp->pdev->dev, "Allocated ring entry %u\n", entry);
+-	mapping = dma_map_single(&bp->pdev->dev, skb->data,
++	if (bp->smem_start) {
++		mapping = bp->tx_ring[entry].addr;
++		memcpy(bp->tx_buffers + entry * TX_MAX_PKT_SIZE,
++			skb->data, len);
++	} else {
++		mapping = dma_map_single(&bp->pdev->dev, skb->data,
+ 				 len, DMA_TO_DEVICE);
++		bp->tx_ring[entry].addr = mapping;
++	}
+ 	bp->tx_skb[entry].skb = skb;
+ 	bp->tx_skb[entry].mapping = mapping;
+ 	dev_dbg(&bp->pdev->dev, "Mapped skb data %p to DMA addr %08lx\n",
+@@ -660,14 +672,13 @@ static int macb_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ 	ctrl = MACB_BF(TX_FRMLEN, len);
+ 	ctrl |= MACB_BIT(TX_LAST);
+-	if (entry == (TX_RING_SIZE - 1))
++	if (entry == (bp->tx_ring_size - 1))
+ 		ctrl |= MACB_BIT(TX_WRAP);
+ 
+-	bp->tx_ring[entry].addr = mapping;
+ 	bp->tx_ring[entry].ctrl = ctrl;
+ 	wmb();
+ 
+-	entry = NEXT_TX(entry);
++	entry = NEXT_TX(bp, entry);
+ 	bp->tx_head = entry;
+ 
+ 	macb_writel(bp, NCR, macb_readl(bp, NCR) | MACB_BIT(TSTART));
+@@ -694,7 +705,8 @@ static void macb_free_consistent(struct macb *bp)
+ 		bp->rx_ring = NULL;
+ 	}
+ 	if (bp->tx_ring) {
+-		dma_free_coherent(&bp->pdev->dev, TX_RING_BYTES,
++		if (!bp->smem_start)
++			dma_free_coherent(&bp->pdev->dev, TX_RING_BYTES(bp),
+ 				  bp->tx_ring, bp->tx_ring_dma);
+ 		bp->tx_ring = NULL;
+ 	}
+@@ -704,13 +716,16 @@ static void macb_free_consistent(struct macb *bp)
+ 				  bp->rx_buffers, bp->rx_buffers_dma);
+ 		bp->rx_buffers = NULL;
+ 	}
++
++	if (bp->smem_start && bp->tx_ring_dma)
++		release_mem_region(bp->tx_ring_dma, bp->smem_size);
+ }
+ 
+ static int macb_alloc_consistent(struct macb *bp)
+ {
+ 	int size;
+ 
+-	size = TX_RING_SIZE * sizeof(struct ring_info);
++	size = bp->tx_ring_size * sizeof(struct ring_info);
+ 	bp->tx_skb = kmalloc(size, GFP_KERNEL);
+ 	if (!bp->tx_skb)
+ 		goto out_err;
+@@ -724,14 +739,30 @@ static int macb_alloc_consistent(struct macb *bp)
+ 		"Allocated RX ring of %d bytes at %08lx (mapped %p)\n",
+ 		size, (unsigned long)bp->rx_ring_dma, bp->rx_ring);
+ 
+-	size = TX_RING_BYTES;
+-	bp->tx_ring = dma_alloc_coherent(&bp->pdev->dev, size,
++	if (bp->smem_start) {
++		if (request_mem_region(bp->smem_start,
++			bp->smem_size, "macb")) {
++			bp->tx_ring_dma = bp->smem_start;
++		}
++		bp->tx_ring = ioremap(bp->tx_ring_dma, bp->smem_size);
++		if (bp->tx_ring) {
++			bp->tx_buffers_dma = bp->tx_ring_dma +
++			TX_RING_BYTES(bp);
++			bp->tx_buffers = (char *) bp->tx_ring +
++			TX_RING_BYTES(bp);
++		}
++	}
++
++	if (!bp->tx_ring) {
++		size = TX_RING_BYTES(bp);
++		bp->tx_ring = dma_alloc_coherent(&bp->pdev->dev, size,
+ 					 &bp->tx_ring_dma, GFP_KERNEL);
+-	if (!bp->tx_ring)
+-		goto out_err;
+-	dev_dbg(&bp->pdev->dev,
+-		"Allocated TX ring of %d bytes at %08lx (mapped %p)\n",
+-		size, (unsigned long)bp->tx_ring_dma, bp->tx_ring);
++		if (!bp->tx_ring)
++			goto out_err;
++		dev_dbg(&bp->pdev->dev,
++			"Allocated TX ring of %d bytes at %08lx (mapped %p)\n",
++			size, (unsigned long)bp->tx_ring_dma, bp->tx_ring);
++	}
+ 
+ 	size = RX_RING_SIZE * RX_BUFFER_SIZE;
+ 	bp->rx_buffers = dma_alloc_coherent(&bp->pdev->dev, size,
+@@ -762,11 +793,14 @@ static void macb_init_rings(struct macb *bp)
+ 	}
+ 	bp->rx_ring[RX_RING_SIZE - 1].addr |= MACB_BIT(RX_WRAP);
+ 
+-	for (i = 0; i < TX_RING_SIZE; i++) {
+-		bp->tx_ring[i].addr = 0;
++	for (i = 0; i < bp->tx_ring_size; i++) {
++		bp->tx_ring[i].addr = (bp->smem_start) ?
++			bp->tx_buffers_dma + i * TX_MAX_PKT_SIZE : 0;
+ 		bp->tx_ring[i].ctrl = MACB_BIT(TX_USED);
++		bp->tx_ring[i].addr = (u32) (bp->tx_buffers_dma +
++			(i * TX_MAX_PKT_SIZE));
+ 	}
+-	bp->tx_ring[TX_RING_SIZE - 1].ctrl |= MACB_BIT(TX_WRAP);
++	bp->tx_ring[bp->tx_ring_size - 1].ctrl |= MACB_BIT(TX_WRAP);
+ 
+ 	bp->rx_tail = bp->tx_head = bp->tx_tail = 0;
+ }
+@@ -1119,6 +1153,7 @@ static int __init macb_probe(struct platform_device *pdev)
+ {
+ 	struct eth_platform_data *pdata;
+ 	struct resource *regs;
++	struct resource *smem;
+ 	struct net_device *dev;
+ 	struct macb *bp;
+ 	struct phy_device *phydev;
+@@ -1224,7 +1259,23 @@ static int __init macb_probe(struct platform_device *pdev)
+ 		macb_writel(bp, USRIO, MACB_BIT(MII));
+ #endif
+ 
+-	bp->tx_pending = DEF_TX_RING_PENDING;
++	/* Check  mem region for TX buffers */
++	smem = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (smem) {
++		bp->smem_start = smem->start;
++		bp->smem_size  = smem->end - smem->start + 1;
++		bp->tx_ring_size = bp->smem_size / (TX_MAX_PKT_SIZE +
++				sizeof(struct dma_desc));
++	}
++
++	/* if ring_size == 0 then mem is too
++	  small and use standard memory */
++	if (!bp->tx_ring_size) {
++		bp->smem_start = 0;
++		bp->tx_ring_size = TX_DEFAULT_RING_SIZE;
++	}
++
++	bp->tx_pending = DEF_TX_RING_PENDING(bp);
+ 
+ 	err = register_netdev(dev);
+ 	if (err) {
+diff --git a/drivers/net/macb.h b/drivers/net/macb.h
+index d3212f6..57f31ad 100644
+--- a/drivers/net/macb.h
++++ b/drivers/net/macb.h
+@@ -364,11 +364,15 @@ struct macb {
+ 	unsigned int		rx_tail;
+ 	struct dma_desc		*rx_ring;
+ 	void			*rx_buffers;
+-
++	void			*tx_buffers;
++	unsigned int		tx_ring_size;
+ 	unsigned int		tx_head, tx_tail;
+ 	struct dma_desc		*tx_ring;
+ 	struct ring_info	*tx_skb;
+ 
++	unsigned int		smem_start;
++	unsigned int		smem_size;
++
+ 	spinlock_t		lock;
+ 	struct platform_device	*pdev;
+ 	struct clk		*pclk;
+@@ -381,6 +385,7 @@ struct macb {
+ 	dma_addr_t		rx_ring_dma;
+ 	dma_addr_t		tx_ring_dma;
+ 	dma_addr_t		rx_buffers_dma;
++	dma_addr_t		tx_buffers_dma;
+ 
+ 	unsigned int		rx_pending, tx_pending;
+ 
+-- 
+1.6.3.3
+
