@@ -44,26 +44,28 @@ def autotools_set_crosscompiling(d):
 
 # EXTRA_OECONF_append = "${@autotools_set_crosscompiling(d)}"
 
+CONFIGUREOPTS = " --build=${BUILD_SYS} \
+		  --host=${HOST_SYS} \
+		  --target=${TARGET_SYS} \
+		  --prefix=${prefix} \
+		  --exec_prefix=${exec_prefix} \
+		  --bindir=${bindir} \
+		  --sbindir=${sbindir} \
+		  --libexecdir=${libexecdir} \
+		  --datadir=${datadir} \
+		  --sysconfdir=${sysconfdir} \
+		  --sharedstatedir=${sharedstatedir} \
+		  --localstatedir=${localstatedir} \
+		  --libdir=${libdir} \
+		  --includedir=${includedir} \
+		  --oldincludedir=${oldincludedir} \
+		  --infodir=${infodir} \
+		  --mandir=${mandir}"
+
 oe_runconf () {
 	if [ -x ${S}/configure ] ; then
 		cfgcmd="${S}/configure \
-		    --build=${BUILD_SYS} \
-		    --host=${HOST_SYS} \
-		    --target=${TARGET_SYS} \
-		    --prefix=${prefix} \
-		    --exec_prefix=${exec_prefix} \
-		    --bindir=${bindir} \
-		    --sbindir=${sbindir} \
-		    --libexecdir=${libexecdir} \
-		    --datadir=${datadir} \
-		    --sysconfdir=${sysconfdir} \
-		    --sharedstatedir=${sharedstatedir} \
-		    --localstatedir=${localstatedir} \
-		    --libdir=${libdir} \
-		    --includedir=${includedir} \
-		    --oldincludedir=${oldincludedir} \
-		    --infodir=${infodir} \
-		    --mandir=${mandir} \
+		        ${CONFIGUREOPTS} \
 			${EXTRA_OECONF} \
 		    $@"
 		oenote "Running $cfgcmd..."
@@ -127,6 +129,10 @@ autotools_do_configure() {
 			    oenote Executing glib-gettextize --force --copy
 			    echo "no" | glib-gettextize --force --copy
 			  fi
+			else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
+			  cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+			fi
+
 			fi
 			mkdir -p m4
 			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
@@ -154,21 +160,17 @@ PACKAGE_PREPROCESS_FUNCS += "autotools_prepackage_lamangler"
 
 autotools_prepackage_lamangler () {
         for i in `find ${PKGD} -name "*.la"` ; do \
-                sed -i -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${libdir}/\1,g' $i
-                sed -i -e s:${CROSS_DIR}/${HOST_SYS}::g $i
-                sed -i -e s:${CROSS_DIR}::g $i
-                sed -i -e s:${STAGING_LIBDIR}:${libdir}:g $i
-                if [ -n "${STAGING_DIR_HOST}" ]; then
-                        sed -i -e s:${STAGING_DIR_HOST}::g $i
-                fi
-                sed -i -e s:${STAGING_DIR}::g $i
-                sed -i -e s:${S}::g $i
-                sed -i -e s:${T}::g $i
-                sed -i -e s:${D}::g $i
-        done
+            sed -i -e 's:${STAGING_LIBDIR}:${libdir}:g;' \
+                   -e 's:${D}::g;' \
+                   -e 's:-I${WORKDIR}\S*: :g;' \
+                   -e 's:-L${WORKDIR}\S*: :g;' \
+                   $i
+	done
 }
 
+# STAGE_TEMP_PREFIX is used for a speedup by packaged-staging
 STAGE_TEMP="${WORKDIR}/temp-staging"
+STAGE_TEMP_PREFIX = ""
 
 autotools_stage_includes() {
 	if [ "${INHIBIT_AUTO_STAGE_INCLUDES}" != "1" ]
