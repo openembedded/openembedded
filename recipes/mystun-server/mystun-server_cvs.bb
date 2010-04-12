@@ -3,6 +3,7 @@ HOMEPAGE = "http://developer.berlios.de/projects/mystun/"
 SECTION = "console/telephony"
 PRIORITY = "optional"
 LICENSE = "GPL"
+SRCDATE = "20060814"
 PV = "1:0.0+cvs${SRCDATE}"
 
 SRC_URI="cvs://anonymous@cvs.mystun.berlios.de/cvsroot/mystun;module=mystun \

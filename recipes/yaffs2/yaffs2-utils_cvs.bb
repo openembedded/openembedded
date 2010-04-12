@@ -2,6 +2,7 @@ DESCRIPTION = "Tools for managing 'yaffs2' file systems."
 SECTION = "base"
 HOMEPAGE = "http://www.yaffs.net"
 LICENSE = "GPLv2"
+SRCDATE = "20080331"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 

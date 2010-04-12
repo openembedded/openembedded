@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-SRCDATE = "20050803"
+SRCDATE = "20060814"
 PV = "1.0.0+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@madwifi.cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;date=${SRCDATE}"

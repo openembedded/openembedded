@@ -1,5 +1,6 @@
 require gnuplot.inc
 
+SRCDATE = "20080328"
 PV = "4.3.0+cvs${SRCDATE}"
 PR = "r0"
 

@@ -3,6 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
 DEPENDS = "virtual/libx11 xft libxtst libxpm fltk"
+SRCDATE = "20061112"
 PR = "r0"
 
 SRC_URI = "cvs://anoncvs@keithp.com/local/src/CVS;method=pserver;module=ipatience \

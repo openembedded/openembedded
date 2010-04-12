@@ -2,6 +2,7 @@ DESCRIPTION = "PuTTY is a free implementation of Telnet and SSH for Win32 and Un
 SECTION = "console/network"
 LICENSE = "MIT"
 #Remove the dash below when 0.58 changes in PV
+SRCDATE = "20060814"
 PV = "0.58+cvs-${SRCDATE}"
 
 SRC_URI = "svn://ixion.tartarus.org/main;module=putty \

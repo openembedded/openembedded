@@ -1,6 +1,7 @@
 DESCRIPTION = "Aufs is a stackable unification filesystem such as Unionfs, which unifies several directories and provides a merged single directory."
 HOMEPAGE = "http://aufs.sourceforge.net/"
 LICENSE = "GPL"
+SRCDATE = "20081203"
 PV = "cvs${SRCDATE}"
 
 RSUGGESTS_${PN} = "${PN}-tools"
