@@ -11,7 +11,7 @@ INC_PR = "r8"
 
 FILESPATHPKG .= ":gcc-$PV"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
         file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
@@ -34,3 +34,6 @@ EXTRA_OECONF_BASE = " --enable-libssp \
 		      --disable-libmudflap"
 
 EXTRA_OECONF_append_linux-uclibc = " ${@base_contains('TARGET_ARCH', 'powerpc', '--disable-decimal-float --without-long-double-128', '',d)}"
+
+SRC_URI[archive.md5sum] = "927eaac3d44b22f31f9c83df82f26436"
+SRC_URI[archive.sha256sum] = "cbefa9abd4adac0931e1b556072dcd8b32a360d4b95a94d7822c86bded803d5b"

@@ -11,7 +11,7 @@ COMPATIBLE_MACHINE = 'simpad'
 
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
            file://${KV}-${VRSV}.patch;patch=1 \
            file://${KV}-${VRSV}-${PXAV}.patch;patch=1 \
            file://${KV}-${VRSV}-${PXAV}-${JPMV}.patch;patch=1 \
@@ -19,7 +19,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 	   file://disable-pcmcia-probe.patch;patch=1 \
            file://mkdep.patch;patch=1 \
            file://defconfig-${MACHINE} \
-	   http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
+	   http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1;name=patch \
            file://mipv6-1.1-v2.4.25.patch;patch=1 \
            file://simpad-backlight-if.patch;patch=1 \
            file://simpad-switches-input.patch;patch=1 \
@@ -85,3 +85,7 @@ do_configure() {
 	echo "CONFIG_CMDLINE=\"${CMDLINE} mem=${mem}M\"" >> ${S}/.config
         oe_runmake oldconfig
 }
+SRC_URI[kernel.md5sum] = "5fc8e9f43fa44ac29ddf9a9980af57d8"
+SRC_URI[kernel.sha256sum] = "877af8ed89e56af004bb0662c1a9cfc785b40c602f71a8bf81521991026cf2f0"
+SRC_URI[patch.md5sum] = "5c54040bba6fea2bfb47df01056e953f"
+SRC_URI[patch.sha256sum] = "d35213dc854f1e1a08512154c7a92fb94d9f0506cc5107f8b2f248412679fb53"

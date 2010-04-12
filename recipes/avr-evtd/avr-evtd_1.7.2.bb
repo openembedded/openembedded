@@ -41,3 +41,6 @@ do_install_append_powerpc() {
 do_install_append_mipsel() {
 	install -D -m 0755 ${S}/MIPS/avr_evtd ${D}${sbindir}/avr_evtd
 }
+
+SRC_URI[md5sum] = "782600479e7967ab104309ee467b57b0"
+SRC_URI[sha256sum] = "bf52cccf8d4a36f75ba364310c602210498b7642951aed5b838de2750d347d22"

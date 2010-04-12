@@ -5,7 +5,7 @@ RDEPENDS =	"graphviz"
 
 SRC_URI =	"http://oandrieu.nerim.net/monotone-viz/monotone-viz-0.11.tar.gz"
 
-inherit autools
+inherit autotools
 
 do_compile() {
 	make world.opt

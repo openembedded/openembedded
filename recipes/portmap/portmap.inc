@@ -3,8 +3,8 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "fakeroot-native"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/p/portmap/portmap_5.orig.tar.gz \
-	${DEBIAN_MIRROR}/main/p/portmap/portmap_${PV}.diff.gz;patch=1 \
+SRC_URI = "${DEBIAN_MIRROR}/main/p/portmap/portmap_5.orig.tar.gz;name=archive \
+	${DEBIAN_MIRROR}/main/p/portmap/portmap_${PV}.diff.gz;patch=1;name=patch \
 	file://no-libwrap.patch;patch=1;pnum=0 \
 	file://portmap.init \
 	file://make.patch;patch=1"

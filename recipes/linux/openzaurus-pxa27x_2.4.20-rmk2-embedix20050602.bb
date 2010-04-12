@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 KV = "2.4.20"
 PR = "r18"
 
-SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3100/20050602/linux-c3100-20050602-rom1_01.tar.bz2 \
+SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3100/20050602/linux-c3100-20050602-rom1_01.tar.bz2;name=kernel \
            file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
            file://P02-C3000-voltage_050221.patch;pnum=2;patch=1 \
            file://P03-C3000-SIGSTOP_FIX_041207.patch;pnum=2;patch=1 \
@@ -94,3 +94,6 @@ do_configure_prepend() {
         install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
         echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
+
+SRC_URI[kernel.md5sum] = "cdd92f6ecffc4ecce4ea6194b789716e"
+SRC_URI[kernel.sha256sum] = "224a81da20b793c003f3d8e9abae7d4abc92320c956f0b5ed346430369772fed"

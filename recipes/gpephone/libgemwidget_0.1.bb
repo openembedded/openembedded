@@ -18,3 +18,6 @@ do_stage () {
 
 SRC_URI[md5sum] = "95d269ad7e7cb7d3032498ad2e47643b"
 SRC_URI[sha256sum] = "b8a1da871aa34362caf0c76dcbd3df42aef7313a4ed08f38eddcb159b80302c5"
+# CHECKSUMS.INI MISMATCH: I got this:
+#SRC_URI[md5sum] = "f5ac1c6a22120581659588a9d507dc06"
+#SRC_URI[sha256sum] = "4d98b3999a79244856edabf8d99874f7fb665e5eb129af1360529c41df29dc4c"

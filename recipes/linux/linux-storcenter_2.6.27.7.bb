@@ -6,7 +6,7 @@ PR = "r2"
 DEPENDS = "dtc-native"
 COMPATIBLE_MACHINE = "storcenter"
 
-SRC_URI = "http://kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "http://kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            file://fw-and-powerpc-install.patch;patch=1 \
            file://defconfig-${PV} \
                "
@@ -55,3 +55,6 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_package after do_install
+
+SRC_URI[kernel.md5sum] = "db323884c7dc46e4cd33d0d944fa59a9"
+SRC_URI[kernel.sha256sum] = "8e7075fc855ffbcf3c24cbd70b22791759224f98839886d50bba8d659193a950"

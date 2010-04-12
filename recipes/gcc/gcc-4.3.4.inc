@@ -9,7 +9,7 @@ DEPENDS = "mpfr gmp"
 
 INC_PR = "r8"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-ia64-libunwind.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-java-nomulti.patch;patch=1;pnum=0 \
@@ -99,3 +99,5 @@ JAVA = ""
 
 EXTRA_OECONF_BASE = "  --enable-cheaders=c_std --enable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"
 
+SRC_URI[archive.md5sum] = "60df63222dbffd53ca11492a2545044f"
+SRC_URI[archive.sha256sum] = "e572453bdb74cc4ceebfab9ffb411d9678343dff5bf86e9338d42fdd0818aa65"

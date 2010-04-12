@@ -17,10 +17,12 @@ HHV     = "20"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26 \
            file://linux-2.6.git-9d20fdd58e74d4d26dc5216efaaa0f800c23dd3a.patch;patch=1 \
-           http://www.rpsys.net/openzaurus/patches/archive/export_atags-r0a.patch;patch=1 \
+           http://www.rpsys.net/openzaurus/patches/archive/export_atags-r0a.patch;patch=1;name=patch \
            file://gcc4x-limits.patch;patch=1 \
            file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch;patch=1 \
            file://defconfig"
 
 require linux-handhelds-2.6.inc
 
+SRC_URI[patch.md5sum] = "8ab51e8ff728f4155db64b9bb6ea6d71"
+SRC_URI[patch.sha256sum] = "75d4c6ddbfc5e4fff7690a3308e2574f89a0e2709fb91caccb29067a9dad251a"

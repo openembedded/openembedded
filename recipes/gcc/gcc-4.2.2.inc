@@ -5,7 +5,7 @@ DEPENDS = "mpfr gmp"
 
 INC_PR = "r16"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://103-uclibc-conf-noupstream.patch;patch=1 \
 	file://200-uclibc-locale.patch;patch=1 \
@@ -82,3 +82,6 @@ JAVA = ""
 EXTRA_OECONF_BASE = "--enable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"
 
 ARM_INSTRUCTION_SET = "arm"
+
+SRC_URI[archive.md5sum] = "7ae33781417a35a2eb03ee098a9f4490"
+SRC_URI[archive.sha256sum] = "673b85d780a082c014ded4ac11f8269a3fe893b4dbb584d65b8602d50b3872b1"

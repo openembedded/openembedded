@@ -43,3 +43,6 @@ do_stage() {
         sed -e '178,179d' ${STAGING_INCDIR}/firefox-${MOZPV}/nsIServiceManager.h
 }
 
+
+SRC_URI[md5sum] = "ff6bf463300cb56bcf750973b2af3d80"
+SRC_URI[sha256sum] = "b653f2fa8dfdd0a54a6b8c576769719cf9014ca6b09f8e9d351721a51766d95d"

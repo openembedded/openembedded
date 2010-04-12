@@ -16,3 +16,5 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 }
 
+SRC_URI[md5sum] = "f7a5b1aedb5b44f4df005caa5f4cceb6"
+SRC_URI[sha256sum] = "3e0478ae9d2402086dd7c45f132ab02045db6f9d1908229dbca1a39684234723"

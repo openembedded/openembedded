@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for the Mainstone (PXA270 ref design)"
 LICENSE = "GPLv2"
 PR = "r1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2;name=kernel \
            file://mainstone_defconfig"
 
 S = "${WORKDIR}/linux-2.6.11"
@@ -26,3 +26,6 @@ do_configure_prepend() {
 }
 
 COMPATIBLE_MACHINE = "mainstone"
+
+SRC_URI[kernel.md5sum] = "f00fd1b5a80f52baf9d1d83acddfa325"
+SRC_URI[kernel.sha256sum] = "1fa39c202efe168bfeb0ddd74c8e4814f77da7dc78993e47826bad9173b95808"

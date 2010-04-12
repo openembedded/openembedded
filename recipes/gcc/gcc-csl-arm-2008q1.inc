@@ -5,7 +5,7 @@ PV = "4.2.3+csl-arm-2008q1-126"
 
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm"
 
-SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2008q1-126-arm-none-eabi.src.tar.bz2 \
+SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2008q1-126-arm-none-eabi.src.tar.bz2;name=archive \
 #           file://100-uclibc-conf.patch;patch=1 \
 #           file://103-uclibc-conf-noupstream.patch;patch=1 \
 #           file://200-uclibc-locale.patch;patch=1 \
@@ -48,3 +48,6 @@ EXTRA_OECONF_BASE = "--enable-libssp --disable-bootstrap --disable-libgomp --dis
 ARM_INSTRUCTION_SET = "arm"
 
 addtask unpack2 after do_unpack before do_patch
+
+SRC_URI[archive.md5sum] = "be1a8a4baeb745af388f4ce09ff7d3e3"
+SRC_URI[archive.sha256sum] = "31ca43436520074e90482f54ffe26cc59ea76836add50d8b7d2c1adfefd19845"

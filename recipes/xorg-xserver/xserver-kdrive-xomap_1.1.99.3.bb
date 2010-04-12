@@ -52,3 +52,6 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive --enable-builtin-fonts \
 do_configure_prepend() {
     sed -i -e 's/tslib-0.0/tslib-1.0/' ${S}/configure.ac
 }
+
+SRC_URI[md5sum] = "19a246ea30233ef3c5fe16248b771862"
+SRC_URI[sha256sum] = "211f4d13d8cd726b10553534a4d0f0267b18d39dd30b2f5bc6dfcde9f6d6b8c9"

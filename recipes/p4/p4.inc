@@ -35,12 +35,12 @@ PREMIRRORS=""
 DL_DIR="${WORKDIR}/${P4ARCH}"
 
 SRC_URI="\
-	${P4BASEURL}/p4 \
-	${P4BASEURL}/p4api.tar \
-	${P4BASEURL}/p4d \
-	${P4BASEURL}/p4ftpd \
-	${P4BASEURL}/p4p \
-	${P4BASEURL}/p4web"
+	${P4BASEURL}/p4;name=p4 \
+	${P4BASEURL}/p4api.tar;name=p4api \
+	${P4BASEURL}/p4d;name=p4d \
+	${P4BASEURL}/p4ftpd;name=p4ftpd \
+	${P4BASEURL}/p4p;name=p4p \
+	${P4BASEURL}/p4web;name=p4web"
 S = "${WORKDIR}"
 
 PACKAGES += " ${PN}-server"

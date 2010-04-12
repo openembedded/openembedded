@@ -12,8 +12,8 @@ KERNEL_RELEASE = "2.6.27.8"
 PV = "${KERNEL_RELEASE}+svnr${SRCPV}"
 PR = "r2"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
-	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2;name=kernel \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1;name=stablepatch \
 	   svn://svn.nslu2-linux.org/svnroot/kernel/trunk/patches;module=${VANILLA_VERSION};proto=http \
 	   file://fix-install.patch;patch=1 \
 	   file://defconfig-${KERNEL_RELEASE}"
@@ -42,3 +42,8 @@ do_postpatch() {
 }
 
 addtask postpatch after do_patch before do_configure
+
+SRC_URI[kernel.md5sum] = "b3e78977aa79d3754cb7f8143d7ddabd"
+SRC_URI[kernel.sha256sum] = "0e99bf9e83f4d1ae0c656741a84dfddfa9c4d2469cf35475f5939d02dc3e4393"
+SRC_URI[stablepatch.md5sum] = "ec23e3dce22b23ca681199fe515f10fb"
+SRC_URI[stablepatch.sha256sum] = "31c35db09289c6e0436a258745d7180e0cd8f567949f27b3dab5a57a3664ed2f"

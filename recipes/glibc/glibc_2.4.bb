@@ -42,9 +42,9 @@ RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 #	   \
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
 #	   file://ldd.patch;patch=1;pnum=0 \
-SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.4.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-2.4.tar.bz2 \
+SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2;name=archive \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.4.tar.bz2;name=ports \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-2.4.tar.bz2;name=libidn \
            file://arm-memcpy.patch;patch=1 \
            file://arm-longlong.patch;patch=1 \
            file://fhs-linux-paths.patch;patch=1 \
@@ -147,3 +147,10 @@ do_compile () {
 require glibc-stage.inc
 
 require glibc-package.inc
+
+SRC_URI[archive.md5sum] = "7e9a88dcd41fbc53801dbe5bdacaf245"
+SRC_URI[archive.sha256sum] = "27aaaaa78b4ab5da76bb29385dc9be087ba7b855a9102eaaa78ce3ec5e2e7fcd"
+SRC_URI[ports.md5sum] = "7bb1b35654e94994925e66676acabd4e"
+SRC_URI[ports.sha256sum] = "2fbbcaad8a9f8560485c398a9066959fe2713c8bc7e653ec476fb56fed21d19a"
+SRC_URI[libidn.md5sum] = "e2d892b40d654c523ab26a26b7dd86a1"
+SRC_URI[libidn.sha256sum] = "2f29ec2b2b2f75f787a1eed8fdea20aff212dc3bad97651ca376914c49181977"

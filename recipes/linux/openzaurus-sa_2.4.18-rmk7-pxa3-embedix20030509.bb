@@ -9,7 +9,7 @@ SHARPV = "20030509"
 PR = "r23"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
-SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.bz2 \
+SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.bz2;name=kernel \
            file://cacko.patch;patch=1 \
            file://unb0rk-rightarrow.patch;patch=1 \
            file://unb0rk-apm.patch;patch=1 \
@@ -28,7 +28,7 @@ SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.b
            file://mkdep.patch;patch=1 \
            file://disable-pcmcia-probe.patch;patch=1 \
            file://linux-2.4.18-list_move.patch;patch=1 \
-           http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1 \
+           http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1;name=patch \
            file://1764-1.patch;patch=1 \
            file://module_licence.patch;patch=1 \
            file://ir240_sys_max_tx-2.diff;patch=1 \
@@ -97,3 +97,8 @@ do_configure_prepend() {
 
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}-${COLLIE_MEMORY_SIZE}-${COLLIE_RAMDISK_SIZE}-${DATETIME}.bin"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}-${COLLIE_MEMORY_SIZE}-${COLLIE_RAMDISK_SIZE}.bin"
+
+SRC_URI[kernel.md5sum] = "52fb654cfd45060b0c77b67ad364df83"
+SRC_URI[kernel.sha256sum] = "be21ce66246a89b2c905fb1ad690440c15b5d263c0247b2285d34cdd6311d320"
+SRC_URI[patch.md5sum] = "5c54040bba6fea2bfb47df01056e953f"
+SRC_URI[patch.sha256sum] = "d35213dc854f1e1a08512154c7a92fb94d9f0506cc5107f8b2f248412679fb53"

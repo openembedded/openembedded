@@ -4,7 +4,7 @@ DEPENDS = "mpfr gmp"
 
 INC_PR = "r1"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://110-arm-eabi.patch;patch=1 \
 	file://200-uclibc-locale.patch;patch=1 \
@@ -45,3 +45,6 @@ FORTRAN = ""
 JAVA = ""
 
 EXTRA_OECONF_BASE = "--disable-libssp --disable-libmudflap"
+
+SRC_URI[archive.md5sum] = "ad9f97a4d04982ccf4fd67cb464879f3"
+SRC_URI[archive.sha256sum] = "985cbb23a486570a8783395a42a8689218f5218a0ccdd6bec590eef341367bb7"

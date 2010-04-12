@@ -8,8 +8,8 @@ RMKV = "2"
 PXAV = "1"
 PR = "r5"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
-	   http://ftp.linux.org.uk/pub/linux/arm/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
+	   http://ftp.linux.org.uk/pub/linux/arm/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;patch=1;name=rmkpatch \
 	   file://diff-${KV}-rmk${RMKV}-pxa${PXAV}.gz;patch=1 \
 	   file://mnci-combined.patch;patch=1"
 
@@ -69,3 +69,7 @@ pkg_postrm_modules () {
 pkg_postrm_kernel () {
 }
 
+SRC_URI[kernel.md5sum] = "f51e12efa18bb828cf57d9d4a81b2fb1"
+SRC_URI[kernel.sha256sum] = "dd197b9b80535591c0dc0505fae31c8eceeb07a891e85b85396494a0f97688db"
+SRC_URI[rmkpatch.md5sum] = "23169d1265241683bb8c9d0daf22b6b5"
+SRC_URI[rmkpatch.sha256sum] = "1381ef6cfb9460adee987322657fbfcd081e70d7be4255163ed1a2afeb7becfb"

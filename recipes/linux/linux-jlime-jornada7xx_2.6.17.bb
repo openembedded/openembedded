@@ -35,3 +35,6 @@ FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconf_jlime ${S}/.config
 }
+
+SRC_URI[md5sum] = "3ee4dae7b648e9c290f16fcfb368dbb0"
+SRC_URI[sha256sum] = "2346f9ce5dfd8b69760b9148d9bbf835cc6b01f6076e00cb412bfb3a2e3b0064"

@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "efika"
 
 FILESPATH = "${FILE_DIRNAME}/linux-efika-${PV}:${FILE_DIRNAME}/linux-efika-2.6.20"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2;name=kernel \
            file://0001-powerpc-serial-Dispose-irq-mapping-when-done-in-mpc52xx_serial.c.txt;p=1;patch=1 \
            file://0003-powerpc-Add-device-tree-fixups-for-the-EFIKA.txt;p=1;patch=1 \
            file://0004-powerpc-Use-common-52xx-of_platform-probe-code-for-EFIKA.txt;p=1;patch=1 \
@@ -41,8 +41,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \
            file://0032-POWERPC-EFIKA-Adds-missing-interrupts-from-bestcomm-node.txt;p=1;patch=1 \
            file://0033-EFIKA-fullduplex-prpl_aln.txt;p=1;patch=1 \
            file://v4l.diff;p=1;patch=1 \
-           http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.20.20.bz2;p=1;patch=1 \
-           http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.20.20-v22.patch;p=1;patch=1 \
+           http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.20.20.bz2;p=1;patch=1;name=stablepatch \
+           http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.20.20-v22.patch;p=1;patch=1;name=shedpatch \
            file://weaken-div64_32-symbol.patch;patch=1 \
            file://defconfig \
 		   "
@@ -70,3 +70,10 @@ do_stage_append () {
        cp -pPR include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
        cp -pPR include/asm-ppc ${STAGING_KERNEL_DIR}/include/
 }
+
+SRC_URI[kernel.md5sum] = "34b0f354819217e6a345f48ebbd8f13e"
+SRC_URI[kernel.sha256sum] = "2c14ada1ac7d272e03b430d3a530d60fc9ec69cc8252382aa049afba7d2b8558"
+SRC_URI[stablepatch.md5sum] = "08b2c1e9759ca409a0d2ca49db1bbedb"
+SRC_URI[stablepatch.sha256sum] = "0417fc3609f5746bce6016862e7f83e83e98e17e5ae77887bf66b37748ab261c"
+SRC_URI[shedpatch.md5sum] = "0fd84a82c51f67d2d0531aab78f66d2a"
+SRC_URI[shedpatch.sha256sum] = "fc5cd165ecc07d2e254412f39a17a26a753bf081a0e02ed5db0b02d2f6bacc6f"

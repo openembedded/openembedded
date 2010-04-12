@@ -69,3 +69,6 @@ pkg_postinst_${PN} () {
 }
 
 COMPATIBLE_HOST = "i.86.*-linux"
+
+SRC_URI[md5sum] = "b70924c697584ab7955050d7a9b4de57"
+SRC_URI[sha256sum] = "dae79e8c56090ac3fb4ac3fe0df9faf6a0c9694a89ef978dce0ab970557ad264"

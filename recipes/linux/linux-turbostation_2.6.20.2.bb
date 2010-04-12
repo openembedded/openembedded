@@ -38,3 +38,6 @@ do_configure() {
 #do_movekernel() {
 #
 #}
+
+SRC_URI[md5sum] = "bc33bd163130df9c59b165a1d31ccfdc"
+SRC_URI[sha256sum] = "56c46e51429530665970c53c9a99d8ad3843bb5c0fa713fb752b2724ff4eb872"

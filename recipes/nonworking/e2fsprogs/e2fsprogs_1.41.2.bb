@@ -85,3 +85,6 @@ pkg_prerm_e2fsprogs-mke2fs () {
 	update-alternatives --remove mkfs.ext3 mkfs.ext3.${PN}
 }
 
+
+SRC_URI[md5sum] = "1c1c5177aea9a23b45b9b3f5b3241819"
+SRC_URI[sha256sum] = "635d6d07e5a4d615e599c051166af965baa754f9ff7435e746de1a5d2a5c0d56"

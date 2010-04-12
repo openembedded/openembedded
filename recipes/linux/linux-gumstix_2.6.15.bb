@@ -7,7 +7,7 @@ DEPENDS = "u-boot-utils-native"
 
 COMPATIBLE_MACHINE = "gumstix"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
 		   cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd;date=20060223 \
            file://defconfig-gumstix \
 		   file://arch-config.patch;patch=1 \
@@ -107,3 +107,6 @@ module_autoload_pxamci = "pxamci"
 module_autoload_mmc_block = "mmc_block"
 module_autoload_gumstix_gadget = "gumstix_gadget"
 module_autoload_g_ether = "g_ether"
+
+SRC_URI[kernel.md5sum] = "cdf95e00f5111e31f78e1d97304d9522"
+SRC_URI[kernel.sha256sum] = "066ec56ce5f57c79a526b6bb3541d32dbf796c11c26c32073fc64b93f09825db"

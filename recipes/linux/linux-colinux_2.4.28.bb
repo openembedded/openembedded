@@ -27,3 +27,6 @@ do_configure() {
 	install -m 0644 ${WORKDIR}/defconfig .config
 	kernel_do_configure
 }
+
+SRC_URI[md5sum] = "ac7735000d185bc7778c08288760a8a3"
+SRC_URI[sha256sum] = "f6639b3861421d522bc0c02f6dec59d92418d27e941fc4e82066a7e1ce23509b"

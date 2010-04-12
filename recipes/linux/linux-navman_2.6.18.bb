@@ -8,8 +8,8 @@ PR = "r0"
 
 COMPATIBLE_MACHINE = "navman-icn330"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-           http://www.duff.dk/navman/navman-2.6.18.patch;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2;name=kernel \
+           http://www.duff.dk/navman/navman-2.6.18.patch;patch=1;name=patch \
            file://defconfig \
 		   "
 
@@ -40,3 +40,8 @@ do_configure() {
 
         yes '' | oe_runmake oldconfig
 }
+
+SRC_URI[kernel.md5sum] = "296a6d150d260144639c3664d127d174"
+SRC_URI[kernel.sha256sum] = "c95280ff6c5d2a17788f7cc582d23ae8a9a7ba3f202ec6e4238eaadfce7c163d"
+SRC_URI[patch.md5sum] = "4ebef6d4a5fd20e45a42831470ea37c8"
+SRC_URI[patch.sha256sum] = "04403bd44ab5ca212a21322766064a575c10df94286365d98be16f12bfe9bdca"

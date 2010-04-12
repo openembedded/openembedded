@@ -1,6 +1,6 @@
 require gcc-common.inc
 
-SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive\
 	   file://config.sub.patch;patch=1 \
 	   file://empty6.patch;patch=1 \
 	   file://pr10392-1-test.patch;patch=1 \
@@ -37,3 +37,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-uclibc-3.3-200-code.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://bash3.patch;patch=1"
+
+SRC_URI[archive.md5sum] = "3c6cfd9fcd180481063b4058cf6faff2"
+SRC_URI[archive.sha256sum] = "9ac6618495b7dd2ff0cd50abd76fe3c51287efcc724340687407f9fc250bdc6a"

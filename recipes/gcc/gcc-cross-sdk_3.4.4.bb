@@ -13,5 +13,3 @@ do_compile_prepend () {
 	ln -s ${CROSS_DIR}/bin/${TARGET_PREFIX}ld gcc/ld
 }
 
-SRC_URI[md5sum] = "b594ff4ea4fbef4ba9220887de713dfe"
-SRC_URI[sha256sum] = "3444179840638cb8664e8e53604900c4521d29d57785a5091202ee4937d8d0fd"

@@ -1,8 +1,8 @@
 include mesa-mesa.inc
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 \
-        ${SOURCEFORGE_MIRROR}/mesa3d/MesaGLUT-${PV}.tar.bz2 \
-        ${SOURCEFORGE_MIRROR}/mesa3d/MesaDemos-${PV}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2;name=archive \
+        ${SOURCEFORGE_MIRROR}/mesa3d/MesaGLUT-${PV}.tar.bz2;name=glut \
+        ${SOURCEFORGE_MIRROR}/mesa3d/MesaDemos-${PV}.tar.bz2;name=demos \
         file://mklib-rpath-link.patch;patch=1 \
         file://fix-host-compile.patch;patch=1 \
         file://fix-progs-makefile.patch;patch=1 \

@@ -2,7 +2,7 @@ require gcc-common.inc
 
 DEPENDS = "mpfr gmp"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://103-uclibc-conf-noupstream.patch;patch=1 \
 	file://200-uclibc-locale.patch;patch=1 \
@@ -34,7 +34,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://pr34130.patch;patch=1 \
 "
 
-SRC_URI_avr32 = " http://ewi546.ewi.utwente.nl/tmp/avr32-gcc-4.2.1-atmel.1.0.3.tar.gz \
+SRC_URI_avr32 = " http://ewi546.ewi.utwente.nl/tmp/avr32-gcc-4.2.1-atmel.1.0.3.tar.gz;name=atmel \
         file://gcc-pr32889.patch;patch=1 \
         file://100-uclibc-conf.patch;patch=1 \
         file://103-uclibc-conf-noupstream.patch;patch=1 \
@@ -92,3 +92,8 @@ JAVA = ""
 EXTRA_OECONF_BASE = "--disable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"
 
 ARM_INSTRUCTION_SET = "arm"
+
+SRC_URI[archive.md5sum] = "cba410e6ff70f7d7f4be7a0267707fd0"
+SRC_URI[archive.sha256sum] = "ca0a12695b3bccfa8628509e08cb9ed7d8ed48deff0a299e4cb8de87d2c1fced"
+SRC_URI[atmel.md5sum] = "566d2a4f588b28bf5cec9638be2ef9fa"
+SRC_URI[atmel.sha256sum] = "a83af699303174164e76ba9327ad1b5d210df8c242ba86e4c94f4f35843e7c55"

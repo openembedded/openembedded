@@ -75,4 +75,5 @@ pkg_postrm_kernel () {
         true
 }
 
-
+SRC_URI[md5sum] = "80812ae14dca35b3630883a96531674e"
+SRC_URI[sha256sum] = "09a788b1bb0ce040c28180f5b2834f5c5d00efdf76b2ea2d071c9b010bf322e7"

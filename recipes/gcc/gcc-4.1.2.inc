@@ -4,7 +4,7 @@ DEPENDS = "mpfr gmp"
 
 INC_PR = "r22"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://110-arm-eabi.patch;patch=1 \
 	file://200-uclibc-locale.patch;patch=1 \
@@ -32,7 +32,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
-SRC_URI_avr32 = "http://www.angstrom-distribution.org/unstable/sources/gcc-4.1.2-atmel.1.1.0.tar.gz \
+SRC_URI_avr32 = "http://www.angstrom-distribution.org/unstable/sources/gcc-4.1.2-atmel.1.1.0.tar.gz;name=atmel \
 #           file://100-uclibc-conf.patch;patch=1 \
 #           file://200-uclibc-locale.patch;patch=1 \
 #           file://300-libstdc++-pic.patch;patch=1 \
@@ -58,3 +58,8 @@ JAVA = ""
 EXTRA_OECONF_BASE = "--disable-libssp --disable-libmudflap"
 
 ARM_INSTRUCTION_SET = "arm"
+
+SRC_URI[archive.md5sum] = "a4a3eb15c96030906d8494959eeda23c"
+SRC_URI[archive.sha256sum] = "cfc0efbcc6fcde0d416a32dfb246c9df022515a312683fac412578c4fd09a9bc"
+SRC_URI[atmel.md5sum] = "4bb4b376f82af84dbd40563112adf471"
+SRC_URI[atmel.sha256sum] = "a6a9d6a66eac090a823124733759b8f1360c79acc0bd9e1e725e80e8742bad3d"

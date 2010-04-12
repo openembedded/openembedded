@@ -41,3 +41,6 @@ do_stage() {
 PACKAGES =+ "sharp-aticore-oss-examples"
 FILES_sharp-aticore-oss-examples = "${bindir}"
 
+
+SRC_URI[md5sum] = "b3d00a755e3be599b714f1f552db2752"
+SRC_URI[sha256sum] = "8f9124bd76c378ae2a25b6b421ebb8f0a88069da697ac6c96943571d93af8b15"

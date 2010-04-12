@@ -44,3 +44,6 @@ FILES_${PN} = "${base_sbindir} /boot"
 
 # Works for sh3/sh4 only
 COMPATIBLE_HOST = "sh.*-linux"
+
+SRC_URI[md5sum] = "1e975d827ad96e1942df73f63512178e"
+SRC_URI[sha256sum] = "da2340aca2eaf451243d2e4c2bf66aa4b80cc0abaef96860da8daf5db1cae12f"
