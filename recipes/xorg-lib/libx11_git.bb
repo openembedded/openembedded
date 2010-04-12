@@ -6,6 +6,8 @@ LICENSE = "XFree86"
 DEPENDS = "libxcb xproto xextproto libxau xtrans libxdmcp xcmiscproto xf86bigfontproto kbproto inputproto bigreqsproto util-macros"
 PROVIDES = "virtual/libx11"
 RPROVIDES = "virtual-libx11"
+SRCREV = "c3f3e4a9e531d010312c97e753d6e543e607094d"
+PV = "1.3.3+git"
 PR = "r2"
 
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
