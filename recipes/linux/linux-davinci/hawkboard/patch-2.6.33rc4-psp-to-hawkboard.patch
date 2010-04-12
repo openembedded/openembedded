@@ -1,0 +1,2763 @@
+From e05dda2d92995969f9268ae8e19a949344e54b21 Mon Sep 17 00:00:00 2001
+From: Roger Monk <r-monk@ti.com>
+Date: Wed, 24 Feb 2010 17:50:56 +0000
+Subject: [PATCH] Hawkboard Support:  Add Hawkboard (DA850/OMAPL138 based) Board Support
+
+   * Hawkboard(.org) (http://www.hawkboard.org) Board Support
+   * Support based on DA850_OMAPL138 EVM Board Support
+   * This board contains the following components
+      * DA850/OMAPL138/(AM1808) - ARM9 + 674x DSP + PRU + Peripherals
+      * 128MB DDR2 SDRAM (MT47H64M16HR-3:G)
+      * 128MB NAND Flash (MT29F1G08ABCHC-ET)
+      * Video Capture (TVP5147M1) - Composite Video
+      * Video Display (THS8135) - VGA
+      * Ethernet (LAN8710A)
+      * Audio (AIC31xx) - Stereo Audio Codec
+      * Serial ATA
+      * SD/MMC
+      * USB 1.1 (OHCI) (Host/Gadget)
+      * USB 2.0 (MUSB) (Host)
+      * Serial Console
+      * CpuFreq/CpuIdle/PM(Suspend-to-Ram) with RTC wakeup
+   * TODO
+      * USB MUSB (host) Disconnect Issues
+      * USB MUSB (gadget) Config + Testing
+      * VPIF Capture Driver creates 2 device nodes
+      * VPIF Capture Driver fails with mplayer tv:// test
+      * Further Board File Cleanup
+   * Notes
+      * RTC not tested
+      * RTC requires battery populated on hawkboard
+         * CONFIG_DRV_RTC_OMAP should be disabled if no battery
+      * No Regulator on hawkboard - CONFIG_REGULATOR should be disabled
+      * Wake-Up source from pm (suspend-to-ram) is RTC
+
+Signed-off-by: Roger Monk <r-monk@ti.com>
+---
+ .../arm/configs/da850_omapl138_hawkboard_defconfig | 1867 ++++++++++++++++++++
+ arch/arm/mach-davinci/Kconfig                      |    7 +
+ arch/arm/mach-davinci/Makefile                     |    1 +
+ arch/arm/mach-davinci/board-da850-hawk.c           |  657 +++++++
+ arch/arm/mach-davinci/da850.c                      |    2 +-
+ arch/arm/mach-davinci/devices-da8xx.c              |    6 +
+ arch/arm/mach-davinci/include/mach/da8xx.h         |    2 +
+ arch/arm/mach-davinci/include/mach/debug-macro.S   |    3 +-
+ drivers/media/video/Kconfig                        |    4 +-
+ drivers/video/da8xx-fb.c                           |   14 +
+ sound/soc/davinci/Kconfig                          |    6 +-
+ sound/soc/davinci/davinci-evm.c                    |    5 +-
+ 12 files changed, 2565 insertions(+), 9 deletions(-)
+ create mode 100644 arch/arm/configs/da850_omapl138_hawkboard_defconfig
+ create mode 100644 arch/arm/mach-davinci/board-da850-hawk.c
+
+diff --git a/arch/arm/configs/da850_omapl138_hawkboard_defconfig b/arch/arm/configs/da850_omapl138_hawkboard_defconfig
+new file mode 100644
+index 0000000..19fcbdf
+--- /dev/null
++++ b/arch/arm/configs/da850_omapl138_hawkboard_defconfig
+@@ -0,0 +1,1867 @@
++#
++# Automatically generated make config: don't edit
++# Linux kernel version: 2.6.33-rc4
++# Tue Mar  2 15:34:51 2010
++#
++CONFIG_ARM=y
++CONFIG_SYS_SUPPORTS_APM_EMULATION=y
++CONFIG_GENERIC_GPIO=y
++CONFIG_GENERIC_TIME=y
++CONFIG_GENERIC_CLOCKEVENTS=y
++CONFIG_GENERIC_HARDIRQS=y
++CONFIG_STACKTRACE_SUPPORT=y
++CONFIG_HAVE_LATENCYTOP_SUPPORT=y
++CONFIG_LOCKDEP_SUPPORT=y
++CONFIG_TRACE_IRQFLAGS_SUPPORT=y
++CONFIG_HARDIRQS_SW_RESEND=y
++CONFIG_GENERIC_IRQ_PROBE=y
++CONFIG_RWSEM_GENERIC_SPINLOCK=y
++CONFIG_ARCH_HAS_CPUFREQ=y
++CONFIG_GENERIC_HWEIGHT=y
++CONFIG_GENERIC_CALIBRATE_DELAY=y
++CONFIG_ZONE_DMA=y
++CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ=y
++CONFIG_VECTORS_BASE=0xffff0000
++CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
++CONFIG_CONSTRUCTORS=y
++
++#
++# General setup
++#
++CONFIG_EXPERIMENTAL=y
++CONFIG_BROKEN_ON_SMP=y
++CONFIG_LOCK_KERNEL=y
++CONFIG_INIT_ENV_ARG_LIMIT=32
++CONFIG_LOCALVERSION=""
++# CONFIG_LOCALVERSION_AUTO is not set
++CONFIG_HAVE_KERNEL_GZIP=y
++CONFIG_HAVE_KERNEL_LZO=y
++CONFIG_KERNEL_GZIP=y
++# CONFIG_KERNEL_BZIP2 is not set
++# CONFIG_KERNEL_LZMA is not set
++# CONFIG_KERNEL_LZO is not set
++CONFIG_SWAP=y
++CONFIG_SYSVIPC=y
++CONFIG_SYSVIPC_SYSCTL=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_POSIX_MQUEUE_SYSCTL=y
++# CONFIG_BSD_PROCESS_ACCT is not set
++# CONFIG_TASKSTATS is not set
++# CONFIG_AUDIT is not set
++
++#
++# RCU Subsystem
++#
++CONFIG_TREE_RCU=y
++# CONFIG_TREE_PREEMPT_RCU is not set
++# CONFIG_TINY_RCU is not set
++# CONFIG_RCU_TRACE is not set
++CONFIG_RCU_FANOUT=32
++# CONFIG_RCU_FANOUT_EXACT is not set
++# CONFIG_TREE_RCU_TRACE is not set
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_LOG_BUF_SHIFT=14
++CONFIG_GROUP_SCHED=y
++CONFIG_FAIR_GROUP_SCHED=y
++# CONFIG_RT_GROUP_SCHED is not set
++CONFIG_USER_SCHED=y
++# CONFIG_CGROUP_SCHED is not set
++# CONFIG_CGROUPS is not set
++# CONFIG_SYSFS_DEPRECATED_V2 is not set
++# CONFIG_RELAY is not set
++# CONFIG_NAMESPACES is not set
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE=""
++CONFIG_RD_GZIP=y
++# CONFIG_RD_BZIP2 is not set
++# CONFIG_RD_LZMA is not set
++# CONFIG_RD_LZO is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++CONFIG_SYSCTL=y
++CONFIG_ANON_INODES=y
++CONFIG_EMBEDDED=y
++CONFIG_UID16=y
++CONFIG_SYSCTL_SYSCALL=y
++CONFIG_KALLSYMS=y
++# CONFIG_KALLSYMS_EXTRA_PASS is not set
++CONFIG_HOTPLUG=y
++CONFIG_PRINTK=y
++CONFIG_BUG=y
++CONFIG_ELF_CORE=y
++CONFIG_BASE_FULL=y
++CONFIG_FUTEX=y
++CONFIG_EPOLL=y
++CONFIG_SIGNALFD=y
++CONFIG_TIMERFD=y
++CONFIG_EVENTFD=y
++CONFIG_SHMEM=y
++CONFIG_AIO=y
++
++#
++# Kernel Performance Events And Counters
++#
++CONFIG_VM_EVENT_COUNTERS=y
++CONFIG_SLUB_DEBUG=y
++CONFIG_COMPAT_BRK=y
++# CONFIG_SLAB is not set
++CONFIG_SLUB=y
++# CONFIG_SLOB is not set
++# CONFIG_PROFILING is not set
++CONFIG_HAVE_OPROFILE=y
++# CONFIG_KPROBES is not set
++CONFIG_HAVE_KPROBES=y
++CONFIG_HAVE_KRETPROBES=y
++CONFIG_HAVE_CLK=y
++
++#
++# GCOV-based kernel profiling
++#
++# CONFIG_GCOV_KERNEL is not set
++# CONFIG_SLOW_WORK is not set
++CONFIG_HAVE_GENERIC_DMA_COHERENT=y
++CONFIG_SLABINFO=y
++CONFIG_RT_MUTEXES=y
++CONFIG_BASE_SMALL=0
++CONFIG_MODULES=y
++# CONFIG_MODULE_FORCE_LOAD is not set
++CONFIG_MODULE_UNLOAD=y
++CONFIG_MODULE_FORCE_UNLOAD=y
++CONFIG_MODVERSIONS=y
++# CONFIG_MODULE_SRCVERSION_ALL is not set
++CONFIG_BLOCK=y
++CONFIG_LBDAF=y
++# CONFIG_BLK_DEV_BSG is not set
++# CONFIG_BLK_DEV_INTEGRITY is not set
++
++#
++# IO Schedulers
++#
++CONFIG_IOSCHED_NOOP=y
++# CONFIG_IOSCHED_DEADLINE is not set
++# CONFIG_IOSCHED_CFQ is not set
++# CONFIG_DEFAULT_DEADLINE is not set
++# CONFIG_DEFAULT_CFQ is not set
++CONFIG_DEFAULT_NOOP=y
++CONFIG_DEFAULT_IOSCHED="noop"
++# CONFIG_INLINE_SPIN_TRYLOCK is not set
++# CONFIG_INLINE_SPIN_TRYLOCK_BH is not set
++# CONFIG_INLINE_SPIN_LOCK is not set
++# CONFIG_INLINE_SPIN_LOCK_BH is not set
++# CONFIG_INLINE_SPIN_LOCK_IRQ is not set
++# CONFIG_INLINE_SPIN_LOCK_IRQSAVE is not set
++# CONFIG_INLINE_SPIN_UNLOCK is not set
++# CONFIG_INLINE_SPIN_UNLOCK_BH is not set
++# CONFIG_INLINE_SPIN_UNLOCK_IRQ is not set
++# CONFIG_INLINE_SPIN_UNLOCK_IRQRESTORE is not set
++# CONFIG_INLINE_READ_TRYLOCK is not set
++# CONFIG_INLINE_READ_LOCK is not set
++# CONFIG_INLINE_READ_LOCK_BH is not set
++# CONFIG_INLINE_READ_LOCK_IRQ is not set
++# CONFIG_INLINE_READ_LOCK_IRQSAVE is not set
++# CONFIG_INLINE_READ_UNLOCK is not set
++# CONFIG_INLINE_READ_UNLOCK_BH is not set
++# CONFIG_INLINE_READ_UNLOCK_IRQ is not set
++# CONFIG_INLINE_READ_UNLOCK_IRQRESTORE is not set
++# CONFIG_INLINE_WRITE_TRYLOCK is not set
++# CONFIG_INLINE_WRITE_LOCK is not set
++# CONFIG_INLINE_WRITE_LOCK_BH is not set
++# CONFIG_INLINE_WRITE_LOCK_IRQ is not set
++# CONFIG_INLINE_WRITE_LOCK_IRQSAVE is not set
++# CONFIG_INLINE_WRITE_UNLOCK is not set
++# CONFIG_INLINE_WRITE_UNLOCK_BH is not set
++# CONFIG_INLINE_WRITE_UNLOCK_IRQ is not set
++# CONFIG_INLINE_WRITE_UNLOCK_IRQRESTORE is not set
++# CONFIG_MUTEX_SPIN_ON_OWNER is not set
++CONFIG_FREEZER=y
++
++#
++# System Type
++#
++CONFIG_MMU=y
++# CONFIG_ARCH_AAEC2000 is not set
++# CONFIG_ARCH_INTEGRATOR is not set
++# CONFIG_ARCH_REALVIEW is not set
++# CONFIG_ARCH_VERSATILE is not set
++# CONFIG_ARCH_AT91 is not set
++# CONFIG_ARCH_CLPS711X is not set
++# CONFIG_ARCH_GEMINI is not set
++# CONFIG_ARCH_EBSA110 is not set
++# CONFIG_ARCH_EP93XX is not set
++# CONFIG_ARCH_FOOTBRIDGE is not set
++# CONFIG_ARCH_MXC is not set
++# CONFIG_ARCH_STMP3XXX is not set
++# CONFIG_ARCH_NETX is not set
++# CONFIG_ARCH_H720X is not set
++# CONFIG_ARCH_NOMADIK is not set
++# CONFIG_ARCH_IOP13XX is not set
++# CONFIG_ARCH_IOP32X is not set
++# CONFIG_ARCH_IOP33X is not set
++# CONFIG_ARCH_IXP23XX is not set
++# CONFIG_ARCH_IXP2000 is not set
++# CONFIG_ARCH_IXP4XX is not set
++# CONFIG_ARCH_L7200 is not set
++# CONFIG_ARCH_DOVE is not set
++# CONFIG_ARCH_KIRKWOOD is not set
++# CONFIG_ARCH_LOKI is not set
++# CONFIG_ARCH_MV78XX0 is not set
++# CONFIG_ARCH_ORION5X is not set
++# CONFIG_ARCH_MMP is not set
++# CONFIG_ARCH_KS8695 is not set
++# CONFIG_ARCH_NS9XXX is not set
++# CONFIG_ARCH_W90X900 is not set
++# CONFIG_ARCH_PNX4008 is not set
++# CONFIG_ARCH_PXA is not set
++# CONFIG_ARCH_MSM is not set
++# CONFIG_ARCH_RPC is not set
++# CONFIG_ARCH_SA1100 is not set
++# CONFIG_ARCH_S3C2410 is not set
++# CONFIG_ARCH_S3C64XX is not set
++# CONFIG_ARCH_S5PC1XX is not set
++# CONFIG_ARCH_SHARK is not set
++# CONFIG_ARCH_LH7A40X is not set
++# CONFIG_ARCH_U300 is not set
++CONFIG_ARCH_DAVINCI=y
++# CONFIG_ARCH_OMAP is not set
++# CONFIG_ARCH_BCMRING is not set
++# CONFIG_ARCH_U8500 is not set
++CONFIG_CP_INTC=y
++
++#
++# TI DaVinci Implementations
++#
++
++#
++# DaVinci Core Type
++#
++# CONFIG_ARCH_DAVINCI_DM644x is not set
++# CONFIG_ARCH_DAVINCI_DM355 is not set
++# CONFIG_ARCH_DAVINCI_DM646x is not set
++# CONFIG_ARCH_DAVINCI_DA830 is not set
++CONFIG_ARCH_DAVINCI_DA850=y
++# CONFIG_DA8XX_MAX_SPEED_300 is not set
++# CONFIG_DA8XX_MAX_SPEED_372 is not set
++# CONFIG_DA8XX_MAX_SPEED_408 is not set
++CONFIG_DA8XX_MAX_SPEED_456=y
++CONFIG_ARCH_DAVINCI_DA8XX=y
++# CONFIG_ARCH_DAVINCI_DM365 is not set
++
++#
++# DaVinci Board Type
++#
++# CONFIG_MACH_DAVINCI_DA850_EVM is not set
++CONFIG_MACH_OMAPL138_HAWKBOARD=y
++CONFIG_DAVINCI_MUX=y
++# CONFIG_DAVINCI_MUX_DEBUG is not set
++# CONFIG_DAVINCI_MUX_WARNINGS is not set
++CONFIG_DAVINCI_RESET_CLOCKS=y
++CONFIG_DAVINCI_MCBSP=y
++# CONFIG_DAVINCI_MCBSP0 is not set
++CONFIG_DAVINCI_MCBSP1=y
++
++#
++# Processor Type
++#
++CONFIG_CPU_ARM926T=y
++CONFIG_CPU_32v5=y
++CONFIG_CPU_ABRT_EV5TJ=y
++CONFIG_CPU_PABRT_LEGACY=y
++CONFIG_CPU_CACHE_VIVT=y
++CONFIG_CPU_COPY_V4WB=y
++CONFIG_CPU_TLB_V4WBI=y
++CONFIG_CPU_CP15=y
++CONFIG_CPU_CP15_MMU=y
++
++#
++# Processor Features
++#
++CONFIG_ARM_THUMB=y
++# CONFIG_CPU_ICACHE_DISABLE is not set
++# CONFIG_CPU_DCACHE_DISABLE is not set
++# CONFIG_CPU_DCACHE_WRITETHROUGH is not set
++# CONFIG_CPU_CACHE_ROUND_ROBIN is not set
++CONFIG_ARM_L1_CACHE_SHIFT=5
++CONFIG_COMMON_CLKDEV=y
++
++#
++# Bus support
++#
++# CONFIG_PCI_SYSCALL is not set
++# CONFIG_ARCH_SUPPORTS_MSI is not set
++# CONFIG_PCCARD is not set
++
++#
++# Kernel Features
++#
++CONFIG_TICK_ONESHOT=y
++CONFIG_NO_HZ=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_GENERIC_CLOCKEVENTS_BUILD=y
++CONFIG_VMSPLIT_3G=y
++# CONFIG_VMSPLIT_2G is not set
++# CONFIG_VMSPLIT_1G is not set
++CONFIG_PAGE_OFFSET=0xC0000000
++# CONFIG_PREEMPT_NONE is not set
++# CONFIG_PREEMPT_VOLUNTARY is not set
++CONFIG_PREEMPT=y
++CONFIG_HZ=100
++CONFIG_AEABI=y
++# CONFIG_OABI_COMPAT is not set
++CONFIG_ARCH_HAS_HOLES_MEMORYMODEL=y
++# CONFIG_ARCH_SPARSEMEM_DEFAULT is not set
++# CONFIG_ARCH_SELECT_MEMORY_MODEL is not set
++# CONFIG_HIGHMEM is not set
++CONFIG_SELECT_MEMORY_MODEL=y
++CONFIG_FLATMEM_MANUAL=y
++# CONFIG_DISCONTIGMEM_MANUAL is not set
++# CONFIG_SPARSEMEM_MANUAL is not set
++CONFIG_FLATMEM=y
++CONFIG_FLAT_NODE_MEM_MAP=y
++CONFIG_PAGEFLAGS_EXTENDED=y
++CONFIG_SPLIT_PTLOCK_CPUS=999999
++# CONFIG_PHYS_ADDR_T_64BIT is not set
++CONFIG_ZONE_DMA_FLAG=1
++CONFIG_BOUNCE=y
++CONFIG_VIRT_TO_BUS=y
++# CONFIG_KSM is not set
++CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
++CONFIG_LEDS=y
++# CONFIG_LEDS_CPU is not set
++CONFIG_ALIGNMENT_TRAP=y
++# CONFIG_UACCESS_WITH_MEMCPY is not set
++
++#
++# Boot options
++#
++CONFIG_ZBOOT_ROM_TEXT=0x0
++CONFIG_ZBOOT_ROM_BSS=0x0
++CONFIG_CMDLINE=""
++# CONFIG_XIP_KERNEL is not set
++# CONFIG_KEXEC is not set
++
++#
++# CPU Power Management
++#
++CONFIG_CPU_FREQ=y
++CONFIG_CPU_FREQ_TABLE=y
++# CONFIG_CPU_FREQ_DEBUG is not set
++CONFIG_CPU_FREQ_STAT=y
++# CONFIG_CPU_FREQ_STAT_DETAILS is not set
++# CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE is not set
++# CONFIG_CPU_FREQ_DEFAULT_GOV_POWERSAVE is not set
++CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
++# CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND is not set
++# CONFIG_CPU_FREQ_DEFAULT_GOV_CONSERVATIVE is not set
++CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
++CONFIG_CPU_FREQ_GOV_POWERSAVE=y
++CONFIG_CPU_FREQ_GOV_USERSPACE=y
++CONFIG_CPU_FREQ_GOV_ONDEMAND=y
++CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
++CONFIG_CPU_IDLE=y
++CONFIG_CPU_IDLE_GOV_LADDER=y
++CONFIG_CPU_IDLE_GOV_MENU=y
++
++#
++# Floating point emulation
++#
++
++#
++# At least one emulation must be selected
++#
++# CONFIG_VFP is not set
++
++#
++# Userspace binary formats
++#
++CONFIG_BINFMT_ELF=y
++# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
++CONFIG_HAVE_AOUT=y
++# CONFIG_BINFMT_AOUT is not set
++# CONFIG_BINFMT_MISC is not set
++
++#
++# Power management options
++#
++CONFIG_PM=y
++# CONFIG_PM_DEBUG is not set
++CONFIG_PM_SLEEP=y
++CONFIG_SUSPEND=y
++CONFIG_SUSPEND_FREEZER=y
++# CONFIG_APM_EMULATION is not set
++# CONFIG_PM_RUNTIME is not set
++CONFIG_ARCH_SUSPEND_POSSIBLE=y
++CONFIG_NET=y
++
++#
++# Networking options
++#
++CONFIG_PACKET=y
++# CONFIG_PACKET_MMAP is not set
++CONFIG_UNIX=y
++CONFIG_XFRM=y
++# CONFIG_XFRM_USER is not set
++# CONFIG_XFRM_SUB_POLICY is not set
++# CONFIG_XFRM_MIGRATE is not set
++# CONFIG_XFRM_STATISTICS is not set
++# CONFIG_NET_KEY is not set
++CONFIG_INET=y
++# CONFIG_IP_MULTICAST is not set
++# CONFIG_IP_ADVANCED_ROUTER is not set
++CONFIG_IP_FIB_HASH=y
++CONFIG_IP_PNP=y
++CONFIG_IP_PNP_DHCP=y
++# CONFIG_IP_PNP_BOOTP is not set
++# CONFIG_IP_PNP_RARP is not set
++# CONFIG_NET_IPIP is not set
++# CONFIG_NET_IPGRE is not set
++# CONFIG_ARPD is not set
++# CONFIG_SYN_COOKIES is not set
++# CONFIG_INET_AH is not set
++# CONFIG_INET_ESP is not set
++# CONFIG_INET_IPCOMP is not set
++# CONFIG_INET_XFRM_TUNNEL is not set
++CONFIG_INET_TUNNEL=m
++CONFIG_INET_XFRM_MODE_TRANSPORT=y
++CONFIG_INET_XFRM_MODE_TUNNEL=y
++CONFIG_INET_XFRM_MODE_BEET=y
++# CONFIG_INET_LRO is not set
++CONFIG_INET_DIAG=y
++CONFIG_INET_TCP_DIAG=y
++# CONFIG_TCP_CONG_ADVANCED is not set
++CONFIG_TCP_CONG_CUBIC=y
++CONFIG_DEFAULT_TCP_CONG="cubic"
++# CONFIG_TCP_MD5SIG is not set
++CONFIG_IPV6=m
++# CONFIG_IPV6_PRIVACY is not set
++# CONFIG_IPV6_ROUTER_PREF is not set
++# CONFIG_IPV6_OPTIMISTIC_DAD is not set
++# CONFIG_INET6_AH is not set
++# CONFIG_INET6_ESP is not set
++# CONFIG_INET6_IPCOMP is not set
++# CONFIG_IPV6_MIP6 is not set
++# CONFIG_INET6_XFRM_TUNNEL is not set
++# CONFIG_INET6_TUNNEL is not set
++CONFIG_INET6_XFRM_MODE_TRANSPORT=m
++CONFIG_INET6_XFRM_MODE_TUNNEL=m
++CONFIG_INET6_XFRM_MODE_BEET=m
++# CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION is not set
++CONFIG_IPV6_SIT=m
++# CONFIG_IPV6_SIT_6RD is not set
++CONFIG_IPV6_NDISC_NODETYPE=y
++# CONFIG_IPV6_TUNNEL is not set
++# CONFIG_IPV6_MULTIPLE_TABLES is not set
++# CONFIG_IPV6_MROUTE is not set
++# CONFIG_NETWORK_SECMARK is not set
++CONFIG_NETFILTER=y
++# CONFIG_NETFILTER_DEBUG is not set
++CONFIG_NETFILTER_ADVANCED=y
++
++#
++# Core Netfilter Configuration
++#
++# CONFIG_NETFILTER_NETLINK_QUEUE is not set
++# CONFIG_NETFILTER_NETLINK_LOG is not set
++# CONFIG_NF_CONNTRACK is not set
++# CONFIG_NETFILTER_XTABLES is not set
++# CONFIG_IP_VS is not set
++
++#
++# IP: Netfilter Configuration
++#
++# CONFIG_NF_DEFRAG_IPV4 is not set
++# CONFIG_IP_NF_QUEUE is not set
++# CONFIG_IP_NF_IPTABLES is not set
++# CONFIG_IP_NF_ARPTABLES is not set
++
++#
++# IPv6: Netfilter Configuration
++#
++# CONFIG_IP6_NF_QUEUE is not set
++# CONFIG_IP6_NF_IPTABLES is not set
++# CONFIG_IP_DCCP is not set
++# CONFIG_IP_SCTP is not set
++# CONFIG_RDS is not set
++# CONFIG_TIPC is not set
++# CONFIG_ATM is not set
++# CONFIG_BRIDGE is not set
++# CONFIG_NET_DSA is not set
++# CONFIG_VLAN_8021Q is not set
++# CONFIG_DECNET is not set
++# CONFIG_LLC2 is not set
++# CONFIG_IPX is not set
++# CONFIG_ATALK is not set
++# CONFIG_X25 is not set
++# CONFIG_LAPB is not set
++# CONFIG_ECONET is not set
++# CONFIG_WAN_ROUTER is not set
++# CONFIG_PHONET is not set
++# CONFIG_IEEE802154 is not set
++# CONFIG_NET_SCHED is not set
++# CONFIG_DCB is not set
++
++#
++# Network testing
++#
++# CONFIG_NET_PKTGEN is not set
++# CONFIG_HAMRADIO is not set
++# CONFIG_CAN is not set
++# CONFIG_IRDA is not set
++# CONFIG_BT is not set
++# CONFIG_AF_RXRPC is not set
++CONFIG_WIRELESS=y
++# CONFIG_CFG80211 is not set
++# CONFIG_LIB80211 is not set
++
++#
++# CFG80211 needs to be enabled for MAC80211
++#
++# CONFIG_WIMAX is not set
++# CONFIG_RFKILL is not set
++# CONFIG_NET_9P is not set
++
++#
++# Device Drivers
++#
++
++#
++# Generic Driver Options
++#
++CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++# CONFIG_DEVTMPFS is not set
++CONFIG_STANDALONE=y
++CONFIG_PREVENT_FIRMWARE_BUILD=y
++# CONFIG_FW_LOADER is not set
++# CONFIG_SYS_HYPERVISOR is not set
++# CONFIG_CONNECTOR is not set
++CONFIG_MTD=y
++# CONFIG_MTD_DEBUG is not set
++# CONFIG_MTD_TESTS is not set
++# CONFIG_MTD_CONCAT is not set
++CONFIG_MTD_PARTITIONS=y
++# CONFIG_MTD_REDBOOT_PARTS is not set
++# CONFIG_MTD_CMDLINE_PARTS is not set
++# CONFIG_MTD_AFS_PARTS is not set
++# CONFIG_MTD_AR7_PARTS is not set
++
++#
++# User Modules And Translation Layers
++#
++CONFIG_MTD_CHAR=y
++CONFIG_MTD_BLKDEVS=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_FTL is not set
++# CONFIG_NFTL is not set
++# CONFIG_INFTL is not set
++# CONFIG_RFD_FTL is not set
++# CONFIG_SSFDC is not set
++# CONFIG_MTD_OOPS is not set
++
++#
++# RAM/ROM/Flash chip drivers
++#
++# CONFIG_MTD_CFI is not set
++# CONFIG_MTD_JEDECPROBE is not set
++CONFIG_MTD_MAP_BANK_WIDTH_1=y
++CONFIG_MTD_MAP_BANK_WIDTH_2=y
++CONFIG_MTD_MAP_BANK_WIDTH_4=y
++# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
++CONFIG_MTD_CFI_I1=y
++CONFIG_MTD_CFI_I2=y
++# CONFIG_MTD_CFI_I4 is not set
++# CONFIG_MTD_CFI_I8 is not set
++# CONFIG_MTD_RAM is not set
++# CONFIG_MTD_ROM is not set
++# CONFIG_MTD_ABSENT is not set
++
++#
++# Mapping drivers for chip access
++#
++# CONFIG_MTD_COMPLEX_MAPPINGS is not set
++# CONFIG_MTD_PLATRAM is not set
++
++#
++# Self-contained MTD device drivers
++#
++# CONFIG_MTD_DATAFLASH is not set
++CONFIG_MTD_M25P80=y
++CONFIG_M25PXX_USE_FAST_READ=y
++# CONFIG_MTD_SST25L is not set
++# CONFIG_MTD_SLRAM is not set
++# CONFIG_MTD_PHRAM is not set
++# CONFIG_MTD_MTDRAM is not set
++# CONFIG_MTD_BLOCK2MTD is not set
++
++#
++# Disk-On-Chip Device Drivers
++#
++# CONFIG_MTD_DOC2000 is not set
++# CONFIG_MTD_DOC2001 is not set
++# CONFIG_MTD_DOC2001PLUS is not set
++# CONFIG_MTD_NAND is not set
++# CONFIG_MTD_ONENAND is not set
++
++#
++# LPDDR flash memory drivers
++#
++# CONFIG_MTD_LPDDR is not set
++
++#
++# UBI - Unsorted block images
++#
++# CONFIG_MTD_UBI is not set
++# CONFIG_PARPORT is not set
++CONFIG_BLK_DEV=y
++# CONFIG_BLK_DEV_COW_COMMON is not set
++CONFIG_BLK_DEV_LOOP=m
++# CONFIG_BLK_DEV_CRYPTOLOOP is not set
++
++#
++# DRBD disabled because PROC_FS, INET or CONNECTOR not selected
++#
++# CONFIG_BLK_DEV_NBD is not set
++# CONFIG_BLK_DEV_UB is not set
++CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_RAM_COUNT=1
++CONFIG_BLK_DEV_RAM_SIZE=32768
++# CONFIG_BLK_DEV_XIP is not set
++# CONFIG_CDROM_PKTCDVD is not set
++# CONFIG_ATA_OVER_ETH is not set
++# CONFIG_MG_DISK is not set
++CONFIG_MISC_DEVICES=y
++# CONFIG_AD525X_DPOT is not set
++# CONFIG_ICS932S401 is not set
++# CONFIG_ENCLOSURE_SERVICES is not set
++# CONFIG_ISL29003 is not set
++# CONFIG_DS1682 is not set
++# CONFIG_TI_DAC7512 is not set
++# CONFIG_C2PORT is not set
++
++#
++# EEPROM support
++#
++CONFIG_EEPROM_AT24=y
++# CONFIG_EEPROM_AT25 is not set
++# CONFIG_EEPROM_LEGACY is not set
++# CONFIG_EEPROM_MAX6875 is not set
++# CONFIG_EEPROM_93CX6 is not set
++# CONFIG_IWMC3200TOP is not set
++CONFIG_HAVE_IDE=y
++# CONFIG_IDE is not set
++
++#
++# SCSI device support
++#
++# CONFIG_RAID_ATTRS is not set
++CONFIG_SCSI=y
++CONFIG_SCSI_DMA=y
++# CONFIG_SCSI_TGT is not set
++# CONFIG_SCSI_NETLINK is not set
++CONFIG_SCSI_PROC_FS=y
++
++#
++# SCSI support type (disk, tape, CD-ROM)
++#
++CONFIG_BLK_DEV_SD=y
++# CONFIG_CHR_DEV_ST is not set
++# CONFIG_CHR_DEV_OSST is not set
++# CONFIG_BLK_DEV_SR is not set
++CONFIG_CHR_DEV_SG=y
++# CONFIG_CHR_DEV_SCH is not set
++# CONFIG_SCSI_MULTI_LUN is not set
++# CONFIG_SCSI_CONSTANTS is not set
++# CONFIG_SCSI_LOGGING is not set
++# CONFIG_SCSI_SCAN_ASYNC is not set
++CONFIG_SCSI_WAIT_SCAN=m
++
++#
++# SCSI Transports
++#
++# CONFIG_SCSI_SPI_ATTRS is not set
++# CONFIG_SCSI_FC_ATTRS is not set
++# CONFIG_SCSI_ISCSI_ATTRS is not set
++# CONFIG_SCSI_SAS_LIBSAS is not set
++# CONFIG_SCSI_SRP_ATTRS is not set
++CONFIG_SCSI_LOWLEVEL=y
++# CONFIG_ISCSI_TCP is not set
++# CONFIG_LIBFC is not set
++# CONFIG_LIBFCOE is not set
++# CONFIG_SCSI_DEBUG is not set
++# CONFIG_SCSI_DH is not set
++# CONFIG_SCSI_OSD_INITIATOR is not set
++CONFIG_ATA=y
++# CONFIG_ATA_NONSTANDARD is not set
++CONFIG_ATA_VERBOSE_ERROR=y
++CONFIG_SATA_PMP=y
++CONFIG_SATA_AHCI=y
++# CONFIG_ATA_SFF is not set
++# CONFIG_MD is not set
++CONFIG_NETDEVICES=y
++# CONFIG_DUMMY is not set
++# CONFIG_BONDING is not set
++# CONFIG_MACVLAN is not set
++# CONFIG_EQUALIZER is not set
++# CONFIG_TUN is not set
++# CONFIG_VETH is not set
++CONFIG_PHYLIB=y
++
++#
++# MII PHY device drivers
++#
++# CONFIG_MARVELL_PHY is not set
++# CONFIG_DAVICOM_PHY is not set
++# CONFIG_QSEMI_PHY is not set
++CONFIG_LXT_PHY=y
++# CONFIG_CICADA_PHY is not set
++# CONFIG_VITESSE_PHY is not set
++CONFIG_SMSC_PHY=y
++# CONFIG_BROADCOM_PHY is not set
++# CONFIG_ICPLUS_PHY is not set
++# CONFIG_REALTEK_PHY is not set
++# CONFIG_NATIONAL_PHY is not set
++# CONFIG_STE10XP is not set
++CONFIG_LSI_ET1011C_PHY=y
++# CONFIG_FIXED_PHY is not set
++# CONFIG_MDIO_BITBANG is not set
++CONFIG_NET_ETHERNET=y
++CONFIG_MII=y
++# CONFIG_AX88796 is not set
++# CONFIG_SMC91X is not set
++CONFIG_TI_DAVINCI_EMAC=y
++# CONFIG_DM9000 is not set
++# CONFIG_ENC28J60 is not set
++# CONFIG_ETHOC is not set
++# CONFIG_SMC911X is not set
++# CONFIG_SMSC911X is not set
++# CONFIG_DNET is not set
++# CONFIG_IBM_NEW_EMAC_ZMII is not set
++# CONFIG_IBM_NEW_EMAC_RGMII is not set
++# CONFIG_IBM_NEW_EMAC_TAH is not set
++# CONFIG_IBM_NEW_EMAC_EMAC4 is not set
++# CONFIG_IBM_NEW_EMAC_NO_FLOW_CTRL is not set
++# CONFIG_IBM_NEW_EMAC_MAL_CLR_ICINTSTAT is not set
++# CONFIG_IBM_NEW_EMAC_MAL_COMMON_ERR is not set
++# CONFIG_B44 is not set
++# CONFIG_KS8842 is not set
++# CONFIG_KS8851 is not set
++# CONFIG_KS8851_MLL is not set
++# CONFIG_NETDEV_1000 is not set
++# CONFIG_NETDEV_10000 is not set
++CONFIG_WLAN=y
++# CONFIG_USB_ZD1201 is not set
++# CONFIG_HOSTAP is not set
++
++#
++# Enable WiMAX (Networking options) to see the WiMAX drivers
++#
++
++#
++# USB Network Adapters
++#
++# CONFIG_USB_CATC is not set
++# CONFIG_USB_KAWETH is not set
++# CONFIG_USB_PEGASUS is not set
++# CONFIG_USB_RTL8150 is not set
++# CONFIG_USB_USBNET is not set
++# CONFIG_WAN is not set
++# CONFIG_PPP is not set
++# CONFIG_SLIP is not set
++CONFIG_NETCONSOLE=y
++# CONFIG_NETCONSOLE_DYNAMIC is not set
++CONFIG_NETPOLL=y
++CONFIG_NETPOLL_TRAP=y
++CONFIG_NET_POLL_CONTROLLER=y
++# CONFIG_ISDN is not set
++# CONFIG_PHONE is not set
++
++#
++# Input device support
++#
++CONFIG_INPUT=y
++# CONFIG_INPUT_FF_MEMLESS is not set
++# CONFIG_INPUT_POLLDEV is not set
++# CONFIG_INPUT_SPARSEKMAP is not set
++
++#
++# Userland interfaces
++#
++# CONFIG_INPUT_MOUSEDEV is not set
++# CONFIG_INPUT_JOYDEV is not set
++CONFIG_INPUT_EVDEV=y
++# CONFIG_INPUT_EVBUG is not set
++
++#
++# Input Device Drivers
++#
++CONFIG_INPUT_KEYBOARD=y
++# CONFIG_KEYBOARD_ADP5588 is not set
++CONFIG_KEYBOARD_ATKBD=m
++# CONFIG_QT2160 is not set
++# CONFIG_KEYBOARD_LKKBD is not set
++CONFIG_KEYBOARD_GPIO=y
++# CONFIG_KEYBOARD_MATRIX is not set
++# CONFIG_KEYBOARD_MAX7359 is not set
++# CONFIG_KEYBOARD_NEWTON is not set
++# CONFIG_KEYBOARD_OPENCORES is not set
++# CONFIG_KEYBOARD_STOWAWAY is not set
++# CONFIG_KEYBOARD_SUNKBD is not set
++CONFIG_KEYBOARD_XTKBD=m
++# CONFIG_INPUT_MOUSE is not set
++# CONFIG_INPUT_JOYSTICK is not set
++# CONFIG_INPUT_TABLET is not set
++CONFIG_INPUT_TOUCHSCREEN=y
++# CONFIG_TOUCHSCREEN_ADS7846 is not set
++# CONFIG_TOUCHSCREEN_AD7877 is not set
++# CONFIG_TOUCHSCREEN_AD7879_I2C is not set
++# CONFIG_TOUCHSCREEN_AD7879_SPI is not set
++# CONFIG_TOUCHSCREEN_AD7879 is not set
++# CONFIG_TOUCHSCREEN_DYNAPRO is not set
++# CONFIG_TOUCHSCREEN_EETI is not set
++# CONFIG_TOUCHSCREEN_FUJITSU is not set
++# CONFIG_TOUCHSCREEN_GUNZE is not set
++# CONFIG_TOUCHSCREEN_ELO is not set
++# CONFIG_TOUCHSCREEN_WACOM_W8001 is not set
++# CONFIG_TOUCHSCREEN_MCS5000 is not set
++# CONFIG_TOUCHSCREEN_MTOUCH is not set
++# CONFIG_TOUCHSCREEN_INEXIO is not set
++# CONFIG_TOUCHSCREEN_MK712 is not set
++# CONFIG_TOUCHSCREEN_PENMOUNT is not set
++# CONFIG_TOUCHSCREEN_TOUCHRIGHT is not set
++# CONFIG_TOUCHSCREEN_TOUCHWIN is not set
++# CONFIG_TOUCHSCREEN_USB_COMPOSITE is not set
++# CONFIG_TOUCHSCREEN_TOUCHIT213 is not set
++# CONFIG_TOUCHSCREEN_TSC2007 is not set
++# CONFIG_TOUCHSCREEN_TSC2004 is not set
++# CONFIG_TOUCHSCREEN_W90X900 is not set
++CONFIG_TOUCHSCREEN_TPS6507X=y
++# CONFIG_INPUT_MISC is not set
++
++#
++# Hardware I/O ports
++#
++CONFIG_SERIO=y
++CONFIG_SERIO_SERPORT=y
++CONFIG_SERIO_LIBPS2=y
++# CONFIG_SERIO_RAW is not set
++# CONFIG_SERIO_ALTERA_PS2 is not set
++# CONFIG_GAMEPORT is not set
++
++#
++# Character devices
++#
++CONFIG_VT=y
++CONFIG_CONSOLE_TRANSLATIONS=y
++# CONFIG_VT_CONSOLE is not set
++CONFIG_HW_CONSOLE=y
++# CONFIG_VT_HW_CONSOLE_BINDING is not set
++CONFIG_DEVKMEM=y
++# CONFIG_SERIAL_NONSTANDARD is not set
++
++#
++# Serial drivers
++#
++CONFIG_SERIAL_8250=y
++CONFIG_SERIAL_8250_CONSOLE=y
++CONFIG_SERIAL_8250_NR_UARTS=3
++CONFIG_SERIAL_8250_RUNTIME_UARTS=3
++# CONFIG_SERIAL_8250_EXTENDED is not set
++
++#
++# Non-8250 serial port support
++#
++# CONFIG_SERIAL_MAX3100 is not set
++CONFIG_SERIAL_CORE=y
++CONFIG_SERIAL_CORE_CONSOLE=y
++CONFIG_UNIX98_PTYS=y
++# CONFIG_DEVPTS_MULTIPLE_INSTANCES is not set
++CONFIG_LEGACY_PTYS=y
++CONFIG_LEGACY_PTY_COUNT=8
++# CONFIG_IPMI_HANDLER is not set
++CONFIG_HW_RANDOM=m
++# CONFIG_HW_RANDOM_TIMERIOMEM is not set
++# CONFIG_R3964 is not set
++# CONFIG_RAW_DRIVER is not set
++# CONFIG_TCG_TPM is not set
++CONFIG_I2C=y
++CONFIG_I2C_BOARDINFO=y
++CONFIG_I2C_COMPAT=y
++CONFIG_I2C_CHARDEV=y
++CONFIG_I2C_HELPER_AUTO=y
++CONFIG_I2C_ALGOBIT=y
++
++#
++# I2C Hardware Bus support
++#
++
++#
++# I2C system bus drivers (mostly embedded / system-on-chip)
++#
++CONFIG_I2C_DAVINCI=y
++# CONFIG_I2C_DESIGNWARE is not set
++CONFIG_I2C_GPIO=y
++# CONFIG_I2C_OCORES is not set
++# CONFIG_I2C_SIMTEC is not set
++
++#
++# External I2C/SMBus adapter drivers
++#
++# CONFIG_I2C_PARPORT_LIGHT is not set
++# CONFIG_I2C_TAOS_EVM is not set
++# CONFIG_I2C_TINY_USB is not set
++
++#
++# Other I2C/SMBus bus drivers
++#
++# CONFIG_I2C_PCA_PLATFORM is not set
++# CONFIG_I2C_STUB is not set
++
++#
++# Miscellaneous I2C Chip support
++#
++# CONFIG_SENSORS_TSL2550 is not set
++# CONFIG_I2C_DEBUG_CORE is not set
++# CONFIG_I2C_DEBUG_ALGO is not set
++# CONFIG_I2C_DEBUG_BUS is not set
++# CONFIG_I2C_DEBUG_CHIP is not set
++CONFIG_SPI=y
++CONFIG_SPI_MASTER=y
++
++#
++# SPI Master Controller Drivers
++#
++CONFIG_SPI_DAVINCI=y
++CONFIG_SPI_BITBANG=y
++# CONFIG_SPI_GPIO is not set
++# CONFIG_SPI_XILINX is not set
++# CONFIG_SPI_DESIGNWARE is not set
++
++#
++# SPI Protocol Masters
++#
++# CONFIG_SPI_SPIDEV is not set
++# CONFIG_SPI_TLE62X0 is not set
++
++#
++# PPS support
++#
++# CONFIG_PPS is not set
++CONFIG_ARCH_REQUIRE_GPIOLIB=y
++CONFIG_GPIOLIB=y
++# CONFIG_GPIO_SYSFS is not set
++
++#
++# Memory mapped GPIO expanders:
++#
++
++#
++# I2C GPIO expanders:
++#
++# CONFIG_GPIO_MAX732X is not set
++CONFIG_GPIO_PCA953X=y
++CONFIG_GPIO_PCF857X=y
++# CONFIG_GPIO_ADP5588 is not set
++
++#
++# PCI GPIO expanders:
++#
++
++#
++# SPI GPIO expanders:
++#
++# CONFIG_GPIO_MAX7301 is not set
++# CONFIG_GPIO_MCP23S08 is not set
++# CONFIG_GPIO_MC33880 is not set
++
++#
++# AC97 GPIO expanders:
++#
++# CONFIG_W1 is not set
++# CONFIG_POWER_SUPPLY is not set
++# CONFIG_HWMON is not set
++# CONFIG_THERMAL is not set
++CONFIG_WATCHDOG=y
++# CONFIG_WATCHDOG_NOWAYOUT is not set
++
++#
++# Watchdog Device Drivers
++#
++# CONFIG_SOFT_WATCHDOG is not set
++CONFIG_DAVINCI_WATCHDOG=y
++
++#
++# USB-based Watchdog Cards
++#
++# CONFIG_USBPCWATCHDOG is not set
++CONFIG_SSB_POSSIBLE=y
++
++#
++# Sonics Silicon Backplane
++#
++# CONFIG_SSB is not set
++
++#
++# Multifunction device drivers
++#
++# CONFIG_MFD_CORE is not set
++# CONFIG_MFD_SM501 is not set
++# CONFIG_MFD_ASIC3 is not set
++# CONFIG_HTC_EGPIO is not set
++# CONFIG_HTC_PASIC3 is not set
++# CONFIG_TPS65010 is not set
++CONFIG_TPS6507x=y
++# CONFIG_TWL4030_CORE is not set
++# CONFIG_MFD_TMIO is not set
++# CONFIG_MFD_T7L66XB is not set
++# CONFIG_MFD_TC6387XB is not set
++# CONFIG_MFD_TC6393XB is not set
++# CONFIG_PMIC_DA903X is not set
++# CONFIG_PMIC_ADP5520 is not set
++# CONFIG_MFD_WM8400 is not set
++# CONFIG_MFD_WM831X is not set
++# CONFIG_MFD_WM8350_I2C is not set
++# CONFIG_MFD_PCF50633 is not set
++# CONFIG_MFD_MC13783 is not set
++# CONFIG_AB3100_CORE is not set
++# CONFIG_EZX_PCAP is not set
++# CONFIG_MFD_88PM8607 is not set
++# CONFIG_AB4500_CORE is not set
++# CONFIG_REGULATOR is not set
++CONFIG_MEDIA_SUPPORT=y
++
++#
++# Multimedia core support
++#
++CONFIG_VIDEO_DEV=y
++CONFIG_VIDEO_V4L2_COMMON=y
++CONFIG_VIDEO_ALLOW_V4L1=y
++CONFIG_VIDEO_V4L1_COMPAT=y
++# CONFIG_DVB_CORE is not set
++CONFIG_VIDEO_MEDIA=y
++
++#
++# Multimedia drivers
++#
++CONFIG_IR_CORE=y
++CONFIG_VIDEO_IR=y
++# CONFIG_MEDIA_ATTACH is not set
++CONFIG_MEDIA_TUNER=y
++# CONFIG_MEDIA_TUNER_CUSTOMISE is not set
++CONFIG_MEDIA_TUNER_SIMPLE=y
++CONFIG_MEDIA_TUNER_TDA8290=y
++CONFIG_MEDIA_TUNER_TDA9887=y
++CONFIG_MEDIA_TUNER_TEA5761=y
++CONFIG_MEDIA_TUNER_TEA5767=y
++CONFIG_MEDIA_TUNER_MT20XX=y
++CONFIG_MEDIA_TUNER_XC2028=y
++CONFIG_MEDIA_TUNER_XC5000=y
++CONFIG_MEDIA_TUNER_MC44S803=y
++CONFIG_VIDEO_V4L2=y
++CONFIG_VIDEO_V4L1=y
++CONFIG_VIDEOBUF_GEN=y
++CONFIG_VIDEOBUF_DMA_CONTIG=y
++CONFIG_VIDEO_CAPTURE_DRIVERS=y
++# CONFIG_VIDEO_ADV_DEBUG is not set
++# CONFIG_VIDEO_FIXED_MINOR_RANGES is not set
++# CONFIG_VIDEO_HELPER_CHIPS_AUTO is not set
++# CONFIG_VIDEO_IR_I2C is not set
++
++#
++# Encoders/decoders and other helper chips
++#
++
++#
++# Audio decoders
++#
++# CONFIG_VIDEO_TVAUDIO is not set
++# CONFIG_VIDEO_TDA7432 is not set
++# CONFIG_VIDEO_TDA9840 is not set
++# CONFIG_VIDEO_TDA9875 is not set
++# CONFIG_VIDEO_TEA6415C is not set
++# CONFIG_VIDEO_TEA6420 is not set
++# CONFIG_VIDEO_MSP3400 is not set
++# CONFIG_VIDEO_CS5345 is not set
++# CONFIG_VIDEO_CS53L32A is not set
++# CONFIG_VIDEO_M52790 is not set
++# CONFIG_VIDEO_TLV320AIC23B is not set
++# CONFIG_VIDEO_WM8775 is not set
++# CONFIG_VIDEO_WM8739 is not set
++# CONFIG_VIDEO_VP27SMPX is not set
++
++#
++# RDS decoders
++#
++# CONFIG_VIDEO_SAA6588 is not set
++
++#
++# Video decoders
++#
++# CONFIG_VIDEO_ADV7180 is not set
++# CONFIG_VIDEO_BT819 is not set
++# CONFIG_VIDEO_BT856 is not set
++# CONFIG_VIDEO_BT866 is not set
++# CONFIG_VIDEO_KS0127 is not set
++# CONFIG_VIDEO_OV7670 is not set
++# CONFIG_VIDEO_MT9V011 is not set
++# CONFIG_VIDEO_TCM825X is not set
++# CONFIG_VIDEO_SAA7110 is not set
++# CONFIG_VIDEO_SAA711X is not set
++# CONFIG_VIDEO_SAA717X is not set
++# CONFIG_VIDEO_SAA7191 is not set
++CONFIG_VIDEO_TVP514X=y
++# CONFIG_VIDEO_TVP5150 is not set
++# CONFIG_VIDEO_VPX3220 is not set
++
++#
++# Video and audio decoders
++#
++# CONFIG_VIDEO_CX25840 is not set
++
++#
++# MPEG video encoders
++#
++# CONFIG_VIDEO_CX2341X is not set
++
++#
++# Video encoders
++#
++# CONFIG_VIDEO_SAA7127 is not set
++# CONFIG_VIDEO_SAA7185 is not set
++# CONFIG_VIDEO_ADV7170 is not set
++# CONFIG_VIDEO_ADV7175 is not set
++# CONFIG_VIDEO_THS7303 is not set
++# CONFIG_VIDEO_ADV7343 is not set
++
++#
++# Video improvement chips
++#
++# CONFIG_VIDEO_UPD64031A is not set
++# CONFIG_VIDEO_UPD64083 is not set
++CONFIG_VIDEO_DAVINCI_VPIF_CAPTURE=y
++CONFIG_VIDEO_DAVINCI_VPIF=y
++# CONFIG_VIDEO_VIVI is not set
++# CONFIG_VIDEO_VPSS_SYSTEM is not set
++# CONFIG_VIDEO_VPFE_CAPTURE is not set
++# CONFIG_VIDEO_CPIA is not set
++# CONFIG_VIDEO_CPIA2 is not set
++# CONFIG_VIDEO_SAA5246A is not set
++# CONFIG_VIDEO_SAA5249 is not set
++# CONFIG_SOC_CAMERA is not set
++CONFIG_V4L_USB_DRIVERS=y
++CONFIG_USB_VIDEO_CLASS=y
++# CONFIG_USB_VIDEO_CLASS_INPUT_EVDEV is not set
++# CONFIG_USB_GSPCA is not set
++# CONFIG_VIDEO_PVRUSB2 is not set
++# CONFIG_VIDEO_HDPVR is not set
++# CONFIG_VIDEO_EM28XX is not set
++# CONFIG_VIDEO_CX231XX is not set
++# CONFIG_VIDEO_USBVISION is not set
++# CONFIG_USB_VICAM is not set
++# CONFIG_USB_IBMCAM is not set
++# CONFIG_USB_KONICAWC is not set
++# CONFIG_USB_QUICKCAM_MESSENGER is not set
++# CONFIG_USB_ET61X251 is not set
++# CONFIG_VIDEO_OVCAMCHIP is not set
++# CONFIG_USB_OV511 is not set
++# CONFIG_USB_SE401 is not set
++# CONFIG_USB_SN9C102 is not set
++# CONFIG_USB_STV680 is not set
++# CONFIG_USB_ZC0301 is not set
++# CONFIG_USB_PWC is not set
++# CONFIG_USB_PWC_INPUT_EVDEV is not set
++# CONFIG_USB_ZR364XX is not set
++# CONFIG_USB_STKWEBCAM is not set
++# CONFIG_USB_S2255 is not set
++# CONFIG_RADIO_ADAPTERS is not set
++# CONFIG_DAB is not set
++
++#
++# Graphics support
++#
++# CONFIG_VGASTATE is not set
++# CONFIG_VIDEO_OUTPUT_CONTROL is not set
++CONFIG_FB=y
++# CONFIG_FIRMWARE_EDID is not set
++# CONFIG_FB_DDC is not set
++# CONFIG_FB_BOOT_VESA_SUPPORT is not set
++CONFIG_FB_CFB_FILLRECT=y
++CONFIG_FB_CFB_COPYAREA=y
++CONFIG_FB_CFB_IMAGEBLIT=y
++# CONFIG_FB_CFB_REV_PIXELS_IN_BYTE is not set
++# CONFIG_FB_SYS_FILLRECT is not set
++# CONFIG_FB_SYS_COPYAREA is not set
++# CONFIG_FB_SYS_IMAGEBLIT is not set
++# CONFIG_FB_FOREIGN_ENDIAN is not set
++# CONFIG_FB_SYS_FOPS is not set
++# CONFIG_FB_SVGALIB is not set
++# CONFIG_FB_MACMODES is not set
++# CONFIG_FB_BACKLIGHT is not set
++# CONFIG_FB_MODE_HELPERS is not set
++# CONFIG_FB_TILEBLITTING is not set
++
++#
++# Frame buffer hardware drivers
++#
++# CONFIG_FB_S1D13XXX is not set
++# CONFIG_FB_DAVINCI is not set
++# CONFIG_FB_VIRTUAL is not set
++CONFIG_FB_DA8XX=y
++# CONFIG_FB_METRONOME is not set
++# CONFIG_FB_MB862XX is not set
++# CONFIG_FB_BROADSHEET is not set
++# CONFIG_BACKLIGHT_LCD_SUPPORT is not set
++
++#
++# Display device support
++#
++# CONFIG_DISPLAY_SUPPORT is not set
++
++#
++# Console display driver support
++#
++# CONFIG_VGA_CONSOLE is not set
++CONFIG_DUMMY_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE=y
++# CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY is not set
++# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
++# CONFIG_FONTS is not set
++CONFIG_FONT_8x8=y
++CONFIG_FONT_8x16=y
++CONFIG_LOGO=y
++CONFIG_LOGO_LINUX_MONO=y
++CONFIG_LOGO_LINUX_VGA16=y
++CONFIG_LOGO_LINUX_CLUT224=y
++CONFIG_SOUND=y
++# CONFIG_SOUND_OSS_CORE is not set
++CONFIG_SND=y
++CONFIG_SND_TIMER=y
++CONFIG_SND_PCM=y
++CONFIG_SND_HWDEP=y
++CONFIG_SND_RAWMIDI=y
++CONFIG_SND_JACK=y
++# CONFIG_SND_SEQUENCER is not set
++# CONFIG_SND_MIXER_OSS is not set
++# CONFIG_SND_PCM_OSS is not set
++# CONFIG_SND_HRTIMER is not set
++# CONFIG_SND_DYNAMIC_MINORS is not set
++CONFIG_SND_SUPPORT_OLD_API=y
++CONFIG_SND_VERBOSE_PROCFS=y
++# CONFIG_SND_VERBOSE_PRINTK is not set
++# CONFIG_SND_DEBUG is not set
++# CONFIG_SND_RAWMIDI_SEQ is not set
++# CONFIG_SND_OPL3_LIB_SEQ is not set
++# CONFIG_SND_OPL4_LIB_SEQ is not set
++# CONFIG_SND_SBAWE_SEQ is not set
++# CONFIG_SND_EMU10K1_SEQ is not set
++CONFIG_SND_DRIVERS=y
++# CONFIG_SND_DUMMY is not set
++# CONFIG_SND_MTPAV is not set
++# CONFIG_SND_SERIAL_U16550 is not set
++# CONFIG_SND_MPU401 is not set
++CONFIG_SND_ARM=y
++CONFIG_SND_SPI=y
++CONFIG_SND_USB=y
++CONFIG_SND_USB_AUDIO=y
++# CONFIG_SND_USB_CAIAQ is not set
++CONFIG_SND_SOC=y
++CONFIG_SND_DAVINCI_SOC=y
++CONFIG_SND_DAVINCI_SOC_MCASP=y
++CONFIG_SND_DA850_SOC_EVM=y
++CONFIG_SND_SOC_I2C_AND_SPI=y
++# CONFIG_SND_SOC_ALL_CODECS is not set
++CONFIG_SND_SOC_TLV320AIC3X=y
++# CONFIG_SOUND_PRIME is not set
++CONFIG_HID_SUPPORT=y
++CONFIG_HID=y
++# CONFIG_HIDRAW is not set
++
++#
++# USB Input Devices
++#
++CONFIG_USB_HID=y
++# CONFIG_HID_PID is not set
++# CONFIG_USB_HIDDEV is not set
++
++#
++# Special HID drivers
++#
++# CONFIG_HID_A4TECH is not set
++# CONFIG_HID_APPLE is not set
++# CONFIG_HID_BELKIN is not set
++# CONFIG_HID_CHERRY is not set
++# CONFIG_HID_CHICONY is not set
++# CONFIG_HID_CYPRESS is not set
++# CONFIG_HID_DRAGONRISE is not set
++# CONFIG_HID_EZKEY is not set
++# CONFIG_HID_KYE is not set
++# CONFIG_HID_GYRATION is not set
++# CONFIG_HID_TWINHAN is not set
++# CONFIG_HID_KENSINGTON is not set
++# CONFIG_HID_LOGITECH is not set
++# CONFIG_HID_MICROSOFT is not set
++# CONFIG_HID_MONTEREY is not set
++# CONFIG_HID_NTRIG is not set
++# CONFIG_HID_PANTHERLORD is not set
++# CONFIG_HID_PETALYNX is not set
++# CONFIG_HID_SAMSUNG is not set
++# CONFIG_HID_SONY is not set
++# CONFIG_HID_SUNPLUS is not set
++# CONFIG_HID_GREENASIA is not set
++# CONFIG_HID_SMARTJOYPLUS is not set
++# CONFIG_HID_TOPSEED is not set
++# CONFIG_HID_THRUSTMASTER is not set
++# CONFIG_HID_ZEROPLUS is not set
++CONFIG_USB_SUPPORT=y
++CONFIG_USB_ARCH_HAS_HCD=y
++CONFIG_USB_ARCH_HAS_OHCI=y
++# CONFIG_USB_ARCH_HAS_EHCI is not set
++CONFIG_USB=y
++# CONFIG_USB_DEBUG is not set
++# CONFIG_USB_ANNOUNCE_NEW_DEVICES is not set
++
++#
++# Miscellaneous USB options
++#
++# CONFIG_USB_DEVICEFS is not set
++# CONFIG_USB_DEVICE_CLASS is not set
++# CONFIG_USB_DYNAMIC_MINORS is not set
++CONFIG_USB_SUSPEND=y
++# CONFIG_USB_OTG is not set
++# CONFIG_USB_OTG_WHITELIST is not set
++# CONFIG_USB_OTG_BLACKLIST_HUB is not set
++# CONFIG_USB_MON is not set
++# CONFIG_USB_WUSB is not set
++# CONFIG_USB_WUSB_CBAF is not set
++
++#
++# USB Host Controller Drivers
++#
++# CONFIG_USB_C67X00_HCD is not set
++# CONFIG_USB_OXU210HP_HCD is not set
++# CONFIG_USB_ISP116X_HCD is not set
++# CONFIG_USB_ISP1760_HCD is not set
++# CONFIG_USB_ISP1362_HCD is not set
++CONFIG_USB_OHCI_HCD=y
++# CONFIG_USB_OHCI_BIG_ENDIAN_DESC is not set
++# CONFIG_USB_OHCI_BIG_ENDIAN_MMIO is not set
++CONFIG_USB_OHCI_LITTLE_ENDIAN=y
++# CONFIG_USB_SL811_HCD is not set
++# CONFIG_USB_R8A66597_HCD is not set
++# CONFIG_USB_HWA_HCD is not set
++CONFIG_USB_MUSB_HDRC=y
++CONFIG_USB_MUSB_SOC=y
++CONFIG_USB_MUSB_HOST=y
++# CONFIG_USB_MUSB_PERIPHERAL is not set
++# CONFIG_USB_MUSB_OTG is not set
++CONFIG_USB_MUSB_HDRC_HCD=y
++# CONFIG_MUSB_PIO_ONLY is not set
++# CONFIG_USB_INVENTRA_DMA is not set
++# CONFIG_USB_TI_CPPI_DMA is not set
++CONFIG_USB_TI_CPPI41_DMA=y
++CONFIG_USB_MUSB_DEBUG=y
++
++#
++# USB Device Class drivers
++#
++# CONFIG_USB_ACM is not set
++# CONFIG_USB_PRINTER is not set
++# CONFIG_USB_WDM is not set
++# CONFIG_USB_TMC is not set
++
++#
++# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may
++#
++
++#
++# also be needed; see USB_STORAGE Help for more info
++#
++CONFIG_USB_STORAGE=y
++# CONFIG_USB_STORAGE_DEBUG is not set
++# CONFIG_USB_STORAGE_DATAFAB is not set
++# CONFIG_USB_STORAGE_FREECOM is not set
++# CONFIG_USB_STORAGE_ISD200 is not set
++# CONFIG_USB_STORAGE_USBAT is not set
++# CONFIG_USB_STORAGE_SDDR09 is not set
++# CONFIG_USB_STORAGE_SDDR55 is not set
++# CONFIG_USB_STORAGE_JUMPSHOT is not set
++# CONFIG_USB_STORAGE_ALAUDA is not set
++# CONFIG_USB_STORAGE_ONETOUCH is not set
++# CONFIG_USB_STORAGE_KARMA is not set
++# CONFIG_USB_STORAGE_CYPRESS_ATACB is not set
++# CONFIG_USB_LIBUSUAL is not set
++
++#
++# USB Imaging devices
++#
++# CONFIG_USB_MDC800 is not set
++# CONFIG_USB_MICROTEK is not set
++
++#
++# USB port drivers
++#
++# CONFIG_USB_SERIAL is not set
++
++#
++# USB Miscellaneous drivers
++#
++# CONFIG_USB_EMI62 is not set
++# CONFIG_USB_EMI26 is not set
++# CONFIG_USB_ADUTUX is not set
++# CONFIG_USB_SEVSEG is not set
++# CONFIG_USB_RIO500 is not set
++# CONFIG_USB_LEGOTOWER is not set
++# CONFIG_USB_LCD is not set
++# CONFIG_USB_BERRY_CHARGE is not set
++# CONFIG_USB_LED is not set
++# CONFIG_USB_CYPRESS_CY7C63 is not set
++# CONFIG_USB_CYTHERM is not set
++# CONFIG_USB_IDMOUSE is not set
++# CONFIG_USB_FTDI_ELAN is not set
++# CONFIG_USB_APPLEDISPLAY is not set
++# CONFIG_USB_SISUSBVGA is not set
++# CONFIG_USB_LD is not set
++# CONFIG_USB_TRANCEVIBRATOR is not set
++# CONFIG_USB_IOWARRIOR is not set
++# CONFIG_USB_TEST is not set
++# CONFIG_USB_ISIGHTFW is not set
++# CONFIG_USB_VST is not set
++# CONFIG_USB_GADGET is not set
++
++#
++# OTG and related infrastructure
++#
++CONFIG_USB_OTG_UTILS=y
++# CONFIG_USB_GPIO_VBUS is not set
++# CONFIG_USB_ULPI is not set
++CONFIG_NOP_USB_XCEIV=y
++CONFIG_MMC=y
++# CONFIG_MMC_DEBUG is not set
++# CONFIG_MMC_UNSAFE_RESUME is not set
++
++#
++# MMC/SD/SDIO Card Drivers
++#
++CONFIG_MMC_BLOCK=y
++CONFIG_MMC_BLOCK_BOUNCE=y
++# CONFIG_SDIO_UART is not set
++# CONFIG_MMC_TEST is not set
++
++#
++# MMC/SD/SDIO Host Controller Drivers
++#
++# CONFIG_MMC_SDHCI is not set
++# CONFIG_MMC_AT91 is not set
++# CONFIG_MMC_ATMELMCI is not set
++CONFIG_MMC_DAVINCI=y
++# CONFIG_MMC_SPI is not set
++# CONFIG_MEMSTICK is not set
++# CONFIG_NEW_LEDS is not set
++# CONFIG_ACCESSIBILITY is not set
++CONFIG_RTC_LIB=y
++CONFIG_RTC_CLASS=y
++CONFIG_RTC_HCTOSYS=y
++CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
++# CONFIG_RTC_DEBUG is not set
++
++#
++# RTC interfaces
++#
++CONFIG_RTC_INTF_SYSFS=y
++CONFIG_RTC_INTF_PROC=y
++CONFIG_RTC_INTF_DEV=y
++# CONFIG_RTC_INTF_DEV_UIE_EMUL is not set
++# CONFIG_RTC_DRV_TEST is not set
++
++#
++# I2C RTC drivers
++#
++# CONFIG_RTC_DRV_DS1307 is not set
++# CONFIG_RTC_DRV_DS1374 is not set
++# CONFIG_RTC_DRV_DS1672 is not set
++# CONFIG_RTC_DRV_MAX6900 is not set
++# CONFIG_RTC_DRV_RS5C372 is not set
++# CONFIG_RTC_DRV_ISL1208 is not set
++# CONFIG_RTC_DRV_X1205 is not set
++# CONFIG_RTC_DRV_PCF8563 is not set
++# CONFIG_RTC_DRV_PCF8583 is not set
++# CONFIG_RTC_DRV_M41T80 is not set
++# CONFIG_RTC_DRV_BQ32K is not set
++# CONFIG_RTC_DRV_S35390A is not set
++# CONFIG_RTC_DRV_FM3130 is not set
++# CONFIG_RTC_DRV_RX8581 is not set
++# CONFIG_RTC_DRV_RX8025 is not set
++
++#
++# SPI RTC drivers
++#
++# CONFIG_RTC_DRV_M41T94 is not set
++# CONFIG_RTC_DRV_DS1305 is not set
++# CONFIG_RTC_DRV_DS1390 is not set
++# CONFIG_RTC_DRV_MAX6902 is not set
++# CONFIG_RTC_DRV_R9701 is not set
++# CONFIG_RTC_DRV_RS5C348 is not set
++# CONFIG_RTC_DRV_DS3234 is not set
++# CONFIG_RTC_DRV_PCF2123 is not set
++
++#
++# Platform RTC drivers
++#
++# CONFIG_RTC_DRV_CMOS is not set
++# CONFIG_RTC_DRV_DS1286 is not set
++# CONFIG_RTC_DRV_DS1511 is not set
++# CONFIG_RTC_DRV_DS1553 is not set
++# CONFIG_RTC_DRV_DS1742 is not set
++# CONFIG_RTC_DRV_STK17TA8 is not set
++# CONFIG_RTC_DRV_M48T86 is not set
++# CONFIG_RTC_DRV_M48T35 is not set
++# CONFIG_RTC_DRV_M48T59 is not set
++# CONFIG_RTC_DRV_MSM6242 is not set
++# CONFIG_RTC_DRV_BQ4802 is not set
++# CONFIG_RTC_DRV_RP5C01 is not set
++# CONFIG_RTC_DRV_V3020 is not set
++
++#
++# on-CPU RTC drivers
++#
++# CONFIG_RTC_DRV_OMAP is not set
++# CONFIG_DMADEVICES is not set
++# CONFIG_AUXDISPLAY is not set
++# CONFIG_UIO is not set
++
++#
++# TI VLYNQ
++#
++# CONFIG_STAGING is not set
++
++#
++# File systems
++#
++CONFIG_EXT2_FS=y
++# CONFIG_EXT2_FS_XATTR is not set
++# CONFIG_EXT2_FS_XIP is not set
++CONFIG_EXT3_FS=y
++# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
++CONFIG_EXT3_FS_XATTR=y
++# CONFIG_EXT3_FS_POSIX_ACL is not set
++# CONFIG_EXT3_FS_SECURITY is not set
++# CONFIG_EXT4_FS is not set
++CONFIG_JBD=y
++# CONFIG_JBD_DEBUG is not set
++CONFIG_FS_MBCACHE=y
++# CONFIG_REISERFS_FS is not set
++# CONFIG_JFS_FS is not set
++# CONFIG_FS_POSIX_ACL is not set
++# CONFIG_XFS_FS is not set
++# CONFIG_GFS2_FS is not set
++# CONFIG_OCFS2_FS is not set
++# CONFIG_BTRFS_FS is not set
++# CONFIG_NILFS2_FS is not set
++CONFIG_FILE_LOCKING=y
++CONFIG_FSNOTIFY=y
++CONFIG_DNOTIFY=y
++CONFIG_INOTIFY=y
++CONFIG_INOTIFY_USER=y
++# CONFIG_QUOTA is not set
++# CONFIG_AUTOFS_FS is not set
++CONFIG_AUTOFS4_FS=m
++# CONFIG_FUSE_FS is not set
++
++#
++# Caches
++#
++# CONFIG_FSCACHE is not set
++
++#
++# CD-ROM/DVD Filesystems
++#
++# CONFIG_ISO9660_FS is not set
++# CONFIG_UDF_FS is not set
++
++#
++# DOS/FAT/NT Filesystems
++#
++CONFIG_FAT_FS=y
++CONFIG_MSDOS_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_FAT_DEFAULT_CODEPAGE=437
++CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
++# CONFIG_NTFS_FS is not set
++
++#
++# Pseudo filesystems
++#
++CONFIG_PROC_FS=y
++CONFIG_PROC_SYSCTL=y
++CONFIG_PROC_PAGE_MONITOR=y
++CONFIG_SYSFS=y
++CONFIG_TMPFS=y
++# CONFIG_TMPFS_POSIX_ACL is not set
++# CONFIG_HUGETLB_PAGE is not set
++# CONFIG_CONFIGFS_FS is not set
++CONFIG_MISC_FILESYSTEMS=y
++# CONFIG_ADFS_FS is not set
++# CONFIG_AFFS_FS is not set
++# CONFIG_HFS_FS is not set
++# CONFIG_HFSPLUS_FS is not set
++# CONFIG_BEFS_FS is not set
++# CONFIG_BFS_FS is not set
++# CONFIG_EFS_FS is not set
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_FS_DEBUG=0
++CONFIG_JFFS2_FS_WRITEBUFFER=y
++# CONFIG_JFFS2_FS_WBUF_VERIFY is not set
++# CONFIG_JFFS2_SUMMARY is not set
++# CONFIG_JFFS2_FS_XATTR is not set
++# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
++CONFIG_JFFS2_ZLIB=y
++# CONFIG_JFFS2_LZO is not set
++CONFIG_JFFS2_RTIME=y
++# CONFIG_JFFS2_RUBIN is not set
++CONFIG_CRAMFS=y
++# CONFIG_SQUASHFS is not set
++# CONFIG_VXFS_FS is not set
++CONFIG_MINIX_FS=m
++# CONFIG_OMFS_FS is not set
++# CONFIG_HPFS_FS is not set
++# CONFIG_QNX4FS_FS is not set
++# CONFIG_ROMFS_FS is not set
++# CONFIG_SYSV_FS is not set
++# CONFIG_UFS_FS is not set
++CONFIG_NETWORK_FILESYSTEMS=y
++CONFIG_NFS_FS=y
++CONFIG_NFS_V3=y
++# CONFIG_NFS_V3_ACL is not set
++# CONFIG_NFS_V4 is not set
++CONFIG_ROOT_NFS=y
++CONFIG_NFSD=m
++CONFIG_NFSD_V3=y
++# CONFIG_NFSD_V3_ACL is not set
++# CONFIG_NFSD_V4 is not set
++CONFIG_LOCKD=y
++CONFIG_LOCKD_V4=y
++CONFIG_EXPORTFS=m
++CONFIG_NFS_COMMON=y
++CONFIG_SUNRPC=y
++# CONFIG_RPCSEC_GSS_KRB5 is not set
++# CONFIG_RPCSEC_GSS_SPKM3 is not set
++CONFIG_SMB_FS=m
++# CONFIG_SMB_NLS_DEFAULT is not set
++# CONFIG_CIFS is not set
++# CONFIG_NCP_FS is not set
++# CONFIG_CODA_FS is not set
++# CONFIG_AFS_FS is not set
++
++#
++# Partition Types
++#
++CONFIG_PARTITION_ADVANCED=y
++# CONFIG_ACORN_PARTITION is not set
++# CONFIG_OSF_PARTITION is not set
++# CONFIG_AMIGA_PARTITION is not set
++# CONFIG_ATARI_PARTITION is not set
++# CONFIG_MAC_PARTITION is not set
++CONFIG_MSDOS_PARTITION=y
++# CONFIG_BSD_DISKLABEL is not set
++# CONFIG_MINIX_SUBPARTITION is not set
++# CONFIG_SOLARIS_X86_PARTITION is not set
++# CONFIG_UNIXWARE_DISKLABEL is not set
++# CONFIG_LDM_PARTITION is not set
++# CONFIG_SGI_PARTITION is not set
++# CONFIG_ULTRIX_PARTITION is not set
++# CONFIG_SUN_PARTITION is not set
++# CONFIG_KARMA_PARTITION is not set
++# CONFIG_EFI_PARTITION is not set
++# CONFIG_SYSV68_PARTITION is not set
++CONFIG_NLS=y
++CONFIG_NLS_DEFAULT="iso8859-1"
++CONFIG_NLS_CODEPAGE_437=y
++# CONFIG_NLS_CODEPAGE_737 is not set
++# CONFIG_NLS_CODEPAGE_775 is not set
++# CONFIG_NLS_CODEPAGE_850 is not set
++# CONFIG_NLS_CODEPAGE_852 is not set
++# CONFIG_NLS_CODEPAGE_855 is not set
++# CONFIG_NLS_CODEPAGE_857 is not set
++# CONFIG_NLS_CODEPAGE_860 is not set
++# CONFIG_NLS_CODEPAGE_861 is not set
++# CONFIG_NLS_CODEPAGE_862 is not set
++# CONFIG_NLS_CODEPAGE_863 is not set
++# CONFIG_NLS_CODEPAGE_864 is not set
++# CONFIG_NLS_CODEPAGE_865 is not set
++# CONFIG_NLS_CODEPAGE_866 is not set
++# CONFIG_NLS_CODEPAGE_869 is not set
++# CONFIG_NLS_CODEPAGE_936 is not set
++# CONFIG_NLS_CODEPAGE_950 is not set
++# CONFIG_NLS_CODEPAGE_932 is not set
++# CONFIG_NLS_CODEPAGE_949 is not set
++# CONFIG_NLS_CODEPAGE_874 is not set
++# CONFIG_NLS_ISO8859_8 is not set
++# CONFIG_NLS_CODEPAGE_1250 is not set
++# CONFIG_NLS_CODEPAGE_1251 is not set
++CONFIG_NLS_ASCII=m
++CONFIG_NLS_ISO8859_1=y
++# CONFIG_NLS_ISO8859_2 is not set
++# CONFIG_NLS_ISO8859_3 is not set
++# CONFIG_NLS_ISO8859_4 is not set
++# CONFIG_NLS_ISO8859_5 is not set
++# CONFIG_NLS_ISO8859_6 is not set
++# CONFIG_NLS_ISO8859_7 is not set
++# CONFIG_NLS_ISO8859_9 is not set
++# CONFIG_NLS_ISO8859_13 is not set
++# CONFIG_NLS_ISO8859_14 is not set
++# CONFIG_NLS_ISO8859_15 is not set
++# CONFIG_NLS_KOI8_R is not set
++# CONFIG_NLS_KOI8_U is not set
++CONFIG_NLS_UTF8=m
++# CONFIG_DLM is not set
++
++#
++# Kernel hacking
++#
++# CONFIG_PRINTK_TIME is not set
++# CONFIG_ENABLE_WARN_DEPRECATED is not set
++# CONFIG_ENABLE_MUST_CHECK is not set
++CONFIG_FRAME_WARN=1024
++# CONFIG_MAGIC_SYSRQ is not set
++# CONFIG_STRIP_ASM_SYMS is not set
++# CONFIG_UNUSED_SYMBOLS is not set
++CONFIG_DEBUG_FS=y
++# CONFIG_HEADERS_CHECK is not set
++# CONFIG_DEBUG_KERNEL is not set
++# CONFIG_SLUB_DEBUG_ON is not set
++# CONFIG_SLUB_STATS is not set
++CONFIG_DEBUG_BUGVERBOSE=y
++# CONFIG_DEBUG_MEMORY_INIT is not set
++CONFIG_FRAME_POINTER=y
++# CONFIG_RCU_CPU_STALL_DETECTOR is not set
++# CONFIG_LATENCYTOP is not set
++# CONFIG_SYSCTL_SYSCALL_CHECK is not set
++CONFIG_HAVE_FUNCTION_TRACER=y
++CONFIG_TRACING_SUPPORT=y
++# CONFIG_FTRACE is not set
++# CONFIG_DYNAMIC_DEBUG is not set
++# CONFIG_SAMPLES is not set
++CONFIG_HAVE_ARCH_KGDB=y
++# CONFIG_ARM_UNWIND is not set
++# CONFIG_DEBUG_USER is not set
++# CONFIG_OC_ETM is not set
++
++#
++# Security options
++#
++# CONFIG_KEYS is not set
++# CONFIG_SECURITY is not set
++# CONFIG_SECURITYFS is not set
++# CONFIG_DEFAULT_SECURITY_SELINUX is not set
++# CONFIG_DEFAULT_SECURITY_SMACK is not set
++# CONFIG_DEFAULT_SECURITY_TOMOYO is not set
++CONFIG_DEFAULT_SECURITY_DAC=y
++CONFIG_DEFAULT_SECURITY=""
++CONFIG_CRYPTO=y
++
++#
++# Crypto core or helper
++#
++# CONFIG_CRYPTO_MANAGER is not set
++# CONFIG_CRYPTO_MANAGER2 is not set
++# CONFIG_CRYPTO_GF128MUL is not set
++# CONFIG_CRYPTO_NULL is not set
++# CONFIG_CRYPTO_CRYPTD is not set
++# CONFIG_CRYPTO_AUTHENC is not set
++# CONFIG_CRYPTO_TEST is not set
++
++#
++# Authenticated Encryption with Associated Data
++#
++# CONFIG_CRYPTO_CCM is not set
++# CONFIG_CRYPTO_GCM is not set
++# CONFIG_CRYPTO_SEQIV is not set
++
++#
++# Block modes
++#
++# CONFIG_CRYPTO_CBC is not set
++# CONFIG_CRYPTO_CTR is not set
++# CONFIG_CRYPTO_CTS is not set
++# CONFIG_CRYPTO_ECB is not set
++# CONFIG_CRYPTO_LRW is not set
++# CONFIG_CRYPTO_PCBC is not set
++# CONFIG_CRYPTO_XTS is not set
++
++#
++# Hash modes
++#
++# CONFIG_CRYPTO_HMAC is not set
++# CONFIG_CRYPTO_XCBC is not set
++# CONFIG_CRYPTO_VMAC is not set
++
++#
++# Digest
++#
++# CONFIG_CRYPTO_CRC32C is not set
++# CONFIG_CRYPTO_GHASH is not set
++# CONFIG_CRYPTO_MD4 is not set
++# CONFIG_CRYPTO_MD5 is not set
++# CONFIG_CRYPTO_MICHAEL_MIC is not set
++# CONFIG_CRYPTO_RMD128 is not set
++# CONFIG_CRYPTO_RMD160 is not set
++# CONFIG_CRYPTO_RMD256 is not set
++# CONFIG_CRYPTO_RMD320 is not set
++# CONFIG_CRYPTO_SHA1 is not set
++# CONFIG_CRYPTO_SHA256 is not set
++# CONFIG_CRYPTO_SHA512 is not set
++# CONFIG_CRYPTO_TGR192 is not set
++# CONFIG_CRYPTO_WP512 is not set
++
++#
++# Ciphers
++#
++# CONFIG_CRYPTO_AES is not set
++# CONFIG_CRYPTO_ANUBIS is not set
++# CONFIG_CRYPTO_ARC4 is not set
++# CONFIG_CRYPTO_BLOWFISH is not set
++# CONFIG_CRYPTO_CAMELLIA is not set
++# CONFIG_CRYPTO_CAST5 is not set
++# CONFIG_CRYPTO_CAST6 is not set
++# CONFIG_CRYPTO_DES is not set
++# CONFIG_CRYPTO_FCRYPT is not set
++# CONFIG_CRYPTO_KHAZAD is not set
++# CONFIG_CRYPTO_SALSA20 is not set
++# CONFIG_CRYPTO_SEED is not set
++# CONFIG_CRYPTO_SERPENT is not set
++# CONFIG_CRYPTO_TEA is not set
++# CONFIG_CRYPTO_TWOFISH is not set
++
++#
++# Compression
++#
++# CONFIG_CRYPTO_DEFLATE is not set
++# CONFIG_CRYPTO_ZLIB is not set
++# CONFIG_CRYPTO_LZO is not set
++
++#
++# Random Number Generation
++#
++# CONFIG_CRYPTO_ANSI_CPRNG is not set
++# CONFIG_CRYPTO_HW is not set
++# CONFIG_BINARY_PRINTF is not set
++
++#
++# Library routines
++#
++CONFIG_BITREVERSE=y
++CONFIG_GENERIC_FIND_LAST_BIT=y
++CONFIG_CRC_CCITT=m
++# CONFIG_CRC16 is not set
++CONFIG_CRC_T10DIF=m
++# CONFIG_CRC_ITU_T is not set
++CONFIG_CRC32=y
++# CONFIG_CRC7 is not set
++# CONFIG_LIBCRC32C is not set
++CONFIG_ZLIB_INFLATE=y
++CONFIG_ZLIB_DEFLATE=y
++CONFIG_DECOMPRESS_GZIP=y
++CONFIG_GENERIC_ALLOCATOR=y
++CONFIG_HAS_IOMEM=y
++CONFIG_HAS_IOPORT=y
++CONFIG_HAS_DMA=y
++CONFIG_NLATTR=y
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index c6d89c9..40c9a45 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -205,6 +205,13 @@ config DA850_UI_VIDEO_PORT
+ 	  select Video Port Interface.
+ endchoice
+ 
++config MACH_OMAPL138_HAWKBOARD
++	bool "TI DA850/OMAP-L138/AM18xx Hawkboard(.org) Platform"
++	default ARCH_DAVINCI_DA850
++	depends on ARCH_DAVINCI_DA850
++	help
++	  Say Y here to select the TI DA850/OMAP-L138/AM18xx Hawkboard.
++
+ config DAVINCI_MUX
+ 	bool "DAVINCI multiplexing support"
+ 	depends on ARCH_DAVINCI
+diff --git a/arch/arm/mach-davinci/Makefile b/arch/arm/mach-davinci/Makefile
+index f4e55de..ad0e75e 100644
+--- a/arch/arm/mach-davinci/Makefile
++++ b/arch/arm/mach-davinci/Makefile
+@@ -30,6 +30,7 @@ obj-$(CONFIG_MACH_DAVINCI_DM6467_EVM)	+= board-dm646x-evm.o cdce949.o
+ obj-$(CONFIG_MACH_DAVINCI_DM365_EVM)	+= board-dm365-evm.o
+ obj-$(CONFIG_MACH_DAVINCI_DA830_EVM)	+= board-da830-evm.o
+ obj-$(CONFIG_MACH_DAVINCI_DA850_EVM)	+= board-da850-evm.o
++obj-$(CONFIG_MACH_OMAPL138_HAWKBOARD)	+= board-da850-hawk.o
+ 
+ # Power Management
+ obj-$(CONFIG_CPU_FREQ)			+= cpufreq.o
+diff --git a/arch/arm/mach-davinci/board-da850-hawk.c b/arch/arm/mach-davinci/board-da850-hawk.c
+new file mode 100644
+index 0000000..2963836
+--- /dev/null
++++ b/arch/arm/mach-davinci/board-da850-hawk.c
+@@ -0,0 +1,657 @@
++/*
++ * TI DA850/OMAP-L138 Hawkboard board
++ *
++ * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Derived from: arch/arm/mach-davinci/board-da830-hawk.c
++ * Original Copyrights follow:
++ *
++ * 2007, 2009 (c) MontaVista Software, Inc. This file is licensed under
++ * the terms of the GNU General Public License version 2. This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/console.h>
++#include <linux/i2c.h>
++#include <linux/i2c/at24.h>
++#include <linux/i2c/pca953x.h>
++#include <linux/mfd/tps6507x.h>
++#include <linux/gpio.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/regulator/machine.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/flash.h>
++#include <linux/usb/musb.h>
++#include <linux/i2c-gpio.h>
++
++#include <asm/mach-types.h>
++#include <asm/mach/arch.h>
++
++#include <mach/cp_intc.h>
++#include <mach/da8xx.h>
++#include <mach/nand.h>
++#include <mach/mux.h>
++#include <mach/flash.h>
++#include <mach/vpif.h>
++
++#include <media/tvp514x.h>
++
++// TODO - check - why is this different from EVM? - default modes - check DS
++#define DA850_HAWK_PHY_MASK		0x1 << 7
++#define DA850_HAWK_MDIO_FREQUENCY	2200000 /* PHY bus frequency */
++
++#define DA850_HAWK_MMCSD_CD_PIN		GPIO_TO_PIN(3, 12)
++#define DA850_HAWK_MMCSD_WP_PIN		GPIO_TO_PIN(3, 13)
++
++#define TVP5147_CH0		"tvp514x-0"
++
++#define VPIF_STATUS	(0x002C)
++#define VPIF_STATUS_CLR	(0x0030)
++
++static struct davinci_pm_config da850_pm_pdata = {
++	.sleepcount = 128,
++};
++
++static struct platform_device da850_pm_device = {
++	.name           = "pm-davinci",
++	.dev = {
++		.platform_data	= &da850_pm_pdata,
++	},
++	.id             = -1,
++};
++
++/* DA850/OMAP-L138 Hawkboard includes a 128 MByte large-page NAND flash
++ * (128K blocks) /?? TODO?
++ */
++struct mtd_partition da850_hawk_nandflash_partition[] = {
++	{
++		.name		= "u-boot env",
++		.offset		= 0,
++		.size		= SZ_128K,
++		.mask_flags	= MTD_WRITEABLE,
++	 },
++	{
++		.name		= "UBL",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= SZ_128K,
++		.mask_flags	= MTD_WRITEABLE,
++	},
++	{
++		.name		= "u-boot",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= 4 * SZ_128K,
++		.mask_flags	= MTD_WRITEABLE,
++	},
++	{
++		.name		= "kernel",
++		.offset		= 0x200000,
++		.size		= SZ_4M,
++		.mask_flags	= 0,
++	},
++	{
++		.name		= "filesystem",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= MTDPART_SIZ_FULL,
++		.mask_flags	= 0,
++	},
++};
++
++// TODO - check timings with Data Sheet
++static struct davinci_aemif_timing da850_hawk_nandflash_timing = {
++	.wsetup		= 0,
++	.wstrobe	= 30,
++	.whold		= 30,
++	.rsetup		= 20,
++	.rstrobe	= 40,
++	.rhold		= 0,
++	.ta		= 0,
++};
++
++static struct davinci_nand_pdata da850_hawk_nandflash_data = {
++	.parts		= da850_hawk_nandflash_partition,
++	.nr_parts	= ARRAY_SIZE(da850_hawk_nandflash_partition),
++	.ecc_mode	= NAND_ECC_HW,
++	.ecc_bits	= 4,
++	.options	= NAND_USE_FLASH_BBT,
++	.timing		= &da850_hawk_nandflash_timing,
++};
++
++static struct resource da850_hawk_nandflash_resource[] = {
++	{
++		.start	= DA8XX_AEMIF_CS3_BASE,
++		.end	= DA8XX_AEMIF_CS3_BASE + SZ_512K + 2 * SZ_1K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	{
++		.start	= DA8XX_AEMIF_CTL_BASE,
++		.end	= DA8XX_AEMIF_CTL_BASE + SZ_32K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++static struct platform_device da850_hawk_nandflash_device = {
++	.name		= "davinci_nand",
++	.id		= 1,
++	.dev		= {
++		.platform_data	= &da850_hawk_nandflash_data,
++	},
++	.num_resources	= ARRAY_SIZE(da850_hawk_nandflash_resource),
++	.resource	= da850_hawk_nandflash_resource,
++};
++
++static struct platform_device *da850_hawk_devices[] __initdata = {
++	&da850_hawk_nandflash_device,
++};
++
++#if defined(CONFIG_MMC_DAVINCI) || \
++    defined(CONFIG_MMC_DAVINCI_MODULE)
++#define HAS_MMC 1
++#else
++#define HAS_MMC 0
++#endif
++
++static struct i2c_board_info __initdata da850_hawk_i2c_devices[] = {
++	{
++		I2C_BOARD_INFO("tlv320aic3x", 0x18),
++	},
++// TODO - DDC VGA device I2C?
++};
++
++static struct davinci_uart_config da850_hawk_uart_config __initdata = {
++	.enabled_uarts = 0x7,
++};
++
++/* davinci da850 hawk audio machine driver */
++static u8 da850_iis_serializer_direction[] = {
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	TX_MODE,	RX_MODE,	INACTIVE_MODE,
++};
++
++static struct snd_platform_data da850_hawk_snd_data = {
++	.tx_dma_offset	= 0x2000,
++	.rx_dma_offset	= 0x2000,
++	.op_mode	= DAVINCI_MCASP_IIS_MODE,
++	.num_serializer	= ARRAY_SIZE(da850_iis_serializer_direction),
++	.tdm_slots	= 2,
++	.serial_dir	= da850_iis_serializer_direction,
++	.eventq_no	= EVENTQ_1,
++	.version	= MCASP_VERSION_2,
++	.txnumevt	= 1,
++	.rxnumevt	= 1,
++};
++
++static struct davinci_mcbsp_platform_data da850_mcbsp0_config = {
++	.inst	= 0,
++};
++
++static struct davinci_mcbsp_platform_data da850_mcbsp1_config = {
++	.inst	= 1,
++};
++
++static int da850_hawk_mmc_get_ro(int index)
++{
++	return gpio_get_value(DA850_HAWK_MMCSD_WP_PIN);
++}
++
++static int da850_hawk_mmc_get_cd(int index)
++{
++	return !gpio_get_value(DA850_HAWK_MMCSD_CD_PIN);
++}
++
++static struct davinci_mmc_config da850_mmc_config = {
++	.get_ro		= da850_hawk_mmc_get_ro,
++	.get_cd		= da850_hawk_mmc_get_cd,
++	.wires		= 4,
++	.max_freq	= 50000000,
++	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
++	.version	= MMC_CTLR_VERSION_2,
++};
++
++static int da850_lcd_hw_init(void)
++{
++	void __iomem *cfg_mstpri2_base;
++	u32 val;
++
++	/*
++	 * Reconfigure the LCDC priority to the highest to ensure that
++	 * the throughput/latency requirements for the LCDC are met.
++	 */
++	cfg_mstpri2_base = DA8XX_SYSCFG0_VIRT(DA8XX_MSTPRI2_REG);
++
++	val = __raw_readl(cfg_mstpri2_base);
++	val &= 0x0fffffff;
++	__raw_writel(val, cfg_mstpri2_base);
++
++	return 0;
++}
++
++static int __init da850_hawk_config_emac(void)
++{
++	void __iomem *cfg_chip3_base;
++	int ret;
++	u32 val;
++	struct davinci_soc_info *soc_info = &davinci_soc_info;
++
++	if (!machine_is_omapl138_hawkboard())
++		return 0;
++
++	cfg_chip3_base = DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
++
++	val = __raw_readl(cfg_chip3_base);
++
++	val &= ~BIT(8);
++	ret = da8xx_pinmux_setup(da850_cpgmac_pins);
++	if (ret)
++		pr_warning("da850_evm_init: cpgmac/rmii mux setup failed: %d\n",
++				ret);
++
++	/* configure the CFGCHIP3 register for MII */
++	__raw_writel(val, cfg_chip3_base);
++
++	soc_info->emac_pdata->phy_mask = DA850_HAWK_PHY_MASK;
++	soc_info->emac_pdata->mdio_max_freq = DA850_HAWK_MDIO_FREQUENCY;
++
++	ret = da8xx_register_emac();
++	if (ret)
++		pr_warning("da850_hawk_init: emac registration failed: %d\n",
++				ret);
++
++	return 0;
++}
++device_initcall(da850_hawk_config_emac);
++
++static int da850_setup_vpif_input_channel_mode(int mux_mode)
++{
++	return 0;
++}
++
++static int da850_vpif_intr_status(void __iomem *vpif_base, int channel)
++{
++	int status = 0;
++	int mask;
++
++	// TODO - only one channel active on hawk?
++	if (channel < 0 || channel > 3)
++		return 0;
++
++	mask = 1 << channel;
++	status = __raw_readl((vpif_base + VPIF_STATUS)) & mask;
++	__raw_writel(status, (vpif_base + VPIF_STATUS_CLR));
++
++	return status;
++}
++
++/* VPIF capture configuration */
++static struct tvp514x_platform_data tvp5146_pdata = {
++	.clk_polarity = 0,
++	.hs_polarity = 1,
++	.vs_polarity = 1
++};
++
++#define TVP514X_STD_ALL (V4L2_STD_NTSC | V4L2_STD_PAL)
++
++static struct vpif_subdev_info da850_vpif_capture_sdev_info[] = {
++	{
++		.name	= TVP5147_CH0,
++		.board_info = {
++			I2C_BOARD_INFO("tvp5146", 0x5d),
++			.platform_data = &tvp5146_pdata,
++		},
++		.input = INPUT_CVBS_VI2B,
++		.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		.can_route = 1,
++		.vpif_if = {
++			.if_type = VPIF_IF_BT656,
++			.hd_pol = 1,
++			.vd_pol = 1,
++			.fid_pol = 0,
++		},
++	},
++};
++
++static const struct vpif_input da850_ch0_inputs[] = {
++	{
++		.input = {
++			.index = 0,
++			.name = "Composite",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.subdev_name = TVP5147_CH0,
++	},
++};
++
++// TODO - V4L2 device creates 2 device nodes for 2 channels - why?
++// - do we need to set .chan_config[1] to NULL?
++static struct vpif_capture_config da850_vpif_capture_config = {
++	.setup_input_channel_mode = da850_setup_vpif_input_channel_mode,
++	.intr_status = da850_vpif_intr_status,
++	.subdev_info = da850_vpif_capture_sdev_info,
++	.subdev_count = ARRAY_SIZE(da850_vpif_capture_sdev_info),
++	.chan_config[0] = {
++		.inputs = da850_ch0_inputs,
++		.input_count = ARRAY_SIZE(da850_ch0_inputs),
++	},
++        .card_name      = "DA850/OMAP-L138 Video Capture",
++};
++
++// TODO - fix all these references to _UI
++
++#if defined(CONFIG_DAVINCI_MCBSP0)
++#define HAS_MCBSP0 1
++#else
++#define HAS_MCBSP0 0
++#endif
++
++#if defined(CONFIG_DAVINCI_MCBSP1)
++#define HAS_MCBSP1 1
++#else
++#define HAS_MCBSP1 0
++#endif
++
++#if defined(CONFIG_TI_DAVINCI_EMAC) || \
++	defined(CONFIG_TI_DAVINCI_EMAC_MODULE)
++#define HAS_EMAC 1
++#else
++#define HAS_EMAC 0
++#endif
++
++//TODO - fix dependence on _EVM
++#if defined(CONFIG_SND_DA850_SOC_EVM) || \
++	defined(CONFIG_SND_DA850_SOC_EVM_MODULE)
++#define HAS_MCASP 1
++#else
++#define HAS_MCASP 0
++#endif
++
++#if defined(CONFIG_DA850_UI_RMII) && (HAS_EMAC)
++#define HAS_RMII 1
++#else
++#define HAS_RMII 0
++#endif
++
++#if defined(CONFIG_DA850_UI_LCD) && defined(CONFIG_FB_DA8XX) ||\
++		defined(CONFIG_FB_DA8XX_MODULE)
++#define HAS_GLCD 1
++#else
++#define HAS_GLCD 0
++#endif
++
++#if defined(CONFIG_VIDEO_DAVINCI_VPIF_DISPLAY) ||\
++		defined(CONFIG_VIDEO_DAVINCI_VPIF_DISPLAY_MODULE)
++#define HAS_VPIF_DISPLAY 1
++#else
++#define HAS_VPIF_DISPLAY 0
++#endif
++
++#if defined(CONFIG_VIDEO_DAVINCI_VPIF_CAPTURE) ||\
++		defined(CONFIG_VIDEO_DAVINCI_VPIF_CAPTURE_MODULE)
++#define HAS_VPIF_CAPTURE 1
++#else
++#define HAS_VPIF_CAPTURE 0
++#endif
++
++static struct da8xx_ohci_root_hub da850_hawk_usb11_pdata = {
++};
++
++static struct musb_hdrc_platform_data usb_hawk_data[] = {
++	{
++#ifdef CONFIG_USB_MUSB_OTG
++		.mode = MUSB_OTG,
++#elif defined(CONFIG_USB_MUSB_DUAL_ROLE)
++		.mode = MUSB_DUAL_ROLE,
++#elif defined(CONFIG_USB_MUSB_PERIPHERAL)
++		.mode =  MUSB_PERIPHERAL,
++#elif defined(CONFIG_USB_MUSB_HOST)
++		.mode = MUSB_HOST,
++#endif
++		.power = 255,
++		.potpgt = 8,
++		.set_vbus = NULL, /* VBUs is directly controlled by the IP */
++	}
++};
++
++static __init void da850_hawk_usb_init(void)
++{
++	int ret;
++	u32 cfgchip2;
++
++	/*
++	 * Setup the Ref. clock frequency for the HAWK at 24 MHz.
++	 */
++	cfgchip2 = __raw_readl(DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
++	cfgchip2 &= ~CFGCHIP2_REFFREQ;
++	cfgchip2 |=  CFGCHIP2_REFFREQ_24MHZ;
++	__raw_writel(cfgchip2, DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
++
++	da8xx_usb20_configure(usb_hawk_data, ARRAY_SIZE(usb_hawk_data));
++
++	ret = da8xx_register_usb11(&da850_hawk_usb11_pdata);
++	if (ret)
++		pr_warning("%s: USB 1.1 registration failed: %d\n",
++			   __func__, ret);
++}
++
++static struct i2c_gpio_platform_data da850_gpio_i2c_pdata = {
++	.sda_pin	= GPIO_TO_PIN(1, 4),
++	.scl_pin	= GPIO_TO_PIN(1, 5),
++	.udelay		= 2,			/* 250 KHz */
++};
++
++static struct platform_device da850_gpio_i2c = {
++	.name		= "i2c-gpio",
++	.id		= 1,
++	.dev		= {
++	.platform_data	= &da850_gpio_i2c_pdata,
++	},
++};
++
++static __init void da850_hawk_init(void)
++{
++	int ret;
++
++	ret = da8xx_register_edma();
++	if (ret)
++		pr_warning("da850_hawk_init: edma registration failed: %d\n",
++				ret);
++
++	// TODO - check safe to enable alongside MMC
++	ret = da8xx_pinmux_setup(da850_nand_pins);
++	if (ret)
++		pr_warning("da850_hawk_init: nand mux setup failed: "
++				"%d\n", ret);
++
++	platform_add_devices(da850_hawk_devices,
++				ARRAY_SIZE(da850_hawk_devices));
++
++	ret = da8xx_pinmux_setup(da850_i2c0_pins);
++	if (ret)
++		pr_warning("da850_hawk_init: i2c0 mux setup failed: %d\n",
++				ret);
++
++	platform_device_register(&da850_gpio_i2c);
++
++	ret = da8xx_register_watchdog();
++	if (ret)
++		pr_warning("da830_hawk_init: watchdog registration failed: %d\n",
++				ret);
++
++	if (HAS_MMC) {
++		ret = da8xx_pinmux_setup(da850_mmcsd0_pins);
++		if (ret)
++			pr_warning("da850_hawk_init: mmcsd0 mux setup failed:"
++					" %d\n", ret);
++
++		ret = gpio_request(DA850_HAWK_MMCSD_CD_PIN, "MMC CD\n");
++		if (ret)
++			pr_warning("da850_hawk_init: can not open GPIO %d\n",
++					DA850_HAWK_MMCSD_CD_PIN);
++		gpio_direction_input(DA850_HAWK_MMCSD_CD_PIN);
++
++		ret = gpio_request(DA850_HAWK_MMCSD_WP_PIN, "MMC WP\n");
++		if (ret)
++			pr_warning("da850_hawk_init: can not open GPIO %d\n",
++					DA850_HAWK_MMCSD_WP_PIN);
++		gpio_direction_input(DA850_HAWK_MMCSD_WP_PIN);
++
++		ret = da8xx_register_mmcsd0(&da850_mmc_config);
++		if (ret)
++			pr_warning("da850_hawk_init: mmcsd0 registration failed:"
++					" %d\n", ret);
++	}
++
++	davinci_serial_init(&da850_hawk_uart_config);
++
++	i2c_register_board_info(1, da850_hawk_i2c_devices,
++			ARRAY_SIZE(da850_hawk_i2c_devices));
++
++	/*
++	 * shut down uart 0 and 1; they are not used on the board and
++	 * accessing them causes endless "too much work in irq53" messages
++	 * with arago fs
++	 */
++	__raw_writel(0, IO_ADDRESS(DA8XX_UART1_BASE) + 0x30);
++	__raw_writel(0, IO_ADDRESS(DA8XX_UART0_BASE) + 0x30);
++
++	if (HAS_MCBSP0) {
++		if (HAS_EMAC)
++			pr_warning("WARNING: both MCBSP0 and EMAC are "
++				"enabled, but they share pins.\n"
++				"\tDisable one of them.\n");
++
++		ret = da8xx_pinmux_setup(da850_mcbsp0_pins);
++		if (ret)
++			pr_warning("da850_hawk_init: mcbsp0 mux setup failed:"
++					" %d\n", ret);
++
++		ret = da850_init_mcbsp(&da850_mcbsp0_config);
++		if (ret)
++			pr_warning("da850_hawk_init: mcbsp0 registration"
++					"failed: %d\n",	ret);
++	}
++
++	if (HAS_MCBSP1) {
++		ret = da8xx_pinmux_setup(da850_mcbsp1_pins);
++		if (ret)
++			pr_warning("da850_hawl_init: mcbsp1 mux setup failed:"
++					" %d\n", ret);
++
++		ret = da850_init_mcbsp(&da850_mcbsp1_config);
++		if (ret)
++			pr_warning("da850_hawk_init: mcbsp1 registration"
++					" failed: %d\n", ret);
++	}
++
++	if (HAS_MCASP) {
++		if ((HAS_MCBSP0 || HAS_MCBSP1))
++			pr_warning("WARNING: both McASP and McBSP are enabled, "
++					"but they share pins.\n"
++					"\tDisable one of them.\n");
++
++		ret = da8xx_pinmux_setup(da850_mcasp_pins);
++		if (ret)
++			pr_warning("da850_hawk_init: mcasp mux setup failed:"
++					"%d\n", ret);
++
++		da8xx_register_mcasp(0, &da850_hawk_snd_data);
++	}
++
++	ret = da8xx_pinmux_setup(da850_lcdcntl_pins);
++	if (ret)
++		pr_warning("da850_evm_init: lcdcntl mux setup failed: %d\n",
++				ret);
++
++	ret = da850_lcd_hw_init();
++	if (ret)
++		pr_warning("da850_hawk_init: lcd initialization failed: %d\n",
++				ret);
++
++	ret = da8xx_register_lcdc(&vga_monitor_pdata);
++	if (ret)
++		pr_warning("da850_hawk_init: lcdc registration failed: %d\n",
++				ret);
++
++	// Default hawkboard doesn't have RTC battery - so CONFIG_RTC_DRV_OMAP
++	//  should be disabled by default
++        ret = da8xx_register_rtc();
++	if (ret)
++		pr_warning("da850_hawk_init: rtc setup failed: %d\n", ret);
++
++	// Generic da850(.c) CPUFREQ support ok as long as CONFIG_REGULATOR disabled
++        ret = da850_register_cpufreq();
++	if (ret)
++		pr_warning("da850_hawk_init: cpufreq registration failed: %d\n",
++				ret);
++
++	ret = da8xx_register_cpuidle();
++	if (ret)
++		pr_warning("da850_hawk_init: cpuidle registration failed: %d\n",
++				ret);
++
++        // Wake-Up relies upon RTC (which requires battery fitted
++	ret = da850_register_pm(&da850_pm_device);
++	if (ret)
++		pr_warning("da850_hawk_init: suspend registration failed: %d\n",
++				ret);
++
++	da850_hawk_usb_init();
++
++	ret = da8xx_register_sata();
++	if (ret)
++		pr_warning("da850_hawk_init: SATA registration failed: %d\n",
++						ret);
++
++	ret = da850_register_vpif();
++	if (ret)
++		pr_warning("da850_hawk_init: VPIF registration failed: "
++					"%d\n",	ret);
++
++	ret = da8xx_pinmux_setup(da850_vpif_capture_pins);
++	if (ret)
++		pr_warning("da850_hawk_init: vpif capture mux failed: "
++					"%d\n",	ret);
++
++	ret = da850_register_vpif_capture(&da850_vpif_capture_config);
++	if (ret)
++		pr_warning("da850_hawk_init: VPIF registration failed: "
++					"%d\n",	ret);
++}
++
++#ifdef CONFIG_SERIAL_8250_CONSOLE
++static int __init da850_hawk_console_init(void)
++{
++	return add_preferred_console("ttyS", 2, "115200");
++}
++console_initcall(da850_hawk_console_init);
++#endif
++
++static __init void da850_hawk_irq_init(void)
++{
++	struct davinci_soc_info *soc_info = &davinci_soc_info;
++
++	cp_intc_init((void __iomem *)DA8XX_CP_INTC_VIRT, DA850_N_CP_INTC_IRQ,
++			soc_info->intc_irq_prios);
++}
++
++static void __init da850_hawk_map_io(void)
++{
++	da850_init();
++}
++
++MACHINE_START(OMAPL138_HAWKBOARD, "DaVinci DA850/OMAP-L138/AM18xx Hawkboard(.org)")
++	.phys_io	= IO_PHYS,
++	.io_pg_offst	= (__IO_ADDRESS(IO_PHYS) >> 18) & 0xfffc,
++	.boot_params	= (DA8XX_DDR_BASE + 0x100),
++	.map_io		= da850_hawk_map_io,
++	.init_irq	= da850_hawk_irq_init,
++	.timer		= &davinci_timer,
++	.init_machine	= da850_hawk_init,
++MACHINE_END
+diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
+index cfecd3c..a32c636 100755
+--- a/arch/arm/mach-davinci/da850.c
++++ b/arch/arm/mach-davinci/da850.c
+@@ -720,7 +720,7 @@ const short da850_rmii_pins[] __initdata = {
+ const short da850_mcasp_pins[] __initdata = {
+ 	DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
+ 	DA850_AHCLKR, DA850_ACLKR, DA850_AFSR, DA850_AMUTE,
+-	DA850_AXR_11, DA850_AXR_12,
++	DA850_AXR_11, DA850_AXR_12, DA850_AXR_13, DA850_AXR_14,
+ 	-1
+ };
+ 
+diff --git a/arch/arm/mach-davinci/devices-da8xx.c b/arch/arm/mach-davinci/devices-da8xx.c
+index 2cea325..96f2235 100755
+--- a/arch/arm/mach-davinci/devices-da8xx.c
++++ b/arch/arm/mach-davinci/devices-da8xx.c
+@@ -560,6 +560,12 @@ struct da8xx_lcdc_platform_data sharp_lk043t1dg01_pdata = {
+ 	.type			= "Sharp_LK043T1DG01",
+ };
+ 
++struct da8xx_lcdc_platform_data vga_monitor_pdata = {
++	.manu_name		= "vga_mon",
++	.controller_data	= &lcd_cfg,
++	.type			= "VGA_Monitor",
++};
++
+ #if !defined(CONFIG_FB_DA8XX) && !defined(CONFIG_FB_DA8XX_MODULE)
+ static struct da8xx_clcd_platform_data da8xx_evm_clcd_pdata = {
+ 	.version = CONFIG_SPACE_1,
+diff --git a/arch/arm/mach-davinci/include/mach/da8xx.h b/arch/arm/mach-davinci/include/mach/da8xx.h
+index d684431..3288273 100755
+--- a/arch/arm/mach-davinci/include/mach/da8xx.h
++++ b/arch/arm/mach-davinci/include/mach/da8xx.h
+@@ -168,6 +168,8 @@ extern struct platform_device da8xx_serial_device;
+ extern struct emac_platform_data da8xx_emac_pdata;
+ extern struct da8xx_lcdc_platform_data sharp_lcd035q3dg01_pdata;
+ extern struct da8xx_lcdc_platform_data sharp_lk043t1dg01_pdata;
++extern struct da8xx_lcdc_platform_data vga_monitor_pdata;
++
+ void da8xx_usb20_configure(struct musb_hdrc_platform_data *pdata, u8 num_inst);
+ 
+ extern const short da830_emif25_pins[];
+diff --git a/arch/arm/mach-davinci/include/mach/debug-macro.S b/arch/arm/mach-davinci/include/mach/debug-macro.S
+index 17ab523..f04c481 100644
+--- a/arch/arm/mach-davinci/include/mach/debug-macro.S
++++ b/arch/arm/mach-davinci/include/mach/debug-macro.S
+@@ -27,7 +27,8 @@
+ #if defined(CONFIG_ARCH_DAVINCI_DA8XX) && defined(CONFIG_ARCH_DAVINCI_DMx)
+ #error Cannot enable DaVinci and DA8XX platforms concurrently
+ #elif defined(CONFIG_MACH_DAVINCI_DA830_EVM) || \
+-	defined(CONFIG_MACH_DAVINCI_DA850_EVM)
++	defined(CONFIG_MACH_DAVINCI_DA850_EVM) || \
++		defined(CONFIG_MACH_OMAPL138_HAWKBOARD)
+ 		orr	\rx, \rx, #0x00d00000	@ physical base address
+ 		orr	\rx, \rx, #0x0000d000	@ of UART 2
+ #else
+diff --git a/drivers/media/video/Kconfig b/drivers/media/video/Kconfig
+index d0db690..ea91489 100644
+--- a/drivers/media/video/Kconfig
++++ b/drivers/media/video/Kconfig
+@@ -513,11 +513,11 @@ config VIDEO_DAVINCI_VPIF_DISPLAY
+ 
+ config VIDEO_DAVINCI_VPIF_CAPTURE
+ 	tristate "DaVinci Video VPIF Capture"
+-	depends on VIDEO_DEV && (MACH_DAVINCI_DM6467_EVM || MACH_DAVINCI_DA850_EVM)
++	depends on VIDEO_DEV && (MACH_DAVINCI_DM6467_EVM || MACH_DAVINCI_DA850_EVM || MACH_OMAPL138_HAWKBOARD)
+ 	select VIDEOBUF_DMA_CONTIG
+ 	select VIDEO_DAVINCI_VPIF
+ 	help
+-	  Support for DaVinci VPIF Capture on DM6467 EVM and/or DA850/OMAP-L138/AM18xx EVM.
++	  Support for DaVinci VPIF Capture on DM6467 EVM and/or DA850/OMAP-L138/AM18xx EVM/Hawkboard.
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called vpif_capture.
+diff --git a/drivers/video/da8xx-fb.c b/drivers/video/da8xx-fb.c
+index e984388..67e3c3a 100644
+--- a/drivers/video/da8xx-fb.c
++++ b/drivers/video/da8xx-fb.c
+@@ -196,6 +196,20 @@ static struct da8xx_panel known_lcd_panels[] = {
+ 		.pxl_clk = 7833600,
+ 		.invert_pxl_clk = 0,
+ 	},
++	/* CRT Monitor or LCD Screen */
++	[2] = {
++		.name = "VGA_Monitor",
++		.width = 640,
++		.height = 480,
++		.hfp = 48,
++		.hbp = 48,
++		.hsw = 63,
++		.vfp = 11,
++		.vbp = 31,
++		.vsw = 1,
++		.pxl_clk = 25000000,
++		.invert_pxl_clk = 1,
++	},
+ };
+ 
+ /* Enable the Raster Engine of the LCD Controller */
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 62dab95..8b34b5b 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -53,11 +53,11 @@ config  SND_DA830_SOC_EVM
+ 	  DA830/OMAP-L137/AM17xx EVM
+ 
+ config  SND_DA850_SOC_EVM
+-	tristate "SoC Audio support for DA850/OMAP-L138/AM18xx EVM"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
++	tristate "SoC Audio support for DA850/OMAP-L138/AM18xx EVM / Hawkboard"
++	depends on SND_DAVINCI_SOC && (MACH_DAVINCI_DA850_EVM || MACH_OMAPL138_HAWKBOARD)
+ 	select SND_DAVINCI_SOC_MCASP
+ 	select SND_SOC_TLV320AIC3X
+ 	help
+ 	  Say Y if you want to add support for SoC audio on TI
+-	  DA850/OMAP-L138/AM18xx EVM
++	  DA850/OMAP-L138/AM18xx EVM/Hawkboard
+ 
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 7ccbe66..a7594b8 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -57,7 +57,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 		sysclk = 12288000;
+ 
+ 	else if (machine_is_davinci_da830_evm() ||
+-				machine_is_davinci_da850_evm())
++				machine_is_davinci_da850_evm() ||
++				machine_is_omapl138_hawkboard() )
+ 		sysclk = 24576000;
+ 
+ 	else
+@@ -256,7 +257,7 @@ static int __init evm_init(void)
+ 	} else if (machine_is_davinci_da830_evm()) {
+ 		evm_snd_dev_data = &da830_evm_snd_devdata;
+ 		index = 1;
+-	} else if (machine_is_davinci_da850_evm()) {
++	} else if (machine_is_davinci_da850_evm() || machine_is_omapl138_hawkboard()) {
+ 		evm_snd_dev_data = &da850_evm_snd_devdata;
+ 		index = 0;
+ 	} else
+-- 
+1.6.0.6
+

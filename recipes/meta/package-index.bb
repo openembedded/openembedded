@@ -2,6 +2,8 @@ DESCRIPTION = "Rebuild the package index"
 LICENSE = "MIT"
 DEPENDS = "ipkg-utils-native"
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
 PACKAGES = ""
@@ -17,8 +19,6 @@ do_configure() {
 do_compile() {
 }
 do_install() {
-}
-do_stage() {
 }
 
 do_build[nostamp] = "1"

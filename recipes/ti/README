@@ -1,32 +1,48 @@
+= Introduction = 
+
 Depending on platform you need to download one or more components from the external URL and put in downloads directory.
 
-DM355
------
- - Code Engine 2.24.01
-
-OMAP3530
-------
-  - Code Engine 2.24
-  - DSP/BIOS Link for Linux 1.61.03  
-  - DSP/BIOS 5.33.04
-  - C6000 Code Generation Tools v6.1.9 Linux
-  - Local Power Managment 1.24
-
-URL's:
-------
-* CE 2.24.01 (codec_engine_2_24.01.tar.gz)
-	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/CE/ce_2_24/index.html
-
-* DSP/BIOS 5.33.04 (bios_setuplinux_5_33_04.bin) 
-	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/bios/bios_5_33/bios_5_33_04/index_external.html
-
-* DSP/BIOS Link for Linux 1.61.03 (dsplink_1_61_03.tar.gz)
-	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/link/link_1_60/index.html
+Most components are 'TSPA' now, which mean OE can download them automagically, if a download fails, you should be able to find the archive you need at:
 
 * C6000 Code Generation Tools v6.1.9 Linux (ti_cgt_c6000_6.1.9_setup_linux_x86.bin)
 	https://www-a.ti.com/downloads/sds_support/TICodegenerationTools/download.htm
-* LPM (local_power_manager_1_24.tar.gz) http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/linuxutils/linuxutils_2_24/index.html 
-
 * Generic download URI
 	http://software-dl.ti.com/dsps/dsps_registered_sw/sdo_sb/targetcontent/
+
+= Version selection =
+
+Tool versions are clustered per codec-engine release, since that combination gets the most testing. Like all other preferred-version files they stored in conf/distro/include:
+
+angstrom-codec-engine-2.25-preferred-versions.inc
+angstrom-codec-engine-2.25.01-preferred-versions.inc
+
+You can select between them by putting the following in local.conf:
+
+CE_VERSION = "2.25.01"
+
+You will get a parsing failure if a non-existing version is selected.
+
+= Recipe setup =
+
+Since most of the recipes in this directory deal with a DSP (e.g OMAP3) or accelerators (e.g DM3xx) and have strict per platform version dependencies they are all machine specific. For things like codec-engine, kernel drivers and userspace samples this makes sense, since they are tied to a specific device or platform. For things like codegen and xdc-tools this is weird, but it's the least bad option currently.
+
+The complete unpacked trees are staged to staging/machine/usr/share/ti/${PN}(-tree) and all the _INSTALL_DIR vars will point to that. To make this work there is a ti-staging.inc which contains:
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+BASEPKG_HOST_SYS = "${MULTIMACH_HOST_SYS}"
+INHIBIT_PACKAGE_STRIP = "1"
+
+The 'BASEPKG_HOST_SYS' bit is what makes it work, but cause trouble is you want to read from it, so ti-paths.inc does:
+
+export CODEGEN_INSTALL_DIR_RECIPE    = "${installdir}/ti-cgt6x"
+export CODEGEN_INSTALL_DIR    = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${CODEGEN_INSTALL_DIR_RECIPE}"
+
+Which will point it to the machine specific staging like we want it to.
+
+
+
+
+
+
+
 

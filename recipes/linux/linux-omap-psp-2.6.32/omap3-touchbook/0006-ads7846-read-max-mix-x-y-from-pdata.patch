@@ -1,0 +1,35 @@
+From 8ccf65bc56ba2f71a4420754969b522fd86945a2 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Fri, 12 Mar 2010 13:50:45 +0100
+Subject: [PATCH 06/16] ads7846: read max/mix x/y from pdata
+
+---
+ drivers/input/touchscreen/ads7846.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index ebdeeeb..56b0ffd 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -604,6 +604,7 @@ static void ads7846_rx(void *ads)
+ {
+ 	struct ads7846		*ts = ads;
+ 	struct ads7846_packet	*packet = ts->packet;
++	struct ads7846_platform_data *pdata = ts->spi->dev.platform_data;
+ 	unsigned		Rt;
+ 	u16			x, y, z1, z2;
+ 
+@@ -674,8 +675,8 @@ static void ads7846_rx(void *ads)
+ 		if (ts->swap_xy)
+ 			swap(x, y);
+ 
+-		input_report_abs(input, ABS_X, x);
+-		input_report_abs(input, ABS_Y, y);
++		input_report_abs(input, ABS_X, pdata->x_max - x + pdata->x_min);
++		input_report_abs(input, ABS_Y, pdata->y_max - y + pdata->y_min);
+ 		input_report_abs(input, ABS_PRESSURE, ts->pressure_max - Rt);
+ 
+ 		input_sync(input);
+-- 
+1.6.6.1
+

@@ -1,0 +1,44 @@
+From 4a8af93ef5fc14877be52716794db928ce7de34a Mon Sep 17 00:00:00 2001
+From: Sudeep Basavaraj <sudeep.basavaraj@ti.com>
+Date: Tue, 5 Jan 2010 18:58:18 +0530
+Subject: [PATCH 13/42] OMAP3630:DSS2:Enable Pre-Multiplied Alpha Support
+
+Enables dss to process color formats with pre-mulitplied alpha values.
+With this we can have alpha values defined for each pixel
+and hence can have different blending values for each pixel.
+
+Signed-off-by: Sudeep Basavaraj <sudeep.basavaraj@ti.com>
+Signed-off-by: Kishore Y <kishore.y@ti.com>
+---
+ drivers/video/omap2/dss/dispc.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index f7acf87..c6d5fc5 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -913,6 +913,11 @@ static void _dispc_set_vid_color_conv(enum omap_plane plane, bool enable)
+ 	dispc_write_reg(dispc_reg_att[plane], val);
+ }
+ 
++static void _dispc_set_alpha_blend_attrs(enum omap_plane plane, bool enable)
++{
++	REG_FLD_MOD(dispc_reg_att[plane], enable ? 1 : 0, 28, 28);
++}
++
+ void dispc_enable_replication(enum omap_plane plane, bool enable)
+ {
+ 	int bit;
+@@ -1689,6 +1694,9 @@ static int _dispc_setup_plane(enum omap_plane plane,
+ 
+ 	_dispc_set_rotation_attrs(plane, rotation, mirror, color_mode);
+ 
++	if (cpu_is_omap3630() && (plane != OMAP_DSS_VIDEO1))
++		_dispc_set_alpha_blend_attrs(plane, 1);
++
+ 	if (plane != OMAP_DSS_VIDEO1)
+ 		_dispc_setup_global_alpha(plane, global_alpha);
+ 
+-- 
+1.6.6.1
+

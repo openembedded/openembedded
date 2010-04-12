@@ -1,0 +1,335 @@
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DA8XXGEM/da8xxgem_hal_pwr.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DA8XXGEM/da8xxgem_hal_pwr.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DA8XXGEM/da8xxgem_hal_pwr.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DA8XXGEM/da8xxgem_hal_pwr.c	2010-02-09 17:42:37.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OSAL Headers                */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <asm/page.h>
+ #include <asm/io.h>
+ 
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DA8XXGEM/shmem/Linux/da8xxgem_phy_shmem.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DA8XXGEM/shmem/Linux/da8xxgem_phy_shmem.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DA8XXGEM/shmem/Linux/da8xxgem_phy_shmem.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DA8XXGEM/shmem/Linux/da8xxgem_phy_shmem.c	2010-02-09 17:43:06.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6437/pci/dm6437_hal_pci_dma.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6437/pci/dm6437_hal_pci_dma.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6437/pci/dm6437_hal_pci_dma.c	2009-11-13 12:12:46.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6437/pci/dm6437_hal_pci_dma.c	2010-02-09 17:45:06.000000000 +0000
+@@ -21,7 +21,12 @@
+  */
+ 
+ 
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <asm/page.h>
+ #include <asm/io.h>
+ 
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6437/pci/Linux/2.6.18/dm6437_phy_pci.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6437/pci/Linux/2.6.18/dm6437_phy_pci.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6437/pci/Linux/2.6.18/dm6437_phy_pci.c	2009-11-13 12:12:46.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6437/pci/Linux/2.6.18/dm6437_phy_pci.c	2010-02-09 17:44:49.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6446GEM/shmem/Linux/dm6446gem_phy_shmem.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6446GEM/shmem/Linux/dm6446gem_phy_shmem.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6446GEM/shmem/Linux/dm6446gem_phy_shmem.c	2009-11-13 12:12:46.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6446GEM/shmem/Linux/dm6446gem_phy_shmem.c	2010-02-09 17:44:21.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6467GEM/shmem/Linux/dm6467gem_phy_shmem.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6467GEM/shmem/Linux/dm6467gem_phy_shmem.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DM6467GEM/shmem/Linux/dm6467gem_phy_shmem.c	2009-11-13 12:12:46.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DM6467GEM/shmem/Linux/dm6467gem_phy_shmem.c	2010-02-09 17:41:46.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DM648/pci/dm648_hal_pci_dma.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DM648/pci/dm648_hal_pci_dma.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DM648/pci/dm648_hal_pci_dma.c	2009-11-13 12:12:46.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DM648/pci/dm648_hal_pci_dma.c	2010-02-09 17:42:02.000000000 +0000
+@@ -20,7 +20,12 @@
+  *  ============================================================================
+  */
+ 
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <asm/page.h>
+ #include <asm/io.h>
+ 
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/DM648/pci/Linux/2.6.18/dm648_phy_pci.c dsplink_linux_1_64b/dsplink/gpp/src/arch/DM648/pci/Linux/2.6.18/dm648_phy_pci.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/DM648/pci/Linux/2.6.18/dm648_phy_pci.c	2009-11-13 12:12:46.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/DM648/pci/Linux/2.6.18/dm648_phy_pci.c	2010-02-09 17:42:21.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/OMAP2530/shmem/Linux/omap2530_phy_shmem.c dsplink_linux_1_64b/dsplink/gpp/src/arch/OMAP2530/shmem/Linux/omap2530_phy_shmem.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/OMAP2530/shmem/Linux/omap2530_phy_shmem.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/OMAP2530/shmem/Linux/omap2530_phy_shmem.c	2010-02-09 17:43:29.000000000 +0000
+@@ -25,7 +25,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/OMAP3530/shmem/Linux/omap3530_phy_shmem.c dsplink_linux_1_64b/dsplink/gpp/src/arch/OMAP3530/shmem/Linux/omap3530_phy_shmem.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/OMAP3530/shmem/Linux/omap3530_phy_shmem.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/OMAP3530/shmem/Linux/omap3530_phy_shmem.c	2010-02-09 17:43:50.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/arch/TNETV107XGEM/shmem/Linux/tnetv107xgem_phy_shmem.c dsplink_linux_1_64b/dsplink/gpp/src/arch/TNETV107XGEM/shmem/Linux/tnetv107xgem_phy_shmem.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/arch/TNETV107XGEM/shmem/Linux/tnetv107xgem_phy_shmem.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/arch/TNETV107XGEM/shmem/Linux/tnetv107xgem_phy_shmem.c	2010-02-09 17:44:06.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Headers                  */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/dpc.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/dpc.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/dpc.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/dpc.c	2010-02-09 17:47:25.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/sched.h>
+ #include <linux/interrupt.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/isr.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/isr.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/isr.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/isr.c	2010-02-09 17:46:54.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/version.h>
+ #include <linux/spinlock.h>
+ #include <linux/sched.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/kfiledef.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/kfiledef.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/kfiledef.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/kfiledef.c	2010-02-09 17:46:39.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/mem.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/mem.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/mem.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/mem.c	2010-02-09 17:46:25.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/sched.h>
+ #include <linux/types.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/notify_knl.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/notify_knl.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/notify_knl.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/notify_knl.c	2010-02-09 17:47:12.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/signal.h>
+ #include <linux/kernel.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/sync.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/sync.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/2.6.18/sync.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/2.6.18/sync.c	2010-02-09 17:47:39.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/timer.h>
+ #include <linux/sched.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/prcs.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/prcs.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/prcs.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/prcs.c	2010-02-09 17:45:44.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/module.h>
+ #include <linux/mm.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/print.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/print.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/print.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/print.c	2010-02-09 17:45:30.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <stdarg.h>
+ #include <linux/types.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/user.c dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/user.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/osal/Linux/user.c	2009-11-13 12:12:47.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/osal/Linux/user.c	2010-02-09 17:46:07.000000000 +0000
+@@ -22,7 +22,12 @@
+ 
+ 
+ /*  ----------------------------------- OS Specific Headers         */
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/timer.h>
+ #include <linux/sched.h>
+diff -uNr dsplink_linux_1_64a/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c dsplink_linux_1_64b/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c
+--- dsplink_linux_1_64a/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c	2009-11-13 12:12:48.000000000 +0000
++++ dsplink_linux_1_64b/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c	2010-02-09 17:40:59.000000000 +0000
+@@ -33,7 +33,11 @@
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,26)
+ #include <linux/device.h>
+ #endif
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
+ #include <linux/autoconf.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <linux/module.h>
+ #include <linux/init.h>

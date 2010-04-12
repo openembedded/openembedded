@@ -1,0 +1,26 @@
+From f09b357be5b607c4de984bf182eb7a13c270b1ce Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Wed, 13 Aug 2008 12:54:50 +0400
+Subject: [PATCH 2/7] SRAM for ethernet TX patch
+
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ arch/arm/configs/afeb9260_defconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/configs/afeb9260_defconfig b/arch/arm/configs/afeb9260_defconfig
+index 64fe7f1..ed97bf7 100644
+--- a/arch/arm/configs/afeb9260_defconfig
++++ b/arch/arm/configs/afeb9260_defconfig
+@@ -581,6 +581,7 @@ CONFIG_PHYLIB=y
+ CONFIG_NET_ETHERNET=y
+ CONFIG_MII=y
+ CONFIG_MACB=y
++CONFIG_MACB_TX_SRAM=y
+ # CONFIG_AX88796 is not set
+ # CONFIG_SMC91X is not set
+ # CONFIG_DM9000 is not set
+-- 
+1.6.3.3
+

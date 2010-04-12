@@ -1,14 +1,17 @@
 DESCRIPTION = "MFP Linux utils for TI ARM/DSP processors"
+SECTION = "devel"
+LICENSE = "GPLv2,BSD"
 
 BASE_SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/linuxutils/${PV}/exports"
 SRC_URI = "${BASE_SRC_URI}/linuxutils_${PV}.tar.gz "
 
 S = "${WORKDIR}/linuxutils_${PV}"
 
-require ti-multimedia-common.inc
+require ti-paths.inc
+require ti-staging.inc
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "a"
+MACHINE_KERNEL_PR_append = "c"
 
 inherit module
 
@@ -17,7 +20,7 @@ do_compile() {
 
     case ${SOC_FAMILY} in 
     dm365)
-            modules="cmem edma";;
+            modules="cmem edma irq";;
     omap3)
             modules="cmem sdma";;
     *)
@@ -57,13 +60,14 @@ do_install () {
          EXEC_DIR="${D}${installdir}/ti-linuxutils-app/edma-app" \
          install
     fi
+
+    # stage tree - other packages may need this
+    install -d ${D}${LINUXUTILS_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${D}${LINUXUTILS_INSTALL_DIR_RECIPE}
 }
 
-# stage tree - other packages may need this
-do_stage() {
-    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}
-    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/
-}
+
+
 
 PACKAGES =+ " ti-cmem-module \
               ti-sdma-module \

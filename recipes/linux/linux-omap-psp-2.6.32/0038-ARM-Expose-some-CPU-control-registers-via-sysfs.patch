@@ -1,0 +1,202 @@
+From 9b88c174cfa0f861fcddd11c2e41b007ff243bd3 Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Tue, 10 Nov 2009 00:39:21 +0000
+Subject: [PATCH 38/42] ARM: Expose some CPU control registers via sysfs
+
+This creates sysfs files under /sys/devices/system/cpu/cpuN
+exposing the values of the control register, auxiliary control
+register, and L2 cache auxiliary control register.  Writing to
+the files allows setting the value of bits which are safe to
+change at any time.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ arch/arm/Kconfig           |    5 ++
+ arch/arm/kernel/Makefile   |    1 +
+ arch/arm/kernel/sysfs_v7.c |  146 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 152 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/kernel/sysfs_v7.c
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index f5ded3c..2d370da 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1252,6 +1252,11 @@ config UACCESS_WITH_MEMCPY
+ 	  However, if the CPU data cache is using a write-allocate mode,
+ 	  this option is unlikely to provide any performance gain.
+ 
++config CPU_V7_SYSFS
++	bool
++	depends on CPU_V7 && SYSFS
++	default y
++
+ endmenu
+ 
+ menu "Boot options"
+diff --git a/arch/arm/kernel/Makefile b/arch/arm/kernel/Makefile
+index dd00f74..ee20134 100644
+--- a/arch/arm/kernel/Makefile
++++ b/arch/arm/kernel/Makefile
+@@ -38,6 +38,7 @@ obj-$(CONFIG_ARM_THUMBEE)	+= thumbee.o
+ obj-$(CONFIG_KGDB)		+= kgdb.o
+ obj-$(CONFIG_ARM_UNWIND)	+= unwind.o
+ obj-$(CONFIG_HAVE_TCM)		+= tcm.o
++obj-$(CONFIG_CPU_V7_SYSFS)	+= sysfs_v7.o
+ 
+ obj-$(CONFIG_CRUNCH)		+= crunch.o crunch-bits.o
+ AFLAGS_crunch-bits.o		:= -Wa,-mcpu=ep9312
+diff --git a/arch/arm/kernel/sysfs_v7.c b/arch/arm/kernel/sysfs_v7.c
+new file mode 100644
+index 0000000..c05bf5f
+--- /dev/null
++++ b/arch/arm/kernel/sysfs_v7.c
+@@ -0,0 +1,146 @@
++/*
++ *  linux/arch/arm/kernel/sysfs.c
++ *
++ *  Copyright (C) 2008 Mans Rullgard
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/kernel.h>
++#include <linux/cpu.h>
++#include <linux/sysdev.h>
++#include <linux/fs.h>
++
++#define SETBITS(val, bits, new)			\
++	do {					\
++		val &= ~bits;			\
++		val |= new & bits;		\
++	} while (0)
++
++#define SHOW_REG(name, opc1, crn, crm, opc2)				\
++static ssize_t name##_show(struct sys_device *dev,			\
++			   struct sysdev_attribute *attr,		\
++			   char *buf)					\
++{									\
++	unsigned val;							\
++	asm ("mrc p15,"#opc1", %0,"#crn","#crm","#opc2 : "=r"(val));	\
++	return snprintf(buf, PAGE_SIZE, "%08x\n", val);			\
++}
++
++#define STORE_REG(name, opc1, crn, crm, opc2, bits)			\
++static ssize_t name##_store(struct sys_device *dev,			\
++			    struct sysdev_attribute *attr,		\
++			    const char *buf, size_t size)		\
++{									\
++	char *end;							\
++	unsigned new = simple_strtoul(buf, &end, 0);			\
++	unsigned val;							\
++									\
++	if (end == buf)							\
++		return -EINVAL;						\
++									\
++	asm ("mrc p15,"#opc1", %0,"#crn","#crm","#opc2 : "=r"(val));	\
++	SETBITS(val, bits, new);					\
++	asm ("mcr p15,"#opc1", %0,"#crn","#crm","#opc2 :: "r"(val));	\
++									\
++	return end - buf;						\
++}
++
++#define RD_REG(name, opc1, crn, crm, opc2)				\
++	SHOW_REG(name, opc1, crn, crm, opc2)				\
++	static SYSDEV_ATTR(name, S_IRUGO|S_IWUSR, name##_show, NULL)
++
++#define RDWR_REG(name, opc1, crn, crm, opc2, bits)			\
++	SHOW_REG(name, opc1, crn, crm, opc2)				\
++	STORE_REG(name, opc1, crn, crm, opc2, bits)			\
++	static SYSDEV_ATTR(name, S_IRUGO|S_IWUSR, name##_show, name##_store)
++
++RDWR_REG(control, 0, c1, c0, 0, 0x802);
++
++SHOW_REG(aux_ctl, 0, c1, c0, 1)
++
++#ifdef CONFIG_ARCH_OMAP34XX
++static ssize_t aux_ctl_store(struct sys_device *dev,
++			     struct sysdev_attribute *attr,
++			     const char *buf, size_t size)
++{
++	char *end;
++	unsigned new = simple_strtoul(buf, &end, 0);
++	unsigned val;
++
++	if (end == buf)
++		return -EINVAL;
++
++	asm ("mrc p15, 0, %0, c1, c0, 1" : "=r"(val));
++	SETBITS(val, 0xff8, new);
++	val &= ~2;
++	asm ("mov r0,  %0	\n\t"
++	     "mov r12, #3	\n\t"
++	     "smc #0		\n\t"
++	     :: "r"(val) : "r0", "r12");
++
++	return end - buf;
++}
++#define AUX_WR S_IWUSR
++#else
++#define aux_ctl_store NULL
++#define AUX_WR 0
++#endif
++
++static SYSDEV_ATTR(aux_control, S_IRUGO|AUX_WR, aux_ctl_show, aux_ctl_store);
++
++SHOW_REG(l2_aux_ctl, 1, c9, c0, 2)
++
++#ifdef CONFIG_ARCH_OMAP34XX
++static ssize_t l2_aux_ctl_store(struct sys_device *dev,
++				struct sysdev_attribute *attr,
++				const char *buf, size_t size)
++{
++	char *end;
++	unsigned new = simple_strtoul(buf, &end, 0);
++	unsigned val;
++
++	if (end == buf)
++		return -EINVAL;
++
++	asm ("mrc p15, 1, %0, c9, c0, 2" : "=r"(val));
++	SETBITS(val, 0xbc00000, new);
++	asm ("mov r0,  %0	\n\t"
++	     "mov r12, #2	\n\t"
++	     "smc #0		\n\t"
++	     :: "r"(val) : "r0", "r12");
++
++	return end - buf;
++}
++#define L2AUX_WR S_IWUSR
++#else
++#define l2_aux_ctl_store NULL
++#define L2AUX_WR 0
++#endif
++
++static SYSDEV_ATTR(l2_aux_control, S_IRUGO|L2AUX_WR,
++		   l2_aux_ctl_show, l2_aux_ctl_store);
++
++#define REG_ATTR(sysdev, name)						\
++	do {								\
++		int err = sysfs_create_file(&sysdev->kobj, &name.attr); \
++		WARN_ON(err != 0);					\
++	} while (0)
++
++static int __init cpu_sysfs_init(void)
++{
++	struct sys_device *sysdev;
++	int cpu;
++
++	for_each_possible_cpu(cpu) {
++		sysdev = get_cpu_sysdev(cpu);
++		REG_ATTR(sysdev, attr_control);
++		REG_ATTR(sysdev, attr_aux_control);
++		REG_ATTR(sysdev, attr_l2_aux_control);
++	}
++
++	return 0;
++}
++device_initcall(cpu_sysfs_init);
+-- 
+1.6.6.1
+

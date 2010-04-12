@@ -1,8 +1,10 @@
 DESCRIPTION = "User space DMA module for DM365"
+SECTION = "devel"
+LICENSE = "GPLv2"
 
 BASE_SRC_URI = "http://install.source.dir.local"
 
-SRC_URI = "${BASE_SRC_URI}/dm365mm_${PV}.tar.gz "
+SRC_URI = "${BASE_SRC_URI}/dm365mm_${PV}.tar.gz;name=dm365mmtarball"
 
 S = "${WORKDIR}/dm365mm_${PV}"
 
@@ -25,4 +27,3 @@ do_install () {
 
 INHIBIT_PACKAGE_STRIP = "1"
 INSANE_SKIP_${PN} = True
-

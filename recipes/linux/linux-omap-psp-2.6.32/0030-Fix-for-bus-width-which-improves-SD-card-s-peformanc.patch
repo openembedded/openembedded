@@ -1,0 +1,32 @@
+From 02cffb32ff4c48c1e23be720aae84a7f3496d2cc Mon Sep 17 00:00:00 2001
+From: Kishore Kadiyala <kishore.kadiyala@ti.com>
+Date: Wed, 17 Feb 2010 19:34:47 +0530
+Subject: [PATCH 30/42] Fix for bus width which improves SD card's peformance.
+
+This patch fixes bus width which improves peformance for SD cards.
+OMAP-MMC controller's can support maximum bus width of '8'.
+when bus width is mentioned as "8" in controller data,the SD
+stack will check whether bus width is "4" and if not it will
+set bus width to "1" and there by degrading peformance.
+
+Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
+---
+ drivers/mmc/host/omap_hsmmc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index fa94580..9646a75 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -1776,7 +1776,7 @@ static int __init omap_hsmmc_probe(struct platform_device *pdev)
+ 		     MMC_CAP_WAIT_WHILE_BUSY;
+ 
+ 	if (mmc_slot(host).wires >= 8)
+-		mmc->caps |= MMC_CAP_8_BIT_DATA;
++		mmc->caps |= (MMC_CAP_8_BIT_DATA | MMC_CAP_4_BIT_DATA);
+ 	else if (mmc_slot(host).wires >= 4)
+ 		mmc->caps |= MMC_CAP_4_BIT_DATA;
+ 
+-- 
+1.6.6.1
+

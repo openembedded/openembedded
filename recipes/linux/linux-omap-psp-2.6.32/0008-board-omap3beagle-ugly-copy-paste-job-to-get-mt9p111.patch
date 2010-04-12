@@ -1,0 +1,214 @@
+From 44c4fcfa0af82b3656e9a629a667ecf3a8fe3434 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
+Date: Tue, 9 Feb 2010 20:53:56 +0100
+Subject: [PATCH 08/42] board-omap3beagle: ugly copy/paste job to get mt9p111 sensor data in (only compile tested)
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |  169 +++++++++++++++++++++++++++++++
+ 1 files changed, 169 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index accf80d..e63bec6 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -25,6 +25,12 @@
+ #include <linux/input.h>
+ #include <linux/gpio_keys.h>
+ 
++#include <media/v4l2-int-device.h>
++#include <media/mt9t111.h>
++
++/* Include V4L2 ISP-Camera driver related header file */
++#include <../drivers/media/video/omap34xxcam.h>
++
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/nand.h>
+@@ -441,6 +447,157 @@ static struct twl4030_platform_data beagle_twldata = {
+ 	.vpll2		= &beagle_vpll2,
+ };
+ 
++
++#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++static struct isp_interface_config mt9t111_if_config = {
++	.ccdc_par_ser		= ISP_PARLL, 
++	.dataline_shift		= 0x0,
++	.hsvs_syncdetect	= ISPCTRL_SYNC_DETECT_VSRISE,
++	.strobe			= 0x0,
++	.prestrobe		= 0x0,
++	.shutter		= 0x0,
++	.u.par.par_bridge	= 0x1,
++	.u.par.par_clk_pol	= 0x0,
++};
++
++static struct v4l2_ifparm mt9t111_ifparm_s = {
++#if 1
++	.if_type = V4L2_IF_TYPE_RAW, 
++	.u 	 = {
++		.raw = {  
++			.frame_start_on_rising_vs = 1,
++			.bt_sync_correct	= 0,
++			.swap			= 0,
++			.latch_clk_inv		= 0,
++			.nobt_hs_inv		= 0,	/* active high */
++			.nobt_vs_inv		= 0,	/* active high */
++			.clock_min		= MT9T111_CLK_MIN,
++			.clock_max		= MT9T111_CLK_MAX,
++		},
++	},
++#else		
++	.if_type = V4L2_IF_TYPE_YCbCr, 
++	.u 	 = {
++		.ycbcr = {  
++			.frame_start_on_rising_vs = 1,
++			.bt_sync_correct	= 0,
++			.swap			= 0,
++			.latch_clk_inv		= 0,
++			.nobt_hs_inv		= 0,	/* active high */
++			.nobt_vs_inv		= 0,	/* active high */
++			.clock_min		= MT9T111_CLK_MIN,
++			.clock_max		= MT9T111_CLK_MAX,
++		},
++	},
++#endif
++};
++
++/**
++ * @brief mt9t111_ifparm - Returns the mt9t111 interface parameters
++ *
++ * @param p - pointer to v4l2_ifparm structure
++ *
++ * @return result of operation - 0 is success
++ */
++static int mt9t111_ifparm(struct v4l2_ifparm *p)
++{
++	if (p == NULL)
++		return -EINVAL;
++
++	*p = mt9t111_ifparm_s;
++	return 0;
++}
++
++#if defined(CONFIG_VIDEO_OMAP3_CAM) || defined(CONFIG_VIDEO_OMAP3_CAM_MODULE)
++static struct omap34xxcam_hw_config mt9t111_decoder_hwc = {
++	.dev_index		= 0,
++	.dev_minor		= 0,
++	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
++	.u.sensor.xclk		= OMAP34XXCAM_XCLK_NONE,
++	.u.sensor.sensor_isp	= 1,
++};
++#endif
++
++/**
++ * @brief mt9t111_set_prv_data - Returns mt9t111 omap34xx driver private data
++ *
++ * @param priv - pointer to omap34xxcam_hw_config structure
++ *
++ * @return result of operation - 0 is success
++ */
++static int mt9t111_set_prv_data(void *priv)
++{
++#if defined(CONFIG_VIDEO_OMAP3_CAM) || defined(CONFIG_VIDEO_OMAP3_CAM_MODULE)
++	struct omap34xxcam_hw_config *hwc = priv;
++
++	if (priv == NULL)
++		return -EINVAL;
++
++	hwc->u.sensor.sensor_isp = mt9t111_decoder_hwc.u.sensor.sensor_isp;
++	hwc->u.sensor.xclk = mt9t111_decoder_hwc.u.sensor.xclk;
++	hwc->dev_index = mt9t111_decoder_hwc.dev_index;
++	hwc->dev_minor = mt9t111_decoder_hwc.dev_minor;
++	hwc->dev_type = mt9t111_decoder_hwc.dev_type;
++	return 0;
++#else
++	return -EINVAL;
++#endif
++}
++
++/**
++ * @brief mt9t111_power_set - Power-on or power-off TVP5146 device
++ *
++ * @param power - enum, Power on/off, resume/standby
++ *
++ * @return result of operation - 0 is success
++ */
++static int mt9t111_power_set(enum v4l2_power power)
++{
++	switch (power) {
++	case V4L2_POWER_OFF:
++		/* Disable mux for TVP5146 decoder data path */
++//		if (omap3evmdc_set_mux(MUX_CAMERA_SENSOR, DISABLE_MUX))
++//			return -ENODEV;
++		break;
++
++	case V4L2_POWER_STANDBY:
++		break;
++
++	case V4L2_POWER_ON:
++		/* Enable mux for expension camera data path */
++//		if (omap3evmdc_set_mux(MUX_CAMERA_SENSOR, ENABLE_MUX))
++//			return -ENODEV;
++
++#if defined(CONFIG_VIDEO_OMAP3_CAM) || defined(CONFIG_VIDEO_OMAP3_CAM_MODULE)
++		isp_configure_interface(&mt9t111_if_config);
++#endif
++		break;
++
++	default:
++		return -ENODEV;
++		break;
++	}
++	return 0;
++}
++
++static struct mt9t111_platform_data mt9t111_pdata = {
++	.master		= "omap34xxcam",
++	.power_set	= mt9t111_power_set,
++	.priv_data_set	= mt9t111_set_prv_data,
++	.ifparm		= mt9t111_ifparm,
++	/* Some interface dependent params */
++	.clk_polarity	= 0, /* data clocked out on falling edge */
++	.hs_polarity	= 1, /* 0 - Active low, 1- Active high */
++	.vs_polarity	= 1, /* 0 - Active low, 1- Active high */
++};
++
++static struct i2c_board_info __initdata mt9t111_i2c_board_info = {
++	I2C_BOARD_INFO("mt9t111", MT9T111_I2C_ADDR),
++	.platform_data	= &mt9t111_pdata,
++};
++
++#endif				/* #ifdef CONFIG_VIDEO_MT9T111 */
++
+ static struct i2c_board_info __initdata beagle_i2c1_boardinfo[] = {
+ 	{
+ 		I2C_BOARD_INFO("twl4030", 0x48),
+@@ -618,6 +775,8 @@ static struct omap_board_mux board_mux[] __initdata = {
+ 
+ static void __init omap3_beagle_init(void)
+ {
++	int err;
++
+ 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+ 	omap3_beagle_i2c_init();
+ 	platform_add_devices(omap3_beagle_devices,
+@@ -640,7 +799,17 @@ static void __init omap3_beagle_init(void)
+ 	omap_mux_init_signal("sdrc_cke1", OMAP_PIN_OUTPUT);
+ 
+ 	beagle_display_init();
++
++	// Revisit: hardcodes i2c bus 2
++#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++       err = i2c_register_board_info(2, &mt9t111_i2c_board_info, 1);
++       if (err) {
++               printk("beagle: MT9T111 I2C Board Registration failed \n");
++               return err;
++       }
++#endif
+ }
++
+ static void __init omap3_beagle_map_io(void)
+ {
+ 	omap2_set_globals_343x();
+-- 
+1.6.6.1
+

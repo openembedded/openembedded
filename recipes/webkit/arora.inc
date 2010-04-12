@@ -2,11 +2,13 @@ DESCRIPTION = "Arora is a lightweight cross-platform web browser"
 LICENE = "GPLv2"
 HOMEPAGE = "http://code.google.com/p/arora/"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://arora.googlecode.com/files/arora-${PV}.tar.gz;name=arora"
 
 S = "${WORKDIR}/arora-${PV}"
+
+export QT_LIBINFIX
 
 do_configure_prepend() {
 	sed -i -e s:lrelease-qt4:${OE_QMAKE_LRELEASE}:g ${S}/src/locale/locale.pri
@@ -38,8 +40,16 @@ do_install() {
 	cp -r ${D}/${D}/* ${D}/ || true
 	cp -r ${D}/usr/local/* ${D}${prefix} || true
 	rm -rf ${D}/usr/local ${D}/${D}
+
+	if [ "$QT_LIBINFIX" = "E" ] ; then
+		mv ${D}${bindir}/arora ${D}${bindir}/aroraE
+	fi
+
 }
 
-FILES_${PN} += "${datadir}/arora ${datadir}/gnome-control-center ${datadir}/icons"
+PACKAGES =+ "arora-data"
+FILES_arora-data += "${datadir}/pixmaps ${datadir}/applications ${datadir}/arora ${datadir}/gnome-control-center ${datadir}/icons"
+
+RDEPENDS_${PN} += "arora-data"
 
 

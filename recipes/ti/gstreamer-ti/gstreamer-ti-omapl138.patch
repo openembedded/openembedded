@@ -1,0 +1,267 @@
+Index: ticodecplugin/src/gstticodecplugin_omapl138.cfg
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ticodecplugin/src/gstticodecplugin_omapl138.cfg	2010-01-08 09:27:23.529399692 -0600
+@@ -0,0 +1,41 @@
++/*
++ * Copyright (C) $year Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as
++ * published by the Free Software Foundation version 2.1 of the License.
++ *
++ * This program is distributed #as is# WITHOUT ANY WARRANTY of any kind,
++ * whether express or implied; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ */
++
++/* Load the Codec Engine 'Operating System Abstraction Layer' */
++var osalGlobal = xdc.useModule('ti.sdo.ce.osal.Global');
++
++var os = xdc.useModule('ti.sdo.ce.osal.linux.Settings');
++osalGlobal.os = os;
++
++/* Configure CE to use it's DSP Link Linux version */
++var ipc = xdc.useModule('ti.sdo.ce.ipc.Settings');
++ipc.commType = ipc.COMM_DSPLINK;
++
++/*
++*  ======== Engine Configuration ========
++ */
++var Engine = xdc.useModule('ti.sdo.ce.Engine');
++var demoEngine = Engine.createFromServer(
++    "codecServer",
++    "./bin/cs.x64P",
++    "ti.sdo.server.cs"
++    );
++
++var combopath = "" + java.lang.System.getenv("CODEC_SERVER");
++if (combopath != "" && combopath != "null") {
++	demoEngine.server = java.lang.System.getenv("CODEC_SERVER");
++}
++
++/* Load support for the DMAI module */
++var DMAI = xdc.loadPackage('ti.sdo.dmai');
+Index: ticodecplugin/src/gstticodecs_omapl138.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ticodecplugin/src/gstticodecs_omapl138.c	2010-01-08 09:27:23.529399692 -0600
+@@ -0,0 +1,81 @@
++/*
++ * gstticodecs_omapl138.c
++ *
++ * This file provides information for available codecs on the OMAP3530 platform.
++ *
++ * Original Author:
++ *     Don Darling, Texas Instruments, Inc.
++ *
++ * Copyright (C) $year Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as
++ * published by the Free Software Foundation version 2.1 of the License.
++ *
++ * This program is distributed #as is# WITHOUT ANY WARRANTY of any kind,
++ * whether express or implied; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ */
++
++#include "gstticodecs.h"
++
++/* Declaration of the production engine and decoders shipped with the DVSDK */
++static Char codecServer[] = "codecServer";
++
++/* NULL terminated list of speech decoders in the engine to use in the demo */
++GstTICodec gst_ticodec_codecs[] = {
++
++    /* Audio Decoders */
++    {
++        "AAC Audio Decoder",     /* String name of codec used by plugin      */
++        "aachedec",              /* String name of codec used by CE          */
++        codecServer              /* Engine that contains this codec          */
++    },
++
++    /* Video Decoders */
++    {
++        "H.264 Video Decoder",   /* String name of codec used by plugin      */
++        "h264dec",               /* String name of codec used by CE          */
++        codecServer              /* Engine that contains this codec          */
++    }, {
++        "MPEG4 Video Decoder",   /* String name of codec used by plugin      */
++        "mpeg4dec",              /* String name of codec used by CE          */
++        codecServer              /* Engine that contains this codec          */
++    },
++
++    /* Image Decoders */
++    {
++        "JPEG Image Decoder",    /* String name of codec used by plugin      */
++        "jpegdec",               /* String name of codec used by CE          */
++        codecServer              /* Engine that contains this codec          */
++    },
++
++    /* Video Encoders */
++    {
++        "H.264 Video Encoder",   /* String name of codec used by plugin      */
++        "h264enc",               /* String name of codec used by CE          */
++        codecServer              /* Engine that contains this codec          */
++    },
++
++    /* Image Encoders */
++    {
++        "JPEG Image Encoder",    /* String name of codec used by plugin      */
++        "jpegenc",               /* String name of codec used by CE          */
++        codecServer              /* Engine that contains this codec          */
++    },
++
++    { NULL }
++};
++
++
++/******************************************************************************
++ * Custom ViM Settings for editing this file
++ ******************************************************************************/
++#if 0
++ Tabs (use 4 spaces for indentation)
++ vim:set tabstop=4:      /* Use 4 spaces for tabs          */
++ vim:set shiftwidth=4:   /* Use 4 spaces for >> operations */
++ vim:set expandtab:      /* Expand tabs into white spaces  */
++#endif
+Index: ticodecplugin/src/gsttividenc1.c
+===================================================================
+--- ticodecplugin.orig/src/gsttividenc1.c	2010-01-07 15:15:37.000000000 -0600
++++ ticodecplugin/src/gsttividenc1.c	2010-01-08 09:27:23.529399692 -0600
+@@ -1455,6 +1455,7 @@
+         #if defined(Platform_omap3530)
+         case Cpu_Device_OMAP3530:
+         #endif
++        case Cpu_Device_OMAPL138:
+         case Cpu_Device_DM6446:
+             params.inputChromaFormat = XDM_YUV_422ILE;
+             break;
+Index: ticodecplugin/src/gsttidmaivideosink.c
+===================================================================
+--- ticodecplugin.orig/src/gsttidmaivideosink.c	2010-01-08 14:17:38.533747453 -0600
++++ ticodecplugin/src/gsttidmaivideosink.c	2010-01-08 15:55:46.881680839 -0600
+@@ -51,6 +51,19 @@
+     GST_PAD_SINK,
+     GST_PAD_ALWAYS,
+     GST_STATIC_CAPS
++#if defined(Platform_omapl138)
++    ("video/x-raw-rgb, "
++        "bpp=(int)16, "
++        "depth=(int)16, "
++        "endianness=(int)1234, "
++        "red_mask=(int)63488, "
++        "green_mask=(int)2016, "
++        "blue_mask=(int)31, "
++        "framerate=(fraction)[ 0, MAX ], "
++        "width=(int)[ 1, MAX ], "
++        "height=(int)[1, MAX ] "
++    )
++#else
+     ("video/x-raw-yuv, "
+          "format=(fourcc)UYVY, "
+          "framerate=(fraction)[ 0, MAX ], "
+@@ -67,6 +80,7 @@
+          "width=(int)[ 1, MAX ], "
+          "height=(int)[ 1, MAX ]"
+     )
++#endif
+ );
+ 
+ GST_DEBUG_CATEGORY_STATIC (gst_tidmaivideosink_debug);
+@@ -664,6 +678,11 @@
+             vattrs->framerate = 60;
+             break;
+ 
++        #if defined(Platform_omapl138)
++        case VideoStd_QVGA:
++            vattrs->framerate = 30;
++            break;
++        #endif
+         #if defined(Platform_omap3530)
+         case VideoStd_VGA:
+             vattrs->framerate = 60;
+@@ -1035,6 +1054,12 @@
+             sink->dAttrs.colorSpace = colorSpace;
+             break;
+         #endif
++        #if defined(Platform_omapl138)
++        case Cpu_Device_OMAPL138:
++            sink->dAttrs = Display_Attrs_OMAPL138_OSD_DEFAULT;
++            sink->dAttrs.colorSpace = colorSpace;
++            break;
++        #endif
+         default:
+             sink->dAttrs = Display_Attrs_DM6446_DM355_VID_DEFAULT;
+             break;
+@@ -1291,8 +1316,10 @@
+     ColorSpace_Type     inBufColorSpace;
+     gint                framerateDen;
+     gint                framerateNum;
++    const gchar         *mime;
+ 
+     structure = gst_caps_get_structure(caps, 0);
++    mime      = gst_structure_get_name(structure);
+ 
+     /* The width and height of the input buffer are collected here so that it
+      * can be checked against the width and height of the display buffer.
+@@ -1300,24 +1327,38 @@
+     gst_structure_get_int(structure, "width", &width);
+     gst_structure_get_int(structure, "height", &height);
+ 
+-    /* Map input buffer fourcc to dmai color space  */
+-    gst_structure_get_fourcc(structure, "format", &fourcc);
++    if (!strcmp(mime, "video/x-raw-rgb")) {
++        gint rm,gm,bm;
+ 
+-    switch (fourcc) {
+-        case GST_MAKE_FOURCC('U', 'Y', 'V', 'Y'):
+-            inBufColorSpace = ColorSpace_UYVY;
+-            break;
+-        case GST_MAKE_FOURCC('Y', '8', 'C', '8'):
+-            inBufColorSpace = ColorSpace_YUV422PSEMI;
+-            break;
+-        #if defined(Platform_dm365)
+-        case GST_MAKE_FOURCC('N', 'V', '1', '2'):
+-            inBufColorSpace = ColorSpace_YUV420PSEMI;
+-            break;
+-        #endif
+-        default:
+-            GST_ERROR("unsupported fourcc\n");
++        gst_structure_get_int(structure,"red_mask",&rm);
++        gst_structure_get_int(structure,"green_mask",&gm);
++        gst_structure_get_int(structure,"blue_mask",&bm);
++        if ((rm == 63488) && (gm == 2016) && (bm == 31)){
++            inBufColorSpace = ColorSpace_RGB565;
++        } else {
++            GST_ERROR("unsupported color space\n");
+             return FALSE;
++        }
++    } else {
++        /* Map input buffer fourcc to dmai color space  */
++        gst_structure_get_fourcc(structure, "format", &fourcc);
++
++        switch (fourcc) {
++            case GST_MAKE_FOURCC('U', 'Y', 'V', 'Y'):
++                inBufColorSpace = ColorSpace_UYVY;
++                break;
++            case GST_MAKE_FOURCC('Y', '8', 'C', '8'):
++                inBufColorSpace = ColorSpace_YUV422PSEMI;
++                break;
++            #if defined(Platform_dm365)
++            case GST_MAKE_FOURCC('N', 'V', '1', '2'):
++                inBufColorSpace = ColorSpace_YUV420PSEMI;
++                break;
++            #endif
++            default:
++                GST_ERROR("unsupported fourcc\n");
++                return FALSE;
++        }
+     }
+ 
+     /* Read the frame rate */

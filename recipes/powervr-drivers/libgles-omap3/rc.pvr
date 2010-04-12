@@ -13,7 +13,7 @@ fi
 
 if [ "$1" = "stop" -o  "$1" = "restart" ]; then
 	echo Stopping PVR
-	#rmmod bc_example
+	rmmod bufferclass_ti
 	rmmod omaplfb 2>/dev/null
 	rmmod pvrsrvkm 2>/dev/null
 fi
@@ -33,7 +33,6 @@ fbset -vyres $(expr $YRES \* 3)
 if [ $CPUTYPE = "OMAP3530" ]; then
 	echo Starting PVR
 	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
-	#modprobe bc_example
 	modprobe omaplfb
 	modprobe bufferclass_ti
 
@@ -46,9 +45,6 @@ if [ $CPUTYPE = "OMAP3530" ]; then
 
 	mknod /dev/pvrsrvkm c $pvr_maj 0 
 	chmod 666 /dev/pvrsrvkm
-
-	mknod /dev/bc_cat c $bc_maj 0
-	chmod 666 /dev/bc_cat
 
 	touch /etc/powervr-esrev
 

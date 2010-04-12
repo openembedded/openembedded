@@ -1,0 +1,69 @@
+From 15ef52dc7a6d92e50ed9437ca6ca4bdcbd62faa6 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Wed, 31 Mar 2010 11:32:23 +0200
+Subject: [PATCH 09/16] DSS2: fix rotation offsets
+
+---
+ drivers/video/omap2/omapfb/omapfb-main.c |   34 +++++++++++++++++++++++++----
+ 1 files changed, 29 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
+index c2c9663..1b116b6 100644
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -859,12 +859,14 @@ static int omapfb_setup_overlay(struct fb_info *fbi, struct omap_overlay *ovl,
+ 	u32 data_start_p;
+ 	void __iomem *data_start_v;
+ 	struct omap_overlay_info info;
+-	int xres, yres;
++	int xres, yres, xoff, yoff;
+ 	int screen_width;
+ 	int mirror;
+ 	int rotation = var->rotate;
+ 	int i;
+ 
++	xoff = var->xoffset;
++	yoff = var->yoffset;
+ 	for (i = 0; i < ofbi->num_overlays; i++) {
+ 		if (ovl != ofbi->overlays[i])
+ 			continue;
+@@ -893,10 +895,32 @@ static int omapfb_setup_overlay(struct fb_info *fbi, struct omap_overlay *ovl,
+ 		data_start_v = omapfb_get_region_vaddr(ofbi, 0);
+ 	}
+ 
+-	if (ofbi->rotation_type == OMAP_DSS_ROT_VRFB)
+-		offset = calc_rotation_offset_vrfb(var, fix, 0);
+-	else
+-		offset = calc_rotation_offset_dma(var, fix, rotation);
++    if (ofbi->rotation == FB_ROTATE_CW || ofbi->rotation == FB_ROTATE_UD) {
++		if (var->yres < var->yres_virtual) {
++			if (var->yoffset)
++				yoff = 0;
++			else
++				yoff = var->yres_virtual - var->yres;
++		}
++	}
++
++	if (ofbi->rotation == FB_ROTATE_CCW || ofbi->rotation == FB_ROTATE_UD) {
++		if (var->xres < var->xres_virtual) {
++			if (var->xoffset)
++				xoff = 0;
++			else
++				xoff = var->xres_virtual - var->xres;
++		}
++	}
++
++	if (ofbi->rotation == FB_ROTATE_CW || ofbi->rotation == FB_ROTATE_CCW) {
++		offset = ((xoff * fix->line_length) >> 1) +
++				((yoff * var->bits_per_pixel) >> 2);
++	} else
++	{
++		offset = yoff * fix->line_length +
++				((xoff * var->bits_per_pixel) >> 3);
++	}
+ 
+ 	data_start_p += offset;
+ 	data_start_v += offset;
+-- 
+1.6.6.1
+

@@ -1,0 +1,27 @@
+From 9cd3eb084a39c039fd17048f071116c866903855 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
+Date: Wed, 27 Jan 2010 21:57:13 +0100
+Subject: [PATCH 05/42] beagleboard: omap3_<foo>_rate_table -> omap35x_<foo>_rate_table
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 3b7f6ec..1caaa01 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -502,8 +502,8 @@ static struct platform_device keys_gpio = {
+ static void __init omap3_beagle_init_irq(void)
+ {
+ 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
+-			     mt46h32m32lf6_sdrc_params, omap3_mpu_rate_table,
+-			     omap3_dsp_rate_table, omap3_l3_rate_table);
++			     mt46h32m32lf6_sdrc_params, omap35x_mpu_rate_table,
++			     omap35x_dsp_rate_table, omap35x_l3_rate_table);
+ 	omap_init_irq();
+ #ifdef CONFIG_OMAP_32K_TIMER
+ 	omap2_gp_clockevent_set_gptimer(12);
+-- 
+1.6.6.1
+

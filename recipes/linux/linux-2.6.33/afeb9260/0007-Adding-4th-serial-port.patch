@@ -1,0 +1,27 @@
+From c0044d3806f0fcf081ef65cb8480c9e6652e45df Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Thu, 8 Apr 2010 19:55:38 +0400
+Subject: [PATCH 7/7] Adding 4th serial port
+
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ arch/arm/mach-at91/board-afeb-9260v1.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-afeb-9260v1.c b/arch/arm/mach-at91/board-afeb-9260v1.c
+index 12aa493..4e1d395 100644
+--- a/arch/arm/mach-at91/board-afeb-9260v1.c
++++ b/arch/arm/mach-at91/board-afeb-9260v1.c
+@@ -67,6 +67,8 @@ static void __init afeb9260_map_io(void)
+ 	at91_register_uart(AT91SAM9260_ID_US1, 2,
+ 			ATMEL_UART_CTS | ATMEL_UART_RTS);
+ 
++	at91_register_uart(AT91SAM9260_ID_US2, 3, 0);
++
+ 	/* set serial console to ttyS0 (ie, DBGU) */
+ 	at91_set_serial_console(0);
+ }
+-- 
+1.6.3.3
+

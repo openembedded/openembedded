@@ -1,0 +1,29 @@
+From 50343d07aaf7c8bfbd02d06261512c99ce430788 Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Mon, 13 Oct 2008 20:32:16 +0100
+Subject: [PATCH 36/42] ARM: Add prompt for CONFIG_ALIGNMENT_TRAP
+
+This adds a prompt text for CONFIG_ALIGNMENT_TRAP, thus making it
+visible in make *config.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ arch/arm/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 88f628b..f5ded3c 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1224,7 +1224,7 @@ config LEDS_CPU
+ 	  will overrule the CPU usage LED.
+ 
+ config ALIGNMENT_TRAP
+-	bool
++	bool "Enable alignment trap"
+ 	depends on CPU_CP15_MMU
+ 	default y if !ARCH_EBSA110
+ 	help
+-- 
+1.6.6.1
+

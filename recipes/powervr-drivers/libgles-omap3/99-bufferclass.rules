@@ -1,0 +1,7 @@
+# Give everyone access to bufferclass nodes and make a compatibility symlink for the first one
+SUBSYSTEM=="bccat", MODE="0666"
+KERNEL=="bccat0", SYMLINK+="bc_cat", MODE="0666"
+
+# Give everyone access to v4l nodes
+SUBSYSTEM=="video4linux", MODE="0666"
+

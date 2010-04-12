@@ -1,0 +1,53 @@
+From df5573b7c2ed7b0e31be60bddc6b9bc928e78bfe Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Fri, 12 Mar 2010 11:41:17 +0100
+Subject: [PATCH 03/16] bq27x00_battery: remove error message output
+
+---
+ drivers/power/bq27x00_battery.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/power/bq27x00_battery.c b/drivers/power/bq27x00_battery.c
+index 62bb981..6935bb6 100644
+--- a/drivers/power/bq27x00_battery.c
++++ b/drivers/power/bq27x00_battery.c
+@@ -93,7 +93,6 @@ static int bq27x00_battery_temperature(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_TEMP, &temp, 0, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading temperature\n");
+ 		return ret;
+ 	}
+ 
+@@ -111,7 +110,6 @@ static int bq27x00_battery_voltage(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_VOLT, &volt, 0, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading voltage\n");
+ 		return ret;
+ 	}
+ 
+@@ -131,12 +129,10 @@ static int bq27x00_battery_current(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_AI, &curr, 0, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading current\n");
+ 		return 0;
+ 	}
+ 	ret = bq27x00_read(BQ27x00_REG_FLAGS, &flags, 0, di);
+ 	if (ret < 0) {
+-		dev_err(di->dev, "error reading flags\n");
+ 		return 0;
+ 	}
+ 	if ((flags & (1 << 7)) != 0) {
+@@ -157,7 +153,6 @@ static int bq27x00_battery_rsoc(struct bq27x00_device_info *di)
+ 
+ 	ret = bq27x00_read(BQ27x00_REG_RSOC, &rsoc, 1, di);
+ 	if (ret) {
+-		dev_err(di->dev, "error reading relative State-of-Charge\n");
+ 		return ret;
+ 	}
+ 
+-- 
+1.6.6.1
+

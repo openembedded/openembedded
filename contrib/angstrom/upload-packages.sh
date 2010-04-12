@@ -32,6 +32,8 @@ cat files-remote files-local | sort | uniq -u >files-uniq
 cat files-uniq files-local | sort | uniq -d > files-trans
 
 rm -f upload-queue/bigbuck* 
+rm -f upload-queue/ti*-sdk*
+rm -f upload-queue/ti*tree*
 
 # Copy over non-duplicate files
 echo "Starting rsync..."

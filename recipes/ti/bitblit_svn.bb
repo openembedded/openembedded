@@ -1,8 +1,7 @@
 DESCRIPTION = "Low level 2D blitting/blending graphics acceleration services support on DM6446, OMAP3530 and OMAP-L137."
+SECTION = "multimedia"
 
 require ti-paths.inc
-
-inherit autotools
 
 DEPENDS = "ti-codec-engine ti-dmai"
 

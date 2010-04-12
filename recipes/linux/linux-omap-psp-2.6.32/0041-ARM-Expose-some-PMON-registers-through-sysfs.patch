@@ -1,0 +1,41 @@
+From ff5abcc2c35de124962f07dff1263b94402cbacc Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Sat, 28 Mar 2009 13:05:02 +0000
+Subject: [PATCH 41/42] ARM: Expose some PMON registers through sysfs
+
+---
+ arch/arm/kernel/sysfs_v7.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/kernel/sysfs_v7.c b/arch/arm/kernel/sysfs_v7.c
+index c05bf5f..5ed32fb 100644
+--- a/arch/arm/kernel/sysfs_v7.c
++++ b/arch/arm/kernel/sysfs_v7.c
+@@ -123,6 +123,12 @@ static ssize_t l2_aux_ctl_store(struct sys_device *dev,
+ static SYSDEV_ATTR(l2_aux_control, S_IRUGO|L2AUX_WR,
+ 		   l2_aux_ctl_show, l2_aux_ctl_store);
+ 
++RDWR_REG(pmon_pmnc,   0, c9, c12, 0, 0x3f)
++RDWR_REG(pmon_cntens, 0, c9, c12, 1, 0x8000000f)
++RDWR_REG(pmon_cntenc, 0, c9, c12, 2, 0x8000000f)
++RDWR_REG(pmon_ccnt,   0, c9, c13, 0, 0xffffffff)
++RDWR_REG(pmon_useren, 0, c9, c14, 0, 1)
++
+ #define REG_ATTR(sysdev, name)						\
+ 	do {								\
+ 		int err = sysfs_create_file(&sysdev->kobj, &name.attr); \
+@@ -139,6 +145,11 @@ static int __init cpu_sysfs_init(void)
+ 		REG_ATTR(sysdev, attr_control);
+ 		REG_ATTR(sysdev, attr_aux_control);
+ 		REG_ATTR(sysdev, attr_l2_aux_control);
++		REG_ATTR(sysdev, attr_pmon_pmnc);
++		REG_ATTR(sysdev, attr_pmon_cntens);
++		REG_ATTR(sysdev, attr_pmon_cntenc);
++		REG_ATTR(sysdev, attr_pmon_ccnt);
++		REG_ATTR(sysdev, attr_pmon_useren);
+ 	}
+ 
+ 	return 0;
+-- 
+1.6.6.1
+

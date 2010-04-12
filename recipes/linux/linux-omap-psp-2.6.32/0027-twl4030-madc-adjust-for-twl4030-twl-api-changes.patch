@@ -1,0 +1,85 @@
+From bd6157d8970cda63db9986ceadb16f3e8f4c22ef Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Mon, 15 Feb 2010 14:20:51 +0100
+Subject: [PATCH 27/42] twl4030-madc: adjust for twl4030 -> twl api changes
+
+---
+ drivers/mfd/twl4030-madc.c |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mfd/twl4030-madc.c b/drivers/mfd/twl4030-madc.c
+index 7d83ab8..de6bdcd 100644
+--- a/drivers/mfd/twl4030-madc.c
++++ b/drivers/mfd/twl4030-madc.c
+@@ -29,7 +29,7 @@
+ #include <linux/fs.h>
+ #include <linux/platform_device.h>
+ #include <linux/miscdevice.h>
+-#include <linux/i2c/twl4030.h>
++#include <linux/i2c/twl.h>
+ #include <linux/i2c/twl4030-madc.h>
+ 
+ #include <asm/uaccess.h>
+@@ -73,7 +73,7 @@ static int twl4030_madc_read(struct twl4030_madc_data *madc, u8 reg)
+ 	int ret;
+ 	u8 val;
+ 
+-	ret = twl4030_i2c_read_u8(TWL4030_MODULE_MADC, &val, reg);
++	ret = twl_i2c_read_u8(TWL4030_MODULE_MADC, &val, reg);
+ 	if (ret) {
+ 		dev_dbg(madc->dev, "unable to read register 0x%X\n", reg);
+ 		return ret;
+@@ -86,7 +86,7 @@ static void twl4030_madc_write(struct twl4030_madc_data *madc, u8 reg, u8 val)
+ {
+ 	int ret;
+ 
+-	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MADC, val, reg);
++	ret = twl_i2c_write_u8(TWL4030_MODULE_MADC, val, reg);
+ 	if (ret)
+ 		dev_err(madc->dev, "unable to write register 0x%X\n", reg);
+ }
+@@ -342,13 +342,13 @@ static int twl4030_madc_set_current_generator(struct twl4030_madc_data *madc,
+ 	if (chan > 1)
+ 		return EINVAL;
+ 
+-	ret = twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE,
++	ret = twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE,
+ 				  &regval, TWL4030_BCI_BCICTL1);
+ 	if (on)
+ 		regval |= (chan) ? TWL4030_BCI_ITHEN : TWL4030_BCI_TYPEN;
+ 	else
+ 		regval &= (chan) ? ~TWL4030_BCI_ITHEN : ~TWL4030_BCI_TYPEN;
+-	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE,
++	ret = twl_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE,
+ 				   regval, TWL4030_BCI_BCICTL1);
+ 
+ 	return ret;
+@@ -453,21 +453,21 @@ static int __init twl4030_madc_probe(struct platform_device *pdev)
+ 	twl4030_madc_set_current_generator(madc, 0, 1);
+ 
+ 	/* Enable ADCIN3 through 6 */
+-	ret = twl4030_i2c_read_u8(TWL4030_MODULE_USB,
++	ret = twl_i2c_read_u8(TWL4030_MODULE_USB,
+ 				  &regval, TWL4030_USB_CARKIT_ANA_CTRL);
+ 
+ 	regval |= TWL4030_USB_SEL_MADC_MCPC;
+ 
+-	ret = twl4030_i2c_write_u8(TWL4030_MODULE_USB,
++	ret = twl_i2c_write_u8(TWL4030_MODULE_USB,
+ 				regval, TWL4030_USB_CARKIT_ANA_CTRL);
+ 
+ 
+-	ret = twl4030_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE,
++	ret = twl_i2c_read_u8(TWL4030_MODULE_MAIN_CHARGE,
+ 				  &regval, TWL4030_BCI_BCICTL1);
+ 
+ 	regval |= TWL4030_BCI_MESBAT;
+ 
+-	ret = twl4030_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE,
++	ret = twl_i2c_write_u8(TWL4030_MODULE_MAIN_CHARGE,
+ 				   regval, TWL4030_BCI_BCICTL1);
+ 
+ 	ret = request_irq(platform_get_irq(pdev, 0), twl4030_madc_irq_handler,
+-- 
+1.6.6.1
+

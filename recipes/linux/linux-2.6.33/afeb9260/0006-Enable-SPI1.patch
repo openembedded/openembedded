@@ -1,0 +1,32 @@
+From 2129eba0028cf71128aef04d4f8294ab87cc978b Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Fri, 7 Aug 2009 22:45:29 +0400
+Subject: [PATCH 6/7] Enable SPI1
+
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ arch/arm/mach-at91/board-afeb-9260v1.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-afeb-9260v1.c b/arch/arm/mach-at91/board-afeb-9260v1.c
+index f1e314f..12aa493 100644
+--- a/arch/arm/mach-at91/board-afeb-9260v1.c
++++ b/arch/arm/mach-at91/board-afeb-9260v1.c
+@@ -104,6 +104,13 @@ static struct spi_board_info afeb9260_spi_devices[] = {
+ 		.max_speed_hz	= 15 * 1000 * 1000,
+ 		.bus_num	= 0,
+ 	},
++	{	/* DataFlash chip */
++		.modalias	= "spidev",
++		.chip_select	= 0,
++		.max_speed_hz	= 500 * 1000,
++		.mode = SPI_CPHA,
++		.bus_num	= 1,
++	},
+ };
+ 
+ 
+-- 
+1.6.3.3
+

@@ -1,0 +1,62 @@
+From 512af40b0efa98d9a7a5596fe6b19600d89a58dd Mon Sep 17 00:00:00 2001
+From: Tim Yamin <plasm@roo.me.uk>
+Date: Sat, 11 Apr 2009 13:05:21 -0700
+Subject: [PATCH 01/16] ARM: OMAP: add spi platform devices
+
+---
+ arch/arm/mach-omap2/devices.c |   32 ++++++++++++++++++++++++++++++++
+ 1 files changed, 32 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index 18ad931..ae67ada 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -15,6 +15,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
++#include <linux/spi/spi_gpio.h> 
+ 
+ #include <mach/hardware.h>
+ #include <asm/mach-types.h>
+@@ -373,6 +374,37 @@ static struct platform_device omap2_mcspi4 = {
+ 		.platform_data = &omap2_mcspi4_config,
+ 	},
+ };
++
++static struct spi_gpio_platform_data spi3_gpio_platform_data = {
++       .miso           = 132,
++       .mosi           = 131,
++       .sck            = 130,
++       .num_chipselect = 1,
++};
++
++static struct platform_device spi3_gpio = {
++       .name           = "spi_gpio",
++       .id             = 3,
++       .dev            = {
++               .platform_data = &spi3_gpio_platform_data,
++       },
++};
++ 
++static struct spi_gpio_platform_data spi4_gpio_platform_data = {
++       .miso           = 159,
++       .mosi           = 158,
++       .sck            = 156,
++       .num_chipselect = 1,
++};
++
++static struct platform_device spi4_gpio = {
++       .name           = "spi_gpio",
++       .id             = 4,
++       .dev            = {
++               .platform_data = &spi4_gpio_platform_data,
++       },
++};
++ 
+ #endif
+ 
+ #ifdef CONFIG_ARCH_OMAP4
+-- 
+1.6.6.1
+

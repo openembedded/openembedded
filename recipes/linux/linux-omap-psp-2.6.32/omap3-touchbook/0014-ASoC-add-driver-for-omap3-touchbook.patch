@@ -1,0 +1,340 @@
+From 0abfaf3d50f7df7b7dd9462d1822e856bf306bf5 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Wed, 31 Mar 2010 11:14:04 +0200
+Subject: [PATCH 14/16] ASoC: add driver for omap3-touchbook
+
+---
+ sound/soc/omap/Kconfig          |    8 +
+ sound/soc/omap/Makefile         |    2 +
+ sound/soc/omap/omap3touchbook.c |  281 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 291 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/omap/omap3touchbook.c
+
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 61952aa..a7c06ab 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -101,6 +101,14 @@ config SND_OMAP_SOC_OMAP3_BEAGLE
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the Beagleboard.
+ 
++config SND_OMAP_SOC_OMAP3_TOUCHBOOK
++	tristate "SoC Audio support for OMAP3 Touch Book"
++	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_TOUCHBOOK
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_TWL4030
++	help
++	  Say Y if you want to add support for SoC audio on the Touch Book.
++
+ config SND_OMAP_SOC_ZOOM2
+ 	tristate "SoC Audio support for Zoom2"
+ 	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_ZOOM2
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index 19283e5..e3f172f 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -16,6 +16,7 @@ snd-soc-am3517evm-objs := am3517evm.o
+ snd-soc-sdp3430-objs := sdp3430.o
+ snd-soc-omap3pandora-objs := omap3pandora.o
+ snd-soc-omap3beagle-objs := omap3beagle.o
++snd-soc-omap3touchbook-objs := omap3touchbook.o
+ snd-soc-zoom2-objs := zoom2.o
+ snd-soc-igep0020-objs := igep0020.o
+ 
+@@ -29,5 +30,6 @@ obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
++obj-$(CONFIG_SND_OMAP_SOC_OMAP3_TOUCHBOOK) += snd-soc-omap3touchbook.o
+ obj-$(CONFIG_SND_OMAP_SOC_ZOOM2) += snd-soc-zoom2.o
+ obj-$(CONFIG_SND_OMAP_SOC_IGEP0020) += snd-soc-igep0020.o
+diff --git a/sound/soc/omap/omap3touchbook.c b/sound/soc/omap/omap3touchbook.c
+new file mode 100644
+index 0000000..27924e0
+--- /dev/null
++++ b/sound/soc/omap/omap3touchbook.c
+@@ -0,0 +1,281 @@
++/*
++ * omap3touchbook.c  --  SoC audio for Touch Book
++ *
++ * Copyright (C) 2009-2010 Always Innovating
++ *
++ * Author: Gregoire Gentil <gregoire@gentil.com>
++ *
++ * Based on:
++ * Author: Steve Sakoman <steve@sakoman.com>
++ * Author: Misael Lopez Cruz <x0052729@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#include <linux/clk.h>
++#include <linux/platform_device.h>
++#include <linux/i2c/twl.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/jack.h>
++
++#include <asm/mach-types.h>
++#include <mach/hardware.h>
++#include <mach/gpio.h>
++#include <plat/mcbsp.h>
++
++#include "omap-mcbsp.h"
++#include "omap-pcm.h"
++#include "../codecs/twl4030.h"
++
++static struct snd_soc_card snd_soc_omap3touchbook;
++
++static int omap3touchbook_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int fmt;
++	int ret;
++
++	switch (params_channels(params)) {
++	case 2: /* Stereo I2S mode */
++		fmt =	SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBM_CFM;
++		break;
++	case 4: /* Four channel TDM mode */
++		fmt =	SND_SOC_DAIFMT_DSP_A |
++			SND_SOC_DAIFMT_IB_NF |
++			SND_SOC_DAIFMT_CBM_CFM;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* Set codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set codec DAI configuration\n");
++		return ret;
++	}
++
++	/* Set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set cpu DAI configuration\n");
++		return ret;
++	}
++
++	/* Set the codec system clock for DAC and ADC */
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
++				     SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		printk(KERN_ERR "can't set codec system clock\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct snd_soc_ops omap3touchbook_ops = {
++	.hw_params = omap3touchbook_hw_params,
++};
++
++/* Headset jack */
++static struct snd_soc_jack hs_jack;
++
++/* Headset jack detection DAPM pins */
++static struct snd_soc_jack_pin hs_jack_pins[] = {
++	{
++		.pin = "External Speakers",
++		.mask = SND_JACK_HEADPHONE,
++		.invert = 1,
++	},
++};
++
++/* Headset jack detection gpios */
++static struct snd_soc_jack_gpio hs_jack_gpios[] = {
++	{
++		.gpio = 56,
++		.name = "hsdet-gpio",
++		.report = SND_JACK_HEADSET,
++		.debounce_time = 200,
++	},
++};
++
++/* omap3touchbook machine DAPM */
++static const struct snd_soc_dapm_widget omap3touchbook_twl4030_dapm_widgets[] = {
++	SND_SOC_DAPM_SPK("External Speakers", NULL),
++	SND_SOC_DAPM_HP("Headset Stereo", NULL),
++	SND_SOC_DAPM_MIC("Headset Micro", NULL),
++	SND_SOC_DAPM_LINE("Line In", NULL),
++};
++
++static const struct snd_soc_dapm_route audio_map[] = {
++	/* External Speakers: HFL, HFR */
++	{"External Speakers", NULL, "HFL"},
++	{"External Speakers", NULL, "HFR"},
++
++	/* Headset Stereo: HSOL, HSOR */
++	{"Headset Stereo", NULL, "HSOL"},
++	{"Headset Stereo", NULL, "HSOR"},
++
++	/* Headset Micro: MAINMICL */
++	{"Headset Micro", NULL, "MAINMIC"},
++
++	/* Line In: AUXL, AUXR */
++	{"Line In", NULL, "AUXL"},
++	{"Line In", NULL, "AUXR"},
++};
++
++static int omap3touchbook_twl4030_init(struct snd_soc_codec *codec)
++{
++	int ret;
++
++	/* Add omap3touchbook specific widgets */
++	ret = snd_soc_dapm_new_controls(codec, omap3touchbook_twl4030_dapm_widgets,
++				ARRAY_SIZE(omap3touchbook_twl4030_dapm_widgets));
++	if (ret)
++		return ret;
++
++	/* Set up omap3touchbook specific audio path audio_map */
++	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
++
++	/* omap3touchbook connected pins */
++	snd_soc_dapm_enable_pin(codec, "External Speakers");
++	snd_soc_dapm_enable_pin(codec, "Headset Stereo");
++	snd_soc_dapm_enable_pin(codec, "Headset Micro");
++	snd_soc_dapm_enable_pin(codec, "Line In");
++
++	/* TWL4030 not connected pins */
++	snd_soc_dapm_nc_pin(codec, "CARKITMIC");
++	snd_soc_dapm_nc_pin(codec, "SUBMIC");
++	snd_soc_dapm_nc_pin(codec, "DIGIMIC0");
++	snd_soc_dapm_nc_pin(codec, "DIGIMIC1");
++	snd_soc_dapm_nc_pin(codec, "OUTL");
++	snd_soc_dapm_nc_pin(codec, "OUTR");
++	snd_soc_dapm_nc_pin(codec, "EARPIECE");
++	snd_soc_dapm_nc_pin(codec, "PREDRIVEL");
++	snd_soc_dapm_nc_pin(codec, "PREDRIVER");
++	snd_soc_dapm_nc_pin(codec, "CARKITL");
++	snd_soc_dapm_nc_pin(codec, "CARKITR");
++	snd_soc_dapm_nc_pin(codec, "VIBRA");
++
++	ret = snd_soc_dapm_sync(codec);
++	if (ret)
++		return ret;
++
++	/* Headset jack detection */
++	ret = snd_soc_jack_new(&snd_soc_omap3touchbook, "Headset Jack",
++				SND_JACK_HEADSET, &hs_jack);
++	if (ret)
++		return ret;
++
++	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
++				hs_jack_pins);
++	if (ret)
++		return ret;
++
++	ret = snd_soc_jack_add_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios),
++				hs_jack_gpios);
++
++	return ret;
++}
++
++/* Digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link omap3touchbook_dai = {
++		.name = "TWL4030 I2S",
++		.stream_name = "TWL4030 Audio",
++		.cpu_dai = &omap_mcbsp_dai[0],
++		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++		.init = omap3touchbook_twl4030_init,
++		.ops = &omap3touchbook_ops,
++};
++
++/* Audio machine driver */
++static struct snd_soc_card snd_soc_omap3touchbook = {
++	.name = "omap3touchbook",
++	.platform = &omap_soc_platform,
++	.dai_link = &omap3touchbook_dai,
++	.num_links = 1,
++};
++
++/* twl4030 setup */
++static struct twl4030_setup_data twl4030_setup = {
++	.ramp_delay_value = 3,
++	.sysclk = 26000,
++	.hs_extmute = 1,
++};
++
++/* Audio subsystem */
++static struct snd_soc_device omap3touchbook_snd_devdata = {
++	.card = &snd_soc_omap3touchbook,
++	.codec_dev = &soc_codec_dev_twl4030,
++	.codec_data = &twl4030_setup,
++};
++
++static struct platform_device *omap3touchbook_snd_device;
++
++static int __init omap3touchbook_soc_init(void)
++{
++	int ret;
++	u8 pin_mux;
++
++	if (!machine_is_touchbook()) {
++		pr_debug("Not Touch Book!\n");
++		//return -ENODEV;
++	}
++	printk(KERN_INFO "Touch Book SoC init\n");
++
++	omap3touchbook_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!omap3touchbook_snd_device) {
++		printk(KERN_ERR "Platform device allocation failed\n");
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(omap3touchbook_snd_device, &omap3touchbook_snd_devdata);
++	omap3touchbook_snd_devdata.dev = &omap3touchbook_snd_device->dev;
++	*(unsigned int *)omap3touchbook_dai.cpu_dai->private_data = 1; /* McBSP2 */
++
++	ret = platform_device_add(omap3touchbook_snd_device);
++	if (ret)
++		goto err1;
++
++	return 0;
++
++err1:
++	printk(KERN_ERR "Unable to add platform device\n");
++	platform_device_put(omap3touchbook_snd_device);
++
++	return ret;
++}
++module_init(omap3touchbook_soc_init);
++
++static void __exit omap3touchbook_soc_exit(void)
++{
++	snd_soc_jack_free_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios),
++				hs_jack_gpios);
++
++	platform_device_unregister(omap3touchbook_snd_device);
++}
++module_exit(omap3touchbook_soc_exit);
++
++MODULE_AUTHOR("Gregoire Gentil <gregoire@gentil.com>");
++MODULE_LICENSE("GPL");
+-- 
+1.6.6.1
+

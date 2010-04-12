@@ -1,0 +1,339 @@
+From 935a7f21581403bd791729ae1cc1b49b10561fa6 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Fri, 12 Mar 2010 14:39:07 +0100
+Subject: [PATCH 11/16] add touchbook hid driver
+
+---
+ drivers/hid/Kconfig    |    7 ++
+ drivers/hid/Makefile   |    1 +
+ drivers/hid/hid-ai.c   |  260 ++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/hid/hid-core.c |    1 +
+ drivers/hid/hid-ids.h  |    3 +
+ 5 files changed, 272 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/hid/hid-ai.c
+
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index 24d90ea..3760565 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -62,6 +62,13 @@ config HID_A4TECH
+ 	---help---
+ 	Support for A4 tech X5 and WOP-35 / Trust 450L mice.
+ 
++config HID_AI
++	tristate "Always Innovating" if EMBEDDED
++	depends on USB_HID
++	default !EMBEDDED
++	---help---
++	Support for Always Innovating Touch Book.
++
+ config HID_APPLE
+ 	tristate "Apple" if EMBEDDED
+ 	depends on (USB_HID || BT_HIDP)
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 0de2dff..1787952 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -20,6 +20,7 @@ ifdef CONFIG_LOGIRUMBLEPAD2_FF
+ endif
+ 
+ obj-$(CONFIG_HID_A4TECH)	+= hid-a4tech.o
++obj-$(CONFIG_HID_AI)		+= hid-ai.o
+ obj-$(CONFIG_HID_APPLE)		+= hid-apple.o
+ obj-$(CONFIG_HID_BELKIN)	+= hid-belkin.o
+ obj-$(CONFIG_HID_CHERRY)	+= hid-cherry.o
+diff --git a/drivers/hid/hid-ai.c b/drivers/hid/hid-ai.c
+new file mode 100644
+index 0000000..83aecaf
+--- /dev/null
++++ b/drivers/hid/hid-ai.c
+@@ -0,0 +1,260 @@
++/*
++ *  USB HID quirks support for the Always Innovating Touch Book
++ *  Code borrowed from hid-apple.c
++ *
++ *  Copyright (c) 2009 Tim Yamin <plasm@roo.me.uk>
++ */
++
++/*
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the Free
++ * Software Foundation; either version 2 of the License, or (at your option)
++ * any later version.
++ */
++
++#include <linux/device.h>
++#include <linux/hid.h>
++#include <linux/module.h>
++#include <linux/usb.h>
++
++#include "hid-ids.h"
++
++struct ai_sc {
++	unsigned long quirks;
++	unsigned int  fn_on;
++	DECLARE_BITMAP(pressed_fn, KEY_CNT);
++};
++
++struct ai_key_translation {
++	u16 from;
++	u16 to;
++	u8 flags;
++};
++
++static struct ai_key_translation ai_fn_keys[] = {
++	{ KEY_F6,	KEY_BRIGHTNESSDOWN },
++	{ KEY_F7,	KEY_BRIGHTNESSUP },
++
++	{ KEY_F8,	KEY_MUTE },
++	{ KEY_F9,	KEY_VOLUMEDOWN },
++	{ KEY_F10,	KEY_VOLUMEUP },
++
++	{ KEY_UP,	KEY_PAGEUP },
++	{ KEY_DOWN,	KEY_PAGEDOWN },
++	{ }
++};
++
++extern unsigned int ai_revision;
++int swap_key = 0;
++
++static struct ai_key_translation *ai_find_translation(
++		struct ai_key_translation *table, u16 from)
++{
++	struct ai_key_translation *trans;
++
++	/* Look for the translation */
++	for (trans = table; trans->from; trans++)
++		if (trans->from == from)
++			return trans;
++
++	return NULL;
++}
++
++static int ai_event(struct hid_device *hid, struct hid_field *field,
++		struct hid_usage *usage, __s32 value)
++{
++	int do_translate;
++
++	struct input_dev *input = field->hidinput->input;
++	struct ai_sc *asc = hid_get_drvdata(hid);
++	struct ai_key_translation *trans;
++
++	if (swap_key && usage->code == KEY_RIGHTSHIFT) {
++		input_event(input, usage->type, KEY_END, value);
++		return 1;
++	}
++
++	if (swap_key && usage->code == KEY_END) {
++		input_event(input, usage->type, KEY_RIGHTSHIFT, value);
++		return 1;
++	}
++
++	if (usage->code == KEY_POWER) {
++		asc->fn_on = !!value;
++		input_event(input, usage->type, usage->code, value);
++		return 1;
++	}
++
++	trans = ai_find_translation(ai_fn_keys, usage->code);
++	if (trans) {
++		if (test_bit(usage->code, asc->pressed_fn))
++			do_translate = 1;
++		else
++			do_translate = asc->fn_on;
++
++		if (do_translate) {
++			if (value)
++				set_bit(usage->code, asc->pressed_fn);
++			else
++				clear_bit(usage->code, asc->pressed_fn);
++
++			input_event(input, usage->type, trans->to,
++					value);
++
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
++static int ai_input_mapping(struct hid_device *hdev, struct hid_input *hi,
++		struct hid_field *field, struct hid_usage *usage,
++		unsigned long **bit, int *max)
++{
++	struct ai_key_translation *trans;
++
++	/* Enable all other keys */
++	for (trans = ai_fn_keys; trans->from; trans++)
++		set_bit(trans->to, hi->input->keybit);
++
++	return 0;
++}
++
++static ssize_t show_swap_key(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	return snprintf(buf, PAGE_SIZE, "%d\n", swap_key);
++}
++
++static ssize_t store_swap_key(struct device *dev,
++		struct device_attribute *attr,
++		const char *buf, size_t count)
++{
++	swap_key = simple_strtoul(buf, NULL, 0);
++
++	if (swap_key != 0 && swap_key != 1) {
++		swap_key = 0;
++		return -EINVAL;
++	}
++
++	return count;
++}
++
++static struct device_attribute ai_hid_attrs[] = {
++	__ATTR(swap_key, S_IRUGO | S_IWUGO, show_swap_key, store_swap_key),
++};
++
++int ai_create_sysfs(struct hid_device *hdev)
++{
++	int i;
++	int r;
++
++	for (i = 0; i < ARRAY_SIZE(ai_hid_attrs); i++) {
++		r = device_create_file(&hdev->dev,
++				&ai_hid_attrs[i]);
++
++		if (r) {
++			dev_err(&hdev->dev, "failed to create sysfs file\n");
++			return r;
++		}
++	}
++
++	return 0;
++}
++
++void ai_remove_sysfs(struct hid_device *hdev)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(ai_hid_attrs); i++)
++		device_remove_file(&hdev->dev,
++					&ai_hid_attrs[i]);
++}
++
++static int ai_probe(struct hid_device *hdev,
++		const struct hid_device_id *id)
++{
++	unsigned long quirks = id->driver_data;
++	struct ai_sc *asc;
++	unsigned int connect_mask = HID_CONNECT_DEFAULT;
++	int ret;
++
++	asc = kzalloc(sizeof(*asc), GFP_KERNEL);
++	if (asc == NULL) {
++		dev_err(&hdev->dev, "can't alloc ai descriptor\n");
++		return -ENOMEM;
++	}
++
++	asc->quirks = quirks;
++	hid_set_drvdata(hdev, asc);
++
++	ret = hid_parse(hdev);
++	if (ret) {
++		dev_err(&hdev->dev, "parse failed\n");
++		goto err_free;
++	}
++
++	ret = ai_create_sysfs(hdev);
++	if (ret) {
++		dev_err(&hdev->dev, "failed to create sysfs entries\n");
++		goto err_free;
++	}
++
++	swap_key = (ai_revision >= 4) ? 1 : 0;
++
++	ret = hid_hw_start(hdev, connect_mask);
++	if (ret) {
++		dev_err(&hdev->dev, "hw start failed\n");
++		goto err_free;
++	}
++
++	return 0;
++err_free:
++	kfree(asc);
++	return ret;
++}
++
++static void ai_remove(struct hid_device *hdev)
++{
++	hid_hw_stop(hdev);
++	kfree(hid_get_drvdata(hdev));
++	ai_remove_sysfs(hdev);
++}
++
++static const struct hid_device_id ai_devices[] = {
++	{ HID_USB_DEVICE(USB_VENDOR_ID_AI, USB_DEVICE_ID_AI_TOUCH_BOOK) },
++	{ }
++};
++
++MODULE_DEVICE_TABLE(hid, ai_devices);
++
++static struct hid_driver ai_driver = {
++	.name = "ai",
++	.id_table = ai_devices,
++	.probe = ai_probe,
++	.remove = ai_remove,
++	.event = ai_event,
++	.input_mapping = ai_input_mapping,
++};
++
++static int ai_init(void)
++{
++	int ret;
++
++	ret = hid_register_driver(&ai_driver);
++	if (ret)
++		printk(KERN_ERR "can't register ai driver\n");
++
++	return ret;
++}
++
++static void ai_exit(void)
++{
++	hid_unregister_driver(&ai_driver);
++}
++
++module_init(ai_init);
++module_exit(ai_exit);
++MODULE_LICENSE("GPL");
++HID_COMPAT_LOAD_DRIVER(ai);
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index 80792d3..f6b5960 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -1250,6 +1250,7 @@ EXPORT_SYMBOL_GPL(hid_disconnect);
+ static const struct hid_device_id hid_blacklist[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_WCP32PU) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_A4TECH, USB_DEVICE_ID_A4TECH_X5_005D) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_AI, USB_DEVICE_ID_AI_TOUCH_BOOK) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ATV_IRCONTROL) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_IRCONTROL4) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_MIGHTYMOUSE) },
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 3839340..5a0127d 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -54,6 +54,9 @@
+ #define USB_VENDOR_ID_ALPS		0x0433
+ #define USB_DEVICE_ID_IBM_GAMEPAD	0x1101
+ 
++#define USB_VENDOR_ID_AI		0xa110
++#define USB_DEVICE_ID_AI_TOUCH_BOOK	0x0002
++
+ #define USB_VENDOR_ID_APPLE		0x05ac
+ #define USB_DEVICE_ID_APPLE_MIGHTYMOUSE	0x0304
+ #define USB_DEVICE_ID_APPLE_FOUNTAIN_ANSI	0x020e
+-- 
+1.6.6.1
+

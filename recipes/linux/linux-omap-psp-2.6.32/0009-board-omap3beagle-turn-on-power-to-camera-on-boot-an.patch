@@ -1,0 +1,31 @@
+From 6f6264e5980b822b5853d2f6a7584aa5e3431cfd Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
+Date: Thu, 11 Feb 2010 20:23:01 +0100
+Subject: [PATCH 09/42] board-omap3beagle: turn on power to camera on boot and add some comments
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index e63bec6..91d835a 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -327,9 +327,14 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 	 */
+ 
+ 	if (cpu_is_omap3630()) {
++		/* Power on DVI, Serial and PWR led */ 
+  		gpio_request(gpio + 1, "nDVI_PWR_EN");
+ 		gpio_direction_output(gpio + 1, 0);	
+ 
++		/* Power on camera interface */
++		gpio_request(gpio + 2, "CAM_EN");
++		gpio_direction_output(gpio + 2, 1);
++
+ 		/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
+ 		gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
+ 		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 1);
+-- 
+1.6.6.1
+

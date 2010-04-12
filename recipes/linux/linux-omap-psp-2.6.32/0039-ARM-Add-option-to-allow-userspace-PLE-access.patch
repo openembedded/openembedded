@@ -1,0 +1,48 @@
+From 85392359bd3a2002b72d65d1637598c2f1e398b3 Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Tue, 10 Nov 2009 00:41:54 +0000
+Subject: [PATCH 39/42] ARM: Add option to allow userspace PLE access
+
+This adds a Kconfig option to allow userspace to access the L2 preload
+engine (PLE) found in Cortex-A8.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ arch/arm/kernel/head.S |    4 ++++
+ arch/arm/mm/Kconfig    |    8 ++++++++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+index eb62bf9..659ec9e 100644
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -172,6 +172,10 @@ __enable_mmu:
+ #ifdef CONFIG_CPU_ICACHE_DISABLE
+ 	bic	r0, r0, #CR_I
+ #endif
++#ifdef CONFIG_USER_L2_PLE
++	mov	r5, #3
++	mcr	p15, 0, r5, c11, c1, 0
++#endif
+ 	mov	r5, #(domain_val(DOMAIN_USER, DOMAIN_MANAGER) | \
+ 		      domain_val(DOMAIN_KERNEL, DOMAIN_MANAGER) | \
+ 		      domain_val(DOMAIN_TABLE, DOMAIN_MANAGER) | \
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index dd4698c..564ff7d 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -785,3 +785,11 @@ config ARM_L1_CACHE_SHIFT
+ 	int
+ 	default 6 if ARCH_OMAP3 || ARCH_S5PC1XX
+ 	default 5
++
++config USER_L2_PLE
++	bool "Enable userspace access to the L2 PLE"
++	depends on CPU_V7
++	default n
++	help
++	  Enable userspace access to the L2 preload engine (PLE) available
++	  in Cortex-A series ARM processors.
+-- 
+1.6.6.1
+

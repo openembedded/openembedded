@@ -1,0 +1,99 @@
+From b5fbb6c23770e496250e5cbdaad7b7b6120b86af Mon Sep 17 00:00:00 2001
+From: Tim Yamin <plasm@roo.me.uk>
+Date: Mon, 20 Apr 2009 20:29:11 -0700
+Subject: [PATCH 08/16] DSS2: OMAPFB: Translate X/Y coordinates for the video planes when rotating.
+
+When rotating the video planes, translate the X/Y coordinates such that
+a [0,0] from userspace always maps to the correct upper left corner of
+the display. This patch assumes that you rotate plane 0 before rotating
+plane 1. Patch also corrects the scaling parameters so that the video is
+displayed in the correct orientation (vertically, instead of horizontally)
+when rotating by 90 / 270 degrees.
+
+Signed-off-by: Tim Yamin <plasm@roo.me.uk>
+---
+ drivers/video/omap2/dss/dispc.c   |   16 ++++++++++++----
+ drivers/video/omap2/dss/manager.c |    2 +-
+ drivers/video/omap2/dss/overlay.c |   19 ++++++++++++++-----
+ 3 files changed, 27 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index c6d5fc5..1b38c49 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -1685,10 +1685,18 @@ static int _dispc_setup_plane(enum omap_plane plane,
+ 	_dispc_set_pic_size(plane, width, height);
+ 
+ 	if (plane != OMAP_DSS_GFX) {
+-		_dispc_set_scaling(plane, width, height,
+-				   out_width, out_height,
+-				   ilace, five_taps, fieldmode);
+-		_dispc_set_vid_size(plane, out_width, out_height);
++		if (rotation == 1 || rotation == 3) {
++			_dispc_set_scaling(plane, width, height,
++					   out_height, out_width,
++					   ilace, five_taps, fieldmode);
++			_dispc_set_vid_size(plane, out_height, out_width);
++		} else {
++			_dispc_set_scaling(plane, width, height,
++					   out_width, out_height,
++					   ilace, five_taps, fieldmode);
++			_dispc_set_vid_size(plane, out_width, out_height);
++		}
++
+ 		_dispc_set_vid_color_conv(plane, cconv);
+ 	}
+ 
+diff --git a/drivers/video/omap2/dss/manager.c b/drivers/video/omap2/dss/manager.c
+index 27d9c46..7c62dea 100644
+--- a/drivers/video/omap2/dss/manager.c
++++ b/drivers/video/omap2/dss/manager.c
+@@ -702,7 +702,7 @@ static int configure_overlay(enum omap_plane plane)
+ 	u16 outw, outh;
+ 	u16 x, y, w, h;
+ 	u32 paddr;
+-	int r;
++	int r, pos_x = 0, pos_y = 0;
+ 
+ 	DSSDBGF("%d", plane);
+ 
+diff --git a/drivers/video/omap2/dss/overlay.c b/drivers/video/omap2/dss/overlay.c
+index b7f9a73..0bc0592 100644
+--- a/drivers/video/omap2/dss/overlay.c
++++ b/drivers/video/omap2/dss/overlay.c
+@@ -374,6 +374,20 @@ int dss_check_overlay(struct omap_overlay *ovl, struct omap_dss_device *dssdev)
+ 			outh = info->out_height;
+ 	}
+ 
++	if ((ovl->supported_modes & info->color_mode) == 0) {
++		DSSERR("overlay doesn't support mode %d\n", info->color_mode);
++		return -EINVAL;
++	}
++
++	if (ovl->id != OMAP_DSS_GFX && (info->rotation == 1 ||
++	    info->rotation == 3)) {
++		if(outw > dh || outh > dw)
++			return -EINVAL;
++
++		/* If coordinates are invalid, they will be clipped later... */
++		return 0;
++	}
++
+ 	if (dw < info->pos_x + outw) {
+ 		DSSDBG("check_overlay failed 1: %d < %d + %d\n",
+ 				dw, info->pos_x, outw);
+@@ -386,11 +400,6 @@ int dss_check_overlay(struct omap_overlay *ovl, struct omap_dss_device *dssdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	if ((ovl->supported_modes & info->color_mode) == 0) {
+-		DSSERR("overlay doesn't support mode %d\n", info->color_mode);
+-		return -EINVAL;
+-	}
+-
+ 	return 0;
+ }
+ 
+-- 
+1.6.6.1
+

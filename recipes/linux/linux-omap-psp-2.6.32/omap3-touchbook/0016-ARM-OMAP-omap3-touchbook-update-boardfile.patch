@@ -1,0 +1,607 @@
+From d0e8e774fdc82320822246fae3167302730bd7e8 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Fri, 12 Mar 2010 11:49:16 +0100
+Subject: [PATCH 16/16] ARM: OMAP: omap3-touchbook: update boardfile
+
+---
+ arch/arm/mach-omap2/board-omap3touchbook.c |  408 +++++++++++++++++++++-------
+ 1 files changed, 313 insertions(+), 95 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3touchbook.c b/arch/arm/mach-omap2/board-omap3touchbook.c
+index fc3e03c..ec7830e 100644
+--- a/arch/arm/mach-omap2/board-omap3touchbook.c
++++ b/arch/arm/mach-omap2/board-omap3touchbook.c
+@@ -1,7 +1,7 @@
+ /*
+  * linux/arch/arm/mach-omap2/board-omap3touchbook.c
+  *
+- * Copyright (C) 2009 Always Innovating
++ * Copyright (C) 2009-2010 Always Innovating
+  *
+  * Modified from mach-omap2/board-omap3beagleboard.c
+  *
+@@ -33,6 +33,7 @@
+ #include <linux/spi/spi.h>
+ 
+ #include <linux/spi/ads7846.h>
++#include <linux/mma7455l.h>
+ 
+ #include <linux/regulator/machine.h>
+ #include <linux/i2c/twl.h>
+@@ -45,6 +46,7 @@
+ 
+ #include <plat/board.h>
+ #include <plat/common.h>
++#include <plat/display.h>
+ #include <plat/gpmc.h>
+ #include <plat/nand.h>
+ #include <plat/usb.h>
+@@ -60,18 +62,22 @@
+ 
+ #include <asm/setup.h>
+ 
++#include <plat/dmtimer.h>
++#include <linux/backlight.h>
+ 
+ #define GPMC_CS0_BASE  0x60
+ #define GPMC_CS_SIZE   0x30
+ 
+ #define NAND_BLOCK_SIZE		SZ_128K
+ 
++#define OMAP3_HJ_GPIO		56
+ #define OMAP3_AC_GPIO		136
++#define OMAP3_TS2_GPIO		154
+ #define OMAP3_TS_GPIO		162
+ #define TB_BL_PWM_TIMER		9
+ #define TB_KILL_POWER_GPIO	168
+ 
+-unsigned long touchbook_revision;
++unsigned long ai_revision = 2;
+ 
+ static struct mtd_partition omap3touchbook_nand_partitions[] = {
+ 	/* All the partition sizes are listed in terms of NAND block size */
+@@ -126,6 +132,103 @@ static struct platform_device omap3touchbook_nand_device = {
+ 	.resource	= &omap3touchbook_nand_resource,
+ };
+ 
++static int touchbook_enable_dvi(struct omap_dss_device *dssdev)
++{
++	if (dssdev->reset_gpio != -1)
++		gpio_set_value(dssdev->reset_gpio, 1);
++
++	return 0;
++}
++
++static void touchbook_disable_dvi(struct omap_dss_device *dssdev)
++{
++	if (dssdev->reset_gpio != -1)
++		gpio_set_value(dssdev->reset_gpio, 0);
++}
++
++static struct omap_dss_device touchbook_dvi_device = {
++	.type = OMAP_DISPLAY_TYPE_DPI,
++	.name = "dvi",
++	.driver_name = "generic_panel",
++	.phy.dpi.data_lines = 24,
++	.reset_gpio = 176,
++	.platform_enable = touchbook_enable_dvi,
++	.platform_disable = touchbook_disable_dvi,
++};
++
++static int touchbook_panel_enable_tv(struct omap_dss_device *dssdev)
++{
++#define ENABLE_VDAC_DEDICATED           0x03
++#define ENABLE_VDAC_DEV_GRP             0x20
++
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEDICATED,
++			TWL4030_VDAC_DEDICATED);
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEV_GRP, TWL4030_VDAC_DEV_GRP);
++
++	return 0;
++}
++
++static void touchbook_panel_disable_tv(struct omap_dss_device *dssdev)
++{
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEDICATED);
++	twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEV_GRP);
++}
++
++static struct omap_dss_device touchbook_tv_device = {
++	.name = "tv",
++	.driver_name = "venc",
++	.type = OMAP_DISPLAY_TYPE_VENC,
++	.phy.venc.type = OMAP_DSS_VENC_TYPE_SVIDEO,
++	.platform_enable = touchbook_panel_enable_tv,
++	.platform_disable = touchbook_panel_disable_tv,
++};
++
++static struct omap_dss_device *touchbook_dss_devices[] = {
++	&touchbook_dvi_device,
++	&touchbook_tv_device,
++};
++
++static struct omap_dss_board_info touchbook_dss_data = {
++	.num_devices = ARRAY_SIZE(touchbook_dss_devices),
++	.devices = touchbook_dss_devices,
++	.default_device = &touchbook_dvi_device,
++};
++
++static struct platform_device touchbook_dss_device = {
++	.name		= "omapdss",
++	.id		= -1,
++	.dev            = {
++		.platform_data = &touchbook_dss_data,
++	},
++};
++
++static struct regulator_consumer_supply touchbook_vdac_supply = {
++	.supply		= "vdda_dac",
++	.dev		= &touchbook_dss_device.dev,
++};
++
++static struct regulator_consumer_supply touchbook_vdvi_supply = {
++	.supply		= "vdds_dsi",
++	.dev		= &touchbook_dss_device.dev,
++};
++
++static void __init touchbook_display_init(void)
++{
++	int r;
++
++	r = gpio_request(touchbook_dvi_device.reset_gpio, "DVI reset");
++	if (r < 0) {
++		printk(KERN_ERR "Unable to get DVI reset GPIO\n");
++		return;
++	}
++
++	gpio_direction_output(touchbook_dvi_device.reset_gpio, 0);
++}
++
+ #include "sdram-micron-mt46h32m32lf-6.h"
+ 
+ static struct twl4030_hsmmc_info mmc[] = {
+@@ -137,15 +240,6 @@ static struct twl4030_hsmmc_info mmc[] = {
+ 	{}	/* Terminator */
+ };
+ 
+-static struct platform_device omap3_touchbook_lcd_device = {
+-	.name		= "omap3touchbook_lcd",
+-	.id		= -1,
+-};
+-
+-static struct omap_lcd_config omap3_touchbook_lcd_config __initdata = {
+-	.ctrl_name	= "internal",
+-};
+-
+ static struct regulator_consumer_supply touchbook_vmmc1_supply = {
+ 	.supply			= "vmmc",
+ };
+@@ -177,6 +271,7 @@ static int touchbook_twl_gpio_setup(struct device *dev,
+ 	 * power switch and overcurrent detect
+ 	 */
+ 
++#if 0
+ 	gpio_request(gpio + 1, "EHCI_nOC");
+ 	gpio_direction_input(gpio + 1);
+ 
+@@ -187,6 +282,7 @@ static int touchbook_twl_gpio_setup(struct device *dev,
+ 	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
+ 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
+ 
++#endif
+ 	return 0;
+ }
+ 
+@@ -201,16 +297,6 @@ static struct twl4030_gpio_platform_data touchbook_gpio_data = {
+ 	.setup		= touchbook_twl_gpio_setup,
+ };
+ 
+-static struct regulator_consumer_supply touchbook_vdac_supply = {
+-	.supply		= "vdac",
+-	.dev		= &omap3_touchbook_lcd_device.dev,
+-};
+-
+-static struct regulator_consumer_supply touchbook_vdvi_supply = {
+-	.supply		= "vdvi",
+-	.dev		= &omap3_touchbook_lcd_device.dev,
+-};
+-
+ /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
+ static struct regulator_init_data touchbook_vmmc1 = {
+ 	.constraints = {
+@@ -283,6 +369,10 @@ static struct twl4030_codec_data touchbook_codec_data = {
+ 	.audio = &touchbook_audio_data,
+ };
+ 
++static struct twl4030_madc_platform_data touchbook_madc_data = {
++	.irq_line	= 1,
++};
++
+ static struct twl4030_platform_data touchbook_twldata = {
+ 	.irq_base	= TWL4030_IRQ_BASE,
+ 	.irq_end	= TWL4030_IRQ_END,
+@@ -291,6 +381,7 @@ static struct twl4030_platform_data touchbook_twldata = {
+ 	.usb		= &touchbook_usb_data,
+ 	.gpio		= &touchbook_gpio_data,
+ 	.codec		= &touchbook_codec_data,
++	.madc		= &touchbook_madc_data,
+ 	.vmmc1		= &touchbook_vmmc1,
+ 	.vsim		= &touchbook_vsim,
+ 	.vdac		= &touchbook_vdac,
+@@ -310,10 +401,18 @@ static struct i2c_board_info __initdata touchBook_i2c_boardinfo[] = {
+ 	{
+ 		I2C_BOARD_INFO("bq27200", 0x55),
+ 	},
++	{
++		I2C_BOARD_INFO("chacha", 0x40),
++		.irq = OMAP_GPIO_IRQ(OMAP3_TS2_GPIO),
++	},
++	{
++		I2C_BOARD_INFO("ds1307", 0x68),
++	},
+ };
+ 
+ static int __init omap3_touchbook_i2c_init(void)
+ {
++	int ret;
+ 	/* Standard TouchBook bus */
+ 	omap_register_i2c_bus(1, 2600, touchbook_i2c_boardinfo,
+ 			ARRAY_SIZE(touchbook_i2c_boardinfo));
+@@ -322,53 +421,16 @@ static int __init omap3_touchbook_i2c_init(void)
+ 	omap_register_i2c_bus(3, 100, touchBook_i2c_boardinfo,
+ 			ARRAY_SIZE(touchBook_i2c_boardinfo));
+ 
+-	return 0;
+-}
+-
+-static void __init omap3_ads7846_init(void)
+-{
+-	if (gpio_request(OMAP3_TS_GPIO, "ads7846_pen_down")) {
+-		printk(KERN_ERR "Failed to request GPIO %d for "
+-				"ads7846 pen down IRQ\n", OMAP3_TS_GPIO);
+-		return;
++	ret = gpio_request(OMAP3_TS2_GPIO, "chacha");
++	if (ret < 0) {
++		printk(KERN_ERR "Failed to request GPIO %d for chacha IRQ\n", OMAP3_TS2_GPIO);
++		return 0;
+ 	}
++	gpio_direction_input(OMAP3_TS2_GPIO);
+ 
+-	gpio_direction_input(OMAP3_TS_GPIO);
+-	omap_set_gpio_debounce(OMAP3_TS_GPIO, 1);
+-	omap_set_gpio_debounce_time(OMAP3_TS_GPIO, 0xa);
++	return 0;
+ }
+ 
+-static struct ads7846_platform_data ads7846_config = {
+-	.x_min			= 100,
+-	.y_min			= 265,
+-	.x_max			= 3950,
+-	.y_max			= 3750,
+-	.x_plate_ohms		= 40,
+-	.pressure_max		= 255,
+-	.debounce_max		= 10,
+-	.debounce_tol		= 5,
+-	.debounce_rep		= 1,
+-	.gpio_pendown		= OMAP3_TS_GPIO,
+-	.keep_vref_on		= 1,
+-};
+-
+-static struct omap2_mcspi_device_config ads7846_mcspi_config = {
+-	.turbo_mode	= 0,
+-	.single_channel	= 1,	/* 0: slave, 1: master */
+-};
+-
+-static struct spi_board_info omap3_ads7846_spi_board_info[] __initdata = {
+-	{
+-		.modalias		= "ads7846",
+-		.bus_num		= 4,
+-		.chip_select		= 0,
+-		.max_speed_hz		= 1500000,
+-		.controller_data	= &ads7846_mcspi_config,
+-		.irq			= OMAP_GPIO_IRQ(OMAP3_TS_GPIO),
+-		.platform_data		= &ads7846_config,
+-	}
+-};
+-
+ static struct gpio_led gpio_leds[] = {
+ 	{
+ 		.name			= "touchbook::usr0",
+@@ -412,6 +474,7 @@ static struct gpio_keys_button gpio_buttons[] = {
+ 		.gpio			= 183,
+ 		.desc			= "power",
+ 		.wakeup			= 1,
++		.active_low		= 1,
+ 	},
+ };
+ 
+@@ -428,23 +491,8 @@ static struct platform_device keys_gpio = {
+ 	},
+ };
+ 
+-static struct omap_board_config_kernel omap3_touchbook_config[] __initdata = {
+-	{ OMAP_TAG_LCD,		&omap3_touchbook_lcd_config },
+-};
+-
+-#ifdef CONFIG_OMAP_MUX
+-static struct omap_board_mux board_mux[] __initdata = {
+-	{ .reg_offset = OMAP_MUX_TERMINATOR },
+-};
+-#else
+-#define board_mux	NULL
+-#endif
+-
+ static void __init omap3_touchbook_init_irq(void)
+ {
+-	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+-	omap_board_config = omap3_touchbook_config;
+-	omap_board_config_size = ARRAY_SIZE(omap3_touchbook_config);
+ 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
+ 			     mt46h32m32lf6_sdrc_params, omap35x_mpu_rate_table,
+ 			     omap35x_dsp_rate_table, omap35x_l3_rate_table);
+@@ -456,9 +504,9 @@ static void __init omap3_touchbook_init_irq(void)
+ }
+ 
+ static struct platform_device *omap3_touchbook_devices[] __initdata = {
+-	&omap3_touchbook_lcd_device,
+ 	&leds_gpio,
+ 	&keys_gpio,
++	&touchbook_dss_device,
+ };
+ 
+ static void __init omap3touchbook_flash_init(void)
+@@ -500,7 +548,7 @@ static void __init omap3touchbook_flash_init(void)
+ 	}
+ }
+ 
+-static struct ehci_hcd_omap_platform_data ehci_pdata __initconst = {
++static struct ehci_hcd_omap_platform_data ehci_pdata __initdata = {
+ 
+ 	.port_mode[0] = EHCI_HCD_OMAP_MODE_PHY,
+ 	.port_mode[1] = EHCI_HCD_OMAP_MODE_PHY,
+@@ -512,6 +560,170 @@ static struct ehci_hcd_omap_platform_data ehci_pdata __initconst = {
+ 	.reset_gpio_port[2]  = -EINVAL
+ };
+ 
++#ifdef CONFIG_OMAP_MUX
++static struct omap_board_mux board_mux[] __initdata = {
++	{ .reg_offset = OMAP_MUX_TERMINATOR },
++};
++#else
++#define board_mux	NULL
++#endif
++
++static struct ads7846_platform_data ads7846_config = {
++	.x_min			= 100,
++	.y_min			= 265,
++	.x_max			= 3950,
++	.y_max			= 3750,
++	.x_plate_ohms		= 40,
++	.pressure_max		= 255,
++	.debounce_max		= 10,
++	.debounce_tol		= 5,
++	.debounce_rep		= 1,
++	.gpio_pendown		= OMAP3_TS_GPIO,
++	.keep_vref_on		= 1,
++};
++
++static struct omap2_mcspi_device_config ads7846_mcspi_config = {
++	.turbo_mode	= 0,
++	.single_channel	= 1,	/* 0: slave, 1: master */
++};
++
++static struct spi_board_info omap3_ads7846_spi_board_info[] __initdata = {
++	{
++		.modalias		= "ads7846",
++		.bus_num		= 4,
++		.chip_select		= 0,
++		.max_speed_hz		= 1500000,
++		.controller_data	= &ads7846_mcspi_config,
++		.irq			= OMAP_GPIO_IRQ(OMAP3_TS_GPIO),
++		.platform_data		= &ads7846_config,
++	}
++};
++
++static void __init omap3_ads7846_init(void)
++{
++	if (gpio_request(OMAP3_TS_GPIO, "ads7846_pen_down")) {
++		printk(KERN_ERR "Failed to request GPIO %d for "
++				"ads7846 pen down IRQ\n", OMAP3_TS_GPIO);
++		return;
++	}
++
++	gpio_direction_input(OMAP3_TS_GPIO);
++	omap_set_gpio_debounce(OMAP3_TS_GPIO, 1);
++	omap_set_gpio_debounce_time(OMAP3_TS_GPIO, 0xa);
++}
++
++static struct mma7455l_platform_data mma7455l_config = {
++	.calibration_x = -4,
++	.calibration_y = 28,
++	.calibration_z = -28,
++};
++
++static struct omap2_mcspi_device_config mma7455l_mcspi_config = {
++	.turbo_mode	= 0,
++	.single_channel	= 1,	/* 0: slave, 1: master */
++};
++
++static struct spi_board_info omap3_mma7455l_spi_board_info[] __initdata = {
++	{
++		.modalias		= "mma7455l",
++		.bus_num		= 3,
++		.chip_select		= 0,
++		.max_speed_hz		= 200000,
++		.irq			= OMAP_GPIO_IRQ(OMAP3_AC_GPIO),
++		.controller_data	= &mma7455l_mcspi_config, //(void *) 135,
++		.platform_data		= &mma7455l_config,
++	}
++};
++
++static void __init omap3_mma7455l_init(void)
++{
++	int ret;
++
++	ret = gpio_request(OMAP3_AC_GPIO, "mma7455l");
++	if (ret < 0) {
++		printk(KERN_ERR "Failed to request GPIO %d for mma7455l IRQ\n", OMAP3_AC_GPIO);
++		return;
++	}
++
++	gpio_direction_input(OMAP3_AC_GPIO);
++}
++
++static int touchbook_backlight_brightness = 50;
++static struct omap_dm_timer *touchbook_backlight_pwm;
++
++static int touchbook_backlight_read(struct backlight_device *bd)
++{
++	return touchbook_backlight_brightness;
++}
++
++static int touchbook_backlight_update(struct backlight_device *bd)
++{
++	int value = bd->props.brightness;
++	touchbook_backlight_brightness = value;
++
++	/* Frequency calculation:
++	   - For 200Hz PWM, you want to load -164 (=> -32768Hz / 200Hz).
++	   - Minimum duty cycle for the backlight is 15%.
++	   - You have (164*0.85) => ~140 levels of brightness.
++	*/
++
++	/* Halve input brightness */
++	if (!bd->props.boost)
++		value /= 2;
++
++	/* For maximum brightness, just stop the timer... */
++	if(value != bd->props.max_brightness)
++	{
++		/* Load the appropriate value for 200Hz PWM */
++		u32 period = clk_get_rate(omap_dm_timer_get_fclk(touchbook_backlight_pwm)) / bd->props.pwm_fq;
++
++		/* Minimum duty cycle is 15% */
++		u32 minimum = (period * bd->props.min_duty) / 100;
++		u32 maximum = (period * 17) / 20;
++
++		/* Work out match value */
++		u32 match = (maximum * value) / 100;
++
++		/* Start... */
++		omap_dm_timer_set_load(touchbook_backlight_pwm, 1, 0xFFFFFFFF - period - 1);
++		omap_dm_timer_set_match(touchbook_backlight_pwm, 1, 0xFFFFFFFF - minimum - match);
++		omap_dm_timer_write_counter(touchbook_backlight_pwm, -1);
++		omap_dm_timer_start(touchbook_backlight_pwm);
++	}
++	else
++		omap_dm_timer_stop(touchbook_backlight_pwm);
++
++
++	return 0;
++}
++
++static struct backlight_ops touchbook_backlight_properties = {
++	.get_brightness = touchbook_backlight_read,
++	.update_status = touchbook_backlight_update,
++};
++
++static void __init omap3_touchbook_backlight_init(void)
++{
++	static struct backlight_device *bd;
++	bd = backlight_device_register("touchbook", NULL, NULL, &touchbook_backlight_properties);
++
++	if(bd)
++	{
++		touchbook_backlight_pwm = omap_dm_timer_request_specific(TB_BL_PWM_TIMER);
++		omap_dm_timer_enable(touchbook_backlight_pwm);
++		omap_dm_timer_set_source(touchbook_backlight_pwm, OMAP_TIMER_SRC_SYS_CLK);
++		omap_dm_timer_set_pwm(touchbook_backlight_pwm, 1, 1, OMAP_TIMER_TRIGGER_OVERFLOW_AND_COMPARE);
++
++		bd->props.max_brightness = 100;
++		bd->props.brightness = touchbook_backlight_brightness;
++		bd->props.boost = 0;
++		bd->props.min_duty = 15;
++		bd->props.pwm_fq = 200;
++	}
++
++	touchbook_backlight_update(bd);
++}
++
+ static void omap3_touchbook_poweroff(void)
+ {
+ 	int r;
+@@ -525,33 +737,26 @@ static void omap3_touchbook_poweroff(void)
+ 	gpio_direction_output(TB_KILL_POWER_GPIO, 0);
+ }
+ 
+-static void __init early_touchbook_revision(char **p)
++static int __init ai_revision_instance(char *str)
+ {
+-	if (!*p)
+-		return;
++	if (!str)
++		return -EINVAL;
++
++	ai_revision = simple_strtoul(str, NULL, 10);
+ 
+-	strict_strtoul(*p, 10, &touchbook_revision);
++	return 0;
+ }
+-__early_param("tbr=", early_touchbook_revision);
+ 
+ static void __init omap3_touchbook_init(void)
+ {
+ 	pm_power_off = omap3_touchbook_poweroff;
+ 
++	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+ 	omap3_touchbook_i2c_init();
+ 	platform_add_devices(omap3_touchbook_devices,
+ 			ARRAY_SIZE(omap3_touchbook_devices));
+ 	omap_serial_init();
+ 
+-	omap_mux_init_gpio(170, OMAP_PIN_INPUT);
+-	gpio_request(176, "DVI_nPD");
+-	/* REVISIT leave DVI powered down until it's needed ... */
+-	gpio_direction_output(176, true);
+-
+-	/* Touchscreen and accelerometer */
+-	spi_register_board_info(omap3_ads7846_spi_board_info,
+-				ARRAY_SIZE(omap3_ads7846_spi_board_info));
+-	omap3_ads7846_init();
+ 	usb_musb_init();
+ 	usb_ehci_init(&ehci_pdata);
+ 	omap3touchbook_flash_init();
+@@ -559,6 +764,17 @@ static void __init omap3_touchbook_init(void)
+ 	/* Ensure SDRC pins are mux'd for self-refresh */
+ 	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
+ 	omap_mux_init_signal("sdrc_cke1", OMAP_PIN_OUTPUT);
++
++	touchbook_display_init();
++	omap3_touchbook_backlight_init();
++
++	/* Touchscreen and accelerometer */
++	spi_register_board_info(omap3_ads7846_spi_board_info,
++				ARRAY_SIZE(omap3_ads7846_spi_board_info));
++	spi_register_board_info(omap3_mma7455l_spi_board_info,
++				ARRAY_SIZE(omap3_mma7455l_spi_board_info));
++	omap3_ads7846_init();
++	omap3_mma7455l_init();
+ }
+ 
+ static void __init omap3_touchbook_map_io(void)
+@@ -567,6 +783,8 @@ static void __init omap3_touchbook_map_io(void)
+ 	omap2_map_common_io();
+ }
+ 
++early_param("air", ai_revision_instance);
++
+ MACHINE_START(TOUCHBOOK, "OMAP3 touchbook Board")
+ 	/* Maintainer: Gregoire Gentil - http://www.alwaysinnovating.com */
+ 	.phys_io	= 0x48000000,
+-- 
+1.6.6.1
+

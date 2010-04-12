@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# We start a system wide gstd daemon
+if ! pidof gstd  > /dev/null; then
+    { gstd 2>&1 | logger -t GSTD & } ; 
+fi
+
+
+amixer -q sset 'HP DAC' 127
+amixer -q sset 'Line DAC' 127
+
+#If we detect a mouse, use it, otherwise configure the touchcreen
+if ! grep -q mouse1 /proc/bus/input/devices ; then
+    if grep -q Touchscreen /proc/bus/input/devices && [ -c /dev/input/touchscreen0 ] ; then
+        export TSLIB_TSDEVICE=/dev/input/touchscreen0
+        if [ ! -f /etc/pointercal ] ; then
+            # We need to calibrate the screen
+            ts_calibrate
+        fi
+        echo -e "\nFreonDemo using touchscreen"
+        export QWS_MOUSE_PROTO=tslib:/dev/input/touchscreen0
+    else
+        echo "ERROR, no mouse or touchscreen detected for FreonDemo"
+        exit 1;
+    fi
+else
+    echo -e "\nFreonDemo using mouse input"
+    export QWS_MOUSE_PROTO=MouseMan:/dev/input/mouse1
+fi
+
+#Otherwise try to use the touchscren
+/usr/libexec/FreonDemo -qws &

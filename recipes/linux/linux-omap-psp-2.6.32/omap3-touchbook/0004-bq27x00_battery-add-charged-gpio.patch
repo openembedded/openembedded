@@ -1,0 +1,65 @@
+From e1869b08e330d50fd0b57cf0f9ee86eb24d83ec3 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Fri, 12 Mar 2010 11:42:45 +0100
+Subject: [PATCH 04/16] bq27x00_battery: add charged gpio
+
+---
+ drivers/power/bq27x00_battery.c |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/power/bq27x00_battery.c b/drivers/power/bq27x00_battery.c
+index 6935bb6..4b80f59 100644
+--- a/drivers/power/bq27x00_battery.c
++++ b/drivers/power/bq27x00_battery.c
+@@ -28,6 +28,7 @@
+ 
+ #define DRIVER_VERSION			"1.0.0"
+ 
++#define BQ27x00_REG_MODE		0x00
+ #define BQ27x00_REG_TEMP		0x06
+ #define BQ27x00_REG_VOLT		0x08
+ #define BQ27x00_REG_RSOC		0x0B /* Relative State-of-Charge */
+@@ -65,6 +66,7 @@ static enum power_supply_property bq27x00_battery_props[] = {
+ 	POWER_SUPPLY_PROP_CURRENT_NOW,
+ 	POWER_SUPPLY_PROP_CAPACITY,
+ 	POWER_SUPPLY_PROP_TEMP,
++	POWER_SUPPLY_PROP_ONLINE,
+ };
+ 
+ /*
+@@ -83,6 +85,22 @@ static int bq27x00_read(u8 reg, int *rt_value, int b_single,
+ }
+ 
+ /*
++ * Return the GPIO status (0 or 1)
++ * Or < 0 if something fails.
++ */
++static int bq27x00_gpio(struct bq27x00_device_info *di)
++{
++	int ret;
++	int gpio = 0;
++
++	ret = bq27x00_read(BQ27x00_REG_MODE, &gpio, 0, di);
++	if (ret)
++		return ret;
++
++	return (gpio & 0x40) >> 6;
++}
++
++/*
+  * Return the battery temperature in Celsius degrees
+  * Or < 0 if something fails.
+  */
+@@ -184,6 +202,9 @@ static int bq27x00_battery_get_property(struct power_supply *psy,
+ 	case POWER_SUPPLY_PROP_TEMP:
+ 		val->intval = bq27x00_battery_temperature(di);
+ 		break;
++	case POWER_SUPPLY_PROP_ONLINE:
++		val->intval = bq27x00_gpio(di);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+1.6.6.1
+

@@ -1,0 +1,57 @@
+#! /bin/sh
+
+set -e
+
+DAEMON=/usr/bin/freondemo
+NAME=freondemo
+PIDFILE=/var/run/freondemo.pid
+DESC="Freon Demo"
+PARAMS=""
+
+test -x $DAEMON || exit 0
+
+start_it_up()
+{
+  if [ -e $PIDFILE ]; then
+    PIDDIR=/proc/$(cat $PIDFILE)
+    if [ -d ${PIDDIR} -a  "$(readlink -f ${PIDDIR}/exe)" = "${DAEMON}" ]; then 
+      echo "$DESC already started; not starting."
+    else
+      echo "Removing stale PID file $PIDFILE."
+      rm -f $PIDFILE
+    fi
+  fi
+
+  echo -n "Starting $DESC: "
+  start-stop-daemon --start --exec $DAEMON -- $PARAMS
+  pidof FreonDemo > $PIDFILE
+  echo "$NAME."
+}
+
+shut_it_down()
+{
+  echo -n "Stopping $DESC: "
+  start-stop-daemon --stop --oknodo --pidfile $PIDFILE
+  echo "$NAME."
+  rm -f $PIDFILE
+}
+
+case "$1" in
+  start)
+    start_it_up
+  ;;
+  stop)
+    shut_it_down
+  ;;
+  restart)
+    shut_it_down
+    sleep 1
+    start_it_up
+  ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|restart}" >&2
+    exit 1
+  ;;
+esac
+
+exit 0

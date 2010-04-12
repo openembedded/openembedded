@@ -1,4 +1,4 @@
-require linux.inc
+require multi-kernel.inc
 
 DESCRIPTION = "Linux kernel for DaVinci processors"
 KERNEL_IMAGETYPE = "uImage"
@@ -22,37 +22,35 @@ ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
 ARAGO_DM_BR  = "r32"
 ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH} "
 
-SRCREV_dm355-evm           = ${ARAGO_DM_REV}
-SRCREV_dm365-evm           = ${ARAGO_DM_REV}
-SRCREV_dm6446-evm          = ${ARAGO_DM_REV}
-SRCREV_dm6467-evm          = ${ARAGO_DM_REV}
-SRCREV_dm6467t-evm         = ${ARAGO_DM_REV}
+SRCREV_dm355           = ${ARAGO_DM_REV}
+SRCREV_dm365           = ${ARAGO_DM_REV}
+SRCREV_dm6446          = ${ARAGO_DM_REV}
+SRCREV_dm6467          = ${ARAGO_DM_REV}
 
-PV_dm355-evm               = ${ARAGO_DM_PV}
-PV_dm365-evm               = ${ARAGO_DM_PV}
-PV_dm6446-evm              = ${ARAGO_DM_PV}
-PV_dm6467-evm              = ${ARAGO_DM_PV}
-PV_dm6467t-evm             = ${ARAGO_DM_PV}
+PV_dm355               = ${ARAGO_DM_PV}
+PV_dm365               = ${ARAGO_DM_PV}
+PV_dm6446              = ${ARAGO_DM_PV}
+PV_dm6467              = ${ARAGO_DM_PV}
 
-BRANCH_dm355-evm           = ${ARAGO_DM_BR}
-BRANCH_dm365-evm           = ${ARAGO_DM_BR}
-BRANCH_dm6446-evm          = ${ARAGO_DM_BR}
-BRANCH_dm6467-evm          = ${ARAGO_DM_BR}
-BRANCH_dm6467t-evm         = ${ARAGO_DM_BR}
+BRANCH_dm355           = ${ARAGO_DM_BR}
+BRANCH_dm365           = ${ARAGO_DM_BR}
+BRANCH_dm6446          = ${ARAGO_DM_BR}
+BRANCH_dm6467          = ${ARAGO_DM_BR}
 
-SRC_URI_append_dm355-evm   = ${ARAGO_DM_URI}
-SRC_URI_append_dm365-evm   = ${ARAGO_DM_URI}
-SRC_URI_append_dm6446-evm  = ${ARAGO_DM_URI}
-SRC_URI_append_dm6467-evm  = ${ARAGO_DM_URI}
-SRC_URI_append_dm6467t-evm = ${ARAGO_DM_URI}
+SRC_URI_append_dm355   = ${ARAGO_DM_URI}
+SRC_URI_append_dm365   = ${ARAGO_DM_URI}
+SRC_URI_append_dm6446  = ${ARAGO_DM_URI}
+SRC_URI_append_dm6467  = ${ARAGO_DM_URI}
 
-# OMAPL1 DA8xx/L1xx
-# da830-omapl137-evm/da850-omapl138-evm/hawkboard OMAPL1 PSP 03.20.00.08 (Beta)
+
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
-ARAGO_L1_REV = "e3939e092ce59a6906bf8869a3c7d40314c02eef"
-ARAGO_L1_PV  = "2.6.31+2.6.32-rc6-${PR}+gitr${SRCPV}"
-ARAGO_L1_URI = "git://arago-project.org/git/people/sekhar/linux-omapl1.git;protocol=git;branch=${BRANCH} "
+# OMAPL tracking master branch
+
+ARAGO_L1_REV = "76fcecb83d562608bcebba44774f92b6c62d3593"
+ARAGO_L1_BR  = "master"
+ARAGO_L1_PV  = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
+ARAGO_L1_URI = "git://arago-project.org/git/projects/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
 SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}
 SRCREV_da850-omapl138-evm         = ${ARAGO_L1_REV}
@@ -62,20 +60,20 @@ PV_da830-omapl137-evm             = ${ARAGO_L1_PV}
 PV_da850-omapl138-evm             = ${ARAGO_L1_PV}
 PV_hawkboard                      = ${ARAGO_L1_PV}
 
+BRANCH_da830-omapl137-evm         = ${ARAGO_L1_BR}
+BRANCH_da850-omapl138-evm         = ${ARAGO_L1_BR}
+BRANCH_hawkboard                  = ${ARAGO_L1_BR}
+
 SRC_URI_append_da830-omapl137-evm = ${ARAGO_L1_URI}
 SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
-                                     file://0001-CheckRegisterForDCDC.patch;patch=1 \
-                                     file://0002-DefDcDcTiedhigh.patch;patch=1 \
-                                     file://da850_omapl138_opp456mhz.patch;patch=1 \
-                                     file://da850_omapl138_opp408mhz.patch;patch=1 \
-                                     file://da850_omapl138_opp456mhz_increaseDcDc3.patch;patch=1"
-SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
-                                     file://da850_omapl138_opp456mhz.patch;patch=1 \
-                                     file://patch_hawk.diff;patch=1"
+                                     "
 
-do_configure_prepend_hawkboard() {
-	sed -i s:2157:2495:g ${S}/arch/arm/tools/mach-types
+SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
+                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch;patch=1 "
+
+do_configure_prepend_dm355-leopard() {
+	sed -i s:2138:1381:g ${S}/arch/arm/tools/mach-types
 }

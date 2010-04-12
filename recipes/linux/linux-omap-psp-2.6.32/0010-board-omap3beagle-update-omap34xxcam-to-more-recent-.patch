@@ -1,0 +1,84 @@
+From 035bb20e5f119fab09686b30d9d57979462bbca6 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
+Date: Thu, 11 Feb 2010 22:59:19 +0100
+Subject: [PATCH 10/42] board-omap3beagle: update omap34xxcam to more recent v4l-int-device-api
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   20 +++++++++++---------
+ 1 files changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 91d835a..d09a676 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -461,6 +461,7 @@ static struct isp_interface_config mt9t111_if_config = {
+ 	.strobe			= 0x0,
+ 	.prestrobe		= 0x0,
+ 	.shutter		= 0x0,
++	.wait_hs_vs		= 2,
+ 	.u.par.par_bridge	= 0x1,
+ 	.u.par.par_clk_pol	= 0x0,
+ };
+@@ -513,14 +514,13 @@ static int mt9t111_ifparm(struct v4l2_ifparm *p)
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_VIDEO_OMAP3_CAM) || defined(CONFIG_VIDEO_OMAP3_CAM_MODULE)
++#if defined(CONFIG_VIDEO_OMAP3)
+ static struct omap34xxcam_hw_config mt9t111_decoder_hwc = {
+ 	.dev_index		= 0,
+ 	.dev_minor		= 0,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+-	.u.sensor.xclk		= OMAP34XXCAM_XCLK_NONE,
+ 	.u.sensor.sensor_isp	= 1,
+-};
++        .u.sensor.capture_mem   = PAGE_ALIGN(2048*1536*2*4),};
+ #endif
+ 
+ /**
+@@ -530,16 +530,16 @@ static struct omap34xxcam_hw_config mt9t111_decoder_hwc = {
+  *
+  * @return result of operation - 0 is success
+  */
+-static int mt9t111_set_prv_data(void *priv)
++static int mt9t111_set_prv_data(struct v4l2_int_device *s, void *priv)
+ {
+-#if defined(CONFIG_VIDEO_OMAP3_CAM) || defined(CONFIG_VIDEO_OMAP3_CAM_MODULE)
++#if defined(CONFIG_VIDEO_OMAP3)
+ 	struct omap34xxcam_hw_config *hwc = priv;
+ 
+ 	if (priv == NULL)
+ 		return -EINVAL;
+ 
+ 	hwc->u.sensor.sensor_isp = mt9t111_decoder_hwc.u.sensor.sensor_isp;
+-	hwc->u.sensor.xclk = mt9t111_decoder_hwc.u.sensor.xclk;
++	hwc->u.sensor.capture_mem = mt9t111_decoder_hwc.u.sensor.capture_mem;
+ 	hwc->dev_index = mt9t111_decoder_hwc.dev_index;
+ 	hwc->dev_minor = mt9t111_decoder_hwc.dev_minor;
+ 	hwc->dev_type = mt9t111_decoder_hwc.dev_type;
+@@ -556,8 +556,10 @@ static int mt9t111_set_prv_data(void *priv)
+  *
+  * @return result of operation - 0 is success
+  */
+-static int mt9t111_power_set(enum v4l2_power power)
++static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ {
++	struct omap34xxcam_videodev *vdev = s->u.slave->master->priv;
++
+ 	switch (power) {
+ 	case V4L2_POWER_OFF:
+ 		/* Disable mux for TVP5146 decoder data path */
+@@ -573,8 +575,8 @@ static int mt9t111_power_set(enum v4l2_power power)
+ //		if (omap3evmdc_set_mux(MUX_CAMERA_SENSOR, ENABLE_MUX))
+ //			return -ENODEV;
+ 
+-#if defined(CONFIG_VIDEO_OMAP3_CAM) || defined(CONFIG_VIDEO_OMAP3_CAM_MODULE)
+-		isp_configure_interface(&mt9t111_if_config);
++#if defined(CONFIG_VIDEO_OMAP3)
++		isp_configure_interface(vdev->cam->isp, &mt9t111_if_config);
+ #endif
+ 		break;
+ 
+-- 
+1.6.6.1
+

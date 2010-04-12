@@ -1,0 +1,36 @@
+From 8fd2a68e8e2eb235ce5ea9fe9e5adc22999f9161 Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Thu, 4 Jun 2009 10:43:48 +0400
+Subject: [PATCH 4/7] Disallowing non-power-of-2 ring size, proper resource usage
+
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ drivers/net/macb.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/macb.c b/drivers/net/macb.c
+index 64839ad..220c66a 100644
+--- a/drivers/net/macb.c
++++ b/drivers/net/macb.c
+@@ -49,7 +49,7 @@
+ 	 (bp)->tx_tail - (bp)->tx_head - TX_RING_GAP(bp))
+ 
+ #define NEXT_TX(bp, n)         (((n) + 1) % ((bp)->tx_ring_size)) 
+-#define NEXT_RX(n)             (((n) + 1) % (RX_RING_SIZE)) 
++#define NEXT_RX(n)             (((n) + 1) & (RX_RING_SIZE - 1)) 
+  
+ 
+ /* minimum number of free TX descriptors before waking up TX process */
+@@ -1263,7 +1263,7 @@ static int __init macb_probe(struct platform_device *pdev)
+ 	smem = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 	if (smem) {
+ 		bp->smem_start = smem->start;
+-		bp->smem_size  = smem->end - smem->start + 1;
++		bp->smem_size  = resource_size(smem);
+ 		bp->tx_ring_size = bp->smem_size / (TX_MAX_PKT_SIZE +
+ 				sizeof(struct dma_desc));
+ 	}
+-- 
+1.6.3.3
+

@@ -1,0 +1,133 @@
+From 876c73557fcf9f31b4d8c23b163fd7675164033d Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
+Date: Thu, 11 Feb 2010 21:34:00 +0100
+Subject: [PATCH 15/42] ISP: add some more from Leopard imaging patch
+
+---
+ drivers/media/video/isp/isppreview.c |   16 ++++++++-
+ include/media/v4l2-int-device.h      |   58 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/video/isp/isppreview.c b/drivers/media/video/isp/isppreview.c
+index 5494efc..85ee25d 100644
+--- a/drivers/media/video/isp/isppreview.c
++++ b/drivers/media/video/isp/isppreview.c
+@@ -79,13 +79,26 @@ static struct ispprev_rgbtorgb flr_rgb2rgb = {
+ 	{0x0000, 0x0000, 0x0000}
+ };
+ 
++static struct ispprev_rgbtorgb unity_rgb2rgb = {
++	{	/* RGB-RGB Matrix */
++		{0x0100, 0x0000, 0x0000},
++		{0x0000, 0x0100, 0x0000},
++		{0x0000, 0x0000, 0x0100}
++	},	/* RGB Offset */
++	{0x0000, 0x0000, 0x0000}
++};
++
+ /* Default values in Office Flourescent Light for RGB to YUV Conversion*/
+ static struct ispprev_csc flr_prev_csc[] = {
+ 	{
+ 		{	/* CSC Coef Matrix */
+-			{66, 129, 25},
++/*			{66, 129, 25},
+ 			{-38, -75, 112},
+ 			{112, -94 , -18}
++*/
++			{0x04C, 0x098, 0x01C},	
++			{0x3D4, 0x3AC, 0x080},
++			{0x080, 0x39E, 0x3EC}
+ 		},	/* CSC Offset */
+ 		{0x0, 0x0, 0x0}
+ 	},
+@@ -107,7 +120,6 @@ static struct ispprev_csc flr_prev_csc[] = {
+ 	}
+ };
+ 
+-
+ /* Default values in Office Flourescent Light for CFA Gradient*/
+ #define FLR_CFA_GRADTHRS_HORZ	0x28
+ #define FLR_CFA_GRADTHRS_VERT	0x28
+diff --git a/include/media/v4l2-int-device.h b/include/media/v4l2-int-device.h
+index ed32d3f..ce415ec 100644
+--- a/include/media/v4l2-int-device.h
++++ b/include/media/v4l2-int-device.h
+@@ -113,6 +113,8 @@ enum v4l2_if_type {
+ 	 * on certain image sensors.
+ 	 */
+ 	V4L2_IF_TYPE_BT656,
++	V4L2_IF_TYPE_YCbCr,
++	V4L2_IF_TYPE_RAW,
+ };
+ 
+ enum v4l2_if_type_bt656_mode {
+@@ -159,10 +161,66 @@ struct v4l2_if_type_bt656 {
+ 	u32 clock_curr;
+ };
+ 
++struct v4l2_if_type_ycbcr {
++	/*
++	 * 0: Frame begins when vsync is high.
++	 * 1: Frame begins when vsync changes from low to high.
++	 */
++	unsigned frame_start_on_rising_vs:1;
++	/* Use Bt synchronisation codes for sync correction. */
++	unsigned bt_sync_correct:1;
++	/* Swap every two adjacent image data elements. */
++	unsigned swap:1;
++	/* Inverted latch clock polarity from slave. */
++	unsigned latch_clk_inv:1;
++	/* Hs polarity. 0 is active high, 1 active low. */
++	unsigned nobt_hs_inv:1;
++	/* Vs polarity. 0 is active high, 1 active low. */
++	unsigned nobt_vs_inv:1;
++	/* Minimum accepted bus clock for slave (in Hz). */
++	u32 clock_min;
++	/* Maximum accepted bus clock for slave. */
++	u32 clock_max;
++	/*
++	 * Current wish of the slave. May only change in response to
++	 * ioctls that affect image capture.
++	 */
++	u32 clock_curr;
++};
++
++struct v4l2_if_type_raw {
++	/*
++	 * 0: Frame begins when vsync is high.
++	 * 1: Frame begins when vsync changes from low to high.
++	 */
++	unsigned frame_start_on_rising_vs:1;
++	/* Use Bt synchronisation codes for sync correction. */
++	unsigned bt_sync_correct:1;
++	/* Swap every two adjacent image data elements. */
++	unsigned swap:1;
++	/* Inverted latch clock polarity from slave. */
++	unsigned latch_clk_inv:1;
++	/* Hs polarity. 0 is active high, 1 active low. */
++	unsigned nobt_hs_inv:1;
++	/* Vs polarity. 0 is active high, 1 active low. */
++	unsigned nobt_vs_inv:1;
++	/* Minimum accepted bus clock for slave (in Hz). */
++	u32 clock_min;
++	/* Maximum accepted bus clock for slave. */
++	u32 clock_max;
++	/*
++	 * Current wish of the slave. May only change in response to
++	 * ioctls that affect image capture.
++	 */
++	u32 clock_curr;
++};
++
+ struct v4l2_ifparm {
+ 	enum v4l2_if_type if_type;
+ 	union {
+ 		struct v4l2_if_type_bt656 bt656;
++		struct v4l2_if_type_ycbcr ycbcr;
++		struct v4l2_if_type_raw raw;
+ 	} u;
+ };
+ 
+-- 
+1.6.6.1
+

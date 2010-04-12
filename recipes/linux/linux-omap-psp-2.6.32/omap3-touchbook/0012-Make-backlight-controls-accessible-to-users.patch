@@ -1,0 +1,25 @@
+From 94ea406045ee596951204736fd5bdf454c574343 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregroire@gentil.com>
+Date: Fri, 12 Mar 2010 14:41:05 +0100
+Subject: [PATCH 12/16] Make backlight controls accessible to users
+
+---
+ drivers/video/backlight/backlight.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/backlight/backlight.c b/drivers/video/backlight/backlight.c
+index 6615ac7..7898707 100644
+--- a/drivers/video/backlight/backlight.c
++++ b/drivers/video/backlight/backlight.c
+@@ -228,7 +228,7 @@ static void bl_device_release(struct device *dev)
+ 
+ static struct device_attribute bl_device_attributes[] = {
+ 	__ATTR(bl_power, 0644, backlight_show_power, backlight_store_power),
+-	__ATTR(brightness, 0644, backlight_show_brightness,
++	__ATTR(brightness, 0666, backlight_show_brightness,
+ 		     backlight_store_brightness),
+ 	__ATTR(actual_brightness, 0444, backlight_show_actual_brightness,
+ 		     NULL),
+-- 
+1.6.6.1
+

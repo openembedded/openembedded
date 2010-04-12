@@ -1,0 +1,25 @@
+From b0247dd9c5004da683efeab8466f4ea2e2b133aa Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Tue, 19 Jan 2010 20:00:46 -0800
+Subject: [PATCH 23/42] netdev: rt73usb - add vendor/device ID for Ceiva Wireless PartNo 81726-00702
+
+---
+ drivers/net/wireless/rt2x00/rt73usb.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/net/wireless/rt2x00/rt73usb.c b/drivers/net/wireless/rt2x00/rt73usb.c
+index ced3b6a..719ac0a 100644
+--- a/drivers/net/wireless/rt2x00/rt73usb.c
++++ b/drivers/net/wireless/rt2x00/rt73usb.c
+@@ -2357,6 +2357,8 @@ static struct usb_device_id rt73usb_device_table[] = {
+ 	{ USB_DEVICE(0x0411, 0x00f4), USB_DEVICE_DATA(&rt73usb_ops) },
+ 	{ USB_DEVICE(0x0411, 0x0116), USB_DEVICE_DATA(&rt73usb_ops) },
+ 	{ USB_DEVICE(0x0411, 0x0119), USB_DEVICE_DATA(&rt73usb_ops) },
++	/* Ceiva Wireless PartNo 81726-00702 */
++	{ USB_DEVICE(0x178d, 0x02be), USB_DEVICE_DATA(&rt73usb_ops) },
+ 	/* CNet */
+ 	{ USB_DEVICE(0x1371, 0x9022), USB_DEVICE_DATA(&rt73usb_ops) },
+ 	{ USB_DEVICE(0x1371, 0x9032), USB_DEVICE_DATA(&rt73usb_ops) },
+-- 
+1.6.6.1
+

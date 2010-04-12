@@ -1,0 +1,44 @@
+diff -uNr cs1omapl138_1_00_00/packages/ti/sdo/server/cs/codec.cfg cs1omapl138_1_00_00_fix/packages/ti/sdo/server/cs/codec.cfg
+--- cs1omapl138_1_00_00/packages/ti/sdo/server/cs/codec.cfg	2009-12-14 17:31:57.000000000 +0000
++++ cs1omapl138_1_00_00_fix/packages/ti/sdo/server/cs/codec.cfg	2010-03-01 18:09:49.000000000 +0000
+@@ -174,7 +174,7 @@
+ DMAN3.numPaRamGroup[GROUP_0] = 48; // number of PaRAM sets for scratch group 0
+ DMAN3.numPaRamGroup[GROUP_1] = 0; // number of PaRAM sets for scratch group 1
+ 
+-DMAN3.numTccGroup[GROUP_0] = 16; // number of TCCs assigned to scratch group 0
++DMAN3.numTccGroup[GROUP_0] = 12; // number of TCCs assigned to scratch group 0
+ DMAN3.numTccGroup[GROUP_1] = 0; // number of TCCs assigned to scratch group 1
+ 
+ 
+diff -uNr cs1omapl138_1_00_00/packages/ti/sdo/server/cs/server.cfg cs1omapl138_1_00_00_fix/packages/ti/sdo/server/cs/server.cfg
+--- cs1omapl138_1_00_00/packages/ti/sdo/server/cs/server.cfg	2009-12-14 17:31:57.000000000 +0000
++++ cs1omapl138_1_00_00_fix/packages/ti/sdo/server/cs/server.cfg	2010-03-01 18:08:59.000000000 +0000
+@@ -233,16 +233,24 @@
+  *  TCCs to Groups [0] and [1] each. (Assuming both algorithms needed no more
+  *  than 24 channels to run properly.)
+  */
+-DMAN3.paRamBaseIndex     = 80;  // 1st EDMA3 PaRAM set available for DMAN3
++
++/* TODO :: DA850-OMAPL138 PSP Linux Kernel reserves some PaRAMs for DSP usage
++ * - channels 30->50 are exclusive for DSP
++ * - all 8 QDMAs are allocated to DSP
++ */
++DMAN3.paRamBaseIndex     = 30;  // 1st EDMA3 PaRAM set available for DMAN3
+ DMAN3.numQdmaChannels    = 8;   // number of device's QDMA channels to use
+ DMAN3.qdmaChannels       = [0,1,2,3,4,5,6,7]; // choice of QDMA channels to use
+-DMAN3.numPaRamEntries    = 48;  // number of PaRAM sets exclusively used by DMAN
++DMAN3.numPaRamEntries    = 50;  // number of PaRAM sets exclusively used by DMAN
+ 
+ /* Please Note: the number of PaRAM sets and number of TCCs for */
+ /* specific scratch groups are set in codeg.cfg */
+ 
+-DMAN3.tccAllocationMaskL = 0xffffffff;   // bit mask indicating which TCCs 0..31 to use
+-DMAN3.tccAllocationMaskH = 0;            // assign all TCCs 32..63 for DMAN
++/* TODO :: DA850-OMAPL138 PSP Linux Kernel reserves some TCCs for DSP usage
++ * - 12 TCC channels are exclusive for DSP
++ */
++DMAN3.tccAllocationMaskL = 0xcf003f00;   // bit mask indicating which TCCs 0..31 to use
++DMAN3.tccAllocationMaskH = 0x0;          // OMAPL138 only has 32 TCCs --> 0
+ DMAN3.debug = false;
+ DMAN3.trace = false;
+ 

@@ -1,0 +1,30 @@
+From 55eb032a9f3d9c2a46a0e4621e6704a00ba2ab46 Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Fri, 12 Mar 2010 15:04:58 +0100
+Subject: [PATCH 13/16] ads7846: don't error out when there's no pendown gpio
+
+---
+ drivers/input/touchscreen/ads7846.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index 1d9f97c..c72c3ae 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -952,13 +952,6 @@ static int __devinit setup_pendown(struct spi_device *spi, struct ads7846 *ts)
+ 		return 0;
+ 	}
+ 
+-	err = gpio_request(pdata->gpio_pendown, "ads7846_pendown");
+-	if (err) {
+-		dev_err(&spi->dev, "failed to request pendown GPIO%d\n",
+-				pdata->gpio_pendown);
+-		return err;
+-	}
+-
+ 	ts->gpio_pendown = pdata->gpio_pendown;
+ 	return 0;
+ }
+-- 
+1.6.6.1
+

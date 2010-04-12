@@ -1,0 +1,36 @@
+diff -uNr ticodecplugin/src/gstticodecplugin_dm6467.cfg ticodecplugin/src/gstticodecplugin_dm6467.cfg
+--- ticodecplugin/src/gstticodecplugin_dm6467.cfg	2010-03-01 10:31:05.000000000 +0000
++++ ticodecplugin/src/gstticodecplugin_dm6467.cfg	2010-03-01 11:12:14.000000000 +0000
+@@ -29,25 +29,15 @@
+  *  ======== Engine Configuration ========
+  */
+ var Engine = xdc.useModule('ti.sdo.ce.Engine');
+-var decodeEngine = Engine.createFromServer(
+-    "decode",
+-    "./decodeCombo.x64P",
+-    "ti.sdo.servers.decode"
++var demoEngine = Engine.createFromServer(
++    "codecServer",
++    "./bin/cs.x64P",
++    "ti.sdo.server.cs"
+     );
+-var encodeEngine = Engine.createFromServer(
+-    "encode",
+-    "./encodeCombo.x64P",
+-    "ti.sdo.servers.encode"
+-    );
+-
+-var encpath = "" + java.lang.System.getenv("ENCODE_COMBO");
+-if (encpath != "" && encpath != "null") {
+-	encodeEngine.server = java.lang.System.getenv("ENCODE_COMBO");
+-}
+ 
+-var decpath = "" + java.lang.System.getenv("DECODE_COMBO");
+-if (decpath != "" && decpath != "null") {
+-	decodeEngine.server = java.lang.System.getenv("DECODE_COMBO"); 
++var combopath = "" + java.lang.System.getenv("CODEC_SERVER");
++if (combopath != "" && combopath != "null") {
++        demoEngine.server = java.lang.System.getenv("CODEC_SERVER");
+ }
+ 
+ /* Load support for the 'Davinci Multimedia Application Interface' modules */

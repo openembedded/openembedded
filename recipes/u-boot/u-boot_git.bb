@@ -148,25 +148,24 @@ SRC_URI_dm6467t-evm  = "git://arago-project.org/git/people/hemant/u-boot-dm646x.
 SRCREV_dm6467t-evm   = "b037106746e5b942d7ef06bfcd776a7cdfe32f68"
 PV_dm6467t-evm       = "1.3.4+${PR}+gitr${SRCPV}"
 
-# OMAPL da380-omapl137/da850-omapl138-evm/hawkboard - PSP 3.20.00.07 (Beta)
+# OMAPL da380-omapl137/da850-omapl138-evm/hawkboard - master branch (hawk still .07beta)
 
-SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
-SRCREV_da830-omapl137-evm  = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
-PV_da830-omapl137-evm      = "2009.08+gitr${SRCPV}"
+SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/projects/u-boot-omapl1.git;protocol=git;branch=master"
+SRCREV_da830-omapl137-evm  = "c7159a07ed980fddf6b804864fff872aff279dce"
+PV_da830-omapl137-evm      = "2009.11+gitr${SRCREV}"
 
-SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
-SRCREV_da850-omapl138-evm  = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
-PV_da850-omapl138-evm      = "2009.08+gitr${SRCPV}"
+SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/projects/u-boot-omapl1.git;protocol=git;branch=master"
+SRCREV_da850-omapl138-evm  = "c7159a07ed980fddf6b804864fff872aff279dce"
+PV_da850-omapl138-evm      = "2009.11+gitr${SRCREV}"
 
 SRC_URI_hawkboard          = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
 SRCREV_hawkboard           = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
 PV_hawkboard               = "2009.08+gitr${SRCPV}"
 
-SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=next \
-                        file://leopardboard-support.patch;patch=1 \
+SRC_URI_dm355-leopard = "git://www.denx.de/git/u-boot-arm.git;protocol=git;branch=master \
 "
-SRCREV_dm355-leopard = "86d5c98d3d97d631b1d3a5f5e6a17e87c99b42cf"
-PV_dm355-leopard = "2009.05+2009.06-rc2+gitr${SRCPV}"
+SRCREV_dm355-leopard = "d650da2dd4af99967aabc43cccbd8f160eb4cea6"
+PV_dm355-leopard = "2009.05+2010.03-rc1+gitr${SRCREV}"
 
 SRC_URI_neuros-osd2 = "git://github.com/neuros/u-boot.git;protocol=git;branch=neuros"
 SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"

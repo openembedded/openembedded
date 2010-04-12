@@ -8,7 +8,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r20"
+INC_PR = "r21"
 
 # allows for a release candidate
 RC ?= ""
@@ -53,7 +53,7 @@ FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
 # Moved to ${base_sbindir} by do_install:
 FILES_util-linux-ng-readprofile = "${base_sbindir}/readprofile.${PN}"
 FILES_util-linux-ng-fsck = "${base_sbindir}/fsck.${PN}"
-FILES_util-linux-ng-blkid = "${sbindir}/blkid"
+FILES_util-linux-ng-blkid = "${base_sbindir}/blkid.${PN}"
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
 
 RREPLACES_util-linux-ng-blkid = "e2fsprogs-blkid"
@@ -124,7 +124,7 @@ do_install () {
 	mkdir -p ${D}${base_bindir}
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk vipw vigr"
-        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck"
+        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck blkid"
         usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall"
         binprogs_a="dmesg kill more umount mount login reset"
 
@@ -289,6 +289,14 @@ pkg_postinst_util-linux-ng-fsck () {
 
 pkg_prerm_util-linux-ng-fsck () {
 	update-alternatives --remove fsck fsck.${PN}
+}
+
+pkg_postinst_util-linux-ng-blkid () {
+	update-alternatives --install ${base_sbindir}/blkid blkid blkid.${PN} 100
+}
+
+pkg_prerm_util-linux-ng-blkid () {
+	update-alternatives --remove blkid blkid.${PN}
 }
 
 BBCLASSEXTEND = "native"

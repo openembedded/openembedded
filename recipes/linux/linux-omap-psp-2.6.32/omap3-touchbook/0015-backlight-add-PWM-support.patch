@@ -1,0 +1,126 @@
+From d24e10c10e57875a65451f46025623f0f77cefbe Mon Sep 17 00:00:00 2001
+From: Gregoire Gentil <gregoire@gentil.com>
+Date: Wed, 31 Mar 2010 11:14:04 +0200
+Subject: [PATCH 15/16] backlight: add PWM support
+
+---
+ drivers/video/backlight/backlight.c |   81 +++++++++++++++++++++++++++++++++++
+ include/linux/backlight.h           |    3 +
+ 2 files changed, 84 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/backlight/backlight.c b/drivers/video/backlight/backlight.c
+index 7898707..615f40f 100644
+--- a/drivers/video/backlight/backlight.c
++++ b/drivers/video/backlight/backlight.c
+@@ -226,6 +226,84 @@ static void bl_device_release(struct device *dev)
+ 	kfree(bd);
+ }
+ 
++static ssize_t backlight_show_boost(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct backlight_device *bd = to_backlight_device(dev);
++	return sprintf(buf, "%u\n", bd->props.boost);
++}
++
++static ssize_t backlight_store_boost(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
++{
++	unsigned long i;
++	struct backlight_device *bd = to_backlight_device(dev);
++
++        if (strict_strtoul(buf, 10, &i))
++		return -EINVAL;
++
++	mutex_lock(&bd->ops_lock);
++	if (bd->ops)
++	{
++		if (i)
++			bd->props.boost = 1;
++		else
++			bd->props.boost = 0;
++		backlight_update_status(bd);
++	}
++	mutex_unlock(&bd->ops_lock);
++
++	return count;
++}
++
++static ssize_t backlight_show_pwm_fq(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct backlight_device *bd = to_backlight_device(dev);
++	return sprintf(buf, "%u\n", bd->props.pwm_fq);
++}
++
++static ssize_t backlight_store_pwm_fq(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
++{
++	unsigned long i;
++	struct backlight_device *bd = to_backlight_device(dev);
++
++        if (strict_strtoul(buf, 10, &i))
++		return -EINVAL;
++
++	mutex_lock(&bd->ops_lock);
++	if (bd->ops)
++	{
++		bd->props.pwm_fq = i;
++		backlight_update_status(bd);
++	}
++	mutex_unlock(&bd->ops_lock);
++
++	return count;
++}
++
++static ssize_t backlight_show_min_duty(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct backlight_device *bd = to_backlight_device(dev);
++	return sprintf(buf, "%u\n", bd->props.min_duty);
++}
++
++static ssize_t backlight_store_min_duty(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
++{
++	unsigned long i;
++	struct backlight_device *bd = to_backlight_device(dev);
++
++        if (strict_strtoul(buf, 10, &i))
++		return -EINVAL;
++
++	mutex_lock(&bd->ops_lock);
++	if (bd->ops)
++	{
++		bd->props.min_duty = i;
++		backlight_update_status(bd);
++	}
++	mutex_unlock(&bd->ops_lock);
++
++	return count;
++}
++
+ static struct device_attribute bl_device_attributes[] = {
+ 	__ATTR(bl_power, 0644, backlight_show_power, backlight_store_power),
+ 	__ATTR(brightness, 0666, backlight_show_brightness,
+@@ -233,6 +311,9 @@ static struct device_attribute bl_device_attributes[] = {
+ 	__ATTR(actual_brightness, 0444, backlight_show_actual_brightness,
+ 		     NULL),
+ 	__ATTR(max_brightness, 0444, backlight_show_max_brightness, NULL),
++	__ATTR(boost, 0666, backlight_show_boost, backlight_store_boost),
++	__ATTR(pwm_fq, 0666, backlight_show_pwm_fq, backlight_store_pwm_fq),
++	__ATTR(min_duty, 0666, backlight_show_min_duty, backlight_store_min_duty),
+ 	__ATTR_NULL,
+ };
+ 
+diff --git a/include/linux/backlight.h b/include/linux/backlight.h
+index 0f5f578..f3a9b9f 100644
+--- a/include/linux/backlight.h
++++ b/include/linux/backlight.h
+@@ -64,6 +64,9 @@ struct backlight_properties {
+ 	int fb_blank;
+ 	/* Flags used to signal drivers of state changes */
+ 	/* Upper 4 bits are reserved for driver internal use */
++	int boost;
++	int pwm_fq;
++	int min_duty;
+ 	unsigned int state;
+ 
+ #define BL_CORE_SUSPENDED	(1 << 0)	/* backlight is suspended */
+-- 
+1.6.6.1
+

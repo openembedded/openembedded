@@ -1,0 +1,26 @@
+From 068b604f7fbe84e6ea51c1f45ca530d863fce8ea Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Fri, 7 Aug 2009 22:44:35 +0400
+Subject: [PATCH 5/7] Add missing header file
+
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ arch/arm/mach-at91/board-afeb-9260v1.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-afeb-9260v1.c b/arch/arm/mach-at91/board-afeb-9260v1.c
+index 50667be..f1e314f 100644
+--- a/arch/arm/mach-at91/board-afeb-9260v1.c
++++ b/arch/arm/mach-at91/board-afeb-9260v1.c
+@@ -32,6 +32,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/clk.h>
+ #include <linux/dma-mapping.h>
++#include <linux/mtd/mtd.h>
+ 
+ #include <mach/hardware.h>
+ #include <asm/setup.h>
+-- 
+1.6.3.3
+

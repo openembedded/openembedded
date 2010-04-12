@@ -1,23 +1,19 @@
-DESCRIPTION = "Framework Components for TI ARM/DSP processors"
-
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/fc/${PV}/exports/framework_components_${PV}.tar.gz"
+DESCRIPTION = "TI Framework Components"
+HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/fc"
+SECTION = "devel"
+LICENSE = "BSD"
 
 require ti-paths.inc
+require ti-staging.inc
+
+PR = "r1"
 
 S = "${WORKDIR}/framework_components_${PV}"
 
-# compile time dependencies
-DEPENDS += "ti-xdctools-native ti-xdais-native ti-linuxutils"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/fc/${PV}/exports/framework_components_${PV},lite.tar.gz;name=fctarball"
 
-do_compile () {
-        echo "! Do not rebuild for now !"
+do_install() {
+    install -d ${D}${FC_INSTALL_DIR_RECIPE}
+    cp -pPrf ${S}/* ${D}${FC_INSTALL_DIR_RECIPE}
 }
 
-# stage tree - other packages may need this
-do_stage() {
-    install -d ${FC_INSTALL_DIR}
-    cp -pPrf ${S}/* ${FC_INSTALL_DIR}
-}
-
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-INHIBIT_PACKAGE_STRIP = "1"

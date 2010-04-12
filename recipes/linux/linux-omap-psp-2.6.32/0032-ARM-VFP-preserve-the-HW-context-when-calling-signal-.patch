@@ -1,0 +1,211 @@
+From 11cceffa4e4c2e6971fde3ec8a978d267d5e9805 Mon Sep 17 00:00:00 2001
+From: Imre Deak <imre.deak@nokia.com>
+Date: Thu, 4 Feb 2010 21:38:30 +0200
+Subject: [PATCH 32/42] ARM: VFP: preserve the HW context when calling signal handlers
+
+ARM: VFP: preserve the HW context when calling signal handlers
+
+Signal handlers can use floating point, so prevent them to corrupt
+the main thread's VFP context. So far there were two signal stack
+frame formats defined based on the VFP implementation, but the user
+struct used for ptrace covers all posibilities, so use it for the
+signal stack too. This patch extends the user struct and leaves
+its magic number the same, in the hope that user space code does
+not depend on its size and can parse the original regs w/o
+problems.
+
+Support to save / restore the exception registers was added by
+Will Deacon.
+
+Signed-off-by: Imre Deak <imre.deak@nokia.com>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
+Signed-off-by: Bryan Wu <bryan.wu@canonical.com>
+---
+ arch/arm/include/asm/ucontext.h |   19 +++-----
+ arch/arm/include/asm/user.h     |    3 +
+ arch/arm/kernel/signal.c        |   91 +++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 97 insertions(+), 16 deletions(-)
+
+diff --git a/arch/arm/include/asm/ucontext.h b/arch/arm/include/asm/ucontext.h
+index bf65e9f..1c3236b 100644
+--- a/arch/arm/include/asm/ucontext.h
++++ b/arch/arm/include/asm/ucontext.h
+@@ -59,23 +59,18 @@ struct iwmmxt_sigframe {
+ #endif /* CONFIG_IWMMXT */
+ 
+ #ifdef CONFIG_VFP
+-#if __LINUX_ARM_ARCH__ < 6
+-/* For ARM pre-v6, we use fstmiax and fldmiax.  This adds one extra
+- * word after the registers, and a word of padding at the end for
+- * alignment.  */
+ #define VFP_MAGIC		0x56465001
+-#define VFP_STORAGE_SIZE	152
+-#else
+-#define VFP_MAGIC		0x56465002
+-#define VFP_STORAGE_SIZE	144
+-#endif
+ 
+ struct vfp_sigframe
+ {
+ 	unsigned long		magic;
+ 	unsigned long		size;
+-	union vfp_state		storage;
+-};
++	struct user_vfp		ufp;
++} __attribute__((__aligned__(8)));
++
++/* 8 byte for magic and size, 272 byte for ufp */
++#define VFP_STORAGE_SIZE	sizeof(struct vfp_sigframe)
++
+ #endif /* CONFIG_VFP */
+ 
+ /*
+@@ -91,7 +86,7 @@ struct aux_sigframe {
+ #ifdef CONFIG_IWMMXT
+ 	struct iwmmxt_sigframe	iwmmxt;
+ #endif
+-#if 0 && defined CONFIG_VFP /* Not yet saved.  */
++#ifdef CONFIG_VFP
+ 	struct vfp_sigframe	vfp;
+ #endif
+ 	/* Something that isn't a valid magic number for any coprocessor.  */
+diff --git a/arch/arm/include/asm/user.h b/arch/arm/include/asm/user.h
+index df95e05..ea7e44d 100644
+--- a/arch/arm/include/asm/user.h
++++ b/arch/arm/include/asm/user.h
+@@ -88,6 +88,9 @@ struct user{
+ struct user_vfp {
+ 	unsigned long long fpregs[32];
+ 	unsigned long fpscr;
++	unsigned long fpexc;
++	unsigned long fpinst;
++	unsigned long fpinst2;
+ };
+ 
+ #endif /* _ARM_USER_H */
+diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+index e7714f3..6a36851 100644
+--- a/arch/arm/kernel/signal.c
++++ b/arch/arm/kernel/signal.c
+@@ -18,6 +18,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/ucontext.h>
+ #include <asm/unistd.h>
++#include <asm/vfp.h>
+ 
+ #include "ptrace.h"
+ #include "signal.h"
+@@ -175,6 +176,88 @@ static int restore_iwmmxt_context(struct iwmmxt_sigframe *frame)
+ 
+ #endif
+ 
++#ifdef CONFIG_VFP
++
++static int preserve_vfp_context(struct vfp_sigframe __user *frame)
++{
++	struct thread_info *thread = current_thread_info();
++	struct vfp_hard_struct *h = &thread->vfpstate.hard;
++	const unsigned long magic = VFP_MAGIC;
++	const unsigned long size = VFP_STORAGE_SIZE;
++	int err = 0;
++
++	vfp_sync_state(thread);
++	__put_user_error(magic, &frame->magic, err);
++	__put_user_error(size, &frame->size, err);
++
++	/*
++	 * Copy the floating point registers. There can be unused
++	 * registers see asm/hwcap.h for details.
++	 */
++	err |= __copy_to_user(&frame->ufp.fpregs, &h->fpregs,
++			      sizeof(h->fpregs));
++	/*
++	 * Copy the status and control register.
++	 */
++	__put_user_error(h->fpscr, &frame->ufp.fpscr, err);
++
++	/*
++	 * Copy the exception registers.
++	 */
++	__put_user_error(h->fpexc, &frame->ufp.fpexc, err);
++	__put_user_error(h->fpinst, &frame->ufp.fpinst, err);
++	__put_user_error(h->fpinst2, &frame->ufp.fpinst2, err);
++
++	return err ? -EFAULT : 0;
++}
++
++static int restore_vfp_context(struct vfp_sigframe __user *frame)
++{
++	struct thread_info *thread = current_thread_info();
++	struct vfp_hard_struct *h = &thread->vfpstate.hard;
++	unsigned long magic;
++	unsigned long size;
++	unsigned long fpexc;
++	int err = 0;
++
++	vfp_sync_state(thread);
++	__get_user_error(magic, &frame->magic, err);
++	__get_user_error(size, &frame->size, err);
++
++	if (err)
++		return -EFAULT;
++	if (magic != VFP_MAGIC || size != VFP_STORAGE_SIZE)
++		return -EINVAL;
++
++	/*
++	 * Copy the floating point registers. There can be unused
++	 * registers see asm/hwcap.h for details.
++	 */
++	err |= __copy_from_user(&h->fpregs, &frame->ufp.fpregs,
++				sizeof(h->fpregs));
++	/*
++	 * Copy the status and control register.
++	 */
++	__get_user_error(h->fpscr, &frame->ufp.fpscr, err);
++
++	/*
++	 * Sanitise and restore the exception registers.
++	 */
++	__get_user_error(fpexc, &frame->ufp.fpexc, err);
++	/* Ensure the VFP is enabled. */
++	fpexc |= FPEXC_EN;
++	/* Ensure FPINST2 is invalid and the exception flag is cleared. */
++	fpexc &= ~(FPEXC_EX | FPEXC_FP2V);
++	h->fpexc = fpexc;
++
++	__get_user_error(h->fpinst, &frame->ufp.fpinst, err);
++	__get_user_error(h->fpinst2, &frame->ufp.fpinst2, err);
++
++	return err ? -EFAULT : 0;
++}
++
++#endif
++
+ /*
+  * Do a signal return; undo the signal stack.  These are aligned to 64-bit.
+  */
+@@ -233,8 +316,8 @@ static int restore_sigframe(struct pt_regs *regs, struct sigframe __user *sf)
+ 		err |= restore_iwmmxt_context(&aux->iwmmxt);
+ #endif
+ #ifdef CONFIG_VFP
+-//	if (err == 0)
+-//		err |= vfp_restore_state(&sf->aux.vfp);
++	if (err == 0)
++		err |= restore_vfp_context(&aux->vfp);
+ #endif
+ 
+ 	return err;
+@@ -348,8 +431,8 @@ setup_sigframe(struct sigframe __user *sf, struct pt_regs *regs, sigset_t *set)
+ 		err |= preserve_iwmmxt_context(&aux->iwmmxt);
+ #endif
+ #ifdef CONFIG_VFP
+-//	if (err == 0)
+-//		err |= vfp_save_state(&sf->aux.vfp);
++	if (err == 0)
++		err |= preserve_vfp_context(&aux->vfp);
+ #endif
+ 	__put_user_error(0, &aux->end_magic, err);
+ 
+-- 
+1.6.6.1
+

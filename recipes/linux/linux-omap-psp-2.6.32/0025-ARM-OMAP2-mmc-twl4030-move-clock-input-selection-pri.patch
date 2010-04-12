@@ -1,0 +1,47 @@
+From e700d77899105c0c81b639256225cd2ce986ce07 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Sun, 24 Jan 2010 09:33:56 -0800
+Subject: [PATCH 25/42] ARM: OMAP2: mmc-twl4030: move clock input selection prior to vcc test
+
+otherwise it is not executed on systems that use non-twl regulators
+---
+ arch/arm/mach-omap2/mmc-twl4030.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/mmc-twl4030.c b/arch/arm/mach-omap2/mmc-twl4030.c
+index 0c3c72d..dbdafb9 100644
+--- a/arch/arm/mach-omap2/mmc-twl4030.c
++++ b/arch/arm/mach-omap2/mmc-twl4030.c
+@@ -302,6 +302,14 @@ static int twl_mmc23_set_power(struct device *dev, int slot, int power_on, int v
+ 	if (c == NULL)
+ 		return -ENODEV;
+ 
++	if (mmc->slots[0].internal_clock) {
++		u32 reg;
++
++		reg = omap_ctrl_readl(control_devconf1_offset);
++		reg |= OMAP2_MMCSDIO2ADPCLKISEL;
++		omap_ctrl_writel(reg, control_devconf1_offset);
++	}
++
+ 	/* If we don't see a Vcc regulator, assume it's a fixed
+ 	 * voltage always-on regulator.
+ 	 */
+@@ -322,14 +330,6 @@ static int twl_mmc23_set_power(struct device *dev, int slot, int power_on, int v
+ 	 * chips/cards need an interface voltage rail too.
+ 	 */
+ 	if (power_on) {
+-		/* only MMC2 supports a CLKIN */
+-		if (mmc->slots[0].internal_clock) {
+-			u32 reg;
+-
+-			reg = omap_ctrl_readl(control_devconf1_offset);
+-			reg |= OMAP2_MMCSDIO2ADPCLKISEL;
+-			omap_ctrl_writel(reg, control_devconf1_offset);
+-		}
+ 		ret = mmc_regulator_set_ocr(c->vcc, vdd);
+ 		/* enable interface voltage rail, if needed */
+ 		if (ret == 0 && c->vcc_aux) {
+-- 
+1.6.6.1
+

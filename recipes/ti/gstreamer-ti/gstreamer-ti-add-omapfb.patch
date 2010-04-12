@@ -9,30 +9,6 @@ diff -uNr ticodecplugin/configure.ac ticodecplugin.new/configure.ac
  
  dnl check for tools
  AC_PROG_CC
-diff -uNr ticodecplugin/src/Makefile.am ticodecplugin.new/src/Makefile.am
---- ticodecplugin/src/Makefile.am	2009-10-28 06:27:14.000000000 -0500
-+++ ticodecplugin.new/src/Makefile.am	2009-10-28 06:35:20.000000000 -0500
-@@ -4,16 +4,16 @@
- plugin_LTLIBRARIES  = libgstticodecplugin.la
- 
- # sources used to compile this plug-in
--libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c
-+libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c omapfb.c yuv.S
- 
- # flags used to compile this plugin
- # add other _CFLAGS and _LIBS as needed
--libgstticodecplugin_la_CFLAGS  = $(GST_CFLAGS) $(shell cat $(XDC_CONFIG_BASENAME)/compiler.opt)
--libgstticodecplugin_la_LIBADD  = $(GST_LIBS) $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) -lgstvideo-0.10 -lgstaudio-0.10 -lm
-+libgstticodecplugin_la_CFLAGS  = $(GST_CFLAGS) $(shell cat $(XDC_CONFIG_BASENAME)/compiler.opt) -I$(LINUXKERNEL_INSTALL_DIR)/include
-+libgstticodecplugin_la_LIBADD  = $(GST_LIBS) $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) -lgstvideo-0.10 -lgstaudio-0.10 -lm -lX11
- libgstticodecplugin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -Wl,$(XDC_CONFIG_BASENAME)/linker.cmd
- 
- # headers we need but don't want installed
--noinst_HEADERS = gsttiauddec.h gsttiauddec1.h gsttividdec.h gsttividdec2.h gsttiimgenc1.h gsttiimgenc.h gsttiimgdec1.h gsttiimgdec.h gsttidmaibuffertransport.h gstticircbuffer.h gsttidmaivideosink.h gsttithreadprops.h gstticodecs.h gsttiquicktime_aac.h gsttiquicktime_h264.h gsttividenc.h gsttividenc1.h gsttiaudenc1.h gstticommonutils.h gsttividresize.h
-+noinst_HEADERS = gsttiauddec.h gsttiauddec1.h gsttividdec.h gsttividdec2.h gsttiimgenc1.h gsttiimgenc.h gsttiimgdec1.h gsttiimgdec.h gsttidmaibuffertransport.h gstticircbuffer.h gsttidmaivideosink.h gsttithreadprops.h gstticodecs.h gsttiquicktime_aac.h gsttiquicktime_h264.h gsttividenc.h gsttividenc1.h gsttiaudenc1.h gstticommonutils.h gsttividresize.h omapfb.h
- 
- # XDC Configuration
- CONFIGURO     = $(XDC_INSTALL_DIR)/xs xdc.tools.configuro
 diff -uNr ticodecplugin/src/gstticodecplugin.c ticodecplugin.new/src/gstticodecplugin.c
 --- ticodecplugin/src/gstticodecplugin.c	2009-10-28 06:27:14.000000000 -0500
 +++ ticodecplugin.new/src/gstticodecplugin.c	2009-10-28 06:36:28.000000000 -0500
@@ -1334,3 +1310,26 @@ diff -uNr ticodecplugin/src/yuv.S ticodecplugin.new/src/yuv.S
 +        pop             {r4-r11,pc}
 +        .endfunc
 +
+--- /tmp/Makefile.am	2010-01-13 09:13:19.000000000 +0100
++++ ticodecplugin/src/Makefile.am	2010-01-13 09:14:38.000000000 +0100
+@@ -4,16 +4,16 @@
+ plugin_LTLIBRARIES  = libgstticodecplugin.la
+ 
+ # sources used to compile this plug-in
+-libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c gsttiquicktime_mpeg4.c 
++libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec.c gsttiauddec1.c gsttividdec.c gsttividdec2.c gsttiimgenc1.c gsttiimgenc.c gsttiimgdec1.c gsttiimgdec.c gsttidmaibuffertransport.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c gsttiquicktime_mpeg4.c omapfb.c yuv.S 
+ 
+ # flags used to compile this plugin
+ # add other _CFLAGS and _LIBS as needed
+-libgstticodecplugin_la_CFLAGS  = $(GST_CFLAGS) $(shell cat $(XDC_CONFIG_BASENAME)/compiler.opt)
+-libgstticodecplugin_la_LIBADD  = $(GST_LIBS) $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) -lgstvideo-0.10 -lgstaudio-0.10 -lm
++libgstticodecplugin_la_CFLAGS  = $(GST_CFLAGS) $(shell cat $(XDC_CONFIG_BASENAME)/compiler.opt) -I$(LINUXKERNEL_INSTALL_DIR)/include
++libgstticodecplugin_la_LIBADD  = $(GST_LIBS) $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) -lgstvideo-0.10 -lgstaudio-0.10 -lm -lX11
+ libgstticodecplugin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -Wl,$(XDC_CONFIG_BASENAME)/linker.cmd
+ 
+ # headers we need but don't want installed
+-noinst_HEADERS = gsttiauddec.h gsttiauddec1.h gsttividdec.h gsttividdec2.h gsttiimgenc1.h gsttiimgenc.h gsttiimgdec1.h gsttiimgdec.h gsttidmaibuffertransport.h gstticircbuffer.h gsttidmaivideosink.h gsttithreadprops.h gstticodecs.h gsttiquicktime_aac.h gsttiquicktime_h264.h gsttividenc.h gsttividenc1.h gsttiaudenc1.h gstticommonutils.h gsttividresize.h gsttiquicktime_mpeg4.h 
++noinst_HEADERS = gsttiauddec.h gsttiauddec1.h gsttividdec.h gsttividdec2.h gsttiimgenc1.h gsttiimgenc.h gsttiimgdec1.h gsttiimgdec.h gsttidmaibuffertransport.h gstticircbuffer.h gsttidmaivideosink.h gsttithreadprops.h gstticodecs.h gsttiquicktime_aac.h gsttiquicktime_h264.h gsttividenc.h gsttividenc1.h gsttiaudenc1.h gstticommonutils.h gsttividresize.h gsttiquicktime_mpeg4.h omapfb.h 
+ 
+ # XDC Configuration
+ CONFIGURO     = $(XDC_INSTALL_DIR)/xs xdc.tools.configuro

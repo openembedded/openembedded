@@ -1,0 +1,67 @@
+diff -Nurd bc-cat-0.2.0-old/test/cmem.c bc-cat-0.2.0/test/cmem.c
+--- bc-cat-0.2.0-old/test/cmem.c	2010-03-24 19:17:15.000000000 +0100
++++ bc-cat-0.2.0/test/cmem.c	2010-03-26 11:26:43.000000000 +0100
+@@ -166,7 +166,7 @@
+     modelview[9] = -sx;
+     modelview[10] = cx * cy;
+    
+-    glClearColor (0.0, 0.0, 0.0, 1.0);
++    glClearColor (0.0, 0.0, 0.0, 0.0);
+     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+     glUseProgram(program[0]);
+diff -Nurd bc-cat-0.2.0-old/test/common.c bc-cat-0.2.0/test/common.c
+--- bc-cat-0.2.0-old/test/common.c	2010-03-24 19:24:56.000000000 +0100
++++ bc-cat-0.2.0/test/common.c	2010-03-26 11:23:13.000000000 +0100
+@@ -364,6 +364,7 @@
+             r = (float)w / h;
+ 
+             glViewport(0, 0, w, h);
++#ifndef GLES_20
+             glMatrixMode(GL_PROJECTION);
+             glLoadIdentity();
+ 
+@@ -376,7 +377,7 @@
+ 
+             glMatrixMode(GL_MODELVIEW);
+             glLoadIdentity();
+-
++#endif
+             break;
+         case Expose:
+             /*must handle this, otherwise, background does not redraw*/
+diff -Nurd bc-cat-0.2.0-old/test/mmap.c bc-cat-0.2.0/test/mmap.c
+--- bc-cat-0.2.0-old/test/mmap.c	2010-03-24 19:17:15.000000000 +0100
++++ bc-cat-0.2.0/test/mmap.c	2010-03-26 11:26:49.000000000 +0100
+@@ -136,7 +136,7 @@
+     modelview[9] = -sx;
+     modelview[10] = cx * cy;
+    
+-    glClearColor (0.0, 0.0, 0.0, 1.0);
++    glClearColor (0.0, 0.0, 0.0, 0.0);
+     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+     glUseProgram(program[0]);
+diff -Nurd bc-cat-0.2.0-old/test/webcam.c bc-cat-0.2.0/test/webcam.c
+--- bc-cat-0.2.0-old/test/webcam.c	2010-03-24 19:17:15.000000000 +0100
++++ bc-cat-0.2.0/test/webcam.c	2010-03-26 11:27:29.000000000 +0100
+@@ -338,7 +338,7 @@
+     modelview[9] = -sx;
+     modelview[10] = cx * cy;
+    
+-    glClearColor (0.0, 0.0, 0.0, 1.0);
++    glClearColor (0.0, 0.0, 0.0, 0.0);
+     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+     glUseProgram(program[0]);
+@@ -372,8 +372,8 @@
+ 
+     eglSwapBuffers(dpy, surface);
+ 
+-    rot_x += 0.01;
+-    rot_y += 0.01;
++    rot_x += 0.02;
++    rot_y += 0.02;
+ }
+ #else
+ 
