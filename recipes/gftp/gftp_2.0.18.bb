@@ -21,3 +21,6 @@ DEPENDS="gtk+ openssl"
 inherit autotools
 
 EXTRA_OECONF="--disable-textport"
+
+SRC_URI[md5sum] = "44b19442d06f6dc68c7211d66029d826"
+SRC_URI[sha256sum] = "8145e18d1edf13e8cb6cd7a69bb69de5c46307086997755654488fb8282d38a2"

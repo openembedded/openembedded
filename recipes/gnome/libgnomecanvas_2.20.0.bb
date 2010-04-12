@@ -16,3 +16,6 @@ FILES_${PN}-dev += "${libdir}/libglade/*/libcanvas.*a"
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "109b71b02e0c976d65b46129d0ad69d1"
+SRC_URI[archive.sha256sum] = "c1d7301ecea3719e307182222ba19375b74017580d58e4a25f4ae15c8c8f9c3f"

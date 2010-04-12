@@ -34,3 +34,6 @@ do_compile() {
 do_install() {
 	oe_runmake -i install # yes, ugly i know... but i can't get rid of that bailing out docbook crap atm.
 }
+
+SRC_URI[md5sum] = "30bdb17e11fb416f9d3c6243e02f6e73"
+SRC_URI[sha256sum] = "90ec337d482a0e766e1f24679324445057abfc2e01d9d2c1f561b40ac7f1915b"

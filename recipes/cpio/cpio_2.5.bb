@@ -37,3 +37,6 @@ pkg_prerm_${PN} () {
 		update-alternatives --remove rmt rmt.${PN}
 	fi
 }
+
+SRC_URI[md5sum] = "e02859af1bbbbd73fcbf757acb57e0a4"
+SRC_URI[sha256sum] = "dbf79293d0cafa7d7a3a266c2b0b90c00d556e7b3185d4243c74153291da24c8"

@@ -18,3 +18,6 @@ do_stage() {
 	install  .libs/libhildonbase.so.0 ${STAGING_LIBDIR}/libhildonbase.so.0
 	install  .libs/libhildonbase.so.0.0.1 ${STAGING_LIBDIR}/libhildonbase.so.0.0.1
 }
+
+SRC_URI[md5sum] = "388d916894122be839ba09d804eefeb5"
+SRC_URI[sha256sum] = "c8eabb77f72efaedb2ed4f1f18e2f3ca84164e0a9fa4dd313a23e3b0cc1ca3d4"

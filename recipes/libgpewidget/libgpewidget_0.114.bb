@@ -22,3 +22,6 @@ do_stage () {
 PACKAGES =+ "libgpewidget-bin"
 FILES_libgpewidget-bin = "${bindir}/*"
 RRECOMMENDS_${PN} = "gpe-icons"
+
+SRC_URI[md5sum] = "36007105704bdc030c2c241c94bba165"
+SRC_URI[sha256sum] = "db67f8fd78da55e71fe61eb28263d823f1bcda8d878bc6f2ffd9254a925dc84a"

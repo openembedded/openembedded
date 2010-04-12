@@ -36,3 +36,6 @@ do_stage() {
 do_install() {
   oe_jarinstall src/${JAR} ${PN}.jar
 }
+
+SRC_URI[md5sum] = "cb830720148bad0c555a02b27e1e7f9a"
+SRC_URI[sha256sum] = "f2441575236be69a460c6a54344b6ba8b8ba03fd0bab242b989f4f0976944cd8"

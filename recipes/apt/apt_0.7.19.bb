@@ -24,3 +24,7 @@ do_stage() {
 
 	install -m 0644 include/apt-pkg/*.h ${STAGING_INCDIR}/apt-pkg/
 }
+
+SRC_URI[md5sum] = "0ef50176aea36cb0cce633a9b62dc7eb"
+SRC_URI[sha256sum] = "c928f5eb2baffb50e7ccf02d07a16daf867945c8aa542d500bbbbaff7bbcef42"
+

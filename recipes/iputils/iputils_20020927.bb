@@ -72,3 +72,6 @@ pkg_prerm_${PN}-ping6 () {
 pkg_postinst_${PN}-traceroute6 () {
 	chmod 4555 ${bindir}/traceroute6
 }
+
+SRC_URI[md5sum] = "b5493f7a2997130a4f86c486c9993b86"
+SRC_URI[sha256sum] = "25d45acf19e3acd09745df47581ac7a13e3694ee51fe4e642108f9f228cacca9"

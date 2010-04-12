@@ -46,3 +46,6 @@ do_install() {
 do_install_append_arm() {
 	cp ${WORKDIR}/procinfo.h ${D}${includedir}/asm/
 }
+
+SRC_URI[md5sum] = "2e230d005c002fb3d38a3ca07c0200d0"
+SRC_URI[sha256sum] = "73c10604c53f1a6ee65ef805293d23903696f8cef864f42d7de9506f0d2ba4c7"

@@ -28,3 +28,6 @@ pkg_postinst() {
 pkg_postrm() {
 	update-rc.d syslog add 5
 }
+
+SRC_URI[md5sum] = "ffbad7e8e6dcbe385820b8ffba23b622"
+SRC_URI[sha256sum] = "3c841fd89599ffb770cdf2844426980d75dc3dab12e0f707e4cbb51937f6125e"

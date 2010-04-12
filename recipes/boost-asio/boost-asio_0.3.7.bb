@@ -33,3 +33,6 @@ do_stage() {
 }
 
 FILES_${PN}-dev = "/usr/include"
+
+SRC_URI[md5sum] = "e006cde4b4a28cfce95e43710cd126a9"
+SRC_URI[sha256sum] = "ade3663edc611d558f5a383abccd0a9ab87d6168f422ef4c2a38775e8b7ca575"

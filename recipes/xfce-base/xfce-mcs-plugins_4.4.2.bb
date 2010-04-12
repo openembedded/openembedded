@@ -10,3 +10,6 @@ inherit xfce
 
 PACKAGES += "${PN}-mcs-plugins"
 FILES_${PN}-mcs-plugins = "${libdir}/xfce4/mcs-plugins/*.so"
+
+SRC_URI[md5sum] = "77fcc929058de530d4f91eb25de851a1"
+SRC_URI[sha256sum] = "e16610264256248bfd8ca227c7861000abf0c323611ad34913b06c41af0c9be5"

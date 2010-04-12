@@ -13,3 +13,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pythonwebdavlib/Python%20WebDAV%20Library%20-%2
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+SRC_URI[md5sum] = "8e49e0ecc5b4327c4f752a544ee10e1a"
+SRC_URI[sha256sum] = "72c029ad1e25de950f59c2f1812d009d2c1691b70e4b5b09f1af9006e8fd5f23"

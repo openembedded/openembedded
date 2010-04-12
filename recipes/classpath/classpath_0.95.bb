@@ -22,3 +22,6 @@ EXTRA_OECONF += "\
                "
 
 
+
+SRC_URI[md5sum] = "08638bb9221460cc311a1c5508083ed8"
+SRC_URI[sha256sum] = "5c274a7741c35c35529f5641e644f61431143dac8e7724ac994d1f20c0d9cce0"

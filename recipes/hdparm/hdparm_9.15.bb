@@ -19,3 +19,6 @@ pkg_postinst_${PN} () {
 pkg_prerm_${PN} () {
 	update-alternatives --remove hdparm hdparm.${PN}
 }
+
+SRC_URI[md5sum] = "0524dd10ad986285ff4eeb3507f7471c"
+SRC_URI[sha256sum] = "689a413119c4d670ed95b9ac24511655c4805db678ad93866ab1036a0ba4d6bf"

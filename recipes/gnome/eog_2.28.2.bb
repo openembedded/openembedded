@@ -29,3 +29,6 @@ do_configure_prepend() {
 
 FILES_${PN}-dbg += "${libdir}/eog/plugins/.debug"
 
+
+SRC_URI[archive.md5sum] = "ee5fd7f3cdd37467cb86052a858757c3"
+SRC_URI[archive.sha256sum] = "9d7ec3f8a94f5fdc051d9ee5dc5f4f8e46d83b44d9b0a40d68beaaa738a91a08"

@@ -13,3 +13,6 @@ S = "${WORKDIR}/u2nl-${PV}"
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 }
+
+SRC_URI[md5sum] = "d97a16d8b2231501ba418b5f1ffe018a"
+SRC_URI[sha256sum] = "7e1d8239a5bd43c50f6091b484acbc8a7c5886cd4523f1e369504266cbaca50d"

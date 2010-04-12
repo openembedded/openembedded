@@ -11,3 +11,6 @@ do_stage() {
 	gnome_stage_includes
 	oe_libinstall -C src -so libgtkhtml-3.8 ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "4455e24142cc914f00f1e8b81940df68"
+SRC_URI[sha256sum] = "d8fc9e7111773448bb07cc2619fbc3b8534a14a9b3075724465c7567cf1a94d0"

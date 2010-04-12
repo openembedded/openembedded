@@ -9,8 +9,8 @@ DEFAULT_PREFERENCE_progear = "1"
 DEFAULT_PREFERENCE_simpad = "-1"
 DEFAULT_PREFERENCE_ts72xx = "1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.45.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.45.bz2;patch=1;name=stablepatch \
            file://defconfig "
 
 SRC_URI_append_boc01 = "\
@@ -84,3 +84,8 @@ do_stage_append() {
 	fi
 }
 
+
+SRC_URI[kernel.md5sum] = "b3e78977aa79d3754cb7f8143d7ddabd"
+SRC_URI[kernel.sha256sum] = "0e99bf9e83f4d1ae0c656741a84dfddfa9c4d2469cf35475f5939d02dc3e4393"
+SRC_URI[stablepatch.md5sum] = "9ad766753f54ba0a4df7c42873e7aa16"
+SRC_URI[stablepatch.sha256sum] = "fb78c95e902194ac62facdbad1a89430c991271a35e4bd30ce9dad2f948d99c8"

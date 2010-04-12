@@ -24,3 +24,6 @@ do_install() {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/nail.rc"
+
+SRC_URI[md5sum] = "2478bff31a9223afffcb74e4dd021770"
+SRC_URI[sha256sum] = "e8caa07c0a841fab2f11db43809c073485b0c1aa12be5dc1b90ca72fa6660175"

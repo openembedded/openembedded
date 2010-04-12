@@ -12,3 +12,6 @@ AUTOTOOLS_STAGE_PKGCONFIG = "1"
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[md5sum] = "a342b2b4495b3e1394e161eb5d85d754"
+SRC_URI[sha256sum] = "6b905a9c2aca2e275544212666eefc4eb44d95d0a57e4305457b407fe63f9494"

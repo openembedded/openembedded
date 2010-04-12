@@ -45,3 +45,6 @@ populate_packages_prepend() {
 PACKAGES += "${PN}-vaxbin"
 
 FILES_${PN}-vaxbin = "${datadir}/${PN}"
+
+SRC_URI[md5sum] = "c8c57379e2e9afbf9817fbbe99ee1106"
+SRC_URI[sha256sum] = "4c3f7374e1faa54c705f7c139e992bb7d3492e9dc62aca5b1e24e5a43bb0f132"

@@ -39,3 +39,6 @@ FILES_${PN} = "${bindir}/syslinux"
 FILES_${PN}-extlinux = "${base_sbindir}/extlinux"
 FILES_${PN}-mbr = "${datadir}/${PN}/mbr.bin"
 FILES_${PN}-dev += "${datadir}/${PN}/com32"
+
+SRC_URI[md5sum] = "c9f4e73e385c86b3a8faf9b615a04836"
+SRC_URI[sha256sum] = "1dbbf8cfd10fc07187fa8bfede23639fc95314976730f3474cb349e8bf6c6f61"

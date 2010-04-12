@@ -24,3 +24,6 @@ do_install_append() {
 
 CONFFILES_${PN} += "${sysconfdir}/monitrc"
 
+
+SRC_URI[md5sum] = "d3143b0bbd79b53f1b019d2fc1dae656"
+SRC_URI[sha256sum] = "f6a29300648381538a403f24506e75b94164e26c69c6861ca112d425edc9d193"

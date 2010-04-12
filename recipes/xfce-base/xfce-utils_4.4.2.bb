@@ -27,3 +27,6 @@ FILES_${PN}-mcs-plugins = "${libdir}/xfce4/mcs-plugins/"
 
 # NOTE:  This package takes a --with-browser for the default browser
 # NOTE:  Works with gdm also gtkhtml
+
+SRC_URI[md5sum] = "119dd3f1daedfa41e3be89bad8997336"
+SRC_URI[sha256sum] = "eba910fb99598e09fa4c41c4ab405216a2b59a837a3ab058656360ec2324314c"

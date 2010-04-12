@@ -53,3 +53,6 @@ do_install_append() {
 
 PACKAGES =+ "nfs-utils-client"
 FILES_nfs-utils-client = "${base_sbindir}/*mount.nfs*"
+
+SRC_URI[md5sum] = "76ee9274c2b867839427eba91b327f03"
+SRC_URI[sha256sum] = "1d09b1c133e4eed9d2df07ead4eba813e6993875c39e66d7b4081287029d4033"

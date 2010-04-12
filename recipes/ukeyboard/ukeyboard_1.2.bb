@@ -12,3 +12,6 @@ FILES_${PN} += "${datadir}/X11/xkb \
                 ${datadir}/scv_layouts \
 		${libdir}/hildon-control-panel/libukeyboard-prefs.so"
 FILES_${PN}-dbg += "${libdir}/hildon-control-panel/.debug/"
+
+SRC_URI[md5sum] = "cf291d487250e3e9c1cc34389ce49297"
+SRC_URI[sha256sum] = "1f54d52abc5a53db45bc063948375b947af2c031ee1b810686027f7694deb474"

@@ -7,8 +7,8 @@ DEPENDS += "u-boot-utils-native"
 
 PR = "r2"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
-           http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2;name=kernel \
+           http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;patch=1;name=patch \
            file://neon-jffs2-config.patch;patch=1"
 
 S = "${WORKDIR}/linux-2.6.22"
@@ -40,3 +40,8 @@ do_deploy_append() {
         ${STAGING_BINDIR_NATIVE}/mkimage -A arm -O linux -T kernel -C gzip -a a0008000 -e a0008000 -n "Boundary Devices NEON" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin
         rm -f linux.bin.gz
 }
+
+SRC_URI[kernel.md5sum] = "2e230d005c002fb3d38a3ca07c0200d0"
+SRC_URI[kernel.sha256sum] = "73c10604c53f1a6ee65ef805293d23903696f8cef864f42d7de9506f0d2ba4c7"
+SRC_URI[patch.md5sum] = "7dac7a5cf401070ecccf42666a30fc0a"
+SRC_URI[patch.sha256sum] = "da8a360035464defd133a4ba604aa7ae9ee077747511b98384862b4cbdde5906"

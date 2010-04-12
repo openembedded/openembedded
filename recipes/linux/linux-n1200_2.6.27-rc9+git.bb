@@ -21,3 +21,6 @@ do_configure() {
         install -m 0644 ${WORKDIR}/defconfig ${S}/.config
         ARCH=${ARCH} oe_runmake oldconfig
 }
+
+SRC_URI[md5sum] = "0d0f5b5d4ef7b8916b5a733bbf8dc05c"
+SRC_URI[sha256sum] = "cb5837924f7234045b4841998987b257977e64d141291068e5b145a3a276df7a"

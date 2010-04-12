@@ -24,3 +24,6 @@ do_install_append () {
 	install ${WORKDIR}/extract-postinst.awk ${STAGING_BINDIR}/
 	install ${WORKDIR}/yum-install-recommends.py ${STAGING_BINDIR}/
 }
+
+SRC_URI[md5sum] = "711f518cb72a698ed98a21a374a4585e"
+SRC_URI[sha256sum] = "8b3f300602ce021bf5202496b98271814935f45f3bf3c6730ba4e789b2f323c8"

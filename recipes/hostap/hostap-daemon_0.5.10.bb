@@ -45,3 +45,6 @@ do_install() {
 	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/hostapd
 }
 
+
+SRC_URI[md5sum] = "ed669d96346dfc7d9f9fad079731853f"
+SRC_URI[sha256sum] = "a99908d5765757ad6025b57d5ecf43b412aaaaf2ca379c02aafa33ca5c9d35c1"

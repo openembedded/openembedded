@@ -97,3 +97,6 @@ do_install_append() {
 }
 
 FILES_${PN} = "${palmtopdir} ${datadir} ${bindir}/konqueror* ${libdir}/libkonq*"
+
+SRC_URI[md5sum] = "3a9e14a245d293d143715c0318e3d0bd"
+SRC_URI[sha256sum] = "63a7d777cfb610c06c3778b4fc780a7e3f4158b5a7125588ccbc0c59f11b48b8"

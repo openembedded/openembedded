@@ -19,3 +19,6 @@ SRCNAME = "madwifi-trunk"
 
 # PR set after the include, to override what's set in the included file.
 PR = "r2"
+
+SRC_URI[md5sum] = "d6e04fa7fb0bea5079f24a753633fb29"
+SRC_URI[sha256sum] = "d504e1e7b8f0d01b5441a86d1086aa4088c8896d87d8aabd6dabace76997467a"

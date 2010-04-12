@@ -31,3 +31,6 @@ do_install() {
 	install ${S}/*.o ${D}/${libdir}/libdictionary/
 }
 
+
+SRC_URI[md5sum] = "10ee733c70e96e8e9f01d3de2cc0c78c"
+SRC_URI[sha256sum] = "46f0a85f340e099e9010c8eb9a28d727830aedb32be48fe0a2f0cd081e0623fd"

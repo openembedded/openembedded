@@ -41,8 +41,8 @@ FILES_localedef = "${bindir}/localedef"
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
-SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz \
+SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz;name=archive \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-2.3.2.tar.gz;name=linuxthreads \
 	   file://noinfo.patch;patch=1 \
 	   file://10_cvs.patch;patch=1 \
  	   file://arm-ioperm.patch;patch=1;pnum=0 \
@@ -165,3 +165,8 @@ do_compile () {
 require glibc-stage.inc
 
 require glibc-package.inc
+
+SRC_URI[archive.md5sum] = "2d72df1e1dd599dbdf3835b7c2951860"
+SRC_URI[archive.sha256sum] = "dbf0deb003531cbd2493986718a1b34a113c914238a90de8b5b3218217257d82"
+SRC_URI[linuxthreads.md5sum] = "993efdb74f75990f4a5cb6f7e69c40b4"
+SRC_URI[linuxthreads.sha256sum] = "74ec1a4a28f854a27deeb9dfd0673f9d8f8fb948b3db0b45503c287c1ec9d15f"

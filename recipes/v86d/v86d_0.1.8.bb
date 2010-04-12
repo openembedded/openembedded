@@ -35,3 +35,6 @@ do_install () {
 }
 
 inherit update-rc.d
+
+SRC_URI[md5sum] = "613c601d6a8a85289327ef6392e16c57"
+SRC_URI[sha256sum] = "4154c5a3830bba25bd63b175f4fba07867ef029124d8c9470fac45235569dde5"

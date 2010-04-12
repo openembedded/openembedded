@@ -31,3 +31,6 @@ do_stage() {
 	install -d ${STAGING_INCDIR}/lame
 	install -m 0644 include/lame.h ${STAGING_INCDIR}/lame/
 }
+
+SRC_URI[md5sum] = "e1206c46a5e276feca11a7149e2fc6ac"
+SRC_URI[sha256sum] = "f4f093e371c999a2a079607b74582a8ef5c1c3c9b322e3e997a47c1ea2afe2a5"

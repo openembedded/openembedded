@@ -23,3 +23,6 @@ do_stage () {
 		install -m 0644 $i ${STAGING_INCDIR}/
 	done
 }
+
+SRC_URI[md5sum] = "e1a41daf3bfc221afaf56751dc506f95"
+SRC_URI[sha256sum] = "e6bff5c00d7d93bade78535573494673f581118c38a8ca13c3afd63809335ba0"

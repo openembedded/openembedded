@@ -47,3 +47,6 @@ FILES_libqanava-la = "${libdir}/libqanava_la*.so*"
 FILES_libqanava-utl = "${libdir}/libqanava_utl*.so*"
 FILES_qanava-examples = "${bindir}"
 
+
+SRC_URI[md5sum] = "ff9b1bef0be97e81691697fa670461fc"
+SRC_URI[sha256sum] = "a779934f67b8de54ab075834b7b1024b13f832a4299699a6fcf7c5d5cfc74972"

@@ -55,3 +55,6 @@ do_configure() {
 do_install_append() {
   chmod a+s ${D}${bindir}/prismstumbler
 }
+
+SRC_URI[md5sum] = "3ef1bf7bfa9a144013155a144aaaa091"
+SRC_URI[sha256sum] = "3a568fbb3a68238d79731bcf933602171bb8d7d51226a7af722d357ab7d2a96b"

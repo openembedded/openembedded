@@ -27,3 +27,6 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/lcd4linux.init ${D}/${INIT_D_DIR}/lcd4linux
 }
 
+
+SRC_URI[md5sum] = "afbbaf37b2d27dfd41f7ba6cef0cc992"
+SRC_URI[sha256sum] = "96386bc45ab7b2a6ab4ac0aaef8634a1e524399d6252e2081581af073ef3b2f8"

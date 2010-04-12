@@ -33,3 +33,6 @@ PACKAGES =+ "libgphoto2-camlibs"
 FILES_libgphoto2-camlibs = "/usr/lib/gphoto2_port/ /usr/lib/gphoto2/"
 RDEPENDS_libgphoto2 = "libgphoto2-camlibs"
 
+
+SRC_URI[md5sum] = "1938cbd9718595fd419907bf2f7c3195"
+SRC_URI[sha256sum] = "f80dc7b4b280db736b07089e31aefc8112a47e285e7d0b4f53249630a07fec80"

@@ -31,3 +31,6 @@ python populate_packages_prepend () {
 	bb.data.setVar('RDEPENDS_' + metapkg, ' '.join(metapkg_rdepends), d)
 	bb.data.setVar('DESCRIPTION_' + metapkg, 'Xfce4 Window Manager extra themes - Meta package', d)
 }
+
+SRC_URI[md5sum] = "4dc5cb29cbd40e3b9dece12a85e20854"
+SRC_URI[sha256sum] = "9964ce221c1715a892c3ecb802739c0f5eae2b64912093d13fe7631710254c8c"

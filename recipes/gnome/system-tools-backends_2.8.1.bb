@@ -33,3 +33,6 @@ FILES_${PN} += " ${libdir}/pkgconfig"
 FILES_${PN} += " ${datadir}/dbus-1/system-services"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/files"
 FILES_${PN} += " ${datadir}/system-tools-backends-2.0/scripts"
+
+SRC_URI[archive.md5sum] = "2aecff382af4d8ba7fcd69298cc79413"
+SRC_URI[archive.sha256sum] = "c1f5746d22ef439ee47c9b012273ccbefbb2621075f05876bdb6ad5cfe4e1bbe"

@@ -47,3 +47,6 @@ if [ -f ${sysconfdir}/prelink.cache ]; then
 fi
 }
 
+
+SRC_URI[md5sum] = "6617a6681f4e5e3d8ddc48955d73d7ab"
+SRC_URI[sha256sum] = "a1c6170e508a3516d0a23963d7fa5cf0a457be431c210096f6b1cecd0731a9f4"

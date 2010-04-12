@@ -27,3 +27,6 @@ do_install() {
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/vtund-start.conf ${sysconfdir}/vtund.conf"
+
+SRC_URI[md5sum] = "309534fd03c5d13a19c43916f61f4bbf"
+SRC_URI[sha256sum] = "fc80dac6d622fdb2db16d772edc6ff7d0023ee6eb5f2acb79d894ee30197c2e5"

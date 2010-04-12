@@ -44,3 +44,6 @@ do_install() {
 	ln -sf ./BitchX-1.1-final ${D}${bindir}/BitchX
 }
 
+
+SRC_URI[md5sum] = "611d2dda222f00c10140236f4c331572"
+SRC_URI[sha256sum] = "7464cd75a10f2d117a10cf0184e5d4b9ece44de03a226402c17bdd3f2c7eca57"

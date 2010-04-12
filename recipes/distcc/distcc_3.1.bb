@@ -61,3 +61,6 @@ pkg_postrm_${PN} () {
     deluser distcc || true
     delgroup distcc || true
 }
+
+SRC_URI[md5sum] = "a1a9d3853df7133669fffec2a9aab9f3"
+SRC_URI[sha256sum] = "f55dbafd76bed3ce57e1bbcdab1329227808890d90f4c724fcd2d53f934ddd89"

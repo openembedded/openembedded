@@ -13,3 +13,6 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 inherit setuptools
 
 export HOME=/tmp/foo
+
+SRC_URI[md5sum] = "19ecf6cfcd000392c8405eceb488efb0"
+SRC_URI[sha256sum] = "35fe5623906ebb8ebe27b2d5c9f793f2dce1698e32d8bdada3b69e42349994d8"

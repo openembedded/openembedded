@@ -29,3 +29,6 @@ do_stage() {
             install -m 644 $i ${STAGING_LIBDIR}
         done
 }
+
+SRC_URI[md5sum] = "ff4104b0e58bca1b61d528edbd902769"
+SRC_URI[sha256sum] = "71d8c6459a4be1912dbc445e2e9d46303be6623cea51563c21abe39c8b5b0bd2"

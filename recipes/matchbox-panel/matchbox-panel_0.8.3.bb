@@ -17,3 +17,6 @@ FILES_${PN} = "${bindir} \
 	       ${datadir}/applications \
 	       ${datadir}/pixmaps"
 
+
+SRC_URI[md5sum] = "7e37e776d63c2f2596d786500ca4138e"
+SRC_URI[sha256sum] = "4fb8b6801dde49d4d37dadc3a5b73bc124bdb3798a554ff1c372c9eb3496bbcd"

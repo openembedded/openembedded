@@ -2,3 +2,6 @@ require libart-lgpl.inc
 
 PR = "${INC_PR}.1"
 
+
+SRC_URI[md5sum] = "ac885805d1918026a18b560f4015bc66"
+SRC_URI[sha256sum] = "46d66be76f962cd6f921011c60409c1d5070db4b01619e6d3e5093705665e7a7"

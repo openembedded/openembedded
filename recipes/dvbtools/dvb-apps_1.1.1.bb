@@ -105,3 +105,6 @@ python populate_packages_prepend () {
 	do_split_packages(d, dvb_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'DVB %s development package', extra_depends='${PN}-dev')
 	do_split_packages(d, dvb_libdir, '^lib(.*)\.so\.*', 'lib%s', 'DVB %s library', extra_depends='', allow_links=True)
 }
+
+SRC_URI[md5sum] = "de958cdb8d00e74792dd69f3c945b037"
+SRC_URI[sha256sum] = "371f8133db705bde6c2f79cccb0b1a1f626a0d94bf41acceba5d76a69155f057"

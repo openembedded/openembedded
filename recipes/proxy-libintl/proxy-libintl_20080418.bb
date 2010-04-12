@@ -35,3 +35,6 @@ do_install() {
     oe_libinstall -a -so -C lib libintl ${D}/${libdir}
 }
 
+
+SRC_URI[md5sum] = "63047fcbe5ff853db0d04981dd9f1888"
+SRC_URI[sha256sum] = "b8519dfd77939b23ca599a724b536f48340f2c795552aa2a600155230571141c"

@@ -8,3 +8,4 @@ require gcc-configure-sdk.inc
 require gcc-package-sdk.inc
 
 SRC_URI += 'file://sdk-libstdc++-includes.patch;patch=1'
+

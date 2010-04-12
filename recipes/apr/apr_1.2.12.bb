@@ -29,3 +29,6 @@ do_stage() {
   cp ${S}/build/make_exports.awk ${STAGING_DATADIR}/apr/
   cp ${S}/build/make_var_export.awk ${STAGING_DATADIR}/apr/
 }
+
+SRC_URI[md5sum] = "c5da94517e3918f0f2b2e0a05f56aa21"
+SRC_URI[sha256sum] = "db22b34c0bfcab8546632475c6de2c63990214fb8ae5e2ada565410a85e22134"

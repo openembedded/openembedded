@@ -79,3 +79,6 @@ pkg_postrm() {
 
 FILES_${PN} += "/opt /etc"
 LEAD_SONAME = "libqte.so.*"
+
+SRC_URI[md5sum] = "0005d4068b2227e26f4583c1a7415e97"
+SRC_URI[sha256sum] = "8db9b3948c607315f0ba0df61b32f747bec5479c38051d3e0e55b31b82c81af5"

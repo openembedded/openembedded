@@ -36,3 +36,6 @@ SRC_URI  = "\
   file://no_system_user_perms.patch;patch=1 \
   file://connman \
 "
+
+SRC_URI[md5sum] = "9bcdc528f38bc17ecb92519a28b741f1"
+SRC_URI[sha256sum] = "1853ed3d6400e25ef61ba1c98a7ef0f3984a2bf59aaf3485721cbc1de036b75c"

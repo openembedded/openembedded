@@ -22,3 +22,6 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 shfsmount shfsumount ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "016f49d71bc32eee2b5d11fc1600cfbe"
+SRC_URI[sha256sum] = "0d48ffe4d801180c15466f20aaa5802adb9d22067e8941e051dc3c64717ec3c2"

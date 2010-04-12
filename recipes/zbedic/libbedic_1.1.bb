@@ -40,3 +40,6 @@ do_stage() {
 }
 
 FILES_${PN}-dev = "${includedir} ${libdir}"
+
+SRC_URI[md5sum] = "211ea5a881b5691ec7a1aedbe7fc406c"
+SRC_URI[sha256sum] = "0cb299278f17d4580d9b1b56df8b7c356afb016f2a68ce7d13a8169f74e2a16b"

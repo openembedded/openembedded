@@ -24,3 +24,6 @@ S = "${WORKDIR}/webcam_server-${PV}"
 ######################################################################################
 
 inherit autotools
+
+SRC_URI[md5sum] = "96830836f64edbb12c248eb84e6b0d18"
+SRC_URI[sha256sum] = "b8e200ae66c20897c9aaa80b0044e638a0016d3bdb6e67560fd61f1ef162f305"

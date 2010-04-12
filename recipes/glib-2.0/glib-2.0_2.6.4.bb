@@ -49,3 +49,6 @@ do_stage () {
 	install -m 0644 ${S}/m4macros/glib-2.0.m4 ${STAGING_DATADIR}/aclocal/glib-2.0.m4
 	install -m 0644 ${S}/m4macros/glib-gettext.m4 ${STAGING_DATADIR}/aclocal/glib-gettext.m4
 }
+
+SRC_URI[md5sum] = "af7eeb8aae764ff763418471ed6eb93d"
+SRC_URI[sha256sum] = "acaff937432e26158c398e888fdcdd4eaf5a16ead75b46ecec194167b80c1fbd"

@@ -23,3 +23,6 @@ FILES_tiffxx-dev = "${libdir}/libtiffxx.so ${libdir}/libtiffxx.*a"
 FILES_tiffxx-dbg += "${libdir}/.debug/libtiffxx.so*"
 FILES_tiff-utils = "${bindir}/*"
 FILES_tiff-utils-dbg += "${bindir}/.debug/"
+
+SRC_URI[md5sum] = "9d7123bd0dbde2a3853fb758346adb78"
+SRC_URI[sha256sum] = "802e13e13cb0051e0b06e5f1e24e0cc613aa0f7c0ef742e5b90a667b40978c46"

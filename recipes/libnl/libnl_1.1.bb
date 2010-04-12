@@ -20,3 +20,6 @@ SRC_URI = "\
   file://netlink-local-fix.patch;patch=1 \
 "
 
+
+SRC_URI[md5sum] = "ae970ccd9144e132b68664f98e7ceeb1"
+SRC_URI[sha256sum] = "35cea4cfb6cd8af0cafa0f34fff81def5a1f193b8b8384299b4b21883e22edc3"

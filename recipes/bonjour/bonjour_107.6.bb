@@ -31,3 +31,6 @@ do_install() {
 	install -m 0640 ${WORKDIR}/bonjour.conf ${D}${sysconfdir}/
 
 }
+
+SRC_URI[md5sum] = "aa4e0e5c57f94489463ea6576591ce9d"
+SRC_URI[sha256sum] = "43d427d3d5c78aef57a49898def469cc4cae28190462205368be1f3a0fcc0165"

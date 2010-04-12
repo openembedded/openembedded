@@ -34,3 +34,6 @@ do_stage() {
 	install -d ${STAGING_DATADIR}/aclocal/
 	install -m 0644 libmikmod.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+SRC_URI[md5sum] = "19fc0879aebd1610813a23bd84726362"
+SRC_URI[sha256sum] = "857b66ef04d695f70414188b985e08b04f1f62cc250d72a43d0e0609dfbdba03"

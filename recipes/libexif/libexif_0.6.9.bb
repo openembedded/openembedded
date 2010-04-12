@@ -17,3 +17,6 @@ do_stage() {
 		install -m 0644 ${S}/libexif/$X ${STAGING_INCDIR}/libexif/$X
 	done
 }
+
+SRC_URI[md5sum] = "0aa142335a8a00c32bb6c7dbfe95fc24"
+SRC_URI[sha256sum] = "a2f309c702ee72967676d96b1a9d06806d069fde8e88076200cca6479c3d3c38"

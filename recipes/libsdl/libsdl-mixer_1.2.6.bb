@@ -22,3 +22,6 @@ do_stage() {
 	install -m 0644 SDL_mixer.h ${STAGING_INCDIR}/SDL/SDL_mixer.h
 }
 
+
+SRC_URI[md5sum] = "2b8beffad9179d80e598c22c80efb135"
+SRC_URI[sha256sum] = "89f94840b1b42ddfe53a8aee415331516f1bbdd942b42d25e74906a332cdf22a"

@@ -19,3 +19,6 @@ FILES_nbd-client-dbg += "/usr/sbin/.debug/nbd-client"
 FILES_nbd-server-dbg += "/usr/bin/.debug/nbd-server"
 FILES_nbd-client-doc = "/usr/share/man/man8/*"
 FILES_nbd-server-doc = "/usr/share/man/man1/*"
+
+SRC_URI[md5sum] = "bc7995b4961385269abc645575bcaf4d"
+SRC_URI[sha256sum] = "a69d1690ad587d81b85c34d1ef9bf47abf0ba21dc96876d95dd6a9a193a859f1"

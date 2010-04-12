@@ -49,3 +49,6 @@ do_install() {
 # bad rpaths we can't get rid off..
 INSANE_SKIP_gst-plugin-opengl = True
 
+
+SRC_URI[md5sum] = "f7b2e300d2d85756407ec529424ab237"
+SRC_URI[sha256sum] = "cf750821040102d2c9fbfed56472a86fd0d8c24ada37901c41867c88438a776d"

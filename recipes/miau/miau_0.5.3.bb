@@ -39,3 +39,6 @@ do_install_append() {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/miau.conf"
+
+SRC_URI[md5sum] = "7f6a372f1f9371094d0dd433b89ec48d"
+SRC_URI[sha256sum] = "ebede057bf1c312182d069b958eccfafbb18fca4cbba0a41f0c5f35094cb15e2"

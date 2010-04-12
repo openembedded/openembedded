@@ -32,3 +32,6 @@ do_stage() {
 		install -m 0644 ${S}/src/*.h ${STAGING_INCDIR}/matchbox-desktop/
 
 }
+
+SRC_URI[md5sum] = "3335a30b1a1aacfb39f23b505254765c"
+SRC_URI[sha256sum] = "ecb025d3660d80a9850973111b4fdfffaa50b47cbf0c5467b508d28d65146793"

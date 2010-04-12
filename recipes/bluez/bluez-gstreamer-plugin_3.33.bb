@@ -29,3 +29,6 @@ EXTRA_OECONF = " \
 
 
 FILES_${PN} = "${libdir}/gstreamer-0.10/libgstbluetooth.so"
+
+SRC_URI[md5sum] = "2e02aabd1a48998a48a22797f59ccf14"
+SRC_URI[sha256sum] = "c9e8f3aa3a34a558293faa1cb2b2204061852d045aaa5311bb1481f89751ab1d"

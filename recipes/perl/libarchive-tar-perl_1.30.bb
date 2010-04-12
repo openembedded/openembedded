@@ -12,3 +12,6 @@ S = "${WORKDIR}/Archive-Tar-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "89604ea8fadc990c7bb668259dacb439"
+SRC_URI[sha256sum] = "c456d5c73a57a567440bca5c138a549a21637aa2e4049228b5ba63cf68d75a1a"

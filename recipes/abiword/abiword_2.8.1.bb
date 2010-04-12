@@ -55,3 +55,6 @@ python populate_packages_prepend () {
 FILES_${PN}-dev += "${libdir}/abiword-${SHRT_VER}/plugins/*.la"
 FILES_${PN}-dbg += "${libdir}/abiword-${SHRT_VER}/plugins/.debug"
 
+
+SRC_URI[md5sum] = "284fe25289c160c3797b527a8aacad12"
+SRC_URI[sha256sum] = "f51b614b1202cf63a5f7ede093d31d638ece3c8e76da4036cc4aed589a9cd2ec"

@@ -66,3 +66,6 @@ pkg_postinst () {
 	fi
 	exit 0
 }
+
+SRC_URI[md5sum] = "1f93b419b35f0b0b2ae78cf3cb1ef491"
+SRC_URI[sha256sum] = "3f4f59d07af4fccdf6aed0822b25422ad7cfaee442a3ab870dc031f173d456f2"

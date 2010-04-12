@@ -33,3 +33,6 @@ EXTRA_OECONF = "--disable-mysql \
                 --with-id3lib-h=${STAGING_INCDIR} \
                 --with-id3lib-libs=${STAGING_LIBDIR} \
 		ac_cv_header_sys_inotify_h=yes"
+
+SRC_URI[md5sum] = "661f08933830d920de21436fe122fb15"
+SRC_URI[sha256sum] = "25e0b3d761e41fc6793c780eb7f638719867cdc6d3429ec24f72d1e9556ac1d2"

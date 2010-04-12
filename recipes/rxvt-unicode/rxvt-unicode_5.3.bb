@@ -53,3 +53,6 @@ do_compile () {
 	# docs need "yodl" and I have no idea what that is
 	oe_runmake -C src "LIBTOOL=$LIBTOOL"
 }
+
+SRC_URI[md5sum] = "1a5372a40d728c8a50e059b5d826490e"
+SRC_URI[sha256sum] = "1906326e75c27e2e7ad9a530e92d104359488c7b1bb7b1d113dd6a2efa8a60ca"

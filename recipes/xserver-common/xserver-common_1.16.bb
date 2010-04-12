@@ -21,3 +21,6 @@ SRC_URI_append = " file://setDPI.sh \
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
 }
+
+SRC_URI[md5sum] = "237d27a5b46d1fa88fb43fb1a40cf209"
+SRC_URI[sha256sum] = "c93e01cd754e8cafc6e02d32a7304d4b152e6aba9e6b0bcaea9ded12263f24b4"

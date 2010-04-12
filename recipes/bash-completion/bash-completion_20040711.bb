@@ -23,3 +23,6 @@ do_install() {
 	install -m 0755 contrib/* ${D}${sysconfdir}/bash_completion.d/
 }
 
+
+SRC_URI[md5sum] = "90ee706965dbf7b24515220d3bdc1f85"
+SRC_URI[sha256sum] = "8e4ddca8aa5ae4261bfcba056292aec4c8bf26fe847e01b67f4b3065fc512a54"

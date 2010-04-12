@@ -25,3 +25,6 @@ do_install() {
 }
 
 FILES_${PN} += "${libdir}/firmware/"
+
+SRC_URI[md5sum] = "6a2c68021e2e05c4eb35e67158b9414e"
+SRC_URI[sha256sum] = "324d0a55f73c82ad48635a94a8d72277a2280030df6d036eafe3498c933dee6d"

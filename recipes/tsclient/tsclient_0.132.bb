@@ -27,3 +27,6 @@ FILES_${PN}="${bindir}  \
 	${datadir}/pixmaps/tsclient/keyboard.png \
 	${datadir}/pixmaps/tsclient/program.png \
 	${datadir}/pixmaps/tsclient/sound.png"
+
+SRC_URI[md5sum] = "748aada74e9e096467a9d553538df885"
+SRC_URI[sha256sum] = "da12dc1257ffb9dd3f9acfc53c7f420b234738a67ffbbe0e9dd96e18d04ebad0"

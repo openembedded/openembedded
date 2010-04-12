@@ -14,3 +14,6 @@ SRC_URI = "\
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+SRC_URI[md5sum] = "3b3d8397c2c9a58fc59a90e2b49c651a"
+SRC_URI[sha256sum] = "dd60bc66b1627d3cbd0950499017dfd57a0705bb12493bb0de2a7b9b5c0873bc"

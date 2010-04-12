@@ -33,3 +33,6 @@ do_stage () {
 	oe_libinstall -so -a -C libcharset/lib libcharset ${STAGING_LIBDIR}
 	autotools_stage_includes
 }
+
+SRC_URI[md5sum] = "b77a17e4a5a817100ad4b2613935055e"
+SRC_URI[sha256sum] = "fbf5b9a63ea6e3abebfabc04506f0e18a2860071031e34ea4ad4f450b8c43d4b"

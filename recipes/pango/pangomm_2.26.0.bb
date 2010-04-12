@@ -17,3 +17,6 @@ EXTRA_OECONF = " --disable-documentation "
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
+
+SRC_URI[md5sum] = "37f54dc8e6cb73ed923b22f313352156"
+SRC_URI[sha256sum] = "bf26ebe42c12c81e5c32ceca80ff226a01c8d80d4db2a4cc3463d5bf241b095e"

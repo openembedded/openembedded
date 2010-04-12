@@ -18,3 +18,6 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ngrep ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "35e821cfd888e9523a90fb7e5074a072"
+SRC_URI[sha256sum] = "fd5a85b48613452fbfc9ce6d6e3fa3f37992731422eb2843235fbf4e02d6f1e9"

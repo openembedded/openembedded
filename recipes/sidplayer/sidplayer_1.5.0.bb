@@ -22,3 +22,6 @@ do_install() {
         	   ${D}${palmtopdir}/pics
 	cp -pPR ../apps ../bin ../pics ${D}${palmtopdir}/
 }
+
+SRC_URI[md5sum] = "bba4a99e59581066e905c9326a724ba5"
+SRC_URI[sha256sum] = "bc6bfd100c495e74baa651c470252484b19bfc2e6fa8520f591b0c01b9fcfb5d"

@@ -14,3 +14,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/viking/viking-${PV}.tar.gz \
 LDFLAGS += "-lstdc++"
 
 inherit autotools
+
+SRC_URI[md5sum] = "14c7de0702a5bd5e45924bd166ae5ee2"
+SRC_URI[sha256sum] = "9370d4e6a7166c03c8838edc9defd5c9c637b0a2a2f765e2a0d7ec4ed9079fb8"

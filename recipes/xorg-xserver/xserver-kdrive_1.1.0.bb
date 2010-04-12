@@ -59,3 +59,6 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 do_configure_prepend() {
     sed -i -e 's/tslib-0.0/tslib-1.0/' ${S}/configure.ac
 }
+
+SRC_URI[md5sum] = "d070c58a598fb52c5cb86344725c4ad6"
+SRC_URI[sha256sum] = "da1d5ce91098e1187579306275a9664ef6f1cea935fabcbd72f4c77af415a461"

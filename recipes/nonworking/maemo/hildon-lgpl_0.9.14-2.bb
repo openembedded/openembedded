@@ -24,3 +24,6 @@ do_stage() {
 	install -m 644 hildon-lgpl/*.h ${STAGING_INCDIR}/hildon-widgets
 	install  hildon-lgpl/.libs/libhildonlgpl.so.0.4.0 ${STAGING_LIBDIR}/libhildonlgpl.so
 }
+
+SRC_URI[md5sum] = "5218b2d7864f6f8af3ab6ea0cc27a313"
+SRC_URI[sha256sum] = "43a532c99b8cdcc0e2f60d95769dee89f2e03a37c5d5931b8de6e4c39ad721ad"

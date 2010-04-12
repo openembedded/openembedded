@@ -67,3 +67,6 @@ FILES_${PN}-dbg += "\
   ${libdir}/bluetooth/plugins/.debug \
   ${libdir}/*/.debug \
 "
+
+SRC_URI[md5sum] = "c1106f56f8e5562cf7c49d3455d2c5f7"
+SRC_URI[sha256sum] = "2bfc5db7703cbcaaa4be2576609136450e1dac5d4782707dd0dc81754e3c2489"

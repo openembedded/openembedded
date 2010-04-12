@@ -66,3 +66,6 @@ FILES_lirc-exec = "${bindir}/irexec ${sysconfdir}/init.d/lircexec"
 FILES_lirc-remotes = "${datadir}/lirc/remotes"
 FILES_lirc-nslu2example = "${sysconfdir}/lircd.conf ${sysconfdir}/lircrc"
 CONFFILES_lirc-nslu2example = "${FILES_lirc-nslu2example}"
+
+SRC_URI[md5sum] = "596e05980f75372fa998d50eb1dcade0"
+SRC_URI[sha256sum] = "4097abc39b928970ba3232942ac5a6db7ec4ed4164593b9223c90470c9c994dc"

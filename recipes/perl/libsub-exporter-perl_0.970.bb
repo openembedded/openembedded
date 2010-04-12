@@ -14,3 +14,6 @@ S = "${WORKDIR}/Sub-Exporter-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "10eaa77a13de4c23640cdd1aaf0f2412"
+SRC_URI[sha256sum] = "d95895fc8a8277b3b8ff34e2eaaebfb56bbc044c8bf6522dbb47e2fb714b238c"

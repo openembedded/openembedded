@@ -21,3 +21,6 @@ do_install() {
         install -m 0644 Qtopia/opt/QtPalmtop/pics/zipsc/*.png_ ${D}${palmtopdir}/pics/zipsc/
         install -m 0644 Qtopia/opt/QtPalmtop/apps/Applications/zipsc.desktop ${D}${palmtopdir}/apps/Applications/
 }
+
+SRC_URI[md5sum] = "84c9037c144cb9a56137e2c218532ee1"
+SRC_URI[sha256sum] = "a5e989f87fd85b66b2cea1246f14577cbef9a618abde2df2c17a04030fb6cda6"

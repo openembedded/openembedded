@@ -20,3 +20,6 @@ FILES_${PN} += "${libdir}/mozilla/plugins/*.so"
 FILES_${PN}-dev += "${libdir}/mozilla/plugins/*a"
 FILES_${PN}-dbg += "${libdir}/mozilla/plugins/.debug"
 
+
+SRC_URI[md5sum] = "c5958f3b003190b21977495021ac2b28"
+SRC_URI[sha256sum] = "0d7927f2e791321b2867c120eb4140d9017c59b77925eb909b2a03f3ef2a8fe4"

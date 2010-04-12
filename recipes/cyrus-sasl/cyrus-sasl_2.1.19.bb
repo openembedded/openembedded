@@ -51,3 +51,6 @@ pkg_postinst () {
 	echo "cyrus" | saslpasswd2 -p -c cyrus
 	chgrp mail /etc/sasldb2
 }
+
+SRC_URI[md5sum] = "ea76410ad88fa7b6c17a6aac424382c9"
+SRC_URI[sha256sum] = "0ee2d5d04972a15c3154730f328467a5cf5c7e69766a73bab06664263666bfeb"

@@ -59,3 +59,6 @@ pkg_postinst_${PN}-ndisc6 () {
 pkg_postinst_${PN}-rdisc6 () {
 	chmod 4555 ${bindir}/rdisc6
 }
+
+SRC_URI[md5sum] = "77f4154d78304e87698d6da4f5f9ff86"
+SRC_URI[sha256sum] = "0b60f1101d49f99111232eb6034ec851a46434bf90a056fd087b4a62451ec9ed"

@@ -30,3 +30,6 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove bunzip2 bunzip2.${PN}
 	update-alternatives --remove bzcat bzcat.${PN}
 }
+
+SRC_URI[md5sum] = "3c15a0c8d1d3ee1c46a1634d00617b1a"
+SRC_URI[sha256sum] = "f7bf5368309d76e5daf3a89d4d1bea688dac7780742e7a0ae1af19be9316fe22"

@@ -21,3 +21,6 @@ PACKAGES_prepend = "nilfs-utils-mkfs nilfs-utils-stats "
 
 FILES_nilfs-utils-mkfs = "${base_sbindir}/mkfs.nilfs2"
 FILES_nilfs-utils-stats = "${bindir}/dumpseg ${bindir}/lssu"
+
+SRC_URI[md5sum] = "2621a9f9145c5edfa38e6e5ee79ceca1"
+SRC_URI[sha256sum] = "2f79bba49c075c101963aeff8abbf7acc77f489f0b5d7dddb1e5405f48cbd4d4"

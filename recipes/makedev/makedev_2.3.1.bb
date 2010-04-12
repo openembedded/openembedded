@@ -14,3 +14,6 @@ do_install () {
 }
 
 FILES_${PN} = "/dev"
+
+SRC_URI[md5sum] = "89c4b6b4a89f6502626783716fc7d887"
+SRC_URI[sha256sum] = "8599712f2b2b3778eea344f59e1512cea284e802560317fac436585885a41dfa"

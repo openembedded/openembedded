@@ -14,3 +14,6 @@ SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+SRC_URI[md5sum] = "98f3917fc4d0855c8f0eab9761533835"
+SRC_URI[sha256sum] = "868c8c105427047842883efc2b1693137fae52e78017a7ae98c2e37b7c1e3f80"

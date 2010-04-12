@@ -18,3 +18,6 @@ do_install() {
 FILES_${PN} += "/lib/firmware/zd1211/*"
 PACKAGE_ARCH = "all"
 
+
+SRC_URI[md5sum] = "19f28781d76569af8551c9d11294c870"
+SRC_URI[sha256sum] = "866308f6f59f7075f075d4959dff2ede47735c751251fecd1496df1ba4d338e1"

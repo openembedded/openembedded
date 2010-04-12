@@ -87,3 +87,6 @@ AUTOFOO="config.guess config.sub depcomp install-sh missing mkinstalldirs"
            rm config/${i}
          done
 }
+
+SRC_URI[md5sum] = "ec92966f4d0c8b50c344fe901859ae2a"
+SRC_URI[sha256sum] = "d34c913e7fff4ea61cf8640b10f9118829cc5359045a1821b6510f3c8b1be26e"

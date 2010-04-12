@@ -29,3 +29,6 @@ do_install() {
 	oe_runmake -f makefiles/makefile.linux install \
 	INCPATH="${D}${includedir}" LIBPATH="${D}${libdir}" prefix=${prefix}
 }
+
+SRC_URI[md5sum] = "d688ca879c934e9cde8b323cf3025f89"
+SRC_URI[sha256sum] = "321c2dc105dfbe61ddde859040c79dec65e4daef8fb44167484d1ce99119c14c"

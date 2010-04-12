@@ -29,3 +29,6 @@ RDEPENDS = "\
   python-threading \
 "
 
+
+SRC_URI[md5sum] = "8ab110b43f891c9664628133753c903a"
+SRC_URI[sha256sum] = "d9e8073c7abb0fd9a94ec72c48f5bf4673de8e9333082dce6954d18a2fe35efd"

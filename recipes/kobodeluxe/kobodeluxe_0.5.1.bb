@@ -53,3 +53,6 @@ CONFFILES_${PN} = "${sysconfdir}/kobo-deluxe/default-config"
 FILES_${PN}-data = "${datadir}"
 
 PACKAGE_ARCH_${PN}-data = "all"
+
+SRC_URI[md5sum] = "cb5dcdaf07ccad18a921058138dedc4a"
+SRC_URI[sha256sum] = "0f7b910a399d985437564af8c5d81d6dcf22b96b26b01488d72baa6a6fdb5c2c"

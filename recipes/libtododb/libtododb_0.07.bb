@@ -21,3 +21,6 @@ do_install () {
 	gpe_do_install
 	oe_runmake PREFIX=${prefix} DESTDIR=${D} install-devel
 }
+
+SRC_URI[md5sum] = "5df2e1f7564d066dce6ec24344605528"
+SRC_URI[sha256sum] = "bc3fb1a20ec97149f6e81285a22bdc48fea9c4fbc9abad6919b87ce2f44acbc3"

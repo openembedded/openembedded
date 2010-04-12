@@ -40,3 +40,6 @@ do_stage () {
 		ln -sf o$tool ${STAGING_BINDIR_NATIVE}/$tool
 	done
 }
+
+SRC_URI[md5sum] = "87f56e79ae0c20397f4207d61d154303"
+SRC_URI[sha256sum] = "987eeb9460185950e066e5db3b5fa531e53e213742b545288405552a5a7bb704"

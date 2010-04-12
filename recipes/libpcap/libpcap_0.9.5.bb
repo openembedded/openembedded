@@ -1,3 +1,6 @@
 require libpcap.inc
 
 PR = "r2"
+
+SRC_URI[md5sum] = "b0626ad59004fe5767ddd2ce743a2271"
+SRC_URI[sha256sum] = "6a6568bc082c266864687674707628d1531e86cffad439af72b865ac3169c322"

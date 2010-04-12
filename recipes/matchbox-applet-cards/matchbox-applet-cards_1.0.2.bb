@@ -26,3 +26,6 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/sd_unmount.png ${D}${datadir}/pixmaps/sd_unmount.png
 	install -m 0644 ${WORKDIR}/cards.png ${D}${datadir}/pixmaps/cards.png
 }
+
+SRC_URI[md5sum] = "0c4f6da5da1196a60af9a7943e583d58"
+SRC_URI[sha256sum] = "b1bdff4c61d320fdbcf9c13a1cb3c3afa4908bdda1d7aad224c6145ab5128706"

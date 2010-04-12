@@ -23,3 +23,6 @@ do_install() {
 	install -m 755 "${S}/vconfig" "${D}/usr/sbin/vconfig"
 }
 
+
+SRC_URI[md5sum] = "1edd81324b4ffc0702c9ff289a342d91"
+SRC_URI[sha256sum] = "5a254457f718df733a03e9e5c39caaba9c0aac864ea69cb5d8907ec6df28e57f"

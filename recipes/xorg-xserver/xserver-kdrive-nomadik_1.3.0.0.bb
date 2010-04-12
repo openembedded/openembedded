@@ -43,3 +43,6 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 do_install() {
         autotools_do_install
 }
+
+SRC_URI[md5sum] = "a51a7d482e3c689394755bb17bda8526"
+SRC_URI[sha256sum] = "93c656f142f37607c15372dd24c5de9eab82cd79c5d60449174a928d345c2975"

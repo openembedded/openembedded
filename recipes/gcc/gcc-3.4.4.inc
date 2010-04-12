@@ -2,7 +2,7 @@ require gcc-common.inc
 
 INC_PR = "r15"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	   file://gcc34-reverse-compare.patch;patch=1 \
 	   file://gcc34-arm-ldm.patch;patch=1 \
 	   file://gcc34-arm-ldm-peephole.patch;patch=1 \
@@ -26,4 +26,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc-cross-fixincl.patch;patch=1 \
 	   file://gcc-posix-open-fix.patch;patch=1 \
 	   "
-SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
+SRC_URI_append = " file://zecke-no-host-includes.patch;patch=1 "
+
+SRC_URI[archive.md5sum] = "b594ff4ea4fbef4ba9220887de713dfe"
+SRC_URI[archive.sha256sum] = "3444179840638cb8664e8e53604900c4521d29d57785a5091202ee4937d8d0fd"

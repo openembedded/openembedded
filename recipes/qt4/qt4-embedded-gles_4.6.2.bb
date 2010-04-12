@@ -10,5 +10,3 @@ require qt-${PV}.inc
 FILESPATHPKG .= ":qt4-embedded-${PV}:qt4-embedded"
 
 DEPENDS += "virtual/egl"
-
-

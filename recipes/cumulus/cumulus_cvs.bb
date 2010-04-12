@@ -42,3 +42,6 @@ do_install() {
 
 	install -m 0755 gpsClient ${D}${palmtopdir}/bin/
 }
+
+SRC_URI[md5sum] = "c5b0ca7f2164e47ef72889baf23690f6"
+SRC_URI[sha256sum] = "e862f8327a3ba42c7bc756fe846764754b3dab76d8ccbedd5a195b582070b791"

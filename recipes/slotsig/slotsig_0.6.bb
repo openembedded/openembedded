@@ -23,3 +23,6 @@ do_stage() {
 do_install() {
 	oe_libinstall -so libslotsig ${D}${libdir}
 }
+
+SRC_URI[md5sum] = "dfe9f5d3f17075ec23eb923899ac5f24"
+SRC_URI[sha256sum] = "124499d3c5d2d44ab07b60c235547079044f3728fd3c907987900e270bd947f8"

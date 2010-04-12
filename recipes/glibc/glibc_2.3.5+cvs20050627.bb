@@ -36,8 +36,8 @@ RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 #	   \
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
 #	   file://ldd.patch;patch=1;pnum=0 \
-SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat.com__20050627.tar.gz \
-	   http://familiar.handhelds.org/source/v0.8.3/stash_ports_sources.redhat.com__20050627.tar.gz \
+SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat.com__20050627.tar.gz;name=archive \
+	   http://familiar.handhelds.org/source/v0.8.3/stash_ports_sources.redhat.com__20050627.tar.gz;name=ports \
 	   file://arm-audit.patch;patch=1 \
 	   file://arm-audit2.patch;patch=1 \
 	   file://arm-no-hwcap.patch;patch=1 \
@@ -136,3 +136,8 @@ do_compile () {
 require glibc-stage.inc
 
 require glibc-package.inc
+
+SRC_URI[archive.md5sum] = "ecbdba24ac6274076d4a073bf1ee8ef0"
+SRC_URI[archive.sha256sum] = "b7bed167db8eb005b55392130a8b3f4d5567bcf62fb5f003a91f6c0bfffa5773"
+SRC_URI[ports.md5sum] = "a457ecf845ef148b3879bd16ce7b89ea"
+SRC_URI[ports.sha256sum] = "1e5d4c2277997dcf2f6eec77b10ed0a84865fb18b0d04da9b99f266e796ba820"

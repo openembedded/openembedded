@@ -23,3 +23,6 @@ do_install() {
         install -d ${D}${palmtopdir}/pics/poqetp
         cp -pPR pics/* ${D}${palmtopdir}/pics/poqetp/
 }
+
+SRC_URI[md5sum] = "b003614237445d23b512cb9571565524"
+SRC_URI[sha256sum] = "4347a70fe84bd2ccecc90738fb121d28298cf0bfdb4963ceee088c56d3109899"

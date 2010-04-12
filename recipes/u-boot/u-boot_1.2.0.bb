@@ -41,3 +41,6 @@ http://www.bitshrine.org/gpp/u-boot-1.2.0-mpc8315erdb-improve-ddr-performance.pa
 http://www.bitshrine.org/gpp/u-boot-1.2.0-mpc8315erdb-fix-PCI-IO-base.patch;patch=1 \ 
 "
 
+
+SRC_URI[md5sum] = "17aeee76ca4c07887bbfea8a52d40884"
+SRC_URI[sha256sum] = "62192ddf019c5d24f6538b33c9e69b6e5792bf5b0f464c0149061e2f0871108b"

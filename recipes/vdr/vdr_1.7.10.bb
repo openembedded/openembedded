@@ -33,3 +33,6 @@ python populate_packages_prepend () {
 
 FILES_${PN} = "${bindir}/* /var/lib/vdr/conf/* ${sysconfdir}/*"
 FILES_${PN}-dbg += "${PLUGINDIR}/.debug/*"
+
+SRC_URI[md5sum] = "c74ee966baca1c47ed6b9e2be3d1639b"
+SRC_URI[sha256sum] = "165bfcd811ef92cab50d11a88a76c481e105689438929414d27edfacfb312f52"

@@ -8,27 +8,27 @@ DEFAULT_PREFERENCE_avr32 = "1"
 
 PR = "r13"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=kernel \
 	   file://binutils-buildid-arm.patch;patch=1 \
            file://kallsyms-missing-include.patch;patch=1 \
            file://defconfig \
 	   "
 
 # Bug fixes on the 2.6.23.x stable branch
-SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.17.bz2;patch=1"
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.17.bz2;patch=1;name=stablepatch"
 # Real-time preemption (includes CFS). This is experimental and requires a different defconfig.
 #SRC_URI += "file://patch-2.6.23.12-rt14;patch=1"
 # Only the Completely Fair Scheduler (CFS), the official backport from 2.6.24 (adapted for 2.6.23.17)
 SRC_URI += "file://sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
 # Add support for squashfs-lzma (a highly compressed read-only filesystem)
-SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;patch=1"
+SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;patch=1;name=squashfspatch"
 
 SRC_URI += "file://time.h.patch;patch=1"
 
 # The Atmel patch doesn't apply against 2.6.23.12  :( 
-SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
+SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=kernel \
                  file://defconfig \
-                 http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1 \
+                 http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1;name=atmelpatch \
                 "
 SRC_URI_append_em-x270 = "\
 	file://em-x270.patch;patch=1 "
@@ -93,3 +93,12 @@ python do_compulab_image() {
 
 addtask compulab_image after do_package before do_build
 
+
+SRC_URI[kernel.md5sum] = "2cc2fd4d521dc5d7cfce0d8a9d1b3472"
+SRC_URI[kernel.sha256sum] = "d4e67c0935ffb2a4158234bff92cc791b83177866009fc9b2214104e0038dbdb"
+SRC_URI[stablepatch.md5sum] = "7d2dbdf18868b496548d4375d8c67d3a"
+SRC_URI[stablepatch.sha256sum] = "04dfd3f22dc3abce7d7509c0836350540b60cadd19292be70a2a2900c5fbe7b8"
+SRC_URI[squashfspatch.md5sum] = "4f9b572c2381c457d866cda9300208de"
+SRC_URI[squashfspatch.sha256sum] = "e0f476d04af5921d4a44ab312a03fc6c7122b71adff6e38add8aa188d9969784"
+SRC_URI[atmelpatch.md5sum] = "649a8c56f8c5cc2c8deee0055f7ed5b0"
+SRC_URI[atmelpatch.sha256sum] = "80de5fe71259921fcd4dd3182f58791ec6eb8380e6030fac10c1d2a53a10133e"

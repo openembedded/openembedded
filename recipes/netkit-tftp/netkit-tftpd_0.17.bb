@@ -34,3 +34,6 @@ pkg_postinst () {
 	#force inetd to reload settings
 	kill -SIGHUP `cat /var/run/inetd.pid`
 }
+
+SRC_URI[md5sum] = "b7262c798e2ff50e29c2ff50dfd8d6a8"
+SRC_URI[sha256sum] = "3a43c0010d4e61f412563fd83769d4667d8b8e82903526d21cb9205fe55ad14d"

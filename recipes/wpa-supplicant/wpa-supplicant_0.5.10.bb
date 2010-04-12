@@ -61,3 +61,6 @@ do_install () {
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-pre-up.d/wpasupplicant
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-post-down.d/wpasupplicant
 }
+
+SRC_URI[md5sum] = "9e7b99da67c47d81121368c6d580d069"
+SRC_URI[sha256sum] = "c5c5ae89b4d3a247d4f5dcfa37e86df248d7e483d42636ef1f82c0bc48597dde"

@@ -84,3 +84,6 @@ FILES_${PN}-plugin-display-fb-dbg = "${libdir}/squeak/3.10-1/.debug/vm-display-f
 FILES_${PN}-plugin-v4l-dbg = "${libdir}/squeak/3.10-1/.debug/VideoForLinuxPlugin.so"
 FILES_${PN}-plugin-squeak3d-dbg = "${libdir}/squeak/3.10-1/.debug/Squeak3D.so"
 FILES_${PN}-plugin-unix-process-dbg = "${libdir}/squeak/3.10-1/.debug/UnixOSProcessPlugin.so"
+
+SRC_URI[md5sum] = "7fbac029115831d18422f3079dbb0444"
+SRC_URI[sha256sum] = "d5e9cab31f25f842f42bde153e04b93547b559e75da08f1b997a47f70d003133"

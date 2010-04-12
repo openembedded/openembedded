@@ -21,3 +21,6 @@ do_install_append() {
         install -d ${D}${datadir}/pixmaps
         install -m 0644 ${WORKDIR}/mboxkbd-layouts-gui.png ${D}${datadir}/pixmaps/
 }
+
+SRC_URI[md5sum] = "bae81f5b80e7e923ee32e1b10c87de7f"
+SRC_URI[sha256sum] = "593d74ba14e8f1c6263f612f0f5ee53eb4a41d05d873d0019aa1542e6971a952"

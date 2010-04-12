@@ -23,3 +23,6 @@ do_install() {
         install -m 644 pptp.8 ${D}${mandir}/man8
         install -m 644 ${WORKDIR}/options.pptp ${D}${sysconfdir}/ppp
 }
+
+SRC_URI[md5sum] = "b47735ba5d6d37dfdbccb85afc044ede"
+SRC_URI[sha256sum] = "8e3fa9f17c22818eae68419f66966865423206d736eb74d212a3501f62423276"

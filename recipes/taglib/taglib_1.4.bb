@@ -22,3 +22,6 @@ do_stage() {
 PACKAGES =+ "${PN}-c"
 FILES_${PN}-dbg += "${bindir}/taglib-config"
 FILES_${PN}-c = "${libdir}/libtag_c.so.*"
+
+SRC_URI[md5sum] = "dcd50ddb2544faeae77f194804559404"
+SRC_URI[sha256sum] = "0ff805bb8dbf72a45d347f2310f7e5c86e2e7419a069d546e53cf5f221c196ab"

@@ -20,3 +20,6 @@ do_configure () {
 }
 
 FILES_${PN} += "/usr/lib/hacklocaledir.so"
+
+SRC_URI[md5sum] = "d31a0a38c2ec71faa06723f6b8bd3076"
+SRC_URI[sha256sum] = "a4adadf76b496a6bc50795702253ecfcb6f0d159b68038f31a5362009340bca2"

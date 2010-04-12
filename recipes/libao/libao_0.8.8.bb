@@ -39,3 +39,6 @@ FILES_${PN}-oss-dev = "${libdir}/ao/plugins-2/liboss*.la"
 FILES_${PN} += "${libdir}/ao/plugins-2/*.so"
 FILES_${PN}-dev += "${libdir}/ao/plugins-2/*.la"
 FILES_${PN}-dbg += "${libdir}/ao/plugins-2/.debug"
+
+SRC_URI[md5sum] = "b92cba3cbcf1ee9bc221118a85d23dcd"
+SRC_URI[sha256sum] = "e52e05af6b10f42d2ee9845df1a581bf2b352060eabf7946aee0a600c3878954"

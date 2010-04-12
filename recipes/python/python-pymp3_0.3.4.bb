@@ -27,3 +27,6 @@ do_install() {
 }
 
 FILES_${PN} += " ${libdir}/${PYTHON_DIR}/site-packages/"
+
+SRC_URI[md5sum] = "28e884057750aa4f0da368678e5b20bd"
+SRC_URI[sha256sum] = "e534ea5505e2d0a571ca8baa4b34260953e796f6c762013756373f13411ebd6e"

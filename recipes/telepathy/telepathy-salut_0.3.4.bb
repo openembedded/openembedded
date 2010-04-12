@@ -16,3 +16,6 @@ do_compile_prepend() {
 
 FILES_${PN} += "${datadir}/telepathy \
 		${datadir}/dbus-1"
+
+SRC_URI[md5sum] = "1cf9e0a1c6becbbeb5872e7a77e9fc77"
+SRC_URI[sha256sum] = "0eb6e2cccd3e4fa61264507fe984d10cd47ebb125a6f9d5f31cbb3040f57b36c"

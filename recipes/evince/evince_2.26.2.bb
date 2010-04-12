@@ -24,3 +24,6 @@ FILES_${PN}-dbg += "${libdir}/evince/*/*/.debug"
 FILES_evince-nautilus-extension = "${libdir}/nautilus/*/*so"
 
 
+
+SRC_URI[archive.md5sum] = "ed8b9fb5c5d6feafd19f0114b736c9ef"
+SRC_URI[archive.sha256sum] = "5165adb77af7dd355c600bc1fce4bcc7de2538ed02d0f87028660096a61af489"

@@ -22,3 +22,6 @@ require ixp4xx-kernel.inc
 require ixp4xx-kernel-svnpatch.inc
 
 SRC_URI += "file://defconfig"
+
+SRC_URI[kernel.md5sum] = "296a6d150d260144639c3664d127d174"
+SRC_URI[kernel.sha256sum] = "c95280ff6c5d2a17788f7cc582d23ae8a9a7ba3f202ec6e4238eaadfce7c163d"

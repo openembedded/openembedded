@@ -18,3 +18,6 @@ do_compile() {
 do_install() {
 	make DESTDIR=${D} install
 }
+
+SRC_URI[md5sum] = "7892c7010512a9bc6697a295c921da25"
+SRC_URI[sha256sum] = "f3bc6747dba7d1a35cd125ca0bd4649f88704be211cf7e47d36b43c7f44ce803"

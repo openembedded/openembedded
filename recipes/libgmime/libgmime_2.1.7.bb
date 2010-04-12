@@ -21,3 +21,6 @@ do_stage () {
 	oe_libinstall -a -so -C gmime libgmime-2.0 ${STAGING_LIBDIR}
 	gnome_stage_includes
 }
+
+SRC_URI[md5sum] = "ed99c382471294896f576e5f77694142"
+SRC_URI[sha256sum] = "39ef812217a76982947a7ac3b4a97e8303466a3dd93709366d1559e0a7ec8a46"

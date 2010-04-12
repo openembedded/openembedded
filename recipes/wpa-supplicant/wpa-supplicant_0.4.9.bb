@@ -44,3 +44,6 @@ do_install () {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/wpa_supplicant.conf"
+
+SRC_URI[md5sum] = "98498c152cbfc388c306fd9bbf7d57d4"
+SRC_URI[sha256sum] = "bc7b0dc81248394d2456ea25059bdf1df2173fa8d178cda7d4570671ab916857"

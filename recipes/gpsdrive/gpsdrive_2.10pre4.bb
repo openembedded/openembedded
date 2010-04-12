@@ -31,3 +31,6 @@ FILES_${PN}-map-icons-classic = "${datadir}/map-icons/classic.small"
 FILES_${PN}-map-icons-other = "${datadir}/map-icons/classic.big ${datadir}/map-icons/japan ${datadir}/map-icons/nickw ${datadir}/map-icons/square.big ${datadir}/map-icons/square.small ${datadir}/map-icons/svg"
 FILES_${PN}-maps = "${datadir}/${PN}/maps ${datadir}/${PN}/map_koord.txt"
 FILES_${PN}-doc = "${datadir}/man ${datadir}/${PN}/Documentation"
+
+SRC_URI[md5sum] = "5d0c7dc9163b2fd9a92ddd886ed7cfab"
+SRC_URI[sha256sum] = "ebefe385ec41e3ff26fa55c0fcecbed75d4cd5581ae5ae39038aac796af126c6"

@@ -13,3 +13,6 @@ FILES_${PN}-dbg += " \
                "
 
 
+
+SRC_URI[archive.md5sum] = "7fca4c4d487e3a43ef5adb2a764b9aaf"
+SRC_URI[archive.sha256sum] = "17c450622752cbda0e41fffd496d3022a533659f3db942e14da8015c47623856"

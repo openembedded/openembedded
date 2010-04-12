@@ -38,3 +38,6 @@ do_stage() {
 	fi
 	rm -rf ${STAGE_TEMP}
 }
+
+SRC_URI[md5sum] = "33e68c9876de84a252a84bf5f828aab6"
+SRC_URI[sha256sum] = "49dca0428d69f43c856800967b2def8c890cd322fbdd0aa47c227aec5820a690"

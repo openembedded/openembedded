@@ -123,3 +123,6 @@ pkg_postinst_${PN}_append() {
 	update-rc.d $OPT udev-cache start 12 S .
 }
 
+
+SRC_URI[md5sum] = "5e66b90bfa91e9ed101fdb66735af658"
+SRC_URI[sha256sum] = "a1fbc567ab6c2062ce32cebe6c96664282a979e0b7bf402b16fb3795c9ac0ae8"

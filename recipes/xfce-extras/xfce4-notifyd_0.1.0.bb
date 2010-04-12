@@ -19,3 +19,6 @@ FILES_${PN} = "\
     ${libexecdir}/xfce4-notifyd \     
     ${bindir}/xfce4-notifyd-config \
 "
+
+SRC_URI[md5sum] = "659ecaf37f0f7ee9e31f7b25f9813778"
+SRC_URI[sha256sum] = "989b0e9ae9ff5bdbdbf56368a44eca039236033f84d05001e311c21c988bd0e1"

@@ -58,3 +58,6 @@ do_stage () {
 
 PACKAGES =+ "pciutils-ids"
 FILES_pciutils-ids="${prefix}/share/pci.ids"
+
+SRC_URI[md5sum] = "10bab01d3c8856426cdf79f124fd4173"
+SRC_URI[sha256sum] = "61fd2a9225aad67d4e21727a297e571ddd6a973b845646cf10b24a92b88467bc"

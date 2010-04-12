@@ -56,3 +56,6 @@ FILES_${PN}-dev += "\
   ${bindir}/pygtk-* \
   ${datadir}/pygtk/2.0"
 
+
+SRC_URI[pygtk.md5sum] = "bd0d437fefd6d5390f5d770a495cd50c"
+SRC_URI[pygtk.sha256sum] = "7fae5e01af217a01738eae41c38ad7f86d1f538f444300d0fa2847aafb7444a8"

@@ -43,3 +43,6 @@ do_install_append() {
     install -m 644 ${WORKDIR}/mpd/mpd.conf ${D}${sysconfdir}/mpd.conf
 }
 
+
+SRC_URI[md5sum] = "2ed93a60bd703ba46d6794e12cfb5f1d"
+SRC_URI[sha256sum] = "38d4c4073e81585c0f0b1a3b4909f7fecd0305de90f373a9a1c087090e6ddc20"

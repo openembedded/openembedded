@@ -107,3 +107,6 @@ do_install () {
 	install -m 0644 tcpd.h ${D}${includedir}/
 }
 
+
+SRC_URI[md5sum] = "e6fa25f71226d090f34de3f6b122fb5a"
+SRC_URI[sha256sum] = "9543d7adedf78a6de0b221ccbbd1952e08b5138717f4ade814039bb489a4315d"

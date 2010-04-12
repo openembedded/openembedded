@@ -26,3 +26,6 @@ do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/shfs/
 	install -m 0644 shfs.o ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/fs/shfs/shfs.o
 }
+
+SRC_URI[md5sum] = "016f49d71bc32eee2b5d11fc1600cfbe"
+SRC_URI[sha256sum] = "0d48ffe4d801180c15466f20aaa5802adb9d22067e8941e051dc3c64717ec3c2"

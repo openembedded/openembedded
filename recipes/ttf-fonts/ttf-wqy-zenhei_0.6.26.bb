@@ -17,3 +17,6 @@ do_install_append () {
 PACKAGES = "${PN}"
 
 FILES_${PN} = "${datadir}/fonts ${sysconfdir}"
+
+SRC_URI[md5sum] = "bf2c1cb512606d995873bada27c777da"
+SRC_URI[sha256sum] = "47355b6ec84bb309614b6d657ddfda993b96ed0be569264f82e523b254f945b2"

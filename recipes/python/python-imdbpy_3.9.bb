@@ -12,3 +12,6 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 inherit distutils
 
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/imdb/parser/common/.debug"
+
+SRC_URI[md5sum] = "8c7bef46f54451c809ffd99e2f1eee2d"
+SRC_URI[sha256sum] = "b677e2f0539b90d1c0a844b9ab0f19ac41424c7c2b9335d17695765f2d7b1b80"

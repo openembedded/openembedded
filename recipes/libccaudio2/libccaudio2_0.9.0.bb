@@ -23,3 +23,6 @@ do_stage () {
 	install -m 0644 src/fixedPoint.H ${STAGING_INCDIR}/cc++
 	oe_libinstall -C src libccaudio2 ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "1596d3dac1549430e8e395d7441acce5"
+SRC_URI[sha256sum] = "b7fa79d5059b2fab03d7eb064b57f0fe3175b30fb1cc30f232a323d1887bc096"

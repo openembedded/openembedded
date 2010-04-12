@@ -21,3 +21,6 @@ do_stage () {
 FILES_${PN} += "${datadir}/xsessions ${datadir}/icons ${datadir}/gnome ${libdir}/gnome-session/helpers"
 FILES_${PN}-dbg += "${libdir}/gnome-session/helpers/.debug"
 
+
+SRC_URI[archive.md5sum] = "b1a2307b02e833010d6c5312b9ff9048"
+SRC_URI[archive.sha256sum] = "83e89a04fb090f1a1f6b609bdc39f1e69390269b885b7da6b32e980f4e765c0c"

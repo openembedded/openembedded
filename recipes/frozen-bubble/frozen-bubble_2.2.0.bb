@@ -72,3 +72,6 @@ FILES_${PN}-data = "\
 FILES_${PN}-server = " \
  ${libdir}/${PN}/fb-server \
 "
+
+SRC_URI[md5sum] = "f7987201470d6755ed309762d348e0dd"
+SRC_URI[sha256sum] = "dada92322ef3adb75df7a4270b2e76c572c3f8e42006ed3a5aaeefa68fcaa5b7"

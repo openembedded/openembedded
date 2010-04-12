@@ -44,3 +44,6 @@ do_install_prepend() {
     install -d ${D}/var/lib/dbus
     install ${WORKDIR}/kbdconfig ${S}/data/kbdconfig
 }
+
+SRC_URI[md5sum] = "3e158dcf57823b55c926d95b245500fb"
+SRC_URI[sha256sum] = "81a23a4af797cf350759fd5ac738797015a66dd5dba2f3d9f3c6908506c1ceff"

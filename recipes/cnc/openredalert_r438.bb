@@ -29,3 +29,6 @@ do_install() {
 
 FILES_${PN} += "${datadir}/games/redalert/"
 FILES_${PN}-dbg += "${datadir}/games/redalert/.debug"
+
+SRC_URI[md5sum] = "12dc7a8042c023bc77b7830946fc8492"
+SRC_URI[sha256sum] = "68058b6ffd9a286111c1860ca6d53af0d98d3f0c2a53875efd72ab381a3f9d6d"

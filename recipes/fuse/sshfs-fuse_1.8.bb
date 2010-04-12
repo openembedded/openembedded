@@ -13,3 +13,6 @@ S = "${WORKDIR}/${P}"
 inherit autotools
 
 FILES_${PN} += "${libdir}/sshnodelay.so"
+
+SRC_URI[md5sum] = "3c575cf89a6d3d8ab6063c2f60bd5b25"
+SRC_URI[sha256sum] = "057626d78e5ade840568ab0e171a1d1ae87348ab51bf9e35d1cdc074fc4e2edb"

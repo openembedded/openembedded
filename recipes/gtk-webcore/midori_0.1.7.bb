@@ -29,3 +29,6 @@ do_configure() {
 
 
 
+
+SRC_URI[md5sum] = "c6299ecf93417526f37bc0154c18b126"
+SRC_URI[sha256sum] = "9b74a776831c3680c10ad5c3d04985a1368c4fdf2f383a0e8efcc3cda925baaf"

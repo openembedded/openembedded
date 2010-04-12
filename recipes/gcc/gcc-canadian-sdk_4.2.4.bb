@@ -24,3 +24,4 @@ SRC_URI_append = "file://fortran-cross-compile-hack.patch;patch=1 \
 EXTRA_OECONF += "--disable-libunwind-exceptions --disable-libssp \
 		--disable-libgomp --disable-libmudflap \
 		--with-mpfr=${STAGING_LIBDIR}"
+

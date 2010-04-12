@@ -22,3 +22,6 @@ do_install () {
 	install -m 0644 ${WORKDIR}/local.conf ${D}/etc/fonts/
 }
 
+
+SRC_URI[md5sum] = "098a36ec53ec893f6511712ec4010d38"
+SRC_URI[sha256sum] = "a906c3193de44e5a8d93174bb86e91f39e415f92ad9319b318fd3a46a2ad9b35"

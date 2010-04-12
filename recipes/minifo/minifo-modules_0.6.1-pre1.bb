@@ -16,3 +16,6 @@ do_install() {
 
 FILES_${PN} = "/lib"
 
+
+SRC_URI[md5sum] = "7e192e01b08023c7f3e63bf1c796bc14"
+SRC_URI[sha256sum] = "68c64a38f0b29347f86871248f0399e7e1b12645dc6263af7b2e4940f1392eaa"

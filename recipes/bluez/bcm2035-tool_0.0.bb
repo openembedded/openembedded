@@ -17,3 +17,6 @@ do_install() {
 	install -d ${D}${sbindir}
 	install -m 755 bcm2035-tool ${D}${sbindir}
 }
+
+SRC_URI[md5sum] = "437a39c6008ea6987af1bbaf2252e7b9"
+SRC_URI[sha256sum] = "a2e482900eb45154653a692565d81ddeb4b59cd438628c1b14beb822499afef7"

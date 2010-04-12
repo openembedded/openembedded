@@ -60,3 +60,6 @@ do_install () {
 	sed -e 's,^#!.*$$,#!/usr/bin/gawk -f,' ${S}/src/baz/=gpg-check.awk > \
 		${D}${bindir}/bazaar-gpg-check
 }
+
+SRC_URI[md5sum] = "1fdb0aa41d7db06bf3429118d0136c8a"
+SRC_URI[sha256sum] = "d1b657f52dea785ce1b1a8b5acfdee4492c5d779422f9b58e145162e2d33c241"

@@ -8,3 +8,6 @@ inherit autotools pkgconfig
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/vde/${P}.tar.bz2"
 
+
+SRC_URI[md5sum] = "d97a8dbc72942c57542f50322b538a48"
+SRC_URI[sha256sum] = "05b473815f9706387a3c5eaeb4da2e492f624e0b7783432179454f9d69bb973c"

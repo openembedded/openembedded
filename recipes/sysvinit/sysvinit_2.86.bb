@@ -145,3 +145,6 @@ pkg_prerm_sysvinit-pidof () {
 #!/bin/sh
 update-alternatives --remove pidof pidof.${PN}
 }
+
+SRC_URI[md5sum] = "7d5d61c026122ab791ac04c8a84db967"
+SRC_URI[sha256sum] = "035f98fae17d9cff002993c564ccc83dc4ed136127172caeff872b6abdb679d8"

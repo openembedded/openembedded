@@ -62,3 +62,6 @@ do_stage_append() {
 	install -d ${bindir}
 	install -m 0755 ${WORKDIR}/ant ${bindir}
 }
+
+SRC_URI[md5sum] = "2a44ff60456cf67bb83771cfcedb8e33"
+SRC_URI[sha256sum] = "1a2fceea38f04e6fea0c0cb8ad7312dc948004af4d9308b5e630d299d89dfb38"

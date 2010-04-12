@@ -18,3 +18,6 @@ EXTRA_OECONF = "--without-clucene --without-curl"
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "e1f1af8c2add8310d0bbcddc9af523b8"
+SRC_URI[sha256sum] = "dd170431235cc419cbe6c40362640927a78dc93e082623709abe1310fe804481"

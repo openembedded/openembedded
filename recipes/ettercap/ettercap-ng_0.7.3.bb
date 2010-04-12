@@ -19,3 +19,6 @@ EXTRA_OECONF += "--disable-gtk --with-libncurses=${STAGING_INCDIR}"
 
 FILES_${PN} += "${datadir}/ettercap ${libdir}/ettercap/*.so"
 FILES_${PN}-dbg += "${libdir}/ettercap/.debug"
+
+SRC_URI[md5sum] = "28fb15cd024162c55249888fe1b97820"
+SRC_URI[sha256sum] = "c74239052d62565c13a82f9bbf217a4fdcce4b34949e361b53bb3f28e3168543"

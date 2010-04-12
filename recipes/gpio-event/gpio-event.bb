@@ -62,3 +62,6 @@ PACKAGES = "${PN}"
 FILES_${PN} = "${bindir}/gpio-event"
 FILES_${PN} += "${base_libdir}/modules/${KERNEL_VERSION}/extra/gpio-event-drv.ko"
 
+
+SRC_URI[md5sum] = "b5cc96cba5a70e19d58534c250de67e2"
+SRC_URI[sha256sum] = "a937f4ba6b450b1330049c90e5e787490eff5bb376dbfe9099abbcdc7a8f6b6c"

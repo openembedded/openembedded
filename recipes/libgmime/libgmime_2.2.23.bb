@@ -18,3 +18,6 @@ do_configure_append = "cp ${WORKDIR}/iconv-detect.h ${S}"
 do_install_append () {
 	rm -f ${D}${libdir}/gmimeConf.sh
 }
+
+SRC_URI[md5sum] = "9f254eb989e0506243da6fde7f164998"
+SRC_URI[sha256sum] = "d5420eef50372d24eaecde93ea4c8ec55f5bf24c9e0f6abbded76e5dbd6a2d76"

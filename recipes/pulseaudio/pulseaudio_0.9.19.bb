@@ -24,3 +24,6 @@ do_compile_prepend() {
     mkdir -p ${S}/libltdl
     cp ${STAGING_LIBDIR}/libltdl* ${S}/libltdl
 }
+
+SRC_URI[md5sum] = "02adc2b99252675f0271db3b9edd432e"
+SRC_URI[sha256sum] = "e47e27083deb79571fb2b9215874ddc26d77c3dec2a7dc8de5ecec9058e4b806"

@@ -44,3 +44,6 @@ FILES_${PN} += "${bindir}/vlc \
 	"
 
 FILES_${PN}-dbg	+= "${libdir}/vlc/*/.debug"
+
+SRC_URI[md5sum] = "8ffa2ff763badd5de7592004d8d69a63"
+SRC_URI[sha256sum] = "197c29803790efc0273bb4577d54629d0769a3b49b091c6430eb6704fd69824f"

@@ -40,3 +40,6 @@ do_install() {
 pkg_postrm_${PN}() {
 	rm -rf ${DEST_DIR}/gallery /${sysconfdir}/apache2/modules.d/95_gallery.conf
 }
+
+SRC_URI[md5sum] = "d2f52d92776f47bf353787237607f23c"
+SRC_URI[sha256sum] = "9f17181cd8bf46203a288e3fc1d9bd82d5dc011fe419d33bee2f62bace081f08"

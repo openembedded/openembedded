@@ -6,8 +6,8 @@ HOMEPAGE = "http://dom4j.org
 DEPENDS = "fastjar-native xerces-j xalan-j xpp2 xpp3 jaxen"
 
 SRC_URI = "\
-	${SOURCEFORGE_MIRROR}/dom4j/${P}.tar.gz \
-	http://apache.org/dist/ws/jaxme/source/ws-jaxme-0.5.2-src.tar.gz \
+	${SOURCEFORGE_MIRROR}/dom4j/${P}.tar.gz;name=archive \
+	http://apache.org/dist/ws/jaxme/source/ws-jaxme-0.5.2-src.tar.gz;name=jaxme \
 	file://debian.patch;patch=1 \
 	"
 
@@ -28,3 +28,8 @@ do_compile() {
   fastjar -C build -c -f ${JARFILENAME} .
 }
 
+
+SRC_URI[archive.md5sum] = "1e7ef6d20939315714de4a8502f27b2d"
+SRC_URI[archive.sha256sum] = "01b4abf86bce337a2a900bf121b3107320ba63b4c0f352e1922fbec6e0736c6f"
+SRC_URI[jaxme.md5sum] = "084ebfe4a816058f8ff6bd731fa70df4"
+SRC_URI[jaxme.sha256sum] = "0415d721259acf95c564fb84606bb17f6227c1cc444e89b78d1cd9903c1c88dc"

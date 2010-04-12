@@ -22,3 +22,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/qclockchange.png ${D}${palmtopdir}/pics/qclockchange.png
 	install -m 0644 ${WORKDIR}/qclockchange.desktop ${D}${palmtopdir}/apps/Settings/qclockchange.desktop
 }
+
+SRC_URI[md5sum] = "4131497c414c7fedae1df58cab2ddfa3"
+SRC_URI[sha256sum] = "8cb7000f55ab124d5fe928960c3c9a059faf4f374981b88e74ac0cdb7904c98a"

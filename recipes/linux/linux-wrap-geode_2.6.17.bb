@@ -20,3 +20,6 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 	yes '' | oe_runmake oldconfig
 }
+
+SRC_URI[md5sum] = "37ddefe96625502161f075b9d907f21e"
+SRC_URI[sha256sum] = "ab0f647d52f124958439517df9e1ae0efda90cdb851f59f522fa1749f1d87d58"

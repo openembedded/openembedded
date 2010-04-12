@@ -14,3 +14,6 @@ SRC_URI = "http://venge.net/monotone/downloads/monotone-${PV}.tar.gz \
 	   "
 
 ALTERNATIVE_PRIORITY = "50"
+
+SRC_URI[md5sum] = "108c18666ce6ff9c05643f923027de8e"
+SRC_URI[sha256sum] = "ea95a2778e3dba087112dc6c42903f9629af17156c4da58c0ba3ac9761690159"

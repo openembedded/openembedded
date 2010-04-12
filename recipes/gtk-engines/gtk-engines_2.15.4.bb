@@ -28,3 +28,6 @@ python populate_packages_prepend() {
 	do_split_packages(d, themes_root, '(.*)', 'gtk-theme-%s', 'GTK theme %s', allow_dirs=True, extra_depends='')
 }
 
+
+SRC_URI[archive.md5sum] = "060ea25c471e5f4cf5c1baeac27d0345"
+SRC_URI[archive.sha256sum] = "0d8b6630c546327ddc67c700859731036eebdf77e51ad8b71e4d19d28ca2ff2c"

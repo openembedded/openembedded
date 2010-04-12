@@ -20,3 +20,6 @@ EXTRA_OECONF += "\
                 --enable-local-sockets \
                 --with-vm=java \
                "
+
+SRC_URI[md5sum] = "a2ffb40f13fc76c2dda8f8311b30add9"
+SRC_URI[sha256sum] = "ee464d20ef9df2196e238302d5d06954cb96a11e73c4c44c6ef376859de2a078"

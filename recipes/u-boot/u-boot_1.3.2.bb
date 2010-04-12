@@ -45,3 +45,6 @@ do_deploy_append_mpc8313e-rdb () {
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/vsc7385_load.bin
 }
 
+
+SRC_URI[md5sum] = "78b1c2722d3907b5fae2cd219dbaf927"
+SRC_URI[sha256sum] = "8ab07cd758a1775642629e624f70e376fa8e84a2f879dee4544158d9c90cde2a"

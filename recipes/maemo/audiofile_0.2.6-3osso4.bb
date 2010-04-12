@@ -24,3 +24,6 @@ do_stage () {
 	oe_libinstall -C libaudiofile libaudiofile ${STAGING_LIBDIR}
 	install -m 0644 audiofile.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+SRC_URI[md5sum] = "7fe7cfb5d6abcef8edab841c0198205b"
+SRC_URI[sha256sum] = "afb8b7286ad4e13c3e6d8393b8f9154ffead6dff48dfc73c5033b0aa2a550344"

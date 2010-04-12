@@ -73,3 +73,6 @@ FILES_${PN} +=       "${libdir}/${PDIR}/scim-panel-gtk \
                       ${libdir}/${PDIR}/scim-launcher \
 		      ${libdir}/${PDIR}/1.4.0 \
                       ${libdir}/gtk-2.0/immodules"
+
+SRC_URI[md5sum] = "975ba34b01304ea8166ac8ea27aa9e88"
+SRC_URI[sha256sum] = "f72e9779e220565f6002923bf7d6aa9891be2bbddcd91a4e2a2d5e20aefba8d0"

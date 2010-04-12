@@ -44,8 +44,8 @@ FILES_localedef = "${bindir}/localedef"
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
-SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz;name=archive \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-${PV}.tar.gz;name=linuxthreads \
 	   file://etc/ld.so.conf \
  	   file://generate-supported.mk"
 
@@ -110,3 +110,8 @@ do_compile () {
 require glibc-stage.inc
 
 require glibc-package.inc
+
+SRC_URI[archive.md5sum] = "b45c4cfa714a4688c319149c15a1e060"
+SRC_URI[archive.sha256sum] = "0ae1b1dc1ee870d307ae6ad4546778377b04055520d3771dab1290e60ab13286"
+SRC_URI[linuxthreads.md5sum] = "9006b8bff18beb864f6053857f25b410"
+SRC_URI[linuxthreads.sha256sum] = "2d7af8211cda81abde3e0bb8ccedbd18924a27b244ff35d4eacafcf899038c56"

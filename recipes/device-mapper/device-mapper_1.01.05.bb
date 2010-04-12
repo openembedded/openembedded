@@ -33,3 +33,6 @@ do_install() {
 	install -m 755 ${S}/lib/ioctl/libdevmapper.a ${D}/${libdir}/ioctl/
         install -D -m 755 ${S}/scripts/${INITSCRIPT_NAME} ${D}${sysconfdir}/init.d/${INITSCRIPT_NAME}
 }
+
+SRC_URI[md5sum] = "074cf116cc2c7194f2d100bc5f743833"
+SRC_URI[sha256sum] = "963cc8a1f7e73a0929b7b527f6b4cfc5f78c932d673b5c13c889108d3182811a"

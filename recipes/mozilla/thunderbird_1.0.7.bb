@@ -5,9 +5,9 @@ PR = "r1"
 
 EMVER="0.92.0"
 IPCVER="1.1.3"
-SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${PV}/source/thunderbird-${PV}-source.tar.bz2 \
-	http://downloads.mozdev.org/enigmail/src/enigmail-${EMVER}.tar.gz \
-http://downloads.mozdev.org/enigmail/src/ipc-${IPCVER}.tar.gz \
+SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${PV}/source/thunderbird-${PV}-source.tar.bz2;name=archive \
+	http://downloads.mozdev.org/enigmail/src/enigmail-${EMVER}.tar.gz;name=enigmail \
+http://downloads.mozdev.org/enigmail/src/ipc-${IPCVER}.tar.gz;name=ipc \
 	file://xptcstubs.patch;patch=1 \
 	file://no-xmb.patch;patch=1 \
 	file://extensions-hack.patch;patch=1 \
@@ -63,3 +63,10 @@ makemake() {
             < ${m} > ${m%.in} || die "sed ${m} failed"
     done
 }
+
+SRC_URI[archive.md5sum] = "e6388feb0ffcd189af779f165c124b4d"
+SRC_URI[archive.sha256sum] = "6b964fb220a46438adf6ec37082da66332a3ce74ca4913b863b17d9ab720681f"
+SRC_URI[enigmail.md5sum] = "50c369ce6d6fcb2d275cd30319a601ff"
+SRC_URI[enigmail.sha256sum] = "de820405e4f3ca5531108ca99fc2bb1f260670f2fc4b45c7fb70ef9aa164bf6c"
+SRC_URI[ipc.md5sum] = "64ba4c6e3b52568468c4f6680ec7e679"
+SRC_URI[ipc.sha256sum] = "0265ae1a639e0975a8820928598a357f769350801ea3633016e974d32f7db725"

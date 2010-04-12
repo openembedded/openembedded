@@ -37,3 +37,6 @@ FILES_${PN} = "${bindir} \
 
 FILES_libgiac = "${libdir}/libg*.so.*"
 FILES_libxcas = "${libdir}/libx*.so.*"
+
+SRC_URI[md5sum] = "c0bdb493cfef3dd058cc3750101a4f47"
+SRC_URI[sha256sum] = "354923541221670d48ea2d713abd3fcad94e7f0d220ac9d53e9bcee0eda6ed4a"

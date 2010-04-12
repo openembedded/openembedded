@@ -16,3 +16,6 @@ python populate_packages_prepend () {
 
 
 
+
+SRC_URI[md5sum] = "2ad1622b672ccf53a3444a0c55724d38"
+SRC_URI[sha256sum] = "ddeafa5965eaa07f3bd46b0e39b65cba6fa9940d684f7b15bfd615f77eccb51c"

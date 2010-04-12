@@ -23,3 +23,6 @@ LEAD_SONAME = "libulxmlrpcpp.so"
 PACKAGES =+ "${PN}-examples ${PN}-contrib"
 FILES_${PN}-examples = "${bindir}/*"
 FILES_${PN}-contrib = "${libdir}/*contrib.so.*"
+
+SRC_URI[md5sum] = "7c5d849d8d1cd9ccfb4b90350145d503"
+SRC_URI[sha256sum] = "0d568ff00cd45f73f3634723f8cb453f8bc952760cad3829bcbca88378a2ed83"

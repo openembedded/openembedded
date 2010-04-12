@@ -16,3 +16,6 @@ do_install() {
 	cp -r lib/* ${D}${RUBY_DIR}
 }
 
+
+SRC_URI[md5sum] = "1f6398d8bbafa272c0b43878fec43276"
+SRC_URI[sha256sum] = "cfcadc4ae860f2de3d6aa1a1230a410b1dedf783148a27a20205bb3b54e3c3ac"

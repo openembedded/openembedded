@@ -102,3 +102,6 @@ FILES_${PN} += "${datadir}/doc/${PN}/copyright.txt"
 # > --
 # > JID: hrw-jabber.org
 # > OpenEmbedded developer/consultant
+
+SRC_URI[md5sum] = "44fd88df361ec4508e10c8d6615245fa"
+SRC_URI[sha256sum] = "920fde1a3843539570e2df4aa611e74df102e52d363c5973d5a9d15bdf976461"

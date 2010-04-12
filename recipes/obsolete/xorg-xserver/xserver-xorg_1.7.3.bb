@@ -25,3 +25,6 @@ EXTRA_OECONF += " --enable-config-hal ${XINERAMA} --disable-kdrive --disable-xep
 EXTRA_OECONF += " --disable-glx-tls --enable-dri2 --disable-unit-tests "
 
 export LDFLAGS += " -ldl "
+
+SRC_URI[archive.md5sum] = "4c63b22cad9ed8ae8b86561f0f92c327"
+SRC_URI[archive.sha256sum] = "4b644113cd030fc77615c03c7b6529e063dc1d471ec6a990e6f62eb45a9c2db4"

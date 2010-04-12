@@ -32,3 +32,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/netsurf.png ${D}/${datadir}/pixmaps/
 	install -m 0644 ${WORKDIR}/netsurf.desktop ${D}/${datadir}/applications/
 }
+
+SRC_URI[md5sum] = "f0a34fd076b492c1a13b45432e8d7e49"
+SRC_URI[sha256sum] = "cda2cf41c852938c226c47c2b995d527387120141f68b416ea745e50a7165a81"

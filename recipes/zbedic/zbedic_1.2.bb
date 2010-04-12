@@ -43,3 +43,6 @@ do_install() {
 PACKAGES = "${PN}-dbg ${PN}-doc ${PN} ${PN}-dev"
 
 FILES_${PN}-doc += "${palmtopdir}/help"
+
+SRC_URI[md5sum] = "c7e8e267567a96cff7920a0365978c4d"
+SRC_URI[sha256sum] = "b991cc5635849353081c2a3350142484763323bc58bfa49b62285645aac129b9"

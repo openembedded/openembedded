@@ -24,3 +24,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.xpm ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${WORKDIR}/zsafe.png ${D}${palmtopdir}/pics/
 }
+
+SRC_URI[md5sum] = "5e4e10a67de603b04b752ed00311455d"
+SRC_URI[sha256sum] = "0937b15ca5dcd6f49adff04096610cee1f70197e17d461aefa98ed52e5ea0b72"

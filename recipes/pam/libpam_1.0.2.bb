@@ -72,3 +72,6 @@ python populate_packages_prepend () {
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "fc5e35645b75befae28c88b711b28ffb"
+SRC_URI[sha256sum] = "42d06febf4717dd43eb557027d1b00a484c22589793438778ed69449a073a3b8"

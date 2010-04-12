@@ -15,3 +15,6 @@ S = "${WORKDIR}/esd"
 
 inherit autotools pkgconfig
 
+
+SRC_URI[md5sum] = "7f110e130db541b1aa9fc428b2620602"
+SRC_URI[sha256sum] = "1a84b7d4939313e9b7ec0ce8f50934251fe1569e6144931dd323de8ee8dacccd"

@@ -35,3 +35,6 @@ pkg_postrm() {
 /usr/bin/qcop QPE/TaskBar "reloadApplets()"
  if [ -n "$D" ]; then false; fi
 }
+
+SRC_URI[md5sum] = "dc62a061d83cf72d1eca7e8ae2c8e1a6"
+SRC_URI[sha256sum] = "4078c44beebfd298995983b9e2ea189167a1ab081d96a7c485a67b65a974e878"

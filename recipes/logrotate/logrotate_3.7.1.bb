@@ -38,3 +38,6 @@ pkg_postrm() {
 }
 
 CONFFILES_${PN} += "${sysconfdir}/logrotate.conf"
+
+SRC_URI[md5sum] = "552639142e163745f6bcd4f1f3816d8a"
+SRC_URI[sha256sum] = "7e79b03d65105541a5fdcc05087bee29ebc9e33149ac33d6563d0b20eddf79e0"

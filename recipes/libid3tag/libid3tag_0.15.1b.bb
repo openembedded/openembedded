@@ -17,3 +17,6 @@ EXTRA_OECONF = "-enable-speed"
 do_configure_prepend() {
     install -m 0644 ${WORKDIR}/id3tag.pc ${S}
 }
+
+SRC_URI[md5sum] = "e5808ad997ba32c498803822078748c3"
+SRC_URI[sha256sum] = "63da4f6e7997278f8a3fef4c6a372d342f705051d1eeb6a46a86b03610e26151"

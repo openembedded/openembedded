@@ -31,3 +31,6 @@ pkg_prerm () {
 		mv /tmp/nsswitch.conf /etc/nsswitch.conf
 	}
 }
+
+SRC_URI[md5sum] = "bc72f5b19cc6ce8cacde448236b30868"
+SRC_URI[sha256sum] = "0bf226bb3a1716e6eb97355e08a7ffcf09aadfb91ba41ccef2ef1ba7a01719a2"

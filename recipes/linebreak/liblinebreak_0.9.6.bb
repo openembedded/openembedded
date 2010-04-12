@@ -25,3 +25,6 @@ do_stage() {
 }
 
 S = "${WORKDIR}/liblinebreak"
+
+SRC_URI[md5sum] = "e898200ac89815365e89b7c6cc2f78fd"
+SRC_URI[sha256sum] = "f23ac7320379d8e950340fe37633c21a56a5f4320d29c34a65819558fe6cdaa1"

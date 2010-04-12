@@ -23,3 +23,6 @@ do_compile () {
 	oe_runmake ${UBOOT_MACHINE}
 	oe_runmake all
 }
+
+SRC_URI[md5sum] = "285e2184d2efef50e0fe43b71d2a7b11"
+SRC_URI[sha256sum] = "a2889bee9c45575b284564dbc27cf3dc6cb9833d4ff643976a1b3dba2d763f86"

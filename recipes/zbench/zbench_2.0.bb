@@ -17,3 +17,6 @@ do_install() {
         install -D -m 644 zbench.desktop ${D}${palmtopdir}/Applications/zbench.desktop
         cp zbench.png ${D}${palmtopdir}/pics/
 }
+
+SRC_URI[md5sum] = "75beb13ea40ce93b7a141b82fbf4437a"
+SRC_URI[sha256sum] = "b1a1a5d98596fc24225968a480617feb5723390db9175cd6e01828b7fda3a921"

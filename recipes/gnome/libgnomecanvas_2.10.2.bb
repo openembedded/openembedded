@@ -15,3 +15,6 @@ do_stage() {
 	gnome_stage_includes
 	oe_libinstall -C libgnomecanvas -a -so libgnomecanvas-2 ${STAGING_LIBDIR}
 }
+
+SRC_URI[archive.md5sum] = "976eada7b499ae6e74966f8888c015d1"
+SRC_URI[archive.sha256sum] = "82e7700a83aa203afc0c8903642546945b66472c66950cfc443f807b629ecc5a"

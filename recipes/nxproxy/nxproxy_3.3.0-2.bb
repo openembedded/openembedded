@@ -15,3 +15,6 @@ do_install () {
        install -d ${D}${bindir}/
        install -m 0755 nxproxy ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "047206e5a811b915aac4ae09bddef207"
+SRC_URI[sha256sum] = "dc1b5e26c4629d35b59dcb25852bcf705c29053a20763a7339b5d890614a9e87"

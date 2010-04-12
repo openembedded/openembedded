@@ -25,3 +25,6 @@ do_configure_prepend() {
 do_configure_append() {
 	sed -i 's,^#!/bin/env python,#!/usr/bin/python,' systemv/hal_lpadmin
 }
+
+SRC_URI[md5sum] = "58e1c8f5597dd39e57dcf3c4aabe60f8"
+SRC_URI[sha256sum] = "f40a7ebd1453d471a8a6bfd8c635708dd739a6160bb661813f936d936ba85618"

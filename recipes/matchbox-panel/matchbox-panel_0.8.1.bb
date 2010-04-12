@@ -17,3 +17,6 @@ EXTRA_OECONF = "--enable-startup-notification --enable-dnotify --enable-small-ic
 FILES_${PN} = "${bindir} \
 	       ${datadir}/applications \
 	       ${datadir}/pixmaps"
+
+SRC_URI[md5sum] = "cfdfb6b006af834513be839d128a4cd7"
+SRC_URI[sha256sum] = "771608e1e2baa2e16781024faa93b24a38556d383158883deff78f7093017534"

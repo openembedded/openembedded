@@ -15,3 +15,6 @@ do_install_append() {
 }
 
 
+
+SRC_URI[md5sum] = "3139a69a1bd9ccb1d853d30aa024fc2b"
+SRC_URI[sha256sum] = "017741fcb70a885d718c534160c9de06b03cc72f352879bd106be165e024574d"

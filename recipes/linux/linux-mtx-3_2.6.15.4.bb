@@ -11,7 +11,7 @@ inherit kernel
 DEPENDS = "u-boot"
 RDEPENDS = "mtd-utils"
 
-SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2;name=kernel \
 	file://00-mtx-3.diff;patch=1 \
 	file://01-verbose-and-fatal-mkuboot.diff;patch=1 \
 	file://defconfig-mtx-3"
@@ -89,3 +89,6 @@ do_deploy() {
         #install -m 0644 arch/mips/boot/mtx-3.flash.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.srec
 	#install -m 0644 arch/mips/boot/mtx-3.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.ram.srec
 }
+
+SRC_URI[kernel.md5sum] = "cee7c554cec949926cf524ee1def88c9"
+SRC_URI[kernel.sha256sum] = "8430e13b08bbfce7963a138658d2192077abce097f210490767f34c8e9cbaa9f"

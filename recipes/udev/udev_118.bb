@@ -72,3 +72,6 @@ pkg_postinst_append() {
         done < $D${sysconfdir}/fstab
 }
 
+
+SRC_URI[md5sum] = "a8233f2afc62a8a8971f79df8878d57e"
+SRC_URI[sha256sum] = "4467f57484124b735450e05617c2aa0f75e0e56306e92c74f9dfe59bd028fcd9"

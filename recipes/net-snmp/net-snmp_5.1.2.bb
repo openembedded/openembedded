@@ -16,3 +16,6 @@ EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 CONFFILES_${PN}_nylon = "${sysconfdir}/snmp/snmpd.conf ${sysconfdir}/snmp/snmptrapd.conf"
 CCACHE = ""
 
+
+SRC_URI[md5sum] = "8080555ab3f90011f25d5122042d9a8d"
+SRC_URI[sha256sum] = "1fca69e934c3d526e308450cc5af2478d440e012922dd0bb10388fcf093ef32e"

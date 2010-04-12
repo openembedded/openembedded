@@ -25,3 +25,6 @@ do_install_append() {
 	rm -f ${D}${datadir}/sounds/linphone/hello*.wav
 	rm -f ${D}${datadir}/sounds/linphone/rings/oldphone.wav
 }
+
+SRC_URI[md5sum] = "5e87231bc214a003a7d2c3a998ea6a8e"
+SRC_URI[sha256sum] = "6855707d72e64ebdec3907fbaaa5d031255cb4b1118159d4b59f26b3704b6929"

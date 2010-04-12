@@ -40,3 +40,6 @@ do_stage() {
 	install -m 0644 include/libnet/libnet-ospf.h ${STAGING_INCDIR}/libnet/
 	oe_libinstall -a -C lib libnet ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "bf4983ea440542f3ec019cc1bb6ca87d"
+SRC_URI[sha256sum] = "cf6bf75d590884fa9d0725d4d86afa93211e29cf0c5f333a60bb4e4eb347dc29"

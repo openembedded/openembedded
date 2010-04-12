@@ -22,3 +22,6 @@ do_stage() {
 PACKAGES =+ "libswfdecgtk libswfdec"
 FILES_libswfdec = "${libdir}/libswfdec-0.8.so.*"
 FILES_libswfdecgtk = "${libdir}/libswfdec-gtk-0.8.so.*"
+
+SRC_URI[md5sum] = "2fb20b04c0e426a1e894a4c4bf22cf87"
+SRC_URI[sha256sum] = "10fd6f07264d3fbd92c03858a99637cd4b9d98ab00fb4d31720adce0c1ed7af4"

@@ -16,3 +16,6 @@ do_stage() {
 do_compile() {
 	oe_runmake ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2
 }
+
+SRC_URI[md5sum] = "1a3e312cec38645c2f811282566d12b0"
+SRC_URI[sha256sum] = "a16751d55a1a635eb2d04613353884c5bdb2ad2fc3afa4b951aa2868552602a9"

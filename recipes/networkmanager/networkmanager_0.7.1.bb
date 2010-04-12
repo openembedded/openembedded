@@ -19,3 +19,6 @@ do_install_append () {
 	install -m 0755 ${WORKDIR}/NetworkManager ${D}/etc/init.d
 }
 
+
+SRC_URI[md5sum] = "954742cfd47191204d62d8d57f2bc6dd"
+SRC_URI[sha256sum] = "7526a31de615a662cb09e915f26e5b151eda364240d983df6232aac8b9333f3a"

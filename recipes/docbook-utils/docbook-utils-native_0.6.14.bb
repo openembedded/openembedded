@@ -40,3 +40,6 @@ do_stage () {
 		 install ${S}/$i ${STAGING_DATADIR}/sgml/docbook/utils-${PV}/$i
 	done
 }
+
+SRC_URI[md5sum] = "6b41b18c365c01f225bc417cf632d81c"
+SRC_URI[sha256sum] = "48faab8ee8a7605c9342fb7b906e0815e3cee84a489182af38e8f7c0df2e92e9"

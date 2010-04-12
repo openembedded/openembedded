@@ -27,3 +27,6 @@ do_install() {
 	install -m 0755 ${S}/src/dillo ${D}${bindir}/dillo
 	install -m 0644 ${WORKDIR}/dillorc ${D}${sysconfdir}/dillorc
 }
+
+SRC_URI[md5sum] = "01d681ba8bec7fdb074d1bbf99c13285"
+SRC_URI[sha256sum] = "bd72287adedccf493f046f0e6ca29ef47f2cd3741c62a98d5eb82a9068846b73"

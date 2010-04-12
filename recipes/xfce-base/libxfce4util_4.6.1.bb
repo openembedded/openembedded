@@ -25,3 +25,6 @@ do_stage() {
 }
 
 FILES_${PN}-dev += " ${datadir}/xfce4/m4"
+
+SRC_URI[md5sum] = "eac51d58179cbcadc3f802450a8ec9cd"
+SRC_URI[sha256sum] = "ceecdc7d3c89f547606c2d77a8a42ccf9975c809374fab84ff0833a08510c16b"

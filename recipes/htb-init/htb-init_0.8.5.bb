@@ -22,3 +22,6 @@ do_install() {
 }
 
 PACKAGE_ARCH = "all"
+
+SRC_URI[md5sum] = "1713d9a4941120235cb0721ceba6493b"
+SRC_URI[sha256sum] = "acfda369dff72b9073a8b70f2b05b1397a61a1cdb23970e5ed216d632ff33586"

@@ -42,3 +42,6 @@ do_install() {
 	set_arch
 	oe_runmake headers_install INSTALL_HDR_PATH=${D}${exec_prefix} ARCH=$ARCH
 }
+
+SRC_URI[md5sum] = "64921b5ff5cdadbccfcd3820f03be7d8"
+SRC_URI[sha256sum] = "58a5ea16d499fe06f90fcbf1d687d1235d2cb9bc28bf979867bd3faadf38fc3f"

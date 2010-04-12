@@ -39,3 +39,6 @@ pkg_postinst_${PN} () {
 pkg_prerm_${PN} () {
 	update-alternatives --remove adjtimex adjtimex.${PN}
 }
+
+SRC_URI[md5sum] = "cb98711f11769cdd22fc592844cef414"
+SRC_URI[sha256sum] = "295ed5ecfab595901cbe2cd41998d1715913318d30c22349784733e79de0e8f8"

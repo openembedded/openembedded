@@ -26,3 +26,6 @@ do_compile() {
 	rm -f ${STAGING_INCDIR}/X11/Xlib.h
 	oe_runmake
 }
+
+SRC_URI[md5sum] = "60b787a812c92d33f71860e4e19cb59d"
+SRC_URI[sha256sum] = "fb42f2400c3709a0c2c17f27cc4a902c191ebd6228c70698891bf3a13ea5b3ac"

@@ -5,8 +5,8 @@ DESCRIPTION = "Linux kernel for the Chumby"
 LICENSE = "GPLv2"
 PR = "r4"
 
-SRC_URI = "http://files.chumby.com/source/ironforge/build396/linux-2.6.16-chumby-1.2.tar.gz \
-           http://files.chumby.com/source/ironforge/build396/align.pl \
+SRC_URI = "http://files.chumby.com/source/ironforge/build396/linux-2.6.16-chumby-1.2.tar.gz;name=kernel \
+           http://files.chumby.com/source/ironforge/build396/align.pl;name=align \
            file://chumby-override-cmdline.patch;patch=1 \
            file://disable-fbchanging.patch;patch=1 \
            file://Makefile-remove-hard-setting-CROSS_COMPILE.patch;patch=1 \
@@ -44,3 +44,8 @@ do_deploy_append() {
 	ln -sf zImage-${PV}-${PR}-${MACHINE}.bin.zip ${DEPLOY_DIR_IMAGE}/zImage-${MACHINE}.bin.zip
 }
 
+
+SRC_URI[kernel.md5sum] = "efb128aed7aba5d47b72bfa8d42d97c4"
+SRC_URI[kernel.sha256sum] = "69468ffe7dade5448c498230bd67fd5a9b843ef1b11ea3fe7161b2c7fc26ea77"
+SRC_URI[align.md5sum] = "d1cbac52c52b956d9cbe6277a7f9a8c5"
+SRC_URI[align.sha256sum] = "67695e9af2b0938b6406eeed41954bf8317693aa7ef8ad2e30fcea5bea59777f"

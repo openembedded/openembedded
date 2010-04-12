@@ -27,3 +27,6 @@ FILES_${PN}-dev = "\
   ${libdir}/gstreamer-0.10/libgstpulse.so*"
 FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
 
+
+SRC_URI[md5sum] = "166164eb07eacd1d70b965731eb6cbdb"
+SRC_URI[sha256sum] = "b9f1bb98917d9879d46b6a959ce9068471908763f2ca98e480837485e290b106"

@@ -15,3 +15,6 @@ SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.pa
 MESA_VER = "7.2"
 
 export LDFLAGS += " -ldl "
+
+SRC_URI[archive.md5sum] = "ed0878bf32a24d4948c3b8a122a39eff"
+SRC_URI[archive.sha256sum] = "0edbaa994797cb7944a4129d33b634ad99164b21ec32355d56996a178d38bfcf"

@@ -26,3 +26,6 @@ do_install_append() {
         install -m 0644 ${WORKDIR}/dillo.desktop ${D}${datadir}/applications/dillo.desktop
         install -m 0644 ${WORKDIR}/dillo.png ${D}${datadir}/pixmaps/dillo.png
 }
+
+SRC_URI[md5sum] = "93f674f2a42d90a1cdb88a6972325954"
+SRC_URI[sha256sum] = "8eec025872030fc1419fb93ee41dbdf380a6d1f75f4d51aec5eee9a9a4aa4477"

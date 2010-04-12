@@ -24,3 +24,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/iaimaster.png ${D}${palmtopdir}/pics/
 }
 
+
+SRC_URI[md5sum] = "6e3992e261e1fb7fbae08530d45886b7"
+SRC_URI[sha256sum] = "bb837de5130cdbe2c1f4dd7ded8c890ef11f37979526e480afd82b364605563b"

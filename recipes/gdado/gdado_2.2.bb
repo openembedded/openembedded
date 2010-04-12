@@ -13,3 +13,6 @@ do_install_prepend() {
 	gdado.desktop
 }
 
+
+SRC_URI[md5sum] = "b84114df6ca8b20560524afed0e21b25"
+SRC_URI[sha256sum] = "cc272f097832e074804bf405f2c013b4f941ad57f0f5f5ec6c08edecc9ad17fa"

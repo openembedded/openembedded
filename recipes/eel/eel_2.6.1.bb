@@ -44,3 +44,6 @@ do_stage() {
 
 	oe_libinstall -C eel libeel-2 ${STAGING_LIBDIR}
 }
+
+SRC_URI[archive.md5sum] = "6dd46ef1905271cd1171a0bdddabee22"
+SRC_URI[archive.sha256sum] = "889c8cff395bc488a6ccfb3fc22fd241a12c33f114bb7d7ec4138d5999da9c5d"

@@ -11,3 +11,6 @@ require mono-mcs-intermediate.inc
 SRC_URI += ""
 
 PR = "${INC_PR}.1"
+
+SRC_URI[md5sum] = "696f25afc8453cd0d1c78de6e905dcf2"
+SRC_URI[sha256sum] = "1bab0d4e2906c88736ff5e242f2905f4c3535ccfc05bb5c427b72adf0e9236ae"

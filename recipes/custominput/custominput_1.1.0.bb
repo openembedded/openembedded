@@ -34,3 +34,6 @@ do_install() {
 	oe_libinstall -so -C ${S}/ libcustominput	${D}${palmtopdir}/plugins/inputmethods/
 
 }
+
+SRC_URI[md5sum] = "7a0f97339a1caed5695715581306b83e"
+SRC_URI[sha256sum] = "9af88287720701691b58ee13898d248dd9afc63d9c593eb79c1149cc2a7f4e92"

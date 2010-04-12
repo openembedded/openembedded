@@ -23,3 +23,6 @@ do_install() {
 }
 
 FILES_${PN}-dbg += "${libdir}/ser/modules/.debug ${sbindir}/.debug"
+
+SRC_URI[md5sum] = "ae1f9b237f0006785ff22eafa1470ac4"
+SRC_URI[sha256sum] = "65eb4c5735859f3ed191437749a85e9fd24a66a6567025f36a0739f9c34c444e"

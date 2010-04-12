@@ -16,3 +16,6 @@ do_install () {
 	install -d ${D}${sbindir}
 	install -m 0744 make-arp zcip ${D}${sbindir}/
 }
+
+SRC_URI[md5sum] = "ce40fdcd923110ee75717295a5fd4100"
+SRC_URI[sha256sum] = "09bff63fdf2ae0704423ad232d31e792b342433e12306e107c14dc02f06ed507"

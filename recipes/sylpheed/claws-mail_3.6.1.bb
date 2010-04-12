@@ -8,8 +8,8 @@ inherit autotools pkgconfig
 
 # translation patch: http://www.thewildbeast.co.uk/claws-mail/bugzilla/show_bug.cgi?id=1774
 SRC_URI = "\
-	${SOURCEFORGE_MIRROR}/sylpheed-claws/claws-mail-${PV}.tar.bz2 \
-	http://www.penguin.cz/~utx/ftp/claws-mail/claws-mail-${PV}-po-update.patch;patch=1 \
+	${SOURCEFORGE_MIRROR}/sylpheed-claws/claws-mail-${PV}.tar.bz2;name=archive \
+	http://www.penguin.cz/~utx/ftp/claws-mail/claws-mail-${PV}-po-update.patch;patch=1;name=patch \
 	file://desktop.patch;patch=1 \
 	file://claws-mail-g_strcmp0.patch;patch=1 \
 	file://duplicate-header.patch;patch=1 \
@@ -51,3 +51,8 @@ do_install_append() {
 	sed -i 's/Icon=[^.]*$/&.png/' ${D}${datadir}/applications/claws-mail.desktop
 }
 
+
+SRC_URI[archive.md5sum] = "761b8ae2d574588460a0fb1ea4931ccb"
+SRC_URI[archive.sha256sum] = "67337a4a1a5a5ce09f2a38422b7a6fc481e4747f74d4ddedd130d4fb06fc3907"
+SRC_URI[patch.md5sum] = "e8ff3fabf1ed47f3b11a9cdc36b026bd"
+SRC_URI[patch.sha256sum] = "767258dd7c966e14ed519affe4c0da93e8fff66ee5fe9158413c8d163af72db8"

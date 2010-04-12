@@ -51,3 +51,6 @@ FILES_${PN}-bin = "${bindir}"
 do_stage() {
   autotools_stage_all
 }
+
+SRC_URI[md5sum] = "ab895165c149d7f95843c7584b1c7ad4"
+SRC_URI[sha256sum] = "e5ef90ff30897448a7c090c2e31ceb302ed064a60411436e8995580848ed1a63"

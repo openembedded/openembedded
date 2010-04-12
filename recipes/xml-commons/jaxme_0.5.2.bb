@@ -5,8 +5,8 @@ AUTHOR = "Apache Software Foundation"
 HOMEPAGE = "http://ws.apache.org/jaxme"
 
 SRC_URI = "\
-	http://apache.org/dist/ws/jaxme/source/ws-${P}-src.tar.gz \
-	http://ftp.hosting-studio.de/pub/linux/apache/ant/source/apache-ant-1.7.1-src.tar.bz2 \
+	http://apache.org/dist/ws/jaxme/source/ws-${P}-src.tar.gz;name=archive \
+	http://ftp.hosting-studio.de/pub/linux/apache/ant/source/apache-ant-1.7.1-src.tar.bz2;name=ant \
 	"
 
 S = "${WORKDIR}/ws-${P}"
@@ -64,3 +64,8 @@ jaxme_build() {
 
   fastjar -C $2 -c -f $4 .
 }
+
+SRC_URI[archive.md5sum] = "084ebfe4a816058f8ff6bd731fa70df4"
+SRC_URI[archive.sha256sum] = "0415d721259acf95c564fb84606bb17f6227c1cc444e89b78d1cd9903c1c88dc"
+SRC_URI[ant.md5sum] = "0d68db4a1ada5c91bcbf53cefd0c2fd7"
+SRC_URI[ant.sha256sum] = "4dc49a7260ef90a6dc6611b7e96b9f047d507589736d4a2ad6efbe3edfc6fba6"

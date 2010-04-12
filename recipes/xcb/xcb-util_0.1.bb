@@ -1,2 +1,5 @@
 include xcb-util.inc
 PR = "r0"
+
+SRC_URI[md5sum] = "c3852c5f0569e2577a6a2b06276948d1"
+SRC_URI[sha256sum] = "9086821a37d29ec4158f841c948b26637f4e262f22344d834eefafb7a313d266"

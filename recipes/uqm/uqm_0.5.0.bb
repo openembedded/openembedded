@@ -32,3 +32,6 @@ do_install() {
         install -d ${D}${bindir}
         install -m 0755 uqm ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "9002b1bc2de9285588dd97b618a867a7"
+SRC_URI[sha256sum] = "bdb715784bf0c94825cf40f97c60a5ec83fd3e17e9e186a78cd145781c4d9804"

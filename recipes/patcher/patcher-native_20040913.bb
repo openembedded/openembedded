@@ -18,3 +18,6 @@ PATCHTOOL = "patch"
 do_stage() {
 	install -m 0755 patcher.py ${STAGING_BINDIR}/patcher
 }
+
+SRC_URI[md5sum] = "08649756a41358b24e1857201a90f8bf"
+SRC_URI[sha256sum] = "bad7cc70c773ecc05edf7d511f37f50a3e753fa8cddea0a81f2fc8f582a10489"

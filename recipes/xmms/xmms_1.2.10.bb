@@ -76,3 +76,6 @@ do_stage() {
 FILES_${PN} = "${bindir}/xmms ${bindir}/xmms.sh ${libdir}/libxmms*.so.* \
                ${datadir}/applications/xmms.desktop \
 	       ${datadir}/pixmaps/xmms_mini.xpm"
+
+SRC_URI[md5sum] = "03a85cfc5e1877a2e1f7be4fa1d3f63c"
+SRC_URI[sha256sum] = "ff9eabae2074043294a19ec7beaf0959bd076f6cd60558264faeec08f4a0eb6a"

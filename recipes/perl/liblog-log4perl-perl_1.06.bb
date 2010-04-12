@@ -10,3 +10,6 @@ S = "${WORKDIR}/Log-Log4perl-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "a7bda690ec0ad0bed457fa525e28034a"
+SRC_URI[sha256sum] = "ffac9cd4a6fbc59618bf4e79c389a927491a81b448528278e010a190e2483544"

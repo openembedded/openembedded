@@ -25,3 +25,6 @@ do_install() {
 # scripts directory due to size constraints and the fact that it seems
 # pointless.  If someone requests it, I might add it as a seperate package.
 #
+
+SRC_URI[md5sum] = "eb74eca847fa71ba89a965548526f7ac"
+SRC_URI[sha256sum] = "ba77747cfb107d31cf4ae2eb27839cfa196c0fca08c98465256a4820b9d85d29"

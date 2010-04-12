@@ -9,8 +9,8 @@ PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz \
-           http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
+SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz;name=plugins \
+           http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=archive \
 	   "
 
 inherit autotools
@@ -38,3 +38,8 @@ RDEPENDS_abiword-plugin-collab-glade = "abiword-plugin-collab"
 
 FILES_${PN}-dbg += "${libdir}/abiword-2.5/plugins/.debug"
 
+
+SRC_URI[plugins.md5sum] = "b1ce7ca49a0ee4e04f828e10eaebe6a9"
+SRC_URI[plugins.sha256sum] = "37faf6ea346c9b6473c5b2dfd1bb599457faa06b6a7cdef58e3e9f3e2773976b"
+SRC_URI[archive.md5sum] = "11d022458e0e090846b35ed4873c2e6e"
+SRC_URI[archive.sha256sum] = "482891fb0e376e2aaeee25afa8b4913e6dc50f4fdc280f9f152b3ee8745d735d"

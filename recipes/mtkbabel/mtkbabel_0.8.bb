@@ -16,3 +16,6 @@ do_install() {
 	install -d ${D}${mandir}/man1
 	install -m 0644 mtkbabel.1 ${D}${mandir}/man1/
 }
+
+SRC_URI[md5sum] = "d5518b678bffb58ceeae898d950ee27e"
+SRC_URI[sha256sum] = "591597c0787822c9fd56c7a3da214e81edd3c98f32d16858221e02dfc0f63779"

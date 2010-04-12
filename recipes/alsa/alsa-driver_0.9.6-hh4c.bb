@@ -81,3 +81,5 @@ fi
       cp familiar/alsa-modules-${familiar_arch} ${D}${sysconfdir}/modutils/
 }
 
+SRC_URI[md5sum] = "de760ca0dda83fa8c79761080a0a655e"
+SRC_URI[sha256sum] = "8d9372e06338cc1367eaaab7b5cf3087939c8ab34a89a427308a96d59997c62a"

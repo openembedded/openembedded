@@ -227,3 +227,6 @@ FILES_mono-xsp-test = " \
 	"
 
 
+
+SRC_URI[md5sum] = "adb7871e5ebeefcf8ed959523442c0fb"
+SRC_URI[sha256sum] = "25c246b7ed3e82a5f3562c2c15db551332830de4c238a53e3260ab7d40cd015a"

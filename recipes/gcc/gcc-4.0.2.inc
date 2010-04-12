@@ -2,7 +2,7 @@ require gcc-common.inc
 
 DEPENDS = "mpfr gmp"
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://gcc-posix-open-fix.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
@@ -26,3 +26,6 @@ SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 FORTRAN = ""
 
 EXTRA_OECONF_BASE = "--disable-libssp --disable-libmudflap"
+
+SRC_URI[archive.md5sum] = "a659b8388cac9db2b13e056e574ceeb0"
+SRC_URI[archive.sha256sum] = "37b3286c2bfb68da9df983f60721f868e29897f7a426306748fee93b25c5fb61"

@@ -16,3 +16,6 @@ python() {
             raise bb.parse.SkipPackage("gst-plugins-ugly will only build if ENTERPRISE_DISTRO != 1")
 }
 
+
+SRC_URI[archive.md5sum] = "031205d5599fce73fc36766f928b2515"
+SRC_URI[archive.sha256sum] = "ced80afedd105cb9b1b72749f8bda29c71fa9eda06120d6b07e7362f705c9987"

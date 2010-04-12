@@ -11,3 +11,6 @@ S = "${WORKDIR}/inkscape-${PV}"
 inherit autotools gettext
 
 EXTRA_OECONF = "--disable-mmx"
+
+SRC_URI[md5sum] = "3542a646c6742686557b2f0e52c5f6dc"
+SRC_URI[sha256sum] = "9436f3c01dc69a1e7781633cd85936a40b3a84325e01930188bbae45e13fdbdc"

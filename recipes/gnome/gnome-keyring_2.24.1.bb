@@ -25,3 +25,6 @@ FILES_${PN} += "${datadir}/dbus-1/services"
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "aa5552dc129f3509ee39145b7f0bf977"
+SRC_URI[archive.sha256sum] = "3c9eb7f45dd0026340635b9e1ee18c36a47541610aa5a7ef604ca645aa4763f9"

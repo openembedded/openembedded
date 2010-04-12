@@ -16,3 +16,6 @@ FILES_${PN} = "${PERLLIBDIRS}/auto/XML/Parser/Expat/* \
                 ${PERLLIBDIRS}/XML"
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "84d9e0001fe01c14867256c3fe115899"
+SRC_URI[sha256sum] = "55386de7bf78f67ad2b9ef664a578db66ee53f512a28eb067cd2303f5e23d740"

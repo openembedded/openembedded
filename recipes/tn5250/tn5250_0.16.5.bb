@@ -20,3 +20,6 @@ do_stage() {
 	autotools_stage_includes
         oe_libinstall -so -a -C src lib5250 ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "2f9ef4509198e96bb184577fdddfce6d"
+SRC_URI[sha256sum] = "794687ae1b34aba9a3cf6f9b118d0ba91b8f83858fe92a9ded0611225db3ca0e"

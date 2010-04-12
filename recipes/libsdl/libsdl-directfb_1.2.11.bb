@@ -25,3 +25,6 @@ EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads
                 --disable-video-opengl --enable-input-events --enable-pthreads \
                 --disable-video-picogui --disable-video-qtopia --enable-dlopen"
 
+
+SRC_URI[md5sum] = "418b42956b7cd103bfab1b9077ccc149"
+SRC_URI[sha256sum] = "6985823287b224b57390b1c1b6cbc54cc9a7d7757fbf9934ed20754b4cd23730"

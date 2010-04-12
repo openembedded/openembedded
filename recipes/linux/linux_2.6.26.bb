@@ -10,8 +10,8 @@ DEFAULT_PREFERENCE_canyonlands = "1"
 DEFAULT_PREFERENCE_topas910 = "1"
 
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.8.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.8.bz2;patch=1;name=stablepatch \
            file://defconfig"
 
 SRC_URI_append_boc01 = "\
@@ -37,7 +37,7 @@ SRC_URI_append_mpc8313e-rdb = "\
 	file://mpc8313e-rdb-eth-fixed.patch;patch=1 \
 	"
 
-SRC_URI_append_topas910 = "http://www.bplan-gmbh.org/data/toshiba/topas/linux/2.6.26.5/patch_2.6.26.5_topas910.bz2;patch=1"
+SRC_URI_append_topas910 = "http://www.bplan-gmbh.org/data/toshiba/topas/linux/2.6.26.5/patch_2.6.26.5_topas910.bz2;patch=1;name=topaspatch"
 
 # see http://bugzilla.kernel.org/show_bug.cgi?id=11143
 do_stage_append() {
@@ -47,3 +47,11 @@ do_stage_append() {
 	fi
 }
 
+
+SRC_URI[kernel.md5sum] = "5169d01c405bc3f866c59338e217968c"
+SRC_URI[kernel.sha256sum] = "666488e2511393fdb901eaf1e67275bcc38ab37c930e8a9adb290a95c1721a2a"
+SRC_URI[stablepatch.md5sum] = "e27c07bb82e02532e874758980141281"
+SRC_URI[stablepatch.sha256sum] = "611f7e118b5b09898493eab4c3071771742f2f3826b5733fa2f47284a38fbcf3"
+
+SRC_URI[topaspatch.md5sum] = "092957fc9e029010106c4fa59ef2c098"
+SRC_URI[topaspatch.sha256sum] = "eefecb157633d2be256c0f6a2d46ab764027bbb906cf5c250be67b95e80767bb"

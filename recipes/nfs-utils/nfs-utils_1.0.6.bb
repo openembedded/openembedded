@@ -75,3 +75,6 @@ do_install() {
 	install -m 0644 ${S}/utils/showmount/showmount.man ${D}${mandir}/man8/showmount.8
 	install -m 0644 ${S}/utils/statd/statd.man ${D}${mandir}/man8/statd.8
 }
+
+SRC_URI[md5sum] = "f17e9983457e1cf61c37f0be4493fce6"
+SRC_URI[sha256sum] = "aa99fcb016971290f9a871331eed60150ebdd84785dda1b252556a54760b97bf"

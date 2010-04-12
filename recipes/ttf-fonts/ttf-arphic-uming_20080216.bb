@@ -13,3 +13,6 @@ require ttf.inc
 
 FILES_${PN} = "${datadir}"
 
+
+SRC_URI[md5sum] = "d219fcaf953f3eb1889399955a00379f"
+SRC_URI[sha256sum] = "8038a6db9e832456d5da5559aff8d15130243be1091bf24f3243503a6f1bda98"

@@ -19,3 +19,6 @@ do_install() {
 	install libfsiclient.so ${D}${libdir}
 	install fsidumpraw fsidumppgm ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "99adcf3275943c109d27a781addf7d63"
+SRC_URI[sha256sum] = "b0474b223a130e9412bb88f464138f40921e84f63b6024bf2ce5b32bd78d4bd8"

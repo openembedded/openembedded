@@ -19,3 +19,6 @@ SRC_URI = "\
 # powerpc patches
 SRC_URI += "file://binutils-2.16.1-e300c2c3.patch;patch=1"
 
+
+SRC_URI[md5sum] = "fd59f36022f6ea802d1c844a2576e616"
+SRC_URI[sha256sum] = "52f350e2844e87f9e3bb60ade650ad806d020aafa66248ec2a55313d62ed60e4"

@@ -36,3 +36,6 @@ do_install () {
 		   'nmapdatadir=${D}${datadir}/nmap' \
 		   install
 }
+
+SRC_URI[md5sum] = "0713306dda85aee2c95ef31b4b7d2838"
+SRC_URI[sha256sum] = "1cfb120008f636a874b871f1625409082badaaf64177c9ac873480630390356c"

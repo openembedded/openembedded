@@ -24,3 +24,6 @@ FILES_${PN} += "${datadir}/dbus-1 ${libdir}/python*"
 FILES_${PN}-dbg += "${libdir}/python*/*/*/*/.debug"
 
 
+
+SRC_URI[md5sum] = "f7a840620f10e5ecf86516c5cb721eb2"
+SRC_URI[sha256sum] = "fc8d5d3918cae739d86718b6e9124dae2ca5ea033a7d3b4e71fc16b2b6463288"

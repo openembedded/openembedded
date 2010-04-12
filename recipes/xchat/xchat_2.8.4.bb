@@ -16,3 +16,6 @@ EXTRA_OECONF = "\
 "
 
 FILES_${PN}-dbg += "${libdir}/xchat/plugins/.debug"
+
+SRC_URI[md5sum] = "66d60febc62a01bafac9bb3a35fb37ae"
+SRC_URI[sha256sum] = "f95a9a9e477128aae536669dedd79f4e7b4d469072565695289e4bbb5b36dd63"

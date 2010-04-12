@@ -10,3 +10,6 @@ SRC_URI = "http://ftp.sh.cvut.cz/MIRRORS/rock/ROCK-2.0/gnome2/figment/figment-${
 S = "${WORKDIR}/figment-${PV}"
 
 inherit autotools
+
+SRC_URI[md5sum] = "4b317749c7a75c4f283c6ef5aaad4146"
+SRC_URI[sha256sum] = "ebafecd9a34dbcb83bcbf69db3e9655e92af2eb0ede33d9f92d13ed5f2e7d8b2"

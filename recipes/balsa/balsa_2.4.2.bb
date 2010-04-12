@@ -91,3 +91,6 @@ do_configure_prepend() {
 	# aclocal seems to insist on looking in here.  Make sure it exists.
 	mkdir -p ${S}/m4
 }
+
+SRC_URI[md5sum] = "1eb90a92c089e194a595072a57c57394"
+SRC_URI[sha256sum] = "48bde6ff926fcc5d47853b87242cc890bdb21b5c74a2454a2b5c0269e9340090"

@@ -13,8 +13,8 @@ DEFAULT_PREFERENCE_smartq5 = "1"
 
 PR = "r34"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;patch=1;name=stablepatch \
            file://squashfs-lzma-2.6.24.patch;patch=1 \
            file://ubifs-v2.6.24.patch;patch=1 \
            file://defconfig"
@@ -65,7 +65,7 @@ SRC_URI_append_cm-x270 = " \
 	file://0005-add-display-set-default-16bpp.patch;patch=1 \
 	"
 
-SRC_URI_avr32 = "http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.24.3.atmel.3.tar.bz2 \
+SRC_URI_avr32 = "http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.24.3.atmel.3.tar.bz2;name=atmelpatch \
                  file://defconfig"
 S_avr32 = "${WORKDIR}/linux-2.6.24.3.atmel.3"
 
@@ -102,8 +102,8 @@ SRC_URI_append_hipox = " \
 	"
 
 EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"
-SRC_URI_smartq5 = " ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
-    http://ftp.kernel.org/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1 \
+SRC_URI_smartq5 = " ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
+    http://ftp.kernel.org/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;name=stablepatch \
     file://smartq-gitupdate.diff;patch=1 \
     file://base/0001-Apply-samsung-kernel-patch.patch;patch=1 \
     file://base/0002-Apply-smartq-patch.patch;patch=1 \
@@ -165,3 +165,11 @@ python do_compulab_image() {
 
 addtask compulab_image after do_deploy before do_build
 
+
+SRC_URI[kernel.md5sum] = "3f23ad4b69d0a552042d1ed0f4399857"
+SRC_URI[kernel.sha256sum] = "413c64fbbcf81244cb5571be4963644a1e81166a2b0f008a016528363b65c5d3"
+SRC_URI[stablepatch.md5sum] = "0c1c5d6d8cd82e18d62406d2f34d1d38"
+SRC_URI[stablepatch.sha256sum] = "b6bbb0dea427aa733c37d58a94b819b523c8649d7605f498348de159380c28a1"
+
+SRC_URI[atmelpatch.md5sum] = "952715cc523f4a77e7c5f94f608594c0"
+SRC_URI[atmelpatch.sha256sum] = "d26a1de101692958fbca1d1be40fe52bd605636baea616a3e8ed96e422a3648d"

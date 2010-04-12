@@ -85,3 +85,6 @@ FILES_${PN}                += "${bindir}"
 RDEPENDS_${PN}-pear         = ${PN}
 RDEPENDS_${PN}-cli          = ${PN}
 RDEPENDS_${PN}-dev          = ${PN}
+
+SRC_URI[src.md5sum] = "7380ffecebd95c6edb317ef861229ebd"
+SRC_URI[src.sha256sum] = "1892b2dd50b56ae2c9aec027fcd9035b76673f113555bc2bc1007bab8ae4db81"

@@ -32,3 +32,6 @@ do_stage() {
 
 FILES_${PN}-dev += "${libdir}/sigcx-*/"
 
+
+SRC_URI[md5sum] = "02e78c3cfbdb4be285d97653e563f65a"
+SRC_URI[sha256sum] = "bd55717374674ed69de46c13b52aaba0420d5c68582cac34d863e44f6f1d560e"

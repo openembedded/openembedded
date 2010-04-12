@@ -18,8 +18,8 @@ DEFAULT_PREFERENCE_at2440evb = "1"
 DEFAULT_PREFERENCE_tqm8540 = "1"
 DEFAULT_PREFERENCE_stamp9g20evb = "1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.6.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.6.bz2;patch=1;name=stablepatch \
            file://defconfig"
 
 SRC_URI_append_boc01 = "\
@@ -86,3 +86,8 @@ pkg_postrm_kernel-devicetree_append_boc01 () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --remove devicetree.v1 devicetree-${KERNEL_VERSION}.v1 || true
 }
 
+
+SRC_URI[kernel.md5sum] = "64921b5ff5cdadbccfcd3820f03be7d8"
+SRC_URI[kernel.sha256sum] = "58a5ea16d499fe06f90fcbf1d687d1235d2cb9bc28bf979867bd3faadf38fc3f"
+SRC_URI[stablepatch.md5sum] = "0317760b52c9ac7a11de997da19a366e"
+SRC_URI[stablepatch.sha256sum] = "0294d475cbbc6cf43db25e64b92616309086cad6be4ee463f7f4b1d16d285c27"

@@ -73,3 +73,6 @@ do_install () {
 	install -m 0644 ${WORKDIR}/sysconfig-usb ${D}${sysconfdir}/sysconfig/usb
 	install -m 0755 ${WORKDIR}/usb-storage ${D}${sysconfdir}/hotplug/usb
 }
+
+SRC_URI[md5sum] = "9e6b06dfa3b91f051b55e1483adb5a68"
+SRC_URI[sha256sum] = "3f2d989f7cbef92612b1ecd913398fc42165e29f214fdf68fa997a8e5b2a138f"

@@ -20,3 +20,6 @@ PACKAGES =+ "${PN}-hal"
 
 FILES_${PN}-hal = "${bindir}/pmount-hal"
 
+
+SRC_URI[md5sum] = "24a676bf495bec367b2d971cdca1c54c"
+SRC_URI[sha256sum] = "2632d931b5732eb1d0de7a2e2d92c75d64412438958ee96dceb4443e4fc2a62f"

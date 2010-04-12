@@ -38,3 +38,6 @@ do_install() {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/xinetd.conf"
+
+SRC_URI[md5sum] = "4295b5fe12350f09b5892b363348ac8b"
+SRC_URI[sha256sum] = "eddfd1bf3684eaff3a7ba424421d3126878a7469ced0f3d370c7cf66bde64522"

@@ -22,3 +22,6 @@ do_install() {
 		install -m 0644 $i ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/
 	done
 }
+
+SRC_URI[md5sum] = "b47d4fa958aaf83916b6a917626102cd"
+SRC_URI[sha256sum] = "9d1fff10d391cb64890bb8e0050d3f023520a8dd5aee43c4d3f9c6f8611da668"

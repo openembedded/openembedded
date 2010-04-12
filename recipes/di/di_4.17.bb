@@ -15,3 +15,6 @@ do_install() {
 	install -d ${D}${mandir}/man1
 	install -m 0644 ${S}/di.1 ${D}${mandir}/man1
 }
+
+SRC_URI[md5sum] = "be55b3a1693b318effa3db8d1c0243c1"
+SRC_URI[sha256sum] = "46e124670fb2b63cb7500a8b36b7856c15858cb35658263ddad4933935d5e210"

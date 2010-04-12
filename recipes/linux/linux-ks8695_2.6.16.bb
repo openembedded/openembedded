@@ -23,3 +23,6 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
+
+SRC_URI[md5sum] = "9a91b2719949ff0856b40bc467fd47be"
+SRC_URI[sha256sum] = "1200dcc7e60fcdaf68618dba991917a47e41e67099e8b22143976ec972e2cad7"

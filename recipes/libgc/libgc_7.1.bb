@@ -17,3 +17,6 @@ LEAD_SONAME = "libgc.so.1"
 
 FILES_${PN}-doc += "${datadir}/gc/"
 
+
+SRC_URI[md5sum] = "2ff9924c7249ef7f736ecfe6f08f3f9b"
+SRC_URI[sha256sum] = "e3cef6028fe3efe7de3bcf4107c880eae50b3ee79841450d885467c09bcebf30"

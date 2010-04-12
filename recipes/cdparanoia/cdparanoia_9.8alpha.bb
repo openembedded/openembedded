@@ -27,3 +27,6 @@ do_stage() {
         oe_libinstall -C paranoia libcdda_paranoia ${STAGING_LIBDIR}
 }
 
+
+SRC_URI[md5sum] = "7218e778b5970a86c958e597f952f193"
+SRC_URI[sha256sum] = "1b79fae1aedc692f87d1344410f5c6b666961afccdc78bc5c4c257c450dfa008"

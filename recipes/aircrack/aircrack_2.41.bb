@@ -22,3 +22,6 @@ do_install() {
         install -m 0755 mergeivs          ${D}/${sbindir}
         install -m 0755 pcap2ivs          ${D}/${sbindir}
 }
+
+SRC_URI[md5sum] = "05a37c8a165efb11ea226829c809deb3"
+SRC_URI[sha256sum] = "0273c476875e5dd09c7e15e8de58ed18fa9f5f2f9482a78e4171b3f56d75efa4"

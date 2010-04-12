@@ -24,3 +24,6 @@ FILES_${PN} += " \
                 ${datadir}/xmodmap/ \
                "
 
+
+SRC_URI[archive.md5sum] = "9eb00e9dc468d2c5c71b70c9fb2b751c"
+SRC_URI[archive.sha256sum] = "73aa1d5b9636ea3293d206986115473f30581dd4a937267873573880eb1bec7b"

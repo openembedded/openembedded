@@ -30,3 +30,6 @@ do_install_append() {
 	install -m 0644 sylpheed.png ${D}${datadir}/pixmaps/
 }
 
+
+SRC_URI[md5sum] = "a6fc9e9c2a33876fddb33f25f40b820f"
+SRC_URI[sha256sum] = "d18a8dc51126e25c7677dd649b7499756278e1d82b7b888d37a10fb1d8d38761"

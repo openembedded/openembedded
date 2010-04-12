@@ -13,3 +13,6 @@ do_compile () {
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 }
+
+SRC_URI[md5sum] = "1342f26b75d8edb1daa01999ce330d29"
+SRC_URI[sha256sum] = "8e7dfa34f3919226550dc6507a23753f9fda55e78b15b264291ecf5940d837e9"

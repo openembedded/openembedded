@@ -26,3 +26,6 @@ do_stage() {
 }	
 
 FILES_${PN}-dev += "${datadir}/pygtk"
+
+SRC_URI[archive.md5sum] = "fbcf4ef5ec4a8c4eec4d390c5889c80f"
+SRC_URI[archive.sha256sum] = "400a5401a591e271c3357d0a8cb05a7927b4c218130497d06f75df9763d4efd8"

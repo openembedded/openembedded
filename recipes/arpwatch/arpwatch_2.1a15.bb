@@ -56,3 +56,6 @@ CONFFILES_${PN} = "${sysconfdir}/default/arpwatch \
 
 INITSCRIPT_NAME = "arpwatch"
 INITSCRIPT_PARAMS = "defaults 95 05"
+
+SRC_URI[md5sum] = "cebfeb99c4a7c2a6cee2564770415fe7"
+SRC_URI[sha256sum] = "c1df9737e208a96a61fa92ddad83f4b4d9be66f8992f3c917e9edf4b05ff5898"

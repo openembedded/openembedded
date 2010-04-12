@@ -1,6 +1,7 @@
 DESCRIPTION = "Android Image Creation and Booting Utilities"
 SECTION = "console/utils"
 LICENSE = "GPL"
+SRCREV = "2812c0ff528e85b394c52cef736ecc07393b8d27"
 PV = "1.0+gitr${SRCREV}"
 PR = "r1"
 

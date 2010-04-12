@@ -17,3 +17,6 @@ do_install() {
 	install -m 0755	${S}/c-nc.desktop ${D}${datadir}/applications/
 }
 
+
+SRC_URI[md5sum] = "ae0d222169d11a8ca790148347ac7d74"
+SRC_URI[sha256sum] = "141730e220eff50b5b3e644211e22a08bc0aacaa6da6fa16f260c57114d0cfdc"

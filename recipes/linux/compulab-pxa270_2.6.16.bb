@@ -11,10 +11,10 @@ do_unpack[depends] += "unzip-native:do_populate_staging"
 # and rebuild the kernel.  If you still get md5 failures, contact cbrake
 # on the #oe IRC channel -- this recipe probably needs updated.
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2;name=kernel \
            file://linux-2.6.16.patch;patch=1 \
            file://defconfig \
-	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip;md5sum=05989295a5f99055c2f60f8b6f7abb6b"
+	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip;name=x270patch"
 
 S = "${WORKDIR}/linux-2.6.16"
 
@@ -61,3 +61,8 @@ addtask compulab_image before do_build after do_deploy
 
 COMPATIBLE_MACHINE = "cm-x270"
 
+
+SRC_URI[kernel.md5sum] = "9a91b2719949ff0856b40bc467fd47be"
+SRC_URI[kernel.sha256sum] = "1200dcc7e60fcdaf68618dba991917a47e41e67099e8b22143976ec972e2cad7"
+SRC_URI[x270patch.md5sum] = "951fc1494f03eb9d40e1ae66f462cbe6"
+SRC_URI[x270patch.sha256sum] = "51b4526a5670a071a6bde749620e188bc417c9632548164522ca55be07d7813b"

@@ -15,3 +15,6 @@ do_compile_prepend() {
 do_stage() {
     install -m 0644 ${S}/gob2.m4 ${STAGING_DATADIR}/aclocal
 }
+
+SRC_URI[md5sum] = "f8721af6f4e90ff48bd7cb4c96a5a94c"
+SRC_URI[sha256sum] = "c2977b18d1166c62e3f04373feefc0e2af704da3cb98e32612be4a55fd77a3f9"

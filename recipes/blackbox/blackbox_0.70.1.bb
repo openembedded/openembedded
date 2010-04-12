@@ -20,3 +20,6 @@ do_install_append() {
 do_stage () {
 	sed -i s#${STAGING_LIBDIR}#${libdir}#g ${STAGING_LIBDIR}/pkgconfig/libbt.pc
 }
+
+SRC_URI[md5sum] = "2d173b95ca5e64ef478c6a5d2deee9df"
+SRC_URI[sha256sum] = "e394561d4426cf17e21eb5cc32e2972eb1af92d04a41808a41b1fb95320bd659"

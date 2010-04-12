@@ -35,3 +35,6 @@ do_stage () {
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install install-elf
 }
+
+SRC_URI[md5sum] = "4fbb1a7f1257e065ca830deefe13d350"
+SRC_URI[sha256sum] = "fa42e57e902f2161dc2b297e0dcb24ca180024770afa379027db582803ffa2fa"

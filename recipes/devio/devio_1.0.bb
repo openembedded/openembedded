@@ -1,1 +1,4 @@
 require devio.inc
+
+SRC_URI[md5sum] = "3f421c80bce00b8bfe68ef9f453932b7"
+SRC_URI[sha256sum] = "25380c3722c75b993d530c09d48f5941c0a640a4382f6a0e1878c4ee8459dd16"

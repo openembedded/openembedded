@@ -30,3 +30,6 @@ PACKAGES += "libmpeg2 libmpeg2-dev libmpeg2convert libmpeg2convert-dev"
 FILES_${PN} = "${bindir}/*"
 FILES_libmpeg2 = "${libdir}/libmpeg2.so.*"
 FILES_libmpeg2convert = "${libdir}/libmpeg2convert.so.*"
+
+SRC_URI[md5sum] = "52d10ea80595ec83d8557ba7ac6dc8e6"
+SRC_URI[sha256sum] = "9416376952812e5b479745d67a2bf874fbcad10137517314ce7de37abb756df8"

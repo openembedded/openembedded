@@ -30,3 +30,6 @@ do_configure_append () {
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "783e5f7be6391d6c46b4725e38af475a"
+SRC_URI[archive.sha256sum] = "a793ebe4245656f0ae23d5a87895555182f62943e02e9667303ad20c4e690c1d"

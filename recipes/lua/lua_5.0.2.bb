@@ -14,3 +14,6 @@ require lua-build.inc
 inherit binconfig
 NATIVE_INSTALL_WORKS = 1
 BBCLASSEXTEND = "native"
+
+SRC_URI[md5sum] = "dea74646b7e5c621fef7174df83c34b1"
+SRC_URI[sha256sum] = "a6c85d85f912e1c321723084389d63dee7660b81b8292452b190ea7190dd73bc"

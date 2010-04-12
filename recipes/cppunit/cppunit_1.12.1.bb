@@ -14,3 +14,6 @@ inherit autotools_stage binconfig
 
 CXXFLAGS_powerpc += "-lstdc++"
 
+
+SRC_URI[md5sum] = "bd30e9cf5523cdfc019b94f5e1d7fd19"
+SRC_URI[sha256sum] = "ac28a04c8e6c9217d910b0ae7122832d28d9917fa668bcc9e0b8b09acb4ea44a"

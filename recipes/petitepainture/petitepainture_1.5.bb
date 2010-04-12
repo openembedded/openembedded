@@ -22,3 +22,6 @@ do_install() {
         install -m 0644 *.png ${D}${palmtopdir}/pics/
         install -m 0644 ${WORKDIR}/petitpeintu.png ${D}${palmtopdir}/pics/
 }
+
+SRC_URI[md5sum] = "8bd0e7e1f4d6549baba4cbb2384de2ff"
+SRC_URI[sha256sum] = "4925a4503cf7650e7880740113ee747d1bf828b6783b24580fbcb0ec894c0801"

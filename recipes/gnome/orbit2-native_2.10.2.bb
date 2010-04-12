@@ -19,3 +19,6 @@ do_configure_prepend() {
 	install ${WORKDIR}/gtk-doc.m4 ./m4/
 	install ${WORKDIR}/gtk-doc.make ./
 }
+
+SRC_URI[md5sum] = "c862e3261b52a84321e89f57e5600da6"
+SRC_URI[sha256sum] = "d43ff15c23f5391850f85a7d40e4bd26f82fe2c86669664fe56eff91f14c1594"

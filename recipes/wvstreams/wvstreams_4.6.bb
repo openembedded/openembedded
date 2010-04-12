@@ -38,3 +38,6 @@ do_configure() {
         autoreconf
         oe_runconf
 }
+
+SRC_URI[md5sum] = "4ee8ccfe6dfc29bf952d58fa23626c97"
+SRC_URI[sha256sum] = "171df8e545b53edb3efbd65b9bc2b35549d05249bd0c92776701f9d8da77ed6f"

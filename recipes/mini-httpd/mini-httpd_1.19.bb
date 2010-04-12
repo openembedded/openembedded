@@ -34,3 +34,6 @@ do_install () {
 	install -m 0755 ${WORKDIR}/mini-httpd.conf ${D}${sysconfdir}/mini-httpd.conf
 	oe_runmake 'BINDIR=${D}${sbindir}' 'MANDIR=${D}${mandir}' install
 }
+
+SRC_URI[md5sum] = "7c68293ad265ecfe2edea917912f6f1f"
+SRC_URI[sha256sum] = "f7f36533b1338ea16d916ea525ea7006ab38fdd3544ac7df93a4688a8e270241"

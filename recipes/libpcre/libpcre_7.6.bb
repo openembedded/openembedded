@@ -54,3 +54,6 @@ python populate_packages_prepend () {
 
 FILES_${PN} = "${libdir}/libpcre.so.*"
 FILES_${PN}-dev += "${bindir}/*"
+
+SRC_URI[md5sum] = "2af38e083fb90ef60fa9eda7cc290e86"
+SRC_URI[sha256sum] = "362e4b4473f2f7a3bfa28ea73e80ec00a2fe525a1aceb5f66e1c528a900bd735"

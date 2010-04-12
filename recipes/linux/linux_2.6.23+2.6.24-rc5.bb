@@ -5,8 +5,8 @@ DEFAULT_PREFERENCE = "-1"
 
 PR = "r3"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
-	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.24/patch-2.6.24-rc5.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=kernel \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.24/patch-2.6.24-rc5.bz2;patch=1;name=patch \
            file://defconfig \
 	   "
 
@@ -65,3 +65,7 @@ python do_compulab_image() {
 
 addtask compulab_image after do_deploy before do_build
 
+SRC_URI[kernel.md5sum] = "2cc2fd4d521dc5d7cfce0d8a9d1b3472"
+SRC_URI[kernel.sha256sum] = "d4e67c0935ffb2a4158234bff92cc791b83177866009fc9b2214104e0038dbdb"
+SRC_URI[patch.md5sum] = "ae984c2ba6bf54e3f7d139c197563792"
+SRC_URI[patch.sha256sum] = "fc8edda5992a3d45bb0b2cfbad9c9a683f74be110f8d767745182c49a86072fd"

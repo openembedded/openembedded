@@ -38,3 +38,6 @@ CONFFILES_${PN} = "${sysconfdir}/clamsmtpd.conf"
 
 INITSCRIPT_NAME = "clamsmtpd"
 INITSCRIPT_PARAMS = "defaults 65 35"
+
+SRC_URI[md5sum] = "04da6aab94934641fcf9e7a7598346fb"
+SRC_URI[sha256sum] = "c09b24c82f858845e235df4c8b2639240a7b786de66b595e351be86ab60663a5"

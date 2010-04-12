@@ -19,3 +19,6 @@ FILES_${PN} = "${bindir} \
 FILES_${PN}-dev = "${libdir}/matchbox-desktop \
 		   ${includedir}/matchbox-desktop \
 		   ${datadir}/matchbox/desktop/modules/*a"
+
+SRC_URI[md5sum] = "7b2aab7fc14b8690b436a22a6c041695"
+SRC_URI[sha256sum] = "bced4bcb32dba30feee0da6e4d7c726f4c0c72dc29c2d7bbb648f9208357bc19"

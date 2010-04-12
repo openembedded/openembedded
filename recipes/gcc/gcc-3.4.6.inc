@@ -1,6 +1,6 @@
 require gcc-common.inc
 
-SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	   file://gcc34-reverse-compare.patch;patch=1 \
 	   file://gcc34-arm-ldm.patch;patch=1 \
 	   file://gcc34-arm-ldm-peephole.patch;patch=1 \
@@ -21,4 +21,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 
 SRC_URI += "file://gcc34-configure.in.patch;patch=1"
 SRC_URI += "file://gcc34-thumb-support.patch;patch=1"
-SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
+SRC_URI_append = " file://zecke-no-host-includes.patch;patch=1 "
+
+SRC_URI[archive.md5sum] = "4a21ac777d4b5617283ce488b808da7b"
+SRC_URI[archive.sha256sum] = "7791a601878b765669022b8b3409fba33cc72f9e39340fec8af6d0e6f72dec39"

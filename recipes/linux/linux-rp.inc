@@ -1,4 +1,4 @@
-DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices and iPAQ hx2750."
+DESCRIPTION= "2.6 Linux Development Kernel for Zaurus devices and iPAQ hx2750."
 SECTION = "kernel"
 LICENSE = "GPLv2"
 
@@ -166,3 +166,5 @@ do_configure() {
 
 	yes '' | oe_runmake oldconfig
 }
+
+require linux-rp.checksums.inc

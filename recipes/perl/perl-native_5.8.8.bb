@@ -95,3 +95,6 @@ do_stage_append_nylon() {
 }
 
 PARALLEL_MAKE = ""
+
+SRC_URI[md5sum] = "b8c118d4360846829beb30b02a6b91a7"
+SRC_URI[sha256sum] = "e15d499321e003d12ed183601e37ee7ba5f64b278d1de30149ce01bd4a3f234d"

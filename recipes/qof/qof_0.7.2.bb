@@ -19,3 +19,6 @@ do_stage() {
 
 FILES_${PN} += "/usr/share/xml"
 
+
+SRC_URI[md5sum] = "dff6bfda556544a240e833d22e509b50"
+SRC_URI[sha256sum] = "643359de7833c9fe661fcfc6fc0dc6e3f390bce55041eba123a495e661366990"

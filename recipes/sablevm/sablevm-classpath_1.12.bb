@@ -24,3 +24,6 @@ do_install() {
 	autotools_do_install
 	mv ${D}${libdir}/security ${D}${libdir}/${PN}
 }
+
+SRC_URI[md5sum] = "938602a0648660f13357115b6f1fbd60"
+SRC_URI[sha256sum] = "3e7b039a188ce5b2f74c86309936e193ea5d5eefcbdcaa92b38bc3f7e1e9fec4"

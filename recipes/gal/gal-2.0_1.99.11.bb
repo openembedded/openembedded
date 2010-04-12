@@ -20,3 +20,6 @@ do_stage() {
 	oe_libinstall -C gal -so -a libgal-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -C gal/a11y -so -a libgal-a11y-2.0 ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "906c0640d3160a55aac98974aecfb316"
+SRC_URI[sha256sum] = "bb76484f73f5d6bc58d4e9990422043663af01204728aee73a1ce4565f8ef2ed"

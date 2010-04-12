@@ -19,3 +19,6 @@ do_install_prepend() {
 do_stage () {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "f4254f345b5d1a1f3ae4e2e27ae38b0a"
+SRC_URI[sha256sum] = "f3687c7308231634619de278b5880cccd6b9b3fc04a4c1b1cf8b2e3131f6f158"

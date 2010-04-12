@@ -63,3 +63,6 @@ do_install() {
 	oe_libinstall -so -C builds/.libs libmk4 ${D}${libdir}
 }
 
+
+SRC_URI[md5sum] = "89a25775fee5db536937f36deb5223f6"
+SRC_URI[sha256sum] = "4d6c46289b1f1dea4e8bbc78332901491bde0c552727c27431ca9cb0234658da"

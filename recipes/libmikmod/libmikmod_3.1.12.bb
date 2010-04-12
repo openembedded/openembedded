@@ -24,3 +24,6 @@ EXTRA_OECONF = "\
   --enable-threads \
 "
 
+
+SRC_URI[md5sum] = "9f3c740298260d5f88981fc0d51f6f16"
+SRC_URI[sha256sum] = "891a2b780306e6ef86e381f459e71a085d4e7f56c970a879d3bf341c01bdfc32"

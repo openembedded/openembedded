@@ -28,3 +28,6 @@ do_install() {
 
     install -m 0755 ${S}/dest/kppi ${D}${palmtopdir}/bin/kppi
 }
+
+SRC_URI[md5sum] = "90d1517db39d4e3f7934af566ea18fca"
+SRC_URI[sha256sum] = "a1b86dc2ef641bc644ff5a206b5e2d3a61dacf58c2c489e0669ba1d71d0534a0"

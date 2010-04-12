@@ -6,3 +6,4 @@ require gcc-configure-sdk.inc
 require gcc-package-sdk.inc
 
 DEPENDS += "gmp-native mpfr-native"
+

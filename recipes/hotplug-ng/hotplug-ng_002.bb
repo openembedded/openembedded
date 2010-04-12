@@ -23,3 +23,6 @@ export bindir = "${base_bindir}"
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 }
+
+SRC_URI[md5sum] = "faa08f321fefd2c61ce4c9355a62fe31"
+SRC_URI[sha256sum] = "ca7ef124cde06883fbf28c7e78ce1e4c5526434bbe5672ef0a3e85a61a9d0b5f"

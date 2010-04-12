@@ -28,3 +28,6 @@ do_install() {
 PACKAGES =+ "libpcsclite"
 
 FILES_libpcsclite = "${libdir}/libpcsclite.so.*"
+
+SRC_URI[md5sum] = "d7d466621bec39354351f09349f6374c"
+SRC_URI[sha256sum] = "a0c11b0b5cc46d4c4ec499b875cfdc4e766fdf12fe2f6ea635e1b11ab7b8821e"

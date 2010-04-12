@@ -17,3 +17,6 @@ inherit autotools pkgconfig gnome
 do_stage() {
 autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "b35e95f6bd7b8add9981b6cf6336674a"
+SRC_URI[archive.sha256sum] = "458e7b2ca26f0d212f91b445f0a93db62a679ec671bd3cc980f3c1ac65f06b96"

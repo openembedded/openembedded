@@ -40,3 +40,6 @@ FILES_libmissioncontrol-server-dbg += "${libdir}/.debug/libmissioncontrol-server
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[md5sum] = "aa8a8264c596c666f886f85356b56e09"
+SRC_URI[sha256sum] = "a36371f8f9d86cb767e4ea84ed378d6546750843d4b1c0d57f7e53153e8da51b"

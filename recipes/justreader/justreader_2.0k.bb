@@ -28,3 +28,6 @@ do_install() {
 	install -m 0755 bin/justreader ${D}${palmtopdir}/bin/
 	install -m 0644 pics/* ${D}${palmtopdir}/pics/justreader/
 }
+
+SRC_URI[md5sum] = "74b2b89b12668cbbbb093b6343e9f52d"
+SRC_URI[sha256sum] = "55b0dd7ac3f9860a4cba0797213fdaa898b77f3228612e3499d54e6fe6144514"

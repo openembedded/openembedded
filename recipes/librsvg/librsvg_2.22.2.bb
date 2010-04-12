@@ -32,3 +32,6 @@ fi
 do_stage() {
 	autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "aae602677ce201b1a0ed6a0c18c207f2"
+SRC_URI[archive.sha256sum] = "2bfc1853ecdc545bf3767ed92c93b8796f2075f522c8eab1693c96f11d55a59e"

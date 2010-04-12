@@ -42,3 +42,6 @@ do_install () {
 PACKAGES =+ "${PN}-ids ${PN}-ids-uncompressed"
 FILES_${PN}-ids = "${datadir}/pci.ids.gz"
 FILES_${PN}-ids-uncompressed = "${datadir}/pci.ids"
+
+SRC_URI[md5sum] = "46387fd7a18c33fbb5311fdb3ab9ea12"
+SRC_URI[sha256sum] = "f66e40b8df5a7b6a93c463b0fb734ea6451c5f0c2cc772f58640b6c7f0d69397"

@@ -16,3 +16,6 @@ EXTRA_OECONF = " --cross-prefix=${TARGET_PREFIX} \
                  --enable-sqlite \
 "
 
+
+SRC_URI[md5sum] = "2c974f95b711e5fd07f78fc4ebfcca66"
+SRC_URI[sha256sum] = "8eb7941cbae088026dd394fbe6f465cae6dd848edc430c6313f04cf57d1192b4"

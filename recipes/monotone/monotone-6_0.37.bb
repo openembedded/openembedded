@@ -50,3 +50,6 @@ tsd = "/home/monotone/${PN}"
 FILES_${PN}-testsuite = "${tsd}/testsuite ${tsd}/tests"
 RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch perl perl-modules"
 
+
+SRC_URI[md5sum] = "d06193f2738626570692bed2173144c1"
+SRC_URI[sha256sum] = "061e2f6aa0a1c0105b105946744d84c44eb49e9a4fe4628e872c518533b6ec2d"

@@ -17,3 +17,6 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 ${S}/bluesnarfer ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "ee1fcf2e12b74e8cf65f43cdd2c47b72"
+SRC_URI[sha256sum] = "5cff4c3269cf006bef9f66ec0a788139689425b96c6d7c60024f0841632b065b"

@@ -5,8 +5,8 @@ LICENSE = "GPLv2"
 DEPENDS = "boost loudmouth libwpd librsvg goffice poppler libglade"
 RDEPENDS = "abiword"
 
-SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz \
-           http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
+SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz;name=plugins \
+           http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=archive \
            file://abiword-cxx-for-ld-fix.patch;patch=1 \
 	   "
 
@@ -42,3 +42,8 @@ RDEPENDS_abiword-plugin-collab-glade = "abiword-plugin-collab"
 
 FILES_${PN}-dbg += "${libdir}/abiword-2.6/plugins/.debug"
 
+
+SRC_URI[plugins.md5sum] = "ebdc165d1b6c3c69f11148cf7841f257"
+SRC_URI[plugins.sha256sum] = "329521398105348ff466b90e1a7567574bd690639b048b6356ddc353d864b785"
+SRC_URI[archive.md5sum] = "d627a5d1061160c683f2257da498355b"
+SRC_URI[archive.sha256sum] = "35b1ced07bed8706a81c2c26c42bf95bdf7a4a9c1fba98935cc5ecb5c674f0bb"

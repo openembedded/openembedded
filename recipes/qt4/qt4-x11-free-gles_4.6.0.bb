@@ -14,5 +14,3 @@ FILESPATHPKG .= ":qt4-x11-free-${PV}:qt4-x11-free"
 
 DEPENDS += "virtual/egl"
 PROVIDES += "qt4-x11-free"
-
-

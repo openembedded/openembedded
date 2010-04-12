@@ -19,3 +19,6 @@ EXTRA_OEMAKE = "ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2"
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "3d8aab9d476a593e731afcd60272454a"
+SRC_URI[archive.sha256sum] = "e1ecc0ddc5a09481deb2daa1f30fa14472bfed541db46bb4f49f3d0d728b0a45"

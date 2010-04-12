@@ -43,3 +43,6 @@ else
 	update-rc.d -s ntpdate defaults 30
 fi
 }
+
+SRC_URI[md5sum] = "0f8fabe87cf54f409b57c6283f0c0c3d"
+SRC_URI[sha256sum] = "da784d5c0363d4f708a25f3aad23ba9a3486aafd464444d2aa6a9f8d29213f25"

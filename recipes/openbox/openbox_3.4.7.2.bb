@@ -24,3 +24,6 @@ ALTERNATIVE_PATH = "${bindir}/openbox"
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
 ALTERNATIVE_PRIORITY = "10"
+
+SRC_URI[md5sum] = "9e7589e90519bc6ac2f4656ea6869439"
+SRC_URI[sha256sum] = "d11f2137a0fe1de6c36c999d29523ad68c05f22c5935ce8628a8cab7a2e4b000"

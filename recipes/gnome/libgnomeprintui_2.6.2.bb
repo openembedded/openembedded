@@ -12,3 +12,6 @@ do_stage() {
 	oe_libinstall -so -a -C libgnomeprintui libgnomeprintui-2-2 ${STAGING_LIBDIR}
 	gnome_stage_includes
 }
+
+SRC_URI[archive.md5sum] = "b26f7f70eb67fe29f20f6312d4f3085e"
+SRC_URI[archive.sha256sum] = "7869603bbda88f35652d9b70af178836ca7612119ab36084ccc35f2d51c83f13"

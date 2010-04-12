@@ -17,3 +17,6 @@ do_stage() {
 	install -m 644 hildon-fm/*.h ${STAGING_INCDIR}/hildon-fm/hildon-widgets
 	install -m 755 hildon-fm/.libs/*.so* ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "6d2646bf0ef3da795a34245b870f7983"
+SRC_URI[sha256sum] = "9305aff5ec4eefe462e94b49c0e1ec3037e9d3ae5a6fa47c8cb7136dadcb1e8c"

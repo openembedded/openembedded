@@ -19,3 +19,6 @@ do_configure_prepend () {
 	touch NEWS AUTHORS ChangeLog
 }
 
+
+SRC_URI[md5sum] = "2e4487cdf922a6da2546bad74f643205"
+SRC_URI[sha256sum] = "5666a1dec6956a9b9869aacc3b05a10222639651790be3a9c43772890eb49cd6"

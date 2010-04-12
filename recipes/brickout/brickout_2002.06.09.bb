@@ -38,3 +38,6 @@ do_install() {
 	echo "Type=Application" >>${D}${palmtopdir}/apps/Games/brickout.desktop
 	echo "Name=Brickout" >>${D}${palmtopdir}/apps/Games/brickout.desktop
 }
+
+SRC_URI[md5sum] = "f191a5658e4262e85499e5b69433af89"
+SRC_URI[sha256sum] = "56e0abb8697b62949ab085419a3b6f83dd13db02d322759f4cd6c5e5286c2240"

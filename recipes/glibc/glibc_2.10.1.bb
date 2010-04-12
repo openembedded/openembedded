@@ -34,9 +34,9 @@ python __anonymous () {
 
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
-SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2;name=ports \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2;name=libidn \
 	   file://nscd-init.patch;patch=1;pnum=0 \
            file://arm-memcpy.patch;patch=1 \
            file://arm-longlong.patch;patch=1 \
@@ -149,3 +149,10 @@ do_compile () {
 require glibc-stage.inc
 
 require glibc-package.inc
+
+SRC_URI[archive.md5sum] = "ee71dedf724dc775e4efec9b823ed3be"
+SRC_URI[archive.sha256sum] = "cbad3e637eab613184405a87a2bf08a41991a0e512a3ced60d120effc73de667"
+SRC_URI[ports.md5sum] = "816b2d48a95ddc23b27fea03a1996443"
+SRC_URI[ports.sha256sum] = "b1f1ec9720036a3a33598b8478eef102535444a083d5b5813a6981ed74ab4071"
+SRC_URI[libidn.md5sum] = "8ef88560ec608d5923ee05eb5f0e15ea"
+SRC_URI[libidn.sha256sum] = "0fa72d1dd06a30642d3bb20a659f4ed0f4af54a205d7102896b68169b38676dc"

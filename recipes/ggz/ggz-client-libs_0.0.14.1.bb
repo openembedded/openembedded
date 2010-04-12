@@ -25,3 +25,6 @@ FILES_${PN} += "${libdir}/ggz/ggzwrap ${datadir}/desktop-directories"
 
 
 
+
+SRC_URI[md5sum] = "299eaa93721b1d867b5bf7dc6ac764b0"
+SRC_URI[sha256sum] = "0a7bec1a381a450f650890b36253893df0001873ba1f414573a4247298107680"

@@ -21,3 +21,6 @@ do_stage() {
 PACKAGES =+ "libdjvulibre"
 FILES_libdjvulibre = "${libdir}/libdjvulibre.so.*"
 FILES_${PN} += "${datadir}/djvu"
+
+SRC_URI[md5sum] = "c94091de014b3aaf037d3d0f398d36c2"
+SRC_URI[sha256sum] = "d937528e10c16831d8df31893ee24da8ec2bfd9e9170671c482a1b1abfc5efc3"

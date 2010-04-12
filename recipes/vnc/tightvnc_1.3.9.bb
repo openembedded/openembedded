@@ -35,3 +35,6 @@ pkg_postinst_${PN}-viewer () {
 pkg_prerm_${PN}-viewer () {
         update-alternatives --remove ${bindir}/vncviewer vncviewer tightvncviewer 100
 }
+
+SRC_URI[md5sum] = "80b904d4a10fccee9045d0feeaa65df8"
+SRC_URI[sha256sum] = "56062708bb547425f8e8f0f9c571d4fa06fcc89a11146a5b15c608fd8debdb80"

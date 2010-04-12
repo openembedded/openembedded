@@ -23,3 +23,6 @@ do_stage() {
 		install osip/$i ${STAGING_INCDIR}/osip/$i
 	done
 }
+
+SRC_URI[md5sum] = "ffc20af80f77653ab534d2a103a2276d"
+SRC_URI[sha256sum] = "b67c0218b7cd2d521783bf055b13c598bd04b623cbf4adbb3cc76bd3ac57dc5d"

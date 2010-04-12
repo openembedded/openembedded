@@ -37,3 +37,6 @@ FILES_${PN}-dev =+ "${libdir}/xine/plugins/${PPDIR}/*.a \
                     ${libdir}/xine/plugins/${PPDIR}/post/*.a \
                     ${libdir}/xine/plugins/${PPDIR}/vidix/*.a \
                    "
+
+SRC_URI[md5sum] = "acd1a210c5a6444e8fd44696469352bb"
+SRC_URI[sha256sum] = "27df9c8f962797b235d69154705cfdf18d3e325f028f54e3e804f6dadb8237be"

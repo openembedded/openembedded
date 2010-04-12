@@ -4,4 +4,3 @@ require mesa-dri_${PV}.bb
 PR = "${INC_PR}.1"
 
 EXTRA_OECONF += "--disable-egl"
-

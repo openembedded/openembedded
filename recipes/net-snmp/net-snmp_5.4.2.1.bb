@@ -26,3 +26,6 @@ do_configure_prepend() {
 
 PARALLEL_MAKE = ""
 CCACHE = ""
+
+SRC_URI[md5sum] = "984932520143f0c8bf7b7ce1fc9e1da1"
+SRC_URI[sha256sum] = "11a8baf167f7bfff60d2590e050991400a3a082923dbcdbf85e0e0ce46eb247c"

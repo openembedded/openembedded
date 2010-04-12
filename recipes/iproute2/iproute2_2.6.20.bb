@@ -11,3 +11,6 @@ SRC_URI_append = " file://new-flex-fix.patch;patch=1 \
 
 S = "${WORKDIR}/iproute-${PV}-${DATE}"
 
+
+SRC_URI[md5sum] = "7bc5883aadf740761fa2dd70b661e8cc"
+SRC_URI[sha256sum] = "3b3960f867bf878a6561428a3c572e87dcccadb7123aa47d7aaca77b32adecc8"

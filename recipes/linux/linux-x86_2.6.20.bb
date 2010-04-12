@@ -28,3 +28,6 @@ do_configure_prepend_i586-generic() {
 do_configure_prepend_i686() {
 	install -m 0644 ${WORKDIR}/i686-defconfig ${S}/.config
 }
+
+SRC_URI[md5sum] = "34b0f354819217e6a345f48ebbd8f13e"
+SRC_URI[sha256sum] = "2c14ada1ac7d272e03b430d3a530d60fc9ec69cc8252382aa049afba7d2b8558"

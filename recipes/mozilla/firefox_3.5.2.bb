@@ -71,3 +71,6 @@ do_stage() {
         # removes 2 lines that call absent headers
         sed -e '178,179d' ${STAGING_INCDIR}/firefox-${PV}/nsIServiceManager.h
 }
+
+SRC_URI[md5sum] = "136867f95c86f3988b7f825e874b85de"
+SRC_URI[sha256sum] = "d68b5988907e06cc37793489589f5545487a9b1bbe6444b7e2e16450bd1cb9ae"

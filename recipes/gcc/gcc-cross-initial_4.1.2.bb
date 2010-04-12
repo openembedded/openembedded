@@ -3,3 +3,4 @@ require gcc-cross-initial.inc
 
 EXTRA_OECONF += "--disable-libmudflap \
 		--disable-libssp"
+

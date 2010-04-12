@@ -52,3 +52,6 @@ do_stage () {
 	cp -pfLR include/linux ${STAGING_INCDIR}/
 	cp -pfLR include/asm ${STAGING_INCDIR}/
 }
+
+SRC_URI[md5sum] = "a75c264f90b07b4f3ba05febc7386f4b"
+SRC_URI[sha256sum] = "384c0e97100170b4566a0b335a18246c42c76df682377cae6ed1c72be8aadc0e"

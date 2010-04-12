@@ -20,3 +20,6 @@ do_install_append () {
 PACKAGES =+ "${PN}-examples"
 
 FILES_${PN}-examples = "${datadir}/callweaver/ogi/perl"
+
+SRC_URI[md5sum] = "cc99a6b12613bbdb132fb5c8c56069f1"
+SRC_URI[sha256sum] = "1d4ec44d6124776009ddc7bf08d5f24f26a9b6814835456ab0b3ddbfc111b527"

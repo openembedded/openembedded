@@ -22,3 +22,6 @@ do_install() {
 
 INITSCRIPT_NAME = "micro-evtd"
 INITSCRIPT_PARAMS = "defaults"
+
+SRC_URI[md5sum] = "2a5353aa1fd028c3cbfdfdec9e38c1bb"
+SRC_URI[sha256sum] = "fe3730d1bcca4eaa86f9e39f6524328a58d134b73f1d9261f21e0f89f7b3ca10"

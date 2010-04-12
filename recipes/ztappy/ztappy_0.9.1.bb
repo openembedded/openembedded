@@ -15,3 +15,6 @@ do_install() {
         cp -pPR ipk/opt/* ${D}/opt
 }
 
+
+SRC_URI[md5sum] = "9bc4d68ba2e17ff91df89452debe2188"
+SRC_URI[sha256sum] = "b23ec333618729edeafbae77b5a73183e6e168c671452b98fac2bf3f13660207"

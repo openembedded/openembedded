@@ -30,3 +30,6 @@ PACKAGES =+ "sirfmon"
 SECTION_sirfmon = "network"
 FILES_sirfmon = "${bindir}"
 FILES_${PN} = "${libdir}"
+
+SRC_URI[md5sum] = "f713b4d3c6a733b429de2673e4427483"
+SRC_URI[sha256sum] = "b91c7fb6420f6787d34b88b1e0d2e705e1006b5bce17235356f84a3c14329612"

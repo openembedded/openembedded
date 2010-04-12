@@ -29,3 +29,6 @@ do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
         install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
 }
+
+SRC_URI[md5sum] = "e18a21b80e1728c6b51b799d1e671f8c"
+SRC_URI[sha256sum] = "1185165125b890ea9a4312440c32bae9214947596b0b3ec31febec0d3c18b008"

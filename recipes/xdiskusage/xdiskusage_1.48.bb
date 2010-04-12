@@ -24,3 +24,6 @@ do_install() {
     install -m 0644 ${WORKDIR}/xdiskusage.desktop ${D}/${datadir}/applications/
     install -m 0644 ${WORKDIR}/xdiskusage.png ${D}/${datadir}/pixmaps/
 }
+
+SRC_URI[md5sum] = "a902aa9d73761ade98256c3cd5c1f533"
+SRC_URI[sha256sum] = "7842aa42510bf52c367164d44a977915ad9f070864d5175157738f8d6894274b"

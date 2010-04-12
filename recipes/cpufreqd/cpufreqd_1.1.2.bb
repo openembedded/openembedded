@@ -12,3 +12,6 @@ inherit autotools
 
 FILES_${PN} = "${sbindir} ${sysconfdir} ${libdir}/libsys_*.so"
 FILES_${PN}-dev = "${libdir}/*.la ${libdir}/*.a"
+
+SRC_URI[md5sum] = "d06dcf3e3b2f8eb25216431ec055aa4b"
+SRC_URI[sha256sum] = "c64eb1923366934357c917ff9a94237a8157de24a1fd96e0f91c4d5dfad83026"

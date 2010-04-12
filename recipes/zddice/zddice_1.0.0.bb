@@ -18,3 +18,6 @@ do_install() {
 	install -m 0644 images/zddice.png ${D}${palmtopdir}/pics/
 	install -m 0644 zddice.desktop ${D}${palmtopdir}/apps/Games/
 }
+
+SRC_URI[md5sum] = "791e8986c6e16dcd1c9878126725e06b"
+SRC_URI[sha256sum] = "eba57692dadd21df8d4afaea4daf8db5179c7398e11cd019fd462aa6947f4119"

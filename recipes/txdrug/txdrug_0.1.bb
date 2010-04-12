@@ -27,3 +27,6 @@ do_install() {
         install -D -m 755 txdrug ${D}${palmtopdir}/bin/txdrug
 }
 
+
+SRC_URI[md5sum] = "c867374392559d6e475eeb03f6a81169"
+SRC_URI[sha256sum] = "ee1044b61fc457ecc6025d06c5b9241994bd19e3d6ce98ae0827842caab00f0f"

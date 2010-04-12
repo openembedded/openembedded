@@ -15,3 +15,6 @@ do_install() {
          install -d ${D}${base_sbindir}
          install -m 0755 softfan ${D}${base_sbindir}/softfan
 }
+
+SRC_URI[md5sum] = "e19e8a55c70d9b78f3c5abfa456ebf0c"
+SRC_URI[sha256sum] = "d1cf80381378041049c2b5ec25afca56939cce1d7dd8a8d8ab2ac46e210e354d"

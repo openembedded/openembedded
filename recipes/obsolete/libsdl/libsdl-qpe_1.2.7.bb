@@ -55,3 +55,6 @@ do_stage() {
 
 	install -m 0644 *.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+SRC_URI[md5sum] = "d29b34b6ba3ed213893fc9d8d35e357a"
+SRC_URI[sha256sum] = "f5708b3909261df2043859e771601a5ec973197b2c59d18c6649c1096b5151bd"

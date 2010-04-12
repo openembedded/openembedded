@@ -48,3 +48,6 @@ do_configure_prepend() {
 }
 
 COMPATIBLE_MACHINE = "wrt54"
+
+SRC_URI[md5sum] = "c439d5c93d7fc9a1480a90842465bb97"
+SRC_URI[sha256sum] = "8c08d562e2263ac82cb47a7b6fcb8e2c1a6cb33d598fa92b0731351f26620875"

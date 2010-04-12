@@ -8,8 +8,8 @@ DEFAULT_PREFERENCE_mx31moboard = "1"
 
 PR = "r6"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.19.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.19.bz2;patch=1;name=stablepatch \
            file://defconfig \
 	   "
 
@@ -23,13 +23,13 @@ SRC_URI_append_cm-x270 = "\
 	file://0007-mmcsd_large_cards-r0.patch;patch=1 \
 	file://0008-cm-x270-nand-simplify-name.patch;patch=1"
 
-SRC_URI_append_mx31moboard = "http://mobots.epfl.ch/mx31moboard/linux-2.6.22-moboard.patch.bz2;patch=1"
+SRC_URI_append_mx31moboard = "http://mobots.epfl.ch/mx31moboard/linux-2.6.22-moboard.patch.bz2;patch=1;name=mx31patch"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
 FILES_kernel-image_cm-x270 = ""
 
-SRC_URI_append_bd-neon =  " http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;patch=1"
+SRC_URI_append_bd-neon =  " http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;patch=1;name=neonpatch"
 
 python do_compulab_image() {
 	import os
@@ -67,3 +67,11 @@ python do_compulab_image() {
 }
 
 addtask compulab_image after do_deploy before do_build
+
+SRC_URI[kernel.md5sum] = "2e230d005c002fb3d38a3ca07c0200d0"
+SRC_URI[kernel.sha256sum] = "73c10604c53f1a6ee65ef805293d23903696f8cef864f42d7de9506f0d2ba4c7"
+SRC_URI[stablepatch.md5sum] = "066cc3bdd2783dcd01f6ff466e449ec0"
+SRC_URI[stablepatch.sha256sum] = "829c48b49c71d89468f2a5a05587714811197545eeba31e9643cabacf344d33a"
+
+SRC_URI[neonpatch.md5sum] = "7dac7a5cf401070ecccf42666a30fc0a"
+SRC_URI[neonpatch.sha256sum] = "da8a360035464defd133a4ba604aa7ae9ee077747511b98384862b4cbdde5906"

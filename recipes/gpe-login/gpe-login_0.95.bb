@@ -38,3 +38,6 @@ ${sysconfdir}/X11/gpe-login.pre-session \
 ${sysconfdir}/X11/Xinit.d/99gpe-login \
 ${sysconfdir}/X11/Xsession.d/50autolock \
 "
+
+SRC_URI[md5sum] = "4e6dfd761f62764f98b9f6c2c09f3715"
+SRC_URI[sha256sum] = "8bea38af14c98354b1ee023475315ae3ba462d33b136a73cde9d83303b659d84"

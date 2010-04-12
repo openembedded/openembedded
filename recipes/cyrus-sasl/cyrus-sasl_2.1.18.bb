@@ -39,3 +39,6 @@ do_stage () {
 	install -m 0644 ${S}/include/saslutil.h ${STAGING_INCDIR}/sasl/
 	install -m 0644 ${S}/include/prop.h ${STAGING_INCDIR}/sasl/
 }
+
+SRC_URI[md5sum] = "1eafae95f0289c10f187d8b2bc4032cf"
+SRC_URI[sha256sum] = "384279adfd582ad6f905197c46a5157f855462718530148fdbab3328cf621eb7"

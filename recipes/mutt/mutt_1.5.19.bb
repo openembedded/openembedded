@@ -24,3 +24,6 @@ do_compile_prepend () {
         ${BUILD_CC} doc/makedoc.c -o doc/makedoc
 }
 
+
+SRC_URI[md5sum] = "73b3747bc7f7c805921e8d24ebac693f"
+SRC_URI[sha256sum] = "b160baedf2676a4c2c1a5c74049e2c63f00fccff43ee2594367087a08bfd63c8"

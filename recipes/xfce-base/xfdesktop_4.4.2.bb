@@ -20,3 +20,6 @@ FILES_${PN} += "${libdir}/xfce4/panel-plugins/*.so \
                 ${libdir}/xfce4/panel-plugins/xfce4-menu-plugin \
                 ${datadir}/xfce4/panel-plugins/*.desktop"
 FILES_${PN}-dbg += "/usr/libexec/xfce4/panel-plugins/.debug"
+
+SRC_URI[md5sum] = "694601234e74903d0fccba064f411e0c"
+SRC_URI[sha256sum] = "7e50c13e45b1424924c49dd1e9daa6c16881ee57ac21e4e2c6f20c0eec227cdb"

@@ -22,3 +22,6 @@ CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 console=ttyS0,115200 mem=64
 CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
 
 COMPATIBLE_MACHINE = "mainstone"
+
+SRC_URI[md5sum] = "296a6d150d260144639c3664d127d174"
+SRC_URI[sha256sum] = "c95280ff6c5d2a17788f7cc582d23ae8a9a7ba3f202ec6e4238eaadfce7c163d"

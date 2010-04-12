@@ -11,3 +11,6 @@ do_install() {
 FILES_${PN} += "${datadir}/movies"
 PACKAGE_ARCH = "all"
 
+
+SRC_URI[md5sum] = "ed7ed01e9aefba8ddd77c13332cec120"
+SRC_URI[sha256sum] = "40d1cf5bc8e1b0e55dac7bb2e3fbc2aea05b6679444864781299b24db044634f"

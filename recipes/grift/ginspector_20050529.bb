@@ -13,3 +13,6 @@ do_stage() {
 }
 
 FILES_${PN} += "${libdir}/*/*/ginspector/*.so"
+
+SRC_URI[md5sum] = "0a8474e0d90b139b1baa70b097a4fd51"
+SRC_URI[sha256sum] = "7f55ec02b5ab9e86c64f5718be64854fd9c64899908e580e1a9759421ac3b436"

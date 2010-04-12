@@ -25,3 +25,6 @@ fakeroot do_stage() {
 }
 
 
+
+SRC_URI[md5sum] = "66bd30503df55a87b9868835ca5a45bc"
+SRC_URI[sha256sum] = "ab91922367ca4c7ae5b176823eca579b2323c463e5d8b71fe5cdfc1061860124"

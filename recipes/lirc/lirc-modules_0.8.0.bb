@@ -40,3 +40,6 @@ if [ ! -c $D/dev/lirc -a ! -f /sbin/udevd ]; then mknod $D/dev/lirc c 61 0; fi
 
 FILES_${PN} = "/lib/modules"
 FILES_${PN}_append_nslu2 = " ${sysconfdir}/modutils ${sysconfdir}/modprobe.d ${sysconfdir}/udev/rules.d"
+
+SRC_URI[md5sum] = "596e05980f75372fa998d50eb1dcade0"
+SRC_URI[sha256sum] = "4097abc39b928970ba3232942ac5a6db7ec4ed4164593b9223c90470c9c994dc"

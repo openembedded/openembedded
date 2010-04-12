@@ -55,3 +55,6 @@ fi
 PACKAGES = "${PN}-dbg madwifi-tools ${PN}"
 FILES_${PN} = "/lib/modules/"
 FILES_madwifi-tools = "/usr/sbin/"
+
+SRC_URI[md5sum] = "26c31e8e1528fd098e3aaa11c0d34d99"
+SRC_URI[sha256sum] = "847596646417abbdce9cfd0e1dca2cced29c6a8b814d1bd28d0c7301e9e4e9d8"

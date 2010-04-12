@@ -28,3 +28,6 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/titan-config ${S}/arch/sh/configs/titan_defconfig
 	yes '' | oe_runmake titan_defconfig
 }
+
+SRC_URI[md5sum] = "1b515f588078dfa7f4bab2634bd17e80"
+SRC_URI[sha256sum] = "f187b12d70e0a48ce81f0472dfe9504fb5f0f966be339ac9d57dd2b991a74942"

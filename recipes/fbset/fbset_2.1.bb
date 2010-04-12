@@ -31,3 +31,6 @@ ALTERNATIVE_PATH = "${sbindir}/fbset.real"
 ALTERNATIVE_PRIORITY = "55"
 
 
+
+SRC_URI[md5sum] = "40ed9608f46d787bfb65fd1269f7f459"
+SRC_URI[sha256sum] = "517fa062d7b2d367f931a1c6ebb2bef84907077f0ce3f0c899e34490bbea9338"

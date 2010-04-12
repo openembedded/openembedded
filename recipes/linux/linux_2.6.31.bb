@@ -13,8 +13,8 @@ DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;patch=1;name=stablepatch \
            file://defconfig"
 
 SRC_URI += "file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;patch=1 \
@@ -27,11 +27,11 @@ SRC_URI += "file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch
            "
 
 SRC_URI_append_db1200 ="\
-            http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;patch=1 \
+            http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;patch=1;name=at91patch \
 	    "
 
 SRC_URI_append_boc01 = "\
-           http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;patch=1 \
+           http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;patch=1;name=at91patch \
            file://boc01.dts \
            file://boc01.dts.v1 \
            file://004-081205-usb.patch;patch=1 \
@@ -79,3 +79,10 @@ pkg_postrm_kernel-devicetree_append_boc01 () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --remove devicetree.v1 devicetree-${KERNEL_VERSION}.v1 || true
 }
 
+
+SRC_URI[kernel.md5sum] = "84c077a37684e4cbfa67b18154390d8a"
+SRC_URI[kernel.sha256sum] = "0acd83f7b85db7ee18c2b0b7505e1ba6fd722c36f49a8870a831c851660e3512"
+SRC_URI[stablepatch.md5sum] = "ce365b2c72ad0855e1746a80b7abdade"
+SRC_URI[stablepatch.sha256sum] = "7dea28a76ca6362ad949ec1bf45fada4a6fc888b40360d90d2f56f01d18f72ae"
+SRC_URI[at91patch.md5sum] = "bf420f0340e30b0a2c42b2b36d0b2577"
+SRC_URI[at91patch.sha256sum] = "738b88daa31e1a033646900813a5f1ce40ba21e2836500fd848a984565f27584"

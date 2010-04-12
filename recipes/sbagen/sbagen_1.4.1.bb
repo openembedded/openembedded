@@ -19,3 +19,6 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 sbagen ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "7d672f2f2a8e33e664b06777459471fe"
+SRC_URI[sha256sum] = "3190534f4449f810d633b0a9848c7db1458b4c57249432a3932a468ecb06daea"

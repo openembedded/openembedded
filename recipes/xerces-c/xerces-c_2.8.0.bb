@@ -34,3 +34,6 @@ do_stage () {
 do_install () {
 	${MAKE} install
 }
+
+SRC_URI[md5sum] = "5daf514b73f3e0de9e3fce704387c0d2"
+SRC_URI[sha256sum] = "416eaf74bbe6ff3b3c64a282e886810cad6cbb48478d3c83344661504c09c8d6"

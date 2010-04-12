@@ -17,3 +17,6 @@ do_install_append() {
 }
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/chilli.conf"
+
+SRC_URI[md5sum] = "4bcf48ec7a94f28faee8b7dc7a0dd97a"
+SRC_URI[sha256sum] = "bace8a6a0b27d09983a2c509d6e6bf8ab786935e269036f14dc158505feba602"

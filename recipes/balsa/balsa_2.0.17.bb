@@ -22,3 +22,6 @@ do_configure_prepend() {
 	( cd libmutt; libtoolize --force ; cp ../ltmain.sh . )
 }
 
+
+SRC_URI[md5sum] = "851db68728ed9adea615eb2f249fa1ee"
+SRC_URI[sha256sum] = "c450b49ce9903d97ed5e4aa788b388e014c0eddcfc038b000237f67cd4528a3b"

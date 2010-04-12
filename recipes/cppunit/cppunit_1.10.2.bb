@@ -18,3 +18,6 @@ do_stage () {
 	cd ./src/cppunit/.libs/
 	oe_libinstall -a -so libcppunit ${STAGING_LIBDIR}
 }
+
+SRC_URI[md5sum] = "0bc06cd219410f7d4f6bbfc9bdd7c824"
+SRC_URI[sha256sum] = "71b626958e3d8927d236f462b2becd192a113d1d6d38b8d567bdc181b5069ccf"

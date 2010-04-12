@@ -27,3 +27,6 @@ do_install() {
 }
 
 FILES_${PN} = "${palmtopdir}/bin/snes9x"
+
+SRC_URI[md5sum] = "a7836a9b6eaae433079c1c9d19f2635a"
+SRC_URI[sha256sum] = "489bb2f9fb69922e9befc27ae1b8d19d31c83c586f55b7ecc503cb4f5e767da4"

@@ -10,11 +10,11 @@ PR = "r4"
 inherit palmtop
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xqt2;method=pserver;date=${PV} \
-        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-1.tgz \
-        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-2.tgz \
-        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-3.tgz \
-        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-4.tgz \
-        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-5.tgz \
+        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-1.tgz;name=archive1 \
+        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-2.tgz;name=archive2 \
+        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-3.tgz;name=archive3 \
+        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-4.tgz;name=archive4 \
+        ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-5.tgz;name=archive5 \
         file://KeyMap.patch;patch=1 \
         file://moc_call.patch;patch=1 \
         file://imake-staging.patch;patch=1 \
@@ -109,3 +109,14 @@ do_install() {
 }
 
 PACKAGE_ARCH_c7x0 = "${MACHINE_ARCH}"
+
+SRC_URI[archive1.md5sum] = "4f241a4f867363f40efa2b00dca292af"
+SRC_URI[archive1.sha256sum] = "5276b045e154948fce7abba7d686406c65862d90b43b50f2546b33e38378f0d7"
+SRC_URI[archive2.md5sum] = "844c2ee908d21dbf8911fd13115bf8b4"
+SRC_URI[archive2.sha256sum] = "0afbf41d0f4bcaceb1381fc1882b80f62548845b85c83c3eb0f3a9ac7f7f96ef"
+SRC_URI[archive3.md5sum] = "b82a0443e1b7bf860e4343e6b6766cb6"
+SRC_URI[archive3.sha256sum] = "19a830e3657851ad575ca895eb59932f1d90cd03735dec68f900dbc1bb6c3b7f"
+SRC_URI[archive4.md5sum] = "567903747018f2534965ab6cb3976b38"
+SRC_URI[archive4.sha256sum] = "f62081c6f8a70a35fb0b5b210329f6bba7f5e506e9b809e23ceba21a2c35278e"
+SRC_URI[archive5.md5sum] = "4dbdbe9a85c8f7f98dd0ee015a3c7b4f"
+SRC_URI[archive5.sha256sum] = "3b732ed179dd34c17d1ba17867b60a36f20d82a3f0eca7b084fcb5396aa2b30c"

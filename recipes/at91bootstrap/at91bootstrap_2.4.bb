@@ -43,3 +43,6 @@ do_deploy () {
 
 do_deploy[dirs] = "${S}"
 addtask deploy before do_build after do_compile
+
+SRC_URI[md5sum] = "10161158f116e0b171582a2f66854af1"
+SRC_URI[sha256sum] = "c01e579401453ae97bd7671997d4b3d3b63e25e7e1e9cec02611a944ad1727fa"

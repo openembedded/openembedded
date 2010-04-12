@@ -29,3 +29,6 @@ do_stage() {
 BINCONFIG_GLOB = "pthsem-config"
 
 PARALLEL_MAKE = ""
+
+SRC_URI[md5sum] = "b277716ee1224ca9925176fa29e1f0c5"
+SRC_URI[sha256sum] = "6226f92f3a0950c6f3da8f9dcb7c76d08634515519bf35cd916b3cdcc1aeb130"

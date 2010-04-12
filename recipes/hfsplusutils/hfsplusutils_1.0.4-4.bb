@@ -24,3 +24,6 @@ do_unpack() {
 		mv hfsplus ${P}
         fi
 }
+
+SRC_URI[md5sum] = "e8760b432b7e95d03158b4bbca404149"
+SRC_URI[sha256sum] = "741577b91c091fc9d6732b57732bdafb85739c65cd65194e506e1d01425bda56"

@@ -17,3 +17,6 @@ EXTRA_OECONF += "--disable-xephyr --disable-config-hal --disable-xinerama --disa
 EXTRA_OECONF += " --disable-glx-tls --enable-dri2 --disable-unit-tests "
 
 export LDFLAGS += " -ldl "
+
+SRC_URI[archive.md5sum] = "dda7842467cda6018fdc87e6002e4db1"
+SRC_URI[archive.sha256sum] = "a58c0de29cbd2b7d1a1ac5ee70a94ad1ed2a085132803c0ca83f2dd8513b4c20"

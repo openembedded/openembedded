@@ -25,3 +25,6 @@ do_install() {
 	install -m 0644 *.bmp ${D}${datadir}/pipepanic/
 }
 
+
+SRC_URI[md5sum] = "1d5e267c57b126038689ce3bf26eea24"
+SRC_URI[sha256sum] = "468f25a70ef2dac90088caa6599c41ade6768e0cdc328dc3e82ab578903e69d4"

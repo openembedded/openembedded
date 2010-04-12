@@ -25,3 +25,6 @@ do_install() {
 	install -m 644 ${S}/script/bootchartd.conf ${D}/etc
 }
 
+
+SRC_URI[md5sum] = "4be91177d19069e21beeb106f2f77dff"
+SRC_URI[sha256sum] = "7738399ecfcfb2242e9f99a316b13a5f59e89052de05074dbf705ccf4edc327d"

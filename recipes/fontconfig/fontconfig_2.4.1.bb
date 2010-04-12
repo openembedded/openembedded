@@ -2,7 +2,7 @@ require fontconfig.inc
 
 PR = "r4"
 
-SRC_URI += "https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h \
+SRC_URI += "https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h;name=deviceSymbols \
 	    file://configure_fix.patch;patch=1 "
 
 EXTRA_OECONF += " --with-arch=${HOST_ARCH}"
@@ -44,3 +44,8 @@ do_install () {
 	autotools_do_install
 }
 
+
+SRC_URI[md5sum] = "108f9a03fa9ed9dd779cc7ca236da557"
+SRC_URI[sha256sum] = "13f59a7cd5190983412689495c399444cf73c1ced0813149e4480c8848bb9f17"
+SRC_URI[deviceSymbols.md5sum] = "c0124afc760d4fe8c24ffcf15ba7f391"
+SRC_URI[deviceSymbols.sha256sum] = "4e0c1726f9c565deec6d6af9eebda47ca6dea473f3280cc89beb321ae33ff962"

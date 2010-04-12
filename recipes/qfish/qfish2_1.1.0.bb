@@ -41,3 +41,6 @@ do_install() {
 	install -d ${D}${palmtopdir}/help/html/
 	install -m 0644 desktop/qfish.html ${D}${palmtopdir}/help/html/qfish2.html
 }
+
+SRC_URI[md5sum] = "2a8219bcb375fac66cea66394c3c36fa"
+SRC_URI[sha256sum] = "1e097fdccda0fc914c8229aab7d83964c5944cc95eb053fd69e357dca69461b9"

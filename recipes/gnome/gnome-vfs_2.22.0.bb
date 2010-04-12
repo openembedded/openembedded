@@ -44,3 +44,6 @@ python populate_packages_prepend () {
 }
 
 
+
+SRC_URI[archive.md5sum] = "369105fd82cb99e69e63acab8f3b89b7"
+SRC_URI[archive.sha256sum] = "622cf50cefa2c4187e0a23f29d665f010f7a0815864fc35a61caefd5a7d4ebb1"

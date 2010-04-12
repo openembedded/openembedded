@@ -44,3 +44,6 @@ do_install_append() {
 PACKAGES += "libsqlitejdbc-jni"
 
 FILES_libsqlitejdbc-jni = "${libdir_jni}"
+
+SRC_URI[md5sum] = "11aad2f368734e1ff8e0ecc37710d4a9"
+SRC_URI[sha256sum] = "c04bb15b650ffcda80ccd3526b325b49a1173b3421da22b16845aad4a8945c10"

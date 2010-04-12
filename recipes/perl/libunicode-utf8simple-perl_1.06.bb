@@ -10,3 +10,6 @@ S = "${WORKDIR}/Unicode-UTF8simple-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "1d90907170ed41690a572a2d6ed6e7da"
+SRC_URI[sha256sum] = "e1249ac08daceb8a83c170c00810001f15d73418e9595711bee663d0130c0fe5"

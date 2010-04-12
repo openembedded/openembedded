@@ -10,3 +10,6 @@ SRC_URI = "http://pypi.python.org/packages/source/s/sphinxsearch/${SRCNAME}-${PV
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+SRC_URI[md5sum] = "920deac1bd4d16fe1c5b51fe839140ab"
+SRC_URI[sha256sum] = "7fcf0aa2e5e08719b39aeb145d3b6e953a8643bb6fd5e8359303399493ee6c39"

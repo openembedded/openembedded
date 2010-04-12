@@ -21,3 +21,6 @@ do_install_append() {
 	install -d ${D}${bindir}
 	install -m 0755 ${WORKDIR}/gpe-package ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "229ba1d7755cc3e77d1e711281ae3554"
+SRC_URI[sha256sum] = "4226c983948521ead98ea0b02939de6b28bacba6f929b9404b9154ffbfb3718e"

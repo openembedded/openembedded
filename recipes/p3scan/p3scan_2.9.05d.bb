@@ -84,3 +84,6 @@ CONFFILES_${PN} = "${sysconfdir}/p3scan/p3scan.conf"
 
 INITSCRIPT_NAME = "p3scan"
 INITSCRIPT_PARAMS = "defaults 65 35"
+
+SRC_URI[md5sum] = "7f54ae7ebe9adbefc2a2ad55c62589da"
+SRC_URI[sha256sum] = "2c23dac41ef0ec0b74b38c4c1dc4b0f6f21386c97a0062a745a2896cdf026e8d"

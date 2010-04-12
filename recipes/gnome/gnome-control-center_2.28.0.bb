@@ -25,3 +25,6 @@ FILES_${PN}-dev += "${libdir}/window-manager-settings/*a"
 
 
 
+
+SRC_URI[archive.md5sum] = "c0e009ed5d94d12a183b61136dd908de"
+SRC_URI[archive.sha256sum] = "d7e925a6247ff03b5c1bbb50aedc8bcf69e7497d6a47c42e1b867e5c6c3b1f54"

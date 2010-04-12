@@ -18,3 +18,6 @@ inherit autotools
 
 
 
+
+SRC_URI[md5sum] = "7788783e5a18221ae591606075d3a8ee"
+SRC_URI[sha256sum] = "c484d80e4636a69c6ad6491a4769f555be20595e67cb4bfd34c3c91e501b95dd"

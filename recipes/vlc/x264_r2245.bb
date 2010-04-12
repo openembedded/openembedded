@@ -24,3 +24,6 @@ EXTRA_OECONF = '--enable-shared ${X264_DISABLE_ASM} --extra-cflags="${X264_ECFLA
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[md5sum] = "99870531113dafd01026c01a96c5fcbb"
+SRC_URI[sha256sum] = "8b435c02ed0a09d039c0a89c8ddc5470e1885630a5dcedfe3d8bc60a6d63ab69"

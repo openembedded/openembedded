@@ -39,3 +39,6 @@ do_install() {
 	install -d ${D}${palmtopdir}/help/html/
 	install -m 0644 desktop/qmatrix.html ${D}${palmtopdir}/help/html/qmatrix.html
 }
+
+SRC_URI[md5sum] = "03c874e403fcf1566d96a9a064cf73c9"
+SRC_URI[sha256sum] = "57d9c0be4714f9973ce50f70d77c68b874cc5456cab2d210861a4b1ee32cb67f"

@@ -32,3 +32,6 @@ FILES_${PN}-psp = "/boot/chumby-firmware/psp.bin"
 FILES_${PN}-k1 = "/boot/chumby-firmware/k1.bin"
 FILES_${PN}-rfs1 = "/boot/chumby-firmware/rfs1.bin"
 
+
+SRC_URI[md5sum] = "87a60c6fc4f249605940fed86a141c54"
+SRC_URI[sha256sum] = "659a581cfb851c3469671fe8600d39b23024bcc564a24ebcc89045207f36b0fc"

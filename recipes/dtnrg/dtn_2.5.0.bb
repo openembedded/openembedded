@@ -65,3 +65,6 @@ FILES_${PN}-dbg += "\
 "
 
 FILES_${PN} += "${sysconfdir}"
+
+SRC_URI[md5sum] = "e6e608907a291016a39c9e3442dfd50c"
+SRC_URI[sha256sum] = "d8c6dedb4f828c90c1c0f36c35bc4539e81e2220c8b01cd5dc957f9116b4e478"

@@ -48,3 +48,6 @@ PACKAGE_ARCH_om-gta02 = "${MACHINE_ARCH}"
 
 FILES_${PN} += "${datadir}"
 
+
+SRC_URI[md5sum] = "88756802d483f922d0910a14cd26a951"
+SRC_URI[sha256sum] = "8d24fbab29ca9401ae1a6a34f7a52eda5de0a9320940e771c6f04f991f5d0052"

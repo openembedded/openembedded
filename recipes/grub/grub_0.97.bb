@@ -36,3 +36,6 @@ FILES_${PN}-eltorito = "/boot/grub/stage2_eltorito"
 FILES_${PN} += "/boot"
 
 COMPATIBLE_HOST = "i.86.*-linux"
+
+SRC_URI[md5sum] = "cd3f3eb54446be6003156158d51f4884"
+SRC_URI[sha256sum] = "4e1d15d12dbd3e9208111d6b806ad5a9857ca8850c47877d36575b904559260b"

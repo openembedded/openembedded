@@ -11,3 +11,6 @@ S = "${WORKDIR}/yum-metadata-parser-${PV}"
 TARGET_CFLAGS += "-I${STAGING_LIBDIR}/glib-2.0"
 
 inherit distutils
+
+SRC_URI[md5sum] = "13df226ef004ea78eebc59022720b536"
+SRC_URI[sha256sum] = "48b87110c3c46ad04209b358fded534eca3bfdc91b396d2549390dd51048be9f"

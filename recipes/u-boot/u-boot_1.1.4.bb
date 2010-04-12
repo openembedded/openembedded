@@ -4,7 +4,7 @@ PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2;name=archive \
           file://u-boot-make381-fix.patch;patch=1"
 
 SRC_URI_append_gumstix = "\
@@ -23,13 +23,13 @@ SRC_URI_append_gumstix = "\
 	file://u-boot-zzz-osx.patch;patch=1"
 
 SRC_URI_append_amsdelta = "\
-	http://the.earth.li/pub/e3/u-boot-amsdelta-20060519.diff;patch=1"
+	http://the.earth.li/pub/e3/u-boot-amsdelta-20060519.diff;patch=1;name=amspatch"
 
 SRC_URI_append_dht-walnut= "\
         file://u-boot-dht-walnut-df2.patch;patch=1"
 
 SRC_URI_append_avr32= "\
-	http://avr32linux.org/twiki/pub/Main/UbootPatches/u-boot-1.1.4-avr1.patch.bz2;patch=1 \
+	http://avr32linux.org/twiki/pub/Main/UbootPatches/u-boot-1.1.4-avr1.patch.bz2;patch=1;name=avrpatch \
 	file://avr32-boards-fix-flash-read.patch;patch=1 \
 	file://lcdc-driver-for-avr32.patch;patch=1 \
 	file://spi-driver-for-avr32.patch;patch=1 \
@@ -69,3 +69,10 @@ do_compile () {
 	oe_runmake ${UBOOT_MACHINE}
 	oe_runmake all
 }
+
+SRC_URI[archive.md5sum] = "096cac66046326659b97eeded007ec73"
+SRC_URI[archive.sha256sum] = "1af9d68adfe044cb8fe1b3efa5b661c4cb57edf90f4a8daf38f0fc19692677a7"
+SRC_URI[amspatch.md5sum] = "0750751c816ca9045b7faf8e4f37158a"
+SRC_URI[amspatch.sha256sum] = "03322d6ec67b0b0fdf15836eb9a268a489733eb6e6ec4b054294d798b3994440"
+SRC_URI[avrpatch.md5sum] = "4508e9abd423a672763441d8535331c4"
+SRC_URI[avrpatch.sha256sum] = "b18d9f4e1fa5cf1f3d89640d6aa5067da150cebb822fdeb07222991f71684590"

@@ -28,3 +28,6 @@ do_install_append() {
 	install -m 0644 gui/themes/modern.ini ${D}${datadir}/scummvm/ 
 	install -m 0644 gui/themes/modern.zip ${D}${datadir}/scummvm/
 }
+
+SRC_URI[md5sum] = "30a82ad466bae223875e66ee14b94904"
+SRC_URI[sha256sum] = "5cd5d9c06281a4f81d85d9a9f9b0410045d4a764a855f06f574183b528c15d1a"

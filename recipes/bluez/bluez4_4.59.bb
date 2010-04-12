@@ -14,3 +14,6 @@ BTUDEV_angstrom = " --enable-udevrules"
 BTUDEV_shr = " --enable-udevrules"
 EXTRA_OECONF += "${BTUDEV}"
 
+
+SRC_URI[md5sum] = "1c7cee215bc84656b1edee019cee78f5"
+SRC_URI[sha256sum] = "c1f4496a1c23038fc7924d0b3eaf83c6dfb22611196e2d07d4a81efef8ca55e5"

@@ -17,3 +17,6 @@ CFLAGS += "-I${STAGING_INCDIR}/libart-2.0 "
 FILES_${PN} += "${datadir}/mime-info/"
 
 
+
+SRC_URI[md5sum] = "642f7e7d4c71dc144b60f51f9d65de62"
+SRC_URI[sha256sum] = "902da1b1e9d90dfda8aa1864846db8ad12386e7521fc9f8b18c8ba220dd0123a"

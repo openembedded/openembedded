@@ -22,3 +22,6 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ${S}/shell/.libs/irdadump ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "2ff18f0571b5a331be7cd22fc3decd41"
+SRC_URI[sha256sum] = "09a30fa12d81014b2877e8b5c36f5a341788579669d72f2dec0e29d22efe11e9"

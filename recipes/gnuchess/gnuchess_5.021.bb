@@ -23,3 +23,6 @@ do_install() {
         install -m 0644 ${WORKDIR}/gnuchess.desktop  ${D}${datadir}/applications/
         install -D ${S}/gnuchess ${D}${bindir}/gnuchess
 }
+
+SRC_URI[md5sum] = "01a9e1dc12613543f10ca3bc09acc0af"
+SRC_URI[sha256sum] = "64483bf3e98124e3490509a6054da0ff70b69ca0baa04f53444d7cf054deee06"

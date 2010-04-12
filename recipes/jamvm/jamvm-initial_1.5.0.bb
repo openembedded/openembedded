@@ -40,3 +40,6 @@ do_stage_append() {
   install -d ${STAGING_BINDIR}
   install -m 0755 java-initial ${STAGING_BINDIR}
 }
+
+SRC_URI[md5sum] = "a965452442cdbfc94caba57d0dd25a8f"
+SRC_URI[sha256sum] = "18b269b1bfad7230384681e89189c6af18584e19cddbf92208c0acef814046ab"

@@ -1,1 +1,4 @@
 require gpe-what.inc
+
+SRC_URI[md5sum] = "92ff9623a237da368c23d5694c4d6b71"
+SRC_URI[sha256sum] = "8cfa56399576b2f166d34a94e05995a16038deabb086401644971726059d1c69"

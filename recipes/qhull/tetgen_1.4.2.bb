@@ -16,3 +16,6 @@ do_install() {
 	install -m 0755 tetgen ${D}${bindir}/
 }
 
+
+SRC_URI[md5sum] = "59c92b223f69cc7e50ae6cd9d1539db1"
+SRC_URI[sha256sum] = "38f24694983f20e5bffa2ebc1d35a7c3abea50479a6df6449cc900bf2732891d"

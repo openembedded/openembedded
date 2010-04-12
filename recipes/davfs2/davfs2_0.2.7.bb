@@ -43,3 +43,6 @@ pkg_postinst () {
 pkg_prerm () {
 	update-alternatives --remove ${ALTERNATIVE_NAME} ${ALTERNATIVE_PATH}
 }
+
+SRC_URI[md5sum] = "c17d450b655bf4503c22f9f07bd9b087"
+SRC_URI[sha256sum] = "8e230254e8a1c426ddb6a78de62de931c0c8cfe0767686b7a10a5031c4340826"

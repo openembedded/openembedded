@@ -15,3 +15,6 @@ do_install() {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/sbrshd.conf"
+
+SRC_URI[md5sum] = "2ca6d18cf54af3d62bfcc01d884bd493"
+SRC_URI[sha256sum] = "0e2e0524f0559daa6816e4f7ad83b29891455c35c61694bcc5869e2011e3c808"

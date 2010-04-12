@@ -59,3 +59,6 @@ FILES_${PN}-dbg += "\
   ${libdir}/gtk-2.0/modules/.debug \
   ${libdir}/${P}/.debug \
 "
+
+SRC_URI[md5sum] = "b182ab134a911ba6c42ea2b727eda13e"
+SRC_URI[sha256sum] = "879f9ab798ae287048518ebb55132bbab905bea4b830a90f27a04df6d08d2a5e"

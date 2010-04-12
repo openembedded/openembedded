@@ -145,3 +145,6 @@ do_stage_append() {
         install ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_DIR_TARGET}${prefix}${includedir}/
         install ${S}/udev/lib/libudev.h ${STAGING_DIR_TARGET}${prefix}${includedir}/
 }
+
+SRC_URI[md5sum] = "86382b7bbc64459e714c65a2a4e10916"
+SRC_URI[sha256sum] = "001be4a8963c48e7debc82c6078562d087a2979da63e558a5e3613c03725c377"

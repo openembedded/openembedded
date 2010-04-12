@@ -16,3 +16,6 @@ do_compile () {
 	install -m 0755 ${S}/vmlinuz ${STAGING_LIBDIR}/nslu2-binaries/
 	install -m 0755 ${S}/Trailer ${STAGING_LIBDIR}/nslu2-binaries/
 }
+
+SRC_URI[md5sum] = "d4daf9d424a182e7ca2747d9db004581"
+SRC_URI[sha256sum] = "703c9083f2f114588eb54442f7e621cbf3e0f1398c3381b5ad8d1fc56f6468a5"

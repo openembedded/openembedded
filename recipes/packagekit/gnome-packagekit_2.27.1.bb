@@ -21,3 +21,6 @@ FILES_${PN} += " \
                 ${datadir}/gnome \
                 ${datadir}/icons \
                "
+
+SRC_URI[md5sum] = "7a38bcdfda3e712365f674c51565e845"
+SRC_URI[sha256sum] = "1d77646aa7291dcf8e5ab78955f5e5755faac982e795fa70f7ecf5aa98da6f9e"

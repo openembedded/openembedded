@@ -11,3 +11,6 @@ S = "${WORKDIR}/ftdi_eeprom-${PV}"
 inherit autotools
 
 EXTRA_OECONF = "--disable-docs"
+
+SRC_URI[md5sum] = "d133e77f625c496ae9d58629d7443596"
+SRC_URI[sha256sum] = "b3e0409d69783ecfa90c893c817bb584296b4c45d9f17b0f2fdd7c07ef411a3f"

@@ -23,3 +23,6 @@ do_fix_libtool_name() {
 	done
 }
 addtask fix_libtool_name after do_patch before do_configure
+
+SRC_URI[md5sum] = "6dfc8364f6e761d558f134a707bae421"
+SRC_URI[sha256sum] = "44fc0eddf56c0abe861190051fceec6e223122c5835967459c69fbf98ee52067"

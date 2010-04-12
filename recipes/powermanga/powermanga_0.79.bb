@@ -35,3 +35,6 @@ do_install() {
 	install -m 0644 ${S}/graphics/* ${D}${palmtopdir}/share/games/powermanga/graphics/
 	install -m 0644 ${S}/sounds/* ${D}${palmtopdir}/share/games/powermanga/sounds/
 }
+
+SRC_URI[md5sum] = "3a4f00658496921b7327413ac476c1b7"
+SRC_URI[sha256sum] = "99a9737480224be47362387d2d2389bee61d7685510b3a161b2b1db6c0556c26"

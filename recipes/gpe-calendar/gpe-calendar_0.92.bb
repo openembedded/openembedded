@@ -14,3 +14,6 @@ inherit autotools gpe
 do_configure () {
         autotools_do_configure
 }
+
+SRC_URI[md5sum] = "7fbe3cf31139b52f755f613c2006ad7e"
+SRC_URI[sha256sum] = "13cd337f72215fc51eca9ab24bd7c7c7fc70b2ff27e23709ffae811d489e078b"

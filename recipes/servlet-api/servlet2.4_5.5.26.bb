@@ -36,3 +36,6 @@ do_compile() {
 
   fastjar -C build -c -m src/etc/manifest -f ${JARFILENAME} .
 }
+
+SRC_URI[md5sum] = "642b6526354cb18c5b5d77ebef8109ae"
+SRC_URI[sha256sum] = "ddc677d7391c438e6102d0b3e9653eaca661344ef74b0260c1f488340d660395"

@@ -28,3 +28,6 @@ SRC_URI_avr32 = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
 inherit autotools
 
 export INCLUDES = "-I. -I./linux"
+
+SRC_URI[md5sum] = "09bcd5d00ece28f8154dec11cadfce3c"
+SRC_URI[sha256sum] = "a6808914cbfead2595dfd061a0f14dcbb0a8bb645e3cfdfa5c247d7ded9e0e7d"

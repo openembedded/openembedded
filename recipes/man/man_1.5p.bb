@@ -40,3 +40,6 @@ do_install() {
 FILES_${PN} = "${bindir}/* ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
 	       ${libdir}/*/ ${sysconfdir} ${sharedstatedir} ${localstatedir} \
 	       /bin /sbin /lib/*/ /lib/*.so*"
+
+SRC_URI[md5sum] = "3800006ccd2f1f16124a2ac3abf04b30"
+SRC_URI[sha256sum] = "5431073fb315f9b8dd43f430d7a9082e0a6232e20af559604da573270df8236b"

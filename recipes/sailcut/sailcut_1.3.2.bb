@@ -14,3 +14,6 @@ EXTRA_OECONF = "\
 
 inherit autotools
 
+
+SRC_URI[md5sum] = "4bd5142c1741bb302dcd8e3b2e22dcd5"
+SRC_URI[sha256sum] = "c93f35baa7100fa04033b646b273ebf1da01954ea1d1dd33ab599b92ed916fa1"

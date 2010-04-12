@@ -41,3 +41,6 @@ do_install () {
 # libs
  oe_libinstall -so libclockapplet ${D}${palmtopdir}/plugins/applets
 }
+
+SRC_URI[md5sum] = "7265673901eacb0b72a11cd6732cc698"
+SRC_URI[sha256sum] = "80fd209d065887729fdeb81f5a91638626e7ed31dabab40c446bd12042df9057"

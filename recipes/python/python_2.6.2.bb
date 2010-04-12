@@ -134,3 +134,6 @@ FILES_python-misc = "${libdir}/python${PYTHON_MAJMIN}"
 # catch manpage
 PACKAGES += "python-man"
 FILES_python-man = "${datadir}/man"
+
+SRC_URI[md5sum] = "245db9f1e0f09ab7e0faaa0cf7301011"
+SRC_URI[sha256sum] = "a1cdc4a8f6c1f947ea3b87d097af2db4371019bac941d92c3844124c5694328b"

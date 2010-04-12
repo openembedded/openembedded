@@ -25,3 +25,6 @@ do_install() {
 # Save the configuration file in the package
 FILES_${PN} += " /etc/gputty"
 
+
+SRC_URI[md5sum] = "d227a37a8a7b036eed44e4278db45735"
+SRC_URI[sha256sum] = "fcee22d7e31a936cde4672ac318ffabb9d39b7fc3b74de391bdade1419c59dfd"

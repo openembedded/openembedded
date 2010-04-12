@@ -45,8 +45,8 @@ RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 #	   file://noinfo.patch;patch=1 \
 #	   file://ldconfig.patch;patch=1;pnum=0 \
 
-SRC_URI = "${GNU_MIRROR}/glibc/glibc-${PV}.tar.gz \
-	   ${GNU_MIRROR}/glibc/glibc-linuxthreads-${PV}.tar.gz \
+SRC_URI = "${GNU_MIRROR}/glibc/glibc-${PV}.tar.gz;name=archive \
+	   ${GNU_MIRROR}/glibc/glibc-linuxthreads-${PV}.tar.gz;name=linuxthreads \
 	   file://alpha-build-failure.patch;patch=1 \
 	   file://arm-asm-clobber.patch;patch=1 \
 	   file://arm-ctl_bus_isa.patch;patch=1 \
@@ -194,3 +194,8 @@ do_stage() {
 }
 
 require glibc-package.inc
+
+SRC_URI[archive.md5sum] = "e4c3eb8343b5df346ceaaec23459f1dc"
+SRC_URI[archive.sha256sum] = "58dc8df59aed1e4d9d50eef9e4c4c0789fa283b50f7a093932d0f467424484ee"
+SRC_URI[linuxthreads.md5sum] = "c766a79a51668d7fa33f175a249655b4"
+SRC_URI[linuxthreads.sha256sum] = "c027824ee6593a838e0883bdd4bf8bd455b3dcf4ff0aa77fe82452819d882f47"

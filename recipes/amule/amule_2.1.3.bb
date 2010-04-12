@@ -25,3 +25,6 @@ FILES_${PN} += " \
         ${libdir}/xchat"
 
 LDFLAGS += "-ldl"
+
+SRC_URI[md5sum] = "0aafdd159edb8ad5f0064da87998b47d"
+SRC_URI[sha256sum] = "6e97e947bb7ac231b75e3b21a509a2ec0239bcd7e9dbfc6062c520a6d13b0244"

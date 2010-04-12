@@ -14,3 +14,6 @@ do_configure_prepend() {
 }
 
 inherit autotools 
+
+SRC_URI[md5sum] = "a6e09d6b71cb217f23069980060abf27"
+SRC_URI[sha256sum] = "4a15e26456498dda5f3aa7d688a4892e0c50394a2f01685136fbc954bacc9691"

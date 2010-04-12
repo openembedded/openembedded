@@ -12,3 +12,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/meta-tools/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+SRC_URI[md5sum] = "8a7763e31e4cc3fdf9154c793dda3bc0"
+SRC_URI[sha256sum] = "7d17f07aa470cac6afc1b7e68745c1bf1767913ce52b401296e21cab245fe26b"

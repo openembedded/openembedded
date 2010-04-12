@@ -10,7 +10,7 @@ RDEPENDS = "wpa-supplicant"
 RRECOMMENDS = "${LIBC}-gconv-utf-16"
 PR = "r1"
 
-SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz\
+SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz;name=archive\
          file://icons.patch;patch=1 \
          file://session_manager.patch;patch=1 "
 
@@ -46,3 +46,6 @@ FILES_${PN} = "/usr/share/pixmaps/wpa_gui.png \
                /usr/share/applications/wpa_gui.desktop"
 
 FILES_${PN}_append_shr = " /usr/share/wpa_gui/style"
+
+SRC_URI[archive.md5sum] = "0efb8fcedf0a8acf6f423dfdb0658fdd"
+SRC_URI[archive.sha256sum] = "6e5284fa3f7c56e001fae92486eaa31340db5dd925dcb38bd572d2e8ed70f570"

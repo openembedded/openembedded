@@ -60,3 +60,6 @@ do_install () {
         cd fbreader/${READER_ARCH}; oe_runmake .builddir RESOLUTION=${READER_RESOLUTION}
 	cp -r data/* ${D}
 }
+
+SRC_URI[md5sum] = "3b4944bf0d37b42249bef84d59918ce0"
+SRC_URI[sha256sum] = "4e505820b150ae35a40c39a3d2aeb7a8dcb6bd9b599055c40f566d874e4d1c82"

@@ -18,3 +18,6 @@ do_install () {
 	install -m 0644 resistorUI.png ${D}${palmtopdir}/pics/
 
 }
+
+SRC_URI[md5sum] = "3ef812023466905883a19a22ead8615c"
+SRC_URI[sha256sum] = "467910e5f6b6e137db93a1ccaf668d4146c3dd27dfa0f368b2a20a0a14a23592"

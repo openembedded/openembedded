@@ -38,3 +38,6 @@ do_stage () {
 
 FILES_${PN} += "${libdir}/packagekit-backend/*.so ${datadir}/dbus-1/system-services/"
 FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so "
+
+SRC_URI[md5sum] = "87bf41fd021077c93549d47de6d5fe07"
+SRC_URI[sha256sum] = "3b1a6f451928ca7e36d25e6e5a2e3dec2adae11c20770406f8bdc484f38b1600"

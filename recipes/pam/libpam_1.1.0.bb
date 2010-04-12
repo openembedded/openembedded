@@ -72,3 +72,6 @@ python populate_packages_prepend () {
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 }
 
+
+SRC_URI[md5sum] = "9cda791c827dfcd9f2888caf0a64cc4a"
+SRC_URI[sha256sum] = "139b1abb0f1c402e443ad9083b5ff0512f4a5ae7bc806528e9d7eced13384ed7"

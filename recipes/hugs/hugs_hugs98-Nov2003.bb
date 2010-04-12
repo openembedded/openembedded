@@ -29,3 +29,6 @@ do_install() {
     install -d ${D}${datadir}/pixmaps/
     install -m 0644 ${WORKDIR}/hugs.png ${D}${datadir}/pixmaps/
 }
+
+SRC_URI[md5sum] = "e80a6739ead9a260087fe4d3fc6a8359"
+SRC_URI[sha256sum] = "9f90613de73e1b8e90d9bbcb09046e83680f15a46fc630c3e26e9aa4ca0e6a1d"

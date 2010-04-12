@@ -26,3 +26,6 @@ do_stage () {
        oe_libinstall -a -so libXcomp ${STAGING_LIBDIR}
        install -m 0644 NX.h ${STAGING_INCDIR}/ 
 }
+
+SRC_URI[md5sum] = "5ea64a557c770d9f5cc4b9a7a9d1343c"
+SRC_URI[sha256sum] = "ec1b9a9447bcbfe36cff46aaf4aaa6b3f8f945487438a92d0b8e70d9b7814f97"

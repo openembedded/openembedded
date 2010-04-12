@@ -17,3 +17,6 @@ do_stage() {
 	install -d ${STAGING_BINDIR}
 	install -m 0755 Utilities/splash ${STAGING_BINDIR}/splash
 }
+
+SRC_URI[md5sum] = "d7c7cdab692fb2edc5cf5ebb554f20a1"
+SRC_URI[sha256sum] = "9b20c37f2ae2247354b580e080bf0c3b650d3e63bf39c3d5573ef3b9c75fe0f0"

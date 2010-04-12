@@ -61,3 +61,6 @@ do_install () {
 CONFFILES_${PN} = "${sysconfdir}/network/options ${sysconfdir}/hosts \
                    ${sysconfdir}/network/interfaces ${sysconfdir}/rpc \
                    ${sysconfdir}/protocols ${sysconfdir}/services"
+
+SRC_URI[md5sum] = "b91eeb701d1733b3efb174b9463c5875"
+SRC_URI[sha256sum] = "cc74bd934a33e80e0218d9b2482d986191879d184ffd03deaefa78b0c8d7a76a"

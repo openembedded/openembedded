@@ -4,8 +4,8 @@ SECTION = "openmoko/applications"
 DEPENDS = "gtk+"
 PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/free42/free42.tgz \
-           http://sense.net/zc/free42/42c_skins.tgz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/free42/free42.tgz;name=archive \
+           http://sense.net/zc/free42/42c_skins.tgz;name=skins \
            file://free42-bcd-gtk-only.patch;patch=1 \
            file://free42-vga-skin.patch;patch=1 \
            file://free42-dont-declare-sincos.patch;patch=1 \
@@ -42,3 +42,8 @@ do_install() {
 }
 
 
+SRC_URI[archive.md5sum] = "1fc21e04b3b77150846027dc7cb5210d"
+SRC_URI[archive.sha256sum] = "9d348a9d2d5bf8eabc7e7bb6f0907e611403e4abe6dc1e11b1b2ad1118b3088a"
+
+SRC_URI[skins.md5sum] = "24b0e5bbfe21ea9c5a5c589bcc79c0f2"
+SRC_URI[skins.sha256sum] = "ab877846c6caaff32efbf5be6fc5c63b7dec97a2e78c57c525da7705d2052bfc"

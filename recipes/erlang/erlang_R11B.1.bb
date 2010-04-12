@@ -70,3 +70,6 @@ def get_erlang_libs(d):
 FILES_${PN}-dbg += " ${libdir}/erlang/bin/.debug ${libdir}/erlang/*/bin/.debug ${libdir}/erlang/lib/*/bin/.debug"
 FILES_${PN}-libs += " ${@' '.join(get_erlang_libs(d))}"
 PACKAGES =+ "${PN}-libs"
+
+SRC_URI[md5sum] = "1fe3707d9bed898bc51444cb529fdd79"
+SRC_URI[sha256sum] = "d5a8530dfee0b2348c4ad0107409fa73ac3233f31e2300ece625a2abd9eb4da7"

@@ -20,3 +20,6 @@ do_prepatch() {
 }
 
 addtask prepatch after do_unpack before do_patch
+
+SRC_URI[md5sum] = "34b0f354819217e6a345f48ebbd8f13e"
+SRC_URI[sha256sum] = "2c14ada1ac7d272e03b430d3a530d60fc9ec69cc8252382aa049afba7d2b8558"

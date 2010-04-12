@@ -16,3 +16,6 @@ do_compile() {
         oe_runmake install INSTROOT='${D}'
 }
 
+
+SRC_URI[md5sum] = "36f7b3120e00c9c74cb6619334de419f"
+SRC_URI[sha256sum] = "6eed89b661ae9f2ac0d383414ca964abea8a115f8fba0f7ab37b49b565ffb2a8"

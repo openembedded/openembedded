@@ -12,3 +12,4 @@ do_compile_prepend () {
 	ln -s ${CROSS_DIR}/bin/${TARGET_PREFIX}as gcc/as 
 	ln -s ${CROSS_DIR}/bin/${TARGET_PREFIX}ld gcc/ld
 }
+

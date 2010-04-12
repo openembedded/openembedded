@@ -14,3 +14,6 @@ S = "${WORKDIR}/Text-Diff-${PV}"
 inherit cpan
 
 BBCLASSEXTEND="native"
+
+SRC_URI[md5sum] = "4931662ea353384dec2a54a71b26ee8c"
+SRC_URI[sha256sum] = "0b654cd39126333a0dab7fdd2fd0c5023f6eb45e72d1d8bf9fb3cab175002bc7"

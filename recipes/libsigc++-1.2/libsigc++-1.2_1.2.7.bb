@@ -28,3 +28,6 @@ do_stage() {
 }
 
 FILES_${PN}-dev += "${libdir}/sigc++-*/"
+
+SRC_URI[md5sum] = "212f48536019e1f003d2509b4c9b36df"
+SRC_URI[sha256sum] = "d9163d90e259bfde9164c7b218475a7664a7907a1b3197f17bc1035f36112225"

@@ -17,3 +17,6 @@ FILES_${PN} += "\
     ${libdir}/lttv/plugins/* \
     ${datadir}/LinuxTraceToolkitViewer/facilities/* \
     ${datadir}/LinuxTraceToolkitViewer/pixmaps/* "
+
+SRC_URI[md5sum] = "de139052f234cf54d714c960524bd5ef"
+SRC_URI[sha256sum] = "a21431358d7f2a5deb76b1a95ee80dc870b0dc2426d4860c61144343d48eff3e"

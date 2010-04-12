@@ -18,3 +18,6 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/mumpot-mapnik.desktop ${D}${datadir}/applications/mumpot-mapnik.desktop
 	install -m 0644 ${WORKDIR}/mumpot-cyclemap.desktop ${D}${datadir}/applications/mumpot-cyclemap.desktop
 }
+
+SRC_URI[md5sum] = "52d1e64c63d70604f13985f1f326a802"
+SRC_URI[sha256sum] = "302bea9f0903fecf13ee0e9c24ed090203f2c77f7164a2a0f68c35fc8e1b9f10"

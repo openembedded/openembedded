@@ -32,3 +32,6 @@ do_install_append () {
 	install -m 6440 ${WORKDIR}/${PN}-${PV}/pci.ids ${D}/${prefix}/share
 }
 
+
+SRC_URI[md5sum] = "2b3b2147b7bc91f362be55cb49fa1c4e"
+SRC_URI[sha256sum] = "8817295a7db11f31837c7c23f49e768131700b2b729d9fc724520d94a8b00f4b"

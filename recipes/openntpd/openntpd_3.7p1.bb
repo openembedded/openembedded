@@ -42,3 +42,6 @@ pkg_postrm () {
 INITSCRIPT_NAME = "openntpd"
 
 INITSCRIPT_PARAMS = "defaults"
+
+SRC_URI[md5sum] = "10ed8eefd760e5819efcf3277b118f47"
+SRC_URI[sha256sum] = "313509a7ccb15565e911f61c599055afc705cfe4bf6370bdc1c30582d52a9ea9"

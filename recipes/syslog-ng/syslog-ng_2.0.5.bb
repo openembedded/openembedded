@@ -32,3 +32,6 @@ CONFFILES_${PN} = "${sysconfdir}/syslog-ng.conf"
 INITSCRIPT_NAME = "syslog-ng"
 #INITSCRIPT_PARAMS = "defaults 05"
 INITSCRIPT_PARAMS = "remove"
+
+SRC_URI[md5sum] = "c161eefc450fabc246c1a10997c6c6a5"
+SRC_URI[sha256sum] = "34862f87d9d404ad4874d95ee871334f5bc2acad65420f672ad2ee286ab660a1"

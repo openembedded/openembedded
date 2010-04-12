@@ -155,3 +155,6 @@ ${sysconfdir}/my.cnf"
 
 DESCRIPTION_${PN}-leftovers = "unpackaged and probably unneeded files for ${PN}"
 FILES_${PN}-leftovers = "/"
+
+SRC_URI[md5sum] = "37b4479951fa0cf052269d27c41ca200"
+SRC_URI[sha256sum] = "6bd2436fd0f233bb1518e15975cb4e9fa4434acb53c3c3cd7d4648219abf58e9"

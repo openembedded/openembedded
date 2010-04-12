@@ -40,3 +40,6 @@ do_install() {
 	done
 	rm ${D}${libexecdir} -rf
 }
+
+SRC_URI[md5sum] = "d132c119831c27350e10b9f885711adc"
+SRC_URI[sha256sum] = "9f6214b8e53f4bba651ac5a72c0f6193b12aa21fbf1d675d89a7b4bc45264498"

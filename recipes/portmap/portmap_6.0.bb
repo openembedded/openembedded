@@ -18,3 +18,6 @@ fakeroot do_install() {
     install -m 0755 ${WORKDIR}/portmap.init ${D}${sysconfdir}/init.d/portmap
     oe_runmake install DESTDIR=${D}
 }
+
+SRC_URI[md5sum] = "ac108ab68bf0f34477f8317791aaf1ff"
+SRC_URI[sha256sum] = "02c820d39f3e6e729d1bea3287a2d8a6c684f1006fb9612f97dcad4a281d41de"

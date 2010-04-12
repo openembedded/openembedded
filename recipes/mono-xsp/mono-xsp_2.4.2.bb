@@ -227,3 +227,6 @@ FILES_mono-xsp-test = " \
 	/usr/lib/xsp/test/2.0/masterpages/content1.aspx \
 	/usr/lib/xsp/test/2.0/masterpages/content2.aspx \
 	"
+
+SRC_URI[md5sum] = "53f544584224dd6470cf1d4913ac077e"
+SRC_URI[sha256sum] = "5535162fcbe4b2bec7df15127ad48d747212723413e021b2e90a931e75b80063"

@@ -10,3 +10,6 @@ inherit autotools pkgconfig
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[md5sum] = "459fc597caea350951f647a92c9c272f"
+SRC_URI[sha256sum] = "361a2861a5cd5bc7bd3320b60165c3bede06056ade7d75ab370d13a6b203d629"

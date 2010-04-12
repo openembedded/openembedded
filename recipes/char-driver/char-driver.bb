@@ -63,3 +63,6 @@ PACKAGES = "${PN}"
 FILES_${PN} = "${bindir}/sample"
 FILES_${PN} += "${base_libdir}/modules/${KERNEL_VERSION}/extra/char-driver.ko"
 
+
+SRC_URI[md5sum] = "70113b86db5dea86c282053e15f36cb7"
+SRC_URI[sha256sum] = "9a87282052a8c0807bbcb46367102f97896a1cf4fcc0d35cfe34b2e5a1456a31"

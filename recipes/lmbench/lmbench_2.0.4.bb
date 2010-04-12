@@ -43,3 +43,6 @@ do_install () {
 		   ${D}${bindir}
 	install -m 0755 ${WORKDIR}/lmbench-run ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "eddf56af6f248812e3016a9e34b42bbd"
+SRC_URI[sha256sum] = "5a729a49ce591a58d241ac39979cb496ab30687556633782557196d2b262921e"

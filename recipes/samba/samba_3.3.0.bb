@@ -33,3 +33,6 @@ do_configure() {
 do_compile () {
 	base_do_compile
 }
+
+SRC_URI[src.md5sum] = "adb048dc3988055533e1ea5d91d81f99"
+SRC_URI[src.sha256sum] = "b00ca360e9b414744eff33ca4567f3eb1a28d32914e20f00b6672fbc141c9beb"

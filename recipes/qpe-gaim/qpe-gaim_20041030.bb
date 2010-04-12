@@ -35,3 +35,6 @@ do_install() {
 	done
 	install -m 0644 gaim.png ${D}${palmtopdir}/pics/
 }
+
+SRC_URI[md5sum] = "b61c7005301956e231feacff707c7b19"
+SRC_URI[sha256sum] = "0b55004666e3353feef384c5795a05b5bf1a3b69a487aee5b8f8e9d66c133b86"

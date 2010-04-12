@@ -37,3 +37,6 @@ do_install_append() {
 PACKAGES = "${PN}"
 
 FILES_${PN} += "${datadir_java}"
+
+SRC_URI[md5sum] = "8b11edfec13c590ea443d0f0ae0da479"
+SRC_URI[sha256sum] = "7e6dc5be74ae56c7e86e69ad0ad88dae3b2847afa9e73a76635918a6b1eb75cd"

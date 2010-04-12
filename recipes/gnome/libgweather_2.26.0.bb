@@ -29,3 +29,6 @@ FILES_${PN}-locationdata = "${datadir}/libgweather/Locations*"
 do_stage() {
         autotools_stage_all
 }
+
+SRC_URI[archive.md5sum] = "b96016d7b35c66cf251189e9851ee252"
+SRC_URI[archive.sha256sum] = "c1efdeb59fe87145d13d99b7bb6f51b56505081fb2ebc2f7fe7dc3f7699da45e"

@@ -1,1 +1,4 @@
 require minilite.inc
+
+SRC_URI[md5sum] = "135996a65350d5c40a2c020a2ddaf5ef"
+SRC_URI[sha256sum] = "2e01c8375e7d876a44b8703e00958aea88967124c1a9631031c4ea8019f5dd32"

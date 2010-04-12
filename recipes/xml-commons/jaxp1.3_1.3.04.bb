@@ -22,3 +22,6 @@ do_compile() {
   fastjar -c -m manifest.commons -f ${JARFILENAME} -C build .
 }
 
+
+SRC_URI[md5sum] = "5536f87a816c766f4999ed60593a8701"
+SRC_URI[sha256sum] = "8e8a412aeb95644eaf14ec1a5cfd04833e38cac4a01b83d73d7de2368a35a597"

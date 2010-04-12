@@ -12,3 +12,6 @@ file://no-tests.patch;patch=1"
 
 inherit autotools
 
+
+SRC_URI[md5sum] = "a593b2eabde56f122e2bb3d2d45f7ca7"
+SRC_URI[sha256sum] = "90f69ae24cc21fa6d33dc406077f16c06113b3000f7d267e7056e52f50d0abc0"

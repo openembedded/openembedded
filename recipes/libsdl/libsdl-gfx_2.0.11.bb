@@ -18,3 +18,6 @@ do_stage() {
 	install -m 0644 *.h ${STAGING_INCDIR}/SDL/
 }
 
+
+SRC_URI[md5sum] = "10f6432ede2b239796f2924bdc7224b4"
+SRC_URI[sha256sum] = "6a3ef9f5556a3d75832b2b9138bdf3551dc59994d2849307f88a9dcd9732d16c"

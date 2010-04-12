@@ -25,3 +25,6 @@ do_install() {
         install c-client/c-client.a ${D}${libdir}/libc-client.a
 }
 
+
+SRC_URI[md5sum] = "4d59ce6303cf8ef93ff51341b1ce2df7"
+SRC_URI[sha256sum] = "b3170bef59f416be1f710be58333f9b0c2c8b0fe137062accd4f5f13a3785cd0"

@@ -17,3 +17,6 @@ do_configure_prepend () {
 do_stage () {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "440835808c577073db7d571357223dce"
+SRC_URI[sha256sum] = "4f707c189259d7b3dda908d78a995366d388fe051aa3554b82cb324426997a23"

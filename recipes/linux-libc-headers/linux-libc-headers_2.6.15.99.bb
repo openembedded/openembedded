@@ -62,3 +62,6 @@ do_install() {
 	cp -pfLR include/asm-generic ${D}${includedir}/
 }
 
+
+SRC_URI[md5sum] = "0ab7fdfc84522e16bfe78b8e0cc66bfa"
+SRC_URI[sha256sum] = "c8630034519e525347e0cb8435bdf0edf9fbad2d16392768ba142c06681b2305"

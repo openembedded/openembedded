@@ -40,3 +40,6 @@ if [ "x$PAV" != "x" ] ; then
         /etc/init.d/avahi-daemon reload
 fi
 }
+
+SRC_URI[md5sum] = "94a43d28794f2445cd5f9c8b970898c4"
+SRC_URI[sha256sum] = "a2295e525febfc3a1a93ad21c0843021e2b22e6720f148bf1c4822a83aea2b8c"

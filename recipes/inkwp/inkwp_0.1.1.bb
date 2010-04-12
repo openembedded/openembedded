@@ -18,3 +18,6 @@ do_install() {
 	install -m 0644 *.png ${D}${palmtopdir}/pics/inkwp/
 	install -m 0644 inkwp.desktop ${D}${palmtopdir}/apps/Applications/
 }
+
+SRC_URI[md5sum] = "a19896b756f1b29a33411a1fb2842c4b"
+SRC_URI[sha256sum] = "4afa4f4ddfdc40a32ef2c6034b2fa3bca415088b7eac4b7ad2b814202153f1e0"

@@ -17,3 +17,6 @@ do_stage() {
 PACKAGES += "libmimedir-utils"
 FILES_libmimedir-utils = "${bindir}"
 FILES_${PN} = "${libdir}/*.so.*"
+
+SRC_URI[md5sum] = "f1e314b35923a3786e4f32b75d3d605a"
+SRC_URI[sha256sum] = "dbe106443b7221b50bd50fe9463fe233dbaf6ee15f052cceedd382dedd021510"

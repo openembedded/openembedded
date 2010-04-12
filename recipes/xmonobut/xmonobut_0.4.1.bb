@@ -19,3 +19,6 @@ inherit autotools
 #	install -m 0644 xmonobut.xpm ${D}${datadir}/pixmaps/xmonobut.xpm
 #	install -m 0644 ${WORKDIR}/xmonobut.desktop ${D}${datadir}/applications/xmonobut.desktop
 #}
+
+SRC_URI[md5sum] = "41d9da556205c7cfcb86362387fa6493"
+SRC_URI[sha256sum] = "5002223fd102fc5bd454a8b62feb9d281f454769624a071804d6bfc82416a0b4"

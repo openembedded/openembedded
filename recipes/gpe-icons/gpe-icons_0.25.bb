@@ -13,3 +13,6 @@ do_configure_prepend_shr() {
 }
 
 require gpe-icons.inc
+
+SRC_URI[md5sum] = "9845af06d8337fa41725c731ba3dab08"
+SRC_URI[sha256sum] = "2914804f6dc63fd19247674cb6c8490f21ab66de9c267d0c55a9f891eebe0c72"

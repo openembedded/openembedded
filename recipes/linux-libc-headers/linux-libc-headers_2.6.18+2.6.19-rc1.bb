@@ -39,3 +39,6 @@ do_install() {
 	cp -pfLR ${S}${includedir}/asm-${ARCH} ${D}${includedir}/asm
 	cp -pfLR ${S}${includedir}/asm-generic ${D}${includedir}/
 }
+
+SRC_URI[md5sum] = "f1fc22939d71224923f168ba179b3e51"
+SRC_URI[sha256sum] = "35b9045edc5992c2d168fc72ca04a57f4e1c81a0ea987fa88342e54f7c79fbd4"

@@ -27,3 +27,6 @@ do_configure_prepend () {
 	sed -i -e s:getline:etline:g ./src/gui-none/nogui.c
 	touch NEWS AUTHORS ChangeLog
 }
+
+SRC_URI[md5sum] = "9fc186f9256d04f940304044e29175ef"
+SRC_URI[sha256sum] = "afc8b30fb9aa0819a4e53b3eb0db8e658e5a2b23d7dbf436f6b5a49b2269da86"

@@ -21,3 +21,6 @@ S = "${WORKDIR}/grdesktop-${PV}"
 
 inherit autotools pkgconfig
 
+
+SRC_URI[md5sum] = "46f8f3e2d4aa2433b8b1537fefa8a4b7"
+SRC_URI[sha256sum] = "a94632ed42273d280ad4f8eec6a803024666ed5c8737ae34585c2d9d2eed5193"

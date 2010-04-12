@@ -50,3 +50,6 @@ FILES_tinymail-camel-lite-dev +=  "${libdir}/libcamel-lite*.so \
 FILES_tinymail-camel-lite-dbg +=  "${libdir}/camel-lite-1.2/camel-providers/.debug"
 
 
+
+SRC_URI[md5sum] = "fea9081686f1157157fd2b0e68b9aeee"
+SRC_URI[sha256sum] = "40bc855073422f893a919896a915e1f3d98f24a269c4c38be0072ad76feb5ca4"

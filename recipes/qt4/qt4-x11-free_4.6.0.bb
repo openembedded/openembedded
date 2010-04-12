@@ -7,5 +7,3 @@ QT_CONFIG_FLAGS += " \
  -no-embedded \
  -xrandr \
  -x11"
-
-

@@ -16,3 +16,6 @@ do_install() {
 	install -m 0644 doc/hnb.1 ${D}${mandir}/man1/
 }
 
+
+SRC_URI[md5sum] = "65196f236b40ecc8bfccf8aec36e91f6"
+SRC_URI[sha256sum] = "0102d55afe4d2071b088624f401f8b830659cb63c3364d3c6e089b4e74138bcc"

@@ -15,3 +15,6 @@ SRC_URI = "http://files.uvena.de/${PN}/${PN}-${PV}.tar.bz2"
 do_compile() {
    oe_runmake
 }
+
+SRC_URI[md5sum] = "e810a525b495d08bce69317aa37d6134"
+SRC_URI[sha256sum] = "e4b20c058ba70f3aa0258ff16817e238303f5d1efb87dbac4acf016e628a7151"

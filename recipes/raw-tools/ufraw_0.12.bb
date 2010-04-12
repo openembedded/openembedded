@@ -14,3 +14,6 @@ FILES_dcraw = "${bindir}/dcraw"
 FILES_dcraw-bdg = "${bindir}/.debug/dcraw"
 
 
+
+SRC_URI[md5sum] = "b2c104938c1c3eb47e7605432bbd3157"
+SRC_URI[sha256sum] = "c750c8180057385eaa0844f1148d6f0223b986da322773195eab44b33b97c19f"

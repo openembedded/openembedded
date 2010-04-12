@@ -12,3 +12,6 @@ do_stage() {
 	install src/*.h ${STAGING_INCDIR}/arena
 }
 
+
+SRC_URI[md5sum] = "dc51d2466493d16a81af10ae0390b292"
+SRC_URI[sha256sum] = "560a17bc5d9e8ef71579391703c2a138d365e68396a5d8b21b1d9e1b232e16d0"

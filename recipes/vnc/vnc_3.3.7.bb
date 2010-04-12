@@ -19,3 +19,6 @@ do_install() {
 	install -m 0755 vncviewer/vncviewer ${D}/usr/bin/vncviewer
 }
 
+
+SRC_URI[md5sum] = "511ffbc8ed8d9df82e7c67852164728c"
+SRC_URI[sha256sum] = "ee1faf72ef745a7d96e44cb4797d92a8cd2c9e290dfe602fae0fd955a11d4f3a"

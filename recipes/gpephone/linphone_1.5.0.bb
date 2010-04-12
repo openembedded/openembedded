@@ -45,3 +45,6 @@ do_stage() {
 	rm ${STAGING_LIBDIR}/libmediastreamer.la 
 	rm ${STAGING_LIBDIR}/liblinphone.la 
 }
+
+SRC_URI[md5sum] = "e9b01b74a3bb989aa5859d06e56162bd"
+SRC_URI[sha256sum] = "8178dcf9552bf34cbb7098bbe6168fa1780232dbb649a2d1642eda18c87fa06f"

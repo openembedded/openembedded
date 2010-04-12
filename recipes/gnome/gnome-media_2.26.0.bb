@@ -30,3 +30,6 @@ FILES_${PN} += "${libdir}/libglade/2.0/libgnome-media-profiles.so \
 		${datadir}/gnome-sound-recorder"
 
 FILES_${PN}-dbg += "${libdir}/libglade/2.0/.debug"
+
+SRC_URI[archive.md5sum] = "3d519bc7d812aed8f6e4288b6d3cdf26"
+SRC_URI[archive.sha256sum] = "39e7646d0790e05a010da1eb2d7552dcb5311abd72f001477c9c465d7146b9f7"

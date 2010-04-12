@@ -90,3 +90,6 @@ FILES_${PN} = "${sysconfdir} \
                 ${libexecdir} \
                 ${datadir}/hal/fdi \
                 ${datadir}/hal/scripts"
+
+SRC_URI[md5sum] = "6a40f49f964e64358e53652038f3059f"
+SRC_URI[sha256sum] = "5dc5cf08502510a00cecd6e04ef006a74ba7ed4b31d25187b5efadd70a78733b"

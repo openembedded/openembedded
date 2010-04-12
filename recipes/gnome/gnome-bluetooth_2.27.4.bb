@@ -13,3 +13,6 @@ do_configure_prepend() {
 	echo "EXTRA_DIST = version.xml" > gtk-doc.make
 }
 
+
+SRC_URI[archive.md5sum] = "e34180aa90d5d718b819572b21b76d08"
+SRC_URI[archive.sha256sum] = "250fede462d5ec0576c0ab9c7f965fb56dc5de6e1180405da8cf0e867a2eca3a"

@@ -18,3 +18,6 @@ RDEPENDS_${PN} = "\
   python-core \
   python-datetime \
 "
+
+SRC_URI[md5sum] = "2a5f25ab12fcefcf0b21348f2d47595a"
+SRC_URI[sha256sum] = "74b615c6a55b4421187feba1633fc233e7c5ebdd7abe9b092447a32946823357"

@@ -15,3 +15,6 @@ SRC_URI = "http://www.phystech.com/ftp/dhcpcd-${PV}.tar.gz \
 
 inherit autotools
 
+
+SRC_URI[md5sum] = "dd627a121e43835bead3ffef5b1a72fd"
+SRC_URI[sha256sum] = "f435e14e1f54dc8792f4e655463d07f2bdbe6d8a8581bd62f5167334ab18bb87"

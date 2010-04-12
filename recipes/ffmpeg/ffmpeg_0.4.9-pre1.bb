@@ -66,3 +66,6 @@ FILES_libavcodec = "${libdir}/libavcodec*.so.*"
 FILES_libavcodec-dev = "${libdir}/libavcodec*.so"
 FILES_libavformat = "${libdir}/libavformat*.so.*"
 FILES_libavformat-dev = "${libdir}/libavformat*.so"
+
+SRC_URI[md5sum] = "ea5587e3c66d50b1503b82ac4179c303"
+SRC_URI[sha256sum] = "0e9e771114a75c461e813538f129eb05a251b8fc6591a5563420700b8e312da0"

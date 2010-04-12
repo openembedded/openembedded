@@ -167,3 +167,6 @@ FILES_boost-wserialization-dbg = "${libdir}/libboost_wserialization-d.so ${libdi
 FILES_boost-wserialization-mt = "${libdir}/libboost_wserialization-mt.so"
 FILES_boost-wserialization-mt-dbg = "${libdir}/libboost_wserialization-mt-d.so ${libdir}/.debug/libboost_wserialization-mt-d.so"
 
+
+SRC_URI[md5sum] = "2d938467e8a448a2c9763e0a9f8ca7e5"
+SRC_URI[sha256sum] = "0f866c75b025a4f1340117a106595cc0675f48ba1e5a9b5c221ec7f19e96ec4c"

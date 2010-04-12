@@ -18,3 +18,6 @@ do_install () {
 	install -d ${D}${libdir}/tconn
 	oe_libinstall -so tconn ${D}${libdir}/tconn/
 }
+
+SRC_URI[md5sum] = "50f75731e610fce00803cc7d98b301fd"
+SRC_URI[sha256sum] = "404df2c479517020290be9847191523c1fcbd3e929e8bb1191a7832209d04af8"

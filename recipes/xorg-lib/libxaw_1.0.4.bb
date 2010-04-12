@@ -19,3 +19,6 @@ PACKAGES =+ "libxaw6 libxaw7 libxaw8"
 FILES_libxaw6 = "${libdir}/libXaw6.so.6*"
 FILES_libxaw7 = "${libdir}/libXaw7.so.7*"
 FILES_libxaw8 = "${libdir}/libXaw8.so.8*"
+
+SRC_URI[archive.md5sum] = "73671d8f1cf36fdd81395328cc3539c9"
+SRC_URI[archive.sha256sum] = "11f4ab184fb8dc853fd95238d4de7b251427dd036643d11fd2a669232fa35af9"

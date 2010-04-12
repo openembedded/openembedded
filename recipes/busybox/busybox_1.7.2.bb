@@ -18,10 +18,10 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
 SRC_URI[tarball.md5sum] = "c91ec9756e2000073a9dd8fa9fc3f89e"
 SRC_URI[tarball.sha256sum] = "83c4cc813124a43f13e2ebb83cea9da9909d63891b824bf4bc7006f0567db7cf"
 
-SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;patch=1 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-iptun.patch;patch=1 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-logger.patch;patch=1 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-tail.patch;patch=1 \
+SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;patch=1;name=patch1 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-iptun.patch;patch=1;name=patch2 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-logger.patch;patch=1;name=patch3 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-tail.patch;patch=1;name=patch4 \
             file://defconfig"
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
@@ -119,3 +119,12 @@ pkg_prerm_${PN} () {
 	export PATH=$PATH:$tmpdir
 	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; bn=`basename $link`; sh /usr/bin/update-alternatives --remove $bn $to; done </etc/busybox.links
 }
+
+SRC_URI[patch1.md5sum] = "4149857c0b2c7f3d52a1f2cec5d7778d"
+SRC_URI[patch1.sha256sum] = "73706e7d77144a6270da02ede61cde3c2e3b0e716d879737ac9d478b29233ba9"
+SRC_URI[patch2.md5sum] = "6c5f498e0677fd91b5b0e85ec5ac3b23"
+SRC_URI[patch2.sha256sum] = "b80a8c173c7a7a40a504585c6af5c74396c8fdbbb1cec179de9edcc030aa6a9a"
+SRC_URI[patch3.md5sum] = "43c292e93bf92623aaa29dd0e243e9a9"
+SRC_URI[patch3.sha256sum] = "5117584a563c512b68cd9678d3cf54e6186f5a062836398791385f8ed73cca86"
+SRC_URI[patch4.md5sum] = "c211189556c59a2665af45bffe5a5878"
+SRC_URI[patch4.sha256sum] = "f44c3c2d7d9b3fc8a5f9fb6ac587ae4170d2515d72f9e76deb8c071ce9847abe"

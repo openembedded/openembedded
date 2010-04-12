@@ -16,3 +16,6 @@ inherit qmake qt3x11
 do_install() {
 	oe_runmake install INSTALL_ROOT="${D}"
 }
+
+SRC_URI[md5sum] = "242c260c50fd774f2301dba66deb668b"
+SRC_URI[sha256sum] = "67b43e51aa5afb22a7329fd78e9d17f489fceb4ac00d9861312993709739528e"

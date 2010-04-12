@@ -24,3 +24,6 @@ do_configure() {
 	sed -i 's:/usr/lib:${STAGING_LIBDIR}:' ./Makefile
 	sed -i 's:/usr/include:${STAGING_INCDIR}:' ./Makefile
 }
+
+SRC_URI[md5sum] = "2aacf4dc9a3bc500a8b4f3887a32cdd5"
+SRC_URI[sha256sum] = "09f1daece22a3555f1ca1f9779caf36357cc8d5b9ad1964606093c7e884e0da4"

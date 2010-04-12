@@ -8,3 +8,6 @@ SRC_URI = " \
  "
 
 S=${WORKDIR}/microwin
+
+SRC_URI[md5sum] = "934348f3ccfb457f8faad0b17dc900cb"
+SRC_URI[sha256sum] = "319d155e2032b97c799faaf0c47dca0a247b4f6893d6d92153600329af32c9b7"

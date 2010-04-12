@@ -9,8 +9,8 @@ DEPENDS = "classpath-native fastjar-native ecj-initial virtual/java-native"
 S = "${WORKDIR}/icepick-0.0+hg20080118"
 
 SRC_URI = "\
-	http://jalimo.evolvis.org/repository/sources/icepick-0.0+hg20080118.tar.bz2;md5sum=ce7b1827e6f4cbe73b9ffa90b0d45a6a \
-	http://jalimo.evolvis.org/repository/sources/openjdk-langtools-jdk7-b31.tar.bz2;md5sum=670931f67b2e4ac46c6e0cd15418f2fa \
+	http://jalimo.evolvis.org/repository/sources/icepick-0.0+hg20080118.tar.bz2;name=archive \
+	http://jalimo.evolvis.org/repository/sources/openjdk-langtools-jdk7-b31.tar.bz2;name=langtools \
 	file://${PV}-build-fix.patch;patch=1 \
 	"	
 
@@ -43,3 +43,8 @@ do_stage() {
 	install -d ${libdir}
 	install -m 0644 tools.jar ${libdir}
 }
+
+SRC_URI[archive.md5sum] = "ce7b1827e6f4cbe73b9ffa90b0d45a6a"
+SRC_URI[archive.sha256sum] = "63170836095f8451498c813a1f93a9ec70a1164d82aa30650c0f2216ca4377ab"
+SRC_URI[langtools.md5sum] = "670931f67b2e4ac46c6e0cd15418f2fa"
+SRC_URI[langtools.sha256sum] = "f8b8820e410c137d279d14dec7e7a93217cc371acdfe1b3343b2278d1728932e"

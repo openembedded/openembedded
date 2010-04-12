@@ -110,3 +110,6 @@ FILES_klibc-utils-static-uname = "${base_bindir}/uname"
 FILES_klibc-utils-static-modprobe = "${base_sbindir}/modprobe"
 FILES_klibc-utils-static-losetup = "${base_bindir}/losetup"
 FILES_klibc-utils-static-wc = "${base_bindir}/wc"
+
+SRC_URI[md5sum] = "481dfdef7273f2cc776c2637f481f017"
+SRC_URI[sha256sum] = "27000ba4bc73a5977502b27d7036df24dd6ab94a1c33b8f5d6d54ba62772f0c7"

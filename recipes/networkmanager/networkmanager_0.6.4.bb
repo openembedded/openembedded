@@ -64,3 +64,6 @@ FILES_${PN}-dev = "${incdir} \
 		   ${libdir}/*.a \
 		   ${libdir}/pkgconfig"
 
+
+SRC_URI[md5sum] = "832c91aa660c7b4e7220fa1263101fe3"
+SRC_URI[sha256sum] = "59eddefa715b3810af20b2b190ae16b46d0b733144d36dc7ddd51b32adac013e"

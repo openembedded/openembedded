@@ -70,3 +70,6 @@ fi
 update-rc.d $OPT ${INITSCRIPT_NAME} remove
 }
 
+
+SRC_URI[md5sum] = "28beef704a4ef62bc2dead005198ef4c"
+SRC_URI[sha256sum] = "96309871519efcab829fdfcc1cca546d772ed6a0e214c9e99e77ca7aea29f734"

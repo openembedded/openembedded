@@ -13,3 +13,6 @@ do_configure_append() {
         find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
 }
 
+
+SRC_URI[md5sum] = "a0bd7629040735f16e510b63edf386dd"
+SRC_URI[sha256sum] = "16e21ab5387220ad885e1d27f936f3add4081d15a1039577002682be521b2c03"

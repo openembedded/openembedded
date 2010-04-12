@@ -11,3 +11,6 @@ S = "${WORKDIR}/libsamplerate-${PV}"
 
 inherit autotools pkgconfig
 
+
+SRC_URI[md5sum] = "ad093e60ec44f0a60de8e29983ddbc0f"
+SRC_URI[sha256sum] = "e0a646224a0323ac63f56ef009b2d7fee11452a7b8af139b19ae71d2890dbc9c"

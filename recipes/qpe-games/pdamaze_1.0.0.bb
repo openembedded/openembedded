@@ -30,3 +30,6 @@ inherit opie
 
 
 
+
+SRC_URI[md5sum] = "bf27dd51fe03c8b475080b74de043a13"
+SRC_URI[sha256sum] = "99d6bc6b360baabd6044e8883d467cc6ed7955f9ab66d8f87f61e3cc757fb97a"

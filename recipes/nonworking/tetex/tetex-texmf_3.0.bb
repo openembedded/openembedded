@@ -73,3 +73,6 @@ FILES_tetex-texmf-scripts = "${datadir}/texmf/scripts"
 FILES_tetex-texmf-tex = "${datadir}/texmf/tex"
 FILES_tetex-texmf-texdoctk = "${datadir}/texmf/texdoctk"
 FILES_tetex-texmf-web2c = "${datadir}/texmf/web2c"
+
+SRC_URI[md5sum] = "ed9d30d9162d16ac8d5065cde6e0f6fa"
+SRC_URI[sha256sum] = "6c3b8fa619749cbb28ca0f8847e56773d13e0bb92f1ea34287420950373640c2"

@@ -21,3 +21,6 @@ do_install() {
 	install -m 0644 cdstatus.1            ${D}/${mandir}
 
 }
+
+SRC_URI[md5sum] = "cd7ea4ef72a08b388523c528d81ba3ca"
+SRC_URI[sha256sum] = "f33cbb551e494747b76bfbeba3954b4839fe7c849f200746fd7dc21bd665aa56"

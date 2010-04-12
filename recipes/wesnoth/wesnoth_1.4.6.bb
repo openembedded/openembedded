@@ -149,3 +149,6 @@ FILES_wesnoth-utbs = "\
 	${datadir}/wesnoth/data/campaigns/Under_the_Burning_Suns \
 	${datadir}/wesnoth/translations/*/LC_MESSAGES/wesnoth-utbs.mo \
 "
+
+SRC_URI[md5sum] = "9e92234b29f062b3779750ba3cd0a71b"
+SRC_URI[sha256sum] = "87caf592bd81922908e7ee6ff356c7d46cf5a2cbe46847df7d64aff537ca16b6"

@@ -52,3 +52,6 @@ do_install () {
 	cd ${D}${mandir}/man1; ln -s run-mailcap.1.gz compose.1.gz
 	cd ${D}${mandir}/man1; ln -s run-mailcap.1.gz print.1.gz
 }
+
+SRC_URI[md5sum] = "048aa29c31f067382cd669ee20934b9e"
+SRC_URI[sha256sum] = "4f65183200955540c097b82bfb18f5d21b636ca79f47cd018a4ea8b89cd2998c"

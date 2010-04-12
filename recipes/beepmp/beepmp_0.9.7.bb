@@ -24,3 +24,6 @@ do_configure() {
 	rm -rf  m4/libtool.m4
 	autotools_do_configure
 }
+
+SRC_URI[md5sum] = "5d74113f5de3d11a400d1d6c118d41c0"
+SRC_URI[sha256sum] = "7b458b6ca51c5f1c01ce328aedaab81e71028c796d37a953582e0deb55980c51"

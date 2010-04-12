@@ -26,3 +26,6 @@ FILES_${PN}-expose = "${datadir}/themes/expose \
 
 FILES_${PN}-mbcrystal = "${datadir}/themes/mbcrystal \
 			 ${datadir}/icons/mbcrystal"
+
+SRC_URI[md5sum] = "04312628f4a21f4105bce1251ea08035"
+SRC_URI[sha256sum] = "98a1c8695842b0cd7f32e67b0ef9118fd0f32db5297f3f08706c706dee8fc6be"

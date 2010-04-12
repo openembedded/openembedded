@@ -27,3 +27,6 @@ do_install() {
         install -m 0644 ${S}/bitmaps/fltk-chess.png  ${D}${datadir}/pixmaps/
         install -m 0644 ${S}/fltk-chess.desktop  ${D}${datadir}/applications/
 }
+
+SRC_URI[md5sum] = "df1f73bdf32f30923d9a2a5717a70913"
+SRC_URI[sha256sum] = "3fffcaf0653c13b249931f76b12119dce8a5b01df056e4b5444f150fec1d5311"

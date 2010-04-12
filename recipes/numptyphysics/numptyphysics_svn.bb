@@ -41,3 +41,6 @@ do_install_append() {
 }
 
 FILES_${PN} += "${datadir}"
+
+SRC_URI[md5sum] = "24a031f628cc91825bb80ee2aaa21b77"
+SRC_URI[sha256sum] = "3a60d6a6327f3ad8653e1de5dbf5c36f2a591d409d3e3ae7f6c84d25dbc3e7da"

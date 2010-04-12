@@ -34,3 +34,6 @@ do_stage () {
 		install -m 0644 $i ${STAGING_INCDIR}/osb/JavaScriptCore
 	done
 }
+
+SRC_URI[md5sum] = "969cda923c419e35a319911b30b1d4b8"
+SRC_URI[sha256sum] = "f5ad6961288687b8dc44a3f5cd6d1901b1b5b293e592da7a63c201eee1089464"

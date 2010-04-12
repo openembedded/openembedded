@@ -28,3 +28,6 @@ do_install() {
 	install -m 0644 ${S}vidcat.1 ${D}${mandir}/man1/vidcat.1
 }
 
+
+SRC_URI[md5sum] = "eec0b301b32bc8e9f65a4e54248c9868"
+SRC_URI[sha256sum] = "96d659d916fafe555311068c9bf8662b93f10d099b12b17ed04d8a8fffbc72e0"

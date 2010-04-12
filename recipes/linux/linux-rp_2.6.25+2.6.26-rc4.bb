@@ -18,32 +18,32 @@ DEFAULT_PREFERENCE_spitz = "1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.26/patch-2.6.26-rc4.bz2;patch=1 \
-           ${RPSRC}/lzo_jffs2_sysfs-r1.patch;patch=1 \
-           ${RPSRC}/hx2750_base-r34.patch;patch=1 \
-           ${RPSRC}/hx2750_bl-r9.patch;patch=1 \
-           ${RPSRC}/hx2750_pcmcia-r3.patch;patch=1 \
-           ${RPSRC}/pxa_keys-r9.patch;patch=1 \
-           ${RPSRC}/tsc2101-r19.patch;patch=1 \
-           ${RPSRC}/hx2750_test1-r8.patch;patch=1 \
-           ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
-           ${RPSRC}/pm_changes-r1.patch;patch=1 \
-           ${RPSRC}/locomo_kbd_tweak-r2.patch;patch=1 \
-#           ${RPSRC}/pxa27x_overlay-r8.patch;patch=1 \
-           ${RPSRC}/w100_extaccel-r2.patch;patch=1 \
-           ${RPSRC}/w100_extmem-r1.patch;patch=1 \
-           ${RPSRC}/poodle_pm-r6.patch;patch=1 \
-           ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
-           ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
-           ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
-           ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.26/patch-2.6.26-rc4.bz2;patch=1;name=rc4patch \
+           ${RPSRC}/lzo_jffs2_sysfs-r1.patch;patch=1;name=rppatch1 \
+           ${RPSRC}/hx2750_base-r34.patch;patch=1;name=rppatch2 \
+           ${RPSRC}/hx2750_bl-r9.patch;patch=1;name=rppatch3 \
+           ${RPSRC}/hx2750_pcmcia-r3.patch;patch=1;name=rppatch4 \
+           ${RPSRC}/pxa_keys-r9.patch;patch=1;name=rppatch5 \
+           ${RPSRC}/tsc2101-r19.patch;patch=1;name=rppatch6 \
+           ${RPSRC}/hx2750_test1-r8.patch;patch=1;name=rppatch7 \
+           ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1;name=rppatch8 \
+           ${RPSRC}/pm_changes-r1.patch;patch=1;name=rppatch9 \
+           ${RPSRC}/locomo_kbd_tweak-r2.patch;patch=1;name=rppatch10 \
+#           ${RPSRC}/pxa27x_overlay-r8.patch;patch=1;name=rppatch11 \
+           ${RPSRC}/w100_extaccel-r2.patch;patch=1;name=rppatch12 \
+           ${RPSRC}/w100_extmem-r1.patch;patch=1;name=rppatch13 \
+           ${RPSRC}/poodle_pm-r6.patch;patch=1;name=rppatch14 \
+           ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1;name=rppatch15 \
+           ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1;name=rppatch16 \
+           ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable;name=rppatch17 \
+           ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable;name=rppatch18 \
            file://hostap-monitor-mode.patch;patch=1;status=unmergable \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1;status=unmergable \
-           ${RPSRC}/mmcsd_large_cards-r1.patch;patch=1;status=hack \
-           ${RPSRC}/mmcsd_no_scr_check-r2.patch;patch=1;status=hack \
-           ${RPSRC}/integrator_rgb-r1.patch;patch=1;status=hack \
-           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
+           ${RPSRC}/mmcsd_large_cards-r1.patch;patch=1;status=hack;name=rppatch19 \
+           ${RPSRC}/mmcsd_no_scr_check-r2.patch;patch=1;status=hack;name=rppatch20 \
+           ${RPSRC}/integrator_rgb-r1.patch;patch=1;status=hack;name=rppatch21 \
+           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack;name=rppatch22 \
            file://sharpsl-rc-r1.patch;patch=1 \
            file://spitz_h_rewrite.patch;patch=1 \
            file://pxa-serial-hack.patch;patch=1;status=hack \
@@ -67,38 +67,39 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2 \
 
 
 # FIXMEs before made default	   
-# ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack
+# ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack;name=rppatch50
 
 
 # Add this to enable pm debug code (useful with a serial lead)
-#  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1
+#  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1;name=rppatch51
 
 # Disabled until I find the reason this gives issues with cdc_subset
-#            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
+#            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1;name=rppatch52 \
 
 
 SRC_URI_append_collie = "\
-	${TKSRC}/mtd-sharp-flash-hack-r4.patch;patch=1 \
-	${TKSRC}/mcp-sa11x0-r0.patch;patch=1 \
-	${TKSRC}/locomo-r1.patch;patch=1 \
-	${TKSRC}/collie-kexec-r1.patch;patch=1 \
-	${TKSRC}/sharpsl_pm-4.patch;patch=1 \
-	${TKSRC}/collie_pm-3.patch;patch=1 \
-	${TKSRC}/ucb1x00_suspend.patch;patch=1 \
-	${TKSRC}/collie-ts.patch;patch=1 \
-	${TKSRC}/pcmcia_suspend.patch;patch=1 \
-	${TKSRC}/locomo_spi-6.patch;patch=1 \
-	${TKSRC}/config.patch;patch=1 \
-	${TKSRC}/locomokeyb-2.patch;patch=1 \
-	${TKSRC}/mmc-spi.patch;patch=1 \
-	${TKSRC}/linux-2.6.24-SIMpad-rtc-sa1100.patch;patch=1 \
-	${TKSRC}/sa1100_spinlock.patch;patch=1 \
-	${TKSRC}/sa1100-dma.patch;patch=1 \
-	${TKSRC}/sa1100_udc_g_ether-2.patch;patch=1 \
+        ${TKSRC}/mtd-sharp-flash-hack-r4.patch;patch=1;name=tkpatch1 \
+        ${TKSRC}/mcp-sa11x0-r0.patch;patch=1;name=tkpatch2 \
+        ${TKSRC}/locomo-r1.patch;patch=1;name=tkpatch3 \
+        ${TKSRC}/collie-kexec-r1.patch;patch=1;name=tkpatch4 \
+        ${TKSRC}/sharpsl_pm-4.patch;patch=1;name=tkpatch5 \
+        ${TKSRC}/collie_pm-3.patch;patch=1;name=tkpatch6 \
+        ${TKSRC}/ucb1x00_suspend.patch;patch=1;name=tkpatch7 \
+        ${TKSRC}/collie-ts.patch;patch=1;name=tkpatch8 \
+        ${TKSRC}/pcmcia_suspend.patch;patch=1;name=tkpatch9 \
+        ${TKSRC}/locomo_spi-6.patch;patch=1;name=tkpatch10 \
+        ${TKSRC}/config.patch;patch=1;name=tkpatch11 \
+	${TKSRC}/locomokeyb-2.patch;patch=1;name=tkpatch17 \
+        ${TKSRC}/mmc-spi.patch;patch=1;name=tkpatch12 \
+        ${TKSRC}/linux-2.6.24-SIMpad-rtc-sa1100.patch;patch=1;name=tkpatch13 \
+        ${TKSRC}/sa1100_spinlock.patch;patch=1;name=tkpatch14 \
+        ${TKSRC}/sa1100-dma.patch;patch=1;name=tkpatch15 \
+	${TKSRC}/sa1100_udc_g_ether-2.patch;patch=1;name=tkpatch16 \
+
 "
 
 SRC_URI_append_poodle = "\
-           ${RPSRC}/poodle_serial_vcc-r0.patch;patch=1 \
+           ${RPSRC}/poodle_serial_vcc-r0.patch;patch=1;name=rppatch53 \
            file://poodle_ts.patch;patch=1 \
            file://pxafb.patch;patch=1 \
 "
@@ -187,3 +188,8 @@ SRC_URI_append_zylonite ="\
 	"
 
 S = "${WORKDIR}/linux-2.6.25"
+
+SRC_URI[kernel.md5sum] = "db95a49a656a3247d4995a797d333153"
+SRC_URI[kernel.sha256sum] = "108b2a3f2b05c0e57d1d0977619525e46f8d4b425aef4b38b47dcf94292f2dd2"
+SRC_URI[rc4patch.md5sum] = "b5f96d823b1183ba0c4e61516e1a23c0"
+SRC_URI[rc4patch.sha256sum] = "45994ebcdd4ed30b37c6fc0569ee69aee4f2ef9ed75857d0a3784ce3bfe92ffc"

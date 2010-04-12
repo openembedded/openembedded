@@ -16,3 +16,6 @@ do_install() {
         install -d ${D}${bindir} 
         install -m 755 composite_pixbuf ${D}${bindir}
 }
+
+SRC_URI[md5sum] = "97edf3cce3353b6cb5f822442a83aa5e"
+SRC_URI[sha256sum] = "bd6f9e5dc0a89e9918f78a550f6e688480f044cec2e8674d34c7c6212831d6bd"

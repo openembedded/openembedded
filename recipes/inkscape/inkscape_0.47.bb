@@ -14,3 +14,6 @@ S = "${WORKDIR}/inkscape-${PV}"
 inherit autotools gettext mime gtk-icon-cache
 
 EXTRA_OECONF = "--disable-mmx"
+
+SRC_URI[md5sum] = "7b497c8f673e40b05295a29f6e2111f4"
+SRC_URI[sha256sum] = "4985bc5bf1938d818fee31c72151a2d889300c0be00fab5dc94ccd84df39ef3a"

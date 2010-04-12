@@ -18,3 +18,6 @@ export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 export MKDIR_P = "mkdir -p"
 
 PARALLEL_MAKE = ""
+
+SRC_URI[md5sum] = "4ab3d5bd74adb0d0aeacb721b8cac395"
+SRC_URI[sha256sum] = "d0aebfb352add3ada95537aeef163019f93d5a0f9385a2fcae678125b77d5035"

@@ -31,3 +31,6 @@ do_install_append () {
         mkdir -p ${D}${sysconfdir}/gconf/schemas
         install -m 0644 ${S}/gkdial.schemas ${D}${sysconfdir}/gconf/schemas/gkdial.schemas
 }
+
+SRC_URI[md5sum] = "b21c6f87b16e398a188a2ed7c5dcd387"
+SRC_URI[sha256sum] = "851ce45628729684bfcb2fab53f18e9be8fecb5ec8b6805071706a0e8f5bf983"

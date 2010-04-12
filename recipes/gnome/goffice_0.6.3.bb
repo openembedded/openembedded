@@ -20,3 +20,6 @@ python populate_packages_prepend () {
         do_split_packages(d, goffice_libdir, '(.*)', 'goffice-plugin-%s', 'Goffice plugin for %s', allow_dirs=True)
 }
 
+
+SRC_URI[archive.md5sum] = "3d8d3357f9d58af901cd1d6eb42e2973"
+SRC_URI[archive.sha256sum] = "a252aff88d801175b27fd7c20e00b0b5f674a5a70e64cd95091abdcab87db35c"

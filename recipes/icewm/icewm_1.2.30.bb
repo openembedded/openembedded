@@ -24,3 +24,6 @@ update-alternatives --install /usr/bin/x-window-manager x-window-manager /usr/bi
 pkg_postrm() {
 update-alternatives --remove x-window-manager /usr/bin/icewm-session
 }
+
+SRC_URI[md5sum] = "8a302c5e629bb81d87cc02004a694ece"
+SRC_URI[sha256sum] = "4b802cf77ecf09bc44345f8fba3c11fd08dca0e8272e628b447ecf7289637e1d"

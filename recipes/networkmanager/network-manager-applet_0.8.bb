@@ -30,3 +30,6 @@ FILES_${PN} += "${datadir}/nm-applet/ \
 FILES_${PN} += "${libdir}/gnome-bluetooth/plugins/*.so"
 FILES_${PN}-dbg += "${libdir}/gnome-bluetooth/plugins/.debug/"
 
+
+SRC_URI[archive.md5sum] = "27071402152a7f8f62c4825f25ca9a3a"
+SRC_URI[archive.sha256sum] = "6379e0acd3eadeb71e3ba2e3cf05d351caf6b794dff5777a5e86a591df603bd4"

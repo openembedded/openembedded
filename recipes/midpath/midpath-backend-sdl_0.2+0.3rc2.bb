@@ -57,3 +57,6 @@ FILES_${PN}  = "\
 FILES_${PN}-jni  = "${libdir_jni}/lib*.so"
 FILES_${PN}-jni-dbg  = "${libdir_jni}/.debug/lib*.so"
 
+
+SRC_URI[md5sum] = "d03cd88f51f82bbcfcfa5b65df0da5b0"
+SRC_URI[sha256sum] = "e235ca7470e7cdfb90e3806fbcc1b2c450db286276136a2523c7ae26a804a100"

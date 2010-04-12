@@ -23,3 +23,6 @@ PACKAGES =+ "gnome-games-gnomine"
 FILES_gnome-games-gnomine = "${bindir}/gnomine ${datadir}/pixmaps/gnomine ${datadir}/pixmaps/gnome-gnomine.png ${datadir}/applications/gnomine.desktop ${sysconfdir}/gconf/schemas/gnomine.schemas"
 
 EXTRA_OECONF = "--disable-schemas-install"
+
+SRC_URI[archive.md5sum] = "6ea145547bfd8aa828b22cbbe34cbedf"
+SRC_URI[archive.sha256sum] = "d7a823601f569589437d671d12b1b12f53abc08aeb7d25280bb3242299353086"

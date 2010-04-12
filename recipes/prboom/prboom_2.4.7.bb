@@ -23,3 +23,6 @@ do_install() {
 }
 
 FILES_${PN} += "${datadir}/games/doom/prboom.wad"
+
+SRC_URI[md5sum] = "9942f521764d7f89df2218a456da4f02"
+SRC_URI[sha256sum] = "de22dbaacd25a0f0b16c507aa2326a90b7f5dcfcf862c3dc7076996c6187cd2f"

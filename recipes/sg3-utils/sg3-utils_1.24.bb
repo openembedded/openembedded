@@ -16,3 +16,6 @@ S = "${WORKDIR}/sg3-utils-${PV}"
 inherit autotools
 
 EXTRA_OEMAKE='"LIBTOOL=${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"'
+
+SRC_URI[md5sum] = "9e1b8811b013d8f97d8ea2e0942cebad"
+SRC_URI[sha256sum] = "0a06dae84a8f7f464c0c29c78a8f73f24a62894a2d3fc10b5f74a993f7b5abfe"

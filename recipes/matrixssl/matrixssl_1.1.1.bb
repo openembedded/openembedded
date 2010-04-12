@@ -15,3 +15,6 @@ do_install () {
 	install -m 0644 ${S}/../matrixSsl.h ${D}${includedir}/
 	oe_libinstall -so libmatrixssl ${D}${libdir}/
 }
+
+SRC_URI[md5sum] = "0f867a7b5ce70650f36caf00c4941ebf"
+SRC_URI[sha256sum] = "b46ade42d080851ba4c5a10d3c520eb169fc33ab5c259ee8ca147eff57741246"

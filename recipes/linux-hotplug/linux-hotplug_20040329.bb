@@ -48,3 +48,6 @@ do_install () {
 	install -m 0755 ${WORKDIR}/mmc.agent ${D}${sysconfdir}/hotplug/
 	install -m 0755 ${WORKDIR}/usbd.agent ${D}${sysconfdir}/hotplug/
 }
+
+SRC_URI[md5sum] = "167bd479a1ca30243c51ca088e0942b3"
+SRC_URI[sha256sum] = "397e06eefc4639342e9f650cc47336ebc8c86a37fdcd9b857e55f99d37d8da9f"

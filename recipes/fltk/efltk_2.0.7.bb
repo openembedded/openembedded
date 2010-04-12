@@ -62,3 +62,6 @@ LEAD_SONAME = "libefltk.so"
 
 FILES_${PN} += "${libdir}/fltk/*.theme"
 FILES_${PN}-dbg += "${libdir}/fltk/.debug"
+
+SRC_URI[md5sum] = "f0300fd2fec47d4b05823297032ddb9f"
+SRC_URI[sha256sum] = "9636876e3c52f0dde5d6ac097568cad9fe8ea7088e28e27a3aad19b100d4e645"

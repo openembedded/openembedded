@@ -52,3 +52,6 @@ do_install_append() {
          mkdir -p ${D}/${sysconfdir}/init.d
          install ${WORKDIR}/bacula-fd.init ${D}/${sysconfdir}/init.d/bacula-fd
 }
+
+SRC_URI[md5sum] = "0d6d6614afdc468d214de4e66f9f5a26"
+SRC_URI[sha256sum] = "d095165d256771c918b80f836feaf837aedc1362b2d67171013d3ab7ac5ee47f"

@@ -31,3 +31,6 @@ FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}/openobex-config"
 FILES_${PN}-apps = "${bindir}/*"
 DEBIAN_NOAUTONAME_${PN}-apps = "1"
+
+SRC_URI[md5sum] = "c92746ae7bd69255c2c41f51e9349c65"
+SRC_URI[sha256sum] = "501c611a73d2f7d8a3de5ef83202ff3f9ab21d2c467e39548737e344b085f931"

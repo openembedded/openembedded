@@ -13,3 +13,6 @@ do_install() {
 	install -m 755 stat ${D}${bindir}
 	install -m 644 stat.1 ${D}${mandir}/man1
 }
+
+SRC_URI[md5sum] = "37e247e8e400ad9205f1b0500b728fd3"
+SRC_URI[sha256sum] = "7071f0384a423a938dd542c1f08547a02824f6359acd3ef3f944b2c4c2d1ee09"

@@ -6,7 +6,7 @@ DEPENDS = "virtual/libsdl zlib libpng jpeg freetype fontconfig alsa-lib lzo ncur
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
+SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2;name=archive \
            file://vo_w100.c \
            file://vo_w100_api.h \
            file://vo_w100_fb.h \
@@ -19,7 +19,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            file://w100-mplayer.patch;patch=1 \
            file://pld-onlyarm5.patch;patch=1 \
            file://makefile-nostrip.patch;patch=1 \
-           ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
+           ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1;name=imageon \
            file://imageon-video_out.patch;patch=1 \
 	   file://powerpc-is-ppc.diff;patch=1 \
            file://pxa_configure.patch;patch=1 \
@@ -236,3 +236,8 @@ do_compile () {
 	oe_runmake
 }
 
+
+SRC_URI[archive.md5sum] = "18c05d88e22c3b815a43ca8d7152ccdc"
+SRC_URI[archive.sha256sum] = "8dd9dd61a0fe56904f5b76ddedb99bd359abaaf486e0b83b45e3357fecc81063"
+SRC_URI[imageon.md5sum] = "d605b6068b6c9aa2bc7550f49c60958c"
+SRC_URI[imageon.sha256sum] = "7e5e1768db0201981f90256fa94db3f09f23285ffd60dc60a51a753825084848"

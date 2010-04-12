@@ -16,3 +16,6 @@ do_install_append() {
 }
 
 FILES_${PN} = "/etc ${libdir}/gtk-2.0/*/modules/*.so*"
+
+SRC_URI[md5sum] = "211bd08961ad78bdeeaab4f33f20c639"
+SRC_URI[sha256sum] = "1964a9fb46e5f57bda75bfc37e19036b32c6a7d57bf13020776dfaaca348920b"

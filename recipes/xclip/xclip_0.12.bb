@@ -8,3 +8,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/xclip/${P}.tar.gz"
 inherit autotools
 
 
+
+SRC_URI[md5sum] = "f7e19d3e976fecdc1ea36cd39e39900d"
+SRC_URI[sha256sum] = "b7c7fad059ba446df5692d175c2a1d3816e542549661224806db369a0d716c45"

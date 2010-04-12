@@ -23,3 +23,6 @@ do_install() {
 	install ${WORKDIR}/minipredict.png ${D}/${datadir}/pixmaps/
 	install ${WORKDIR}/minipredict.desktop ${D}/${datadir}/applications/
 }
+
+SRC_URI[md5sum] = "d6793818b10c9af0f1c424a2e81009e1"
+SRC_URI[sha256sum] = "73edd3f8e7c36c81c895ea723e7faefd3ee5a3671d0b1e0ea7b3a960b169231e"

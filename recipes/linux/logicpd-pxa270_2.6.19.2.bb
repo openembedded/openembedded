@@ -48,3 +48,6 @@ do_configure_prepend() {
 }
 
 COMPATIBLE_MACHINE = "logicpd-pxa270"
+
+SRC_URI[md5sum] = "ca0ce8f288e8ae93ac243b568f906bf8"
+SRC_URI[sha256sum] = "c55c52caa613d1f25718b35811e4614d9712b9e1de56a91aa73c867f351a540b"

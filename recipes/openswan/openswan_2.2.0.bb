@@ -37,3 +37,6 @@ FILES_${PN} = "${sysconfdir} ${libdir}/ipsec/* ${sbindir}/* ${libexecdir}/ipsec/
 FILES_${PN}-dbg += "${libdir}/ipsec/.debug ${libexecdir}/ipsec/.debug"
 
 CONFFILES_${PN} = "${sysconfdir}/ipsec/ipsec.conf"
+
+SRC_URI[md5sum] = "f5f83204652627cf51d2567c53df5520"
+SRC_URI[sha256sum] = "62d36b998b9ec21864263d17e83aeb30a300a8f0d336a057ca9610b447b9ce7a"

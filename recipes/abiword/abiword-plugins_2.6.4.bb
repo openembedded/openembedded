@@ -7,8 +7,8 @@ RDEPENDS = "abiword"
 
 PR = "r1"
 
-SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz \
-           http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
+SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz;name=plugins \
+           http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=archive \
 #           file://abiword-cxx-for-ld-fix.patch;patch=1 \
 	   "
 
@@ -60,3 +60,8 @@ RDEPENDS_abiword-plugin-collab-glade = "abiword-plugin-collab"
 
 FILES_${PN}-dbg += "${libdir}/abiword-2.6/plugins/.debug"
 
+
+SRC_URI[plugins.md5sum] = "3bf973c5a1446ef3eaf980724821d6e9"
+SRC_URI[plugins.sha256sum] = "ec561e865387fa0a108ac135fc39ef0aa18e0dddd99f1f92749f67b029ba30eb"
+SRC_URI[archive.md5sum] = "16748b2d6e318e0e2a25581005e1943a"
+SRC_URI[archive.sha256sum] = "4d2d7a6b69b00ffe603a136a9df7ecda9f43448c7bc723503e76eaec9ab8e9fe"

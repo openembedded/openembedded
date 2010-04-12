@@ -1,2 +1,5 @@
 require orbit2.inc
 
+
+SRC_URI[md5sum] = "f4898b999f39c79d55c13c0e0f597c71"
+SRC_URI[sha256sum] = "e7bc69a316e6e2a263987a0aec5c6249dc152361e9559b4818a680681409aac1"

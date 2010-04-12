@@ -37,3 +37,6 @@ do_stage () {
   	cp support/envvars-std ${STAGING_BINDIR_NATIVE}/envvars
     	chmod 755 ${STAGING_BINDIR_NATIVE}/envvars
 }
+
+SRC_URI[md5sum] = "a5226203aaf97e5b941c41a71c112704"
+SRC_URI[sha256sum] = "b2deab8a5e797fde7a04fb4a5ebfa9c80f767d064dd19dcd2857c94838ae3ac6"

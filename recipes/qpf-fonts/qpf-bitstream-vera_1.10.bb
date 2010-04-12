@@ -22,3 +22,6 @@ ${palmqtdir}/lib/fonts/vera_140_75*										\
 ${palmqtdir}/lib/fonts/vera_140_75i* ${palmqtdir}/lib/fonts/vera_160_50* ${palmqtdir}/lib/fonts/vera_160_50i*	\
 ${palmqtdir}/lib/fonts/vera_160_75* ${palmqtdir}/lib/fonts/vera_160_75i* ${palmqtdir}/lib/fonts/vera_180_50*	\
 ${palmqtdir}/lib/fonts/vera_180_50i* ${palmqtdir}/lib/fonts/vera_180_75* ${palmqtdir}/lib/fonts/vera_180_75i*"
+
+SRC_URI[md5sum] = "13327e7086fa5ceec44550745a914f42"
+SRC_URI[sha256sum] = "1ca61d438f3e5f4b7af853b48e16d68b226d568cd12eda36b94ffbf3cb9458c1"

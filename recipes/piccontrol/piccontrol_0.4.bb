@@ -25,3 +25,6 @@ do_install() {
 	install -D -m 0644 ${WORKDIR}/piccontrol-0.4.conf ${D}${sysconfdir}/piccontrol.conf
 	install -D -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/piccontrol
 }
+
+SRC_URI[md5sum] = "8c073a5df813b437277a3de39636f61f"
+SRC_URI[sha256sum] = "c85ba04c9459cbc283a6f04ced730b49dc9966cf749808e8f960305116d525e6"

@@ -34,3 +34,6 @@ do_stage() {
 	oe_libinstall -a -so -C common/mp4ff libmp4ff ${STAGING_LIBDIR}
 	install -m 0644 ${S}/common/mp4ff/mp4ff.h ${STAGING_INCDIR}/
 }
+
+SRC_URI[md5sum] = "b6807fba02d52747ebb92097daee71e8"
+SRC_URI[sha256sum] = "50cf7188f6f99b75566f14d417915dcff1446d36d05982971c126893ae74a97a"

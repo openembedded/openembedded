@@ -35,3 +35,6 @@ PACKAGES_DYNAMIC = "${PN}-plugin-*"
 
 FILES_${PN}-mcs-plugins += "${libdir}/xfce4/mcs-plugins/"
 FILES_${PN}-dbg += "${libdir}/xfce4/mcs-plugins/.debug"
+
+SRC_URI[md5sum] = "8f26b32c442bf9926f98f285a3c251dd"
+SRC_URI[sha256sum] = "ddabfb0ccf04366820efdeb7c640ee3a648a55e51b5177c9861a5ab896e96ddd"
