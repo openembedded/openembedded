@@ -2,8 +2,11 @@ SECTION = "console/utils"
 DESCRIPTION = "A tool for retrieving kernel spinlock metering information."
 DEPENDS = "virtual/kernel"
 
-SRC_URI = "ftp://oss.sgi.com/projects/lockmeter/download/lockstat-${PV}.tar.gz"
+SRC_URI = "ftp://oss.sgi.com/projects/lockmeter/download/old/lockstat-${PV}.tar.gz"
 S = "${WORKDIR}/lockstat"
+
+SRC_URI[md5sum] = "924779ede0615f41d033dc8eb49361fd"
+SRC_URI[sha256sum] = "43125a2f26db5254bef8063bd85cfda60f32cbbc8ddb4d4141294d5d3627bf61"
 
 export KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion')}"
 export KERNEL_SOURCE = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}"
