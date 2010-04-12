@@ -16,8 +16,7 @@ require ti-staging.inc
 
 PROVIDES += "gstreamer-ti-demo-script"
 
-SRCREV = "459"
-PV = "svnr${SRCPV}"
+PV = "svnr${SRCREV}"
 # Rebuild on kernel change since it links statically to ti-dmai, ti-codec-engine, etc
 PR = "r49+${MACHINE_KERNEL_PR}"
 
