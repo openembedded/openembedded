@@ -7,7 +7,7 @@ PR = "r6"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://procinfo.h \
            file://unifdef.patch;patch=1 \
-           file:// linux-libc-headers-2.6.23/arm-hwcap-add-new-entries.patch;patch=1"
+           file://arm-hwcap-add-new-entries.patch;patch=1"
 
 S = "${WORKDIR}/linux-${PV}"
 
