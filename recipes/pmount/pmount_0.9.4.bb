@@ -13,3 +13,6 @@ do_install() {
 	install -m 644 -D ${S}/pumount.1 ${D}/${datadir}/man/man1/pumount.1
 	install -m 644 -D ${S}/pmount.allow ${D}/${sysconfdir}/pmount.allow
 }
+
+SRC_URI[md5sum] = "249d016d7e863e8cec4a45267c4f4af9"
+SRC_URI[sha256sum] = "ca97a56fe13eb887e64a80ddd323b6986f94a0ac3200630cc87a0204dbb8f078"

@@ -23,3 +23,6 @@ do_stage() {
 	install -m 0755 sip*.py ${STAGING_PYDIR}/site-packages
 }
 
+
+SRC_URI[md5sum] = "a792c58d4d211c65949dac6005eb652b"
+SRC_URI[sha256sum] = "8bc0a9d2ab565abb307ffd57e07d813c5b2e14a445d5ee16d96e132e0023ac13"

@@ -31,3 +31,6 @@ do_install() {
         install -m 644 -D qpe/pics/Gnuboy.png ${D}${palmtopdir}/pics/Gnuboy.png
         install -m 644 -D qpe/apps/Games/qtopiagnuboy.desktop ${D}${palmtopdir}/Games/qtopiagnuboy.desktop
 }
+
+SRC_URI[md5sum] = "e04f655073e765100a27df789fdec0ee"
+SRC_URI[sha256sum] = "915db4532c1da5e3bdf66044ebd38f1b19ed26c051fded06bdb298b04cf09816"

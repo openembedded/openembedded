@@ -11,3 +11,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pyx/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
+
+SRC_URI[md5sum] = "2e9b5935d6a0695e57345c419e58d9d8"
+SRC_URI[sha256sum] = "5f1e84d51b40c2e81dcb9cf708f5cf83ad140ec6d1d7f67e6e07b24cd2a1e1c3"

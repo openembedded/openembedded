@@ -38,3 +38,6 @@ FILES_${PN}-dbg += "${sysconfdir}/mobilemesh/mmtodot.debug ${sysconfdir}/mobilem
 	${sysconfdir}/mobilemesh/mmrp.debug ${sysconfdir}/mobilemesh/mmdiscover.debug"
 CONFFILES_${PN}_nylon = "${sysconfdir}/mobilemesh/mmrp.conf ${sysconfdir}/mobilemesh/mmdiscover.conf"
 
+
+SRC_URI[md5sum] = "d428c743de00ed7165c5eae37bfe4f5b"
+SRC_URI[sha256sum] = "06e814ae5910368dd14abb6228b7d3a5e2f504ef9c7b766364cfd4b8c9c04ddd"

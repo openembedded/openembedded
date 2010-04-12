@@ -71,3 +71,6 @@ python populate_packages_prepend () {
 	if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
 		bb.data.setVar('PKG_dbus', 'dbus-1', d)
 }
+
+SRC_URI[md5sum] = "151c42600940d5fab7e8c6ab9f07f5fb"
+SRC_URI[sha256sum] = "dc8022037b58a7240f5c70072cd8c14038b8d47dd3c6c9b5b5c2eb9f917ff076"

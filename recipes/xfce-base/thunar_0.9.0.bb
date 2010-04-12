@@ -19,3 +19,6 @@ FILES_${PN}-dbg += "${libdir}/thunarx-1/.debug/ ${libexecdir}/xfce4/panel-plugin
 do_stage () {
 	autotools_stage_all
 }
+
+SRC_URI[md5sum] = "0fc5008858661c0abd0399acbe30ef28"
+SRC_URI[sha256sum] = "26c833b0bdf3281c61e03f1fb985feced88cf4a5cebce7bd055f05e025460037"

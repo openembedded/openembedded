@@ -44,3 +44,6 @@ do_install() {
 }
 
 FILES_${PN} = "/"
+
+SRC_URI[md5sum] = "128e72bf3a333e36c4cd8b23e9cbe705"
+SRC_URI[sha256sum] = "6a75c70d95e75d2cb6f3d85a5f14d1a402a74ab695424a7ad28ba4d29944c140"

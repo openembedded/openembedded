@@ -1,1 +1,4 @@
 require upslug2.inc
+
+SRC_URI[md5sum] = "40088234967d957af454ab0fe01dd4ae"
+SRC_URI[sha256sum] = "26471872b4c7ce02282881c19d6660b54c7ec5a2b731fe420f721f04bf896c95"

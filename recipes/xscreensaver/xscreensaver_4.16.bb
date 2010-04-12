@@ -60,3 +60,6 @@ python populate_packages_prepend () {
 	hackdir = bb.data.expand('${libdir}/xscreensaver', d)
 	do_split_packages(d, hackdir, '^(.*)', 'xscreensaver-hack-%s', 'XScreensaver hack %s')
 }
+
+SRC_URI[md5sum] = "e715ca402fc1218a078d65b7e7922082"
+SRC_URI[sha256sum] = "e428b88cb6719b4deedf505ffb98fb7cbfecb4340e81c29857801aeeef329528"

@@ -27,3 +27,6 @@ do_install() {
 FILES_${PN} = "/"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+SRC_URI[md5sum] = "b28d863b340a27c507398f717bc752e2"
+SRC_URI[sha256sum] = "97d19b84f695a7f58f84fe2b4e8e1a2cde164be869db82b4536b05a2b2d055d1"

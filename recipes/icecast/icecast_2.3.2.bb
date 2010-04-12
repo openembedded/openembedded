@@ -19,3 +19,6 @@ EXTRA_OECONF = " \
 S = "${WORKDIR}/${PN}-${PV}"
 inherit autotools
 
+
+SRC_URI[md5sum] = "ff516b3ccd2bcc31e68f460cd316093f"
+SRC_URI[sha256sum] = "4742b38fc55b6373895a7c0a35baed49a848fec99f5e8538e3f0157383d0b3f0"

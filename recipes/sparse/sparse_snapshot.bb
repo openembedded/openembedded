@@ -23,3 +23,6 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 check ${D}${bindir}/sparse
 }
+
+SRC_URI[md5sum] = "6016c8271e4b8640d8cd97719b120e59"
+SRC_URI[sha256sum] = "3dea88d313c565e84fea5638da30894fea4e63e8d618e2a86f6e231b3dec6182"

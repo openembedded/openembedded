@@ -13,3 +13,6 @@ SRC_URI = "http://www.us.xfce.org/archive/xfce-${XFCE_VERSION}/src/Terminal-${PV
 S = "${WORKDIR}/Terminal-${PV}"
 
 FILES_${PN} += "${datadir}/Terminal"
+
+SRC_URI[md5sum] = "adb419d279c9fc16d02291c052190717"
+SRC_URI[sha256sum] = "352205b03e9ed1b9080c61235fbc0fa15609410e724237441055a232a3b603dc"

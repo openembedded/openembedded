@@ -25,3 +25,6 @@ do_configure() {
 do_install_prepend () {
 	$BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
 }
+
+SRC_URI[md5sum] = "854e6e61a69781746496012658d8ef98"
+SRC_URI[sha256sum] = "7091536ef2a51d2548ac6268cc846dda9c37f7f7348597868c793f42b9be7d78"

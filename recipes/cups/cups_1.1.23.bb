@@ -46,3 +46,6 @@ FILES_${PN} += "${datadir}/doc/cups/images \
 
 
 
+
+SRC_URI[md5sum] = "4ce09b1dce09b6b9398af0daae9adf63"
+SRC_URI[sha256sum] = "87da0f7b1e03236e183045f1e787957132658ead56c4b0f80ac7f86c1574a85e"

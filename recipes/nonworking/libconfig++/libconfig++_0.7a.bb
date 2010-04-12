@@ -10,3 +10,6 @@ S = "${WORKDIR}/config-plus-${PV}"
 inherit autotools
 
 
+
+SRC_URI[md5sum] = "f7315c3dfcdf9e99bab9ece04187abef"
+SRC_URI[sha256sum] = "bda6160e106ab9ee7ab53b3b9995515cae121c2c1f73ffb9786fb6237ab5e3fe"

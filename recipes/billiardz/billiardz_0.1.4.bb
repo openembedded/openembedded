@@ -9,6 +9,9 @@ PR = "r2"
 SRC_URI = "http://www.chipx86.com/packages/ipkg/billiardz-${PV}.tar.gz \
            file://gcc4.patch;patch=1"
 
+SRC_URI[md5sum] = "21908ae1ee9e3cb96e9dda6f096ed13f"
+SRC_URI[sha256sum] = "23b70f94a987af6be23108a772b927a2c02060c6137b9589484e28b55c2bdebd"
+
 inherit palmtop
 
 QMAKE_PROFILES = "billiardz.arm.pro"

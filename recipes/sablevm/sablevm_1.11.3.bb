@@ -40,3 +40,6 @@ do_install_append() {
 	install -d ${D}${libdir}/${PN}/bin
 	cd ${D}${libdir}/${PN}/bin && ln -sf ../../../bin/java-sablevm java
 }
+
+SRC_URI[md5sum] = "aea6e808c5f2e3646a60971485220bff"
+SRC_URI[sha256sum] = "e6e21125e3e1a83f57b0020aeb1e74388c35e7e707a617050717e2f19f304c77"
