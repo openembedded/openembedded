@@ -2,6 +2,8 @@ DESCRIPTION = "Flex is a tool for generating programs that recognize lexical pat
 SECTION = "devel"
 LICENSE = "BSD"
 
+DEPENDS = "gettext"
+
 S = "${WORKDIR}/flex-${PV}"
 
 inherit autotools
