@@ -3,7 +3,7 @@ HOMEPAGE = "http://code.google.com/p/comic-reader/"
 LICENSE = "GPLv3"
 DEPENDS = "evas edje ecore etk eet edbus"
 PR = "r3"
-SRCREV = "56"
+SRCREV = "54"
 
 SRC_URI = "svn://comic-reader.googlecode.com/svn/;module=trunk;proto=http"
 
