@@ -84,106 +84,34 @@ def base_chk_load_parser(config_paths):
 
     return parser
 
-def base_chk_file_vars(parser, localpath, params, data):
-    try:
-        name = params["name"]
-    except KeyError:
-        return False
-    if name:
-        md5flag = "%s.md5sum" % name
-        sha256flag = "%s.sha256sum" % name
-    else:
-        md5flag = "md5sum"
-        sha256flag = "sha256sum"
-    want_md5sum = bb.data.getVarFlag("SRC_URI", md5flag, data)
-    want_sha256sum = bb.data.getVarFlag("SRC_URI", sha256flag, data)
-
-    if (want_sha256sum == None and want_md5sum == None):
-        # no checksums to check, nothing to do
-        return False
-
+def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data):
+    strict_checking =  bb.data.getVar("OE_STRICT_CHECKSUMS", data, True)
     if not os.path.exists(localpath):
         localpath = base_path_out(localpath, data)
         bb.note("The localpath does not exist '%s'" % localpath)
         raise Exception("The path does not exist '%s'" % localpath)
 
-    if want_md5sum:
-        try:
-	    md5pipe = os.popen('PATH=%s md5sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
-            md5data = (md5pipe.readline().split() or [ "" ])[0]
-            md5pipe.close()
-        except OSError, e:
-            raise Exception("Executing md5sum failed")
-        if want_md5sum != md5data:
-            bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (want_md5sum, md5data))
-            raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (want_md5sum, md5data))
-
-    if want_sha256sum:
-        try:
-            shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
-            sha256data = (shapipe.readline().split() or [ "" ])[0]
-            shapipe.close()
-        except OSError, e:
-            raise Exception("Executing shasum failed")
-        if want_sha256sum != sha256data:
-            bb.note("The SHA256Sums did not match. Wanted: '%s' and Got: '%s'" % (want_sha256sum, sha256data))
-            raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (want_sha256sum, sha256data))
-
-    return True
-
-
-def base_chk_file(parser, pn, pv, src_uri, localpath, data):
-    no_checksum = False
-    # Try PN-PV-SRC_URI first and then try PN-SRC_URI
-    # we rely on the get method to create errors
-    pn_pv_src = "%s-%s-%s" % (pn,pv,src_uri)
-    pn_src    = "%s-%s" % (pn,src_uri)
-    if parser.has_section(pn_pv_src):
-        md5    = parser.get(pn_pv_src, "md5")
-        sha256 = parser.get(pn_pv_src, "sha256")
-    elif parser.has_section(pn_src):
-        md5    = parser.get(pn_src, "md5")
-        sha256 = parser.get(pn_src, "sha256")
-    elif parser.has_section(src_uri):
-        md5    = parser.get(src_uri, "md5")
-        sha256 = parser.get(src_uri, "sha256")
-    else:
-        no_checksum = True
-
-    # md5 and sha256 should be valid now
-    if not os.path.exists(localpath):
-        localpath = base_path_out(localpath, data)
-        bb.note("The localpath does not exist '%s'" % localpath)
-        raise Exception("The path does not exist '%s'" % localpath)
-
-
-    # call md5(sum) and shasum
     try:
-	md5pipe = os.popen('PATH=%s md5sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
+        md5pipe = os.popen('PATH=%s md5sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
         md5data = (md5pipe.readline().split() or [ "" ])[0]
         md5pipe.close()
-    except OSError:
-        raise Exception("Executing md5sum failed")
+    except OSError, e:
+        if strict_checking:
+            raise Exception("Executing md5sum failed")
+        else:
+            bb.note("Executing md5sum failed")
 
     try:
         shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
-        shadata = (shapipe.readline().split() or [ "" ])[0]
+        sha256data = (shapipe.readline().split() or [ "" ])[0]
         shapipe.close()
-    except OSError:
-        raise Exception("Executing shasum failed")
+    except OSError, e:
+        if strict_checking:
+            raise Exception("Executing shasum failed")
+        else:
+            bb.note("Executing shasum failed")
 
-    if no_checksum == True:	# we do not have conf/checksums.ini entry
-        try:
-            file = open("%s/checksums.ini" % bb.data.getVar("TMPDIR", data, 1), "a")
-        except:
-            return False
-
-        if not file:
-            raise Exception("Creating checksums.ini failed")
-        
-        file.write("[%s]\nmd5=%s\nsha256=%s\n\n" % (src_uri, md5data, shadata))
-        file.close()
-
+    if (expected_md5sum == None or expected_md5sum == None):
         from string import maketrans
         trtable = maketrans("", "")
         uname = src_uri.split("/")[-1].translate(trtable, "-+._")
@@ -196,28 +124,86 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
         if not ufile:
             raise Exception("Creating %s.sum failed" % uname)
 
-        ufile.write("SRC_URI = \"%s;name=%s\"\nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (src_uri, uname, uname, md5data, uname, shadata))
+        ufile.write("SRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (md5data, sha256data))
         ufile.close()
+        bb.note("This package has no checksums, please add to recipe")
+        bb.note("\nSRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (md5data, sha256data))
 
-        if not bb.data.getVar("OE_STRICT_CHECKSUMS",data, True):
-            bb.note("This package has no entry in checksums.ini, please add one")
-            bb.note("\n[%s]\nmd5=%s\nsha256=%s" % (src_uri, md5data, shadata))
-            bb.note("This package has no checksums in corresponding recipe, please add")
-            bb.note("SRC_URI = \"%s;name=%s\"\nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (src_uri, uname, uname, md5data, uname, shadata))
-            return True
-        else:
-            bb.note("Missing checksum")
-            return False
+        # fail for strict, continue for disabled strict checksums
+        return not strict_checking
 
-    if not md5 == md5data:
-        bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (md5,md5data))
-        raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (md5, md5data))
-
-    if not sha256 == shadata:
-        bb.note("The SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256,shadata))
-        raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256, shadata))
+    if (expected_md5sum and expected_md5sum != md5data) or (expected_sha256sum and expected_sha256sum != sha256data):
+        bb.note("The checksums for '%s' did not match.\nExpected MD5: '%s' and Got: '%s'\nExpected SHA256: '%s' and Got: '%s'" % (localpath, expected_md5sum, md5data, expected_sha256sum, sha256data))
+        bb.note("Your checksums:\nSRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (md5data, sha256data))
+        return False
 
     return True
+
+def base_get_checksums(pn, pv, src_uri, localpath, params, data):
+    # Try checksum from recipe and then parse checksums.ini 
+    # and try PN-PV-SRC_URI first and then try PN-SRC_URI
+    # we rely on the get method to create errors
+    try:
+        name = params["name"]
+    except KeyError:
+        name = ""
+    if name:
+        md5flag = "%s.md5sum" % name
+        sha256flag = "%s.sha256sum" % name
+    else:
+        md5flag = "md5sum"
+        sha256flag = "sha256sum"
+    expected_md5sum = bb.data.getVarFlag("SRC_URI", md5flag, data)
+    expected_sha256sum = bb.data.getVarFlag("SRC_URI", sha256flag, data)
+
+    if (expected_md5sum and expected_sha256sum):
+        return (expected_md5sum,expected_sha256sum)
+    else:
+        # missing checksum, parse checksums.ini
+
+        # Verify the SHA and MD5 sums we have in OE and check what do
+        # in
+        checksum_paths = bb.data.getVar('BBPATH', data, True).split(":")
+
+        # reverse the list to give precedence to directories that
+        # appear first in BBPATH
+        checksum_paths.reverse()
+
+        checksum_files = ["%s/conf/checksums.ini" % path for path in checksum_paths]
+        try:
+            parser = base_chk_load_parser(checksum_files)
+        except ValueError:
+            bb.note("No conf/checksums.ini found, not checking checksums")
+            return (None,None)
+        except:
+            bb.note("Creating the CheckSum parser failed: %s:%s" % (sys.exc_info()[0], sys.exc_info()[1]))
+            return (None,None)
+        pn_pv_src = "%s-%s-%s" % (pn,pv,src_uri)
+        pn_src    = "%s-%s" % (pn,src_uri)
+        if parser.has_section(pn_pv_src):
+            expected_md5sum    = parser.get(pn_pv_src, "md5")
+            expected_sha256sum = parser.get(pn_pv_src, "sha256")
+        elif parser.has_section(pn_src):
+            expected_md5sum    = parser.get(pn_src, "md5")
+            expected_sha256sum = parser.get(pn_src, "sha256")
+        elif parser.has_section(src_uri):
+            expected_md5sum    = parser.get(src_uri, "md5")
+            expected_sha256sum = parser.get(src_uri, "sha256")
+        else:
+            return (None,None)
+        
+        if name:
+            bb.note("This package has no checksums in corresponding recipe '%s', please consider moving its checksums from checksums.ini file \
+                \nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (bb.data.getVar("FILE", data, True), name, expected_md5sum, name, expected_sha256sum))
+        else:
+            bb.note("This package has no checksums in corresponding recipe '%s', please consider moving its checksums from checksums.ini file \
+                \nSRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (bb.data.getVar("FILE", data, True), expected_md5sum, expected_sha256sum))
+
+        return (expected_md5sum, expected_sha256sum)
+
+def base_chk_file(pn, pv, src_uri, localpath, params, data):
+    (expected_md5sum, expected_sha256sum) = base_get_checksums(pn, pv, src_uri, localpath, params, data)
+    return base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data)
 
 def base_read_file(filename):
 	try:
