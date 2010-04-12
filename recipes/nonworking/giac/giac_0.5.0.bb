@@ -36,3 +36,6 @@ do_install () {
 	install -d ${D}${docdir}
 	mv ${D}${datadir}/${PN}/doc ${D}${docdir}/${PN}
 }
+
+SRC_URI[md5sum] = "828ffb4300200cf60e9e700ea8e576ad"
+SRC_URI[sha256sum] = "ea135f4857bf14f2c5ddd5092efd984a6801eb47ff92ba35eac2c3291f862877"

@@ -8,7 +8,7 @@ SRC_URI = " \
 	file://init \
 	"
 SRC_URI[tar.md5sum] = "7e9344fe85bb68bcf65c35034add6655"
-SRC_URI[tar.sha256sum] = ""
+SRC_URI[tar.sha256sum] = "2e36744da83eb2e6e54a5769aa1abf044d53089470d646898222936e7e8da6ac"
 
 inherit autotools
 inherit update-rc.d

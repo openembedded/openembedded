@@ -12,3 +12,6 @@ do_install() {
         install -m 755  mbw ${D}${bindir}
         install -m 644  mbw.1 ${D}${mandir}/man1/
 }
+
+SRC_URI[md5sum] = "4509f034b22aec5001e1402e53353f8e"
+SRC_URI[sha256sum] = "2b7d24130c4b75ac824c397a7856e68c191c196e6cafb71c2dd51ed983bf48ca"

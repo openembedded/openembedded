@@ -26,3 +26,6 @@ do_install() {
 	oe_runmake "TARGET_CROSS=${TARGET_PREFIX}" INSTALL_DIR=${D}/${prefix}/pixil \
 	DEST_DIR=/${prefix}/pixil install
 }
+
+SRC_URI[md5sum] = "243f23a612ced8b47e84aa2f5ddcf0a3"
+SRC_URI[sha256sum] = "498214e6975be634623ce547c3fc9af20a0792c201914a5cc22e1d42ecff60cf"

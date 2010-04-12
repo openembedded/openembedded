@@ -20,3 +20,6 @@ do_stage() {
 }
 
 
+
+SRC_URI[md5sum] = "7293cab94a8595efe740ede12991ef84"
+SRC_URI[sha256sum] = "27752b6d4115a3ef6299d8ad55e74624c800409fa606326343319c17e37d0ed0"

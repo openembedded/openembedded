@@ -28,3 +28,6 @@ do_install() {
        install -m 644 -p LICENCE.txt     ${D}${docdir}/${PN}-${PV}
        install -m 644 -p README.txt      ${D}${docdir}/${PN}-${PV}
 }
+
+SRC_URI[md5sum] = "3df4d9f1d3d785fcc6d66dbbf4b672b6"
+SRC_URI[sha256sum] = "f7f47e2cea845fc4bb0c290f2b71f697bfb51e1bebd0baf393a1991a98e4d92a"

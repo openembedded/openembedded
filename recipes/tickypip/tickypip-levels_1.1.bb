@@ -33,3 +33,6 @@ do_install () {
 }
 
 FILES_${PN} = "${palmtopdir}/"
+
+SRC_URI[md5sum] = "cfdaae67b3d33351e37021cb0394153c"
+SRC_URI[sha256sum] = "881109774a77e34c61fbf41a839fe02a95cb3e67a0218fe4aebc5e6999cbaa57"

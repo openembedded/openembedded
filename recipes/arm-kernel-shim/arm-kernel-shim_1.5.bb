@@ -13,6 +13,9 @@ SRC_URI = "ftp://ftp.buici.com/pub/arm/arm-kernel-shim/arm-kernel-shim-${PV}.tar
 	   file://config-dsmg600.h \
 	   file://config-fsg3.h"
 
+SRC_URI[md5sum] = "d85eb707cbbf0c729019289df1fbc636"
+SRC_URI[sha256sum] = "20fc8f095b2d6894e5fd8156c870686aced5edee964b0dd7163163327a7b32a7"
+
 S = ${WORKDIR}/arm-kernel-shim-${PV}
 
 inherit siteinfo

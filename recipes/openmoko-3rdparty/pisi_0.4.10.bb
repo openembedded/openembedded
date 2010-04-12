@@ -33,3 +33,6 @@ do_install() {
 	rm -rf ${D}/opt/pisi/build/
 	rm -rf ${D}/opt/pisi/patches/
 }
+
+SRC_URI[md5sum] = "5311ff9ddbca49ab751ad6f526c53e8f"
+SRC_URI[sha256sum] = "540a363188a51387e5296fdb3f7b885f9a0a116d106d578c14e738075e7edf42"

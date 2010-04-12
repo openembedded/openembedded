@@ -15,3 +15,6 @@ EXTRA_OECONF = "--disable-yp --with-ogg=${STAGING_LIBDIR} --with-vorbis=${STAGIN
 S = "${WORKDIR}/${PN}-${PV}"
 inherit autotools
 
+
+SRC_URI[md5sum] = "7958347af55651384298828175e32dcf"
+SRC_URI[sha256sum] = "c95ee1d68c287f654e6ee1d3416a91c058531232d6f08ff6ed156376f997a41d"

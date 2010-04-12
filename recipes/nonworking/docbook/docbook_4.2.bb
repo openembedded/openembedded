@@ -17,3 +17,6 @@ do_install () {
 		install -m 0644 $i ${D}/${datadir}/sgml/docbook_${PV}
 	done
 }
+
+SRC_URI[md5sum] = "0dfeb94569334dd22a62d90d99fc0630"
+SRC_URI[sha256sum] = "67ebd2c94b342718c6865d2de60f5d4ff02d77a7e4b0d9e72a48c45f2b2635c3"

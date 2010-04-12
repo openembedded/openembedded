@@ -2,6 +2,7 @@ DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 DEPENDS = "gnutls jpeg dbus dbus-glib libpng zlib fakeroot-native"
+INC_PR = "r7"
 PR = "${INC_PR}.1"
 
 SRC_URI = "ftp://ftp3.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
@@ -74,3 +75,6 @@ FILES_${PN} += "${datadir}/doc/cups/images \
 
 
 
+
+SRC_URI[md5sum] = "bf44783d9b46130bee9f2995e6055470"
+SRC_URI[sha256sum] = "e7485d6b3dcbd338a2361aff66c516f8dfafc1c81ea5b01396f6ee5f365c4eb3"

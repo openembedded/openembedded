@@ -39,3 +39,6 @@ update-rc.d busybox-httpd start 40 2 3 4 5 .
 
 FILES_${PN} += "/srv"
 
+
+SRC_URI[md5sum] = "f373680b3b792925eb5293eafe487168"
+SRC_URI[sha256sum] = "c848b2a53396e51fccb589c56ddba928671f08d30bece7883dc69f4fa5f8e113"

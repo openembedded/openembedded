@@ -7,14 +7,21 @@ MMV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 LV = "2.6.10"
 PR = "r3"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${LV}.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KV}-${RCV}.bz2;patch=1 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/2.6/${KV}-${RCV}/${KV}-${RCV}-${MMV}/${KV}-${RCV}-${MMV}.gz;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${LV}.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KV}-${RCV}.bz2;patch=1;name=patch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/2.6/${KV}-${RCV}/${KV}-${RCV}-${MMV}/${KV}-${RCV}-${MMV}.gz;patch=1;name=akpmpatch \
            file://defconfig"
 #http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-core-on-panic;patch=1 \
 #http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-pretend-to-be-i586;patch=1 \
 #http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-general-protection-fault;patch=1 \
 #http://www.suse.de/~kraxel/uml/patches/2.6.10-rc3/uml-x11-fb;patch=1 \
+
+SRC_URI[kernel.md5sum] = "cffcd2919d9c8ef793ce1ac07a440eda"
+SRC_URI[kernel.sha256sum] = "21646736755faee214f489b7388e6c47f5bcf6c2df64298ed2597104fabb8f0e"
+SRC_URI[patch.md5sum] = "c93568f10a6aa445184b005a0754aa71"
+SRC_URI[patch.sha256sum] = "82dd73b3db7abeadc33e9b2ede0406de35277a8b897a23d266af0614f15052f1"
+SRC_URI[akpmpatch.md5sum] = "0e34b11b54e99a4d1d058a711bfad3d4"
+SRC_URI[akpmpatch.sha256sum] = "189e355021a87d11bbc3caf65fa96b937d8da4060eb4f8773457c19519a079a4"
 
 S = "${WORKDIR}/linux-${LV}"
 

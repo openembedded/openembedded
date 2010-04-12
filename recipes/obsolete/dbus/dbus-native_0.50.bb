@@ -17,3 +17,6 @@ do_stage() {
 	install -m 0644 tools/dbus-glib-bindings.h ${STAGING_DATADIR}/dbus
 }
 
+
+SRC_URI[md5sum] = "1addd5b600a8a4550766005d1f59401b"
+SRC_URI[sha256sum] = "3a8375c935f0c7b87cdd25f0408da963836fdce23390bb1b81cc6bd6ee7951c5"

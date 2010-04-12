@@ -90,3 +90,6 @@ python populate_packages_prepend () {
 	plugindir = bb.data.expand('${libdir}/gnome-vfs-2.0/modules/', d)
 	do_split_packages(d, plugindir, '^lib(.*)\.so$', 'gnome-vfs-plugin-%s', 'GNOME VFS plugin for %s')
 }
+
+SRC_URI[md5sum] = "989aa9f2cee728e95e512dc0fe4113e8"
+SRC_URI[sha256sum] = "bcf6321155f9ccd138fe415e520f408fe2e3b3e6c8b8378c3b4f8282df4d3f5d"

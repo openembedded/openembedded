@@ -13,3 +13,6 @@ inherit autotools
 export KERNELDIR="${STAGING_KERNEL_DIR}"
 
 FILES_${PN} += "${datadir}/ltt-control/facilities/*"
+
+SRC_URI[md5sum] = "5846298f930f27454fc8f3b6cc0b6002"
+SRC_URI[sha256sum] = "f6ae22f65ffca55b456ab6dc46d601f82956503b53698c9565dc41ef499e3bb5"

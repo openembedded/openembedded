@@ -45,3 +45,6 @@ fi
 }
 
 FILES_${PN} += "/srv"
+
+SRC_URI[md5sum] = "318a328926d72b61e689673b90d53f17"
+SRC_URI[sha256sum] = "c532fe3a05417cd28d27e81839733d162a133a01bbd1acf8600796351d0a3f8b"

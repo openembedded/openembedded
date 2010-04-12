@@ -21,3 +21,6 @@ do_compile_prepend() {
 }
 
 	
+
+SRC_URI[md5sum] = "a82ceeb2245e22f4de2b41da21eaee32"
+SRC_URI[sha256sum] = "0a8524b789b57eaf944c3d9bce32c21a4e893016b22a02a24cd0a4c6afee7260"

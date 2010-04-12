@@ -5,6 +5,9 @@ LICENSE = "LGPL"
 SECTION = "console/network"
 
 SRC_URI = "http://www.willthompson.co.uk/bustle/releases/bustle-${PV}.tar.gz"
+SRC_URI[md5sum] = "23d6467bcadd7cbc7a3d1ffe0614f7f6"
+SRC_URI[sha256sum] = "995a4f02604d28adbb3e8bd3045cd774834b244c42039032e5d3d0ab11949d87"
+
 S = "${WORKDIR}/bustle-${PV}"
 
 do_compile() {

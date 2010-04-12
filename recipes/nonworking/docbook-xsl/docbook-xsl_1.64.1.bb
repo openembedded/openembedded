@@ -1,1 +1,4 @@
 SRC_URI = ${SOURCEFORGE_MIRROR}/docbook/docbook-xsl-${PV}.tar.gz
+
+SRC_URI[md5sum] = "ed766902e8381f6206d12f5c326fbd47"
+SRC_URI[sha256sum] = "900173715b9730c53048a19b238d5f1114be90e33d70b9d5217dcad1caffb3ad"

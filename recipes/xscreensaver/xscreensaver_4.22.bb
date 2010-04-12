@@ -8,6 +8,7 @@ SECTION = "x11-misc"
 LICENSE = "BSD"
 DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
 
+INC_PR = "r4"
 PR = "${INC_PR}.0"
 
 SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
@@ -64,3 +65,6 @@ python populate_packages_prepend () {
 	hackdir = bb.data.expand('${libexecdir}/xscreensaver', d)
 	do_split_packages(d, hackdir, '^(.*)', 'xscreensaver-hack-%s', 'XScreensaver hack %s')
 }
+
+SRC_URI[md5sum] = "9f37c428f034e581026e243445378195"
+SRC_URI[sha256sum] = "d0a4a6a60a1cad27aebc23580acdce442d3c6d8eae782883c7df08b3fc3184a1"

@@ -18,3 +18,6 @@ do_install() {
 	install -m 0755 ${WORKDIR}/militaryalphabet/sounds/*.wav  ${D}${palmtopdir}/sounds/militaryalphabet/
 }
 
+
+SRC_URI[md5sum] = "7392786df07a2473f3c29b221f3dcbe5"
+SRC_URI[sha256sum] = "e1edc43af77f5fef64dffc30551cd540b1d90eb669b011a02bfedbd6947e3805"

@@ -2,6 +2,7 @@ DESCRIPTION = "GPG-Error library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
+INC_PR = "r7"
 PR = "${INC_PR}.1"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgpg-error/libgpg-error-${PV}.tar.gz"
@@ -20,3 +21,6 @@ do_stage() {
 	done
 
 }
+
+SRC_URI[md5sum] = "516623893401d391b6c346cba543681d"
+SRC_URI[sha256sum] = "32fe6ccae632a2d6ede51477dbdd5b39a0816510031bae0b5e5059099044a58c"
