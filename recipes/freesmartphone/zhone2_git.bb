@@ -4,6 +4,7 @@ HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "x11"
 LICENSE = "GPLv2"
 DEPENDS = "edje-native vala-native evas ecore edje libeflvala libfsobasics libfsoframework libfso-glib"
+SRCREV = "1e3dca8a407f4e69636c47d9f22b31f8ae718d5a"
 PV = "2.0.0+gitr${SRCREV}"
 PR = "r2"
 
