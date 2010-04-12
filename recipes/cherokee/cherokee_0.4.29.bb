@@ -8,6 +8,7 @@ SRC_URI = "http://www.0x50.org/download/0.4/${PV}/${P}.tar.gz \
 	  file://Makefile.in.patch;patch=1 \
 	  file://Makefile.cget.patch;patch=1 \
 	  file://util.patch;patch=1"
+INC_PR = "r7"
 PR = "${INC_PR}.0"
 
 inherit autotools

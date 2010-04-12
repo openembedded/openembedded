@@ -7,6 +7,7 @@ HOMEPAGE = "http://www.jwz.org/xscreensaver/"
 SECTION = "x11-misc"
 LICENSE = "BSD"
 DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
+INC_PR = "r4"
 PR = "${INC_PR}.0"
 
 BROKEN = "1"
