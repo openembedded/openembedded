@@ -139,3 +139,6 @@ FILES_${PN}-fax += "${libdir}/callweaver/modules/app_backgrounddetect.so \
 FILES_${PN}-ogi += "${libdir}/callweaver/modules/res_ogi.so \
                     ${datadir}/callweaver/ogi/*"
 FILES_${PN}-ldap += "${libdir}/callweaver/modules/app_ldap.*"
+
+SRC_URI[md5sum] = "cc99a6b12613bbdb132fb5c8c56069f1"
+SRC_URI[sha256sum] = "1d4ec44d6124776009ddc7bf08d5f24f26a9b6814835456ab0b3ddbfc111b527"

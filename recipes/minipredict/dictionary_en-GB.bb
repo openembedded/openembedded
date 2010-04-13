@@ -26,3 +26,6 @@ do_install() {
 
 SRC_URI[md5sum] = "6fb885d57899c3e6aa2b27f3510deb37"
 SRC_URI[sha256sum] = "f4b43083923e2998298fd270a8a9f9ed570f4fbebeaa46ce5f1788b76920308b"
+#CHECKSUMS.INI MISMATCH: I've got this instead:
+#SRC_URI[md5sum] = "218909136738f4564b81ecd145ade6ee"
+#SRC_URI[sha256sum] = "5869d8bd80eb2eb328ebe36b356348de4ae2acb1db6df39d1717d33f89f63728"

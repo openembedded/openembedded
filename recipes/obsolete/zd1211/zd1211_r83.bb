@@ -27,3 +27,6 @@ do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net
         install -m 0644 ${S}/zd1211*${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net
 }
+
+SRC_URI[md5sum] = "a5751f0e6f1f368689077fa7758a4932"
+SRC_URI[sha256sum] = "8288a1299f8c6f0176f2cd1b51f83b2c4b919460a2aa4fe98699b019e583bfc1"

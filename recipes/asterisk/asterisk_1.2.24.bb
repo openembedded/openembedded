@@ -7,7 +7,7 @@ DEPENDS="ncurses zlib openssl curl alsa-lib libogg libvorbis speex"
 SECTION = "console/telephony"
 PR = "r1"
 
-SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
+SRC_URI="http://downloads.asterisk.org/pub/telephony/asterisk/releases/${P}.tar.gz \
 	 file://uclibc-compat-getloadavg.patch;patch=1 \
 	 file://uclibc-dns.patch;patch=1 \
 #         file://uclibc-define-glob.patch;patch=1 \
@@ -45,3 +45,9 @@ do_stage () {
 FILES_${PN}-dbg += "${libdir}/asterisk/modules/.debug"
 FILES_${PN}-dbg += "/var/lib/asterisk/agi-bin/.debug"
 
+
+SRC_URI[md5sum] = "63dc8b7be4cd10375c5fbda893c780bc"
+SRC_URI[sha256sum] = "9debaf410636fa477e1e1f09fe0b16a1c2814afaf7195f34f29e4ce5b8debbbd"
+# CHECKSUMS.INI MISMATCH: I've got this instead:
+#SRC_URI[md5sum] = "db7bcaaa494804af361157a37c224dfa"
+#SRC_URI[sha256sum] = "eed3493b1409d7100e0f983af0486bd7f8965e9e47b7a6d5ab8539b2dd3609aa"

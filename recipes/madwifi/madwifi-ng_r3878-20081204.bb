@@ -29,3 +29,6 @@ do_compile() {
 	unset LDFLAGS
 	oe_runmake all
 }
+
+SRC_URI[md5sum] = "bf12d0f9f306dad91bf7530586712dee"
+SRC_URI[sha256sum] = "3b8ea233bee05edc346c66577b6beb5ccc81db9d9440982624d7b39aecc79c77"

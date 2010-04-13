@@ -5,7 +5,7 @@ LICENSE = "MIT"
 SRCDATE = "20060814"
 PV = "0.58+cvs-${SRCDATE}"
 
-SRC_URI = "svn://ixion.tartarus.org/main;module=putty \
+SRC_URI = "svn://svn.tartarus.org/sgt;module=putty \
 	   file://lib.pro \
 	   file://plink.pro \
 	   file://pscp.pro \

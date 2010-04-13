@@ -3,7 +3,7 @@ DEFAULT_PREFERENCE = "-1"
 DEPENDS = "gtk+ libxt"
 PV = "r7436+svn${SRCDATE}"
 
-SRC_URI = "svn://ixion.tartarus.org/main;module=puzzles;proto=svn \
+SRC_URI = "svn://svn.tartarus.org/sgt;module=puzzles;proto=svn \
            file://game.png"
 S = "${WORKDIR}/puzzles"
 
