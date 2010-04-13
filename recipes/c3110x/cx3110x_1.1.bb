@@ -10,7 +10,7 @@ export LDFLAGS = ""
 
 SRC_URI = "https://garage.maemo.org/frs/download.php/939/cx3110x-1.1.tar.gz \
            file://umac_binary.patch;patch=1 \
-           http://use.the.umac.ko.from.your.own.nokia800/umac.ko"
+           http://use.the.umac.ko.from.your.own.nokia800/umac.ko" 
 
 S = "${WORKDIR}/cx3110x-${PV}"
 
@@ -28,3 +28,6 @@ do_compile() {
 	oe_runmake modules 
 }
 
+
+SRC_URI[md5sum] = "18e5dc522aa9424cf9b32b86da19b85e"
+SRC_URI[sha256sum] = "b0e00a7c164711512549d3ad82707c53a20fd978c2448ec22d2ea76df1954eee"
