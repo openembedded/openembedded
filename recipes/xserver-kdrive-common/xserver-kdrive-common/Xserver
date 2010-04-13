@@ -144,11 +144,12 @@ case `module_id` in
                      PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga-square.ppm"
                 fi
                 ARGS="$ARGS -dpi 181 -screen 320x320 -mouse tslib -hide-cursor ${PPM}" ;;
-        "Motorola Ezx Platform")
+        "Motorola Ezx Platform" | \
+        "Motorola EZX"*)
                 if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
                      PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm ${PPM}"
                 fi
-                ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE}" ;;
+                ARGS="$ARGS -dpi 170 -mouse tslib -hide-cursor -screen ${SCREEN_SIZE} ${PPM}" ;;
 	"Glofiish M800")
                 if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
                      PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
