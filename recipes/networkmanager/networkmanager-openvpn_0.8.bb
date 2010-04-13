@@ -16,7 +16,7 @@ inherit autotools pkgconfig
 
 PR = "r1"
 
-SRC_URI += "${GNOME_MIRROR}/NetworkManager-openvpn/${@gnome_verdir("${PV}")}/NetworkManager-openvpn-${PV}.tar.bz2 \
+SRC_URI += "${GNOME_MIRROR}/NetworkManager-openvpn/${PV}/NetworkManager-openvpn-${PV}.tar.bz2 \
 "
 
 S = "${WORKDIR}/NetworkManager-openvpn-${PV}"
@@ -27,3 +27,6 @@ FILES_${PN} += " \
 		${datadir}/icons "
 
 
+
+SRC_URI[md5sum] = "5039d6a840be45445db876cd71d64d20"
+SRC_URI[sha256sum] = "8fd6f25093ade66a98ce1327f24ef953351aabf02870c5dcf12500a6b7f08d43"
