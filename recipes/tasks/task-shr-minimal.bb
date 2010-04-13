@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r29"
+PR = "r30"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -121,8 +121,6 @@ RDEPENDS_${PN}-x = "\
 "
 
 RDEPENDS_${PN}-apps = "\
-# because of new opimd doesn't support SIM contacts itself
-  pisi \
   fso-abyss \
   task-fso2-compliance \
   phoneui-apps-messages \
