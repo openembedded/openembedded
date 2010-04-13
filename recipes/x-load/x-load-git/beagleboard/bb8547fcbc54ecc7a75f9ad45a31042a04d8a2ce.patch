@@ -1,0 +1,35 @@
+From bb8547fcbc54ecc7a75f9ad45a31042a04d8a2ce Mon Sep 17 00:00:00 2001
+From: Laine Walker-Avina <lwalkera@ieee.org>
+Date: Tue, 13 Apr 2010 13:27:31 -0700
+Subject: [PATCH] FAT: Find the start of the first partition in a non-hardcoded way
+
+---
+ fs/fat/fat.c |   12 +++++-------
+ 1 files changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/fs/fat/fat.c b/fs/fat/fat.c
+index eb754c0..c6bdb13 100644
+--- a/fs/fat/fat.c
++++ b/fs/fat/fat.c
+@@ -145,13 +145,11 @@ fat_register_device(block_dev_desc_t *dev_desc, int part_no)
+ 			return -1;
+ 		}
+ #else
+-		/* FIXME we need to determine the start block of the
+-		 * partition where the DOS FS resides. This can be done
+-		 * by using the get_partition_info routine. For this
+-		 * purpose the libpart must be included.
+-		 */
+-		part_offset=63;
+-		//part_offset=0;
++		part_offset = buffer[DOS_PART_TBL_OFFSET+8]      |
++		              buffer[DOS_PART_TBL_OFFSET+9] <<8  |
++		              buffer[DOS_PART_TBL_OFFSET+10]<<16 |
++		              buffer[DOS_PART_TBL_OFFSET+11]<<24;
++
+ 		cur_part = 1;
+ #endif
+ 	}
+-- 
+1.6.1
+
