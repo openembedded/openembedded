@@ -8,12 +8,15 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0-native gtk-doc virtual/libiconv virtual/libintl zlib"
 
+PR = "r1"
+
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.24/glib-${PV}.tar.bz2;name=archive \
   file://glibconfig-sysdefs.h \
   file://configure-libtool.patch;patch=1 \
   file://g_once_init_enter.patch;patch=1 \
   file://gatomic-proper-pointer-get-cast.patch;patch=1 \
+  file://gio.patch;patch=1 \
 "
 
 SRC_URI[archive.md5sum] = "45a8bc697d07f859566c0b64c40382a8"
