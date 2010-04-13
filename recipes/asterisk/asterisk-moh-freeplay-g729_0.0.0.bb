@@ -21,3 +21,6 @@ pkg_postinst_prepend() {
 
 SRC_URI[md5sum] = "381497d57c39d786cc79200576c5b2cc"
 SRC_URI[sha256sum] = "fdb7b483b55457b488fcb788f0254c26ca87cab49dcfb8391d347454fb3a8b7f"
+# CHECKSUMS.INI MISMATCH: I've got this instead
+#SRC_URI[md5sum] = "6c3b81fa38c5e940932f5e7600c94a11"
+#SRC_URI[sha256sum] = "0147ca9a97f0c550227aacb7793499057c4d2c64e021c95f93722f27d5549585"
