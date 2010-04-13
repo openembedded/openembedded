@@ -4,7 +4,8 @@ LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "libgee"
 SRCREV = "217ad803745f8ac1f3c72c6715e2c0faefb3fd06"
-PV = "0.1.0+gitr${SRCREV}"
+PV = "0.1.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "\

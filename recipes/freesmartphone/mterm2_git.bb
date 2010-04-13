@@ -5,7 +5,8 @@ SECTION = "console/network"
 DEPENDS = "dbus dbus-glib readline libfsoframework libfsotransport"
 LICENSE = "GPL"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PV = "0.1.0+gitr${SRCREV}"
+PV = "0.1.0+gitr${SRCPV}"
+PE = "1"
 PR = "r0"
 
 SRC_URI = "\

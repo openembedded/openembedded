@@ -6,8 +6,9 @@ require cornucopia.inc
 
 DEPENDS += "gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
 PR = "${INC_PR}.3"
+PE = "1"
 
 RDEPENDS += "\
 #gst-plugins-base

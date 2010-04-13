@@ -4,7 +4,8 @@ LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-native vala-dbus-binding-tool-native dbus-glib glib-2.0 fso-specs"
 SRCREV = "f1a0b3fe2ed6e15d83ad4880b4eb7aece00f9d57"
-PV = "0.2.2+gitr${SRCREV}"
+PV = "0.2.2+gitr${SRCPV}"
+PE = "1"
 PR = "r3"
 
 inherit autotools_stage pkgconfig vala

@@ -5,7 +5,8 @@ SECTION = "libs"
 DEPENDS = "glib-2.0"
 LICENSE = "LGPL"
 SRCREV = "a86abd4240622ec377bbc5773850a4593e13f7eb"
-PV = "0.5.0+gitr${SRCREV}"
+PV = "0.5.0+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "\
   git://git.gnome.org/libgee;protocol=git;branch=master \
