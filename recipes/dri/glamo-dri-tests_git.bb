@@ -1,7 +1,7 @@
 DEPENDS = "libdrm virtual/libx11 libxext"
 
 SRCREV = "080b8db3d9dbfae38ebb00439887b5535ab1d380"
-PV = "1.0.0+gitr${SRCREV}"
+PV = "1.0.0+gitr${SRCPV}"
 
 SRC_URI = "git://git.bitwiz.org.uk/glamo-dri-tests.git;protocol=git;branch=master"
 

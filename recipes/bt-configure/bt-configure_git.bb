@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RDEPENDS = "python python-pygtk bluez4"
 
 SRCREV = "9654c88ff74bca89cf747937cbec67421d2f1cbc"
-PV = "1.0.0+gitr${SRCREV}"
+PV = "1.0.0+gitr${SRCPV}"
 PR = "r1"
 
 ARCH_bt-configure = "all"

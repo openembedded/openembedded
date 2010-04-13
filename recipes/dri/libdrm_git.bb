@@ -7,7 +7,7 @@ PROVIDES = "drm"
 DEPENDS = "libpthread-stubs virtual/kernel"
 
 PE = "1"
-PV = "2.4.18+gitr${SRCREV}"
+PV = "2.4.18+gitr${SRCPV}"
 PR = "r0"
 
 SRCREV = "a5c8f55397377994ceeb76ed0ff148ff89eb3a1b"

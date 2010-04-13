@@ -4,7 +4,7 @@ AUTHOR = "Thomas White"
 LICENSE = "GPLv3"
 SECTION = "applications/games"
 SRCREV = "39648419825cddfea1cb1321e552a12b71fede14"
-PV = "0.0.3+gitr${SRCREV}"
+PV = "0.0.3+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "git://git.bitwiz.org.uk/openmoocow.git;protocol=git;branch=master"

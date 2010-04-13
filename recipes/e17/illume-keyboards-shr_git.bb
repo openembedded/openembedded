@@ -4,7 +4,7 @@ SRC_URI = "git://git.shr-project.org/repo/illume-keyboards.git;protocol=http;bra
 S = "${WORKDIR}/git"
 
 SRCREV = "9bd2c8f060c48eee3ab247838d8ecf2cf7082472"
-PV = "0.0+gitr${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
 PE = "1"
 PR = "r3"
 

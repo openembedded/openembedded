@@ -4,8 +4,8 @@ SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=m
 S = "${WORKDIR}/git"
 
 SRCREV = "77b6d1b7363d3ff28f063ed92c9ed47194f70b20"
-PV = "1.0.0+gitr${SRCREV}"
-PE = "1"
+PV = "1.0.0+gitr${SRCPV}"
+PE = "2"
 PR = "r4"
 
 do_configure_prepend() {

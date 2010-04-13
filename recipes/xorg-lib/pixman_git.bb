@@ -1,7 +1,7 @@
 require pixman.inc
 PV = "0.17.13"
-PR = "${INC_PR}.1"
-PR_append = "+gitr${SRCREV}"
+PR = "${INC_PR}.2"
+PR_append = "+gitr${SRCPV}"
 
 SRCREV = "69f1ec9a7827aeb522fcae99846237ef0f896e7b"
  

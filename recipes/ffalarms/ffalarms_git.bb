@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 DEPENDS = "elementary libeflvala libical"
 RDEPENDS = "atd alsa-utils-amixer ttf-dejavu-sans libical"
 RSUGGESTS = "mplayer alsa-utils-aplay frameworkd"
-PV = "0.4+gitr${SRCREV}"
+PV = "0.4+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master"
