@@ -23,11 +23,14 @@ PV_omapzoom36x = "2.6.32-rc7-${OEV}"
 
 PR_append = "+gitr${SRCREV}"
 
+
 SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=master;protocol=git \
+       file://rev.patch;patch=1 \
 	   file://logo_linux_clut224.ppm \
 	   file://defconfig"
 
 SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=L23.I3.3;protocol=git \
+       file://rev.patch;patch=1 \
 	   file://logo_linux_clut224.ppm \
 	   file://defconfig"
 
