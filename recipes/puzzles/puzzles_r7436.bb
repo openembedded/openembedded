@@ -5,7 +5,7 @@ PR = "r3"
 
 SVN_REV = "${@bb.data.getVar('PV',d,1).replace('r', '')}"
 
-SRC_URI = "svn://ixion.tartarus.org/main;module=puzzles;proto=svn;rev=${SVN_REV} \
+SRC_URI = "svn://svn.tartarus.org/sgt;module=puzzles;proto=svn;rev=${SVN_REV} \
            file://game.png"
 
 S = "${WORKDIR}/puzzles"
