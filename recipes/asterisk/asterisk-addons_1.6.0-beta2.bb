@@ -13,6 +13,9 @@ DEFAULT_PREFERENCE = "-1"
 
 SRC_URI="http://downloads.digium.com/pub/asterisk/asterisk-addons-${PV}.tar.gz"
 
+SRC_URI[md5sum] = "190622fb25b4d1402594dd2e1833808b"
+SRC_URI[sha256sum] = "1af141e3d74b802e37bee75ef93f873b424363a287b6ca3d3f9e2e41dc2e88cf"
+
 ARCH_efika="ppc"
 ARCH_dht-walnut="ppc"
 ARCH_magicbox="ppc"
