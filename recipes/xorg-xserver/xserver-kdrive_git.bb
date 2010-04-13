@@ -1,8 +1,8 @@
 DEFAULT_PREFERENCE = "-2"
 
 require xserver-kdrive-common.inc
-SRCREV = "9b28d998424c77fbc057dd3a022ccbb122793a52"
-PV = "1.4+git${SRCDATE}"
+SRCREV = "43285b4f72a0eb47aa0c33e4e41cd10434969991"
+PV = "1.4.1+gitr${SRCREV}"
 
 DEPENDS += "libxkbfile libxcalibrate pixman"
 
