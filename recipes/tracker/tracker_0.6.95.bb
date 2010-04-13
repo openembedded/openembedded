@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 DEPENDS = "file gtk+ gstreamer gamin gmime dbus poppler libexif libgsf libgnomecanvas gettext"
 HOMEPAGE="http://www.tracker-project.org/"
 
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig gnome
 

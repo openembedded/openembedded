@@ -1,4 +1,4 @@
-DESCRIPTION = "Multimedia library using gstreamer""
+DESCRIPTION = "Multimedia library using gstreamer"
 HOMEPAGE = "http://bolgo.cent.uji.es/proyectos/eina"
 LICENSE = "GPL"
 

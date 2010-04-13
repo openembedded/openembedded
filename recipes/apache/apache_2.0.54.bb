@@ -11,6 +11,9 @@ PR = "r4"
 SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.gz \
 	   "
 
+SRC_URI[md5sum] = "772503748ffb85301385d47fb2b96eca"
+SRC_URI[sha256sum] = "bb4236fb6c7ac4204f908fa7409ff3177a6f99e48ed69547f087f691ef2a5fcb"
+
 S = "${WORKDIR}/httpd-${PV}"
 
 inherit autotools update-rc.d

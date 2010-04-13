@@ -16,3 +16,6 @@ python() {
     if enterprise != "1":
             raise bb.parse.SkipPackage("gst-plugins-ugly-sid will only build if ENTERPRISE_DISTRO == 1")
 }
+
+SRC_URI[md5sum] = "cff4f55138d12152cf580a3ee71c2519"
+SRC_URI[sha256sum] = "556ba24072bdb32ee568adc682d69add1241d77936bc9563e50cdb953097be35"
