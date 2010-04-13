@@ -5,7 +5,7 @@ RSUGGESTS = "gpe-filemanager gpe-sketchbook elementary-theme-neo e-wm-theme-illu
 LICENSE = "unknown"
 
 SRCREV = "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-PV = "0.2-${EFL_SRCREV}+gitr${SRCREV}"
+PV = "0.2-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "${INC_PR}.2"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

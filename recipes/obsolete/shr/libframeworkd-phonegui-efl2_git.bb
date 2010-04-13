@@ -1,7 +1,7 @@
 DESCRIPTION = "frameworkd EFL phonegui 2"
 SECTION = "e/apps"
 DEPENDS += " dbus-glib libframeworkd-glib libframeworkd-phonegui etk evas ecore edje edje-native elementary"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
 PR = "r2"
 
 SRCREV = "917226025c67b75def91e98ea923c2e550474a5b"

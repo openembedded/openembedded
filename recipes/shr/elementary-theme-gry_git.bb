@@ -7,7 +7,7 @@ RRECOMMENDS = "e-wm-theme-illume-gry"
 LICENSE = "unknown"
 
 SRCREV = "2b62d1c9b02da047071105a7b5695acd6c6dbcca"
-PV = "0.8-${EFL_SRCREV}+gitr${SRCREV}"
+PV = "0.8-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master \

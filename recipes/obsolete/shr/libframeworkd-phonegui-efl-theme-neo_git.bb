@@ -6,7 +6,7 @@ RSUGGESTS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo etk-theme-
 LICENSE = "unknown"
 
 SRCREV = "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-PV = "0.2-${EFL_SRCREV}+gitr${SRCREV}"
+PV = "0.2-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r3"
 
 require libframeworkd-phonegui-efl-theme.inc

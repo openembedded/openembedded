@@ -5,7 +5,7 @@ LICENSE  = "GPLv2"
 DEPENDS = "vala-native elementary libeflvala"
 SECTION = "x11/application"
 SRCREV = "37dd7ac950e2bfd438801faf34c29fccfdbbaccf"
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCPV}"
 PR = "r5"
 
 EXTRA_OECONF="--enable-vapidir=${STAGING_DATADIR}/vala/vapi"

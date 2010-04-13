@@ -2,7 +2,7 @@ DESCRIPTION = "illume SHR applications.menu config"
 SECTION = "e/utils"
 LICENSE = "MIT BSD"
 SRCREV = "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"
-PV = "1.1-${EFL_SRCREV}+gitr${SRCREV}"
+PV = "1.1-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r1"
 
 RCONFLICTS_${PN} = "e-wm-menu"

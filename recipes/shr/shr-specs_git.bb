@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "BSD"
 SECTION = "devel/specifications"
 SRCREV = "d8f0dc85f1a7a6c0c6d24755f3770a55229621ae"
-PV = "0.0.0+gitr${SRCREV}"
+PV = "0.0.0+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-specs.git;protocol=http;branch=master"

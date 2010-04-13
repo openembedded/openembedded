@@ -5,7 +5,7 @@ DEPENDS = "e-wm"
 RDEPENDS = "python-elementary shr-settings python-phoneutils e-wm python-dbus python-edbus"
 SECTION = "x11/application"
 SRCREV = "24450cba257e7057045ad576530f158a03bd0f8b"
-PV = "0.0.0+gitr${SRCREV}"
+PV = "0.0.0+gitr${SRCPV}"
 PR = "r1"
 
 inherit autotools

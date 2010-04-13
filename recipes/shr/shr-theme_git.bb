@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "x11/data"
 
 SRCREV = "730da87ad75c814c16c856ca138605d985b6efdb"
-PV = "0.0.2+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCPV}"
 PR = "r2"
 
 inherit autotools

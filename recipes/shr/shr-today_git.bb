@@ -6,7 +6,7 @@ RDEPENDS = "python-edje python-dbus python-edbus python-ecore"
 SECTION = "x11/applications"
 
 SRCREV = "7b69649a9df0e85f0c0f7985fd1d93543c3b11e2"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.1+gitr${SRCPV}"
 PR = "r2"
 
 inherit distutils

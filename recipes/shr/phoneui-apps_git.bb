@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += "dbus-glib"
 SRCREV = "d349e764400d7a4eaaa12f359d6c64b3ca55faaf"
-PV = "0.0.0+gitr${SRCREV}"
+PV = "0.0.0+gitr${SRCPV}"
 PR = "r1"
 
 inherit pkgconfig autotools

@@ -1,6 +1,6 @@
 DESCRIPTION = "etk SHR theme"
 LICENSE = "MIT BSD"
-PV = "1.1.1-${EFL_SRCREV}+gitr${SRCREV}"
+PV = "1.1.1-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r2"
 
 SRCREV = "1cc80e26a4558dfc2268b349d9a1f468e515bcfb"

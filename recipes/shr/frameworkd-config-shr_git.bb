@@ -9,7 +9,7 @@ SRCREV_pn-frameworkd-config-shr_FSO_REV ?= "f751f2724eea23d0ca050bdf2672f9011ae0
 SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "cdf5b5f3d8f37d6d91e1eb8d9cf07d034291df87"
 
 SRCREV_FORMAT = "FSO_REV-SHR_REV"
-PV = "0.9.5.9+gitr${SRCREV}"
+PV = "0.9.5.9+gitr${SRCPV}"
 PR = "r8"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master;name=FSO_REV \
