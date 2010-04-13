@@ -32,3 +32,6 @@ do_install() {
         install -m 0644 ${S}/scsi-idle.8		${D}${mandir}/man8
         install -m 0644 ${S}/scsi-start.8		${D}${mandir}/man8
 }
+
+SRC_URI[md5sum] = "86b310223642b6841c9e04ecd4d7fed8"
+SRC_URI[sha256sum] = "6b53eb1645ac64667f0ee109b3456ba909b1c8bec432330a9d90e9a20980823b"

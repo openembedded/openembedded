@@ -45,3 +45,6 @@ do_stage () {
 FILES_${PN}-dbg += "${libdir}/asterisk/modules/.debug"
 FILES_${PN}-dbg += "/var/lib/asterisk/agi-bin/.debug"
 
+
+SRC_URI[md5sum] = "63dc8b7be4cd10375c5fbda893c780bc"
+SRC_URI[sha256sum] = "9debaf410636fa477e1e1f09fe0b16a1c2814afaf7195f34f29e4ce5b8debbbd"
