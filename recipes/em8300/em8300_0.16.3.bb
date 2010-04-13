@@ -1,4 +1,4 @@
-DESCRIPTION = "Drivers and utils for DXR3/Hollywood+ mpeg decoder cards""
+DESCRIPTION = "Drivers and utils for DXR3/Hollywood+ mpeg decoder cards"
 DEPENDS = "gtk+"
 
 # Be sure to have the I2C bitbanging interface enabled in your kernel config
@@ -6,6 +6,9 @@ DEPENDS = "gtk+"
 SRC_URI = "${SOURCEFORGE_MIRROR}/dxr3/${PN}-${PV}.tar.gz \
            file://kernel-source-dir.diff;patch=1 \
           "
+
+SRC_URI[md5sum] = "3ec91423f6a0b274b5bf56bfc3b98ac6"
+SRC_URI[sha256sum] = "0604ae93f77603f94dfdb29d62094c56851d37ff451e0f70a9120c6a583222d9"
 
 inherit module-base autotools
 
