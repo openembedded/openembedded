@@ -6,6 +6,9 @@ DEPENDS = "libtool"
 SRC_URI = "http://distro.ibiblio.org/pub/linux/distributions/gentoo/distfiles/elfutils-${PV}.tar.gz \
 	   file://warnings.patch;patch=1"
 
+SRC_URI[md5sum] = "a690778e93e4b04eb531c6a3ef0ad23a"
+SRC_URI[sha256sum] = "a87a193cb0f63267573611c7adba0dab033f34cb760b2b1009ee3ca9fddb5a09"
+
 inherit autotools
 
 SOV = "${PV}"
