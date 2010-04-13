@@ -8,7 +8,7 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 SRCREV = "fb42ce6724576fc173faf8abfb04aa2c36d213b7"
 OEV = "oe5"
-PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
+PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "\

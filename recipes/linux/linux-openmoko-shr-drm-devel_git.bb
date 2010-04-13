@@ -9,7 +9,7 @@ KERNEL_VERSION = "2.6.29-rc3-drm"
 
 SRCREV = "e62a4ae1c6783f41b41a9ac3d258786586b65a40"
 OMV = "oe15"
-PV = "${KERNEL_RELEASE}-drm-${OMV}+gitr${SRCREV}"
+PV = "${KERNEL_RELEASE}-drm-${OMV}+gitr${SRCPV}"
 PR = "r5"
 
 SRC_URI = "\
