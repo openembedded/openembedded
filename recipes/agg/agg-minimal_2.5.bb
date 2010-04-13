@@ -7,8 +7,8 @@ DEPENDS = "freetype"
 
 PR = "r0"
 
-SRC_URI = "http://www.antigrain.com/agg-${PV}.tar.gz"
-SRC_URI += "http://www.wxsvg.org/files/agg-2.5_cygming.patch;patch=1"
+SRC_URI = "http://www.antigrain.com/agg-${PV}.tar.gz;name=archive"
+SRC_URI += "http://www.wxsvg.org/files/agg-2.5_cygming.patch;patch=1;name=patch"
 S = "${WORKDIR}/agg-${PV}"
 
 inherit autotools pkgconfig
@@ -41,3 +41,9 @@ do_stage() {
             install -D -m 0644 $f ${STAGING_INCDIR}/agg2/$f
     done
 }
+
+SRC_URI[archive.md5sum] = "0229a488bc47be10a2fee6cf0b2febd6"
+SRC_URI[archive.sha256sum] = "ab1edc54cc32ba51a62ff120d501eecd55fceeedf869b9354e7e13812289911f"
+# no checksum for patch because of 404
+#SRC_URI[patch.md5sum] = ""
+#SRC_URI[patch.sha256sum] = ""

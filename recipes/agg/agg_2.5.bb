@@ -7,7 +7,7 @@ DEPENDS = "virtual/libx11 virtual/libsdl freetype"
 
 PR = "r2"
 
-SRC_URI = "http://www.antigrain.com/${P}.tar.gz"
+SRC_URI = "http://www.antigrain.com/${P}.tar.gz;name=archive"
 S = "${WORKDIR}/${P}"
 
 inherit autotools pkgconfig
@@ -48,5 +48,5 @@ do_stage() {
     done
 }
 
-SRC_URI[md5sum] = "0229a488bc47be10a2fee6cf0b2febd6"
-SRC_URI[sha256sum] = "ab1edc54cc32ba51a62ff120d501eecd55fceeedf869b9354e7e13812289911f"
+SRC_URI[archive.md5sum] = "0229a488bc47be10a2fee6cf0b2febd6"
+SRC_URI[archive.sha256sum] = "ab1edc54cc32ba51a62ff120d501eecd55fceeedf869b9354e7e13812289911f"
