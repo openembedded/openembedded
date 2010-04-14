@@ -129,12 +129,12 @@ autotools_do_configure() {
 			  fi
 			fi
 			mkdir -p m4
+			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
+			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
 			if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
 			  oenote Executing intltoolize --copy --force --automake
 			  intltoolize --copy --force --automake
 			fi
-			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
-			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
 			cd $olddir
 		fi
 	;;
