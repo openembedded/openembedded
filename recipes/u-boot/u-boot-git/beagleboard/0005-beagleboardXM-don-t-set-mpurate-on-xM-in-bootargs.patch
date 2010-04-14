@@ -1,0 +1,24 @@
+From 2a567cdc062d65e175f7bf0324d5d41d803fb2c5 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 13 Apr 2010 22:04:07 +0200
+Subject: [PATCH 5/6] beagleboardXM: don't set mpurate on xM in bootargs
+
+---
+ board/ti/beagle/beagle.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index eb57b5a..974a72c 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -226,7 +226,6 @@ int misc_init_r(void)
+ 					TWL4030_PM_RECEIVER_VAUX2_VSEL_18,
+ 					TWL4030_PM_RECEIVER_VAUX2_DEV_GRP,
+ 					TWL4030_PM_RECEIVER_DEV_GRP_P1);
+-		setenv("mpurate", "720");
+ 		break;
+ 	default:
+ 		printf("Beagle unknown 0x%02x\n", beagle_revision);
+-- 
+1.6.6.1
+

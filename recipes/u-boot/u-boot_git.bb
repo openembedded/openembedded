@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r44"
+PR ="r45"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -19,7 +19,12 @@ SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_cm-t35 = "file://cm-t35/cm-t35.patch;patch=1"
 
 SRC_URI_beagleboard = "git://www.sakoman.com/git/u-boot.git;branch=omap3-v2010.3;protocol=git \
-                       file://0001-Minimal-Display-driver-for-OMAP3.patch;patch=1 \
+                       file://0001-beagleboard-display-message-about-I2C-errors-being-e.patch;patch=1 \
+                       file://0002-beagleboard-fix-TCT-expansionboard-IDs.patch;patch=1 \
+                       file://0003-Add-DSS-driver-for-OMAP3.patch;patch=1 \
+                       file://0004-Enable-DSS-driver-for-Beagle.patch;patch=1 \
+                       file://0005-beagleboardXM-don-t-set-mpurate-on-xM-in-bootargs.patch;patch=1 \
+                       file://0006-OMAP3-remove-ES1-cache-workaround-it-falsely-trigger.patch;patch=1 \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "946351081bd14e8bf5816fc38b82e004a0e6b4fe"
