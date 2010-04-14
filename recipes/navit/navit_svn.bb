@@ -13,7 +13,7 @@ DEPENDS_shr += " librsvg-native"
 RDEPENDS = " navit-icons"
 EXTRA_OECONF += " --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher --enable-cache-size=20971520"
 
-SRCREV = "3012"
+SRCREV = "3174"
 SRC_URI = "svn://anonymous@navit.svn.sourceforge.net/svnroot/navit/trunk;module=navit;proto=https"
 
 EXTRA_AUTORECONF = " -I m4"

@@ -18,7 +18,7 @@ inherit autotools
 
 FILES_${PN} = " /usr/share/navit/xpm/"
 
-SRCREV = "2948"
+SRCREV = "3135"
 
 #use different URL than navit_svn does, to prevent upgrade/downgrade cycle in downloads dir
 SRC_URI = "svn://anonymous@navit.svn.sourceforge.net/svnroot/navit/trunk/navit/navit;module=xpm;proto=https \
