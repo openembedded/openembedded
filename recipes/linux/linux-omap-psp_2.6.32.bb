@@ -5,8 +5,8 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|omap3-touchbook|overo"
 
-# This tag is v2.6.32_OMAPPSP_03.00.00.05
-SRCREV = "da0c86a8f3bd57fad0ccd05eb1b5e3326d7f36aa"
+# This is the v2.6.32_OMAPPSP_03.00.00.05 branch
+SRCREV = "7b8926aa626991fa087b00f6bbc1fb6b0e8269b0"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
@@ -53,6 +53,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://0039-ARM-Add-option-to-allow-userspace-PLE-access.patch;patch=1 \
            file://0040-ARM-Add-option-to-allow-userspace-access-to-performa.patch;patch=1 \
            file://0041-ARM-Expose-some-PMON-registers-through-sysfs.patch;patch=1 \
+           file://0042-musb-allow-host-io-without-gadget-module.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
