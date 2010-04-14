@@ -447,11 +447,20 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
 
     <variablelist>
       <varlistentry>
+        <term>branch</term>
+
+        <listitem>
+          <para>The git branch to retrieve from. The default is
+          <command>"master"</command>.</para>
+        </listitem>
+      </varlistentry>
+
         <term>tag</term>
 
         <listitem>
-          <para>The tag to retrieve. The default is
-          <command>"master"</command>.</para>
+          <para>The git tag to retrieve. The default is
+	  <command>"master"</command>.  This may be placed into
+          <command>SRCREV</command> instead.</para>
         </listitem>
       </varlistentry>
 
@@ -460,8 +469,9 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
 
         <listitem>
           <para>The method to use to access the repository. Common options are
-          <command>"git"</command> and <command>"rsync"</command>. The default
-          is <command>"rsync"</command>.</para>
+          <command>"git"</command>, <command>"http"</command> and
+	  <command>"rsync"</command>. The default is
+          <command>"rsync"</command>.</para>
         </listitem>
       </varlistentry>
     </variablelist>
@@ -469,6 +479,16 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
     <para>Related variables</para>
 
     <para><variablelist>
+        <varlistentry>
+          <term>SRCREV</term>
+
+          <listitem>
+            <para>The revision of the git source to be checked out.
+	    The default is <command>1</command> which is invalid and leads to
+            an error.</para>
+          </listitem>
+        </varlistentry>
+
         <varlistentry>
           <term>GITDIR</term>
 
