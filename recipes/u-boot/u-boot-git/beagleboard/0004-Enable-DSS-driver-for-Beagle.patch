@@ -1,0 +1,158 @@
+From 492fac657a2e53f4714e24471a01ed0462edb8fc Mon Sep 17 00:00:00 2001
+From: Syed Mohammed Khasim <khasim@ti.com>
+Date: Sun, 11 Apr 2010 17:44:39 +0200
+Subject: [PATCH 4/6] Enable DSS driver for Beagle
+
+Configures DSS to display color bar on Svideo
+Configures DSS to display background color on DVID
+
+Signed-off-by: Syed Mohammed Khasim <khasim@ti.com>
+---
+ board/ti/beagle/beagle.c       |   12 ++++++
+ board/ti/beagle/beagle.h       |   75 ++++++++++++++++++++++++++++++++++++++++
+ include/configs/omap3_beagle.h |    1 +
+ 3 files changed, 88 insertions(+), 0 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 7cb6d1f..eb57b5a 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -141,6 +141,16 @@ unsigned int get_expansion_id(void)
+ }
+ 
+ /*
++ * Configure DSS to display background color on DVID
++ * Configure VENC to display color bar on S-Video
++ */
++void display_init(void)
++{
++	omap3_dss_venc_config(&venc_config_std_tv, VENC_HEIGHT, VENC_WIDTH);
++	omap3_dss_panel_config(&dvid_cfg);
++}
++
++/*
+  * Routine: misc_init_r
+  * Description: Configure board specific parts
+  */
+@@ -188,6 +198,7 @@ int misc_init_r(void)
+ 
+ 	twl4030_power_init();
+ 	twl4030_led_init(TWL4030_LED_LEDEN_LEDAON | TWL4030_LED_LEDEN_LEDBON);
++	display_init();
+ 
+ 	switch (beagle_revision) {
+ 	case REVISION_AXBX:
+@@ -233,6 +244,7 @@ int misc_init_r(void)
+ 		GPIO15 | GPIO14 | GPIO13 | GPIO12, &gpio5_base->setdataout);
+ 
+ 	dieid_num_r();
++	omap3_dss_enable();
+ 
+ 	return 0;
+ }
+diff --git a/board/ti/beagle/beagle.h b/board/ti/beagle/beagle.h
+index ec4f831..69f9398 100644
+--- a/board/ti/beagle/beagle.h
++++ b/board/ti/beagle/beagle.h
+@@ -23,6 +23,8 @@
+ #ifndef _BEAGLE_H_
+ #define _BEAGLE_H_
+ 
++#include <asm/arch/dss.h>
++
+ const omap3_sysinfo sysinfo = {
+ 	DDR_STACKED,
+ 	"OMAP3 Beagle board",
+@@ -433,4 +435,77 @@ const omap3_sysinfo sysinfo = {
+ 	MUX_VAL(CP(MCBSP3_DR),      (IEN  | PTD | DIS | M4)) /*GPIO_142*/\
+ 	MUX_VAL(CP(MCBSP3_CLKX),    (IEN  | PTD | DIS | M4)) /*GPIO_141*/\
+ 
++/*
++ * Display Configuration
++ */
++
++#define DVI_BEAGLE_ORANGE_COL		0x00FF8000
++#define VENC_HEIGHT			0x00ef
++#define VENC_WIDTH			0x027f
++
++/*
++ * Configure VENC in DSS for Beagle to generate Color Bar
++ *
++ * Kindly refer to OMAP TRM for definition of these values.
++ */
++static const struct venc_regs venc_config_std_tv = {
++	.status					= 0x0000001B,
++	.f_control				= 0x00000040,
++	.vidout_ctrl				= 0x00000000,
++	.sync_ctrl				= 0x00008000,
++	.llen					= 0x00008359,
++	.flens					= 0x0000020C,
++	.hfltr_ctrl				= 0x00000000,
++	.cc_carr_wss_carr			= 0x043F2631,
++	.c_phase				= 0x00000024,
++	.gain_u					= 0x00000130,
++	.gain_v					= 0x00000198,
++	.gain_y					= 0x000001C0,
++	.black_level				= 0x0000006A,
++	.blank_level				= 0x0000005C,
++	.x_color				= 0x00000000,
++	.m_control				= 0x00000001,
++	.bstamp_wss_data			= 0x0000003F,
++	.s_carr					= 0x21F07C1F,
++	.line21					= 0x00000000,
++	.ln_sel					= 0x00000015,
++	.l21__wc_ctl				= 0x00001400,
++	.htrigger_vtrigger			= 0x00000000,
++	.savid__eavid				= 0x069300F4,
++	.flen__fal				= 0x0016020C,
++	.lal__phase_reset			= 0x00060107,
++	.hs_int_start_stop_x			= 0x008D034E,
++	.hs_ext_start_stop_x			= 0x000F0359,
++	.vs_int_start_x				= 0x01A00000,
++	.vs_int_stop_x__vs_int_start_y		= 0x020501A0,
++	.vs_int_stop_y__vs_ext_start_x		= 0x01AC0024,
++	.vs_ext_stop_x__vs_ext_start_y		= 0x020D01AC,
++	.vs_ext_stop_y				= 0x00000006,
++	.avid_start_stop_x			= 0x03480079,
++	.avid_start_stop_y			= 0x02040024,
++	.fid_int_start_x__fid_int_start_y	= 0x0001008A,
++	.fid_int_offset_y__fid_ext_start_x	= 0x01AC0106,
++	.fid_ext_start_y__fid_ext_offset_y	= 0x01060006,
++	.tvdetgp_int_start_stop_x		= 0x00140001,
++	.tvdetgp_int_start_stop_y		= 0x00010001,
++	.gen_ctrl				= 0x00FF0000,
++	.output_control				= 0x0000000D,
++	.dac_b__dac_c				= 0x00000000
++};
++
++/*
++ * Configure Timings for DVI D
++ */
++static const struct panel_config dvid_cfg = {
++	.timing_h	= 0x0ff03f31, /* Horizantal timing */
++	.timing_v	= 0x01400504, /* Vertical timing */
++	.pol_freq	= 0x00007028, /* Pol Freq */
++	.divisor	= 0x00010006, /* 72Mhz Pixel Clock */
++	.lcd_size	= 0x02ff03ff, /* 1024x768 */
++	.panel_type	= 0x01, /* TFT */
++	.data_lines	= 0x03, /* 24 Bit RGB */
++	.load_mode	= 0x02, /* Frame Mode */
++	.panel_color	= DVI_BEAGLE_ORANGE_COL /* ORANGE */
++};
++
+ #endif
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index c156cea..7bcbe9b 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -131,6 +131,7 @@
+ #define CONFIG_CMD_I2C		/* I2C serial bus support	*/
+ #define CONFIG_CMD_MMC		/* MMC support			*/
+ #define CONFIG_CMD_NAND		/* NAND support			*/
++#define CONFIG_VIDEO_OMAP3	/* DSS Support			*/
+ 
+ #undef CONFIG_CMD_FLASH		/* flinfo, erase, protect	*/
+ #undef CONFIG_CMD_FPGA		/* FPGA configuration Support	*/
+-- 
+1.6.6.1
+

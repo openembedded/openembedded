@@ -1,0 +1,27 @@
+From 4397cc2f9b55471b4d90e7327bf65e1a610dcabb Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sun, 11 Apr 2010 12:14:43 +0200
+Subject: [PATCH 2/6] beagleboard: fix TCT expansionboard IDs
+
+---
+ board/ti/beagle/beagle.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index c9c9a58..7cb6d1f 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -58,8 +58,8 @@ static struct {
+ 
+ #define TINCANTOOLS_ZIPPY		0x01000100
+ #define TINCANTOOLS_ZIPPY2		0x02000100
+-#define TINCANTOOLS_TRAINER		0x03000100
+-#define TINCANTOOLS_SHOWDOG		0x04000100
++#define TINCANTOOLS_TRAINER		0x04000100
++#define TINCANTOOLS_SHOWDOG		0x03000100
+ 
+ #define BEAGLE_NO_EEPROM		0xffffffff
+ 
+-- 
+1.6.6.1
+
