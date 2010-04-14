@@ -32,3 +32,6 @@ do_stage() {
 FILES_${PN} = "/usr/bin/${PN}"
 FILES_${PN}-dev = "/usr/lib/libcxio.a /usr/include"
 
+
+SRC_URI[md5sum] = "8b90c19943f1b893cd53072de34f2ca6"
+SRC_URI[sha256sum] = "100ec0afc6a5733f2b0c936058d8055d7965078c95ac187a573bf0a5a63cb268"

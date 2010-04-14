@@ -14,6 +14,9 @@ DESCRIPTION="Portable Text and GUI C/C++ Class Libarary."
 LICENSE = "GPL"
 
 SRC_URI="${DEBIAN_MIRROR}/main/p/${PN}/${PN}_${PV}.orig.tar.gz"
+SRC_URI[md5sum] = "618f0ec3e816d7ff9d3bbe23ea5a3312"
+SRC_URI[sha256sum] = "c51e760ea1c143e2edbba5b6bfb4785b3b66805c4581d8517febb75cd52582da"
+
 DEPENDS="openssl openldap"
 
 inherit autotools

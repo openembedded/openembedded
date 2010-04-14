@@ -7,7 +7,7 @@ HOMEPAGE = "http://live.com/"
 LICENSE = "LGPL"
 SECTION = "devel"
 
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "http://www.live555.com/liveMedia/public/live.2009.06.02.tar.gz \
            file://config.linux-cross"
@@ -34,24 +34,12 @@ do_install() {
 	cp -a ${S}/groupsock/include/*.hh ${D}${includedir}/groupsock/
 	cp -a ${S}/liveMedia/include/*.hh ${D}${includedir}/liveMedia/
 	cp -a ${S}/UsageEnvironment/include/*.hh ${D}${includedir}/UsageEnvironment/
-	cp ${S}/*/*.a ${D}${libdir}
-}
-
-do_stage () {
-	install -d ${STAGING_INCDIR}/
-	install -d ${STAGING_LIBDIR}/
-
 	# Find all the headers
 	for i in $(find . -name "*.hh") $(find . -name "*.h") ; do
-		install ${i} ${STAGING_INCDIR}/
+		install ${i} ${D}${includedir}
 	done
-
-	# Find the libs *.a
-	for i in $(find . -name "*.a") ; do
-		install ${i} ${STAGING_LIBDIR}
-	done
+	cp ${S}/*/*.a ${D}${libdir}
 }
-
 
 SRC_URI[md5sum] = "088f848b64cef1d54034bc24cfa3c156"
 SRC_URI[sha256sum] = "66c54241bfcc7ea42fe40e1c93739be79a3c065390c4163c0f2647ac45c24758"

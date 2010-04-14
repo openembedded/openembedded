@@ -7,6 +7,9 @@ PR = "r2"
 SRC_URI = "http://home.mag.cx/messenger/source/${PN}-${PV}.tar.gz \
 	   file://qc-messenger-0.8-fix;patch=1"
 
+SRC_URI[md5sum] = "8163c9c6aa773dfc647a4835254706bf"
+SRC_URI[sha256sum] = "d7de5a0b35f3db3a76ff515f35d0fda45cf79e9f7a24b6d9bb4cc2b254742fed"
+
 S = "${WORKDIR}/${PN}-${PV}"
 
 inherit module

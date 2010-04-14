@@ -41,3 +41,6 @@ FILES_maradns-zone = "${sbindir}/zoneserver ${bindir}/getzone"
 FILES_maradns-ask = "${bindir}/askmara"
 
 CONFFILES_${PN}_nylon = "/etc/maradns/mararc"
+
+SRC_URI[md5sum] = "5ac39978f55ecaf6e887cd5be027b1c3"
+SRC_URI[sha256sum] = "4ac5940d25a9b5a52d0ff1f8223bb85462f9cfcceb4ac547e3ca9b6690aad394"

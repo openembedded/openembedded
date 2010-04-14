@@ -337,7 +337,7 @@ python populate_packages_prepend () {
 
 		dvar = bb.data.getVar('PKGD', d, 1)
 		if not dvar:
-			bb.error("D not defined")
+			bb.error("PKGD not defined")
 			return
 
 		kernelver = bb.data.getVar('KERNEL_VERSION', d, 1)

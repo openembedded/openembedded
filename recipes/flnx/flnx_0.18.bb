@@ -2,7 +2,7 @@ SECTION = "x11/libs"
 DEPENDS = "microwindows"
 RDEPENDS = "microwindows"
 DESCRIPTION = "fltk library for microwindows."
-SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}-tar.gz \
+SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}.tar.gz \
 	   file://gcc3.patch;patch=1"
 S = "${WORKDIR}/flnx"
 LICENSE = "LGPL"
@@ -30,3 +30,6 @@ do_install () {
 		   "libdir=${D}${libdir}" \
 		   "includedir=${D}${includedir}" install
 }
+
+SRC_URI[md5sum] = "2dfdb9b44a1a08a675985bb92d1439e6"
+SRC_URI[sha256sum] = "4a0d868889d5221cc6e4b96f6e8de19bd4fc770fa8e05012c6c169686088088b"

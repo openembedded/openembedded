@@ -8,6 +8,9 @@ HOMEPAGE="http://dasui.prima.de/e2wiki/"
 SRC_URI="http://dasui.prima.de/~tooar/emelfm2-${PV}.tar.gz \
 	file://makefile.patch;patch=1"
 
+SRC_URI[md5sum] = "70baf819021f2d733c122e3350764483"
+SRC_URI[sha256sum] = "14955a6ef5115165dc8e74c68fdda8feda365ec45a3b2a3241ea3d2ba6b959da"
+
 DEPENDS="gtk+"
 
 FILES_${PN} += " /usr/lib/emelfm2/plugins/ /usr/share/pixmaps/emelfm2/"

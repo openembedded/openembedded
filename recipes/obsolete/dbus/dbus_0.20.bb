@@ -5,8 +5,11 @@ DEPENDS = "expat glib-2.0 virtual/libintl"
 PROVIDES = "dbus-glib"
 LICENSE = "GPL"
 
-SRC_URI = "http://freedesktop.org/Software/dbus/releases/dbus-${PV}.tar.gz \
+SRC_URI = "http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
 	   file://cross.patch;patch=1"
+
+SRC_URI[md5sum] = "8ebff3cb4beec993e9160ff844e0411c"
+SRC_URI[sha256sum] = "3923076133c5a3f6c4c66f3fc842c2e05c14cd87b89096811a3cc853ab848577"
 
 inherit autotools pkgconfig gettext
 

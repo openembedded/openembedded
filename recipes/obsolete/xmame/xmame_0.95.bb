@@ -23,3 +23,6 @@ do_install() {
 	install -m 0755 xmame.SDL ${D}${bindir}
 }
 
+
+SRC_URI[md5sum] = "e2571ce90bdf1517eea4d8085170fe6c"
+SRC_URI[sha256sum] = "c3044870d1778b4f6d64463f0aeda2995aade1e0bea0feb6935d18bf44fcf6cb"

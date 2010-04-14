@@ -14,3 +14,6 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ${PN} pcasc pcxm pcym pczm ${D}${bindir}/
 }
+
+SRC_URI[md5sum] = "21865bf2891222082afc44afdd80aeaa"
+SRC_URI[sha256sum] = "ed3e0190a1940cf08a167429aa3fd25b3ae7313fdf126f851a9abccc89845ee6"

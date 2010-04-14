@@ -6,9 +6,12 @@ DEPENDS = "swig-native sdcc-native virtual/libusb0 python boost"
 RDEPENDS = "python-core"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/old/usrp-${PV}.tar.gz \
            file://fix_compile_h.patch;patch=1;pnum=3 \
            file://install_test.patch;patch=1"
+
+SRC_URI[md5sum] = "41ee5d5f1ef440fdd880f99c53fccf69"
+SRC_URI[sha256sum] = "c9be448984840ae960874c3c536942ba63c79a7f6a0dff3970540190b1500804"
 
 SRC_URI_append_omap5912osk = "file://usb11.patch;patch=1"
 

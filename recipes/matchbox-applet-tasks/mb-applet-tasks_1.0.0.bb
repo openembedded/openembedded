@@ -29,3 +29,6 @@ install -m 644 mb-applet-tasks.desktop ${D}/${datadir}/applications
 
 
 
+
+SRC_URI[md5sum] = "3442d374f459c607395fd56998a6d7b0"
+SRC_URI[sha256sum] = "ae72570a433f4e928c4b424dde003c5035fee765fad23c8df76f4062d67c53a0"

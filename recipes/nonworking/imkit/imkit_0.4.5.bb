@@ -10,6 +10,9 @@ RDEPENDS = "anthy"
 SRC_URI = "http://downloads.sourceforge.jp/zaurus-ja/9316/imkit-0.4.5.tar.gz"
 S = "${WORKDIR}/imkit-${PV}"
 
+SRC_URI[md5sum] = "de20bff9734595553f9a2b79cf3db719"
+SRC_URI[sha256sum] = "3832a7f8ca6ef03c2ea32e364be854a4eb2396053516c5f048fca910d8d8fc08"
+
 inherit palmtop
 
 PARALLEL_MAKE = ""
