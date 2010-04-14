@@ -10,6 +10,9 @@ RDEPENDS_${PN} = "${PN}-native (>= ${PV})"
 SRC_URI = "http://sablevm.org/download/release/${PV}/${PN}-${PV}.tar.gz \
            file://disable-automake-checks.patch;patch=1"
 
+SRC_URI[md5sum] = "0aed850f5583199b3d1adb41ac2043ed"
+SRC_URI[sha256sum] = "5235747132974dd99591f0986224a82205201ea959e5be62f128378d5dc31003"
+
 inherit autotools
 
 EXTRA_OECONF = "--with-compressed-classes=zip"

@@ -10,6 +10,9 @@ PR = "r1"
 
 SRC_URI = "http://prism54.org/pub/linux/testing/tars/2004-06/prism54-1.2.tar.bz2"
 
+SRC_URI[md5sum] = "dabaf02dd25a09efbc71755909cd4ef4"
+SRC_URI[sha256sum] = "d7d191acdc65c163f64f1f72f8e7c96570a5c69d1ba1ad4f28dd8a1a1645b957"
+
 S = "${WORKDIR}/prism54-${PV}"
 
 inherit module-base

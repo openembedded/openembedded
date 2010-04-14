@@ -25,3 +25,6 @@ do_install() {
 
 FILES_${PN} = "${palmtopdir}/chess"
 FILES_${PN}-dbg += "${palmtopdir}/chess/engines/Phalanx/.debug"
+
+SRC_URI[md5sum] = "e4e6155530a23ea0ea4ca59f8c5fda8c"
+SRC_URI[sha256sum] = "e86a0a81ce1b989a4d06e0c07d64e1fcbba2456fa8e22ae24f333f186f3fc663"

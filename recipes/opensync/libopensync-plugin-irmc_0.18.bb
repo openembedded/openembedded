@@ -16,3 +16,6 @@ install -d ${D}${libdir}/opensync/plugins
 install -m 644 src/irmc-sync ${D}${datadir}/opensync/defaults
 install -m 755 src/.libs/irmc_sync.so ${D}${libdir}/opensync/plugins/
 }
+
+SRC_URI[md5sum] = "52f86db50d653f5af0adefeb76cf9a31"
+SRC_URI[sha256sum] = "db7250647b86dc8d0bd45c73d454d73ca182c88f6ffe2ccf1760f40be81080f2"

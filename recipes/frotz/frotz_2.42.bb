@@ -22,3 +22,6 @@ do_compile() {
 do_install() {
 	oe_runmake PREFIX=${D}${prefix} MAN_PREFIX=${D}${mandir} install
 }
+
+SRC_URI[md5sum] = "a1cf81b39f749ea96e4585238ffc1b3f"
+SRC_URI[sha256sum] = "cbdd2b2911aaf57a3efa6e12d4b45036b80efbb3ede30e88118fc528d90a4768"

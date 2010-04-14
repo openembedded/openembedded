@@ -34,3 +34,6 @@ do_install () {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/olsrd.conf"
+
+SRC_URI[md5sum] = "4d8636af067f90822a47a062497680de"
+SRC_URI[sha256sum] = "b935aaf1e389f767ba8238c7a5c0b4387a345168acddf4f38bb6914149953a28"

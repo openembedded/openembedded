@@ -18,7 +18,7 @@ PR = "r0"
 
 ######################################################################################
 
-SRC_URI = "svn://forge.bearstech.com/bearforge/openmoko;module=gps;rev=9"
+SRC_URI = "svn://forge.bearstech.com/forge/openmoko;module=gps;rev=9"
 
 S = "${WORKDIR}/gps"
 

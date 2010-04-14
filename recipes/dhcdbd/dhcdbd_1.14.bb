@@ -22,3 +22,6 @@ do_install() {
 }
 
 FILES_${PN} += "${sysconfdir} ${datadir}/dbus-1 ${base_sbindir}/*"
+
+SRC_URI[md5sum] = "1180dee7a51a4384d55768650634cf93"
+SRC_URI[sha256sum] = "e5facfcab28377d32fd4c70aa1fe0820d3dba4abdfc48bd15eda712c8815e505"

@@ -9,6 +9,9 @@ LICENSE = "GPL"
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
 	   file://signedchar.patch;patch=1"
 
+SRC_URI[md5sum] = "52664198e7c6a500dd9728b1a2c97e8a"
+SRC_URI[sha256sum] = "6ce00673bb9be8ed172c41c9246689916e358d331eb24aa05f5d89db4dd23c82"
+
 inherit autotools update-alternatives
 
 PROVIDES = "virtual/x-terminal-emulator"
