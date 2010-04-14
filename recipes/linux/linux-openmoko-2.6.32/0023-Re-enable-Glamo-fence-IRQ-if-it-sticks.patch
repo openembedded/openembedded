@@ -1,0 +1,36 @@
+From 348d0334015689a22c9dbd8dd0291360c960a764 Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Tue, 13 Apr 2010 22:18:41 +0200
+Subject: [PATCH 23/24] Re-enable Glamo fence IRQ if it sticks
+
+Also fix a formatting typo.
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ drivers/mfd/glamo/glamo-fence.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mfd/glamo/glamo-fence.c b/drivers/mfd/glamo/glamo-fence.c
+index 9119675..ba3ed88 100644
+--- a/drivers/mfd/glamo/glamo-fence.c
++++ b/drivers/mfd/glamo/glamo-fence.c
+@@ -98,7 +98,7 @@ static void glamo_fence_emit(struct glamo_fence *fence)
+ 
+ static void glamo_fence_enable(struct glamodrm_handle *gdrm)
+ {
+-	enable_irq( GLAMO_IRQ_2D);
++	enable_irq(GLAMO_IRQ_2D);
+ }
+ 
+ 
+@@ -168,6 +168,7 @@ static void glamo_fence_debodge(struct glamodrm_handle *gdrm)
+ 
+ 	glamo_cmdq_wait(gdrm, GLAMO_ENGINE_ALL);
+ 	glamo_engine_reset(gdrm->glamo_core, GLAMO_ENGINE_2D);
++	glamo_fence_enable(gdrm);
+ 
+ 	read_lock(&gdrm->fence_list_lock);
+ 	list_for_each(tmp, &gdrm->fence_list) {
+-- 
+1.7.0.4
+
