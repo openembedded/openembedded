@@ -1,0 +1,38 @@
+From 1b83b6d7f2e1bf5473cd17a742737a1cfe450509 Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Fri, 20 Nov 2009 22:06:30 +0100
+Subject: [PATCH 24/24] Fix KMS framebuffer physical address
+
+This allows "/dev/fb0" to work correctly with mmap().
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ drivers/mfd/glamo/glamo-kms-fb.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mfd/glamo/glamo-kms-fb.c b/drivers/mfd/glamo/glamo-kms-fb.c
+index 6d4b9ea..04de83b 100644
+--- a/drivers/mfd/glamo/glamo-kms-fb.c
++++ b/drivers/mfd/glamo/glamo-kms-fb.c
+@@ -387,9 +387,6 @@ int glamofb_create(struct drm_device *dev, uint32_t fb_width,
+ 	info->fbops = &glamofb_ops;
+ 
+ 	info->fix.line_length = fb->pitch;
+-	info->fix.smem_start = dev->mode_config.fb_base
+-	                        + (unsigned long) gdrm->vram->start;
+-	info->fix.smem_len = size;
+ 
+ 	info->flags = FBINFO_DEFAULT;
+ 
+@@ -401,6 +398,8 @@ int glamofb_create(struct drm_device *dev, uint32_t fb_width,
+ 		ret = -ENOSPC;
+ 		goto out_unref;
+ 	}
++	info->fix.smem_start = (unsigned long)gdrm->vram->start + offs;
++	info->fix.smem_len = size;
+ 	info->screen_size = size;
+ 
+ 	info->pseudo_palette = fb->pseudo_palette;
+-- 
+1.7.0.4
+

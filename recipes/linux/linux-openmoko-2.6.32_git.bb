@@ -8,7 +8,7 @@ KERNEL_RELEASE="2.6.32.11"
 SRCREV = "14be1091928fcce66812a85129768fb253b36420"
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
@@ -39,6 +39,8 @@ SRC_URI = "\
   file://0020-save_regs.patch.patch;patch=1 \
   file://0021-gta02_defconfig.patch;patch=1 \
   file://0022-gta02_drm_defconfig.patch;patch=1 \
+  file://0023-Re-enable-Glamo-fence-IRQ-if-it-sticks.patch;patch=1 \
+  file://0024-Fix-KMS-framebuffer-physical-address.patch;patch=1 \
 "
 
 SRC_URI[stablepatch.md5sum] = "855c248334a71ef5ca3d8cb89d51334f"
