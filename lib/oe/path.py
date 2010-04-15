@@ -1,12 +1,7 @@
-def join(a, *p):
+def join(*paths):
     """Like os.path.join but doesn't treat absolute RHS specially"""
-    path = a
-    for b in p:
-        if path == '' or path.endswith('/'):
-            path +=  b
-        else:
-            path += '/' + b
-    return path
+    import os.path
+    return os.path.normpath("/".join(paths))
 
 def relative(src, dest):
     """ Return a relative path from src to dest.
