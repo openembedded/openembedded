@@ -8,7 +8,7 @@ inherit autotools
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r21"
+INC_PR = "r22"
 
 # allows for a release candidate
 RC ?= ""
@@ -125,7 +125,7 @@ do_install () {
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk vipw vigr"
         sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck blkid"
-        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall"
+        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid"
         binprogs_a="dmesg kill more umount mount login reset"
 
         if [ "${base_sbindir}" != "${sbindir}" ]; then
@@ -208,6 +208,7 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
 	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
+	update-alternatives --install ${bindir}/setsid setsid setsid.${PN} 100
 	
 	# There seems to be problem, atleast on nslu2, with these, until they are
 	# fixed the busybox ones have higher priority
