@@ -36,7 +36,9 @@ inherit autotools update-rc.d binconfig
 EXTRA_OECONF = "--disable-clamav \
                 --with-zlib=${STAGING_DIR_HOST}${layout_prefix} \
                 --with-libcurl \
-                --with-dbdir=${localstatedir}/lib/clamav"
+                --with-dbdir=${localstatedir}/lib/clamav \
+		--program-transform-name='' \
+		"
 
 do_install_append() {
         install -m 0755 -d ${D}${sysconfdir}/default/volatiles \
