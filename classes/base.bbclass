@@ -9,6 +9,29 @@ inherit utils
 inherit utility-tasks
 inherit metadata_scm
 
+python sys_path_eh () {
+    if isinstance(e, bb.event.ConfigParsed):
+        import sys
+        import os
+        import time
+
+        bbpath = e.data.getVar("BBPATH", True).split(":")
+        sys.path[0:0] = [os.path.join(dir, "lib") for dir in bbpath]
+
+        def inject(name, value):
+            """Make a python object accessible from everywhere for the metadata"""
+            if hasattr(bb.utils, "_context"):
+                bb.utils._context[name] = value
+            else:
+                __builtins__[name] = value
+
+        inject("bb", bb)
+        inject("sys", sys)
+        inject("time", time)
+}
+
+addhandler sys_path_eh
+
 die() {
 	oefatal "$*"
 }
