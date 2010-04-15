@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 DEPENDS = "gconf librsvg libgweather startup-notification libwnck orbit2 gtk+ libbonoboui libglade libgnome libgnomeui gnome-desktop libglade gnome-menus orbit2-native"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome pkgconfig
 
@@ -17,10 +17,6 @@ EXTRA_OECONF = "--disable-scrollkeeper --disable-eds"
 
 do_configure_prepend() {
         sed -i -e s:help:: ${S}/Makefile.am
-}
-
-do_stage() {
-        autotools_stage_all
 }
 
 pkg_postinst_append () {

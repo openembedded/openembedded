@@ -1,6 +1,8 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-PR = "r1"
+
+PR = "r2"
+
 DEPENDS = "libgnome libgnomecanvas libbonoboui gnome-keyring"
 DESCRIPTION = "GNOME User Interface Library"
 
@@ -15,11 +17,6 @@ EXTRA_OECONF = "--disable-gtk-doc"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/gnome-stock-pixbufs.h ${S}/libgnomeui/pixmaps/gnome-stock-pixbufs.h
-}
-
-do_stage() {
-	gnome_stage_includes
-	oe_libinstall -C libgnomeui -a -so libgnomeui-2 ${STAGING_LIBDIR}
 }
 
 SRC_URI[archive.md5sum] = "16e6717b5d7da982db00fea6167188ef"

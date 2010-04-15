@@ -14,10 +14,6 @@ do_configure_prepend () {
 	done
 }
 
-do_stage() {
-        autotools_stage_all
-}
-
 FILES_${PN} += " \
                 ${datadir}/dbus-1/ \
                 ${datadir}/PolicyKit/ \

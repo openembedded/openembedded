@@ -1,7 +1,7 @@
 LICENSE = "GPL/LGPL"
 DEPENDS = "librsvg libwnck totem-pl-parser libgtop gnome-panel gnome-desktop eds-dbus python-pygtk gnome-python libgnomeprint libgnomeprintui"
 
-PR = "r4"
+PR = "r5"
 
 inherit gnome distutils-base
 
@@ -18,11 +18,6 @@ do_configure_prepend() {
 	       -e s:'`$PKG_CONFIG --variable=defsdir gnome-python-2.0`':\"${STAGING_DATADIR}/pygtk/2.0/defs\":g \
 	       -e s:'`$PKG_CONFIG --variable=argtypesdir gnome-python-2.0`':\"${STAGING_DATADIR}/pygtk/2.0/argtypes\":g \	
 	${S}/configure.ac
-}	
-
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-do_stage() {
-	autotools_stage_all
 }	
 
 FILES_${PN}-dev += "${datadir}/pygtk"

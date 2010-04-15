@@ -8,10 +8,6 @@ RDEPENDS_${PN} = "libgail-gnome gtk-module-gail"
 
 inherit gnome
 
-do_stage () {
-	autotools_stage_all
-}
-
 FILES_${PN} += " \
                 ${libdir}/bonobo \
                 ${libdir}/gtk-2.0 \

@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "iso-codes gnome-common glib-2.0 gtk+ gconf gtksourceview2"
 RDEPENDS += " gtksourceview2"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome pkgconfig
 
@@ -13,10 +13,6 @@ EXTRA_OECONF = "--disable-scrollkeeper"
 
 do_configure_prepend () {
 	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}
-}
-
-do_stage () {
-	autotools_stage_all
 }
 
 FILES_${PN} += "${libdir}/gedit-2/plugin* ${datadir}/gedit-2"

@@ -22,9 +22,5 @@ EXTRA_OECONF = "--disable-scrollkeeper \
                 --disable-eds \
                "
 
-do_stage() {
-        autotools_stage_all
-}
-
 SRC_URI[archive.md5sum] = "27965de9b12952b22b7e232af6acb0de"
 SRC_URI[archive.sha256sum] = "e8e21b008d4afcebfc3241d0f91dd2dcc0b171b16f5675fc1b7ed699e79b56f3"
