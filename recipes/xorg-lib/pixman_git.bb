@@ -1,6 +1,6 @@
 require pixman.inc
 PV = "0.17.13"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 PR_append = "+gitr${SRCREV}"
 
 SRCREV = "69f1ec9a7827aeb522fcae99846237ef0f896e7b"
@@ -16,6 +16,8 @@ SRC_URI = "git://anongit.freedesktop.org/pixman;protocol=git;branch=master \
            file://0006-Revert-ARM-SIMD-Try-without-any-CFLAGS-before-forcin.patch;patch=1 \ 
            file://over-n-8-0565.patch;patch=1 \
            file://src-8888-0565.patch;patch=1 \
+           file://calloc.patch;patch=1 \
+           file://tls.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"
