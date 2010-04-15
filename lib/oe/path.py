@@ -15,22 +15,25 @@ def relative(src, dest):
     >>> relative("/tmp", "/tmp/foo/bar")
     foo/bar
     """
-    from os.path import sep, pardir, normpath, commonprefix
+    import os.path
 
-    destlist = normpath(dest).split(sep)
-    srclist = normpath(src).split(sep)
+    if hasattr(os.path, "relpath"):
+        return os.path.relpath(dest, src)
+    else:
+        destlist = os.path.normpath(dest).split(os.path.sep)
+        srclist = os.path.normpath(src).split(os.path.sep)
 
-    # Find common section of the path
-    common = commonprefix([destlist, srclist])
-    commonlen = len(common)
+        # Find common section of the path
+        common = os.path.commonprefix([destlist, srclist])
+        commonlen = len(common)
 
-    # Climb back to the point where they differentiate
-    relpath = [ pardir ] * (len(srclist) - commonlen)
-    if commonlen < len(destlist):
-        # Add remaining portion
-        relpath += destlist[commonlen:]
+        # Climb back to the point where they differentiate
+        relpath = [ pardir ] * (len(srclist) - commonlen)
+        if commonlen < len(destlist):
+            # Add remaining portion
+            relpath += destlist[commonlen:]
 
-    return sep.join(relpath)
+        return sep.join(relpath)
 
 def format_display(path, metadata):
     """ Prepare a path for display to the user. """
