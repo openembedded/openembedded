@@ -4,6 +4,8 @@ LICENSE = "LGPL"
 DEPENDS = "libffi python-pygobject-native-${PV}"
 PE = "1"
 
+PR = "r1"
+
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 
 SRC_URI = "\
@@ -22,12 +24,11 @@ export HOST_SYS
 
 export GOBJECT_INTROSPECTION_CFLAGS="-pthread -I${STAGING_INCDIR}/gobject-introspection-1.0 -I${STAGING_INCDIR}/glib-2.0 -I${STAGING_LIBDIR}/glib-2.0/include"
 
-do_stage() {
-	autotools_stage_all
-	install -d ${STAGING_LIBDIR}/../share/pygobject/
-	cp -dpfR docs/* ${STAGING_LIBDIR}/../share/pygobject/
-	install -d ${STAGING_LIBDIR}/../share/gtk-doc/html/pygobject/
-	cp docs/style.css ${STAGING_LIBDIR}/../share/gtk-doc/html/pygobject/
+do_install_append() {
+	install -d ${D}${datadir}/pygobject/
+	cp -dpfR docs/* ${D}${datadir}/pygobject/
+	install -d ${D}${datadir}/gtk-doc/html/pygobject/
+	cp docs/style.css ${D}${datadir}/gtk-doc/html/pygobject/
 }
 
 PACKAGES += "${PN}-lib"
