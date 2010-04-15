@@ -25,9 +25,12 @@ python sys_path_eh () {
             else:
                 __builtins__[name] = value
 
+        import oe.path
+        import oe.utils
         inject("bb", bb)
         inject("sys", sys)
         inject("time", time)
+        inject("oe", oe)
 }
 
 addhandler sys_path_eh
