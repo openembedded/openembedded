@@ -9,7 +9,7 @@ inherit gnome
 SRC_URI[archive.md5sum] = "57a583709fdce994038c4562ba5733b7"
 SRC_URI[archive.sha256sum] = "93838655e7c062137966733dee0db9ae204477cf44984b54d2488be6ce2ba127"
 
-SRC_URI = "http://launchpad.net/gnome-dvb-daemon/trunk/${PV}/+download/gnome-dvb-daemon-${PV}.tar.bz2"
+SRC_URI = "http://launchpad.net/gnome-dvb-daemon/trunk/${PV}/+download/gnome-dvb-daemon-${PV}.tar.bz2;name=archive"
 
 # We have no use for checking using gst-inspect when crosscompiling, so sed out the check
 do_configure_prepend() {
