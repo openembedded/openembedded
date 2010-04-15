@@ -7,7 +7,7 @@ DEPENDS_virtclass-native = "python-native"
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz;name=archive"
 S = "${WORKDIR}/${BPN}-${PV}"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 BBCLASSEXTEND = "native"
 
@@ -20,17 +20,21 @@ EXTRA_OECONF = "\
  --with-docbook \
  --with-c14n"
 
-EXTRA_OECONF_append = " --without-python"
-EXTRA_OECONF_append_virtclass-native = " --with-python=${PYTHON_DIR}"
+XPY = ""
+XPY_virtclass-native = " --with-python=${PYTHON_DIR}" 
+
+EXTRA_OECONF += "${XPY}"
 
 export LDFLAGS += "-ldl"
 
 do_install_append() {
- 	install -m 0644 libxml.m4 ${STAGING_DATADIR}/aclocal/
+	install -d ${D}${datadir}/aclocal
+ 	install -m 0644 libxml.m4 ${D}${datadir}/aclocal
 	#this is need it by php during its install
 	install -d ${STAGING_BINDIR_CROSS}
 	install -m 0755 xml2-config ${STAGING_BINDIR_CROSS}/
 }
+
 do_install_append_virtclass-native() {
 	:
 }
