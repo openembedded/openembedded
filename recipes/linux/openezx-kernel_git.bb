@@ -1,10 +1,10 @@
 DESCRIPTION = "OpenEZX 2.6 Linux Development Kernel for the Motorola EZX GSM phones"
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
-SRCREV = "b390bb1ee708277297fdfd38e26d955b17d81c2e"
-KV = "2.6.33"
+SRCREV = "c485cc5953bbebdab1c52032754accca75031837"
+KV = "2.6.34-oe"
 PV = "${KV}+gitr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 require linux.inc
 
@@ -25,7 +25,10 @@ S = "${WORKDIR}/git"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680|a910|a1200|rorkre2|rokre6)'
 
-# The Kernel command line parameters are given via boot_usb or gen-blob
+# Provide a fallback kernel command line, even if parameters should be given
+# via boot_usb or gen-blob
+CMDLINE = "console=tty1 root=/dev/mmcblk0p2 rootfstype=ext2 rootdelay=3 ip=192.168.0.202:192.168.0.200:192.168.0.200:255.255.255.0"
+ARM_KEEP_OABI = "1"
 
 ###############################################################
 # module configs specific to this kernel
@@ -35,4 +38,10 @@ COMPATIBLE_MACHINE = '(a780|e680|a910|a1200|rorkre2|rokre6)'
 
 do_configure_prepend() {
 	install -m 0644 ${S}/arch/arm/configs/ezx_defconfig ${WORKDIR}/defconfig
+}
+
+# linux.inc overrides LOCAVERSION but we like to have one
+do_compile_prepend() {
+	sed -i -e '/CONFIG_LOCALVERSION=/d' ${S}/.config
+	echo 'CONFIG_LOCALVERSION="-oe"' >>${S}/.config
 }
