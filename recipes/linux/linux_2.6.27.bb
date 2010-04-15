@@ -77,10 +77,10 @@ SRC_URI_append_ts72xx = "\
            "
 
 # see http://bugzilla.kernel.org/show_bug.cgi?id=11143
-do_stage_append() {
+do_install_append() {
 	if [ -f arch/${ARCH}/lib/crtsavres.o ]; then
-		mkdir -p ${STAGING_KERNEL_DIR}/arch/${ARCH}/lib
-		cp -a arch/${ARCH}/lib/crtsavres.o ${STAGING_KERNEL_DIR}/arch/${ARCH}/lib/
+		mkdir -p $kerneldir/arch/${ARCH}/lib
+		cp -a arch/${ARCH}/lib/crtsavres.o $kerneldir/arch/${ARCH}/lib/
 	fi
 }
 
