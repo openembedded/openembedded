@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.mozilla.org/projects/security/pki/nss/"
 
 LICENSE = "MPL1.1 GPL LGPL"
 
+PR = "r1"
+
 DEPENDS = "sqlite3 nspr"
 
 SRC_URI = "\
@@ -17,6 +19,7 @@ SRC_URI = "\
 	file://91_build_pwdecrypt.dpatch;patch=1 \
 	file://95_add_spi+cacert_ca_certs.dpatch;patch=1 \
 	file://build-fix.patch;patch=1 \
+    file://nss.pc.in \
 "
 
 SRC_URI[archive.md5sum] = "917f4e05f3982bd7fceaede197f0e1d4"
@@ -92,6 +95,9 @@ do_install() {
 	do
 		install -m 755 -t ${D}/${bindir} $binary
 	done
+
+	install -d ${D}${libdir}/pkgconfig/
+	sed 's/@VERSION@/${PV}/' ${WORKDIR}/nss.pc.in > ${D}${libdir}/pkgconfig/nss.pc
 
 }
 
