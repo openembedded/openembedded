@@ -2,7 +2,7 @@ SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ libetpan openssl aspell"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 inherit autotools pkgconfig
 

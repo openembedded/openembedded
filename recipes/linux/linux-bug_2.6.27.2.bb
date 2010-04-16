@@ -24,12 +24,12 @@ do_install_append() {
         cd ${D}/${KERNEL_IMAGEDEST} && ln -sf uImage-${KERNEL_VERSION} uImage
 }
 
-do_stage_append() {
-	cp -fR arch/arm/include/asm/* ${STAGING_KERNEL_DIR}/include/asm/
-	if [ ! -e ${STAGING_KERNEL_DIR}/include/mach ]; then
-		mkdir ${STAGING_KERNEL_DIR}/include/mach
+do_install_append() {
+	cp -fR arch/arm/include/asm/* $kerneldir/include/asm/
+	if [ ! -e $kerneldir/include/mach ]; then
+		mkdir $kerneldir/include/mach
 	fi
-	cp -fR arch/arm/plat-mxc/include/mach/* ${STAGING_KERNEL_DIR}/include/mach/
+	cp -fR arch/arm/plat-mxc/include/mach/* $kerneldir/include/mach/
 }
 
 FILESDIR = "${WORKDIR}"

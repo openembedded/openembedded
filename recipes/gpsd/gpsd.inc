@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-glib ncurses python"
 PROVIDES = "virtual/gpsd"
-INC_PR = "r4"
+INC_PR = "r5"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
                 --x-libraries=${STAGING_LIBDIR} \
@@ -60,7 +60,9 @@ pkg_postrm_${PN}-conf() {
 	update-alternatives --remove gpsd-defaults ${sysconfdir}/default/gpsd.default	
 }
 
-PACKAGES =+ "libgps python-pygps gpsd-udev gpsd-conf gpsd-gpsctl gps-utils"
+PACKAGES =+ "libgps python-pygps-dbg python-pygps gpsd-udev gpsd-conf gpsd-gpsctl gps-utils"
+
+FILES_python-pygps-dbg += " ${libdir}/python*/site-packages/gps/.debug"
 
 RDEPENDS_${PN} = "gpsd-gpsctl"
 RRECOMMENDS_${PN} = "gpsd-conf gpsd-udev"

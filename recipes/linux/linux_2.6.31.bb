@@ -12,6 +12,7 @@ DEFAULT_PREFERENCE_db1200 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
+DEFAULT_PREFERENCE_cm-x300 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;patch=1;name=stablepatch \
@@ -64,6 +65,10 @@ SRC_URI_append_collie = "\
 
 SRC_URI_append_ep93xx = " \
            file://edb9301-fix-machine-id.patch;patch=1 \
+           "
+
+SRC_URI_append_cm-x300 = "\
+           file://linux-2.6.31-cm-x300.patch;patch=1 \
            "
 
 do_devicetree_image_append_boc01() {

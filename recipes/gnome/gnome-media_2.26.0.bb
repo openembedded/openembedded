@@ -8,17 +8,13 @@ DEPENDS += "pulseaudio"
 #DEPENDS += "nautilus-cd-burner"
 inherit gnome
 
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--disable-static --disable-gtk-doc --disable-scrollkeeper"
 
 # FIXME: Native doc processing with xsltproc using docbook needs additional work:
 do_configure_prepend() {
 	sed -i 's/^\(SUBDIRS = .*\)\(doc\|help\)/\1/' */Makefile.am
-}
-
-do_stage() {
-	autotools_stage_all
 }
 
 do_install_append() {

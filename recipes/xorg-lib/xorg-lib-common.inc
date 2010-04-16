@@ -13,6 +13,3 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--enable-malloc0returnsnull"
 
-do_stage() {
-        autotools_stage_all
-}

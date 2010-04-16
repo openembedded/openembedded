@@ -1,0 +1,333 @@
+Index: mozilla/security/coreconf/BSD_OS.mk
+===================================================================
+--- mozilla.orig/security/coreconf/BSD_OS.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/BSD_OS.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -73,7 +73,7 @@
+ DSO_CFLAGS		= -fPIC -DPIC
+ DSO_LDOPTS		= -shared
+ DSO_LDFLAGS		=
+-DSO_LDOPTS		+= -Wl,-soname,lib$(LIBRARY_NAME)$(LIBRARY_VERSION).$(DLL_SUFFIX)
++DSO_LDOPTS		+= -Wl,-soname,$(SONAME)
+ 
+ ifdef LIBRUNPATH
+ DSO_LDOPTS		+= -Wl,-R$(LIBRUNPATH)
+Index: mozilla/security/coreconf/BeOS.mk
+===================================================================
+--- mozilla.orig/security/coreconf/BeOS.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/BeOS.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -59,7 +59,7 @@
+ 	CPU_ARCH	= x86
+ endif
+ 
+-MKSHLIB		= $(CC) -nostart -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so)
++MKSHLIB		= $(CC) -nostart -Wl,-soname -Wl,$(SONAME)
+ ifdef BUILD_OPT
+ 	OPTIMIZER	= -O2
+ endif
+Index: mozilla/security/coreconf/FreeBSD.mk
+===================================================================
+--- mozilla.orig/security/coreconf/FreeBSD.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/FreeBSD.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -51,7 +51,7 @@
+ OS_CFLAGS		= $(DSO_CFLAGS) -ansi -Wall -Wno-switch -DFREEBSD -DHAVE_STRERROR -DHAVE_BSD_FLOCK
+ 
+ DSO_CFLAGS		= -fPIC
+-DSO_LDOPTS		= -shared -Wl,-soname -Wl,$(notdir $@)
++DSO_LDOPTS		= -shared -Wl,-soname -Wl,$(SONAME)
+ 
+ #
+ # The default implementation strategy for FreeBSD is pthreads.
+Index: mozilla/security/coreconf/HP-UX.mk
+===================================================================
+--- mozilla.orig/security/coreconf/HP-UX.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/HP-UX.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -83,7 +83,7 @@
+ PROCESS_MAP_FILE = grep -v ';+' $< | grep -v ';-' | \
+          sed -e 's; DATA ;;' -e 's,;;,,' -e 's,;.*,,' -e 's,^,+e ,' > $@
+ 
+-DSO_LDOPTS		= -b +h $(notdir $@)
++DSO_LDOPTS		= -b +h $(SONAME)
+ ifeq ($(OS_TEST),ia64)
+ 	DSO_LDOPTS	+= +b '$$ORIGIN'
+ endif
+Index: mozilla/security/coreconf/IRIX.mk
+===================================================================
+--- mozilla.orig/security/coreconf/IRIX.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/IRIX.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -102,7 +102,7 @@
+ 	SHLIB_LD_OPTS	+= -n32 -mips3
+ endif
+ 
+-MKSHLIB     += $(LD) $(SHLIB_LD_OPTS) -shared -soname $(@:$(OBJDIR)/%.so=%.so)
++MKSHLIB     += $(LD) $(SHLIB_LD_OPTS) -shared -soname $(SONAME)
+ ifdef MAPFILE
+ # Add LD options to restrict exported symbols to those in the map file
+ endif
+Index: mozilla/security/coreconf/Linux.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux.mk	2008-07-23 20:27:31.000000000 +0200
++++ mozilla/security/coreconf/Linux.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -143,7 +143,7 @@
+ 
+ ifeq ($(OS_RELEASE),2.0)
+ 	OS_REL_CFLAGS	+= -DLINUX2_0
+-	MKSHLIB		= $(CC) -shared -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so)
++	MKSHLIB		= $(CC) -shared -Wl,-soname -Wl,$(SONAME)
+ 	ifdef MAPFILE
+ 		MKSHLIB += -Wl,--version-script,$(MAPFILE)
+ 	endif
+Index: mozilla/security/coreconf/Linux2.1.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux2.1.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/Linux2.1.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -38,7 +38,7 @@
+ include $(CORE_DEPTH)/coreconf/Linux.mk
+ ifeq ($(OS_RELEASE),2.1)
+         OS_REL_CFLAGS   += -DLINUX2_1
+-        MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so)
++        MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(SONAME)
+ 	ifdef MAPFILE
+ 		MKSHLIB += -Wl,--version-script,$(MAPFILE)
+ 	endif
+Index: mozilla/security/coreconf/Linux2.2.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux2.2.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/Linux2.2.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -38,7 +38,7 @@
+ include $(CORE_DEPTH)/coreconf/Linux.mk
+ 
+ OS_REL_CFLAGS   += -DLINUX2_1
+-MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so)
++MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(SONAME)
+ 
+ ifdef MAPFILE
+ 	MKSHLIB += -Wl,--version-script,$(MAPFILE)
+Index: mozilla/security/coreconf/Linux2.4.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux2.4.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/Linux2.4.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -38,7 +38,7 @@
+ include $(CORE_DEPTH)/coreconf/Linux.mk
+ 
+ OS_REL_CFLAGS   += -DLINUX2_1
+-MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so)
++MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(SONAME)
+ 
+ ifdef MAPFILE
+ 	MKSHLIB += -Wl,--version-script,$(MAPFILE)
+Index: mozilla/security/coreconf/Linux2.5.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux2.5.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/Linux2.5.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -38,7 +38,7 @@
+ include $(CORE_DEPTH)/coreconf/Linux.mk
+ 
+ OS_REL_CFLAGS   += -DLINUX2_1
+-MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so)
++MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(SONAME)
+ 
+ ifdef MAPFILE
+ 	MKSHLIB += -Wl,--version-script,$(MAPFILE)
+Index: mozilla/security/coreconf/NetBSD.mk
+===================================================================
+--- mozilla.orig/security/coreconf/NetBSD.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/NetBSD.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -68,7 +68,7 @@
+ DSO_LDOPTS		= -shared
+ DSO_LDFLAGS		=
+ ifeq ($(OBJECT_FMT),ELF)
+-DSO_LDOPTS		+= -Wl,-soname,lib$(LIBRARY_NAME)$(LIBRARY_VERSION).$(DLL_SUFFIX)
++DSO_LDOPTS		+= -Wl,-soname,$(SONAME)
+ endif
+ 
+ ifdef LIBRUNPATH
+Index: mozilla/security/coreconf/OSF1.mk
+===================================================================
+--- mozilla.orig/security/coreconf/OSF1.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/OSF1.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -64,7 +64,7 @@
+ endif
+ 
+ # The command to build a shared library on OSF1.
+-MKSHLIB    += ld -shared -expect_unresolved "*" -soname $(notdir $@)
++MKSHLIB    += ld -shared -expect_unresolved "*" -soname $(SONAME)
+ ifdef MAPFILE
+ MKSHLIB += -hidden -input $(MAPFILE)
+ endif
+Index: mozilla/security/coreconf/OpenBSD.mk
+===================================================================
+--- mozilla.orig/security/coreconf/OpenBSD.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/OpenBSD.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -65,7 +65,7 @@
+ ARCH			= openbsd
+ 
+ DSO_CFLAGS		= -fPIC -DPIC
+-DSO_LDOPTS		= -shared -fPIC -Wl,-soname,lib$(LIBRARY_NAME)$(LIBRARY_VERSION).$(DLL_SUFFIX)
++DSO_LDOPTS		= -shared -fPIC -Wl,-soname,$(SONAME)
+ DSO_LDFLAGS		=
+ 
+ MKSHLIB			= $(CC) $(DSO_LDOPTS)
+Index: mozilla/security/coreconf/QNX.mk
+===================================================================
+--- mozilla.orig/security/coreconf/QNX.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/QNX.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -54,7 +54,7 @@
+ 	CPU_ARCH	= x86
+ endif
+ 
+-MKSHLIB		= $(CC) -shared -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so)
++MKSHLIB		= $(CC) -shared -Wl,-soname -Wl,$(SONAME)
+ ifdef BUILD_OPT
+ 	OPTIMIZER	= -O2
+ endif
+Index: mozilla/security/coreconf/ReliantUNIX.mk
+===================================================================
+--- mozilla.orig/security/coreconf/ReliantUNIX.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/ReliantUNIX.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -51,7 +51,7 @@
+ 		OPTIMIZER += -O6
+ 	endif
+ 	MKSHLIB     = $(LD)
+-	MKSHLIB    += -G -h $(@:$(OBJDIR)/%.so=%.so)
++	MKSHLIB    += -G -h $(SONAME)
+ 	DSO_LDOPTS += -G -Xlinker -Blargedynsym
+ else
+ 	## native compiler (CDS++ 1.0)
+Index: mozilla/security/coreconf/SunOS5.mk
+===================================================================
+--- mozilla.orig/security/coreconf/SunOS5.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/SunOS5.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -143,7 +143,7 @@
+ ifeq ($(USE_64), 1)
+ 	DSO_LDOPTS += -m64
+ endif
+-	DSO_LDOPTS += -shared -h $(notdir $@)
++	DSO_LDOPTS += -shared -h $(SONAME)
+ else
+ ifeq ($(USE_64), 1)
+ 	ifeq ($(OS_TEST),i86pc)
+@@ -152,7 +152,7 @@
+ 	    DSO_LDOPTS +=-xarch=v9
+ 	endif
+ endif
+-	DSO_LDOPTS += -G -h $(notdir $@)
++	DSO_LDOPTS += -G -h $(SONAME)
+ endif
+ DSO_LDOPTS += -z combreloc -z defs -z ignore
+ 
+Index: mozilla/security/coreconf/rules.mk
+===================================================================
+--- mozilla.orig/security/coreconf/rules.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/rules.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -115,6 +115,7 @@
+ 	$(INSTALL) -m 644 $(SHARED_LIBRARY:$(DLL_SUFFIX)=pdb) $(SOURCE_LIB_DIR)
+ endif
+ endif
++	$(call MKSHLINKS,$(SOURCE_LIB_DIR))
+ endif
+ ifdef IMPORT_LIBRARY
+ 	$(INSTALL) -m 775 $(IMPORT_LIBRARY) $(SOURCE_LIB_DIR)
+@@ -258,6 +259,7 @@
+ release_md::
+ ifneq ($(MD_LIB_RELEASE_FILES),)
+ 	$(INSTALL) -m 444 $(MD_LIB_RELEASE_FILES) $(SOURCE_RELEASE_PREFIX)/$(SOURCE_RELEASE_LIB_DIR)
++	$(call MKSHLINKS,$(SOURCE_RELEASE_PREFIX)/$(SOURCE_RELEASE_LIB_DIR))
+ endif
+ ifneq ($(MD_BIN_RELEASE_FILES),)
+ 	$(INSTALL) -m 555 $(MD_BIN_RELEASE_FILES) $(SOURCE_RELEASE_PREFIX)/$(SOURCE_RELEASE_BIN_DIR)
+@@ -313,6 +315,8 @@
+ endif
+ endif
+ 
++$(SHARED_LIBRARY_LINKS): %: $(SHARED_LIBRARY)
++
+ $(SHARED_LIBRARY): $(OBJS) $(RES) $(MAPFILE) $(SUB_SHLOBJS)
+ 	@$(MAKE_OBJDIR)
+ 	rm -f $@
+Index: mozilla/security/coreconf/ruleset.mk
+===================================================================
+--- mozilla.orig/security/coreconf/ruleset.mk	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/coreconf/ruleset.mk	2008-07-23 20:28:04.000000000 +0200
+@@ -123,6 +123,25 @@
+     ifndef SHARED_LIBRARY
+ 	SHARED_LIBRARY = $(OBJDIR)/$(DLL_PREFIX)$(LIBRARY_NAME)$(LIBRARY_VERSION)$(JDK_DEBUG_SUFFIX).$(DLL_SUFFIX)
+     endif
++    SONAME = $(notdir $(SHARED_LIBRARY))
++    ifdef SO_VERSION
++    ifneq (,$(findstring $(SONAME),$(MKSHLIB)))
++        SO_VERSION_MAJOR	:= $(shell echo $(SO_VERSION) | sed 's/^\([^.]*\)\(\.[^.]*\)\?\(\.[^.]*\)\?/\1/')
++        SO_VERSION_MINOR	:= $(shell echo $(SO_VERSION) | sed 's/^\([^.]*\)\(\.[^.]*\)\?\(\.[^.]*\)\?/\2/')
++        SO_VERSION_MICRO	:= $(shell echo $(SO_VERSION) | sed 's/^\([^.]*\)\(\.[^.]*\)\?\(\.[^.]*\)\?/\3/')
++
++        SHARED_LIBRARY_LINKS	:= $(SONAME)
++        ifdef SO_VERSION_MINOR
++            SHARED_LIBRARY_LINKS	+= $(SONAME).$(SO_VERSION_MAJOR)
++        endif
++
++        SONAME			:= $(SONAME).$(SO_VERSION_MAJOR)
++        SHARED_LIBRARY		:= $(SHARED_LIBRARY).$(SO_VERSION)
++
++        MKSHLINKS		= (cd $(1) && for link in $(SHARED_LIBRARY_LINKS); do rm -f $$link; ln -s $(notdir $(SHARED_LIBRARY)) $$link; done)
++    endif
++    endif
++
+     ifndef MAPFILE_SOURCE
+ 	MAPFILE_SOURCE = $(LIBRARY_NAME).def
+     endif
+@@ -189,7 +208,7 @@
+ endif
+ 
+ ALL_TRASH =	$(TARGETS) $(OBJS) $(OBJDIR) LOGS TAGS $(GARBAGE) \
+-		so_locations $(BUILT_SRCS) $(NOSUCHFILE)
++		so_locations $(BUILT_SRCS) $(NOSUCHFILE) $(SHARED_LIBRARY_LINKS)
+ 
+ ifdef NS_USE_JDK
+     ALL_TRASH += $(JDK_HEADER_CFILES) $(JDK_STUB_CFILES) \
+Index: mozilla/security/nss/lib/nss/manifest.mn
+===================================================================
+--- mozilla.orig/security/nss/lib/nss/manifest.mn	2008-07-23 20:27:09.000000000 +0200
++++ mozilla/security/nss/lib/nss/manifest.mn	2008-07-23 20:28:04.000000000 +0200
+@@ -58,6 +58,7 @@
+ 
+ LIBRARY_NAME = nss
+ LIBRARY_VERSION = 3
++SO_VERSION = 1d
+ 
+ # This part of the code, including all sub-dirs, can be optimized for size
+ export ALLOW_OPT_CODE_SIZE = 1
+Index: mozilla/security/nss/lib/smime/manifest.mn
+===================================================================
+--- mozilla.orig/security/nss/lib/smime/manifest.mn	2008-07-23 20:27:10.000000000 +0200
++++ mozilla/security/nss/lib/smime/manifest.mn	2008-07-23 20:28:04.000000000 +0200
+@@ -79,6 +79,7 @@
+ 
+ LIBRARY_NAME = smime
+ LIBRARY_VERSION = 3
++SO_VERSION = 1d
+ 
+ # This part of the code, including all sub-dirs, can be optimized for size
+ export ALLOW_OPT_CODE_SIZE = 1
+Index: mozilla/security/nss/lib/ssl/manifest.mn
+===================================================================
+--- mozilla.orig/security/nss/lib/ssl/manifest.mn	2008-07-23 20:27:09.000000000 +0200
++++ mozilla/security/nss/lib/ssl/manifest.mn	2008-07-23 20:28:04.000000000 +0200
+@@ -83,6 +83,7 @@
+ 
+ LIBRARY_NAME = ssl
+ LIBRARY_VERSION = 3
++SO_VERSION = 1d
+ 
+ # This part of the code, including all sub-dirs, can be optimized for size
+ export ALLOW_OPT_CODE_SIZE = 1
+Index: mozilla/security/nss/lib/util/manifest.mn
+===================================================================
+--- mozilla.orig/security/nss/lib/util/manifest.mn	2008-07-23 20:27:09.000000000 +0200
++++ mozilla/security/nss/lib/util/manifest.mn	2008-07-23 20:28:04.000000000 +0200
+@@ -100,6 +100,7 @@
+ 
+ LIBRARY_NAME = nssutil
+ LIBRARY_VERSION = 3
++SO_VERSION = 1d
+ 
+ # This part of the code, including all sub-dirs, can be optimized for size
+ export ALLOW_OPT_CODE_SIZE = 1

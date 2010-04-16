@@ -1,0 +1,23 @@
+From 634ba33b5b1fcfd5a0e7910f9991b4ed4f674549 Mon Sep 17 00:00:00 2001
+From: Søren Sandmann Pedersen <ssp@redhat.com>
+Date: Wed, 07 Apr 2010 05:39:14 +0000
+Subject: Fix uninitialized cache when pthreads are used
+
+The thread local cache is allocated with malloc(), but we rely on it
+being initialized to zero, so allocate it with calloc() instead.
+---
+diff --git a/pixman/pixman-compiler.h b/pixman/pixman-compiler.h
+index a4e3f88..cdac0d8 100644
+--- a/pixman/pixman-compiler.h
++++ b/pixman/pixman-compiler.h
+@@ -101,7 +101,7 @@
+     static type *							\
+     tls_ ## name ## _alloc (key)					\
+     {									\
+-	type *value = malloc (sizeof (type));				\
++	type *value = calloc (1, sizeof (type));			\
+ 	if (value)							\
+ 	    pthread_setspecific (key, value);				\
+ 	return value;							\
+--
+cgit v0.8.3-6-g21f6

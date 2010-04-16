@@ -27,16 +27,16 @@ do_configure() {
                 make ARCH=${ARCH} oldconfig
 }
 
-do_stage_append () {
+do_install_append () {
 #need ppc platforms includes + friends in order for external kernel modules to compile as headers a$
 
-       install -d ${STAGING_KERNEL_DIR}/arch/
-       cp -pPR arch/ppc ${STAGING_KERNEL_DIR}/arch/
-       cp -pPR arch/powerpc ${STAGING_KERNEL_DIR}/arch/
+       install -d $kerneldir/arch/
+       cp -pPR arch/ppc $kerneldir/arch/
+       cp -pPR arch/powerpc $kerneldir/arch/
 
-       install -d ${STAGING_KERNEL_DIR}/include/asm
-       cp -pPR include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
-       cp -pPR include/asm-ppc ${STAGING_KERNEL_DIR}/include/
+       install -d $kerneldir/include/asm
+       cp -pPR include/asm-powerpc $kerneldir/include/
+       cp -pPR include/asm-ppc $kerneldir/include/
 }
 
 #seems like 2.6.21 kernel images have moved (or is this only for the Denx kernel ?)

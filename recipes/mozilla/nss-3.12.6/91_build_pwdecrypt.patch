@@ -1,0 +1,17 @@
+## 91_build_pwdecrypt.patch by Paul Wise <pabs@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Enable building and installing pwdecrypt (Closes: #472303)
+
+diff --git a/mozilla/security/nss/cmd/manifest.mn b/mozilla/security/nss/cmd/manifest.mn
+index 4032e81..6de19aa 100644
+--- a/mozilla/security/nss/cmd/manifest.mn
++++ b/mozilla/security/nss/cmd/manifest.mn
+@@ -65,6 +65,7 @@ DIRS = lib  \
+  pk12util \
+  pk11mode \
+  pp  \
++ pwdecrypt \
+  rsaperf \
+  sdrtest \
+  selfserv  \

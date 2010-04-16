@@ -1,0 +1,17 @@
+## 80_security_build.patch by Mike Hommey <glandium@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Don't automatically create the .chk files, since we will strip
+## DP: the library in debian/rules.
+
+diff --git a/mozilla/security/nss/cmd/shlibsign/Makefile b/mozilla/security/nss/cmd/shlibsign/Makefile
+index 892a2db..22cfc0c 100644
+--- a/mozilla/security/nss/cmd/shlibsign/Makefile
++++ b/mozilla/security/nss/cmd/shlibsign/Makefile
+@@ -120,5 +120,5 @@ else
+ 	$(call core_abspath,$(NSPR_LIB_DIR)) $(call core_abspath,$<)
+ endif
+ 
+-libs install :: $(CHECKLOC)
++libs install ::
+ 

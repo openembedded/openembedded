@@ -1,0 +1,12 @@
+--- linux-2.6.24/arch/arm/mach-hipox/gmac-napi.c	2010-04-15 17:50:02.000000000 +0200
++++ linux-2.6.24.new/arch/arm/mach-hipox/gmac-napi.c	2010-04-15 16:27:54.000000000 +0200
+@@ -1995,7 +1995,7 @@
+ 
+         // Do any interrupt disabling with a single register write
+         if (int_disable_mask) {
+-            gmac_int_en_clr(priv, int_disable_mask, 0);
++            gmac_int_en_clr(priv, int_disable_mask, NULL, 0);
+ 
+             // Update our record of the current interrupt enable status
+             int_enable &= ~int_disable_mask;
+        }

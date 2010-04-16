@@ -1,7 +1,7 @@
 LICENSE = "GPL/LGPL"
 DEPENDS = "python-pygtk libwnck"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome distutils-base
 
@@ -13,11 +13,6 @@ do_configure_prepend() {
 
 do_configure_prepend() {
 	sed -i -e s:'`$PKG_CONFIG --variable=defsdir pygtk-2.0`':\"${STAGING_DATADIR}/pygtk/2.0/defs\":g ${S}/configure.ac
-}	
-
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-do_stage() {
-	autotools_stage_all
 }	
 
 FILES_${PN}-dev += "${datadir}/pygtk"

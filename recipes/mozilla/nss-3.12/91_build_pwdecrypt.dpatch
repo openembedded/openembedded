@@ -1,0 +1,12 @@
+Index: mozilla/security/nss/cmd/manifest.mn
+===================================================================
+--- mozilla.orig/security/nss/cmd/manifest.mn	2008-07-23 20:20:10.000000000 +0200
++++ mozilla/security/nss/cmd/manifest.mn	2008-07-23 20:20:42.000000000 +0200
+@@ -65,6 +65,7 @@
+  pk12util \
+  pk11mode \
+  pp  \
++ pwdecrypt \
+  rsaperf \
+  sdrtest \
+  selfserv  \

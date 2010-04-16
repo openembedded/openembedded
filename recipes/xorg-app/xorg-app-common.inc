@@ -12,8 +12,4 @@ S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig
 
-do_stage() {
-        autotools_stage_all
-}
-
 FILES_${PN} += "  /usr/lib/X11/${XORG_PN}"

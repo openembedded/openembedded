@@ -5,7 +5,7 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 RCV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 MMV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 LV = "2.6.10"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${LV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KV}-${RCV}.bz2;patch=1;name=patch \
@@ -50,7 +50,7 @@ do_compile() {
 	kernel_do_compile
 }
 
-do_stage_prepend() {
+do_install_prepend() {
 	install -d arch/um/boot/
 	ln -sf ${S}/linux arch/um/boot/linux
 }

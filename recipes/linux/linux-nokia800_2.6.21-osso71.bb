@@ -13,9 +13,9 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2;name=k
 
 S = "${WORKDIR}/linux-2.6.21"
 
-do_stage_append () {
-	mkdir -p ${STAGING_KERNEL_DIR}/drivers/media/video/omap/
-	cp -f drivers/media/video/omap/tcm825x.h ${STAGING_KERNEL_DIR}/drivers/media/video/omap/
+do_install_append () {
+	mkdir -p $kerneldir/drivers/media/video/omap/
+	cp -f drivers/media/video/omap/tcm825x.h $kerneldir/drivers/media/video/omap/
 }
 
 SRC_URI[kernel.md5sum] = "1b515f588078dfa7f4bab2634bd17e80"

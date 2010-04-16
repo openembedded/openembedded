@@ -1,0 +1,41 @@
+--- nsprpub/configure.in
++++ nsprpub/configure.in
+@@ -57,7 +57,7 @@
+ USE_USER_PTHREADS=
+ USE_NSPR_THREADS=
+ USE_N32=
+-USE_64=
++USE_64=maybe
+ USE_CPLUS=
+ USE_IPV6=
+ USE_MDUPDATE=
+@@ -222,11 +222,26 @@
+     fi ])
+ 
+ AC_ARG_ENABLE(64bit,
+-    [  --enable-64bit          Enable 64-bit support (on certain platforms)],
+-    [ if test "$enableval" = "yes"; then
+-	    USE_64=1
++    [  --disable-64bit         Disable 64-bit support (on 64-bit platforms)],
++    [ if test "$enableval" = "no"; then
++	    USE_64=
++      else
++	    USE_64=1
+       fi ])
+ 
++if test "${USE_64}"; then
++    AC_MSG_CHECKING(for 64-bit OS)
++    AC_TRY_COMPILE([],[int assert[(sizeof(long) == 8) ? 1: -1]],
++        result="yes", result="no")
++    AC_MSG_RESULT("$result")
++    if test "$result" = "no" && test "$USE_64" = 1; then
++        AC_MSG_ERROR([Can't --enable-64bit on non 64-bit platforms])
++    fi
++    if test "$result" = "yes"; then
++        USE_64=1
++    fi
++fi
++
+ AC_ARG_ENABLE(mdupdate,
+     [  --enable-mdupdate       Enable use of certain compilers' mdupdate feature],
+     [ if test "$enableval" = "yes"; then

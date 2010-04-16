@@ -1,0 +1,46 @@
+Index: nsprpub/configure.in
+===================================================================
+--- nsprpub.orig/configure.in	2008-07-23 14:38:19.000000000 +0200
++++ nsprpub/configure.in	2008-07-23 15:14:45.000000000 +0200
+@@ -42,7 +42,7 @@
+ AC_PREREQ(2.12)
+ AC_INIT(config/libc_r.h)
+ 
+-AC_CONFIG_AUX_DIR(${srcdir}/build/autoconf)
++AC_CONFIG_AUX_DIR(build/autoconf)
+ AC_CANONICAL_SYSTEM
+ 
+ dnl ========================================================
+@@ -442,7 +442,8 @@
+ 
+     AC_MSG_CHECKING([whether the $host compiler ($HOST_CC $HOST_CFLAGS $HOST_LDFLAGS) works])
+     AC_TRY_COMPILE([], [return(0);], 
+-        [ac_cv_prog_host_cc_works=1 AC_MSG_RESULT([yes])],
++        [ac_cv_prog_host_cc_works=1
++				AC_MSG_RESULT([yes])],
+         AC_MSG_ERROR([installation or configuration problem: $host compiler $HOST_CC cannot create executables.]) )
+ 
+     CC=$_SAVE_CC
+@@ -2266,9 +2267,8 @@
+ *-darwin*|*-beos*)
+     ;;
+ *)
+-    AC_CHECK_LIB(dl, dlopen,
+-        AC_CHECK_HEADER(dlfcn.h,
+-            OS_LIBS="-ldl $OS_LIBS"))
++    AC_CHECK_HEADER([dlfcn.h])
++    AC_CHECK_LIB(dl, dlopen, [OS_LIBS="-ldl $OS_LIBS"])
+     ;;
+ esac
+ 
+@@ -2366,8 +2366,8 @@
+ dnl using it
+ dnl
+ dnl MOZ_CHECK_PTHREADS(lib, success, failure)
+-AC_DEFUN(MOZ_CHECK_PTHREADS,
+-[
++AC_DEFUN([MOZ_CHECK_PTHREADS],
++[AC_PREREQ([2.57])dnl
+ AC_MSG_CHECKING([for pthread_create in -l$1])
+ echo "
+     #include <pthread.h> 

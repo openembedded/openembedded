@@ -22,9 +22,5 @@ export SYSROOT = "${STAGING_DIR_HOST}"
 EXTRA_OEMAKE = "ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2 SYSROOT=${SYSROOT}"
 EXTRA_OECONF = "--disable-scrollkeeper"
 
-do_stage() {
-        autotools_stage_all
-}
-
 SRC_URI[archive.md5sum] = "0d246880611a4c58fe2ff99614b96918"
 SRC_URI[archive.sha256sum] = "6d6d0f013594f1d5f685bc9d35ad2c64d7817339a932d8e17eede5b8a3c8196a"

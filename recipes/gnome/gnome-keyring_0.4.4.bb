@@ -8,17 +8,5 @@ DEPENDS = "gtk+"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
-HEADERS = " \
-gnome-keyring.h \
-"
-
-do_stage() {
-	install -d ${STAGING_INCDIR}/gnome-keyring-1
-	for i in ${HEADERS}; do
-		install -m 0644 $i ${STAGING_INCDIR}/gnome-keyring-1/$i
-	done
-	oe_libinstall -so libgnome-keyring ${STAGING_LIBDIR}
-}
-
 SRC_URI[md5sum] = "dc17fa8b04172d3b1993caa6959a7648"
 SRC_URI[sha256sum] = "f6799acf59bc91054c4832e7956cb3126effdf911f746139478dcfa8ec727653"

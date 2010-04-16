@@ -1,0 +1,59 @@
+From 714559dccda3165a72f0a9935c1edc3aef535f30 Mon Sep 17 00:00:00 2001
+From: Søren Sandmann Pedersen <ssp@redhat.com>
+Date: Wed, 07 Apr 2010 05:44:12 +0000
+Subject: Fixes for pthread thread local storage.
+
+The tls_name_key variable is passed to tls_name_get(), and the first
+time this happens it isn't initialized. tls_name_get() then passes it
+on to tls_name_alloc() which passes it on to pthread_setspecific()
+leading to undefined behavior.
+
+None of this is actually necessary at all because there is only one
+such variable per thread local variable, so it doesn't need to passed
+as a parameter at all.
+
+All of this was pointed out by Tor Lillqvist on the cairo mailing
+list.
+---
+diff --git a/pixman/pixman-compiler.h b/pixman/pixman-compiler.h
+index cdac0d8..531c8c9 100644
+--- a/pixman/pixman-compiler.h
++++ b/pixman/pixman-compiler.h
+@@ -99,16 +99,16 @@
+     }									\
+ 									\
+     static type *							\
+-    tls_ ## name ## _alloc (key)					\
++    tls_ ## name ## _alloc (void)					\
+     {									\
+ 	type *value = calloc (1, sizeof (type));			\
+ 	if (value)							\
+-	    pthread_setspecific (key, value);				\
++	    pthread_setspecific (tls_ ## name ## _key, value);		\
+ 	return value;							\
+     }									\
+ 									\
+     static force_inline type *						\
+-    tls_ ## name ## _get (key)						\
++    tls_ ## name ## _get (void)						\
+     {									\
+ 	type *value = NULL;						\
+ 	if (pthread_once (&tls_ ## name ## _once_control,		\
+@@ -116,13 +116,13 @@
+ 	{								\
+ 	    value = pthread_getspecific (tls_ ## name ## _key);		\
+ 	    if (!value)							\
+-		value = tls_ ## name ## _alloc (key);			\
++		value = tls_ ## name ## _alloc ();			\
+ 	}								\
+ 	return value;							\
+     }
+ 
+ #   define PIXMAN_GET_THREAD_LOCAL(name)				\
+-    tls_ ## name ## _get (tls_ ## name ## _key)
++    tls_ ## name ## _get ()
+ 
+ #else
+ 
+--
+cgit v0.8.3-6-g21f6

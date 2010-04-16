@@ -1,0 +1,129 @@
+Index: cdc/build/share/rules_zoneinfo.mk
+===================================================================
+--- cdc/build/share/rules_zoneinfo.mk.orig	2010-04-15 11:14:44.000000000 +0200
++++ cdc/build/share/rules_zoneinfo.mk	2010-04-15 11:26:38.285079007 +0200
+@@ -45,7 +45,7 @@
+ .compile.classlist:
+ 	$(AT)if [ -s $(ZONEINFO_CLASSES_DIR)/.classes.list ] ; then	\
+ 	     echo "Compiling zic classes... ";				\
+-	     $(JAVAC_CMD)						\
++	     $(JAVAC_CMD) -sourcepath $(CVM_SHAREROOT)/classes		\
+ 			-d $(ZONEINFO_CLASSES_DIR)			\
+ 			@$(ZONEINFO_CLASSES_DIR)/.classes.list ;	\
+ 	fi
+Index: cdc/build/share/jcc.mk
+===================================================================
+--- cdc/build/share/jcc.mk.orig	2010-04-15 11:14:44.000000000 +0200
++++ cdc/build/share/jcc.mk	2010-04-15 11:26:38.285079007 +0200
+@@ -93,7 +93,7 @@
+ 		 $(CVM_JCC_SRCPATH)/JCCMessage.properties
+ 	@echo "... $@"
+ 	$(AT)CLASSPATH=$(CVM_JCC_SRCPATH); export CLASSPATH; \
+-	$(CVM_JAVAC) $(JAVAC_OPTIONS) -d $(CVM_JCC_CLASSPATH) \
++	$(CVM_JAVAC) $(JAVAC_OPTIONS) -sourcepath $(CVM_JCC_SRCPATH) -d $(CVM_JCC_CLASSPATH) \
+ 	    $(subst /,$(CVM_FILESEP),$(CVM_JCC_SRCPATH)/GenOpcodes.java)
+ 	$(AT)rm -f $(CVM_JCC_CLASSPATH)/JCCMessage.properties; \
+ 	cp $(CVM_JCC_SRCPATH)/JCCMessage.properties $(CVM_JCC_CLASSPATH)/JCCMessage.properties
+@@ -258,7 +258,7 @@
+ 		 $(CVM_JCC_SRCPATH)/JCCMessage.properties
+ 	@echo "... $@"
+ 	@CLASSPATH=$(CVM_JCC_CLASSPATH)$(PS)$(CVM_JCC_SRCPATH)$(PS)$(CVM_DERIVEDROOT)/javavm/runtime; export CLASSPATH; \
+-	$(CVM_JAVAC) $(JAVAC_OPTIONS) -d $(CVM_JCC_CLASSPATH) \
++	$(CVM_JAVAC) $(JAVAC_OPTIONS) -classpath $(CVM_JCC_CLASSPATH)$(PS)$(CVM_JCC_SRCPATH)$(PS)$(CVM_DERIVEDROOT)/javavm/runtime -d $(CVM_JCC_CLASSPATH) \
+ 	    $(CVM_JCC_CLASSES)
+ 	@rm -f $(CVM_JCC_CLASSPATH)/JCCMessage.properties; \
+ 	cp $(CVM_JCC_SRCPATH)/JCCMessage.properties $(CVM_JCC_CLASSPATH)/JCCMessage.properties
+Index: cdc/build/share/defs.mk
+===================================================================
+--- cdc/build/share/defs.mk.orig	2010-04-15 11:14:44.000000000 +0200
++++ cdc/build/share/defs.mk	2010-04-15 11:26:38.285079007 +0200
+@@ -1304,7 +1304,7 @@
+ BUNDLE_VERSION	= $(subst -,_,$(J2ME_BUILD_VERSION_STRING))
+ BUNDLE_TARGET	= $(subst -,_,$(CVM_TARGET))
+ 
+-BINARY_BUNDLE_NAME	= \
++BINARY_BUNDLE_NAME	?= \
+ 	$(BUNDLE_PRODUCT_NAME)-$(BUNDLE_VERSION)-$(BUNDLE_TARGET)-bin
+ BINARY_BUNDLE_DIRNAME	= $(BINARY_BUNDLE_NAME)
+ 
+@@ -2314,11 +2314,11 @@
+ 
+ # Note, ALL_INCLUDE_FLAGS flags is setup in rules.mk so
+ # abs2rel only needs to be called on it once.
+-CPPFLAGS 	+= $(CVM_DEFINES) $(ALL_INCLUDE_FLAGS)
+-CFLAGS_SPEED   	= $(CFLAGS) $(CCFLAGS_SPEED) $(CPPFLAGS)
+-CFLAGS_SPACE   	= $(CFLAGS) $(CCFLAGS_SPACE) $(CPPFLAGS)
+-CFLAGS_LOOP    	= $(CFLAGS) $(CCFLAGS_LOOP)  $(CPPFLAGS)
+-CFLAGS_FDLIB   	= $(CFLAGS) $(CCFLAGS_FDLIB) $(CPPFLAGS)
++CVM_CPPFLAGS 	+= $(CVM_DEFINES) $(ALL_INCLUDE_FLAGS)
++CFLAGS_SPEED   	= $(CFLAGS) $(CCFLAGS_SPEED) $(CVM_CPPFLAGS)
++CFLAGS_SPACE   	= $(CFLAGS) $(CCFLAGS_SPACE) $(CVM_CPPFLAGS)
++CFLAGS_LOOP    	= $(CFLAGS) $(CCFLAGS_LOOP)  $(CVM_CPPFLAGS)
++CFLAGS_FDLIB   	= $(CFLAGS) $(CCFLAGS_FDLIB) $(CVM_CPPFLAGS)
+ CFLAGS_JCS	= 
+ 
+ LINKFLAGS       += -g -Wl,-export-dynamic $(LINK_ARCH_FLAGS)
+@@ -2326,13 +2326,13 @@
+ LINKLIBS_JCS    +=
+ 
+ SO_CCFLAGS   	= $(CCFLAGS_SPEED)
+-SO_CFLAGS	= $(CFLAGS) $(SO_CCFLAGS) $(CPPFLAGS)
++SO_CFLAGS	= $(CFLAGS) $(SO_CCFLAGS) $(CVM_CPPFLAGS)
+ SO_LINKFLAGS 	= $(LINKFLAGS) -shared
+ 
+ #
+ # commands for running the tools
+ #
+-ASM_CMD 	= $(AT)$(TARGET_AS) $(ASM_FLAGS) -D_ASM $(CPPFLAGS) \
++ASM_CMD 	= $(AT)$(TARGET_AS) $(ASM_FLAGS) -D_ASM $(CVM_CPPFLAGS) \
+ 			-o $@ $(call abs2rel,$<)
+ 
+ # compileCCC(flags, objfile, srcfiles)
+Index: cdc/build/share/rules.mk
+===================================================================
+--- cdc/build/share/rules.mk.orig	2010-04-15 11:14:44.000000000 +0200
++++ cdc/build/share/rules.mk	2010-04-15 11:28:31.702151157 +0200
+@@ -685,7 +685,7 @@
+ # As a performance improvement, evaluate some flags in case
+ # they contain shell commands.
+ # NOTE: Disabled because this causes GCI build failures
+-#$(J2ME_CLASSLIB):: CPPFLAGS := $(CPPFLAGS)
++#$(J2ME_CLASSLIB):: CVM_CPPFLAGS := $(CVM_CPPFLAGS)
+ 
+ $(J2ME_CLASSLIB):: initbuild
+ $(J2ME_CLASSLIB):: btclasses $(CVM_BUILDTIME_CLASSESZIP)
+@@ -877,14 +877,14 @@
+ # command to use to generate dependency makefiles if requested
+ ifeq ($(GENERATEMAKEFILES), true)
+ GENERATEMAKEFILES_CMD = \
+-	@$(TARGET_CC) $(CCDEPEND) $(CC_ARCH_FLAGS) $(CPPFLAGS) $< \
++	@$(TARGET_CC) $(CCDEPEND) $(CC_ARCH_FLAGS) $(CVM_CPPFLAGS) $< \
+ 		2> /dev/null | sed 's!$*\.o!$(dir $@)&!g' > $(@:.o=.d)
+ endif
+ 
+ # command to use to generate stack map analysis files if requested
+ ifeq ($(CVM_CSTACKANALYSIS), true)
+ CSTACKANALYSIS_CMD = \
+-	$(AT)$(TARGET_CC) -S $(CCFLAGS) $(CPPFLAGS) -o $(@:.o=.asm) $<
++	$(AT)$(TARGET_CC) -S $(CCFLAGS) $(CVM_CPPFLAGS) -o $(@:.o=.asm) $<
+ endif
+ 
+ #
+@@ -920,7 +920,7 @@
+ 	@echo "as  $<"
+ 	$(ASM_CMD)
+ ifeq ($(GENERATEMAKEFILES), true)
+-	@$(TARGET_CC) $(ASM_ARCH_FLAGS) $(CCDEPEND) $(CPPFLAGS) $< \
++	@$(TARGET_CC) $(ASM_ARCH_FLAGS) $(CCDEPEND) $(CVM_CPPFLAGS) $< \
+ 		2> /dev/null | sed 's!$*\.o!$(dir $@)&!g' > $(@:.o=.d)
+ endif
+ ifeq ($(CVM_CSTACKANALYSIS), true)
+@@ -941,7 +941,7 @@
+ 	@echo "cc  $<"
+ 	$(CC_CMD_FDLIB)
+ ifeq ($(GENERATEMAKEFILES), true)
+-	@$(TARGET_CC) $(CC_ARCH_FLAGS) $(CCDEPEND) $(CPPFLAGS) $< \
++	@$(TARGET_CC) $(CC_ARCH_FLAGS) $(CCDEPEND) $(CVM_CPPFLAGS) $< \
+ 		2> /dev/null | sed 's!$*\.o!$(dir $@)&!g' > $(@:.o=.d)
+ endif
+ 

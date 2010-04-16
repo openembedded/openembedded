@@ -1,0 +1,57 @@
+Index: mozilla/security/nss/lib/freebl/genload.c
+===================================================================
+--- mozilla.orig/security/nss/lib/freebl/genload.c	2008-07-23 20:27:21.000000000 +0200
++++ mozilla/security/nss/lib/freebl/genload.c	2008-07-23 20:28:57.000000000 +0200
+@@ -113,9 +113,14 @@
+ 
+     /* Remove the trailing filename from referencePath and add the new one */
+     c = strrchr(referencePath, PR_GetDirectorySeparator());
++    if (!c) { /* referencePath doesn't contain a / means that dladdr gave us argv[0]
++               * and program was called from $PATH. Hack to get libs from /usr/lib */
++        referencePath = "/usr/lib/";
++        c = &referencePath[8]; /* last / */
++    }
+     if (c) {
+         size_t referencePathSize = 1 + c - referencePath;
+-        fullName = (char*) PORT_Alloc(strlen(name) + referencePathSize + 1);
++        fullName = (char*) PORT_Alloc(strlen(name) + referencePathSize + 5);
+         if (fullName) {
+             memcpy(fullName, referencePath, referencePathSize);
+             strcpy(fullName + referencePathSize, name); 
+@@ -125,7 +130,17 @@
+ #endif
+             libSpec.type = PR_LibSpec_Pathname;
+             libSpec.value.pathname = fullName;
++            if ((referencePathSize >= 4) &&
++                (strncmp(fullName + referencePathSize - 4, "bin", 3) == 0)) {
++                memcpy(fullName + referencePathSize -4, "lib", 3);
++            }
++            strcpy(fullName + referencePathSize, "nss/");
++            strcpy(fullName + referencePathSize + 4, name);
+             dlh = PR_LoadLibraryWithFlags(libSpec, PR_LD_NOW | PR_LD_LOCAL);
++            if (! dlh) {
++                strcpy(fullName + referencePathSize, name);
++                dlh = PR_LoadLibraryWithFlags(libSpec, PR_LD_NOW | PR_LD_LOCAL);
++            }
+             PORT_Free(fullName);
+         }
+     }
+Index: mozilla/security/nss/lib/pk11wrap/pk11load.c
+===================================================================
+--- mozilla.orig/security/nss/lib/pk11wrap/pk11load.c	2008-07-23 20:27:22.000000000 +0200
++++ mozilla/security/nss/lib/pk11wrap/pk11load.c	2008-07-23 20:28:57.000000000 +0200
+@@ -331,6 +331,14 @@
+ #endif
+ 
+ 	if (library == NULL) {
++	    full_name = rindex(mod->dllName, PR_GetDirectorySeparator());
++	    if (full_name)
++	        full_name++;
++	    else
++	        full_name = mod->dllName;
++	    library = loader_LoadLibrary(full_name);
++	}
++	if (library == NULL) {
+ 	    return SECFailure;
+ 	}
+ 
