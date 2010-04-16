@@ -1,0 +1,152 @@
+## 38_kbsd.patch by Petr Salinger <Petr.Salinger@seznam.cz>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: GNU/kFreeBSD support. bz#356011
+## DP: Added Hurd support.
+
+diff --git a/mozilla/security/coreconf/Linux.mk b/mozilla/security/coreconf/Linux.mk
+index 44b20b2..86d3edc 100644
+--- a/mozilla/security/coreconf/Linux.mk
++++ b/mozilla/security/coreconf/Linux.mk
+@@ -101,7 +101,7 @@ endif
+ 
+ LIBC_TAG		= _glibc
+ 
+-ifeq ($(OS_RELEASE),2.0)
++ifeq ($(KERNEL)-$(OS_RELEASE),linux-2.0)
+ 	OS_REL_CFLAGS	+= -DLINUX2_0
+ 	MKSHLIB		= $(CC) -shared -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so) $(RPATH)
+ 	ifdef MAPFILE
+@@ -132,14 +132,21 @@ endif
+ # -ansi on platforms like Android where the system headers are C99 and do
+ # not build with -ansi.
+ STANDARDS_CFLAGS	= -ansi -D_POSIX_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE
+-OS_CFLAGS		= $(STANDARDS_CFLAGS) $(DSO_CFLAGS) $(OS_REL_CFLAGS) $(ARCHFLAG) -Wall -Werror-implicit-function-declaration -Wno-switch -pipe -DLINUX -Dlinux -DHAVE_STRERROR
++OS_CFLAGS		= $(STANDARDS_CFLAGS) $(DSO_CFLAGS) $(OS_REL_CFLAGS) $(ARCHFLAG) -Wall -Werror-implicit-function-declaration -Wno-switch -pipe -DHAVE_STRERROR
++ifeq ($(KERNEL),linux)
++OS_CFLAGS		+= -DLINUX -Dlinux
++endif
+ OS_LIBS			= $(OS_PTHREAD) -ldl -lc
+ 
+ ifdef USE_PTHREADS
+ 	DEFINES		+= -D_REENTRANT
+ endif
+ 
+-ARCH			= linux
++ifeq ($(KERNEL),linux)
++	ARCH		= linux
++else
++	ARCH		= gnu
++endif
+ 
+ DSO_CFLAGS		= -fPIC
+ DSO_LDOPTS		= -shared $(ARCHFLAG)
+@@ -150,7 +157,7 @@ ZDEFS_FLAG		= -Wl,-z,defs
+ DSO_LDOPTS		+= $(if $(findstring 2.11.90.0.8,$(shell ld -v)),,$(ZDEFS_FLAG))
+ LDFLAGS			+= $(ARCHFLAG)
+ 
+-# INCLUDES += -I/usr/include -Y/usr/include/linux
++# INCLUDES += -I/usr/include
+ G++INCLUDES		= -I/usr/include/g++
+ 
+ #
+diff --git a/mozilla/security/coreconf/Linux2.6.mk b/mozilla/security/coreconf/Linux2.6.mk
+index 4a6cc1e..8d5cf07 100644
+--- a/mozilla/security/coreconf/Linux2.6.mk
++++ b/mozilla/security/coreconf/Linux2.6.mk
+@@ -37,7 +37,10 @@
+ 
+ include $(CORE_DEPTH)/coreconf/Linux.mk
+ 
++ifeq ($(KERNEL), linux)
+ OS_REL_CFLAGS   += -DLINUX2_1
++endif
++
+ MKSHLIB         = $(CC) $(DSO_LDOPTS) -Wl,-soname -Wl,$(@:$(OBJDIR)/%.so=%.so) $(RPATH)
+ 
+ ifdef MAPFILE
+diff --git a/mozilla/security/coreconf/arch.mk b/mozilla/security/coreconf/arch.mk
+index bd3c02c..86aca7c 100644
+--- a/mozilla/security/coreconf/arch.mk
++++ b/mozilla/security/coreconf/arch.mk
+@@ -155,6 +155,14 @@ ifeq ($(OS_ARCH),Linux)
+     ifneq ($(words $(OS_RELEASE)),1)
+ 	OS_RELEASE := $(word 1,$(OS_RELEASE)).$(word 2,$(OS_RELEASE))
+     endif
++    KERNEL = linux
++endif
++
++# This check must be last.  Since all uses of OS_ARCH that follow affect only
++# userland, we can merge other Glibc systems with Linux here.
++ifneq (, $(filter GNU GNU_%, $(OS_ARCH)))
++OS_ARCH = Linux
++OS_RELEASE = 2.6
+ endif
+ 
+ #
+diff --git a/mozilla/security/coreconf/config.mk b/mozilla/security/coreconf/config.mk
+index 5b560fb..b9f7e3d 100644
+--- a/mozilla/security/coreconf/config.mk
++++ b/mozilla/security/coreconf/config.mk
+@@ -63,7 +63,7 @@ endif
+ #######################################################################
+ 
+ TARGET_OSES = FreeBSD BSD_OS NetBSD OpenUNIX OS2 QNX Darwin BeOS OpenBSD \
+-              AIX RISCOS WINNT WIN95 WINCE
++              AIX RISCOS WINNT WIN95 WINCE GNU GNU_%
+ 
+ ifeq (,$(filter-out $(TARGET_OSES),$(OS_TARGET)))
+ include $(CORE_DEPTH)/coreconf/$(OS_TARGET).mk
+diff --git a/mozilla/security/nss/lib/freebl/unix_rand.c b/mozilla/security/nss/lib/freebl/unix_rand.c
+index 78c1769..be212a3 100644
+--- a/mozilla/security/nss/lib/freebl/unix_rand.c
++++ b/mozilla/security/nss/lib/freebl/unix_rand.c
+@@ -188,7 +188,8 @@ static SECStatus RNG_kstat(PRUint32* fed)
+ 
+ #if defined(SCO) || defined(UNIXWARE) || defined(BSDI) || defined(FREEBSD) \
+     || defined(NETBSD) || defined(DARWIN) || defined(OPENBSD) \
+-    || defined(NTO) || defined(__riscos__)
++    || defined(NTO) || defined(__riscos__) || defined(__GNU__) \
++    || defined(__FreeBSD_kernel__) || defined(__NetBSD_kernel__)
+ #include <sys/times.h>
+ 
+ #define getdtablesize() sysconf(_SC_OPEN_MAX)
+diff --git a/mozilla/security/nss/lib/softoken/softoken.h b/mozilla/security/nss/lib/softoken/softoken.h
+index 6375f9a..a4ba6b0 100644
+--- a/mozilla/security/nss/lib/softoken/softoken.h
++++ b/mozilla/security/nss/lib/softoken/softoken.h
+@@ -303,7 +303,7 @@ extern PRBool sftk_fatalError;
+ 
+ #define CHECK_FORK_MIXED
+ 
+-#elif defined(LINUX)
++#elif defined(LINUX) || defined (__GLIBC__)
+ 
+ #define CHECK_FORK_PTHREAD
+ 
+diff --git a/mozilla/security/nss/lib/ssl/sslmutex.c b/mozilla/security/nss/lib/ssl/sslmutex.c
+index 6b5dbd1..edd0b00 100644
+--- a/mozilla/security/nss/lib/ssl/sslmutex.c
++++ b/mozilla/security/nss/lib/ssl/sslmutex.c
+@@ -89,7 +89,7 @@ static SECStatus single_process_sslMutex_Lock(sslMutex* pMutex)
+     return SECSuccess;
+ }
+ 
+-#if defined(LINUX) || defined(AIX) || defined(BEOS) || defined(BSDI) || (defined(NETBSD) && __NetBSD_Version__ < 500000000) || defined(OPENBSD)
++#if defined(LINUX) || defined(AIX) || defined(BEOS) || defined(BSDI) || (defined(NETBSD) && __NetBSD_Version__ < 500000000) || defined(OPENBSD) || defined(__GLIBC__)
+ 
+ #include <unistd.h>
+ #include <fcntl.h>
+diff --git a/mozilla/security/nss/lib/ssl/sslmutex.h b/mozilla/security/nss/lib/ssl/sslmutex.h
+index 0fdb685..87cd0a9 100644
+--- a/mozilla/security/nss/lib/ssl/sslmutex.h
++++ b/mozilla/security/nss/lib/ssl/sslmutex.h
+@@ -83,7 +83,7 @@ typedef struct
+ 
+ typedef int    sslPID;
+ 
+-#elif defined(LINUX) || defined(AIX) || defined(BEOS) || defined(BSDI) || (defined(NETBSD) && __NetBSD_Version__ < 500000000) || defined(OPENBSD)
++#elif defined(LINUX) || defined(AIX) || defined(BEOS) || defined(BSDI) || (defined(NETBSD) && __NetBSD_Version__ < 500000000) || defined(OPENBSD) || defined(__GLIBC__)
+ 
+ #include <sys/types.h>
+ #include "prtypes.h"

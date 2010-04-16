@@ -1,0 +1,35 @@
+## 90_realpath.patch by Mike Hommey <glandium@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Use realpath() for loader_GetOriginalPathname, so that symlinks are
+## DP: properly followed when determining where the current library lives.
+
+diff --git a/mozilla/security/nss/lib/freebl/genload.c b/mozilla/security/nss/lib/freebl/genload.c
+index fac6e22..d242517 100644
+--- a/mozilla/security/nss/lib/freebl/genload.c
++++ b/mozilla/security/nss/lib/freebl/genload.c
+@@ -62,6 +62,16 @@
+  */
+ static char* loader_GetOriginalPathname(const char* link)
+ {
++#ifdef __GLIBC__
++    char* tmp = realpath(link, NULL);
++    char* resolved;
++    if (! tmp)
++    	return NULL;
++    resolved = PR_Malloc(strlen(tmp) + 1);
++    strcpy(resolved, tmp); /* This is necessary because PR_Free might not be using free() */
++    free(tmp);
++    return resolved;
++#else
+     char* resolved = NULL;
+     char* input = NULL;
+     PRUint32 iterations = 0;
+@@ -96,6 +106,7 @@ static char* loader_GetOriginalPathname(const char* link)
+         input = NULL;
+     }
+     return input;
++#endif
+ }
+ #endif /* XP_UNIX */
+ 

@@ -1,0 +1,79 @@
+## 85_security_load.patch by Mike Hommey <glandium@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Load modules from $ORIGIN/nss.
+
+diff --git a/mozilla/security/nss/cmd/shlibsign/shlibsign.c b/mozilla/security/nss/cmd/shlibsign/shlibsign.c
+index e486f7f..ae050f9 100644
+--- a/mozilla/security/nss/cmd/shlibsign/shlibsign.c
++++ b/mozilla/security/nss/cmd/shlibsign/shlibsign.c
+@@ -768,6 +768,8 @@ int main(int argc, char **argv)
+     libname = PR_GetLibraryName(NULL, "softokn3");
+     assert(libname != NULL);
+     lib = PR_LoadLibrary(libname);
++    if (!lib)
++        lib = PR_LoadLibrary("/usr/lib/nss/libsoftokn3.so");
+     assert(lib != NULL);
+     PR_FreeLibraryName(libname);
+ 
+diff --git a/mozilla/security/nss/lib/pk11wrap/pk11load.c b/mozilla/security/nss/lib/pk11wrap/pk11load.c
+index 1929993..2d4f91b 100644
+--- a/mozilla/security/nss/lib/pk11wrap/pk11load.c
++++ b/mozilla/security/nss/lib/pk11wrap/pk11load.c
+@@ -440,6 +440,12 @@ secmod_LoadPKCS11Module(SECMODModule *mod, SECMODModule **oldModule) {
+ 	 * unload the library if anything goes wrong from here on out...
+ 	 */
+ 	library = PR_LoadLibrary(full_name);
++	if ((library == NULL) &&
++	    !rindex(full_name, PR_GetDirectorySeparator())) {
++            library = PORT_LoadLibraryFromOrigin(my_shlib_name,
++                                      (PRFuncPtr) &softoken_LoadDSO,
++                                      full_name);
++	}
+ 	mod->library = (void *)library;
+ 	PORT_Free(full_name);
+ 
+diff --git a/mozilla/security/nss/lib/util/secload.c b/mozilla/security/nss/lib/util/secload.c
+index 6f9b527..7d6fc22 100644
+--- a/mozilla/security/nss/lib/util/secload.c
++++ b/mozilla/security/nss/lib/util/secload.c
+@@ -104,9 +104,14 @@ loader_LoadLibInReferenceDir(const char *referencePath, const char *name)
+ 
+     /* Remove the trailing filename from referencePath and add the new one */
+     c = strrchr(referencePath, PR_GetDirectorySeparator());
++    if (!c) { /* referencePath doesn't contain a / means that dladdr gave us argv[0]
++               * and program was called from $PATH. Hack to get libs from /usr/lib */
++        referencePath = "/usr/lib/";
++        c = &referencePath[8]; /* last / */
++    }
+     if (c) {
+         size_t referencePathSize = 1 + c - referencePath;
+-        fullName = (char*) PORT_Alloc(strlen(name) + referencePathSize + 1);
++        fullName = (char*) PORT_Alloc(strlen(name) + referencePathSize + 5);
+         if (fullName) {
+             memcpy(fullName, referencePath, referencePathSize);
+             strcpy(fullName + referencePathSize, name); 
+@@ -116,6 +121,12 @@ loader_LoadLibInReferenceDir(const char *referencePath, const char *name)
+ #endif
+             libSpec.type = PR_LibSpec_Pathname;
+             libSpec.value.pathname = fullName;
++            if ((referencePathSize >= 4) &&
++                (strncmp(fullName + referencePathSize - 4, "bin", 3) == 0)) {
++                memcpy(fullName + referencePathSize -4, "lib", 3);
++            }
++            strcpy(fullName + referencePathSize, "nss/");
++            strcpy(fullName + referencePathSize + 4, name);
+             dlh = PR_LoadLibraryWithFlags(libSpec, PR_LD_NOW | PR_LD_LOCAL
+ #ifdef PR_LD_ALT_SEARCH_PATH
+             /* allow library's dependencies to be found in the same directory
+@@ -123,6 +134,10 @@ loader_LoadLibInReferenceDir(const char *referencePath, const char *name)
+                                           | PR_LD_ALT_SEARCH_PATH 
+ #endif
+                                           );
++            if (! dlh) {
++                strcpy(fullName + referencePathSize, name);
++                dlh = PR_LoadLibraryWithFlags(libSpec, PR_LD_NOW | PR_LD_LOCAL);
++            }
+             PORT_Free(fullName);
+         }
+     }

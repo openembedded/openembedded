@@ -1,0 +1,59 @@
+## 38_hurd.patch by  <glandium@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix FTBFS on Hurd because of MAXPATHLEN
+
+diff --git a/mozilla/security/nss/cmd/shlibsign/shlibsign.c b/mozilla/security/nss/cmd/shlibsign/shlibsign.c
+index 6e93225..e486f7f 100644
+--- a/mozilla/security/nss/cmd/shlibsign/shlibsign.c
++++ b/mozilla/security/nss/cmd/shlibsign/shlibsign.c
+@@ -594,7 +594,6 @@ int main(int argc, char **argv)
+ #ifdef USES_LINKS
+     int ret;
+     struct stat stat_buf;
+-    char link_buf[MAXPATHLEN+1];
+     char *link_file = NULL;
+ #endif
+ 
+@@ -871,10 +870,22 @@ int main(int argc, char **argv)
+     }
+     if (S_ISLNK(stat_buf.st_mode)) {
+         char *dirpath,*dirend;
+-        ret = readlink(input_file, link_buf, sizeof(link_buf) - 1);
+-        if (ret < 0) {
+-            perror(input_file);
+-            goto cleanup;
++        char *link_buf = NULL;
++        size_t size = 64;
++        while (1) {
++            link_buf = realloc(link_buf, size);
++            if (!link_buf) {
++                perror(input_file);
++                goto cleanup;
++            }
++            ret = readlink(input_file, link_buf, size - 1);
++            if (ret < 0) {
++                perror(input_file);
++                goto cleanup;
++            }
++            if (ret < size - 1)
++                break;
++            size *= 2;
+         }
+         link_buf[ret] = 0;
+         link_file = mkoutput(input_file);
+diff --git a/mozilla/security/nss/lib/freebl/unix_rand.c b/mozilla/security/nss/lib/freebl/unix_rand.c
+index 6c019da..78c1769 100644
+--- a/mozilla/security/nss/lib/freebl/unix_rand.c
++++ b/mozilla/security/nss/lib/freebl/unix_rand.c
+@@ -1053,6 +1053,10 @@ void ReadSingleFile(const char *fileName)
+ #define _POSIX_PTHREAD_SEMANTICS
+ #include <dirent.h>
+ 
++#ifndef PATH_MAX
++#define PATH_MAX 1024
++#endif
++
+ PRBool
+ ReadFileOK(char *dir, char *file)
+ {

@@ -1,0 +1,18 @@
+Remove runtime check of NSPR version in NSS_VersionCheck, which seems to
+be pointless.
+
+https://bugzilla.mozilla.org/show_bug.cgi?id=542741
+diff --git a/mozilla/security/nss/lib/nss/nssinit.c b/mozilla/security/nss/lib/nss/nssinit.c
+index f2e3ffb..66be164 100644
+--- a/mozilla/security/nss/lib/nss/nssinit.c
++++ b/mozilla/security/nss/lib/nss/nssinit.c
+@@ -1198,9 +1198,5 @@ NSS_VersionCheck(const char *importedVersion)
+         vpatch == NSS_VPATCH && vbuild > NSS_VBUILD) {
+         return PR_FALSE;
+     }
+-    /* Check dependent libraries */
+-    if (PR_VersionCheck(PR_VERSION) == PR_FALSE) {
+-        return PR_FALSE;
+-    }
+     return PR_TRUE;
+ }
