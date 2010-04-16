@@ -14,6 +14,7 @@ DEFAULT_PREFERENCE_sh7785lcr = "1"
 DEFAULT_PREFERENCE_ben-nanonote = "-1"
 DEFAULT_PREFERENCE_jornada6xx = "-1"
 DEFAULT_PREFERENCE_jornada7xx = "-1"
+DEFAULT_PREFERENCE_tb5200l = "1"
 DEFAULT_PREFERENCE_ts72xx = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
