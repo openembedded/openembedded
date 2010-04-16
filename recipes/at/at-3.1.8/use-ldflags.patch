@@ -1,0 +1,18 @@
+--- a/Makefile.in	2010-04-16 17:35:22.000000000 +0400
++++ b/Makefile.in	2010-04-16 17:36:37.000000000 +0400
+@@ -70,13 +70,13 @@ LIST = Filelist Filelist.asc
+ all: at atd atrun
+ 
+ at: $(ATOBJECTS)
+-	$(CC) $(CFLAGS) -o at $(ATOBJECTS) $(LIBS) $(LEXLIB)
++	$(CC) $(CFLAGS) -o at $(ATOBJECTS) $(LIBS) $(LEXLIB) $(LDFLAGS)
+ 	rm -f $(CLONES)
+ 	$(LN_S) -f at atq
+ 	$(LN_S) -f at atrm
+ 
+ atd: $(RUNOBJECTS)
+-	$(CC) $(CFLAGS) -o atd $(RUNOBJECTS) $(LIBS)
++	$(CC) $(CFLAGS) -o atd $(RUNOBJECTS) $(LIBS) $(LDFLAGS)
+ 
+ y.tab.c y.tab.h: parsetime.y
+ 	$(YACC) -d parsetime.y
