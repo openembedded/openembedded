@@ -7,7 +7,7 @@ DEPENDS_virtclass-native = "python-native"
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz;name=archive"
 S = "${WORKDIR}/${BPN}-${PV}"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 BBCLASSEXTEND = "native"
 
@@ -20,7 +20,7 @@ EXTRA_OECONF = "\
  --with-docbook \
  --with-c14n"
 
-XPY = ""
+XPY = " --without-python"
 XPY_virtclass-native = " --with-python=${PYTHON_DIR}" 
 
 EXTRA_OECONF += "${XPY}"
