@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mozilla.org/projects/security/pki/nss/"
 
 LICENSE = "MPL1.1 GPL LGPL"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "sqlite3 nspr"
 
