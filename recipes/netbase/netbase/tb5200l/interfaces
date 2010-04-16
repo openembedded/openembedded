@@ -1,0 +1,33 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+
+# Wired ethernet interface of "tiny box"
+auto eth0
+iface eth0 inet dhcp
+
+
+# Ethernet/RNDIS gadget (g_ether)
+# ... or on host side, usbnet and random hwaddr
+iface usb0 inet static
+	address 192.168.0.202
+	netmask 255.255.255.0
+	network 192.168.0.0
+	gateway 192.168.0.200
+
+# CAN interfaces
+auto can0
+iface can0 inet manual
+	pre-up ip link set $IFACE type can bitrate 125000 listen-only off
+	up /sbin/ifconfig $IFACE up
+	down /sbin/ifconfig $IFACE down
+
+auto can1
+iface can1 inet manual
+	pre-up ip link set $IFACE type can bitrate 125000 listen-only off
+	up /sbin/ifconfig $IFACE up
+	down /sbin/ifconfig $IFACE down
+
