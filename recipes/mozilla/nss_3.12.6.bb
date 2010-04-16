@@ -1,7 +1,7 @@
 DESCRIPTION = "Mozilla's SSL and TLS implementation"
 HOMEPAGE = "http://www.mozilla.org/projects/security/pki/nss/"
 
-PR = "r1"
+PR = "r2"
 
 LICENSE = "MPL1.1 GPL LGPL"
 
@@ -79,9 +79,10 @@ do_install() {
 
 	install -d ${D}/${libdir}/nss
 
-	for shared_lib in ${TD}/${libdir}/*.so
+	for shared_lib in ${TD}/${libdir}/*.so.*
 	do
-		cp $shared_lib ${D}/${libdir}/nss
+		cp $shared_lib ${D}/${libdir}
+		ln -sf $(basename $shared_lib) ${D}/${libdir}/$(basename $shared_lib .1oe)
 	done
 
 	install -d ${D}/${includedir}/mozilla/nss
@@ -89,7 +90,7 @@ do_install() {
 
 	for static_lib in ${TD}/${libdir}/*.a
 	do
-		oe_libinstall -C ${TD}/${libdir} `basename $static_lib .a` ${D}/${libdir}/nss
+		oe_libinstall -C ${TD}/${libdir} `basename $static_lib .a` ${D}/${libdir}
 	done
 
 	install -d ${D}/${bindir}
@@ -103,5 +104,3 @@ do_install() {
 
 }
 
-FILES_${PN} = "${bindir} ${libdir}/nss/*.so"
-FILES_${PN}-static += "${libdir}/nss/*.a"
