@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 RDEPENDS_${PN} = "ppp"
 RDEPENDS_${PN}-server = "${PN}"
 RRECOMMENDS_${PN} = "ppp-oe"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
            file://top-autoconf.patch \
@@ -13,6 +13,7 @@ SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
            file://pppoe-src-restrictions.patch \
            file://update-config.patch \
            file://dont-swallow-errors.patch \
+	   file://use-ldflags.patch \
            file://pppoe-server.default \
            file://pppoe-server.init"
 
