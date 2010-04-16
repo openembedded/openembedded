@@ -1,0 +1,63 @@
+Index: mozilla/security/coreconf/Linux.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux.mk	2008-07-25 13:48:56.000000000 +0200
++++ mozilla/security/coreconf/Linux.mk	2008-07-25 13:49:07.000000000 +0200
+@@ -46,11 +46,11 @@
+ 	IMPL_STRATEGY = _PTH
+ endif
+ 
+-CC			= gcc
+-CCC			= g++
+-RANLIB			= ranlib
++CC			?= gcc
++CCC			?= g++
++RANLIB			?= ranlib
+ 
+-DEFAULT_COMPILER = gcc
++DEFAULT_COMPILER ?= gcc
+ 
+ ifeq ($(OS_TEST),m68k)
+ 	OS_REL_CFLAGS	= -DLINUX1_2 -D_XOPEN_SOURCE
+Index: mozilla/security/coreconf/arch.mk
+===================================================================
+--- mozilla.orig/security/coreconf/arch.mk	2008-07-25 13:47:34.000000000 +0200
++++ mozilla/security/coreconf/arch.mk	2008-07-25 13:48:51.000000000 +0200
+@@ -66,7 +66,7 @@
+ # Attempt to differentiate between sparc and x86 Solaris
+ #
+ 
+-OS_TEST := $(shell uname -m)
++OS_TEST ?= $(shell uname -m)
+ ifeq ($(OS_TEST),i86pc)
+     OS_RELEASE := $(shell uname -r)_$(OS_TEST)
+ else
+Index: mozilla/security/nss/lib/softoken/legacydb/manifest.mn
+===================================================================
+--- mozilla.orig/security/nss/lib/softoken/legacydb/manifest.mn	2008-07-24 21:21:37.000000000 +0200
++++ mozilla/security/nss/lib/softoken/legacydb/manifest.mn	2008-07-25 14:01:28.000000000 +0200
+@@ -48,6 +48,10 @@
+ 
+ ifdef MOZILLA_CLIENT
+ INCLUDES += -I$(DIST)/include/sqlite3
++
++ifdef SQLITE3_INCLUDE_DIR
++INCLUDES += -I$(SQLITE3_INCLUDE_DIR)
++endif
+ endif
+ 
+ CSRCS = \
+Index: mozilla/security/nss/lib/softoken/manifest.mn
+===================================================================
+--- mozilla.orig/security/nss/lib/softoken/manifest.mn	2008-07-24 21:20:03.000000000 +0200
++++ mozilla/security/nss/lib/softoken/manifest.mn	2008-07-25 14:00:43.000000000 +0200
+@@ -49,6 +49,10 @@
+ 
+ ifdef MOZILLA_CLIENT
+ INCLUDES += -I$(DIST)/include/sqlite3
++
++ifdef SQLITE3_INCLUDE_DIR
++INCLUDES += -I$(SQLITE3_INCLUDE_DIR)
++endif
+ endif
+ 
+ EXPORTS = \

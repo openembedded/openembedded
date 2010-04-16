@@ -1,0 +1,22 @@
+Index: mozilla/security/coreconf/Linux.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux.mk	2008-07-23 20:20:14.000000000 +0200
++++ mozilla/security/coreconf/Linux.mk	2008-07-23 20:20:28.000000000 +0200
+@@ -105,6 +105,9 @@
+ 	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+ 	CPU_ARCH        = hppa
+ else
++	ifeq ($(OS_TEST),mips64)
++	CPU_ARCH        = mips
++else
+ ifeq ($(OS_TEST),s390)
+ 	OS_REL_CFLAGS   = -DLINUX1_2 -D_XOPEN_SOURCE
+ 	CPU_ARCH        = s390
+@@ -133,6 +136,7 @@
+ endif
+ endif
+ endif
++endif
+ 
+ 
+ LIBC_TAG		= _glibc

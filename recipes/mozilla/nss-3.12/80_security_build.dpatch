@@ -1,0 +1,11 @@
+Index: mozilla/security/nss/cmd/shlibsign/Makefile
+===================================================================
+--- mozilla.orig/security/nss/cmd/shlibsign/Makefile	2008-07-23 20:20:14.000000000 +0200
++++ mozilla/security/nss/cmd/shlibsign/Makefile	2008-07-23 20:20:30.000000000 +0200
+@@ -99,5 +99,5 @@
+ 	$(call core_abspath,$(NSPR_LIB_DIR)) $(call core_abspath,$<)
+ endif
+ 
+-libs install :: $(CHECKLOC)
++libs install ::
+ 

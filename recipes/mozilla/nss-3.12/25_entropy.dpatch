@@ -1,0 +1,16 @@
+Index: mozilla/security/nss/lib/freebl/unix_rand.c
+===================================================================
+--- mozilla.orig/security/nss/lib/freebl/unix_rand.c	2008-07-23 20:20:15.000000000 +0200
++++ mozilla/security/nss/lib/freebl/unix_rand.c	2008-07-23 20:20:18.000000000 +0200
+@@ -888,7 +888,11 @@
+ /* Fork netstat to collect its output by default. Do not unset this unless
+  * another source of entropy is available
+  */
++#ifndef LINUX
+ #define DO_NETSTAT 1
++#else
++#undef DO_NETSTAT 
++#endif
+ 
+ void RNG_SystemInfoForRNG(void)
+ {

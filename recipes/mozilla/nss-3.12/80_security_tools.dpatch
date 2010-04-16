@@ -1,0 +1,31 @@
+Index: mozilla/security/coreconf/Linux.mk
+===================================================================
+--- mozilla.orig/security/coreconf/Linux.mk	2008-07-23 20:20:28.000000000 +0200
++++ mozilla/security/coreconf/Linux.mk	2008-07-23 20:20:33.000000000 +0200
+@@ -184,3 +184,6 @@
+ # Always set CPU_TAG on Linux, OpenVMS, WINCE.
+ #
+ CPU_TAG = _$(CPU_ARCH)
++
++USE_SYSTEM_ZLIB = 1
++ZLIB_LIBS = -lz
+Index: mozilla/security/nss/cmd/platlibs.mk
+===================================================================
+--- mozilla.orig/security/nss/cmd/platlibs.mk	2008-07-23 20:20:13.000000000 +0200
++++ mozilla/security/nss/cmd/platlibs.mk	2008-07-23 20:20:33.000000000 +0200
+@@ -38,6 +38,7 @@
+ # set RPATH-type linker instructions here so they can be used in the shared
+ # version and in the mixed (static nss libs/shared NSPR libs) version.
+ 
++ifdef ENABLE_RPATH
+ ifeq ($(OS_ARCH), SunOS) 
+ ifeq ($(BUILD_SUN_PKG), 1)
+ ifeq ($(USE_64), 1)
+@@ -71,6 +72,7 @@
+ endif
+ endif
+ endif
++endif
+ 
+ SQLITE=-lsqlite3
+ 
