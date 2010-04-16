@@ -16,6 +16,7 @@ DEFAULT_PREFERENCE_jornada6xx = "-1"
 DEFAULT_PREFERENCE_jornada7xx = "-1"
 DEFAULT_PREFERENCE_tb5200l = "1"
 DEFAULT_PREFERENCE_ts72xx = "-1"
+DEFAULT_PREFERENCE_bluepro = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.9.bz2;apply=yes;name=stablepatch \
