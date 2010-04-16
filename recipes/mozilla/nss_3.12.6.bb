@@ -1,6 +1,8 @@
 DESCRIPTION = "Mozilla's SSL and TLS implementation"
 HOMEPAGE = "http://www.mozilla.org/projects/security/pki/nss/"
 
+PR = "r1"
+
 LICENSE = "MPL1.1 GPL LGPL"
 
 DEPENDS = "sqlite3 nspr"
