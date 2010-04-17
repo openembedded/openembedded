@@ -1,5 +1,3 @@
-/* $Xorg: keysymdef.h,v 1.4 2001/02/09 02:03:23 $ */
-
 /***********************************************************
 Copyright 1987, 1994, 1998  The Open Group
 
@@ -47,7 +45,6 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
 ******************************************************************/
-/* $XFree86: $ */
 
 /*
  * The "X11 Window System Protocol" standard defines in Appendix A the
@@ -56,7 +53,7 @@ SOFTWARE.
  * engraving) of a keyboard layout. This file assigns mnemonic macro
  * names for these keysyms.
  *
- * This file is also compiled (by xc/lib/X11/util/makekeys.c) into
+ * This file is also compiled (by src/util/makekeys.c in libX11) into
  * hash tables that can be accessed with X11 library functions such as
  * XStringToKeysym() and XKeysymToString().
  *
@@ -93,9 +90,26 @@ SOFTWARE.
  *    /^\#define XK_([a-zA-Z_0-9]+)\s+0x([0-9a-f]+)\s*\/\*\(U+([0-9A-F]{4,6}) (.*)\)\*\/\s*$/
  *    /^\#define XK_([a-zA-Z_0-9]+)\s+0x([0-9a-f]+)\s*(\/\*\s*(.*)\s*\*\/)?\s*$/
  *
+ * Before adding new keysyms, please do consider the following: In
+ * addition to the keysym names defined in this file, the
+ * XStringToKeysym() and XKeysymToString() functions will also handle
+ * any keysym string of the form "U0020" to "U007E" and "U00A0" to
+ * "U10FFFF" for all possible Unicode characters. In other words,
+ * every possible Unicode character has already a keysym string
+ * defined algorithmically, even if it is not listed here. Therefore,
+ * defining an additional keysym macro is only necessary where a
+ * non-hexadecimal mnemonic name is needed, or where the new keysym
+ * does not represent any existing Unicode character.
+ *
  * When adding new keysyms to this file, do not forget to also update the
- * mappings in xc/lib/X11/KeyBind.c and the protocol specification in
- * xc/doc/specs/XProtocol/X11.keysyms.
+ * following:
+ *
+ *   - the mappings in src/KeyBind.c in the repo
+ *     git://anongit.freedesktop.org/xorg/lib/libX11
+ *
+ *   - the protocol specification in specs/XProtocol/X11.keysyms
+ *     in the repo git://anongit.freedesktop.org/xorg/doc/xorg-docs
+ *
  */
 
 #define XK_VoidSymbol                  0xffffff  /* Void symbol */
@@ -327,6 +341,9 @@ SOFTWARE.
 #define XK_ISO_Level3_Shift              0xfe03
 #define XK_ISO_Level3_Latch              0xfe04
 #define XK_ISO_Level3_Lock               0xfe05
+#define XK_ISO_Level5_Shift              0xfe11
+#define XK_ISO_Level5_Latch              0xfe12
+#define XK_ISO_Level5_Lock               0xfe13
 #define XK_ISO_Group_Shift               0xff7e  /* Alias for mode_switch */
 #define XK_ISO_Group_Latch               0xfe06
 #define XK_ISO_Group_Lock                0xfe07
@@ -365,6 +382,7 @@ SOFTWARE.
 #define XK_dead_acute                    0xfe51
 #define XK_dead_circumflex               0xfe52
 #define XK_dead_tilde                    0xfe53
+#define XK_dead_perispomeni              0xfe53  /* alias for dead_tilde */
 #define XK_dead_macron                   0xfe54
 #define XK_dead_breve                    0xfe55
 #define XK_dead_abovedot                 0xfe56
@@ -381,6 +399,34 @@ SOFTWARE.
 #define XK_dead_hook                     0xfe61
 #define XK_dead_horn                     0xfe62
 #define XK_dead_stroke                   0xfe63
+#define XK_dead_abovecomma               0xfe64
+#define XK_dead_psili                    0xfe64  /* alias for dead_abovecomma */
+#define XK_dead_abovereversedcomma       0xfe65
+#define XK_dead_dasia                    0xfe65  /* alias for dead_abovereversedcomma */
+#define XK_dead_doublegrave              0xfe66
+#define XK_dead_belowring                0xfe67
+#define XK_dead_belowmacron              0xfe68
+#define XK_dead_belowcircumflex          0xfe69
+#define XK_dead_belowtilde               0xfe6a
+#define XK_dead_belowbreve               0xfe6b
+#define XK_dead_belowdiaeresis           0xfe6c
+#define XK_dead_invertedbreve            0xfe6d
+#define XK_dead_belowcomma               0xfe6e
+#define XK_dead_currency                 0xfe6f
+
+/* dead vowels for universal syllable entry */
+#define XK_dead_a                        0xfe80
+#define XK_dead_A                        0xfe81
+#define XK_dead_e                        0xfe82
+#define XK_dead_E                        0xfe83
+#define XK_dead_i                        0xfe84
+#define XK_dead_I                        0xfe85
+#define XK_dead_o                        0xfe86
+#define XK_dead_O                        0xfe87
+#define XK_dead_u                        0xfe88
+#define XK_dead_U                        0xfe89
+#define XK_dead_small_schwa              0xfe8a
+#define XK_dead_capital_schwa            0xfe8b
 
 #define XK_First_Virtual_Screen          0xfed0
 #define XK_Prev_Virtual_Screen           0xfed1
@@ -1465,20 +1511,20 @@ SOFTWARE.
 #define XK_downcaret                     0x0ba8  /*(U+2228 LOGICAL OR)*/
 #define XK_upcaret                       0x0ba9  /*(U+2227 LOGICAL AND)*/
 #define XK_overbar                       0x0bc0  /*(U+00AF MACRON)*/
-#define XK_downtack                      0x0bc2  /* U+22A5 UP TACK */
+#define XK_downtack                      0x0bc2  /* U+22A4 DOWN TACK */
 #define XK_upshoe                        0x0bc3  /*(U+2229 INTERSECTION)*/
 #define XK_downstile                     0x0bc4  /* U+230A LEFT FLOOR */
 #define XK_underbar                      0x0bc6  /*(U+005F LOW LINE)*/
 #define XK_jot                           0x0bca  /* U+2218 RING OPERATOR */
 #define XK_quad                          0x0bcc  /* U+2395 APL FUNCTIONAL SYMBOL QUAD */
-#define XK_uptack                        0x0bce  /* U+22A4 DOWN TACK */
+#define XK_uptack                        0x0bce  /* U+22A5 UP TACK */
 #define XK_circle                        0x0bcf  /* U+25CB WHITE CIRCLE */
 #define XK_upstile                       0x0bd3  /* U+2308 LEFT CEILING */
 #define XK_downshoe                      0x0bd6  /*(U+222A UNION)*/
 #define XK_rightshoe                     0x0bd8  /*(U+2283 SUPERSET OF)*/
 #define XK_leftshoe                      0x0bda  /*(U+2282 SUBSET OF)*/
-#define XK_lefttack                      0x0bdc  /* U+22A2 RIGHT TACK */
-#define XK_righttack                     0x0bfc  /* U+22A3 LEFT TACK */
+#define XK_lefttack                      0x0bdc  /* U+22A3 LEFT TACK */
+#define XK_righttack                     0x0bfc  /* U+22A2 RIGHT TACK */
 #endif /* XK_APL */
 
 /*

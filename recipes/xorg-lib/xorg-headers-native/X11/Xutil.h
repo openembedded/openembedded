@@ -1,4 +1,3 @@
-/* $Xorg: Xutil.h,v 1.8 2001/02/09 02:03:39 xorgcvs Exp $ */
 
 /***********************************************************
 
@@ -29,13 +28,13 @@ Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of Digital not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -46,7 +45,6 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
 ******************************************************************/
-/* $XFree86: xc/lib/X11/Xutil.h,v 3.6 2003/04/13 19:22:20 dawes Exp $ */
 
 #ifndef _XUTIL_H_
 #define _XUTIL_H_
@@ -55,7 +53,7 @@ SOFTWARE.
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 
-/* 
+/*
  * Bitmask returned by XParseGeometry().  Each bit tells if the corresponding
  * value (x, y, width, height) was found in the parsed string.
  */
@@ -151,7 +149,7 @@ IconPositionHint|IconMaskHint|WindowGroupHint)
 
 
 /*
- * new structure for manipulating TEXT properties; used with WM_NAME, 
+ * new structure for manipulating TEXT properties; used with WM_NAME,
  * WM_ICON_NAME, WM_CLIENT_MACHINE, and WM_COMMAND.
  */
 typedef struct {
@@ -262,16 +260,16 @@ typedef struct _XComposeStatus {
    || ((KeySym)(keysym) == XK_Num_Lock))
 #endif
 /*
- * opaque reference to Region data type 
+ * opaque reference to Region data type
  */
-typedef struct _XRegion *Region; 
+typedef struct _XRegion *Region;
 
 /* Return values from XRectInRegion() */
- 
+
 #define RectangleOut 0
 #define RectangleIn  1
 #define RectanglePart 2
- 
+
 
 /*
  * Information used by the visual utility routines to find desired visual
@@ -452,7 +450,7 @@ extern Status XGetStandardColormap(
     Display*		/* display */,
     Window		/* w */,
     XStandardColormap*	/* colormap_return */,
-    Atom		/* property */			    
+    Atom		/* property */
 );
 
 extern Status XGetTextProperty(
@@ -477,7 +475,7 @@ extern Status XGetWMClientMachine(
 
 extern XWMHints *XGetWMHints(
     Display*		/* display */,
-    Window		/* w */		      
+    Window		/* w */
 );
 
 extern Status XGetWMIconName(
@@ -496,7 +494,7 @@ extern Status XGetWMNormalHints(
     Display*		/* display */,
     Window		/* w */,
     XSizeHints*		/* hints_return */,
-    long*		/* supplied_return */ 
+    long*		/* supplied_return */
 );
 
 extern Status XGetWMSizeHints(
@@ -584,7 +582,7 @@ extern int XSetIconSizes(
     Display*		/* display */,
     Window		/* w */,
     XIconSize*		/* size_list */,
-    int			/* count */    
+    int			/* count */
 );
 
 extern int XSetNormalHints(

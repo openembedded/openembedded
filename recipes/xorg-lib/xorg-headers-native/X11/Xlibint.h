@@ -1,4 +1,3 @@
-/* $Xorg: Xlibint.h,v 1.5 2001/02/09 02:03:38 xorgcvs Exp $ */
 
 /*
 
@@ -27,7 +26,6 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
-/* $XFree86: xc/lib/X11/Xlibint.h,v 3.27 2003/05/27 22:26:26 tsi Exp $ */
 
 #ifndef _XLIBINT_H_
 #define _XLIBINT_H_ 1
@@ -108,7 +106,7 @@ struct _XDisplay
 	int nscreens;		/* number of screens on this server*/
 	Screen *screens;	/* pointer to list of screens */
 	unsigned long motion_buffer;	/* size of motion buffer */
-	unsigned long flags;	   /* internal connection flags */
+	volatile unsigned long flags;	   /* internal connection flags */
 	int min_keycode;	/* minimum defined keycode */
 	int max_keycode;	/* maximum defined keycode */
 	KeySym *keysyms;	/* This server's keysyms */
@@ -121,7 +119,7 @@ struct _XDisplay
 	struct _XExten *ext_procs; /* extensions initialized on this display */
 	/*
 	 * the following can be fixed size, as the protocol defines how
-	 * much address space is available. 
+	 * much address space is available.
 	 * While this could be done using the extension vector, there
 	 * may be MANY events processed, so a search through the extension
 	 * list to find the right procedure for each event might be
@@ -184,6 +182,21 @@ struct _XDisplay
 	int xcmisc_opcode;	/* major opcode for XC-MISC */
 	struct _XkbInfoRec *xkb_info; /* XKB info */
 	struct _XtransConnInfo *trans_conn; /* transport connection object */
+	struct _X11XCBPrivate *xcb; /* XCB glue private data */
+
+	/* Generic event cookie handling */
+	unsigned int next_cookie; /* next event cookie */
+	/* vector for wire to generic event, index is (extension - 128) */
+	Bool (*generic_event_vec[128])(
+		Display *	/* dpy */,
+		XGenericEventCookie *	/* Xlib event */,
+		xEvent *	/* wire event */);
+	/* vector for event copy, index is (extension - 128) */
+	Bool (*generic_event_copy_vec[128])(
+		Display *	/* dpy */,
+		XGenericEventCookie *	/* in */,
+		XGenericEventCookie *   /* out*/);
+	void *cookiejar;  /* cookie events returned but not claimed */
 };
 
 #define XAllocIDs(dpy,ids,n) (*(dpy)->idlist_alloc)(dpy,ids,n)
@@ -416,7 +429,7 @@ extern LockInfoPtr _Xglobal_lock;
 
 /*
  * GetReq - Get the next available X request packet in the buffer and
- * return it. 
+ * return it.
  *
  * "name" is the name of the request, e.g. CreatePixmap, OpenFont, etc.
  * "req" is the name of the request pointer.
@@ -473,9 +486,9 @@ extern LockInfoPtr _Xglobal_lock;
 
 
 /*
- * GetResReq is for those requests that have a resource ID 
+ * GetResReq is for those requests that have a resource ID
  * (Window, Pixmap, GContext, etc.) as their single argument.
- * "rid" is the name of the resource. 
+ * "rid" is the name of the resource.
  */
 
 #if !defined(UNIXCPP) || defined(ANSICPP)
@@ -504,7 +517,7 @@ extern LockInfoPtr _Xglobal_lock;
 
 /*
  * GetEmptyReq is for those requests that have no arguments
- * at all. 
+ * at all.
  */
 #if !defined(UNIXCPP) || defined(ANSICPP)
 #define GetEmptyReq(name, req) \
@@ -610,7 +623,7 @@ extern void _XFlushGCCache(Display *dpy, GC gc);
  * "ptr" is the pointer being assigned to.
  * "n" is the number of bytes to allocate.
  *
- * Example: 
+ * Example:
  *    xTextElt *elt;
  *    BufAlloc (xTextElt *, elt, nbytes)
  */
@@ -660,7 +673,7 @@ extern void _XRead32(
 			     (((cs)->rbearing|(cs)->lbearing| \
 			       (cs)->ascent|(cs)->descent) == 0))
 
-/* 
+/*
  * CI_GET_CHAR_INFO_1D - return the charinfo struct for the indicated 8bit
  * character.  If the character is in the column and exists, then return the
  * appropriate metrics (note that fonts with common per-character metrics will
@@ -686,7 +699,7 @@ extern void _XRead32(
 
 
 /*
- * CI_GET_CHAR_INFO_2D - return the charinfo struct for the indicated row and 
+ * CI_GET_CHAR_INFO_2D - return the charinfo struct for the indicated row and
  * column.  This is used for fonts that have more than row zero.
  */
 #define CI_GET_CHAR_INFO_2D(fs,row,col,def,cs) \
@@ -1004,6 +1017,19 @@ extern Bool _XUnknownWireEvent(
     XEvent*	/* re */,
     xEvent*	/* event */
 );
+
+extern Bool _XUnknownWireEventCookie(
+    Display*	/* dpy */,
+    XGenericEventCookie*	/* re */,
+    xEvent*	/* event */
+);
+
+extern Bool _XUnknownCopyEventCookie(
+    Display*	/* dpy */,
+    XGenericEventCookie*	/* in */,
+    XGenericEventCookie*	/* out */
+);
+
 extern Status _XUnknownNativeEvent(
     Display*	/* dpy */,
     XEvent*	/* re */,
@@ -1041,7 +1067,7 @@ extern int (*XESetCopyGC(
 	      Display*			/* display */,
               GC			/* gc */,
               XExtCodes*		/* codes */
-            )		/* proc */	      
+            )		/* proc */
 ))(
     Display*, GC, XExtCodes*
 );
@@ -1053,7 +1079,7 @@ extern int (*XESetFlushGC(
 	      Display*			/* display */,
               GC			/* gc */,
               XExtCodes*		/* codes */
-            )		/* proc */	     
+            )		/* proc */
 ))(
     Display*, GC, XExtCodes*
 );
@@ -1065,7 +1091,7 @@ extern int (*XESetFreeGC(
 	      Display*			/* display */,
               GC			/* gc */,
               XExtCodes*		/* codes */
-            )		/* proc */	     
+            )		/* proc */
 ))(
     Display*, GC, XExtCodes*
 );
@@ -1077,7 +1103,7 @@ extern int (*XESetCreateFont(
 	      Display*			/* display */,
               XFontStruct*		/* fs */,
               XExtCodes*		/* codes */
-            )		/* proc */    
+            )		/* proc */
 ))(
     Display*, XFontStruct*, XExtCodes*
 );
@@ -1089,10 +1115,10 @@ extern int (*XESetFreeFont(
 	      Display*			/* display */,
               XFontStruct*		/* fs */,
               XExtCodes*		/* codes */
-            )		/* proc */    
+            )		/* proc */
 ))(
     Display*, XFontStruct*, XExtCodes*
-); 
+);
 
 extern int (*XESetCloseDisplay(
     Display*		/* display */,
@@ -1100,7 +1126,7 @@ extern int (*XESetCloseDisplay(
     int (*) (
 	      Display*			/* display */,
               XExtCodes*		/* codes */
-            )		/* proc */    
+            )		/* proc */
 ))(
     Display*, XExtCodes*
 );
@@ -1113,7 +1139,7 @@ extern int (*XESetError(
               xError*			/* err */,
               XExtCodes*		/* codes */,
               int*			/* ret_code */
-            )		/* proc */    
+            )		/* proc */
 ))(
     Display*, xError*, XExtCodes*, int*
 );
@@ -1127,7 +1153,7 @@ extern char* (*XESetErrorString(
                 XExtCodes*		/* codes */,
                 char*			/* buffer */,
                 int			/* nbytes */
-              )		/* proc */	       
+              )		/* proc */
 ))(
     Display*, int, XExtCodes*, char*, int
 );
@@ -1151,10 +1177,35 @@ extern Bool (*XESetWireToEvent(
 	       Display*			/* display */,
                XEvent*			/* re */,
                xEvent*			/* event */
-             )		/* proc */    
+             )		/* proc */
 ))(
     Display*, XEvent*, xEvent*
 );
+
+extern Bool (*XESetWireToEventCookie(
+    Display*		/* display */,
+    int			/* extension */,
+    Bool (*) (
+	       Display*			/* display */,
+               XGenericEventCookie*	/* re */,
+               xEvent*			/* event */
+             )		/* proc */
+))(
+    Display*, XGenericEventCookie*, xEvent*
+);
+
+extern Bool (*XESetCopyEventCookie(
+    Display*		/* display */,
+    int			/* extension */,
+    Bool (*) (
+	       Display*			/* display */,
+               XGenericEventCookie*	/* in */,
+               XGenericEventCookie*	/* out */
+             )		/* proc */
+))(
+    Display*, XGenericEventCookie*, XGenericEventCookie*
+);
+
 
 extern Status (*XESetEventToWire(
     Display*		/* display */,
@@ -1163,7 +1214,7 @@ extern Status (*XESetEventToWire(
 	      Display*			/* display */,
               XEvent*			/* re */,
               xEvent*			/* event */
-            )		/* proc */   
+            )		/* proc */
 ))(
     Display*, XEvent*, xEvent*
 );
@@ -1175,7 +1226,7 @@ extern Bool (*XESetWireToError(
 	       Display*			/* display */,
 	       XErrorEvent*		/* he */,
 	       xError*			/* we */
-            )		/* proc */   
+            )		/* proc */
 ))(
     Display*, XErrorEvent*, xError*
 );
@@ -1188,7 +1239,7 @@ extern void (*XESetBeforeFlush(
 	       XExtCodes*		/* codes */,
 	       _Xconst char*		/* data */,
 	       long			/* len */
-            )		/* proc */   
+            )		/* proc */
 ))(
     Display*, XExtCodes*, _Xconst char*, long
 );
@@ -1212,6 +1263,11 @@ extern Status _XRegisterInternalConnection(
 extern void _XUnregisterInternalConnection(
     Display*			/* dpy */,
     int				/* fd */
+);
+
+extern void _XProcessInternalConnection(
+    Display*			/* dpy */,
+    struct _XConnectionInfo*	/* conn_info */
 );
 
 /* Display structure has pointers to these */
@@ -1312,8 +1368,28 @@ Status _XGetWindowAttributes(
     XWindowAttributes *attr);
 
 int _XPutBackEvent (
-    register Display *dpy, 
+    register Display *dpy,
     register XEvent *event);
+
+extern Bool _XIsEventCookie(
+        Display *dpy,
+        XEvent *ev);
+
+extern void _XFreeEventCookies(
+        Display *dpy);
+
+extern void _XStoreEventCookie(
+        Display *dpy,
+        XEvent *ev);
+
+extern Bool _XFetchEventCookie(
+        Display *dpy,
+        XGenericEventCookie *ev);
+
+extern Bool _XCopyEventCookie(
+        Display *dpy,
+        XGenericEventCookie *in,
+        XGenericEventCookie *out);
 
 _XFUNCPROTOEND
 

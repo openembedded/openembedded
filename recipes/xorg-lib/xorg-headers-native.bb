@@ -1,6 +1,6 @@
 inherit native
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://X11"
 
