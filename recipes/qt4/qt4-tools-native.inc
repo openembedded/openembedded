@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 inherit native
 
@@ -59,17 +59,19 @@ do_compile() {
     done
 }
 
-do_stage() {
-    install -d ${STAGING_BINDIR_NATIVE}/
-    install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
+NATIVE_INSTALL_WORKS = "1"
+
+do_install() {
+    install -d ${D}${bindir}/
+    install -m 0755 bin/qmake ${D}${bindir}/qmake2
     for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
-        install -m 0755 bin/${i} ${STAGING_BINDIR_NATIVE}/${i}4
+        install -m 0755 bin/${i} ${D}${bindir}/${i}4
     done
     
-    install -d ${STAGING_DATADIR_NATIVE}/qt4/
-    cp -PfR mkspecs ${STAGING_DATADIR_NATIVE}/qt4/
-    ln -sf linux-g++ ${STAGING_DATADIR_NATIVE}/qt4/mkspecs/${BUILD_OS}-oe-g++
-    cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf ${STAGING_DATADIR_NATIVE}/qt4/mkspecs/common/
+    install -d ${D}${datadir}/qt4/
+    cp -PfR mkspecs ${D}${datadir}/qt4/
+    ln -sf linux-g++ ${D}${datadir}/qt4/mkspecs/${BUILD_OS}-oe-g++
+    cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf ${D}${datadir}/qt4/mkspecs/common/
 
-    install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DATADIR_NATIVE}/qt4/
+    install -m 0644 tools/porting/src/q3porting.xml ${D}${datadir}/qt4/
 }
