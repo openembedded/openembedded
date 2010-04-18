@@ -1,0 +1,53 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 53_fix_deprecated_widgets.dpatch by Davide Puricelli <evo@debian.org>
+##
+## Description: Fix FTBFS errors due to new GTK 2.20 widgets names.
+
+@DPATCH@
+diff -Naur xchat-2.8.6foo/src/fe-gtk/fe-gtk.c xchat-2.8.6/src/fe-gtk/fe-gtk.c
+--- xchat-2.8.6foo/src/fe-gtk/fe-gtk.c	2010-04-06 21:48:19.000000000 +0200
++++ xchat-2.8.6/src/fe-gtk/fe-gtk.c	2010-04-06 21:49:27.000000000 +0200
+@@ -819,7 +819,7 @@
+ 	switch (info_type)
+ 	{
+ 	case 0:	/* window status */
+-		if (!GTK_WIDGET_VISIBLE (GTK_WINDOW (sess->gui->window)))
++		if (!gtk_widget_get_visible (GTK_WINDOW (sess->gui->window)))
+ 			return 2;	/* hidden (iconified or systray) */
+ #if GTK_CHECK_VERSION(2,4,0)
+ 		if (gtk_window_is_active (GTK_WINDOW (sess->gui->window)))
+diff -Naur xchat-2.8.6foo/src/fe-gtk/maingui.c xchat-2.8.6/src/fe-gtk/maingui.c
+--- xchat-2.8.6foo/src/fe-gtk/maingui.c	2008-04-01 10:53:41.000000000 +0200
++++ xchat-2.8.6/src/fe-gtk/maingui.c	2010-04-06 21:50:45.000000000 +0200
+@@ -599,7 +599,7 @@
+ 	int num;
+ 	GtkWidget *f = NULL;
+ 
+-	if (current_sess && GTK_WIDGET_HAS_FOCUS (current_sess->gui->input_box))
++	if (current_sess && gtk_widget_has_focus (current_sess->gui->input_box))
+ 		f = current_sess->gui->input_box;
+ 
+ 	num = gtk_notebook_page_num (GTK_NOTEBOOK (mg_gui->note_book), box);
+@@ -809,8 +809,8 @@
+ static void
+ mg_hide_empty_pane (GtkPaned *pane)
+ {
+-	if ((pane->child1 == NULL || !GTK_WIDGET_VISIBLE (pane->child1)) &&
+-		 (pane->child2 == NULL || !GTK_WIDGET_VISIBLE (pane->child2)))
++	if ((pane->child1 == NULL || !gtk_widget_get_visible (pane->child1)) &&
++		 (pane->child2 == NULL || !gtk_widget_get_visible (pane->child2)))
+ 	{
+ 		gtk_widget_hide (GTK_WIDGET (pane));
+ 		return;
+diff -Naur xchat-2.8.6foo/src/fe-gtk/menu.c xchat-2.8.6/src/fe-gtk/menu.c
+--- xchat-2.8.6foo/src/fe-gtk/menu.c	2008-06-08 09:59:37.000000000 +0200
++++ xchat-2.8.6/src/fe-gtk/menu.c	2010-04-06 21:49:54.000000000 +0200
+@@ -1670,7 +1670,7 @@
+ menu_canacaccel (GtkWidget *widget, guint signal_id, gpointer user_data)
+ {
+ 	/* GTK2.2 behaviour */
+-	return GTK_WIDGET_IS_SENSITIVE (widget);
++	return gtk_widget_is_sensitive (widget);
+ }
+ 
+ #endif
