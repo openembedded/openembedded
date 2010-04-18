@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r51"
+PR = "r52"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -274,10 +274,12 @@ RDEPENDS_${PN} += "\
 		qi \
 		qi-ubi \
 		wpa-gui \
+		iliwi \
 		gabriel \
 		stopwatch \
 		qgpslog \
 		litephone \
+		linphone \
 		rtmom \
 		ventura \
 		emtooth \

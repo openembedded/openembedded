@@ -309,7 +309,7 @@ index b3bbd97..a87a90c 100644
  
  LIBRARY_NAME = nss
  LIBRARY_VERSION = 3
-+SO_VERSION = 1d
++SO_VERSION = 1oe
  
  # This part of the code, including all sub-dirs, can be optimized for size
  export ALLOW_OPT_CODE_SIZE = 1
@@ -321,7 +321,7 @@ index a72b413..a782e1d 100644
  
  LIBRARY_NAME = smime
  LIBRARY_VERSION = 3
-+SO_VERSION = 1d
++SO_VERSION = 1oe
  
  # This part of the code, including all sub-dirs, can be optimized for size
  export ALLOW_OPT_CODE_SIZE = 1
@@ -333,7 +333,7 @@ index 8451229..ec3495e 100644
  
  LIBRARY_NAME = ssl
  LIBRARY_VERSION = 3
-+SO_VERSION = 1d
++SO_VERSION = 1oe
  
  # This part of the code, including all sub-dirs, can be optimized for size
  export ALLOW_OPT_CODE_SIZE = 1
@@ -345,7 +345,7 @@ index 74ddd92..30f530a 100644
  
  LIBRARY_NAME = nssutil
  LIBRARY_VERSION = 3
-+SO_VERSION = 1d
++SO_VERSION = 1oe
  
  # This part of the code, including all sub-dirs, can be optimized for size
  export ALLOW_OPT_CODE_SIZE = 1

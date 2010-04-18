@@ -8,7 +8,7 @@ RDEPENDS += "libcanberra-alsa"
 RPROVIDES_${PN} = "openmoko-alsa-scenarios virtual/alsa-scenarios"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.9.0+gitr${SRCPV}"
-PE = "1"
+PE = "2"
 PR = "${INC_PR}.10"
 
 EXTRA_OECONF = "\

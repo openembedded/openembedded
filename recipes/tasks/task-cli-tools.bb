@@ -1,8 +1,9 @@
-DESCRIPTION = "A set of command line tools useful for debugging"
+DESCRIPTION = "A set of useful command line tools"
+DESCRIPTION_${PN}-debug = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r14"
+PR = "r15"
 
 inherit task
 
@@ -21,10 +22,8 @@ RDEPENDS_${PN} = "\
   nfs-utils-client \
   powertop \
   screen \
-  serial-forward \
   socat \
   sysstat \
-  tcpdump \
 "
 
 RDEPENDS_${PN}-debug = "\
@@ -38,5 +37,7 @@ RDEPENDS_${PN}-debug = "\
   pxaregs \
   s3c24xx-gpio \
   s3c64xx-gpio \
+  serial-forward \
   strace \
+  tcpdump \
 "

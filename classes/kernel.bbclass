@@ -132,10 +132,11 @@ kernel_do_install() {
 		cp -fR include/$ASMDIR/* $kerneldir/include/$ASMDIR/
 	fi
 
-	cp -fR include/$ASMDIR/* $kerneldir/include/$ASMDIR/
 	# Kernel 2.6.27 moved headers from includes/asm-${ARCH} to arch/${ARCH}/include/asm	
 	if [ -e arch/${ARCH}/include/asm/ ] ; then 
-		cp -fR arch/${ARCH}/include/asm/* $kerneldir/include/$ASMDIR/
+		if [ -e include/asm ] ; then
+			cp -fR arch/${ARCH}/include/asm/* $kerneldir/include/$ASMDIR/
+		fi
 		install -d $kerneldir/arch/${ARCH}/include
 		cp -fR arch/${ARCH}/* $kerneldir/arch/${ARCH}/	
 

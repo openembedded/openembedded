@@ -14,7 +14,7 @@ SRCREV_omapzoom2 = "015cbaf1035cd9a61d33a27de2a22902555db3c5"
 
 SRCREV_omapzoom36x = "2e3c681c6228de2a3f8fbb0cfbc940e7ea825a09"
 
-OEV = "oe5"
+OEV = "oe6"
 PE = "1"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc

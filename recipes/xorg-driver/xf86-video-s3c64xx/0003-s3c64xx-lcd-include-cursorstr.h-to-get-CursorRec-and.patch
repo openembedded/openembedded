@@ -1,0 +1,25 @@
+From d004fb3e90acffdf800f3d07642fac364dd20f2d Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sat, 17 Apr 2010 10:55:47 +0200
+Subject: [PATCH 3/3] s3c64xx lcd: include "cursorstr.h to get CursorRec and AllocCursorARGB definitions
+
+---
+ src/s3c64xx_lcd.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/src/s3c64xx_lcd.c b/src/s3c64xx_lcd.c
+index 02627ae..3005d2e 100644
+--- a/src/s3c64xx_lcd.c
++++ b/src/s3c64xx_lcd.c
+@@ -60,6 +60,8 @@
+ #include "X11/extensions/dpms.h"
+ #endif
+ 
++#include "cursorstr.h"
++
+ enum OutputTypes  {
+    S3C_OUTPUT_LCD,
+    S3C_OUTPUT_TV,  /* add another Output if TV out is desired */
+-- 
+1.6.6.1
+

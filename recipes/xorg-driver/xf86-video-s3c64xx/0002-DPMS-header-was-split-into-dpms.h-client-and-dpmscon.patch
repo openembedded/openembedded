@@ -1,0 +1,45 @@
+From 1311ff65283ed306bcac4b4b971e02144d65da6b Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sat, 17 Apr 2010 10:50:38 +0200
+Subject: [PATCH 2/3] DPMS header was split into dpms.h (client) and dpmsconst.h (server). Drivers need to include dpmsconst.h if xextproto 7.1 is available.
+
+---
+ configure.ac      |    4 ++++
+ src/s3c64xx_lcd.c |    4 ++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index c69218f..a9ec2f0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -58,6 +58,10 @@ XORG_DRIVER_CHECK_EXT(XV, videoproto)
+ # Checks for pkg-config packages
+ PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901 xproto fontsproto $REQUIRED_MODULES])
+ sdkdir=$(pkg-config --variable=sdkdir xorg-server)
++PKG_CHECK_MODULES(XEXT, [xextproto >= 7.0.99.1],
++                  HAVE_XEXTPROTO_71="yes"; AC_DEFINE(HAVE_XEXTPROTO_71, 1, [xextproto 7.1 available]),
++                  HAVE_XEXTPROTO_71="no")
++AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
+ 
+ AM_CONDITIONAL(PCIACCESS, [test "x$PCIACCESS" = xyes])
+ if test "x$PCIACCESS" = xyes; then
+diff --git a/src/s3c64xx_lcd.c b/src/s3c64xx_lcd.c
+index 5200f60..02627ae 100644
+--- a/src/s3c64xx_lcd.c
++++ b/src/s3c64xx_lcd.c
+@@ -53,8 +53,12 @@
+ 
+ #include "s3c64xx.h" 
+ 
++#ifdef HAVE_XEXTPROTO_71
++#include <X11/extensions/dpmsconst.h>
++#else
+ #define DPMS_SERVER
+ #include "X11/extensions/dpms.h"
++#endif
+ 
+ enum OutputTypes  {
+    S3C_OUTPUT_LCD,
+-- 
+1.6.6.1
+

@@ -4,9 +4,12 @@ HOMEPAGE = "http://www.xchat.org"
 SECTION = "x11/network"
 DEPENDS = "libgcrypt zlib gtk+"
 DEPENDS += "gdk-pixbuf-csource-native"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://www.xchat.org/files/source/2.8/xchat-${PV}.tar.bz2"
+SRC_URI = "http://www.xchat.org/files/source/2.8/xchat-${PV}.tar.bz2 \
+	 file://46_CVE-2009-0315.dpatch;patch=1 \
+	 file://53_fix_deprecated_widgets.dpatch;patch=1 \
+	 "
 
 inherit autotools
 

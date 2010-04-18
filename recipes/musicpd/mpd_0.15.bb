@@ -12,6 +12,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
 inherit autotools update-rc.d
 INITSCRIPT_NAME = "mpd"
 
+PR = "r1"
+
 # Setting --enable-mpd-{mad,id3tag} causes local caches of the libraries to
 # be built, instead we use the OE built versions which should be installed
 # in staging - remove the --with and replace with --enable to use the local

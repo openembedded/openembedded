@@ -5,6 +5,7 @@ DEPENDS = "xextproto cairo nss"
 
 SRCREV = "34027"
 PV = "0.1+svnr${SRCREV}"
+PR = "r1"
 
 SRC_URI = "svn://src.chromium.org/svn/trunk/;module=src;proto=http \
            git://git.chromium.org/cros.git;protocol=git;rev=07f1fc0ce7a4bbd57f6b057435ad86f0a98e073d\
