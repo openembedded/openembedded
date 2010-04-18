@@ -19,9 +19,9 @@ case "$1" in
     ;;
   restart|force-reload)
     echo -n "Restarting music player daemon: mpd"
-    start-stop-daemon --start --quiet --exec /usr/bin/mpd
-    sleep 2
     start-stop-daemon --stop --quiet --exec /usr/bin/mpd
+    sleep 2
+    start-stop-daemon --start --quiet --exec /usr/bin/mpd
     echo "."
     ;;
   *)
