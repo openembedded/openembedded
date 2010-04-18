@@ -1,3 +1,6 @@
+# Assign it here, since the hal->udev transition happens post 1.7 in angstrom
+DISTRO_XORG_CONFIG_MANAGER_angstrom = "udev"
+
 require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
