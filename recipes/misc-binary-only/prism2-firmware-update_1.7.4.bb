@@ -6,7 +6,7 @@ LICENSE = "unknown"
 
 SRC_URI = "http://www.red-bean.com/~proski/firmware/${PV}.tar.bz2"
 
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 do_install() {
 	install -d ${D}tmp

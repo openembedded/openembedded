@@ -13,7 +13,7 @@ RDEPENDS = "bash"
 SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/${PN}_gruen.4g__${SRCDATE}.tar.gz \
 	file://firewall-bash.diff;patch=1"
 S = "${WORKDIR}/${PN}"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 do_install() {
 	install -d -m 755 ${D}

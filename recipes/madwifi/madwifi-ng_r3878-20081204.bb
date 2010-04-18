@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE_slugos = "1"
 
 # Disable stripping of kernel modules, since this action strips too
 # much out, and the resulting module won't load.
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 require madwifi-ng_r.inc
 

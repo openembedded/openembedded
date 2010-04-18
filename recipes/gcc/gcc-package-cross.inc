@@ -1,6 +1,6 @@
-INHIBIT_PACKAGE_STRIP ?= ""
-OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP ?= ""
+OLD_PACKAGE_STRIP := "${PACKAGE_STRIP}"
+PACKAGE_STRIP = "no"
 
 PACKAGES = "libgcc libssp libstdc++ libg2c libgfortran"
 
@@ -58,7 +58,7 @@ do_install () {
 
        # Manually run the target stripper since we won't get it run by
        # the packaging.
-       if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
+       if [ "x${OLD_PACKAGE_STRIP}" != "xno" ]; then
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libstdc++.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libg2c.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.* || true

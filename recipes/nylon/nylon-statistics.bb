@@ -10,7 +10,7 @@ PR = "r1"
 
 SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/${PN}_gruen.4g__${SRCDATE}.tar.gz"
 S = "${WORKDIR}/${PN}"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 do_install() {
 	install -d ${D}/srv/www/cgi-bin

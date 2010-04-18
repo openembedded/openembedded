@@ -21,7 +21,7 @@ inherit module
 
 PVRBUILD = "release"
 
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 MAKE_TARGETS = " BUILD=${PVRBUILD} TI_PLATFORM=omap3630"
 

@@ -1,7 +1,7 @@
 SECTION = "unknown"
 PR = "r4"
 LICENSE = "GPL"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 RRECOMMENDS = "kernel-module-serport"
 

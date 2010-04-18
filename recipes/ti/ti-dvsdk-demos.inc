@@ -64,5 +64,5 @@ FILES_${PN} = "${installdir}/dvsdk-demos/*"
 
 BASE_SRC_URI ?= "http://install.source.dir.local"
 
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 INSANE_SKIP_${PN} = "True"

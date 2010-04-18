@@ -197,7 +197,8 @@ def runstrip(file, d):
 
     os.system("%s'%s' --only-keep-debug '%s' '%s'" % (pathprefix, objcopy, file, debugfile))
     ret = os.system("%s%s" % (pathprefix, stripcmd))
-    os.system("%s'%s' --add-gnu-debuglink='%s' '%s'" % (pathprefix, objcopy, debugfile, file))
+    if (bb.data.getVar('PACKAGE_STRIP', d, True) != 'full'):
+        os.system("%s'%s' --add-gnu-debuglink='%s' '%s'" % (pathprefix, objcopy, debugfile, file))
 
     if newmode:
         os.chmod(file, origmode)
@@ -389,7 +390,7 @@ python populate_packages () {
 			package_list.append(pkg)
 
 
-	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, True) != '1'):
+	if (bb.data.getVar('PACKAGE_STRIP', d, True) != 'no'):
 		for f in (bb.data.getVar('PACKAGESTRIPFUNCS', d, True) or '').split():
 			bb.build.exec_func(f, d)
 
