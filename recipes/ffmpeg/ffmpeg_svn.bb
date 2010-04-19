@@ -4,7 +4,6 @@ DEPENDS += "schroedinger libgsm"
 
 SRCREV = "22521"
 
-PE = "1"
 PV = "0.5.0+${PR}+svnr${SRCPV}"
 PR = "${INC_PR}.0"
 
