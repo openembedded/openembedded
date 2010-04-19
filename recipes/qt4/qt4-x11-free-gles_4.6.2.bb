@@ -1,7 +1,7 @@
 require qt4-x11-free.inc
-PR = "${INC_PR}.6"
+PR = "${INC_PR}.7"
 
-QT_GLFLAGS = "-opengl es2 -no-openvg  -depths 16,24,32 "
+QT_GLFLAGS = "-opengl es2 -depths 16,24,32 "
 
 require qt-${PV}.inc
 

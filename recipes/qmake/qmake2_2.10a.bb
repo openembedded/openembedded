@@ -16,6 +16,8 @@ do_install() {
 
     script="${D}/${datadir}/qtopia/environment-setup"
     touch $script
+    echo 'export QT_DIR_NAME=qtopia' >> $script
+    echo 'export QT_LIBINFIX=E' >> $script
     echo 'export OE_QMAKE_CC=gcc' >> $script
     echo 'export OE_QMAKE_CXX=g++' >> $script
     echo 'export OE_QMAKE_LINK=g++' >> $script
