@@ -2,11 +2,14 @@ DESCRIPTION = "C++ bindings for dbus"
 LICENSE = "LGPL"
 SECTION = "libs"
 DEPENDS = "dbus dbus-c++-native expat"
-SRCREV = "13131"
+SRCREV = "530a887913d3b0dd7091eabb8eef8e3c279e3bb8"
 
-SRC_URI = "svn://dev.openwengo.org/svn/openwengo/wengophone-ng/branches/wengophone-dbus-api/libs;module=dbus;proto=http"
+PE = "1"
+PV = "0.5.0+gitr${SRCPV}"
+
+SRC_URI = "git://gitorious.org/dbus-cplusplus/mainline.git;protocol=git"
 #           file://fix-linking.patch;patch=1"
-S = "${WORKDIR}/dbus"
+S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 

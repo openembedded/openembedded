@@ -1,4 +1,4 @@
-require dbus-c++_${PV}.bb
+require dbus-c++_git.bb
 inherit native
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dbus-c++"
