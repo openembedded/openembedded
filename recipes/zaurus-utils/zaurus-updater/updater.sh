@@ -41,7 +41,7 @@
 # - Polish HDD installer messages
 #
 # 2007.12.25 Matthias 'CoreDump' Hentges
-# -Add support for installing / updating u-boot
+# - Add support for installing / updating u-boot
 #
 # 2008.11.23 Dmitry 'lumag' Baryshkov
 # - Add support for reflashing home partitions
@@ -51,6 +51,10 @@
 #   Bug in Sharp original line...
 #   /sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
 #   didn't use correctly determined block size
+#
+# 2010.04.18 Andrea 'ant' Adami
+# - Add support for flashing pure jffs2 rootfs, without Sharp headers
+#   (ToDo: rename it rootfs or rootfs.bin instead of initrd.bin?)
 
 # Set to "yes" to enable
 ENABLE_UBOOT_UPDATER="no"
@@ -115,11 +119,11 @@ check_for_hdd()
 {
     IDE1=`get_dev_pcmcia_slot 1`
     if [ "$IDE1" = "" ]; then
-        echo "Error: There is no microdrive. Retrying..."
+        echo 'Error: There is no microdrive. Retrying...'
         while [ "$IDE1" = "" ]; do
             IDE1=`get_dev_pcmcia_slot 1`
         done
-        echo "Microdrive found."
+        echo 'Microdrive found.'
     fi
 
     LINUXFMT=ext3
@@ -157,16 +161,16 @@ do_rootfs_extraction()
     mke2fs $MKE2FSOPT /dev/${IDE1}1 > /dev/null 2>&1
     e2fsck -p /dev/${IDE1}1 > /dev/null
     if [ "$?" != "0" ]; then
-    	echo "FAILED"
-        echo "Error: Unable to create filesystem on microdrive!"
+        echo 'FAILED'
+        echo 'Error: Unable to create filesystem on microdrive!'
         exit "$?"
     else 
-    	echo "Done"
+        echo 'done'
     fi
 
     mount -t $LINUXFMT -o noatime /dev/${IDE1}1 /hdd1
     if [ "$?" != "0" ]; then
-        echo "Error: Unable to mount microdrive!"
+        echo 'Error: Unable to mount microdrive!'
         exit "$?"
     fi
 
@@ -174,11 +178,11 @@ do_rootfs_extraction()
     echo -n '* Now extracting (this can take over 5m)...'
     gzip -dc $DATAPATH/$TARGETFILE | $TARBIN xf -
     if [ "$?" != "0" ]; then
-    	echo "FAILED"
-        echo "Error: Unable to extract root filesystem archive!"
+        echo 'FAILED'
+        echo 'Error: Unable to extract root filesystem archive!'
         exit "$?"
     else
-    	echo "Done"
+        echo 'done'
     fi
 
     echo 'HDD Installation Finished.'
@@ -191,67 +195,66 @@ do_rootfs_extraction()
 
 do_flashing()
 {
-	if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
-	then
-		echo "Error: File is too big to flash!"
-		echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"
-		return
-	fi
+        if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
+        then
+                echo 'Error: File is too big to flash!'
+                echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"
+                return
+        fi
 
-	if [ "$ZAURUS" = "tosa" ] || [ "$ZAURUS" = "poodle" ]
-	then
-		#check version
-		/sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
-		
-		if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
-		then
-		    #no version info...
-		    rm -f $TMPHEAD > /dev/null 2>&1
-		    DATAPOS=0
-		fi
-	fi
+        #check version (common to all models)
+        /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
+        if [ `cat $TMPDATA` != "SHARP!" ] && [ `cat $TMPDATA` != "OZ!3.1" ] > /dev/null 2>&1
+        then
+            #check for known fake headers
+            if [ `cat $TMPDATA` != "OZ!3.1" ] > /dev/null 2>&1
+            then
+                #no version info...
+                rm -f $TMPHEAD > /dev/null 2>&1
+                DATAPOS=0
+            fi
+        fi
 
-	if [ $ISFORMATTED = 0 ]
-	then
-		/sbin/eraseall $TARGET_MTD > /dev/null 2>&1
-		ISFORMATTED=1
-	fi
+        if [ $ISFORMATTED = 0 ]
+        then
+                echo -n 'Flash erasing...'
+                /sbin/eraseall $TARGET_MTD > /dev/null 2>&1
+                echo 'done'
+                ISFORMATTED=1
+        fi
 
-	if [ -e $TMPHEAD ]
-	then
-		VTMPNAME=$TMPPATH'/vtmp'`date '+%s'`'.tmp'
-		MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
-		/sbin/nandlogical $LOGOCAL_MTD READ $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
-		/sbin/nandlogical $LOGOCAL_MTD READ $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
+        if [ -e $TMPHEAD ]
+        then
+                VTMPNAME=$TMPPATH'/vtmp'`date '+%s'`'.tmp'
+                MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
+                /sbin/nandlogical $LOGOCAL_MTD READ $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
+                /sbin/nandlogical $LOGOCAL_MTD READ $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
 
-		/sbin/verchg -v $VTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
-		/sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
-	fi
+                /sbin/verchg -v $VTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
+                /sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
+        fi
 
         # Looks like Akita and Spitz are unique when it comes to kernel flashing
-        
-       	if [ "$ZAURUS" = "akita" -o "$ZAURUS" = "c3x00" ] && [ "$FLASH_TYPE" = "kernel" ]
-	then 
-#               	echo $TARGETFILE':'$DATASIZE'bytes'
-		echo ""
-		echo -n "Installing SL-Cxx00 kernel..."
-               	echo '                ' > /tmp/data
-               	 test "$ZAURUS" = "akita" && /sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
-               	/sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
-               	 test "$ZAURUS" = "akita" && /sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1     
-		 echo "Done"
-	else	
-	
-		echo ''
-		echo '0%                   100%'
-		PROGSTEP=`expr $DATASIZE / $ONESIZE + 1`
-		PROGSTEP=`expr 25 / $PROGSTEP`
-		
-		if [ $PROGSTEP = 0 ]
-		then
-			PROGSTEP=1
-		fi	
-			
+        if [ "$ZAURUS" = "akita" -o "$ZAURUS" = "c3x00" ] && [ "$FLASH_TYPE" = "kernel" ]
+        then
+                echo ''
+                echo -n 'Installing SL-Cxx00 kernel...'
+                echo '                ' > /tmp/data
+                test "$ZAURUS" = "akita" && /sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
+                /sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
+                test "$ZAURUS" = "akita" && /sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1
+                echo 'done'
+        else
+                echo ''
+                echo '0%                   100%'
+                PROGSTEP=`expr $DATASIZE / $ONESIZE + 1`
+                PROGSTEP=`expr 25 / $PROGSTEP`
+
+                if [ $PROGSTEP = 0 ]
+                then
+                    PROGSTEP=1
+                fi
+
                 #loop
                 while [ $DATAPOS -lt $DATASIZE ]
                 do
@@ -266,7 +269,7 @@ do_flashing()
                         then
                                 next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
                                 if [ "$next_addr" = "" ]; then
-                echo "Error: flash write"
+                                        echo 'Error: flash write'
                                         rm $TMPDATA > /dev/null 2>&1
                                         RESULT=3
                                         break;
@@ -288,76 +291,76 @@ do_flashing()
                         done
                 done
         fi
-	echo ''
+        echo ''
 
-	#finish
-	rm -f $TMPPATH/*.bin > /dev/null 2>&1
+        #finish
+        rm -f $TMPPATH/*.bin > /dev/null 2>&1
 
-	if [ $RESULT = 0 ]
-	then
-		if [ -e $VTMPNAME ]
-		then
-		    /sbin/nandlogical $LOGOCAL_MTD WRITE $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
-		    rm -f $VTMPNAME > /dev/null 2>&1
-		fi
+        if [ $RESULT = 0 ]
+        then
+                if [ -e $VTMPNAME ]
+                then
+                    /sbin/nandlogical $LOGOCAL_MTD WRITE $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
+                    rm -f $VTMPNAME > /dev/null 2>&1
+                fi
 
-		if [ -e $MTMPNAME ]
-		then
-		    /sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
-		    rm -f $MTMPNAME > /dev/null 2>&1
-		fi
-	
-		[ "$FLASH_TYPE" != "kernel" ] && echo 'Done.'
-	else
-		echo 'Error!'
-	fi
+                if [ -e $MTMPNAME ]
+                then
+                    /sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
+                    rm -f $MTMPNAME > /dev/null 2>&1
+                fi
+
+                [ "$FLASH_TYPE" != "kernel" ] && echo 'done.'
+        else
+                echo 'Error!'
+        fi
 }
 
 update_uboot() {
-	# The flashing part of this function is based on pdaXrom's
-	# updater.sh
-	
-	if test "$ENABLE_UBOOT_UPDATER" != "yes" -o -z "$1"
-	then
-		echo "u-boot updates not allowed."
-		return
-	fi
+        # The flashing part of this function is based on pdaXrom's
+        # updater.sh
 
-	echo ""
-	echo "Installing u-boot bootloader:"
+        if test "$ENABLE_UBOOT_UPDATER" != "yes" -o -z "$1"
+        then
+                echo 'u-boot updates not allowed.'
+                return
+        fi
 
-	DATASIZE=`wc -c $TARGETFILE`
-	FSIZE=`echo $DATASIZE | cut -d' ' -f1`
+        echo ''
+        echo 'Installing u-boot bootloader:'
 
-	echo -n "* Creating backup ($FSIZE Bytes)..."
-	if ( nandlogical /dev/mtd1 READ 0 $FSIZE /tmp/sharploader.bin ) > /dev/null 2>&1
-	then
-		echo "Ok"
+        DATASIZE=`wc -c $TARGETFILE`
+        FSIZE=`echo $DATASIZE | cut -d' ' -f1`
 
-		echo -n "* Flashing u-boot..."
-		if ( nandlogical /dev/mtd1 WRITE 0 $FSIZE $1 ) > /dev/null 2>&1
-		then
-			echo "Success"
-		else
-			echo "FAILED"
-			echo "ERROR: Installation of u-boot failed!"
+        echo -n '* Creating backup ('$FSIZE' Bytes)...'
+        if ( nandlogical /dev/mtd1 READ 0 $FSIZE /tmp/sharploader.bin ) > /dev/null 2>&1
+        then
+                echo 'Ok'
 
-			echo -n "* Trying to restore backup..."			
-			if ( nandlogical /dev/mtd1 WRITE 0 $FSIZE /tmp/sharploader.bin ) > /dev/null 2>&1
-			then
-				echo "Success"
-				echo "Your old bootloader has been restored"
-			else
-				echo "FAILED"
-				echo "Sorry, it's NAND-Restore time for you =("
-			fi
-		fi
-	else
-		echo "FAILED"
-		echo "Could not create backup, aborting!"
-		echo "Your bootloader has not been altered in any way."
-		exit 1
-	fi		
+                echo -n '* Flashing u-boot...'
+                if ( nandlogical /dev/mtd1 WRITE 0 $FSIZE $1 ) > /dev/null 2>&1
+                then
+                        echo 'Success'
+                else
+                        echo 'FAILED'
+                        echo 'Error: Installation of u-boot failed!'
+
+                        echo -n '* Trying to restore backup...'
+                        if ( nandlogical /dev/mtd1 WRITE 0 $FSIZE /tmp/sharploader.bin ) > /dev/null 2>&1
+                        then
+                                echo 'Success'
+                                echo 'Your old bootloader has been restored'
+                        else
+                                echo 'FAILED'
+                                echo "Sorry, it's NAND-Restore time for you =("
+                        fi
+                fi
+        else
+                echo 'FAILED'
+                echo 'Could not create backup, aborting!'
+                echo 'Your bootloader has not been altered in any way.'
+                exit 1
+        fi
 }
 
 ### Check model ###
@@ -392,14 +395,16 @@ case "$MODEL" in
 esac
 
 clear
-echo "---- Universal Zaurus Updater ZAURUS_UPDATER_VERSION ----"
+echo '---- Universal Zaurus Updater ZAURUS_UPDATER_VERSION ----'
 echo 'MODEL: '$MODEL' ('$ZAURUS')'
+echo ''
 
 mkdir -p $TMPPATH > /dev/null 2>&1
 
 cd $DATAPATH/
 
-for TARGETFILE in u-boot.bin U-BOOT.BIN zimage zImage zImage.bin zimage.bin ZIMAGE ZIMAGE.BIN initrd.bin INITRD.BIN hdimage1.tgz HDIMAGE1.TGZ home.bin HOME.BIN
+for TARGETFILE in u-boot.bin U-BOOT.BIN zimage zImage zImage.bin zimage.bin ZIMAGE ZIMAGE.BIN \
+                initrd.bin INITRD.BIN hdimage1.tgz HDIMAGE1.TGZ home.bin HOME.BIN
 do
     if [ ! -e $TARGETFILE ]
     then
@@ -420,6 +425,7 @@ do
         then
             continue
         fi
+        echo 'kernel'
         FLASHED_KERNEL=1
         ISLOGICAL=1
         MODULEID=5
@@ -468,9 +474,9 @@ do
         ISFORMATTED=0
         MTD_PART_SIZE="0x$HOMEFS_SIZE"
         ADDR=0
-        ISFORMATTED=0
         TARGET_MTD=$RW_MTD
-        DATAPOS=0
+        #home should not have headers but one could flash a second rootfs here
+        DATAPOS=16
         ONESIZE=1048576
         FLASH_TYPE="home"
         /sbin/bcut -s 16 -o $TMPHEAD $TARGETFILE
@@ -481,18 +487,18 @@ do
     hdimage1.tgz)
         if [ $UNPACKED_ROOTFS = 0 ]
         then
-        	do_rootfs_extraction
+                do_rootfs_extraction
         fi
         ;;
-    
+
     u-boot.bin)
         if [ $FLASHED_UBOOT != 1 ]
-	then
-		update_uboot "$TARGETFILE"
-		FLASHED_UBOOT="1"
-	fi
-	;;	
-	
+        then
+                update_uboot "$TARGETFILE"
+                FLASHED_UBOOT="1"
+        fi
+        ;;
+
     *)
         ;;
     esac
