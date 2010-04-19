@@ -2,7 +2,7 @@ DESCRIPTION = "The X Window System -- install this task to get a client/server b
 SECTION = "x11/server"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r3"
+PR = "r4"
 
 # WORK IN PROGRESS
 
@@ -21,6 +21,8 @@ RRECOMMENDS_${PN} = "\
 # Some machines don't set a *runtime* provider for X, so default to Xfbdev here
 # virtual/xserver won't work, since the kdrive recipes will build multiple xserver packages
 XSERVER ?= "xserver-kdrive-fbdev"
+XSERVER_COMMON ?= "xserver-kdrive-common"
+XSERVER_COMMON_shr = "xserver-common"
 
 # This is also the reason why we have to make this package machine specific :/
 PACKAGE_ARCH_${PN}-server = "${MACHINE_ARCH}"
@@ -30,7 +32,7 @@ RDEPENDS_${PN}-server = "\
 "
 
 RDEPENDS_${PN}-utils = "\
-  xserver-kdrive-common \
+  ${XSERVER_COMMON} \
   xserver-nodm-init \
   xauth \
   xhost \
