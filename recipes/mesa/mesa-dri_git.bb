@@ -7,8 +7,7 @@ DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS} makedepend-native mesa-dri-glsl-native"
 
 PV = "7.7.999"
 PR = "${INC_PR}.0"
-PR_append = "+gitr${SRCREV}"
-PE = "1"
+PR_append = "+gitr${SRCPV}"
 
 DEFAULT_PREFERENCE = "-2"
 DEFAULT_PREFERENCE_shr = "2"
