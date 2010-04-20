@@ -14,13 +14,13 @@ IMAGE_FSTYPES += "jffs2 tar.gz"
 # kernel now supports favourlzo
 IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -m favourlzo \
                    --output=${T}/${IMAGE_NAME}.rootfs.jffs2 --pad --little-endian --eraseblock=${ERASEBLOCKSIZE} -n \
-#                   && sumtool -i ${T}/${IMAGE_NAME}.rootfs.jffs2 \
-#                   -o ${T}/${IMAGE_NAME}.rootfs.jffs2.summary \
-#                   --eraseblock=${ERASEBLOCKSIZE} -l -p; \
+                   && sumtool -i ${T}/${IMAGE_NAME}.rootfs.jffs2 \
+                   -o ${T}/${IMAGE_NAME}.rootfs.jffs2.summary \
+                   --eraseblock=${ERASEBLOCKSIZE} -l -p; \
                    cat ${T}/${IMAGE_NAME}.rootfs.jffs2 > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2; \
                    rm ${T}/${IMAGE_NAME}.rootfs.jffs2; \
-#                   cat ${T}/${IMAGE_NAME}.rootfs.jffs2.summary > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.summary.jffs2; \
-#                   rm ${T}/${IMAGE_NAME}.rootfs.jffs2.summary;"
+                   cat ${T}/${IMAGE_NAME}.rootfs.jffs2.summary > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.summary.jffs2; \
+                   rm ${T}/${IMAGE_NAME}.rootfs.jffs2.summary;"
 
 
 EXTRA_IMAGEDEPENDS += "zaurus-installer"
