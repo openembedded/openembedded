@@ -1,5 +1,5 @@
 --- src/atd.c-orig	2004-02-02 16:30:39.000000000 +0100
-+++ src/atd.c	2009-09-15 22:57:35.000000000 +0200
++++ src/atd.c	2010-04-20 19:23:10.000000000 +0200
 @@ -7,10 +7,12 @@
   *	Copyright (C) 1996, Paul Gortmaker
   *	Copyright (C) 2001, Russell Nelson
@@ -184,7 +184,7 @@
  }
  
  
-@@ -345,11 +242,223 @@
+@@ -345,11 +242,232 @@
  }
  
  
@@ -300,20 +300,29 @@
 +
 +void atd_alarm_waitfor(AtdAlarm *self, time_t t)
 +{
-+GError *error;
++GError *error1, *error2;
 +
 +	if (!t)
 +		return;
 +
 +	rtc_set_time();
-+	error = NULL;
++	error1 = error2 = NULL;
 +	if (self->alarm_proxy == NULL) {
-+		g_printerr(OTIMED " not running, could not call SetAlarm\n");
-+	} else if (!dbus_g_proxy_call(self->alarm_proxy, "SetAlarm", &error,
-+				      G_TYPE_STRING, DBUS_NAME,
-+				      G_TYPE_INT, t, G_TYPE_INVALID,
-+				      G_TYPE_INVALID)) {
-+		display_free_g_error(&error);
++		g_printerr(OTIMED " not running, could not call"
++			   " AddAlarm or SetAlarm\n");
++	} else if (dbus_g_proxy_call(self->alarm_proxy, "AddAlarm", &error1,
++				     G_TYPE_STRING, DBUS_NAME,
++				     G_TYPE_INT, t, G_TYPE_INVALID,
++				     G_TYPE_INVALID) ||
++		   dbus_g_proxy_call(self->alarm_proxy, "SetAlarm", &error2,
++				     G_TYPE_STRING, DBUS_NAME,
++				     G_TYPE_INT, t, G_TYPE_INVALID,
++				     G_TYPE_INVALID)) {
++		if (error1 != NULL)
++			g_error_free(error1);
++	} else {
++		display_free_g_error(&error1);
++		display_free_g_error(&error2);
 +	}
 +#ifdef DEBUG
 +	printf("DBus waitfor: %d\n", (int) t);
@@ -410,7 +419,7 @@
  
  	argv0 = strrchr(argv[0], '/');
  	if (!argv0)
-@@ -362,17 +471,36 @@
+@@ -362,17 +480,36 @@
  		die("cannot chdir");
  	if (!strcmp (argv0, "atq"))
  		exit_atq();
@@ -452,7 +461,7 @@
  		/* run all the jobs in the past */
  		now = time (NULL);
  		scan_from_top ();
-@@ -402,8 +530,7 @@
+@@ -402,8 +539,7 @@
  #endif
  		if (next == ULONG_MAX)
  			next = 0;
