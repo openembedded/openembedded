@@ -87,5 +87,6 @@ do_deploy_append () {
 
 }
 
+do_compileconfigs[depends] += "virtual/${TARGET_PREFIX}gcc:do_populate_staging virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX}:do_populate_staging"
 addtask compileconfigs after do_patch before do_configure
 
