@@ -4,7 +4,7 @@ AUTHOR = "cchandel"
 LICENSE = "GPLv2"
 SECTION = "e/apps"
 DEPENDS = "elementary eina edbus"
-SRCREV = "103"
+SRCREV = "104"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r5"
 
