@@ -3,6 +3,7 @@ DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
 PR = "r25"
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 PACKAGES = ""
 COMPATIBLE_MACHINE = '(poodle|c7x0|spitz|akita|tosa)'
 
