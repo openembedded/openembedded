@@ -54,7 +54,6 @@
 #
 # 2010.04.18 Andrea 'ant' Adami
 # - Add support for flashing pure jffs2 rootfs, without Sharp headers
-#   (ToDo: rename it rootfs or rootfs.bin instead of initrd.bin?)
 
 # Set to "yes" to enable
 ENABLE_UBOOT_UPDATER="no"
@@ -204,7 +203,7 @@ do_flashing()
 
         #check version (common to all models)
         /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
-        if [ `cat $TMPDATA` != "SHARP!" ] && [ `cat $TMPDATA` != "OZ!3.1" ] > /dev/null 2>&1
+        if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
         then
             #check for known fake headers
             if [ `cat $TMPDATA` != "OZ!3.1" ] > /dev/null 2>&1
