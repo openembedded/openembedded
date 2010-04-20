@@ -12,7 +12,7 @@ PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master"
 
-SRCREV = "f8175d83d7807eea9577a555016d6e41210196bb"
+SRCREV = "084e4268045b4f3d1c644fe3a1d5a9c49b161713"
 S = "${WORKDIR}/git"
 
 inherit vala
