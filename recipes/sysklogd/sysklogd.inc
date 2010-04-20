@@ -3,8 +3,12 @@ SECTION = "base"
 DESCRIPTION = "The sysklogd package implements two system log daemons."
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/sysklogd-${PV}.tar.gz \
-	   file://nonrootinstall.patch;patch=1"
+	       file://nonrootinstall.patch;patch=1 \
+           file://sysklogd"
 
+inherit update-rc.d
+INITSCRIPT_NAME = "sysklogd"
+INITSCRIPT_PARAMS = "start 39 S 1 2 3 . stop 99 0 6 ."
 CFLAGS_append = " -DSYSV"
 RCONFLICTS = "busybox-syslog"
 
@@ -18,6 +22,8 @@ do_install () {
     mv ${D}${base_sbindir}/klogd ${D}${base_sbindir}/klogd.${PN}
     install -d ${D}${sysconfdir}
     install -m 644 ${S}/syslog.conf ${D}${sysconfdir}/syslog.conf
+    install -d ${D}${sysconfdir}/init.d
+    install -m 755 ${WORKDIR}/sysklogd ${D}${sysconfdir}/init.d/sysklogd
 }
 pkg_postinst_${PN} () {
     update-alternatives --install ${base_sbindir}/syslogd syslogd syslogd.${PN} 100
