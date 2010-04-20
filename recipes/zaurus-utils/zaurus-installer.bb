@@ -1,35 +1,35 @@
 DESCRIPTION = "Installkit for kexecboot-kernel"
 DEPENDS = "${@base_conditional('MACHINE', 'collie', 'linux-kexecboot', 'zaurus-updater linux-kexecboot', d)}"
+DEPENDS += "${@base_conditional('MACHINE', 'spitz', 'zaurus-legacy-tar', '', d)}"
 LICENSE = "zaurus-installer"
-PR = "r1"
+PR = "r3"
 
 PACKAGES = ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = '(collie|poodle|c7x0|spitz|akita|tosa)'
-
-S = "${WORKDIR}"
-
-do_configure() {
-}
 
 do_compile() {
 }
 
 do_deploy() {
 
-	cd ${DEPLOY_DIR_IMAGE}
-	rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/
-	mkdir installkit-${MACHINE}/
+        cd ${DEPLOY_DIR_IMAGE}
+        rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/
+        mkdir installkit-${MACHINE}/
 
-	[ -f "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin" ] && cp ${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin installkit-${MACHINE}/${KERNEL_IMAGETYPE}
+        [ -f "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin" ] && cp ${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin installkit-${MACHINE}/${KERNEL_IMAGETYPE}
 
-	if [ ! "${MACHINE}" = "collie" ]; then
-		cp updater.sh.${MACHINE} installkit-${MACHINE}/updater.sh
-	fi
- 
-	tar czf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz installkit-${MACHINE}/
-	md5sum ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz > ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz.md5
-	rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/
+        if [ ! "${MACHINE}" = "collie" ]; then
+                cp updater.sh installkit-${MACHINE}/updater.sh
+        fi
+
+        if [ "${MACHINE}" = "spitz" ]; then
+                cp ${DEPLOY_DIR_IMAGE}/gnu-tar installkit-${MACHINE}/gnu-tar
+        fi
+
+        tar czf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz installkit-${MACHINE}/
+        md5sum ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz > ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz.md5
+        rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/
 }
 
 addtask deploy before do_build after do_compile
