@@ -14,7 +14,7 @@ SRCREV_omapzoom2 = "015cbaf1035cd9a61d33a27de2a22902555db3c5"
 
 SRCREV_omapzoom36x = "2e3c681c6228de2a3f8fbb0cfbc940e7ea825a09"
 
-OEV = "oe6"
+OEV = "oe7"
 PE = "1"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
@@ -25,14 +25,16 @@ PR_append = "+gitr${SRCREV}"
 
 
 SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=master;protocol=git \
+       file://0042-musb-allow-host-io-without-gadget-module.patch;patch=1 \
        file://rev.patch;patch=1 \
-	   file://logo_linux_clut224.ppm \
-	   file://defconfig"
+       file://logo_linux_clut224.ppm \
+       file://defconfig"
 
 SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=L23.I3.3;protocol=git \
+       file://0042-musb-allow-host-io-without-gadget-module.patch;patch=1 \
        file://rev.patch;patch=1 \
-	   file://logo_linux_clut224.ppm \
-	   file://defconfig"
+       file://logo_linux_clut224.ppm \
+       file://defconfig"
 
 SRC_URI_append = " \
 "
