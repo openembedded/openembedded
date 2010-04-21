@@ -5,8 +5,8 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 
-SRCREV_pn-frameworkd-config-shr_FSO_REV ?= "f751f2724eea23d0ca050bdf2672f9011ae09517"
-SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "3d81d813c8c65a5fa4c2ff912f18489af583a47d"
+SRCREV_pn-frameworkd-config-shr_FSO_REV ?= "cfc0a5c3def2dc2556c86f3dad182181124de006"
+SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "8ba6f1545068399060483017451261e9b3c70d4a"
 
 SRCREV_FORMAT = "FSO_REV-SHR_REV"
 PV = "0.9.5.9+gitr${SRCPV}"
