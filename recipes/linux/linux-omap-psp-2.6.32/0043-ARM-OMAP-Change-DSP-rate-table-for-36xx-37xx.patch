@@ -1,0 +1,54 @@
+From 82d4a1e8295fec4869eb85c597074c124e1f493d Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 10 Mar 2010 17:42:54 +0100
+Subject: [PATCH 43/43] ARM: OMAP: Change DSP rate table for 36xx/37xx:
+
+The frequencies are now:
+
+ARM:    DSP:
+300     300
+600     600
+800     800
+1000    430
+---
+ arch/arm/mach-omap2/omap3-opp.h |    1 +
+ arch/arm/mach-omap2/pm34xx.c    |    8 ++++----
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/omap3-opp.h b/arch/arm/mach-omap2/omap3-opp.h
+index 7cc11df..2e546d9 100644
+--- a/arch/arm/mach-omap2/omap3-opp.h
++++ b/arch/arm/mach-omap2/omap3-opp.h
+@@ -4,6 +4,7 @@
+ #include <plat/omap-pm.h>
+ 
+ /* MPU speeds */
++#define S1200M 1200000000
+ #define S1000M 1000000000
+ #define S800M   800000000
+ #define S720M   720000000
+diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
+index 6bd7918..e0d517a 100644
+--- a/arch/arm/mach-omap2/pm34xx.c
++++ b/arch/arm/mach-omap2/pm34xx.c
+@@ -177,13 +177,13 @@ struct omap_opp omap37x_mpu_rate_table[] = {
+ struct omap_opp omap37x_dsp_rate_table[] = {
+ 	{0, 0, 0},
+ 	/*OPP1 (OPP50) */
+-	{S260M, VDD1_OPP1, 0x1B},
++	{S300M, VDD1_OPP1, 0x1B},
+ 	/*OPP2 (OPP100) */
+-	{S520M, VDD1_OPP2, 0x28},
++	{S600M, VDD1_OPP2, 0x28},
+ 	/*OPP3 (OPP120) */
+-	{S660M, VDD1_OPP3, 0x35},
++	{S800M, VDD1_OPP3, 0x35},
+ 	/*OPP4 (OPPTM) */
+-	{S875M, VDD1_OPP4, 0x39},
++	{S430M, VDD1_OPP4, 0x39},
+ };
+ 
+ struct omap_opp omap37x_l3_rate_table[] = {
+-- 
+1.6.6.1
+
