@@ -1,7 +1,7 @@
 require cornucopia.inc
 inherit fso-plugin
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 PV = "0.5.0+gitr${SRCPV}"
 PE = "1"
 
@@ -11,8 +11,3 @@ EXTRA_OECONF_append = "\
   --enable-libgsm0710mux \
   --enable-modem-qualcomm-palm \
 "
-
-do_install_append_shr() {
-	# remove .service file to disable fsogsmd autostart
-	rm -f ${D}${datadir}/dbus-1/system-services/org.freesmartphone.ogsmd.service
-}
