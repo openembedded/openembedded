@@ -19,7 +19,9 @@ FEED_ARCH ?= "${TARGET_ARCH}"
 SDK_SUFFIX = "toolchain"
 TOOLCHAIN_OUTPUTNAME ?= "${DISTRO}-${DISTRO_VERSION}-${SDK_SYS}-${FEED_ARCH}-${TARGET_OS}-${SDK_SUFFIX}"
 
-RDEPENDS = "${TOOLCHAIN_TARGET_TASK} ${TOOLCHAIN_HOST_TASK}"
+DISTRO_FEED_CONFIGS ?= " "
+
+RDEPENDS = "${DISTRO_FEED_CONFIGS} ${TOOLCHAIN_TARGET_TASK} ${TOOLCHAIN_HOST_TASK}"
 
 TOOLCHAIN_FEED_URI ?= "${DISTRO_FEED_URI}"
 
@@ -30,13 +32,21 @@ modify_opkg_conf () {
         rm -f ${OUTPUT_OPKGCONF_TARGET}
         rm -f ${OUTPUT_OPKGCONF_HOST}
         rm -f ${OUTPUT_OPKGCONF_SDK}
-        opkgarchs="${PACKAGE_ARCHS}"
-        priority=1
-        for arch in ${opkgarchs}; do
-                echo "arch ${arch} ${priority}" >> ${OUTPUT_OPKGCONF_TARGET};
-                echo "src/gz ${arch} ${TOOLCHAIN_FEED_URI}/${arch}" >> ${OUTPUT_OPKGCONF_TARGET};
-                priority=$(expr ${priority} + 5);
-        done
+
+        if [ -e ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/${sysconfdir}/opkg/arch.conf ] ; then
+            echo "Creating empty opkg.conf since arch.conf is already present"
+            echo > ${OUTPUT_OPKGCONF_TARGET} 
+        else
+            opkgarchs="${PACKAGE_ARCHS}"
+            priority=1
+            for arch in ${opkgarchs}; do
+                    echo "arch ${arch} ${priority}" >> ${OUTPUT_OPKGCONF_TARGET};
+                    if [ -n "${TOOLCHAIN_FEED_URI}" ] ; then
+                        echo "src/gz ${arch} ${TOOLCHAIN_FEED_URI}/${arch}" >> ${OUTPUT_OPKGCONF_TARGET};
+                    fi
+                    priority=$(expr ${priority} + 5);
+            done
+        fi
 }
 
 do_populate_sdk() {
@@ -55,7 +65,7 @@ do_populate_sdk() {
 	${IPKG_HOST} -force-depends install ${TOOLCHAIN_HOST_TASK}
 
 	${IPKG_TARGET} update
-	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
+	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK} ${DISTRO_FEED_CONFIGS}
 
 	# Remove packages in the exclude list which were installed by dependencies
 	if [ ! -z "${TOOLCHAIN_TARGET_EXCLUDE}" ]; then
