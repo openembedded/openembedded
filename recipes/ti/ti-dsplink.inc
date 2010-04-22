@@ -44,6 +44,13 @@ DSPLINKDSPCFG_omapl138    = "OMAPL138GEMSHMEM"
 DSPLINKDSPCFG_omap3       = "OMAP3530SHMEM"
 DSPLINKDSPCFG            ?= "<UNDEFINED_DSPLINKDSPCFG>"
 
+DSPLINKDSP_dm6446         = "DM6446GEM_0"
+DSPLINKDSP_dm6467         = "DM6467GEM_0"
+DSPLINKDSP_omapl137       = "OMAPL1XXGEM_0"
+DSPLINKDSP_omapl138       = "OMAPL138GEM_0"
+DSPLINKDSP_omap3          = "OMAP3530_0"
+DSPLINKDSP               ?= "<UNDEFINED_DSPLINKDSP>"
+
 DSPLINKGPPOS_dm6446       = "DM6446LSP"
 DSPLINKGPPOS_dm6467       = "DM6467LSP"
 DSPLINKGPPOS_omapl137     = "ARM"
@@ -152,13 +159,10 @@ do_install () {
     install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
     install -m 0755 ${DSPLINK}/gpp/export/BIN/Linux/${DSPLINKPLATFORM}/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/ 
 
-    # Install the example apps
+    # Install the example apps (gpp and dsp)
     install -d ${D}/${installdir}/ti-dsplink-examples/
     cp ${DSPLINK}/gpp/export/BIN/Linux/${DSPLINKPLATFORM}/RELEASE/*gpp ${D}/${installdir}/ti-dsplink-examples
-    
-    for i in $(find ${DSPLINK}/dsp/BUILD/ -name "*.out") ; do
-        cp ${i} ${D}/${installdir}/ti-dsplink-examples
-    done
+    cp ${DSPLINK}/dsp/export/BIN/DspBios/${DSPLINKPLATFORM}/${DSPLINKDSP}/RELEASE/*.out ${D}/${installdir}/ti-dsplink-examples    
 
     # Install the example apps module un/load scripts
     install ${WORKDIR}/ti-dsplink-examples-loadmodules.sh ${D}/${installdir}/ti-dsplink-examples
