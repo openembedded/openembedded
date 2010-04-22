@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r52"
+PR = "r53"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -64,7 +64,6 @@ RDEPENDS_${PN} += "\
 		pingus \
 		openmoocow \
 		python-pygame \
-		mokoko \
 #		exhibit \
 		obexpush \
 		obexftp \
@@ -206,7 +205,6 @@ RDEPENDS_${PN} += "\
 #		msn-pecan \
 		qwo \
 		fso-apm \
-		fso-abyss \
 		fsousaged \
 		fsodeviced \
 		fsonetworkd \
