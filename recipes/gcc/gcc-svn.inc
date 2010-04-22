@@ -1,14 +1,14 @@
 DEFAULT_PREFERENCE = "-999"
 ARM_INSTRUCTION_SET = "arm"
 
-SRCREV = "156750"
+SRCREV = "158653"
 
 require gcc-common.inc
 
 DEPENDS = "mpfr gmp libmpc"
 
-BINV = "4.5.0"
-PV = "4.5+svnr${SRCPV}"
+BINV = "4.6.0"
+PV = "4.6+svnr${SRCPV}"
 
 FILESPATHPKG .= ":gcc-svn"
 
