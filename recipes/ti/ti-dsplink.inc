@@ -16,7 +16,7 @@ PROVIDES += "ti-dsplink-examples"
 
 # This package builds a kernel module, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "e"
+PR_append = "f"
 
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
@@ -186,6 +186,6 @@ pkg_postrm_ti-dsplink-module_append () {
 
 PACKAGES += "ti-dsplink-examples"
 RDEPENDS_ti-dsplink-examples_append = " ti-dsplink-module"
-RDEPENDS_ti-dsplink-examples_append_omap3 += " ti-lpm-module"
+RDEPENDS_ti-dsplink-examples_append_omap3 += " ti-lpm-module ti-lpm-utils"
 FILES_ti-dsplink-examples = "${installdir}/ti-dsplink-examples/*"
 INSANE_SKIP_ti-dsplink-examples = True
