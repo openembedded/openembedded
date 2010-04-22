@@ -84,6 +84,15 @@ def base_chk_load_parser(config_paths):
 
     return parser
 
+def setup_checksum_deps(d):
+    try:
+        import hashlib
+    except ImportError:
+        if d.getVar("PN", True) != "shasum-native":
+            depends = d.getVarFlag("do_fetch", "depends") or ""
+            d.setVarFlag("do_fetch", "depends", "%s %s" %
+                         (depends, "shasum-native:do_populate_staging"))
+
 def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data):
     strict_checking =  bb.data.getVar("OE_STRICT_CHECKSUMS", data, True)
     if not os.path.exists(localpath):
@@ -91,25 +100,18 @@ def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256s
         bb.note("The localpath does not exist '%s'" % localpath)
         raise Exception("The path does not exist '%s'" % localpath)
 
-    try:
-        md5pipe = os.popen('PATH=%s md5sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
-        md5data = (md5pipe.readline().split() or [ "" ])[0]
-        md5pipe.close()
-    except OSError, e:
-        if strict_checking:
-            raise Exception("Executing md5sum failed")
-        else:
-            bb.note("Executing md5sum failed")
-
-    try:
-        shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
-        sha256data = (shapipe.readline().split() or [ "" ])[0]
-        shapipe.close()
-    except OSError, e:
-        if strict_checking:
-            raise Exception("Executing shasum failed")
-        else:
-            bb.note("Executing shasum failed")
+    md5data = bb.utils.md5_file(localpath)
+    sha256data = bb.utils.sha256_file(localpath)
+    if not sha256data:
+        try:
+            shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
+            sha256data = (shapipe.readline().split() or [ "" ])[0]
+            shapipe.close()
+        except OSError, e:
+            if strict_checking:
+                raise Exception("Executing shasum failed")
+            else:
+                bb.note("Executing shasum failed")
 
     if (expected_md5sum == None or expected_md5sum == None):
         from string import maketrans

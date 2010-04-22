@@ -37,11 +37,10 @@ def base_dep_prepend(d):
 	# the case where host == build == target, for now we don't work in
 	# that case though.
 	#
-	deps = "shasum-native coreutils-native"
-	if bb.data.getVar('PN', d, True) == "shasum-native" or bb.data.getVar('PN', d, True) == "stagemanager-native":
+	deps = "coreutils-native"
+	if bb.data.getVar('PN', d, True) in ("shasum-native", "stagemanager-native",
+	                                     "coreutils-native"):
 		deps = ""
-	if bb.data.getVar('PN', d, True) == "coreutils-native":
-		deps = "shasum-native"
 
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
@@ -76,7 +75,6 @@ addtask setscene before do_fetch
 
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
-do_fetch[depends] = "shasum-native:do_populate_staging"
 python base_do_fetch() {
 	import sys
 
@@ -364,6 +362,8 @@ python () {
     use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
     if use_nls != None:
         bb.data.setVar('USE_NLS', use_nls, d)
+
+    setup_checksum_deps(d)
 
     # Git packages should DEPEND on git-native
     srcuri = bb.data.getVar('SRC_URI', d, 1)
