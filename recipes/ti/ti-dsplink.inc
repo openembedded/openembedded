@@ -79,59 +79,6 @@ do_prepsources () {
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc .make -PR .
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc clean -PR .
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc .interfaces -PR .
-
-    # Clean the gpp user space library
-    cd ${DSPLINK}/gpp/src/api && make \
-      CROSS_COMPILE="${TARGET_PREFIX}" \
-      CC="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      AR="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      LD="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      COMPILER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      ARCHIVER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      KERNEL_DIR="${STAGING_KERNEL_DIR}" \
-      clean
-
-    # Clean the gpp kernel space (debug and release)
-    cd ${DSPLINK}/gpp/src && make \
-      OBJDUMP="${TARGET_PREFIX}objdump" \
-      CROSS_COMPILE="${TARGET_PREFIX}" \
-      CC="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      AR="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      LD="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      COMPILER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      ARCHIVER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      KERNEL_DIR="${STAGING_KERNEL_DIR}" \
-      BASE_BUILDOS="${STAGING_KERNEL_DIR}" \
-      clean
-
-    # Clean the gpp samples
-    cd ${DSPLINK}/gpp/src/samples && make \
-      BASE_TOOLCHAIN="${TOOLCHAIN_PATH}" \
-      BASE_CGTOOLS="${BASE_TOOLCHAIN}/bin" \
-      OSINC_PLATFORM="${TOOLCHAIN_PATH}/lib/gcc/${TARGET_SYS}/$(${TARGET_PREFIX}gcc -dumpversion)/include" \
-      OSINC_TARGET="${BASE_TOOLCHAIN}/target/usr/include" \
-      CROSS_COMPILE="${TARGET_PREFIX}" \
-      CC="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      AR="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      LD="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      COMPILER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      LINKER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      ARCHIVER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      KERNEL_DIR="${STAGING_KERNEL_DIR}" \
-      clean
-
-    # Clean the dsp library (debug and release)
-     cd ${DSPLINK}/dsp/src && make \
-      BASE_CGTOOLS="${CODEGEN_INSTALL_DIR}" \
-      BASE_SABIOS="${BIOS_INSTALL_DIR}" \
-      clean
-
-    # Clean the dsp samples (debug and release)
-    cd ${DSPLINK}/dsp/src/samples && make \
-      BASE_CGTOOLS="${CODEGEN_INSTALL_DIR}" \
-      BASE_SABIOS="${BIOS_INSTALL_DIR}" \
-      clean
-	
 }
 
 addtask prepsources after do_configure before do_compile
