@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r26"
+INC_PR = "r27"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -142,7 +142,9 @@ pkg_postinst_${PN} () {
 	if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; busybox ln -s $to $link; fi; done </etc/busybox.links; fi
 
 	# This adds the links, remember that this has to work when building an image too, hence the $D
+    set +e
 	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 50; done <$D/etc/busybox.links
+    set -e
 }
 
 pkg_postinst_${PN}-mountall () {
