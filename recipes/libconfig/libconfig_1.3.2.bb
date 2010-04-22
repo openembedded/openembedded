@@ -4,9 +4,10 @@ HOMEPAGE = "http://www.hyperrealm.com/libconfig/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPLv2"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.hyperrealm.com/libconfig/libconfig-${PV}.tar.gz"
+SRC_URI = "http://www.hyperrealm.com/libconfig/libconfig-${PV}.tar.gz \
+           file://libconfig.newer.automake-1.11.patch;patch=1"
 
 S = "${WORKDIR}/libconfig-${PV}"
 
