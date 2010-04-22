@@ -64,13 +64,6 @@ export DSPLINK
 
 do_configure() {
 
-    # asm/page.h is gone with linux-libc-headers 2.6.31.
-    # We can safely sed it out since it has been empty for the past 2 years
-    sed -i /page.h/d ${S}/dsplink/gpp/src/api/Linux/drv_api.c || true 
-
-    # Makefile passes hardcoded CROSS_COMPILE - rename so this doesnt get passed to kbuild
-    sed -i -e s:CROSS_COMPILE:BOGUS_CROSS_COMPILE:g ${S}/dsplink/gpp/src/Rules.mk
-
     # Run perl script to create appropriate makefiles (v1.60 and up)
     (
     cd ${DSPLINK}
