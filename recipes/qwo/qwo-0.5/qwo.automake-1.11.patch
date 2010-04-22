@@ -1,0 +1,12 @@
+diff -uNr qwo-0.5.orig//data/Makefile.am qwo-0.5/data/Makefile.am
+--- qwo-0.5.orig//data/Makefile.am	2009-05-28 20:05:43.000000000 +0200
++++ qwo-0.5/data/Makefile.am	2010-04-22 15:33:59.000000000 +0200
+@@ -13,8 +13,6 @@
+ man_MANS = qwo.1
+ endif
+ 
+-dist_man_MANS = $(man_MANS)
+-
+ qwo.1:
+ 	help2man -n "An input method for touchscreen" -s 1 -N -o qwo.1\
+ 		$(top_builddir)/src/qwo
