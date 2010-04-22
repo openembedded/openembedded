@@ -1,0 +1,12 @@
+diff -uNr libconfig-1.3.2.orig//Makefile.am libconfig-1.3.2/Makefile.am
+--- libconfig-1.3.2.orig//Makefile.am	2009-02-18 20:46:32.000000000 +0100
++++ libconfig-1.3.2/Makefile.am	2010-04-22 14:59:36.000000000 +0200
+@@ -34,7 +34,7 @@
+ libinc = libconfig.h
+ 
+ libsrc_cpp =  $(libsrc) libconfigcpp.c++
+-libinc_cpp =  $(libinc) libconfig.h++
++libinc_cpp =  libconfig.h++
+ 
+ BUILT_SOURCES = scanner.c scanner.h grammar.c grammar.h
+ 
