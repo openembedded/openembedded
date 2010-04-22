@@ -1,5 +1,5 @@
 DESCRIPTION = "DSPLINK Inter-Processor Communications (IPC) for TI ARM/DSP processors"
-HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/DSPLink"
+HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/DSPLink/index.html"
 SECTION = "devel"
 LICENSE = "GPLv2"
 
@@ -20,7 +20,7 @@ PR_append = "e"
 
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/DSPLink/${PV}/exports/dsplink_linux_${PV}.tar.gz;name=dsplinktarball \
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/${PV_DL_PATH}/dsplink_linux_${PV}.tar.gz;name=dsplinktarball \
            file://ti-dsplink-examples-run.sh \
            file://ti-dsplink-examples-loadmodules.sh \
            file://ti-dsplink-examples-unloadmodules.sh "
