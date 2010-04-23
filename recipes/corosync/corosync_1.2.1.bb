@@ -1,7 +1,7 @@
 DESCRIPTION = "OSI Certified implementation of a complete cluster engine"
 LICENSE = "BSD"
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = " \
 	ftp://ftp@corosync.org/downloads/corosync-${PV}/corosync-${PV}.tar.gz;name=tar \
@@ -10,8 +10,8 @@ SRC_URI = " \
 	file://corosync.conf \
 	file://volatiles \
 	"
-SRC_URI[tar.md5sum] = "789bea831a97977e56900477c3022cc1"
-SRC_URI[tar.sha256sum] = "3cee3be9f747c7031da9eafdffa5e3009513f4ac93ce021a49574e3de1fd93f0"
+SRC_URI[tar.md5sum] = "cba5eb5da41630f53e54b90c449c056d"
+SRC_URI[tar.sha256sum] = "d919d9817c4cde9e3d38e6f79731d9e1cd53485c6160bd253d888fa58a87a43d"
 
 inherit autotools_stage update-rc.d
 
