@@ -2,7 +2,7 @@ DESCRIPTION = "OCF resource agents for use by compatible cluster managers"
 LICENSE = "GPL"
 DEPENDS = "cluster-glue"
 
-PR = "r3"
+PR = "r0"
 
 SRC_URI = " \
 	http://hg.linux-ha.org/agents/archive/agents-${PV}.tar.bz2;name=tar \
@@ -10,8 +10,8 @@ SRC_URI = " \
 	file://disable-doc-build.patch;patch=1 \
 	"
 SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch;patch=1"
-SRC_URI[tar.md5sum] = "b536dea1b1f642bdc3607cb85ea0b89d"
-SRC_URI[tar.sha256sum] = "c5a1ea9a83c578672cd475ab4af5c2e40736669bae0eb70bb9bb6124074e5e5e"
+SRC_URI[tar.md5sum] = "fcaa2cfd83a28d1965200e11db2ddd41"
+SRC_URI[tar.sha256sum] = "09b58332e34cf128c8d53d5bb4b3f61e402c2e0c0c809f5abae53ca144ad101e"
 
 inherit autotools_stage
 
@@ -28,7 +28,7 @@ S = "${WORKDIR}/Cluster-Resource-Agents-agents-${PV}"
 # The code itself doesn't look that bad, so just disable -Werror
 EXTRA_OECONF_arm += "--disable-fatal-warnings"
 
-PACKAGES =+ "ldirectord ldirectord-doc"
+PACKAGES =+ "ldirectord ldirectord-doc ocft"
 
 FILES_ldirectord = " \
 	${sbindir}/ldirectord \
@@ -64,14 +64,19 @@ RDEPENDS_ldirectord += " \
 	"
 
 FILES_${PN} += " \
-	/usr/lib/heartbeat/findif \
-	/usr/lib/heartbeat/ocf-returncodes \
-	/usr/lib/heartbeat/ocf-shellfuncs \
-	/usr/lib/heartbeat/send_arp \
-	/usr/lib/heartbeat/sfex_daemon \
-	/usr/lib/heartbeat/tickle_tcp \
-	/usr/lib/ocf/resource.d/heartbeat/ \
-	/usr/share/resource-agents/ra-api-1.dtd \
+	${libdir}/heartbeat/findif \
+	${libdir}/heartbeat/ocf-returncodes \
+	${libdir}/heartbeat/ocf-shellfuncs \
+	${libdir}/heartbeat/send_arp \
+	${libdir}/heartbeat/sfex_daemon \
+	${libdir}/heartbeat/tickle_tcp \
+	${libdir}/ocf/resource.d/heartbeat/ \
+	${datadir}/resource-agents/ra-api-1.dtd \
+	"
+
+FILES_ocft += " \
+	${datadir}/resource-agents/ocft \
+	${sbindir}/ocft \
 	"
 
 FILES_${PN}-dbg += "/usr/lib/heartbeat/.debug/"
