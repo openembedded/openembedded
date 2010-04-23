@@ -6,11 +6,11 @@ LICENSE = "GPLv2"
 
 DEPENDS = "opencv"
 
-SRC_URI = "svn://opencvlibrary.svn.sourceforge.net/svnroot/opencvlibrary/trunk;module=opencv;proto=https \
+SRC_URI = "svn://code.ros.org/svn/opencv/trunk;module=opencv;proto=https \
 "
 
-SRCREV = "2219"
-PV = "2.0.0+svnr${SRCPV}"
+SRCREV = "2997"
+PV = "2.1.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/opencv"
 
