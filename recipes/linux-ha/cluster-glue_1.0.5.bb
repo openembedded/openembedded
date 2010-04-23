@@ -6,7 +6,7 @@ is not the cluster messaging layer (Heartbeat), nor the cluster resource manager
 LICENSE = "GPL"
 DEPENDS = "libxml2 libtool glib-2.0 bzip2 util-linux-ng"
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = " \
 	http://hg.linux-ha.org/glue/archive/glue-${PV}.tar.bz2;name=tar \
@@ -14,8 +14,8 @@ SRC_URI = " \
 	file://volatiles \
 	"
 SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch;patch=1"
-SRC_URI[tar.md5sum] = "f13746a8f3e8db1fa9c682d9db892573"
-SRC_URI[tar.sha256sum] = "fb1e4b75779849daf0f2c2c93668dd2a33d304307554f3d617b07f1957c61c9f"
+SRC_URI[tar.md5sum] = "09721e2d2ab3c3fa6696b4347e31721a"
+SRC_URI[tar.sha256sum] = "c437a04494850b79c094f7e84d396e917ec09d9a2fdfb7c11f3b420741ea91a2"
 
 inherit autotools_stage
 
