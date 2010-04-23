@@ -5,10 +5,10 @@ HOMEPAGE = "http://people.openezx.org/wyrm/gen-blob"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
 DEPENDS = "virtual/kernel"
-SRCREV = "2517"
+SRCREV = "2519"
 PV = "1.0.0+svnr${SRCPV}"
 PE = "1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   svn://svn.openezx.org/trunk/src/blob/;module=gen-blob;proto=http \
