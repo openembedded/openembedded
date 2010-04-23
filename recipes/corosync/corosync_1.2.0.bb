@@ -1,6 +1,8 @@
 DESCRIPTION = "OSI Certified implementation of a complete cluster engine"
 LICENSE = "BSD"
 
+PR = "r1"
+
 SRC_URI = " \
 	ftp://ftp@corosync.org/downloads/corosync-${PV}/corosync-${PV}.tar.gz;name=tar \
 	file://fix-lcrso-linkage.patch;patch=1 \
