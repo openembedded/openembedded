@@ -14,6 +14,10 @@ SRC_URI = "https://alioth.debian.org/frs/download.php/2867/pmount-0.9.19.tar.gz 
 
 inherit autotools gettext
 
+do_configure_prepend() {
+	autopoint --force || true
+}
+
 EXTRA_OECONF = "--enable-hal"
 
 PACKAGES =+ "${PN}-hal"
