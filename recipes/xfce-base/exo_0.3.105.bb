@@ -1,7 +1,7 @@
 DESCRIPTION="XFCE extensions and framework library with session management support"
 DEPENDS = "libxfce4util hal liburi-perl-native python-native cairo"
 SECTION = "x11"
-PR = "r1"
+PR = "r2"
 
 inherit xfce46 python-dir
 
@@ -16,10 +16,6 @@ SRC_URI += " \
 # Note: Python checking is broken
 do_configure_prepend() {
 	sed -i -e s:'`$PKG_CONFIG --variable=defsdir pygtk-2.0`':\"${STAGING_DATADIR}/pygtk/2.0/defs\":g ${S}/configure.in
-}
-
-do_stage() {
-    autotools_stage_all
 }
 
 FILES_${PN} += "${datadir}/xfce4/ \

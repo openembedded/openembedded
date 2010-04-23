@@ -3,7 +3,7 @@
 DESCRIPTION = "Xfce4 Panel"
 DEPENDS = "virtual/libx11 startup-notification libxfcegui4 libxml2 exo libwnck"
 SECTION = "x11"
-PR = "r1"
+PR = "r2"
 
 inherit xfce46
 
