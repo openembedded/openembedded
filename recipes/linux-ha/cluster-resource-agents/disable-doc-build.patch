@@ -1,0 +1,13 @@
+Index: Cluster-Resource-Agents-agents-1.0.2/Makefile.am
+===================================================================
+--- Cluster-Resource-Agents-agents-1.0.2.orig/Makefile.am	2010-04-23 13:10:00.000000000 +0400
++++ Cluster-Resource-Agents-agents-1.0.2/Makefile.am	2010-04-23 13:10:05.000000000 +0400
+@@ -19,7 +19,7 @@
+ MAINTAINERCLEANFILES    = Makefile.in aclocal.m4 configure DRF/config-h.in \
+                         DRF/stamp-h.in libtool.m4 ltdl.m4 libltdl.tar
+ 
+-SUBDIRS	= heartbeat tools ldirectord doc
++SUBDIRS	= heartbeat tools ldirectord
+ 
+ dist-clean-local:
+ 	rm -f autoconf automake autoheader $(TARFILE)
