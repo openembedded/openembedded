@@ -6,11 +6,9 @@ DESCRIPTION = "XFCE Widget library and X Window System interaction"
 DEPENDS = "libxfce4util dbh libxml2 gtk+"
 SECTION = "x11/libs"
 
-inherit xfce
+PR = "r1"
 
-do_stage() {
-autotools_stage_all
-}
+inherit xfce
 
 FILES_${PN} += "${libdir}/xfce4/modules ${datadir}/xfce4/mime ${datadir}/icons/hicolor"
 

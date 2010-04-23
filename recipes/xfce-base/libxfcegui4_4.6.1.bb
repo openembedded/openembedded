@@ -5,13 +5,9 @@ DEPENDS = "gettext pkgconfig intltool virtual/libx11 libxfce4util xfconf dbh lib
 RDEPENDS = "xfconf startup-notification "
 
 SECTION = "x11/libs"
-PR = "r4"
+PR = "r5"
 
 inherit xfce46
-
-do_stage() {
-   autotools_stage_all
-}
 
 LEAD_SONAME = "libxfcegui4.so.4"
 
