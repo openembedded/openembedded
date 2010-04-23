@@ -7,5 +7,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/lxde/${PN}-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
-SRC_URI[md5sum] = "5c484ea089f5a6455265e1e1f472240e"
-SRC_URI[sha256sum] = "7663e1849f3b1f2225a3310f907f86068d7ac5c8957d68fc4a684059b49211ca"
+SRC_URI[md5sum] = "a2de255bf9bdc40746c0dc89b3454a10"
+SRC_URI[sha256sum] = "4c85ef5affba0812b22426217871cc18366fa570e195dc43a5e0f17fbc005639"
+
