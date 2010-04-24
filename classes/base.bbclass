@@ -161,15 +161,14 @@ python base_do_fetch() {
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
 
-def oe_unpack_file(file, data, url = None):
-	import subprocess
-	if not url:
-		url = "file://%s" % file
-	dots = file.split(".")
-	if dots[-1] in ['gz', 'bz2', 'Z']:
-		efile = os.path.join(bb.data.getVar('WORKDIR', data, 1),os.path.basename('.'.join(dots[0:-1])))
-	else:
-		efile = file
+def oe_unpack_file(file, destdir, **options):
+	import subprocess, shutil
+
+	dest = os.path.join(destdir, os.path.basename(file))
+	if os.path.exists(dest):
+		if os.path.samefile(file, dest):
+			return True
+
 	cmd = None
 	if file.endswith('.tar'):
 		cmd = 'tar x --no-same-owner -f %s' % file
