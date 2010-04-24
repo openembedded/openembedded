@@ -47,7 +47,7 @@ export CC=${TARGET_PREFIX}klcc
 ############################
 
 EXTRA_OECONF_akita = "--with-zaurus"
-EXTRA_OECONF_c7x0 = "--with-zaurus --enable-debug"
+EXTRA_OECONF_c7x0 = "--with-zaurus"
 EXTRA_OECONF_spitz = "--with-zaurus"
 EXTRA_OECONF_poodle = "--with-zaurus"
 EXTRA_OECONF_tosa = "--with-zaurus"
