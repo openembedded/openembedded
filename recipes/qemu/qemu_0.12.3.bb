@@ -18,6 +18,8 @@ SRC_URI = "\
     file://fix_segfault.patch;patch=1 \
     file://fix_baum_c_compilation.patch;patch=1 \
     file://fix_fortify_source_compilation.patch;patch=1 \
+    file://3f26c1227e3b08010f2a65379cecf4cb4b5933fa.patch;patch=1 \
+    file://c5883be23519921254c6940873ee8db04979c20a.patch;patch=1 \
     "
 
 SRC_URI[qemu-0.12.3.sha256sum] = "3ce26f8fb0a59418b2064a26bac4b40ea4e493acbc3df7ad5932635477fade4b"
