@@ -7,20 +7,20 @@ PROVIDES = "virtual/psplash"
 RPROVIDES_${PN} = "virtual-psplash"
 RCONFLICTS_${PN} = "exquisite"
 
-SRCREV = "249"
+SRCREV = "422"
 PV = "0.0+svnr${SRCPV}"
-PR = "r23"
+PR = "r25"
 
-# You can create your own pslash-hand-img.h by doing
-# ./make-image-header.sh <file>.png HAND
-# and rename the resulting .h to pslash-hand-img.h (for the logo)
+# You can create your own pslash-poky-img.h by doing
+# ./make-image-header.sh <file>.png POKY
+# and rename the resulting .h to pslash-poky-img.h (for the logo)
 # respectively psplash-bar-img.h (BAR) for the bar.
 # You might also want to patch the colors (see patch)
 
 inherit autotools pkgconfig update-rc.d
 
 do_configure_append() {
-	install -m 0644 ${WORKDIR}/psplash-hand-img.h ${S}/
+	install -m 0644 ${WORKDIR}/psplash-poky-img.h ${S}/
 	install -m 0644 ${WORKDIR}/psplash-bar-img.h ${S}/
 
 	if [ -e "${WORKDIR}/psplash.h" ]; then
