@@ -57,7 +57,7 @@ JAVA_arm = ""
 JAVA = ""
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
-require recipes/gcc/gcc-${PV}.inc
+require ../gcc/gcc-${PV}.inc
 
 EXTRA_OECONF += "--disable-libspp --with-slibdir=\"/lib\""
 
