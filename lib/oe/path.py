@@ -1,12 +1,10 @@
 def join(*paths):
     """Like os.path.join but doesn't treat absolute RHS specially"""
-    from os import sep
-    from os.path import normpath
+    import os.path
+    return os.path.normpath("/".join(paths))
 
-    return normpath(sep.join(paths))
-
-def relative(src, dest=None):
-    """ Return a relative path from src to dest(default=cwd).
+def relative(src, dest):
+    """ Return a relative path from src to dest.
 
     >>> relative("/usr/bin", "/tmp/foo/bar")
     ../../tmp/foo/bar
@@ -17,20 +15,25 @@ def relative(src, dest=None):
     >>> relative("/tmp", "/tmp/foo/bar")
     foo/bar
     """
-    if dest is None:
-        dest = getcwd()
+    import os.path
 
     if hasattr(os.path, "relpath"):
         return os.path.relpath(dest, src)
     else:
-        from os import getcwd, sep
-        from os.path import abspath, normpath
+        destlist = os.path.normpath(dest).split(os.path.sep)
+        srclist = os.path.normpath(src).split(os.path.sep)
 
-        srclist = abspath(src).split(sep)
-        destlist = abspath(dest).split(sep)
-        loc = [spath == dpath for spath, dpath in zip(srclist, destlist)].index(False)
-        rellist = ([ ".." ] * (len(srclist) - loc)) + destlist[loc:]
-        return sep.join(rellist)
+        # Find common section of the path
+        common = os.path.commonprefix([destlist, srclist])
+        commonlen = len(common)
+
+        # Climb back to the point where they differentiate
+        relpath = [ pardir ] * (len(srclist) - commonlen)
+        if commonlen < len(destlist):
+            # Add remaining portion
+            relpath += destlist[commonlen:]
+
+        return sep.join(relpath)
 
 def format_display(path, metadata):
     """ Prepare a path for display to the user. """
