@@ -17,6 +17,7 @@ DEFAULT_PREFERENCE_jornada7xx = "-1"
 DEFAULT_PREFERENCE_tb5200l = "1"
 DEFAULT_PREFERENCE_ts72xx = "-1"
 DEFAULT_PREFERENCE_bluepro = "1"
+DEFAULT_PREFERENCE_topas910 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.9.bz2;apply=yes;name=stablepatch \
@@ -67,3 +68,10 @@ SRC_URI_append_ts72xx = " \
 
 SRC_URI_append_eee701 = " \
 	file://intelfb.patch "
+
+SRC_URI_append_topas910 = " \
+	http://github.com/matgnt/linux-2.6/commit/7b8a71c15b44715e3dc08bfa0f9e420b0a567f8b.patch;patch=1;name=topaspatch \
+	"
+
+SRC_URI[topaspatch.md5sum] = "5ebdfa95e5f2d96d77d0efaa50b52d62"
+SRC_URI[topaspatch.sha256sum] = "6bac75b6e9a84def788190402bb6c203da6b0d56877ed192864806d2dc378225"
