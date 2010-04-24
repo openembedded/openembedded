@@ -28,12 +28,12 @@ def relative(src, dest):
         commonlen = len(common)
 
         # Climb back to the point where they differentiate
-        relpath = [ pardir ] * (len(srclist) - commonlen)
+        relpath = [ os.path.pardir ] * (len(srclist) - commonlen)
         if commonlen < len(destlist):
             # Add remaining portion
             relpath += destlist[commonlen:]
 
-        return sep.join(relpath)
+        return os.path.sep.join(relpath)
 
 def format_display(path, metadata):
     """ Prepare a path for display to the user. """
