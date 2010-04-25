@@ -178,7 +178,8 @@ SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
 PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git \
-                     file://0001-OMAP3-set-L1NEON-bit-in-aux-control-register.patch"
+                     file://0001-OMAP3-set-L1NEON-bit-in-aux-control-register.patch \
+                     file://inline-fix.patch"
 SRCREV_omapzoom2 = "78e778e0ea884306841c6499851a1e35177d81d0"
 PV_omapzoom2 = "1.1.4+${PR}+gitr${SRCREV}"
 PE_omapzoom2 = "1"
