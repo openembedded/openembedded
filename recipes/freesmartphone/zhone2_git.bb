@@ -18,7 +18,7 @@ SRC_URI[splash.md5sum] = "e198d5c83cc47a216562e435df0e03c3"
 SRC_URI[splash.sha256sum] = "3e41bcf4ea50ab7406d3833e412a78ddb9afaab4b0a8cca1bf93755d1ce9a215"
 S = "${WORKDIR}/git/zhone2"
 
-inherit autotools_stage update-rc.d
+inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "zhone2"
 INITSCRIPT_PARAMS = "defaults 40"

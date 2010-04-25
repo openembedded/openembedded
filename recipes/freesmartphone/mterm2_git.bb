@@ -14,10 +14,6 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git/tools/mterm2"
 
-do_stage() {
-	:
-}
-
 inherit autotools vala
 
 FILES_${PN} += "${datadir}"
