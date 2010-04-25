@@ -161,14 +161,15 @@ python base_do_fetch() {
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
 
-def oe_unpack_file(file, destdir, **options):
-	import subprocess, shutil
-
-	dest = os.path.join(destdir, os.path.basename(file))
-	if os.path.exists(dest):
-		if os.path.samefile(file, dest):
-			return True
-
+def oe_unpack_file(file, data, url = None):
+	import subprocess
+	if not url:
+		url = "file://%s" % file
+	dots = file.split(".")
+	if dots[-1] in ['gz', 'bz2', 'Z']:
+		efile = os.path.join(bb.data.getVar('WORKDIR', data, 1),os.path.basename('.'.join(dots[0:-1])))
+	else:
+		efile = file
 	cmd = None
 	if file.endswith('.tar'):
 		cmd = 'tar x --no-same-owner -f %s' % file
@@ -177,72 +178,92 @@ def oe_unpack_file(file, destdir, **options):
 	elif file.endswith('.tbz') or file.endswith('.tbz2') or file.endswith('.tar.bz2'):
 		cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % file
 	elif file.endswith('.gz') or file.endswith('.Z') or file.endswith('.z'):
-		base, ext = os.path.splitext(file)
-		cmd = 'gzip -dc %s > %s' % (file, base)
+		cmd = 'gzip -dc %s > %s' % (file, efile)
 	elif file.endswith('.bz2'):
-		base, ext = os.path.splitext(file)
-		cmd = 'bzip2 -dc %s > %s' % (file, base)
+		cmd = 'bzip2 -dc %s > %s' % (file, efile)
 	elif file.endswith('.tar.xz'):
 		cmd = 'xz -dc %s | tar x --no-same-owner -f -' % file
 	elif file.endswith('.xz'):
-		base, ext = os.path.splitext(file)
-		cmd = 'xz -dc %s > %s' % (file, base)
+		cmd = 'xz -dc %s > %s' % (file, efile)
 	elif file.endswith('.zip') or file.endswith('.jar'):
 		cmd = 'unzip -q -o'
-		if 'dos' in options:
+		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
+		if 'dos' in parm:
 			cmd = '%s -a' % cmd
 		cmd = "%s '%s'" % (cmd, file)
 	elif os.path.isdir(file):
-		shutil.rmtree(dest, True)
-		shutil.copytree(file, dest, True)
+		destdir = "."
+		filespath = bb.data.getVar("FILESPATH", data, 1).split(":")
+		for fp in filespath:
+			if file[0:len(fp)] == fp:
+				destdir = file[len(fp):file.rfind('/')]
+				destdir = destdir.strip('/')
+				if len(destdir) < 1:
+					destdir = "."
+				elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
+					os.makedirs("%s/%s" % (os.getcwd(), destdir))
+				break
+
+		cmd = 'cp -pPR %s %s/%s/' % (file, os.getcwd(), destdir)
 	else:
-		if not "patch" in options:
-			shutil.copy2(file, dest)
+		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
+		if not 'patch' in parm:
+			# The "destdir" handling was specifically done for FILESPATH
+			# items.  So, only do so for file:// entries.
+			if type == "file":
+				destdir = bb.decodeurl(url)[1] or "."
+			else:
+				destdir = "."
+			bb.mkdirhier("%s/%s" % (os.getcwd(), destdir))
+			cmd = 'cp %s %s/%s/' % (file, os.getcwd(), destdir)
 
 	if not cmd:
 		return True
 
-	ret = subprocess.call(cmd, preexec_fn=subprocess_setup, shell=True,
-                              cwd=destdir, env=options.get("env"))
+	dest = os.path.join(os.getcwd(), os.path.basename(file))
+	if os.path.exists(dest):
+		if os.path.samefile(file, dest):
+			return True
+
+	# Change to subdir before executing command
+	save_cwd = os.getcwd();
+	parm = bb.decodeurl(url)[5]
+	if 'subdir' in parm:
+		newdir = ("%s/%s" % (os.getcwd(), parm['subdir']))
+		bb.mkdirhier(newdir)
+		os.chdir(newdir)
+
+	cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', data, 1), cmd)
+	bb.note("Unpacking %s to %s/" % (base_path_out(file, data), base_path_out(os.getcwd(), data)))
+	ret = subprocess.call(cmd, preexec_fn=subprocess_setup, shell=True)
+
+	os.chdir(save_cwd)
 
 	return ret == 0
 
 addtask unpack after do_fetch
 do_unpack[dirs] = "${WORKDIR}"
 python base_do_unpack() {
-	workdir = d.getVar("WORKDIR", True)
-	urldatadict = bb.fetch.init(d.getVar("SRC_URI", True).split(), d, True)
+	import re
 
-	env = {
-		"PATH": d.getVar("PATH", True),
-	}
-	for url, urldata in urldatadict.iteritems():
-		if not urldata.setup:
-			urldata.setup_localpath(d)
+	localdata = bb.data.createCopy(d)
+	bb.data.update_data(localdata)
 
-		local = urldata.localpath
+	src_uri = bb.data.getVar('SRC_URI', localdata)
+	if not src_uri:
+		return
+	src_uri = bb.data.expand(src_uri, localdata)
+	for url in src_uri.split():
+		try:
+			local = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
+		except bb.MalformedUrl, e:
+			raise bb.build.FuncFailed('Unable to generate local path for malformed uri: %s' % e)
 		if not local:
 			raise bb.build.FuncFailed('Unable to locate local file for %s' % url)
-
-		if bb.msg.debug_level['default']:
-			bb.note("Unpacking %s to %s/" % (base_path_out(local, d),
-			                                base_path_out(destdir)))
-		else:
-			bb.note("Unpacking %s" % base_path_out(local, d))
-
-		subdirs = []
-		if "subdir" in urldata.parm:
-			subdirs.append(urldata.parm["subdir"])
-		if urldata.type == "file":
-			if urldata.host:
-				subdirs.append(urldata.host)
-
-		if subdirs:
-			destdir = os.path.join(workdir, *subdirs)
-			bb.mkdirhier(destdir)
-		else:
-			destdir = workdir
-		oe_unpack_file(local, destdir, env=env, **urldata.parm)
+		local = os.path.realpath(local)
+		ret = oe_unpack_file(local, localdata, url)
+		if not ret:
+			raise bb.build.FuncFailed()
 }
 
 addhandler base_eventhandler
