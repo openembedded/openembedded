@@ -1,0 +1,32 @@
+#! /bin/sh
+
+matrixgui="/usr/bin/matrix_gui"
+
+test -x "$matrixgui" || exit 0
+
+export LD_LIBRARY_PATH=/usr/lib
+export TSLIB_PLUGINDIR=/usr/lib/ts
+export TSLIB_TSDEVICE=/dev/input/touchscreen0
+export TSLIB_CONFFILE=/etc/ts.conf
+export QWS_MOUSE_PROTO=Tslib:/dev/input/touchscreen0
+
+case "$1" in
+  start)
+    echo -n "Starting Matrix GUI application"
+    if [ ! -f /etc/pointercal ] ; then
+        ts_calibrate
+    fi
+    start-stop-daemon --start --quiet --background --exec $matrixgui
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping Matrix GUI application"
+    start-stop-daemon --stop --quiet --pidfile /var/run/matrix-gui.pid
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/matrix-gui {start|stop}"
+    exit 1
+esac
+
+exit 0
