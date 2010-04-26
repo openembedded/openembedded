@@ -11,4 +11,8 @@ PR = "r0"
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/tools/fso-alsa"
 
-inherit autotools vala
+do_stage() {
+	:
+}
+
+inherit autotools_stage vala

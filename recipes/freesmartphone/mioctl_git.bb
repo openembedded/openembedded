@@ -10,4 +10,8 @@ PR = "r0"
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/tools/mioctl"
 
+do_stage() {
+	:
+}
+
 inherit autotools vala

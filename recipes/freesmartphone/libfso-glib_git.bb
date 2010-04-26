@@ -8,7 +8,11 @@ PV = "0.2.2+gitr${SRCPV}"
 PE = "1"
 PR = "r4"
 
-inherit autotools vala
+inherit autotools_stage pkgconfig vala
+
+PARALLEL_MAKE = ""
 
 SRC_URI = "${FREESMARTPHONE_GIT}/libfso-glib.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
+
+FILES_${PN}-dev += "${datadir}/gir-1.0/*.gir"

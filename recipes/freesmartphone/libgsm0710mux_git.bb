@@ -11,4 +11,4 @@ PR = "r0"
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/libgsm0710mux"
 
-inherit autotools vala
+inherit autotools_stage pkgconfig vala

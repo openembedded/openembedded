@@ -10,4 +10,9 @@ PR = "r0"
 SRC_URI = "${FREESMARTPHONE_GIT}/libframeworkd-glib.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
-inherit autotools
+inherit autotools pkgconfig
+
+do_stage() {
+	autotools_stage_all
+}
+

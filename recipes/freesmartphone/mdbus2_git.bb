@@ -12,4 +12,8 @@ PE = "1"
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/tools/mdbus2"
 
-inherit autotools vala
+do_stage() {
+	:
+}
+
+inherit autotools_stage vala

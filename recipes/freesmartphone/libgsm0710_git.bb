@@ -9,4 +9,4 @@ PR = "r0"
 SRC_URI = "${FREESMARTPHONE_GIT}/libgsm0710.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
-inherit autotools vala
+inherit autotools_stage pkgconfig vala

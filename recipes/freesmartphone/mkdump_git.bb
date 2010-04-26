@@ -16,3 +16,8 @@ SRC_URI = "\
 S = "${WORKDIR}/git/tools/mkdump"
 
 inherit autotools vala
+
+do_stage() {
+	:
+}
+
