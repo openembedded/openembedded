@@ -28,6 +28,8 @@ PREFERRED_VERSION_linux-libc-headers = "2.6.32"
 PREFERRED_VERSION_openssh = "5.2p1"
 
 # upgrades used in Angstrom
+PREFERRED_VERSION_xserver-common = "1.33"
+PREFERRED_VERSION_xserver-nodm-init = "2.0"
 PREFERRED_VERSION_gtk+          = "2.20.0"
 PREFERRED_VERSION_gtk+-native   = "2.20.0"
 PREFERRED_VERSION_hal           = "0.5.13"
