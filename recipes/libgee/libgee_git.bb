@@ -14,11 +14,6 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-inherit autotools vala
-
-# only because of do_stage_append in vala.bbclass
-do_stage() {
-
-}
+inherit autotools_stage pkgconfig vala
 
 BBCLASSEXTEND = "native"
