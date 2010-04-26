@@ -3,7 +3,7 @@ DESCRIPTION = "Configuration files for online package repositories aka feeds"
 RRECOMMENDS_${PN} += "opkg-nogpg-nocurl"
 
 #PV = "${DISTRO_VERSION}"
-PR = "r9"
+PR = "r10"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"
@@ -25,8 +25,9 @@ do_compile() {
 		  echo "src/gz ${feed} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/${feed}" > ${S}/${sysconfdir}/opkg/${feed}-feed.conf
 	done
 
-		echo "src/gz ${MACHINE_ARCH} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/machine/${MACHINE_ARCH}" >  ${S}/${sysconfdir}/opkg/${MACHINE_ARCH}-feed.conf
-	echo "src/gz no-arch ${ANGSTROM_URI}/${FEED_BASEPATH}/all" > ${S}/${sysconfdir}/opkg/noarch-feed.conf
+	echo "src/gz ${MACHINE_ARCH} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/machine/${MACHINE_ARCH}" >  ${S}/${sysconfdir}/opkg/${MACHINE_ARCH}-feed.conf
+	echo "src/gz sdk ${ANGSTROM_URI}/${FEED_BASEPATH}sdk" > ${S}/${sysconfdir}/opkg/sdk-feed.conf
+	echo "src/gz no-arch ${ANGSTROM_URI}/${FEED_BASEPATH}all" > ${S}/${sysconfdir}/opkg/noarch-feed.conf
 		
 	# iwmmxt is a special case, add the iwmmxt feed for machine that have 'iwmmxt' in MACHINE_FEATURES
 		if [ "${IWMMXT_FEED}" = "iwmmxt" ] ; then
@@ -53,6 +54,7 @@ FILES_${PN} = "${sysconfdir}/opkg/base-feed.conf \
 					${sysconfdir}/opkg/${MACHINE_ARCH}-feed.conf \
 					${sysconfdir}/opkg/noarch-feed.conf \
 					${sysconfdir}/opkg/iwmmxt-feed.conf \
+					${sysconfdir}/opkg/sdk-feed.conf \
 					${sysconfdir}/opkg/arch.conf \
 					"
 
@@ -63,7 +65,8 @@ CONFFILES_${PN} += "${sysconfdir}/opkg/base-feed.conf \
 					${sysconfdir}/opkg/gstreamer-feed.conf \
 					${sysconfdir}/opkg/${MACHINE_ARCH}-feed.conf \
 					${sysconfdir}/opkg/noarch-feed.conf \
-				    ${sysconfdir}/opkg/arch.conf \
+					${sysconfdir}/opkg/sdk-feed.conf \
+					${sysconfdir}/opkg/arch.conf \
 					"
 
 python populate_packages_prepend () {
