@@ -3,13 +3,14 @@ SECTION = "x11/data"
 SRC_URI = "git://git.shr-project.org/repo/illume-keyboards.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
 
-SRCREV = "9bd2c8f060c48eee3ab247838d8ecf2cf7082472"
+SRCREV = "4064489f359a1addf572089b582f317dff5f50e1"
 PV = "0.0+gitr${SRCPV}"
 PE = "1"
 PR = "r3"
 
 
 PACKAGES = "\
+illume-keyboard-alpha \
 illume-keyboard-arabic \
 illume-keyboard-browse \
 illume-keyboard-danish \
@@ -28,6 +29,10 @@ illume-keyboard-persian \
 
 PACKAGE_ARCH = "all"
 KEYBOARDS_DIR="${libdir}/enlightenment/modules/illume/keyboards"
+
+AUTHOR_illume-keyboard-alpha = "Jesus McCloud"
+DESCRIPTION_illume-keyboard-alpha = "Illume keyboard with phone-like layout"
+FILES_illume-keyboard-alpha = "${KEYBOARDS_DIR}/Alpha.kbd"
 
 AUTHOR_illume-keyboard-arabic = "Mohammad Fahmi / Tom Hacohen"
 DESCRIPTION_illume-keyboard-arabic = "Illume keyboard with arabic layout"
