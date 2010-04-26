@@ -16,4 +16,9 @@ S = "${WORKDIR}/git"
 
 inherit autotools vala
 
+# only because of do_stage_append in vala.bbclass
+do_stage() {
+
+}
+
 BBCLASSEXTEND = "native"
