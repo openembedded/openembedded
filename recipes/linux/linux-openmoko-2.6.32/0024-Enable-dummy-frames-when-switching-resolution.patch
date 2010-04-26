@@ -1,0 +1,26 @@
+From ed45a9c582b2626a7f44e9fe64ae313d9dcbfbfb Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Sat, 24 Apr 2010 21:45:38 +0200
+Subject: [PATCH 30/31] Enable dummy frames when switching resolution
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ drivers/video/backlight/jbt6k74.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/backlight/jbt6k74.c b/drivers/video/backlight/jbt6k74.c
+index 43249ad..91651e7 100644
+--- a/drivers/video/backlight/jbt6k74.c
++++ b/drivers/video/backlight/jbt6k74.c
+@@ -217,7 +217,7 @@ static int jbt_init_regs(struct jbt_info *jbt)
+ 	 * to avoid red / blue flicker
+ 	 */
+ 	ret |= jbt_reg_write(jbt, JBT_REG_ASW_SLEW, 0x00 | (1 << 5));
+-	ret |= jbt_reg_write(jbt, JBT_REG_DUMMY_DISPLAY, 0x00);
++	ret |= jbt_reg_write(jbt, JBT_REG_DUMMY_DISPLAY, 0xff);
+ 
+ 	ret |= jbt_reg_write(jbt, JBT_REG_SLEEP_OUT_FR_A, 0x11);
+ 	ret |= jbt_reg_write(jbt, JBT_REG_SLEEP_OUT_FR_B, 0x11);
+-- 
+1.7.0.4
+

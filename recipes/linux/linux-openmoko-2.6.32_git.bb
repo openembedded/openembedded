@@ -3,12 +3,11 @@ require linux-openmoko.inc
 
 DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Smartphones"
 
-KERNEL_RELEASE="2.6.32.11"
+KERNEL_RELEASE="2.6.32.12"
 
-SRCREV = "14be1091928fcce66812a85129768fb253b36420"
+SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
-PR = "r8"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
@@ -31,20 +30,20 @@ SRC_URI = "\
   file://0012-Report-all-FB-modes-given-by-the-lower-levels.patch;patch=1 \
   file://0013-Change-connector-type-to-LVDS.patch;patch=1 \
   file://0014-Clean-up-JBT-hooks-and-allow-resolution-switching.patch;patch=1 \
-  file://0015-ar6000-send-userspace-an-event-on-disconnection.patch;patch=1 \
-  file://0016-Enable-display-before-trying-to-set-mode-or-base.patch;patch=1 \
-  file://0017-accels.patch.patch;patch=1 \
-  file://0018-usbhost.patch.patch;patch=1 \
-  file://0019-ar6000_delay.patch.patch;patch=1 \
-  file://0020-save_regs.patch.patch;patch=1 \
-  file://0021-gta02_defconfig.patch;patch=1 \
-  file://0022-gta02_drm_defconfig.patch;patch=1 \
-  file://0023-Re-enable-Glamo-fence-IRQ-if-it-sticks.patch;patch=1 \
-  file://0024-Fix-KMS-framebuffer-physical-address.patch;patch=1 \
+  file://0015-Enable-display-before-trying-to-set-mode-or-base.patch;patch=1 \
+  file://0016-accels.patch.patch;patch=1 \
+  file://0017-usbhost.patch.patch;patch=1 \
+  file://0018-ar6000_delay.patch.patch;patch=1 \
+  file://0019-save_regs.patch.patch;patch=1 \
+  file://0020-Fix-KMS-framebuffer-physical-address.patch;patch=1 \
+  file://0021-Reject-modes-with-clock-0.patch;patch=1 \
+  file://0022-JBT6k74-tweaks-Make-resolution-switch-work.patch;patch=1 \
+  file://0023-Remove-a-couple-of-debugging-messages.patch;patch=1 \
+  file://0024-Enable-dummy-frames-when-switching-resolution.patch;patch=1 \
 "
 
-SRC_URI[stablepatch.md5sum] = "855c248334a71ef5ca3d8cb89d51334f"
-SRC_URI[stablepatch.sha256sum] = "edb26ff62b2f95b0d6e5c434d777af2815600a990f1c7c5d2c7faad9b4e4bc2b"
+SRC_URI[stablepatch.md5sum] = "9d097d34648a1734b1a7f97c5d000f03"
+SRC_URI[stablepatch.sha256sum] = "e03ffcd2c88e936e581e5f7a7c675d11345064f2e3df96e335e5438c6593e3e7"
 
 S = "${WORKDIR}/git"
 

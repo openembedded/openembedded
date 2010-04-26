@@ -1,0 +1,33 @@
+From 926753617ff0961104567c7c0944d5a4bb2b94e5 Mon Sep 17 00:00:00 2001
+From: Paul Fertser <fercerpav@gmail.com>
+Date: Sat, 6 Mar 2010 15:44:10 +0300
+Subject: [PATCH 31/31] ar6000: minimise possibility of race in ar6000_ioctl_siwscan
+
+This stupid patch should make driver not do NULL pointer dereference when
+there's a race between scan and removing of the device. As clumsy as the
+rest of the driver, this is not a proper solution, of course.
+
+Screw the anonymous dev who's written the original code!
+
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+---
+ drivers/ar6000/ar6000/wireless_ext.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/ar6000/ar6000/wireless_ext.c b/drivers/ar6000/ar6000/wireless_ext.c
+index af78ae0..52a4675 100644
+--- a/drivers/ar6000/ar6000/wireless_ext.c
++++ b/drivers/ar6000/ar6000/wireless_ext.c
+@@ -1813,6 +1813,9 @@ ar6000_ioctl_siwscan(struct net_device *dev,
+     wait_event_interruptible_timeout(ar6000_scan_queue, ar->scan_complete,
+ 				     5 * HZ);
+ 
++    if (ar->arWmiReady == FALSE || ar->arWlanState == WLAN_DISABLED)
++	return -EIO;
++
+     if (wmi_bssfilter_cmd(ar->arWmi, NONE_BSS_FILTER, 0) != A_OK) {
+ 	    printk("Couldn't set filtering\n");
+ 	    ret = -EIO;
+-- 
+1.7.0.4
+

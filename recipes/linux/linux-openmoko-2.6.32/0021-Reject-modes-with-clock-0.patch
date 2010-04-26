@@ -1,0 +1,25 @@
+From 6a6957d634daa88f381e44353c98f27e4c39300a Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Sun, 18 Apr 2010 14:25:14 +0200
+Subject: [PATCH 27/31] Reject modes with clock=0
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+---
+ drivers/mfd/glamo/glamo-display.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
+index 24a1a31..f57d273 100644
+--- a/drivers/mfd/glamo/glamo-display.c
++++ b/drivers/mfd/glamo/glamo-display.c
+@@ -522,6 +522,7 @@ static bool glamo_encoder_mode_fixup(struct drm_encoder *encoder,
+                                  struct drm_display_mode *mode,
+                                  struct drm_display_mode *adjusted_mode)
+ {
++	if ( mode->clock == 0 ) return false;
+ 	return true;
+ }
+ 
+-- 
+1.7.0.4
+
