@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r117"
+PR = "r118"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -34,6 +34,8 @@ SRC_URI = "file://functions \
            file://save-rtc.sh"
 
 SRC_URI_append_arm = " file://alignment.sh"
+
+CONFFILES_${PN} += "${sysconfdir}/device_table" 
 
 KERNEL_VERSION = ""
 

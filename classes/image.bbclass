@@ -119,8 +119,12 @@ fakeroot do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}
 	mkdir -p ${DEPLOY_DIR_IMAGE}
 
+	mkdir -p ${IMAGE_ROOTFS}/etc
+
 	if [ "${USE_DEVFS}" != "1" ]; then
+		rm -rf ${IMAGE_ROOTFS}/etc/device_table
 		for devtable in ${@get_devtable_list(d)}; do
+			cat $devtable >> ${IMAGE_ROOTFS}/etc/device_table
 			makedevs -r ${IMAGE_ROOTFS} -D $devtable
 		done
 	fi
