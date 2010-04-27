@@ -4,11 +4,18 @@ SECTION = "devel"
 DEPENDS = "glib-2.0 dbus"
 HOMEPAGE = "http://vala-project.org"
 LICENSE = "LGPL"
-INC_PR = "r0"
+INC_PR = "r1"
 
-SRC_URI = "http://downloads.freesmartphone.org/sources/vala-${PV}.tar.bz2;name=archive"
+#
+# WARNING: This source release has specifically been built for OpenEmbedded.
+# Don't update to an upstream release!
+#
 
-inherit autotools_stage
+SRC_URI = "\
+  http://downloads.freesmartphone.org/sources/vala-${PV}.tar.bz2;name=archive \
+"
+
+inherit autotools
 
 EXTRA_OECONF = "--disable-vapigen"
 
