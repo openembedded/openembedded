@@ -55,6 +55,8 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://0041-ARM-Expose-some-PMON-registers-through-sysfs.patch;patch=1 \
            file://0042-musb-allow-host-io-without-gadget-module.patch;patch=1 \
            file://0043-ARM-OMAP-Change-DSP-rate-table-for-36xx-37xx.patch;patch=1 \
+           file://0044-ARM-OMAP-modify-mpurate-logic-to-accept-anything-upt.patch;patch=1 \
+           file://0045-MTD-silence-ecc-errors-on-mtdblock0.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
