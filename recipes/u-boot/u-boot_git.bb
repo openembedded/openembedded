@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r46"
+PR ="r47"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -24,7 +24,13 @@ SRC_URI_beagleboard = "git://www.sakoman.com/git/u-boot.git;branch=omap3-v2010.3
                        file://0003-Add-DSS-driver-for-OMAP3.patch;patch=1 \
                        file://0004-Enable-DSS-driver-for-Beagle.patch;patch=1 \
                        file://0005-beagleboardXM-don-t-set-mpurate-on-xM-in-bootargs.patch;patch=1 \
-                       file://0006-OMAP3-remove-ES1-cache-workaround-it-falsely-trigger.patch;patch=1 \
+                       file://0006-OMAP3-fix-and-clean-up-L2-cache-enable-disable-funct.patch;patch=1 \
+                       file://0007-OMAP3-convert-setup_auxcr-to-pure-asm.patch;patch=1 \
+                       file://0008-OMAP3-apply-Cortex-A8-errata-workarounds-only-on-aff.patch;patch=1 \
+                       file://0009-OMAP3-beagle-add-more-expansionboards-based-on-http-.patch;patch=1 \
+                       file://0010-OMAP3-beagle-set-mpurate-to-600-for-revB-and-revC1-3.patch;patch=1 \
+                       file://0011-OMAP3-beagle-prettify-expansionboard-message-a-bit.patch;patch=1 \
+                       file://0012-OMAP3-beagle-add-pinmux-for-Tincantools-Trainer-expa.patch;patch=1 \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "946351081bd14e8bf5816fc38b82e004a0e6b4fe"

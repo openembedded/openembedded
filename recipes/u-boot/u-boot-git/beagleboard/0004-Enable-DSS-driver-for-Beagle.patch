@@ -1,7 +1,7 @@
-From 492fac657a2e53f4714e24471a01ed0462edb8fc Mon Sep 17 00:00:00 2001
+From 907184b7135a2f954b905fdae8d1d6fff0d35744 Mon Sep 17 00:00:00 2001
 From: Syed Mohammed Khasim <khasim@ti.com>
 Date: Sun, 11 Apr 2010 17:44:39 +0200
-Subject: [PATCH 4/6] Enable DSS driver for Beagle
+Subject: [PATCH 04/12] Enable DSS driver for Beagle
 
 Configures DSS to display color bar on Svideo
 Configures DSS to display background color on DVID

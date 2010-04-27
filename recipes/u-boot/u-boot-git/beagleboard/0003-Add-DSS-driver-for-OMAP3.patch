@@ -1,7 +1,7 @@
-From fe23f2e29f4d6f4f20ed268d8060f897392a47f7 Mon Sep 17 00:00:00 2001
+From 53c3410ac7acae89c349cd1aa9b51fd81807dfd7 Mon Sep 17 00:00:00 2001
 From: Syed Mohammed Khasim <khasim@ti.com>
 Date: Tue, 12 Jan 2010 23:57:28 +0530
-Subject: [PATCH 3/6] Add DSS driver for OMAP3
+Subject: [PATCH 03/12] Add DSS driver for OMAP3
 
 Supports dynamic panel configuration
 Supports dynamic tv standard selection
