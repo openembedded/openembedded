@@ -34,11 +34,6 @@ pkg_postrm_${PN}() {
 /etc/init.d/dbus-1 reload
 }
 
-# needed because there is do_stage_append in vala.bbclass and do_stage() was removed..
-do_stage() {
-
-}
-
 FILES_${PN} += "${datadir}/${PN} ${datadir}/applications ${datadir}/pixmaps"
 
 MAINTAINER = "Lukasz Pankowski <lukpank@o2.pl>"
