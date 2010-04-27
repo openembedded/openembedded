@@ -12,9 +12,7 @@ PE = "1"
 SRC_URI = "${FREESMARTPHONE_GIT}/msmcomm.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
-inherit autotools_stage vala
-
-PARALLEL_MAKE = ""
+inherit autotools vala
 
 PACKAGES =+ "${PN}-lib ${PN}-term"
 FILES_${PN}-lib = "${libdir}/lib*.so.*"

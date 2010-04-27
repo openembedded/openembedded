@@ -13,4 +13,4 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-inherit autotools_stage pkgconfig vala
+inherit autotools vala
