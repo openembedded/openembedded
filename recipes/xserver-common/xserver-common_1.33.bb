@@ -2,9 +2,13 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
+PR = "r1"
 
 PACKAGE_ARCH = "all"
 DEFAULT_PREFERENCE = "-1"
+
+RCONFLICTS_${PN} = "xserver-kdrive-common"
+RREPLACES_${PN} = "xserver-kdrive-common"
 
 # we are using a gpe-style Makefile
 inherit gpe
@@ -19,6 +23,11 @@ SRC_URI_append = " file://loop.patch;patch=1;pnum=3 \
 
 SRC_URI_append_angstrom = " file://xtscal-fix.patch;patch=1 "
 RDEPENDS_${PN}_append_angstrom = " tslib-calibrate "
+
+SRC_URI_append_shr = " file://89xTs_Calibrate.xinput_calibrator.patch;patch=1 \
+                       file://90xXWindowManager.patch;patch=1 \
+                       file://Xserver.add.nocursor.for.gta.patch;patch=1 \
+                       file://Xserver.add.dpi.for.gta.patch;patch=1"
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
