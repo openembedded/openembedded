@@ -9,6 +9,8 @@
 #  TI_BIN_UNPK_WDEXT  - This variable extends workdir path, if user wants to put
 #                       the output in some internal directory
 
+export DISPLAY = ""
+
 python do_unpack () {
     bb.build.exec_func('base_do_unpack', d)
     bb.build.exec_func('ti_bin_do_unpack', d)
