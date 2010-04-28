@@ -2,13 +2,12 @@ require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
-           file://scsi-use-__u8.patch;patch=1 \
 	  "
 S = "${WORKDIR}/linux-${PV}"
 
@@ -44,6 +43,7 @@ do_compile () {
 do_install() {
 	set_arch
 	oe_runmake headers_install INSTALL_HDR_PATH=${D}${exec_prefix} ARCH=$ARCH
+	rm -f ${D}${exec_prefix}/include/scsi/scsi.h
 }
 
 SRC_URI[md5sum] = "84c077a37684e4cbfa67b18154390d8a"
