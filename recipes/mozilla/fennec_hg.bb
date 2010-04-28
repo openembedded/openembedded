@@ -1,15 +1,14 @@
 DESCRIPTION = "Mozilla Mobile browser"
 
-PV = "0.9+1.0b4pre"
-MOZPV = "1.0b4pre"
-PR = "r7"
+PV = "0.9+${MOZPV}"
+MOZPV = "1.1b2"
+PR = "r8"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=37acc871cb55 \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=c725e5e30b9d \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=060ddfe5aa48 \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=ad254d8abbc9 \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
-           file://use-native-bpp.patch;patch=1 \
 "
 
 S = "${WORKDIR}/mozilla-central"
