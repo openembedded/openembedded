@@ -4,7 +4,7 @@ LICENSE = "TI"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-SRCREV = "15"
+SRCREV = "21"
 PV = "1.0"
 PR = "r1+svnr${SRCPV}"
 
