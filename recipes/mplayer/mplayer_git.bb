@@ -23,7 +23,7 @@ SRC_URI_append_armv7a = " \
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
 
-SRCREV = "5b7a3c944e39b8dad17eeae2c3bdc038662f9352"
+SRCREV = "e64bef6a821e12e4a2fabeae15a2dfeef2ab460b"
 
 PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
