@@ -5,7 +5,7 @@ DEPENDS = "e-wm"
 RDEPENDS = "e-wm"
 SECTION = "x11/application"
 
-SRCREV = "c23dda5f81ed3c6d785617696fb009adb5594a55"
+SRCREV = "2423b80cc840066391793405aeeb23f91809f887"
 PV = "0.0.0+gitr${SRCPV}"
 
 inherit autotools
@@ -14,6 +14,12 @@ SRC_URI = "git://git.shr-project.org/repo/shr-e-gadgets.git;protocol=http;branch
 S = "${WORKDIR}/git"
 
 FILES_${PN} += "\
-	${libdir}/enlightenment/modules/*/*.* \
-	${libdir}/enlightenment/modules/*/*/* \
+	${datadir}/shr_elm_softkey \
+	${libdir}/enlightenment/modules/*/*.desktop \
+	${libdir}/enlightenment/modules/*/*.edj \
+	${libdir}/enlightenment/modules/*/*/*.so \
 "
+FILES_${PN}-static += "${libdir}/enlightenment/modules/*/*/*.a"
+FILES_${PN}-dev += "${libdir}/enlightenment/modules/*/*/*.la"
+FILES_${PN}-dbg += "${libdir}/enlightenment/modules/*/*/.debug"
+
