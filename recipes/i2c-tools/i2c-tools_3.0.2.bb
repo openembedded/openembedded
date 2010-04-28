@@ -12,8 +12,8 @@ inherit autotools
 
 do_compile_prepend() {
         cp ${WORKDIR}/Module.mk ${S}/eepromer/
-        sed -i 's_/usr/local_/usr_' Makefile
-        sed -i 's_CC\t:= gcc_CC\t:= ${CC}_' Makefile
+        sed -i 's#/usr/local#/usr#' Makefile
+        sed -i 's#CC\t:= gcc#CC\t:= ${CC}#' Makefile
         echo "include eepromer/Module.mk" >> Makefile
 }
 
