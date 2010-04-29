@@ -9,8 +9,8 @@ DEPENDS = "alsa-lib openssl"
 PARALLEL_MAKE = ""
 
 SRC_URI = "http://www.pjsip.org/release/${PV}/pjproject-${PV}.tar.bz2 "
-SRC_URI[md5sum] = "1680ed5ffa00ab38449efc2affda53c5"
-SRC_URI[sha256sum] = "de39b121f10bae22cf3e53b0b8d7f62f19b8ca994d29f175a72644f1bd9a60f9"
+SRC_URI[md5sum] = "bcafe54494e0ba44942d352b442ba773"
+SRC_URI[sha256sum] = "a769d4e3812ae9ea2342fa8d918841e60797d1a8605fd9f46a6496ce2e61998c"
 
 S = "${WORKDIR}/pjproject-${PV}"
 
@@ -23,8 +23,4 @@ do_configure_prepend () {
 
 do_compile_prepend() {
         oe_runmake dep
-}
-
-do_stage() {
-        :
 }
