@@ -9,7 +9,7 @@ PREFERRED_VERSION_automake-native = "1.11.1"
 PREFERRED_VERSION_libmikmod = "3.2.0-beta2"
 PREFERRED_VERSION_mtd-utils-native = "1.2.0+git"
 PREFERRED_VERSION_strace = "4.5.15"
-PREFERRED_VERSION_mesa-dri     = "7.8"
+PREFERRED_VERSION_mesa-dri     = "7.8.1"
 
 # We need this for jamvm
 PREFERRED_VERSION_classpath = "0.98"
