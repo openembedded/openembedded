@@ -1,0 +1,26 @@
+Index: svgalib-1.9.25/Makefile
+===================================================================
+--- svgalib-1.9.25.orig/Makefile
++++ svgalib-1.9.25/Makefile
+@@ -100,7 +100,7 @@ installsharedlib: $(SHAREDLIBS) $(SVGALI
+ 		 ln -sf $$foo `echo $$foo | sed 's/\.so\..*/.so/'` ); \
+ 	done
+ 	@./fixldsoconf
+-	-ldconfig
++#	-ldconfig
+ 
+ installstaticlib: static
+ 	@echo Installing static libraries in $(libdir).
+Index: svgalib-1.9.25/threeDKit/Makefile
+===================================================================
+--- svgalib-1.9.25.orig/threeDKit/Makefile
++++ svgalib-1.9.25/threeDKit/Makefile
+@@ -58,7 +58,7 @@ lib3dkit.so.$(VERSION): $(OBJECTS)
+ $(sharedlibdir)/lib3dkit.so.$(VERSION): lib3dkit.so.$(VERSION)
+ 	$(INSTALL_SHLIB) $< $(sharedlibdir)/$<
+ 	(cd $(sharedlibdir); ln -sf lib3dkit.so.$(VERSION) `echo lib3dkit.so.$(VERSION) | sed 's/\.so\..*/.so/'` )
+-	-ldconfig
++#	-ldconfig
+ 
+ install: $(sharedlibdir)/lib3dkit.so.$(VERSION) installheaders
+ 
