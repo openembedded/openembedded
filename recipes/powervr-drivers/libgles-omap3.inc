@@ -1,5 +1,7 @@
 DESCRIPTION = "libGLES for the omap3"
-LICENCE = "proprietary-binary"
+LICENSE = "proprietary-binary"
+
+PR = "r2"
 
 COMPATIBLE_MACHINE = "(dm3730-am3715-evm|am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 
@@ -157,7 +159,7 @@ do_install () {
 
 	install -d ${D}${sysconfdir}
 	echo "[default]" > ${D}${sysconfdir}/powervr.ini
-	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
+	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so.1" >> ${D}${sysconfdir}/powervr.ini
 
 	# The ES2.x, ES3.x and ES5.x CPUs have different SGX hardware, so we need to install 2 sets of userspace
 
@@ -213,6 +215,14 @@ PACKAGES =+ "${PN}-rawdemos \
 PACKAGES += "xserver-kdrive-powervrsgx \
              ${PN}-tests "
 
+PACKAGES =+ "${PN}-blitwsegl ${PN}-flipwsegl ${PN}-frontwsegl ${PN}-linuxfbwsegl ${PN}-x11wsegl"
+
+FILES_${PN}-blitwsegl = "${libdir}/libpvrPVR2D_BLITWSEGL.so.* ${libdir}/*/libpvrPVR2D_BLITWSEGL.so.*"
+FILES_${PN}-flipwsegl = "${libdir}/libpvrPVR2D_FLIPWSEGL.so.* ${libdir}/*/libpvrPVR2D_FLIPWSEGL.so.*"
+FILES_${PN}-frontwsegl = "${libdir}/libpvrPVR2D_FRONTWSEGL.so.* ${libdir}/*/libpvrPVR2D_FRONTWSEGL.so.*"
+FILES_${PN}-linuxfbwsegl = "${libdir}/libpvrPVR2D_LINUXFBWSEGL.so.* ${libdir}/*/libpvrPVR2D_LINUXFBWSEGL.so.*"
+FILES_${PN}-x11wsegl = "${libdir}/libpvrPVR2D_X11WSEGL.so* ${libdir}/*/libpvrPVR2D_X11WSEGL.so*"
+
 FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${libdir}/ES*/* ${bindir}/pvrsrvinit ${bindir}/cputype ${bindir}/*/*"
 FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
 FILES_${PN}-tests = "${bindir}/*"
@@ -236,6 +246,11 @@ RDEPENDS_${PN} += "fbset devmem2"
 
 #HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
 INSANE_SKIP_${PN} = True
+INSANE_SKIP_${PN}-blitwsegl = True
+INSANE_SKIP_${PN}-flipwsegl = True
+INSANE_SKIP_${PN}-frontwsegl = True
+INSANE_SKIP_${PN}-linuxfbwsegl = True
+INSANE_SKIP_${PN}-x11wsegl = True
 INSANE_SKIP_${PN}-tests = True
 INSANE_SKIP_xserver-kdrive-powervrsgx = True
 
