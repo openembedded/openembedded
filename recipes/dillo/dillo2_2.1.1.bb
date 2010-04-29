@@ -8,7 +8,7 @@ RDEPENDS = "fltk2-images"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
          file://dillo.desktop \
          file://dillo.png"
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/dillo-${PV}/"
 
@@ -18,7 +18,7 @@ FILES_${PN} += " /usr/lib/dillo/ /usr/bin/dpid /usr/bin/dpidc "
 FILES_${PN}-dbg += " ${libdir}/dillo/dpi/*/.debug/"
 
 
-EXTRA_OECONF = "--enable-ipv6"
+EXTRA_OECONF = "--enable-ipv6 --enable-ssl"
 
 do_install_append() {
         install -d ${D}${datadir}/applications
