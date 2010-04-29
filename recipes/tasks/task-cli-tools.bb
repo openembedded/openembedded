@@ -3,13 +3,14 @@ DESCRIPTION_${PN}-debug = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r16"
+PR = "r17"
 
 inherit task
 
 PACKAGES += "${PN}-debug"
 
 RDEPENDS_${PN} = "\
+  dbus-daemon-proxy \
   dosfstools \
   htop \
   iptables \
