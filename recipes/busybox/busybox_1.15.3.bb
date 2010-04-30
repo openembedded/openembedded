@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
@@ -10,6 +10,7 @@ SRC_URI = "\
   file://get_header_tar.patch;patch=1 \
   file://busybox-appletlib-dependency.patch;patch=1 \
   file://0000-wget-no-check-certificate.patch;patch=1 \
+  file://run-parts.in.usr-bin.patch;patch=1 \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \
