@@ -260,7 +260,9 @@ if [ -e ${IMAGE_ROOTFS}/usr/bin/opkg-cl ] ; then
 
 	cat /tmp/wanted-locale-packages /tmp/available-locale-packages | sort | uniq -d > /tmp/pending-locale-packages
 
-	cat /tmp/pending-locale-packages | xargs ${OPKG} -nodeps install
+	if [ -s /tmp/pending-locale-packages ] ; then
+		cat /tmp/pending-locale-packages | xargs ${OPKG} -nodeps install
+	fi
 	rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
 
     for i in ${IMAGE_ROOTFS}${libdir}/opkg/info/*.preinst; do
