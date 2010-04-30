@@ -1,11 +1,11 @@
 Index: llvm/lib/Target/ARM/ARMInstrInfo.td
 ===================================================================
---- llvm.orig/lib/Target/ARM/ARMInstrInfo.td	2009-10-06 12:35:26.000000000 +0000
-+++ llvm/lib/Target/ARM/ARMInstrInfo.td	2009-10-06 12:36:03.000000000 +0000
-@@ -645,7 +645,7 @@
-                   IIC_Br, "mov lr, pc\n\tbx $func",
-                   [(ARMcall_nolink GPR:$func)]>,
-            Requires<[IsARM, IsNotDarwin]> {
+--- llvm.orig/lib/Target/ARM/ARMInstrInfo.td	2010-03-08 16:07:25.000000000 +0100
++++ llvm/lib/Target/ARM/ARMInstrInfo.td	2010-03-08 16:10:21.000000000 +0100
+@@ -942,7 +942,7 @@
+                   IIC_Br, "mov\tlr, pc\n\tbx\t$func",
+                   [(ARMcall_nolink tGPR:$func)]>,
+            Requires<[IsARM, HasV4T, IsNotDarwin]> {
 -    let Inst{7-4}   = 0b0001;
 +    let Inst{7-4}   = 0b0011;
      let Inst{19-8}  = 0b111111111111;
