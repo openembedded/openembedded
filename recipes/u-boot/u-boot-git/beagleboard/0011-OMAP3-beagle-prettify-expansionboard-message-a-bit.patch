@@ -1,7 +1,7 @@
 From cd82c1f2db57407bc6571a3221937c14924cc440 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 27 Apr 2010 13:45:28 +0200
-Subject: [PATCH 11/12] OMAP3: beagle: prettify expansionboard message a bit
+Subject: [PATCH 11/14] OMAP3: beagle: prettify expansionboard message a bit
 
 ---
  board/ti/beagle/beagle.c |    2 +-

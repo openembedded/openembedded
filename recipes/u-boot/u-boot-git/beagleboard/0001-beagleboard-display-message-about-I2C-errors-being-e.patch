@@ -1,7 +1,7 @@
 From f62aac5842779fbc5a62ade1c78d47244d565456 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 31 Mar 2010 14:24:25 +0200
-Subject: [PATCH 01/12] beagleboard: display message about I2C errors being expected when no expansion boards are present
+Subject: [PATCH 01/14] beagleboard: display message about I2C errors being expected when no expansion boards are present
 
 ---
  board/ti/beagle/beagle.c |    3 +++

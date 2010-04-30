@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r47"
+PR ="r48"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -31,6 +31,8 @@ SRC_URI_beagleboard = "git://www.sakoman.com/git/u-boot.git;branch=omap3-v2010.3
                        file://0010-OMAP3-beagle-set-mpurate-to-600-for-revB-and-revC1-3.patch;patch=1 \
                        file://0011-OMAP3-beagle-prettify-expansionboard-message-a-bit.patch;patch=1 \
                        file://0012-OMAP3-beagle-add-pinmux-for-Tincantools-Trainer-expa.patch;patch=1 \
+                       file://0013-OMAP3-Beagle-set-mpurate-to-1000-for-xM.patch;patch=1 \
+                       file://0014-OMAP3-Beagle-decrease-bootdelay-to-3-use-VGA-for-def.patch;patch=1 \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "946351081bd14e8bf5816fc38b82e004a0e6b4fe"

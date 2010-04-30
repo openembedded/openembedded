@@ -1,0 +1,34 @@
+From 94ea631bf18a242660a1c3e6e028409480217837 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Fri, 30 Apr 2010 13:26:01 +0200
+Subject: [PATCH 14/14] OMAP3: Beagle: decrease bootdelay to 3, use VGA for default resolution
+
+---
+ include/configs/omap3_beagle.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 7bcbe9b..93a6a5a 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -178,7 +178,7 @@
+ 							/* partition */
+ 
+ /* Environment information */
+-#define CONFIG_BOOTDELAY		10
++#define CONFIG_BOOTDELAY		3
+ 
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"loadaddr=0x82000000\0" \
+@@ -186,7 +186,7 @@
+ 	"console=ttyS2,115200n8\0" \
+ 	"mpurate=500\0" \
+ 	"vram=12M\0" \
+-	"dvimode=1024x768MR-16@60\0" \
++	"dvimode=640x480MR-16@60\0" \
+ 	"defaultdisplay=dvi\0" \
+ 	"mmcroot=/dev/mmcblk0p2 rw\0" \
+ 	"mmcrootfstype=ext3 rootwait\0" \
+-- 
+1.6.6.1
+

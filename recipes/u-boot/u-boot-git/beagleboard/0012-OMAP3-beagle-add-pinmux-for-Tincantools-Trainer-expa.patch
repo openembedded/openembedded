@@ -1,7 +1,7 @@
 From f5796d9de9622ef47fff175613f1baf1d372b5ff Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 27 Apr 2010 18:25:57 +0200
-Subject: [PATCH 12/12] OMAP3: beagle: add pinmux for Tincantools Trainer expansionboard
+Subject: [PATCH 12/14] OMAP3: beagle: add pinmux for Tincantools Trainer expansionboard
 
 ---
  board/ti/beagle/beagle.c |    2 ++
