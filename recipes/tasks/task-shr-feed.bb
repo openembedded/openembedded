@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r54"
+PR = "r55"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -285,6 +285,7 @@ RDEPENDS_${PN} += "\
 		mcnavi \
 		neolight \
 		spojegui \
+		dbus-daemon-proxy \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
