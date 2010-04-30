@@ -1,6 +1,6 @@
 require llvm.inc
 
-DEPENDS = "llvm-common-native cmake-native binutils-cross"
+DEPENDS = "llvm-common-native cmake-native binutils-cross perl-native"
 
 inherit native
 
