@@ -1,0 +1,33 @@
+http://bugs.gentoo.org/213836
+
+Fix the following error :
+
+| loader/module.o: In function `MODULE_GetProcAddress':
+| module.c:(.text+0x125): undefined reference to `report_entry'
+| module.c:(.text+0x12f): undefined reference to `report_ret'
+| module.c:(.text+0x139): undefined reference to `wrapper_target'
+| module.c:(.text+0x13e): undefined reference to `wrapper'
+| loader/module.o: In function `LoadLibraryExA':
+| module.c:(.text+0x10d4): undefined reference to `report_entry'
+| module.c:(.text+0x10de): undefined reference to `report_ret'
+| module.c:(.text+0x10ea): undefined reference to `wrapper_target'
+| module.c:(.text+0x10f0): undefined reference to `wrapper'
+| collect2: ld returned 1 exit status
+| make: *** [mplayer] Error 1
+
+---
+diff --git a/loader/module.c b/loader/module.c
+index e316cf0..2023acb 100644
+--- a/loader/module.c
++++ b/loader/module.c
+@@ -9,8 +9,8 @@
+  */
+ 
+ // define for quicktime calls debugging and/or MacOS-level emulation:
+-#ifndef __APPLE__
+-#define EMU_QTX_API
++#ifdef __APPLE__
++#undef EMU_QTX_API
+ #endif /* __APPLE__ */
+ 
+ // define for quicktime debugging (verbose logging):

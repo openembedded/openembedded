@@ -14,6 +14,7 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
        file://fix-exp.diff;patch=1;maxrev=30291 \
 	   file://fix-addrinfo.patch;patch=1;maxrev=30302 \
        file://fix-avconfig.diff;patch=1;maxrev=30376 \
+	   file://fix-emu_qtx_api.diff;patch=1;maxrev=30165 \
 "
 
 SRCREV = "30165"
@@ -39,7 +40,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc3+svnr${SRCPV}"
-PR = "r19"
+PR = "r20"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_shr = "1"
@@ -156,6 +157,9 @@ EXTRA_OECONF = " \
 	--disable-tga \
 	--disable-pnm \
 	--disable-md5sum \
+	--disable-xss \
+	--disable-dga1 \
+	--disable-dga2 \
 	\
 	--enable-alsa \
 	--enable-ossaudio \
