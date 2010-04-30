@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -24,7 +24,6 @@ PROVIDES = "\
 	linux-libc-headers \
 "
 
-RPROVIDES = "glibc-utils libsegfault glibc-thread-db"
 RPROVIDES_glibc-dev += "libc-dev"
 PACKAGES_DYNAMIC += "glibc-gconv-*"
 PACKAGES_DYNAMIC += "glibc-locale-*"
