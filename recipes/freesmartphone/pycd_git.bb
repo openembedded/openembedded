@@ -1,14 +1,13 @@
 DESCRIPTION = "Python Clone Factory"
 AUTHOR = "Jan Luebbe <jluebbe@debian.org>"
-HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console/network"
-LICENSE = "GPLv2"
+
+require python-helpers.inc
+
 SRCREV = "${FSO_PYTHONHELPERS_SRCREV}"
 PV = "0.1+gitr${SRCPV}"
-PE = "1"
 PR = "r0"
 
-SRC_URI = "${FREESMARTPHONE_GIT}/python-helpers.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/${PN}"
 
 RDEPENDS_${PN} = "\
