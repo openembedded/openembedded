@@ -38,6 +38,7 @@ sysroot_stage_dir() {
 	fi
 }
 
+SYSROOTEXTRALIBDIRSED ?= ""
 sysroot_stage_libdir() {
 	src="$1"
 	dest="$2"
@@ -52,6 +53,7 @@ sysroot_stage_libdir() {
 		sed -e 's/^installed=yes$/installed=no/' \
 		    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
 		    -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
+		    ${SYSROOTEXTRALIBDIRSED} \
 		    -i $src/$i
 	done
 	sysroot_stage_dir $src $dest
