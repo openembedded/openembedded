@@ -1,3 +1,5 @@
+require cornucopia.inc
+
 DESCRIPTION = "Abyss is a GSM 07.10 muxer userspace daemon"
 HOMEPAGE = "http://www.freesmartphone.org/mediawiki/index.php/Implementations/Abyss"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
@@ -7,15 +9,10 @@ LICENSE = "GPL"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.9.2+gitr${SRCPV}"
 PE = "1"
-PR = "r1"
+PR = "${INC_PR}.0"
 
-SRC_URI = "\
-  ${FREESMARTPHONE_GIT}/cornucopia.git;protocol=git;branch=master \
-  file://fso-abyss.conf \
-"
-S = "${WORKDIR}/git/tools/fso-abyss"
-
-inherit autotools vala
+SRC_URI += " file://fso-abyss.conf"
+S = "${WORKDIR}/git/tools/${PN}"
 
 do_install_append() {
 	install -d ${D}${sysconfdir}
