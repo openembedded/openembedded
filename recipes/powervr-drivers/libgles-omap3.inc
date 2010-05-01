@@ -1,7 +1,7 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENSE = "proprietary-binary"
 
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_MACHINE = "(dm3730-am3715-evm|am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 
@@ -59,6 +59,7 @@ do_configure() {
 	# Due to recursive make PLAT_* isn't always passed down correctly, so use sed to fix those
 	for mak in $(find ${S} -name "*.mak") ; do
 		sed -i -e s:arm-none-linux-gnueabi-:${TARGET_PREFIX}:g $mak
+		sed -i -e 's:-lX11 -lXau:-lX11 -lXau -lXdmcp:g' $mak
 	done
 
 	# clear out old stuff
@@ -70,7 +71,8 @@ TARGET_CC_ARCH += " ${TARGET_LINK_HASH_STYLE} -Wl,-rpath-link,${BINLOCATION} -L$
 PARALLEL_MAKE = ""
 
 do_compile() {
-	export X11ROOT="${STAGING_INCDIR}"
+	export X11ROOT="${STAGING_DIR_HOST}/usr"
+	export TOOLCHAIN="${TOOLCHAIN_PATH}"
 	export PLATFORM="LinuxOMAP3"
 
 	export PLAT_CC="${CC}"
