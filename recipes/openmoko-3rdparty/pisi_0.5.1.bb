@@ -5,18 +5,16 @@ LICENSE = "GPL"
 HOMEPAGE = "http://freshmeat.net/projects/pisiom"
 SRCNAME = "pisi"
 DEPENDS = "python-native"
-RDEPENDS = "python-vobject python python-pygtk python-pygobject python-pycairo\
+RDEPENDS = "python-vobject python-core python-pygtk python-pygobject python-pycairo\
            python-gdata python-webdav python-ldap python-epydoc python-core\
            python-dateutil python-sqlite3 python-netserver python-netclient\
            python-misc python-ctypes libsyncml"
 
 PACKAGE_ARCH = "all"
 
-PR = "r0"
-
-SRC_URI = "http://github.com/downloads/kichkasch/pisi/pisi-src-${PV}.tar.gz;name=archive"
-SRC_URI[archive.md5sum] = "a1c241a56cb786025a79df92aef2dcd1"
-SRC_URI[archive.sha256sum] = "b46f11a570904bf550558ba4a5cc99e42dd950f0aec88745752b994757392c18"
+SRC_URI = "http://github.com/downloads/kichkasch/pisi/pisi-src-${PV}.tar.gz"
+SRC_URI[md5sum] = "bc565875420cae99d23c2d062bb4d317"
+SRC_URI[sha256sum] = "2862ffe42f42d9d42bc87a9facfb1c3323f67af4b0db338d8a657df4a604f465"
 
 FILES_${PN} += "/opt/${PN} \
                 ${datadir}/pixmaps \
