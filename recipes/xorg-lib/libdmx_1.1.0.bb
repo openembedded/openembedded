@@ -1,8 +1,8 @@
 require xorg-lib-common.inc
 
 DESCRIPTION = "X11 Distributed Multihead extension library"
-DEPENDS += "libxext dmxproto fso-specs"
-PR = "r2"
+DEPENDS += "libxext dmxproto"
+PR = "r3"
 PE = "1"
 
 SRC_URI[archive.md5sum] = "a2fcf0382837888d3781b714489a8999"
