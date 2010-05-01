@@ -2,7 +2,7 @@ DESCRIPTION = "Enchant Spell checker API Library"
 PRIORITY    = "optional"
 SECTION     = "libs"
 LICENSE     = "LGPL"
-DEPENDS     = "aspell"
+DEPENDS     = "aspell glib-2.0"
 RDEPENDS    = "aspell"
 
 inherit autotools pkgconfig
