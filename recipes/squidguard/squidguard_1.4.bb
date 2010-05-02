@@ -4,13 +4,15 @@ SECTION = "network"
 DEPENDS = "virtual/db openldap mysql5 zlib"
 RDEPENDS += "squid"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	http://www.squidguard.org/Downloads/squidGuard-${PV}.tar.gz;name=tar \
 	file://squidguard-1.4-no_header_checks.patch;patch=1 \
 	file://squidguard-1.4-fix-parallel-build.patch;patch=1 \
 	file://squidguard-cross-ldap.patch;patch=1 \
+	file://squidguard-fix-CVE-2009-3700.patch;patch=1 \
+	file://squidguard-fix-CVE-2009-3826.patch;patch=1 \
 	file://squidGuard.conf \
 	"
 SRC_URI[tar.md5sum] = "de834150998c1386c30feae196f16b06"
