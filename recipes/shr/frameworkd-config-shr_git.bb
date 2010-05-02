@@ -10,7 +10,7 @@ SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "8ba6f1545068399060483017451261e9b3c7
 
 SRCREV_FORMAT = "FSO_REV-SHR_REV"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master;name=FSO_REV \
            git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master;name=SHR_REV"
@@ -27,16 +27,12 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/rules/
 	install -d ${D}${sysconfdir}/freesmartphone/oevents/
-	install -d ${D}${sysconfdir}/freesmartphone/ogsmd/
 	install -d ${D}${sysconfdir}/freesmartphone/persist/
         install -d ${D}${sysconfdir}/freesmartphone/opim/
 	install -m 0644 ${S}/etc/freesmartphone/opreferences/schema/phone.yaml ${D}${sysconfdir}/freesmartphone/opreferences/schema/
 	install -m 0644 ${S}/etc/freesmartphone/opreferences/schema/profiles.yaml ${D}${sysconfdir}/freesmartphone/opreferences/schema/
 	install -m 0644 ${S}/etc/freesmartphone/opreferences/schema/rules.yaml ${D}${sysconfdir}/freesmartphone/opreferences/schema/
 	install -m 0644 ${S}/etc/freesmartphone/persist/README ${D}${sysconfdir}/freesmartphone/persist/
-	install -m 0644 ${S}/etc/freesmartphone/ogsmd/networks.tab ${D}${sysconfdir}/freesmartphone/ogsmd/
-        install -m 0644 ${S}/etc/freesmartphone/ogsmd/cell.db ${D}${sysconfdir}/freesmartphone/ogsmd/
-        install -m 0644 ${S}/etc/freesmartphone/ogsmd/la.db ${D}${sysconfdir}/freesmartphone/ogsmd/
 
 	#Check for machine specific conf.
         CONF_PATH_MACHINE="${CONF_PATH}"
@@ -82,5 +78,4 @@ CONFFILES_${PN} = "\
   ${sysconfdir}/freesmartphone/opreferences/conf/rules/silent.yaml \
   ${sysconfdir}/freesmartphone/opreferences/conf/rules/default.yaml \
   ${sysconfdir}/freesmartphone/oevents/rules.yaml \
-  ${sysconfdir}/freesmartphone/ogsmd/networks.tab \
 "
