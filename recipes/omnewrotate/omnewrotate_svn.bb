@@ -10,9 +10,7 @@ SRCREV = "66"
 PV = "0.5.8+svnr${SRCPV}"
 PR = "r0"
 
-SRC_URI = "svn://omnewrotate.googlecode.com/svn;module=trunk;proto=http \
-           file://correct-sysfs-bl-path.patch;patch=1;maxrev=55 \
-"
+SRC_URI = "svn://omnewrotate.googlecode.com/svn;module=trunk;proto=http"
 
 S = "${WORKDIR}/trunk"
 
