@@ -2,7 +2,7 @@ require abiword-2.5.inc
 DEPENDS += " loudmouth libwmf-native gtkmathview "
 RCONFLICTS_${PN} = "abiword-embedded"
 
-PR = "r2"
+PR = "r2.1"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=abiword \
            file://autogen-common.sh \
