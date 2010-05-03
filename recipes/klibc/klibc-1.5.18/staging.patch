@@ -1,0 +1,134 @@
+Index: klibc-1.5/Makefile
+===================================================================
+--- klibc-1.5.orig/Makefile	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/Makefile	2008-02-24 15:25:15.213824149 +0100
+@@ -33,7 +33,7 @@
+ export PERL       := perl
+ 
+ # Location for installation
+-export prefix      = /usr
++export prefix      = $(INST)
+ export bindir      = $(prefix)/bin
+ export libdir      = $(prefix)/lib
+ export mandir      = $(prefix)/man
+Index: klibc-1.5/scripts/Kbuild.install
+===================================================================
+--- klibc-1.5.orig/scripts/Kbuild.install	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/scripts/Kbuild.install	2008-02-24 15:24:28.085825030 +0100
+@@ -88,16 +88,12 @@
+ header:
+ 	$(Q)echo "  INSTALL headers + man pages to $(INSTALLROOT)$(INSTALLDIR)"
+ 	$(Q)mkdir -p $(INSTALLROOT)$(bindir)
+-	$(Q)mkdir -p $(INSTALLROOT)$(mandir)/man1
+-	$(Q)mkdir -p $(INSTALLROOT)$(SHLIBDIR)
+ 	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)
+ 	$(Q)-rm -rf $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include
+ 	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include
+ 	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)lib
+-	$(Q)mkdir -p $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)bin
+ 	$(Q)make -C $(KLIBCKERNELSRC) ARCH=$(KLIBCARCH) INSTALL_HDR_PATH=$(INSTALLROOT)$(INSTALLDIR)/$(KCROSS) headers_install
+ 	$(Q)cp -rf usr/include/. $(INSTALLROOT)$(INSTALLDIR)/$(KCROSS)include/.
+-	$(Q)$(install-data) $(srctree)/klcc/klcc.1 $(INSTALLROOT)$(mandir)/man1/$(KCROSS)klcc.1
+ 	$(Q)$(install-bin) $(objtree)/klcc/$(KCROSS)klcc $(INSTALLROOT)$(bindir)
+ 
+ footer: header
+Index: klibc-1.5/usr/dash/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/dash/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/dash/Kbuild	2008-02-24 15:13:50.189827040 +0100
+@@ -107,5 +107,3 @@
+ $(obj)/arith.c: $(obj)/arith.h
+ 	$(Q):
+ 
+-# Targets to install
+-install-y := sh.shared
+Index: klibc-1.5/usr/gzip/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/gzip/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/gzip/Kbuild	2008-02-24 15:13:50.197824604 +0100
+@@ -21,5 +21,3 @@
+ # Cleaning
+ targets := gzip gzip.g gunzip zcat
+ 
+-# Targets to install
+-install-y := gzip gunzip zcat
+Index: klibc-1.5/usr/kinit/fstype/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/kinit/fstype/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/kinit/fstype/Kbuild	2008-02-24 15:13:50.201824503 +0100
+@@ -21,5 +21,3 @@
+ # Cleaning
+ clean-dirs := static shared
+ 
+-# install binary
+-install-y := $(shared-y)
+Index: klibc-1.5/usr/kinit/ipconfig/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/kinit/ipconfig/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/kinit/ipconfig/Kbuild	2008-02-24 15:13:50.205824123 +0100
+@@ -27,5 +27,3 @@
+ # Cleaning
+ clean-dirs := static shared
+ 
+-# install binary
+-install-y := $(shared-y)
+Index: klibc-1.5/usr/kinit/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/kinit/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/kinit/Kbuild	2008-02-24 15:13:50.209824302 +0100
+@@ -33,5 +33,3 @@
+ subdir- := fstype ipconfig nfsmount resume run-init
+ 
+ 
+-# install binary
+-install-y := kinit kinit.shared
+Index: klibc-1.5/usr/kinit/nfsmount/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/kinit/nfsmount/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/kinit/nfsmount/Kbuild	2008-02-24 15:13:50.213824201 +0100
+@@ -23,5 +23,3 @@
+ 
+ clean-dirs := static shared
+ 
+-# Install binary
+-install-y := $(shared-y)
+Index: klibc-1.5/usr/kinit/resume/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/kinit/resume/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/kinit/resume/Kbuild	2008-02-24 15:13:50.217824380 +0100
+@@ -26,5 +26,3 @@
+ # Cleaning
+ clean-dirs := static shared
+ 
+-# install binary
+-install-y := $(shared-y)
+Index: klibc-1.5/usr/kinit/run-init/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/kinit/run-init/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/kinit/run-init/Kbuild	2008-02-24 15:13:50.221824559 +0100
+@@ -25,5 +25,3 @@
+ # Cleaning
+ clean-dirs := static shared
+ 
+-# install binary
+-install-y := $(shared-y)
+Index: klibc-1.5/usr/klibc/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/klibc/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/klibc/Kbuild	2008-02-24 15:13:50.229824358 +0100
+@@ -175,5 +175,3 @@
+ 	          $(INSTALLROOT)$(INSTALLDIR)/$(KLIBCCROSS)lib))
+ 	$(Q)$(install-lib) $(obj)/klibc-$(SOLIBHASH).so \
+ 	                      $(INSTALLROOT)$(INSTALLDIR)/$(KLIBCCROSS)lib
+-	$(Q)$(install-lib) $(obj)/klibc-$(SOLIBHASH).so \
+-	                      $(INSTALLROOT)$(SHLIBDIR)
+Index: klibc-1.5/usr/utils/Kbuild
+===================================================================
+--- klibc-1.5.orig/usr/utils/Kbuild	2007-03-04 02:52:10.000000000 +0100
++++ klibc-1.5/usr/utils/Kbuild	2008-02-24 15:13:50.229824358 +0100
+@@ -66,5 +66,3 @@
+ # Clean deletes the static and shared dir
+ clean-dirs := static shared
+ 
+-# install only install the shared binaries
+-install-y := $(shared-y) shared/reboot shared/poweroff
