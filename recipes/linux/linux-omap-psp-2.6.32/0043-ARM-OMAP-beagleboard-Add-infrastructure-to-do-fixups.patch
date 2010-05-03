@@ -1,7 +1,7 @@
 From b6238a79746a5022969a5f780a6e51d794ab9c0c Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 3 May 2010 14:41:29 +0200
-Subject: [PATCH 43/43] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
+Subject: [PATCH 43/45] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
 
 And add support for zippy2
 ---

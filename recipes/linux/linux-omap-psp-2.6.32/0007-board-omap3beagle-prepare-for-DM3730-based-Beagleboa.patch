@@ -1,4 +1,4 @@
-From ee1d0dcae9e02b451e66c68977482b1f33f8e76f Mon Sep 17 00:00:00 2001
+From 81f13d0f20e50503eb6baef9bb28a3ed2210154a Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Mon, 8 Feb 2010 16:30:59 +0100
 Subject: [PATCH 07/45] board-omap3beagle: prepare for DM3730 based BeagleboardXM

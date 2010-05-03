@@ -1,4 +1,4 @@
-From 0d26a081f4f4c6a44dcee0253e82307cc5020108 Mon Sep 17 00:00:00 2001
+From 6942ec9d19faef80770ae0f2302790d8ec73a9a7 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 30 Apr 2010 11:12:24 +0200
 Subject: [PATCH 01/45] Revert "omap3: beagle: Fix compile-time errors"

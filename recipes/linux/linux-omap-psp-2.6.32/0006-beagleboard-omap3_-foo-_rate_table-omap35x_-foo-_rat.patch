@@ -1,4 +1,4 @@
-From 2186b66d5eeb3028d7c87a8dbdab626797d5bbbe Mon Sep 17 00:00:00 2001
+From 5be3bc924fbb66f7604763c617eecc4c5b009cb5 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Wed, 27 Jan 2010 21:57:13 +0100
 Subject: [PATCH 06/45] beagleboard: omap3_<foo>_rate_table -> omap35x_<foo>_rate_table
