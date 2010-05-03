@@ -19,10 +19,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://0005-board-omap3-beagle-add-DSS2-support.patch;patch=1 \
            file://0006-beagleboard-omap3_-foo-_rate_table-omap35x_-foo-_rat.patch;patch=1 \
            file://0007-board-omap3beagle-prepare-for-DM3730-based-Beagleboa.patch;patch=1 \
-           file://0008-mt9t111-first-stab-at-merging-sensor-driver-based-on.patch;patch=1 \
-           file://0009-board-omap3beagle-ugly-copy-paste-job-to-get-mt9p111.patch;patch=1 \
            file://0010-board-omap3beagle-turn-on-power-to-camera-on-boot-an.patch;patch=1 \
-           file://0011-board-omap3beagle-update-omap34xxcam-to-more-recent-.patch;patch=1 \
            file://0012-ASoC-enable-audio-capture-by-default-for-twl4030.patch;patch=1 \
            file://0013-MTD-NAND-omap2-proper-fix-for-subpage-read-ECC-error.patch;patch=1 \
            file://0014-OMAP3630-DSS2-Enable-Pre-Multiplied-Alpha-Support.patch;patch=1 \
