@@ -3,7 +3,7 @@ DESCRIPTION = "Configuration files for online package repositories aka feeds"
 RRECOMMENDS_${PN} += "opkg-nogpg-nocurl"
 
 #PV = "${DISTRO_VERSION}"
-PR = "r10"
+PR = "r11"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"
@@ -26,7 +26,7 @@ do_compile() {
 	done
 
 	echo "src/gz ${MACHINE_ARCH} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/machine/${MACHINE_ARCH}" >  ${S}/${sysconfdir}/opkg/${MACHINE_ARCH}-feed.conf
-	echo "src/gz sdk ${ANGSTROM_URI}/${FEED_BASEPATH}sdk" > ${S}/${sysconfdir}/opkg/sdk-feed.conf
+	echo "#src/gz sdk ${ANGSTROM_URI}/${FEED_BASEPATH}sdk" > ${S}/${sysconfdir}/opkg/sdk-feed.conf
 	echo "src/gz no-arch ${ANGSTROM_URI}/${FEED_BASEPATH}all" > ${S}/${sysconfdir}/opkg/noarch-feed.conf
 		
 	# iwmmxt is a special case, add the iwmmxt feed for machine that have 'iwmmxt' in MACHINE_FEATURES
