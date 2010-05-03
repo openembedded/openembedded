@@ -2,7 +2,7 @@ Index: xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator
 ===================================================================
 --- xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator	(revision 0)
 +++ xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator	(revision 0)
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,34 @@
 +#!/bin/sh
 +
 +SYSFS_CALIBRATION_DIR=/sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration
@@ -35,6 +35,5 @@ Index: xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator
 +    else
 +      /usr/bin/xinput_calibrator_once.sh
 +    fi
-+    exit
 +  fi
 +fi
