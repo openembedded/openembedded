@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r48"
+PR ="r49"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -18,25 +18,48 @@ SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch;patch=1"
 SRC_URI_append_cm-t35 = "file://cm-t35/cm-t35.patch;patch=1"
 
-SRC_URI_beagleboard = "git://www.sakoman.com/git/u-boot.git;branch=omap3-v2010.3;protocol=git \
-                       file://0001-beagleboard-display-message-about-I2C-errors-being-e.patch;patch=1 \
-                       file://0002-beagleboard-fix-TCT-expansionboard-IDs.patch;patch=1 \
-                       file://0003-Add-DSS-driver-for-OMAP3.patch;patch=1 \
-                       file://0004-Enable-DSS-driver-for-Beagle.patch;patch=1 \
-                       file://0005-beagleboardXM-don-t-set-mpurate-on-xM-in-bootargs.patch;patch=1 \
-                       file://0006-OMAP3-fix-and-clean-up-L2-cache-enable-disable-funct.patch;patch=1 \
-                       file://0007-OMAP3-convert-setup_auxcr-to-pure-asm.patch;patch=1 \
-                       file://0008-OMAP3-apply-Cortex-A8-errata-workarounds-only-on-aff.patch;patch=1 \
-                       file://0009-OMAP3-beagle-add-more-expansionboards-based-on-http-.patch;patch=1 \
-                       file://0010-OMAP3-beagle-set-mpurate-to-600-for-revB-and-revC1-3.patch;patch=1 \
-                       file://0011-OMAP3-beagle-prettify-expansionboard-message-a-bit.patch;patch=1 \
-                       file://0012-OMAP3-beagle-add-pinmux-for-Tincantools-Trainer-expa.patch;patch=1 \
-                       file://0013-OMAP3-Beagle-set-mpurate-to-1000-for-xM.patch;patch=1 \
-                       file://0014-OMAP3-Beagle-decrease-bootdelay-to-3-use-VGA-for-def.patch;patch=1 \
+SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
+                       file://0001-OMAP3-enable-i2c-bus-switching-for-Beagle-and-Overo.patch;patch=1 \
+                       file://0002-OMAP3-add-board-revision-detection-for-Overo.patch;patch=1 \
+                       file://0003-OMAP3-update-Beagle-revision-detection-to-recognize-.patch;patch=1 \
+                       file://0004-OMAP3-Set-VAUX2-to-1.8V-for-EHCI-PHY-on-Beagle-Rev-C.patch;patch=1 \
+                       file://0005-OMAP3-add-entry-for-rev-3.1.2-check-and-display-max-.patch;patch=1 \
+                       file://0006-OMAP3-add-mpurate-boot-arg-for-overo-and-beagle.patch;patch=1 \
+                       file://0007-OMAP3-detect-expansion-board-type-version-using-eepr.patch;patch=1 \
+                       file://0008-OMAP3-Overo-enable-config-eeprom-to-set-u-boot-env-v.patch;patch=1 \
+                       file://0009-OMAP3-Overo-enable-input-on-MMC1_CLK-and-MMC3_CLK-pi.patch;patch=1 \
+                       file://0010-OMAP3-Overo-set-CONFIG_SYS_I2C_SPEED-to-400Khz.patch;patch=1 \
+                       file://0011-OMAP3-trim-excessively-long-delays-in-i2c-driver.patch;patch=1 \
+                       file://0012-OMAP3-Overo-allow-expansion-boards-with-any-vendor-I.patch;patch=1 \
+                       file://0013-OMAP3-Overo-change-address-of-expansion-eeprom-to-0x.patch;patch=1 \
+                       file://0014-OMAP3-board.c-don-t-attempt-to-set-up-second-RAM-ban.patch;patch=1 \
+                       file://0015-OMAP3-mem.c-enhance-the-RAM-test.patch;patch=1 \
+                       file://0016-env_nand.c-fail-gracefully-if-no-nand-is-present.patch;patch=1 \
+                       file://0017-OMAP3-add-definitions-to-support-sysinfo-cpu-and-cpu.patch;patch=1 \
+                       file://0018-OMAP3-sys_info-update-cpu-detection-for-36XX-37XX.patch;patch=1 \
+                       file://0019-OMAP3-clocks-update-clock-setup-for-36XX-37XX.patch;patch=1 \
+                       file://0020-OMAP3-beagle-add-support-for-Beagle-xM.patch;patch=1 \
+                       file://0021-OMAP3-Beagle-Overo-remove-omapfb.debug-y-from-defaul.patch;patch=1 \
+                       file://0022-OMAP3-beagle-implement-expansionboard-detection-base.patch;patch=1 \
+                       file://0023-beagleboard-display-message-about-I2C-errors-being-e.patch;patch=1 \
+                       file://0024-beagleboard-fix-TCT-expansionboard-IDs.patch;patch=1 \
+                       file://0025-Add-DSS-driver-for-OMAP3.patch;patch=1 \
+                       file://0026-Enable-DSS-driver-for-Beagle.patch;patch=1 \
+                       file://0027-beagleboardXM-don-t-set-mpurate-on-xM-in-bootargs.patch;patch=1 \
+                       file://0028-OMAP3-fix-and-clean-up-L2-cache-enable-disable-funct.patch;patch=1 \
+                       file://0029-OMAP3-convert-setup_auxcr-to-pure-asm.patch;patch=1 \
+                       file://0030-OMAP3-apply-Cortex-A8-errata-workarounds-only-on-aff.patch;patch=1 \
+                       file://0031-OMAP3-beagle-add-more-expansionboards-based-on-http-.patch;patch=1 \
+                       file://0032-OMAP3-beagle-set-mpurate-to-600-for-revB-and-revC1-3.patch;patch=1 \
+                       file://0033-OMAP3-beagle-prettify-expansionboard-message-a-bit.patch;patch=1 \
+                       file://0034-OMAP3-beagle-add-pinmux-for-Tincantools-Trainer-expa.patch;patch=1 \
+                       file://0035-OMAP3-Beagle-set-mpurate-to-1000-for-xM.patch;patch=1 \
+                       file://0036-OMAP3-Beagle-decrease-bootdelay-to-3-use-VGA-for-def.patch;patch=1 \
+                       file://0037-OMAP3-beagle-pass-expansionboard-name-in-bootargs.patch;patch=1 \
                        file://fw_env.config \
 "
-SRCREV_beagleboard = "946351081bd14e8bf5816fc38b82e004a0e6b4fe"
-PV_beagleboard = "2010.03-rc1+${PR}+gitr${SRCREV}"
+SRCREV_beagleboard = "ca6e1c136ddb720c3bb2cc043b99f7f06bc46c55"
+PV_beagleboard = "2010.03+${PR}+gitr${SRCREV}"
 
 SRCREV_calamari = "533cf3a024947aaf74c16573a6d951cd0c3d0a7d"
 

@@ -1,7 +1,7 @@
-From 94ea631bf18a242660a1c3e6e028409480217837 Mon Sep 17 00:00:00 2001
+From 39f15722db5595411ec085e36b7fd7657415a554 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 30 Apr 2010 13:26:01 +0200
-Subject: [PATCH 14/14] OMAP3: Beagle: decrease bootdelay to 3, use VGA for default resolution
+Subject: [PATCH 36/37] OMAP3: Beagle: decrease bootdelay to 3, use VGA for default resolution
 
 ---
  include/configs/omap3_beagle.h |    4 ++--

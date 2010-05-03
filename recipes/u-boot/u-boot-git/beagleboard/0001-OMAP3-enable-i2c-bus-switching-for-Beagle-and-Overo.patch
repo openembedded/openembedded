@@ -1,0 +1,52 @@
+From fc313d72cbfd788f23a7623d0b8cd9c2af329b7b Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Wed, 10 Feb 2010 13:39:40 -0800
+Subject: [PATCH 01/37] OMAP3: enable i2c bus switching for Beagle and Overo
+
+---
+ drivers/i2c/omap24xx_i2c.c     |    6 ++++++
+ include/configs/omap3_beagle.h |    1 +
+ include/configs/omap3_overo.h  |    1 +
+ 3 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/i2c/omap24xx_i2c.c b/drivers/i2c/omap24xx_i2c.c
+index ff18991..30a8b4c 100644
+--- a/drivers/i2c/omap24xx_i2c.c
++++ b/drivers/i2c/omap24xx_i2c.c
+@@ -435,3 +435,9 @@ int i2c_set_bus_num(unsigned int bus)
+ 
+ 	return 0;
+ }
++
++int i2c_get_bus_num(void)
++{
++	return (int) current_bus;
++}
++
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 08d79ac..87e3dd0 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -146,6 +146,7 @@
+ #define CONFIG_SYS_I2C_BUS		0
+ #define CONFIG_SYS_I2C_BUS_SELECT	1
+ #define CONFIG_DRIVER_OMAP34XX_I2C	1
++#define CONFIG_I2C_MULTI_BUS		1
+ 
+ /*
+  * TWL4030
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index a43500b..0d24758 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -117,6 +117,7 @@
+ #define CONFIG_SYS_I2C_BUS		0
+ #define CONFIG_SYS_I2C_BUS_SELECT	1
+ #define CONFIG_DRIVER_OMAP34XX_I2C	1
++#define CONFIG_I2C_MULTI_BUS		1
+ 
+ /*
+  * TWL4030
+-- 
+1.6.6.1
+

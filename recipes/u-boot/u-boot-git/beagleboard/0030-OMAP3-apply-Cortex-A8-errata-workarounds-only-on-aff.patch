@@ -1,7 +1,7 @@
-From 2d0c47945ca49aa18dbedd9e4266ec18bc3b0150 Mon Sep 17 00:00:00 2001
+From 4e7bc59affc2a71de40259330e27e62181993968 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Wed, 14 Apr 2010 17:10:28 +0100
-Subject: [PATCH 08/14] OMAP3: apply Cortex-A8 errata workarounds only on affected revisions
+Subject: [PATCH 30/37] OMAP3: apply Cortex-A8 errata workarounds only on affected revisions
 
 The workarounds for errata 621766 and 725233 should only be applied
 on affected Cortex-A8 revisions.  Recent chips use r3px cores where
