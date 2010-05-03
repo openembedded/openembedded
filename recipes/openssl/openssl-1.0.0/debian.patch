@@ -1,22 +1,8 @@
 Index: openssl-1.0.0/Makefile
 ===================================================================
---- openssl-1.0.0.orig/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-@@ -26,10 +26,10 @@
+--- openssl-1.0.0.orig/Makefile
++++ openssl-1.0.0/Makefile
+@@ -26,10 +26,10 @@ HERE=.
  # for, say, /usr/ and yet have everything installed to /tmp/somedir/usr/.
  # Normally it is left empty.
  INSTALL_PREFIX=
@@ -29,7 +15,7 @@ Display the current time in the given FORMAT.
  
  # NO_IDEA - Define to build without the IDEA algorithm
  # NO_RC4  - Define to build without the RC4 algorithm
-@@ -133,12 +133,13 @@
+@@ -133,12 +133,13 @@ TESTS = alltests
  
  MAKEFILE= Makefile
  
@@ -46,7 +32,7 @@ Display the current time in the given FORMAT.
  SHELL=/bin/sh
  
  TOP=    .
-@@ -149,8 +150,8 @@
+@@ -149,8 +150,8 @@ LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
  SHARED_SSL=libssl$(SHLIB_EXT)
  SHARED_LIBS=
@@ -57,7 +43,7 @@ Display the current time in the given FORMAT.
  
  GENERAL=        Makefile
  BASENAME=       openssl
-@@ -324,7 +325,8 @@
+@@ -324,7 +325,8 @@ libcrypto.pc: Makefile
  	    echo 'Description: OpenSSL cryptography library'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -67,7 +53,7 @@ Display the current time in the given FORMAT.
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
  
  libssl.pc: Makefile
-@@ -337,7 +339,8 @@
+@@ -337,7 +339,8 @@ libssl.pc: Makefile
  	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -77,7 +63,7 @@ Display the current time in the given FORMAT.
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
  
  openssl.pc: Makefile
-@@ -350,7 +353,8 @@
+@@ -350,7 +353,8 @@ openssl.pc: Makefile
  	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -87,7 +73,7 @@ Display the current time in the given FORMAT.
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
  
  Makefile: Makefile.org Configure config
-@@ -499,7 +503,7 @@
+@@ -499,7 +503,7 @@ install: all install_docs install_sw
  install_sw:
  	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
  		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR) \
@@ -96,7 +82,7 @@ Display the current time in the given FORMAT.
  		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/pkgconfig \
  		$(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl \
  		$(INSTALL_PREFIX)$(OPENSSLDIR)/misc \
-@@ -608,7 +612,7 @@
+@@ -608,7 +612,7 @@ install_docs:
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -105,7 +91,7 @@ Display the current time in the given FORMAT.
  			--release=$(VERSION) `basename $$i`") \
  			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
  		$(PERL) util/extract-names.pl < $$i | \
-@@ -625,7 +629,7 @@
+@@ -625,7 +629,7 @@ install_docs:
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -116,29 +102,15 @@ Display the current time in the given FORMAT.
  		$(PERL) util/extract-names.pl < $$i | \
 Index: openssl-1.0.0/Configure
 ===================================================================
---- openssl-1.0.0.orig/Configure	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/Configure	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/Configure
++++ openssl-1.0.0/Configure
 @@ -1,4 +1,4 @@
 -:
 +#!/usr/local/bin/perl
  eval 'exec perl -S $0 ${1+"$@"}'
      if $running_under_some_shell;
  ##
-@@ -331,6 +331,47 @@
+@@ -331,6 +331,44 @@ my %table=(
  "osf1-alpha-cc",  "cc:-std1 -tune host -O4 -readonly_strings::(unknown):::SIXTY_FOUR_BIT_LONG RC4_CHUNK:${alpha_asm}:dlfcn:alpha-osf1-shared:::.so",
  "tru64-alpha-cc", "cc:-std1 -tune host -fast -readonly_strings::-pthread:::SIXTY_FOUR_BIT_LONG RC4_CHUNK:${alpha_asm}:dlfcn:alpha-osf1-shared::-msym:.so",
  
@@ -146,47 +118,44 @@ Display the current time in the given FORMAT.
 +"debian-alpha","gcc:-DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_UNROLL:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-alpha-ev4","gcc:-DTERMIO -O3 -Wa,--noexecstack -mcpu=ev4 -g -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_UNROLL:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-alpha-ev5","gcc:-DTERMIO -O3 -Wa,--noexecstack -mcpu=ev5 -g -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_UNROLL:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-arm","gcc:-DL_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-armeb","gcc:-DB_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-armel","gcc:-DL_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+#"debian-amd64","gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-arm","gcc:-DL_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-armeb","gcc:-DB_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-armel","gcc:-DL_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-amd64", "gcc:-m64 -DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall -DMD32_REG_T=int::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK RC4_CHAR BF_PTR2 DES_INT DES_UNROLL:${x86_64_asm}:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-kfreebsd-amd64","gcc:-m64 -DL_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -Wall -DMD32_REG_T=int::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK BF_PTR2 DES_INT DES_UNROLL:${x86_64_asm}:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+#"debian-freebsd-alpha","gcc:-DTERMIOS -O -Wa,--noexecstack -fomit-frame-pointer::(unknown):::SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_PTR DES_RISC2::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-kfreebsd-i386","gcc:-DL_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -m486 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-hppa","gcc:-DB_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG MD2_CHAR RC4_INDEX::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-hppa","gcc:-DB_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG MD2_CHAR RC4_INDEX:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-hurd-i386","gcc:-DL_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -m486 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-ia64","gcc:-DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK RC4_CHAR:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+#"debian-i386","gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -fomit-frame-pointer -m486 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::dlfcn:linux-shared:-fPIC",
-+"debian-i386","gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-i386","gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-i386-i486","gcc:-DL_ENDIAN 	-DTERMIO -fexpensive-optimizations -frename-registers -fomit-frame-pointer -O2 -ggdb3 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-i386-i586","gcc:-DL_ENDIAN -DTERMIO -O3 -march=i586 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"debian-i386-i686/cmov","gcc:-DL_ENDIAN -DTERMIO -O3 -march=i686 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-m68k","gcc:-DB_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG MD2_CHAR RC4_INDEX::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-mips",   "gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-mipsel",   "gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-netbsd-i386",	"gcc:-DL_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -m486 -Wall::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-netbsd-m68k",	"gcc:-DB_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -Wall::(unknown):::BN_LLONG MD2_CHAR RC4_INDEX DES_UNROLL::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-netbsd-sparc",	"gcc:-DB_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -mv8 -Wall::(unknown):::BN_LLONG MD2_CHAR RC4_INDEX DES_UNROLL::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-openbsd-alpha","gcc:-DTERMIOS -O3 -Wa,--noexecstack -g::(unknown):::SIXTY_FOUR_BIT_LONG DES_INT DES_PTR DES_RISC2::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-openbsd-i386",  "gcc:-DL_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -m486::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-openbsd-mips","gcc:-O2 -Wa,--noexecstack -g -DL_ENDIAN::(unknown)::BN_LLONG MD2_CHAR RC4_INDEX RC4_CHAR DES_UNROLL DES_RISC2 DES_PTR BF_PTR:::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-powerpc","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::linux_ppc32.o::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-ppc64","gcc:-m64 -DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::linux_ppc64.o::::::::::dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-s390","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)", 
-+"debian-sh3",   "gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-sh4",   "gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-sh3eb",   "gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-sh4eb",   "gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-m32r","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-sparc","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-sparc-v8","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -mcpu=v8 -g -Wall -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR::sparcv8.o:des_enc-sparc.o fcrypt_b.o:::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"debian-sparc-v9","gcc:-DB_ENDIAN -DTERMIO -O3 -mcpu=v9 -Wa,--noexecstack -Wa,-Av8plus -g -Wall -DULTRASPARC -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR::sparcv8plus.o:des_enc-sparc.o fcrypt_b.o:::md5-sparcv8plus.o::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-m68k","gcc:-DB_ENDIAN -DTERMIO -O2 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG MD2_CHAR RC4_INDEX:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-mips",   "gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-mipsel",   "gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-netbsd-i386",	"gcc:-DL_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -m486 -Wall::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:::::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-netbsd-m68k",	"gcc:-DB_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -Wall::(unknown):::BN_LLONG MD2_CHAR RC4_INDEX DES_UNROLL:::::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-netbsd-sparc",	"gcc:-DB_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -mv8 -Wall::(unknown):::BN_LLONG MD2_CHAR RC4_INDEX DES_UNROLL:::::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-openbsd-alpha","gcc:-DTERMIOS -O3 -Wa,--noexecstack -g::(unknown):::SIXTY_FOUR_BIT_LONG DES_INT DES_PTR DES_RISC2:::::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-openbsd-i386",  "gcc:-DL_ENDIAN -DTERMIOS -O3 -Wa,--noexecstack -g -m486::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-openbsd-mips","gcc:-O2 -Wa,--noexecstack -g -DL_ENDIAN::(unknown)::BN_LLONG MD2_CHAR RC4_INDEX RC4_CHAR DES_UNROLL DES_RISC2 DES_PTR BF_PTR::::::::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-powerpc","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::linux_ppc32.o:::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-ppc64","gcc:-m64 -DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::linux_ppc64.o:::::::::::::dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-s390","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)", 
++"debian-sh3",   "gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sh4",   "gcc:-DL_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sh3eb",   "gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sh4eb",   "gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-m32r","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sparc","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:::::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sparc-v8","gcc:-DB_ENDIAN -DTERMIO -O3 -Wa,--noexecstack -mcpu=v8 -g -Wall -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR::sparcv8.o:des_enc-sparc.o fcrypt_b.o::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sparc-v9","gcc:-DB_ENDIAN -DTERMIO -O3 -mcpu=v9 -Wa,--noexecstack -Wa,-Av8plus -g -Wall -DULTRASPARC -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR::sparcv8plus.o:des_enc-sparc.o fcrypt_b.o:::md5-sparcv8plus.o:::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +
  ####
  #### Variety of LINUX:-)
  ####
-@@ -529,7 +570,7 @@
+@@ -529,7 +567,7 @@ my %table=(
  # Cygwin
  "Cygwin-pre1.3", "gcc:-DTERMIOS -DL_ENDIAN -fomit-frame-pointer -O3 -m486 -Wall::(unknown):CYGWIN32::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${no_asm}:win32",
  "Cygwin", "gcc:-DTERMIOS -DL_ENDIAN -fomit-frame-pointer -O3 -march=i486 -Wall:::CYGWIN32::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_asm}:coff:dlfcn:cygwin-shared:-D_WINDLL:-shared:.dll.a",
@@ -195,7 +164,7 @@ Display the current time in the given FORMAT.
  
  # NetWare from David Ward (dsward@novell.com)
  # requires either MetroWerks NLM development tools, or gcc / nlmconv
-@@ -1465,6 +1506,8 @@
+@@ -1465,6 +1503,8 @@ if ($strict_warnings)
  		}
  	}
  
@@ -204,7 +173,7 @@ Display the current time in the given FORMAT.
  open(IN,'<Makefile.org') || die "unable to read Makefile.org:$!\n";
  unlink("$Makefile.new") || die "unable to remove old $Makefile.new:$!\n" if -e "$Makefile.new";
  open(OUT,">$Makefile.new") || die "unable to create $Makefile.new:$!\n";
-@@ -1555,7 +1598,8 @@
+@@ -1555,7 +1595,8 @@ while (<IN>)
  	elsif ($shared_extension ne "" && $shared_extension =~ /^\.s([ol])\.[^\.]*\.[^\.]*$/)
  		{
  		my $sotmp = $1;
@@ -214,7 +183,7 @@ Display the current time in the given FORMAT.
  		}
  	elsif ($shared_extension ne "" && $shared_extension =~ /^\.[^\.]*\.[^\.]*\.dylib$/)
  		{
-@@ -1683,7 +1727,7 @@
+@@ -1683,7 +1724,7 @@ while (<IN>)
  		}
  	elsif	(/^#define\s+ENGINESDIR/)
  		{
@@ -225,23 +194,9 @@ Display the current time in the given FORMAT.
  		}
 Index: openssl-1.0.0/config
 ===================================================================
---- openssl-1.0.0.orig/config	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/config	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-@@ -170,8 +170,8 @@
+--- openssl-1.0.0.orig/config
++++ openssl-1.0.0/config
+@@ -170,8 +170,8 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${
  	echo "${MACHINE}-whatever-linux1"; exit 0
  	;;
  
@@ -254,23 +209,9 @@ Display the current time in the given FORMAT.
      LynxOS:*)
 Index: openssl-1.0.0/Makefile.org
 ===================================================================
---- openssl-1.0.0.orig/Makefile.org	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/Makefile.org	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-@@ -131,12 +131,13 @@
+--- openssl-1.0.0.orig/Makefile.org
++++ openssl-1.0.0/Makefile.org
+@@ -131,12 +131,13 @@ TESTS = alltests
  
  MAKEFILE= Makefile
  
@@ -287,7 +228,7 @@ Display the current time in the given FORMAT.
  SHELL=/bin/sh
  
  TOP=    .
-@@ -322,7 +323,8 @@
+@@ -322,7 +323,8 @@ libcrypto.pc: Makefile
  	    echo 'Description: OpenSSL cryptography library'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -297,7 +238,7 @@ Display the current time in the given FORMAT.
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
  
  libssl.pc: Makefile
-@@ -335,7 +337,8 @@
+@@ -335,7 +337,8 @@ libssl.pc: Makefile
  	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -307,7 +248,7 @@ Display the current time in the given FORMAT.
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
  
  openssl.pc: Makefile
-@@ -348,7 +351,8 @@
+@@ -348,7 +351,8 @@ openssl.pc: Makefile
  	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -317,7 +258,7 @@ Display the current time in the given FORMAT.
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
  
  Makefile: Makefile.org Configure config
-@@ -497,7 +501,7 @@
+@@ -497,7 +501,7 @@ install: all install_docs install_sw
  install_sw:
  	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
  		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR) \
@@ -326,7 +267,7 @@ Display the current time in the given FORMAT.
  		$(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/pkgconfig \
  		$(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl \
  		$(INSTALL_PREFIX)$(OPENSSLDIR)/misc \
-@@ -606,7 +610,7 @@
+@@ -606,7 +610,7 @@ install_docs:
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -335,7 +276,7 @@ Display the current time in the given FORMAT.
  			--release=$(VERSION) `basename $$i`") \
  			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
  		$(PERL) util/extract-names.pl < $$i | \
-@@ -623,7 +627,7 @@
+@@ -623,7 +627,7 @@ install_docs:
  		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
  		(cd `$(PERL) util/dirname.pl $$i`; \
  		sh -c "$$pod2man \
@@ -346,15 +287,8 @@ Display the current time in the given FORMAT.
  		$(PERL) util/extract-names.pl < $$i | \
 Index: openssl-1.0.0/openssl.ld
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-1.0.0/openssl.ld	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- /dev/null
++++ openssl-1.0.0/openssl.ld
 @@ -0,0 +1,5 @@
 +OPENSSL_0.9.8 {
 +	 global:
@@ -363,15 +297,8 @@ Display the current time in the given FORMAT.
 +
 Index: openssl-1.0.0/engines/openssl.ld
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-1.0.0/engines/openssl.ld	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- /dev/null
++++ openssl-1.0.0/engines/openssl.ld
 @@ -0,0 +1,5 @@
 +OPENSSL_0.9.8 {
 +	 global:
@@ -380,15 +307,8 @@ Display the current time in the given FORMAT.
 +
 Index: openssl-1.0.0/doc/Makefile
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-1.0.0/doc/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- /dev/null
++++ openssl-1.0.0/doc/Makefile
 @@ -0,0 +1,40 @@
 +VERSION =
 +
@@ -432,15 +352,8 @@ Display the current time in the given FORMAT.
 +	-$(MAKE) clean
 Index: openssl-1.0.0/doc/apps/c_rehash.pod
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ openssl-1.0.0/doc/apps/c_rehash.pod	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- /dev/null
++++ openssl-1.0.0/doc/apps/c_rehash.pod
 @@ -0,0 +1,55 @@
 +
 +=pod
@@ -499,22 +412,8 @@ Display the current time in the given FORMAT.
 +=cut
 Index: openssl-1.0.0/crypto/opensslconf.h
 ===================================================================
---- openssl-1.0.0.orig/crypto/opensslconf.h	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/crypto/opensslconf.h	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/crypto/opensslconf.h
++++ openssl-1.0.0/crypto/opensslconf.h
 @@ -11,6 +11,9 @@
  #ifndef OPENSSL_NO_JPAKE
  # define OPENSSL_NO_JPAKE
@@ -593,7 +492,7 @@ Display the current time in the given FORMAT.
  #endif /* HEADER_BF_LOCL_H */
  
  #if defined(HEADER_DES_LOCL_H) && !defined(CONFIG_HEADER_DES_LOCL_H)
-@@ -170,7 +176,7 @@
+@@ -170,7 +176,7 @@ YOU SHOULD NOT HAVE BOTH DES_RISC1 AND D
  /* Unroll the inner loop, this sometimes helps, sometimes hinders.
   * Very mucy CPU dependant */
  #ifndef DES_UNROLL
@@ -604,22 +503,8 @@ Display the current time in the given FORMAT.
  /* These default values were supplied by
 Index: openssl-1.0.0/crypto/sha/sha.h
 ===================================================================
---- openssl-1.0.0.orig/crypto/sha/sha.h	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/crypto/sha/sha.h	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/crypto/sha/sha.h
++++ openssl-1.0.0/crypto/sha/sha.h
 @@ -59,6 +59,7 @@
  #ifndef HEADER_SHA_H
  #define HEADER_SHA_H

@@ -1,21 +1,7 @@
 Index: openssl-1.0.0/crypto/Makefile
 ===================================================================
---- openssl-1.0.0.orig/crypto/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/crypto/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/crypto/Makefile
++++ openssl-1.0.0/crypto/Makefile
 @@ -104,7 +104,7 @@
  
  shared: buildinf.h lib subdirs
@@ -27,22 +13,8 @@ Display the current time in the given FORMAT.
  libs:
 Index: openssl-1.0.0/Makefile.org
 ===================================================================
---- openssl-1.0.0.orig/Makefile.org	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/Makefile.org	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/Makefile.org
++++ openssl-1.0.0/Makefile.org
 @@ -260,7 +260,7 @@
  
  libcrypto$(SHLIB_EXT): libcrypto.a
@@ -63,22 +35,8 @@ Display the current time in the given FORMAT.
  		exit 1; \
 Index: openssl-1.0.0/ssl/Makefile
 ===================================================================
---- openssl-1.0.0.orig/ssl/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/ssl/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/ssl/Makefile
++++ openssl-1.0.0/ssl/Makefile
 @@ -62,7 +62,7 @@
  
  shared: lib
