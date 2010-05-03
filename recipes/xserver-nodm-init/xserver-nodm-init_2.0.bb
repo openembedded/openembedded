@@ -2,8 +2,9 @@ DESCRIPTION = "Simple Xserver Init Script (no dm)"
 LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
-RDEPENDS = "xserver-common (>= 1.30) xinit"
+RDEPENDS_${PN} = "xserver-common (>= 1.30) xinit"
 DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 SRC_URI = "file://xserver-nodm"
 S = ${WORKDIR}
