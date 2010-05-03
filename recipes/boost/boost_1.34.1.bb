@@ -17,8 +17,6 @@ SRC_URI = "\
 	file://${PV}-gcc43.patch;patch=1 \
 	"
 
-DEFAULT_PREFERENCE = "-1"
-
 S = "${WORKDIR}/${BOOST_P}"
 
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"

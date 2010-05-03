@@ -12,5 +12,3 @@ SRC_URI[tarball.sha256sum] = "78b7e72d34b057847ff99b291719d5bf1b76ed080bebfa3122
 
 DEPENDS += " icu "
 
-DEFAULT_PREFERENCE = "-1"
-
