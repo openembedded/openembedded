@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.rsyslog.com/"
 LICENSE = "GPLv3"
 INC_PR = "r0"
 
-SRC_URI = "http://download.rsyslog.com/rsyslog/${PN}-${PV}.tar.gz;name=archive \
+SRC_URI = "http://download.rsyslog.com/rsyslog/${PN}-${PV}.tar.gz \
           file://rsyslog.conf \
           file://initscript"
 
