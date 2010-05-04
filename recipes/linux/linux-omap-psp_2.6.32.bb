@@ -79,6 +79,7 @@ SRC_URI_append_omap3-touchbook = " \
                                   file://0014-ASoC-add-driver-for-omap3-touchbook.patch;patch=1 \
                                   file://0015-backlight-add-PWM-support.patch;patch=1 \
                                   file://0016-ARM-OMAP-omap3-touchbook-update-boardfile.patch;patch=1 \
+#                                  file://0017-ARM-OMAP-add-800MHz-OPP-and-remove-125MHz-one.patch;patch=1 \
 "
 
 addtask quiltfixup before do_patch after do_unpack
