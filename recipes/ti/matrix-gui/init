@@ -1,6 +1,7 @@
 #! /bin/sh
 
 matrixgui="/usr/bin/matrix_gui"
+GUI_OPTS="-qws -display transformed:Rot90 /usr/share/matrix/html/menu_main.html"
 
 test -x "$matrixgui" || exit 0
 
@@ -16,7 +17,7 @@ case "$1" in
     if [ ! -f /etc/pointercal ] ; then
         ts_calibrate
     fi
-    start-stop-daemon --start --quiet --background --exec $matrixgui
+    start-stop-daemon --start --quiet --background --pidfile /var/run/matrix-gui.pid --exec $matrixgui -- $GUI_OPTS
     echo "."
     ;;
   stop)
