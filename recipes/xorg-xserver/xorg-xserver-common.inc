@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
-INC_PR = "r14"
+INC_PR = "r15"
 
 PROVIDES = "virtual/xserver"
 
@@ -51,6 +51,8 @@ FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
 RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config xorg-minimal-fonts rgb xserver-xorg-conf"
 
 PACKAGES =+ "${PN}-sdl ${PN}-fbdev ${PN}-xprint ${PN}-xvfb ${PN}-utils ${PN}-xephyr"
+
+RDEPENDS_${PN}-xvfb += "xkeyboard-config"
 
 FILES_${PN}-fbdev = "${bindir}/Xfbdev"
 FILES_${PN}-sdl = "${bindir}/Xsdl"
