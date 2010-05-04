@@ -5,7 +5,7 @@ DEPENDS = "firefox gtk+ gconf dbus-glib"
 RDEPENDS = "firefox gnome-mplayer"
 
 PV = "0.9.9.2+${SRCPV}"
-SRCREV = "385"
+SRCREV = "387"
 
 inherit autotools
 
