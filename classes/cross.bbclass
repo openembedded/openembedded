@@ -67,8 +67,12 @@ sysroot_stage_all() {
 	sysroot_stage_dir ${D} ${SYSROOT_DESTDIR}
 	install -d ${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}${target_base_libdir}/
 	install -d ${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}${target_libdir}/  
-	sysroot_stage_libdir ${SYSROOT_DESTDIR}${target_base_libdir} ${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}${target_base_libdir}
-	sysroot_stage_libdir ${SYSROOT_DESTDIR}${target_libdir} ${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}${target_libdir}
+	if [ -d ${SYSROOT_DESTDIR}${target_base_libdir} ]; then
+		sysroot_stage_libdir ${SYSROOT_DESTDIR}${target_base_libdir} ${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}${target_base_libdir}
+	fi
+	if [ -d ${SYSROOT_DESTDIR}${target_libdir} ]; then
+		sysroot_stage_libdir ${SYSROOT_DESTDIR}${target_libdir} ${SYSROOT_DESTDIR}${STAGING_DIR_TARGET}${target_libdir}
+	fi
 }
 
 #
