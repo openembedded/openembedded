@@ -24,7 +24,7 @@ do_configure_append() {
 }
 
 do_install() {
-	oe_runmake DEPMOD=echo DESTDIR="${D}" INSTALL_MOD_PATH="${D}" install-modules
+	oe_runmake DEPMOD=echo DESTDIR="${D}" INSTALL_MOD_PATH="${D}" LDFLAGS="" install-modules
 }
 
 SRC_URI[md5sum] = "9b22d0baf4ec7fbf127740b618b5d63a"
