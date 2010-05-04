@@ -19,7 +19,7 @@ INITSCRIPT_PARAMS = "defaults 99"
 
 inherit qt4e update-rc.d
 
-do_install(52) {
+do_install() {
 	install -d ${D}/${bindir}
 	install -m 0755 ${S}/matrix_gui ${D}/${bindir}
 	install -d ${D}/${datadir}/matrix/html
