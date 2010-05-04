@@ -1,7 +1,7 @@
 DESCRIPTION = "Web server"
 SECTION = "net"
 LICENSE = "BSD"
-DEPENDS = "libpcre"
+DEPENDS = "zlib libpcre"
 RDEPENDS_${PN} += " \
                lighttpd-module-access \
                lighttpd-module-accesslog \
