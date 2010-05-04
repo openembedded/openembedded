@@ -3,7 +3,8 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r0"
+PR = "r1"
+NATIVE_INSTALL_WORKS = "1"
 
 # Not tested enough
 DEFAULT_PREFERENCE = "-1"
@@ -65,17 +66,20 @@ do_configure () {
 	 s!^installsitebin=.*!installsitebin=\'${STAGING_BINDIR}\'!" < config.sh > config.sh.new
     mv config.sh.new config.sh
 }
-do_stage_append() {
+
+do_install() {
+	oe_runmake DESTDIR="${D}" install.perl
+
         # We need a hostperl link for building perl
-        ln -sf ${STAGING_BINDIR_NATIVE}/perl${PV} ${STAGING_BINDIR_NATIVE}/hostperl
+        ln -sf ${D}${STAGING_BINDIR_NATIVE}/perl${PV} ${D}${STAGING_BINDIR_NATIVE}/hostperl
         # Store native config in non-versioned directory
-        install -d ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
-                   ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
-        install config.sh ${STAGING_LIBDIR}/perl
+        install -d ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
+                   ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
+        install config.sh ${D}${STAGING_LIBDIR}/perl
 	# target configuration
-        install lib/Config.pm       ${STAGING_LIBDIR_NATIVE}/perl/${PV}/
-	install lib/ExtUtils/xsubpp ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
-	install lib/ExtUtils/typemap ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
+        install lib/Config.pm       ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/
+	install lib/ExtUtils/xsubpp ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
+	install lib/ExtUtils/typemap ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
         # perl shared library headers
         for i in av.h embed.h gv.h keywords.h op.h perlio.h pp.h regexp.h \
                  uconfig.h XSUB.h cc_runtime.h embedvar.h handy.h opnames.h \
@@ -86,15 +90,15 @@ do_stage_append() {
                  nostdio.h overload.h parser.h perlapi.h perlvars.h util.h \
                  dosish.h form.h iperlsys.h opcode.h perl.h perly.h regcomp.h \
                  thread.h warnings.h; do
-            install $i ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE
+            install $i ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE
         done
 
 	# Fix Errno.pm for target builds
-	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Errno.pm
+	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/Errno.pm
 }
-do_stage_append_nylon() {
+do_install_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
-        for i in ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${STAGING_LIBDIR}/perl/config.sh; do
+        for i in ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${D}${STAGING_LIBDIR}/perl/config.sh; do
                 perl -pi -e 's/-Wdeclaration-after-statement //g' ${i}
         done
 }
