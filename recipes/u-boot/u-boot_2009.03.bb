@@ -4,6 +4,8 @@ require u-boot.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_hipox = "1"
 
+DEPENDS_append_hipox = " oxnas-boot-tools oxnas-boot-tools-native "
+
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 "
 
 SRC_URI_append_hipox = "file://00-hipox.patch;patch=1 \
@@ -22,6 +24,11 @@ inherit base
 do_compile () {
 	oe_runmake ${UBOOT_MACHINE}
 	oe_runmake all
+}
+
+do_deploy_append_hipox () {
+	cat ${STAGING_DATADIR}/oxnas-boot-tools/arm/oxnasbt_header.bin ${DEPLOY_DIR_IMAGE}/${UBOOT_IMAGE} > ${DEPLOY_DIR_IMAGE}/${UBOOT_IMAGE}.wrapped
+	oxnasbt_update_header ${DEPLOY_DIR_IMAGE}/${UBOOT_IMAGE}.wrapped
 }
 
 SRC_URI[md5sum] = "285e2184d2efef50e0fe43b71d2a7b11"
