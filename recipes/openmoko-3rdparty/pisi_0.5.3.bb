@@ -13,8 +13,8 @@ RDEPENDS = "python-vobject python-core python-pygtk python-pygobject python-pyca
 PACKAGE_ARCH = "all"
 
 SRC_URI = "http://github.com/downloads/kichkasch/pisi/pisi-src-${PV}.tar.gz"
-SRC_URI[md5sum] = "ea947696e99db19b61893c43b47609f6"
-SRC_URI[sha256sum] = "58e0411cdc7b7c18a5276b10dc3b5261193a5c2f4c79c45ab0c91bdd7d351b28"
+SRC_URI[md5sum] = "c416b316668575f8506dc54e19475795"
+SRC_URI[sha256sum] = "a27603662747aee9a0440acc6472fe274c0724fcc66ad05849eb186bfb24868e"
 
 FILES_${PN} += "/opt/${PN} \
                 ${datadir}/pixmaps \
