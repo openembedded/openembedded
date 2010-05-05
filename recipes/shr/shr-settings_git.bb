@@ -7,7 +7,7 @@ SECTION = "x11/application"
 SRCREV = "4912195f23519a69932ed474b36b78bd97b1ac1d"
 PE = "1"
 PV = "0.1.1+gitr${SRCPV}"
-PR = "r10"
+PR = "r11"
 
 inherit setuptools
 
@@ -20,6 +20,13 @@ RRECOMMENDS_${PN} = "\
   ${PN}-addons-illume \
   ${PN}-backup-configuration \
 "
+
+do_configure_append_shr() {
+  # change category because EFL_SRCREV 48174 (separate Home module) changes
+  # Efreet_Desktop filtering from "sys AND settings OR kbd" to "sys OR settings OR kbd"
+
+  sed -i "s#Categories=Settings;#Categories=Utility;#g" ${S}/data/shr-settings.desktop
+}
 
 do_install_append() {
   install -d ${D}/${sysconfdir}/profile.d/
