@@ -1,0 +1,15 @@
+Index: gdb/gdbserver/Makefile.in
+===================================================================
+--- gdb/gdbserver/Makefile.in.orig	2009-07-31 08:23:20.000000000 -0700
++++ gdb/gdbserver/Makefile.in	2009-10-13 14:47:21.365401025 -0700
+@@ -89,8 +89,8 @@ WARN_CFLAGS = -Wall
+ CFLAGS = @CFLAGS@
+ 
+ # INTERNAL_CFLAGS is the aggregate of all other *CFLAGS macros.
+-INTERNAL_CFLAGS =  $(WARN_CFLAGS) ${CFLAGS} ${GLOBAL_CFLAGS} \
+-	${PROFILE_CFLAGS} ${INCLUDE_CFLAGS}
++INTERNAL_CFLAGS =  $(WARN_CFLAGS) ${GLOBAL_CFLAGS} \
++	${PROFILE_CFLAGS} ${INCLUDE_CFLAGS} ${CFLAGS}
+ 
+ # LDFLAGS is specifically reserved for setting from the command line
+ # when running make.

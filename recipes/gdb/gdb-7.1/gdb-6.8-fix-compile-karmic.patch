@@ -1,0 +1,22 @@
+fix this on karmic
+
+cc1: warnings being treated as errors
+/home/ich/build/arm/armv5t/tmp/work/i686-armv5te-sdk-oe-linux-gnueabi/gdb-cross-sdk-6.8-r2/gdb-6.8/gdb/eval.c: In function 'evaluate_subexp_standard':
+/home/ich/build/arm/armv5t/tmp/work/i686-armv5te-sdk-oe-linux-gnueabi/gdb-cross-sdk-6.8-r2/gdb-6.8/gdb/eval.c:1705: error: 'subscript_array' may be used uninitialized in this function
+/home/ich/build/arm/armv5t/tmp/work/i686-armv5te-sdk-oe-linux-gnueabi/gdb-cross-sdk-6.8-r2/gdb-6.8/gdb/eval.c:1644: note: 'subscript_array' was declared here
+
+
+
+Index: gdb-6.8/gdb/eval.c
+===================================================================
+--- gdb-6.8.orig/gdb/eval.c	2009-08-02 03:25:20.000000000 +0200
++++ gdb-6.8/gdb/eval.c	2009-08-02 03:53:39.000000000 +0200
+@@ -1656,6 +1656,8 @@
+ 	if (nargs != ndimensions)
+ 	  error (_("Wrong number of subscripts"));
+ 
++        memset(&subscript_array, 0, sizeof(subscript_array));
++
+ 	/* Now that we know we have a legal array subscript expression 
+ 	   let us actually find out where this element exists in the array. */
+ 
