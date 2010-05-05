@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "udev zlib ncurses virtual/libintl"
 DEPENDS_virtclass-native = "zlib-native ncurses-native lzo-native"
 
-inherit autotools
+inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
