@@ -4,7 +4,7 @@ DEPENDS = "edje-native eet-native e-wm places gnome-icon-theme"
 
 PACKAGES_DYNAMIC = "e-wm-config-angstrom*"
 
-PR = "r13"
+PR = "r14"
 
 SRC_URI = " \
           file://configs \
