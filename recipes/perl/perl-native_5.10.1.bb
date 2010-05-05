@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r1"
+PR = "r2"
 NATIVE_INSTALL_WORKS = "1"
 
 # Not tested enough
@@ -71,13 +71,13 @@ do_install() {
 	oe_runmake DESTDIR="${D}" install.perl
 
         # We need a hostperl link for building perl
-        ln -sf ${D}${STAGING_BINDIR_NATIVE}/perl${PV} ${D}${STAGING_BINDIR_NATIVE}/hostperl
+        ln -sf perl${PV} ${D}${bindir}/hostperl
         # Store native config in non-versioned directory
-        install -d ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
+        install -d ${D}${libdir}/perl/${PV}/CORE \
                    ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
         install config.sh ${D}${STAGING_LIBDIR}/perl
 	# target configuration
-        install lib/Config.pm       ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/
+        install lib/Config.pm       ${D}${libdir}/perl/${PV}/
 	install lib/ExtUtils/xsubpp ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
 	install lib/ExtUtils/typemap ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
         # perl shared library headers
@@ -90,15 +90,15 @@ do_install() {
                  nostdio.h overload.h parser.h perlapi.h perlvars.h util.h \
                  dosish.h form.h iperlsys.h opcode.h perl.h perly.h regcomp.h \
                  thread.h warnings.h; do
-            install $i ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE
+            install $i ${D}${libdir}/perl/${PV}/CORE
         done
 
 	# Fix Errno.pm for target builds
-	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/Errno.pm
+	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${libdir}/perl/${PV}/Errno.pm
 }
 do_install_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
-        for i in ${D}${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${D}${STAGING_LIBDIR}/perl/config.sh; do
+        for i in ${D}${libdir}/perl/${PV}/Config_heavy.pl ${D}${STAGING_LIBDIR}/perl/config.sh; do
                 perl -pi -e 's/-Wdeclaration-after-statement //g' ${i}
         done
 }
