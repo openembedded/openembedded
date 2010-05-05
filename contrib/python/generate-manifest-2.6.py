@@ -9,10 +9,10 @@ import os
 import sys
 import time
 
-VERSION = "2.6.2"
+VERSION = "2.6.4"
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20091004"
+__version__ = "20100505"
 
 class MakefileMaker:
 
@@ -23,7 +23,7 @@ class MakefileMaker:
         self.output = outfile
         self.out( """
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: '%s' Version %s (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: '%s' Version %s (C) 2002-2010 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 """ % ( sys.argv[0], __version__ ) )
 
@@ -248,7 +248,7 @@ if __name__ == "__main__":
 
     m.addPackage( "python-io", "Python Low-Level I/O", "python-core python-math",
     "lib-dynload/_socket.so lib-dynload/_ssl.so lib-dynload/select.so lib-dynload/termios.so lib-dynload/cStringIO.so " +
-    "pipes.* socket.* tempfile.* StringIO.* " )
+    "pipes.* socket.* ssl.* tempfile.* StringIO.* " )
 
     m.addPackage( "python-json", "Python JSON Support", "python-core python-math python-re",
     "json" ) # package
