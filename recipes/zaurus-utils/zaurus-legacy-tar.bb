@@ -20,4 +20,4 @@ do_deploy() {
 }
 
 # package_stagefile_shell needs to run before populate_staging for packaged-staging
-addtask deploy before do_populate_staging after do_compile
+addtask deploy before do_populate_sysroot after do_compile

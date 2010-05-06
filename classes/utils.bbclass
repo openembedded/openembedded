@@ -85,7 +85,7 @@ def setup_checksum_deps(d):
         if d.getVar("PN", True) != "shasum-native":
             depends = d.getVarFlag("do_fetch", "depends") or ""
             d.setVarFlag("do_fetch", "depends", "%s %s" %
-                         (depends, "shasum-native:do_populate_staging"))
+                         (depends, "shasum-native:do_populate_sysroot"))
 
 def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data):
     strict_checking =  bb.data.getVar("OE_STRICT_CHECKSUMS", data, True)
