@@ -95,6 +95,4 @@ do_compile () {
 	)
 }
 
-require eglibc-stage.inc
-
 require eglibc-package.bbclass
