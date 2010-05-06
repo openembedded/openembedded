@@ -203,6 +203,7 @@ kernel_do_install() {
 
 sysroot_stage_all_append() {
 	sysroot_stage_dir ${D}/kernel ${SYSROOT_DESTDIR}${STAGING_KERNEL_DIR}
+	cp -fpPR ${D}/kernel/.config ${SYSROOT_DESTDIR}${STAGING_KERNEL_DIR}
 }
 
 kernel_do_configure() {
