@@ -5,18 +5,17 @@ GUI_OPTS="-qws -display transformed:Rot90 /usr/share/matrix/html/menu_main.html"
 
 test -x "$matrixgui" || exit 0
 
-export LD_LIBRARY_PATH=/usr/lib
-export TSLIB_PLUGINDIR=/usr/lib/ts
 export TSLIB_TSDEVICE=/dev/input/touchscreen0
-export TSLIB_CONFFILE=/etc/ts.conf
 export QWS_MOUSE_PROTO=Tslib:/dev/input/touchscreen0
 
 case "$1" in
   start)
-    echo -n "Starting Matrix GUI application"
     if [ ! -f /etc/pointercal ] ; then
+        echo -n "Calibrating touchscreen (first time only)"
         ts_calibrate
+        echo "."
     fi
+    echo -n "Starting Matrix GUI application"
     start-stop-daemon --start --quiet --background --pidfile /var/run/matrix-gui.pid --exec $matrixgui -- $GUI_OPTS
     echo "."
     ;;
