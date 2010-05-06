@@ -5,6 +5,8 @@ LICENSE     = "GPLv2"
 SRC_URI     = "http://gentoo.osuosl.org/distfiles/pax-utils-${PV}.tar.bz2"
 S           = "${WORKDIR}/pax-utils-${PV}"
 
+PR = "r2"
+
 CPPFLAGS   += "-D_GNU_SOURCE "
 
 do_compile() {
@@ -12,7 +14,7 @@ do_compile() {
 }
 
 do_install() {
-    oe_runmake DESTDIR=${D} install
+    oe_runmake PREFIX=${D}${prefix} DESTDIR=${D} install
 }
 
 NATIVE_INSTALL_WORKS = "1"
