@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SRC_URI = "file://unifdef.c"
 
 inherit native
-
+NATIVE_INSTALL_WORKS = "1"
 do_compile() {
 	${CC} ${CFLAGS} ${LDFLAGS} -o unifdef ${WORKDIR}/unifdef.c
 }
@@ -13,6 +13,6 @@ do_compile() {
 NATIVE_INSTALL_WORKS = "1"
 
 do_install() {
+	install -d ${D}${bindir}/
 	install -m 0755 unifdef ${D}${bindir}
 }
-
