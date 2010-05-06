@@ -22,6 +22,3 @@ do_install() {
 	install -m 0755 ${WORKDIR}/stage-manager-ipkg-build ${STAGING_BINDIR}
 }
 
-do_stage() {
-	:
-}
