@@ -6,6 +6,7 @@ inherit relocatable
 EXCLUDE_FROM_WORLD = "1"
 
 PACKAGES = ""
+PACKAGES_virtclass-native = ""
 PACKAGE_ARCH = "${BUILD_ARCH}"
 
 BASE_PACKAGE_ARCH = "${BUILD_ARCH}"
