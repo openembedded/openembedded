@@ -8,6 +8,8 @@ LICENSE = "LGPLv2.1 GPLv3"
 DEFAULT_PREFERENCE = "-1"
 inherit sdk
 
+PR = "r1"
+
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
            file://configure-lflags.patch;patch=1 \
            file://qt-config.patch;patch=1 \
@@ -70,6 +72,12 @@ do_install() {
     for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
         install -m 0755 bin/${i} ${D}${bindir}/${i}4
     done
+
+	(cd ${D}${bindir}; \
+	ln -s qmake2 qmake; \
+	for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do \
+		ln -s ${i}4 ${i}; \
+	done)
 }
 
 
