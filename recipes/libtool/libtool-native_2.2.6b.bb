@@ -17,6 +17,7 @@ do_configure_prepend () {
 
 do_install () {
 	install -d ${D}${bindir}/
+	install -d ${D}${includedir}/
 	install -m 0755 ${HOST_SYS}-libtool ${D}${bindir}/${HOST_SYS}-libtool
 	install -m 0755 libtoolize ${D}${bindir}/libtoolize
 	oe_libinstall -a -so -C libltdl libltdl ${D}${libdir}
