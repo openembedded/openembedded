@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r28"
+INC_PR = "r29"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -46,12 +46,14 @@ RDEPENDS_${PN} += "${PN}-mountall"
 RRECOMMENDS_${PN} += "libgcc ${PN}-syslog"
 
 FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
-FILES_${PN}-syslog = "${sysconfdir}/init.d/syslog ${sysconfdir}/syslog.conf"
+FILES_${PN}-syslog = "${sysconfdir}/init.d/syslog.${PN} ${sysconfdir}/syslog.conf"
 FILES_${PN}-udhcpd = "${sysconfdir}/init.d/busybox-udhcpd"
 
 FILES_${PN} += "${datadir}/udhcpc"
 
-INITSCRIPT_PACKAGES = "${PN}-httpd ${PN}-syslog ${PN}-udhcpd"
+# syslog initscript is handled explicitly because order of
+# update-rc.d and update-alternatives is important (see below)
+INITSCRIPT_PACKAGES = "${PN}-httpd ${PN}-udhcpd"
 INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
 INITSCRIPT_NAME_${PN}-syslog = "syslog"
 INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd"
@@ -107,7 +109,7 @@ do_install () {
 	ln -sf busybox ${D}${base_bindir}/sh
 
 	if grep -q "CONFIG_SYSLOGD=y" ${WORKDIR}/defconfig; then
-		install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/
+		install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/syslog.${PN}
 		install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/
 	fi
 	if grep "CONFIG_CROND=y" ${WORKDIR}/defconfig; then
@@ -155,6 +157,40 @@ pkg_postinst_${PN}-mountall () {
 }
 pkg_prerm_${PN}-mountall () {
 	update-alternatives --remove default_mountall mountall.${PN}
+}
+
+pkg_postinst_${PN}-syslog () {
+	update-alternatives --install ${sysconfdir}/init.d/syslog syslog-init syslog.${PN} 50
+
+	if test "x$D" != "x"; then
+		OPT="-r $D"
+	else
+		OPT="-s"
+	fi
+	update-rc.d $OPT syslog defaults
+}
+
+pkg_prerm_${PN}-syslog () {
+	if test "x$D" = "x"; then
+		if test "$1" = "upgrade" -o "$1" = "remove"; then
+			/etc/init.d/syslog stop
+		fi
+	fi
+
+	update-alternatives --remove syslog-init syslog.${PN}
+}
+
+pkg_postrm_${PN}-syslog () {
+	if test "x$D" != "x"; then
+		OPT="-r $D"
+	else
+		OPT=""
+	fi
+	if test "$1" = "remove" -o "$1" = "purge"; then
+		if ! test -e "/etc/init.d/syslog"; then
+			update-rc.d $OPT syslog remove
+		fi
+	fi
 }
 
 pkg_prerm_${PN} () {
