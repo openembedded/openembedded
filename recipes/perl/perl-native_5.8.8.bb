@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r18"
+PR = "r19"
 NATIVE_INSTALL_WORKS = "1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
@@ -71,13 +71,13 @@ do_install() {
         ln -sf perl${PV} ${D}${bindir}/hostperl
         # Store native config in non-versioned directory
         install -d ${D}${libdir}/perl/${PV}/CORE \
-                   ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
-        install config.sh ${D}${STAGING_LIBDIR}/perl
+                   ${D}${datadir}/perl/${PV}/ExtUtils
+        install config.sh ${D}${libdir}/perl
 	# Fix Errno.pm for target builds
 	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${libdir}/perl/${PV}/Errno.pm
 	# target configuration
         install lib/Config.pm       ${D}${libdir}/perl/${PV}/
-	install lib/ExtUtils/typemap ${D}${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
+	install lib/ExtUtils/typemap ${D}${datadir}/perl/${PV}/ExtUtils/
         # perl shared library headers
         for i in av.h embed.h gv.h keywords.h op.h perlio.h pp.h regexp.h \
                  uconfig.h XSUB.h cc_runtime.h embedvar.h handy.h opnames.h \
@@ -94,7 +94,7 @@ do_install() {
 
 do_install_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
-        for i in ${D}${libdir}/perl/${PV}/Config_heavy.pl ${D}${STAGING_LIBDIR}/perl/config.sh; do
+        for i in ${D}${libdir}/perl/${PV}/Config_heavy.pl ${D}${libdir}/perl/config.sh; do
                 perl -pi -e 's/-Wdeclaration-after-statement //g' ${i}
         done
 }
