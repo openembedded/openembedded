@@ -1,5 +1,7 @@
 require ti-codec-engine.inc
 
+DEFAULT_PREFERENCE = "-1"
+
 PV = "2_25_02_10_eng"
 
 SRC_URI[cetarball.md5sum] = "8544484dd526cbd41b4981cab25eeafb"

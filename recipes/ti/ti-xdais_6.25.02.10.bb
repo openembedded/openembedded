@@ -1,5 +1,7 @@
 require ti-xdais.inc
 
+DEFAULT_PREFERENCE = "-1"
+
 PV = "6_25_02_10_eng"
 
 SRC_URI[xdaistarball.md5sum] = "0c3f2d4c52b6007ddd53981aa6976de5"
