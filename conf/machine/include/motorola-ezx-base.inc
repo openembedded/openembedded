@@ -39,6 +39,23 @@ PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 IMAGE_FSTYPES ?= "jffs2"
 EXTRA_IMAGECMD_jffs2 = "--pad=14680064 --little-endian --eraseblock=0x20000 -n"
 
+# In order to enable UIBIFS add "uibi and ubifs"
+#IMAGE_FSTYPES += "ubi ubifs"
+
+# From dmesg:
+# UBI: smallest flash I/O unit:    1
+# UBI: logical eraseblock size:    131072 bytes
+# from ubiattach stdout:
+# UBI device number 0, total 1996 LEBs
+MKUBIFS_ARGS = "-m 1 -e 130944 -c 487"
+
+# from dmesg:
+# UBI: smallest flash I/O unit:    1
+# UBI: physical eraseblock size:   131072 bytes (128 KiB)
+# UBI: sub-page size:              512
+UBINIZE_ARGS = "-m 1 -p 128KiB "
+
+
 EXTRA_IMAGEDEPENDS += "ezx-boot-usb-native ezx-gen-blob"
 
 IMAGE_INSTALL_append += "\
