@@ -1,0 +1,26 @@
+From 1305372dfce86160fe103de0f4bd86d37d3fec4a Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Micka=C3=ABl=20Chazaux?= <mchazaux@adeneo-embedded.com>
+Date: Tue, 4 May 2010 10:19:26 +0200
+Subject: [PATCH] Revert "ENGR00119267 revert to gcc 4.1.2 toolchain"
+
+This reverts commit a93beb448c82402736aaac2db070df7f17e9b0ad.
+---
+ arch/arm/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index d22dff6..c72dea4 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -50,7 +50,7 @@ comma = ,
+ # Note that GCC does not numerically define an architecture version
+ # macro, but instead defines a whole series of macros which makes
+ # testing for a specific architecture or later rather impossible.
+-arch-$(CONFIG_CPU_32v7)		:=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7a,-march=armv5t -Wa$(comma)-march=armv7a)
++arch-$(CONFIG_CPU_32v7)		:=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
+ arch-$(CONFIG_CPU_32v6)		:=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
+ # Only override the compiler option if ARMv6. The ARMv6K extensions are
+ # always available in ARMv7
+-- 
+1.6.3.3
+

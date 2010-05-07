@@ -5,6 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_at91sam9g20ek = "1"
 DEFAULT_PREFERENCE_at91sam9g45ek = "1"
 DEFAULT_PREFERENCE_igep0020 = "1"
+DEFAULT_PREFERENCE_babbage  = "1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 "
 
@@ -12,6 +13,12 @@ SRC_URI_append_igep0020 = " \
 	file://update-mach-types.patch;patch=1 \
 	file://add-board-support-for-IGEP-v2-series-rev-B.patch;patch=1 \
 "
+SRC_URI_append_babbage ="\
+           http://download.berlios.de/mx25patches/u-boot-v2009.08-imx-09.12.00.patch.bz2;patch=1;name=ubootbabbage \
+           "
+
+SRC_URI[ubootbabbage.md5sum] = "b7bc4870b647de422b983ea3acc367a5"
+SRC_URI[ubootbabbage.sha256sum] = "c65baf791f987126251dfcb5fa100ffef6cf6b668b71d57c2ca4e1128870ff9b"
 
 TARGET_LDFLAGS = ""
 

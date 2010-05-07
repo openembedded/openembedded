@@ -13,6 +13,7 @@ DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 DEFAULT_PREFERENCE_cm-x300 = "1"
+DEFAULT_PREFERENCE_babbage = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;patch=1;name=stablepatch \
@@ -71,6 +72,12 @@ SRC_URI_append_cm-x300 = "\
            file://linux-2.6.31-cm-x300.patch;patch=1 \
            "
 
+SRC_URI_append_babbage = " \
+           http://download.berlios.de/mx25patches/linux-2.6.31.12-imx-09.12.00.patch.bz2;patch=1;name=patchbabbage \
+	   file://0001-Revert-ENGR00119267-revert-to-gcc-4.1.2-toolchain.patch;patch=1 \
+           file://defconfig \
+           "
+
 do_devicetree_image_append_boc01() {
 	dtc -I dts -O dtb ${KERNEL_DEVICETREE_FLAGS} -o devicetree.v1 ${KERNEL_DEVICETREE}.v1
 	install -m 0644 devicetree.v1 ${D}/boot/devicetree-${KERNEL_VERSION}.v1
@@ -91,3 +98,6 @@ SRC_URI[stablepatch.md5sum] = "ce365b2c72ad0855e1746a80b7abdade"
 SRC_URI[stablepatch.sha256sum] = "7dea28a76ca6362ad949ec1bf45fada4a6fc888b40360d90d2f56f01d18f72ae"
 SRC_URI[at91patch.md5sum] = "bf420f0340e30b0a2c42b2b36d0b2577"
 SRC_URI[at91patch.sha256sum] = "738b88daa31e1a033646900813a5f1ce40ba21e2836500fd848a984565f27584"
+SRC_URI[patchbabbage.md5sum] = "a1687104ac3654a3a91cdeb039281369"
+SRC_URI[patchbabbage.sha256sum] = "2ecbc311e2887165f8d8327f8c7ff118c16d4c9554b281b733bb0d7619139779"
+
