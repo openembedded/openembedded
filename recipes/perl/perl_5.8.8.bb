@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r32"
+PR = "r34"
 
 # Major part of version
 PVM = "5.8"
@@ -54,7 +54,7 @@ export LDDLFLAGS = "${LDFLAGS} -shared"
 
 do_configure() {
         # Make hostperl in build directory be the native perl
-        cp -f ${HOSTPERL} hostperl
+        ln -sf ${HOSTPERL} hostperl
 
         # Do out work in the cross subdir
         cd Cross
