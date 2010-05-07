@@ -4,7 +4,7 @@ LICENSE = "Apache"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-SRCREV = "26"
+SRCREV = "28"
 PV = "1.0"
 PR = "r1+svnr${SRCPV}"
 
