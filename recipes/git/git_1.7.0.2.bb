@@ -7,7 +7,11 @@ EXTRA_OECONF += "ac_cv_snprintf_returns_bogus=no ac_cv_c_c99_format=yes"
 
 
 DEPENDS = "openssl curl zlib expat"
-RDEPENDS = "perl perl-module-file-path cpio findutils sed"
-PR = "r4"
+RDEPENDS_${PN} = "perl perl-module-file-path cpio findutils sed"
+
+# Dropbear ssh needs a wrapper script, so install openssh-ssh to make it work out of the box
+RRECOMMENDS_${PN} = "openssh-ssh"
+
+PR = "r5"
 
 FILES_${PN}-dbg += "${libexecdir}/git-core/.debug"
