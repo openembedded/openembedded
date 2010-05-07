@@ -6,7 +6,7 @@ RDEPENDS_${PN}-server += "net-snmp-mibs"
 RDEPENDS_${PN}-client += "net-snmp-mibs"
 RDEPENDS_${PN}-dev = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
 RRECOMMENDS_${PN}-dbg = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
-INC_PR = "r5"
+INC_PR = "r6"
 
 inherit autotools update-rc.d siteinfo
 
@@ -60,9 +60,10 @@ do_stage() {
         rm -Rf ${STAGE_TEMP}
 }
 
-PACKAGES = "net-snmp-dbg net-snmp-doc net-snmp-dev net-snmp-libs \
+PACKAGES = "net-snmp-dbg net-snmp-doc net-snmp-dev net-snmp-static net-snmp-libs \
             net-snmp-mibs net-snmp-server net-snmp-client"
 
+FILES_${PN}-static = "${libdir}/*.a"
 FILES_${PN}-libs = "${libdir}/*"
 FILES_${PN}-mibs = "${datadir}/snmp/mibs"
 FILES_${PN}-server = "${sbindir}/* ${sysconfdir}"
