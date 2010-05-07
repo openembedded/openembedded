@@ -2,4 +2,4 @@
 # only SRCREVs included in more recipes should be here, otherwise put sane SRCREV to recipe directly
 
 OPKG_SRCREV ?= "527"
-EFL_SRCREV ?= "48617"
+EFL_SRCREV ?= "48775"
