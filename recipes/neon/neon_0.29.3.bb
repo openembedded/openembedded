@@ -13,5 +13,5 @@ inherit autotools binconfig lib_package pkgconfig
 EXTRA_OECONF = "--with-ssl=gnutls --with-libxml2 --with-expat --enable-shared"
 EXTRA_AUTORECONF=" -I ${S}/macros "
 
-SRC_URI[md5sum] = "076072f11c5278f4c4b7de189ea1506e"
-SRC_URI[sha256sum] = "76472e51576b42bfc129e487ae7dd3a5e1f1f380105b422fc14ee408e3a881df"
+SRC_URI[md5sum] = "ba1015b59c112d44d7797b62fe7bee51"
+SRC_URI[sha256sum] = "849004a9f3cbb79706cd29461142868c25aceb44785eb81c78db0390e1372cb4"
