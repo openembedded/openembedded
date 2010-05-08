@@ -1,0 +1,34 @@
+From 9d9326c26ea990fa49842e0c57d520a5acb4d887 Mon Sep 17 00:00:00 2001
+From: Don Darling <ddarling@ti.com>
+Date: Fri, 16 Apr 2010 17:40:40 -0500
+Subject: [PATCH] Correct DMAI's Resize module for DM365.
+
+The PSP requires virtual addresses to be given for the resize buffers.  This
+differs from previous releases, which required physical addresses.  This
+change updates the Resize module to use virtual addresses.
+---
+ .../packages/ti/sdo/dmai/linux/dm365/Resize.c      |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/dmai/packages/ti/sdo/dmai/linux/dm365/Resize.c b/dmai/packages/ti/sdo/dmai/linux/dm365/Resize.c
+index c1716c4..3e71e46 100644
+--- a/dmai/packages/ti/sdo/dmai/linux/dm365/Resize.c
++++ b/dmai/packages/ti/sdo/dmai/linux/dm365/Resize.c
+@@ -313,12 +313,12 @@ Int Resize_execute(Resize_Handle hResize,
+ 
+     rsz.in_buff.index     = -1;
+     rsz.in_buff.buf_type  = IMP_BUF_IN;
+-    rsz.in_buff.offset    = Buffer_getPhysicalPtr(hSrcBuf) + srcOffset;
++    rsz.in_buff.offset    = ((Int32)Buffer_getUserPtr(hSrcBuf)) + srcOffset;
+     rsz.in_buff.size      = Buffer_getSize(hSrcBuf);
+ 
+     rsz.out_buff1.index    = -1;
+     rsz.out_buff1.buf_type = IMP_BUF_OUT1;
+-    rsz.out_buff1.offset   = Buffer_getPhysicalPtr(hDstBuf) + dstOffset;
++    rsz.out_buff1.offset   = ((Int32)Buffer_getUserPtr(hDstBuf)) + dstOffset;
+     rsz.out_buff1.size     = Buffer_getSize(hDstBuf);
+     
+     /* 
+-- 
+1.6.3.3
+
