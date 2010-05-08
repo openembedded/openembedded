@@ -1,13 +1,15 @@
 DESCRIPTION = "Commands for Manipulating POSIX Access Control Lists"
 LICENSE = "GPLv2"
 
-PR = "r1" 
+PR = "r2"
 
 DEPENDS = "attr"
 
 SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/acl/acl-${PV}.src.tar.gz"
 
 inherit autotools lib_package
+
+TOPDIR[unexport] = "1"
 
 EXTRA_OECONF = " --enable-gettext=yes \
                 ac_cv_path_XGETTEXT=${STAGING_BINDIR_NATIVE}/xgettext \
