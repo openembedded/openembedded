@@ -277,7 +277,6 @@ python packagestage_scenefunc () {
         if stageok:
             bb.note("Staging package found, using it for %s." % file)
             installcmd = bb.data.getVar("PSTAGE_INSTALL_CMD", d, 1)
-            lf = bb.utils.lockfile(bb.data.expand("${SYSROOT_LOCK}", d))
             ret = os.system("PATH=\"%s\" %s %s" % (path, installcmd, stagepkg))
             bb.utils.unlockfile(lf)
             if ret != 0:
