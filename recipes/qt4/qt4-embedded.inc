@@ -4,7 +4,7 @@ LICENSE = "GPL QPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "directfb tslib"
-INC_PR = "r18"
+INC_PR = "r19"
 
 QT_BASE_NAME ?= "qt4-embedded"
 QT_BASE_LIB  ?= "libqt-embedded"
@@ -24,18 +24,28 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${
            file://g++.conf \
            file://linux.conf \
            "
+
+# Set necessary variables in the profile
+SRC_URI += "file://qte.sh"
+
 S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 
 QT_CONFIG_FLAGS += " \
     -qtlibinfix ${QT_LIBINFIX} \
-    -qt-decoration-styled -plugin-decoration-default -plugin-decoration-windows \
     -plugin-gfx-transformed -plugin-gfx-qvfb -plugin-gfx-vnc -plugin-gfx-directfb \
-    -plugin-mouse-tslib -qt-mouse-pc -qt-mouse-qvfb \
+    -plugin-mouse-tslib -qt-mouse-pc -qt-mouse-qvfb -qt-mouse-linuxinput \
     -qt-kbd-tty \
     -DQT_KEYPAD_NAVIGATION \
     "
 
 require qt4.inc
+
+do_install_append() {
+	install -d ${D}${sysconfdir}/profile.d/
+	install -m 0755 ${WORKDIR}/qte.sh ${D}${sysconfdir}/profile.d/
+}
+
+FILES_qt4-embedded += " ${sysconfdir}/profile.d/qte.sh"
 
 inherit qt4e
 

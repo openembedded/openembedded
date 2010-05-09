@@ -16,6 +16,9 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
            file://linux.conf \
            "
 
+# Set necessary variables in the profile
+SRC_URI += "file://qte.sh"
+
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
 do_configure_prepend() {
