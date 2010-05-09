@@ -1,7 +1,18 @@
-diff -uNr ticodecplugin/src/gsttividdec.c ticodecplugin.new/src/gsttividdec.c
---- ticodecplugin/src/gsttividdec.c	2009-09-05 00:04:51.000000000 -0500
-+++ ticodecplugin.new/src/gsttividdec.c	2009-09-05 03:54:42.000000000 -0500
-@@ -82,7 +82,7 @@
+From e227c83e6b857c7b87758741e0ab7a8b8c424a50 Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <bksingh@ti.com>
+Date: Sun, 9 May 2010 05:34:03 -0500
+Subject: [PATCH] gstreamer ti tracker 462
+
+---
+ src/gsttividdec.c  |   10 ++++++++--
+ src/gsttividdec2.c |   10 ++++++++--
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/src/gsttividdec.c b/src/gsttividdec.c
+index e3714d6..51da81d 100644
+--- a/src/gsttividdec.c
++++ b/src/gsttividdec.c
+@@ -83,7 +83,7 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE(
      GST_PAD_ALWAYS,
      GST_STATIC_CAPS
      ("video/mpeg, " 
@@ -10,7 +21,7 @@ diff -uNr ticodecplugin/src/gsttividdec.c ticodecplugin.new/src/gsttividdec.c
           "systemstream=(boolean)false, "
           "framerate=(fraction)[ 0, MAX ], "
           "width=(int)[ 1, MAX ], "
-@@ -90,7 +90,8 @@
+@@ -91,7 +91,8 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE(
       "video/x-h264, "                             /* H264                  */
           "framerate=(fraction)[ 0, MAX ], "
           "width=(int)[ 1, MAX ], "
@@ -20,7 +31,7 @@ diff -uNr ticodecplugin/src/gsttividdec.c ticodecplugin.new/src/gsttividdec.c
      )
  );
  
-@@ -614,6 +615,11 @@
+@@ -606,6 +607,11 @@ static gboolean gst_tividdec_set_sink_caps(GstPad *pad, GstCaps *caps)
          codec = gst_ticodec_get_codec("H.264 Video Decoder");
      }
  
@@ -31,11 +42,12 @@ diff -uNr ticodecplugin/src/gsttividdec.c ticodecplugin.new/src/gsttividdec.c
 +
      /* Mime type not supported */
      else {
-         GST_ERROR("stream type not supported");
-diff -uNr ticodecplugin/src/gsttividdec2.c ticodecplugin.new/src/gsttividdec2.c
---- ticodecplugin/src/gsttividdec2.c	2009-09-05 00:04:51.000000000 -0500
-+++ ticodecplugin.new/src/gsttividdec2.c	2009-09-05 03:54:42.000000000 -0500
-@@ -83,7 +83,7 @@
+         GST_ELEMENT_ERROR(viddec, STREAM, NOT_IMPLEMENTED,
+diff --git a/src/gsttividdec2.c b/src/gsttividdec2.c
+index 79b28a5..6bf421b 100644
+--- a/src/gsttividdec2.c
++++ b/src/gsttividdec2.c
+@@ -84,7 +84,7 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE(
      GST_PAD_ALWAYS,
      GST_STATIC_CAPS
      ("video/mpeg, " 
@@ -44,7 +56,7 @@ diff -uNr ticodecplugin/src/gsttividdec2.c ticodecplugin.new/src/gsttividdec2.c
           "systemstream=(boolean)false, "
           "framerate=(fraction)[ 0, MAX ], "
           "width=(int)[ 1, MAX ], "
-@@ -91,7 +91,8 @@
+@@ -92,7 +92,8 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE(
       "video/x-h264, "                             /* H264                  */
           "framerate=(fraction)[ 0, MAX ], "
           "width=(int)[ 1, MAX ], "
@@ -54,7 +66,7 @@ diff -uNr ticodecplugin/src/gsttividdec2.c ticodecplugin.new/src/gsttividdec2.c
      )
  );
  
-@@ -625,6 +626,11 @@
+@@ -616,6 +617,11 @@ static gboolean gst_tividdec2_set_sink_caps(GstPad *pad, GstCaps *caps)
          codec = gst_ticodec_get_codec("H.264 Video Decoder");
      }
  
@@ -65,4 +77,7 @@ diff -uNr ticodecplugin/src/gsttividdec2.c ticodecplugin.new/src/gsttividdec2.c
 +
      /* Mime type not supported */
      else {
-         GST_ERROR("stream type not supported");
+         GST_ELEMENT_ERROR(viddec2, STREAM, NOT_IMPLEMENTED,
+-- 
+1.5.4.3
+

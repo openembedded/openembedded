@@ -1,7 +1,17 @@
-diff -uNr ticodecplugin/src/gstticodecplugin_dm6467.cfg ticodecplugin/src/gstticodecplugin_dm6467.cfg
---- ticodecplugin/src/gstticodecplugin_dm6467.cfg	2010-03-01 10:31:05.000000000 +0000
-+++ ticodecplugin/src/gstticodecplugin_dm6467.cfg	2010-03-01 11:12:14.000000000 +0000
-@@ -29,25 +29,15 @@
+From 35f013c24fb78d6ae7257abb4b4ed5f356cac36b Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <bksingh@ti.com>
+Date: Sun, 9 May 2010 05:27:41 -0500
+Subject: [PATCH] gstreamer ti dm6467 usesinglecsserver
+
+---
+ src/gstticodecplugin_dm6467.cfg |   24 +++++++-----------------
+ 1 files changed, 7 insertions(+), 17 deletions(-)
+
+diff --git a/src/gstticodecplugin_dm6467.cfg b/src/gstticodecplugin_dm6467.cfg
+index a141f03..9e64775 100644
+--- a/src/gstticodecplugin_dm6467.cfg
++++ b/src/gstticodecplugin_dm6467.cfg
+@@ -29,25 +29,15 @@ TraceUtil.attrs = TraceUtil.SOCRATES_TRACING;
   *  ======== Engine Configuration ========
   */
  var Engine = xdc.useModule('ti.sdo.ce.Engine');
@@ -34,3 +44,6 @@ diff -uNr ticodecplugin/src/gstticodecplugin_dm6467.cfg ticodecplugin/src/gsttic
  }
  
  /* Load support for the 'Davinci Multimedia Application Interface' modules */
+-- 
+1.5.4.3
+

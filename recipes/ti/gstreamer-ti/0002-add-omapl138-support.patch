@@ -1,7 +1,22 @@
-Index: ticodecplugin/src/gstticodecplugin_omapl137.cfg
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ ticodecplugin/src/gstticodecplugin_omapl137.cfg	2010-01-08 09:27:23.529399692 -0600
+From f19ff5f127764d42d497d47bcefeeca1e0af5f28 Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <bksingh@ti.com>
+Date: Sun, 9 May 2010 05:23:59 -0500
+Subject: [PATCH] add omapl138 support
+
+---
+ src/gstticodecplugin_omapl138.cfg |   41 +++++++++++++++++++
+ src/gstticodecs_omapl138.c        |   81 +++++++++++++++++++++++++++++++++++++
+ src/gsttidmaivideosink.c          |   73 ++++++++++++++++++++++++++-------
+ src/gsttividenc1.c                |    3 +
+ 4 files changed, 183 insertions(+), 15 deletions(-)
+ create mode 100644 src/gstticodecplugin_omapl138.cfg
+ create mode 100644 src/gstticodecs_omapl138.c
+
+diff --git a/src/gstticodecplugin_omapl138.cfg b/src/gstticodecplugin_omapl138.cfg
+new file mode 100644
+index 0000000..af1ad41
+--- /dev/null
++++ b/src/gstticodecplugin_omapl138.cfg
 @@ -0,0 +1,41 @@
 +/*
 + * Copyright (C) $year Texas Instruments Incorporated - http://www.ti.com/
@@ -44,13 +59,14 @@ Index: ticodecplugin/src/gstticodecplugin_omapl137.cfg
 +
 +/* Load support for the DMAI module */
 +var DMAI = xdc.loadPackage('ti.sdo.dmai');
-Index: ticodecplugin/src/gstticodecs_omapl137.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ ticodecplugin/src/gstticodecs_omapl137.c	2010-01-08 09:27:23.529399692 -0600
+diff --git a/src/gstticodecs_omapl138.c b/src/gstticodecs_omapl138.c
+new file mode 100644
+index 0000000..edab54f
+--- /dev/null
++++ b/src/gstticodecs_omapl138.c
 @@ -0,0 +1,81 @@
 +/*
-+ * gstticodecs_omapl137.c
++ * gstticodecs_omapl138.c
 + *
 + * This file provides information for available codecs on the OMAP3530 platform.
 + *
@@ -130,27 +146,15 @@ Index: ticodecplugin/src/gstticodecs_omapl137.c
 + vim:set shiftwidth=4:   /* Use 4 spaces for >> operations */
 + vim:set expandtab:      /* Expand tabs into white spaces  */
 +#endif
-Index: ticodecplugin/src/gsttividenc1.c
-===================================================================
---- ticodecplugin.orig/src/gsttividenc1.c	2010-01-07 15:15:37.000000000 -0600
-+++ ticodecplugin/src/gsttividenc1.c	2010-01-08 09:27:23.529399692 -0600
-@@ -1455,6 +1455,7 @@
-         #if defined(Platform_omap3530)
-         case Cpu_Device_OMAP3530:
-         #endif
-+        case Cpu_Device_OMAPL137:
-         case Cpu_Device_DM6446:
-             params.inputChromaFormat = XDM_YUV_422ILE;
-             break;
-Index: ticodecplugin/src/gsttidmaivideosink.c
-===================================================================
---- ticodecplugin.orig/src/gsttidmaivideosink.c	2010-01-08 14:17:38.533747453 -0600
-+++ ticodecplugin/src/gsttidmaivideosink.c	2010-01-08 15:55:46.881680839 -0600
-@@ -51,6 +51,19 @@
+diff --git a/src/gsttidmaivideosink.c b/src/gsttidmaivideosink.c
+index 81bdac7..65e0406 100644
+--- a/src/gsttidmaivideosink.c
++++ b/src/gsttidmaivideosink.c
+@@ -52,6 +52,19 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE (
      GST_PAD_SINK,
      GST_PAD_ALWAYS,
      GST_STATIC_CAPS
-+#if defined(Platform_omapl137)
++#if defined(Platform_omapl138)
 +    ("video/x-raw-rgb, "
 +        "bpp=(int)16, "
 +        "depth=(int)16, "
@@ -166,7 +170,7 @@ Index: ticodecplugin/src/gsttidmaivideosink.c
      ("video/x-raw-yuv, "
           "format=(fourcc)UYVY, "
           "framerate=(fraction)[ 0, MAX ], "
-@@ -67,6 +80,7 @@
+@@ -73,6 +86,7 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE (
           "width=(int)[ 1, MAX ], "
           "height=(int)[ 1, MAX ]"
      )
@@ -174,32 +178,33 @@ Index: ticodecplugin/src/gsttidmaivideosink.c
  );
  
  GST_DEBUG_CATEGORY_STATIC (gst_tidmaivideosink_debug);
-@@ -664,6 +678,11 @@
+@@ -673,6 +687,12 @@ static int gst_tidmaivideosink_videostd_get_attrs(VideoStd_Type videoStd,
              vattrs->framerate = 60;
              break;
  
-+        #if defined(Platform_omapl137)
++        #if defined(Platform_omapl138)
 +        case VideoStd_QVGA:
 +            vattrs->framerate = 30;
 +            break;
 +        #endif
++
          #if defined(Platform_omap3530)
          case VideoStd_VGA:
              vattrs->framerate = 60;
-@@ -1035,6 +1054,12 @@
+@@ -1051,6 +1071,12 @@ static gboolean gst_tidmaivideosink_set_display_attrs(GstTIDmaiVideoSink *sink,
              sink->dAttrs.colorSpace = colorSpace;
              break;
          #endif
-+        #if defined(Platform_omapl137)
-+        case Cpu_Device_OMAPL137:
-+            sink->dAttrs = Display_Attrs_OMAPL137_OSD_DEFAULT;
++        #if defined(Platform_omapl138)
++        case Cpu_Device_OMAPL138:
++            sink->dAttrs = Display_Attrs_OMAPL138_OSD_DEFAULT;
 +            sink->dAttrs.colorSpace = colorSpace;
 +            break;
 +        #endif
          default:
              sink->dAttrs = Display_Attrs_DM6446_DM355_VID_DEFAULT;
              break;
-@@ -1291,8 +1316,10 @@
+@@ -1307,8 +1333,10 @@ static gboolean gst_tidmaivideosink_process_caps(GstBaseSink * bsink,
      ColorSpace_Type     inBufColorSpace;
      gint                framerateDen;
      gint                framerateNum;
@@ -210,7 +215,7 @@ Index: ticodecplugin/src/gsttidmaivideosink.c
  
      /* The width and height of the input buffer are collected here so that it
       * can be checked against the width and height of the display buffer.
-@@ -1300,24 +1327,38 @@
+@@ -1316,23 +1344,38 @@ static gboolean gst_tidmaivideosink_process_caps(GstBaseSink * bsink,
      gst_structure_get_int(structure, "width", &width);
      gst_structure_get_int(structure, "height", &height);
  
@@ -223,14 +228,13 @@ Index: ticodecplugin/src/gsttidmaivideosink.c
 -        case GST_MAKE_FOURCC('U', 'Y', 'V', 'Y'):
 -            inBufColorSpace = ColorSpace_UYVY;
 -            break;
+-        case GST_MAKE_FOURCC('N', 'V', '1', '6'):
 -        case GST_MAKE_FOURCC('Y', '8', 'C', '8'):
 -            inBufColorSpace = ColorSpace_YUV422PSEMI;
 -            break;
--        #if defined(Platform_dm365)
 -        case GST_MAKE_FOURCC('N', 'V', '1', '2'):
 -            inBufColorSpace = ColorSpace_YUV420PSEMI;
 -            break;
--        #endif
 -        default:
 -            GST_ERROR("unsupported fourcc\n");
 +        gst_structure_get_int(structure,"red_mask",&rm);
@@ -243,6 +247,7 @@ Index: ticodecplugin/src/gsttidmaivideosink.c
              return FALSE;
 +        }
 +    } else {
++
 +        /* Map input buffer fourcc to dmai color space  */
 +        gst_structure_get_fourcc(structure, "format", &fourcc);
 +
@@ -250,14 +255,13 @@ Index: ticodecplugin/src/gsttidmaivideosink.c
 +            case GST_MAKE_FOURCC('U', 'Y', 'V', 'Y'):
 +                inBufColorSpace = ColorSpace_UYVY;
 +                break;
++            case GST_MAKE_FOURCC('N', 'V', '1', '6'):
 +            case GST_MAKE_FOURCC('Y', '8', 'C', '8'):
 +                inBufColorSpace = ColorSpace_YUV422PSEMI;
 +                break;
-+            #if defined(Platform_dm365)
 +            case GST_MAKE_FOURCC('N', 'V', '1', '2'):
 +                inBufColorSpace = ColorSpace_YUV420PSEMI;
 +                break;
-+            #endif
 +            default:
 +                GST_ERROR("unsupported fourcc\n");
 +                return FALSE;
@@ -265,3 +269,20 @@ Index: ticodecplugin/src/gsttidmaivideosink.c
      }
  
      /* Read the frame rate */
+diff --git a/src/gsttividenc1.c b/src/gsttividenc1.c
+index 2e1fb31..60bf9e4 100644
+--- a/src/gsttividenc1.c
++++ b/src/gsttividenc1.c
+@@ -1488,6 +1488,9 @@ static gboolean gst_tividenc1_codec_start (GstTIVidenc1 *videnc1)
+         #if defined(Platform_omap3530)
+         case Cpu_Device_OMAP3530:
+         #endif
++        #if defined(Platform_omapl138)
++        case Cpu_Device_OMAPL138:
++        #endif
+         case Cpu_Device_DM6446:
+             params.inputChromaFormat = XDM_YUV_422ILE;
+             break;
+-- 
+1.5.4.3
+
