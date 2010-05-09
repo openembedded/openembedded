@@ -1,7 +1,7 @@
-From 68e4eb5c9690531fa04cc9e0621854b03369d78b Mon Sep 17 00:00:00 2001
+From 7330c695afad64eef62c525cb8e54913265a3b39 Mon Sep 17 00:00:00 2001
 From: Gregoire Gentil <gregoire@gentil.com>
 Date: Fri, 12 Mar 2010 13:50:52 +0100
-Subject: [PATCH 07/16] ads7846: add settling delay to pdata
+Subject: [PATCH 07/17] ads7846: add settling delay to pdata
 
 ---
  drivers/input/touchscreen/ads7846.c |   22 ++++++++++++++++++++++

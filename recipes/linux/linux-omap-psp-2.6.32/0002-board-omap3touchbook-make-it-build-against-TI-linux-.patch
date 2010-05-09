@@ -1,7 +1,7 @@
-From c5438f97d0ace3b414b13ef59a58427b9fd5b94b Mon Sep 17 00:00:00 2001
+From ad2b9548c700dc424209e543d10ab14c848895a5 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Sat, 30 Jan 2010 15:49:15 +0100
-Subject: [PATCH 02/45] board-omap3touchbook: make it build against TI linux-omap 2.6.32-PSP
+Subject: [PATCH 02/43] board-omap3touchbook: make it build against TI linux-omap 2.6.32-PSP
 
 ---
  arch/arm/mach-omap2/board-omap3touchbook.c |   11 +++++++++--

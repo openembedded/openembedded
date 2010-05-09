@@ -1,0 +1,103 @@
+From 9f69d9bbab1d24da77864b48dbc5d8d4db9f4cdf Mon Sep 17 00:00:00 2001
+From: Koen Kooi <k-kooi@ti.com>
+Date: Wed, 27 Jan 2010 21:57:13 +0100
+Subject: [PATCH 06/43] board-omap3beagle: prepare for DM3730 based BeagleboardXM
+
+* OPP changes copy/pasted from board-omap3evm.c
+	* EHCI changes copy/pasted from Steve Kipisz' 2.6.33rcX work
+	* turn on power to camera on boot and add some comments
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   62 +++++++++++++++++++++++++++----
+ 1 files changed, 54 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 3b7f6ec..429dacb 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -53,6 +53,23 @@
+ #include "pm.h"
+ #include "omap3-opp.h"
+ 
++#ifdef CONFIG_PM
++static struct omap_opp * _omap35x_mpu_rate_table        = omap35x_mpu_rate_table;
++static struct omap_opp * _omap37x_mpu_rate_table        = omap37x_mpu_rate_table;
++static struct omap_opp * _omap35x_dsp_rate_table        = omap35x_dsp_rate_table;
++static struct omap_opp * _omap37x_dsp_rate_table        = omap37x_dsp_rate_table;
++static struct omap_opp * _omap35x_l3_rate_table         = omap35x_l3_rate_table;
++static struct omap_opp * _omap37x_l3_rate_table         = omap37x_l3_rate_table;
++#else   /* CONFIG_PM */
++static struct omap_opp * _omap35x_mpu_rate_table        = NULL;
++static struct omap_opp * _omap37x_mpu_rate_table        = NULL;
++static struct omap_opp * _omap35x_dsp_rate_table        = NULL;
++static struct omap_opp * _omap37x_dsp_rate_table        = NULL;
++static struct omap_opp * _omap35x_l3_rate_table         = NULL;
++static struct omap_opp * _omap37x_l3_rate_table         = NULL;
++#endif  /* CONFIG_PM */
++
++
+ #define GPMC_CS0_BASE  0x60
+ #define GPMC_CS_SIZE   0x30
+ 
+@@ -303,12 +320,28 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 	 * power switch and overcurrent detect
+ 	 */
+ 
+-	gpio_request(gpio + 1, "EHCI_nOC");
+-	gpio_direction_input(gpio + 1);
++	if (cpu_is_omap3630()) {
++		/* Power on DVI, Serial and PWR led */ 
++ 		gpio_request(gpio + 1, "nDVI_PWR_EN");
++		gpio_direction_output(gpio + 1, 0);	
++
++		/* Power on camera interface */
++		gpio_request(gpio + 2, "CAM_EN");
++		gpio_direction_output(gpio + 2, 1);
++
++		/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
++		gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
++		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 1);
++	}
++	else {
++		gpio_request(gpio + 1, "EHCI_nOC");
++		gpio_direction_input(gpio + 1);
++
++		/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
++		gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
++		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
++	}
+ 
+-	/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
+-	gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
+-	gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
+ 
+ 	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
+ 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
+@@ -501,9 +534,22 @@ static struct platform_device keys_gpio = {
+ 
+ static void __init omap3_beagle_init_irq(void)
+ {
+-	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
+-			     mt46h32m32lf6_sdrc_params, omap3_mpu_rate_table,
+-			     omap3_dsp_rate_table, omap3_l3_rate_table);
++        if (cpu_is_omap3630())
++        {
++                omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
++                                        NULL,
++                                        _omap37x_mpu_rate_table,
++                                        _omap37x_dsp_rate_table,
++                                        _omap37x_l3_rate_table);
++        }
++        else
++        {
++                omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
++                                        NULL,
++                                        _omap35x_mpu_rate_table,
++                                        _omap35x_dsp_rate_table,
++                                        _omap35x_l3_rate_table);
++        }
+ 	omap_init_irq();
+ #ifdef CONFIG_OMAP_32K_TIMER
+ 	omap2_gp_clockevent_set_gptimer(12);
+-- 
+1.6.6.1
+

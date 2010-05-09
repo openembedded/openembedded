@@ -1,4 +1,4 @@
-From 0e43db0084633476e60f686627594042ca5cfe3a Mon Sep 17 00:00:00 2001
+From 1f36c057ab83a5c5e8162094fb52022edd5ba9b8 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 4 May 2010 09:01:21 +0200
 Subject: [PATCH 17/17] ARM: OMAP: add 800MHz OPP and remove 125MHz one

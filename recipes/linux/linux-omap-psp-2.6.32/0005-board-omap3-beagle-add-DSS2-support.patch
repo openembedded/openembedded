@@ -1,7 +1,7 @@
-From 48e9baa773af0d99e5f9121da26bb92a391e2853 Mon Sep 17 00:00:00 2001
+From 8a3d9bff79f71a2733607e409f820e79142592d5 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 10 Feb 2010 15:07:36 +0100
-Subject: [PATCH 05/45] board-omap3-beagle: add DSS2 support
+Subject: [PATCH 05/43] board-omap3-beagle: add DSS2 support
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |  130 ++++++++++++++++++++++++-------
