@@ -2,16 +2,17 @@ DESCRIPTION = "DVSDK Demo applications for TI ARM/DSP processors"
 SECTION = "multimedia"
 LICENSE = "TI"
 
-INC_PR = "r1"
-
+INC_PR = "r5"
+ 
 DEPENDS += "ti-dmai"
 DEPENDS += "alsa-lib libpng freetype jpeg"
 
-SRC_URI = "${BASE_SRC_URI}/dvsdk_demos_${PV}.tar.gz;name=dvsdkdemostarball"
+SRC_URI = "http://gt_tspa_dev.gt.design.ti.com/dev/DVSDK/310_DVSDK/3_10_00/dvsdk_demos_${PV}.tar.gz;name=dvsdkdemostarball"
 
 S = "${WORKDIR}/dvsdk_demos_${PV}"
 
 require ti-paths.inc
+require ti-staging.inc
 
 DEMOSPLATFORM_dm355    = "dm355"
 DEMOSPLATFORM_dm365    = "dm365"
@@ -49,6 +50,9 @@ do_compile () {
 }
 
 do_install () {
+        install -d ${D}${DVSDK_DEMOS_INSTALL_DIR_RECIPE}
+        cp -pPrf ${S}/* ${D}${DVSDK_DEMOS_INSTALL_DIR_RECIPE}
+
 	cd ${S}
 	make -e EXEC_DIR=${D}/${installdir}/dvsdk-demos \
 		PLATFORM=${DEMOSPLATFORM} \
@@ -57,8 +61,8 @@ do_install () {
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RDEPENDS_ti-dvsdk-demos_dm355 += "ti-dm355mm-module ti-cmem-module alsa-lib libpng freetype jpeg"
-RDEPENDS_ti-dvsdk-demos_dm365 += "ti-dm365mm-module ti-cmem-module alsa-lib libpng freetype jpeg"
+RDEPENDS_ti-dvsdk-demos_dm355 += "ti-dm355mm-module ti-cmem-module alsa-lib libpng freetype jpeg libpng12"
+RDEPENDS_ti-dvsdk-demos_dm365 += "ti-dm365mm-module ti-cmem-module alsa-lib libpng freetype jpeg ti-codecs-dm365 ti-edma-module ti-irq-module libpng12"
 
 FILES_${PN} = "${installdir}/dvsdk-demos/*"
 

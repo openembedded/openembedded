@@ -1,0 +1,17 @@
+diff -uNr dvsdk_demos_3_10_00_13_orig/dm365/interface/dec.c dvsdk_demos_3_10_00_13/dm365/interface/dec.c
+--- dvsdk_demos_3_10_00_13_orig/dm365/interface/dec.c	2010-04-09 11:54:20.000000000 -0500
++++ dvsdk_demos_3_10_00_13/dm365/interface/dec.c	2010-04-08 17:35:27.000000000 -0500
+@@ -49,10 +49,10 @@
+ 
+ #define NUM_FILE_COMBOS           4
+ 
+-#define DAVINCIEFFECT_MPEG4       "data/videos/davincieffect.mpeg4"
+-#define DAVINCIEFFECT_H264        "data/videos/davincieffect.264"
++#define DAVINCIEFFECT_MPEG4       "/usr/share/ti/data/videos/davincieffect.mpeg4"
++#define DAVINCIEFFECT_H264        "/usr/share/ti/data/videos/davincieffect.264"
+ 
+-#define DAVINCIEFFECT_G711        "data/sounds/davincieffect.g711"
++#define DAVINCIEFFECT_G711        "/usr/share/ti/data/sounds/davincieffect.g711"
+ 
+ #define USERMADE_H264             "demo.264"
+ #define USERMADE_MPEG4            "demo.mpeg4"

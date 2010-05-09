@@ -1,0 +1,11 @@
+diff -uNr dvsdk_demos_3_10_00_14_orig/dm365/Makefile dvsdk_demos_3_10_00_14/dm365/Makefile
+--- dvsdk_demos_3_10_00_14_orig/dm365/Makefile	2010-04-27 19:26:55.000000000 -0500
++++ dvsdk_demos_3_10_00_14/dm365/Makefile	2010-04-27 19:31:31.000000000 -0500
+@@ -48,7 +48,6 @@
+ 	@make -C ../data install
+ 	@install -d $(EXEC_DIR)/thirdpartydemos
+ 	@install loadmodules.sh $(EXEC_DIR)
+-	@install loadmodules_hd.sh $(EXEC_DIR)
+ 
+ $(INSTALLSUBDIRS):
+ 	@echo
