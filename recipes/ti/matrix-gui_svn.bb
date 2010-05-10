@@ -6,7 +6,7 @@ PRIORITY = "optional"
 
 SRCREV = "56"
 PV = "1.0"
-PR = "r5+svnr${SRCPV}"
+PR = "r6+svnr${SRCPV}"
 
 SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' \
 	file://init \
