@@ -61,6 +61,9 @@ export LINK_XDC_ROOT   = "${LINK_INSTALL_DIR}"
 export CODEC_SERVER  = "${installdir}/ti-codecs-server/cs.x64P"
 CPPFLAGS_append = " -DPlatform_${PLATFORM}"
 
+# Makefile also expects to be able to find the kernel headers from the envirionment
+export LINUXKERNEL_INSTALL_DIR = "${STAGING_KERNEL_DIR}"
+
 do_configure_prepend() {
 	# PSP kernel is based on older DSS. we need to replace linux/omapfb.h with mach/omapfb.h
 	if ! [ -e ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ] ; then
