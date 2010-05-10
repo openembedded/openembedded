@@ -61,6 +61,13 @@ export LINK_XDC_ROOT   = "${LINK_INSTALL_DIR}"
 export CODEC_SERVER  = "${installdir}/ti-codecs-server/cs.x64P"
 CPPFLAGS_append = " -DPlatform_${PLATFORM}"
 
+do_configure_prepend() {
+	# PSP kernel is based on older DSS. we need to replace linux/omapfb.h with mach/omapfb.h
+	if ! [ -e ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ] ; then
+		sed -i -e s:linux/omapfb:mach/omapfb:g ${S}/src/omapfb.h || true
+	fi
+}
+
 do_install_prepend () {
 
     install -d ${D}/${installdir}/gst/${PLATFORM}
