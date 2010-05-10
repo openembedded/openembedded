@@ -1,7 +1,9 @@
 require emacs.inc
 
 # full X (non-diet) is needed for X support
-DEPENDS += "gtk+ libungif"
+DEPENDS += "gtk+ libungif dbus"
+
+PR = "r1"
 
 EXTRA_OECONF = "--without-sound --with-x-toolkit=gtk"
 

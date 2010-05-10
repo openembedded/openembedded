@@ -50,6 +50,11 @@ do_compile_prepend() {
         if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* ]; then
                 cp -pPR ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* $treedir/lib
         fi
+	# stupid hack, but without it, it tries to use /usr/lib/libc.so from host and fails
+	# temacs: error while loading shared libraries: /usr/lib/libc.so: ELF file version does not match current one
+	if [ ! -f $treedir/lib/libc.so ]; then
+		ln -s libc.so.6 $treedir/lib/libc.so
+	fi
 }
 
 EXTRA_OEMAKE += 'QEMU="${QEMU}"'
