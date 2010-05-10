@@ -2,7 +2,7 @@ require ti-dmai.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PV = "1.0+svnr${SRCPV}"
+PV = "2_10_00_01+svnr${SRCPV}"
 
 # This package has high dependence on kernel, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
