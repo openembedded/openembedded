@@ -1,7 +1,7 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENSE = "proprietary-binary"
 
-PR = "r3"
+PR = "r4"
 
 COMPATIBLE_MACHINE = "(dm3730-am3715-evm|am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 
@@ -14,15 +14,17 @@ PROVIDES += "virtual/egl"
 #
 # 1. if you don't already have a ti account get one here. it's free:
 #  http://www.ti.com/hdr_my_ti
-# 2. fetch the gl-es bin from here:
-#  https://www-a.ti.com/downloads/sds_support/targetcontent/dvsdk/oslinux_dvsdk/v3_00_3530/OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin
-# (replace version in .bin file as appropriate)
-# 3. put the OMAP35x_*.bin file in libgles-omap3/
-#  mv OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin ./libgles-omap3/
+# 2. fetch the gl-es bin (full OMAP Graphics SDK) from here:
+#  http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/latest/index_FDS.html
+# 3. put the OMAP35x_*.bin file in $DL_DIR, i.e. downloads/
+#  mv OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin ./downloads/
+# 4. make the checksum file in ./downloads/ directory:
+#  cd ./downloads/
+#  md5sum OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin > OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin.md5
 # 
 # voila!
 
-SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
+SRC_URI = "http://install.source.dir.local/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
 		   file://cputype \
 		   file://rc.pvr \
 		   file://sample.desktop \
@@ -224,6 +226,8 @@ FILES_${PN}-flipwsegl = "${libdir}/libpvrPVR2D_FLIPWSEGL.so.* ${libdir}/*/libpvr
 FILES_${PN}-frontwsegl = "${libdir}/libpvrPVR2D_FRONTWSEGL.so.* ${libdir}/*/libpvrPVR2D_FRONTWSEGL.so.*"
 FILES_${PN}-linuxfbwsegl = "${libdir}/libpvrPVR2D_LINUXFBWSEGL.so.* ${libdir}/*/libpvrPVR2D_LINUXFBWSEGL.so.*"
 FILES_${PN}-x11wsegl = "${libdir}/libpvrPVR2D_X11WSEGL.so* ${libdir}/*/libpvrPVR2D_X11WSEGL.so*"
+
+CONFFILES_${PN} = "${sysconfdir}/powervr.ini"
 
 FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${libdir}/ES*/* ${bindir}/pvrsrvinit ${bindir}/cputype ${bindir}/*/*"
 FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
