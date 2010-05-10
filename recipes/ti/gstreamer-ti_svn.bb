@@ -20,13 +20,13 @@ SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=
 
 # use local loadmodules.sh for these platform
 # TODO: must be removed onces these loadmodules goes in gstreamer.ti.com
-SRC_URI_append_dm365 = "file://loadmodules.sh"
-SRC_URI_append_omapl137 = "file://loadmodules.sh"
-SRC_URI_append_omapl138 = "file://loadmodules.sh "
+SRC_URI_append_dm365 = " file://loadmodules.sh"
+SRC_URI_append_omapl137 = " file://loadmodules.sh"
+SRC_URI_append_omapl138 = " file://loadmodules.sh "
 
+SRC_URI_append_omap3 = " file://loadmodules.sh "
 # apply omapdmaifbsink patch on omap3 platform
 # NOTE: this patch need's X11 header/libs
-#SRC_URI_append_omap3 = "file://0007-add-omapdmaifbsink.patch;patch=1 \
-# file://loadmodules.sh \
-# "
+SRC_URI_append_omap3 = " file://0007-add-omapdmaifbsink.patch;patch=1"
+
 
