@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r55"
+PR = "r56"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -94,7 +94,7 @@ RDEPENDS_${PN} += "\
 		intone \
 		vim \
 		vpnc \
-#		emacs \
+		emacs-x11 \
 		mcabber \
 		gdb \
 		oh-puzzles \
