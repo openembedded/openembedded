@@ -11,7 +11,7 @@ DEPENDS = "ffmpeg gtk+ libtool swig swig-native python jpeg zlib libpng tiff gli
 SRC_URI = "svn://code.ros.org/svn/opencv/trunk;module=opencv;proto=https \
 "
 
-SRCREV = "2997"
+SRCREV = "3058"
 PV = "2.1.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/opencv"
@@ -55,6 +55,8 @@ FILES_${PN} = ""
 FILES_${PN}-apps = "${bindir}/* ${datadir}/opencv/"
 FILES_${PN}-dbg += "${libdir}/.debug"
 FILES_${PN}-dev = "${includedir} ${libdir}/pkgconfig"
+
+ALLOW_EMPTY_${PN} = "1"
 
 INSANE_SKIP_python-opencv = True
 DESCRIPTION_python-opencv = "Python bindings to opencv"
