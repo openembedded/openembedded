@@ -21,10 +21,7 @@ OBJC ?= ",objc"
 # hidden symbols in libgcc.a which linker complains
 # when linking shared libraries further in the build like (gnutls)
 
-OPTSPACE_linux-gnuspe ?= ""
-OPTSPACE_linux-uclibcspe ?= ""
-OPTSPACE ?= "--enable-target-optspace"
-
+OPTSPACE = "${@base_contains('TARGET_ARCH', 'powerpc', '', '--enable-target-optspace',d)}"
 # gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
 FORTRAN ?= ",f77"
 LANGUAGES ?= "c,c++${OBJC}${FORTRAN}${JAVA}"
