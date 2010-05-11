@@ -41,5 +41,6 @@ IMAGE_INSTALL += " \
   abiword \
   gnumeric \
   epiphany \
+  memtester \
 "
 
