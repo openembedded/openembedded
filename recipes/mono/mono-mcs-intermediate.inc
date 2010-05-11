@@ -13,7 +13,6 @@ SRC_URI += "file://mono-fix-libdir-path.patch;patch=1"
 # Inherit native to set up compiler and paths ...
 inherit native
 # ... but override the target prefix
-prefix = "/usr"
 exec_prefix = "/usr"
 sysconfdir = "/etc"
 # TODO: Where does the mono package get
@@ -29,24 +28,17 @@ do_fix_libtool_name() {
 }
 addtask fix_libtool_name after do_patch before do_configure
 
-do_stage() {
-	true
-}
-
-do_install() {
+do_compile_append() {
 	oe_runmake 'DESTDIR=${D}' install
-}
-
-do_package() {
-	true
-}
-
-do_stage() {
 	cd ${D}
 	rm -f ${WORKDIR}/mono-mcs-${PV}.tar.gz
 	tar -cvzf ${WORKDIR}/mono-mcs-${PV}.tar.gz .
 	install -d ${STAGING_DATADIR}/mono-mcs
 	cp ${WORKDIR}/mono-mcs-${PV}.tar.gz ${STAGING_DATADIR}/mono-mcs/
+}
+
+do_package() {
+	true
 }
 
 do_package_write_ipk() {
