@@ -44,6 +44,8 @@ def check_sanity(e):
 
 	messages = ""
 
+	messages = messages + 'Please checkout org.openembedded.dev branch instead, shr/merge branch is not used anymore and not updated.\n'
+
 	if (LooseVersion(__version__) < LooseVersion(minversion)):
 		messages = messages + 'Bitbake version %s is required and version %s was found\n' % (minversion, __version__)
 
