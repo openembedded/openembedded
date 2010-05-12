@@ -42,5 +42,6 @@ IMAGE_INSTALL += " \
   gnumeric \
   epiphany \
   memtester \
+  kernel-modules \
 "
 
