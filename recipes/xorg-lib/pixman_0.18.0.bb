@@ -1,5 +1,5 @@
 require pixman.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "2"
@@ -13,6 +13,7 @@ SRC_URI += "\
            file://0005-ARM-added-NEON-optimizations-for-fetch-store-r5g6b5-.patch;patch=1 \
            file://calloc.patch;patch=1 \
            file://tls.patch;patch=1 \
+           file://565-scanline.patch;patch=1 \
 "
 
 SRC_URI[archive.md5sum] = "a4fb870fc325be258089f1683642e976"
