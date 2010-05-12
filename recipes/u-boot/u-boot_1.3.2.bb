@@ -2,7 +2,7 @@ require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 
@@ -15,6 +15,8 @@ SRC_URI_append_mpc8313e-rdb = "\
            file://u-boot-fsl-1.3.0-mpc8313erdb-vsc7385-support.patch;patch=1 \
            file://u-boot-fsl-1.3.0-mpc8313erdb-fix-vitesse-7385-firmware.patch;patch=1 \
            file://u-boot-fsl-1.3.0-mpc8313erdb-performance-tuning-for-TSEC.patch;patch=1 \
+           file://gcc4-weak-inline.patch;patch=1 \
+           file://linker-script-sort-rodata-sections.patch;patch=1 \
            "
 
 SRC_URI_append_boc01 = "\
