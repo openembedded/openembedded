@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r118"
+PR = "r119"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -38,6 +38,8 @@ SRC_URI_append_arm = " file://alignment.sh"
 CONFFILES_${PN} += "${sysconfdir}/device_table" 
 
 KERNEL_VERSION = ""
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_install () {
 #
