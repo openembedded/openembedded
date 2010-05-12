@@ -45,6 +45,8 @@ def check_sanity(e):
 		raise_sanity_error("Do not use Bitbake as root.")
 
 	messages = ""
+	
+	messages = messages + 'Please checkout org.openembedded.dev branch instead, shr/unstable branch is not used anymore and not updated since 2010-04-19.\n'
 
 	if (LooseVersion(__version__) < LooseVersion(minversion)):
 		messages = messages + 'Bitbake version %s is required and version %s was found\n' % (minversion, __version__)
