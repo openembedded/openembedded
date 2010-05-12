@@ -2,7 +2,8 @@ DESCRIPTION = "Matchbox window manager common files"
 SECTION = "x11/wm"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox"
-PR = "r5"
+RDEPENDS += "matchbox-panel"
+PR = "r6"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/0.9/${PN}-${PV}.tar.gz \
            file://no-utilities-category.patch;patch=1 \
