@@ -3,7 +3,7 @@ HOMEPAGE = "http://tslib.berlios.de/"
 AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPLv2"
-INC_PR = "r23"
+INC_PR = "r24"
 
 SRC_URI += "\
   file://ts.conf \
@@ -21,12 +21,7 @@ inherit autotools pkgconfig
 EXTRA_OECONF        = "--enable-shared"
 EXTRA_OECONF_mnci   = "--enable-shared --disable-h3600 --enable-input --disable-corgi --disable-collie --disable-mk712 --disable-arctic2 --disable-ucb1x00 "
 
-do_stage () {
-	autotools_stage_all
-}
-
-do_install () {
-	autotools_do_install
+do_install_append () {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 	install -m 0644 ${WORKDIR}/ts.conf ${D}${sysconfdir}/ts.conf
