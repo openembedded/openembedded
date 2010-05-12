@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
-INC_PR = "r15"
+INC_PR = "r16"
 
 PROVIDES = "virtual/xserver"
 
