@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz;name=qemu-${PV} \
@@ -20,6 +20,7 @@ SRC_URI = "\
     file://fix_fortify_source_compilation.patch;patch=1 \
     file://3f26c1227e3b08010f2a65379cecf4cb4b5933fa.patch;patch=1 \
     file://c5883be23519921254c6940873ee8db04979c20a.patch;patch=1 \
+    file://fallback.to.safe.mmap_min_addr.patch;patch=1 \
     "
 
 SRC_URI[qemu-0.12.3.sha256sum] = "3ce26f8fb0a59418b2064a26bac4b40ea4e493acbc3df7ad5932635477fade4b"

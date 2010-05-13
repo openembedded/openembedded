@@ -1,0 +1,37 @@
+From c313f89c33217ac0e471554dace2144718f86669 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Thu, 13 May 2010 12:23:40 +0200
+Subject: [PATCH] linux-user: use default mmap_min_addr 65536 when /proc/sys/vm/mmap_min_addr cannot be read
+
+* 65536 is default at least for ubuntu and fedora.
+---
+ linux-user/main.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/linux-user/main.c b/linux-user/main.c
+index 18b52c0..cf2cc59 100644
+--- a/linux-user/main.c
++++ b/linux-user/main.c
+@@ -2728,6 +2728,7 @@
+      * When user has explicitly set the quest base, we skip this
+      * test.
+      */
++#define MMAP_MIN_ADDR_DEFAULT 65536
+     if (!have_guest_base) {
+         FILE *fp;
+ 
+@@ -2736,8 +2737,14 @@
+             if (fscanf(fp, "%lu", &tmp) == 1) {
+                 mmap_min_addr = tmp;
+                 qemu_log("host mmap_min_addr=0x%lx\n", mmap_min_addr);
++            } else {
++                qemu_log("cannot read value from /proc/sys/vm/mmap_min_addr, assuming %d\n", MMAP_MIN_ADDR_DEFAULT);
++                mmap_min_addr = MMAP_MIN_ADDR_DEFAULT;
+             }
+             fclose(fp);
++        } else {
++            qemu_log("cannot open /proc/sys/vm/mmap_min_addr for reading, assuming %d\n", MMAP_MIN_ADDR_DEFAULT);
++            mmap_min_addr = MMAP_MIN_ADDR_DEFAULT;
+         }
+     }
+ #endif /* CONFIG_USE_GUEST_BASE */
