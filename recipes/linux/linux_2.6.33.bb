@@ -9,6 +9,7 @@ DEFAULT_PREFERENCE_mpc8641-hpcn = "1"
 DEFAULT_PREFERENCE_p2020ds = "1"
 DEFAULT_PREFERENCE_imote2 = "1"
 DEFAULT_PREFERENCE_afeb9260 = "1"
+DEFAULT_PREFERENCE_qemuarm = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://defconfig"
