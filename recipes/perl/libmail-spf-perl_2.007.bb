@@ -17,10 +17,13 @@ RDEPENDS_${PN} += " \
 	perl-module-module-build \
 	perl-module-test-more \
 	perl-module-version \
+	perl-module-exporter-heavy \
+	perl-module-utf8 \
+	perl-module-utf8-heavy \
 	"
 BBCLASSEXTEND = "native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	http://search.cpan.org/CPAN/authors/id/J/JM/JMEHNLE/mail-spf/Mail-SPF-v${PV}.tar.gz;name=mail-spf-perl-${PV} \
