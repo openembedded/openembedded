@@ -6,5 +6,5 @@ require tzdata.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI[tar.md5sum] = "4d2a90afd5bffe8df97f3def245e178e"
-SRC_URI[tar.sha256sum] = "bee0a26cca54db3413416d968c0a6361d83188b112d2512559d0e3602f254dc3"
+SRC_URI[tar.md5sum] = "f668f66b260e14b477eac3f48bcfb5f4"
+SRC_URI[tar.sha256sum] = "dcf2101d0c5bb20a7f182866ea3e52b54c8f4d129c025a96c9a31377676f554b"
