@@ -2,10 +2,10 @@ require gst-common.inc
 require gst-plugins-package.inc
 
 DESCRIPTION = "Plugins for GStreamer"
-DEPENDS = "gstreamer libmms libmusicbrainz schroedinger faac faad2 libmikmod liboil libogg tremor libvorbis"
+DEPENDS = "gstreamer x264 libmms libmusicbrainz schroedinger faac faad2 libmikmod liboil libogg tremor libvorbis"
 DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 PACKAGES_DYNAMIC = "gst-plugin-*"
 
