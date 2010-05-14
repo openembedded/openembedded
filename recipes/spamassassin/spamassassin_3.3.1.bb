@@ -2,7 +2,7 @@ DESCRIPTION = "The Powerful #1 Open-Source Spam Filter"
 HOMEPAGE = "http://spamassassin.apache.org/"
 SECTION = "network"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 inherit cpan
 
@@ -19,9 +19,9 @@ DEPENDS += " \
 	libip-country-perl-native \
 	libmail-dkim-perl-native \
 	libmail-spf-perl-native \
-	libnetaddr-ip-perl-native \
 	libnet-dns-perl-native \
 	libnet-ident-perl-native \
+	libnetaddr-ip-perl-native \
 	libwww-perl-native \
 	openssl \
 	zlib \
@@ -39,9 +39,9 @@ RDEPENDS_${PN} += " \
 	libip-country-perl \
 	libmail-dkim-perl \
 	libmail-spf-perl \
-	libnetaddr-ip-perl \
 	libnet-dns-perl \
 	libnet-ident-perl \
+	libnetaddr-ip-perl \
 	liburi-perl \
 	libwww-perl \
 	perl-module-base \
@@ -63,6 +63,7 @@ RDEPENDS_${PN} += " \
 	perl-module-file-spec \
 	perl-module-file-spec-unix \
 	perl-module-io-file \
+	perl-module-io-pipe \
 	perl-module-io-select \
 	perl-module-io-socket \
 	perl-module-io-socket-inet \
@@ -70,6 +71,8 @@ RDEPENDS_${PN} += " \
 	perl-module-pod-text \
 	perl-module-pod-usage \
 	perl-module-posix \
+	perl-module-posix-sigaction \
+	perl-module-re \
 	perl-module-socket \
 	perl-module-strict \
 	perl-module-sys-hostname \
