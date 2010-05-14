@@ -9,7 +9,7 @@ DESCRIPTION = "Manage the default USB gadget mode"
 SECTION = "console/network"
 LICENSE = "GPL"
 PV = "0.0.2"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "\
   file://usb-gadget.conf \
