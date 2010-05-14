@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r27"
+INC_PR = "r28"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -78,6 +78,9 @@ do_configure () {
 do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS
 	base_do_compile
+	# Busybox will force a strip, we do not want that.  Future-proof
+	# in case later versions do this better.
+	cp busybox_unstripped busybox || true
 }
 
 do_install () {
