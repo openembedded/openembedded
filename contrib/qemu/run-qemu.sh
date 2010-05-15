@@ -23,6 +23,23 @@
 #
 #auto eth0
 
+# before using this script make sure that the following variables are set
+# as per your build system environment
+
+# kernel
+# hdimage
+# libc
+# server
+# gateway
+# netmask
+# address
+# hostname
+# nfsdir
+# device
+# qemuifup
+# qemuifdown
+# qemupath
+
 supported_archs="{arm mips x86}"
 if [ $# -ne 1 ]; then
     echo -en "
@@ -65,14 +82,14 @@ case $arch in
     	arch=ppc
 	address="10.0.1.103"
         macaddr="00:16:3e:00:00:03"
-	machine="bamboo"
+	machine="g3beige"
 	gdbport="1236"
         consoleopt="console=ttyS0"
 	rootdisk="hdc" #hdc4
-	qemu="qemu-system-ppcemb"
+	qemu="qemu-system-ppc"
 	libc="eglibc"
-        kernel="/scratch/oe/deploy/$libc/images/qemu$arch/uImage-qemuppc.bin"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/helloworld-image-qemuppc.ext2"
+        kernel="/scratch/oe/deploy/$libc/images/qemu$arch/vmlinux-qemuppc.bin"
+        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/minimalist-image-qemuppc.ext2"
         ;;
     sh|sh4)
     	arch=sh4
@@ -140,7 +157,7 @@ ipopt="ip=$address::$gateway:$netmask:$hostname:$device:off"
 init=""
 qemuifup="/home/kraj/work/oe/openembedded/contrib/qemu/qemu-ifup"
 qemuifdown="/home/kraj/work/oe/openembedded/contrib/qemu/qemu-ifdown"
-
+qemupath="/scratch/oe/qemu$arch/sysroots/x86_64-linux/usr/bin"
 uid=`whoami`
 iface=`sudo tunctl -b -u $uid`
 
@@ -153,7 +170,7 @@ fi
 echo "Starting QEMU ..."
 set -x
 	#-L /scratch/oe/deploy/$libc/images/qemu$arch \
-$qemu -M $machine --snapshot $gdbit -m $mem -kernel $kernel -hda $hdimage \
+$qemupath/$qemu -M $machine --snapshot $gdbit -m $mem -kernel $kernel -hda $hdimage \
 	-usb -usbdevice wacom-tablet -nographic --no-reboot -localtime \
 	-append "$consoleopt $rootfs $ipopt $init debug user_debug=-1" \
 	$netopt
