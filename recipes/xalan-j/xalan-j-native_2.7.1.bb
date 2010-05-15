@@ -7,8 +7,3 @@ DEPENDS = "\
 
 inherit java-native
 
-
-do_install_append() {
-	:
-}
-
