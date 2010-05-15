@@ -1,0 +1,49 @@
+From: Koen Kooi <k-kooi@ti.com>
+Subject: Git: don't use hardlink, try softlinks and fall back to plain 'cp'
+
+Using hardlinks confuses packaging an ends up giving us a *copy* of the git binary,
+making the resulting package 54MB big. This brings it down a more managable 4.4M.
+
+This patch isn't complete though:
+
+12cb2bfcde40ce7084ae44af7db88f29  git-cvsserver
+2404a2cd2838be3841eac93de40a644e  git
+2404a2cd2838be3841eac93de40a644e  git-receive-pack
+2404a2cd2838be3841eac93de40a644e  git-upload-archive
+61631194968f67e12abd1f80103a2c68  git-upload-pack
+7b8faebe64076d65934a05cd60bbeb29  git-shell
+
+---
+
+--- /tmp/Makefile	2010-05-15 09:39:26.000000000 +0200
++++ git-1.7.0.2/Makefile	2010-05-15 09:44:21.000000000 +0200
+@@ -1453,7 +1453,6 @@
+ 
+ $(BUILT_INS): git$X
+ 	$(QUIET_BUILT_IN)$(RM) $@ && \
+-	ln git$X $@ 2>/dev/null || \
+ 	ln -s git$X $@ 2>/dev/null || \
+ 	cp git$X $@
+ 
+@@ -1626,7 +1625,6 @@
+ 
+ $(REMOTE_CURL_ALIASES): $(REMOTE_CURL_PRIMARY)
+ 	$(QUIET_LNCP)$(RM) $@ && \
+-	ln $< $@ 2>/dev/null || \
+ 	ln -s $< $@ 2>/dev/null || \
+ 	cp $< $@
+ 
+@@ -1830,13 +1828,11 @@
+ 		cp "$$bindir/git$X" "$$execdir/git$X"; } ; } && \
+ 	{ for p in $(BUILT_INS); do \
+ 		$(RM) "$$execdir/$$p" && \
+-		ln "$$execdir/git$X" "$$execdir/$$p" 2>/dev/null || \
+ 		ln -s "git$X" "$$execdir/$$p" 2>/dev/null || \
+ 		cp "$$execdir/git$X" "$$execdir/$$p" || exit; \
+ 	  done; } && \
+ 	{ for p in $(REMOTE_CURL_ALIASES); do \
+ 		$(RM) "$$execdir/$$p" && \
+-		ln "$$execdir/git-remote-http$X" "$$execdir/$$p" 2>/dev/null || \
+ 		ln -s "git-remote-http$X" "$$execdir/$$p" 2>/dev/null || \
+ 		cp "$$execdir/git-remote-http$X" "$$execdir/$$p" || exit; \
+ 	  done; } && \
