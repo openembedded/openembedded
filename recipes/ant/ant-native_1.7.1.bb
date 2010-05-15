@@ -1,8 +1,9 @@
 DESCRIPTION = "Another Neat Tool - build system for Java"
 LICENSE = "AL2.0"
-
 AUTHOR = "Apache Software Foundation"
 HOMEPAGE = "http://ant.apache.org"
+PR = "r1"
+
 
 SRC_URI = "\
     http://ftp.riken.jp/net/apache/ant/source/apache-ant-${PV}-src.tar.gz \
@@ -58,9 +59,9 @@ do_compile() {
   sed -i -e"s|@JAR_FILE@|$cp|" ${WORKDIR}/ant
 }
 
-do_stage_append() {
-	install -d ${bindir}
-	install -m 0755 ${WORKDIR}/ant ${bindir}
+do_install_append() {
+	install -d ${D}${bindir}
+	install -m 0755 ${WORKDIR}/ant ${D}${bindir}
 }
 
 SRC_URI[md5sum] = "2a44ff60456cf67bb83771cfcedb8e33"
