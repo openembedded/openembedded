@@ -7,7 +7,3 @@
 inherit native
 
 NATIVE_INSTALL_WORKS = "1"
-
-do_stage () {
-  java_stage
-}
