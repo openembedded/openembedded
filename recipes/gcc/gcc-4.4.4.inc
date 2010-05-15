@@ -8,7 +8,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -25,6 +25,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=gcc444tarbz2 \
 	file://gcc-ppc_add_d_constraint.patch;patch=1 \
 	file://gcc-pr41175.patch;patch=1 \
 	file://gcc-armv4-pass-fix-v4bx-to-ld.patch;patch=1 \
+	file://gcc-add-t-slibgcc-libgcc.patch;patch=1 \
 	"
 SRC_URI[gcc444tarbz2.md5sum] = "7ff5ce9e5f0b088ab48720bbd7203530"
 SRC_URI[gcc444tarbz2.sha256sum] = "e1c13696b45752ad3f652304fab5120a43a8a5c0f438d3bda78cf16b620c0c58"
