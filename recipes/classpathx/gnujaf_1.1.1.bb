@@ -12,8 +12,6 @@ inherit autotools java-library
 
 S = "${WORKDIR}/activation-${PV}"
 
-DEPENDS = "fastjar-native"
-
 export JAVAC = "javac"
 
 # Fake javadoc
@@ -28,10 +26,6 @@ do_compile() {
   javac -sourcepath source -d build `find source -name "*.java"`
 
   fastjar -C build -c -f ${JARFILENAME} .
-}
-
-do_install() {
-  java_install
 }
 
 SRC_URI[md5sum] = "de50d7728e8140eb404f2b4554321f8c"
