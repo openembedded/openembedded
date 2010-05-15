@@ -9,6 +9,11 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/jikes/jikes-${PV}.tar.bz2"
 
 inherit autotools
 
+PROVIDES_virtclass-native = ""
+
+BBCLASSEXTEND = "native"
+
+
 EXTRA_OECONF = "--disable-fp-emulation"
 
 # configure script incorrectly defines these when cross compiling for ARM
