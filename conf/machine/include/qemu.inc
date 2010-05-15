@@ -11,3 +11,5 @@ IMAGE_ROOTFS_SIZE_ext2 ?= "230000"
 
 # Don't include kernels in standard images
 RDEPENDS_kernel-base = ""
+
+EXTRA_IMAGEDEPENDS += "qemu-native"
