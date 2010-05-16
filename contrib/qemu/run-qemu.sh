@@ -130,9 +130,9 @@ case $arch in
         consoleopt="console=ttyS0"
 	rootdisk="hda"
 	qemuopts="-nographic"
-	libc="uclibc"
+	libc="eglibc"
         kernel="bzImage"
-        image="console-image"
+        image="minimalist-image"
         ;;
     *)
         echo "Specify one architectures out of $supported_archs to emulate."
