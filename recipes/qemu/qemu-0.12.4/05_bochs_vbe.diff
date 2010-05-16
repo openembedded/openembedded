@@ -1,0 +1,66 @@
+commit af92284bec7ddbd76ddd105c40718627dda3407e
+Author: Gerd Hoffmann <kraxel@redhat.com>
+Date:   Thu Mar 25 11:38:52 2010 +0100
+
+    update bochs vbe interface
+    
+    The bochs vbe interface got a new register a while back, which specifies
+    the linear framebuffer size in 64k units.  This patch adds support for
+    the new register to qemu.  With this patch applied vgabios 0.6c works
+    with qemu.
+    
+    Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+    Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+
+diff --git a/hw/vga.c b/hw/vga.c
+index 6a1a059..bb65677 100644
+--- a/hw/vga.c
++++ b/hw/vga.c
+@@ -522,7 +522,7 @@ static uint32_t vbe_ioport_read_data(void *opaque, uint32_t addr)
+     VGACommonState *s = opaque;
+     uint32_t val;
+ 
+-    if (s->vbe_index <= VBE_DISPI_INDEX_NB) {
++    if (s->vbe_index < VBE_DISPI_INDEX_NB) {
+         if (s->vbe_regs[VBE_DISPI_INDEX_ENABLE] & VBE_DISPI_GETCAPS) {
+             switch(s->vbe_index) {
+                 /* XXX: do not hardcode ? */
+@@ -542,6 +542,8 @@ static uint32_t vbe_ioport_read_data(void *opaque, uint32_t addr)
+         } else {
+             val = s->vbe_regs[s->vbe_index];
+         }
++    } else if (s->vbe_index == VBE_DISPI_INDEX_VIDEO_MEMORY_64K) {
++        val = s->vram_size / (64 * 1024);
+     } else {
+         val = 0;
+     }
+@@ -1955,7 +1957,7 @@ void vga_common_reset(VGACommonState *s)
+ #ifdef CONFIG_BOCHS_VBE
+     s->vbe_index = 0;
+     memset(s->vbe_regs, '\0', sizeof(s->vbe_regs));
+-    s->vbe_regs[VBE_DISPI_INDEX_ID] = VBE_DISPI_ID0;
++    s->vbe_regs[VBE_DISPI_INDEX_ID] = VBE_DISPI_ID5;
+     s->vbe_start_addr = 0;
+     s->vbe_line_offset = 0;
+     s->vbe_bank_mask = (s->vram_size >> 16) - 1;
+diff --git a/hw/vga_int.h b/hw/vga_int.h
+index 23a42ef..6a46a43 100644
+--- a/hw/vga_int.h
++++ b/hw/vga_int.h
+@@ -47,13 +47,15 @@
+ #define VBE_DISPI_INDEX_VIRT_HEIGHT     0x7
+ #define VBE_DISPI_INDEX_X_OFFSET        0x8
+ #define VBE_DISPI_INDEX_Y_OFFSET        0x9
+-#define VBE_DISPI_INDEX_NB              0xa
++#define VBE_DISPI_INDEX_NB              0xa /* size of vbe_regs[] */
++#define VBE_DISPI_INDEX_VIDEO_MEMORY_64K 0xa /* read-only, not in vbe_regs */
+ 
+ #define VBE_DISPI_ID0                   0xB0C0
+ #define VBE_DISPI_ID1                   0xB0C1
+ #define VBE_DISPI_ID2                   0xB0C2
+ #define VBE_DISPI_ID3                   0xB0C3
+ #define VBE_DISPI_ID4                   0xB0C4
++#define VBE_DISPI_ID5                   0xB0C5
+ 
+ #define VBE_DISPI_DISABLED              0x00
+ #define VBE_DISPI_ENABLED               0x01

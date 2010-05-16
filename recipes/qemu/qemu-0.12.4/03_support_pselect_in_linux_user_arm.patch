@@ -1,0 +1,175 @@
+downloaded from: http://bazaar.launchpad.net/%7Eubuntu-server-edgers/ubuntu/lucid/qemu-kvm/qemu-kvm-dailies-packaging.trunk/annotate/head%3A/debian/patches/This-patch-adds-support-for-the-pselect-syscall-in-l.patch
+
+see also: http://lists.gnu.org/archive/html/qemu-devel/2010-02/msg01026.html
+
+From 2c28192f9eb4a23cda0787c97cdb78c33735803e Mon Sep 17 00:00:00 2001
+From: Michael Casadevall <mcasadevall@ubuntu.com>
+Date: Tue, 16 Feb 2010 05:31:19 -0500
+Subject: [PATCH] This patch adds support for the pselect syscall in linux-user emulation and also adds several support functions required to translate the timespec structs between the target and the host.
+
+Signed-off-by: Michael Casadevall <mcasadevall@ubuntu.com>
+---
+ linux-user/arm/syscall_nr.h |    2 +-
+ linux-user/syscall.c        |  119 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 120 insertions(+), 1 deletions(-)
+
+diff --git a/linux-user/arm/syscall_nr.h b/linux-user/arm/syscall_nr.h
+index b1db341..79a216a 100644
+--- a/linux-user/arm/syscall_nr.h
++++ b/linux-user/arm/syscall_nr.h
+@@ -338,7 +338,7 @@
+ #define TARGET_NR_readlinkat			(332)
+ #define TARGET_NR_fchmodat			(333)
+ #define TARGET_NR_faccessat			(334)
+-					/* 335 for pselect6 */
++#define TARGET_NR_pselect6			(335)
+ 					/* 336 for ppoll */
+ #define TARGET_NR_unshare			(337)
+ #define TARGET_NR_set_robust_list		(338)
+diff --git a/linux-user/syscall.c b/linux-user/syscall.c
+index 9fb493f..3663451 100644
+--- a/linux-user/syscall.c
++++ b/linux-user/syscall.c
+@@ -850,6 +850,38 @@ static inline abi_long copy_to_user_timeval(abi_ulong target_tv_addr,
+     return 0;
+ }
+ 
++static inline abi_long copy_from_user_timespec(struct timespec *ts,
++                                              abi_ulong target_ts_addr)
++{
++    struct target_timespec *target_ts;
++
++    if (!lock_user_struct(VERIFY_READ, target_ts, target_ts_addr, 1))
++        return -TARGET_EFAULT;
++
++    __get_user(ts->tv_sec, &target_ts->tv_sec);
++    __get_user(ts->tv_nsec, &target_ts->tv_nsec);
++
++    unlock_user_struct(target_ts, target_ts_addr, 0);
++
++    return 0;
++}
++
++
++static inline abi_long copy_to_user_timespec(abi_ulong target_ts_addr,
++                                            const struct timespec *ts)
++{
++    struct target_timespec *target_ts;
++
++    if (!lock_user_struct(VERIFY_WRITE, target_ts, target_ts_addr, 0))
++        return -TARGET_EFAULT;
++
++    __put_user(ts->tv_sec, &target_ts->tv_sec);
++    __put_user(ts->tv_nsec, &target_ts->tv_nsec);
++
++    unlock_user_struct(target_ts, target_ts_addr, 1);
++
++    return 0;
++}
+ #if defined(TARGET_NR_mq_open) && defined(__NR_mq_open)
+ #include <mqueue.h>
+ 
+@@ -949,6 +981,75 @@ static abi_long do_select(int n,
+     return ret;
+ }
+ 
++#ifdef TARGET_NR_pselect6
++/* do_pselect() must return target values and target errnos. */
++static abi_long do_pselect(int n,
++                          abi_ulong rfd_addr, abi_ulong wfd_addr,
++                          abi_ulong efd_addr, abi_ulong target_tv_addr,
++                          abi_ulong set_addr)
++{
++    fd_set rfds, wfds, efds;
++    fd_set *rfds_ptr, *wfds_ptr, *efds_ptr;
++    struct timespec tv, *tv_ptr;
++    sigset_t set, *set_ptr;
++    abi_long ret;
++
++    if (rfd_addr) {
++        if (copy_from_user_fdset(&rfds, rfd_addr, n))
++            return -TARGET_EFAULT;
++        rfds_ptr = &rfds;
++    } else {
++        rfds_ptr = NULL;
++    }
++    if (wfd_addr) {
++        if (copy_from_user_fdset(&wfds, wfd_addr, n))
++            return -TARGET_EFAULT;
++        wfds_ptr = &wfds;
++    } else {
++        wfds_ptr = NULL;
++    }
++    if (efd_addr) {
++        if (copy_from_user_fdset(&efds, efd_addr, n))
++            return -TARGET_EFAULT;
++        efds_ptr = &efds;
++    } else {
++        efds_ptr = NULL;
++    }
++
++    if (target_tv_addr) {
++        if (copy_from_user_timespec(&tv, target_tv_addr))
++            return -TARGET_EFAULT;
++        tv_ptr = &tv;
++    } else {
++        tv_ptr = NULL;
++    }
++
++    /* We don't need to return sigmask to target */
++    if (set_addr) {
++        target_to_host_old_sigset(&set, &set_addr);
++        set_ptr = &set;
++    } else {
++        set_ptr = NULL;
++    }
++
++    ret = get_errno(pselect(n, rfds_ptr, wfds_ptr, efds_ptr, tv_ptr, set_ptr));
++
++    if (!is_error(ret)) {
++        if (rfd_addr && copy_to_user_fdset(rfd_addr, &rfds, n))
++            return -TARGET_EFAULT;
++        if (wfd_addr && copy_to_user_fdset(wfd_addr, &wfds, n))
++            return -TARGET_EFAULT;
++        if (efd_addr && copy_to_user_fdset(efd_addr, &efds, n))
++            return -TARGET_EFAULT;
++
++        if (target_tv_addr && copy_to_user_timespec(target_tv_addr, &tv))
++            return -TARGET_EFAULT;
++    }
++
++    return ret;
++}
++#endif
++
+ static abi_long do_pipe2(int host_pipe[], int flags)
+ {
+ #ifdef CONFIG_PIPE2
+@@ -5136,6 +5237,24 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
+         }
+         break;
+ #endif
++
++#ifdef TARGET_NR_pselect6
++    case TARGET_NR_pselect6:
++        {
++            abi_ulong inp, outp, exp, tvp, set;
++            long nsel;
++
++            nsel = tswapl(arg1);
++            inp = tswapl(arg2);
++            outp = tswapl(arg3);
++            exp = tswapl(arg4);
++            tvp = tswapl(arg5);
++            set = tswapl(arg6);
++
++            ret = do_pselect(nsel, inp, outp, exp, tvp, set);
++        }
++        break;
++#endif
+     case TARGET_NR_symlink:
+         {
+             void *p2;
+-- 
+1.6.6.1
+
