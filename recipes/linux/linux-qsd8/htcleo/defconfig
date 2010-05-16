@@ -376,7 +376,9 @@ CONFIG_CPU_FREQ_GOV_ONDEMAND=y
 #
 # At least one emulation must be selected
 #
-# CONFIG_VFP is not set
+CONFIG_VFP=y
+CONFIG_VFPv3=y
+CONFIG_NEON=y
 
 #
 # Userspace binary formats

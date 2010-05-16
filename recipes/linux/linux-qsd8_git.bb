@@ -1,11 +1,11 @@
 require linux.inc
 
 PV = "2.6.32+${PR}+gitr${SRCREV}"
-PR = "r14"
+PR = "r15"
 
 COMPATIBLE_MACHINE = "htcnexus|htcleo"
 
-SRCREV = "ee54d02485711f2c96db4a8f1f4a43c0bead736c"
+SRCREV = "bc796399c0a19622b8aa1f705d841c9b4059550b"
 
 SRC_BRANCH = "htc-msm-2.6.32"
 
