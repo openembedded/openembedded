@@ -3,7 +3,7 @@ DESCRIPTION_${PN}-debug = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r17"
+PR = "r18"
 
 inherit task
 
@@ -21,6 +21,7 @@ RDEPENDS_${PN} = "\
   mterm2 \
   nano \
   nfs-utils-client \
+  nmon \
   powertop \
   screen \
   socat \
