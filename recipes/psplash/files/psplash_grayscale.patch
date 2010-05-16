@@ -1,17 +1,17 @@
-diff -urN psplash.orig/psplash-fb.c psplash/psplash-fb.c
---- psplash.orig/psplash-fb.c	2007-08-29 20:27:49.000000000 +0200
-+++ psplash/psplash-fb.c	2009-01-15 18:42:11.000000000 +0100
-@@ -62,7 +62,8 @@
+diff -Nru psplash_orig/psplash-fb.c psplash/psplash-fb.c
+--- psplash_orig/psplash-fb.c	2010-04-22 16:17:33.000000000 +0200
++++ psplash/psplash-fb.c	2010-05-16 15:49:40.000000000 +0200
+@@ -132,7 +132,8 @@
        goto fail;
      }
-   
+ 
 -  if (fb_var.bits_per_pixel < 16)
-+  if (fb_var.bits_per_pixel != 1 && fb_var.bits_per_pixel != 2
-+      && fb_var.bits_per_pixel < 16)
++  if (fb_var.bits_per_pixel != 1 && fb_var.bits_per_pixel != 2                           
++       && fb_var.bits_per_pixel < 16) 
      {
        fprintf(stderr,
- 	      "Error, no support currently for %i bpp frame buffers\n",
-@@ -143,7 +144,18 @@
+               "Error, no support currently for %i bpp frame buffers\n"
+@@ -258,7 +259,18 @@
    return NULL;
  }
  
@@ -30,8 +30,8 @@ diff -urN psplash.orig/psplash-fb.c psplash/psplash-fb.c
 +}
  
  inline void
- psplash_fb_plot_pixel (PSplashFB    *fb, 
-@@ -153,7 +165,7 @@
+ psplash_fb_plot_pixel (PSplashFB    *fb,
+@@ -268,7 +280,7 @@
  		       uint8        green,
  		       uint8        blue)
  {
@@ -40,7 +40,7 @@ diff -urN psplash.orig/psplash-fb.c psplash/psplash-fb.c
  
    if (x < 0 || x > fb->width-1 || y < 0 || y > fb->height-1)
      return;
-@@ -161,17 +173,17 @@
+@@ -276,17 +288,17 @@
    switch (fb->angle)
      {
      case 270:
@@ -62,22 +62,22 @@ diff -urN psplash.orig/psplash-fb.c psplash/psplash-fb.c
        break;
      }
  
-@@ -188,6 +200,18 @@
-       *(volatile uint16 *) (fb->data + off) 
- 	= ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
-       break;
-+    case 2:
-+      shift = (3 - (off & 3)) << 1;
-+      *(fb->data + (off >> 2)) = (*(fb->data + (off >> 2)) & ~(3 << shift))
-+      | (((11*red + 16*green + 5*blue) >> 11) << shift);
-+      break;
-+    case 1:
-+      shift = 7 - (off & 7);
-+      if (((11*red + 16*green + 5*blue) >> 5) >= 128)
-+        *(fb->data + (off >> 3)) |= (1 << shift);
-+      else
-+        *(fb->data + (off >> 3)) &= ~(1 << shift);
-+      break;
-     default:
-       /* depth not supported yet */
-       break;
+@@ -303,6 +315,18 @@
+         *(volatile uint16_t *) (fb->data + off)
+ 	  = ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
+         break;
++      case 2:                                                                              
++        shift = (3 - (off & 3)) << 1;                                                      
++        *(fb->data + (off >> 2)) = (*(fb->data + (off >> 2)) & ~(3 << shift))              
++        | (((11*red + 16*green + 5*blue) >> 11) << shift);                                 
++        break;                                                                             
++      case 1:                                                                              
++        shift = 7 - (off & 7);                                                             
++        if (((11*red + 16*green + 5*blue) >> 5) >= 128)                                    
++          *(fb->data + (off >> 3)) |= (1 << shift);                                        
++        else                                                                               
++          *(fb->data + (off >> 3)) &= ~(1 << shift);                                       
++        break;  
+       default:
+         /* depth not supported yet */
+         break;
