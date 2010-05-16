@@ -1,4 +1,4 @@
-PV = "0.0.1.26+cvs${SRCDATE}"
+PV = "0.0.1.27+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@linknx.cvs.sourceforge.net/cvsroot/linknx;module=linknx;method=pserver "
 S = "${WORKDIR}/linknx/linknx"
