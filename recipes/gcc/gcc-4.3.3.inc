@@ -8,7 +8,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r11"
+INC_PR = "r12"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
@@ -54,10 +54,11 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 #	file://pr34130.patch;patch=1 \
 #	file://fortran-static-linking.patch;patch=1 \
 	file://gcc-arm-frename-registers.patch;patch=1 \
-	file://gcc-4.3.3-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \
 	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://gcc-flags-for-build.patch;patch=1 \
+	file://gcc-pr36218.patch;patch=1 \
+	file://gcc-4.3.3-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \
         file://arm-gcc-objective.patch;patch=1 \
 "
 
