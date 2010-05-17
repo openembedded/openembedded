@@ -2,9 +2,9 @@ DESCRIPTION = "Linux Bluetooth Stack Userland V4"
 HOMEPAGE = "http://www.bluez.org"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2/LGPLv2.1"
 DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
-INC_PR = "r6"
+INC_PR = "r7"
 
 # temporary solution until bug 5176 is properly fixed
 PROVIDES += "bluez-utils bluez-libs bluez-utils-dbus"
