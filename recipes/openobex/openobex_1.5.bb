@@ -4,8 +4,8 @@ HOMEPAGE = "http://openobex.triq.net"
 SECTION = "libs"
 PROVIDES = "openobex-apps"
 DEPENDS = "virtual/libusb0 bluez-libs"
-LICENSE = "GPL"
-PR = "r1"
+LICENSE = "GPLv2/LGPLv2.1"
+PR = "r2"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/openobex-${PV}.tar.gz \
            file://disable-cable-test.patch;patch=1 \
