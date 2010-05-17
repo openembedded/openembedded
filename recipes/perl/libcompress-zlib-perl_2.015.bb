@@ -1,7 +1,8 @@
 DESCRIPTION = "Compress::Zlib - Interface to zlib compression library"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r11"
+PR = "r12"
+RDEPENDS_${PN} += "libio-compress-base-perl libcompress-raw-zlib-perl libio-compress-zlib-perl"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PM/PMQS/Compress-Zlib-${PV}.tar.gz"
 
