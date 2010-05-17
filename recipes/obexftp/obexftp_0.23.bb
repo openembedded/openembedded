@@ -1,8 +1,9 @@
 DESCRIPTION = "OBEX Ftp Client based on openobex."
 SECTION = "console/network"
 HOMEPAGE = "http://dev.zuckschwerdt.org/openobex/wiki/ObexFtp"
-LICENSE = "GPL"
+LICENSE = "GPLv2/LGPLv2"
 DEPENDS = "openobex bluez-libs virtual/libusb0 virtual/libiconv"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.bz2 \
 	  "
