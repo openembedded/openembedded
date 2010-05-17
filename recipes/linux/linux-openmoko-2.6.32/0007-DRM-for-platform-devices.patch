@@ -1,7 +1,7 @@
-From 660570997a5c998aaecc94798b6ea8d60b0da053 Mon Sep 17 00:00:00 2001
+From d05d2c82e2ec110720c5c714ad18d60ef676aa1d Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 20 Oct 2009 15:52:30 +0200
-Subject: [PATCH 2/9] DRM for platform devices
+Subject: [PATCH 07/14] DRM for platform devices
 
 This modifies the DRM core in a small number of places to allow platform
 devices to be used for direct rendering, alongside PCI devices.
@@ -454,5 +454,5 @@ index 7ad3faa..1d9a229 100644
  extern int drm_get_dev(struct pci_dev *pdev, const struct pci_device_id *ent,
  		       struct drm_driver *driver);
 -- 
-1.6.6.1
+1.7.1
 

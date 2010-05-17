@@ -1,30 +1,31 @@
-From eff70b6d14cc372944bbeda0dd0afe8599327f96 Mon Sep 17 00:00:00 2001
+From ee4092984dd817e3889a48c0b51c173e96c71913 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 20 Oct 2009 16:14:55 +0200
-Subject: [PATCH 3/9] Glamo DRM and KMS driver
+Subject: [PATCH 08/14] Glamo DRM and KMS driver
 
-This adds the Glamo DRM and KMS driver, but not the modifications needed
+This adds the Glamo DRM and KMS driver, but note that modifications are needed
 elsewhere to support it.
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
 ---
- drivers/mfd/glamo/Kconfig             |   15 +
+ drivers/mfd/glamo/Kconfig             |   16 +
  drivers/mfd/glamo/Makefile            |    5 +-
- drivers/mfd/glamo/glamo-buffer.c      |  372 ++++++++++++++
- drivers/mfd/glamo/glamo-buffer.h      |   60 +++
- drivers/mfd/glamo/glamo-cmdq.c        |  528 ++++++++++++++++++++
+ drivers/mfd/glamo/glamo-buffer.c      |  374 +++++++++++++
+ drivers/mfd/glamo/glamo-buffer.h      |   60 ++
+ drivers/mfd/glamo/glamo-cmdq.c        |  555 +++++++++++++++++++
  drivers/mfd/glamo/glamo-cmdq.h        |   49 ++
- drivers/mfd/glamo/glamo-display.c     |  869 +++++++++++++++++++++++++++++++++
- drivers/mfd/glamo/glamo-display.h     |   39 ++
- drivers/mfd/glamo/glamo-drm-drv.c     |  444 +++++++++++++++++
- drivers/mfd/glamo/glamo-drm-private.h |  156 ++++++
- drivers/mfd/glamo/glamo-fence.c       |  330 +++++++++++++
+ drivers/mfd/glamo/glamo-display.c     |  975 +++++++++++++++++++++++++++++++++
+ drivers/mfd/glamo/glamo-display.h     |   41 ++
+ drivers/mfd/glamo/glamo-drm-drv.c     |  423 ++++++++++++++
+ drivers/mfd/glamo/glamo-drm-private.h |  166 ++++++
+ drivers/mfd/glamo/glamo-fence.c       |  330 +++++++++++
  drivers/mfd/glamo/glamo-fence.h       |   34 ++
- drivers/mfd/glamo/glamo-kms-fb.c      |  540 ++++++++++++++++++++
+ drivers/mfd/glamo/glamo-kms-fb.c      |  493 +++++++++++++++++
  drivers/mfd/glamo/glamo-kms-fb.h      |   41 ++
  include/drm/Kbuild                    |    1 +
- include/drm/glamo_drm.h               |  153 ++++++
- 16 files changed, 3635 insertions(+), 1 deletions(-)
+ include/drm/glamo_drm.h               |  153 +++++
+ 16 files changed, 3715 insertions(+), 1 deletions(-)
  create mode 100644 drivers/mfd/glamo/glamo-buffer.c
  create mode 100644 drivers/mfd/glamo/glamo-buffer.h
  create mode 100644 drivers/mfd/glamo/glamo-cmdq.c
@@ -40,10 +41,10 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  create mode 100644 include/drm/glamo_drm.h
 
 diff --git a/drivers/mfd/glamo/Kconfig b/drivers/mfd/glamo/Kconfig
-index 3aa4831..214c70e 100644
+index 3aa4831..a12ebf6 100644
 --- a/drivers/mfd/glamo/Kconfig
 +++ b/drivers/mfd/glamo/Kconfig
-@@ -40,3 +40,18 @@ config MFD_GLAMO_MCI
+@@ -40,3 +40,19 @@ config MFD_GLAMO_MCI
  	  neo1973 GTA-02.
  
  	  If unsure, say N.
@@ -54,6 +55,7 @@ index 3aa4831..214c70e 100644
 +	select FB_CFB_FILLRECT
 +	select FB_CFB_COPYAREA
 +	select FB_CFB_IMAGEBLIT
++	select DRM_KMS_HELPER
 +	help
 +	  Direct Rendering Manager interface for the S-Media Glamo chip, as
 +	  used in Openmoko FreeRunner (GTA02).
@@ -83,10 +85,10 @@ index ebf26f7..d5ebf8f 100644
 +                    glamo-display.o glamo-kms-fb.o glamo-fence.o
 diff --git a/drivers/mfd/glamo/glamo-buffer.c b/drivers/mfd/glamo/glamo-buffer.c
 new file mode 100644
-index 0000000..45500d3
+index 0000000..82ea0c0
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-buffer.c
-@@ -0,0 +1,372 @@
+@@ -0,0 +1,374 @@
 +/*
 + * SMedia Glamo 336x/337x memory management
 + *
@@ -334,6 +336,8 @@ index 0000000..45500d3
 +	if (!gobj->mmap_offset) {
 +		ret = glamo_gem_create_mmap_offset(obj);
 +		if (ret) {
++			printk(KERN_CRIT "Couldn't create mmap offset\n");
++			drm_gem_object_unreference(obj);
 +			mutex_unlock(&dev->struct_mutex);
 +			return ret;
 +		}
@@ -527,10 +531,10 @@ index 0000000..41f18fd
 +#endif /* __GLAMO_BUFFER_H */
 diff --git a/drivers/mfd/glamo/glamo-cmdq.c b/drivers/mfd/glamo/glamo-cmdq.c
 new file mode 100644
-index 0000000..caedc27
+index 0000000..442963c
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-cmdq.c
-@@ -0,0 +1,528 @@
+@@ -0,0 +1,555 @@
 +/*
 + * SMedia Glamo 336x/337x command queue handling
 + *
@@ -590,6 +594,9 @@ index 0000000..caedc27
 +#include "glamo-core.h"
 +#include "glamo-drm-private.h"
 +#include "glamo-regs.h"
++
++
++#define GLAMO_CMDQ_SIZE (128 * 1024)    /* 128k ring buffer */
 +
 +
 +static inline void reg_write(struct glamodrm_handle *gdrm,
@@ -969,7 +976,7 @@ index 0000000..caedc27
 +	burst[0] = 1<<15 | cbuf->base;
 +	burst[1] = data_size / 2;  /* -> 2-byte words */
 +	if ( burst[1] & 0x01 ) {
-+		printk(KERN_CRIT "Burst not aligned!\n");
++		printk(KERN_WARNING "[glamo-drm] Burst not aligned!\n");
 +		goto cleanup;
 +	}
 +
@@ -988,7 +995,7 @@ index 0000000..caedc27
 +}
 +
 +
-+int glamo_cmdq_init(struct glamodrm_handle *gdrm)
++int glamo_cmdq_setup(struct glamodrm_handle *gdrm)
 +{
 +	unsigned int i;
 +
@@ -1008,9 +1015,9 @@ index 0000000..caedc27
 +
 +	/* Set up command queue location */
 +	reg_write(gdrm, GLAMO_REG_CMDQ_BASE_ADDRL,
-+					GLAMO_OFFSET_CMDQ & 0xffff);
++					gdrm->cmdq_offs & 0xffff);
 +	reg_write(gdrm, GLAMO_REG_CMDQ_BASE_ADDRH,
-+					(GLAMO_OFFSET_CMDQ >> 16) & 0x7f);
++					(gdrm->cmdq_offs >> 16) & 0x7f);
 +
 +	/* Length of command queue in 1k blocks, minus one */
 +	reg_write(gdrm, GLAMO_REG_CMDQ_LEN, (GLAMO_CMDQ_SIZE >> 10)-1);
@@ -1022,6 +1029,30 @@ index 0000000..caedc27
 +	                                 8 << 4);    /* HQ threshold */
 +
 +	return 0;
++}
++
++
++int glamo_cmdq_init(struct glamodrm_handle *gdrm)
++{
++	struct drm_gem_object *obj;
++	struct drm_glamo_gem_object *gobj;
++	int ret = 0;
++
++	obj = glamo_gem_object_alloc(dev, GLAMO_CMDQ_SIZE, 4);
++	if ( !obj ) {
++		printk(KERN_ERR "[glamo-drm] Failed to allocate CmdQ\n");
++		ret = -ENOMEM;
++		goto out;
++	}
++	gobj = fbo->driver_private;
++	gdrm->cmdq_offs = GLAMO_OFFSET_FB + gobj->block->start;
++	gdrm->cmdq_base = ioremap(gdrm->vram->start + offs, GLAMO_CMDQ_SIZE);
++
++	/* Set up registers */
++	glamo_cmdq_setup(gdrm);
++
++out:
++	return ret;
 +}
 +
 +
@@ -1039,7 +1070,7 @@ index 0000000..caedc27
 +
 +void glamo_cmdq_resume(struct glamodrm_handle *gdrm)
 +{
-+	glamo_cmdq_init(gdrm);
++	glamo_cmdq_setup(gdrm);
 +}
 +
 +
@@ -1116,10 +1147,10 @@ index 0000000..510d195
 +#endif /* __GLAMO_CMDQ_H */
 diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
 new file mode 100644
-index 0000000..34a665a
+index 0000000..75ad734
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-display.c
-@@ -0,0 +1,869 @@
+@@ -0,0 +1,975 @@
 +/*
 + * SMedia Glamo 336x/337x display
 + *
@@ -1174,19 +1205,18 @@ index 0000000..34a665a
 + *
 + */
 +
-+#define DEBUG 1
-+
 +#include <drm/drmP.h>
 +#include <drm/glamo_drm.h>
 +#include <drm/drm_crtc_helper.h>
 +#include <drm/drm_crtc.h>
++#include <linux/glamofb.h>
++#include <linux/jbt6k74.h>
 +
 +#include "glamo-core.h"
 +#include "glamo-drm-private.h"
 +#include "glamo-regs.h"
 +#include "glamo-kms-fb.h"
 +#include "glamo-display.h"
-+#include <linux/glamofb.h>
 +
 +
 +#define GLAMO_LCD_WIDTH_MASK 0x03FF
@@ -1361,14 +1391,6 @@ index 0000000..34a665a
 +}
 +
 +
-+extern void jbt6k74_action(int val);
-+
-+/* Power on/off */
-+static void glamo_crtc_dpms(struct drm_crtc *crtc, int mode)
-+{
-+}
-+
-+
 +static bool glamo_crtc_mode_fixup(struct drm_crtc *crtc,
 +                                  struct drm_display_mode *mode,
 +                                  struct drm_display_mode *adjusted_mode)
@@ -1397,6 +1419,12 @@ index 0000000..34a665a
 +	gcrtc = to_glamo_crtc(crtc);
 +	gdrm = gcrtc->gdrm;	/* Here it is! */
 +
++	if ( !gcrtc->pixel_clock_on ) {
++		printk(KERN_WARNING "[glamo-drm] Display is off - "
++		                    "enabling it before setting base.\n");
++		glamo_lcd_power(gdrm, 1);
++	}
++
 +	gfb = to_glamo_framebuffer(crtc->fb);
 +	obj = gfb->obj;
 +	gobj = obj->driver_private;
@@ -1423,60 +1451,173 @@ index 0000000..34a665a
 +	struct glamodrm_handle *gdrm;
 +	struct glamo_crtc *gcrtc;
 +	int retr_start, retr_end, disp_start, disp_end;
++	int rot;
 +
 +	/* Dig out our handle */
 +	gcrtc = to_glamo_crtc(crtc);
 +	gdrm = gcrtc->gdrm;	/* Here it is! */
 +
++	if ( !gcrtc->pixel_clock_on ) {
++		printk(KERN_WARNING "[glamo-drm] Display is off - "
++		                    "enabling it before setting mode.\n");
++		glamo_lcd_power(gdrm, 1);
++		msleep(500);
++	}
++
++	/* Rotate? */
++	if ( (mode->hdisplay == 640) && (mode->vdisplay == 480) ) {
++		rot = GLAMO_LCD_ROT_MODE_90;
++	} else if ( (mode->hdisplay == 480) && (mode->vdisplay == 640) ) {
++		rot = GLAMO_LCD_ROT_MODE_0;
++	} else if ( (mode->hdisplay == 320) && (mode->vdisplay == 240) ) {
++		rot = GLAMO_LCD_ROT_MODE_90;
++	} else if ( (mode->hdisplay == 240) && (mode->vdisplay == 320) ) {
++		rot = GLAMO_LCD_ROT_MODE_0;
++	} else {
++		printk(KERN_WARNING "[glamo-drm] Couldn't choose rotation.\n");
++		rot = GLAMO_LCD_ROT_MODE_0;
++	}
++
 +	glamo_lcd_cmd_mode(gdrm, 1);
 +
-+	glamo_engine_reclock(gdrm->glamo_core, GLAMO_ENGINE_LCD, mode->clock);
++	/* Set dimensions */
++	if ( rot == GLAMO_LCD_ROT_MODE_0 ) {
++
++		glamo_engine_reclock(gdrm->glamo_core, GLAMO_ENGINE_LCD,
++		                     mode->clock);
++
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_WIDTH,
++			             GLAMO_LCD_WIDTH_MASK, mode->hdisplay);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HEIGHT,
++			             GLAMO_LCD_HEIGHT_MASK, mode->vdisplay);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_PITCH,
++			             GLAMO_LCD_PITCH_MASK, mode->hdisplay*2);
++
++		/* Set rotation */
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_WIDTH,
++				     GLAMO_LCD_ROT_MODE_MASK, rot);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_MODE1,
++				     GLAMO_LCD_MODE1_ROTATE_EN,
++				     (rot != GLAMO_LCD_ROT_MODE_0) ?
++				       GLAMO_LCD_MODE1_ROTATE_EN : 0);
++
++		/* Convert "X modeline timings" into "Glamo timings" */
++		retr_start = 0;
++		retr_end = retr_start + mode->hsync_end - mode->hsync_start;
++		disp_start = mode->htotal - mode->hsync_start;
++		disp_end = disp_start + mode->hdisplay;
++
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_TOTAL,
++				     GLAMO_LCD_HV_TOTAL_MASK, mode->htotal);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_START,
++				     GLAMO_LCD_HV_RETR_START_MASK, retr_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_END,
++				     GLAMO_LCD_HV_RETR_END_MASK, retr_end);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_START,
++				     GLAMO_LCD_HV_RETR_DISP_START_MASK, disp_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_END,
++				     GLAMO_LCD_HV_RETR_DISP_END_MASK, disp_end);
++
++		/* The same in the vertical direction */
++		retr_start = 0;
++		retr_end = retr_start + mode->vsync_end - mode->vsync_start;
++		disp_start = mode->vtotal - mode->vsync_start;
++		disp_end = disp_start + mode->vdisplay;
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_TOTAL,
++				     GLAMO_LCD_HV_TOTAL_MASK, mode->vtotal);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_START,
++				     GLAMO_LCD_HV_RETR_START_MASK, retr_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_END,
++				     GLAMO_LCD_HV_RETR_END_MASK, retr_end);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_START,
++				     GLAMO_LCD_HV_RETR_DISP_START_MASK,
++				     disp_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_END,
++				     GLAMO_LCD_HV_RETR_DISP_END_MASK, disp_end);
++
++	} else {
++
++		glamo_engine_reclock(gdrm->glamo_core, GLAMO_ENGINE_LCD,
++		                     mode->clock/2);
++
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_WIDTH,
++			             GLAMO_LCD_WIDTH_MASK, mode->vdisplay);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HEIGHT,
++			             GLAMO_LCD_HEIGHT_MASK, mode->hdisplay);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_PITCH,
++			             GLAMO_LCD_PITCH_MASK, mode->hdisplay*2);
++
++		/* Set rotation */
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_WIDTH,
++				     GLAMO_LCD_ROT_MODE_MASK, rot);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_MODE1,
++				     GLAMO_LCD_MODE1_ROTATE_EN,
++				     (rot != GLAMO_LCD_ROT_MODE_0) ?
++				       GLAMO_LCD_MODE1_ROTATE_EN : 0);
++
++		/* Apply "vertical" numbers to the horizontal registers */
++		retr_start = 0;
++		retr_end = retr_start + mode->vsync_end - mode->vsync_start;
++		disp_start = mode->vtotal - mode->vsync_start;
++		disp_end = disp_start + mode->vdisplay;
++
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_TOTAL,
++				     GLAMO_LCD_HV_TOTAL_MASK, mode->vtotal);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_START,
++				     GLAMO_LCD_HV_RETR_START_MASK, retr_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_END,
++				     GLAMO_LCD_HV_RETR_END_MASK, retr_end);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_START,
++				     GLAMO_LCD_HV_RETR_DISP_START_MASK,
++				     disp_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_END,
++				     GLAMO_LCD_HV_RETR_DISP_END_MASK, disp_end);
++
++		/* Apply "horizontal" numbers to the vertical registers */
++		retr_start = 0;
++		retr_end = retr_start + mode->hsync_end - mode->hsync_start;
++		disp_start = mode->htotal - mode->hsync_start;
++		disp_end = disp_start + mode->hdisplay;
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_TOTAL,
++				     GLAMO_LCD_HV_TOTAL_MASK, mode->htotal);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_START,
++				     GLAMO_LCD_HV_RETR_START_MASK, retr_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_END,
++				     GLAMO_LCD_HV_RETR_END_MASK, retr_end);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_START,
++				     GLAMO_LCD_HV_RETR_DISP_START_MASK,
++				     disp_start);
++		reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_END,
++				     GLAMO_LCD_HV_RETR_DISP_END_MASK, disp_end);
++
++	}
++
 +	gdrm->saved_clock = mode->clock;
-+
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_WIDTH,
-+	                     GLAMO_LCD_WIDTH_MASK, mode->hdisplay);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HEIGHT,
-+	                     GLAMO_LCD_HEIGHT_MASK, mode->vdisplay);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_PITCH,
-+	                     GLAMO_LCD_PITCH_MASK, mode->hdisplay*2);
-+
-+	/* Convert "X modeline timings" into "Glamo timings" */
-+	retr_start = 0;
-+	retr_end = retr_start + mode->hsync_end - mode->hsync_start;
-+	disp_start = mode->htotal - mode->hsync_start;
-+	disp_end = disp_start + mode->hdisplay;
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_TOTAL,
-+	                     GLAMO_LCD_HV_TOTAL_MASK, mode->htotal);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_START,
-+	                     GLAMO_LCD_HV_RETR_START_MASK, retr_start);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_END,
-+	                     GLAMO_LCD_HV_RETR_END_MASK, retr_end);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_START,
-+	                     GLAMO_LCD_HV_RETR_DISP_START_MASK, disp_start);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_END,
-+	                     GLAMO_LCD_HV_RETR_DISP_END_MASK, disp_end);
-+
-+	/* The same in the vertical direction */
-+	retr_start = 0;
-+	retr_end = retr_start + mode->vsync_end - mode->vsync_start;
-+	disp_start = mode->vtotal - mode->vsync_start;
-+	disp_end = disp_start + mode->vdisplay;
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_TOTAL,
-+	                     GLAMO_LCD_HV_TOTAL_MASK, mode->vtotal);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_START,
-+	                     GLAMO_LCD_HV_RETR_START_MASK, retr_start);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_END,
-+	                     GLAMO_LCD_HV_RETR_END_MASK, retr_end);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_START,
-+	                     GLAMO_LCD_HV_RETR_DISP_START_MASK, disp_start);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_END,
-+	                     GLAMO_LCD_HV_RETR_DISP_END_MASK, disp_end);
 +
 +	glamo_lcd_cmd_mode(gdrm, 0);
 +
 +	glamo_crtc_mode_set_base(crtc, 0, 0, old_fb);
 +
++	if ( mode->hdisplay == 240 ) {
++		jbt6k74_finish_resolutionchange(JBT_RESOLUTION_QVGA);
++	} else {
++		jbt6k74_finish_resolutionchange(JBT_RESOLUTION_VGA);
++	}
++
++	gcrtc->current_mode = *mode;
++	gcrtc->current_mode_set = 1;
++	gcrtc->current_fb = old_fb;
++
 +	return 0;
++}
++
++
++/* This is not the right place to switch power on/off, because the helper
++ * stuff ends up calling this before/after setting the mode.  We can't
++ * set modes with the display off (although backlight off would be OK) */
++static void glamo_crtc_dpms(struct drm_crtc *crtc, int mode)
++{
++	/* do nothing */
 +}
 +
 +
@@ -1537,43 +1678,53 @@ index 0000000..34a665a
 +
 +static int glamo_connector_get_modes(struct drm_connector *connector)
 +{
-+	struct drm_display_mode *mode;
 +	struct glamo_fb_platform_data *fb_info;
 +	struct glamo_output *goutput = to_glamo_output(connector);
 +	struct glamodrm_handle *gdrm = goutput->gdrm;
++	int i;
 +
 +	/* Dig out the record which will tell us about the hardware */
 +	fb_info = gdrm->glamo_core->pdata->fb_data;
 +
-+	mode = drm_mode_create(connector->dev);
-+	if (!mode)
-+		return 0;
-+	/* Fill in 'mode' here */
-+	mode->type = DRM_MODE_TYPE_DEFAULT | DRM_MODE_TYPE_PREFERRED;
++	for ( i=0; i<fb_info->num_modes; i++ ) {
 +
-+	/* Convert framebuffer timings into KMS timings */
-+	mode->clock = 1000000000UL / fb_info->modes[0].pixclock; /* ps -> kHz */
-+	mode->clock *= 1000; /* kHz -> Hz */
-+	mode->hdisplay = fb_info->modes[0].xres;
-+	mode->hsync_start = fb_info->modes[0].right_margin + mode->hdisplay;
-+	mode->hsync_end = mode->hsync_start + fb_info->modes[0].hsync_len;
-+	mode->htotal = mode->hsync_end + fb_info->modes[0].left_margin;
-+	mode->hskew = 0;
++		struct drm_display_mode *mode;
 +
-+	mode->vdisplay = fb_info->modes[0].yres;
-+	mode->vsync_start = fb_info->modes[0].lower_margin + mode->vdisplay;
-+	mode->vsync_end = mode->vsync_start + fb_info->modes[0].vsync_len;
-+	mode->vtotal = mode->vsync_end + fb_info->modes[0].upper_margin;
-+	mode->vscan = 0;
++		mode = drm_mode_create(connector->dev);
++		if ( !mode ) continue;
 +
-+	/* Physical size */
-+	mode->width_mm = fb_info->width;
-+	mode->height_mm = fb_info->height;
++		mode->type = DRM_MODE_TYPE_DEFAULT | DRM_MODE_TYPE_PREFERRED;
 +
-+	drm_mode_set_name(mode);
-+	drm_mode_probed_add(connector, mode);
++		/* Convert framebuffer timings into KMS timings.
++		 * First:  ps -> kHz */
++		mode->clock = 1000000000UL / fb_info->modes[i].pixclock;
++		mode->clock *= 1000; /* then kHz -> Hz */
++		mode->hdisplay = fb_info->modes[i].xres;
++		mode->hsync_start = fb_info->modes[i].right_margin
++		                     + mode->hdisplay;
++		mode->hsync_end = mode->hsync_start
++		                     + fb_info->modes[i].hsync_len;
++		mode->htotal = mode->hsync_end + fb_info->modes[i].left_margin;
++		mode->hskew = 0;
 +
-+	return 1;	/* one mode, for now */
++		mode->vdisplay = fb_info->modes[i].yres;
++		mode->vsync_start = fb_info->modes[i].lower_margin
++		                     + mode->vdisplay;
++		mode->vsync_end = mode->vsync_start
++		                   + fb_info->modes[i].vsync_len;
++		mode->vtotal = mode->vsync_end + fb_info->modes[i].upper_margin;
++		mode->vscan = 0;
++
++		/* Physical size */
++		mode->width_mm = fb_info->width;
++		mode->height_mm = fb_info->height;
++
++		drm_mode_set_name(mode);
++		drm_mode_probed_add(connector, mode);
++
++	}
++
++	return fb_info->num_modes;
 +}
 +
 +
@@ -1612,6 +1763,7 @@ index 0000000..34a665a
 +                                 struct drm_display_mode *mode,
 +                                 struct drm_display_mode *adjusted_mode)
 +{
++	if ( mode->clock == 0 ) return false;
 +	return true;
 +}
 +
@@ -1835,8 +1987,8 @@ index 0000000..34a665a
 +	drm_mode_config_init(dev);
 +
 +	dev->mode_config.min_width = 240;
-+	dev->mode_config.min_height = 320;
-+	dev->mode_config.max_width = 480;
++	dev->mode_config.min_height = 240;
++	dev->mode_config.max_width = 640;
 +	dev->mode_config.max_height = 640;
 +
 +	dev->mode_config.funcs = (void *)&glamo_mode_funcs;
@@ -1847,6 +1999,8 @@ index 0000000..34a665a
 +	                   + sizeof(struct drm_connector *), GFP_KERNEL);
 +	if (glamo_crtc == NULL) return 1;
 +	glamo_crtc->gdrm = gdrm;
++	gdrm->crtc = (struct drm_crtc *)glamo_crtc;
++	glamo_crtc->pixel_clock_on = 1;
 +	glamo_crtc->blank_mode = DRM_MODE_DPMS_OFF;
 +	drm_crtc_init(dev, &glamo_crtc->base, &glamo_crtc_funcs);
 +	drm_crtc_helper_add(&glamo_crtc->base, &glamo_crtc_helper_funcs);
@@ -1864,7 +2018,7 @@ index 0000000..34a665a
 +
 +	/* Initialise the connector */
 +	drm_connector_init(dev, connector, &glamo_connector_funcs,
-+	                   DRM_MODE_CONNECTOR_Unknown);
++	                   DRM_MODE_CONNECTOR_LVDS);
 +	drm_sysfs_connector_add(connector);
 +	connector->interlace_allowed = 0;
 +	connector->doublescan_allowed = 0;
@@ -1928,73 +2082,56 @@ index 0000000..34a665a
 +}
 +
 +
++void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode)
++{
++	struct drm_crtc *crtc = gdrm->crtc;
++	struct glamo_crtc *gcrtc = to_glamo_crtc(crtc);
++
++	if ( mode ) {
++		glamo_engine_enable(gdrm->glamo_core, GLAMO_ENGINE_LCD);
++		gcrtc->pixel_clock_on = 1;
++		jbt6k74_setpower(JBT_POWER_MODE_NORMAL);
++		if ( gcrtc->current_mode_set ) {
++			glamo_crtc_mode_set(crtc, &gcrtc->current_mode,
++			                    &gcrtc->current_mode, 0, 0,
++			                    gcrtc->current_fb);
++		}
++	} else {
++		jbt6k74_setpower(JBT_POWER_MODE_OFF);
++		glamo_engine_suspend(gdrm->glamo_core, GLAMO_ENGINE_LCD);
++		gcrtc->pixel_clock_on = 0;
++	}
++}
++
++
 +void glamo_display_suspend(struct glamodrm_handle *gdrm)
 +{
-+	gdrm->saved_width = reg_read_lcd(gdrm, GLAMO_REG_LCD_WIDTH);
-+	gdrm->saved_height = reg_read_lcd(gdrm, GLAMO_REG_LCD_HEIGHT);
-+	gdrm->saved_pitch = reg_read_lcd(gdrm, GLAMO_REG_LCD_PITCH);
-+	gdrm->saved_htotal = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_TOTAL);
-+	gdrm->saved_hrtrst = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_START);
-+	gdrm->saved_hrtren = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_END);
-+	gdrm->saved_hdspst = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_START);
-+	gdrm->saved_hdspen = reg_read_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_END);
-+	gdrm->saved_vtotal = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_TOTAL);
-+	gdrm->saved_vrtrst = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_START);
-+	gdrm->saved_vrtren = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_END);
-+	gdrm->saved_vdspst = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_START);
-+	gdrm->saved_vdspen = reg_read_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_END);
++	/* do nothing */
 +}
 +
 +
 +void glamo_display_resume(struct glamodrm_handle *gdrm)
 +{
++	struct drm_crtc *crtc = gdrm->crtc;
++	struct glamo_crtc *gcrtc = to_glamo_crtc(crtc);
++
 +	glamo_engine_enable(gdrm->glamo_core, GLAMO_ENGINE_LCD);
 +	glamo_engine_reset(gdrm->glamo_core, GLAMO_ENGINE_LCD);
 +	glamo_run_lcd_script(gdrm, lcd_init_script,
 +	                           ARRAY_SIZE(lcd_init_script));
 +
-+	/* Restore timings */
-+	glamo_lcd_cmd_mode(gdrm, 1);
-+	glamo_engine_reclock(gdrm->glamo_core, GLAMO_ENGINE_LCD,
-+	                     gdrm->saved_clock);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_WIDTH, GLAMO_LCD_WIDTH_MASK,
-+	                     gdrm->saved_width);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HEIGHT, GLAMO_LCD_HEIGHT_MASK,
-+	                     gdrm->saved_height);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_PITCH, GLAMO_LCD_PITCH_MASK,
-+	                     gdrm->saved_pitch);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_TOTAL,
-+	                     GLAMO_LCD_HV_TOTAL_MASK, gdrm->saved_htotal);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_START,
-+	                     GLAMO_LCD_HV_RETR_START_MASK, gdrm->saved_hrtrst);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_RETR_END,
-+	                     GLAMO_LCD_HV_RETR_END_MASK, gdrm->saved_hrtren);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_START,
-+	                     GLAMO_LCD_HV_RETR_DISP_START_MASK,
-+	                     gdrm->saved_hdspst);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_HORIZ_DISP_END,
-+	                     GLAMO_LCD_HV_RETR_DISP_END_MASK,
-+	                     gdrm->saved_hdspen);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_TOTAL,
-+	                     GLAMO_LCD_HV_TOTAL_MASK, gdrm->saved_vtotal);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_START,
-+	                     GLAMO_LCD_HV_RETR_START_MASK, gdrm->saved_vrtrst);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_RETR_END,
-+	                     GLAMO_LCD_HV_RETR_END_MASK, gdrm->saved_vrtren);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_START,
-+	                     GLAMO_LCD_HV_RETR_DISP_START_MASK,
-+	                     gdrm->saved_vdspst);
-+	reg_set_bit_mask_lcd(gdrm, GLAMO_REG_LCD_VERT_DISP_END,
-+	                     GLAMO_LCD_HV_RETR_DISP_END_MASK,
-+	                     gdrm->saved_vdspen);
-+	glamo_lcd_cmd_mode(gdrm, 0);
++	if ( gcrtc->current_mode_set ) {
++		glamo_crtc_mode_set(crtc, &gcrtc->current_mode,
++		                    &gcrtc->current_mode, 0, 0,
++		                    gcrtc->current_fb);
++	}
 +}
 diff --git a/drivers/mfd/glamo/glamo-display.h b/drivers/mfd/glamo/glamo-display.h
 new file mode 100644
-index 0000000..d6f21bc
+index 0000000..728bba5
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-display.h
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,41 @@
 +/* Smedia Glamo 336x/337x Display
 + *
 + * Copyright (c) 2008-2009 Thomas White <taw@bitwiz.org.uk>
@@ -2033,13 +2170,15 @@ index 0000000..d6f21bc
 +extern void glamo_display_suspend(struct glamodrm_handle *gdrm);
 +extern void glamo_display_resume(struct glamodrm_handle *gdrm);
 +
++extern void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode);
++
 +#endif /* __GLAMO_DISPLAY_H */
 diff --git a/drivers/mfd/glamo/glamo-drm-drv.c b/drivers/mfd/glamo/glamo-drm-drv.c
 new file mode 100644
-index 0000000..f30097e
+index 0000000..774eaff
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-drm-drv.c
-@@ -0,0 +1,444 @@
+@@ -0,0 +1,423 @@
 +/* Smedia Glamo 336x/337x Graphics Driver
 + *
 + * Copyright (C) 2009 Openmoko, Inc. Jorge Luis Zapata <turran@openmoko.com>
@@ -2195,6 +2334,8 @@ index 0000000..f30097e
 +
 +static struct vm_operations_struct glamodrm_gem_vm_ops = {
 +	.fault = glamodrm_gem_fault,
++	.open = drm_gem_vm_open,
++	.close = drm_gem_vm_close,
 +};
 +
 +static struct drm_driver glamodrm_drm_driver = {
@@ -2269,29 +2410,6 @@ index 0000000..f30097e
 +		dev_err(&pdev->dev, "failed to ioremap() MMIO registers\n");
 +		rc = -ENOENT;
 +		goto out_release_regs;
-+	}
-+
-+	/* Find the command queue itself */
-+	gdrm->cmdq = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+	                                          "glamo-command-queue");
-+	if ( !gdrm->cmdq ) {
-+		dev_err(&pdev->dev, "Unable to find command queue.\n");
-+		rc = -ENOENT;
-+		goto out_unmap_regs;
-+	}
-+	gdrm->cmdq = request_mem_region(gdrm->cmdq->start,
-+	                                resource_size(gdrm->cmdq), pdev->name);
-+	if ( !gdrm->cmdq ) {
-+		dev_err(&pdev->dev, "failed to request command queue region\n");
-+		rc = -ENOENT;
-+		goto out_unmap_regs;
-+	}
-+	gdrm->cmdq_base = ioremap_nocache(gdrm->cmdq->start,
-+	                                  resource_size(gdrm->cmdq));
-+	if ( !gdrm->cmdq_base ) {
-+		dev_err(&pdev->dev, "failed to ioremap() command queue\n");
-+		rc = -ENOENT;
-+		goto out_release_cmdq;
 +	}
 +
 +	/* Find the VRAM */
@@ -2389,7 +2507,7 @@ index 0000000..f30097e
 +	release_mem_region(gdrm->reg->start, resource_size(gdrm->reg));
 +out_free:
 +	kfree(gdrm);
-+	pdev->dev.driver_data = NULL;
++	dev_set_drvdata(&pdev->dev, NULL);
 +	return rc;
 +}
 +
@@ -2486,10 +2604,10 @@ index 0000000..f30097e
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/mfd/glamo/glamo-drm-private.h b/drivers/mfd/glamo/glamo-drm-private.h
 new file mode 100644
-index 0000000..7949a2e
+index 0000000..75f2757
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-drm-private.h
-@@ -0,0 +1,156 @@
+@@ -0,0 +1,166 @@
 +/* Smedia Glamo 336x/337x DRM private bits
 + *
 + * Copyright (C) 2008-2009 Thomas White <taw@bitwiz.org.uk>
@@ -2553,8 +2671,8 @@ index 0000000..7949a2e
 +	struct resource *vram;
 +
 +	/* Command queue region */
-+	struct resource *cmdq;
 +	char __iomem *cmdq_base;
++	unsigned long cmdq_offs;
 +
 +	/* LCD controller registers */
 +	struct resource *lcd_regs;
@@ -2598,6 +2716,9 @@ index 0000000..7949a2e
 +
 +	/* A scratch block */
 +	struct drm_mm_node *scratch;
++
++	/* We only have one */
++	struct drm_crtc *crtc;
 +};
 +
 +
@@ -2610,11 +2731,18 @@ index 0000000..7949a2e
 +
 +
 +struct glamo_crtc {
++
 +	struct drm_crtc base;
 +	struct glamodrm_handle *gdrm;
 +	/* a mode_set for fbdev users on this crtc */
 +	struct drm_mode_set mode_set;
 +	int blank_mode;
++
++	int pixel_clock_on;
++
++	int current_mode_set;
++	struct drm_display_mode current_mode;
++	struct drm_framebuffer *current_fb;
 +};
 +
 +
@@ -3024,10 +3152,10 @@ index 0000000..deda995
 +#endif /* __GLAMO_FENCE_H */
 diff --git a/drivers/mfd/glamo/glamo-kms-fb.c b/drivers/mfd/glamo/glamo-kms-fb.c
 new file mode 100644
-index 0000000..61cd605
+index 0000000..d76dd24
 --- /dev/null
 +++ b/drivers/mfd/glamo/glamo-kms-fb.c
-@@ -0,0 +1,540 @@
+@@ -0,0 +1,493 @@
 +/*
 + * SMedia Glamo 336x/337x KMS Framebuffer
 + *
@@ -3207,37 +3335,35 @@ index 0000000..61cd605
 +	struct drm_device *dev = par->dev;
 +	struct fb_var_screeninfo *var = &info->var;
 +	int i;
++	struct drm_crtc *crtc;
++	int ret;
 +
 +	DRM_DEBUG("%d %d\n", var->xres, var->pixclock);
 +
 +	if (var->pixclock != -1) {
-+
-+		DRM_ERROR("PIXEL CLOCK SET\n");
-+		return -EINVAL;
-+	} else {
-+		struct drm_crtc *crtc;
-+		int ret;
-+
-+		list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
-+			struct glamo_crtc *glamo_crtc = to_glamo_crtc(crtc);
-+
-+			for (i = 0; i < par->crtc_count; i++)
-+				if (crtc->base.id == par->crtc_ids[i])
-+					break;
-+
-+			if (i == par->crtc_count)
-+				continue;
-+
-+			if (crtc->fb == glamo_crtc->mode_set.fb) {
-+				mutex_lock(&dev->mode_config.mutex);
-+				ret = crtc->funcs->set_config(&glamo_crtc->mode_set);
-+				mutex_unlock(&dev->mode_config.mutex);
-+				if (ret)
-+					return ret;
-+			}
-+		}
-+		return 0;
++		DRM_ERROR("Warning: userspace gave me a pixel clock value (%i)"
++		          "- I'm ignoring it.\n", var->pixclock);
 +	}
++
++	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
++		struct glamo_crtc *glamo_crtc = to_glamo_crtc(crtc);
++
++		for (i = 0; i < par->crtc_count; i++)
++			if (crtc->base.id == par->crtc_ids[i])
++				break;
++
++		if (i == par->crtc_count)
++			continue;
++
++		if (crtc->fb == glamo_crtc->mode_set.fb) {
++			mutex_lock(&dev->mode_config.mutex);
++			ret = crtc->funcs->set_config(&glamo_crtc->mode_set);
++			mutex_unlock(&dev->mode_config.mutex);
++			if (ret)
++				return ret;
++		}
++	}
++	return 0;
 +}
 +
 +static int glamofb_pan_display(struct fb_var_screeninfo *var,
@@ -3283,64 +3409,20 @@ index 0000000..61cd605
 +{
 +	struct glamofb_par *par = info->par;
 +	struct drm_device *dev = par->dev;
-+	struct drm_crtc *crtc;
-+	struct drm_encoder *encoder;
-+	int i;
++	struct glamodrm_handle *gdrm = dev->dev_private;
 +
-+	/*
-+	 * For each CRTC in this fb, find all associated encoders
-+	 * and turn them off, then turn off the CRTC.
-+	 */
-+	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
-+		struct drm_crtc_helper_funcs *crtc_funcs = crtc->helper_private;
++	gdrm = dev->dev_private;
 +
-+		for (i = 0; i < par->crtc_count; i++)
-+			if (crtc->base.id == par->crtc_ids[i])
-+				break;
-+
-+		crtc_funcs->dpms(crtc, DRM_MODE_DPMS_ON);
-+
-+		/* Found a CRTC on this fb, now find encoders */
-+		list_for_each_entry(encoder, &dev->mode_config.encoder_list, head) {
-+			if (encoder->crtc == crtc) {
-+				struct drm_encoder_helper_funcs *encoder_funcs;
-+				encoder_funcs = encoder->helper_private;
-+				encoder_funcs->dpms(encoder, DRM_MODE_DPMS_ON);
-+			}
-+		}
-+	}
++	glamo_lcd_power(gdrm, 1);
 +}
 +
 +static void glamofb_off(struct fb_info *info, int dpms_mode)
 +{
 +	struct glamofb_par *par = info->par;
 +	struct drm_device *dev = par->dev;
-+	struct drm_crtc *crtc;
-+	struct drm_encoder *encoder;
-+	int i;
++	struct glamodrm_handle *gdrm = dev->dev_private;
 +
-+	/*
-+	 * For each CRTC in this fb, find all associated encoders
-+	 * and turn them off, then turn off the CRTC.
-+	 */
-+	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
-+		struct drm_crtc_helper_funcs *crtc_funcs = crtc->helper_private;
-+
-+		for (i = 0; i < par->crtc_count; i++)
-+			if (crtc->base.id == par->crtc_ids[i])
-+				break;
-+
-+		/* Found a CRTC on this fb, now find encoders */
-+		list_for_each_entry(encoder, &dev->mode_config.encoder_list, head) {
-+			if (encoder->crtc == crtc) {
-+				struct drm_encoder_helper_funcs *encoder_funcs;
-+				encoder_funcs = encoder->helper_private;
-+				encoder_funcs->dpms(encoder, dpms_mode);
-+			}
-+		}
-+		if (dpms_mode == DRM_MODE_DPMS_OFF)
-+			crtc_funcs->dpms(crtc, dpms_mode);
-+	}
++	glamo_lcd_power(gdrm, 0);
 +}
 +
 +static int glamofb_blank(int blank, struct fb_info *info)
@@ -3459,9 +3541,6 @@ index 0000000..61cd605
 +	info->fbops = &glamofb_ops;
 +
 +	info->fix.line_length = fb->pitch;
-+	info->fix.smem_start = dev->mode_config.fb_base
-+	                        + (unsigned long) gdrm->vram->start;
-+	info->fix.smem_len = size;
 +
 +	info->flags = FBINFO_DEFAULT;
 +
@@ -3473,6 +3552,8 @@ index 0000000..61cd605
 +		ret = -ENOSPC;
 +		goto out_unref;
 +	}
++	info->fix.smem_start = (unsigned long)gdrm->vram->start + offs;
++	info->fix.smem_len = size;
 +	info->screen_size = size;
 +
 +	info->pseudo_palette = fb->pseudo_palette;
@@ -3784,5 +3865,5 @@ index 0000000..4c194dc
 +
 +#endif
 -- 
-1.6.6.1
+1.7.1
 

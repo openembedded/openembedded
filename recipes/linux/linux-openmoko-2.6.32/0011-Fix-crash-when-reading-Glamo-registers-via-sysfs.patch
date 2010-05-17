@@ -1,7 +1,7 @@
-From f6debba05c9f6d0337324dc0eaa8e892d2d3142b Mon Sep 17 00:00:00 2001
+From d5f07ab010afe531312874872904fe1a0348ee2b Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 4 Feb 2010 00:07:25 +0100
-Subject: [PATCH 8/9] Fix crash when reading Glamo registers via sysfs
+Subject: [PATCH 11/14] Fix crash when reading Glamo registers via sysfs
 
 glamo-core didn't ioremap() some areas, so don't try to read them.
 
@@ -11,7 +11,7 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  1 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mfd/glamo/glamo-core.c b/drivers/mfd/glamo/glamo-core.c
-index a614d44..faaf269 100644
+index 74da668..33a7a59 100644
 --- a/drivers/mfd/glamo/glamo-core.c
 +++ b/drivers/mfd/glamo/glamo-core.c
 @@ -90,14 +90,14 @@ static const struct reg_range reg_range[] = {
@@ -34,5 +34,5 @@ index a614d44..faaf269 100644
  };
  
 -- 
-1.6.6.1
+1.7.1
 
