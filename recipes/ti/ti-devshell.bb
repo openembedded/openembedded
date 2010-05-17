@@ -10,7 +10,7 @@ do_configure() {
 	:
 }
 
-def devshell_emit_env(o, d, all=False, funcwhitelist=None):
+def tidevshell_emit_env(o, d, all=False, funcwhitelist=None):
     """Emits all items in the data store in a format such that it can be sourced by a shell."""
 
     env = bb.data.keys(d)
@@ -41,7 +41,7 @@ python do_compile() {
 	f = open(shellfile, "w")
 
 	# emit variables and shell functions
-        devshell_emit_env(f, d, False, ["die", "oe", "autotools_do_configure"])
+        tidevshell_emit_env(f, d, False, ["die", "oe", "autotools_do_configure"])
 
 	f.close()
 }
