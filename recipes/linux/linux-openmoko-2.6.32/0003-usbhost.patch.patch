@@ -1,7 +1,7 @@
-From d71534de6ab5e132d0798df30408042c229cbb62 Mon Sep 17 00:00:00 2001
+From 1000aee5e65dc824e02aafe2a70ad5b3f0d44d2d Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:17:28 +0200
-Subject: [PATCH 18/22] usbhost.patch
+Subject: [PATCH 03/14] usbhost.patch
 
 adds support for usb host mode and adds usb host pm sysfs node. I just copied
 and modified how modem is powered up and backported changes in ohci-s3c2410.c.
@@ -32,7 +32,7 @@ index 6247ca0..3e7145c 100644
  # Machine support
  
 diff --git a/arch/arm/mach-s3c2442/mach-gta02.c b/arch/arm/mach-s3c2442/mach-gta02.c
-index 8e3cc91..f1d4d51 100644
+index 0675181..779d6df 100644
 --- a/arch/arm/mach-s3c2442/mach-gta02.c
 +++ b/arch/arm/mach-s3c2442/mach-gta02.c
 @@ -322,6 +322,10 @@ static struct platform_device gta02_pm_gsm_dev = {
@@ -106,7 +106,7 @@ index 8e3cc91..f1d4d51 100644
  static struct regulator_bulk_data gta02_gps_consumer_supply = {
  	.supply = "GPS",
  };
-@@ -1332,12 +1368,17 @@ static struct platform_device* gta02_glamo_gpio_children[] = {
+@@ -1331,12 +1367,17 @@ static struct platform_device* gta02_glamo_gpio_children[] = {
  
  static struct platform_device* gta02_pcf50633_gpio_children[] = {
  	&gta02_gsm_supply_device,
@@ -124,7 +124,7 @@ index 8e3cc91..f1d4d51 100644
  static struct platform_device* gta02_hdq_children[] = {
  	&bq27000_battery_device,
  };
-@@ -1364,14 +1405,19 @@ static struct gta02_device_children gta02_device_children[] = {
+@@ -1363,14 +1404,19 @@ static struct gta02_device_children gta02_device_children[] = {
  	},
  	{
  		.dev_name = "pcf50633-gpio",
@@ -229,5 +229,5 @@ index a68af2d..02bd7b0 100644
  	s3c2410_stop_hc(dev);
  	iounmap(hcd->regs);
 -- 
-1.7.0.4
+1.7.1
 

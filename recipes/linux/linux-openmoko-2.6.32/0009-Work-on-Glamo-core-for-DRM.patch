@@ -1,24 +1,24 @@
-From eb0614d6a8a879bd3ac69050b3f5b012ef562b9e Mon Sep 17 00:00:00 2001
+From 8cdc10f17ecd42c9f71f7f4a657d979ab20f9e26 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 17 Nov 2009 23:45:29 +0100
-Subject: [PATCH 4/9] Work on Glamo-core for DRM
+Subject: [PATCH 09/14] Work on Glamo-core for DRM
 
 This adds modifications to the core of the Glamo driver to expose functionality
 to support DRM and KMS.
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
- drivers/mfd/glamo/glamo-core.c |   33 +++++++++++++++++++++++++++------
- drivers/mfd/glamo/glamo-core.h |   35 +++++++++++++++++++++++++----------
+ drivers/mfd/glamo/glamo-core.c |   27 +++++++++++++++++++++------
+ drivers/mfd/glamo/glamo-core.h |   32 ++++++++++++++++++++++----------
  drivers/mfd/glamo/glamo-regs.h |   24 ++++++++++++++++++++++++
  include/linux/mfd/glamo.h      |    7 ++-----
- 4 files changed, 78 insertions(+), 21 deletions(-)
+ 4 files changed, 69 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/mfd/glamo/glamo-core.c b/drivers/mfd/glamo/glamo-core.c
-index 82a906a..a614d44 100644
+index 82a906a..74da668 100644
 --- a/drivers/mfd/glamo/glamo-core.c
 +++ b/drivers/mfd/glamo/glamo-core.c
-@@ -221,10 +221,31 @@ static struct resource glamo_fb_resources[] = {
+@@ -221,10 +221,25 @@ static struct resource glamo_fb_resources[] = {
  		.flags	= IORESOURCE_MEM,
  	}, {
  		.name	= "glamo-fb-mem",
@@ -34,12 +34,6 @@ index 82a906a..a614d44 100644
 +		.end    = GLAMO_REGOFS_RISC - 1,
 +		.flags  = IORESOURCE_MEM,
 +	}, {
-+		.name	= "glamo-command-queue",
-+		.start  = GLAMO_MEM_BASE + GLAMO_OFFSET_CMDQ,
-+		.end    = GLAMO_MEM_BASE + GLAMO_OFFSET_CMDQ +
-+			  GLAMO_CMDQ_SIZE - 1,
-+		.flags  = IORESOURCE_MEM,
-+	}, {
 +		.name	= "glamo-2d-regs",
 +		.start  = GLAMO_REGOFS_2D,
 +		.end    = GLAMO_REGOFS_3D- 1,
@@ -53,7 +47,7 @@ index 82a906a..a614d44 100644
  };
  
  static struct resource glamo_mmc_resources[] = {
-@@ -235,9 +256,9 @@ static struct resource glamo_mmc_resources[] = {
+@@ -235,9 +250,9 @@ static struct resource glamo_mmc_resources[] = {
  		.flags	= IORESOURCE_MEM
  	}, {
  		.name	= "glamo-mmc-mem",
@@ -67,10 +61,10 @@ index 82a906a..a614d44 100644
  	}, {
  		.start	= GLAMO_IRQ_MMC,
 diff --git a/drivers/mfd/glamo/glamo-core.h b/drivers/mfd/glamo/glamo-core.h
-index 17017b0..d21bdc4 100644
+index 17017b0..0adba96 100644
 --- a/drivers/mfd/glamo/glamo-core.h
 +++ b/drivers/mfd/glamo/glamo-core.h
-@@ -3,18 +3,33 @@
+@@ -3,18 +3,30 @@
  
  #include <linux/mfd/glamo.h>
  
@@ -80,12 +74,10 @@ index 17017b0..d21bdc4 100644
 +/* Arbitrarily determined amount for the hardware cursor */
 +#define GLAMO_CURSOR_SIZE (4096)
 +#define GLAMO_MMC_BUFFER_SIZE (64 * 1024) /* 64k MMC buffer */
-+#define GLAMO_CMDQ_SIZE (128 * 1024)    /* 128k ring buffer */
 +/* Remaining memory will be used for 2D and 3D graphics */
 +#define GLAMO_FB_SIZE (GLAMO_INTERNAL_RAM_SIZE     \
 +			 - GLAMO_CURSOR_SIZE       \
-+			 - GLAMO_MMC_BUFFER_SIZE   \
-+			 - GLAMO_CMDQ_SIZE)
++			 - GLAMO_MMC_BUFFER_SIZE)
 +/* A 640x480, 16bpp, double-buffered framebuffer */
 +#if (GLAMO_FB_SIZE < (640 * 480 * 4))	/* == 0x12c000 */
 +#error Not enough Glamo VRAM for framebuffer!
@@ -110,7 +102,6 @@ index 17017b0..d21bdc4 100644
 +#define GLAMO_OFFSET_FB		(0x000000)
 +#define GLAMO_OFFSET_CURSOR	(GLAMO_OFFSET_FB + GLAMO_FB_SIZE)
 +#define GLAMO_OFFSET_MMC	(GLAMO_OFFSET_CURSOR + GLAMO_CURSOR_SIZE)
-+#define GLAMO_OFFSET_CMDQ	(GLAMO_OFFSET_MMC + GLAMO_MMC_BUFFER_SIZE)
  
  enum glamo_pll {
      GLAMO_PLL1,
@@ -167,5 +158,5 @@ index 529d4f0..ea91a06 100644
 +
  #endif
 -- 
-1.6.6.1
+1.7.1
 

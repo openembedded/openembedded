@@ -1,7 +1,7 @@
-From a08be3ba79daf13baca6de98249c8784ede31297 Mon Sep 17 00:00:00 2001
+From b96dbc75c274014171a53da13686bd90d239c023 Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:15:40 +0200
-Subject: [PATCH 17/22] accels.patch
+Subject: [PATCH 02/14] accels.patch
 
 adds support for accelerometers. You will need include/linux/lis302dl.h and
 drivers/input/misc/lis302dl.c from andy-tracking. The patch needs
@@ -39,7 +39,7 @@ index 980a099..0ff8949 100644
  
  
 diff --git a/arch/arm/mach-s3c2442/mach-gta02.c b/arch/arm/mach-s3c2442/mach-gta02.c
-index b580b1b..8e3cc91 100644
+index 7965cad..0675181 100644
 --- a/arch/arm/mach-s3c2442/mach-gta02.c
 +++ b/arch/arm/mach-s3c2442/mach-gta02.c
 @@ -63,6 +63,7 @@
@@ -73,7 +73,7 @@ index b580b1b..8e3cc91 100644
  struct pcf50633 *gta02_pcf;
  
  /*
-@@ -776,6 +793,60 @@ const struct jbt6k74_platform_data jbt6k74_pdata = {
+@@ -775,6 +792,60 @@ const struct jbt6k74_platform_data jbt6k74_pdata = {
  	.gpio_reset = GTA02_GPIO_GLAMO(4),
  };
  
@@ -134,7 +134,7 @@ index b580b1b..8e3cc91 100644
  static struct spi_board_info gta02_spi_board_info[] = {
  	{
  		.modalias	= "jbt6k74",
-@@ -786,6 +857,81 @@ static struct spi_board_info gta02_spi_board_info[] = {
+@@ -785,6 +856,81 @@ static struct spi_board_info gta02_spi_board_info[] = {
  		.bus_num	= 2,
  		.chip_select = 0
  	},
@@ -216,7 +216,7 @@ index b580b1b..8e3cc91 100644
  };
  
  /* BQ27000 Battery */
-@@ -1136,6 +1282,7 @@ static struct platform_device *gta02_devices[] __initdata = {
+@@ -1135,6 +1281,7 @@ static struct platform_device *gta02_devices[] __initdata = {
  static struct platform_device *gta02_devices_pmu_children[] = {
  	&s3c_device_ts,
  	&gta02_glamo_dev,
@@ -224,7 +224,7 @@ index b580b1b..8e3cc91 100644
  	&s3c_device_timer[2],
  	&gta02_hdq_device,
  	&gta02_gps_userspace_consumer
-@@ -1362,6 +1509,16 @@ static void __init gta02_machine_init(void)
+@@ -1361,6 +1508,16 @@ static void __init gta02_machine_init(void)
  	/* Set the panic callback to make AUX LED blink at ~5Hz. */
  	panic_blink = gta02_panic_blink;
  
@@ -1755,5 +1755,5 @@ index eed4254..f92de01 100644
  /* start or stop queue processing */
  extern int spi_bitbang_start(struct spi_bitbang *spi);
 -- 
-1.7.0.4
+1.7.1
 
