@@ -77,5 +77,7 @@ sysroot_stage_all() {
 
 #
 # Cross .la files have more path issues we have to correct
-SYSROOTEXTRALIBDIRSED = '-e "/^libdir=/s,.*,libdir=${STAGING_DIR_TARGET}${target_libdir},g"'
+SYSROOTEXTRALIBDIRSED = '-e "/^libdir=/s,.*,libdir=${STAGING_DIR_TARGET}${target_libdir},g" \
+                         -e "/^dependency_libs=/s,\([[:space:]']\)-L${STAGING_LIBDIR_NATIVE},,g" \
+'
 
