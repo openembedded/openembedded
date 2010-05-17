@@ -1,0 +1,48 @@
+From f80beb203e503696cd2e74e194176b8d6f49b27b Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Mon, 17 May 2010 12:41:06 +0200
+Subject: [PATCH] gta02 defconfigs, enable LEDS_S3C24XX and dummy battery driver
+
+---
+ arch/arm/configs/gta02_defconfig     |    2 +-
+ arch/arm/configs/gta02_drm_defconfig |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/configs/gta02_defconfig b/arch/arm/configs/gta02_defconfig
+index 73d26ba..55832ac 100644
+--- a/arch/arm/configs/gta02_defconfig
++++ b/arch/arm/configs/gta02_defconfig
+@@ -1635,7 +1635,7 @@ CONFIG_LEDS_CLASS=y
+ #
+ # LED drivers
+ #
+-# CONFIG_LEDS_S3C24XX is not set
++CONFIG_LEDS_S3C24XX=y
+ # CONFIG_LEDS_PCA9532 is not set
+ CONFIG_LEDS_GPIO=y
+ CONFIG_LEDS_GPIO_PLATFORM=y
+diff --git a/arch/arm/configs/gta02_drm_defconfig b/arch/arm/configs/gta02_drm_defconfig
+index 05aa130..4d85e9a 100644
+--- a/arch/arm/configs/gta02_drm_defconfig
++++ b/arch/arm/configs/gta02_drm_defconfig
+@@ -1233,7 +1233,7 @@ CONFIG_POWER_SUPPLY=y
+ CONFIG_CHARGER_PCF50633=y
+ CONFIG_BATTERY_BQ27000_HDQ=y
+ CONFIG_HDQ_GPIO_BITBANG=y
+-# CONFIG_BATTERY_PLATFORM is not set
++CONFIG_BATTERY_PLATFORM=y
+ # CONFIG_HWMON is not set
+ # CONFIG_THERMAL is not set
+ CONFIG_WATCHDOG=y
+@@ -1681,7 +1681,7 @@ CONFIG_LEDS_CLASS=y
+ #
+ # LED drivers
+ #
+-# CONFIG_LEDS_S3C24XX is not set
++CONFIG_LEDS_S3C24XX=y
+ # CONFIG_LEDS_PCA9532 is not set
+ CONFIG_LEDS_GPIO=y
+ CONFIG_LEDS_GPIO_PLATFORM=y
+-- 
+1.7.1
+

@@ -3,7 +3,7 @@ require linux-openmoko.inc
 
 DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Smartphones"
 
-KERNEL_RELEASE="2.6.32.12"
+KERNEL_RELEASE="2.6.32.13"
 
 SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
 OEV = "oe1"
@@ -40,10 +40,12 @@ SRC_URI = "\
   file://0022-JBT6k74-tweaks-Make-resolution-switch-work.patch;patch=1 \
   file://0023-Remove-a-couple-of-debugging-messages.patch;patch=1 \
   file://0024-Enable-dummy-frames-when-switching-resolution.patch;patch=1 \
+  file://0025-Almost-make-rotation-work.patch;patch=1 \
+  file://0026-gta02-defconfigs-enable-LEDS_S3C24XX.patch;patch=1 \
 "
 
-SRC_URI[stablepatch.md5sum] = "9d097d34648a1734b1a7f97c5d000f03"
-SRC_URI[stablepatch.sha256sum] = "e03ffcd2c88e936e581e5f7a7c675d11345064f2e3df96e335e5438c6593e3e7"
+SRC_URI[stablepatch.md5sum] = "ba6abb1ffee513a1d4f831599ddae490"
+SRC_URI[stablepatch.sha256sum] = "baf6dff5d1c478e65decf2e8b704c60e546ea37c4de59ee8eb6af9dd3d63f145"
 
 S = "${WORKDIR}/git"
 
