@@ -71,6 +71,15 @@ sed -i -e /CONFIG_BLK_DEV_INITRD/d \
 sed -i -e /CONFIG_CMDLINE/s/quiet/loglevel=3/1 ${S}/.config
 sed -i -e /CONFIG_CMDLINE/s/debug/loglevel=3/1 ${S}/.config
 
+# Rename getline in ./scripts/unifdef.c
+# with 2.6.2x builds are currently failing to build unifdef.c,
+# clashing with exposed getline() from <stdio.h>
+# see https://patchwork.kernel.org/patch/11166/
+# committed in 2.6.29 (harmless for newer kernels)
+
+sed -i -e 's/getline/parseline/g' ${S}/scripts/unifdef.c
+
+
 echo 'CONFIG_BLK_DEV_INITRD=y
 CONFIG_KEXEC=y
 ${KERNEL_COMPRESSION}
