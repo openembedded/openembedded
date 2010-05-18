@@ -45,7 +45,7 @@ brw-------  1 root root 22, 0 Aug 18 13:20 hdc
     device node, even though we did not have to give a password for the root
     user. In reality this device node still doesn't exist, it just looks like
     it exits. Fakeroot is lying to the shell process and telling it that
-    <emphasis>"yes, this file exists and these are it's
+    <emphasis>"yes, this file exists and these are its
     properties"</emphasis>. We'll talk more about how fakeroot actually works
     in a minute.</para>
 

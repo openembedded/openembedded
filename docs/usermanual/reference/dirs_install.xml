@@ -6,7 +6,7 @@
   control the directories into which files are installed.</para>
 
   <para>These variables can be used directly by the recipe to refer to paths
-  that will be used after the package is installed. For example, when specify
+  that will be used after the package is installed. For example, when specifying
   the location of configuration files you need to specify the location on the
   target as show in the following example from quagga:<screen># Indicate that the default files are configuration files
 CONFFILES_${PN} = "${sysconfdir}/default/quagga"

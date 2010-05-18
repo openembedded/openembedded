@@ -5,7 +5,7 @@
   <section id="usage_introduction" xreflabel="introduction">
     <title>Introduction</title>
 
-    <para>If your reading this manual you probably already have some idea of
+    <para>If you're reading this manual you probably already have some idea of
     what OpenEmbedded is all about, which is taking a lot of software and
     creating something that you can run on another device. This involves
     downloading some source code, compiling it, creating packages (like .deb
@@ -13,7 +13,7 @@
     device. The difficulties of cross-compiling and the variety of devices
     which can be supported lead to a lot more complexity in an OpenEmbedded
     based distribution than you'd find in a typical desktop distribution
-    (which cross-compiling isn't needed).</para>
+    (for which cross-compiling isn't needed).</para>
 
     <para>A major part of OpenEmbedded deals with compiling source code for
     various projects. For each project this generally requires the same basic
@@ -745,7 +745,7 @@ NOTE: build 200705041709: completed</screen><note>
           available for other applications to include and link against.</para>
 
           <note>
-            <para>This is different to the <emphasis>install</emphasis> task
+            <para>This is different from the <emphasis>install</emphasis> task
             in that this is responsible for making available libraries and
             headers for use during build on the development host. Therefore
             it's libraries which normal have to stage things while
@@ -853,7 +853,7 @@ NOTE: package perl-5.8.8-r11: task do_listtasks: completed
 NOTE: package perl-5.8.8: completed
 $ </screen></para>
 
-    <para>If your being observant you'll note that
+    <para>If you're being observant you'll note that
     <emphasis>listtasks</emphasis> is in fact a task itself, and that the
     <emphasis role="bold">-c</emphasis> option to bitbake allows you to
     explicitly run specific tasks. We'll make use of this in the next section
@@ -876,7 +876,7 @@ $ </screen></para>
     the named recipe only. Note that this ignores any dependencies that are in
     the recipe, so these must have already been built previously.</para>
 
-    <para>Here's a typically example that cleans up the package (using the
+    <para>Here's a typical example that cleans up the package (using the
     <emphasis>clean</emphasis> task) and the rebuilds it with debugging output
     from bitbake enabled:<screen>$ <command>bitbake</command> -b &lt;bb-file&gt; -c clean
 $ <command>bitbake</command> -b &lt;bb-file&gt; -D</screen></para>

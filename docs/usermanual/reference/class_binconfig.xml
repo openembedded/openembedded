@@ -37,7 +37,7 @@
   class.</para>
 
   <para>The class will search in source directory, <command>${S}</command>,
-  and all it's subdirectories, for files that end in
+  and all its subdirectories, for files that end in
   <command>-config</command> and process them as described above. All that is
   required to use the class is the addition of binconfig in an inherit
   statement:</para>

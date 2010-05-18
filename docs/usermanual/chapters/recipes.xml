@@ -451,7 +451,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
       </listitem>
 
       <listitem>
-        <para>The classes, that are used via the inherit keyword, define
+        <para>The classes that are used via the inherit keyword define
         and/or use the majority of the remaining variables. A class is like
         a library that contains parts of a bitbake recipe that is used by
         multiple recipes. To make them usable in more situations they often
@@ -503,7 +503,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     <para>Practically all recipes start with a header section which describes
     various aspects of the package that is being built. This information is
     typically used directly by the package format (such as ipkg or deb) as
-    it's meta data used to describe the package.</para>
+    its meta data used to describe the package.</para>
 
     <para>Variables used in the header include:</para>
 
@@ -835,7 +835,7 @@ S = "${WORKDIR}/widgets"</screen></para>
       <title>D: The destination directory</title>
 
       <para>The destination directory is where the completed application and
-      all of it's files are installed into in preparation for packaging.
+      all of its files are installed into in preparation for packaging.
       Typically an installation would place files in directories such as
       <emphasis role="bold">/etc</emphasis> and <emphasis
       role="bold">/usr/bin</emphasis> by default. Since those directories are
@@ -1037,7 +1037,7 @@ ${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
       done is when one recipe includes another one in which the default values
       will be based on the name of the package doing the including, not the
       included package. Typically the included package will expect the files
-      to be located in a directory based on it's own name.</para>
+      to be located in a directory based on its own name.</para>
 
       <para>As an example the m4-native recipe includes the m4 recipe. This is
       fine, except that the m4 recipe expects its files and patches to be
@@ -1458,7 +1458,7 @@ inherit autotools</screen></para>
   </section>
 
   <section id="recipes_methods" xreflabel="methods">
-    <title>Methods: Inbuilt methods to make your life easier</title>
+    <title>Methods: Built-in methods to make your life easier</title>
 
     <para>There are several helper functions defined by the base class, which
     is included by default for all recipes. Many of these are used a lot in
@@ -1931,7 +1931,7 @@ NOTE: package helloworld-0.1-r0: task do_package_write: completed</screen>We
 
             <listitem>
               <para>Documentation related files. All documentation is
-              separated into it's own package so that it does not need to be
+              separated into its own package so that it does not need to be
               installed unless explicitly required.<screen>FILES_${PN}-doc = "\
     ${docdir} \
     ${mandir} \
@@ -2447,7 +2447,7 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     building later applications.</para>
 
     <para>Taking bzip2 as an example you can see that it stages a header file
-    and it's library files:<screen>do_stage () {
+    and its library files:<screen>do_stage () {
     install -m 0644 bzlib.h ${STAGING_INCDIR}/
     oe_libinstall -a -so libbz2 ${STAGING_LIBDIR}
 }</screen></para>
@@ -2929,7 +2929,7 @@ fi</screen></para>
     some action, such as changing user or group owners or creating device
     nodes. Since OpenEmbedded will not keep the user and group information
     it's usually preferable to remove that from the makefiles. For device
-    nodes it's usually preferably to create them from the initial device node
+    nodes it's usually preferable to create them from the initial device node
     lists or via udev configuration.</para>
 
     <para>However if you can't get by without root permissions then you can
@@ -3135,7 +3135,7 @@ do_configure() {
     object, then replaces any dots with underscores. Therefore if the <emphasis
     role="bold">PV</emphasis> was <emphasis role="bold">0.9.0</emphasis> then
     <emphasis role="bold">TAG</emphasis> will be set to <emphasis
-    role="bold">0-9-0</emphasis>.</para>
+    role="bold">0_9_0</emphasis>.</para>
 
     <para>Some of the more common python code in use in existing recipes is
     shown in the following table:</para>
