@@ -4,6 +4,8 @@ SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 DEPENDS = "tcl virtual/libx11 libxt"
 
+PR = "r1"
+
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
   file://confsearch.diff;patch=1;pnum=2 \
@@ -33,10 +35,12 @@ BINCONFIG_GLOB = "*Config.sh"
 
 do_install() {
 	autotools_do_install
+	mv libtk8.5.so libtk8.5.so.0
+	oe_libinstall -so libtk8.5 ${D}${libdir}
 	ln -sf wish8.5 ${D}${bindir}/wish
 }
 
 PACKAGES =+ "${PN}-lib"
-FILES_${PN}-lib = "${libdir}/libtk8.5.so"
+FILES_${PN}-lib = "${libdir}/libtk8.5.so.*"
 FILES_${PN} += "${libdir}/tk*"
 
