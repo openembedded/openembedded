@@ -1,0 +1,25 @@
+From 54dc9b9e9cced3204b9d9a8a27319d9de662af3b Mon Sep 17 00:00:00 2001
+From: Adrian Alonso <aalonso00@gmail.com>
+Date: Wed, 31 Mar 2010 22:14:55 -0600
+Subject: [PATCH] xilinxfb.c: add tft compatibility versions
+
+Signed-off-by: Adrian Alonso <aalonso00@gmail.com>
+---
+ drivers/video/xilinxfb.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/xilinxfb.c b/drivers/video/xilinxfb.c
+index ed7c8d0..829efaa 100644
+--- a/drivers/video/xilinxfb.c
++++ b/drivers/video/xilinxfb.c
+@@ -484,6 +484,8 @@ static int __devexit xilinxfb_of_remove(struct of_device *op)
+ /* Match table for of_platform binding */
+ static struct of_device_id xilinxfb_of_match[] __devinitdata = {
+	{ .compatible = "xlnx,xps-tft-1.00.a", },
++	{ .compatible = "xlnx,xps-tft-2.00.a", },
++	{ .compatible = "xlnx,xps-tft-2.01.a", },
+	{ .compatible = "xlnx,plb-tft-cntlr-ref-1.00.a", },
+	{ .compatible = "xlnx,plb-dvi-cntlr-ref-1.00.c", },
+	{},
+--
+1.6.6.1
