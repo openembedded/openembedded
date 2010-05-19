@@ -1,8 +1,10 @@
 DESCRIPTION = "eZ430 Chronos Tools - MSP430 Development Kit/Watch"
 HOMEPAGE = "http://processors.wiki.ti.com/index.php/EZ430-Chronos"
+LICENCE = "unknown"
 SECTION = "multimedia"
 
 PV = "1_05_00_00"
+PR = "1"
 
 SRC_URI = "http://focus.ti.com/lit/sw/slac388/slac388.zip;name=slac388zip"
 
@@ -30,10 +32,15 @@ do_install() {
 
     install -d ${D}/${installdir}/ti-msp430-chronos-apps
     cp -pPrf "${S}"/"Control Center"/* ${D}/${installdir}/ti-msp430-chronos-apps
+
+    # Remove dos formatting
+    dos2unix "${D}/${installdir}/ti-msp430-chronos-apps/Chronos Data Logger"/*
+    dos2unix "${D}/${installdir}/ti-msp430-chronos-apps/Chronos Control Center"/*
+
+    # Should probably also remove hardcoded script reference to tcl8.5
 }
 
 PACKAGES += "ti-msp430-chronos-apps"
 FILES_ti-msp430-chronos-apps = "${installdir}/ti-msp430-chronos-apps/*"
 
-RDEPENDS_ti-msp430-chronos-apps += " tcl xdotool"
-
+RDEPENDS_ti-msp430-chronos-apps += " tcl tk xdotool"
