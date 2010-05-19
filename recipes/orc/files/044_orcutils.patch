@@ -1,0 +1,12 @@
+diff -Nru orc-0.4.4_orig/orc/orcutils.c orc-0.4.4/orc/orcutils.c
+--- orc-0.4.4_orig/orc/orcutils.c	2010-03-19 23:44:36.000000000 +0100
++++ orc-0.4.4/orc/orcutils.c	2010-05-19 10:56:28.000000000 +0200
+@@ -40,7 +40,7 @@
+  * @title: Utility functions
+  * @short_description: Orc utility functions
+  */
+-
++#define unused
+ #ifdef unused
+ int
+ get_file_int (const char *file, int *value)
