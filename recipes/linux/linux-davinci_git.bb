@@ -44,9 +44,9 @@ SRC_URI_append_dm6467  = ${ARAGO_DM_URI}
 
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
-# OMAPL tracking master branch
+# OMAPL tracking master branch - PSP 3.20.00.12
 
-ARAGO_L1_REV = "76fcecb83d562608bcebba44774f92b6c62d3593"
+ARAGO_L1_REV = "2acf935c01b9adb50164d421c40cdc5862b9e143"
 ARAGO_L1_BR  = "master"
 ARAGO_L1_PV  = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
 ARAGO_L1_URI = "git://arago-project.org/git/projects/linux-omapl1.git;protocol=git;branch=${BRANCH} "
