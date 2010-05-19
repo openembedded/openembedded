@@ -1,10 +1,10 @@
 DESCRIPTION = "Matrix TUI"
 HOMEPAGE = "https://gforge.ti.com/gf/project/matrix_tui/"
-LICENSE = "Apache"
+LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-SRCREV = "28"
+SRCREV = "29"
 PV = "1.0"
 PR = "r1+svnr${SRCPV}"
 
