@@ -1,0 +1,23 @@
+Patch by Sergei Golovan "fixes" building Tcl 8.5.8 for MIPS architectures
+until a proper solution isn't suggested.
+
+--- tcl8.5-8.5.8.orig/generic/tclStrToD.c
++++ tcl8.5-8.5.8/generic/tclStrToD.c
+@@ -73,7 +73,7 @@
+  * MIPS floating-point units need special settings in control registers
+  * to use gradual underflow as we expect.
+  */
+-#if defined(__mips)
++#if 0 && defined(__mips)
+ #include <sys/fpu.h>
+ #endif
+ /*
+@@ -2166,7 +2166,7 @@
+     } bitwhack;
+ #endif
+ 
+-#if defined(__mips)
++#if 0 && defined(__mips)
+     union fpc_csr mipsCR;
+ 
+     mipsCR.fc_word = get_fpc_csr();

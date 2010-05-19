@@ -1,0 +1,41 @@
+Patch by Chris Waters sets paths which are normally point to a directory
+with Tcl sources to a subdirectory of /usr/include/tcl8.4 (debian/rules
+puts private Tcl headers there).
+
+--- tcl8.5-8.5.8.orig/unix/tclConfig.sh.in
++++ tcl8.5-8.5.8/unix/tclConfig.sh.in
+@@ -111,7 +111,7 @@
+ 
+ # String to pass to linker to pick up the Tcl library from its
+ # build directory.
+-TCL_BUILD_LIB_SPEC='@TCL_BUILD_LIB_SPEC@'
++TCL_BUILD_LIB_SPEC='@TCL_LIB_SPEC@'
+ 
+ # String to pass to linker to pick up the Tcl library from its
+ # installed directory.
+@@ -146,7 +146,7 @@
+ # different place than the directory containing the source files, this
+ # points to the location of the sources, not the location where Tcl was
+ # compiled.
+-TCL_SRC_DIR='@TCL_SRC_DIR@'
++TCL_SRC_DIR='@includedir@/tcl-private'
+ 
+ # List of standard directories in which to look for packages during
+ # "package require" commands.  Contains the "prefix" directory plus also
+@@ -164,14 +164,14 @@
+ 
+ # String to pass to linker to pick up the Tcl stub library from its
+ # build directory.
+-TCL_BUILD_STUB_LIB_SPEC='@TCL_BUILD_STUB_LIB_SPEC@'
++TCL_BUILD_STUB_LIB_SPEC='@TCL_STUB_LIB_SPEC@'
+ 
+ # String to pass to linker to pick up the Tcl stub library from its
+ # installed directory.
+ TCL_STUB_LIB_SPEC='@TCL_STUB_LIB_SPEC@'
+ 
+ # Path to the Tcl stub library in the build directory.
+-TCL_BUILD_STUB_LIB_PATH='@TCL_BUILD_STUB_LIB_PATH@'
++TCL_BUILD_STUB_LIB_PATH='@TCL_STUB_LIB_PATH@'
+ 
+ # Path to the Tcl stub library in the install directory.
+ TCL_STUB_LIB_PATH='@TCL_STUB_LIB_PATH@'
