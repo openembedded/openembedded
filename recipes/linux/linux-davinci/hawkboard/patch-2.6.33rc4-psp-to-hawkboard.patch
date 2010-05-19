@@ -1,6 +1,6 @@
-From e05dda2d92995969f9268ae8e19a949344e54b21 Mon Sep 17 00:00:00 2001
+From a9847b4b964b65b8a3f041550c4a15342d151b88 Mon Sep 17 00:00:00 2001
 From: Roger Monk <r-monk@ti.com>
-Date: Wed, 24 Feb 2010 17:50:56 +0000
+Date: Wed, 19 May 2010 13:43:53 +0100
 Subject: [PATCH] Hawkboard Support:  Add Hawkboard (DA850/OMAPL138 based) Board Support
 
    * Hawkboard(.org) (http://www.hawkboard.org) Board Support
@@ -39,14 +39,14 @@ Signed-off-by: Roger Monk <r-monk@ti.com>
  arch/arm/mach-davinci/Makefile                     |    1 +
  arch/arm/mach-davinci/board-da850-hawk.c           |  657 +++++++
  arch/arm/mach-davinci/da850.c                      |    2 +-
- arch/arm/mach-davinci/devices-da8xx.c              |    6 +
+ arch/arm/mach-davinci/devices-da8xx.c              |    8 +
  arch/arm/mach-davinci/include/mach/da8xx.h         |    2 +
  arch/arm/mach-davinci/include/mach/debug-macro.S   |    3 +-
  drivers/media/video/Kconfig                        |    4 +-
  drivers/video/da8xx-fb.c                           |   14 +
  sound/soc/davinci/Kconfig                          |    6 +-
  sound/soc/davinci/davinci-evm.c                    |    5 +-
- 12 files changed, 2565 insertions(+), 9 deletions(-)
+ 12 files changed, 2567 insertions(+), 9 deletions(-)
  create mode 100644 arch/arm/configs/da850_omapl138_hawkboard_defconfig
  create mode 100644 arch/arm/mach-davinci/board-da850-hawk.c
 
@@ -1955,7 +1955,7 @@ index f4e55de..ad0e75e 100644
  obj-$(CONFIG_CPU_FREQ)			+= cpufreq.o
 diff --git a/arch/arm/mach-davinci/board-da850-hawk.c b/arch/arm/mach-davinci/board-da850-hawk.c
 new file mode 100644
-index 0000000..2963836
+index 0000000..87ed017
 --- /dev/null
 +++ b/arch/arm/mach-davinci/board-da850-hawk.c
 @@ -0,0 +1,657 @@
@@ -2630,7 +2630,7 @@ index cfecd3c..a32c636 100755
  };
  
 diff --git a/arch/arm/mach-davinci/devices-da8xx.c b/arch/arm/mach-davinci/devices-da8xx.c
-index 2cea325..96f2235 100755
+index 0842590..97a4611 100755
 --- a/arch/arm/mach-davinci/devices-da8xx.c
 +++ b/arch/arm/mach-davinci/devices-da8xx.c
 @@ -560,6 +560,12 @@ struct da8xx_lcdc_platform_data sharp_lk043t1dg01_pdata = {
@@ -2646,8 +2646,20 @@ index 2cea325..96f2235 100755
  #if !defined(CONFIG_FB_DA8XX) && !defined(CONFIG_FB_DA8XX_MODULE)
  static struct da8xx_clcd_platform_data da8xx_evm_clcd_pdata = {
  	.version = CONFIG_SPACE_1,
+@@ -664,9 +670,11 @@ int da8xx_register_rtc(void)
+ {
+ 	int ret;
+ 
++#ifdef CONFIG_RTC_DRV_OMAP
+ 	/* Unlock the rtc's registers */
+ 	__raw_writel(0x83e70b13, IO_ADDRESS(DA8XX_RTC_BASE + 0x6c));
+ 	__raw_writel(0x95a4f1e0, IO_ADDRESS(DA8XX_RTC_BASE + 0x70));
++#endif
+ 
+ 	ret = platform_device_register(&da8xx_rtc_device);
+ 	if (!ret)
 diff --git a/arch/arm/mach-davinci/include/mach/da8xx.h b/arch/arm/mach-davinci/include/mach/da8xx.h
-index d684431..3288273 100755
+index f76433f..c39b5b0 100755
 --- a/arch/arm/mach-davinci/include/mach/da8xx.h
 +++ b/arch/arm/mach-davinci/include/mach/da8xx.h
 @@ -168,6 +168,8 @@ extern struct platform_device da8xx_serial_device;
@@ -2692,7 +2704,7 @@ index d0db690..ea91489 100644
  	  To compile this driver as a module, choose M here: the
  	  module will be called vpif_capture.
 diff --git a/drivers/video/da8xx-fb.c b/drivers/video/da8xx-fb.c
-index e984388..67e3c3a 100644
+index faa1fd3..d416923 100644
 --- a/drivers/video/da8xx-fb.c
 +++ b/drivers/video/da8xx-fb.c
 @@ -196,6 +196,20 @@ static struct da8xx_panel known_lcd_panels[] = {
