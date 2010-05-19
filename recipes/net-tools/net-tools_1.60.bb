@@ -83,8 +83,8 @@ do_compile() {
     unset LDFLAGS
 
     oe_runmake
-    $CC $CFLAGS -o ether-wake ether-wake.c
-    $CC $CFLAGS -o mii-diag   mii-diag.c
+    ${CC} ${CFLAGS} ${LDFLAGS} -o ether-wake ether-wake.c
+    ${CC} ${CFLAGS} ${LDFLAGS} -o mii-diag   mii-diag.c
 }
 
 do_install() {
