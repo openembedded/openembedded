@@ -26,7 +26,7 @@ addtask unpackpost after do_unpack before do_patch
 do_compile() {
   mkdir -p build
 
-  oe_makeclasspath cp -s servlet-api-2.4`
+  oe_makeclasspath cp -s servlet-api-2.4
   javac -sourcepath src/share -d build -cp $cp `find src/share/javax -name \*.java`
 
   # Copy extraneous files according to build.xml's compile task
