@@ -23,7 +23,7 @@ do_configure() {
 }
 
 do_install_prepend () {
-	$BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
+	${BUILD_CC} ${BUILD_CFLAGS} -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
 }
 
 SRC_URI[md5sum] = "854e6e61a69781746496012658d8ef98"
