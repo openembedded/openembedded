@@ -10,7 +10,7 @@
 #
 # This *must* be removed after initial testing is completed.  MJW 08-Dec-2008
 #
-SRCREV_pn-linux-ixp4xx ?= "1089"
+SRCREV_pn-linux-ixp4xx ?= "1090"
 PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV_pn-linux-ixp4xx}"
 #
 #===============================================================================#

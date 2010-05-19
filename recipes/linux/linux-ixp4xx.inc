@@ -1,7 +1,7 @@
 # linux-ixp4xx.inc
 #
 DESCRIPTION = "Linux 2.6.x kernel for IXP4xx devices"
-SRCREV = "1089"
+SRCREV = "1090"
 
 COMPATIBLE_HOST = 'arm.*-linux.*'
 COMPATIBLE_MACHINE = '(ixp4xx|nslu2|syhl1)'
