@@ -2,7 +2,7 @@ DESCRIPTION = "The Powerful #1 Open-Source Spam Filter"
 HOMEPAGE = "http://spamassassin.apache.org/"
 SECTION = "network"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 inherit cpan
 

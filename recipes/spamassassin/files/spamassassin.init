@@ -30,8 +30,6 @@ ENABLED=0
 OPTIONS=""
 NICE=
 
-. /lib/lsb/init-functions
-
 test -f /etc/default/spamassassin && . /etc/default/spamassassin
 
 DOPTIONS="-d --pidfile=$PIDFILE"
