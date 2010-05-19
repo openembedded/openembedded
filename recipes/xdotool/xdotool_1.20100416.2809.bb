@@ -1,9 +1,11 @@
 DESCRIPTION = "xdotool - command-line X11 automation tool - utilising X11 XTEST interface"
 HOMEPAGE = "http://www.semicomplete.com/projects/xdotool"
-LICENSE = "GPL"
+LICENSE = "MIT"
 SECTION = "x11"
 PRIORITY = "optional"
 DEPENDS = "virtual/libx11 libxtst"
+
+PR = "1"
 
 SRC_URI = "http://semicomplete.googlecode.com/files/xdotool-${PV}.tar.gz"
 
