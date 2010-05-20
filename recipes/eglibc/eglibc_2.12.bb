@@ -1,15 +1,17 @@
 require eglibc.inc
 
-DEPENDS += "gperf-native"
-SRCREV = "10505"
 DEFAULT_PREFERENCE = "-1"
+DEPENDS += "gperf-native"
 FILESPATHPKG =. "eglibc-svn:"
-PV = "2.11+svnr${SRCPV}"
-PR = "${INC_PR}.4"
-EGLIBC_BRANCH="trunk"
-SRC_URI = "svn://svn.eglibc.org;module=${EGLIBC_BRANCH} \
+PV = "2.12"
+PR = "${INC_PR}.0"
+PR_append = "+svnr${SRCPV}"
+SRCREV="10495"
+EGLIBC_BRANCH="eglibc-2_12"
+SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
-	   file://IO-acquire-lock-fix.patch;patch=1 \
+           file://IO-acquire-lock-fix.patch;patch=1 \
+           file://shorten-build-commands.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"
