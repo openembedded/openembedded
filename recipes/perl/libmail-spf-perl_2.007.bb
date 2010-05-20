@@ -23,7 +23,7 @@ RDEPENDS_${PN} += " \
 	"
 BBCLASSEXTEND = "native"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " \
 	http://search.cpan.org/CPAN/authors/id/J/JM/JMEHNLE/mail-spf/Mail-SPF-v${PV}.tar.gz;name=mail-spf-perl-${PV} \
@@ -35,5 +35,9 @@ SRC_URI[mail-spf-perl-2.007.sha256sum] = "d8886e6a5b300946434284a6527bbb68ed98d2
 S = "${WORKDIR}/Mail-SPF-v${PV}"
 
 inherit cpan_build
+
+do_install_append() {
+	sed -ri "s,${D},," ${D}/${bindir}/spfquery
+}
 
 PACKAGE_ARCH = "all"
