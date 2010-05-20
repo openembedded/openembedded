@@ -172,16 +172,19 @@ PACKAGES += "ti-dsplink-module"
 FILES_ti-dsplink-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/dsplinkk.ko" 
 RDEPENDS_ti-dsplink-module += "update-modules"
 
-pkg_postinst_ti-dsplink-module_append () {
-        if [ -n "$D" ]; then
-                exit 1
-        fi
-        depmod -a
-        update-modules || true
+pkg_postinst_ti-dsplink-module () {
+#!/bin/sh
+if [ -n "$D" ]; then
+	exit 1
+fi
+
+depmod -a
+update-modules || true
 }
 
-pkg_postrm_ti-dsplink-module_append () {
-        update-modules || true
+pkg_postrm_ti-dsplink-module () {
+#!/bin/sh
+update-modules || true
 }
 
 PACKAGES += "ti-dsplink-examples"
