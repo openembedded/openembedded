@@ -57,6 +57,16 @@ python __anonymous () {
 }
 
 do_configure_prepend() {
+
+        # Rename getline in ./scripts/unifdef.c
+        # Kernels up to 2.6.29 are currently failing to build unifdef.c,
+        # clashing with exposed getline() from <stdio.h>
+        # see https://patchwork.kernel.org/patch/11166/
+        # committed in 2.6.29 (commit d15bd1067b1fcb2b7250d22bc0c7c7fea0b759f7)
+
+        sed -i -e 's/getline/parseline/g' ${S}/scripts/unifdef.c
+
+
         echo "" > ${S}/.config
 
         #
