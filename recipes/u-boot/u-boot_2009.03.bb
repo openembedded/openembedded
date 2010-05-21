@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
@@ -13,6 +13,7 @@ SRC_URI_append_hipox = "file://00-hipox.patch;patch=1 \
 	file://02-hipox-enable-mmu.patch;patch=1 \
 	file://03-hipox-direct-switch.patch;patch=1 \
 	file://04-hipox-env.patch;patch=1 \
+	file://10-hipox-boot-abort-key.patch;patch=1 \
 "
 
 TARGET_LDFLAGS = ""
