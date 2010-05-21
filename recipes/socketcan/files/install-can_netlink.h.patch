@@ -1,0 +1,21 @@
+commit 2470d91a6254b062aae8ab6120795a0f28344687
+Author: Vitus Jensen <vitus@vitus.devnet.local>
+Date:   Tue May 18 16:59:01 2010 +0200
+
+    install can_netlink.h
+
+diff --git a/include/GNUmakefile.am b/include/GNUmakefile.am
+index 4ba2798..eb35a3a 100644
+--- a/include/GNUmakefile.am
++++ b/include/GNUmakefile.am
+@@ -1,8 +1,6 @@
+-noinst_HEADERS = \
+-	can_netlink.h
+-
+ nobase_include_HEADERS = \
+-	libsocketcan.h	
++	libsocketcan.h	\
++	can_netlink.h
+ 
+ MAINTAINERCLEANFILES = \
+ 	libsocketcan_config.h.in \
