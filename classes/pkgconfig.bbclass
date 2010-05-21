@@ -5,6 +5,7 @@ do_install_prepend () {
 		sed -i -e 's:-L${STAGING_LIBDIR}::g' \
 			-e 's:-R${STAGING_LIBDIR}::g' \
 			-e 's:-I${STAGING_INCDIR}::g' \
+			-e 's:-isystem${STAGING_INCDIR}::g' \
 			$i
         done
 }
