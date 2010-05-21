@@ -18,7 +18,7 @@ RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
 RPROVIDES_${PN}-freshclam = "${PN}-data"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz;name=clamav-${PV} \
           file://clamav-daemon.init \
@@ -29,7 +29,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz;name=clamav-${PV} \
           file://volatiles.03_clamav-daemon \
           file://volatiles.03_clamav-freshclam"
 
-inherit autotools update-rc.d binconfig
+inherit autotools update-rc.d binconfig pkgconfig
 
 # Don't check for clamav uid/gid - they don't exist on the host
 # Put virus definitions in /var/lib not /usr/lib
@@ -60,11 +60,6 @@ do_install_append() {
         for i in 03_clamav-daemon 03_clamav-freshclam 03_clamav-data; do
           install -m 0644 ${WORKDIR}/volatiles.$i ${D}${sysconfdir}/default/volatiles/$i
         done
-}
-do_stage () {
-        oe_libinstall -a -so libclamav ${STAGING_LIBDIR}
-        rm -f ${STAGING_LIBDIR}/libclamav.la
-        install -m 0644 libclamav/clamav.h ${STAGING_INCDIR}
 }
 
 PACKAGES += "${PN}-freshclam ${PN}-daemon ${PN}-conf ${PN}-data ${PN}-lib \
