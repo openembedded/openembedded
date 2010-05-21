@@ -1,8 +1,11 @@
 DESCRIPTION = "openBmap logger and uploader of GPS/GSM data"
 SECTION = "x11/utils"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/myposition/openbmap-logger-${PV}.tar.gz"
+SRC_URI = "\
+${SOURCEFORGE_MIRROR}/myposition/openbmap-logger-${PV}.tar.gz \
+file://fsogsmd-fix.patch;patch=1 \
+"
 
 inherit distutils
 
