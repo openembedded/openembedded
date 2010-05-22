@@ -36,7 +36,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=k
            ${RPSRC}/w100_extaccel-r2.patch;patch=1;name=rppatch12 \
            ${RPSRC}/w100_extmem-r1.patch;patch=1;name=rppatch13 \
 #           ${RPSRC}/poodle_pm-r6.patch;patch=1;name=rppatch14 \
-           ${RPSRC}/poodle_pm-r7.patch;patch=1;name=rppatch14 \
+           file://poodle_pm-r7.patch;patch=1;name=rppatch14 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1;name=rppatch15 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1;name=rppatch16 \
            file://zaurus-i2c-init.patch;patch=1;status=upstream \
