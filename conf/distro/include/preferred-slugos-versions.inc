@@ -73,3 +73,6 @@ PREFERRED_VERSION_boost				?= "1.33.1"
 
 # pulseaudio 0.9.19 is broken (ASM errors during do_compile):
 PREFERRED_VERSION_pulseaudio                    ?= "0.9.15"
+
+# latest tcl recipe has a bug that overwites regex.h; use the old tcl
+PREFERRED_VERSION_tcl				?= "8.4.19"
