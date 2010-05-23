@@ -1,9 +1,8 @@
 require pixman.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "2"
-DEFAULT_PREFERENCE_angstrom = "2"
  
 SRC_URI += "\
            file://0001-Generic-C-implementation-of-pixman_blt-with-overlapp.patch;patch=1 \
@@ -14,6 +13,7 @@ SRC_URI += "\
            file://calloc.patch;patch=1 \
            file://tls.patch;patch=1 \
            file://565-scanline.patch;patch=1 \
+           file://missing-cache-preload.diff;patch=1 \
 "
 
 SRC_URI[archive.md5sum] = "a4fb870fc325be258089f1683642e976"
