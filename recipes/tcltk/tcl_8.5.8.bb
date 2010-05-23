@@ -3,6 +3,8 @@ LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 
+PR = "r5"
+
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
   file://confsearch.diff;patch=1;pnum=2 \
@@ -33,15 +35,19 @@ BINCONFIG_GLOB = "*Config.sh"
 do_install() {
 	autotools_do_install
 	# Stage a few extra headers to make tk happy
-	install -m 0644 ../generic/*.h ${D}${includedir}
-	install -m 0644 *.h ${D}${includedir}
+	install -d ${D}${includedir}/tcl-${PV}/generic
+	install -m 0644 ../generic/*.h ${D}${includedir}/tcl-${PV}/generic
+	install -m 0644 *.h ${D}${includedir}/tcl-${PV}/generic
+	install -d ${D}${includedir}/tcl-${PV}/unix
+	install -m 0644 *Unix*.h ${D}${includedir}/tcl-${PV}/unix/
+	rm -f ${D}${includedir}/regex.h
 	ln -sf tclsh8.5 ${D}${bindir}/tclsh
 }
 
 SYSROOT_PREPROCESS_FUNCS =+ "tcl_sysroot"
 
 tcl_sysroot() {
-	sed -i 's:/usr/include/tcl-private:${STAGING_INCDIR}:' tclConfig.sh
+	sed -i 's:/usr/include/tcl-private:${STAGING_INCDIR}/tcl-${PV}:' tclConfig.sh
 }
 
 PACKAGES =+ "${PN}-lib"
