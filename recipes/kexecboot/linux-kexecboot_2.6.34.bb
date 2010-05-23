@@ -11,5 +11,5 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=k
            file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;patch=1;status=pending \
            file://defconfig"
 
-SRC_URI[kernel.md5sum] = "c3883760b18d50e8d78819c54d579b00"
-SRC_URI[kernel.sha256sum] = "63e237de3b3c4c46a21833b9ce7e20574548d52dabbd1a8bf376041e4455d5c6"
+SRC_URI[kernel.md5sum] = "10eebcb0178fb4540e2165bfd7efc7ad"
+SRC_URI[kernel.sha256sum] = "fa395fec7de633df1cb85b6248b8f35af98380ed128a8bc465fb48bc4d252633"
