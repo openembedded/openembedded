@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz;name=qemu-${PV} \
@@ -16,6 +16,7 @@ SRC_URI = "\
     file://fix_baum_c_compilation.patch;patch=1 \
     file://fix_fortify_source_compilation.patch;patch=1 \
     file://fallback.to.safe.mmap_min_addr.patch;patch=1 \
+    file://linux-user-fix-running-programs-with-iwmmxt.patch;patch=1 \
     "
 
 SRC_URI[qemu-0.12.4.md5sum] = "93e6b134dff89b2799f57b7d9e0e0fc5"
