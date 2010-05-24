@@ -1,17 +1,18 @@
 require linux.inc
 
 DESCRIPTION = "Linux kernel for Xilinx ml507 platform"
-KERNEL_RELEASE = "2.6.32+git"
+KERNEL_RELEASE = "2.6.33+git"
 
 COMPATIBLE_MACHINE = "xilinx-ml507"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_xilinx-ml507 = "1"
 
 PV = "${KERNEL_RELEASE}"
-PR = "r0"
+PR = "r1"
 
-SRCREV = "dc53725d22405e384b984d222542f526eaa9b829"
+SRCREV = "17431547113100a3ae0a622b9f76ad17fb76eb56"
 SRC_URI = "git://git.xilinx.com/linux-2.6-xlnx.git;protocol=git \
+           file://xilinxfb.patch;patch=1 \
            file://defconfig"
 
 inherit kernel xilinx-bsp
