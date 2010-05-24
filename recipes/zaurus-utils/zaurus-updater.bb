@@ -3,6 +3,12 @@ DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
 PR = "r25"
 
+# even though the package is not machine-specific
+# we have to force it there to allow multimachine builds
+# because DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
+# and without this only the first machine built get the right staging ipk
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
 PACKAGES = ""
 COMPATIBLE_MACHINE = '(poodle|c7x0|spitz|akita|tosa)'
 
