@@ -64,12 +64,7 @@ CONFIGUREOPTS = " --build=${BUILD_SYS} \
 
 oe_runconf () {
 	if [ -x ${S}/configure ] ; then
-		cfgcmd="${S}/configure \
-		        ${CONFIGUREOPTS} \
-			${EXTRA_OECONF} \
-		    $@"
-		oenote "Running $cfgcmd..."
-		$cfgcmd || oefatal "oe_runconf failed" 
+		${S}/configure ${CONFIGUREOPTS} ${EXTRA_OECONF} "$@"
 	else
 		oefatal "no configure script found"
 	fi
