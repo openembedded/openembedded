@@ -7,4 +7,4 @@ SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
 
 inherit gpe pkgconfig
 
-SRC_URI += "file://makefile-fix.patch;apply=yes"
+SRC_URI += "file://makefile-fix.patch"

@@ -5,9 +5,9 @@ PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/iscsitarget/iscsitarget-${PV}.tar.gz;name=iscsitarget1419targz \
 
-           file://libs.patch;apply=yes \
-           file://2.6.31.patch;apply=yes \
-           file://2.6.32.patch;apply=yes \
+           file://libs.patch \
+           file://2.6.31.patch \
+           file://2.6.32.patch \
            file://ietd.conf \
            file://init"
 SRC_URI[iscsitarget1419targz.md5sum] = "9beca214c28949cce1716b49fec57de4"

@@ -2,21 +2,21 @@ PR = "r10"
 
 SRC_URI = \
     "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
-     file://ld_makefile.patch;apply=yes \
-     file://better_file_error.patch;apply=yes \
-     file://signed_char_fix.patch;apply=yes \
-     file://binutils-2.16-objcopy-rename-errorcode.patch;apply=yes \
-     file://binutils-100_cflags_for_build.patch;apply=yes"
+     file://ld_makefile.patch \
+     file://better_file_error.patch \
+     file://signed_char_fix.patch \
+     file://binutils-2.16-objcopy-rename-errorcode.patch \
+     file://binutils-100_cflags_for_build.patch"
 
 # uclibc patches
-SRC_URI += "file://binutils-2.16-linux-uclibc.patch;apply=yes"
+SRC_URI += "file://binutils-2.16-linux-uclibc.patch"
 
 # arm thumb support patches
-SRC_URI += "file://binutils-2.16-thumb-trampoline.patch;apply=yes"
-SRC_URI += "file://binutils-2.16-thumb-glue.patch;apply=yes"
+SRC_URI += "file://binutils-2.16-thumb-trampoline.patch"
+SRC_URI += "file://binutils-2.16-thumb-glue.patch"
 
 # powerpc patches
-SRC_URI += "file://binutils-2.16.1-e300c2c3.patch;apply=yes"
+SRC_URI += "file://binutils-2.16.1-e300c2c3.patch"
 
 require binutils.inc
 

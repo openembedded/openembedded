@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://rcdrummond.net/uae/e-uae-${PV}/e-uae-${PV}.tar.bz2 \
-           file://configure.patch;apply=yes"
+           file://configure.patch"
 
 inherit autotools
 

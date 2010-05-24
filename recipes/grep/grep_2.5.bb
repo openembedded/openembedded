@@ -3,7 +3,7 @@ SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.bz2 \
-	   file://install.patch;apply=yes"
+	   file://install.patch"
 
 inherit autotools
 

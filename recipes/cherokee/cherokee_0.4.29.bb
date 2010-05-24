@@ -4,10 +4,10 @@ LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "openssl libpcre"
 SRC_URI = "http://www.0x50.org/download/0.4/${PV}/${P}.tar.gz \
-	  file://configure.patch;apply=yes \
-	  file://Makefile.in.patch;apply=yes \
-	  file://Makefile.cget.patch;apply=yes \
-	  file://util.patch;apply=yes"
+	  file://configure.patch \
+	  file://Makefile.in.patch \
+	  file://Makefile.cget.patch \
+	  file://util.patch"
 INC_PR = "r7"
 PR = "${INC_PR}.0"
 

@@ -7,7 +7,7 @@ RDEPENDS = "util-linux"
 PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \
-           file://configure-libtool.patch;apply=yes"
+           file://configure-libtool.patch"
 	    
 inherit autotools
 

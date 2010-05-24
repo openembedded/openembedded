@@ -24,12 +24,12 @@ p = "${pn}-${PV}"
 S = "${WORKDIR}/${p}"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/library/${p}.tar.bz2 \
-           file://pam-nodocs.patch;apply=yes \
-           file://fix_disabled_nls.patch;apply=yes \
+           file://pam-nodocs.patch \
+           file://fix_disabled_nls.patch \
           "
 
-UCLIBC_PATCHES = " file://pam-disable-nis-on-uclibc.patch;apply=yes \
-                   file://disable_modules_uclibc.patch;apply=yes \
+UCLIBC_PATCHES = " file://pam-disable-nis-on-uclibc.patch \
+                   file://disable_modules_uclibc.patch \
                  "
 
 SRC_URI_append_linux-uclibc = ${UCLIBC_PATCHES}

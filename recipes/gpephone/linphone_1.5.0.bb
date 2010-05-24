@@ -6,8 +6,8 @@ DEPENDS = "libosip2 speex libogg alsa-lib readline"
 PR = "r2"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/1.5.x/source/linphone-${PV}.tar.gz \
-           file://linphone-1.5.0.patch;apply=yes \
-           file://linphone-pkgconfig.patch;apply=yes;striplevel=0"
+           file://linphone-1.5.0.patch \
+           file://linphone-pkgconfig.patch;striplevel=0"
 
 FILES_${PN} += "${datadir}/linphonec"
 

@@ -7,8 +7,8 @@ DEPENDS = "ncurses"
 PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/screen/screen-${PV}.tar.gz \
-           file://screen_4.0.2-4.1sarge1.diff.gz;apply=yes \
-           file://configure.patch;apply=yes"
+           file://screen_4.0.2-4.1sarge1.diff.gz \
+           file://configure.patch"
 
 inherit autotools
 

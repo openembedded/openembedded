@@ -4,9 +4,9 @@ LICENSE = "GPL"
 DEPENDS = "gtk+"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.gz \
-         file://dillo2-gcc4.patch;apply=yes \
-         file://gtk2.patch;apply=yes \
-         file://fix_about_syntax.patch;apply=yes \
+         file://dillo2-gcc4.patch \
+         file://gtk2.patch \
+         file://fix_about_syntax.patch \
          file://dillo.desktop \
          file://dillo.png \
          file://dillorc"

@@ -2,9 +2,9 @@ require dietlibc.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://ccache.patch;apply=yes \
-            file://ceil.patch;apply=yes \
-            file://ai_addrconfig.patch;apply=yes \
+SRC_URI += "file://ccache.patch \
+            file://ceil.patch \
+            file://ai_addrconfig.patch \
            "
 
 SRC_URI[md5sum] = "acb98d469ee932d902fdf6de07802b7c"

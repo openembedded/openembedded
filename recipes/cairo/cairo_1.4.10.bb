@@ -3,7 +3,7 @@ require cairo.inc
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz \
-file://stats.patch;apply=yes;p=1"
+file://stats.patch;p=1"
 
 PR = "r0"
 

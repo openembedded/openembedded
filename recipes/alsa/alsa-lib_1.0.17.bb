@@ -10,8 +10,8 @@ LICENSE = "LGPLv2.1"
 ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2 \
-           file://fix-tstamp-declaration.patch;apply=yes \
-	   file://fix_libmath.patch;apply=yes \
+           file://fix-tstamp-declaration.patch \
+	   file://fix_libmath.patch \
 	  "
 
 inherit autotools pkgconfig

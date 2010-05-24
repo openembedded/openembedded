@@ -15,18 +15,18 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${BASE_KERNEL_VERSION
            "
 
 SRC_URI_append_ts72xx = "\
-           file://ep93xx-gpio-interrupt-debounce.diff;apply=yes \
-           file://ep93xx-i2c-bus.diff;apply=yes \
-           file://ep93xx-i2c.diff;apply=yes \
-           file://ep93xx-leds.diff;apply=yes \
-           file://ep93xx-serial-uartbaud.diff;apply=yes \
-           file://ep93xx-serial-clocks.diff;apply=yes \
-           file://ep93xx-timer-accuracy.diff;apply=yes \
-           file://ep93xx-maverick-uniqid.patch;apply=yes \
-           file://ts72xx-nfbit-fix.patch;apply=yes \
-           file://ts72xx-machine-id-fix.patch;apply=yes \
-           file://ts72xx-watchdog.patch;apply=yes \
-           file://ts72xx-use-cpld-reset.patch;apply=yes \
+           file://ep93xx-gpio-interrupt-debounce.diff \
+           file://ep93xx-i2c-bus.diff \
+           file://ep93xx-i2c.diff \
+           file://ep93xx-leds.diff \
+           file://ep93xx-serial-uartbaud.diff \
+           file://ep93xx-serial-clocks.diff \
+           file://ep93xx-timer-accuracy.diff \
+           file://ep93xx-maverick-uniqid.patch \
+           file://ts72xx-nfbit-fix.patch \
+           file://ts72xx-machine-id-fix.patch \
+           file://ts72xx-watchdog.patch \
+           file://ts72xx-use-cpld-reset.patch \
            "
 
 S = "${WORKDIR}/linux-2.6.22"

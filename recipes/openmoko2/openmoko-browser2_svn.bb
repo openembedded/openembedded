@@ -8,9 +8,9 @@ PR = "r2"
 inherit openmoko2
 LDFLAGS_append = " -Wl,-rpath-link,${CROSS_DIR}/${TARGET_SYS}/lib"
 
-SRC_URI += "file://webkit-update.patch;apply=yes;minrev=3646;maxrev=4171"
+SRC_URI += "file://webkit-update.patch;minrev=3646;maxrev=4171"
 
-#SRC_URI += "file://fingerscroll.diff;apply=yes"
+#SRC_URI += "file://fingerscroll.diff"
 
 do_compile_prepend() {
         find ${S} -name Makefile | xargs sed -i s:'-I/usr/include':"-I${STAGING_INCDIR}":g

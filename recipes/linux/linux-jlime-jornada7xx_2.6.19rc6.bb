@@ -8,7 +8,7 @@ COMPATIBLE_MACHINE = "jornada7xx"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.gz;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.19/patch-2.6.19-rc6.bz2;apply=yes;name=patch \
-	   file://jornada7xx.patch;apply=yes \
+	   file://jornada7xx.patch \
            file://defconf_jlime "
 
 S = "${WORKDIR}/linux-2.6.18"

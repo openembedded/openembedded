@@ -10,8 +10,8 @@ PV = "${OPIE_CVS_PV}"
 PR = "${INC_PR}.0"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/library \
-           file://fix-titleheight.patch;apply=yes \
-           file://unbreak-logging.patch;apply=yes \
-           file://citytime-path-2.patch;apply=yes \
-           file://no-include-pro.patch;apply=yes \
+           file://fix-titleheight.patch \
+           file://unbreak-logging.patch \
+           file://citytime-path-2.patch \
+           file://no-include-pro.patch \
           "

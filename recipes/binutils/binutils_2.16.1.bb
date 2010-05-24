@@ -3,13 +3,13 @@ PR = "r1"
 CROSSTOOL_PATCH_URL = "http://www.kegel.com/crosstool/crosstool-0.43/patches/binutils-2.16.1/"
 SRC_URI = \
     "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2;name=archive \
-     ${CROSSTOOL_PATCH_URL}bfd-hash-tweak.patch;apply=yes;name=patch1 \
-     ${CROSSTOOL_PATCH_URL}binutils-2.15-psignal.patch;apply=yes;name=patch2 \
-     ${CROSSTOOL_PATCH_URL}binutils-skip-comments.patch;apply=yes;name=patch3 \
-     ${CROSSTOOL_PATCH_URL}callahan.patch;apply=yes;name=patch4 \
-     ${CROSSTOOL_PATCH_URL}cross-gprof.patch;apply=yes;name=patch5 \
-     ${CROSSTOOL_PATCH_URL}stabs-tweak.patch;apply=yes;name=patch6 \
-     file://binutils-2.16.91.0.6-objcopy-rename-errorcode.patch;apply=yes"
+     ${CROSSTOOL_PATCH_URL}bfd-hash-tweak.patch;name=patch1 \
+     ${CROSSTOOL_PATCH_URL}binutils-2.15-psignal.patch;name=patch2 \
+     ${CROSSTOOL_PATCH_URL}binutils-skip-comments.patch;name=patch3 \
+     ${CROSSTOOL_PATCH_URL}callahan.patch;name=patch4 \
+     ${CROSSTOOL_PATCH_URL}cross-gprof.patch;name=patch5 \
+     ${CROSSTOOL_PATCH_URL}stabs-tweak.patch;name=patch6 \
+     file://binutils-2.16.91.0.6-objcopy-rename-errorcode.patch"
 
 
 require binutils.inc

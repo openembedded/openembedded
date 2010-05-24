@@ -2,10 +2,10 @@ require libpcap.inc
 
 PR = "r6"
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz"
-SRC_URI += "file://aclocal.patch;apply=yes"
-SRC_URI += "file://ieee80215-arphrd.patch;apply=yes"
-SRC_URI += "file://ldflags.patch;apply=yes"
-SRC_URI += "file://0001-Fix-some-problems-that-show-up-in-autoconf-2.64-and-.patch;apply=yes"
+SRC_URI += "file://aclocal.patch"
+SRC_URI += "file://ieee80215-arphrd.patch"
+SRC_URI += "file://ldflags.patch"
+SRC_URI += "file://0001-Fix-some-problems-that-show-up-in-autoconf-2.64-and-.patch"
 
 do_configure_prepend() {
 	cat ${S}/aclocal.m4 >>${S}/acinclude.m4

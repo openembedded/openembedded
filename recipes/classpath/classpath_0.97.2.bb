@@ -1,16 +1,16 @@
 require classpath.inc
 
 SRC_URI += "\
-  file://netif_16.patch;apply=yes;striplevel=0 \
-  file://SimpleName.diff;apply=yes;striplevel=0 \
-  file://javanet-local.patch;apply=yes;striplevel=0 \
-  file://ecj_java_dir.patch;apply=yes \
-  file://autotools.patch;apply=yes \
-  file://decimalformat.patch;apply=yes \
-  file://cp-byte-loophelper.patch;apply=yes;striplevel=0 \
-  file://drawpolyline.patch;apply=yes;striplevel=0 \
-  file://gtk-fix.patch;apply=yes;striplevel=0 \
-  file://toolwrapper-exithook.patch;apply=yes \
+  file://netif_16.patch;striplevel=0 \
+  file://SimpleName.diff;striplevel=0 \
+  file://javanet-local.patch;striplevel=0 \
+  file://ecj_java_dir.patch \
+  file://autotools.patch \
+  file://decimalformat.patch \
+  file://cp-byte-loophelper.patch;striplevel=0 \
+  file://drawpolyline.patch;striplevel=0 \
+  file://gtk-fix.patch;striplevel=0 \
+  file://toolwrapper-exithook.patch \
   "
 
 PR = "r10"

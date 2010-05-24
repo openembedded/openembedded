@@ -8,8 +8,8 @@ PV = "0.5.2+svnr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=JavaScriptCore;proto=https \
-           file://gcc4-fno-threadsafe-statics-JavaScriptCore.patch;apply=yes \
-	   file://no-static-templates.patch;apply=yes \
+           file://gcc4-fno-threadsafe-statics-JavaScriptCore.patch \
+	   file://no-static-templates.patch \
 	"
 
 S = "${WORKDIR}/JavaScriptCore"

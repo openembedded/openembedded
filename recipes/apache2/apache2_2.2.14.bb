@@ -9,8 +9,8 @@ SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-${PV}.tar.bz2 \
 	   file://apr-sockets-patch;apply=yes \
 	   file://configure-patch;apply=yes \
 	   file://server-makefile-patch;apply=yes \
-	   file://configure.in.patch;apply=yes \
-	   file://apr.h.in.patch;apply=yes \
+	   file://configure.in.patch \
+	   file://apr.h.in.patch \
            file://init"
 
 #

@@ -8,8 +8,8 @@ LICENSE = "GPL"
 INC_PR = "r8"
 
 SRC_URI = "http://pkgconfig.freedesktop.org/releases/pkg-config-${PV}.tar.gz \
-           file://autofoo.patch;apply=yes \
-           file://sysrootfix.patch;apply=yes \
+           file://autofoo.patch \
+           file://sysrootfix.patch \
            file://glibconfig-sysdefs.h"
 
 S = "${WORKDIR}/pkg-config-${PV}/"

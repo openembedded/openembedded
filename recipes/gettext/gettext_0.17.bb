@@ -12,15 +12,15 @@ RCONFLICTS_gettext-libintl = "proxy-libintl"
 BBCLASSEXTEND = "native nativesdk"
 
 SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
-	   file://autotools.patch;apply=yes \
-	   file://wchar-uclibc.patch;apply=yes \
-	   file://use_open_properly.patch;apply=yes \
-	   file://gettext-autoconf-lib-link-no-L.patch;apply=yes \
-	   file://m4_copy.patch;apply=yes \
+	   file://autotools.patch \
+	   file://wchar-uclibc.patch \
+	   file://use_open_properly.patch \
+	   file://gettext-autoconf-lib-link-no-L.patch \
+	   file://m4_copy.patch \
 	  "
 
-SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch;apply=yes"
-SRC_URI_append_linux-uclibceabi = " file://gettext-error_print_progname.patch;apply=yes"
+SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch"
+SRC_URI_append_linux-uclibceabi = " file://gettext-error_print_progname.patch"
 
 PARALLEL_MAKE = ""
 

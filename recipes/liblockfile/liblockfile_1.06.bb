@@ -4,10 +4,10 @@ LICENSE = "LGPL"
 PR ="r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
-	   file://install.patch;apply=yes \
-	   file://configure.patch;apply=yes \
-	   file://ldflags.patch;apply=yes \
-	   file://glibc-2.4.patch;apply=yes"
+	   file://install.patch \
+	   file://configure.patch \
+	   file://ldflags.patch \
+	   file://glibc-2.4.patch"
 
 inherit autotools
 

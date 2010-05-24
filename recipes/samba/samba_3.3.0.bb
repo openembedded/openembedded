@@ -8,10 +8,10 @@ LICENSE = "GPLv3"
 # should there be further issues. Appears to work though :)
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI += "file://configure-3.3.0.patch;apply=yes \
-            file://config-h.patch;apply=yes \
-            file://mtab.patch;apply=yes \
-            file://tdbheaderfix.patch;apply=yes "
+SRC_URI += "file://configure-3.3.0.patch \
+            file://config-h.patch \
+            file://mtab.patch \
+            file://tdbheaderfix.patch "
 
 PR = "r3"
 

@@ -5,7 +5,7 @@ DEPENDS = "gettext libgalago dbus glib-2.0"
 PR = "r1"
 
 SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
-           file://no-check.patch;apply=yes"
+           file://no-check.patch"
 EXTRA_OECONF =	"--disable-binreloc"
 
 FILES_${PN} += "${datadir}/dbus-1/services/"

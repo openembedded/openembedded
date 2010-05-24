@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 inherit gpe
 
-SRC_URI += "file://makefile-fix.patch;apply=yes"
+SRC_URI += "file://makefile-fix.patch"
 
 DEPENDS = "libgpewidget"
 RDEPENDS = "gpe-icons"

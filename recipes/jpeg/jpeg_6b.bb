@@ -10,10 +10,10 @@ PR = "r9"
 
 #SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
 SRC_URI = "ftp://aeneas.mit.edu/pub/gnu/ghostscript/jpegsrc.v${PV}.tar.gz \
-	   file://debian.patch;apply=yes \
-	   file://ldflags.patch;apply=yes \
-	   file://paths.patch;apply=yes \
-	   file://libtool_tweak.patch;apply=yes"
+	   file://debian.patch \
+	   file://ldflags.patch \
+	   file://paths.patch \
+	   file://libtool_tweak.patch"
 S = "${WORKDIR}/jpeg-${PV}"
 
 inherit autotools

@@ -8,7 +8,7 @@ PR ="r4"
 # The source can no longer be found at ${DEBIAN_MIRROR}/main/m/mgetty/mgetty_${PV}.orig.tar.gz
 # so the nslu2-linux project has mirrored it until someone updates this package to a newer version.
 SRC_URI = "http://nslu.sf.net/downloads/mgetty_1.1.30.orig.tar.gz \
-           file://debian.patch;apply=yes \
+           file://debian.patch \
            file://00-g3_Makefile;apply=yes \
            file://01-adjust-path;apply=yes \
            file://02-pending-fix-includes;apply=yes \
@@ -37,9 +37,9 @@ SRC_URI = "http://nslu.sf.net/downloads/mgetty_1.1.30.orig.tar.gz \
            file://50-pending-voice-zoom-2949l-c;apply=yes \
            file://51-pending-faxq-time;apply=yes \
            file://52-pending-metamail;apply=yes \
-           file://install.patch;apply=yes \
-	   file://newslock_ldflags.patch;apply=yes \
-	   file://faxqhelper_ldflags.patch;apply=yes \
+           file://install.patch \
+	   file://newslock_ldflags.patch \
+	   file://faxqhelper_ldflags.patch \
            file://policy.h \
            file://voice-defs.h"
 

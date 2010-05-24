@@ -1,8 +1,8 @@
 require cups14.inc
 
-SRC_URI += "file://use_echo_only_in_init.patch;apply=yes \
-		    file://skip_tools.patch;apply=yes \
-		    file://configure.patch;apply=yes \
+SRC_URI += "file://use_echo_only_in_init.patch \
+		    file://skip_tools.patch \
+		    file://configure.patch \
 			"
 
 SRC_URI[archive.md5sum] = "e70b1c3f60143d7310c1d74c111a21ab"

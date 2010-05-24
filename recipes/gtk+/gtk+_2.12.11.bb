@@ -2,15 +2,15 @@ require gtk+.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://cellrenderer-cairo.patch;apply=yes;striplevel=0 \
-           file://entry-cairo.patch;apply=yes;striplevel=0 \
-           file://scrolled-placement.patch;apply=yes;striplevel=0"
+SRC_URI += "file://cellrenderer-cairo.patch;striplevel=0 \
+           file://entry-cairo.patch;striplevel=0 \
+           file://scrolled-placement.patch;striplevel=0"
 # temporary
 #           file://gtklabel-resize-patch;apply=yes \
-#           file://menu-deactivate.patch;apply=yes \
-#           file://combo-arrow-size.patch;apply=yes;striplevel=0 \
+#           file://menu-deactivate.patch \
+#           file://combo-arrow-size.patch;striplevel=0 \
 # die die die
-#           file://pangoxft2.10.6.diff;apply=yes"
+#           file://pangoxft2.10.6.diff"
 
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 

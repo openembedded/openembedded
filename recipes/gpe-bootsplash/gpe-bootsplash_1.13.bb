@@ -8,7 +8,7 @@ PR = "r3"
 
 SRC_URI += "file://splash-p.svg \
             file://splash-l.svg \
-            file://no-strip-on-install.patch;apply=yes"
+            file://no-strip-on-install.patch"
 
 FILES_${PN} += "${datadir}/gpe"
 

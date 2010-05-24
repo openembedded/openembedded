@@ -16,10 +16,10 @@ PV = "0.22"
 
 SRCREV = "23710"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=mythplugins;proto=http \
-        file://sysroot.patch;apply=yes \
-        file://mythplugins_wo_qtopengl.diff;apply=yes \
-        file://configure.patch;apply=yes \
-        file://mytharchive.pro.patch;apply=yes \
+        file://sysroot.patch \
+        file://mythplugins_wo_qtopengl.diff \
+        file://configure.patch \
+        file://mytharchive.pro.patch \
         "
 
 

@@ -13,7 +13,7 @@ PR = "r0"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \
-  file://defconfig-oe.patch \
+  file://defconfig-oe.patch;apply=no \
 "
 S = "${WORKDIR}/git"
 

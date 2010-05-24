@@ -32,46 +32,46 @@ SRC_URI[stablepatch.md5sum] = "7f615dd3b4a3b19fb86e479996a2deb5"
 SRC_URI[stablepatch.sha256sum] = "8aeb15c31fb09c769f004c8dc51e29aa26be8e84d70db418af70ecefc463459a"
 
 SRC_URI_append_at91sam9g45ek = " \
-	file://at91/linux-2.6.32-001-configurable-nand-partitions.patch;apply=yes \
-	file://at91/linux-2.6.32-002-sam9g20-proper-reset.patch;apply=yes \
+	file://at91/linux-2.6.32-001-configurable-nand-partitions.patch \
+	file://at91/linux-2.6.32-002-sam9g20-proper-reset.patch \
 	"
 
 
 # part of 2.6.24.7 patchset from Sim.One project
 # other patches needs work
 SRC_URI_append_simone = " \
-			file://ep93xx/edb9301-fix-machine-id.patch;apply=yes \
-			file://ep93xx/simone-board-def.patch;apply=yes \
-			file://ep93xx/ep93xx-regs.patch;apply=yes \
-			file://ep93xx/ep93xx-i2c.patch;apply=yes \
-			file://ep93xx/ep93xx-touchscreen.patch;apply=yes \
-			file://ep93xx/ep93xx-spi.patch;apply=yes \
-			file://ep93xx/ep93xx-cpuinfo.patch;apply=yes "
+			file://ep93xx/edb9301-fix-machine-id.patch \
+			file://ep93xx/simone-board-def.patch \
+			file://ep93xx/ep93xx-regs.patch \
+			file://ep93xx/ep93xx-i2c.patch \
+			file://ep93xx/ep93xx-touchscreen.patch \
+			file://ep93xx/ep93xx-spi.patch \
+			file://ep93xx/ep93xx-cpuinfo.patch "
 
 FILES_kernel-image_simone = ""
 
 SRC_URI_append_ts72xx = " \
-                        file://0001-ts72xx_base.patch;apply=yes \
-                        file://0002-ts72xx_force_machine-id.patch;apply=yes \
-                        file://0003-ep93xx_cpuinfo.patch;apply=yes \
-                        file://0004-ts72xx_sbcinfo.patch;apply=yes \
-                        file://0005-ep93xx_eth.patch;apply=yes \
-                        file://0006-ts72xx_ts_ser1.patch;apply=yes \
-                        file://0007-ts72xx_rs485.patch;apply=yes \
-                        file://0008-ts72xx_ts_eth100.patch;apply=yes \
-                        file://0009-ts7200_cf_ide.patch;apply=yes \
-                        file://0010-ts72xx_pata.patch;apply=yes \
-                        file://0011-ep93xx_pm.patch;apply=yes \
-                        file://0012-ts72xx_gpio_i2c.patch;apply=yes \
-                        file://0013-ts72xx_dio_keypad.patch;apply=yes \
-                        file://0014-ep93xx_spi.patch;apply=yes \
-                        file://0015-ep93xx_cpufreq.patch;apply=yes \
-                        file://0016-ts7200_nor_flash.patch;apply=yes \
+                        file://0001-ts72xx_base.patch \
+                        file://0002-ts72xx_force_machine-id.patch \
+                        file://0003-ep93xx_cpuinfo.patch \
+                        file://0004-ts72xx_sbcinfo.patch \
+                        file://0005-ep93xx_eth.patch \
+                        file://0006-ts72xx_ts_ser1.patch \
+                        file://0007-ts72xx_rs485.patch \
+                        file://0008-ts72xx_ts_eth100.patch \
+                        file://0009-ts7200_cf_ide.patch \
+                        file://0010-ts72xx_pata.patch \
+                        file://0011-ep93xx_pm.patch \
+                        file://0012-ts72xx_gpio_i2c.patch \
+                        file://0013-ts72xx_dio_keypad.patch \
+                        file://0014-ep93xx_spi.patch \
+                        file://0015-ep93xx_cpufreq.patch \
+                        file://0016-ts7200_nor_flash.patch \
                         "
 
 # Zaurus family bootloader patches
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
-ZAURUSPATCHES = " ${RPSRC}/pxa-linking-bug-r1.patch;apply=yes;status=unmergable;name=pxa-linking-bug-r1 "
+ZAURUSPATCHES = " ${RPSRC}/pxa-linking-bug-r1.patch;status=unmergable;name=pxa-linking-bug-r1 "
 SRC_URI[pxa-linking-bug-r1.md5sum] = "1e2a99787260c3566033e7f41180e2c8"
 SRC_URI[pxa-linking-bug-r1.sha256sum] = "785d2680022325ad54c1593082dce902f5fee31dae4c1922ba43956b1dcfcd8b"
 
@@ -84,4 +84,4 @@ SRC_URI_append_spitz = "${ZAURUSPATCHES}"
 SRC_URI_append_tosa = "${ZAURUSPATCHES}"
 
 SRC_URI_append_eee701 = " \
-	file://intelfb.patch;apply=yes "
+	file://intelfb.patch "

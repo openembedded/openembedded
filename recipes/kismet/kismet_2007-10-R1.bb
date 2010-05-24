@@ -1,7 +1,7 @@
 require kismet.inc
 
-SRC_URI += "file://fix_strip.patch;apply=yes \
-            file://string_h.patch;apply=yes"
+SRC_URI += "file://fix_strip.patch \
+            file://string_h.patch"
 
 PR = "r5"
 

@@ -16,8 +16,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
 
 # an selinux API is used even if no selinux is detected by
 # configure.
-SRC_URI += " file://no-selinux.patch;apply=yes"
-SRC_URI += " file://libdl.patch;apply=yes"
+SRC_URI += " file://no-selinux.patch"
+SRC_URI += " file://libdl.patch"
 
 DEPENDS += " libpam openldap openssl"
 

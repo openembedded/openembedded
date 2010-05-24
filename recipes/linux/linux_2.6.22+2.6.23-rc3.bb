@@ -14,9 +14,9 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${BASE_KERNEL_VERSION
            file://defconfig \
            "
 
-SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.23-rc3-at91.patch.gz;apply=yes;name=at91patch \
+SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.23-rc3-at91.patch.gz;name=at91patch \
                         "
-SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.23-rc3-at91.patch.gz;apply=yes;name=at91patch \
+SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.23-rc3-at91.patch.gz;name=at91patch \
                                "
 
 S = "${WORKDIR}/linux-${BASE_KERNEL_VERSION}"

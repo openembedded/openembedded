@@ -18,8 +18,8 @@ RDEPENDS_${PN} += "patch"
 RSUGGESTS_${PN} += "gnupg"
 
 SRC_URI = "http://bazaar.canonical.com/releases/src/bazaar_${PV}.tar.gz \
-	   file://no_archive_format_guess_msg.patch;apply=yes \
-	   file://import_dirarg.patch;apply=yes"
+	   file://no_archive_format_guess_msg.patch \
+	   file://import_dirarg.patch"
 
 S = "${WORKDIR}/thelove@canonical.com---dists--bazaar--1.2"
 B = "${WORKDIR}/build-${HOST_SYS}"

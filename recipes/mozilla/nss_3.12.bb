@@ -18,7 +18,7 @@ SRC_URI = "\
 	file://90_realpath.dpatch;apply=yes \
 	file://91_build_pwdecrypt.dpatch;apply=yes \
 	file://95_add_spi+cacert_ca_certs.dpatch;apply=yes \
-	file://build-fix.patch;apply=yes \
+	file://build-fix.patch \
     file://nss.pc.in \
 "
 

@@ -10,10 +10,10 @@ PROVIDES = "gdk-pixbuf"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "http://download.gnome.org/sources/gtk+/${MAJ_VER}/gtk+-${PV}.tar.bz2;name=gtk \
-	file://hardcoded_libtool.patch;apply=yes \
-	file://run-iconcache.patch;apply=yes \
-	file://toggle-font.diff;apply=yes;striplevel=0 \
-	file://xsettings.patch;apply=yes \
+	file://hardcoded_libtool.patch \
+	file://run-iconcache.patch \
+	file://toggle-font.diff;striplevel=0 \
+	file://xsettings.patch \
 	"
 
 INC_PR = "r8"

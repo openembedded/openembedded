@@ -9,7 +9,7 @@ PR = "r0"
 inherit gpe
 
 SRC_URI = "${GPE_SVN} \
-           file://libxsettings-svn-makefile-fix.patch;apply=yes \
+           file://libxsettings-svn-makefile-fix.patch \
            file://Makefile.dpkg_ipkg \
            file://Makefile.translation"
 

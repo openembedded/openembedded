@@ -4,11 +4,11 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
-           file://cross-compile.patch;apply=yes \
-           file://runltp-path.patch;apply=yes \
+           file://cross-compile.patch \
+           file://runltp-path.patch \
            file://ltp-run \
-           file://posix_shell_compat.patch;apply=yes \
-           file://ballista.patch;apply=yes"
+           file://posix_shell_compat.patch \
+           file://ballista.patch"
 
 S = "${WORKDIR}/ltp-full-${PV}"
 

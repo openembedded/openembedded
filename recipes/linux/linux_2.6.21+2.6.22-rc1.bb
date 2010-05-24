@@ -14,16 +14,16 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2;name=k
 	   "
 
 SRC_URI_append_simpad = "\
-           file://linux-2.6.21-SIMpad-cs3-simpad.patch;apply=yes \
-           file://linux-2.6.21-SIMpad-mq200.patch;apply=yes \
-           file://linux-2.6.21-SIMpad-serial-and-gpio_keys.patch;apply=yes \
-           file://linux-2.6.21-SIMpad-ucb1x00-switches.patch;apply=yes \
-           file://linux-2.6.21-pcmcia-device-to-platform-driver.patch;apply=yes \
+           file://linux-2.6.21-SIMpad-cs3-simpad.patch \
+           file://linux-2.6.21-SIMpad-mq200.patch \
+           file://linux-2.6.21-SIMpad-serial-and-gpio_keys.patch \
+           file://linux-2.6.21-SIMpad-ucb1x00-switches.patch \
+           file://linux-2.6.21-pcmcia-device-to-platform-driver.patch \
            "
-SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.22-rc1-at91.patch.gz;apply=yes;name=at91patch \
-                          file://at91-mmcfix.patch;apply=yes"
-SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.22-rc1-at91.patch.gz;apply=yes;name=at91patch \
-                                 file://at91-mmcfix.patch;apply=yes"
+SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.22-rc1-at91.patch.gz;name=at91patch \
+                          file://at91-mmcfix.patch"
+SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.22-rc1-at91.patch.gz;name=at91patch \
+                                 file://at91-mmcfix.patch"
 
 S = "${WORKDIR}/linux-2.6.21"
 

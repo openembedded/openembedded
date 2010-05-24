@@ -1,6 +1,6 @@
 require libxsettings-client.inc
 
-SRC_URI += "        file://Makefile-am.patch;apply=yes"
+SRC_URI += "        file://Makefile-am.patch"
 
 
 PR ="r2"

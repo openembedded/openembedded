@@ -13,8 +13,8 @@ PR = "6"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
-	file://linux-uclibc.patch;apply=yes \
-	file://${PV}-gcc43.patch;apply=yes \
+	file://linux-uclibc.patch \
+	file://${PV}-gcc43.patch \
 	"
 
 S = "${WORKDIR}/${BOOST_P}"

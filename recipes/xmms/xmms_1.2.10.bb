@@ -6,8 +6,8 @@ SECTION = "x11/multimedia"
 DEPENDS = "gtk+-1.2 libvorbis mikmod alsa-lib libsm esound"
 
 SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
-           file://gcc4.patch;apply=yes \
-           file://xmms-config-dequote.patch;apply=yes \
+           file://gcc4.patch \
+           file://xmms-config-dequote.patch \
 	   file://acinclude.m4 \
            file://xmms.sh"
 PR = "r5"

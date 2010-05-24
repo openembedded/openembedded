@@ -3,8 +3,8 @@ DEPENDS="sysfsutils"
 PR ="r1"
 
 SRC_URI="http://www.piware.de/projects/pmount-0.9.4.tar.gz \
-	 file://mmc-fix.patch;apply=yes \
-	 file://no-hal.patch;apply=yes"
+	 file://mmc-fix.patch \
+	 file://no-hal.patch"
 
 do_install() {
 	install -m 4755 -D ${S}/pmount ${D}/${bindir}/pmount

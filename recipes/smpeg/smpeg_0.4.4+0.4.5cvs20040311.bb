@@ -6,8 +6,8 @@ DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
 
 SRC_URI = "cvs://anonymous:anonymous@cvs.icculus.org/cvs/cvsroot;module=smpeg;date=20040311 \
-	   file://m4.patch;apply=yes \
-	   file://compile.patch;apply=yes"
+	   file://m4.patch \
+	   file://compile.patch"
 S = "${WORKDIR}/smpeg"
 
 inherit autotools

@@ -9,34 +9,34 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=ke
            file://defconfig"
 
 SRC_URI_append_acern30 = "\
-           http://rtp-net.org/ipaq/patches/2.6.14-3/v2.6.14-gitcurrent.patch;apply=yes;name=patch1 \
-           http://rtp-net.org/ipaq/patches/2.6.14-3/full.patch;apply=yes;name=patch2 \
-           file://n30-cleanup.patch;apply=yes \
-           file://n35.patch;apply=yes \
-           file://n30-lcd.patch;apply=yes \
-           file://n30-backlight.patch;apply=yes \
-           file://n30-ts.patch;apply=yes \
-           file://n30-buttons.patch;apply=yes \
-           file://n30-mmc.patch;apply=yes \
-           file://n30-mmc-power.patch;apply=yes \
-           file://n30-mmc-wprotect.patch;apply=yes \
-           file://n30-nand.patch;apply=yes \
-           file://n30-usbstart.patch;apply=yes \
-           file://n30-hardcode.patch;apply=yes \
-           file://n30-apm.patch;apply=yes \
-           file://s3c2410fb-resume.patch;apply=yes \
-           file://s3c2410_ts-pm.patch;apply=yes \
+           http://rtp-net.org/ipaq/patches/2.6.14-3/v2.6.14-gitcurrent.patch;name=patch1 \
+           http://rtp-net.org/ipaq/patches/2.6.14-3/full.patch;name=patch2 \
+           file://n30-cleanup.patch \
+           file://n35.patch \
+           file://n30-lcd.patch \
+           file://n30-backlight.patch \
+           file://n30-ts.patch \
+           file://n30-buttons.patch \
+           file://n30-mmc.patch \
+           file://n30-mmc-power.patch \
+           file://n30-mmc-wprotect.patch \
+           file://n30-nand.patch \
+           file://n30-usbstart.patch \
+           file://n30-hardcode.patch \
+           file://n30-apm.patch \
+           file://s3c2410fb-resume.patch \
+           file://s3c2410_ts-pm.patch \
            file://s3c2410_lcd-pm.c;apply=yes \
-           file://s3c2410mci-pm.patch;apply=yes \
-           file://s3c2410-nand-pm.patch;apply=yes \
-           file://n30-nand-hack.patch;apply=yes \
-           file://mmc-plus.patch;apply=yes \
-           file://gpio-sysfs.patch;apply=yes \
-           file://regdump.patch;apply=yes \
-           file://n30-pm.patch;apply=yes \
-           file://spi.patch;apply=yes \
-           file://wingel-hacking.patch;apply=yes \
-           file://gcc4-fixes.patch;apply=yes \
+           file://s3c2410mci-pm.patch \
+           file://s3c2410-nand-pm.patch \
+           file://n30-nand-hack.patch \
+           file://mmc-plus.patch \
+           file://gpio-sysfs.patch \
+           file://regdump.patch \
+           file://n30-pm.patch \
+           file://spi.patch \
+           file://wingel-hacking.patch \
+           file://gcc4-fixes.patch \
            "
 
 inherit kernel

@@ -11,7 +11,7 @@ XORG_PN = "libX11"
 
 EXTRA_OECONF += "--without-xcb"
 
-SRC_URI += " file://ruutf8.patch;apply=yes"
+SRC_URI += " file://ruutf8.patch"
 
 do_compile() {
         (

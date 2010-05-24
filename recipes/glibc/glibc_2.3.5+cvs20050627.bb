@@ -30,39 +30,39 @@ python __anonymous () {
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
-#	   file://noinfo.patch;apply=yes
-#	   file://ldconfig.patch;apply=yes;striplevel=0
-#	   file://arm-machine-gmon.patch;apply=yes;striplevel=0 \
+#	   file://noinfo.patch
+#	   file://ldconfig.patch;striplevel=0
+#	   file://arm-machine-gmon.patch;striplevel=0 \
 #	   \
-#	   file://arm-ioperm.patch;apply=yes;striplevel=0 \
-#	   file://ldd.patch;apply=yes;striplevel=0 \
+#	   file://arm-ioperm.patch;striplevel=0 \
+#	   file://ldd.patch;striplevel=0 \
 SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat.com__20050627.tar.gz;name=archive \
 	   http://familiar.handhelds.org/source/v0.8.3/stash_ports_sources.redhat.com__20050627.tar.gz;name=ports \
-	   file://arm-audit.patch;apply=yes \
-	   file://arm-audit2.patch;apply=yes \
-	   file://arm-no-hwcap.patch;apply=yes \
-	   file://arm-memcpy.patch;apply=yes \
-	   file://arm-longlong.patch;apply=yes;striplevel=0 \
-	   file://fhs-linux-paths.patch;apply=yes \
-	   file://dl-cache-libcmp.patch;apply=yes \
-	   file://ldsocache-varrun.patch;apply=yes \
-	   file://5090_all_stubs-rule-fix.patch;apply=yes \
-	   file://raise.patch;apply=yes \
-	   file://zecke-sane-readelf.patch;apply=yes \
-	   file://glibc-2.3.5-fix-weak-alias-arm.patch;apply=yes \
-	   file://glibc-2.3.5-fix-weak-alias-arm-2.patch;apply=yes \
+	   file://arm-audit.patch \
+	   file://arm-audit2.patch \
+	   file://arm-no-hwcap.patch \
+	   file://arm-memcpy.patch \
+	   file://arm-longlong.patch;striplevel=0 \
+	   file://fhs-linux-paths.patch \
+	   file://dl-cache-libcmp.patch \
+	   file://ldsocache-varrun.patch \
+	   file://5090_all_stubs-rule-fix.patch \
+	   file://raise.patch \
+	   file://zecke-sane-readelf.patch \
+	   file://glibc-2.3.5-fix-weak-alias-arm.patch \
+	   file://glibc-2.3.5-fix-weak-alias-arm-2.patch \
 	   file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
 # seems to fail on tls platforms
-SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;apply=yes"
-SRC_URI_append_armeb = " file://dyn-ldconfig-20041128.patch;apply=yes"
+SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch"
+SRC_URI_append_armeb = " file://dyn-ldconfig-20041128.patch"
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;apply=yes \
-                       file://superh-fcntl.patch;apply=yes;striplevel=0"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;apply=yes \
-                       file://superh-fcntl.patch;apply=yes;striplevel=0"
+SRC_URI_append_sh3 = " file://no-z-defs.patch \
+                       file://superh-fcntl.patch;striplevel=0"
+SRC_URI_append_sh4 = " file://no-z-defs.patch \
+                       file://superh-fcntl.patch;striplevel=0"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"

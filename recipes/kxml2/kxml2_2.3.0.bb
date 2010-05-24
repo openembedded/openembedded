@@ -16,7 +16,7 @@ JAR = "${PN}-${PV}.jar"
 
 SRC_URI = "\
     ${SOURCEFORGE_MIRROR}/kxml/${PN}-src-${PV}.zip \
-    file://makefile.patch;apply=yes \
+    file://makefile.patch \
     "
 
 do_compile() {

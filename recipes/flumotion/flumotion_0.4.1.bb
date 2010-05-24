@@ -12,8 +12,8 @@ RDEPENDS_${PN}-gui = "${PN} python-pygtk python-pycairo"
 PR = "r10"
 
 SRC_URI = "http://www.flumotion.net/src/flumotion/flumotion-${PV}.tar.bz2 \
-           file://python-path.patch;apply=yes \
-           file://no-check-for-python-stuff.patch;apply=yes"
+           file://python-path.patch \
+           file://no-check-for-python-stuff.patch"
 
 inherit autotools distutils-base pkgconfig
 

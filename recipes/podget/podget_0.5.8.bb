@@ -7,7 +7,7 @@ RDEPENDS = "bash sed wget"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/podget/podget_${PV}.tar.gz \
-           file://busybox_df.patch;apply=yes"
+           file://busybox_df.patch"
 
 S = "${WORKDIR}/podget"
 

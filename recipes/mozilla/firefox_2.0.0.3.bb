@@ -2,17 +2,17 @@ DEPENDS += "cairo"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
-	file://xptcstubs.patch;apply=yes \
-	file://no-xmb.patch;apply=yes \
+	file://xptcstubs.patch \
+	file://no-xmb.patch \
 	file://jsautocfg.h \
-	file://extensions-hack.patch;apply=yes \
-	file://security-cross.patch;apply=yes \
-	file://jsautocfg-dontoverwrite.patch;apply=yes \
-	file://xptcinvoke-arm.patch;apply=yes \
-	file://eabi-fix.patch;apply=yes \
-	file://eabi-fix2.patch;apply=yes \
-	file://eabi-fix3.patch;apply=yes \
-	file://linkage-problem.patch;apply=yes \
+	file://extensions-hack.patch \
+	file://security-cross.patch \
+	file://jsautocfg-dontoverwrite.patch \
+	file://xptcinvoke-arm.patch \
+	file://eabi-fix.patch \
+	file://eabi-fix2.patch \
+	file://eabi-fix3.patch \
+	file://linkage-problem.patch \
 "
 
 S = "${WORKDIR}/mozilla"

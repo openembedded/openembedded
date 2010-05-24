@@ -8,19 +8,19 @@ COMPATIBLE_MACHINE = "jornada7xx"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
            file://defconf_jlime \
-	   file://AsmArm-ArchSa1100-Jornada720.patch;apply=yes \
-	   file://Cpu-Sa1110-Jornada720.patch;apply=yes \
-	   file://Kconfig-Arch-Jornada720.patch;apply=yes \
-	   file://Kconfig-Keyboard-Jornada720.patch;apply=yes \
-	   file://Kconfig-Touchscreen-Jornada720.patch;apply=yes \
-	   file://Kconfig-Video-Jornada720.patch;apply=yes \
-	   file://Mach-Sa1100-Jornada720.patch;apply=yes \
-	   file://Makefile-Keyboard-Jornada720.patch;apply=yes \
-	   file://Makefile-Touchscreen-Jornada720.patch;apply=yes \
-	   file://Makefile-Video-Jornada720.patch;apply=yes \
-	   file://Newfile-Epson1356fb.patch;apply=yes \
-	   file://Newfile-Jornada720_kbd.patch;apply=yes \
-	   file://Newfile-Jornada720_ts.patch;apply=yes"
+	   file://AsmArm-ArchSa1100-Jornada720.patch \
+	   file://Cpu-Sa1110-Jornada720.patch \
+	   file://Kconfig-Arch-Jornada720.patch \
+	   file://Kconfig-Keyboard-Jornada720.patch \
+	   file://Kconfig-Touchscreen-Jornada720.patch \
+	   file://Kconfig-Video-Jornada720.patch \
+	   file://Mach-Sa1100-Jornada720.patch \
+	   file://Makefile-Keyboard-Jornada720.patch \
+	   file://Makefile-Touchscreen-Jornada720.patch \
+	   file://Makefile-Video-Jornada720.patch \
+	   file://Newfile-Epson1356fb.patch \
+	   file://Newfile-Jornada720_kbd.patch \
+	   file://Newfile-Jornada720_ts.patch"
 
 S = "${WORKDIR}/linux-${PV}"
 

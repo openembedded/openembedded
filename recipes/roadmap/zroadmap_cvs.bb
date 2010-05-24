@@ -4,10 +4,10 @@ PV = "0.0+cvs${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "cvs://anonymous:@roadmap.cvs.sf.net/cvsroot/roadmap;module=roadmap \
-           file://cross.patch;apply=yes;striplevel=2 \
-           file://options.mk.patch;apply=yes;striplevel=2 \
-           file://qt/qt2-fixes.patch;apply=yes \
-           file://roadmap_path.patch;apply=yes \
+           file://cross.patch;striplevel=2 \
+           file://options.mk.patch;striplevel=2 \
+           file://qt/qt2-fixes.patch \
+           file://roadmap_path.patch \
            http://roadmap.digitalomaha.net/maps/usdir.rdm.tar.gz;name=usdir"
 
 S = "${WORKDIR}/roadmap/src"

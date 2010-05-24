@@ -1,11 +1,11 @@
 require kismet.inc
 
 # patches *.diff are from openSUSE
-SRC_URI += "file://kismet-2008-05-R1-crash.diff;apply=yes;striplevel=0 \
-            file://kismet-2008-05-R1-fmt.diff;apply=yes;striplevel=0 \
-            file://kismet-2008-05-R1-infinite-loop.diff;apply=yes;striplevel=0 \
-            file://kismet-2008-05-R1-nonvoid.diff;apply=yes;striplevel=0 \
-            file://fix_strip.patch;apply=yes"
+SRC_URI += "file://kismet-2008-05-R1-crash.diff;striplevel=0 \
+            file://kismet-2008-05-R1-fmt.diff;striplevel=0 \
+            file://kismet-2008-05-R1-infinite-loop.diff;striplevel=0 \
+            file://kismet-2008-05-R1-nonvoid.diff;striplevel=0 \
+            file://fix_strip.patch"
 
 PR = "r0"
 

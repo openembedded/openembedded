@@ -4,9 +4,9 @@ require libtool.inc
 PR = "${INC_PR}.0"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
-           file://autotools.patch;apply=yes \
-	   file://uclibc.patch;apply=yes \
-           file://never-ever-do-rpath.patch;apply=yes" 
+           file://autotools.patch \
+	   file://uclibc.patch \
+           file://never-ever-do-rpath.patch" 
 
 S = "${WORKDIR}/libtool-${PV}"
 

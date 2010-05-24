@@ -5,7 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 PR = "r3"
 
 SRC_URI += " \
-    file://remove-gtk-doc-make.patch;apply=yes \
+    file://remove-gtk-doc-make.patch \
     file://nm-system-settings.conf \
     file://NetworkManager \
     file://gtk-doc.make \

@@ -8,10 +8,10 @@ SECTION = "base"
 LICENSE = "GPLv2"
 
 SRC_URI = "ftp://ftp.namesys.com/pub/${PN}/old-versions/${P}.tar.gz \
-		file://oid40.c.patch;apply=yes \
-		file://key_short.c.patch;apply=yes \
-		file://key_large.c.patch;apply=yes \
-		file://align.patch;apply=yes"
+		file://oid40.c.patch \
+		file://key_short.c.patch \
+		file://key_large.c.patch \
+		file://align.patch"
 
 LIBAAL = "libaal"
 

@@ -1,9 +1,9 @@
 INC_PR = "r0"
 PR = "${INC_PR}.5"
 
-SRC_URI_append += "file://sh4-asmfix.patch;apply=yes \
-                   file://use-includedir.patch;apply=yes \
-                   file://dont_use_mips_h_constraint.patch;apply=yes \
+SRC_URI_append += "file://sh4-asmfix.patch \
+                   file://use-includedir.patch \
+                   file://dont_use_mips_h_constraint.patch \
 		  "
 require gmp.inc
 LICENSE = "GPLv3 LGPLv3"

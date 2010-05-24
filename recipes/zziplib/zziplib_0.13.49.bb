@@ -3,8 +3,8 @@ require zziplib.inc
 PR = "r1"
 
 SRC_URI += "\
-  file://zip_c.patch;apply=yes \
-  file://zziplib-autoconf.patch;apply=yes \
+  file://zip_c.patch \
+  file://zziplib-autoconf.patch \
   "
 
 #EXTRA_OECONF = "--srcdir=${S} --enable-builddir=${S}/build"

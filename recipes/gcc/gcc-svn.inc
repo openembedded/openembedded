@@ -14,11 +14,11 @@ PV = "4.6+svnr${SRCPV}"
 FILESPATHPKG .= ":gcc-svn"
 
 SRC_URI = "svn://gcc.gnu.org/svn/gcc;module=trunk \
-	   file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;apply=yes \
-	   file://100-uclibc-conf.patch;apply=yes \
-           file://gcc-uclibc-locale-ctype_touplow_t.patch;apply=yes \
-	   file://cache-amnesia.patch;apply=yes \
-	   file://gcc-flags-for-build.patch;apply=yes \
+	   file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch \
+	   file://100-uclibc-conf.patch \
+           file://gcc-uclibc-locale-ctype_touplow_t.patch \
+	   file://cache-amnesia.patch \
+	   file://gcc-flags-for-build.patch \
 	  "
 
 # Language Overrides

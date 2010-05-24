@@ -11,12 +11,12 @@ PR = "${INC_PR}.0"
 inherit gettext
 
 SRC_URI += "\
-  file://buildfix.patch;apply=yes \
-  file://autoconf_version.patch;apply=yes \
-  file://tls_m4.patch;apply=yes \
-  file://configure_silent_rules.patch;apply=yes \
-  file://gettext.patch;apply=yes \
-  file://fixbluezbuild.patch;apply=yes \
+  file://buildfix.patch \
+  file://autoconf_version.patch \
+  file://tls_m4.patch \
+  file://configure_silent_rules.patch \
+  file://gettext.patch \
+  file://fixbluezbuild.patch \
 "
 
 do_compile_prepend() {

@@ -4,15 +4,15 @@ LICENSE = "BSD"
 PR = "r12"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
-           file://autotools.patch;apply=yes \
-           file://tail.patch;apply=yes \
-           file://imapopts.c.gcc4.patch;apply=yes \
-           file://imapopts.h.gcc4.patch;apply=yes \
+           file://autotools.patch \
+           file://tail.patch \
+           file://imapopts.c.gcc4.patch \
+           file://imapopts.h.gcc4.patch \
 	   file://cyrus \
 	   file://cyrus.conf_2.2 \
 	   file://imapd.conf_2.2 \
 	   file://volatiles \
-           file://remove-install-strip.patch;apply=yes \
+           file://remove-install-strip.patch \
 	   "
 
 inherit autotools update-rc.d

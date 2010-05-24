@@ -4,9 +4,9 @@ require xorg-xserver-common.inc
 PE = "1"
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://drmfix.patch;apply=yes \
-            file://glyphstr.patch;apply=yes \
-            file://report-correct-randr12.patch;apply=yes"
+SRC_URI += "file://drmfix.patch \
+            file://glyphstr.patch \
+            file://report-correct-randr12.patch"
 
 export LDFLAGS += " -ldl "
 

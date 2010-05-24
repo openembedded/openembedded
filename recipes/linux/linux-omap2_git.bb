@@ -11,32 +11,32 @@ PR = "r64"
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
 
-SRC_URI_append_beagleboard = " file://no-harry-potter.diff;apply=yes \
-           file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch;apply=yes \
-	   file://0001-omap3-cpuidle.patch;apply=yes \ 
-           file://0002-omap3-cpuidle.patch;apply=yes \
-           file://timer-suppression.patch;apply=yes \
-           file://ASoC-TWL4030-codec-driver.patch;apply=yes \
-           file://ASoC-machine-driver-for-OMAP3-EVM.patch;apply=yes \
-           file://ASoC-machine-driver-for_OMAP3-Beagle.patch;apply=yes \
-           file://16bpp.patch;apply=yes \
-           file://no-empty-flash-warnings.patch;apply=yes \
+SRC_URI_append_beagleboard = " file://no-harry-potter.diff \
+           file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch \
+	   file://0001-omap3-cpuidle.patch \ 
+           file://0002-omap3-cpuidle.patch \
+           file://timer-suppression.patch \
+           file://ASoC-TWL4030-codec-driver.patch \
+           file://ASoC-machine-driver-for-OMAP3-EVM.patch \
+           file://ASoC-machine-driver-for_OMAP3-Beagle.patch \
+           file://16bpp.patch \
+           file://no-empty-flash-warnings.patch \
            file://logo_linux_clut224.ppm \
-           file://oprofile-0.9.3.armv7.diff;apply=yes \
-           file://01-fix-timing-print.diff;apply=yes \
-           file://03-enable-overlay-opt.diff;apply=yes \
-           file://04-use-pcd.diff;apply=yes \
-           file://05-fix-display-panning.diff;apply=yes \
-           file://06-ensure-fclk.diff;apply=yes \
-           file://07-set-burst-size.diff;apply=yes \
-           file://cache-display-fix.patch;apply=yes \
-           file://mru-clocks1.diff;apply=yes \
-           file://mru-clocks2.diff;apply=yes \
-           file://mru-clocks3.diff;apply=yes \	
-           file://4bitmmc.diff;apply=yes \
-           file://no-cortex-deadlock.patch;apply=yes \
+           file://oprofile-0.9.3.armv7.diff \
+           file://01-fix-timing-print.diff \
+           file://03-enable-overlay-opt.diff \
+           file://04-use-pcd.diff \
+           file://05-fix-display-panning.diff \
+           file://06-ensure-fclk.diff \
+           file://07-set-burst-size.diff \
+           file://cache-display-fix.patch \
+           file://mru-clocks1.diff \
+           file://mru-clocks2.diff \
+           file://mru-clocks3.diff \	
+           file://4bitmmc.diff \
+           file://no-cortex-deadlock.patch \
            file://01-make_tick_gptimer_configurable;apply=yes \
-           file://read_die_ids.patch;apply=yes \
+           file://read_die_ids.patch \
            file://omap23-pm-noop.eml;apply=yes \
            file://01-omappm-srf.eml;apply=yes \
            file://02-omappm-mpu-latency-modeling.eml;apply=yes \
@@ -51,18 +51,18 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;apply=yes \
            file://01-postrate-notifier.eml;apply=yes \
            file://02-postrate-notifier.eml;apply=yes \
            file://01-omap3-cpufreq.eml;apply=yes \
-           file://01-beagle-cpufreq.diff;apply=yes \
-           file://musb-dmafix.patch;apply=yes \ 
+           file://01-beagle-cpufreq.diff \
+           file://musb-dmafix.patch \ 
 "
 
-SRC_URI_append_omap3evm = " file://no-harry-potter.diff;apply=yes \
-           file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch;apply=yes \
-           file://0001-omap3-cpuidle.patch;apply=yes \
-           file://0002-omap3-cpuidle.patch;apply=yes \
-           file://timer-suppression.patch;apply=yes \
-           file://soc.patch;apply=yes \
-           file://no-empty-flash-warnings.patch;apply=yes \
-           file://touchscreen.patch;apply=yes \
+SRC_URI_append_omap3evm = " file://no-harry-potter.diff \
+           file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch \
+           file://0001-omap3-cpuidle.patch \
+           file://0002-omap3-cpuidle.patch \
+           file://timer-suppression.patch \
+           file://soc.patch \
+           file://no-empty-flash-warnings.patch \
+           file://touchscreen.patch \
 "
 
 

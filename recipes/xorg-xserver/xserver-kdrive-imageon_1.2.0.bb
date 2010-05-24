@@ -12,18 +12,18 @@ PR = "r8"
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-${PV}:${FILE_DIRNAME}/xserver-kdrive:${FILE_DIRNAME}/files"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
-	file://kdrive-evdev.patch;apply=yes  \
-	file://kdrive-use-evdev.patch;apply=yes  \
-	file://disable-xf86-dga-xorgcfg.patch;apply=yes \
-	file://enable-xcalibrate.patch;apply=yes \
-        file://fbcompositesrc8888revnpx0565.patch;apply=yes \
-        file://kdrive-vidmemarea.patch;apply=yes \
-        file://kdrive-imageon.patch;apply=yes \
-        file://xcalibrate_coords.patch;apply=yes \
-        file://enable-builtin-fonts.patch;apply=yes \
-	file://fix-picturestr-include-order.patch;apply=yes \
-	file://split_multiple_AC_SUBST.patch;apply=yes \
-	file://report-correct-randr10.patch;apply=yes \
+	file://kdrive-evdev.patch  \
+	file://kdrive-use-evdev.patch  \
+	file://disable-xf86-dga-xorgcfg.patch \
+	file://enable-xcalibrate.patch \
+        file://fbcompositesrc8888revnpx0565.patch \
+        file://kdrive-vidmemarea.patch \
+        file://kdrive-imageon.patch \
+        file://xcalibrate_coords.patch \
+        file://enable-builtin-fonts.patch \
+	file://fix-picturestr-include-order.patch \
+	file://split_multiple_AC_SUBST.patch \
+	file://report-correct-randr10.patch \
 	"
        
 S = "${WORKDIR}/xorg-server-${PV}"

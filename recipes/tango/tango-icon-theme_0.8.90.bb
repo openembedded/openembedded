@@ -4,7 +4,7 @@ LICENSE = "http://creativecommons.org/licenses/by-sa/2.5/"
 inherit gnome
 
 SRC_URI = "http://tango.freedesktop.org/releases/${PN}-${PV}.tar.gz \
-	   file://no-icon-naming-utils.patch;apply=yes"
+	   file://no-icon-naming-utils.patch"
 EXTRA_OECONF = "--disable-icon-framing"
 
 PACKAGE_ARCH = "all"

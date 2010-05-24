@@ -37,46 +37,46 @@ SRC_URI = "\
   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2;name=ports \
   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2;name=libidn \
-  file://arm-memcpy.patch;apply=yes \
-  file://arm-longlong.patch;apply=yes \
-  file://fhs-linux-paths.patch;apply=yes \
-  file://dl-cache-libcmp.patch;apply=yes \
-  file://nptl-crosscompile.patch;apply=yes \
-  file://glibc-2.5-local-dynamic-resolvconf.patch;apply=yes;striplevel=0 \
-  file://glibc-check_pf.patch;apply=yes;striplevel=0 \
-  file://zecke-sane-readelf.patch;apply=yes \
-  file://ldd-unbash.patch;apply=yes \
+  file://arm-memcpy.patch \
+  file://arm-longlong.patch \
+  file://fhs-linux-paths.patch \
+  file://dl-cache-libcmp.patch \
+  file://nptl-crosscompile.patch \
+  file://glibc-2.5-local-dynamic-resolvconf.patch;striplevel=0 \
+  file://glibc-check_pf.patch;striplevel=0 \
+  file://zecke-sane-readelf.patch \
+  file://ldd-unbash.patch \
   file://generic-bits_select.h \
   file://generic-bits_types.h \
   file://generic-bits_typesizes.h \
   file://generic-bits_time.h \
   file://etc/ld.so.conf \
   file://generate-supported.mk \
-  file://glibc-2.6.1-RTLD_SINGLE_THREAD_P-1.patch;apply=yes \
-  file://glibc-2.6.1-use-short-for-fnstsw.patch;apply=yes \
-  file://glibc-use-isystem-include-fixed.patch;apply=yes \
-  file://glibc-arm-no-asm-page.patch;apply=yes \
-  file://armv4t-interworking.patch;apply=yes \
-  file://march-i686.patch;apply=yes;striplevel=0 \
+  file://glibc-2.6.1-RTLD_SINGLE_THREAD_P-1.patch \
+  file://glibc-2.6.1-use-short-for-fnstsw.patch \
+  file://glibc-use-isystem-include-fixed.patch \
+  file://glibc-arm-no-asm-page.patch \
+  file://armv4t-interworking.patch \
+  file://march-i686.patch;striplevel=0 \
 "
 
 SRC_URI_append_ep9312 = "\
-  file://glibc-crunch-endian-littleword-littlebyte.patch;apply=yes \
-  file://glibc-crunch-eabi-setjmp_longjmp.patch;apply=yes \
-  file://glibc-crunch-eabi-unwind.patch;apply=yes \
-  file://glibc-crunch-eabi.patch;apply=yes \
-  file://glibc-crunch-eabi-force.patch;apply=yes \
-  file://glibc-crunch-eabi-fraiseexcpt.patch;apply=yes \
+  file://glibc-crunch-endian-littleword-littlebyte.patch \
+  file://glibc-crunch-eabi-setjmp_longjmp.patch \
+  file://glibc-crunch-eabi-unwind.patch \
+  file://glibc-crunch-eabi.patch \
+  file://glibc-crunch-eabi-force.patch \
+  file://glibc-crunch-eabi-fraiseexcpt.patch \
 "
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;apply=yes"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;apply=yes"
+SRC_URI_append_sh3 = " file://no-z-defs.patch"
+SRC_URI_append_sh4 = " file://no-z-defs.patch"
 
 # PowerPC Patches to add support for soft-float
 SRC_URI_append_powerpc = "\
-  file://powerpc-sqrt-hack.diff;apply=yes \
-  file://glibc-2.6.1-powerpc-nofpu.patch;apply=yes \
+  file://powerpc-sqrt-hack.diff \
+  file://glibc-2.6.1-powerpc-nofpu.patch \
 "
 
 S = "${WORKDIR}/glibc-${PV}"

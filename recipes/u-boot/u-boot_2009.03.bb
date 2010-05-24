@@ -8,12 +8,12 @@ DEPENDS_append_hipox = " oxnas-boot-tools oxnas-boot-tools-native "
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 "
 
-SRC_URI_append_hipox = "file://00-hipox.patch;apply=yes \
-	file://01-hipox-fix-gmac-reset.patch;apply=yes \
-	file://02-hipox-enable-mmu.patch;apply=yes \
-	file://03-hipox-direct-switch.patch;apply=yes \
-	file://04-hipox-env.patch;apply=yes \
-	file://10-hipox-boot-abort-key.patch;apply=yes \
+SRC_URI_append_hipox = "file://00-hipox.patch \
+	file://01-hipox-fix-gmac-reset.patch \
+	file://02-hipox-enable-mmu.patch \
+	file://03-hipox-direct-switch.patch \
+	file://04-hipox-env.patch \
+	file://10-hipox-boot-abort-key.patch \
 "
 
 TARGET_LDFLAGS = ""

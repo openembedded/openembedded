@@ -10,7 +10,7 @@ PR = "r2"
 inherit autotools gpe
 
 SRC_URI = "${GPE_SVN}"
-SRC_URI += "file://handle-import-categories.patch;apply=yes"
+SRC_URI += "file://handle-import-categories.patch"
 
 S = "${WORKDIR}/${PN}"
 

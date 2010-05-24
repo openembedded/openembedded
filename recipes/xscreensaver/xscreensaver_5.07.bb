@@ -2,9 +2,9 @@ require xscreensaver.inc
 PR = "${INC_PR}.0"
 
 SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
-           file://configure.in.patch;apply=yes \
-           file://glfix.patch;apply=yes \
-           file://dpms-header.patch;apply=yes \
+           file://configure.in.patch \
+           file://glfix.patch \
+           file://dpms-header.patch \
            file://XScreenSaver"
 
 

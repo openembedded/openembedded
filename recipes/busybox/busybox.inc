@@ -18,17 +18,17 @@ SRC_URI = "\
   file://busybox-httpd \
   file://busybox-udhcpd \
   file://default.script file://simple.script \
-  file://dhcp-hostname.patch;apply=yes \
+  file://dhcp-hostname.patch \
   file://hwclock.sh \
-  file://ifupdown-spurious-environ.patch;apply=yes \
+  file://ifupdown-spurious-environ.patch \
   file://mount.busybox \
   file://syslog \
   file://syslog.conf \
-  file://udhcpscript.patch;apply=yes \
+  file://udhcpscript.patch \
   file://umount.busybox \
 "
 
-SRC_URI_append_nylon = " file://xargs-double-size.patch;apply=yes"
+SRC_URI_append_nylon = " file://xargs-double-size.patch"
 
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"

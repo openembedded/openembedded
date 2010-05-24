@@ -6,7 +6,7 @@ SRC_URI = "\
 	file://30_pkgconfig.dpatch;apply=yes \
 	file://81_sonames.dpatch;apply=yes \
 	file://99_configure.dpatch;apply=yes \
-	file://unbreak-build.diff;apply=yes \
+	file://unbreak-build.diff \
 	"
 
 SRC_URI[archive.md5sum] = "7c6e75a0867ce2b9ec62e399a908b5ac"

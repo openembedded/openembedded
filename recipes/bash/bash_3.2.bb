@@ -3,7 +3,7 @@ require bash.inc
 PR = "r8"
 
 SRC_URI += "\
-           file://builtins.patch;apply=yes \
+           file://builtins.patch \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-001;apply=yes;striplevel=0;name=bash32-01 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-002;apply=yes;striplevel=0;name=bash32-02 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-003;apply=yes;striplevel=0;name=bash32-03 \
@@ -43,7 +43,7 @@ SRC_URI += "\
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-037;apply=yes;striplevel=0;name=bash32-37 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-038;apply=yes;striplevel=0;name=bash32-38 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-039;apply=yes;striplevel=0;name=bash32-39 \
-           file://default_path.patch;apply=yes \
+           file://default_path.patch \
            "
 
 SRC_URI[archive.md5sum] = "00bfa16d58e034e3c2aa27f390390d30"

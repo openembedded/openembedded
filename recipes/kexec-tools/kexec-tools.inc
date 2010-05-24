@@ -9,5 +9,5 @@ inherit autotools
 
 
 SRC_URI = "http://www.xmission.com/~ebiederm/files/kexec/kexec-tools-${PV}.tar.gz \
-           file://kexec-tools-arm.patch;apply=yes \
-           file://kexec-arm-atags.patch;apply=yes"
+           file://kexec-tools-arm.patch \
+           file://kexec-arm-atags.patch"

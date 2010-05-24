@@ -3,9 +3,9 @@ PROVIDES = "qt3x11"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
-	   file://configure.patch;apply=yes \
-	   file://no-examples.patch;apply=yes \
-           file://gcc4_1-HACK.patch;apply=yes"
+	   file://configure.patch \
+	   file://no-examples.patch \
+           file://gcc4_1-HACK.patch"
 
 require qt-x11-free-common.inc
 

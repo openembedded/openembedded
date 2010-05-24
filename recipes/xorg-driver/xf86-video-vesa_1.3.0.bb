@@ -1,7 +1,7 @@
 require xorg-driver-video.inc
 PE = "1"
 
-SRC_URI += "file://fix-includepath.patch;apply=yes"
+SRC_URI += "file://fix-includepath.patch"
 
 #DESCRIPTION = ""
 

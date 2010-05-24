@@ -7,8 +7,8 @@ RDEPENDS += "libxxf86dga"
 PR = "r0"
 
 SRC_URI = "http://easynews.dl.sourceforge.net/sourceforge/xaos/XaoS-3.2.3.tar.gz \
-           file://fix-build.patch;apply=yes \
-           file://fix-aalib-configure.patch;apply=yes"
+           file://fix-build.patch \
+           file://fix-aalib-configure.patch"
 
 S = "${WORKDIR}/XaoS-${PV}"
 

@@ -3,7 +3,7 @@ LICENSE    = "GPL"
 DEPENDS    = "virtual/xserver tslib"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/t/${PN}/${PN}_${PV}.tar.gz \
-           file://makefile.patch;apply=yes;striplevel=0"
+           file://makefile.patch;striplevel=0"
 
 S = "${WORKDIR}/${PN}"
 

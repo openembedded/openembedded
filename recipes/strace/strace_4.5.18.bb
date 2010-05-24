@@ -13,7 +13,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
           "
 
 SRC_URI_avr32 = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
-           file://strace-4.5.15.atmel.1.patch;apply=yes \  
+           file://strace-4.5.15.atmel.1.patch \  
           "
 
 inherit autotools

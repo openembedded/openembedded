@@ -7,8 +7,8 @@ PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.25/patch-2.6.25-rc4.bz2;apply=yes;name=patch \
-           file://mainstone-keypad.patch;apply=yes \
-	   file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch;apply=yes \
+           file://mainstone-keypad.patch \
+	   file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.24"

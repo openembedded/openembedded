@@ -9,7 +9,7 @@ DEPENDS = "libnet-1.1"
 PR = "r0"
 
 SRC_URI = "http://michael.toren.net/code/tcptraceroute/tcptraceroute-${PV}.tar.gz \
-	   file://configure.ac.patch;apply=yes"
+	   file://configure.ac.patch"
 
 inherit autotools
 

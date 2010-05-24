@@ -8,7 +8,7 @@ APPNAME = "petitpeintu"
 APPDESKTOP = "${WORKDIR}"
 
 SRC_URI = "http://sun.dhis.portside.net/~sakira/archive/SPainter_1.5_src.tar.gz \
-           file://dialogs.patch;apply=yes \
+           file://dialogs.patch \
            file://petitpeintu.desktop \
            file://petitpeintu.png "
 S = "${WORKDIR}/SPainter"

@@ -7,12 +7,12 @@ LICENSE = "GPL"
 PR = "r7"
 
 SRC_URI += "file://splash-p.svg file://splash-l.svg \
-            file://c7x0-rotation.patch;apply=yes \
-            file://cxx0-rotation.patch;apply=yes \
-            file://cairofix.patch;apply=yes \
-            file://no-strip-on-install.patch;apply=yes"
+            file://c7x0-rotation.patch \
+            file://cxx0-rotation.patch \
+            file://cairofix.patch \
+            file://no-strip-on-install.patch"
 
-SRC_URI_append_mnci = " file://mnci.patch;apply=yes"
+SRC_URI_append_mnci = " file://mnci.patch"
 
 FILES_${PN} += "${datadir}/gpe"
 

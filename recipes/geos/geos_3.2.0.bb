@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 PR = "r1"
 
 SRC_URI = "http://download.osgeo.org/geos/geos-${PV}.tar.bz2;name=geos \
-	   file://geos-arm.patch;apply=yes \
+	   file://geos-arm.patch \
 	  "
 
 S = "${WORKDIR}/${PN}-${PV}"

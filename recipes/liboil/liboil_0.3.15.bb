@@ -6,8 +6,8 @@ PR = "r4"
 DEPENDS = "glib-2.0"
 
 SRC_URI = "http://liboil.freedesktop.org/download/${P}.tar.gz \
-	   file://autotools.patch;apply=yes \
-	   file://arm-vfp.patch;apply=yes \
+	   file://autotools.patch \
+	   file://arm-vfp.patch \
           "
 
 inherit autotools pkgconfig

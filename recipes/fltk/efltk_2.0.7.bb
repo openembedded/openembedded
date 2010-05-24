@@ -7,7 +7,7 @@ DEPENDS = "zlib jpeg libpng libxext libxft"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ede/efltk-${PV}.tar.gz \
-           file://fix.void.cast.patch;apply=yes"
+           file://fix.void.cast.patch"
 S = "${WORKDIR}/efltk"
 
 inherit autotools binconfig

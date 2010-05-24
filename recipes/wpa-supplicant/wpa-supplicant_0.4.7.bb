@@ -8,10 +8,10 @@ DEPENDS_append_mtx-2 = " madwifi-modules"
 PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
-	file://madwifi-bsd-fix.diff;apply=yes;striplevel=0 \
+	file://madwifi-bsd-fix.diff;striplevel=0 \
 	file://defconfig \
-        file://driver-hermes.patch;apply=yes \
-	file://driver-zd1211.patch;apply=yes \
+        file://driver-hermes.patch \
+	file://driver-zd1211.patch \
 	file://wpa_supplicant.conf"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}"

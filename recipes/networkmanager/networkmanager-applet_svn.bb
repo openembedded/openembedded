@@ -7,7 +7,7 @@ RDEPENDS = "networkmanager"
 inherit gnome gtk-icon-cache
 
 SRC_URI = "svn://svn.gnome.org/svn/network-manager-applet/;module=trunk;proto=http \
-           file://applet-no-gnome.diff;apply=yes;striplevel=0"
+           file://applet-no-gnome.diff;striplevel=0"
 
 SRCREV = "200"
 

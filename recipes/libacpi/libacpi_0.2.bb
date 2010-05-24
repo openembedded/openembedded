@@ -5,7 +5,7 @@ LICENSE = "MIT"
 PR = "r1"
 
 SRC_URI = "http://www.ngolde.de/download/libacpi-${PV}.tar.gz \
-	   file://makefile-fix.patch;apply=yes "
+	   file://makefile-fix.patch "
 
 PACKAGES += "${PN}-bin"
 

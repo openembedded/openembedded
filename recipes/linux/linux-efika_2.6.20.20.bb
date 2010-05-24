@@ -40,10 +40,10 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2;name=k
            file://0031-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;p=1;apply=yes \
            file://0032-POWERPC-EFIKA-Adds-missing-interrupts-from-bestcomm-node.txt;p=1;apply=yes \
            file://0033-EFIKA-fullduplex-prpl_aln.txt;p=1;apply=yes \
-           file://v4l.diff;p=1;apply=yes \
+           file://v4l.diff;p=1 \
            http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.20.20.bz2;p=1;apply=yes;name=stablepatch \
-           http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.20.20-v22.patch;p=1;apply=yes;name=shedpatch \
-           file://weaken-div64_32-symbol.patch;apply=yes \
+           http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.20.20-v22.patch;p=1;name=shedpatch \
+           file://weaken-div64_32-symbol.patch \
            file://defconfig \
 		   "
 

@@ -6,7 +6,7 @@ PR = "r1"
 DEPENDS = "sugar icon-slicer-native"
 
 SRC_URI = "http://dev.laptop.org/pub/sugar/sources/sugar-artwork/${PN}-${PV}.tar.bz2 \
-           file://icon-slicer.diff;apply=yes"
+           file://icon-slicer.diff"
 
 inherit autotools distutils-base
 

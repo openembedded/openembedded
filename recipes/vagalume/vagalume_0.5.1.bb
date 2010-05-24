@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = "\
   http://people.igalia.com/berto/files/vagalume/source/vagalume_0.5.1-1.tar.gz \
-  file://use-png-icons.patch;apply=yes \
+  file://use-png-icons.patch \
 "
 
 inherit autotools

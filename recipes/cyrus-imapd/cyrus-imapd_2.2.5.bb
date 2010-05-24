@@ -4,8 +4,8 @@ PR = "r2"
 LICENSE = "BSD"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/OLD-VERSIONS/imap/cyrus-imapd-${PV}.tar.gz \
-           file://autotools.patch;apply=yes \
-           file://tail.patch;apply=yes"
+           file://autotools.patch \
+           file://tail.patch"
 
 inherit autotools
 

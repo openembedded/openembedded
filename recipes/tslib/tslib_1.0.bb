@@ -1,8 +1,8 @@
 SRC_URI = "http://download.berlios.de/tslib/${BP}.tar.bz2 \
-           file://fix_version.patch;apply=yes \
-           file://tslib-nopressure.patch;apply=yes \
-           file://tslib-pluginsld.patch;apply=yes \
-           file://newer-libtool-fix.patch;apply=yes "
+           file://fix_version.patch \
+           file://tslib-nopressure.patch \
+           file://tslib-pluginsld.patch \
+           file://newer-libtool-fix.patch "
 PR = "${INC_PR}.5"
 
 include tslib.inc

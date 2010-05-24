@@ -2,7 +2,7 @@ require gst-plugins.inc
 
 PR = "r6"
 
-SRC_URI += "file://fix-unit-scale-asseration.patch;apply=yes"
+SRC_URI += "file://fix-unit-scale-asseration.patch"
 
 inherit gconf 
 

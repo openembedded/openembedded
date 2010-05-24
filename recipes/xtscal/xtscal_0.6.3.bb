@@ -7,8 +7,8 @@ DEPENDS = "virtual/libx11 libxft libxcalibrate"
 PR = "r7"
 
 SRC_URI = "${GPE_MIRROR}/xtscal-${PV}.tar.bz2 \
-           file://change-cross.patch;apply=yes \
-	   file://cleanup.patch;apply=yes"
+           file://change-cross.patch \
+	   file://cleanup.patch"
 
 inherit autotools
 

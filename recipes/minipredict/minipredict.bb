@@ -6,8 +6,8 @@ SECTION = "gpe"
 PRIORITY = "optional"
 
 SRC_URI = "http://handhelds.org/~paxanima/files/${PN}.tar.gz \
-	   file://fix-makefile.patch;apply=yes \
-	   file://fix-include.patch;apply=yes \
+	   file://fix-makefile.patch \
+	   file://fix-include.patch \
 	   file://minipredict.desktop \
 	   file://minipredict.png"
 

@@ -9,7 +9,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2;name=k
 	cvs://anonymous@openwrt.org/openwrt;module=openwrt/package/linux/kernel-source;tag=TESTED \
 	http://downloads.openwrt.org/sources/kernel-binary-wl-0.2.tar.gz;name=wlpatch \
 	http://downloads.openwrt.org/sources/kernel-source-et-0.6.tar.gz;name=etpatch \
-	file://000-linux-mips-2_4_30.patch;apply=yes \
+	file://000-linux-mips-2_4_30.patch \
 	file://001-Makefile;apply=yes \
 	file://002-Rules_make;apply=yes \
 	file://003-arch_mips_Makefile;apply=yes \
@@ -34,13 +34,13 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2;name=k
 	file://036-include_asm-mips_serial_h;apply=yes \
 	file://037-init_do_mounts_c;apply=yes \
 	file://100-gcc3-mtune;apply=yes \
-	file://200-include_linux_netdevice_h.patch;apply=yes \
-	file://201-include_linux_skbuff_h.patch;apply=yes \
-	file://202-net_core_Makefile.patch;apply=yes \
-	file://203-net_core_dev_c.patch;apply=yes \
-	file://204-net_sched_sched_api_c.patch;apply=yes \
-	file://205-net_sched_sched_generic_c.patch;apply=yes \
-	file://206-include_net_pkt_sched_h.patch;apply=yes \
+	file://200-include_linux_netdevice_h.patch \
+	file://201-include_linux_skbuff_h.patch \
+	file://202-net_core_Makefile.patch \
+	file://203-net_core_dev_c.patch \
+	file://204-net_sched_sched_api_c.patch \
+	file://205-net_sched_sched_generic_c.patch \
+	file://206-include_net_pkt_sched_h.patch \
 	file://207-hfsplus-fix;apply=yes \
 	file://208-gcc-3.4-fix;apply=yes \
 	file://300-squashfs2.1;apply=yes \
@@ -50,21 +50,21 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2;name=k
 	file://304-netfilter-ipp2p-0.7.4;apply=yes \
 	file://305-cifs-1.20c;apply=yes \
 	file://306-netfilter-layer7-0.9.1;apply=yes \
-	file://307-gcc-3.4-fix.patch;apply=yes \
+	file://307-gcc-3.4-fix.patch \
 	file://308-netfilter-nat-pptp;apply=yes \
-	file://309-drivers_net_b44_c.patch;apply=yes \
+	file://309-drivers_net_b44_c.patch \
 	file://310-netfilter-maxconn;apply=yes \
 	file://311-ipsec-nat-traversal;apply=yes \
 	file://312-netfilter-TTL;apply=yes \
 	file://313-gcc-4.0-fixes;apply=yes \
-	file://314-drivers_net_b44_h.patch;apply=yes \
-	file://315-include_linux_pci_ids_h.patch;apply=yes \
-	file://316-b44_mii_phy.patch;apply=yes \
+	file://314-drivers_net_b44_h.patch \
+	file://315-include_linux_pci_ids_h.patch \
+	file://316-b44_mii_phy.patch \
 	file://400-i4l-cvs-2-4-29;apply=yes \
 	file://401-hfc-usb-backport-i4l-cvs;apply=yes \
 	file://402-pl2303-backport-2-4-29;apply=yes \
-	file://403-netdev_random_core.patch;apply=yes \
-	file://404-netdev_random_et.patch;apply=yes \
+	file://403-netdev_random_core.patch \
+	file://404-netdev_random_et.patch \
 	file://600-linux-squashfs-lzma;apply=yes \
 	file://600-optional-aout-support;apply=yes \
 	file://linux.config"

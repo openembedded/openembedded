@@ -9,21 +9,21 @@ DEPENDS = "sqlite3 nspr"
 
 SRC_URI = "\
 	http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_6_RTM/src/${PN}-${PV}.tar.gz;name=archive \
-	file://00_ckbi_1.79.patch;apply=yes \
-	file://25_entropy.patch;apply=yes \
-	file://38_hurd.patch;apply=yes \
-	file://38_kbsd.patch;apply=yes \
-	file://38_mips64_build.patch;apply=yes \
-	file://80_security_build.patch;apply=yes \
-	file://80_security_tools.patch;apply=yes \
-	file://81_sonames.patch;apply=yes \
-	file://85_security_load.patch;apply=yes \
-	file://90_realpath.patch;apply=yes \
-	file://91_build_pwdecrypt.patch;apply=yes \
-	file://95_add_spi+cacert_ca_certs.patch;apply=yes \
-	file://96_NSS_VersionCheck.patch;apply=yes \
-	file://97_SSL_RENEGOTIATE_TRANSITIONAL.patch;apply=yes \
-	file://build-fix.patch;apply=yes;striplevel=0 \
+	file://00_ckbi_1.79.patch \
+	file://25_entropy.patch \
+	file://38_hurd.patch \
+	file://38_kbsd.patch \
+	file://38_mips64_build.patch \
+	file://80_security_build.patch \
+	file://80_security_tools.patch \
+	file://81_sonames.patch \
+	file://85_security_load.patch \
+	file://90_realpath.patch \
+	file://91_build_pwdecrypt.patch \
+	file://95_add_spi+cacert_ca_certs.patch \
+	file://96_NSS_VersionCheck.patch \
+	file://97_SSL_RENEGOTIATE_TRANSITIONAL.patch \
+	file://build-fix.patch;striplevel=0 \
 	file://nss.pc.in \
 "
 

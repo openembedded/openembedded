@@ -8,11 +8,11 @@ SECTION = "console/telephony"
 PR = "r1"
 
 SRC_URI="http://downloads.asterisk.org/pub/telephony/asterisk/releases/${P}.tar.gz \
-	 file://uclibc-compat-getloadavg.patch;apply=yes \
-	 file://uclibc-dns.patch;apply=yes \
-#         file://uclibc-define-glob.patch;apply=yes \
-         file://asterisk.patch;apply=yes \
-         file://enable-speex.patch;apply=yes"
+	 file://uclibc-compat-getloadavg.patch \
+	 file://uclibc-dns.patch \
+#         file://uclibc-define-glob.patch \
+         file://asterisk.patch \
+         file://enable-speex.patch"
 
 S = "${WORKDIR}/asterisk-${PV}"
 

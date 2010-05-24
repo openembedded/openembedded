@@ -5,8 +5,8 @@ LICENSE = "ClarifiedArtistic"
 
 SRC_URI = "ftp://ftp.ncftp.com/ncftp/older_versions/ncftp-${PV}-src.tar.bz2 \
 	   file://acinclude.m4 \
-	   file://make.patch;apply=yes \
-	   file://fixes.patch;apply=yes"
+	   file://make.patch \
+	   file://fixes.patch"
 
 inherit autotools
 

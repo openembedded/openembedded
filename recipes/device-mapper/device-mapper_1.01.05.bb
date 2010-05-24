@@ -8,8 +8,8 @@ PR = "r4"
 S = "${WORKDIR}/${PN}.${PV}"
 
 SRC_URI = "ftp://sources.redhat.com/pub/dm/device-mapper.${PV}.tgz \
-	   file://devmap-mknod-busybox.patch;apply=yes \
-	   file://remove_insanity.patch;apply=yes "
+	   file://devmap-mknod-busybox.patch \
+	   file://remove_insanity.patch "
 
 inherit autotools update-rc.d
 

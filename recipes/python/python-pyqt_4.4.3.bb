@@ -13,11 +13,11 @@ PYQT_OE_VERSION = "Qt_4_4_1"
 
 SRC_URI = "\
   http://cvs.fedora.redhat.com/repo/pkgs/PyQt4/PyQt-x11-gpl-4.4.3.tar.gz/89e84c36a8520bf8b3a8a2b20e765154/PyQt-x11-gpl-4.4.3.tar.gz \
-  file://cross-compile.patch;apply=yes \
+  file://cross-compile.patch \
   file://01_configure.dpatch;apply=yes \
   file://02_htmllinks.dpatch;apply=yes \
   \
-  file://assistantclient-fix.patch;apply=yes \
+  file://assistantclient-fix.patch \
 "
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 

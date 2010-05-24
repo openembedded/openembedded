@@ -8,8 +8,8 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ettercap/ettercap-NG-${PV}.tar.gz \
-           file://autotools.patch;apply=yes \
-           file://configure.patch;apply=yes "
+           file://autotools.patch \
+           file://configure.patch "
 
 S = "${WORKDIR}/ettercap-NG-${PV}"
 

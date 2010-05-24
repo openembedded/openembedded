@@ -4,18 +4,18 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.20.tar.bz2 \
-	   file://linux-2.4.20-mipscvs.patch;apply=yes \
-	   file://2.4.20_broadcom_3_37_2_1109_US.patch;apply=yes \
-	   file://110-sch_htb.patch;apply=yes \
-	   file://120-openwrt.patch;apply=yes \
-	   file://130-nfsswap.patch;apply=yes \
-	   file://140-ebtables-brnf-5.patch;apply=yes \
-	   file://150-mppe-mppc-0.98.patch;apply=yes \
-	   file://160-expr.patch;apply=yes \
-	   file://linux-2.4.24-attribute-used.patch;apply=yes \
-	   file://gcc_mtune.patch;apply=yes \
-	   file://gcc3.patch;apply=yes \
-	   file://nobcom.patch;apply=yes \
+	   file://linux-2.4.20-mipscvs.patch \
+	   file://2.4.20_broadcom_3_37_2_1109_US.patch \
+	   file://110-sch_htb.patch \
+	   file://120-openwrt.patch \
+	   file://130-nfsswap.patch \
+	   file://140-ebtables-brnf-5.patch \
+	   file://150-mppe-mppc-0.98.patch \
+	   file://160-expr.patch \
+	   file://linux-2.4.24-attribute-used.patch \
+	   file://gcc_mtune.patch \
+	   file://gcc3.patch \
+	   file://nobcom.patch \
 	   file://compressed-20040531.tar.bz2 \
 	   file://diag.c \
            file://defconfig"

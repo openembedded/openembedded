@@ -7,8 +7,8 @@ LICENSE = "GPLv2"
 DEPENDS = "zlib"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
-	   file://pciutils.patch;apply=yes "
-SRC_URI_append_nylon = "file://gcc-3-compatibility.patch;apply=yes "
+	   file://pciutils.patch "
+SRC_URI_append_nylon = "file://gcc-3-compatibility.patch "
 
 PARALLEL_MAKE = ""
 

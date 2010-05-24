@@ -9,8 +9,8 @@ PV = "1.1.11+gitr${SRCPV}"
 PR = "r5"
 
 SRC_URI = "git://gitorious.org/webkit-efl/webkit-efl.git;protocol=git;branch=master \
-           file://fix-build-with-newer-evas.patch;apply=yes \
-           file://fix-build-with-newer-ecore.patch;apply=yes"
+           file://fix-build-with-newer-evas.patch \
+           file://fix-build-with-newer-ecore.patch"
 
 S = "${WORKDIR}/git"
 

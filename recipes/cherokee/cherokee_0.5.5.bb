@@ -1,5 +1,5 @@
-SRC_URI_append = "file://configure.in.patch;apply=yes \
-                  file://Makefile.am.patch;apply=yes"
+SRC_URI_append = "file://configure.in.patch \
+                  file://Makefile.am.patch"
 
 do_install_prepend () {
         # It only needs this app during the install, so compile it natively

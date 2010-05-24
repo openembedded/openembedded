@@ -6,11 +6,11 @@ DEPENDS_append_i686 = " nasm-native"
 RDEPENDS_epia = "kernel-module-joydev"
 
 SRC_URI = "http://www.lysator.liu.se/snes9x/1.43-WIP1/snes9x-1.43-WIP1-src.tar.gz \
-	file://makefile.patch;apply=yes;striplevel=2 \
-	file://private.patch;apply=yes;striplevel=0 \
-	file://64bit.patch;apply=yes \
-        file://configure.patch;apply=yes;striplevel=0 \
-        file://linkage.patch;apply=yes;striplevel=0"
+	file://makefile.patch;striplevel=2 \
+	file://private.patch;striplevel=0 \
+	file://64bit.patch \
+        file://configure.patch;striplevel=0 \
+        file://linkage.patch;striplevel=0"
 
 S = "${WORKDIR}/snes9x-1.43-dev-src/snes9x"
 

@@ -2,9 +2,9 @@ require e2fsprogs.inc
 
 PR = "${INC_PR}"
 
-SRC_URI += "file://no-hardlinks.patch;apply=yes \
-	    file://mkinstalldirs.patch;apply=yes \
-            file://file-open-mode.patch;apply=yes \
+SRC_URI += "file://no-hardlinks.patch \
+	    file://mkinstalldirs.patch \
+            file://file-open-mode.patch \
            "
 
 TARGET_CC_ARCH += "${LDFLAGS}"

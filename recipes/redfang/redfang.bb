@@ -1,6 +1,6 @@
 SECTION = "unknown"
 SRC_URI = "http://packetstormsecurity.org/wireless/redfang.2.5.tar.gz \
-    	   file://Makefile.patch;apply=yes;striplevel=0"
+    	   file://Makefile.patch;striplevel=0"
 
 DEFAULT_PREFERENCE="-1"
 PV="2.5"

@@ -6,10 +6,10 @@ PR = "r9"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;apply=yes \
-           file://makefile-am.patch;apply=yes \
-           file://binconfig-fixes.patch;apply=yes \
-           file://fix_open_file.patch;apply=yes \
-           file://openm4-autoconf-fix.patch;apply=yes"
+           file://makefile-am.patch \
+           file://binconfig-fixes.patch \
+           file://fix_open_file.patch \
+           file://openm4-autoconf-fix.patch"
 
 IMVER = "6.3.5"
 

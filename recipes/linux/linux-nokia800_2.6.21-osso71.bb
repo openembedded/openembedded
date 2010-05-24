@@ -4,11 +4,11 @@ PR = "r5"
 DEFAULT_PREFERENCE_nokia770 = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2;name=kernel \
-	   http://repository.maemo.org/pool/os2008/free/source/k/kernel-source-rx-34/kernel-source-rx-34_2.6.21.0-osso71.diff.gz;apply=yes;name=ossopatch \
-           ${RPSRC}/input_power-r7.patch;apply=yes;name=rppatch24 \
-	   file://suspend-button.patch;apply=yes \
-           file://linux-2.6-limits.patch;apply=yes \
-           file://1300-fix-gcc-4.3-false-modulo-optimization.patch.patch;apply=yes \
+	   http://repository.maemo.org/pool/os2008/free/source/k/kernel-source-rx-34/kernel-source-rx-34_2.6.21.0-osso71.diff.gz;name=ossopatch \
+           ${RPSRC}/input_power-r7.patch;name=rppatch24 \
+	   file://suspend-button.patch \
+           file://linux-2.6-limits.patch \
+           file://1300-fix-gcc-4.3-false-modulo-optimization.patch.patch \
 	   file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.21"

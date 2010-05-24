@@ -8,8 +8,8 @@ RDEPENDS = "gdk-pixbuf-loader-xpm"
 PR = "r3"
 
 SRC_URI = "http://talinux.fi.tal.org/pub/talinux/sources/balsa-${PV}.tar.bz2 \
-	   file://libmutt-cross.patch;apply=yes \
-	   file://desktop-file-fix.patch;apply=yes"
+	   file://libmutt-cross.patch \
+	   file://desktop-file-fix.patch"
 
 inherit autotools
 

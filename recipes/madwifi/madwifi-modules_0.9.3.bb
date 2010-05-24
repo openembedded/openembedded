@@ -9,8 +9,8 @@ SRCDATE = "20050803"
 PV = "0.9.3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/madwifi/madwifi-${PV}.tar.bz2 \
-	   file://madwifi-devname.patch;apply=yes \
-	   file://madwifi-skbpanic.patch;apply=yes"
+	   file://madwifi-devname.patch \
+	   file://madwifi-skbpanic.patch"
 S = "${WORKDIR}/madwifi-${PV}"
 
 inherit module-base

@@ -4,9 +4,9 @@ HOMEPAGE = "http://udhcp.busybox.net/"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.mirrorservice.org/sites/ftp.locustworld.com/udhcp-${PV}.tar.gz;name=udhcp \
-	   file://install.patch;apply=yes \
-	   file://nostrip.patch;apply=yes \
-	   file://gcc3.patch;apply=yes"
+	   file://install.patch \
+	   file://nostrip.patch \
+	   file://gcc3.patch"
 
 inherit autotools
 

@@ -8,7 +8,7 @@ PR = "r1"
 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/project/glew/glew/1.5.1/glew-1.5.1-src.tgz \
-           file://autotools.patch;apply=yes \
+           file://autotools.patch \
           "
 
 inherit autotools lib_package

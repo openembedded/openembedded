@@ -14,25 +14,25 @@ SRC_URI[perl588targz.md5sum] = "b8c118d4360846829beb30b02a6b91a7"
 SRC_URI[perl588targz.sha256sum] = "e15d499321e003d12ed183601e37ee7ba5f64b278d1de30149ce01bd4a3f234d"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/5.0/perl-5.8.8.tar.gz;name=perl588targz \
-        file://Makefile.patch;apply=yes \
-        file://Makefile.SH.patch;apply=yes \
-        file://makedepend-dash.patch;apply=yes \
-        file://installperl.patch;apply=yes \
-        file://perl-dynloader.patch;apply=yes \
-        file://perl-moreconfig.patch;apply=yes \
-        file://letgcc-find-errno.patch;apply=yes \
-        file://generate-sh.patch;apply=yes \
-        file://perl-5.8.8-gcc-4.2.patch;apply=yes \
-        file://09_fix_installperl.patch;apply=yes \
-        file://52_debian_extutils_hacks.patch;apply=yes \
-        file://53_debian_mod_paths.patch;apply=yes \
-        file://54_debian_perldoc-r.patch;apply=yes \
-        file://58_debian_cpan_config_path.patch;apply=yes \
-        file://60_debian_libnet_config_path.patch;apply=yes \
-        file://62_debian_cpan_definstalldirs.patch;apply=yes \
-        file://64_debian_enc2xs_inc.patch;apply=yes \
-        file://asm-pageh-fix.patch;apply=yes \
-        file://shared-ldflags.patch;apply=yes \
+        file://Makefile.patch \
+        file://Makefile.SH.patch \
+        file://makedepend-dash.patch \
+        file://installperl.patch \
+        file://perl-dynloader.patch \
+        file://perl-moreconfig.patch \
+        file://letgcc-find-errno.patch \
+        file://generate-sh.patch \
+        file://perl-5.8.8-gcc-4.2.patch \
+        file://09_fix_installperl.patch \
+        file://52_debian_extutils_hacks.patch \
+        file://53_debian_mod_paths.patch \
+        file://54_debian_perldoc-r.patch \
+        file://58_debian_cpan_config_path.patch \
+        file://60_debian_libnet_config_path.patch \
+        file://62_debian_cpan_definstalldirs.patch \
+        file://64_debian_enc2xs_inc.patch \
+        file://asm-pageh-fix.patch \
+        file://shared-ldflags.patch \
         file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \

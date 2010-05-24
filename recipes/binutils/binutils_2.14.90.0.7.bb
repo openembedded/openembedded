@@ -40,17 +40,17 @@ FILES_${PN}-symlinks = " \
 
 SRC_URI = \
     "${KERNELORG_MIRROR}/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
-     file://ld_makefile.patch;apply=yes \
-     file://better_file_error.patch;apply=yes \
-     file://signed_char_fix.patch;apply=yes \
-     file://binutils-uclibc-001-debian.patch;apply=yes \
-     file://binutils-uclibc-100-conf.patch;apply=yes \
-     file://binutils-uclibc-200-build_modules.patch;apply=yes \
-     file://binutils-uclibc-210-cflags.patch;apply=yes \
-     file://binutils-100_cflags_for_build.patch;apply=yes \
-     file://plt32trunc.patch;apply=yes \
-     file://600-arm-textrel.patch;apply=yes \
-     file://binutils-2.14.90.0.7-fix-broken-configure.patch;apply=yes"
+     file://ld_makefile.patch \
+     file://better_file_error.patch \
+     file://signed_char_fix.patch \
+     file://binutils-uclibc-001-debian.patch \
+     file://binutils-uclibc-100-conf.patch \
+     file://binutils-uclibc-200-build_modules.patch \
+     file://binutils-uclibc-210-cflags.patch \
+     file://binutils-100_cflags_for_build.patch \
+     file://plt32trunc.patch \
+     file://600-arm-textrel.patch \
+     file://binutils-2.14.90.0.7-fix-broken-configure.patch"
 
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"

@@ -10,8 +10,8 @@ PR = "r1"
 sbindir = "/sbin"
 
 SRC_URI = "http://www.phystech.com/ftp/dhcpcd-${PV}.tar.gz \
-	   file://config_dir.patch;apply=yes \
-	   file://paths.patch;apply=yes"
+	   file://config_dir.patch \
+	   file://paths.patch"
 
 inherit autotools
 

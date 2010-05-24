@@ -8,14 +8,14 @@ DEPENDS = "libnxcl"
 
 SRC_URI = "http://download.berlios.de/freenx/freenx-client-${PV}.tar.bz2 \
 	   file://qtnx.desktop \
-	   file://pro.patch;apply=yes \
-	   file://id-path.patch;apply=yes \
-	   file://scroll.patch;apply=yes \
-           file://keymap.patch;apply=yes \
-           file://dodnx.patch;apply=yes \
-           file://keychooser.patch;apply=yes \
-           file://sessionfiles.patch;apply=yes \
-           file://ssh_dnserror.patch;apply=yes \
+	   file://pro.patch \
+	   file://id-path.patch \
+	   file://scroll.patch \
+           file://keymap.patch \
+           file://dodnx.patch \
+           file://keychooser.patch \
+           file://sessionfiles.patch \
+           file://ssh_dnserror.patch \
 	  "
 
 S = "${WORKDIR}/freenx-client-${PV}/qtnx"

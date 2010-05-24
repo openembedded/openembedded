@@ -13,9 +13,9 @@ EXTRA_OEMAKE = "'COPT_FLAGS=${CFLAGS}' \
 CFLAGS[unexport] = "1"
 
 SRC_URI += "\
-  file://getsockopt-failed.patch;apply=yes \
-  file://iptables-use-s6_addr32.patch;apply=yes \
-  file://cross-iptables.diff;apply=yes \
+  file://getsockopt-failed.patch \
+  file://iptables-use-s6_addr32.patch \
+  file://cross-iptables.diff \
 "
 
 do_install () {

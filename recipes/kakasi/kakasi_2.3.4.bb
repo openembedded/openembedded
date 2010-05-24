@@ -3,7 +3,7 @@ require kakasi.inc
 SECTION = "utils"
 DEPENDS = "kakasi-native"
 
-SRC_URI += "file://makefile.patch;apply=yes"
+SRC_URI += "file://makefile.patch"
 
 do_stage () {
         install -m 0644 lib/*.h ${STAGING_INCDIR}

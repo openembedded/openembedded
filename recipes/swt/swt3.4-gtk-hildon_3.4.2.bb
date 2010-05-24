@@ -4,4 +4,4 @@ PR = "r1"
 
 DEPENDS += "libhildon libhildonfm"
 
-SRC_URI += "file://swt-hildon.patch;apply=yes"
+SRC_URI += "file://swt-hildon.patch"

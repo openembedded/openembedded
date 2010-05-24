@@ -5,7 +5,7 @@ LICENSE = "LGPL / MPL"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freeassociation/${P}.tar.gz \
-           file://pthread-link.patch;apply=yes"
+           file://pthread-link.patch"
 
 
 inherit autotools

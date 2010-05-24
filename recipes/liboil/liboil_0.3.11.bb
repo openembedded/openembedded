@@ -6,7 +6,7 @@ PR ="r2"
 DEPENDS = "glib-2.0"
 
 SRC_URI = "http://liboil.freedesktop.org/download/${P}.tar.gz \
-           file://ppc-detect-fpu.patch;apply=yes"
+           file://ppc-detect-fpu.patch"
 
 inherit autotools pkgconfig
 

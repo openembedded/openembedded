@@ -5,8 +5,8 @@ PR = "r2"
 DESCRIPTION = "SIP-based IP phone (GPE edition)"
 DEPENDS = "libosip gtk+ libogg libgnomeui"
 SRC_URI = "http://simon.morlat.free.fr/download/0.12.2/source/linphone-${PV}.tar.gz \
-	file://osip-lossage.patch;apply=yes \
-	file://disable-gtk-doc.patch;apply=yes"
+	file://osip-lossage.patch \
+	file://disable-gtk-doc.patch"
 
 FILES_${PN} += "${datadir}/linphonec"
 

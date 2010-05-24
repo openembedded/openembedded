@@ -4,7 +4,7 @@ PR = "r1"
 
 inherit gnome
 
-SRC_URI += "file://glade-cruft.patch;apply=yes file://no-xml2.patch;apply=yes"
+SRC_URI += "file://glade-cruft.patch file://no-xml2.patch"
 
 EXTRA_OECONF += "--without-libxml2"
 

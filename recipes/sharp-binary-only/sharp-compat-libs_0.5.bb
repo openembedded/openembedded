@@ -14,8 +14,8 @@ EXCLUDE_FROM_SHLIBS = "1"
 COMPATIBLE_HOST = "arm.*-linux"
 
 SRC_URI = "http://openzaurus.org/mirror/oz-compat_0.5.tar.gz \
-	   file://hentges.patch;apply=yes \
-	   file://qt2310.patch;apply=yes"
+	   file://hentges.patch \
+	   file://qt2310.patch"
 
 S = "${WORKDIR}/oz-compat-0.5"
 

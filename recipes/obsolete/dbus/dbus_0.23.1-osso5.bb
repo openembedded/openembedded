@@ -8,16 +8,16 @@ DEPENDS = "expat glib-2.0 virtual/libintl"
 PROVIDES = "dbus-glib"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/d/${PN}/${PN}_${PV}.tar.gz \
-	   file://cross.patch;apply=yes \
-	   file://tmpdir.patch;apply=yes \
-	   file://gettext.patch;apply=yes \
-           file://0.23.1.diff;apply=yes \
-           file://dbus-monitor.patch;apply=yes \
-           file://dbussend.patch;apply=yes;striplevel=0 \
-           file://spawn-priority.diff;apply=yes \
-           file://config.diff;apply=yes;striplevel=0 \
-           file://dbus-quiesce-startup-errors.patch;apply=yes \
-           file://tools.diff;apply=yes;striplevel=0 \
+	   file://cross.patch \
+	   file://tmpdir.patch \
+	   file://gettext.patch \
+           file://0.23.1.diff \
+           file://dbus-monitor.patch \
+           file://dbussend.patch;striplevel=0 \
+           file://spawn-priority.diff \
+           file://config.diff;striplevel=0 \
+           file://dbus-quiesce-startup-errors.patch \
+           file://tools.diff;striplevel=0 \
 	   file://dbus-1.init"
 
 inherit autotools pkgconfig update-rc.d gettext

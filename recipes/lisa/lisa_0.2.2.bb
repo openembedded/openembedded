@@ -4,8 +4,8 @@ like the network neighbourhood under windows, but more and \
 only relying on the TCP/IP protocol stack."
 
 SRC_URI = "http://lisa-home.sourceforge.net/src/lisa-${PV}.tar.bz2 \
-	   file://configure.patch;apply=yes \
-	   file://head-n.patch;apply=yes"
+	   file://configure.patch \
+	   file://head-n.patch"
 LICENSE = "GPL"
 inherit autotools
 

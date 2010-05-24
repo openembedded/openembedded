@@ -6,8 +6,8 @@ DEPENDS = "readline util-linux-ng"
 PR = "r3"
 
 SRC_URI = "${GNU_MIRROR}/parted/parted-${PV}.tar.gz \
-	   file://use_llseek_syscall.patch;apply=yes \
-	   file://parted-1.8.x.patch;apply=yes \
+	   file://use_llseek_syscall.patch \
+	   file://parted-1.8.x.patch \
 "
            
 EXTRA_OECONF = "--disable-Werror ac_cv_func_calloc_0_nonnull=yes"

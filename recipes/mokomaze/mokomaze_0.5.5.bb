@@ -14,7 +14,7 @@ PV="0.5.5+git8"
 
 SRC_URI="http://mokomaze.projects.openmoko.org/files/${PN}-${PV}.tar.gz"
 
-SRC_URI_append_shr = " file://fsoraw.patch;apply=yes"
+SRC_URI_append_shr = " file://fsoraw.patch"
 
 inherit autotools
 

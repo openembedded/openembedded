@@ -4,14 +4,14 @@ LICENSE = "LGPL"
 DEPENDS = "expat popt"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wbxmllib/${PN}-${PV}.tar.gz \
-	   file://00-fix-includes.patch;apply=yes \
-	   file://01-anonymous-support-and-misc-fixes.patch;apply=yes \
-	   file://02-namespaces.patch;apply=yes \
-	   file://04_saxlike_entity_parsing.patch;apply=yes \
-	   file://05-syncml-fixes.patch;apply=yes \
-	   file://06-no-install-docs.patch;apply=yes \
-	   file://07-current_attr_null.patch;apply=yes \
-	   file://08-maxsize-translation-table.patch;apply=yes;striplevel=0 \
+	   file://00-fix-includes.patch \
+	   file://01-anonymous-support-and-misc-fixes.patch \
+	   file://02-namespaces.patch \
+	   file://04_saxlike_entity_parsing.patch \
+	   file://05-syncml-fixes.patch \
+	   file://06-no-install-docs.patch \
+	   file://07-current_attr_null.patch \
+	   file://08-maxsize-translation-table.patch;striplevel=0 \
 	   "
 
 inherit autotools pkgconfig

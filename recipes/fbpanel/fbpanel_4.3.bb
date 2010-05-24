@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ libxmu libxpm"
 HOMEPAGE = "http://fbpanel.sourceforge.net/"
 SRC_URI = "${SOURCEFORGE_MIRROR}/fbpanel/fbpanel-${PV}.tgz \
-           file://makefile.common.patch;apply=yes "
+           file://makefile.common.patch "
 
 PR = "r1"
 

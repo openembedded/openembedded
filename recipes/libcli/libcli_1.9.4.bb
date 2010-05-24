@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 PR = "r1"
 
 SRC_URI = "http://libcli.googlecode.com/files/${PN}-${PV}.tar.gz \
-           file://autotools.patch;apply=yes \
+           file://autotools.patch \
           "
 
 inherit autotools lib_package

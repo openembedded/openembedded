@@ -14,7 +14,7 @@ FILES_tcp-wrappers = "${bindir}"
 FILES_tcp-wrappers-doc = "${mandir}/man8"
 
 SRC_URI = "ftp://ftp.porcupine.org/pub/security/tcp_wrappers_${PV}.tar.gz \
-           file://00_man_quoting.diff;apply=yes \
+           file://00_man_quoting.diff \
            file://01_man_portability;apply=yes \
            file://05_wildcard_matching;apply=yes \
            file://06_fix_gethostbyname;apply=yes \
@@ -29,7 +29,7 @@ SRC_URI = "ftp://ftp.porcupine.org/pub/security/tcp_wrappers_${PV}.tar.gz \
            file://have_strerror;apply=yes \
            file://man_fromhost;apply=yes \
            file://restore_sigalarm;apply=yes \
-           file://rfc931.diff;apply=yes \
+           file://rfc931.diff \
            file://safe_finger;apply=yes \
            file://sig_fix;apply=yes \
            file://siglongjmp;apply=yes \

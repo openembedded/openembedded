@@ -4,7 +4,7 @@ AUTHOR = "GNU ClasspathX"
 
 SRC_URI = "\
   http://ftp.gnu.org/gnu/classpathx/mail-${PV}.tar.gz \
-  file://datadir_java.patch;apply=yes \
+  file://datadir_java.patch \
   "
 
 inherit java-library autotools

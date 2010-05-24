@@ -5,8 +5,8 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI="http://www.tinc-vpn.org/packages/tinc-1.0.2.tar.gz \
-	file://mtu-vlan.diff;apply=yes \
-	file://public-key-fix.diff;apply=yes \
+	file://mtu-vlan.diff \
+	file://public-key-fix.diff \
 	file://init"
 
 DEPENDS = "openssl lzo zlib"

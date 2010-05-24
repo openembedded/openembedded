@@ -4,11 +4,11 @@ DESCRIPTION = "Allows you to set-up and manipulate the Linux console."
 PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lct/console-tools-${PV}.tar.gz \
-           file://codepage.patch;apply=yes \
-           file://configure.patch;apply=yes \
-           file://compile.patch;apply=yes \
-           file://kbdrate.patch;apply=yes \
-           file://uclibc-fileno.patch;apply=yes \
+           file://codepage.patch \
+           file://configure.patch \
+           file://compile.patch \
+           file://kbdrate.patch \
+           file://uclibc-fileno.patch \
            file://config"
 
 export SUBDIRS = "fontfiletools vttools kbdtools screenfonttools contrib \

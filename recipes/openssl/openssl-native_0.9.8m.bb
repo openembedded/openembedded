@@ -10,9 +10,9 @@ PR = "${INC_PR}.2"
 export FULL_OPTIMIZATION = " "
 export BUILD_OPTIMIZATION = " "
 
-SRC_URI += "file://configure-targets.patch;apply=yes \
-            file://shared-libs.patch;apply=yes \
-            file://debian.patch;apply=yes"
+SRC_URI += "file://configure-targets.patch \
+            file://shared-libs.patch \
+            file://debian.patch"
 
 PARALLEL_MAKE = ""
 

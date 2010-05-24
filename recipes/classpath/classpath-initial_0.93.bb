@@ -10,8 +10,8 @@ PR = "r6"
 DEPENDS = "zip-native fastjar-native jikes-native gettext-native"
 
 SRC_URI += "\
-	file://autotools.patch;apply=yes \
-	file://miscompilation-0.93.patch;apply=yes \
+	file://autotools.patch \
+	file://miscompilation-0.93.patch \
 	"
 
 EXTRA_OECONF = "\

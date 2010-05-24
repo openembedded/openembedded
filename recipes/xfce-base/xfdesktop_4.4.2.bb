@@ -9,8 +9,8 @@ PR = "r2"
 
 inherit xfce
 
-SRC_URI += " file://relocation-and-memleak.patch;apply=yes \
-             file://fix-segfault-when-removable-icons-are-disabled.patch;apply=yes"
+SRC_URI += " file://relocation-and-memleak.patch \
+             file://fix-segfault-when-removable-icons-are-disabled.patch"
 
 PACKAGES += "xfdesktop-backdrops ${PN}-mcs-plugins"
 

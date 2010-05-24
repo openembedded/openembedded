@@ -9,7 +9,7 @@ PROVIDES = "xt"
 
 XORG_PN = "libXt"
 
-SRC_URI += "file://pr10970-header-fix.patch;apply=yes"
+SRC_URI += "file://pr10970-header-fix.patch"
 
 PR = "r1"
 

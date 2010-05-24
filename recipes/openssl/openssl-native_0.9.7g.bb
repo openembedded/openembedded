@@ -4,9 +4,9 @@ require openssl.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://debian.patch;apply=yes \
-            file://armeb.patch;apply=yes;striplevel=0 \
-            file://gnueabi-arm.patch;apply=yes"
+SRC_URI += "file://debian.patch \
+            file://armeb.patch;striplevel=0 \
+            file://gnueabi-arm.patch"
 
 do_install() {
 	:

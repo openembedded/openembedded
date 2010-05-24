@@ -6,14 +6,14 @@ COMPATIBLE_MACHINE = "amsdelta"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2;name=kernel \
 	http://www.muru.com/linux/omap/patches/patch-2.6.16-omap2.bz2;apply=yes;name=omap2patch \
-	http://the.earth.li/pub/e3/2.6.16/00-ams-delta-backlight.diff;apply=yes;name=amspatch1 \
-	http://the.earth.li/pub/e3/2.6.16/01-ams-delta-lcd.diff;apply=yes;name=amspatch2 \
-	http://the.earth.li/pub/e3/2.6.16/02-ams-delta-keypad.diff;apply=yes;name=amspatch3 \
-	http://the.earth.li/pub/e3/2.6.16/03-ams-delta-modem.diff;apply=yes;name=amspatch4 \
-	http://the.earth.li/pub/e3/2.6.16/04-omapfb-12bpp-support.diff;apply=yes;name=amspatch5 \
-	http://the.earth.li/pub/e3/2.6.16/05-ams-delta-nand.diff;apply=yes;name=amspatch6 \
-	http://the.earth.li/pub/e3/2.6.16/06-ams-delta-keyboard.diff;apply=yes;name=amspatch7 \
-	http://the.earth.li/pub/e3/2.6.16/08-ams-delta-sound.diff;apply=yes;name=amspatch8 \
+	http://the.earth.li/pub/e3/2.6.16/00-ams-delta-backlight.diff;name=amspatch1 \
+	http://the.earth.li/pub/e3/2.6.16/01-ams-delta-lcd.diff;name=amspatch2 \
+	http://the.earth.li/pub/e3/2.6.16/02-ams-delta-keypad.diff;name=amspatch3 \
+	http://the.earth.li/pub/e3/2.6.16/03-ams-delta-modem.diff;name=amspatch4 \
+	http://the.earth.li/pub/e3/2.6.16/04-omapfb-12bpp-support.diff;name=amspatch5 \
+	http://the.earth.li/pub/e3/2.6.16/05-ams-delta-nand.diff;name=amspatch6 \
+	http://the.earth.li/pub/e3/2.6.16/06-ams-delta-keyboard.diff;name=amspatch7 \
+	http://the.earth.li/pub/e3/2.6.16/08-ams-delta-sound.diff;name=amspatch8 \
 	file://defconfig"
 S = "${WORKDIR}/linux-2.6.16"
 

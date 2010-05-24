@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.cinlug.org/modules/Static_Docs/data/db/zddice/zddice_${PV}_arm.src.tar.gz \
-           file://qtopia17.patch;apply=yes"
+           file://qtopia17.patch"
 S = "${WORKDIR}/zddice-src"
 
 inherit palmtop

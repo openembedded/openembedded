@@ -13,7 +13,7 @@ APPDESKTOP = "${S}/src/ubahnnav"
 PR = "r0"
 
 SRC_URI = "http://ubahnstation.net/source/ubahnnav-${PV}.tar.gz \
-	   file://qmake.patch;apply=yes"
+	   file://qmake.patch"
 S = "${WORKDIR}/ubahnnav-${PV}"
 
 inherit opie

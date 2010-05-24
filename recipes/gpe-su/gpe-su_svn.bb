@@ -3,7 +3,7 @@ require gpe-su.inc
 PR = "r1"
 
 SRC_URI = "${GPE_SVN} \
-           file://svn-build.patch;apply=yes"
+           file://svn-build.patch"
 
 S = "${WORKDIR}/${PN}"
 

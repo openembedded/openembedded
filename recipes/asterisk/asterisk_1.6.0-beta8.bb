@@ -15,8 +15,8 @@ DEFAULT_PREFERENCE = "-1"
 
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
-	file://sounds.xml.patch;apply=yes\
-	file://Makefile.patch;apply=yes\
+	file://sounds.xml.patch\
+	file://Makefile.patch\
 	file://logrotate \
 	file://volatiles \
 	file://init"

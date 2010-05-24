@@ -13,8 +13,8 @@ RDEPENDS ="rdesktop gail orbit2 gnome-vfs gnome-keyring libbonobo libbonoboui \
 PR = "r1"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/grdesktop/grdesktop-${PV}.tar.gz \
-           file://fr.po.patch;apply=yes \
-           file://install-help.patch;apply=yes"
+           file://fr.po.patch \
+           file://install-help.patch"
       
 
 S = "${WORKDIR}/grdesktop-${PV}"

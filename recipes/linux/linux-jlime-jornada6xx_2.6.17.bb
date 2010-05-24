@@ -6,13 +6,13 @@ COMPATIBLE_MACHINE = "jornada6xx"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            file://defconfig_jlime \
-	   file://LinuxSH-2.6.17.patch;apply=yes \
-	   file://alsa_hp6xx_2.6.17.patch;apply=yes \
-	   file://rtc-2.6.17.patch;apply=yes \
-	   file://unexpected-int-fix.patch;apply=yes \
-	   file://keymap-fix.patch;apply=yes \
-	   file://io.h-fix.patch;apply=yes \
-	   file://keyboard-fix-deadkeys.patch;apply=yes"
+	   file://LinuxSH-2.6.17.patch \
+	   file://alsa_hp6xx_2.6.17.patch \
+	   file://rtc-2.6.17.patch \
+	   file://unexpected-int-fix.patch \
+	   file://keymap-fix.patch \
+	   file://io.h-fix.patch \
+	   file://keyboard-fix-deadkeys.patch"
 
 S = "${WORKDIR}/linux-${PV}"
 

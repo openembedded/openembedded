@@ -5,7 +5,7 @@ DEPENDS = ""
 LICENSE = "GPL"
 
 SRC_URI = "http://musthave.sunbase.org/progs/ccvs/cvs-${PV}/cvs-${PV}.tar.bz2 \
-	   file://m4.patch;apply=yes"
+	   file://m4.patch"
 
 inherit autotools gettext
 

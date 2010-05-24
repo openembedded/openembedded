@@ -13,7 +13,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=k
 S = "${WORKDIR}/linux-2.6.23"
 
 SRC_URI_append_at91sam9260ek = "\
-	file://0001-2.6.23-at91.patch;apply=yes \
+	file://0001-2.6.23-at91.patch \
 	"
 CMDLINE_at91sam9260ek = "mem=64M console=ttyS0,115200 root=/dev/mtdblock0 rw rootfstype=jffs2"
 

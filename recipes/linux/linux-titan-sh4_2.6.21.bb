@@ -4,11 +4,11 @@ LICENSE = "GPLv2"
 PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-	   file://titan-flash.patch;apply=yes \
-	   file://titan-pcibios-scan-update.patch;apply=yes \
-           file://no-mm-mutex.patch;apply=yes \
-	   file://linux-2.6-limits.patch;apply=yes \
-	   file://linux-sh-__sdivsi3_i4i.patch;apply=yes \
+	   file://titan-flash.patch \
+	   file://titan-pcibios-scan-update.patch \
+           file://no-mm-mutex.patch \
+	   file://linux-2.6-limits.patch \
+	   file://linux-sh-__sdivsi3_i4i.patch \
 	   file://titan-config"
 S = "${WORKDIR}/linux-${PV}"
 

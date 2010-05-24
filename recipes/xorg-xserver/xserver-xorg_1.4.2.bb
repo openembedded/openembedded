@@ -6,9 +6,9 @@ RDEPENDS += "hal"
 PE = "1"
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://drmfix.patch;apply=yes \
-            file://pkgconfig_fix.patch;apply=yes \
-            file://sysroot_fix.patch;apply=yes \
+SRC_URI += "file://drmfix.patch \
+            file://pkgconfig_fix.patch \
+            file://sysroot_fix.patch \
             file://xcalibrate-xorg.diff \
 "
 

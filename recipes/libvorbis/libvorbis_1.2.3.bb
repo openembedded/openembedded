@@ -4,7 +4,7 @@ require libvorbis.inc
 PR = "${INC_PR}.1"
 
 SRC_URI = "http://downloads.xiph.org/releases/vorbis/libvorbis-${PV}.tar.gz \
-	   file://configure_powerpc-no-fixed-cpu.patch;apply=yes \
+	   file://configure_powerpc-no-fixed-cpu.patch \
 	   file://patch-lib_backends.h;apply=yes;striplevel=0 \
 	   file://patch-lib_codebook.c;apply=yes;striplevel=0 \
 	   file://patch-lib_modes_residue_44.h;apply=yes;striplevel=0 \

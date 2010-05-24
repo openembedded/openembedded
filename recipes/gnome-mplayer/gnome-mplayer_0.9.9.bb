@@ -1,6 +1,6 @@
 require gnome-mplayer.inc
 
-SRC_URI += "file://default.patch;apply=yes \
+SRC_URI += "file://default.patch \
 "
 
 SRC_URI[gnomemplayer.md5sum] = "335918da07a62941778444e126ae5ede"

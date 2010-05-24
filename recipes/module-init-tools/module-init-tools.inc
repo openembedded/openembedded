@@ -16,7 +16,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/module-init-tools/module-i
 	   file://modutils_extension;apply=yes \
 	   file://no_man_rebuild;apply=yes \
 	   file://manpagesopt;apply=yes \
-           file://module-init-tools-remove-index.patch;apply=yes "
+           file://module-init-tools-remove-index.patch "
 S = "${WORKDIR}/module-init-tools-${PV}"
 
 EXTRA_OECONF = "--disable-manpages"

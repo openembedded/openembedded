@@ -5,10 +5,10 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.gz \
-           file://prefix-fix.patch;apply=yes \
-           file://add-sysfs-ldflags.patch;apply=yes"
+           file://prefix-fix.patch \
+           file://add-sysfs-ldflags.patch"
 
-SRC_URI_append_uclibc = "file://iconv.patch;apply=yes"
+SRC_URI_append_uclibc = "file://iconv.patch"
 
 S = "${WORKDIR}/lm_sensors-${PV}"
 

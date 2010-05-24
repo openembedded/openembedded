@@ -7,14 +7,14 @@ PR = "${INC_PR}.1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += "\
-  file://disable-using-glibc-tls.patch;apply=yes \
-  file://buildfix.patch;apply=yes \
-#  file://libpulsedsp-references-libpulsecore.patch;apply=yes \
-#  file://pa-drop-caps-returns-void.patch;apply=yes \
-#  file://libtool2.patch;apply=yes \
-  file://2113.diff;apply=yes;striplevel=0 \
-  file://2114.diff;apply=yes;striplevel=0 \
-#  file://libiconv.patch;apply=yes \
+  file://disable-using-glibc-tls.patch \
+  file://buildfix.patch \
+#  file://libpulsedsp-references-libpulsecore.patch \
+#  file://pa-drop-caps-returns-void.patch \
+#  file://libtool2.patch \
+  file://2113.diff;striplevel=0 \
+  file://2114.diff;striplevel=0 \
+#  file://libiconv.patch \
 "            
 
 do_compile_prepend() {

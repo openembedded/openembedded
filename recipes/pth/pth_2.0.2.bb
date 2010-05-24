@@ -5,8 +5,8 @@ LICENSE = "GPL LGPL FDL"
 PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/pth/pth-${PV}.tar.gz \
-	   file://m4-warning.patch;apply=yes \
-	   file://ldflags.patch;apply=yes \
+	   file://m4-warning.patch \
+	   file://ldflags.patch \
 	  "
 
 PARALLEL_MAKE=""

@@ -7,7 +7,7 @@ LICENSE = "GPLv2"
 DEPENDS = "ncurses"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/htop/htop-${PV}.tar.gz \
-           file://remove-proc-test.patch;apply=yes"
+           file://remove-proc-test.patch"
 
 inherit autotools
 

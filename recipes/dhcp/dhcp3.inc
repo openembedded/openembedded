@@ -5,10 +5,10 @@ LICENSE = "BSD"
 INC_PR = "r11"
 
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.1-history/dhcp-${PV}.tar.gz \
-	   file://fixincludes.patch;apply=yes \
-	   file://useless-use-of-bash.patch;apply=yes \
+	   file://fixincludes.patch \
+	   file://useless-use-of-bash.patch \
            file://dhclient-script-exit-status.dpatch;apply=yes \
-	   file://dhcp-3.0.3-dhclient-dbus.patch;apply=yes;striplevel=0 \
+	   file://dhcp-3.0.3-dhclient-dbus.patch;striplevel=0 \
 	   file://init-relay file://default-relay \
 	   file://init-server file://default-server \
 	   file://dhclient.conf file://dhcpd.conf"

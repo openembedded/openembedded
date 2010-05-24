@@ -9,8 +9,8 @@ DEPENDS += "alsa-lib glib-2.0 dbus consolekit hal openssl"
 INC_PR = "r9"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz \
-           file://gcc4-compile-fix.patch;apply=yes \
-           file://configure-ac.patch;apply=yes \
+           file://gcc4-compile-fix.patch \
+           file://configure-ac.patch \
            file://volatiles.04_pulse"
 
 inherit autotools pkgconfig

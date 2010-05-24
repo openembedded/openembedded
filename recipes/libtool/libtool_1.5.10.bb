@@ -2,9 +2,9 @@ require libtool.inc
 PR = "${INC_PR}.0"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
-           file://autotools.patch;apply=yes \
-	   file://uclibc.patch;apply=yes \
-	   file://3figures.patch;apply=yes"
+           file://autotools.patch \
+	   file://uclibc.patch \
+	   file://3figures.patch"
 S = "${WORKDIR}/libtool-${PV}"
 
 PACKAGES =+ "libltdl libltdl-dev libltdl-dbg"

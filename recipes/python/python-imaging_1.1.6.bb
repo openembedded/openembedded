@@ -8,7 +8,7 @@ SRCNAME = "Imaging"
 PR = "ml1"
 
 SRC_URI = "http://effbot.org/downloads/Imaging-${PV}.tar.gz \
-           file://path.patch;apply=yes"
+           file://path.patch"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

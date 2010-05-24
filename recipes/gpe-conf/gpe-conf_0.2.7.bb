@@ -16,8 +16,8 @@ GPE_TARBALL_SUFFIX = "bz2"
 
 inherit gpe autotools pkgconfig
 
-SRC_URI += "file://poweroff.patch;apply=yes \
-            file://wifi-key.patch;apply=yes;striplevel=0"
+SRC_URI += "file://poweroff.patch \
+            file://wifi-key.patch;striplevel=0"
 
 PACKAGES += "gpe-conf-panel"
 

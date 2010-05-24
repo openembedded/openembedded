@@ -9,12 +9,12 @@ PR = "r3"
 # is usually not compiled. However if someone changes
 # to --enable-local-sockets it will.
 SRC_URI += "\
-  file://SimpleName.diff;apply=yes;striplevel=0 \
-  file://sun-security-getproperty.patch;apply=yes;striplevel=0 \
-  file://ecj_java_dir.patch;apply=yes \
-  file://autotools.patch;apply=yes \
-  file://miscompilation.patch;apply=yes \
-  file://toolwrapper-exithook.patch;apply=yes \
+  file://SimpleName.diff;striplevel=0 \
+  file://sun-security-getproperty.patch;striplevel=0 \
+  file://ecj_java_dir.patch \
+  file://autotools.patch \
+  file://miscompilation.patch \
+  file://toolwrapper-exithook.patch \
   "
 
 do_unpackpost() {

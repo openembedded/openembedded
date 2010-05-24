@@ -10,9 +10,9 @@ RDEPENDS = "xrdb"
 DESCRIPTION = "Touchscreen detection utility"
 
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
-           file://access.patch;apply=yes;striplevel=0 \
-	   file://extra-device-check.patch;apply=yes \
-	   file://correct-theme-name.patch;apply=yes"
+           file://access.patch;striplevel=0 \
+	   file://extra-device-check.patch \
+	   file://correct-theme-name.patch"
 
 export CVSBUILD="no"
 

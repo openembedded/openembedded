@@ -1,7 +1,7 @@
 PR = "r2"
 
-SRC_URI_append += "file://sh4-asmfix.patch;apply=yes \
-                   file://x86-fat.diff;apply=yes;striplevel=0 "
+SRC_URI_append += "file://sh4-asmfix.patch \
+                   file://x86-fat.diff;striplevel=0 "
 
 require gmp.inc
 

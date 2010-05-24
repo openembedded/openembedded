@@ -6,13 +6,13 @@ DEFAULT_PREFERENCE_angstrom = "2"
 DEFAULT_PREFERENCE_shr = "2"
 
 SRC_URI += " \
-           file://0003-Generic-C-implementation-of-pixman_blt-with-overlapp.patch;apply=yes \
-           file://0004-Support-of-overlapping-src-dst-for-pixman_blt_mmx.patch;apply=yes \
-           file://0005-Support-of-overlapping-src-dst-for-pixman_blt_sse2.patch;apply=yes \
-           file://0006-Support-of-overlapping-src-dst-for-pixman_blt_neon.patch;apply=yes \
-           file://1-composite.patch;apply=yes \
-           file://2-composite.patch;apply=yes \          
-           file://3-composite.patch;apply=yes \          
+           file://0003-Generic-C-implementation-of-pixman_blt-with-overlapp.patch \
+           file://0004-Support-of-overlapping-src-dst-for-pixman_blt_mmx.patch \
+           file://0005-Support-of-overlapping-src-dst-for-pixman_blt_sse2.patch \
+           file://0006-Support-of-overlapping-src-dst-for-pixman_blt_neon.patch \
+           file://1-composite.patch \
+           file://2-composite.patch \          
+           file://3-composite.patch \          
           "
 
 SRC_URI[archive.md5sum] = "a7deb2ff6b286b676d67aa6ae91317ae"

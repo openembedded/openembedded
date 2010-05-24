@@ -39,21 +39,27 @@ python patch_do_patch() {
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	for url in src_uri:
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
+
+		local = None
+		base, ext = os.path.splitext(os.path.basename(path))
+		if ext in ('.gz', '.bz2', '.Z'):
+			local = os.path.join(workdir, base)
+			ext = os.path.splitext(base)[1]
+
 		apply = parm.get("apply")
-		if apply != "yes" and not "patch" in parm:
-			if apply and apply != "no":
+		if apply is not None and apply != "yes" and not "patch" in parm:
+			if apply != "no":
 				bb.msg.warn(None, "Unsupported value '%s' for 'apply' url param in '%s', please use 'yes' or 'no'" % (apply, url))
 			continue
 		elif "patch" in parm:
 			bb.msg.warn(None, "Deprecated usage of 'patch' url param in '%s', please use 'apply={yes,no}'" % url)
+		elif ext not in (".diff", ".patch"):
+			continue
 
-		bb.fetch.init([url],d)
-		url = bb.encodeurl((type, host, path, user, pswd, []))
-		local = os.path.join('/', bb.fetch.localpath(url, d))
-
-		base, ext = os.path.splitext(os.path.basename(local))
-		if ext in ('.gz', '.bz2', '.Z'):
-			local = os.path.join(workdir, base)
+		if not local:
+			bb.fetch.init([url],d)
+			url = bb.encodeurl((type, host, path, user, pswd, []))
+			local = os.path.join('/', bb.fetch.localpath(url, d))
 		local = bb.data.expand(local, d)
 
 		if "striplevel" in parm:

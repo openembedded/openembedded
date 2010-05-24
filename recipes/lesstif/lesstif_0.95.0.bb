@@ -5,17 +5,17 @@ PR = "r2"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/lesstif/${BP}.tar.bz2 \
-	file://000_bootstrap_script.diff;apply=yes \
-	file://000_libtool_linking.diff;apply=yes \
-	file://010_rebootstrap-small.diff;apply=yes \
-	file://020_bad_integer_cast.diff;apply=yes \
-	file://020_missing_xm_h.diff;apply=yes \
-	file://020_render_table_crash.diff;apply=yes \
-	file://020_unsigned_int.diff;apply=yes \
-	file://020_xpmpipethrough.diff;apply=yes \
-	file://021_xim_chained_list_crash.diff;apply=yes \
-	file://030_manpage.diff;apply=yes \
-	file://disable-docs.patch;apply=yes \
+	file://000_bootstrap_script.diff \
+	file://000_libtool_linking.diff \
+	file://010_rebootstrap-small.diff \
+	file://020_bad_integer_cast.diff \
+	file://020_missing_xm_h.diff \
+	file://020_render_table_crash.diff \
+	file://020_unsigned_int.diff \
+	file://020_xpmpipethrough.diff \
+	file://021_xim_chained_list_crash.diff \
+	file://030_manpage.diff \
+	file://disable-docs.patch \
 	"
 
 DEPENDS = "flex-native bison-native libice libsm libx11 libxext libxp libxt libxrender libxft fontconfig freetype"

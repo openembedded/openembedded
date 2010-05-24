@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zaurus-shopper/Shopper-${PV}.tar.gz \
-           file://gcc3.patch;apply=yes \
-           file://path_fix.patch;apply=yes"
+           file://gcc3.patch \
+           file://path_fix.patch"
 S = "${WORKDIR}/Shopper"
 
 inherit palmtop

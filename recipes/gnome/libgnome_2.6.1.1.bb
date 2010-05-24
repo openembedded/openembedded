@@ -5,7 +5,7 @@ PR = "r2"
 
 inherit gnome
 
-SRC_URI += "file://makefile.patch;apply=yes"
+SRC_URI += "file://makefile.patch"
 
 DEPENDS = "gnome-vfs libbonobo"
 

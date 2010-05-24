@@ -1,9 +1,9 @@
 PR = "r1"
 
-SRC_URI_append += "file://02_noexec-stack.diff;apply=yes \
-		   file://03_gnu89-inline.diff;apply=yes \
-		   file://mpf_set_str_c.diff;apply=yes \
-		   file://sh4-asmfix.patch;apply=yes \
+SRC_URI_append += "file://02_noexec-stack.diff \
+		   file://03_gnu89-inline.diff \
+		   file://mpf_set_str_c.diff \
+		   file://sh4-asmfix.patch \
 		  "
 require gmp.inc
 

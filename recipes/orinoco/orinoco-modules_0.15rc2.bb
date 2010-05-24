@@ -6,12 +6,12 @@ RDEPENDS_orinoco-modules-cs += "orinoco-modules spectrum-fw"
 PR = "r10"
 
 SRC_URI += "\
-           file://makefile_fix.patch;apply=yes \
-           file://list-move.patch;apply=yes \
-           file://add_utsname.patch;apply=yes \
-           file://add_event.patch;apply=yes \
-           file://spectrum_cs_ids.patch;apply=yes \
-           file://catch-up-with-kernel-changes.patch;apply=yes"
+           file://makefile_fix.patch \
+           file://list-move.patch \
+           file://add_utsname.patch \
+           file://add_event.patch \
+           file://spectrum_cs_ids.patch \
+           file://catch-up-with-kernel-changes.patch"
 
 do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/net/

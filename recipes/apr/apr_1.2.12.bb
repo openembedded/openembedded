@@ -6,7 +6,7 @@ PR = "r1"
 
 # apache mirrors?
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.bz2 \
-           file://configure_fixes.patch;apply=yes"
+           file://configure_fixes.patch"
 
 inherit autotools lib_package binconfig
 

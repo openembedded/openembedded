@@ -9,10 +9,10 @@ inherit autotools pkgconfig
 # translation patch: http://www.thewildbeast.co.uk/claws-mail/bugzilla/show_bug.cgi?id=1774
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/sylpheed-claws/claws-mail-${PV}.tar.bz2;name=archive \
-	http://www.penguin.cz/~utx/ftp/claws-mail/claws-mail-${PV}-po-update.patch;apply=yes;name=patch \
-	file://desktop.patch;apply=yes \
-	file://claws-mail-g_strcmp0.patch;apply=yes \
-	file://duplicate-header.patch;apply=yes \
+	http://www.penguin.cz/~utx/ftp/claws-mail/claws-mail-${PV}-po-update.patch;name=patch \
+	file://desktop.patch \
+	file://claws-mail-g_strcmp0.patch \
+	file://duplicate-header.patch \
 	"
 
 do_configure_append() {

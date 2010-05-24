@@ -4,8 +4,8 @@ LICENSE = "GPLv2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2;name=kernel \
 	   http://www.muru.com/linux/omap/patches/patch-2.6.16-omap2.bz2;apply=yes;name=patch \
-           file://linux-2.6.16.16.patch;apply=yes \
-           file://linux-h6300-omap2-2.6.16.16.patch;apply=yes \
+           file://linux-2.6.16.16.patch \
+           file://linux-h6300-omap2-2.6.16.16.patch \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.16"

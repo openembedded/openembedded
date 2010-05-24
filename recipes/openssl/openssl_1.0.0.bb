@@ -11,12 +11,12 @@ DEFAULT_PREFERENCE = "-1"
 export DIRS = "crypto ssl apps engines"
 export OE_LDFLAGS="${LDFLAGS}"
 
-SRC_URI += "file://configure-targets.patch;apply=yes \
-            file://shared-libs.patch;apply=yes \
-            file://debian.patch;apply=yes \
-            file://oe-ldflags.patch;apply=yes \
-	    file://libdeps-first.patch;apply=yes \
-	    file://engines-install-in-libdir-ssl.patch;apply=yes \
+SRC_URI += "file://configure-targets.patch \
+            file://shared-libs.patch \
+            file://debian.patch \
+            file://oe-ldflags.patch \
+	    file://libdeps-first.patch \
+	    file://engines-install-in-libdir-ssl.patch \
 	   "
 
 PARALLEL_MAKE = ""

@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI = "http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-alpha9.8.src.tgz \
-         file://fixes.patch;apply=yes \
-         file://Makefile.patch;apply=yes"
+         file://fixes.patch \
+         file://Makefile.patch"
 
 S = "${WORKDIR}/cdparanoia-III-alpha9.8"
 

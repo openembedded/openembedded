@@ -11,7 +11,7 @@ SRC_URI = "http://www.daidouji.com/oneko/distfiles/oneko-${PV}.tar.gz \
            file://kill-oneko.desktop \
 	   file://oneko.png \
 	   file://kill-oneko.png \
-	   file://remove-bsd-daemon-logo.patch;apply=yes"
+	   file://remove-bsd-daemon-logo.patch"
 
 inherit pkgconfig 
 

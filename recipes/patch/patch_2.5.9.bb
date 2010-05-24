@@ -1,11 +1,11 @@
 require patch.inc
 
 SRC_URI = "${GNU_MIRROR}/patch/patch-2.5.4.tar.gz \
-	   file://2.5.9.patch;apply=yes \
-	   file://debian.patch;apply=yes \
-	   file://install.patch;apply=yes \
-           file://unified-reject-files.diff;apply=yes \
-           file://global-reject-file.diff;apply=yes "
+	   file://2.5.9.patch \
+	   file://debian.patch \
+	   file://install.patch \
+           file://unified-reject-files.diff \
+           file://global-reject-file.diff "
 S = "${WORKDIR}/patch-2.5.4"
 PR = "r2"
 SRC_URI[md5sum] = "ee5ae84d115f051d87fcaaef3b4ae782"

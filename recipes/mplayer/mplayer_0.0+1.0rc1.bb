@@ -12,28 +12,28 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2;name
            file://vo_w100_fb.h \
            file://vo_pxa.c \
            file://vo_pxa.h \
-           file://Makefile.patch;apply=yes \
-           file://w100-configure.patch;apply=yes \
-           file://w100-Makefile.patch;apply=yes \
-           file://w100-video_out.patch;apply=yes \
-           file://w100-mplayer.patch;apply=yes \
-           file://pld-onlyarm5.patch;apply=yes \
-           file://makefile-nostrip.patch;apply=yes \
-           ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;apply=yes;name=imageon \
-           file://imageon-video_out.patch;apply=yes \
-	   file://powerpc-is-ppc.diff;apply=yes \
-           file://pxa_configure.patch;apply=yes \
-           file://pxa-video_out.patch;apply=yes \
+           file://Makefile.patch \
+           file://w100-configure.patch \
+           file://w100-Makefile.patch \
+           file://w100-video_out.patch \
+           file://w100-mplayer.patch \
+           file://pld-onlyarm5.patch \
+           file://makefile-nostrip.patch \
+           ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;name=imageon \
+           file://imageon-video_out.patch \
+	   file://powerpc-is-ppc.diff \
+           file://pxa_configure.patch \
+           file://pxa-video_out.patch \
           "
 
-SRC_URI_append_avr32 = " file://mplayer-1.0rc1-atmel.2.patch;apply=yes \
+SRC_URI_append_avr32 = " file://mplayer-1.0rc1-atmel.2.patch \
                        "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
 # discovers this is more general than please make this more general
 # ie. for all armv4 machines.
-SRC_URI_append_collie = "file://disable-executable-stack-test.patch;apply=yes"
+SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 PACKAGE_ARCH_mplayer_collie = "collie"
 PACKAGE_ARCH_mencoder_collie = "collie"
 

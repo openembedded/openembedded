@@ -5,9 +5,9 @@ PR = "r1"
 
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
-  file://nobash.patch;apply=yes \
-  file://root-home.patch;apply=yes \
-  file://mysql.patch;apply=yes \
+  file://nobash.patch \
+  file://root-home.patch \
+  file://mysql.patch \
 "
 S = "${WORKDIR}/base-passwd"
 

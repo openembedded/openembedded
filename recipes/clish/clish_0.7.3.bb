@@ -6,7 +6,7 @@ SECTION = "console/utils"
 PR ="r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clish/clish-${PV}.tar.gz \
-           file://configure.patch;apply=yes"
+           file://configure.patch"
 
 PARALLEL_MAKE=""
 

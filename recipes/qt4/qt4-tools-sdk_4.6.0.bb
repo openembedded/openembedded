@@ -9,8 +9,8 @@ DEFAULT_PREFERENCE = "-1"
 inherit sdk
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
-           file://configure-lflags.patch;apply=yes \
-           file://qt-config.patch;apply=yes \
+           file://configure-lflags.patch \
+           file://qt-config.patch \
            file://g++.conf \
            file://linux.conf"
 

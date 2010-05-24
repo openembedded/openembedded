@@ -11,7 +11,7 @@ PR = "r1"
 
 SRC_URI = "\
   svn://svn.easysw.com/public/fltk/fltk;proto=http;module=trunk \
-  file://fix-it-damnit.patch;apply=yes \
+  file://fix-it-damnit.patch \
 "
 S = "${WORKDIR}/trunk"
 

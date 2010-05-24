@@ -12,7 +12,7 @@ CONFLICTS = "db"
 PROVIDES += "${VIRTUAL_NAME}"
 
 SRC_URI = "http://download.oracle.com/berkeley-db/db-${PV}.tar.gz \
-	   file://autofoo.patch;apply=yes"
+	   file://autofoo.patch"
 S = "${WORKDIR}/db-${PV}/dist"
 B = "${WORKDIR}/db-${PV}/build_unix"
 

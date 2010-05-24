@@ -2,9 +2,9 @@ require procps.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://procmodule.patch;apply=yes \
-            file://psmodule.patch;apply=yes \
-	    file://linux-limits.patch;apply=yes \
+SRC_URI += "file://procmodule.patch \
+            file://psmodule.patch \
+	    file://linux-limits.patch \
 	    file://60_linux_version_init.dpatch;apply=yes \
 	    "
 

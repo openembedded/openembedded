@@ -6,13 +6,13 @@ RRECOMMENDS = "arpwatch-data"
 PR = "r2"
 
 SRC_URI = "ftp://ftp.ee.lbl.gov/arpwatch-${PV}.tar.gz \
-           file://05debian_fhs.patch;apply=yes \
-           file://06debian_manpages.patch;apply=yes \
+           file://05debian_fhs.patch \
+           file://06debian_manpages.patch \
            file://init.d \
            file://arpwatch.default \
            file://arpwatch.conf \
            file://ethercodes.dat \
-           file://make.patch;apply=yes \
+           file://make.patch \
            file://volatiles.08_arpwatch"
 
 inherit autotools update-rc.d

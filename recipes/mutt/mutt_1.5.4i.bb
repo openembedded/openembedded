@@ -13,10 +13,10 @@ SRC_URI = "ftp://ftp.mutt.org/mutt/devel/mutt-${PV}.tar.gz;name=archive \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.nntp.gz;apply=yes;name=patch2 \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.initials.gz;apply=yes;name=patch3 \
 	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.quote.gz;apply=yes;name=patch4 \
-	   file://cppflags.patch;apply=yes \
-	   file://posix1_lim.patch;apply=yes \
-	   file://keymap.h.patch;apply=yes \
-	   file://configure.patch;apply=yes"
+	   file://cppflags.patch \
+	   file://posix1_lim.patch \
+	   file://keymap.h.patch \
+	   file://configure.patch"
 S = "${WORKDIR}/mutt-1.5.4"
 
 inherit autotools

@@ -3,11 +3,11 @@ PR ="r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.sakoman.net/omap3/u-boot.tar.gz \
-           file://name.patch;apply=yes \
-           file://armv7-a.patch;apply=yes \
-           file://500mhz-l2enable.patch;apply=yes \
-           file://disable-tone-logo.patch;apply=yes \
-           file://env.patch;apply=yes \
+           file://name.patch \
+           file://armv7-a.patch \
+           file://500mhz-l2enable.patch \
+           file://disable-tone-logo.patch \
+           file://env.patch \
           "
 
 S = "${WORKDIR}/u-boot"

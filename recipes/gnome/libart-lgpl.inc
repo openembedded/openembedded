@@ -9,7 +9,7 @@ INC_PR = "r5"
 # can't use gnome.bbclass due to _ in filename
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libart_lgpl/2.3/libart_lgpl-${PV}.tar.bz2 \
        file://${ART_CONFIG} \
-       file://Makefile.am.patch;apply=yes"
+       file://Makefile.am.patch"
 
 inherit autotools pkgconfig
 

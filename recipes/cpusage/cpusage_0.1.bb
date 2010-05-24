@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "http://www8.in.tum.de/~schneifa/group/sources/cpusage-${PV}.tar.gz \
-           file://cpusage.patch;apply=yes"
+           file://cpusage.patch"
 
 S = "${WORKDIR}/cpusage-${PV}"
 

@@ -5,8 +5,8 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "http://efault.net/npat/hacks/picocom/dist/picocom-${PV}.tar.gz \
-           file://nolock.patch;apply=yes \
-           file://gcc4.patch;apply=yes"
+           file://nolock.patch \
+           file://gcc4.patch"
 
 CFLAGS_append = ' -DVERSION_STR=\\"${PV}\\"'
 

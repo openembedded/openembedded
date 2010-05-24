@@ -6,8 +6,8 @@ AUTHOR = "Dirk Farin, Port by Rober Ernst"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Nine-Mens-Morris.html"
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/nmm_V0.0.2.tar.gz \
-           file://Makefile.patch;apply=yes \
-	   file://nmm.patch;apply=yes"
+           file://Makefile.patch \
+	   file://nmm.patch"
 
 PV = "0.0.2"
 S = "${WORKDIR}/nmm_V${PV}"

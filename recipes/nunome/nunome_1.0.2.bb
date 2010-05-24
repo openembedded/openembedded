@@ -7,8 +7,8 @@ RDEPENDS = "virtual-japanese-font"
 PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/nunome-${PV}.tar.bz2 \
-	file://timer.patch;apply=yes \
-	file://nunome.patch;apply=yes"
+	file://timer.patch \
+	file://nunome.patch"
 S = "${WORKDIR}/nunome"
 
 inherit opie

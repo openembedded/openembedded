@@ -10,7 +10,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=ke
            ftp://ftp.arm.linux.org.uk/pub/armlinux/source/kernel-patches/v2.4/patch-2.4.25-vrs1.bz2;apply=yes;name=patch1 \
            http://www.simtec.co.uk/products/SWLINUX/files/patch-2.4.25-vrs1-bast1.bz2;apply=yes;name=patch2 \
            file://defconfig \
-           file://mkdep.patch;apply=yes \
+           file://mkdep.patch \
            file://defconfig"
 S = "${WORKDIR}/linux-${KV}"
 

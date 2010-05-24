@@ -10,72 +10,72 @@ PR = "r13"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;apply=yes;name=stablepatch \
            file://tsc2003.c \
-	   file://tsc2003-config.diff;apply=yes \
+	   file://tsc2003-config.diff \
 	   file://defconfig \
 	   "
 
 SRC_URI_append_simpad = "\
-           file://linux-2.6.21-SIMpad-cs3-simpad.patch;apply=yes \
-           file://linux-2.6.21-SIMpad-mq200.patch;apply=yes \
-           file://linux-2.6.21-SIMpad-serial-gpio_keys-and-cs3-ro.patch;apply=yes \
-           file://linux-2.6.21-SIMpad-ucb1x00-switches.patch;apply=yes \
-	   file://linux-2.6.21-SIMpad-pcmcia.patch;apply=yes \
-	   file://linux-2.6.21-SIMpad-net-shared-irq.patch;apply=yes \
-	   file://linux-2.6.21-SIMpad-ucb1x00-ts-supend-and-accuracy.patch;apply=yes \
-           file://linux-2.6.21-SIMpad-GPIO-MMC-mod.patch;apply=yes \
-	   file://linux-2.6.21-SIMpad-battery-old-way-but-also-with-sysfs.patch;apply=yes \
-	   file://linux-2.6.21-SIMpad-usb-gadget.patch;apply=yes \
+           file://linux-2.6.21-SIMpad-cs3-simpad.patch \
+           file://linux-2.6.21-SIMpad-mq200.patch \
+           file://linux-2.6.21-SIMpad-serial-gpio_keys-and-cs3-ro.patch \
+           file://linux-2.6.21-SIMpad-ucb1x00-switches.patch \
+	   file://linux-2.6.21-SIMpad-pcmcia.patch \
+	   file://linux-2.6.21-SIMpad-net-shared-irq.patch \
+	   file://linux-2.6.21-SIMpad-ucb1x00-ts-supend-and-accuracy.patch \
+           file://linux-2.6.21-SIMpad-GPIO-MMC-mod.patch \
+	   file://linux-2.6.21-SIMpad-battery-old-way-but-also-with-sysfs.patch \
+	   file://linux-2.6.21-SIMpad-usb-gadget.patch \
            "
-SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;apply=yes;name=at91patch "
-SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;apply=yes;name=at91patch "
-SRC_URI_append_sarge-at91 = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;apply=yes;name=at91patch \
-                              file://2.6.21-sarge-kernel.patch;apply=yes \
-                              file://2.6.21-sarge-phy.patch;apply=yes \
-                              file://2.6.21-sarge-mmc.patch;apply=yes"
+SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;name=at91patch "
+SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;name=at91patch "
+SRC_URI_append_sarge-at91 = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;name=at91patch \
+                              file://2.6.21-sarge-kernel.patch \
+                              file://2.6.21-sarge-phy.patch \
+                              file://2.6.21-sarge-mmc.patch"
 
 GUMSTIX_PATCHES = "\
-       file://pxa-regs-additions.patch;apply=yes \
-       file://header.patch;apply=yes \
-       file://arch-config.patch;apply=yes \
-       file://board-init.patch;apply=yes \
-       file://compact-flash.patch;apply=yes \
-       file://flash.patch;apply=yes \
-       file://pxa2xx_udc.patch;apply=yes \
-       file://bkpxa-pxa-cpu.patch;apply=yes \
-       file://bkpxa-pxa-cpufreq.patch;apply=yes \
-       file://proc-gpio.patch;apply=yes \
-       file://serial-ether-addr.patch;apply=yes \
-       file://cpufreq-better-freqs.patch;apply=yes \
-       file://ethernet-config.patch;apply=yes \
-       file://smc-ether-addr.patch;apply=yes \
-       file://cpufreq-ondemand-by-default.patch;apply=yes \
-       file://modular-init-bluetooth.patch;apply=yes \
-       file://modular-init-smc91x.patch;apply=yes \
-       file://modular-init-usb-gadget.patch;apply=yes \
-       file://bugfix-i2c-include.patch;apply=yes \
-       file://bugfix-mmc-clock.patch;apply=yes \
-       file://bugfix-pxa-cpufreq.patch;apply=yes \
-       file://bugfix-serial-interrupt.patch;apply=yes \
-       file://bugfix-serial-register-status.patch;apply=yes \
-       file://mach-types-fix.patch;apply=yes \
-       file://pcm-gcc-411-bugfix.patch;apply=yes \
-       file://ucb1400-ac97-audio.patch;apply=yes \
-       file://gumstix-asoc.patch;apply=yes \
-       file://disable-uncompress-message.patch;apply=yes \
-       file://serial-divisor.patch;apply=yes \
-       file://mmc-card-detect.patch;apply=yes \
-       file://misalignment-handling.patch;apply=yes \
-       file://compile-fix-pxa_cpufreq.patch;apply=yes \
-       file://pxafb-definition.patch;apply=yes \
-       file://270-usb-gadget-udc.patch;apply=yes \
-       file://gumstix-pxa270-usb-host.patch;apply=yes \
-       file://cpufreq-fixup.patch;apply=yes \
-       file://uImage-in-own-partition.patch;apply=yes \
-       file://pxa-regs-fixup.patch;apply=yes \
-       file://gumstix-fb-logo.patch;apply=yes \
-       file://gumstix-pxa270-mmc.patch;apply=yes \
-       ${RPSRC}/pxa27x_overlay-r5.patch;apply=yes;name=rppatch23 \
-       file://smc911x-fixup.patch;apply=yes \
+       file://pxa-regs-additions.patch \
+       file://header.patch \
+       file://arch-config.patch \
+       file://board-init.patch \
+       file://compact-flash.patch \
+       file://flash.patch \
+       file://pxa2xx_udc.patch \
+       file://bkpxa-pxa-cpu.patch \
+       file://bkpxa-pxa-cpufreq.patch \
+       file://proc-gpio.patch \
+       file://serial-ether-addr.patch \
+       file://cpufreq-better-freqs.patch \
+       file://ethernet-config.patch \
+       file://smc-ether-addr.patch \
+       file://cpufreq-ondemand-by-default.patch \
+       file://modular-init-bluetooth.patch \
+       file://modular-init-smc91x.patch \
+       file://modular-init-usb-gadget.patch \
+       file://bugfix-i2c-include.patch \
+       file://bugfix-mmc-clock.patch \
+       file://bugfix-pxa-cpufreq.patch \
+       file://bugfix-serial-interrupt.patch \
+       file://bugfix-serial-register-status.patch \
+       file://mach-types-fix.patch \
+       file://pcm-gcc-411-bugfix.patch \
+       file://ucb1400-ac97-audio.patch \
+       file://gumstix-asoc.patch \
+       file://disable-uncompress-message.patch \
+       file://serial-divisor.patch \
+       file://mmc-card-detect.patch \
+       file://misalignment-handling.patch \
+       file://compile-fix-pxa_cpufreq.patch \
+       file://pxafb-definition.patch \
+       file://270-usb-gadget-udc.patch \
+       file://gumstix-pxa270-usb-host.patch \
+       file://cpufreq-fixup.patch \
+       file://uImage-in-own-partition.patch \
+       file://pxa-regs-fixup.patch \
+       file://gumstix-fb-logo.patch \
+       file://gumstix-pxa270-mmc.patch \
+       ${RPSRC}/pxa27x_overlay-r5.patch;name=rppatch23 \
+       file://smc911x-fixup.patch \
        "
 
 SRC_URI_append_gumstix-verdex = "${GUMSTIX_PATCHES}"

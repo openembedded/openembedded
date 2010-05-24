@@ -5,7 +5,7 @@ LICENSE = "libmng"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libmng/libmng-${PV}.tar.gz \
-           file://ldflags.patch;apply=yes"
+           file://ldflags.patch"
 
 inherit pkgconfig
 

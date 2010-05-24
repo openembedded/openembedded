@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "ep93xx"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2;name=kernel \
 	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.20-rc7.bz2;apply=yes;name=patch \
-           file://dynamic-phys-offset-2.6.20-rc7.diff;apply=yes \ 
+           file://dynamic-phys-offset-2.6.20-rc7.diff \ 
            file://defconfig \
 		   "
 

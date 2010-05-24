@@ -12,20 +12,20 @@ PR = "${INC_PR}.0"
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-git:${FILE_DIRNAME}/xserver-kdrive"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	${KDRIVE_COMMON_PATCHES} \
-	file://enable-epson.patch;apply=yes \
-	file://fix_default_mode.patch;apply=yes \
-	file://enable-xcalibrate.patch;apply=yes \
-	file://hide-cursor-and-ppm-root.patch;apply=yes \
-	file://xcalibrate_coords.patch;apply=yes \
-	file://w100.patch;apply=yes \
-	file://w100-autofoo.patch;apply=yes \
-	file://w100-fix-offscreen-bmp.patch;apply=yes \
-	file://w100-new-input-world-order.patch;apply=yes \
-	file://w100-post-1.4-buildfix.patch;apply=yes \
-	file://xcalibrate-new-input-world-order.patch;apply=yes \
-	file://tslib-default-device.patch;apply=yes \
-	file://fbdev-evdev.patch;apply=yes \
-	file://xephyr-post-1.4-buildfix.patch;apply=yes \
+	file://enable-epson.patch \
+	file://fix_default_mode.patch \
+	file://enable-xcalibrate.patch \
+	file://hide-cursor-and-ppm-root.patch \
+	file://xcalibrate_coords.patch \
+	file://w100.patch \
+	file://w100-autofoo.patch \
+	file://w100-fix-offscreen-bmp.patch \
+	file://w100-new-input-world-order.patch \
+	file://w100-post-1.4-buildfix.patch \
+	file://xcalibrate-new-input-world-order.patch \
+	file://tslib-default-device.patch \
+	file://fbdev-evdev.patch \
+	file://xephyr-post-1.4-buildfix.patch \
 	"
 
 S = "${WORKDIR}/git"

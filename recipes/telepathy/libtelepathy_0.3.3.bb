@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 PR = "r0"
 
 SRC_URI = "http://telepathy.freedesktop.org/releases/libtelepathy/libtelepathy-${PV}.tar.gz \
-           file://duplicate-header.patch;apply=yes \
+           file://duplicate-header.patch \
           "
 
 inherit autotools pkgconfig

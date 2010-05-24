@@ -5,9 +5,9 @@ PR = "r1"
 DEPENDS = "llvm-common llvm2.6-native"
 
 SRC_URI += "\
-  file://fix-build.patch;apply=yes \
-  file://llvm-debugonly-zeroormore.patch;apply=yes;striplevel=0 \
-  file://BX_to_BLX.patch;apply=yes \
+  file://fix-build.patch \
+  file://llvm-debugonly-zeroormore.patch;striplevel=0 \
+  file://BX_to_BLX.patch \
 "
 
 LLVM_RELEASE = "2.6"

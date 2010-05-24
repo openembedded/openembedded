@@ -7,8 +7,8 @@ PR = "r0"
 
 SRC_URI = "\
   http://samba.org/ftp/tridge/dbench/dbench-${PV}.tar.gz \
-  file://destdir.patch;apply=yes \
-  file://makefile.patch;apply=yes"
+  file://destdir.patch \
+  file://makefile.patch"
 
 inherit autotools
 

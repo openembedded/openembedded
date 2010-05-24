@@ -5,8 +5,8 @@ PR = "r0"
 
 SRC_URI = " \
     ${DEBIAN_MIRROR}/main/i/iptraf/iptraf_${PV}.orig.tar.gz;name=archive \
-    ${DEBIAN_MIRROR}/main/i/iptraf/iptraf_3.0.0-6.diff.gz;apply=yes;name=patch \
-    file://support-makefile.patch;apply=yes \
+    ${DEBIAN_MIRROR}/main/i/iptraf/iptraf_3.0.0-6.diff.gz;name=patch \
+    file://support-makefile.patch \
 "
 
 # iptraf will store user filters etc. in /var/run/iptraf, which is probably

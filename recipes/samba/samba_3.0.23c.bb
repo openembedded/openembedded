@@ -1,8 +1,8 @@
 require samba.inc
 require samba-basic.inc
 
-SRC_URI += "file://configure.patch;apply=yes \
-            file://cifs.patch;apply=yes"
+SRC_URI += "file://configure.patch \
+            file://cifs.patch"
 
 PR = "r7"
 

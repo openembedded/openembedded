@@ -7,7 +7,7 @@ SRCDATE = "20061112"
 PR = "r0"
 
 SRC_URI = "cvs://anoncvs@keithp.com/local/src/CVS;method=pserver;module=ipatience \
-          file://fix-make.patch;apply=yes"
+          file://fix-make.patch"
 
 S = "${WORKDIR}/${PN}"
 

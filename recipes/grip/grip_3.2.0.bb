@@ -8,7 +8,7 @@ LICENSE="GPL"
 SRC_URI="${SOURCEFORGE_MIRROR}/grip/grip-${PV}.tar.gz \
          file://patch-src::discdb;apply=yes;striplevel=0 \
          file://patch-src::main.c;apply=yes;striplevel=0 \
-         file://no-host-includes.patch;apply=yes "
+         file://no-host-includes.patch "
 DEPENDS="libgnomeui vte curl cdparanoia id3lib"
 
 PR = "r3"

@@ -28,8 +28,8 @@ RDEPENDS += "perl-module-file-spec-unix"
 PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
-	   file://ppmtojpeg.patch;apply=yes;striplevel=42 \
-	   file://libgnuhash.patch;apply=yes \
+	   file://ppmtojpeg.patch;striplevel=42 \
+	   file://libgnuhash.patch \
 	   file://Makefile.config \
 	   file://oeendiangen"
 

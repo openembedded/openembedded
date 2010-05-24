@@ -10,10 +10,10 @@ PR = "ml12"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/${MAJ_VER}/${SRCNAME}-${PV}.tar.bz2 \
-           file://fix-gtkunixprint.patch;apply=yes \
-           file://prevent_to_get_display_during_import.patch;apply=yes \
-           file://nodocs.patch;apply=yes \
-           file://gdk_display.patch;apply=yes;striplevel=0 \
+           file://fix-gtkunixprint.patch \
+           file://prevent_to_get_display_during_import.patch \
+           file://nodocs.patch \
+           file://gdk_display.patch;striplevel=0 \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 

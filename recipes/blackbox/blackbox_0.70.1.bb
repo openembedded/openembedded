@@ -5,7 +5,7 @@ DEPENDS = "libx11 libxext libxcomposite libxfixes libxdamage libxrender libxiner
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/blackboxwm/blackbox-0.70.1.tar.gz \
-  file://remove-host-includes.patch;apply=yes"
+  file://remove-host-includes.patch"
 S = "${WORKDIR}/blackbox-${PV}"
 
 inherit autotools pkgconfig

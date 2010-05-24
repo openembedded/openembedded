@@ -7,7 +7,7 @@ DEPENDS = "sugar"
 RDEPENDS = "sugar shared-mime-info"
 
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/etoys/etoys-${PV}.tar.gz \
-           file://etoys.diff;apply=yes"
+           file://etoys.diff"
 
 inherit autotools distutils-base
 

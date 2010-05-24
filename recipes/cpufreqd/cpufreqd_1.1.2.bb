@@ -6,7 +6,7 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cpufreqd/cpufreqd-${PV}.tar.gz \
-	   file://nonrootinstall.patch;apply=yes"
+	   file://nonrootinstall.patch"
 
 inherit autotools
 

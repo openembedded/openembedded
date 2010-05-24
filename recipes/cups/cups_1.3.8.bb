@@ -1,6 +1,6 @@
 require cups.inc
 
-SRC_URI += "file://use_echo_only_in_init.patch;apply=yes"
+SRC_URI += "file://use_echo_only_in_init.patch"
 PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"

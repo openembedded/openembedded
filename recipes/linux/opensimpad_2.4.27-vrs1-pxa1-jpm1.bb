@@ -13,38 +13,38 @@ COMPATIBLE_MACHINE = 'simpad'
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
-           file://${KV}-${VRSV}.patch;apply=yes \
-           file://${KV}-${VRSV}-${PXAV}.patch;apply=yes \
-           file://${KV}-${VRSV}-${PXAV}-${JPMV}.patch;apply=yes \
-           file://${KV}-mh1.patch;apply=yes \
-           file://sound-volume-reversed.patch;apply=yes \
-	   file://disable-pcmcia-probe.patch;apply=yes \
-           file://mkdep.patch;apply=yes \
+           file://${KV}-${VRSV}.patch \
+           file://${KV}-${VRSV}-${PXAV}.patch \
+           file://${KV}-${VRSV}-${PXAV}-${JPMV}.patch \
+           file://${KV}-mh1.patch \
+           file://sound-volume-reversed.patch \
+	   file://disable-pcmcia-probe.patch \
+           file://mkdep.patch \
            file://defconfig-${MACHINE} \
-	   http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;apply=yes;name=patch \
-           file://mipv6-1.1-v${KV}.patch;apply=yes \
-           file://simpad-backlight-if.patch;apply=yes \
-           file://simpad-switches-input.patch;apply=yes \
-           file://simpad-switches-input2.patch;apply=yes \
-           file://simpad-apm.patch;apply=yes \
-           file://simpad-ts-noninput.patch;apply=yes \
-           file://simpad-pm-updates.patch;apply=yes \
-           file://support-128mb-ram.patch;apply=yes \
-           file://simpad-proc-sys-board.patch;apply=yes \
-           file://simpad-serial.patch;apply=yes \
-           file://mppe-20040216.patch;apply=yes \
-           file://sa1100-usb-tcl1.patch;apply=yes \
-           file://mmc-spi.patch;apply=yes \
-           file://iw249_we17-13.diff;apply=yes \
-           file://iw240_we18-5.diff;apply=yes \
+	   http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;name=patch \
+           file://mipv6-1.1-v${KV}.patch \
+           file://simpad-backlight-if.patch \
+           file://simpad-switches-input.patch \
+           file://simpad-switches-input2.patch \
+           file://simpad-apm.patch \
+           file://simpad-ts-noninput.patch \
+           file://simpad-pm-updates.patch \
+           file://support-128mb-ram.patch \
+           file://simpad-proc-sys-board.patch \
+           file://simpad-serial.patch \
+           file://mppe-20040216.patch \
+           file://sa1100-usb-tcl1.patch \
+           file://mmc-spi.patch \
+           file://iw249_we17-13.diff \
+           file://iw240_we18-5.diff \
 "
 # This applies right after the jpm patch but is useless until we
 # have sa1100_udc.c
-#           file://${KV}-${VRSV}-${USBV}.patch;apply=yes \
+#           file://${KV}-${VRSV}-${USBV}.patch \
 
 # apply this when we have a patch that allows building with gcc 3.x:
-# SRC_URI_append = file://gcc-3.3.patch;apply=yes
-# SRC_URI_append = file://machtune-args.patch;apply=yes
+# SRC_URI_append = file://gcc-3.3.patch
+# SRC_URI_append = file://machtune-args.patch
 
 S = "${WORKDIR}/linux-${KV}"
 

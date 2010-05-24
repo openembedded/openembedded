@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 PR = "r2"
 
 SRC_URI = "http://developer.kde.org/~wheeler/files/src/taglib-${PV}.tar.gz \
-           file://taglib_1.4-8.diff.gz;apply=yes"
+           file://taglib_1.4-8.diff.gz"
 S = "${WORKDIR}/taglib-${PV}"
 
 inherit autotools pkgconfig binconfig

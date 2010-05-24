@@ -8,21 +8,21 @@ DEFAULT_PREFERENCE = "-1"
 WEBCVSURL = "http://handhelds.org/cgi-bin/cvsweb.cgi/~checkout~/gaim"
 
 SRC_URI = "cvs://anonymous@gaim.cvs.sourceforge.net/cvsroot/gaim;module=gaim \
-	${WEBCVSURL}/no-superimposed-version-on-logo.patch;apply=yes \
-	${WEBCVSURL}/01-optional-icons-in-dialogs.patch;apply=yes \
-	${WEBCVSURL}/02-request-field-dialogs.patch;apply=yes \
-	${WEBCVSURL}/03-blist-dialogs.patch;apply=yes \
-	${WEBCVSURL}/04-saved-status-dialogs.patch;apply=yes \
-	${WEBCVSURL}/05-statusbox-icon-size.patch;apply=yes \
-	${WEBCVSURL}/06-account-dialogs.patch;apply=yes \
-	${WEBCVSURL}/07-roomlist-dialog.patch;apply=yes \
-	${WEBCVSURL}/define-pda-mode.patch;apply=yes \
-	${WEBCVSURL}/desktop-name-2.0.0.patch;apply=yes \
-	${WEBCVSURL}/docklet-icon-size.patch;apply=yes \
-	${WEBCVSURL}/08-prefs-dialog.patch;apply=yes \
-	${WEBCVSURL}/09-filetransfer-dialog.patch;apply=yes \
-	${WEBCVSURL}/10-pda-default-settings.patch;apply=yes \
-	file://gaim-OE-branding.patch;apply=yes \
+	${WEBCVSURL}/no-superimposed-version-on-logo.patch \
+	${WEBCVSURL}/01-optional-icons-in-dialogs.patch \
+	${WEBCVSURL}/02-request-field-dialogs.patch \
+	${WEBCVSURL}/03-blist-dialogs.patch \
+	${WEBCVSURL}/04-saved-status-dialogs.patch \
+	${WEBCVSURL}/05-statusbox-icon-size.patch \
+	${WEBCVSURL}/06-account-dialogs.patch \
+	${WEBCVSURL}/07-roomlist-dialog.patch \
+	${WEBCVSURL}/define-pda-mode.patch \
+	${WEBCVSURL}/desktop-name-2.0.0.patch \
+	${WEBCVSURL}/docklet-icon-size.patch \
+	${WEBCVSURL}/08-prefs-dialog.patch \
+	${WEBCVSURL}/09-filetransfer-dialog.patch \
+	${WEBCVSURL}/10-pda-default-settings.patch \
+	file://gaim-OE-branding.patch \
 	"
 
 require gaim.inc

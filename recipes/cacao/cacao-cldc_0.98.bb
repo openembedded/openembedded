@@ -6,14 +6,14 @@ PR = "r1"
 
 SRC_URI += "\
   http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-${PV}/cacao-${PV}.tar.bz2;md5sum=8b8907c8b925761c9410bcadb9705346 \
-	file://midpath.patch;apply=yes \
-	file://offsets_make.patch;apply=yes \
-	file://classpath_var.patch;apply=yes \
-	file://libmath.patch;apply=yes \
-	file://arm_mmap.patch;apply=yes \
+	file://midpath.patch \
+	file://offsets_make.patch \
+	file://classpath_var.patch \
+	file://libmath.patch \
+	file://arm_mmap.patch \
 	"
 
-SRC_URI_append_arm = "file://offset.h_arm.patch;apply=yes"
+SRC_URI_append_arm = "file://offset.h_arm.patch"
 
 
 SRC_URI[md5sum] = "8b8907c8b925761c9410bcadb9705346"

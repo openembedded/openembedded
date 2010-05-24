@@ -7,9 +7,9 @@ LICENSE = "GPLv2"
 DEPENDS = "zlib"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
-	   file://configure.patch;apply=yes \
-	   file://configure-uclibc.patch;apply=yes \
-	   file://pcimodules-pciutils.diff;apply=yes"
+	   file://configure.patch \
+	   file://configure-uclibc.patch \
+	   file://pcimodules-pciutils.diff"
 
 PARALLEL_MAKE = ""
 

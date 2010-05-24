@@ -16,10 +16,10 @@ K_MICRO = "21"
 HHV     = "20"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26 \
-           file://linux-2.6.git-9d20fdd58e74d4d26dc5216efaaa0f800c23dd3a.patch;apply=yes \
-           http://www.rpsys.net/openzaurus/patches/archive/export_atags-r0a.patch;apply=yes;name=patch \
-           file://gcc4x-limits.patch;apply=yes \
-           file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch;apply=yes \
+           file://linux-2.6.git-9d20fdd58e74d4d26dc5216efaaa0f800c23dd3a.patch \
+           http://www.rpsys.net/openzaurus/patches/archive/export_atags-r0a.patch;name=patch \
+           file://gcc4x-limits.patch \
+           file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch \
            file://defconfig"
 
 require linux-handhelds-2.6.inc

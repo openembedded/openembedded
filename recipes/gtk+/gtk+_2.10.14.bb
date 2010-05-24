@@ -3,28 +3,28 @@ require gtk-2.10.inc
 PR = "r9"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
-           file://no-xwc.patch;apply=yes \
-           file://automake-lossage.patch;apply=yes \
-           file://disable-tooltips.patch;apply=yes \
+           file://no-xwc.patch \
+           file://automake-lossage.patch \
+           file://disable-tooltips.patch \
            file://gtklabel-resize-patch;apply=yes \
-           file://menu-deactivate.patch;apply=yes \
-           file://xsettings.patch;apply=yes \
-           file://scroll-timings.patch;apply=yes \
-           file://small-gtkfilesel.patch;apply=yes \
-           file://small-gtkfilechooser.patch;apply=yes \
-#           file://migration.patch;apply=yes;striplevel=0 \
-           file://run-iconcache.patch;apply=yes \
-           file://hardcoded_libtool.patch;apply=yes \
-           file://no-demos.patch;apply=yes \
-           file://single-click.patch;apply=yes \
-           file://spinbutton.patch;apply=yes \
-           file://gtk+-handhelds.patch;apply=yes \
-           file://filesel-fix-segfault.patch;apply=yes \
-           file://combo-arrow-size.patch;apply=yes;striplevel=0 \
-           file://range-no-redraw.patch;apply=yes;striplevel=0 \
-           file://scrolled-placement.patch;apply=yes;striplevel=0 \
-           file://treeview-checkbox-size.patch;apply=yes;striplevel=0 \
-           file://cell-renderer-edit-focus.patch;apply=yes;striplevel=0 \
+           file://menu-deactivate.patch \
+           file://xsettings.patch \
+           file://scroll-timings.patch \
+           file://small-gtkfilesel.patch \
+           file://small-gtkfilechooser.patch \
+#           file://migration.patch;striplevel=0 \
+           file://run-iconcache.patch \
+           file://hardcoded_libtool.patch \
+           file://no-demos.patch \
+           file://single-click.patch \
+           file://spinbutton.patch \
+           file://gtk+-handhelds.patch \
+           file://filesel-fix-segfault.patch \
+           file://combo-arrow-size.patch;striplevel=0 \
+           file://range-no-redraw.patch;striplevel=0 \
+           file://scrolled-placement.patch;striplevel=0 \
+           file://treeview-checkbox-size.patch;striplevel=0 \
+           file://cell-renderer-edit-focus.patch;striplevel=0 \
            "
 
 # check for TARGET_FPU=soft and inform configure of the result so it can disable some floating points

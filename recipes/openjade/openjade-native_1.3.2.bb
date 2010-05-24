@@ -2,8 +2,8 @@ SECTION = "unknown"
 DEPENDS = "opensp-native sgml-common-native"
 LICENSE = "MIT"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
-	   file://configure.patch;apply=yes \
-	   file://oj-native-libosp-fix.patch;apply=yes"
+	   file://configure.patch \
+	   file://oj-native-libosp-fix.patch"
 S = "${WORKDIR}/openjade-${PV}"
 
 inherit autotools native

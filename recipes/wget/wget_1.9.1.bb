@@ -2,9 +2,9 @@ PR = "${INC_PR}.0"
 
 SRC_URI = " \
 	${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
-	file://m4macros.patch;apply=yes \
-	file://autotools.patch;apply=yes \
-        file://ipv6-fix.patch;apply=yes \
+	file://m4macros.patch \
+	file://autotools.patch \
+        file://ipv6-fix.patch \
 "
 
 S = "${WORKDIR}/wget-${PV}"

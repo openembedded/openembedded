@@ -8,8 +8,8 @@ HOMEPAGE = "http://subversion.tigris.org"
 PR = "r1"
 
 SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
-           file://disable-revision-install.patch;apply=yes \
-	   file://neon-detection.patch;apply=yes"
+           file://disable-revision-install.patch \
+	   file://neon-detection.patch"
 
 EXTRA_OECONF = "--with-neon=${STAGING_EXECPREFIXDIR} \
                 --without-berkeley-db --without-apxs --without-apache \

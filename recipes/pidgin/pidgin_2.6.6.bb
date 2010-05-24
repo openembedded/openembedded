@@ -5,10 +5,10 @@ DEPENDS += "farsight2 libidn"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/pidgin/pidgin-${PV}.tar.bz2;name=pidgin \
-  file://sanitize-configure.ac.patch;apply=yes \
-  file://pidgin.desktop-set-icon.patch;apply=yes \
-  file://purple-OE-branding-25.patch;apply=yes \
-  file://pidgin-cross-python-265.patch;apply=yes \
+  file://sanitize-configure.ac.patch \
+  file://pidgin.desktop-set-icon.patch \
+  file://purple-OE-branding-25.patch \
+  file://pidgin-cross-python-265.patch \
 "
 
 SRC_URI[pidgin.md5sum] = "b37ab6c52db8355e8c70c044c2ba17c1"

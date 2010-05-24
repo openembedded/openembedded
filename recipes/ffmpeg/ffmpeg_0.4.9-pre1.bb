@@ -3,12 +3,12 @@ require ffmpeg.inc
 PR = "${INC_PR}.0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ffmpeg/ffmpeg-${PV}.tar.gz \
-           file://configure.patch;apply=yes \
-           file://gcc4.patch;apply=yes \
-           file://soname.patch;apply=yes \
-	   file://Makefile-avformat-use-LDFLAGS.patch;apply=yes \
-           file://Makefile-add-liblame.patch;apply=yes \
-           file://install-must-not-strip.patch;apply=yes \
+           file://configure.patch \
+           file://gcc4.patch \
+           file://soname.patch \
+	   file://Makefile-avformat-use-LDFLAGS.patch \
+           file://Makefile-add-liblame.patch \
+           file://install-must-not-strip.patch \
           "
 
 EXTRA_OECONF += " \

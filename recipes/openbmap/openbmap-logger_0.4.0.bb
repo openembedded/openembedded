@@ -4,7 +4,7 @@ PR = "r1"
 
 SRC_URI = "\
 ${SOURCEFORGE_MIRROR}/myposition/openbmap-logger-${PV}.tar.gz \
-file://fsogsmd-fix.patch;apply=yes \
+file://fsogsmd-fix.patch \
 "
 
 inherit distutils

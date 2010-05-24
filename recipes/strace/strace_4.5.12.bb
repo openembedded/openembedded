@@ -5,9 +5,9 @@ PR = "r1"
 DESCRIPTION = "strace is a system call tracing tool."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
-	   file://arm-syscallent.patch;apply=yes \
-	   file://quota.patch;apply=yes \
-	   file://strace-fix-arm-bad-syscall.patch;apply=yes"
+	   file://arm-syscallent.patch \
+	   file://quota.patch \
+	   file://strace-fix-arm-bad-syscall.patch"
 
 inherit autotools
 

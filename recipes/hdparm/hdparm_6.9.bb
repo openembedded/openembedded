@@ -7,8 +7,8 @@ LICENSE = "BSD"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/hdparm/hdparm-${PV}.tar.gz \
-	   file://bswap.patch;apply=yes \
-	   file://uclibc.patch;apply=yes"
+	   file://bswap.patch \
+	   file://uclibc.patch"
 
 do_install () {
 	install -d ${D}/${base_sbindir} ${D}/${mandir}/man8

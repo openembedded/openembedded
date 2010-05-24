@@ -4,8 +4,8 @@
 
 inherit gnome
 
-SRC_URI += "file://idl-sysroot.patch;apply=yes \
-            file://no-try-run-strftime.diff;apply=yes \
+SRC_URI += "file://idl-sysroot.patch \
+            file://no-try-run-strftime.diff \
 "
 
 SRC_URI[archive.md5sum] = "e09aea66166c0a90d09955bd4d2672be"

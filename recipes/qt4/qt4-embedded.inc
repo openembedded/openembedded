@@ -12,15 +12,15 @@ QT_DIR_NAME = "qtopia"
 QT_LIBINFIX = "E"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
-           file://0001-cross-compile.patch;apply=yes \
-           file://0002-fix-resinit-declaration.patch;apply=yes \
-           file://0003-no-tools.patch;apply=yes \
-           file://0004-no-qmake.patch;apply=yes \
-           file://0006-freetype-host-includes.patch;apply=yes \
-           file://0007-openssl-host-includes.patch;apply=yes \
-           file://0008-qt-lib-infix.patch;apply=yes \
-           file://0009-support-2bpp.patch;apply=yes \
-           file://fix-config-tests.patch;apply=yes \
+           file://0001-cross-compile.patch \
+           file://0002-fix-resinit-declaration.patch \
+           file://0003-no-tools.patch \
+           file://0004-no-qmake.patch \
+           file://0006-freetype-host-includes.patch \
+           file://0007-openssl-host-includes.patch \
+           file://0008-qt-lib-infix.patch \
+           file://0009-support-2bpp.patch \
+           file://fix-config-tests.patch \
            file://g++.conf \
            file://linux.conf \
            "

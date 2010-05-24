@@ -5,7 +5,7 @@ DEPENDS = "alsa-lib"
 PR = "r2"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2 \
-	   file://libio.patch;apply=yes \
+	   file://libio.patch \
 	  "
 
 inherit autotools 

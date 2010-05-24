@@ -4,8 +4,8 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/iscsitarget/iscsitarget-${PV}.tar.gz \
-           file://libs.patch;apply=yes \
-           file://2.6.29.patch;apply=yes \
+           file://libs.patch \
+           file://2.6.29.patch \
            file://ietd.conf \
            file://init"
 S = "${WORKDIR}/iscsitarget-${PV}"

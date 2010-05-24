@@ -7,7 +7,7 @@ DEPENDS = "ncurses openssl"
 PR ="r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tn5250/tn5250-${PV}.tar.gz \
-	   file://compile.patch;apply=yes"
+	   file://compile.patch"
 
 inherit autotools
 

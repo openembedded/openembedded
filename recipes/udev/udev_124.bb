@@ -5,12 +5,12 @@ RPROVIDES_${PN} = "hotplug"
 PR = "r19"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://noasmlinkage.patch;apply=yes \
-	   file://flags.patch;apply=yes \
-	   file://vol_id_ld.patch;apply=yes \
-	   file://udevtrigger_add_devname_filtering.patch;apply=yes \
-	   file://libvolume-id-soname.patch;apply=yes \
-	   file://mtd-exclude-persistent.patch;apply=yes \
+	   file://noasmlinkage.patch \
+	   file://flags.patch \
+	   file://vol_id_ld.patch \
+	   file://udevtrigger_add_devname_filtering.patch \
+	   file://libvolume-id-soname.patch \
+	   file://mtd-exclude-persistent.patch \
 	   file://mount.blacklist \
 	   file://run.rules \
 	   file://default \

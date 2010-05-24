@@ -4,7 +4,7 @@ LICENSE = "BSD"
 DEPENDS = "sphinxbase"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cmusphinx/${PN}-${PV}.tar.bz2 \
-           file://cross-compile.patch;apply=yes"
+           file://cross-compile.patch"
 
 inherit autotools
 

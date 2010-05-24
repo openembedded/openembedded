@@ -7,7 +7,7 @@ PR = "r1"
 
 inherit pkgconfig gpe
 
-SRC_URI += "file://makefile-fix.patch;apply=yes"
+SRC_URI += "file://makefile-fix.patch"
 
 headers = "displaymigration.h auth.h crypt.h"
 

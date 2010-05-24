@@ -5,8 +5,8 @@ LICENSE = "BSD"
 PR = "r10"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
-	   file://berkdb.m4.patch;apply=yes \
-	   file://client.c.patch;apply=yes"
+	   file://berkdb.m4.patch \
+	   file://client.c.patch"
 
 inherit autotools
 

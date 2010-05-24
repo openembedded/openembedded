@@ -6,9 +6,9 @@ DEPENDS = "ncurses"
 PR = "r6"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
-           file://autofoo.patch;apply=yes \
-           file://fix_host_path.patch;apply=yes \
-	   file://configure-ps-cache-check.patch;apply=yes \
+           file://autofoo.patch \
+           file://fix_host_path.patch \
+	   file://configure-ps-cache-check.patch \
            file://my.cnf \
            file://mysqld.sh"
 

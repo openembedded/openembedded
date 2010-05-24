@@ -4,8 +4,8 @@ PR = "r2"
 
 SRC_URI = "\
   http://repository.maemo.org/pool/maemo4.0/free/source/libo/${PN}/${PN}_${PV}-1.1fix.tar.gz \
-  file://libosso-buildfix.patch;apply=yes \
-  file://libosso-dont-use-inline.patch;apply=yes \
+  file://libosso-buildfix.patch \
+  file://libosso-dont-use-inline.patch \
   "
 
 PACKAGES += "${PN}-outo ${PN}-outo-dev ${PN}-outo-dbg ${PN}-outo-bin-dbg ${PN}-outo-bin"

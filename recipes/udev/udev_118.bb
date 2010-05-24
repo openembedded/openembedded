@@ -9,10 +9,10 @@ DEFAULT_PREFERENCE = "-118"
 
 SRC_URI = "\
  http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
- file://flags.patch;apply=yes \
- file://vol_id_ld.patch;apply=yes \
- file://udevtrigger_add_devname_filtering.patch;apply=yes \
- file://mtd-exclude-persistent.patch;apply=yes \
+ file://flags.patch \
+ file://vol_id_ld.patch \
+ file://udevtrigger_add_devname_filtering.patch \
+ file://mtd-exclude-persistent.patch \
  file://mount.blacklist \
 "
 TARGET_CC_ARCH += "${LDFLAGS}"

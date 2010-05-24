@@ -3,11 +3,11 @@ require iproute2.inc
 PR = "${INC_PR}.1"
 DATE = "070313"
 
-SRC_URI_append = " file://new-flex-fix.patch;apply=yes \
-                   file://ip6tunnel.patch;apply=yes \
-                   file://man-pages-fix.patch;apply=yes \
-                   file://remove-bashisms.patch;apply=yes \
-                   file://no-strip.patch;apply=yes"
+SRC_URI_append = " file://new-flex-fix.patch \
+                   file://ip6tunnel.patch \
+                   file://man-pages-fix.patch \
+                   file://remove-bashisms.patch \
+                   file://no-strip.patch"
 
 S = "${WORKDIR}/iproute-${PV}-${DATE}"
 

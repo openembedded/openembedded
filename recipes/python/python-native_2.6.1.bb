@@ -4,14 +4,14 @@ PR = "${INC_PR}.2"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
-  file://00-fix-bindir-libdir-for-cross.patch;apply=yes \
-  file://04-default-is-optimized.patch;apply=yes \
-  file://05-enable-ctypes-cross-build.patch;apply=yes \
-  file://10-distutils-fix-swig-parameter.patch;apply=yes \
-  file://11-distutils-never-modify-shebang-line.patch;apply=yes \
-  file://12-distutils-prefix-is-inside-staging-area.patch;apply=yes \
-  file://debug.patch;apply=yes \
-  file://nohostlibs.patch;apply=yes \
+  file://00-fix-bindir-libdir-for-cross.patch \
+  file://04-default-is-optimized.patch \
+  file://05-enable-ctypes-cross-build.patch \
+  file://10-distutils-fix-swig-parameter.patch \
+  file://11-distutils-never-modify-shebang-line.patch \
+  file://12-distutils-prefix-is-inside-staging-area.patch \
+  file://debug.patch \
+  file://nohostlibs.patch \
 "
 S = "${WORKDIR}/Python-${PV}"
 

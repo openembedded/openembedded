@@ -12,9 +12,9 @@ INC_PR = "r4"
 PR = "${INC_PR}.0"
 
 SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
-           file://fixes.patch;apply=yes \
-           file://configure.in.patch;apply=yes \
-	   file://configure.in-includedir.patch;apply=yes \
+           file://fixes.patch \
+           file://configure.in.patch \
+	   file://configure.in-includedir.patch \
            file://XScreenSaver"
 
 # xscreensaver-demo is a glade app

@@ -8,8 +8,8 @@ LICENSE = "GPLv2/LGPLv2.1"
 PR = "r2"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/openobex-${PV}.tar.gz \
-           file://disable-cable-test.patch;apply=yes \
-           file://libusb_crosscompile_check.patch;apply=yes"
+           file://disable-cable-test.patch \
+           file://libusb_crosscompile_check.patch"
 
 inherit autotools_stage binconfig pkgconfig
 

@@ -5,7 +5,7 @@ LICENSE = "GPL"
 inherit pkgconfig
 
 SRC_URI = "${GPE_MIRROR}/libdotdesktop-${PV}.tar.gz \
-	file://make_build_var.patch;apply=yes"
+	file://make_build_var.patch"
 
 headers = "dotdesktop.h"
 

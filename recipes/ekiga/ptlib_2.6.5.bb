@@ -8,7 +8,7 @@ inherit gnome
 DEPENDS += "libgsm openldap openssl expat virtual/libsdl alsa-lib"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/opalvoip/ptlib-${PV}.tar.bz2 \
-           file://rgb16.patch;apply=yes \
+           file://rgb16.patch \
 "
 
 do_configure() {

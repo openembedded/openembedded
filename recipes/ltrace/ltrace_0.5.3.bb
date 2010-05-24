@@ -6,12 +6,12 @@ LICENSE = "GPLv2"
 
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz;name=archive \
-  ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}-2.diff.gz;apply=yes;name=patch \
-  file://add-sysdep.patch;apply=yes \
-  file://ltrace-compile.patch;apply=yes \
-  file://ltrace-mips-remove-CP.patch;apply=yes \
-  file://ltrace-mips.patch;apply=yes \
-  file://ltrace-ppc.patch;apply=yes \
+  ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}-2.diff.gz;name=patch \
+  file://add-sysdep.patch \
+  file://ltrace-compile.patch \
+  file://ltrace-mips-remove-CP.patch \
+  file://ltrace-mips.patch \
+  file://ltrace-ppc.patch \
 "
 inherit autotools
 

@@ -8,7 +8,7 @@ PR = "r0"
 inherit gpephone
 
 SRC_URI = "${GPEPHONE_MIRROR}/GPRS/GPRS-${PV}.tar.bz2 \
-           file://oe-install.patch;apply=yes"
+           file://oe-install.patch"
 
 
 S  = ${WORKDIR}/GPRS/cms92init-simple

@@ -11,9 +11,9 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dbus-${PV}"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
-  file://cross.patch;apply=yes \
-  file://tmpdir.patch;apply=yes \
-  file://fix-install-daemon.patch;apply=yes \
+  file://cross.patch \
+  file://tmpdir.patch \
+  file://fix-install-daemon.patch \
   file://dbus-1.init \
 "
 

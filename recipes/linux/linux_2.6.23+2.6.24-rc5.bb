@@ -13,13 +13,13 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=k
 S = "${WORKDIR}/linux-2.6.23"
 
 SRC_URI_append_cm-x270 = "\
-	file://0001-cm-x270-match-type.patch;apply=yes \
-	file://0002-ramdisk_load.patch;apply=yes \
-	file://0003-mmcsd_large_cards-r0.patch;apply=yes \
-	file://0004-cm-x270-nand-simplify-name.patch;apply=yes \
-	file://0005-cmx270-pci.patch;apply=yes"
+	file://0001-cm-x270-match-type.patch \
+	file://0002-ramdisk_load.patch \
+	file://0003-mmcsd_large_cards-r0.patch \
+	file://0004-cm-x270-nand-simplify-name.patch \
+	file://0005-cmx270-pci.patch"
 
-SRC_URI_append_gesbc-9302 = "file://0001-gesbc-nand.patch;apply=yes"
+SRC_URI_append_gesbc-9302 = "file://0001-gesbc-nand.patch"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 

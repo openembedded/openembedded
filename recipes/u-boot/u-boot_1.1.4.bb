@@ -5,46 +5,46 @@ PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2;name=archive \
-          file://u-boot-make381-fix.patch;apply=yes"
+          file://u-boot-make381-fix.patch"
 
 SRC_URI_append_gumstix = "\
-	file://u-boot-autoscript.patch;apply=yes \
-	file://u-boot-base.patch;apply=yes \
-	file://u-boot-crc-warning-not-so-scary.patch;apply=yes \
-	file://u-boot-flash-protect-fixup.patch;apply=yes \
-	file://u-boot-fw_printenv.patch;apply=yes \
-	file://u-boot-install.patch;apply=yes \
-	file://u-boot-jerase-cmd.patch;apply=yes \
-	file://u-boot-jffs2-new-nodetypes.patch;apply=yes \
-	file://u-boot-loadb-safe.patch;apply=yes \
-	file://u-boot-mmc-init.patch;apply=yes \
-	file://u-boot-mmcclk-alternate.patch;apply=yes \
-	file://u-boot-smc91x-multi.patch;apply=yes \
-	file://u-boot-zzz-osx.patch;apply=yes"
+	file://u-boot-autoscript.patch \
+	file://u-boot-base.patch \
+	file://u-boot-crc-warning-not-so-scary.patch \
+	file://u-boot-flash-protect-fixup.patch \
+	file://u-boot-fw_printenv.patch \
+	file://u-boot-install.patch \
+	file://u-boot-jerase-cmd.patch \
+	file://u-boot-jffs2-new-nodetypes.patch \
+	file://u-boot-loadb-safe.patch \
+	file://u-boot-mmc-init.patch \
+	file://u-boot-mmcclk-alternate.patch \
+	file://u-boot-smc91x-multi.patch \
+	file://u-boot-zzz-osx.patch"
 
 SRC_URI_append_amsdelta = "\
-	http://the.earth.li/pub/e3/u-boot-amsdelta-20060519.diff;apply=yes;name=amspatch"
+	http://the.earth.li/pub/e3/u-boot-amsdelta-20060519.diff;name=amspatch"
 
 SRC_URI_append_dht-walnut= "\
-        file://u-boot-dht-walnut-df2.patch;apply=yes"
+        file://u-boot-dht-walnut-df2.patch"
 
 SRC_URI_append_avr32= "\
-	http://avr32linux.org/twiki/pub/Main/UbootPatches/u-boot-1.1.4-avr1.patch.bz2;apply=yes;name=avrpatch \
-	file://avr32-boards-fix-flash-read.patch;apply=yes \
-	file://lcdc-driver-for-avr32.patch;apply=yes \
-	file://spi-driver-for-avr32.patch;apply=yes \
-	file://at32ap-add-framebuffer-address.patch;apply=yes \
-	file://at32ap-add-spi-initcalls.patch;apply=yes \
-	file://at32ap-add-system-manager-header-file.patch;apply=yes \
-	file://ap7000-add-spi-device-and-lcdc-base-address.patch;apply=yes \
-	file://libavr32-add-spi-and-lcd-board-support.patch;apply=yes \
-	file://cmd-bmp-add-gzip-compressed-bmp.patch;apply=yes \
-	file://lcd-add-24-bpp-support-and-atmel-lcdc-support.patch;apply=yes \
-	file://atstk1000-spi-support.patch;apply=yes \
-	file://atstk1000-ltv350qv-display-support.patch;apply=yes \
-	file://atstk1000-add-lcd-and-spi-to-config.patch;apply=yes \
-	file://at32ap-add-define-for-sdram-test.patch;apply=yes \
-	file://fix-mmc-data-timeout.patch;apply=yes \
+	http://avr32linux.org/twiki/pub/Main/UbootPatches/u-boot-1.1.4-avr1.patch.bz2;name=avrpatch \
+	file://avr32-boards-fix-flash-read.patch \
+	file://lcdc-driver-for-avr32.patch \
+	file://spi-driver-for-avr32.patch \
+	file://at32ap-add-framebuffer-address.patch \
+	file://at32ap-add-spi-initcalls.patch \
+	file://at32ap-add-system-manager-header-file.patch \
+	file://ap7000-add-spi-device-and-lcdc-base-address.patch \
+	file://libavr32-add-spi-and-lcd-board-support.patch \
+	file://cmd-bmp-add-gzip-compressed-bmp.patch \
+	file://lcd-add-24-bpp-support-and-atmel-lcdc-support.patch \
+	file://atstk1000-spi-support.patch \
+	file://atstk1000-ltv350qv-display-support.patch \
+	file://atstk1000-add-lcd-and-spi-to-config.patch \
+	file://at32ap-add-define-for-sdram-test.patch \
+	file://fix-mmc-data-timeout.patch \
 "
 
 EXTRA_OEMAKE_gumstix = "CROSS_COMPILE=${TARGET_PREFIX} GUMSTIX_400MHZ=${GUMSTIX_400MHZ}"

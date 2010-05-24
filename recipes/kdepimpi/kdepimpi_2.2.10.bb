@@ -1,5 +1,5 @@
 SRC_URI = "${SOURCEFORGE_MIRROR}/kdepimpi/kdepimpi-${PV}.tar.gz \
-            file://qt-mt.patch;apply=yes" 
+            file://qt-mt.patch" 
 
 require kdepimpi-base.inc
 

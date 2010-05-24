@@ -10,14 +10,14 @@ PR = "r1"
 DEFAULT_PREFERENCE_angstrom = "2"
 
 SRC_URI = "http://ftp.de.debian.org/debian/pool/main/i/iputils/iputils_${PV}.orig.tar.gz \
-           file://debian/fix-dead-host-ping-stats.diff;apply=yes \
-           file://debian/add-icmp-return-codes.diff;apply=yes \
-           file://debian/use_gethostbyname2.diff;apply=yes \
-           file://debian/fix-cmsghdr-offset-bug.diff;apply=yes \
-           file://debian/cleanup-docbook-formatting.diff;apply=yes \
-           file://debian/targets.diff;apply=yes \
-           file://debian/fix-tracepath-docs.diff;apply=yes \
-           file://debian/fix-arping-timeouts.diff;apply=yes \
+           file://debian/fix-dead-host-ping-stats.diff \
+           file://debian/add-icmp-return-codes.diff \
+           file://debian/use_gethostbyname2.diff \
+           file://debian/fix-cmsghdr-offset-bug.diff \
+           file://debian/cleanup-docbook-formatting.diff \
+           file://debian/targets.diff \
+           file://debian/fix-tracepath-docs.diff \
+           file://debian/fix-arping-timeouts.diff \
 "
 
 S = "${WORKDIR}/iputils_20071127.orig"

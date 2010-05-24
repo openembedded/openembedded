@@ -8,7 +8,7 @@ DNS resolution."
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/httppc/httppc-${PV}.tar.gz \
-	   file://install.patch;apply=yes"
+	   file://install.patch"
 
 inherit autotools
 

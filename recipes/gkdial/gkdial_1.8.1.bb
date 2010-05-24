@@ -9,10 +9,10 @@ PRIORITY = "optional"
 PR = "r4"
 
 SRC_URI = "http://familiar.handhelds.org/source/v0.8.2/${PN}-${PV}.tar.gz \
-           file://gkdial-pgpe.patch;apply=yes \
-           file://gkdial-ungnome.patch;apply=yes;striplevel=0 \
-           file://gkdial-gladedir.patch;apply=yes;striplevel=0 \
-           file://gkdial-gpepda.patch;apply=yes \
+           file://gkdial-pgpe.patch \
+           file://gkdial-ungnome.patch;striplevel=0 \
+           file://gkdial-gladedir.patch;striplevel=0 \
+           file://gkdial-gpepda.patch \
            file://gkdial.desktop \
            file://gkdial.png"
 

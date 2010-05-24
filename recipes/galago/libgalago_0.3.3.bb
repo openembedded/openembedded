@@ -6,7 +6,7 @@ PR =		"r1"
 
 
 SRC_URI =	"http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
-		 file://no-check.patch;apply=yes"
+		 file://no-check.patch"
 
 inherit autotools pkgconfig
 

@@ -6,7 +6,7 @@ DEPENDS = "boost"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/witty/wt-${PV}.tar.gz \
-	file://cmakelist.patch;apply=yes"
+	file://cmakelist.patch"
 
 FILES_${PN} += "${datadir}/Wt"
 FILES_${PN}-dev += "${datadir}/cmake-2.*"

@@ -3,14 +3,14 @@ require zroadmap.inc
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/roadmap/roadmap-${PV}-src.tar.gz;name=archive \
-           file://cross.patch;apply=yes;striplevel=2 \
-           file://options.mk.patch;apply=yes;striplevel=2 \
-           file://qt/qt2-fixes.patch;apply=yes \
-           file://qt/qt_canvas.patch;apply=yes \
-           file://qt/qt_main.patch;apply=yes \
-           file://qt/roadmap_main.patch;apply=yes \
-           file://roadmap_path.patch;apply=yes \
-           file://roadmap.desktop.patch;apply=yes \
+           file://cross.patch;striplevel=2 \
+           file://options.mk.patch;striplevel=2 \
+           file://qt/qt2-fixes.patch \
+           file://qt/qt_canvas.patch \
+           file://qt/qt_main.patch \
+           file://qt/roadmap_main.patch \
+           file://roadmap_path.patch \
+           file://roadmap.desktop.patch \
            http://roadmap.digitalomaha.net/maps/usdir.rdm.tar.gz;name=usdir"
 
 S = "${WORKDIR}/roadmap-${PV}/src"

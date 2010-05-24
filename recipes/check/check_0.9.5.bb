@@ -6,7 +6,7 @@ SECTION = "devel"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/check/check-${PV}.tar.gz \
-           file://configure_fix.patch;apply=yes"
+           file://configure_fix.patch"
 S = "${WORKDIR}/check-${PV}"
 
 inherit autotools_stage pkgconfig

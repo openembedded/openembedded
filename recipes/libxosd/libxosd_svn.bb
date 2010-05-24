@@ -7,8 +7,8 @@ PV = "2.2.15+svnr${SRCPV}"
 PR = "r5"
 
 SRC_URI = "svn://libxosd.svn.sourceforge.net/svnroot/libxosd/source;module=current;proto=https \
-           file://autofoo.patch;apply=yes \
-           file://use-sane-default-font.patch;apply=yes"
+           file://autofoo.patch \
+           file://use-sane-default-font.patch"
 
 S = "${WORKDIR}/current"
 

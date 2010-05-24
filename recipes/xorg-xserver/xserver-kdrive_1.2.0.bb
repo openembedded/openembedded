@@ -7,18 +7,18 @@ PR = "r11"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
-	file://enable-epson.patch;apply=yes \
-	file://enable-builtin-fonts.patch;apply=yes \
-	file://kdrive-evdev.patch;apply=yes  \
-	file://kdrive-use-evdev.patch;apply=yes  \
-	file://disable-xf86-dga-xorgcfg.patch;apply=yes \
-	file://enable-xcalibrate.patch;apply=yes \
-        file://w100.patch;apply=yes \
-        file://w100-autofoo.patch;apply=yes \
-        file://w100-fix-offscreen-bmp.patch;apply=yes \
-        file://fbcompositesrc8888revnpx0565.patch;apply=yes \
-        file://xcalibrate_coords.patch;apply=yes \
-	file://report-correct-randr10.patch;apply=yes \
+	file://enable-epson.patch \
+	file://enable-builtin-fonts.patch \
+	file://kdrive-evdev.patch  \
+	file://kdrive-use-evdev.patch  \
+	file://disable-xf86-dga-xorgcfg.patch \
+	file://enable-xcalibrate.patch \
+        file://w100.patch \
+        file://w100-autofoo.patch \
+        file://w100-fix-offscreen-bmp.patch \
+        file://fbcompositesrc8888revnpx0565.patch \
+        file://xcalibrate_coords.patch \
+	file://report-correct-randr10.patch \
 	"
        
 S = "${WORKDIR}/xorg-server-${PV}"

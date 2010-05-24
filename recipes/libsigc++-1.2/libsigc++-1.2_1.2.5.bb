@@ -4,8 +4,8 @@ PRIORITY = "optional"
 PR = "r1"
 LICENSE = "GPL LGPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/libsigc/libsigc++-${PV}.tar.gz \
-	   file://autofoo.patch;apply=yes \
-	   file://pkgconfig.patch;apply=yes"
+	   file://autofoo.patch \
+	   file://pkgconfig.patch"
 S = "${WORKDIR}/libsigc++-${PV}"
 
 inherit autotools pkgconfig

@@ -2,8 +2,8 @@ require util-linux-ng.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://uclibc-compile.patch;apply=yes \
-	    file://util-linux-ng-replace-siginterrupt.patch;apply=yes \
+SRC_URI += "file://uclibc-compile.patch \
+	    file://util-linux-ng-replace-siginterrupt.patch \
            "
 
 # fallocate is glibc 2.10, fallocate64 is glibc 2.11

@@ -2,9 +2,9 @@ require util-linux-ng.inc
 
 PR = "${INC_PR}"
 
-SRC_URI += "file://fix-make-c.patch;apply=yes \
-            file://optional-uuid.patch;apply=yes \
-            file://uclibc-compile.patch;apply=yes \
+SRC_URI += "file://fix-make-c.patch \
+            file://optional-uuid.patch \
+            file://uclibc-compile.patch \
 "
 
 do_compile_prepend() {

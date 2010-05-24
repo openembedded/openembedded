@@ -8,7 +8,7 @@ PROVIDES = "gtk+"
 RPROVIDES_${PN} = "gtk+"
 PR = "r2"
 
-SRC_URI += "file://lower-quality-scaling-in-pixbuf-engine.patch;apply=yes"
+SRC_URI += "file://lower-quality-scaling-in-pixbuf-engine.patch"
 
 S = "${WORKDIR}/gtk+-${PV}"
 

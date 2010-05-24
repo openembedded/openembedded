@@ -7,8 +7,8 @@ PR = "r2"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/icewm/icewm-${PV}.tar.gz \
-  file://makefile.patch;apply=yes \
-  file://configure.patch;apply=yes \
+  file://makefile.patch \
+  file://configure.patch \
 "
 
 inherit autotools pkgconfig

@@ -5,7 +5,7 @@ LICENSE = "University of Washingtons Free-Fork License"
 DEPENDS = "libpam openssl libpam"
 
 SRC_URI = "ftp://ftp.cac.washington.edu/imap/imap-${PV}.tar.Z \
-	   file://quote_cctype.patch;apply=yes"
+	   file://quote_cctype.patch"
 
 S = "${WORKDIR}/imap-${PV}"
 

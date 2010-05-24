@@ -37,34 +37,34 @@ RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2;name=ports \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2;name=libidn \
-	   file://nscd-init.patch;apply=yes;striplevel=0 \
-           file://arm-memcpy.patch;apply=yes \
-           file://arm-longlong.patch;apply=yes \
-           file://fhs-linux-paths.patch;apply=yes \
-           file://dl-cache-libcmp.patch;apply=yes \
-           file://ldsocache-varrun.patch;apply=yes \
-           file://nptl-crosscompile.patch;apply=yes \
-	   file://glibc-check_pf.patch;apply=yes;striplevel=0 \
-           file://ldd-unbash.patch;apply=yes \
-	   file://glibc-arm-IO-acquire-lock-fix.diff;apply=yes \
+	   file://nscd-init.patch;striplevel=0 \
+           file://arm-memcpy.patch \
+           file://arm-longlong.patch \
+           file://fhs-linux-paths.patch \
+           file://dl-cache-libcmp.patch \
+           file://ldsocache-varrun.patch \
+           file://nptl-crosscompile.patch \
+	   file://glibc-check_pf.patch;striplevel=0 \
+           file://ldd-unbash.patch \
+	   file://glibc-arm-IO-acquire-lock-fix.diff \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
 	   file://generic-bits_time.h \
            file://etc/ld.so.conf \
            file://generate-supported.mk \
-           file://march-i686.patch;apply=yes;striplevel=0 \
-           file://arm-lowlevellock-include-tls.patch;apply=yes \
-           file://glibc-2.9-enable-binutils-2.2.patch;apply=yes \
-	   file://armv4t-interworking.patch;apply=yes \
+           file://march-i686.patch;striplevel=0 \
+           file://arm-lowlevellock-include-tls.patch \
+           file://glibc-2.9-enable-binutils-2.2.patch \
+	   file://armv4t-interworking.patch \
            "
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;apply=yes"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;apply=yes"
+SRC_URI_append_sh3 = " file://no-z-defs.patch"
+SRC_URI_append_sh4 = " file://no-z-defs.patch"
 
 #powerpc patches to add support for soft-float
-SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff;apply=yes"
+SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

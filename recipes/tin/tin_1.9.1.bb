@@ -3,7 +3,7 @@ require tin.inc
 PR = "r1"
 
 SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/v1.9/tin-${PV}.tar.gz \
-	   file://m4.patch;apply=yes"
+	   file://m4.patch"
 
 PARALLEL_MAKE = ""
 

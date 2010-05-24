@@ -3,7 +3,7 @@ SECTION = "console/utils"
 DESCRIPTION = "sed is a Stream EDitor."
 
 SRC_URI = "${GNU_MIRROR}/sed/sed-${PV}.tar.gz \
-	   file://fchmod.patch;apply=yes"
+	   file://fchmod.patch"
 S = "${WORKDIR}/sed-${PV}"
 
 inherit autotools

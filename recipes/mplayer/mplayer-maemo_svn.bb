@@ -15,17 +15,17 @@ RCONFLICTS_${PN} = "mplayer"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://garage.maemo.org/svn/mplayer/;module=trunk;proto=https \
-           file://Makefile-codec-cfg.patch;apply=yes \
-           file://pld-onlyarm5.patch;apply=yes \
-           file://makefile-nostrip.patch;apply=yes \
-           file://motion-comp-pld.patch;apply=yes \
-	   file://cfg-common-position.patch;apply=yes "
+           file://Makefile-codec-cfg.patch \
+           file://pld-onlyarm5.patch \
+           file://makefile-nostrip.patch \
+           file://motion-comp-pld.patch \
+	   file://cfg-common-position.patch "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
 # discovers this is more general than please make this more general
 # ie. for all armv4 machines.
-SRC_URI_append_collie = "file://disable-executable-stack-test.patch;apply=yes"
+SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 
 PACKAGE_ARCH_collie = "collie"
 

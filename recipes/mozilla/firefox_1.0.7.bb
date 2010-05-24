@@ -1,14 +1,14 @@
 PR = "r2"
 
 SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
-	file://xptcstubs.patch;apply=yes \
-	file://no-xmb.patch;apply=yes \
-	file://firefox-cc-fix.patch;apply=yes \
+	file://xptcstubs.patch \
+	file://no-xmb.patch \
+	file://firefox-cc-fix.patch \
 	file://jsautocfg.h \
-	file://extensions-hack.patch;apply=yes \
-	file://firefox-1.0-gcc4-compile.patch;apply=yes;striplevel=0 \
-	file://xptcinvoke-arm.patch;apply=yes \
-	file://mozilla-eabi.patch;apply=yes"
+	file://extensions-hack.patch \
+	file://firefox-1.0-gcc4-compile.patch;striplevel=0 \
+	file://xptcinvoke-arm.patch \
+	file://mozilla-eabi.patch"
 S = "${WORKDIR}/mozilla"
 
 inherit autotools mozilla

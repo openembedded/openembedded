@@ -9,12 +9,12 @@ LICENSE="GPL"
 PR = "r4"
 
 SRC_URI="http://www.gftp.org/gftp-${PV}.tar.bz2 \
-	 file://configure.patch;apply=yes \
-	 file://gftp-2.0.18-188252.patch;apply=yes \
-	 file://gftp-2.0.18-ipv6.patch;apply=yes;striplevel=2 \
-	 file://gftp-2.0.18-ssh2-read.patch;apply=yes \
-	 file://gftp-2.0.18-ssl-wildcardcert.patch;apply=yes;striplevel=0 \
-	 file://gftp-2.0.18-mkinstalldir.patch;apply=yes "
+	 file://configure.patch \
+	 file://gftp-2.0.18-188252.patch \
+	 file://gftp-2.0.18-ipv6.patch;striplevel=2 \
+	 file://gftp-2.0.18-ssh2-read.patch \
+	 file://gftp-2.0.18-ssl-wildcardcert.patch;striplevel=0 \
+	 file://gftp-2.0.18-mkinstalldir.patch "
 
 DEPENDS="gtk+ openssl"
 

@@ -8,8 +8,8 @@ LICENSE = "GPL"
 PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
-           file://disable-cable-test.patch;apply=yes \
-	   file://libusb_crosscompile_check.patch;apply=yes"
+           file://disable-cable-test.patch \
+	   file://libusb_crosscompile_check.patch"
 
 inherit autotools binconfig pkgconfig
 

@@ -6,7 +6,7 @@ PR = "r3"
 LICENSE = "MIT"
 
 SRC_URI = "${FREEDESKTOP_CVS}/dri;module=drm;method=pserver \
-	file://make.patch;apply=yes"
+	file://make.patch"
 
 inherit module-base
 

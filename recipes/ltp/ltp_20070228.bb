@@ -4,8 +4,8 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
-           file://cross-compile.patch;apply=yes \
-           file://runltp-path.patch;apply=yes \
+           file://cross-compile.patch \
+           file://runltp-path.patch \
            file://ltp-run"
 
 S = "${WORKDIR}/ltp-full-${PV}"

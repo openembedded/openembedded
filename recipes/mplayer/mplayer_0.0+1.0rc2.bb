@@ -18,24 +18,24 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc2.tar.bz2 \
            file://vo_pxa.c \
            file://vo_pxa.h \
 	   file://simple_idct_armv5te.S \
-           file://Makefile-codec-cfg.patch;apply=yes \
-           file://w100-configure-svn.patch;apply=yes \
-           file://w100-video_out.patch;apply=yes \
+           file://Makefile-codec-cfg.patch \
+           file://w100-configure-svn.patch \
+           file://w100-video_out.patch \
            file://w100-mplayer.patch;patch= \
-           file://pld-onlyarm5.patch;apply=yes \
-           file://makefile-nostrip-rc2.patch;apply=yes \
-           file://mplayer-imageon-svn.patch;apply=yes \
-           file://imageon-video_out.patch;apply=yes \
-           file://pxa_configure.patch;apply=yes \
-           file://pxa-video_out.patch;apply=yes \
-           file://motion-comp-pld.patch;apply=yes \
-	   file://ivtv-fix.patch;apply=yes "
+           file://pld-onlyarm5.patch \
+           file://makefile-nostrip-rc2.patch \
+           file://mplayer-imageon-svn.patch \
+           file://imageon-video_out.patch \
+           file://pxa_configure.patch \
+           file://pxa-video_out.patch \
+           file://motion-comp-pld.patch \
+	   file://ivtv-fix.patch "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
 # discovers this is more general than please make this more general
 # ie. for all armv4 machines.
-SRC_URI_append_collie = "file://disable-executable-stack-test.patch;apply=yes"
+SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 
 PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"

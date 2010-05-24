@@ -9,7 +9,7 @@ PR = "r7"
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
-           file://configure-hack.diff;apply=yes \
+           file://configure-hack.diff \
 "
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"

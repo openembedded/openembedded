@@ -8,9 +8,9 @@ inherit autotools autotools_stage
 
 SRC_URI = "\
   http://rpm.org/releases/historical/rpm-4.1.x/popt-${PV}.tar.gz \
-  file://m4.patch;apply=yes \
-  file://intl.patch;apply=yes \
-  file://mkinstalldirs.patch;apply=yes \
+  file://m4.patch \
+  file://intl.patch \
+  file://mkinstalldirs.patch \
 "
 
 do_configure() {

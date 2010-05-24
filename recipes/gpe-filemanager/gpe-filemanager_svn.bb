@@ -10,7 +10,7 @@ PV = "0.25+svn-${SRCDATE}"
 inherit autotools
 
 SRC_URI = "${GPE_SVN} \
-	   file://svn-build.patch;apply=yes"
+	   file://svn-build.patch"
 
 S = "${WORKDIR}/${PN}"
 

@@ -5,6 +5,6 @@ PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/inputmethods/multikey \
            ${HANDHELDS_CVS};module=opie/share \
-           file://fix-rpath.patch;apply=yes"
+           file://fix-rpath.patch"
 
-#           file://friendly-button-names.patch;apply=yes"
+#           file://friendly-button-names.patch"

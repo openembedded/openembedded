@@ -11,12 +11,12 @@ inherit gpe
 
 SRC_URI_append = " file://setDPI.sh \
                    file://89xdgautostart.sh \
-                   file://avoid-rotated-server.patch;apply=yes \
-                   file://ts-handling-cleanup.diff;apply=yes \
-                   file://Xserver-at91.patch;apply=yes \
+                   file://avoid-rotated-server.patch \
+                   file://ts-handling-cleanup.diff \
+                   file://Xserver-at91.patch \
 "
 
-SRC_URI_append_angstrom = " file://xtscal-fix.patch;apply=yes "
+SRC_URI_append_angstrom = " file://xtscal-fix.patch "
 RDEPENDS_${PN}_append_angstrom = " tslib-calibrate "
 
 do_install_append() {

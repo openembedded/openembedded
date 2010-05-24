@@ -1,6 +1,6 @@
 require transmission.inc
 
-SRC_URI_append = " file://webupload.patch;apply=yes;striplevel=0"
+SRC_URI_append = " file://webupload.patch;striplevel=0"
 
 PR = "r5"
 

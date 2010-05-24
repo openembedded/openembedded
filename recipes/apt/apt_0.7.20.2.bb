@@ -3,9 +3,9 @@ RDEPENDS = "dpkg"
 
 require apt.inc
 
-SRC_URI += "file://no-doxygen.patch;apply=yes \
-            file://no-ko-translation.patch;apply=yes \
-            file://use-host.patch;apply=yes "
+SRC_URI += "file://no-doxygen.patch \
+            file://no-ko-translation.patch \
+            file://use-host.patch "
 PR = "r1"
 
 require apt-package.inc

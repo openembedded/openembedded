@@ -14,7 +14,7 @@ PR = "r9"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "cvs://anoncvs:anonymous@cvs.savannah.gnu.org/sources/emacs;module=emacs \
-           file://use-qemu.patch;apply=yes"
+           file://use-qemu.patch"
 S = "${WORKDIR}/emacs"
 
 inherit autotools

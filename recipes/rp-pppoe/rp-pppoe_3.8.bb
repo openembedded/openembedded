@@ -8,11 +8,11 @@ RRECOMMENDS_${PN} = "ppp-oe"
 PR = "r6"
 
 SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
-           file://top-autoconf.patch;apply=yes \
-           file://configure_in_cross.patch;apply=yes \
-           file://pppoe-src-restrictions.patch;apply=yes \
-           file://update-config.patch;apply=yes \
-           file://dont-swallow-errors.patch;apply=yes \
+           file://top-autoconf.patch \
+           file://configure_in_cross.patch \
+           file://pppoe-src-restrictions.patch \
+           file://update-config.patch \
+           file://dont-swallow-errors.patch \
            file://pppoe-server.default \
            file://pppoe-server.init"
 

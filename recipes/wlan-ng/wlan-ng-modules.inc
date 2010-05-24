@@ -7,13 +7,13 @@ SECTION = "kernel/modules"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
 
-SRC_URI = "file://no-compat.patch;apply=yes \
-	file://msleep-vs-mdelay.patch;apply=yes \
-	file://might-sleep.patch;apply=yes \
-	file://only-the-modules.patch;apply=yes \
-#	file://module_param_array.patch;apply=yes \
-	file://scripts-makefile-hostcc.patch;apply=yes \
-	file://pcmciasrc.patch;apply=yes \
+SRC_URI = "file://no-compat.patch \
+	file://msleep-vs-mdelay.patch \
+	file://might-sleep.patch \
+	file://only-the-modules.patch \
+#	file://module_param_array.patch \
+	file://scripts-makefile-hostcc.patch \
+	file://pcmciasrc.patch \
 	file://config.in"
 
 inherit module

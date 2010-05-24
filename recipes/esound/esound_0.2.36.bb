@@ -8,9 +8,9 @@ PR = "r3"
 inherit gnome binconfig
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2/esound-0.2.36.tar.bz2;name=archive \
-	   https://launchpad.net/ubuntu/breezy/+source/esound/0.2.36-1ubuntu5/+files/esound_0.2.36-1ubuntu5.diff.gz;apply=yes;name=patch \
-           file://no-docs.patch;apply=yes \
-	   file://configure-fix.patch;apply=yes"
+	   https://launchpad.net/ubuntu/breezy/+source/esound/0.2.36-1ubuntu5/+files/esound_0.2.36-1ubuntu5.diff.gz;name=patch \
+           file://no-docs.patch \
+	   file://configure-fix.patch"
 
 EXTRA_OECONF = " \
     --disable-alsa \

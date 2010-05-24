@@ -1,7 +1,7 @@
 require changedfiles.inc
 PR = "r1"
 
-SRC_URI += "file://autofoo.patch;apply=yes"
+SRC_URI += "file://autofoo.patch"
 
 inherit autotools
 

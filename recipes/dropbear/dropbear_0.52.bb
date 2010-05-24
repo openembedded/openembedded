@@ -1,7 +1,7 @@
 require dropbear.inc
 PR = "r0"
 
-SRC_URI += "file://no-host-lookup.patch;apply=yes"
+SRC_URI += "file://no-host-lookup.patch"
 
 DEFAULT_PREFERENCE = "-1"
 

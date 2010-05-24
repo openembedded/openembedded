@@ -4,6 +4,6 @@ SECTION = "console"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.hoopajoo.net/static/projects/${PN}-${PV}.tar.gz \
-           file://remove-man.patch;apply=yes"
+           file://remove-man.patch"
 
 inherit autotools pkgconfig

@@ -8,7 +8,7 @@ COMPATIBLE_MACHINE = "(lsppchd|lsppchg)"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.gz;apply=yes;name=patch \
-           file://fw-and-powerpc-install.patch;apply=yes \
+           file://fw-and-powerpc-install.patch \
            file://defconfig \
                "
 S = "${WORKDIR}/linux-2.6.28"

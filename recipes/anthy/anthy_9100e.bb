@@ -12,9 +12,9 @@ DEPENDS = "anthy-native"
 PR = "r3"
 
 SRC_URI = "http://osdn.dl.sourceforge.jp/anthy/29142/anthy-9100e.tar.gz \
-           file://not_build_elc.patch;apply=yes \
-           file://2ch_t.patch;apply=yes \
-           file://native-helpers.patch;apply=yes"
+           file://not_build_elc.patch \
+           file://2ch_t.patch \
+           file://native-helpers.patch"
 
 inherit autotools pkgconfig
 

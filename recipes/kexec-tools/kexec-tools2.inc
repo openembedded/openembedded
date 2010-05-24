@@ -9,8 +9,8 @@ inherit autotools
 
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/people/horms/kexec-tools/kexec-tools-${PV}.tar.gz \
-           file://fix-arm-arch-detection.patch;apply=yes \
-           file://no-getline-no-fscanf.patch;apply=yes \
-           file://kexec-tools-2-arm-add-uImage.patch;apply=yes \
-           file://kexec-tools-2-autoconf-post-2.63.patch;apply=yes \
+           file://fix-arm-arch-detection.patch \
+           file://no-getline-no-fscanf.patch \
+           file://kexec-tools-2-arm-add-uImage.patch \
+           file://kexec-tools-2-autoconf-post-2.63.patch \
            "

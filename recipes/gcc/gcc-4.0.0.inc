@@ -4,9 +4,9 @@ DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
-	file://gcc-posix-open-fix.patch;apply=yes \
-	file://zecke-xgcc-cpp.patch;apply=yes"
-SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;apply=yes "
+	file://gcc-posix-open-fix.patch \
+	file://zecke-xgcc-cpp.patch"
+SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch "
 
 # Language Overrides
 FORTRAN = ",f95"

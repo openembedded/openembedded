@@ -8,7 +8,7 @@ PACKAGES = ""
 PROVIDES += "virtual/${TARGET_PREFIX}depmod virtual/${TARGET_PREFIX}depmod-2.4"
 DEFAULT_PREFERENCE = "1"
 
-SRC_URI +=  "file://modutils-cross/module.h.diff;apply=yes"
+SRC_URI +=  "file://modutils-cross/module.h.diff"
 
 sbindir = "${prefix}/bin"
 

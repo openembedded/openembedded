@@ -8,7 +8,7 @@ DEPENDS = "gtk+ vte"
 inherit gnome
 
 SRC_URI = "http://download.geany.org/geany-${PV}.tar.bz2 \
-           file://no-bogus-cxx-check.diff;apply=yes \
+           file://no-bogus-cxx-check.diff \
 "
 
 

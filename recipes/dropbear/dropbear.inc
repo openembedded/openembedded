@@ -8,10 +8,10 @@ RPROVIDES = "ssh sshd"
 
 SRC_URI = "\
   http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \
-  file://urandom-xauth-changes-to-options.h.patch;apply=yes \
-  file://configure.patch;apply=yes \
-  file://fix-2kb-keys.patch;apply=yes \
-  file://allow-nopw.patch \
+  file://urandom-xauth-changes-to-options.h.patch \
+  file://configure.patch \
+  file://fix-2kb-keys.patch \
+  file://allow-nopw.patch;apply=no \
   file://init \
 "
 SRC_URI_append_openmoko = "\

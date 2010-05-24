@@ -8,9 +8,9 @@ PR = "r7"
 
 inherit gpe pkgconfig
 
-SRC_URI_append = " file://init-script-busybox.patch;apply=yes"
-SRC_URI_append = " file://install-fix.patch;apply=yes"
-SRC_URI_append = " file://unbreak.patch;apply=yes"
+SRC_URI_append = " file://init-script-busybox.patch"
+SRC_URI_append = " file://install-fix.patch"
+SRC_URI_append = " file://unbreak.patch"
 
 CONFFILES_${PN} += "${sysconfdir}/ipaq-sleep.conf"
 

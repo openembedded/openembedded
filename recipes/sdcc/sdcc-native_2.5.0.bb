@@ -4,7 +4,7 @@ DEPENDS = ""
 
 # don't need native-tools patch here
 SRC_URI = "${SOURCEFORGE_MIRROR}/sdcc/sdcc-${PV}.tar.gz \
-           file://gcc4.patch;apply=yes"
+           file://gcc4.patch"
 
 do_stage() {
 	oe_runmake install

@@ -9,7 +9,7 @@ PR = "r0"
 DEPENDS = "libusb1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/${P}.tar.bz2"
-SRC_URI_append_nylon = " file://gcc-3-compatibility.patch;apply=yes"
+SRC_URI_append_nylon = " file://gcc-3-compatibility.patch"
 
 inherit autotools_stage binconfig lib_package
 

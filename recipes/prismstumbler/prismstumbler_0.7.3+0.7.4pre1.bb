@@ -12,10 +12,10 @@ RRECOMMENDS = "gpsd"
 # wireless.patch is required for linux-libc-headers == 2.6.23
 # but breaks build with linux-libc-headers >= 2.6.30.
 SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-0.7.4pre1.tar.gz \
-           file://gpsapi.patch;apply=yes \
-      ${@['', 'file://wireless.patch;apply=yes'][bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1) and bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1).split('.')[2] < '30']} \
-           file://fix-includes.patch;apply=yes;striplevel=0 \
-           file://libgps-check.patch;apply=yes"
+           file://gpsapi.patch \
+      ${@['', 'file://wireless.patch'][bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1) and bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1).split('.')[2] < '30']} \
+           file://fix-includes.patch;striplevel=0 \
+           file://libgps-check.patch"
 
 S = "${WORKDIR}/${PN}-0.7.4pre1"
 

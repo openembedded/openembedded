@@ -4,10 +4,10 @@ HOMEPAGE = "http://www.acme.com/software/thttpd/"
 PR ="r7"
 
 SRC_URI = "http://www.acme.com/software/thttpd/thttpd-2.25b.tar.gz \
-	   file://install.patch;apply=yes \
+	   file://install.patch \
 	   file://acinclude.m4 \
 	   file://init \
-	   file://htpasswd_shared.diff;apply=yes"
+	   file://htpasswd_shared.diff"
 S = "${WORKDIR}/thttpd-${PV}"
 
 PARALLEL_MAKE = ""

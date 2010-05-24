@@ -11,8 +11,8 @@ DEPENDS = "virtual/kernel"
 PR = "r3"
 
 SRC_URI = "http://www.davehylands.com/gumstix-wiki/char-driver/char-driver-2.6.21.tar.gz \
-   file://makefile.patch;apply=yes \
-#   file://sysctl.patch;apply=yes \
+   file://makefile.patch \
+#   file://sysctl.patch \
    "
 
 S = "${WORKDIR}/char-driver"

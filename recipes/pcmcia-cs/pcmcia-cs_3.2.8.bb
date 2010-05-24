@@ -10,21 +10,21 @@ RDEPENDS = "hostap-conf orinoco-conf"
 PR = "r28"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
-	   file://busybox.patch;apply=yes \
-	   file://network.patch;apply=yes \
-	   file://pcic-extra.patch;apply=yes \
-	   file://automount.patch;apply=yes \
-	   file://ratoc-cfu1u.patch;apply=yes \
-	   file://no-hostap-cards.patch;apply=yes \
-	   file://gcc4_fixes.patch;apply=yes \
+	   file://busybox.patch \
+	   file://network.patch \
+	   file://pcic-extra.patch \
+	   file://automount.patch \
+	   file://ratoc-cfu1u.patch \
+	   file://no-hostap-cards.patch \
+	   file://gcc4_fixes.patch \
 	   file://pcmcia \
 	   file://ide.opts \
 	   file://wireless.opts \
 	   file://network.conf \
 	   file://wnv.conf"
 
-SRC_URI_append_spitz = " file://nocleanup.patch;apply=yes"
-SRC_URI_append_sh3 = " file://superh-noO3.patch;apply=yes"
+SRC_URI_append_spitz = " file://nocleanup.patch"
+SRC_URI_append_sh3 = " file://superh-noO3.patch"
 
 S = "${WORKDIR}/pcmcia-cs-${PV}"
 

@@ -33,7 +33,7 @@ RRECOMMENDS_${PN} += "gst-plugin-playbin \
 
 inherit gnome
 
-SRC_URI += "file://gst-detect.diff;apply=yes"
+SRC_URI += "file://gst-detect.diff"
 
 EXTRA_OECONF=" --disable-schemas-install \
                --enable-gtk \

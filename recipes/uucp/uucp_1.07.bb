@@ -7,7 +7,7 @@ PR = "r2"
 inherit autotools
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/uucp/uucp-${PV}.tar.gz \
-           file://policy.patch;apply=yes"
+           file://policy.patch"
 
 do_configure() {
 	libtoolize --force

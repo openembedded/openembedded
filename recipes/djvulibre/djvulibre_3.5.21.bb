@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "jpeg libpng tiff"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/djvu/djvulibre-${PV}.tar.gz \
-           file://fix-cross-configure.patch;apply=yes"
+           file://fix-cross-configure.patch"
 
 inherit qt4x11 autotools pkgconfig
 

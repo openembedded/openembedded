@@ -5,8 +5,8 @@ LICENSE = "GPL LGPL"
 PR = "r0"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libsigc++/1.2/libsigc++-${PV}.tar.bz2 \
-	   file://autofoo.patch;apply=yes \
-           file://disable-tests.patch;apply=yes"
+	   file://autofoo.patch \
+           file://disable-tests.patch"
 S = "${WORKDIR}/libsigc++-${PV}"
 
 inherit autotools pkgconfig

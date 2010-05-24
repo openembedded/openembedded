@@ -10,10 +10,10 @@ FILES_libipkg = "${libdir}/*.so.*"
 AUTO_LIBNAME_PKGS = "libipkg"
 
 SRC_URI = "${HANDHELDS_CVS};module=familiar/dist/ipkg;tag=${@'V' + bb.data.getVar('PV',d,1).replace('.', '-')} \
-        file://update_version_comparision.patch;apply=yes \
-        file://enable_debversion.patch;apply=yes \
+        file://update_version_comparision.patch \
+        file://enable_debversion.patch \
         file://ipkg-configure \
-	file://terse.patch;apply=yes"
+	file://terse.patch"
 
 S = "${WORKDIR}/ipkg/C"
 

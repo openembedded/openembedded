@@ -1,7 +1,7 @@
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/linknx/linknx-${PV}.tar.gz \
-           file://logger-initialisations.patch;apply=yes \
+           file://logger-initialisations.patch \
            "
 
 require linknx.inc

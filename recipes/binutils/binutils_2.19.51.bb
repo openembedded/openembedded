@@ -5,19 +5,19 @@ LICENSE = "GPLv3"
 
 SRC_URI = "\
      ftp://sourceware.org/pub/binutils/snapshots/binutils-${PV}.tar.bz2 \
-     file://binutils-uclibc-100-uclibc-conf.patch;apply=yes \
-     file://110-arm-eabi-conf.patch;apply=yes \
-     file://binutils-uclibc-300-001_ld_makefile_patch.patch;apply=yes \
-     file://binutils-uclibc-300-006_better_file_error.patch;apply=yes \
-     file://binutils-uclibc-300-012_check_ldrunpath_length.patch;apply=yes \
-     file://binutils-uclibc-gas-needs-libm.patch;apply=yes \
-     file://binutils-arm-pr7093.patch;apply=yes \
-     file://ld-stub-crash.patch;apply=yes;striplevel=0 \
-     file://thumb-func.patch;apply=yes \
+     file://binutils-uclibc-100-uclibc-conf.patch \
+     file://110-arm-eabi-conf.patch \
+     file://binutils-uclibc-300-001_ld_makefile_patch.patch \
+     file://binutils-uclibc-300-006_better_file_error.patch \
+     file://binutils-uclibc-300-012_check_ldrunpath_length.patch \
+     file://binutils-uclibc-gas-needs-libm.patch \
+     file://binutils-arm-pr7093.patch \
+     file://ld-stub-crash.patch;striplevel=0 \
+     file://thumb-func.patch \
      "
 
 # powerpc patches
-SRC_URI += "file://binutils-2.16.1-e300c2c3.patch;apply=yes"
+SRC_URI += "file://binutils-2.16.1-e300c2c3.patch"
 
 
 SRC_URI[md5sum] = "fd59f36022f6ea802d1c844a2576e616"

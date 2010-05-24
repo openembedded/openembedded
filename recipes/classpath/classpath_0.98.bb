@@ -1,11 +1,11 @@
 require classpath.inc
 
 SRC_URI += "\
-  file://SimpleName.diff;apply=yes;striplevel=0 \
-  file://ecj_java_dir.patch;apply=yes \
-  file://autotools.patch;apply=yes \
-  file://fix-gmp.patch;apply=yes \
-  file://toolwrapper-exithook.patch;apply=yes \
+  file://SimpleName.diff;striplevel=0 \
+  file://ecj_java_dir.patch \
+  file://autotools.patch \
+  file://fix-gmp.patch \
+  file://toolwrapper-exithook.patch \
   "
 
 PR = "r3"

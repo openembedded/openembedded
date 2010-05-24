@@ -7,7 +7,7 @@ PR = "r3"
 
 inherit gnome update-rc.d
 
-SRC_URI += "file://cross-xdetection.diff;apply=yes \
+SRC_URI += "file://cross-xdetection.diff \
             file://%gconf-tree.xml \
             file://gdm.conf \
             file://gdm \

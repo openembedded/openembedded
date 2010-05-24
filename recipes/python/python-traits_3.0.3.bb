@@ -8,7 +8,7 @@ inherit setuptools
 
 SRC_URI = "\
   http://pypi.python.org/packages/source/T/Traits/Traits-${PV}.tar.gz \
-#  file://fix-import-pyface.diff;apply=yes \
+#  file://fix-import-pyface.diff \
 "
 S = "${WORKDIR}/Traits-${PV}"
 

@@ -8,7 +8,7 @@ DEPENDS = "wxbase"
 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/amule/aMule-${PV}.tar.bz2 \
-           file://parser.patch;apply=yes"
+           file://parser.patch"
 
 S = "${WORKDIR}/aMule-${PV}"
 

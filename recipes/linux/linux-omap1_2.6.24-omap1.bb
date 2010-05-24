@@ -4,8 +4,8 @@ COMPATIBLE_MACHINE = "omap5912osk"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
            http://www.muru.com/linux/omap/patches/patch-2.6.24-omap1.bz2;apply=yes;name=patch \
-           file://binutils-buildid-arm.patch;apply=yes \
-           file://timespec_add_ns_avoid_udivdi3.patch;apply=yes \
+           file://binutils-buildid-arm.patch \
+           file://timespec_add_ns_avoid_udivdi3.patch \
 	   file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.24"

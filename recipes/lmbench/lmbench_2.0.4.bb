@@ -5,8 +5,8 @@ RDEPENDS = "debianutils"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
-	   file://debian.patch;apply=yes \
-	   file://exe.patch;apply=yes \
+	   file://debian.patch \
+	   file://exe.patch \
 	   file://lmbench-run"
 S = "${WORKDIR}/lmbench-${PV}"
 

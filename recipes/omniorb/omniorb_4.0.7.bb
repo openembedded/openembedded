@@ -7,11 +7,11 @@ PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz \
 file://omniORB.cfg \
-file://omniORB-cross.patch;apply=yes \
-file://omniORB_embedded_appl.patch;apply=yes \
-file://rm_LongDouble.patch;apply=yes \
-file://arm_double.patch;apply=yes;striplevel=0 \
-file://dynskel.patch;apply=yes;striplevel=0 \
+file://omniORB-cross.patch \
+file://omniORB_embedded_appl.patch \
+file://rm_LongDouble.patch \
+file://arm_double.patch;striplevel=0 \
+file://dynskel.patch;striplevel=0 \
 "
 
 S = "${WORKDIR}/omniORB-${PV}"

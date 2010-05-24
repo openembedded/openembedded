@@ -8,7 +8,7 @@ PR          = "r0"
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpephone pkgconfig autotools
 
-SRC_URI += " file://disable-tests.patch;apply=yes file://libgemwidget-fixup.diff;apply=yes"
+SRC_URI += " file://disable-tests.patch file://libgemwidget-fixup.diff"
 
 FILES_${PN} += "${datadir}/gem"
 

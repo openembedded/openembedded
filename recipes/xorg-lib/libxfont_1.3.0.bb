@@ -7,8 +7,8 @@ PROVIDES = "xfont"
 PR = "r2"
 PE = "1"
 
-SRC_URI += "file://no-scalable-crash.patch;apply=yes \
-            file://builtinreaddirectory-no-side-effect.patch;apply=yes"
+SRC_URI += "file://no-scalable-crash.patch \
+            file://builtinreaddirectory-no-side-effect.patch"
 
 XORG_PN = "libXfont"
 

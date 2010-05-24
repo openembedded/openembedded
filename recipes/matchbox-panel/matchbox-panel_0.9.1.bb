@@ -5,8 +5,8 @@ SECTION = "x11/wm"
 PR = "r2"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/0.9/${PN}-${PV}.tar.gz \
-           file://allow-100-per-cent-battery.patch;apply=yes \
-	   file://no_time_support.patch;apply=yes"
+           file://allow-100-per-cent-battery.patch \
+	   file://no_time_support.patch"
 
 inherit autotools pkgconfig gettext
 

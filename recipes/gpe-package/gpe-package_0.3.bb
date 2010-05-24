@@ -8,8 +8,8 @@ RDEPENDS = "gpe-icons gpe-su"
 SECTION = "gpe"
 PRIORITY = "optional"
 
-SRC_URI += " file://sbin-and-no-suid-install.patch;apply=yes \
-		file://search.patch;apply=yes \
+SRC_URI += " file://sbin-and-no-suid-install.patch \
+		file://search.patch \
 		file://gpe-package"
 
 FILES_${PN} += " /usr/bin/gpe-package"

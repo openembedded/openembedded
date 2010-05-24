@@ -1,9 +1,9 @@
 SRC_URI = "${SOURCEFORGE_MIRROR}/kdepimpi/kdepimpi-${PV}.tar.gz \
-file://libkcal.patch;apply=yes \
-file://kabc.patch;apply=yes \
-file://kammu.patch;apply=yes \
-file://korganizer.patch;apply=yes \
-file://nomail.patch;apply=yes \
+file://libkcal.patch \
+file://kabc.patch \
+file://kammu.patch \
+file://korganizer.patch \
+file://nomail.patch \
 "
 
 include kdepimpi-base.inc

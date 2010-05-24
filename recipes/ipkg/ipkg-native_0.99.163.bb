@@ -7,11 +7,11 @@ PR = "r6"
 inherit autotools pkgconfig native
 
 SRC_URI = "http://www.handhelds.org/pub/packages/ipkg/ipkg-${PV}.tar.gz \
-           file://update_version_comparision.patch;apply=yes \
-           file://enable_debversion.patch;apply=yes \
-           file://is-processing.patch;apply=yes \
-           file://1-pkg-parse--Optimize-inefficient-parsing.patch;apply=yes \
-           file://2-pkg-vec--Optimize-gross-inefficiency.patch;apply=yes \
+           file://update_version_comparision.patch \
+           file://enable_debversion.patch \
+           file://is-processing.patch \
+           file://1-pkg-parse--Optimize-inefficient-parsing.patch \
+           file://2-pkg-vec--Optimize-gross-inefficiency.patch \
           "
 
 

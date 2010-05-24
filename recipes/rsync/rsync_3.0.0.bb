@@ -3,7 +3,7 @@ require rsync.inc
 PR = "r1"
 
 SRC_URI += "\
-  file://m4.patch;apply=yes \
+  file://m4.patch \
   file://rsyncd.conf \
 "
 

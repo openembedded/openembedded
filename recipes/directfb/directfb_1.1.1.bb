@@ -9,11 +9,11 @@ DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = " \
     http://www.directfb.org/downloads/Old/DirectFB-${PV}.tar.gz \
-    file://fix-pkgconfig-cflags.patch;apply=yes \
-    file://fix-font-missing-char.patch;apply=yes \
-    file://mkdfiff.patch;apply=yes \
-    file://dont-use-linux-config.patch;apply=yes \
-    file://ts_lib_autotools.patch;apply=yes \
+    file://fix-pkgconfig-cflags.patch \
+    file://fix-font-missing-char.patch \
+    file://mkdfiff.patch \
+    file://dont-use-linux-config.patch \
+    file://ts_lib_autotools.patch \
 "
 
 EXTRA_OECONF = "\

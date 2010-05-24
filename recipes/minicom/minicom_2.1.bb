@@ -2,9 +2,9 @@ SECTION = "console/network"
 DEPENDS = "ncurses"
 LICENSE = "GPL"
 SRC_URI = "http://alioth.debian.org/download.php/123/minicom-${PV}.tar.gz \
-	file://configure.patch;apply=yes \
-	file://gcc4-scope.patch;apply=yes \
-	file://gcc4-scope2.patch;apply=yes"
+	file://configure.patch \
+	file://gcc4-scope.patch \
+	file://gcc4-scope2.patch"
 
 inherit autotools gettext
 

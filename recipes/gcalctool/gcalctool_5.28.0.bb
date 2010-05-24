@@ -4,7 +4,7 @@ DEPENDS = "gtk+"
 DESCRIPTION = "gcalctool is a powerful calculator"
 PR = "r0"
 
-SRC_URI = "file://makefile-fix.diff;apply=yes"
+SRC_URI = "file://makefile-fix.diff"
 
 inherit gnome
 

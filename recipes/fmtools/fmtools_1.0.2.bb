@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "http://www.stanford.edu/~blp/fmtools/fmtools-1.0.2.tar.gz \
-           file://makefile.patch;apply=yes"
+           file://makefile.patch"
 
 inherit autotools
 

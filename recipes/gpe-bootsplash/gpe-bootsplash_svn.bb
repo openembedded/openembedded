@@ -10,8 +10,8 @@ inherit autotools
 SRC_URI += "${GPE_SVN} \
             file://splash-p.svg \
             file://splash-l.svg \
-            file://init.patch;apply=yes \
-	    file://svn-build.patch;apply=yes"
+            file://init.patch \
+	    file://svn-build.patch"
 
 S = "${WORKDIR}/${PN}"
 

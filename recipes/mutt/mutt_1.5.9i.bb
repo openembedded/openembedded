@@ -14,11 +14,11 @@ SRC_URI = "ftp://ftp.mutt.org/mutt/devel/mutt-${PV}.tar.gz;name=archive \
 	   http://www.mutt.org.ua/download/mutt-1.5.9/patch-1.5.9.vvv.initials.gz;apply=yes;name=initials \
 	   http://www.mutt.org.ua/download/mutt-1.5.9/patch-1.5.9.vvv.quote.gz;apply=yes;name=quote \
 	   file://patch-1.5.9i.sidebar.20050628.txt.hackedfornntp;apply=yes \
-	   file://sidebar-nntp-clash.patch;apply=yes \
-	   file://cppflags.patch;apply=yes \
-	   file://posix1_lim.patch;apply=yes \
-	   file://makedoc.patch;apply=yes "
-#	   file://configure.patch;apply=yes"
+	   file://sidebar-nntp-clash.patch \
+	   file://cppflags.patch \
+	   file://posix1_lim.patch \
+	   file://makedoc.patch "
+#	   file://configure.patch"
 S = "${WORKDIR}/mutt-1.5.9"
 
 DEFAULT_PREFERENCE = "-1"

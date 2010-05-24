@@ -8,7 +8,7 @@ SECTION = "libs"
 PR = "r1"
 
 SRC_URI = "http://cxx.uclibc.org/src/uClibc++-${PV}.tbz2 \
-	   file://nobash.patch;apply=yes \
+	   file://nobash.patch \
 	   file://defconfig"
 S = "${WORKDIR}/uClibc++"
 

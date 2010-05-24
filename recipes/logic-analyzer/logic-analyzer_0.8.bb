@@ -11,9 +11,9 @@ RDEPENDS = "java2-runtime classpath-awt librxtx-java"
 
 SRC_URI = "\
     http://sump.org/projects/analyzer/downloads/la-src-${PV}.tar.bz2 \
-    file://cp-run-fix.patch;apply=yes \
-    file://client-makefile.patch;apply=yes \
-    file://scrolling-capture-dialog.patch;apply=yes \
+    file://cp-run-fix.patch \
+    file://client-makefile.patch \
+    file://scrolling-capture-dialog.patch \
     "
 
 S = "${WORKDIR}/LogicAnalyzer"

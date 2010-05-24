@@ -6,15 +6,15 @@ LICENSE = "BSD GPLv2"
 PR = "r9"
 
 SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
-        file://ppp-2.4.3-mppe-mppc-1.1.patch;apply=yes \
-	file://makefile.patch;apply=yes \
-	file://cifdefroute.patch;apply=yes \
-	file://pppd-resolv-varrun.patch;apply=yes \
-	file://plugins-fix-CC.patch;apply=yes \
-	file://pppoatm-makefile.patch;apply=yes \
-	file://enable-ipv6.patch;apply=yes \
-	file://makefile-remove-hard-usr-reference.patch;apply=yes \
-	file://ldflags.patch;apply=yes \
+        file://ppp-2.4.3-mppe-mppc-1.1.patch \
+	file://makefile.patch \
+	file://cifdefroute.patch \
+	file://pppd-resolv-varrun.patch \
+	file://plugins-fix-CC.patch \
+	file://pppoatm-makefile.patch \
+	file://enable-ipv6.patch \
+	file://makefile-remove-hard-usr-reference.patch \
+	file://ldflags.patch \
 	file://pon \
 	file://poff \
 	file://init \
@@ -23,7 +23,7 @@ SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
 	file://08setupdns \
 	file://92removedns"
 
-SRC_URI_append_nylon = " file://ppp-tdbread.patch;apply=yes"
+SRC_URI_append_nylon = " file://ppp-tdbread.patch"
 
 inherit autotools
 

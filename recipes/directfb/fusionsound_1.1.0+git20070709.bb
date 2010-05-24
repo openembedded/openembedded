@@ -5,8 +5,8 @@ LICENSE = "LGPL"
 PR = "r2"
 
 SRC_URI = "git://git.directfb.org/git/directfb/core/FusionSound;protocol=git;tag=0b2162b570c8314fd1240b08d6ab4a8d074ccf37 \
-	   file://fix-pkgconfig-cflags.patch;apply=yes \
-	   file://use_limits_h.patch;apply=yes \
+	   file://fix-pkgconfig-cflags.patch \
+	   file://use_limits_h.patch \
 "
 
 S = "${WORKDIR}/git"

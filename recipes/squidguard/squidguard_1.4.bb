@@ -8,11 +8,11 @@ PR = "r1"
 
 SRC_URI = " \
 	http://www.squidguard.org/Downloads/squidGuard-${PV}.tar.gz;name=tar \
-	file://squidguard-1.4-no_header_checks.patch;apply=yes \
-	file://squidguard-1.4-fix-parallel-build.patch;apply=yes \
-	file://squidguard-cross-ldap.patch;apply=yes \
-	file://squidguard-fix-CVE-2009-3700.patch;apply=yes \
-	file://squidguard-fix-CVE-2009-3826.patch;apply=yes \
+	file://squidguard-1.4-no_header_checks.patch \
+	file://squidguard-1.4-fix-parallel-build.patch \
+	file://squidguard-cross-ldap.patch \
+	file://squidguard-fix-CVE-2009-3700.patch \
+	file://squidguard-fix-CVE-2009-3826.patch \
 	file://squidGuard.conf \
 	"
 SRC_URI[tar.md5sum] = "de834150998c1386c30feae196f16b06"

@@ -8,8 +8,8 @@ RDEPENDS = "phalanx"
 PR = "r2"
 
 SRC_URI = "http://www.openzaurus.org/mirror/knights.tar.gz \
-           file://libqpe-opie.patch;apply=yes \
-           file://gcc3.patch;apply=yes"
+           file://libqpe-opie.patch \
+           file://gcc3.patch"
 S = "${WORKDIR}/knights"
 
 inherit palmtop

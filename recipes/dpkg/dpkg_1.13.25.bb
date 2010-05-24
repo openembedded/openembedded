@@ -1,7 +1,7 @@
 require dpkg.inc
 PR = "r2"
 DEPENDS += "zlib bzip2"
-SRC_URI += "file://noman.patch;apply=yes"
+SRC_URI += "file://noman.patch"
 
 EXTRA_OECONF = "--without-static-progs \
 		--without-dselect \

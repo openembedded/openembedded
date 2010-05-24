@@ -1,5 +1,5 @@
 require quilt.inc
 
-SRC_URI += "file://install.patch;apply=yes \
-	   file://nostrip.patch;apply=yes"
+SRC_URI += "file://install.patch \
+	   file://nostrip.patch"
 

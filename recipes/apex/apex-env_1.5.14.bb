@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
-	file://find-apex-partition.patch;apply=yes \
+	file://find-apex-partition.patch \
 	"
 S = ${WORKDIR}/apex-${PV}/usr
 

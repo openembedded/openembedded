@@ -5,7 +5,7 @@ DEPENDS = "glib-2.0 pkgconfig"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
-	   file://glib2.patch;apply=yes"
+	   file://glib2.patch"
 
 S="${WORKDIR}/irda-utils-${PV}/irdadump"
 

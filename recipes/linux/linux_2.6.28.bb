@@ -20,49 +20,49 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=k
            file://defconfig"
 
 SRC_URI_append_at91sam9263ek = " \
-           file://linux-2.6.28-at91.patch.bz2;apply=yes \
-	   file://linux-2.6.28-exp.patch.bz2;apply=yes "
+           file://linux-2.6.28-at91.patch.bz2 \
+	   file://linux-2.6.28-exp.patch.bz2 "
 
 SRC_URI_append_ronetix-pm9263 = " \
-           file://linux-2.6.28-at91.patch.bz2;apply=yes \
-           file://linux-2.6.28-exp.patch.bz2;apply=yes \
-           http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch;apply=yes;name=ronetixpatch "
+           file://linux-2.6.28-at91.patch.bz2 \
+           file://linux-2.6.28-exp.patch.bz2 \
+           http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch;name=ronetixpatch "
 
 SRC_URI_append_mh355 = " \
-           file://linux-2.6.28-at91.patch.bz2;apply=yes \
-           file://linux-2.6.28-exp.patch.bz2;apply=yes \
-           file://linux-2.6.28.10-at91-mh.patch;apply=yes "
+           file://linux-2.6.28-at91.patch.bz2 \
+           file://linux-2.6.28-exp.patch.bz2 \
+           file://linux-2.6.28.10-at91-mh.patch "
 
 SRC_URI_append_stb225 = " \
-           file://uImage.patch;apply=yes \
-           file://ebase-fix.patch;apply=yes \
-           file://enable-uart.patch;apply=yes \
-           file://ip3902.patch;apply=yes"
+           file://uImage.patch \
+           file://ebase-fix.patch \
+           file://enable-uart.patch \
+           file://ip3902.patch"
 
 SRC_URI_append_collie = " \
-	file://0001-collie-start-scoop-converton-to-new-api.patch;apply=yes \
-	file://0002-add-locomo_spi-driver.patch;apply=yes \
-	file://0003-enable-cpufreq-for-collie.patch;apply=yes \
-	file://0004-fix-dma-for-SA1100.patch;apply=yes \
-	file://0005-fix-collie-keyboard-bug.patch;apply=yes \
-	file://0006-add-collie-flash-hack.patch;apply=yes \
-	file://0007-hostap-workaround-for-buggy-sa1100-pcmcia-driver.patch;apply=yes \
-	file://0008-fix-collie-suspend-hack.patch;apply=yes \
-	file://0009-add-sa1100-usb-gadget-driver-hack.patch;apply=yes \
-	file://0010-mmc_spi-add-suspend-and-resume-callbacks.patch;apply=yes \
-	file://0011-move-drivers-mfd-.h-to-include-linux-mfd.patch;apply=yes \
-	file://0012-move-ucb1200-ts-driver.patch;apply=yes \
-	file://0013-add-collie-touchscreen-driver.patch;apply=yes \
-	file://0014-collie-locomo-led-change-default-trigger.patch;apply=yes \
-	file://0015-SA1100-make-gpio_to_irq-and-reverse-a-macro.patch;apply=yes \
-	file://0016-add-gpiolib-support-to-ucb1x00.patch;apply=yes \
-	file://0017-collie-convert-to-gpiolib-for-ucb1x00.patch;apply=yes \
-	file://0018-collie-add-battery-driver.patch;apply=yes \
-	file://0019-collie-support-pda_power-driver.patch;apply=yes \
-	file://0020-remove-collie_pm.c.patch;apply=yes \
-	file://0021-mmc-trivial-annotation-of-blocks.patch;apply=yes \
-	file://0022-mmc_block-print-better-error-messages.patch;apply=yes \
-	file://0023-mmc_block-ensure-all-sectors-that-do-not-have-error.patch;apply=yes " 
+	file://0001-collie-start-scoop-converton-to-new-api.patch \
+	file://0002-add-locomo_spi-driver.patch \
+	file://0003-enable-cpufreq-for-collie.patch \
+	file://0004-fix-dma-for-SA1100.patch \
+	file://0005-fix-collie-keyboard-bug.patch \
+	file://0006-add-collie-flash-hack.patch \
+	file://0007-hostap-workaround-for-buggy-sa1100-pcmcia-driver.patch \
+	file://0008-fix-collie-suspend-hack.patch \
+	file://0009-add-sa1100-usb-gadget-driver-hack.patch \
+	file://0010-mmc_spi-add-suspend-and-resume-callbacks.patch \
+	file://0011-move-drivers-mfd-.h-to-include-linux-mfd.patch \
+	file://0012-move-ucb1200-ts-driver.patch \
+	file://0013-add-collie-touchscreen-driver.patch \
+	file://0014-collie-locomo-led-change-default-trigger.patch \
+	file://0015-SA1100-make-gpio_to_irq-and-reverse-a-macro.patch \
+	file://0016-add-gpiolib-support-to-ucb1x00.patch \
+	file://0017-collie-convert-to-gpiolib-for-ucb1x00.patch \
+	file://0018-collie-add-battery-driver.patch \
+	file://0019-collie-support-pda_power-driver.patch \
+	file://0020-remove-collie_pm.c.patch \
+	file://0021-mmc-trivial-annotation-of-blocks.patch \
+	file://0022-mmc_block-print-better-error-messages.patch \
+	file://0023-mmc_block-ensure-all-sectors-that-do-not-have-error.patch " 
 
 SRC_URI_append_tosa = " \
 	file://commit-31c9b28;apply=yes \
@@ -74,11 +74,11 @@ SRC_URI_append_gamecube = " \
 	"
 
 SRC_URI_append_tx27 = " \
-	file://linux-2.6.28-karo4.diff;apply=yes \
+	file://linux-2.6.28-karo4.diff \
 	"
 
 SRC_URI_nokia900 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
-		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20094803.3+0m5.diff.gz;apply=yes;name=nokiapatch \
+		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20094803.3+0m5.diff.gz;name=nokiapatch \
 		    file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.28/"

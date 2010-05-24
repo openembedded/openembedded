@@ -4,9 +4,9 @@ LICENSE = "BSD"
 
 SRC_URI = " \
 	http://www.klake.org/~jt/sscep/sscep.tgz \
-	file://memleak.patch;apply=yes \
-	file://httphost.patch;apply=yes \
-	file://ca_segfault.patch;apply=yes \
+	file://memleak.patch \
+	file://httphost.patch \
+	file://ca_segfault.patch \
 "
 
 S = "${WORKDIR}/${PN}"

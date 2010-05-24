@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "BSD"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/radlib/radlib-${PV}.tar.gz \
-	file://Makefile.am.patch;apply=yes"
+	file://Makefile.am.patch"
 
 S = "${WORKDIR}/radlib-${PV}"
 

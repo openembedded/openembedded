@@ -14,22 +14,22 @@ PR = "${INC_PR}.0"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 SRC_URI += "file://uClibc.machine file://uClibc.distro \
-		file://errno_values.h.patch;apply=yes \
-		file://termios.h.patch;apply=yes \
-		file://unistd_arm.patch;apply=yes \
-		file://build_wcs_upper_buffer.patch;apply=yes \
-		file://uClibc-0.9.29-001-fix-mmap.patch;apply=yes \
-		file://uClibc-0.9.29-002-atmel.1.patch;apply=yes \
-		file://uClibc-0.9.29-avr32-fix-sa_onstack.patch;apply=yes \
-		file://uClibc-0.9.29-conditional-sched_affinity.patch;apply=yes \
-		file://uClibc-0.9.29-fix-gethostent_r-failure-retval.patch;apply=yes \
-		file://uClibc-0.9.29-fix-internal_function-definition.patch;apply=yes \
-		file://uClibc-0.9.29-rm-whitespace.patch;apply=yes \
-		file://uClibc-0.9.29-avr32-bzero.patch;apply=yes \
-		file://uClibc-0.9.29-nonposix_bashisms.patch;apply=yes \
-		file://arm_fix_alignment.patch;apply=yes \
-		file://uclibc-arm-ftruncate64.patch;apply=yes \
-		file://uclibc-use-fgnu89-inline.patch;apply=yes \
+		file://errno_values.h.patch \
+		file://termios.h.patch \
+		file://unistd_arm.patch \
+		file://build_wcs_upper_buffer.patch \
+		file://uClibc-0.9.29-001-fix-mmap.patch \
+		file://uClibc-0.9.29-002-atmel.1.patch \
+		file://uClibc-0.9.29-avr32-fix-sa_onstack.patch \
+		file://uClibc-0.9.29-conditional-sched_affinity.patch \
+		file://uClibc-0.9.29-fix-gethostent_r-failure-retval.patch \
+		file://uClibc-0.9.29-fix-internal_function-definition.patch \
+		file://uClibc-0.9.29-rm-whitespace.patch \
+		file://uClibc-0.9.29-avr32-bzero.patch \
+		file://uClibc-0.9.29-nonposix_bashisms.patch \
+		file://arm_fix_alignment.patch \
+		file://uclibc-arm-ftruncate64.patch \
+		file://uclibc-use-fgnu89-inline.patch \
 		"
 
 #recent versions uclibc require real kernel headers

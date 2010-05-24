@@ -5,7 +5,7 @@ LICENSE = "BSD"
 PR="r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openrdate/openrdate-${PV}.tar.gz \
-           file://debian.patch;apply=yes"
+           file://debian.patch"
 
 inherit autotools
 

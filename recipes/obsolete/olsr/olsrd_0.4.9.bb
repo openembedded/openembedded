@@ -1,7 +1,7 @@
 require olsrd.inc
 PR = "r2"
 
-SRC_URI += "file://0.4.9-httpinfo-makefile.diff;apply=yes"
+SRC_URI += "file://0.4.9-httpinfo-makefile.diff"
 
 do_compile() {
 	oe_runmake OS=linux clean

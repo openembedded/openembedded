@@ -3,11 +3,11 @@ RDEPENDS = "dpkg"
 
 require apt.inc
 
-SRC_URI += "file://no-ko-translation.patch;apply=yes \
-            file://use-host.patch;apply=yes "
+SRC_URI += "file://no-ko-translation.patch \
+            file://use-host.patch "
 PR = "r3"
 
-SRC_URI += "file://nodoc.patch;apply=yes"
+SRC_URI += "file://nodoc.patch"
 
 require apt-package.inc
 

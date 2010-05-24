@@ -10,14 +10,14 @@ S="${WORKDIR}/dosfstools-${PV}"
 PR ="r4"
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
-	file://mkdosfs-bootcode.patch;apply=yes \
-	file://mkdosfs-dir.patch;apply=yes \
-	file://alignment_hack.patch;apply=yes \
-	file://dosfstools-2.10-kernel-2.6.patch;apply=yes \
-	file://msdos_fat12_undefined.patch;apply=yes \
-	file://dosfstools-msdos_fs-types.patch;apply=yes \
-	file://include-linux-types.patch;apply=yes \
-	file://2.6.20-syscall.patch;apply=yes"
+	file://mkdosfs-bootcode.patch \
+	file://mkdosfs-dir.patch \
+	file://alignment_hack.patch \
+	file://dosfstools-2.10-kernel-2.6.patch \
+	file://msdos_fat12_undefined.patch \
+	file://dosfstools-msdos_fs-types.patch \
+	file://include-linux-types.patch \
+	file://2.6.20-syscall.patch"
 
 inherit native
 

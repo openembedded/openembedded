@@ -3,13 +3,13 @@ require classpath.inc
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/${PBN}-${PV}"
 
 SRC_URI += "\
-  file://netif_16.patch;apply=yes;striplevel=0 \
-  file://SimpleName.diff;apply=yes;striplevel=0 \
-  file://javanet-local.patch;apply=yes;striplevel=0 \
-  file://ecj_java_dir.patch;apply=yes \
-  file://autotools.patch;apply=yes \
-  file://decimalformat.patch;apply=yes \
-  file://cp-byte-loophelper.patch;apply=yes;striplevel=0 \
+  file://netif_16.patch;striplevel=0 \
+  file://SimpleName.diff;striplevel=0 \
+  file://javanet-local.patch;striplevel=0 \
+  file://ecj_java_dir.patch \
+  file://autotools.patch \
+  file://decimalformat.patch \
+  file://cp-byte-loophelper.patch;striplevel=0 \
   "
 
 PR = "r3"

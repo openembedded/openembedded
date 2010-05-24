@@ -5,8 +5,8 @@ DEPENDS = "intltool libgnomeprint gtk+ libglade libgnomeui libgnomecanvas libxml
 inherit gnome
 
 SRC_URI = "${GNOME_MIRROR}/gal/1.99/gal-${PV}.tar.bz2 \
-	file://configure.patch;apply=yes \
-	file://forward-decl.patch;apply=yes \
+	file://configure.patch \
+	file://forward-decl.patch \
 	file://iconv-detect.h"
 
 S = "${WORKDIR}/gal-${PV}"

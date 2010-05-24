@@ -4,9 +4,9 @@ DEPENDS = ""
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glib-2.0-${PV}"
 
 SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/glib/2.2/glib-${PV}.tar.bz2 \
-           file://automake-lossage.patch;apply=yes \
+           file://automake-lossage.patch \
            file://glibconfig-sysdefs.h \
-           file://configure-libtool.patch;apply=yes"
+           file://configure-libtool.patch"
 S = "${WORKDIR}/glib-${PV}"
 PR = "r1"
 

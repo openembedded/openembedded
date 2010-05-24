@@ -7,10 +7,10 @@ DEPENDS += "sysfsutils"
 
 SRC_URI = " \
     http://www.directfb.org/downloads/Old/DirectFB-${PV}.tar.gz \
-    file://directfb-1.2.x-fix-pkgconfig-cflags.patch;apply=yes \
-    file://mkdfiff.patch;apply=yes \
-    file://dont-use-linux-config.patch;apply=yes \
-    file://ts_lib_autotools.patch;apply=yes \
+    file://directfb-1.2.x-fix-pkgconfig-cflags.patch \
+    file://mkdfiff.patch \
+    file://dont-use-linux-config.patch \
+    file://ts_lib_autotools.patch \
 "
 
 EXTRA_OECONF = "\

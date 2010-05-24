@@ -4,9 +4,9 @@ LICENSE = "GPLv2"
 PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.17/linux-2.6.17-rc5.tar.bz2 \
-           file://linux-2.6.17-rc5.patch;apply=yes;striplevel=0 \
-           file://ucb1400-ac97-audio.patch;apply=yes \
-           file://ucb1400-touchscreen.patch;apply=yes \
+           file://linux-2.6.17-rc5.patch;striplevel=0 \
+           file://ucb1400-ac97-audio.patch \
+           file://ucb1400-touchscreen.patch \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.17-rc5"

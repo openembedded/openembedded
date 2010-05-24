@@ -10,7 +10,7 @@ SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-2.2.3.tar.bz2 \
 	   file://apr-sockets-patch;apply=yes \
 	   file://configure-patch;apply=yes \
 	   file://server-makefile-patch;apply=yes \
-           file://configure-fix-cross-compile-ptr-check.patch;apply=yes \
+           file://configure-fix-cross-compile-ptr-check.patch \
            file://init"
 
 #

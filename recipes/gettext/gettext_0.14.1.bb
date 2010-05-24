@@ -9,15 +9,15 @@ PROVIDES = "virtual/libintl"
 PROVIDES_virtclass-native = ""
 
 SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
-	   file://gettext-vpath.patch;apply=yes \
-	   file://fixchicken.patch;apply=yes \
-	   file://linklib_from_0.17.patch;apply=yes \
-	   file://gettext-autoconf-lib-link-no-L.patch;apply=yes \
-           file://getline.m4.patch;apply=yes \
-           file://disable_java.patch;apply=yes"
+	   file://gettext-vpath.patch \
+	   file://fixchicken.patch \
+	   file://linklib_from_0.17.patch \
+	   file://gettext-autoconf-lib-link-no-L.patch \
+           file://getline.m4.patch \
+           file://disable_java.patch"
 
-SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch;apply=yes"
-SRC_URI_append_linux-uclibceabi = " file://gettext-error_print_progname.patch;apply=yes"
+SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch"
+SRC_URI_append_linux-uclibceabi = " file://gettext-error_print_progname.patch"
 
 PARALLEL_MAKE = ""
 

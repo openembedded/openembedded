@@ -9,12 +9,12 @@ PV = "0.0+svnr${SRCPV}"
 PR ="r7"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
-           file://smallscreen-fontsize.patch;apply=yes \
-           file://2-Add-new-modifier--layout--Used-to-cycle-thru-all-available-layouts.patch;apply=yes \
-           file://3-Changes-to-improve-layout-rendering--especially-after-adding-support-for.patch;apply=yes \
-           file://4-Add-rendering-debug-logging.patch;apply=yes \
-           file://5-Add-support-for-loading-multiple-independent-layouts.patch;apply=yes \
-           file://6-Add-layout-switch-key-to-all-layouts.patch;apply=yes \
+           file://smallscreen-fontsize.patch \
+           file://2-Add-new-modifier--layout--Used-to-cycle-thru-all-available-layouts.patch \
+           file://3-Changes-to-improve-layout-rendering--especially-after-adding-support-for.patch \
+           file://4-Add-rendering-debug-logging.patch \
+           file://5-Add-support-for-loading-multiple-independent-layouts.patch \
+           file://6-Add-layout-switch-key-to-all-layouts.patch \
           "
 
 

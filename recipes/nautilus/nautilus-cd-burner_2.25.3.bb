@@ -4,8 +4,8 @@ SECTION = "x11/gnome"
 
 inherit gnome
 
-SRC_URI += " file://eject1.diff;apply=yes \
-             file://eject2.diff;apply=yes \
+SRC_URI += " file://eject1.diff \
+             file://eject2.diff \
 "
 
 SRC_URI[archive.md5sum] = "02324246d8e4804e15e41ef7b62836a7"

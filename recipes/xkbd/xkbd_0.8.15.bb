@@ -1,9 +1,9 @@
 SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/xkbd-${PV}-CVS.tar.gz \
-           file://libtool-lossage.patch;apply=yes \
-	   file://fix-equalsign.patch;apply=yes \
-	   file://fix-circumkey.patch;apply=yes \
-	   file://add-default-common-slides.patch;apply=yes \
-	   file://differentiate-desktop-name.patch;apply=yes \
+           file://libtool-lossage.patch \
+	   file://fix-equalsign.patch \
+	   file://fix-circumkey.patch \
+	   file://add-default-common-slides.patch \
+	   file://differentiate-desktop-name.patch \
 	   file://xkbd.png"
 LICENSE = "GPL"
 PR = "r4"

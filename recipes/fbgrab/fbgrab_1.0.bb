@@ -7,9 +7,9 @@ PR = "r2"
 DEPENDS = " zlib libpng "
 
 SRC_URI = "http://hem.bredband.net/gmogmo/fbgrab/fbgrab-${PV}.tar.gz;name=archive \
-           file://makefile.patch;apply=yes \
-	   http://people.openezx.org/ao2/fbgrab_network_mode.diff;apply=yes;name=patch \
-	   file://fbgrab_1bpp.patch;apply=yes \
+           file://makefile.patch \
+	   http://people.openezx.org/ao2/fbgrab_network_mode.diff;name=patch \
+	   file://fbgrab_1bpp.patch \
 	   "
 
 do_install() {

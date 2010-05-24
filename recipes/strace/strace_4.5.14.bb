@@ -4,15 +4,15 @@ LICENSE = "GPL"
 PR = "r9"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
-           file://glibc-2.5.patch;apply=yes \
-           file://arm-eabi.patch;apply=yes \
-           file://sh-arch-update.patch;apply=yes \
-           file://sh-syscall-update.patch;apply=yes \
-           file://strace-fix-arm-bad-syscall.patch;apply=yes \
-           file://strace-undef-syscall.patch;apply=yes \
-           file://strace-arm-no-cachectl.patch;apply=yes \
-           file://strace-dont-include-linux-dirent-h.patch;apply=yes \
-           file://mips-sigcontext.patch;apply=yes \
+           file://glibc-2.5.patch \
+           file://arm-eabi.patch \
+           file://sh-arch-update.patch \
+           file://sh-syscall-update.patch \
+           file://strace-fix-arm-bad-syscall.patch \
+           file://strace-undef-syscall.patch \
+           file://strace-arm-no-cachectl.patch \
+           file://strace-dont-include-linux-dirent-h.patch \
+           file://mips-sigcontext.patch \
           "
 
 # The strace-4.5.14-avr32.patch conflicts with some other patches.
@@ -21,8 +21,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
 # The avr32 patch also includes the drop-ctl-proc.patch
 # The AVR32 patches are from http://avr32linux.org/twiki/bin/view/Main/STrace
 SRC_URI_avr32 = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
-     file://strace-4.5.14-avr32.patch;apply=yes \
-     file://strace-4.5.14-avr32-add-syscalls-up-to-sysvipc.patch;apply=yes \
+     file://strace-4.5.14-avr32.patch \
+     file://strace-4.5.14-avr32-add-syscalls-up-to-sysvipc.patch \
     "
 
 inherit autotools

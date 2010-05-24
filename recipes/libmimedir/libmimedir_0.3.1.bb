@@ -11,7 +11,7 @@ PR = "r4"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.rittau.org/mimedir/${P}.tar.gz \
-	   file://mimedir-duration.diff;apply=yes"
+	   file://mimedir-duration.diff"
 
 inherit autotools pkgconfig
 

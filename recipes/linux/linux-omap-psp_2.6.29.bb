@@ -11,20 +11,20 @@ SRCREV = "9abb6eb717acbca192ab251a056e3a66b2b47884"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=int_030000_build3 \
-           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;apply=yes \
+           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch \
            file://defconfig"
 
 S = "${WORKDIR}/git"
 
 SRC_URI_append_am3517-evm = " \
-        file://shiva-bits.diff;apply=yes \
-        file://shiva-ehci.diff;apply=yes \
+        file://shiva-bits.diff \
+        file://shiva-ehci.diff \
 "
 
 SRC_URI_append_omap3evm = " \
-	file://fix-twl-merge-damage.diff;apply=yes \
-	file://fix-section-mismatch.diff;apply=yes \
-	file://no-3517-hack.diff;apply=yes \
+	file://fix-twl-merge-damage.diff \
+	file://fix-section-mismatch.diff \
+	file://no-3517-hack.diff \
 "
 
 do_install_append() {

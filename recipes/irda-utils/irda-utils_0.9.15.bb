@@ -5,8 +5,8 @@ such as phones and laptops."
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
-	   file://configure.patch;apply=yes \
-	   file://m4.patch;apply=yes"
+	   file://configure.patch \
+	   file://m4.patch"
 
 export SYS_INCLUDES="-I${STAGING_INCDIR}"
 BROKEN = "1"

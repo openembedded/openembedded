@@ -9,8 +9,8 @@ DEFAULT_PREFERENCE_avr32 = "1"
 PR = "r13"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=kernel \
-	   file://binutils-buildid-arm.patch;apply=yes \
-           file://kallsyms-missing-include.patch;apply=yes \
+	   file://binutils-buildid-arm.patch \
+           file://kallsyms-missing-include.patch \
            file://defconfig \
 	   "
 
@@ -19,37 +19,37 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.17.bz2;apply=
 # Real-time preemption (includes CFS). This is experimental and requires a different defconfig.
 #SRC_URI += "file://patch-2.6.23.12-rt14;apply=yes"
 # Only the Completely Fair Scheduler (CFS), the official backport from 2.6.24 (adapted for 2.6.23.17)
-SRC_URI += "file://sched-cfs-v2.6.23.12-v24.1.patch;apply=yes"
+SRC_URI += "file://sched-cfs-v2.6.23.12-v24.1.patch"
 # Add support for squashfs-lzma (a highly compressed read-only filesystem)
-SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;apply=yes;name=squashfspatch"
+SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;name=squashfspatch"
 
-SRC_URI += "file://time.h.patch;apply=yes"
+SRC_URI += "file://time.h.patch"
 
 # The Atmel patch doesn't apply against 2.6.23.12  :( 
 SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=kernel \
                  file://defconfig \
-                 http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;apply=yes;name=atmelpatch \
+                 http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;name=atmelpatch \
                 "
 SRC_URI_append_em-x270 = "\
-	file://em-x270.patch;apply=yes "
+	file://em-x270.patch "
 
 SRC_URI_append_cm-x270 = "\
-	file://0001-cm-x270-base2.patch;apply=yes \
-	file://0002-cm-x270-match-type.patch;apply=yes \
-	file://0003-cm-x270-ide.patch;apply=yes \
-	file://0004-cm-x270-it8152.patch;apply=yes \
-	file://0005-cm-x270-pcmcia.patch;apply=yes \
-	file://0006-ramdisk_load.patch;apply=yes \
-	file://0007-mmcsd_large_cards-r0.patch;apply=yes \
-	file://0008-cm-x270-nand-simplify-name.patch;apply=yes"
+	file://0001-cm-x270-base2.patch \
+	file://0002-cm-x270-match-type.patch \
+	file://0003-cm-x270-ide.patch \
+	file://0004-cm-x270-it8152.patch \
+	file://0005-cm-x270-pcmcia.patch \
+	file://0006-ramdisk_load.patch \
+	file://0007-mmcsd_large_cards-r0.patch \
+	file://0008-cm-x270-nand-simplify-name.patch"
 
 SRC_URI_append_mpc8313e-rdb = "\
-	file://mpc831x-nand.patch;apply=yes \
-	file://mpc8313e-rdb-leds.patch;apply=yes \
-	file://mpc8313e-rdb-rtc.patch;apply=yes"
+	file://mpc831x-nand.patch \
+	file://mpc8313e-rdb-leds.patch \
+	file://mpc8313e-rdb-rtc.patch"
 
 SRC_URI_append_mpc8323e-rdb = "\
-	file://mpc832x-leds.patch;apply=yes" 
+	file://mpc832x-leds.patch" 
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 

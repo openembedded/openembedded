@@ -6,10 +6,10 @@ PR = "r1"
 FILESPATH_append = ":${@os.path.dirname(bb.data.getVar('FILE',d,1))}/vsftpd-2.0.5"
 
 SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
-           file://vsftpd-charconv.patch;apply=yes \
-           file://makefile.patch;apply=yes \
-           file://nopam.patch;apply=yes \
-           file://syscall.patch;apply=yes \
+           file://vsftpd-charconv.patch \
+           file://makefile.patch \
+           file://nopam.patch \
+           file://syscall.patch \
            file://init \
            file://vsftpd.conf"
 	   

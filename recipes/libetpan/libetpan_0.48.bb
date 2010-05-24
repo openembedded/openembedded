@@ -7,7 +7,7 @@ LICENSE = "BSD"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
-           file://honor-oe-lflags.patch;apply=yes"
+           file://honor-oe-lflags.patch"
 
 inherit autotools pkgconfig gettext binconfig
 

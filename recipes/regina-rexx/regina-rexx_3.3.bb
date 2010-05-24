@@ -5,7 +5,7 @@ HOMEPAGE = "http://regina-rexx.sf.net"
 DEPENDS = "regina-rexx-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/regina-rexx/regina33.zip \
-           file://use-proper-host-tools.patch;apply=yes"
+           file://use-proper-host-tools.patch"
 S = "${WORKDIR}"
 
 inherit autotools

@@ -5,10 +5,10 @@ LICENSE = "BSD GPLv2"
 PR = "r7"
 
 SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
-	file://pppd.patch;apply=yes \
-	file://man.patch;apply=yes \
+	file://pppd.patch \
+	file://man.patch \
 	file://cifdefroute.dif;apply=yes \
-	file://pppd-resolv-varrun.patch;apply=yes \
+	file://pppd-resolv-varrun.patch \
 	file://pon \
 	file://poff \
 	file://init \
@@ -17,7 +17,7 @@ SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
 	file://08setupdns \
 	file://92removedns"
 
-SRC_URI_append_nylon = " file://ppp-tdbread.patch;apply=yes"
+SRC_URI_append_nylon = " file://ppp-tdbread.patch"
 
 inherit autotools
 

@@ -8,7 +8,7 @@ RRECOMMENDS = "telepathy-gabble"
 PR ="r1"
 
 SRC_URI = "http://projects.collabora.co.uk/~xclaesse/empathy-0.1.tar.gz \
-        file://no-gnome.diff;apply=yes"
+        file://no-gnome.diff"
 
 inherit autotools pkgconfig
 

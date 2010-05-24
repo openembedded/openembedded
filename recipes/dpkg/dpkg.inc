@@ -3,8 +3,8 @@ LICENSE = "GPL"
 SECTION = "base"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/d/dpkg/dpkg_${PV}.tar.gz \
-           file://ignore_extra_fields.patch;apply=yes \
-           file://noupdalt.patch;apply=yes"
+           file://ignore_extra_fields.patch \
+           file://noupdalt.patch"
 
 S = "${WORKDIR}/dpkg-${PV}"
 

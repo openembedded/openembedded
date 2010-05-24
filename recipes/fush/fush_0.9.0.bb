@@ -8,9 +8,9 @@ PR = "r3"
 
 RV = "${@bb.data.getVar('PV', d, 1).replace('.', '-')}"
 SRC_URI = "${SOURCEFORGE_MIRROR}/foosh/fush-${RV}.tar.gz \
-	   file://openpty.patch;apply=yes \
-	   file://install.patch;apply=yes \
-	   file://paths.patch;apply=yes"
+	   file://openpty.patch \
+	   file://install.patch \
+	   file://paths.patch"
 S = "${WORKDIR}/fush-${RV}"
 
 inherit autotools

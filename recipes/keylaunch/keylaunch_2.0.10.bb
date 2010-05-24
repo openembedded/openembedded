@@ -13,7 +13,7 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  rather than just running another copy."
 PR = "r14"
 
-SRC_URI += " file://makefile-fix.patch;apply=yes file://unbreak-keyevents.patch;apply=yes"
+SRC_URI += " file://makefile-fix.patch file://unbreak-keyevents.patch"
 
 export CVSBUILD="no"
 

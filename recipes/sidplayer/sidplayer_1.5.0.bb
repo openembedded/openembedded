@@ -7,9 +7,9 @@ DEPENDS = "libsidplay"
 PR = "r1"
 
 SRC_URI = "http://sidplayer.sourceforge.net/sidplayer.tar.gz \
-           file://use-external-libsidplay.patch;apply=yes \
-           file://gcc3.patch;apply=yes \
-	   file://gcc34.patch;apply=yes"
+           file://use-external-libsidplay.patch \
+           file://gcc3.patch \
+	   file://gcc34.patch"
 S = "${WORKDIR}/sidplayer"
 
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/sidplay"

@@ -10,7 +10,7 @@ PARALLEL_MAKE = ""
 
 inherit gnome flow-lossage
 
-SRC_URI += "file://remove-docs.patch;apply=yes"
+SRC_URI += "file://remove-docs.patch"
 
 EXTRA_OECONF=" --without-perl "
 

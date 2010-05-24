@@ -1,12 +1,12 @@
 require libtool_${PV}.bb
 
 PR = "${INC_PR}.0"
-SRC_URI_append = " file://libdir-la.patch;apply=yes \
-                   file://libdir-la2.patch;apply=yes \
-                   file://prefix.patch;apply=yes \
-                   file://tag.patch;apply=yes \
-                   file://install-path-check.patch;apply=yes \
-		   file://nousrlib.patch;apply=yes"
+SRC_URI_append = " file://libdir-la.patch \
+                   file://libdir-la2.patch \
+                   file://prefix.patch \
+                   file://tag.patch \
+                   file://install-path-check.patch \
+		   file://nousrlib.patch"
 
 S = "${WORKDIR}/libtool-${PV}"
 

@@ -4,24 +4,24 @@ HOMEPAGE = "http://www.midnight-commander.org/"
 
 # most of these fixes were copied from openSUSE Factory.
 SRC_URI = "http://www.midnight-commander.org/downloads/${P}.tar.gz \
-	   file://mhl-stdbool.patch;apply=yes \
-	   file://mc-utf8.patch;apply=yes \
-	   file://00-70-utf8-common.patch;apply=yes \
-	   file://00-73-utf8-bottom-buttons-width.patch;apply=yes \
-	   file://00-75-utf8-cmdline-help.patch;apply=yes \
-	   file://00-76-utf8-hotlist-highlight.patch;apply=yes \
-	   file://00-77-utf8-filename-search-highlight.patch;apply=yes \
-	   file://mc-utf8-nlink.patch;apply=yes \
-	   file://mc-utf8-look-and-feel.patch;apply=yes \
-	   file://mc-utf8-slang-codeset.patch;apply=yes \
-	   file://99_regexp-replace-fixed.patch;apply=yes \
-	   file://99b_fix-regex-pattern-lengths.patch;apply=yes \
-	   file://multi-press-f-keys.patch;apply=yes \
-	   file://cross-compile.patch;apply=yes \
-	   file://01_ftpfs_symlink.patch;apply=yes \
-	   file://02_ignore_ftp_chmod_error.patch;apply=yes \
-	   file://mc-cursor-appearance.patch;apply=yes \
-	   file://mc-esc-seq.patch;apply=yes"
+	   file://mhl-stdbool.patch \
+	   file://mc-utf8.patch \
+	   file://00-70-utf8-common.patch \
+	   file://00-73-utf8-bottom-buttons-width.patch \
+	   file://00-75-utf8-cmdline-help.patch \
+	   file://00-76-utf8-hotlist-highlight.patch \
+	   file://00-77-utf8-filename-search-highlight.patch \
+	   file://mc-utf8-nlink.patch \
+	   file://mc-utf8-look-and-feel.patch \
+	   file://mc-utf8-slang-codeset.patch \
+	   file://99_regexp-replace-fixed.patch \
+	   file://99b_fix-regex-pattern-lengths.patch \
+	   file://multi-press-f-keys.patch \
+	   file://cross-compile.patch \
+	   file://01_ftpfs_symlink.patch \
+	   file://02_ignore_ftp_chmod_error.patch \
+	   file://mc-cursor-appearance.patch \
+	   file://mc-esc-seq.patch"
 
 EXTRA_OECONF = "--without-x --without-samba \
 --without-nfs --without-gpm-mouse --enable-charset \

@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.linuxtv.org"
 LICENSE = "GPL"
 
 SRC_URI = "http://linuxtv.org/downloads/linuxtv-dvb-apps-${PV}.tar.bz2 \
-           file://update-to-trunk.diff;apply=yes"
+           file://update-to-trunk.diff"
 
 PR = "r1"
 

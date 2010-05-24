@@ -16,25 +16,25 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=k
 
 SRC_URI_append_boc01 = "\
 	file://boc01.dts \
-	file://fsl-elbc-nand-backport.patch;apply=yes \
-	file://002-081105-headers.patch;apply=yes \
-	file://004-081105-usb.patch;apply=yes \
-	file://005-081217-isl12024.patch;apply=yes \
-	file://006-081216-at24c32.patch;apply=yes \
-	file://007-081216-lm73.patch;apply=yes \
-	file://008-081127-spi.patch;apply=yes \
-	file://010-081105-mii.patch;apply=yes \
-	file://011-081202-gpio.patch;apply=yes \
-	file://012-081222-cy3218-btns.patch;apply=yes \
-	file://013-081212-lcd.patch;apply=yes \
+	file://fsl-elbc-nand-backport.patch \
+	file://002-081105-headers.patch \
+	file://004-081105-usb.patch \
+	file://005-081217-isl12024.patch \
+	file://006-081216-at24c32.patch \
+	file://007-081216-lm73.patch \
+	file://008-081127-spi.patch \
+	file://010-081105-mii.patch \
+	file://011-081202-gpio.patch \
+	file://012-081222-cy3218-btns.patch \
+	file://013-081212-lcd.patch \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\
-	file://cdc-ether-hack.patch;apply=yes \
-	file://fsl-elbc-nand-backport.patch;apply=yes \
-	file://mpc8313e-rdb-leds.patch;apply=yes \
-	file://mpc8313e-rdb-cardbus.patch;apply=yes \
-	file://mpc8313e-rdb-eth-fixed.patch;apply=yes \
+	file://cdc-ether-hack.patch \
+	file://fsl-elbc-nand-backport.patch \
+	file://mpc8313e-rdb-leds.patch \
+	file://mpc8313e-rdb-cardbus.patch \
+	file://mpc8313e-rdb-eth-fixed.patch \
 	"
 
 SRC_URI_append_topas910 = "http://www.bplan-gmbh.org/data/toshiba/topas/linux/2.6.26.5/patch_2.6.26.5_topas910.bz2;apply=yes;name=topaspatch"

@@ -6,7 +6,7 @@ DEPENDS = "osb-nrcit gtk+ glib-2.0 libglade"
 SECTION = "gpe"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-browser-${PV}.tar.gz \
-           file://no-pedantic.patch;apply=yes"
+           file://no-pedantic.patch"
 
 inherit autotools
 

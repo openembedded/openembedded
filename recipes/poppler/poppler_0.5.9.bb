@@ -2,7 +2,7 @@ require poppler.inc
 
 PR = "r1"
 
-SRC_URI += "file://fix-splash.patch;apply=yes"
+SRC_URI += "file://fix-splash.patch"
 EXTRA_OECONF_append = " --disable-abiword-output "
 
 

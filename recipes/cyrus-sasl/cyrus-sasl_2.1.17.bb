@@ -6,7 +6,7 @@ LICENSE = "BSD"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/OLD-VERSIONS/sasl/cyrus-sasl-${PV}.tar.gz \
-	   file://configure.patch;apply=yes"
+	   file://configure.patch"
 
 inherit autotools
 

@@ -25,14 +25,14 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${OLD_KERNEL_RELEASE}
            file://defconfig"
 
 SRC_URI_append_afeb9260 = " \
-        file://0001-SRAM-TX-buffers-implementation-from-atmel-to-fix-TX.patch;apply=yes \
-        file://0002-RS-485-mode-of-USART1.patch;apply=yes \
-        file://0004-AFEB9260-ASoC-driver.patch;apply=yes \
+        file://0001-SRAM-TX-buffers-implementation-from-atmel-to-fix-TX.patch \
+        file://0002-RS-485-mode-of-USART1.patch \
+        file://0004-AFEB9260-ASoC-driver.patch \
 "
 
-SRC_URI_append_tx25 = " file://linux-2.6.30-rc4-git.patch;apply=yes \
-	file://linux-2.6.30-rc4-karo3.diff;apply=yes \
-        file://stk5-baseboard_c_vesa640.patch;apply=yes"
+SRC_URI_append_tx25 = " file://linux-2.6.30-rc4-git.patch \
+	file://linux-2.6.30-rc4-karo3.diff \
+        file://stk5-baseboard_c_vesa640.patch"
 
 SRC_URI[kernel.md5sum] = "64921b5ff5cdadbccfcd3820f03be7d8"
 SRC_URI[kernel.sha256sum] = "58a5ea16d499fe06f90fcbf1d687d1235d2cb9bc28bf979867bd3faadf38fc3f"

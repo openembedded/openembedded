@@ -18,10 +18,10 @@ RDEPENDS_xserver-kdrive-nomadikfb = "sga-init"
 RRECOMMENDS_xserver-kdrive-nomadikfb = "kernel-module-nmdkmod-sva"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
-        file://nomadik_xserver_1300.patch;apply=yes \
-        file://nomadik_xserver_sva_service_cleanup.patch;apply=yes \
-        file://autotools.patch;apply=yes \
-        file://fix-picturestr-include-order.patch;apply=yes" 
+        file://nomadik_xserver_1300.patch \
+        file://nomadik_xserver_sva_service_cleanup.patch \
+        file://autotools.patch \
+        file://fix-picturestr-include-order.patch" 
 
 S = "${WORKDIR}/xorg-server-${PV}"
 

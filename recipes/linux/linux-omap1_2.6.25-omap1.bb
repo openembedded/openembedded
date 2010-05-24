@@ -4,7 +4,7 @@ COMPATIBLE_MACHINE = "omap5912osk"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2;name=kernel \
            http://www.muru.com/linux/omap/patches/patch-2.6.25-omap1.bz2;apply=yes;name=patch \
-	   file://gcc43-arm-fix-inline-asm-constraints-for-preload.patch;apply=yes \
+	   file://gcc43-arm-fix-inline-asm-constraints-for-preload.patch \
 	   file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.25"

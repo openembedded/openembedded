@@ -8,7 +8,7 @@ PR = "ml2"
 
 SRC_URI = "\
   http://${SRCNAME}.sourceforge.net/download/${SRCNAME}-${PV}.tar.gz \
-  file://no-static-link.patch;apply=yes \
+  file://no-static-link.patch \
 "
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 

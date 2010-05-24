@@ -9,11 +9,11 @@ require madwifi-ng_r.inc
 # Due to a minor Makefile restructuring, newer versions require an updated
 # patch; this is really ugly and some alternate way to do this that's more
 # generic should be figured out.
-WACKELF_SRC_URI_ixp4xx =          " file://20-xscale-VFP-wackelf-v2.patch;apply=yes"
-WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf-v2.patch;apply=yes"
+WACKELF_SRC_URI_ixp4xx =          " file://20-xscale-VFP-wackelf-v2.patch"
+WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf-v2.patch"
 
-SRC_URI += "file://respect-ldflags.patch;apply=yes"
-SRC_URI += "file://madwifi-fix-2.6.30.patch;apply=yes"
+SRC_URI += "file://respect-ldflags.patch"
+SRC_URI += "file://madwifi-fix-2.6.30.patch"
 
 SRCNAME = "madwifi-trunk"
 

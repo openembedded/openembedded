@@ -6,13 +6,13 @@ LICENSE = "GPL"
 PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz \
-           file://add-pkgconfig.patch;apply=yes \
-	   file://mad.diff;apply=yes \
-	   file://mad-mips-h-constraint.patch;apply=yes"
+           file://add-pkgconfig.patch \
+	   file://mad.diff \
+	   file://mad-mips-h-constraint.patch"
 
 S = "${WORKDIR}/libmad-${PV}"
 
-SRC_URI_append_avr32 = " file://libmad-0.15.1b-avr32-optimization.patch;apply=yes"
+SRC_URI_append_avr32 = " file://libmad-0.15.1b-avr32-optimization.patch"
 
 inherit autotools pkgconfig
 

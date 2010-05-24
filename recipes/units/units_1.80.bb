@@ -5,8 +5,8 @@ PR = "r1"
 
 LICENSE = "GPL"
 SRC_URI = "${GNU_MIRROR}/units/units-${PV}.tar.gz \
-	   file://units.c.patch;apply=yes \
-	   file://makefile.patch;apply=yes"
+	   file://units.c.patch \
+	   file://makefile.patch"
 
 inherit autotools
 

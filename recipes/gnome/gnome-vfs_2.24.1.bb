@@ -7,9 +7,9 @@ PR = "r2"
 
 inherit gnome
 
-SRC_URI += "file://gconftool-lossage.patch;apply=yes \
-	    file://gnome-vfs-no-kerberos.patch;apply=yes;striplevel=0 \
-	    file://03_gnutls27.patch;apply=yes"
+SRC_URI += "file://gconftool-lossage.patch \
+	    file://gnome-vfs-no-kerberos.patch;striplevel=0 \
+	    file://03_gnutls27.patch"
 
 # This is to provide compatibility with the gnome-vfs DBus fork
 PROVIDES = "gnome-vfs-plugin-dbus"

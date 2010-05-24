@@ -7,9 +7,9 @@ DEPENDS += "openssl tzdata"
 PR = "r14"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
-           file://autofoo.patch;apply=yes \
-           file://adjtimex-${PV}.patch;apply=yes \
-           file://makefile-install.patch;apply=yes \
+           file://autofoo.patch \
+           file://adjtimex-${PV}.patch \
+           file://makefile-install.patch \
            file://init"
 
 S = "${WORKDIR}/openntpd-${PV}"

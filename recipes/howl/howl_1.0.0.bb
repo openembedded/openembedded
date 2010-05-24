@@ -1,6 +1,6 @@
 SRC_URI = "http://www.porchdogsoft.com/download/howl-${PV}.tar.gz \
-	file://posix.patch;apply=yes;striplevel=0 \
-	file://configure.patch;apply=yes;striplevel=0 \
+	file://posix.patch;striplevel=0 \
+	file://configure.patch;striplevel=0 \
 	file://mdnsresponder.init"
 LICENSE = "howl"
 

@@ -4,29 +4,29 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.19.2.tar.bz2 \
-	   file://asoc-v0.12.4.patch;apply=yes \
-	   file://pxafb_fix_params-r2.patch;apply=yes \
-           file://pxa_irda_susres_fix-r0.patch;apply=yes \
-           file://pxa_keys-r5.patch;apply=yes \
-           file://pxa_timerfix-r0.patch;apply=yes \
-           file://input_power-r6.patch;apply=yes \
-           file://pxa25x_cpufreq-r1.patch;apply=yes \
-           file://pm_changes-r1.patch;apply=yes \
-           file://usb_add_epalloc-r3.patch;apply=yes \
-           file://usb_pxa27x_udc-r3.patch;apply=yes \
-           file://kexec-arm-r3.patch;apply=yes \
-           file://pxa27x_overlay-r4.patch;apply=yes \
-           file://xscale_cache_workaround-r1.patch;apply=yes \
-           file://ucb1400-touchscreen.patch;apply=yes \
-           file://config-nr-tty-devices.patch;apply=yes \
+	   file://asoc-v0.12.4.patch \
+	   file://pxafb_fix_params-r2.patch \
+           file://pxa_irda_susres_fix-r0.patch \
+           file://pxa_keys-r5.patch \
+           file://pxa_timerfix-r0.patch \
+           file://input_power-r6.patch \
+           file://pxa25x_cpufreq-r1.patch \
+           file://pm_changes-r1.patch \
+           file://usb_add_epalloc-r3.patch \
+           file://usb_pxa27x_udc-r3.patch \
+           file://kexec-arm-r3.patch \
+           file://pxa27x_overlay-r4.patch \
+           file://xscale_cache_workaround-r1.patch \
+           file://ucb1400-touchscreen.patch \
+           file://config-nr-tty-devices.patch \
 	   "
 
 SRC_URI_append_logicpd-pxa270 = "\
-           file://logicpd-pxa270-cf-hack.patch;apply=yes;striplevel=0 \
-           file://logicpd-pxa270-flash.patch;apply=yes;striplevel=0 \
-           file://logicpd-pxa270-hardware-id-hack.patch;apply=yes;striplevel=0 \
-           file://logicpd-pxa270-smc91x.patch;apply=yes;striplevel=0 \
-           file://logicpd-pxa270-lcd-osd024ttea2.patch;apply=yes;striplevel=0 \
+           file://logicpd-pxa270-cf-hack.patch;striplevel=0 \
+           file://logicpd-pxa270-flash.patch;striplevel=0 \
+           file://logicpd-pxa270-hardware-id-hack.patch;striplevel=0 \
+           file://logicpd-pxa270-smc91x.patch;striplevel=0 \
+           file://logicpd-pxa270-lcd-osd024ttea2.patch;striplevel=0 \
            file://defconfig-logicpd-pxa270 \
            "
 

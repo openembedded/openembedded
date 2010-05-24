@@ -11,10 +11,10 @@ PR = "r2"
 SRC_URI = "${GPE_SVN} \
             file://Makefile.translation \
             file://Makefile.dpkg_ipkg \
-	    file://svn_makefiles.patch;apply=yes \
-	    file://keyboardless-buttonmap.patch;apply=yes \	   
-	    file://softkeys-c7x0.patch;apply=yes \
- 	    file://sl-cxx00-modmap.patch;apply=yes \
-	    file://load-xmodmap-k26.patch;apply=yes \
-	    file://Xserver-udev-input-helper.patch;apply=yes"
+	    file://svn_makefiles.patch \
+	    file://keyboardless-buttonmap.patch \	   
+	    file://softkeys-c7x0.patch \
+ 	    file://sl-cxx00-modmap.patch \
+	    file://load-xmodmap-k26.patch \
+	    file://Xserver-udev-input-helper.patch"
 	    

@@ -9,8 +9,8 @@ inherit distutils
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/mysql-python/MySQL-python-${PV}_p2.tar.gz \
-  file://mysqlpath.patch;apply=yes \
-  file://site.patch;apply=yes \
+  file://mysqlpath.patch \
+  file://site.patch \
 "
 S = "${WORKDIR}/${SRCNAME}-${PV}_p2"
 

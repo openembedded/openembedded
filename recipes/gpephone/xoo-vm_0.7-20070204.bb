@@ -9,7 +9,7 @@ PV = "0.7+svn${SRCDATE}"
 PR = "r3"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=Xoo;proto=http \
-           file://gpephone-vm.patch;apply=yes;striplevel=0"
+           file://gpephone-vm.patch;striplevel=0"
 
 S = "${WORKDIR}/Xoo"
 

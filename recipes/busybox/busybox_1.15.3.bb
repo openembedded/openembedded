@@ -4,13 +4,13 @@ PR = "${INC_PR}.1"
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
   \
-  file://udhcpscript.patch;apply=yes \
-  file://udhcpc-fix-nfsroot.patch;apply=yes \
-  file://B921600.patch;apply=yes \
-  file://get_header_tar.patch;apply=yes \
-  file://busybox-appletlib-dependency.patch;apply=yes \
-  file://0000-wget-no-check-certificate.patch;apply=yes \
-  file://run-parts.in.usr-bin.patch;apply=yes \
+  file://udhcpscript.patch \
+  file://udhcpc-fix-nfsroot.patch \
+  file://B921600.patch \
+  file://get_header_tar.patch \
+  file://busybox-appletlib-dependency.patch \
+  file://0000-wget-no-check-certificate.patch \
+  file://run-parts.in.usr-bin.patch \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \

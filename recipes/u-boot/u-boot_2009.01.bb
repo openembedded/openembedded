@@ -19,14 +19,14 @@ PR = "r1"
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 
 SRC_URI_append_at91sam9263ek = "\
-	   file://u-boot-2009.01-exp-002-at91sam9g20ek.patch;apply=yes \
-	   file://u-boot-2009.01-exp-003-drivers-net-macb.c.patch;apply=yes \
+	   file://u-boot-2009.01-exp-002-at91sam9g20ek.patch \
+	   file://u-boot-2009.01-exp-003-drivers-net-macb.c.patch \
            "
 
 SRC_URI_append_at91sam9g20ek = "\
-	   file://u-boot-2009.01-exp-002-at91sam9g20ek.patch;apply=yes \
-	   file://u-boot-2009.01-exp-003-drivers-net-macb.c.patch;apply=yes \
-           file://at91sam9g20-fix-config.patch;apply=yes \
+	   file://u-boot-2009.01-exp-002-at91sam9g20ek.patch \
+	   file://u-boot-2009.01-exp-003-drivers-net-macb.c.patch \
+           file://at91sam9g20-fix-config.patch \
            "
 
 

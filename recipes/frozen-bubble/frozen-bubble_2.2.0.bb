@@ -22,10 +22,10 @@ inherit cpan-base
 PERL_VERSION = ${@get_perl_version(d)}
 
 SRC_URI = "http://www.frozen-bubble.org/data/frozen-bubble-${PV}.tar.bz2 \
-	   file://Makefile.PL.patch;apply=yes \
-	   file://Makefile.patch;apply=yes \
-	   file://Makefile_top.patch;apply=yes \
-	   file://localespath-fix.patch;apply=yes \
+	   file://Makefile.PL.patch \
+	   file://Makefile.patch \
+	   file://Makefile_top.patch \
+	   file://localespath-fix.patch \
 	  "
 
 #permit the installation of the locales in ${datadir}/locales otherwise they are installed in /usr/local/share/locales

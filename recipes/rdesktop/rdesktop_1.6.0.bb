@@ -2,8 +2,8 @@ require rdesktop.inc
 
 PR = "${INC_PR}.2"
 
-SRC_URI += " file://audio-2008.patch;apply=yes"
-SRC_URI_append_ossystems = " file://rdesktop-addin.patch;apply=yes"
+SRC_URI += " file://audio-2008.patch"
+SRC_URI_append_ossystems = " file://rdesktop-addin.patch"
 
 inherit autotools
 

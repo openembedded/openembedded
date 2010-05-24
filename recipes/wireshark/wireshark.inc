@@ -4,10 +4,10 @@ LICENSE = "GPL"
 DEPENDS = "perl-native gnutls libpcap pcre expat glib-2.0 net-snmp"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wireshark/wireshark-${PV}.tar.bz2 \
-           file://use-our-lemon.patch;apply=yes \
-           file://acinclude-net-snmp-fix.patch;apply=yes \
-           file://libtool-fix.patch;apply=yes \
-	   file://no-host-includes.patch;apply=yes"
+           file://use-our-lemon.patch \
+           file://acinclude-net-snmp-fix.patch \
+           file://libtool-fix.patch \
+	   file://no-host-includes.patch"
 
 S=${WORKDIR}/wireshark-${PV}
 

@@ -15,24 +15,24 @@ COMPATIBLE_MACHINE = "nokia(800|770)"
 FILES_${PN} = "${libdir}/xserver /etc/dbus-1/* ${bindir}/Xomap"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo3.1/free/source/xorg-server_1.1.99.3-0osso31.tar.gz \
-	file://kmode.patch;apply=yes \
-	file://disable-apm.patch;apply=yes \
-	file://no-serial-probing.patch;apply=yes \
-	file://fbdev-not-fix.patch;apply=yes  \
-	file://enable-builtin-fonts.patch;apply=yes \
-	file://xcalibrate.patch;apply=yes \
-	file://fixups.patch;apply=yes \
-	file://button_only.patch;apply=yes \
-	file://calibrateext.patch;apply=yes \
-        file://fix-picturestr-include-order.patch;apply=yes \
-	file://xcalibrate_coords.patch;apply=yes \
-	file://report-correct-randr10.patch;apply=yes"
-#	file://kdrive-evdev.patch;apply=yes  \
-#	file://kdrive-use-evdev.patch;apply=yes  \
-#	file://optional-xkb.patch;apply=yes \
-#	file://disable-xf86-dga-xorgcfg.patch;apply=yes \
-#	file://enable-tslib.patch;apply=yes \
-#	file://xfbdev-fb-opt.patch;apply=yes"
+	file://kmode.patch \
+	file://disable-apm.patch \
+	file://no-serial-probing.patch \
+	file://fbdev-not-fix.patch  \
+	file://enable-builtin-fonts.patch \
+	file://xcalibrate.patch \
+	file://fixups.patch \
+	file://button_only.patch \
+	file://calibrateext.patch \
+        file://fix-picturestr-include-order.patch \
+	file://xcalibrate_coords.patch \
+	file://report-correct-randr10.patch"
+#	file://kdrive-evdev.patch  \
+#	file://kdrive-use-evdev.patch  \
+#	file://optional-xkb.patch \
+#	file://disable-xf86-dga-xorgcfg.patch \
+#	file://enable-tslib.patch \
+#	file://xfbdev-fb-opt.patch"
 
 S = "${WORKDIR}/xorg-server-1.1.99.3"
 

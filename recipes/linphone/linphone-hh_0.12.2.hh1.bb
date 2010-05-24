@@ -5,11 +5,11 @@ PR = "r4"
 DESCRIPTION = "SIP-based IP phone (GPE edition)"
 DEPENDS = "libosip gtk+ libogg alsa-lib"
 SRC_URI = "http://handhelds.org/packages/linphone/linphone-${PV}.tar.gz \
-	file://osipua-ipv6-lossage.patch;apply=yes \
-	file://gpe-cross-lossage.patch;apply=yes \
-	file://disable-gtk-doc.patch;apply=yes \
-	file://dotdesktop.patch;apply=yes \
-	file://segfault.patch;apply=yes"
+	file://osipua-ipv6-lossage.patch \
+	file://gpe-cross-lossage.patch \
+	file://disable-gtk-doc.patch \
+	file://dotdesktop.patch \
+	file://segfault.patch"
 
 S = "${WORKDIR}/linphone-${PV}"
 

@@ -5,7 +5,7 @@ DEPENDS = "gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-l
 
 inherit gnome
 
-SRC_URI += "file://gdm-nodocs.patch;apply=yes"
+SRC_URI += "file://gdm-nodocs.patch"
 
 FILES_${PN} += "${datadir}/icon* \
 		${datadir}/xsession*"

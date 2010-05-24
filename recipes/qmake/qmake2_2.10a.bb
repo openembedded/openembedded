@@ -5,7 +5,7 @@ BBCLASSEXTEND = "native sdk"
 
 require ${PN}.inc
 
-SRC_URI += "file://qmake-hack.diff;apply=yes"
+SRC_URI += "file://qmake-hack.diff"
 
 do_install() {
     install -d ${D}/${bindir}

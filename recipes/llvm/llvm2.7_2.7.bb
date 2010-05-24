@@ -6,7 +6,7 @@ DEPENDS = "llvm-common llvm2.7-native"
 
 SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
-  file://BX_to_BLX.patch;apply=yes \
+  file://BX_to_BLX.patch \
   "
 
 EXTRA_OECMAKE += "\

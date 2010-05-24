@@ -8,20 +8,20 @@ require linux.inc
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.gz;apply=yes;name=stablepatch \
-           file://kuropro-foonas-mtd.patch;apply=yes \
-           file://fw-and-powerpc-install.patch;apply=yes \
+           file://kuropro-foonas-mtd.patch \
+           file://fw-and-powerpc-install.patch \
            file://defconfig \
                "
 
 S = "${WORKDIR}/linux-2.6.28"
 
 # Fix the mach-type of orion devices - always passed 526
-SRC_URI_append_dns323 +=        "file://dns323.patch;apply=yes"
-SRC_URI_append_mv2120 +=        "file://mv2120.patch;apply=yes"
-SRC_URI_append_kuropro +=       "file://kuropro.patch;apply=yes"
-SRC_URI_append_lspro +=         "file://lspro.patch;apply=yes"
-SRC_URI_append_tsx09 +=         "file://tsx09.patch;apply=yes"
-SRC_URI_append_ts409 +=         "file://ts409.patch;apply=yes"
+SRC_URI_append_dns323 +=        "file://dns323.patch"
+SRC_URI_append_mv2120 +=        "file://mv2120.patch"
+SRC_URI_append_kuropro +=       "file://kuropro.patch"
+SRC_URI_append_lspro +=         "file://lspro.patch"
+SRC_URI_append_tsx09 +=         "file://tsx09.patch"
+SRC_URI_append_ts409 +=         "file://ts409.patch"
 
 KERNEL_IMAGETYPE ?= "uImage"
 

@@ -6,9 +6,9 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bvi/bvi-${PV}.src.tar.gz \
-	   file://configure.patch;apply=yes \
-	   file://compile.patch;apply=yes \
-	   file://no-strip.patch;apply=yes"
+	   file://configure.patch \
+	   file://compile.patch \
+	   file://no-strip.patch"
 
 inherit autotools
 

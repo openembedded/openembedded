@@ -4,8 +4,8 @@
 
 inherit gnome
 
-SRC_URI += "file://idl-sysroot.patch;apply=yes \
-            file://no-try-run-strftime.diff;apply=yes \
+SRC_URI += "file://idl-sysroot.patch \
+            file://no-try-run-strftime.diff \
 "
 
 export SYSROOT = "${STAGING_DIR_HOST}"

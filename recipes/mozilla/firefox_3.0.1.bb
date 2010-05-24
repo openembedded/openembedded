@@ -3,17 +3,17 @@ PR = "r9"
 
 SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \
-	file://security-cross.patch;apply=yes \
-	file://jsautocfg-dontoverwrite.patch;apply=yes \
-	file://Bug339782.additional.fix.diff;apply=yes \
-	file://Bug385583.nspr.jmp_buf.eabi.diff;apply=yes \
-	file://Bug405992.atomic.nspr.diff;apply=yes \
-	file://random_to_urandom.diff;apply=yes \
-	file://jemalloc-tls.patch;apply=yes \
-	file://wchart.diff;apply=yes \
-	file://0001-Remove-Werror-from-build.patch;apply=yes \
-	file://0002-Fix-security-cross-compile-cpu-detection-error.patch;apply=yes \
-	file://use-native-bpp.patch;apply=yes \
+	file://security-cross.patch \
+	file://jsautocfg-dontoverwrite.patch \
+	file://Bug339782.additional.fix.diff \
+	file://Bug385583.nspr.jmp_buf.eabi.diff \
+	file://Bug405992.atomic.nspr.diff \
+	file://random_to_urandom.diff \
+	file://jemalloc-tls.patch \
+	file://wchart.diff \
+	file://0001-Remove-Werror-from-build.patch \
+	file://0002-Fix-security-cross-compile-cpu-detection-error.patch \
+	file://use-native-bpp.patch \
 "
 
 S = "${WORKDIR}/mozilla"

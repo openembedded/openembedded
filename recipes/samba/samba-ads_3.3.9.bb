@@ -3,11 +3,11 @@ require samba-ads.inc
 LICENSE = "GPLv3"
 
 PR = "r3"
-SRC_URI += "file://config-lfs.patch;apply=yes \
-            file://quota.patch;apply=yes;striplevel=0 \
-            file://configure-3.3.0.patch;apply=yes \
-            file://config-h.patch;apply=yes \
-            file://mtab.patch;apply=yes \
+SRC_URI += "file://config-lfs.patch \
+            file://quota.patch;striplevel=0 \
+            file://configure-3.3.0.patch \
+            file://config-h.patch \
+            file://mtab.patch \
 	        "
 
 do_compile () {

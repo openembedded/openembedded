@@ -4,8 +4,8 @@ require coreutils-target.inc
 PR = "r3"
 
 SRC_URI += "\
-  file://man.patch;apply=yes \
-  file://oe-old-tools.patch;apply=yes \
+  file://man.patch \
+  file://oe-old-tools.patch \
 "
 
 SRC_URI[md5sum] = "c15219721e6590fa13bf50af49e712c2"

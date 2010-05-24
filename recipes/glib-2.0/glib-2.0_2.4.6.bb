@@ -22,10 +22,10 @@ FILES_${PN}-dev += "${libdir}/glib-2.0/include/glibconfig.h \
 EXTRA_OECONF = "--disable-debug"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
-           file://glibinclude.patch;apply=yes;striplevel=2 \
-           file://visibility.patch;apply=yes \
+           file://glibinclude.patch;striplevel=2 \
+           file://visibility.patch \
            file://glibconfig-sysdefs.h \
-           file://configure-libtool.patch;apply=yes"
+           file://configure-libtool.patch"
 
 S = "${WORKDIR}/glib-${PV}"
 

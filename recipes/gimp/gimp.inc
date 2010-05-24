@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "sed-native gdk-pixbuf-csource-native libart-lgpl gtk+ jpeg libpng libexif tiff"
 
 SRC_URI = "ftp://ftp.gimp.org/pub/gimp/v2.3/gimp-${PV}.tar.bz2 \
-                 file://configure-libwmf.patch;apply=yes"
+                 file://configure-libwmf.patch"
 
 inherit gnome
 

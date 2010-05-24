@@ -16,13 +16,13 @@ DEPENDS = ""
 PROVIDES += "opkg"
 
 SRC_URI += " \
-	    file://isatty.patch;apply=yes \
-	    file://opkg_wget.patch;apply=yes;maxrev=180 \
-	    file://reduce-nogpg-noise.patch;apply=yes;maxrev=180 \
-	    file://opkg_wget_nogpg_01_use_vfork_gunzip.patch;apply=yes \
-	    file://opkg_wget_nogpg_02_use_vfork_system.patch;apply=yes \
-	    file://opkg_wget_nogpg_03_fix_tmpdirs.patch;apply=yes \
-	    file://opkg_wget_nogpg_04_default_tmpdir.patch;apply=yes \
+	    file://isatty.patch \
+	    file://opkg_wget.patch;maxrev=180 \
+	    file://reduce-nogpg-noise.patch;maxrev=180 \
+	    file://opkg_wget_nogpg_01_use_vfork_gunzip.patch \
+	    file://opkg_wget_nogpg_02_use_vfork_system.patch \
+	    file://opkg_wget_nogpg_03_fix_tmpdirs.patch \
+	    file://opkg_wget_nogpg_04_default_tmpdir.patch \
 	   "
 PR = "${INC_PR}"
 

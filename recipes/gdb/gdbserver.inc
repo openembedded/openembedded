@@ -17,9 +17,9 @@ inherit gettext
 
 FILESPATHPKG =. "gdb-${PV}:"
 
-SRC_URI += "file://kill_arm_map_symbols.patch;apply=yes \
-            file://gdbserver-cflags-last.diff;apply=yes;striplevel=0"
-#FIXME	   file://uclibc.patch;apply=yes \
+SRC_URI += "file://kill_arm_map_symbols.patch \
+            file://gdbserver-cflags-last.diff;striplevel=0"
+#FIXME	   file://uclibc.patch \
 
 EXTRA_OEMAKE = "gdbserver"
 

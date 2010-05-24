@@ -2,10 +2,10 @@ require dietlibc.inc
 
 PR = "${INC_PR}.2"
 
-SRC_URI += "file://ccache.patch;apply=yes \
-            file://ceil.patch;apply=yes \
-            file://diethome.patch;apply=yes \
-            file://getrlimit.patch;apply=yes \
+SRC_URI += "file://ccache.patch \
+            file://ceil.patch \
+            file://diethome.patch \
+            file://getrlimit.patch \
            " 
 
 

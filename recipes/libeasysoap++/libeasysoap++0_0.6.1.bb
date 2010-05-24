@@ -5,10 +5,10 @@ LICENSE = "LGPL"
 PR = "r1"
 
 SRC_URI = "http://activecampus2.ucsd.edu/apt/sarge/easysoap++/easysoap++_${PV}.orig.tar.gz;name=archive \
-  http://activecampus2.ucsd.edu/apt/sarge/easysoap++/easysoap++_${PV}-5.diff.gz;apply=yes;name=patch \
-  file://libeasysoap++0-0.6.1/libeasysoap++0-0.6.1-template-keyword-qualifier-swb.patch;apply=yes \
-  file://libeasysoap++0-0.6.1/libeasysoap++0-0.6.1-compile-errors-swb.patch;apply=yes \
-  file://libeasysoap++0-0.6.1/libeasysoap++0-0.6.1-autoreconf-fixes-swb.patch;apply=yes"
+  http://activecampus2.ucsd.edu/apt/sarge/easysoap++/easysoap++_${PV}-5.diff.gz;name=patch \
+  file://libeasysoap++0-0.6.1/libeasysoap++0-0.6.1-template-keyword-qualifier-swb.patch \
+  file://libeasysoap++0-0.6.1/libeasysoap++0-0.6.1-compile-errors-swb.patch \
+  file://libeasysoap++0-0.6.1/libeasysoap++0-0.6.1-autoreconf-fixes-swb.patch"
 
 S = "${WORKDIR}/EasySoap++-${PV}"
 

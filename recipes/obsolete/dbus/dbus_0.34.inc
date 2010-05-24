@@ -7,8 +7,8 @@ DEPENDS = "expat glib-2.0 virtual/libintl"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
-	   file://cross.patch;apply=yes \
-	   file://tmpdir.patch;apply=yes \
+	   file://cross.patch \
+	   file://tmpdir.patch \
 	   file://dbus-1.init \
 	   ${SRC_URI_EXTRA}"
 

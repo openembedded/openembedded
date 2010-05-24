@@ -1,5 +1,5 @@
-SRC_URI += "file://config-lfs.patch;apply=yes \
-            file://quota.patch;apply=yes;striplevel=0 \
+SRC_URI += "file://config-lfs.patch \
+            file://quota.patch;striplevel=0 \
             "
 
 EXTRA_OECONF += "\

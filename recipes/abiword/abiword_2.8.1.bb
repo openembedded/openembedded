@@ -4,7 +4,7 @@ PR = "r5"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
            file://autogen-common.sh \
-	   file://nodolt.patch;apply=yes"
+	   file://nodolt.patch"
 
 do_configure() {
 	autotools_do_configure

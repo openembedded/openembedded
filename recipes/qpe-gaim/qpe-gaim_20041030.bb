@@ -11,9 +11,9 @@ APPDESKTOP = "${S}"
 PR = "r2"
 
 SRC_URI = "http://www.vanille.de/mirror/qpe-gaim_20041030.tar.bz2 \
-           file://qpe-gaim.patch;apply=yes \
-	   file://buzzer-notification.patch;apply=yes \
-	   file://vit.patch;apply=yes"
+           file://qpe-gaim.patch \
+	   file://buzzer-notification.patch \
+	   file://vit.patch"
 S = "${WORKDIR}/qpe-gaim"
 
 inherit opie

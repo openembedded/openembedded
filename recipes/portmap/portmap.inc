@@ -4,10 +4,10 @@ LICENSE = "GPL"
 DEPENDS = "fakeroot-native"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/p/portmap/portmap_5.orig.tar.gz;name=archive \
-	${DEBIAN_MIRROR}/main/p/portmap/portmap_${PV}.diff.gz;apply=yes;name=patch \
-	file://no-libwrap.patch;apply=yes;striplevel=0 \
+	${DEBIAN_MIRROR}/main/p/portmap/portmap_${PV}.diff.gz;name=patch \
+	file://no-libwrap.patch;striplevel=0 \
 	file://portmap.init \
-	file://make.patch;apply=yes"
+	file://make.patch"
 S = "${WORKDIR}/portmap_5beta"
 
 INITSCRIPT_NAME = "portmap"

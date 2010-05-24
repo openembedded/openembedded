@@ -8,9 +8,9 @@ PROVIDES = "virtual/libintl"
 
 SRC_URI = " \
     http://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/${PN}-${PV}.zip \
-    file://stub-only.patch;apply=yes \
-    file://create-as-shared-lib.patch;apply=yes \
-    file://soname.patch;apply=yes \
+    file://stub-only.patch \
+    file://create-as-shared-lib.patch \
+    file://soname.patch \
 "
 
 S = "${WORKDIR}"

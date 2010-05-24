@@ -8,33 +8,33 @@ DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
 PR = "r11"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
-           file://help.patch;apply=yes \
-           file://no-demos.patch;apply=yes \
-           file://no-xwc.patch;apply=yes \
-           file://automake-lossage.patch;apply=yes \
-           file://gtk+-handhelds.patch;apply=yes \
-           file://spinbutton.patch;apply=yes \
-           file://hardcoded_libtool.patch;apply=yes \
-           file://disable-tooltips.patch;apply=yes \
+           file://help.patch \
+           file://no-demos.patch \
+           file://no-xwc.patch \
+           file://automake-lossage.patch \
+           file://gtk+-handhelds.patch \
+           file://spinbutton.patch \
+           file://hardcoded_libtool.patch \
+           file://disable-tooltips.patch \
            file://gtklabel-resize-patch;apply=yes \
-           file://menu-deactivate.patch;apply=yes \
-           file://xsettings.patch;apply=yes \
-           file://scroll-timings.patch;apply=yes \
-           file://small-gtkfilesel.patch;apply=yes \
-           file://migration.patch;apply=yes;striplevel=0 \
-           file://single-click.patch;apply=yes \
-           file://menu-styling.patch;apply=yes \
-           file://compile-against-newer-glib.patch;apply=yes \
-           file://gtk.keynav.gtkcombobox.patch;apply=yes;striplevel=0 \
-           file://gtk.keynav.gtkentry.patch;apply=yes;striplevel=0 \
-           file://gtk.keynav.gtkiconview.patch;apply=yes;striplevel=0 \
-           file://gtk.keynav.gtkradiobutton.patch;apply=yes;striplevel=0 \
-           file://gtk.keynav.gtksettings.patch;apply=yes;striplevel=0 \
-           file://gtk.keynav.gtktextview.patch;apply=yes;striplevel=0 \
-           file://gtk.keynav.gtktreeview.patch;apply=yes;striplevel=0 \
-           file://gtk.keynav.gtkwidget.patch;apply=yes;striplevel=0 \
-           file://gtk+-2.6.10-bg.patch;apply=yes \
-           file://filesel-fix-segfault.patch;apply=yes \
+           file://menu-deactivate.patch \
+           file://xsettings.patch \
+           file://scroll-timings.patch \
+           file://small-gtkfilesel.patch \
+           file://migration.patch;striplevel=0 \
+           file://single-click.patch \
+           file://menu-styling.patch \
+           file://compile-against-newer-glib.patch \
+           file://gtk.keynav.gtkcombobox.patch;striplevel=0 \
+           file://gtk.keynav.gtkentry.patch;striplevel=0 \
+           file://gtk.keynav.gtkiconview.patch;striplevel=0 \
+           file://gtk.keynav.gtkradiobutton.patch;striplevel=0 \
+           file://gtk.keynav.gtksettings.patch;striplevel=0 \
+           file://gtk.keynav.gtktextview.patch;striplevel=0 \
+           file://gtk.keynav.gtktreeview.patch;striplevel=0 \
+           file://gtk.keynav.gtkwidget.patch;striplevel=0 \
+           file://gtk+-2.6.10-bg.patch \
+           file://filesel-fix-segfault.patch \
            "
 
 inherit autotools pkgconfig

@@ -5,9 +5,9 @@ LICENSE = "LGPL"
 PR = "r2"
 
 SRC_URI = "http://developer.kde.org/~wheeler/files/src/taglib-${PV}.tar.gz \
-           file://add_missing_exports_fix.diff;apply=yes \
-	   file://gcc_visibility_feature.diff;apply=yes \
-	   file://link_interface_libraries_fix.diff;apply=yes \
+           file://add_missing_exports_fix.diff \
+	   file://gcc_visibility_feature.diff \
+	   file://link_interface_libraries_fix.diff \
 	  "
 
 S = "${WORKDIR}/taglib-${PV}"

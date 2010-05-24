@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "dbus"
 
 SRC_URI = "https://fedorahosted.org/releases/d/h/dhcdbd/dhcdbd-${PV}.tar.gz \
-           file://dhcdbd-1.14-pkgconfig_dbus.patch;apply=yes \
+           file://dhcdbd-1.14-pkgconfig_dbus.patch \
            file://dhcdbd"
 
 do_compile() {

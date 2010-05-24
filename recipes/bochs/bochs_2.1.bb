@@ -9,7 +9,7 @@ BROKEN = "1"
 APPIMAGE = "doc/docbook/images/dlxlinux-in-linux.png"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bochs/bochs-${PV}.tar.gz \
-           file://compile.patch;apply=yes"
+           file://compile.patch"
 
 inherit autotools sdl
 

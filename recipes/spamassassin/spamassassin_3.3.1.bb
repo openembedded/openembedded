@@ -92,7 +92,7 @@ SRC_URI = " \
 	file://60_fix-pod;apply=yes \
 	file://70_fix-whatis;apply=yes \
 	file://80_fix_man_warnings;apply=yes \
-	file://spamassassin-spamc-configure.patch;apply=yes \
+	file://spamassassin-spamc-configure.patch \
 	"
 SRC_URI[spamassassin-3.3.1.md5sum] = "bb977900c3b2627db13e9f44f9b5bfc8"
 SRC_URI[spamassassin-3.3.1.sha256sum] = "4c348cd951fc2c5688e9713fcbc6ba453df51d32a1ab332a63800d20ff18bdb4"

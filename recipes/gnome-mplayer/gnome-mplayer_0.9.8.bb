@@ -1,7 +1,7 @@
 require gnome-mplayer.inc
 
-SRC_URI += "file://gnome-mplayer-svn.diff;apply=yes;striplevel=0 \
-            file://default.patch;apply=yes \
+SRC_URI += "file://gnome-mplayer-svn.diff;striplevel=0 \
+            file://default.patch \
 "
 
 PR = "${INC_PR}.0"

@@ -1,12 +1,12 @@
 include erlang.inc
 DEPENDS += "erlang-native openssl"
 
-SRC_URI += "file://erts-configure.in.patch;apply=yes \
-            file://erts-emulator-Makefile.in.patch;apply=yes \
-            file://erts-etc-unix-Install.src.patch;apply=yes \
-            file://lib-crypto-c_src-Makefile.in.patch;apply=yes \
-            file://lib-erl_interface-src-Makefile.in.patch;apply=yes \
-            file://Makefile.in.patch;apply=yes \
+SRC_URI += "file://erts-configure.in.patch \
+            file://erts-emulator-Makefile.in.patch \
+            file://erts-etc-unix-Install.src.patch \
+            file://lib-crypto-c_src-Makefile.in.patch \
+            file://lib-erl_interface-src-Makefile.in.patch \
+            file://Makefile.in.patch \
             "
 
 EXTRA_OEMAKE = "BUILD_CC='${BUILD_CC}'"

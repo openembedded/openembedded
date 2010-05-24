@@ -6,21 +6,21 @@ PRIORITY = "optional"
 DEPENDS = "ncurses readline less perl-native r-native"
 
 SRC_URI = "http://www.stats.bris.ac.uk/R/src/base/R-2/R-${PV}.tar.gz \
-	file://configure.patch;apply=yes \
-	file://src_library_Makefile.patch;apply=yes \
-	file://src_library_Recommended_Makefile.patch;apply=yes \
-	file://src_library_base_Makefile.patch;apply=yes \
-	file://src_library_tools_Makefile.patch;apply=yes \
-	file://src_library_utils_Makefile.patch;apply=yes \
-	file://src_library_datasets_Makefile.patch;apply=yes \
-	file://src_library_graphics_Makefile.patch;apply=yes \
-	file://src_library_grid_Makefile.patch;apply=yes \
-	file://src_library_methods_Makefile.patch;apply=yes \
-	file://src_library_splines_Makefile.patch;apply=yes \
-	file://src_library_stats4_Makefile.patch;apply=yes \
-	file://src_library_stats_Makefile.patch;apply=yes \
-	file://src_library_tcltk_Makefile.patch;apply=yes \
-	file://src_library_grDevices_Makefile.patch;apply=yes"
+	file://configure.patch \
+	file://src_library_Makefile.patch \
+	file://src_library_Recommended_Makefile.patch \
+	file://src_library_base_Makefile.patch \
+	file://src_library_tools_Makefile.patch \
+	file://src_library_utils_Makefile.patch \
+	file://src_library_datasets_Makefile.patch \
+	file://src_library_graphics_Makefile.patch \
+	file://src_library_grid_Makefile.patch \
+	file://src_library_methods_Makefile.patch \
+	file://src_library_splines_Makefile.patch \
+	file://src_library_stats4_Makefile.patch \
+	file://src_library_stats_Makefile.patch \
+	file://src_library_tcltk_Makefile.patch \
+	file://src_library_grDevices_Makefile.patch"
 
 S = "${WORKDIR}/R-${PV}"
 

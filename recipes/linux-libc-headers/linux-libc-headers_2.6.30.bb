@@ -5,10 +5,10 @@ DEPENDS += "unifdef-native"
 PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-	   file://uio-header.patch;apply=yes \
+	   file://uio-header.patch \
 	  "
 # Not applied, see note in the patch:
-#	   file://asm-page.patch;apply=yes \
+#	   file://asm-page.patch \
 
 S = "${WORKDIR}/linux-${PV}"
 

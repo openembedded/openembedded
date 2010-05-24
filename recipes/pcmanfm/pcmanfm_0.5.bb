@@ -7,13 +7,13 @@ RRECOMMENDS = "pmount-hal"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmanfm/pcmanfm-${PV}.tar.gz \
-           file://desired_mount_point.patch;apply=yes \
-           file://auto_mount.patch;apply=yes \
+           file://desired_mount_point.patch \
+           file://auto_mount.patch \
 	   file://gnome-fs-directory.png \
 	   file://gnome-fs-regular.png \
 	   file://gnome-mime-text-plain.png \
 	   file://emblem-symbolic-link.png \
-	   file://desktop.patch;apply=yes"
+	   file://desktop.patch"
 
 inherit autotools pkgconfig
 

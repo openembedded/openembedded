@@ -4,9 +4,9 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
-           file://makefile.patch;apply=yes \
-           file://nopam.patch;apply=yes \
-           file://syscall.patch;apply=yes \
+           file://makefile.patch \
+           file://nopam.patch \
+           file://syscall.patch \
            file://init \
            file://vsftpd.conf"
 

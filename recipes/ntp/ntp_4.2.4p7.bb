@@ -3,8 +3,8 @@ require ntp.inc
 PR = "r1"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
-	file://tickadj.c.patch;apply=yes \
-        file://ntp-4.2.4_p6-nano.patch;apply=yes \
+	file://tickadj.c.patch \
+        file://ntp-4.2.4_p6-nano.patch \
 	file://ntpd \
 	file://ntp.conf \
 	file://ntpdate"
