@@ -5,15 +5,18 @@ SECTION = "bootloader"
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
            file://fix-arm920t-eabi.patch;patch=1"
 
-PR = "r1"
+PR = "r3"
 
 S = "${WORKDIR}/u-boot-${PV}"
 
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_compile () {
 	oe_runmake smdk2410_config
-	oe_runmake tools STRIP='/bin/true'
+	sed -i -e 's:img2srec$(SFX) mkimage$(SFX) envcrc$(SFX) ubsha1$(SFX) gen_eth_addr$(SFX) bmp_logo$(SFX):mkimage$(SFX):' tools/Makefile
+	oe_runmake HOSTCC="${CC}" LOGO_H="" tools STRIP='/bin/true'
 }
 
 do_install () {
