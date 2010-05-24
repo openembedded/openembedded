@@ -21,9 +21,7 @@ python () {
     depends = d.getVar("__depends", 0) or []
     d.setVar("__depends", depends + [(file, 0) for file in amendfiles if not os.path.exists(file)])
 
-    existing = (file for file in amendfiles if os.path.exists(file))
-    try:
-        bb.parse.handle(existing.next(), d, 1)
-    except StopIteration:
-        pass
+    for file in amendfiles:
+        if os.path.exists(file):
+            bb.parse.handle(file, d, 1)
 }
