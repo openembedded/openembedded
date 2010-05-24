@@ -3,11 +3,11 @@ LICENSE = "BSD"
 DEPENDS = "cluster-glue corosync"
 
 SRC_URI = " \
-	ftp://ftp@openais.org/downloads/openais-${PV}/openais-${PV}.tar.gz;name=tar \
+	ftp://ftp@openais.org/downloads/openais-${PV}/openais-${PV}.tar.gz \
 	file://fix-lcrso-linkage.patch \
 	"
-SRC_URI[tar.md5sum] = "f94ccb867358ac54ab24bc54def27335"
-SRC_URI[tar.sha256sum] = "7ba87dc480a9dd224fe3a3732c966d6fdf6ec5f192bb184d586afa3703f808f2"
+SRC_URI[md5sum] = "13d8d590f806fb396d750b086c6c0b78"
+SRC_URI[sha256sum] = "eeef58dd2df3eb16ba68b3fbdc6f0d4dfb537443f1c091ec6f0431594f2f00b6"
 
 inherit autotools_stage
 
