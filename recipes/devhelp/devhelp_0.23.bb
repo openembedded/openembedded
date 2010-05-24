@@ -5,8 +5,8 @@ PR = "r0"
 
 inherit gnome
 
-SRC_URI += "file://devhelp-includes.patch;patch=1 \
-	    file://devhelp-webkit.patch;patch=1"
+SRC_URI += "file://devhelp-includes.patch;apply=yes \
+	    file://devhelp-webkit.patch;apply=yes"
 
 PACKAGES += "gedit-plugin-${PN}"
 FILES_gedit-plugin-${PN} += "${libdir}/gedit-2"

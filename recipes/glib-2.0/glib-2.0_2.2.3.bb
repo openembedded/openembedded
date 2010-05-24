@@ -10,9 +10,9 @@ DEPENDS = "glib-2.0-native"
 DEPENDS += "virtual/libiconv virtual/libintl"
 
 SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/glib/2.2/glib-${PV}.tar.bz2 \
-           file://automake-lossage.patch;patch=1 \
+           file://automake-lossage.patch;apply=yes \
            file://glibconfig-sysdefs.h \
-           file://configure-libtool.patch;patch=1"
+           file://configure-libtool.patch;apply=yes"
 
 S = "${WORKDIR}/glib-${PV}"
 PR = "r1"

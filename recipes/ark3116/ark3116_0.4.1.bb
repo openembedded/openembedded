@@ -10,8 +10,8 @@ PR = "r2"
 RRECOMMENDS = "kernel-module-usbserial"
 
 SRC_URI = "http://avr.auctionant.de/ark3116_linux_driver/releases/ark3116-0.4.1.tgz \
-           file://ark3116.c.patch;patch=1 \
-           file://Makefile.patch;patch=1"
+           file://ark3116.c.patch;apply=yes \
+           file://Makefile.patch;apply=yes"
 
 S = "${WORKDIR}/ark3116"
 

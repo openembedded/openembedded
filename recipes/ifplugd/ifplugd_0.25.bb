@@ -7,8 +7,8 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://0pointer.de/lennart/projects/ifplugd/ifplugd-${PV}.tar.gz \
- file://kernel-types.patch;patch=1 \
- file://nobash.patch;patch=1"
+ file://kernel-types.patch;apply=yes \
+ file://nobash.patch;apply=yes"
 
 inherit autotools update-rc.d pkgconfig
 

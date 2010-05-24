@@ -4,10 +4,10 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
-           file://libvncs0.6.patch;patch=1 \
-	   file://paths.patch;patch=1 \
-	   file://kernelinclude.patch;patch=1 \
-           file://ipaq.patch;patch=1"
+           file://libvncs0.6.patch;apply=yes \
+	   file://paths.patch;apply=yes \
+	   file://kernelinclude.patch;apply=yes \
+           file://ipaq.patch;apply=yes"
 
 S = "${WORKDIR}/fbvncserver-${PV}"
 

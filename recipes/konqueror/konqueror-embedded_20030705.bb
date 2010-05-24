@@ -12,15 +12,15 @@ PR = "r5"
 # machine (Ubuntu/Debain) or your distro's equivalent (FC = pcre-devel).
 
 SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/Attic/konqueror-embedded-snapshot-${PV}.tar.gz \
-           file://opie1.patch;patch=1 \
-           file://packing.patch;patch=1 \
-           file://include_qconfig.patch;patch=1 \
-           file://useragent.patch;patch=1 \
-           file://kcookiejar-merge.patch;patch=1 \
-           file://malformed.patch;patch=1 \
-           file://cachepath.patch;patch=1 \
-           file://vit.patch;patch=1 \
-           file://gcc4.patch;patch=1 \
+           file://opie1.patch;apply=yes \
+           file://packing.patch;apply=yes \
+           file://include_qconfig.patch;apply=yes \
+           file://useragent.patch;apply=yes \
+           file://kcookiejar-merge.patch;apply=yes \
+           file://malformed.patch;apply=yes \
+           file://cachepath.patch;apply=yes \
+           file://vit.patch;apply=yes \
+           file://gcc4.patch;apply=yes \
            file://konq-embedrc"
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 

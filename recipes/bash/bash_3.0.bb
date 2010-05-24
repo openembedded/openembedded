@@ -2,9 +2,9 @@ require bash.inc
 PR = "r12"
 
 SRC_URI += "\
-  file://bash-3.0-fixes.patch;patch=1 \
-  file://default_path.patch;patch=1 \
-  file://signames-mipsel.diff;patch=1 \
+  file://bash-3.0-fixes.patch;apply=yes \
+  file://default_path.patch;apply=yes \
+  file://signames-mipsel.diff;apply=yes \
 "
 
 SRC_URI[archive.md5sum] = "26c4d642e29b3533d8d754995bc277b3"

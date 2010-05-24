@@ -6,9 +6,9 @@ DEPENDS = ""
 PR = "r4"
 
 SRC_URI = "http://www.ohse.de/uwe/releases/lrzsz-${PV}.tar.gz \
-	   file://autotools.patch;patch=1 \
-	   file://makefile.patch;patch=1 \
-	   file://gettext.patch;patch=1"
+	   file://autotools.patch;apply=yes \
+	   file://makefile.patch;apply=yes \
+	   file://gettext.patch;apply=yes"
 
 inherit autotools gettext
 

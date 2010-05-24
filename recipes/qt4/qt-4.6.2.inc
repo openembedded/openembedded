@@ -3,15 +3,15 @@ DEFAULT_PREFERENCE = "-1"
 FILESPATHPKG .= ":qt-${PV}"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
-           file://0001-cross-compile.patch;patch=1 \
-           file://0002-fix-resinit-declaration.patch;patch=1 \
-           file://0004-no-qmake.patch;patch=1 \
-           file://0006-freetype-host-includes.patch;patch=1 \
-           file://0008-qt-lib-infix.patch;patch=1 \
-           file://0009-support-2bpp.patch;patch=1 \
-           file://0010-no-simpledecoration-example.patch;patch=1 \
-           file://fix-config-tests.patch;patch=1 \
-           file://qt-config.patch;patch=1 \
+           file://0001-cross-compile.patch;apply=yes \
+           file://0002-fix-resinit-declaration.patch;apply=yes \
+           file://0004-no-qmake.patch;apply=yes \
+           file://0006-freetype-host-includes.patch;apply=yes \
+           file://0008-qt-lib-infix.patch;apply=yes \
+           file://0009-support-2bpp.patch;apply=yes \
+           file://0010-no-simpledecoration-example.patch;apply=yes \
+           file://fix-config-tests.patch;apply=yes \
+           file://qt-config.patch;apply=yes \
            file://g++.conf \
            file://linux.conf \
            "
@@ -61,7 +61,7 @@ do_install_append() {
 
 LICENSE = "LGPLv2.1 GPLv3"
 SRC_URI += " \
-            file://hack-out-pg_config.patch;patch=1"
+            file://hack-out-pg_config.patch;apply=yes"
 
 SRC_URI[md5sum] = "eb651ee4b157c01696aa56777fc6e0e5"
 SRC_URI[sha256sum] = "176f51ddb06dce67ab4b2efc6b327dc21ed8f764c5d97acc15ff1f907c2affae"

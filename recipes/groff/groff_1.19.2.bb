@@ -4,9 +4,9 @@ LICENSE = "GPL"
 PR = "r6"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
-	           file://Makefile.in.patch;patch=1 \
-	           file://Makefile.sub.patch;patch=1 \
-	           file://groff.patch;patch=1"
+	           file://Makefile.in.patch;apply=yes \
+	           file://Makefile.sub.patch;apply=yes \
+	           file://groff.patch;apply=yes"
 
 inherit autotools
 

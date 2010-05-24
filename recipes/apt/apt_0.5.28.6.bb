@@ -1,7 +1,7 @@
 require apt.inc
 PR = "r2"
 
-SRC_URI += "file://autofoo.patch;patch=1"
+SRC_URI += "file://autofoo.patch;apply=yes"
 
 inherit autotools gettext
 

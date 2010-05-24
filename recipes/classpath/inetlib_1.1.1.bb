@@ -5,7 +5,7 @@ HOMEPAGE = "http://gnu.org/software/classpath/inetlib.html"
 
 SRC_URI = "\
   http://ftp.gnu.org/gnu/classpath/${BP}.tar.gz \
-  file://datadir_java.patch;patch=1 \
+  file://datadir_java.patch;apply=yes \
   "
 
 inherit java-library autotools

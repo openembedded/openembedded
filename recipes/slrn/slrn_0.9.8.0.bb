@@ -6,8 +6,8 @@ DEPENDS = "slang"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/slrn/slrn-${PV}.tar.bz2 \
-	   file://m4.patch;patch=1 \
-	   file://chkslang.patch;patch=1"
+	   file://m4.patch;apply=yes \
+	   file://chkslang.patch;apply=yes"
 
 inherit autotools
 

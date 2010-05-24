@@ -9,10 +9,10 @@ DEFAULT_PREFERENCE_motorola-ezx = "-1"
 inherit gettext
 
 SRC_URI += "\
-  file://buildfix.patch;patch=1 \
-  file://autoconf_version.patch;patch=1 \
-  file://tls_m4.patch;patch=1 \
-  file://configure_silent_rules.patch;patch=1 \
+  file://buildfix.patch;apply=yes \
+  file://autoconf_version.patch;apply=yes \
+  file://tls_m4.patch;apply=yes \
+  file://configure_silent_rules.patch;apply=yes \
 "
 
 do_compile_prepend() {

@@ -6,9 +6,9 @@ PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/pobox-${PV}.tar.bz2;name=archive \
            http://www.vanille.de/mirror/pbserver-${PV}.tar.gz;name=pbserver \
-           file://OpenPOBox-1.25.diff;patch=1 \
-           file://remove-local-includes.patch;patch=1 \
-           file://unicode.patch;patch=1 \
+           file://OpenPOBox-1.25.diff;apply=yes \
+           file://remove-local-includes.patch;apply=yes \
+           file://unicode.patch;apply=yes \
            file://pbserver.sh"
 
 S = "${WORKDIR}/OpenPOBox"

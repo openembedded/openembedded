@@ -4,8 +4,8 @@ LICENSE = "GPLv2"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/2.6/${PV}/${PV}-mm2/${PV}-mm2.bz2;patch=1;name=patch \
-		   file://patch-2.6.11-mm2-karo9.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/2.6/${PV}/${PV}-mm2/${PV}-mm2.bz2;apply=yes;name=patch \
+		   file://patch-2.6.11-mm2-karo9.bz2;apply=yes \
 		   file://defconfig"
 
 S = "${WORKDIR}/linux-${PV}"

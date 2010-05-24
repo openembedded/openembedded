@@ -1,10 +1,10 @@
 require samba.inc
 require samba-basic.inc
 
-SRC_URI += "file://configure.patch;patch=1 \
+SRC_URI += "file://configure.patch;apply=yes \
             "
-SRC_URI_append_linux-uclibc        = "file://uclibc-strlcpy-strlcat.patch;patch=1"
-SRC_URI_append_linux-uclibceabi = "file://uclibc-strlcpy-strlcat.patch;patch=1"
+SRC_URI_append_linux-uclibc        = "file://uclibc-strlcpy-strlcat.patch;apply=yes"
+SRC_URI_append_linux-uclibceabi = "file://uclibc-strlcpy-strlcat.patch;apply=yes"
 
 PR = "r5"
 

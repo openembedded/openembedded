@@ -15,60 +15,60 @@ DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 DEFAULT_PREFERENCE_cm-x300 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;patch=1;name=stablepatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;apply=yes;name=stablepatch \
            file://defconfig"
 
-SRC_URI += "file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;patch=1 \
-            file://0002-Squashfs-Factor-out-remaining-zlib-dependencies-int.patch;patch=1 \
-            file://0003-Squashfs-add-a-decompressor-framework.patch;patch=1 \
-            file://0004-Squashfs-add-decompressor-entries-for-lzma-and-lzo.patch;patch=1 \
-            file://0005-Squashfs-add-an-extra-parameter-to-the-decompressor.patch;patch=1 \
-            file://0006-Squashfs-add-LZMA-compression.patch;patch=1 \
-            file://0007-Squashfs-Make-unlzma-available-to-non-initramfs-ini.patch;patch=1 \
+SRC_URI += "file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;apply=yes \
+            file://0002-Squashfs-Factor-out-remaining-zlib-dependencies-int.patch;apply=yes \
+            file://0003-Squashfs-add-a-decompressor-framework.patch;apply=yes \
+            file://0004-Squashfs-add-decompressor-entries-for-lzma-and-lzo.patch;apply=yes \
+            file://0005-Squashfs-add-an-extra-parameter-to-the-decompressor.patch;apply=yes \
+            file://0006-Squashfs-add-LZMA-compression.patch;apply=yes \
+            file://0007-Squashfs-Make-unlzma-available-to-non-initramfs-ini.patch;apply=yes \
            "
 
 SRC_URI_append_db1200 ="\
-            http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;patch=1;name=at91patch \
+            http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;apply=yes;name=at91patch \
 	    "
 
 SRC_URI_append_boc01 = "\
-           http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;patch=1;name=at91patch \
+           http://maxim.org.za/AT91RM9200/2.6/2.6.31-at91.patch.gz;apply=yes;name=at91patch \
            file://boc01.dts \
            file://boc01.dts.v1 \
-           file://004-081205-usb.patch;patch=1 \
-           file://005-091110-isl12024.patch;patch=1 \
-           file://007-091005-lm73.patch;patch=1 \
-           file://011-091028-gpio.patch;patch=1 \
-           file://012-091019-capsense.patch;patch=1 \
-           file://013-091015-lcd.patch;patch=1 \
-           file://014-091030-buttons.patch;patch=1 \
+           file://004-081205-usb.patch;apply=yes \
+           file://005-091110-isl12024.patch;apply=yes \
+           file://007-091005-lm73.patch;apply=yes \
+           file://011-091028-gpio.patch;apply=yes \
+           file://012-091019-capsense.patch;apply=yes \
+           file://013-091015-lcd.patch;apply=yes \
+           file://014-091030-buttons.patch;apply=yes \
            "
 
 SRC_URI_append_collie = "\
-           file://0001-add-locomo_spi-driver.patch;patch=1 \
-           file://0002-collie-fix-scoop-convesion-to-new-api.patch;patch=1 \
-           file://0003-collie-prepare-for-gpiolib-use.patch;patch=1 \
-           file://0004-move-drivers-mfd-.h-to-include-linux-mfd.patch;patch=1 \
-           file://0005-collie-locomo-led-change-default-trigger.patch;patch=1 \
-           file://0006-SA1100-make-gpio_to_irq-and-reverse-a-macro.patch;patch=1 \
-           file://0007-add-gpiolib-support-to-ucb1x00.patch;patch=1 \
-           file://0008-collie-convert-to-gpiolib-for-ucb1x00.patch;patch=1 \
-           file://0009-collie-add-battery-driver.patch;patch=1 \
-           file://0010-collie-support-pda_power-driver.patch;patch=1 \
-           file://0011-fix-collie-keyboard-bug.patch;patch=1 \
-           file://0012-add-collie-touchscreen-driver.patch;patch=1 \
-           file://0013-add-sa1100-udc-hack-extra-hacked-for-collie.patch;patch=1 \
-           file://0014-gadget-add-file.patch;patch=1 \
-           file://0004-fix-dma-for-SA1100.patch;patch=1 \
+           file://0001-add-locomo_spi-driver.patch;apply=yes \
+           file://0002-collie-fix-scoop-convesion-to-new-api.patch;apply=yes \
+           file://0003-collie-prepare-for-gpiolib-use.patch;apply=yes \
+           file://0004-move-drivers-mfd-.h-to-include-linux-mfd.patch;apply=yes \
+           file://0005-collie-locomo-led-change-default-trigger.patch;apply=yes \
+           file://0006-SA1100-make-gpio_to_irq-and-reverse-a-macro.patch;apply=yes \
+           file://0007-add-gpiolib-support-to-ucb1x00.patch;apply=yes \
+           file://0008-collie-convert-to-gpiolib-for-ucb1x00.patch;apply=yes \
+           file://0009-collie-add-battery-driver.patch;apply=yes \
+           file://0010-collie-support-pda_power-driver.patch;apply=yes \
+           file://0011-fix-collie-keyboard-bug.patch;apply=yes \
+           file://0012-add-collie-touchscreen-driver.patch;apply=yes \
+           file://0013-add-sa1100-udc-hack-extra-hacked-for-collie.patch;apply=yes \
+           file://0014-gadget-add-file.patch;apply=yes \
+           file://0004-fix-dma-for-SA1100.patch;apply=yes \
            "
 
 
 SRC_URI_append_ep93xx = " \
-           file://edb9301-fix-machine-id.patch;patch=1 \
+           file://edb9301-fix-machine-id.patch;apply=yes \
            "
 
 SRC_URI_append_cm-x300 = "\
-           file://linux-2.6.31-cm-x300.patch;patch=1 \
+           file://linux-2.6.31-cm-x300.patch;apply=yes \
            "
 
 do_devicetree_image_append_boc01() {

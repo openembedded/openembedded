@@ -8,17 +8,17 @@ PR = "r4"
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
-           file://cross-compile.patch;patch=1 \
-           file://runltp-path.patch;patch=1 \
-           file://fix-tcore_patch_test_suites.patch;patch=1 \
-           file://no-IDcheck.patch;patch=1 \
-           file://no_hyperthreading_tests.patch;patch=1 \
-           file://syscalls.patch;patch=1"
+           file://cross-compile.patch;apply=yes \
+           file://runltp-path.patch;apply=yes \
+           file://fix-tcore_patch_test_suites.patch;apply=yes \
+           file://no-IDcheck.patch;apply=yes \
+           file://no_hyperthreading_tests.patch;apply=yes \
+           file://syscalls.patch;apply=yes"
 
-SRC_URI_append_mips += "file://no_epoll_create2.patch;patch=1"
-SRC_URI_append_mipsel += "file://no_epoll_create2.patch;patch=1"
-SRC_URI_append_arm += "file://no_epoll_create2.patch;patch=1"
-SRC_URI_append_armeb += "file://no_epoll_create2.patch;patch=1"
+SRC_URI_append_mips += "file://no_epoll_create2.patch;apply=yes"
+SRC_URI_append_mipsel += "file://no_epoll_create2.patch;apply=yes"
+SRC_URI_append_arm += "file://no_epoll_create2.patch;apply=yes"
+SRC_URI_append_armeb += "file://no_epoll_create2.patch;apply=yes"
 
 S = "${WORKDIR}/ltp-full-${PV}"
 

@@ -4,10 +4,10 @@ AUTHOR = "Holger Schurig <hs4233@mail.mn-solutions.de>"
 HOMEPAGE = "http://www.mn-logistik.de/unsupported/pxa250/"
 
 SRC_URI = "http://www.mn-logistik.de/unsupported/pxa250/pxaregs.c \
-           file://i2c.patch;pnum=1;patch=1 \
-           file://munmap.patch;pnum=1;patch=1 \
-           file://serial.patch;pnum=1;patch=1 \
-           file://usb.patch;pnum=1;patch=1 "
+           file://i2c.patch;apply=yes \
+           file://munmap.patch;apply=yes \
+           file://serial.patch;apply=yes \
+           file://usb.patch;apply=yes "
 
 S = "${WORKDIR}"
 

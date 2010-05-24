@@ -6,8 +6,8 @@ LICENSE = "GPL"
 #COMPATIBLE_MACHINE = "tsx09"
 
 SRC_URI = "http://byronbradley.co.uk/piccontrol/qcontrol-0.4.tar.gz \
-           file://luafix-0.4.patch;patch=0 \
-           file://configlocation.patch;patch=1 \
+           file://luafix-0.4.patch;apply=yes \
+           file://configlocation.patch;apply=yes \
            file://piccontrol-0.4.conf \
            file://init"
 S = "${WORKDIR}/qcontrol-${PV}"

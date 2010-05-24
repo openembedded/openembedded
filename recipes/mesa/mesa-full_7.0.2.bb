@@ -3,9 +3,9 @@ include mesa-mesa.inc
 SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2;name=archive \
         ${SOURCEFORGE_MIRROR}/mesa3d/MesaGLUT-${PV}.tar.bz2;name=glut \
         ${SOURCEFORGE_MIRROR}/mesa3d/MesaDemos-${PV}.tar.bz2;name=demos \
-        file://mklib-rpath-link.patch;patch=1 \
-        file://fix-host-compile.patch;patch=1 \
-        file://fix-progs-makefile.patch;patch=1 \
+        file://mklib-rpath-link.patch;apply=yes \
+        file://fix-host-compile.patch;apply=yes \
+        file://fix-progs-makefile.patch;apply=yes \
         "
 
 do_install_append = "install -d ${D}${bindir}; \

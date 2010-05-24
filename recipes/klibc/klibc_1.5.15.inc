@@ -1,15 +1,15 @@
 require klibc-common.inc
 
-SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
-            file://modprobe.patch;patch=1 \
-            file://losetup.patch;patch=1 \
-            file://dash_readopt.patch;patch=1 \
-            file://wc.patch;patch=1 \
-            file://staging.patch;patch=1 \
-            file://klibc_kexecsyscall.patch;patch=1 \
-            file://mntproc-definitions.patch;patch=1 \
-            file://signal-cleanup.patch;patch=1 \
-            file://isystem.patch;patch=1 \
+SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;apply=yes \
+            file://modprobe.patch;apply=yes \
+            file://losetup.patch;apply=yes \
+            file://dash_readopt.patch;apply=yes \
+            file://wc.patch;apply=yes \
+            file://staging.patch;apply=yes \
+            file://klibc_kexecsyscall.patch;apply=yes \
+            file://mntproc-definitions.patch;apply=yes \
+            file://signal-cleanup.patch;apply=yes \
+            file://isystem.patch;apply=yes \
             "
 
 KLIBC_FETCHDIR = "1.5"

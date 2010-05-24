@@ -4,7 +4,7 @@ PR = "r0"
 
 SRC_URI = " \
 	http://fping.sourceforge.net/download/fping.tar.gz \
-	file://sourceforge-truckload.patch;patch=1 \
+	file://sourceforge-truckload.patch;apply=yes \
 "
 
 S = "${WORKDIR}/fping-2.4b2_to"

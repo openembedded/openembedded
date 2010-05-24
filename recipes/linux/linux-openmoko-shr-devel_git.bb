@@ -13,8 +13,8 @@ PR = "r8"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
-  file://fix-install.patch;patch=1 \
-  file://0007-Enable-UBI-UBIFS.patch;patch=1 \
+  file://fix-install.patch;apply=yes \
+  file://0007-Enable-UBI-UBIFS.patch;apply=yes \
 "
 S = "${WORKDIR}/git"
 

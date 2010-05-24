@@ -6,8 +6,8 @@ DEFAULT_PREFERENCE = "1"
 PR = "r4"
 DEPENDS = "klibc"
 
-SRC_URI += "file://kexec-tools-2-headers.patch;patch=1 \
-	    file://kexec-tools-2-klibc.patch;patch=1 \
+SRC_URI += "file://kexec-tools-2-headers.patch;apply=yes \
+	    file://kexec-tools-2-klibc.patch;apply=yes \
 	    "
 
 S = "${WORKDIR}/kexec-tools-${PV}"

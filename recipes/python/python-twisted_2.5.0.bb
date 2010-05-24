@@ -8,7 +8,7 @@ LICENSE = "LGPL"
 PR = "r9"
 
 SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Twisted/2.5/Twisted-${PV}.tar.bz2 \
-           file://remove-zope-check.patch;patch=1"
+           file://remove-zope-check.patch;apply=yes"
 S = "${WORKDIR}/Twisted-${PV}"
 
 inherit distutils

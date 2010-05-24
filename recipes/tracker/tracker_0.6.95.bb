@@ -8,12 +8,12 @@ PR = "r2"
 inherit autotools pkgconfig gnome
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/tracker/0.6/tracker-${PV}.tar.bz2 \
-           file://munge-configure.ac-cross-compile.patch;patch=1 \
-           file://05-tracker-ioprio-cross.patch;patch=1 \
-           file://10-drop-bogus-version-info.patch;patch=1 \
-           file://20-tracker-defaults.patch;patch=1 \
-           file://30-gmime-2.4.patch;patch=1 \
-           file://99-autoreconf.patch;patch=1 \           
+           file://munge-configure.ac-cross-compile.patch;apply=yes \
+           file://05-tracker-ioprio-cross.patch;apply=yes \
+           file://10-drop-bogus-version-info.patch;apply=yes \
+           file://20-tracker-defaults.patch;apply=yes \
+           file://30-gmime-2.4.patch;apply=yes \
+           file://99-autoreconf.patch;apply=yes \           
            file://90tracker \
 " 
 

@@ -3,9 +3,9 @@ PR = "r6"
 
 SRC_URI = "\
   http://projects.o-hand.com/matchbox/sources/${PN}/${PV}/${PN}-${PV}.tar.gz \
-  file://16bppfixes.patch;patch=1 \
-  file://configure_fixes.patch;patch=1 \
-  file://reset-sigchld.patch;patch=1 \
+  file://16bppfixes.patch;apply=yes \
+  file://configure_fixes.patch;apply=yes \
+  file://reset-sigchld.patch;apply=yes \
   file://check.m4\
 "
 

@@ -8,9 +8,9 @@ same time, including Xft fonts."
 DEFAULT_PREFERENCE = "-1"
 LICENSE = "GPL"
 SRC_URI = "cvs://anonymous@cvs.schmorp.de/schmorpforge;module=rxvt-unicode;port=636 \
-	   file://xwc.patch;patch=1 \
-	   file://signedchar.patch;patch=1 \
-	   file://makefile.patch;patch=1"
+	   file://xwc.patch;apply=yes \
+	   file://signedchar.patch;apply=yes \
+	   file://makefile.patch;apply=yes"
 
 inherit autotools update-alternatives
 

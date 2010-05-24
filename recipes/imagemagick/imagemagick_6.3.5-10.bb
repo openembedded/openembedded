@@ -5,11 +5,11 @@ DEPENDS = "tiff jpeg libpng librsvg tiff zlib"
 PR = "r9"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
-           file://PerlMagic_MakePatch;patch=1 \
-           file://makefile-am.patch;patch=1 \
-           file://binconfig-fixes.patch;patch=1 \
-           file://fix_open_file.patch;patch=1 \
-           file://openm4-autoconf-fix.patch;patch=1"
+           file://PerlMagic_MakePatch;apply=yes \
+           file://makefile-am.patch;apply=yes \
+           file://binconfig-fixes.patch;apply=yes \
+           file://fix_open_file.patch;apply=yes \
+           file://openm4-autoconf-fix.patch;apply=yes"
 
 IMVER = "6.3.5"
 

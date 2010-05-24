@@ -7,7 +7,7 @@ PRIORITY = "optional"
 PR = "r1"
 
 SRC_URI += " \
-            file://fix_makefiles.patch;patch=1 \
+            file://fix_makefiles.patch;apply=yes \
            "
 
 SRC_URI[md5sum] = "b10893acb76c5d016c9bcfff6ba9418b"

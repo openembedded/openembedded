@@ -4,8 +4,8 @@ PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
 
 SRC_URI = "http://www.warmi.net/zaurus/files/gnuboy-${PV}-qtopia3.tar.gz \
-           file://qtopiagnuboyl-hwkeys.patch;patch=1 \
-           file://gcc3.patch;patch=1"
+           file://qtopiagnuboyl-hwkeys.patch;apply=yes \
+           file://gcc3.patch;apply=yes"
 S = "${WORKDIR}/gnuboy"
 
 FILES = ""

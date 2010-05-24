@@ -8,9 +8,9 @@ FILES_${PN} += "${datadir}/cdstatus.cfg"
 CFLAGS += -D__USE_MISC
 
 SRC_URI="${SOURCEFORGE_MIRROR}/cdstatus/cdstatus-0.97.01.tar.gz \
-	 file://Makefile.am.patch;patch=1 \
-	 file://cddb_connect_to_server.c.patch;patch=1 \
-	 file://cdstatus.patch;patch=1"
+	 file://Makefile.am.patch;apply=yes \
+	 file://cddb_connect_to_server.c.patch;apply=yes \
+	 file://cdstatus.patch;apply=yes"
 
 S="${WORKDIR}/cdstatus-0.97.01"
 

@@ -14,16 +14,16 @@ PR = "${INC_PR}.4"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 SRC_URI += "file://uClibc.machine file://uClibc.distro \
-            file://arm-linuxthreads.patch;patch=1 \
-            file://linuxthreads-changes.patch;patch=1 \
-	    file://pthread_atfork.patch;patch=1 \
-	    file://uclibc_ldso_use_O0.patch;patch=1 \
-	    file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
-	    file://gcc-4.4-fixlet.patch;patch=1 \
-	    file://uclibc-c99-ldbl-math.patch;patch=1 \
-	    file://Use-__always_inline-instead-of-__inline__.patch;patch=1 \
-            file://installfix.patch;patch=1 \
-            file://o_cloexec.patch;patch=1 \
+            file://arm-linuxthreads.patch;apply=yes \
+            file://linuxthreads-changes.patch;apply=yes \
+	    file://pthread_atfork.patch;apply=yes \
+	    file://uclibc_ldso_use_O0.patch;apply=yes \
+	    file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;apply=yes \
+	    file://gcc-4.4-fixlet.patch;apply=yes \
+	    file://uclibc-c99-ldbl-math.patch;apply=yes \
+	    file://Use-__always_inline-instead-of-__inline__.patch;apply=yes \
+            file://installfix.patch;apply=yes \
+            file://o_cloexec.patch;apply=yes \
 	   "
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"

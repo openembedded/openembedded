@@ -6,11 +6,11 @@ RDEPENDS += "hal"
 PE = "2"
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://sysroot_fix.patch;patch=1 \
-	    file://dolt-fix.patch;patch=1"
+SRC_URI += "file://sysroot_fix.patch;apply=yes \
+	    file://dolt-fix.patch;apply=yes"
 
 # This requires support in pixman, which the default one doesn't have
-SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch;patch=1"
+SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch;apply=yes"
 
 MESA_VER = "7.2"
 

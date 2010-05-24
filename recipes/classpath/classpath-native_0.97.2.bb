@@ -6,16 +6,16 @@ PR = "r7"
 # is usually not compiled. However if someone changes
 # to --enable-local-sockets it will.
 SRC_URI += "\
-  file://netif_16.patch;patch=1;pnum=0 \
-  file://SimpleName.diff;patch=1;pnum=0 \
-  file://javanet-local.patch;patch=1;pnum=0 \
-  file://sun-security-getproperty_0.96.1.patch;patch=1;pnum=0 \
-  file://ecj_java_dir.patch;patch=1 \
-  file://autotools.patch;patch=1 \
-  file://decimalformat.patch;patch=1 \
-  file://cp-byte-loophelper.patch;patch=1;pnum=0 \
-  file://miscompilation.patch;patch=1 \
-  file://toolwrapper-exithook.patch;patch=1 \
+  file://netif_16.patch;apply=yes;striplevel=0 \
+  file://SimpleName.diff;apply=yes;striplevel=0 \
+  file://javanet-local.patch;apply=yes;striplevel=0 \
+  file://sun-security-getproperty_0.96.1.patch;apply=yes;striplevel=0 \
+  file://ecj_java_dir.patch;apply=yes \
+  file://autotools.patch;apply=yes \
+  file://decimalformat.patch;apply=yes \
+  file://cp-byte-loophelper.patch;apply=yes;striplevel=0 \
+  file://miscompilation.patch;apply=yes \
+  file://toolwrapper-exithook.patch;apply=yes \
   "
 
 do_unpackpost() {

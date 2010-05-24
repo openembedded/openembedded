@@ -6,8 +6,8 @@ PR = "r2"
 inherit autotools pkgconfig
 
 SRC_URI = "ftp://ftp.mars.org/pub/hfs/hfsutils-3.2.6.tar.gz \
-	   file://hfsutils-3.2.6-errno.patch;patch=1 \
-	   file://largerthan2gb.patch;patch=1 \
+	   file://hfsutils-3.2.6-errno.patch;apply=yes \
+	   file://largerthan2gb.patch;apply=yes \
 		"
 
 do_configure () {

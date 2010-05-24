@@ -4,8 +4,8 @@ LICENSE = "BSD"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-base-${PV}.tar.gz \
-           file://configure.patch;patch=1 \
-           file://mconfig.patch;patch=1 \
+           file://configure.patch;apply=yes \
+           file://mconfig.patch;apply=yes \
            file://init \
            file://inetd.conf"
 

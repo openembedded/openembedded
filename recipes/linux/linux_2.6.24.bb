@@ -14,55 +14,55 @@ DEFAULT_PREFERENCE_smartq5 = "1"
 PR = "r34"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;patch=1;name=stablepatch \
-           file://squashfs-lzma-2.6.24.patch;patch=1 \
-           file://ubifs-v2.6.24.patch;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;apply=yes;name=stablepatch \
+           file://squashfs-lzma-2.6.24.patch;apply=yes \
+           file://ubifs-v2.6.24.patch;apply=yes \
            file://defconfig"
 
 # Moved away temporarely until committed properly (work in progress).
-#           file://powerpc-clockres.patch;patch=1 \
-#           file://leds-cpu-activity.patch;patch=1 \
-#           file://leds-cpu-activity-powerpc.patch;patch=1 \
+#           file://powerpc-clockres.patch;apply=yes \
+#           file://leds-cpu-activity.patch;apply=yes \
+#           file://leds-cpu-activity-powerpc.patch;apply=yes \
 
 SRC_URI_append_simpad = "\
-           file://linux-2.6.24-SIMpad-GPIO-MMC-mod.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-battery-old-way-but-also-with-sysfs.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-cs3-simpad.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-mq200.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-pcmcia.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-serial-gpio_keys-and-cs3-ro.patch.v2;patch=1 \ 
-           file://linux-2.6.24-SIMpad-ucb1x00-switches.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-ucb1x00-ts-supend-and-accuracy.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-hostap_cs-shared-irq.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-orinoco_cs-shared-irq.patch;patch=1 \ 
-           file://linux-2.6.24-SIMpad-rtc-sa1100.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-ucb1x00-audio.patch;patch=1 \
-	   file://connectplus-remove-ide-HACK.patch;patch=1 \
-	   file://collie-kexec.patch;patch=1 \
-           file://export_atags-r2.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-GPIO-MMC-mod.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-battery-old-way-but-also-with-sysfs.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-cs3-simpad.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-mq200.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-pcmcia.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-serial-gpio_keys-and-cs3-ro.patch.v2;apply=yes \ 
+           file://linux-2.6.24-SIMpad-ucb1x00-switches.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-ucb1x00-ts-supend-and-accuracy.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-hostap_cs-shared-irq.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-orinoco_cs-shared-irq.patch;apply=yes \ 
+           file://linux-2.6.24-SIMpad-rtc-sa1100.patch;apply=yes \
+           file://linux-2.6.24-SIMpad-ucb1x00-audio.patch;apply=yes \
+	   file://connectplus-remove-ide-HACK.patch;apply=yes \
+	   file://collie-kexec.patch;apply=yes \
+           file://export_atags-r2.patch;apply=yes \
            "	   
 
 SRC_URI_append_gesbc-9302 = " \
-	file://0001-gesbc-nand.patch;patch=1 \
-	file://0002-gesbc-eth-platform.patch;patch=1 \
-	file://0005-ep93xx-reboot.patch;patch=1 \
+	file://0001-gesbc-nand.patch;apply=yes \
+	file://0002-gesbc-eth-platform.patch;apply=yes \
+	file://0005-ep93xx-reboot.patch;apply=yes \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\
-	file://mpc831x-nand.patch;patch=1 \
-	file://mpc8313e-rdb-leds.patch;patch=1 \
-	file://mpc8313e-rdb-rtc.patch;patch=1 \
-	file://mpc8313e-rdb-cardbus.patch;patch=1 \
+	file://mpc831x-nand.patch;apply=yes \
+	file://mpc8313e-rdb-leds.patch;apply=yes \
+	file://mpc8313e-rdb-rtc.patch;apply=yes \
+	file://mpc8313e-rdb-cardbus.patch;apply=yes \
 	"
 
 CMDLINE_gesbc-9302 = "console=ttyAM0 root=mtd5 rootfstype=jffs2 mtdparts=GESBC-NAND:64m(app),-(data)"
 
 SRC_URI_append_cm-x270 = " \
-	file://0001-cm-x270-match-type.patch;patch=1 \
-	file://0002-ramdisk_load.patch;patch=1 \
-	file://0003-mmcsd_large_cards-r0.patch;patch=1 \
-	file://0004-cm-x270-nand-simplify-name.patch;patch=1 \
-	file://0005-add-display-set-default-16bpp.patch;patch=1 \
+	file://0001-cm-x270-match-type.patch;apply=yes \
+	file://0002-ramdisk_load.patch;apply=yes \
+	file://0003-mmcsd_large_cards-r0.patch;apply=yes \
+	file://0004-cm-x270-nand-simplify-name.patch;apply=yes \
+	file://0005-add-display-set-default-16bpp.patch;apply=yes \
 	"
 
 SRC_URI_avr32 = "http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.24.3.atmel.3.tar.bz2;name=atmelpatch \
@@ -70,56 +70,56 @@ SRC_URI_avr32 = "http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.24.
 S_avr32 = "${WORKDIR}/linux-2.6.24.3.atmel.3"
 
 SRC_URI_append_ts72xx = "\
-	file://ep93xx-gpio-interrupt-debounce.diff;patch=1 \
-	file://ep93xx-i2c-bus.diff;patch=1 \
-	file://ep93xx-i2c.diff;patch=1 \
-	file://ep93xx-leds.diff;patch=1 \
-	file://ep93xx-serial-uartbaud.diff;patch=1 \
-	file://ep93xx-serial-clocks.diff;patch=1 \
-	file://ep93xx-timer-accuracy.diff;patch=1 \
-	file://ep93xx-maverick-uniqid.patch;patch=1 \
-	file://ep93xx-eth-phylib-framework.patch;patch=1 \
-	file://ts72xx-nfbit-fix.patch;patch=1 \
-	file://ts72xx-machine-id-fix.patch;patch=1 \
-	file://ts72xx-watchdog.patch;patch=1 \
-	file://ts72xx-use-cpld-reset.patch;patch=1 \
-	file://ts72xx-rs485.patch;patch=1"
+	file://ep93xx-gpio-interrupt-debounce.diff;apply=yes \
+	file://ep93xx-i2c-bus.diff;apply=yes \
+	file://ep93xx-i2c.diff;apply=yes \
+	file://ep93xx-leds.diff;apply=yes \
+	file://ep93xx-serial-uartbaud.diff;apply=yes \
+	file://ep93xx-serial-clocks.diff;apply=yes \
+	file://ep93xx-timer-accuracy.diff;apply=yes \
+	file://ep93xx-maverick-uniqid.patch;apply=yes \
+	file://ep93xx-eth-phylib-framework.patch;apply=yes \
+	file://ts72xx-nfbit-fix.patch;apply=yes \
+	file://ts72xx-machine-id-fix.patch;apply=yes \
+	file://ts72xx-watchdog.patch;apply=yes \
+	file://ts72xx-use-cpld-reset.patch;apply=yes \
+	file://ts72xx-rs485.patch;apply=yes"
 
 SRC_URI_append_hipox = " \
-	file://hipox-mach-type.patch;patch=1 \
-	file://hipox.patch;patch=1 \
-	file://hipox-uart.patch;patch=1 \
-	file://hipox-pci-config-delay.patch;patch=1 \
-	file://hipox-pci-max-size.patch;patch=1 \
-	file://hipox-nand.patch;patch=1 \
-	file://hipox-ubifs.patch;patch=1 \
-	file://hipox-kconfig.patch;patch=1 \
-	file://hipox-sata-module.patch;patch=1 \
-	file://hipox-OXE-INT2.patch;patch=1 \
-	file://hipox-rtc.patch;patch=1 \
-	file://hipox-nand-vs-pci.patch;patch=1 \
-	file://hipox-nand-vs-nor.patch;patch=1 \
-	file://ox810-gmac-without-leon.patch;patch=1 \
+	file://hipox-mach-type.patch;apply=yes \
+	file://hipox.patch;apply=yes \
+	file://hipox-uart.patch;apply=yes \
+	file://hipox-pci-config-delay.patch;apply=yes \
+	file://hipox-pci-max-size.patch;apply=yes \
+	file://hipox-nand.patch;apply=yes \
+	file://hipox-ubifs.patch;apply=yes \
+	file://hipox-kconfig.patch;apply=yes \
+	file://hipox-sata-module.patch;apply=yes \
+	file://hipox-OXE-INT2.patch;apply=yes \
+	file://hipox-rtc.patch;apply=yes \
+	file://hipox-nand-vs-pci.patch;apply=yes \
+	file://hipox-nand-vs-nor.patch;apply=yes \
+	file://ox810-gmac-without-leon.patch;apply=yes \
 	"
 
 EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"
 SRC_URI_smartq5 = " ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
-    http://ftp.kernel.org/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;name=stablepatch \
-    file://smartq-gitupdate.diff;patch=1 \
-    file://base/0001-Apply-samsung-kernel-patch.patch;patch=1 \
-    file://base/0002-Apply-smartq-patch.patch;patch=1 \
-    file://mer/0001-Mer-keymappings-change.patch;patch=1 \
-    file://mer/0002-no-DM9000.patch;patch=1 \
-    file://mer/0003-Mer-WPA-fix.patch;patch=1 \
-    file://mer/0004-Mer-hardwire-USB-OTG-gadget-type.patch;patch=1 \
-    file://mer/0005-backlight-parameter-and-fixes.patch;patch=1 \
-    file://mer/0006-tv-encoder.patch;patch=1 \
-    file://mer/0007-make-tv-encoder-scaler-compile.patch;patch=1 \
-    file://mer/0008-build-TV-by-default.patch;patch=1 \
-    file://mer/0009-Apply-cpufreq-patch-from-gqwang.patch;patch=1 \
-    file://mer/0010-Better-compatibility-with-some-memory-chips.patch;patch=1 \
-    file://mer/0011-Only-reserve-memory-for-TV-if-CONFIG_VIDEO_SAMSUNG_T.patch;patch=1 \
-    file://mer/0012-Disable-TV-out-to-save-RAM.patch;patch=1 \
+    http://ftp.kernel.org/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;apply=yes;name=stablepatch \
+    file://smartq-gitupdate.diff;apply=yes \
+    file://base/0001-Apply-samsung-kernel-patch.patch;apply=yes \
+    file://base/0002-Apply-smartq-patch.patch;apply=yes \
+    file://mer/0001-Mer-keymappings-change.patch;apply=yes \
+    file://mer/0002-no-DM9000.patch;apply=yes \
+    file://mer/0003-Mer-WPA-fix.patch;apply=yes \
+    file://mer/0004-Mer-hardwire-USB-OTG-gadget-type.patch;apply=yes \
+    file://mer/0005-backlight-parameter-and-fixes.patch;apply=yes \
+    file://mer/0006-tv-encoder.patch;apply=yes \
+    file://mer/0007-make-tv-encoder-scaler-compile.patch;apply=yes \
+    file://mer/0008-build-TV-by-default.patch;apply=yes \
+    file://mer/0009-Apply-cpufreq-patch-from-gqwang.patch;apply=yes \
+    file://mer/0010-Better-compatibility-with-some-memory-chips.patch;apply=yes \
+    file://mer/0011-Only-reserve-memory-for-TV-if-CONFIG_VIDEO_SAMSUNG_T.patch;apply=yes \
+    file://mer/0012-Disable-TV-out-to-save-RAM.patch;apply=yes \
     file://defconfig \
 "
 

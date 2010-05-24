@@ -8,8 +8,8 @@ DEFAULT_PREFERENCE = "-1"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.1.bz2;patch=1;name=stablepatch \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-${PV}.1-rt8.bz2;patch=1;name=rtpatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.1.bz2;apply=yes;name=stablepatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-${PV}.1-rt8.bz2;apply=yes;name=rtpatch \
            file://defconfig"
 
 S = "${WORKDIR}/linux-${PV}"

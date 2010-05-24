@@ -3,9 +3,9 @@ SRCREV = "${EFL_SRCREV}"
 PR = "r11"
 
 SRC_URI += "\
-  file://iconv.patch;patch=1;maxrev=43996 \
-  file://exit_uclibc_dns.patch;patch=1;maxrev=47076 \
-  file://exit_uclibc.patch;patch=1 \
+  file://iconv.patch;apply=yes;maxrev=43996 \
+  file://exit_uclibc_dns.patch;apply=yes;maxrev=47076 \
+  file://exit_uclibc.patch;apply=yes \
 "
 
 ECORE_OECONF = "\

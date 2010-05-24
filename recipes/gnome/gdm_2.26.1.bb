@@ -8,8 +8,8 @@ PR = "r1"
 inherit gnome update-rc.d
 
 SRC_URI += " \
-            file://cross-xdetection.diff;patch=1 \
-            file://gdm-xklavier.patch;patch=1 \
+            file://cross-xdetection.diff;apply=yes \
+            file://gdm-xklavier.patch;apply=yes \
             file://%gconf-tree.xml \
             file://gdm \
             file://gdm.conf \

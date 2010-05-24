@@ -1,6 +1,6 @@
 require fontconfig.inc
 
-SRC_URI += "file://one-j-too-many.patch;patch=1"
+SRC_URI += "file://one-j-too-many.patch;apply=yes"
 
 PR = "r3"
 

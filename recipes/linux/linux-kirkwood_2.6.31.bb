@@ -20,15 +20,15 @@ SRCREV = "8cb424312d88810bb62edbeef42a510725ceb482"
 SRC_URI = "git://git.marvell.com/orion.git;protocol=git \
            file://defconfig"
 
-SRC_URI_append_openrd-base = " file://openrd-base-enable-pcie.patch;patch=1 \
-                               file://cpuidle-reenable-interrupts.patch;patch=1 \
-                               file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;patch=1 \
-                               file://0002-Squashfs-Factor-out-remaining-zlib-dependencies-int.patch;patch=1 \
-                               file://0003-Squashfs-add-a-decompressor-framework.patch;patch=1 \
-                               file://0004-Squashfs-add-decompressor-entries-for-lzma-and-lzo.patch;patch=1 \
-                               file://0005-Squashfs-add-an-extra-parameter-to-the-decompressor.patch;patch=1 \
-                               file://0006-Squashfs-add-LZMA-compression.patch;patch=1 \
-                               file://0007-Squashfs-Make-unlzma-available-to-non-initramfs-ini.patch;patch=1 \
+SRC_URI_append_openrd-base = " file://openrd-base-enable-pcie.patch;apply=yes \
+                               file://cpuidle-reenable-interrupts.patch;apply=yes \
+                               file://0001-Squashfs-move-zlib-decompression-wrapper-code-into.patch;apply=yes \
+                               file://0002-Squashfs-Factor-out-remaining-zlib-dependencies-int.patch;apply=yes \
+                               file://0003-Squashfs-add-a-decompressor-framework.patch;apply=yes \
+                               file://0004-Squashfs-add-decompressor-entries-for-lzma-and-lzo.patch;apply=yes \
+                               file://0005-Squashfs-add-an-extra-parameter-to-the-decompressor.patch;apply=yes \
+                               file://0006-Squashfs-add-LZMA-compression.patch;apply=yes \
+                               file://0007-Squashfs-Make-unlzma-available-to-non-initramfs-ini.patch;apply=yes \
                              "
 # update machine types list for ARM architecture, only for machines that need it
 do_arm_mach_types() {

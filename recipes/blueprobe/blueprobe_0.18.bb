@@ -2,10 +2,10 @@ require blueprobe.inc
 PR = "r6"
 
 SRC_URI += "\
-  file://fix-makefile.patch;patch=1 \
-  file://h4000.patch;patch=1 \
-  file://uclibc-fix.patch;patch=1 \
-  file://rx3000.patch;patch=1 \
+  file://fix-makefile.patch;apply=yes \
+  file://h4000.patch;apply=yes \
+  file://uclibc-fix.patch;apply=yes \
+  file://rx3000.patch;apply=yes \
 "
 
 SRC_URI[md5sum] = "174a1f2c9ffea150c7abe4becd99f2cd"

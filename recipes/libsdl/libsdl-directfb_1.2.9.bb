@@ -6,9 +6,9 @@ DEFAULT_PREFERENCE = "-1"
 PR = "${INC_PR}.0"
 
 SRC_URI += "\
-  file://explicit-extern-C.patch;patch=1 \
+  file://explicit-extern-C.patch;apply=yes \
   file://acinclude.m4 \
-  file://directfb_obsolete_calls.patch;patch=1 \
+  file://directfb_obsolete_calls.patch;apply=yes \
 "
 
 CFLAGS_append  += " -I${STAGING_INCDIR}/directfb -I${STAGING_INCDIR}/directfb-internal"

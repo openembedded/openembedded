@@ -5,8 +5,8 @@ LICENSE = "GPL LGPL FDL"
 DEPENDS = "libgpg-error"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-${PV}.tar.gz \
-           file://add-pkgconfig-support.patch;patch=1 \
-           file://mips-h-constraint.patch;patch=1"
+           file://add-pkgconfig-support.patch;apply=yes \
+           file://mips-h-constraint.patch;apply=yes"
 
 inherit autotools binconfig pkgconfig lib_package
 

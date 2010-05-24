@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 inherit gpe pkgconfig
 
-SRC_URI += "file://makefile-fix.patch;patch=1"
+SRC_URI += "file://makefile-fix.patch;apply=yes"
 
 DESCRIPTION = "GPE audio Recorder"
 DEPENDS = "gtk+ libgpewidget libglade libgsm gpe-soundserver"

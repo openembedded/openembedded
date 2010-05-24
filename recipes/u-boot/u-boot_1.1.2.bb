@@ -2,17 +2,17 @@ PR = "r3"
 require u-boot.inc
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
-	   file://arm_flags.patch;patch=1 "
+	   file://arm_flags.patch;apply=yes "
 # Override whole URI fr Neon since Neon patch is incompatible with arm_flags patch.
 SRC_URI_bd-neon = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
-                   file://u-boot-1.1.2-neon.patch;patch=1"
-SRC_URI_append_vibren = "ftp://bec-systems.com/pub/pxa255_idp/u-boot/uboot_pxa255-idp_2005-03-23.patch;patch=1"
-SRC_URI_append_mnci   = "file://mnci.patch;patch=1 \
-                         file://mnci-jffs2.patch;patch=1 \
-                         file://cmd-arm-linux.patch;patch=1 \
-                         file://command-names.patch;patch=1"
+                   file://u-boot-1.1.2-neon.patch;apply=yes"
+SRC_URI_append_vibren = "ftp://bec-systems.com/pub/pxa255_idp/u-boot/uboot_pxa255-idp_2005-03-23.patch;apply=yes"
+SRC_URI_append_mnci   = "file://mnci.patch;apply=yes \
+                         file://mnci-jffs2.patch;apply=yes \
+                         file://cmd-arm-linux.patch;apply=yes \
+                         file://command-names.patch;apply=yes"
 
-SRC_URI_append_magicbox  = "file://u-boot-emetec.patch;patch=1 "
+SRC_URI_append_magicbox  = "file://u-boot-emetec.patch;apply=yes "
 
 
 # TODO: SRC_URI_append_rt3000

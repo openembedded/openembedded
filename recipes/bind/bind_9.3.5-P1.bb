@@ -7,9 +7,9 @@ PR = "r0"
 DEPENDS = "openssl"
 
 SRC_URI = "ftp://ftp.isc.org/isc/bind9/9.3.5-P1/bind-9.3.5-P1.tar.gz \
-	   file://conf.patch;patch=1 \
-	   file://configure.in.patch;patch=1 \
-	   file://so_bsdcompat.patch;patch=1 \
+	   file://conf.patch;apply=yes \
+	   file://configure.in.patch;apply=yes \
+	   file://so_bsdcompat.patch;apply=yes \
 	   "
 
 EXTRA_OECONF = " --enable-ipv6=no --with-randomdev=/dev/random --disable-threads --sysconfdir=/etc/bind --localstatedir=/var --prefix=/usr"

@@ -8,13 +8,13 @@ PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
-  file://confsearch.diff;patch=1;pnum=2 \
-  file://manpages.diff;patch=1;pnum=2 \
-  file://non-linux.diff;patch=1;pnum=2 \
-  file://rpath.diff;patch=1;pnum=2 \
-  file://tklibrary.diff;patch=1;pnum=2 \
-  file://tkprivate.diff;patch=1;pnum=2 \
-  file://fix-xft.diff;patch=1 \
+  file://confsearch.diff;apply=yes;striplevel=2 \
+  file://manpages.diff;apply=yes;striplevel=2 \
+  file://non-linux.diff;apply=yes;striplevel=2 \
+  file://rpath.diff;apply=yes;striplevel=2 \
+  file://tklibrary.diff;apply=yes;striplevel=2 \
+  file://tkprivate.diff;apply=yes;striplevel=2 \
+  file://fix-xft.diff;apply=yes \
 "
 
 SRC_URI[md5sum] = "13bf90602e16fc530e05196431021dc6"

@@ -5,10 +5,10 @@ PR = "r0"
 
 
 SRC_URI += " \
-    	file://libxine-arm-configure.patch;patch=1 \
-	file://iconv.patch;patch=1 \
-	file://libpostproc.patch;patch=1 \
-	file://libavcodec.patch;patch=1 \
+    	file://libxine-arm-configure.patch;apply=yes \
+	file://iconv.patch;apply=yes \
+	file://libpostproc.patch;apply=yes \
+	file://libavcodec.patch;apply=yes \
         "
 
 python populate_packages_prepend () {

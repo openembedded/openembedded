@@ -10,10 +10,10 @@ inherit kernel-arch autotools pkgconfig
 DEPENDS = " rpm2cpio-native"
 
 SRC_URI = "http://penguinppc.org/historical/hfsplus/hfsplusutils-1.0.4-4.src.rpm \
-	   file://hfsplusutils-1.0.4-errno.patch;patch=1 \
-	   file://hfsplusutils-1.0.4-gcc4.patch;patch=1 \
-	   file://hfsplusutils-1.0.4-glob.patch;patch=1 \
-	   file://hfsplusutils-1.0.4-string.patch;patch=1 \
+	   file://hfsplusutils-1.0.4-errno.patch;apply=yes \
+	   file://hfsplusutils-1.0.4-gcc4.patch;apply=yes \
+	   file://hfsplusutils-1.0.4-glob.patch;apply=yes \
+	   file://hfsplusutils-1.0.4-string.patch;apply=yes \
 		"
 
 do_unpack() {

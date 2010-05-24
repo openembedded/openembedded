@@ -5,22 +5,22 @@ PR = "r3"
 
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz;name=qemu-${PV} \
-    file://06_exit_segfault.patch;patch=1;pnum=0 \
-    file://11_signal_sigaction.patch;patch=1;pnum=0 \
-    file://22_net_tuntap_stall.patch;patch=1 \
-    file://31_syscalls.patch;patch=1;pnum=0 \
-    file://32_syscall_sysctl.patch;patch=1;pnum=0 \
-    file://52_ne2000_return.patch;patch=1 \
-    file://63_sparc_build.patch;patch=1;pnum=0 \
-    file://64_ppc_asm_constraints.patch;patch=1 \
-    file://66_tls_ld.patch;patch=1;pnum=0 \
-    file://91-oh-sdl-cursor.patch;patch=1;pnum=0 \
-    file://fix_segfault.patch;patch=1 \
-    file://fix_baum_c_compilation.patch;patch=1 \
-    file://fix_fortify_source_compilation.patch;patch=1 \
-    file://3f26c1227e3b08010f2a65379cecf4cb4b5933fa.patch;patch=1 \
-    file://c5883be23519921254c6940873ee8db04979c20a.patch;patch=1 \
-    file://fallback.to.safe.mmap_min_addr.patch;patch=1 \
+    file://06_exit_segfault.patch;apply=yes;striplevel=0 \
+    file://11_signal_sigaction.patch;apply=yes;striplevel=0 \
+    file://22_net_tuntap_stall.patch;apply=yes \
+    file://31_syscalls.patch;apply=yes;striplevel=0 \
+    file://32_syscall_sysctl.patch;apply=yes;striplevel=0 \
+    file://52_ne2000_return.patch;apply=yes \
+    file://63_sparc_build.patch;apply=yes;striplevel=0 \
+    file://64_ppc_asm_constraints.patch;apply=yes \
+    file://66_tls_ld.patch;apply=yes;striplevel=0 \
+    file://91-oh-sdl-cursor.patch;apply=yes;striplevel=0 \
+    file://fix_segfault.patch;apply=yes \
+    file://fix_baum_c_compilation.patch;apply=yes \
+    file://fix_fortify_source_compilation.patch;apply=yes \
+    file://3f26c1227e3b08010f2a65379cecf4cb4b5933fa.patch;apply=yes \
+    file://c5883be23519921254c6940873ee8db04979c20a.patch;apply=yes \
+    file://fallback.to.safe.mmap_min_addr.patch;apply=yes \
     "
 
 SRC_URI[qemu-0.12.3.sha256sum] = "3ce26f8fb0a59418b2064a26bac4b40ea4e493acbc3df7ad5932635477fade4b"

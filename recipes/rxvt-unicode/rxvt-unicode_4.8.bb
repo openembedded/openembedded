@@ -8,8 +8,8 @@ same time, including Xft fonts."
 PR = "r2"
 LICENSE = "GPL"
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PV}.tar.bz2 \
-	   file://xwc.patch;patch=1 \
-	   file://signedchar.patch;patch=1"
+	   file://xwc.patch;apply=yes \
+	   file://signedchar.patch;apply=yes"
 
 inherit autotools update-alternatives
 

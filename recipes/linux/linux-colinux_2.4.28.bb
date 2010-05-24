@@ -7,12 +7,12 @@ COMPATIBLE_MACHINE = "colinux"
 
 #http://internap.dl.sourceforge.net/sourceforge/colinux/coLinux-0.6.1.tar.gz
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
-	   file://colinux-${COLV}.patch;patch=1 \
-	   file://nofpu.patch;patch=1 \
-	   file://shortloadbytes.patch;patch=1 \
-	   file://gcc-registerparanoia.patch;patch=1 \
-	   file://linux-2.4.24-attribute-used.patch;patch=1 \
-	   file://gcc340-fixes-v2.4.26-try3.patch;patch=1 \
+	   file://colinux-${COLV}.patch;apply=yes \
+	   file://nofpu.patch;apply=yes \
+	   file://shortloadbytes.patch;apply=yes \
+	   file://gcc-registerparanoia.patch;apply=yes \
+	   file://linux-2.4.24-attribute-used.patch;apply=yes \
+	   file://gcc340-fixes-v2.4.26-try3.patch;apply=yes \
            file://defconfig"
 
 S = "${WORKDIR}/linux-${PV}"

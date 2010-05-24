@@ -6,12 +6,12 @@ DEPENDS = "zlib ncurses"
 inherit autotools
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux/util-linux-${PV}.tar.bz2 \
-           file://gcc34.patch;patch=1 \
+           file://gcc34.patch;apply=yes \
            file://MCONFIG \
            file://make_include \
            file://swapargs.h \
-	   file://fdiskbsdlabel_thumb.diff;patch=1 \
-	   file://umount.diff;patch=1 \
+	   file://fdiskbsdlabel_thumb.diff;apply=yes \
+	   file://umount.diff;apply=yes \
            file://defines.h"
 
 PACKAGES_prepend = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-swaponoff util-linux-losetup util-linux-umount util-linux-mount util-linux-readprofile "

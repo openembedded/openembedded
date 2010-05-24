@@ -11,8 +11,8 @@ FILES_${PN}-daemon = "${bindir}/rxvtd"
 FILES_${PN}-control = "${bindir}/rxvtc"
 
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PV}.tar.bz2 \
-	   file://xwc.patch;patch=1 \
-	   file://signedchar.patch;patch=1"
+	   file://xwc.patch;apply=yes \
+	   file://signedchar.patch;apply=yes"
 PR = "r3"
 
 inherit autotools update-alternatives

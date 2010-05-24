@@ -13,15 +13,15 @@ inherit gpe
 
 SRC_URI_append = " file://setDPI.sh \
                    file://89xdgautostart.sh \
-file://0018-zaurus-fixed-machine-names.patch;patch=1 \
-file://0019-keymap-fixed-machine-names.patch;patch=1 \
-file://0020-keymap-fixed-machine-names-again.patch;patch=1 \
-file://0021-xserver-introduced-MOUSE-variable-for-mouse-argument.patch;patch=1 \
-file://0022-xserver-fix-syntax-error.patch;patch=1 \
-file://0023-Xserver-provide-screen-argument-only-for-non-X.org-s.patch;patch=1 \
-file://0024-Xserver-move-nearly-whole-functionality-to-xserver-c.patch;patch=1 \
-file://0025-Makefile-move-modmaps-install-xserver-common.patch;patch=1 \
-file://0026-98keymap-fixup-fixed-path-to-xmodmap-file.patch;patch=1 \
+file://0018-zaurus-fixed-machine-names.patch;apply=yes \
+file://0019-keymap-fixed-machine-names.patch;apply=yes \
+file://0020-keymap-fixed-machine-names-again.patch;apply=yes \
+file://0021-xserver-introduced-MOUSE-variable-for-mouse-argument.patch;apply=yes \
+file://0022-xserver-fix-syntax-error.patch;apply=yes \
+file://0023-Xserver-provide-screen-argument-only-for-non-X.org-s.patch;apply=yes \
+file://0024-Xserver-move-nearly-whole-functionality-to-xserver-c.patch;apply=yes \
+file://0025-Makefile-move-modmaps-install-xserver-common.patch;apply=yes \
+file://0026-98keymap-fixup-fixed-path-to-xmodmap-file.patch;apply=yes \
 "
 
 do_install_append() {

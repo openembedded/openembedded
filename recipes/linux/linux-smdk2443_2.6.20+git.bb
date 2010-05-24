@@ -8,15 +8,15 @@ PR = "r1"
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.21-rc5 \
-           file://0020-Add-ASoC-S3C24xx-platform-support.patch;patch=1 \
-           file://0021-Add-Neo1973-ASoC-support.patch;patch=1 \
-           file://0022-Add-initial-ASoC-SMDK2440-support.patch;patch=1 \
-           file://0023-Add-ASoC-SMDK2440-support-for-WM8956-codec.patch;patch=1 \
-           file://0034-Export-ac97_dai.patch;patch=1 \
-           file://0036-Move-s3c24xx_i2s_dai-and-add-dma_size.patch;patch=1 \
-           file://0037-Use-dma_size-parameter-and-fix-buffdone-oops.patch;patch=1 \
-           file://0038-Add-smdk2443-s3c2443-ac97-and-wm9710-support.patch;patch=1 \
-           file://asoc-mainline.patch;patch=1 \
+           file://0020-Add-ASoC-S3C24xx-platform-support.patch;apply=yes \
+           file://0021-Add-Neo1973-ASoC-support.patch;apply=yes \
+           file://0022-Add-initial-ASoC-SMDK2440-support.patch;apply=yes \
+           file://0023-Add-ASoC-SMDK2440-support-for-WM8956-codec.patch;apply=yes \
+           file://0034-Export-ac97_dai.patch;apply=yes \
+           file://0036-Move-s3c24xx_i2s_dai-and-add-dma_size.patch;apply=yes \
+           file://0037-Use-dma_size-parameter-and-fix-buffdone-oops.patch;apply=yes \
+           file://0038-Add-smdk2443-s3c2443-ac97-and-wm9710-support.patch;apply=yes \
+           file://asoc-mainline.patch;apply=yes \
            file://defconfig-smdk2443"
 
 S = "${WORKDIR}/git"

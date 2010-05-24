@@ -21,9 +21,9 @@ PR = "r0"
 PARALLEL_MAKE = ""
 
 SRC_URI = "http://my.arava.co.il/~matan/svgalib/svgalib-${PV}.tar.gz;name=tarball \
-	file://makefiles-ldconfig.patch;patch=1 \
-	file://gtfcalc-round.patch;patch=1 \
-	file://svgalib-1.9.25-linux2.6.patch;patch=1 \
+	file://makefiles-ldconfig.patch;apply=yes \
+	file://gtfcalc-round.patch;apply=yes \
+	file://svgalib-1.9.25-linux2.6.patch;apply=yes \
 	"
 
 S = "${WORKDIR}/svgalib-${PV}"

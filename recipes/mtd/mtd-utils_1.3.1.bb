@@ -11,9 +11,9 @@ ARM_INSTRUCTION_SET = "arm"
 TAG = "v${PV}"
 
 SRC_URI = "git://git.infradead.org/mtd-utils.git;protocol=git;tag=${TAG} \
-	   file://add-exclusion-to-mkfs-jffs2-git-2.patch;patch=1 \
-	   file://fix-ignoreerrors-git.patch;patch=1 \
-	   file://lzo_1x-git.patch;patch=1"
+	   file://add-exclusion-to-mkfs-jffs2-git-2.patch;apply=yes \
+	   file://fix-ignoreerrors-git.patch;apply=yes \
+	   file://lzo_1x-git.patch;apply=yes"
 
 S = "${WORKDIR}/git/"
 

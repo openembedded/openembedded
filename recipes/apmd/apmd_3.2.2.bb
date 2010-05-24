@@ -6,11 +6,11 @@ LICENSE = "GPL"
 PR = "r12"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz \
-           file://debian.patch;patch=1 \
-           file://workaround.patch;patch=1 \
-           file://zaurus24.patch;patch=1 \
-           file://unlinux.patch;patch=1 \
-           file://libtool.patch;patch=1 \
+           file://debian.patch;apply=yes \
+           file://workaround.patch;apply=yes \
+           file://zaurus24.patch;apply=yes \
+           file://unlinux.patch;apply=yes \
+           file://libtool.patch;apply=yes \
            file://init \
            file://default \
            file://apmd_proxy \

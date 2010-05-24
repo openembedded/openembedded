@@ -7,9 +7,9 @@ DEPENDS = "freetype fontconfig libxft virtual/libx11"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/materm/mrxvt-${PV}.tar.gz;name=archive \
-           ${SOURCEFORGE_MIRROR}/materm/no_debug_x.patch;pnum=0;patch=1;name=patch \
-           file://fix-compile.patch;patch=1 \
-           file://font-defaults.patch;patch=1"
+           ${SOURCEFORGE_MIRROR}/materm/no_debug_x.patch;apply=yes;striplevel=0;name=patch \
+           file://fix-compile.patch;apply=yes \
+           file://font-defaults.patch;apply=yes"
 
 inherit autotools
 

@@ -8,8 +8,8 @@ LICENSE = "LGPLv2.1 GPLv3"
 inherit sdk
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
-           file://configure-lflags.patch;patch=1 \
-           file://qt-config.patch;patch=1 \
+           file://configure-lflags.patch;apply=yes \
+           file://qt-config.patch;apply=yes \
            file://g++.conf \
            file://linux.conf"
 S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"

@@ -27,29 +27,29 @@ python __anonymous () {
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
-#	   file://noinfo.patch;patch=1
-#	   file://ldconfig.patch;patch=1;pnum=0
-#	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
-#	   file://arm-memcpy.patch;patch=1;pnum=0 \
-#	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+#	   file://noinfo.patch;apply=yes
+#	   file://ldconfig.patch;apply=yes;striplevel=0
+#	   file://arm-no-hwcap.patch;apply=yes;striplevel=0 \
+#	   file://arm-memcpy.patch;apply=yes;striplevel=0 \
+#	   file://arm-machine-gmon.patch;apply=yes;striplevel=0 \
 #	   \
-#	   file://arm-ioperm.patch;patch=1;pnum=0 \
-#	   file://ldd.patch;patch=1;pnum=0 \
+#	   file://arm-ioperm.patch;apply=yes;striplevel=0 \
+#	   file://ldd.patch;apply=yes;striplevel=0 \
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc \
 	   cvs://anoncvs@sources.redhat.com/cvs/glibc;module=ports \
-	   file://nscd-init.patch;patch=1;pnum=0 \
-	   file://arm-audit.patch;patch=1 \
-	   file://arm-audit2.patch;patch=1 \
-	   file://arm-memcpy.patch;patch=1 \
-	   file://arm-longlong.patch;patch=1;pnum=0 \
-	   file://fhs-linux-paths.patch;patch=1 \
-	   file://dl-cache-libcmp.patch;patch=1 \
-	   file://ldsocache-varrun.patch;patch=1 \
+	   file://nscd-init.patch;apply=yes;striplevel=0 \
+	   file://arm-audit.patch;apply=yes \
+	   file://arm-audit2.patch;apply=yes \
+	   file://arm-memcpy.patch;apply=yes \
+	   file://arm-longlong.patch;apply=yes;striplevel=0 \
+	   file://fhs-linux-paths.patch;apply=yes \
+	   file://dl-cache-libcmp.patch;apply=yes \
+	   file://ldsocache-varrun.patch;apply=yes \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
 # seems to fail on tls platforms
-SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
+SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;apply=yes"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"

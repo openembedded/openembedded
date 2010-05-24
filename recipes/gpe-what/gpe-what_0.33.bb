@@ -1,5 +1,5 @@
 require gpe-what.inc
 
-SRC_URI += "file://makefile-fix.patch;patch=1"
+SRC_URI += "file://makefile-fix.patch;apply=yes"
 
 DEPENDS = "virtual/libx11 libxpm libmatchbox"

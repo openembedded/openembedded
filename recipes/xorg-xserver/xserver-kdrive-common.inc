@@ -75,19 +75,19 @@ FILES_${PKGN}-via = "${bindir}/Xvia"
 SRC_URI ?= "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2;name=archive \
 	${KDRIVE_COMMON_PATCHES}"
 KDRIVE_COMMON_PATCHES = " \
-	file://kmode.patch;patch=1 \
-	file://kmode-800_480.patch;patch=1 \
-	file://disable-apm.patch;patch=1 \
-	file://no-serial-probing.patch;patch=1 \
-	file://fbdev-not-fix.patch;patch=1  \
-	file://optional-xkb.patch;patch=1 \
-	file://enable-tslib.patch;patch=1 \
-	file://kmode-palm.patch;patch=1 \
+	file://kmode.patch;apply=yes \
+	file://kmode-800_480.patch;apply=yes \
+	file://disable-apm.patch;apply=yes \
+	file://no-serial-probing.patch;apply=yes \
+	file://fbdev-not-fix.patch;apply=yes  \
+	file://optional-xkb.patch;apply=yes \
+	file://enable-tslib.patch;apply=yes \
+	file://kmode-palm.patch;apply=yes \
 	"
 
-SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
-SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
-SRC_URI_append_qemux86 = " file://xserver-kdrive-poodle.patch;patch=1"
+SRC_URI_append_mnci   = " file://onlyfb.patch;apply=yes"
+SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;apply=yes"
+SRC_URI_append_qemux86 = " file://xserver-kdrive-poodle.patch;apply=yes"
 PACKAGE_ARCH_poodle = "${MACHINE_ARCH}"
 PACKAGE_ARCH_qemux86 = "${MACHINE_ARCH}"
 

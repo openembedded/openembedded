@@ -7,10 +7,10 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI = "http://www.staikos.net/~staikos/pocketcellar/pocketcellar-${PV}.tar.gz \
-           file://winedb.patch;patch=1 \
-           file://cellardb.patch;patch=1 \
-           file://pocketcellar.patch;patch=1 \
-           file://gcc3.patch;patch=1"
+           file://winedb.patch;apply=yes \
+           file://cellardb.patch;apply=yes \
+           file://pocketcellar.patch;apply=yes \
+           file://gcc3.patch;apply=yes"
 
 inherit palmtop
 

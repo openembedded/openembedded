@@ -6,7 +6,7 @@ RDEPENDS = "hotplug-dbus"
 inherit gpe
 
 SRC_URI = "${GPE_SVN} \
-           file://svn-build.patch;patch=1"
+           file://svn-build.patch;apply=yes"
 
 S = "${WORKDIR}/${PN}"
 

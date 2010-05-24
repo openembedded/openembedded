@@ -4,9 +4,9 @@ DEPENDS = "libxml2 glib-2.0 gtk+ loudmouth"
 PR = "r3"
 
 SRC_URI = "http://jabberstudio.2nw.net/${PN}/${PN}-${PV}.tar.gz \
-           file://fix-configure.patch;patch=1 \
-           file://fix-desktop-file.patch;patch=0 \
-           file://gcc4.patch;patch=1"
+           file://fix-configure.patch;apply=yes \
+           file://fix-desktop-file.patch;apply=yes \
+           file://gcc4.patch;apply=yes"
 
 inherit autotools pkgconfig
 

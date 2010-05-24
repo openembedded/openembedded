@@ -6,9 +6,9 @@ DEPENDS = "mtd-utils"
 PR = "r9"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
-        file://fw_env.c.patch;patch=1 \
-        file://tools-Makefile.patch;patch=1 \
-        file://env-Makefile.patch;patch=1 \
+        file://fw_env.c.patch;apply=yes \
+        file://tools-Makefile.patch;apply=yes \
+        file://env-Makefile.patch;apply=yes \
         file://fw_env.config"
 
 S = "${WORKDIR}/u-boot-${PV}"

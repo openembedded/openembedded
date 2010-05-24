@@ -11,9 +11,9 @@ SECTION = "gpe"
 PRIORITY = "optional"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
-        file://desktop-categories.patch;patch=1 \
-        file://Makefile.am.patch;patch=1 \
-        file://src-ui.c.patch;patch=1;pnum=0"
+        file://desktop-categories.patch;apply=yes \
+        file://Makefile.am.patch;apply=yes \
+        file://src-ui.c.patch;apply=yes;striplevel=0"
 
 LDFLAGS += '-Wl,--export-dynamic'
 

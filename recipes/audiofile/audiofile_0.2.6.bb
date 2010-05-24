@@ -8,10 +8,10 @@ RPROVIDES_${PN} += "audiofile"
 PR = "r8"
 
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz \
-	   file://audiofile-m4_quote_fix.diff;patch=1;pnum=0 \
-	   file://audiofile-oldstyle.patch;patch=1;pnum=0 \
-	   file://audiofile-0.2.6.patch;patch=1;pnum=0 \
-	   file://CVE-2008-5824.patch;patch=1 \
+	   file://audiofile-m4_quote_fix.diff;apply=yes;striplevel=0 \
+	   file://audiofile-oldstyle.patch;apply=yes;striplevel=0 \
+	   file://audiofile-0.2.6.patch;apply=yes;striplevel=0 \
+	   file://CVE-2008-5824.patch;apply=yes \
 "
 
 inherit autotools_stage lib_package binconfig

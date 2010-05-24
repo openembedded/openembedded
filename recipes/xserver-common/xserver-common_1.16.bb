@@ -10,12 +10,12 @@ PACKAGE_ARCH = "all"
 inherit gpe
 
 SRC_URI_append = " file://setDPI.sh \
-                   file://xserver-imageon.patch;patch=1 \
-                   file://calibrate-only-if-ts.patch;patch=1 \
-		   file://softkeys-c7x0.patch;patch=1 \
-		   file://load-xmodmap-k26.patch;patch=1 \
-		   file://Xserver-udev-input-helper.patch;patch=1 \
-		   file://sl-cxx00-modmap.patch;patch=1 \
+                   file://xserver-imageon.patch;apply=yes \
+                   file://calibrate-only-if-ts.patch;apply=yes \
+		   file://softkeys-c7x0.patch;apply=yes \
+		   file://load-xmodmap-k26.patch;apply=yes \
+		   file://Xserver-udev-input-helper.patch;apply=yes \
+		   file://sl-cxx00-modmap.patch;apply=yes \
 		   "
 
 do_install_append() {

@@ -1,9 +1,9 @@
 require time.inc
 
 SRC_URI = "${GNU_MIRROR}/time/time-${PV}.tar.gz \
-	   file://debian.patch;patch=1"
-#	   file://autofoo.patch;patch=1 \
-#	   file://compile.patch;patch=1"
+	   file://debian.patch;apply=yes"
+#	   file://autofoo.patch;apply=yes \
+#	   file://compile.patch;apply=yes"
 S = "${WORKDIR}/time-${PV}"
 
 inherit autotools

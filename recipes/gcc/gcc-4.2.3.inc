@@ -7,63 +7,63 @@ NATIVEDEPS = "mpfr-native gmp-native"
 INC_PR = "r17"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
-	file://100-uclibc-conf.patch;patch=1 \
-	file://103-uclibc-conf-noupstream.patch;patch=1 \
-	file://200-uclibc-locale.patch;patch=1 \
-	file://203-uclibc-locale-no__x.patch;patch=1 \
-	file://204-uclibc-locale-wchar_fix.patch;patch=1 \
-	file://205-uclibc-locale-update.patch;patch=1 \
-	file://300-libstdc++-pic.patch;patch=1 \
-	file://301-missing-execinfo_h.patch;patch=1 \
-	file://302-c99-snprintf.patch;patch=1 \
-	file://303-c99-complex-ugly-hack.patch;patch=1 \
-	file://304-index_macro.patch;patch=1 \
-	file://305-libmudflap-susv3-legacy.patch;patch=1 \
-	file://306-libstdc++-namespace.patch;patch=1 \
-	file://307-locale_facets.patch;patch=1 \
-	file://402-libbackend_dep_gcov-iov.h.patch;patch=1 \
-	file://602-sdk-libstdc++-includes.patch;patch=1 \
-	file://740-sh-pr24836.patch;patch=1 \
-	file://800-arm-bigendian.patch;patch=1 \
-	file://801-arm-bigendian-eabi.patch;patch=1 \
-	file://904-flatten-switch-stmt-00.patch;patch=1 \
-	file://arm-nolibfloat.patch;patch=1 \
-	file://arm-softfloat.patch;patch=1 \
-	file://gcc41-configure.in.patch;patch=1 \
-	file://arm-thumb.patch;patch=1 \
-	file://arm-thumb-cache.patch;patch=1 \
-	file://zecke-xgcc-cpp.patch;patch=1 \
-	file://unbreak-armv4t.patch;patch=1 \
-	file://cache-amnesia.patch;patch=1 \
-	file://gfortran.patch;patch=1 \
-	file://gcc-4.0.2-e300c2c3.patch;patch=1 \
-	file://fortran-static-linking.patch;patch=1 \
-	file://intermask-bigendian.patch;patch=1 \
+	file://100-uclibc-conf.patch;apply=yes \
+	file://103-uclibc-conf-noupstream.patch;apply=yes \
+	file://200-uclibc-locale.patch;apply=yes \
+	file://203-uclibc-locale-no__x.patch;apply=yes \
+	file://204-uclibc-locale-wchar_fix.patch;apply=yes \
+	file://205-uclibc-locale-update.patch;apply=yes \
+	file://300-libstdc++-pic.patch;apply=yes \
+	file://301-missing-execinfo_h.patch;apply=yes \
+	file://302-c99-snprintf.patch;apply=yes \
+	file://303-c99-complex-ugly-hack.patch;apply=yes \
+	file://304-index_macro.patch;apply=yes \
+	file://305-libmudflap-susv3-legacy.patch;apply=yes \
+	file://306-libstdc++-namespace.patch;apply=yes \
+	file://307-locale_facets.patch;apply=yes \
+	file://402-libbackend_dep_gcov-iov.h.patch;apply=yes \
+	file://602-sdk-libstdc++-includes.patch;apply=yes \
+	file://740-sh-pr24836.patch;apply=yes \
+	file://800-arm-bigendian.patch;apply=yes \
+	file://801-arm-bigendian-eabi.patch;apply=yes \
+	file://904-flatten-switch-stmt-00.patch;apply=yes \
+	file://arm-nolibfloat.patch;apply=yes \
+	file://arm-softfloat.patch;apply=yes \
+	file://gcc41-configure.in.patch;apply=yes \
+	file://arm-thumb.patch;apply=yes \
+	file://arm-thumb-cache.patch;apply=yes \
+	file://zecke-xgcc-cpp.patch;apply=yes \
+	file://unbreak-armv4t.patch;apply=yes \
+	file://cache-amnesia.patch;apply=yes \
+	file://gfortran.patch;apply=yes \
+	file://gcc-4.0.2-e300c2c3.patch;apply=yes \
+	file://fortran-static-linking.patch;apply=yes \
+	file://intermask-bigendian.patch;apply=yes \
 "
 
 SRC_URI_append_ep93xx = " \
-        file://arm-crunch-saveregs.patch;patch=1 \
-        file://arm-crunch-20000320.patch;patch=1 \
-        file://arm-crunch-compare.patch;patch=1 \
-        file://arm-crunch-compare-unordered.patch;patch=1 \
-        file://arm-crunch-compare-geu.patch;patch=1 \
-        file://arm-crunch-eabi-ieee754.patch;patch=1 \
-        file://arm-crunch-eabi-ieee754-div.patch;patch=1 \
-        file://arm-crunch-64bit-disable0.patch;patch=1 \
-        file://arm-crunch-offset.patch;patch=1 \
-        file://arm-crunch-fp_consts.patch;patch=1 \
-        file://arm-crunch-neg2.patch;patch=1 \
-        file://arm-crunch-predicates3.patch;patch=1 \
-        file://arm-crunch-cfcvtds-disable.patch;patch=1 \
-        file://arm-crunch-floatsi-disable.patch;patch=1 \
-        file://arm-crunch-truncsi-disable.patch;patch=1 \
-        file://arm-crunch-cfcvt64-disable.patch;patch=1 \
-        file://arm-crunch-cirrus-bugfixes.patch;patch=1 \
+        file://arm-crunch-saveregs.patch;apply=yes \
+        file://arm-crunch-20000320.patch;apply=yes \
+        file://arm-crunch-compare.patch;apply=yes \
+        file://arm-crunch-compare-unordered.patch;apply=yes \
+        file://arm-crunch-compare-geu.patch;apply=yes \
+        file://arm-crunch-eabi-ieee754.patch;apply=yes \
+        file://arm-crunch-eabi-ieee754-div.patch;apply=yes \
+        file://arm-crunch-64bit-disable0.patch;apply=yes \
+        file://arm-crunch-offset.patch;apply=yes \
+        file://arm-crunch-fp_consts.patch;apply=yes \
+        file://arm-crunch-neg2.patch;apply=yes \
+        file://arm-crunch-predicates3.patch;apply=yes \
+        file://arm-crunch-cfcvtds-disable.patch;apply=yes \
+        file://arm-crunch-floatsi-disable.patch;apply=yes \
+        file://arm-crunch-truncsi-disable.patch;apply=yes \
+        file://arm-crunch-cfcvt64-disable.patch;apply=yes \
+        file://arm-crunch-cirrus-bugfixes.patch;apply=yes \
        "
 
 PACKAGE_ARCH_ep93xx = "${MACHINE_ARCH}"
 
-SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
+SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;apply=yes "
 
 # Language Overrides
 FORTRAN = ""

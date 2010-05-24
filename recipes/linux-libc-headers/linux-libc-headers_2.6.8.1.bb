@@ -13,8 +13,8 @@ PR = "r8"
 PACKAGES = ""
 
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
-	file://mips-asm-atomic-system.diff;patch=1;pnum=0 \
-	file://keyboard.patch;patch=1"
+	file://mips-asm-atomic-system.diff;apply=yes;striplevel=0 \
+	file://keyboard.patch;apply=yes"
 
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 

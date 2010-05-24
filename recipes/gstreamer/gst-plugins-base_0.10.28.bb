@@ -1,8 +1,8 @@
 require gst-plugins.inc
 
 SRC_URI += " \
-            file://gst-plugins-base_rowstride.patch;patch=1 \
-            file://ivorbis-thumb.patch;patch=1 \
+            file://gst-plugins-base_rowstride.patch;apply=yes \
+            file://ivorbis-thumb.patch;apply=yes \
 "
 
 SRC_URI[archive.md5sum] = "0107cf985ac90544bae70288220f5bab"

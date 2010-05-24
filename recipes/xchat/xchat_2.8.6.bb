@@ -7,8 +7,8 @@ DEPENDS += "gdk-pixbuf-csource-native"
 PR = "r2"
 
 SRC_URI = "http://www.xchat.org/files/source/2.8/xchat-${PV}.tar.bz2 \
-	 file://46_CVE-2009-0315.dpatch;patch=1 \
-	 file://53_fix_deprecated_widgets.dpatch;patch=1 \
+	 file://46_CVE-2009-0315.dpatch;apply=yes \
+	 file://53_fix_deprecated_widgets.dpatch;apply=yes \
 	 "
 
 inherit autotools

@@ -7,10 +7,10 @@ RRECOMMENDS = "gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png gdk-pixbuf-loader-gi
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gqview/gqview-2.1.5.tar.gz \
-	   file://include-path-fix.patch;patch=1 \
-	   file://gqview-rc-quotes.patch;patch=1;pnum=0 \
-	   file://gqview-motion-hint.patch;patch=1;pnum=0 \
-	   file://gqview-gimp.patch;patch=1;pnum=0"
+	   file://include-path-fix.patch;apply=yes \
+	   file://gqview-rc-quotes.patch;apply=yes;striplevel=0 \
+	   file://gqview-motion-hint.patch;apply=yes;striplevel=0 \
+	   file://gqview-gimp.patch;apply=yes;striplevel=0"
 
 inherit autotools
 

@@ -4,7 +4,7 @@ PR = "r8"
 
 DEPENDS += "avahi gtk+"
 
-SRC_URI += "file://dbus-pre-1.1.1-support.patch;patch=1"
+SRC_URI += "file://dbus-pre-1.1.1-support.patch;apply=yes"
 AVAHI_GTK = "--enable-gtk"
 
 S = "${WORKDIR}/avahi-${PV}"

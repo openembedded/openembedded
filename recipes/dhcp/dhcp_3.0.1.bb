@@ -4,9 +4,9 @@ HOMEPAGE = "http://www.isc.org/"
 LICENSE = "BSD"
 PR = "r4"
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
-	   file://noattrmode.patch;patch=1 \
-	   file://fixincludes.patch;patch=1 \
-	   file://useless-use-of-bash.patch;patch=1 \
+	   file://noattrmode.patch;apply=yes \
+	   file://fixincludes.patch;apply=yes \
+	   file://useless-use-of-bash.patch;apply=yes \
 	   file://init-relay file://default-relay \
 	   file://init-server file://default-server \
 	   file://dhclient.conf file://dhcpd.conf"

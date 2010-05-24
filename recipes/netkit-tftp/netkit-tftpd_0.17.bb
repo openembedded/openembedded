@@ -6,9 +6,9 @@ LICENSE = "BSD"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/netkit-tftp-${PV}"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-tftp-${PV}.tar.gz \
-	   file://mconfig.patch;patch=1 \
-           file://tftpd_add_debug.patch;patch=1 \
-	   file://pack_tftphdr.patch;patch=1"
+	   file://mconfig.patch;apply=yes \
+           file://tftpd_add_debug.patch;apply=yes \
+	   file://pack_tftphdr.patch;apply=yes"
 
 S = "${WORKDIR}/netkit-tftp-${PV}"
 

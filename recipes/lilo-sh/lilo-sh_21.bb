@@ -15,16 +15,16 @@ LICENSE = "MIT"
 PR = "r1"
 
 SRC_URI = "http://twibble.org/dist/sh4/src/lilosh/lilo-21.tar.gz \
-           file://lilo-0.21-include.patch;patch=1 \
-           file://lilo-0.21-1.1.patch;patch=1 \
-           file://lilo.patch;patch=1 \
-           file://lilo.raid1;patch=1 \
-           file://lilo-0.21-loopdev.patch;patch=1 \
-           file://lilo-0.21-second.patch;patch=1;pnum=0 \
-           file://lilo-sh-linux.patch;patch=1 \
-           file://lilo-linkgear.patch;patch=1 \
-           file://lilo-noconfig-h.patch;patch=1 \
-	   file://lilo-replace-PAGE_SIZE.patch;patch=1 \
+           file://lilo-0.21-include.patch;apply=yes \
+           file://lilo-0.21-1.1.patch;apply=yes \
+           file://lilo.patch;apply=yes \
+           file://lilo.raid1;apply=yes \
+           file://lilo-0.21-loopdev.patch;apply=yes \
+           file://lilo-0.21-second.patch;apply=yes;striplevel=0 \
+           file://lilo-sh-linux.patch;apply=yes \
+           file://lilo-linkgear.patch;apply=yes \
+           file://lilo-noconfig-h.patch;apply=yes \
+	   file://lilo-replace-PAGE_SIZE.patch;apply=yes \
 	"
 
 S = "${WORKDIR}/lilo"

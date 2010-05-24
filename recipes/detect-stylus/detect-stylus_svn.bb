@@ -9,8 +9,8 @@ PR = "r0"
 inherit gpe pkgconfig
 
 SRC_URI = "${GPE_SVN} \
-           file://detect-stylus-svn-build.patch;patch=1 \
-           file://install-detect-tsdevice.patch;patch=1"
+           file://detect-stylus-svn-build.patch;apply=yes \
+           file://install-detect-tsdevice.patch;apply=yes"
 
 S = "${WORKDIR}/${PN}"
 

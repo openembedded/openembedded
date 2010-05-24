@@ -5,8 +5,8 @@ PR = "r1"
 inherit xfce
 XFCE_VERSION = 4.4.2
 
-SRC_URI += " file://configure.patch;patch=1"
-SRC_URI += " file://exo-no-tests.patch;patch=1"
+SRC_URI += " file://configure.patch;apply=yes"
+SRC_URI += " file://exo-no-tests.patch;apply=yes"
 
 # Note: Python checking is broken
 do_configure_prepend() {

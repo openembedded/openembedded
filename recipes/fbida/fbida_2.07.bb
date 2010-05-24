@@ -14,10 +14,10 @@ DEPENDS = "virtual/libiconv jpeg fontconfig freetype libexif"
 RDEPENDS = "ttf-dejavu-sans-mono"
 
 SRC_URI = "http://dl.bytesex.org/releases/fbida/fbida-${PV}.tar.gz \
-	   file://exiftran.c.patch;patch=1 \
-	   file://fbi.c.patch;patch=1 \
-	   file://GNUmakefile.patch;patch=1 \
-	   file://sys_siglist.patch;patch=1 \
+	   file://exiftran.c.patch;apply=yes \
+	   file://fbi.c.patch;apply=yes \
+	   file://GNUmakefile.patch;apply=yes \
+	   file://sys_siglist.patch;apply=yes \
 	  "
 
 EXTRA_OEMAKE = ""

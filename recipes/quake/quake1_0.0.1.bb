@@ -7,10 +7,10 @@ PR = "r2"
 
 SRC_URI = "http://mirror1.pdaXrom.org/rc9/src/quake1src.tar.bz2;name=archive \
            http://mirror1.pdaxrom.org/source/src/pak0.tar.gz;name=pak0 \
-           file://Makefile.patch;patch=1 \
-           file://cl_parse.c.patch;patch=1 \
-           file://vid_sdl.c.patch;patch=1 \
-           file://host.c.patch;patch=1"
+           file://Makefile.patch;apply=yes \
+           file://cl_parse.c.patch;apply=yes \
+           file://vid_sdl.c.patch;apply=yes \
+           file://host.c.patch;apply=yes"
 
 S = "${WORKDIR}/quake1src"
 

@@ -11,10 +11,10 @@ PR = "r6"
 DEPENDS += "fakeroot-native"
 
 SRC_URI = "ftp://ftp.handhelds.org/packages/alsa-driver/alsa-driver-${PV}.tar.gz \
-	file://sound.p.patch;patch=1 \
-	file://h5400.patch;patch=1 \
-	file://sa11xx.patch;patch=1 \
-	file://adriver.h.patch;patch=1"
+	file://sound.p.patch;apply=yes \
+	file://h5400.patch;apply=yes \
+	file://sa11xx.patch;apply=yes \
+	file://adriver.h.patch;apply=yes"
 
 inherit autotools module
 

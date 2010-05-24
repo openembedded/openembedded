@@ -13,7 +13,7 @@ GPE_TARBALL_SUFFIX = "bz2"
 
 inherit gpe autotools pkgconfig
 
-SRC_URI += "file://scriptname.patch;patch=1;pnum=0"
+SRC_URI += "file://scriptname.patch;apply=yes;striplevel=0"
 
 PACKAGES += "gpe-conf-panel"
 

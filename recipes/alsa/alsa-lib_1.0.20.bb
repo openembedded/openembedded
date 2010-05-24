@@ -11,8 +11,8 @@ PR = "r3"
 ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2 \
-           file://fix-tstamp-declaration.patch;patch=1 \
-	   file://fix_libmath.patch;patch=1 \
+           file://fix-tstamp-declaration.patch;apply=yes \
+	   file://fix_libmath.patch;apply=yes \
 	  "
 
 inherit autotools pkgconfig

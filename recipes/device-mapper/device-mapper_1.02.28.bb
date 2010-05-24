@@ -7,8 +7,8 @@ LICENSE = "GPL"
 S = "${WORKDIR}/${PN}.${PV}"
 
 SRC_URI = "ftp://sources.redhat.com/pub/dm/device-mapper.${PV}.tgz \
-       file://devmap-mknod-busybox.patch;patch=1 \
-	   file://remove_insanity.patch;patch=1 "
+       file://devmap-mknod-busybox.patch;apply=yes \
+	   file://remove_insanity.patch;apply=yes "
 
 inherit autotools_stage update-rc.d
 AUTOTOOLS_STAGE_PKGCONFIG = "1"

@@ -7,8 +7,8 @@ LICENSE = "BSD"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
-	   file://libetpan-autoreconf.patch;patch=1 \
-           file://libetpan-ldflags.patch;patch=1"
+	   file://libetpan-autoreconf.patch;apply=yes \
+           file://libetpan-ldflags.patch;apply=yes"
 
 inherit autotools pkgconfig gettext binconfig
 

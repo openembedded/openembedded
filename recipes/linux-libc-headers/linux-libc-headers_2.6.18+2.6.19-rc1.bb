@@ -6,9 +6,9 @@ PR = "r1"
 
 SRC_URI = " \
 	${KERNELORG_MIRROR}/pub/linux/kernel/people/dwmw2/kernel-headers/snapshot/linux-kernel-headers-2.6.19-rc1.tar.bz2 \
-	file://arm-procinfo-hwcap.patch;patch=1 \
-	file://arm-unistd-syscall.patch;patch=1 \
-	file://linux-err.patch;patch=1 \
+	file://arm-procinfo-hwcap.patch;apply=yes \
+	file://arm-unistd-syscall.patch;apply=yes \
+	file://linux-err.patch;apply=yes \
 "
 
 S = "${WORKDIR}/linux-2.6.19-rc1"

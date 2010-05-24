@@ -7,12 +7,12 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/files"
 PR = "r8"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/modutils/v2.4/modutils-${PV}.tar.bz2 \
-           file://lex.l.diff;patch=1 \
-           file://modutils-notest.patch;patch=1 \
-           file://configure.patch;patch=1 \
-           file://program_prefix.patch;patch=1 \
-           file://armeb.patch;patch=1 \
-	   file://gcc4.patch;patch=1"
+           file://lex.l.diff;apply=yes \
+           file://modutils-notest.patch;apply=yes \
+           file://configure.patch;apply=yes \
+           file://program_prefix.patch;apply=yes \
+           file://armeb.patch;apply=yes \
+	   file://gcc4.patch;apply=yes"
 
 inherit autotools
 

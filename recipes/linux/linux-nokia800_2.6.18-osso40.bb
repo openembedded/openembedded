@@ -3,17 +3,17 @@ require linux-nokia800.inc
 PR = "r5"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo3.1/free/source/kernel-source-rx-34_2.6.18.orig.tar.gz;name=kernel \
-           http://repository.maemo.org/pool/maemo3.1/free/source/kernel-source-rx-34_2.6.18-osso40.diff.gz;patch=1;name=ossopatch \
-           ${RPSRC}/lzo_kernel-r0.patch;patch=1;name=rppatch25 \
-           ${RPSRC}/lzo_jffs2-r0.patch;patch=1;name=rppatch26 \
-           ${RPSRC}/lzo_crypto-r0b.patch;patch=1;name=rppatch27 \
-           ${RPSRC}/lzo_jffs2_lzomode-r0.patch;patch=1;name=rppatch28 \
-           ${RPSRC}/lzo_jffs2_sysfs-r0.patch;patch=1;name=rppatch29 \
-           file://fix_oprofile.patch;patch=1 \
-           file://linux-2.6-limits.patch;patch=1 \
+           http://repository.maemo.org/pool/maemo3.1/free/source/kernel-source-rx-34_2.6.18-osso40.diff.gz;apply=yes;name=ossopatch \
+           ${RPSRC}/lzo_kernel-r0.patch;apply=yes;name=rppatch25 \
+           ${RPSRC}/lzo_jffs2-r0.patch;apply=yes;name=rppatch26 \
+           ${RPSRC}/lzo_crypto-r0b.patch;apply=yes;name=rppatch27 \
+           ${RPSRC}/lzo_jffs2_lzomode-r0.patch;apply=yes;name=rppatch28 \
+           ${RPSRC}/lzo_jffs2_sysfs-r0.patch;apply=yes;name=rppatch29 \
+           file://fix_oprofile.patch;apply=yes \
+           file://linux-2.6-limits.patch;apply=yes \
 	   file://defconfig"
 
-SRC_URI_append_nokia770 = " file://nokia770_nand_fix.patch;patch=1"
+SRC_URI_append_nokia770 = " file://nokia770_nand_fix.patch;apply=yes"
 
 S = "${WORKDIR}/linux-g"
 

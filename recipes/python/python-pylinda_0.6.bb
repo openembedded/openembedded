@@ -7,7 +7,7 @@ SRCNAME = "linda"
 PR = "r1"
 
 SRC_URI = "http://www.handhelds.org/~aquadran/distro/latest/sources/linda-${PV}.tar.gz \
-           file://honor-datadir.patch;patch=1"
+           file://honor-datadir.patch;apply=yes"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

@@ -9,9 +9,9 @@ PR = "r3"
 PARALLEL_MAKE = ""
 
 SRC_URI = "ftp://arcana.linux.it/pub/gpm/gpm-${PV}.tar.bz2 \
-	   file://configure.patch;patch=1 \
-	   file://no-docs.patch;patch=1 \
-	   file://gpm-OPEN_MAX.patch;patch=1 \
+	   file://configure.patch;apply=yes \
+	   file://no-docs.patch;apply=yes \
+	   file://gpm-OPEN_MAX.patch;apply=yes \
 	   file://init"
 
 inherit autotools update-rc.d

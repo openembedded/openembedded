@@ -2,9 +2,9 @@ require util-linux-ng.inc
 
 PR = "${INC_PR}"
 
-SRC_URI += "file://uclibc-compile.patch;patch=1 \
-            file://tls.patch;patch=1 \
-	    file://util-linux-ng-replace-siginterrupt.patch;patch=1 \
+SRC_URI += "file://uclibc-compile.patch;apply=yes \
+            file://tls.patch;apply=yes \
+	    file://util-linux-ng-replace-siginterrupt.patch;apply=yes \
            "
 
 SRC_URI[archive.md5sum] = "9623380641b0c2e0449f5b1ecc567663"

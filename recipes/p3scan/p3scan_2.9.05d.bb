@@ -9,9 +9,9 @@ RDEPENDS_${PN} = "${PN}-templates-en"
 PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/p3scan/p3scan-2.9.05d.tar.gz \
-           file://libtool-fix.patch;patch=1 \
-           file://dont-search-use-include.patch;patch=1 \
-           file://configure.in-add-newline.patch;patch=1 \
+           file://libtool-fix.patch;apply=yes \
+           file://dont-search-use-include.patch;apply=yes \
+           file://configure.in-add-newline.patch;apply=yes \
            file://p3scan.init \
            file://p3scan.conf \
            file://doc.configure.txt \

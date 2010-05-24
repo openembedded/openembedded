@@ -6,7 +6,7 @@ PR = "r2"
 
 inherit autotools pkgconfig gnome
 
-SRC_URI_append = " file://croco.patch;patch=1 "
+SRC_URI_append = " file://croco.patch;apply=yes "
 
 do_stage() {
 	install -d ${STAGING_LIBDIR}

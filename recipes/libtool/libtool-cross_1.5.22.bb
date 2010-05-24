@@ -4,12 +4,12 @@ require libtool_${PV}.bb
 
 PR = "${INC_PR}.0"
 PACKAGES = ""
-SRC_URI_append = " file://libdir-la.patch;patch=1 \
-                   file://prefix.patch;patch=1 \
-                   file://tag.patch;patch=1 \
-                   file://tag1.patch;patch=1 \
-#                   file://rpath.patch;patch=1 \
-                   file://install-path-check.patch;patch=1"
+SRC_URI_append = " file://libdir-la.patch;apply=yes \
+                   file://prefix.patch;apply=yes \
+                   file://tag.patch;apply=yes \
+                   file://tag1.patch;apply=yes \
+#                   file://rpath.patch;apply=yes \
+                   file://install-path-check.patch;apply=yes"
 S = "${WORKDIR}/libtool-${PV}"
 
 prefix = "${STAGING_DIR_NATIVE}${prefix_native}"

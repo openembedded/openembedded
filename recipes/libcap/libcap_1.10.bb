@@ -8,9 +8,9 @@ PR = "r2"
 CFLAGS_append = " -I${S}/libcap/include -fPIC"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/kernel-2.4/${PN}-${PV}.tar.bz2 \
-	   file://makenames.patch;patch=1 \
-	   file://make.patch;patch=1 \
-	   file://syscall.patch;patch=1"
+	   file://makenames.patch;apply=yes \
+	   file://make.patch;apply=yes \
+	   file://syscall.patch;apply=yes"
 
 FILES_${PN} = "${libdir}"
 FILES_${PN}-dev = "${includedir}"

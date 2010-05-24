@@ -6,7 +6,7 @@ PR = "r2"
 LICENSE = "GPL"
 
 SRC_URI = "http://optusnet.dl.sourceforge.net/sourceforge/nail/nail-11.21.tar.bz2 \
-	   file://nail.spec.diff;patch=1"
+	   file://nail.spec.diff;apply=yes"
 
 S = "${WORKDIR}/nail-11.21/"
 

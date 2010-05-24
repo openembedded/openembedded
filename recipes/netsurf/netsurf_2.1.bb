@@ -5,8 +5,8 @@ SECTION = "x11/network"
 LICENSE = "GPLv2"
 
 SRC_URI = "http://www.netsurf-browser.org/downloads/releases/netsurf-${PV}-src.tar.gz \
-	   file://fix_makefile.patch;patch=1 \
-	   file://debugxml_fix.patch;patch=1 \
+	   file://fix_makefile.patch;apply=yes \
+	   file://debugxml_fix.patch;apply=yes \
 	   file://netsurf.png \
 	   file://netsurf.desktop \
 	   file://Makefile.config"

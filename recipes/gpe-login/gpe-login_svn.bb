@@ -12,7 +12,7 @@ inherit autotools
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 SRC_URI = "${GPE_SVN} \
-	   file://removeblue-fontsize8.patch;patch=1"
+	   file://removeblue-fontsize8.patch;apply=yes"
 
 S = "${WORKDIR}/${PN}"
 

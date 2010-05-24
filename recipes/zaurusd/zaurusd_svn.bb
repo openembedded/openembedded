@@ -9,18 +9,18 @@ PR = "r22"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
-	   file://add-poodle.patch;patch=1 \
-	   file://alsa-cxx00-default.state.patch;patch=1 \
-	   file://alsa-6000x-default.state.patch;patch=1 \
-	   file://disable-alsa-handling.patch;patch=1 \
-	   file://avoid-rotated-server.patch;patch=1 \
+	   file://add-poodle.patch;apply=yes \
+	   file://alsa-cxx00-default.state.patch;apply=yes \
+	   file://alsa-6000x-default.state.patch;apply=yes \
+	   file://disable-alsa-handling.patch;apply=yes \
+	   file://avoid-rotated-server.patch;apply=yes \
 	   file://zaurus-hinge.matchbox-portrait \
 	   file://zaurus-hinge.matchbox-landscape \
 	   file://zaurus-hinge.bl-on \
 	   file://zaurus-hinge.bl-off \
 	   file://01-check-toggle-landscape \
 	   file://01-check-toggle-portait \
-       file://use-ts-symlink-instead-of-hardcoding.diff;patch=1 "
+       file://use-ts-symlink-instead-of-hardcoding.diff;apply=yes "
 
 
 S = "${WORKDIR}/${PN}"

@@ -6,8 +6,8 @@ DEPENDS = "expat"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ulxmlrpcpp/ulxmlrpcpp-${PV}-src.tar.bz2 \
-           file://disable-docs.patch;patch=1 \
-           file://remove-local-includes.patch;patch=1"
+           file://disable-docs.patch;apply=yes \
+           file://remove-local-includes.patch;apply=yes"
 
 inherit autotools
 

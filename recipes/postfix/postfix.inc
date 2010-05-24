@@ -6,8 +6,8 @@ LICENSE = "IPL"
 INC_PR = "r13"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz;name=postfix-${PV} \
-	   file://makedefs.patch;patch=1 \
-	   file://install.patch;patch=1 \
+	   file://makedefs.patch;apply=yes \
+	   file://install.patch;apply=yes \
 	   file://main.cf_2.0 \
 	   file://volatiles \
 	   file://postfix \

@@ -8,7 +8,7 @@ PR = "r2"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/pyid3lib/${SRCNAME}-${PV}.tar.bz2\
-  file://gcc4-fix.patch;patch=1 \
+  file://gcc4-fix.patch;apply=yes \
 "
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 

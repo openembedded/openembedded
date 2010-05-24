@@ -7,11 +7,11 @@ LICENSE = "libgsm"
 PR = "r1"
 
 SRC_URI = "http://user.cs.tu-berlin.de/~jutta/gsm/gsm-${PV}.tar.gz \
-	   file://01_makefile.patch;patch=1 \
-           file://02_cplusplus.patch;patch=1 \
-           file://03_config.patch;patch=1 \
-           file://04_includes.patch;patch=1 \
-           file://05_compiler_warnings.patch;patch=1 \
+	   file://01_makefile.patch;apply=yes \
+           file://02_cplusplus.patch;apply=yes \
+           file://03_config.patch;apply=yes \
+           file://04_includes.patch;apply=yes \
+           file://05_compiler_warnings.patch;apply=yes \
 	  "
 
 S = "${WORKDIR}/gsm-1.0-pl12/"

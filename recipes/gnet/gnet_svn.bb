@@ -8,9 +8,9 @@ PV = "2.0.7+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://svn.gnome.org/svn/${PN}/;module=trunk;proto=http \
-           file://buildfix.patch;patch=1 \
-           file://configure_fix.patch;patch=1 \
-           file://pkgconfig_fix.patch;patch=1 "
+           file://buildfix.patch;apply=yes \
+           file://configure_fix.patch;apply=yes \
+           file://pkgconfig_fix.patch;apply=yes "
 
 S = "${WORKDIR}/trunk"
 

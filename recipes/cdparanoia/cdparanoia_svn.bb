@@ -9,11 +9,11 @@ PV = "10.2+svnr${SRCPV}"
 SRCREV = "16684"
 
 SRC_URI = "svn://svn.xiph.org/trunk;module=cdparanoia;proto=http \
-	 file://fixes10.patch;patch=1 \
-	 file://Makefile.in.patch;patch=1 \
-	 file://interface_Makefile.in.patch;patch=1 \
-	 file://paranoia_Makefile.in.patch;patch=1 \
-	 file://configure.in.patch;patch=1 "
+	 file://fixes10.patch;apply=yes \
+	 file://Makefile.in.patch;apply=yes \
+	 file://interface_Makefile.in.patch;apply=yes \
+	 file://paranoia_Makefile.in.patch;apply=yes \
+	 file://configure.in.patch;apply=yes "
 
 S = "${WORKDIR}/cdparanoia"
 

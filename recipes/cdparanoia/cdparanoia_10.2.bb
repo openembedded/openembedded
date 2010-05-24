@@ -4,12 +4,12 @@
 LICENSE = "GPL"
 
 SRC_URI = "http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-10.2.src.tgz \
-         file://fixes10.patch;patch=1 \
-         file://Makefile.in.patch;patch=1 \
-         file://interface_Makefile.in.patch;patch=1 \
-         file://paranoia_Makefile.in.patch;patch=1 \
-         file://cdparanoia-III-10.2-privatefix.patch;patch=1 \
-	 file://configure.in.patch;patch=1"
+         file://fixes10.patch;apply=yes \
+         file://Makefile.in.patch;apply=yes \
+         file://interface_Makefile.in.patch;apply=yes \
+         file://paranoia_Makefile.in.patch;apply=yes \
+         file://cdparanoia-III-10.2-privatefix.patch;apply=yes \
+	 file://configure.in.patch;apply=yes"
 
 S = "${WORKDIR}/cdparanoia-III-10.2"
 

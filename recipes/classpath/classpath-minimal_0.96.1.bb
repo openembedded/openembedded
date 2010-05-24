@@ -3,8 +3,8 @@ require classpath.inc
 PR = "r7"
 
 SRC_URI += "\
-  file://gjar-prefix-patch.diff;patch=1;pnum=0 \
-  file://xmlstream-fix.patch;patch=1;pnum=0 \
+  file://gjar-prefix-patch.diff;apply=yes;striplevel=0 \
+  file://xmlstream-fix.patch;apply=yes;striplevel=0 \
   "
 
 PROVIDES = "${PN} classpath"

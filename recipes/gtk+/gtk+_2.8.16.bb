@@ -10,21 +10,21 @@ PR = "r5"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/gtk+-${PV}.tar.bz2 \
-           file://no-xwc.patch;patch=1 \
-           file://automake-lossage.patch;patch=1 \
-	   file://spinbutton.patch;patch=1 \
-	   file://hardcoded_libtool.patch;patch=1 \
-	   file://disable-tooltips.patch;patch=1 \
-	   file://gtklabel-resize-patch;patch=1 \
-	   file://gtktreeview-316689.patch;patch=1 \
-	   file://menu-deactivate.patch;patch=1 \
-	   file://xsettings.patch;patch=1 \
-	   file://scroll-timings.patch;patch=1 \
-	   file://small-gtkfilesel.patch;patch=1 \
-	   file://migration.patch;patch=1;pnum=0 \
-	   file://no-demos.patch;patch=1 \
-	   file://gtk+-handhelds.patch;patch=1 \
-	   file://single-click.patch;patch=1"
+           file://no-xwc.patch;apply=yes \
+           file://automake-lossage.patch;apply=yes \
+	   file://spinbutton.patch;apply=yes \
+	   file://hardcoded_libtool.patch;apply=yes \
+	   file://disable-tooltips.patch;apply=yes \
+	   file://gtklabel-resize-patch;apply=yes \
+	   file://gtktreeview-316689.patch;apply=yes \
+	   file://menu-deactivate.patch;apply=yes \
+	   file://xsettings.patch;apply=yes \
+	   file://scroll-timings.patch;apply=yes \
+	   file://small-gtkfilesel.patch;apply=yes \
+	   file://migration.patch;apply=yes;striplevel=0 \
+	   file://no-demos.patch;apply=yes \
+	   file://gtk+-handhelds.patch;apply=yes \
+	   file://single-click.patch;apply=yes"
 
 inherit autotools pkgconfig
 

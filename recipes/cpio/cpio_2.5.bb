@@ -7,7 +7,7 @@ PR = "r5"
 DEPENDS += " texinfo-native "
 
 SRC_URI = "${GNU_MIRROR}/cpio/cpio-${PV}.tar.gz \
-	   file://install.patch;patch=1"
+	   file://install.patch;apply=yes"
 S = "${WORKDIR}/cpio-${PV}"
 
 inherit autotools

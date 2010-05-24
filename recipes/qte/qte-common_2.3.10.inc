@@ -19,35 +19,35 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
 CXXFLAGS := "${@oe_filter_out('-fvisibility-inlines-hidden', '${CXXFLAGS}', d)}"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=1f7ad30113afc500cab7f5b2f4dec0d7 \
-   	   file://qpe.patch;patch=1 \
-	   file://vt-switch.patch;patch=1 \
-	   file://daemonize.patch;patch=1 \
-	   file://no-moc.patch;patch=1 \
-	   file://gcc3.patch;patch=1 \
-	   file://gcc4.patch;patch=1 \
-	   file://encoding.patch;patch=1 \
-	   file://fix-qgfxraster.patch;patch=1 \
-	   file://qt-visibility.patch;patch=1 \
-	   file://tslib.patch;patch=1 \
-	   file://handhelds.patch;patch=1 \
-	   file://qiconview-speed.patch;patch=1 \
-	   file://qtabbar.patch;patch=1 \
-	   file://increase-qxml-robustness.patch;patch=1 \
-	   file://qte-fix-iconsize.patch;patch=1 \
-	   file://fix-linuxfb-setmode.patch;patch=1 \
-	   file://fix-linuxfb-offscreenoverflow.patch;patch=1 \
-	   file://fix-qscreen-sync.patch;patch=1 \
-	   file://improve-calibration-r0.patch;patch=1 \
-	   file://key.patch;patch=1 \
-	   file://bidimetrics.patch;patch=5 \
-	   file://fix-native-build.patch;patch=1 \
-	   file://fix-errno-exception-spec.patch;patch=1 \
-           file://keyboardless-buttonmap.patch;patch=1 \
-           file://kernel-keymap.patch;patch=1 \
-	   file://kernel-keymap-corgi.patch;patch=1 \
-	   file://remove-unused-kbdhandler.patch;patch=1 \
-	   file://disable-dup-rotation.patch;patch=1 \
-	   file://fix-qte-asm-include.patch;patch=1 \
+   	   file://qpe.patch;apply=yes \
+	   file://vt-switch.patch;apply=yes \
+	   file://daemonize.patch;apply=yes \
+	   file://no-moc.patch;apply=yes \
+	   file://gcc3.patch;apply=yes \
+	   file://gcc4.patch;apply=yes \
+	   file://encoding.patch;apply=yes \
+	   file://fix-qgfxraster.patch;apply=yes \
+	   file://qt-visibility.patch;apply=yes \
+	   file://tslib.patch;apply=yes \
+	   file://handhelds.patch;apply=yes \
+	   file://qiconview-speed.patch;apply=yes \
+	   file://qtabbar.patch;apply=yes \
+	   file://increase-qxml-robustness.patch;apply=yes \
+	   file://qte-fix-iconsize.patch;apply=yes \
+	   file://fix-linuxfb-setmode.patch;apply=yes \
+	   file://fix-linuxfb-offscreenoverflow.patch;apply=yes \
+	   file://fix-qscreen-sync.patch;apply=yes \
+	   file://improve-calibration-r0.patch;apply=yes \
+	   file://key.patch;apply=yes \
+	   file://bidimetrics.patch;apply=yes;striplevel=5 \
+	   file://fix-native-build.patch;apply=yes \
+	   file://fix-errno-exception-spec.patch;apply=yes \
+           file://keyboardless-buttonmap.patch;apply=yes \
+           file://kernel-keymap.patch;apply=yes \
+	   file://kernel-keymap-corgi.patch;apply=yes \
+	   file://remove-unused-kbdhandler.patch;apply=yes \
+	   file://disable-dup-rotation.patch;apply=yes \
+	   file://fix-qte-asm-include.patch;apply=yes \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -55,18 +55,18 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 # add device specific patches here
 #
 
-W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
-                      file://c7x0-w100-gcc4.patch;patch=1 \
-		      file://suspend-resume-hooks.patch;patch=1"
+W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;apply=yes \
+                      file://c7x0-w100-gcc4.patch;apply=yes \
+		      file://suspend-resume-hooks.patch;apply=yes"
 
 #SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
-#SRC_URI_append_spitz        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
-#SRC_URI_append_akita        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
+#SRC_URI_append_spitz        = "file://spitz-adhoc-keypad-rotate.patch;apply=yes "
+#SRC_URI_append_akita        = "file://spitz-adhoc-keypad-rotate.patch;apply=yes "
 
 # "ipaqs" used to have this, but later were proven to at least work
 # without it. Review again and see if has interesting bits to be applied
 # universally.
-#SRC_URI_append   = "file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append   = "file://ipaq_sound_fix.patch;apply=yes "
 
 
 S = "${WORKDIR}/qt-${PV}"

@@ -8,10 +8,10 @@ DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib libxpm"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prismstumbler/${PN}-${PV}.tar.bz2 \
-	file://bogoconf.patch;patch=1 \
-	file://crosscompile.patch;patch=1 \
-        file://libz.patch;patch=1;pnum=0 \
-	file://wireless.patch;patch=1"
+	file://bogoconf.patch;apply=yes \
+	file://crosscompile.patch;apply=yes \
+        file://libz.patch;apply=yes;striplevel=0 \
+	file://wireless.patch;apply=yes"
 
 inherit autotools pkgconfig
 

@@ -6,8 +6,8 @@ DEPENDS = "gdbm zlib libpcap libpng gd"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ntop/ntop-${PV}.tgz \
-           file://autotools.patch;patch=1 \
-           file://plugins.patch;patch=1"
+           file://autotools.patch;apply=yes \
+           file://plugins.patch;apply=yes"
 
 inherit autotools
 

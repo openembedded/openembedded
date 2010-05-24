@@ -4,8 +4,8 @@ DEPENDS = "libpng jpeg"
 PR = "r2"
 
 SRC_URI = "http://s-tech.elsat.net.pl/fbv/fbv-1.0b.tar.gz \
-	file://cross_compile.patch;patch=1 \
-	file://fbv-1.0b.patch;patch=1 \
+	file://cross_compile.patch;apply=yes \
+	file://fbv-1.0b.patch;apply=yes \
 	"
 
 do_configure() {

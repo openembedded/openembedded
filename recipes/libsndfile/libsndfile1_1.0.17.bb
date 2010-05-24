@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 PR = "r2"
 
 SRC_URI = "http://www.mega-nerd.com/libsndfile/libsndfile-${PV}.tar.gz \
-           file://configure-fix.patch;patch=1"
+           file://configure-fix.patch;apply=yes"
 
 S = "${WORKDIR}/libsndfile-${PV}"
 

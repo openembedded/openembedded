@@ -5,8 +5,8 @@ SECTION = "x11/utils"
 LICENSE = "GPLv2"
 
 SRC_URI = "http://linuxbrit.co.uk/downloads/camE-${PV}.tar.gz \
-           file://make.patch;patch=1 \
-           file://compile.patch;patch=1"
+           file://make.patch;apply=yes \
+           file://compile.patch;apply=yes"
 S = "${WORKDIR}/camE-${PV}"
 
 do_install () {

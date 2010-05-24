@@ -5,10 +5,10 @@ LICENSE = "GPL"
 PR = "r6"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
-           file://ldflags.patch;patch=1 \
-           file://configure.patch;patch=1 \
-           file://libs-lcrypto.patch;patch=1 \
-           file://dont-strip.patch;patch=1 \
+           file://ldflags.patch;apply=yes \
+           file://configure.patch;apply=yes \
+           file://libs-lcrypto.patch;apply=yes \
+           file://dont-strip.patch;apply=yes \
            file://ssmtp.conf"
 S = "${WORKDIR}/${PN}-${PV}"
 

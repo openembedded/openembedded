@@ -11,54 +11,54 @@ SHARPV = "20031107"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
-           ftp://ftp.linux.org.uk/pub/armlinux/source/kernel-patches/v2.4/patch-${KV}-rmk${RMKV}.gz;patch=1;name=patch1 \
-           ftp://source.mvista.com/pub/xscale/pxa/diff-${KV}-rmk${RMKV}-pxa${PXAV}.gz;patch=1;name=patch2 \
-           http://openzaurus.org/mirror/linux-${PV}-slc860-${SHARPV}-rom1_10.bz2;patch=1;name=patch3 \
-           file://piro.patch;patch=1 \
-           file://swap-performance.patch;patch=1 \
-           file://bluetooth-2.4.18-mh15.patch;patch=1 \
-           file://iw_handlers.w13-5.diff;patch=1 \
-           file://iw_handlers.w14-5.diff;patch=1 \
-           file://iw240_we15-6.diff;patch=1 \
-           file://iw249_we16-6.diff;patch=1 \
-           file://iw249_we17-13.diff;patch=1 \
-           file://iw240_we18-5.diff;patch=1 \
-           file://bt950_cs.patch;patch=1 \
-           file://bluecard_cs.patch;patch=1 \
-           file://sharpsl_battery.patch;patch=1 \
-           file://buffered-fbmem.patch;patch=1 \
-           file://enable-sysrq.patch;patch=1 \
-           file://compile.patch;patch=1 \
-           file://idecs.patch;patch=1 \
-           file://logo.patch;patch=1 \
-           file://initsh.patch;patch=1 \
-           file://keyboard-ctrl+alt.patch;patch=1 \
-           file://keymap-more-sane.patch;patch=1 \
-           file://mkdep.patch;patch=1 \
-           file://disable-pcmcia-probe.patch;patch=1 \
-           file://deviceinfo.patch;patch=1 \
-           file://linux-2.4.18-list_move.patch;patch=1 \
-           file://tosa_map.patch;patch=1 \
-           file://tosa_ts.patch;patch=1 \
-           file://corgi-fbcon-logo.patch;patch=1 \
-           file://corgi-default-brightness.patch;patch=1 \
-           http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1;name=patch4 \
-           file://1764-1.patch;patch=1 \
-           file://module_licence.patch;patch=1 \
-           file://ir240_sys_max_tx-2.diff;patch=1 \
-           file://ir241_qos_param-2.diff;patch=1 \
+           ftp://ftp.linux.org.uk/pub/armlinux/source/kernel-patches/v2.4/patch-${KV}-rmk${RMKV}.gz;apply=yes;name=patch1 \
+           ftp://source.mvista.com/pub/xscale/pxa/diff-${KV}-rmk${RMKV}-pxa${PXAV}.gz;apply=yes;name=patch2 \
+           http://openzaurus.org/mirror/linux-${PV}-slc860-${SHARPV}-rom1_10.bz2;apply=yes;name=patch3 \
+           file://piro.patch;apply=yes \
+           file://swap-performance.patch;apply=yes \
+           file://bluetooth-2.4.18-mh15.patch;apply=yes \
+           file://iw_handlers.w13-5.diff;apply=yes \
+           file://iw_handlers.w14-5.diff;apply=yes \
+           file://iw240_we15-6.diff;apply=yes \
+           file://iw249_we16-6.diff;apply=yes \
+           file://iw249_we17-13.diff;apply=yes \
+           file://iw240_we18-5.diff;apply=yes \
+           file://bt950_cs.patch;apply=yes \
+           file://bluecard_cs.patch;apply=yes \
+           file://sharpsl_battery.patch;apply=yes \
+           file://buffered-fbmem.patch;apply=yes \
+           file://enable-sysrq.patch;apply=yes \
+           file://compile.patch;apply=yes \
+           file://idecs.patch;apply=yes \
+           file://logo.patch;apply=yes \
+           file://initsh.patch;apply=yes \
+           file://keyboard-ctrl+alt.patch;apply=yes \
+           file://keymap-more-sane.patch;apply=yes \
+           file://mkdep.patch;apply=yes \
+           file://disable-pcmcia-probe.patch;apply=yes \
+           file://deviceinfo.patch;apply=yes \
+           file://linux-2.4.18-list_move.patch;apply=yes \
+           file://tosa_map.patch;apply=yes \
+           file://tosa_ts.patch;apply=yes \
+           file://corgi-fbcon-logo.patch;apply=yes \
+           file://corgi-default-brightness.patch;apply=yes \
+           http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;apply=yes;name=patch4 \
+           file://1764-1.patch;apply=yes \
+           file://module_licence.patch;apply=yes \
+           file://ir240_sys_max_tx-2.diff;apply=yes \
+           file://ir241_qos_param-2.diff;apply=yes \
            http://us1.samba.org/samba/ftp/cifs-cvs/cifs-1.20c-2.4.tar.gz;name=patch5 \
-           file://fix_tosa_apm.patch;patch=1 \
-           file://dumb-hack-for-wlan-ng.patch;patch=1 \
-           file://unb0rk-apm.patch;patch=1 \
-           file://apm_arrowkey.patch;patch=1 \
+           file://fix_tosa_apm.patch;apply=yes \
+           file://dumb-hack-for-wlan-ng.patch;apply=yes \
+           file://unb0rk-apm.patch;apply=yes \
+           file://apm_arrowkey.patch;apply=yes \
            file://defconfig-${MACHINE} "
 
-SRC_URI_append_poodle += " file://smallfonts.diff;patch=1"
-SRC_URI_append_poodle255 += " file://smallfonts.diff;patch=1"
+SRC_URI_append_poodle += " file://smallfonts.diff;apply=yes"
+SRC_URI_append_poodle255 += " file://smallfonts.diff;apply=yes"
 # apply this when we have a kernel that builds with gcc 3.x:
-# SRC_URI_append = file://machtune-args.patch;patch=1
-SRC_URI_append_tosa = " file://tosa-power-key-off.patch;patch=1"
+# SRC_URI_append = file://machtune-args.patch;apply=yes
+SRC_URI_append_tosa = " file://tosa-power-key-off.patch;apply=yes"
 
 S = "${WORKDIR}/linux"
 

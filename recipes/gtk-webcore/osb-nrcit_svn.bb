@@ -11,8 +11,8 @@ PR = "r1"
 DEPENDS = "curl librsvg osb-nrcore pango"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=NRCit;proto=https \
-           file://pkgconfig_fix.patch;patch=1 \
-           file://gcc4-fno-threadsafe-statics-NRCit.patch;patch=1"
+           file://pkgconfig_fix.patch;apply=yes \
+           file://gcc4-fno-threadsafe-statics-NRCit.patch;apply=yes"
 
 inherit autotools pkgconfig
 

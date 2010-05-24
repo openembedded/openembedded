@@ -6,12 +6,12 @@ DEPENDS = "ncurses"
 PR = "r2"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
-           file://configure.in.patch;patch=1 \
-           file://plug.in.patch;patch=1 \
-           file://misc.m4.patch;patch=1 \
-           file://Makefile.am.patch;patch=1 \
-           file://fix_host_path.patch;patch=1 \
-	   file://configure-ps-cache-check.patch;patch=1 \
+           file://configure.in.patch;apply=yes \
+           file://plug.in.patch;apply=yes \
+           file://misc.m4.patch;apply=yes \
+           file://Makefile.am.patch;apply=yes \
+           file://fix_host_path.patch;apply=yes \
+	   file://configure-ps-cache-check.patch;apply=yes \
            file://my.cnf \
            file://mysqld.sh"
 

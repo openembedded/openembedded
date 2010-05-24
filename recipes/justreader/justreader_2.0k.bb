@@ -6,8 +6,8 @@ HOMEPAGE = "http://justreader.sourceforge.net/"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/justreader/justreader_${PV}.tgz \
-file://correct-settings-path.patch;patch=1 \
-file://missing-include.patch;patch=1"
+file://correct-settings-path.patch;apply=yes \
+file://missing-include.patch;apply=yes"
 
 S = "${WORKDIR}/TextReader2"
 

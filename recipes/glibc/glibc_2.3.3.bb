@@ -49,10 +49,10 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz;name=archive \
 	   file://etc/ld.so.conf \
  	   file://generate-supported.mk"
 
-SRC_URI_append_mtx-1 = " file://mips-abio32.patch;patch=1 \
-                         file://allow-gcc.patch;patch=1 "
-SRC_URI_append_mtx-2 = " file://mips-abio32.patch;patch=1 \
-                         file://allow-gcc.patch;patch=1 "
+SRC_URI_append_mtx-1 = " file://mips-abio32.patch;apply=yes \
+                         file://allow-gcc.patch;apply=yes "
+SRC_URI_append_mtx-2 = " file://mips-abio32.patch;apply=yes \
+                         file://allow-gcc.patch;apply=yes "
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

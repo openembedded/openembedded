@@ -4,10 +4,10 @@ DEPENDS += "erlang-native openssl"
 PR = "r2"
 
 SRC_URI += "\
-            file://erts-emulator-Makefile.in.patch;patch=1 \
-            file://erts-etc-unix-Install.src.patch;patch=1 \
-            file://lib-erl_interface-src-Makefile.in.patch;patch=1 \
-            file://Makefile.in.patch;patch=1 \
+            file://erts-emulator-Makefile.in.patch;apply=yes \
+            file://erts-etc-unix-Install.src.patch;apply=yes \
+            file://lib-erl_interface-src-Makefile.in.patch;apply=yes \
+            file://Makefile.in.patch;apply=yes \
             "
 
 TARGET_CC_ARCH += "${LDFLAGS}"

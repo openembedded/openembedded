@@ -38,18 +38,18 @@ SRC_URI = "\
   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2;name=ports \
   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2;name=libidn \
-  file://arm-memcpy.patch;patch=1 \
-  file://arm-longlong.patch;patch=1 \
-  file://fhs-linux-paths.patch;patch=1 \
-  file://dl-cache-libcmp.patch;patch=1 \
-  file://ldsocache-varrun.patch;patch=1 \
-  file://nptl-crosscompile.patch;patch=1 \
-  file://glibc-2.5-local-dynamic-resolvconf.patch;patch=1;pnum=0 \
-  file://glibc-check_pf.patch;patch=1;pnum=0 \
-  file://zecke-sane-readelf.patch;patch=1 \
-  file://ldd-unbash.patch;patch=1 \
-  file://glibc-2.6.1-use-short-for-fnstsw.patch;patch=1 \
-  file://glibc-arm-no-asm-page.patch;patch=1 \
+  file://arm-memcpy.patch;apply=yes \
+  file://arm-longlong.patch;apply=yes \
+  file://fhs-linux-paths.patch;apply=yes \
+  file://dl-cache-libcmp.patch;apply=yes \
+  file://ldsocache-varrun.patch;apply=yes \
+  file://nptl-crosscompile.patch;apply=yes \
+  file://glibc-2.5-local-dynamic-resolvconf.patch;apply=yes;striplevel=0 \
+  file://glibc-check_pf.patch;apply=yes;striplevel=0 \
+  file://zecke-sane-readelf.patch;apply=yes \
+  file://ldd-unbash.patch;apply=yes \
+  file://glibc-2.6.1-use-short-for-fnstsw.patch;apply=yes \
+  file://glibc-arm-no-asm-page.patch;apply=yes \
   file://generic-bits_select.h \
   file://generic-bits_types.h \
   file://generic-bits_typesizes.h \
@@ -59,16 +59,16 @@ SRC_URI = "\
 "
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
+SRC_URI_append_sh3 = " file://no-z-defs.patch;apply=yes"
+SRC_URI_append_sh4 = " file://no-z-defs.patch;apply=yes"
 
 # Powerpc patches to add support for soft-float
-SRC_URI_append_powerpc = " file://ppc-sfp-machine.patch;patch=1 \
-                           file://ppc-soft-fp-20070115.patch;patch=1 \
-                           file://ppc-ld-nofpu-20070104.patch;patch=1 \
-                           file://ppc-ports-ld-nofpu-20070114.patch;patch=1 \
-                           file://powerpc-sqrt-hack.diff;patch=1 \
-                           file://glibc-2.5-soft-fp-separate-strong-alias.patch;patch=1"
+SRC_URI_append_powerpc = " file://ppc-sfp-machine.patch;apply=yes \
+                           file://ppc-soft-fp-20070115.patch;apply=yes \
+                           file://ppc-ld-nofpu-20070104.patch;apply=yes \
+                           file://ppc-ports-ld-nofpu-20070114.patch;apply=yes \
+                           file://powerpc-sqrt-hack.diff;apply=yes \
+                           file://glibc-2.5-soft-fp-separate-strong-alias.patch;apply=yes"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

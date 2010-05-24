@@ -8,8 +8,8 @@ PR = "r5"
 inherit openmoko2 python-dir
 
 SRC_URI += "\
-	file://configure.patch;patch=1 \
-	file://makefile.am.patch;patch=1 \
+	file://configure.patch;apply=yes \
+	file://makefile.am.patch;apply=yes \
 	"
 LICENSE = "LGPL"
 

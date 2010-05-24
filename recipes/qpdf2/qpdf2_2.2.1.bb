@@ -10,10 +10,10 @@ APPDESKTOP = "${S}/ipkg-render-freetype/opt/QtPalmtop/apps/Applications"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/qpdf2/qpdf2_2.2.1_20040217b.tgz \
-           file://hack-the-hack.patch;patch=1 \
-           file://fix-sigsegv.patch;patch=1 \
-           file://fix_qtversion_check.patch;patch=1 \
-           file://gcc4.patch;patch=1"
+           file://hack-the-hack.patch;apply=yes \
+           file://fix-sigsegv.patch;apply=yes \
+           file://fix_qtversion_check.patch;apply=yes \
+           file://gcc4.patch;apply=yes"
 S = "${WORKDIR}/qpdf2_${PV}"
 
 inherit opie

@@ -36,52 +36,52 @@ python __anonymous () {
 
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
-#	   file://noinfo.patch;patch=1
-#	   file://ldconfig.patch;patch=1;pnum=0
-#	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+#	   file://noinfo.patch;apply=yes
+#	   file://ldconfig.patch;apply=yes;striplevel=0
+#	   file://arm-machine-gmon.patch;apply=yes;striplevel=0 \
 #	   \
-#	   file://arm-ioperm.patch;patch=1;pnum=0 \
-#	   file://ldd.patch;patch=1;pnum=0 \
+#	   file://arm-ioperm.patch;apply=yes;striplevel=0 \
+#	   file://ldd.patch;apply=yes;striplevel=0 \
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2;name=ports \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2;name=libidn \
-	   file://nscd-init.patch;patch=1;pnum=0 \
-           file://arm-memcpy.patch;patch=1 \
-           file://arm-longlong.patch;patch=1 \
-           file://fhs-linux-paths.patch;patch=1 \
-           file://dl-cache-libcmp.patch;patch=1 \
-           file://ldsocache-varrun.patch;patch=1 \
-           file://nptl-crosscompile.patch;patch=1 \
-	   file://glibc-check_pf.patch;patch=1;pnum=0 \
-           file://ldd-unbash.patch;patch=1 \
-	   file://glibc-arm-IO-acquire-lock-fix.diff;patch=1 \
+	   file://nscd-init.patch;apply=yes;striplevel=0 \
+           file://arm-memcpy.patch;apply=yes \
+           file://arm-longlong.patch;apply=yes \
+           file://fhs-linux-paths.patch;apply=yes \
+           file://dl-cache-libcmp.patch;apply=yes \
+           file://ldsocache-varrun.patch;apply=yes \
+           file://nptl-crosscompile.patch;apply=yes \
+	   file://glibc-check_pf.patch;apply=yes;striplevel=0 \
+           file://ldd-unbash.patch;apply=yes \
+	   file://glibc-arm-IO-acquire-lock-fix.diff;apply=yes \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
 	   file://generic-bits_time.h \
            file://etc/ld.so.conf \
            file://generate-supported.mk \
-           file://march-i686.patch;patch=1;pnum=0 \
-	   file://tls_i486.patch;patch=1 \
-	   file://glibc-2.9-use-_begin.patch;patch=1 \
-           file://arm-lowlevellock-include-tls.patch;patch=1 \
-           file://glibc-2.9-enable-binutils-2.2.patch;patch=1 \
+           file://march-i686.patch;apply=yes;striplevel=0 \
+	   file://tls_i486.patch;apply=yes \
+	   file://glibc-2.9-use-_begin.patch;apply=yes \
+           file://arm-lowlevellock-include-tls.patch;apply=yes \
+           file://glibc-2.9-enable-binutils-2.2.patch;apply=yes \
            "
 
 # patches to fix libmemusage.so
-SRC_URI_append = " file://0001-malloc-memusage.c-update_data-Fix-handling-of-wrappi.patch;patch=1 \
-                   file://0002-malloc-memusage.c-DEFAULT_BUFFER_SIZE-Change-to-3276.patch;patch=1 \
-                   file://0003-Fix-wrap-around-in-memusage.patch;patch=1 "
+SRC_URI_append = " file://0001-malloc-memusage.c-update_data-Fix-handling-of-wrappi.patch;apply=yes \
+                   file://0002-malloc-memusage.c-DEFAULT_BUFFER_SIZE-Change-to-3276.patch;apply=yes \
+                   file://0003-Fix-wrap-around-in-memusage.patch;apply=yes "
 
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1 \
-		file://glibc-2.9-sh-fix.patch;patch=1"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1 \
-		file://glibc-2.9-sh-fix.patch;patch=1"
+SRC_URI_append_sh3 = " file://no-z-defs.patch;apply=yes \
+		file://glibc-2.9-sh-fix.patch;apply=yes"
+SRC_URI_append_sh4 = " file://no-z-defs.patch;apply=yes \
+		file://glibc-2.9-sh-fix.patch;apply=yes"
 
 #powerpc patches to add support for soft-float
-SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff;patch=1"
+SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff;apply=yes"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

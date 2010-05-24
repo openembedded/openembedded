@@ -14,18 +14,18 @@ PR = "r6"
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-2.6.31 \
 # build fix
-  file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch;patch=1 \
+  file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch;apply=yes \
 # patches from Weiss's gdrm-2.6.31 branch
-  file://0001-DRM-for-platform-devices.patch;patch=1 \
-  file://0002-Glamo-DRM-and-KMS-driver.patch;patch=1 \
-  file://0003-Work-on-Glamo-core-for-DRM.patch;patch=1 \
-  file://0004-Add-JBT6k74-hook-for-use-by-KMS.patch;patch=1 \
+  file://0001-DRM-for-platform-devices.patch;apply=yes \
+  file://0002-Glamo-DRM-and-KMS-driver.patch;apply=yes \
+  file://0003-Work-on-Glamo-core-for-DRM.patch;apply=yes \
+  file://0004-Add-JBT6k74-hook-for-use-by-KMS.patch;apply=yes \
 # enable UBI+DRM+NFS+INOTIFY_USER
-  file://0004-gta02_defconfig-Enable-UBI-support.patch;patch=1 \
-  file://0005-gta02_defconfig-Enable-UBI-debug.patch;patch=1 \
-  file://0001-gta02_defconfig-Enable-GLAMO_DRM.patch;patch=1 \
-  file://0006-gta02-defconfig-enable-NFS-and-INOTIFY_USER.patch;patch=1 \
-  file://0007-gta02_defconfig-disable-LEDS_GTA02_VIBRATOR.patch;patch=1 \
+  file://0004-gta02_defconfig-Enable-UBI-support.patch;apply=yes \
+  file://0005-gta02_defconfig-Enable-UBI-debug.patch;apply=yes \
+  file://0001-gta02_defconfig-Enable-GLAMO_DRM.patch;apply=yes \
+  file://0006-gta02-defconfig-enable-NFS-and-INOTIFY_USER.patch;apply=yes \
+  file://0007-gta02_defconfig-disable-LEDS_GTA02_VIBRATOR.patch;apply=yes \
 "
 
 S = "${WORKDIR}/git"

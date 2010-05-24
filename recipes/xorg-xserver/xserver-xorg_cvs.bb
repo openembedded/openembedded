@@ -7,8 +7,8 @@ PV = "6.8.1+cvs${SRCDATE}"
 DEPENDS = "fontconfig freetype libxi libxmu flex-2.5.4-native"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc;method=pserver \
-	file://imake-staging.patch;patch=1 \
-	file://dri.patch;patch=1"
+	file://imake-staging.patch;apply=yes \
+	file://dri.patch;apply=yes"
 
 PACKAGES =+ "xserver-xorg-xprint xserver-xorg-xvfb xserver-xorg-utils"
 

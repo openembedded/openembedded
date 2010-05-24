@@ -13,18 +13,18 @@ INC_PR = "r2"
 FILESPATHPKG .= ":gcc-$PV"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
-        file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
-	file://100-uclibc-conf.patch;patch=1 \
-	file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
-	file://gcc-disable-linux-unwind-with-libc-inhibit.patch;patch=1 \
-	file://gcc-link-libgcc-with-libm.patch;patch=1 \
-	file://gcc-improve-tls-macro.patch;patch=1 \
-	file://cache-amnesia.patch;patch=1 \
-	file://gcc-flags-for-build.patch;patch=1 \
-	file://gcc-ppc_single_precision_regs.patch;patch=1 \
-	file://gcc-ppc_add_d_constraint.patch;patch=1 \
-	file://gcc-pr41175.patch;patch=1 \
-	file://gcc-armv4-pass-fix-v4bx-to-ld.patch;patch=1 \
+        file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;apply=yes \
+	file://100-uclibc-conf.patch;apply=yes \
+	file://gcc-uclibc-locale-ctype_touplow_t.patch;apply=yes \
+	file://gcc-disable-linux-unwind-with-libc-inhibit.patch;apply=yes \
+	file://gcc-link-libgcc-with-libm.patch;apply=yes \
+	file://gcc-improve-tls-macro.patch;apply=yes \
+	file://cache-amnesia.patch;apply=yes \
+	file://gcc-flags-for-build.patch;apply=yes \
+	file://gcc-ppc_single_precision_regs.patch;apply=yes \
+	file://gcc-ppc_add_d_constraint.patch;apply=yes \
+	file://gcc-pr41175.patch;apply=yes \
+	file://gcc-armv4-pass-fix-v4bx-to-ld.patch;apply=yes \
 	"
 # Language Overrides
 FORTRAN = ""

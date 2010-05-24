@@ -6,16 +6,16 @@ LICENSE = "GPL"
 PR = "r6"
 
 SRC_URI = "cvs://anonymous@xmms-embedded.cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
-           file://bogusincdir.patch;patch=1 \
-           file://gtkremoval.patch;patch=1 \
-           file://removenativeincdir.patch;patch=1 \
-           file://glib2.patch;patch=1 \
-           file://tremorlib.patch;patch=1 \
-           file://bufferdefaults.patch;patch=1 \
-           file://gcc34.patch;patch=1 \
-           file://gcc34-enum.patch;patch=1 \
-           file://mikmod-endian.patch;patch=1 \
-           file://mikmod-update.patch;patch=1 \
+           file://bogusincdir.patch;apply=yes \
+           file://gtkremoval.patch;apply=yes \
+           file://removenativeincdir.patch;apply=yes \
+           file://glib2.patch;apply=yes \
+           file://tremorlib.patch;apply=yes \
+           file://bufferdefaults.patch;apply=yes \
+           file://gcc34.patch;apply=yes \
+           file://gcc34-enum.patch;apply=yes \
+           file://mikmod-endian.patch;apply=yes \
+           file://mikmod-update.patch;apply=yes \
            file://xmms.png"
 S = "${WORKDIR}/xmms-embedded"
 

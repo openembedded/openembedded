@@ -9,8 +9,8 @@ EXTRA_OECONF = "--with-libc"
 
 SRC_URI = "\
   ftp://ftp.mktemp.org/pub/mktemp/${P}.tar.gz \
-  file://add_destdir.patch;patch=1 \
-  file://disable-strip.patch;patch=1 \
+  file://add_destdir.patch;apply=yes \
+  file://disable-strip.patch;apply=yes \
 "
 
 do_install_append () {

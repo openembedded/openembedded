@@ -4,7 +4,7 @@ DEPENDS = "jpeg libpng tiff"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/djvu/djvulibre-${PV}.tar.gz \
-           file://fix-cross-configure.patch;patch=1"
+           file://fix-cross-configure.patch;apply=yes"
 
 inherit qt4x11 autotools pkgconfig
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Utility for viewing function call flow."
 SECTION = "devel"
 SRC_URI = "http://www.ibiblio.org/pub/Linux/devel/lang/c/cflow-${PV}.tar.gz \
-	   file://compile.patch;patch=1"
+	   file://compile.patch;apply=yes"
 LICENSE = "PD"
 
 do_install () {

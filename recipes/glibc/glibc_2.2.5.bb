@@ -42,68 +42,68 @@ FILES_localedef = "${bindir}/localedef"
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
-#	   file://noinfo.patch;patch=1 \
-#	   file://ldconfig.patch;patch=1;pnum=0 \
+#	   file://noinfo.patch;apply=yes \
+#	   file://ldconfig.patch;apply=yes;striplevel=0 \
 
 SRC_URI = "${GNU_MIRROR}/glibc/glibc-${PV}.tar.gz;name=archive \
 	   ${GNU_MIRROR}/glibc/glibc-linuxthreads-${PV}.tar.gz;name=linuxthreads \
-	   file://alpha-build-failure.patch;patch=1 \
-	   file://arm-asm-clobber.patch;patch=1 \
-	   file://arm-ctl_bus_isa.patch;patch=1 \
-	   file://cris-libc-symbols.patch;patch=1 \
-	   file://cris-stack-direction.patch;patch=1 \
-	   file://dl-machine-alpha.patch;patch=1 \
-	   file://dl-machine-arm.patch;patch=1 \
-	   file://dl-machine-m68k.patch;patch=1 \
-	   file://dl-machine-mips.patch;patch=1 \
-	   file://dl-machine-sh.patch;patch=1 \
-	   file://dl-machine-sparc.patch;patch=1 \
-	   file://errlist-1.9.patch;patch=1 \
-	   file://errlist-arm.patch;patch=1 \
-	   file://glibc-2.2.5-allow-gcc-3.4-fixup.patch;patch=1 \
-	   file://glibc-2.2.5-allow-gcc-3.4-grp.patch;patch=1 \
-	   file://glibc-2.2.5-allow-gcc-4.x-configure.patch;patch=1 \
-	   file://glibc-2.2.5-alpha-pwrite64.patch;patch=1 \
-	   file://glibc-2.2.5-arm-pwrite64.patch;patch=1 \
-	   file://glibc-2.2.5-crosstest.patch;patch=1 \
-	   file://glibc-2.2.5-crossyes.patch;patch=1 \
-	   file://glibc-2.2.5-cygwin.patch;patch=1 \
-	   file://glibc-2.2.5-hhl-powerpc-fpu.patch;patch=1 \
-	   file://glibc-2.2.5-mips-build-gmon.patch;patch=1 \
-	   file://glibc-2.2.5-mips-clone-local-label.patch;patch=1 \
-	   file://glibc-2.2.5-ppc405erratum77.patch;patch=1 \
-	   file://glibc-drow-sh.patch;patch=1 \
-	   file://glibc-test-lowram.patch;patch=1 \
-	   file://initfini-alpha.patch;patch=1 \
-	   file://initfini-sh.patch;patch=1 \
-	   file://longjmp-sparc.patch;patch=1 \
-	   file://sh-setjmp-fix.patch;patch=1 \
-	   file://sprintf-prototype.patch;patch=1 \
-	   file://sscanf.patch;patch=1 \
-	   file://unwind-arm.patch;patch=1 \
-	   file://ldd.patch;patch=1;pnum=0 \
-	   file://fhs-linux-paths.patch;patch=1;pnum=1 \
-	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
-	   file://arm-memcpy.patch;patch=1;pnum=0 \
-	   file://arm-longlong.patch;patch=1;pnum=0 \
-	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
-	   file://glibc-2.2.5-allow-gcc-3.4-td.patch;patch=1 \
-	   file://glibc-2.2.5-alpha-self-clobber.patch;patch=1 \
-	   file://pt-initfini-alpha.patch;patch=1 \
-	   file://pt-initfini-sh.patch;patch=1 \
-	   file://linuxthreads-2.2.5-ppc405erratum77.patch;patch=1 \
-	   file://threadparam.patch;patch=1 \
-	   file://initfini-flags.patch;patch=1 \
-	   file://pt-initfini-flags.patch;patch=1 \
-	   file://glibc-2.3.2-allow-solaris.patch;patch=1 \
+	   file://alpha-build-failure.patch;apply=yes \
+	   file://arm-asm-clobber.patch;apply=yes \
+	   file://arm-ctl_bus_isa.patch;apply=yes \
+	   file://cris-libc-symbols.patch;apply=yes \
+	   file://cris-stack-direction.patch;apply=yes \
+	   file://dl-machine-alpha.patch;apply=yes \
+	   file://dl-machine-arm.patch;apply=yes \
+	   file://dl-machine-m68k.patch;apply=yes \
+	   file://dl-machine-mips.patch;apply=yes \
+	   file://dl-machine-sh.patch;apply=yes \
+	   file://dl-machine-sparc.patch;apply=yes \
+	   file://errlist-1.9.patch;apply=yes \
+	   file://errlist-arm.patch;apply=yes \
+	   file://glibc-2.2.5-allow-gcc-3.4-fixup.patch;apply=yes \
+	   file://glibc-2.2.5-allow-gcc-3.4-grp.patch;apply=yes \
+	   file://glibc-2.2.5-allow-gcc-4.x-configure.patch;apply=yes \
+	   file://glibc-2.2.5-alpha-pwrite64.patch;apply=yes \
+	   file://glibc-2.2.5-arm-pwrite64.patch;apply=yes \
+	   file://glibc-2.2.5-crosstest.patch;apply=yes \
+	   file://glibc-2.2.5-crossyes.patch;apply=yes \
+	   file://glibc-2.2.5-cygwin.patch;apply=yes \
+	   file://glibc-2.2.5-hhl-powerpc-fpu.patch;apply=yes \
+	   file://glibc-2.2.5-mips-build-gmon.patch;apply=yes \
+	   file://glibc-2.2.5-mips-clone-local-label.patch;apply=yes \
+	   file://glibc-2.2.5-ppc405erratum77.patch;apply=yes \
+	   file://glibc-drow-sh.patch;apply=yes \
+	   file://glibc-test-lowram.patch;apply=yes \
+	   file://initfini-alpha.patch;apply=yes \
+	   file://initfini-sh.patch;apply=yes \
+	   file://longjmp-sparc.patch;apply=yes \
+	   file://sh-setjmp-fix.patch;apply=yes \
+	   file://sprintf-prototype.patch;apply=yes \
+	   file://sscanf.patch;apply=yes \
+	   file://unwind-arm.patch;apply=yes \
+	   file://ldd.patch;apply=yes;striplevel=0 \
+	   file://fhs-linux-paths.patch;apply=yes \
+	   file://arm-no-hwcap.patch;apply=yes;striplevel=0 \
+	   file://arm-memcpy.patch;apply=yes;striplevel=0 \
+	   file://arm-longlong.patch;apply=yes;striplevel=0 \
+	   file://arm-machine-gmon.patch;apply=yes;striplevel=0 \
+	   file://glibc-2.2.5-allow-gcc-3.4-td.patch;apply=yes \
+	   file://glibc-2.2.5-alpha-self-clobber.patch;apply=yes \
+	   file://pt-initfini-alpha.patch;apply=yes \
+	   file://pt-initfini-sh.patch;apply=yes \
+	   file://linuxthreads-2.2.5-ppc405erratum77.patch;apply=yes \
+	   file://threadparam.patch;apply=yes \
+	   file://initfini-flags.patch;apply=yes \
+	   file://pt-initfini-flags.patch;apply=yes \
+	   file://glibc-2.3.2-allow-solaris.patch;apply=yes \
 	   \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
-#	   file://makeconfig.patch;patch=1;pnum=0
+#	   file://makeconfig.patch;apply=yes;striplevel=0
 
 
 # seems to break on TLS platforms
-# SRC_URI_append_arm = " file://dyn-ldconfig.patch;patch=1;pnum=0"
+# SRC_URI_append_arm = " file://dyn-ldconfig.patch;apply=yes;striplevel=0"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

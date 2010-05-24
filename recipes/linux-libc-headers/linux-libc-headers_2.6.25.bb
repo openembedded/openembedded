@@ -5,11 +5,11 @@ DEPENDS += "unifdef-native"
 PR = "r4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-	   file://reinstate-a.out.h.patch;patch=1 \
-	   file://fix-kernel-conditionalize-a.out.h.patch;patch=1 \
-	   file://netfilter-include-types_h-in-userspace.patch;patch=1 \
+	   file://reinstate-a.out.h.patch;apply=yes \
+	   file://fix-kernel-conditionalize-a.out.h.patch;apply=yes \
+	   file://netfilter-include-types_h-in-userspace.patch;apply=yes \
            file://procinfo.h \
-           file://unifdef.patch;patch=1"
+           file://unifdef.patch;apply=yes"
 
 S = "${WORKDIR}/linux-${PV}"
 

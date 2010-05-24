@@ -11,10 +11,10 @@ RSUGGESTS = "pciutils usbutils"
 PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
-	file://dash.patch;patch=1 \
-	file://userspecified_hcd.patch;patch=1 \
-	file://hotplug-net-agent-usb.patch;patch=1 \
-	file://usbrc-busybox.patch;patch=1 \
+	file://dash.patch;apply=yes \
+	file://userspecified_hcd.patch;apply=yes \
+	file://hotplug-net-agent-usb.patch;apply=yes \
+	file://usbrc-busybox.patch;apply=yes \
 	file://fix-net.agent \
 	file://update-usb.usermap \
 	file://logcheck-ignore \
@@ -25,12 +25,12 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20
 	file://usbd \
 	file://sysconfig-hotplug \
 	file://sysconfig-usb \
-	file://isapnp-exit.diff;patch=1 \
+	file://isapnp-exit.diff;apply=yes \
 	file://usb-storage \
 	file://soc.agent \
-	file://hotplug-binary-path.patch;patch=1"
+	file://hotplug-binary-path.patch;apply=yes"
 
-SRC_URI_append_openzaurus = " file://quiet-pci.patch;patch=1"
+SRC_URI_append_openzaurus = " file://quiet-pci.patch;apply=yes"
 
 S = "${WORKDIR}/hotplug-2004_09_20"
 

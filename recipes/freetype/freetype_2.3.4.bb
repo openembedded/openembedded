@@ -4,8 +4,8 @@ LICENSE = "freetype"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
-           file://fix-x86_64-build.patch;patch=1 \
-           file://no-hardcode.patch;patch=1 \
+           file://fix-x86_64-build.patch;apply=yes \
+           file://no-hardcode.patch;apply=yes \
 	  "
 
 S = "${WORKDIR}/freetype-${PV}"

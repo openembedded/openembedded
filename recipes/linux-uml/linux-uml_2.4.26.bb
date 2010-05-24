@@ -5,7 +5,7 @@ UMLR = "2"
 PR = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2;name=kernel \
-           ${SOURCEFORGE_MIRROR}/user-mode-linux/uml-patch-${PV}-${UMLR}.bz2;patch=1;name=patch \
+           ${SOURCEFORGE_MIRROR}/user-mode-linux/uml-patch-${PV}-${UMLR}.bz2;apply=yes;name=patch \
            file://defconfig \
            file://aio_abi.h"
 S = "${WORKDIR}/linux-${PV}"

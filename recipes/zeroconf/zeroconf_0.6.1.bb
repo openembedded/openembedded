@@ -7,8 +7,8 @@ PRIORITY = "optional"
 PR = "r0"
 
 SRC_URI = "http://www.progsoc.org/~wildfire/zeroconf/download/${PN}-${PV}.tar.gz \
-	   file://debian-zeroconf.patch;patch=1 \
-	   file://busybox.patch;patch=1 \
+	   file://debian-zeroconf.patch;apply=yes \
+	   file://busybox.patch;apply=yes \
 	   file://zeroconf-default"
 
 do_install () {

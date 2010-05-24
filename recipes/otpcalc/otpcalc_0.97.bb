@@ -8,10 +8,10 @@ PR = "r1"
 S = "${WORKDIR}/otpCalc-${PV}"
 
 SRC_URI = "http://killa.net/infosec/otpCalc/otpCalc-${PV}.tar.gz \
-	file://otpcalc-man-table-format.diff;patch=1 \
-	file://otpcalc-0.97-badindex.diff;patch=1 \
-	file://otpcalc-crypto-proto.diff;patch=1 \
-	file://otpcalc-0.97-gtk2-gentoo.patch;patch=1 \
+	file://otpcalc-man-table-format.diff;apply=yes \
+	file://otpcalc-0.97-badindex.diff;apply=yes \
+	file://otpcalc-crypto-proto.diff;apply=yes \
+	file://otpcalc-0.97-gtk2-gentoo.patch;apply=yes \
 	"
 
 inherit autotools pkgconfig

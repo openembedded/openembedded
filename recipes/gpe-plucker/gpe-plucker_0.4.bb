@@ -8,8 +8,8 @@ PRIORITY = "optional"
 PR = "r3"
 
 SRC_URI += " \
-           file://plucker-no-host-includes.patch;patch=1 \
-           file://fix-install.patch;patch=1 \
+           file://plucker-no-host-includes.patch;apply=yes \
+           file://fix-install.patch;apply=yes \
            "
 
 PARALLEL_MAKE=""

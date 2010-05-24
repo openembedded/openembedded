@@ -4,7 +4,7 @@ DESCRIPTION = "Japanese HWR engine used by a number of programs. Original algori
 SECTION = "inputmethods"
 PR = "r1"
 
-SRC_URI += "file://Makefile-kpengine-only.patch;patch=1"
+SRC_URI += "file://Makefile-kpengine-only.patch;apply=yes"
 
 FILES_${PN} = "${bindir}/kpengine ${datadir}"
 

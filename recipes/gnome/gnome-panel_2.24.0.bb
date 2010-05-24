@@ -3,9 +3,9 @@ DEPENDS = "librsvg libgweather startup-notification libwnck orbit2 gtk+ libgnome
 
 inherit gnome pkgconfig
 
-SRC_URI += "file://scrollkeeper.patch;patch=1"
+SRC_URI += "file://scrollkeeper.patch;apply=yes"
 
-SRC_URI += "file://idl-sysroot.patch;patch=1"
+SRC_URI += "file://idl-sysroot.patch;apply=yes"
 
 do_configure_prepend() {
         sed -i -e s:help:: ${S}/Makefile.am

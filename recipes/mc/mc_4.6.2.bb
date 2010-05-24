@@ -4,24 +4,24 @@ HOMEPAGE = "http://www.midnight-commander.org/"
 
 # most of these fixes were copied from openSUSE Factory.
 SRC_URI = "http://www.midnight-commander.org/downloads/${P}.tar.gz \
-	   file://mhl-stdbool.patch;patch=1 \
-	   file://mc-utf8.patch;patch=1 \
-	   file://00-70-utf8-common.patch;patch=1 \
-	   file://00-73-utf8-bottom-buttons-width.patch;patch=1 \
-	   file://00-75-utf8-cmdline-help.patch;patch=1 \
-	   file://00-76-utf8-hotlist-highlight.patch;patch=1 \
-	   file://00-77-utf8-filename-search-highlight.patch;patch=1 \
-	   file://mc-utf8-nlink.patch;patch=1 \
-	   file://mc-utf8-look-and-feel.patch;patch=1 \
-	   file://mc-utf8-slang-codeset.patch;patch=1 \
-	   file://99_regexp-replace-fixed.patch;patch=1 \
-	   file://99b_fix-regex-pattern-lengths.patch;patch=1 \
-	   file://multi-press-f-keys.patch;patch=1 \
-	   file://cross-compile.patch;patch=1 \
-	   file://01_ftpfs_symlink.patch;patch=1 \
-	   file://02_ignore_ftp_chmod_error.patch;patch=1 \
-	   file://mc-cursor-appearance.patch;patch=1 \
-	   file://mc-esc-seq.patch;patch=1"
+	   file://mhl-stdbool.patch;apply=yes \
+	   file://mc-utf8.patch;apply=yes \
+	   file://00-70-utf8-common.patch;apply=yes \
+	   file://00-73-utf8-bottom-buttons-width.patch;apply=yes \
+	   file://00-75-utf8-cmdline-help.patch;apply=yes \
+	   file://00-76-utf8-hotlist-highlight.patch;apply=yes \
+	   file://00-77-utf8-filename-search-highlight.patch;apply=yes \
+	   file://mc-utf8-nlink.patch;apply=yes \
+	   file://mc-utf8-look-and-feel.patch;apply=yes \
+	   file://mc-utf8-slang-codeset.patch;apply=yes \
+	   file://99_regexp-replace-fixed.patch;apply=yes \
+	   file://99b_fix-regex-pattern-lengths.patch;apply=yes \
+	   file://multi-press-f-keys.patch;apply=yes \
+	   file://cross-compile.patch;apply=yes \
+	   file://01_ftpfs_symlink.patch;apply=yes \
+	   file://02_ignore_ftp_chmod_error.patch;apply=yes \
+	   file://mc-cursor-appearance.patch;apply=yes \
+	   file://mc-esc-seq.patch;apply=yes"
 
 EXTRA_OECONF = "--without-x --without-samba \
 --without-nfs --without-gpm-mouse --enable-charset \

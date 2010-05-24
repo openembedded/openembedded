@@ -7,7 +7,7 @@ PR = "r0"
 DEPENDS = ""
 
 SRC_URI = "http://www.kokkinizita.net/linuxaudio/downloads/clthreads-${PV}.tar.bz2 \
-	file://clthreads-Makefile.patch;patch=1 \
+	file://clthreads-Makefile.patch;apply=yes \
 "
 
 S = "${WORKDIR}/clthreads-${PV}"

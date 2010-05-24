@@ -14,10 +14,10 @@ CFLAGS += '-DVLAN_FLAG_REORDER_HDR=1'
 
 SRC_URI = "\
   http://people.suug.ch/~tgr/libnl/files/libnl-${PV}.tar.gz \
-  file://local-includes.patch;patch=1 \
-  file://fix-includes.patch;patch=1 \
-  file://respect-ldflags.patch;patch=1 \
-  file://netlink-local-fix.patch;patch=1 \
+  file://local-includes.patch;apply=yes \
+  file://fix-includes.patch;apply=yes \
+  file://respect-ldflags.patch;apply=yes \
+  file://netlink-local-fix.patch;apply=yes \
 "
 
 

@@ -9,11 +9,11 @@ PR = "${INC_PR}.0"
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
   file://acinclude.m4 \
-  file://configure_tweak.patch;patch=1 \
-  file://pagesize.patch;patch=1 \
-  file://kernel-asm-page.patch;patch=1 \
-  file://sdl-cdfix.patch;patch=1 \
-  file://fixmfour.patch;patch=1 \
+  file://configure_tweak.patch;apply=yes \
+  file://pagesize.patch;apply=yes \
+  file://kernel-asm-page.patch;apply=yes \
+  file://sdl-cdfix.patch;apply=yes \
+  file://fixmfour.patch;apply=yes \
 "
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \

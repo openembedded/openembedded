@@ -2,13 +2,13 @@ require matchbox-panel.inc
 
 PR ="r12"
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/0.9/${PN}-${PV}.tar.gz;name=archive \
-           file://add_hostap.patch;patch=1 \
-           http://handhelds.org/~pb/mb-panel-0.9.2-polling.patch;patch=1;name=patch1 \
-           http://handhelds.org/~pb/mb-panel-0.9.2-msgcancel.patch;patch=1;name=patch2 \
-           file://mb-applet-battery-repaint.patch;patch=1 \
-           file://mb-panel-multi-category-matching.patch;patch=1 \
-           file://mb-panel-allow-disabling-menu-panel.patch;patch=1 \
-	   file://system-monitor-crash-fix.patch;patch=1 "
+           file://add_hostap.patch;apply=yes \
+           http://handhelds.org/~pb/mb-panel-0.9.2-polling.patch;apply=yes;name=patch1 \
+           http://handhelds.org/~pb/mb-panel-0.9.2-msgcancel.patch;apply=yes;name=patch2 \
+           file://mb-applet-battery-repaint.patch;apply=yes \
+           file://mb-panel-multi-category-matching.patch;apply=yes \
+           file://mb-panel-allow-disabling-menu-panel.patch;apply=yes \
+	   file://system-monitor-crash-fix.patch;apply=yes "
 
 
 

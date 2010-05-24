@@ -6,17 +6,17 @@ PR = "${INC_PR}.6"
 inherit gettext
 
 SRC_URI += "\
-  file://buildfix.patch;patch=1 \
-  file://alsaerror.patch;patch=1 \
-  file://periodfix.patch;patch=1 \
-  file://fallback.patch;patch=1 \
-  file://autoconf_version.patch;patch=1 \
-  file://gettext.patch;patch=1 \
-  file://fixbluezbuild.patch;patch=1 \
-  file://tls_m4.patch;patch=1 \
-  file://sbc-thumb.patch;patch=1 \
-  file://CVE-2009-1299.patch;patch=1 \
-  file://CVE-2009-1894.patch;patch=1 \
+  file://buildfix.patch;apply=yes \
+  file://alsaerror.patch;apply=yes \
+  file://periodfix.patch;apply=yes \
+  file://fallback.patch;apply=yes \
+  file://autoconf_version.patch;apply=yes \
+  file://gettext.patch;apply=yes \
+  file://fixbluezbuild.patch;apply=yes \
+  file://tls_m4.patch;apply=yes \
+  file://sbc-thumb.patch;apply=yes \
+  file://CVE-2009-1299.patch;apply=yes \
+  file://CVE-2009-1894.patch;apply=yes \
 "
 
 do_compile_prepend() {

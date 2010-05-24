@@ -6,9 +6,9 @@ DEPENDS = "zlib openssl (>= 0.9.8)"
 PR = "r1"
 
 SRC_URI = "http://ftp.de.debian.org/debian/pool/main/w/wvstreams/${PN}_${PV}.orig.tar.gz;name=archive \
-           http://ftp.de.debian.org/debian/pool/main/w/wvstreams/wvstreams_4.2.2-2.2.diff.gz;patch=1;name=patch22 \
-           file://wvstreams-debian.patch;patch=1 \
-           file://build-fixes-and-sanity.patch;patch=1 "
+           http://ftp.de.debian.org/debian/pool/main/w/wvstreams/wvstreams_4.2.2-2.2.diff.gz;apply=yes;name=patch22 \
+           file://wvstreams-debian.patch;apply=yes \
+           file://build-fixes-and-sanity.patch;apply=yes "
 
 inherit autotools pkgconfig
 

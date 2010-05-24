@@ -6,9 +6,9 @@ PR = "r3"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/mikmod/libmikmod-${PV}.tar.gz \
-  file://m4.patch;patch=1 \
-  file://autofoo.patch;patch=1 \
-  file://ldflags.patch;patch=1 \
+  file://m4.patch;apply=yes \
+  file://autofoo.patch;apply=yes \
+  file://ldflags.patch;apply=yes \
 "
 
 inherit autotools binconfig

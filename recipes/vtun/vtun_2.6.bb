@@ -8,7 +8,7 @@ PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/vtun/vtun-${PV}.tar.gz \
 	file://init \
-	file://makefile.in-ldflags.patch;patch=1;pnum=0"
+	file://makefile.in-ldflags.patch;apply=yes;striplevel=0"
 
 S = "${WORKDIR}/vtun"
 

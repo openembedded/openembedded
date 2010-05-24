@@ -1,12 +1,12 @@
 DESCRIPTION = "Static version of udev for devices with an old (e.g. <2.6.27) kernel"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://noasmlinkage.patch;patch=1 \
-	   file://flags.patch;patch=1 \
-	   file://vol_id_ld.patch;patch=1 \
-	   file://udevtrigger_add_devname_filtering.patch;patch=1 \
-	   file://libvolume-id-soname.patch;patch=1 \
-	   file://mtd-exclude-persistent.patch;patch=1 \
+	   file://noasmlinkage.patch;apply=yes \
+	   file://flags.patch;apply=yes \
+	   file://vol_id_ld.patch;apply=yes \
+	   file://udevtrigger_add_devname_filtering.patch;apply=yes \
+	   file://libvolume-id-soname.patch;apply=yes \
+	   file://mtd-exclude-persistent.patch;apply=yes \
 	   "
 
 require udev.inc

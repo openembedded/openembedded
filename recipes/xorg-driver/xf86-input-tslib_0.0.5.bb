@@ -7,10 +7,10 @@ DEPENDS += "tslib"
 PR = "r8"
 
 SRC_URI = "http://www.pengutronix.de/software/xf86-input-tslib/download/xf86-input-tslib-${PV}.tar.bz2;name=archive \
-           file://use-hal-for-device.diff;patch=1 \
-           file://01_fix-wrong-value-range-for-the-axises.diff;patch=1 \
-           file://dynamic-xy.patch;patch=1 \
-           file://xserver16.patch;patch=1 \
+           file://use-hal-for-device.diff;apply=yes \
+           file://01_fix-wrong-value-range-for-the-axises.diff;apply=yes \
+           file://dynamic-xy.patch;apply=yes \
+           file://xserver16.patch;apply=yes \
            file://10-x11-input-tslib.fdi"
 
 do_configure_prepend() {

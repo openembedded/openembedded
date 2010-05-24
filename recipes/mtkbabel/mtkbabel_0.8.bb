@@ -8,7 +8,7 @@ PR = "r1"
 RDEPENDS = "libdevice-serialport-perl libtimedate-perl perl-module-file-basename perl-module-getopt-std"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sourceforge/${PN}/${P}.tar.gz \
-	   file://fast-logging.patch;patch=1"
+	   file://fast-logging.patch;apply=yes"
 
 do_install() {
 	install -d ${D}${bindir}

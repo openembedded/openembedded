@@ -3,10 +3,10 @@ PR = "${INC_PR}.0"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/pidgin/pidgin-${PV}.tar.bz2 \
-  file://sanitize-configure.ac.patch;patch=1 \
-  file://pidgin.desktop-set-icon.patch;patch=1 \
-  file://purple-OE-branding-25.patch;patch=1 \
-  file://pidgin-cross-python.patch;patch=1 \
+  file://sanitize-configure.ac.patch;apply=yes \
+  file://pidgin.desktop-set-icon.patch;apply=yes \
+  file://purple-OE-branding-25.patch;apply=yes \
+  file://pidgin-cross-python.patch;apply=yes \
 "
 
 EXTRA_OECONF += "\

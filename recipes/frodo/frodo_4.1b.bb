@@ -5,8 +5,8 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://frodo.cebix.net/downloads/FrodoV4_1b.Src.tar.gz \
-           file://frodo-qte.diff;patch=1 \
-           file://frodo-joystick-4state.diff;patch=1 \
+           file://frodo-qte.diff;apply=yes \
+           file://frodo-joystick-4state.diff;apply=yes \
            file://frodorc \
            file://Frodo.png \
            file://frodo.desktop"

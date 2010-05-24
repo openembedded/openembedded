@@ -22,24 +22,24 @@ RDEPENDS_xserver-kdrive-fake = "${PN}"
 RDEPENDS_xserver-kdrive-xephyr = "${PN}"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-1.1.0.tar.bz2 \
-	file://kmode.patch;patch=1 \
-	file://disable-apm.patch;patch=1 \
-	file://no-serial-probing.patch;patch=1 \
-	file://kdrive-evdev.patch;patch=1  \
-	file://kdrive-use-evdev.patch;patch=1  \
-	file://fbdev-not-fix.patch;patch=1  \
-	file://enable-builtin-fonts.patch;patch=1 \
-	file://optional-xkb.patch;patch=1 \
-	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
-	file://enable-tslib.patch;patch=1 \
-	file://xcalibrate.patch;patch=1 \
-	file://xfbdev-fb-opt.patch;patch=1 \
-	file://hide-cursor-and-ppm-root.patch;patch=1 \
-	file://report-correct-randr10.patch;patch=1"
+	file://kmode.patch;apply=yes \
+	file://disable-apm.patch;apply=yes \
+	file://no-serial-probing.patch;apply=yes \
+	file://kdrive-evdev.patch;apply=yes  \
+	file://kdrive-use-evdev.patch;apply=yes  \
+	file://fbdev-not-fix.patch;apply=yes  \
+	file://enable-builtin-fonts.patch;apply=yes \
+	file://optional-xkb.patch;apply=yes \
+	file://disable-xf86-dga-xorgcfg.patch;apply=yes \
+	file://enable-tslib.patch;apply=yes \
+	file://xcalibrate.patch;apply=yes \
+	file://xfbdev-fb-opt.patch;apply=yes \
+	file://hide-cursor-and-ppm-root.patch;apply=yes \
+	file://report-correct-randr10.patch;apply=yes"
 
-SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
-SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
-SRC_URI_append_qemux86 = " file://xserver-kdrive-poodle.patch;patch=1"
+SRC_URI_append_mnci   = " file://onlyfb.patch;apply=yes"
+SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;apply=yes"
+SRC_URI_append_qemux86 = " file://xserver-kdrive-poodle.patch;apply=yes"
 PACKAGE_ARCH_poodle = "poodle"
 
 S = "${WORKDIR}/xorg-server-1.1.0"

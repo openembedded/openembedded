@@ -10,24 +10,24 @@ DEPENDS = "libtool swig swig-native python jpeg zlib libpng tiff glib-2.0"
 #RDEPENDS = "python jpeg zlib libpng tiff glib-2.0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/opencvlibrary/opencv-${PV}.tar.gz \
-          file://debian/010_enable_static.diff;patch=1 \
-          file://debian/010_ffmpeg_linking.diff;patch=1 \
-          file://debian/010_fix_optimisations.diff;patch=1 \
-          file://debian/010_m4_syntax.diff;patch=1 \
-          file://debian/010_makefile_syntax.diff;patch=1 \
-          file://debian/010_python_cspec.diff;patch=1 \
-          file://debian/020_python_linking.diff;patch=1 \
-          file://debian/030_install_hook.diff;patch=1 \
-          file://debian/050_rebootstrap.diff;patch=1 \
-          file://debian/100_amd64.diff;patch=1 \
-          file://debian/100_static_inline.diff;patch=1 \
-          file://debian/100_ffmpeg_updates.diff;patch=1 \
-          file://debian/110_dc1394.diff;patch=1 \
-          file://debian/120_header_warnings.diff;patch=1 \
-          file://debian/200_documentation.diff;patch=1 \
-          file://debian/200_examples_makefile.diff;patch=1 \
-          file://debian/210_openmp_compilation.diff;patch=1 \
-          file://debian/300_fix_segfault_in_window_gtk.diff;patch=1 \
+          file://debian/010_enable_static.diff;apply=yes \
+          file://debian/010_ffmpeg_linking.diff;apply=yes \
+          file://debian/010_fix_optimisations.diff;apply=yes \
+          file://debian/010_m4_syntax.diff;apply=yes \
+          file://debian/010_makefile_syntax.diff;apply=yes \
+          file://debian/010_python_cspec.diff;apply=yes \
+          file://debian/020_python_linking.diff;apply=yes \
+          file://debian/030_install_hook.diff;apply=yes \
+          file://debian/050_rebootstrap.diff;apply=yes \
+          file://debian/100_amd64.diff;apply=yes \
+          file://debian/100_static_inline.diff;apply=yes \
+          file://debian/100_ffmpeg_updates.diff;apply=yes \
+          file://debian/110_dc1394.diff;apply=yes \
+          file://debian/120_header_warnings.diff;apply=yes \
+          file://debian/200_documentation.diff;apply=yes \
+          file://debian/200_examples_makefile.diff;apply=yes \
+          file://debian/210_openmp_compilation.diff;apply=yes \
+          file://debian/300_fix_segfault_in_window_gtk.diff;apply=yes \
 "
 
 inherit distutils-base autotools pkgconfig

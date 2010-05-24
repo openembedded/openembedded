@@ -1,8 +1,8 @@
 require acpid.inc
 
-SRC_URI_append = " file://event.c.diff;patch=1 \
-                   file://netlink.diff;patch=1 \
-                   file://gcc44.diff;patch=1 \
+SRC_URI_append = " file://event.c.diff;apply=yes \
+                   file://netlink.diff;apply=yes \
+                   file://gcc44.diff;apply=yes \
                  "
 PR = "${INC_PR}.0"
 SRC_URI[md5sum] = "61156ef32015c56dc0f2e3317f4ae09e"

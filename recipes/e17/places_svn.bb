@@ -5,7 +5,7 @@ PR = "r4"
 
 require e-module.inc
 
-SRC_URI += "file://fix-api.diff;patch=1;maxrev=39830;pnum=3"
+SRC_URI += "file://fix-api.diff;apply=yes;maxrev=39830;striplevel=3"
 
 do_configure_prepend() {
        sed -i -e /po/d -e /AM_GNU_GETTEXT/d configure.ac 

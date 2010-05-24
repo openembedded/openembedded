@@ -12,9 +12,9 @@ needed to link programs with libvolume_id."
 PR = "r16"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://noasmlinkage.patch;patch=1 \
-	   file://flags.patch;patch=1 \
-	   file://mtd-exclude-persistent.patch;patch=1 \
+	   file://noasmlinkage.patch;apply=yes \
+	   file://flags.patch;apply=yes \
+	   file://mtd-exclude-persistent.patch;apply=yes \
 	   file://mount.blacklist \
 	   file://mount.sh \
 	   "

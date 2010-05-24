@@ -4,8 +4,8 @@ DEPENDS = "gmp"
 PR = "r1"
 
 SRC_URI = "http://www.mpfr.org/mpfr-${PV}/mpfr-${PV}.tar.bz2 \
-           file://long-long-thumb.patch;patch=1 \
-	   file://dont_use_mips_h_constraint.patch;patch=1 \
+           file://long-long-thumb.patch;apply=yes \
+	   file://dont_use_mips_h_constraint.patch;apply=yes \
 	  "
 S = "${WORKDIR}/mpfr-${PV}"
 

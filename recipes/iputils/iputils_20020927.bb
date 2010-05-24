@@ -6,13 +6,13 @@ LICENSE ="BSD"
 PR = "r5"
 
 SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz \
-	    file://debian-fixes.patch;patch=1 \
-	    file://makefile.patch;patch=1 \
-	    file://standard-header-types.patch;patch=1 \
-	    file://tracepath6-mtu-opt.patch;patch=1 \
-	    file://remove-glibc-headers.patch;patch=1 \
-	    file://iputils-retvals.patch;patch=1 \
-	    file://glibc-2.4-compat.patch;patch=1"
+	    file://debian-fixes.patch;apply=yes \
+	    file://makefile.patch;apply=yes \
+	    file://standard-header-types.patch;apply=yes \
+	    file://tracepath6-mtu-opt.patch;apply=yes \
+	    file://remove-glibc-headers.patch;apply=yes \
+	    file://iputils-retvals.patch;apply=yes \
+	    file://glibc-2.4-compat.patch;apply=yes"
 S = "${WORKDIR}/iputils"
 
 PACKAGES += "${PN}-ping ${PN}-ping6 ${PN}-arping ${PN}-tracepath ${PN}-tracepath6 ${PN}-traceroute6"

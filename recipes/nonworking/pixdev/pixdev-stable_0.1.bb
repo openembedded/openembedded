@@ -5,7 +5,7 @@ DEPENDS = "microwindows"
 RDEPENDS = "microwindows"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pixdev/pixdev-stable-${PV}.tar.gz \
-          file://${FILESDIR}/braces.patch;patch=1"
+          file://${FILESDIR}/braces.patch;apply=yes"
 export EXTRA_OEMAKE=
 
 inherit autotools

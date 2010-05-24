@@ -8,9 +8,9 @@ PR = "r7"
 SRCREV = "736"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
-           file://no_libdb.patch;patch=1;maxrev=659 \
-           file://no_iconv_test.patch;patch=1 \
-           file://no_libedataserverui.patch;patch=1;maxrev=659 \
+           file://no_libdb.patch;apply=yes;maxrev=659 \
+           file://no_iconv_test.patch;apply=yes \
+           file://no_libedataserverui.patch;apply=yes;maxrev=659 \
            file://iconv-detect.h"
 
 S = "${WORKDIR}/trunk"

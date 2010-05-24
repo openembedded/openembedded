@@ -9,11 +9,11 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/apps \
            ${HANDHELDS_CVS};module=opie/root \
            ${HANDHELDS_CVS};module=opie/etc \
-           file://nomax.patch;patch=1;pnum=3 \
-           file://no-builtin-qss-startup.patch;patch=1 \
-           file://kbdlocks-runtime.patch;patch=1 \
-	   file://restart-from-bindir.patch;patch=1 \
-           file://server-pro-cvs.patch;patch=1 \
-	   file://firstuse-path.patch;patch=1 \
+           file://nomax.patch;apply=yes;striplevel=3 \
+           file://no-builtin-qss-startup.patch;apply=yes \
+           file://kbdlocks-runtime.patch;apply=yes \
+	   file://restart-from-bindir.patch;apply=yes \
+           file://server-pro-cvs.patch;apply=yes \
+	   file://firstuse-path.patch;apply=yes \
           "
 

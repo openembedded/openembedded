@@ -6,12 +6,12 @@ SECTION = "gpe"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-jscore-${PV}.tar.gz \
-           file://missing-includes.patch;patch=1 \
-           file://libm.patch;patch=1"
+           file://missing-includes.patch;apply=yes \
+           file://libm.patch;apply=yes"
 
-SRC_URI_append_sh3 = " file://superh-aclocal.patch;patch=1 \
-                       file://gcc4-fno-threadsafe-statics.patch;patch=1 \
-		       file://superh-ustring-declaration-error.patch;patch=1"
+SRC_URI_append_sh3 = " file://superh-aclocal.patch;apply=yes \
+                       file://gcc4-fno-threadsafe-statics.patch;apply=yes \
+		       file://superh-ustring-declaration-error.patch;apply=yes"
 
 inherit autotools pkgconfig
 

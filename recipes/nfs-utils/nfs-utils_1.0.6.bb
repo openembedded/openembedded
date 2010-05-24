@@ -5,12 +5,12 @@ LICENSE = "GPL"
 PR = "r13"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
-	file://acinclude-lossage.patch;patch=1 \
-	file://rpcgen-lossage.patch;patch=1 \
-	file://stat-include.patch;patch=1 \
-	file://nfs-utils-1.0.6-uclibc.patch;patch=1 \
-	file://kernel-2.6.18+.patch;patch=1 \
-	file://uclibc_bzero_fix.patch;patch=1 \
+	file://acinclude-lossage.patch;apply=yes \
+	file://rpcgen-lossage.patch;apply=yes \
+	file://stat-include.patch;apply=yes \
+	file://nfs-utils-1.0.6-uclibc.patch;apply=yes \
+	file://kernel-2.6.18+.patch;apply=yes \
+	file://uclibc_bzero_fix.patch;apply=yes \
 	file://nfsserver \
 	file://forgotten-defines"
 

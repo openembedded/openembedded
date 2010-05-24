@@ -39,32 +39,37 @@ python patch_do_patch() {
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	for url in src_uri:
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
-		if not "patch" in parm:
+		apply = parm.get("apply")
+		if apply != "yes" and not "patch" in parm:
+			if apply and apply != "no":
+				bb.msg.warn(None, "Unsupported value '%s' for 'apply' url param in '%s', please use 'yes' or 'no'" % (apply, url))
 			continue
+		elif "patch" in parm:
+			bb.msg.warn(None, "Deprecated usage of 'patch' url param in '%s', please use 'apply={yes,no}'" % url)
 
 		bb.fetch.init([url],d)
 		url = bb.encodeurl((type, host, path, user, pswd, []))
 		local = os.path.join('/', bb.fetch.localpath(url, d))
 
-		# did it need to be unpacked?
-		dots = os.path.basename(local).split(".")
-		if dots[-1] in ['gz', 'bz2', 'Z']:
-			unpacked = os.path.join(bb.data.getVar('WORKDIR', d),'.'.join(dots[0:-1]))
-		else:
-			unpacked = local
-		unpacked = bb.data.expand(unpacked, d)
+		base, ext = os.path.splitext(os.path.basename(local))
+		if ext in ('.gz', '.bz2', '.Z'):
+			local = os.path.join(workdir, base)
+		local = bb.data.expand(local, d)
 
-		if "pnum" in parm:
-			pnum = parm["pnum"]
+		if "striplevel" in parm:
+			striplevel = parm["striplevel"]
+		elif "pnum" in parm:
+			bb.msg.warn(None, "Deprecated usage of 'pnum' url parameter in '%s', please use 'striplevel'" % url)
+			striplevel = parm["pnum"]
 		else:
-			pnum = "1"
+			striplevel = '1'
 
 		if "pname" in parm:
 			pname = parm["pname"]
 		else:
-			pname = os.path.basename(unpacked)
+			pname = os.path.basename(local)
 
-                if "mindate" in parm or "maxdate" in parm:
+		if "mindate" in parm or "maxdate" in parm:
 			pn = bb.data.getVar('PN', d, 1)
 			srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
 			if not srcdate:
@@ -94,9 +99,9 @@ python patch_do_patch() {
 				bb.note("Patch '%s' applies to earlier revisions" % pname)
 				continue
 
-		bb.note("Applying patch '%s' (%s)" % (pname, oe.path.format_display(unpacked, d)))
+		bb.note("Applying patch '%s' (%s)" % (pname, oe.path.format_display(local, d)))
 		try:
-			patchset.Import({"file":unpacked, "remote":url, "strippath": pnum}, True)
+			patchset.Import({"file":local, "remote":url, "strippath": striplevel}, True)
 		except Exception:
 			import sys
 			raise bb.build.FuncFailed(str(sys.exc_value))

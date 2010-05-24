@@ -7,13 +7,13 @@ PR = "r5"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
-  file://confsearch.diff;patch=1;pnum=2 \
-  file://manpages.diff;patch=1;pnum=2 \
-  file://non-linux.diff;patch=1;pnum=2 \
-  file://rpath.diff;patch=1;pnum=2 \
-  file://tcllibrary.diff;patch=1;pnum=2 \
-  file://tclpackagepath.diff;patch=1;pnum=2 \
-  file://tclprivate.diff;patch=1;pnum=2 \
+  file://confsearch.diff;apply=yes;striplevel=2 \
+  file://manpages.diff;apply=yes;striplevel=2 \
+  file://non-linux.diff;apply=yes;striplevel=2 \
+  file://rpath.diff;apply=yes;striplevel=2 \
+  file://tcllibrary.diff;apply=yes;striplevel=2 \
+  file://tclpackagepath.diff;apply=yes;striplevel=2 \
+  file://tclprivate.diff;apply=yes;striplevel=2 \
 "
 
 SRC_URI[md5sum] = "7f123e53b3daaaba2478d3af5a0752e3"

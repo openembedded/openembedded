@@ -4,9 +4,9 @@ require openssl.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://debian.patch;patch=1 \
-            file://configure-targets.patch;patch=1 \
-            file://shared-libs.patch;patch=1"
+SRC_URI += "file://debian.patch;apply=yes \
+            file://configure-targets.patch;apply=yes \
+            file://shared-libs.patch;apply=yes"
 
 PARALLEL_MAKE = ""
 

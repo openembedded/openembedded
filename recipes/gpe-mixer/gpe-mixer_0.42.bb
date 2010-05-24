@@ -3,8 +3,8 @@ PR = "r2"
 
 inherit gpe pkgconfig
 
-SRC_URI += "file://gpemixer-no-host-includes.patch;patch=1 \
-	    file://fix-install.patch;patch=1"
+SRC_URI += "file://gpemixer-no-host-includes.patch;apply=yes \
+	    file://fix-install.patch;apply=yes"
 
 DESCRIPTION = "GPE audio mixer"
 DEPENDS = "gtk+ libgpewidget"

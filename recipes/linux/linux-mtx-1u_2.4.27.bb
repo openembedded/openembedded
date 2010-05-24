@@ -5,14 +5,14 @@ COMPATIBLE_MACHINE = "mtx-1u"
 PR = "r11"
 
 SRC_URI += "\
-	file://22-umts.diff;patch=1 \
-	file://28-idsel-cardbus.diff;patch=1 \
-	file://30-mtx-1-sysled.diff;patch=1 \
-	file://31-mtx-1u-led-init.diff;patch=1 \
-	file://32-usbserial-stalled-hack.diff;patch=1 \
-	file://33-usbserial-bulk_in_size-4096.diff;patch=1 \
-	file://39-mppe-mpc.patch;patch=1 \
-	file://40-option-hsdpa.patch;patch=1"
+	file://22-umts.diff;apply=yes \
+	file://28-idsel-cardbus.diff;apply=yes \
+	file://30-mtx-1-sysled.diff;apply=yes \
+	file://31-mtx-1u-led-init.diff;apply=yes \
+	file://32-usbserial-stalled-hack.diff;apply=yes \
+	file://33-usbserial-bulk_in_size-4096.diff;apply=yes \
+	file://39-mppe-mpc.patch;apply=yes \
+	file://40-option-hsdpa.patch;apply=yes"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-mtx-1-${PV}"
 

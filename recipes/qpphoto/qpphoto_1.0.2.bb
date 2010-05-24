@@ -12,9 +12,9 @@ PR = "r0"
 inherit opie
 
 SRC_URI = "http://zaurus.colognearts.de/qpphoto/qpPhoto_1.0.2_src.tar.gz \
-           file://draw.patch;patch=1 \
-           file://drawview.patch;patch=1 \
-           file://drawwidget.patch;patch=1 "
+           file://draw.patch;apply=yes \
+           file://drawview.patch;apply=yes \
+           file://drawwidget.patch;apply=yes "
 
 S = "${WORKDIR}/qpPhoto_1.0.2"
 

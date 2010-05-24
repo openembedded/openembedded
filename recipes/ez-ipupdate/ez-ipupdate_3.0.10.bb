@@ -7,10 +7,10 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "http://www.ez-ipupdate.com/dist/ez-ipupdate-${PV}.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://conffile.patch;patch=1 \
-	   file://zoneedit.patch;patch=1 \
-	   file://CVE-2004-0980.patch;patch=1;pnum=0 \
+	   file://configure.patch;apply=yes \
+	   file://conffile.patch;apply=yes \
+	   file://zoneedit.patch;apply=yes \
+	   file://CVE-2004-0980.patch;apply=yes;striplevel=0 \
 	   file://init \
 	   file://ipupdate.conf \
 	  "
