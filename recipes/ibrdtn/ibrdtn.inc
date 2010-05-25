@@ -4,6 +4,4 @@ SECTION = "devel"
 DEPENDS = "libpthread-stubs sqlite3 lua5.1"
 PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
-
 inherit autotools
