@@ -2,30 +2,8 @@ Index: xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator
 ===================================================================
 --- xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator	(revision 0)
 +++ xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator	(revision 0)
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,12 @@
 +#!/bin/sh
-+
-+SYSFS_CALIBRATION_DIR=/sys/bus/i2c/devices/0-0073/s3c2440-ts/calibration
-+
-+if [ ! -d $SYSFS_CALIBRATION_DIR ]; then
-+  # moved in 2.6.31
-+  SYSFS_CALIBRATION_DIR=/sys/devices/platform/s3c2440-i2c/i2c-adapter/i2c-0/0-0073/s3c2410-ts/calibration
-+fi
-+
-+if [ ! -d $SYSFS_CALIBRATION_DIR ]; then
-+  # moved in 2.6.32
-+  SYSFS_CALIBRATION_DIR=/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/s3c2410-ts/calibration
-+fi
-+
-+if [ -d $SYSFS_CALIBRATION_DIR ]; then
-+  echo 0 > $SYSFS_CALIBRATION_DIR/0
-+  echo 80000 > $SYSFS_CALIBRATION_DIR/1
-+  echo -8000000 > $SYSFS_CALIBRATION_DIR/2
-+  echo -81000 > $SYSFS_CALIBRATION_DIR/3
-+  echo 0 > $SYSFS_CALIBRATION_DIR/4
-+  echo 75000000 > $SYSFS_CALIBRATION_DIR/5
-+  echo 65536 > $SYSFS_CALIBRATION_DIR/6
-+fi
 +
 +if [ -e /usr/bin/xinput_calibrator_once.sh ] ; then
 +  if [ -e /etc/pointercal.xinput ] ; then
