@@ -7,6 +7,8 @@ PE = "1"
 
 DEPENDS += "libfsoresource libgsm0710mux ppp msmcommd"
 
+SRC_URI += " file://0001-fsogsmd-update-sysfs-node-in-config-for-openmoko_gta.patch"
+
 EXTRA_OECONF_append = "\
   --enable-libgsm0710mux \
   --enable-modem-qualcomm-palm \
