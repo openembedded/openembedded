@@ -1,0 +1,30 @@
+From 11fad6cb429cb98a16de5f7f0bd676dff576716d Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 25 May 2010 13:04:14 +0200
+Subject: [PATCH 2/2] ogsmd ti_calipsy: update sysfs node for 2.6.32+ kernels on freerunner
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ .../subsystems/ogsmd/modems/ti_calypso/modem.py    |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/framework/subsystems/ogsmd/modems/ti_calypso/modem.py b/framework/subsystems/ogsmd/modems/ti_calypso/modem.py
+index c7a5b6f..bc48052 100644
+--- a/framework/subsystems/ogsmd/modems/ti_calypso/modem.py
++++ b/framework/subsystems/ogsmd/modems/ti_calypso/modem.py
+@@ -15,9 +15,9 @@ __version__ = "0.9.9.10"
+ MODULE_NAME = "ogsmd.modems.ti_calypso"
+ 
+ DEVICE_CALYPSO_PATH             = "/dev/ttySAC0"
+-SYSFS_CALYPSO_POWER_PATH        = "/sys/bus/platform/devices/neo1973-pm-gsm.0/power_on"
+-SYSFS_CALYPSO_RESET_PATH        = "/sys/bus/platform/devices/neo1973-pm-gsm.0/reset"
+-SYSFS_CALYPSO_FLOW_CONTROL_PATH = "/sys/bus/platform/devices/neo1973-pm-gsm.0/flowcontrolled"
++SYSFS_CALYPSO_POWER_PATH        = "/sys/bus/platform/devices/gta02-pm-gsm.0/power_on"
++SYSFS_CALYPSO_RESET_PATH        = "/sys/bus/platform/devices/gta02-pm-gsm.0/reset"
++SYSFS_CALYPSO_FLOW_CONTROL_PATH = "/sys/bus/platform/devices/gta02-pm-gsm.0/flowcontrolled"
+ 
+ import mediator
+ 
+-- 
+1.7.1
+

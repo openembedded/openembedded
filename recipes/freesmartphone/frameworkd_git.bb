@@ -15,6 +15,8 @@ INITSCRIPT_NAME = "frameworkd"
 INITSCRIPT_PARAMS = "defaults 29"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
+           file://0001-ogpsd-update-sysfs-node-for-2.6.32-kernels-on-freeru.patch \
+           file://0002-ogsmd-ti_calipsy-update-sysfs-node-for-2.6.32-kernel.patch \
            file://frameworkd \
            file://frameworkd.conf \
 	   "
