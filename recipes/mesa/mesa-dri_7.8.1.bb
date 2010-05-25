@@ -15,7 +15,7 @@ SRC_URI[archive.sha256sum] = "b0b46e5abfd75db44501e308125fa92bcf1c91d91e97a043a3
 SRC_URI[demos.md5sum] = "9ef47f911869657c6bf2f43ebce86b61"
 SRC_URI[demos.sha256sum] = "e9f20b9345240064ac35ec914ebce63322a96d3f7c566963791d0daf7e7a93e5"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 # most of our targets do not have DRI so will use mesa-xlib
 DEFAULT_PREFERENCE = "-1"
