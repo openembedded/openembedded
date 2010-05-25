@@ -2,27 +2,27 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES_${PN} = "hotplug"
-PR = "r19"
 
-SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://noasmlinkage.patch \
-	   file://flags.patch \
-	   file://vol_id_ld.patch \
-	   file://udevtrigger_add_devname_filtering.patch \
-	   file://libvolume-id-soname.patch \
-	   file://mtd-exclude-persistent.patch \
-	   file://mount.blacklist \
-	   file://run.rules \
-	   file://default \
-	   file://local.rules \
+require udev.inc
+
+PR = "${INC_PR}.0"
+
+LD = "${CC}"
+
+SRC_URI += "file://noasmlinkage.patch \
+	    file://flags.patch \
+	    file://vol_id_ld.patch \
+	    file://udevtrigger_add_devname_filtering.patch \
+	    file://libvolume-id-soname.patch \
+	    file://mtd-exclude-persistent.patch \
+	    file://mount.blacklist \
+	    file://run.rules \
+	    file://default \
+	    file://local.rules \
 	   "
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
-
-require udev.inc
-
-INITSCRIPT_PARAMS = "start 03 S ."
 
 FILES_${PN} += "${base_libdir}/udev/*"
 FILES_${PN}-dbg += "${base_libdir}/udev/.debug"

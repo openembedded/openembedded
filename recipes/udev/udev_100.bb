@@ -9,19 +9,18 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-PR = "r16"
-
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://noasmlinkage.patch \
-	   file://flags.patch \
-	   file://mtd-exclude-persistent.patch \
-	   file://mount.blacklist \
-	   file://mount.sh \
-	   "
-
 require udev.inc
 
-INITSCRIPT_PARAMS = "start 03 S ."
+PR = "${INC_PR}.0"
+
+LD = "${CC}"
+
+SRC_URI += "file://noasmlinkage.patch;patch=1 \
+	    file://flags.patch;patch=1 \
+	    file://mtd-exclude-persistent.patch;patch=1 \
+	    file://mount.blacklist \
+	    file://mount.sh \
+	   "
 
 FILES_${PN} += "${base_libdir}/udev/*"
 FILES_${PN}-dbg += "${base_libdir}/udev/.debug"
