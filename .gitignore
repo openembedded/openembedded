@@ -1,3 +1,4 @@
 *.sw?
 *~
 lib/oe/*.pyc
+contrib/oeaudit/*.pyc
