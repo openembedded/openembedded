@@ -7,11 +7,12 @@
 
     <para>Creating a new distribution is not complicated, however we urge you
     to try existing distributions first, because it's also very easy to do
-    wrong. The config need to be created in /conf/distro directory. So what
-    has to be inside? <itemizedlist>
+    wrong. The config needs to be created in $OEBASE/openembedded/conf/distro 
+    directory. So what has to be inside? 
+      <itemizedlist>
         <listitem>
           <para><command>DISTRO_VERSION</command> so users will know which
-          version of distribution they use.</para>
+          version of the distribution they are using.</para>
         </listitem>
 
         <listitem>
@@ -71,29 +72,30 @@ SRCDATE = "20061014"
   <section id="commonuse_new_machine">
     <title>Adding a new Machine</title>
 
-    <para>To be able to build for device OpenEmbedded have to know it, so
-    machine config file need to be written. All those configs are stored in
-    /conf/machine/ directory.</para>
+    <para>To be able to build for a device OpenEmbedded has to know about it, 
+    so a machine config file needs to be written. All of the machine 
+    configs are stored in $OEBASE/openembedded/conf/machine/ directory.</para>
 
     <para>As usual some variables are required: <itemizedlist>
         <listitem>
-          <para><command>TARGET_ARCH</command> which describe which CPU
-          architecture does machine use.</para>
+          <para><command>TARGET_ARCH</command> describes which CPU
+          architecture the machine uses.</para>
         </listitem>
 
         <listitem>
-          <para><command>MACHINE_FEATURES</command> which describe which
-          features device has. More about it in <link
+          <para><command>MACHINE_FEATURES</command> which describes which
+          features the device has. More about it in <link
           linkend="task-base">task-base</link> section.</para>
         </listitem>
 
         <listitem>
           <para><command>PREFERRED_PROVIDER_virtual/kernel</command> has to
-          point into proper kernel recipe for this machine.</para>
+          point to the proper kernel recipe for this machine.</para>
         </listitem>
       </itemizedlist></para>
 
-    <para>Next kernel recipe needs to be added.</para>
+    <para>Next the kernel recipe needs to be added if it doesn't already exist.
+    </para>
   </section>
 
   <section id="commonuse_new_package">
@@ -105,7 +107,7 @@ SRCDATE = "20061014"
     <section>
         <title>building from unstable source code</title>
         <para>Building against the latest, bleeding-edge source has some intricacies of its own.
-        For one, it is desirable to pin down a 1 code revision that is known to build to
+        For one, it is desirable to pin down a code revision that is known to build to
         prevent random breakage in OE at the most inopportune time for all OE users.  Here is
         how to do that properly.
           <itemizedlist>
@@ -113,7 +115,8 @@ SRCDATE = "20061014"
             <listitem><para>for cvs: add 'PV = "1.1+cvs${SRCREV}"' to your bb file.</para></listitem>
           </itemizedlist>
         Accompany either with an entry to conf/distro/include/sane-srcrevs.inc for a revision that you know
-        builds successfully.
+        builds successfully.  It is also common to define the stable SRCREV 
+        for your package directly in the package recipe.
         </para>
         <para>
         If you really absolutely have to follow the latest commits, you can do that by adding
@@ -126,7 +129,7 @@ SRCDATE = "20061014"
   <section id="commonuse_new_image">
     <title>Creating your own image</title>
 
-    <para>Creating own image is easy - only few variables needs to be set:
+    <para>Creating own image is easy - only few variables need to be set:
     <itemizedlist>
         <listitem>
           <para><command>IMAGE_BASENAME</command> to give a name for your own
@@ -147,7 +150,7 @@ SRCDATE = "20061014"
           <para><command>IMAGE_LINGUAS</command> is an optional list of
           languages which has to be installed into the image</para>
         </listitem>
-      </itemizedlist> Then adding of the <emphasis>image</emphasis> class use:
+      </itemizedlist> Then add the <emphasis>image</emphasis> class using:
     <screen>
 inherit image
 </screen> And the image recipe is ready for usage.</para>
@@ -240,7 +243,7 @@ export LOCALDIR=$PWD/secret-isv
                     </screen>
 
         <para>Use <command>source build_source</command> to source the script,
-        use <command>env</command> to check that the variable where
+        use <command>env</command> to check that the variables were
         exported.</para>
       </section>
 
@@ -484,8 +487,8 @@ RDEPENDS_${PN} += "\
             <title>Putting it together</title>
             <para>In the previous two sections we have prepared the host and
             target side. One thing that is missing is combining the two newly
-            created tasks and actually create the SDK. This is what we are going
-            to do now.</para>
+            created tasks and actually creating the SDK. This is what we are 
+            going to do now.</para>
 
             <para>Create <filename>meta-toolchain-YOU.bb</filename> in the
             <filename>recipes/meta</filename> directory and place the following
@@ -529,7 +532,7 @@ SDK_SUFFIX = "toolchain-YOUR"
             optional dependencies like directFB, glib-2.0, gstreamer-0.10, tslib
             and more esoteric dependencies like mysql and postgres. This allows
             developers to simply start developing using Qt and enables system
-            integrator to easily recompile Qt and base libraries without tracking
+            integrators to easily recompile Qt and base libraries without tracking
             down extra dependencies.
             </para>
 
@@ -575,7 +578,7 @@ $ <command>bitbake</command> meta-toolchain-qte
             should start by downloading the SDK and untar it to the root folder
             (<filename>/</filename>). Once this operation is finished you will
             find a new directory <filename>/usr/local/angstrom/arm/</filename> and
-            it contains the <filename>environment-setup</filename> to setup the
+            it contains the <filename>environment-setup</filename> file to setup the
             <emphasis>QMAKESPEC</emphasis> and various other paths.
             </para>
 
