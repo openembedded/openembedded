@@ -18,7 +18,7 @@ PROVIDES += "gstreamer-ti-demo-script"
 
 PV = "svnr${SRCREV}"
 # Rebuild on kernel change since it links statically to ti-dmai, ti-codec-engine, etc
-PR = "r49+${MACHINE_KERNEL_PR}"
+PR = "r50+${MACHINE_KERNEL_PR}"
 
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
@@ -36,6 +36,7 @@ SRCREV = "573"
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
            file://gstreamer-ti-tracker-462.patch \
            file://gstreamer-ti-remove-mp3-decode-support-from-auddec1.patch \
+           file://mpeg2-caps.patch;striplevel=4\
            file://${GST_TI_RC_SCRIPT} \
 "
 
