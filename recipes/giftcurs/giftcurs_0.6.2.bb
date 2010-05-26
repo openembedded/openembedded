@@ -7,7 +7,7 @@ has been described as 'seriously slick'. It wont work that well \
 without giFT, which you should have already."
 
 SRC_URI = "http://fnord.csbnet.se/giftcurs/giFTcurs-${PV}.tar.gz \
-	   file://m4.patch;patch=1"
+	   file://m4.patch"
 S = "${WORKDIR}/giFTcurs-${PV}"
 
 inherit autotools

@@ -9,36 +9,36 @@ DEFAULT_PREFERENCE_nhk15 = "1"
 PR = "r11"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.21.bz2;patch=1;name=stablepatch \
-	   file://0001-kbuild-include-limits.h-in-sumversion.c-for-PATH_MAX.patch;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.21.bz2;apply=yes;name=stablepatch \
+	   file://0001-kbuild-include-limits.h-in-sumversion.c-for-PATH_MAX.patch \
            file://defconfig"
 
 SRC_URI_append_n2100 = "\
-	   file://n2100-r8169-parity.patch;patch=1 \
-	   file://rtc-rs5c372-n2100.patch;patch=1 \
+	   file://n2100-r8169-parity.patch \
+	   file://rtc-rs5c372-n2100.patch \
 	   "
 
 SRC_URI_append_at91sam9263ek = " \
-                                 http://maxim.org.za/AT91RM9200/2.6/${PV}-at91.patch.gz;patch=1;name=at91patch \
-                                 http://www.at91.com/repFichier/Project-217/linux-${PV}-at91-exp.diff.bz2;patch=1;name=exppatch \
+                                 http://maxim.org.za/AT91RM9200/2.6/${PV}-at91.patch.gz;name=at91patch \
+                                 http://www.at91.com/repFichier/Project-217/linux-${PV}-at91-exp.diff.bz2;name=exppatch \
                                "
 SRC_URI_append_at91sam9261ek = " \
-                                 http://maxim.org.za/AT91RM9200/2.6/${PV}-at91.patch.gz;patch=1;name=at91patch \
-                                 http://www.at91.com/repFichier/Project-217/linux-${PV}-at91-exp.diff.bz2;patch=1;name=exppatch \
+                                 http://maxim.org.za/AT91RM9200/2.6/${PV}-at91.patch.gz;name=at91patch \
+                                 http://www.at91.com/repFichier/Project-217/linux-${PV}-at91-exp.diff.bz2;name=exppatch \
                                "
 SRC_URI_append_at91sam9260ek = " \
-                                 http://maxim.org.za/AT91RM9200/2.6/${PV}-at91.patch.gz;patch=1;name=at91patch \
-                                 http://www.at91.com/repFichier/Project-217/linux-${PV}-at91-exp.diff.bz2;patch=1;name=exppatch \
+                                 http://maxim.org.za/AT91RM9200/2.6/${PV}-at91.patch.gz;name=at91patch \
+                                 http://www.at91.com/repFichier/Project-217/linux-${PV}-at91-exp.diff.bz2;name=exppatch \
                                "
 
 SRC_URI_append_nhk15 = " \
-		file://nomadik_baseline_linux_2620.patch;patch=1 \
-		file://audio_codec_patch_base_v5.6.0.patch;patch=1 \
-		file://linux-2.6.20_01_dec_2.patch;patch=1 \
-		file://patch_classdamp_pm_v_audio_codec_patch.patch;patch=1 \
-		file://patch_audiocodec_glitch.patch;patch=1 \
-		file://hrw-saa-fix.diff;patch=1 \
-		file://hrw-make-create-kconfig-executable.patch;patch=1 \
+		file://nomadik_baseline_linux_2620.patch \
+		file://audio_codec_patch_base_v5.6.0.patch \
+		file://linux-2.6.20_01_dec_2.patch \
+		file://patch_classdamp_pm_v_audio_codec_patch.patch \
+		file://patch_audiocodec_glitch.patch \
+		file://hrw-saa-fix.diff \
+		file://hrw-make-create-kconfig-executable.patch \
 "
 
 do_install_append_nhk15 () {

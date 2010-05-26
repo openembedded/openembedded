@@ -12,8 +12,8 @@ PR = "r1"
 
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
-	file://sounds.xml.patch;patch=1\
-	file://Makefile.patch;patch=1\
+	file://sounds.xml.patch\
+	file://Makefile.patch\
 	file://logrotate \
 	file://volatiles \
 	file://init"

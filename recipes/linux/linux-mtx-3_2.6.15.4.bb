@@ -12,8 +12,8 @@ DEPENDS = "u-boot"
 RDEPENDS = "mtd-utils"
 
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2;name=kernel \
-	file://00-mtx-3.diff;patch=1 \
-	file://01-verbose-and-fatal-mkuboot.diff;patch=1 \
+	file://00-mtx-3.diff \
+	file://01-verbose-and-fatal-mkuboot.diff \
 	file://defconfig-mtx-3"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-mtx-3-${KV}"

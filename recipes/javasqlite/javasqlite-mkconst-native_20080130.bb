@@ -6,7 +6,7 @@ DEPENDS = "sqlite-native sqlite3-native"
 
 SRC_URI = "\
   http://www.ch-werner.de/javasqlite/javasqlite-${PV}.tar.gz \
-  file://build-fix.patch;patch=1"
+  file://build-fix.patch"
 
 S = "${WORKDIR}/javasqlite-${PV}"
 

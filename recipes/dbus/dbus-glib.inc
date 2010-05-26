@@ -7,8 +7,8 @@ INC_PR = "r1"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-${PV}.tar.gz;name=archive \
-  file://no-introspect.patch;patch=1 \
-  file://no-examples.patch;patch=1 \
+  file://no-introspect.patch \
+  file://no-examples.patch \
 "
 
 inherit autotools pkgconfig gettext

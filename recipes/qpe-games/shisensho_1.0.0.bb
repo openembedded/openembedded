@@ -6,7 +6,7 @@ AUTHOR = "Mario Weilguni"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Shisen-Sho.html"
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/shisensho_V1.0.0.tar.gz \
-           file://shisen.patch;patch=1"
+           file://shisen.patch"
 
 PV = "1.0.0"
 S = "${WORKDIR}/shisensho_V${PV}"

@@ -6,7 +6,7 @@ DEPENDS = "glib-2.0 openobex bluez-libs"
 PR = "r7"
 
 SRC_URI = "http://www.caside.lancs.ac.uk/bt/obexpush.tar.gz \
-           file://add-obextool.patch;patch=1 \
+           file://add-obextool.patch \
            file://init \
            file://opd_args"
 S = "${WORKDIR}/obexpush"

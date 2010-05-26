@@ -6,8 +6,8 @@ DEPENDS = "ncurses"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.linux.ee/pub/gentoo/distfiles/distfiles/libedit-${PV}.tar.bz2 \
-	file://20031222-debian-to-gentoo.patch;patch=1;pnum=1 \
-	file://libedit-add-soname.diff;patch=1;pnum=0"
+	file://20031222-debian-to-gentoo.patch \
+	file://libedit-add-soname.diff;striplevel=0"
 
 S = "${WORKDIR}/netbsd-cvs"
 

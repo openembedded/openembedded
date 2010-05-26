@@ -8,8 +8,8 @@ PR = "r0"
 
 #FIXME the patches are a) HACKS and b) something's wrong with lineend conversion
 SRC_URI = "http://downloads.openmoko.org/sources/juce_${@bb.data.getVar('PV',d,1).split('.')[0]}_${@bb.data.getVar('PV',d,1).split('.')[1]}.zip \
-           file://remove-x86isms.patch;patch=1 \
-           file://no-opengl.patch;patch=1"
+           file://remove-x86isms.patch \
+           file://no-opengl.patch"
 S = "${WORKDIR}/juce"
 
 LIB = "libjuce_debug"

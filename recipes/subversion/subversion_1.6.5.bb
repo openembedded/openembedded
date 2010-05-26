@@ -8,7 +8,7 @@ HOMEPAGE = "http://subversion.tigris.org/"
 PR = "r0"
 
 SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
-	   file://disable-revision-install.patch;patch=1"
+	   file://disable-revision-install.patch"
 
 EXTRA_OECONF = "--without-berkeley-db --without-apxs --without-apache \
                 --without-swig --with-apr=${STAGING_BINDIR_CROSS} \

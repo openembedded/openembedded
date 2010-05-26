@@ -8,7 +8,7 @@ APPDESKTOP = "${S}"
 PR = "r1"
 
 SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_downloads/${PV}/cumulus-${PV}.src.tar.bz2 \
-	file://open_max.patch;patch=1"
+	file://open_max.patch"
 S = "${WORKDIR}/cumulus_${PV}/cumulus"
 
 inherit opie

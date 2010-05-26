@@ -7,7 +7,7 @@ PR = "r2"
 
 inherit gnome pkgconfig
 
-SRC_URI += "file://idl-sysroot.patch;patch=1"
+SRC_URI += "file://idl-sysroot.patch"
 
 CPPFLAGS += " -I${STAGING_INCDIR}/gnome-desktop-2.0" 
 export SYSROOT = "${STAGING_DIR_HOST}"

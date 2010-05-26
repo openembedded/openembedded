@@ -1,6 +1,6 @@
 require gst-plugins.inc
 
-SRC_URI += "file://flvdemux-ecma.diff;patch=1 \
+SRC_URI += "file://flvdemux-ecma.diff \
 "
 
 SRC_URI[archive.md5sum] = "9bc5c9b390edbb96bda42fc553eae5ae"

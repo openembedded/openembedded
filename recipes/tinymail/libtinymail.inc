@@ -6,7 +6,7 @@ DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf libgnomeui"
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
 SRC_URI = "http://tinymail.org/files/releases/pre-releases/v${PV}/libtinymail-${PV}.tar.bz2 \
-	   file://no-iconv-detect.patch;patch=1 \
+	   file://no-iconv-detect.patch \
 	   file://iconv-detect.h \
 	   file://gtk-doc.m4 \
            file://gtk-doc.make"

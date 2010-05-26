@@ -7,9 +7,9 @@ PR = "r6"
 
 LICENSE = "LGPL GPL"
 SRC_URI = "${DEBIAN_MIRROR}/main/t/t1lib/t1lib_${PV}.orig.tar.gz \
-           file://configure.patch;patch=1 \
-           file://install.patch;patch=1 \
-	   file://libtool.patch;patch=1"
+           file://configure.patch \
+           file://install.patch \
+	   file://libtool.patch"
 
 inherit autotools
 

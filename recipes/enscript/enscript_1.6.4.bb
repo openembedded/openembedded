@@ -5,7 +5,7 @@ output to a file or sends it directly to the printer."
 LICENSE = "GPL"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/e/enscript/enscript_${PV}.orig.tar.gz \
-	   file://autotools.patch;patch=1"
+	   file://autotools.patch"
 
 inherit autotools
 

@@ -1,7 +1,7 @@
 require gst-plugins.inc
 
 SRC_URI += "file://vorbisenc.h file://vorbisdec.h \
-            file://ivorbis-thumb.patch;patch=1"
+            file://ivorbis-thumb.patch"
 
 DEPENDS += "gst-plugins-base openssl directfb"
 

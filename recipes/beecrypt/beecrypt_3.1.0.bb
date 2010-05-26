@@ -5,7 +5,7 @@
 DESCRIPTION="Beecrypt is a general-purpose cryptography library."
 HOMEPAGE="http://sourceforge.net/projects/beecrypt"
 SRC_URI="${SOURCEFORGE_MIRROR}/beecrypt/beecrypt-${PV}.tar.gz \
-         file://x64fix.patch;patch=1"
+         file://x64fix.patch"
 
 PR = "r4"
 

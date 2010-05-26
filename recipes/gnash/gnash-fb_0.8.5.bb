@@ -7,7 +7,7 @@ acpaths = " -Imacros"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
-SRC_URI += "file://gnash-glib-dependency.patch;patch=1"
+SRC_URI += "file://gnash-glib-dependency.patch"
 
 S = "${WORKDIR}/gnash-${PV}"
 

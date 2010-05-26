@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r6"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/atftp/atftp_${PV}.orig.tar.gz;name=archive \
-	   ${DEBIAN_MIRROR}/main/a/atftp/atftp_${PV}.dfsg-6.diff.gz;patch=1;name=patch \
+	   ${DEBIAN_MIRROR}/main/a/atftp/atftp_${PV}.dfsg-6.diff.gz;name=patch \
 	   file://atftpd.init"
 S = "${WORKDIR}/atftp-${PV}"
 

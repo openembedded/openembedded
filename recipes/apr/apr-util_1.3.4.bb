@@ -6,8 +6,8 @@ LICENSE = "Apache License, Version 2.0"
 PR = "r5"
 
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
-           file://configfix.patch;patch=1 \
-           file://configure_fixes.patch;patch=1"
+           file://configfix.patch \
+           file://configure_fixes.patch"
 
 EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS}/apr-1-config \ 
 		--with-dbm=gdbm \

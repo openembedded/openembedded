@@ -3,8 +3,8 @@ LICENSE = "LGPL"
 DEPENDS = "glib-2.0"
 
 SRC_URI = "http://www.gnome.org/~veillard/gamin/sources/gamin-${PV}.tar.gz \
-           file://no-abstract-sockets.patch;patch=1 \
-           file://configure_ucred.patch;patch=1 "
+           file://no-abstract-sockets.patch \
+           file://configure_ucred.patch "
 
 EXTRA_OECONF = " --without-python " 
 

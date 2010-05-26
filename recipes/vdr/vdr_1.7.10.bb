@@ -1,14 +1,14 @@
 require vdr.inc
 PR = "r3"
 
-SRC_URI += " file://fixpaths.patch;patch=1 \
-           file://cplusplus.patch;patch=1 \
-           file://disable_plugin.patch;patch=1 \
-           file://linkerflags.patch;patch=1 \
+SRC_URI += " file://fixpaths.patch \
+           file://cplusplus.patch \
+           file://disable_plugin.patch \
+           file://linkerflags.patch \
           "
 
-SRC_URI_append_linux-uclibceabi = " file://libintl.patch;patch=1 "
-SRC_URI_append_uclinux-uclibc = " file://libintl.patch;patch=1 "
+SRC_URI_append_linux-uclibceabi = " file://libintl.patch "
+SRC_URI_append_uclinux-uclibc = " file://libintl.patch "
 
 CFLAGS_append += " -I${STAGING_INCDIR}/freetype2"
 

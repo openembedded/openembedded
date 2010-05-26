@@ -5,7 +5,7 @@ PR = "r2"
 
 export PV := "${PV}"
 
-SRC_URI += "file://no-need-for-pyqt-at-buildtime.patch;patch=1"
+SRC_URI += "file://no-need-for-pyqt-at-buildtime.patch"
 S = "${WORKDIR}/anki-${PV}"
 
 SRC_URI[md5sum] = "90434860945de4c09d55cdb5dbe984fc"

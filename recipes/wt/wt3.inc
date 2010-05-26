@@ -11,8 +11,8 @@ INC_PR = "r1"
 # the api of these versions is incompatible with 2.*
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/witty/wt-${PV}.tar.gz;name=tarball \
-	file://ext.patch;patch=1 \
-	file://wgooglemap.patch;patch=1"
+	file://ext.patch \
+	file://wgooglemap.patch"
 
 CXXFLAGS += "-Dsinl=sin -Dcosl=cos -Dasinl=asin"
 

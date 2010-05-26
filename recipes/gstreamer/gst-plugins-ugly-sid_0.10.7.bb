@@ -6,7 +6,7 @@ PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-${PV}.tar.bz2 \
-  file://gstsid_autofoo_HACK.patch;patch=1 \
+  file://gstsid_autofoo_HACK.patch \
 "
 S = "${WORKDIR}/gst-plugins-ugly-${PV}"
 

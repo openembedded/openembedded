@@ -8,7 +8,7 @@ SRCNAME = "pygtk"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/python/v1.2/${SRCNAME}-${PV}.tar.gz \
-           file://remove-imlib-et-al.patch;patch=1 \
+           file://remove-imlib-et-al.patch \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 

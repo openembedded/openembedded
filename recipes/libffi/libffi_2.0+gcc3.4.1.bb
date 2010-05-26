@@ -18,7 +18,7 @@ FILES_${PN}-dev = "${includedir}/ffi* \
 GCC_VER = "${@bb.data.getVar('PV',d,1).split('gcc')[1]}"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 \
-	   file://soname.patch;patch=1"
+	   file://soname.patch"
 
 MIRRORS_prepend () {
 ${GNU_MIRROR}/gcc/	http://gcc.get-software.com/releases/

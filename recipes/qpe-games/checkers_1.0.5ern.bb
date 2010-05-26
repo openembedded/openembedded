@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Checkers.html"
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/checkers_V1.0.5ern.tar.gz \
-           file://checkers.patch;patch=1"
+           file://checkers.patch"
 
 PV = "1.0.5ern"
 S = "${WORKDIR}/checkers_V${PV}"

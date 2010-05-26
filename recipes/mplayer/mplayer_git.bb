@@ -8,11 +8,11 @@ DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jp
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "git://repo.or.cz/mplayer/glamo.git;protocol=git;branch=master \
-   file://makefile-nostrip-svn.patch;patch=1 \
+   file://makefile-nostrip-svn.patch \
    "
 
 SRC_URI_append_armv7a = " \
-		file://omapfb.patch;patch=1 \
+		file://omapfb.patch \
 	   file://vo_omapfb.c \
 	   file://yuv.S \
 	  "
@@ -21,7 +21,7 @@ SRC_URI_append_armv7a = " \
 # machine seem to be set to executable by the toolchain. If someone
 # discovers this is more general than please make this more general
 # ie. for all armv4 machines.
-SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
+SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 
 SRCREV = "e64bef6a821e12e4a2fabeae15a2dfeef2ab460b"
 

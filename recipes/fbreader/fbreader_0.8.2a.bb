@@ -11,17 +11,17 @@ PR = "r7"
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 SRC_URI = "http://www.fbreader.org/obsolete/fbreader-sources-${PV}.tgz \
-	   file://fbreader-0.8.2a_buildsys_oe.patch;patch=1 \
-	   file://480x640-buildfix.patch;patch=1"
+	   file://fbreader-0.8.2a_buildsys_oe.patch \
+	   file://480x640-buildfix.patch"
 	   
 SRC_URI_append_spitz = "\
-		  file://zaurus-VGA.patch;patch=1"
+		  file://zaurus-VGA.patch"
 
 SRC_URI_append_akita = "\
-		  file://zaurus-VGA.patch;patch=1"
+		  file://zaurus-VGA.patch"
 
 SRC_URI_append_htcuniversal = "\
-		  file://zaurus-VGA.patch;patch=1"
+		  file://zaurus-VGA.patch"
 
 # Set the defaults
 READER_RESOLUTION = "240x320"

@@ -6,12 +6,12 @@ LICENSE = "GPL QPL"
 PR = "r4"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
-           file://fix-makefile.patch;patch=1 \
-           file://gcc3_4.patch;patch=1 \
-           file://gcc4.patch;patch=1 \
-           file://gcc4_1.patch;patch=1 \
-           file://64bit-cleanup.patch;patch=1 \
-	   file://kernel-asm-page.patch;patch=1"
+           file://fix-makefile.patch \
+           file://gcc3_4.patch \
+           file://gcc4.patch \
+           file://gcc4_1.patch \
+           file://64bit-cleanup.patch \
+	   file://kernel-asm-page.patch"
 S = "${WORKDIR}/qt-${PV}"
 
 inherit native qmake_base

@@ -4,8 +4,8 @@ LICENSE    = "GPL"
 DEPENDS = "hildon-lgpl hildon-base-lib osso-af-settings libosso hildon-libs osso-af-settings libosso-help"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/h/${PN}/${PN}_${PV}.tar.gz \
-           file://config-path.patch;patch=1;pnum=0 \
-           file://noWerror.patch;patch=1;pnum=0"
+           file://config-path.patch;striplevel=0 \
+           file://noWerror.patch;striplevel=0"
 
 S = "${WORKDIR}/hildon-control-panel-0.9.1"
 

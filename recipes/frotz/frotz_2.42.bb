@@ -5,7 +5,7 @@ SECTION = "console/games"
 DEPENDS = "ncurses"
 
 SRC_URI = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz \
-	file://Makefile.patch;patch=1 "
+	file://Makefile.patch "
 
 do_configure() {
 	patch -N ${s}/ux_init.c < remove_root_restriction.patch || :

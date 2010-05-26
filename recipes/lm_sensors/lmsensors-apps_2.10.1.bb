@@ -5,10 +5,10 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.gz;name=archive \
-           file://prefix-fix.patch;patch=1 \
-           file://add-sysfs-ldflags.patch;patch=1"
+           file://prefix-fix.patch \
+           file://add-sysfs-ldflags.patch"
 
-SRC_URI_append_uclibc = "file://iconv.patch;patch=1"
+SRC_URI_append_uclibc = "file://iconv.patch"
 SRC_URI[archive.md5sum] = "cdc857b78e813b88cbf8be92441aa299"
 SRC_URI[archive.sha256sum] = "a332cacfa9d0eed6e9158c394db714e536f38c27451d7df08b9634952118fa1b"
 

@@ -16,19 +16,19 @@ inherit gpe
 SRC_URI[md5sum] = "2df46d6b1bbac9f3e5e7e3191ccdd3e4"
 SRC_URI[sha256sum] = "4576ccca80730f1860a273df38b9f917cf906eca9865e108d76fc5460e006d87"
 
-SRC_URI_append = " file://loop.patch;patch=1;pnum=3 \
-                   file://rgba.diff;patch=1 \
+SRC_URI_append = " file://loop.patch;striplevel=3 \
+                   file://rgba.diff \
                    file://setDPI.sh \
                    file://89xdgautostart.sh"
 
-SRC_URI_append_angstrom = " file://xtscal-fix.patch;patch=1 "
+SRC_URI_append_angstrom = " file://xtscal-fix.patch "
 RDEPENDS_${PN}_append_angstrom = " tslib-calibrate "
 
-SRC_URI_append_shr = " file://89xTs_Calibrate.xinput_calibrator.patch;patch=1 \
-                       file://90xXWindowManager.patch;patch=1 \
-                       file://Xserver.add.nocursor.for.gta.patch;patch=1 \
-                       file://Xserver.add.xserver-system.patch;patch=1 \
-                       file://Xserver.add.dpi.for.gta.patch;patch=1"
+SRC_URI_append_shr = " file://89xTs_Calibrate.xinput_calibrator.patch \
+                       file://90xXWindowManager.patch \
+                       file://Xserver.add.nocursor.for.gta.patch \
+                       file://Xserver.add.xserver-system.patch \
+                       file://Xserver.add.dpi.for.gta.patch"
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"

@@ -47,7 +47,7 @@ SRC_URI = "svn://gforge.ti.com/svn/dmai/;module=${DMAIBRANCH};proto=https;user=a
 		file://loadmodules-ti-dmai-ol138_al.sh \
 	"
 
-SRC_URI_append_omapl137 = " file://dmai-r423-add-omapl137-support.patch;patch=1 "
+SRC_URI_append_omapl137 = " file://dmai-r423-add-omapl137-support.patch "
 
 DEPENDS = "virtual/kernel alsa-lib ti-framework-components ti-codec-engine ti-xdctools"
 

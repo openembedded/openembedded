@@ -4,8 +4,8 @@ LICENSE = "GPLv2"
 PR = "r15"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-	   http://www.epiawiki.org/files/epia_kernel/patch-2.6.8.1-epia1.bz2;patch=1;name=patch1 \
-	   http://hem.bredband.net/ekmlar/patch-vt1211-2.6.txt;patch=1;name=patch2 \
+	   http://www.epiawiki.org/files/epia_kernel/patch-2.6.8.1-epia1.bz2;apply=yes;name=patch1 \
+	   http://hem.bredband.net/ekmlar/patch-vt1211-2.6.txt;apply=yes;name=patch2 \
            file://epia_defconfig"
 S = "${WORKDIR}/linux-${PV}"
 

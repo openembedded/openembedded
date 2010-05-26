@@ -12,11 +12,11 @@ FILES_module-init-tools-depmod = "${sbindir}/depmod.26"
 FILES_module-init-tools-insmod-static = "${sbindir}/insmod.static"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/module-init-tools/module-init-tools-${PV}.tar.bz2 \
-	   file://ignore_arch_directory;patch=1 \
-	   file://modutils_extension;patch=1 \
-	   file://no_man_rebuild;patch=1 \
-	   file://manpagesopt;patch=1 \
-           file://module-init-tools-remove-index.patch;patch=1 "
+	   file://ignore_arch_directory;apply=yes \
+	   file://modutils_extension;apply=yes \
+	   file://no_man_rebuild;apply=yes \
+	   file://manpagesopt;apply=yes \
+           file://module-init-tools-remove-index.patch "
 S = "${WORKDIR}/module-init-tools-${PV}"
 
 EXTRA_OECONF = "--disable-manpages"

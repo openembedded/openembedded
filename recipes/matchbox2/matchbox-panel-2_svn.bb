@@ -13,10 +13,10 @@ PR = "r1"
 inherit autotools_stage pkgconfig
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
-	   file://scaling-image-double-free.patch;patch=1;pnum=0 \
-	   file://startup-invalid-access.patch;patch=1;pnum=0 \
-	   file://startup-shown-uninitialized.patch;patch=1;pnum=0 \
-	   file://themeable-icons.patch;patch=1;pnum=0 \
+	   file://scaling-image-double-free.patch;striplevel=0 \
+	   file://startup-invalid-access.patch;striplevel=0 \
+	   file://startup-shown-uninitialized.patch;striplevel=0 \
+	   file://themeable-icons.patch;striplevel=0 \
 "
 S = "${WORKDIR}/${PN}"
 

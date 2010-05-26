@@ -9,11 +9,11 @@ groups of messages."
 LICENSE = "GPL"
 PR = "r0"
 SRC_URI = "ftp://ftp.mutt.org/mutt/devel/mutt-${PV}.tar.gz;name=archive \
-           http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.nntp.2.gz;patch=1;name=patch1 \
-           http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.initials.gz;patch=1;name=patch2 \
-           http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.quote.gz;patch=1;name=patch3 \
-           file://patch-1.5.15.sidebar.20070408.txt;patch=1 \
-           file://makedoc.patch;patch=1 "
+           http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.nntp.2.gz;apply=yes;name=patch1 \
+           http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.initials.gz;apply=yes;name=patch2 \
+           http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.quote.gz;apply=yes;name=patch3 \
+           file://patch-1.5.15.sidebar.20070408.txt;apply=yes \
+           file://makedoc.patch "
 
 S = "${WORKDIR}/mutt-1.5.15"
 

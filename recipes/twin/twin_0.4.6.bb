@@ -4,7 +4,7 @@ SECTION = "console/utils"
 DEPENDS = "coreutils-native"
 LICENSE = "GPL LGPL"
 SRC_URI = "http://linuz.sns.it/~max/twin/twin-0.4.6.tar.gz \
-	   file://cross_compile.patch;patch=1"
+	   file://cross_compile.patch"
 
 EXTRA_OECONF = " --disable-tt-hw-x11 --disable-hw-x11 --disable-tt-hw-gtk"
 

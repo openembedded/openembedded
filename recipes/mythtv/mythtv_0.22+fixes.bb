@@ -26,7 +26,7 @@ ALLOW_EMPTY_${PN} = "1"
 QMAKE_PROFILES = "mythtv.pro"
 
 SRC_URI += " \
-        file://configure.patch;patch=1 \
+        file://configure.patch \
         "
 
 inherit qmake2 qt4x11

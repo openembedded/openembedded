@@ -10,7 +10,7 @@ APPTYPE = "binary"
 APPDESKTOP = "${S}/dist/opt/QtPalmtop/apps/Applications"
 
 SRC_URI = "http://my-zaurus.narod.ru/downloads/qpealarmclock-1.0.9.tar.gz \
-           file://fix-compile.patch;patch=1 "
+           file://fix-compile.patch "
 
 S = "${WORKDIR}/qpealarmclock"
 

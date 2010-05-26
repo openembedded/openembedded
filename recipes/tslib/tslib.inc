@@ -12,8 +12,8 @@ SRC_URI += "\
   file://tslib.sh \
 "
 SRC_URI_append_mnci += "\
-  file://devfs.patch;patch=1 \
-  file://event1.patch;patch=1 \
+  file://devfs.patch \
+  file://event1.patch \
 "
 
 inherit autotools pkgconfig

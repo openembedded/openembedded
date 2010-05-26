@@ -6,7 +6,7 @@ DEPENDS = "tetex-native flex gd ncurses libpng t1lib virtual/libx11 libxau libxe
 PR = "r6"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-src-${PV}.tar.gz \
-           file://configure.patch;patch=1"
+           file://configure.patch"
 S = "${WORKDIR}/tetex-src-${PV}"
 
 inherit autotools

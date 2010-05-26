@@ -16,14 +16,14 @@ GPE_TARBALL_SUFFIX = "bz2"
 inherit gpe autotools pkgconfig
 
 
-SRC_URI += "file://removeblue-fontsize8.patch;patch=1"
-SRC_URI += " file://chvt-keylaunch.patch;patch=1 "
-SRC_URI += " file://c-locale.patch;patch=1 "
-SRC_URI += " file://no-deprecated-sysfs.patch;patch=1 "
+SRC_URI += "file://removeblue-fontsize8.patch"
+SRC_URI += " file://chvt-keylaunch.patch "
+SRC_URI += " file://c-locale.patch "
+SRC_URI += " file://no-deprecated-sysfs.patch "
 
-SRC_URI_append_spitz = "file://brightness-adjust-keyluanchrc.patch;patch=1"
-SRC_URI_append_akita = "file://brightness-adjust-keyluanchrc.patch;patch=1"
-SRC_URI_append_c7x0 = "file://brightness-adjust-keyluanchrc.patch;patch=1"
+SRC_URI_append_spitz = "file://brightness-adjust-keyluanchrc.patch"
+SRC_URI_append_akita = "file://brightness-adjust-keyluanchrc.patch"
+SRC_URI_append_c7x0 = "file://brightness-adjust-keyluanchrc.patch"
 
 
 CONFFILES_${PN} += " \

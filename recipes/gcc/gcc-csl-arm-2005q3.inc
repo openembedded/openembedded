@@ -7,10 +7,10 @@ PV_chinook-compat = "3.4.4cs2005q3.2"
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm"
 
 SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2005q3-2-arm-none-eabi.src.tar.bz2;name=archive \
-           file://gcc_optab_arm.patch;patch=1 \
-           file://gcc-3.4.4-eabi-bigendian.patch;patch=1 \
-           file://libstdc++_configure.patch;patch=1 \
-           file://demangle.patch;patch=1 \
+           file://gcc_optab_arm.patch \
+           file://gcc-3.4.4-eabi-bigendian.patch \
+           file://libstdc++_configure.patch \
+           file://demangle.patch \
           "
 
 S = "${WORKDIR}/gcc-2005q3"

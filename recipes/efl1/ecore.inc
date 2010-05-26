@@ -12,7 +12,7 @@ inherit efl
 
 BBCLASSEXTEND = "native"
 
-SRC_URI += "file://fix-ecore-fb-initialization.patch;patch=1"
+SRC_URI += "file://fix-ecore-fb-initialization.patch"
 
 do_configure_prepend() {
 	touch ${S}/po/Makefile.in.in || true

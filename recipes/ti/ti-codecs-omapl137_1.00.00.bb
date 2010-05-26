@@ -22,7 +22,7 @@ PROVIDES += "ti-codecs-omapl137-server"
 S = "${WORKDIR}/OMAP_L138_arm_1_00_00_08/cs1omapl138_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/sdk/omap_l138/1_00/latest/exports/${BINFILE};name=l137codecsbin \
-           file://ti-codecs-omapl138-1-00-00-fixDman3Config.patch;patch=1"
+           file://ti-codecs-omapl138-1-00-00-fixDman3Config.patch"
 
 BINFILE = "cs1omapl138_${PV}-v2_setup_linux.bin"
 TI_BIN_UNPK_CMDS = "y:Y: qY:workdir"

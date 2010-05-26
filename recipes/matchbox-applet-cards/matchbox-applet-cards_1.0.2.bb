@@ -5,7 +5,7 @@ SECTION = "x11/wm"
 PR = "r1"
 
 SRC_URI = "http://distro.ibiblio.org/pub/linux/distributions/pdaxrom/src/mb-applet-cards-${PV}.tar.bz2 \
-	file://oz-gpe.patch;patch=1 \
+	file://oz-gpe.patch \
 	file://gpe-applet-cards \
 	file://cf_mount.png \
 	file://cf_unmount.png \

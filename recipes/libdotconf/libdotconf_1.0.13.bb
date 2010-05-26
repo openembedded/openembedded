@@ -7,7 +7,7 @@ PR = "r0"
 inherit autotools
 
 SRC_URI = "http://www.azzit.de/dotconf/download/v1.0/dotconf-${PV}.tar.gz \
-	  file://srcMakefile.am_00.patch;patch=1"
+	  file://srcMakefile.am_00.patch"
 
 S = "${WORKDIR}/dotconf-${PV}"
 

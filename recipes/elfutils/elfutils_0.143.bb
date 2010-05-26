@@ -7,7 +7,7 @@ PR = "r1"
 inherit autotools
 
 SRC_URI = "https://fedorahosted.org/releases/e/l/elfutils/elfutils-${PV}.tar.bz2;name=archive \
-           http://ftp.de.debian.org/debian/pool/main/e/elfutils/elfutils_0.143-1.diff.gz;patch=1;name=patch \
+           http://ftp.de.debian.org/debian/pool/main/e/elfutils/elfutils_0.143-1.diff.gz;name=patch \
            file://i386_dis.h \
            file://x86_64_dis.h \
 "

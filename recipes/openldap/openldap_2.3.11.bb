@@ -16,16 +16,16 @@ PR = "r5"
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
 
 SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
-SRC_URI += "file://openldap-m4-pthread.patch;patch=1"
+SRC_URI += "file://openldap-m4-pthread.patch"
 SRC_URI += "file://initscript"
 # The build tries to run a host executable, this fails.  The patch
 # causes the executable and its data to be installed instead of
 # the output - ucgendat must be run after the ipkg install!
-#SRC_URI += "file://ucgendat.patch;patch=1"
+#SRC_URI += "file://ucgendat.patch"
 # The original top.mk used INSTALL, not INSTALL_STRIP_PROGRAM when
 # installing .so and executables, this fails in cross compilation
 # environments
-SRC_URI += "file://install-strip.patch;patch=1"
+SRC_URI += "file://install-strip.patch"
 
 inherit autotools
 

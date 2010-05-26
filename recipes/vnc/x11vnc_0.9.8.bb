@@ -7,7 +7,7 @@ DEPENDS = "openssl virtual/libx11 libxtst libxext avahi jpeg zlib"
 
 PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/x11vnc-${PV}.tar.gz \
-	   file://x11vnc-0.9.8-xshm-header-fix.patch;patch=1"
+	   file://x11vnc-0.9.8-xshm-header-fix.patch"
 
 inherit autotools
 

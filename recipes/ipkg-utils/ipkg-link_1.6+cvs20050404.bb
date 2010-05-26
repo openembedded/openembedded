@@ -6,7 +6,7 @@ SRCDATE = "20050930"
 PR = "r4"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
-	   file://link-vfat-libs.patch;patch=1"
+	   file://link-vfat-libs.patch"
 
 S = "${WORKDIR}/ipkg-utils"
 

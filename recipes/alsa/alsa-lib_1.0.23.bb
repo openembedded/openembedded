@@ -10,8 +10,8 @@ LICENSE = "LGPLv2.1"
 ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2 \
-           file://fix-tstamp-declaration.patch;patch=1 \
-           file://fix_libmath.patch;patch=1 \
+           file://fix-tstamp-declaration.patch \
+           file://fix_libmath.patch \
 	  "
 
 SRC_URI[md5sum] = "f48b50421d8a69d2d806d9c47e534f0d"

@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.warmi.net/zaurus/zipsc.shtml"
 PR = "r2"
 
 SRC_URI = "http://www.warmi.net/zaurus/files/zipsc_${PV}.tar.gz \
-           file://gcc3.patch;patch=1"
+           file://gcc3.patch"
 S = "${WORKDIR}/zipsc_${PV}"
 
 inherit palmtop

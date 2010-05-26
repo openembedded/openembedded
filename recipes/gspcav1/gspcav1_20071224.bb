@@ -5,7 +5,7 @@ SECTION = "kernel/modules"
 LICENSE = "GPL"
 
 SRC_URI = "http://mxhaard.free.fr/spca50x/Download/gspcav1-${PV}.tar.gz \
-           file://Makefile-fix-cc-quoting.diff;patch=1 \
+           file://Makefile-fix-cc-quoting.diff \
           "
 
 S = "${WORKDIR}/gspcav1-${PV}"

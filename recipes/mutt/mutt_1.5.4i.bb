@@ -9,14 +9,14 @@ groups of messages."
 LICENSE = "GPL"
 PR = "r1"
 SRC_URI = "ftp://ftp.mutt.org/mutt/devel/mutt-${PV}.tar.gz;name=archive \
-	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.rr.compressed.gz;patch=1;name=patch1 \
-	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.nntp.gz;patch=1;name=patch2 \
-	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.initials.gz;patch=1;name=patch3 \
-	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.quote.gz;patch=1;name=patch4 \
-	   file://cppflags.patch;patch=1 \
-	   file://posix1_lim.patch;patch=1 \
-	   file://keymap.h.patch;patch=1 \
-	   file://configure.patch;patch=1"
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.rr.compressed.gz;apply=yes;name=patch1 \
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.nntp.gz;apply=yes;name=patch2 \
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.initials.gz;apply=yes;name=patch3 \
+	   http://mutt.kiev.ua/download/mutt-1.5.4/patch-1.5.4.vvv.quote.gz;apply=yes;name=patch4 \
+	   file://cppflags.patch \
+	   file://posix1_lim.patch \
+	   file://keymap.h.patch \
+	   file://configure.patch"
 S = "${WORKDIR}/mutt-1.5.4"
 
 inherit autotools

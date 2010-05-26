@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://john.fremlin.de/programs/linux/read-edid/read-edid-${PV}.tar.gz;name=archive \
-           http://ftp.de.debian.org/debian/pool/main/r/read-edid/read-edid_1.4.1-2.1.diff.gz;patch=1;name=patch "
+           http://ftp.de.debian.org/debian/pool/main/r/read-edid/read-edid_1.4.1-2.1.diff.gz;name=patch "
 
 inherit autotools
 

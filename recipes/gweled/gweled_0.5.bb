@@ -6,7 +6,7 @@ DEPENDS = "gtk+ librsvg"
 PRIORITY = "optional"
 
 SRC_URI = "http://sebdelestaing.free.fr/gweled/Release/gweled-0.5.tar.gz \
-	   file://de-gnome.patch;patch=1"
+	   file://de-gnome.patch"
 
 EXTRA_OECONF = " --disable-setgid --prefix=/usr"
 

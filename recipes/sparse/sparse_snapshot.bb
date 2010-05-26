@@ -15,8 +15,8 @@ preprocessor (although it contains as a part of it a preprocessing phase)."
 PV = "0.0+${SRCDATE}"
 LICENSE = "OSL"
 SRC_URI = "http://www.codemonkey.org.uk/projects/git-snapshots/sparse/sparse-${@get_snapshot_date(d)}.tar.gz \
-	   file://compile.patch;patch=1 \
-	   file://vars.patch;patch=1"
+	   file://compile.patch \
+	   file://vars.patch"
 S = "${WORKDIR}/sparse-bk"
 
 do_install () {

@@ -8,7 +8,7 @@ PV = "0.0+${PR}+gitr${SRCREV}"
 
 SRCREV = "26df4208b57ccb0f0ca101ae4ddb92c956a0ecc0"
 SRC_URI = "git://git.mansr.com/${PN};protocol=git \
-           file://fbplay-static.diff;patch=1 "
+           file://fbplay-static.diff "
 
 S = "${WORKDIR}/git"
 

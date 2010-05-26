@@ -1,6 +1,6 @@
 require zziplib.inc
 
-SRC_URI += "file://zziplib-0.10-disable-test.patch;patch=1"
+SRC_URI += "file://zziplib-0.10-disable-test.patch"
 
 PR = "r1"
 

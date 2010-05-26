@@ -4,7 +4,7 @@ DEFAULT_PREFERENCE = "-1"
 
 PR = "r0"
 
-SRC_URI += "file://Makefile.in.patch;patch=1"
+SRC_URI += "file://Makefile.in.patch"
 
 EXTRA_OECONF = " --disable-gui \
                  --enable-largefile \

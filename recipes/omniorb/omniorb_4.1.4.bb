@@ -6,11 +6,11 @@ DEPENDS = "omniorb-native"
 PR = "r0"
 
 SRC_URI = "http://downloads.sourceforge.net/omniorb/omniORB-4.1.4.tar.gz;name=omniORB414targz \
-file://omniorb_4.1.4.patch;patch=1 \ 
+file://omniorb_4.1.4.patch \ 
 file://omniORB.cfg \
-file://omniORB-cross.patch;patch=1 \
-file://omniORB_embedded_appl.patch;patch=1 \
-file://rm_LongDouble.patch;patch=1 \
+file://omniORB-cross.patch \
+file://omniORB_embedded_appl.patch \
+file://rm_LongDouble.patch \
 "
 
 SRC_URI[omniORB414targz.md5sum] = "1f6070ff9b6339876976d61981eeaa6a"

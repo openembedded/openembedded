@@ -7,9 +7,9 @@ DEPENDS = "gtk+ libgpewidget"
 SECTION = "gpe"
 PRIORITY = "optional"
 
-SRC_URI += "file://fix_makefile.patch;patch=1 \
-            file://fix_install.patch;patch=1 \
-            file://no-render-h.patch;patch=1 \
+SRC_URI += "file://fix_makefile.patch \
+            file://fix_install.patch \
+            file://no-render-h.patch \
            "
 
 SRC_URI[md5sum] = "0c1cc9a5e7086194c1d2ff462759f135"

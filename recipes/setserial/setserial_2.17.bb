@@ -10,7 +10,7 @@ inherit autotools
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/setserial/${PN}-${PV}.tar.gz \
-  file://addflags.patch;patch=1 \
+  file://addflags.patch \
 "
 
 do_install() {

@@ -4,7 +4,7 @@ DESCRIPTION = "The sysklogd package implements two system log daemons."
 INC_PR = "r3"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/sysklogd-${PV}.tar.gz \
-	       file://nonrootinstall.patch;patch=1 \
+	       file://nonrootinstall.patch \
            file://sysklogd"
 
 # syslog initscript is handled explicitly because order of

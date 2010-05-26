@@ -3,8 +3,8 @@ require gst-plugins.inc
 PR = "${INC_PR}.1"
 
 SRC_URI += "file://vorbisenc.h file://vorbisdec.h \
-            file://gst-plugins-directfb-fix.patch;patch=1;pnum=2 \
-            file://ivorbis-thumb.patch;patch=1"
+            file://gst-plugins-directfb-fix.patch;striplevel=2 \
+            file://ivorbis-thumb.patch"
 DEPENDS += "gst-plugins-base directfb"
 
 do_compile_prepend() {

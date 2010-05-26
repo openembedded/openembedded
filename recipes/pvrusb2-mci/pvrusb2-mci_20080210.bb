@@ -16,7 +16,7 @@ RRECOMMENDS = "kernel-module-tveeprom \
 SRC_URI = "http://www.isely.net/downloads/pvrusb2-mci-${PV}.tar.bz2 \
            file://hotplug.functions \
            file://firmware.hotplug \
-           file://Makefile.patch;patch=1"
+           file://Makefile.patch"
 
 S = "${WORKDIR}/pvrusb2-mci-${PV}/driver"
 

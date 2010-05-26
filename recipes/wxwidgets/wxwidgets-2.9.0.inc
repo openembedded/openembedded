@@ -15,7 +15,7 @@ LEAD_SONAME = "libwx_.*_core-.*\.so"
 
 # Patch and regenerate configure script so that it finds staging root.
 FILESDIR = "${FILE_DIRNAME}/wxwidgets-${PV}"
-SRC_URI += "file://configure-cross_root.patch;patch=1"
+SRC_URI += "file://configure-cross_root.patch"
 
 do_configure_prepend() {
 	./autogen.sh

@@ -6,7 +6,7 @@ DEPENDS = "expat freetype zlib"
 PR = "r3"
 
 SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
-           file://fix-pkgconfig.patch;patch=1"
+           file://fix-pkgconfig.patch"
 
 PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
 FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"

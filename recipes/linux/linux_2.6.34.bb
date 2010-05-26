@@ -4,7 +4,7 @@ require linux.inc
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
-           file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;patch=1;status=pending \
+           file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;status=pending \
            file://defconfig"
 
 SRC_URI[kernel.md5sum] = "10eebcb0178fb4540e2165bfd7efc7ad"

@@ -4,7 +4,7 @@ DEPENDS = "gamin"
 
 SRC_URI = " \
 	${SOURCEFORGE_MIRROR}/fileschanged/fileschanged-${PV}.tar.gz;name=fileschanged-${PV} \
-	file://fileschanged-no-man-build.patch;patch=1 \
+	file://fileschanged-no-man-build.patch \
 	"
 
 inherit autotools

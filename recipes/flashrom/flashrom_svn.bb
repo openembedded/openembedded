@@ -9,7 +9,7 @@ PR = "r0"
 
 SRC_URI = " \
 	svn://coreboot.org/repos/trunk/util/;module=flashrom \
-	file://makefile-disable-strip.patch;patch=1 \
+	file://makefile-disable-strip.patch \
 	"
 
 S = "${WORKDIR}/${PN}"

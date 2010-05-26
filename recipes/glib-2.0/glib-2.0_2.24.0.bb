@@ -13,21 +13,21 @@ PR = "r4"
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.24/glib-${PV}.tar.bz2;name=archive \
   file://glibconfig-sysdefs.h \
-  file://configure-libtool.patch;patch=1 \
-  file://g_once_init_enter.patch;patch=1 \
-  file://gatomic-proper-pointer-get-cast.patch;patch=1 \
-  file://gio.patch;patch=1 \
-  file://gvariant.patch;patch=1 \
-  file://gasync.patch;patch=1 \
-  file://60_wait-longer-for-threads-to-die.patch;patch=1 \
+  file://configure-libtool.patch \
+  file://g_once_init_enter.patch \
+  file://gatomic-proper-pointer-get-cast.patch \
+  file://gio.patch \
+  file://gvariant.patch \
+  file://gasync.patch \
+  file://60_wait-longer-for-threads-to-die.patch \
 "
 
 SRC_URI[archive.md5sum] = "45a8bc697d07f859566c0b64c40382a8"
 SRC_URI[archive.sha256sum] = "7b6aa2cf21e734a6092a711bf196b8d2ddc589b971f93337610c10fa4f23400d"
 
-SRC_URI_append_arm = " file://atomic-thumb.patch;patch=1"
-SRC_URI_append_armv6 = " file://gatomic_armv6.patch;patch=1"
-SRC_URI_append_armv7a = " file://gatomic_armv6.patch;patch=1"
+SRC_URI_append_arm = " file://atomic-thumb.patch"
+SRC_URI_append_armv6 = " file://gatomic_armv6.patch"
+SRC_URI_append_armv7a = " file://gatomic_armv6.patch"
 
 inherit autotools gettext
 

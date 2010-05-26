@@ -6,8 +6,8 @@ RDEPENDS += "matchbox-panel"
 PR = "r6"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/0.9/${PN}-${PV}.tar.gz \
-           file://no-utilities-category.patch;patch=1 \
-           file://add-media-category.patch;patch=1"
+           file://no-utilities-category.patch \
+           file://add-media-category.patch"
 
 inherit autotools pkgconfig update-alternatives
 

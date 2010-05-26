@@ -2,10 +2,10 @@ require procps.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://procmodule.patch;patch=1 \
-            file://psmodule.patch;patch=1 \
-	    file://linux-limits.patch;patch=1 \
-	    file://60_linux_version_init.dpatch;patch=1 \
+SRC_URI += "file://procmodule.patch \
+            file://psmodule.patch \
+	    file://linux-limits.patch \
+	    file://60_linux_version_init.dpatch;apply=yes \
 	    "
 
 SRC_URI[tarball.md5sum] = "9532714b6846013ca9898984ba4cd7e0"

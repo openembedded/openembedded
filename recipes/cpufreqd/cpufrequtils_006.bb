@@ -4,7 +4,7 @@ DESCRIPTION = "To make access to the Linux kernel cpufreq subsystem easier for u
 PR = "r1"
 
 SRC_URI = "http://www.kernel.org/pub/linux/utils/kernel/cpufreq/cpufrequtils-${PV}.tar.bz2 \
-           file://fix-proc-stat-reading.patch;patch=1 \
+           file://fix-proc-stat-reading.patch \
 "
 
 export CROSS = "${TARGET_PREFIX}"

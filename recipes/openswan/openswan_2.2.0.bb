@@ -9,11 +9,11 @@ RDEPENDS_append_nylon = "perl"
 PR = "r6"
 
 SRC_URI = "http://www.openswan.org/download/old/openswan-${PV}.tar.gz \
-	   file://openswan-2.2.0-gentoo.patch;patch=1 \
-           file://gcc4-fixes.patch;patch=1 \
-           file://installflags.patch;patch=1 \
-	   file://makefile-whitespace-fix.patch;patch=1 \
-	   file://ld-library-path-breakage.patch;patch=1"
+	   file://openswan-2.2.0-gentoo.patch \
+           file://gcc4-fixes.patch \
+           file://installflags.patch \
+	   file://makefile-whitespace-fix.patch \
+	   file://ld-library-path-breakage.patch"
 S = "${WORKDIR}/openswan-${PV}"
 
 PARALLEL_MAKE = ""

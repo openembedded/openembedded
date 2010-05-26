@@ -7,8 +7,8 @@ COMPATIBLE_HOST = "sh.*-linux"
 #COMPATIBLE_MACHINE = "jornada6xx"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.21-rc5 \
-           file://git-20070405-2.patch;patch=1 \
-           file://hp6xx-IRQ3.patch;patch=1 \
+           file://git-20070405-2.patch \
+           file://hp6xx-IRQ3.patch \
 	   file://defconfig"
 	   
 

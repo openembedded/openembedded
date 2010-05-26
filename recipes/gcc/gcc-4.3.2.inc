@@ -11,59 +11,59 @@ NATIVEDEPS = "mpfr-native gmp-native"
 INC_PR = "r10"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
-	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-ia64-libunwind.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-java-nomulti.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-ppc32-retaddr.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-pr27898.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-pr32139.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-pr33763.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-rh330771.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-rh341221.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-cpp-pragma.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-java-debug-iface-type.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-libgomp-speedup.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-i386-libgomp.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-rh251682.patch;patch=1;pnum=0 \
-    file://debian/arm-unbreak-eabi-armv4t.dpatch;patch=1 \
-	file://debian/libstdc++-pic.dpatch;patch=1;pnum=0 \
-	file://debian/gcc-ice-hack.dpatch;patch=1;pnum=0 \ 
-	file://debian/pr30961.dpatch;patch=1;pnum=0 \
-	file://100-uclibc-conf.patch;patch=1 \
-	file://103-uclibc-conf-noupstream.patch;patch=1 \
-	file://200-uclibc-locale.patch;patch=1 \
-	file://203-uclibc-locale-no__x.patch;patch=1 \
-	file://204-uclibc-locale-wchar_fix.patch;patch=1 \
-	file://205-uclibc-locale-update.patch;patch=1 \
-	file://301-missing-execinfo_h.patch;patch=1 \
-	file://302-c99-snprintf.patch;patch=1 \
-	file://303-c99-complex-ugly-hack.patch;patch=1 \
-	file://304-index_macro.patch;patch=1 \
-	file://305-libmudflap-susv3-legacy.patch;patch=1 \
-	file://306-libstdc++-namespace.patch;patch=1 \
-	file://307-locale_facets.patch;patch=1 \
-	file://602-sdk-libstdc++-includes.patch;patch=1 \
-	file://740-sh-pr24836.patch;patch=1 \
-	file://800-arm-bigendian.patch;patch=1 \
-	file://904-flatten-switch-stmt-00.patch;patch=1 \
-	file://arm-nolibfloat.patch;patch=1 \
-	file://arm-softfloat.patch;patch=1 \
-	file://cache-amnesia.patch;patch=1 \
-	file://gfortran-4.3.x.patch;patch=1 \
-	file://gcc-4.0.2-e300c2c3.patch;patch=1 \
-#	file://pr34130.patch;patch=1 \
-#	file://fortran-static-linking.patch;patch=1 \
-	file://gcc-arm-frename-registers.patch;patch=1 \
-	file://gcc-4.3.2-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \
-	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
-	file://zecke-xgcc-cpp.patch;patch=1 \
-	file://gcc-flags-for-build.patch;patch=1 \
+	file://fedora/gcc43-c++-builtin-redecl.patch;striplevel=0 \
+	file://fedora/gcc43-ia64-libunwind.patch;striplevel=0 \
+	file://fedora/gcc43-java-nomulti.patch;striplevel=0 \
+	file://fedora/gcc43-ppc32-retaddr.patch;striplevel=0 \
+	file://fedora/gcc43-pr27898.patch;striplevel=0 \
+	file://fedora/gcc43-pr32139.patch;striplevel=0 \
+	file://fedora/gcc43-pr33763.patch;striplevel=0 \
+	file://fedora/gcc43-rh330771.patch;striplevel=0 \
+	file://fedora/gcc43-rh341221.patch;striplevel=0 \
+	file://fedora/gcc43-cpp-pragma.patch;striplevel=0 \
+	file://fedora/gcc43-java-debug-iface-type.patch;striplevel=0 \
+	file://fedora/gcc43-libgomp-speedup.patch;striplevel=0 \
+	file://fedora/gcc43-i386-libgomp.patch;striplevel=0 \
+	file://fedora/gcc43-rh251682.patch;striplevel=0 \
+    file://debian/arm-unbreak-eabi-armv4t.dpatch;apply=yes \
+	file://debian/libstdc++-pic.dpatch;apply=yes;striplevel=0 \
+	file://debian/gcc-ice-hack.dpatch;apply=yes;striplevel=0 \ 
+	file://debian/pr30961.dpatch;apply=yes;striplevel=0 \
+	file://100-uclibc-conf.patch \
+	file://103-uclibc-conf-noupstream.patch \
+	file://200-uclibc-locale.patch \
+	file://203-uclibc-locale-no__x.patch \
+	file://204-uclibc-locale-wchar_fix.patch \
+	file://205-uclibc-locale-update.patch \
+	file://301-missing-execinfo_h.patch \
+	file://302-c99-snprintf.patch \
+	file://303-c99-complex-ugly-hack.patch \
+	file://304-index_macro.patch \
+	file://305-libmudflap-susv3-legacy.patch \
+	file://306-libstdc++-namespace.patch \
+	file://307-locale_facets.patch \
+	file://602-sdk-libstdc++-includes.patch \
+	file://740-sh-pr24836.patch \
+	file://800-arm-bigendian.patch \
+	file://904-flatten-switch-stmt-00.patch \
+	file://arm-nolibfloat.patch \
+	file://arm-softfloat.patch \
+	file://cache-amnesia.patch \
+	file://gfortran-4.3.x.patch \
+	file://gcc-4.0.2-e300c2c3.patch \
+#	file://pr34130.patch \
+#	file://fortran-static-linking.patch \
+	file://gcc-arm-frename-registers.patch \
+	file://gcc-4.3.2-SYSROOT_CFLAGS_FOR_TARGET.patch \
+	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch \
+	file://zecke-xgcc-cpp.patch \
+	file://gcc-flags-for-build.patch \
 "
 
-SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
+SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch "
 
-SRC_URI_append_sh4  = " file://sh_unwind.patch;patch=1 \
-			file://gcc-4.2.3-linux-multilib-fix.patch;patch=1 \
+SRC_URI_append_sh4  = " file://sh_unwind.patch \
+			file://gcc-4.2.3-linux-multilib-fix.patch \
 		      "
 # Language Overrides
 FORTRAN = ""

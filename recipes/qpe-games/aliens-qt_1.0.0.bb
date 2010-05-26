@@ -7,8 +7,8 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Aliens.html"
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/aliens_V1.0.0.tar.gz \
-	   file://Makefile.patch;patch=1 \
-           file://aliens.patch;patch=1"
+	   file://Makefile.patch \
+           file://aliens.patch"
 
 PV = "1.0.0"
 S = "${WORKDIR}/aliens_V${PV}"

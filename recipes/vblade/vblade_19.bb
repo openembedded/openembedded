@@ -4,7 +4,7 @@ PR = "r1"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/aoetools/${PN}-${PV}.tgz \
-	   file://cross.patch;patch=1"
+	   file://cross.patch"
 
 inherit autotools
 

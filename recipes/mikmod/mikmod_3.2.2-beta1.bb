@@ -5,7 +5,7 @@ DEPENDS = "ncurses libmikmod"
 PR = "r1"
 LICENSE = "GPL"
 SRC_URI = "http://mikmod.raphnet.net/files/mikmod-${PV}.tar.bz2 \
-           file://m4.patch;patch=1"
+           file://m4.patch"
 
 inherit autotools
 

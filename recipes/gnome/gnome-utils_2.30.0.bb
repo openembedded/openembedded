@@ -7,7 +7,7 @@ inherit gnome pkgconfig
 
 PR = "r1"
 
-SRC_URI += "file://no-try-run-strftime.diff;patch=1"
+SRC_URI += "file://no-try-run-strftime.diff"
 SRC_URI[archive.md5sum] = "c6d779ddccf99cbe0667b578078dd011"
 SRC_URI[archive.sha256sum] = "745bb25fce536dc5337e7b5cbcbce9eee66b3cc0c500de302759b98ebcef6a8f"
 

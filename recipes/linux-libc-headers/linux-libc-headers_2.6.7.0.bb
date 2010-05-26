@@ -6,8 +6,8 @@ PR = "r4"
 PACKAGES = ""
 
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
-	   file://sh-missing.patch;patch=1 \
-	   file://keyboard.patch;patch=1"
+	   file://sh-missing.patch \
+	   file://keyboard.patch"
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 
 do_configure () {

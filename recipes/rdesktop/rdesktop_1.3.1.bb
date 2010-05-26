@@ -2,7 +2,7 @@ require rdesktop.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI +="file://configure.patch;patch=1"
+SRC_URI +="file://configure.patch"
 
 # Note - rdesktop 1.3.1 doesn't use autotools - don't make the same
 # mistakes I did.. :)

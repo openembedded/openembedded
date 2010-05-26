@@ -8,7 +8,7 @@ PR = "r0"
 
 SRC_URI = "\
         http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-${PV}/cacao-${PV}.tar.bz2; \
-        file://cacao-0.98-initial.patch;patch=1;pnum=1 \
+        file://cacao-0.98-initial.patch \
         "
 
 # libjvm disabled - it would conflict with cacao-native installations

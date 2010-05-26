@@ -11,7 +11,7 @@ SRCREV = "c81cabbee7901b6643907d08f9a530308044ec22"
 inherit gnome
 
 SRC_URI = "git://git.gnome.org/ekiga;protocol=git;branch=master \
-           file://rgb16.patch;patch=1 \
+           file://rgb16.patch \
 "
 
 S = "${WORKDIR}/git"

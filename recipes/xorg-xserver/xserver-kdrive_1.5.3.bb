@@ -10,15 +10,15 @@ PR = "${INC_PR}.0"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
-	file://enable-epson.patch;patch=1 \
-        file://fix_default_mode.patch;patch=1 \
-	file://linux-keyboard-mediumraw.patch;patch=1 \
-	file://xcalibrate-new-input-world-order.patch;patch=1 \
-	file://tslib-default-device.patch;patch=1 \
-	file://keyboard-resume-workaround.patch;patch=1 \
-	file://xorg-avr32-support.diff;patch=1 \
-    file://sysroot_fix.patch;patch=1 \
-    file://drmfix.patch;patch=1 \
+	file://enable-epson.patch \
+        file://fix_default_mode.patch \
+	file://linux-keyboard-mediumraw.patch \
+	file://xcalibrate-new-input-world-order.patch \
+	file://tslib-default-device.patch \
+	file://keyboard-resume-workaround.patch \
+	file://xorg-avr32-support.diff \
+    file://sysroot_fix.patch \
+    file://drmfix.patch \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"

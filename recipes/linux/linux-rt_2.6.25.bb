@@ -12,8 +12,8 @@ PR = "r4"
 #KERNEL_IMAGETYPE_efika = "Image"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.25.4.bz2;patch=1;name=stablepatch \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.25.4-rt6.bz2;patch=1;name=rtpatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.25.4.bz2;apply=yes;name=stablepatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.25.4-rt6.bz2;apply=yes;name=rtpatch \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.25"

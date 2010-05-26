@@ -9,7 +9,7 @@ GPE_TARBALL_SUFFIX = "gz"
 
 inherit gpephone pkgconfig autotools
 
-SRC_URI += "file://po.patch;patch=1"
+SRC_URI += "file://po.patch"
 FILES_${PN} += " ${datadir}/vochistory"
 
 do_configure_prepend () {

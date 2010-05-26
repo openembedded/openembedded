@@ -7,10 +7,10 @@ PR = "r2"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ebtables/ebtables-v${PV}.tar.gz \
-           file://gcc34.patch;patch=1 \
-           file://gcc4.patch;patch=1 \
-           file://installnonroot.patch;patch=1 \
-           file://installcreatedirs.patch;patch=1"
+           file://gcc34.patch \
+           file://gcc4.patch \
+           file://installnonroot.patch \
+           file://installcreatedirs.patch"
 S = "${WORKDIR}/ebtables-v${PV}"
 
 do_compile () {

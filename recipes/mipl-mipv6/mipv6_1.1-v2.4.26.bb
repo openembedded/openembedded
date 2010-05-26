@@ -1,7 +1,7 @@
 SECTION = "unknown"
 SRC_URI = "http://www.mobile-ipv6.org/software/download/mipv6-${PV}.tar.gz \
-        file://sbindir.patch;pnum=0;patch=1 \
-        file://outputfix.patch;pnum=0;patch=1"
+        file://sbindir.patch;striplevel=0 \
+        file://outputfix.patch;striplevel=0"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
 CFLAGS =+ "-I${S}/include -I${STAGING_KERNEL_DIR}/include"

@@ -8,7 +8,7 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Maki.html"
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/maki_V1.0.4ern.tar.gz \
-	   file://maki.patch;patch=1"
+	   file://maki.patch"
 
 PV = "1.0.4ern"
 S = "${WORKDIR}/maki_V${PV}"

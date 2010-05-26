@@ -11,7 +11,7 @@ RDEPENDS_${PN}-logwtmp-plugin = "${PN}"
 PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/poptop/pptpd-${PV}.tar.gz \
-           file://fix-plugins-install.patch;patch=1 \
+           file://fix-plugins-install.patch \
            file://pptpd.init"
 
 S = "${WORKDIR}/pptpd-${PV}"

@@ -1,10 +1,10 @@
 PR = "r3"
 
 SRC_URI = "http://ftp.sudo.ws/sudo/dist/sudo-${PV}.tar.gz \
-           file://nonrootinstall.patch;patch=1 \
-           file://nostrip.patch;patch=1 \
-           file://autofoo.patch;patch=1 \
-           file://noexec-link.patch;patch=1"
+           file://nonrootinstall.patch \
+           file://nostrip.patch \
+           file://autofoo.patch \
+           file://noexec-link.patch"
 
 require sudo.inc
 

@@ -5,7 +5,7 @@ DEPENDS = "libtool libgphoto2 popt"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gphoto/gphoto2-${PV}.tar.bz2\
-           file://gphoto-popt-fixup.patch;patch=1"
+           file://gphoto-popt-fixup.patch"
 
 inherit autotools
 

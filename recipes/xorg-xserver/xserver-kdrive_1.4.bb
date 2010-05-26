@@ -8,22 +8,22 @@ PR = "${INC_PR}.0"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
-	file://enable-epson.patch;patch=1 \
-        file://fix_default_mode.patch;patch=1 \
-	file://enable-xcalibrate.patch;patch=1 \
-	file://hide-cursor-and-ppm-root.patch;patch=1 \
-	file://xcalibrate_coords.patch;patch=1 \
-	file://w100.patch;patch=1 \
-	file://w100-autofoo.patch;patch=1 \
-	file://w100-fix-offscreen-bmp.patch;patch=1 \
-	file://w100-new-input-world-order.patch;patch=1 \
-	file://linux-keyboard-mediumraw.patch;patch=1 \
-	file://xcalibrate-new-input-world-order.patch;patch=1 \
-	file://tslib-default-device.patch;patch=1 \
-	file://fbdev-evdev.patch;patch=1 \
-	file://keyboard-resume-workaround.patch;patch=1 \
-	file://xorg-avr32-support.diff;patch=1 \
-	file://pkgconfig_fix.patch;patch=1 \
+	file://enable-epson.patch \
+        file://fix_default_mode.patch \
+	file://enable-xcalibrate.patch \
+	file://hide-cursor-and-ppm-root.patch \
+	file://xcalibrate_coords.patch \
+	file://w100.patch \
+	file://w100-autofoo.patch \
+	file://w100-fix-offscreen-bmp.patch \
+	file://w100-new-input-world-order.patch \
+	file://linux-keyboard-mediumraw.patch \
+	file://xcalibrate-new-input-world-order.patch \
+	file://tslib-default-device.patch \
+	file://fbdev-evdev.patch \
+	file://keyboard-resume-workaround.patch \
+	file://xorg-avr32-support.diff \
+	file://pkgconfig_fix.patch \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"

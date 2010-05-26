@@ -1,8 +1,8 @@
 DEPENDS = "python-native"
 
 SRC_URI = "http://createrepo.baseurl.org/download/createrepo-${PV}.tar.gz \
-           file://fix.patch;patch=1 \
-           file://pathfix.patch;patch=1 "
+           file://fix.patch \
+           file://pathfix.patch "
 PR = "r1"
 
 inherit autotools native

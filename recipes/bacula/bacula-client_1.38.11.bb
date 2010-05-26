@@ -7,7 +7,7 @@ PR ="r1"
 DEPENDS = "gmp openssl zlib readline"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/bacula/bacula-1.38.11.tar.gz \
-           file://findlib-attribs.patch;patch=1;pnum=1 \
+           file://findlib-attribs.patch \
            file://bacula-fd.init"
 
 S = "${WORKDIR}/bacula-1.38.11"

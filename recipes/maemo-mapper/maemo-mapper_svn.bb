@@ -8,7 +8,7 @@ PV = "2.0.3+svnr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "svn://garage.maemo.org/svn/maemo-mapper;proto=https;module=trunk \
-           file://mapper-hildon1.diff;patch=1;maxrev=108" 
+           file://mapper-hildon1.diff;maxrev=108" 
 
 S = "${WORKDIR}/trunk"
 

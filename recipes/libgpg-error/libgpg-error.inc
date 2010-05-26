@@ -7,7 +7,7 @@ DEPENDS += "virtual/libiconv"
 DEPENDS_virtclass-native = ""
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-${PV}.tar.gz \
-	   file://pkgconfig.patch;patch=1"
+	   file://pkgconfig.patch"
 
 INC_PR = "r7"
 

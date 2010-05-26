@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "libdes"
 SRC_URI = "http://www.agentpp.com/libdes-l-${PV}.tar.gz \
-           file://cross-compile.patch;patch=1"
+           file://cross-compile.patch"
 S = "${WORKDIR}/libdes"
 
 do_compile() {

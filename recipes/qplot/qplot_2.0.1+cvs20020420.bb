@@ -9,7 +9,7 @@ PV = "2.0.1-cvs-${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "cvs://anonymous@qplot.cvs.sourceforge.net/cvsroot/qplot;module=qplot \
-	   file://gcc3.patch;patch=1"
+	   file://gcc3.patch"
 S = "${WORKDIR}/qplot"
 
 inherit palmtop

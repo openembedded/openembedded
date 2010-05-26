@@ -6,7 +6,7 @@ EXTRA_OECONF = "--with-kernel=${STAGING_INCDIR} \
 PR = "${INC_PR}.0"
 
 SRC_URI += "\
-	file://netfilter_remove_ipt_DSCP.patch;patch=1 \
+	file://netfilter_remove_ipt_DSCP.patch \
 	"
 
 SRC_URI[iptables-1.4.6.md5sum] = "c67cf30e281a924def6426be0973df56"

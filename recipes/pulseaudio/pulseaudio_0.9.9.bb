@@ -4,9 +4,9 @@ PR = "${INC_PR}.1"
 
 # this is not correct (see below)
 SRC_URI += "\
-  file://disable-using-glibc-tls.patch;patch=1 \
-  file://fix-dbus-without-hal.patch;patch=1 \
-  file://fix-shm.patch;patch=1 \
+  file://disable-using-glibc-tls.patch \
+  file://fix-dbus-without-hal.patch \
+  file://fix-shm.patch \
 "            
 
 # problems w/ pulseaudio 0.9.9 atm:

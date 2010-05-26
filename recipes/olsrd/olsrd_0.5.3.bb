@@ -2,7 +2,7 @@ require olsrd.inc
 
 PR = "r1"
 
-SRC_URI += "file://unbreak-makefile.patch;patch=1"
+SRC_URI += "file://unbreak-makefile.patch"
 
 
 SRC_URI[md5sum] = "786fdf52adeb0d421905332312e5b75f"

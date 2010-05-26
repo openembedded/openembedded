@@ -8,7 +8,7 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=
            "
 
 SRC_URI_append_palmpre = "\
-http://palm.cdnetworks.net/opensource/1.3.1/linuxkernel-2.6.24-patch.gz;patch=1;name=patch \
+http://palm.cdnetworks.net/opensource/1.3.1/linuxkernel-2.6.24-patch.gz;apply=yes;name=patch \
 "
 S = "${WORKDIR}/linux-2.6.24"
 

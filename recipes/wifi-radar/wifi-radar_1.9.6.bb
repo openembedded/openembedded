@@ -10,8 +10,8 @@ PACKAGE_ARCH = "all"
 RDEPENDS = "python-core python-pygtk python-re python-io python-pygobject python-pycairo"
 
 SRC_URI="http://wifi-radar.systemimager.org/pub/${PN}-${PV}.tar.bz2 \
-        file://wifi-radar.patch;patch=1 \
-        file://wifi-radar_destktop.patch;patch=1 "
+        file://wifi-radar.patch \
+        file://wifi-radar_destktop.patch "
 
 
 S = "${WORKDIR}/${PN}-${PV}"

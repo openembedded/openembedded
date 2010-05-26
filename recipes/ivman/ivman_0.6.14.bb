@@ -7,8 +7,8 @@ DEPENDS = "hal libxml2"
 RDEPENDS = "hal pmount-hal"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ivman/${P}.tar.bz2 \
-           file://ivman-0.6-hotpluggable.patch;patch=1 \
-           file://ivman-launch.patch;patch=1 "
+           file://ivman-0.6-hotpluggable.patch \
+           file://ivman-launch.patch "
 
 inherit autotools
 

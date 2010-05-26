@@ -2,9 +2,9 @@ require fontconfig.inc
 
 DEPENDS += "fontconfig-native"
 
-SRC_URI += "file://fc-glyphname.patch;patch=1 \
-           file://fc-lang.patch;patch=1 \
-           file://one-j-too-many.patch;patch=1 \
+SRC_URI += "file://fc-glyphname.patch \
+           file://fc-lang.patch \
+           file://one-j-too-many.patch \
            file://local.conf"
 
 PR = "r4"

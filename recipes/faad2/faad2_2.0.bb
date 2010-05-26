@@ -9,7 +9,7 @@ PR ="r2"
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/faac/${PN}-${PV}.zip \
-           file://faad2-gcc-fix.patch;patch=1 \
+           file://faad2-gcc-fix.patch \
  	   file://Makefile.am"
 
 S="${WORKDIR}/${PN}"

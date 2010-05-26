@@ -11,7 +11,7 @@ inherit module
 PV = "1_13_000"
 
 SRC_URI	= "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/codecs/dm355_codecs_setuplinux_${PV}.bin \
-		   file://dm355mm.patch;patch=1 \
+		   file://dm355mm.patch \
 	      "
 S = "${WORKDIR}/dm355_codecs_${PV}"
 BINFILE="dm355_codecs_setuplinux_${PV}.bin"

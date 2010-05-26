@@ -11,7 +11,7 @@ S = "${WORKDIR}/icepick-0.0+hg20080118"
 SRC_URI = "\
 	http://jalimo.evolvis.org/repository/sources/icepick-0.0+hg20080118.tar.bz2;name=archive \
 	http://jalimo.evolvis.org/repository/sources/openjdk-langtools-jdk7-b31.tar.bz2;name=langtools \
-	file://${PV}-build-fix.patch;patch=1 \
+	file://${PV}-build-fix.patch \
 	"	
 
 inherit java autotools native

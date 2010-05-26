@@ -8,8 +8,8 @@ do_unpack[depends] += "unzip-native:do_populate_sysroot"
 # the SOURCE_URI requires authentication via web browser and cookie (gasp)
 # all we can do right now is download the file and save it under sources/
 SRC_URI = "http://www.mediaassistent.se/jarl/files/RCF-04.zip \
-	file://rcf-0.4-g++-4.1.diff;patch=1 \
-	file://rcf-0.4-openembedded.diff;patch=1"
+	file://rcf-0.4-g++-4.1.diff \
+	file://rcf-0.4-openembedded.diff"
 S = "${WORKDIR}/RCF-${PV}"
 
 CPPFLAGS_prepend = "-I../../include "

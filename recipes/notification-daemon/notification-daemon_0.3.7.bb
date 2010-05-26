@@ -6,7 +6,7 @@ DEPENDS = "gettext dbus gtk+ libsexy gconf libwnck"
 PR = "r1"
 
 SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
-           file://notification-daemon-fix-text-color.diff;patch=1"
+           file://notification-daemon-fix-text-color.diff"
 
 EXTRA_OECONF = "--disable-binreloc"
 

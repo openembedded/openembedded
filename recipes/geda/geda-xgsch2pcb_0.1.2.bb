@@ -9,7 +9,7 @@ DEPENDS = "python-native"
 RDEPENDS = "geda-gschem geda-utils pcb python-codecs python-dbus python-pygtk python-subprocess"
 
 SRC_URI = "http://geda.seul.org/dist/${P}.tar.gz \
-           file://skip-python-checks.patch;patch=1"
+           file://skip-python-checks.patch"
 
 inherit autotools
 

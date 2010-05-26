@@ -16,14 +16,14 @@ DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 DEFAULT_PREFERENCE_tosa = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;patch=1;name=stablepatch \
-           http://maxim.org.za/AT91RM9200/2.6/2.6.30-at91.patch.gz;patch=1;name=at91patch \
-           file://aufs2-30.patch;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;apply=yes;name=stablepatch \
+           http://maxim.org.za/AT91RM9200/2.6/2.6.30-at91.patch.gz;name=at91patch \
+           file://aufs2-30.patch \
            file://defconfig"
 
-SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch;patch=1"
+SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch"
 
-SRC_URI_append_at91sam9263ek = " file://hrw-linux-2.6.30-exp.patch;patch=1 "
+SRC_URI_append_at91sam9263ek = " file://hrw-linux-2.6.30-exp.patch "
 
 
 SRC_URI[kernel.md5sum] = "7a80058a6382e5108cdb5554d1609615"

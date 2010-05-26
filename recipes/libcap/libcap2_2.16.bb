@@ -10,7 +10,7 @@ CFLAGS += "-I${S}/libcap/include"
 LDFLAGS =+ "-L../libcap"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
-	   file://make.patch;patch=1 \
+	   file://make.patch \
 	"
 
 S = "${WORKDIR}/libcap-${PV}"

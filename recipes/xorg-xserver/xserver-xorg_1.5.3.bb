@@ -6,11 +6,11 @@ RDEPENDS += "hal"
 PE = "2"
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://drmfix.patch;patch=1 \
-            file://sysroot_fix.patch;patch=1 \
-            file://xorg-avr32-support.diff;patch=1 \
-	    file://xorg-server-1.5.3-configure.patch;patch=1 \
-	    file://xorg-server-1.5.3-glcore-prepare-for-dynamic.patch;patch=1 \
+SRC_URI += "file://drmfix.patch \
+            file://sysroot_fix.patch \
+            file://xorg-avr32-support.diff \
+	    file://xorg-server-1.5.3-configure.patch \
+	    file://xorg-server-1.5.3-glcore-prepare-for-dynamic.patch \
 "
 
 MESA_VER = "7.2"

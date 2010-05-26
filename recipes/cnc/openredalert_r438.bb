@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 DEPENDS = "virtual/libsdl libsdl-mixer" 
 
 SRC_URI = "http://openredalert.googlecode.com/files/openredalert-${PV}-src.tar.gz \
-           file://gcc43-fix.patch;patch=1 \
+           file://gcc43-fix.patch \
            file://openredalert-launcher"
 
 PR = "r1"

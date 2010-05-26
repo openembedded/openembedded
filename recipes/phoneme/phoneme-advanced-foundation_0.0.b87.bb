@@ -5,7 +5,7 @@ require phoneme-advanced.inc
 BUILDREV = "b87"
 SRCREV = "13783"
 
-SRC_URI += "file://${BUILDREV}-makefile-fix.patch;patch=1;pnum=0"
+SRC_URI += "file://${BUILDREV}-makefile-fix.patch;striplevel=0"
 
 FILES_${PN} += "\
 	${COMMON_DIR}/bin/cvm \ 

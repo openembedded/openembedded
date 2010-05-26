@@ -5,7 +5,7 @@ DEPENDS = "hildon-lgpl hildon-base-lib libosso hildon-libs hildon-control-panel 
 RDEPENDS = "shared-mime-info"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz \
-           file://fix-buildsystem.patch;patch=1"
+           file://fix-buildsystem.patch"
 
 S = "${WORKDIR}/osso-application-installer-1.0.03"
 

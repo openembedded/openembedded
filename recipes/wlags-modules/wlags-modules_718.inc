@@ -24,10 +24,10 @@ TARFILE = "wl_lkm_${PV}_release.tar.gz"
 
 SRC_URI = "ftp://ftp.elmeg.de/artem/ClientCards/11b/linux/${TARFILE} \
 	file://Makefile \
-	file://includes.patch \
-	file://kernel-pcmcia.patch \
-	file://bugs.patch \
-	file://fixes.patch \
+	file://includes.patch;apply=no \
+	file://kernel-pcmcia.patch;apply=no \
+	file://bugs.patch;apply=no \
+	file://fixes.patch;apply=no \
 	file://wlags_h${COMPILE_HERMES}.conf"
 S = "${WORKDIR}/${PN}"
 

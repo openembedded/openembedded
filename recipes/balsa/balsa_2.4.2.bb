@@ -3,7 +3,7 @@ HOMEPAGE = "http://pawsa.fedorapeople.org/balsa/"
 SECTION = "x11/network"
 LICENSE = "GPL"
 SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2 \
-	   file://libbalsa-gpe-corruption.patch;patch=1"
+	   file://libbalsa-gpe-corruption.patch"
 PR = "r1"
 
 DEPENDS = "glib-2.0 gmime gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native"

@@ -5,7 +5,7 @@ PR = "r0"
 
 SRC_URI = " \
 	ftp://ftp@corosync.org/downloads/corosync-${PV}/corosync-${PV}.tar.gz;name=tar \
-	file://fix-lcrso-linkage.patch;patch=1 \
+	file://fix-lcrso-linkage.patch \
 	file://init \
 	file://corosync.conf \
 	file://volatiles \

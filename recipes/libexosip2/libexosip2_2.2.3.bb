@@ -8,7 +8,7 @@ LEAD_SONAME = "libeXosip2"
 
 PR = "r0"
 SRC_URI = "http://download.savannah.nongnu.org/releases/exosip/${SRCNAME}-${PV}.tar.gz \
-           file://simplify-flags.patch;patch=1"
+           file://simplify-flags.patch"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit autotools pkgconfig

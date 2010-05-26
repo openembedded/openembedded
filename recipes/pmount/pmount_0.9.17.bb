@@ -8,8 +8,8 @@ RDEPENDS_${PN}-hal = "${PN}"
 RRECOMMENDS_${PN}-hal = "hal"
 
 SRC_URI = "http://alioth.debian.org/frs/download.php/2247/${P}.tar.gz \
-	   file://gettext.patch;patch=1 \
-	   file://install.patch;patch=1 \
+	   file://gettext.patch \
+	   file://install.patch \
 	  "
 
 inherit autotools gettext

@@ -8,8 +8,8 @@ inherit autotools pkgconfig gnome
 
 PR = "r1"
 SRC_URI = "http://spruce.sourceforge.net/gmime/sources/v2.1/gmime-${PV}.tar.gz \
-	   file://skip-iconv-detect.patch;patch=1 \
-	   file://configure-ldflags-cross.patch;patch=1"
+	   file://skip-iconv-detect.patch \
+	   file://configure-ldflags-cross.patch"
 
 S = "${WORKDIR}/gmime-${PV}"
 

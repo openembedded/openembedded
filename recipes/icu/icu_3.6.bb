@@ -3,8 +3,8 @@ require icu-3.6.inc
 DEPENDS += "icu-native"
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://use-g++-for-linking.patch;patch=1 \
-            file://rematch-gcc-bug.patch;patch=1"
+SRC_URI += "file://use-g++-for-linking.patch \
+            file://rematch-gcc-bug.patch"
 
 do_configure_append() {
         for i in */Makefile */*.inc */*/Makefile */*/*.inc icudefs.mk ; do

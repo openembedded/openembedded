@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "http://www.mneuroth.de/privat/zaurus/qscintilla-${PV}_zaurus.tar.gz \
-           file://no-external-lexers.patch;patch=1;pnum=0"
+           file://no-external-lexers.patch;striplevel=0"
 
 S = "${WORKDIR}/qscintilla-${PV}/qt"
 

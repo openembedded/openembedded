@@ -7,7 +7,7 @@ DESCRIPTION="Open Soure ITU-T H.323 teleconferencing protocol implementation."
 LICENSE = "GPL"
 
 SRC_URI="http://http.us.debian.org/debian/pool/main/o/${PN}/${PN}_${PV}.orig.tar.gz \
-	file://fixes.patch;patch=1"
+	file://fixes.patch"
 
 S="${WORKDIR}/${PN}"
 DEPENDS="pwlib openssl"

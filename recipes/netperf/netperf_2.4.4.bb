@@ -5,7 +5,7 @@ LICENSE = "netperf"
 PR = "r1"
 
 SRC_URI="ftp://ftp.netperf.org/netperf/archive/netperf-${PV}.tar.bz2 \
-         file://cpu_set.patch;patch=1 \
+         file://cpu_set.patch \
          file://init"
 
 inherit update-rc.d autotools

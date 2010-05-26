@@ -9,14 +9,14 @@ NATIVE_INSTALL_WORKS = "1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/5.0/perl-${PV}.tar.gz \
-           file://perl-5.8.8-gcc-4.2.patch;patch=1 \
-           file://Configure-multilib.patch;patch=1 \
-           file://perl-configpm-switch.patch;patch=1 \
-           file://native-nopacklist.patch;patch=1 \
-           file://native-no-gdbminc.patch;patch=1 \
-           file://native-perlinc.patch;patch=1 \
-           file://makedepend-dash.patch;patch=1 \
-           file://asm-pageh-fix.patch;patch=1"
+           file://perl-5.8.8-gcc-4.2.patch \
+           file://Configure-multilib.patch \
+           file://perl-configpm-switch.patch \
+           file://native-nopacklist.patch \
+           file://native-no-gdbminc.patch \
+           file://native-perlinc.patch \
+           file://makedepend-dash.patch \
+           file://asm-pageh-fix.patch"
 
 S = "${WORKDIR}/perl-${PV}"
 

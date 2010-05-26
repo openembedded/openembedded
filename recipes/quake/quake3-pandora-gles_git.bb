@@ -8,7 +8,7 @@ PV = "0.0"
 DEPENDS = "virtual/libsdl libgles-omap3"
 
 SRC_URI = "git://github.com/Cpasjuste/quake3_pandora_gles.git;branch=master;protocol=git \ 
-           file://quake3_makefile.patch;patch=1 \
+           file://quake3_makefile.patch \
 "
 S = "${WORKDIR}/git"
 

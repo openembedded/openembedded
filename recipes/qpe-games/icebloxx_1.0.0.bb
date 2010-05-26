@@ -7,8 +7,8 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-IceBloxx.html"
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/icebloxx_V1.0.0.tar.gz \
-           file://Makefile.patch;patch=1 \
-	   file://icebloxx.patch;patch=1"
+           file://Makefile.patch \
+	   file://icebloxx.patch"
 
 PV = "1.0.0"
 S = "${WORKDIR}/icebloxx_V${PV}"

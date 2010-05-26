@@ -9,15 +9,15 @@ COMPATIBLE_MACHINE = "turbostation"
 RDEPENDS_kernel-module-zd1211rw += "zd1211-firmware"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-	file://001_r1000.diff;patch=1 \
-	file://linux-2.6.16_arch_ppc_platforms_sandpoint.h;patch=1 \
-	file://002_qnap-pic.diff;patch=1 \
-	file://linux-2.6.16_arch_ppc_syslib_Makefile;patch=1 \
-	file://linux-2.6.16_drivers_mtd_maps_physmap.c;patch=1 \
-	file://linux-2.6.16_arch_ppc_syslib_mpc10x_common.c;patch=1 \
-	file://linux-2.6.16_arch_ppc_platforms_Makefile;patch=1 \
-	file://linux-2.6.16_include_asm-ppc_mpc10x.h;patch=1 \
-	file://linux-2.6.16_arch_ppc_platforms_sandpoint.c;patch=1 \
+	file://001_r1000.diff \
+	file://linux-2.6.16_arch_ppc_platforms_sandpoint.h;apply=yes \
+	file://002_qnap-pic.diff \
+	file://linux-2.6.16_arch_ppc_syslib_Makefile;apply=yes \
+	file://linux-2.6.16_drivers_mtd_maps_physmap.c;apply=yes \
+	file://linux-2.6.16_arch_ppc_syslib_mpc10x_common.c;apply=yes \
+	file://linux-2.6.16_arch_ppc_platforms_Makefile;apply=yes \
+	file://linux-2.6.16_include_asm-ppc_mpc10x.h;apply=yes \
+	file://linux-2.6.16_arch_ppc_platforms_sandpoint.c;apply=yes \
 	file://defconfig"
 
 S = "${WORKDIR}/linux-${PV}"

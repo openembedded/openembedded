@@ -10,7 +10,7 @@ PR = "r1"
 inherit gnome
 
 SRC_URI = "svn://svn.gnome.org/svn/${PN};module=trunk \
-           file://gegl-resilience.patch;patch=1"
+           file://gegl-resilience.patch"
 
 S = "${WORKDIR}/trunk"
 

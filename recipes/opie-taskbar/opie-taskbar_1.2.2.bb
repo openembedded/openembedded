@@ -8,6 +8,6 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/root \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/etc \
-	   file://nomax.patch;patch=1;pnum=3 \
-           file://server-pro-old.patch;patch=1 \
+	   file://nomax.patch;striplevel=3 \
+           file://server-pro-old.patch \
           "

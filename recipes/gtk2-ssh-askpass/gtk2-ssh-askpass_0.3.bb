@@ -8,7 +8,7 @@ LICENSE = "GPL"
 SECTION = "network/misc"
 
 SRC_URI="http://src.gentoo.pl/distfiles/gtk2-ssh-askpass-${PV}.tar.gz \
-	file://makefile.patch;patch=1"
+	file://makefile.patch"
 
 DEPENDS="gtk+"
 

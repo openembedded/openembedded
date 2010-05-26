@@ -9,16 +9,16 @@ DEPENDS = "sqlite3 nspr"
 
 SRC_URI = "\
 	http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_RTM/src/${PN}-${PV}.tar.gz;name=archive \
-	file://25_entropy.dpatch;patch=1 \
-	file://38_mips64_build.dpatch;patch=1 \
-	file://80_security_build.dpatch;patch=1 \
-	file://80_security_tools.dpatch;patch=1 \
-	file://81_sonames.dpatch;patch=1 \
-	file://85_security_load.dpatch;patch=1 \
-	file://90_realpath.dpatch;patch=1 \
-	file://91_build_pwdecrypt.dpatch;patch=1 \
-	file://95_add_spi+cacert_ca_certs.dpatch;patch=1 \
-	file://build-fix.patch;patch=1 \
+	file://25_entropy.dpatch;apply=yes \
+	file://38_mips64_build.dpatch;apply=yes \
+	file://80_security_build.dpatch;apply=yes \
+	file://80_security_tools.dpatch;apply=yes \
+	file://81_sonames.dpatch;apply=yes \
+	file://85_security_load.dpatch;apply=yes \
+	file://90_realpath.dpatch;apply=yes \
+	file://91_build_pwdecrypt.dpatch;apply=yes \
+	file://95_add_spi+cacert_ca_certs.dpatch;apply=yes \
+	file://build-fix.patch \
     file://nss.pc.in \
 "
 

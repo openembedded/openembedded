@@ -15,11 +15,11 @@ SRC_URI = "\
 # Maemo garage is sadly only available with https. Can make you trouble while fetching without accepting the certificate.
   svn://vcs.maemo.org/svn/${PN};module=trunk;proto=https \
   http://wwwpub.zih.tu-dresden.de/~mkluge/numptyphysics_setup.tgz \
-  file://replay_off.patch;patch=1;pnum=0 \
+  file://replay_off.patch;striplevel=0 \
   file://next.png \
-  file://keyb.patch;patch=1;pnum=0 \
+  file://keyb.patch;striplevel=0 \
   file://keyb.png \
-  file://faster.patch;patch=1;pnum=0 \
+  file://faster.patch;striplevel=0 \
   file://numptyphysics.desktop \
 "
 S = "${WORKDIR}/trunk"

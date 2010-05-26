@@ -11,7 +11,7 @@ require disko.inc
 DEPENDS += "taglib directfb virtual/libx11 hal libxv libxxf86vm"
 
 SRC_URI = "git://www.diskohq.org/disko.git;protocol=git \
-	   file://pkgconfig.patch;patch=1 \
+	   file://pkgconfig.patch \
 	  "
 
 S = "${WORKDIR}/git"

@@ -1,7 +1,7 @@
-SRC_URI_append = "file://configure.patch;patch=1 \
-                  file://Makefile.in.patch;patch=1 \
-                  file://Makefile.cget.patch;patch=1 \
-                  file://util.patch;patch=1"
+SRC_URI_append = "file://configure.patch \
+                  file://Makefile.in.patch \
+                  file://Makefile.cget.patch \
+                  file://util.patch"
 
 require cherokee.inc
 PR = "${INC_PR}.0"

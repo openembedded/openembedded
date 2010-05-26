@@ -5,7 +5,7 @@ DEPENDS = "ecore evas imlib2 gpsd edje-native"
 PR = "r2"
 
 SRC_URI = "http://www.gps-routes.info/debian/pool/main/m/mcnavi/mcnavi_${PV}.tar.gz;name=archive \
-           file://gpsd-2.90.patch;patch=1"
+           file://gpsd-2.90.patch"
 
 SRC_URI[archive.md5sum] = "b572c3691f05e22b37efd6cd53da203e"
 SRC_URI[archive.sha256sum] = "ee6792bef93070319141ee2020b7ae376527e3b8043f0f540bcd58d418576d44"

@@ -9,7 +9,7 @@ PR = "r8"
 inherit autotools
 
 SRC_URI = "http://gecko-mediaplayer.googlecode.com/files/${P}.tar.gz \
-           file://gecko-mplayer-svn.diff;patch=1;pnum=0 \
+           file://gecko-mplayer-svn.diff;striplevel=0 \
            file://extensions \
 "
 

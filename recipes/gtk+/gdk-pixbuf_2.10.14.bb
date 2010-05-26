@@ -12,7 +12,7 @@ FILESPATH = "${FILE_DIRNAME}/gdk-pixbuf-csource:${FILE_DIRNAME}/gtk+-${PV}:${FIL
 
 SRC_URI = "\
   ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
-  file://automake-lossage.patch;patch=1 \
+  file://automake-lossage.patch \
 "
 
 inherit autotools pkgconfig

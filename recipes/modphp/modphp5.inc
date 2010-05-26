@@ -4,7 +4,7 @@ LICENSE = "PHP"
 RDEPENDS = "apache2"
 DEPENDS = "apache2-native apache2 zlib"
 SRC_URI = "http://de3.php.net/distributions/php-${PV}.tar.bz2 \
-	   file://configure.patch;patch=1 \
+	   file://configure.patch \
 	  "
 
 S = "${WORKDIR}/php-${PV}"

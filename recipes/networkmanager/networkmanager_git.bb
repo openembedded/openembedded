@@ -9,7 +9,7 @@ PR_append = ".gitr${SRCREV}"
 inherit gnome
 
 SRC_URI = "git://anongit.freedesktop.org/NetworkManager/NetworkManager;protocol=git;branch=NETWORKMANAGER_0_7 \
-	file://remove-gtk-doc-make.patch;patch=1 \
+	file://remove-gtk-doc-make.patch \
 	file://nm-system-settings.conf \
 	file://NetworkManager \
            file://gtk-doc.make \

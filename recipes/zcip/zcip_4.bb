@@ -3,9 +3,9 @@ DEPENDS = "libpcap libnet-1.0.2a"
 DESCRIPTION = "zcip is an implementation of zero configuration networking (zeroconf)."
 LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/zeroconf/zcip-${PV}.tar.gz \
-	   file://compile.patch;patch=1 \
-	   file://linux-types.patch;patch=1 \
-	   file://char-signed-idiocy.patch;patch=1"
+	   file://compile.patch \
+	   file://linux-types.patch \
+	   file://char-signed-idiocy.patch"
 
 CPPFLAGS_append = " -DLIBNET_LIL_ENDIAN"
 do_compile () {

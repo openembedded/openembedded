@@ -9,7 +9,7 @@ PR = "ml0"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz \
-           file://fix-setup-py.patch;patch=1"
+           file://fix-setup-py.patch"
 S = "${WORKDIR}/pycairo-${PV}"
 
 inherit distutils pkgconfig

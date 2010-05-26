@@ -11,7 +11,7 @@ PV = "0.5.8+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://omnewrotate.googlecode.com/svn;module=trunk;proto=http \
-           file://xsession.script.patch;patch=1"
+           file://xsession.script.patch"
 
 S = "${WORKDIR}/trunk"
 

@@ -10,9 +10,9 @@ INC_PR = "r10"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
-  file://extra-keys.patch;patch=1 \
-  file://pagesize.patch;patch=1 \
-  file://remove_path.patch;patch=1 \
+  file://extra-keys.patch \
+  file://pagesize.patch \
+  file://remove_path.patch \
   file://acinclude.m4"
 S = "${WORKDIR}/SDL-${PV}"
 

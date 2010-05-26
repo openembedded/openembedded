@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 DEPENDS = "sed-native wbxml2 libsoup libxml2 bluez-libs openobex"
 
 SRC_URI = "http://libsyncml.opensync.org/download/releases/${PV}/libsyncml-${PV}.tar.bz2 \
-           file://build-in-src.patch;patch=1"
+           file://build-in-src.patch"
 
 inherit cmake pkgconfig
 

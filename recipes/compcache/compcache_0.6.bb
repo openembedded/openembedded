@@ -5,9 +5,9 @@ LICENSE = "GPLv2"
 inherit module
 
 SRC_URI = "http://compcache.googlecode.com/files/${PN}-${PV}.tar.gz \
-	file://003-compcache-0.6-KERNELDIR.patch;patch=1 \
-	file://001-compcache-rzscontrol-cross-compile.patch;patch=1 \
-	file://002-compcache-modules-install.patch;patch=1 \
+	file://003-compcache-0.6-KERNELDIR.patch \
+	file://001-compcache-rzscontrol-cross-compile.patch \
+	file://002-compcache-modules-install.patch \
 	   "
 TARGET_CC_ARCH += "${LDFLAGS}"
 

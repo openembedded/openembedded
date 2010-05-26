@@ -6,7 +6,7 @@ DEPENDS = ""
 PR ="r1"
 
 SRC_URI = "http://www.wirelessdefence.org/Contents/Files/${P}.tgz \
-		file://oe.patch;patch=1;pnum=1"
+		file://oe.patch"
 
 inherit autotools
 

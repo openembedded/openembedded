@@ -5,8 +5,8 @@ LICENSE = "GPL"
 
 inherit gpe
 
-SRC_URI += "file://dbus-new-api.patch;patch=1 \
-	    file://makefile-fix.patch;patch=1"
+SRC_URI += "file://dbus-new-api.patch \
+	    file://makefile-fix.patch"
 
 
 SRC_URI[md5sum] = "d993818295e00754592ee6c13db4a723"

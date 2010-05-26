@@ -8,7 +8,7 @@ DEPENDS = "ffmpeg gstreamer gst-plugins-base zlib"
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
-           file://lower-rank.diff;patch=1 \
+           file://lower-rank.diff \
 "
 
 PR = "r2"

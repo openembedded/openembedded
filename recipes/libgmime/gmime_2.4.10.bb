@@ -8,7 +8,7 @@ inherit gnome autotools_stage lib_package binconfig
 
 SRC_URI += " \
            file://iconv-detect.h \
-	   file://nodolt.patch;patch=1"
+	   file://nodolt.patch"
 
 EXTRA_OECONF += "--disable-mono"
 

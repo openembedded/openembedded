@@ -6,7 +6,7 @@ DEPENDS = "u-boot-mkimage-native"
 COMPATIBLE_MACHINE = "n1200"
 
 SRC_URI = "http://downloads.thecus.nas-central.org/N1200/Kernels/linux-2.6.27-foonas-git.tar.gz \
-           file://fw-install.patch;patch=1 \
+           file://fw-install.patch \
            file://defconfig"
 S = "${WORKDIR}/linux-2.6.27-foonas-git"
 

@@ -4,7 +4,7 @@ PR = "r2"
 
 LICENSE = "bzip2"
 SRC_URI = "http://www.bzip.org/${PV}/bzip2-${PV}.tar.gz \
-	   file://bzip2-1.0.5-autoconfiscated.patch;patch=1"
+	   file://bzip2-1.0.5-autoconfiscated.patch"
 
 inherit autotools pkgconfig
 

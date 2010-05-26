@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ glib-2.0 libsm libice"
 
 SRC_URI = "http://members.dslextreme.com/users/billw/gkrellm/gkrellm-${PV}.tar.bz2 \
-           file://destdir.patch;patch=1"
+           file://destdir.patch"
 
 inherit pkgconfig
 

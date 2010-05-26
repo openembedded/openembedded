@@ -12,9 +12,9 @@ PR = "r6"
 EXTRA_OECONF = "--disable-debug"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
-           file://visibility.patch;patch=1 \
+           file://visibility.patch \
            file://glibconfig-sysdefs.h \
-           file://configure-libtool.patch;patch=1"
+           file://configure-libtool.patch"
 
 S = "${WORKDIR}/glib-${PV}"
 

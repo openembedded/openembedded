@@ -15,7 +15,7 @@ IMGPV = "1.4.14.2514"
 BINFILE := "OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin"
 
 SRC_URI = "http://install.source.dir.local/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
-           file://0001-Compile-fixes-for-recent-kernels.patch;patch=1 \
+           file://0001-Compile-fixes-for-recent-kernels.patch \
 "
 S = "${WORKDIR}/OMAP35x_Graphics_SDK_${SGXPV}/GFX_Linux_KM"
 

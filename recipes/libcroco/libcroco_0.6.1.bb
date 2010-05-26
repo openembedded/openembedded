@@ -6,7 +6,7 @@ PR = "r3"
 
 inherit gnome
 
-SRC_URI_append = " file://croco.patch;patch=1 "
+SRC_URI_append = " file://croco.patch "
 
 
 SRC_URI[archive.md5sum] = "b0975bd01eb11964f1b3f254f267a43d"

@@ -9,8 +9,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/asio/boost_asio_0_3_7.tar.bz2"
 
 # mtx-[12] use 2.4 kernels but the kernel-libc-headers are from kernel 2.6,
 # thus the automatic epoll detection does not work in epoll_reactor_fwd.hpp.
-SRC_URI_append_mtx-1 = " file://disable-epoll.patch;patch=1"
-SRC_URI_append_mtx-2 = " file://disable-epoll.patch;patch=1"
+SRC_URI_append_mtx-1 = " file://disable-epoll.patch"
+SRC_URI_append_mtx-2 = " file://disable-epoll.patch"
 
 S = "${WORKDIR}/boost_asio_0_3_7"
 

@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 DEPENDS = "gtk+"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/gtk-industrial-engine/gtk-industrial-engine_${PV}.tar.gz \
-	file://no-gtk1.patch;patch=1"
+	file://no-gtk1.patch"
 
 PACKAGES += "gtk-theme-industrial"
 FILES_${PN} = "${libdir}/gtk-2.0/*/engines/*.so"

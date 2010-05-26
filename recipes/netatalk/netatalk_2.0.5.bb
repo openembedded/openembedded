@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "cups db openssl"
 
 SRC_URI = "http://ovh.dl.sourceforge.net/sourceforge/netatalk/netatalk-${PV}.tar.gz;name=src \
-	   file://netatalk-dbd.patch;patch=1 \
+	   file://netatalk-dbd.patch \
 	   file://netatalk.conf \
 	   file://init"
 SRC_URI[src.md5sum] = "f35cd7a4ce26c780de380cd2bcae5ce6"

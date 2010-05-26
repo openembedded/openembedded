@@ -6,8 +6,8 @@ mail user agent."
 PR = "r0"
 LICENSE = "GPL"
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mailx/mailx_${PV}.orig.tar.gz;name=archive \
-	   ${DEBIAN_MIRROR}/main/m/mailx/mailx_${PV}-1.diff.gz;patch=1;name=patch \
-	   file://install.patch;patch=1"
+	   ${DEBIAN_MIRROR}/main/m/mailx/mailx_${PV}-1.diff.gz;name=patch \
+	   file://install.patch"
 S = "${WORKDIR}/mailx-${PV}.orig"
 
 CFLAGS_append = " -D_BSD_SOURCE -DDEBIAN -I${S}/EXT"

@@ -10,7 +10,7 @@ GPE_TARBALL_SUFFIX = "bz2"
 
 inherit gpephone autotools
 
-SRC_URI += " file://somefixes.patch;patch=1;pnum=0"
+SRC_URI += " file://somefixes.patch;striplevel=0"
 
 FILES_${PN} += "${datadir}/conf ${datadir}/graphic"
 

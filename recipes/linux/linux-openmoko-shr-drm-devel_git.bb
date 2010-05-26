@@ -14,12 +14,12 @@ PR = "r5"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=drm-tracking \
-  file://fix-install.patch;patch=1 \
-  file://0001-Add-drm-to-Makefile-version.patch;patch=1 \
-  file://0004-gta02_drm_defconfig-start-from-gta02_packaging_defco.patch;patch=1 \
-  file://0005-Enable-DRM-and-MFD_GLAMO_DRM.patch;patch=1 \
-  file://0006-Enable-I2C_ALGOBIT-from-make-oldconfig.patch;patch=1 \
-  file://0007-Enable-UBI-UBIFS.patch;patch=1 \
+  file://fix-install.patch \
+  file://0001-Add-drm-to-Makefile-version.patch \
+  file://0004-gta02_drm_defconfig-start-from-gta02_packaging_defco.patch \
+  file://0005-Enable-DRM-and-MFD_GLAMO_DRM.patch \
+  file://0006-Enable-I2C_ALGOBIT-from-make-oldconfig.patch \
+  file://0007-Enable-UBI-UBIFS.patch \
 "
 S = "${WORKDIR}/git"
 

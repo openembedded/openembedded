@@ -4,7 +4,7 @@ DEPENDS = "gtk+"
 # Be sure to have the I2C bitbanging interface enabled in your kernel config
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dxr3/${PN}-${PV}.tar.gz \
-           file://kernel-source-dir.diff;patch=1 \
+           file://kernel-source-dir.diff \
           "
 
 SRC_URI[md5sum] = "3ec91423f6a0b274b5bf56bfc3b98ac6"

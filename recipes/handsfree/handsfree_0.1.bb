@@ -9,7 +9,7 @@ PR = "r0"
 
 SRC_URI = "\
    http://www.soft.uni-linz.ac.at/~vogl/bluez/handsfree-040326.tar.gz \
-  file://Makefile.patch;patch=1 \
+  file://Makefile.patch \
 "
 S = "${WORKDIR}/handsfree"
 

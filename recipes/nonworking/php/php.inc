@@ -4,8 +4,8 @@ SECTION = "console/network"
 LICENSE = "PHP"
 
 SRC_URI =     "http://us2.php.net/distributions/php-${PV}.tar.bz2;name=src \
-               file://acinclude-xml2-config.patch;patch=1 \
-               file://php-m4-divert.patch;patch=1"
+               file://acinclude-xml2-config.patch \
+               file://php-m4-divert.patch"
 
 S = "${WORKDIR}/php-${PV}"
 

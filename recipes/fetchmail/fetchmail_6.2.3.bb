@@ -6,7 +6,7 @@ intended to be used over on-demand TCP/IP links \
 (such as SLIP or PPP connections)."
 
 SRC_URI = "http://catb.org/~esr/fetchmail/fetchmail-${PV}.tar.gz \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 
 inherit autotools
 

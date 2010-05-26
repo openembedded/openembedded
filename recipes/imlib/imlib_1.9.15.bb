@@ -4,7 +4,7 @@ DEPENDS = "gtk+-1.2 jpeg tiff libpng libungif"
 
 inherit gnome binconfig
 
-SRC_URI += "file://configure.patch;patch=1"
+SRC_URI += "file://configure.patch"
 
 EXTRA_OECONF = " --enable-modules \
 		 --disable-gtktest \

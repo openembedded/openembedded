@@ -2,8 +2,8 @@ require libtool_${PV}.bb
 PR = "${INC_PR}.1"
 
 SRC_URI += "\
-  file://cross_compile.patch;patch=1 \
-  file://prefix.patch;patch=1 \
+  file://cross_compile.patch \
+  file://prefix.patch \
 "
 
 inherit native

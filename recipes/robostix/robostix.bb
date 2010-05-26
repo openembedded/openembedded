@@ -8,8 +8,8 @@ DEPENDS = "virtual/kernel"
 PR = "r0"
 
 SRC_URI = "svn://svn.gumstix.com/gumstix-buildroot/branches/projects;module=robostix;rev=1588;proto=http \
-   file://makefile-rules.patch;patch=1 \
-   file://gummake.patch;patch=1 \
+   file://makefile-rules.patch \
+   file://gummake.patch \
    "
 
 S = "${WORKDIR}/robostix"

@@ -9,7 +9,7 @@ PR = "r1"
 # to add back SSE and MMX after fixing the makefile to not use uname to check for cpu 
 
 SRC_URI = "http://www.ludd.luth.se/~torger/files/brutefir-${PV}.tar.gz \
-           file://unbreak-makefile.patch;patch=1 \
+           file://unbreak-makefile.patch \
 	   "
 
 do_configure() {

@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/opende/ode-src-${PV}.zip \
-           file://install.patch;patch=1"
+           file://install.patch"
 
 inherit autotools binconfig
 

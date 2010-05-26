@@ -36,48 +36,48 @@ python __anonymous () {
 
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
-#	   file://noinfo.patch;patch=1
-#	   file://ldconfig.patch;patch=1;pnum=0
-#	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+#	   file://noinfo.patch
+#	   file://ldconfig.patch;striplevel=0
+#	   file://arm-machine-gmon.patch;striplevel=0 \
 #	   \
-#	   file://arm-ioperm.patch;patch=1;pnum=0 \
-#	   file://ldd.patch;patch=1;pnum=0 \
+#	   file://arm-ioperm.patch;striplevel=0 \
+#	   file://ldd.patch;striplevel=0 \
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2;name=ports \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2;name=libidn \
-           file://arm-memcpy.patch;patch=1 \
-           file://arm-longlong.patch;patch=1 \
-           file://fhs-linux-paths.patch;patch=1 \
-           file://dl-cache-libcmp.patch;patch=1 \
-           file://ldsocache-varrun.patch;patch=1 \
-           file://nptl-crosscompile.patch;patch=1 \
-	   file://glibc-check_pf.patch;patch=1;pnum=0 \
-#	   file://glibc-2.4-compile.patch;patch=1 \
-#	   file://glibc-2.4-openat-3.patch;patch=1 \
-#	   file://fixup-aeabi-syscalls.patch;patch=1 \
-#	   file://zecke-sane-readelf.patch;patch=1 \
-           file://ldd-unbash.patch;patch=1 \
-	   file://glibc-arm-IO-acquire-lock-fix.diff;patch=1 \
-	   file://all_glibc-i586-chk.patch;patch=1 \
-	   file://glibc-2.6.1-use-short-for-fnstsw.patch;patch=1 \
-           file://glibc-use-isystem-include-fixed.patch;patch=1 \
+           file://arm-memcpy.patch \
+           file://arm-longlong.patch \
+           file://fhs-linux-paths.patch \
+           file://dl-cache-libcmp.patch \
+           file://ldsocache-varrun.patch \
+           file://nptl-crosscompile.patch \
+	   file://glibc-check_pf.patch;striplevel=0 \
+#	   file://glibc-2.4-compile.patch \
+#	   file://glibc-2.4-openat-3.patch \
+#	   file://fixup-aeabi-syscalls.patch \
+#	   file://zecke-sane-readelf.patch \
+           file://ldd-unbash.patch \
+	   file://glibc-arm-IO-acquire-lock-fix.diff \
+	   file://all_glibc-i586-chk.patch \
+	   file://glibc-2.6.1-use-short-for-fnstsw.patch \
+           file://glibc-use-isystem-include-fixed.patch \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
 	   file://generic-bits_time.h \
            file://etc/ld.so.conf \
            file://generate-supported.mk \
-           file://march-i686.patch;patch=1;pnum=0 \
-	   file://glibc-arm-no-asm-page.patch;patch=1 \
+           file://march-i686.patch;striplevel=0 \
+	   file://glibc-arm-no-asm-page.patch \
            "
 
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
+SRC_URI_append_sh3 = " file://no-z-defs.patch"
+SRC_URI_append_sh4 = " file://no-z-defs.patch"
 
 #powerpc patches to add support for soft-float
-SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff;patch=1"
+SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

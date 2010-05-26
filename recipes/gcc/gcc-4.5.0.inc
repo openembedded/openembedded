@@ -12,11 +12,11 @@ FILESPATHPKG .= ":gcc-$PV"
 INC_PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=gcc450tarbz2 \
-	   file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
-	   file://100-uclibc-conf.patch;patch=1 \
-           file://gcc-uclibc-locale-ctype_touplow_t.patch;patch=1 \
-	   file://cache-amnesia.patch;patch=1 \
-	   file://gcc-flags-for-build.patch;patch=1 \
+	   file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch \
+	   file://100-uclibc-conf.patch \
+           file://gcc-uclibc-locale-ctype_touplow_t.patch \
+	   file://cache-amnesia.patch \
+	   file://gcc-flags-for-build.patch \
 	  "
 
 # Language Overrides

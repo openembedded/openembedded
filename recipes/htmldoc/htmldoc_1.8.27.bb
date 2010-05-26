@@ -4,7 +4,7 @@ PR = "r2"
 
 
 SRC_URI = "http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/htmldoc/${PV}/htmldoc-${PV}-source.tar.bz2 \
-file://paths_1.8.27.patch;patch=1"
+file://paths_1.8.27.patch"
 
 
 inherit autotools pkgconfig

@@ -14,7 +14,7 @@ PACKAGES_prepend = " ${PN}-levels-bonus1 ${PN}-levels-bonus2 "
 SRC_URI = "${SOURCEFORGE_MIRROR}/super-tux/supertux-${PV}.tar.bz2 \
 #           file://supertux-qvga-gfx.tar.bz2 \
            file://supertux-smallsize-data.tar.bz2 \
-	   file://gp2x.patch;patch=1 \
+	   file://gp2x.patch \
 	   file://img-resize.sh \
 	   file://supertux.png \
 	   file://supertux.desktop \

@@ -4,7 +4,7 @@ INC_PR = "r7"
 DEPENDS = "squid-native-${PV} openssl openldap"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
-           file://fix_epoll_check.patch;patch=1 \
+           file://fix_epoll_check.patch \
            file://squid.init \
 	   file://squid-volatiles \
 	   "

@@ -14,14 +14,14 @@ PR = "r1"
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \
   \
-  file://0001-squashfs-with-lzma.patch;patch=1 \
-  file://0002-squashfs-initrd.patch;patch=1 \
-  file://0003-squashfs-force-O2.patch;patch=1 \
-  file://0004-squashfs-Kconfig.patch;patch=1 \
-  file://0005-squashfs-Makefile.patch;patch=1 \
+  file://0001-squashfs-with-lzma.patch \
+  file://0002-squashfs-initrd.patch \
+  file://0003-squashfs-force-O2.patch \
+  file://0004-squashfs-Kconfig.patch \
+  file://0005-squashfs-Makefile.patch \
   \
-  file://openwrt-ledtrig-netdev.patch;patch=1 \
-  file://gta01-fix-battery-class-name.patch;patch=1 \
+  file://openwrt-ledtrig-netdev.patch \
+  file://gta01-fix-battery-class-name.patch \
   \
   file://defconfig-oe \
 "

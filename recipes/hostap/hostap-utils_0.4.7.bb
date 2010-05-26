@@ -6,8 +6,8 @@ LICENSE = "GPL"
 PR = "r6"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-utils-${PV}.tar.gz \
-	   file://hostap-fw-load.patch;patch=1 \
-	   file://ldflags.patch;patch=1"
+	   file://hostap-fw-load.patch \
+	   file://ldflags.patch"
 
 S = "${WORKDIR}/hostap-utils-${PV}"
 

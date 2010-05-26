@@ -3,7 +3,7 @@ require vpnc.inc
 PR = "r2"
 
 SRC_URI = "http://www.unix-ag.uni-kl.de/~massar/vpnc/vpnc-${PV}.tar.gz \
-           file://vpnc-script.patch;patch=1 \
+           file://vpnc-script.patch \
            file://default.conf"
 
 SRC_URI[md5sum] = "e7518cff21326fe7eb9795b60c25ae6a"

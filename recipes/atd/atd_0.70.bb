@@ -7,7 +7,7 @@ RREPLACES = "at"
 PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
-			file://atd-startup.patch;patch=1;pnum=0"
+			file://atd-startup.patch;striplevel=0"
 S = "${WORKDIR}/atd"
 
 inherit update-rc.d

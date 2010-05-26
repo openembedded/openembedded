@@ -3,24 +3,24 @@ PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
-  file://busybox-1.13.2-awk.patch;patch=1 \
-  file://busybox-1.13.2-depmod.patch;patch=1 \
-  file://busybox-1.13.2-init.patch;patch=1 \
-  file://busybox-1.13.2-killall.patch;patch=1 \
-  file://busybox-1.13.2-mdev.patch;patch=1 \
-  file://busybox-1.13.2-modprobe.patch;patch=1 \
-  file://busybox-1.13.2-printf.patch;patch=1 \
-  file://busybox-1.13.2-syslogd.patch;patch=1 \
-  file://busybox-1.13.2-tar.patch;patch=1 \
-  file://busybox-1.13.2-top24.patch;patch=1 \
-  file://busybox-1.13.2-unzip.patch;patch=1 \
-  file://busybox-1.13.2-wget.patch;patch=1 \
+  file://busybox-1.13.2-awk.patch \
+  file://busybox-1.13.2-depmod.patch \
+  file://busybox-1.13.2-init.patch \
+  file://busybox-1.13.2-killall.patch \
+  file://busybox-1.13.2-mdev.patch \
+  file://busybox-1.13.2-modprobe.patch \
+  file://busybox-1.13.2-printf.patch \
+  file://busybox-1.13.2-syslogd.patch \
+  file://busybox-1.13.2-tar.patch \
+  file://busybox-1.13.2-top24.patch \
+  file://busybox-1.13.2-unzip.patch \
+  file://busybox-1.13.2-wget.patch \
   \
-  file://udhcpscript.patch;patch=1 \
-  file://udhcpc-fix-nfsroot.patch;patch=1 \
-  file://B921600.patch;patch=1 \
-  file://get_header_tar.patch;patch=1 \
-  file://busybox-appletlib-dependency.patch;patch=1 \
+  file://udhcpscript.patch \
+  file://udhcpc-fix-nfsroot.patch \
+  file://B921600.patch \
+  file://get_header_tar.patch \
+  file://busybox-appletlib-dependency.patch \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \

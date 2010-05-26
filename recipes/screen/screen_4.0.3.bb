@@ -7,11 +7,11 @@ DEPENDS = "ncurses"
 PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/screen/screen-${PV}.tar.gz \
-           file://cross-compile.patch;patch=1 \
-           file://configure.patch;patch=1 \
-           file://sched.patch;patch=1 \
-           file://no-stropts.patch;patch=1 \
-           file://no-utempter.patch;patch=1 \
+           file://cross-compile.patch \
+           file://configure.patch \
+           file://sched.patch \
+           file://no-stropts.patch \
+           file://no-utempter.patch \
 	  "
 
 inherit autotools

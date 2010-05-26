@@ -10,8 +10,8 @@ APPDESKTOP = "${WORKDIR}/misc"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-2.tgz \
-           file://opie-icons.patch;patch=1 \
-           file://qtopia17.patch;patch=1"
+           file://opie-icons.patch \
+           file://qtopia17.patch"
 
 S = "${WORKDIR}"
 

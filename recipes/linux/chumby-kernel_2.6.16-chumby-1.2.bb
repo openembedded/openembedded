@@ -7,9 +7,9 @@ PR = "r4"
 
 SRC_URI = "http://files.chumby.com/source/ironforge/build396/linux-2.6.16-chumby-1.2.tar.gz;name=kernel \
            http://files.chumby.com/source/ironforge/build396/align.pl;name=align \
-           file://chumby-override-cmdline.patch;patch=1 \
-           file://disable-fbchanging.patch;patch=1 \
-           file://Makefile-remove-hard-setting-CROSS_COMPILE.patch;patch=1 \
+           file://chumby-override-cmdline.patch \
+           file://disable-fbchanging.patch \
+           file://Makefile-remove-hard-setting-CROSS_COMPILE.patch \
            file://defconfig \
            "
 

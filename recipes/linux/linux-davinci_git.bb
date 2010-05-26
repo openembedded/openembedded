@@ -71,7 +71,7 @@ SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
                                      "
 
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
-                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch;patch=1 "
+                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch "
 
 do_configure_prepend_dm355-leopard() {
 	sed -i s:2138:1381:g ${S}/arch/arm/tools/mach-types

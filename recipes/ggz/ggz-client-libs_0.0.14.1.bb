@@ -5,7 +5,7 @@ DEPENDS = "libggz"
 PR = "r2"
 
 SRC_URI = "http://ftp.belnet.be/packages/ggzgamingzone/ggz/${PV}/${PN}-${PV}.tar.gz \
-           file://ggz-unbreak-m4.patch;patch=1 \
+           file://ggz-unbreak-m4.patch \
           "
 
 inherit autotools

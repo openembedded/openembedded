@@ -3,10 +3,10 @@ include boost-36.inc
 PR = "${INC_PR}.1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2;name=boost1370tarbz2 \
-           file://arm-intrinsics.patch;patch=1 \
-           file://02-atomic-count-pthreads-on-arm.patch;patch=1 \
-           file://uclibc.patch;patch=1 \
-           file://sscanf.patch;patch=1 \
+           file://arm-intrinsics.patch \
+           file://02-atomic-count-pthreads-on-arm.patch \
+           file://uclibc.patch \
+           file://sscanf.patch \
           "
 
 SRC_URI[boost1370tarbz2.md5sum] = "8d9f990bfb7e83769fa5f1d6f065bc92"

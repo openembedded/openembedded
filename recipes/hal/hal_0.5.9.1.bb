@@ -9,8 +9,8 @@ RDEPENDS_${PN} += "udev-utils hal-info"
 PR = "r10"
 
 SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
-           file://configure_fix.patch;patch=1 \
-           file://sg-inhibit.patch;patch=1 \
+           file://configure_fix.patch \
+           file://sg-inhibit.patch \
            file://20hal \
            file://99_hal"
 

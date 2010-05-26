@@ -8,9 +8,9 @@ export BUILD_OPTIMIZATION = " "
 
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://debian.patch;patch=1 \
-            file://armeb.patch;patch=1;pnum=0 \
-            file://gnueabi-arm.patch;patch=1"
+SRC_URI += "file://debian.patch \
+            file://armeb.patch;striplevel=0 \
+            file://gnueabi-arm.patch"
 
 do_install() {
 	:

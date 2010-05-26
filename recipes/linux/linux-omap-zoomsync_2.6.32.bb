@@ -25,14 +25,14 @@ PR_append = "+gitr${SRCREV}"
 
 
 SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=master;protocol=git \
-       file://0042-musb-allow-host-io-without-gadget-module.patch;patch=1 \
-       file://rev.patch;patch=1 \
+       file://0042-musb-allow-host-io-without-gadget-module.patch \
+       file://rev.patch \
        file://logo_linux_clut224.ppm \
        file://defconfig"
 
 SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=L23.I3.3;protocol=git \
-       file://0042-musb-allow-host-io-without-gadget-module.patch;patch=1 \
-       file://rev.patch;patch=1 \
+       file://0042-musb-allow-host-io-without-gadget-module.patch \
+       file://rev.patch \
        file://logo_linux_clut224.ppm \
        file://defconfig"
 

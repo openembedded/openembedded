@@ -7,8 +7,8 @@ PR = "r0"
 DEPENDS = "openssl"
 
 SRC_URI = "ftp://ftp.isc.org/isc/bind9/${PV}/${PN}-${PV}.tar.gz \
-	   file://conf.patch;patch=1 \
-	   file://configure.in.patch;patch=1 \
+	   file://conf.patch \
+	   file://configure.in.patch \
 	   "
 
 EXTRA_OECONF = " --enable-ipv6=no --with-randomdev=/dev/random --disable-threads --sysconfdir=/etc/bind --localstatedir=/var --prefix=/usr --disable-devpoll --disable-epoll"

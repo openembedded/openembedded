@@ -8,7 +8,7 @@ SRCREV = "8310"
 PV = "1.6.1+svnr${SRCPV}"
 
 SRC_URI = "svn://ogre.svn.sourceforge.net/svnroot/ogre;module=trunk;proto=https \
-           file://ogre-egl-update.diff;patch=1;pnum=0 \
+           file://ogre-egl-update.diff;striplevel=0 \
           "
 
 inherit autotools_stage siteinfo

@@ -6,7 +6,7 @@ LICENSE = "GPL, MIT"
 # for embedded systems.
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz \
-           file://cross-build.patch;patch=1"
+           file://cross-build.patch"
 
 PR = "r1"
 

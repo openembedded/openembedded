@@ -12,7 +12,7 @@ DEPENDS = "virtual/db libpcap libnet-1.0 libnids openssl"
 
 SRC_URI = "\
   http://www.monkey.org/~dugsong/dsniff/dsniff-${PV}.tar.gz \
-  file://configure.patch;patch=1 \
+  file://configure.patch \
 "
 
 inherit autotools

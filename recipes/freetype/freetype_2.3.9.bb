@@ -5,9 +5,9 @@ PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
-  file://no-hardcode.patch;patch=1 \
-  file://fix-configure.patch;patch=1 \
-  file://libtool-tag.patch;patch=1 \
+  file://no-hardcode.patch \
+  file://fix-configure.patch \
+  file://libtool-tag.patch \
 "
 S = "${WORKDIR}/freetype-${PV}"
 

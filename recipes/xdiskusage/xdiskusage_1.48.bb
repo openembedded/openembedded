@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "fltk"
 
 SRC_URI = "http://xdiskusage.sourceforge.net/xdiskusage-${PV}.tgz \
-           file://running_from_menu.patch;patch=1 \
+           file://running_from_menu.patch \
            file://xdiskusage.desktop \
            file://xdiskusage.png"
 

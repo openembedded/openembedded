@@ -6,8 +6,8 @@ LICENSE = "GPLv2"
 PRIORITY = "optional"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/viking/viking-${PV}.tar.gz \
-	file://viking-openaerialmap.patch;patch=1 \
-	file://viking-parallel-build.patch;patch=1"
+	file://viking-openaerialmap.patch \
+	file://viking-parallel-build.patch"
 
 # libgps is linked with c++
 #export CC='${CC} -lstdc++'

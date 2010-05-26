@@ -6,14 +6,14 @@ DEFAULT_PREFERENCE = "-1"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=kernel \
-	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.24/patch-2.6.24-rc6.bz2;patch=1;name=patch \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.24/patch-2.6.24-rc6.bz2;apply=yes;name=patch \
            file://defconfig \
 	   "
 
 S = "${WORKDIR}/linux-2.6.23"
 
 SRC_URI_append_at91sam9260ek = "\
-	file://0001-2.6.23-at91.patch;patch=1 \
+	file://0001-2.6.23-at91.patch \
 	"
 CMDLINE_at91sam9260ek = "mem=64M console=ttyS0,115200 root=/dev/mtdblock0 rw rootfstype=jffs2"
 

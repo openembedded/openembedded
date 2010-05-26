@@ -2,9 +2,9 @@ require hal.inc
 
 PR = "r6"
 
-SRC_URI += " file://hal-right-input-h.patch;patch=1 \
-             file://fix-configure.diff;patch=1 \
-             file://wifi-2.6.27.diff;patch=1"
+SRC_URI += " file://hal-right-input-h.patch \
+             file://fix-configure.diff \
+             file://wifi-2.6.27.diff"
 
 # The following code finds the right linux/input.h,
 # which also works with external-toolchain/SDK

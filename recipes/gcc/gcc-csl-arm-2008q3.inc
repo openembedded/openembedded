@@ -6,13 +6,13 @@ PV = "4.3.2+csl-arm-2008q3-39"
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm-2008q3"
 
 SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2008q3-39-arm-none-eabi.src.tar.bz2;name=archive \
-           file://gcc-csl-2008q3-hotfix.diff;patch=1 \
-           file://arm-nolibfloat.patch;patch=1 \
-           file://arm-softfloat.patch;patch=1 \
-           file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
-           file://gcc-flags-for-build.patch;patch=1 \
-           file://gcc-4.3.1-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \
-           file://gfortran-4.3.x.patch;patch=1 \
+           file://gcc-csl-2008q3-hotfix.diff \
+           file://arm-nolibfloat.patch \
+           file://arm-softfloat.patch \
+           file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch \
+           file://gcc-flags-for-build.patch \
+           file://gcc-4.3.1-SYSROOT_CFLAGS_FOR_TARGET.patch \
+           file://gfortran-4.3.x.patch \
 "
 
 

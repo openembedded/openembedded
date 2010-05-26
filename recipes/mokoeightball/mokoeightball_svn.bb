@@ -11,7 +11,7 @@ FILES_${PN} += /usr/share/moko_eightball/Accelerometer/__init__.py
 FILES_${PN} += /usr/share/moko_eightball/themes/eightball.edj
 
 SRC_URI = "svn://svn.pureenergy.cc/moko_eightball;module=.;proto=svn \
-	   file://files/fixpath.patch;patch=1"
+	   file://files/fixpath.patch"
 
 do_compile() {
 	cd python/src/data/themes

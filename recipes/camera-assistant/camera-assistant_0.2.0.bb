@@ -16,7 +16,7 @@ HOMEPAGE = "http://cameraassistant.sourceforge.net/"
 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cameraassistant/camera-assistant_0.2.0.tar.gz \
-	  file://g++-3.4-compile-fixes.patch;patch=1 \
+	  file://g++-3.4-compile-fixes.patch \
 	  file://ca.desktop \
 	  file://ca.png "
 

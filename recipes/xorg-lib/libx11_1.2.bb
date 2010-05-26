@@ -8,8 +8,8 @@ PE = "1"
 
 XORG_PN = "libX11"
 
-SRC_URI += "file://x11_disable_makekeys.patch;patch=1 \
-            file://keysymdef_include.patch;patch=1"
+SRC_URI += "file://x11_disable_makekeys.patch \
+            file://keysymdef_include.patch"
 
 EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
 

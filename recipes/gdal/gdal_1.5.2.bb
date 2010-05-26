@@ -5,7 +5,7 @@ DEPENDS = "proj-4 sqlite3 zlib jpeg libpng tiff giflib curl jasper expat"
 PR = "r3"
 
 SRC_URI = "http://www.gdal.org/dl/${P}.tar.gz \
-	   file://gdal_config.patch;patch=1 \
+	   file://gdal_config.patch \
  	  "
 
 ARM_INSTRUCTION_SET = "arm"

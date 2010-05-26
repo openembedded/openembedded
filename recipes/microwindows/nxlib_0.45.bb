@@ -8,7 +8,7 @@ PR="r0"
 
 SRC_URI = " \
   ftp://ftp.microwindows.org/pub/microwindows/nxlib-${PV}.tar.gz \
-  file://varargs.patch;patch=1 \
+  file://varargs.patch \
  "
 
 EXTRA_OEMAKE = ' \

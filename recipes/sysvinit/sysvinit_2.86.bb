@@ -19,7 +19,7 @@ USE_VT ?= "1"
 SYSVINIT_ENABLED_GETTYS ?= "1"
 
 SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-${PV}.tar.gz \
-           file://install.patch;patch=1 \
+           file://install.patch \
            file://need \
            file://provide \
            file://inittab \

@@ -7,9 +7,9 @@ PE = "1"
 
 SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=060ddfe5aa48 \
            hg://hg.mozilla.org/;module=mobile-browser;rev=ad254d8abbc9 \
-           file://use-native-bpp.patch;patch=1 \
+           file://use-native-bpp.patch \
            file://jsautocfg.h \
-           file://jsautocfg-dontoverwrite.patch;patch=1 \
+           file://jsautocfg-dontoverwrite.patch \
 "
 
 S = "${WORKDIR}/mozilla-central"

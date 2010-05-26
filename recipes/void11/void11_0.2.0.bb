@@ -6,7 +6,7 @@ FILES_${PN} += "${libdir}/libvoid11.so"
 
 SRC_URI = "http://www.wirelessdefence.org/Contents/Files/void11-0.2.0.tar.bz2;name=archive \
            http://hostap.epitest.fi/releases/hostapd-0.1.3.tar.gz;name=hostapd \
-           file://oezc.patch;patch=1;pnum=1"
+           file://oezc.patch"
 
 S = "${WORKDIR}/void11-0.2.0"
 

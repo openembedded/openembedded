@@ -5,15 +5,15 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "2"
  
 SRC_URI += "\
-           file://0001-Generic-C-implementation-of-pixman_blt-with-overlapp.patch;patch=1 \
-           file://0002-Support-of-overlapping-src-dst-for-pixman_blt_mmx.patch;patch=1 \
-           file://0003-Support-of-overlapping-src-dst-for-pixman_blt_sse2.patch;patch=1 \
-           file://0004-Support-of-overlapping-src-dst-for-pixman_blt_neon.patch;patch=1 \
-           file://0005-ARM-added-NEON-optimizations-for-fetch-store-r5g6b5-.patch;patch=1 \
-           file://calloc.patch;patch=1 \
-           file://tls.patch;patch=1 \
-           file://565-scanline.patch;patch=1 \
-           file://missing-cache-preload.diff;patch=1 \
+           file://0001-Generic-C-implementation-of-pixman_blt-with-overlapp.patch \
+           file://0002-Support-of-overlapping-src-dst-for-pixman_blt_mmx.patch \
+           file://0003-Support-of-overlapping-src-dst-for-pixman_blt_sse2.patch \
+           file://0004-Support-of-overlapping-src-dst-for-pixman_blt_neon.patch \
+           file://0005-ARM-added-NEON-optimizations-for-fetch-store-r5g6b5-.patch \
+           file://calloc.patch \
+           file://tls.patch \
+           file://565-scanline.patch \
+           file://missing-cache-preload.diff \
 "
 
 SRC_URI[archive.md5sum] = "a4fb870fc325be258089f1683642e976"

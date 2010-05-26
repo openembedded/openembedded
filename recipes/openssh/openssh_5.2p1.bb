@@ -6,7 +6,7 @@ SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.
            file://sshd_config \
            file://ssh_config \
            file://init \
-           file://openssh-5.2-sftp-server-nolibcrypto.patch;patch=1 \
+           file://openssh-5.2-sftp-server-nolibcrypto.patch \
           "
 
 SRC_URI[md5sum] = "ada79c7328a8551bdf55c95e631e7dad"

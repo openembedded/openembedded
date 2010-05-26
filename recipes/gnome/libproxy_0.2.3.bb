@@ -5,7 +5,7 @@ DEPENDS = "libxmu gconf virtual/libx11"
 PR = "r1"
 
 SRC_URI = "http://libproxy.googlecode.com/files/libproxy-${PV}.tar.gz \
-	   file://libproxy-move-define-__USE_BSD.patch;patch=1 \
+	   file://libproxy-move-define-__USE_BSD.patch \
 	   "
 
 inherit autotools_stage

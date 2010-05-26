@@ -7,7 +7,7 @@ EXTRA_OECONF += " --with-x --without-npsqueak --with-ffi=any-libffi --docdir=${d
 
 
 SRC_URI = "http://www.squeakvm.org/unix/release/Squeak-3.10-1.src.tar.gz \
-           file://configure-fixes.patch;patch=1"
+           file://configure-fixes.patch"
 S = "${WORKDIR}/Squeak-3.10-1/platforms/unix/config"
 
 inherit autotools

@@ -10,7 +10,7 @@ inherit gpephone pkgconfig autotools
 
 # This really is not angstrom specific, but gtk 2.10 specific
 # for a better solution: "patches accepted"
-SRC_URI_append_angstrom = " file://gemfilechooser-NULL-callback.patch;patch=1"
+SRC_URI_append_angstrom = " file://gemfilechooser-NULL-callback.patch"
 
 do_stage () {
 	autotools_stage_all

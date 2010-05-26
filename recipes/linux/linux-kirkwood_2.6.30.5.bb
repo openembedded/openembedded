@@ -14,7 +14,7 @@ SRC_URI = "git://git.marvell.com/orion.git;protocol=git;branch=stable-2.6.30 \
            file://defconfig"
 
 SRCREV_openrd-base = "8cb424312d88810bb62edbeef42a510725ceb482"
-SRC_URI_append_openrd-base = " file://newer-arm-mach-types.patch;patch=1 "
+SRC_URI_append_openrd-base = " file://newer-arm-mach-types.patch "
 
 S = "${WORKDIR}/git"
 

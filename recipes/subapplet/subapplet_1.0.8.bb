@@ -8,7 +8,7 @@ HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
 PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz \
-	file://toolbar-resize-fix.patch;patch=1"
+	file://toolbar-resize-fix.patch"
 
 S = "${WORKDIR}/SubApplet-1.0.8"
 

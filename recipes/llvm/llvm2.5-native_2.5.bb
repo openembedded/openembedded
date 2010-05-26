@@ -1,6 +1,6 @@
 require llvm-native.inc
 
-SRC_URI += "file://fix-build.patch;patch=1"
+SRC_URI += "file://fix-build.patch"
 
 
 SRC_URI[md5sum] = "55df2ea8665c8094ad2ef85187b9fc74"

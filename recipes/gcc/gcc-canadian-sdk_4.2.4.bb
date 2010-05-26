@@ -14,11 +14,11 @@ DEPENDS = "gmp-canadian mpfr-canadian"
 require gcc-configure-canadian-sdk.inc
 require gcc-package-sdk.inc
 
-SRC_URI_append = "file://fortran-cross-compile-hack.patch;patch=1 \
-		  file://pr22133-mingw-path-fixup.patch;patch=1 \
-		  file://pr33281-mingw-host-fragment.patch;patch=1 \
-		  file://pr35916-mingw-__USE_MINGW_ACCESS-everywhere.patch;patch=1 \
-		  file://canadian-build-modules-configure.patch;patch=1 \
+SRC_URI_append = "file://fortran-cross-compile-hack.patch \
+		  file://pr22133-mingw-path-fixup.patch \
+		  file://pr33281-mingw-host-fragment.patch \
+		  file://pr35916-mingw-__USE_MINGW_ACCESS-everywhere.patch \
+		  file://canadian-build-modules-configure.patch \
 "
 
 EXTRA_OECONF += "--disable-libunwind-exceptions --disable-libssp \

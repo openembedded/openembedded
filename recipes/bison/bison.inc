@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "gettext"
 
 SRC_URI = "${GNU_MIRROR}/bison/bison-${PV}.tar.gz \
-	   file://m4.patch;patch=1"
+	   file://m4.patch"
 
 INCPR = "r4"
 

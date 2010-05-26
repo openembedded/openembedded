@@ -7,7 +7,7 @@ PR = "${INC_PR}.0"
 # mono makes use of non-thumb-compatible inline asm.
 ARM_INSTRUCTION_SET = "arm"
 
-SRC_URI += "file://configure.patch;patch=1\
+SRC_URI += "file://configure.patch\
            "
 
 # Per http://www.mono-project.com/Mono:ARM

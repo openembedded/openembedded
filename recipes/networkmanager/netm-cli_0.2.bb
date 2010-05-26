@@ -8,6 +8,6 @@ PR = "r3"
 inherit setuptools
 
 SRC_URI = "git://dev.openbossa.org/mamona/users/salveti/netm-cli.git;protocol=http;tag=netm-cli-${PV}"
-SRC_URI_append_mamona = " file://scan_support.patch;patch=1"
+SRC_URI_append_mamona = " file://scan_support.patch"
 
 S = "${WORKDIR}/git"

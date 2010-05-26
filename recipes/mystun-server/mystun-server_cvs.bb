@@ -8,7 +8,7 @@ PV = "1:0.0+cvs${SRCDATE}"
 
 SRC_URI="cvs://anonymous@cvs.mystun.berlios.de/cvsroot/mystun;module=mystun \
 	file://init \
-	file://nossl.patch;patch=1"
+	file://nossl.patch"
 
 S = "${WORKDIR}/mystun"
 

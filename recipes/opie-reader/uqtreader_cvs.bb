@@ -12,7 +12,7 @@ PR = "r3"
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/opie-reader \
            ${HANDHELDS_CVS};module=opie/pics \
            ${HANDHELDS_CVS};module=opie/apps \
-	   file://qt4.patch;patch=1"
+	   file://qt4.patch"
 S = "${WORKDIR}/opie-reader"
 
 export OPIEDIR="${S}/opiedir"

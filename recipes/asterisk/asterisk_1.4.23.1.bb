@@ -9,8 +9,8 @@ DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 #RRECOMMENDS_${PN} = "logrotate"
 
 SRC_URI="http://downloads.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
-#	file://sounds.xml.patch;patch=1 \
-	file://Makefile.patch;patch=1 \
+#	file://sounds.xml.patch \
+	file://Makefile.patch \
 	file://logrotate \
 	file://volatiles \
 	file://init"

@@ -11,9 +11,9 @@ DEPENDS = "uicmoc4-native"
 QTVER = "qt-embedded-linux-opensource-src-${QTVERSION}"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/${QTVER}.tar.bz2 \
-           file://0001-fix-mkspecs.patch;patch=1 \
-           file://qt-config.patch;patch=1 \
-           file://use-lflags-last.patch;patch=1 \
+           file://0001-fix-mkspecs.patch \
+           file://qt-config.patch \
+           file://use-lflags-last.patch \
            file://linux-oe-qmake.conf"
 S = "${WORKDIR}/${QTVER}"
 

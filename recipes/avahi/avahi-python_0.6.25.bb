@@ -8,7 +8,7 @@ FILES_avahi-discover = ""
 PROVIDES = "avahi"
 DEPENDS += "python-native"
 
-SRC_URI += "file://configure-check-pymod.patch;patch=1"
+SRC_URI += "file://configure-check-pymod.patch"
 
 S = "${WORKDIR}/avahi-${PV}"
 

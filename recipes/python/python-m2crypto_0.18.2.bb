@@ -8,7 +8,7 @@ PR = "ml1"
 
 SRC_URI = "\
   http://chandlerproject.org/pub/Projects/MeTooCrypto/m2crypto-${PV}.tar.gz \
-  file://install.patch;patch=1 \
+  file://install.patch \
 "
 S = "${WORKDIR}/m2crypto-0.18.2"
 

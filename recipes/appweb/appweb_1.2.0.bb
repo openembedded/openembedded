@@ -2,8 +2,8 @@ DESCRIPTION = "AppWeb is an embedded HTTP Web server that has been designed with
 SECTION = "console/network"
 LICENSE = "GPL"
 SRC_URI = "http://www.mbedthis.com/software/appWeb-src-1.2.0-1.tar.gz \
-	   file://makerules.patch;patch=1 \
-	   file://nonrootinstall.patch;patch=1"
+	   file://makerules.patch \
+	   file://nonrootinstall.patch"
 S = "${WORKDIR}/appWeb-1.2.0"
 
 APPWEB_HOST = "${@get_appweb_host(d, bb)}"

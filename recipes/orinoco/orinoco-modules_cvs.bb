@@ -12,7 +12,7 @@ EXTRA_OEMAKE = 'KERNEL_SRC="${KERNEL_STAGING_DIR}"'
 DEFAULT_PREFERENCE_arm = "-1"
 
 SRC_URI = "cvs://anonymous@cvs.sv.gnu.org/cvsroot/orinoco;module=orinoco;method=pserver \
-           file://list-move.patch;patch=1"
+           file://list-move.patch"
 S = "${WORKDIR}/orinoco"
 
 do_install() {

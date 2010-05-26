@@ -5,7 +5,7 @@ DEPENDS = "t1lib gtk+ popt libxslt libxml2"
 PR = "r1"
 
 SRC_URI = "http://helm.cs.unibo.it/mml-widget/sources/${P}.tar.gz \
-           file://mathview-gcc43x.diff;patch=1 \
+           file://mathview-gcc43x.diff \
 	  "
 
 inherit autotools 

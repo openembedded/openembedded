@@ -5,7 +5,7 @@ LICENSE = "Public Domain"
 S="${WORKDIR}/nrlolsr/"
 
 SRC_URI = "http://downloads.pf.itd.nrl.navy.mil/olsr/nrlolsrdv7.8.1.tgz \
-           file://nrlolsr-cross.patch;patch=1 \
+           file://nrlolsr-cross.patch \
           "
 
 do_compile () {

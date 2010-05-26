@@ -6,7 +6,7 @@ PR = "r1"
 DEPENDS = "libxcomp"
 
 SRC_URI = "http://64.34.161.181/download/3.2.0/sources/${PN}-${PV}.tar.gz \
-	   file://stdin.patch;patch=1 \
+	   file://stdin.patch \
 	  "
 inherit autotools
           

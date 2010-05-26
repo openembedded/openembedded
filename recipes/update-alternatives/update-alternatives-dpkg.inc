@@ -4,7 +4,7 @@ SRC_URI += "${DEBIAN_MIRROR}/main/d/dpkg/dpkg_${PV}.tar.gz"
 S = "${WORKDIR}/dpkg-${PV}"
 PACKAGE_ARCH = "all"
 
-SRC_URI += "file://paths.patch;patch=1"
+SRC_URI += "file://paths.patch"
 
 do_patch_append () {
 	import shutil

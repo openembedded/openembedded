@@ -7,7 +7,7 @@ RDEPENDS = "networkmanager"
 inherit gnome gtk-icon-cache
 
 SRC_URI = "http://people.redhat.com/dcbw/NetworkManager/0.6.6/nm-applet-0.6.6.tar.gz \
- file://applet-no-gnome.diff;patch=1;pnum=0"
+ file://applet-no-gnome.diff;striplevel=0"
 
 FILES_${PN} += "${datadir}/nm-applet/ \
         ${datadir}/gnome-vpn-properties/ \

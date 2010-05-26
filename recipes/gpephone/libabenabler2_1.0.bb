@@ -8,7 +8,7 @@ PR          = "r1"
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpephone pkgconfig autotools
 
-SRC_URI += "file://i18n.patch;patch=1"
+SRC_URI += "file://i18n.patch"
 
 FILES_${PN} += "${datadir}/contact ${libdir}/lips/*.so"
 FILES_${PN}-dbg += "${libdir}/lips/.debug/*.so"

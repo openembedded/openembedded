@@ -10,7 +10,7 @@ APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zrally/zrally_0.90_src.tar.gz \
-file://dir.patch;patch=1;pnum=0"
+file://dir.patch;striplevel=0"
 
 S = "${WORKDIR}"
 

@@ -10,7 +10,7 @@ PR ="r1"
 inherit gnome
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/empathy/0.5/empathy-${PV}.tar.bz2 \
-           file://no-gnome.diff;patch=1;pnum=0"
+           file://no-gnome.diff;striplevel=0"
 
 FILES_${PN} += "${datadir}/mission-control/profiles/*.profile \
         ${datadir}/dbus-1/services/*.service \

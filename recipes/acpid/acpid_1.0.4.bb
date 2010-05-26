@@ -1,5 +1,5 @@
 require acpid.inc
-SRC_URI += "file://gcc40.patch;patch=1"
+SRC_URI += "file://gcc40.patch"
 PR = "${INC_PR}.0"
 
 SRC_URI[md5sum] = "3aff94e92186e99ed5fd6dcee2db7c74"

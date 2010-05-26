@@ -11,8 +11,8 @@ PE = "2"
 PR = "r1"
 
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz;name=archive \
-           file://configurefix.patch;patch=1 \
-           file://opkgfixes.patch;patch=1"
+           file://configurefix.patch \
+           file://opkgfixes.patch"
 
 SRC_URI[archive.md5sum] = "6c8d9c48e21b82abeea15c3fd5066242"
 SRC_URI[archive.sha256sum] = "0eafd1be5516a41ebc0f0c3acff0b0763da105a4178b5eee0ff16d66ccd04408"

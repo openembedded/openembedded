@@ -4,7 +4,7 @@ PR = "r0"
 inherit pkgconfig gpe autotools
 
 SRC_URI = "${GPE_SVN} \
-           file://blueprobe-svn-Makefile.patch;patch=1"
+           file://blueprobe-svn-Makefile.patch"
 
 S = "${WORKDIR}/${PN}"
 

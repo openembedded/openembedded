@@ -7,8 +7,8 @@ DEPENDS = "qmake-native"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-${PV}.tar.bz2 \
-           file://no-examples.patch;patch=1 \
-           file://64bit-cleanup.patch;patch=1"
+           file://no-examples.patch \
+           file://64bit-cleanup.patch"
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 
 inherit native qmake_base qt3e

@@ -4,7 +4,7 @@ SECTION = "multimedia"
 PR = "r2"
 
 SRC_URI = "http://bmrc.berkeley.edu/ftp/pub/multimedia/mpeg/encode/mpeg_encode-${PV}-src.tar.gz \
-           file://fixup.patch;patch=1"
+           file://fixup.patch"
 
 S = "${WORKDIR}/mpeg_encode"
 

@@ -4,29 +4,29 @@ PR = "${INC_PR}.0"
 
 GLIBC_ADDONS ?= "linuxthreads"
 
-#           ${CROSSTOOL_PATCH_URL}glibc-2.3.5-cygwin.patch;patch=1
+#           ${CROSSTOOL_PATCH_URL}glibc-2.3.5-cygwin.patch
 
 CROSSTOOL_PATCH_URL = "http://www.kegel.com/crosstool/crosstool-0.43/patches/glibc-2.3.6/"
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
            ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-${PV}.tar.bz2;name=linuxthreads \
-           ${CROSSTOOL_PATCH_URL}glibc-2.3.5-sh-lowlevellock.patch;patch=1;name=crosspatch1 \
-           ${CROSSTOOL_PATCH_URL}glibc-2.3.5-sh-memset.patch;patch=1;name=crosspatch2 \
-           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-allow-gcc-4.0-arm.patch;patch=1;name=crosspatch3 \
-           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-allow-gcc-4.0-elf.patch;patch=1;name=crosspatch4 \
-           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-configure-apple-as.patch;patch=1;name=crosspatch5 \
-           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-fix-pr631.patch;patch=1;name=crosspatch6 \
-           ${CROSSTOOL_PATCH_URL}glibc-fp-byteorder.patch;patch=1;name=crosspatch7 \
-           ${CROSSTOOL_PATCH_URL}glibc-mips-bootstrap-gcc-header-install.patch;patch=1;name=crosspatch8 \
-           ${CROSSTOOL_PATCH_URL}arm-ctl_bus_isa.patch;patch=1;name=crosspatch9 \
-           ${CROSSTOOL_PATCH_URL}make-install-lib-all.patch;patch=1;name=crosspatch10 \
-           ${CROSSTOOL_PATCH_URL}maybe/glibc-2.3.6-allow-gcc-4.0-powerpc32.patch;patch=1;name=crosspatch11 \
-           file://glibc-2.3.6-bind-already-defined-on-powerpc.patch;patch=1 \
-           file://glibc-2.3.6-allow-gcc-4.1-powerpc32-initfini.s.patch;patch=1 \
-           file://glibc-2.3.6-linuxthreads-allow-gcc-4.1-powerpc32-initfini.s.patch;patch=1 \
-           file://late-install-loop-break.patch;patch=1 \
-           file://glibc-arm-socket-weakalias.patch;patch=1 \
-           file://glibc-2.3.6-linuxthreads-pthread-raise.patch;patch=1 \
-           file://glibc-cross_sunrpc.patch;patch=1 \
+           ${CROSSTOOL_PATCH_URL}glibc-2.3.5-sh-lowlevellock.patch;name=crosspatch1 \
+           ${CROSSTOOL_PATCH_URL}glibc-2.3.5-sh-memset.patch;name=crosspatch2 \
+           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-allow-gcc-4.0-arm.patch;name=crosspatch3 \
+           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-allow-gcc-4.0-elf.patch;name=crosspatch4 \
+           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-configure-apple-as.patch;name=crosspatch5 \
+           ${CROSSTOOL_PATCH_URL}glibc-2.3.6-fix-pr631.patch;name=crosspatch6 \
+           ${CROSSTOOL_PATCH_URL}glibc-fp-byteorder.patch;name=crosspatch7 \
+           ${CROSSTOOL_PATCH_URL}glibc-mips-bootstrap-gcc-header-install.patch;name=crosspatch8 \
+           ${CROSSTOOL_PATCH_URL}arm-ctl_bus_isa.patch;name=crosspatch9 \
+           ${CROSSTOOL_PATCH_URL}make-install-lib-all.patch;name=crosspatch10 \
+           ${CROSSTOOL_PATCH_URL}maybe/glibc-2.3.6-allow-gcc-4.0-powerpc32.patch;name=crosspatch11 \
+           file://glibc-2.3.6-bind-already-defined-on-powerpc.patch \
+           file://glibc-2.3.6-allow-gcc-4.1-powerpc32-initfini.s.patch \
+           file://glibc-2.3.6-linuxthreads-allow-gcc-4.1-powerpc32-initfini.s.patch \
+           file://late-install-loop-break.patch \
+           file://glibc-arm-socket-weakalias.patch \
+           file://glibc-2.3.6-linuxthreads-pthread-raise.patch \
+           file://glibc-cross_sunrpc.patch \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 

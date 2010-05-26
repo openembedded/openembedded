@@ -8,10 +8,10 @@ PR_append = "+svnr${SRCPV}"
 SRCREV="10152"
 EGLIBC_BRANCH="eglibc-2_10"
 SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};proto=svn \
-           file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
-           file://armv4t-interworking.patch;patch=1 \
-           file://IO-acquire-lock-fix.patch;patch=1 \
-           file://shorten-build-commands.patch;patch=1 \
+           file://eglibc-svn-arm-lowlevellock-include-tls.patch \
+           file://armv4t-interworking.patch \
+           file://IO-acquire-lock-fix.patch \
+           file://shorten-build-commands.patch \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"

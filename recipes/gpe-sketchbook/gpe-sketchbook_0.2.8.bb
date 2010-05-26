@@ -8,8 +8,8 @@ inherit gpe pkgconfig
 CFLAGS +="-D_GNU_SOURCE"
 
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
-	   file://sketchbook-size.patch;patch=1;pnum=0 \
-	   file://remove-render.patch;patch=1"
+	   file://sketchbook-size.patch;striplevel=0 \
+	   file://remove-render.patch"
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN} += " ${datadir}/gpe/pixmaps"

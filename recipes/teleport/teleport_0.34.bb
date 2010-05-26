@@ -4,7 +4,7 @@ DESCRIPTION = "Teleport app"
 DEPENDS = "gtk+ libgpewidget libdisplaymigration libgcrypt sqlite"
 PRIORITY = "optional"
 
-SRC_URI += "file://makefile-fix.patch;patch=1"
+SRC_URI += "file://makefile-fix.patch"
 
 
 SRC_URI[md5sum] = "ae571a20333f90d4b79b68c446387925"

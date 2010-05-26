@@ -3,7 +3,7 @@ LICENSE = "MIT"
 SECTION = "console/network"
 
 SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2;name=tarball \
-           file://pkgconfig_fix.patch;patch=1"
+           file://pkgconfig_fix.patch"
 S = "${WORKDIR}/curl-${PV}"
 
 INC_PR = "r3"

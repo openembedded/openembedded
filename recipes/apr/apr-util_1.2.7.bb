@@ -7,7 +7,7 @@ PR = "r3"
 
 # apache mirrors?
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
-           file://configure_fixes.patch;patch=1"
+           file://configure_fixes.patch"
 
 EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm \
 		--with-gdbm=${STAGING_DIR_HOST}${layout_prefix} \

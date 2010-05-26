@@ -12,7 +12,7 @@ RRECOMMENDS = "fbset-modes"
 PR = "r2"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/f/fbset/fbset_2.1.orig.tar.gz \
-           file://makefile.patch;patch=1"
+           file://makefile.patch"
 
 inherit autotools update-alternatives
 

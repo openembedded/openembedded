@@ -6,7 +6,7 @@ PROVIDES = "virtual/libusb0"
 PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
-	   file://configure_fix.patch;patch=1"
+	   file://configure_fix.patch"
 
 S = "${WORKDIR}/libusb-${PV}"
 

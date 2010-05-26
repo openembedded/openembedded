@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.warmi.net/zaurus/files/puzz-le_${PV}.tar.gz \
-           file://gcc3.patch;patch=1"
+           file://gcc3.patch"
 S = "${WORKDIR}/puzzle_arm"
 
 inherit palmtop

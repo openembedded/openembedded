@@ -11,7 +11,7 @@ PR = "r2"
 RDEPENDS = "bash"
 
 SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/${PN}_gruen.4g__${SRCDATE}.tar.gz \
-	file://firewall-bash.diff;patch=1"
+	file://firewall-bash.diff"
 S = "${WORKDIR}/${PN}"
 PACKAGE_STRIP = "no"
 

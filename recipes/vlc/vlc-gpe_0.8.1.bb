@@ -9,8 +9,8 @@ DEPENDS = "gtk+ freetype gnutls tremor faad2 ffmpeg flac \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.gz \
-	file://fix-pda.patch;patch=1 \
-	file://vlc-tremor.patch;patch=1"
+	file://fix-pda.patch \
+	file://vlc-tremor.patch"
 S = "${WORKDIR}/vlc-${PV}"
 
 inherit autotools

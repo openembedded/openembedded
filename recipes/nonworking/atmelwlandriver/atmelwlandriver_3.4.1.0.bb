@@ -1,10 +1,10 @@
 SRC_URI = "${SOURCEFORGE_MIRROR}/atmelwlandriver/atmelwlandriver-${PV}.tar.bz2 \
 	file://dotconfig \
 	file://pcmf502rd.conf \
-	file://makefile.patch;patch=1 \
-	file://add-compaq-usb-ids.patch;patch=1 \
-	file://power-on-and-leds.patch;patch=1 \
-	file://fix-kernel-version-test-for-hh.patch;patch=1"
+	file://makefile.patch \
+	file://add-compaq-usb-ids.patch \
+	file://power-on-and-leds.patch \
+	file://fix-kernel-version-test-for-hh.patch"
 S = "${WORKDIR}/atmelwlandriver"
 LICENSE = "GPL"
 PR = "r2"

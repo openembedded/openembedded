@@ -5,9 +5,9 @@ DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts"
 PE = "2"
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://sysroot_fix.patch;patch=1 \
-            file://dolt-fix-1.7.0.patch;patch=1 \
-            file://randr-support-1.7.0.patch;patch=1 \
+SRC_URI += "file://sysroot_fix.patch \
+            file://dolt-fix-1.7.0.patch \
+            file://randr-support-1.7.0.patch \
            "
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts

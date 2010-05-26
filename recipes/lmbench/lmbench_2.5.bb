@@ -5,7 +5,7 @@ RDEPENDS = "debianutils"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
-	   file://build.patch;patch=1 \
+	   file://build.patch \
 	   file://lmbench-run"
 S = "${WORKDIR}/lmbench-${PV}"
 

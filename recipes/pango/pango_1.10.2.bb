@@ -12,7 +12,7 @@ RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc"
 FULL_OPTIMIZATION_arm = "-O2"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/pango-${PV}.tar.bz2 \
-	   file://no-tests.patch;patch=1"
+	   file://no-tests.patch"
 
 inherit autotools pkgconfig
 

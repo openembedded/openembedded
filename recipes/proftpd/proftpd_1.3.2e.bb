@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.nl.uu.net/pub/unix/ftp/proftpd/ftp/distrib/source/${PN}-${PV}.tar.gz;name=src \
-	file://make.patch;patch=1 \
+	file://make.patch \
 	"
 SRC_URI[src.md5sum] = "4ecb82cb1050c0e897d5343f6d2cc1ed"
 SRC_URI[src.sha256sum] = "7c7f295944e8e7c85060829deeaed74f3f0b36c8f1d3936277d59bbea5d60093"

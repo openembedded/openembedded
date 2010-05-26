@@ -3,7 +3,7 @@ RCONFLICTS = "cairo"
 RPROVIDES = "cairo-directfb"
 DEPENDS = "directfb pixman libsm libpng fontconfig"
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz \
-           file://configure_fix.patch;patch=1 "
+           file://configure_fix.patch "
 
 EXTRA_OECONF += " --enable-directfb \
 		  --disable-xlib \

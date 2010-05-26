@@ -7,7 +7,7 @@ SRCREV = "ecd1842714b5e982f3138cbdd358517d57be6aa3"
 PV = "0.0.1+gitr${SRCREV}"
 
 SRC_URI = "git://git.gitorious.org/madbutterfly/mainline.git;protocol=git \
-           file://001_makefile.am_bugs.patch;patch=1"
+           file://001_makefile.am_bugs.patch"
 
 S = "${WORKDIR}/git"
 

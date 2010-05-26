@@ -7,7 +7,7 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "http://www.xmailserver.org/ussp-push-${PV}.tar.gz \
-	file://hci_remote_name.patch;patch=1"
+	file://hci_remote_name.patch"
 
 S = "${WORKDIR}/ussp-push-${PV}"
 

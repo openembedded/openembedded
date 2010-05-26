@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://packetstorm.linuxsecurity.com/groups/thc/thcrut-1.2.5.tar.gz \
-	   file://configure_in.patch;patch=1;pnum=0"
+	   file://configure_in.patch;striplevel=0"
 
 S = "${WORKDIR}/thcrut-${PV}"
 

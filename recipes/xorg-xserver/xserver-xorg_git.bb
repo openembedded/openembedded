@@ -11,9 +11,9 @@ DEFAULT_PREFERENCE = "-1"
 
 SRCREV = "67b814d9b2baea6beccfb1625a1e3f0b2ba7218b"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
-           file://dolt-fix-1.7.0.patch;patch=1 \
-           file://randr-support-1.7.0.patch;patch=1 \
-	   file://hack-fbdev-ignore-return-mode.patch;patch=1 \
+           file://dolt-fix-1.7.0.patch \
+           file://randr-support-1.7.0.patch \
+	   file://hack-fbdev-ignore-return-mode.patch \
            "
 
 S = "${WORKDIR}/git"

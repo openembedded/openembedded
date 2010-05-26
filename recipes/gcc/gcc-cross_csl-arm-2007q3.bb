@@ -3,7 +3,7 @@ PR = "r6"
 require gcc-csl-arm-2007q3.inc
 require gcc-cross4.inc
 
-SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
+SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch "
 
 EXTRA_OECONF += "--disable-multilib --disable-libunwind-exceptions --with-mpfr=${STAGING_DIR_NATIVE}${prefix_native}"
 

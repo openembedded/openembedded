@@ -6,7 +6,7 @@ HOMEPAGE = "http://apr.apache.org"
 PR = "r1"
 
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
-           file://gen_uri_delims.patch;patch=1 \
+           file://gen_uri_delims.patch \
            file://uri_delims.h"
 
 EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm --with-gdbm=${STAGING_DIR_HOST}${layout_prefix} --with-expat=${STAGING_DIR_HOST}${layout_prefix}"

@@ -7,7 +7,7 @@ LICENSE = "LGPLv2"
 PR = "r1"
 
 SRC_URI = "http://www.hyperrealm.com/libconfig/libconfig-${PV}.tar.gz \
-           file://libconfig.newer.automake-1.11.patch;patch=1"
+           file://libconfig.newer.automake-1.11.patch"
 
 S = "${WORKDIR}/libconfig-${PV}"
 

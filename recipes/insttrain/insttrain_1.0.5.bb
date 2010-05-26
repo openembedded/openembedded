@@ -8,7 +8,7 @@ APPDESKTOP = "../Qtopia/opt/QtPalmtop/apps/Applications"
 inherit opie
 
 SRC_URI = "http://www.Vanille.de/mirror/insttrain-${PV}.tgz \
-           file://gcc3.patch;patch=1"
+           file://gcc3.patch"
 S = "${WORKDIR}/insttrain-${PV}/src"
 
 QMAKE_PROFILES = "rmi.pro"

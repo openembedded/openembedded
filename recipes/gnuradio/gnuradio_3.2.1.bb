@@ -9,8 +9,8 @@ S = "${WORKDIR}/gnuradio-3.2.1"
 EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable--usrp2"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/gnuradio-3.2.1.tar.gz;name=archive \
-    file://no-usrp2.patch;patch=1 \
-    file://gnuradio-neon.patch;patch=1;pnum=0 \
+    file://no-usrp2.patch \
+    file://gnuradio-neon.patch;striplevel=0 \
      ${SOURCEFORGE_MIRROR}/libusb/libusb-0.1.12.tar.gz;name=libusb \
 "
 

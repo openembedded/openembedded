@@ -12,7 +12,7 @@ python __anonymous () {
 }
 
 SRC_URI = "http://savannah.nongnu.org/download/avr-libc/avr-libc-${PV}.tar.bz2 \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 B = "${WORKDIR}/build.${BUILD_SYS}.${TARGET_SYS}"
 
 inherit autotools

@@ -7,7 +7,7 @@ PARALLEL_MAKE = ""
 
 inherit gnome flow-lossage
 
-SRC_URI += " file://nodolt.patch;patch=1 "
+SRC_URI += " file://nodolt.patch "
 
 EXTRA_OECONF=" --without-perl "
 

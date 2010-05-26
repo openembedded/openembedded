@@ -15,15 +15,15 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xqt2;method=pse
         ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-3.tgz;name=archive3 \
         ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-4.tgz;name=archive4 \
         ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-5.tgz;name=archive5 \
-        file://KeyMap.patch;patch=1 \
-        file://moc_call.patch;patch=1 \
-        file://imake-staging.patch;patch=1 \
-        file://cross.patch;patch=1 \
-        file://fephack.patch;patch=1 \
-        file://xchar2b.patch;patch=1 \
-        file://xqt-make.patch;patch=1 \ 
-        file://fix_qtscreen_HACK.patch;patch=1 \
-	file://fix_seqfault_qtscreen.patch;patch=1 "
+        file://KeyMap.patch \
+        file://moc_call.patch \
+        file://imake-staging.patch \
+        file://cross.patch \
+        file://fephack.patch \
+        file://xchar2b.patch \
+        file://xqt-make.patch \ 
+        file://fix_qtscreen_HACK.patch \
+	file://fix_seqfault_qtscreen.patch "
 S = "${WORKDIR}/xc"
 
 QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte",d)}'

@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE = "-1"
 # hfcs_usb_endianchecks.diff does not apply cleanly anymore (cf. bug 240)
 # without it the package at least compiles.  no guarantees about functionality.
 SRC_URI = "cvs://anonymous:readonly@cvs.isdn4linux.de/i4ldev;module=mISDN;method=pserver \
-#	   file://hfcs_usb_endianchecks.diff;patch=1 \
+#	   file://hfcs_usb_endianchecks.diff \
 	   file://Makefile"
 
 S = "${WORKDIR}/mISDN/"

@@ -4,20 +4,20 @@ require klibc-common.inc
 # until 1.5.16 is released
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-1.5.15.tar.bz2 \
-            file://1.5.15+1.5.16.patch;patch=1 \
+            file://1.5.15+1.5.16.patch \
             "
 
-SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
-            file://modprobe.patch;patch=1 \
-            file://losetup.patch;patch=1 \
-            file://dash_readopt.patch;patch=1 \
-            file://wc.patch;patch=1 \
-            file://staging.patch;patch=1 \
-            file://klibc_kexecsyscall.patch;patch=1 \
-            file://mntproc-definitions.patch;patch=1 \
-            file://signal-cleanup.patch;patch=1 \
-            file://isystem.patch;patch=1 \
-            file://socket.h.patch;patch=1 \
+SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
+            file://modprobe.patch \
+            file://losetup.patch \
+            file://dash_readopt.patch \
+            file://wc.patch \
+            file://staging.patch \
+            file://klibc_kexecsyscall.patch \
+            file://mntproc-definitions.patch \
+            file://signal-cleanup.patch \
+            file://isystem.patch \
+            file://socket.h.patch \
             "
 
 S = "${WORKDIR}/klibc-1.5.15"

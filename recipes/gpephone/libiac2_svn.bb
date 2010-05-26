@@ -11,7 +11,7 @@ PR = "r0"
 inherit gpephone pkgconfig autotools
 
 SRC_URI = "${GPEPHONE_SVN} \
-           file://disable-tests.patch;patch=1;pnum=0"
+           file://disable-tests.patch;striplevel=0"
 
 EXTRA_OECONF = "--enable-gui --enable-test=no  --with-cuint=no"
 

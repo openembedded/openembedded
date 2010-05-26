@@ -5,7 +5,7 @@ PV = "1.12+svnr${SRCPV}"
 PR = "${INC_PR}.0"
 
 SRC_URI = "svn://powertop.googlecode.com/svn;module=trunk;proto=http"
-SRC_URI_append_omap3 = " file://omap-svn.patch;patch=1"
+SRC_URI_append_omap3 = " file://omap-svn.patch"
 
 S = "${WORKDIR}/trunk"
 

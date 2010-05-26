@@ -6,8 +6,8 @@ RDEPENDS = "dhcp-client"
 PR = "r1"
 
 SRC_URI = "https://fedorahosted.org/releases/d/h/dhcdbd/dhcdbd-${PV}.tar.bz2 \
-           file://dbus_connection_unref.patch;patch=1 \
-           file://paths.patch;patch=1 \
+           file://dbus_connection_unref.patch \
+           file://paths.patch \
            file://dhcdbd"
 
 inherit update-rc.d

@@ -8,7 +8,7 @@ SECTION = "Applications"
 DEPENDS = "gd mysql expat sqlite3 lmsensors-apps fftw qt4-x11-free"
 #SRC_URI = "ftp://ftp.oscada.org/OpenSCADA/0.6.4/openscada-0.6.4.tar.gz"
 SRC_URI = "svn://oscada.org.ua/trunk;module=OpenSCADA;rev=;proto=svn \
-           file://rcc-moc.patch;patch=1 \
+           file://rcc-moc.patch \
           "
 
 PV = "0.6.4+svnr${SRCPV}"

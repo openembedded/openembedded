@@ -6,7 +6,7 @@ PR = "r1"
 PE = "1"
 
 SRC_URI = "git://git.moblin.org/repos/users/pippin/prototype.git/;protocol=http \
-           file://paths.patch;patch=1"
+           file://paths.patch"
 
 S = "${WORKDIR}/git"
 

@@ -7,7 +7,7 @@ LICENSE = "GPL"
 # CVS, because openwrt is just another mirror of a file which no
 # longer seems to exist outside mirrors.  mirror magic.
 SRC_URI = "http://downloads.openwrt.org/sources/m102.tar.gz \
-	   file://make.patch;patch=1"
+	   file://make.patch"
 S = "${WORKDIR}"
 
 do_install () {

@@ -6,11 +6,11 @@ DEPENDS = "zlib-native ncurses-native"
 inherit autotools native
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux/util-linux-${PV}.tar.bz2 \
-           file://gcc34.patch;patch=1 \
+           file://gcc34.patch \
            file://MCONFIG \
            file://make_include \
            file://swapargs.h \
-	   file://fdiskbsdlabel_thumb.diff;patch=1 \
+	   file://fdiskbsdlabel_thumb.diff \
            file://defines.h"
 
 S="${WORKDIR}/util-linux-${PV}"

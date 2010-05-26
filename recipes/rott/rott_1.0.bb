@@ -6,7 +6,7 @@ PR = "r2"
 APPIMAGE = "${WORKDIR}/rott.jpg"
 
 SRC_URI = "http://icculus.org/rott/releases/rott-${PV}.tar.gz \
-           file://gcc4.patch;patch=1;pnum=2 \
+           file://gcc4.patch;striplevel=2 \
            file://rott.jpg"
 S = "${WORKDIR}/rott-${PV}/rott"
 

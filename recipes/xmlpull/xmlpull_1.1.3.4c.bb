@@ -13,7 +13,7 @@ JAR = "${PN}-${PV}.jar"
 
 SRC_URI = "\
     http://xmlpull.org/v1/download/xmlpull_1_1_3_4c_src.tgz \
-    file://makefile.patch;patch=1 \
+    file://makefile.patch \
     "
 
 do_compile() {

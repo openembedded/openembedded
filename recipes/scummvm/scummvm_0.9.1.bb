@@ -3,8 +3,8 @@ require scummvm.inc
 DEPENDS = "virtual/libsdl libvorbis libogg zlib \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad mpeg2dec', d)}"
 
-SRC_URI += "file://makefile-nostrip.patch;patch=1 \
-            file://scummvm-targetcheck.patch;patch=1"
+SRC_URI += "file://makefile-nostrip.patch \
+            file://scummvm-targetcheck.patch"
 SRC_URI_append_openmoko = " file://openmoko-scummvm \
                            file://scummvm.desktop"
 

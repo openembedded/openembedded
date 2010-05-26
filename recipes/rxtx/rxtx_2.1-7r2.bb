@@ -11,7 +11,7 @@ inherit autotools java-library
 
 SRC_URI = "\
     http://rxtx.qbang.org/pub/rxtx/${PN}-${PV}.zip \
-    file://rxtx-fixes-from-debian.patch;patch=1 \
+    file://rxtx-fixes-from-debian.patch \
     "
 
 do_removebinaries_append() {

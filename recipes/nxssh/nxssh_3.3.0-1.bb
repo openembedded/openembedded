@@ -6,9 +6,9 @@ PR = "r0"
 DEPENDS = "openssl libxcomp"
 
 SRC_URI = "http://64.34.161.181/download/3.3.0/sources/${PN}-${PV}.tar.gz \
-	   file://autotools.patch;patch=1 \
-	   file://stdarg.patch;patch=1 \
-	   file://link.patch;patch=1 \
+	   file://autotools.patch \
+	   file://stdarg.patch \
+	   file://link.patch \
 	  "
 inherit autotools
           

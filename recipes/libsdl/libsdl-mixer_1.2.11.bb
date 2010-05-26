@@ -7,7 +7,7 @@ LICENSE = "LGPL"
 PR = "r2"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz \
-           file://fix-flac-madness.diff;patch=1"
+           file://fix-flac-madness.diff"
 
 S = "${WORKDIR}/SDL_mixer-${PV}"
 

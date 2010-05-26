@@ -10,7 +10,7 @@ RSUGGESTS = "mysql-client postgresql-client"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz \
-           file://ffmpeg-0.4.9.15594svn-20081010.diff;patch=1 "
+           file://ffmpeg-0.4.9.15594svn-20081010.diff "
 
 inherit autotools
 

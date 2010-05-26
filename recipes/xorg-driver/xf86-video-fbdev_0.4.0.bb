@@ -3,7 +3,7 @@ PE = "1"
 
 DESCRIPTION = "X.Org X server -- fbdev display driver"
 
-FILES_${PN} += " file://use-staged-headers.patch;patch=1"
+FILES_${PN} += " file://use-staged-headers.patch"
 
 #DEPENDS += " "
 SRC_URI[archive.md5sum] = "6572b39fec77b8e6de1c858a93992924"

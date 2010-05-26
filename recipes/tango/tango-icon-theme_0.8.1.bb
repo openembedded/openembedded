@@ -3,7 +3,7 @@ LICENSE = "http://creativecommons.org/licenses/by-sa/2.5/"
 inherit autotools pkgconfig
 
 SRC_URI = "http://tango.freedesktop.org/releases/${PN}-${PV}.tar.gz \
-	   file://no-icon-naming-utils.patch;patch=1"
+	   file://no-icon-naming-utils.patch"
 EXTRA_OECONF = "--disable-icon-framing"
 
 PACKAGE_ARCH = "all"

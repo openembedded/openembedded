@@ -8,7 +8,7 @@ DEPENDS = "freetype"
 PR = "r0"
 
 SRC_URI = "http://www.antigrain.com/agg-${PV}.tar.gz;name=archive"
-SRC_URI += "http://www.wxsvg.org/files/agg-2.5_cygming.patch;patch=1;name=patch"
+SRC_URI += "http://www.wxsvg.org/files/agg-2.5_cygming.patch;name=patch"
 S = "${WORKDIR}/agg-${PV}"
 
 inherit autotools pkgconfig

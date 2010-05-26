@@ -4,7 +4,7 @@ PRIORITY = "optional"
 PR = "r4"
 LICENSE = "GPL"
 SRC_URI = "http://ftp.debian.org/debian/pool/main/p/phalanx/phalanx_22.orig.tar.gz \
-           file://gcc3.patch;patch=1 \
+           file://gcc3.patch \
            file://capabilities \
            file://description"
 S = "${WORKDIR}/phalanx-22.orig"

@@ -1,6 +1,6 @@
 require gtk+.inc
 
-SRC_URI_append_virtclass-native = " file://no-demos.patch;patch=1 \
+SRC_URI_append_virtclass-native = " file://no-demos.patch \
 "
 
 SRC_URI[gtk.md5sum] = "5517f78b1eb9b1eb60bd48a0152d09e6"

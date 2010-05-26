@@ -8,8 +8,8 @@ PR = "r2"
 
 inherit gnome pkgconfig gtk-icon-cache
 
-SRC_URI += "file://no-icon-theme.diff;patch=1;pnum=0 \
-            file://no-help-dir.patch;patch=1"
+SRC_URI += "file://no-icon-theme.diff;striplevel=0 \
+            file://no-help-dir.patch"
 
 EXTRA_OECONF = " --without-libgnome \
                  --disable-thumbnailer \

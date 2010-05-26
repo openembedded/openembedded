@@ -4,11 +4,11 @@ DESCRIPTION = "A driver for wireless LAN cards based on Intersil's Prism2/2.5/3 
 RDEPENDS_hostap-modules-cs-rawtx = "hostap-modules-rawtx"
 RDEPENDS_hostap-modules-pci-rawtx = "hostap-modules-rawtx"
 
-SRC_URI += "file://kernel_updates.patch;patch=1 \
-	   file://hostap-driver-0.4.7.patch;patch=1;pnum=1 \
+SRC_URI += "file://kernel_updates.patch \
+	   file://hostap-driver-0.4.7.patch \
            file://hostap_cs.conf "
-SRC_URI_append_mtx-1 = " file://mtx_compat.diff;patch=1;pnum=0 \
-	file://mtx_hostap_deferred_irq.diff;patch=1;pnum=0"
+SRC_URI_append_mtx-1 = " file://mtx_compat.diff;striplevel=0 \
+	file://mtx_hostap_deferred_irq.diff;striplevel=0"
 
 S = "${WORKDIR}/hostap-driver-${PV}"
 

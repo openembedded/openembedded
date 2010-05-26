@@ -5,8 +5,8 @@ LICENSE = "BSD"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-telnet-${PV}.tar.gz \
-           file://netkit-telnet-debian_0.17-36.diff;patch=1 \
-           file://cross-compile.patch;patch=1 "
+           file://netkit-telnet-debian_0.17-36.diff \
+           file://cross-compile.patch "
 
 do_configure () {
     ./configure --prefix=${prefix}

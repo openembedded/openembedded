@@ -1,6 +1,6 @@
 require fakeroot_${PV}.bb
 
-SRC_URI += "file://fix-prefix.patch;patch=1"
+SRC_URI += "file://fix-prefix.patch"
 S = "${WORKDIR}/fakeroot-${PV}"
 
 inherit native

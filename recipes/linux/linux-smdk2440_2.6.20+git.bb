@@ -6,7 +6,7 @@ PR = "r1"
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 
 SRC_URI = "git://opensource.wolfsonmicro.com/linux-2.6-asoc-ggdev;protocol=git;tag=asoc-merge-0002 \
-           file://0001-Enable-cs8900A-network-device-for-smdk2440-board.patch;patch=1 \
+           file://0001-Enable-cs8900A-network-device-for-smdk2440-board.patch \
            file://defconfig-smdk2440"
 
 S = "${WORKDIR}/git"

@@ -10,7 +10,7 @@ PR = "r1"
 inherit native
 
 SRC_URI = "http://www.holgerschurig.de/files/linux/patcher-${PV}.tar.bz2"
-SRC_URI_append_build-freebsd = " file://freebsd_gpatch.patch;patch=1 "
+SRC_URI_append_build-freebsd = " file://freebsd_gpatch.patch "
 S = "${WORKDIR}/patcher"
 
 PATCHTOOL = "patch"

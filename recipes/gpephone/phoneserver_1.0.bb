@@ -11,8 +11,8 @@ DEPENDS = "dbus-glib glib-2.0  libmsgenabler libabenabler"
 GPE_TARBALL_SUFFIX= "bz2"
 inherit gpephone autotools
 
-SRC_URI_append_x86 = " file://changeport.patch;patch=1;pnum=0"
-SRC_URI_append_om-gta01 = " file://phoneserver-gta01.patch;patch=1"
+SRC_URI_append_x86 = " file://changeport.patch;striplevel=0"
+SRC_URI_append_om-gta01 = " file://phoneserver-gta01.patch"
 
 
 SRC_URI[md5sum] = "6f6450c4e762059e790216b15b5930e6"

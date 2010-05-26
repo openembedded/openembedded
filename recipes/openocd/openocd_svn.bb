@@ -8,7 +8,7 @@ PR = "r3"
 inherit autotools
 
 SRC_URI = "svn://svn.berlios.de/openocd;module=trunk \
-           file://openocd-link-static.patch;patch=1"
+           file://openocd-link-static.patch"
 S = "${WORKDIR}/trunk"
 
 DEPENDS = "libftdi"

@@ -7,7 +7,7 @@ RDEPENDS = "wireless-tools"
 PR = "r1"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
-           file://makefile.patch;patch=1"
+           file://makefile.patch"
 
 S = "${WORKDIR}/zd1211-driver-${PV}"
 

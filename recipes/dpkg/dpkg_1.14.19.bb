@@ -2,7 +2,7 @@ require dpkg.inc
 PR = "r2"
 DEPENDS += "zlib bzip2"
 #RDEPENDS_${PN} = "${VIRTUAL-RUNTIME_update-alternatives}"
-SRC_URI += "file://noman.patch;patch=1"
+SRC_URI += "file://noman.patch"
 
 EXTRA_OECONF = "--without-static-progs \
 		--without-dselect \

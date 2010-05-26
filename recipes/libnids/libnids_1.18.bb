@@ -8,7 +8,7 @@ PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/libnids/libnids-${PV}.tar.gz \
-  file://configure.patch;patch=1"
+  file://configure.patch"
 
 inherit autotools
 

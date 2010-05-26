@@ -8,7 +8,7 @@ DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst virtual/javac-native zip-nati
 RDEPENDS_${PN} = "${PN}-native (>= ${PV})"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sablevm/sablevm-classpath-${PV}.tar.gz \
-           file://disable-automake-checks.patch;patch=1"
+           file://disable-automake-checks.patch"
 
 inherit autotools
 

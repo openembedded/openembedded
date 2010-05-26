@@ -9,7 +9,7 @@ PR = "r8"
 PRIORITY = "optional"
 
 SRC_URI = "http://launchpad.net/bogofilter/main/0.96.6/+download/bogofilter-0.96.6.tar.gz;name=src \
-           file://configure.ac.patch;patch=1 \
+           file://configure.ac.patch \
 	   file://volatiles \
 	   file://postfix-filter.sh \
 	   file://bogohelper.sh "

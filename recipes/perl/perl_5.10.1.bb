@@ -14,16 +14,16 @@ DEFAULT_PREFERENCE = "-1"
 PVM = "5.10"
 
 SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
-	file://perl_${PV}-8.diff.gz;patch=1 \
-        file://Makefile.patch;patch=1 \
-        file://Makefile.SH.patch;patch=1 \
-        file://installperl.patch;patch=1 \
-        file://perl-dynloader.patch;patch=1 \
-        file://perl-moreconfig.patch;patch=1 \
-        file://letgcc-find-errno.patch;patch=1 \
-        file://generate-sh.patch;patch=1 \
-        file://shared-ldflags.patch;patch=1 \
-	file://cross-generate_uudmap.patch;patch=1 \
+	file://perl_${PV}-8.diff.gz \
+        file://Makefile.patch \
+        file://Makefile.SH.patch \
+        file://installperl.patch \
+        file://perl-dynloader.patch \
+        file://perl-moreconfig.patch \
+        file://letgcc-find-errno.patch \
+        file://generate-sh.patch \
+        file://shared-ldflags.patch \
+	file://cross-generate_uudmap.patch \
         file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \

@@ -7,8 +7,8 @@ PR = "${INC_PR}.0"
 SRCREV = "3240"
 
 SRC_URI = "svn://svn.o-hand.com/repos/clutter/trunk;module=clutter;proto=http \
-           file://enable_tests.patch;patch=1;maxrev=2989 \
-           file://enable-tests-r2990.patch;patch=1;minrev=2990"
+           file://enable_tests.patch;maxrev=2989 \
+           file://enable-tests-r2990.patch;minrev=2990"
 
 S = "${WORKDIR}/clutter"
 

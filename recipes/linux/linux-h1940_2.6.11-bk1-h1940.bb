@@ -6,8 +6,8 @@ COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "h1940"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.11-bk1.gz;patch=1;name=bkpatch \
-           http://rtpnet.nerim.net/ipaq/2.6.11-bk1/2.6.11-bk1-h1940.patch;patch=1;name=patch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.11-bk1.gz;apply=yes;name=bkpatch \
+           http://rtpnet.nerim.net/ipaq/2.6.11-bk1/2.6.11-bk1-h1940.patch;name=patch \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.11"

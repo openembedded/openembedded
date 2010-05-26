@@ -7,7 +7,7 @@ require disko.inc
 DEPENDS += "taglib directfb virtual/libx11 hal libxv libxxf86vm"
 
 SRC_URI = "http://www.diskohq.org/downloads/${PN}-${PV}.tar.gz \
-	   file://pkgconfig.patch;patch=1 \
+	   file://pkgconfig.patch \
 	  "
 
 do_compile() {

@@ -6,7 +6,7 @@ PR = "r11"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://procinfo.h \
-           file://unifdef.patch;patch=1 \
+           file://unifdef.patch \
           "
 
 S = "${WORKDIR}/linux-${PV}"

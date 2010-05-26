@@ -7,11 +7,11 @@ RDEPENDS = "fbvncserver-kmodule libvncserver-storepasswd libvncserver-javaapplet
 PR = "r3"
 
 SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
-           file://libvncs0.6.patch;patch=1 \
-           file://paths.patch;patch=1 \
-           file://kernelinclude.patch;patch=1 \
-	   file://buildfix.patch;patch=1 \
-	   file://ipaq.patch;patch=1 \
+           file://libvncs0.6.patch \
+           file://paths.patch \
+           file://kernelinclude.patch \
+	   file://buildfix.patch \
+	   file://ipaq.patch \
            file://init"
 
 S = "${WORKDIR}/fbvncserver-${PV}"

@@ -4,7 +4,7 @@ LICENSE = "BSD"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-2.0-history/dhcp-${PV}.tar.gz \
-	   file://make.patch;patch=1"
+	   file://make.patch"
 S = "${WORKDIR}/dhcp-${PV}"
 
 export BINDIR = "${sbindir}"

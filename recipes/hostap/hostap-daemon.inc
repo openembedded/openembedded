@@ -11,8 +11,8 @@ CPPFLAGS_append_mtx-1 = " -I${STAGING_INCDIR}/madwifi/"
 CPPFLAGS_append_mtx-2 = " -I${STAGING_INCDIR}/madwifi/"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
-	file://makefile-cross.diff;patch=1;pnum=0 \
-	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \
+	file://makefile-cross.diff;striplevel=0 \
+	file://madwifi-bsd-fix.diff;striplevel=0 \
 	file://defconfig \
 	file://init"
 

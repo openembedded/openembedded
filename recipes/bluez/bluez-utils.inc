@@ -10,14 +10,14 @@ LICENSE = "GPL"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://hcid.conf \
-	file://hciattach-ti-bts.patch;patch=1 \
-        file://handle-eintr.patch;patch=1;status=applied"
+	file://hciattach-ti-bts.patch \
+        file://handle-eintr.patch;status=applied"
 SRC_URI_append_r1000      = " file://hciattach.sh"
 SRC_URI_append_ghi270      = " file://hciattach.sh"
 
 # Almost all serial CF cards w/ manfid 0x0000,0x0000 seem to use the bcs protocol
 # Let's default to that instead of 'any' until further notice...
-SRC_URI += " file://default-manfid-0x0-to-bcps.patch;patch=1"
+SRC_URI += " file://default-manfid-0x0-to-bcps.patch"
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 

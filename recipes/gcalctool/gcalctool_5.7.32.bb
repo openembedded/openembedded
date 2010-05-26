@@ -5,7 +5,7 @@ DESCRIPTION = "gcalctool is a powerful calculator"
 PR = "r1"
 
 SRC_URI = "http://download.gnome.org/sources/${PN}/5.7/${PN}-${PV}.tar.gz \
-        file://makefile-fix.diff;patch=1"
+        file://makefile-fix.diff"
 
 inherit autotools pkgconfig
 

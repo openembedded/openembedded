@@ -6,7 +6,7 @@ HOMEPAGE = "http://inotify-tools.sourceforge.net/"
 EXTRA_OECONF = "--disable-doxygen"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/inotify-tools/inotify-tools-${PV}.tar.gz \
-           file://no-tests.patch;patch=1 \
+           file://no-tests.patch \
           "
 
 inherit autotools

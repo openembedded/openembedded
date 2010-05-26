@@ -6,7 +6,7 @@ DEPENDS = "aalib"
 PR = "r1"
 
 SRC_URI = "http://prdownloads.sourceforge.net/aa-project/bb-1.2.tar.gz \
-           file://fix-compile.patch;patch=1"
+           file://fix-compile.patch"
 
 inherit autotools
 

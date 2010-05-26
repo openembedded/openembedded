@@ -7,7 +7,7 @@ SRCDATE = "20040801"
 PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cebix.net/home/cvs/cebix;module=Frodo4 \
-           file://configure.patch;patch=1 \
+           file://configure.patch \
            file://frodorc \
            file://Frodo.png \
            file://frodo.desktop"

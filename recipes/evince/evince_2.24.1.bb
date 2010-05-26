@@ -7,7 +7,7 @@ PR = "r2"
 
 inherit gnome pkgconfig gtk-icon-cache
 
-SRC_URI += " file://no-help-dir.patch;patch=1"
+SRC_URI += " file://no-help-dir.patch"
 
 EXTRA_OECONF = "  \
                  --enable-thumbnailer \

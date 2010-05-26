@@ -14,8 +14,8 @@ BROKEN = "1"
 # upstream is at 4.22 now - patches do not apply
 
 SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
-           file://fixes.patch;patch=1 \
-           file://configure.patch;patch=1 \
+           file://fixes.patch \
+           file://configure.patch \
            file://XScreenSaver"
 
 # xscreensaver-demo is a glade app

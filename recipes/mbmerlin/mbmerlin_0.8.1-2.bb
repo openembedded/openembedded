@@ -11,7 +11,7 @@ FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/mbmerlin ${datadir}/applicatio
 FILES_${PN} += " ${datadir}/pixmaps"
 
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
-	   file://fix_makefile.patch;patch=1"
+	   file://fix_makefile.patch"
 
 S = "${WORKDIR}/mbmerlin"
 

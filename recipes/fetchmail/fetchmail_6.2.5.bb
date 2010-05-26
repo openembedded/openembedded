@@ -12,7 +12,7 @@ intended to be used over on-demand TCP/IP links \
 #DEPENDS = "virtual/libintl"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/${PN}/${PN}_${PV}.orig.tar.gz \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 
 inherit autotools gettext
 

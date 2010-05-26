@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 
 PR = "r3"
 
-SRC_URI += "file://early_debug_in_nptl.patch;patch=1;pnum=0"
+SRC_URI += "file://early_debug_in_nptl.patch;striplevel=0"
 
 
 SRC_URI[md5sum] = "18be4e7a1ac713bda93d00fee20bbef8"

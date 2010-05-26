@@ -6,9 +6,9 @@ DEPENDS = "openobex libgsm"
 PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.gz \
-	   file://iconv.patch;patch=1 \
-	   file://i-hate-libtool.patch;patch=1 \
-	   file://m4.patch;patch=1"
+	   file://iconv.patch \
+	   file://i-hate-libtool.patch \
+	   file://m4.patch"
 
 inherit autotools gettext
 

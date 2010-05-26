@@ -11,7 +11,7 @@ PR = "r0"
 #
 
 SRC_URI = "cvs://anonymous@cvs.aleph1.co.uk/home/aleph1/cvs;module=yaffs2 \
-           file://mkyaffs2image.patch;patch=1"
+           file://mkyaffs2image.patch"
 S = "${WORKDIR}/yaffs2"
 
 CFLAGS += "-I.. -DCONFIG_YAFFS_UTIL"

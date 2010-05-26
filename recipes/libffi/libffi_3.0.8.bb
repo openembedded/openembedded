@@ -25,7 +25,7 @@ FILES_${PN}-dev = "${includedir}/${TARGET_SYS}/ffi* \
 "
 
 SRC_URI = "ftp://sourceware.org/pub/libffi/${P}.tar.gz \
-           file://autoconf-2.64.patch;patch=1"
+           file://autoconf-2.64.patch"
 
 EXTRA_OECONF = "--with-gnu-ld \
                 --enable-shared \

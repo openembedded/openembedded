@@ -4,7 +4,7 @@ DEPENDS = "virtual/libsdl libsdl-image"
 PR = "r1"
 
 SRC_URI = "http://guichan.googlecode.com/files/${PN}-${PV}.tar.gz \
-           file://link-against-sdlimage.patch;patch=1"
+           file://link-against-sdlimage.patch"
 
 inherit autotools
 

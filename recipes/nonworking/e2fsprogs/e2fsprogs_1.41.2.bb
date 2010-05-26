@@ -3,7 +3,7 @@ require e2fsprogs.inc
 PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI += "file://no-hardlinks.patch;patch=1"
+SRC_URI += "file://no-hardlinks.patch"
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX

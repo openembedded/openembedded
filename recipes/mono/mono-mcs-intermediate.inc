@@ -8,7 +8,7 @@
 PR = "r0"
 DEPENDS = "mono-native glib-2.0-native perl-native"
 
-SRC_URI += "file://mono-fix-libdir-path.patch;patch=1"
+SRC_URI += "file://mono-fix-libdir-path.patch"
 
 # Inherit native to set up compiler and paths ...
 inherit native

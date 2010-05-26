@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.cosmicpenguin.net/pub/bootmenu/bootmenu-${PV}.tar.gz \
-	   file://compile.patch;patch=1"
+	   file://compile.patch"
 
 EXTRA_OEMAKE = ""
 

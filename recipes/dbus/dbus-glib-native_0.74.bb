@@ -5,7 +5,7 @@ DESCRIPTION = "Message bus system for applications to talk to one another"
 LICENSE = "GPL"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-${PV}.tar.gz \
-	   file://run-with-tmp-session-bus.patch;patch=1"
+	   file://run-with-tmp-session-bus.patch"
 
 inherit autotools pkgconfig gettext native
 

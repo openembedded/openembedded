@@ -7,7 +7,7 @@ SECTION = "kernel/userland"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
 
-SRC_URI = "file://only-the-utils.patch;patch=1 \
+SRC_URI = "file://only-the-utils.patch \
 	file://wlan-ng.modutils \
 	file://wlan.agent \
 	file://resume \

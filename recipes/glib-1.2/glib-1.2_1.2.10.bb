@@ -15,10 +15,10 @@ EXTRA_OECONF = "--disable-debug"
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/glib-${PV}.tar.gz \
            file://glibconfig-sysdefs.h \
 	   file://depcomp \
-	   file://glib-reconf-fix;patch=1 \
-           file://posix-conf-changes;patch=1 \
-           file://glib-config-use-pkg-config;patch=1 \
-	   file://gcc-3.4-pretty_function;patch=1"
+	   file://glib-reconf-fix;apply=yes \
+           file://posix-conf-changes;apply=yes \
+           file://glib-config-use-pkg-config;apply=yes \
+	   file://gcc-3.4-pretty_function;apply=yes"
 
 S = "${WORKDIR}/glib-${PV}"
 

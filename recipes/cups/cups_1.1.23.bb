@@ -6,7 +6,7 @@ INC_PR = "r7"
 PR = "${INC_PR}.1"
 
 SRC_URI = "ftp://ftp3.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
-           file://strftime_fix.patch;patch=1"
+           file://strftime_fix.patch"
 
 inherit autotools binconfig
 

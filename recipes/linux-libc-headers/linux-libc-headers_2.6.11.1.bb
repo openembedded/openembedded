@@ -10,7 +10,7 @@ INHIBIT_DEFAULT_DEPS = "1"
 PR = "r4"
 
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
-	file://keyboard.patch;patch=1"
+	file://keyboard.patch"
 
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 

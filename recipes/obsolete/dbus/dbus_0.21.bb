@@ -7,7 +7,7 @@ PROVIDES = "dbus-glib"
 LICENSE = "GPL"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
-	   file://cross.patch;patch=1 \
+	   file://cross.patch \
 	   file://dbus-1.init"
 
 SRC_URI[md5sum] = "311229d60154334ee3f908badc56747d"

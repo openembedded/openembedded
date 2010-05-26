@@ -10,7 +10,7 @@ INC_PR = "r7"
 inherit native
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
-           file://qt-config.patch;patch=1 \
+           file://qt-config.patch \
            file://g++.conf \
            file://linux.conf"
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"

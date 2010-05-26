@@ -11,7 +11,7 @@ DEPENDS = "virtual/kernel"
 PR = "r4"
 
 SRC_URI = "http://davehylands.com/gumstix-wiki/gpio-event/gpio-event-2.6.21-1444-select.tar.gz \
-   file://makefile.patch;patch=1 \
+   file://makefile.patch \
    "
 
 S = "${WORKDIR}/gpio-event"

@@ -6,9 +6,9 @@ PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/free42/free42.tgz;name=archive \
            http://sense.net/zc/free42/42c_skins.tgz;name=skins \
-           file://free42-bcd-gtk-only.patch;patch=1 \
-           file://free42-vga-skin.patch;patch=1 \
-           file://free42-dont-declare-sincos.patch;patch=1 \
+           file://free42-bcd-gtk-only.patch \
+           file://free42-vga-skin.patch \
+           file://free42-dont-declare-sincos.patch \
            file://free42dec.desktop"
 
 S = "${WORKDIR}/free42"

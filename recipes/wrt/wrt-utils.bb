@@ -3,8 +3,8 @@ SECTION = "base"
 LICENSE = "broadcom"
 SRC_URI = "cvs://anonymous@openwrt.org/openwrt;module=openwrt/package/openwrt;tag=TESTED \
 	http://openwrt.inf.fh-brs.de/mirror/linksys-wlconf.tar.gz \
-	file://nvram-makefile.diff;patch=1;pnum=0 \
-	file://libshared-makefile.diff;patch=1;pnum=0"
+	file://nvram-makefile.diff;striplevel=0 \
+	file://libshared-makefile.diff;striplevel=0"
 
 S = "${WORKDIR}/openwrt"
 

@@ -8,8 +8,8 @@ DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "cvs://anonymous@gnuplot.cvs.sourceforge.net/cvsroot/${PN};module=${PN} \
            http://www.mneuroth.de/privat/zaurus/qtplot-0.2.tar.gz;name=qtplot \
-           file://subdirs.patch;patch=1 \
-           file://term.patch;patch=1 \
+           file://subdirs.patch \
+           file://term.patch \
            file://gnuplot.desktop \
            file://gnuplot.png"
 

@@ -15,74 +15,74 @@ DEFAULT_PREFERENCE_akita = "1"
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
 # ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2
 # ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/linux-2.6.20-rc4.tar.bz2
-# ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc6.bz2;patch=1
-# ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/patch-2.6.18-rc2-git1.bz2;patch=1
-# ${KERNELORG_MIRROR}/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1
-# ${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1
+# ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc6.bz2;apply=yes
+# ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/patch-2.6.18-rc2-git1.bz2;apply=yes
+# ${KERNELORG_MIRROR}/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;apply=yes
+# ${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;apply=yes
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=kernel \
-           ${RPSRC}/lzo_jffs2_sysfs-r1.patch;patch=1;name=rppatch1 \
-           ${RPSRC}/hx2750_base-r34.patch;patch=1;name=rppatch2 \
-           ${RPSRC}/hx2750_bl-r9.patch;patch=1;name=rppatch3 \
-           ${RPSRC}/hx2750_pcmcia-r3.patch;patch=1;name=rppatch4 \
-           ${RPSRC}/pxa_keys-r9.patch;patch=1;name=rppatch5 \
-           ${RPSRC}/tsc2101-r19.patch;patch=1;name=rppatch6 \
-           ${RPSRC}/hx2750_test1-r8.patch;patch=1;name=rppatch7 \
-           ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1;name=rppatch8 \
-           ${RPSRC}/pm_changes-r1.patch;patch=1;name=rppatch9 \
-           ${RPSRC}/locomo_kbd_tweak-r2.patch;patch=1;name=rppatch10 \
-#           ${RPSRC}/pxa27x_overlay-r8.patch;patch=1;name=rppatch11 \
-           ${RPSRC}/w100_extaccel-r2.patch;patch=1;name=rppatch12 \
-           ${RPSRC}/w100_extmem-r1.patch;patch=1;name=rppatch13 \
-           ${RPSRC}/poodle_pm-r6.patch;patch=1;name=rppatch14 \
-           ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1;name=rppatch15 \
-           ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1;name=rppatch16 \
-           file://zaurus-i2c-init.patch;patch=1;status=upstream \
-#           ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable;name=rppatch17 \
-           ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable;name=rppatch18 \
-           file://hostap-monitor-mode.patch;patch=1;status=unmergable \
-           file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1;status=unmergable \
-           ${RPSRC}/mmcsd_large_cards-r1.patch;patch=1;status=hack;name=rppatch19 \
-           ${RPSRC}/mmcsd_no_scr_check-r2.patch;patch=1;status=hack;name=rppatch20 \
-           ${RPSRC}/integrator_rgb-r1.patch;patch=1;status=hack;name=rppatch21 \
-           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack;name=rppatch22 \
-           file://sharpsl-rc-r1.patch;patch=1 \
-           file://spitz_h_rewrite.patch;patch=1 \
-           file://pxa-serial-hack.patch;patch=1;status=hack \
-           file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
-           file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
-           file://htcuni.patch;patch=1 \
-           file://versatile-armv6.patch;patch=1 \
+           ${RPSRC}/lzo_jffs2_sysfs-r1.patch;name=rppatch1 \
+           ${RPSRC}/hx2750_base-r34.patch;name=rppatch2 \
+           ${RPSRC}/hx2750_bl-r9.patch;name=rppatch3 \
+           ${RPSRC}/hx2750_pcmcia-r3.patch;name=rppatch4 \
+           ${RPSRC}/pxa_keys-r9.patch;name=rppatch5 \
+           ${RPSRC}/tsc2101-r19.patch;name=rppatch6 \
+           ${RPSRC}/hx2750_test1-r8.patch;name=rppatch7 \
+           ${RPSRC}/sharpsl_pm_fixes1-r0.patch;name=rppatch8 \
+           ${RPSRC}/pm_changes-r1.patch;name=rppatch9 \
+           ${RPSRC}/locomo_kbd_tweak-r2.patch;name=rppatch10 \
+#           ${RPSRC}/pxa27x_overlay-r8.patch;name=rppatch11 \
+           ${RPSRC}/w100_extaccel-r2.patch;name=rppatch12 \
+           ${RPSRC}/w100_extmem-r1.patch;name=rppatch13 \
+           ${RPSRC}/poodle_pm-r6.patch;name=rppatch14 \
+           ${RPSRC}/poodle_lcd_hack-r0.patch;name=rppatch15 \
+           ${RPSRC}/poodle_asoc_fix-r1.patch;name=rppatch16 \
+           file://zaurus-i2c-init.patch;status=upstream \
+#           ${RPSRC}/logo_oh-r1.patch.bz2;status=unmergable;name=rppatch17 \
+           ${RPSRC}/pxa-linking-bug.patch;status=unmergable;name=rppatch18 \
+           file://hostap-monitor-mode.patch;status=unmergable \
+           file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;status=unmergable \
+           ${RPSRC}/mmcsd_large_cards-r1.patch;status=hack;name=rppatch19 \
+           ${RPSRC}/mmcsd_no_scr_check-r2.patch;status=hack;name=rppatch20 \
+           ${RPSRC}/integrator_rgb-r1.patch;status=hack;name=rppatch21 \
+           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;status=hack;name=rppatch22 \
+           file://sharpsl-rc-r1.patch \
+           file://spitz_h_rewrite.patch \
+           file://pxa-serial-hack.patch;status=hack \
+           file://connectplus-remove-ide-HACK.patch;status=hack \
+           file://connectplus-prevent-oops-HACK.patch;status=hack \
+           file://htcuni.patch \
+           file://versatile-armv6.patch \
            file://defconfig"
 
 # FIXMEs before made default	   
-# ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack;name=rppatch50
+# ${RPSRC}/mmcsd_no_scr_check-r1.patch;status=hack;name=rppatch50
 
 
 # Add this to enable pm debug code (useful with a serial lead)
-#  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1;name=rppatch51
+#  ${RPSRC}/sharpsl_pm_debug-r0.patch;name=rppatch51
 
 # Disabled until I find the reason this gives issues with cdc_subset
-#            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1;name=rppatch52 \
+#            ${RPSRC}/usb_rndis_tweaks-r0.patch;name=rppatch52 \
 
 
 SRC_URI_append_collie = "\
-	file://collie.patch;patch=1 \
-	file://collie_keymap.patch;patch=1 \
+	file://collie.patch \
+	file://collie_keymap.patch \
 "
 
 SRC_URI_append_htcuniversal ="\
-	file://htcuni-acx.patch;patch=1;status=external \
+	file://htcuni-acx.patch;status=external \
 	"
 
 SRC_URI_append_zylonite ="\
-	file://pxa_fb_overlay.patch;patch=1 \
-	file://zylonite-boot.patch;patch=1 \
-	file://zylonite_mtd-r0.patch;patch=1 \
-	file://zylonite_touch-r0.patch;patch=1 \
-	file://zylonite_keypad-r0.patch;patch=1 \
+	file://pxa_fb_overlay.patch \
+	file://zylonite-boot.patch \
+	file://zylonite_mtd-r0.patch \
+	file://zylonite_touch-r0.patch \
+	file://zylonite_keypad-r0.patch \
 	"
 
 S = "${WORKDIR}/linux-2.6.26"

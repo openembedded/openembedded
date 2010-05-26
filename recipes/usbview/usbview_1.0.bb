@@ -8,7 +8,7 @@ HOMEPAGE="http://www.kroah.com/linux-usb/"
 LICENSE="GPL"
 
 SRC_URI="http://www.kroah.com/linux-usb/${PN}-${PV}.tar.gz \
-	file://gtk2.patch;patch=1"
+	file://gtk2.patch"
 
 DEPENDS="gtk+ pango glib-2.0 cairo atk"
 

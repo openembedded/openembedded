@@ -32,7 +32,7 @@ EXTRA_OECONF += "\
 
 SRC_URI  = "\
   http://www.kernel.org/pub/linux/network/connman/connman-${PV}.tar.gz \
-  file://link-against-libnl2.patch;patch=1 \
+  file://link-against-libnl2.patch \
   file://connman \
 "
 

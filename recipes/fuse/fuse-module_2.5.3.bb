@@ -2,7 +2,7 @@ require fuse.inc
 
 PR = "r0"
 
-SRC_URI += "file://preserve_CC_with_2_4_kernel.patch;patch=1"
+SRC_URI += "file://preserve_CC_with_2_4_kernel.patch"
 
 S = "${WORKDIR}/fuse-${PV}"
 

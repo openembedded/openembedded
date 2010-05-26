@@ -4,7 +4,7 @@ AUTHOR = "GNU ClasspathX"
 
 SRC_URI = "\
   http://ftp.gnu.org/gnu/classpathx/activation-${PV}.tar.gz \
-  file://datadir_java.patch;patch=1 \
+  file://datadir_java.patch \
   "
 
 # java-library must be last (it defines do_stage)

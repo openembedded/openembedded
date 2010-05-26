@@ -5,7 +5,7 @@ DESCRIPTION = "X.Org X server -- displaylink driver"
 RRECOMMENDS_${PN} = "kernel-module-udlfb"
 
 SRC_URI = "http://projects.unbit.it/downloads/udlfb-0.2.3_and_xf86-video-displaylink-${PV}.tar.gz;name=archive \
-           file://xf86-video-displaylink-0.3-xorg-abi-fix.patch;patch=1 \
+           file://xf86-video-displaylink-0.3-xorg-abi-fix.patch \
 "
 
 S = "${WORKDIR}/${PN}"

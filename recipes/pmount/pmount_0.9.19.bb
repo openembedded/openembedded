@@ -8,8 +8,8 @@ RDEPENDS_${PN}-hal = "${PN}"
 RRECOMMENDS_${PN}-hal = "hal"
 
 SRC_URI = "https://alioth.debian.org/frs/download.php/2867/pmount-0.9.19.tar.gz \
-	   file://gettext.patch;patch=1 \
-	   file://install.patch;patch=1 \
+	   file://gettext.patch \
+	   file://install.patch \
 	  "
 
 inherit autotools gettext

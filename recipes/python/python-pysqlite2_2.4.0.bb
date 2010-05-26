@@ -7,7 +7,7 @@ SRCNAME = "pysqlite"
 PR = "ml2"
 
 SRC_URI = "http://initd.org/pub/software/pysqlite/releases/2.4/${PV}/${SRCNAME}-${PV}.tar.gz \
-           file://fix-setup.patch;patch=1"
+           file://fix-setup.patch"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

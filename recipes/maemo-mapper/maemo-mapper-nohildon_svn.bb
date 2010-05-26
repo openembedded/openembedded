@@ -8,8 +8,8 @@ PR = "r1"
 
 # Only works with SRCDATE_maemo-mapper-nohildon = "20061114"
 SRC_URI = "svn://garage.maemo.org/svn/maemo-mapper;proto=https;module=trunk \
-           http://home.tal.org/%7Emilang/n770/maemo-mapper-desktop-20061114-001.patch;patch=1;pnum=0;name=mapperPatch \
-	   file://fix_segfault.patch;patch=1"
+           http://home.tal.org/%7Emilang/n770/maemo-mapper-desktop-20061114-001.patch;striplevel=0;name=mapperPatch \
+	   file://fix_segfault.patch"
 
 S = "${WORKDIR}/trunk"
 

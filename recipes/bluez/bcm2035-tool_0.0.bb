@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "http://people.openezx.org/wyrm/bcm2035-tool.tgz \
-           file://addr-as-arg.patch;patch=1 \
+           file://addr-as-arg.patch \
 	   "
 
 S = "${WORKDIR}/${PN}"

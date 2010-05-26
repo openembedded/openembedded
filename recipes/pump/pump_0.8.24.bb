@@ -7,7 +7,7 @@ DEPENDS = "popt"
 S = "${WORKDIR}/pump-${PV}"
 
 SRC_URI = "http://ftp.de.debian.org/debian/pool/main/p/pump/pump_0.8.24.orig.tar.gz \
-           file://debian.patch;patch=1"
+           file://debian.patch"
 
 do_compile() {
         oe_runmake pump 

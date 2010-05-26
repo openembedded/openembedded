@@ -9,7 +9,7 @@ HOMEPAGE="http://www.gnomepro.com/tsclient/"
 LICENSE="GPL"
 
 SRC_URI="http://www.gnomepro.com/tsclient/tsclient-${PV}.tar.gz \
-	 file://fixes.patch;patch=1"
+	 file://fixes.patch"
 
 DEPENDS="gtk+ intltool-native"
 

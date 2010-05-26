@@ -3,9 +3,9 @@ require portmap.inc
 PR = "r5"
 
 SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/portmap-6.0.tgz \
-           file://destdir-no-strip.patch;patch=1 \
-	   file://no-tcpd-support.patch;patch=1 \
-           file://no-libwrap.patch;patch=1;pnum=0 \
+           file://destdir-no-strip.patch \
+	   file://no-tcpd-support.patch \
+           file://no-libwrap.patch;striplevel=0 \
            file://portmap.init "
 
 S = "${WORKDIR}/${PN}_${PV}/"

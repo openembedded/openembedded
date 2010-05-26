@@ -10,8 +10,8 @@ LICENSE = "GPLv2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
 	http://www.amd.com/files/connectivitysolutions/geode/Patches_Linux_${KV}_1.00.tar.gz;name=patch \
-	file://${WORKDIR}/Patches_Linux_${KV}_1.00/linux-${KV}-geode.patch;patch=1 \
-	file://linux-2.4.24-gcc340-fixes.patch;patch=1 \
+	file://${WORKDIR}/Patches_Linux_${KV}_1.00/linux-${KV}-geode.patch \
+	file://linux-2.4.24-gcc340-fixes.patch \
 	file://defconfig"
 
 S = "${WORKDIR}/linux-${KV}"

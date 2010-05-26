@@ -3,7 +3,7 @@ DEPENDS = "microwindows"
 RDEPENDS = "microwindows"
 DESCRIPTION = "fltk library for microwindows."
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}.tar.gz \
-	   file://gcc3.patch;patch=1"
+	   file://gcc3.patch"
 S = "${WORKDIR}/flnx"
 LICENSE = "LGPL"
 

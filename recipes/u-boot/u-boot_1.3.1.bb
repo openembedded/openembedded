@@ -5,9 +5,9 @@ DEFAULT_PREFERENCE = "-1"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
-           file://mpc8313e-rdb-autoboot.patch;patch=1 \
-           file://mpc8313e-rdb-mtdparts.patch;patch=1 \
-           file://mpc8313e-rdb-nand.patch;patch=1"
+           file://mpc8313e-rdb-autoboot.patch \
+           file://mpc8313e-rdb-mtdparts.patch \
+           file://mpc8313e-rdb-nand.patch"
 
 
 SRC_URI[md5sum] = "8fbd29c7e70c524a42d18b9c3f3a4aa1"

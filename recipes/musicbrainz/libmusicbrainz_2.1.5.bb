@@ -6,7 +6,7 @@ DEPENDS = "expat"
 
 # gcc43.patch from openSUSE
 SRC_URI = "http://ftp.musicbrainz.org/pub/musicbrainz/libmusicbrainz-${PV}.tar.gz \
-           file://libmusicbrainz-2.1.5-gcc43.patch;patch=1"
+           file://libmusicbrainz-2.1.5-gcc43.patch"
 
 inherit autotools pkgconfig
 

@@ -11,7 +11,7 @@ PROVIDES = "virtual/java-initial"
 S = "${WORKDIR}/jamvm-${PV}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jamvm/jamvm-${PV}.tar.gz \
-          file://jamvm_${PV}-initial.patch;patch=1;pnum=1 \
+          file://jamvm_${PV}-initial.patch \
           "
 
 # This uses 32 bit arm, so force the instruction set to arm, not thumb

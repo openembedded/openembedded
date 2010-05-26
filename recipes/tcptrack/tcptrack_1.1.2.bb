@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 DEPENDS = "ncurses libpcap"
 
 SRC_URI = "http://www.rhythm.cx/~steve/devel/tcptrack/release/${PV}/source/tcptrack-${PV}.tar.gz \
-	   file://macros.patch;patch=1"
+	   file://macros.patch"
 S = "${WORKDIR}/tcptrack-${PV}"
 
 inherit autotools

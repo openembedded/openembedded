@@ -5,7 +5,7 @@ PR ="r2"
 
 inherit gnome
 
-SRC_URI_append = " file://file_contains.patch;patch=1"
+SRC_URI_append = " file://file_contains.patch"
 
 EXTRA_OECONF = "--with-engine=webkit --with-distributor-name=${DISTRO}"
 

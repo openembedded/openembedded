@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "http://unimut.fsk.uni-heidelberg.de/demi/comprec/comprec-${PV}.tar.gz \
-	   file://makefile.patch;patch=1"
+	   file://makefile.patch"
 
 export AS = "${TARGET_PREFIX}as"
 

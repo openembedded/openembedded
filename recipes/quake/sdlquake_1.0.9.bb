@@ -5,7 +5,7 @@ DEPENDS = "libsdl-x11 libsdl-mixer libsdl-net zlib libxau"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.libsdl.org/projects/quake/src/sdlquake-${PV}.tar.gz \
-	   file://sdlquake-no-x86-asm.diff;patch=1 \
+	   file://sdlquake-no-x86-asm.diff \
 	   " 	
 
 inherit autotools

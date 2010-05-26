@@ -4,8 +4,8 @@ LICENSE = "GPLv2"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           file://ks8695-headers-r0.patch;patch=1 \
-           file://ks8695-base-r0.patch;patch=1 \
+           file://ks8695-headers-r0.patch \
+           file://ks8695-base-r0.patch \
            file://defconfig-ks8695"
 
 S = "${WORKDIR}/linux-${PV}"

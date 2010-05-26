@@ -6,9 +6,9 @@ DEPENDS = "libsdl-qpe tremor libogg zlib \
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
-			file://sword1.patch;patch=1 \
-			file://tremor.patch;patch=1 \
-			file://mouse.patch;patch=1 "
+			file://sword1.patch \
+			file://tremor.patch \
+			file://mouse.patch "
 PR="r1"
 
 inherit autotools

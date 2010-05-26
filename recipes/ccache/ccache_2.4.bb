@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "http://samba.org/ftp/ccache/ccache-${PV}.tar.gz \
-	file://ccache-gcov.patch;patch=1 \
+	file://ccache-gcov.patch \
 	"
 
 inherit autotools

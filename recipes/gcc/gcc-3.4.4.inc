@@ -3,30 +3,30 @@ require gcc-common.inc
 INC_PR = "r15"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
-	   file://gcc34-reverse-compare.patch;patch=1 \
-	   file://gcc34-arm-ldm.patch;patch=1 \
-	   file://gcc34-arm-ldm-peephole.patch;patch=1 \
-	   file://gcc34-arm-tune.patch;patch=1 \
-	   file://gcc-3.4.1-uclibc-100-conf.patch;patch=1 \
-	   file://gcc-3.4.1-uclibc-200-locale.patch;patch=1 \
-	   file://gcc-3.4.0-arm-lib1asm.patch;patch=1 \
-	   file://gcc-3.4.0-arm-nolibfloat.patch;patch=1 \
-	   file://gcc-3.4.0-arm-bigendian.patch;patch=1 \
-	   file://gcc-3.4.0-arm-bigendian-uclibc.patch;patch=1 \
-	   file://GCC3.4.0VisibilityPatch.diff;patch=1 \
-	   file://15342.patch;patch=1 \
-	   file://jarfix.patch;patch=1 \
-	   file://always-fixincperm.patch;patch=1 \
-	   file://GCOV_PREFIX_STRIP-cross-profile_3.4.patch;patch=1 \
-	   file://zecke-xgcc-cpp.patch;patch=1 \
-	   file://gcc-libgcc2-inhibit-libc.patch;patch=1 \
-	   file://gcc4-mtune-compat.patch;patch=1 \
-	   file://gcc34-configure.in.patch;patch=1 \
-	   file://gcc34-thumb-support.patch;patch=1 \
-	   file://gcc-cross-fixincl.patch;patch=1 \
-	   file://gcc-posix-open-fix.patch;patch=1 \
+	   file://gcc34-reverse-compare.patch \
+	   file://gcc34-arm-ldm.patch \
+	   file://gcc34-arm-ldm-peephole.patch \
+	   file://gcc34-arm-tune.patch \
+	   file://gcc-3.4.1-uclibc-100-conf.patch \
+	   file://gcc-3.4.1-uclibc-200-locale.patch \
+	   file://gcc-3.4.0-arm-lib1asm.patch \
+	   file://gcc-3.4.0-arm-nolibfloat.patch \
+	   file://gcc-3.4.0-arm-bigendian.patch \
+	   file://gcc-3.4.0-arm-bigendian-uclibc.patch \
+	   file://GCC3.4.0VisibilityPatch.diff \
+	   file://15342.patch \
+	   file://jarfix.patch \
+	   file://always-fixincperm.patch \
+	   file://GCOV_PREFIX_STRIP-cross-profile_3.4.patch \
+	   file://zecke-xgcc-cpp.patch \
+	   file://gcc-libgcc2-inhibit-libc.patch \
+	   file://gcc4-mtune-compat.patch \
+	   file://gcc34-configure.in.patch \
+	   file://gcc34-thumb-support.patch \
+	   file://gcc-cross-fixincl.patch \
+	   file://gcc-posix-open-fix.patch \
 	   "
-SRC_URI_append = " file://zecke-no-host-includes.patch;patch=1 "
+SRC_URI_append = " file://zecke-no-host-includes.patch "
 
 SRC_URI[archive.md5sum] = "b594ff4ea4fbef4ba9220887de713dfe"
 SRC_URI[archive.sha256sum] = "3444179840638cb8664e8e53604900c4521d29d57785a5091202ee4937d8d0fd"

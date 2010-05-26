@@ -8,7 +8,7 @@ SRC_URI = "http://archive.xfce.org/src/apps/midori/0.1/midori-${PV}.tar.bz2 \
            file://waf \
           "
 
-SRC_URI_append_shr = "file://ua-iphone-0.1.10.patch;patch=1 \
+SRC_URI_append_shr = "file://ua-iphone-0.1.10.patch \
                       file://config"
 
 do_configure() {

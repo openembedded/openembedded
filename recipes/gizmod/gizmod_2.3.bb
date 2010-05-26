@@ -4,9 +4,9 @@ LICENSE = "GPLv2"
 SECTION = "console/multimedia"
 DEPENDS = "python virtual/libx11 xf86vidmodeproto alsa-lib"
 SRC_URI = "${SOURCEFORGE_MIRROR}/gizmod/gizmod-${PV}.tar.bz2 \
-           file://disable-xmms.patch;patch=1 \
-           file://fix-python-configure.patch;patch=1 \
-           file://disable-bmp.patch;patch=1"
+           file://disable-xmms.patch \
+           file://fix-python-configure.patch \
+           file://disable-bmp.patch"
 
 PR = "r0"
 

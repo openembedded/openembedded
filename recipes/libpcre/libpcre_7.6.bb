@@ -8,7 +8,7 @@ SECTION = "devel"
 PR = "r7"
 LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2 \
-           file://pcre-cross.patch;patch=1"
+           file://pcre-cross.patch"
 S = "${WORKDIR}/pcre-${PV}"
 
 PROVIDES = "pcre"

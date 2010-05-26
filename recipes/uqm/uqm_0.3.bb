@@ -12,7 +12,7 @@ S = "${WORKDIR}/uqm-${PV}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sc2/uqm-${PV}-source.tgz \
            file://build-opts.sh \
-           file://build-oe.patch;patch=1;pnum=0"
+           file://build-oe.patch;striplevel=0"
 
 do_configure() {
 	install ${WORKDIR}/build-opts.sh ${S}/

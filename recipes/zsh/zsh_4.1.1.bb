@@ -6,7 +6,7 @@ PR = "r2"
 LICENSE = "zsh"
 
 SRC_URI = "http://www.zsh.org/pub/old/zsh-${PV}.tar.bz2 \
-	 file://configure.patch;patch=1"
+	 file://configure.patch"
 
 inherit autotools
 

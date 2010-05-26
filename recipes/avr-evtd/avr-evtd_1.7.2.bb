@@ -5,7 +5,7 @@ PR = "r1"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ppc-evtd/avr_evtd_${PV}.release.tar.gz \
-	   file://dont-ignore-config.patch;patch=1 \
+	   file://dont-ignore-config.patch \
 	   file://avr_evtd.conf \
 	   file://EventScript \
 	   file://init"

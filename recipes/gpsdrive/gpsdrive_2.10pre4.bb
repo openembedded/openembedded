@@ -7,9 +7,9 @@ PR = "r2"
 
 SRC_URI = "http://www.gpsdrive.de/packages/${PN}-${PV}.tar.gz \
            file://gpsdrive_2.10pre4.desktop \
-           file://gpsdrive-remove-hardcoded-paths.patch;patch=1 \
-           file://gpsdrive-ifdef-mapnik.patch;patch=1 \
-           file://gpsdrive-2.10pre4-openstreetmap-download.patch;patch=1"
+           file://gpsdrive-remove-hardcoded-paths.patch \
+           file://gpsdrive-ifdef-mapnik.patch \
+           file://gpsdrive-2.10pre4-openstreetmap-download.patch"
 
 do_install_append () {
         mkdir -p  ${D}${datadir}/applications

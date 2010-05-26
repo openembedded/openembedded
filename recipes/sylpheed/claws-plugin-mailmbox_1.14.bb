@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "http://www.claws-mail.org/downloads/plugins/mailmbox-${PV}.tar.gz\
-           file://claws-plugin-mailmbox-fixup.patch;patch=1"
+           file://claws-plugin-mailmbox-fixup.patch"
 
 inherit autotools pkgconfig
 

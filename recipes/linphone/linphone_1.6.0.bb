@@ -21,8 +21,8 @@ PROVIDES += "linphone linphonec liblinphone"
 PR = "r3"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/1.6.x/sources/linphone-${PV}.tar.gz;name=archive \
-           http://download.devbase.at/voip/linphone-1.6.0-pl0.patch;patch=1;name=patch \
-           file://linphone-speex.diff;patch=1"
+           http://download.devbase.at/voip/linphone-1.6.0-pl0.patch;name=patch \
+           file://linphone-speex.diff"
 
 S = "${WORKDIR}/linphone-${PV}"
 

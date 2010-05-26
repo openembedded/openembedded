@@ -8,8 +8,8 @@ SRCDATE = "20041111"
 DEPENDS = "freetype libxi libxmu flex-native virtual/libqte2 libqpe-opie"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xc;method=pserver \
-	   file://imake-staging.patch;patch=1 \
-	   file://moc_call.patch;patch=1 "
+	   file://imake-staging.patch \
+	   file://moc_call.patch "
 
 inherit palmtop
 

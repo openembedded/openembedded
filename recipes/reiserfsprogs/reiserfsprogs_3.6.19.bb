@@ -7,7 +7,7 @@ PR = "r1"
 #Namesys.com seems to be in trouble.  See bug #3482 for more information
 #SRC_URI ="ftp://ftp.namesys.com/pub/reiserfsprogs/reiserfsprogs-${PV}.tar.gz \
 SRC_URI ="${DEBIAN_MIRROR}/main/r/reiserfsprogs/reiserfsprogs_${PV}.orig.tar.gz \
-	  file://header-fix.patch;patch=1 \
+	  file://header-fix.patch \
 	  "
 
 S = "${WORKDIR}/reiserfsprogs-${PV}"

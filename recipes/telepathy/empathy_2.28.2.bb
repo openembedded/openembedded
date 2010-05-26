@@ -10,7 +10,7 @@ RRECOMMENDS = "telepathy-gabble"
 
 inherit gnome
 
-SRC_URI += "file://fix-xml-threadbreakage.patch;patch=1"
+SRC_URI += "file://fix-xml-threadbreakage.patch"
 
 PARALLEL_MAKE = ""
 

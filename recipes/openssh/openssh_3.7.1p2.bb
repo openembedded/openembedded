@@ -10,8 +10,8 @@ It is intended as a replacement for rlogin, rsh and rcp, and can be \
 used to provide applications with a secure communication channel."
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
-           file://configure.patch;patch=1 \
-           file://scp-nossl.patch;patch=1 \
+           file://configure.patch \
+           file://scp-nossl.patch \
            file://sshd_config"
 
 inherit autotools

@@ -5,7 +5,7 @@ DEPENDS = "libgpewidget libxsettings virtual/libx11"
 
 inherit pkgconfig gpe
 
-SRC_URI += "file://make_pkgconfig_x11.patch;patch=1"
+SRC_URI += "file://make_pkgconfig_x11.patch"
 
 headers = "xsettings-client.h"
 do_stage () {

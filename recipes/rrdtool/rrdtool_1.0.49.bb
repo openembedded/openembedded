@@ -6,7 +6,7 @@ DEPENDS = "libpng zlib"
 DEPENDS_rddtool-perl = "perl-module-lib perl-module-dynaloader"
 PR = "r2"
 SRC_URI = "http://oss.oetiker.ch/rrdtool/pub/rrdtool-1.0.x/rrdtool-${PV}.tar.gz \
-	file://perl-make-options.diff;patch=1;pnum=0"
+	file://perl-make-options.diff;striplevel=0"
 
 inherit autotools
 

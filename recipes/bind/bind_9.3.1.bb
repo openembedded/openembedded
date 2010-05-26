@@ -4,9 +4,9 @@ DESCRIPTION = "ISC Internet Domain Name Server"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.isc.org/isc/bind9/9.3.1/bind-9.3.1.tar.gz \
-           file://lib_dns_Makefile.in.patch;patch=1 \
-	   file://configure.in.patch;patch=1 \
-	   file://conf.patch;patch=1 \
+           file://lib_dns_Makefile.in.patch \
+	   file://configure.in.patch \
+	   file://conf.patch \
 	   "
 
 EXTRA_OECONF = " --enable-ipv6=no --with-randomdev=/dev/random --disable-threads --sysconfdir=/etc/bind --localstatedir=/var --prefix=/usr"

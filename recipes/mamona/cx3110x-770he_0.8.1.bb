@@ -14,14 +14,14 @@ SRC_URI += "https://garage.maemo.org/frs/download.php/2443/cx3110x-0.8.1.tar.gz;
  http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2005q3-2-arm-none-eabi-i686-pc-linux-gnu.tar.bz2;name=arm \
  http://dev.openbossa.org/mamona/sources/kernel-source-${KERVER}.tar.gz;name=kernel \
  file://defconfig \
- file://fix_mem_corruption.patch;patch=1 \
- file://fix_mem_allign.patch;patch=1 \
- file://cx3110x.patch;patch=1 \
- file://fix_cross_makefile.patch;patch=1 \
- file://fix_ssid_data_length.patch;patch=1 \
- file://770_performance_improvements.patch;patch=1 \
- file://create_sysfs_link_for_wlan0.patch;patch=1 \
- file://fix_opps_while_connecting_with_nm.patch;patch=1 \
+ file://fix_mem_corruption.patch \
+ file://fix_mem_allign.patch \
+ file://cx3110x.patch \
+ file://fix_cross_makefile.patch \
+ file://fix_ssid_data_length.patch \
+ file://770_performance_improvements.patch \
+ file://create_sysfs_link_for_wlan0.patch \
+ file://fix_opps_while_connecting_with_nm.patch \
 "
 
 SRC_URI[archive.md5sum] = "85c115a81fa4429bee2cd16bfe961d44"

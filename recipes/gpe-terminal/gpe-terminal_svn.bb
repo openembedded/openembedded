@@ -8,7 +8,7 @@ PV = "1.1+svn-${SRCDATE}"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${GPE_EXTRA_SVN} \
-	   file://svn-build.patch;patch=1 \
+	   file://svn-build.patch \
            file://${PN}.desktop \
            file://${PN}.png"
 

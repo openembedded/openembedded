@@ -7,7 +7,7 @@ HOMEPAGE="http://www.cdrkit.org"
 PARALLEL_MAKE = ""
 DEPENDS = "libcap"
 SRC_URI="http://cdrkit.org/releases/cdrkit-${PV}.tar.gz \
-	file://xconfig.patch;patch=1"
+	file://xconfig.patch"
 
 S="${WORKDIR}/cdrkit-${PV}"
 PR = "r2"

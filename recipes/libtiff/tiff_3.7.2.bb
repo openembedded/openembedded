@@ -5,7 +5,7 @@ DEPENDS = "zlib jpeg lzo"
 PR = "r4"
 
 SRC_URI = "http://dl.maptools.org/dl/libtiff/old/tiff-${PV}.tar.gz \
-	  file://configure.patch;patch=1"
+	  file://configure.patch"
 
 inherit autotools
 

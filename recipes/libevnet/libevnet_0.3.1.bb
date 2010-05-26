@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.25thandclement.com/~william/projects/libevnet.html"
 DEPENDS = "libarena libevent openssl"
 
 SRC_URI = "http://www.25thandclement.com/~william/projects/releases/libevnet-${PV}.tgz \
-           file://stdargs.patch;patch=1"
+           file://stdargs.patch"
 
 do_stage() {
 	oe_libinstall -C src -a libevnet ${STAGING_LIBDIR}

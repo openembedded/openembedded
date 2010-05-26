@@ -6,7 +6,7 @@ DEPENDS = "dbus dbus-glib glib-2.0 policykit"
 inherit gnome pkgconfig update-rc.d
 
 SRC_URI += " \
-            file://angstrom.patch;patch=1 \
+            file://angstrom.patch \
             file://system-tools-backends \
            "
 

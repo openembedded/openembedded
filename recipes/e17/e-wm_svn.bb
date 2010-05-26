@@ -11,18 +11,18 @@ inherit e update-alternatives
 SRC_URI += "\
   file://enlightenment_start.oe \
   file://applications.menu \
-  file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
-  file://fix-profiles.diff;patch=1;maxrev=39889 \
-  file://drop-illume-keyboards.patch;patch=1 \
+  file://gsm-segfault-fix.patch;maxrev=37617 \
+  file://fix-profiles.diff;maxrev=39889 \
+  file://drop-illume-keyboards.patch \
 "
 
-SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
+SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch"
 
 SRC_URI_append_shr = " \
-  file://illume-disable-screensaver.patch;patch=1 \
-  file://wizard-module-skipping.patch;patch=1 \
-  file://illume-flaunch-fix.patch;patch=1 \
-  file://illume-keyboard-flow.patch;patch=1;maxrev=46549 \
+  file://illume-disable-screensaver.patch \
+  file://wizard-module-skipping.patch \
+  file://illume-flaunch-fix.patch \
+  file://illume-keyboard-flow.patch;maxrev=46549 \
 "
 
 EXTRA_OECONF = "\

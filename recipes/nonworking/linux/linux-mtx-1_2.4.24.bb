@@ -6,21 +6,21 @@ RDEPENDS = "mtd-utils"
 PR ="r2"
 
 SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_24_pre2 \
-	file://01-mtd-2004-01-27.diff;patch=1 \
-	file://02-mtd-mtx-1-map.diff;patch=1 \
-	file://03-mtd-erase-compiler-bug.diff;patch=1 \
-	file://04-zboot-2.4.24.patch;patch=1 \
-	file://05-zboot-cflags.diff;patch=1 \
-	file://06-zboot-mtx.diff;patch=1 \
-	file://07-zimage-flash-bin.patch;patch=1 \
-	file://08-usb-nonpci-2.4.24.patch;patch=1 \
-	file://09-iw-max-spy-32.diff;patch=1 \
-	file://10-mtx-pci-slots.diff;patch=1 \
-	file://11-mtx-extraversion.diff;patch=1 \
-	file://12-openswan-2.2.0-nat-t.diff;patch=1 \
-	file://13-openswan-2.2.0.patch;patch=1 \
-	file://14-au1000-eth-vlan.diff;patch=1 \
-	file://15-mtd-proc-partition-rw.diff;patch=1 \
+	file://01-mtd-2004-01-27.diff \
+	file://02-mtd-mtx-1-map.diff \
+	file://03-mtd-erase-compiler-bug.diff \
+	file://04-zboot-2.4.24.patch \
+	file://05-zboot-cflags.diff \
+	file://06-zboot-mtx.diff \
+	file://07-zimage-flash-bin.patch \
+	file://08-usb-nonpci-2.4.24.patch \
+	file://09-iw-max-spy-32.diff \
+	file://10-mtx-pci-slots.diff \
+	file://11-mtx-extraversion.diff \
+	file://12-openswan-2.2.0-nat-t.diff \
+	file://13-openswan-2.2.0.patch \
+	file://14-au1000-eth-vlan.diff \
+	file://15-mtd-proc-partition-rw.diff \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"

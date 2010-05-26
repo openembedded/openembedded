@@ -6,9 +6,9 @@ PR = "r1"
 FILESPATHPKG .= ":libxine-1.1.16"
 
 SRC_URI += " \
-    	file://libxine-arm-configure.patch;patch=1 \
-	file://iconv.patch;patch=1 \
-	file://ffmpeg_headers.patch;patch=1 \
+    	file://libxine-arm-configure.patch \
+	file://iconv.patch \
+	file://ffmpeg_headers.patch \
         "
 
 python populate_packages_prepend () {

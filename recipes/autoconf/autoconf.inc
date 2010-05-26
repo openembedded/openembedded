@@ -11,7 +11,7 @@ RDEPENDS_${PN}_virtclass-native = "m4-native gnu-config-native"
 INC_PR = "r9"
 
 SRC_URI = "${GNU_MIRROR}/autoconf/autoconf-${PV}.tar.bz2;name=autoconf \
-	   file://program_prefix.patch;patch=1"
+	   file://program_prefix.patch"
 
 inherit autotools
 

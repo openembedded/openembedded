@@ -9,7 +9,7 @@ DEPENDS = " pthsem lua5.1 curl libesmtp"
 DEPENDS_append_linux-uclibc = " argp-standalone"
 DEPENDS_append_linux-uclibceabi = " argp-standalone"
 
-SRC_URI += "file://configure-libcurl.patch;patch=1 \
+SRC_URI += "file://configure-libcurl.patch \
             file://linknx.start "
 
 inherit autotools update-rc.d

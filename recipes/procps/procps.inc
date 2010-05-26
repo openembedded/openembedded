@@ -13,7 +13,7 @@ INC_PR = "r9"
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz;name=tarball \
 	   file://sysctl.conf \
 	   file://procps.init \
-           file://install.patch;patch=1"
+           file://install.patch"
 
 inherit autotools update-rc.d
 

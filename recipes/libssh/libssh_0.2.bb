@@ -9,7 +9,7 @@ DEPENDS = "openssl"
 
 SRC_URI = "\
   http://www.0xbadc0de.be/libssh/libssh-${PV}.tgz \
-  file://libssh_libdir_fix.patch;patch=1 \
+  file://libssh_libdir_fix.patch \
 "
 inherit autotools
 

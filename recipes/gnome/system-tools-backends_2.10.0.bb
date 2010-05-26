@@ -14,7 +14,7 @@ SRC_URI += " \
            "
 
 SRC_URI_append_angstrom = " \
-            file://add-angstrom-distro.patch;patch=1 \
+            file://add-angstrom-distro.patch \
            "
 
 SRC_URI[archive.md5sum] = "01fd8fcfbe5f68492186404c96af915a"

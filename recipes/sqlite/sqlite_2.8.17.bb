@@ -7,8 +7,8 @@ LICENSE = "PD"
 PR = "r5"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
-       file://mainmk_build_dynamic.patch;patch=1 \
-       file://mainmk_no_tcl.patch;patch=1 \
+       file://mainmk_build_dynamic.patch \
+       file://mainmk_no_tcl.patch \
        file://sqlite.pc"
 
 SOURCES = "attach.o auth.o btree.o btree_rb.o build.o copy.o date.o delete.o \

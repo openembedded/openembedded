@@ -5,7 +5,7 @@ DEPENDS = "gtk+ libexif libgnome libgnomeui libgnomeprintui"
 
 inherit gnome
 
-SRC_URI += "file://pkg-config-hack.patch;patch=1"
+SRC_URI += "file://pkg-config-hack.patch"
 
 PR = "r2"
 

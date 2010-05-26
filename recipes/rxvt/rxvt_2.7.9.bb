@@ -4,7 +4,7 @@ PR = "r1"
 DEPENDS = "virtual/libx11 libxft"
 LICENSE = "GPL"
 SRC_URI = "${HANDHELDS_CVS};module=apps/rxvt \
-	   file://include.patch;patch=1"
+	   file://include.patch"
 
 inherit autotools update-alternatives
 

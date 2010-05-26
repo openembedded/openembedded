@@ -8,13 +8,13 @@ require binutils.inc
 S = "${WORKDIR}/src"
 EXTRA_OEMAKE = "configure-build-libiberty"
 SRC_URI = "cvs://anoncvs:anoncvs@sources.redhat.com/cvs/src;module=binutils;method=pserver;localdir=src \
-     file://binutils-2.16.91.0.6-objcopy-rename-errorcode.patch;patch=1;maxdate=20090801 \
-     file://binutils-uclibc-100-uclibc-conf.patch;patch=1 \
-     file://110-arm-eabi-conf.patch;patch=1 \
-     file://binutils-uclibc-300-001_ld_makefile_patch.patch;patch=1 \
-     file://binutils-uclibc-300-006_better_file_error.patch;patch=1 \
-     file://binutils-uclibc-300-012_check_ldrunpath_length.patch;patch=1 \
-     file://binutils-uclibc-gas-needs-libm.patch;patch=1 \
+     file://binutils-2.16.91.0.6-objcopy-rename-errorcode.patch;maxdate=20090801 \
+     file://binutils-uclibc-100-uclibc-conf.patch \
+     file://110-arm-eabi-conf.patch \
+     file://binutils-uclibc-300-001_ld_makefile_patch.patch \
+     file://binutils-uclibc-300-006_better_file_error.patch \
+     file://binutils-uclibc-300-012_check_ldrunpath_length.patch \
+     file://binutils-uclibc-gas-needs-libm.patch \
      "
 
 do_compile () {

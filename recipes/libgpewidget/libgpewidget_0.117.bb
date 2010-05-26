@@ -8,7 +8,7 @@ PR          = "r0"
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpe pkgconfig autotools
 
-SRC_URI += "file://pkgconfig.patch;patch=1;pnum=0"
+SRC_URI += "file://pkgconfig.patch;striplevel=0"
 
 PACKAGES =+ "libgpewidget-bin"
 FILES_libgpewidget-bin = "${bindir}/*"

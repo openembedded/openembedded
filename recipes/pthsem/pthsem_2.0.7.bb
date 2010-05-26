@@ -5,7 +5,7 @@ LICENSE = "GPL LGPL FDL"
 PR = "r0"
 
 SRC_URI = "https://www.auto.tuwien.ac.at/~mkoegler/pth/pthsem-${PV}.tar.gz \
-           file://ldflags.patch;patch=1 \
+           file://ldflags.patch \
           "
 
 inherit autotools binconfig

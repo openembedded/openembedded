@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "http://download.aircrack-ng.org/aircrack-ng-${PV}.tar.gz \
-           file://makefile-ldflags.patch;patch=1"
+           file://makefile-ldflags.patch"
 
 SBINFILES = "airodump-ng aireplay-ng airmon-ng airtun-ng"
 BINFILES = "aircrack-ng airdecap-ng packetforge-ng ivstools kstats makeivs"

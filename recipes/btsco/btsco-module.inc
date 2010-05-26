@@ -7,7 +7,7 @@ DEPENDS = "alsa-lib bluez-libs"
 inherit module
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bluetooth-alsa/btsco-${PV}.tar.gz \
-	   file://makefile.patch;patch=1"
+	   file://makefile.patch"
 
 S = "${WORKDIR}/btsco-${PV}/kernel"
 

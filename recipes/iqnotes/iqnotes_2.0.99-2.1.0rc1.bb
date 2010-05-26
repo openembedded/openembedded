@@ -5,7 +5,7 @@ UPV = "2.1.0rc1"
 PR = "r2"
 
 SRC_URI = "http://download.berlios.de/iqnotes/iqnotes-${UPV}.tar.bz2 \
-           file://pro.patch;patch=1"
+           file://pro.patch"
 
 S = "${WORKDIR}/iqnotes-${UPV}/iqnotes/"
 

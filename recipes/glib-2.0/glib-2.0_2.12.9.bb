@@ -3,7 +3,7 @@ PR = "${INC_PR}.0"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/glib/2.12/glib-${PV}.tar.bz2 \
            file://glibconfig-sysdefs.h \
-           file://configure-libtool.patch;patch=1"
+           file://configure-libtool.patch"
 
 
 SRC_URI[md5sum] = "b3f6a2a318610af6398b3445f1a2d6c6"

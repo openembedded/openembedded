@@ -5,7 +5,7 @@ SECTION = "kernel/modules"
 LICENSE = "GPL"
 
 SRC_URI = "http://mxhaard.free.fr/spca50x/Download/spca5xx-${PV}.tar.gz \
-           file://Makefile.patch;patch=1"
+           file://Makefile.patch"
 
 S = "${WORKDIR}/spca5xx-${PV}"
 

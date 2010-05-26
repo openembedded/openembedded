@@ -5,8 +5,8 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI += " \
-            file://fix-esound.diff;patch=1 \
-            file://fix-install.diff;patch=1 \
+            file://fix-esound.diff \
+            file://fix-install.diff \
            "
 
 SRC_URI[md5sum] = "74ca3a6e37c9d9ae9fe2c50fc6d8350f"

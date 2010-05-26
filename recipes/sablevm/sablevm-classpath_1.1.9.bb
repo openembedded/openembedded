@@ -9,7 +9,7 @@ DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst virtual/javac-native fastjar-
 RDEPENDS_${PN} = "${PN}-native"
 
 SRC_URI = "http://sablevm.org/download/release/${PV}/${PN}-${PV}.tar.gz \
-           file://disable-automake-checks.patch;patch=1"
+           file://disable-automake-checks.patch"
 
 inherit autotools
 

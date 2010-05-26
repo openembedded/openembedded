@@ -8,7 +8,7 @@ PR = "r0"
 EXTRA_OECONF = "--disable-doxygen"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/inotify-tools/inotify-tools-3.12.tar.gz \
-file://no-tests.patch;patch=1"
+file://no-tests.patch"
 
 inherit autotools
 

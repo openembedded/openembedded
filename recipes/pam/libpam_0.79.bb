@@ -30,9 +30,9 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/pre/library/${p}.tar.bz2"
 
 # the patches are necessary to get the autoreconf and cross build
 # to work correctly
-SRC_URI += " file://libpam-config.patch;patch=1"
+SRC_URI += " file://libpam-config.patch"
 # The Makefile uses 'FAKEROOT' not DESTDIR.
-SRC_URI += " file://libpam-make.patch;patch=1"
+SRC_URI += " file://libpam-make.patch"
 
 inherit autotools
 

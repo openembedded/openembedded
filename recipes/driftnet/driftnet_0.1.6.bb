@@ -9,7 +9,7 @@ DEPENDS = "libpcap jpeg libungif gtk+ libgpewidget"
 PV = "0.1.6"
 
 SRC_URI = "http://www.ex-parrot.com/~chris/driftnet/${PN}-${PV}.tar.gz \
-	file://arm.patch;patch=1"
+	file://arm.patch"
 
 S = "${WORKDIR}/driftnet-${PV}"
 

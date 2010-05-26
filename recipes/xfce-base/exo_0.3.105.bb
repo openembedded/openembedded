@@ -8,9 +8,9 @@ inherit xfce46 python-dir
 XFCE_VERSION = "4.6.1"
 
 SRC_URI += " \
-    file://exo-0.3.105-iocharset.patch;patch=1 \
-    file://exo-no-tests.patch;patch=1 \
-    file://configure.patch;patch=1 \
+    file://exo-0.3.105-iocharset.patch \
+    file://exo-no-tests.patch \
+    file://configure.patch \
 "
 
 # Note: Python checking is broken

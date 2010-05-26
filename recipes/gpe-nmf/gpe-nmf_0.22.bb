@@ -4,8 +4,8 @@ RDEPENDS += "gst-plugin-decodebin"
 RRECOMMENDS += "gst-plugin-ivorbis gst-plugin-tcp"
 PR = "r3"
 
-SRC_URI += " file://playlist-segfault.patch;patch=1;pnum=0 \
-             file://fix-includepath.patch;patch=1"
+SRC_URI += " file://playlist-segfault.patch;striplevel=0 \
+             file://fix-includepath.patch"
 
 do_compile() {
         oe_runmake PREFIX=${prefix} GST_VERSION="0.8"

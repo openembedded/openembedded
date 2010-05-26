@@ -7,7 +7,7 @@ the standard compression program for its system."
 PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/gzip/gzip-${PV}.tar.gz;name=src \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 SRC_URI[src.md5sum] = "c54a31b93e865f6a4410b2dc64662706"
 SRC_URI[src.sha256sum] = "1d06ff9f5c523651bed3dcde6e6aa8118eee48b22534a157a2588705fa517ca3"
 

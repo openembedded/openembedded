@@ -13,17 +13,17 @@ SRCREV = "06733a907b777f7dca21b2d44e36b6c4afbe01fe"
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
 
 SRC_URI += "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=master \
-           file://0005-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board.patch;patch=1 \
-           file://0006-ARM-OMAP-Make-beagle-u-boot-partition-writable.patch;patch=1 \
-           file://0007-ASoC-enable-audio-capture-by-default-for-twl4030.patch;patch=1 \
-           file://0009-MTD-NAND-omap2-proper-fix-for-subpage-read-ECC-error.patch;patch=1 \
-           file://dss2/0015-OMAP-DSS-Add-DSS2-support-for-Beagle.patch;patch=1 \
-           file://dss2/0016-video-add-timings-for-hd720.patch;patch=1 \
-           file://holes.patch;patch=1 \
-           file://no-mmc-spew.patch;patch=1 \
-           file://beagleboard/0001-beagleboard-omap3_-foo-_rate_table-omap35x_-foo.patch;patch=1 \
-           file://beagleboard/0001-board-omap3beagle-prepare-for-DM3730-based-Beaglebo.patch;patch=1 \
-           file://0001-board-omap3touchbook-make-it-build-against-TI-linux.patch;patch=1 \
+           file://0005-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board.patch \
+           file://0006-ARM-OMAP-Make-beagle-u-boot-partition-writable.patch \
+           file://0007-ASoC-enable-audio-capture-by-default-for-twl4030.patch \
+           file://0009-MTD-NAND-omap2-proper-fix-for-subpage-read-ECC-error.patch \
+           file://dss2/0015-OMAP-DSS-Add-DSS2-support-for-Beagle.patch \
+           file://dss2/0016-video-add-timings-for-hd720.patch \
+           file://holes.patch \
+           file://no-mmc-spew.patch \
+           file://beagleboard/0001-beagleboard-omap3_-foo-_rate_table-omap35x_-foo.patch \
+           file://beagleboard/0001-board-omap3beagle-prepare-for-DM3730-based-Beaglebo.patch \
+           file://0001-board-omap3touchbook-make-it-build-against-TI-linux.patch \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

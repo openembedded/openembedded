@@ -2,8 +2,8 @@ PR = "${INC_PR}.0"
 
 require iproute2.inc
 
-SRC_URI += "file://iproute2-2.6.15_no_strip.diff;patch=1;pnum=0 \
-            file://new-flex-fix.patch;patch=1"
+SRC_URI += "file://iproute2-2.6.15_no_strip.diff;striplevel=0 \
+            file://new-flex-fix.patch"
 
 DATE = "061002"
 

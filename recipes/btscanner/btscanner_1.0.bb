@@ -7,8 +7,8 @@ PR = "r3"
 LICENSE = "GPLv2"
 
 SRC_URI = "http://www.pentest.co.uk/src/btscanner-${PV}.tar.gz \
-	   file://0909132213173.patch;patch=1 \
-	   file://configure.patch;patch=1"
+	   file://0909132213173.patch \
+	   file://configure.patch"
 
 #Yes, the packages uses this ugly hardcoded path instead of ${sysconfdir}
 FILES_${PN} += "/usr/etc/oui.txt"

@@ -8,9 +8,9 @@ PV = "2.6.25"
 COMPATIBLE_MACHINE = "(davinci-dvevm|davinci-sffsdr)"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git \
-           file://8250_davinci.patch;patch=1 \
+           file://8250_davinci.patch \
            file://defconfig"
 
-SRC_URI_append_davinci-sffsdr = " file://sffsdr.patch;patch=1"
+SRC_URI_append_davinci-sffsdr = " file://sffsdr.patch"
 
 S = "${WORKDIR}/git"

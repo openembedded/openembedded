@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.gedanken.demon.co.uk/gpsdrive-ipaq/"
 
 SRC_URI = "http://www.gedanken.demon.co.uk/gpsdrive-ipaq/gpsdrive-2.10pre2-ipaq-r4.tar.gz \
            file://gpsdrive.desktop \
-	   file://makefile.patch;patch=1 "
+	   file://makefile.patch "
 
 S = "${WORKDIR}/gpsdrive-2.10pre2-ipaq"
 

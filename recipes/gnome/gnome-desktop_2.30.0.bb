@@ -8,4 +8,4 @@ SRC_URI[archive.sha256sum] = "cb80b676966127d8ee1a9b5ebbed1c23646d62ecdfccbb46d4
 DEPENDS += "gnome-doc-utils gnome-vfs libxrandr"
 
 # FIXME: docs build requires gnome-doc-utils-native (for xml2po) and docbook
-SRC_URI += "file://no-desktop-docs.patch;patch=1;pnum=0"
+SRC_URI += "file://no-desktop-docs.patch;striplevel=0"

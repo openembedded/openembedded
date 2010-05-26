@@ -5,9 +5,9 @@ PV = "0.5.2+svnr${SRCPV}"
 PR = "r3"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=NRCore;proto=https \
-           file://gcc4-fno-threadsafe-statics-NRCore.patch;patch=1 \
-	   file://build_silence.patch;patch=0;maxdate=20070401 \
-	   file://path_fixes.patch;patch=1"
+           file://gcc4-fno-threadsafe-statics-NRCore.patch \
+	   file://build_silence.patch;maxdate=20070401 \
+	   file://path_fixes.patch"
 
 S = "${WORKDIR}/NRCore"
 

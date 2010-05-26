@@ -16,9 +16,9 @@ RRECOMMENDS_gdb_append_linux-spe = " uclibc-thread-db "
 
 inherit gettext
 
-SRC_URI += "file://kill_arm_map_symbols.patch;patch=1 \
-            file://gdbserver-cflags-last.diff;patch=1;pnum=0"
-#FIXME	   file://uclibc.patch;patch=1 \
+SRC_URI += "file://kill_arm_map_symbols.patch \
+            file://gdbserver-cflags-last.diff;striplevel=0"
+#FIXME	   file://uclibc.patch \
 
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils'"
 

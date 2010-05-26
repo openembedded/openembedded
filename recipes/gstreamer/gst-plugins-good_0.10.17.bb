@@ -1,6 +1,6 @@
 require gst-plugins.inc
 
-SRC_URI += "file://flvdemux-ecma.diff;patch=1 \
+SRC_URI += "file://flvdemux-ecma.diff \
 "
 
 PR = "r3"

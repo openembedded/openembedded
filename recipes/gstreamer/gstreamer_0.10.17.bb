@@ -2,8 +2,8 @@ require gstreamer.inc
 
 PR = "r4"
 
-SRC_URI += "file://po-makefile-fix.patch;patch=1 \
-            file://registry-do-not-look-into-debug-dirs.patch;patch=1 "
+SRC_URI += "file://po-makefile-fix.patch \
+            file://registry-do-not-look-into-debug-dirs.patch "
 
 
 SRC_URI[archive.md5sum] = "3232416ea6fceab628236d67a7d0a44a"

@@ -11,9 +11,9 @@ PARALLEL_MAKE = ""
 FILES_pciutils-ids="${prefix}/share/pci.ids"
 PACKAGES =+ "pciutils-ids"
 SRC_URI = "${KERNELORG_MIRROR}/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
-	   file://configure.patch;patch=1 \
-	   file://configure-uclibc.patch;patch=1 \
-	   file://pcimodules-pciutils-2.1.11.diff;patch=1"
+	   file://configure.patch \
+	   file://configure-uclibc.patch \
+	   file://pcimodules-pciutils-2.1.11.diff"
 
 do_configure () {
 	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})

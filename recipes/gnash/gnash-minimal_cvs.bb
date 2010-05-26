@@ -6,9 +6,9 @@ PR = "r4"
 PV = "0.8.3+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous:anonymous@cvs.sv.gnu.org/sources/gnash;module=gnash"
-SRC_URI += "file://libtool-2.2.patch;patch=1 \
-            file://libintl.patch;patch=1 \
-            file://fix-trunc.diff;patch=1"
+SRC_URI += "file://libtool-2.2.patch \
+            file://libintl.patch \
+            file://fix-trunc.diff"
 
 S = ${WORKDIR}/gnash
 

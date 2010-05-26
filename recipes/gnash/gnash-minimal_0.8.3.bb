@@ -7,7 +7,7 @@ EXTRA_OECONF += " --without-included-ltdl \
                   --with-ltdl-lib=${STAGING_LIBDIR} \
 "
 
-SRC_URI += "file://libtool-2.2.patch;patch=1 file://libintl.patch;patch=1"
+SRC_URI += "file://libtool-2.2.patch file://libintl.patch"
 
 
 

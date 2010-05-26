@@ -5,7 +5,7 @@ LICENSE = "BSD"
 #PR = "-r1"
 
 SRC_URI = "http://bitchx.sourceforge.net/ircii-pana-${PV}-final.tar.gz \
-	   file://gcc34.patch;patch=1"
+	   file://gcc34.patch"
 S = "${WORKDIR}/BitchX"
 
 inherit autotools

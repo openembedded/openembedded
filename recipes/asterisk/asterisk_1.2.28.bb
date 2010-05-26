@@ -8,10 +8,10 @@ SECTION = "console/telephony"
 PR = "r1"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
-	 file://uclibc-compat-getloadavg.patch;patch=1 \
-	 file://uclibc-dns.patch;patch=1 \
-         file://asterisk.patch;patch=1 \
-         file://enable-speex.patch;patch=1"
+	 file://uclibc-compat-getloadavg.patch \
+	 file://uclibc-dns.patch \
+         file://asterisk.patch \
+         file://enable-speex.patch"
 
 S = "${WORKDIR}/asterisk-${PV}"
 

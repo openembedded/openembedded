@@ -4,7 +4,7 @@ HOMEPAGE = "http://homepages.tu-darmstadt.de/~p_larbig/wlan/"
 LICENSE = "GPLv2"
 
 SRC_URI = "http://www.tu-darmstadt.de/~p_larbig/wlan/mdk3-${PV}.tar.bz2 \
-           file://cross-compile.diff;patch=1"
+           file://cross-compile.diff"
 
 do_install() {
         install -d ${D}/${sbindir}

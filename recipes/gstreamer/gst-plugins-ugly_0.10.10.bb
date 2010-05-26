@@ -5,8 +5,8 @@ PR = "${INC_PR}.1"
 DEPENDS += "gst-plugins-base mpeg2dec libsidplay"
 
 SRC_URI += "\
-  file://gstmad_16bit.patch;patch=1 \
-  file://gstsid_autofoo_HACK.patch;patch=1 \
+  file://gstmad_16bit.patch \
+  file://gstsid_autofoo_HACK.patch \
 "
 
 python() {

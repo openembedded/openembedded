@@ -8,7 +8,7 @@ inherit gnome distutils-base gconf
 
 PR = "r2"
 
-SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
+SRC_URI += "file://ggz-unbreak-m4.patch \
            "
 
 EXTRA_OECONF = "--with-libggz-includes=${STAGING_INCDIR} \

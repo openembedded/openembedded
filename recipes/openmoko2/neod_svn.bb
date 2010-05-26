@@ -10,8 +10,8 @@ PR = "r7"
 
 inherit openmoko2 gconf
 
-SRC_URI += "file://htc.patch;patch=1;maxrev=3348 \
-            file://ipaq.patch;patch=1;maxrev=3348"
+SRC_URI += "file://htc.patch;maxrev=3348 \
+            file://ipaq.patch;maxrev=3348"
 
 EXTRA_OECONF_om-gta01 = "--with-platform=neo1973"
 EXTRA_OECONF_om-gta02 = "--with-platform=neo1973"

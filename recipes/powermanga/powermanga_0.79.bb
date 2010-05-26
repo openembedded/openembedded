@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = "http://linux.tlk.fr/games/Powermanga/download/powermanga-0.79.tgz \
 	   file://linuxroutines.cpp \
-	   file://pda-tweaks.patch;patch=1 \
+	   file://pda-tweaks.patch \
 	   file://powermanga.pro \
 	   file://powermanga.png \
 	   file://powermanga.desktop"

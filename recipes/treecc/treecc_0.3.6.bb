@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.southern-storm.com.au/treecc.html"
 PRIORITY = "optional"
 
 SRC_URI = "http://www.southern-storm.com.au/download/treecc-${PV}.tar.gz \
-           file://dont-make-in-examples.patch;patch=1"
+           file://dont-make-in-examples.patch"
 
 inherit autotools
 

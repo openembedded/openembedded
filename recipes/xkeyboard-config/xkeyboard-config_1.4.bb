@@ -5,7 +5,7 @@ RDEPENDS = "xkbcomp"
 PR = "r4"
 
 SRC_URI = "http://xlibs.freedesktop.org/xkbdesc/xkeyboard-config-${PV}.tar.bz2 \
-           file://abnt2-fixes.patch;patch=1"
+           file://abnt2-fixes.patch"
 
 inherit autotools
 

@@ -8,7 +8,7 @@ RDEPENDS = "at76c503-firmware"
 
 SRC_URI = "http://download.berlios.de/at76c503a/at76_usb-0.17.tar.gz"
 SRC_URI_ixp4xx = "http://download.berlios.de/at76c503a/at76_usb-0.17.tar.gz \
-                  file://at76_usb-0.17-.patch;patch=1"
+                  file://at76_usb-0.17-.patch"
 S = "${WORKDIR}/at76_usb-${PV}/"
 
 inherit module

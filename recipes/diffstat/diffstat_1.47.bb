@@ -10,7 +10,7 @@ SECTION = "devel"
 # I'd rather rely on debian, and possible have the sources vanish, than risk
 # the sources _changing_ underneith us. -CL
 SRC_URI = "${DEBIAN_MIRROR}/main/d/diffstat/diffstat_${PV}.orig.tar.gz;name=archive \
-	   ${DEBIAN_MIRROR}/main/d/diffstat/diffstat_${PV}-1.diff.gz;patch=1;name=patch"
+	   ${DEBIAN_MIRROR}/main/d/diffstat/diffstat_${PV}-1.diff.gz;name=patch"
 S = "${WORKDIR}/diffstat-${PV}"
 
 inherit autotools

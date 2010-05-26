@@ -5,7 +5,7 @@ PR = "r1"
 
 LICENSE = "LGPL"
 SRC_URI = "http://www.alumnit.ca/download/wvdial-1.56.tar.gz \
-           file://fixmakefile.patch;patch=1"
+           file://fixmakefile.patch"
 
 DEPENDS = "wvstreams"
 RDEPENDS = "ppp"

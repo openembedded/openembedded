@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "http://dircproxy.securiweb.net/pub/1.1/dircproxy-${PV}.tar.gz\
-           file://dircproxy.patch;patch=1"
+           file://dircproxy.patch"
 
 inherit autotools
 

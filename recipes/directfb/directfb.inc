@@ -10,12 +10,12 @@ DEPENDS = "jpeg libpng freetype zlib tslib"
 
 SRC_URI = " \
     http://www.directfb.org/downloads/Old/DirectFB-${PV}.tar.gz \
-    file://fix-pkgconfig-cflags.patch;patch=1 \
-    file://fix-font-missing-char.patch;patch=1 \
-    file://getpagesize.patch;patch=1 \
-    file://mkdfiff.patch;patch=1 \
-    file://dont-use-linux-config.patch;patch=1 \
-    file://ts_lib_autotools.patch;patch=1 \
+    file://fix-pkgconfig-cflags.patch \
+    file://fix-font-missing-char.patch \
+    file://getpagesize.patch \
+    file://mkdfiff.patch \
+    file://dont-use-linux-config.patch \
+    file://ts_lib_autotools.patch \
 "
 S = "${WORKDIR}/DirectFB-${PV}"
 

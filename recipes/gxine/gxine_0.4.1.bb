@@ -31,7 +31,7 @@ RDEPENDS = "libxine-plugin-vo-out-xshm \
 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-${PV}.tar.gz \
-	   file://disable-browser-plugin.patch;patch=1"
+	   file://disable-browser-plugin.patch"
 
 EXTRA_OECONF = " --includedir=${STAGING_INCDIR} \
 		--libdir=${STAGING_LIBDIR} \

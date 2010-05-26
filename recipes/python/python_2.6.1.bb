@@ -6,23 +6,23 @@ PR = "${INC_PR}.0"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
-  file://00-fix-bindir-libdir-for-cross.patch;patch=1 \
-  file://01-use-proper-tools-for-cross-build.patch;patch=1 \
-  file://02-remove-test-for-cross.patch;patch=1 \
-  file://03-fix-tkinter-detection.patch;patch=1 \
-  file://04-default-is-optimized.patch;patch=1 \
-  file://05-enable-ctypes-cross-build.patch;patch=1 \
-  file://06-libffi-enable-default-mips.patch;patch=1 \
-  file://07-export-grammer.patch;patch=1 \
-  file://99-ignore-optimization-flag.patch;patch=1 \
+  file://00-fix-bindir-libdir-for-cross.patch \
+  file://01-use-proper-tools-for-cross-build.patch \
+  file://02-remove-test-for-cross.patch \
+  file://03-fix-tkinter-detection.patch \
+  file://04-default-is-optimized.patch \
+  file://05-enable-ctypes-cross-build.patch \
+  file://06-libffi-enable-default-mips.patch \
+  file://07-export-grammer.patch \
+  file://99-ignore-optimization-flag.patch \
   \
 # not yet pushed forward
 # sitecustomize, sitebranding
   \
-#  file://05-install.patch;patch=1 \
-#  file://06-fix-urllib-exception.patch;patch=1 \
-#  file://16-bug1179-imageop.patch;patch=1 \
-#  file://13-set-wakeup-fix.patch;patch=1 \
+#  file://05-install.patch \
+#  file://06-fix-urllib-exception.patch \
+#  file://16-bug1179-imageop.patch \
+#  file://13-set-wakeup-fix.patch \
   \
   file://sitecustomize.py \
 "

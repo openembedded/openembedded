@@ -7,7 +7,7 @@ SRCNAME = "pyvorbis"
 PR = "ml0"
 
 SRC_URI = "http://www.andrewchatham.com/pyogg/download/${SRCNAME}-${PV}.tar.gz \
-           file://disable-oggcheck.patch;patch=1"
+           file://disable-oggcheck.patch"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

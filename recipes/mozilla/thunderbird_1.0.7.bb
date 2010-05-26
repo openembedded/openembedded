@@ -8,10 +8,10 @@ IPCVER="1.1.3"
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${PV}/source/thunderbird-${PV}-source.tar.bz2;name=archive \
 	http://downloads.mozdev.org/enigmail/src/enigmail-${EMVER}.tar.gz;name=enigmail \
 http://downloads.mozdev.org/enigmail/src/ipc-${IPCVER}.tar.gz;name=ipc \
-	file://xptcstubs.patch;patch=1 \
-	file://no-xmb.patch;patch=1 \
-	file://extensions-hack.patch;patch=1 \
-	file://firefox-1.0-gcc4-compile.patch;patch=1;pnum=0 \
+	file://xptcstubs.patch \
+	file://no-xmb.patch \
+	file://extensions-hack.patch \
+	file://firefox-1.0-gcc4-compile.patch;striplevel=0 \
 	file://mozilla-thunderbird.png file://mozilla-thunderbird.desktop"
 S = "${WORKDIR}/mozilla"
 

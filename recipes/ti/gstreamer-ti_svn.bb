@@ -34,25 +34,25 @@ GST_TI_RC_SCRIPT_omapl138 = "gstreamer-ti-omapl138-rc.sh"
 SRCREV = "573"
 
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
-           file://gstreamer-ti-tracker-462.patch;patch=1 \
-           file://gstreamer-ti-remove-mp3-decode-support-from-auddec1.patch;patch=1 \
+           file://gstreamer-ti-tracker-462.patch \
+           file://gstreamer-ti-remove-mp3-decode-support-from-auddec1.patch \
            file://${GST_TI_RC_SCRIPT} \
 "
 
 SRC_URI_append_omap3 = " \
-           file://gstreamer-ti-add-omapfb.patch;patch=1 \
+           file://gstreamer-ti-add-omapfb.patch \
 "
 
 SRC_URI_append_omapl137 = " \
-           file://gstreamer-ti-omapl137.patch;patch=1 \
+           file://gstreamer-ti-omapl137.patch \
 "
 
 SRC_URI_append_omapl138 = " \
-           file://gstreamer-ti-omapl138.patch;patch=1 \
+           file://gstreamer-ti-omapl138.patch \
 "
 
 SRC_URI_append_dm6467 = " \
-           file://gstreamer-ti-dm6467-usesinglecsserver.patch;patch=1 \
+           file://gstreamer-ti-dm6467-usesinglecsserver.patch \
 "
 
 DEPENDS = "ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly"

@@ -2,7 +2,7 @@ require libogg.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://m4.patch;patch=1"
+SRC_URI += "file://m4.patch"
 
 
 SRC_URI[md5sum] = "461d7097bf47864b872085a94ff94e10"

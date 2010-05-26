@@ -6,8 +6,8 @@ RPROVIDES = "httpd"
 PR = "r3"
 
 SRC_URI = "http://www.boa.org/boa-${PV}.tar.gz \
-           file://cgi.patch;patch=1;pnum=2 \
-           file://debian-patch.diff;patch=1;pnum=2 \
+           file://cgi.patch;striplevel=2 \
+           file://debian-patch.diff;striplevel=2 \
            file://boa.conf \
            file://boa.init"
 

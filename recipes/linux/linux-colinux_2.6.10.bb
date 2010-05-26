@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "colinux"
 
 #http://internap.dl.sourceforge.net/sourceforge/colinux/coLinux-${COLV}.tar.gz
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-	   file://colinux-${COLV}.patch;patch=1 \
+	   file://colinux-${COLV}.patch \
 	   file://defconfig"
 
 S = "${WORKDIR}/linux-${PV}"

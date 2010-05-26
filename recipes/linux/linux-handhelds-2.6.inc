@@ -7,8 +7,8 @@ COMPATIBLE_MACHINE ?= "(asus620|asus730|aximx50|aximx50v|eseries|h1910|h2200|h36
 
 # SRC_URI *must* be overriden in includer, but this is a good reference
 SRC_URI ?= "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
-           file://24-hostap_cs_id.diff;patch=1 \
-           file://hrw-pcmcia-ids-r2.patch;patch=1 \
+           file://24-hostap_cs_id.diff \
+           file://hrw-pcmcia-ids-r2.patch \
 	   file://defconfig"
 
 S = "${WORKDIR}/kernel26"

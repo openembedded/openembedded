@@ -5,8 +5,8 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/dcron-${PV}.tar.gz \
-	   file://compile.patch;patch=1 \
-	   file://strip.patch;patch=1"
+	   file://compile.patch \
+	   file://strip.patch"
 
 do_install () {
 	install -d ${D}${bindir} ${D}${sbindir} \

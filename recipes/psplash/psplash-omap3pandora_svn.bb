@@ -11,7 +11,7 @@ ALTERNATIVE_PRIORITY_omap3pandora = "5"
 # You might also want to patch the colors (see patch)
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
-          file://logo-math.patch;patch=1 \
+          file://logo-math.patch \
           file://psplash-poky-img.h \
           file://psplash-bar-img.h \
           file://psplash-default \

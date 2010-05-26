@@ -9,10 +9,10 @@ PE = "1"
 PR = "r1"
 
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
-           file://disable-docbook2man.patch;patch=1 \
-           file://repository-ping.patch;patch=1 \
-           file://force_depends.patch;patch=1 \
-           file://racing_condition.patch;patch=1 \
+           file://disable-docbook2man.patch \
+           file://repository-ping.patch \
+           file://force_depends.patch \
+           file://racing_condition.patch \
            "
 
 

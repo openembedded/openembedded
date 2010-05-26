@@ -8,7 +8,7 @@ PR          = "r2"
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpephone pkgconfig autotools
 
-SRC_URI += "file://po.patch;patch=1"
+SRC_URI += "file://po.patch"
 
 do_stage () {
 	autotools_stage_all

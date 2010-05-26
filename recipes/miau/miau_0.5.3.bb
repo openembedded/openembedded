@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/miau/miau-${PV}.tar.gz \
-           file://paths.patch;patch=1 \
+           file://paths.patch \
 	   file://miau.init"
 S = "${WORKDIR}/miau-${PV}"
 

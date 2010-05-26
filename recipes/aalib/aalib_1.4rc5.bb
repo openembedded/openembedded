@@ -5,7 +5,7 @@ LICENSE="LGPL"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/aa-project/aalib-${PV}.tar.gz \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 S = "${WORKDIR}/aalib-1.4.0"
 
 inherit autotools

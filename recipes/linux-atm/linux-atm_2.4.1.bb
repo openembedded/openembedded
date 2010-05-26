@@ -7,8 +7,8 @@ PR = "r1"
 LICENSE = "GPL LGPL"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/linux-atm/linux-atm-${PV}.tar.gz \
-           file://gcc-3.4-fix;patch=1 \
-           file://qgen-cross;patch=1"
+           file://gcc-3.4-fix;apply=yes \
+           file://qgen-cross;apply=yes"
 S = "${WORKDIR}/linux-atm-${PV}"
 
 inherit autotools pkgconfig flow-lossage

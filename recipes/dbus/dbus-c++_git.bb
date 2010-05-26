@@ -8,7 +8,7 @@ PE = "1"
 PV = "0.5.0+gitr${SRCPV}"
 
 SRC_URI = "git://gitorious.org/dbus-cplusplus/mainline.git;protocol=git"
-#           file://fix-linking.patch;patch=1"
+#           file://fix-linking.patch"
 S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig

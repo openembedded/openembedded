@@ -43,9 +43,9 @@ FILES_${PN}-symlinks = " \
 	${bindir}/strip"
 
 SRC_URI = "cvs://anoncvs:anoncvs@sources.redhat.com/cvs/src;module=binutils;method=pserver;localdir=src;tag=binutils-csl-arm-2005q1-branch;date=20050603 \
-     file://ld_makefile.patch;patch=1 \
-     file://better_file_error.patch;patch=1 \
-     file://signed_char_fix.patch;patch=1"
+     file://ld_makefile.patch \
+     file://better_file_error.patch \
+     file://signed_char_fix.patch"
 
 S = "${WORKDIR}/src"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"

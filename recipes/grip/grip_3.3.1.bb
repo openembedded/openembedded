@@ -6,7 +6,7 @@ HOMEPAGE="http://www.nostatic.org/grip/"
 LICENSE="GPL"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/${PN}/${PV}/${P}.tar.gz;name=grip \
-         file://no-host-includes.patch;patch=1 "
+         file://no-host-includes.patch "
 SRC_URI[grip.md5sum] = "4b4233999b9f2bc85c711092553ea9aa"
 SRC_URI[grip.sha256sum] = "d46394a1062ed066f9c633b010fd1059e63d9ed791bbb7a85bc6567cf0fd66fd"
 

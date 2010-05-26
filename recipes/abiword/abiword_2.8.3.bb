@@ -6,7 +6,7 @@ PR = "r2"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=abiword \
            file://autogen-common.sh \
-	   file://nodolt.patch;patch=1"
+	   file://nodolt.patch"
 
 SRC_URI[abiword.md5sum] = "8984b09663e1514ca0e361b0627ea285"
 SRC_URI[abiword.sha256sum] = "b74f7ba5852e6225dd1fb52be266eaa33149fb24210b33b5d8d0f37273e0e3cb"

@@ -12,10 +12,10 @@ DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
-           file://Configure-multilib.patch;patch=1 \
-           file://perl-configpm-switch.patch;patch=1 \
-           file://native-nopacklist.patch;patch=1 \
-           file://native-perlinc.patch;patch=1 \
+           file://Configure-multilib.patch \
+           file://perl-configpm-switch.patch \
+           file://native-nopacklist.patch \
+           file://native-perlinc.patch \
 	   "
 
 SRC_URI[perl-5.10.1.md5sum] = "b9b2fdb957f50ada62d73f43ee75d044"

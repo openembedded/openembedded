@@ -11,7 +11,7 @@ RDEPENDS_${PN} = "clamav-daemon"
 PR = "r2"
 
 SRC_URI = "http://memberwebs.com/nielsen/software/clamsmtp/clamsmtp-${PV}.tar.gz \
-           file://update-config.patch;patch=1 \
+           file://update-config.patch \
            file://clamsmtp.init \
            file://doc.configure.txt"
 

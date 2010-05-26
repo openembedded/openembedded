@@ -5,8 +5,8 @@ LICENSE = "PSF"
 PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/numpy/numpy-${PV}.tar.gz \
-           file://unbreak-assumptions.diff;patch=1 \
-	   file://trycompile.diff;patch=1 \
+           file://unbreak-assumptions.diff \
+	   file://trycompile.diff \
 	   file://config.h \
 	   file://numpyconfig.h \
 	  "

@@ -6,7 +6,7 @@ RPROVIDES_${PN}  = "esd"
 DEPENDS = "audiofile osso-dsp-headers"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.orig.tar.gz \
-           file://qa-silence.patch;patch=1"
+           file://qa-silence.patch"
 
 # for qa-silence.patch:
 export MME_INCDIR = "${STAGING_INCDIR}/mme"

@@ -4,7 +4,7 @@ RDEPENDS += "imlib2-loaders"
 LICENSE = "GPL"
 
 SRC_URI = "http://thegraveyard.org/files/hsetroot-${PV}.tar.gz \
-           file://pkgconfigize-imlib.patch;patch=1"
+           file://pkgconfigize-imlib.patch"
 
 inherit autotools
 

@@ -7,7 +7,7 @@ DESCRIPTION = "Multistroke / full word handwriting recognition for X"
 LICENSE = "GPL"
 
 SRC_URI = "${HANDHELDS_CVS};module=rosetta \
-	file://rosetta-makefile.patch;patch=1"
+	file://rosetta-makefile.patch"
 S = "${WORKDIR}/rosetta"
 PR = "r4"
 

@@ -30,8 +30,8 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://uClibc.config \
 	file://uClibc.machine \
 	file://uClibc.distro \
-	file://uclibc-arm-ftruncate64.patch;patch=1 \
-	file://uclibc_enable_log2_test.patch;patch=1 \
-	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
+	file://uclibc-arm-ftruncate64.patch \
+	file://uclibc_enable_log2_test.patch \
+	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch \
 	"
 S = "${WORKDIR}/git"

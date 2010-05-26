@@ -7,8 +7,8 @@ DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS} makedepend-native mesa-dri-glsl-native"
 
 SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaLib-${PV}.tar.bz2;name=archive \
            ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaDemos-${PV}.tar.bz2;name=demos \
-	   file://fix-progs-makefile.patch;patch=1 \
-	   file://glamo.patch;patch=1 \
+	   file://fix-progs-makefile.patch \
+	   file://glamo.patch \
           "
 SRC_URI[archive.md5sum] = "85cb891eecb89aae4fdd3499cccd934b"
 SRC_URI[archive.sha256sum] = "8c85db5844303b806b18fc6bd40a9dccb02d90b54878a94f910674673ba0aa35"

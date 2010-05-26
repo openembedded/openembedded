@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "BSD"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/uriparser/uriparser-${PV}.tar.bz2 \
-           file://autofoo.patch;patch=1"
+           file://autofoo.patch"
 S = "${WORKDIR}/uriparser-${PV}"
 
 inherit autotools pkgconfig

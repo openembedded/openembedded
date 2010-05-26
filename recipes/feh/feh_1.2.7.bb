@@ -4,7 +4,7 @@ LICENSE = "MIT"
 DEPENDS = "virtual/imlib2 giblib jpeg virtual/libx11 libxext libxt"
 
 SRC_URI = "http://linuxbrit.co.uk/downloads/feh-${PV}.tar.gz \
-	   file://cross.patch;patch=1"
+	   file://cross.patch"
 S = "${WORKDIR}/feh-${PV}"
 
 inherit autotools

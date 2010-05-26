@@ -10,10 +10,10 @@ PR = "r0"
 
 SRC_URI = " \
 	http://hg.linux-ha.org/glue/archive/glue-${PV}.tar.bz2;name=tar \
-	file://glue-remove-getpid-check.patch;patch=1 \
+	file://glue-remove-getpid-check.patch \
 	file://volatiles \
 	"
-SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch;patch=1"
+SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch"
 SRC_URI[tar.md5sum] = "09721e2d2ab3c3fa6696b4347e31721a"
 SRC_URI[tar.sha256sum] = "c437a04494850b79c094f7e84d396e917ec09d9a2fdfb7c11f3b420741ea91a2"
 

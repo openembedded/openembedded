@@ -11,7 +11,7 @@ DEPENDS = "gnome-common gtk+ libgnomeui"
 
 EXTRA_OECONF = "--disable-schemas-install"
 
-SRC_URI += "file://noscrollkeeper.patch;patch=1"
+SRC_URI += "file://noscrollkeeper.patch"
 
 do_configure_prepend () {
 	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}

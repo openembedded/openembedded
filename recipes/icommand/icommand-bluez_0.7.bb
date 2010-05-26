@@ -8,7 +8,7 @@ inherit java
 
 SRC_URI = "\
     svn://nxtcommand.svn.sourceforge.net/svnroot/nxtcommand;module=icommand-projects/trunk/icommand-bluez;rev=134;proto=https \
-    file://makefile.patch;patch=1 \
+    file://makefile.patch \
     "
 
 DEPENDS = "bluez-libs"

@@ -8,7 +8,7 @@ S = "${WORKDIR}/me060909"
 
 SRC_URI = "http://www.jasspa.com/release_${PV}/jasspa-mesrc-${PV}-2.tar.gz;name=archive \
            http://www.jasspa.com/release_${PV}/jasspa-memacros-${PV}.tar.gz;name=macros \
-           file://zaurus_make.patch;patch=1"
+           file://zaurus_make.patch"
 
 do_compile () {
         oe_runmake -C src -f zaurus.gmk mec

@@ -11,8 +11,8 @@ PR = "r2"
 inherit xfce46
 
 SRC_URI += " \
-    file://xfce4-settings-4.6.1-libxklavier.patch;patch=1 \
-    file://xfce4-settings-4.6.1-configure.patch;patch=1 \
+    file://xfce4-settings-4.6.1-libxklavier.patch \
+    file://xfce4-settings-4.6.1-configure.patch \
 "
 
 SRC_URI[md5sum] = "dc1c8704471c5b0104fa10c30eb60cb6"

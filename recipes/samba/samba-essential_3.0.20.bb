@@ -3,9 +3,9 @@ inherit update-rc.d
 
 PR = "r7"
 
-SRC_URI = "file://config-lfs.patch;patch=1 \
+SRC_URI = "file://config-lfs.patch \
 	   file://init-essential \
-           file://quota.patch;patch=1;pnum=0 \
+           file://quota.patch;striplevel=0 \
 	   file://smb-essential.conf \
 	   file://smb-essential-inactive.conf \
 	   file://Managing-Samba.txt"

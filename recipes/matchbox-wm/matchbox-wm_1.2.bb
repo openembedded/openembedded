@@ -6,8 +6,8 @@ RDEPENDS = ""
 PR ="r5"
 
 SRC_URI = "http://matchbox-project.org/sources/matchbox-window-manager/1.2/matchbox-window-manager-${PV}.tar.bz2 \
-           file://configure_fix.patch;patch=1 \
-           file://select-client-crash.patch;patch=1 \
+           file://configure_fix.patch \
+           file://select-client-crash.patch \
            file://gconf-2.m4 \
            file://kbdconfig"
 

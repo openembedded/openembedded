@@ -10,7 +10,7 @@ PR = "r1"
 inherit autotools_stage pkgconfig
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
-	   file://fallback-folder.patch;patch=1;pnum=0 \
+	   file://fallback-folder.patch;striplevel=0 \
 "
 S = "${WORKDIR}/${PN}"
 

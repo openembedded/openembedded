@@ -6,8 +6,8 @@ PR = "r4"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
-  file://tcl-add-soname.patch;patch=1;pnum=2 \
-#  file://fix-configure.patch;patch=1;pnum=2 \
+  file://tcl-add-soname.patch;striplevel=2 \
+#  file://fix-configure.patch;striplevel=2 \
 "
 S = "${WORKDIR}/tcl${PV}/unix"
 

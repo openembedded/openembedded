@@ -14,7 +14,7 @@ PR = "${INC_PR}.0"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 SRC_URI += "file://uClibc.machine file://uClibc.distro \
-	    file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
+	    file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch \
 	   "
 
 #recent versions uclibc require real kernel headers

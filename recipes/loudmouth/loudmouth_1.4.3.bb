@@ -5,7 +5,7 @@ DEPENDS = "glib-2.0 gnutls check"
 PR = "r1"
 
 SRC_URI = "http://ftp.imendio.com/pub/imendio/${PN}/src/${PN}-${PV}.tar.gz \
-           file://04-use-pkg-config-for-gnutls.patch;patch=1" 
+           file://04-use-pkg-config-for-gnutls.patch" 
 
 inherit autotools pkgconfig
 

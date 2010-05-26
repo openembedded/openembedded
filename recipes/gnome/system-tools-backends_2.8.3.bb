@@ -16,7 +16,7 @@ SRC_URI += " \
            "
 
 SRC_URI_append_angstrom = " \
-            file://add-angstrom-distro.patch;patch=1 \
+            file://add-angstrom-distro.patch \
            "
 
 EXTRA_OECONF = " --with-net-dbus=${libdir}/perl5 "

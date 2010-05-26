@@ -8,7 +8,7 @@ RREPLACES = "hotplug"
 PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-ng-${PV}.tar.gz \
-	   file://flags.patch;patch=1"
+	   file://flags.patch"
 S = "${WORKDIR}/hotplug-ng-${PV}"
 
 LD = "${CC}"

@@ -12,7 +12,7 @@ PR = "r1"
 
 SRCREV = "17431547113100a3ae0a622b9f76ad17fb76eb56"
 SRC_URI = "git://git.xilinx.com/linux-2.6-xlnx.git;protocol=git \
-           file://xilinxfb.patch;patch=1 \
+           file://xilinxfb.patch \
            file://defconfig"
 
 inherit kernel xilinx-bsp

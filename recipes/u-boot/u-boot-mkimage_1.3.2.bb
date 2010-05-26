@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 SECTION = "bootloader"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
-           file://fix-arm920t-eabi.patch;patch=1"
+           file://fix-arm920t-eabi.patch"
 
 PR = "r3"
 

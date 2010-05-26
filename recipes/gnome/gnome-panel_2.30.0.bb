@@ -5,7 +5,7 @@ DEPENDS = "libcanberra gconf librsvg libgweather startup-notification libwnck or
 
 inherit gnome pkgconfig
 
-SRC_URI += "file://idl-sysroot.patch;patch=1"
+SRC_URI += "file://idl-sysroot.patch"
 
 SRC_URI[archive.md5sum] = "e17f25417b2c9011ed1c3ebd75706de6"
 SRC_URI[archive.sha256sum] = "7e8f99d3105bc0dda038b5859ab56d0a9740e244d7853786f1deb2df0a692220"

@@ -10,7 +10,7 @@ PR = "r2"
 
 #We apply a patch that subverts the checks for jpeg, zlib, png and tiff because we know OE has the required versions, but it is still a hack.
 SRC_URI = "http://www.povray.org/redirect/www.povray.org/ftp/pub/povray/Official/Unix/${P}.tar.bz2 \
-	   file://configure-cross-hack.patch;patch=1"
+	   file://configure-cross-hack.patch"
 
 inherit autotools pkgconfig
 

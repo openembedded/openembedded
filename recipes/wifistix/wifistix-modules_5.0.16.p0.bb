@@ -13,18 +13,18 @@ PR = "r0"
 SRC_URI = "http://files.gumstix.com/cf8385-5.0.16.p0-26306.tbz \
 			file://wifistix.conf \
 			file://mcf25 \
-			file://marvell-devicename.patch;patch=1 \
-			file://marvell-devicetable.patch;patch=1 \
-			file://marvell-gumstix.patch;patch=1 \
-			file://sbi-no-inline.patch;patch=1 \
-			file://2.6.17-new-pcmcia-layer.patch;patch=1 \
-			file://bad-cast.patch;patch=1 \
-			file://sk_buff.patch;patch=1 \
-			file://struct-changes.patch;patch=1 \
-			file://no-more-config-h.patch;patch=1 \
-			file://realtime-kernel.patch;patch=1 \
-			file://install-properly.patch;patch=1 \
-			file://fix-essid-truncation.patch;patch=1"
+			file://marvell-devicename.patch \
+			file://marvell-devicetable.patch \
+			file://marvell-gumstix.patch \
+			file://sbi-no-inline.patch \
+			file://2.6.17-new-pcmcia-layer.patch \
+			file://bad-cast.patch \
+			file://sk_buff.patch \
+			file://struct-changes.patch \
+			file://no-more-config-h.patch \
+			file://realtime-kernel.patch \
+			file://install-properly.patch \
+			file://fix-essid-truncation.patch"
 
 S = "${WORKDIR}/src_cf8385"
 

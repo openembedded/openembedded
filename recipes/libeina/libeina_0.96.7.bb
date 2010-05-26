@@ -6,7 +6,7 @@ PR = "r2"
 DEPENDS = "glib-2.0 gstreamer"
 
 SRC_URI = "http://bolgo.cent.uji.es/files/libeina/${P}.tar.gz \
-		  file://nomagic.diff;patch=1"
+		  file://nomagic.diff"
 
 EXTRA_OECONF = "--disable-magic"
 

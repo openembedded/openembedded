@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "netkit-tftp includes a commandline tftp client."
 LICENSE = "BSD"
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-tftp-${PV}.tar.gz \
-	   file://mconfig.patch;patch=1"
+	   file://mconfig.patch"
 
 EXTRA_OEMAKE = ""
 do_compile () {

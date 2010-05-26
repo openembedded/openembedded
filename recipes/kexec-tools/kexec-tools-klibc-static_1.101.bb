@@ -4,8 +4,8 @@ require kexec-tools.inc
 PR = "r8"
 DEPENDS = "klibc"
 
-SRC_URI += "file://kexec-static.patch;patch=1 \
-	    file://kexec-klibc.patch;patch=1 \
+SRC_URI += "file://kexec-static.patch \
+	    file://kexec-klibc.patch \
 	    "
 S = "${WORKDIR}/kexec-tools-${PV}"
 

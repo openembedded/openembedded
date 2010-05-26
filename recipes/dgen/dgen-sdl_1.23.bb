@@ -5,7 +5,7 @@ LICENSE = "BSD"
 
 SRC_URI = "\
   http://pknet.com/~joe/${PN}-${PV}.tar.gz \
-  file://fix-configure-and-make.patch;patch=1 \
+  file://fix-configure-and-make.patch \
 "
 
 inherit autotools

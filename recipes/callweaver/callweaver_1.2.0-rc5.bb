@@ -18,7 +18,7 @@ CWRCV = "rc5"
 
 SRC_URI = "http://devs.callweaver.org/release/callweaver-1.2.0-${CWRCV}.tar.bz2 \
            svn://svn.callweaver.org/callweaver-sounds/trunk/sounds/en_US;module=MelanieTaylor;proto=https;rev=4466 \
-           file://bootstrap.patch;patch=1 \
+           file://bootstrap.patch \
            file://logrotate \
            file://volatiles \
            file://init"

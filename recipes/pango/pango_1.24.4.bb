@@ -2,7 +2,7 @@ require pango.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://CVE-2010-0421.patch;patch=1"
+SRC_URI += "file://CVE-2010-0421.patch"
 
 
 SRC_URI[archive.md5sum] = "f2eeaf183930e00ed28fca3a6ed1deb0"

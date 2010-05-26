@@ -6,7 +6,7 @@ grabbing images and AVI movies, tuning in TV stations, etc."
 DEPENDS = "libxaw libxmu libxt libxpm libxext virtual/libx11 ncurses libxft fs jpeg"
 
 SRC_URI = "http://dl.bytesex.org/releases/xawtv/xawtv-${PV}.tar.gz \
-	   file://make.patch;patch=1"
+	   file://make.patch"
 S = "${WORKDIR}/xawtv-${PV}"
 
 inherit autotools

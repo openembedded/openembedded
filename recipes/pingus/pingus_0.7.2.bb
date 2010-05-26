@@ -11,9 +11,9 @@ inherit scons
 
 SRC_URI = "\
   http://pingus.seul.org/files/pingus-0.7.2.tar.bz2 \
-  file://sconstruct.diff;patch=1 \
-  file://boost.patch;patch=1 \
-  file://cheader.patch;patch=1 \
+  file://sconstruct.diff \
+  file://boost.patch \
+  file://cheader.patch \
   file://pingus.desktop \
   file://pingus.png \
   file://pingus-gta012.sh \

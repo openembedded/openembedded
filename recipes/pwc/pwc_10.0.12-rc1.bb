@@ -9,7 +9,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "http://www.saillard.org/linux/pwc/files/pwc-${PV}.tar.bz2 \
-           file://Makefile.patch;patch=1"
+           file://Makefile.patch"
 
 S = "${WORKDIR}/pwc-${PV}"
 

@@ -6,9 +6,9 @@ RDEPENDS_${PN}-install = "diffutils"
 PR = "r6"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz \
-           file://automake-1.10.patch;patch=1 \
-           file://grub-0.97-disk_geometry-1.patch;patch=1 \
-           file://grub-support-256byte-inode.diff;patch=1 \
+           file://automake-1.10.patch \
+           file://grub-0.97-disk_geometry-1.patch \
+           file://grub-support-256byte-inode.diff \
            file://menu.lst"
 
 inherit autotools

@@ -5,8 +5,8 @@ DEPENDS = "expat ffmpeg sqlite3 libexif js zlib file id3lib"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mediatomb/mediatomb-${PV}.tar.gz \
-           file://curl.diff;patch=1 \
-	   file://inotify.diff;patch=1 \
+           file://curl.diff \
+	   file://inotify.diff \
 	  "
 
 inherit autotools pkgconfig

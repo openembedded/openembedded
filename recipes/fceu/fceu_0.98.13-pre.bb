@@ -7,7 +7,7 @@ DEPENDS = "virtual/libsdl"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/fceultra/fceu-${PV}.src.tar.bz2 \
-	   file://fceu.patch;pnum=0;patch=1 \
+	   file://fceu.patch;striplevel=0 \
 	  "
 
 S = "${WORKDIR}/fceu"

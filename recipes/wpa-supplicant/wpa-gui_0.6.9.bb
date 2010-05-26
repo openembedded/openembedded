@@ -11,10 +11,10 @@ RRECOMMENDS = "${LIBC}-gconv-utf-16"
 PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz;name=archive\
-         file://icons.patch;patch=1 \
-         file://session_manager.patch;patch=1 "
+         file://icons.patch \
+         file://session_manager.patch "
 
-SRC_URI_append_shr = "file://desktop.patch;patch=1 \
+SRC_URI_append_shr = "file://desktop.patch \
 	              file://style"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant/wpa_gui-qt4"

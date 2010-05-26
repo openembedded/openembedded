@@ -14,15 +14,15 @@ SECTION = "libs"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
-SRC_URI += "file://openldap-autoconf.patch;patch=1"
+SRC_URI += "file://openldap-autoconf.patch"
 # The build tries to run a host executable, this fails.  The patch
 # causes the executable and its data to be installed instead of
 # the output - ucgendat must be run after the ipkg install!
-SRC_URI += "file://ucgendat.patch;patch=1"
+SRC_URI += "file://ucgendat.patch"
 # The original top.mk used INSTALL, not INSTALL_STRIP_PROGRAM when
 # installing .so and executables, this fails in cross compilation
 # environments
-SRC_URI += "file://install-strip.patch;patch=1"
+SRC_URI += "file://install-strip.patch"
 
 inherit autotools
 

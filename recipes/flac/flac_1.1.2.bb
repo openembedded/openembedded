@@ -2,7 +2,7 @@ require flac.inc
 
 PR = "r7"
 
-SRC_URI += "file://disable-xmms-plugin.patch;patch=1"
+SRC_URI += "file://disable-xmms-plugin.patch"
 
 do_configure_append () {
 	# removes '-read-only-relocs' which is enabled for PowerPC builds.

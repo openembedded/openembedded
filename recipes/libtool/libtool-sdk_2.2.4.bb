@@ -2,7 +2,7 @@ require libtool_${PV}.bb
 
 PR = "${INC_PR}.0"
 
-SRC_URI_append = " file://cross_compile.patch;patch=1"
+SRC_URI_append = " file://cross_compile.patch"
 
 S = "${WORKDIR}/libtool-${PV}"
 

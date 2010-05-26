@@ -7,7 +7,7 @@ DEPENDS = "bzip2 jpeg libpng librsvg tiff zlib"
 PR = "r4"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
-           file://PerlMagic_MakePatch;patch=1 \
+           file://PerlMagic_MakePatch;apply=yes \
           "
 
 IMVER = "6.4.4"

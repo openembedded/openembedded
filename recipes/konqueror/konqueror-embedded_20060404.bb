@@ -12,10 +12,10 @@ inherit autotools
 
 SRC_URI = "svn://anonsvn.kde.org/home/kde/tags/KDE/3.5.1;module=kdelibs;date=${PV} \
            svn://anonsvn.kde.org/home/kde/trunk;module=kdenox;date=${PV} \
-           file://gcc4.patch;patch=1 \
-	   file://dont-use-kde-config.patch;patch=0"
+           file://gcc4.patch \
+	   file://dont-use-kde-config.patch"
 # uncomment this for a static build
-#          file://inject-extraflags.patch;patch=1"
+#          file://inject-extraflags.patch"
 S = "${WORKDIR}/kdenox"
 
 export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"

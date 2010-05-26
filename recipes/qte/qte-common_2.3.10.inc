@@ -19,35 +19,35 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
 CXXFLAGS := "${@oe_filter_out('-fvisibility-inlines-hidden', '${CXXFLAGS}', d)}"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=1f7ad30113afc500cab7f5b2f4dec0d7 \
-   	   file://qpe.patch;patch=1 \
-	   file://vt-switch.patch;patch=1 \
-	   file://daemonize.patch;patch=1 \
-	   file://no-moc.patch;patch=1 \
-	   file://gcc3.patch;patch=1 \
-	   file://gcc4.patch;patch=1 \
-	   file://encoding.patch;patch=1 \
-	   file://fix-qgfxraster.patch;patch=1 \
-	   file://qt-visibility.patch;patch=1 \
-	   file://tslib.patch;patch=1 \
-	   file://handhelds.patch;patch=1 \
-	   file://qiconview-speed.patch;patch=1 \
-	   file://qtabbar.patch;patch=1 \
-	   file://increase-qxml-robustness.patch;patch=1 \
-	   file://qte-fix-iconsize.patch;patch=1 \
-	   file://fix-linuxfb-setmode.patch;patch=1 \
-	   file://fix-linuxfb-offscreenoverflow.patch;patch=1 \
-	   file://fix-qscreen-sync.patch;patch=1 \
-	   file://improve-calibration-r0.patch;patch=1 \
-	   file://key.patch;patch=1 \
-	   file://bidimetrics.patch;patch=5 \
-	   file://fix-native-build.patch;patch=1 \
-	   file://fix-errno-exception-spec.patch;patch=1 \
-           file://keyboardless-buttonmap.patch;patch=1 \
-           file://kernel-keymap.patch;patch=1 \
-	   file://kernel-keymap-corgi.patch;patch=1 \
-	   file://remove-unused-kbdhandler.patch;patch=1 \
-	   file://disable-dup-rotation.patch;patch=1 \
-	   file://fix-qte-asm-include.patch;patch=1 \
+   	   file://qpe.patch \
+	   file://vt-switch.patch \
+	   file://daemonize.patch \
+	   file://no-moc.patch \
+	   file://gcc3.patch \
+	   file://gcc4.patch \
+	   file://encoding.patch \
+	   file://fix-qgfxraster.patch \
+	   file://qt-visibility.patch \
+	   file://tslib.patch \
+	   file://handhelds.patch \
+	   file://qiconview-speed.patch \
+	   file://qtabbar.patch \
+	   file://increase-qxml-robustness.patch \
+	   file://qte-fix-iconsize.patch \
+	   file://fix-linuxfb-setmode.patch \
+	   file://fix-linuxfb-offscreenoverflow.patch \
+	   file://fix-qscreen-sync.patch \
+	   file://improve-calibration-r0.patch \
+	   file://key.patch \
+	   file://bidimetrics.patch;striplevel=5 \
+	   file://fix-native-build.patch \
+	   file://fix-errno-exception-spec.patch \
+           file://keyboardless-buttonmap.patch \
+           file://kernel-keymap.patch \
+	   file://kernel-keymap-corgi.patch \
+	   file://remove-unused-kbdhandler.patch \
+	   file://disable-dup-rotation.patch \
+	   file://fix-qte-asm-include.patch \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -55,18 +55,18 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 # add device specific patches here
 #
 
-W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
-                      file://c7x0-w100-gcc4.patch;patch=1 \
-		      file://suspend-resume-hooks.patch;patch=1"
+W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch \
+                      file://c7x0-w100-gcc4.patch \
+		      file://suspend-resume-hooks.patch"
 
 #SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
-#SRC_URI_append_spitz        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
-#SRC_URI_append_akita        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
+#SRC_URI_append_spitz        = "file://spitz-adhoc-keypad-rotate.patch "
+#SRC_URI_append_akita        = "file://spitz-adhoc-keypad-rotate.patch "
 
 # "ipaqs" used to have this, but later were proven to at least work
 # without it. Review again and see if has interesting bits to be applied
 # universally.
-#SRC_URI_append   = "file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append   = "file://ipaq_sound_fix.patch "
 
 
 S = "${WORKDIR}/qt-${PV}"

@@ -7,7 +7,7 @@ PR = "r4"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch \
 	  "
 S = "${WORKDIR}/linux-${PV}"
 

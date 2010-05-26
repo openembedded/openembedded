@@ -10,7 +10,7 @@ PR = "r1"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/${MAJ_VER}/${SRCNAME}-${PV}.tar.bz2;name=pygtk \
-           file://fix-gtkunixprint.patch;patch=1 \
+           file://fix-gtkunixprint.patch \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 

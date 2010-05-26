@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \
-  file://configure-libtool.patch;patch=1 \
+  file://configure-libtool.patch \
 "
 	    
 inherit autotools

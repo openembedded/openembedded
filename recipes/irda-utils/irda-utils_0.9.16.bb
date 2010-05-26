@@ -6,10 +6,10 @@ LICENSE = "GPL"
 PR = "r9"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://m4.patch;patch=1 \
-	   file://ldflags.patch;patch=1 \
-           file://sbindir.patch;patch=1 \
+	   file://configure.patch \
+	   file://m4.patch \
+	   file://ldflags.patch \
+           file://sbindir.patch \
 	   file://init"
 
 export SYS_INCLUDES="-I${STAGING_INCDIR}"

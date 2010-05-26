@@ -12,7 +12,7 @@ do_unpack[depends] += "unzip-native:do_populate_sysroot"
 # on the #oe IRC channel -- this recipe probably needs updated.
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2;name=kernel \
-           file://linux-2.6.16.patch;patch=1 \
+           file://linux-2.6.16.patch \
            file://defconfig \
 	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip;name=x270patch"
 

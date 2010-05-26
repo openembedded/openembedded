@@ -6,12 +6,12 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libx11"
 
 SRC_URI = "http://www.etla.net/libstroke/${P}.tar.gz \
-	file://configure.in.patch;patch=1 \
-	file://libstroke-Makefile.am.patch;patch=1 \
-	file://tests-Makefile.am.patch;patch=1 \
+	file://configure.in.patch \
+	file://libstroke-Makefile.am.patch \
+	file://tests-Makefile.am.patch \
 	"
-#	file://Makefile.am.patch;patch=1 \
-#	file://libgstroke-Makefile.am.patch;patch=1 \
+#	file://Makefile.am.patch \
+#	file://libgstroke-Makefile.am.patch \
 
 inherit autotools pkgconfig
 

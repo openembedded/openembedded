@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 DEPENDS = "binutils"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/ksymoops/v2.4/ksymoops-${PV}.tar.bz2 \
-	   file://flags.patch;patch=1"
+	   file://flags.patch"
 S = "${WORKDIR}/ksymoops-${PV}"
 
 do_install () {

@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "alsa-lib ncurses"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
-           file://alsa-utils-automake.patch;patch=1 \
+           file://alsa-utils-automake.patch \
 	  "
 
 inherit autotools

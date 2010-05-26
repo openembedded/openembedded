@@ -2,8 +2,8 @@ require pixman.inc
 PR = "${INC_PR}.0"
 
 SRC_URI += " \
-           file://pixman-arm.patch;patch=1 \
-	   file://pixman-x888-565.patch;patch=1 \
+           file://pixman-arm.patch \
+	   file://pixman-x888-565.patch \
 	  "
 
 SRC_URI[archive.md5sum] = "09357cc74975b01714e00c5899ea1881"

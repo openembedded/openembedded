@@ -8,7 +8,7 @@ LICENSE = "GPL"
 DEPENDS = "libxml2 libxslt jpeg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/albumshaper/albumshaper_${PV}.tar.bz2 \
-           file://fixpaths.patch;patch=1"
+           file://fixpaths.patch"
 S = "${WORKDIR}/albumshaper_2.1_src"
 
 inherit qmake qt3x11
