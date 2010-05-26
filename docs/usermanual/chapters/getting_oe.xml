@@ -98,7 +98,7 @@ $ <command>git</command> clone git://git.openembedded.org/openembedded</screen>
         seems good practice to update your OpenEmbedded tree at least
         daily. To do this, run:
         <screen>
-$ <command>cd</command> $OEBASE
+$ <command>cd</command> $OEBASE/openembedded
 $ <command>git</command> pull</screen>
       </para>
     </section>
@@ -142,7 +142,7 @@ $ <command>git</command> pull</screen>
 
       <para>Since the path to your OpenEmbedded installation will be used in
         many places, setting it in your environment will allow you to use
-        the <varname>$OEBASE</varname> variable in all pathes and make it
+        the <varname>$OEBASE</varname> variable in all paths and make it
         easier to change in the future should the need arise. To
         set <varname>$OEBASE</varname> if you use a Bourne like shell
         <footnote>
@@ -342,6 +342,16 @@ MACHINE = "om-gta01"</screen>
             </varlistentry>
 
             <varlistentry>
+              <term><literal>base-image</literal></term>
+              <listitem>
+                <para>Build an image that is the smallest possible image
+                  which allows for ssh access and the ability to install
+                  additional packages using ipkg.
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
               <term><literal>console-image</literal></term>
               <listitem>
                 <para>Build an image without the X11, gtk+, or qt windowing
@@ -463,9 +473,10 @@ MACHINE = "om-gta01"</screen>
             </varlistentry>
 
             <varlistentry>
-              <term><literal>task-native-sdk</literal></term>
+              <term><literal>task-sdk-native</literal></term>
               <listitem>
-                <para>Mata-package for native (on-device) SDK.
+                <para>Meta-package for native (on-device) SDK.  i.e. libc, gcc,
+                  make, etc.
                 </para>
               </listitem>
             </varlistentry>
@@ -534,6 +545,13 @@ MACHINE = "om-gta01"</screen>
               <term><literal>virtual/kernel</literal></term>
               <listitem>
                 <para>Builds the appropriate kernel for your device.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><literal>virtual/bootloader</literal></term>
+              <listitem>
+                <para>Builds the appropriate bootloader for your device.</para>
               </listitem>
             </varlistentry>
           </variablelist>
