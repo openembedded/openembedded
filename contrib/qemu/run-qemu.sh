@@ -46,24 +46,27 @@
 # hostname -	Name of the target
 # nfsdir -	Absolute path to directory having the root file system on NFS
 # device
-# networking -	If target should enable networking over bridge set to 'yes' else 'no'
 # nfsboot -	'yes' if root file system is to be mounted over NFS, if booting from
 #		disk image then set it to 'no'
+# networking -	If target should enable networking over bridge set to 'yes' else 'no'
+#		This will be set to 'yes' automatically if nfsboot is enabled
 # staticip -	Set to 'yes' if IP address is assigned statically or 'no' if getting
 #		from dhcp server. Note that this option is not entertained if networking
 #		is disabled
 
 supported_archs="{arm mips ppc sh4 x86}"
-if [ $# -lt 1 ]; then
+if [ $# -ne 2 ]; then
     echo -en "
-    Usage: `basename $0` <arch>
+    Usage: `basename $0` <arch> <libc>
     where <arch> is one $supported_archs
-    Example: `basename $0` arm
+    libc is uclibc glibc or eglibc
+    Example: `basename $0` arm eglibc
 "
-    exit 1
+    exit 0
 fi
 
 arch=$1
+libc=$2
 mem=256				# memory for guest server in Mb
 imagetype="ext2"
 networking="no"
@@ -79,9 +82,8 @@ case $arch in
 	consoleopt="console=ttyAMA0 console=ttyS0"
 	rootdisk="sda"
 	qemuopts="-nographic"
-	libc="eglibc"
         kernel="zImage"
-        image="console-image"
+        image="minimalist-image"
         ;;
     mips)
 	address="10.0.1.102"
@@ -91,9 +93,8 @@ case $arch in
         consoleopt="console=ttyS0"
 	rootdisk="hda"
 	qemuopts="-nographic"
-	libc="eglibc"
         kernel="vmlinux"
-        image="console-image"
+        image="minimalist-image"
         ;;
     ppc|powerpc)
     	arch=ppc
@@ -104,7 +105,6 @@ case $arch in
         consoleopt="console=ttyS0"
 	rootdisk="hdc"
 	qemuopts="-nographic"
-	libc="eglibc"
         kernel="vmlinux"
         image="minimalist-image"
         ;;
@@ -118,7 +118,6 @@ case $arch in
         consoleopt="console=ttySC1 noiotrap earlyprintk=sh-sci.1"
 	rootdisk="sda"
 	qemuopts="-monitor null -serial vc -serial stdio"
-	libc="eglibc"
         kernel="zImage"
         image="minimalist-image"
         ;;
@@ -130,7 +129,6 @@ case $arch in
         consoleopt="console=ttyS0"
 	rootdisk="hda"
 	qemuopts="-nographic"
-	libc="eglibc"
         kernel="bzImage"
         image="minimalist-image"
         ;;
@@ -150,7 +148,7 @@ gdbit="-redir tcp:2222::22 -gdb tcp::$gdbport"   # debug the kernel using gdb se
 				# add -S to stop after launch and wait for
 				# gdb to connect
 
-oetmpdir=/scratch/oe/qemu$arch
+oetmpdir=/scratch/oe
 oesrcdir=$HOME/work/oe/openembedded
 
 nfsopts="rsize=8192,wsize=8192,hard,intr,tcp,nolock"	# nfs options
@@ -158,6 +156,8 @@ nfsopts="rsize=8192,wsize=8192,hard,intr,tcp,nolock"	# nfs options
 if [ $nfsboot = "yes" ]; then
 	# for NFS root 
 	rootfs="root=/dev/nfs rw nfsroot=$nfsserver:$nfsdir,$nfsopts"
+	# without networking nfsroot wouldnt be possible so enable it explicitly.
+	networking="yes"
 else
 	# Boot from a Disk Image
 	rootfs="root=/dev/$rootdisk rw"
@@ -205,7 +205,7 @@ hdimage=$oetmpdir/deploy/$libc/images/qemu$arch/$image-qemu$arch.$imagetype
 echo "Starting QEMU ..."
 set -x
 $qemu -M $machine --snapshot $gdbit -m $mem \
-	-kernel $kernelimage -hda $hdimage \
+	-kernel $kernelimage -drive file=$hdimage \
 	-usb -usbdevice wacom-tablet --no-reboot -localtime \
 	$qemuopts \
 	-append "$consoleopt $rootfs $ipopt $init debug user_debug=-1" \
