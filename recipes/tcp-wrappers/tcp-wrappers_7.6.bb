@@ -15,27 +15,27 @@ FILES_tcp-wrappers-doc = "${mandir}/man8"
 
 SRC_URI = "ftp://ftp.porcupine.org/pub/security/tcp_wrappers_${PV}.tar.gz \
            file://00_man_quoting.diff \
-           file://01_man_portability;apply=yes \
-           file://05_wildcard_matching;apply=yes \
-           file://06_fix_gethostbyname;apply=yes \
-           file://10_usagi-ipv6;apply=yes \
-           file://11_tcpd_blacklist;apply=yes \
-           file://11_usagi_fix;apply=yes \
-           file://12_makefile_config;apply=yes \
-           file://13_shlib_weaksym;apply=yes \
-           file://14_cidr_support;apply=yes \
-           file://15_match_clarify;apply=yes \
-           file://expand_remote_port;apply=yes \
-           file://have_strerror;apply=yes \
-           file://man_fromhost;apply=yes \
-           file://restore_sigalarm;apply=yes \
+           file://01_man_portability.patch \
+           file://05_wildcard_matching.patch \
+           file://06_fix_gethostbyname.patch \
+           file://10_usagi-ipv6.patch \
+           file://11_tcpd_blacklist.patch \
+           file://11_usagi_fix.patch \
+           file://12_makefile_config.patch \
+           file://13_shlib_weaksym.patch \
+           file://14_cidr_support.patch \
+           file://15_match_clarify.patch \
+           file://expand_remote_port.patch \
+           file://have_strerror.patch \
+           file://man_fromhost.patch \
+           file://restore_sigalarm.patch \
            file://rfc931.diff \
-           file://safe_finger;apply=yes \
-           file://sig_fix;apply=yes \
-           file://siglongjmp;apply=yes \
-           file://size_t;apply=yes \
-           file://tcpdchk_libwrapped;apply=yes \
-           file://ldflags;apply=yes \
+           file://safe_finger.patch \
+           file://sig_fix.patch \
+           file://siglongjmp.patch \
+           file://size_t.patch \
+           file://tcpdchk_libwrapped.patch \
+           file://ldflags.patch \
            \
            file://try-from.8 \
            file://safe_finger.8"
