@@ -39,7 +39,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://fix-qscreen-sync.patch \
 	   file://improve-calibration-r0.patch \
 	   file://key.patch \
-	   file://bidimetrics.patch;striplevel=5 \
+	   file://bidimetrics.patch \
 	   file://fix-native-build.patch \
 	   file://fix-errno-exception-spec.patch \
            file://keyboardless-buttonmap.patch \
