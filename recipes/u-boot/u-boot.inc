@@ -17,8 +17,6 @@ UBOOT_BINARY ?= "u-boot.bin"
 UBOOT_IMAGE ?= "u-boot-${MACHINE}-${PV}-${PR}.bin"
 UBOOT_SYMLINK ?= "u-boot-${MACHINE}.bin"
 
-INSANE_SKIP_${PN} = True
-
 do_compile () {
 	unset LDFLAGS
 	unset CFLAGS
@@ -29,6 +27,10 @@ do_compile () {
 }
 
 do_install () {
+	install -d ${D}/boot
+	install ${S}/${UBOOT_BINARY} ${D}/boot/${UBOOT_IMAGE}
+	ln -sf ${UBOOT_IMAGE} ${D}/boot/${UBOOT_BINARY}
+
 	if [ -e ${WORKDIR}/fw_env.config ] ; then
 	    install -d ${D}${base_sbindir}
 		install -d ${D}${sysconfdir}
@@ -36,7 +38,17 @@ do_install () {
 		install -m 755 ${S}/tools/env/fw_printenv ${D}${base_sbindir}/fw_printenv
 		install -m 755 ${S}/tools/env/fw_printenv ${D}${base_sbindir}/fw_setenv
 	fi
+
 }
+
+FILES_${PN} = "/boot"
+# no gnu_hash in uboot.bin, by design, so skip QA
+INSANE_SKIP_${PN} = True
+
+PACKAGES += "${PN}-fw-utils"
+FILES_${PN}-fw-utils = "${sysconfdir} ${base_sbindir}"
+# u-boot doesn't use LDFLAGS for fw files, needs to get fixed, but until then:
+INSANE_SKIP_${PN}-fw-utils = True
 
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
