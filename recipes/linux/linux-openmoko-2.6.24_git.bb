@@ -1,9 +1,13 @@
 require linux.inc
 require linux-openmoko.inc
 
+KERNEL_RELEASE = "2.6.24"
+KERNEL_VERSION = "${KERNEL_RELEASE}"
+
 SRCREV = "fb42ce6724576fc173faf8abfb04aa2c36d213b7"
-PR = "r2"
-PR_append = "+gitr${SRCPV}"
+OEV = "oe5"
+PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \

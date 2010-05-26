@@ -1,9 +1,13 @@
 require linux.inc
 require linux-openmoko.inc
 
+KERNEL_RELEASE = "2.6.29"
+KERNEL_VERSION = "2.6.29-rc3"
+
 SRCREV = "973a41fce60e5f6edfcf0eaf94056a57eee65e16"
-PR = "r9"
-PR_append = "+gitr${SRCPV}"
+OMV = "oe11"
+PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCPV}"
+PR = "r8"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \

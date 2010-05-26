@@ -1,15 +1,17 @@
 require linux.inc
 require linux-openmoko.inc
 
+KERNEL_RELEASE="2.6.32.13"
+
 SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
-PR = "r1"
-PR_append = "+gitr${SRCPV}"
+OEV = "oe2"
+PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.32 \
   file://0001-Revert-s3cmci-initialize-default-platform-data-no_wp.patch \
 # latest stable patch for ubi fix 943e167cb3e8fb191894bde8a4a75db78531a7c8
-  ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.32.13.bz2;patch=1;name=stablepatch \
+  ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;apply=yes;name=stablepatch \
 # build fix
   file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch \
 # patches from Radek Polak used in qtmoko
