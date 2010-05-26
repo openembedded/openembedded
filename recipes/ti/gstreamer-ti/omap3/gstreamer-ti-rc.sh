@@ -5,8 +5,8 @@
 
 load_module() {
     echo 
-    echo -n "Running /usr/share/ti/gst/omap3530/loadmodule.sh"
-    sh /usr/share/ti/gst/omap3530/loadmodule.sh
+    echo -n "Running /usr/share/ti/gst/omap3530/loadmodules.sh"
+    sh /usr/share/ti/gst/omap3530/loadmodules.sh
 }
 
 unload_module() {
