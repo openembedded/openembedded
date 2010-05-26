@@ -14,7 +14,7 @@ require vim.inc
 PR = "${INC_PR}.1"
 
 # 001-411.diff contains 411 patches fetched from upstream
-SRC_URI += "file://001-411.diff"
+SRC_URI += "file://001-411.diff;apply=no"
 
 # we need to apply patches in other dir then ${S}
 do_applypatch() {
