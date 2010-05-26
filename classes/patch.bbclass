@@ -46,11 +46,12 @@ python patch_do_patch() {
 			local = os.path.join(workdir, base)
 			ext = os.path.splitext(base)[1]
 
-		apply = parm.get("apply")
-		if apply is not None and apply != "yes" and not "patch" in parm:
-			if apply != "no":
-				bb.msg.warn(None, "Unsupported value '%s' for 'apply' url param in '%s', please use 'yes' or 'no'" % (apply, url))
-			continue
+		if "apply" in parm:
+			apply = parm["apply"]
+			if apply != "yes":
+				if apply != "no":
+					bb.msg.warn(None, "Unsupported value '%s' for 'apply' url param in '%s', please use 'yes' or 'no'" % (apply, url))
+				continue
 		elif "patch" in parm:
 			bb.msg.warn(None, "Deprecated usage of 'patch' url param in '%s', please use 'apply={yes,no}'" % url)
 		elif ext not in (".diff", ".patch"):
