@@ -178,3 +178,7 @@ rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
 # squeak (forbid unaliged access)
 ac_cv_double_align=${ac_cv_double_align=no}                           
 ac_cv_double_order=${ac_cv_double_order=no}
+
+# TCL
+tcl_cv_api_getaddrinfo=${tcl_cv_api_getaddrinfo=yes}
+tcl_cv_api_serial=${tcl_cv_api_serial=termios}
