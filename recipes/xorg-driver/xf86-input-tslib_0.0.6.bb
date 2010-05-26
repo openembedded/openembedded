@@ -1,10 +1,11 @@
 require xorg-driver-input.inc
 
 DESCRIPTION = "X.Org X server -- tslib input driver"
-RRECOMMENDS += "hal tslib-calibrate"
+RRECOMMENDS_${PN} += "tslib-calibrate"
+RSUGGESTS_${PN} += "hal"
 DEPENDS += "tslib"
 
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "http://www.pengutronix.de/software/xf86-input-tslib/download/xf86-input-tslib-${PV}.tar.bz2;name=archive \
            file://double-free-crash.patch \
