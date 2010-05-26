@@ -1,8 +1,10 @@
 DESCRIPTION = "GNOME DVB Daemon is a daemon written in Vala based on GStreamer to setup your DVB devices, record and watch TV shows and browse EPG. It can be controlled by any application via its D-Bus interface."
 LICENSE = "GPLv3"
 
-DEPENDS = "libxml2 python-dbus python-gst python-pygtk libgee vala-native gstreamer gst-plugins-good gst-plugins-bad glib-2.0 dbus-glib sqlite3 gst-rtsp"
+DEPENDS = "totem libxml2 python-dbus python-gst python-pygtk libgee vala-native gstreamer gst-plugins-good gst-plugins-bad glib-2.0 dbus-glib sqlite3 gst-rtsp"
 RDEPENDS_${PN} = "python-netserver python-dbus python-gst python-pygtk gst-plugin-dvb gst-fluendo-mpegdemux dvb-apps dvb-scan dvb-tzap dvb-czap dvbstream"
+
+PR = "r1"
 
 inherit gnome
 
