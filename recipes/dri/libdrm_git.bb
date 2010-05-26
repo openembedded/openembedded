@@ -1,10 +1,10 @@
-SECTION = "x11/base"
-LICENSE = "MIT"
+require libdrm.inc
 SRC_URI = "git://anongit.freedesktop.org/mesa/drm;protocol=git;branch=master"
 SRC_URI_shr = "git://git.bitwiz.org.uk/libdrm.git;protocol=git;branch=glamo"
 
-PROVIDES = "drm"
 DEPENDS = "libpthread-stubs virtual/kernel"
+
+PR = "${INC_PR}.0"
 
 PE = "1"
 PV = "2.4.18+gitr${SRCPV}"
@@ -19,9 +19,3 @@ DEFAULT_PREFERENCE_shr = "1"
 S = "${WORKDIR}/git"
 
 EXTRA_OECONF_append_shr = " --enable-glamo-experimental-api --disable-radeon --disable-intel"
-
-inherit autotools pkgconfig
-
-do_stage() {
-	autotools_stage_all
-}
