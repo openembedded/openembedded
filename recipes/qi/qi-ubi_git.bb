@@ -6,5 +6,5 @@ do_configure_prepend() {
 }
 
 SRC_URI_append = "\
-  file://rootfstype.ubifs.patch;patch=1 \
+  file://rootfstype.ubifs.patch \
 "

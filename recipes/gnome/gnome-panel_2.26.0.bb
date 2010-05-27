@@ -3,7 +3,7 @@ DEPENDS = "gconf librsvg libgweather startup-notification libwnck orbit2 gtk+ li
 
 inherit gnome pkgconfig
 
-SRC_URI += "file://idl-sysroot.patch;patch=1"
+SRC_URI += "file://idl-sysroot.patch"
 
 do_configure_prepend() {
         sed -i -e s:help:: ${S}/Makefile.am

@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libx11 libxext xpext"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/x/xsp/${PN}_${PV}.tar.gz \
-           file://xsp-fix-pc.patch;patch=1"
+           file://xsp-fix-pc.patch"
 S = "${WORKDIR}/Xsp"
 
 inherit autotools pkgconfig

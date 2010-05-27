@@ -6,7 +6,7 @@ SRCREV = "2409"
 PV = "1.6+svnr${SRCPV}"
 
 SRC_URI = "svn://irrlicht.svn.sourceforge.net/svnroot/irrlicht/branches;module=ogl-es;proto=https \
-           file://irrlicht_beagle.diff;patch=1;pnum=0 \
+           file://irrlicht_beagle.diff;striplevel=0 \
           "
 
 TARGET_CC_ARCH += "${LDFLAGS}"

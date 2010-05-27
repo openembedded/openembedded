@@ -7,9 +7,9 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI = "http://www.metzlerbros.org/dvb/${P}.tar.gz \
-          file://topf2ps.patch;patch=1 \
-          file://gcc4.patch;patch=1 \
-          file://ldflags.patch;patch=1"
+          file://topf2ps.patch \
+          file://gcc4.patch \
+          file://ldflags.patch"
 
 S = "${WORKDIR}/${PN}-${PV}"
 

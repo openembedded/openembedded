@@ -3,8 +3,8 @@ require php.inc
 PR = "r1"
 
 SRC_URI = "http://museum.php.net/php4/php-${PV}.tar.bz2 \
-           file://${FILESDIR}/autotools.patch;patch=1 \
-           file://${FILESDIR}/pear.patch;patch=1"
+           file://${FILESDIR}/autotools.patch \
+           file://${FILESDIR}/pear.patch"
 
 
 SRC_URI[md5sum] = "bc6fa8908e2ac36e93bab9f7d42cda3a"

@@ -9,7 +9,7 @@ DEPENDS = "gtk+ freetype gnutls tremor faad2 ffmpeg flac \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.gz \
-	file://pda-interface.patch;patch=1"
+	file://pda-interface.patch"
 S = "${WORKDIR}/vlc-${PV}"
 
 export GTK2_CFLAGS  = "`${STAGING_BINDIR_NATIVE}/pkg-config --cflags gtk+-2.0 gthread-2.0`"

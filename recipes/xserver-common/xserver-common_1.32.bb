@@ -13,7 +13,7 @@ inherit gpe
 SRC_URI_append = " file://setDPI.sh \
                    file://89xdgautostart.sh"
 
-SRC_URI_append_angstrom = " file://xtscal-fix.patch;patch=1 "
+SRC_URI_append_angstrom = " file://xtscal-fix.patch "
 RDEPENDS_${PN}_append_angstrom = " tslib-calibrate "
 
 do_install_append() {

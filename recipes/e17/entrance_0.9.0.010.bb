@@ -11,11 +11,11 @@ SRCREV = "46589"
 inherit e
 
 SRC_URI += "\
-           file://rebased_config-db.patch;patch=1 \
-           file://allow-missing-xsession.patch;patch=1 \
-           file://run-Xinit.patch;patch=1 \
-           file://fix-auth-mode.patch;patch=1 \
-           file://use-bash.patch;patch=1 \
+           file://rebased_config-db.patch \
+           file://allow-missing-xsession.patch \
+           file://run-Xinit.patch \
+           file://fix-auth-mode.patch \
+           file://use-bash.patch \
            file://Sessions"
 
 S = "${WORKDIR}/entrance"

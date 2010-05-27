@@ -4,7 +4,7 @@ DEPENDS = "ncurses"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bwmon/${P}.tar.gz \
-           file://makefile.patch;patch=1"
+           file://makefile.patch"
 
 inherit autotools
 

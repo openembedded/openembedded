@@ -7,7 +7,7 @@ HOMEPAGE="https://rhn.redhat.com/errata/RHBA-2005-085.html"
 LICENSE="GPL"
 
 SRC_URI="http://search.belnet.be/packages/lineox/4.0/updates/SRPMS/${P}-3.src.rpm \
-file://${P}-more-arches.patch;patch=1"
+file://${P}-more-arches.patch"
 
 S="${WORKDIR}/${P}"
 

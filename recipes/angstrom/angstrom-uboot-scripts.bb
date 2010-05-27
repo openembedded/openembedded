@@ -8,6 +8,10 @@ SRC_URI = "file://*.cmd"
 
 do_configure() {
 	cp ${WORKDIR}/*.cmd ${S}
+
+	for i in *.cmd ; do
+		mv $i uboot-$i
+	done
 }
 
 do_compile() {
@@ -17,13 +21,13 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}${datadir}/u-boot-scripts
-	for i in *.scr ; do
-		install -m 0644 $i ${D}${datadir}/u-boot-scripts
+	install -d ${D}/boot/u-boot-scripts
+	for i in *.cmd *.scr ; do
+		install -m 0644 $i ${D}/boot/u-boot-scripts
 	done
 }
 
-FILES_${PN} += "${datadir}"
+FILES_${PN} += "/boot"
 
 addtask deploy before do_package after do_install
 

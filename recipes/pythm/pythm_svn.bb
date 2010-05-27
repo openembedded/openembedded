@@ -8,7 +8,7 @@ SRCREV = "19"
 PV = "0.5.1+svnr${SRCPV}"
 PR = "r3"
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=pythm \
-           file://mplayer-escape-filenames.patch;patch=0 \
+           file://mplayer-escape-filenames.patch \
            file://pythm.desktop \
 	   file://pythm.conf"
 S = "${WORKDIR}/pythm"

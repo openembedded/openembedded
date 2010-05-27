@@ -11,8 +11,8 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 SRC_URI = "\
   http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz \
-  file://m4.patch;patch=1 \
-  file://autofoo.patch;patch=1 \
+  file://m4.patch \
+  file://autofoo.patch \
 "
 
 inherit autotools binconfig

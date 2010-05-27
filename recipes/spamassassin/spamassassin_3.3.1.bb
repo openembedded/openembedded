@@ -85,14 +85,14 @@ SRC_URI = " \
 	${APACHE_MIRROR}/spamassassin/source/Mail-SpamAssassin-${PV}.tar.bz2;name=spamassassin-${PV} \
 	file://spamassassin.default \
 	file://spamassassin.init \
-	file://10_change_config_paths;patch=1 \
-	file://20_edit_spamc_pod;patch=1 \
-	file://30_edit_README;patch=1 \
-	file://50_sa-learn_fix_empty_list_handling;patch=1 \
-	file://60_fix-pod;patch=1 \
-	file://70_fix-whatis;patch=1 \
-	file://80_fix_man_warnings;patch=1 \
-	file://spamassassin-spamc-configure.patch;patch=1 \
+	file://10_change_config_paths;apply=yes \
+	file://20_edit_spamc_pod;apply=yes \
+	file://30_edit_README;apply=yes \
+	file://50_sa-learn_fix_empty_list_handling;apply=yes \
+	file://60_fix-pod;apply=yes \
+	file://70_fix-whatis;apply=yes \
+	file://80_fix_man_warnings;apply=yes \
+	file://spamassassin-spamc-configure.patch \
 	"
 SRC_URI[spamassassin-3.3.1.md5sum] = "bb977900c3b2627db13e9f44f9b5bfc8"
 SRC_URI[spamassassin-3.3.1.sha256sum] = "4c348cd951fc2c5688e9713fcbc6ba453df51d32a1ab332a63800d20ff18bdb4"

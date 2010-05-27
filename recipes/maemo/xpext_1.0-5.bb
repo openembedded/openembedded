@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libx11 libxext"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/x/${PN}/${PN}_${PV}.tar.gz \
-           file://auxdir.patch;patch=1;pnum=0"
+           file://auxdir.patch;striplevel=0"
 S = "${WORKDIR}/xpext-1.0"
 
 inherit autotools pkgconfig

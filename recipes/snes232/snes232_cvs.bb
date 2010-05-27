@@ -1,12 +1,12 @@
 SECTION = "unknown"
 PR = "r4"
 LICENSE = "GPL"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 RRECOMMENDS = "kernel-module-serport"
 
 SRC_URI = "${HANDHELDS_CVS};module=gpe/games/snes232 \
-	file://snes232-2.6.patch;patch=1;pnum=0 \
+	file://snes232-2.6.patch;striplevel=0 \
 	file://Makefile-2.6"
 
 S = "${WORKDIR}/snes232"

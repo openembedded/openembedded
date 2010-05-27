@@ -6,11 +6,11 @@ RDEPENDS += "openssl"
 PR = "r1"
 
 SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-${PV}.tar.bz2 \
-	   file://apr-sockets-patch;patch=1 \
-	   file://configure-patch;patch=1 \
-	   file://server-makefile-patch;patch=1 \
-	   file://configure.in.patch;patch=1 \
-	   file://apr.h.in.patch;patch=1 \
+	   file://apr-sockets-patch;apply=yes \
+	   file://configure-patch;apply=yes \
+	   file://server-makefile-patch;apply=yes \
+	   file://configure.in.patch \
+	   file://apr.h.in.patch \
            file://init"
 
 #

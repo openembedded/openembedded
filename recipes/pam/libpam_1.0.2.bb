@@ -24,10 +24,10 @@ p = "${pn}-${PV}"
 S = "${WORKDIR}/${p}"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/library/${p}.tar.bz2 \
-           file://pam-nodocs.patch;patch=1 "
+           file://pam-nodocs.patch "
 
-SRC_URI_append_linux-uclibc = " file://pam-disable-nis-on-uclibc.patch;patch=1"
-SRC_URI_append_linux-uclibceabi = " file://pam-disable-nis-on-uclibc.patch;patch=1"
+SRC_URI_append_linux-uclibc = " file://pam-disable-nis-on-uclibc.patch"
+SRC_URI_append_linux-uclibceabi = " file://pam-disable-nis-on-uclibc.patch"
 
 inherit autotools
 

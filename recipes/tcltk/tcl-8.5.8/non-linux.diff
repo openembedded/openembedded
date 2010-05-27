@@ -1,0 +1,55 @@
+Patch by Sergei Golovan (originally by Mike Markley and Chris Waters) fixes
+building on non-linux Debian architectures.
+
+--- tcl8.5-8.5.8.orig/unix/configure
++++ tcl8.5-8.5.8/unix/configure
+@@ -6536,6 +6536,9 @@
+ 		if test "`uname -s`" = "AIX" ; then
+ 		    tcl_cv_sys_version=AIX-`uname -v`.`uname -r`
+ 		fi
++		if test "`uname -s`" = "NetBSD" -a -f /etc/debian_version ; then
++		    system=NetBSD-Debian
++		fi
+ 	    fi
+ 	fi
+ 
+@@ -7340,7 +7343,7 @@
+ fi
+ 
+ 	    ;;
+-	Linux*)
++	Linux*|GNU*|NetBSD-Debian)
+ 	    SHLIB_CFLAGS="-fPIC"
+ 	    SHLIB_LD_LIBS='${LIBS}'
+ 	    SHLIB_SUFFIX=".so"
+--- tcl8.5-8.5.8.orig/unix/Makefile.in
++++ tcl8.5-8.5.8/unix/Makefile.in
+@@ -172,6 +172,7 @@
+ SHLIB_LD		= @SHLIB_LD@
+ SHLIB_CFLAGS		= @SHLIB_CFLAGS@
+ SHLIB_LD_LIBS		= @SHLIB_LD_LIBS@
++SHLIB_LD_FLAGS		= @SHLIB_LD_FLAGS@
+ TCL_SHLIB_LD_EXTRAS	= @TCL_SHLIB_LD_EXTRAS@
+ 
+ SHLIB_SUFFIX		= @SHLIB_SUFFIX@
+--- tcl8.5-8.5.8.orig/unix/tcl.m4
++++ tcl8.5-8.5.8/unix/tcl.m4
+@@ -962,6 +962,9 @@
+ 		if test "`uname -s`" = "AIX" ; then
+ 		    tcl_cv_sys_version=AIX-`uname -v`.`uname -r`
+ 		fi
++		if test "`uname -s`" = "NetBSD" -a -f /etc/debian_version ; then
++		    tcl_cv_sys_version=NetBSD-Debian
++		fi
+ 	    fi
+ 	fi
+     ])
+@@ -1422,7 +1425,7 @@
+ 	        ])
+ 	    ])
+ 	    ;;
+-	Linux*)
++	Linux*|GNU*|NetBSD-Debian)
+ 	    SHLIB_CFLAGS="-fPIC"
+ 	    SHLIB_LD_LIBS='${LIBS}'
+ 	    SHLIB_SUFFIX=".so"

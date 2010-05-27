@@ -2,7 +2,7 @@ require oprofile.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://fix-timer-mode.patch;patch=1"
+SRC_URI += "file://fix-timer-mode.patch"
 
 
 SRC_URI[tarball.md5sum] = "4b2ceca3fa013c95cc8d47c790807dc2"

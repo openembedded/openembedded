@@ -1,10 +1,10 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r15"
+PR = "r16"
 
 inherit task 
 
-ECONFIG ?= "places e-wm-config-angstrom e-wm-config-angstrom-touchscreen e-wm-config-angstrom-widescreen e-wm-config-default"
+ECONFIG ?= "places e-wm-config-angstrom e-wm-config-angstrom-widescreen e-wm-config-default"
 EMENU ?= "e-wm-menu"
 
 RDEPENDS_${PN} = "\

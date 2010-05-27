@@ -4,8 +4,8 @@ PRIORITY = "optional"
 SECTION = "devel"
 
 SRC_URI = "http://www.muppetlabs.com/~breadbox/pub/software/ELFkickers-${PV}.tar.gz \
-           file://gentoo.patch;patch=1 \
-           file://mjn3-sstrip.patch;patch=1"
+           file://gentoo.patch \
+           file://mjn3-sstrip.patch"
 S = "${WORKDIR}/ELFkickers"
 
 ELFPKGS = "ebfc elfls elftoc \

@@ -9,9 +9,9 @@ PXAV = "1"
 PR = "r5"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
-	   http://ftp.linux.org.uk/pub/linux/arm/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;patch=1;name=rmkpatch \
-	   file://diff-${KV}-rmk${RMKV}-pxa${PXAV}.gz;patch=1 \
-	   file://mnci-combined.patch;patch=1"
+	   http://ftp.linux.org.uk/pub/linux/arm/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;apply=yes;name=rmkpatch \
+	   file://diff-${KV}-rmk${RMKV}-pxa${PXAV}.gz;apply=yes \
+	   file://mnci-combined.patch"
 
 S = "${WORKDIR}/linux-${KV}"
 

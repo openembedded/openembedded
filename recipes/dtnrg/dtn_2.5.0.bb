@@ -10,7 +10,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "\
   http://www.dtnrg.org/docs/code/dtn_${PV}.tgz \
-  file://configure_fix.patch;patch=1 \
+  file://configure_fix.patch \
 "
 
 inherit autotools distutils-base

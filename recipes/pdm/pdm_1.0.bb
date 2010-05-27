@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DESCRIPTION = "pdm is a minimal session manager for GUIs."
 
 SRC_URI="http://www.penguru.net/download/${PN}-${PV}.tar.gz \
-	file://pdm-1.0-changes.patch;patch=1 \
+	file://pdm-1.0-changes.patch \
 	file://pdm.conf \
 	file://xfce \
 	file://mythtv"

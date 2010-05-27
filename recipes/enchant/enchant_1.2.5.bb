@@ -12,7 +12,7 @@ PR = "r1"
 S = "${WORKDIR}/enchant-${PV}"
 
 SRC_URI = "http://www.abisource.com/downloads/enchant/${PV}/enchant-${PV}.tar.gz \
-           file://configure.patch;patch=1"
+           file://configure.patch"
 
 EXTRA_OECONF = "--with-aspell-prefix=${STAGING_DIR_HOST}${layout_prefix} --enable-aspell --disable-binreloc"
 

@@ -11,7 +11,7 @@ DEPENDS     = "ppp "
 inherit base
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pptpclient/pptp-linux-1.5.0.tar.gz \
-	   file://makefile.patch;patch=1 \
+	   file://makefile.patch \
 	   file://options.pptp"
 
 

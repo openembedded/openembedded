@@ -124,11 +124,18 @@ IMAGE_FSTYPES = "jffs2 tar"
 # Uncomment this if you want BitBake to emit debugging output
 # BBDEBUG = "yes"
 
-# Uncomment these two if you want BitBake to build images useful for debugging. 
-# Note that INHIBIT_PACKAGE_STRIP needs a package format to be defined.
-# Also note that OE now produces -dbg packages which contain debugging symbols.
+# Use DEBUG_BUILD to build packages with DEBUG_OPTIMIZATION instead of
+# FULL_OPTIMIZATION.
+#
 # DEBUG_BUILD = "1"
-# INHIBIT_PACKAGE_STRIP = "1"
+
+# If you want to have unstripped ready-to-debug binaries, set this to "no",
+# although for debugging you can use automatically produced -dbg packages.
+# If you need to have completely undebuggable builds, set this to "full",
+# by default gnu.debuglink section is left in the binaries after stripping, so
+# this might be useful if you want to have checksum-level binary consistency
+# across successive builds.
+# PACKAGE_STRIP = "no"
 
 # Uncomment these to build a package such that you can use gprof to profile it.
 # NOTE: This will only work with 'linux' targets, not

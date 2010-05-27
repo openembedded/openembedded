@@ -30,7 +30,7 @@ The complete unpacked trees are staged to staging/machine/usr/share/ti/${PN}(-tr
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 BASEPKG_HOST_SYS = "${MULTIMACH_HOST_SYS}"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 The 'BASEPKG_HOST_SYS' bit is what makes it work, but cause trouble is you want to read from it, so ti-paths.inc does:
 

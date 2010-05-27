@@ -1,6 +1,6 @@
 require jamvm.inc
 
-SRC_URI += "file://debian-jni.patch;patch=1;pnum=0"
+SRC_URI += "file://debian-jni.patch;striplevel=0"
 
 PR = "r4"
 

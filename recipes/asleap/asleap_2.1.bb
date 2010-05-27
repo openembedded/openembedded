@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "libpcap openssl"
 
 SRC_URI = "http://802.11ninja.net/~jwright/code/${PN}-${PV}.tgz \
-           file://if.h.patch;patch=1 \
+           file://if.h.patch \
            "
 
 S = "${WORKDIR}/${PN}-${PV}"

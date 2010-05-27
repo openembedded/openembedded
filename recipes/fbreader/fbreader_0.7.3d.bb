@@ -7,7 +7,7 @@ DEPENDS = "gtk+ enca expat bzip2"
 PR = "r2"
 
 SRC_URI = "http://only.mawhrin.net/fbreader/obsolete/fbreader-sources-${PV}.tgz \
-	file://fbreader-0.7.3d_buildsys_oe.patch;patch=1"
+	file://fbreader-0.7.3d_buildsys_oe.patch"
 
 FILES_${PN} += "${datadir}/FBReader"
 

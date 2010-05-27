@@ -83,7 +83,7 @@ def check_sanity(e):
 	if not check_app_exists('${BUILD_PREFIX}g++', e.data):
 		missing = missing + "C++ Compiler (${BUILD_PREFIX}g++),"
 
-	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum"
+	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum chrpath"
 
 	# If we'll be running qemu, perform some sanity checks
 	if data.getVar('ENABLE_BINARY_LOCALE_GENERATION', e.data, True):
@@ -139,6 +139,14 @@ def check_sanity(e):
 		f = file(abifile, "r")
 		abi = f.read().strip()
 		if not abi.isdigit():
+			f = file(abifile, "w")
+			f.write(current_abi)
+                elif abi == "3" and current_abi == "4":
+			import bb
+			bb.note("Converting staging from layout version 2 to layout version 3")
+			os.system(bb.data.expand("mv ${TMPDIR}/staging ${TMPDIR}/sysroots", e.data))
+			os.system(bb.data.expand("ln -s sysroots ${TMPDIR}/staging", e.data))
+			os.system(bb.data.expand("cd ${TMPDIR}/stamps; for i in */*do_populate_staging; do new=`echo $i | sed -e 's/do_populate_staging/do_populate_sysroot/'`; mv $i $new; done", e.data))
 			f = file(abifile, "w")
 			f.write(current_abi)
 		elif (abi != current_abi):

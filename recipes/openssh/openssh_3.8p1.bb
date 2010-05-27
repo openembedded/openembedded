@@ -13,8 +13,8 @@ LICENSE = "BSD"
 PR ="r3"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
-           file://configure.patch;patch=1 \
-           file://scp-nossl.patch;patch=1 \
+           file://configure.patch \
+           file://scp-nossl.patch \
 	   file://ssh_config \
            file://sshd_config \
            file://init"

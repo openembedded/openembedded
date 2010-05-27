@@ -33,7 +33,7 @@ RRECOMMENDS_${PN} += "gst-plugin-playbin \
 
 inherit gnome
 
-SRC_URI += "file://gst-detect.diff;patch=1"
+SRC_URI += "file://gst-detect.diff"
 
 EXTRA_OECONF=" --enable-shared \
            --disable-static \

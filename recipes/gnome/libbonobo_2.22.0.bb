@@ -2,7 +2,7 @@ require libbonobo.inc
 
 PR = "r0"
 
-SRC_URI += "file://configure-gthread.patch;patch=1"
+SRC_URI += "file://configure-gthread.patch"
 
 
 SRC_URI[archive.md5sum] = "998a576ad26784ac87eab99e96013527"

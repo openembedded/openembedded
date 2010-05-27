@@ -11,7 +11,7 @@ LEAD_SONAME = "libreadline.so"
 PR = "r4"
 
 SRC_URI = "${GNU_MIRROR}/readline/readline-${PV}.tar.gz \
-	   file://shlink-termcap.patch;patch=1 \
+	   file://shlink-termcap.patch \
 	   file://acinclude.m4"
 S = "${WORKDIR}/readline-${PV}"
 

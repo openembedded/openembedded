@@ -3,7 +3,7 @@ require fontconfig.inc
 PR = "r4"
 
 SRC_URI += "https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h;name=deviceSymbols \
-	    file://configure_fix.patch;patch=1 "
+	    file://configure_fix.patch "
 
 EXTRA_OECONF += " --with-arch=${HOST_ARCH}"
 

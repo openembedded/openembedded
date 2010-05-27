@@ -5,7 +5,7 @@ PV = "0.0+cvs${SRCDATE}"
 DESCRIPTION = "Command line tool for iPaq backlight control"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/h3600_test \
-           file://nokernelheader.patch;patch=1;pnum=0 \
+           file://nokernelheader.patch;striplevel=0 \
 	   file://zaurus-hinge.bl-on \
 	   file://zaurus-hinge.bl-off"
 

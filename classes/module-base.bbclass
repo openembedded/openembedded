@@ -7,7 +7,12 @@ export CROSS_COMPILE = "${TARGET_PREFIX}"
 
 # A machine.conf or local.conf can increase MACHINE_KERNEL_PR to force
 # rebuilds for kernel and external modules
-PR = "${MACHINE_KERNEL_PR}"
+python __anonymous () {
+    machine_kernel_pr = bb.data.getVar('MACHINE_KERNEL_PR', d, True)
+
+    if machine_kernel_pr:
+       bb.data.setVar('PR', machine_kernel_pr, d)
+}
 
 export KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion')}"
 export KERNEL_SOURCE = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}"

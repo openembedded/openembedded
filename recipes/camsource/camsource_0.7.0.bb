@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "jpeg libxml2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/camsource/camsource-${PV}.tar.bz2 \
-	   file://gcc34.patch;patch=1"
+	   file://gcc34.patch"
 S = "${WORKDIR}/camsource-${PV}"
 
 inherit autotools

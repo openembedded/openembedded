@@ -21,6 +21,8 @@ PR = "r2"
 
 JAR = "ecj-bootstrap.jar"
 
+NATIVE_INSTALL_WORKS = "1"
+
 inherit native
 
 do_compile() {
@@ -31,8 +33,8 @@ do_compile() {
   cat ecj.in >> ecj-bootstrap
 }
 
-do_stage() {
-  install -d ${STAGING_BINDIR}
-  install -m 755 ${S}/ecj-bootstrap ${STAGING_BINDIR}
-  install -m 755 ${S}/ecj-bootstrap ${STAGING_BINDIR}/javac
+do_install() {
+  install -d ${D}${bindir}
+  install -m 755 ${S}/ecj-bootstrap ${D}${bindir}
+  install -m 755 ${S}/ecj-bootstrap ${D}${bindir}/javac
 }

@@ -14,7 +14,7 @@ RDEPENDS = "bash coreutils acct"
 PACKAGE_ARCH = "all"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bootchart/bootchart-${PV}.tar.bz2\
-           file://handheld.patch;patch=1"
+           file://handheld.patch"
 
 
 do_install() {

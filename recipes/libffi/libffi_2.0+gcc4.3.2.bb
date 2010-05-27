@@ -1,4 +1,4 @@
-require recipes/gcc/gcc-common.inc
+require ../gcc/gcc-common.inc
 SECTION = "libs"
 DESCRIPTION = "Foreign Function Interface library"
 LICENSE = "libffi"

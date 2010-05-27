@@ -16,13 +16,13 @@ INHIBIT_DEFAULT_DEPS = "1"
 PR = "r6"
 
 SRC_URI = "http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-${PV}.tar.bz2 \
-	file://keyboard.patch;patch=1 \
-	file://asm-arch-irqs.patch;patch=1 \
-	file://linux-netdevice.patch;patch=1 \
-	file://linux-netfilter_ipv4.patch;patch=1 \
-	file://linux-rtc.patch;patch=1 \
-	file://linux-videodev2.patch;patch=1 \
-	file://3477-1.patch;patch=1"
+	file://keyboard.patch \
+	file://asm-arch-irqs.patch \
+	file://linux-netdevice.patch \
+	file://linux-netfilter_ipv4.patch \
+	file://linux-rtc.patch \
+	file://linux-videodev2.patch \
+	file://3477-1.patch"
 
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 

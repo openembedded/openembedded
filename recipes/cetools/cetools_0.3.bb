@@ -2,7 +2,7 @@ DESCRIPTION = "Ethload for Linux is a tool to send ROM images over ethernet usin
 SECTION = "console/network"
 LICENSE = "GPL"
 SRC_URI = "http://linuxsh.free.fr/tools/cetools-${PV}.tar.gz \
-	   file://sean-hsieh.patch;patch=1"
+	   file://sean-hsieh.patch"
 S = "${WORKDIR}/cetools-${PV}"
 PR = "r1"
 

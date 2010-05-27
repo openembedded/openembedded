@@ -15,7 +15,7 @@ APPTYPE = "binary"
 
 SRC_URI = "http://my-zaurus.narod.ru/downloads/clockapplet.tar.gz \
 	   file://missing-files.tar.gz \
-	   file://fix-compile.patch;patch=1 "
+	   file://fix-compile.patch "
 
 S = "${WORKDIR}/clockapplet"
 

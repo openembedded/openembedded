@@ -8,22 +8,22 @@ DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
 PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;p=1;name=patch24.7 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/patch-2.6.24.7-rt27.bz2;patch=1;p=1;name=patchrt27 \
-           file://squashfs-lzma-2.6.24.patch;patch=1 \
-           file://powerpc-clockres.patch;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;apply=yes;p=1;name=patch24.7 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/patch-2.6.24.7-rt27.bz2;apply=yes;p=1;name=patchrt27 \
+           file://squashfs-lzma-2.6.24.patch \
+           file://powerpc-clockres.patch \
            file://defconfig"
 
-#           file://sysctl_missing_include.patch;patch=1 \
+#           file://sysctl_missing_include.patch \
 
 S = "${WORKDIR}/linux-2.6.24"
 
 SRC_URI_append_mpc8313e-rdb = " \
-           file://leds-cpu-activity.patch;patch=1 \
-           file://leds-cpu-activity-powerpc.patch;patch=1 \
-           file://mpc8313e-rdb-leds.patch;patch=1"
-#	file://mpc831x-nand.patch;patch=1 \
-#	file://mpc8313e-rdb-rtc.patch;patch=1 "
+           file://leds-cpu-activity.patch \
+           file://leds-cpu-activity-powerpc.patch \
+           file://mpc8313e-rdb-leds.patch"
+#	file://mpc831x-nand.patch \
+#	file://mpc8313e-rdb-rtc.patch "
 
 
 # override the device tree source file from linux.inc, as the patches below
@@ -36,38 +36,38 @@ KERNEL_DEVICETREE_mpc8315e-rdb = "arch/${ARCH}/boot/dts/mpc8315erdb_default.dts"
 
 SRC_URI_mpc8315e-rdb = " \
 ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
-${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.3.bz2;patch=1;p=1;name=patch24.3 \
-${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.24.3-rt3.bz2;patch=1;p=1;name=patchrt3 \
-file://squashfs-lzma-2.6.24.patch;patch=1 \
-file://powerpc-clockres.patch;patch=1 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-platform-support.patch;patch=1;name=patchmpc1 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-add-all-interrupts.patch;patch=1;name=patchmpc2 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Realtek-821x-phy.patch;patch=1;name=patchmpc3 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-fix-gianfar.patch;patch=1;name=patchmpc4 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Gianfar-buffer-recycling.patch;patch=1;name=patchmpc5 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Gianfar-performance.patch;patch=1;name=patchmpc6 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-sata-support.patch;patch=1;name=patchmpc7 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-fsl-serdes-support.patch;patch=1;name=patchmpc8 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-pcie-INTx-support.patch;patch=1;name=patchmpc9 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-ipic-msi.patch;patch=1;name=patchmpc10 \ 
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-usb-support.patch;patch=1;name=patchmpc11 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-power-management.patch;patch=1;name=patchmpc12 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-usb-power-mangement.patch;patch=1;name=patchmpc13 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-NAND-flash.patch;patch=1;name=patchmpc14 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-elbc-jffs2-on-nand.patch;patch=1;name=patchmpc15 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Codewarrior-kernel-debug.patch;patch=1;name=patchmpc16 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-otg.patch;patch=1;name=patchmpc17 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC831x-LFC.patch;patch=1;name=patchmpc18 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-TDM.patch;patch=1;name=patchmpc19 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-tdm-test-modules.patch;patch=1;name=patchmpc20 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-spi-for-tdm-module.patch;patch=1;name=patchmpc21 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-port-mutiplier-in-sata.patch;patch=1;name=patchmpc22 \ 
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-performance-monitor.patch;patch=1;name=patchmpc23 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-ieee-1588.patch;patch=1;name=patchmpc24 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-DTS.patch;patch=1;name=patchmpc25 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-sata-pm.patch;patch=1;name=patchmpc26 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-fix-large-file-transfer.patch;patch=1;name=patchmpc27 \
-http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-default-configuration.patch;patch=1;name=patchmpc28 \
+${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.3.bz2;apply=yes;p=1;name=patch24.3 \
+${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.24.3-rt3.bz2;apply=yes;p=1;name=patchrt3 \
+file://squashfs-lzma-2.6.24.patch \
+file://powerpc-clockres.patch \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-platform-support.patch;name=patchmpc1 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-add-all-interrupts.patch;name=patchmpc2 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Realtek-821x-phy.patch;name=patchmpc3 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-fix-gianfar.patch;name=patchmpc4 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Gianfar-buffer-recycling.patch;name=patchmpc5 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Gianfar-performance.patch;name=patchmpc6 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-sata-support.patch;name=patchmpc7 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-fsl-serdes-support.patch;name=patchmpc8 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-pcie-INTx-support.patch;name=patchmpc9 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-ipic-msi.patch;name=patchmpc10 \ 
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-usb-support.patch;name=patchmpc11 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-power-management.patch;name=patchmpc12 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-usb-power-mangement.patch;name=patchmpc13 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-NAND-flash.patch;name=patchmpc14 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-elbc-jffs2-on-nand.patch;name=patchmpc15 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Codewarrior-kernel-debug.patch;name=patchmpc16 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-otg.patch;name=patchmpc17 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC831x-LFC.patch;name=patchmpc18 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-TDM.patch;name=patchmpc19 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-tdm-test-modules.patch;name=patchmpc20 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-spi-for-tdm-module.patch;name=patchmpc21 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-port-mutiplier-in-sata.patch;name=patchmpc22 \ 
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-performance-monitor.patch;name=patchmpc23 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-ieee-1588.patch;name=patchmpc24 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-DTS.patch;name=patchmpc25 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-sata-pm.patch;name=patchmpc26 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-fix-large-file-transfer.patch;name=patchmpc27 \
+http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-default-configuration.patch;name=patchmpc28 \
 file://defconfig \
 "
 
@@ -75,11 +75,11 @@ file://defconfig \
 # against crypto/ocf/ and thus needs a proper rebase against the base dir.
 # This remains a todo. -- Leon Woestenberg.
 #SRC_URI_append_mpc8315e-rdb = " \
-#http://www.bitshrine.org/gpp/ocf-linux-26-20071215.patch.gz;patch=1;name=patchmpc29 \
-#http://www.bitshrine.org/gpp/ocf-linux-20071215-20080427.diff;patch=1;name=patchmpc30 \
-#http://www.bitshrine.org/gpp/linux-fsl-2.6.24-OCF-fsl_soc-2.patch;patch=1;name=patchmpc31 \
-#http://www.bitshrine.org/gpp/linux-2.6.24-Openswan-2.4.12.patch;patch=1;name=patchmpc32 \
-#http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-openswan-sysctl.patch;patch=1;name=patchmpc33 \
+#http://www.bitshrine.org/gpp/ocf-linux-26-20071215.patch.gz;name=patchmpc29 \
+#http://www.bitshrine.org/gpp/ocf-linux-20071215-20080427.diff;name=patchmpc30 \
+#http://www.bitshrine.org/gpp/linux-fsl-2.6.24-OCF-fsl_soc-2.patch;name=patchmpc31 \
+#http://www.bitshrine.org/gpp/linux-2.6.24-Openswan-2.4.12.patch;name=patchmpc32 \
+#http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-openswan-sysctl.patch;name=patchmpc33 \
 #"
 
 SRC_URI[kernel.md5sum] = "3f23ad4b69d0a552042d1ed0f4399857"

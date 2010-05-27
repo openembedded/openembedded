@@ -1,0 +1,6 @@
+include nano.inc
+
+PR = "${INC_PR}.0"
+
+SRC_URI[md5sum] = "6304308afb1f7ef4a5e93eb99206632a"
+SRC_URI[sha256sum] = "971b8547be157de5a814cb26c804dc2515b686d7188f4dc016269312965d4da5"

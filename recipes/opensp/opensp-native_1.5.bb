@@ -3,9 +3,9 @@ DEPENDS = ""
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
-		file://m4.patch;patch=1 \
-		file://attributevalue.patch;patch=1 \
-		file://rangmap-fix.patch;patch=1"
+		file://m4.patch \
+		file://attributevalue.patch \
+		file://rangmap-fix.patch"
 
 S = "${WORKDIR}/OpenSP-${PV}"
 LICENSE = "MIT"

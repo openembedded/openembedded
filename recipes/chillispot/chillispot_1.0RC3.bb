@@ -2,7 +2,7 @@ DESCRIPTION = "ChilliSpot is an open source captive portal or wireless LAN acces
 HOMEPAGE = "http://www.chillispot.org/"
 LICENSE = "GPL"
 SRC_URI = "http://www.chillispot.org/download/chillispot-${PV}.tar.gz \
-	file://no-ansi.patch;patch=1 \
+	file://no-ansi.patch \
 	file://init"
 RDEPENDS = "kernel-module-tun"
 

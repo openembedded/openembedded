@@ -9,7 +9,8 @@ PREFERRED_VERSION_automake-native = "1.11.1"
 PREFERRED_VERSION_libmikmod = "3.2.0-beta2"
 PREFERRED_VERSION_mtd-utils-native = "1.2.0+git"
 PREFERRED_VERSION_strace = "4.5.15"
-PREFERRED_VERSION_mesa-dri     = "7.8"
+PREFERRED_VERSION_mesa-dri     = "7.8.1"
+PREFERRED_VERSION_emacs-x11 = "23.1"
 
 # We need this for jamvm
 PREFERRED_VERSION_classpath = "0.98"
@@ -28,6 +29,8 @@ PREFERRED_VERSION_linux-libc-headers = "2.6.32"
 PREFERRED_VERSION_openssh = "5.2p1"
 
 # upgrades used in Angstrom
+PREFERRED_VERSION_xserver-common = "1.33"
+PREFERRED_VERSION_xserver-nodm-init = "2.0"
 PREFERRED_VERSION_gtk+          = "2.20.0"
 PREFERRED_VERSION_gtk+-native   = "2.20.0"
 PREFERRED_VERSION_hal           = "0.5.13"

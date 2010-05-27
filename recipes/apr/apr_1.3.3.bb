@@ -5,9 +5,9 @@ LICENSE = "Apache License, Version 2.0"
 PR = "r4"
 
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.bz2 \
-           file://configure_fixes.patch;patch=1 \
-	   file://cleanup.patch;patch=1 \
-           file://configfix.patch;patch=1"
+           file://configure_fixes.patch \
+	   file://cleanup.patch \
+           file://configfix.patch"
 
 inherit autotools lib_package binconfig
 

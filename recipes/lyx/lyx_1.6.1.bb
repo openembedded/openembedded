@@ -9,7 +9,7 @@ PR = "r0"
 
 SRC_URI = "\
   ftp://ftp.lyx.org/pub/lyx/stable/1.6.x/lyx-${PV}.tar.bz2 \
-  file://no-session-manager.patch;patch=1 \
+  file://no-session-manager.patch \
 "
 
 inherit qt4x11 autotools

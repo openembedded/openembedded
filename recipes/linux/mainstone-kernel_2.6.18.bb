@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-           file://flash-unlock.patch;patch=1;pnum=0 \
+           file://flash-unlock.patch;striplevel=0 \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.18"

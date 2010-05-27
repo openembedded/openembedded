@@ -2,7 +2,7 @@ require libxslt.inc
 DEPENDS = "libxml2"
 PR = "${INC_PR}.0"
 
-SRC_URI += " file://destdir.patch;patch=1"
+SRC_URI += " file://destdir.patch"
 
 EXTRA_OECONF += " --without-plugins"
 

@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Sokoban.html"
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/sokoban_V1.3.8ern.tar.gz \
-           file://sokoban.patch;patch=1"
+           file://sokoban.patch"
 
 PV = "1.3.8ern"
 S = "${WORKDIR}/sokoban_V${PV}"

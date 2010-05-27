@@ -1,5 +1,5 @@
 DESCRIPTION = "DSPLINK Inter-Processor Communications (IPC) for TI ARM/DSP processors"
-HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/DSPLink"
+HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/DSPLink/index.html"
 SECTION = "devel"
 LICENSE = "GPLv2"
 
@@ -16,11 +16,11 @@ PROVIDES += "ti-dsplink-examples"
 
 # This package builds a kernel module, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "e"
+PR_append = "f"
 
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/DSPLink/${PV}/exports/dsplink_linux_${PV}.tar.gz;name=dsplinktarball \
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/${PV_DL_PATH}/dsplink_linux_${PV}.tar.gz;name=dsplinktarball \
            file://ti-dsplink-examples-run.sh \
            file://ti-dsplink-examples-loadmodules.sh \
            file://ti-dsplink-examples-unloadmodules.sh "
@@ -44,6 +44,13 @@ DSPLINKDSPCFG_omapl138    = "OMAPL138GEMSHMEM"
 DSPLINKDSPCFG_omap3       = "OMAP3530SHMEM"
 DSPLINKDSPCFG            ?= "<UNDEFINED_DSPLINKDSPCFG>"
 
+DSPLINKDSP_dm6446         = "DM6446GEM_0"
+DSPLINKDSP_dm6467         = "DM6467GEM_0"
+DSPLINKDSP_omapl137       = "OMAPL1XXGEM_0"
+DSPLINKDSP_omapl138       = "OMAPL138GEM_0"
+DSPLINKDSP_omap3          = "OMAP3530_0"
+DSPLINKDSP               ?= "<UNDEFINED_DSPLINKDSP>"
+
 DSPLINKGPPOS_dm6446       = "DM6446LSP"
 DSPLINKGPPOS_dm6467       = "DM6467LSP"
 DSPLINKGPPOS_omapl137     = "ARM"
@@ -56,13 +63,6 @@ DSPLINK = "${S}/dsplink"
 export DSPLINK
 
 do_configure() {
-
-    # asm/page.h is gone with linux-libc-headers 2.6.31.
-    # We can safely sed it out since it has been empty for the past 2 years
-    sed -i /page.h/d ${S}/dsplink/gpp/src/api/Linux/drv_api.c || true 
-
-    # Makefile passes hardcoded CROSS_COMPILE - rename so this doesnt get passed to kbuild
-    sed -i -e s:CROSS_COMPILE:BOGUS_CROSS_COMPILE:g ${S}/dsplink/gpp/src/Rules.mk
 
     # Run perl script to create appropriate makefiles (v1.60 and up)
     (
@@ -79,59 +79,6 @@ do_prepsources () {
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc .make -PR .
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc clean -PR .
     XDCPATH=${DSPLINK} ${XDC_INSTALL_DIR}/xdc .interfaces -PR .
-
-    # Clean the gpp user space library
-    cd ${DSPLINK}/gpp/src/api && make \
-      CROSS_COMPILE="${TARGET_PREFIX}" \
-      CC="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      AR="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      LD="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      COMPILER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      ARCHIVER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      KERNEL_DIR="${STAGING_KERNEL_DIR}" \
-      clean
-
-    # Clean the gpp kernel space (debug and release)
-    cd ${DSPLINK}/gpp/src && make \
-      OBJDUMP="${TARGET_PREFIX}objdump" \
-      CROSS_COMPILE="${TARGET_PREFIX}" \
-      CC="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      AR="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      LD="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      COMPILER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      ARCHIVER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      KERNEL_DIR="${STAGING_KERNEL_DIR}" \
-      BASE_BUILDOS="${STAGING_KERNEL_DIR}" \
-      clean
-
-    # Clean the gpp samples
-    cd ${DSPLINK}/gpp/src/samples && make \
-      BASE_TOOLCHAIN="${TOOLCHAIN_PATH}" \
-      BASE_CGTOOLS="${BASE_TOOLCHAIN}/bin" \
-      OSINC_PLATFORM="${TOOLCHAIN_PATH}/lib/gcc/${TARGET_SYS}/$(${TARGET_PREFIX}gcc -dumpversion)/include" \
-      OSINC_TARGET="${BASE_TOOLCHAIN}/target/usr/include" \
-      CROSS_COMPILE="${TARGET_PREFIX}" \
-      CC="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      AR="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      LD="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      COMPILER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc" \
-      LINKER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ld" \
-      ARCHIVER="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}ar" \
-      KERNEL_DIR="${STAGING_KERNEL_DIR}" \
-      clean
-
-    # Clean the dsp library (debug and release)
-     cd ${DSPLINK}/dsp/src && make \
-      BASE_CGTOOLS="${CODEGEN_INSTALL_DIR}" \
-      BASE_SABIOS="${BIOS_INSTALL_DIR}" \
-      clean
-
-    # Clean the dsp samples (debug and release)
-    cd ${DSPLINK}/dsp/src/samples && make \
-      BASE_CGTOOLS="${CODEGEN_INSTALL_DIR}" \
-      BASE_SABIOS="${BIOS_INSTALL_DIR}" \
-      clean
-	
 }
 
 addtask prepsources after do_configure before do_compile
@@ -205,13 +152,10 @@ do_install () {
     install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
     install -m 0755 ${DSPLINK}/gpp/export/BIN/Linux/${DSPLINKPLATFORM}/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/ 
 
-    # Install the example apps
+    # Install the example apps (gpp and dsp)
     install -d ${D}/${installdir}/ti-dsplink-examples/
     cp ${DSPLINK}/gpp/export/BIN/Linux/${DSPLINKPLATFORM}/RELEASE/*gpp ${D}/${installdir}/ti-dsplink-examples
-    
-    for i in $(find ${DSPLINK}/dsp/BUILD/ -name "*.out") ; do
-        cp ${i} ${D}/${installdir}/ti-dsplink-examples
-    done
+    cp ${DSPLINK}/dsp/export/BIN/DspBios/${DSPLINKPLATFORM}/${DSPLINKDSP}/RELEASE/*.out ${D}/${installdir}/ti-dsplink-examples    
 
     # Install the example apps module un/load scripts
     install ${WORKDIR}/ti-dsplink-examples-loadmodules.sh ${D}/${installdir}/ti-dsplink-examples
@@ -242,6 +186,6 @@ pkg_postrm_ti-dsplink-module_append () {
 
 PACKAGES += "ti-dsplink-examples"
 RDEPENDS_ti-dsplink-examples_append = " ti-dsplink-module"
-RDEPENDS_ti-dsplink-examples_append_omap3 += " ti-lpm-module"
+RDEPENDS_ti-dsplink-examples_append_omap3 += " ti-lpm-module ti-lpm-utils"
 FILES_ti-dsplink-examples = "${installdir}/ti-dsplink-examples/*"
 INSANE_SKIP_ti-dsplink-examples = True

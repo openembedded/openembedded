@@ -7,7 +7,7 @@ RDEPENDS += "marvell-gspi-fw"
 COMPATIBLE_MACHINE = "sgh-i900"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           file://sgh-i900-support.patch;patch=1 \
+           file://sgh-i900-support.patch \
            file://sgh_i900_defconfig"
 
 S = "${WORKDIR}/linux-${PV}"

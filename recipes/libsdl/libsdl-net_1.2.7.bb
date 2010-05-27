@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 PR = "r1"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_net/release/SDL_net-${PV}.tar.gz \
-	   file://libtool2.patch;patch=1 \
+	   file://libtool2.patch \
 	  "
 
 S = "${WORKDIR}/SDL_net-${PV}"

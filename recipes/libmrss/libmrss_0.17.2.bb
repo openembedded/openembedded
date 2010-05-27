@@ -2,7 +2,7 @@ require libmrss.inc
 
 PR = "${INC_PR}.2"
 
-SRC_URI += "file://better-parse-url-r0.patch;patch=1"
+SRC_URI += "file://better-parse-url-r0.patch"
 
 
 SRC_URI[md5sum] = "54935c6cff42df2f1daada267b701392"

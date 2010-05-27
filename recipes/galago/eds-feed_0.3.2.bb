@@ -4,8 +4,8 @@ LICENSE = "GPL"
 DEPENDS = "gettext libgalago dbus glib-2.0 eds-dbus"
 
 SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
-           file://disable-bonobo.patch;patch=1"
-#           file://no-check.patch;patch=1"
+           file://disable-bonobo.patch"
+#           file://no-check.patch"
 #EXTRA_OECONF =	"--disable-binreloc"
 
 FILES_${PN} += "${libdir}/galago/eds-feed"

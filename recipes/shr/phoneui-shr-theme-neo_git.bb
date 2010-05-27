@@ -6,7 +6,7 @@ LICENSE = "unknown"
 DEPENDS = "edje-native"
 RDEPENDS = "libphone-ui-shr"
 RSUGGESTS = "e-wm-theme-illume-neo gtk-theme-neo icon-theme-neo elementary-theme-neo"
-SRCREV = "df522dfc585fc0ad83e7164f451d15fb770c524b"
+SRCREV = "20e5e82819a7612aa31c753a6898ccc9e940c7c6"
 PV = "0.1+gitr${SRCPV}"
 PR = "r0"
 

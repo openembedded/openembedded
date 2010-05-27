@@ -4,8 +4,8 @@ DEPENDS = "libpcap"
 
 SRC_URI = " \
 	http://www.netfilter.org/projects/ulogd/files/ulogd-${PV}.tar.bz2;name=tar \
-	file://ulogd-kill-uname-in-rules.patch;patch=1 \
-	file://ulogd-hash-style-gnu.patch;patch=1 \
+	file://ulogd-kill-uname-in-rules.patch \
+	file://ulogd-hash-style-gnu.patch \
 	file://init \
 	"
 SRC_URI[tar.md5sum] = "05b4ed2926b9a22aaeaf642917bbf8ff"

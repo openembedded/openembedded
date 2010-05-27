@@ -1,7 +1,7 @@
 SECTION = "unknown"
 SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 \
-	file://Make-config.patch;patch=1 \
-	file://mklib.patch;patch=1"
+	file://Make-config.patch \
+	file://mklib.patch"
 S = "${WORKDIR}/Mesa-${PV}"
 PE = "2"
 LICENSE = "LGPL"

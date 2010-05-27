@@ -9,7 +9,7 @@ PR = "r1"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz;name=plugins \
            http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=archive \
-#           file://abiword-cxx-for-ld-fix.patch;patch=1 \
+#           file://abiword-cxx-for-ld-fix.patch \
 	   "
 
 DEFAULT_PREFERENCE = "2"

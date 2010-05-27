@@ -12,7 +12,7 @@ RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc"
 FULL_OPTIMIZATION_arm = "-O2"
 
 SRC_URI = "http://download.gnome.org/sources/pango/1.12/pango-${PV}.tar.bz2 \
-	   file://no-tests.patch;patch=1"
+	   file://no-tests.patch"
 
 inherit autotools pkgconfig
 

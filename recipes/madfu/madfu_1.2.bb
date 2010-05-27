@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/usb-midi-fw/madfuload-1.2.tar.gz \
-           file://autofoo.patch;patch=1"
+           file://autofoo.patch"
 
 S = "${WORKDIR}/madfuload-1.2"
 

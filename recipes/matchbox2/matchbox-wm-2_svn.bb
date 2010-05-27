@@ -4,8 +4,8 @@ PV = "0.1.0+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-window-manager-2;proto=http \
-	   file://fix-timeout-handler-free.patch;patch=1 \
-	   file://makefile-vars.patch;patch=1;pnum=0 \
+	   file://fix-timeout-handler-free.patch \
+	   file://makefile-vars.patch;striplevel=0 \
 "
 S = "${WORKDIR}/matchbox-window-manager-2"
 

@@ -9,8 +9,8 @@ PR = "r1"
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
-           file://configure-hack.diff;patch=1 \
-           file://lower-rank.diff;patch=1 \
+           file://configure-hack.diff \
+           file://lower-rank.diff \
 "
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"

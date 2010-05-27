@@ -6,8 +6,8 @@ DEPENDS = "virtual/xserver libxdamage libxcomposite"
 inherit pkgconfig
 
 SRC_URI = "http://thegraveyard.org/files/${PN}-${PV}.tar.bz2 \
-           file://fix-makefile.patch;patch=1 \
-           file://event_base.patch;patch=1"
+           file://fix-makefile.patch \
+           file://event_base.patch"
 
 EXTRA_OEMAKE = "X11PREFIX='${STAGING_DIR_TARGET}${layout_prefix}' PKG_CONFIG='${STAGING_BINDIR_NATIVE}/pkg-config'"
 CFLAGS_append = " -I${STAGING_INCDIR}/X11"

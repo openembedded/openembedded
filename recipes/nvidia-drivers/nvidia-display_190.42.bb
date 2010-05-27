@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE_ion = "1"
 PKG_BASENAME="NVIDIA-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}"
 
 SRC_URI="http://download.nvidia.com/XFree86/Linux-${NVIDIA_ARCH}/${PV}/${PKG_BASENAME}.run \
-	file://nvidia-oe-conftest.patch;patch=1"
+	file://nvidia-oe-conftest.patch"
 
 S="${WORKDIR}/${PKG_BASENAME}/usr/src/nv"
 

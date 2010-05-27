@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libusb0"
 
 SRC_URI = "http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/libftdi-${PV}.tar.gz \
-           file://doxygen-configure.patch;patch=1"
+           file://doxygen-configure.patch"
 S = "${WORKDIR}/libftdi-${PV}"
 
 inherit autotools

@@ -12,7 +12,7 @@
   <para>The autotools class takes care of all of the details for you. It
   defines appropriate tasks for <emphasis>configure</emphasis>,
   <emphasis>compile</emphasis>, <emphasis>stage</emphasis> and
-  <emphasis>install</emphasis>. At it's simplest adding an inherit for the
+  <emphasis>install</emphasis>. At its simplest adding an inherit for the
   autotools class is all that is required. The netcat recipe for example
   is:<screen>DESCRIPTION = "GNU Netcat"
 HOMEPAGE = "http://netcat.sourceforge.net"

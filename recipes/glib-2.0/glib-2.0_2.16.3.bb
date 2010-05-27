@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/glib/2.16/glib-${PV}.tar.bz2 \
            file://glibconfig-sysdefs.h \
-           file://configure-libtool.patch;patch=1 \
+           file://configure-libtool.patch \
           "
 
 SRC_URI[md5sum] = "195f9a803cc5279dbb39afdf985f44cb"

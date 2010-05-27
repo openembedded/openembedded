@@ -6,7 +6,7 @@ inherit gnome
 DEPENDS += " ffmpeg ptlib virtual/libsdl openldap"
 
 SRC_URI = "http://www.ekiga.org/admin/downloads/latest/sources/ekiga_3.0.2/opal-${PV}.tar.bz2 \
-           file://configure.diff;patch=1 \
+           file://configure.diff \
           "
 
 EXTRA_OECONF = "--enable-localgsm --disable-spandsp "

@@ -1,6 +1,6 @@
 require llvm.inc
 
-DEPENDS = "llvm-common-native cmake-native"
+DEPENDS = "llvm-common-native cmake-native binutils-cross perl-native"
 
 inherit native
 
@@ -14,13 +14,16 @@ EXTRA_OECMAKE = "\
   -DCMAKE_OBJDUMP:FILEPATH=${OBJDUMP} \
   -DCMAKE_RANLIB:FILEPATH=${RANLIB} \
   -DCMAKE_STRIP:FILEPATH=${STRIP} \
+  -DNM_PATH:FILEPATH=${NM} \
 "
 
 do_stage() {
+  cd ${OECMAKE_BUILDPATH}
+
   llvm_stage
 
   install -d ${STAGING_BINDIR}
-	install -m 0755 build/bin/llvm-config${LLVM_RELEASE} ${STAGING_BINDIR}
+  install -m 0755 bin/llvm-config${LLVM_RELEASE} ${STAGING_BINDIR}
 }
 
 

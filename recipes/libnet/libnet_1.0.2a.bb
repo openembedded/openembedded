@@ -11,9 +11,9 @@ PROVIDES = "libnet-1.0"
 
 #SRC_URI = "http://www.packetfactory.net/libnet/dist/deprecated/libnet-${PV}.tar.gz \
 SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet0/libnet0_${PV}.orig.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://configure.uclibc.patch;patch=1 \
-	   file://configure_x86-64-host.patch;patch=1 \
+	   file://configure.patch \
+	   file://configure.uclibc.patch \
+	   file://configure_x86-64-host.patch \
 	   "
 S = "${WORKDIR}/libnet-${PV}.orig"
 

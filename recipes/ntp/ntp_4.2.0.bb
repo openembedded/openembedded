@@ -3,9 +3,9 @@ require ntp.inc
 PR = "r9"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
-	file://ntpdc.Makefile.am.maybe-layout.patch;patch=1 \
-	file://ipv6only-workaround.patch;patch=1 \
-        file://gcc4.patch;patch=1 \
+	file://ntpdc.Makefile.am.maybe-layout.patch \
+	file://ipv6only-workaround.patch \
+        file://gcc4.patch \
 	file://ntpd \
 	file://ntp.conf \
 	file://ntpdate"

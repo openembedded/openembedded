@@ -55,7 +55,7 @@ sip_do_generate() {
 	done
 }
 
-do_generate[deptask] = "do_populate_staging"
+do_generate[deptask] = "do_populate_sysroot"
 
 EXPORT_FUNCTIONS do_generate
 

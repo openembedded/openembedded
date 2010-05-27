@@ -8,13 +8,13 @@ SRCDATE = "20050930"
 PR = "r24"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
-           file://ipkg-utils-fix.patch;patch=1 \
-           file://ipkg-py-sane-vercompare.patch;patch=1 \
-           file://ipkg-py-tarfile.patch;patch=1 \
-           file://arfile_even_alignment.patch;patch=1 \
-           file://ipkg-make-index-track-stamps.patch;patch=1 \
-           file://fields_tweaks.patch;patch=1 \
-           file://ipkg-env.patch;patch=1 \
+           file://ipkg-utils-fix.patch \
+           file://ipkg-py-sane-vercompare.patch \
+           file://ipkg-py-tarfile.patch \
+           file://arfile_even_alignment.patch \
+           file://ipkg-make-index-track-stamps.patch \
+           file://fields_tweaks.patch \
+           file://ipkg-env.patch \
 	   "
 
 S = "${WORKDIR}/ipkg-utils"

@@ -6,8 +6,8 @@ DEPENDS = "dbus-glib gconf libnotify gtk+"
 RRECOMMENDS = "gnome-icon-theme"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/${P}.tar.gz \
-	   file://add-device-from-rfcomm-crash.patch;patch=1 \
-	   file://cs-typo.patch;patch=1"
+	   file://add-device-from-rfcomm-crash.patch \
+	   file://cs-typo.patch"
 
 inherit autotools pkgconfig gconf mime
 

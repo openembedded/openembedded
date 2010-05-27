@@ -6,7 +6,7 @@ DEPENDS = "gtk+ ffmpeg poppler libxrandr"
 inherit cmake
 
 SRC_URI = "http://www.openscenegraph.org/downloads/developer_releases/OpenSceneGraph-2.9.6.zip;name=osg \
-           file://gles.diff;patch=1 "
+           file://gles.diff "
 
 SRC_URI[osg.md5sum] = "f27a69499f3eadf1d8ad2ee22f6d5e85"
 SRC_URI[osg.sha256sum] = "9aa8ce2a581d42f8c9bac14dff5069c66633ddf73370a1e7412873048d643e9a"

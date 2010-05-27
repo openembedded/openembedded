@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r30"
+PR = "r31"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -121,7 +121,6 @@ RDEPENDS_${PN}-x = "\
 "
 
 RDEPENDS_${PN}-apps = "\
-  fso-abyss \
   task-fso2-compliance \
   phoneui-apps-messages \
   phoneui-apps-contacts \

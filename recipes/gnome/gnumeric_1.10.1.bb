@@ -7,7 +7,7 @@ PARALLEL_MAKE = ""
 
 inherit gnome flow-lossage
 
-SRC_URI += " file://nodolt.patch;patch=1 "
+SRC_URI += " file://nodolt.patch "
 
 SRC_URI[archive.md5sum] = "80daf446f299578d05e60e9b7d38900c"
 SRC_URI[archive.sha256sum] = "91a0a9aa47ae82b14fe717e5d49d164cfe871add2bf71d0cb2f68cf3d383c9db"

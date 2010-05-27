@@ -1,0 +1,287 @@
+commit 507dd07316e8b529def4f0f429c72b98e37d13d5
+Author: Aurelien Jarno <aurelien@aurel32.net>
+Date:   Sat Jan 30 20:41:33 2010 +0100
+
+    SH4/R2D: fix poweroff
+    
+    The write the the PA_POWOFF register is currently ignored. Fix that by
+    calling qemu_system_shutdown_request() when a poweroff is requested.
+    
+    Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+
+diff --git a/hw/r2d.c b/hw/r2d.c
+index e4c02f0..8769a12 100644
+--- a/hw/r2d.c
++++ b/hw/r2d.c
+@@ -66,7 +66,6 @@ typedef struct {
+     uint16_t keyctlclr;
+     uint16_t pad0;
+     uint16_t pad1;
+-    uint16_t powoff;
+     uint16_t verreg;
+     uint16_t inport;
+     uint16_t outport;
+@@ -128,7 +127,7 @@ static uint32_t r2d_fpga_read(void *opaque, target_phys_addr_t addr)
+     case PA_OUTPORT:
+ 	return s->outport;
+     case PA_POWOFF:
+-	return s->powoff;
++	return 0x00;
+     case PA_VERREG:
+ 	return 0x10;
+     }
+@@ -150,8 +149,10 @@ r2d_fpga_write(void *opaque, target_phys_addr_t addr, uint32_t value)
+ 	s->outport = value;
+ 	break;
+     case PA_POWOFF:
+-	s->powoff = value;
+-	break;
++        if (value & 1) {
++            qemu_system_shutdown_request();
++        }
++        break;
+     case PA_VERREG:
+ 	/* Discard writes */
+ 	break;
+
+
+commit e6df0efdf7d4e304fe4a099cef625d8e4f60b320
+Author: Aurelien Jarno <aurelien@aurel32.net>
+Date:   Mon Feb 1 20:02:23 2010 +0100
+
+    target-sh4: MMU: simplify call to tlb_set_page()
+    
+    tlb_set_page() doesn't need addresses with offset, but simply the
+    page aligned addresses.
+    
+    Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+
+diff --git a/target-sh4/helper.c b/target-sh4/helper.c
+index e7c494f..f9bf5e2 100644
+--- a/target-sh4/helper.c
++++ b/target-sh4/helper.c
+@@ -464,7 +464,7 @@ static int get_physical_address(CPUState * env, target_ulong * physical,
+ int cpu_sh4_handle_mmu_fault(CPUState * env, target_ulong address, int rw,
+ 			     int mmu_idx, int is_softmmu)
+ {
+-    target_ulong physical, page_offset, page_size;
++    target_ulong physical;
+     int prot, ret, access_type;
+ 
+     access_type = ACCESS_INT;
+@@ -511,11 +511,8 @@ int cpu_sh4_handle_mmu_fault(CPUState * env, target_ulong address, int rw,
+ 	return 1;
+     }
+ 
+-    page_size = TARGET_PAGE_SIZE;
+-    page_offset =
+-	(address - (address & TARGET_PAGE_MASK)) & ~(page_size - 1);
+-    address = (address & TARGET_PAGE_MASK) + page_offset;
+-    physical = (physical & TARGET_PAGE_MASK) + page_offset;
++    address &= TARGET_PAGE_MASK;
++    physical &= TARGET_PAGE_MASK;
+ 
+     return tlb_set_page(env, address, physical, prot, mmu_idx, is_softmmu);
+ }
+
+
+commit fc1a70eb8792472b7d18ad21f40763d4b32f9413
+Author: Aurelien Jarno <aurelien@aurel32.net>
+Date:   Tue Feb 2 19:50:51 2010 +0100
+
+    target-sh4: MMU: optimize UTLB accesses
+    
+    With the current code, the QEMU TLB is setup to match the read/write
+    mode of the MMU fault. This means when read access is done, the page
+    is setup in read-only mode. When the page is later accessed in write
+    mode, an MMU fault happened, and the page is switch in write-only
+    mode. This flip-flop causes a lot of calls to the MMU code and slow
+    down the emulation.
+    
+    This patch changes the MMU emulation, so that the QEMU TLB is setup
+    to match the UTLB protection key. This impressively increase the
+    speed of the emulation.
+    
+    Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+
+diff --git a/target-sh4/helper.c b/target-sh4/helper.c
+index 589efe4..2d00dfa 100644
+--- a/target-sh4/helper.c
++++ b/target-sh4/helper.c
+@@ -386,38 +386,28 @@ static int get_mmu_address(CPUState * env, target_ulong * physical,
+ 	n = find_utlb_entry(env, address, use_asid);
+ 	if (n >= 0) {
+ 	    matching = &env->utlb[n];
+-	    switch ((matching->pr << 1) | ((env->sr & SR_MD) ? 1 : 0)) {
+-	    case 0:		/* 000 */
+-	    case 2:		/* 010 */
+-		n = (rw == 1) ? MMU_DTLB_VIOLATION_WRITE :
+-		    MMU_DTLB_VIOLATION_READ;
+-		break;
+-	    case 1:		/* 001 */
+-	    case 4:		/* 100 */
+-	    case 5:		/* 101 */
+-		if (rw == 1)
+-		    n = MMU_DTLB_VIOLATION_WRITE;
+-		else
+-		    *prot = PAGE_READ;
+-		break;
+-	    case 3:		/* 011 */
+-	    case 6:		/* 110 */
+-	    case 7:		/* 111 */
+-		*prot = (rw == 1)? PAGE_WRITE : PAGE_READ;
+-		break;
+-	    }
++            if (!(env->sr & SR_MD) && !(matching->pr & 2)) {
++                n = (rw == 1) ? MMU_DTLB_VIOLATION_WRITE :
++                    MMU_DTLB_VIOLATION_READ;
++            } else if ((rw == 1) && !(matching->pr & 1)) {
++                n = MMU_DTLB_VIOLATION_WRITE;
++            } else if ((rw == 1) & !matching->d) {
++                n = MMU_DTLB_INITIAL_WRITE;
++            } else {
++                *prot = PAGE_READ;
++                if ((matching->pr & 1) && matching->d) {
++                    *prot |= PAGE_WRITE;
++                }
++            }
+ 	} else if (n == MMU_DTLB_MISS) {
+ 	    n = (rw == 1) ? MMU_DTLB_MISS_WRITE :
+ 		MMU_DTLB_MISS_READ;
+ 	}
+     }
+     if (n >= 0) {
++	n = MMU_OK;
+ 	*physical = ((matching->ppn << 10) & ~(matching->size - 1)) |
+ 	    (address & (matching->size - 1));
+-	if ((rw == 1) & !matching->d)
+-	    n = MMU_DTLB_INITIAL_WRITE;
+-	else
+-	    n = MMU_OK;
+     }
+     return n;
+ }
+
+
+commit d7b30bf685e88c3cac4a5f470ef42b0b3c37aed9
+Author: Aurelien Jarno <aurelien@aurel32.net>
+Date:   Wed Feb 3 02:32:49 2010 +0100
+
+    target-sh4: MMU: reduce the size of a TLB entry
+    
+    Reduce the size of the TLB entry from 32 to 16 bytes, reorganising
+    members and using a bit field.
+    
+    Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+
+diff --git a/target-sh4/cpu.h b/target-sh4/cpu.h
+index 015d598..85f221d 100644
+--- a/target-sh4/cpu.h
++++ b/target-sh4/cpu.h
+@@ -72,21 +72,20 @@
+  * The use of DELAY_SLOT_TRUE flag makes us accept such SR_T modification.
+  */
+ 
+-/* XXXXX The structure could be made more compact */
+ typedef struct tlb_t {
+-    uint8_t asid;		/* address space identifier */
+     uint32_t vpn;		/* virtual page number */
+-    uint8_t v;			/* validity */
+     uint32_t ppn;		/* physical page number */
+-    uint8_t sz;			/* page size */
+-    uint32_t size;		/* cached page size in bytes */
+-    uint8_t sh;			/* share status */
+-    uint8_t c;			/* cacheability */
+-    uint8_t pr;			/* protection key */
+-    uint8_t d;			/* dirty */
+-    uint8_t wt;			/* write through */
+-    uint8_t sa;			/* space attribute (PCMCIA) */
+-    uint8_t tc;			/* timing control */
++    uint32_t size;		/* mapped page size in bytes */
++    uint8_t asid;		/* address space identifier */
++    uint8_t v:1;		/* validity */
++    uint8_t sz:2;		/* page size */
++    uint8_t sh:1;		/* share status */
++    uint8_t c:1;		/* cacheability */
++    uint8_t pr:2;		/* protection key */
++    uint8_t d:1;		/* dirty */
++    uint8_t wt:1;		/* write through */
++    uint8_t sa:3;		/* space attribute (PCMCIA) */
++    uint8_t tc:1;		/* timing control */
+ } tlb_t;
+ 
+ #define UTLB_SIZE 64
+
+
+commit efcf683080924841f7ef32920fb79019a04dc681
+Author: Aurelien Jarno <aurelien@aurel32.net>
+Date:   Wed Feb 3 02:33:00 2010 +0100
+
+    target-sh4: MMU: remove dead code
+    
+    Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+
+diff --git a/target-sh4/helper.c b/target-sh4/helper.c
+index 2d00dfa..9b3a259 100644
+--- a/target-sh4/helper.c
++++ b/target-sh4/helper.c
+@@ -261,24 +261,6 @@ static int find_tlb_entry(CPUState * env, target_ulong address,
+ 	    continue;		/* Invalid entry */
+ 	if (!entries[i].sh && use_asid && entries[i].asid != asid)
+ 	    continue;		/* Bad ASID */
+-#if 0
+-	switch (entries[i].sz) {
+-	case 0:
+-	    size = 1024;	/* 1kB */
+-	    break;
+-	case 1:
+-	    size = 4 * 1024;	/* 4kB */
+-	    break;
+-	case 2:
+-	    size = 64 * 1024;	/* 64kB */
+-	    break;
+-	case 3:
+-	    size = 1024 * 1024;	/* 1MB */
+-	    break;
+-	default:
+-	    assert(0);
+-	}
+-#endif
+ 	start = (entries[i].vpn << 10) & ~(entries[i].size - 1);
+ 	end = start + entries[i].size - 1;
+ 	if (address >= start && address <= end) {	/* Match */
+
+
+commit 2c8bbb9fabadf3687017694bae1008bee7fedc7c
+Author: Aurelien Jarno <aurelien@aurel32.net>
+Date:   Fri Apr 2 12:16:04 2010 +0200
+
+    hw/r2d: add a USB keyboard
+    
+    The R2D board does not have a PS/2 port, and only support a keyboard on
+    the USB bus.
+    
+    Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+
+diff --git a/hw/r2d.c b/hw/r2d.c
+index 8769a12..ec075db 100644
+--- a/hw/r2d.c
++++ b/hw/r2d.c
+@@ -34,6 +34,7 @@
+ #include "sh7750_regs.h"
+ #include "ide.h"
+ #include "loader.h"
++#include "usb.h"
+ 
+ #define SDRAM_BASE 0x0c000000 /* Physical location of SDRAM: Area 3 */
+ #define SDRAM_SIZE 0x04000000
+@@ -240,6 +241,9 @@ static void r2d_init(ram_addr_t ram_size,
+     for (i = 0; i < nb_nics; i++)
+         pci_nic_init_nofail(&nd_table[i], "rtl8139", i==0 ? "2" : NULL);
+ 
++    /* USB keyboard */
++    usbdevice_create("keyboard");
++
+     /* Todo: register on board registers */
+     if (kernel_filename) {
+       int kernel_size;

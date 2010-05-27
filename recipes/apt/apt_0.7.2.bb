@@ -1,7 +1,7 @@
 require apt.inc
 PR = "r3"
 
-SRC_URI += "file://nodoc.patch;patch=1"
+SRC_URI += "file://nodoc.patch"
 
 require apt-package.inc
 

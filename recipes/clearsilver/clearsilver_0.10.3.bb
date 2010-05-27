@@ -6,7 +6,7 @@ DEPENDS = "python"
 PR = "r2"
 
 SRC_URI = "http://www.clearsilver.net/downloads/${P}.tar.gz \
-           file://crosscompile.patch;patch=1"
+           file://crosscompile.patch"
 
 EXTRA_OECONF = "--disable-apache --disable-perl --disable-ruby --disable-java --disable-csharp --enable-gettext --with-python=${STAGING_BINDIR_NATIVE}/python"
 

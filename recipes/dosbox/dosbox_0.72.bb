@@ -2,7 +2,7 @@ require dosbox.inc
 
 PR = "r1"
 
-SRC_URI += "file://gcc-4.3.patch;patch=1"
+SRC_URI += "file://gcc-4.3.patch"
 
 
 SRC_URI[md5sum] = "262939cc28966c1f9b07c2bc472b699f"

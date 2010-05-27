@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
-	   file://makefile.patch;patch=1"
+	   file://makefile.patch"
 S = "${WORKDIR}/gdbm-${PV}"
 
 inherit autotools native

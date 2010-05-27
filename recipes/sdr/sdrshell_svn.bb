@@ -6,11 +6,10 @@ DEPENDS = "dttsp"
 inherit qmake qt3x11 
 
 SRCREV = "57"
-PV = "1.0.0+svnr${SRCPV}"
-PE = "1"
+PV = "${SRCREV}"
 
 SRC_URI = "svn://sdr-shell.googlecode.com/svn/branches;module=sdr-shell-v2;proto=http \
-           file://gcc-43-fix.patch;patch=1;pnum=0"
+           file://gcc-43-fix.patch;striplevel=0"
 S = "${WORKDIR}/sdr-shell-v2"
 
 PARALLEL_MAKE = ""

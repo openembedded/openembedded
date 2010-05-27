@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "http://crimson.seul.org/files/crimson-${PV}.tar.bz2 \
-           file://native-tools.patch;patch=1"
+           file://native-tools.patch"
 S = "${WORKDIR}/crimson-${PV}"
 
 inherit autotools

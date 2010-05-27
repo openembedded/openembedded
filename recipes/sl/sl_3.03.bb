@@ -4,7 +4,7 @@ LICENSE = "unknown"
 DEPENDS = "ncurses"
 
 SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/universe/s/sl/sl_3.03.orig.tar.gz;name=archive \
-           http://archive.ubuntu.com/ubuntu/pool/universe/s/sl/sl_3.03-14.diff.gz;patch=1;name=patch"
+           http://archive.ubuntu.com/ubuntu/pool/universe/s/sl/sl_3.03-14.diff.gz;name=patch"
 
 S = "${WORKDIR}/${P}.orig"
 

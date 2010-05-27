@@ -12,7 +12,7 @@ RDEPENDS_${PN}-tcptraceroute6 = "${PN}-rltraceroute6"
 RDEPENDS_${PN}-tracert6 = "${PN}-rltraceroute6"
 
 SRC_URI = "http://www.remlab.net/files/ndisc6/ndisc6-${PV}.tar.bz2 \
-	   file://autoconf-older-version.patch;patch=1 \
+	   file://autoconf-older-version.patch \
 	   file://acinclude.m4"
 
 inherit autotools

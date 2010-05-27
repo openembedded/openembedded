@@ -4,6 +4,6 @@ SECTION = "devel"
 LICENSE = "GPL"
 
 SRC_URI = "http://download.savannah.gnu.org/releases/quilt/quilt-${PV}.tar.gz \
-           file://install.patch;patch=1"
+           file://install.patch"
 
 S = "${WORKDIR}/quilt-${PV}"

@@ -5,7 +5,7 @@ PR="r2"
 PARALLEL_MAKE = ""
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/commoncpp/commoncpp2-${PV}.tar.gz \
-	file://configure.ac.patch;patch=1"
+	file://configure.ac.patch"
 
 inherit autotools pkgconfig autotools_stage binconfig
 

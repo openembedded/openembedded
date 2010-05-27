@@ -8,9 +8,8 @@ SRC_URI = "svn://gstplayer.googlecode.com/svn;module=trunk;proto=http"
 
 S = "${WORKDIR}/trunk/gstplayer"
 
-PE = "1"
-PV = "1.0.0+svnr${SRCPV}"
-PR = "r0"
+PV = "svnr${SRCREV}"
+PR = "r2"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 

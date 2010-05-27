@@ -1,0 +1,13 @@
+diff --git a/usb-bsd.c b/usb-bsd.c
+index 48567a3..a761b61 100644
+--- a/usb-bsd.c
++++ b/usb-bsd.c
+@@ -35,7 +35,7 @@
+ 
+ #include <sys/ioctl.h>
+ #ifndef __DragonFly__
+-#include <dev/usb/usb.h>
++#include <legacy/dev/usb/usb.h>
+ #else
+ #include <bus/usb/usb.h>
+ #endif

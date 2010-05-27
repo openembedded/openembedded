@@ -4,8 +4,8 @@ PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gnuplot/${PN}-${PV}.tar.gz;name=archive \
            http://www.mneuroth.de/privat/zaurus/qtplot-0.2.tar.gz;name=qtplot \
-	   file://subdirs.patch;patch=1 \
-           file://term.patch;patch=1 \
+	   file://subdirs.patch \
+           file://term.patch \
 	   file://gnuplot.desktop \
 	   file://gnuplot.png"
 

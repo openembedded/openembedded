@@ -1,7 +1,7 @@
 SRC_URI = "${SOURCEFORGE_MIRROR}/atmelwlandriver/atmelwlandriver-${PV}.tar.bz2 \
 	file://dotconfig \
 	file://pcmf502rd.conf \
-	file://makefile.patch;patch=1"
+	file://makefile.patch"
 S = "${WORKDIR}/atmelwlandriver"
 LICENSE = "GPL"
 

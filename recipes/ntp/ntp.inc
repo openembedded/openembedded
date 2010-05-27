@@ -9,7 +9,7 @@ LICENSE = "ntp"
 RSUGGESTS = "iana-etc"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
-	file://ipv6only-workaround.patch;patch=1 \
+	file://ipv6only-workaround.patch \
 	file://ntpd \
 	file://ntp.conf \
 	file://ntpdate"

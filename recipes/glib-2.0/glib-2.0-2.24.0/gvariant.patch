@@ -1,0 +1,32 @@
+From e51ec13ab4bc629f73b41f2ad3e96b3a787a8760 Mon Sep 17 00:00:00 2001
+From: Ryan Lortie <desrt@desrt.ca>
+Date: Sun, 11 Apr 2010 02:01:02 +0000
+Subject: Add g_return_if_fail()s to g_variant_new_from_data()
+
+also, document that @type must be definite
+---
+diff --git a/glib/gvariant.c b/glib/gvariant.c
+index 721740f..f8f29e0 100644
+--- a/glib/gvariant.c
++++ b/glib/gvariant.c
+@@ -4087,7 +4087,7 @@ g_variant_byteswap (GVariant *value)
+ 
+ /**
+  * g_variant_new_from_data:
+- * @type: a #GVariantType
++ * @type: a definite #GVariantType
+  * @data: the serialised data
+  * @size: the size of @data
+  * @trusted: %TRUE if @data is definitely in normal form
+@@ -4129,6 +4129,9 @@ g_variant_new_from_data (const GVariantType *type,
+   GVariant *value;
+   GBuffer *buffer;
+ 
++  g_return_val_if_fail (g_variant_type_is_definite (type), NULL);
++  g_return_val_if_fail (data != NULL || size == 0, NULL);
++
+   if (notify)
+     buffer = g_buffer_new_from_pointer (data, size, notify, user_data);
+   else
+--
+cgit v0.8.3.1

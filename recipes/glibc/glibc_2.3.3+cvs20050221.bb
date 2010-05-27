@@ -12,25 +12,25 @@ DEFAULT_PREFERENCE_i686 = "0"
 DEFAULT_PREFERENCE_sh3 = "0"
 DEFAULT_PREFERENCE_sh4 = "0"
 
-#	   file://noinfo.patch;patch=1
-#	   file://ldconfig.patch;patch=1;pnum=0
+#	   file://noinfo.patch
+#	   file://ldconfig.patch;striplevel=0
 SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@bb.data.getVar('PV', d, 1)[9:]} \
-	   file://arm-ioperm.patch;patch=1;pnum=0 \
-	   file://fhs-linux-paths.patch;patch=1 \
-	   file://arm-no-hwcap.patch;patch=1;pnum=0 \
-	   file://arm-memcpy.patch;patch=1;pnum=0 \
-	   file://arm-longlong.patch;patch=1;pnum=0 \
-	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
-	   file://trampoline.patch;patch=1;pnum=0 \
-	   file://dl-cache-libcmp.patch;patch=1 \
+	   file://arm-ioperm.patch;striplevel=0 \
+	   file://fhs-linux-paths.patch \
+	   file://arm-no-hwcap.patch;striplevel=0 \
+	   file://arm-memcpy.patch;striplevel=0 \
+	   file://arm-longlong.patch;striplevel=0 \
+	   file://arm-machine-gmon.patch;striplevel=0 \
+	   file://trampoline.patch;striplevel=0 \
+	   file://dl-cache-libcmp.patch \
 	   \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
 # seems to fail on tls platforms
-SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
+SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch"
 
-SRC_URI_append_openmn = " file://ldsocache-varrun.patch;patch=1"
+SRC_URI_append_openmn = " file://ldsocache-varrun.patch"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"

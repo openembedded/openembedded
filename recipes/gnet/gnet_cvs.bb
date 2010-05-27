@@ -6,7 +6,7 @@ DEPENDS = "glib-2.0"
 PV = "2.0.7+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=gnet \
-           file://buildfix.patch;patch=1"
+           file://buildfix.patch"
 S = "${WORKDIR}/gnet"
 
 EXTRA_OECONF =	"--disable-pthreads"

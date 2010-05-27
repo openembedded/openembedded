@@ -29,6 +29,9 @@ CACHE = "${TMPDIR}/cache/${LIBC}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${LIBC}"
 require conf/distro/include/angstrom-${LIBC}.inc
 
+# Set some java bits
+require conf/distro//include/sane-toolchain-java.inc
+
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
 # Angstrom turns on thumb for armv4t machine according to this RFC:

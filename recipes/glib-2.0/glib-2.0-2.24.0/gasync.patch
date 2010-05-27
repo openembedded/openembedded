@@ -1,0 +1,22 @@
+From 324f928af62d8a0aa132a5caaec107d4daa76429 Mon Sep 17 00:00:00 2001
+From: David Zeuthen <davidz@redhat.com>
+Date: Mon, 19 Apr 2010 14:42:42 +0000
+Subject: Bug 615111 – GAsyncInitable's default implementation is broken
+
+Signed-off-by: David Zeuthen <davidz@redhat.com>
+---
+diff --git a/gio/gasyncinitable.c b/gio/gasyncinitable.c
+index 05e17e2..c369a4e 100644
+--- a/gio/gasyncinitable.c
++++ b/gio/gasyncinitable.c
+@@ -201,7 +201,7 @@ async_init_thread (GSimpleAsyncResult *res,
+ {
+   GError *error = NULL;
+ 
+-  if (!g_initable_init (G_INITABLE (res), cancellable, &error))
++  if (!g_initable_init (G_INITABLE (object), cancellable, &error))
+     {
+       g_simple_async_result_set_from_error (res, error);
+       g_error_free (error);
+--
+cgit v0.8.3.1

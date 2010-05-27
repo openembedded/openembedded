@@ -4,7 +4,9 @@ AUTHOR = "Vojtech Pavlik <vojtech@suse.cz>"
 SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
+
+DEPENDS = "libxml2"
 
 SRC_URI = "http://cgit.freedesktop.org/~whot/evtest/snapshot/evtest-${PV}.tar.bz2;name=archive"
 SRC_URI[archive.md5sum] = "770d6af03affe976bdbe3ad1a922c973"

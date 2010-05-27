@@ -6,9 +6,9 @@ DEPENDS = "alsa-lib ncurses"
 PR = "r2"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
-           file://alsa-utils-automake.patch;patch=1 \
-	   file://alsa-utils-remove-xmlto.patch;patch=1 \
-	   file://alsa-utils-autoconf-strl-funcs.patch;patch=1 \
+           file://alsa-utils-automake.patch \
+	   file://alsa-utils-remove-xmlto.patch \
+	   file://alsa-utils-autoconf-strl-funcs.patch \
 	  "
 
 inherit autotools

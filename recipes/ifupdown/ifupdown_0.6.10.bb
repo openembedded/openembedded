@@ -8,8 +8,8 @@ PR = "r2"
 
 
 SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.tar.gz;name=ifupdown \
-           file://busybox.patch;patch=1 \
-           file://zeroconf.patch;patch=1 \
+           file://busybox.patch \
+           file://zeroconf.patch \
            file://init "
 
 EXTRA_OEMAKE = ""

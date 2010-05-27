@@ -7,7 +7,7 @@ DEPENDS = "libx11 libxtst"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/synergy2/synergy-${PV}.tar.gz \
-           file://synergy-1.3.1+gcc-4.3.patch;patch=1"
+           file://synergy-1.3.1+gcc-4.3.patch"
 
 do_configure_prepend() {
 	grep -l -- -Werror "${S}/"* | xargs sed -i 's:-Werror::'

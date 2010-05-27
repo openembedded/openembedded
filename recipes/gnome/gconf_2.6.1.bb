@@ -8,7 +8,7 @@ PR = "r2"
 S = "${WORKDIR}/GConf-${PV}"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/GConf/2.6/GConf-${PV}.tar.bz2 \
-	   file://backends.patch;patch=1"
+	   file://backends.patch"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 

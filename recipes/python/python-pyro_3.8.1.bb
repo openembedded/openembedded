@@ -10,7 +10,7 @@ PR = "ml0"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/pyro/Pyro-${PV}.tar.gz \
-  file://pyro-unattended-install.patch;patch=1;pnum=0 \
+  file://pyro-unattended-install.patch;striplevel=0 \
 "
 S = "${WORKDIR}/Pyro-${PV}"
 

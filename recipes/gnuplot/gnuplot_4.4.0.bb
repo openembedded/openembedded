@@ -2,7 +2,7 @@ require gnuplot.inc
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gnuplot/${PN}-${PV}.tar.gz;name=archive \
        http://www.mneuroth.de/privat/zaurus/qtplot-0.2.tar.gz \
-       file://subdirs.patch;patch=1 \
+       file://subdirs.patch \
 	   file://gnuplot.desktop \
 	   file://gnuplot.png"
 

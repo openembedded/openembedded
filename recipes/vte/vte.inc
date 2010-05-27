@@ -5,7 +5,7 @@ DEPENDS += "glib-2.0 gtk+ intltool-native ncurses"
 inherit gnome
 
 SRC_URI += "\
-  file://vte-pkgconfig-fixes.patch;patch=1 \
+  file://vte-pkgconfig-fixes.patch \
   file://vte.desktop.in \
 "
 

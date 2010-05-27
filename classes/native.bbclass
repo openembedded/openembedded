@@ -1,8 +1,12 @@
+# We want native packages to be relocatable
+inherit relocatable
+
 # Native packages are built indirectly via dependency,
 # no need for them to be a direct target of 'world'
 EXCLUDE_FROM_WORLD = "1"
 
 PACKAGES = ""
+PACKAGES_virtclass-native = ""
 PACKAGE_ARCH = "${BUILD_ARCH}"
 
 BASE_PACKAGE_ARCH = "${BUILD_ARCH}"
@@ -37,6 +41,7 @@ STAGING_BINDIR = "${STAGING_BINDIR_NATIVE}"
 STAGING_BINDIR_CROSS = "${STAGING_BINDIR_NATIVE}"
 
 STAGING_DIR_JAVA = "${STAGING_DATADIR_JAVA_NATIVE}"
+DEPENDS_GETTEXT = "gettext-native"
 
 # Don't use site files for native builds
 export CONFIG_SITE = ""

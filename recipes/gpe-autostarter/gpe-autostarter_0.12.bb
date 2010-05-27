@@ -5,8 +5,8 @@ RDEPENDS = "hotplug-dbus"
 
 inherit gpe
 
-SRC_URI += "file://wireless.patch;patch=1 \
-	    file://makefile-fix.patch;patch=1"
+SRC_URI += "file://wireless.patch \
+	    file://makefile-fix.patch"
 
 
 SRC_URI[md5sum] = "254a580e67d8e804adb3583281ae8586"

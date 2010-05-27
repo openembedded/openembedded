@@ -10,7 +10,7 @@
 #
 # This *must* be removed after initial testing is completed.  MJW 08-Dec-2008
 #
-SRCREV_pn-linux-ixp4xx ?= "1089"
+SRCREV_pn-linux-ixp4xx ?= "1090"
 PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV_pn-linux-ixp4xx}"
 #
 #===============================================================================#
@@ -73,3 +73,6 @@ PREFERRED_VERSION_boost				?= "1.33.1"
 
 # pulseaudio 0.9.19 is broken (ASM errors during do_compile):
 PREFERRED_VERSION_pulseaudio                    ?= "0.9.15"
+
+# latest tcl recipe has a bug that overwites regex.h; use the old tcl
+PREFERRED_VERSION_tcl				?= "8.4.19"

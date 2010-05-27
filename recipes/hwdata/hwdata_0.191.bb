@@ -4,7 +4,7 @@ LICENSE = "GPL + X11"
 PR = "r1"
 
 SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/main/h/hwdata/hwdata_0.191.orig.tar.gz;name=archive \
-           http://archive.ubuntu.com/ubuntu/pool/main/h/hwdata/hwdata_0.191-1.diff.gz;patch=1;name=patch \
+           http://archive.ubuntu.com/ubuntu/pool/main/h/hwdata/hwdata_0.191-1.diff.gz;name=patch \
 	   "
 
 PACKAGE_ARCH = "all"

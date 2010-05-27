@@ -8,7 +8,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/l/logrotate/logrotate_${PV}.orig.tar.gz \
-	   file://logrotate-3.7.1.patch;patch=1 \
+	   file://logrotate-3.7.1.patch \
            file://logrotate.conf"
 
 CFLAGS_prepend  += "-I${STAGING_INCDIR} "

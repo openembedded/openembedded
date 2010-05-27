@@ -6,9 +6,9 @@ SECTION = "x11/wm"
 PR = "r4"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/mb-applet-input-manager/${PV}/mb-applet-input-manager-${PV}.tar.gz \
-	   file://update-to-svn.diff;patch=1 \
-           file://mbinputmgr-libgtkinput.patch;patch=1 \
-	   file://visibility-protocol.patch;patch=1 \
+	   file://update-to-svn.diff \
+           file://mbinputmgr-libgtkinput.patch \
+	   file://visibility-protocol.patch \
 	   "
 
 S = "${WORKDIR}/mb-applet-input-manager-${PV}"

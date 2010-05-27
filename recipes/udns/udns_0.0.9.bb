@@ -4,7 +4,7 @@ PR = "r0"
 
 SRC_URI = " \
 	    http://www.corpit.ru/mjt/${PN}/${PN}_${PV}.tar.gz;name=udns \
-        file://fix-cc-check.patch;patch=1 \
+        file://fix-cc-check.patch \
 "
 SRC_URI[udns.md5sum] = "78843added6f6b690bc6019ab8ef03c9"
 SRC_URI[udns.sha256sum] = "cfc5f9b5387f96e48fc9c7aa5ef6511809e6c72c0df0d533cf150016816eaad2"

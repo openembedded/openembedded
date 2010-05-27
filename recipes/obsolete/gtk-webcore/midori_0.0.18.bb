@@ -2,7 +2,7 @@ require midori.inc
 
 PR = "r2"
 
-SRC_URI += "file://desktop.patch;patch=1"
+SRC_URI += "file://desktop.patch"
 
 
 SRC_URI[md5sum] = "aa9c10bbf6fe3502a65633c4fac0fb80"

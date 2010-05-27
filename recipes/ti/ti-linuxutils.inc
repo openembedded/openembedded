@@ -83,4 +83,4 @@ FILES_ti-irq-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/irq*.ko
 FILES_ti-linuxutils-app = "${installdir}/ti-linuxutils-app/*/*"
 
 INSANE_SKIP_ti-linuxutils-app = "True"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"

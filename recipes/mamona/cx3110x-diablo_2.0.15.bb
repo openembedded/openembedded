@@ -14,9 +14,9 @@ SRC_URI += "\
  http://repository.maemo.org/pool/maemo4.1/free/c/cx3110x-module-src/cx3110x-module-src_2.0.15-1.tar.gz;name=archive \
  http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2005q3-2-arm-none-eabi-i686-pc-linux-gnu.tar.bz2;name=arm \
  http://repository.maemo.org/pool/maemo4.1/free/k/kernel-source-diablo/kernel-source-diablo_2.6.21-200823maemo6.tar.gz;name=kernel \
- file://cx3110x.patch;patch=1 \
- file://create_sysfs_link_for_wlan0.patch;patch=1 \
- file://fix_old_include.patch;patch=1 \
+ file://cx3110x.patch \
+ file://create_sysfs_link_for_wlan0.patch \
+ file://fix_old_include.patch \
 "
 
 SRC_URI[archive.md5sum] = "6ac5db5e602ef205200428a6612b4036"

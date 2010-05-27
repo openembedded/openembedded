@@ -3,13 +3,14 @@ DESCRIPTION_${PN}-debug = "A set of command line tools useful for debugging"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r15"
+PR = "r18"
 
 inherit task
 
 PACKAGES += "${PN}-debug"
 
 RDEPENDS_${PN} = "\
+  dbus-daemon-proxy \
   dosfstools \
   htop \
   iptables \
@@ -20,6 +21,7 @@ RDEPENDS_${PN} = "\
   mterm2 \
   nano \
   nfs-utils-client \
+  nmon \
   powertop \
   screen \
   socat \
@@ -32,6 +34,7 @@ RDEPENDS_${PN}-debug = "\
   i2c-tools \
   gdb \
   ltrace \
+  mkdump \
   mioctl \
   procps \
   pxaregs \

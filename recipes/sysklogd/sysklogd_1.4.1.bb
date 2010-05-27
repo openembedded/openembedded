@@ -1,5 +1,5 @@
 require sysklogd.inc
-PR = "r1"
+PR = "${INC_PR}.1"
 
 
 SRC_URI[md5sum] = "d214aa40beabf7bdb0c9b3c64432c774"

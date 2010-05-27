@@ -8,10 +8,10 @@ RREPLACES_${PN} = "wpa-supplicant-nossl"
 PR = "r8"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
-	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \
+	file://madwifi-bsd-fix.diff;striplevel=0 \
 	file://defconfig \
-        file://driver-hermes.patch;patch=1 \
-	file://driver-zd1211.patch;patch=1 \
+        file://driver-hermes.patch \
+	file://driver-zd1211.patch \
 	file://wpa-supplicant.sh \
 	file://wpa_supplicant.conf"
 

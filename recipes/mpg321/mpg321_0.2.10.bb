@@ -9,7 +9,7 @@ RREPLACES_${PN} = "mpg123"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mpg321/mpg321-0.2.10.tar.gz \
-           file://libao.m4.patch;patch=1"
+           file://libao.m4.patch"
 
 inherit autotools
 

@@ -4,7 +4,7 @@ DESCRIPTION = "grep GNU utility"
 PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.bz2 \
-           file://uclibc-fix.patch;patch=1"
+           file://uclibc-fix.patch"
 
 inherit autotools
 

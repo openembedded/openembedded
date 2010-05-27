@@ -1,10 +1,10 @@
 require at91bootstrap.inc
 SRC_URI = "ftp://www.at91.com/pub/buildroot/${PN}-${PV}.tar.bz2 \
            "
-SRC_URI_append_afeb9260 = " file://0001-Generic-code-changes.patch;patch=1 \
-           file://0002-Making-image-directly-flashable.patch;patch=1 \
-           file://0003-AFEB9260-board-support.patch;patch=1 \
-           file://0004-AFEB9260-133-board-support.patch;patch=1"
+SRC_URI_append_afeb9260 = " file://0001-Generic-code-changes.patch \
+           file://0002-Making-image-directly-flashable.patch \
+           file://0003-AFEB9260-board-support.patch \
+           file://0004-AFEB9260-133-board-support.patch"
 
 PR = "r5"
 

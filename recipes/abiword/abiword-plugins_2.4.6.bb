@@ -8,7 +8,7 @@ RDEPENDS = "abiword"
 PR = "r1"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
-           file://abiword-plugin-pdf-poppler.patch;patch=1;pnum=2"
+           file://abiword-plugin-pdf-poppler.patch;striplevel=2"
 S = "${WORKDIR}/abiword-${PV}/abiword-plugins"
 
 inherit autotools

@@ -1,7 +1,7 @@
 require gst-plugins.inc
 
-SRC_URI += "file://fix-playbin2.patch;patch=1 \
-            file://gst-plugins-base_rowstride.patch;patch=1 \
+SRC_URI += "file://fix-playbin2.patch \
+            file://gst-plugins-base_rowstride.patch \
 "
 
 PR = "${INC_PR}.3"

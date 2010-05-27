@@ -7,7 +7,7 @@ RDEPENDS = "shared-mime-info"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/rox/${P}.tar.bz2 \
-           file://no-strip-objcopy.patch;patch=1;pnum=3"
+           file://no-strip-objcopy.patch;striplevel=3"
 
 inherit mime pkgconfig
 

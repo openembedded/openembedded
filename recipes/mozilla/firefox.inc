@@ -1,5 +1,5 @@
 DESCRIPTION ?= "Browser made by mozilla"
-DEPENDS += "alsa-lib"
+DEPENDS += "alsa-lib curl"
 SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
 ARM_INSTRUCTION_SET = "arm"

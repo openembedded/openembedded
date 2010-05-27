@@ -6,10 +6,10 @@ HOMEPAGE = "http://trific.ath.cx/software/enca/"
 PR = "r4"
 
 SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/enca-${PV}.tar.bz2 \
-	file://configure-hack.patch;patch=1 \
-	file://dont-run-tests.patch;patch=1 \
-	file://configure-remove-dumbness.patch;patch=1 \
-	file://makefile-remove-tools.patch;patch=1 "
+	file://configure-hack.patch \
+	file://dont-run-tests.patch \
+	file://configure-remove-dumbness.patch \
+	file://makefile-remove-tools.patch "
 
 inherit autotools
 

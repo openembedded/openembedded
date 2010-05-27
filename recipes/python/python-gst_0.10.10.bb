@@ -6,8 +6,8 @@ PR = "ml4"
 
 SRC_URI = "\
   http://gstreamer.freedesktop.org/src/gst-python/gst-python-${PV}.tar.bz2 \
-  file://python-path.patch;patch=1 \
-  file://import-gobject-instead-of-pygtk.patch;patch=1 \
+  file://python-path.patch \
+  file://import-gobject-instead-of-pygtk.patch \
 "
 S = "${WORKDIR}/gst-python-${PV}"
 

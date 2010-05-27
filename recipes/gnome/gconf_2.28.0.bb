@@ -10,6 +10,10 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/GConf/2.28/GConf-${PV}.tar.bz2
 SRC_URI[archive.md5sum] = "ad2aeb9c7d906b274954c51a615caeac"
 SRC_URI[archive.sha256sum] = "d057dcfe2bfb2a80e592349c2a78d7dce12d19542aeced466c64fb701c806ac8"
 
+PR="r1"
+
+RDEPENDS += "dbus-x11"
+
 EXTRA_OECONF = " --without-openldap --disable-gtk-doc --enable-gtk POLKIT_POLICY_FILE_VALIDATE=true"
 
 inherit autotools gettext

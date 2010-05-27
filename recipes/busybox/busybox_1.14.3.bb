@@ -6,11 +6,11 @@ DEFAULT_PREFERENCE = "-1"
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
 \
-  file://udhcpscript.patch;patch=1 \
-  file://udhcpc-fix-nfsroot.patch;patch=1 \
-  file://B921600.patch;patch=1 \
-  file://get_header_tar.patch;patch=1 \
-  file://busybox-appletlib-dependency.patch;patch=1 \
+  file://udhcpscript.patch \
+  file://udhcpc-fix-nfsroot.patch \
+  file://B921600.patch \
+  file://get_header_tar.patch \
+  file://busybox-appletlib-dependency.patch \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \

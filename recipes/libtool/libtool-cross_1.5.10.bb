@@ -2,14 +2,14 @@ require libtool_${PV}.bb
 
 PR = "${INC_PR}.0"
 PACKAGES = ""
-SRC_URI_append = " file://rpath-control.patch;patch=1 \
-                   file://libdir-la.patch;patch=1 \
-                   file://libdir-la2.patch;patch=1 \
-                   file://prefix.patch;patch=1 \
-                   file://tag.patch;patch=1 \
-                   file://install-path-check.patch;patch=1 \
-		   file://nmedit_fix.patch;patch=1 \
-		   file://nousrlib.patch;patch=1"
+SRC_URI_append = " file://rpath-control.patch \
+                   file://libdir-la.patch \
+                   file://libdir-la2.patch \
+                   file://prefix.patch \
+                   file://tag.patch \
+                   file://install-path-check.patch \
+		   file://nmedit_fix.patch \
+		   file://nousrlib.patch"
 
 S = "${WORKDIR}/libtool-${PV}"
 

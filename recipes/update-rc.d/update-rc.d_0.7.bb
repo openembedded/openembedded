@@ -9,7 +9,7 @@ PR = "r1"
 BBCLASSEXTEND = "native"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_7 \
-           file://add-verbose.patch;patch=1"
+           file://add-verbose.patch"
 
 PACKAGE_ARCH = "all"
 

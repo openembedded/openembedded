@@ -6,7 +6,7 @@ RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpe
 
 PR = "r1"
 
-SRC_URI += "file://mini-browser-desktop-fix.patch;patch=0"
+SRC_URI += "file://mini-browser-desktop-fix.patch"
 
 S = "${WORKDIR}/gpe-mini-browser-${PV}"
 

@@ -3,8 +3,8 @@ LICENSE = "GPL"
 DEPENDS = "readline"
 	       
 SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
-           file://configure.patch;patch=1 \
-           file://cifs.patch;patch=1"
+           file://configure.patch \
+           file://cifs.patch"
 S = "${WORKDIR}/samba-${PV}/source"
 
 inherit autotools

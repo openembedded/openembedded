@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = "http://swfdec.freedesktop.org/download/swfdec/0.4/${P}.tar.gz \
            file://jsautocfg.h \
-	   file://fix-cross-build.patch;patch=1"
+	   file://fix-cross-build.patch"
 
 inherit autotools pkgconfig lib_package
 

@@ -9,7 +9,7 @@ PR = "r2"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/sg3-utils/sg3-utils_${PV}.orig.tar.gz \
-	file://Makefile-r1.patch;patch=1"
+	file://Makefile-r1.patch"
 
 S = "${WORKDIR}/sg3-utils-${PV}"
 

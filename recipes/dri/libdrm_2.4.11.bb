@@ -1,15 +1,6 @@
-SECTION = "x11/base"
-DEPENDS = "libpthread-stubs"
-LICENSE = "MIT"
-SRC_URI = "http://dri.freedesktop.org/libdrm/libdrm-${PV}.tar.bz2"
-PROVIDES = "drm"
-PR = "r1"
+require libdrm.inc
 
-inherit autotools pkgconfig
-
-do_stage() {
-	autotools_stage_all
-}
+PR = "${INC_PR}.0"
 
 PACKAGES =+ "${PN}-intel"
 

@@ -1,6 +1,6 @@
 include mesa-common-old.inc
 
-SRC_URI += " file://mklib-cross.patch;patch=1"
+SRC_URI += " file://mklib-cross.patch"
 
 FILESPATH = "${FILE_DIRNAME}/mesa-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 

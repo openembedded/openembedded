@@ -5,9 +5,9 @@ SECTION = "libs"
 PR = "r1"
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/ccaudio/ccaudio2-${PV}.tar.gz \
-	file://01-ccaudio-fixed-point.diff;patch=1 \
-	file://02-ccaudio-stereo.diff;patch=1 \
-	file://03-ccaudio-dtmf-reset.diff;patch=1"
+	file://01-ccaudio-fixed-point.diff \
+	file://02-ccaudio-stereo.diff \
+	file://03-ccaudio-dtmf-reset.diff"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libccaudio2-${PV}"
 

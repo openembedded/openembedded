@@ -3,7 +3,7 @@ LICENSE = 	"LGPL"
 DEPENDS = "gtk+-2.6.4-1.osso7 outo libxtst libmatchbox libxi libxt libpng gconf"
 
 SRC_URI = 	"http://repository.maemo.org/pool/maemo/ossw/source/h/hildon-lgpl/hildon-lgpl_${PV}.tar.gz \
-			file://hildon-lgpl-noWerror.patch;patch=1"
+			file://hildon-lgpl-noWerror.patch"
 
 S =	"${WORKDIR}/hildon-lgpl-0.9.14"
 EXTRA_OECONF =	"--enable-shared --disable-gtk-doc"

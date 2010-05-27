@@ -1,5 +1,5 @@
 LICENSE = "MIT"
-do_unpack[depends] += "unzip-native:do_populate_staging"
+do_unpack[depends] += "unzip-native:do_populate_sysroot"
 
 PR = "r1"
 

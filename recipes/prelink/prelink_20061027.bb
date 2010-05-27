@@ -13,7 +13,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/p/prelink/prelink_0.0.${PV}.orig.tar.gz \
 
 TARGET_OS_ORIG := "${TARGET_OS}"
 OVERRIDES_append = ":${TARGET_OS_ORIG}"
-SRC_URI_append_linux-gnueabi = " file://arm_eabi.patch;patch=1"
+SRC_URI_append_linux-gnueabi = " file://arm_eabi.patch"
 
 S = "${WORKDIR}/prelink-0.0.${PV}"
 

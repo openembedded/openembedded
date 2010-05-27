@@ -3,7 +3,7 @@ PR = "r2"
 
 
 SRC_URI = "http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/htmldoc/snapshots/htmldoc-${PV}.tar.bz2 \
-file://paths_1.9.x.patch;patch=1"
+file://paths_1.9.x.patch"
 
 
 inherit autotools native

@@ -6,8 +6,8 @@ DEPENDS = "sdcc-native"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sdcc/sdcc-${PV}.tar.gz \
-           file://gcc4.patch;patch=1 \
-           file://use-native-tools.patch;patch=1"
+           file://gcc4.patch \
+           file://use-native-tools.patch"
 S = "${WORKDIR}/sdcc"
 
 PARALLEL_MAKE = ""

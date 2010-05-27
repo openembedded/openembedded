@@ -5,7 +5,7 @@ HOMEPAGE = "http://nbd.sourceforge.net"
 DEPENDS = "glib-2.0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2;md5sum=bc7995b4961385269abc645575bcaf4d \
-           file://cross-compile.patch;patch=1 "
+           file://cross-compile.patch "
 
 inherit autotools
 

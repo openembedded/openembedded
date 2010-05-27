@@ -31,7 +31,7 @@ RRECOMMENDS_${PN} += "gst-plugin-playbin \
 
 inherit gnome
 
-SRC_URI += "file://gst-detect.diff;patch=1"
+SRC_URI += "file://gst-detect.diff"
 
 SRC_URI[archive.md5sum] = "ecee18e876f6adf5845f71ace87549ca"
 SRC_URI[archive.sha256sum] = "9d8edd266bd2546e4c8034de1196b79855e24a3634d05cc4f8a07fd3edc7b1af"

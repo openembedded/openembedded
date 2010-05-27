@@ -1,0 +1,33 @@
+From 36b10b27570b8549ee1b75793fddc9bc9aea9081 Mon Sep 17 00:00:00 2001
+From: fboor <fboor@d4735bf7-8e1f-0410-bce4-ef584eb11c25>
+Date: Fri, 29 Jan 2010 14:28:23 +0000
+Subject: Avoid X startup to hang in keymap fixing loop.
+
+git-svn-id: svn://projects.linuxtogo.org/svnroot/gpe/trunk@10072 d4735bf7-8e1f-0410-bce4-ef584eb11c25
+---
+diff --git a/base/xserver-common/ChangeLog b/base/xserver-common/ChangeLog
+index 0f4bf90..2c06f75 100644
+--- a/base/xserver-common/ChangeLog
++++ b/base/xserver-common/ChangeLog
+@@ -1,3 +1,5 @@
++2010-01-29  Florian Boor <florian@kernelconcepts.de>
++	* Avoid X startup to hang in keymap fixing loop.
+ 
+ 2009-11-20  Florian Boor <florian@kernelconcepts.de>
+ 	* Release 1.33
+diff --git a/base/xserver-common/X11/Xinit.d/98keymap-fixup b/base/xserver-common/X11/Xinit.d/98keymap-fixup
+index fcc84d9..6f9c8bf 100755
+--- a/base/xserver-common/X11/Xinit.d/98keymap-fixup
++++ b/base/xserver-common/X11/Xinit.d/98keymap-fixup
+@@ -5,6 +5,9 @@ iter=0
+ while [ $(xmodmap -pke | awk '{if ($2 == 36) { if ($4 == "Return") { print "good" } else {print "bad" }}}') = "bad" ] ; do
+ 	xmodmap - </etc/X11/default.xmodmap
+ 	let iter=iter+1
++	if [ $iter -eq 30 ]; then
++		exit 0
++	fi 
+ done
+ 
+ echo "modmap applied after $iter additional tries"
+--
+cgit v0.8.3.1-30-gff3a

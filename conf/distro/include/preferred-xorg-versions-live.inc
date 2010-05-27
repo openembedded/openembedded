@@ -1,4 +1,4 @@
-#Wed Apr  7 09:27:09 CEST 2010
+#Tue May 11 11:49:22 CEST 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -47,7 +47,7 @@ PREFERRED_VERSION_xcursorgen ?= "1.0.3"
 PREFERRED_VERSION_xcursorgen-native ?= "1.0.3"
 PREFERRED_VERSION_xdbedizzy ?= "1.0.2"
 PREFERRED_VERSION_xditview ?= "1.0.1"
-PREFERRED_VERSION_xdm ?= "1.1.9"
+PREFERRED_VERSION_xdm ?= "1.1.10"
 PREFERRED_VERSION_xdpyinfo ?= "1.1.0"
 PREFERRED_VERSION_xdriinfo ?= "1.0.3"
 PREFERRED_VERSION_xedit ?= "1.1.2"
@@ -343,7 +343,7 @@ PREFERRED_VERSION_xproto-native ?= "7.0.16"
 PREFERRED_VERSION_xproxymanagementprotocol ?= "1.0.3"
 #util
 PREFERRED_VERSION_gccmakedep ?= "1.0.2"
-PREFERRED_VERSION_imake ?= "1.0.2"
+PREFERRED_VERSION_imake ?= "1.0.3"
 PREFERRED_VERSION_lndir ?= "1.0.1"
 PREFERRED_VERSION_makedepend ?= "1.0.2"
 PREFERRED_VERSION_makedepend-native ?= "1.0.2"
@@ -351,4 +351,4 @@ PREFERRED_VERSION_util-macros ?= "1.7.0"
 PREFERRED_VERSION_util-macros-native ?= "1.7.0"
 PREFERRED_VERSION_xorg-cf-files ?= "1.0.3"
 #xserver
-PREFERRED_VERSION_xserver-xorg ?= "1.8.0"
+PREFERRED_VERSION_xserver-xorg ?= "1.8.1"

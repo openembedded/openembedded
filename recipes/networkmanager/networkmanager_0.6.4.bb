@@ -9,8 +9,8 @@ RDEPENDS = "wpa-supplicant iproute2 dhcdbd gnome-keyring hicolor-icon-theme"
 PR = "r6"
 
 SRC_URI="http://www.handhelds.org/~mmp/files/NetworkManager-${PV}-gpe.tar.gz \
-	file://dbus-api-fix.patch;patch=1 \
-	file://dbus-1.0-fix.patch;patch=1 \
+	file://dbus-api-fix.patch \
+	file://dbus-1.0-fix.patch \
         file://99_networkmanager \
 	file://NetworkManager \
 	file://nm-applet.desktop"

@@ -7,7 +7,7 @@ DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv liblinebreak libf
 PR = "r2"
 
 SRC_URI = "http://www.fbreader.org/fbreader-sources-${PV}.tgz \
-file://Makefile.patch;patch=1"
+file://Makefile.patch"
 	   
 # Set the defaults
 READER_RESOLUTION ?= "1024x600"

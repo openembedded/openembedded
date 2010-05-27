@@ -2,9 +2,9 @@ DESCRIPTION = "Linux Bluetooth Stack Userland V4"
 HOMEPAGE = "http://www.bluez.org"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2/LGPLv2.1"
 DEPENDS = "gst-plugins-base alsa-lib virtual/libusb0 dbus-glib"
-INC_PR = "r6"
+INC_PR = "r7"
 
 # temporary solution until bug 5176 is properly fixed
 PROVIDES += "bluez-utils bluez-libs bluez-utils-dbus"
@@ -13,8 +13,8 @@ RPROVIDES_bluez4-dev = "bluez-libs-dev"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
-  file://fix-dfutool-usb-declaration-mismatch.patch;patch=1 \
-  file://sbc-thumb.patch;patch=1 \
+  file://fix-dfutool-usb-declaration-mismatch.patch \
+  file://sbc-thumb.patch \
   file://bluetooth.conf \
 "
 S = "${WORKDIR}/bluez-${PV}"

@@ -6,7 +6,7 @@ SECTION = "libs"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gpstk/gpstk-${PV}-src.tar.gz \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 
 inherit autotools lib_package
 

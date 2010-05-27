@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.wviewweather.com/"
 DEPENDS += " bash util-linux gd openssl curl update-rc.d"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wview/wview-${PV}.tar.gz \
-	file://Makefile.am.patch;patch=1"
+	file://Makefile.am.patch"
 
 S = "${WORKDIR}/wview-${PV}"
 

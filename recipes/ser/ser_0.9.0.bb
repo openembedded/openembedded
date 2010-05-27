@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "flex"
 SRC_URI = "ftp://ftp.berlios.de/pub/ser/0.9.0/src/ser-${PV}_src.tar.gz \
 	file://init \
-	file://fix-sercfg.patch;patch=1"
+	file://fix-sercfg.patch"
 
 LDFLAGS_append = "-rdynamic"
 

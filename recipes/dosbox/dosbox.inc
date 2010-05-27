@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/dosbox/dosbox-${PV}.tar.gz \
-	file://nocdrom.patch;patch=1"
+	file://nocdrom.patch"
 
 CXXFLAGS_append = " -DC_SDL_NOCDROM"
 

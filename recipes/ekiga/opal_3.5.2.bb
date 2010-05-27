@@ -8,7 +8,7 @@ inherit gnome
 DEPENDS += " ffmpeg ptlib virtual/libsdl openldap"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/opalvoip/opal-${PV}.tar.bz2 \
-           file://configure.diff;patch=1 \
+           file://configure.diff \
           "
 
 EXTRA_OECONF = "--enable-localgsm --disable-spandsp "

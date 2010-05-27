@@ -6,16 +6,16 @@ DEPENDS = "gtk+"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz \
-           file://gcc-4.4-const-char.dpatch;patch=1 \
-           file://configure.patch;patch=1 \
-           file://20_scim_config.dpatch;patch=1 \
-           file://40_scim_user_home_overrides.dpatch;patch=1 \
-           file://50_validate-desktop-entry.dpatch;patch=1 \
-           file://51_scim-1.4.7-fix-capslock.dpatch;patch=1 \
-           file://52_scim-1.4.7-imdkit-read-property-properly.dpatch;patch=1 \
-           file://53_scim-1.4.7-trayicon.dpatch;patch=1 \
-           file://54_scim-1.4.7-xim-wrong-format.dpatch;patch=1 \
-           file://scim-1.4.7-syslibltdl.patch;patch=1 \
+           file://gcc-4.4-const-char.dpatch;apply=yes \
+           file://configure.patch \
+           file://20_scim_config.dpatch;apply=yes \
+           file://40_scim_user_home_overrides.dpatch;apply=yes \
+           file://50_validate-desktop-entry.dpatch;apply=yes \
+           file://51_scim-1.4.7-fix-capslock.dpatch;apply=yes \
+           file://52_scim-1.4.7-imdkit-read-property-properly.dpatch;apply=yes \
+           file://53_scim-1.4.7-trayicon.dpatch;apply=yes \
+           file://54_scim-1.4.7-xim-wrong-format.dpatch;apply=yes \
+           file://scim-1.4.7-syslibltdl.patch \
            "
 
 inherit autotools pkgconfig

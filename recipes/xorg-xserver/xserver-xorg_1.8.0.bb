@@ -1,3 +1,6 @@
+# Assign it here, since the hal->udev transition happens post 1.7 in angstrom
+DISTRO_XORG_CONFIG_MANAGER_angstrom = "udev"
+
 require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
@@ -10,15 +13,15 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
 
 SRC_URI += " \
-            file://dolt-fix-1.7.0.patch;patch=1 \
-            file://randr-support-1.7.0.patch;patch=1 \
-	    file://hack-fbdev-ignore-return-mode.patch;patch=1 \
+            file://dolt-fix-1.7.0.patch \
+            file://randr-support-1.7.0.patch \
+	    file://hack-fbdev-ignore-return-mode.patch \
            "
 SRC_URI[archive.md5sum] = "7cec3a11890bb53f4a07854319360348"
 SRC_URI[archive.sha256sum] = "423a8092e28affb83aa736695408e01fd4641040727f34ed6bcfae9c06018b77"
 
-SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch;patch=1"
-SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch;patch=1"
+SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch"
+SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch"
 
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts

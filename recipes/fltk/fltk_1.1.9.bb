@@ -7,7 +7,7 @@ DEPENDS = "alsa-lib zlib jpeg libpng libxext libxft"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/${PV}/fltk-${PV}-source.tar.bz2 \
-	   file://disable_test.patch;patch=1 \
+	   file://disable_test.patch \
 	  "
 
 S = "${WORKDIR}/fltk-${PV}"

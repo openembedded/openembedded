@@ -3,8 +3,7 @@ LICENSE     = "LiPS"
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libiac libgpephone gnome-vfs libxdamage libxcomposite libgpewidget"
-PV = "1.0+svnr${SRCPV}"
-PE = "1"
+PV = "1.0+svnr-${SRCREV}"
 PR          = "r0"
 
 inherit gpephone pkgconfig autotools

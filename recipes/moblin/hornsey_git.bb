@@ -9,7 +9,7 @@ PR_append = "+git${SRCREV}"
 DEPENDS = "clutter-0.9 clutter-gst-0.9 bickley nbtk bognor-regis libunique startup-notification gtk+"
 
 SRC_URI = "git://git.moblin.org/${PN}.git;protocol=git \
-           file://fix-api.patch;patch=1 \
+           file://fix-api.patch \
 "
 S = "${WORKDIR}/git"
 

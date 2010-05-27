@@ -3,16 +3,14 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r9"
+PR = "r11"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
 # Needed for udev-extras
 DEPENDS = "gperf-native usbutils acl glib-2.0"
-
-# needed for init.d script
-RDEPENDS_${PN} += "udev-utils"
+RDEPENDS_${PN} += "module-init-tools-depmod udev-utils"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
@@ -63,7 +61,7 @@ PACKAGES =+ "libudev libgudev udev-utils"
 FILES_libudev = "${libdir}/libudev.so.*"
 FILES_libgudev = "${libdir}/libgudev*.so.*"
 
-FILES_udev-utils = "${bindir}/udevinfo ${base_sbindir}/udevadm ${bindir}/udevtest"
+FILES_udev-utils = "${bindir}/udevinfo ${bindir}/udevtest ${base_sbindir}/udevadm"
 
 RPROVIDES_${PN} = "hotplug"
 FILES_${PN} += "${usrbindir}/* ${usrsbindir}/udevd"

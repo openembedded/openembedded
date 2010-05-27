@@ -1,0 +1,14 @@
+Patch by Stanislav Maslovski <stanislav.maslovski@gmail.com>.
+See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=488501
+
+--- tk8.5-8.5.8.orig/generic/tkPort.h
++++ tk8.5-8.5.8/generic/tkPort.h
+@@ -29,7 +29,7 @@
+ #   if defined(MAC_OSX_TK)
+ #	include "tkMacOSXPort.h"
+ #   else
+-#	include "tkUnixPort.h"
++#	include "../unix/tkUnixPort.h"
+ #   endif
+ #endif
+ 

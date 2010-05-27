@@ -10,8 +10,8 @@ INC_PR = "r21"
 FILESPATHPKG =. "opkg:"
 
 SRC_URI = "svn://opkg.googlecode.com/svn;module=trunk;proto=http \
-	file://opkg_unarchive.patch;patch=1;maxrev=201 \
-	file://opkg-intercept-cleanup.patch;patch=1;maxrev=241 \
+	file://opkg_unarchive.patch;maxrev=201 \
+	file://opkg-intercept-cleanup.patch;maxrev=241 \
 "
 
 SRC_URI += "file://configure"

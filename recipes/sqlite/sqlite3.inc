@@ -5,7 +5,7 @@ DEPENDS = "tcl-native readline ncurses"
 LICENSE = "PD"
 
 SRC_URI = "http://www.sqlite.org/sqlite-${PV}.tar.gz \
-	   file://libtool.patch;patch=1"
+	   file://libtool.patch"
 
 S = "${WORKDIR}/sqlite-${PV}"
 

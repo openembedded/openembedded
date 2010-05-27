@@ -4,7 +4,7 @@ RCONFLICTS_${PN} = "abiword-embedded"
 
 SRC_URI = "http://www.abisource.com/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=abiword \
            file://autogen-common.sh \
-	   file://nodolt.patch;patch=1"
+	   file://nodolt.patch"
 
 SRC_URI[abiword.md5sum] = "b44ffbebd5bd0f5f98f34dc8c688b4ed"
 SRC_URI[abiword.sha256sum] = "cb668f47649a8ed40dbaedb22383794d07b8349549a392fed57814120803db9c"

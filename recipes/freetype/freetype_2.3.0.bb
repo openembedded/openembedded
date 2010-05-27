@@ -4,8 +4,8 @@ LICENSE = "freetype"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
-	   file://configure.patch;patch=1 \
-           file://no-hardcode.patch;patch=1"
+	   file://configure.patch \
+           file://no-hardcode.patch"
 S = "${WORKDIR}/freetype-${PV}"
 
 inherit autotools pkgconfig binconfig

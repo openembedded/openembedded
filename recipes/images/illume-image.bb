@@ -38,6 +38,7 @@ X_INSTALL = "\
   shared-mime-info \
   mime-support \
   e-wm \
+  e-wm-menu \
   e-wm-sysactions \
   e-wm-config-illume \
   e-wm-config-standard \
@@ -135,7 +136,7 @@ ZHONE_INSTALL = "\
 
 # additional apps
 APPS_INSTALL = "\
-   elementary-alarm \
+#   elementary-alarm \
    expedite \
    expedite-themes \
 #   libefso \

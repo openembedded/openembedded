@@ -1,6 +1,6 @@
 require gtk+.inc
 
-SRC_URI_append_virtclass-native = " file://no-demos.patch;patch=1 \
+SRC_URI_append_virtclass-native = " file://no-demos.patch \
 "
 
 PR = "${INC_PR}.4"

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.cinlug.org/modules/Static_Docs/data/db/zlaps/zlaps_${PV}_arm.src.tar.gz \
-           file://qtopia17.patch;patch=1"
+           file://qtopia17.patch"
 S = "${WORKDIR}/zlaps-src"
 
 inherit palmtop

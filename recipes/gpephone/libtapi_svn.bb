@@ -3,8 +3,7 @@ DESCRIPTION = "LiPS telephony library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libglade libgsmd"
-PV = "0.0+svnr${SRCPV}"
-PE = "1"
+PV = "0.0+svnr-${SRCREV}"
 PR          = "r0"
 
 inherit gpephone pkgconfig autotools

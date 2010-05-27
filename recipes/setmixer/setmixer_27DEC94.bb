@@ -3,8 +3,8 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 PRIORITY = "optional"
 SRC_URI = "${DEBIAN_MIRROR}/main/s/setmixer/setmixer_${PV}.orig.tar.gz \
-	   file://setmixer.patch;patch=1"
-SRC_URI_append_mnci = " file://devfs.patch;patch=1"
+	   file://setmixer.patch"
+SRC_URI_append_mnci = " file://devfs.patch"
 
 S = "${WORKDIR}/${PN}-${PV}.orig"
 

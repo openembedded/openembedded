@@ -4,7 +4,7 @@ LICENSE = "GPLV2"
 DEPENDS = "ncurses"
 
 SRC_URI = "http://jpj.net/~trevor/aumix/aumix-${PV}.tar.bz2 \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 
 inherit autotools
 

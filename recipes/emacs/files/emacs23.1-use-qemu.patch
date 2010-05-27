@@ -64,6 +64,15 @@ Index: emacs-23.1/src/Makefile.in
 ===================================================================
 --- emacs-23.1.orig/src/Makefile.in
 +++ emacs-23.1/src/Makefile.in
+@@ -497,7 +497,7 @@
+    this with the shell''s ``for'' construct.
+    Note that some people do not have '.'  in their paths, so we must
+    use ./prefix-args.  */
+-#define YMF_PASS_LDFLAGS(flags) `./prefix-args -Xlinker flags`
++#define YMF_PASS_LDFLAGS(flags) `${QEMU} ./prefix-args -Xlinker flags`
+ #else
+ #define YMF_PASS_LDFLAGS(flags) flags
+ #endif
 @@ -895,9 +895,9 @@ LIBES = $(LOADLIBES) $(LIBS) $(LIBX) $(L
  #endif
  

@@ -12,7 +12,7 @@ PR = "r1"
 
 SRC_URI = "\
   svn://svn.openezx.org/trunk/src/blob/;module=gen-blob;proto=http \
-  file://remove-bogus-sed.patch;patch=1 \
+  file://remove-bogus-sed.patch \
 "
 S = "${WORKDIR}/gen-blob"
 

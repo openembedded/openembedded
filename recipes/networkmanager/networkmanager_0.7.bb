@@ -4,16 +4,16 @@ PV = "0.7"
 PR = "r10"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/NetworkManager/0.7/NetworkManager-0.7.0.tar.bz2 \
-	file://remove-gtk-doc-make.patch;patch=1 \
-	file://008-BACKEND-debian-fallback-to-generic-loopback.loom.patch;patch=1 \
-	file://02-dbus_access_network_manager.patch;patch=1 \
-	file://add_probe_for_v250_modems.patch;patch=1 \
-	file://cx3110_bring_up.patch;patch=1 \
+	file://remove-gtk-doc-make.patch \
+	file://008-BACKEND-debian-fallback-to-generic-loopback.loom.patch \
+	file://02-dbus_access_network_manager.patch \
+	file://add_probe_for_v250_modems.patch \
+	file://cx3110_bring_up.patch \
 	file://nm-system-settings.conf \
 	file://NetworkManager \
 "
 
-SRC_URI_append_mamona += " file://disable_wireless_by_default.patch;patch=1 "
+SRC_URI_append_mamona += " file://disable_wireless_by_default.patch "
 
 S = "${WORKDIR}/NetworkManager-0.7.0"
 

@@ -6,7 +6,7 @@ DEPENDS = "glib-2.0 gnutls"
 PR = "r0"
 
 SRC_URI = "http://get.bitlbee.org/src/${P}.tar.gz \
-           file://configure.patch;patch=1 \
+           file://configure.patch \
            file://init-script"
 
 S = "${WORKDIR}/bitlbee-${PV}"

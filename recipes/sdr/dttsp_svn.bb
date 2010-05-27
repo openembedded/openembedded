@@ -2,8 +2,7 @@ DESCRIPTION = "Software Radio Core"
 LICENSE = "GPLv3"
 DEPENDS = "fftwf jack"
 
-PV = "1.0.0+svnr${SRCPV}"
-PE = "1"
+PV = "${SRCREV}"
 SRCREV = "241"
 
 SRC_URI = "svn://206.216.146.154/svn/repos_sdr_linux/branches/ab2kt;module=dttsp-ng"

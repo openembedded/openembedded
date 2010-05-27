@@ -1,0 +1,25 @@
+Index: qemu-0.10.0/hw/pc.c
+===================================================================
+--- qemu-0.10.0.orig/hw/pc.c	2009-03-07 13:47:27.000000000 +0100
++++ qemu-0.10.0/hw/pc.c	2009-03-07 13:47:30.000000000 +0100
+@@ -390,7 +390,8 @@
+     case 0x400:
+     case 0x401:
+         fprintf(stderr, "BIOS panic at rombios.c, line %d\n", val);
+-        exit(1);
++        /* according to documentation, these can be safely ignored */
++        break;
+     case 0x402:
+     case 0x403:
+ #ifdef DEBUG_BIOS
+@@ -413,8 +414,9 @@
+         /* LGPL'ed VGA BIOS messages */
+     case 0x501:
+     case 0x502:
++        /* according to documentation, these can be safely ignored */
+         fprintf(stderr, "VGA BIOS panic, line %d\n", val);
+-        exit(1);
++        break;
+     case 0x500:
+     case 0x503:
+ #ifdef DEBUG_BIOS

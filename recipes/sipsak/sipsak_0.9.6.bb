@@ -4,7 +4,7 @@ HOMEPAGE="sipsak.org"
 LICENSE = "GPLv2"
 PR = "r1"
 SRC_URI = "http://download.berlios.de/sipsak/sipsak-${PV}-1.tar.gz\
-           file://sipsak.patch;patch=1"
+           file://sipsak.patch"
 
 inherit autotools
 

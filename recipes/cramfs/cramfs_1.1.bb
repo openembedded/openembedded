@@ -4,8 +4,8 @@ LICENSE = "GPLv2"
 DEPENDS = "zlib"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cramfs/cramfs-1.1.tar.gz \
-	file://makefile.patch;patch=1 \
-	file://cramfs-andersee.patch;patch=1"
+	file://makefile.patch \
+	file://cramfs-andersee.patch"
 
 do_compile() {
 	oe_runmake

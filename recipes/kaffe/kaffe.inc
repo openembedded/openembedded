@@ -5,7 +5,7 @@ LICENSE  = "GPL LGPL W3C Classpath BSD"
 DEPENDS = "virtual/javac-native fastjar-native libffi zip-native libart-lgpl"
 RDEPENDS_${PN} = "${PN}-common (>= ${PV})"
 
-SRC_URI += "file://disable-automake-checks.patch;patch=1"
+SRC_URI += "file://disable-automake-checks.patch"
 
 inherit autotools gettext
 

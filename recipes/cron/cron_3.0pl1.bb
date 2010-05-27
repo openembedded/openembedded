@@ -4,8 +4,8 @@ LICENSE = "cron"
 PR ="r8"
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/cron${PV}.tar.gz \
-	   file://nonrootinstall.patch;patch=1 \
-	   file://time.patch;patch=1 \
+	   file://nonrootinstall.patch \
+	   file://time.patch \
 	   file://init"
 S = "${WORKDIR}/cron${PV}"
 

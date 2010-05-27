@@ -7,7 +7,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 PR ="r1"
 
-SRC_URI += "file://remove-render.patch;patch=1"
+SRC_URI += "file://remove-render.patch"
 
 
 SRC_URI[md5sum] = "cc3b6b7676671b81251fb237118daada"

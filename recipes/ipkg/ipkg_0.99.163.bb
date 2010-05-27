@@ -5,11 +5,11 @@ S = "${WORKDIR}/ipkg-${PV}"
 
 SRC_URI = "http://www.handhelds.org/pub/packages/ipkg/ipkg-${PV}.tar.gz \
 	file://ipkg-configure \
-	file://terse.patch;patch=1 \
-	file://is-processing.patch;patch=1 \
-	file://1-pkg-parse--Optimize-inefficient-parsing.patch;patch=1 \
-	file://2-pkg-vec--Optimize-gross-inefficiency.patch;patch=1 \
-	file://lonk-link-name.patch;patch=1 \
+	file://terse.patch \
+	file://is-processing.patch \
+	file://1-pkg-parse--Optimize-inefficient-parsing.patch \
+	file://2-pkg-vec--Optimize-gross-inefficiency.patch \
+	file://lonk-link-name.patch \
 	"
 
 do_stage() {

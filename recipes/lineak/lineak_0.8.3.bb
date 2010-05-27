@@ -6,7 +6,7 @@ DEPENDS = "virtual/libx11 libxext"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lineak/lineakd-${PV}.tar.gz \
-           file://add-zaurus-remote-support.patch;patch=1"
+           file://add-zaurus-remote-support.patch"
 S = "${WORKDIR}/lineakd-${PV}"
 
 inherit autotools

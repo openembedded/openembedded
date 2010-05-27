@@ -6,7 +6,7 @@ HOMEPAGE = "http://xom.nu"
 SRC_URI = "\
 	http://www.cafeconleche.org/XOM/${P}-src.tar.gz;name=archive \
 	http://dist.codehaus.org/jaxen/distributions/jaxen-1.1.1-src.tar.gz;name=jaxen \
-	file://04_remove_sun_import.patch;patch=1 \
+	file://04_remove_sun_import.patch \
 	"
 
 S = "${WORKDIR}/XOM"

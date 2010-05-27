@@ -1,15 +1,12 @@
 DESCRIPTION = "Mickey's DBus introspection and calling Program"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console/network"
-LICENSE = "GPLv2"
+
+require python-helpers.inc
+
 SRCREV = "${FSO_PYTHONHELPERS_SRCREV}"
 PV = "0.9.2+gitr${SRCPV}"
-PE = "1"
 PR = "r2"
-
-SRC_URI = "${FREESMARTPHONE_GIT}/python-helpers.git;protocol=git;branch=master"
-S = "${WORKDIR}/git"
 
 do_install() {
 	install -d ${D}${bindir}

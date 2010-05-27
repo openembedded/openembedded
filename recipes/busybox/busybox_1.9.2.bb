@@ -2,11 +2,11 @@ require busybox.inc
 PR = "${INC_PR}.1"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
-           file://udhcpscript.patch;patch=1 \
-           file://adduser-longops.patch;patch=1 \
-           file://sort-z-nul.patch;patch=1;status=upstream \
-           file://topmem.patch;patch=1 \
-           file://busybox-appletlib-dependency.patch;patch=1 \
+           file://udhcpscript.patch \
+           file://adduser-longops.patch \
+           file://sort-z-nul.patch;status=upstream \
+           file://topmem.patch \
+           file://busybox-appletlib-dependency.patch \
            file://busybox-cron \
            file://busybox-httpd \
            file://busybox-udhcpd \

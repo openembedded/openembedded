@@ -57,6 +57,16 @@ python __anonymous () {
 }
 
 do_configure_prepend() {
+
+        # Rename getline in ./scripts/unifdef.c
+        # Kernels up to 2.6.29 are currently failing to build unifdef.c,
+        # clashing with exposed getline() from <stdio.h>
+        # see https://patchwork.kernel.org/patch/11166/
+        # committed in 2.6.29 (commit d15bd1067b1fcb2b7250d22bc0c7c7fea0b759f7)
+
+        sed -i -e 's/getline/parseline/g' ${S}/scripts/unifdef.c
+
+
         echo "" > ${S}/.config
 
         #
@@ -87,6 +97,12 @@ do_configure_prepend() {
         if [ "${ARM_INSTRUCTION_SET}" = "thumb" ] ; then
             sed -i -e /CONFIG_ARM_THUMB/d ${WORKDIR}/defconfig 
             echo "CONFIG_ARM_THUMB=y" >> ${S}/.config
+        fi
+
+        # Enable thumb2 fixup for specific issue in angstrom toolchains when used on A8 r1p[012] silicon
+        if [ "${DISTRO_NAME}" = "Angstrom" ] ; then
+            sed -i -e /CONFIG_ARM_ERRATA_430973/d ${WORKDIR}/defconfig
+            echo "CONFIG_ARM_ERRATA_430973=y" >> ${S}/.config
         fi
 
 	#
@@ -183,6 +199,13 @@ do_configure_append() {
 		sed -i -e "s:-m0644:-m 0644:g" scripts/Makefile.fwinst
 	fi
 }
+
+do_install_append() {
+	oe_runmake headers_install INSTALL_HDR_PATH=${D}${exec_prefix}/src/linux-${KERNEL_VERSION} ARCH=$ARCH
+}
+
+PACKAGES =+ "kernel-headers"
+FILES_kernel-headers = "${exec_prefix}/src/linux*"
 
 do_devicetree_image() {
     if test -n "${KERNEL_DEVICETREE}" ; then

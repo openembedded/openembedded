@@ -8,7 +8,7 @@ SRCREV = "${EFL_SRCREV}"
 inherit efl
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/PROTO;module=epdf;proto=http"
-#           file://fix-plugin-path-check.patch;HACK=1;patch=1"
+#           file://fix-plugin-path-check.patch;HACK=1"
 # FIXME This package is not really working correctly at the moment. It doesn't
 # recognize epsilon and doesn't build everything. The next one actually using
 # this package is welcome to fix it.

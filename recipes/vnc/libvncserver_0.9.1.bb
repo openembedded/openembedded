@@ -10,9 +10,9 @@ PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI  = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz \
-            file://configure_ac.patch;patch=1 \
-            file://clientlogger.patch;patch=1 \
-            file://autoreconf.patch;patch=1"
+            file://configure_ac.patch \
+            file://clientlogger.patch \
+            file://autoreconf.patch"
 S = "${WORKDIR}/LibVNCServer-${PV}"
 
 # => create libvncserver only

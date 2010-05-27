@@ -9,7 +9,7 @@ S = "${WORKDIR}/midpath-0.3rc2"
 require midpath-common.inc
 
 SRC_URI += "\
-	file://fix-openfile.patch;patch=1 \
+	file://fix-openfile.patch \
   file://midpath-suitemanager \
   file://midpath-launcher-j2se \
   file://midpath-suitemanager.desktop \

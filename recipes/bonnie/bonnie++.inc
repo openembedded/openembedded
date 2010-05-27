@@ -7,7 +7,7 @@ LICENSE="GPL"
 
 
 SRC_URI="http://www.coker.com.au/bonnie++/${PN}-${PV}.tgz \
-	 file://gcc-4.3-fixes.patch;patch=1"
+	 file://gcc-4.3-fixes.patch"
 
 inherit autotools
 

@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.saillard.org/linux/pwc/files/pwc-${PV}.tar.bz2 \
-	   file://endian-fix.patch;patch=1 \
+	   file://endian-fix.patch \
 	   file://Makefile"
 
 S = "${WORKDIR}/pwc-${PV}"

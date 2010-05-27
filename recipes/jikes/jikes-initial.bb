@@ -2,8 +2,6 @@ SUMMARY = "Initial Java 1.4-compatible (and not higher) compiler"
 
 DEPENDS = "jikes-native classpath-initial"
 
-SRC_URI = ""
-
 S = "${WORKDIR}"
 
 inherit native
@@ -17,7 +15,9 @@ do_compile() {
   echo "${STAGING_BINDIR_NATIVE}/jikes -bootclasspath ${STAGING_DATADIR_NATIVE}/classpath-initial/glibj.zip \$@" >> jikes-initial
 }
 
-do_stage() {
-  install -d ${STAGING_BINDIR}
-  install -m 0755 jikes-initial ${STAGING_BINDIR}
+do_install() {
+  install -d ${D}${bindir}
+  install -m 0755 jikes-initial ${D}${bindir}
 }
+
+NATIVE_INSTALL_WORKS = "1"

@@ -3,7 +3,7 @@ LICENSE = 	""
 DEPENDS =	"dbus gconf glib-2.0 libosso bluez-libs"
 
 SRC_URI = 	"http://repository.maemo.org/pool/maemo/ossw/source/o/osso-gwconnect/osso-gwconnect_${PV}.tar.gz \
-			file://osso-gwconnect-stdio.patch;patch=1"
+			file://osso-gwconnect-stdio.patch"
 
 EXTRA_OECONF = 	"--disable-mce"
 

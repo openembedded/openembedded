@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.antd.nist.gov/wctg/aodv_kernel/kernel-aodv_v${PV}.tgz \
-	   file://fix-makefile.patch;patch=1"
+	   file://fix-makefile.patch"
 S = "${WORKDIR}/kernel-aodv_v${PV}"
 
 inherit module

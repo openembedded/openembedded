@@ -13,6 +13,8 @@ PR = "r1"
 
 SRC_URI = "file://ecj.in"
 
+NATIVE_INSTALL_WORKS = "1"
+
 S = "${WORKDIR}"
 
 inherit native
@@ -27,7 +29,7 @@ do_compile() {
   cat ecj.in >> ecj-initial
 }
 
-do_stage() {
-  install -d ${STAGING_BINDIR}
-  install -m 755 ${S}/ecj-initial ${STAGING_BINDIR}
+do_install() {
+  install -d ${D}${bindir}
+  install -m 755 ${S}/ecj-initial ${D}${bindir}
 }

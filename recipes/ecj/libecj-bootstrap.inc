@@ -12,6 +12,8 @@ S = "${WORKDIR}"
 
 JAR = "ecj-bootstrap-${PV}.jar"
 
+NATIVE_INSTALL_WORKS = "1"
+
 do_unpackpost() {
   if [ ! -d source ]; then
     mkdir source
@@ -61,7 +63,7 @@ do_compile() {
   fastjar -c -C build . -f ${JAR}
 }
 
-do_stage() {
-  oe_jarinstall -s ${JAR} ecj-bootstrap.jar
+do_install() {
+  oe_jarinstall ${JAR} ecj-bootstrap.jar
 }
 

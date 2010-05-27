@@ -8,7 +8,7 @@ RDEPENDS = "libao-alsa"
 PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz \
-           file://mpd/save-volume-state.patch;patch=1 file://mpd/mpd.init"
+           file://mpd/save-volume-state.patch file://mpd/mpd.init"
 S = "${WORKDIR}/mpd-${PV}"
 
 inherit autotools update-rc.d

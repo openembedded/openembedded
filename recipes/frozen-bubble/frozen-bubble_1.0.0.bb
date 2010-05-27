@@ -16,9 +16,9 @@ RDEPENDS_${PN} = "${PN}-data perl sdl-perl \
 PR = "r1"
 
 SRC_URI = "http://zarb.org/~gc/fb//frozen-bubble-${PV}.tar.bz2 \
-	file://Makefile_top.patch;patch=1 \
-	file://Makefile.patch;patch=1 \
-	file://Makefile.PL.patch;patch=1"
+	file://Makefile_top.patch \
+	file://Makefile.patch \
+	file://Makefile.PL.patch"
 # The Makefile needs to be patched to look in STAGING_LIBDIR/perl/... - It's looking in i686-linux/lib at the moment, regardless of arch
 BROKEN = "1"
 

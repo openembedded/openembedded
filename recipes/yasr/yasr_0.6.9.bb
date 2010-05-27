@@ -9,8 +9,8 @@ SECTION = "console/utils"
 SUGGESTS = "speech-dispatcher"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/yasr/yasr-${PV}.tar.gz \
-	   file://yasr-0.6.9-gcc43.patch;patch=1 \
-	   file://yasr-0.6.9-remove-m4.patch;patch=1 \
+	   file://yasr-0.6.9-gcc43.patch \
+	   file://yasr-0.6.9-remove-m4.patch \
 	  "
 
 inherit autotools

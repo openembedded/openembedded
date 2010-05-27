@@ -1,7 +1,7 @@
 DESCRIPTION = "Commands for Manipulating Filesystem Extended Attributes"
 LICENSE = "GPLv2"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/attr/attr-${PV}.src.tar.gz"
 
@@ -13,6 +13,8 @@ EXTRA_OECONF = " --enable-gettext=yes \
                  ac_cv_path_MSGMERGE=${STAGING_BINDIR_NATIVE}/msgmerge "
 
 LDFLAGS_append_libc-uclibc += " -lintl"
+
+TOPDIR[unexport] = "1"
 
 do_configure_append() {
 	# gettext hack

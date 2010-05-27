@@ -2,7 +2,7 @@ require libtheora.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://libtheora-1.0-no-docs.patch;patch=1"
+SRC_URI += "file://libtheora-1.0-no-docs.patch"
 
 
 SRC_URI[md5sum] = "c963937053f45a7878954bed37ceb182"

@@ -3,7 +3,7 @@ DEPENDS = "hal gphoto2 jpeg virtual/libusb0"
 LICENSE = "LGPL"
 
 SRC_URI = "http://alioth.debian.org/frs/download.php/3026/sane-backends-${PV}.tar.gz \
-	file://Makefile.in.patch;patch=1 \
+	file://Makefile.in.patch \
 	file://saned.xinetd \
 	file://byteorder.m4 \
 	file://stdint.m4 \

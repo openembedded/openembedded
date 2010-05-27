@@ -7,8 +7,8 @@ HOMEPAGE = "http://gaim.sourceforge.net/"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gaim/gaim-${PV}.tar.bz2 \
-	   file://dont-look-for-gtk.patch;patch=1        \
-	   file://libgaim.patch;patch=1 "
+	   file://dont-look-for-gtk.patch        \
+	   file://libgaim.patch "
 
 S = "${WORKDIR}/gaim-${PV}"
 

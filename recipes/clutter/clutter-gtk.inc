@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.clutter-project.org/"
 LICENSE = "LGPL"
 
 DEPENDS = "gtk+"
-PE = "1"
 
 FILESPATH = "${FILE_DIRNAME}/clutter-gtk"
 

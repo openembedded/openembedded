@@ -12,8 +12,8 @@ DEPENDS = "openssl"
 PR = "r0"
 
 SRC_URI="http://www.acme.com/software/mini_httpd/mini_httpd-${PV}.tar.gz \
-	 file://new-bindir-mandir.patch;patch=1 \
-	 file://remove-CC.patch;patch=1 \
+	 file://new-bindir-mandir.patch \
+	 file://remove-CC.patch \
 	 file://mini-httpd.conf \
 	 file://init \
 	"

@@ -1,0 +1,73 @@
+diff -Nurd u-boot-2009.03.orig//common/main.c u-boot-2009.03/common/main.c
+--- u-boot-2009.03.orig//common/main.c	2010-05-25 08:10:52.000000000 +0200
++++ u-boot-2009.03/common/main.c	2010-05-25 08:16:03.000000000 +0200
+@@ -62,6 +62,9 @@
+ 
+ #define MAX_DELAY_STOP_STR 32
+ 
++/* The boot abort character '.' */
++#define BOOT_ABORT_CHAR 0x2E
++
+ #if defined(CONFIG_BOOTDELAY) && (CONFIG_BOOTDELAY >= 0)
+ static int abortboot(int);
+ #endif
+@@ -214,11 +217,18 @@
+ static __inline__ int abortboot(int bootdelay)
+ {
+ 	int abort = 0;
++	// flush 16 byte UART read fifo
++	int i;
++	for(i=0; (i<16) && tstc(); ++i)
++	{
++		int dropbyte = getc();  /* consume input        */
++		printf("drop UART byte: 0x%02X\n", dropbyte);
++	}
+ 
+ #ifdef CONFIG_MENUPROMPT
+ 	printf(CONFIG_MENUPROMPT);
+ #else
+-	printf("Hit any key to stop autoboot: %2d ", bootdelay);
++	printf("Hit '%c' to stop autoboot: %2d ", BOOT_ABORT_CHAR, bootdelay);
+ #endif
+ 
+ #if defined CONFIG_ZERO_BOOTDELAY_CHECK
+@@ -228,9 +238,12 @@
+ 	 */
+ 	if (bootdelay >= 0) {
+ 		if (tstc()) {	/* we got a key press	*/
+-			(void) getc();  /* consume input	*/
+-			puts ("\b\b\b 0");
+-			abort = 1;	/* don't auto boot	*/
++			int currkey = getc();  /* consume input	*/
++			if(BOOT_ABORT_CHAR == currkey)
++			{
++				puts ("\b\b\b 0");
++				abort = 1;	/* don't auto boot	*/
++			}
+ 		}
+ 	}
+ #endif
+@@ -242,14 +255,20 @@
+ 		/* delay 100 * 10ms */
+ 		for (i=0; !abort && i<100; ++i) {
+ 			if (tstc()) {	/* we got a key press	*/
++# ifdef CONFIG_MENUKEY
+ 				abort  = 1;	/* don't auto boot	*/
+ 				bootdelay = 0;	/* no more delay	*/
+-# ifdef CONFIG_MENUKEY
+ 				menukey = getc();
++				break;
+ # else
+-				(void) getc();  /* consume input	*/
++				int currkey = getc();  /* consume input	*/
++				if(BOOT_ABORT_CHAR == currkey)
++				{
++					abort  = 1;	/* don't auto boot	*/
++					bootdelay = 0;	/* no more delay	*/
++					break;
++				}
+ # endif
+-				break;
+ 			}
+ 			udelay(10000);
+ 		}

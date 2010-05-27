@@ -7,7 +7,7 @@ PR = "${INC_PR}.0"
 PR_append = "+git${SRCREV}"
 
 SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git \
-           file://enable_tests.patch;patch=1 "
+           file://enable_tests.patch "
 S = "${WORKDIR}/git"
 
 BASE_CONF += "--disable-introspection"

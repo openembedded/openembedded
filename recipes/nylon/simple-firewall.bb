@@ -10,7 +10,7 @@ RDEPENDS = "kernel-module-ipt-limit kernel-module-ipt-tcpmss"
 PV = "cvs20051022"
 
 SRC_URI = "http://br1.einfach.org/nylon/stable/sources/simple-firewall_gruen.4g__20051022.tar.gz \
-	file://simple-firewall-bash.diff;patch=1"
+	file://simple-firewall-bash.diff"
 S = "${WORKDIR}/${PN}"
 
 do_install() {

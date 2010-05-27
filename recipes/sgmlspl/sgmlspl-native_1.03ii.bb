@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.cpan.org/authors/id/D/DM/DMEGG/SGMLSpm-${PV}.tar.gz \
-          file://combined.patch;patch=1"
+          file://combined.patch"
 
 S = "${WORKDIR}/SGMLSpm"
 

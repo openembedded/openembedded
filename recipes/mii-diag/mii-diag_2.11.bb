@@ -6,7 +6,7 @@ PR = "r4"
 
 S = "${WORKDIR}/"
 
-#INHIBIT_PACKAGE_STRIP = "1"
+#PACKAGE_STRIP = "no"
 
 SRC_URI = "file://mii-diag.c \
            file://libmii.c"

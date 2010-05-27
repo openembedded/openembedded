@@ -7,7 +7,7 @@ require nvidia-drivers.inc
 PKG_BASENAME="NFORCE-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}"
 
 SRC_URI="http://download.nvidia.com/XFree86/nforce/${PV}/NFORCE-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}.run \
-	file://nvaudio-remap_page_range.patch;patch=1"
+	file://nvaudio-remap_page_range.patch"
 
 S="${WORKDIR}/${PKG_BASENAME}"
 

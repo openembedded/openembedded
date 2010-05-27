@@ -8,7 +8,7 @@ DEPENDS = "fastjar-native xerces-j xalan-j xpp2 xpp3 jaxen"
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/dom4j/${P}.tar.gz;name=archive \
 	http://apache.org/dist/ws/jaxme/source/ws-jaxme-0.5.2-src.tar.gz;name=jaxme \
-	file://debian.patch;patch=1 \
+	file://debian.patch \
 	"
 
 inherit java-library

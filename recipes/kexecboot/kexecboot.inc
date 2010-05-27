@@ -15,17 +15,36 @@ SRC_URI += "file://logo-img.h \
 export CC=${TARGET_PREFIX}klcc
 
 # Defaults as in ver 0.5+0.6b
-# --with_static_linking=no
-# --with_fbmenu=yes
-# --with_cfgfiles=yes
-# --with_icons=yes
-# --with_zaurus=no
-# --with_zimage=yes
-# --with_uimage=no
-# --with_machine_kernel=no
-# --enable_devices_recreating="yes"
-# --enable_debug="no"
-# --enable_host_debug="no"
+#############################
+# Optional Features:
+#  --disable-option-checking  ignore unrecognized --enable/--with options
+#  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+#  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+#  --enable-maintainer-mode  enable make rules and dependencies not useful
+#                          (and sometimes confusing) to the casual installer
+#  --enable-devices-recreating
+#                          enable devices re-creating [default=yes]
+#  --enable-debug          enable debug output [default=no]
+#  --enable-host-debug     allow for non-destructive executing of kexecboot on
+#                          host system[default=no]
+#  --disable-dependency-tracking  speeds up one-time build
+#  --enable-dependency-tracking   do not reject slow dependency extractors
+#
+# Optional Packages:
+#  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+#  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+#  --with-static-linking   compiles kexecboot as a static executable
+#                          [default=no]
+#  --with-fbmenu           support framebuffer menu [default=yes]
+#  --with-cfgfiles         support config files [default=yes]
+#  --with-icons            support custom icons (depends on fbmenu)
+#                          [default=yes]
+#  --with-zaurus           compile Sharp Zaurus specific code [default=no]
+#  --with-zimage           compile with zImage support [default=yes]
+#  --with-uimage           compile with uImage support [default=no]
+#  --with-machine-kernel   enable looking for machine-specific zImage kernel
+#                          [default=no]
+############################
 
 EXTRA_OECONF_akita = "--with-zaurus"
 EXTRA_OECONF_c7x0 = "--with-zaurus"

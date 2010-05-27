@@ -9,7 +9,7 @@ PR = "ml0"
 
 SRC_URI = "\
   http://cheeseshop.python.org/packages/source/s/setuptools/${SRCNAME}-${PV}.tar.gz\
-  file://fix-log-usage.patch;patch=1 \
+  file://fix-log-usage.patch \
 "
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 

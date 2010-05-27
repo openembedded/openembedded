@@ -8,7 +8,7 @@ DEPENDS = "libx11 clthreads freetype libxft"
 RDEPENDS = "libx11-locale"
 
 SRC_URI = "http://www.kokkinizita.net/linuxaudio/downloads/clxclient-${PV}.tar.bz2 \
-	file://clxclient-Makefile.patch;patch=1 \
+	file://clxclient-Makefile.patch \
 "
 
 S = "${WORKDIR}/clxclient-${PV}"

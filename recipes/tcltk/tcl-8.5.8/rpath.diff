@@ -1,0 +1,41 @@
+Patch by Chris Waters removes -rpath from search flags and adds -soname
+to library build options.
+
+--- tcl8.5-8.5.8.orig/unix/configure
++++ tcl8.5-8.5.8/unix/configure
+@@ -7351,6 +7351,9 @@
+ 	    # get rid of the warnings.
+ 	    #CFLAGS_OPTIMIZE="${CFLAGS_OPTIMIZE} -D__NO_STRING_INLINES -D__NO_MATH_INLINES"
+ 
++	    # following line added by CW for Debian GNU/Linux
++	    TCL_SHLIB_LD_EXTRAS="-Wl,-soname,\${TCL_LIB_FILE}.0"
++
+ 	    SHLIB_LD='${CC} -shared ${CFLAGS} ${LDFLAGS}'
+ 	    DL_OBJS="tclLoadDl.o"
+ 	    DL_LIBS="-ldl"
+--- tcl8.5-8.5.8.orig/unix/Makefile.in
++++ tcl8.5-8.5.8/unix/Makefile.in
+@@ -729,7 +729,10 @@
+ 	    fi
+ 	@echo "Installing $(LIB_FILE) to $(LIB_INSTALL_DIR)/"
+ 	@@INSTALL_LIB@
+-	@chmod 555 "$(LIB_INSTALL_DIR)"/$(LIB_FILE)
++	mv "$(LIB_INSTALL_DIR)"/$(LIB_FILE) "$(LIB_INSTALL_DIR)"/$(LIB_FILE).0
++	ln -sf $(LIB_FILE).0 "$(LIB_INSTALL_DIR)"/$(LIB_FILE)
++	ln -sf "$(LIB_INSTALL_DIR)"/$(LIB_FILE).0 ./
++	@chmod 555 "$(LIB_INSTALL_DIR)"/$(LIB_FILE).0
+ 	@if test "$(TCL_BUILD_EXP_FILE)" != ""; then \
+ 	    echo "Installing $(TCL_EXP_FILE) to $(LIB_INSTALL_DIR)/"; \
+ 	    $(INSTALL_DATA) $(TCL_BUILD_EXP_FILE) \
+--- tcl8.5-8.5.8.orig/unix/tcl.m4
++++ tcl8.5-8.5.8/unix/tcl.m4
+@@ -1433,6 +1433,9 @@
+ 	    # get rid of the warnings.
+ 	    #CFLAGS_OPTIMIZE="${CFLAGS_OPTIMIZE} -D__NO_STRING_INLINES -D__NO_MATH_INLINES"
+ 
++	    # following line added by CW for Debian GNU/Linux
++	    TCL_SHLIB_LD_EXTRAS="-Wl,-soname,\${TCL_LIB_FILE}.0"
++
+ 	    SHLIB_LD='${CC} -shared ${CFLAGS} ${LDFLAGS}'
+ 	    DL_OBJS="tclLoadDl.o"
+ 	    DL_LIBS="-ldl"

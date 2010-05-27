@@ -1,7 +1,7 @@
-From 9b88c174cfa0f861fcddd11c2e41b007ff243bd3 Mon Sep 17 00:00:00 2001
+From bbc04eff26fcd9ecb75069a62a84fa49d83811b8 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Tue, 10 Nov 2009 00:39:21 +0000
-Subject: [PATCH 38/42] ARM: Expose some CPU control registers via sysfs
+Subject: [PATCH 38/43] ARM: Expose some CPU control registers via sysfs
 
 This creates sysfs files under /sys/devices/system/cpu/cpuN
 exposing the values of the control register, auxiliary control

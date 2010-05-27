@@ -9,7 +9,7 @@ PR = "r1"
 inherit gnome pkgconfig
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/evince/0.6/${PN}-${PV}.tar.bz2 \
-          file://more-no-doc.patch;patch=1"
+          file://more-no-doc.patch"
 
 FILES_${PN} += "${datadir}/icons"
 

@@ -7,9 +7,9 @@ LICENSE = "BSD"
 DEPENDS = "libevent openssl zlib"
 
 SRC_URI = "http://tor.eff.org/dist/${P}.tar.gz \
-          file://configure.patch;patch=1;pnum=1 \
-          file://make.patch;patch=1;pnum=1 \
-          file://compat.patch;patch=1;pnum=1 \
+          file://configure.patch \
+          file://make.patch \
+          file://compat.patch \
           file://tor.init"
 
 

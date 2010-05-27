@@ -8,8 +8,8 @@ FILES_avahi-discover = ""
 PROVIDES = "avahi"
 DEPENDS += "python-native"
 
-SRC_URI += "file://dbus-pre-1.1.1-support.patch;patch=1 \
-            file://configure-check-pymod.patch;patch=1"
+SRC_URI += "file://dbus-pre-1.1.1-support.patch \
+            file://configure-check-pymod.patch"
 S = "${WORKDIR}/avahi-${PV}"
 
 RDEPENDS_avahi-discover = "python-avahi python-pygtk"

@@ -7,8 +7,8 @@ SECTION = "console/multimedia"
 PR = "r1"
 
 SRC_URI = "http://www.vorbis.com/files/${PV}/unix/vorbis-tools-${PV}.tar.gz \
-           file://m4.patch;patch=1 \
-           file://remove-deprecated-curl-option.patch;patch=1"
+           file://m4.patch \
+           file://remove-deprecated-curl-option.patch"
 
 inherit autotools
 

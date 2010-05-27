@@ -10,8 +10,8 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.hping.org/hping2.0.0-rc3.tar.gz \
-	   file://hping2_debian.patch;patch=1 \
-	   file://hping2_configure.patch;patch=1"
+	   file://hping2_debian.patch \
+	   file://hping2_configure.patch"
 S = "${WORKDIR}/hping2-rc3"
 
 inherit siteinfo

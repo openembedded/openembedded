@@ -17,8 +17,8 @@ PR = "r6"
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git;protocol=git \
 	   file://defconfig"
 
-SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch;patch=1"
-SRC_URI_append_calamari = " file://mpc8536ds.dts.patch;patch=1"
+SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch"
+SRC_URI_append_calamari = " file://mpc8536ds.dts.patch"
 
 COMPATIBLE_MACHINE = "(mpc8315e-rdb|calamari)"
 

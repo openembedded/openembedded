@@ -11,7 +11,7 @@ SRC_URI = "svn://src.chromium.org/svn/trunk/;module=src;proto=http \
            git://git.chromium.org/cros.git;protocol=git;rev=07f1fc0ce7a4bbd57f6b057435ad86f0a98e073d\
            http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz;name=depot \
            file://include.gypi \
-           file://gypi.patch;patch=1 \
+           file://gypi.patch \
 "
 
 SRC_URI[depot.md5sum] = "0d0f198a2b3c5495f75d95b867ae89b4"

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI = "cvs://anonymous:@puppy.cvs.sourceforge.net/cvsroot/puppy;module=puppy;tag=PUPPY_1_11 \
-	   file://usb-header.patch;patch=1"
+	   file://usb-header.patch"
 S = "${WORKDIR}/puppy"
 
 inherit autotools

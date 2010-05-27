@@ -7,13 +7,13 @@ PR = "r2"
 RDEPENDS = "nxproxy nxssh"
 
 SRC_URI = "http://download.berlios.de/freenx/freenx-client-${PV}.tar.bz2 \
-	   file://gcc4.3-ftbfs.patch;patch=1 \
-	   file://dodnx.patch;patch=1 \
-	   file://gcc-warnings.patch;patch=1 \
-	   file://restorekeyboard.patch;patch=1 \
-	   file://publicKey.patch;patch=1 \
-	   file://deletelogfiles.patch;patch=1 \
-	   file://ssh_dnserror.patch;patch=1 \
+	   file://gcc4.3-ftbfs.patch \
+	   file://dodnx.patch \
+	   file://gcc-warnings.patch \
+	   file://restorekeyboard.patch \
+	   file://publicKey.patch \
+	   file://deletelogfiles.patch \
+	   file://ssh_dnserror.patch \
 	  "
 
 S = "${WORKDIR}/freenx-client-${PV}/nxcl"

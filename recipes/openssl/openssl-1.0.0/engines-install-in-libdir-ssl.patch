@@ -1,21 +1,7 @@
 Index: openssl-1.0.0/engines/Makefile
 ===================================================================
---- openssl-1.0.0.orig/engines/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/engines/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/engines/Makefile
++++ openssl-1.0.0/engines/Makefile
 @@ -107,7 +107,7 @@
  	@[ -n "$(INSTALLTOP)" ] # should be set by top Makefile...
  	@if [ -n "$(SHARED_LIBS)" ]; then \
@@ -45,22 +31,8 @@ Display the current time in the given FORMAT.
  	@target=install; $(RECURSIVE_MAKE)
 Index: openssl-1.0.0/engines/ccgost/Makefile
 ===================================================================
---- openssl-1.0.0.orig/engines/ccgost/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/engines/ccgost/Makefile	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/engines/ccgost/Makefile
++++ openssl-1.0.0/engines/ccgost/Makefile
 @@ -53,13 +53,13 @@
  			*DSO_WIN32*) sfx="eay32.dll"; pfx=;; \
  			*) sfx=".bad";; \

@@ -7,8 +7,8 @@ PR = "r2"
 LICENSE = "GPLv2"
 
 SRC_URI = "http://www.pentest.co.uk/src/btscanner-${PV}.tar.bz2 \
-           file://gcc-4.patch;patch=1 \
-           file://configurable-paths.patch;patch=1 \
+           file://gcc-4.patch \
+           file://configurable-paths.patch \
            "
 
 FILES_${PN} += "${datadir}/oui.txt"

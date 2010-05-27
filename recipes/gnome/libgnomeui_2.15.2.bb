@@ -11,7 +11,7 @@ FILES_${PN} += "${libdir}/gtk-2.0/*/filesystems/lib*.so \
 
 inherit gnome
 
-SRC_URI += "file://gnome-stock-pixbufs.h file://no-pixbuf-csource.patch;patch=1"
+SRC_URI += "file://gnome-stock-pixbufs.h file://no-pixbuf-csource.patch"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 

@@ -5,7 +5,7 @@ DEPENDS = "libftdi confuse"
 PR = "r1"
 
 SRC_URI = "http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/ftdi_eeprom-${PV}.tar.gz \
-           file://ftdi_eeprom-0.2-moko.patch;patch=1"
+           file://ftdi_eeprom-0.2-moko.patch"
 S = "${WORKDIR}/ftdi_eeprom-${PV}"
 
 inherit autotools

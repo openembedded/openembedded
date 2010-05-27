@@ -11,7 +11,9 @@ LICENSE = "BSD"
 SECTION = "base"
 DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
-INC_PR = "r13"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
+
+INC_PR = "r14"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \
@@ -90,8 +92,15 @@ do_install_append() {
   mv ${D}${bindir}/login ${D}${base_bindir}/login.${PN}
 
   # Ensure we add a suitable securetty file to the package that has most common embedded TTYs defined.
+  if [ ! -z "${SERIAL_CONSOLE}" ]; then
+  # our SERIAL_CONSOLE contains baud rate too and sometime -L option as well.
+  # the following pearl :) takes that and converts it into newline sepated tty's and appends
+  # them into securetty. So if a machine has a weird looking console device node (e.g. ttyAMA0) that securetty
+  # does not know then it will get appended to securetty and root login will be allowed on
+  # that console.
+    echo "${SERIAL_CONSOLE}" | sed -e 's/[0-9][0-9]\|\-L//g'|tr "[ ]" "[\n]"  >> ${WORKDIR}/securetty
+  fi
   install -m 0400 ${WORKDIR}/securetty ${D}${sysconfdir}/securetty 
-
 }
 
 pkg_postinst_${PN} () {

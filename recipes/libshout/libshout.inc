@@ -4,7 +4,7 @@ DEPENDS = "speex libtheora libvorbis libogg"
 LICENSE = "LGPL"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/libshout/libshout-${PV}.tar.gz \
-           file://no-host-includes.ac;patch=1 "
+           file://no-host-includes.ac;apply=yes "
 
 inherit autotools
 

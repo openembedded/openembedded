@@ -9,5 +9,5 @@ require gcc-cross-kernel.inc
 
 PR = "r3"
 
-SRC_URI += "file://gcc-3.4.4-makefile-fix.patch;patch=1"
+SRC_URI += "file://gcc-3.4.4-makefile-fix.patch"
 

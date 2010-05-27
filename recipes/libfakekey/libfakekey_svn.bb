@@ -7,7 +7,7 @@ PV = "0.2+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
-	   file://configure-fix.patch;patch=1"
+	   file://configure-fix.patch"
 
 S = "${WORKDIR}/${PN}"
 

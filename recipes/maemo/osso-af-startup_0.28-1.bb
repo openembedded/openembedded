@@ -7,8 +7,8 @@ RDEPENDS_osso-af-services = "${PN}"
 RDEPENDS_osso-af-base-apps = "${PN}"
 
 SRC_URI = "http://stage.maemo.org:80/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz \
-           file://osso-af-startup-source.patch;patch=1;pnum=0 \
-           file://launch-no-o.patch;patch=1;pnum=0"
+           file://osso-af-startup-source.patch;striplevel=0 \
+           file://launch-no-o.patch;striplevel=0"
 
 S = "${WORKDIR}/${PN}-0.28"
 

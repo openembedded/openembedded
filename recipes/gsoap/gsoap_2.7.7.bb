@@ -6,7 +6,7 @@ DEPENDS = "gsoap-native"
 PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gsoap2/gsoap_${PV}.tar.gz \
-           file://rename_bogus_ldflags.patch;patch=1"
+           file://rename_bogus_ldflags.patch"
 S = "${WORKDIR}/gsoap-2.7"
 
 inherit autotools_stage

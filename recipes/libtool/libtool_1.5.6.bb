@@ -6,7 +6,7 @@ PR = "${INC_PR}.0"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
-           file://autotools.patch;patch=1"
+           file://autotools.patch"
 S = "${WORKDIR}/libtool-${PV}"
 
 PACKAGES = "libltdl libltdl-dbg libltdl-dev ${PN} ${PN}-doc"

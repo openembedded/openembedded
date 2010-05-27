@@ -1,6 +1,6 @@
 require quilt.inc
 
-SRC_URI_append_build-darwin = "?   file://non-gnu.patch;patch=1 "
+SRC_URI_append_build-darwin = "?   file://non-gnu.patch "
 RDEPENDS_${PN} = "diffstat-native patch-native bzip2-native util-linux-native"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/quilt-${PV}"
 

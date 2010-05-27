@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI  = "http://johnath.com/beep/beep-${PV}.tar.gz"
-SRC_URI += "file://linux-input.patch;patch=1"
+SRC_URI += "file://linux-input.patch"
 
 S = "${WORKDIR}/beep-${PV}"
 

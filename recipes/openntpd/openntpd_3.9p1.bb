@@ -7,7 +7,7 @@ DEPENDS += "openssl tzdata"
 PR = "r1"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/${P}.tar.gz \
-           file://adjtimex-${PV}.patch;patch=1 \
+           file://adjtimex-${PV}.patch \
            file://init"
 
 S = "${WORKDIR}/openntpd-${PV}"

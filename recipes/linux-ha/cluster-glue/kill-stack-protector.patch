@@ -1,0 +1,12 @@
+Index: Reusable-Cluster-Components-glue-1.0.3/configure.ac
+===================================================================
+--- Reusable-Cluster-Components-glue-1.0.3.orig/configure.ac	2010-04-23 12:35:52.000000000 +0400
++++ Reusable-Cluster-Components-glue-1.0.3/configure.ac	2010-04-23 12:36:00.000000000 +0400
+@@ -1135,7 +1135,6 @@
+ 
+ 	# We had to eliminate -Wnested-externs because of libtool changes
+         EXTRA_FLAGS="-fgnu89-inline
+-		-fstack-protector-all
+ 		-Wall
+ 		-Waggregate-return
+ 		-Wbad-function-cast 

@@ -6,6 +6,10 @@ LICENSE = "IBM"
 PR = "r1"
 
 RDEPENDS = "classpath"
+PROVIDES_virtclass-native = ""
+RDEPENDS_virtclass-native = ""
+
+BBCLASSEXTEND = "native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jikes/jikes-${PV}.tar.bz2"
 

@@ -7,7 +7,7 @@ PV="2.1"
 PR ="r0"
 
 SRC_URI = "http://archive.aircrack-ng.org/aircrack-old/${P}.tgz \
-file://silent_patch.diff;patch=1;pnum=0"
+file://silent_patch.diff;striplevel=0"
 
 SRC_URI[md5sum] = "694c6180f620b0534e5925a71b960bd1"
 SRC_URI[sha256sum] = "9b749d98278450b80153c1f82b7e253548a3f03603062dc98cc1320803d791da"

@@ -7,8 +7,8 @@ DEPENDS = "dbus"
 PR = "r1"
 
 SRC_URI = "https://fedorahosted.org/releases/d/h/dhcdbd/dhcdbd-${PV}.tar.bz2 \
-           file://dhcdbd-1.14-pkgconfig_dbus.patch;patch=1 \
-           file://dbus-api-fix.patch;patch=1 \
+           file://dhcdbd-1.14-pkgconfig_dbus.patch \
+           file://dbus-api-fix.patch \
            file://dhcdbd"
 
 do_compile() {

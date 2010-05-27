@@ -7,7 +7,7 @@ HOMEPAGE = "http://logging.apache.org/log4cxx/"
 PR = "r1"
 
 SRC_URI = "http://archive.apache.org/dist/logging/log4cxx/log4cxx-0.9.7.tar.gz \
-          file://log4cxx097.patch;patch=1"
+          file://log4cxx097.patch"
 
 #build this:
 S = "${WORKDIR}/${PN}-${PV}"

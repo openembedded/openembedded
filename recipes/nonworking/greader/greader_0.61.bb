@@ -6,7 +6,7 @@ SECTION = "gpe/applications"
 #RDEPENDS = "gpe-icons"
 
 SRC_URI = "http://handhelds.org/~gberenfield/${PN}_${PV}_src.tgz \
-           file://greader.patch;patch=1;pnum=1"
+           file://greader.patch"
 S = "${WORKDIR}/greader/"
 
 SRC_URI[md5sum] = "6a2c4167c79ccd768e770e693e5e69bd"

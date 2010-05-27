@@ -6,8 +6,8 @@ DEPENDS = "libxi gstreamer virtual/libx11 freeglut virtual/libgl"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/artoolkit/ARToolKit-${PV}.tgz \
-           file://configure.diff;patch=1 \
-           file://paddle.diff;patch=1 "
+           file://configure.diff \
+           file://paddle.diff "
 
 S = "${WORKDIR}/ARToolKit"
 

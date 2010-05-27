@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PR = "r2"
 
 SRC_URI = "http://surfnet.dl.sourceforge.net/sourceforge/xbplayer/${P}.tar.gz \
-	file://ccxstream-termcap.patch;patch=1 \
+	file://ccxstream-termcap.patch \
 	file://ccxstream.init \
 	file://ccxstream.conf"
 

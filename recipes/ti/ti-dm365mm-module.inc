@@ -25,5 +25,5 @@ do_install () {
     install -m 0755 ${S}/module/dm365mmap.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
 }
 
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 INSANE_SKIP_${PN} = True

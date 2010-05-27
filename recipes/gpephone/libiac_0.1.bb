@@ -4,12 +4,11 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ gtk-doc"
 PR          = "r2"
-PE          = "1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpephone pkgconfig autotools
 
-SRC_URI += "file://po.patch;patch=1"
+SRC_URI += "file://po.patch"
 
 do_stage () {
 	autotools_stage_all

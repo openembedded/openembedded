@@ -1,0 +1,34 @@
+From 16ac58809c76a870e03ae298cef55e0c337423ea Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Thu, 13 May 2010 21:43:08 +0200
+Subject: [PATCH 44/44] ARM: OMAP: beagle: every known beagle (except revB) uses 2 chipselects so don't use NULL for the second chipselect timings
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index dd830b1..078e026 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -614,7 +614,7 @@ static void __init omap3_beagle_init_irq(void)
+         if (cpu_is_omap3630())
+         {
+                 omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
+-                                        NULL,
++                                        mt46h32m32lf6_sdrc_params,
+                                         _omap37x_mpu_rate_table,
+                                         _omap37x_dsp_rate_table,
+                                         _omap37x_l3_rate_table);
+@@ -622,7 +622,7 @@ static void __init omap3_beagle_init_irq(void)
+         else
+         {
+                 omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
+-                                        NULL,
++                                        mt46h32m32lf6_sdrc_params,
+                                         _omap35x_mpu_rate_table,
+                                         _omap35x_dsp_rate_table,
+                                         _omap35x_l3_rate_table);
+-- 
+1.6.6.1
+

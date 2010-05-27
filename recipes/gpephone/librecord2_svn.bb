@@ -4,8 +4,7 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 util-linux-ng sqlite3"
 PR          = "r0"
-PV = "0.1+svnr${SRCPV}"
-PE = "1"
+PV = "0.1+svnr-${SRCREV}"
 
 DEFAULT_PREFERENCE = "-1"
 

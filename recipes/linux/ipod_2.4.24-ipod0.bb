@@ -5,8 +5,8 @@ KV = "2.4.24"
 PV = "${KV}-ipod0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
-           http://www.uclinux.org/pub/uClinux/uClinux-2.4.x/uClinux-2.4.24-uc0.diff.gz;patch=1;name=uclinupatch \
-           ${SOURCEFORGE_MIRROR}/ipodlinux/uclinux-2.4.24-ipod0.patch.gz;patch=1;name=ipodpatch  "
+           http://www.uclinux.org/pub/uClinux/uClinux-2.4.x/uClinux-2.4.24-uc0.diff.gz;name=uclinupatch \
+           ${SOURCEFORGE_MIRROR}/ipodlinux/uclinux-2.4.24-ipod0.patch.gz;name=ipodpatch  "
 
 S = "${WORKDIR}/linux-${KV}"
 

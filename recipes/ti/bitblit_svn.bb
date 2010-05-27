@@ -8,7 +8,7 @@ DEPENDS = "ti-codec-engine ti-dmai"
 # Fetch source from svn repo
 SRCREV = "2"
 SRC_URI = "svn://gforge.ti.com/svn/${PN};module=trunk;proto=https;user=anonymous;pswd='' \
-           file://recent-linux.diff;patch=1 \
+           file://recent-linux.diff \
 "
 
 # Again, no '.' in PWD allowed :(

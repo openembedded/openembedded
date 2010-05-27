@@ -12,7 +12,7 @@ PR ="r1"
 EXTRA_OECONF = "--disable-debug"
 
 SRC_URI = "http://download.gnome.org/sources/glib/2.12/glib-${PV}.tar.bz2 \
-           file://glib-gettextize-dir.patch;patch=1 \
+           file://glib-gettextize-dir.patch \
            file://glibconfig-sysdefs.h"
 
 S = "${WORKDIR}/glib-${PV}"

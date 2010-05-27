@@ -4,7 +4,7 @@ DEPENDS = "glib-2.0 gupnp gupnp-av gstreamer sqlite3 libsoup-2.4 "
 HOMEPAGE = "http://live.gnome.org/Rygel"
 
 SRC_URI = "http://ftp.acc.umu.se/pub/GNOME/sources/rygel/0.4/rygel-${PV}.tar.bz2 \
-           file://configure.ac.patch;patch=1"
+           file://configure.ac.patch"
 
 inherit autotools
 

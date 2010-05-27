@@ -11,7 +11,7 @@ PV = "0.66+svnr${SRCPV}"
 PR = "r3"
 
 SRC_URI = "svn://intone.googlecode.com/svn;module=trunk;proto=http \
-file://vorbis-include-id3tag.patch;pnum=1;patch=1;maxrev=18"
+file://vorbis-include-id3tag.patch;maxrev=18"
 S = "${WORKDIR}/trunk"
 
 inherit autotools

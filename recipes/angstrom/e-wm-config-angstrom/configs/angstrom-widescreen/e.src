@@ -98,14 +98,6 @@ group "E_Config" struct {
   }
   group "modules" list {
     group "E_Config_Module" struct {
-      value "name" string: "exebuf";
-      value "enabled" uchar: 1;
-      value "delayed" uchar: 1;
-      value "priority" int: 0;
-    }
-  }
-  group "modules" list {
-    group "E_Config_Module" struct {
       value "name" string: "winlist";
       value "enabled" uchar: 1;
       value "delayed" uchar: 1;
@@ -195,14 +187,6 @@ group "E_Config" struct {
   group "modules" list {
     group "E_Config_Module" struct {
       value "name" string: "conf_dpms";
-      value "enabled" uchar: 1;
-      value "delayed" uchar: 1;
-      value "priority" int: 0;
-    }
-  }
-  group "modules" list {
-    group "E_Config_Module" struct {
-      value "name" string: "conf_exebuf";
       value "enabled" uchar: 1;
       value "delayed" uchar: 1;
       value "priority" int: 0;
@@ -443,14 +427,6 @@ group "E_Config" struct {
   group "modules" list {
     group "E_Config_Module" struct {
       value "name" string: "places";
-      value "enabled" uchar: 1;
-      value "delayed" uchar: 0;
-      value "priority" int: 0;
-    }
-  }
-  group "modules" list {
-    group "E_Config_Module" struct {
-      value "name" string: "msgbus_lang";
       value "enabled" uchar: 1;
       value "delayed" uchar: 0;
       value "priority" int: 0;
@@ -910,15 +886,6 @@ group "E_Config" struct {
       value "modifiers" int: 6;
       value "key" string: "Delete";
       value "action" string: "logout";
-      value "any_mod" uchar: 0;
-    }
-  }
-  group "key_bindings" list {
-    group "E_Config_Binding_Key" struct {
-      value "context" int: 9;
-      value "modifiers" int: 4;
-      value "key" string: "Escape";
-      value "action" string: "exebuf";
       value "any_mod" uchar: 0;
     }
   }
@@ -1499,20 +1466,6 @@ group "E_Config" struct {
   value "menu_eap_generic_show" int: 1;
   value "menu_eap_comment_show" int: 0;
   value "fullscreen_policy" int: 0;
-  value "exebuf_max_exe_list" int: 20;
-  value "exebuf_max_eap_list" int: 20;
-  value "exebuf_max_hist_list" int: 20;
-  value "exebuf_scroll_animate" int: 1;
-  value "exebuf_scroll_speed" double: 0.1000000000000000055511151;
-  value "exebuf_pos_align_x" double: 0.5000000000000000000000000;
-  value "exebuf_pos_align_y" double: 0.5000000000000000000000000;
-  value "exebuf_pos_size_w" double: 0.7500000000000000000000000;
-  value "exebuf_pos_size_h" double: 0.2500000000000000000000000;
-  value "exebuf_pos_min_w" int: 200;
-  value "exebuf_pos_min_h" int: 160;
-  value "exebuf_pos_max_w" int: 400;
-  value "exebuf_pos_max_h" int: 320;
-  value "exebuf_term_cmd" string: "xterm -hold -e";
   value "use_app_icon" int: 1;
   value "cnfmdlg_disabled" int: 0;
   value "cfgdlg_auto_apply" int: 0;

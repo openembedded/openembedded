@@ -7,7 +7,7 @@ DEPENDS = "boost zlib openssl"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/witty/wt-${PV}.tar.gz \
-	file://cmakelist.patch;patch=1"
+	file://cmakelist.patch"
 
 FILES_${PN} += "${datadir}/Wt"
 FILES_${PN}-dev += "${datadir}/cmake-2.*"

@@ -5,7 +5,7 @@ DEPENDS = "libpthread-stubs sqlite3 lua5.1"
 PR = "r0"
 
 SRC_URI = "http://www.ibr.cs.tu-bs.de/projects/ibr-dtn/releases/ibrdtn-${PV}.tar.gz \
-        file://0001-fix-header-include-for-gcc44.patch;patch=1 \
+        file://0001-fix-header-include-for-gcc44.patch \
         "
 
 inherit autotools

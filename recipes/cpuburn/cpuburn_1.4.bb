@@ -7,7 +7,7 @@ HOMEPAGE="http://pages.sbcglobal.net/redelm/"
 LICENSE="GPL"
 
 SRC_URI="http://pages.sbcglobal.net/redelm/${PN}_1_4_tar.gz \
-	file://gcc_CC.patch;patch=1"
+	file://gcc_CC.patch"
 
 python do_unpack () {
 	bb.build.exec_func('base_do_unpack', d)

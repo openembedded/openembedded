@@ -7,7 +7,7 @@ RDEPENDS = "pcmcia-cs"
 PR = "r1"
 
 SRC_URI = "http://www.holtmann.org/linux/bluetooth/bt950-${PV}.tar.gz \
-file://makefile.patch;patch=1"
+file://makefile.patch"
 
 S = "${WORKDIR}/bt950-${PV}"
 

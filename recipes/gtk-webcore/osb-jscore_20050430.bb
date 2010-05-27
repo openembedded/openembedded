@@ -9,7 +9,7 @@ PV = "0.5.0+cvs${FIXEDSRCDATE}"
 PR = "r1"
 
 SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;module=JavaScriptCore;date=${FIXEDSRCDATE} \
-           file://libm.patch;patch=1"
+           file://libm.patch"
 S = "${WORKDIR}/JavaScriptCore"
 
 inherit autotools pkgconfig

@@ -6,7 +6,7 @@ LICENSE = "freely distributable"
 SECTION = "console/utils"
 
 SRC_URI = "http://www.tux.org/~mayer/linux/${PN}-${PV}.tar.gz \
-           file://nbench_32bits.patch;patch=1"
+           file://nbench_32bits.patch"
 
 PR = "r1"
 

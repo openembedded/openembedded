@@ -8,7 +8,7 @@ RDEPENDS = "gnuchess"
 
 
 SRC_URI = "http://members.cheese.at/woody/fltk-chess/fltk-chess-${PV}.tgz \
-           file://fix_cast_error_and_gnuchess_exec.patch;patch=1 \
+           file://fix_cast_error_and_gnuchess_exec.patch \
            file://fltk-chess.desktop"
 S = "${WORKDIR}/fltk-chess/"
 

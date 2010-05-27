@@ -3,8 +3,7 @@ DESCRIPTION = "Useen tool"
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
-PV = "0.0+svnr${SRCPV}"
-PE = "1"
+PV = "0.0+svnr-${SRCREV}"
 
 DEFAULT_PREFERENCE = "-1"
 

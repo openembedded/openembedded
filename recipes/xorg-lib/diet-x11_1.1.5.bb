@@ -1,8 +1,8 @@
 require libx11_${PV}.bb
 
-SRC_URI += "file://X18NCMSstubs.diff;patch=1 \
-            file://fix-disable-xlocale.diff;patch=1 \
-            file://fix-utf8-wrong-define.patch;patch=1"
+SRC_URI += "file://X18NCMSstubs.diff \
+            file://fix-disable-xlocale.diff \
+            file://fix-utf8-wrong-define.patch"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libx11"
 

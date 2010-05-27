@@ -6,7 +6,7 @@ DEPENDS = "virtual/libqte2"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/qwt/qwt-${PV}.tgz \
-          file://qt2-fix.patch;patch=1"
+          file://qt2-fix.patch"
 
 inherit palmtop
 

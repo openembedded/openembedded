@@ -7,7 +7,7 @@ DEPENDS = "dtc-native"
 COMPATIBLE_MACHINE = "storcenter"
 
 SRC_URI = "http://kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           file://fw-and-powerpc-install.patch;patch=1 \
+           file://fw-and-powerpc-install.patch \
            file://defconfig-${PV} \
                "
 

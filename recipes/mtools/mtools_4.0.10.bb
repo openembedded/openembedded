@@ -8,10 +8,10 @@ HOMEPAGE="http://mtools.linux.lu"
 LICENSE="GPL"
 
 SRC_URI="http://ftp.gnu.org/gnu/mtools/mtools-${PV}.tar.bz2 \
-	file://m486.patch;patch=1 \
-	file://mtools-makeinfo.patch;patch=1 \
-	file://plainio.patch;patch=1 \
-	file://use-sg_io.patch;patch=1"
+	file://m486.patch \
+	file://mtools-makeinfo.patch \
+	file://plainio.patch \
+	file://use-sg_io.patch"
 
 PR = "r1"
 

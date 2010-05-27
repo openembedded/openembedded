@@ -1,6 +1,5 @@
-
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: '../../contrib/python/generate-manifest-2.6.py' Version 20091004 (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: './generate-manifest-2.6.py' Version 20100505 (C) 2002-2010 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 
  
@@ -51,7 +50,7 @@ FILES_python-core="${libdir}/python2.6/__future__.* ${libdir}/python2.6/_abcoll.
 
 DESCRIPTION_python-io="Python Low-Level I/O"
 RDEPENDS_python-io="python-core python-math"
-FILES_python-io="${libdir}/python2.6/lib-dynload/_socket.so ${libdir}/python2.6/lib-dynload/_ssl.so ${libdir}/python2.6/lib-dynload/select.so ${libdir}/python2.6/lib-dynload/termios.so ${libdir}/python2.6/lib-dynload/cStringIO.so ${libdir}/python2.6/pipes.* ${libdir}/python2.6/socket.* ${libdir}/python2.6/tempfile.* ${libdir}/python2.6/StringIO.* "
+FILES_python-io="${libdir}/python2.6/lib-dynload/_socket.so ${libdir}/python2.6/lib-dynload/_ssl.so ${libdir}/python2.6/lib-dynload/select.so ${libdir}/python2.6/lib-dynload/termios.so ${libdir}/python2.6/lib-dynload/cStringIO.so ${libdir}/python2.6/pipes.* ${libdir}/python2.6/socket.* ${libdir}/python2.6/ssl.* ${libdir}/python2.6/tempfile.* ${libdir}/python2.6/StringIO.* "
 
 DESCRIPTION_python-compiler="Python Compiler Support"
 RDEPENDS_python-compiler="python-core"

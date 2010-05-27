@@ -5,7 +5,7 @@ PR = "r1"
 LICENSE = "bzip2"
 FILESPATH =. "${FILE_DIRNAME}/bzip2-${PV}:"
 SRC_URI = "http://www.bzip.org/${PV}/bzip2-${PV}.tar.gz \
-	   file://bzip2-1.0.5-autoconfiscated.patch;patch=1"
+	   file://bzip2-1.0.5-autoconfiscated.patch"
 
 S = "${WORKDIR}/bzip2-${PV}"
 

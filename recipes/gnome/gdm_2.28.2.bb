@@ -8,7 +8,7 @@ inherit gnome update-rc.d
 RDEPENDS_${PN} += "grep dbus-x11 shadow libpam-base-files"
 
 SRC_URI += " \
-            file://cross-xdetection.diff;patch=1 \
+            file://cross-xdetection.diff \
             file://%gconf-tree.xml \
             file://gdm \
             file://gdm.conf \

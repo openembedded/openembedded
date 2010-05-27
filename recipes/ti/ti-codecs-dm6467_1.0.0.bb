@@ -38,4 +38,4 @@ do_install () {
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"

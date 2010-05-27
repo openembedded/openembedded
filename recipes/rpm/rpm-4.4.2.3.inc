@@ -5,13 +5,13 @@ DEPENDS = "python-native"
 PR = "r16"
 
 SRC_URI = "http://www.rpm.org/releases/rpm-4.4.x/rpm-4.4.2.3.tar.gz \
-           file://external-tools.patch;patch=1 \
-	   file://cross_libpaths.patch;patch=1 \
-	   file://rpmconfigdir.patch;patch=1 \
-	   file://weakdeps.patch;patch=1;pnum=0 \
-	   file://tagsbackport.patch;patch=1;pnum=0 \
-	   file://missingok.patch;patch=1;pnum=0 \
-	   file://extcond.patch;patch=1;pnum=0"
+           file://external-tools.patch \
+	   file://cross_libpaths.patch \
+	   file://rpmconfigdir.patch \
+	   file://weakdeps.patch;striplevel=0 \
+	   file://tagsbackport.patch;striplevel=0 \
+	   file://missingok.patch;striplevel=0 \
+	   file://extcond.patch;striplevel=0"
 
 inherit autotools python-dir
 

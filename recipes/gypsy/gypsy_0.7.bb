@@ -1,8 +1,8 @@
 require gypsy.inc
 
 SRC_URI = "http://gypsy.freedesktop.org/gypsy-releases/gypsy-0.7.tar.gz;name=gypsy \
-           file://docs-reference-am.patch;patch=1 \
-           file://remove-werror.patch;patch=1 \
+           file://docs-reference-am.patch \
+           file://remove-werror.patch \
 "
 
 SRC_URI[gypsy.md5sum] = "cde52c121693014efa75d9098fd7de22"

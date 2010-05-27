@@ -9,7 +9,7 @@ export KERNEL_SRC_DIR = ${STAGING_KERNEL_DIR}
 export LDFLAGS = ""
 
 SRC_URI = "https://garage.maemo.org/frs/download.php/939/cx3110x-1.1.tar.gz \
-           file://umac_binary.patch;patch=1 \
+           file://umac_binary.patch \
            http://use.the.umac.ko.from.your.own.nokia800/umac.ko" 
 
 S = "${WORKDIR}/cx3110x-${PV}"

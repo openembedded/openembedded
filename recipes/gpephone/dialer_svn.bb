@@ -3,8 +3,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ libgpephone libgemwidget"
-PV = "0.0+svnr${SRCPV}"
-PE = "1"
+PV = "0.0+svnr-${SRCREV}"
 PR = "r0"
 
 inherit gpephone autotools

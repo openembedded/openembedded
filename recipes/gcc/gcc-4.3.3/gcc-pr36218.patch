@@ -1,0 +1,345 @@
+http://gcc.gnu.org/viewcvs?view=revision&revision=136563
+
+2008-06-08  Joseph Myers  <joseph@codesourcery.com>
+
+	PR tree-optimization/36218
+	* Makefile.def (flags_to_pass): Add LDFLAGS_FOR_BUILD.
+	* Makefile.tpl (EXTRA_BUILD_FLAGS): Define.
+	(all prefix="build-"): Pass them to build-system sub-makes.
+	* Makefile.in: Regenerate.
+
+config:
+	* config/mh-mingw (LDFLAGS): Define.
+
+gcc:
+	* configure.ac: Use LDFLAGS="${LDFLAGS_FOR_BUILD}" when running
+	configure for the build system.
+	(BUILD_LDFLAGS): Define.
+	* configure: Regenerate.
+	* Makefile.in (BUILD_LDFLAGS): Define to @BUILD_LDFLAGS@.
+
+
+Index: gcc-4.3.3/Makefile.def
+===================================================================
+--- gcc-4.3.3.orig/Makefile.def	2010-05-16 23:08:16.000000000 -0700
++++ gcc-4.3.3/Makefile.def	2010-05-16 23:09:17.130520085 -0700
+@@ -215,6 +215,7 @@ flags_to_pass = { flag= INSTALL ; };
+ flags_to_pass = { flag= INSTALL_DATA ; };
+ flags_to_pass = { flag= INSTALL_PROGRAM ; };
+ flags_to_pass = { flag= INSTALL_SCRIPT ; };
++flags_to_pass = { flag= LDFLAGS_FOR_BUILD ; };
+ flags_to_pass = { flag= LEX ; };
+ flags_to_pass = { flag= M4 ; };
+ flags_to_pass = { flag= MAKE ; };
+Index: gcc-4.3.3/Makefile.in
+===================================================================
+--- gcc-4.3.3.orig/Makefile.in	2010-05-16 23:08:16.000000000 -0700
++++ gcc-4.3.3/Makefile.in	2010-05-16 23:10:22.000000000 -0700
+@@ -136,6 +136,12 @@ BUILD_EXPORTS = \
+ 	WINDRES="$(WINDRES_FOR_BUILD)"; export WINDRES; \
+ 	WINDMC="$(WINDMC_FOR_BUILD)"; export WINDMC;
+ 
++# These variables must be set on the make command line for directories
++# built for the build system to override those in BASE_FLAGS_TO_PASSS.
++EXTRA_BUILD_FLAGS = \
++	CFLAGS="$(CFLAGS_FOR_BUILD)" \
++	LDFLAGS="$(LDFLAGS_FOR_BUILD)"
++
+ # This is the list of directories to built for the host system.
+ SUBDIRS = @configdirs@
+ # This is set by the configure script to the arguments to use when configuring
+@@ -499,6 +505,7 @@ BASE_FLAGS_TO_PASS = \
+ 	"INSTALL_DATA=$(INSTALL_DATA)" \
+ 	"INSTALL_PROGRAM=$(INSTALL_PROGRAM)" \
+ 	"INSTALL_SCRIPT=$(INSTALL_SCRIPT)" \
++	"LDFLAGS_FOR_BUILD=$(LDFLAGS_FOR_BUILD)" \
+ 	"LEX=$(LEX)" \
+ 	"M4=$(M4)" \
+ 	"MAKE=$(MAKE)" \
+@@ -2741,7 +2748,7 @@ all-build-libiberty: configure-build-lib
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	$(BUILD_EXPORTS) \
+ 	(cd $(BUILD_SUBDIR)/libiberty && \
+-	  $(MAKE)   $(TARGET-build-libiberty))
++	  $(MAKE) $(EXTRA_BUILD_FLAGS)  $(TARGET-build-libiberty))
+ @endif build-libiberty
+ 
+ 
+@@ -2796,7 +2803,7 @@ all-build-bison: configure-build-bison
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	$(BUILD_EXPORTS) \
+ 	(cd $(BUILD_SUBDIR)/bison && \
+-	  $(MAKE)   $(TARGET-build-bison))
++	  $(MAKE) $(EXTRA_BUILD_FLAGS)  $(TARGET-build-bison))
+ @endif build-bison
+ 
+ 
+@@ -2851,7 +2858,7 @@ all-build-byacc: configure-build-byacc
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	$(BUILD_EXPORTS) \
+ 	(cd $(BUILD_SUBDIR)/byacc && \
+-	  $(MAKE)   $(TARGET-build-byacc))
++	  $(MAKE) $(EXTRA_BUILD_FLAGS)  $(TARGET-build-byacc))
+ @endif build-byacc
+ 
+ 
+@@ -2906,7 +2913,7 @@ all-build-flex: configure-build-flex
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	$(BUILD_EXPORTS) \
+ 	(cd $(BUILD_SUBDIR)/flex && \
+-	  $(MAKE)   $(TARGET-build-flex))
++	  $(MAKE) $(EXTRA_BUILD_FLAGS)  $(TARGET-build-flex))
+ @endif build-flex
+ 
+ 
+@@ -2961,7 +2968,7 @@ all-build-m4: configure-build-m4
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	$(BUILD_EXPORTS) \
+ 	(cd $(BUILD_SUBDIR)/m4 && \
+-	  $(MAKE)   $(TARGET-build-m4))
++	  $(MAKE) $(EXTRA_BUILD_FLAGS)  $(TARGET-build-m4))
+ @endif build-m4
+ 
+ 
+@@ -3016,7 +3023,7 @@ all-build-texinfo: configure-build-texin
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	$(BUILD_EXPORTS) \
+ 	(cd $(BUILD_SUBDIR)/texinfo && \
+-	  $(MAKE)   $(TARGET-build-texinfo))
++	  $(MAKE) $(EXTRA_BUILD_FLAGS)  $(TARGET-build-texinfo))
+ @endif build-texinfo
+ 
+ 
+@@ -3071,7 +3078,7 @@ all-build-fixincludes: configure-build-f
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	$(BUILD_EXPORTS) \
+ 	(cd $(BUILD_SUBDIR)/fixincludes && \
+-	  $(MAKE)   $(TARGET-build-fixincludes))
++	  $(MAKE) $(EXTRA_BUILD_FLAGS)  $(TARGET-build-fixincludes))
+ @endif build-fixincludes
+ 
+ 
+Index: gcc-4.3.3/Makefile.tpl
+===================================================================
+--- gcc-4.3.3.orig/Makefile.tpl	2010-05-16 23:08:16.000000000 -0700
++++ gcc-4.3.3/Makefile.tpl	2010-05-16 23:09:17.170555760 -0700
+@@ -139,6 +139,12 @@ BUILD_EXPORTS = \
+ 	WINDRES="$(WINDRES_FOR_BUILD)"; export WINDRES; \
+ 	WINDMC="$(WINDMC_FOR_BUILD)"; export WINDMC;
+ 
++# These variables must be set on the make command line for directories
++# built for the build system to override those in BASE_FLAGS_TO_PASSS.
++EXTRA_BUILD_FLAGS = \
++	CFLAGS="$(CFLAGS_FOR_BUILD)" \
++	LDFLAGS="$(LDFLAGS_FOR_BUILD)"
++
+ # This is the list of directories to built for the host system.
+ SUBDIRS = @configdirs@
+ # This is set by the configure script to the arguments to use when configuring
+@@ -947,7 +953,8 @@ clean-stage[+id+]-[+prefix+][+module+]:
+ 	     target_alias=(get "target" "${target_alias}")
+ 	     args="$(BUILD_CONFIGARGS)" no-config-site=true +]
+ 
+-[+ all prefix="build-" subdir="$(BUILD_SUBDIR)" exports="$(BUILD_EXPORTS)" +]
++[+ all prefix="build-" subdir="$(BUILD_SUBDIR)" exports="$(BUILD_EXPORTS)"
++	     args="$(EXTRA_BUILD_FLAGS)" +]
+ [+ ENDFOR build_module +]
+ 
+ # --------------------------------------
+Index: gcc-4.3.3/config/mh-mingw
+===================================================================
+--- gcc-4.3.3.orig/config/mh-mingw	2007-09-06 08:42:02.000000000 -0700
++++ gcc-4.3.3/config/mh-mingw	2010-05-16 23:09:17.170555760 -0700
+@@ -1,3 +1,6 @@
+ # Add -D__USE_MINGW_ACCESS to enable the built compiler to work on Windows
+ # Vista (see PR33281 for details).
+ BOOT_CFLAGS += -D__USE_MINGW_ACCESS
++# Increase stack limit to same as Linux default.
++LDFLAGS = -Wl,--stack,8388608
++
+Index: gcc-4.3.3/gcc/Makefile.in
+===================================================================
+--- gcc-4.3.3.orig/gcc/Makefile.in	2010-05-16 23:08:16.000000000 -0700
++++ gcc-4.3.3/gcc/Makefile.in	2010-05-16 23:10:11.430519728 -0700
+@@ -689,7 +689,7 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
+ BUILD_CFLAGS= @BUILD_CFLAGS@ -DGENERATOR_FILE
+ 
+ # Native linker and preprocessor flags.  For x-fragment overrides.
+-BUILD_LDFLAGS=$(LDFLAGS)
++BUILD_LDFLAGS=@BUILD_LDFLAGS@
+ BUILD_CPPFLAGS=$(INCLUDES) @BUILD_CPPFLAGS@ $(X_CPPFLAGS)
+ 
+ # Actual name to use when installing a native compiler.
+Index: gcc-4.3.3/gcc/configure
+===================================================================
+--- gcc-4.3.3.orig/gcc/configure	2010-05-16 23:08:16.000000000 -0700
++++ gcc-4.3.3/gcc/configure	2010-05-16 23:09:17.170555760 -0700
+@@ -458,7 +458,7 @@ ac_includes_default="\
+ # include <unistd.h>
+ #endif"
+ 
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os target_noncanonical build_libsubdir build_subdir host_subdir target_subdir GENINSRC CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT NO_MINUS_C_MINUS_O OUTPUT_OPTION CPP EGREP loose_warn cxx_compat_warn strict_warn warn_cflags nocommon_flag TREEBROWSER valgrind_path valgrind_path_defines valgrind_command coverage_flags enable_multilib enable_decimal_float enable_fixed_point enable_shared TARGET_SYSTEM_ROOT TARGET_SYSTEM_ROOT_DEFINE CROSS_SYSTEM_HEADER_DIR onestep PKGVERSION REPORT_BUGS_TO REPORT_BUGS_TEXI datarootdir docdir htmldir SET_MAKE AWK LN_S LN RANLIB ac_ct_RANLIB ranlib_flags INSTALL INSTALL_PROGRAM INSTALL_DATA make_compare_target have_mktemp_command MAKEINFO BUILD_INFO GENERATED_MANPAGES FLEX BISON NM AR COLLECT2_LIBS GNAT_LIBEXC LDEXP_LIB TARGET_GETGROUPS_T LIBICONV LTLIBICONV LIBICONV_DEP manext objext gthread_flags extra_modes_file extra_opt_files USE_NLS LIBINTL LIBINTL_DEP INCINTL XGETTEXT GMSGFMT POSUB CATALOGS DATADIRNAME INSTOBJEXT GENCAT CATOBJEXT host_cc_for_libada CROSS ALL SYSTEM_HEADER_DIR inhibit_libc CC_FOR_BUILD BUILD_CFLAGS BUILD_CPPFLAGS STMP_FIXINC STMP_FIXPROTO collect2 LIBTOOL SED FGREP GREP LD DUMPBIN ac_ct_DUMPBIN ac_ct_AR STRIP ac_ct_STRIP lt_ECHO objdir enable_fast_install gcc_cv_as ORIGINAL_AS_FOR_TARGET gcc_cv_ld ORIGINAL_LD_FOR_TARGET gcc_cv_nm ORIGINAL_NM_FOR_TARGET gcc_cv_objdump libgcc_visibility GGC zlibdir zlibinc MAINT gcc_tooldir dollar slibdir subdirs srcdir all_compilers all_gtfiles all_lang_makefrags all_lang_makefiles all_languages all_selected_languages build_exeext build_install_headers_dir build_xm_file_list build_xm_include_list build_xm_defines build_file_translate check_languages cpp_install_dir xmake_file tmake_file extra_gcc_objs extra_headers_list extra_objs extra_parts extra_passes extra_programs float_h_file gcc_config_arguments gcc_gxx_include_dir host_exeext host_xm_file_list host_xm_include_list host_xm_defines out_host_hook_obj install lang_opt_files lang_specs_files lang_tree_files local_prefix md_file objc_boehm_gc out_file out_object_file thread_file tm_file_list tm_include_list tm_defines tm_p_file_list tm_p_include_list xm_file_list xm_include_list xm_defines c_target_objs cxx_target_objs target_cpu_default GMPLIBS GMPINC LIBOBJS LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os target_noncanonical build_libsubdir build_subdir host_subdir target_subdir GENINSRC CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT NO_MINUS_C_MINUS_O OUTPUT_OPTION CPP EGREP loose_warn cxx_compat_warn strict_warn warn_cflags nocommon_flag TREEBROWSER valgrind_path valgrind_path_defines valgrind_command coverage_flags enable_multilib enable_decimal_float enable_fixed_point enable_shared TARGET_SYSTEM_ROOT TARGET_SYSTEM_ROOT_DEFINE CROSS_SYSTEM_HEADER_DIR onestep PKGVERSION REPORT_BUGS_TO REPORT_BUGS_TEXI datarootdir docdir htmldir SET_MAKE AWK LN_S LN RANLIB ac_ct_RANLIB ranlib_flags INSTALL INSTALL_PROGRAM INSTALL_DATA make_compare_target have_mktemp_command MAKEINFO BUILD_INFO GENERATED_MANPAGES FLEX BISON NM AR COLLECT2_LIBS GNAT_LIBEXC LDEXP_LIB TARGET_GETGROUPS_T LIBICONV LTLIBICONV LIBICONV_DEP manext objext gthread_flags extra_modes_file extra_opt_files USE_NLS LIBINTL LIBINTL_DEP INCINTL XGETTEXT GMSGFMT POSUB CATALOGS DATADIRNAME INSTOBJEXT GENCAT CATOBJEXT host_cc_for_libada CROSS ALL SYSTEM_HEADER_DIR inhibit_libc CC_FOR_BUILD BUILD_CFLAGS BUILD_LDFLAGS BUILD_CPPFLAGS STMP_FIXINC STMP_FIXPROTO collect2 LIBTOOL SED FGREP GREP LD DUMPBIN ac_ct_DUMPBIN ac_ct_AR STRIP ac_ct_STRIP lt_ECHO objdir enable_fast_install gcc_cv_as ORIGINAL_AS_FOR_TARGET gcc_cv_ld ORIGINAL_LD_FOR_TARGET gcc_cv_nm ORIGINAL_NM_FOR_TARGET gcc_cv_objdump libgcc_visibility GGC zlibdir zlibinc MAINT gcc_tooldir dollar slibdir subdirs srcdir all_compilers all_gtfiles all_lang_makefrags all_lang_makefiles all_languages all_selected_languages build_exeext build_install_headers_dir build_xm_file_list build_xm_include_list build_xm_defines build_file_translate check_languages cpp_install_dir xmake_file tmake_file extra_gcc_objs extra_headers_list extra_objs extra_parts extra_passes extra_programs float_h_file gcc_config_arguments gcc_gxx_include_dir host_exeext host_xm_file_list host_xm_include_list host_xm_defines out_host_hook_obj install lang_opt_files lang_specs_files lang_tree_files local_prefix md_file objc_boehm_gc out_file out_object_file thread_file tm_file_list tm_include_list tm_defines tm_p_file_list tm_p_include_list xm_file_list xm_include_list xm_defines c_target_objs cxx_target_objs target_cpu_default GMPLIBS GMPINC LIBOBJS LTLIBOBJS'
+ ac_subst_files='language_hooks'
+ 
+ # Initialize some variables set by options.
+@@ -12972,6 +12972,7 @@ else
+ 	esac
+ 	saved_CFLAGS="${CFLAGS}"
+ 	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" \
++	LDFLAGS="${LDFLAGS_FOR_BUILD}" \
+ 	CONFIG_SITE= ${realsrcdir}/configure --cache-file=./other.cache \
+ 		--enable-languages=${enable_languages-all} \
+ 		--target=$target_alias --host=$build_alias --build=$build_alias
+@@ -13469,6 +13470,7 @@ fi
+ # These are the normal (build=host) settings:
+ CC_FOR_BUILD='$(CC)'
+ BUILD_CFLAGS='$(ALL_CFLAGS)'
++BUILD_LDFLAGS='$(LDFLAGS)'
+ BUILD_CPPFLAGS='$(ALL_CPPFLAGS)'
+ STMP_FIXINC=stmp-fixinc
+ 
+@@ -13488,6 +13490,7 @@ if test x$build != x$host || test "x$cov
+ then
+     BUILD_CFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(CFLAGS_FOR_BUILD)'
+     BUILD_CPPFLAGS='$(CPPFLAGS_FOR_BUILD)'
++    BUILD_LDFLAGS='$(LDFLAGS_FOR_BUILD)'
+ 
+     if test "x$TARGET_SYSTEM_ROOT" = x; then
+ 	if test "x$STMP_FIXPROTO" != x; then
+@@ -14066,13 +14069,13 @@ if test "${lt_cv_nm_interface+set}" = se
+ else
+   lt_cv_nm_interface="BSD nm"
+   echo "int some_variable = 0;" > conftest.$ac_ext
+-  (eval echo "\"\$as_me:14069: $ac_compile\"" >&5)
++  (eval echo "\"\$as_me:14072: $ac_compile\"" >&5)
+   (eval "$ac_compile" 2>conftest.err)
+   cat conftest.err >&5
+-  (eval echo "\"\$as_me:14072: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
++  (eval echo "\"\$as_me:14075: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
+   cat conftest.err >&5
+-  (eval echo "\"\$as_me:14075: output\"" >&5)
++  (eval echo "\"\$as_me:14078: output\"" >&5)
+   cat conftest.out >&5
+   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
+     lt_cv_nm_interface="MS dumpbin"
+@@ -15127,7 +15130,7 @@ ia64-*-hpux*)
+   ;;
+ *-*-irix6*)
+   # Find out which ABI we are using.
+-  echo '#line 15130 "configure"' > conftest.$ac_ext
++  echo '#line 15133 "configure"' > conftest.$ac_ext
+   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+   (eval $ac_compile) 2>&5
+   ac_status=$?
+@@ -15747,11 +15750,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:15750: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:15753: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:15754: \$? = $ac_status" >&5
++   echo "$as_me:15757: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -16069,11 +16072,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:16072: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:16075: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:16076: \$? = $ac_status" >&5
++   echo "$as_me:16079: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -16174,11 +16177,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:16177: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:16180: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:16181: \$? = $ac_status" >&5
++   echo "$as_me:16184: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -16229,11 +16232,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:16232: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:16235: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:16236: \$? = $ac_status" >&5
++   echo "$as_me:16239: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -19026,7 +19029,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<_LT_EOF
+-#line 19029 "configure"
++#line 19032 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -19126,7 +19129,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<_LT_EOF
+-#line 19129 "configure"
++#line 19132 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -23936,6 +23939,7 @@ s,@SYSTEM_HEADER_DIR@,$SYSTEM_HEADER_DIR
+ s,@inhibit_libc@,$inhibit_libc,;t t
+ s,@CC_FOR_BUILD@,$CC_FOR_BUILD,;t t
+ s,@BUILD_CFLAGS@,$BUILD_CFLAGS,;t t
++s,@BUILD_LDFLAGS@,$BUILD_LDFLAGS,;t t
+ s,@BUILD_CPPFLAGS@,$BUILD_CPPFLAGS,;t t
+ s,@STMP_FIXINC@,$STMP_FIXINC,;t t
+ s,@STMP_FIXPROTO@,$STMP_FIXPROTO,;t t
+Index: gcc-4.3.3/gcc/configure.ac
+===================================================================
+--- gcc-4.3.3.orig/gcc/configure.ac	2010-05-16 23:08:16.000000000 -0700
++++ gcc-4.3.3/gcc/configure.ac	2010-05-16 23:09:17.180525673 -0700
+@@ -1480,6 +1480,7 @@ else
+ 	esac
+ 	saved_CFLAGS="${CFLAGS}"
+ 	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" \
++	LDFLAGS="${LDFLAGS_FOR_BUILD}" \
+ 	CONFIG_SITE= ${realsrcdir}/configure --cache-file=./other.cache \
+ 		--enable-languages=${enable_languages-all} \
+ 		--target=$target_alias --host=$build_alias --build=$build_alias
+@@ -1776,6 +1777,7 @@ AC_SUBST(inhibit_libc)
+ # These are the normal (build=host) settings:
+ CC_FOR_BUILD='$(CC)'			AC_SUBST(CC_FOR_BUILD)
+ BUILD_CFLAGS='$(ALL_CFLAGS)'		AC_SUBST(BUILD_CFLAGS)
++BUILD_LDFLAGS='$(LDFLAGS)'		AC_SUBST(BUILD_LDFLAGS)
+ BUILD_CPPFLAGS='$(ALL_CPPFLAGS)'	AC_SUBST(BUILD_CPPFLAGS)
+ STMP_FIXINC=stmp-fixinc			AC_SUBST(STMP_FIXINC)
+ 
+@@ -1795,6 +1797,7 @@ if test x$build != x$host || test "x$cov
+ then
+     BUILD_CFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(CFLAGS_FOR_BUILD)'
+     BUILD_CPPFLAGS='$(CPPFLAGS_FOR_BUILD)'
++    BUILD_LDFLAGS='$(LDFLAGS_FOR_BUILD)'
+ 
+     if test "x$TARGET_SYSTEM_ROOT" = x; then
+ 	if test "x$STMP_FIXPROTO" != x; then

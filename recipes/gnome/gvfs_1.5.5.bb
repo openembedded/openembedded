@@ -5,8 +5,8 @@ DEPENDS = "gawk-native libimobiledevice gnome-keyring glib-2.0 obexftp fuse avah
 inherit gnome
 
 SRC_URI += " \
-            file://imobile-fix.patch;patch=1 \
-            file://imobile-fix2.patch;patch=1 \
+            file://imobile-fix.patch \
+            file://imobile-fix2.patch \
 "
 
 SRC_URI[archive.md5sum] = "d4ae94acdea317d8a8bf88a793b8df3f"

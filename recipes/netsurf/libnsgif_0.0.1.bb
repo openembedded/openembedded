@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 
 SRC_URI = "http://www.netsurf-browser.org/projects/releases/libnsgif-${PV}-src.tar.gz \
-           file://libnsgif-strict-aliasing.patch;patch=1"
+           file://libnsgif-strict-aliasing.patch"
 
 PR = "r1"
 

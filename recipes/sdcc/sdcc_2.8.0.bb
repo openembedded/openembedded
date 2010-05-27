@@ -5,7 +5,7 @@ HOMEPAGE = "http://sdcc.sourceforge.net"
 DEPENDS = "sdcc-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sdcc/sdcc-src-${PV}.tar.bz2 \
-           file://use-native-tools.patch;patch=1"
+           file://use-native-tools.patch"
 
 S = "${WORKDIR}/sdcc"
 

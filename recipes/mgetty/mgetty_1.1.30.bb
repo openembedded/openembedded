@@ -8,38 +8,38 @@ PR ="r4"
 # The source can no longer be found at ${DEBIAN_MIRROR}/main/m/mgetty/mgetty_${PV}.orig.tar.gz
 # so the nslu2-linux project has mirrored it until someone updates this package to a newer version.
 SRC_URI = "http://nslu.sf.net/downloads/mgetty_1.1.30.orig.tar.gz \
-           file://debian.patch;patch=1 \
-           file://00-g3_Makefile;patch=1 \
-           file://01-adjust-path;patch=1 \
-           file://02-pending-fix-includes;patch=1 \
-           file://03-callback_Makefile;patch=1 \
-           file://04-new_fax.pbm;patch=1 \
-           file://06-pending-contrib_g3tolj.c;patch=1 \
-           file://07-pending-contrib_g3toxwd.c;patch=1 \
-           file://09-doc_Makefile;patch=1 \
-           file://10-doc_faxrunqd.8in;patch=1 \
-           file://12-fax_faxrunqd.in;patch=1 \
-           file://13-fax_faxspool.in;patch=1 \
-           file://14-frontends_X11_viewfax-2.5_Makefile;patch=1 \
-           file://23-samples_new_fax.mime4;patch=1 \
-           file://24-voice_include_paths.h;patch=1 \
-           file://26-voice_libpvf_usr.c;patch=1 \
-           file://36-voice_voice.conf-dist;patch=1 \
-           file://37-Makefile;patch=1 \
-           file://39-mgetty.cfg.in;patch=1 \
-           file://40-locks.c_bug153394;patch=1 \
-           file://41-ugly-redo-ring.c_bug128668;patch=1 \
-           file://42-voice_libvoice_detect.c;patch=1 \
-           file://43-moreinfo-cnd.c_bug112163;patch=1 \
-           file://44-pending-faxexpand.h_bug169455;patch=1 \
-           file://45-logfile.c;patch=1 \
-           file://47-doc_mgetty.texi-in;patch=1 \
-           file://50-pending-voice-zoom-2949l-c;patch=1 \
-           file://51-pending-faxq-time;patch=1 \
-           file://52-pending-metamail;patch=1 \
-           file://install.patch;patch=1 \
-	   file://newslock_ldflags.patch;patch=1 \
-	   file://faxqhelper_ldflags.patch;patch=1 \
+           file://debian.patch \
+           file://00-g3_Makefile;apply=yes \
+           file://01-adjust-path;apply=yes \
+           file://02-pending-fix-includes;apply=yes \
+           file://03-callback_Makefile;apply=yes \
+           file://04-new_fax.pbm;apply=yes \
+           file://06-pending-contrib_g3tolj.c;apply=yes \
+           file://07-pending-contrib_g3toxwd.c;apply=yes \
+           file://09-doc_Makefile;apply=yes \
+           file://10-doc_faxrunqd.8in;apply=yes \
+           file://12-fax_faxrunqd.in;apply=yes \
+           file://13-fax_faxspool.in;apply=yes \
+           file://14-frontends_X11_viewfax-2.5_Makefile;apply=yes \
+           file://23-samples_new_fax.mime4;apply=yes \
+           file://24-voice_include_paths.h;apply=yes \
+           file://26-voice_libpvf_usr.c;apply=yes \
+           file://36-voice_voice.conf-dist;apply=yes \
+           file://37-Makefile;apply=yes \
+           file://39-mgetty.cfg.in;apply=yes \
+           file://40-locks.c_bug153394;apply=yes \
+           file://41-ugly-redo-ring.c_bug128668;apply=yes \
+           file://42-voice_libvoice_detect.c;apply=yes \
+           file://43-moreinfo-cnd.c_bug112163;apply=yes \
+           file://44-pending-faxexpand.h_bug169455;apply=yes \
+           file://45-logfile.c;apply=yes \
+           file://47-doc_mgetty.texi-in;apply=yes \
+           file://50-pending-voice-zoom-2949l-c;apply=yes \
+           file://51-pending-faxq-time;apply=yes \
+           file://52-pending-metamail;apply=yes \
+           file://install.patch \
+	   file://newslock_ldflags.patch \
+	   file://faxqhelper_ldflags.patch \
            file://policy.h \
            file://voice-defs.h"
 

@@ -8,7 +8,7 @@ PARALLEL_MAKE = ""
 
 SRC_URI = "\
   ftp://ftp.gnome.org/pub/GNOME/sources/pygobject/${MAJ_VER}/pygobject-${PV}.tar.bz2 \
-#  file://python-path.patch;patch=1 \
+#  file://python-path.patch \
 "
 
 export GOBJECT_INTROSPECTION_CFLAGS="-pthread -I${STAGING_INCDIR}/gobject-introspection-1.0 -I${STAGING_INCDIR}/glib-2.0 -I${STAGING_LIBDIR}/glib-2.0/include"

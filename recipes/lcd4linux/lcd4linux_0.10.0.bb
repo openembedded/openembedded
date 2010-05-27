@@ -7,7 +7,7 @@ PV = "0.10.0+0.10.1-RC2"
 PR = "r4"
 
 SRC_URI = "http://ssl.bulix.org/projects/lcd4linux/raw-attachment/wiki/Download/lcd4linux-0.10.1-RC2.tar.gz \
-           file://libusb-compat.diff;patch=1 \ 
+           file://libusb-compat.diff \ 
            file://lcd4linux.init"
 
 S =  "${WORKDIR}/lcd4linux-0.10.1-RC2"

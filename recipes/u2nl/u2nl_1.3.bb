@@ -7,7 +7,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 
 SRC_URI = "http://www.reitwiessner.de/programs/u2nl-${PV}.tar.gz \
-	   file://buildsystem.patch;patch=1"
+	   file://buildsystem.patch"
 S = "${WORKDIR}/u2nl-${PV}"
 
 do_install () {

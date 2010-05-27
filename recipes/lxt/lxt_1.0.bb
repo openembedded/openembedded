@@ -6,7 +6,7 @@ DEPENDS = "ncurses"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/lxt-1.0"
 
 SRC_URI = "http://www.xtreefanpage.org/download/lxt-1.0.tgz \
-	   file://lxt.patch;patch=1"
+	   file://lxt.patch"
 S = "${WORKDIR}/lxt"
 
 do_install() {

@@ -4,7 +4,6 @@ PRIORITY = "optional"
 LICENSE = "GPLv3"
 DEPENDS = "virtual/libusb0 guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
 INC_PR = "r7"
-PE = "1"
 
 inherit distutils-base autotools autotools_stage pkgconfig
 
@@ -48,7 +47,7 @@ do_buildlibusb() {
 
 addtask buildlibusb before do_configure after do_unpack
 
-do_buildlibusb[deptask] = "do_populate_staging"
+do_buildlibusb[deptask] = "do_populate_sysroot"
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/acinclude.m4 ] ; then

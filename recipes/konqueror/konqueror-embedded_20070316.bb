@@ -11,12 +11,12 @@ PR = "r7"
 inherit autotools
 
 SRC_URI = "http://www.basyskom.de/uploads/175/37/kdenox_snapshot_qt2_20070316.tar.bz2 \
-	   file://dont-use-kde-config.patch;patch=1 \
-           file://konqe_new_opie.patch;patch=1 \
-	   file://konqe-kapplication.patch;patch=1 \
-           file://fix_configure.patch;patch=1 \
-           file://fix_acinclude.patch;patch=1 \
-           file://fix_KDE_LDPATH_HACK.patch;patch=1 \
+	   file://dont-use-kde-config.patch \
+           file://konqe_new_opie.patch \
+	   file://konqe-kapplication.patch \
+           file://fix_configure.patch \
+           file://fix_acinclude.patch \
+           file://fix_KDE_LDPATH_HACK.patch \
 	   "
 S = "${WORKDIR}/kdenox"
 

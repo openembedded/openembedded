@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 
 SRC_URI = "http://download.savannah.gnu.org/releases/confuse/confuse-${PV}.tar.gz \
-           file://build-only-library.patch;patch=1"
+           file://build-only-library.patch"
 S = "${WORKDIR}/confuse-${PV}"
 
 inherit autotools binconfig pkgconfig lib_package

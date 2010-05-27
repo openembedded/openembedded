@@ -6,17 +6,17 @@ SECTION = "opie/libs"
 DEPENDS = "virtual/libqpe1 libopie2"
 
 SRC_URI += "\
-  file://agawa-piro-mickey-1.2.9.patch;patch=1 \
-  file://pygame-1.2.9.patch;patch=1 \
-  file://mouse-1.2.9.patch;patch=1 \
-  file://kill-stdc++-1.2.9.patch;patch=1 \
-  file://ipaq-1.2.9.patch;patch=1 \
-  file://SDL-Akita-1.2.9.patch;patch=1 \
-  file://fixlibs-1.2.9.patch;patch=1 \
-  file://explicit-extern-C.patch;patch=1 \
-  file://no-PAGE_SIZE.patch;patch=1 \
-  file://fix_Makefile.am.patch;patch=1 \
-  file://fix_configure.in.patch;patch=1 \
+  file://agawa-piro-mickey-1.2.9.patch \
+  file://pygame-1.2.9.patch \
+  file://mouse-1.2.9.patch \
+  file://kill-stdc++-1.2.9.patch \
+  file://ipaq-1.2.9.patch \
+  file://SDL-Akita-1.2.9.patch \
+  file://fixlibs-1.2.9.patch \
+  file://explicit-extern-C.patch \
+  file://no-PAGE_SIZE.patch \
+  file://fix_Makefile.am.patch \
+  file://fix_configure.in.patch \
 "
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \

@@ -10,8 +10,8 @@ DEFAULT_PREFERENCE = "-1"
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
 SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=http \
-	   file://camel-lite-configure-hack.patch;patch=1;maxdate=20061113 \
-	   file://no-iconv-detect.patch;patch=1;mindate=20061114 \
+	   file://camel-lite-configure-hack.patch;maxdate=20061113 \
+	   file://no-iconv-detect.patch;mindate=20061114 \
 	   file://iconv-detect.h \
 	   file://gtk-doc.m4 \
            file://gtk-doc.make"

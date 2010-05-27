@@ -1,8 +1,7 @@
 DESCRIPTION = "Neuros qt-plugins"
 LICENSE = "GPL"
 
-PV = "0.0+${PR}+gitr${SRCPV}"
-PE = "1"
+PV = "0.0+${PR}+gitr${SRCREV}"
 PR = "r3"
 
 inherit qt4e

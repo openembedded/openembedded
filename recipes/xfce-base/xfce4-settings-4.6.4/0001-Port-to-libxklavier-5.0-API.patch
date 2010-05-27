@@ -1,0 +1,34 @@
+From 8e1ce14a33351f2664678f945c7050e42529c5d4 Mon Sep 17 00:00:00 2001
+From: Lionel Le Folgoc <mrpouit@ubuntu.com>
+Date: Mon, 25 Jan 2010 21:02:53 +0100
+Subject: [PATCH] Port to libxklavier 5.0 API.
+
+Patch slightly modified for Xubuntu to add POTFILES.skip.
+
+---
+ dialogs/keyboard-settings/xfce-keyboard-settings.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/dialogs/keyboard-settings/xfce-keyboard-settings.c b/dialogs/keyboard-settings/xfce-keyboard-settings.c
+index 631dc69..0e36375 100644
+--- a/dialogs/keyboard-settings/xfce-keyboard-settings.c
++++ b/dialogs/keyboard-settings/xfce-keyboard-settings.c
+@@ -395,7 +395,7 @@ xfce_keyboard_settings_finalize (GObject *object)
+ 
+ #ifdef HAVE_LIBXKLAVIER
+   /* Stop xklavier engine */
+-  xkl_engine_stop_listen (settings->priv->xkl_engine);
++  xkl_engine_stop_listen (settings->priv->xkl_engine, XKLL_TRACK_KEYBOARD_STATE);
+ #endif /* HAVE_LIBXKLAVIER */
+ 
+   g_object_unref (G_OBJECT (settings->priv->provider));
+diff --git a/po/POTFILES.skip b/po/POTFILES.skip
+new file mode 100644
+index 0000000..0e36375
+--- /dev/null
++++ b/po/POTFILES.skip
+@@ -0,0 +1,1 @@
++.pc/0001-Port-to-libxklavier-5.0-API.patch/dialogs/keyboard-settings/xfce-keyboard-settings.c
+-- 
+1.6.3.3
+

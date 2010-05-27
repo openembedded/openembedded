@@ -1,8 +1,8 @@
 HOMEPAGE = "http://linux.duke.edu/projects/yum/"
 
 SRC_URI = "http://linux.duke.edu/projects/yum/download/3.2/yum-${PV}.tar.gz \
-           file://hacks.patch;patch=1 \
-           file://paths.patch;patch=1 \
+           file://hacks.patch \
+           file://paths.patch \
 	   file://yum-install-recommends.py \
 	   file://extract-postinst.awk"
 PR = "r7"

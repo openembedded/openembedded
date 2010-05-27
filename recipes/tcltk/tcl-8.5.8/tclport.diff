@@ -1,0 +1,14 @@
+Patch by Stanislav Maslovski <stanislav.maslovski@gmail.com>.
+See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=488491
+
+--- tcl8.5-8.5.8.orig/generic/tclPort.h
++++ tcl8.5-8.5.8/generic/tclPort.h
+@@ -24,7 +24,7 @@
+ #if defined(__WIN32__)
+ #   include "tclWinPort.h"
+ #else
+-#   include "tclUnixPort.h"
++#   include "../unix/tclUnixPort.h"
+ #endif
+ 
+ #if !defined(LLONG_MIN)

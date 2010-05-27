@@ -6,7 +6,7 @@ processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
-	   file://configure.patch;patch=1"
+	   file://configure.patch"
 
 inherit autotools
 

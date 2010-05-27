@@ -3,8 +3,8 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.12/linux-2.6.12-rc5.tar.bz2;name=kernel \
-           http://www.muru.com/linux/omap/patches/old/patch-2.6.12-rc5-omap2.bz2;patch=1;name=patch \
-           file://h6300_omap1_2612rc5.patch;patch=1 \
+           http://www.muru.com/linux/omap/patches/old/patch-2.6.12-rc5-omap2.bz2;apply=yes;name=patch \
+           file://h6300_omap1_2612rc5.patch \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.12-rc5"

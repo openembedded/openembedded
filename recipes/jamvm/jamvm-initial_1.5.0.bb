@@ -11,7 +11,7 @@ PROVIDES = "virtual/java-initial"
 S = "${WORKDIR}/jamvm-${PV}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jamvm/jamvm-${PV}.tar.gz \
-          file://jamvm_${PV}-initial.patch;patch=1;pnum=1 \
+          file://jamvm_${PV}-initial.patch \
           "
 
 # This uses 32 bit arm, so force the instruction set to arm, not thumb
@@ -36,9 +36,8 @@ do_compile() {
     GLIBJ_ZIP=${STAGING_DATADIR_NATIVE}/classpath-initial/glibj.zip
 }
 
-do_stage_append() {
-  install -d ${STAGING_BINDIR}
-  install -m 0755 java-initial ${STAGING_BINDIR}
+do_install_append() {
+  install -m 0755 java-initial ${D}${bindir}
 }
 
 SRC_URI[md5sum] = "a965452442cdbfc94caba57d0dd25a8f"

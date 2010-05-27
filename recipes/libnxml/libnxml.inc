@@ -4,12 +4,8 @@ LICENSE = "LGPL"
 
 DEPENDS = "curl"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 inherit autotools pkgconfig
 
 SRC_URI = "http://www.autistici.org/bakunin/libnxml/libnxml-${PV}.tar.gz"
-
-do_stage() {
-    autotools_stage_all
-}

@@ -4,9 +4,9 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxext libxfixes libxpm xrandr xft libxml2 zlib libice libxau libxcb libxcursor libxdmcp libxrender libpng librsvg fontconfig libstroke"
 
 SRC_URI="ftp://ftp.fvwm.org/pub/fvwm/version-2/${P}.tar.bz2 \
-	file://oe-configure.ac.patch;patch=1 \
-	file://upstream-configure.ac.patch;patch=1 \
-	file://acinclude.m4.patch;patch=1 \
+	file://oe-configure.ac.patch \
+	file://upstream-configure.ac.patch \
+	file://acinclude.m4.patch \
 	"
 
 inherit autotools pkgconfig

@@ -5,7 +5,7 @@ PV = "2.43+svn${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "svn://stage.maemo.org/svn/maemo/projects/haf/trunk/;module=sapwood;proto=https \
-	   file://sockets.patch;patch=1 \
+	   file://sockets.patch \
 	  "
 
 S = "${WORKDIR}/${PN}"

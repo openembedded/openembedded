@@ -5,8 +5,8 @@ DEPENDS="glib-2.0 gtk+ pango cairo libgnomeprint libgsf libglade libpcre libxml2
 
 inherit gnome pkgconfig
 
-SRC_URI += " file://c99math.patch;patch=1 \
-             file://nodolt.patch;patch=1 "
+SRC_URI += " file://c99math.patch \
+             file://nodolt.patch "
 
 SRC_URI[archive.md5sum] = "fdc43c5e04f6ead55bebc034c1d34296"
 SRC_URI[archive.sha256sum] = "9e2497956349fee8e6ec34a13160635455ead79a5118cbe61cb387e4cfd2b31e"

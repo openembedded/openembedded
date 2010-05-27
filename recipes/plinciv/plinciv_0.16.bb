@@ -5,8 +5,8 @@ DESCRIPTION = "Embedded version of a popular FreeCiv game"
 HOMEPAGE = "http://www.handhelds.org/moin/moin.cgi/PlinCiv"
 
 SRC_URI = "ftp://ftp.freeciv.org/freeciv/stable/freeciv-1.14.1.tar.bz2 \
-	file://FC1.14.1-PC0.16.diff.gz;patch=1 \
-	file://configure.patch;patch=1"
+	file://FC1.14.1-PC0.16.diff.gz \
+	file://configure.patch"
 
 inherit autotools
 

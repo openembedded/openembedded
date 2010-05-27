@@ -6,7 +6,7 @@ inherit gnome pkgconfig
 
 PR = "r2"
 
-SRC_URI += "file://remove-docs.patch;patch=1"
+SRC_URI += "file://remove-docs.patch"
 
 EXTRA_OECONF = "--disable-scrollkeeper \
                "

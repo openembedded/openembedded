@@ -7,7 +7,7 @@ PV = "${KV}"
 SRC_URI = "http://mycable.de/xxs1500/cms/index.php?download=linux-2.4.21-20040514.1522.tgz \
 	file://Makefile \
 	file://defconfig-xxs1500 \
-	file://zboot-Makefile-flags.diff;patch=1;pnum=0"
+	file://zboot-Makefile-flags.diff;striplevel=0"
 
 S = "${WORKDIR}/linux"
 

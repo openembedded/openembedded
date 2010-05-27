@@ -4,13 +4,14 @@ DEFAULT_PREFERENCE = "-1"
 DEPENDS += "gperf-native"
 FILESPATHPKG =. "eglibc-svn:"
 PV = "2.11"
-PR = "${INC_PR}.4"
-SVN_REV="10151"
+PR = "${INC_PR}.5"
+PR_append = "+svnr${SRCPV}"
+SRCREV="10454"
 EGLIBC_BRANCH="eglibc-2_11"
-SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};rev=${SVN_REV};proto=svn \
-           file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
-           file://IO-acquire-lock-fix.patch;patch=1 \
-           file://shorten-build-commands.patch;patch=1 \
+SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};proto=svn \
+           file://eglibc-svn-arm-lowlevellock-include-tls.patch \
+           file://IO-acquire-lock-fix.patch \
+           file://shorten-build-commands.patch \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"
@@ -95,7 +96,5 @@ do_compile () {
 		done
 	)
 }
-
-require eglibc-stage.inc
 
 require eglibc-package.bbclass

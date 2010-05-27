@@ -11,9 +11,9 @@ inherit autotools update-rc.d
 
 SRC_URI = "http://www.freebsoft.org/pub/projects/speechd/${PN}-${PV}.tar.gz \
 	   file://speech-dispatcher.init \
-           file://srcMakefile.am.patch;patch=1 \
-           file://configure_fix.patch;patch=1 \
-	   file://configSpeechd.conf.in_00.patch;patch=1"
+           file://srcMakefile.am.patch \
+           file://configure_fix.patch \
+	   file://configSpeechd.conf.in_00.patch"
 
 LEAD_SONAME = "libspeechd.so"
 EXTRA_OECONF = " --with-espeak --with-flite --without-ibmtts --without-nas --with-alsa --with-pulse "

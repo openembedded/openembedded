@@ -5,7 +5,6 @@ DEPENDS = "gmp"
 SRCNAME = "pycrypto"
 LICENSE = "pycrypto"
 PR = "ml1"
-PE = "1"
 
 SRC_URI = "http://www.amk.ca/files/python/crypto/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

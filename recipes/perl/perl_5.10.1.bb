@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r1"
+PR = "r4"
 
 # Not tested enough
 DEFAULT_PREFERENCE = "-1"
@@ -14,16 +14,16 @@ DEFAULT_PREFERENCE = "-1"
 PVM = "5.10"
 
 SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
-	file://perl_${PV}-8.diff.gz;patch=1 \
-        file://Makefile.patch;patch=1 \
-        file://Makefile.SH.patch;patch=1 \
-        file://installperl.patch;patch=1 \
-        file://perl-dynloader.patch;patch=1 \
-        file://perl-moreconfig.patch;patch=1 \
-        file://letgcc-find-errno.patch;patch=1 \
-        file://generate-sh.patch;patch=1 \
-        file://shared-ldflags.patch;patch=1 \
-	file://cross-generate_uudmap.patch;patch=1 \
+	file://perl_${PV}-8.diff.gz \
+        file://Makefile.patch \
+        file://Makefile.SH.patch \
+        file://installperl.patch \
+        file://perl-dynloader.patch \
+        file://perl-moreconfig.patch \
+        file://letgcc-find-errno.patch \
+        file://generate-sh.patch \
+        file://shared-ldflags.patch \
+	file://cross-generate_uudmap.patch \
         file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \
@@ -49,7 +49,7 @@ CFLAGS += "-DDEBIAN"
 
 do_configure() {
         # Make hostperl in build directory be the native perl
-        cp -f ${HOSTPERL} hostperl
+        ln -sf ${HOSTPERL} hostperl
 
         # Do out work in the cross subdir
         cd Cross
@@ -65,6 +65,7 @@ do_configure() {
         # Fixups for uclibc
         if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibceabi" ]; then
                 sed -i -e "s,\(d_crypt_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_futimes=\)'define',\1'undef',g" \
                        -e "s,\(crypt_r_proto=\)'\w+',\1'0',g" \
                        -e "s,\(d_getnetbyname_r=\)'define',\1'undef',g" \
                        -e "s,\(getnetbyname_r_proto=\)'\w+',\1'0',g" \

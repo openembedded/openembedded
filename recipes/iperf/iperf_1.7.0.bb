@@ -5,7 +5,7 @@ LICENSE = "BSD"
 PR = "r1"
 
 SRC_URI = "http://dast.nlanr.net/Projects/Iperf/iperf-${PV}-source.tar.gz \
-	file://socketaddr-h-errno.diff;patch=1"
+	file://socketaddr-h-errno.diff"
 
 inherit autotools
 

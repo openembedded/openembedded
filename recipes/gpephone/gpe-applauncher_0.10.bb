@@ -3,7 +3,6 @@ DESCRIPTION = "A cellphone application launcher."
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r1"
-PE          = "1"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 

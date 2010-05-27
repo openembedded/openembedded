@@ -5,6 +5,6 @@ PR = "${INC_PR}.0"
 SRCREV = "3240"
 
 SRC_URI = "svn://svn.o-hand.com/repos/clutter/branches;module=clutter-0-6;proto=http \
-	   file://enable_tests-0.6.patch;patch=1 "
+	   file://enable_tests-0.6.patch "
 
 S = "${WORKDIR}/clutter-0-6"

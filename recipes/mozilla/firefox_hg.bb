@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=8c9a6d851018 \
            file://jsautocfg.h \
-           file://jsautocfg-dontoverwrite.patch;patch=1 \
+           file://jsautocfg-dontoverwrite.patch \
 "
 
 S = "${WORKDIR}/mozilla-central"

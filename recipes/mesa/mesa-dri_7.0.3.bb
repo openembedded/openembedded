@@ -1,7 +1,7 @@
 include mesa-common-old.inc
 
 # suppress mklib-rpath-link patch from mesa-common
-SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 file://mklib-cross.patch;patch=1"
+SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 file://mklib-cross.patch"
 
 FILESPATH = "${FILE_DIRNAME}/mesa-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 

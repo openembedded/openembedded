@@ -7,9 +7,9 @@ DEPENDS = "glib-1.2 jpeg libpng libxext"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-${PV}.tar.gz \
-           file://timezone-fix.patch;patch=1 \
-           file://gtk+1.2-reconf-fix;patch=1 \
-           file://no-xwc;patch=1"
+           file://timezone-fix.patch \
+           file://gtk+1.2-reconf-fix;apply=yes \
+           file://no-xwc;apply=yes"
 S = "${WORKDIR}/gtk+-${PV}"
 
 inherit autotools pkgconfig flow-lossage

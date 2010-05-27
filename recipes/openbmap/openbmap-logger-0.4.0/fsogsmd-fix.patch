@@ -1,0 +1,22 @@
+diff -uri openbmap-logger-0.4.0/openbmap/logger.py openbmap-logger-0.4.0-fsogsmd/openbmap/logger.py
+--- openbmap-logger-0.4.0/openbmap/logger.py	2009-07-20 19:07:43.000000000 +0200
++++ openbmap-logger-0.4.0-fsogsmd/openbmap/logger.py	2010-05-21 22:00:02.024118210 +0200
+@@ -220,7 +220,10 @@
+         """If available, returns the manufacturer, model and revision."""
+         #TODO call the dBus interface only if instance attributes are not set.
+         obj = dbus.SystemBus().get_object('org.freesmartphone.ogsmd', '/org/freesmartphone/GSM/Device')
+-        data = dbus.Interface(obj, 'org.freesmartphone.GSM.Device').GetInfo()
++	try:
++            data = dbus.Interface(obj, 'org.freesmartphone.GSM.Device').GetInfo()
++	except:
++            data = dbus.Interface(obj, 'org.freesmartphone.Info').GetInfo()
+         if 'manufacturer' in data:
+             # At the moment the returned string starts and ends with '"' for model and revision
+             self._manufacturer = data['manufacturer'].strip('"')
+@@ -1392,4 +1395,4 @@
+         mainloop.quit()
+     else:
+         logging.info("normal exit.")
+-        sys.exit( 0 )
+\ Kein Zeilenumbruch am Dateiende.
++        sys.exit( 0 )

@@ -24,7 +24,7 @@ RDEPENDS = "\
   task-fso-compliance \
   elementary \
   elementary-themes \
-  edbus-ehal \
+  edbus \
 "
 
 E_CONFIG_DIR="/usr/share/enlightenment/data"

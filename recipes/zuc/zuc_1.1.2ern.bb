@@ -9,7 +9,7 @@ PR = "r4"
 
 SRC_URI = "http://www.linux-solutions.at/projects/zaurus/source/zuc_V${PV}.tar.gz;name=archive \
            http://nick.kreucher.net/zuc/zuc_units;name=units \
-           file://fixed-include.patch;patch=1"
+           file://fixed-include.patch"
 
 S = "${WORKDIR}/zuc_V${PV}"
 

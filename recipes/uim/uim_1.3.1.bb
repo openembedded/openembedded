@@ -3,7 +3,7 @@ DEPENDS = "gtk+ uim-native anthy fontconfig libxft xt glib-2.0 ncurses"
 SECTION_uim-gtk2.0 = "x11/inputmethods"
 PR = "r3"
 
-SRC_URI += "file://uim-module-manager.patch;patch=1"
+SRC_URI += "file://uim-module-manager.patch"
 
 inherit autotools pkgconfig
 

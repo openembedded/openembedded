@@ -8,8 +8,8 @@ RDEPENDS = "python-shell python-textutils"
 
 SRC_URI = "\
   ftp://ftp.lyx.org/pub/lyx/stable/1.6.x/lyx-${PV}.tar.bz2 \
-  file://no-session-manager.patch;patch=1 \
-  file://qt4tools-detect.diff;patch=1 \
+  file://no-session-manager.patch \
+  file://qt4tools-detect.diff \
 "
 
 inherit qt4x11 autotools

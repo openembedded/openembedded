@@ -12,7 +12,7 @@ PV = "2.6.30+2.6.31rc7"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=staging \
-           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch;patch=1 \
+           file://0001-implement-TIF_RESTORE_SIGMASK-support-and-enable-the.patch \
            file://defconfig"
 
 S = "${WORKDIR}/git"

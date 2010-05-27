@@ -4,8 +4,8 @@ DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql"
 
 PR = "r7"
 
-SRC_URI += "file://pear-makefile.patch;patch=1 \
-	file://string.c.patch;patch=1 "
+SRC_URI += "file://pear-makefile.patch \
+	file://string.c.patch "
 
 export THREADS="pthread"
 export LIBS=" -lpthread "

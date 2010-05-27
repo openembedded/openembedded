@@ -6,7 +6,7 @@ LICENSE = "unknown"
 DEPENDS = "edje-native"
 RDEPENDS = "libphone-ui-shr"
 RSUGGESTS = "elementary-theme-o2"
-SRCREV = "5093da3ca27bb50388ac3277d8685a38772d7f48"
+SRCREV = "20e5e82819a7612aa31c753a6898ccc9e940c7c6"
 PV = "0.1+gitr${SRCPV}"
 PR = "r0"
 

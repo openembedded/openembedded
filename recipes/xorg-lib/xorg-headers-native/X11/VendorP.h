@@ -68,13 +68,11 @@ SOFTWARE.
 #ifndef  _XtVendorPrivate_h
 #define _XtVendorPrivate_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <X11/Vendor.h>
 
 /* New fields for the VendorShell widget class record */
+
+_XFUNCPROTOBEGIN
 
 typedef struct {
     XtPointer       extension;          /* pointer to extension record      */
@@ -104,8 +102,6 @@ typedef  struct {
 	VendorShellPart	vendor;
 } VendorShellRec, *VendorShellWidget;
 
-#ifdef __cplusplus
-}
-#endif
+_XFUNCPROTOEND
 
 #endif  /* _XtVendorPrivate_h */

@@ -9,7 +9,7 @@ INC_PR = "r1"
 RDEPENDS = "kernel-module-tun"
 
 SRC_URI = "http://downloads.open-mesh.net/batman/stable/sources/batman/batman-${PV}.tar.gz \
-           file://makefile-fix.patch;patch=1 \
+           file://makefile-fix.patch \
           "
 
 S = "${WORKDIR}/batman-${PV}"

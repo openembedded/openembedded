@@ -6,9 +6,9 @@ DEPENDS = "zlib openssl (>= 0.9.8)"
 PR = "r3"
 
 SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
-	file://build-fixes-and-sanity.patch;patch=1 \
-	file://dont-forget-header.patch;patch=1 \
-	file://gcc4.3.patch;patch=1 \
+	file://build-fixes-and-sanity.patch \
+	file://dont-forget-header.patch \
+	file://gcc4.3.patch \
 	"
 
 

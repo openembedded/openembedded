@@ -5,7 +5,7 @@ DESCRIPTION = "X font library (used by the X server)."
 LICENSE= "BSD-X"
 PRIORITY = "optional"
 
-SRC_URI += "file://no-scalable-crash.patch;patch=1"
+SRC_URI += "file://no-scalable-crash.patch"
 
 DEPENDS += " freetype fontcacheproto zlib xproto xtrans fontsproto libfontenc"
 PROVIDES = "xfont"

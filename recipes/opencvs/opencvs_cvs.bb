@@ -10,7 +10,7 @@ PV = "0.0+cvs${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "cvs://anoncvs@anoncvs.ca.openbsd.org/cvs;method=ext;module=src/usr.bin/cvs \
-	   file://linux.patch;patch=1"
+	   file://linux.patch"
 S = "${WORKDIR}/cvs"
 
 inherit autotools

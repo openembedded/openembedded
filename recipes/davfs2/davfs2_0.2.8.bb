@@ -9,7 +9,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dav/${P}.tar.gz \
-           file://Makefile.in.patch;patch=1 \
+           file://Makefile.in.patch \
            file://volatiles"
 
 inherit autotools

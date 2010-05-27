@@ -6,7 +6,7 @@ PR = "r0"
 
 SRC_URI = "\
   http://www.cs.purdue.edu/homes/trinkle/RCS/rcs-${PV}.tar.Z \
-  file://fix-installpath.patch;patch=1 \
+  file://fix-installpath.patch \
   file://oe-src-conf.h \
 "
 

@@ -8,8 +8,8 @@ PR = "r2"
 
 SRC_URI = "\
   http://www.delorie.com/store/ace/ace-${PV}.tar.gz\
-  file://gcc4.patch;patch=1\
-  file://fix-crosscompile.patch;patch=1\
+  file://gcc4.patch\
+  file://fix-crosscompile.patch\
 "
 S = "${WORKDIR}/ace-${PV}"
 

@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-PDA-Pipeman.html
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/pipeman_V1.0.0.tar.gz \
-           file://pipe.patch;patch=1"
+           file://pipe.patch"
 
 PV = "1.0.0"
 S = "${WORKDIR}/pipeman_V${PV}"

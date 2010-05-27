@@ -6,10 +6,10 @@ DESCRIPTION = "X.Org X server -- evtouch input driver"
 
 SRC_URI = "http://www.conan.de/touchscreen/xf86-input-evtouch-${PV}.tar.bz2;name=archive \
            file://fdi/*.fdi \
-           file://udev-ett-tc5uh.patch;patch=1 \
-           file://02_calibration_1.6.patch;patch=1 \
-           file://03_server-1.6-ftbfs.diff;patch=1 \
-           file://04_server-1.7-ftbfs.diff;patch=1 \
+           file://udev-ett-tc5uh.patch \
+           file://02_calibration_1.6.patch \
+           file://03_server-1.6-ftbfs.diff \
+           file://04_server-1.7-ftbfs.diff \
 "
 
 EXTRA_OECONF = "--enable-evcalibrate \

@@ -16,7 +16,7 @@ PV = "0.22"
 # but for packaging the real PV is needed
 REALPV = "0.22"
 
-SRCREV = "23710"
+SRCREV = "24225"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=mythtv;proto=http"
 
 S = "${WORKDIR}/mythtv"
@@ -26,7 +26,7 @@ ALLOW_EMPTY_${PN} = "1"
 QMAKE_PROFILES = "mythtv.pro"
 
 SRC_URI += " \
-        file://configure.patch;patch=1 \
+        file://configure.patch \
         "
 
 inherit qmake2 qt4x11

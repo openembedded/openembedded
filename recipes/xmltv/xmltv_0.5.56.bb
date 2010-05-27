@@ -2,7 +2,7 @@ DESCRIPTION="xmltv; epg grabbers for e.g. mythtv"
 
 PARALLEL_MAKE = ""
 SRC_URI="http://downloads.sourceforge.net/xmltv/xmltv-${PV}.tar.bz2 \
-         file://Makefile.PL.patch;patch=1"
+         file://Makefile.PL.patch"
 
 RDEPENDS = "perl \
             libarchive-zip-perl \

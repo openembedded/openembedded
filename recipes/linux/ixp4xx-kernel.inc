@@ -92,7 +92,7 @@ python () {
         name.append(patch)
         pname = '-'.join(name)
         if patch[0:2] == "rc" or patch[0:3] == "pre":
-            patch_uri.append("${KERNELORG_MIRROR}/pub/linux/kernel/v%s/testing/patch-%s.bz2;patch=1;pname=%s;name=rcpatch" % (major, pname, pname))
+            patch_uri.append("${KERNELORG_MIRROR}/pub/linux/kernel/v%s/testing/patch-%s.bz2;apply=yes;pname=%s;name=rcpatch" % (major, pname, pname))
             kernel[-1] = str(int(kernel[-1]) - 1)
             if patch[0:2] == "rc" and pref == 10:
                 pref = 6
@@ -101,14 +101,14 @@ python () {
             else:
                 pref = 2
         elif patch[0:2] == "bk" or patch[0:3] == "git":
-            patch_uri.append("${KERNELORG_MIRROR}/pub/linux/kernel/v%s/snapshots/patch-%s.bz2;patch=1;pname=%s;name=gitpatch" % (major, pname, pname))
+            patch_uri.append("${KERNELORG_MIRROR}/pub/linux/kernel/v%s/snapshots/patch-%s.bz2;apply=yes;pname=%s;name=gitpatch" % (major, pname, pname))
             pref = 2
         elif patch[0:2] == "ac":
             patch_uri.append("${KERNELORG_MIRROR}/pub/linux/kernel/people/alan/linux-%s/%s/patch-%s;name=acpatch" % (major, base, pname))
             mmac = 2
             filepath[0:0] = [ filedir % (name[0] + "-ac") ]
         elif patch[0:2] == "mm":
-            patch_uri.append("${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/%s/%s/%s/%s.bz2;patch=1;pname=%s;name=mmpatch" % (major, base, pname, pname, pname))
+            patch_uri.append("${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/%s/%s/%s/%s.bz2;apply=yes;pname=%s;name=mmpatch" % (major, base, pname, pname, pname))
             mmac = 2
             filepath[0:0] = [ filedir % (name[0] + "-mm") ]
         else:

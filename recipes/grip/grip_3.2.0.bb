@@ -6,9 +6,9 @@ HOMEPAGE="http://www.nostatic.org/grip/"
 LICENSE="GPL"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/grip/grip-${PV}.tar.gz \
-         file://patch-src::discdb;patch=1;pnum=0 \
-         file://patch-src::main.c;patch=1;pnum=0 \
-         file://no-host-includes.patch;patch=1 "
+         file://patch-src::discdb;apply=yes;striplevel=0 \
+         file://patch-src::main.c;apply=yes;striplevel=0 \
+         file://no-host-includes.patch "
 DEPENDS="libgnomeui vte curl cdparanoia id3lib"
 
 PR = "r3"

@@ -11,7 +11,7 @@ RRECOMMENDS_${PN} = "nilfs-utils-mkfs nilfs-utils-stats"
 PR = "r0"
 
 SRC_URI ="http://www.nilfs.org/download/nilfs-utils-${PV}.tar.bz2 \
-file://no-ldconfig-during-install.patch;patch=1"
+file://no-ldconfig-during-install.patch"
 
 S = "${WORKDIR}/nilfs-utils-${PV}"
 

@@ -36,26 +36,26 @@ python __anonymous () {
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
-#	   file://noinfo.patch;patch=1
-#	   file://ldconfig.patch;patch=1;pnum=0
-#	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
+#	   file://noinfo.patch
+#	   file://ldconfig.patch;striplevel=0
+#	   file://arm-machine-gmon.patch;striplevel=0 \
 #	   \
-#	   file://arm-ioperm.patch;patch=1;pnum=0 \
-#	   file://ldd.patch;patch=1;pnum=0 \
+#	   file://arm-ioperm.patch;striplevel=0 \
+#	   file://ldd.patch;striplevel=0 \
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2;name=archive \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.4.tar.bz2;name=ports \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-2.4.tar.bz2;name=libidn \
-           file://arm-memcpy.patch;patch=1 \
-           file://arm-longlong.patch;patch=1 \
-           file://fhs-linux-paths.patch;patch=1 \
-           file://dl-cache-libcmp.patch;patch=1 \
-           file://ldsocache-varrun.patch;patch=1 \
-           file://nptl-crosscompile.patch;patch=1 \
-	   file://glibc-2.4-compile.patch;patch=1 \
-	   file://glibc-2.4-openat-3.patch;patch=1 \
-	   file://fixup-aeabi-syscalls.patch;patch=1 \
-	   file://zecke-sane-readelf.patch;patch=1 \
-	   file://arm_eabi_ipc_fix.patch;patch=1 \
+           file://arm-memcpy.patch \
+           file://arm-longlong.patch \
+           file://fhs-linux-paths.patch \
+           file://dl-cache-libcmp.patch \
+           file://ldsocache-varrun.patch \
+           file://nptl-crosscompile.patch \
+	   file://glibc-2.4-compile.patch \
+	   file://glibc-2.4-openat-3.patch \
+	   file://fixup-aeabi-syscalls.patch \
+	   file://zecke-sane-readelf.patch \
+	   file://arm_eabi_ipc_fix.patch \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
@@ -65,8 +65,8 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2;name=archive \
 
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
+SRC_URI_append_sh3 = " file://no-z-defs.patch"
+SRC_URI_append_sh4 = " file://no-z-defs.patch"
 
 S = "${WORKDIR}/glibc-2.4"
 B = "${WORKDIR}/build-${TARGET_SYS}"

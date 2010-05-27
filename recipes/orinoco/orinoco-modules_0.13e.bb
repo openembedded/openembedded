@@ -4,8 +4,8 @@ RDEPENDS_orinoco-modules-cs += "orinoco-modules"
 PR = "r5"
 
 SRC_URI += "\
-           file://crosscompile.patch;patch=1 \
-           file://monitor-${PV}.patch;patch=1 \
+           file://crosscompile.patch \
+           file://monitor-${PV}.patch \
            file://spectrum.conf \
            file://spectrum_fw.h \
 	   file://spectrum_cs.c \

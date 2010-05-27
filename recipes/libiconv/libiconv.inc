@@ -6,12 +6,12 @@ PRIORITY = "optional"
 NOTES = "Needs to be stripped down to: ascii iso8859-1 eucjp iso-2022jp gb utf8"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PV}.tar.gz \
-	   file://autotools.patch;patch=1 \
-	   file://preload.patch;patch=1"
+	   file://autotools.patch \
+	   file://preload.patch"
 
 S = "${WORKDIR}/libiconv-${PV}"
 
-inherit autotools
+inherit autotools gettext
 
 EXTRA_OECONF += "--enable-shared --enable-static --enable-relocatable --disable-rpath"
 

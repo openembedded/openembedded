@@ -8,7 +8,7 @@ PR = "r0"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/libnids/libnids-${PV}.tar.gz;name=libnids \
-  file://configure.patch;patch=1"
+  file://configure.patch"
 SRC_URI[libnids.md5sum] = "72d37c79c85615ffe158aa524d649610"
 SRC_URI[libnids.sha256sum] = "314b4793e0902fbf1fdb7fb659af37a3c1306ed1aad5d1c84de6c931b351d359"
 

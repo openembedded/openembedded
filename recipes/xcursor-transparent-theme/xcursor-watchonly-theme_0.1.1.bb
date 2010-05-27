@@ -6,8 +6,8 @@ RPROVIDES = "xcursor-transparent-theme"
 PR ="r4"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/utils/xcursor-transparent-theme-${PV}.tar.gz \
-	   file://use-relative-symlinks.patch;patch=1 \
-	   file://skip_watch_cursor.patch;patch=1 \
+	   file://use-relative-symlinks.patch \
+	   file://skip_watch_cursor.patch \
 	   file://20xcursor-transparent"
 S = "${WORKDIR}/xcursor-transparent-theme-${PV}"
 

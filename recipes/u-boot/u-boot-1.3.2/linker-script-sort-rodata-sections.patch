@@ -1,0 +1,16 @@
+Index: u-boot-1.3.2/cpu/mpc83xx/u-boot.lds
+===================================================================
+--- u-boot-1.3.2.orig/cpu/mpc83xx/u-boot.lds	2010-05-11 21:18:24.130376212 -0700
++++ u-boot-1.3.2/cpu/mpc83xx/u-boot.lds	2010-05-11 21:19:46.870376132 -0700
+@@ -55,10 +55,8 @@ SECTIONS
+     *(.fixup)
+     *(.got1)
+     . = ALIGN(16);
+-    *(.rodata)
+-    *(.rodata1)
+-    *(.rodata.str1.4)
+     *(.eh_frame)
++    *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*)))
+   }
+   .fini      : { *(.fini)    } =0
+   .ctors     : { *(.ctors)   }

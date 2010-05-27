@@ -2,20 +2,20 @@ DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux sys
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "udev zlib ncurses virtual/libintl"
-DEPENDS_virtclass-native = "zlib-native ncurses-native lzo-native"
+DEPENDS_virtclass-native = "zlib-native ncurses-native lzo-native gettext-native"
 
-inherit autotools
+inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r21"
+INC_PR = "r24"
 
 # allows for a release candidate
 RC ?= ""
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2;name=archive"
 
-SRC_URI_append_chinook-compat = " file://chinook_libtool.patch;patch=1 "
+SRC_URI_append_chinook-compat = " file://chinook_libtool.patch "
 
 PACKAGES =+ "${PN}-fdisk ${PN}-cfdisk ${PN}-sfdisk ${PN}-swaponoff \
 	     ${PN}-losetup ${PN}-umount ${PN}-mount ${PN}-readprofile \
@@ -71,7 +71,7 @@ EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --with-fsprobe=builtin --enable-libuuid --enable-libblkid \
 --enable-fsck --enable-reset"
 
-LDFLAGS_append_libc-uclibc = " -lintl"
+LDFLAGS_append_libc-uclibc = "${@['',' -lintl'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
 LDFLAGS_virtclass-native = "${BUILD_LDFLAGS}"
 
 S = "${WORKDIR}/util-linux-ng-${PV}${RC}"
@@ -125,7 +125,7 @@ do_install () {
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk vipw vigr"
         sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck blkid"
-        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall"
+        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt"
         binprogs_a="dmesg kill more umount mount login reset"
 
         if [ "${base_sbindir}" != "${sbindir}" ]; then
@@ -208,6 +208,8 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
 	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
+	update-alternatives --install ${bindir}/setsid setsid setsid.${PN} 100
+	update-alternatives --install ${bindir}/chrt chrt chrt.${PN} 100
 	
 	# There seems to be problem, atleast on nslu2, with these, until they are
 	# fixed the busybox ones have higher priority

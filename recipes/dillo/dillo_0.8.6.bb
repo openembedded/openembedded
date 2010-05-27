@@ -7,7 +7,7 @@ DEPENDS = "gtk+-1.2 libpng openssl"
 RCONFLICTS = "dillo2"
 PR = "r2"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
-         file://dillo-i18n.diff;patch=1 \
+         file://dillo-i18n.diff \
          file://dillo.desktop \
          file://dillo.png"
 

@@ -1,0 +1,24 @@
+diff -uNr local_power_manager_linux_1_24_01_orig/packages/ti/bios/power/modules/dm6446/lpm/Makefile local_power_manager_linux_1_24_01/packages/ti/bios/power/modules/dm6446/lpm/Makefile
+--- local_power_manager_linux_1_24_01_orig/packages/ti/bios/power/modules/dm6446/lpm/Makefile	2009-07-22 23:10:04.000000000 -0500
++++ local_power_manager_linux_1_24_01/packages/ti/bios/power/modules/dm6446/lpm/Makefile	2010-04-16 15:26:14.000000000 -0500
+@@ -54,7 +54,7 @@
+ endif
+ 
+ MAKE_OPTS = ARCH=arm CROSS_COMPILE=$(MVTOOL_PREFIX)
+-CFLAGS = -DUSE_UDEV -DOS_LINUX -DLINUX_KERNEL \
++CFLAGS = -DUSE_UDEV -DOS_LINUX -DLINUX_KERNEL -DOPT="" \
+          $(LINK_DEFS) $(LINK_INCS) $(LINK_INCS_INTERNAL)
+ 
+ # Invoke the kernel build system
+diff -uNr local_power_manager_linux_1_24_01_orig/packages/ti/bios/power/modules/omap3530/lpm/Makefile local_power_manager_linux_1_24_01/packages/ti/bios/power/modules/omap3530/lpm/Makefile
+--- local_power_manager_linux_1_24_01_orig/packages/ti/bios/power/modules/omap3530/lpm/Makefile	2009-07-22 23:10:05.000000000 -0500
++++ local_power_manager_linux_1_24_01/packages/ti/bios/power/modules/omap3530/lpm/Makefile	2010-04-16 15:26:38.000000000 -0500
+@@ -54,7 +54,7 @@
+ endif
+ 
+ MAKE_OPTS = ARCH=arm CROSS_COMPILE=$(MVTOOL_PREFIX)
+-CFLAGS = -DUSE_UDEV -DOS_LINUX -DLINUX_KERNEL \
++CFLAGS = -DUSE_UDEV -DOS_LINUX -DLINUX_KERNEL -DOPT="" \
+          $(LINK_DEFS) $(LINK_INCS) $(LINK_INCS_INTERNAL)
+ 
+ # Invoke the kernel build system

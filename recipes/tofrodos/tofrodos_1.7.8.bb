@@ -2,7 +2,7 @@ DESCRIPTION = "Tofrodos is a text file conversion utility that converts ASCII fi
 LICENSE = "GPLv2"
 
 SRC_URI = "http://tofrodos.sourceforge.net/download/tofrodos-${PV}.tar.gz \
-           file://cross.patch;patch=1;pnum=2"
+           file://cross.patch;striplevel=2"
 
 S = "${WORKDIR}/${PN}/src"
 

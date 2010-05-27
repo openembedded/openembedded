@@ -1,7 +1,7 @@
-SRC_URI_append = "file://configure.patch;patch=1 \
-                  file://Makefile.in.patch;patch=1 \
-                  file://Makefile.cget.patch;patch=1 \
-                  file://util.patch;patch=1"
+SRC_URI_append = "file://configure.patch \
+                  file://Makefile.in.patch \
+                  file://Makefile.cget.patch \
+                  file://util.patch"
 
 require cherokee.inc
 PR = "${INC_PR}.0"
@@ -14,7 +14,7 @@ do_configure() {
 
 do_install_prepend () {
         # It only needs this app during the install, so compile it natively
-        $BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
+        ${BUILD_CC} ${BUILD_CFLAGS} -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
 }
 
 SRC_URI[md5sum] = "9e8dfc46f94ee150515be5d31bd40d16"

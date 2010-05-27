@@ -3,8 +3,8 @@ LICENSE = "LGPL"
 PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/liba/libaio/libaio_${PV}.orig.tar.gz \
-           file://00_arches.patch;patch=1 \
-           file://destdir.patch;patch=1"
+           file://00_arches.patch \
+           file://destdir.patch"
 
 do_stage() {
     install -d ${STAGING_INCDIR} ${STAGING_LIBDIR}

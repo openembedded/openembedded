@@ -1,5 +1,5 @@
 SRC_URI = "http://wl500g.dyndns.org/loader/loader-${PV}.tar.gz \
-	file://toolchain.patch;patch=1"
+	file://toolchain.patch"
 
 S = "${WORKDIR}/${P}"
 

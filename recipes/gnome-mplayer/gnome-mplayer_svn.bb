@@ -6,7 +6,7 @@ PR = "${INC_PR}.0"
 S = "${WORKDIR}/trunk"
 
 SRC_URI = "svn://gnome-mplayer.googlecode.com/svn/;module=trunk;proto=http \
-           file://default.patch;patch=1 \
+           file://default.patch \
 "
 
 # Untested

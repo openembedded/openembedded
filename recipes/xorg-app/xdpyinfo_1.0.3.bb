@@ -5,7 +5,7 @@ LICENSE = "MIT"
 DEPENDS += "libxtst libxext libxxf86vm libxxf86dga libxxf86misc libxi libxrender libxinerama libdmx libxp libxau"
 PE = "1"
 
-SRC_URI += "file://disable-xkb.patch;patch=1"
+SRC_URI += "file://disable-xkb.patch"
 
 EXTRA_OECONF = "--disable-xkb"
 

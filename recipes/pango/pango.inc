@@ -22,7 +22,7 @@ INC_PR = "r0"
 # seems to go wrong with default cflags
 FULL_OPTIMIZATION_arm = "-O2"
 
-SRC_URI += "file://no-tests.patch;patch=1 \
+SRC_URI += "file://no-tests.patch \
            "
 
 EXTRA_OECONF = "--disable-glibtest \

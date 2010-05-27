@@ -16,7 +16,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/mingw/gcc-core-${PV}-src.tar.gz;name=core \
 	   ${SOURCEFORGE_MIRROR}/mingw/gcc-java-${PV}-src.tar.gz;name=java \
 	   ${SOURCEFORGE_MIRROR}/mingw/gcc-objc-${PV}-src.tar.gz;name=objc \
 	   ${SOURCEFORGE_MIRROR}/mingw/gcc-ada-${PV}-src.tar.gz;name=ada \
-	   file://includedir.patch;patch=1 \
+	   file://includedir.patch \
 "
 
 

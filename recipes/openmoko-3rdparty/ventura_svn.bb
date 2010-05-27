@@ -10,7 +10,7 @@ PR = "1"
 
 SRC_URI = "svn://elm-browser.googlecode.com/svn;module=trunk;proto=http"
 
-SRCREV = "15"
+SRCREV = "16"
 S = "${WORKDIR}/trunk"
 
 inherit autotools

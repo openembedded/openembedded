@@ -349,7 +349,7 @@ Alias /bogofeed ${DEPLOY_DIR}
 	<command>deploy/ipk</command>).</para>
         <para>Now, every image built will automatically contain feed configs
 	for the deploy directory (as of time of writing, deploy directory is internally structured with
-	per-arch subdirectories; so, there several feed configs are being generated, one for each subdirectory).
+	per-arch subdirectories; so, there are several feed configs being generated, one for each subdirectory).
         </para>
 
     </section>

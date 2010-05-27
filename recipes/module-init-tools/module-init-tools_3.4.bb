@@ -1,7 +1,7 @@
 require module-init-tools.inc
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/module-init-tools/module-init-tools-${PV}.tar.bz2 \
-	   file://modutils_extension;patch=1 \
+	   file://modutils_extension;apply=yes \
 "
 
 bindir = "/bin"

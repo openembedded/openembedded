@@ -9,7 +9,7 @@ SECTION = "devel"
 RDEPENDS += "java-virtual-machine"
 
 SRC_URI = "http://www.antlr.org/download/antlr-${PV}.tar.gz \
-	   file://install.patch;patch=1"
+	   file://install.patch"
 S = "${WORKDIR}/antlr-${PV}"
 
 inherit autotools

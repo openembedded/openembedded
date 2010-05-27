@@ -6,7 +6,7 @@ DEPENDS += "freetype fontcacheproto xtrans fontsproto libfontenc"
 PROVIDES = "xfont"
 PE = "1"
 
-#SRC_URI += "file://no-scalable-crash.patch;patch=1"
+#SRC_URI += "file://no-scalable-crash.patch"
 
 # disable docs
 EXTRA_OECONF += " --disable-devel-docs "

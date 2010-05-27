@@ -37,6 +37,3 @@ EXTRA_OECONF = "\
   --with-vm=java \
   "
 
-do_stage() {
-	oe_runmake install
-}

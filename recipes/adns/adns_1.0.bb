@@ -3,8 +3,8 @@ SECTION = "console/network"
 LICENSE="GPL"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/adns/adns-${PV}.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://fixparsedomainflags.patch;patch=1"
+	   file://configure.patch \
+	   file://fixparsedomainflags.patch"
 
 inherit autotools
 

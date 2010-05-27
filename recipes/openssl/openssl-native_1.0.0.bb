@@ -14,10 +14,10 @@ export DIRS = "crypto ssl apps engines"
 export FULL_OPTIMIZATION = " "
 export BUILD_OPTIMIZATION = " "
 
-SRC_URI += "file://configure-targets.patch;patch=1 \
-            file://shared-libs.patch;patch=1 \
-            file://debian.patch;patch=1 \
-	    file://libdeps-first.patch;patch=1 \
+SRC_URI += "file://configure-targets.patch \
+            file://shared-libs.patch \
+            file://debian.patch \
+	    file://libdeps-first.patch \
 	   "
 
 PARALLEL_MAKE = ""

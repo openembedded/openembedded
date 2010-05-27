@@ -5,7 +5,7 @@ DEPENDS = "gtk+-1.2 imlib"
 PR = "r1"
 
 SRC_URI = "http://www.klografx.net/qiv/download/qiv-1.9-src.tgz \
-		file://makefile.patch;patch=1 \
+		file://makefile.patch \
 		"
 inherit pkgconfig binconfig
 

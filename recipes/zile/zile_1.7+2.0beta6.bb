@@ -9,7 +9,7 @@ PR = "r1"
 UV = "${@bb.data.getVar('PV', d, 1).split('+')[1]}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zile/zile-${UV}.tar.gz \
-	   file://for_build.patch;patch=1"
+	   file://for_build.patch"
 S = "${WORKDIR}/zile-${UV}"
 
 inherit autotools

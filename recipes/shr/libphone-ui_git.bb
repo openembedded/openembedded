@@ -2,11 +2,11 @@ DESCRIPTION = "A generic framework for phone ui"
 HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "libs"
-SRCREV = "1e5b5bb3cb8de11a068ca43e20b9481c51e7a26f"
+SRCREV = "2a87a548f004d7e7c7a45cdca5816b552e2b1796"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r0"
 
-DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libphone-utils alsa-lib"
+DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libfso-glib libfsoframework libphone-utils alsa-lib"
 
 inherit pkgconfig autotools autotools_stage
 

@@ -6,9 +6,9 @@
 # UCLIBC_BASE can be set in a distro file, but whether this works depends
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
-UCLIBC_BASE ?= "0.9.30"
-SRCREV="63859f89f327e48037a4cdba982cd6afa3007da7"
-PV = "${UCLIBC_BASE}+gitr${SRCPV}"
+UCLIBC_BASE ?= "0.9.31"
+SRCREV="b2c4199f0fd53c009858e7ce27f932a4ac92bc60"
+PV = "${UCLIBC_BASE}+gitr${SRCREV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
@@ -30,8 +30,8 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://uClibc.config \
 	file://uClibc.machine \
 	file://uClibc.distro \
-	file://uclibc-arm-ftruncate64.patch;patch=1 \
-	file://uclibc_enable_log2_test.patch;patch=1 \
-	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
+	file://uclibc-arm-ftruncate64.patch \
+	file://uclibc_enable_log2_test.patch \
+	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch \
 	"
 S = "${WORKDIR}/git"

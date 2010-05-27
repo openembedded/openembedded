@@ -5,7 +5,7 @@ PRIORITY = "required"
 DEPENDS = "ncurses virtual/libintl"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz \
-	   file://libintl-link.patch;patch=1"
+	   file://libintl-link.patch"
 S = "${WORKDIR}/psmisc-${PV}"
 
 inherit autotools gettext

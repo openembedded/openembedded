@@ -8,7 +8,7 @@ inherit gnome pkgconfig
 
 EXTRA_OECONF = "--disable-gtk-doc --enable-pam --with-pam-dir=${libdir}/security"
 
-SRC_URI += "file://tasn.m4 file://org.gnome.keyring.service file://libtool.workarround.patch;patch=1"
+SRC_URI += "file://tasn.m4 file://org.gnome.keyring.service file://libtool.workarround.patch"
 
 do_configure_prepend() {
 	cp ${WORKDIR}/tasn.m4 acinclude.m4

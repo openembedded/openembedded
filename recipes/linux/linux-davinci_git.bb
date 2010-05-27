@@ -15,10 +15,9 @@ S = "${WORKDIR}/git"
 # DaVinci DM3xx/DM6xxx
 # dm355-evm/dm365-evm/dm6446-evm/dm6467-evm/dm6467t-evm Davinci PSP 03.01.00/03.02.00 (build r30)
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
-PE = "1"
 
 ARAGO_DM_REV = "e87a8397d2830db11ce1518bd2abc4e8815763f1"
-ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCPV}"
+ARAGO_DM_PV  = "2.6.31+2.6.32-rc2-${PR}+gitr${SRCREV}"
 ARAGO_DM_BR  = "r32"
 ARAGO_DM_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git;branch=${BRANCH} "
 
@@ -45,9 +44,9 @@ SRC_URI_append_dm6467  = ${ARAGO_DM_URI}
 
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
 
-# OMAPL tracking master branch
+# OMAPL tracking master branch - PSP 3.20.00.12
 
-ARAGO_L1_REV = "76fcecb83d562608bcebba44774f92b6c62d3593"
+ARAGO_L1_REV = "2acf935c01b9adb50164d421c40cdc5862b9e143"
 ARAGO_L1_BR  = "master"
 ARAGO_L1_PV  = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
 ARAGO_L1_URI = "git://arago-project.org/git/projects/linux-omapl1.git;protocol=git;branch=${BRANCH} "
@@ -72,7 +71,7 @@ SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
                                      "
 
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
-                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch;patch=1 "
+                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch "
 
 do_configure_prepend_dm355-leopard() {
 	sed -i s:2138:1381:g ${S}/arch/arm/tools/mach-types

@@ -7,44 +7,44 @@ KV = "2.4.20"
 PR = "r18"
 
 SRC_URI = "http://developer.ezaurus.com/sl_j/source/c3100/20050602/linux-c3100-20050602-rom1_01.tar.bz2;name=kernel \
-           file://P01-C3000-clockup_050221.patch;pnum=2;patch=1 \
-           file://P02-C3000-voltage_050221.patch;pnum=2;patch=1 \
-           file://P03-C3000-SIGSTOP_FIX_041207.patch;pnum=2;patch=1 \
-           file://P04-C3000-UNICON_041206.patch;pnum=2;patch=1 \
-           file://P05-C3000-TSPRESSURE_041207.patch;pnum=2;patch=1 \
-           file://P06-C3000-WRITETS_041206.patch;pnum=2;patch=1 \
-           file://P07-C3000-KBDDEV_041206.patch;pnum=2;patch=1 \
-           file://P08-rtc-mremap-mremap2nd-fix_041213.patch;pnum=2;patch=1 \
-           file://P09-ext3-isofs-fix_041216.patch;pnum=2;patch=1 \
-           file://P10-ntfs-fix_041216.patch;pnum=2;patch=1 \
-           file://P11-bluetooth-mh18_041216.patch;pnum=2;patch=1 \
-           file://P12-fbcon-fix_041219.patch;pnum=2;patch=1 \
-           file://P14-lowlatency_041221.patch;pnum=2;patch=1 \
-           file://P17-bvdd_050222.patch;pnum=2;patch=1 \
-           file://P18-detailed_battery_050309.patch;pnum=2;patch=1 \
-           file://P02++050226.patch;pnum=1;patch=1 \
+           file://P01-C3000-clockup_050221.patch;striplevel=2 \
+           file://P02-C3000-voltage_050221.patch;striplevel=2 \
+           file://P03-C3000-SIGSTOP_FIX_041207.patch;striplevel=2 \
+           file://P04-C3000-UNICON_041206.patch;striplevel=2 \
+           file://P05-C3000-TSPRESSURE_041207.patch;striplevel=2 \
+           file://P06-C3000-WRITETS_041206.patch;striplevel=2 \
+           file://P07-C3000-KBDDEV_041206.patch;striplevel=2 \
+           file://P08-rtc-mremap-mremap2nd-fix_041213.patch;striplevel=2 \
+           file://P09-ext3-isofs-fix_041216.patch;striplevel=2 \
+           file://P10-ntfs-fix_041216.patch;striplevel=2 \
+           file://P11-bluetooth-mh18_041216.patch;striplevel=2 \
+           file://P12-fbcon-fix_041219.patch;striplevel=2 \
+           file://P14-lowlatency_041221.patch;striplevel=2 \
+           file://P17-bvdd_050222.patch;striplevel=2 \
+           file://P18-detailed_battery_050309.patch;striplevel=2 \
+           file://P02++050226.patch \
            \
-           file://swap-performance.patch;patch=1 \
-           file://iw240_we15-6.diff;patch=1 \
-           file://iw241_we16-6.diff;patch=1 \
-           file://iw249_we17-13.diff;patch=1 \
-           file://iw240_we18-5.diff;patch=1 \
-           file://bluecard_cs.patch;patch=1 \
-           file://compile.patch;patch=1 \
-           file://idecs.patch;patch=1 \
-           file://logo.patch;patch=1 \
-           file://initsh.patch;patch=1 \
-           file://disable-pcmcia-probe.patch;patch=1 \
-           file://deviceinfo.patch;patch=1 \
-           file://corgi-fbcon-logo.patch;patch=1 \
-           file://corgi-default-brightness.patch;patch=1 \
-           file://1764-1.patch;patch=1 \
-           file://armdeffix.patch;patch=1 \
-           file://add-oz-release-string.patch;patch=1 \
-           file://saner-spitz-keymap.patch;patch=1 \
+           file://swap-performance.patch \
+           file://iw240_we15-6.diff \
+           file://iw241_we16-6.diff \
+           file://iw249_we17-13.diff \
+           file://iw240_we18-5.diff \
+           file://bluecard_cs.patch \
+           file://compile.patch \
+           file://idecs.patch \
+           file://logo.patch \
+           file://initsh.patch \
+           file://disable-pcmcia-probe.patch \
+           file://deviceinfo.patch \
+           file://corgi-fbcon-logo.patch \
+           file://corgi-default-brightness.patch \
+           file://1764-1.patch \
+           file://armdeffix.patch \
+           file://add-oz-release-string.patch \
+           file://saner-spitz-keymap.patch \
            file://defconfig-${MACHINE} "
 # Breaks compilation for now, needs to be fixed
-# SRC_URI += "file://CPAR050218.patch;patch=1"
+# SRC_URI += "file://CPAR050218.patch"
 
 S = "${WORKDIR}/linux"
 

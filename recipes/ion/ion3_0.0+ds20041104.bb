@@ -15,14 +15,14 @@ SNAPDATE = "${@(bb.data.getVar('PV', d, 1) or '')[-8:]}"
 BROKEN = "1"
 
 SRC_URI = "http://modeemi.fi/~tuomov/ion/dl/ion-3ds-${SNAPDATE}.tar.gz \
-	   file://201_fix-paths.diff;patch=1 \
-	   file://202_fix-menus.diff;patch=1 \
-	   file://203_fix-kludges.diff;patch=1 \
-	   file://204_fix-bindings.diff;patch=1 \
-	   file://205_ion-lock.diff;patch=1 \
-	   file://206_use-xterm.diff;patch=1 \
-	   file://luaconfig.patch;patch=1 \
-	   file://cross.patch;patch=1"
+	   file://201_fix-paths.diff \
+	   file://202_fix-menus.diff \
+	   file://203_fix-kludges.diff \
+	   file://204_fix-bindings.diff \
+	   file://205_ion-lock.diff \
+	   file://206_use-xterm.diff \
+	   file://luaconfig.patch \
+	   file://cross.patch"
 S = "${WORKDIR}/ion-3ds-${SNAPDATE}"
 
 EXTRA_OECONF += "--disable-xinerama --disable-xfree86-textprop-bug-workaround \

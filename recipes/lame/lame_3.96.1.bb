@@ -4,9 +4,9 @@ LICENSE = "LGPL"
 PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lame/lame-${PV}.tar.gz \
-	file://no-gtk1.patch;patch=1 \
-	file://Makefile-lm.patch;patch=1 \
-	file://ldflags-qa.patch;patch=1"
+	file://no-gtk1.patch \
+	file://Makefile-lm.patch \
+	file://ldflags-qa.patch"
 
 inherit autotools
 

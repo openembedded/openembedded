@@ -1,0 +1,32 @@
+From af8a33d3b132c0192d59c47426bb3a201cb64b32 Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Fri, 21 May 2010 13:31:03 +0000
+Subject: [PATCH 7/7] ARM: added missing cache preload
+
+---
+ pixman/pixman-arm-neon-asm.S |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
+index f30869e..dc7fd69 100644
+--- a/pixman/pixman-arm-neon-asm.S
++++ b/pixman/pixman-arm-neon-asm.S
+@@ -388,6 +388,7 @@ generate_composite_function \
+     vld1.16     {d4, d5}, [DST_R, :128]!
+     vst1.16     {d28, d29}, [DST_W, :128]!
+     pixman_composite_over_n_0565_process_pixblock_head
++    cache_preload 8, 8
+ .endm
+ 
+ .macro pixman_composite_over_n_0565_init
+@@ -680,6 +681,7 @@ generate_composite_function_single_scanline \
+     vld4.8      {d4, d5, d6, d7}, [DST_R, :128]!
+     vst4.8      {d28, d29, d30, d31}, [DST_W, :128]!
+     pixman_composite_over_8888_8888_process_pixblock_head
++    cache_preload 8, 8
+ .endm
+ 
+ .macro pixman_composite_over_n_8888_init
+-- 
+1.6.6.1
+

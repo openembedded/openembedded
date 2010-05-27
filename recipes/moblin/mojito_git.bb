@@ -1,7 +1,6 @@
 
 SRC_URI = "git://git.moblin.org/${PN}.git;protocol=git"
-PV = "0.0+gitr${SRCPV}"
-PE = "1"
+PV = "0.0+git${SRCREV}"
 PR = "r3"
 
 DEPENDS = "libsoup-2.4 gconf librest glib-2.0 twitter-glib sqlite3 gnome-keyring"

@@ -1,6 +1,6 @@
 require pango.inc
 
-SRC_URI += "file://pkgconfig_fixes.patch;patch=1"
+SRC_URI += "file://pkgconfig_fixes.patch"
 
 
 SRC_URI[archive.md5sum] = "4a9862b5151f16dcad8e30dd6ef08549"

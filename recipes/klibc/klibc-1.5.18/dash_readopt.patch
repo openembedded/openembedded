@@ -1,0 +1,106 @@
+diff -uNr klibc-1.5.18.orig//usr/dash/miscbltin.c klibc-1.5.18/usr/dash/miscbltin.c
+--- klibc-1.5.18.orig//usr/dash/miscbltin.c	2010-04-22 02:08:49.000000000 +0200
++++ klibc-1.5.18/usr/dash/miscbltin.c	2010-05-03 13:55:32.000000000 +0200
+@@ -46,6 +46,7 @@
+ #include <ctype.h>
+ #include <stdint.h>
+ #include <time.h>		/* strtotimeval() */
++#include <termios.h>
+ 
+ #include "shell.h"
+ #include "options.h"
+@@ -140,6 +141,11 @@
+ 	int timeout;
+ 	int i;
+ 	fd_set set;
++	int n_flag = 0;
++	unsigned int nchars = 0;
++	int silent = 0;
++	struct termios tty, old_tty;
++
+ 	struct timeval ts, t0, t1, to;
+ 
+ 	ts.tv_sec = ts.tv_usec = 0;
+@@ -147,11 +153,18 @@
+ 	rflag = 0;
+ 	timeout = 0;
+ 	prompt = NULL;
+-	while ((i = nextopt("p:rt:")) != '\0') {
++	while ((i = nextopt("p:rt:n:s")) != '\0') {
+ 		switch(i) {
+ 		case 'p':
+ 			prompt = optionarg;
+ 			break;
++		case 'n':
++			nchars = strtoul(optionarg, NULL, 10);
++			n_flag = nchars; /* just a flag "nchars is nonzero" */
++			break;
++		case 's':
++			silent = 1;
++			break;
+ 		case 't':
+ 			p = strtotimeval(optionarg, &ts);
+ 			if (*p || (!ts.tv_sec && !ts.tv_usec))
+@@ -173,6 +186,24 @@
+ 	}
+ 	if (*(ap = argptr) == NULL)
+ 		sh_error("arg count");
++	if (n_flag || silent) {
++		if (tcgetattr(0, &tty) != 0) {
++			/* Not a tty */
++			n_flag = 0;
++			silent = 0;
++		} else {
++			old_tty = tty;
++			if (n_flag) {
++				tty.c_lflag &= ~ICANON;
++				tty.c_cc[VMIN] = nchars < 256 ? nchars : 255;
++			}
++			if (silent) {
++				tty.c_lflag &= ~(ECHO | ECHOK | ECHONL);
++			}
++			tcsetattr(0, TCSANOW, &tty);
++		}
++	}
++
+ 	status = 0;
+ 	backslash = 0;
+ 	if (timeout) {
+@@ -187,13 +218,15 @@
+ 		ts.tv_sec += t0.tv_sec;
+ 	}
+ 	STARTSTACKSTR(p);
+-	for (;;) {
++	do {
+ 		if (timeout) {
+ 			gettimeofday(&t1, NULL);
+ 			if (t1.tv_sec > ts.tv_sec ||
+ 			    (t1.tv_sec == ts.tv_sec &&
+ 			     t1.tv_usec >= ts.tv_usec)) {
+ 				status = 1;
++				if (n_flag)
++					tcsetattr(0, TCSANOW, &old_tty);
+ 				break;	/* Timeout! */
+ 			}
+ 
+@@ -210,6 +243,8 @@
+ 			FD_SET(0, &set);
+ 			if (select(1, &set, NULL, NULL, &to) != 1) {
+ 				status = 1;
++				if (n_flag)
++					tcsetattr(0, TCSANOW, &old_tty);
+ 				break; /* Timeout! */
+ 			}
+ 		}
+@@ -235,7 +270,10 @@
+ 		STPUTC(c, p);
+ resetbs:
+ 		backslash = 0;
+-	}
++	} while (!n_flag || --nchars);
++	if (n_flag || silent)
++		tcsetattr(0, TCSANOW, &old_tty);
++
+ 	STACKSTRNUL(p);
+ 	readcmd_handle_line(stackblock(), ap, p + 1 - (char *)stackblock());
+ 	return status;

@@ -1,0 +1,23 @@
+Patch by Sergei Golovan.
+
+It ensures that font size is positive (measured in pixels). This fixes
+mirrored text problem in canvas postscript output.
+
+--- tk8.5-8.5.5.orig/unix/tkUnixRFont.c
++++ tk8.5-8.5.5/unix/tkUnixRFont.c
+@@ -260,6 +260,7 @@
+     ftFont = GetFont(fontPtr, 0);
+     fontPtr->font.fid = XLoadFont(Tk_Display(tkwin), "fixed");
+     GetTkFontAttributes(ftFont, &fontPtr->font.fa);
++    fontPtr->font.fa.size = TkFontGetPoints(tkwin, fontPtr->font.fa.size);
+     GetTkFontMetrics(ftFont, &fontPtr->font.fm);
+ 
+     return fontPtr;
+@@ -518,6 +519,7 @@
+ 
+     GetTkFontAttributes(ftFont, faPtr);
+     faPtr->underline = fontPtr->font.fa.underline;
++    faPtr->size = TkFontGetPoints(tkwin, faPtr->size);
+     faPtr->overstrike = fontPtr->font.fa.overstrike;
+ }
+ 

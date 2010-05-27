@@ -7,7 +7,7 @@ SRCREV = "917"
 PV = "0.0+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.berlios.de/socketcan;module=trunk;proto=svn \
-           file://autotoolize.patch;patch=1;pnum=0 \
+           file://autotoolize.patch;striplevel=0 \
           "
 
 S = "${WORKDIR}/trunk"

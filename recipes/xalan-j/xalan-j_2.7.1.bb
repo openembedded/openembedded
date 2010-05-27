@@ -41,14 +41,6 @@ do_compile() {
 
 do_install_append() {
   oe_jarinstall serializer-${PV}.jar serializer.jar
-
-  # Like Debian we provide a symlink called xml-apis pointing to the JAXP
-  # classes.
-  ln -sf ${D}${datadir_java}/xml-apis.jar jaxp-1.3.jar
-}
-
-do_stage_append() {
-	oe_jarinstall -s serializer-${PV}.jar serializer.jar
 }
 
 PACKAGES = "libxalan2-serializer-java ${JPN}"

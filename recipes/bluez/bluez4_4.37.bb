@@ -15,8 +15,8 @@ PR = "r1"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
-  file://fix-dfutool-usb-declaration-mismatch.patch;patch=1 \
-  file://sbc-thumb.patch;patch=1 \
+  file://fix-dfutool-usb-declaration-mismatch.patch \
+  file://sbc-thumb.patch \
   file://bluetooth.conf \
 "
 S = "${WORKDIR}/bluez-${PV}"

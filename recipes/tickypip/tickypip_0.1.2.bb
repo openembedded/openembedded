@@ -8,7 +8,7 @@ RRECOMMENDS = "tickypip-levels"
 PR = "r5"
 
 SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/tickypip-0.1.2.tar.gz \
-           file://path_fix.patch;patch=1 \
+           file://path_fix.patch \
            file://tickypip.desktop \
            file://tickypip.png"
 

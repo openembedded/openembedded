@@ -1,7 +1,6 @@
 DESCRIPTION = "GCC for iPhone"
 DEPENDS = "iphone-sdks"
-PV = "4.2.1+gitr${SRCPV}"
-PE = "1"
+PV = "4.2.1+git${SRCREV}"
 
 INHIBIT_DEFAULT_DEPS = "1"
 

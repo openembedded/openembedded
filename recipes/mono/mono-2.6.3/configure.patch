@@ -1,0 +1,31 @@
+Index: mono-2.4.2.1/configure.in
+===================================================================
+--- mono-2.4.2.1.orig/configure.in	2008-11-13 18:22:29.000000000 -0500
++++ mono-2.4.2.1/configure.in	2008-12-10 16:03:11.000000000 -0500
+@@ -1155,6 +1155,8 @@
+ 		], [
+ 				AC_MSG_RESULT(no)
+ 				with_tls=pthread
++		], [
++				AC_MSG_RESULT(yes)
+ 		])
+ 	fi
+ 
+@@ -1257,6 +1259,9 @@
+ 		], [
+ 				with_sigaltstack=no
+ 				AC_MSG_RESULT(no)
++		], [
++				AC_MSG_RESULT(yes)
++				AC_DEFINE(HAVE_WORKING_SIGALTSTACK)
+ 		])
+ 	fi
+ 
+@@ -1746,6 +1751,7 @@
+ 
+ jit_wanted=false
+ interp_wanted=false
++echo "CLIFF: checking host = $host"
+ case "$host" in
+ #	mips-sgi-irix5.* | mips-sgi-irix6.*)
+ #		TARGET=MIPS;

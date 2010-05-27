@@ -44,7 +44,6 @@ LLVM_RELEASE = "${PV}"
 # llvm *must* be built out of tree
 OECMAKE_SOURCEPATH = ".."
 OECMAKE_BUILDPATH = "build"
-EXTRA_OEMAKE = "-C build"
 EXTRA_OECMAKE = "\
   -DLLVM_TABLEGEN=${STAGING_BINDIR_NATIVE}/llvm${LLVM_RELEASE}/tblgen \
   -DLLVM_TARGETS_TO_BUILD=${LLVM_ARCH} \
@@ -54,6 +53,7 @@ EXTRA_OECMAKE = "\
   -DCMAKE_OBJDUMP:FILEPATH=${OBJDUMP} \
   -DCMAKE_RANLIB:FILEPATH=${RANLIB} \
   -DCMAKE_STRIP:FILEPATH=${STRIP} \
+  -DNM_PATH:FILEPATH=${NM} \
   -DLLVM_ENABLE_PIC:BOOL=ON \
 "
 
@@ -63,7 +63,7 @@ llvm_stage() {
 
 	# Create our custom target directories
 	install -d ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
-  install -d ${STAGING_INCDIR}/llvm${LLVM_RELEASE}
+    install -d ${STAGING_INCDIR}/llvm${LLVM_RELEASE}
 	install -d ${STAGING_LIBDIR}/llvm${LLVM_RELEASE}
 
 	#	Move headers into their own directory
@@ -84,7 +84,7 @@ llvm_stage() {
     install {} ${STAGING_BINDIR}/llvm${LLVM_RELEASE} \;
 
 	# LLVM does not install this by default.
-  install build/bin/tblgen ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
+  install bin/tblgen ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
 
   # Fix the paths in the config script to make it find the binaries and
   # library files. Doing so allows 3rd party configure scripts working
@@ -93,14 +93,16 @@ llvm_stage() {
       -e's!my.*INCLUDEDIR =.*!my $INCLUDEDIR = "${STAGING_INCDIR}/llvm${LLVM_RELEASE}";!' \
       -e's!my.*LIBDIR.*!my $LIBDIR = "${STAGING_LIBDIR}/llvm${LLVM_RELEASE}";!' \
       -e's!my.*BINDIR.*!my $BINDIR = "${STAGING_BINDIR}/llvm${LLVM_RELEASE}";!' \
-      build/bin/llvm-config > build/bin/llvm-config${LLVM_RELEASE}
+      bin/llvm-config > bin/llvm-config${LLVM_RELEASE}
 }
 
 do_stage() {
+  cd ${OECMAKE_BUILDPATH}
+
   llvm_stage
 
   install -d ${STAGING_BINDIR_CROSS}
-	install -m 0755 build/bin/llvm-config${LLVM_RELEASE} ${STAGING_BINDIR_CROSS}
+  install -m 0755 bin/llvm-config${LLVM_RELEASE} ${STAGING_BINDIR_CROSS}
 }
 
 # Retrieve the target in a way that is compatible to the arch

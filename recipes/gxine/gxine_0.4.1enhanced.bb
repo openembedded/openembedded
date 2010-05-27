@@ -34,7 +34,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-0.4.1.tar.gz \
 	   file://rhythmbox-volume-medium.png \
 	   file://rhythmbox-volume-min.png \
 	   file://rhythmbox-volume-zero.png \
-	   file://enhance.patch;patch=1"
+	   file://enhance.patch"
 
 EXTRA_OECONF = " --includedir=${STAGING_INCDIR} \
 		--libdir=${STAGING_LIBDIR} \

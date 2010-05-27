@@ -24,11 +24,12 @@ module_do_install() {
 }
 
 pkg_postinst_append () {
-	if [ -n "$D" ]; then
-		exit 1
-	fi
-	depmod -a
+if [ -n "$D" ]; then
+	exit 1
+else
+	depmod -a ${KERNEL_VERSION}
 	update-modules || true
+fi
 }
 
 pkg_postrm_append () {

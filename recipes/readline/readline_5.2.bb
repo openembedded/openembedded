@@ -12,8 +12,8 @@ PR = "r6"
 
 SRC_URI = "\
   ftp://ftp.gnu.org/gnu/readline/readline-${PV}.tar.gz \
-  file://fix-includes.patch;patch=1 \
-  file://configure_fix.patch;patch=1 \
+  file://fix-includes.patch \
+  file://configure_fix.patch \
   file://acinclude.m4 \
 "
 S = "${WORKDIR}/readline-${PV}"

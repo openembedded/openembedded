@@ -10,7 +10,7 @@ MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1
 
 SRC_URI = "\
   ftp://ftp.gnome.org/pub/GNOME/sources/pygobject/${MAJ_VER}/pygobject-${PV}.tar.bz2 \
-  file://generate-constants.patch;patch=1 \
+  file://generate-constants.patch \
 "
 S = "${WORKDIR}/pygobject-${PV}"
 

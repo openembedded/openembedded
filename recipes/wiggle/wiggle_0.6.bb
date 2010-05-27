@@ -5,11 +5,11 @@ SECTION = "console/utils"
 PR = "r1"
 
 SRC_URI = "http://cgi.cse.unsw.edu.au/~neilb/source/wiggle/wiggle-${PV}.tar.gz \
-	   file://001NoQuietTime;patch=1 \
-	   file://002SpecFile;patch=1 \
-	   file://003Recommit;patch=1 \
-	   file://004ExtractFix;patch=1 \
-	   file://005Pchanges;patch=1"
+	   file://001NoQuietTime;apply=yes \
+	   file://002SpecFile;apply=yes \
+	   file://003Recommit;apply=yes \
+	   file://004ExtractFix;apply=yes \
+	   file://005Pchanges;apply=yes"
 S = "${WORKDIR}/wiggle-${PV}"
 
 export MANDIR = "${mandir}"

@@ -6,7 +6,7 @@ PR = "r3"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/${MOZPV}-candidates/build1/source/firefox-${MOZPV}-source.tar.bz2 \
 	file://jsautocfg.h \
-	file://jsautocfg-dontoverwrite.patch;patch=1 \
+	file://jsautocfg-dontoverwrite.patch \
 "
 
 S = "${WORKDIR}/mozilla-1.9.1"

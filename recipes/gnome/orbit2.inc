@@ -2,8 +2,8 @@ LICENSE = "GPL"
 DESCRIPTION = "CORBA ORB"
 SECTION = "x11/gnome/libs"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ORBit2/2.14/ORBit2-${PV}.tar.bz2 \
-           file://configure-lossage.patch;patch=1;pnum=1 \
-           file://pkgconfig-fix.patch;patch=1 \
+           file://configure-lossage.patch \
+           file://pkgconfig-fix.patch \
 	   file://gtk-doc.m4 \
 	   file://gtk-doc.make"
 DEPENDS = "libidl popt orbit2-native gtk-doc"

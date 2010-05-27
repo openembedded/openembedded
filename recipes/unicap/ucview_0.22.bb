@@ -5,7 +5,7 @@ DEPENDS = "intltool-native gtk+ libpng unicap gconf libglade gdk-pixbuf-csource-
 PR = "r1"
 
 SRC_URI = "http://www.unicap-imaging.org/downloads/${P}.tar.gz \
-           file://cross.patch;patch=1"
+           file://cross.patch"
 
 inherit autotools pkgconfig
 

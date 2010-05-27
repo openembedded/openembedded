@@ -3,15 +3,10 @@ SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=m
 
 S = "${WORKDIR}/git"
 
-SRCREV = "77b6d1b7363d3ff28f063ed92c9ed47194f70b20"
+SRCREV = "a5ef0525ab34d7d5590aba51651ae1a6f40858bc"
 PV = "1.0.0+gitr${SRCPV}"
 PE = "2"
-PR = "r4"
-
-do_configure_prepend() {
-  # pedantic emits warning about GCC extension used in xserver header file edid.h (from version 1.8) and because of -Werror it fill fail
-  sed -i 's/ -pedantic / /g' ${S}/src/Makefile.am
-}
+PR = "r5"
 
 RDEPENDS = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"
 DEPENDS += "libdrm"

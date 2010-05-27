@@ -5,7 +5,7 @@ LICENSE="GPL-2"
 RDEPENDS="pidgin"
 DEPENDS="pidgin"
 SRCREV = "e795b33b29d792f19fcf699275eb966dc68be257"
-PV="0.0.1+gitr${SRCPV}"
+PV="0.0.1+gitr${SRCREV}"
 PR="r0"
 
 inherit pkgconfig

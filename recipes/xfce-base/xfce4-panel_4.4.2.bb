@@ -8,12 +8,9 @@ DEPENDS = "startup-notification virtual/libx11 libxfcegui4 libxfce4mcs xfce-mcs-
 
 inherit pkgconfig xfce
 
+PR = "r1"
+
 EXTRA_OECONF += " --enable-startup-notification"
-
-
-do_stage() {
-autotools_stage_all
-}
 
 do_install() {
     oe_runmake DESTDIR=${D} install

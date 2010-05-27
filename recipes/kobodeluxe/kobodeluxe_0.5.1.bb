@@ -13,11 +13,11 @@ RDEPENDS_${PN} = "${PN}-data"
 
 SRC_URI = "http://olofson.net/kobodl/download/KoboDeluxe-${PV}.tar.bz2 \
            file://fighter-48.xpm \
-					 file://debian-kobo.patch;patch=1 \
-					 file://kobodeluxe-putenv.patch;patch=1 \
-					 file://kobodeluxe-sysconf-support.patch;patch=1 \
-					 file://kobodeluxe-menu-pointer.patch;patch=1 \
-					 file://kobodeluxe-dimension-autoswap.patch;patch=1 \
+					 file://debian-kobo.patch \
+					 file://kobodeluxe-putenv.patch \
+					 file://kobodeluxe-sysconf-support.patch \
+					 file://kobodeluxe-menu-pointer.patch \
+					 file://kobodeluxe-dimension-autoswap.patch \
            file://default-config \
           "
 

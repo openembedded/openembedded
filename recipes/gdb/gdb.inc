@@ -16,15 +16,15 @@ RRECOMMENDS_gdb_append_linux-spe = " uclibc-thread-db "
 
 inherit gettext
 
-SRC_URI += "file://kill_arm_map_symbols.patch;patch=1 \
-            file://gdbserver-cflags-last.diff;patch=1;pnum=0"
-#FIXME	   file://uclibc.patch;patch=1 \
+SRC_URI += "file://kill_arm_map_symbols.patch \
+            file://gdbserver-cflags-last.diff;striplevel=0"
+#FIXME	   file://uclibc.patch \
 
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils'"
 
 EXTRA_OECONF = "--disable-gdbtk --disable-tui --disable-x \
                 --with-curses --disable-multilib --with-readline --disable-sim \
-                --program-prefix=''"
+                --program-prefix='' --disable-lto"
 
 LDFLAGS_append = " -s"
 export CFLAGS_append=" -L${STAGING_LIBDIR}"

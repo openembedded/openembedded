@@ -2,7 +2,7 @@ require quilt.inc
 
 RDEPENDS_${PN} += "patch diffstat bzip2 util-linux"
 
-SRC_URI += "file://aclocal.patch;patch=1"
+SRC_URI += "file://aclocal.patch"
 
 inherit autotools gettext
 

@@ -1,0 +1,46 @@
+From patchwork Sat May  8 16:58:11 2010
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2] linux-user: fix running programs with iwmmxt
+Date: Sat, 08 May 2010 06:58:11 -0000
+From: Lars Munch <lars@segv.dk>
+X-Patchwork-Id: 51970
+Message-Id: <1273337891-20342-1-git-send-email-lars@segv.dk>
+To: qemu-devel@nongnu.org
+Cc: Lars Munch <lars@segv.dk>
+
+CP0 and/or CP1 needs to be accessible when using linux-user for emulating a
+pxa270 cpu with code using iwmmxt instructions. This patch inits the cpu to
+have CP0 and/or CP1 accessible if in linux-user mode.
+
+Signed-off-by: Lars Munch <lars@segv.dk>
+
+---
+target-arm/helper.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+Index: qemu-0.12.4/target-arm/helper.c
+===================================================================
+--- qemu-0.12.4.orig/target-arm/helper.c	2010-05-22 22:48:27.045182598 -0700
++++ qemu-0.12.4/target-arm/helper.c	2010-05-23 08:31:29.095165136 -0700
+@@ -165,6 +165,9 @@ static void cpu_reset_model_id(CPUARMSta
+         /* JTAG_ID is ((id << 28) | 0x09265013) */
+         env->cp15.c0_cachetype = 0xd172172;
+         env->cp15.c1_sys = 0x00000078;
++#if defined (CONFIG_USER_ONLY)
++       env->cp15.c15_cpar = 0x00000001;
++#endif
+         break;
+     case ARM_CPUID_PXA270_A0:
+     case ARM_CPUID_PXA270_A1:
+@@ -178,6 +181,9 @@ static void cpu_reset_model_id(CPUARMSta
+         env->iwmmxt.cregs[ARM_IWMMXT_wCID] = 0x69051000 | 'Q';
+         env->cp15.c0_cachetype = 0xd172172;
+         env->cp15.c1_sys = 0x00000078;
++#if defined (CONFIG_USER_ONLY)
++       env->cp15.c15_cpar = 0x00000003;
++#endif
+         break;
+     default:
+         cpu_abort(env, "Bad CPU ID: %x\n", id);

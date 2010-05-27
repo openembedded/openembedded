@@ -3,7 +3,6 @@ SECTION = "gpephone"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+"
-PE = "1"
 
 inherit gpephone pkgconfig autotools
 

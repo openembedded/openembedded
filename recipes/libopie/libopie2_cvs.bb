@@ -9,7 +9,7 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
            file://include.pro"
 
 # FIXME remove this!
-SRC_URI_append_poodle = " file://poodle-2.6-hotkeys.patch;patch=1"
+SRC_URI_append_poodle = " file://poodle-2.6-hotkeys.patch"
 
 do_stage_append() {
         # special case for uic-created header files

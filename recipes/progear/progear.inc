@@ -7,7 +7,7 @@ AUTHOR = "Mike Schacht <mschacht at alumni dot washington dot edu>"
 COMPATIBLE_MACHINE = "progear"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/progear/${PN}-${PV}.tar.gz \
-           file://paths.patch;patch=1"
+           file://paths.patch"
 
 inherit module
 

@@ -1,5 +1,12 @@
 #!/bin/sh
 # set -x
+# This script helps in launching QEMU to emulate OE based target systems
+# It accepts 2 arguments
+# First argument is the target architectures
+# second argument is empty if you want to do a complete init or
+# 'single' if booting into /bin/sh
+# It assumes that bridge is setup on the eth0 device on the host systems
+
 # on debian-like systems
 # set up bridge aptitude install bridge-utils
 # 
@@ -23,17 +30,49 @@
 #
 #auto eth0
 
-supported_archs="{arm mips x86}"
-if [ $# -ne 1 ]; then
+# before using this script make sure that the following variables are set
+# as per your build system environment
+
+# oetmpdir -	Same as $TMPDIR set in OE local.conf
+# oesrcdir -	Absolute path to OE metadata
+# kernel -	Kernel image e.g. uImage, zImage, vmlinux etc.
+# image -	The root file system created by OE console-image, x11-image etc.
+# imagetype -	Image file system type e.g. ext2, ext3 etc.
+# libc -	uclibc/glibc/eglibc
+# server -	NFS server hosting the root file system.
+# gateway
+# netmask
+# address -	IP Address of the target. You may have diffrent LAN setup
+# hostname -	Name of the target
+# nfsdir -	Absolute path to directory having the root file system on NFS
+# device
+# nfsboot -	'yes' if root file system is to be mounted over NFS, if booting from
+#		disk image then set it to 'no'
+# networking -	If target should enable networking over bridge set to 'yes' else 'no'
+#		This will be set to 'yes' automatically if nfsboot is enabled
+# staticip -	Set to 'yes' if IP address is assigned statically or 'no' if getting
+#		from dhcp server. Note that this option is not entertained if networking
+#		is disabled
+
+supported_archs="{arm mips ppc sh4 x86}"
+if [ $# -ne 2 ]; then
     echo -en "
-    Usage: `basename $0` <arch>
+    Usage: `basename $0` <arch> <libc>
     where <arch> is one $supported_archs
-    Example: `basename $0` arm
+    libc is uclibc glibc or eglibc
+    Example: `basename $0` arm eglibc
 "
-    exit 1
+    exit 0
 fi
 
 arch=$1
+libc=$2
+mem=256				# memory for guest server in Mb
+imagetype="ext2"
+networking="no"
+nfsboot="no"
+staticip="yes"
+
 case $arch in
     arm)
 	address="10.0.1.101"
@@ -42,11 +81,9 @@ case $arch in
 	gdbport="1234"
 	consoleopt="console=ttyAMA0 console=ttyS0"
 	rootdisk="sda"
-	qemu="qemu-system-arm"
-	libc="uclibc"
-        kernel="/scratch/oe/deploy/$libc/images/qemu$arch/zImage-qemuarm.bin"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/native-sdk-image-qemuarm.ext2"
-        #hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/console-image-qemuarm.ext2"
+	qemuopts="-nographic"
+        kernel="zImage"
+        image="minimalist-image"
         ;;
     mips)
 	address="10.0.1.102"
@@ -55,24 +92,21 @@ case $arch in
 	gdbport="1235"
         consoleopt="console=ttyS0"
 	rootdisk="hda"
-	qemu="qemu-system-mips"
-	libc="uclibc"
-        kernel="/scratch/oe/deploy/$libc/images/qemu$arch/vmlinux-qemumips.bin"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/native-sdk-image-qemumips.ext2"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/console-image-qemumips.ext2"
+	qemuopts="-nographic"
+        kernel="vmlinux"
+        image="minimalist-image"
         ;;
     ppc|powerpc)
     	arch=ppc
 	address="10.0.1.103"
         macaddr="00:16:3e:00:00:03"
-	machine="bamboo"
+	machine="g3beige"
 	gdbport="1236"
         consoleopt="console=ttyS0"
-	rootdisk="hdc" #hdc4
-	qemu="qemu-system-ppcemb"
-	libc="eglibc"
-        kernel="/scratch/oe/deploy/$libc/images/qemu$arch/uImage-qemuppc.bin"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/helloworld-image-qemuppc.ext2"
+	rootdisk="hdc"
+	qemuopts="-nographic"
+        kernel="vmlinux"
+        image="minimalist-image"
         ;;
     sh|sh4)
     	arch=sh4
@@ -80,15 +114,12 @@ case $arch in
         macaddr="00:16:3e:00:00:04"
 	machine="r2d"
 	gdbport="1237"
-        #consoleopt="console=tty0 console=ttySC1"
-	rootdisk="sdc2" #hdc4
-	qemu="qemu-system-sh4 -serial vc -serial stdio"
-	#qemu="qemu-system-sh4"
-	libc="uclibc"
-        kernel="/scratch/oe/deploy/$libc/images/qemu$arch/zImage-qemush4.bin"
-        #kernel="/home/kraj/qemu/sh/sh-test-0.2/zImage"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/console-image-qemush4.ext2"
-        #hdimage="/home/kraj/qemu/sh/sh-test-0.2/sh-linux-mini.img"
+	mem="512"
+        consoleopt="console=ttySC1 noiotrap earlyprintk=sh-sci.1"
+	rootdisk="sda"
+	qemuopts="-monitor null -serial vc -serial stdio"
+        kernel="zImage"
+        image="minimalist-image"
         ;;
     x86)
 	address="10.0.1.105"
@@ -97,12 +128,9 @@ case $arch in
 	machine="pc"
         consoleopt="console=ttyS0"
 	rootdisk="hda"
-	qemu="qemu"
-	libc="uclibc"
-        kernel="/scratch/oe/deploy/$libc/images/qemu$arch/bzImage-qemux86.bin"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/native-sdk-image-qemux86.ext2"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/minimalist-image-qemux86.ext2"
-        hdimage="/scratch/oe/deploy/$libc/images/qemu$arch/console-image-qemux86.ext2"
+	qemuopts="-nographic"
+        kernel="bzImage"
+        image="minimalist-image"
         ;;
     *)
         echo "Specify one architectures out of $supported_archs to emulate."
@@ -116,49 +144,75 @@ netmask="255.255.0.0"		# subnet mask
 hostname="qemu$arch"		# hostname for guest server
 nfsdir="/opt/oe/$hostname"	# nfs directory where root file system is
 device="eth0"			# interface that guest server will use
-mem=256				# memory for guest server in Mb
-gdbit="-gdb tcp::$gdbport"	# debug the kernel using gdb set it to -s
+gdbit="-redir tcp:2222::22 -gdb tcp::$gdbport"   # debug the kernel using gdb set it to -s
 				# add -S to stop after launch and wait for
 				# gdb to connect
 
+oetmpdir=/scratch/oe
+oesrcdir=$HOME/work/oe/openembedded
+
 nfsopts="rsize=8192,wsize=8192,hard,intr,tcp,nolock"	# nfs options
 
-# for NFS root 
-rootfs="root=/dev/nfs rw nfsroot=$nfsserver:$nfsdir,$nfsopts"
-
-# Boot from a Disk Image
-
-rootfs="root=/dev/$rootdisk rw"
-
-# ip format
-#ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>
-ipopt="ip=$address::$gateway:$netmask:$hostname:$device:off"
-
-# get IP from DHCP server on network
-#ipopt="ip=dhcp"
-
-init=""
-qemuifup="/home/kraj/work/oe/openembedded/contrib/qemu/qemu-ifup"
-qemuifdown="/home/kraj/work/oe/openembedded/contrib/qemu/qemu-ifdown"
-
-uid=`whoami`
-iface=`sudo tunctl -b -u $uid`
-
-netopt="-net nic,vlan=0,macaddr=$macaddr -net tap,vlan=0,ifname=$iface,script=$qemuifup,downscript=$qemuifdown"
-
-if [ "x$1" == "xsingle" ]
-then
-    init="init=/bin/sh"
+if [ $nfsboot = "yes" ]; then
+	# for NFS root 
+	rootfs="root=/dev/nfs rw nfsroot=$nfsserver:$nfsdir,$nfsopts"
+	# without networking nfsroot wouldnt be possible so enable it explicitly.
+	networking="yes"
+else
+	# Boot from a Disk Image
+	rootfs="root=/dev/$rootdisk rw"
 fi
+
+if [ $networking != "yes" ]; then
+	ipopt=""
+else
+if [ $staticip = "yes" ]; then
+	# ip format
+	#ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>
+	ipopt="ip=$address::$gateway:$netmask:$hostname:$device:off"
+else
+	# get IP from DHCP server on network
+	ipopt="ip=dhcp"
+fi
+fi
+qemuifup="$oesrcdir/contrib/qemu/qemu-ifup"
+qemuifdown="$oesrcdir/contrib/qemu/qemu-ifdown"
+
+
+if [ $networking = "yes" ]; then
+	uid=`whoami`
+	iface=`sudo tunctl -b -u $uid`
+	netopt="-net nic,vlan=0,macaddr=$macaddr -net tap,vlan=0,ifname=$iface,script=$qemuifup,downscript=$qemuifdown"
+else
+	netopt="-net none"
+fi
+
+if [ "x$2" == "xsingle" ]; then
+    init="init=/bin/sh"
+else
+    init=""
+fi
+
+qemupath="$oetmpdir/sysroots/`uname -m`-linux/usr/bin"
+
+if [ $arch = "x86" ]; then
+    qemu=$qemupath/qemu
+else
+    qemu=$qemupath/qemu-system-$arch
+fi
+kernelimage=$oetmpdir/deploy/$libc/images/qemu$arch/$kernel-qemu$arch.bin
+hdimage=$oetmpdir/deploy/$libc/images/qemu$arch/$image-qemu$arch.$imagetype
 echo "Starting QEMU ..."
 set -x
-	#-L /scratch/oe/deploy/$libc/images/qemu$arch \
-$qemu -M $machine --snapshot $gdbit -m $mem -kernel $kernel -hda $hdimage \
-	-usb -usbdevice wacom-tablet -nographic --no-reboot -localtime \
+$qemu -M $machine --snapshot $gdbit -m $mem \
+	-kernel $kernelimage -drive file=$hdimage \
+	-usb -usbdevice wacom-tablet --no-reboot -localtime \
+	$qemuopts \
 	-append "$consoleopt $rootfs $ipopt $init debug user_debug=-1" \
 	$netopt
 set +x
-#destroy the tap interface
-sudo tunctl -b -d $iface
+if [ $networking = "yes" ]; then
+	#destroy the tap interface
+	sudo tunctl -b -d $iface
+fi
 stty sane
-# qemu-system-sh4 -M r2d -kernel ~/zImage -nographic -monitor null -serial null -serial stdio  

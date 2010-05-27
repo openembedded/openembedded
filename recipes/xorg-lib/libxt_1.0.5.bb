@@ -8,7 +8,7 @@ PE = "1"
 
 XORG_PN = "libXt"
 
-SRC_URI += "file://pr10970-header-fix.patch;patch=1"
+SRC_URI += "file://pr10970-header-fix.patch"
 
 EXTRA_OECONF += "--disable-install-makestrs --disable-xkb"
 

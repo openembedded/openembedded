@@ -1,7 +1,7 @@
 require cornucopia.inc
 inherit fso-plugin
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.2"
 PV = "0.5.0+gitr${SRCPV}"
 PE = "1"
 
@@ -12,7 +12,8 @@ EXTRA_OECONF_append = "\
   --enable-modem-qualcomm-palm \
 "
 
-do_install_append_shr() {
-	# remove .service file to disable fsogsmd autostart
-	rm -f ${D}${datadir}/dbus-1/system-services/org.freesmartphone.ogsmd.service
-}
+CONFFILES_${PN} = "${sysconfdir}/freesmartphone/conf/openmoko_gta/fsogsmd.conf \
+                   ${sysconfdir}/freesmartphone/conf/palm_pre/fsogsmd.conf \
+                   ${sysconfdir}/freesmartphone/conf/htc_qualcomm_dream/fsogsmd.conf \
+                   ${sysconfdir}/freesmartphone/conf/htc_qualcomm_msm/fsogsmd.conf \
+                  "

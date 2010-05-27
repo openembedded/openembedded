@@ -8,8 +8,8 @@ DEPENDS = "alsa-lib zlib jpeg libpng libxext libxft"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/${PV}/fltk-${PV}-source.tar.bz2 \
-	   file://disable_test.patch;patch=1 \
-#       http://ftp.de.debian.org/debian/pool/main/f/fltk1.1/fltk1.1_1.1.10-2.diff.gz;patch=1 \
+	   file://disable_test.patch \
+#       http://ftp.de.debian.org/debian/pool/main/f/fltk1.1/fltk1.1_1.1.10-2.diff.gz \
 	  "
 
 S = "${WORKDIR}/fltk-${PV}"

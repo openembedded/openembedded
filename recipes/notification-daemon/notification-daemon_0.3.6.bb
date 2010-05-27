@@ -6,7 +6,7 @@ DEPENDS = "gettext dbus gtk+ libsexy gconf libwnck"
 PR = "r1"
 
 SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
-           file://dbus-glib-tool-prefix.patch;patch=1"
+           file://dbus-glib-tool-prefix.patch"
 
 EXTRA_OECONF = "--disable-binreloc"
 

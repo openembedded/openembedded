@@ -3,8 +3,8 @@ PR = "r0"
 
 DEPENDS = 	"libosso hildon-lgpl hildon-base-lib hildon-libs"
 SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/libo/${PN}/libosso-help_${PV}.tar.gz \
-                 file://no-Werror.patch;patch=1;pnum=0 \
-                 file://help-header-pp.patch;patch=1;pnum=0"
+                 file://no-Werror.patch;striplevel=0 \
+                 file://help-header-pp.patch;striplevel=0"
 
 inherit pkgconfig autotools
 

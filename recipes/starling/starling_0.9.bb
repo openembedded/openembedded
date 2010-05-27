@@ -2,8 +2,8 @@ DESCRIPTION = "Starling audio player for GPE"
 SECTION = "gpe/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "gtk+ gstreamer gst-plugins-good gst-plugins-bad esound sqlite libsoup libhandoff"
-PR = "r0"
+DEPENDS = "gtk+ gstreamer gst-plugins-good gst-plugins-bad ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)} esound sqlite libsoup libhandoff"
+PR = "r1"
 
 inherit gpe autotools
 

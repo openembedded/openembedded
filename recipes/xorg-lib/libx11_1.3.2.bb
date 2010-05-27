@@ -9,9 +9,9 @@ PR = "r3"
 
 XORG_PN = "libX11"
 
-SRC_URI += "file://x11_disable_makekeys.1.6.3.patch;patch=1 \
-            file://dolt-fix.patch;patch=1 \
-            file://keysymdef_include.patch;patch=1"
+SRC_URI += "file://x11_disable_makekeys.1.6.3.patch \
+            file://dolt-fix.patch \
+            file://keysymdef_include.patch"
 
 EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
 

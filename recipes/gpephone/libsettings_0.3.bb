@@ -4,7 +4,6 @@ PRIORITY = "required"
 LICENSE = "LiPS"
 DEPENDS = "glib-2.0 gconf"
 PR = "r1"
-PE = "1"
 
 inherit gpephone pkgconfig autotools
 

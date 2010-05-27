@@ -7,7 +7,7 @@ PR = "r0"
 
 URIPV = "${@bb.data.getVar('PV',d,1).replace('.','')}"
 SRC_URI = "http://simh.trailing-edge.com/sources/simhv${URIPV}.zip \
-        file://makefile.patch;patch=1"
+        file://makefile.patch"
 S = "${WORKDIR}/${PN}-${PV}"
 
 python do_unpack() {

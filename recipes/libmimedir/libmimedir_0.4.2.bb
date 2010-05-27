@@ -2,8 +2,8 @@ DESCRIPTION = "RFC2425 MIME Directory Profile library, supporting vCard and iCal
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "intltool-native"
-PR = "r0"
+DEPENDS = "intltool-native glib-2.0"
+PR = "r1"
 
 inherit autotools pkgconfig gpe
 

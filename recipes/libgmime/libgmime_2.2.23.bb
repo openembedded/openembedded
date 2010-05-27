@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 zlib"
 SRC_URI = "http://ftp.acc.umu.se/pub/GNOME/sources/gmime/2.2/gmime-${PV}.tar.bz2 \
-           file://configure-cross.patch;patch=1 \
+           file://configure-cross.patch \
            file://iconv-detect.h"
 EXTRA_OECONF += "--disable-mono"
 S = "${WORKDIR}/gmime-${PV}"

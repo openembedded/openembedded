@@ -10,7 +10,7 @@ PR_append = "+gitr${SRCREV}"
 
 SRCREV = "ef7ef29b5cdcf8630c901362a66905b956242e0d"
 SRC_URI = "git://git.denx.de/ptp-gadget.git;protocol=git \
-           file://0001-Fix-musb_hdrc-EP_STATUS_NAME.patch;patch=1"
+           file://0001-Fix-musb_hdrc-EP_STATUS_NAME.patch"
 
 S = "${WORKDIR}/git"
 

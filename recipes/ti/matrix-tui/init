@@ -1,0 +1,24 @@
+#! /bin/sh
+
+matrixtui="/usr/bin/matrix_tui"
+TUI_OPTS="/usr/share/matrix/xml/matrix.xml"
+
+test -x "$matrixtui" || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting Matrix TUI application"
+    start-stop-daemon --start --quiet --background --pidfile /var/run/matrix-tui.pid --exec $matrixtui -- $TUI_OPTS
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping Matrix TUI application"
+    start-stop-daemon --stop --quiet --pidfile /var/run/matrix-tui.pid
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/matrix-tui {start|stop}"
+    exit 1
+esac
+
+exit 0

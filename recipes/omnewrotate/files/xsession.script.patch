@@ -1,0 +1,35 @@
+Index: omnewrotate.orig/data/omnewrotate.in
+===================================================================
+--- omnewrotate.orig/data/omnewrotate.in	(revision 66)
++++ omnewrotate/data/omnewrotate.in	(working copy)
+@@ -4,10 +4,14 @@
+ 	. @SYSCONFDIR@/default/omnewrotate.conf
+ fi
+ 
+-export DIPLAY=:0
+ PIDFILE="/var/run/omnewrotate.pid"
+ 
+ case "$1" in
++	autostart)
++		if test "$START" == "yes" ; then
++			$0 start
++		fi
++	;;
+ 	start)
+ 		echo -n starting omnewrotate...
+ 		/sbin/start-stop-daemon -S \
+Index: omnewrotate.orig/data/89omnewrotate.in
+===================================================================
+--- omnewrotate.orig/data/89omnewrotate.in	(revision 66)
++++ omnewrotate/data/89omnewrotate.in	(working copy)
+@@ -1,9 +1,3 @@
+ #!/bin/sh
+ 
+-if [ -f @CONFIGDIR@/omnewrotate.conf ] ; then
+-	. @CONFIGDIR@/omnewrotate.conf
+-fi
+-
+-if test "$START" == "yes" ; then
+-	exec @SYSCONFDIR@/init.d/omnewrotate start
+-fi
++@SYSCONFDIR@/init.d/omnewrotate autostart

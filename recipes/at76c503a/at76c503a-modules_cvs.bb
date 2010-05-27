@@ -1,7 +1,7 @@
 SECTION = "base"
 LICENSE = "GPL"
 SRC_URI = "cvs://anonymous@cvs.berlios.de/cvsroot/at76c503a;module=at76c503a \
-	   file://makefile.cc.patch;patch=1"
+	   file://makefile.cc.patch"
 S = "${WORKDIR}/at76c503a"
 PR = "r4"
 SRCDATE = "20060814"

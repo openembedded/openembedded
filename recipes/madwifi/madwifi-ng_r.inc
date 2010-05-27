@@ -7,15 +7,15 @@ DEPENDS = "virtual/kernel"
 PR ="r6"
 
 WACKELF_SRC_URI = ""
-WACKELF_SRC_URI_ixp4xx = " file://20-xscale-VFP-wackelf.patch;patch=1"
-WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf.patch;patch=1"
+WACKELF_SRC_URI_ixp4xx = " file://20-xscale-VFP-wackelf.patch"
+WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf.patch"
 
 SRCNAME = "${PN}"
 SRC_URI = "http://snapshots.madwifi-project.org/madwifi-trunk/${SRCNAME}-${PV}.tar.gz \
-           file://10-xscale-be-elf-copts.patch;patch=1 \
-           file://10-xscale-le-elf-copts.patch;patch=1 \
-           file://10-sh4-le-elf-copts.patch;patch=1 \
-	   file://powerpc-fix.patch;patch=1 \
+           file://10-xscale-be-elf-copts.patch \
+           file://10-xscale-le-elf-copts.patch \
+           file://10-sh4-le-elf-copts.patch \
+	   file://powerpc-fix.patch \
            ${WACKELF_SRC_URI}"
 
 S = "${WORKDIR}/${SRCNAME}-${PV}"

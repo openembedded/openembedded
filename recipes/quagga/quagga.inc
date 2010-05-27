@@ -28,7 +28,7 @@ QUAGGASUBDIR = ""
 # ${QUAGGASUBDIR} is deal with old versions. Set to "/attic" for old
 # versions and leave it empty for recent versions.
 SRC_URI = "http://www.quagga.net/download${QUAGGASUBDIR}/quagga-${PV}.tar.gz;name=quagga-${PV} \
-           file://fix-for-lib-inpath.patch;patch=1 \
+           file://fix-for-lib-inpath.patch \
            file://quagga.init \
            file://quagga.default \
            file://watchquagga.init \

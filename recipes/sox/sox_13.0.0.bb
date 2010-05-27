@@ -7,7 +7,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sox/sox-${PV}.tar.gz \
-         file://src-Makefile.am.patch;patch=1"
+         file://src-Makefile.am.patch"
 
 inherit autotools
 

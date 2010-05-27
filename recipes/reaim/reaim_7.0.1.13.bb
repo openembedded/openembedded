@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "libaio"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/re-aim-7/osdl-aim-${PV}.tar.gz \
-           file://makefile-fix.patch;patch=1"
+           file://makefile-fix.patch"
 
 S = "${WORKDIR}/osdl-aim-7/"
 

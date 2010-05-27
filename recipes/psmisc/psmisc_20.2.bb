@@ -6,7 +6,7 @@ DEPENDS = "ncurses"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz \
-	   file://gettext.patch;patch=1"
+	   file://gettext.patch"
 S = "${WORKDIR}/psmisc-${PV}"
 
 inherit autotools gettext

@@ -4,12 +4,11 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libiac libgpephone gnome-vfs libxdamage libxcomposite libgpewidget"
 PR          = "r0"
-PE          = "1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpephone pkgconfig autotools
 
-SRC_URI += " file://disable-tests.patch;patch=1 file://libgemwidget-fixup.diff;patch=1"
+SRC_URI += " file://disable-tests.patch file://libgemwidget-fixup.diff"
 
 FILES_${PN} += "${datadir}/gem"
 

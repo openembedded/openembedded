@@ -8,7 +8,7 @@ PR = "r1"
 
 SRC_URI = "http://www.iozone.org/src/current/iozone3_263.tar \
 	   file://copyright.txt \
-           file://fileop-arm.patch;patch=1"
+           file://fileop-arm.patch"
 
 S = "${WORKDIR}/${PN}_${PV}/src/current/"
 

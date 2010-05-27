@@ -13,23 +13,23 @@ PYQT_OE_VERSION = "Qt_4_4_1"
 
 SRC_URI = "\
   http://cvs.fedora.redhat.com/repo/pkgs/PyQt4/PyQt-x11-gpl-4.4.3.tar.gz/89e84c36a8520bf8b3a8a2b20e765154/PyQt-x11-gpl-4.4.3.tar.gz \
-  file://cross-compile.patch;patch=1 \
-  file://01_configure.dpatch;patch=1 \
-  file://02_htmllinks.dpatch;patch=1 \
+  file://cross-compile.patch \
+  file://01_configure.dpatch;apply=yes \
+  file://02_htmllinks.dpatch;apply=yes \
   \
-  file://assistantclient-fix.patch;patch=1 \
+  file://assistantclient-fix.patch \
 "
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
 # arm and mips machines need some extra patches
 
 SRC_URI_append_arm = "\
-  file://03_qreal.dpatch;patch=1 \
-  file://04_qreal_api_fixes-for-4.4.3.dpatch;patch=1"
+  file://03_qreal.dpatch;apply=yes \
+  file://04_qreal_api_fixes-for-4.4.3.dpatch;apply=yes"
 
 SRC_URI_append_mipsel = "\
-  file://03_qreal.dpatch;patch=1 \
-  file://04_qreal_api_fixes-for-4.4.3.dpatch;patch=1"
+  file://03_qreal.dpatch;apply=yes \
+  file://04_qreal_api_fixes-for-4.4.3.dpatch;apply=yes"
 
 inherit qt4x11 sip distutils-base
 

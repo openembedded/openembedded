@@ -6,7 +6,7 @@ DEBV = "2"
 PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fortune-mod/fortune-mod_${PV}.orig.tar.gz;name=archive \
-           ${DEBIAN_MIRROR}/main/f/fortune-mod/fortune-mod_${PV}-${DEBV}.diff.gz;patch=1;name=patch"
+           ${DEBIAN_MIRROR}/main/f/fortune-mod/fortune-mod_${PV}-${DEBV}.diff.gz;name=patch"
 
 PARALLEL_MAKE = ""
 CFLAGS += '\$(DEFINES)'

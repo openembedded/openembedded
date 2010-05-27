@@ -7,7 +7,7 @@ PR = "r0"
 DEPENDS = "alsa-lib"
 
 SRC_URI = "http://www.kokkinizita.net/linuxaudio/downloads/clalsadrv-${PV}.tar.bz2 \
-	file://clalsadrv-Makefile.patch;patch=1 \
+	file://clalsadrv-Makefile.patch \
 "
 
 S = "${WORKDIR}/clalsadrv"

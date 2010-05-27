@@ -7,7 +7,7 @@ KERNEL_CCSUFFIX = "-3.3.4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://epia_defconfig \
-	   file://linux-2.6-limits.patch;patch=1"
+	   file://linux-2.6-limits.patch"
 S = "${WORKDIR}/linux-${PV}"
 
 COMPATIBLE_HOST = 'i.86.*-linux'

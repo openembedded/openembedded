@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "GPL"
 PR = "r1"
 SRC_URI = "http://wiki.openembedded.org/dl/matrixssl-1-1-1.tar.gz \
-	   file://cross.patch;patch=1"
+	   file://cross.patch"
 S = "${WORKDIR}/matrixssl/src"
 
 require matrixssl.inc

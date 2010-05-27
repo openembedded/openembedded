@@ -8,8 +8,8 @@ DEPENDS += "u-boot-utils-native"
 PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2;name=kernel \
-           http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;patch=1;name=patch \
-           file://neon-jffs2-config.patch;patch=1"
+           http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;name=patch \
+           file://neon-jffs2-config.patch"
 
 S = "${WORKDIR}/linux-2.6.22"
 

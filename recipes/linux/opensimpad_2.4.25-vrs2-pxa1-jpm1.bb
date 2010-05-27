@@ -12,30 +12,30 @@ COMPATIBLE_MACHINE = 'simpad'
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
-           file://${KV}-${VRSV}.patch;patch=1 \
-           file://${KV}-${VRSV}-${PXAV}.patch;patch=1 \
-           file://${KV}-${VRSV}-${PXAV}-${JPMV}.patch;patch=1 \
-           file://sound-volume-reversed.patch;patch=1 \
-	   file://disable-pcmcia-probe.patch;patch=1 \
-           file://mkdep.patch;patch=1 \
+           file://${KV}-${VRSV}.patch \
+           file://${KV}-${VRSV}-${PXAV}.patch \
+           file://${KV}-${VRSV}-${PXAV}-${JPMV}.patch \
+           file://sound-volume-reversed.patch \
+	   file://disable-pcmcia-probe.patch \
+           file://mkdep.patch \
            file://defconfig-${MACHINE} \
-	   http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1;name=patch \
-           file://mipv6-1.1-v2.4.25.patch;patch=1 \
-           file://simpad-backlight-if.patch;patch=1 \
-           file://simpad-switches-input.patch;patch=1 \
-           file://simpad-switches-input2.patch;patch=1 \
-           file://simpad-apm.diff;patch=1;pnum=0 \
-           file://simpad-ts-noninput.patch;patch=1 \
-           file://simpad-pm-updates.patch;patch=1;pnum=0 \
-           file://support-128mb-ram.patch;patch=1 \
-           file://mmc-spi.patch;patch=1 \
-           file://iw249_we17-13.diff;patch=1 \
-           file://iw240_we18-5.diff;patch=1 \
+	   http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;name=patch \
+           file://mipv6-1.1-v2.4.25.patch \
+           file://simpad-backlight-if.patch \
+           file://simpad-switches-input.patch \
+           file://simpad-switches-input2.patch \
+           file://simpad-apm.diff;striplevel=0 \
+           file://simpad-ts-noninput.patch \
+           file://simpad-pm-updates.patch;striplevel=0 \
+           file://support-128mb-ram.patch \
+           file://mmc-spi.patch \
+           file://iw249_we17-13.diff \
+           file://iw240_we18-5.diff \
 "
 
 # apply this when we have a patch that allows building with gcc 3.x:
-# SRC_URI_append = file://gcc-3.3.patch;patch=1
-# SRC_URI_append = file://machtune-args.patch;patch=1
+# SRC_URI_append = file://gcc-3.3.patch
+# SRC_URI_append = file://machtune-args.patch
 
 S = "${WORKDIR}/linux-${KV}"
 

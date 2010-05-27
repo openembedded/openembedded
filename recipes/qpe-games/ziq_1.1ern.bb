@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-ZIQ.html"
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/ziq_V1.1ern.tar.gz \
-           file://ziq.patch;patch=1"
+           file://ziq.patch"
 
 PV = "1.1ern"
 PR = "r1"

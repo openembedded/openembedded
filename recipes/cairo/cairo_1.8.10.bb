@@ -1,7 +1,7 @@
 require cairo.inc
 
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz;name=cairo \
-           file://dolt-fix.patch;patch=1 \
+           file://dolt-fix.patch \
           "
 
 SRC_URI[cairo.md5sum] = "b60a82f405f9400bbfdcf850b1728d25"

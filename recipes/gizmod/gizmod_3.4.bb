@@ -6,7 +6,7 @@ DEPENDS = "python virtual/libx11 xf86vidmodeproto alsa-lib boost libvisual"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/gizmod/gizmod-${PV}.tar.bz2 \
-	file://${PV}-build-fix.patch;patch=1 \
+	file://${PV}-build-fix.patch \
 	"
 
 PR = "r0"

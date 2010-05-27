@@ -1,6 +1,6 @@
 PR = "r2"
 
-SRC_URI_append += "file://automake.patch;patch=1 "
+SRC_URI_append += "file://automake.patch "
 
 require radvd.inc
 

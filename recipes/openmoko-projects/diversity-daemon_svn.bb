@@ -9,7 +9,7 @@ PV = "0.0+svnr${SRCPV}"
 PR = "r3"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/diversity/trunk;module=diversity-daemon;proto=https \
-           file://no-xmmp.patch;patch=1;minrev=276"
+           file://no-xmmp.patch;minrev=276"
 S = "${WORKDIR}/diversity-daemon"
 
 inherit autotools pkgconfig

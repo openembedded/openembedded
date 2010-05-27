@@ -8,7 +8,7 @@ PV = "0.16.1+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://svn.icculus.org/quake2/;module=trunk \
-           file://quake2-arm.patch;patch=1"
+           file://quake2-arm.patch"
 
 S = "${WORKDIR}/trunk"
 

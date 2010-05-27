@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r11"
+PR = "r12"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -200,7 +200,6 @@ RDEPENDS_task-gnome-xserver = " \
 PACKAGE_ARCH_task-gnome-xserver = "${MACHINE_ARCH}"
 
 RDEPENDS_${PN} = " \
-  task-gnome-apps \
   task-gnome-fonts \
   task-gnome \
   task-gnome-gstreamer \

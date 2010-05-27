@@ -6,12 +6,12 @@ PR = "r3"
 COMPATIBLE_MACHINE = "efika"
 
 SRC_URI = "http://www.efika.de/download/linux-2.6.19-rc6_efika.tgz;name=kernel \
-           file://0001-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;patch=1 \
-           file://0001-powerpc-Add-device-tree-fixup-for-the-EFIKA.txt;patch=1 \
+           file://0001-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;apply=yes \
+           file://0001-powerpc-Add-device-tree-fixup-for-the-EFIKA.txt;apply=yes \
            file://defconfig \
 		   "
-#	http://www.246tnt.com/files/0001-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;patch=1 \
-#           http://lkml.org/lkml/2006/11/29/335;patch=1 \
+#	http://www.246tnt.com/files/0001-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;apply=yes \
+#           http://lkml.org/lkml/2006/11/29/335;apply=yes \
 
 S = "${WORKDIR}/linux-2.6.19-rc6_efika"
 

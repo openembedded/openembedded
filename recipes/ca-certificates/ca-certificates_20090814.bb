@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 SRC_URI = "http://ftp.de.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_${PV}.tar.gz;name=archive \
-           file://remove-c-rehash.patch;patch=1"
+           file://remove-c-rehash.patch"
 SRC_URI[archive.md5sum] = "307052c985bec7f9a00eb84293eef779"
 SRC_URI[archive.sha256sum] = "6924fafc35dd020da99bc86842f95f2a97a3a5ff084b0635eea815fe2777fc7c"
 

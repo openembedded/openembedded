@@ -4,7 +4,7 @@ flash images for the Linksys NSLU2 device."
 PR = "r1"
 LICENSE = "GPL"
 SRC_URI = "http://www.lantz.com/filemgmt_data/files/slugtool.tar.gz \
-	   file://redboot_typo.patch;patch=1"
+	   file://redboot_typo.patch"
 S = "${WORKDIR}"
 
 do_compile () {

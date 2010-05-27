@@ -1,3 +1,44 @@
+# For compatibility
+def base_path_join(a, *p):
+    return oe.path.join(a, *p)
+
+def base_path_relative(src, dest):
+    return oe.path.relative(src, dest)
+
+def base_path_out(path, d):
+    return oe.path.format_display(path, d)
+
+def base_read_file(filename):
+    return oe.utils.read_file(filename)
+
+def base_ifelse(condition, iftrue = True, iffalse = False):
+    return oe.utils.ifelse(condition, iftrue, iffalse)
+
+def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
+    return oe.utils.conditional(variable, checkvalue, truevalue, falsevalue, d)
+
+def base_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
+    return oe.utils.less_or_equal(variable, checkvalue, truevalue, falsevalue, d)
+
+def base_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
+    return oe.utils.version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d)
+
+def base_contains(variable, checkvalues, truevalue, falsevalue, d):
+    return oe.utils.contains(variable, checkvalues, truevalue, falsevalue, d)
+
+def base_both_contain(variable1, variable2, checkvalue, d):
+    return oe.utils.both_contain(variable1, variable2, checkvalue, d)
+
+def base_prune_suffix(var, suffixes, d):
+    return oe.utils.prune_suffix(var, suffixes, d)
+
+def oe_filter(f, str, d):
+    return oe.utils.str_filter(f, str, d)
+
+def oe_filter_out(f, str, d):
+    return oe.utils.str_filter_out(f, str, d)
+
+
 def subprocess_setup():
    import signal
    # Python installs a SIGPIPE handler by default. This is usually not what
@@ -28,53 +69,6 @@ def oe_system(d, cmd):
     """ Popen based version of os.system. """
     return oe_popen(d, cmd, shell=True).wait()
 
-# like os.path.join but doesn't treat absolute RHS specially
-def base_path_join(a, *p):
-    path = a
-    for b in p:
-        if path == '' or path.endswith('/'):
-            path +=  b
-        else:
-            path += '/' + b
-    return path
-
-def base_path_relative(src, dest):
-    """ Return a relative path from src to dest.
-
-    >>> base_path_relative("/usr/bin", "/tmp/foo/bar")
-    ../../tmp/foo/bar
-
-    >>> base_path_relative("/usr/bin", "/usr/lib")
-    ../lib
-
-    >>> base_path_relative("/tmp", "/tmp/foo/bar")
-    foo/bar
-    """
-    from os.path import sep, pardir, normpath, commonprefix
-
-    destlist = normpath(dest).split(sep)
-    srclist = normpath(src).split(sep)
-
-    # Find common section of the path
-    common = commonprefix([destlist, srclist])
-    commonlen = len(common)
-
-    # Climb back to the point where they differentiate
-    relpath = [ pardir ] * (len(srclist) - commonlen)
-    if commonlen < len(destlist):
-        # Add remaining portion
-        relpath += destlist[commonlen:]
-
-    return sep.join(relpath)
-
-def base_path_out(path, d):
-    """ Prepare a path for display to the user. """
-    rel = base_path_relative(d.getVar("TOPDIR", 1), path)
-    if len(rel) > len(path):
-        return path
-    else:
-        return rel
-
 # for MD5/SHA handling
 def base_chk_load_parser(config_paths):
     import ConfigParser
@@ -84,6 +78,15 @@ def base_chk_load_parser(config_paths):
 
     return parser
 
+def setup_checksum_deps(d):
+    try:
+        import hashlib
+    except ImportError:
+        if d.getVar("PN", True) != "shasum-native":
+            depends = d.getVarFlag("do_fetch", "depends") or ""
+            d.setVarFlag("do_fetch", "depends", "%s %s" %
+                         (depends, "shasum-native:do_populate_sysroot"))
+
 def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data):
     strict_checking =  bb.data.getVar("OE_STRICT_CHECKSUMS", data, True)
     if not os.path.exists(localpath):
@@ -91,25 +94,18 @@ def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256s
         bb.note("The localpath does not exist '%s'" % localpath)
         raise Exception("The path does not exist '%s'" % localpath)
 
-    try:
-        md5pipe = os.popen('PATH=%s md5sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
-        md5data = (md5pipe.readline().split() or [ "" ])[0]
-        md5pipe.close()
-    except OSError, e:
-        if strict_checking:
-            raise Exception("Executing md5sum failed")
-        else:
-            bb.note("Executing md5sum failed")
-
-    try:
-        shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
-        sha256data = (shapipe.readline().split() or [ "" ])[0]
-        shapipe.close()
-    except OSError, e:
-        if strict_checking:
-            raise Exception("Executing shasum failed")
-        else:
-            bb.note("Executing shasum failed")
+    md5data = bb.utils.md5_file(localpath)
+    sha256data = bb.utils.sha256_file(localpath)
+    if not sha256data:
+        try:
+            shapipe = os.popen('PATH=%s oe_sha256sum "%s"' % (bb.data.getVar('PATH', data, True), localpath))
+            sha256data = (shapipe.readline().split() or [ "" ])[0]
+            shapipe.close()
+        except OSError, e:
+            if strict_checking:
+                raise Exception("Executing shasum failed")
+            else:
+                bb.note("Executing shasum failed")
 
     if (expected_md5sum == None or expected_md5sum == None):
         from string import maketrans
@@ -204,76 +200,6 @@ def base_get_checksums(pn, pv, src_uri, localpath, params, data):
 def base_chk_file(pn, pv, src_uri, localpath, params, data):
     (expected_md5sum, expected_sha256sum) = base_get_checksums(pn, pv, src_uri, localpath, params, data)
     return base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data)
-
-def base_read_file(filename):
-	try:
-		f = file( filename, "r" )
-	except IOError, reason:
-		return "" # WARNING: can't raise an error now because of the new RDEPENDS handling. This is a bit ugly. :M:
-	else:
-		return f.read().strip()
-	return None
-
-def base_ifelse(condition, iftrue = True, iffalse = False):
-    if condition:
-        return iftrue
-    else:
-        return iffalse
-
-def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
-	if bb.data.getVar(variable,d,1) == checkvalue:
-		return truevalue
-	else:
-		return falsevalue
-
-def base_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
-	if float(bb.data.getVar(variable,d,1)) <= float(checkvalue):
-		return truevalue
-	else:
-		return falsevalue
-
-def base_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
-    result = bb.vercmp(bb.data.getVar(variable,d,True), checkvalue)
-    if result <= 0:
-        return truevalue
-    else:
-        return falsevalue
-
-def base_contains(variable, checkvalues, truevalue, falsevalue, d):
-	val = bb.data.getVar(variable,d,1)
-	if not val:
-		return falsevalue
-	matches = 0
-	if type(checkvalues).__name__ == "str":
-		checkvalues = [checkvalues]
-	for value in checkvalues:
-		if val.find(value) != -1:
-			matches = matches + 1
-	if matches == len(checkvalues):
-		return truevalue
-	return falsevalue
-
-def base_both_contain(variable1, variable2, checkvalue, d):
-       if bb.data.getVar(variable1,d,1).find(checkvalue) != -1 and bb.data.getVar(variable2,d,1).find(checkvalue) != -1:
-               return checkvalue
-       else:
-               return ""
-
-def base_prune_suffix(var, suffixes, d):
-    # See if var ends with any of the suffixes listed and 
-    # remove it if found
-    for suffix in suffixes:
-        if var.endswith(suffix):
-            return var.replace(suffix, "")
-    return var
-
-def oe_filter(f, str, d):
-	from re import match
-	return " ".join(filter(lambda x: match(f, x, 0), str.split()))
-
-def oe_filter_out(f, str, d):
-	from re import match
-	return " ".join(filter(lambda x: not match(f, x, 0), str.split()))
 
 oedebug() {
 	test $# -ge 2 || {
@@ -487,7 +413,7 @@ def check_app_exists(app, d):
 
 	app = data.expand(app, d)
 	path = data.getVar('PATH', d, 1)
-	return len(which(path, app)) != 0
+	return bool(which(path, app))
 
 def explode_deps(s):
 	return bb.utils.explode_deps(s)

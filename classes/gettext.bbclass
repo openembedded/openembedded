@@ -1,4 +1,3 @@
-DEPENDS =+ "gettext-native"
 def gettext_after_parse(d):
     # Remove the NLS bits if USE_NLS is no.
     if bb.data.getVar('USE_NLS', d, 1) == 'no':
@@ -12,5 +11,7 @@ python () {
     gettext_after_parse(d)
 }
 
-DEPENDS =+ "gettext-native"
+DEPENDS_GETTEXT = "gettext gettext-native"
+
+DEPENDS =+ "${DEPENDS_GETTEXT}"
 EXTRA_OECONF += "--enable-nls"

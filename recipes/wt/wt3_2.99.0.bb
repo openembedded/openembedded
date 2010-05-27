@@ -2,7 +2,7 @@ require wt3.inc
 
 PR = "${INC_PR}.1"
 
-SRC_URI += "file://src.patch;patch=1 \
+SRC_URI += "file://src.patch \
            "
 
 do_configure_append() {

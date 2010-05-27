@@ -1,33 +1,19 @@
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.12."
-LICENSE = "GPLv2+"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r21"
+require udev.inc
 
-# needed for init.d script
-RDEPENDS_${PN} += "udev-utils"
+PR = "${INC_PR}.0"
 
-SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://mount.blacklist \
-	   file://run.rules \
+SRC_URI += "file://mount.blacklist \
+	    file://run.rules \
+	    file://default \
+	    file://cache \
 	   "
-SRC_URI += " \
-       file://udev.rules \
-       file://devfs-udev.rules \
-       file://links.conf \
-       file://permissions.rules \
-       file://mount.sh \
-       file://network.sh \
-       file://local.rules \
-       file://default \
-       file://init \
-       file://cache \
-"
-
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
 
@@ -39,26 +25,16 @@ SRC_URI_append_bug = " \
 
 PACKAGE_ARCH_bug = "bug"
 
-inherit update-rc.d autotools_stage
-
-# Put stuff in /lib and /sbin
-export sbindir="${base_sbindir}"
-export exec_prefix=""
 EXTRA_OECONF += " --with-udev-prefix= \
                   --with-libdir-name=${base_libdir} \
 "
 
-INITSCRIPT_NAME = "udev"
-INITSCRIPT_PARAMS = "start 03 S ."
+UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/"
 
-PACKAGES =+ "udev-utils libvolume-id libvolume-id-dev"
-
-FILES_libvolume-id-dev = "${includedir}/libvolume_id.h ${libdir}/libvolume_id.a ${libdir}/libvolume_id.so ${libdir}/pkgconfig/libvolume_id.pc"
-FILES_udev-utils = "${usrbindir}/udevinfo ${sbindir}/udevadm ${usrbindir}/udevtest"
-FILES_libvolume-id = "${base_libdir}/libvolume_id.so.*"
+LEAD_SONAME = "libudev.so.0"
 
 RPROVIDES_${PN} = "hotplug"
-FILES_${PN} += "${usrbindir}/* ${usrsbindir}/udevd"
+FILES_${PN} += "${usrbindir}/* ${usrsbindir}/udevd ${sbindir}/udevadm"
 FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 
 # udev installs binaries under $(udev_prefix)/lib/udev, even if ${libdir}
@@ -103,6 +79,8 @@ do_install () {
 
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
+        oe_libinstall -C udev/lib -so libudev ${D}${libdir}
+        install ${S}/udev/lib/libudev.h ${D}${includedir}
 }
 
 do_install_append_h2200() {
@@ -130,20 +108,6 @@ if [ -d $D/lib/udev/rules.d ] ; then
 	rm -rf $D/lib/udev/rules.d
 	ln -sf ${sysconfdir}/udev/rules.d $D/lib/udev/
 fi
-}
-
-do_stage_append() {
-        install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}
-        oe_libinstall -C extras/volume_id/lib -so libvolume_id ${STAGING_LIBDIR}
-        oe_libinstall -C udev/lib -so libudev ${STAGING_LIBDIR}
-        # Since we change exec_prefix above, autotools_stage_all will not see the .pc files
-        # When we upgrade to 145 with the path bugs fixed we can drop all this (see poky)
-        install -d ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
-        install ${S}/extras/volume_id/lib/libvolume_id.pc ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
-        install ${S}/udev/lib/libudev.pc ${STAGING_DIR_TARGET}${prefix}${libdir}/pkgconfig/
-	install -d ${STAGING_DIR_TARGET}${prefix}${includedir}/
-        install ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_DIR_TARGET}${prefix}${includedir}/
-        install ${S}/udev/lib/libudev.h ${STAGING_DIR_TARGET}${prefix}${includedir}/
 }
 
 SRC_URI[md5sum] = "86382b7bbc64459e714c65a2a4e10916"

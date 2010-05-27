@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/metalog/metalog-${PV}.tar.gz \
-           file://crosscompile.patch;patch=1"
+           file://crosscompile.patch"
 S = "${WORKDIR}/metalog-${PV}"
 
 inherit autotools

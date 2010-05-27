@@ -8,10 +8,10 @@ APPNAME = "portabase"
 PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/portabase/portabase_${PV}.tar.gz \
-	   file://qtopia.patch;patch=1 		\
-	   file://fileselector.patch;patch=1    \
-           file://qtversion.patch;patch=1 \
-           file://qt2310-fontbug.patch;patch=1"
+	   file://qtopia.patch 		\
+	   file://fileselector.patch    \
+           file://qtversion.patch \
+           file://qt2310-fontbug.patch"
 
 S = "${WORKDIR}/portabase"
 

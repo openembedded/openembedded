@@ -7,7 +7,7 @@ LICENSE = "GPL"
 
 #we know that GC version is 6.5, so we patch out the version check, since gc_open was already detected
 SRC_URI = "${SOURCEFORGE_MIRROR}/inkscape/inkscape-${PV}.tar.bz2 \
-           file://no-boehm-version-check.patch;patch=1"
+           file://no-boehm-version-check.patch"
 
 S = "${WORKDIR}/inkscape-${PV}"
 

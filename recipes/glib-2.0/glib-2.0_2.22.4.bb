@@ -11,16 +11,16 @@ DEPENDS = "glib-2.0-native gtk-doc virtual/libiconv virtual/libintl"
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.22/glib-${PV}.tar.bz2;name=archive \
   file://glibconfig-sysdefs.h \
-  file://configure-libtool.patch;patch=1 \
-  file://g_once_init_enter.patch;patch=1 \
-  file://uclibc-res_query.patch;patch=1 \
+  file://configure-libtool.patch \
+  file://g_once_init_enter.patch \
+  file://uclibc-res_query.patch \
 "
 SRC_URI[archive.md5sum] = "d91bcbe27556430ddecce65086355708"
 SRC_URI[archive.sha256sum] = "0d1f6bf8aaeab772f2370229eefda45bef434e3f29a7d1d8e5dfafeaa1d8ad14"
 
-SRC_URI_append_arm = " file://atomic-thumb.patch;patch=1"
-SRC_URI_append_armv6 = " file://gatomic_armv6.patch;patch=1"
-SRC_URI_append_armv7a = " file://gatomic_armv6.patch;patch=1" 
+SRC_URI_append_arm = " file://atomic-thumb.patch"
+SRC_URI_append_armv6 = " file://gatomic_armv6.patch"
+SRC_URI_append_armv7a = " file://gatomic_armv6.patch" 
 
 PR = "r1"
 

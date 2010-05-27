@@ -5,7 +5,7 @@ DEPENDS = "gnome-common glib-2.0 gtk+ gconf"
 
 inherit gnome pkgconfig
 
-SRC_URI += "file://no-try-run-strftime.diff;patch=1"
+SRC_URI += "file://no-try-run-strftime.diff"
 
 EXTRA_OECONF = "--disable-scrollkeeper"
 

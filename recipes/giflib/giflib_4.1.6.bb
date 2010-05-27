@@ -7,6 +7,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/giflib/${BP}.tar.bz2"
 
 inherit autotools
 
+DEPENDS = "libsm"
+
 PACKAGES += "${PN}-utils"
 FILES_${PN} = "${libdir}/libgif.so.*"
 FILES_${PN}-utils = "${bindir}"

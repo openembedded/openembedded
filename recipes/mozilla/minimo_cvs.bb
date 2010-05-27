@@ -16,14 +16,14 @@ PE = "1"
 PR = "r1"
 
 SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${MOZDATE} \
-	   file://minimo.patch;patch=1 \
-           file://bug-322806.diff;patch=1 \
+	   file://minimo.patch \
+           file://bug-322806.diff \
 	   file://mozconfig file://minimo \
-	   file://eabi-fix.patch;patch=1 \
-	   file://eabi-fix2.patch;patch=1 \
-	   file://eabi-fix3.patch;patch=1 \
-	   file://minimo-components-ssr-only.patch;patch=1 \
-	   file://minimo-disable-mode-switch.patch;patch=1 \
+	   file://eabi-fix.patch \
+	   file://eabi-fix2.patch \
+	   file://eabi-fix3.patch \
+	   file://minimo-components-ssr-only.patch \
+	   file://minimo-disable-mode-switch.patch \
            file://minimo.desktop file://minimo.png"
 
 inherit autotools

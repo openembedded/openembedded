@@ -3,7 +3,7 @@ PR ="r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://linux.omap.com/pub/bootloader/2430sdp/source/u-boot-SEP1106.tar.gz \
-           file://u-boot-makefile-3.81.patch;patch=1 \
+           file://u-boot-makefile-3.81.patch \
           "
 
 S = "${WORKDIR}/u-boot"

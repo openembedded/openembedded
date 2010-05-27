@@ -8,6 +8,6 @@ FILES_${PN} += "\
         ${gcclibdir}/${TARGET_SYS}/*/*.o \
 "
 
-SRC_URI_append = "file://fortran-cross-compile-hack.patch;patch=1"
+SRC_URI_append = "file://fortran-cross-compile-hack.patch"
 
 ARCH_FLAGS_FOR_TARGET += "-isystem${STAGING_INCDIR}"

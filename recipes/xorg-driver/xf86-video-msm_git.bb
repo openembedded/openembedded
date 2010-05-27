@@ -9,10 +9,10 @@ PV = "1.1.0+${PR}+gitr${SRCREV}"
 PE = "1"
 
 SRC_URI = "git://codeaurora.org/quic/xwin/xf86-video-msm.git;protocol=git;branch=chromium \
-           file://compile_cfbbd17f0d4ab0f30915594d74e1b2b12c4ff8a1.patch;patch=1 \
+           file://compile_cfbbd17f0d4ab0f30915594d74e1b2b12c4ff8a1.patch \
            file://kgsl_drm.h "
 
-SRC_URI_append_htcdream = "file://no_neon_cfbbd17f0d4ab0f30915594d74e1b2b12c4ff8a1.patch;patch=1"
+SRC_URI_append_htcdream = "file://no_neon_cfbbd17f0d4ab0f30915594d74e1b2b12c4ff8a1.patch"
 
 S = "${WORKDIR}/git"
 

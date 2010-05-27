@@ -4,7 +4,7 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-SRCREV = "f751f2724eea23d0ca050bdf2672f9011ae09517"
+SRCREV = "93673aa09cafc8fb5cfc3cb4055a73e25e595b70"
 PV = "0.9.5.9+gitr${SRCPV}"
 PR = "r3"
 PE = "1"
@@ -18,7 +18,7 @@ SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd \
            file://frameworkd.conf \
 	   "
-SRC_URI_append_shr = "file://oeventsd-use-opimd-signals.patch;patch=1"
+SRC_URI_append_shr = "file://oeventsd-use-opimd-signals.patch"
 
 S = "${WORKDIR}/git"
 

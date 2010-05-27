@@ -9,14 +9,14 @@ LICENSE = "LGPL"
 PR = "r9"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
-           file://agawa-piro-mickey.patch;patch=1 \
-           file://pygame.patch;patch=1 \
-           file://gcc34.patch;patch=1 \
-           file://mouse.patch;patch=1 \
-	   file://kill-stdc++.patch;patch=1 \
-	   file://ipaq.patch;patch=1 \
-	   file://SDL-Akita.patch;patch=1 \
-	   file://fixlibs.patch;patch=1"
+           file://agawa-piro-mickey.patch \
+           file://pygame.patch \
+           file://gcc34.patch \
+           file://mouse.patch \
+	   file://kill-stdc++.patch \
+	   file://ipaq.patch \
+	   file://SDL-Akita.patch \
+	   file://fixlibs.patch"
 S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools binconfig

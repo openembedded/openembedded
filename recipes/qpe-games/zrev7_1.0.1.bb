@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-ZRev7.html"
 PR = "r1"
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/zrev7_V1.0.1.tar.gz \
-           file://zrev.patch;patch=1"
+           file://zrev.patch"
 S = "${WORKDIR}/zrev7_V${PV}"
 
 APPNAME = "zrev7"

@@ -11,7 +11,7 @@ DEPENDS = "libxml2 gconf-osso dbus-0.23.1-osso5 bzip2 gnome-mime-data zlib samba
 RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz \
-           file://gconftool-lossage.patch;patch=1;pnum=1"
+           file://gconftool-lossage.patch"
 
 EXTRA_OECONF = "--with-ipc=dbus --enable-ext-dbus-daemon --disable-orbit"
 

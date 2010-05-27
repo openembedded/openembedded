@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.python-ldap.org/"
 DEPENDS = "python openldap" 
  
 SRC_URI = "http://pypi.python.org/packages/source/p/${PN}/${PN}-${PV}.tar.gz \ 
-           file://setup.cfg.patch;patch=1"  
+           file://setup.cfg.patch"  
  
 inherit setuptools  
 

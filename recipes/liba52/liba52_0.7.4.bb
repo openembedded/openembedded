@@ -7,7 +7,7 @@ PR = "r3"
 inherit autotools
 
 SRC_URI = "http://liba52.sourceforge.net/files/a52dec-${PV}.tar.gz \
-           file://01-enable-pic.diff;patch=1"
+           file://01-enable-pic.diff"
 S = "${WORKDIR}/a52dec-${PV}"
 
 EXTRA_OECONF = " --enable-shared "

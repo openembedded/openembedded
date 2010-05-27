@@ -6,9 +6,9 @@ PR = "r1"
 COMPATIBLE_MACHINE = "ep93xx"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2;name=kernel \
-	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc1.bz2;patch=1;name=rcpatch \
-	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.18-rc1-git9.bz2;patch=1;name=patch \
-	   http://www.wantstofly.org/~buytenh/ep93xx/derevo20.diff;pnum=1;patch=1;name=derevopatch \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc1.bz2;apply=yes;name=rcpatch \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.18-rc1-git9.bz2;apply=yes;name=patch \
+	   http://www.wantstofly.org/~buytenh/ep93xx/derevo20.diff;name=derevopatch \
            file://defconfig \
 		   "
 

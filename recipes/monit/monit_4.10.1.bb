@@ -3,7 +3,7 @@ DEPENDS = "openssl"
 PR = "r1"
 
 SRC_URI = "http://www.tildeslash.com/monit/dist/monit-${PV}.tar.gz\
-	file://no-strip-in-makefile.patch;patch=1 \
+	file://no-strip-in-makefile.patch \
 	file://init"
 
 INITSCRIPT_NAME = "monit"

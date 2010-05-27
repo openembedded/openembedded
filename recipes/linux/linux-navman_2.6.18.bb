@@ -9,7 +9,7 @@ PR = "r0"
 COMPATIBLE_MACHINE = "navman-icn330"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2;name=kernel \
-           http://www.duff.dk/navman/navman-2.6.18.patch;patch=1;name=patch \
+           http://www.duff.dk/navman/navman-2.6.18.patch;name=patch \
            file://defconfig \
 		   "
 

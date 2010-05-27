@@ -4,11 +4,11 @@ PR = "${INC_PR}.1"
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
   \
-  file://udhcpscript.patch;patch=1 \
-  file://B921600.patch;patch=1 \
-  file://fdisk_lineedit_segfault.patch;patch=1 \
-  file://iptunnel.patch;patch=1 \
-  file://busybox-appletlib-dependency.patch;patch=1 \
+  file://udhcpscript.patch \
+  file://B921600.patch \
+  file://fdisk_lineedit_segfault.patch \
+  file://iptunnel.patch \
+  file://busybox-appletlib-dependency.patch \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \

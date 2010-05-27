@@ -1,0 +1,57 @@
+From d6b0c74edb3fc58060d1ab337bcb1f838328ebbf Mon Sep 17 00:00:00 2001
+From: Eric Benard <eric@eukrea.com>
+Date: Sun, 2 May 2010 10:49:05 +0200
+Subject: [PATCH] autotools
+
+---
+ Makefile.am  |   12 ++++++++++++
+ configure.ac |   17 +++++++++++++++++
+ 2 files changed, 29 insertions(+), 0 deletions(-)
+ create mode 100644 Makefile.am
+ create mode 100644 configure.ac
+
+diff --git a/Makefile.am b/Makefile.am
+new file mode 100644
+index 0000000..76976fb
+--- /dev/null
++++ b/Makefile.am
+@@ -0,0 +1,12 @@
++lib_LTLIBRARIES = libz.la
++
++libz_la_SOURCES = adler32.c compress.c crc32.c gzclose.c gzlib.c gzread.c gzwrite.c \
++		uncompr.c deflate.c trees.c zutil.c inflate.c infback.c inftrees.c \
++		inffast.c
++
++libz_la_LDFLAGS = -version-number 1:2:5
++
++include_HEADERS = zconf.h zlib.h
++
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = zlib.pc
+diff --git a/configure.ac b/configure.ac
+new file mode 100644
+index 0000000..177c89a
+--- /dev/null
++++ b/configure.ac
+@@ -0,0 +1,17 @@
++AC_INIT(zlib,1.2.5)
++AC_CONFIG_SRCDIR(adler32.c)
++AM_INIT_AUTOMAKE(zlibs,1.2.5)
++
++AC_PREREQ([2.59])
++
++AC_PROG_CC([gcc])
++AC_PROG_LIBTOOL
++
++AC_HEADER_STDC
++
++AC_CONFIG_FILES([
++Makefile
++zlib.pc
++])
++
++AC_OUTPUT
+\ No newline at end of file
+-- 
+1.6.3.3
+

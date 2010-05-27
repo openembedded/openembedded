@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 
 
 SRC_URI = "http://www.deater.net/john/${P}.tar.gz \
-		   file://fix-makefile.patch;patch=1"
+		   file://fix-makefile.patch"
 
 do_install() {
 	install -d ${D}${sbindir}

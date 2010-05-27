@@ -6,7 +6,7 @@ LICENSE = "MIT"
 DEPENDS = "libparserutils"
 
 SRC_URI = "http://www.netsurf-browser.org/projects/releases/hubbub-${PV}-src.tar.gz \
-           file://hubbub-uninitialised.patch;patch=1"
+           file://hubbub-uninitialised.patch"
 
 PR = "r1"
 

@@ -9,9 +9,9 @@ PROVIDES = "libnet-1.1"
 PR = "r4"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet/libnet_${PV}.orig.tar.gz \
-           file://support-uclibc.patch;patch=1 \
-           file://fix-endianess-test.patch;patch=1 \
-           file://new-autotools.patch;patch=1"
+           file://support-uclibc.patch \
+           file://fix-endianess-test.patch \
+           file://new-autotools.patch"
 
 S = "${WORKDIR}/libnet"
 

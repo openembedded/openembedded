@@ -8,17 +8,18 @@ DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jp
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-	   file://makefile-nostrip-svn.patch;patch=1 \
-	   file://mplayer-arm-pld.patch;patch=1 \
-	   file://mplayer-lavc-arm.patch;patch=1 \
-       file://fix-exp.diff;patch=1;maxrev=30291 \
-	   file://fix-addrinfo.patch;patch=1;maxrev=30302 \
-       file://fix-avconfig.diff;patch=1;maxrev=30376 \
+	   file://makefile-nostrip-svn.patch \
+	   file://mplayer-arm-pld.patch \
+	   file://mplayer-lavc-arm.patch \
+       file://fix-exp.diff;maxrev=30291 \
+	   file://fix-addrinfo.patch;maxrev=30302 \
+       file://fix-avconfig.diff;maxrev=30376 \
+	   file://fix-emu_qtx_api.diff;maxrev=30165 \
 "
 
 SRCREV = "30165"
 SRC_URI_append_armv7a = " \
-		file://omapfb.patch;patch=1 \
+		file://omapfb.patch \
 	   file://vo_omapfb.c \
 	   file://yuv.S \
 	  "
@@ -27,7 +28,7 @@ SRC_URI_append_armv7a = " \
 # machine seem to be set to executable by the toolchain. If someone
 # discovers this is more general than please make this more general
 # ie. for all armv4 machines.
-SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
+SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 
 PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
@@ -39,7 +40,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc3+svnr${SRCPV}"
-PR = "r19"
+PR = "r20"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_shr = "1"
@@ -156,6 +157,9 @@ EXTRA_OECONF = " \
 	--disable-tga \
 	--disable-pnm \
 	--disable-md5sum \
+	--disable-xss \
+	--disable-dga1 \
+	--disable-dga2 \
 	\
 	--enable-alsa \
 	--enable-ossaudio \

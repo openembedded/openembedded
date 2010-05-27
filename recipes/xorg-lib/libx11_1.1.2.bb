@@ -9,7 +9,7 @@ PR = "r3"
 
 XORG_PN = "libX11"
 
-SRC_URI += "file://include_fix.patch;patch=1" 
+SRC_URI += "file://include_fix.patch" 
 
 EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
 

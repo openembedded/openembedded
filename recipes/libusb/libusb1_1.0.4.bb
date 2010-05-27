@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = " \
            ${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2 \
-           file://libusb-shortok.patch;patch=1 \
+           file://libusb-shortok.patch \
           "
 S = "${WORKDIR}/libusb-${PV}"
 

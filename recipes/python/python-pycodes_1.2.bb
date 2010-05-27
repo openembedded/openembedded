@@ -8,7 +8,7 @@ SRCNAME = "pycodes"
 PR = "ml1"
 
 SRC_URI = "http://web.mit.edu/~emin/www/source_code/pycodes/pycodes-1-2.tar.gz \
-           file://no-docs.patch;patch=1"
+           file://no-docs.patch"
 S = "${WORKDIR}/${SRCNAME}"
 
 inherit distutils

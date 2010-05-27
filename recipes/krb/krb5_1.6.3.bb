@@ -8,7 +8,7 @@ DEPENDS = "perl-native ncurses util-linux-ng e2fsprogs-native"
 inherit autotools binconfig
 
 SRC_URI = "http://web.mit.edu/kerberos/dist/krb5/1.6/krb5-1.6.3-signed.tar \
-           file://fix-uclibc-ruserpass-collision.patch \
+           file://fix-uclibc-ruserpass-collision.patch;apply=no \
            file://copyperms.patch"
 
 S = "${WORKDIR}/${PN}-${PV}/src/"

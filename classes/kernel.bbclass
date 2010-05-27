@@ -14,7 +14,7 @@ python __anonymous () {
     kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
     if kerneltype == 'uImage':
     	depends = bb.data.getVar("DEPENDS", d, 1)
-    	depends = "%s u-boot-mkimage-openmoko-native" % depends
+    	depends = "%s u-boot-mkimage-native" % depends
     	bb.data.setVar("DEPENDS", depends, d)
 
     image = bb.data.getVar('INITRAMFS_IMAGE', d, True)
@@ -142,6 +142,7 @@ kernel_do_install() {
 
 	# Check for arch/x86 on i386
 	elif [ -d arch/x86/include/asm/ ]; then
+		mkdir -p $kerneldir/include/asm-x86/
 		cp -fR arch/x86/include/asm/* $kerneldir/include/asm-x86/
 		install -d $kerneldir/arch/x86/include
 		cp -fR arch/x86/* $kerneldir/arch/x86/
@@ -155,12 +156,15 @@ kernel_do_install() {
 	mkdir -p $kerneldir/include/asm-generic
 	cp -fR include/asm-generic/* $kerneldir/include/asm-generic/
 
-	for entry in drivers/crypto drivers/media include/generated include/linux include/net include/pcmcia include/media include/acpi include/sound include/video include/scsi include/trace; do
+	for entry in drivers/crypto drivers/media include/generated include/linux include/net include/pcmcia include/media include/acpi include/sound include/video include/scsi include/trace include/mtd include/rdma include/drm include/xen; do
 		if [ -d $entry ]; then
 			mkdir -p $kerneldir/$entry
 			cp -fR $entry/* $kerneldir/$entry/
 		fi
 	done
+	if [ -f include/Kbuild ]; then
+		cp -fR include/Kbuild $kerneldir/include
+	fi
 
 	if [ -d drivers/sound ]; then
 		# 2.4 alsa needs some headers from this directory
@@ -199,6 +203,7 @@ kernel_do_install() {
 
 sysroot_stage_all_append() {
 	sysroot_stage_dir ${D}/kernel ${SYSROOT_DESTDIR}${STAGING_KERNEL_DIR}
+	cp -fpPR ${D}/kernel/.config ${SYSROOT_DESTDIR}${STAGING_KERNEL_DIR}
 }
 
 kernel_do_configure() {
@@ -545,6 +550,6 @@ do_deploy() {
 }
 
 do_deploy[dirs] = "${S}"
-do_deploy[depends] += "fakeroot-native:do_populate_staging"
+do_deploy[depends] += "fakeroot-native:do_populate_sysroot"
 
 addtask deploy before do_build after do_package

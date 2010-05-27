@@ -5,7 +5,7 @@ DEPENDS += " xextproto xproto zlib"
 PROVIDES = "lbxutil"
 PE = "1"
 
-SRC_URI += "file://mkg3states-1.1.patch;patch=1"
+SRC_URI += "file://mkg3states-1.1.patch"
 
 export CC_FOR_BUILD = "gcc"
 

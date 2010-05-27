@@ -10,7 +10,7 @@ PR = "r1"
 inherit palmtop
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/corsair/corsair-${PV}.tar.gz \
-           file://corsair-opie.patch;patch=1"
+           file://corsair-opie.patch"
 
 S = "${WORKDIR}/corsair"
 

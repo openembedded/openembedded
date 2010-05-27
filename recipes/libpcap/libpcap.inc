@@ -8,7 +8,7 @@ PR = "r3"
 
 # Don't forget to edit shared.patch to have the correct version number inside
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz \
-           file://shared.patch;patch=1"
+           file://shared.patch"
 
 inherit autotools
 

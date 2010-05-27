@@ -1,6 +1,6 @@
 require zziplib.inc
 
-SRC_URI += "file://zziplib-buildfix.patch;patch=1"
+SRC_URI += "file://zziplib-buildfix.patch"
 
 
 SRC_URI[md5sum] = "4943ab7aa141af2c339266cd66b05c74"

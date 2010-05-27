@@ -4,7 +4,7 @@ USB, Cardbus, and other hot-pluggable devices using the new Hotplug \
 feature in Linux 2.4."
 LICENSE = "GPL"
 SRC_URI = "http://www.dotaster.com/~shuu/linux/murasaki/0.8/8/murasaki-${PV}.tar.gz \
-	   file://fix-compile.patch;patch=1"
+	   file://fix-compile.patch"
 
 EXTRA_OEMAKE = 'OPT="-DPATH_MAX" DEBUG= INC="-I ../inc ${CFLAGS}"'
 

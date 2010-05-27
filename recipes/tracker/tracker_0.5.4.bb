@@ -5,7 +5,7 @@ DEPENDS = "file gtk+ gstreamer gamin libgmime dbus poppler libexif libgsf libgno
 PR = "r3"
 
 SRC_URI = "http://www.gnome.org/~jamiemcc/tracker/tracker-${PV}.tar.gz \
-           file://no-ioprio.patch;patch=1 \
+           file://no-ioprio.patch \
            file://90tracker " 
 
 inherit autotools pkgconfig

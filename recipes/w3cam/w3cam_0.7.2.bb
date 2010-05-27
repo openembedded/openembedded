@@ -6,7 +6,7 @@ LICENSE = "GPLV2"
 PR = "r0"
 
 SRC_URI = "http://mpx.freeshell.net/w3cam-0.7.2.tar.gz \
-	   file://staticpaths.patch;patch=1"
+	   file://staticpaths.patch"
 
 S = "${WORKDIR}/w3cam-0.7.2/"
 

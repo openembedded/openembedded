@@ -6,16 +6,16 @@ DEPENDS = "jpeg zlib fontconfig cups"
 PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/ghostscript/ghostscript_${PV}~dfsg.orig.tar.gz;name=tarball \
-           file://0001_svn_snapshot.patch;patch=1 \
-           file://0002_svn_snapshot_jbig2dec.patch;patch=1 \
-           file://1001_install_cjk_examples.patch;patch=1 \
-           file://1002_ps2pdf_man_fix.patch;patch=1 \
-           file://1003_fix_autoconf_create_from_infiles.patch;patch=1 \
-           file://1004_CVE-2009-0792_CVE-2009-0584_CVE-2009-0583.patch;patch=1 \
-           file://1006_system-jasper.patch;patch=1 \
-           file://1007_fix_pphs_script_not_lib.patch;patch=1 \
-           file://2001_docdir_fix_for_debian.patch;patch=1 \
-           file://2002_gs_man_fix_debian.patch;patch=1 \
+           file://0001_svn_snapshot.patch \
+           file://0002_svn_snapshot_jbig2dec.patch \
+           file://1001_install_cjk_examples.patch \
+           file://1002_ps2pdf_man_fix.patch \
+           file://1003_fix_autoconf_create_from_infiles.patch \
+           file://1004_CVE-2009-0792_CVE-2009-0584_CVE-2009-0583.patch \
+           file://1006_system-jasper.patch \
+           file://1007_fix_pphs_script_not_lib.patch \
+           file://2001_docdir_fix_for_debian.patch \
+           file://2002_gs_man_fix_debian.patch \
            "
 
 SRC_URI[tarball.md5sum] = "e42706c2409815df5c959484080fd4a3"

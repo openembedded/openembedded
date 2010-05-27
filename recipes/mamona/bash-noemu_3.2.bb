@@ -5,8 +5,8 @@ RCONFLICTS = "bash"
 RREPLACES = "bash"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
-           file://001-005.patch;patch=1 \
-           file://006-add_internal_libcpwd_functions.patch;patch=1"
+           file://001-005.patch \
+           file://006-add_internal_libcpwd_functions.patch"
 
 S = "${WORKDIR}/bash-${PV}"
 

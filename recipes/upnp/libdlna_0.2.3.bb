@@ -4,7 +4,7 @@ LICENSE = "LGPLv2.1"
 DEPENDS = "sqlite3 ffmpeg"
 
 SRC_URI = "http://libdlna.geexbox.org/releases/libdlna-${PV}.tar.bz2 \
-           file://dlna.diff;patch=1"
+           file://dlna.diff"
 
 inherit autotools
 

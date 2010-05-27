@@ -2,8 +2,8 @@ require gnutls.inc
 LICENSE_${PN}-extra = "GPLv3"
 
 SRC_URI += "\
-	file://gnutls-openssl.patch;patch=1 \
-	file://gnutls-replace-siginterrupt.patch;patch=1 \
+	file://gnutls-openssl.patch \
+	file://gnutls-replace-siginterrupt.patch \
 	"
 
 EXTRA_OECONF += " --without-libgcrypt-prefix "

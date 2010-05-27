@@ -5,7 +5,7 @@ PVM = "4.3"
 
 require db4.inc
 
-SRC_URI += "file://arm-thumb-mutex.patch;patch=1"
+SRC_URI += "file://arm-thumb-mutex.patch"
 
 #configuration - set in local.conf to override
 # All the --disable-* options replace --enable-smallbuild, which breaks a bunch of stuff (eg. postfix)

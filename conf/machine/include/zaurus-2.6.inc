@@ -1,25 +1,35 @@
+########################
 # Zaurus common settings
-# Additionally, clamshell specific stuff in zaurus-clamshell.inc
-
-TARGET_ARCH = "arm"
+########################
 
 ERASEBLOCKSIZE = "0x4000"
 ERASEBLOCKSIZE_akita = "0x20000"
 
-# Warning! SL-C3000 seems to be "0x4000" (16m NAND) 
-# C3100 and C3200 have same 128MB NAND device as akita
+# Warning! SL-C3000 has "0x4000" (16MiB NAND) 
+# C3100 and C3200 have same 128MiB NAND device as akita
 ERASEBLOCKSIZE_spitz = "0x20000"
 
-EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=${ERASEBLOCKSIZE} --pad --faketime -n" 
+IMAGE_FSTYPES += "jffs2 tar.gz"
+
+# kernel now supports favourlzo
+IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -m favourlzo \
+                   --output=${T}/${IMAGE_NAME}.rootfs.jffs2 --pad --little-endian --eraseblock=${ERASEBLOCKSIZE} -n \
+                   && sumtool -i ${T}/${IMAGE_NAME}.rootfs.jffs2 \
+                   -o ${T}/${IMAGE_NAME}.rootfs.jffs2.summary \
+                   --eraseblock=${ERASEBLOCKSIZE} -l -p; \
+                   cat ${T}/${IMAGE_NAME}.rootfs.jffs2 > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2; \
+                   rm ${T}/${IMAGE_NAME}.rootfs.jffs2; \
+                   cat ${T}/${IMAGE_NAME}.rootfs.jffs2.summary > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.summary.jffs2; \
+                   rm ${T}/${IMAGE_NAME}.rootfs.jffs2.summary;"
+
 
 EXTRA_IMAGEDEPENDS += "zaurus-installer"
 
-SERIAL_CONSOLE = "115200 ttyS0"
-SERIAL_CONSOLE_collie = "115200 ttySA0"
 
-# FIXME: xserver-xorg is in testing on spitz
+#########
+# xserver (FIXME: xserver-xorg is in testing on spitz)
+#########
 
-# deprecated defaults
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 XSERVER = "xserver-kdrive-fbdev"
 
@@ -40,9 +50,36 @@ PREFERRED_PROVIDER_virtual/xserver_spitz = "xserver-xorg"
 XSERVER_spitz = "xserver-xorg xf86-input-keyboard xf86-input-mouse xf86-input-evdev"
 PREFERRED_PROVIDER_virtual/libgl_spitz = "mesa-dri"
 
-PCMCIA_MANAGER ?= "pcmciautils"
 
-IMAGE_FSTYPES += "jffs2 tar.gz"
+########
+# kernel
+########
+
+MACHINE_KERNEL_VERSION = "2.6"
+
+PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
+
+# Starting with 2.6.32 linux-rp is deprecated for some models
+#PREFERRED_PROVIDER_virtual/kernel = "linux"
+PREFERRED_PROVIDER_virtual/kernel_collie = "linux"
+PREFERRED_PROVIDER_virtual/kernel_tosa = "linux"
+
+# Default bootloader expects "zImage", use "uImage" for u-boot
+# Note: kexecboot can boot both kind of images
+ZAURUS_KERNEL_IMAGETYPE ?= "zImage"
+KERNEL_IMAGETYPE = "${ZAURUS_KERNEL_IMAGETYPE}"
+
+
+################
+# machine tuning
+################
+
+TARGET_ARCH = "arm"
+
+SERIAL_CONSOLE = "115200 ttyS0"
+SERIAL_CONSOLE_collie = "115200 ttySA0"
+
+PCMCIA_MANAGER ?= "pcmciautils"
 
 MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen vfat ext2"
 MACHINE_FEATURES_append_akita = " usbhost "
@@ -52,7 +89,6 @@ MACHINE_FEATURES_append_tosa  = " usbhost wifi "
 MACHINE_EXTRA_RDEPENDS = "zaurusd mtd-utils nandlogical"
 MACHINE_EXTRA_RDEPENDS_collie = "zaurusd"
 
-# Here we just need snd modules
 # Fixme ? pcmcia and pxa2xx-cs are now compiled in kernel
 # Fixme ? module-snd for collie
 MACHINE_EXTRA_RRECOMMENDS_collie = ""
@@ -65,5 +101,10 @@ MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle kernel-module-p
 # Fixme ? module-snd for tosa
 MACHINE_EXTRA_RRECOMMENDS_tosa = "apm-tosa-suspendfix"
 
-require conf/machine/include/zaurus-kernel.inc
+
+##################################
+# build kexecboot kernel while
+# making sure rootfs is compatible
+##################################
+
 require conf/machine/include/initramfs-kexecboot.inc

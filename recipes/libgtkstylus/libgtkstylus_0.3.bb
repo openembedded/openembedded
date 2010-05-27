@@ -7,7 +7,7 @@ PR = "r6"
 inherit autotools
 
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2 \
-	file://makefile.patch;patch=1 \
+	file://makefile.patch \
 	file://gtkstylus.sh"
 
 do_install_append() {

@@ -10,9 +10,9 @@ INC_PR = "r1"
 
 SHRT_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "ftp://ftp.ruby-lang.org/pub/ruby/${SHRT_VER}/ruby-${PV}.tar.gz \
-           file://extmk_run.patch;patch=1 \
-           file://openssl.patch;patch=1 \
-           file://disable_wide_getaddrinfo_check.patch;patch=1"
+           file://extmk_run.patch \
+           file://openssl.patch \
+           file://disable_wide_getaddrinfo_check.patch"
 
 S = "${WORKDIR}/ruby-${PV}"
 

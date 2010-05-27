@@ -2,7 +2,7 @@ require gtk+.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI += "file://smallscreen_filechooser.patch;patch=1 \
+SRC_URI += "file://smallscreen_filechooser.patch \
           "
 
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"

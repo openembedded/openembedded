@@ -6,7 +6,7 @@ LICENSE = "GPL"
 INC_PR = "r1"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
-        file://avinfo-link.patch;patch=1;pnum=0"
+        file://avinfo-link.patch;striplevel=0"
 
 S = "${WORKDIR}/bluez-${PV}"
 

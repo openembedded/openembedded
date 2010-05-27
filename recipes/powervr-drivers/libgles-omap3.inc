@@ -1,7 +1,9 @@
 DESCRIPTION = "libGLES for the omap3"
-LICENCE = "proprietary-binary"
+LICENSE = "proprietary-binary"
 
-COMPATIBLE_MACHINE = "(am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
+PR = "r4"
+
+COMPATIBLE_MACHINE = "(dm3730-am3715-evm|am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 
 DEPENDS = "virtual/libx11 libxau libxdmcp"
 
@@ -12,15 +14,17 @@ PROVIDES += "virtual/egl"
 #
 # 1. if you don't already have a ti account get one here. it's free:
 #  http://www.ti.com/hdr_my_ti
-# 2. fetch the gl-es bin from here:
-#  https://www-a.ti.com/downloads/sds_support/targetcontent/dvsdk/oslinux_dvsdk/v3_00_3530/OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin
-# (replace version in .bin file as appropriate)
-# 3. put the OMAP35x_*.bin file in libgles-omap3/
-#  mv OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin ./libgles-omap3/
+# 2. fetch the gl-es bin (full OMAP Graphics SDK) from here:
+#  http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/latest/index_FDS.html
+# 3. put the OMAP35x_*.bin file in $DL_DIR, i.e. downloads/
+#  mv OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin ./downloads/
+# 4. make the checksum file in ./downloads/ directory:
+#  cd ./downloads/
+#  md5sum OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin > OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin.md5
 # 
 # voila!
 
-SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
+SRC_URI = "http://install.source.dir.local/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
 		   file://cputype \
 		   file://rc.pvr \
 		   file://sample.desktop \
@@ -57,6 +61,7 @@ do_configure() {
 	# Due to recursive make PLAT_* isn't always passed down correctly, so use sed to fix those
 	for mak in $(find ${S} -name "*.mak") ; do
 		sed -i -e s:arm-none-linux-gnueabi-:${TARGET_PREFIX}:g $mak
+		sed -i -e 's:-lX11 -lXau:-lX11 -lXau -lXdmcp:g' $mak
 	done
 
 	# clear out old stuff
@@ -68,7 +73,8 @@ TARGET_CC_ARCH += " ${TARGET_LINK_HASH_STYLE} -Wl,-rpath-link,${BINLOCATION} -L$
 PARALLEL_MAKE = ""
 
 do_compile() {
-	export X11ROOT="${STAGING_INCDIR}"
+	export X11ROOT="${STAGING_DIR_HOST}/usr"
+	export TOOLCHAIN="${TOOLCHAIN_PATH}"
 	export PLATFORM="LinuxOMAP3"
 
 	export PLAT_CC="${CC}"
@@ -157,7 +163,7 @@ do_install () {
 
 	install -d ${D}${sysconfdir}
 	echo "[default]" > ${D}${sysconfdir}/powervr.ini
-	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
+	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so.1" >> ${D}${sysconfdir}/powervr.ini
 
 	# The ES2.x, ES3.x and ES5.x CPUs have different SGX hardware, so we need to install 2 sets of userspace
 
@@ -213,6 +219,16 @@ PACKAGES =+ "${PN}-rawdemos \
 PACKAGES += "xserver-kdrive-powervrsgx \
              ${PN}-tests "
 
+PACKAGES =+ "${PN}-blitwsegl ${PN}-flipwsegl ${PN}-frontwsegl ${PN}-linuxfbwsegl ${PN}-x11wsegl"
+
+FILES_${PN}-blitwsegl = "${libdir}/libpvrPVR2D_BLITWSEGL.so.* ${libdir}/*/libpvrPVR2D_BLITWSEGL.so.*"
+FILES_${PN}-flipwsegl = "${libdir}/libpvrPVR2D_FLIPWSEGL.so.* ${libdir}/*/libpvrPVR2D_FLIPWSEGL.so.*"
+FILES_${PN}-frontwsegl = "${libdir}/libpvrPVR2D_FRONTWSEGL.so.* ${libdir}/*/libpvrPVR2D_FRONTWSEGL.so.*"
+FILES_${PN}-linuxfbwsegl = "${libdir}/libpvrPVR2D_LINUXFBWSEGL.so.* ${libdir}/*/libpvrPVR2D_LINUXFBWSEGL.so.*"
+FILES_${PN}-x11wsegl = "${libdir}/libpvrPVR2D_X11WSEGL.so* ${libdir}/*/libpvrPVR2D_X11WSEGL.so*"
+
+CONFFILES_${PN} = "${sysconfdir}/powervr.ini"
+
 FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${libdir}/ES*/* ${bindir}/pvrsrvinit ${bindir}/cputype ${bindir}/*/*"
 FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
 FILES_${PN}-tests = "${bindir}/*"
@@ -236,6 +252,11 @@ RDEPENDS_${PN} += "fbset devmem2"
 
 #HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
 INSANE_SKIP_${PN} = True
+INSANE_SKIP_${PN}-blitwsegl = True
+INSANE_SKIP_${PN}-flipwsegl = True
+INSANE_SKIP_${PN}-frontwsegl = True
+INSANE_SKIP_${PN}-linuxfbwsegl = True
+INSANE_SKIP_${PN}-x11wsegl = True
 INSANE_SKIP_${PN}-tests = True
 INSANE_SKIP_xserver-kdrive-powervrsgx = True
 

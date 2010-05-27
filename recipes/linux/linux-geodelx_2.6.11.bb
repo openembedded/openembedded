@@ -21,7 +21,7 @@ inherit kernel
 ARCH = "i386"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2;name=kernel \
-	http://www.amd.com/files/connectivitysolutions/geode/geode_lx/${AMD_DRIVER_LABEL}.patch;patch=1;name=patch \
+	http://www.amd.com/files/connectivitysolutions/geode/geode_lx/${AMD_DRIVER_LABEL}.patch;name=patch \
 	file://defconfig"
 
 do_configure_prepend() {

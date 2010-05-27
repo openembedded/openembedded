@@ -7,7 +7,7 @@ PR = "r1"
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
 SRC_URI = "http://tinymail.org/files/releases/pre-releases/v0.0.1/libtinymail-0.0.1.tar.bz2 \
-	   file://no-iconv-detect.patch;patch=1 \
+	   file://no-iconv-detect.patch \
 	   file://iconv-detect.h \
 	   file://gtk-doc.m4 \
            file://gtk-doc.make"

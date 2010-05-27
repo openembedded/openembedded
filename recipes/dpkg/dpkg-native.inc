@@ -5,7 +5,7 @@ inherit native
 DEPENDS = "perl-native bzip2-native zlib-native virtual/update-alternatives-native"
 RDEPENDS = ""
 
-SRC_URI += "file://noman.patch;patch=1"
+SRC_URI += "file://noman.patch"
 FILESPATH += "dpkg-${PV}"
 
 # We need to do this so our perl is picked up.

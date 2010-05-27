@@ -10,39 +10,39 @@ PR = "r23"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-sa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
 SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.bz2;name=kernel \
-           file://cacko.patch;patch=1 \
-           file://unb0rk-rightarrow.patch;patch=1 \
-           file://unb0rk-apm.patch;patch=1 \
-           file://battery.patch;patch=1 \
-           file://bluetooth-2.4.18-mh15.patch;patch=1 \
-           file://iw_handlers.w13-5.diff;patch=1 \
-           file://iw_handlers.w14-5.diff;patch=1 \
-           file://iw240_we15-6.diff;patch=1 \
-           file://iw249_we16-6.diff;patch=1 \
-           file://iw249_we17-13.diff;patch=1 \
-           file://iw240_we18-5.diff;patch=1 \
-           file://idecs.patch;patch=1 \
-           file://logo.patch;patch=1 \
-           file://initsh.patch;patch=1 \
-           file://keymap-more-sane.patch;patch=1 \
-           file://mkdep.patch;patch=1 \
-           file://disable-pcmcia-probe.patch;patch=1 \
-           file://linux-2.4.18-list_move.patch;patch=1 \
-           http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;patch=1;name=patch \
-           file://1764-1.patch;patch=1 \
-           file://module_licence.patch;patch=1 \
-           file://ir240_sys_max_tx-2.diff;patch=1 \
-           file://ir241_qos_param-2.diff;patch=1 \
+           file://cacko.patch \
+           file://unb0rk-rightarrow.patch \
+           file://unb0rk-apm.patch \
+           file://battery.patch \
+           file://bluetooth-2.4.18-mh15.patch \
+           file://iw_handlers.w13-5.diff \
+           file://iw_handlers.w14-5.diff \
+           file://iw240_we15-6.diff \
+           file://iw249_we16-6.diff \
+           file://iw249_we17-13.diff \
+           file://iw240_we18-5.diff \
+           file://idecs.patch \
+           file://logo.patch \
+           file://initsh.patch \
+           file://keymap-more-sane.patch \
+           file://mkdep.patch \
+           file://disable-pcmcia-probe.patch \
+           file://linux-2.4.18-list_move.patch \
+           http://www.openswan.org/download/old/openswan-2.2.0-kernel-2.4-klips.patch.gz;name=patch \
+           file://1764-1.patch \
+           file://module_licence.patch \
+           file://ir240_sys_max_tx-2.diff \
+           file://ir241_qos_param-2.diff \
            file://defconfig-${MACHINE} \
 	   "
 
 # that patch allow to use buzzer as sound device but it removes alarms,
 # touchclicks etc so it is removed until be fixed
-#           file://sound-2.4.18r2.patch;patch=1
+#           file://sound-2.4.18r2.patch
 
 # apply this when we have a patch that allows building with gcc 3.x:
-# SRC_URI_append = file://gcc-3.3.patch;patch=1
-# SRC_URI_append = file://machtune-args.patch;patch=1
+# SRC_URI_append = file://gcc-3.3.patch
+# SRC_URI_append = file://machtune-args.patch
 
 S = "${WORKDIR}/linux"
 

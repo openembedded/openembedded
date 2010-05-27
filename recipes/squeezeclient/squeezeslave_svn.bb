@@ -7,9 +7,9 @@ SRCREV=30572
 PV = "7.6+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.slimdevices.com/repos/slim/7.6/trunk/;module=softsqueeze;proto=http \
-           file://varinit.patch;patch=1 \
-           file://runfix.patch;patch=1 \
-           file://makefile.patch;patch=1"
+           file://varinit.patch \
+           file://runfix.patch \
+           file://makefile.patch"
 
 
 S = "${WORKDIR}/softsqueeze/SlimProtoLib"

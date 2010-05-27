@@ -9,8 +9,8 @@ PR = "r2"
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
-	   file://armv5.patch;patch=1 \
-	   file://autotools.patch;patch=1 \
+	   file://armv5.patch \
+	   file://autotools.patch \
           "
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"

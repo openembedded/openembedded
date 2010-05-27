@@ -3,8 +3,7 @@ AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 SRCREV = "b390bb1ee708277297fdfd38e26d955b17d81c2e"
 KV = "2.6.33"
-PV = "${KV}+gitr${SRCPV}"
-PE = "1"
+PV = "${KV}+gitr${SRCREV}"
 PR = "r4"
 
 require linux.inc

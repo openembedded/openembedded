@@ -10,9 +10,9 @@ PACKAGE_ARCH = "all"
 inherit gpe
 
 SRC_URI_append = " file://setDPI.sh "
-SRC_URI_append_angstrom = " file://kdrive-1.4-fixes.patch;patch=1 \
-                            file://xorg-fixes.patch;patch=1 \
-			    file://gta-xorg-fixes.patch;patch=1 \
+SRC_URI_append_angstrom = " file://kdrive-1.4-fixes.patch \
+                            file://xorg-fixes.patch \
+			    file://gta-xorg-fixes.patch \
                             file://default.xmodmap \
                             file://98keymap-fixup "
 

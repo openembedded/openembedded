@@ -1,0 +1,53 @@
+From e26b222adeea78777a89e9b0d0aefed67cde7d55 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Thu, 25 Mar 2010 06:54:47 -0700
+Subject: [PATCH 21/37] OMAP3: Beagle, Overo: remove omapfb.debug=y from default env
+
+---
+ include/configs/omap3_beagle.h |    2 --
+ include/configs/omap3_overo.h  |    2 --
+ 2 files changed, 0 insertions(+), 4 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index bba36df..c156cea 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -195,7 +195,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${mmcroot} " \
+ 		"rootfstype=${mmcrootfstype}\0" \
+@@ -203,7 +202,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${nandroot} " \
+ 		"rootfstype=${nandrootfstype}\0" \
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index fdbeb67..418e2ea 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -164,7 +164,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${mmcroot} " \
+ 		"rootfstype=${mmcrootfstype}\0" \
+@@ -172,7 +171,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${nandroot} " \
+ 		"rootfstype=${nandrootfstype}\0" \
+-- 
+1.6.6.1
+

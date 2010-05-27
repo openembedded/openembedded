@@ -9,14 +9,14 @@ COMPATIBLE_MACHINE = "magicbox"
 KERNEL_CCSUFFIX = "-3.4.4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-          file://000-fix-makefile.patch;patch=1 \
-          file://001-magicbox-board-2.6.18.patch;patch=1 \
-          file://002-magicbox-mtd-map-2.6.18.patch;patch=1 \
-          file://010-load-ramdisk-even-if-rootdev-equals-ramdisk.patch;patch=1 \
-          file://magicbox2-ide-cf_2.6.18.patch;patch=1 \
-          file://squashfs3.1-patch;patch=1 \
-          file://squashfs-lzma-support.patch;patch=1 \
-          file://kernel-2.6.18-layer7-2.6.patch;patch=1 \
+          file://000-fix-makefile.patch \
+          file://001-magicbox-board-2.6.18.patch \
+          file://002-magicbox-mtd-map-2.6.18.patch \
+          file://010-load-ramdisk-even-if-rootdev-equals-ramdisk.patch \
+          file://magicbox2-ide-cf_2.6.18.patch \
+          file://squashfs3.1-patch;apply=yes \
+          file://squashfs-lzma-support.patch \
+          file://kernel-2.6.18-layer7-2.6.patch \
           file://config-2.6.18-magicbox2\
 "
 

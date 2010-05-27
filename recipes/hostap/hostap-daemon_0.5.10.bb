@@ -15,7 +15,7 @@ MY_ARCH := "${PACKAGE_ARCH}"
 PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'madwifi', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
-	file://makefile-cross.diff;patch=1 \
+	file://makefile-cross.diff \
 	file://defconfig \
 	file://init"
 

@@ -9,6 +9,6 @@ PV = "0.1+svnr${SRCPV}"
 PR = "r0"
 S = "${WORKDIR}/${PN}"
 SRC_URI = "svn://omgps.googlecode.com/svn/trunk;module=omgps;proto=http \
-           file://gcc-4.4.patch;patch=1"
+           file://gcc-4.4.patch"
 
 inherit autotools

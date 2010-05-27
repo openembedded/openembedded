@@ -8,7 +8,4 @@ SRC_URI = "http://users.musicbrainz.org/~matt/libdiscid-${PV}.tar.gz"
 
 inherit cmake pkgconfig
 
-do_stage() {
-	autotools_stage_all
-}
 

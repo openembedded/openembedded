@@ -14,28 +14,28 @@ FILES_tcp-wrappers = "${bindir}"
 FILES_tcp-wrappers-doc = "${mandir}/man8"
 
 SRC_URI = "ftp://ftp.porcupine.org/pub/security/tcp_wrappers_${PV}.tar.gz \
-           file://00_man_quoting.diff;patch=1 \
-           file://01_man_portability;patch=1 \
-           file://05_wildcard_matching;patch=1 \
-           file://06_fix_gethostbyname;patch=1 \
-           file://10_usagi-ipv6;patch=1 \
-           file://11_tcpd_blacklist;patch=1 \
-           file://11_usagi_fix;patch=1 \
-           file://12_makefile_config;patch=1 \
-           file://13_shlib_weaksym;patch=1 \
-           file://14_cidr_support;patch=1 \
-           file://15_match_clarify;patch=1 \
-           file://expand_remote_port;patch=1 \
-           file://have_strerror;patch=1 \
-           file://man_fromhost;patch=1 \
-           file://restore_sigalarm;patch=1 \
-           file://rfc931.diff;patch=1 \
-           file://safe_finger;patch=1 \
-           file://sig_fix;patch=1 \
-           file://siglongjmp;patch=1 \
-           file://size_t;patch=1 \
-           file://tcpdchk_libwrapped;patch=1 \
-           file://ldflags;patch=1 \
+           file://00_man_quoting.diff \
+           file://01_man_portability.patch \
+           file://05_wildcard_matching.patch \
+           file://06_fix_gethostbyname.patch \
+           file://10_usagi-ipv6.patch \
+           file://11_tcpd_blacklist.patch \
+           file://11_usagi_fix.patch \
+           file://12_makefile_config.patch \
+           file://13_shlib_weaksym.patch \
+           file://14_cidr_support.patch \
+           file://15_match_clarify.patch \
+           file://expand_remote_port.patch \
+           file://have_strerror.patch \
+           file://man_fromhost.patch \
+           file://restore_sigalarm.patch \
+           file://rfc931.diff \
+           file://safe_finger.patch \
+           file://sig_fix.patch \
+           file://siglongjmp.patch \
+           file://size_t.patch \
+           file://tcpdchk_libwrapped.patch \
+           file://ldflags.patch \
            \
            file://try-from.8 \
            file://safe_finger.8"

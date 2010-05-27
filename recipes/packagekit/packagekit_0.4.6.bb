@@ -8,9 +8,9 @@ RDEPENDS_${PN} = "${IPKG_VARIANT}"
 inherit gnome autotools_stage
 
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
-           file://no_validate.patch;patch=1 \
-           file://opkg-fix-includes.diff;patch=1 \
-           file://opkg-fix-declarations.diff;patch=1 "
+           file://no_validate.patch \
+           file://opkg-fix-includes.diff \
+           file://opkg-fix-declarations.diff "
 
 PR = "r3"
 PE = "1"

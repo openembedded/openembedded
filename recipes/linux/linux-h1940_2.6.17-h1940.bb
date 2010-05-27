@@ -8,16 +8,16 @@ COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "h1940"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2;name=kernel \
-           http://rtp-net.org/ipaq/patches/2.6.17-1/v2.6.17-gitcurrent.patch;patch=1;name=patch1 \
-           http://rtp-net.org/ipaq/patches/2.6.17-1/full.patch;patch=1;name=patch2 \
-           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/serial_sparse.patch;patch=1;name=patch3 \
-           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/h1940_leds.patch;patch=1;name=patch4 \
-           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/bluetooth.patch;patch=1;name=patch5 \
-           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/h1940_batt.patch;patch=1;name=patch6 \
-           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/mtd_partition.patch;patch=1;name=patch7 \
-           http://anymore.nl/ipaq/usbgadget_fixups.patch;patch=1;name=patch8 \
-           http://anymore.nl/ipaq/udc_usb_gadget_register_driver_fix.patch;patch=1;name=patch9 \
-           http://anymore.nl/ipaq/udc_unbind.patch;patch=1;name=patch10 \
+           http://rtp-net.org/ipaq/patches/2.6.17-1/v2.6.17-gitcurrent.patch;name=patch1 \
+           http://rtp-net.org/ipaq/patches/2.6.17-1/full.patch;name=patch2 \
+           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/serial_sparse.patch;name=patch3 \
+           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/h1940_leds.patch;name=patch4 \
+           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/bluetooth.patch;name=patch5 \
+           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/h1940_batt.patch;name=patch6 \
+           http://rtp-net.org/ipaq/patches/2.6.17-1/WIP/mtd_partition.patch;name=patch7 \
+           http://anymore.nl/ipaq/usbgadget_fixups.patch;name=patch8 \
+           http://anymore.nl/ipaq/udc_usb_gadget_register_driver_fix.patch;name=patch9 \
+           http://anymore.nl/ipaq/udc_unbind.patch;name=patch10 \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.17"

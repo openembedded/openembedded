@@ -7,7 +7,7 @@ EXTRA_OECONF += " --without-included-ltdl \
                   --with-ltdl-lib=${STAGING_LIBDIR} \
 "
 
-SRC_URI += "file://libtool-2.2.patch;patch=1"
+SRC_URI += "file://libtool-2.2.patch"
 
 
 SRC_URI[md5sum] = "5033ef2602ea1234a9ccb73000a0dedb"

@@ -1,0 +1,61 @@
+From c5883be23519921254c6940873ee8db04979c20a Mon Sep 17 00:00:00 2001
+From: Paul Brook <paul@codesourcery.com>
+Date: Tue, 23 Feb 2010 14:45:16 +0000
+Subject: ARM CP15 tls fix
+
+Fix temporary handling in cp15 tls register load/store.
+
+Signed-off-by: Paul Brook <paul@codesourcery.com>
+---
+diff --git a/target-arm/translate.c b/target-arm/translate.c
+index 8b3b12d..ac04996 100644
+--- a/target-arm/translate.c
++++ b/target-arm/translate.c
+@@ -2469,19 +2469,17 @@ static int cp15_tls_load_store(CPUState *env, DisasContext *s, uint32_t insn, ui
+         return 0;
+ 
+     if (insn & ARM_CP_RW_BIT) {
+-        tmp = new_tmp();
+         switch (op) {
+         case 2:
+-            tcg_gen_ld_i32(tmp, cpu_env, offsetof(CPUARMState, cp15.c13_tls1));
++            tmp = load_cpu_field(cp15.c13_tls1);
+             break;
+         case 3:
+-            tcg_gen_ld_i32(tmp, cpu_env, offsetof(CPUARMState, cp15.c13_tls2));
++            tmp = load_cpu_field(cp15.c13_tls2);
+             break;
+         case 4:
+-            tcg_gen_ld_i32(tmp, cpu_env, offsetof(CPUARMState, cp15.c13_tls3));
++            tmp = load_cpu_field(cp15.c13_tls3);
+             break;
+         default:
+-            dead_tmp(tmp);
+             return 0;
+         }
+         store_reg(s, rd, tmp);
+@@ -2490,18 +2488,18 @@ static int cp15_tls_load_store(CPUState *env, DisasContext *s, uint32_t insn, ui
+         tmp = load_reg(s, rd);
+         switch (op) {
+         case 2:
+-            tcg_gen_st_i32(tmp, cpu_env, offsetof(CPUARMState, cp15.c13_tls1));
++            store_cpu_field(tmp, cp15.c13_tls1);
+             break;
+         case 3:
+-            tcg_gen_st_i32(tmp, cpu_env, offsetof(CPUARMState, cp15.c13_tls2));
++            store_cpu_field(tmp, cp15.c13_tls2);
+             break;
+         case 4:
+-            tcg_gen_st_i32(tmp, cpu_env, offsetof(CPUARMState, cp15.c13_tls3));
++            store_cpu_field(tmp, cp15.c13_tls3);
+             break;
+         default:
++            dead_tmp(tmp);
+             return 0;
+         }
+-        dead_tmp(tmp);
+     }
+     return 1;
+ }
+--
+cgit v0.8.2.1

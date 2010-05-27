@@ -2,7 +2,7 @@ require jamvm.inc
 
 PR = "r3"
 
-SRC_URI += "file://jamvm-1.3.1-size-defaults.patch;patch=1"
+SRC_URI += "file://jamvm-1.3.1-size-defaults.patch"
 
 
 SRC_URI[md5sum] = "3f538bab6e1c77aed331e5e71f754f5b"

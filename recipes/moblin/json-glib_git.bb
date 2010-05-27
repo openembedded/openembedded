@@ -1,7 +1,6 @@
 HOMEPAGE = "http://live.gnome.org/JsonGlib"
 SRC_URI = "git://github.com/ebassi/${PN}.git;protocol=git"
-PV = "0.6.2+gitr${SRCPV}"
-PE = "1"
+PV = "0.6.2+git${SRCREV}"
 PR = "r0"
 
 S = "${WORKDIR}/git"

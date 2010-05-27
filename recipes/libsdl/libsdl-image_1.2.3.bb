@@ -3,7 +3,7 @@ require libsdl-image.inc
 PR = "${INC_PR}.2"
 
 SRC_URI += "\
-  file://autotools.patch;patch=1 \
+  file://autotools.patch \
 "
 
 inherit autotools

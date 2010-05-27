@@ -11,17 +11,17 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
            file://mountall \
            file://syslog \
            file://syslog.conf \
-           file://udhcpscript.patch;patch=1 \
-           file://busybox-appletlib-dependency.patch;patch=1 \
+           file://udhcpscript.patch \
+           file://busybox-appletlib-dependency.patch \
            file://umount.busybox \
            file://run_parts.c"
 SRC_URI[tarball.md5sum] = "c91ec9756e2000073a9dd8fa9fc3f89e"
 SRC_URI[tarball.sha256sum] = "83c4cc813124a43f13e2ebb83cea9da9909d63891b824bf4bc7006f0567db7cf"
 
-SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;patch=1;name=patch1 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-iptun.patch;patch=1;name=patch2 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-logger.patch;patch=1;name=patch3 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-tail.patch;patch=1;name=patch4 \
+SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;name=patch1 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-iptun.patch;name=patch2 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-logger.patch;name=patch3 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-tail.patch;name=patch4 \
             file://defconfig"
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"

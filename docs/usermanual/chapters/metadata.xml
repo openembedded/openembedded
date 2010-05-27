@@ -95,7 +95,7 @@
 
     <para>OpenEmbedded has files ending with <emphasis>.conf</emphasis>,
     <emphasis>.inc</emphasis>, <emphasis>.bb</emphasis>
-    and<emphasis>.bbclass</emphasis>. The syntax and semantic of these files
+    and<emphasis>.bbclass</emphasis>. The syntax and semantics of these files
     are best described in the <ulink
     url="http://bitbake.berlios.de/manual"><application>BitBake</application>
     manual</ulink>.</para>

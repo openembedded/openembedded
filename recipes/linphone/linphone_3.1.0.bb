@@ -21,8 +21,8 @@ RDEPENDS_libmediastreamer = "speex libogg libasound libortp"
 PROVIDES += "linphone linphonec liblinphone"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/3.1.x/sources/linphone-${PV}.tar.gz \
-	file://b64_assert.patch;patch=1 \
-	file://preferences-segv.patch;patch=1 \
+	file://b64_assert.patch \
+	file://preferences-segv.patch \
 	"
 
 S = "${WORKDIR}/linphone-${PV}"

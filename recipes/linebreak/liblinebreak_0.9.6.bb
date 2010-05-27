@@ -5,7 +5,7 @@ LICENSE = "Unicode"
 PR = "r0"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libl/liblinebreak/liblinebreak_${PV}.orig.tar.gz \
-	file://liblinebreak-build-fix.patch;patch=1"
+	file://liblinebreak-build-fix.patch"
 
 do_compile() {
 	oe_runmake release

@@ -3,13 +3,13 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = ""
-do_unpack[depends] += "unzip-native:do_populate_staging"
+do_unpack[depends] += "unzip-native:do_populate_sysroot"
 PR ="r2"
 
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/faac/${PN}-${PV}.zip \
-           file://faad2-gcc-fix.patch;patch=1 \
+           file://faad2-gcc-fix.patch \
  	   file://Makefile.am"
 
 S="${WORKDIR}/${PN}"

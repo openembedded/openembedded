@@ -3,19 +3,20 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r16"
+PR = "r19"
+NATIVE_INSTALL_WORKS = "1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/5.0/perl-${PV}.tar.gz \
-           file://perl-5.8.8-gcc-4.2.patch;patch=1 \
-           file://Configure-multilib.patch;patch=1 \
-           file://perl-configpm-switch.patch;patch=1 \
-           file://native-nopacklist.patch;patch=1 \
-           file://native-no-gdbminc.patch;patch=1 \
-           file://native-perlinc.patch;patch=1 \
-           file://makedepend-dash.patch;patch=1 \
-           file://asm-pageh-fix.patch;patch=1"
+           file://perl-5.8.8-gcc-4.2.patch \
+           file://Configure-multilib.patch \
+           file://perl-configpm-switch.patch \
+           file://native-nopacklist.patch \
+           file://native-no-gdbminc.patch \
+           file://native-perlinc.patch \
+           file://makedepend-dash.patch \
+           file://asm-pageh-fix.patch"
 
 S = "${WORKDIR}/perl-${PV}"
 
@@ -62,18 +63,21 @@ do_configure () {
 	 s!^installsitebin=.*!installsitebin=\'${STAGING_BINDIR}\'!" < config.sh > config.sh.new
     mv config.sh.new config.sh
 }
-do_stage_append() {
+
+do_install() {
+	oe_runmake DESTDIR="${D}" install.perl
+
         # We need a hostperl link for building perl
-        ln -sf ${STAGING_BINDIR_NATIVE}/perl${PV} ${STAGING_BINDIR_NATIVE}/hostperl
+        ln -sf perl${PV} ${D}${bindir}/hostperl
         # Store native config in non-versioned directory
-        install -d ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
-                   ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
-        install config.sh ${STAGING_LIBDIR}/perl
+        install -d ${D}${libdir}/perl/${PV}/CORE \
+                   ${D}${datadir}/perl/${PV}/ExtUtils
+        install config.sh ${D}${libdir}/perl
 	# Fix Errno.pm for target builds
-	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Errno.pm
+	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${libdir}/perl/${PV}/Errno.pm
 	# target configuration
-        install lib/Config.pm       ${STAGING_LIBDIR_NATIVE}/perl/${PV}/
-	install lib/ExtUtils/typemap ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
+        install lib/Config.pm       ${D}${libdir}/perl/${PV}/
+	install lib/ExtUtils/typemap ${D}${datadir}/perl/${PV}/ExtUtils/
         # perl shared library headers
         for i in av.h embed.h gv.h keywords.h op.h perlio.h pp.h regexp.h \
                  uconfig.h XSUB.h cc_runtime.h embedvar.h handy.h opnames.h \
@@ -84,12 +88,13 @@ do_stage_append() {
                  nostdio.h perlapi.h perlvars.h reentr.inc thrdvar.h util.h \
                  dosish.h form.h iperlsys.h opcode.h perl.h perly.h regcomp.h \
                  thread.h warnings.h; do
-            install $i ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE
+            install $i ${D}${libdir}/perl/${PV}/CORE
         done
 }
-do_stage_append_nylon() {
+
+do_install_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
-        for i in ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy.pl ${STAGING_LIBDIR}/perl/config.sh; do
+        for i in ${D}${libdir}/perl/${PV}/Config_heavy.pl ${D}${libdir}/perl/config.sh; do
                 perl -pi -e 's/-Wdeclaration-after-statement //g' ${i}
         done
 }

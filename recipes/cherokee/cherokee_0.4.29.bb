@@ -4,10 +4,10 @@ LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "openssl libpcre"
 SRC_URI = "http://www.0x50.org/download/0.4/${PV}/${P}.tar.gz \
-	  file://configure.patch;patch=1 \
-	  file://Makefile.in.patch;patch=1 \
-	  file://Makefile.cget.patch;patch=1 \
-	  file://util.patch;patch=1"
+	  file://configure.patch \
+	  file://Makefile.in.patch \
+	  file://Makefile.cget.patch \
+	  file://util.patch"
 INC_PR = "r7"
 PR = "${INC_PR}.0"
 
@@ -23,7 +23,7 @@ do_configure() {
 }
 
 do_install_prepend () {
-	$BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
+	${BUILD_CC} ${BUILD_CFLAGS} -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
 }
 
 SRC_URI[md5sum] = "854e6e61a69781746496012658d8ef98"

@@ -5,7 +5,7 @@ DEPENDS = "libsndfile1 flex zlib alsa-lib"
 PR = "r1"
 
 SRC_URI = "http://iij.dl.sourceforge.jp/julius/37582/julius-${PV}.tar.gz \
-           file://patch-julius-4.1.2-command-pipe.patch;patch=1 "
+           file://patch-julius-4.1.2-command-pipe.patch "
 
 inherit autotools
 

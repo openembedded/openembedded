@@ -1,21 +1,7 @@
 Index: openssl-1.0.0/Makefile.shared
 ===================================================================
---- openssl-1.0.0.orig/Makefile.shared	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
-+++ openssl-1.0.0/Makefile.shared	Usage: date [OPTION]... [+FORMAT]
-Display the current time in the given FORMAT.
-
-  -d, --date=STRING         display time described by STRING, not `now'
-  -f, --file=DATEFILE       like --date once for each line of DATEFILE
-  -R, --rfc-822             output RFC-822 compliant date string
-  -u, --utc, --universal    print or set Coordinated Universal Time
-      --help                display this help and exit
+--- openssl-1.0.0.orig/Makefile.shared
++++ openssl-1.0.0/Makefile.shared
 @@ -92,7 +92,7 @@
  LINK_APP=	\
    ( $(SET_X);   \

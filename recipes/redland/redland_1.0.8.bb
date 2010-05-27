@@ -1,7 +1,7 @@
 LICENSE = "GPLv2"
 SRC_URI = "http://download.librdf.org/source/redland-1.0.8.tar.gz \
-           file://crosscompile.patch;patch=1 \
-	   file://sane_pkgconfig.patch;patch=1"
+           file://crosscompile.patch \
+	   file://sane_pkgconfig.patch"
 	   
 PR = "r3"
 

@@ -9,7 +9,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.tar.gz \
-           file://gcc-visibility.patch;patch=1"
+           file://gcc-visibility.patch"
 
 inherit autotools pkgconfig lib_package
 

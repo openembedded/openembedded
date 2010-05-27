@@ -14,7 +14,7 @@ def vars_from_file(filename):
 FN := "${@vars_from_file(bb.data.getVar('FILE',d))}"
 
 SRC_URI = "http://download2.berlios.de/${FN}/${FN}-${PV}-src.tar.gz \
-        file://build.patch;patch=1"
+        file://build.patch"
 S = "${WORKDIR}/${FN}-${PV}"
 
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/subversion-1"

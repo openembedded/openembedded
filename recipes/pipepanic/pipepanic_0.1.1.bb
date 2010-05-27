@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "http://www.users.waitrose.com/~thunor/pipepanic/dload/pipepanic-${PV}-source.tar.gz \
-           file://fix-datadir.patch;patch=1"
+           file://fix-datadir.patch"
 S = "${WORKDIR}/pipepanic-0.1.1-source"
 
 APPIMAGE = "zaurus/pipepanic.png"

@@ -2,9 +2,9 @@ require pcmciautils.inc
 
 PR = "r0"
 
-SRC_URI += "file://makefile_fix.patch;patch=1 \
-            file://version_workaround.patch;patch=1 \
-	    file://ccdv.patch;patch=1 \
+SRC_URI += "file://makefile_fix.patch \
+            file://version_workaround.patch \
+	    file://ccdv.patch \
 	   "
 
 SRC_URI[md5sum] = "9e12435c8b6cf7bf59894e90e480b4aa"

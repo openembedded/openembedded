@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL LGPL"
 
 SRC_URI = "ftp://oss.sgi.com/projects/fam/download/stable/fam-${PV}.tar.gz \
-	   file://compile-fix.patch;patch=1"
+	   file://compile-fix.patch"
 
 inherit autotools
 

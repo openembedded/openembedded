@@ -8,10 +8,10 @@ INC_PR = "r18"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz;name=dbus \
-  file://cross.patch;patch=1 \
-  file://tmpdir.patch;patch=1 \
-  file://fix-install-daemon.patch;patch=1 \
-  file://0001-Make-the-default-DBus-reply-timeout-configurable.patch;patch=1 \
+  file://cross.patch \
+  file://tmpdir.patch \
+  file://fix-install-daemon.patch \
+  file://0001-Make-the-default-DBus-reply-timeout-configurable.patch \
   file://dbus-1.init \
 "
 

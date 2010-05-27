@@ -16,11 +16,11 @@ RDEPENDS += "dbus dbus-glib frameworkd"
 PR = "r4"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
-			file://atd-startup.patch;patch=1;pnum=0 \
-			file://atd-startup-restart.patch;patch=2;pnum=0 \
-			file://atd-alarm-glue.patch;patch=3;pnum=0 \
-			file://atd-over-fso.conf.patch;patch=4;pnum=0 \
-			file://run-over-fso.patch;patch=5;pnum=1"
+			file://atd-startup.patch;striplevel=0 \
+			file://atd-startup-restart.patch;striplevel=0 \
+			file://atd-alarm-glue.patch;striplevel=0 \
+			file://atd-over-fso.conf.patch;striplevel=0 \
+			file://run-over-fso.patch"
 S = "${WORKDIR}/atd"
 
 inherit update-rc.d

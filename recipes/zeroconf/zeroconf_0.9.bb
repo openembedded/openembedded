@@ -9,8 +9,8 @@ PR = "r2"
 
 SRC_URI = "http://www.progsoc.org/~wildfire/zeroconf/download/${PN}-${PV}.tar.gz \
 	   file://zeroconf-default \
-	   file://zeroconf-ldflags.patch;patch=1 \
-	   file://zeroconf-limits.h.patch;patch=1 \
+	   file://zeroconf-ldflags.patch \
+	   file://zeroconf-limits.h.patch \
 	   file://debian-zeroconf"
 
 do_install () {

@@ -6,8 +6,8 @@ HOMEPAGE = "http://takahr.dhis.portside.net/cgi-bin/rwiki.cgi?cmd=view;name=QPOB
 PR = "r2"
 
 SRC_URI = "http://www.vanille.de/mirror/qpobox-${PV}.tar.gz \
-           file://qpobox-0.5.4-opie.patch;patch=1 \
-           file://qpobox.patch;patch=1"
+           file://qpobox-0.5.4-opie.patch \
+           file://qpobox.patch"
 S = "${WORKDIR}/qpobox"
 
 inherit opie

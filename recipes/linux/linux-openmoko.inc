@@ -7,6 +7,8 @@ UBOOT_ENTRYPOINT = "30008000"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-3d7k"
 
+DESCRIPTION_${PN} = "Linux kernel for the Openmoko Neo GSM Smartphones"
+
 KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA01.bin"
 KERNEL_IMAGE_SYMLINK_NAME_om-gta02 = "uImage-GTA02.bin"
 KERNEL_IMAGE_SYMLINK_NAME_om-3d7k  = "uImage-OM3D7K.bin"

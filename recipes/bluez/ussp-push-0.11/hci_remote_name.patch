@@ -1,0 +1,13 @@
+diff -urN ussp-push-0.11/src/obex_socket.c ussp-push-0.11_Demo/src/obex_socket.c
+--- ussp-push-0.11/src/obex_socket.c	2008-08-25 02:18:53.000000000 +0530
++++ ussp-push-0.11_Demo/src/obex_socket.c	2010-04-16 15:11:27.000000000 +0530
+@@ -197,7 +197,8 @@
+ 	for (i = 0; i < niinf; i++) {
+ 		char devname[128];
+ 
+-		if (hci_remote_name(dd, &piinf[i].bdaddr, sizeof(devname) - 1,
++		if (hci_read_remote_name(dd, &piinf[i].bdaddr,
++					sizeof(devname) - 1,
+ 				    devname, 100000) >= 0) {
+ 			if (strcasecmp(devname, btname) == 0) {
+ 				*btaddr = piinf[i].bdaddr;

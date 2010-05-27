@@ -5,7 +5,7 @@ DEPENDS = "gstreamer pulseaudio gst-plugins-base"
 PR = "r1"
 
 SRC_URI = "http://0pointer.de/lennart/projects/gst-pulse/gst-pulse-${PV}.tar.gz \
-	file://dont-overload-pulseaudio.patch;patch=1"
+	file://dont-overload-pulseaudio.patch"
 S = "${WORKDIR}/gst-pulse-${PV}"
 
 inherit autotools

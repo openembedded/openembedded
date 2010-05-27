@@ -19,7 +19,7 @@ do_compile () {
 do_stage () {
 }
 
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP = "no"
 
 mtd_utils_tests = " \
 	help_all.sh \

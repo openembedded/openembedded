@@ -2,7 +2,7 @@ DESCRIPTION = "GNOME DVB Daemon is a daemon written in Vala based on GStreamer t
 LICENSE = "GPLv3"
 
 DEPENDS = "libxml2 python-dbus python-gst python-pygtk libgee vala-native gstreamer gst-plugins-good gst-plugins-bad glib-2.0 dbus-glib sqlite3 gst-rtsp"
-RDEPENDS = "python-dbus python-gst python-pygtk gst-plugin-dvb gst-fluendo-mpegdemux dvb-apps dvb-scan dvb-tzap dvb-czap dvbstream"
+RDEPENDS_${PN} = "python-netserver python-dbus python-gst python-pygtk gst-plugin-dvb gst-fluendo-mpegdemux dvb-apps dvb-scan dvb-tzap dvb-czap dvbstream"
 
 inherit gnome
 

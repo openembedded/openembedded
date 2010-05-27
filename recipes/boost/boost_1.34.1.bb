@@ -13,11 +13,9 @@ PR = "6"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
-	file://linux-uclibc.patch;patch=1 \
-	file://${PV}-gcc43.patch;patch=1 \
+	file://linux-uclibc.patch \
+	file://${PV}-gcc43.patch \
 	"
-
-DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/${BOOST_P}"
 

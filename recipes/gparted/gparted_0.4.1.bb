@@ -5,7 +5,7 @@ DEPENDS = "gtkmm parted"
 inherit gnome
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gparted/gparted-${PV}.tar.bz2 \
-           file://cross.patch;patch=1 \
+           file://cross.patch \
 "
 
 EXTRA_OECONF = " --disable-doc  --disable-scrollkeeper "

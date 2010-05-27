@@ -7,7 +7,7 @@ PR = "r1"
 
 # No sources for that Maemo revision any more.
 SRC_URI = "http://repository.maemo.org/pool/bora/free/source/${PN}_${PV}.tar.gz \
-           file://dbus-api-update.patch;patch=1 "
+           file://dbus-api-update.patch "
 
 inherit autotools pkgconfig lib_package
 

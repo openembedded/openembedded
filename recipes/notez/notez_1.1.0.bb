@@ -10,8 +10,8 @@ APPDESKTOP = "${S}"
 PR = "r1"
 
 SRC_URI = "http://www.holtschneider.com/notez/notez-${PV}.tar.gz \
-file://use-homedir.patch;patch=1 \
-file://fix-encoding.patch;patch=1"
+file://use-homedir.patch \
+file://fix-encoding.patch"
 
 inherit opie
 

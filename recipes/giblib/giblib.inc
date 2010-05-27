@@ -5,7 +5,7 @@ LICENSE = "BSD"
 DEPENDS = "virtual/imlib2"
 
 SRC_URI = "http://linuxbrit.co.uk/downloads/giblib-${PV}.tar.gz \
-	   file://binconfig.patch;patch=1"
+	   file://binconfig.patch"
 S = "${WORKDIR}/giblib-${PV}"
 
 inherit autotools pkgconfig binconfig

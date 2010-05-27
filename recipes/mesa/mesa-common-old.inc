@@ -2,7 +2,7 @@ SECTION = "x11"
 PE = "2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 \
-	file://mklib-rpath-link.patch;patch=1"
+	file://mklib-rpath-link.patch"
 
 S = "${WORKDIR}/Mesa-${PV}"
 

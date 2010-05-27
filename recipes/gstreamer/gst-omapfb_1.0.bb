@@ -6,11 +6,10 @@ inherit autotools
 DEPENDS = "gstreamer virtual/libx11 virtual/kernel"
 
 SRCREV = "6f0b1cb50d1c67c3a3db2f11246256060ac871de"
-PV = "0.0+${PR}+gitr${SRCPV}"
-PE = "1"
+PV = "0.0+${PR}+gitr${SRCREV}"
 
 SRC_URI = "git://github.com/felipec/${PN}.git;protocol=git \
-           file://0001-Implement-XOverlay-and-I420-to-422-colorspace-conver.patch;patch=1"
+           file://0001-Implement-XOverlay-and-I420-to-422-colorspace-conver.patch"
 
 S  ="${WORKDIR}/git"
 

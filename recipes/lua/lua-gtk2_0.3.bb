@@ -8,7 +8,7 @@ RDEPENDS = "lua"
 inherit gpe
 
 SRC_URI = "http://luaforge.net/frs/download.php/989/${P}.tar.gz \
-	file://lua-gtk2-0.3_fixbuild.patch;patch=1"
+	file://lua-gtk2-0.3_fixbuild.patch"
 
 FILES_${PN} =  "${datadir}/lua   ${libdir}/lua50"
 

@@ -13,7 +13,7 @@ RDEPENDS_${PN} += "${PN}-common"
 inherit autotools
 
 SRC_URI = "http://www.irssi.org/files/${P}.tar.bz2 \
-	   file://autofoo.patch;patch=1"
+	   file://autofoo.patch"
 
 EXTRA_OECONF = "--enable-ipv6 \
 		--disable-ssl \

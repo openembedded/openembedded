@@ -11,16 +11,16 @@ PR = "r0"
 # that they will stay there indefinitely.
 #  - Joost
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.27.8.tar.bz2;name=kernel \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx.patch;patch=1;name=patch1 \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-update1.patch;patch=1;name=patch2 \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update2.patch;patch=1;name=patch3 \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update3.patch;patch=1;name=patch4 \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_armtskit_update2.patch;patch=1;name=patch5 \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_ea3250.patch;patch=1;name=patch6 \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update4.patch;patch=1;name=patch7 \
-	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update5.patch;patch=1;name=patch8 \
-	file://kernel-arm-2.6.27.8-lpc32xx_update5_fix.patch;patch=1 \
-	file://lpc32xx-spwm.patch;patch=1 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx.patch;name=patch1 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-update1.patch;name=patch2 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update2.patch;name=patch3 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update3.patch;name=patch4 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_armtskit_update2.patch;name=patch5 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_ea3250.patch;name=patch6 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update4.patch;name=patch7 \
+	http://bitshrine.org/gpp/kernel-arm-2.6.27.8-lpc32xx_update5.patch;name=patch8 \
+	file://kernel-arm-2.6.27.8-lpc32xx_update5_fix.patch \
+	file://lpc32xx-spwm.patch \
 	file://defconfig"
 
 # Source directory

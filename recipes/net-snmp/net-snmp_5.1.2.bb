@@ -2,7 +2,7 @@ require net-snmp.inc
 PR = "${INC_PR}.0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
-	file://uclibc-fix.patch;patch=1 \
+	file://uclibc-fix.patch \
 	file://init \
 	file://snmpd.conf \
 	file://snmptrapd.conf"

@@ -1,0 +1,48 @@
+From 1f36c057ab83a5c5e8162094fb52022edd5ba9b8 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 4 May 2010 09:01:21 +0200
+Subject: [PATCH 17/17] ARM: OMAP: add 800MHz OPP and remove 125MHz one
+
+---
+ arch/arm/mach-omap2/pm34xx.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
+index d1cc528..42fbcdd 100644
+--- a/arch/arm/mach-omap2/pm34xx.c
++++ b/arch/arm/mach-omap2/pm34xx.c
+@@ -120,7 +120,7 @@ static struct prm_setup_vc prm_setup = {
+ struct omap_opp omap35x_mpu_rate_table[] = {
+ 	{0, 0, 0},
+ 	/*OPP1*/
+-	{S125M, VDD1_OPP1, 0x1E},
++//	{S125M, VDD1_OPP1, 0x1E},
+ 	/*OPP2*/
+ 	{S250M, VDD1_OPP2, 0x26},
+ 	/*OPP3*/
+@@ -131,12 +131,13 @@ struct omap_opp omap35x_mpu_rate_table[] = {
+ 	{S600M, VDD1_OPP5, 0x3C},
+ 	/*OPP6*/
+ 	{S720M, VDD1_OPP6, 0x3C},
++	{S800M, VDD1_OPP6, 0x3F},
+ };
+ 
+ struct omap_opp omap35x_dsp_rate_table[] = {
+ 	{0, 0, 0},
+ 	/*OPP1*/
+-	{S90M, VDD1_OPP1, 0x1E},
++//	{S90M, VDD1_OPP1, 0x1E},
+ 	/*OPP2*/
+ 	{S180M, VDD1_OPP2, 0x26},
+ 	/*OPP3*/
+@@ -147,6 +148,7 @@ struct omap_opp omap35x_dsp_rate_table[] = {
+ 	{S430M, VDD1_OPP5, 0x3C},
+ 	/*OPP5*/
+ 	{S520M, VDD1_OPP6, 0x3C},
++	{S600M, VDD1_OPP6, 0x3F},
+ };
+ 
+ struct omap_opp omap35x_l3_rate_table[] = {
+-- 
+1.6.6.1
+

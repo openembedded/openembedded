@@ -6,11 +6,11 @@ RDEPENDS += "openssl"
 PR = "r6"
 
 SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-2.2.3.tar.bz2 \
-	   file://dftables-makefile-patch;patch=1 \
-	   file://apr-sockets-patch;patch=1 \
-	   file://configure-patch;patch=1 \
-	   file://server-makefile-patch;patch=1 \
-           file://configure-fix-cross-compile-ptr-check.patch;patch=1 \
+	   file://dftables-makefile-patch;apply=yes \
+	   file://apr-sockets-patch;apply=yes \
+	   file://configure-patch;apply=yes \
+	   file://server-makefile-patch;apply=yes \
+           file://configure-fix-cross-compile-ptr-check.patch \
            file://init"
 
 #

@@ -9,7 +9,7 @@ LICENSE="GPL"
 HOMEPAGE="http://sox.sourceforge.net"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/sox/sox-${PV}.tar.gz; \
-	file://uclibc-fixes.patch;patch=1"
+	file://uclibc-fixes.patch"
 
 inherit autotools
 

@@ -3,8 +3,8 @@ DESCRIPTION = "netkit-rpc includes rpcgen and rpcinfo."
 PR = "r1"
 LICENSE = "GPL"
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-rpc-${PV}.tar.gz \
-	   file://gcc4.patch;patch=1 \
-	   file://install.patch;patch=1"
+	   file://gcc4.patch \
+	   file://install.patch"
 S = "${WORKDIR}/netkit-rpc-${PV}"
 
 EXTRA_OEMAKE = ""

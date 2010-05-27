@@ -6,7 +6,7 @@ RDEPENDS_${PN}-server += "net-snmp-mibs"
 RDEPENDS_${PN}-client += "net-snmp-mibs"
 RDEPENDS_${PN}-dev = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
 RRECOMMENDS_${PN}-dbg = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
-INC_PR = "r5"
+INC_PR = "r7"
 
 inherit autotools update-rc.d siteinfo
 
@@ -25,44 +25,20 @@ do_install_append() {
         install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/snmpd
         install -m 644 ${WORKDIR}/snmpd.conf ${D}${sysconfdir}/snmp/
         install -m 644 ${WORKDIR}/snmptrapd.conf ${D}${sysconfdir}/snmp/
+	install -d ${STAGING_BINDIR}
+	install -m 0755 ${D}${bindir}/net-snmp-config ${STAGING_BINDIR}/
+	sed -e "s@-I/usr/include@@g" \
+		-e "s@^prefix=.*@prefix=${STAGING_DIR_HOST}@g" \
+		-e "s@^exec_prefix=.*@exec_prefix=${STAGING_DIR_HOST}@g" \
+		-e "s@^includedir=.*@includedir=${STAGING_INCDIR}@g" \
+		-e "s@^libdir=.*@libdir=${STAGING_LIBDIR}@g" \
+		-i ${STAGING_BINDIR}/net-snmp-config
 }
 
-do_stage() {
-	    rm -rf ${STAGE_TEMP}
-	    mkdir -p ${STAGE_TEMP}
-	    oe_runmake INSTALL_PREFIX="${STAGE_TEMP}" install
-	    autotools_stage_dir ${STAGE_TEMP}/${includedir} ${STAGING_INCDIR}
-	    if [ -d ${STAGE_TEMP}/${libdir} ]
-	    then
-    		olddir=`pwd`
-    		cd ${STAGE_TEMP}/${libdir}
-    		las=$(find . -name \*.la -type f)
-    		cd $olddir
-    		echo "Found la files: $las"		 
-    		for i in $las
-    		do
-    			sed -e 's/^installed=yes$/installed=no/' \
-    			    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
-    			    -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
-    			    -i ${STAGE_TEMP}/${libdir}/$i
-    		done
-    		autotools_stage_dir ${STAGE_TEMP}/${libdir} ${STAGING_LIBDIR}
-    	fi
-        install -d ${STAGING_DIR_HOST}${layout_bindir}
-        sed -e "s@-I/usr/include@@g" \
-            -e "s@^prefix=.*@prefix=${STAGING_DIR_HOST}@g" \
-            -e "s@^exec_prefix=.*@exec_prefix=${STAGING_DIR_HOST}@g" \
-            -e "s@^includedir=.*@includedir=${STAGING_INCDIR}@g" \
-            -e "s@^libdir=.*@libdir=${STAGING_LIBDIR}@g" \
-                -i net-snmp-config
-
-        install -m 755 net-snmp-config ${STAGING_DIR_HOST}${layout_bindir}
-        rm -Rf ${STAGE_TEMP}
-}
-
-PACKAGES = "net-snmp-dbg net-snmp-doc net-snmp-dev net-snmp-libs \
+PACKAGES = "net-snmp-dbg net-snmp-doc net-snmp-dev net-snmp-static net-snmp-libs \
             net-snmp-mibs net-snmp-server net-snmp-client"
 
+FILES_${PN}-static = "${libdir}/*.a"
 FILES_${PN}-libs = "${libdir}/*"
 FILES_${PN}-mibs = "${datadir}/snmp/mibs"
 FILES_${PN}-server = "${sbindir}/* ${sysconfdir}"

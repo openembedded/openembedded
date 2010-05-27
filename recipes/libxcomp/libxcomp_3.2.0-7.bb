@@ -7,7 +7,7 @@ PR = "r0"
 DEPENDS = "virtual/libx11 zlib jpeg libpng"
 
 SRC_URI = "http://64.34.161.181/download/3.2.0/sources/nxcomp-${PV}.tar.gz \
-	   file://sa_restorer.patch;patch=1 \
+	   file://sa_restorer.patch \
 	  "
 
           

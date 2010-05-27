@@ -6,7 +6,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/apt-${PV}"
 PACKAGES = ""
 USE_NLS = "yes"
 
-SRC_URI += "file://db_linking_hack.patch;patch=1"
+SRC_URI += "file://db_linking_hack.patch"
 
 python do_stage () {
 	bb.build.exec_func('do_stage_base', d)

@@ -8,7 +8,7 @@ COMPATIBLE_MACHINE = "h2200"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
-	   file://labrun.patch;patch=1 \
+	   file://labrun.patch \
            file://defconfig"
 
 S = "${WORKDIR}/kernel26"

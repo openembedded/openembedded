@@ -1,6 +1,6 @@
-INHIBIT_PACKAGE_STRIP ?= ""
-OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGE_STRIP ?= ""
+OLD_PACKAGE_STRIP := "${PACKAGE_STRIP}"
+PACKAGE_STRIP = "no"
 
 # Having anything auto depending on gcc-cross-sdk is a really bad idea...
 EXCLUDE_FROM_SHLIBS = "1"
@@ -54,7 +54,7 @@ do_install () {
 
 	# Manually run the target stripper since we won't get it run by
 	# the packaging.
-	if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
+	if [ "x${OLD_PACKAGE_STRIP}" != "xno" ]; then
 		${TARGET_PREFIX}strip ${D}${prefix}/${TARGET_SYS}/lib/libstdc++.so.*
 		${TARGET_PREFIX}strip ${D}${prefix}/${TARGET_SYS}/lib/libg2c.so.* || true
 		${TARGET_PREFIX}strip ${D}${prefix}/${TARGET_SYS}/lib/libgcc_s.so.*

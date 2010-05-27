@@ -1,0 +1,265 @@
+From: Koen Kooi <koen@openembedded.org
+Subject: xserver-common: make rgb params kdrive specific
+
+Also convert stray tabs to spaces
+
+--- /tmp/xserver-common	2010-04-20 19:47:18.000000000 +0200
++++ xserver-common-1.33/X11/xserver-common	2010-04-20 19:47:22.000000000 +0200
+@@ -47,6 +47,7 @@
+ ARGS="-br -pn $INPUT_EXTRA_ARGS"
+ DPI="100"
+ MOUSE=""
++KDRIVEARGS=""
+ 
+ # use ucb 1x00 touchscreen if present
+ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
+@@ -68,127 +69,133 @@
+ else
+     # start off server in conventional location.
+     case `machine_id` in
+-	    "aml_m8050")
+-		    ARGS="$ARGS  -screen 320x240@270"
+-		    DPI="100" ;;
+-	    "hp_ipaq_h3100" | "hp_ipaq_h3800")
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@90"
+-		    DPI="100" ;;
+-	    "hp_ipaq_h3600" | "hp_ipaq_h3700" | "hp_ipaq_h3900")
+-		    ARGS="$ARGS -rgba vbgr -screen 320x240@270"
+-		    DPI="100" ;;
+-	    "hp_ipaq_h5400" | "hp_ipaq_h2200")
+-		    ARGS="$ARGS -rgba rgb"
+-		    DPI="100" ;;
+-	    "hp_ipaq_hx4700")
+-		    DPI="200" ;;
+-	    "ramses")
+-		    # What is this "vt2" in aid of?
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@90 vt2"
+-		    DPI="100" ;;
+-	    *poodle)
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@270"
+-		    DPI="100" ;;
+-	    # both 'Sharp-Collie' and just 'Collie' have been reported
+-	    *collie)
+-		    ARGS="$ARGS -rgba vrgb -screen 320x240@270"
+-		    DPI="100" ;;
+-	    "sharp_shepherd" | "sharp_husky" | "sharp_corgi")
+-		    ARGS="$ARGS -rgba rgb"
+-		    DPI="200" ;;
+-	    "sharp_spitz" | "sharp_akita" | "sharp_borzoi")
+-		    export XSERVER_DEFAULT_ORIENTATION="normal"
+-		    ARGS="$ARGS -rgba rgb -screen 480x640"
+-		    DPI="200" ;;
+-	    "simpad")
+-		    ARGS="$ARGS -rgba rgb"
+-		    DPI="100" ;;
+-	    "generic_omap1510/1610/1710")
+-		    MOUSE="-mouse /dev/input/event0"
+-		    DPI="220" ;;
+-	    "ti-osk")
+-		    DPI="100" ;;
+-	    "cellon_c8000_board")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE},10,1"
+-		    DPI="100" ;;
+-	    "htc_magician")
+-		    DPI="142" ;;
+-	    "htc_universal")
+-		    ARGS="$ARGS -screen 480x640@270"
+-		    DPI="100" ;;
+-	    "htc_tornado")
+-		    ARGS="$ARGS -hide-cursor"
+-		    DPI="100" ;;
+-	    "generic_omap1510/1610/1710")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="225" ;;
+-	    "nokia_n800" | "nokia_rx-44" | "nokia_n770")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="225" ;;
+-	    "gta01" )
+-		    DPI="285"
+-		    if [ "$XSERVER" != "Xorg" ] ; then
+-			    ARGS="$ARGS -screen 480x640"
+-		    fi
+-		    ;;
+-	    "gta02")
+-		    DPI="285"
+-		    if [ "$XSERVER" != "Xorg" ] ; then
+-			    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    fi
+-		    ;;
+-	    "motorola_ezx_platform")
+-		    ARGS="$ARGS -screen 240x320"
+-		    DPI="170" ;;
+-	    "arm-integratorcp" | "arm-versatile_pb")
+-		    ARGS="$ARGS -rgba vrgb" ;;
+-	    "compulab_cm-x270")
+-		    modprobe mbxfb
+-		    ARGS="$ARGS -fb /dev/fb1" ;;
+-	    "boundary_devices_neon_board")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="100" ;;
+-	    "hoeft&wessel_hw90350")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="100" ;;
+-	    "hoeft&wessel_hw90250")
+-		    ARGS="$ARGS -screen 240x320@90"
+-		    DPI="100" ;;
+-	    "hoeft&wessel_skeye.pad_pos_aka_almex_mobile")
+-		    DPI="100"
+-		    ARGS="$ARGS -screen 640x480@180 -hide-cursor" ;;
+-	    "mini2440")
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-		    DPI="100" ;;
+-	    "palm_treo_650")
+-	            DPI="181"
+-		    ARGS="$ARGS -screen 320x320 -hide-cursor" ;;
+-	    "glofiish_m800")
+-	            DPI="285"
+-		    ARGS="$ARGS -screen ${SCREEN_SIZE} -hide-cursor vt1" ;;
+-	    "freescale_mx21ads")
+-	    # That's what /proc/cpuinfo shows as hardware on the chumby
+-	            DPI="121"
+-		    ARGS="$ARGS -screen 320x240 -hide-cursor" ;;
++        "aml_m8050")
++            ARGS="$ARGS  -screen 320x240@270"
++            DPI="100" ;;
++        "hp_ipaq_h3100" | "hp_ipaq_h3800")
++            KDRIVEARGS="-rgba vrgb" 
++            ARGS="$ARGS -screen 320x240@90"
++            DPI="100" ;;
++        "hp_ipaq_h3600" | "hp_ipaq_h3700" | "hp_ipaq_h3900")
++            KDRIVEARGS="-rgba vrgb"
++            ARGS="$ARGS -screen 320x240@270"
++            DPI="100" ;;
++        "hp_ipaq_h5400" | "hp_ipaq_h2200")
++            KDRIVEARGS="-rgba rgb"
++            DPI="100" ;;
++        "hp_ipaq_hx4700")
++            DPI="200" ;;
++        "ramses")
++            # What is this "vt2" in aid of?
++            KDRIVEARGS="-rgba vrgb"
++            ARGS="$ARGS -screen 320x240@90 vt2"
++            DPI="100" ;;
++        *poodle)
++            KDRIVEARGS="-rgba vrgb"
++            ARGS="$ARGS -screen 320x240@270"
++            DPI="100" ;;
++        # both 'Sharp-Collie' and just 'Collie' have been reported
++        *collie)
++            KDRIVEARGS="-rgba vrgb"
++            ARGS="$ARGS -screen 320x240@270"
++            DPI="100" ;;
++        "sharp_shepherd" | "sharp_husky" | "sharp_corgi")
++            KDRIVEARGS="-rgba rgb"
++            DPI="200" ;;
++        "sharp_spitz" | "sharp_akita" | "sharp_borzoi")
++            export XSERVER_DEFAULT_ORIENTATION="normal"
++            KDRIVEARGS="-rgba vrgb"
++            ARGS="$ARGS -screen 480x640"
++            DPI="200" ;;
++        "simpad")
++            KDRIVEARGS="-rgba rgb"
++            DPI="100" ;;
++        "generic_omap1510/1610/1710")
++            MOUSE="-mouse /dev/input/event0"
++            DPI="220" ;;
++        "ti-osk")
++            DPI="100" ;;
++        "cellon_c8000_board")
++            ARGS="$ARGS -screen ${SCREEN_SIZE},10,1"
++            DPI="100" ;;
++        "htc_magician")
++            DPI="142" ;;
++        "htc_universal")
++            ARGS="$ARGS -screen 480x640@270"
++            DPI="100" ;;
++        "htc_tornado")
++            ARGS="$ARGS -hide-cursor"
++            DPI="100" ;;
++        "generic_omap1510/1610/1710")
++            ARGS="$ARGS -screen ${SCREEN_SIZE}"
++            DPI="225" ;;
++        "nokia_n800" | "nokia_rx-44" | "nokia_n770")
++            ARGS="$ARGS -screen ${SCREEN_SIZE}"
++            DPI="225" ;;
++        "gta01" )
++            DPI="285"
++            if [ "$XSERVER" != "Xorg" ] ; then
++                ARGS="$ARGS -screen 480x640"
++            fi
++            ;;
++        "gta02")
++            DPI="285"
++            if [ "$XSERVER" != "Xorg" ] ; then
++                ARGS="$ARGS -screen ${SCREEN_SIZE}"
++            fi
++            ;;
++        "motorola_ezx_platform")
++            ARGS="$ARGS -screen 240x320"
++            DPI="170" ;;
++        "arm-integratorcp" | "arm-versatile_pb")
++            KDRIVEARGS="-rgba vrgb" ;;
++        "compulab_cm-x270")
++            modprobe mbxfb
++            ARGS="$ARGS -fb /dev/fb1" ;;
++        "boundary_devices_neon_board")
++            ARGS="$ARGS -screen ${SCREEN_SIZE}"
++            DPI="100" ;;
++        "hoeft&wessel_hw90350")
++            ARGS="$ARGS -screen ${SCREEN_SIZE}"
++            DPI="100" ;;
++        "hoeft&wessel_hw90250")
++            ARGS="$ARGS -screen 240x320@90"
++            DPI="100" ;;
++        "hoeft&wessel_skeye.pad_pos_aka_almex_mobile")
++            DPI="100"
++            ARGS="$ARGS -screen 640x480@180 -hide-cursor" ;;
++        "mini2440")
++            ARGS="$ARGS -screen ${SCREEN_SIZE}"
++            DPI="100" ;;
++        "palm_treo_650")
++                DPI="181"
++            ARGS="$ARGS -screen 320x320 -hide-cursor" ;;
++        "glofiish_m800")
++                DPI="285"
++            ARGS="$ARGS -screen ${SCREEN_SIZE} -hide-cursor vt1" ;;
++        "freescale_mx21ads")
++        # That's what /proc/cpuinfo shows as hardware on the chumby
++                DPI="121"
++            ARGS="$ARGS -screen 320x240 -hide-cursor" ;;
+ 
+             # this is to rotate X display properly, tested with display TX09D71VM1CCA
+             ronetix*pm9261*  | ronetix*pm9263*)
+-         	    ARGS="$ARGS -screen 240/54x320/81@90x16" ;;
+-	    # This is a fallback for PCs
+-	    "")
+-		    if [ -f $BINDIR/Xvesa ]; then
+-			    ARGS="$ARGS -mode 0x0114"
+-		    else
+-			# It is a device we do not know about, in which case we force
+-			# kdrive to use the current framebuffer geometry -- otherwise
+-			# it will default to trying to achieve 1024x768
+-			if [ "$XSERVER" != "Xorg" ] ; then
+-			    ARGS="$ARGS -screen ${SCREEN_SIZE}"
+-			fi
+-		    fi
++                 ARGS="$ARGS -screen 240/54x320/81@90x16" ;;
++        # This is a fallback for PCs
++        "")
++            if [ -f $BINDIR/Xvesa ]; then
++                ARGS="$ARGS -mode 0x0114"
++            else
++            # It is a device we do not know about, in which case we force
++            # kdrive to use the current framebuffer geometry -- otherwise
++            # it will default to trying to achieve 1024x768
++            if [ "$XSERVER" != "Xorg" ] ; then
++                ARGS="$ARGS -screen ${SCREEN_SIZE}"
++            fi
++            fi
+     esac
+ fi
+ 
+ if [ "$XSERVER" != "Xorg" ] ; then
+-    ARGS="$ARGS $MOUSE"
++    ARGS="$ARGS $MOUSE $KDRIVEARGS"
+ fi

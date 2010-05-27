@@ -25,23 +25,23 @@ RRECOMMENDS_${PN}_linux-gnueabi = " "
 FILESPATH = "${FILE_DIRNAME}/gtk+-${PV}:${FILE_DIRNAME}/files"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
-           file://no-xwc.patch;patch=1 \
-           file://automake-lossage.patch;patch=1 \
-           file://disable-tooltips.patch;patch=1 \
-           file://gtklabel-resize-patch;patch=1 \
-           file://menu-deactivate.patch;patch=1 \
-           file://xsettings.patch;patch=1 \
-           file://scroll-timings.patch;patch=1 \
-           file://small-gtkfilesel.patch;patch=1 \
-           file://migration.patch;patch=1;pnum=0 \
-           file://run-iconcache.patch;patch=1 \
-           file://hardcoded_libtool.patch;patch=1 \
-           file://no-demos.patch;patch=1 \
-           file://single-click.patch;patch=1 \
-           file://spinbutton.patch;patch=1 \
-           file://gtk+-handhelds.patch;patch=1 \
-	   file://directfb-pixbuf-deprecated-fix.patch;patch=1 \
-#	   file://gtk-doc.patch;patch=1 \
+           file://no-xwc.patch \
+           file://automake-lossage.patch \
+           file://disable-tooltips.patch \
+           file://gtklabel-resize-patch;apply=yes \
+           file://menu-deactivate.patch \
+           file://xsettings.patch \
+           file://scroll-timings.patch \
+           file://small-gtkfilesel.patch \
+           file://migration.patch;striplevel=0 \
+           file://run-iconcache.patch \
+           file://hardcoded_libtool.patch \
+           file://no-demos.patch \
+           file://single-click.patch \
+           file://spinbutton.patch \
+           file://gtk+-handhelds.patch \
+	   file://directfb-pixbuf-deprecated-fix.patch \
+#	   file://gtk-doc.patch \
 "
 EXTRA_OECONF =" \
                 --prefix=${STAGING_DIR_HOST}${layout_prefix} \

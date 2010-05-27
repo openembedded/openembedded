@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r3"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
-	           file://groff.patch;patch=1"
+	           file://groff.patch"
 
 PARALLEL_MAKE = ""
 # prefix and exec-prefix are broken and the .in file is broken too

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 DEPENDS = "expat virtual/libsdl libsdl-mixer"
 
 SRC_URI = "http://x.mame.net/download/historic/${P}.tar.bz2 \
-          file://${FILESDIR}/crosscompile.patch;patch=1"
+          file://${FILESDIR}/crosscompile.patch"
 
 inherit flow-lossage
 

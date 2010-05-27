@@ -15,7 +15,7 @@ do_patch_prepend() {
         if bb.data.getVar('PREFERRED_VERSION_gtk+', d, 1) and
         bb.data.getVar('PREFERRED_VERSION_gtk+', d, 1).split('.')[0] <= '2' and 
         bb.data.getVar('PREFERRED_VERSION_gtk+', d, 1).split('.')[1] < '18':
-            SRC_URI_append = "file://gattrib-gtk218.patch;patch=1"
+            SRC_URI_append = "file://gattrib-gtk218.patch"
 }
 
 SRC_URI[md5sum] = "e1f68401e7ca5fff16292358f0dfd553"

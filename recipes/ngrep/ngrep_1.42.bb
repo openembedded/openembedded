@@ -5,7 +5,7 @@ PRIORITY = "optional"
 DEPENDS = "libpcap libpcre"
 LICENSE="ngrep"
 SRC_URI = "${SOURCEFORGE_MIRROR}/ngrep/ngrep-${PV}.tar.bz2 \
-           file://use-our-pcre.patch;patch=1"
+           file://use-our-pcre.patch"
 
 EXTRA_OECONF = "--with-restart --enable-pcre --with-pcap-includes=${STAGING_INCDIR}"
 EXTRA_OEMAKE = "INCLUDES=${S}"

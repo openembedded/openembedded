@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += " dbus-glib libframeworkd-glib sqlite3 shr-specs"
-SRCREV = "de3eab1df1682cb41abfd105bb6767fedfbbf7b4"
+SRCREV = "c01f2eb0eb79d5d5581ab35f2dbd1c3b3979439b"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r4"
 

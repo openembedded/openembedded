@@ -1,15 +1,15 @@
 require autofs.inc
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2;name=archive \
-           ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-misc-fixes.patch;patch=1;name=patch1 \
-           ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-multi-parse-fix.patch;patch=1;name=patch2 \
-           ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-non-replicated-ping.patch;patch=1;name=patch3 \
-           file://cross.patch;patch=1 \
-           file://Makefile.rules-cross.patch;patch=1 \
-	   file://install.patch;patch=1 \
-	   file://auto.net-sort-option-fix.patch;patch=1 \
-	   file://autofs-additional-distros.patch;patch=1 \
-	   file://no-bash.patch;patch=1"
+           ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-misc-fixes.patch;name=patch1 \
+           ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-multi-parse-fix.patch;name=patch2 \
+           ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-non-replicated-ping.patch;name=patch3 \
+           file://cross.patch \
+           file://Makefile.rules-cross.patch \
+	   file://install.patch \
+	   file://auto.net-sort-option-fix.patch \
+	   file://autofs-additional-distros.patch \
+	   file://no-bash.patch"
 PR = "${INC_PR}"
 
 inherit update-rc.d

@@ -8,8 +8,8 @@ DEPENDS = "avahi gtk+"
 RRECOMMENDS = "avahi-daemon"
 
 SRC_URI = "http://distcc.samba.org/ftp/distcc/distcc-${PV}.tar.bz2 \
-	   file://distcc-avahi.patch;patch=1 \
-	   file://no-man.patch;patch=1 \
+	   file://distcc-avahi.patch \
+	   file://no-man.patch \
            file://default \
 	   file://distccmon-gnome.desktop \
 	   file://distcc"

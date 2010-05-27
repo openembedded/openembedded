@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r5"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -24,7 +24,6 @@ PROVIDES = "\
 	linux-libc-headers \
 "
 
-RPROVIDES = "glibc-utils libsegfault glibc-thread-db"
 RPROVIDES_glibc-dev += "libc-dev"
 PACKAGES_DYNAMIC += "glibc-gconv-*"
 PACKAGES_DYNAMIC += "glibc-locale-*"
@@ -188,6 +187,12 @@ PKGV_ldd = ${CSL_VER_LIBC}
 PKGV_localedef = ${CSL_VER_LIBC}
 PKGV_libsegfault = ${CSL_VER_LIBC}
 PKGV_linux-libc-headers = ${CSL_VER_KERNEL}
+
+LICENSE_ldd = "LGPLv2.1+"
+LICENSE_glibc = "LGPLv2.1+"
+LICENSE_glibc-thread-db = "LGPLv2.1+"
+LICENSE_libgcc := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2009q1-203"]}"
+LICENSE_libstdc++ := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2009q1-203"]}"
 
 do_install() {
 	install -d ${D}${sysconfdir}

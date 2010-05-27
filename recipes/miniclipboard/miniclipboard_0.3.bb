@@ -7,7 +7,7 @@ RDEPENDS = "gdk-pixbuf-loader-xpm"
 PR = "r2"
 
 SRC_URI += "file://miniclipboard.desktop \
-            file://makefile.patch;patch=1;pnum=0"
+            file://makefile.patch;striplevel=0"
 
 do_install() {
 	install -d ${D}${bindir}

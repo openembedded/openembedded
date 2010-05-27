@@ -88,86 +88,6 @@ def package_qa_get_machine_dict():
 
        }
 
-# factory for a class, embedded in a method
-def package_qa_get_elf(path, bits32):
-    class ELFFile:
-        EI_NIDENT = 16
-
-        EI_CLASS      = 4
-        EI_DATA       = 5
-        EI_VERSION    = 6
-        EI_OSABI      = 7
-        EI_ABIVERSION = 8
-
-        # possible values for EI_CLASS
-        ELFCLASSNONE = 0
-        ELFCLASS32   = 1
-        ELFCLASS64   = 2
-
-        # possible value for EI_VERSION
-        EV_CURRENT   = 1
-
-        # possible values for EI_DATA
-        ELFDATANONE  = 0
-        ELFDATA2LSB  = 1
-        ELFDATA2MSB  = 2
-
-        def my_assert(self, expectation, result):
-            if not expectation == result:
-                #print "'%x','%x' %s" % (ord(expectation), ord(result), self.name)
-                raise Exception("This does not work as expected")
-
-        def __init__(self, name):
-            self.name = name
-
-        def open(self):
-            self.file = file(self.name, "r")
-            self.data = self.file.read(ELFFile.EI_NIDENT+4)
-
-            self.my_assert(len(self.data), ELFFile.EI_NIDENT+4)
-            self.my_assert(self.data[0], chr(0x7f) )
-            self.my_assert(self.data[1], 'E')
-            self.my_assert(self.data[2], 'L')
-            self.my_assert(self.data[3], 'F')
-            if bits32 :
-                self.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS32))
-            else:
-                self.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS64))
-            self.my_assert(self.data[ELFFile.EI_VERSION], chr(ELFFile.EV_CURRENT) )
-
-            self.sex = self.data[ELFFile.EI_DATA]
-            if self.sex == chr(ELFFile.ELFDATANONE):
-                raise Exception("self.sex == ELFDATANONE")
-            elif self.sex == chr(ELFFile.ELFDATA2LSB):
-                self.sex = "<"
-            elif self.sex == chr(ELFFile.ELFDATA2MSB):
-                self.sex = ">"
-            else:
-                raise Exception("Unknown self.sex")
-
-        def osAbi(self):
-            return ord(self.data[ELFFile.EI_OSABI])
-
-        def abiVersion(self):
-            return ord(self.data[ELFFile.EI_ABIVERSION])
-
-        def isLittleEndian(self):
-            return self.sex == "<"
-
-        def isBigEngian(self):
-            return self.sex == ">"
-
-        def machine(self):
-            """
-            We know the sex stored in self.sex and we
-            know the position
-            """
-            import struct
-            (a,) = struct.unpack(self.sex+"H", self.data[18:20])
-            return a
-
-    return ELFFile(path)
-
 
 # Known Error classes
 # 0 - non dev contains .so
@@ -432,7 +352,7 @@ def package_qa_check_staged(path,d):
 
 # Walk over all files in a directory and call func
 def package_qa_walk(path, funcs, package,d):
-    sane = True
+    import oe.qa
 
     #if this will throw an exception, then fix the dict above
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
@@ -440,10 +360,11 @@ def package_qa_walk(path, funcs, package,d):
     (machine, osabi, abiversion, littleendian, bits32) \
         = package_qa_get_machine_dict()[target_os][target_arch]
 
+    sane = True
     for root, dirs, files in os.walk(path):
         for file in files:
             path = os.path.join(root,file)
-            elf = package_qa_get_elf(path, bits32)
+            elf = oe.qa.ELFFile(path, bits32)
             try:
                 elf.open()
             except:
@@ -524,7 +445,7 @@ python do_package_qa () {
 
 
 # The Staging Func, to check all staging
-addtask qa_staging after do_populate_staging before do_build
+addtask qa_staging after do_populate_sysroot before do_build
 python do_qa_staging() {
     bb.debug(2, "QA checking staging")
 
@@ -535,6 +456,7 @@ python do_qa_staging() {
 # Check broken config.log files
 addtask qa_configure after do_configure before do_compile
 python do_qa_configure() {
+    configs = []
     bb.debug(1, "Checking sanity of the config.log file")
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
         statement = "grep 'CROSS COMPILE Badness:' %s > /dev/null" % \
@@ -543,4 +465,24 @@ python do_qa_configure() {
             if os.system(statement) == 0:
                 bb.fatal("""This autoconf log indicates errors, it looked at host includes.
 Rerun configure task after fixing this. The path was '%s'""" % root)
+
+        if "configure.ac" in files:
+            configs.append(os.path.join(root,"configure.ac"))
+        if "configure.in" in files:
+            configs.append(os.path.join(root, "configure.in"))
+
+    if "gettext" not in bb.data.getVar('P', d, True):
+       if bb.data.inherits_class('native', d) or bb.data.inherits_class('cross', d) or bb.data.inherits_class('crosssdk', d) or bb.data.inherits_class('nativesdk', d):
+          gt = "gettext-native"
+       elif bb.data.inherits_class('cross-canadian', d):
+          gt = "gettext-nativesdk"
+       else:
+          gt = "gettext"
+       deps = bb.utils.explode_deps(bb.data.getVar('DEPENDS', d, True) or "")
+       if gt not in deps:
+          for config in configs:
+              gnu = "grep \"^[[:space:]]*AM_GNU_GETTEXT\" %s >/dev/null" % config
+              if os.system(gnu) == 0:
+                 bb.note("""Gettext required but not in DEPENDS for file %s.
+Missing inherit gettext?""" % config)
 }

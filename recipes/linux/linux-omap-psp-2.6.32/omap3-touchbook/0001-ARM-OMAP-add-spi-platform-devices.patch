@@ -1,7 +1,7 @@
-From 512af40b0efa98d9a7a5596fe6b19600d89a58dd Mon Sep 17 00:00:00 2001
+From 0031d3fb2d067f4c46e434f5f5c6c14cef2a83a3 Mon Sep 17 00:00:00 2001
 From: Tim Yamin <plasm@roo.me.uk>
 Date: Sat, 11 Apr 2009 13:05:21 -0700
-Subject: [PATCH 01/16] ARM: OMAP: add spi platform devices
+Subject: [PATCH 01/17] ARM: OMAP: add spi platform devices
 
 ---
  arch/arm/mach-omap2/devices.c |   32 ++++++++++++++++++++++++++++++++

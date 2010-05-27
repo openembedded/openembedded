@@ -1,13 +1,13 @@
 require linux.inc
 
-PV = "2.6.29+${PR}+gitr${SRCREV}"
-PR = "r13"
+PV = "2.6.32+${PR}+gitr${SRCREV}"
+PR = "r15"
 
 COMPATIBLE_MACHINE = "htcnexus|htcleo"
 
-SRCREV = "2d3ee40a2d334693c342ef10c5fde599854e91a9"
+SRCREV = "bc796399c0a19622b8aa1f705d841c9b4059550b"
 
-SRC_BRANCH = "htc-qsd8k-2.6.29"
+SRC_BRANCH = "htc-msm-2.6.32"
 
 SRC_URI = "\
   git://git.linuxtogo.org/home/groups/mobile-linux/kernel.git;branch=${SRC_BRANCH};protocol=git \

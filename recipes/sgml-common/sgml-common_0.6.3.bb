@@ -11,7 +11,7 @@ as defined by OASIS."
 FILES_sgml-common_append = " ${datadir}/sgml"
 
 SRC_URI = "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/sgml-common-${PV}.tgz \
-	   file://autohell.patch;patch=1"
+	   file://autohell.patch"
 
 inherit autotools
 

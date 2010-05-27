@@ -5,9 +5,9 @@ LICENSE = "CLOSED"
 PR = "r4"
 
 SRC_URI = "http://mirror1.pdaxrom.org/source/src/AtiCore-1.0.1.tar.bz2 \
-		file://fixstretchblit.patch;patch=1 \
-		file://aticore-2.6.patch;patch=1 \
-		file://make381.patch;patch=1"
+		file://fixstretchblit.patch \
+		file://aticore-2.6.patch \
+		file://make381.patch"
 S = "${WORKDIR}/AtiCore-1.0.1"
 
 EXTRA_OEMAKE="CC='${CC}' AS='${AS}' AR='${AR}' LD='${LD}' FPU='${TARGET_FPU}'"

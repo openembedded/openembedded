@@ -5,7 +5,7 @@ LICENSE     = "GPL"
 DEPENDS     = "uicmoc3-native"
 
 SRC_URI     = "ftp://download.kde.org/pub/kde/stable/${PV}/src/kdelibs-${PV}.tar.bz2 \
-	      file://dcopidl-compile.patch;patch=1 "
+	      file://dcopidl-compile.patch "
 S           = "${WORKDIR}/kdelibs-${PV}/dcop/dcopidl"
 
 inherit native qmake qt3e

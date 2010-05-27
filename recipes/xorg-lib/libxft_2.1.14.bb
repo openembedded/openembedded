@@ -6,7 +6,7 @@ PROVIDES = "xft"
 PR = "r1"
 PE = "1"
 
-SRC_URI += "file://autotools.patch;patch=1"
+SRC_URI += "file://autotools.patch"
 
 XORG_PN = "libXft"
 

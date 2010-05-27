@@ -9,7 +9,7 @@ PV = "0.1.7+${PR}+gitr${SRCPV}"
 
 SRC_URI = "git://git.xfce.org/apps/midori;protocol=git \
            file://waf \
-           file://wscript-fix.patch;patch=1"
+           file://wscript-fix.patch"
 
 S = "${WORKDIR}/git"
 

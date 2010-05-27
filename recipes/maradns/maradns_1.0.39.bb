@@ -5,7 +5,7 @@ LICENSE = "PD"
 
 SRC_URI = "http://www.maradns.org/download/1.0/maradns-${PV}.tar.bz2 \
            file://init \
-           file://rng-makefile-build-cc.patch;patch=1;pnum=0"
+           file://rng-makefile-build-cc.patch;striplevel=0"
 
 do_install() {
 	install -d ${D}${bindir}

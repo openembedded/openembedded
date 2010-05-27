@@ -9,6 +9,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-${PV
 
 S = "${WORKDIR}/klibc-${PV}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+INC_PR = "r14"
 
 KLIBC_ARCH = '${TARGET_ARCH}'
 KLIBC_ARCH_armeb = 'arm'
@@ -23,8 +24,8 @@ KLIBC_ARCH_pentium = 'i386'
 # could be fixed, but for the moment:
 ARM_INSTRUCTION_SET = "arm"
 
-SRC_URI_append_linux-gnueabi = "file://klibc-config-eabi.patch;patch=1"
-SRC_URI_append_linux-uclibceabi = "file://klibc-config-eabi.patch;patch=1"
+SRC_URI_append_linux-gnueabi = "file://klibc-config-eabi.patch"
+SRC_URI_append_linux-uclibceabi = "file://klibc-config-eabi.patch"
 
 EXTRA_OEMAKE = "'KLIBCARCH=${KLIBC_ARCH}' \
                 'CROSS_COMPILE=${TARGET_PREFIX}' \

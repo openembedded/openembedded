@@ -17,46 +17,46 @@ DEFAULT_PREFERENCE_ronetix-pm9263 = "1"
 DEFAULT_PREFERENCE_ronetix-pm9261 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.20.bz2;patch=1;name=stablepatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.20.bz2;apply=yes;name=stablepatch \
            file://defconfig"
 
 SRC_URI_append_mpc8313e-rdb = "\
-	file://mpc831x-nand.patch;patch=1 \
-	file://mpc8313e-rdb-leds.patch;patch=1 \
-	file://mpc8313e-rdb-cardbus.patch;patch=1 \
+	file://mpc831x-nand.patch \
+	file://mpc8313e-rdb-leds.patch \
+	file://mpc8313e-rdb-cardbus.patch \
 	"
 
 SRC_URI_append_cm-x270 = " \
-	file://0001-cm-x270-match-type.patch;patch=1 \
-	file://0002-ramdisk_load.patch;patch=1 \
-	file://0003-mmcsd_large_cards-r0.patch;patch=1 \
-	file://0004-cm-x270-nand-simplify-name.patch;patch=1 \
-	file://0005-add-display-set-default-16bpp.patch;patch=1 \
+	file://0001-cm-x270-match-type.patch \
+	file://0002-ramdisk_load.patch \
+	file://0003-mmcsd_large_cards-r0.patch \
+	file://0004-cm-x270-nand-simplify-name.patch \
+	file://0005-add-display-set-default-16bpp.patch \
 	"
 
 SRC_URI_append_at32stk1000 = " \
-	http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.25.6.atmel.1.patch.bz2;patch=1;name=atmelpatch \
-	file://virtualmouse.patch;patch=1 \
-#    file://pll1.diff;patch=1 \
+	http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.25.6.atmel.1.patch.bz2;name=atmelpatch \
+	file://virtualmouse.patch \
+#    file://pll1.diff \
 "
 
 SRC_URI_append_at91-l9260 = " \
-	http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1;name=at91patch \
+	http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;name=at91patch \
 "
 
 SRC_URI_append_ronetix-pm9263 = " \
-        http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1;name=at91patch \
-        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/linux-2.6.25.4-ronetix-08-11-02.2228.patch;patch=1;name=ronetixpatch \
-        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/socketcan-driver-at91.patch;patch=1;name=socketat91patch \
+        http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;name=at91patch \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/linux-2.6.25.4-ronetix-08-11-02.2228.patch;name=ronetixpatch \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/socketcan-driver-at91.patch;name=socketat91patch \
 "
 
 SRC_URI_append_ronetix-pm9261 = " \
-        http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1;name=at91patch \
-        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/linux-2.6.25.4-ronetix-08-11-02.2228.patch;patch=1;name=ronetixpatch \
-        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/socketcan-driver-at91.patch;patch=1;name=socketat91patch \
+        http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;name=at91patch \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/linux-2.6.25.4-ronetix-08-11-02.2228.patch;name=ronetixpatch \
+        http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.25.4/socketcan-driver-at91.patch;name=socketat91patch \
 "
 
-SRC_URI_append_m8050 = " file://m8050.diff;patch=1 file://update-mach-types.diff;patch=1"
+SRC_URI_append_m8050 = " file://m8050.diff file://update-mach-types.diff"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 

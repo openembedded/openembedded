@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
 
 PR = "r0"
-PE = "2"
+PE = "1"
 
 SRC_URI = "http://sources.slimlogic.co.uk/libscenario/scenario-lib-0.2.0.tar.bz2"
 

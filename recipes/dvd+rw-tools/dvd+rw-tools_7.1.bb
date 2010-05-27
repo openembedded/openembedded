@@ -3,14 +3,14 @@ PR = "r2"
 DEPENDS += "m4-native"
 RDEPENDS += "cdrkit"
 SRC_URI = "http://fy.chalmers.se/~appro/linux/DVD+RW/tools/dvd+rw-tools-${PV}.tar.gz \
-           file://01-growisofs-pioneer.dpatch;patch=1 \
-           file://02-growisofs-manpage.dpatch;patch=1 \
-           file://03-growisofs-dvd-dl.dpatch;patch=1 \
-           file://04-kfreebsd.dpatch;patch=1 \
-           file://07-beeping.dpatch;patch=1 \
-           file://08-cdrkit-code.dpatch;patch=1 \
-           file://09-cdrkit-doc.dpatch;patch=1 \
-           file://10-includes.dpatch;patch=1 \
+           file://01-growisofs-pioneer.dpatch;apply=yes \
+           file://02-growisofs-manpage.dpatch;apply=yes \
+           file://03-growisofs-dvd-dl.dpatch;apply=yes \
+           file://04-kfreebsd.dpatch;apply=yes \
+           file://07-beeping.dpatch;apply=yes \
+           file://08-cdrkit-code.dpatch;apply=yes \
+           file://09-cdrkit-doc.dpatch;apply=yes \
+           file://10-includes.dpatch;apply=yes \
           "
 
 do_configure() {

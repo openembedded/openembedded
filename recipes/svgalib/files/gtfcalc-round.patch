@@ -1,0 +1,17 @@
+Index: svgalib-1.9.25/utils/gtf/gtfcalc.c
+===================================================================
+--- svgalib-1.9.25.orig/utils/gtf/gtfcalc.c
++++ svgalib-1.9.25/utils/gtf/gtfcalc.c
+@@ -64,10 +64,12 @@ static GTF_constants GC = {
+ 
+ /*-------------------------- Implementation -------------------------------*/
+ 
++#ifndef HAVE_ROUND
+ static double round(double v)
+ {
+ 	return floor(v + 0.5);
+ }
++#endif
+ 
+ static void GetInternalConstants(GTF_constants *c)
+ /****************************************************************************

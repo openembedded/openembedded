@@ -8,7 +8,7 @@ HOMEPAGE = "http://www.trolltech.com"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qt-x11-free"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
-	   file://no-examples.patch;patch=1"
+	   file://no-examples.patch"
 S = "${WORKDIR}/qt-x11-free-${PV}"
 
 #
