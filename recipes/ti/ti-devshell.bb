@@ -1,10 +1,11 @@
 DESCRIPTION = "Runs a shell in an environment as emitted by BitBake to execute tasks"
 LICENSE = "GPL"
 
+PR = "r1"
+
 inherit autotools pkgconfig
 
 require ti-paths.inc 
-
 
 do_configure() {
 	:
@@ -49,6 +50,8 @@ python do_compile() {
 do_install() {
 	:
 }
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_deploy() {
 	shellfile="${TARGET_PREFIX}${DISTRO}-${MACHINE}-ti-devshell"
