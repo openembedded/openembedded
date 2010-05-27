@@ -6,11 +6,12 @@ PRIORITY = "optional"
 
 SRCREV = "58"
 PV = "1.0"
-PR = "r12+svnr${SRCPV}"
+PR = "r13+svnr${SRCPV}"
 
 SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' \
     file://0001-Disable-cursor-override-for-X11.patch;patch=1 \
 	file://init \
+    file://matrix-gui.desktop \
 "
 
 S = "${WORKDIR}/trunk"
@@ -45,6 +46,14 @@ do_install() {
 	install -m 0644 ${S}/images/*.png ${D}/${datadir}/matrix/images/
 	install -d ${D}${sysconfdir}/init.d/
 	install -c -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/matrix-gui
+    install -d ${D}/${sysconfdir}/xdg/autostart
+    install -m 0755 ${WORKDIR}/matrix-gui.desktop ${D}/${sysconfdir}/xdg/autostart
 }
 
+FILES_${PN}-autostart = "${sysconfdir}/xdg/autostart/matrix-gui.desktop"
 FILES_${PN} += "${datadir}/matrix/*"
+
+#Make autostart package depend on matrix-gui package.  Doesn't make sense
+#to install the autostart package without the underlying matrix-gui package.
+RDEPENDS_${PN}-autostart = "${PN}"
+PACKAGES =+ "${PN}-autostart"
