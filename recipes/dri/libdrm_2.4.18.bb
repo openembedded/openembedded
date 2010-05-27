@@ -1,5 +1,7 @@
 require libdrm.inc
 
+DEPENDS = "libpthread-stubs"
+
 PR = "${INC_PR}.0"
 
 SRC_URI[md5sum] = "d2b5fbfd37742af7d2169f7d26ce3007"
