@@ -163,6 +163,7 @@ python base_do_fetch() {
 
 def oe_unpack_file(file, data, url = None):
 	import subprocess
+	import oe.utils
 	if not url:
 		url = "file://%s" % file
 	dots = file.split(".")
@@ -207,7 +208,9 @@ def oe_unpack_file(file, data, url = None):
 		cmd = 'cp -pPR %s %s/%s/' % (file, os.getcwd(), destdir)
 	else:
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
-		if not 'apply' in parm and not 'patch' in parm:
+		is_patch = path.endswith('.diff') or path.endswith('.patch')
+		if not oe.utils.param_bool(parm, 'apply', is_patch) and \
+		   not oe.utils.param_bool(parm, 'patch', False):
 			# The "destdir" handling was specifically done for FILESPATH
 			# items.  So, only do so for file:// entries.
 			if type == "file":
