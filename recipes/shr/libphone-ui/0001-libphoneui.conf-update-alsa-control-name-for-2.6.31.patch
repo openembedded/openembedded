@@ -1,0 +1,38 @@
+From 47df8a90652e3b22692d2ad7ee3b0219d7651f3a Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 25 May 2010 13:09:17 +0200
+Subject: [PATCH] libphoneui.conf: update alsa control name for 2.6.31+
+
+---
+ data/libphoneui.conf |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/data/libphoneui.conf b/data/libphoneui.conf
+index 980ef10..f8bfc3f 100644
+--- a/data/libphoneui.conf
++++ b/data/libphoneui.conf
+@@ -46,18 +46,18 @@ hardware_control_name = hw:0
+ [alsa_control_speaker]
+ speaker = Headphone Playback Volume
+ microphone = Mono Playback Volume
+-microphone_mute = Mono Mixer Sidetone Playback Sw
++microphone_mute = Mono Mixer Sidetone Playback Switch
+ 
+ [alsa_control_handset]
+ speaker = Speaker Playback Volume
+ speaker_min = 90
+ microphone = Mono Playback Volume
+-microphone_mute = Mono Mixer Sidetone Playback Sw
++microphone_mute = Mono Mixer Sidetone Playback Switch
+ 
+ [alsa_control_headset]
+ speaker = Headphone Playback Volume
+ microphone = Mono Playback Volume
+-microphone_mute = Mono Mixer Sidetone Playback Sw
++microphone_mute = Mono Mixer Sidetone Playback Switch
+ 
+ [alsa_control_bluetooth]
+ speaker = Speaker Playback Volume
+-- 
+1.7.1
+

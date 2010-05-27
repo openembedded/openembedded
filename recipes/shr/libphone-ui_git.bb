@@ -10,7 +10,9 @@ DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libfso-glib libfsoframework libph
 
 inherit pkgconfig autotools autotools_stage
 
-SRC_URI = "git://git.shr-project.org/repo/libphone-ui.git;protocol=http;branch=master"
+SRC_URI = "git://git.shr-project.org/repo/libphone-ui.git;protocol=http;branch=master \
+           file://0001-libphoneui.conf-update-alsa-control-name-for-2.6.31.patch;patch=1"
+
 S="${WORKDIR}/git"
 
 CONFFILES_${PN} = "${sysconfdir}/libphoneui.conf"
