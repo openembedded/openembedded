@@ -6,6 +6,7 @@ QUILTRCFILE ?= "${STAGING_BINDIR_NATIVE}/quiltrc"
 PATCHDEPENDENCY = "${PATCHTOOL}-native:do_populate_sysroot"
 
 python patch_do_patch() {
+	import oe.utils
 	import oe.patch
 
 	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
@@ -46,15 +47,13 @@ python patch_do_patch() {
 			local = os.path.join(workdir, base)
 			ext = os.path.splitext(base)[1]
 
-		if "apply" in parm:
-			apply = parm["apply"]
-			if apply != "yes":
-				if apply != "no":
-					bb.msg.warn(None, "Unsupported value '%s' for 'apply' url param in '%s', please use 'yes' or 'no'" % (apply, url))
-				continue
+		is_patch = ext in (".diff", ".patch")
+
+		if not oe.utils.param_bool(parm, 'apply', is_patch):
+			continue
 		elif "patch" in parm:
 			bb.msg.warn(None, "Deprecated usage of 'patch' url param in '%s', please use 'apply={yes,no}'" % url)
-		elif ext not in (".diff", ".patch"):
+		elif not is_patch:
 			continue
 
 		if not local:
