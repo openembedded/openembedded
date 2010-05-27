@@ -8,7 +8,6 @@ IMAGE_INSTALL = "task-boot \
             util-linux-ng-mount util-linux-ng-umount \
             ${DISTRO_SSH_DAEMON} \
             lowpan-tools \
-            ibrdtnd \
             angstrom-version \
 	   "
 
