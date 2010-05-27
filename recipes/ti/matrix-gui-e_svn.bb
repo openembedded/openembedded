@@ -1,12 +1,12 @@
-DESCRIPTION = "Matrix GUI"
+DESCRIPTION = "Matrix GUI for Qt Embedded"
 HOMEPAGE = "https://gforge.ti.com/gf/project/matrix_gui/"
 LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-SRCREV = "57"
+SRCREV = "58"
 PV = "1.0"
-PR = "r6+svnr${SRCPV}"
+PR = "r7+svnr${SRCPV}"
 
 SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' \
 	file://init \
@@ -14,7 +14,7 @@ SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=ano
 
 S = "${WORKDIR}/trunk"
 
-INITSCRIPT_NAME = "matrix-gui"
+INITSCRIPT_NAME = "matrix-gui-e"
 INITSCRIPT_PARAMS = "defaults 99"
 
 inherit qt4e update-rc.d
@@ -37,7 +37,7 @@ MATRIX_EXTRA_BINS = " \
 
 do_install() {
 	install -d ${D}/${bindir}
-	install -m 0755 ${S}/matrix_gui ${D}/${bindir}
+	install -m 0755 ${S}/matrix_gui ${D}/${bindir}/matrix_guiE
 	for i in ${MATRIX_EXTRA_BINS}; do
 		install -m 0755 ${S}/bin/${i} ${D}/${bindir}
 	done
@@ -46,7 +46,7 @@ do_install() {
 	install -d ${D}/${datadir}/matrix/images
 	install -m 0644 ${S}/images/*.png ${D}/${datadir}/matrix/images/
 	install -d ${D}${sysconfdir}/init.d/
-	install -c -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/matrix-gui
+	install -c -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/matrix-gui-e
 }
 
 RRECOMMENDS_${PN} = "qt4-embedded-plugin-mousedriver-tslib"
