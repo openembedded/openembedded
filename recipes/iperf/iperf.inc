@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Iperf is a tool to measure maximum TCP bandwidth, allowing the tuning of various parameters and UDP characteristics"
 HOMEPAGE = "http://dast.nlanr.net/Projects/Iperf/"
 LICENSE = "BSD"
-PR = "r1"
+INC_PR = "r1"
 
 inherit autotools
 
