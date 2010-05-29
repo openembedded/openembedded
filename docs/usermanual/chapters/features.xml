@@ -22,9 +22,9 @@
     <para>Run-time Dependencies (<command>RDEPENDS</command>) will be added
     when packaging the software. They should only contain the minimal
     dependencies to run the program. OpenEmbedded will analyze each packaged
-    binary and search for <command>SO_NEEDED</command> libraries. The
-    libraries are absolutely required by the program then OpenEmbedded is
-    searching for packages that installs these libraries. these packages are
+    binary and search for <command>SO_NEEDED</command> libraries. These
+    libraries are absolutely required by the program so OpenEmbedded will
+    search for packages that install these libraries. These packages are
     automatically added to the <command>RDEPENDS</command>. As a packager you
     don't need to worry about shared libraries anymore they will be added
     automatically.</para>
@@ -52,9 +52,9 @@ BBFILE_PRIORITY_local = "10"
     <title>Task-base <anchor id="task-base" /></title>
 
     <para>Task-base is new way of creating basic root filesystems. Instead of
-    having each machine setting a ton of duplicate variables, this allow a
+    having each machine setting a ton of duplicate variables, this allows a
     machine to specify its features and <command>task-base</command> builds it
-    a customised package based on what the machine needs along with what the
+    a customized package based on what the machine needs along with what the
     distro supports.</para>
 
     <para>To illustrate, the distro config file can say: <screen>

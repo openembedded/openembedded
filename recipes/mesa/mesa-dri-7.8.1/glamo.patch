@@ -2371,3 +2371,16 @@ index 0000000..ba8f997
 +                                   unsigned int count);
 +
 +#endif   /* __GLAMO_TRIS_H */
+diff --git a/src/mesa/drivers/dri/glamo/glamo_screen.c b/src/mesa/drivers/dri/glamo/glamo_screen.c
+index 39148f3..8244ec3 100644
+--- a/src/mesa/drivers/dri/glamo/glamo_screen.c
++++ b/src/mesa/drivers/dri/glamo/glamo_screen.c
+@@ -166,7 +166,7 @@ static GLboolean glamoCreateBuffer(__DRIscreen *driScrnPriv,
+    gfb = CALLOC_STRUCT(glamo_framebuffer);
+    if ( !gfb ) return GL_FALSE;
+ 
+-   _mesa_initialize_framebuffer(&gfb->base, mesaVis);
++   _mesa_initialize_window_framebuffer(&gfb->base, mesaVis);
+ 
+    /* we only support this one format at the moment */
+    rgbFormat = GL_RGB5;
