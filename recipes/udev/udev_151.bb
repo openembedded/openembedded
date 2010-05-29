@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r12"
+PR = "r11"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -27,7 +27,6 @@ SRC_URI += " \
        file://default \
        file://init \
        file://cache \
-       file://udev-compat-static.patch \
 "
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
