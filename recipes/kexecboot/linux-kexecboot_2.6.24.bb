@@ -23,7 +23,7 @@ DEFAULT_PREFERENCE_spitz = "1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
 	   file://0001-time-prevent-the-loop-in-timespec_add_ns-from-bei.patch \
            ${RPSRC}/export_atags-r2.patch;status=pending;name=rppatch54 \
            ${RPSRC}/lzo_crypto-r2.patch;status=pending;name=rppatch36 \

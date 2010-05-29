@@ -22,7 +22,7 @@ DEFAULT_PREFERENCE_akita = "1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=kernel \
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=kernel \
            ${RPSRC}/lzo_jffs2_sysfs-r1.patch;name=rppatch1 \
            ${RPSRC}/hx2750_base-r34.patch;name=rppatch2 \
            ${RPSRC}/hx2750_bl-r9.patch;name=rppatch3 \
