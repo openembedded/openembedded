@@ -1,8 +1,9 @@
-This patch adds support for Sharp CE-RH2 on Spitz.
+This patch adds support for Sharp CE-RH2 on Akita+Spitz and CE-RH1 on Corgi.
 
 It is not clean enough to be upstreamed:
-- It is a bit syslog-noisy.
-- Does not support other Zaurus models.
+  * Configuration shoud to platform tables
+  * Maybe more generic driver would be better
+  * Deprecated way to use Scoop GPIO
 - Maybe split to more parts:
   * MAX1111 driver
   * linear input device
@@ -10,9 +11,9 @@ It is not clean enough to be upstreamed:
 
 Index: linux-2.6.26/arch/arm/mach-pxa/spitz.c
 ===================================================================
---- linux-2.6.26.orig/arch/arm/mach-pxa/spitz.c	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/arch/arm/mach-pxa/spitz.c	2008-07-15 10:11:15.000000000 +0000
-@@ -261,6 +261,13 @@
+--- linux-2.6.26.orig/arch/arm/mach-pxa/spitz.c
++++ linux-2.6.26/arch/arm/mach-pxa/spitz.c
+@@ -262,6 +262,13 @@ static struct platform_device spitzkbd_d
  	.id		= -1,
  };
  
@@ -26,7 +27,7 @@ Index: linux-2.6.26/arch/arm/mach-pxa/spitz.c
  
  /*
   * Spitz LEDs
-@@ -522,6 +529,7 @@
+@@ -523,6 +530,7 @@ static struct platform_device *devices[]
  	&spitzscoop_device,
  	&spitzssp_device,
  	&spitzkbd_device,
@@ -36,9 +37,9 @@ Index: linux-2.6.26/arch/arm/mach-pxa/spitz.c
  	&spitzled_device,
 Index: linux-2.6.26/drivers/input/keyboard/Kconfig
 ===================================================================
---- linux-2.6.26.orig/drivers/input/keyboard/Kconfig	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/drivers/input/keyboard/Kconfig	2008-07-15 10:11:15.000000000 +0000
-@@ -175,6 +175,17 @@
+--- linux-2.6.26.orig/drivers/input/keyboard/Kconfig
++++ linux-2.6.26/drivers/input/keyboard/Kconfig
+@@ -175,6 +175,17 @@ config KEYBOARD_TOSA_USE_EXT_KEYCODES
  
  	  Say Y only if you know, what you are doing!
  
@@ -58,9 +59,9 @@ Index: linux-2.6.26/drivers/input/keyboard/Kconfig
  	depends on AMIGA
 Index: linux-2.6.26/drivers/input/keyboard/Makefile
 ===================================================================
---- linux-2.6.26.orig/drivers/input/keyboard/Makefile	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/drivers/input/keyboard/Makefile	2008-07-15 10:11:15.000000000 +0000
-@@ -26,4 +26,5 @@
+--- linux-2.6.26.orig/drivers/input/keyboard/Makefile
++++ linux-2.6.26/drivers/input/keyboard/Makefile
+@@ -26,4 +26,5 @@ obj-$(CONFIG_KEYBOARD_HP6XX)		+= jornada
  obj-$(CONFIG_KEYBOARD_HP7XX)		+= jornada720_kbd.o
  obj-$(CONFIG_KEYBOARD_MAPLE)		+= maple_keyb.o
  obj-$(CONFIG_KEYBOARD_BFIN)		+= bf54x-keys.o
@@ -68,9 +69,9 @@ Index: linux-2.6.26/drivers/input/keyboard/Makefile
  obj-$(CONFIG_KEYBOARD_SH_KEYSC)		+= sh_keysc.o
 Index: linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c	2008-07-15 10:11:15.000000000 +0000
-@@ -0,0 +1,319 @@
+--- /dev/null
++++ linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c
+@@ -0,0 +1,321 @@
 +/*
 + *  Keyboard driver for Sharp Clamshell Models (SL-Cxx00)
 + *
@@ -171,7 +172,7 @@ Index: linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c
 +			 ++i) {
 +		if (val >= remote_keys[i].min
 +			&& val <= remote_keys[i].max) {
-+			printk("get_remocon_raw: VAL=%i, KEY=%i\n", val, remote_keys[i].key);
++			//printk("get_remocon_raw: VAL=%i, KEY=%i\n", val, remote_keys[i].key);
 +			return remote_keys[i].key;
 +		}
 +	}
@@ -232,6 +233,7 @@ Index: linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c
 +		} else {
 +			DPRINTK("key press detected %d, noise %d", data->last_key, data->noise);
 +			input_report_key(data->input, data->last_key, 1);
++			input_sync(data->input);
 +		}
 +		++data->state;
 +
@@ -249,6 +251,7 @@ Index: linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c
 +		//send button release
 +		DPRINTK("release key %d", data->last_key);
 +		input_report_key(data->input, data->last_key, 0);
++		input_sync(data->input);
 +		timer = 0;
 +	}
 +	if (timer) {
@@ -373,13 +376,13 @@ Index: linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c
 +
 +static int __devinit sharpsl_rc_init(void)
 +{
-+	printk("sharpsl_rc_init\n");
++	//printk("sharpsl_rc_init\n");
 +	return platform_driver_register(&sharpsl_rc_driver);
 +}
 +
 +static void __exit sharpsl_rc_exit(void)
 +{
-+	printk("sharpsl_rc_exit\n");
++	//printk("sharpsl_rc_exit\n");
 +	platform_driver_unregister(&sharpsl_rc_driver);
 +}
 +
@@ -392,8 +395,8 @@ Index: linux-2.6.26/drivers/input/keyboard/sharpsl_rc.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.26/drivers/input/keyboard/spitzkbd.c
 ===================================================================
---- linux-2.6.26.orig/drivers/input/keyboard/spitzkbd.c	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/drivers/input/keyboard/spitzkbd.c	2008-07-15 10:11:15.000000000 +0000
+--- linux-2.6.26.orig/drivers/input/keyboard/spitzkbd.c
++++ linux-2.6.26/drivers/input/keyboard/spitzkbd.c
 @@ -19,6 +19,7 @@
  #include <linux/jiffies.h>
  #include <linux/module.h>
@@ -402,7 +405,7 @@ Index: linux-2.6.26/drivers/input/keyboard/spitzkbd.c
  
  #include <asm/arch/spitz.h>
  #include <asm/arch/hardware.h>
-@@ -280,13 +281,21 @@
+@@ -280,13 +281,21 @@ static irqreturn_t spitzkbd_hinge_isr(in
  static int sharpsl_hinge_state;
  static int hinge_count;
  
@@ -424,7 +427,7 @@ Index: linux-2.6.26/drivers/input/keyboard/spitzkbd.c
  	state |= (GPLR(SPITZ_GPIO_AK_INT) & GPIO_bit(SPITZ_GPIO_AK_INT));
  	if (state != sharpsl_hinge_state) {
  		hinge_count = 0;
-@@ -300,9 +309,18 @@
+@@ -300,9 +309,18 @@ static void spitzkbd_hinge_timer(unsigne
  
  		input_report_switch(spitzkbd_data->input, SW_LID, ((GPLR(SPITZ_GPIO_SWA) & GPIO_bit(SPITZ_GPIO_SWA)) != 0));
  		input_report_switch(spitzkbd_data->input, SW_TABLET_MODE, ((GPLR(SPITZ_GPIO_SWB) & GPIO_bit(SPITZ_GPIO_SWB)) != 0));
@@ -444,7 +447,7 @@ Index: linux-2.6.26/drivers/input/keyboard/spitzkbd.c
  		spin_unlock_irqrestore(&spitzkbd_data->lock, flags);
  	} else {
  		mod_timer(&spitzkbd_data->htimer, jiffies + msecs_to_jiffies(HINGE_SCAN_INTERVAL));
-@@ -396,6 +414,7 @@
+@@ -396,6 +414,7 @@ static int __init spitzkbd_probe(struct
  	set_bit(SW_LID, input_dev->swbit);
  	set_bit(SW_TABLET_MODE, input_dev->swbit);
  	set_bit(SW_HEADPHONE_INSERT, input_dev->swbit);
@@ -452,7 +455,7 @@ Index: linux-2.6.26/drivers/input/keyboard/spitzkbd.c
  
  	err = input_register_device(input_dev);
  	if (err)
-@@ -433,9 +452,12 @@
+@@ -433,9 +452,12 @@ static int __init spitzkbd_probe(struct
  	request_irq(SPITZ_IRQ_GPIO_SWB, spitzkbd_hinge_isr,
  		    IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
  		    "Spitzkbd SWB", spitzkbd);
@@ -466,7 +469,7 @@ Index: linux-2.6.26/drivers/input/keyboard/spitzkbd.c
  
  	return 0;
  
-@@ -456,6 +478,7 @@
+@@ -456,6 +478,7 @@ static int spitzkbd_remove(struct platfo
  	free_irq(SPITZ_IRQ_GPIO_ON_KEY, spitzkbd);
  	free_irq(SPITZ_IRQ_GPIO_SWA, spitzkbd);
  	free_irq(SPITZ_IRQ_GPIO_SWB, spitzkbd);
@@ -476,9 +479,9 @@ Index: linux-2.6.26/drivers/input/keyboard/spitzkbd.c
  	del_timer_sync(&spitzkbd->htimer);
 Index: linux-2.6.26/arch/arm/mach-pxa/sharpsl.h
 ===================================================================
---- linux-2.6.26.orig/arch/arm/mach-pxa/sharpsl.h	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/arch/arm/mach-pxa/sharpsl.h	2008-07-15 10:11:15.000000000 +0000
-@@ -37,15 +37,10 @@
+--- linux-2.6.26.orig/arch/arm/mach-pxa/sharpsl.h
++++ linux-2.6.26/arch/arm/mach-pxa/sharpsl.h
+@@ -37,15 +37,10 @@ void corgi_lcdtg_hw_init(int mode);
   */
  #define READ_GPIO_BIT(x)    (GPLR(x) & GPIO_bit(x))
  
@@ -497,9 +500,9 @@ Index: linux-2.6.26/arch/arm/mach-pxa/sharpsl.h
  
 Index: linux-2.6.26/arch/arm/mach-pxa/sharpsl_pm.c
 ===================================================================
---- linux-2.6.26.orig/arch/arm/mach-pxa/sharpsl_pm.c	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/arch/arm/mach-pxa/sharpsl_pm.c	2008-07-15 10:11:15.000000000 +0000
-@@ -136,6 +136,8 @@
+--- linux-2.6.26.orig/arch/arm/mach-pxa/sharpsl_pm.c
++++ linux-2.6.26/arch/arm/mach-pxa/sharpsl_pm.c
+@@ -136,6 +136,8 @@ int sharpsl_pm_pxa_read_max1111(int chan
  			| MAXCTRL_SGL | MAXCTRL_UNI | MAXCTRL_STR);
  }
  
@@ -510,9 +513,9 @@ Index: linux-2.6.26/arch/arm/mach-pxa/sharpsl_pm.c
  	pxa_gpio_mode(sharpsl_pm.machinfo->gpio_acin | GPIO_IN);
 Index: linux-2.6.26/include/asm-arm/hardware/sharpsl_pm.h
 ===================================================================
---- linux-2.6.26.orig/include/asm-arm/hardware/sharpsl_pm.h	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/include/asm-arm/hardware/sharpsl_pm.h	2008-07-15 10:11:15.000000000 +0000
-@@ -104,3 +104,10 @@
+--- linux-2.6.26.orig/include/asm-arm/hardware/sharpsl_pm.h
++++ linux-2.6.26/include/asm-arm/hardware/sharpsl_pm.h
+@@ -104,3 +104,10 @@ irqreturn_t sharpsl_ac_isr(int irq, void
  irqreturn_t sharpsl_chrg_full_isr(int irq, void *dev_id);
  irqreturn_t sharpsl_fatal_isr(int irq, void *dev_id);
  
@@ -525,9 +528,9 @@ Index: linux-2.6.26/include/asm-arm/hardware/sharpsl_pm.h
 +int sharpsl_pm_pxa_read_max1111(int channel);
 Index: linux-2.6.26/include/linux/input.h
 ===================================================================
---- linux-2.6.26.orig/include/linux/input.h	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/include/linux/input.h	2008-07-15 10:13:04.000000000 +0000
-@@ -640,6 +640,7 @@
+--- linux-2.6.26.orig/include/linux/input.h
++++ linux-2.6.26/include/linux/input.h
+@@ -640,6 +640,7 @@ struct input_absinfo {
  #define SW_RFKILL_ALL		0x03  /* rfkill master switch, type "any"
  					 set = radio enabled */
  #define SW_RADIO		SW_RFKILL_ALL	/* deprecated */
@@ -537,9 +540,9 @@ Index: linux-2.6.26/include/linux/input.h
  
 Index: linux-2.6.26/arch/arm/mach-pxa/spitz_pm.c
 ===================================================================
---- linux-2.6.26.orig/arch/arm/mach-pxa/spitz_pm.c	2008-07-13 21:51:29.000000000 +0000
-+++ linux-2.6.26/arch/arm/mach-pxa/spitz_pm.c	2008-07-15 10:11:15.000000000 +0000
-@@ -160,6 +160,13 @@
+--- linux-2.6.26.orig/arch/arm/mach-pxa/spitz_pm.c
++++ linux-2.6.26/arch/arm/mach-pxa/spitz_pm.c
+@@ -160,6 +160,13 @@ static int spitz_should_wakeup(unsigned
  	if (resume_on_alarm && (PEDR & PWER_RTC))
  		is_resume |= PWER_RTC;
  

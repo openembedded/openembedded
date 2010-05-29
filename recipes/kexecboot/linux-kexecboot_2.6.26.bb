@@ -10,6 +10,8 @@ DEFAULT_PREFERENCE_spitz = "1"
 DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_c7x0 = "1"
 DEFAULT_PREFERENCE_akita = "1"
+DEFAULT_PREFERENCE_poodle = "-1"
+
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -36,7 +38,8 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=
 #           ${RPSRC}/pxa27x_overlay-r8.patch;name=rppatch11 \
            ${RPSRC}/w100_extaccel-r2.patch;name=rppatch12 \
            ${RPSRC}/w100_extmem-r1.patch;name=rppatch13 \
-           ${RPSRC}/poodle_pm-r6.patch;name=rppatch14 \
+#           ${RPSRC}/poodle_pm-r6.patch;name=rppatch14 \
+           file://poodle_pm-r7.patch;name=rppatch14 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;name=rppatch15 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;name=rppatch16 \
            file://zaurus-i2c-init.patch;status=upstream \
@@ -71,6 +74,12 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=
 SRC_URI_append_collie = "\
 	file://collie.patch \
 	file://collie_keymap.patch \
+"
+
+SRC_URI_append_poodle = "\
+           file://poodle_serial_vcc-r1.patch \
+#           file://poodle_ts.patch \
+#           file://pxafb.patch \
 "
 
 SRC_URI_append_htcuniversal ="\

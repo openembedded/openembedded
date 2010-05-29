@@ -1,0 +1,30 @@
+
+Index: linux-2.6.26/arch/arm/common/locomo.c
+===================================================================
+--- linux-2.6.26.orig/arch/arm/common/locomo.c	2008-08-02 20:53:56.000000000 -0700
++++ linux-2.6.26/arch/arm/common/locomo.c	2008-08-04 16:50:29.000000000 -0700
+@@ -715,7 +715,7 @@
+	locomo_writel(0, lchip->base + LOCOMO_KEYBOARD + LOCOMO_KIC);
+
+	/* GPIO */
+-	locomo_writel(0, lchip->base + LOCOMO_GPO);
++	locomo_writel(POODLE_LOCOMO_GPIO_232VCC_ON, lchip->base + LOCOMO_GPO);
+	locomo_writel((LOCOMO_GPIO(1) | LOCOMO_GPIO(2) | LOCOMO_GPIO(13) | LOCOMO_GPIO(14))
+			, lchip->base + LOCOMO_GPE);
+	locomo_writel((LOCOMO_GPIO(1) | LOCOMO_GPIO(2) | LOCOMO_GPIO(13) | LOCOMO_GPIO(14))
+Index: linux-2.6.26/drivers/serial/pxa.c
+===================================================================
+--- linux-2.6.26.orig/drivers/serial/pxa.c	2008-08-04 16:46:37.000000000 -0700
++++ linux-2.6.26/drivers/serial/pxa.c	2008-08-04 16:48:18.000000000 -0700
+@@ -296,9 +296,9 @@
+	unsigned char mcr = 0;
+
+	if (mctrl & TIOCM_RTS)
+-		mcr |= UART_MCR_RTS;
++		mcr &= ~UART_MCR_RTS;
+	if (mctrl & TIOCM_DTR)
+-		mcr |= UART_MCR_DTR;
++		mcr &= ~UART_MCR_DTR;
+	if (mctrl & TIOCM_OUT1)
+		mcr |= UART_MCR_OUT1;
+	if (mctrl & TIOCM_OUT2)
