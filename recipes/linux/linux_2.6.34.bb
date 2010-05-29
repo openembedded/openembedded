@@ -3,6 +3,10 @@ require linux.inc
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "1"
+DEFAULT_PREFERENCE_qemuppc = "1"
+DEFAULT_PREFERENCE_qemush4 = "1"
+DEFAULT_PREFERENCE_qemumips = "1"
+DEFAULT_PREFERENCE_qemux86 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;status=pending \
