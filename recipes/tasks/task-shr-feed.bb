@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r56"
+PR = "r57"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -38,6 +38,7 @@ RDEPENDS_${PN} += "\
 		mpd \
 		mplayer \
 		navit \
+		omhacks \
 		orrery \
 		python-elementary \
 		pythm \
@@ -47,8 +48,8 @@ RDEPENDS_${PN} += "\
 		pyphonelog \
 #		shr-config \
 		shr-today \
-                shr-theme-neo \
-                shr-theme-o2 \
+		shr-theme-neo \
+		shr-theme-o2 \
 		shr-theme-niebiee \
 		shr-theme-sixteen \
 # gry should be in image already
