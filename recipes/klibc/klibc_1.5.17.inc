@@ -7,10 +7,12 @@ SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
             file://staging.patch \
             file://klibc_kexecsyscall.patch \
             file://mntproc-definitions.patch \
+            file://arm-signal-cleanup.patch \
+            file://socket.h.patch \
             file://isystem.patch \
 	    "
 
-DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "1"
 DEFAULT_PREFERENCE_aquides = "1"
 
 KLIBC_FETCHDIR = "1.5"
