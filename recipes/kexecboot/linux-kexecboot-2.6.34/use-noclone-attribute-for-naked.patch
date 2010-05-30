@@ -1,0 +1,139 @@
+This patch add noinline and noclone attributes to naked functions. 
+GCC 4.5 has new optimization -fipa-ira which is enabled at -Os and -O2
+this option will clone the functions and that can change the standard
+calling convention but the naked functions expect that and use
+arguments as in standard calling convention. Therefore the naked
+functions should not be marked non inline and noclone.
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+
+Index: linux-2.6.34/include/linux/compiler-gcc4.h
+===================================================================
+--- linux-2.6.34.orig/include/linux/compiler-gcc4.h	2010-05-29 17:18:55.338127623 -0700
++++ linux-2.6.34/include/linux/compiler-gcc4.h	2010-05-29 17:32:33.910657021 -0700
+@@ -48,6 +48,10 @@
+  * unreleased.  Really, we need to have autoconf for the kernel.
+  */
+ #define unreachable() __builtin_unreachable()
++
++/* Mark a function definition as prohibited from being cloned. */
++#define __noclone	__attribute__((__noclone__))
++
+ #endif
+ 
+ #endif
+Index: linux-2.6.34/include/linux/compiler-gcc.h
+===================================================================
+--- linux-2.6.34.orig/include/linux/compiler-gcc.h	2010-05-29 17:28:28.238113095 -0700
++++ linux-2.6.34/include/linux/compiler-gcc.h	2010-05-29 17:31:58.938153321 -0700
+@@ -58,8 +58,12 @@
+  * naked functions because then mcount is called without stack and frame pointer
+  * being set up and there is no chance to restore the lr register to the value
+  * before mcount was called.
++ *
++ * The asm() bodies of naked functions often depend on standard calling conventions,
++ * therefore they must be noinline and noclone.  GCC 4.[56] currently fail to enforce
++ * this, so we must do so ourselves.  See GCC PR44290.
+  */
+-#define __naked				__attribute__((naked)) notrace
++#define __naked				__attribute__((naked)) noinline __noclone notrace
+ 
+ #define __noreturn			__attribute__((noreturn))
+ 
+@@ -85,3 +89,8 @@
+ #define _gcc_header(x) __gcc_header(linux/compiler-gcc##x.h)
+ #define gcc_header(x) _gcc_header(x)
+ #include gcc_header(__GNUC__)
++
++#if !defined(__noclone)
++#define __noclone	/* not needed */
++#endif
++
+Index: linux-2.6.34/arch/arm/mm/copypage-v4wb.c
+===================================================================
+--- linux-2.6.34.orig/arch/arm/mm/copypage-v4wb.c	2010-05-29 23:01:46.580600195 -0700
++++ linux-2.6.34/arch/arm/mm/copypage-v4wb.c	2010-05-29 23:46:10.610629920 -0700
+@@ -27,7 +27,7 @@ v4wb_copy_user_page(void *kto, const voi
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4, lr}			@ 2\n\
+-	mov	r2, %0				@ 1\n\
++	mov	r2, %2				@ 1\n\
+ 	ldmia	r1!, {r3, r4, ip, lr}		@ 4\n\
+ 1:	mcr	p15, 0, r0, c7, c6, 1		@ 1   invalidate D line\n\
+ 	stmia	r0!, {r3, r4, ip, lr}		@ 4\n\
+@@ -44,7 +44,7 @@ v4wb_copy_user_page(void *kto, const voi
+ 	mcr	p15, 0, r1, c7, c10, 4		@ 1   drain WB\n\
+ 	ldmfd	 sp!, {r4, pc}			@ 3"
+ 	:
+-	: "I" (PAGE_SIZE / 64));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE / 64));
+ }
+ 
+ void v4wb_copy_user_highpage(struct page *to, struct page *from,
+Index: linux-2.6.34/arch/arm/mm/copypage-v4wt.c
+===================================================================
+--- linux-2.6.34.orig/arch/arm/mm/copypage-v4wt.c	2010-05-29 23:48:51.908131421 -0700
++++ linux-2.6.34/arch/arm/mm/copypage-v4wt.c	2010-05-29 23:53:15.410657789 -0700
+@@ -25,7 +25,7 @@ v4wt_copy_user_page(void *kto, const voi
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4, lr}			@ 2\n\
+-	mov	r2, %0				@ 1\n\
++	mov	r2, %2				@ 1\n\
+ 	ldmia	r1!, {r3, r4, ip, lr}		@ 4\n\
+ 1:	stmia	r0!, {r3, r4, ip, lr}		@ 4\n\
+ 	ldmia	r1!, {r3, r4, ip, lr}		@ 4+1\n\
+@@ -40,7 +40,7 @@ v4wt_copy_user_page(void *kto, const voi
+ 	mcr	p15, 0, r2, c7, c7, 0		@ flush ID cache\n\
+ 	ldmfd	sp!, {r4, pc}			@ 3"
+ 	:
+-	: "I" (PAGE_SIZE / 64));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE / 64));
+ }
+ 
+ void v4wt_copy_user_highpage(struct page *to, struct page *from,
+Index: linux-2.6.34/arch/arm/mm/copypage-feroceon.c
+===================================================================
+--- linux-2.6.34.orig/arch/arm/mm/copypage-feroceon.c	2010-05-29 23:50:26.518121374 -0700
++++ linux-2.6.34/arch/arm/mm/copypage-feroceon.c	2010-05-29 23:50:53.238196555 -0700
+@@ -18,7 +18,7 @@ feroceon_copy_user_page(void *kto, const
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4-r9, lr}		\n\
+-	mov	ip, %0				\n\
++	mov	ip, %2				\n\
+ 1:	mov	lr, r1				\n\
+ 	ldmia	r1!, {r2 - r9}			\n\
+ 	pld	[lr, #32]			\n\
+@@ -64,7 +64,7 @@ feroceon_copy_user_page(void *kto, const
+ 	mcr	p15, 0, ip, c7, c10, 4		@ drain WB\n\
+ 	ldmfd	sp!, {r4-r9, pc}"
+ 	:
+-	: "I" (PAGE_SIZE));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE));
+ }
+ 
+ void feroceon_copy_user_highpage(struct page *to, struct page *from,
+Index: linux-2.6.34/arch/arm/mm/copypage-xsc3.c
+===================================================================
+--- linux-2.6.34.orig/arch/arm/mm/copypage-xsc3.c	2010-05-29 23:52:00.010626567 -0700
++++ linux-2.6.34/arch/arm/mm/copypage-xsc3.c	2010-05-29 23:52:30.048147465 -0700
+@@ -34,7 +34,7 @@ xsc3_mc_copy_user_page(void *kto, const 
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4, r5, lr}		\n\
+-	mov	lr, %0				\n\
++	mov	lr, %2				\n\
+ 						\n\
+ 	pld	[r1, #0]			\n\
+ 	pld	[r1, #32]			\n\
+@@ -67,7 +67,7 @@ xsc3_mc_copy_user_page(void *kto, const 
+ 						\n\
+ 	ldmfd	sp!, {r4, r5, pc}"
+ 	:
+-	: "I" (PAGE_SIZE / 64 - 1));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE / 64 - 1));
+ }
+ 
+ void xsc3_mc_copy_user_highpage(struct page *to, struct page *from,
