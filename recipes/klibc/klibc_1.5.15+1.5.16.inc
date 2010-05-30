@@ -1,5 +1,4 @@
 require klibc-common.inc
-inherit linux-kernel-base
 
 # temporary override here in the recipe
 # until 1.5.16 is released
