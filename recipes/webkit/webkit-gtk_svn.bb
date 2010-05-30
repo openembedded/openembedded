@@ -4,8 +4,8 @@ DEPENDS = "geoclue enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl
 SRCREV_FORMAT = "webcore-rwebkit"
 
 PR = "r1"
-SRCREV = "56686"
-PV = "1.1.90+svnr${SRCPV}"
+SRCREV = "60413"
+PV = "1.3.1+svnr${SRCPV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
