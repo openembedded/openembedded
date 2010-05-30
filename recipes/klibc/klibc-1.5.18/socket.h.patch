@@ -1,0 +1,160 @@
+upstream: http://www.zytor.com/pipermail/klibc/2010-February/002486.html,http://www.zytor.com/pipermail/klibc/2010-February/002487.html,http://www.zytor.com/pipermail/klibc/2010-February/002488.html
+status: pending
+comment: squashed 3 commits togheter
+
+Subject: Add relevant socket.h definitions
+From: maximilian attems <max@stro.at>
+Date: Tue Feb 23 06:02:42 PST 2010
+
+
+linux-2.6 9c501935a3cdcf6b1d35aaee3aa11c7a7051a305 cleaned
+<linux/socket.h> from allmost any userspace export.
+
+thus define the stuff that used to be there in klibc socket.h
+
+Signed-off-by: maximilian attems <max@stro.at>
+
+Modified for compatibility with pre 2.6.33 kernels in OpenEmbedded
+---
+Index: klibc-1.5.16/usr/include/sys/socket.h
+===================================================================
+--- a/usr/include/sys/socket.h	2010-03-13 22:33:51.000000000 +0100
++++ b/usr/include/sys/socket.h	2010-05-31 00:44:16.000000000 +0200
+@@ -9,6 +9,14 @@
+ #include <klibc/compiler.h>
+ #include <klibc/sysconfig.h>
+ #include <linux/socket.h>
++
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <linux/sockios.h>		/* the SIOCxxx I/O controls     */
++#include <linux/uio.h>			/* iovec support                */
++#include <asm/socket.h>			/* arch-dependent defines       */
++#endif
++
+ #include <linux/uio.h>
+ #include <asm/socket.h>
+ #if _KLIBC_HAS_ARCHSOCKET_H
+@@ -29,6 +37,8 @@
+ # define SOCK_PACKET    10
+ #endif
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++
+ #ifndef AF_INET
+ #define AF_UNSPEC	0
+ #define AF_UNIX		1	/* Unix domain sockets 		*/
+@@ -148,7 +158,12 @@
+ 	sa_family_t     sa_family;      /* address family, AF_xxx       */
+ 	char            sa_data[14];    /* 14 bytes of protocol address */
+ };
++
++#endif
++
+ typedef int socklen_t;
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
+ struct msghdr {
+ 	void *msg_name;
+ 	int msg_namelen;
+@@ -158,7 +173,7 @@
+ 	size_t msg_controllen;
+ 	unsigned msg_flags;
+ };
+-
++#endif
+ 
+ __extern int socket(int, int, int);
+ __extern int bind(int, struct sockaddr *, int);
+Index: klibc-1.5.16/usr/kinit/nfsmount/nfsmount.h
+===================================================================
+--- a/usr/kinit/nfsmount/nfsmount.h	2009-01-04 20:28:03.000000000 +0100
++++ b/usr/kinit/nfsmount/nfsmount.h	2010-05-30 23:00:36.000000000 +0200
+@@ -3,6 +3,12 @@
+ 
+ #include <linux/nfs_mount.h>
+ 
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#define MNTPROC_MNT            1
++#define MNTPROC_UMNT           3
++#endif
++
+ extern int nfs_port;
+ 
+ extern int nfsmount_main(int argc, char *argv[]);
+Index: klibc-1.5.16/usr/kinit/nfsmount/dummypmap.c
+===================================================================
+--- a/usr/kinit/nfsmount/dummypmap.c	2009-01-04 20:28:03.000000000 +0100
++++ b/usr/kinit/nfsmount/dummypmap.c	2010-05-30 23:08:29.000000000 +0200
+@@ -39,7 +39,12 @@
+ 
+ static int bind_portmap(void)
+ {
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++	int sock = socket(AF_INET, SOCK_DGRAM, 0);
++#else
+ 	int sock = socket(PF_INET, SOCK_DGRAM, 0);
++#endif
+ 	struct sockaddr_in sin;
+ 
+ 	if (sock < 0)
+Index: klibc-1.5.16/usr/kinit/nfsmount/mount.c
+===================================================================
+--- a/usr/kinit/nfsmount/mount.c	2010-05-30 22:30:26.000000000 +0200
++++ b/usr/kinit/nfsmount/mount.c	2010-05-30 23:13:15.000000000 +0200
+@@ -294,11 +294,21 @@
+ 	}
+ 	mounted = 1;
+ 
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++	if (data->flags & NFS_MOUNT_TCP) {
++		sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
++	} else {
++		sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
++	}
++#else
+ 	if (data->flags & NFS_MOUNT_TCP) {
+ 		sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+ 	} else {
+ 		sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+ 	}
++#endif
++
+ 
+ 	if (sock == -1) {
+ 		perror("socket");
+Index: klibc-1.5.16/usr/kinit/nfsmount/sunrpc.c
+===================================================================
+--- a/usr/kinit/nfsmount/sunrpc.c	2009-01-04 20:28:03.000000000 +0100
++++ b/usr/kinit/nfsmount/sunrpc.c	2010-05-30 23:11:12.000000000 +0200
+@@ -152,7 +152,12 @@
+ 
+ 	memset(clnt, 0, sizeof(clnt));
+ 
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++	if ((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
++#else
+ 	if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
++#endif
+ 		perror("socket");
+ 		goto bail;
+ 	}
+@@ -197,7 +202,12 @@
+ 
+ 	memset(clnt, 0, sizeof(clnt));
+ 
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++	if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
++#else
+ 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
++#endif
+ 		perror("socket");
+ 		goto bail;
+ 	}
+-- 
+1.6.6.1
