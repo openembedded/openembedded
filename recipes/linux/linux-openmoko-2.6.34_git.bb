@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.34"
 
 SRCREV = "dd1225cc08c3375bf80289ac1965c724881b149a"
-OEV = "oe2"
+OEV = "oe3"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -13,6 +13,8 @@ SRC_URI = "\
   file://wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch \
 # fix for lost touchscreen https://docs.openmoko.org/trac/ticket/2328
   file://touchscreen_ignoreunexpectedintr34.patch \
+# fix runtime issue when built with gcc-4.5
+  file://use-noclone-attribute-for-naked.patch \
 # patches from Thomas White's gdrm-for-merging branch
   file://0001-DRM-for-platform-devices.patch \
   file://0002-Glamo-DRM-and-KMS-driver.patch \
