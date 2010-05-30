@@ -1,4 +1,5 @@
 require klibc-common.inc
+inherit linux-kernel-base
 
 # temporary override here in the recipe
 # until 1.5.16 is released
@@ -16,10 +17,9 @@ SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
             file://klibc_kexecsyscall.patch \
             file://mntproc-definitions.patch \
             file://signal-cleanup.patch \
+            file://socket.h.patch \
             file://isystem.patch \
             "
-# upstream in 2.6.33
-SRC_URI += '${@base_version_less_or_equal("PV", "2.6.32", "", "file://socket.h.patch", d)}'
 
 S = "${WORKDIR}/klibc-1.5.15"
 
