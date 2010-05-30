@@ -17,14 +17,16 @@ SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
             file://mntproc-definitions.patch \
             file://signal-cleanup.patch \
             file://isystem.patch \
-            file://socket.h.patch \
             "
+# upstream in 2.6.33
+SRC_URI += '${@base_version_less_or_equal("PV", "2.6.32", "", "file://socket.h.patch", d)}'
 
 S = "${WORKDIR}/klibc-1.5.15"
 
 # end temporary overrides
 
-DEFAULT_PREFERENCE = "-1"
+# tested on arm with 2.6.2x kernels
+DEFAULT_PREFERENCE = "1"
 
 KLIBC_FETCHDIR = "1.5"
 
