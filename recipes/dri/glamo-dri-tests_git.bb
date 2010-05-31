@@ -8,11 +8,12 @@ SRC_URI = "git://git.bitwiz.org.uk/glamo-dri-tests.git;protocol=git;branch=maste
 inherit pkgconfig
 
 do_compile_prepend() {
-	export CROSS_CFLAGS=`pkg-config --cflags libdrm_glamo`
+	export CROSS_CFLAGS="`pkg-config --cflags libdrm_glamo`"
+	export CC="${CC} ${LDFLAGS}"
 }
 
 do_install() {
-        PREFIX=${D}/usr make install
+        PREFIX=${D}/usr oe_runmake install
 }
 
 S = "${WORKDIR}/git"
