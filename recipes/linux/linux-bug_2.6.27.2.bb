@@ -25,11 +25,11 @@ do_install_append() {
 }
 
 do_install_append() {
-	cp -fR arch/arm/include/asm/* $kerneldir/include/asm/
+	cp -fR ${S}/arch/arm/include/asm/* $kerneldir/include/asm/
 	if [ ! -e $kerneldir/include/mach ]; then
 		mkdir $kerneldir/include/mach
 	fi
-	cp -fR arch/arm/plat-mxc/include/mach/* $kerneldir/include/mach/
+	cp -fR ${S}/arch/arm/plat-mxc/include/mach/* $kerneldir/include/mach/
 }
 
 FILESDIR = "${WORKDIR}"
