@@ -1,0 +1,9 @@
+--- latencytop-0.5/Makefile.orig	2010-05-27 16:36:41.510515029 -0400
++++ latencytop-0.5/Makefile	2010-05-27 16:37:03.442467568 -0400
+@@ -1,6 +1,3 @@
+-# FIXME: Use autoconf ?
+-HAS_GTK_GUI = 1
+-
+ DESTDIR =
+ SBINDIR = /usr/sbin
+ XCFLAGS = -W  -g `pkg-config --cflags glib-2.0` -D_FORTIFY_SOURCE=2 -Wno-sign-compare

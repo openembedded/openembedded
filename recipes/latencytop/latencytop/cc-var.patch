@@ -1,0 +1,15 @@
+--- latencytop-0.5/Makefile.orig	2010-05-27 16:45:23.051146454 -0400
++++ latencytop-0.5/Makefile	2010-05-27 16:49:14.660573483 -0400
+@@ -23,10 +23,10 @@ endif
+ 
+ # We write explicity this "implicit rule"
+ %.o : %.c
+-	gcc -c $(CFLAGS) $(XCFLAGS) $< -o $@
++	$(CC) -c $(CFLAGS) $(XCFLAGS) $< -o $@
+ 
+ latencytop:  $(OBJS) latencytop.h Makefile
+-	gcc $(CFLAGS) $(OBJS) $(LDF) -o latencytop 
++	$(CC) $(CFLAGS) $(OBJS) $(LDF) -o latencytop 
+ 
+ clean:
+ 	rm -f *~ latencytop DEADJOE *.o

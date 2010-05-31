@@ -1,0 +1,27 @@
+--- latencytop-0.5/Makefile.orig	2010-05-31 11:11:51.632940308 -0400
++++ latencytop-0.5/Makefile	2010-05-31 11:12:48.201571738 -0400
+@@ -1,7 +1,7 @@
+ DESTDIR =
+ SBINDIR = /usr/sbin
+ XCFLAGS = -W  -g `pkg-config --cflags glib-2.0` -D_FORTIFY_SOURCE=2 -Wno-sign-compare
+-LDF = -Wl,--as-needed `pkg-config --libs glib-2.0`   -lncursesw 
++LDF = -Wl,--as-needed `pkg-config --libs glib-2.0`   -lncurses
+ 
+ OBJS= latencytop.o text_display.o translate.o fsync.o
+ 
+@@ -12,14 +12,7 @@ ifdef HAS_GTK_GUI
+ endif
+ 
+ 
+-#
+-# The w in -lncursesw is not a typo; it is the wide-character version
+-# of the ncurses library, needed for multi-byte character languages
+-# such as Japanese and Chinese etc.
+-#
+-# On Debian/Ubuntu distros, this can be found in the
+-# libncursesw5-dev package. 
+-#
++# we use ncurses instead of ncursesw in embedded environments -- similar to powertop
+ 
+ # We write explicity this "implicit rule"
+ %.o : %.c

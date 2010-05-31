@@ -1,0 +1,11 @@
+--- latencytop-0.5/Makefile.orig	2010-05-31 11:05:50.750592910 -0400
++++ latencytop-0.5/Makefile	2010-05-31 11:06:03.030795137 -0400
+@@ -26,7 +26,7 @@ endif
+ 	$(CC) -c $(CFLAGS) $(XCFLAGS) $< -o $@
+ 
+ latencytop:  $(OBJS) latencytop.h Makefile
+-	$(CC) $(CFLAGS) $(OBJS) $(LDF) -o latencytop 
++	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LDF) -o latencytop 
+ 
+ clean:
+ 	rm -f *~ latencytop DEADJOE *.o
