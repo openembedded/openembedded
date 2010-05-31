@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r50"
+PR ="r51"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -56,6 +56,7 @@ SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
                        file://0035-OMAP3-Beagle-set-mpurate-to-1000-for-xM.patch \
                        file://0036-OMAP3-Beagle-decrease-bootdelay-to-3-use-VGA-for-def.patch \
                        file://0037-OMAP3-beagle-pass-expansionboard-name-in-bootargs.patch \
+                       file://0038-Added-configurations-for-xM-Rev-A-board.patch \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "ca6e1c136ddb720c3bb2cc043b99f7f06bc46c55"
