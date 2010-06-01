@@ -1,10 +1,12 @@
 DESCRIPTION = "H.264 encoder"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
-X264PV = "snapshot-20090928-2245"
+X264PV = "snapshot-20100531-2245"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/x264/snapshots/x264-${X264PV}.tar.bz2"
+SRC_URI[md5sum] = "d1ccb8122bd418291a9576a2bffdf662"
+SRC_URI[sha256sum] = "929e946947701a0b3a336a4b9cfe65daf4c52480f45d4363335ae2a3d5596fa9"
 
 S = "${WORKDIR}/${PN}-${X264PV}"
 
@@ -22,9 +24,4 @@ DEPENDS_x86 = "yasm-native"
 
 EXTRA_OECONF = '--enable-shared ${X264_DISABLE_ASM} --extra-cflags="${X264_ECFLAGS}"'
 
-do_stage() {
-        autotools_stage_all
-}
 
-SRC_URI[md5sum] = "99870531113dafd01026c01a96c5fcbb"
-SRC_URI[sha256sum] = "8b435c02ed0a09d039c0a89c8ddc5470e1885630a5dcedfe3d8bc60a6d63ab69"
