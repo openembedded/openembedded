@@ -7,8 +7,8 @@ PR = "r2"
 
 inherit xfce46
 
-SRC_URI[archive.md5sum] = "0b715abb929220f136483ccd7303ff62"
-SRC_URI[archive.sha256sum] = "4f5e19187ddf9f812303b77479124562079d25c6263674040aba4395c6b2e41c"
+SRC_URI[md5sum] = "0b715abb929220f136483ccd7303ff62"
+SRC_URI[sha256sum] = "4f5e19187ddf9f812303b77479124562079d25c6263674040aba4395c6b2e41c"
 
 EXTRA_OECONF += " --enable-startup-notification"
 
