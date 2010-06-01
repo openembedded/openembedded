@@ -13,7 +13,7 @@ S = "${WORKDIR}/linux-2.6.27-foonas-git"
 export ARCH="powerpc"
 
 # Bootloader is not device tree aware
-KERNEL_OUTPUT = "${S}/arch/powerpc/boot/cuImage.thecus_n1200"
+KERNEL_OUTPUT = "arch/powerpc/boot/cuImage.thecus_n1200"
 
 require linux.inc
 
