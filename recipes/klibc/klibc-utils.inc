@@ -43,11 +43,9 @@ do_install_append() {
 # only in 1.5
 # install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/insmod ${D}${base_bindir}
 
-# only in >= 1.5.15
+# only in >= 1.5.18 (can be moved to do_install_append above as soon as klibc_1.5 is dropped from tree)
 # install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/dmesg ${D}${base_bindir}
 # install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/sync ${D}${base_bindir}
-
-# only in >= 1.5.15+1.5.16
 # install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/ls ${D}${base_bindir}
 
 PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
@@ -85,6 +83,7 @@ PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
              ${KLIBC_UTILS_PKGNAME}-modprobe \
              ${KLIBC_UTILS_PKGNAME}-losetup \
              ${KLIBC_UTILS_PKGNAME}-wc \
+             ${KLIBC_UTILS_PKGNAME}-insmod \
              ${KLIBC_UTILS_PKGNAME}-ls"
 
 FILES_${KLIBC_UTILS_PKGNAME}-sh = "${base_bindir}/sh"
@@ -122,4 +121,5 @@ FILES_${KLIBC_UTILS_PKGNAME}-uname = "${base_bindir}/uname"
 FILES_${KLIBC_UTILS_PKGNAME}-modprobe = "${base_sbindir}/modprobe"
 FILES_${KLIBC_UTILS_PKGNAME}-losetup = "${base_bindir}/losetup"
 FILES_${KLIBC_UTILS_PKGNAME}-wc = "${base_bindir}/wc"
+FILES_${KLIBC_UTILS_PKGNAME}-insmod = "${base_bindir}/insmod"
 FILES_${KLIBC_UTILS_PKGNAME}-ls = "${base_bindir}/ls"
