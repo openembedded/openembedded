@@ -1,5 +1,5 @@
 require grep_${PV}.bb
-inherit native
+inherit native gettext
 
 S = "${WORKDIR}/grep-${PV}"
 
