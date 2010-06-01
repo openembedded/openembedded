@@ -79,6 +79,11 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-designer \
              ${QT_BASE_NAME}-examples \
              ${QT_BASE_NAME}-fonts \
+             ${QT_BASE_NAME}-fonts-ttf-vera \
+             ${QT_BASE_NAME}-fonts-ttf-dejavu \
+             ${QT_BASE_NAME}-fonts-pfa \
+             ${QT_BASE_NAME}-fonts-pfb \
+             ${QT_BASE_NAME}-fonts-qpf \
              ${QT_BASE_NAME}-linguist \
              ${QT_BASE_NAME}-makeqpf \
              ${QT_BASE_NAME}-mkspecs \
@@ -86,15 +91,22 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-qt3to4"
 
 PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
-PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*  ${QT_BASE_NAME}-translation-*"
+PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-* ${QT_BASE_NAME}-translation-* ${QT_BASE_NAME}-fonts-*"
 
 ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-fonts = "1"
 FILES_${PN}     = ""
 FILES_${PN}-dev = "${includedir}/${QT_DIR_NAME}/Qt/*"
 FILES_${PN}-dbg = ""
 RRECOMMENDS_${PN} = "${LIB_PACKAGES} ${OTHER_PACKAGES}"
 RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
 RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
+RRECOMMENDS_${QT_BASE_NAME}-fonts = " \
+             ${QT_BASE_NAME}-fonts-ttf-vera \
+             ${QT_BASE_NAME}-fonts-ttf-dejavu \
+             ${QT_BASE_NAME}-fonts-pfa \
+             ${QT_BASE_NAME}-fonts-pfb \
+             ${QT_BASE_NAME}-fonts-qpf"
 
 FILES_${QT_BASE_NAME}-tools                = "${bindir}/uic* ${bindir}/moc ${bindir}/rcc ${bindir}/qttracereplay ${bindir}/qdoc*"
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant* ${bindir}/qcollectiongenerator ${bindir}/qhelpconverter ${bindir}/qhelpgenerator"
@@ -109,7 +121,11 @@ FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
 FILES_${QT_BASE_NAME}-designer-dbg         = "${bindir}/.debug/*designer*"
 FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_DIR_NAME}/examples/*"
 FILES_${QT_BASE_NAME}-examples-dbg         = "${bindir}/${QT_DIR_NAME}/examples/.debug ${bindir}/${QT_DIR_NAME}/examples/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/*/.debug ${bindir}/${QT_DIR_NAME}/examples/*/*/*/*/.debug"
-FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
+FILES_${QT_BASE_NAME}-fonts-ttf-vera       = "${libdir}/fonts/Vera*.ttf"
+FILES_${QT_BASE_NAME}-fonts-ttf-dejavu     = "${libdir}/fonts/DejaVu*.ttf"
+FILES_${QT_BASE_NAME}-fonts-pfa            = "${libdir}/fonts/*.pfa"
+FILES_${QT_BASE_NAME}-fonts-pfb            = "${libdir}/fonts/*.pfb"
+FILES_${QT_BASE_NAME}-fonts-qpf            = "${libdir}/fonts/*.qpf"
 FILES_${QT_BASE_NAME}-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/lconvert ${bindir}/qm2ts"
 FILES_${QT_BASE_NAME}-linguist-dbg         = "${bindir}/.debug/*linguist* ${bindir}/.debug/lrelease ${bindir}/.debug/lupdate ${bindir}/.debug/lconvert ${bindir}/.debug/qm2ts"
 FILES_${QT_BASE_NAME}-pixeltool            = "${bindir}/pixeltool"
