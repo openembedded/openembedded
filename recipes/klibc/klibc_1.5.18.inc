@@ -42,11 +42,3 @@ do_install_append() {
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/sync ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/ls ${D}${base_bindir}
 }
-
-PACKAGES += "${KLIBC_UTILS_PKGNAME}-dmesg \
-             ${KLIBC_UTILS_PKGNAME}-sync \
-             ${KLIBC_UTILS_PKGNAME}-ls"
-
-FILES_${KLIBC_UTILS_PKGNAME}-dmesg = "${base_bindir}/dmesg"
-FILES_${KLIBC_UTILS_PKGNAME}-sync = "${base_bindir}/sync"
-FILES_${KLIBC_UTILS_PKGNAME}-ls = "${base_bindir}/ls"

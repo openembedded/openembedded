@@ -17,6 +17,3 @@ SRC_URI[sha256sum] = "27000ba4bc73a5977502b27d7036df24dd6ab94a1c33b8f5d6d54ba627
 do_install_append() {
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/insmod ${D}${base_bindir}
 }
-
-PACKAGES += "${KLIBC_UTILS_PKGNAME}-insmod"
-FILES_${KLIBC_UTILS_PKGNAME}-insmod = "${base_bindir}/insmod"
