@@ -5,8 +5,9 @@
 PV = "2.0"
 PR = "r14"
 
-
 DEPENDS += "task-shr-minimal"
+IMAGE_LOGIN_MANAGER = "shadow"
+IMAGE_DEV_MANAGER = ""
 
 RDEPENDS_${PN} += "\
   task-shr-minimal-base \
