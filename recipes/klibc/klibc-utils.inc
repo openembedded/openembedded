@@ -40,16 +40,6 @@ do_install_append() {
         ln -s gzip ${D}${base_bindir}/zcat
 }
 
-# only in 1.5
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/insmod ${D}${base_bindir}
-
-# only in >= 1.5.15
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/dmesg ${D}${base_bindir}
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/sync ${D}${base_bindir}
-
-# only in >= 1.5.15+1.5.16
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/ls ${D}${base_bindir}
-
 PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
              ${KLIBC_UTILS_PKGNAME}-gzip \
              ${KLIBC_UTILS_PKGNAME}-kinit \
@@ -62,7 +52,6 @@ PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
              ${KLIBC_UTILS_PKGNAME}-chroot \
              ${KLIBC_UTILS_PKGNAME}-cpio \
              ${KLIBC_UTILS_PKGNAME}-dd \
-             ${KLIBC_UTILS_PKGNAME}-dmesg \
              ${KLIBC_UTILS_PKGNAME}-false \
              ${KLIBC_UTILS_PKGNAME}-halt \
              ${KLIBC_UTILS_PKGNAME}-kill \
@@ -78,14 +67,12 @@ PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
              ${KLIBC_UTILS_PKGNAME}-readlink \
              ${KLIBC_UTILS_PKGNAME}-reboot \
              ${KLIBC_UTILS_PKGNAME}-sleep \
-             ${KLIBC_UTILS_PKGNAME}-sync \
              ${KLIBC_UTILS_PKGNAME}-true \
              ${KLIBC_UTILS_PKGNAME}-umount \
              ${KLIBC_UTILS_PKGNAME}-uname \
              ${KLIBC_UTILS_PKGNAME}-modprobe \
              ${KLIBC_UTILS_PKGNAME}-losetup \
-             ${KLIBC_UTILS_PKGNAME}-wc \
-             ${KLIBC_UTILS_PKGNAME}-ls"
+             ${KLIBC_UTILS_PKGNAME}-wc"
 
 FILES_${KLIBC_UTILS_PKGNAME}-sh = "${base_bindir}/sh"
 FILES_${KLIBC_UTILS_PKGNAME}-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
@@ -99,7 +86,6 @@ FILES_${KLIBC_UTILS_PKGNAME}-cat = "${base_bindir}/cat"
 FILES_${KLIBC_UTILS_PKGNAME}-chroot = "${base_bindir}/chroot"
 FILES_${KLIBC_UTILS_PKGNAME}-cpio = "${base_bindir}/cpio"
 FILES_${KLIBC_UTILS_PKGNAME}-dd = "${base_bindir}/dd"
-FILES_${KLIBC_UTILS_PKGNAME}-dmesg = "${base_bindir}/dmesg"
 FILES_${KLIBC_UTILS_PKGNAME}-false = "${base_bindir}/false"
 FILES_${KLIBC_UTILS_PKGNAME}-halt = "${base_bindir}/halt"
 FILES_${KLIBC_UTILS_PKGNAME}-kill = "${base_bindir}/kill"
@@ -115,11 +101,9 @@ FILES_${KLIBC_UTILS_PKGNAME}-poweroff = "${base_bindir}/poweroff"
 FILES_${KLIBC_UTILS_PKGNAME}-readlink = "${base_bindir}/readlink"
 FILES_${KLIBC_UTILS_PKGNAME}-reboot = "${base_bindir}/reboot"
 FILES_${KLIBC_UTILS_PKGNAME}-sleep = "${base_bindir}/sleep"
-FILES_${KLIBC_UTILS_PKGNAME}-sync = "${base_bindir}/sync"
 FILES_${KLIBC_UTILS_PKGNAME}-true = "${base_bindir}/true"
 FILES_${KLIBC_UTILS_PKGNAME}-umount = "${base_bindir}/umount"
 FILES_${KLIBC_UTILS_PKGNAME}-uname = "${base_bindir}/uname"
 FILES_${KLIBC_UTILS_PKGNAME}-modprobe = "${base_sbindir}/modprobe"
 FILES_${KLIBC_UTILS_PKGNAME}-losetup = "${base_bindir}/losetup"
 FILES_${KLIBC_UTILS_PKGNAME}-wc = "${base_bindir}/wc"
-FILES_${KLIBC_UTILS_PKGNAME}-ls = "${base_bindir}/ls"
