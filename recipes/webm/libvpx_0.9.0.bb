@@ -1,6 +1,8 @@
 DESCRIPTION = "vpx Multi-Format Codec SDK"
 LICENSE = "VP8"
 
+PR = "r1"
+
 SRC_URI = "http://webm.googlecode.com/files/libvpx-${PV}.tar.bz2"
 
 SRC_URI[md5sum] = "9eb8e818d2f3263623c258fe66924082"
@@ -27,5 +29,7 @@ do_install() {
 	oe_runmake install
 	install -d ${D}${prefix}
 	cp -r ${S}/vpx-vp8-nopost-nodocs*${PV}/* ${D}${prefix}/
+	install -d ${D}${includedir}/vpx
+	mv ${D}${includedir}/*.h ${D}${includedir}/vpx
 }
 
