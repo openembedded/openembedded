@@ -1,0 +1,22 @@
+diff --git a/pump.8 b/pump.8
+index d1dce5c..d976748 100644
+--- a/pump.8
++++ b/pump.8
+@@ -77,7 +77,7 @@ switch	long option	description
+ \-R	\-\-renew	Renew lease immediately
+ \-r	\-\-release	Release interface
+ \-m	\-\-route-metric=\fIMETRIC\fR	Metric to use on routes (normally 0)
+-  	\-\-no\-gateway	Don't configurate a default route for this interface
++  	\-\-no\-gateway	Don't configure a default route for this interface
+   	\-\-no\-resolvconf	Don't use the \fBresolvconf\fR program to update resolv.conf
+   	\-\-no\-ntp	Don't update ntp.conf
+   	\-\-no\-setup	Don't set up anything
+@@ -253,7 +253,7 @@ If the UNIX domain socket (normally \fI/var/run/pump.sock\fR)
+ does not exist,
+ .B pump
+ tries to connect to tcp/127.0.0.1:68.
+-If it is also unreacheable (possibly due to packet filtering),
++If it is also unreachable (possibly due to packet filtering),
+ .B pump
+ will issue a warning to stderr and assume that there is no
+ instance of itself running.

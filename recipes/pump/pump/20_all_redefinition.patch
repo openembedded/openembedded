@@ -1,0 +1,13 @@
+diff -Nru pump-0.8.24.orig/pump.c pump-0.8.24/pump.c
+--- pump-0.8.24.orig/pump.c	2009-02-11 10:48:34.000000000 +0100
++++ pump-0.8.24/pump.c	2009-02-11 10:48:54.000000000 +0100
+@@ -58,7 +58,9 @@
+ int bootp_server_port;
+ #endif
+ 
++#if !defined(N_)
+ #define N_(foo) (foo)
++#endif
+ 
+ #define PROGNAME "pump"
+ #define CONTROLSOCKET "/var/run/pump.sock"

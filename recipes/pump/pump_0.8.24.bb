@@ -2,13 +2,20 @@ DESCRIPTION = "BOOTP and DHCP client for automatic IP configuration"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "popt"
+DEPENDS = "popt virtual/libiconv"
+
+PR = "r1"
 
 S = "${WORKDIR}/pump-${PV}"
 
 SRC_URI = "http://ftp.de.debian.org/debian/pool/main/p/pump/pump_0.8.24.orig.tar.gz \
-           file://debian.patch"
-
+	   file://00_00_all_debian.patch \
+	   file://00_all_retvals.patch \
+	   file://10_all_gentoo.patch \
+	   file://20_all_redefinition.patch \
+	   file://30_all_Makefile.patch \
+	   file://40_all_manpage.patch \
+	  "
 do_compile() {
         oe_runmake pump 
 }

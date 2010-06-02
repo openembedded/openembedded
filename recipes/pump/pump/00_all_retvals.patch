@@ -1,0 +1,38 @@
+--- pump-0.8.24/pump.c	2008-12-20 12:29:28.000000000 +0100
++++ pump.c	2008-12-20 12:28:47.000000000 +0100
+@@ -555,7 +555,11 @@
+   
+ 		listen(sock, 5);
+   
+-		write(conn, &c, 1);
++		if (write(conn, &c, 1) < 0) {
++		    syslog(LOG_ERR, "failed to write to connection: %s\n",
++			   strerror(errno));
++		    exit(1);
++		}
+   
+ out:
+ 		close(conn);
+@@ -731,7 +735,8 @@
+     if (!connect(sock_in, (struct sockaddr *) &addr_in, sizeof(addr_in))) {
+ 	char c;
+ 
+-	read(sock_in, &c, 1);
++	if( read(sock_in, &c, 1) < 0) {}
++
+ 	close(sock_in);
+ 	goto again;
+     }
+@@ -774,7 +779,11 @@
+ 	    exit(1);
+ 	}
+ 
+-	chdir("/");
++	if( chdir("/") < 0 ) {
++	    syslog(LOG_ERR, "couldn't chdir to root: %s\n", strerror(errno));
++	    exit(1);
++	}
++
+ 	umask(077);
+ 	if (bind(sock, (struct sockaddr *) &addr, addrLength)) {
+ 	    syslog(LOG_ERR, "bind to %s failed: %s\n", CONTROLSOCKET,

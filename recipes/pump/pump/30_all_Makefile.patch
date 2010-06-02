@@ -1,0 +1,20 @@
+diff -Nru pump-0.8.24.vanilla/Makefile pump-0.8.24/Makefile
+--- pump-0.8.24.vanilla/Makefile	2009-03-07 15:55:01.000000000 +0000
++++ pump-0.8.24/Makefile	2009-03-07 15:56:21.000000000 +0000
+@@ -6,14 +6,13 @@
+ USRLIBPATH = $(libdir)
+ INCPATH = $(includedir)
+ MAN8PATH = $(mandir)/man8
+-CFLAGS = $(DEB_CFLAGS) -I. -Wall -Werror -g $(RPM_OPT_FLAGS) -D__STANDALONE__ -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE
++CFLAGS = $(DEB_CFLAGS) -I. -Wall $(RPM_OPT_FLAGS) -D__STANDALONE__ -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE
+ CVSROOT = $(shell cat CVS/Root 2>/dev/null)
+ 
+ ARCH := $(patsubst i%86,i386,$(shell uname -m))
+ ARCH := $(patsubst sparc%,sparc,$(ARCH))
+ 
+-LOADLIBES = -Wl,-Bstatic -lpopt -Wl,-Bdynamic -lresolv
+-LDFLAGS = -g
++LOADLIBES = -lpopt -lresolv
+ 
+ CVSTAG = r$(subst .,-,$(VERSION))
+ 
