@@ -5,7 +5,7 @@ DEPENDS += "bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
             libxdmcp xf86bigfontproto kbproto inputproto xproto-native"
 PROVIDES = "virtual/libx11"
 PE = "1"
-PR = "r3"
+PR = "r4"
 
 XORG_PN = "libX11"
 
@@ -14,6 +14,12 @@ SRC_URI += "file://x11_disable_makekeys.1.6.3.patch \
             file://keysymdef_include.patch"
 
 EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
+
+# Below option is added to overcome the GCC bug on ARM 
+# see http://gcc.gnu.org/PR42981 for further details.
+# We could potentially take it off when its fixed in gcc 4.5
+
+CFLAGS_append_arm = " -fforward-propagate "
 
 do_compile() {
 	(
