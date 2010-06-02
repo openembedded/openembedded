@@ -17,8 +17,9 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://tslib-default-device.patch \
 	file://keyboard-resume-workaround.patch \
 	file://xorg-avr32-support.diff \
-    file://sysroot_fix.patch \
-    file://drmfix.patch \
+	file://sysroot_fix.patch \
+	file://drmfix.patch \
+	file://no_xkb.patch \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"
