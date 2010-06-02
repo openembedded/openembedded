@@ -1,7 +1,7 @@
 DESCRIPTION = "Take photos and videos with your webcam, with fun graphical effects"
 LICENSE = "GPLv2"
 
-DEPENDS = "gtk+ gstreamer libcanberra udev librsvg gnome-desktop eds-dbus"
+DEPENDS = "gtk+ gstreamer gst-plugins-base libcanberra udev librsvg gnome-desktop eds-dbus"
 RRECOMMENDS_${PN} = "gst-plugin-gconfelements gst-plugins-good-meta gst-plugins-base-meta"
 
 inherit gnome
