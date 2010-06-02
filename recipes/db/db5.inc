@@ -1,4 +1,4 @@
-# Version 4 of the Berkeley DB from Oracle
+# Version 5 of the Berkeley DB from Oracle
 #
 # At present this package only installs the DB code
 # itself (shared libraries, .a in the dev package),
@@ -6,16 +6,16 @@
 #
 # The headers have the same names as those as v3
 # of the DB, only one version can be used *for dev*
-# at once - DB3 and DB4 can both be installed on the
+# at once - DB3 and DB5 both be installed on the
 # same system at the same time if really necessary.
 
 
-DESCRIPTION = "Berkeley DB v4."
+DESCRIPTION = "Berkeley DB v5."
 HOMEPAGE = "http://www.oracle.com/technology/products/berkeley-db/db/index.html"
 SECTION = "libs"
 LICENSE = "BSD"
 VIRTUAL_NAME ?= "virtual/db"
-CONFLICTS = "db3"
+CONFLICTS = "db3 db4"
 
 SRC_URI = "http://download.oracle.com/berkeley-db/db-${PV}.tar.gz"
 
@@ -43,14 +43,14 @@ B = "${WORKDIR}/db-${PV}/build_unix"
 PACKAGES += " ${PN}-bin"
 
 # Package contents
-FILES_${PN} = "${libdir}/libdb-4*so*"
+FILES_${PN} = "${libdir}/libdb-5*so*"
 FILES_${PN}-bin = "${bindir}/*"
 # The dev package has the .so link (as in db3) and the .a's -
 # it is therefore incompatible (cannot be installed at the
 # same time) as the db3 package
 FILES_${PN}-dev = "${includedir} ${libdir}/*"
 
-EXTRA_OECONF = "${DB4_CONFIG}"
+EXTRA_OECONF = "${DB5_CONFIG}"
 
 # Override the MUTEX setting here, the POSIX library is
 # the default - "POSIX/pthreads/library".
