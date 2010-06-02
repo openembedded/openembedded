@@ -32,7 +32,7 @@ S = "${WORKDIR}/qemu-${PV}"
 
 EXTRA_OECONF += " --disable-curl --disable-sdl --disable-strip"
 
-EXTRA_OECONF_append_virtclass-native += " --extra-cflags="-I${STAGING_INCDIR_NATIVE}""
+EXTRA_OECONF_append_virtclass-native = " --extra-cflags="-I${STAGING_INCDIR_NATIVE}""
 
 inherit autotools
 
