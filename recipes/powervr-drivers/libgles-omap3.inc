@@ -1,7 +1,7 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENSE = "proprietary-binary"
 
-PR = "r4"
+PR = "r5"
 
 COMPATIBLE_MACHINE = "(dm3730-am3715-evm|am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
 
@@ -240,9 +240,11 @@ FILES_${PN}-dbg = "${libdir}/.debug/* ${bindir}/.debug/* \
 
 FILES_${PN}-rawdemos = "${bindir}/SGX/demos/Raw/*"
 FILES_${PN}-x11demos = "${bindir}/SGX/demos/X11/* ${prefix}/share/applications "
+RRECOMMENDS_${PN}-x11demos = "${PN}-x11wsegl"
 
 FILES_${PN}-rawtrainingcourses = "${bindir}/SGX/trainingcourses/Raw/*"
 FILES_${PN}-x11trainingcourses = "${bindir}/SGX/trainingcourses/X11/*"
+RRECOMMENDS_${PN}-x11trainingcourses = "${PN}-x11wsegl"
 
 # The libs need the kernel-modules
 RRECOMMENDS_${PN} = "omap3-sgx-modules"
