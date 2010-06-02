@@ -6,21 +6,10 @@ PRIORITY = "optional"
 NOTES = "Needs to be stripped down to: ascii iso8859-1 eucjp iso-2022jp gb utf8"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PV}.tar.gz \
-	   file://autotools.patch \
-	   file://preload.patch"
+          "
 
 S = "${WORKDIR}/libiconv-${PV}"
 
 inherit autotools gettext
 
-EXTRA_OECONF += "--enable-shared --enable-static --enable-relocatable --disable-rpath"
-
-do_configure_append () {
-	        # Fix stupid libtool... handling. rpath handling can't be disabled and the Makefile's can't be regenerated..
-        # (GNU sed required)
-        sed -i s/^hardcode_libdir_flag_spec/#hardcode_libdir_flag_spec/ ${S}/*-libtool
-}
-
-do_stage () {
-	autotools_stage_all
-}
+EXTRA_OECONF += "--enable-shared --enable-static --enable-relocatable"
