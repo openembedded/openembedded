@@ -1,0 +1,44 @@
+diff a/src/cairo-matrix.c b/src/cairo-matrix.c
+--- a/src/cairo-matrix.c
++++ b/src/cairo-matrix.c
+@@ -653,16 +653,39 @@ _cairo_matrix_compute_basis_scale_factors (const cairo_matrix_t *matrix,
+ cairo_bool_t
+ _cairo_matrix_is_identity (const cairo_matrix_t *matrix)
+ {
++	static const cairo_matrix_t id = {
++		.xx = 1,
++		.xy = 0,
++		.yx = 0,
++		.yy = 1,
++		.x0 = 0,
++		.y0 = 0
++	};
++
++	return !memcmp(matrix, &id, sizeof(id));
++
++#if 0
+     return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
+ 	    matrix->xy == 0.0 && matrix->yy == 1.0 &&
+ 	    matrix->x0 == 0.0 && matrix->y0 == 0.0);
++#endif
+ }
+ 
+ cairo_bool_t
+ _cairo_matrix_is_translation (const cairo_matrix_t *matrix)
+ {
++	cairo_matrix_t tmp;
++	tmp.xx = matrix->xx;
++	tmp.xy = matrix->xy;
++	tmp.yx = matrix->yx;
++	tmp.yy = matrix->yy;
++	tmp.x0 = tmp.y0 = 0;
++	return _cairo_matrix_is_identity(&tmp);
++
++#if 0
+     return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
+ 	    matrix->xy == 0.0 && matrix->yy == 1.0);
++#endif
+ }
+ 
+ cairo_bool_t
+
