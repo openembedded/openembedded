@@ -1,6 +1,6 @@
 DESCRIPTION =	"Monotone-viz is a small GTK+ application that visualizes monotone ancestry graphs."
 DEPENDS =	"gtk+ libgnomecanvas lablgtk sqlite3 ocaml-cross"
-RDEPENDS =	"graphviz"
+RDEPENDS_${PN} =	"graphviz"
 
 
 SRC_URI =	"http://oandrieu.nerim.net/monotone-viz/archive/monotone-viz-0.11.tar.gz"

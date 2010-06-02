@@ -3,7 +3,7 @@ HOMEPAGE = "http://fakeroot.alioth.debian.org/"
 SECTION = "base"
 LICENSE = "GPL"
 # fakeroot needs getopt which is provided by the util-linux package
-RDEPENDS = "util-linux"
+RDEPENDS_${PN} = "util-linux"
 PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \

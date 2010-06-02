@@ -5,4 +5,4 @@ S = "${WORKDIR}/jsch-${PV}"
 inherit java-native
 
 DEPENDS = "fastjar-native jzlib-native"
-RDEPENDS = ""
+RDEPENDS_${PN} = ""

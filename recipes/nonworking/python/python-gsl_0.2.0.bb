@@ -2,7 +2,7 @@ DESCRIPTION = "GNU Scientific Library Python Bindings"
 SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "gsl"
-RDEPENDS = "python-core gsl"
+RDEPENDS_${PN} = "python-core gsl"
 SRCNAME = "pygsl"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz \

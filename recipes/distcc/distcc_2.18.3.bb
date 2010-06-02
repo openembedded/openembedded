@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 PR = "r4"
 
 DEPENDS = "avahi gtk+"
-RRECOMMENDS = "avahi-daemon"
+RRECOMMENDS_${PN} = "avahi-daemon"
 
 SRC_URI = "http://distcc.samba.org/ftp/distcc/distcc-${PV}.tar.bz2 \
 	   file://distcc-avahi.patch \

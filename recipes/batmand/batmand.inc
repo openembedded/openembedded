@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.open-mesh.net/"
 
 INC_PR = "r1"
 
-RDEPENDS = "kernel-module-tun"
+RDEPENDS_${PN} = "kernel-module-tun"
 
 SRC_URI = "http://downloads.open-mesh.net/batman/stable/sources/batman/batman-${PV}.tar.gz \
            file://makefile-fix.patch \

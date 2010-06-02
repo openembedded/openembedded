@@ -6,8 +6,8 @@ DESCRIPTION = "Prismstumbler wireless LAN scanner"
 DESCRIPTION_prismstumbler-frontend = "Prismstumbler wireless LAN scanner GTK frontend"
 LICENSE = "GPL"
 DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib dbus-glib gpsd"
-RDEPENDS = "wireless-tools"
-RRECOMMENDS = "gpsd"
+RDEPENDS_${PN} = "wireless-tools"
+RRECOMMENDS_${PN} = "gpsd"
 
 # wireless.patch is required for linux-libc-headers == 2.6.23
 # but breaks build with linux-libc-headers >= 2.6.30.

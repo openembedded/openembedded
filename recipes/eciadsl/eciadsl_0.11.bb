@@ -3,7 +3,7 @@ SECTION = "net"
 SRC_URI = "http://eciadsl.flashtux.org/download/eciadsl-usermode-${PV}.tar.gz \
            file://eciadsl-bash.patch"
 LICENSE = "GPL"
-RDEPENDS = "bash kernel-module-n_hdlc ppp grep"
+RDEPENDS_${PN} = "bash kernel-module-n_hdlc ppp grep"
 S = "${WORKDIR}/eciadsl-usermode-${PV}"
 
 inherit autotools

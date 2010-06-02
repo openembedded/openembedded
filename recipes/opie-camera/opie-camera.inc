@@ -2,7 +2,7 @@ DESCRIPTION = "Opie Camera, Photo and Video Capturing Application for the Sharp 
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "sharp-camera-support"
+RDEPENDS_${PN} = "sharp-camera-support"
 APPNAME = "camera"
 APPTYPE = "binary"
 

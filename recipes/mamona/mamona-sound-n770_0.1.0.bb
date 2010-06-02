@@ -2,7 +2,7 @@ DESCRIPTION = "Mamona's sound configuration for Nokia N770"
 HOMEPAGE = "http://dev.openbossa.org/trac/mamona/"
 #SECTION = "console/utils"
 LICENSE = "GPL"
-RDEPENDS = "dspgw-utils udev alsa-lib alsa-utils-alsactl"
+RDEPENDS_${PN} = "dspgw-utils udev alsa-lib alsa-utils-alsactl"
 PR = "r1"
 
 PACKAGES = "${PN}"

@@ -1,6 +1,6 @@
 RPROVIDES_${PN} = "virtual/shr-splash-theme"
 PROVIDES  = "virtual/shr-splash-theme"
-RDEPENDS += "shr-splash"
+RDEPENDS_${PN} += "shr-splash"
 
 inherit update-alternatives
 

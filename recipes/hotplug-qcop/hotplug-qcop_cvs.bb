@@ -1,6 +1,6 @@
 DESCRIPTION = "HotPlug -> QCOP Event Bridge"
 SECTION = "opie/base"
-RDEPENDS = "opie-qcop hotplug"
+RDEPENDS_${PN} = "opie-qcop hotplug"
 LICENSE = "GPL"
 PR = "r0"
 

@@ -14,7 +14,7 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-netclient \
   python-netserver \
 "

@@ -19,7 +19,7 @@ SRC_URI += "\
 PROVIDES = "java-midp2.0"
 DEPENDS += "midpath-cldc midpath-backend-sdl midpath-backend-escher swt3.4-gtk kxml2 bluez-libs"
 
-RDEPENDS += "libkxml2-java"
+RDEPENDS_${PN} += "libkxml2-java"
 
 JAR = "midpath.jar"
 

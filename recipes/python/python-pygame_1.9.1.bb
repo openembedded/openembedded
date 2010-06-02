@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.pygame.org"
 LICENSE = "LGPL"
 DEPENDS = "libsdl-x11 libsdl-image libsdl-mixer libsdl-net libsdl-ttf python-numeric"
 DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'smpeg', d)}"
-RDEPENDS = "python-numeric"
+RDEPENDS_${PN} = "python-numeric"
 SRCNAME = "pygame"
 PR = "ml4"
 

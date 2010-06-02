@@ -9,7 +9,7 @@ PV = "0.5.0+cvs${FIXEDSRCDATE}"
 PR = "r0"
 
 DEPENDS = "osb-nrcit gtk+ glib-2.0 libglade"
-RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-ico gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png"
+RRECOMMENDS_${PN} = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-ico gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png"
 
 SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;module=osb-browser;date=${FIXEDSRCDATE} \
            file://no-pedantic.patch"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Programmable Completion for Bash"
 SECTION = "console/utils"
-RDEPENDS = "bash"
+RDEPENDS_${PN} = "bash"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.caliban.org/files/bash/bash-completion-${PV}.tar.gz \

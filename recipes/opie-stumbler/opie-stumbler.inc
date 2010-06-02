@@ -2,7 +2,7 @@ DESCRIPTION = "A Wireless Network Scanner"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RRECOMMENDS = "manufacturers"
+RRECOMMENDS_${PN} = "manufacturers"
 APPNAME = "opiestumbler"
 
 S = "${WORKDIR}/${APPNAME}"

@@ -1,8 +1,8 @@
 SRC_URI = "file://80-nfsboot.sh"
 PR = "r2"
 DESCRIPTION = "An initramfs module for booting via NFS."
-RDEPENDS = "initramfs-uniboot"
-RRECOMMENDS = "kernel-module-g-ether kernel-module-nfs"
+RDEPENDS_${PN} = "initramfs-uniboot"
+RRECOMMENDS_${PN} = "kernel-module-g-ether kernel-module-nfs"
 
 do_install() {
 	install -d ${D}/initrd.d

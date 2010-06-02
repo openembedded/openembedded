@@ -2,7 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for MTX-1 (MeshCube)"
 LICENSE = "GPL"
 KV = "${PV}"
-RDEPENDS = "mtd-utils"
+RDEPENDS_${PN} = "mtd-utils"
 PR ="r2"
 
 SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_24_pre2 \

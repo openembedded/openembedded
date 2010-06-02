@@ -4,7 +4,7 @@ SECTION = "x11/wm"
 PR = "r3"
 
 DEPENDS = "xfwm4 libglade libxml2"
-RDEPENDS = "xfwm4 libglade libxml2"
+RDEPENDS_${PN} = "xfwm4 libglade libxml2"
 
 inherit xfce46
 

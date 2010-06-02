@@ -6,7 +6,7 @@ FILESPATH = "${FILE_DIRNAME}/gdk-pixbuf-csource:${FILE_DIRNAME}/gtk+-${PV}:${FIL
 SRC_URI += "file://reduce-dependencies.patch"
 
 #clear recommends for uclibc builds
-RRECOMMENDS = " "
+RRECOMMENDS_${PN} = " "
 RRECOMMENDS_${PN}_linux = "  "
 RRECOMMENDS_${PN}_linux-gnueabi = " "
 

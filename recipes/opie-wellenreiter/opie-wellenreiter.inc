@@ -2,7 +2,7 @@ DESCRIPTION = "A Wireless Network Monitor"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RRECOMMENDS = "manufacturers"
+RRECOMMENDS_${PN} = "manufacturers"
 APPNAME = "wellenreiter"
 APPTYPE = "binary"
 

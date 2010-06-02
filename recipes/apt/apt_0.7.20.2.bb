@@ -1,5 +1,5 @@
 DEPENDS = "curl db"
-RDEPENDS = "dpkg"
+RDEPENDS_${PN} = "dpkg"
 
 require apt.inc
 

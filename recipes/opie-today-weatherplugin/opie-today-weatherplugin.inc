@@ -3,7 +3,7 @@ SECTION = "opie/today"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopiepim2"
-RDEPENDS = "opie-today"
+RDEPENDS_${PN} = "opie-today"
 APPNAME = "todayweatherplugin"
 
 

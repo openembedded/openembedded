@@ -3,7 +3,7 @@ inherit autotools gpe pkgconfig
 PR = "r0"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget gpe-icons gpe-conf"
-RRECOMMENDS = "gpe-conf"
+RRECOMMENDS_${PN} = "gpe-conf"
 SECTION = "gpe"
 
 DESCRIPTION = "GPE network connection checker"

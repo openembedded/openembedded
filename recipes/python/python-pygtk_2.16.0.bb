@@ -2,7 +2,7 @@ DESCRIPTION = "Python GTK+ 2.10.x Bindings"
 SECTION = "devel/python"
 # needs gtk+ 2.10.x
 DEPENDS = "gtk+ libglade python-pycairo python-pygobject"
-RDEPENDS = "python-shell python-pycairo python-pygobject"
+RDEPENDS_${PN} = "python-shell python-pycairo python-pygobject"
 PROVIDES = "python-pygtk2"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"

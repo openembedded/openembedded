@@ -11,5 +11,5 @@ S = "${WORKDIR}/tangogps-${PV}"
 
 inherit autotools pkgconfig
 
-RRECOMMENDS = "gpsd"
+RRECOMMENDS_${PN} = "gpsd"
 RRECOMMENDS_shr = "fso-gpsd"

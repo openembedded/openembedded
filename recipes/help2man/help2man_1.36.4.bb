@@ -3,7 +3,7 @@ HOMEPAGE    = "http://www.gnu.org/software/help2man"
 SECTION     = "console/utils"
 LICENSE     = "GPLv2"
 DEPENDS     = "gettext-native perl-native liblocale-gettext-perl-native"
-RDEPENDS    = "gettext perl liblocale-gettext-perl"
+RDEPENDS_${PN}    = "gettext perl liblocale-gettext-perl"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 

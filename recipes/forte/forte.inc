@@ -2,7 +2,7 @@ DESCRIPTION = "4DIAC-RTE (FORTE) is a small portable implementation of an IEC 61
 HOMEPAGE = "http://www.fordiac.org/8.0.html"
 SECTION = "console/network"
 DEPENDS = ""
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 LICENSE = "EPL"
 
 inherit autotools

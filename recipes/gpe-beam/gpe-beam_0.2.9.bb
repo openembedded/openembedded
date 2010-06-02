@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-RDEPENDS = "irda-utils"
+RDEPENDS_${PN} = "irda-utils"
 
 inherit gpe
 

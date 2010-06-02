@@ -15,5 +15,5 @@ do_install() {
         install -m 0644 ${WORKDIR}/usdir.rdm ${D}${datadir}/roadmap/
 }
 
-RRECOMMENDS = "gpsd flite"
+RRECOMMENDS_${PN} = "gpsd flite"
 FILES_${PN} += "${datadir}/roadmap"

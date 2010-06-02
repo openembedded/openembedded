@@ -5,6 +5,6 @@ PR = "r1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
-RDEPENDS = "task-e-x11"
+RDEPENDS_${PN} = "task-e-x11"
 
 inherit meta

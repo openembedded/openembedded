@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxcalibrate libxft libxrandr"
 
 # xtscal needs a font to display text
-RRECOMMENDS = "ttf-dejavu-sans"
+RRECOMMENDS_${PN} = "ttf-dejavu-sans"
 
 SRC_URI = "${GPE_MIRROR}/xtscal-${PV}.tar.bz2"
 

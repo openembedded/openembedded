@@ -7,7 +7,7 @@ SRC_URI = "http://linux.duke.edu/projects/yum/download/3.2/yum-${PV}.tar.gz \
 	   file://yum-install-recommends.py \
 	   file://extract-postinst.awk"
 
-RDEPENDS = "python-rpm python-core python-iniparse python-urlgrabber \
+RDEPENDS_${PN} = "python-rpm python-core python-iniparse python-urlgrabber \
             python-shell python-re python-logging python-pickle \
 	    python-netserver python-compression \
 	    python-unixadmin python-xml python-sqlite3 \

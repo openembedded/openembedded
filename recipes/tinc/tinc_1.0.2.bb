@@ -10,7 +10,7 @@ SRC_URI="http://www.tinc-vpn.org/packages/tinc-1.0.2.tar.gz \
 	file://init"
 
 DEPENDS = "openssl lzo zlib"
-RRECOMMENDS = "kernel-module-tun"
+RRECOMMENDS_${PN} = "kernel-module-tun"
 
 inherit autotools
 

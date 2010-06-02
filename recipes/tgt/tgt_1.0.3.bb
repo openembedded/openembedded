@@ -2,7 +2,7 @@ DESCRIPTION = "Linux target framework (tgt) aims to simplify various SCSI target
 HOMEPAGE = "http://stgt.berlios.de/"
 LICENSE = "GPLv2"
 DEPENDS = "openssl"
-RDEPENDS = "iscsi-target"
+RDEPENDS_${PN} = "iscsi-target"
 
 PR = "r0"
 SRC_URI = "http://stgt.berlios.de/releases/tgt-${PV}.tar.gz;name=tgttargz"

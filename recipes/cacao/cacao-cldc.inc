@@ -8,7 +8,7 @@ DEPENDS = "zlib libtool classpath midpath-cldc cacaoh-cldc-native virtual/javac-
 
 # Avoid version number here, otherwise dpkg will expect a package name
 # and cannot be satisfied with a package that provides classpath.
-RDEPENDS = "midpath-cldc"
+RDEPENDS_${PN} = "midpath-cldc"
 
 PROVIDES = "cacao-cldc virtual/java-cldc"
 RPROVIDES_cacao-cldc = "java-cldc-runtime"

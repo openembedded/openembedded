@@ -2,7 +2,7 @@ DESCRIPTION = "Blueman is a GTK+ Bluetooth Manager"
 HOMEPAGE = "http://www.blueman-project.org/"
 SECTION = "optional"
 DEPENDS = "gtk+ glib-2.0 bluez4 intltool python python-native python-pyrex startup-notification"
-RDEPENDS = "python-dbus python-pygobject python dbus bluez4 python-pygtk python-notify obex-data-server \
+RDEPENDS_${PN} = "python-dbus python-pygobject python dbus bluez4 python-pygtk python-notify obex-data-server \
 "
 
 PR = "r1"

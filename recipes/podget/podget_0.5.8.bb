@@ -3,7 +3,7 @@ HOMEPAGE = "http://podget.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS += "virtual/libiconv"
-RDEPENDS = "bash sed wget"
+RDEPENDS_${PN} = "bash sed wget"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/podget/podget_${PV}.tar.gz \

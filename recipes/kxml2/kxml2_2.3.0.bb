@@ -8,7 +8,7 @@ PR = "r1"
 inherit java-library
 
 DEPENDS = "xmlpull"
-RDEPENDS = "libxmlpull-java"
+RDEPENDS_${PN} = "libxmlpull-java"
 
 S = "${WORKDIR}"
 

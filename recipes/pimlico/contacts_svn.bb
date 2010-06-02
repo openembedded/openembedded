@@ -1,8 +1,8 @@
 require contacts.inc
 
 #DEPENDS += "gnome-vfs"
-#RDEPENDS += "gnome-vfs-plugin-file"
-#RRECOMMENDS += "gnome-vfs-plugin-http"
+#RDEPENDS_${PN} += "gnome-vfs-plugin-file"
+#RRECOMMENDS_${PN} += "gnome-vfs-plugin-http"
 
 PV = "0.8+svnr${SRCPV}"
 

@@ -7,7 +7,7 @@ DEPENDS = "gtk+ glib-2.0 bluez4 intltool python \
            startup-notification \
 "
 
-RDEPENDS = "python-dbus python-pygobject python \
+RDEPENDS_${PN} = "python-dbus python-pygobject python \
             dbus bluez4 python-pygtk obex-data-server \
 "
 

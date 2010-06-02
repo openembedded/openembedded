@@ -17,6 +17,6 @@ SRC_URI = "svn://numberx.googlecode.com/svn;module=trunk;proto=http"
 
 inherit distutils
 
-RDEPENDS += "python-math python-elementary" 
+RDEPENDS_${PN} += "python-math python-elementary" 
 
 FILES_${PN} += "${datadir}"

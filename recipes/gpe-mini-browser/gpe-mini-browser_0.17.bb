@@ -2,7 +2,7 @@ require gpe-mini-browser.inc
 
 SRC_URI = "ftp://ftp.handhelds.org/projects/gpe/source/gpe-mini-browser-${PV}.tar.gz"
 DEPENDS = "osb-nrcit sqlite libgpewidget"
-RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
+RRECOMMENDS_${PN} = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
 
 
 S = "${WORKDIR}/gpe-mini-browser-${PV}"

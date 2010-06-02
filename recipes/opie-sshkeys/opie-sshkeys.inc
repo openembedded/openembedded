@@ -2,7 +2,7 @@ DESCRIPTION = "Utility for managing ssh-agent keys"
 SECTION = "opie/settings"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "ssh opie-sh-ssh-askpass"
+RDEPENDS_${PN} = "ssh opie-sh-ssh-askpass"
 APPNAME = "sshkeys"
 
 

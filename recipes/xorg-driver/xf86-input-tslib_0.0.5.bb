@@ -1,7 +1,7 @@
 require xorg-driver-input.inc
 
 DESCRIPTION = "X.Org X server -- tslib input driver"
-RRECOMMENDS += "hal tslib-calibrate"
+RRECOMMENDS_${PN} += "hal tslib-calibrate"
 DEPENDS += "tslib"
 
 PR = "r8"

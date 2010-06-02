@@ -2,7 +2,7 @@ DESCRIPTION = "Network Applet"
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "opie-networksettings"
+RDEPENDS_${PN} = "opie-networksettings"
 APPNAME = "networkapplet"
 
 S = "${WORKDIR}/${APPNAME}"

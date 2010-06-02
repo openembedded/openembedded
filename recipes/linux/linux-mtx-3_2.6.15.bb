@@ -6,7 +6,7 @@ PR = "r11"
 inherit module-base kernel
 
 PROVIDES = "virtual/kernel"
-RDEPENDS = "mtd-utils"
+RDEPENDS_${PN} = "mtd-utils"
 
 SRC_URI += "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_6_15 \
 	file://defconfig-mtx-3"

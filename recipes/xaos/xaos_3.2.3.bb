@@ -3,7 +3,7 @@ HOMEPAGE = "http://wmi.math.u-szeged.hu/xaos/doku.php"
 SECTION = "graphics"
 LICENSE = "GPLv2"
 DEPENDS = "aalib libx11 zlib libpng"
-RDEPENDS += "libxxf86dga"
+RDEPENDS_${PN} += "libxxf86dga"
 PR = "r0"
 
 SRC_URI = "http://easynews.dl.sourceforge.net/sourceforge/xaos/XaoS-3.2.3.tar.gz \

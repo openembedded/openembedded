@@ -2,7 +2,7 @@ DESCRIPTION = "Bluetooth manager for Opie"
 SECTION = "opie/settings"
 PRIORITY = "optional"
 DEPENDS = "libopietooth1 obexftp"
-RDEPENDS = "opie-bluepin"
+RDEPENDS_${PN} = "opie-bluepin"
 LICENSE = "GPL"
 APPNAME = "bluetooth-manager"
 

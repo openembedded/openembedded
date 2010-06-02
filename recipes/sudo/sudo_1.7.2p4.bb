@@ -1,7 +1,7 @@
 PR = "r3"
 
 DEPENDS = "libpam"
-RDEPENDS = "libpam libpam-meta"
+RDEPENDS_${PN} = "libpam libpam-meta"
 
 SRC_URI = "http://ftp.sudo.ws/sudo/dist/sudo-${PV}.tar.gz;name=src \
   file://sudo.pamd \

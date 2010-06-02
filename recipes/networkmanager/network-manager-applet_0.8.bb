@@ -1,7 +1,7 @@
 DESCRIPTION = "GTK+ applet for NetworkManager" 
 LICENSE = "GPL"
 DEPENDS = "gnome-bluetooth policykit-gnome libnotify networkmanager dbus-glib libglade gconf gnome-keyring"
-RDEPENDS = "networkmanager"
+RDEPENDS_${PN} = "networkmanager"
 
 PR = "r2"
 

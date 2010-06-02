@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "${PN}"
 SRC_DISTRIBUTE_LICENSES += "${PN}"
 AUTHOR = "NetWalk Group <netwalkgroup@hotmail.com>"
-RDEPENDS = "tickypip"
+RDEPENDS_${PN} = "tickypip"
 PACKAGE_ARCH = "all"
 PR = "r1"
 

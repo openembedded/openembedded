@@ -9,7 +9,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 DEPENDS = "virtual/xserver"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     ${XSERVER} \
     dbus-x11 \
     ttf-dejavu-sans \

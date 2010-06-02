@@ -2,7 +2,7 @@ DESCRIPTION = "Authen::PAM - Perl interface to PAM library"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "libpam"
-RDEPENDS = "perl-module-posix"
+RDEPENDS_${PN} = "perl-module-posix"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/N/NI/NIKIP/Authen-PAM-${PV}.tar.gz;name=authen-pam-perl-${PV}"
 SRC_URI[authen-pam-perl-0.16.md5sum] = "7278471dfa694d9ef312bc92d7099af2"

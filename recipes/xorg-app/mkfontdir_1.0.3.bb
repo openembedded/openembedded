@@ -2,7 +2,7 @@ require xorg-app-common.inc
 
 PE = "1"
 
-RDEPENDS += "mkfontscale"
+RDEPENDS_${PN} += "mkfontscale"
 
 
 SRC_URI[archive.md5sum] = "4d0f89a23f77e22f1671a77bf0898955"

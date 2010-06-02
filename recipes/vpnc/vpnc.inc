@@ -5,7 +5,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libgcrypt"
-RDEPENDS = "kernel-module-tun"
+RDEPENDS_${PN} = "kernel-module-tun"
 
 CFLAGS_append = ' -DVERSION=\\"${PV}\\"'
 LDFLAGS_append = " -lgcrypt -lgpg-error"

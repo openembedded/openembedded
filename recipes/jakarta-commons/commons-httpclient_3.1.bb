@@ -7,7 +7,7 @@ SRC_URI = "http://www.apache.org/dist/httpcomponents/commons-httpclient/source/$
 S = "${WORKDIR}/${BP}"
 
 DEPENDS += "commons-logging commons-codec"
-RDEPENDS = "libcommons-logging-java libcommons-codec-java"
+RDEPENDS_${PN} = "libcommons-logging-java libcommons-codec-java"
 
 CP = "commons-logging commons-codec"
 

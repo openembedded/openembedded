@@ -1,7 +1,7 @@
 require intltool.inc
 
-RDEPENDS = "perl-module-text-wrap perl-module-re"
-RRECOMMENDS = "perl-modules"
+RDEPENDS_${PN} = "perl-module-text-wrap perl-module-re"
+RRECOMMENDS_${PN} = "perl-modules"
 
 PR = "${INC_PR}.0"
 

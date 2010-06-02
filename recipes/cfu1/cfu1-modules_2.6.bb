@@ -3,7 +3,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
-RDEPENDS = "kernel-module-usbcore"
+RDEPENDS_${PN} = "kernel-module-usbcore"
 PR = "r2"
 
 SRC_URI = "file://rex-cfu1.conf \

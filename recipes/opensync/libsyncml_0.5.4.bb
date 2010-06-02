@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 
 DEPENDS = "libxml2 glib-2.0"
-RRECOMMENDS = "wbxml2 openobex libsoup"
+RRECOMMENDS_${PN} = "wbxml2 openobex libsoup"
 
 PR = "r1"
 

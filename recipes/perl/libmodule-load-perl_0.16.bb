@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r1"
 
-RDEPENDS = "perl-module-test-more"
+RDEPENDS_${PN} = "perl-module-test-more"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/K/KA/KANE/Module-Load-${PV}.tar.gz"
 

@@ -4,7 +4,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "qt4-x11-free"
 RSUGGESTS = "tetex"
-RDEPENDS = "python-shell python-textutils"
+RDEPENDS_${PN} = "python-shell python-textutils"
 PR = "r0"
 
 SRC_URI = "\

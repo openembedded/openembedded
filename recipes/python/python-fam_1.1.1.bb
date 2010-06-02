@@ -10,7 +10,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 
 inherit distutils
 
-RDEPENDS = "fam python-core python-io"
+RDEPENDS_${PN} = "fam python-core python-io"
 
 
 SRC_URI[md5sum] = "f6c760c6d8e5ea69a3fce029f7973558"

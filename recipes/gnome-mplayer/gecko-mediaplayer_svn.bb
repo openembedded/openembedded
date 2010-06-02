@@ -2,7 +2,7 @@ DESCRIPTION = "Gecko plugin for gnome-mplayer"
 HOMEPAGE = "http://dekorte.homeip.net/download/gecko-mediaplayer/"
 LICENSE = "GPL"
 DEPENDS = "firefox gtk+ gconf dbus-glib"
-RDEPENDS = "firefox gnome-mplayer"
+RDEPENDS_${PN} = "firefox gnome-mplayer"
 
 PV = "0.9.9.2+${SRCPV}"
 SRCREV = "387"

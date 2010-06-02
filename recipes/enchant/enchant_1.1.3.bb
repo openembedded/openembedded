@@ -3,7 +3,7 @@ PRIORITY    = "optional"
 SECTION = "libs"
 
 DEPENDS     = "aspell"
-RDEPENDS    = "aspell"
+RDEPENDS_${PN}    = "aspell"
 
 inherit autotools pkgconfig
 

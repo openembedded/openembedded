@@ -106,7 +106,7 @@ pkg_prerm_e2fsprogs-mke2fs () {
 }
 
 # blkid used to be part of e2fsprogs but is useful outside, add it
-# as an RDEPENDS so that anything relying on it being in e2fsprogs
+# as an RDEPENDS_${PN} so that anything relying on it being in e2fsprogs
 # still works
 RDEPENDS_e2fsprogs = "util-linux-ng e2fsprogs-badblocks"
 

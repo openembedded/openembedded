@@ -2,7 +2,7 @@ DESCRIPTION = "GTK bindings for mono"
 SECTION = "devel/mono"
 
 DEPENDS = "mono mono-native gtk+ atk pango cairo glib-2.0 libglade "
-RDEPENDS = "mono"
+RDEPENDS_${PN} = "mono"
 
 inherit autotools
 

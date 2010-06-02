@@ -11,7 +11,7 @@ inherit java-library
 JPN = "libxerces2-java"
 
 DEPENDS = "fastjar-native jaxp1.3 xml-commons-resolver1.1"
-RDEPENDS = "libjaxp1.3-java libxml-commons-resolver1.1-java"
+RDEPENDS_${PN} = "libjaxp1.3-java libxml-commons-resolver1.1-java"
 
 do_unpackpost() {
   find src -exec \

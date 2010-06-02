@@ -1,6 +1,6 @@
 DESCRIPTION = "Gtk2 theme files to accompany default Matchbox themes"
 LICENSE = "GPL"
-RDEPENDS = "matchbox-wm gtk2-theme-angelistic"
+RDEPENDS_${PN} = "matchbox-wm gtk2-theme-angelistic"
 SECTION = "x11/base"
 
 SRC_URI = "file://gtkrc"

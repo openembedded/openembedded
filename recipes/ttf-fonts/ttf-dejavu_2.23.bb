@@ -3,7 +3,7 @@ require ttf.inc
 DESCRIPTION = "DejaVu font - TTF Edition"
 HOMEPAGE = "http://dejavu.sourceforge.net/wiki/"
 LICENSE = "Bitstream Vera"
-RDEPENDS = "ttf-dejavu-common"
+RDEPENDS_${PN} = "ttf-dejavu-common"
 RDEPENDS_ttf-dejavu-common = ""
 PR = "r2"
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Opie Login Manager (similar to gdm, xdm or kdm)"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RRECOMMENDS = "opie-logoutapplet"
+RRECOMMENDS_${PN} = "opie-logoutapplet"
 APPNAME = "opie-login"
 
 BROKEN = "1"

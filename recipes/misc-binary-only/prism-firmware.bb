@@ -1,7 +1,7 @@
 DESCRIPTION = "Firmware for the Prism 2.x/3 cards"
 SECTION = "base"
 LICENSE = "closed"
-RDEPENDS = "hostap-utils"
+RDEPENDS_${PN} = "hostap-utils"
 RREPLACES = "prism3-firmware prism3-support"
 RCONFLICTS = "prism3-firmware prism3-support"
 PACKAGE_ARCH = "all"

@@ -9,7 +9,7 @@ HOMEPAGE = "http://developer.berlios.de/projects/bitbake/"
 LICENSE = "GPL MIT"
 SECTION = "devel"
 SUMMARY = "BitBake build tool"
-RDEPENDS += "python-shell python-lang python-textutils python-pickle python-crypt python-netclient"
+RDEPENDS_${PN} += "python-shell python-lang python-textutils python-pickle python-crypt python-netclient"
 
 # crypt for md5
 # netclient for tinderclient.bbclass

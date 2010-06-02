@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/octave/"
 SECTION = "console/scientific"
 LICENSE = "GPL"
 DEPENDS = "gperf-native readline ncurses fftw"
-RDEPENDS = "libfftw3"
+RDEPENDS_${PN} = "libfftw3"
 # fftw compiled with --disable-fortran
 
 ARM_INSTRUCTION_SET = "arm"

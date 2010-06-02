@@ -4,7 +4,7 @@ SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libao-alsa zlib flac audiofile virtual/libiconv faad2 \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
-RDEPENDS = "libao-alsa"
+RDEPENDS_${PN} = "libao-alsa"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
 file://mpd/mpd.conf \

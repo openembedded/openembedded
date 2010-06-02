@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
-RDEPENDS = "debianutils"
+RDEPENDS_${PN} = "debianutils"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \

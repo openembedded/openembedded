@@ -3,7 +3,7 @@ SECTION = "net/misc"
 LICENSE = "GPL"
 PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib hal wireless-tools policykit gnutls util-linux-ng ppp"
-RDEPENDS = "wpa-supplicant dhcp-client \
+RDEPENDS_${PN} = "wpa-supplicant dhcp-client \
            ${@base_contains('COMBINED_FEATURES', '3gmodem', 'ppp', '', d)} \
            "
 

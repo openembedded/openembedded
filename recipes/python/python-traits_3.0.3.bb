@@ -12,7 +12,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/Traits-${PV}"
 
-RDEPENDS = "python-netclient"
+RDEPENDS_${PN} = "python-netclient"
 
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/enthought/traits/.debug"
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/enthought/traits/protocols/.debug"

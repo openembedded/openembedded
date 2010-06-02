@@ -2,7 +2,7 @@ DESCRIPTION = "A remote control"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "lirc"
+RDEPENDS_${PN} = "lirc"
 APPNAME = "remote"
 APPTYPE = "binary"
 

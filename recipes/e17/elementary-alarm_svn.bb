@@ -11,7 +11,7 @@ inherit e
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary-alarm;proto=http"
 S = "${WORKDIR}/elementary-alarm"
 
-RDEPENDS = "waker"
+RDEPENDS_${PN} = "waker"
 FILES_${PN} += "${bindir}/*"
 FILES_${PN} += "${datadir}/${PN}"
 FILES_${PN} += "${datadir}/icons/*"

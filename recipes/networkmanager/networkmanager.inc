@@ -4,7 +4,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.gnome.org"
 PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib hal gconf wireless-tools ppp"
-RDEPENDS = "hal wpa-supplicant iproute2 dhcp-client dhcdbd"
+RDEPENDS_${PN} = "hal wpa-supplicant iproute2 dhcp-client dhcdbd"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/NetworkManager/0.6/NetworkManager-${PV}.tar.bz2 \
 	  file://25NetworkManager \

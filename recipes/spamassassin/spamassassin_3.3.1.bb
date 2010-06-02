@@ -26,7 +26,7 @@ DEPENDS += " \
 	openssl \
 	zlib \
 	"
-RDEPENDS += " \
+RDEPENDS_${PN} += " \
 	libarchive-tar-perl \
 	libdb-file-perl \
 	libdbi-perl \

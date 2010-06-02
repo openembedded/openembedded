@@ -3,7 +3,7 @@ SECTION = "opie/today"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "opie-today opie-mailapplet"
-RDEPENDS = "opie-today opie-mailapplet"
+RDEPENDS_${PN} = "opie-today opie-mailapplet"
 APPNAME = "todaymailplugin"
 
 

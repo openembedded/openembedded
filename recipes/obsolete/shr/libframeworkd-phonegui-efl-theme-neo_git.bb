@@ -1,7 +1,7 @@
 DESCRIPTION = "nEo libframeworkd-phonegui-efl - a very fast, high contrast etk theme"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
-RDEPENDS = "libframeworkd-phonegui-efl"
+RDEPENDS_${PN} = "libframeworkd-phonegui-efl"
 RSUGGESTS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo etk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 

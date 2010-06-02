@@ -17,7 +17,7 @@ do_stage() {
 }
 
 # fakeroot needs getopt which is provided by the util-linux package
-RDEPENDS = "util-linux"
+RDEPENDS_${PN} = "util-linux"
 
 
 SRC_URI[md5sum] = "aaefede2405a40c87438e7e833d69b70"

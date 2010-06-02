@@ -1,7 +1,7 @@
 DESCRIPTION = "A Curses-based mp3 player. See http://damien.degois.info/PyMP3/"
 SECTION = "console/multimedia"
 PRIORITY = "optional"
-RDEPENDS = "python-core python-curses python-pyid3lib python-mad python-ao"
+RDEPENDS_${PN} = "python-core python-curses python-pyid3lib python-mad python-ao"
 LICENSE = "GPL"
 PR = "r3"
 

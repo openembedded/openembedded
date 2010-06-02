@@ -16,7 +16,7 @@ inherit distutils
 
 FILES_${PN} += "${datadir}/${PN} ${datadir}/applications/ffalarms.desktop ${datadir}/pixmaps"
 
-RDEPENDS += "python-re python-datetime python-edje python-ecore \
+RDEPENDS_${PN} += "python-re python-datetime python-edje python-ecore \
              atd-over-fso alsa-utils-amixer alsa-utils-alsactl \
              ttf-dejavu-sans"
 

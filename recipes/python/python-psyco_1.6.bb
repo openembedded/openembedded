@@ -3,7 +3,7 @@ HOMEPAGE = "http://psyco.sourceforge.net"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "PSF"
-RDEPENDS = "python-core"
+RDEPENDS_${PN} = "python-core"
 SRCNAME = "psyco"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}-src.tar.gz"

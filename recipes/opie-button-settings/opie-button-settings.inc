@@ -2,7 +2,7 @@ DESCRIPTION = "Opie device buttons settings dialog"
 SECTION = "opie/settings"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "opie-button-settings-pics"
+RDEPENDS_${PN} = "opie-button-settings-pics"
 APPNAME = "buttonsettings"
 
 S = "${WORKDIR}/button"

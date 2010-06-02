@@ -1,5 +1,5 @@
 RPROVIDES_${PN} += "virtual/theme-gtk"
-RDEPENDS = "gtk+"
+RDEPENDS_${PN} = "gtk+"
 SECTION = "gtk"
 
 inherit update-alternatives

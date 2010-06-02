@@ -1,5 +1,5 @@
 DESCRIPTION = "statistics & graphing for nylon"
-RDEPENDS = "rrdtool"
+RDEPENDS_${PN} = "rrdtool"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPLv2"

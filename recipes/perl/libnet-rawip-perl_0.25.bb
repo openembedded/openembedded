@@ -2,7 +2,7 @@ DESCRIPTION = "Perl extension to manipulate raw IP packets with interface to lib
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "libpcap"
-RDEPENDS = " \
+RDEPENDS_${PN} = " \
 	 perl-module-class-struct \
 	 perl-module-data-dumper \
 	 perl-module-english \

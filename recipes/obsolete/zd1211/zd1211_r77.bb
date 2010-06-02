@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 PR = "r3"
-RDEPENDS = "wireless-tools"
+RDEPENDS_${PN} = "wireless-tools"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
 	file://makefile.patch \

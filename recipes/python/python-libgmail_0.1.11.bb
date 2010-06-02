@@ -19,7 +19,7 @@ do_install() {
 	done
 }
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-core \
   python-netclient \
   python-email \

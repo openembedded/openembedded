@@ -16,7 +16,7 @@ S = "${WORKDIR}/Pyro-${PV}"
 
 inherit distutils
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-crypt \
   python-io \
   python-lang \

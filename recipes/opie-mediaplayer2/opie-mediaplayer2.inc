@@ -4,8 +4,8 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libxine libqtaux2 opie-mediaplayer2-skin-default"
-RDEPENDS = "opie-mediaplayer2-skin-default"
-RRECOMMENDS = "libxine-plugin-ao-out-oss libxine-plugin-inp-file \
+RDEPENDS_${PN} = "opie-mediaplayer2-skin-default"
+RRECOMMENDS_${PN} = "libxine-plugin-ao-out-oss libxine-plugin-inp-file \
 libxine-plugin-decode-ff libxine-plugin-decode-mad \
 libxine-plugin-dmx-audio libxine-plugin-dmx-avi libxine-plugin-dmx-mpeg"
 APPNAME = "opieplayer2"

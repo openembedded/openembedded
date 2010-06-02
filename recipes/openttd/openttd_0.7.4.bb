@@ -2,7 +2,7 @@ DESCRIPTION = "Open source clone of the Microprose game 'Transport Tycoon Deluxe
 HOMEPAGE = "http://www.openttd.org"
 LICENSE = "GPLv2"
 DEPENDS = "libsdl-net libpng zlib freetype fontconfig"
-RRECOMMENDS = "openttd-gfx openttd-sfx"
+RRECOMMENDS_${PN} = "openttd-gfx openttd-sfx"
 
 inherit siteinfo sdl
 

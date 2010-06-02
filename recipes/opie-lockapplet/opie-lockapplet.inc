@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "lockapplet"
 DEPENDS = "opie-security"
-RDEPENDS = "opie-security"
+RDEPENDS_${PN} = "opie-security"
 
 
 S = "${WORKDIR}/lockapplet"

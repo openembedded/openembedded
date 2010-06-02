@@ -3,7 +3,7 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "zkbapplet"
-RDEPENDS = "opie-pics"
+RDEPENDS_${PN} = "opie-pics"
 I18N_FILES = "keyz-cfg.ts"
 
 

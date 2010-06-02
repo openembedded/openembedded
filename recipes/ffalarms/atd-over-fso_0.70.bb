@@ -11,7 +11,7 @@ RCONFLICTS_${PN}-dev = "at-dev atd-dev"
 RREPLACES_${PN}-dev = "at-dev atd-dev"
 RPROVIDES_${PN}-dev = "atd-dev"
 DEPENDS = "dbus-glib pkgconfig"
-RDEPENDS += "dbus dbus-glib frameworkd"
+RDEPENDS_${PN} += "dbus dbus-glib frameworkd"
 
 PR = "r4"
 

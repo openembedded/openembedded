@@ -7,7 +7,7 @@ PR = "r2"
 
 PACKAGE_ARCH = "all"
 
-RDEPENDS = "python-core python-pygtk python-re python-io python-pygobject python-pycairo"
+RDEPENDS_${PN} = "python-core python-pygtk python-re python-io python-pygobject python-pycairo"
 
 SRC_URI="http://wifi-radar.systemimager.org/pub/${PN}-${PV}.tar.bz2 \
         file://wifi-radar.patch \

@@ -1,5 +1,5 @@
 DESCRIPTION = "Provide per-machine static nodes of /dev"
-RDEPENDS = "udev"
+RDEPENDS_${PN} = "udev"
 
 PR = "r0"
 

@@ -4,7 +4,7 @@ HOMEPAGE = "http://p910nd.sourceforge.net/"
 LICENSE = "GPLv2"
 SECTION = "console/utils"
 PR = "r0"
-RRECOMMENDS = "avahi"
+RRECOMMENDS_${PN} = "avahi"
 
 inherit update-rc.d
 

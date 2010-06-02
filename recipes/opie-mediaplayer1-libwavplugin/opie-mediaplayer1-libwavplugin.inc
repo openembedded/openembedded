@@ -3,7 +3,7 @@ SECTION = "opie/codecs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "opie-mediaplayer1-core"
-RDEPENDS = "opie-mediaplayer1-core"
+RDEPENDS_${PN} = "opie-mediaplayer1-core"
 APPNAME = "wavplugin"
 
 

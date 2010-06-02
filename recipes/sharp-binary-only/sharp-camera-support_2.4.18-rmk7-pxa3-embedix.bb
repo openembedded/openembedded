@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for the SHARP CG-AG06 digital compact flash camera for lin
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
-RDEPENDS = "kernel (${KERNEL_VERSION})"
+RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
 PR = "r4"
 
 SRC_URI = "http://openzaurus.sf.net/mirror/camera-modules-2.4.18-rmk7-pxa3-embedix.tar.bz2 \

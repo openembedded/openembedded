@@ -2,7 +2,7 @@ DESCRIPTION = "Python module to manage netfilter rules"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "iptables iptables-utils python-logging python-shell python-subprocess"
+RDEPENDS_${PN} = "iptables iptables-utils python-logging python-shell python-subprocess"
 SRCNAME = "python-netfilter"
 PR = "ml0"
 

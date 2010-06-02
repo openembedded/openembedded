@@ -2,7 +2,7 @@ DESCRIPTION = "OPKG Package Manager Utilities"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python"
+RDEPENDS_${PN} = "python"
 SRCREV = "4578"
 PR = "r2"
 

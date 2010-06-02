@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libdata-optlist-perl-native libsub-install-perl-native \
             libparams-util-perl-native"
-RDEPENDS += "perl-module-carp libdata-optlist-perl libparams-util-perl \
+RDEPENDS_${PN} += "perl-module-carp libdata-optlist-perl libparams-util-perl \
              perl-module-strict libsub-install-perl perl-module-warnings"
 PR = "r4"
 

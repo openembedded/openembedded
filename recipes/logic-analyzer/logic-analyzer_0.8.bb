@@ -7,7 +7,7 @@ PR = "r2"
 inherit java
 
 DEPENDS = "rxtx"
-RDEPENDS = "java2-runtime classpath-awt librxtx-java"
+RDEPENDS_${PN} = "java2-runtime classpath-awt librxtx-java"
 
 SRC_URI = "\
     http://sump.org/projects/analyzer/downloads/la-src-${PV}.tar.bz2 \

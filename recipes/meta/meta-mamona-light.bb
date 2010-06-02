@@ -5,7 +5,7 @@ PR = "r1"
 inherit meta
 EXCLUDE_FROM_WORLD = "1"
 
-RDEPENDS = " \
+RDEPENDS_${PN} = " \
 task-mamona \
 "
 

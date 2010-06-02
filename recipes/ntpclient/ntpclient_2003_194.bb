@@ -1,7 +1,7 @@
 DESCRIPTION = "NTP (RFC-1305) client for unix-alike computers"
 HOMEPAGE = "http://doolittle.icarus.com/ntpclient"
 AUTHOR = "Larry Doolittle <larry@doolittle.boa.org>"
-RDEPENDS = "busybox"
+RDEPENDS_${PN} = "busybox"
 SECTION = "admin"
 LICENSE = "GPLv2"
 PR = "r1"

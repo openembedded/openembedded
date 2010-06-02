@@ -2,8 +2,8 @@ DESCRIPTION = "Evince is a document viewer for document formats like pdf, ps, dj
 LICENSE = "GPL"
 SECTION = "x11/office"
 DEPENDS = "tiff libxt espgs poppler gtk+ libgnomeui libgnomeprint libgnomeprintui"
-RDEPENDS = "espgs gconf"
-RRECOMMENDS = "gnome-vfs-plugin-file"
+RDEPENDS_${PN} = "espgs gconf"
+RRECOMMENDS_${PN} = "gnome-vfs-plugin-file"
 PR = "r1"
 
 inherit gnome pkgconfig

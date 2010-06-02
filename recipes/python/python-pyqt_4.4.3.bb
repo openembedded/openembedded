@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "sip-native python-sip"
-RDEPENDS = "python-core"
+RDEPENDS_${PN} = "python-core"
 SRCNAME = "pyqt"
 PR = "ml5"
 

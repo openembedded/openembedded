@@ -34,10 +34,10 @@ export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 PACKAGES =+ "${PN}-mountall ${PN}-httpd ${PN}-syslog ${PN}-udhcpd"
 
-# We need this RRECOMMENDS because libc dlopens libgcc
+# We need this RRECOMMENDS_${PN} because libc dlopens libgcc
 # and shlib mechanism can not detect it because its not
 # listed in the NEEDED field.
-RRECOMMENDS += "libgcc"
+RRECOMMENDS_${PN} += "libgcc"
 
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
 RDEPENDS_${PN} += "${PN}-mountall"

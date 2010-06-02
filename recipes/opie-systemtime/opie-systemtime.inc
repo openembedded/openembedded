@@ -2,7 +2,7 @@ DESCRIPTION = "Set the system time - utilizing ntpdate, if available."
 SECTION = "opie/settings"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RRECOMMENDS = "ntpdate"
+RRECOMMENDS_${PN} = "ntpdate"
 
 APPNAME = "systemtime"
 

@@ -3,7 +3,7 @@ AUTHOR = "Marcin Sztolcman <marcin@urzenia.net>"
 HOMEPAGE = "http://blipapi.googlecode.com/"
 DEPENDS = "python-setuptools"
 LICENSE = "GPL"
-RDEPENDS += "python-json"
+RDEPENDS_${PN} += "python-json"
 PR = "r0"
 inherit setuptools
 

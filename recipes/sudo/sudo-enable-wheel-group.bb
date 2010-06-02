@@ -1,6 +1,6 @@
 PR = "r0"
 
-RDEPENDS = "sudo"
+RDEPENDS_${PN} = "sudo"
 
 ALLOW_EMPTY_${PN} = "1"
 PACKAGE_ARCH = "all"

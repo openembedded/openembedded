@@ -10,7 +10,7 @@ LICENSE = "GPL MIT Artistic"
 # subject to the licenses of the libraries they use too - including
 # libpng libz, IJG, and libtiff licenses
 DEPENDS = "jpeg zlib libpng tiff flex-native"
-RDEPENDS = "perl\
+RDEPENDS_${PN} = "perl\
 	perl-module-cwd\
 	perl-module-english\
 	perl-module-fcntl\
@@ -22,8 +22,8 @@ RDEPENDS = "perl\
 
 # these should not be required, they are here because the perl
 # module dependencies are currently incorrect:
-RDEPENDS += "perl-module-exporter-heavy"
-RDEPENDS += "perl-module-file-spec-unix"
+RDEPENDS_${PN} += "perl-module-exporter-heavy"
+RDEPENDS_${PN} += "perl-module-file-spec-unix"
 
 PR = "r7"
 

@@ -9,4 +9,4 @@ DEPENDS += "\
   libxml2 \
   mobile-broadband-provider-info \
 "
-RDEPENDS += "mobile-broadband-provider-info"
+RDEPENDS_${PN} += "mobile-broadband-provider-info"

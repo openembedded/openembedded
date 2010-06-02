@@ -7,7 +7,7 @@ LICENSE = "GPLv2"
 
 DEPENDS = "gtk+ libgnomeui"
            
-RDEPENDS ="rdesktop gail orbit2 gnome-vfs gnome-keyring libbonobo libbonoboui \ 
+RDEPENDS_${PN} ="rdesktop gail orbit2 gnome-vfs gnome-keyring libbonobo libbonoboui \ 
             libart-lgpl libgnome libidl libglade libgnomecanvas "
 
 PR = "r1"

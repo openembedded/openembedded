@@ -2,7 +2,7 @@ DESCRIPTION = "USB Networking"
 HOMEPAGE = "http://dev.openbossa.org/trac/mamona/"
 SECTION = "utils"
 LICENSE = "GPL"
-RDEPENDS = "module-init-tools busybox"
+RDEPENDS_${PN} = "module-init-tools busybox"
 PR = "r1"
 
 PACKAGES = "${PN}"

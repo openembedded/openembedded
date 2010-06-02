@@ -7,7 +7,7 @@ DEPENDS = "opie-libqrsync opie-qss"
 # Instead of seeing if something in package package lists selects needed package among the rest
 # or errors out otherwise, it just install random package which has needed Provides. So, comment
 # this out.
-#RDEPENDS = "opie-taskbar-images"
+#RDEPENDS_${PN} = "opie-taskbar-images"
 APPNAME = "qpe"
 
 S = "${WORKDIR}/launcher"

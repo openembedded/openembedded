@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "advancedfm"
-RDEPENDS = "opie-advancedfm-pics"
+RDEPENDS_${PN} = "opie-advancedfm-pics"
 
 S = "${WORKDIR}/${APPNAME}"
 

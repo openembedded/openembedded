@@ -1,7 +1,7 @@
 DESCRIPTION = "${PN} bindings"
 SECTION = "devel/ruby"
 LICENSE = "LGPL"
-RDEPENDS = "dbus ruby"
+RDEPENDS_${PN} = "dbus ruby"
 
 SRC_URI = "http://trac.luon.net/data/${PN}/releases/${PN}-0.2.1.tar.gz"
 

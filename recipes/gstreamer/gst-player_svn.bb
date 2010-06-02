@@ -1,7 +1,7 @@
 DESCRIPTION="A simple gstreamer based player"
 
 DEPENDS = "gstreamer"
-RDEPENDS = "gstreamer-ti"
+RDEPENDS_${PN} = "gstreamer-ti"
 
 SRCREV = "6"
 SRC_URI = "svn://gstplayer.googlecode.com/svn;module=trunk;proto=http"

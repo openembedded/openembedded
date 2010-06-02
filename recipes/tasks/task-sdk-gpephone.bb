@@ -3,7 +3,7 @@ PR = "r0"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     libidn-dev \
     libim-dev \
     gloox-dev \

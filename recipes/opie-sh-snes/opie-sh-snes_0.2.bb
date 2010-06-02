@@ -3,7 +3,7 @@ SECTION = "opie/shell"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-RDEPENDS = "opie-sh"
+RDEPENDS_${PN} = "opie-sh"
 
 
 PR = "r2"

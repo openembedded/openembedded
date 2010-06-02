@@ -24,4 +24,4 @@ do_configure_prepend_shr() {
 
 FILES_${PN} += "${datadir}/neomis ${datadir}/applications/neomis.desktop ${datadir}/pixmaps"
 
-RDEPENDS += "python-audio python-pyalsaaudio python-elementary" 
+RDEPENDS_${PN} += "python-audio python-pyalsaaudio python-elementary" 

@@ -10,7 +10,7 @@ S = "${WORKDIR}/pyraf-${PV}"
 
 inherit distutils
 
-RDEPENDS = "python-numarray"
+RDEPENDS_${PN} = "python-numarray"
 
 
 SRC_URI[md5sum] = "9a728aef7bebcd54abc103b00e2e1de6"

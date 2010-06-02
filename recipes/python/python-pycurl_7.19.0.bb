@@ -16,4 +16,4 @@ SRC_URI[archive.sha256sum] = "eb782dfcc5a7c023539a077462b83c167e178128ee9f720166
 
 inherit distutils
 
-RDEPENDS = "python-core curl"
+RDEPENDS_${PN} = "python-core curl"

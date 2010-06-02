@@ -3,7 +3,7 @@ HOMEPAGE = "http://code.google.com/p/om-mediaplayer/"
 SECTION = "openmoko/applications"
 LICENSE = "GPL"
 DEPENDS = "gstreamer"
-RDEPENDS = "gstreamer"
+RDEPENDS_${PN} = "gstreamer"
 
 SRCREV = "127"
 PV = "0.1+svnr${SRCPV}"

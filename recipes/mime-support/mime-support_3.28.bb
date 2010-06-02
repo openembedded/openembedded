@@ -3,7 +3,7 @@ DESCRIPTION = "MIME files 'mime.types' & 'mailcap', and support programs"
 LICENSE = "PD"
 
 DEPENDS = "file"
-RRECOMMENDS = "file"
+RRECOMMENDS_${PN} = "file"
 
 PR = "r3"
 

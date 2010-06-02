@@ -2,7 +2,7 @@ DESCRIPTION = "A graphical Boot Manager for the Ångström Linux Distribution"
 AUTHOR = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "base"
 DEPENDS = "evas-fb ecore-fb esmart-fb imlib2-fb edje efl++-fb"
-#RDEPENDS = "libefl++0"
+#RDEPENDS_${PN} = "libefl++0"
 
 ALLOW_EMPTY = "1"
 

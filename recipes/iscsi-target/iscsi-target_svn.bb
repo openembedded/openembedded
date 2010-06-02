@@ -12,7 +12,7 @@ SRC_URI = "svn://svn.berlios.de/iscsitarget/;module=trunk;rev=HEAD \
 		"
 
 DEPENDS = " openssl"
-RRECOMMENDS = "kernel-module-crc32c kernel-module-libcrc32c"
+RRECOMMENDS_${PN} = "kernel-module-crc32c kernel-module-libcrc32c"
 
 S = "${WORKDIR}/trunk"
 

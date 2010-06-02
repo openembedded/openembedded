@@ -2,7 +2,7 @@ DESCRIPTION = "GTK+ applet for NetworkManager"
 LICENSE = "GPL"
 DEPENDS = "networkmanager dbus-glib libglade gconf gnome-keyring"
 #TODO DEPENDS libnotify
-RDEPENDS = "networkmanager"
+RDEPENDS_${PN} = "networkmanager"
 
 inherit gnome gtk-icon-cache
 

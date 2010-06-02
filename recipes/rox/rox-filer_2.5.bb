@@ -3,7 +3,7 @@ HOMEPAGE = "http://rox.sf.net"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS = "gtk+ shared-mime-info"
-RDEPENDS = "shared-mime-info"
+RDEPENDS_${PN} = "shared-mime-info"
 PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/rox/${P}.tar.bz2 \

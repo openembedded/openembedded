@@ -5,7 +5,7 @@ DESCRIPTION = "Slugimage is a small app to disassemble and reassemble \
 flash images for the Linksys NSLU2 device. It also has jffs2 support"
 PR = "r12"
 
-RDEPENDS = "perl"
+RDEPENDS_${PN} = "perl"
 
 SLUGIMAGE_SVN_REV  ?= "104"
 SLUGIMAGE_SVN_REPO ?= "http://svn.nslu2-linux.org/svnroot/slugimage/trunk"

@@ -1,7 +1,7 @@
 require chicken.inc
 
 DEPENDS = "gcc-cross-sdk"
-RDEPENDS = "gcc-cross-sdk"
+RDEPENDS_${PN} = "gcc-cross-sdk"
 PR = "${INC_PR}.1"
 
 do_compile() {

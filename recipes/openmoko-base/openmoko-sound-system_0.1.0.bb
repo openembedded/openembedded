@@ -1,6 +1,6 @@
 DESCRIPTION = "Openmoko Sound System"
 SECTION = "openmoko/base"
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   pulseaudio-server \
   pulseaudio-module-alsa-sink \
   pulseaudio-module-alsa-source \

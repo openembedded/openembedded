@@ -2,7 +2,7 @@ DESCRIPTION = "An e17 module for a lot of needed shr-gadgets"
 HOMEPAGE = "http://shr-project.org"
 LICENSE = "BSD"
 DEPENDS = "e-wm"
-RDEPENDS = "e-wm"
+RDEPENDS_${PN} = "e-wm"
 SECTION = "x11/application"
 
 SRCREV = "6480322a8a419e8cbe4af5e627661ff03f56ed18"

@@ -16,4 +16,4 @@ inherit autotools
 
 EXTRA_OECONF = "--disable-tests"
 
-RDEPENDS = "fso-gsm0710muxd"
+RDEPENDS_${PN} = "fso-gsm0710muxd"

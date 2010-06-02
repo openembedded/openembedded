@@ -1,7 +1,7 @@
 DESCRIPTION = "All tools needed for OpenEmbedded build"
 SECTION = "devel"
 LICENSE = "MIT"
-RDEPENDS = "task-native-sdk python-modules bash texinfo cvs subversion git"
+RDEPENDS_${PN} = "task-native-sdk python-modules bash texinfo cvs subversion git"
 PR = "r1"
 
 #

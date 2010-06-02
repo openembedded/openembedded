@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PACKAGE_ARCH = "all"
 PR = "r1"
-RDEPENDS = "xkbd"
+RDEPENDS_${PN} = "xkbd"
 
 #SRC_URI = "http://whitenoise.ssrlab.com/pda/xkbd/xkbd-ru-en-123_0.1.1.tar.gz" 
 SRC_URI = "file://en-ru-123.xkbd"

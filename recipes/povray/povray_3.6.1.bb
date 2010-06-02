@@ -4,7 +4,7 @@ SECTION = "console/graphics"
 #Make this a weak assigment to allow branding of the povray binary
 LICENSE = "povray"
 DEPENDS = "virtual/libx11 zlib jpeg libpng tiff"
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 PR = "r2"
 

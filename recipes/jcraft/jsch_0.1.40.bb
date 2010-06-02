@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/jsch/jsch-${PV}.zip"
 inherit java-library
 
 DEPENDS = "fastjar-native jzlib"
-RDEPENDS = "libjzlib-java"
+RDEPENDS_${PN} = "libjzlib-java"
 
 do_compile() {
   mkdir -p build

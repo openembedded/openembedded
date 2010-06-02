@@ -12,7 +12,7 @@ PE = "1"
 
 RCONFLICTS_${PN} = "mplayer"
 
-RDEPENDS = "mplayer-common"
+RDEPENDS_${PN} = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://garage.maemo.org/svn/mplayer/;module=trunk;proto=https \
            file://Makefile-codec-cfg.patch \

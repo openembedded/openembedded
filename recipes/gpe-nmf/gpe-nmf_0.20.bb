@@ -1,6 +1,6 @@
 require gpe-nmf.inc
 
-RRECOMMENDS += "gst-plugin-tcp"
+RRECOMMENDS_${PN} += "gst-plugin-tcp"
 PR = "r1"
 
 SRC_URI[md5sum] = "28e1ff870af9b38d0cce345d339b857a"

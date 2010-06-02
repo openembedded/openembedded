@@ -5,7 +5,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://qpegps.sourceforge.net/"
 
 DEPENDS = "gpsd"
-RRECOMMENDS = "gpsd"
+RRECOMMENDS_${PN} = "gpsd"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/qpegps/qpegps_${PV}_src.zip \
            file://qpegps.desktop \

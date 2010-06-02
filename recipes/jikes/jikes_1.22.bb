@@ -5,7 +5,7 @@ SECTION = "devel"
 LICENSE = "IBM"
 PR = "r1"
 
-RDEPENDS = "classpath"
+RDEPENDS_${PN} = "classpath"
 PROVIDES_virtclass-native = ""
 RDEPENDS_virtclass-native = ""
 

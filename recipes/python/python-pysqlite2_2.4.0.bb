@@ -17,7 +17,7 @@ do_install_append() {
     mv ${D}${datadir}/pysqlite2-doc ${D}${datadir}/doc/${PN}
 }
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
  python-datetime \
  python-lang \
  python-crypt \

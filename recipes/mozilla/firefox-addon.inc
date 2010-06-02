@@ -2,7 +2,7 @@
 # Released under the MIT license (see packages/COPYING)
 
 DEPENDS = "unzip-native"
-RDEPENDS = "firefox"
+RDEPENDS_${PN} = "firefox"
 
 S = "${WORKDIR}"
 FIREFOX_VERSION = "3.0.4"

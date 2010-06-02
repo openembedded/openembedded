@@ -6,7 +6,7 @@ DEPENDS = "libyaml-perl-native libversion-perl-native \
            libextutils-cbuilder-perl-native \
            libextutils-parsexs-perl-native \
            libarchive-tar-perl-native"
-RDEPENDS = "libyaml-perl libversion-perl libextutils-cbuilder-perl \
+RDEPENDS_${PN} = "libyaml-perl libversion-perl libextutils-cbuilder-perl \
             libextutils-parsexs-perl libarchive-tar-perl"
 PR = "r5"
 

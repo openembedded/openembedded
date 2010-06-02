@@ -3,7 +3,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget gtk+ sqlite libtododb"
-RDEPENDS = "gpe-icons"
+RDEPENDS_${PN} = "gpe-icons"
 
 inherit autotools gpe
 

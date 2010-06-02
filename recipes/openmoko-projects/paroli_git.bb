@@ -13,7 +13,7 @@ inherit distutils
 
 PACKAGES += "${PN}-autostart ${PN}-theme ${PN}-sounds ${PN}-calculator"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-datetime \
   python-subprocess \
   python-textutils \

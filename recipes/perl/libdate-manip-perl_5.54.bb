@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r1"
 
-RDEPENDS = "perl-module-test-more \
+RDEPENDS_${PN} = "perl-module-test-more \
             perl-module-io-file \
             perl-module-carp"
 

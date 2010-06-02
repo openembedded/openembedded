@@ -7,7 +7,7 @@ SRC_URI = "http://www.apache.org/dist/commons/net/source/${BP}-src.tar.gz"
 S = "${WORKDIR}/${BP}"
 
 DEPENDS += "oro"
-RDEPENDS = "liboro-java"
+RDEPENDS_${PN} = "liboro-java"
 
 CP = "oro"
 

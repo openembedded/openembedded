@@ -6,7 +6,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-RDEPENDS = "hostap-conf orinoco-conf"
+RDEPENDS_${PN} = "hostap-conf orinoco-conf"
 PR = "r28"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \

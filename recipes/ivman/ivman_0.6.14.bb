@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 DEPENDS = "hal libxml2"
-RDEPENDS = "hal pmount-hal"
+RDEPENDS_${PN} = "hal pmount-hal"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ivman/${P}.tar.bz2 \
            file://ivman-0.6-hotpluggable.patch \

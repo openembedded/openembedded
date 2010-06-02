@@ -1,7 +1,7 @@
 DESCRIPTION = "Fluendo Streaming Server"
 LICENSE = "GPL"
 DEPENDS = "gstreamer python-imaging python-gst python-twisted python-pygtk"
-RDEPENDS = "python-resource python-pprint python-threading \
+RDEPENDS_${PN} = "python-resource python-pprint python-threading \
             python-imaging python-xml python-curses \
             python-compression python-fcntl python-pygobject \
             python-pickle python-netclient python-datetime \

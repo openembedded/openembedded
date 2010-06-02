@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 
 DEPENDS = "task-sdk-bare"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     task-sdk-bare \
     glibc \
     virtual-libc-dev \

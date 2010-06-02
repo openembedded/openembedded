@@ -6,7 +6,7 @@ SECTION = "devel/python"
 HOMEPAGE = "http://www.logilab.org/857"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python-logilab-common"
+RDEPENDS_${PN} = "python-logilab-common"
 SRCNAME = "pylint"
 PR = "ml0"
 

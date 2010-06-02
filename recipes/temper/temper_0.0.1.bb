@@ -3,7 +3,7 @@ SECTION = "console/network"
 PR = "r1"
 LICENSE = "GPL"
 COMPATIBLE_MACHINE = "(n1200|n2100)"
-RDEPENDS = "hddtemp"
+RDEPENDS_${PN} = "hddtemp"
 
 SRC_URI = "file://temper \
            file://init"

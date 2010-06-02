@@ -5,7 +5,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "libxtst libxext virtual/imlib2 libconfig"
-RDEPENDS += "imlib2-loaders"
+RDEPENDS_${PN} += "imlib2-loaders"
 PR = "r1"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/qwo/qwo-${PV}.tar.gz \

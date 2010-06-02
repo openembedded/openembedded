@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.abiword.org"
 SECTION = "x11/office"
 LICENSE = "GPLv2"
 DEPENDS = "boost loudmouth libwpd librsvg goffice poppler libglade"
-RDEPENDS = "abiword"
+RDEPENDS_${PN} = "abiword"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz;name=plugins \
            http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz;name=archive \

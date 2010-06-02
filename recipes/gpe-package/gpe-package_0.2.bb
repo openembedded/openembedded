@@ -4,7 +4,7 @@ inherit gpe pkgconfig
 
 DESCRIPTION = "A package manager GUI for GPE"
 DEPENDS = "ipkg libgpewidget"
-RDEPENDS = "gpe-icons"
+RDEPENDS_${PN} = "gpe-icons"
 SECTION = "gpe"
 PRIORITY = "optional"
 

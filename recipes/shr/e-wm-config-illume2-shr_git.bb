@@ -2,7 +2,7 @@ DESCRIPTION = "illume2 SHR config"
 SECTION = "e/utils"
 DEPENDS = "eet"
 LICENSE = "MIT BSD"
-RDEPENDS = "shr-e-gadgets"
+RDEPENDS_${PN} = "shr-e-gadgets"
 SRCREV = "1247d22a007435a58f0967189fc92db2931b31cb"
 PV = "1.2+gitr${SRCPV}"
 

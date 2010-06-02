@@ -1,7 +1,7 @@
 inherit gpe
 
 DEPENDS = "virtual/xserver libxtst libxau libxpm libgpelaunch keylaunch-conf"
-RDEPENDS = "keylaunch-conf"
+RDEPENDS_${PN} = "keylaunch-conf"
 
 SECTION = "gpe"
 LICENSE = "GPL"

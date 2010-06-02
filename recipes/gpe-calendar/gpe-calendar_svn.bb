@@ -5,7 +5,7 @@ SECTION = "gpe"
 LICENSE = "GPL"
 
 DEPENDS = "libhandoff libsoup libeventdb libschedule libxsettings libxsettings-client libgpepimc libdisplaymigration libgpevtype libsoundgen"
-RDEPENDS = "gpe-icons"
+RDEPENDS_${PN} = "gpe-icons"
 
 inherit autotools gpe
 

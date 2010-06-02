@@ -5,7 +5,7 @@ PR = "r1"
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
 
-RDEPENDS = 'xauth \
+RDEPENDS_${PN} = 'xauth \
 	xhost \
 	xmodmap \
 	xrdb \

@@ -14,7 +14,7 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
 S = "${WORKDIR}/gsm"
 
 inherit autotools pkgconfig update-rc.d
-# handle update-rc.d RDEPENDS manually, we don't need it on
+# handle update-rc.d RDEPENDS_${PN} manually, we don't need it on
 # anything but gsmd
 RDEPENDS_append = ""
 

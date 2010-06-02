@@ -2,7 +2,7 @@ DESCRIPTION = "This is a device-side implementation of the PTP (Picture Transfer
 LICENSE = "GPLv3"
 
 DEPENDS = "virtual/kernel"
-RDEPENDS = "imagemagick"
+RDEPENDS_${PN} = "imagemagick"
 
 PV = "1.1"
 PR = "r1"

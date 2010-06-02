@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ lua-native perl-native readline libffi"
-RDEPENDS = "lua"
+RDEPENDS_${PN} = "lua"
 
 inherit gpe
 

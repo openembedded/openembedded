@@ -3,7 +3,7 @@ HOMEPAGE = "http://bridge.sourceforge.net/"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "sysfsutils"
-RRECOMMENDS = "kernel-module-bridge"
+RRECOMMENDS_${PN} = "kernel-module-bridge"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bridge/bridge-utils-${PV}.tar.gz file://ifupdown.sh"
 

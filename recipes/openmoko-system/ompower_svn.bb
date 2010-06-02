@@ -4,7 +4,7 @@ DEPENDS = "ecore edbus"
 SRCREV = "4727"
 PV = "0.0.0+svnr${SRCPV}"
 PR = "r4"
-RDEPENDS = "initscripts"
+RDEPENDS_${PN} = "initscripts"
 
 SRCNAME = "ompower"
 S = "${WORKDIR}/${PN}"

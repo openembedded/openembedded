@@ -20,7 +20,7 @@ do_stage () {
 	autotools_stage_includes
 }
 
-RDEPENDS = "sdk-default-icons"
+RDEPENDS_${PN} = "sdk-default-icons"
 RPROVIDES = "libgpewidget"
 
 SRC_URI[md5sum] = "9eb90850adf65ec0d0ff26833f7cb8c6"

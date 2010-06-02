@@ -1,7 +1,7 @@
 DESCRIPTION = "A multi protocol instant messager application, Qt/Embedded based Palmtop Environments Edition"
 SECTION = "opie/applications"
 DEPENDS = "qpe-libgaim glib-2.0"
-RDEPENDS = "libgaim-plugins glibc-gconv-iso8859-1"
+RDEPENDS_${PN} = "libgaim-plugins glibc-gconv-iso8859-1"
 LICENSE = "GPL"
 HOMEPAGE = "http://qpe-gaim.sourceforge.net/"
 APPNAME = "gaim"

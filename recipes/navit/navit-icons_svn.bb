@@ -2,7 +2,7 @@ DESCRIPTION = "Navit is a car navigation system with routing engine."
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS = "glib-2.0 gtk+ imagemagick-native librsvg-native"
-RRECOMMENDS = "gpsd espeak flite"
+RRECOMMENDS_${PN} = "gpsd espeak flite"
 
 #only icons present in the package
 PACKAGE_ARCH = "all"

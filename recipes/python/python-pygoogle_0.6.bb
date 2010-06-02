@@ -5,7 +5,7 @@ SECTION = "devel/python"
 HOMEPAGE = "http://pygoogle.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "PSF"
-RDEPENDS = "python-soappy"
+RDEPENDS_${PN} = "python-soappy"
 SRCNAME = "pygoogle"
 PR = "ml1"
 

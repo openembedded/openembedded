@@ -21,7 +21,7 @@ inherit distutils
 
 FILES_${PN} += "${datadir}/neon ${datadir}/applications/neon.desktop ${datadir}/pixmaps"
 
-RDEPENDS += "python-textutils python-evas python-ecore python-edje"
+RDEPENDS_${PN} += "python-textutils python-evas python-ecore python-edje"
 
 do_compile_prepend() {
 	sed -i "s/\/opt\/bin\/edje_cc -v/${@"${STAGING_BINDIR_NATIVE}".replace('/', '\/')}\/edje_cc/g" ${S}/build_edje.py

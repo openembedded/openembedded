@@ -4,7 +4,7 @@ LICENSE = "MIT"
 PV = "2.6"
 PR = "ml44"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-ao \
   python-cheetah \
   python-coherence \

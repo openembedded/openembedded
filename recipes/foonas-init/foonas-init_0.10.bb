@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
-RDEPENDS = "busybox devio"
+RDEPENDS_${PN} = "busybox devio"
 PR = "r1"
 
 SRC_URI = "file://initscripts/fixfstab \

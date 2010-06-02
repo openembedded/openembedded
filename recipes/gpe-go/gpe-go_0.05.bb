@@ -2,7 +2,7 @@ inherit gpe
 LICENSE = "GPL"
 DESCRIPTION = "A Go Board for GPE."
 DEPENDS = "gtk+ libgpewidget gpe-icons"
-RDEPENDS = "gdk-pixbuf-loader-jpeg"
+RDEPENDS_${PN} = "gdk-pixbuf-loader-jpeg"
 SECTION = "gpe"
 PRIORITY = "optional"
 PR = "r1"

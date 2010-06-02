@@ -1,7 +1,7 @@
 DESCRIPTION = "LXDE Panel"
 SECTION = "x11"
 DEPENDS = "menu-cache"
-RDEPENDS = "lxmenu-data"
+RDEPENDS_${PN} = "lxmenu-data"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lxde/${PN}-${PV}.tar.gz"
 

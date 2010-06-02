@@ -1,7 +1,7 @@
 DESCRIPTION = "PyFITS provides an interface to FITS formatted files under the Python scripting language."
 HOMEPAGE = "http://www.stsci.edu/resources/software_hardware/pyfits"
 AUTHOR = "Space Telescope Science Institute"
-RDEPENDS = "python-numpy"
+RDEPENDS_${PN} = "python-numpy"
 SECTION = "devel/python"
 LICENSE = "AURA"
 PR = "ml0"

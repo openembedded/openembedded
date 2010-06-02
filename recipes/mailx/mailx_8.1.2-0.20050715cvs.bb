@@ -1,6 +1,6 @@
 SECTION = "console/network"
 DEPENDS = "liblockfile"
-RRECOMMENDS = "ssmtp"
+RRECOMMENDS_${PN} = "ssmtp"
 DESCRIPTION = "mailx is the traditional command-line-mode \
 mail user agent."
 PR = "r0"

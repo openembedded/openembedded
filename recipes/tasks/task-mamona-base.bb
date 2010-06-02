@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   apt \
   base-files \
   base-passwd \

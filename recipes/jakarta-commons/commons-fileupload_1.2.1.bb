@@ -5,7 +5,7 @@ DESCRIPTION = "Robust, high-performance, file upload capability for Java servlet
 SRC_URI = "http://www.apache.org/dist/commons/fileupload/source/${BP}-src.tar.gz"
 
 DEPENDS += "commons-beanutils commons-io servlet2.3"
-RDEPENDS = "libcommons-beanutils-java libcommons-io-java libservlet2.3-java"
+RDEPENDS_${PN} = "libcommons-beanutils-java libcommons-io-java libservlet2.3-java"
 
 CP = "commons-beanutils commons-io servlet-2.3"
 

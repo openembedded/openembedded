@@ -1,7 +1,7 @@
 DESCRIPTION = "Free PDF Creator for PHP"
 SECTION = "libs"
 DEPENDS = ""
-RDEPENDS = "php"
+RDEPENDS_${PN} = "php"
 LICENSE = "FREEWARE"
 PR = "r0"
 

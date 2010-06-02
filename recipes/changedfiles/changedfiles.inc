@@ -4,7 +4,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "fget"
-RDEPENDS = "fget"
+RDEPENDS_${PN} = "fget"
 
 SRC_URI = "http://www.bangstate.com/changedfiles-${PV}.tar.gz"
 S = "${WORKDIR}/changedfiles-${PV}"

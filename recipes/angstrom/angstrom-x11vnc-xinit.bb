@@ -1,6 +1,6 @@
 DESCRIPTION = "Script to start a passwordless vnc of the current X session"
 LICENSE = "MIT"
-RDEPENDS = "x11vnc"
+RDEPENDS_${PN} = "x11vnc"
 
 do_install() {
 	install -d ${D}/${sysconfdir}/X11/Xinit.d

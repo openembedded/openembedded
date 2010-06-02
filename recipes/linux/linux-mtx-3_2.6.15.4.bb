@@ -9,7 +9,7 @@ inherit kernel
 # PROVIDES = "virtual/kernel"
 
 DEPENDS = "u-boot"
-RDEPENDS = "mtd-utils"
+RDEPENDS_${PN} = "mtd-utils"
 
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2;name=kernel \
 	file://00-mtx-3.diff \

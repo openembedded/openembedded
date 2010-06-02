@@ -1,6 +1,6 @@
 DESCRIPTION = "Expedite is a comprehensive benchmarking suite for Evas"
 DEPENDS = "eet evas"
-RDEPENDS = "expedite-themes evas-engine-buffer evas-engine-fb evas-engine-software-generic evas-engine-software-x11 evas-loader-png"
+RDEPENDS_${PN} = "expedite-themes evas-engine-buffer evas-engine-fb evas-engine-software-generic evas-engine-software-x11 evas-loader-png"
 LICENSE = "MIT BSD"
 PV = "0.6.0+svnr${SRCPV}"
 PR = "r3"

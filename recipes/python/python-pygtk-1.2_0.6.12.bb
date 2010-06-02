@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "gtk+-1.2"
-RDEPENDS = "python-shell python-re"
+RDEPENDS_${PN} = "python-shell python-re"
 SRCNAME = "pygtk"
 PR = "r3"
 

@@ -3,7 +3,7 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libopietooth1 opie-taskbar openobex-apps"
-RDEPENDS = "openobex-apps"
+RDEPENDS_${PN} = "openobex-apps"
 APPNAME = "obex"
 
 S = "${WORKDIR}/obex"

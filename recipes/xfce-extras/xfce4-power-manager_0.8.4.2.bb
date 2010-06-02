@@ -1,6 +1,6 @@
 DESCRIPTION = "Xfce panel plugins for power management."
 DEPENDS = "libxfce4util libxfcegui4 libnotify xfconf xfce4-panel"
-RDEPENDS = "libxfce4util libxfcegui4 libnotify xfce4-panel"
+RDEPENDS_${PN} = "libxfce4util libxfcegui4 libnotify xfce4-panel"
 
 SECTION = "x11"
 PR = "r1"

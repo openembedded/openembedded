@@ -4,12 +4,12 @@ AUTHOR = "Benjamin 'blindcoder' Schieder'
 LICENSE = "GPLv2"
 SECTION = "other/tool"
 DEPENDS = "fltk"
-RDEPENDS = "curl"
+RDEPENDS_${PN} = "curl"
 SRCREV = "10"
 PV = "1.0+svnr${SRCPV}"
 PR = "r0"
 S = "${WORKDIR}/trunk"
-RDEPENDS = "bash wget"
+RDEPENDS_${PN} = "bash wget"
 
 inherit autotools
 

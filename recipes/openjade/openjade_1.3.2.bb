@@ -1,6 +1,6 @@
 SECTION = "unknown"
 DEPENDS = "opensp"
-RDEPENDS = "sgml-common"
+RDEPENDS_${PN} = "sgml-common"
 DESCRIPTION = "OpenJade is a suite of tools for validating, \
 processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."

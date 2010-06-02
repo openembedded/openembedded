@@ -5,7 +5,7 @@ PR = "r0"
 
 DEPENDS = "libcontactsdb libgpewidget libgpepimc libdisplaymigration libgpevtype dbus-glib"
 SECTION = "gpe"
-RDEPENDS = "gpe-icons"
+RDEPENDS_${PN} = "gpe-icons"
 DESCRIPTION = "GPE contacts manager"
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2"
 

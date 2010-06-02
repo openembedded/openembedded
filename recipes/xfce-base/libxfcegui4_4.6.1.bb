@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Xfce Widget library and X Window System interaction"
 DEPENDS = "gettext pkgconfig intltool virtual/libx11 libxfce4util xfconf dbh libxml2 gtk+ libglade"
-RDEPENDS = "xfconf startup-notification "
+RDEPENDS_${PN} = "xfconf startup-notification "
 
 SECTION = "x11/libs"
 PR = "r5"

@@ -2,7 +2,7 @@ DESCRIPTION = "Python Radius Client and Server"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "BSD"
-RDEPENDS = "python-crypt"
+RDEPENDS_${PN} = "python-crypt"
 SRCNAME = "pyrad"
 PR = "r1"
 

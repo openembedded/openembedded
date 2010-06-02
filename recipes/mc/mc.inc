@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0 glib-2.0-native"
-RDEPENDS = "ncurses-terminfo"
+RDEPENDS_${PN} = "ncurses-terminfo"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 

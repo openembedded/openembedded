@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.riverbankcomputing.co.uk/sip"
 AUTHOR = "Phil Thompson"
 LICENSE = "GPL"
 DEPENDS = "python"
-RDEPENDS = "python-core"
+RDEPENDS_${PN} = "python-core"
 
 SRC_URI = "http://www.riverbankcomputing.com/static/Downloads/sip4/sip-${PV}.tar.gz"
 

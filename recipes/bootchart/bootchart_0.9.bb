@@ -8,7 +8,7 @@ PR = "r1"
 
 #needed for a real /bin/sh and /bin/sleep
 DEPENDS = "bash coreutils acct"
-RDEPENDS = "bash coreutils acct"
+RDEPENDS_${PN} = "bash coreutils acct"
 
 #this is a plain shell script
 PACKAGE_ARCH = "all"

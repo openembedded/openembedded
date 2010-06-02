@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-RDEPENDS = "libopenobex-1.0-1 irda-utils"
+RDEPENDS_${PN} = "libopenobex-1.0-1 irda-utils"
 PR = "r1"
 
 SRC_URI += "file://vcard-send.patch;striplevel=0"

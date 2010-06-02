@@ -2,7 +2,7 @@ DESCRIPTION = "Python DES implementation"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python"
+RDEPENDS_${PN} = "python"
 
 PR = "r1"
 ARCH_pydes = "all"

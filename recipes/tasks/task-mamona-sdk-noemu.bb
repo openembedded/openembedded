@@ -5,7 +5,7 @@ require mamona-sdk.inc
 RCONFLICTS = "task-mamona-sdk"
 RREPLACES = "task-mamona-sdk"
 
-RDEPENDS += "\
+RDEPENDS_${PN} += "\
   bash-noemu \
   binutils-noemu \
   binutils-noemu-symlinks \

@@ -2,7 +2,7 @@ SECTION = "base"
 HOMEPAGE = "http://linux.dell.com/devlabel/devlabel.html"
 DESCRIPTION = "tool for user-define static device labels"
 DEPENDS = "util-linux-ng"
-RDEPENDS = "bash util-linux-ng"
+RDEPENDS_${PN} = "bash util-linux-ng"
 LICENSE = "GPL"
 PR = "r0"
 

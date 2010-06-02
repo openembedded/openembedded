@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.abiword.org"
 SECTION = "x11/office"
 LICENSE = "GPLv2"
 DEPENDS = "libwpd librsvg goffice poppler"
-RDEPENDS = "abiword"
+RDEPENDS_${PN} = "abiword"
 
 PR = "r1"
 

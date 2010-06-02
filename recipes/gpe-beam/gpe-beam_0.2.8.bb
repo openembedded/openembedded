@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-RDEPENDS = "irda-utils"
+RDEPENDS_${PN} = "irda-utils"
 
 SRC_URI += "file://dbus-new-api.patch"
 

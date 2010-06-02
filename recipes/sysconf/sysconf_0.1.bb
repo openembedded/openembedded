@@ -2,7 +2,7 @@ DESCRIPTION = "System Configuration save/restore functionality"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "devio cpio findutils diffutils"
+RDEPENDS_${PN} = "devio cpio findutils diffutils"
 PR = "r10"
 
 # Currently, the scripts only support ixp4xx machines.

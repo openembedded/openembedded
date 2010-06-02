@@ -6,7 +6,7 @@ LICENSE = "PD"
 PRIORITY = "optional"
 SECTION = "devel"
 # DEPENDS += "virtual/java"
-RDEPENDS += "java-virtual-machine"
+RDEPENDS_${PN} += "java-virtual-machine"
 
 SRC_URI = "http://www.antlr.org/download/antlr-${PV}.tar.gz \
 	   file://install.patch"

@@ -9,7 +9,7 @@ SECTION = "devel/mono"
 
 
 DEPENDS = "mono"
-RDEPENDS = "mono"
+RDEPENDS_${PN} = "mono"
 
 DEFAULT_PREFERENCE = "-1"
 

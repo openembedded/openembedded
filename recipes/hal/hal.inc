@@ -10,8 +10,8 @@ S = "${WORKDIR}/hal-${PV}"
 inherit autotools pkgconfig
 
 DEPENDS = "consolekit virtual/kernel util-linux-ng dbus-glib udev intltool intltool-native expat virtual/libusb0 gperf-native"
-RDEPENDS += "hal-info udev-utils"
-RRECOMMENDS += "eject"
+RDEPENDS_${PN} += "hal-info udev-utils"
+RRECOMMENDS_${PN} += "eject"
 
 SRC_URI += "file://99_hal \
             file://20hal \

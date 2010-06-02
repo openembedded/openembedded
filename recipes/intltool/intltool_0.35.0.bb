@@ -1,7 +1,7 @@
 require intltool.inc
 
-#RDEPENDS = "libxml-parser-perl"
-RRECOMMENDS = "perl-modules"
+#RDEPENDS_${PN} = "libxml-parser-perl"
+RRECOMMENDS_${PN} = "perl-modules"
 
 PR = "${INC_PR}.0"
 

@@ -5,7 +5,7 @@ PR = "r1"
 
 SRC_URI = "file://asound.conf.pulseaudio"
 
-RDEPENDS = "hal \
+RDEPENDS_${PN} = "hal \
 	pulseaudio-server \
 	pulseaudio-misc \
 	pulseaudio-module-alsa-sink \

@@ -7,7 +7,7 @@ HOMEPAGE = "http://luks.endorphin.org/"
 SECTION = "console"
 LICENSE = "GPL"
 DEPENDS = "util-linux-ng device-mapper libgcrypt popt"
-RRECOMMENDS = "kernel-module-aes \
+RRECOMMENDS_${PN} = "kernel-module-aes \
                kernel-module-dm-crypt \
                kernel-module-md5 \
                kernel-module-cbc \

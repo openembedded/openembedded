@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "Apache License V2.0" 
 HOMEPAGE = "http://vobject.skyhouseconsulting.com/" 
 SRCNAME = "vobject" 
-RDEPENDS = "python python-dateutil"
+RDEPENDS_${PN} = "python python-dateutil"
 PR = "r1"
 
 SRC_URI = "http://vobject.skyhouseconsulting.com/${SRCNAME}-${PV}.tar.gz" 

@@ -7,7 +7,7 @@ SECTION = "interpreters"
 DEPENDS = "libffi libtool popt \
            sablevm-classpath"
 #          unzip"
-RRECOMMENDS = "sablevm-classpath (>= ${PV})"
+RRECOMMENDS_${PN} = "sablevm-classpath (>= ${PV})"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sablevm/${PN}-${PV}.tar.gz \
            file://no-internal-libs.patch"

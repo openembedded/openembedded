@@ -2,7 +2,7 @@ DESCRIPTION = "A driver for wireless LAN cards based on Intersil's Prism2/2.5/3 
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RRECOMMENDS = "apm-wifi-suspendfix"
+RRECOMMENDS_${PN} = "apm-wifi-suspendfix"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-driver-${PV}.tar.gz"
 SRC_URI_append_mtx-1 = " file://mtx_compat.diff;striplevel=0 \

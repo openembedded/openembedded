@@ -7,7 +7,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 inherit gnome
 DEPENDS += " avahi libnotify eds-dbus libgnome gtkmm libsigc++-2.0 gstreamer opal ptlib"
-RDEPENDS += "opal ptlib"
+RDEPENDS_${PN} += "opal ptlib"
 
 SRC_URI = "http://www.ekiga.org/admin/downloads/latest/sources/ekiga_${PV}/ekiga-${PV}.tar.gz \
            file://static-fix.diff"

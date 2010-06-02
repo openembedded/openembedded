@@ -2,7 +2,7 @@ DESCRIPTION = "A datebook/appointment manager"
 SECTION = "opie/pim"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "opie-pics"
+RDEPENDS_${PN} = "opie-pics"
 APPNAME = "datebook"
 
 

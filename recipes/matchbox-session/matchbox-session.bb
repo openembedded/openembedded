@@ -1,5 +1,5 @@
 DESCRIPTION = "Matchbox session support"
-RDEPENDS = "matchbox-common"
+RDEPENDS_${PN} = "matchbox-common"
 # they do the same in other way
 RCONFLICTS = "gpe-session-scripts"
 

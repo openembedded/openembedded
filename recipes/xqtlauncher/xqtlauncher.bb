@@ -3,7 +3,7 @@ HOMEPAGE = "http://angstrom-distribution.org/"
 LICENSE = "GPL"
 PR = "r2"
 
-RDEPENDS = "xqt2 xorg-minimal-fonts"
+RDEPENDS_${PN} = "xqt2 xorg-minimal-fonts"
 
 SRC_URI = "file://dot.directory \
 	file://startxqt \

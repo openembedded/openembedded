@@ -1,7 +1,7 @@
 DESCRIPTION = "Blueping plugin for opie-security authentication. \
 This is a bluetooth-based authentication plugin (you need \
 to have another Bluetooth device around to use it)."
-RDEPENDS += "bluez-utils"
+RDEPENDS_${PN} += "bluez-utils"
 APPNAME = "multiauthbluepingplugin"
 
 include opie-securityplugin.inc

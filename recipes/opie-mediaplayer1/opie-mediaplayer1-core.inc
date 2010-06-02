@@ -3,7 +3,7 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
-RDEPENDS = "opie-mediaplayer2-skin-default"
+RDEPENDS_${PN} = "opie-mediaplayer2-skin-default"
 APPNAME = "opieplayer"
 APPTYPE = "binary"
 

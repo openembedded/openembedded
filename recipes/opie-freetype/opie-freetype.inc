@@ -3,7 +3,7 @@ SECTION = "opie/fontfactories"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "freetype opie-ttf-support"
-RDEPENDS = "opie-ttf-support"
+RDEPENDS_${PN} = "opie-ttf-support"
 APPNAME = "freetypefactory"
 APPTYPE = "plugin"
 

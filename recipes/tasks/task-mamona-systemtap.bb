@@ -4,7 +4,7 @@ ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     libcap \
     systemtap \
     task-mamona-sdk \

@@ -11,7 +11,7 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit setuptools
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-core \
   python-re \
   python-io \

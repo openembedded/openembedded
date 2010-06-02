@@ -1,7 +1,7 @@
 require matchbox-wm.inc
 
 DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf "
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 PV = "1.1+svn${SRCDATE}"
 PR = "r4"
 DEFAULT_PREFERENCE = "-1"

@@ -1,7 +1,7 @@
 require xserver-kdrive-common.inc
 
 DEPENDS += "hal libxkbfile libxcalibrate pixman"
-RDEPENDS += "hal"
+RDEPENDS_${PN} += "hal"
 
 DEFAULT_PREFERENCE = "-99" 
 

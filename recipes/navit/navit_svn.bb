@@ -6,11 +6,11 @@ PR = "${INC_PR}.5"
 S = "${WORKDIR}/navit"
 
 # override navit.inc RRECOMMENDS, we only suggest a text2speech app
-RRECOMMENDS = "gpsd"
+RRECOMMENDS_${PN} = "gpsd"
 RSUGGESTS_${PN} = "flite espeak"
 
 DEPENDS_shr += " gd librsvg-native"
-RDEPENDS = " navit-icons"
+RDEPENDS_${PN} = " navit-icons"
 EXTRA_OECONF += " --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher --enable-cache-size=20971520"
 
 SRCREV = "3279"

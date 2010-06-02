@@ -12,7 +12,7 @@ inherit setuptools
 
 # FIXME might stop packaging serialwin32 and serialjava files
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-fcntl \
   python-io \
   python-stringold \

@@ -3,7 +3,7 @@ require shr-image.inc
 IMAGE_BASENAME = "full"
 
 DEPENDS += "task-shr"
-RDEPENDS += "\
+RDEPENDS_${PN} += "\
     task-shr-apps \
     task-shr-games \
     task-shr-gtk \

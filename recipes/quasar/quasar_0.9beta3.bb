@@ -3,7 +3,7 @@ HOMEPAGE = "http://katastrophos.net/andre/blog/software/quasar-media-player/"
 AUTHOR = "Andre Beckedorf"
 LICENSE = "GPL"
 SECTION = "multimedia"
-RDEPENDS = "mplayer"
+RDEPENDS_${PN} = "mplayer"
 PV = "0.8+0.9beta3"
 S = "${WORKDIR}/v0.9_beta3"
 

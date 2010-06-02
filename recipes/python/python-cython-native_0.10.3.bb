@@ -1,7 +1,7 @@
 require python-cython_${PV}.bb
 inherit native
 DEPENDS = "python-native"
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 do_stage() {
     BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \

@@ -3,9 +3,9 @@ AUTHOR = "Christian Reitwießner"
 HOMEPAGE = "http://www.reitwiessner.de/openmoko/evopedia.html"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python python-xml python-shell python-netclient python-mime \
+RDEPENDS_${PN} = "python python-xml python-shell python-netclient python-mime \
             python-netserver python-io python-compression"
-RRECOMMENDS = "midori"
+RRECOMMENDS_${PN} = "midori"
 RRECOMMENDS_shr = "ventura"
 
 PV = "0.3.0-rc3+gitr${SRCPV}"

@@ -7,7 +7,7 @@ S ?= "${WORKDIR}/${PLUGIN_NAME}"
 
 LICENSE ?= "LGPL"
 DEPENDS += " libopensync"
-RRECOMMENDS += " msynctool"
+RRECOMMENDS_${PN} += " msynctool"
 HOMEPAGE ?= "http://www.opensync.org/"
 
 inherit autotools pkgconfig

@@ -1,7 +1,7 @@
 DESCRIPTION = "A multi protocol instant messager library, Qt/Embedded based Palmtop Environments Edition"
 SECTION = "opie/applications"
 DEPENDS = "glib-2.0 gnutls"
-RDEPENDS = "libgaim-plugins"
+RDEPENDS_${PN} = "libgaim-plugins"
 LICENSE = "GPL"
 HOMEPAGE = "http://gaim.sourceforge.net/"
 PR = "r3"

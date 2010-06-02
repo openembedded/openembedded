@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko Settings GUI"
 AUTHOR = "Kristian M."
 SECTION = "openmoko/applications"
-RDEPENDS = "python-pygtk python-subprocess python-threading"
+RDEPENDS_${PN} = "python-pygtk python-subprocess python-threading"
 LICENSE = "GPL"
 PR = "r0"
 

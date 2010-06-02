@@ -10,7 +10,7 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-core \
   python-io \
   python-terminal \

@@ -6,8 +6,8 @@ PR = "r2"
 SRC_URI = "${SOURCEFORGE_MIRROR}/htbinit/htb.init-v${PV} \
 	file://htb.init+ingress+predef+verbose.diff;striplevel=0 \
 	file://htb-basic-verbose.diff;striplevel=0"
-RRECOMMENDS = "kernel-module-sch-ingress kernel-module-cls-route kernel-module-cls-u32 kernel-module-cls-fw kernel-module-sch-sfq kernel-module-sch-htb"
-RDEPENDS = "iproute2"
+RRECOMMENDS_${PN} = "kernel-module-sch-ingress kernel-module-cls-route kernel-module-cls-u32 kernel-module-cls-fw kernel-module-sch-sfq kernel-module-sch-htb"
+RDEPENDS_${PN} = "iproute2"
 
 S="${WORKDIR}"
 

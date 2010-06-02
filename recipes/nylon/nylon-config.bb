@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "closed"
 DEPENDS = "perl virtual/kernel hostap-daemon busybox"
-RDEPENDS = "perl perl-module-exporter perl-module-posix perl-module-autoloader perl-module-strict perl-module-xsloader perl-module-data-dumper perl-module-carp perl-module-bytes perl-module-overload perl-module-warnings-register perl-module-warnings  kernel-module-aes madwifi-modules hostap-daemon simple-firewall wlan-ng-utils busybox-httpd"
+RDEPENDS_${PN} = "perl perl-module-exporter perl-module-posix perl-module-autoloader perl-module-strict perl-module-xsloader perl-module-data-dumper perl-module-carp perl-module-bytes perl-module-overload perl-module-warnings-register perl-module-warnings  kernel-module-aes madwifi-modules hostap-daemon simple-firewall wlan-ng-utils busybox-httpd"
 CVSDATE = "20051026"
 PV = "cvs${CVSDATE}"
 

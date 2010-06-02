@@ -3,7 +3,7 @@ SECTION = "e/utils"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
-RDEPENDS = "e-wm"
+RDEPENDS_${PN} = "e-wm"
 RSUGGESTS = "elementary-theme-neo gtk-theme-neo gpe-theme-neo icon-theme-neo"
 LICENCE = "unknown"
 

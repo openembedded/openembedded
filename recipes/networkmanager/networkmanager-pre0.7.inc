@@ -3,7 +3,7 @@ SECTION = "net/misc"
 LICENSE = "GPL"
 PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib hal wireless-tools ppp policykit gnutls"
-RDEPENDS = "hal wpa-supplicant iproute2 dhcp-client dhcdbd"
+RDEPENDS_${PN} = "hal wpa-supplicant iproute2 dhcp-client dhcdbd"
 
 # Providers that require this file MUST append the source to SRC_URI
 # These are just the common patches

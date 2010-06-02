@@ -3,7 +3,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://comsec.com/wiki?UniversalSoftwareRadioPeripheral"
 SECTION = "devel"
 DEPENDS = "swig-native sdcc-native virtual/libusb0 python boost"
-RDEPENDS = "python-core"
+RDEPENDS_${PN} = "python-core"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/old/usrp-${PV}.tar.gz \

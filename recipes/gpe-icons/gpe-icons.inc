@@ -1,5 +1,5 @@
 SECTION = "gpe"
-RDEPENDS += "gdk-pixbuf-loader-png"
+RDEPENDS_${PN} += "gdk-pixbuf-loader-png"
 
 #only icons present in the package
 PACKAGE_ARCH = "all"

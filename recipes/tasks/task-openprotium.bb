@@ -23,7 +23,7 @@ DISTRO_EXTRA_RDEPENDS += "diffutils cpio findutils"
 # pick up the fw_set/get env utils.
 DISTRO_EXTRA_RDEPENDS += "u-boot-utils"
 
-RDEPENDS = " kernel \
+RDEPENDS_${PN} = " kernel \
 	base-files \
 	base-passwd \
 	netbase \
@@ -47,6 +47,6 @@ RDEPENDS = " kernel \
 	${MACHINE_EXTRA_RDEPENDS} \
 	${DISTRO_EXTRA_RDEPENDS} "
 
-RRECOMMENDS += " \
+RRECOMMENDS_${PN} += " \
 	${DISTRO_EXTRA_RRECOMMENDS} \
 	${MACHINE_EXTRA_RRECOMMENDS}"

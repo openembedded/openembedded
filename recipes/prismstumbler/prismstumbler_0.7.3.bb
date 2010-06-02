@@ -5,7 +5,7 @@ PACKAGES = "${PN}-dbg prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
 LICENSE = "GPL"
 DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib libxpm"
-RDEPENDS = "wireless-tools"
+RDEPENDS_${PN} = "wireless-tools"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prismstumbler/${PN}-${PV}.tar.bz2 \
 	file://bogoconf.patch \

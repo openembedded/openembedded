@@ -6,6 +6,6 @@ PR = "r1"
 
 DEPENDS = "libgeda gtk+"
 DEPENDS += "geda-utils geda-gattrib geda-gnetlist geda-gschem geda-gsymcheck geda-symbols geda-docs geda-examples pcb"
-RDEPENDS = "geda-utils geda-gattrib geda-gnetlist geda-gschem geda-gsymcheck geda-symbols pcb"
-RRECOMMENDS = "geda-docs geda-examples"
+RDEPENDS_${PN} = "geda-utils geda-gattrib geda-gnetlist geda-gschem geda-gsymcheck geda-symbols pcb"
+RRECOMMENDS_${PN} = "geda-docs geda-examples"
 ALLOW_EMPTY_${PN} = "1"

@@ -12,4 +12,4 @@ S = "${WORKDIR}/gabriel"
 
 inherit autotools_stage
 
-RDEPENDS = "socat"
+RDEPENDS_${PN} = "socat"

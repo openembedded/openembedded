@@ -1,6 +1,6 @@
 require fuse.inc
 
-RRECOMMENDS = "fuse"
+RRECOMMENDS_${PN} = "fuse"
 PR = "r1"
 
 S = "${WORKDIR}/fuse-${PV}"

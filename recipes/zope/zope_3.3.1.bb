@@ -1,5 +1,5 @@
-RDEPENDS = "python-shell"
-RRECOMMENDS += "zope-interfaces"
+RDEPENDS_${PN} = "python-shell"
+RRECOMMENDS_${PN} += "zope-interfaces"
 
 inherit distutils-base
 

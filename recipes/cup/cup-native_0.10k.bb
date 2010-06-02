@@ -3,7 +3,7 @@ require cup_${PV}.bb
 inherit java-native
 
 DEPENDS += "virtual/java-native"
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 do_configure() {
 	sed -i \

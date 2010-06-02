@@ -2,7 +2,7 @@ DESCRIPTION = "nEo icon theme - a high contrast icon theme which looks especiall
 SECTION = "e/utils"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
-RDEPENDS = "e-wm"
+RDEPENDS_${PN} = "e-wm"
 RSUGGESTS = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo gpe-theme-neo"
 LICENSE = "unknown"
 

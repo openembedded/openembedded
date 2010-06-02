@@ -7,7 +7,7 @@ inherit task
 DEVIMAGE_EXTRA_RDEPENDS ?= ""
 DEVIMAGE_EXTRA_RRECOMMENDS ?= ""
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     devimage \
     busybox dropbear udev \
     util-linux-mount \
@@ -18,7 +18,7 @@ RDEPENDS = "\
     ${DEVIMAGE_EXTRA_RDEPENDS} \
     "
 
-RRECOMMENDS = "\
+RRECOMMENDS_${PN} = "\
     kernel \
     kernel-image \
     kernel-module-msdos \

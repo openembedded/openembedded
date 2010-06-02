@@ -12,7 +12,7 @@ def get_language_name(package):
     return lang
 
 DEPENDS = "unzip-native"
-RDEPENDS = "firefox"
+RDEPENDS_${PN} = "firefox"
 LANGUAGE = "${@get_language_name('${PN}')}"
 
 SRC_URI = "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/linux-i686/xpi/${LANGUAGE}.xpi"

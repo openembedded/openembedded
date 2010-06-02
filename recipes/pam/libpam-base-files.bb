@@ -4,8 +4,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = ""
-RDEPENDS = "libpam"
-RRECOMMENDS = "libpam-meta"
+RDEPENDS_${PN} = "libpam"
+RRECOMMENDS_${PN} = "libpam-meta"
 
 PR = "r5"
 

@@ -3,7 +3,7 @@ SECTION = "x11/fonts"
 LICENSE = "MIT-X"
 
 DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-native"
-RDEPENDS = "encodings font-util font-alias"
+RDEPENDS_${PN} = "encodings font-util font-alias"
 
 XORG_PN = "${PN}"
 INC_PR = "r1"

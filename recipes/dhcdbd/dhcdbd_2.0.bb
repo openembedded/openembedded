@@ -2,7 +2,7 @@ DESCRIPTION = "DBus-enabled dhcp client"
 SECTION = "net"
 LICENSE = "GPL"
 DEPENDS = "dbus"
-RDEPENDS = "dhcp-client"
+RDEPENDS_${PN} = "dhcp-client"
 PR = "r1"
 
 SRC_URI = "https://fedorahosted.org/releases/d/h/dhcdbd/dhcdbd-${PV}.tar.bz2 \

@@ -2,7 +2,7 @@ inherit autotools pkgconfig gconf
 
 DESCRIPTION = "GTK PPP dialing tool"
 DEPENDS = "gconf gtk+ libglade gettext ppp gpe-su"
-RDEPENDS = "ppp gconf gpe-su"
+RDEPENDS_${PN} = "ppp gconf gpe-su"
 SECTION = "gpe"
 PRIORITY = "optional"
 

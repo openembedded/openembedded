@@ -3,7 +3,7 @@ SECTION = "x11/gnome"
 LICENSE = "GPL"
 
 DEPENDS = "iso-codes gnome-common glib-2.0 gtk+ gconf gtksourceview2"
-RDEPENDS += " gtksourceview2"
+RDEPENDS_${PN} += " gtksourceview2"
 
 inherit gnome
 SRC_URI[archive.md5sum] = "aebd49797406fdde7b25624b71990860"

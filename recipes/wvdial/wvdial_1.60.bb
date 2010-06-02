@@ -7,7 +7,7 @@ LICENSE = "LGPL"
 SRC_URI = "http://www.alumnit.ca/download/wvdial-1.60.tar.gz"
 
 DEPENDS = "wvstreams"
-RDEPENDS = "ppp"
+RDEPENDS_${PN} = "ppp"
 
 EXTRA_OEMAKE = ""
 export CC="${CXX}"

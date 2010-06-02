@@ -3,7 +3,7 @@
 
 require pvrusb2-mci2.inc
 
-RRECOMMENDS = "kernel-module-tveeprom \
+RRECOMMENDS_${PN} = "kernel-module-tveeprom \
 	kernel-module-firmware-class \
 	kernel-module-tuner \
 	kernel-module-msp3400 \

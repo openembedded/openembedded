@@ -1,7 +1,7 @@
 DESCRIPTION = "Numpty Physics is a drawing puzzle game in the spirit (and style?) \
 of Crayon Physics using the same excellent Box2D engine."
 DEPENDS = "virtual/libsdl libsdl-image libpng"
-RDEPENDS += "libpng"
+RDEPENDS_${PN} += "libpng"
 LICENSE = "GPL"
 HOMEPAGE = "http://numptyphysics.garage.maemo.org/"
 SECTION = "x11/games"

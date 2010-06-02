@@ -3,7 +3,7 @@ SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "apmd"
-RDEPENDS = "apmd"
+RDEPENDS_${PN} = "apmd"
 
 S = "${WORKDIR}/opiealarm"
 

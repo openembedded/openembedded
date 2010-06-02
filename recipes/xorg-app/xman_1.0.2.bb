@@ -2,7 +2,7 @@ require xorg-app-common.inc
 PE = "1"
 
 DEPENDS += " libxaw libxprintutil libxp libxt"
-RDEPENDS = " man"
+RDEPENDS_${PN} = " man"
 
 FILES_${PN} += " /usr/share/X11/xman.help"
 

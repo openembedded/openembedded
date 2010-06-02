@@ -3,7 +3,7 @@ SECTION = "gpe"
 LICENSE = "GPL"
 
 DEPENDS = "dbus-glib libeventdb libschedule libxsettings-client libgpepimc libgpevtype"
-RDEPENDS = "gpe-icons"
+RDEPENDS_${PN} = "gpe-icons"
 
 PR = "r0"
 

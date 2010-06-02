@@ -1,7 +1,7 @@
 DESCRIPTION = "GPE terminal wrapper"
 SECTION = "gpe"
 LICENSE = "GPL"
-RRECOMMENDS = "rxvt-unicode"
+RRECOMMENDS_${PN} = "rxvt-unicode"
 PR = "r1"
 
 SRC_URI = "file://${PN}.desktop file://${PN}.png"

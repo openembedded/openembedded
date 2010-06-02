@@ -1,6 +1,6 @@
 DESCRIPTION = "Pulseaudio Meta package w/ initscript et. al."
 SECTION = "audio"
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   pulseaudio-server \
   pulseaudio-module-alsa-sink \
   pulseaudio-module-alsa-source \

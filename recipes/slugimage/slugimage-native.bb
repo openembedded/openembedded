@@ -2,7 +2,7 @@
 require slugimage.bb
 
 # slugimage depends on perl, we assume that this is installed.
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 inherit native
 

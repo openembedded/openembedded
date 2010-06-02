@@ -13,5 +13,5 @@ S = "${WORKDIR}/BT_HID_UI"
 
 inherit distutils
 
-RDEPENDS = "remoko-server python-evas python-ecore python-edje python-edbus"
+RDEPENDS_${PN} = "remoko-server python-evas python-ecore python-edje python-edbus"
 FILES_${PN} += "${datadir}"

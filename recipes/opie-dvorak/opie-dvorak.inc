@@ -3,7 +3,7 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "opie-pickboard"
-RDEPENDS = "opie-pickboard"
+RDEPENDS_${PN} = "opie-pickboard"
 APPNAME = "qdvorak"
 
 S = "${WORKDIR}/dvorak"

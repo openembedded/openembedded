@@ -8,7 +8,7 @@ PV = "1.0.0+gitr${SRCPV}"
 PE = "2"
 PR = "r5"
 
-RDEPENDS = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"
+RDEPENDS_${PN} = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"
 DEPENDS += "libdrm"
 
 DESCRIPTION = "X.Org X server -- Glamo display driver with KMS support"

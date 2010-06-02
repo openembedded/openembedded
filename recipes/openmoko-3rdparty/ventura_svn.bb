@@ -4,7 +4,7 @@ HOMEPAGE = "http://code.google.com/p/elm-browser/"
 SECTION = "e/apps"
 LICENSE = "GPLv2"
 DEPENDS = "elementary webkit-efl sqlite3"
-RRECOMMENDS = "ca-certificates"
+RRECOMMENDS_${PN} = "ca-certificates"
 PV = "0.2+svnr${SRCPV}"
 PR = "1"
 

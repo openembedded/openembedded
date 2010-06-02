@@ -1,7 +1,7 @@
 SRC_URI = "file://98-aufs.sh"
 PR = "r1"
 DESCRIPTION = "An initramfs module for mount aufs."
-RDEPENDS = "initramfs-uniboot aufs"
+RDEPENDS_${PN} = "initramfs-uniboot aufs"
 
 do_install() {
     install -d ${D}/initrd.d

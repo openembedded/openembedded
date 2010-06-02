@@ -1,7 +1,7 @@
 DESCRIPTION = "Python Bindings for libphone-utils"
 SECTION = "devel/python"
 DEPENDS = "libphone-utils python-cython-native python-pyrex-native"
-RDEPENDS = "libphone-utils"
+RDEPENDS_${PN} = "libphone-utils"
 
 SRCREV = "8a7c719e0c3f1f8c10f77f17422da02d7177f0dd"
 PV = "0.0.2+gitr${SRCPV}"

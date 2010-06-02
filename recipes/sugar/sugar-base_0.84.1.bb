@@ -2,7 +2,7 @@ DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
 DEPENDS = "python-pygtk sugar-toolkit"
-RDEPENDS = "librsvg-gtk \
+RDEPENDS_${PN} = "librsvg-gtk \
             gconf \
             matchbox-wm \
             ohm-plugin-x11 ohm \

@@ -13,7 +13,7 @@ S = "${WORKDIR}/git"
 
 inherit autotools
 
-RDEPENDS = "dbus dbus-glib"
+RDEPENDS_${PN} = "dbus dbus-glib"
 RCONFLICTS = "gsm0710muxd"
 RREPLACES = "gsm0710muxd"
 

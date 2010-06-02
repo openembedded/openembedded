@@ -4,7 +4,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "qt4-x11-free"
 RSUGGESTS = "tetex"
-RDEPENDS = "python-shell python-textutils"
+RDEPENDS_${PN} = "python-shell python-textutils"
 
 SRC_URI = "\
   ftp://ftp.lyx.org/pub/lyx/stable/1.6.x/lyx-${PV}.tar.bz2 \

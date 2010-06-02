@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 AUTHOR = "Luca Vaudano <vaudano@gmail.com>"
 HOMEPAGE = "http://babiloo-project.org"
-RDEPENDS = "python-elementary python-compression python-misc python-netclient"
+RDEPENDS_${PN} = "python-elementary python-compression python-misc python-netclient"
 
 PACKAGE_ARCH = "all"
 

@@ -4,7 +4,7 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "phalanx"
-RDEPENDS = "phalanx"
+RDEPENDS_${PN} = "phalanx"
 PR = "r2"
 
 SRC_URI = "http://www.openzaurus.org/mirror/knights.tar.gz \

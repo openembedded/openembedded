@@ -2,7 +2,7 @@ DESCRIPTION = "Python keyring"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python python-pygtk python-xml python-netclient python-numeric pydes"
+RDEPENDS_${PN} = "python python-pygtk python-xml python-netclient python-numeric pydes"
 
 ARCH_pyring = "all"
 

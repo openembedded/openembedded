@@ -2,7 +2,7 @@ DESCRIPTION = "Sugar base system"
 LICENSE = "GPLv2"
 
 DEPENDS = "sugar-toolkit libxml2 gtk+"
-RDEPENDS = "sugar-toolkit sugar-base sugar-datastore gnome-python-desktop"
+RDEPENDS_${PN} = "sugar-toolkit sugar-base sugar-datastore gnome-python-desktop"
 
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar/${PN}-${PV}.tar.bz2"
 

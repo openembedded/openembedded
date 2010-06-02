@@ -2,7 +2,7 @@ LICENSE = "GPL"
 
 DESCRIPTION = "Tools for administering a system that utilises unionroot."
 DEPENDS = "ipkg-collateral unionroot busybox"
-RDEPENDS = "ipkg-collateral unionroot busybox"
+RDEPENDS_${PN} = "ipkg-collateral unionroot busybox"
 SECTION = "base"
 PRIORITY = "optional"
 

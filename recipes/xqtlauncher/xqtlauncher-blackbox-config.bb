@@ -3,7 +3,7 @@ HOMEPAGE = "http://angstrom-distribution.org/"
 LICENSE = "GPL"
 PR = "r0"
 
-RDEPENDS = "blackbox xqtlauncher"
+RDEPENDS_${PN} = "blackbox xqtlauncher"
 
 SRC_URI = "file://blackboxrc \
            file://defaultwm"

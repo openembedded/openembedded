@@ -1,5 +1,5 @@
 DESCRIPTION = "simple logrotate bash script"
-RDEPENDS = "busybox"
+RDEPENDS_${PN} = "busybox"
 SECTION = "admin"
 PRIORITY = "optional"
 LICENSE = "GPL"

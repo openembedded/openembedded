@@ -15,7 +15,7 @@ SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
 	   file://00avahi-autoipd file://99avahi-autoipd"
 
 inherit autotools pkgconfig update-rc.d python-dir
-# handle update-rc.d RDEPENDS manually, we don't need it on
+# handle update-rc.d RDEPENDS_${PN} manually, we don't need it on
 # anything but avahi-daemon and avahi-autoipd
 RDEPENDS_append = ""
 

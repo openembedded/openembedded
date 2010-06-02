@@ -19,7 +19,7 @@ LIBPCAP_RDEPENDS = "libpcap"
 LIBPCAP_RDEPENDS_linux = ""
 LIBPCAP_RDEPENDS_linux-uclibc = ""
 
-RDEPENDS += "${LIBPCAP_RDEPENDS}"
+RDEPENDS_${PN} += "${LIBPCAP_RDEPENDS}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nslu/upslug2-${PV}.tar.gz"
 

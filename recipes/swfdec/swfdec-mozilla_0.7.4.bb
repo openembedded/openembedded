@@ -5,7 +5,7 @@ PR = "r1"
 
 DEPENDS = "gst-ffmpeg swfdec gstreamer libsoup-2.4 pango cairo liboil zlib gtk+ alsa-lib \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad', d)}"
-RDEPENDS = "gst-ffmpeg"
+RDEPENDS_${PN} = "gst-ffmpeg"
 
 SRC_URI = "http://swfdec.freedesktop.org/download/swfdec-mozilla/0.7/${P}.tar.gz \
 "

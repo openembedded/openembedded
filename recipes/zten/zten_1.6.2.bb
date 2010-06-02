@@ -5,7 +5,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "eb kakasi"
-RDEPENDS = "virtual-japanese-font"
+RDEPENDS_${PN} = "virtual-japanese-font"
 RCONFLICTS = "ztenv"
 PR = "r1"
 

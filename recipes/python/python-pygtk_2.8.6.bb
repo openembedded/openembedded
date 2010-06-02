@@ -3,7 +3,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 # needs gtk+ 2.8.x
 DEPENDS = "gtk+-2.8.16 libglade"
-RDEPENDS = "python-shell"
+RDEPENDS_${PN} = "python-shell"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
 PR = "r2"

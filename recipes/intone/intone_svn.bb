@@ -4,7 +4,7 @@ AUTHOR = "cchandel"
 LICENSE = "GPLv2"
 SECTION = "e/apps"
 DEPENDS = "elementary eina sqlite3 edbus libvorbis id3lib"
-RDEPENDS = "mplayer lame libxv libsdl-x11"
+RDEPENDS_${PN} = "mplayer lame libxv libsdl-x11"
 
 SRCREV = "76"
 PV = "0.66+svnr${SRCPV}"

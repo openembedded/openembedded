@@ -2,7 +2,7 @@ DESCRIPTION = "Opie datebook birthday plugin"
 SECTION = "opie/datebook"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "opie-datebook"
+RDEPENDS_${PN} = "opie-datebook"
 APPNAME = "birthdayplugin"
 
 S = "${WORKDIR}/birthday"

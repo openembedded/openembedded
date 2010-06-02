@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PR = "r0"
 
 DEPENDS = "sugar"
-RDEPENDS = "sugar shared-mime-info"
+RDEPENDS_${PN} = "sugar shared-mime-info"
 
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/etoys/etoys-${PV}.tar.gz \
            file://etoys.diff"

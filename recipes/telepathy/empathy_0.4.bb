@@ -2,8 +2,8 @@ DESCRIPTION = "Empathy: a Telepathy based IM client"
 HOMEPAGE = "http://blogs.gnome.org/view/xclaesse/2007/04/26/0"
 LICENSE = "GPL"
 DEPENDS = "libgnomeui telepathy-mission-control libtelepathy gtk+ gconf libglade"
-RDEPENDS = "telepathy-mission-control"
-RRECOMMENDS = "telepathy-gabble"
+RDEPENDS_${PN} = "telepathy-mission-control"
+RRECOMMENDS_${PN} = "telepathy-gabble"
 
 PR ="r0"
 

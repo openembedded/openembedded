@@ -15,7 +15,7 @@ RPROVIDES_${PN} += "iptables-utils"
 FILES_${PN}-dbg += "${libexecdir}/xtables/.debug"
 FILES_${PN}-doc += "${mandir}"
 
-RRECOMMENDS = "\
+RRECOMMENDS_${PN} = "\
   kernel-module-ip-tables \
   kernel-module-iptable-nat \
   kernel-module-iptable-filter \

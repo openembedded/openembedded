@@ -11,7 +11,7 @@ PR = "${INC_PR}.0"
 
 DEPENDS += "libdrm"
 # DRI is useless without the kernel drivers
-RRECOMMENDS += " kernel-module-drm kernel-module-radeon "
+RRECOMMENDS_${PN} += " kernel-module-drm kernel-module-radeon "
 
 do_configure() {
 	cd configs

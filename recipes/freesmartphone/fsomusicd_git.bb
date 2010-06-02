@@ -1,6 +1,6 @@
 require cornucopia.inc
 # Seems like bitbake cannot find dynamicaly created package names in
-# gst-plugins.inc. Image creation usually fail with missing RDEPENDS for
+# gst-plugins.inc. Image creation usually fail with missing RDEPENDS_${PN} for
 # gst-plugin-mad gst-plugin-flac gst-plugin-wavparse gst-plugin-sid
 # so add recipes needed for runtime dependencies manually here
 
@@ -10,12 +10,12 @@ PV = "0.0.1+gitr${SRCPV}"
 PR = "${INC_PR}.3"
 PE = "1"
 
-RDEPENDS += "\
+RDEPENDS_${PN} += "\
 #gst-plugins-base
   gst-plugin-volume \
   gst-plugin-alsa \
 "
-RRECOMMENDS += "\
+RRECOMMENDS_${PN} += "\
 #gst-plugins-base
   gst-plugin-ogg \
   gst-plugin-audioconvert \

@@ -12,7 +12,7 @@ RCONFLICTS = "initscripts"
 # the below lines serve to remove the dependency on the full makedevs package,
 # as well as adding the dependency for the update-rc.d package.
 DEPENDS = "update-rc.d-native"
-RDEPENDS = "update-rc.d"
+RDEPENDS_${PN} = "update-rc.d"
 
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is

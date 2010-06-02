@@ -2,7 +2,7 @@ DESCRIPTION = "PCMCIA-cs configuration files for wireless LAN cards based on Int
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "update-modules"
+RDEPENDS_${PN} = "update-modules"
 PACKAGE_ARCH = "all"
 PR = "r9"
 

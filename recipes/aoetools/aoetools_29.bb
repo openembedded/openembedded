@@ -1,6 +1,6 @@
 DESCRIPTION = "ATA over Ethernet Tools"
 SECTION = "console/network"
-RRECOMMENDS = "kernel-module-aoe"
+RRECOMMENDS_${PN} = "kernel-module-aoe"
 PR = "r0"
 LICENSE = "GPL"
 

@@ -4,7 +4,7 @@ DEPENDS = "eet evas ecore embryo edje"
 PV = "0.0.1+svnr${SRCPV}"
 PR = "r9"
 SRCREV = "${EFL_SRCREV}"
-RDEPENDS = "initscripts"
+RDEPENDS_${PN} = "initscripts"
 RRECOMMENDS_${PN} = "exquisite-themes"
 RCONFLICTS_${PN} = "psplash virtual-psplash"
 

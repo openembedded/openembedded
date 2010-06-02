@@ -1,6 +1,6 @@
 DESCRIPTION = "Ristretto is a picture-viewer for XFCE"
 DEPENDS = "thunar libxfce4util libxfcegui4 libexif dbus"
-RDEPENDS = "thunar libxfce4util libxfcegui4"
+RDEPENDS_${PN} = "thunar libxfce4util libxfcegui4"
 
 SECTION = "x11"
 PR = "r1"

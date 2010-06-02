@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-keytabs"
-RDEPENDS = "opie-keytabs"
+RDEPENDS_${PN} = "opie-keytabs"
 APPNAME = "embeddedkonsole"
 
 S = "${WORKDIR}/${APPNAME}"

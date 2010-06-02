@@ -2,7 +2,7 @@ require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman"
-RDEPENDS += "hal"
+RDEPENDS_${PN} += "hal"
 PE = "1"
 PR = "${INC_PR}.0"
 

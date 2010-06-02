@@ -4,7 +4,7 @@ LICENSE = "GPLv3"
 AUTHOR = "Josef Jebavy <josef.jebavy@gmail.com>"
 SECTION = "x11/applications"
 PRIORITY = "optional"
-RDEPENDS = "python-core python-elementary python-sqlite3 python-netclient"
+RDEPENDS_${PN} = "python-core python-elementary python-sqlite3 python-netclient"
 
 SRCREV = "64"
 PV = "0.4.2+svnr${SRCPV}"

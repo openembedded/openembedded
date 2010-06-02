@@ -3,7 +3,7 @@ SECTION = "opie/codecs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "opie-mediaplayer1"
-RDEPENDS = "opie-mediaplayer1"
+RDEPENDS_${PN} = "opie-mediaplayer1"
 PV = "${OPIE_CVS_PV}"
 APPNAME = "mpeg3plugin"
 

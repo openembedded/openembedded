@@ -3,7 +3,7 @@ SECTION = "opie/base"
 LICENSE = "MIT"
 PR = "r3"
 
-RDEPENDS = " \
+RDEPENDS_${PN} = " \
     task-qpe-applets \
     task-qpe-games \
     task-qpe-inputmethods \

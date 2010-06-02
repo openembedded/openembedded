@@ -6,7 +6,7 @@ APPNAME = "opie-scummvm"
 APPTYPE = "binary"
 APPDESKTOP = "${S}"
 
-RDEPENDS = "scummvm-qpe"
+RDEPENDS_${PN} = "scummvm-qpe"
 SRC_URI = "http://sickpeople.wmc-allstars.com/law/files/scummvm/opie-scummvm-${PV}-r0_arm.tar.bz2"
 
 SRC_URI[md5sum] = "a71902804ea20314b7336a3d566f1977"

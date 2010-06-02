@@ -4,7 +4,7 @@ SECTION = "x11/wm"
 LICENSE = "GPL-2"
 
 DEPENDS = "virtual/libx11 virtual/xserver libxi libwnck xrandr exo libxfce4util"
-RDEPENDS = "gtk+ libxfce4util libxfcegui4 xfconf exo"
+RDEPENDS_${PN} = "gtk+ libxfce4util libxfcegui4 xfconf exo"
 
 PR = "r2"
 

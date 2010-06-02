@@ -3,7 +3,7 @@ HOMEPAGE = "http://wiki.openmoko.org/wiki/PyPhonelog"
 SECTION = "x11/applications"
 LICENSE = "GPLv2"
 SRCNAME = "pyphonelog"
-RDEPENDS += "python python-pygtk python-sqlite3 python-phoneutils"
+RDEPENDS_${PN} += "python python-pygtk python-sqlite3 python-phoneutils"
 
 inherit distutils
 

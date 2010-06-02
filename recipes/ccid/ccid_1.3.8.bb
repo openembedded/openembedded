@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 DEPENDS = "virtual/libusb0 pcsc-lite"
-RDEPENDS = "pcsc-lite"
+RDEPENDS_${PN} = "pcsc-lite"
 
 SRC_URI = "http://alioth.debian.org/download.php/2482/ccid-${PV}.tar.bz2"
 

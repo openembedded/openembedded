@@ -4,7 +4,7 @@ HOMEPAGE = "http://balsa.gnome.org"
 SECTION = "x11/network"
 LICENSE = "GPL"
 DEPENDS = "libesmtp glib-2.0 libgnome libgnomeui gtk+ gnome-vfs libbonobo aspell libpcre libtool openssl gtkhtml-3.0"
-RDEPENDS = "gdk-pixbuf-loader-xpm"
+RDEPENDS_${PN} = "gdk-pixbuf-loader-xpm"
 PR = "r3"
 
 SRC_URI = "http://talinux.fi.tal.org/pub/talinux/sources/balsa-${PV}.tar.bz2 \

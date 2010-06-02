@@ -3,7 +3,7 @@ require dpkg.inc
 inherit native
 
 DEPENDS = "perl-native bzip2-native zlib-native virtual/update-alternatives-native"
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 SRC_URI += "file://noman.patch"
 FILESPATH += "dpkg-${PV}"

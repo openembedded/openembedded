@@ -13,7 +13,7 @@ PR = "r0"
 
 SRC_URI += "file://configuration_openmoko.cfg"
 
-RDEPENDS += "java2-runtime midpath-backend-alsa libswt3.4-gtk-java midpath-core-bluetooth"
+RDEPENDS_${PN} += "java2-runtime midpath-backend-alsa libswt3.4-gtk-java midpath-core-bluetooth"
 
 CONFIGURATION = "configuration_openmoko.cfg"
 

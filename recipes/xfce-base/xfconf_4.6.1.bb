@@ -4,7 +4,7 @@ SECTION = "x11/wm"
 LICENSE = "GPL-2"
 
 DEPENDS = "libxfce4util"
-RDEPENDS = "libxfce4util"
+RDEPENDS_${PN} = "libxfce4util"
 
 PR = "r2"
 

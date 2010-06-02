@@ -3,7 +3,7 @@ inherit cross
 DEFAULT_PREFERENCE = "0"
 PROVIDES += "virtual/${TARGET_PREFIX}depmod virtual/${TARGET_PREFIX}depmod-2.6"
 
-# Remove the RDEPENDS we picked up from the "require";
+# Remove the RDEPENDS_${PN} we picked up from the "require";
 # it's simply extraneous for the cross package
 RDEPENDS_${PN} = ""
 

@@ -4,7 +4,7 @@ PR = "r0"
 
 PACKAGES = "${PN}"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     python-ao \
     python-cheetah \
     python-constraint \

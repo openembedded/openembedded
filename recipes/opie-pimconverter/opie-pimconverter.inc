@@ -3,7 +3,7 @@ SECTION = "opie/pim"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "sqlite3 sqlite" 
-RDEPENDS = "sqlite3 sqlite-bin" 
+RDEPENDS_${PN} = "sqlite3 sqlite-bin" 
 
 APPNAME = "opimconverter"
 

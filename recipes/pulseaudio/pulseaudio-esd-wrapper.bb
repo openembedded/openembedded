@@ -6,7 +6,7 @@ PR = "r1"
 RCONFLICTS = "esd"
 RREPLACES = "esd"
 
-RDEPENDS = " \
+RDEPENDS_${PN} = " \
 	pulseaudio-server \
 	pulseaudio-misc \
 	pulseaudio-lib-protocol-esound \

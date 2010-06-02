@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 libopiemm2"
-RDEPENDS = "opie-advancedfm-pics"
+RDEPENDS_${PN} = "opie-advancedfm-pics"
 APPNAME = "opie-eye"
 
 S = "${WORKDIR}/${APPNAME}"

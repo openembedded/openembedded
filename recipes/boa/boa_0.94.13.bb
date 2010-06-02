@@ -1,7 +1,7 @@
 DESCRIPTION = "Lightweight and High Performance WebServer"
 SECTION = "console/network"
 LICENSE = "GPL"
-RDEPENDS = "mime-support"
+RDEPENDS_${PN} = "mime-support"
 RPROVIDES = "httpd"
 PR = "r3"
 

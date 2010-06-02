@@ -4,7 +4,7 @@ HOMEPAGE = "http://code.google.com/p/emtooth/"
 SECTION = "x11/applications"
 LICENSE = "GPLv2"
 DEPENDS = "elementary eina edbus"
-RDEPENDS = "bluez4 obexd"
+RDEPENDS_${PN} = "bluez4 obexd"
 
 SRCREV = "77"
 PV = "0.1+svnr${SRCPV}"

@@ -4,7 +4,7 @@ LICENSE = "LGPLv2"
 PR = "r11"
 
 DEPENDS = "python-pygtk sugar-toolkit"
-RDEPENDS = "librsvg-gtk \
+RDEPENDS_${PN} = "librsvg-gtk \
             ohm-plugin-x11 ohm \
 	    hippo-canvas \
             python-datetime \

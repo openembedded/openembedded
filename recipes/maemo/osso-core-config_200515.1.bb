@@ -2,7 +2,7 @@ LICENSE    = "unknown"
 PR         = "r6"
 
 DEPENDS =	"base-passwd osso-af-startup"
-RDEPENDS =	"base-passwd osso-af-startup"
+RDEPENDS_${PN} =	"base-passwd osso-af-startup"
 
 SRC_URI =	"http://stage.maemo.org:80/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz"
 

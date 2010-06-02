@@ -3,7 +3,7 @@ SECTION = "opie/pim"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libmailwrapper libetpan"
-RDEPENDS = "opie-pics"
+RDEPENDS_${PN} = "opie-pics"
 APPNAME = "opiemail"
 
 

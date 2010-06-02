@@ -3,7 +3,7 @@ HOMEPAGE = "http://zd1211.ath.cx/"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "wireless-tools"
+RDEPENDS_${PN} = "wireless-tools"
 PR = "r1"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \

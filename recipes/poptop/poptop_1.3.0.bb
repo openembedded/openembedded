@@ -9,7 +9,7 @@ LICENSE     = "GPL"
 SECTION = "network"
 PRIORITY    = "optional"
 DEPENDS     = "ppp"
-RDEPENDS    = "ppp"
+RDEPENDS_${PN}    = "ppp"
 
 PR = "r0"
 

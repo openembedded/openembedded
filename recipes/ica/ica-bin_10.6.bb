@@ -3,7 +3,7 @@
 # Released under the MIT license (see packages/COPYING)
 
 DEPENDS = "virtual/libx11 libxaw rpm2cpio-native fakeroot-native"
-RDEPENDS = "libxaw"
+RDEPENDS_${PN} = "libxaw"
 
 HOMEPAGE="www.citrix.com/download/"
 

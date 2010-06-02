@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
-RDEPENDS = "python"
+RDEPENDS_${PN} = "python"
 SRCDATE = "20050930"
 PR = "r24"
 

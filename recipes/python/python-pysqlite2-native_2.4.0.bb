@@ -1,7 +1,7 @@
 require python-pysqlite2_${PV}.bb
 inherit native
 DEPENDS = "python-native sqlite3-native"
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 do_stage() {
     BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \

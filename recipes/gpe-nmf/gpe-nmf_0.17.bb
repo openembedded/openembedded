@@ -1,7 +1,7 @@
 require gpe-nmf.inc
 
-RDEPENDS = ""
-RRECOMMENDS = ""
+RDEPENDS_${PN} = ""
+RRECOMMENDS_${PN} = ""
 
 SRC_URI += "file://fix_makefiles.patch"
 

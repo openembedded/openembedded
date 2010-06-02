@@ -1,7 +1,7 @@
 DESCRIPTION = "The Multi Router Traffic Grapher"
 SECTION = "net"
 DEPENDS = "gd perl-native"
-RDEPENDS = " \
+RDEPENDS_${PN} = " \
 	 gd \
 	 net-snmp-server \
 	 perl \

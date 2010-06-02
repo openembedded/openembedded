@@ -3,7 +3,7 @@ HOMEPAGE = "http://jamvm.sourceforge.net/"
 LICENSE = "GPL"
 
 DEPENDS = "zlib classpath virtual/javac-native"
-RDEPENDS = "classpath"
+RDEPENDS_${PN} = "classpath"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jamvm/jamvm-${PV}.tar.gz"
 

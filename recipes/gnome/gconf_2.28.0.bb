@@ -12,7 +12,7 @@ SRC_URI[archive.sha256sum] = "d057dcfe2bfb2a80e592349c2a78d7dce12d19542aeced466c
 
 PR="r1"
 
-RDEPENDS += "dbus-x11"
+RDEPENDS_${PN} += "dbus-x11"
 
 EXTRA_OECONF = " --without-openldap --disable-gtk-doc --enable-gtk POLKIT_POLICY_FILE_VALIDATE=true"
 

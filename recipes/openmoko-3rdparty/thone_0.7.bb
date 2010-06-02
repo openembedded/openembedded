@@ -2,7 +2,7 @@ DESCRIPTION = "Terminal phone for OpenMoko/FSO"
 HOMEPAGE = "http://code.google.com/p/thone/"
 LICENSE = "GPLv3"
 AUTHOR = "pike"
-RDEPENDS = "bash python python-dbus"
+RDEPENDS_${PN} = "bash python python-dbus"
 PACKAGE_ARCH = "all"
 
 SRC_URI = "http://thone.googlecode.com/files/${P}.tgz;name=archive"

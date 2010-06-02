@@ -5,7 +5,7 @@ SRCREV = "0375bf2b66a053dd490774004c56b5d949f02ac8"
 PV = "1.2+gitr${SRCPV}"
 PR = "r5"
 DEPENDS = "virtual/shr-splash-theme"
-RRECOMMENDS = "virtual/shr-splash-theme"
+RRECOMMENDS_${PN} = "virtual/shr-splash-theme"
 
 inherit update-rc.d
 

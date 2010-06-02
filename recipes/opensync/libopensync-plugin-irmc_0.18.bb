@@ -3,7 +3,7 @@ SRC_URI = "http://ewi546.ewi.utwente.nl/OE/source/${P}.tar.gz"
 
 LICENSE = "LGPL"
 DEPENDS = "libopensync openobex bluez-libs"
-RRECOMMENDS = "multisync"
+RRECOMMENDS_${PN} = "multisync"
 HOMEPAGE = "http://www.opensync.org/"
 
 inherit autotools pkgconfig

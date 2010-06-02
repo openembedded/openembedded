@@ -2,7 +2,7 @@ LICENSE = "GPL"
 
 DESCRIPTION = "Provides an init script that changes the root file-system to unionfs."
 DEPENDS = "busybox base-files"
-RDEPENDS = "busybox base-files"
+RDEPENDS_${PN} = "busybox base-files"
 SECTION = "base"
 PRIORITY = "optional"
 

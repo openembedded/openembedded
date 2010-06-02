@@ -1,6 +1,6 @@
 DESCRIPTION = "Calendar application for the Xfce Desktop  Environment"
 DEPENDS = "libxfcegui4  exo xfce4-panel"
-RDEPENDS = "xfce4-panel"
+RDEPENDS_${PN} = "xfce4-panel"
 RREPLACES = "xfcalendar"
 
 SECTION = "x11"

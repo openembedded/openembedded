@@ -1,6 +1,6 @@
 require anki.inc
 
-RDEPENDS += "libanki"
+RDEPENDS_${PN} += "libanki"
 PR = "r2"
 
 export PV := "${PV}"

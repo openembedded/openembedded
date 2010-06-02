@@ -5,7 +5,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://freshmeat.net/projects/rtmom"
 SRCNAME = "rtmom"
 DEPENDS = "python python-elementary"
-RDEPENDS = "python-core pyrtm"
+RDEPENDS_${PN} = "python-core pyrtm"
 RSUGGESTS_${PN} = "python-simplejson"
 
 PACKAGE_ARCH = "all"

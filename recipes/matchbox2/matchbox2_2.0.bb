@@ -1,7 +1,7 @@
 DESCRIPTION = "Metapackage for Matchbox2 suite"
 LICENSE = "GPL"
 DEPENDS = "matchbox-wm-2 matchbox-panel-2 matchbox-desktop-2"
-RDEPENDS = "matchbox-wm-2 matchbox-panel-2 matchbox-desktop-2"
+RDEPENDS_${PN} = "matchbox-wm-2 matchbox-panel-2 matchbox-desktop-2"
 SECTION = "x11/wm"
 PR = "r1"
 

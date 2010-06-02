@@ -4,7 +4,7 @@ Linux operating system."
 HOMEPAGE = "http://www.openswan.org"
 LICENSE = "GPLv2"
 DEPENDS = "gmp flex-native"
-RRECOMMENDS = "kernel-module-ipsec"
+RRECOMMENDS_${PN} = "kernel-module-ipsec"
 RDEPENDS_append_nylon = "perl"
 PR = "r6"
 

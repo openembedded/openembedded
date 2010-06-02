@@ -5,16 +5,16 @@
  
 inherit meta
 
-RDEPENDS = ""
+RDEPENDS_${PN} = ""
 
 # Basic tools
-RDEPENDS += " \
+RDEPENDS_${PN} += " \
          task-proper-tools \
 	 screen \
 	 "
 
 # Browsers know to work on all archs
-RDEPENDS += " \
+RDEPENDS_${PN} += " \
          gpe-mini-browser \
          midori \
 	 minimo \
@@ -23,7 +23,7 @@ RDEPENDS += " \
          "
 
 # Webservers
-RDEPENDS += " \
+RDEPENDS_${PN} += " \
         apache2 \
         boa \
 	cherokee \

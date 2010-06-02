@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for the SHARP Zaurus SD/MMC Slot for linux ${PV}"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
-RDEPENDS = "kernel (${PV})"
+RDEPENDS_${PN} = "kernel (${PV})"
 PR = "r23"
 PACKAGE_ARCH = "${MACHINE}"
 

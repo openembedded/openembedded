@@ -1,7 +1,7 @@
 DESCRIPTION = "Sub::Install - install subroutines into packages easily"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-RDEPENDS += "perl-module-carp perl-module-scalar-util perl-module-strict \
+RDEPENDS_${PN} += "perl-module-carp perl-module-scalar-util perl-module-strict \
              perl-module-warnings"
 PR = "r4"
 

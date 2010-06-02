@@ -1,5 +1,5 @@
 DESCRIPTION = "one-time install package to upgrade the firmware of all installed prism2 based cards."
-RDEPENDS = "hostap-modules-pci hostap-utils"
+RDEPENDS_${PN} = "hostap-modules-pci hostap-utils"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "unknown"

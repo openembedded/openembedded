@@ -1,7 +1,7 @@
 DESCRIPTION = "nEo GTK theme - a very fast, high contrast GTK theme"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
-RDEPENDS += "icon-theme-neo"
+RDEPENDS_${PN} += "icon-theme-neo"
 RSUGGESTS = "elementary-theme-neo e-wm-theme-illume-neo gpe-theme-neo icon-theme-neo"
 LICENSE = "unknown"
 

@@ -1,7 +1,7 @@
 inherit gpe pkgconfig
 
 DESCRIPTION = "Dictionary access library, used by minipredict."
-RRECOMMENDS = "dictionary"
+RRECOMMENDS_${PN} = "dictionary"
 SECTION = "gpe"
 PRIORITY = "optional"
 

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 AUTHOR = "Anton Maslovsky"
 HOMEPAGE = "http://my-zaurus.narod.ru/"
-RDEPENDS = "qpealarmclock"
+RDEPENDS_${PN} = "qpealarmclock"
 RCONFLICTS = "opie-clockapplet"
 RREPLACES = "opie-clockapplet"
 

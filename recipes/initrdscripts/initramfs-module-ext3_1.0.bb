@@ -1,7 +1,7 @@
 SRC_URI = "file://80-ext3.sh"
 PR = "r1"
 DESCRIPTION = "An initramfs module for mount ext3."
-RDEPENDS = "initramfs-uniboot"
+RDEPENDS_${PN} = "initramfs-uniboot"
 
 do_install() {
     install -d ${D}/initrd.d

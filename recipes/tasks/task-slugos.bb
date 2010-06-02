@@ -81,7 +81,7 @@ kernel-module-md-mod \
 kernel-module-raid1 \
 "
 
-# Add the machine-specific RRECOMMENDS stuff -- kernel modules required for
+# Add the machine-specific RRECOMMENDS_${PN} stuff -- kernel modules required for
 # network support.
 SLUGOS_MACHINE_RRECOMMENDS_nslu2 = "\
 kernel-module-mii \
@@ -89,7 +89,7 @@ kernel-module-ixp4xx-mac \
 kernel-module-ixp4xx-qmgr \
 "
 
-# Add machine-specific RDEPENDS stuff - packages such as the NPE firmware
+# Add machine-specific RDEPENDS_${PN} stuff - packages such as the NPE firmware
 SLUGOS_MACHINE_RDEPENDS_nslu2 = "\
 ixp4xx-npe \
 "
@@ -100,7 +100,7 @@ DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
 DISTRO_EXTRA_RDEPENDS ?= ""
 
 ## This comment block is temporary, to be removed once SlugOS 5.0 stabilizes
-##RDEPENDS += "\
+##RDEPENDS_${PN} += "\
 ##	kernel ixp4xx-npe \
 ##	base-files base-passwd netbase \
 ##        busybox initscripts-slugos slugos-init \
@@ -115,7 +115,7 @@ DISTRO_EXTRA_RDEPENDS ?= ""
 ##	util-linux-losetup \
 ##	${SLUGOS_STANDARD_RDEPENDS} \
 ##	${DISTRO_EXTRA_RDEPENDS}"
-## SlugOS 5.0 - original RDEPENDS above for reference; tinylogin and the
+## SlugOS 5.0 - original RDEPENDS_${PN} above for reference; tinylogin and the
 ## util-linux-* utilities are now replaced by busybox tools.  Also, ipkg
 ## is replaced by a trimmed-down version of opkg (no package signatures,
 ## and it uses the busybox wget command instead of libcurl - MJW
@@ -123,7 +123,7 @@ DISTRO_EXTRA_RDEPENDS ?= ""
 ## SlugOS 5.2 - module-init-tools reinstated due to busybox bugs - MJW
 ## SlugOS 5.4 - util-linux-mount reinstated due to busybox bugs - MJW
 
-RDEPENDS += "\
+RDEPENDS_${PN} += "\
 	kernel \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
@@ -138,7 +138,7 @@ RDEPENDS += "\
 	${DISTRO_EXTRA_RDEPENDS}"
 
 DISTRO_EXTRA_RRECOMMENDS ?= ""
-RRECOMMENDS += "\
+RRECOMMENDS_${PN} += "\
 	openssh \
 	${SLUGOS_STANDARD_RRECOMMENDS} \
         ${SLUGOS_MACHINE_RRECOMMENDS} \

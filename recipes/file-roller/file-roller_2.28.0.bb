@@ -2,7 +2,7 @@ DESCRIPTION = "An archive manager for the GNOME environment"
 LICENSE="GPL"
 SECTION = "x11/gnome"
 DEPENDS="gtk+ libgnomeui gnome-common gnome-vfs libglade libbonoboui"
-RDEPENDS = "unzip"
+RDEPENDS_${PN} = "unzip"
 
 PR = "r2"
 

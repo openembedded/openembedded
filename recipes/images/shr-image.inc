@@ -8,7 +8,7 @@ PR = "r13"
 
 DEPENDS += "task-shr-minimal"
 
-RDEPENDS += "\
+RDEPENDS_${PN} += "\
   task-shr-minimal-base \
   task-shr-minimal-cli \
   task-shr-minimal-fso \

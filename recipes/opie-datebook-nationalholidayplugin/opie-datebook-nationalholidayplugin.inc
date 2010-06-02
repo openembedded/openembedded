@@ -2,7 +2,7 @@ DESCRIPTION = "Opie datebook national holidays plugin"
 SECTION = "opie/datebook"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "opie-datebook"
+RDEPENDS_${PN} = "opie-datebook"
 APPNAME = "nationaldayplugin"
 
 S = "${WORKDIR}/national"

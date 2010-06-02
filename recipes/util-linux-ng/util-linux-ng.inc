@@ -25,7 +25,7 @@ PACKAGES_virtclass-native = ""
 
 PACKAGES_DYNAMIC = "libblkid* libuuid*"
 
-# Provide old util-linux names (several recipes still use DEPENDS or RDEPENDS = "util-linux"):
+# Provide old util-linux names (several recipes still use DEPENDS or RDEPENDS_${PN} = "util-linux"):
 PROVIDES = "util-linux"
 RPROVIDES_${PN} = "util-linux"
 RPROVIDES_util-linux-ng-fdisk = "util-linux-fdisk"

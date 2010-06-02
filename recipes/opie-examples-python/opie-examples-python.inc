@@ -2,7 +2,7 @@ DESCRIPTION = "Python examples for Opie"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python-pyqt opie-pyquicklaunchapplet"
+RDEPENDS_${PN} = "python-pyqt opie-pyquicklaunchapplet"
 APPNAME = "python"
 PACKAGE_ARCH = "all"
 

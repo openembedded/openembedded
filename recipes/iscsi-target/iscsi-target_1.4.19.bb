@@ -16,7 +16,7 @@ S = "${WORKDIR}/iscsitarget-${PV}"
 
 
 DEPENDS = "openssl"
-RRECOMMENDS = "kernel-module-crc32c kernel-module-libcrc32c"
+RRECOMMENDS_${PN} = "kernel-module-crc32c kernel-module-libcrc32c"
 
 inherit module
 

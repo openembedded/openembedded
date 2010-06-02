@@ -2,7 +2,7 @@ DESCRIPTION = "Voice Memo Recorder Applet"
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "opie-vmemo-settings"
+RDEPENDS_${PN} = "opie-vmemo-settings"
 I18N_FILES = "libvmemoapplet.ts"
 APPNAME = "vmemoapplet"
 

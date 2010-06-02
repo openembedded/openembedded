@@ -3,7 +3,7 @@ DESCRIPTION = "A no-nonsense, simple to use, small viewer for cbr and cbz (comic
 SECTION = "x11/applications"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgnomeui"
-RDEPENDS = "unzip"
+RDEPENDS_${PN} = "unzip"
 
 INC_PR = "r2"
 

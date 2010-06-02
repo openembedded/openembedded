@@ -4,11 +4,11 @@ HOMEPAGE = "http://gakusei.sf.net"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "virtual-japanese-font qte-mt libpng (>= 1) kpengine"
+RDEPENDS_${PN} = "virtual-japanese-font qte-mt libpng (>= 1) kpengine"
 PR = "r8"
 
 #  stuff that still needs fixing
-#) is the RDEPENDS line correct and sufficient?
+#) is the RDEPENDS_${PN} line correct and sufficient?
 #) upon execution there is a message that /usr/lib/libpng12.so.0 does not have version information
 #) desktop icon missing
 #) Desktop png file an falscher Stelle, daher kein Icon

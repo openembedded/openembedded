@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gpe-bootsplash"
-RDEPENDS = "gpe-bootsplash"
+RDEPENDS_${PN} = "gpe-bootsplash"
 PR = "r0"
 
 export THEME = "gpephone"

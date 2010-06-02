@@ -1,7 +1,7 @@
 SECTION = "x11/libs"
 LICENSE = "LGPL"
 DEPENDS = "microwindows"
-RDEPENDS = "microwindows"
+RDEPENDS_${PN} = "microwindows"
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}.tar.gz"
 DESCRIPTION = "fltk library for microwindows."
 

@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "GPL"
 PR = "r2"
 
-RDEPENDS = "nxproxy nxssh"
+RDEPENDS_${PN} = "nxproxy nxssh"
 
 SRC_URI = "http://download.berlios.de/freenx/freenx-client-${PV}.tar.bz2 \
 	   file://gcc4.3-ftbfs.patch \

@@ -16,7 +16,7 @@ NONWORKING = "\
 		python-sword            \
 		python-vorbis"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
 		python-ao 		\
 		python-constraint	\
 		python-dialog		\

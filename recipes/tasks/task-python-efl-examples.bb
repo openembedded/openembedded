@@ -1,7 +1,7 @@
 DESCRIPTION = "Python Examples for the Enlightenment Foundation Libraries"
 LICENSE = "MIT"
 SECTION = "devel/python"
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   task-python-efl \
   python-ecore-examples \
   python-emotion-examples \

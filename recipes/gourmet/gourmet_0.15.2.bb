@@ -4,7 +4,7 @@ HOMEPAGE = "http://grecipe-manager.sf.net"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ python-pygtk"
-RDEPENDS = "python-core"
+RDEPENDS_${PN} = "python-core"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/grecipe-manager/${PN}-${PV}.tar.gz"
 

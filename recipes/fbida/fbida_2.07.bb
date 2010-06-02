@@ -11,7 +11,7 @@ SECTION = "utils"
 PR = "r3"
 
 DEPENDS = "virtual/libiconv jpeg fontconfig freetype libexif"
-RDEPENDS = "ttf-dejavu-sans-mono"
+RDEPENDS_${PN} = "ttf-dejavu-sans-mono"
 
 SRC_URI = "http://dl.bytesex.org/releases/fbida/fbida-${PV}.tar.gz \
 	   file://exiftran.c.patch \

@@ -8,7 +8,7 @@ LICENSE = "GPLv2"
 SRCDATE = "20051022"
 PV = "1.0.0+cvs${SRCDATE}"
 PR = "r2"
-RDEPENDS = "bash"
+RDEPENDS_${PN} = "bash"
 
 SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/${PN}_gruen.4g__${SRCDATE}.tar.gz \
 	file://firewall-bash.diff"

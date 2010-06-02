@@ -3,7 +3,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libschedule libgpewidget gpe-announce libgpelaunch"
-RDEPENDS = "gpe-announce atd"
+RDEPENDS_${PN} = "gpe-announce atd"
 
 INC_PR = "r2"
 

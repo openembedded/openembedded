@@ -1,5 +1,5 @@
 DESCRIPTION = "Files to make opkg and ipkg coexist"
-RDEPENDS = "opkg ipkg ipkg-collateral"
+RDEPENDS_${PN} = "opkg ipkg ipkg-collateral"
 
 PR = "r0"
 PACKAGE_ARCH = "all"

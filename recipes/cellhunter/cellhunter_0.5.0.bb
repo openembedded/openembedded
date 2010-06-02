@@ -1,7 +1,7 @@
 DESCRIPTION = "CellHunter - A game to collect information about mobile phone cells"
 SECTION = "x11/utils"
 DEPENDS = "python"
-RDEPENDS = "python-subprocess python-netclient python-math python-core python-io python-pygtk python-dbus frameworkd"
+RDEPENDS_${PN} = "python-subprocess python-netclient python-math python-core python-io python-pygtk python-dbus frameworkd"
 PR = "r0"
 
 SRC_URI = "\

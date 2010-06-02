@@ -1,6 +1,6 @@
 SECTION = "console/network"
 DEPENDS = "ncurses glib-2.0"
-RDEPENDS = "gift"
+RDEPENDS_${PN} = "gift"
 LICENSE = "GPL"
 DESCRIPTION = "giFTcurs is a cursed frontend to the giFT daemon and \
 has been described as 'seriously slick'. It wont work that well \

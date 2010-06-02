@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.assembla.com/wiki/show/shrdev"
 AUTHOR = "Fate"
 LICENSE = "GPLv2"
 SECTION = "e/apps"
-RDEPENDS = "python-elementary connman connman-plugin-wifi connman-plugin-udhcp"
+RDEPENDS_${PN} = "python-elementary connman connman-plugin-wifi connman-plugin-udhcp"
 
 SRCREV = "113"
 PV = "0.4+svnr${SRCPV}"

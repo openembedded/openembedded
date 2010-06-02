@@ -1,6 +1,6 @@
 DESCRIPTION = "File manager for the Xfce Desktop Environment"
 DEPENDS = "libxfcegui4 exo dbus-glib libexif xfce4-panel libice libsm gamin"
-RRECOMMENDS = "shared-mime-info"
+RRECOMMENDS_${PN} = "shared-mime-info"
 
 inherit xfce pkgconfig
 

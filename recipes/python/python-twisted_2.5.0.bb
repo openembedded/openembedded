@@ -29,7 +29,7 @@ PACKAGES += "\
   ${PN}-core \
 "
 
-RDEPENDS = "python-core python-zopeinterface"
+RDEPENDS_${PN} = "python-core python-zopeinterface"
 RDEPENDS_${PN} += "\
   ${PN}-bin \
   ${PN}-conch \

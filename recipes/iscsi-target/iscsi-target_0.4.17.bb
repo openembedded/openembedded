@@ -11,7 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/iscsitarget/iscsitarget-${PV}.tar.gz \
 S = "${WORKDIR}/iscsitarget-${PV}"
 
 DEPENDS = "openssl"
-RRECOMMENDS = "kernel-module-crc32c kernel-module-libcrc32c"
+RRECOMMENDS_${PN} = "kernel-module-crc32c kernel-module-libcrc32c"
 
 inherit module
 

@@ -8,7 +8,7 @@ inherit distutils
 SRC_URI = "http://jerakeen.org/files/PythonDaap-${PV}.tar.gz"
 S = "${WORKDIR}/PythonDaap-${PV}"
 
-RDEPENDS = "python-compression"
+RDEPENDS_${PN} = "python-compression"
 
 
 SRC_URI[md5sum] = "b3db3d60b0ee83f5f23101d2c3bb99e0"

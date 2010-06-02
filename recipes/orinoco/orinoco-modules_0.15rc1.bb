@@ -1,7 +1,7 @@
 require orinoco-modules.inc
 
 DEPENDS = "orinoco-conf spectrum-fw"
-RDEPENDS += "orinoco-conf"
+RDEPENDS_${PN} += "orinoco-conf"
 RDEPENDS_orinoco-modules-cs += "orinoco-modules spectrum-fw"
 PR = "r8"
 

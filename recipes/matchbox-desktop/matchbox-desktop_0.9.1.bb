@@ -8,7 +8,7 @@ SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-desktop/0.9/matc
            file://pkgconfig_fix.patch \
            file://mb-desktop-multi-category-matching.patch"
 
-RDEPENDS += "matchbox-common"
+RDEPENDS_${PN} += "matchbox-common"
 
 EXTRA_OECONF = "--enable-startup-notification --enable-dnotify"
 

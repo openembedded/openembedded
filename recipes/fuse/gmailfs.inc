@@ -3,7 +3,7 @@ HOMEPAGE = "http://richard.jones.name/google-hacks/gmail-filesystem/gmail-filesy
 LICENSE = "GPLv2"
 
 DEPENDS = "fuse python-libgmail python-fuse"
-RDEPENDS = "fuse python-libgmail python-fuse python-unixadmin  python-lang python-textutils python-core"
+RDEPENDS_${PN} = "fuse python-libgmail python-fuse python-unixadmin  python-lang python-textutils python-core"
 
 SRC_URI = "http://richard.jones.name/google-hacks/gmail-filesystem/${PN}-${PV}.tar.gz"
 

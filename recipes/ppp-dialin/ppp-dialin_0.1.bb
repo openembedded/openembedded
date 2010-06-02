@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DESCRIPTION = "Enables PPP dial-in through a serial connection"
 DEPENDS = "ppp"
-RDEPENDS = "ppp"
+RDEPENDS_${PN} = "ppp"
 PR = "r6"
 LICENSE = "MIT"
 

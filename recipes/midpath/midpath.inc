@@ -5,7 +5,7 @@
 # RDEPENDS.
 require midpath-common.inc
 
-RDEPENDS = "midpath-core midpath-core-bluetooth midpath-core-ogg ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'midpath-core-mp3', d)}"
+RDEPENDS_${PN} = "midpath-core midpath-core-bluetooth midpath-core-ogg ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'midpath-core-mp3', d)}"
 
 PROVIDES = "midpath"
 RPROVIDES = "midpath"

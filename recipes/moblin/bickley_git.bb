@@ -5,7 +5,7 @@ PR_append = "+git${SRCREV}"
 PR = "r3"
 
 DEPENDS = "redland gtk+ dbus-glib clutter-gst-0.9 libexif taglib gupnp gupnp-av samba"
-RDEPENDS = "xdg-user-dirs"
+RDEPENDS_${PN} = "xdg-user-dirs"
 
 S = "${WORKDIR}/git"
 

@@ -8,7 +8,7 @@ LICENSE = "GPL"
 AUTHOR = "Thomas Hood"
 HOMEPAGE = "http://packages.debian.org/resolvconf"
 DEPENDS = "bash"
-RDEPENDS = "bash"
+RDEPENDS_${PN} = "bash"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/r/resolvconf/resolvconf_${PV}.tar.gz"
 

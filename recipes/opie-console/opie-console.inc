@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "opie-keytabs"
-RDEPENDS = "opie-keytabs"
+RDEPENDS_${PN} = "opie-keytabs"
 APPNAME = "opie-console"
 APPTYPE = "binary"
 

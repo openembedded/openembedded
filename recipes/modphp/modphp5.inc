@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DESCRIPTION = "A server-side, HTML-embedded scripting language. This package provides the apache php module."
 LICENSE = "PHP"
-RDEPENDS = "apache2"
+RDEPENDS_${PN} = "apache2"
 DEPENDS = "apache2-native apache2 zlib"
 SRC_URI = "http://de3.php.net/distributions/php-${PV}.tar.bz2 \
 	   file://configure.patch \

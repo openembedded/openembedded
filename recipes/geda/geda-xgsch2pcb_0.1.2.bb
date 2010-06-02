@@ -6,7 +6,7 @@ PR = "r1"
 
 DEPENDS = "python-native"
 # python-codecs for gettext.py
-RDEPENDS = "geda-gschem geda-utils pcb python-codecs python-dbus python-pygtk python-subprocess"
+RDEPENDS_${PN} = "geda-gschem geda-utils pcb python-codecs python-dbus python-pygtk python-subprocess"
 
 SRC_URI = "http://geda.seul.org/dist/${P}.tar.gz \
            file://skip-python-checks.patch"

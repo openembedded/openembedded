@@ -9,7 +9,7 @@ S = "${WORKDIR}/webpy"
 
 inherit distutils
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
   python-netserver \
   python-netclient \
   python-pprint \

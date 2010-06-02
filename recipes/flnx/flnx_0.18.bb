@@ -1,6 +1,6 @@
 SECTION = "x11/libs"
 DEPENDS = "microwindows"
-RDEPENDS = "microwindows"
+RDEPENDS_${PN} = "microwindows"
 DESCRIPTION = "fltk library for microwindows."
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}.tar.gz \
 	   file://gcc3.patch"

@@ -3,9 +3,9 @@ LICENSE = "GPLv2"
 
 DEPENDS = "libvorbis libogg libxslt"
 
-# The RDEPENDS line is a workaround to make sure
+# The RDEPENDS_${PN} line is a workaround to make sure
 # icecast pulls in necessary library deps.
-RDEPENDS = "libvorbis libogg libxslt"
+RDEPENDS_${PN} = "libvorbis libogg libxslt"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/icecast/${PN}-${PV}.tar.gz"
 

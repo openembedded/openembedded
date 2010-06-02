@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r2"
 
 DEPENDS = "virtual/libx11 xrdb xcursor-transparent-theme"
-RDEPENDS = "xrdb xcursor-transparent-theme"
+RDEPENDS_${PN} = "xrdb xcursor-transparent-theme"
 SECTION = "gpe"
 
 DESCRIPTION = "Touchscreen detection utility"

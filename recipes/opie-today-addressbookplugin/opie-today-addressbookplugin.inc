@@ -2,7 +2,7 @@ DESCRIPTION = "Addressbook plugin for Today"
 SECTION = "opie/today"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "opie-today"
+RDEPENDS_${PN} = "opie-today"
 APPNAME = "todayaddressbookplugin"
 
 

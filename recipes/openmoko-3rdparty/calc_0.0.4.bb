@@ -2,7 +2,7 @@ DESCRIPTION = "A simple calculator which is elementary-themed"
 HOMEPAGE = "http://github.com/spaetz/calc"
 AUTHOR = "Sebastian Spaeth <Sebastian@SSpaeth.de>"
 LICENSE  = "MIT"
-RDEPENDS = "python-elementary python python-edbus"
+RDEPENDS_${PN} = "python-elementary python python-edbus"
 SECTION = "x11/application"
 PR = "r0"
 

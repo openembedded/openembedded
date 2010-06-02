@@ -3,7 +3,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
-RDEPENDS = "xkbd gpe-theme-clearlooks"
+RDEPENDS_${PN} = "xkbd gpe-theme-clearlooks"
 RPROVIDES_${PN} = "gpe-session-starter"
 PR = "r1"
 

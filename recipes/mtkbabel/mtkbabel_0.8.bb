@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PACKAGE_ARCH = "all"
 PR = "r1"
 
-RDEPENDS = "libdevice-serialport-perl libtimedate-perl perl-module-file-basename perl-module-getopt-std"
+RDEPENDS_${PN} = "libdevice-serialport-perl libtimedate-perl perl-module-file-basename perl-module-getopt-std"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sourceforge/${PN}/${P}.tar.gz \
 	   file://fast-logging.patch"

@@ -3,7 +3,7 @@ LICENSE = 	"MIT + GPL"
 PR =		"r0"
 
 #it doesn't really depends on it, but it's nice to make OE build it
-RDEPENDS =		"gtk+"
+RDEPENDS_${PN} =		"gtk+"
 
 FILES_${PN} =		"${datadir}/themes/"
 SRC_URI =		"http://linuxtogo.org/~koen/gpe/themes/${P}.tar.gz"

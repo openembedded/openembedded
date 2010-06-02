@@ -11,7 +11,7 @@ SECTION = "devel/mono"
 PR = "r4"
 
 DEPENDS = "mono"
-RDEPENDS = "mono"
+RDEPENDS_${PN} = "mono"
 
 inherit autotools mono
 

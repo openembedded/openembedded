@@ -5,7 +5,7 @@ PR = "r2"
 
 DEPENDS = "virtual/libx11 xcursor-transparent-theme xrdb"
 SECTION = "gpe"
-RDEPENDS = "xrdb"
+RDEPENDS_${PN} = "xrdb"
 
 DESCRIPTION = "Touchscreen detection utility"
 

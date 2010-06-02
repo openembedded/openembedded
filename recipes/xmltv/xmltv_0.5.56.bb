@@ -4,7 +4,7 @@ PARALLEL_MAKE = ""
 SRC_URI="http://downloads.sourceforge.net/xmltv/xmltv-${PV}.tar.bz2 \
          file://Makefile.PL.patch"
 
-RDEPENDS = "perl \
+RDEPENDS_${PN} = "perl \
             libarchive-zip-perl \
             libdate-manip-perl \
             libdatetime-format-strptime-perl \

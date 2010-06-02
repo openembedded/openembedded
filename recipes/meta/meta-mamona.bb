@@ -5,7 +5,7 @@ PR = "r2"
 inherit meta
 EXCLUDE_FROM_WORLD = "1"
 
-RDEPENDS = " \
+RDEPENDS_${PN} = " \
 task-mamona-base \
 task-mamona \
 task-mamona-devel \

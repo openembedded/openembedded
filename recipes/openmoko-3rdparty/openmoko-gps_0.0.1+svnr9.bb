@@ -12,7 +12,7 @@ HOMEPAGE = "http://forge.bearstech.com/trac/wiki/OpenmokoGPS"
 SECTION = "base"
 LICENSE = "GPL"
 
-RDEPENDS = "python-pygtk"
+RDEPENDS_${PN} = "python-pygtk"
 
 PR = "r0" 
 

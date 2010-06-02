@@ -3,7 +3,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "freetype jpeg tiff"
-RDEPENDS = "python-lang python-stringold"
+RDEPENDS_${PN} = "python-lang python-stringold"
 SRCNAME = "Imaging"
 PR = "ml1"
 

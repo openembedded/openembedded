@@ -2,7 +2,7 @@ DESCRIPTION = "VDE can be used: (i) to create a general purpose tunnel (every pr
 LICENSE = "GPLv2"
 HOMEPAGE = "http://vde.sf.net"
 
-RRECOMMENDS = "kernel-module-tun kernel-module-tap"
+RRECOMMENDS_${PN} = "kernel-module-tun kernel-module-tap"
 
 inherit autotools pkgconfig
 

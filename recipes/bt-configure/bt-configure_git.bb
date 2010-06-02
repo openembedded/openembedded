@@ -2,7 +2,7 @@ DESCRIPTION = "Python keyring"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python python-pygtk bluez4"
+RDEPENDS_${PN} = "python python-pygtk bluez4"
 
 SRCREV = "9654c88ff74bca89cf747937cbec67421d2f1cbc"
 PV = "1.0.0+gitr${SRCPV}"

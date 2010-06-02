@@ -11,6 +11,6 @@ inherit autotools
 SRC_URI = "${FREESMARTPHONE_GIT}/vala-terminal.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
-RDEPENDS = "ttf-liberation-mono"
+RDEPENDS_${PN} = "ttf-liberation-mono"
 RREPLACES = "openmoko-terminal2"
 RPROVIDES = "openmoko-terminal2"

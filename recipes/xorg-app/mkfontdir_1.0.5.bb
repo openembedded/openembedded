@@ -4,7 +4,7 @@ DESCRIPTION = "a program to create an index of X font files in a directory"
 
 PE = "1"
 
-RDEPENDS += "mkfontscale"
+RDEPENDS_${PN} += "mkfontscale"
 
 
 SRC_URI[archive.md5sum] = "9365ac66d19186eaf030482d312fca06"

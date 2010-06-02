@@ -3,7 +3,7 @@ PR = "r7"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     strace \
     gdb \
     sbrsh \

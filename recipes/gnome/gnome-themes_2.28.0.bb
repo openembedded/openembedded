@@ -2,7 +2,7 @@ DESCRIPTION = "GNOME themes"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
 DEPENDS = "gtk-engines icon-naming-utils-native glib-2.0 intltool-native"
-RDEPENDS = "gnome-icon-theme"
+RDEPENDS_${PN} = "gnome-icon-theme"
 
 EXTRA_OECONF = "--enable-all-themes --disable-hicolor-check"
 

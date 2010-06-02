@@ -3,7 +3,7 @@ SECTION = "kernel/modules"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://www.holtmann.org/linux/bluetooth/bt950.html"
 DEPENDS = "pcmcia-cs"
-RDEPENDS = "pcmcia-cs"
+RDEPENDS_${PN} = "pcmcia-cs"
 PR = "r1"
 
 SRC_URI = "http://www.holtmann.org/linux/bluetooth/bt950-${PV}.tar.gz \
