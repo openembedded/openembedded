@@ -13,3 +13,5 @@ IMAGE_ROOTFS_SIZE_ext2 ?= "230000"
 RDEPENDS_kernel-base = ""
 
 EXTRA_IMAGEDEPENDS += "qemu-native"
+
+ROOTFS_POSTPROCESS_COMMAND =+ "zap_root_password"
