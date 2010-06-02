@@ -30,6 +30,12 @@ export BUILD_CCFLAGS = "-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}"
 export BUILD_LDFLAGS = ""
 export EXTRA_OEMAKE = '"BUILD_LDFLAGS=" "BUILD_CCFLAGS=${BUILD_CCFLAGS}"'
 
+# Below option is added to overcome the GCC bug on ARM
+# see http://gcc.gnu.org/PR42981 for further details.
+# We could potentially take it off when its fixed in gcc 4.5
+
+CFLAGS_append_arm = " -fforward-propagate "
+
 # This is necessary so that the "tic" command executed during the install can
 # link with the correct libary in staging.
 export LD_LIBRARY_PATH = "${STAGING_LIBDIR_NATIVE}"
@@ -70,16 +76,12 @@ do_install() {
 		mv ${D}${bindir}/reset ${D}${bindir}/reset.${PN}
 	fi
 }
-		
-		
 pkg_postinst_ncurses-tools () {
 	if [ "${PN}" = "ncurses" ]; then
 		update-alternatives --install ${bindir}/clear clear clear.${PN} 100
 		update-alternatives --install ${bindir}/reset reset reset.${PN} 100
 	fi
 }
-				
-			
 pkg_prerm_ncurses-tools () {
 	if [ "${PN}" = "ncurses" ]; then
 		update-alternatives --remove clear clear.${PN}
@@ -110,7 +112,6 @@ FILES_${PN}-tools = "\
 FILES_${PN}-terminfo = "\
   ${datadir}/terminfo \
 "
-  
 RSUGGESTS_${PN} = "ncurses-terminfo"
 RPROVIDES_${PN} = "libncurses5"
 RCONFLICTS_${PN} = "libncurses5"
