@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages required for native (on-device) SDK"
 LICENSE = "MIT"
-INC_PR = "r10"
+INC_PR = "r11"
 
 DEPENDS = "virtual/libc gcc binutils make patch patchutils diffstat diffutils automake flex bison gawk sed grep libtool pkgconfig"
 RDEPENDS_${PN} = "gcc-symlinks g++-symlinks cpp cpp-symlinks binutils-symlinks \
@@ -9,5 +9,5 @@ RDEPENDS_${PN} = "gcc-symlinks g++-symlinks cpp cpp-symlinks binutils-symlinks \
 	    patch patchutils diffstat diffutils libstdc++-dev \
             libtool libtool-dev libltdl-dev pkgconfig"
 
-RECOMMENDS_${PN} = " g77-symlinks gfortran-symlinks cvs"
+RRECOMMENDS_${PN} = " g77-symlinks gfortran-symlinks cvs"
 
