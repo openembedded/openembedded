@@ -374,7 +374,7 @@ staging_packager () {
 	if [ "$srcuri" == "" ]; then
 		srcuri="OpenEmbedded"
 	fi
-	echo "Source: ${SRC_URI}"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+	echo "Source: $srcuri"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
 
 	# Deal with libtool not supporting sysroots
 	# Need to remove hardcoded paths and fix these when we install the
