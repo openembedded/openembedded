@@ -29,11 +29,9 @@ S = "${WORKDIR}/qemu-${PV}"
 EXTRA_OECONF += " --disable-curl --disable-sdl --disable-strip \
                 "
 
-inherit autotools
+EXTRA_OECONF_append_virtclass-native += " --extra-cflags="-I${STAGING_INCDIR_NATIVE}""
 
-do_configure_prepend_virtclass-native() {
-	export QEMU_CFLAGS="-I${STAGING_INCDIR_NATIVE} ${QEMU_CFLAGS}"
-}
+inherit autotools
 
 do_configure() {
 	${S}/configure --prefix=${prefix} ${EXTRA_OECONF}
