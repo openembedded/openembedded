@@ -1,44 +1,69 @@
-diff a/src/cairo-matrix.c b/src/cairo-matrix.c
+From 940c62bd51d498d5cdc7d8b1b8aecd750d1094ef Mon Sep 17 00:00:00 2001
+From: Jonathan Morton <jonathan.morton@movial.com>
+Date: Wed, 2 Jun 2010 13:58:31 +0300
+Subject: [PATCH] Rely less on DP FPU for common matrix funcs.
+
+---
+ src/cairo-matrix.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/src/cairo-matrix.c b/src/cairo-matrix.c
+index de1c6ed..3aec9e5 100644
 --- a/src/cairo-matrix.c
 +++ b/src/cairo-matrix.c
-@@ -653,16 +653,39 @@ _cairo_matrix_compute_basis_scale_factors (const cairo_matrix_t *matrix,
+@@ -43,6 +43,13 @@
+ #define ISFINITE(x) ((x) * (x) >= 0.) /* check for NaNs */
+ #endif
+ 
++static const cairo_matrix_t
++_cairo_matrix_identity = {
++	.xx = 1,	.xy = 0,
++	.yx = 0,	.yy = 1,
++	.x0 = 0,	.y0 = 0
++};
++
+ static void
+ _cairo_matrix_scalar_multiply (cairo_matrix_t *matrix, double scalar);
+ 
+@@ -58,10 +65,7 @@ _cairo_matrix_compute_adjoint (cairo_matrix_t *matrix);
+ void
+ cairo_matrix_init_identity (cairo_matrix_t *matrix)
+ {
+-    cairo_matrix_init (matrix,
+-		       1, 0,
+-		       0, 1,
+-		       0, 0);
++	*matrix = _cairo_matrix_identity;
+ }
+ slim_hidden_def(cairo_matrix_init_identity);
+ 
+@@ -86,7 +90,6 @@ slim_hidden_def(cairo_matrix_init_identity);
+ void
+ cairo_matrix_init (cairo_matrix_t *matrix,
+ 		   double xx, double yx,
+-
+ 		   double xy, double yy,
+ 		   double x0, double y0)
+ {
+@@ -653,16 +656,13 @@ _cairo_matrix_compute_basis_scale_factors (const cairo_matrix_t *matrix,
  cairo_bool_t
  _cairo_matrix_is_identity (const cairo_matrix_t *matrix)
  {
-+	static const cairo_matrix_t id = {
-+		.xx = 1,
-+		.xy = 0,
-+		.yx = 0,
-+		.yy = 1,
-+		.x0 = 0,
-+		.y0 = 0
-+	};
-+
-+	return !memcmp(matrix, &id, sizeof(id));
-+
-+#if 0
-     return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
- 	    matrix->xy == 0.0 && matrix->yy == 1.0 &&
- 	    matrix->x0 == 0.0 && matrix->y0 == 0.0);
-+#endif
+-    return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
+-	    matrix->xy == 0.0 && matrix->yy == 1.0 &&
+-	    matrix->x0 == 0.0 && matrix->y0 == 0.0);
++	return !memcmp(matrix, &_cairo_matrix_identity, sizeof(cairo_matrix_t));
  }
  
  cairo_bool_t
  _cairo_matrix_is_translation (const cairo_matrix_t *matrix)
  {
-+	cairo_matrix_t tmp;
-+	tmp.xx = matrix->xx;
-+	tmp.xy = matrix->xy;
-+	tmp.yx = matrix->yx;
-+	tmp.yy = matrix->yy;
-+	tmp.x0 = tmp.y0 = 0;
-+	return _cairo_matrix_is_identity(&tmp);
-+
-+#if 0
-     return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
- 	    matrix->xy == 0.0 && matrix->yy == 1.0);
-+#endif
+-    return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
+-	    matrix->xy == 0.0 && matrix->yy == 1.0);
++	return !memcmp(matrix, &_cairo_matrix_identity, sizeof(double)*4);
  }
  
  cairo_bool_t
+-- 
+1.5.6.1
 

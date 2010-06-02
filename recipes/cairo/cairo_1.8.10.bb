@@ -1,6 +1,6 @@
 require cairo.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz;name=cairo \
            file://dolt-fix.patch \
