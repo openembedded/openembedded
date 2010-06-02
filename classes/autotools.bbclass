@@ -125,7 +125,11 @@ autotools_do_configure() {
 			    echo "no" | glib-gettextize --force --copy
 			  fi
 			else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
-			  cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+			  if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
+			    cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+			  else
+			    oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
+			  fi
 			fi
 
 			fi
