@@ -1,6 +1,6 @@
 require xinput-calibrator.inc
 
-PR = "r6"
+PR = "${INC_PR}.0"
 
 SRC_URI = "git://github.com/tias/xinput_calibrator.git;protocol=git \
            file://xinput-calibrator.desktop \

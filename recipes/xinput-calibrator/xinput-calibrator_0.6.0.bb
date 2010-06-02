@@ -6,7 +6,7 @@ SRC_URI = "git://github.com/tias/xinput_calibrator.git;protocol=git \
 SRCREV = "d6e01d780001948f55006698e8e9e48c12894810"
 S = "${WORKDIR}/git/"
 
-PR = "r2"
+PR = "${INC_PR}.0"
 
 do_install_append() {
         install -d ${D}${bindir}
