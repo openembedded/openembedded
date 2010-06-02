@@ -1,4 +1,7 @@
 require gnutls.inc
+
+PR = "${INC_PR}.0"
+
 LICENSE_${PN}-extra = "GPLv3"
 
 SRC_URI += "\
