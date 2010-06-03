@@ -11,7 +11,7 @@ DEPENDS = "dbus dbus-glib gstreamer readline"
 SRCREV = "b1b22984a3028531cbddea431acd1e6c3fd0edb8"
 
 PV = "1.0"
-PR = "r13"
+PR = "r14"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://gstd.git.sourceforge.net/gitroot/gstd/gstd;protocol=git \
