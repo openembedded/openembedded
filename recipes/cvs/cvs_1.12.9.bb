@@ -3,9 +3,12 @@ SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = ""
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://musthave.sunbase.org/progs/ccvs/cvs-${PV}/cvs-${PV}.tar.bz2 \
-	   file://m4.patch"
+	   file://m4.patch \
+	   file://fix-__mempcpy.patch \
+	  "
 
 inherit autotools gettext
 

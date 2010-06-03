@@ -1,0 +1,16 @@
+Index: cvs-1.12.9/lib/regex.c
+===================================================================
+--- cvs-1.12.9.orig/lib/regex.c	2010-06-02 17:40:24.350340585 -0700
++++ cvs-1.12.9/lib/regex.c	2010-06-02 17:42:54.460370216 -0700
+@@ -8182,7 +8182,11 @@ regerror (int errcode, const regex_t *pr
+       if (msg_size > errbuf_size)
+         {
+ #if defined HAVE_MEMPCPY || defined _LIBC
++#if defined __UCLIBC__
++	  *((char *) mempcpy (errbuf, msg, errbuf_size - 1)) = '\0';
++#else
+ 	  *((char *) __mempcpy (errbuf, msg, errbuf_size - 1)) = '\0';
++#endif
+ #else
+           memcpy (errbuf, msg, errbuf_size - 1);
+           errbuf[errbuf_size - 1] = 0;
