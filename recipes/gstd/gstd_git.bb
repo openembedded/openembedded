@@ -1,16 +1,14 @@
 DESCRIPTION = "gstd: a Gstreamer-based streaming server"
-HOMEPAGE = "http://sourceforge.net/projects/harrier/"
-LICENSE = "BSD"
+HOMEPAGE = "http://sourceforge.net/projects/gstd/"
+LICENSE = "Various"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
 inherit autotools pkgconfig
 
-DEPENDS = "dbus dbus-glib gstreamer"
-RDEPENDS_${PN} = "dbus dbus-glib gstreamer gst-plugins-base"
-RRECOMENDS_${PN} = "gstreamer-ti"
+DEPENDS = "dbus dbus-glib gstreamer readline"
 
-SRCREV = "f3e22c93f4fd7ca47d6309b8450788127550ecb9"
+SRCREV = "b1b22984a3028531cbddea431acd1e6c3fd0edb8"
 
 PV = "1.0"
 PR = "r13"
@@ -25,6 +23,9 @@ S = "${WORKDIR}/git"
 do_configure() {
     oe_runconf
 }
+
+RDEPENDS_${PN} = "dbus dbus-glib gstreamer gst-plugins-base"
+RRECOMENDS_${PN} = "gstreamer-ti"
 
 FILES_${PN} += "${datadir}/dbus-1/*/*.service"
 FILES_${PN}-dev += "${datadir}/dbus-1/interfaces/*.xml"
