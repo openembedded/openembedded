@@ -20,6 +20,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://sysroot_fix.patch \
 	file://drmfix.patch \
 	file://no_xkb.patch \
+	file://keyboard_device.patch \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"

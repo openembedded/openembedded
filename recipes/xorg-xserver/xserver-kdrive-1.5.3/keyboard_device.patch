@@ -1,0 +1,16 @@
+--- a/hw/kdrive/src/kinput.c	2010-06-03 19:03:41.000000000 +0400
++++ b/hw/kdrive/src/kinput.c	2010-06-03 19:08:26.000000000 +0400
+@@ -1174,10 +1174,11 @@
+             ki->xkbVariant = option->value;
+         else if (strcasecmp(option->key, "XkbOptions") == 0)
+             ki->xkbOptions = option->value;
+-        else if (!strcasecmp (option->key, "device"))
+-            ki->path = KdSaveString(option->value);
+         else
+ #endif
++        if (!strcasecmp (option->key, "device"))
++            ki->path = KdSaveString(option->value);
++        else
+            ErrorF("Kbd option key (%s) of value (%s) not assigned!\n", 
+                     option->key, option->value);
+     }
