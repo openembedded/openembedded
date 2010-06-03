@@ -2,7 +2,7 @@
 Name=Texture streaming Demo
 Comment=TI Webcam texture streaming demo
 Exec=gles2_bc_webcam-x11
-Icon=star
+Icon=camera-web
 Type=Application
 Categories=Graphics;3DGraphics;
 
