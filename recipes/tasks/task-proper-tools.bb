@@ -1,5 +1,5 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-PR = "r12"
+PR = "r13"
 
 inherit task
 
@@ -32,6 +32,7 @@ RDEPENDS_${PN} = "\
 		module-init-tools \
 		ncurses-tools \
 		netcat \
+		netkit-telnet \
 		net-tools \
 		openrdate \
 		patch \
