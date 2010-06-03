@@ -5,7 +5,7 @@ DESCRIPTION = "grep GNU utility"
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.bz2 \
 	   file://install.patch"
 
-inherit autotools
+inherit autotools gettext
 
 EXTRA_OECONF = "--disable-perl-regexp --disable-ncurses"
 
