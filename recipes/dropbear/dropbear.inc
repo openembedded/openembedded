@@ -6,6 +6,8 @@ DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
 RPROVIDES = "ssh sshd"
 
+INC_PR = "r2"
+
 SRC_URI = "\
   http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \
   file://urandom-xauth-changes-to-options.h.patch \
