@@ -113,7 +113,7 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
     </varlistentry>
 
     <varlistentry>
-      <term>.tbz, .tar.bz2</term>
+      <term>.tbz, .tbz2, .tar.bz2</term>
 
       <listitem>
         <para>Bzip2 compressed tar archives which will be extracted with
@@ -143,7 +143,25 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
     </varlistentry>
 
     <varlistentry>
-      <term>.zip</term>
+      <term>.xz</term>
+
+      <listitem>
+        <para>xz (LZMA2) compressed files which will be decompressed with
+        <command>"xz -dc &lt;srcfile&gt; &gt; &lt;srcfile&gt;"</command>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>.tar.xz</term>
+
+      <listitem>
+        <para>xz (LZMA2) compressed tar archives which will be decompressed with
+        <command>"xz -dc &lt;srcfile&gt; | tar x --no-same-owner -f -"</command>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>.zip, .jar</term>
 
       <listitem>
         <para>Zip archives which will be extracted with <command>"unzip -q
