@@ -47,6 +47,7 @@ def create_cross_env(bb,d):
 
     import tarfile, socket, time
     ice_dir = bb.data.expand('${CROSS_DIR}', d)
+    staging_dir = bb.data.expand('${STAGING_DIR_TARGET}', d)
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
     distro  = bb.data.expand('${DISTRO}', d)
     target_sys = bb.data.expand('${TARGET_SYS}',  d)
@@ -57,12 +58,12 @@ def create_cross_env(bb,d):
     # Stupid check to determine if we have built a libc and a cross
     # compiler.
     try:
-        os.stat(os.path.join(ice_dir, target_sys, 'lib', 'libstdc++.so'))
-        os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
+        os.stat(os.path.join(staging_dir, 'usr', 'lib', 'libstdc++.so'))
+        os.stat(os.path.join(ice_dir, 'bin', "%s-g++" % target_sys))
     except: # no cross compiler built yet
         return ""
 
-    VERSION = icc_determine_gcc_version( os.path.join(ice_dir,target_sys,"bin","g++") )
+    VERSION = icc_determine_gcc_version( os.path.join(ice_dir,"bin","%s-g++" % target_sys) )
     cross_name = prefix + distro + "-" + target_sys + "-" + float + "-" + VERSION + "-" + name
     tar_file = os.path.join(ice_dir, 'ice', cross_name + '.tar.gz')
 
@@ -159,7 +160,7 @@ def create_cross_kernel_env(bb,d):
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,"bin",kernel_cc) )
-    cross_name = prefix + distro + "-" + target_sys + "-" + float + "-" + VERSION + "-" + name
+    cross_name = prefix + distro + "-kernel-" + target_sys + "-" + float + "-" + VERSION + "-" + name
     tar_file = os.path.join(ice_dir, 'ice', cross_name + '.tar.gz')
 
     try:
