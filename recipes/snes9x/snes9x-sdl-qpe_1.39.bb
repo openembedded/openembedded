@@ -9,7 +9,7 @@ SRC_URI = "http://www.vanille.de/mirror/snes9x-sdl-${PV}.tar.bz2 \
 	   file://compile.patch"
 S = "${WORKDIR}/snes9x-sdl-${PV}"
 
-FILESPATH = "${FILE_DIRNAME}/${PN}-${PV}:${FILE_DIRNAME}/snes9x-sdl-${PV}:${FILE_DIRNAME}/snes9x-sdl:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
+FILESPATHPKG .= ":snes9x-sdl"
 
 inherit qmake_base
 
