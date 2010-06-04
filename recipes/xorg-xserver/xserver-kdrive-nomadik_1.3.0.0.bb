@@ -1,6 +1,6 @@
 require xserver-kdrive-common.inc
 
-FILESPATH += ":${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xserver-kdrive-1.3.0.0:${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xserver-kdrive"
+FILESPATHPKG .= ":xserver-kdrive-1.3.0.0:xserver-kdrive"
 
 DEPENDS += "sgalib"
 COMPATIBLE_MACHINE = "nhk15"
