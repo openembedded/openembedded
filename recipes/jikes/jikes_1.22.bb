@@ -5,15 +5,15 @@ SECTION = "devel"
 LICENSE = "IBM"
 PR = "r1"
 
-RDEPENDS_${PN} = "classpath"
-PROVIDES_virtclass-native = ""
-RDEPENDS_virtclass-native = ""
-
-BBCLASSEXTEND = "native"
-
 SRC_URI = "${SOURCEFORGE_MIRROR}/jikes/jikes-${PV}.tar.bz2"
 
 inherit autotools update-alternatives
+
+BBCLASSEXTEND = "native"
+
+RDEPENDS = "classpath"
+PROVIDES_virtclass-native = ""
+RDEPENDS_virtclass-native = ""
 
 EXTRA_OECONF = "--disable-fp-emulation --enable-source15"
 
