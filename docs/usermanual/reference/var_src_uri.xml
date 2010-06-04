@@ -2,7 +2,7 @@
 <section id="src_uri_variable" xreflabel="SRC_URI variable">
   <title>SRC_URI variable: Source code and patches</title>
 
-  <para>All recipies need to contain a definition of
+  <para>All recipes need to contain a definition of
   <command>SRC_URI</command>. It determines what files and source code is
   needed and where that source code should be obtained from. This includes
   patches to be applied and basic files that are shipped as part of the
@@ -10,8 +10,8 @@
 
   <para>A typical <command>SRC_URI</command> contains a list of URL's, patches
   and files as shown in this example from quagga:<screen>SRC_URI = "http://www.quagga.net/download/quagga-${PV}.tar.gz \
-           file://ospfd-no-opaque-lsa-fix.patch;patch=1 \
-           file://fix-for-lib-inpath.patch;patch=1 \
+           file://ospfd-no-opaque-lsa-fix.patch \
+           file://fix-for-lib-inpath.patch \
            file://quagga.init \
            file://quagga.default \
            file://watchquagga.init \
@@ -37,8 +37,8 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
   a checksum will throw errors.</para>
   <para>Each URI supports a set of additional options. These options are
   tag/value pairs of the form <command>"a=b"</command> and are semi-colon
-  separated from each other and from the URI. The follow examples shows two
-  options being included, the patch and pnum options:<screen>file://ospfd-no-opaque-lsa-fix.patch;patch=1;pnum=2</screen>The
+  separated from each other and from the URI. The following example shows one
+  option being included, the striplevel option:<screen>file://ospfd-no-opaque-lsa-fix.patch;striplevel=2</screen>The
   supported methods for fetching source and files are:</para>
 
   <variablelist>
@@ -209,7 +209,7 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
     scripts, to be included in the final package.</para>
 
     <para>The following example shows the specification of a patch
-    file:<screen>file://ospfd-no-opaque-lsa-fix.patch;patch=1</screen></para>
+    file:<screen>file://ospfd-no-opaque-lsa-fix.patch</screen></para>
 
     <para>Patch files are be copied to the patches subdirectory of the source
     directory, <command>${S}/patches</command>, and then applied from the
