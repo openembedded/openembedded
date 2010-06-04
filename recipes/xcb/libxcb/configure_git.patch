@@ -1,0 +1,20 @@
+--- a/configure.ac	2010-06-04 13:45:24.312592212 +0400
++++ b/configure.ac	2010-06-04 13:47:09.468417189 +0400
+@@ -54,7 +54,7 @@
+ 
+ # Find the xcb-proto protocol descriptions
+ AC_MSG_CHECKING(XCBPROTO_XCBINCLUDEDIR)
+-XCBPROTO_XCBINCLUDEDIR=`$PKG_CONFIG --variable=xcbincludedir xcb-proto`
++XCBPROTO_XCBINCLUDEDIR=${STAGING_DIR}`$PKG_CONFIG --variable=xcbincludedir xcb-proto`
+ AC_MSG_RESULT($XCBPROTO_XCBINCLUDEDIR)
+ AC_SUBST(XCBPROTO_XCBINCLUDEDIR)
+ 
+@@ -64,7 +64,7 @@
+ 
+ # Find the xcbgen Python package
+ AC_MSG_CHECKING(XCBPROTO_XCBPYTHONDIR)
+-XCBPROTO_XCBPYTHONDIR=`$PKG_CONFIG --variable=pythondir xcb-proto`
++XCBPROTO_XCBPYTHONDIR=${STAGING_DIR}`$PKG_CONFIG --variable=pythondir xcb-proto`
+ AC_MSG_RESULT($XCBPROTO_XCBPYTHONDIR)
+ AC_SUBST(XCBPROTO_XCBPYTHONDIR)
+ 

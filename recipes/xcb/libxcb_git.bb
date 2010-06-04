@@ -7,7 +7,8 @@ PR = "r0"
 
 DEPENDS += "libpthread-stubs"
 
-SRC_URI = "git://anongit.freedesktop.org/xcb/libxcb;protocol=git"
+SRC_URI = "git://anongit.freedesktop.org/xcb/libxcb;protocol=git \
+	   file://configure_git.patch "
 S = "${WORKDIR}/git"
 
 PACKAGES =+ "libxcb-xinerama"
