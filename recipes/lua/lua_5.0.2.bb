@@ -8,7 +8,6 @@ SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
 	   file://advanced-readline.patch"
 #	   http://lua-users.org/files/wiki_insecure/power_patches/5.0/advanced-readline.patch"
 S = "${WORKDIR}/lua-${PV}"
-FILESPATH = "${FILE_DIRNAME}/lua-${PV}:${FILE_DIRNAME}/lua:${FILE_DIRNAME}/files"
 
 require lua-build.inc
 inherit binconfig
