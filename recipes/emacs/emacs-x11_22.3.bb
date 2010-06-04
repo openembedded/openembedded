@@ -7,7 +7,7 @@ EXTRA_OECONF = "--without-sound --with-x-toolkit=gtk"
 
 RREPLACES = "emacs"
 
-FILESPATH = "${FILE_DIRNAME}/emacs-${PV}:${FILE_DIRNAME}/files"
+FILESPATHPKG =. "emacs-${PV}:"
 SRC_URI = "${GNU_MIRROR}/emacs/emacs-${PV}.tar.gz \
 	   file://use-qemu.patch \
 	   file://nostdlib-unwind.patch"
