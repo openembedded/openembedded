@@ -5,7 +5,7 @@ PR = "r2"
 
 COMPATIBLE_MACHINE = "efika"
 
-FILESPATH = "${FILE_DIRNAME}/linux-efika-${PV}:${FILE_DIRNAME}/linux-efika-2.6.20"
+FILESPATHPKG .= ":linux-efika-2.6.20"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2;name=kernel \
            file://0001-powerpc-serial-Dispose-irq-mapping-when-done-in-mpc52xx_serial.c.txt;p=1;apply=yes \
