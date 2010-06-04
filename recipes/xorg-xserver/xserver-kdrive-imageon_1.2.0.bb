@@ -9,7 +9,7 @@ PROVIDES = "virtual/xserver"
 PE = "1"
 PR = "r8"
 
-FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-${PV}:${FILE_DIRNAME}/xserver-kdrive:${FILE_DIRNAME}/files"
+FILESPATHPKG =. "xserver-kdrive-${PV}:xserver-kdrive:"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
 	file://kdrive-evdev.patch  \
