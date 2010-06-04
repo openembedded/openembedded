@@ -9,7 +9,7 @@ DEPENDS += "libxkbfile libxcalibrate pixman"
 PE = "1"
 PR = "${INC_PR}.0"
 
-FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-git:${FILE_DIRNAME}/xserver-kdrive"
+FILESPATHPKG =. "xserver-kdrive-git:xserver-kdrive:"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	${KDRIVE_COMMON_PATCHES} \
 	file://enable-epson.patch \
