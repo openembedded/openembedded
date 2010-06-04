@@ -14,8 +14,6 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/pygobject-${PV}"
 
-FILESPATH = "${FILE_DIRNAME}/python-pygobject:${FILE_DIRNAME}/files"
-
 inherit autotools distutils-base pkgconfig
 
 # necessary to let the call for python-config succeed
