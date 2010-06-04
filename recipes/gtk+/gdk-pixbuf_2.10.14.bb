@@ -8,7 +8,7 @@ DEPENDS = "libpng gettext glib-2.0"
 PR = "r2"
 
 S = "${WORKDIR}/gtk+-${PV}"
-FILESPATH = "${FILE_DIRNAME}/gdk-pixbuf-csource:${FILE_DIRNAME}/gtk+-${PV}:${FILE_DIRNAME}/files"
+FILESPATHPKG =. "gdk-pixbuf-csource:gtk+-${PV}:"
 
 SRC_URI = "\
   ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
