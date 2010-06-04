@@ -17,7 +17,7 @@ PR = "r3"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = 'om-gta02'
 
-FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-1.3.0.0:${FILE_DIRNAME}/xserver-kdrive:${FILE_DIRNAME}/files"
+FILESPATHPKG =. "xserver-kdrive-1.3.0.0:xserver-kdrive:"
 
 SRC_URI = "git://git.openmoko.org/git/xglamo.git;protocol=git"
 S = "${WORKDIR}/git"
