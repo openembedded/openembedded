@@ -1,5 +1,5 @@
 DESCRIPTION = "Linux Kernel 2.6 Userland Utilities for the PCMCIA Subsystem"
-DEPENDS = "sysfsutils"
+DEPENDS = "sysfsutils flex-native"
 RDEPENDS_${PN} = "udev module-init-tools"
 HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
@@ -20,7 +20,7 @@ LD = "${CC}"
 CFLAGS =+ "-I${S}/src"
 
 PARALLEL_MAKE = ""
-EXTRA_OEMAKE = "-e 'STRIP=echo' 'LIB_OBJS=-lc -lsysfs'"
+EXTRA_OEMAKE = "-e 'STRIP=echo' 'LIB_OBJS=-lc -lsysfs' LEX='${STAGING_BINDIR_NATIVE}/flex'"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
