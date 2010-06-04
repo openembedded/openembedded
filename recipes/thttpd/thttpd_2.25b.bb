@@ -1,13 +1,14 @@
 DESCRIPTION = "A simple, small, portable, fast, and secure HTTP server."
 LICENSE = "BSD"
 HOMEPAGE = "http://www.acme.com/software/thttpd/"
-PR ="r7"
+PR ="r8"
 
 SRC_URI = "http://www.acme.com/software/thttpd/thttpd-2.25b.tar.gz \
 	   file://install.patch \
 	   file://acinclude.m4 \
 	   file://init \
-	   file://htpasswd_shared.diff"
+	   file://htpasswd_shared.diff \
+           file://htpasswd_getline.diff"
 S = "${WORKDIR}/thttpd-${PV}"
 
 PARALLEL_MAKE = ""
