@@ -1,6 +1,6 @@
 # Build xserver-kdrive as xserver-kdrive-1300 to allow them to co-exist in feeds.
 # akita and spitz needs them:
-FILESPATH = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xserver-kdrive-1.3.0.0:${@os.path.dirname(bb.data.getVar('FILE',d,1))}/xserver-kdrive:${@os.path.dirname(bb.data.getVar('FILE',d,1))}/files"
+FILESPATHPKG =. "xserver-kdrive-1.3.0.0:xserver-kdrive:"
 
 PKGN = xserver-kdrive-1300
 require xserver-kdrive_1.3.0.0.bb
