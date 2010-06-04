@@ -43,7 +43,7 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
 
   <variablelist>
     <varlistentry>
-      <term>http, https, ftps</term>
+      <term>http, https, ftp, ftps</term>
 
       <listitem>
         <para>Used to download files and source code via the specified URL.
