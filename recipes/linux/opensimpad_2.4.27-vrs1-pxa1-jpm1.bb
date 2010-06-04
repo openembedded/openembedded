@@ -10,7 +10,7 @@ PR = "r4"
 
 COMPATIBLE_MACHINE = 'simpad'
 
-FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
+FILESPATHPKG =. "opensimpad-${PV}:opensimpad:"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=kernel \
            file://${KV}-${VRSV}.patch \
