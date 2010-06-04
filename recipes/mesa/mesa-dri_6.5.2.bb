@@ -2,7 +2,7 @@ include mesa-common-old.inc
 
 SRC_URI += " file://mklib-cross.patch"
 
-FILESPATH = "${FILE_DIRNAME}/mesa-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
+FILESPATHPKG =. "mesa-${PV}:"
 
 PACKAGES_DYNAMIC = "mesa-dri-driver-*"
 
