@@ -11,7 +11,6 @@ PREFERRED_PROVIDER_virtual/libintl      = "proxy-libintl"
 PREFERRED_PROVIDER_virtual/libiconv     = "libiconv"
 
 USE_NLS ?= "no"
-USE_NLS_glib-2.0 = "yes"
 USE_NLS_glib-2.0-native = "yes"
 USE_NLS_gcc-cross = "no"
 
