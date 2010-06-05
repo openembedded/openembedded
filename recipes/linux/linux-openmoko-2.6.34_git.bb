@@ -11,6 +11,8 @@ SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.34 \
 # build fix
   file://wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch \
+# fix for lost touchscreen https://docs.openmoko.org/trac/ticket/2328
+  file://touchscreen_ignoreunexpectedintr34.patch \
 # patches from Thomas White's gdrm-for-merging branch
   file://0001-DRM-for-platform-devices.patch \
   file://0002-Glamo-DRM-and-KMS-driver.patch \
