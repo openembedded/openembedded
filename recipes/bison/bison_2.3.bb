@@ -1,6 +1,6 @@
 require bison.inc
 
-PR = "${INCPR}.0"
+PR = "${INC_PR}.0"
 
 # >> bison-2.3-r0: /usr/lib/liby.a
 # That one is a special case: it wants to stay in the main bison package,
