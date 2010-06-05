@@ -1,0 +1,26 @@
+From 753cc5766d51c5b7d599fada569d6b262f2a3b1a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matthias=20G=C3=BCnther?= <matgnt@gmail.com>
+Date: Wed, 12 May 2010 20:49:30 +0200
+Subject: [PATCH 4/9] Disable exaqmples/dbus/remotecontrolledcar
+
+---
+ examples/dbus/dbus.pro |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/examples/dbus/dbus.pro b/examples/dbus/dbus.pro
+index e599334..daa89b0 100644
+--- a/examples/dbus/dbus.pro
++++ b/examples/dbus/dbus.pro
+@@ -4,8 +4,7 @@ SUBDIRS = listnames \
+ 	  complexpingpong
+ 
+ !contains(QT_CONFIG, no-gui) {
+-    SUBDIRS += dbus-chat \
+-               remotecontrolledcar
++    SUBDIRS += dbus-chat
+ }
+ 
+ # install
+-- 
+1.7.0.4
+

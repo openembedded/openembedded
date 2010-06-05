@@ -1,0 +1,25 @@
+From f107d9957f8382dfc2c7b28248eee2d628342a93 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matthias=20G=C3=BCnther?= <matgnt@gmail.com>
+Date: Wed, 12 May 2010 19:41:13 +0200
+Subject: [PATCH 2/9] Disable tools/assistant
+
+---
+ tools/tools.pro |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/tools/tools.pro b/tools/tools.pro
+index 7598962..1d35a3f 100644
+--- a/tools/tools.pro
++++ b/tools/tools.pro
+@@ -9,7 +9,7 @@ TEMPLATE        = subdirs
+         } else:wince* {
+             SUBDIRS = qtestlib designer
+         } else {
+-            SUBDIRS = assistant \
++            SUBDIRS = \
+                       pixeltool \
+                       porting \
+                       qtestlib \
+-- 
+1.7.0.4
+

@@ -1,0 +1,24 @@
+From 11657d8c4b964b7c16b1d216522a92d6280007e1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matthias=20G=C3=BCnther?= <matgnt@gmail.com>
+Date: Thu, 13 May 2010 15:53:29 +0200
+Subject: [PATCH 6/9] Disable /demos/browser
+
+---
+ demos/demos.pro |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/demos/demos.pro b/demos/demos.pro
+index 5e8a4ea..8008ccb 100644
+--- a/demos/demos.pro
++++ b/demos/demos.pro
+@@ -56,7 +56,6 @@ wince*:SUBDIRS += demos_sqlbrowser
+ }
+ }
+ contains(QT_CONFIG, phonon):!static:SUBDIRS += demos_mediaplayer
+-contains(QT_CONFIG, webkit):contains(QT_CONFIG, svg):!symbian:SUBDIRS += demos_browser
+ contains(QT_CONFIG, multimedia):SUBDIRS += demos_multimedia
+ contains(QT_CONFIG, declarative):SUBDIRS += demos_declarative
+ 
+-- 
+1.7.0.4
+

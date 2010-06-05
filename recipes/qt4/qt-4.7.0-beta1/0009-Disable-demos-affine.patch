@@ -1,0 +1,24 @@
+From ab87c21fab1b2bb3e593a27e4a08ba66e689f724 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matthias=20G=C3=BCnther?= <matgnt@gmail.com>
+Date: Thu, 13 May 2010 20:46:18 +0200
+Subject: [PATCH 9/9] Disable demos/affine
+
+---
+ demos/demos.pro |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/demos/demos.pro b/demos/demos.pro
+index a0691bc..082a77d 100644
+--- a/demos/demos.pro
++++ b/demos/demos.pro
+@@ -6,7 +6,6 @@ SUBDIRS     = \
+             demos_deform \
+             demos_gradients \
+             demos_pathstroke \
+-            demos_affine \
+             demos_composition \
+             demos_books \
+             demos_interview \
+-- 
+1.7.0.4
+
