@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.32.13"
 
 SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
-OEV = "oe2"
+OEV = "oe3"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -30,6 +30,8 @@ SRC_URI = "\
   file://0012-Fix-dynamic-command-queue-allocation.patch \
   file://0013-Debug-statements-for-testing.patch \
   file://0014-Fix-claim-of-2D-register-resource.patch \
+# fix for lost touchscreen https://docs.openmoko.org/trac/ticket/2328
+  file://touchscreen_ignoreunexpectedintr29.patch \
 "
 
 SRC_URI[stablepatch.md5sum] = "ba6abb1ffee513a1d4f831599ddae490"
