@@ -1,0 +1,102 @@
+diff --git a/drivers/input/touchscreen/s3c2410_ts.c b/drivers/input/touchscreen/s3c2410_ts.c
+index bcfdd00..73994ff 100644
+--- a/drivers/input/touchscreen/s3c2410_ts.c
++++ b/drivers/input/touchscreen/s3c2410_ts.c
+@@ -47,6 +47,9 @@
+  * 2009-04-09: Nelson Castillo <arhuaco@freaks-unidos.net>
+  *      - Use s3c-adc API (Vasily Khoruzhick <anarsoul@gmail.com> provided
+  *        a working example for a simpler version of this driver).
++
++ * 2010-06-01: Gennady Kupava <gb@bsdmn.com>
++ *      - Improve interrupt handling
+  */
+ 
+ #include <linux/errno.h>
+@@ -118,10 +121,15 @@ struct s3c2410ts {
+ 	struct kfifo *event_fifo;
+ 	struct s3c_adc_client *adc_client;
+ 	unsigned adc_selected;
++	int expectedintr; /* which interrupt we are waiting for */
+ };
+ 
+ static struct s3c2410ts ts;
+ 
++#define WAITFORINT_UP (0)
++#define WAITFORINT_DOWN (1)
++#define WAITFORINT_NOTHING (2)
++
+ static void __iomem *base_addr;
+ 
+ /*
+@@ -280,6 +288,19 @@ static irqreturn_t stylus_updown(int irq, void *dev_id)
+ 	ts.is_down = !(data0 & S3C2410_ADCDAT0_UPDOWN) &&
+ 		     !(data1 & S3C2410_ADCDAT0_UPDOWN);
+ 
++	/* situations below can actually happen on openmoko hardware while
++	   various debugging facilities are turned off */
++	if (ts.expectedintr == WAITFORINT_NOTHING)
++	  return IRQ_HANDLED;
++	if (!ts.is_down && ts.expectedintr == WAITFORINT_DOWN) {
++	  writel(WAIT4INT (0), base_addr + S3C2410_ADCTSC);
++	  return IRQ_HANDLED;
++	} else if (ts.is_down && ts.expectedintr == WAITFORINT_UP) {
++	  writel(WAIT4INT (1), base_addr + S3C2410_ADCTSC);
++	  return IRQ_HANDLED;
++	}
++	ts.expectedintr = WAITFORINT_NOTHING;
++
+ 	event_type = ts.is_down ? 'D' : 'U';
+ 
+ 	if (unlikely(__kfifo_put(ts.event_fifo, (unsigned char *)&event_type,
+@@ -289,8 +310,10 @@ static irqreturn_t stylus_updown(int irq, void *dev_id)
+ 
+ 	if (ts.is_down)
+ 		s3c2410_ts_start_adc_conversion();
+-	else
++	else {
++		ts.expectedintr = WAITFORINT_DOWN;
+ 		writel(WAIT4INT(0), base_addr + S3C2410_ADCTSC);
++	}
+ 
+ 	mod_timer(&event_send_timer, jiffies + 1);
+ 
+@@ -325,6 +348,7 @@ static void stylus_adc_action(unsigned p0, unsigned p1, unsigned *conv_left)
+ 	case -1:
+ 		/* Too much noise. Ignore the event. */
+ 		ts_filter_chain_clear(ts.chain);
++		ts.expectedintr = WAITFORINT_UP;
+ 		writel(WAIT4INT(1), base_addr + S3C2410_ADCTSC);
+ 		return;
+ 	};
+@@ -334,6 +358,7 @@ static void stylus_adc_action(unsigned p0, unsigned p1, unsigned *conv_left)
+ 		/* This will only happen if we have a bug. */
+ 		TSPRINTK("FIFO full\n");
+ 
++	ts.expectedintr = WAITFORINT_UP;
+ 	writel(WAIT4INT(1), base_addr + S3C2410_ADCTSC);
+ 	mod_timer(&event_send_timer, jiffies + 1);
+ 
+@@ -371,6 +396,7 @@ static int __init s3c2410ts_probe(struct platform_device *pdev)
+ 	if (!strcmp(pdev->name, "s3c2410-ts"))
+ 		s3c2410_ts_connect();
+ 
++	ts.expectedintr = WAITFORINT_DOWN;
+ 	writel(WAIT4INT(0), base_addr + S3C2410_ADCTSC);
+ 
+ 	/* Initialise input stuff */
+@@ -481,6 +507,7 @@ static int s3c2410ts_remove(struct platform_device *pdev)
+ 
+ static int s3c2410ts_suspend(struct platform_device *pdev, pm_message_t state)
+ {
++	ts.expectedintr = WAITFORINT_NOTHING;
+ 	writel(TSC_SLEEP, base_addr + S3C2410_ADCTSC);
+ 	writel(readl(base_addr + S3C2410_ADCCON) | S3C2410_ADCCON_STDBM,
+ 	       base_addr + S3C2410_ADCCON);
+@@ -492,6 +519,7 @@ static int s3c2410ts_suspend(struct platform_device *pdev, pm_message_t state)
+ static int s3c2410ts_resume(struct platform_device *pdev)
+ {
+ 	ts_filter_chain_clear(ts.chain);
++	ts.expectedintr = WAITFORINT_DOWN;
+ 	enable_irq(IRQ_TC);
+ 	writel(WAIT4INT(0), base_addr + S3C2410_ADCTSC);
+ 

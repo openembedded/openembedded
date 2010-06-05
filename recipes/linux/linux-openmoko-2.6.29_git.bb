@@ -7,12 +7,13 @@ KERNEL_VERSION = "2.6.29-rc3"
 SRCREV = "973a41fce60e5f6edfcf0eaf94056a57eee65e16"
 OMV = "oe11"
 PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCPV}"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
   file://fix-install.patch \
   file://0007-Enable-UBI-UBIFS.patch \
+  file://touchscreen_ignoreunexpectedintr29.patch \
 "
 S = "${WORKDIR}/git"
 
