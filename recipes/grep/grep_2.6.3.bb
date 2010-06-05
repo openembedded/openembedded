@@ -1,7 +1,9 @@
 LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
-PR = "r0"
+PR = "r1"
+
+DEPENDS += "xz-native"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.xz \
            file://uclibc-fix.patch"
