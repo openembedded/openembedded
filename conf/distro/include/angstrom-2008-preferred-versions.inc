@@ -5,7 +5,7 @@ require conf/distro/include/angstrom-codec-engine-${CE_VERSION}-preferred-versio
 
 PREFERRED_VERSION_autoconf = "2.65"
 PREFERRED_VERSION_autoconf-native = "2.65"
-PREFERRED_VERSION_automake-native = "1.10.3"
+PREFERRED_VERSION_automake-native = "1.11"
 PREFERRED_VERSION_busybox 	= "1.13.2"
 PREFERRED_VERSION_cairo		= "1.8.10"
 PREFERRED_VERSION_dbus 		= "1.2.24"
