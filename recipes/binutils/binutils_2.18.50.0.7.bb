@@ -1,7 +1,7 @@
-INC_PR = "r7"
-PR = "${INC_PR}.1"
 
 require binutils.inc
+PR = "${INC_PR}.1"
+
 LICENSE = "GPLv3"
 
 SRC_URI = "\

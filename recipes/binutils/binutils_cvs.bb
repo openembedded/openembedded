@@ -1,9 +1,8 @@
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/binutils-cvs"
 PV = "2.20+cvs${SRCDATE}"
-INC_PR = "r5"
-PR = "${INC_PR}.2"
 
 require binutils.inc
+PR = "${INC_PR}.2"
 
 S = "${WORKDIR}/src"
 EXTRA_OEMAKE = "configure-build-libiberty"

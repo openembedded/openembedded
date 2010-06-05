@@ -6,10 +6,14 @@ PACKAGES = ""
 EXTRA_OECONF = "--with-sysroot=${STAGING_DIR_TARGET} \
 		--program-prefix=${TARGET_PREFIX} \
 		--enable-install-libbfd \
-                --disable-werror"
+		--enable-shared \
+		--disable-werror \
+	       "
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
+	install -m 0644 libiberty/pic/libiberty.a \
+	${D}${libdir}/libiberty_pic.a
 
 	# We don't really need these, so we'll remove them...
 	rm -rf ${D}${CROSS_DIR}/lib/ldscripts
@@ -22,8 +26,4 @@ do_install () {
 	rmdir ${D}${CROSS_DIR}/${libdir} || :
 	rmdir ${D}${CROSS_DIR}/${libdir}64 || :
 	rmdir ${D}${CROSS_DIR}/${prefix} || :
-}
-
-do_stage () {
-	use_do_install_for_stage
 }

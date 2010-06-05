@@ -1,5 +1,3 @@
-PR = "r1"
-
 CROSSTOOL_PATCH_URL = "http://www.kegel.com/crosstool/crosstool-0.43/patches/binutils-2.16.1/"
 SRC_URI = \
     "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2;name=archive \
@@ -13,6 +11,8 @@ SRC_URI = \
 
 
 require binutils.inc
+
+PR = "${INC_PR}.0"
 
 SRC_URI[archive.md5sum] = "6a9d529efb285071dad10e1f3d2b2967"
 SRC_URI[archive.sha256sum] = "351a6846ee179a37ed87a487971547159a7f4f92a1dec598c727f184a0de61ae"

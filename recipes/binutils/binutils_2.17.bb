@@ -1,7 +1,6 @@
 require binutils.inc
 require binutils-avr32.inc
 
-INC_PR = "r7"
 PR = "${INC_PR}.1"
 
 SRC_URI = \

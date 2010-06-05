@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 
+INC_PR = "r10"
+
 inherit autotools gettext
 
 PACKAGES += "${PN}-symlinks"
