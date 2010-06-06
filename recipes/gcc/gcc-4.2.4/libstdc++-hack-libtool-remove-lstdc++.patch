@@ -1,0 +1,18 @@
+This is a hacked backport of backport http://gcc.gnu.org/bugzilla/show_bug.cgi?id=35942
+which is in no way similar in implementation but achieves same results. libtool in
+gcc 4.2 does not have postdeps_CXX separated out so it can not be used.
+
+-Khem
+
+Index: gcc-4.2.4/Makefile.in
+===================================================================
+--- gcc-4.2.4.orig/Makefile.in	2010-06-06 09:49:36.724619615 -0700
++++ gcc-4.2.4/Makefile.in	2010-06-06 10:03:59.092090624 -0700
+@@ -33586,6 +33586,7 @@ all-target-libstdc++-v3: configure-targe
+ 	@: $(MAKE); $(unstage)
+ 	@r=`${PWD_COMMAND}`; export r; \
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
++	sed -i 's|postdeps=\"-lstdc++|postdeps=\"|' $(TARGET_SUBDIR)/libstdc++-v3/libtool; \
+ 	$(RAW_CXX_TARGET_EXPORTS) \
+ 	(cd $(TARGET_SUBDIR)/libstdc++-v3 && \
+ 	  $(MAKE) $(TARGET_FLAGS_TO_PASS) 'CXX=$$(RAW_CXX_FOR_TARGET)' 'CXX_FOR_TARGET=$$(RAW_CXX_FOR_TARGET)'  $(TARGET-target-libstdc++-v3))

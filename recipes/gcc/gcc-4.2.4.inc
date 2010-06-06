@@ -4,7 +4,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch \
@@ -39,6 +39,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://gcc-4.0.2-e300c2c3.patch \
 	file://fortran-static-linking.patch \
 	file://intermask-bigendian.patch \
+	file://libstdc++-hack-libtool-remove-lstdc++.patch \
 "
 
 SRC_URI_append_ep93xx = " \
@@ -77,7 +78,19 @@ SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch "
 SRC_URI_append_sh4  = " file://sh_unwind.patch \
 			file://cppdefault_cross.patch \
 		      "
+# with sysroot this change is not needed for gcc 4.3+ but its needed
+# for older compilers because of bug in libtool as well as this PR
+# http://gcc.gnu.org/bugzilla/show_bug.cgi?id=5291
+# we append the .la munging specially for libstdc++ and libsupc++ here
+# This change if needed for other compilers in use should be put
+# in there specific inc file.
 
+do_install_append () {
+        for d in ${target_libdir} ${target_libdir}/nof; do
+                sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-lm '|" ${D}$d/libsupc++.la || true
+                sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-lm '|" ${D}$d/libstdc++.la || true
+        done
+}
 
 # Language Overrides
 FORTRAN = ""
