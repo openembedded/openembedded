@@ -20,7 +20,7 @@ LD = "${CC}"
 CFLAGS =+ "-I${S}/src"
 
 PARALLEL_MAKE = ""
-EXTRA_OEMAKE = "-e 'STRIP=echo' 'LIB_OBJS=-lc -lsysfs' LEX='${STAGING_BINDIR_NATIVE}/flex'"
+EXTRA_OEMAKE = "-e 'STRIP=echo' 'LIB_OBJS=-lc -lsysfs' LEX='flex'"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
