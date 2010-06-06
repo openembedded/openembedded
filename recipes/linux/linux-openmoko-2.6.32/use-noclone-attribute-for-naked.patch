@@ -1,0 +1,144 @@
+From 583c7d937789398cb6e37989ef91cf96c16da204 Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Sun, 6 Jun 2010 03:28:43 +0200
+Subject: [PATCH] add noinline and noclone attributes to naked functions
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ arch/arm/mm/copypage-feroceon.c |    4 ++--
+ arch/arm/mm/copypage-v4wb.c     |    4 ++--
+ arch/arm/mm/copypage-v4wt.c     |    4 ++--
+ arch/arm/mm/copypage-xsc3.c     |    4 ++--
+ include/linux/compiler-gcc.h    |   11 ++++++++++-
+ include/linux/compiler-gcc4.h   |    2 ++
+ 6 files changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/mm/copypage-feroceon.c b/arch/arm/mm/copypage-feroceon.c
+index 70997d5..dd9598b 100644
+--- a/arch/arm/mm/copypage-feroceon.c
++++ b/arch/arm/mm/copypage-feroceon.c
+@@ -18,7 +18,7 @@ feroceon_copy_user_page(void *kto, const void *kfrom)
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4-r9, lr}		\n\
+-	mov	ip, %0				\n\
++	mov	ip, %2				\n\
+ 1:	mov	lr, r1				\n\
+ 	ldmia	r1!, {r2 - r9}			\n\
+ 	pld	[lr, #32]			\n\
+@@ -64,7 +64,7 @@ feroceon_copy_user_page(void *kto, const void *kfrom)
+ 	mcr	p15, 0, ip, c7, c10, 4		@ drain WB\n\
+ 	ldmfd	sp!, {r4-r9, pc}"
+ 	:
+-	: "I" (PAGE_SIZE));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE));
+ }
+ 
+ void feroceon_copy_user_highpage(struct page *to, struct page *from,
+diff --git a/arch/arm/mm/copypage-v4wb.c b/arch/arm/mm/copypage-v4wb.c
+index 9ab0984..7bc0ac7 100644
+--- a/arch/arm/mm/copypage-v4wb.c
++++ b/arch/arm/mm/copypage-v4wb.c
+@@ -27,7 +27,7 @@ v4wb_copy_user_page(void *kto, const void *kfrom)
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4, lr}			@ 2\n\
+-	mov	r2, %0				@ 1\n\
++	mov	r2, %2				@ 1\n\
+ 	ldmia	r1!, {r3, r4, ip, lr}		@ 4\n\
+ 1:	mcr	p15, 0, r0, c7, c6, 1		@ 1   invalidate D line\n\
+ 	stmia	r0!, {r3, r4, ip, lr}		@ 4\n\
+@@ -44,7 +44,7 @@ v4wb_copy_user_page(void *kto, const void *kfrom)
+ 	mcr	p15, 0, r1, c7, c10, 4		@ 1   drain WB\n\
+ 	ldmfd	 sp!, {r4, pc}			@ 3"
+ 	:
+-	: "I" (PAGE_SIZE / 64));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE / 64));
+ }
+ 
+ void v4wb_copy_user_highpage(struct page *to, struct page *from,
+diff --git a/arch/arm/mm/copypage-v4wt.c b/arch/arm/mm/copypage-v4wt.c
+index 300efaf..35bf609 100644
+--- a/arch/arm/mm/copypage-v4wt.c
++++ b/arch/arm/mm/copypage-v4wt.c
+@@ -25,7 +25,7 @@ v4wt_copy_user_page(void *kto, const void *kfrom)
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4, lr}			@ 2\n\
+-	mov	r2, %0				@ 1\n\
++	mov	r2, %2				@ 1\n\
+ 	ldmia	r1!, {r3, r4, ip, lr}		@ 4\n\
+ 1:	stmia	r0!, {r3, r4, ip, lr}		@ 4\n\
+ 	ldmia	r1!, {r3, r4, ip, lr}		@ 4+1\n\
+@@ -40,7 +40,7 @@ v4wt_copy_user_page(void *kto, const void *kfrom)
+ 	mcr	p15, 0, r2, c7, c7, 0		@ flush ID cache\n\
+ 	ldmfd	sp!, {r4, pc}			@ 3"
+ 	:
+-	: "I" (PAGE_SIZE / 64));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE / 64));
+ }
+ 
+ void v4wt_copy_user_highpage(struct page *to, struct page *from,
+diff --git a/arch/arm/mm/copypage-xsc3.c b/arch/arm/mm/copypage-xsc3.c
+index bc4525f..27dc363 100644
+--- a/arch/arm/mm/copypage-xsc3.c
++++ b/arch/arm/mm/copypage-xsc3.c
+@@ -34,7 +34,7 @@ xsc3_mc_copy_user_page(void *kto, const void *kfrom)
+ {
+ 	asm("\
+ 	stmfd	sp!, {r4, r5, lr}		\n\
+-	mov	lr, %0				\n\
++	mov	lr, %2				\n\
+ 						\n\
+ 	pld	[r1, #0]			\n\
+ 	pld	[r1, #32]			\n\
+@@ -67,7 +67,7 @@ xsc3_mc_copy_user_page(void *kto, const void *kfrom)
+ 						\n\
+ 	ldmfd	sp!, {r4, r5, pc}"
+ 	:
+-	: "I" (PAGE_SIZE / 64 - 1));
++	: "r" (kto), "r" (kfrom), "I" (PAGE_SIZE / 64 - 1));
+ }
+ 
+ void xsc3_mc_copy_user_highpage(struct page *to, struct page *from,
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index a3ed7cb..132a651 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -58,8 +58,12 @@
+  * naked functions because then mcount is called without stack and frame pointer
+  * being set up and there is no chance to restore the lr register to the value
+  * before mcount was called.
++ *
++ * The asm() bodies of naked functions often depend on standard calling conventions,
++ * therefore they must be noinline and noclone.  GCC 4.[56] currently fail to enforce
++ * this, so we must do so ourselves.  See GCC PR44290.
+  */
+-#define __naked				__attribute__((naked)) notrace
++#define __naked				__attribute__((naked)) noinline __noclone notrace
+ 
+ #define __noreturn			__attribute__((noreturn))
+ 
+@@ -84,3 +88,8 @@
+ #define _gcc_header(x) __gcc_header(linux/compiler-gcc##x.h)
+ #define gcc_header(x) _gcc_header(x)
+ #include gcc_header(__GNUC__)
++
++#if !defined(__noclone)
++#define __noclone	/* not needed */
++#endif
++
+diff --git a/include/linux/compiler-gcc4.h b/include/linux/compiler-gcc4.h
+index 450fa59..cd5932a 100644
+--- a/include/linux/compiler-gcc4.h
++++ b/include/linux/compiler-gcc4.h
+@@ -36,4 +36,6 @@
+    the kernel context */
+ #define __cold			__attribute__((__cold__))
+ 
++/* Mark a function definition as prohibited from being cloned. */
++#define __noclone      __attribute__((__noclone__))
+ #endif
+-- 
+1.7.1
+

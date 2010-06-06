@@ -14,6 +14,8 @@ SRC_URI = "\
   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;apply=yes;name=stablepatch \
 # build fix
   file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch \
+# fix runtime issue when built with gcc-4.5
+  file://use-noclone-attribute-for-naked.patch \
 # patches from Radek Polak used in qtmoko
   file://0002-accels.patch.patch \
   file://0003-usbhost.patch.patch \
