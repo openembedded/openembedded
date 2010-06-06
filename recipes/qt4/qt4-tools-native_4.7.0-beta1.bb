@@ -2,6 +2,8 @@ DEFAULT_PREFERENCE = "-1"
 
 require qt4-tools-native.inc
 LICENSE = "LGPLv2.1 GPLv3"
+
+PV = "4.6.2+4.7.0-beta1"
 PR = "${INC_PR}.0"
 
 EXTRA_OECONF += " -no-fast -silent -no-rpath"
