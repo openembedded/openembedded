@@ -1,6 +1,0 @@
-PR = "${INC_PR}.0"
-include pmacct.inc
-
-SRC_URI[md5sum] = "82f11cac3fb14fc7f4754918272f685f"
-SRC_URI[sha256sum] = "e562a416b2483e4611764e9633e8b8b50b5ce008322f27994e6af6479a39f65a"
-
