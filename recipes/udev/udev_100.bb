@@ -15,9 +15,9 @@ PR = "${INC_PR}.0"
 
 LD = "${CC}"
 
-SRC_URI += "file://noasmlinkage.patch;patch=1 \
-	    file://flags.patch;patch=1 \
-	    file://mtd-exclude-persistent.patch;patch=1 \
+SRC_URI += "file://noasmlinkage.patch \
+	    file://flags.patch \
+	    file://mtd-exclude-persistent.patch \
 	    file://mount.blacklist \
 	    file://mount.sh \
 	   "
