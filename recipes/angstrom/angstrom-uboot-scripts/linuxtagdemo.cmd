@@ -25,7 +25,13 @@ setenv musbfifomode '5'
 
 # mpurate is read from omap registers on omap3530 (which x-load has set to 600mhz?), on xm, uboot sets this to 1GHz
 #setenv mpurate '720'  
-setenv memmap 'mem=80M mem=128M@0x88000000'
+setenv memmap 'mem=80M mem=384M@0x88000000'
+if "${beaglerev}" = "AxBx"; then
+ setenv memmap 'mem=80M'
+fi
+if "${beaglerev}" = "Cx"; then
+ setenv memmap 'mem=80M mem=128M@0x88000000'
+fi
 setenv vram '16M omapfb.vram=0:8M,1:4M,2:4M'
 setenv defaultdisplay 'dvi'
 setenv dvimode 'hd720'
