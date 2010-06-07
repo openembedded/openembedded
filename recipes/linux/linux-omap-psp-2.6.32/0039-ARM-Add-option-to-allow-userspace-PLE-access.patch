@@ -1,7 +1,7 @@
-From 7ba11a1ce9a6dc90dd17aeff30127217fa604ecf Mon Sep 17 00:00:00 2001
+From 3a9cdc003dd90261fa0473418daf792162d59de2 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Tue, 10 Nov 2009 00:41:54 +0000
-Subject: [PATCH 39/43] ARM: Add option to allow userspace PLE access
+Subject: [PATCH 39/48] ARM: Add option to allow userspace PLE access
 
 This adds a Kconfig option to allow userspace to access the L2 preload
 engine (PLE) found in Cortex-A8.

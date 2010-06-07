@@ -1,7 +1,7 @@
-From a27b4854330f9f7430c757bd5b4476fb85bae6c6 Mon Sep 17 00:00:00 2001
+From dc40bf1b03de2987fc2cfd2774e15b47e2c69b92 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 12:45:20 -0800
-Subject: [PATCH 11/43] ASoC: enable audio capture by default for twl4030
+Subject: [PATCH 11/48] ASoC: enable audio capture by default for twl4030
 
 ---
  sound/soc/codecs/twl4030.c |    4 ++--

@@ -1,7 +1,7 @@
-From f1f418ef2fd457872e4ca7da1789bcfd8f97bca8 Mon Sep 17 00:00:00 2001
+From c250cb2423618f253b91092d50420a20ba5fc914 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Sat, 28 Mar 2009 13:21:55 +0000
-Subject: [PATCH 37/43] ARM: Print warning on alignment trap in kernel mode
+Subject: [PATCH 37/48] ARM: Print warning on alignment trap in kernel mode
 
 Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---

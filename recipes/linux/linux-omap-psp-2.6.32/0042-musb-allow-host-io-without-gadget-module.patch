@@ -1,7 +1,7 @@
-From f769159cae4d1ae42589d180ac8a376ac3ad687f Mon Sep 17 00:00:00 2001
+From 3770853bc0a25112b5f50811c75079a41cdb81da Mon Sep 17 00:00:00 2001
 From: Ajay Kumar Gupta <ajay.gupta@ti.com>
 Date: Wed, 14 Apr 2010 16:08:37 +0530
-Subject: [PATCH 42/43] musb: allow host io without gadget module
+Subject: [PATCH 42/48] musb: allow host io without gadget module
 
 Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
 ---
@@ -42,10 +42,10 @@ index 98874c5..a448fa6 100644
  		musb->xceiv->default_a = 0;
  		musb->xceiv->state = OTG_STATE_B_IDLE;
 diff --git a/drivers/usb/musb/musb_gadget.c b/drivers/usb/musb/musb_gadget.c
-index c0e2efc..e0a6015 100644
+index fd842af..b9ef9f3 100644
 --- a/drivers/usb/musb/musb_gadget.c
 +++ b/drivers/usb/musb/musb_gadget.c
-@@ -1765,24 +1765,6 @@ int usb_gadget_register_driver(struct usb_gadget_driver *driver)
+@@ -1768,24 +1768,6 @@ int usb_gadget_register_driver(struct usb_gadget_driver *driver)
  		otg_set_peripheral(musb->xceiv, &musb->g);
  
  		spin_unlock_irqrestore(&musb->lock, flags);
@@ -70,7 +70,7 @@ index c0e2efc..e0a6015 100644
  	}
  
  	return retval;
-@@ -1878,14 +1860,6 @@ int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
+@@ -1881,14 +1863,6 @@ int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
  		retval = -EINVAL;
  	spin_unlock_irqrestore(&musb->lock, flags);
  

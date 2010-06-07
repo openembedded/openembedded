@@ -1,7 +1,7 @@
-From 16ac58809c76a870e03ae298cef55e0c337423ea Mon Sep 17 00:00:00 2001
+From 98916b700d91e3a2cf811cdba0ed5a1903dcb1ce Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 13 May 2010 21:43:08 +0200
-Subject: [PATCH 44/44] ARM: OMAP: beagle: every known beagle (except revB) uses 2 chipselects so don't use NULL for the second chipselect timings
+Subject: [PATCH 44/48] ARM: OMAP: beagle: every known beagle (except revB) uses 2 chipselects so don't use NULL for the second chipselect timings
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    4 ++--

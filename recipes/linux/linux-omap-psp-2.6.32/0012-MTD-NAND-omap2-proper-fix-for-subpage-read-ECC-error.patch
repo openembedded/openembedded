@@ -1,7 +1,7 @@
-From 6ea180bb9b73b36b5b3ff47fdd1d3d0194ee03c1 Mon Sep 17 00:00:00 2001
+From 2abf4bf06de06d2e2f653f06272ca487b337197a Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 31 Dec 2009 07:05:02 -0800
-Subject: [PATCH 12/43] MTD: NAND: omap2: proper fix for subpage read ECC errors
+Subject: [PATCH 12/48] MTD: NAND: omap2: proper fix for subpage read ECC errors
 
 ---
  drivers/mtd/nand/omap2.c |   11 +++++++----

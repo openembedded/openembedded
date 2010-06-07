@@ -1,7 +1,7 @@
-From 95d7fc0cb0c4367c378ed640d6bb49ab6dc100dc Mon Sep 17 00:00:00 2001
+From f79f1a7c2f6df54edd83932f4074c3042525a599 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <sakoman@gmail.com>
 Date: Tue, 15 Dec 2009 15:34:29 -0800
-Subject: [PATCH 03/43] ARM: OMAP: add support for TCT Zippy to Beagle board file
+Subject: [PATCH 03/48] ARM: OMAP: add support for TCT Zippy to Beagle board file
 
 Signed-off-by: Steve Sakoman <sakoman@gmail.com>
 ---

@@ -1,0 +1,70 @@
+From fb0e78890ed606930231a32ea7d9b84ce0a88f58 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sat, 15 May 2010 21:47:32 +0200
+Subject: [PATCH 45/48] ARM: OMAP: beagle: add support for beagleFPGA expansionboard: http://members.cox.net/ebrombaugh1/embedded/beagle/beagle_fpga.html
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 078e026..b313350 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -24,6 +24,7 @@
+ #include <linux/irq.h>
+ #include <linux/input.h>
+ #include <linux/gpio_keys.h>
++#include <linux/spi/spi.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -47,6 +48,7 @@
+ #include <plat/timer-gp.h>
+ #include <plat/clock.h>
+ #include <plat/omap-pm.h>
++#include <plat/mcspi.h>
+ 
+ #include "mux.h"
+ #include "mmc-twl4030.h"
+@@ -609,6 +611,24 @@ static struct platform_device keys_gpio = {
+ 	},
+ };
+ 
++static struct spi_board_info beaglefpga_mcspi_board_info[] = {
++	// spi 4.0
++	{
++		.modalias	= "spidev",
++		.max_speed_hz	= 48000000, //48 Mbps
++		.bus_num	= 4,
++		.chip_select	= 0,	
++		.mode = SPI_MODE_1,
++	},
++};
++
++static void __init beaglefpga_init_spi(void)
++{
++	/* hook the spi ports to the spidev driver */
++	spi_register_board_info(beaglefpga_mcspi_board_info,
++		ARRAY_SIZE(beaglefpga_mcspi_board_info));
++}
++
+ static void __init omap3_beagle_init_irq(void)
+ {
+         if (cpu_is_omap3630())
+@@ -769,6 +789,12 @@ static void __init omap3_beagle_init(void)
+ 		gpio_export(162, 1);
+ 	}
+ 
++	if(!strcmp(expansionboard_name, "beaglefpga"))
++	{  
++		printk(KERN_INFO "Beagle expansionboard: Using McSPI for SPI\n");
++		beaglefpga_init_spi();
++	}
++
+ 	usb_musb_init();
+ 	usb_ehci_init(&ehci_pdata);
+ 	omap3beagle_flash_init();
+-- 
+1.6.6.1
+

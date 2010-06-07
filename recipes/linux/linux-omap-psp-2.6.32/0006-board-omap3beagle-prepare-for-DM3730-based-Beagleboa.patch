@@ -1,7 +1,7 @@
-From 9f69d9bbab1d24da77864b48dbc5d8d4db9f4cdf Mon Sep 17 00:00:00 2001
+From 9d72ec0f11e370715e19ea51702b386b41252438 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Wed, 27 Jan 2010 21:57:13 +0100
-Subject: [PATCH 06/43] board-omap3beagle: prepare for DM3730 based BeagleboardXM
+Subject: [PATCH 06/48] board-omap3beagle: prepare for DM3730 based BeagleboardXM
 
 * OPP changes copy/pasted from board-omap3evm.c
 	* EHCI changes copy/pasted from Steve Kipisz' 2.6.33rcX work

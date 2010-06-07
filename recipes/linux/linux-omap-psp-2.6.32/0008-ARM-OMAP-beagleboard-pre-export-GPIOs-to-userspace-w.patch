@@ -1,7 +1,7 @@
-From dec5927ff1ccda36cc982509c9a9e92ff9d49af7 Mon Sep 17 00:00:00 2001
+From a48d37f4280918f3c535f350647125358e3dc1fc Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 3 May 2010 21:38:34 +0200
-Subject: [PATCH 08/43] ARM: OMAP: beagleboard: pre-export GPIOs to userspace when using a Tincantools trainerboard
+Subject: [PATCH 08/48] ARM: OMAP: beagleboard: pre-export GPIOs to userspace when using a Tincantools trainerboard
 
 This really needs a for loop, patches welcome
 ---

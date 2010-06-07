@@ -6,7 +6,7 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|dm3730-am3715-evm|omap3-touchbook|overo"
 
 # This is the v2.6.32_OMAPPSP_03.00.01.06 branch
-SRCREV = "627293ad28604b22612f9a4a318f64cfab241e22"
+SRCREV = "a6bad4464f985fdd3bed72e1b82dcbfc004d7869"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
@@ -56,6 +56,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://0042-musb-allow-host-io-without-gadget-module.patch \
            file://0043-MTD-silence-ecc-errors-on-mtdblock0.patch \
            file://0044-ARM-OMAP-beagle-every-known-beagle-except-revB-uses-.patch \
+           file://0045-ARM-OMAP-beagle-add-support-for-beagleFPGA-expansion.patch \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

@@ -1,7 +1,7 @@
-From 9bd77da63888873c8ebb0c6a70835f2c432a0337 Mon Sep 17 00:00:00 2001
+From 6678e3fcadf0e562b30798791d6396d7b57c3b7b Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Mon, 26 Apr 2010 11:17:26 -0700
-Subject: [PATCH 43/43] MTD: silence ecc errors on mtdblock0
+Subject: [PATCH 43/48] MTD: silence ecc errors on mtdblock0
 
 mtdblock0 is the x-load partition, which uses hw ecc
 this confuses linux, which uses sw ecc
