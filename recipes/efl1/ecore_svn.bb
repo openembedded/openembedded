@@ -12,7 +12,6 @@ ECORE_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \
   --x-libraries=${STAGING_LIBDIR} \
   --enable-simple-x11 \
-  --enable-ecore-txt \
   --enable-ecore-config \
   --enable-ecore-x \
   --enable-ecore-job \
