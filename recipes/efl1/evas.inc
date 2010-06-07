@@ -30,12 +30,12 @@ do_install_append() {
     find "${D}" -name .debug -type d -exec rm -rf {} \;
 }
 
-FILES_${SRCNAME}-dev += "${libdir}/evas/modules/*/*/*/*.a ${libdir}/evas/modules/*/*/*/*.la"
-FILES_${SRCNAME}-dbg += "${libdir}/evas/modules/*/*/*/.debug/"
+FILES_${PN}-dev += "${libdir}/evas/modules/*/*/*/*.a ${libdir}/evas/modules/*/*/*/*.la"
+FILES_${PN}-dbg += "${libdir}/evas/modules/*/*/*/.debug/"
 
 PACKAGES_DYNAMIC = "evas-engine-* evas-loader-* evas-saver-*"
 
-RRECOMMENDS_${SRCNAME} = "\
+RRECOMMENDS_${PN} = "\
   evas-engine-buffer \
   evas-engine-fb \
   evas-engine-software-generic \
@@ -52,9 +52,9 @@ RRECOMMENDS_${SRCNAME} = "\
 # Some upgrade path tweaking
 AUTO_LIBNAME_PKGS = ""
 
-RREPLACES_${SRCNAME} = "libevas-ver-pre-svn-00-0 libevas-ver-pre-svn-01-0"
+RREPLACES_${PN} = "libevas-ver-pre-svn-00-0 libevas-ver-pre-svn-01-0"
 
-RREPLACES_${SRCNAME}-tests = "libevas-ver-pre-svn-00-tests libevas-ver-pre-svn-01-tests"
+RREPLACES_${PN}-tests = "libevas-ver-pre-svn-00-tests libevas-ver-pre-svn-01-tests"
 
 RREPLACES_evas-loader-pmaps = "liblibevas-ver-pre-svn-00-loader-pmaps libevas-ver-pre-svn-00-loader-pmaps "
 RREPLACES_evas-loader-eet = "liblibevas-ver-pre-svn-00-loader-eet libevas-ver-pre-svn-00-loader-eet "
@@ -80,6 +80,6 @@ RREPLACES_evas-engine-software-x11 = "liblibevas-ver-pre-svn-00-engine-software-
 
 
 # disabling this, since (due to OE bugs) it drags in whole Gtk+
-#RRECOMMENDS_${SRCNAME} += "\
+#RRECOMMENDS_${PN} += "\
 #  libevas-loader-svg \
 #"
