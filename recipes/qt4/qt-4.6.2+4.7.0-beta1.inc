@@ -13,10 +13,8 @@ SRC_URI = "\
 	file://0003-Disable-examples-designer.patch \
 	file://0004-Disable-exaqmples-dbus-remotecontrolledcar.patch \
 	file://0005-Disable-examples-help.patch \
-	file://0006-Disable-demos-browser.patch \
 	file://0007-Disable-demos-qtdemos.patch \
 	file://0008-Disable-examples-declarative.patch \
-	file://0009-Disable-demos-affine.patch \
 	file://g++.conf \
 	file://linux.conf \
            "
