@@ -41,6 +41,7 @@ CONFFILES_${PN}-config = " \
   ${sysconfdir}/freesmartphone/conf/palm_pre/fsodeviced.conf \
   ${sysconfdir}/freesmartphone/conf/htc_qualcomm_dream/fsodeviced.conf \
   ${sysconfdir}/freesmartphone/conf/htc_qualcomm_msm/fsodeviced.conf \
+  ${sysconfdir}/freesmartphone/conf/motorola_ezx/fsodeviced.conf \
 "
 RDEPENDS_${PN} += "${PN}-config"
 
