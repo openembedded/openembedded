@@ -13,6 +13,8 @@ do_package_write_deb[rdeptask] = "do_package"
 do_package_write_tar[rdeptask] = "do_package"
 do_package_write_rpm[rdeptask] = "do_package"
 
+inherit utils
+
 python debian_package_name_hook () {
 	import glob, copy, stat, errno, re
 
@@ -54,7 +56,7 @@ python debian_package_name_hook () {
 				for f in files:
 					if so_re.match(f):
 						fp = os.path.join(root, f)
-						cmd = (bb.data.getVar('BUILD_PREFIX', d, 1) or "") + "objdump -p " + fp + " 2>/dev/null"
+						cmd = "PATH=" + bb.data.getVar('PATH', d, 1) + " " + (bb.data.getVar('TARGET_PREFIX', d, 1) or "") + "objdump -p " + fp + " 2>/dev/null"
 						fd = os.popen(cmd)
 						lines = fd.readlines()
 						fd.close()
