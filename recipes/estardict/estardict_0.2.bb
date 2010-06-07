@@ -4,6 +4,7 @@ AUTHOR = "Luca Vaudano"
 LICENSE = "GPLv3"
 SECTION = "e/apps"
 DEPENDS = "elementary"
+PR = "r1"
 
 SRC_URI = "http://www.vaudano.eu/projects/${PN}/${PN}-${PV}.tar.gz;name=archive"
 SRC_URI[archive.md5sum] = "2aaad7efc6658539f68f8cf093dd4361"

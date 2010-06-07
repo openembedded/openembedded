@@ -8,7 +8,7 @@ DEPENDS = "elementary libeflvala libical"
 RDEPENDS_${PN} = "atd alsa-utils-amixer ttf-dejavu-sans libical"
 RSUGGESTS = "mplayer alsa-utils-aplay frameworkd"
 PV = "0.4+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master"
 

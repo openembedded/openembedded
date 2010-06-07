@@ -6,7 +6,7 @@ DEPENDS = "edje-native elementary iksemel gnutls eet evas ecore eina"
 HOMEPAGE = "http://jefliks.sourceforge.net/"
 AUTHOR = "Phoenix Kayo <kayo.k11.4@gmail.com>"
 PV = "0.0.2b+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig
 
