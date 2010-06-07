@@ -1,0 +1,4 @@
+#! /bin/sh
+set -x
+gst-launch udpsrc port=5434 caps="application/x-rtp, payload=96, clock-rate=90000, encoding-name=MP4V-ES" ! rtpmp4vdepay ! video/mpeg, mpegversion=4, systemstream=false, framerate=\(fraction\)23/1, width=1280, height=720, codec_data=\(buffer\)000001010000012000845d4c294022d0a21f ! ffdec_mpeg4 ! dmaiperf print-arm-load=true ! omapdmaifbsink
+

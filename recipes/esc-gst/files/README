@@ -1,0 +1,67 @@
+       Script           |              Description
+------------------------+-------------------------------------------
+
+Setup
+
+s                         Set PATH and DISPLAY
+
+
+Audio
+
+a0                        ARM based MP3 audio decode
+a1 [wave] [duration]      Audio test source plays out ALSA audio out
+a2                        ARM based FLAC audio decode
+a3                        ARM based MP3 audio decode
+a4                        ARM based AAC audio decode
+a5 [duration]             DSP based AAC audio decode
+a6 [duration]             ALSA audio in to ALSA audio out  
+
+
+Video
+
+v1 [pattern]              Video test source displays on X windows using XVideo
+v2 [pattern]              Warped video test source displays on X windows
+v3 [pattern]              Edge detection video test source displays on 
+                          X windows
+v4 [pattern]              Vertigo video test source displays on X windows
+
+
+Demultiplexing
+
+d1 [duration]             Figure-it-out-yourself decodebin audio example 
+                          (verbose enabled)
+d2 [duration]             Same as d1 with filter to just list element names
+d3 [duration]             QuickTime audio with DSP based decode to audio out
+d4 [duration]             AVI video MPEG2 and audio MP3 using ARM decode
+d5                        YouTube FLV video VP and audio MP3 using ARM decode
+d6 [duration]             QuickTime DSP video decode and ARM audio (AAC) decode 
+
+Compiling source code
+
+c1                        Compile and run audio example a_gst.c
+
+GStreamer Daemon
+
+g1                        Start GStreamer Daemon
+g2                        Create QuickTime (d4) pipeline
+g3                        Change pipeline to pause state
+g4                        Change pipeline to play state
+g5                        Change pipeline to pause state
+g6                        Change pipeline to play state
+g7                        Set speed to 2x
+g8                        Set speed to 1/2
+g9                        Kill pipeline (set pipeline to NULL)
+
+
+Performance measurement
+
+p1                        YouTube FLV (d5) with performance data
+
+
+Networking
+
+n1                        Reminder text on how to start live555
+n2 [host IP address]      RTSP stream MP3 audio from host
+n3 [host IP address]      RTP stream send audio data
+n4                        RTP stream receive audio data
+n5                        Stream video from Leopard Board 365

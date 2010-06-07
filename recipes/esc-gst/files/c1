@@ -1,0 +1,8 @@
+#! /bin/sh
+set -x
+
+export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+
+gcc -Wall $(pkg-config --cflags --libs gstreamer-0.10) a_gst.c -o a_gst
+
+a_gst /usr/share/esc-media/bbb.mp3

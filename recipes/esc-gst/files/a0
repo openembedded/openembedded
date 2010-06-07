@@ -1,0 +1,3 @@
+#! /bin/sh
+set -x
+gst-launch filesrc location=/usr/share/esc-media/bbb.mp3 ! mad ! alsasink
