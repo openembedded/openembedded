@@ -6,6 +6,7 @@
 #
 
 do_rootfs[depends] += "opkg-native:do_populate_sysroot"
+do_rootfs[lockfiles] = "${DEPLOY_DIR_IPK}.lock"
 
 IPKG_TMP_DIR = "${IMAGE_ROOTFS}-tmp"
 IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} -t ${IPKG_TMP_DIR} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
