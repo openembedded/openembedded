@@ -3,8 +3,8 @@ require linux-openmoko.inc
 
 KERNEL_RELEASE="2.6.34"
 
-SRCREV = "dd1225cc08c3375bf80289ac1965c724881b149a"
-OEV = "oe3"
+SRCREV = "7d1467b5820a384e3e274ee051f44ff749c5ab71"
+OEV = "oe4"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -15,6 +15,7 @@ SRC_URI = "\
   file://touchscreen_ignoreunexpectedintr34.patch \
 # fix runtime issue when built with gcc-4.5
   file://use-noclone-attribute-for-naked.patch \
+  file://pcf.patch \
 # patches from Thomas White's gdrm-for-merging branch
   file://0001-DRM-for-platform-devices.patch \
   file://0002-Glamo-DRM-and-KMS-driver.patch \

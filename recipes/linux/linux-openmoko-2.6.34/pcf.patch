@@ -1,0 +1,70 @@
+From 52a3e211599d22d03411549633869b9d3ea57d7e Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Mon, 7 Jun 2010 23:45:10 +0200
+Subject: [PATCH] pcf50633 fix suspend/resume (slow resume bug #2337)
+
+---
+ drivers/mfd/pcf50633-core.c |   28 ++++++++++++++++------------
+ drivers/mfd/pcf50633-irq.c  |    5 ++++-
+ 2 files changed, 20 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mfd/pcf50633-core.c b/drivers/mfd/pcf50633-core.c
+index 9c14dbf..84673a9 100644
+--- a/drivers/mfd/pcf50633-core.c
++++ b/drivers/mfd/pcf50633-core.c
+@@ -238,24 +237,30 @@ pcf50633_client_dev_register(struct pcf50633 *pcf, const char *name,
+ }
+ 
+ #ifdef CONFIG_PM
+-static int pcf50633_suspend(struct i2c_client *client, pm_message_t state)
++
++static int pcf50633_suspend(struct device *dev)
+ {
+-	struct pcf50633 *pcf;
+-	pcf = i2c_get_clientdata(client);
++	struct pcf50633 *pcf = dev_get_drvdata(dev);
+ 
+ 	return pcf50633_irq_suspend(pcf);
+ }
+ 
+-static int pcf50633_resume(struct i2c_client *client)
++static int pcf50633_resume(struct device *dev)
+ {
+-	struct pcf50633 *pcf;
+-	pcf = i2c_get_clientdata(client);
++	struct pcf50633 *pcf = dev_get_drvdata(dev);
+ 
+ 	return pcf50633_irq_resume(pcf);
+ }
++
++static const struct dev_pm_ops pcf50633_pm_ops = {
++	.suspend = pcf50633_suspend,
++	.resume = pcf50633_resume,
++};
++
++#define PCF50633_PM_OPS (&pcf50633_pm_ops)
++
+ #else
+-#define pcf50633_suspend NULL
+-#define pcf50633_resume NULL
++#define PCF50633_PM_OPS NULL
+ #endif
+ 
+ static int __devinit pcf50633_probe(struct i2c_client *client,
+@@ -372,12 +377,11 @@ static struct i2c_device_id pcf50633_id_table[] = {
+ static struct i2c_driver pcf50633_driver = {
+ 	.driver = {
+ 		.name	= "pcf50633",
++		.pm		= PCF50633_PM_OPS,
+ 	},
+ 	.id_table = pcf50633_id_table,
+ 	.probe = pcf50633_probe,
+ 	.remove = __devexit_p(pcf50633_remove),
+-	.suspend = pcf50633_suspend,
+-	.resume	= pcf50633_resume,
+ };
+ 
+ static int __init pcf50633_init(void)
+-- 
+1.7.1
+
