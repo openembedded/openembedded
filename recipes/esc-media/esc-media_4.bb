@@ -5,12 +5,7 @@ SRC_URI = "http://hivelocity.dl.sourceforge.net/project/showoff/esc_media_files.
 SRC_URI[md5sum] = "b75cbc0ce0dfcbd85de12e7fe9ecab8b"
 SRC_URI[sha256sum] = "364f474a6356326c113d964885207d90741f2e95770b079d96fffc4295e62739"
 
-PV=4
-
-FILES_${PN} += "${datadir}/esc-media"
 S=${WORKDIR}/esc_media_files
-
-inherit base
 
 do_install() {
     ESC_MEDIA="2009-obama-congress-speech.avi AlphaAnimal.license \
@@ -23,3 +18,6 @@ do_install() {
         install -m 0644 ${S}/${F} ${D}${datadir}/esc-media
     done
 }
+
+FILES_${PN} += "${datadir}/esc-media"
+
