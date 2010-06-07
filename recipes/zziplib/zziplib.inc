@@ -9,6 +9,8 @@ LICENSE = "LGPL MPL"
 
 inherit autotools pkgconfig
 
+BBCLASSEXTEND = "native"
+
 do_configure_append() {
 	# Fix some brokenness in the generated makefile.
 	sed -i \
@@ -18,13 +20,4 @@ do_configure_append() {
 	Makefile
 
   mkdir ${S}/build
-}
-
-
-do_compile_append() {
-for i in ${S}/*/*.pc ; do
-        sed -i -e s:${STAGING_DIR_TARGET}::g \
-               -e s:/${TARGET_SYS}::g \
-                  $i
-done
 }

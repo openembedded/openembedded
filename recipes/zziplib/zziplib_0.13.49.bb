@@ -3,8 +3,9 @@ require zziplib.inc
 PR = "r2"
 
 SRC_URI += "\
-  file://zip_c.patch \
-  file://zziplib-autoconf.patch \
+  file://zip_c.patch;apply=yes \
+  file://zziplib-autoconf.patch;apply=yes \
+  file://automake.patch;apply=yes \
   "
 
 SRC_URI[md5sum] = "5f7b88ebb2bcd7e8044328482d079661"
