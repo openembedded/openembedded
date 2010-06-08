@@ -13,8 +13,6 @@ do_package_write_deb[rdeptask] = "do_package"
 do_package_write_tar[rdeptask] = "do_package"
 do_package_write_rpm[rdeptask] = "do_package"
 
-inherit utils
-
 python debian_package_name_hook () {
 	import glob, copy, stat, errno, re
 
