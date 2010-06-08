@@ -4,7 +4,7 @@ LICENSE = "LGPLv2.1 GPLv3"
 FILESPATHPKG .= ":qt-${PV}"
 
 SRC_URI = "\
-	ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
+	ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${SRCVER}.tar.gz \
 	file://0004-no-qmake.patch \
 	file://hack-out-pg_config.patch \
 	file://0006-freetype-host-includes.patch \
@@ -19,7 +19,7 @@ SRC_URI = "\
 	file://linux.conf \
            "
 
-S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
+S = "${WORKDIR}/qt-everywhere-opensource-src-${SRCVER}"
 
 QT_LIB_NAMES += "QtDeclarative"
 FILES_${QT_BASE_NAME}-tools                += "${bindir}/qml"

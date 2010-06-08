@@ -3,8 +3,15 @@ DEFAULT_PREFERENCE = "-1"
 require qt4-tools-native.inc
 LICENSE = "LGPLv2.1 GPLv3"
 
-PV = "4.6.2+4.7.0-beta1"
+SRCVER = "4.7.0-beta1"
+PV = "4.6.2+${SRCVER}"
 PR = "${INC_PR}.0"
+
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${SRCVER}.tar.gz \
+           file://qt-config.patch \
+           file://g++.conf \
+           file://linux.conf"
+S = "${WORKDIR}/qt-everywhere-opensource-src-${SRCVER}"
 
 EXTRA_OECONF += " -no-fast -silent -no-rpath"
 
