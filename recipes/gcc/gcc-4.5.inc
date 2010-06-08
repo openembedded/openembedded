@@ -8,10 +8,16 @@ DEPENDS = "mpfr gmp libmpc"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r1"
+INC_PR = "r2"
 
-SRCREV = "160043"
+SRCREV = "160413"
 PV = "4.5"
+# BINV should be incremented after updating to a revision
+# after a minor gcc release (e.g. 4.5.1 or 4.5.2) has been made
+# the value will be minor-release+1 e.g. if minor release was
+# 4.5.1 then the value below will be 2 which will mean 4.5.2
+# which will be next minor release and so on.
+
 BINV = "${PV}.1"
 BRANCH = "gcc-4_5-branch"
 PR_append = "+svnr${SRCPV}"
@@ -22,6 +28,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
            file://gcc-uclibc-locale-ctype_touplow_t.patch \
 	   file://cache-amnesia.patch \
 	   file://gcc-flags-for-build.patch \
+	   file://libstdc++-emit-__cxa_end_cleanup-in-text.patch \
 	  "
 
 # Language Overrides
