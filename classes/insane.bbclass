@@ -255,8 +255,10 @@ def package_qa_check_desktop(path, name, d, elf):
     Run all desktop files through desktop-file-validate.
     """
     sane = True
+    env_path = bb.data.getVar('PATH', d, True)
+
     if path.endswith(".desktop"):
-        output = os.popen("desktop-file-validate %s" % path)
+        output = os.popen("PATH=%s desktop-file-validate %s" % (env_path, path))
         # This only produces output on errors
         for l in output:
             sane = package_qa_handle_error(7, l.strip(), name, path, d)
