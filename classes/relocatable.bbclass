@@ -75,7 +75,8 @@ def process_dir (directory, d):
             if len(new_rpaths):
                 args = ":".join(new_rpaths)
                 #bb.note("Setting rpath for %s to %s" %(fpath,args))
-                sub.call([cmd, '-r', args, fpath])
+                oe_system(d, [cmd, '-r', args, fpath], shell=False,
+                          stdout=open("/dev/null", "a"))
 
             if perms:
                 os.chmod(fpath, perms)
