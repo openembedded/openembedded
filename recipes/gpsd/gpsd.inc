@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-glib ncurses python"
 PROVIDES = "virtual/gpsd"
-INC_PR = "r6"
+INC_PR = "r7"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
                 --x-libraries=${STAGING_LIBDIR} \
@@ -60,7 +60,7 @@ pkg_postrm_${PN}-conf() {
 	update-alternatives --remove gpsd-defaults ${sysconfdir}/default/gpsd.default	
 }
 
-PACKAGES =+ "libgps python-pygps-dbg python-pygps gpsd-udev gpsd-conf gpsd-gpsctl gps-utils"
+PACKAGES =+ "libgps libgpsd python-pygps-dbg python-pygps gpsd-udev gpsd-conf gpsd-gpsctl gps-utils"
 
 FILES_python-pygps-dbg += " ${libdir}/python*/site-packages/gps/.debug"
 
@@ -71,8 +71,11 @@ DESCRIPTION_gpsd-udev = "udev relevant files to use gpsd hotplugging"
 FILES_gpsd-udev = "${base_libdir}/* ${sysconfdir}/udev/*"
 RDEPENDS_gpsd-udev += "udev gpsd-conf"
 
+DESCRIPTION_libgpsd = "C service library used for communicating with gpsd"
+FILES_libgpsd = "${libdir}/libgpsd.so.*"
+
 DESCRIPTION_libgps = "C service library used for communicating with gpsd"
-FILES_libgps = "${libdir}/*.so.*"
+FILES_libgps = "${libdir}/libgps.so.*"
 
 DESCRIPTION_gpsd-conf = "gpsd configuration files and init scripts" 
 FILES_gpsd-conf = "${sysconfdir}"
