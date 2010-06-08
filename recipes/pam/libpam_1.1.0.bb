@@ -15,7 +15,7 @@ DEPENDS = "flex flex-native"
 # PAM is not a lot of use without configuration files and the plugins
 RRECOMMENDS_${PN} = "libpam-meta libpam-base-files"
 
-PR = "r1"
+PR = "r2"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -26,6 +26,7 @@ S = "${WORKDIR}/${p}"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/library/${p}.tar.bz2 \
            file://pam-nodocs.patch \
            file://fix_disabled_nls.patch \
+           file://define-HAVE_DBM.patch \
           "
 
 UCLIBC_PATCHES = " file://pam-disable-nis-on-uclibc.patch \
