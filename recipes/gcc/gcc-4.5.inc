@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRCREV = "160413"
 PV = "4.5"
@@ -42,7 +42,8 @@ do_unpack_append() {
         bb.build.exec_func('rename_srcdir', d)
 }
 
-EXTRA_OECONF_BASE = " --enable-libssp \
+EXTRA_OECONF_BASE = " --enable-lto \
+		      --enable-libssp \
 		      --disable-bootstrap --disable-libgomp \
 		      --disable-libmudflap"
 
