@@ -1,0 +1,9 @@
+Index: qt-everywhere-opensource-src-4.7.0-beta1/config.tests/x11/xlib/xlib.pro
+===================================================================
+--- qt-everywhere-opensource-src-4.7.0-beta1.orig/config.tests/x11/xlib/xlib.pro
++++ qt-everywhere-opensource-src-4.7.0-beta1/config.tests/x11/xlib/xlib.pro	
+@@ -1,3 +1,4 @@
+ CONFIG += x11
+ CONFIG -= qt
+ SOURCES = xlib.cpp
++LIBS += -lXau -lXdmcp

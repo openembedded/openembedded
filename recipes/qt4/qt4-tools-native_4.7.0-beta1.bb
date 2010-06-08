@@ -8,6 +8,7 @@ PV = "4.6.2+${SRCVER}"
 PR = "${INC_PR}.0"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${SRCVER}.tar.gz \
+           file://fix.xlib-test.libs.patch \
            file://qt-config.patch \
            file://g++.conf \
            file://linux.conf"
