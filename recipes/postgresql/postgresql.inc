@@ -64,7 +64,7 @@ FILES_libecpg-dev = "${libdir}/libecpg*.a ${libdir}/libecpg*.so \
                      ${includedir}/sql3types.h ${includedir}/sqlca.h"
 
 FILES_libpq = "${libdir}/libpq*.so.*"
-FILES_libpq-dbg = "${libdir}/.debug/libpq*"
+FILES_libpq-dbg = "${libdir}/.debug/libpq* ${libdir}/${PN}/pgxs/src/test/regress/.debug/*"
 FILES_libpq-dev = "${libdir}/libpq*.a ${libdir}/libpq*.so ${libdir}/libpgport.a \
                    ${includedir}"
 
