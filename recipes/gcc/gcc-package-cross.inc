@@ -17,7 +17,6 @@ FILES_libstdc++ = "${target_libdir}/libstdc++.so.*"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
-
 	install -d ${D}${target_base_libdir}
 	install -d ${D}${target_libdir}
 
@@ -49,5 +48,8 @@ do_install () {
 		fi
 		cd $currdir
 	fi
+	# We use libiberty from binutils or binutils-cross
+	rm -f ${D}${libdir}/libiberty.a
+	rm -f ${D}${target_libdir}/libiberty.a
 }
 
