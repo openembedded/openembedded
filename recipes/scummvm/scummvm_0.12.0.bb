@@ -11,6 +11,7 @@ SRC_URI += " file://scummvm.desktop \
 SRC_URI_append_openmoko = " file://openmoko-scummvm "
 SRC_URI_append_shr = " file://openmoko-scummvm "
 
+PR = "${INC_PR}.0"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 

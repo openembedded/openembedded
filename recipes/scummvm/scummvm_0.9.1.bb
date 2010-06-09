@@ -8,6 +8,8 @@ SRC_URI += "file://makefile-nostrip.patch \
 SRC_URI_append_openmoko = " file://openmoko-scummvm \
                            file://scummvm.desktop"
 
+PR = "${INC_PR}.0"
+
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 EXTRA_OECONF += "--enable-lure \
