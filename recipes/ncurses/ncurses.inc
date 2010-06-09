@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
 LICENSE = "MIT"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
+INC_PR = "r20"
 
 inherit autotools
 
@@ -110,8 +111,7 @@ FILES_${PN}-tools = "\
 FILES_${PN}-terminfo = "\
   ${datadir}/terminfo \
 "
-RSUGGESTS_${PN} = "ncurses-terminfo"
+RSUGGESTS_${PN} = "${PN}-terminfo"
 RPROVIDES_${PN} = "libncurses5"
 RCONFLICTS_${PN} = "libncurses5"
 RREPLACES_${PN} = "libncurses5"
-
