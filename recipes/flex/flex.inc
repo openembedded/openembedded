@@ -4,6 +4,8 @@ LICENSE = "BSD"
 
 DEPENDS = "gettext"
 
+INC_PR = "r5"
+
 S = "${WORKDIR}/flex-${PV}"
 
 inherit autotools gettext

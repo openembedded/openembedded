@@ -1,5 +1,7 @@
 require flex.inc
 
+PR = "${INC_PR}.0"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/flex/flex-${PV}.tar.bz2;name=flex \
 "
 
