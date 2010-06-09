@@ -11,7 +11,7 @@ RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
 RREPLACES = "bluez-utils-dbus"
 RCONFLICTS_${PN} = "bluez-utils-nodbus"
 
-FILESPATH = "${FILE_DIRNAME}/bluez-utils-${PV}:${FILE_DIRNAME}/bluez-utils"
+FILESPATHPKG =. "bluez-utils-${PV}:bluez-utils:"
 
 S = "${WORKDIR}/bluez-${PV}"
 

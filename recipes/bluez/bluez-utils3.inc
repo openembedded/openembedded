@@ -8,7 +8,7 @@ RREPLACES = "bluez-utils-dbus"
 RCONFLICTS_${PN} = "bluez-utils-nodbus"
 LICENSE = "GPL"
 
-FILESPATH = "${FILE_DIRNAME}/bluez-utils-${PV}:${FILE_DIRNAME}/bluez-utils"
+FILESPATHPKG =. "bluez-utils-${PV}:bluez-utils:"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \
