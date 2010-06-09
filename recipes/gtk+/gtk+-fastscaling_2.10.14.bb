@@ -1,6 +1,6 @@
 require gtk+_${PV}.bb
 
-FILESPATH_prepend = "${FILE_DIRNAME}/gtk+-${PV}:"
+FILESPATHPKG =. "gtk+-${PV}:"
 
 DEFAULT_PREFERENCE = "-1"
 
