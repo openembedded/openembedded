@@ -4,7 +4,7 @@ ARM_INSTRUCTION_SET = "arm"
 require gcc-common.inc
 LICENSE = "GPLv3"
 
-DEPENDS = "mpfr gmp libmpc"
+DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
