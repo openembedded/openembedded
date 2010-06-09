@@ -15,6 +15,7 @@ SRC_URI = "\
 	file://0005-Disable-examples-help.patch \
 	file://0007-Disable-demos-qtdemos.patch \
 	file://0008-Disable-examples-declarative.patch \
+	file://demos.browser.add.mediaservices.lib.patch \
 	file://g++.conf \
 	file://linux.conf \
            "
