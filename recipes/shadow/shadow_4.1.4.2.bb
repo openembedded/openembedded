@@ -1,9 +1,13 @@
 require shadow.inc
 
 SRC_URI += "file://shadow.automake-1.11.patch \
+	    file://shadow-4.1.3-dots-in-usernames.patch \
+	    file://shadow-4.1.4.2-env-reset-keep-locale.patch \
+	    file://shadow-4.1.4.2-groupmod-pam-check.patch \
+	    file://shadow-4.1.4.2-su_no_sanitize_env.patch \
 	   "
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 EXTRA_OECONF_libc-uclibc += " --with-nscd=no "
 
