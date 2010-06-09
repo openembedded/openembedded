@@ -230,15 +230,10 @@ class QuiltTree(PatchSet):
         if not self.initialized:
             self.InitFromDir()
         PatchSet.Import(self, patch, force)
-
-        args = ["import", "-p", patch["strippath"]]
-        if force:
-            args.append("-f")
-            args.append("-dn")
-        args.append(patch["file"])
-
-        self._runcmd(args)
-
+        os.symlink(patch["file"], self._quiltpatchpath(patch["file"]))
+        f = open(os.path.join(self.dir, "patches","series"), "a");
+        f.write(os.path.basename(patch["file"]) + " -p" + patch["strippath"]+"\n")
+        f.close()
         patch["quiltfile"] = self._quiltpatchpath(patch["file"])
         patch["quiltfilemd5"] = bb.utils.md5_file(patch["quiltfile"])
 
