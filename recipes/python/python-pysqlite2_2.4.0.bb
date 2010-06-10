@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "BSD"
 DEPENDS = "sqlite3"
 SRCNAME = "pysqlite"
-PR = "ml2"
+PR = "ml3"
 
 SRC_URI = "http://initd.org/pub/software/pysqlite/releases/2.4/${PV}/${SRCNAME}-${PV}.tar.gz \
            file://fix-setup.patch"

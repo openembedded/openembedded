@@ -11,7 +11,7 @@ PRIORITY = "optional"
 DEPENDS = "libdaemon libg15"
 RDEPENDS_${PN} = "libg15"
 RRECOMMENDS_${PN} = "kernel-module-uinput"
-PR ="r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/g15daemon/g15daemon-${PV}.tar.bz2"
 

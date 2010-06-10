@@ -4,7 +4,7 @@ DEPENDS = "exo dbus-glib libexif xfce4-panel libice libsm gamin"
 RDEPENDS_${PN} = "libxfcegui4 exo dbus-glib libexif xfce4-panel libice libsm gamin"
 RRECOMMENDS_${PN} = "shared-mime-info"
 SECTION = "x11"
-PR = "r2"
+PR = "r3"
 
 inherit xfce46
 

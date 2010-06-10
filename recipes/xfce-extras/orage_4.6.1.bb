@@ -4,7 +4,7 @@ RDEPENDS_${PN} = "xfce4-panel"
 RREPLACES_${PN} = "xfcalendar"
 
 SECTION = "x11"
-PR = "r3"
+PR = "r4"
 
 inherit xfce46
 

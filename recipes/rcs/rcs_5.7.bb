@@ -2,7 +2,7 @@ DESCRIPTION = "The Revision Control System (RCS) manages multiple revisions of f
 HOMEPAGE = "http://www.cs.purdue.edu/homes/trinkle/RCS/"
 SECTION = "console/network"
 LICENSE = "RCS"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://www.cs.purdue.edu/homes/trinkle/RCS/rcs-${PV}.tar.Z \

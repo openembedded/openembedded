@@ -7,7 +7,7 @@ PRIORITY = "optional"
 LICENSE = "PSF"
 RDEPENDS_${PN} = "python-soappy"
 SRCNAME = "pygoogle"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

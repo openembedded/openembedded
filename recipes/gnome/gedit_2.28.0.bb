@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "iso-codes gnome-common glib-2.0 gtk+ gconf gtksourceview2"
 RDEPENDS_${PN} += " gtksourceview2"
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome pkgconfig
 

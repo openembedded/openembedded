@@ -1,6 +1,6 @@
 DESCRIPTION = "A fan control script for the Thecus n1200 or n2100"
 SECTION = "console/network"
-PR = "r1"
+PR = "r2"
 LICENSE = "GPL"
 COMPATIBLE_MACHINE = "(n1200|n2100)"
 RDEPENDS_${PN} = "hddtemp"

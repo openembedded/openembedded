@@ -4,7 +4,7 @@ DEPENDS = "gtk+"
 LICENSE = "GPL"
 HOMEPAGE = "http://gqview.sourceforge.net/"
 RRECOMMENDS_${PN} = "gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png gdk-pixbuf-loader-gif"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gqview/gqview-2.1.5.tar.gz \
 	   file://include-path-fix.patch \

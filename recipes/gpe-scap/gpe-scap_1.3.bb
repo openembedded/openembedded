@@ -2,7 +2,7 @@ DESCRIPTION = "A GPE application that allows you to take screenshots."
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "gpe"
-PR = "r2"
+PR = "r3"
 
 RREPLACES_${PN} = "gpe-screenshot"
 

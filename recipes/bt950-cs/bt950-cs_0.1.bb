@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://www.holtmann.org/linux/bluetooth/bt950.html"
 DEPENDS = "pcmcia-cs"
 RDEPENDS_${PN} = "pcmcia-cs"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.holtmann.org/linux/bluetooth/bt950-${PV}.tar.gz \
 file://makefile.patch"

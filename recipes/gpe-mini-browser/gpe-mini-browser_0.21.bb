@@ -4,7 +4,7 @@ SRC_URI = "http://gpe.linuxtogo.org/download/source/gpe-mini-browser-${PV}.tar.g
 DEPENDS = "osb-nrcit sqlite libgpewidget"
 RRECOMMENDS_${PN} = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://mini-browser-desktop-fix.patch"
 

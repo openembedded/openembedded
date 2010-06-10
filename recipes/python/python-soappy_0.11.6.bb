@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "BSD"
 RDEPENDS_${PN} = "python-xml python-fpconst"
 SRCNAME = "SOAPpy"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pywebsvcs/${SRCNAME}-${PV}.tar.gz \
            file://fix-future.patch \

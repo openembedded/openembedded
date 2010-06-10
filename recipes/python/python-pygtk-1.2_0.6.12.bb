@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 DEPENDS = "gtk+-1.2"
 RDEPENDS_${PN} = "python-shell python-re"
 SRCNAME = "pygtk"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/python/v1.2/${SRCNAME}-${PV}.tar.gz \
            file://remove-imlib-et-al.patch \

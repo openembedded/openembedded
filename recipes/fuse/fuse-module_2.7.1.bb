@@ -1,7 +1,7 @@
 require fuse.inc
 
 RRECOMMENDS_${PN} = "fuse"
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/fuse-${PV}"
 FILES_${PN} = "/dev ${base_libdir}/modules ${sysconfdir}"

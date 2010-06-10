@@ -1,5 +1,5 @@
 SRC_URI = "file://98-aufs.sh"
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "An initramfs module for mount aufs."
 RDEPENDS_${PN} = "initramfs-uniboot aufs"
 

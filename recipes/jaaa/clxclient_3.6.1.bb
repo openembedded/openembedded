@@ -2,7 +2,7 @@ DESCRIPTION = "clxclient library from http://www.kokkinizita.net/linuxaudio/"
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libx11 clthreads freetype libxft"
 RDEPENDS_${PN} = "libx11-locale"

@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 RCONFLICTS_${PN} = "at"
 RREPLACES_${PN} = "at"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
 			file://atd-startup.patch;striplevel=0"

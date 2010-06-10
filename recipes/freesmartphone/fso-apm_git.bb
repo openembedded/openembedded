@@ -8,6 +8,6 @@ PE = "1"
 RCONFLICTS_${PN} = "apm"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "2.0.0+gitr${SRCPV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 S = "${WORKDIR}/git/tools/apm2"

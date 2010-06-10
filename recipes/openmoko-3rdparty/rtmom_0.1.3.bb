@@ -10,7 +10,7 @@ RSUGGESTS_${PN} = "python-simplejson"
 
 PACKAGE_ARCH = "all"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://cloud.github.com/downloads/kichkasch/rtmom/rtmom-src-${PV}.tar.gz"
 

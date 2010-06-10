@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 #SRCDATE = "20050909"
 SRCDATE = "20051022"
 PV = "1.0.0+cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/${PN}_gruen.4g__${SRCDATE}.tar.gz"
 S = "${WORKDIR}/${PN}"

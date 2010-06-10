@@ -1,5 +1,5 @@
 require ../bash/bash.inc
-PR = "r1"
+PR = "r2"
 
 RCONFLICTS_${PN} = "bash"
 RREPLACES_${PN} = "bash"

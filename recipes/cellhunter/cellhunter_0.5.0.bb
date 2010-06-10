@@ -2,7 +2,7 @@ DESCRIPTION = "CellHunter - A game to collect information about mobile phone cel
 SECTION = "x11/utils"
 DEPENDS = "python"
 RDEPENDS_${PN} = "python-subprocess python-netclient python-math python-core python-io python-pygtk python-dbus frameworkd"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://ch.omoco.de/cellhunter/files/cellhunter-${PV}.tar.gz \

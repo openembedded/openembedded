@@ -4,7 +4,7 @@ DEPENDS = "gd"
 RSUGGESTS_${PN} = "squid"
 LICENSE = "GPL"
 HOMEPAGE = "http://sarg.sourceforge.net/sarg.php"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	${SOURCEFORGE_MIRROR}/sarg/sarg-${PV}.tar.gz;name=tar \

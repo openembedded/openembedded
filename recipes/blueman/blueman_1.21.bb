@@ -11,7 +11,7 @@ RDEPENDS_${PN} = "python-dbus python-pygobject python \
             dbus bluez4 python-pygtk obex-data-server \
 "
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://download.tuxfamily.org/blueman/blueman-${PV}.tar.gz"
 

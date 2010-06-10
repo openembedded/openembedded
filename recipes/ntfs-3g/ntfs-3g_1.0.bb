@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.ntfs-3g.org/"
 LICENSE = "GPLv2"
 DEPENDS = "fuse"
 RDEPENDS_${PN} = "fuse"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

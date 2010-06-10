@@ -1,5 +1,5 @@
 SRC_URI = "file://80-ext3.sh"
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "An initramfs module for mount ext3."
 RDEPENDS_${PN} = "initramfs-uniboot"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "iSCSI Enterprise Target is for building an iSCSI storage system on Linux"
 HOMEPAGE = "http://iscsitarget.sourceforge.net/"
 LICENSE = "GPL"
-PR = "r13"
+PR = "r14"
 
 DEFAULT_PREFERENCE = "-1"
 

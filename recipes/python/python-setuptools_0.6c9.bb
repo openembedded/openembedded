@@ -4,7 +4,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"
 SRCNAME = "setuptools"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "\
   http://cheeseshop.python.org/packages/source/s/setuptools/${SRCNAME}-${PV}.tar.gz\

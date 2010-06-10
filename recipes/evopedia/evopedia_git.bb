@@ -9,7 +9,7 @@ RRECOMMENDS_${PN} = "midori"
 RRECOMMENDS_shr = "ventura"
 
 PV = "0.3.0-rc3+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "git://github.com/crei/evopedia.git;protocol=http;branch=master"
 

@@ -4,7 +4,7 @@ DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl"
 RDEPENDS_${PN} += "hal"
 PE = "2"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI += "file://drmfix.patch \
             file://sysroot_fix.patch \

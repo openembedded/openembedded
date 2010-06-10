@@ -1,7 +1,7 @@
 DESCRIPTION = "Basic image for openprotium"
 HOMEPAGE = "http://www.openprotium.org"
 ALLOW_EMPTY = "1"
-PR = "r2"
+PR = "r3"
 
 inherit task
 

@@ -9,7 +9,7 @@ export SYSROOT = "${STAGING_DIR_HOST}"
 
 LICENSE="GPL"
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS += " gvfs tracker librsvg libexif eel esound gnome-desktop orbit2-native"
 RDEPENDS_${PN} = "gvfs"

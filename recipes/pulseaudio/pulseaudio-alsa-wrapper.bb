@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta package to make alsa transparently use pulseaudio"
 LICENSE = "GPLv2"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://asound.conf.pulseaudio"
 

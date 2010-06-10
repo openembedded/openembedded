@@ -1,6 +1,6 @@
 DESCRIPTION = "Bluetooth configuration applet"
 LICENSE = "GPL+LGPL"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "dbus-glib gconf libnotify gtk+"
 RRECOMMENDS_${PN} = "gnome-icon-theme"

@@ -3,7 +3,7 @@ DESCRIPTION = "The apache v2 web server"
 DEPENDS = "apache2-native openssl expat pcre"
 RDEPENDS_${PN} += "openssl"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-${PV}.tar.bz2 \
 	   file://apr-sockets-patch;apply=yes \

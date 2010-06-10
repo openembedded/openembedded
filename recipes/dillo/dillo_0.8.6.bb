@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+-1.2 libpng openssl"
 RCONFLICTS_${PN} = "dillo2"
-PR = "r2"
+PR = "r3"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
          file://dillo-i18n.diff \
          file://dillo.desktop \

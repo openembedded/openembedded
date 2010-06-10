@@ -1,5 +1,5 @@
 LICENSE     = "LGPL"
-PR          = "r1"
+PR          = "r2"
 DESCRIPTION = "Common code for GPE PIMs"
 SECTION = "gpe/libs"
 PRIORITY    = "optional"

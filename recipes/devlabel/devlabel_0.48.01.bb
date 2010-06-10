@@ -4,7 +4,7 @@ DESCRIPTION = "tool for user-define static device labels"
 DEPENDS = "util-linux-ng"
 RDEPENDS_${PN} = "bash util-linux-ng"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://linux.dell.com/devlabel/permalink/devlabel-${PV}.tar.gz"
 

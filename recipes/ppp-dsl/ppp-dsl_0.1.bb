@@ -4,7 +4,7 @@ LICENSE = "PD"
 DEPENDS = "ppp rp-pppoe"
 RDEPENDS_${PN} = "ppp rp-pppoe"
 RRECOMMENDS_${PN} = "kernel-module-ppp-async kernel-module-ppp-generic kernel-module-slhc"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "file://dsl-provider \
 	file://ppp_on_boot.dsl"

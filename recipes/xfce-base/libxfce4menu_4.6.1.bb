@@ -4,7 +4,7 @@ DEPENDS = "gettext pkgconfig libxfce4util intltool"
 RDEPENDS_${PN} = "gtk+ libxfce4util"
 
 LICENSE="LGPL-2 FDL-1.1"
-PR = "r2"
+PR = "r3"
 
 inherit xfce46
 

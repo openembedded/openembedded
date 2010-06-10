@@ -1,5 +1,5 @@
 DESCRIPTION = "tools to write DVDs"
-PR = "r2"
+PR = "r3"
 DEPENDS += "m4-native"
 RDEPENDS_${PN} += "cdrkit"
 SRC_URI = "http://fy.chalmers.se/~appro/linux/DVD+RW/tools/dvd+rw-tools-${PV}.tar.gz \

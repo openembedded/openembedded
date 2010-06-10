@@ -4,7 +4,7 @@ RDEPENDS_${PN} = "gnome-vfs-plugin-http iso-codes"
 
 inherit gnome
 
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF = "--with-engine=webkit --with-distributor-name=${DISTRO}"
 

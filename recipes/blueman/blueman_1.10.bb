@@ -5,7 +5,7 @@ DEPENDS = "gtk+ glib-2.0 bluez4 intltool python python-native python-pyrex start
 RDEPENDS_${PN} = "python-dbus python-pygobject python dbus bluez4 python-pygtk python-notify obex-data-server \
 "
 
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig python-dir
 

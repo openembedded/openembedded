@@ -1,7 +1,7 @@
 
 inherit gpe
 
-PR          = "r1"
+PR          = "r2"
 LICENSE     = "GPL"
 DESCRIPTION = "GPE file manager"
 DEPENDS     = "libgpewidget gnome-vfs dbus-glib"

@@ -3,7 +3,7 @@ AUTHOR = "Kristian M."
 SECTION = "openmoko/applications"
 RDEPENDS_${PN} = "python-pygtk python-subprocess python-threading"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://mput.de/~kristian/.openmoko/settingsgui-0.8-beta.tar.bz2"
 S = "${WORKDIR}/settingsgui-0.8-beta"

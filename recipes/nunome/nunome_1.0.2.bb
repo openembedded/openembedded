@@ -4,7 +4,7 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "virtual-japanese-font"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/nunome-${PV}.tar.bz2 \
 	file://timer.patch \

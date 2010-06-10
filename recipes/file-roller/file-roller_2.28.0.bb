@@ -4,7 +4,7 @@ SECTION = "x11/gnome"
 DEPENDS="gtk+ libgnomeui gnome-common gnome-vfs libglade libbonoboui"
 RDEPENDS_${PN} = "unzip"
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome
 

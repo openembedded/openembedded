@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "phalanx"
 RDEPENDS_${PN} = "phalanx"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.openzaurus.org/mirror/knights.tar.gz \
            file://libqpe-opie.patch \

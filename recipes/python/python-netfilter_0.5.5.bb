@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "iptables iptables-utils python-logging python-shell python-subprocess"
 SRCNAME = "python-netfilter"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "http://opensource.bolloretelecom.eu/files/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

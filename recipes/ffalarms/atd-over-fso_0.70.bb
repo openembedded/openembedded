@@ -13,7 +13,7 @@ RPROVIDES_${PN}-dev = "atd-dev"
 DEPENDS = "dbus-glib pkgconfig"
 RDEPENDS_${PN} += "dbus dbus-glib frameworkd"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/atd;tag=ATD-0_70 \
 			file://atd-startup.patch;striplevel=0 \

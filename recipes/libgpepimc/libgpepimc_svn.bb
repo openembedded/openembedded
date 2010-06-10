@@ -6,7 +6,7 @@ DEPENDS = "libgpewidget gtk+ sqlite"
 PROVIDES = "libgepepimc"
 RPROVIDES_${PN} = "libgepepimc"
 PV = "0.8+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit pkgconfig autotools
 

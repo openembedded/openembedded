@@ -6,7 +6,7 @@ DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-n
 RDEPENDS_${PN} = "encodings font-util font-alias"
 
 XORG_PN = "${PN}"
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "${XORG_MIRROR}/individual/font/${XORG_PN}-${PV}.tar.bz2;name=archive"
 S = "${WORKDIR}/${XORG_PN}-${PV}"

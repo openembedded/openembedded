@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 
 require ../binutils/binutils.inc
 

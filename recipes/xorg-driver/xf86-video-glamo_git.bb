@@ -6,7 +6,7 @@ S = "${WORKDIR}/git"
 SRCREV = "2d96367657adb21b34742e76c3a92ba1a3961106"
 PV = "1.0.0+gitr${SRCPV}"
 PE = "2"
-PR = "r5"
+PR = "r6"
 
 RDEPENDS_${PN} = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"
 DEPENDS += "libdrm"

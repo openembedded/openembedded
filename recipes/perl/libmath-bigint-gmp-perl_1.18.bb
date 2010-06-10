@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "gmp-native"
 RDEPENDS_${PN} += "gmp"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TE/TELS/math/Math-BigInt-GMP-${PV}.tar.gz"
 

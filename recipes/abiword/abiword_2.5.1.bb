@@ -2,7 +2,7 @@ require abiword-2.5.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r2"
+PR = "r3"
 
 RCONFLICTS_${PN} = "abiword-embedded"
 

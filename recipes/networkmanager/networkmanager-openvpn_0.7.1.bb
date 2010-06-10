@@ -14,7 +14,7 @@ EXTRA_OECONF = " \
 
 inherit autotools pkgconfig
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "http://ftp.gnome.org/pub/GNOME/sources/NetworkManager-openvpn/0.7/NetworkManager-openvpn-${PV}.tar.bz2 \
 "

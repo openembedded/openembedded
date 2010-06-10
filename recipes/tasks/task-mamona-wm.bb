@@ -1,6 +1,6 @@
 DESCRIPTION = "Task mamona: Window Manager"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"

@@ -1,5 +1,5 @@
 SRC_URI = "file://00-psplash.sh file://99-psplash.sh"
-PR = "r5"
+PR = "r6"
 RDEPENDS_${PN} = "initramfs-uniboot virtual-psplash"
 DESCRIPTION = "An initramfs module to enable psplash."
 

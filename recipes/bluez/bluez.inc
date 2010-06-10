@@ -3,7 +3,7 @@ SECTION = "console"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "gstreamer gst-plugins-base dbus glib-2.0"
 PROVIDES = "bluez-utils-dbus"

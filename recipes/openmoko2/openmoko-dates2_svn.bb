@@ -4,7 +4,7 @@ DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus libjana"
 RDEPENDS_${PN} = "libedata-cal"
 SRCREV = "703"
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 inherit openmoko2 pkgconfig
 

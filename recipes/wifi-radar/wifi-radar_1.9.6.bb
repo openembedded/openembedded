@@ -3,7 +3,7 @@ DESCRIPTION="WiFi Radar is a Python/PyGTK2  utility for managing WiFi profiles."
 HOMEPAGE="http://www.bitbuilder.com/wifi_radar/"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 PACKAGE_ARCH = "all"
 

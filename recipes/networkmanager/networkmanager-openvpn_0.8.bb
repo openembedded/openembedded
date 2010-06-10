@@ -14,7 +14,7 @@ EXTRA_OECONF = " \
 
 inherit autotools pkgconfig
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "${GNOME_MIRROR}/NetworkManager-openvpn/${PV}/NetworkManager-openvpn-${PV}.tar.bz2 \
 "

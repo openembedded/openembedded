@@ -7,7 +7,7 @@ LICENSE = "GPL"
 SRCREV = "c16883a079aeff8780e5d461ec4e8348537ab4d8"
 PV = "0.1.0+gitr${SRCPV}"
 PE = "1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/gsmd2.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"

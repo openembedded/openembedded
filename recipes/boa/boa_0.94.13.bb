@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "mime-support"
 RPROVIDES_${PN} = "httpd"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.boa.org/boa-${PV}.tar.gz \
            file://cgi.patch;striplevel=2 \

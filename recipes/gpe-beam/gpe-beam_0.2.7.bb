@@ -1,7 +1,7 @@
 require ${PN}.inc
 
 RDEPENDS_${PN} = "libopenobex-1.0-1 irda-utils"
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://decl.patch;striplevel=0"
 

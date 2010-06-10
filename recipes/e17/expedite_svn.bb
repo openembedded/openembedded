@@ -3,7 +3,7 @@ DEPENDS = "eet evas"
 RDEPENDS_${PN} = "expedite-themes evas-engine-buffer evas-engine-fb evas-engine-software-generic evas-engine-software-x11 evas-loader-png"
 LICENSE = "MIT BSD"
 PV = "0.6.0+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e

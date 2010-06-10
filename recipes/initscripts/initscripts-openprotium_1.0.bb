@@ -11,7 +11,7 @@ RCONFLICTS_${PN} = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.11"
+PR := "${PR}.12"
 
 FILESPATHPKG =. "${P}:initscripts-${PV}:"
 

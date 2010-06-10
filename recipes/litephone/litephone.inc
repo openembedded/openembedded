@@ -5,7 +5,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
 RRECOMMENDS_${PN} = "fsodeviced fsogsmd fsousaged frameworkd"
-INC_PR = "r0"
+INC_PR = "r1"
 
 inherit qt4x11
 

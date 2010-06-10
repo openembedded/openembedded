@@ -1,7 +1,7 @@
 inherit gpe
 
 LICENSE = 		"gpe-theme-foxbox"
-PR = 			"r2"
+PR = 			"r3"
 SECTION = 		"x11/base"
 DESCRIPTION = 	"Simple GPE theme using the Smooth theming engine."
 DEPENDS = 		"gtk-engines"

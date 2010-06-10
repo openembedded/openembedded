@@ -58,7 +58,7 @@ DEPENDS = "perl \
            libxml-writer-perl-native \
            "
 
-PR = "r4"
+PR = "r5"
 
 # cpan does not work, it installs things in the perl work dir iso the xmltv work dir
 # root cause are bad definitions in perl/config.sh, but I don't know what they should be

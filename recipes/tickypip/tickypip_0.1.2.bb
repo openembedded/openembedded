@@ -5,7 +5,7 @@ LICENSE = "GPL"
 AUTHOR = "Christian Hammond"
 HOMEPAGE = "http://www.chipx86.com/projects/tickypip/"
 RRECOMMENDS_${PN} = "tickypip-levels"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/tickypip-0.1.2.tar.gz \
            file://path_fix.patch \

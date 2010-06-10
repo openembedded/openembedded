@@ -4,7 +4,7 @@ LICENSE = "GPL"
 RDEPENDS_${PN} += "perl-module-carp perl-module-posix perl-module-io-handle \
 	     perl-module-strict perl-module-warnings perl-module-vars \
 	     perl-module-xsloader"
-PR= "r1"
+PR = "r2"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/Device/Device-SerialPort-${PV}.tar.gz"
 

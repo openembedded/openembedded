@@ -3,7 +3,7 @@ require irk.inc
 DESCRIPTION += "(version with Belkin support)"
 RCONFLICTS_${PN} = "irk-targus"
 RREPLACES_${PN} = "irk-targus"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/irk-current.tgz \
            file://install-default-conf.patch"

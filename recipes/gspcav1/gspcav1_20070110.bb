@@ -4,7 +4,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 RRECOMMENDS_${PN} = "kernel-module-videodev kernel-module-v4l1-compat kernel-module-v4l2-common"
 

@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "gnome-bluetooth policykit-gnome libnotify networkmanager dbus-glib libglade gconf gnome-keyring"
 RDEPENDS_${PN} = "networkmanager"
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome
 

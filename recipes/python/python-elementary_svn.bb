@@ -3,7 +3,7 @@ SRCREV = "${EFL_SRCREV}"
 DEPENDS += "elementary"
 RDEPENDS_${PN} += "python-evas python-ecore python-edje" 
 PV = "0.1+svnr${SRCPV}"
-PR = "ml0"
+PR = "ml1"
 
 do_stage() {         
 	distutils_stage_all 

@@ -1,5 +1,5 @@
 SRC_URI = "file://80-squashfs.sh"
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "An initramfs module for mount squashfs."
 RDEPENDS_${PN} = "initramfs-uniboot"
 

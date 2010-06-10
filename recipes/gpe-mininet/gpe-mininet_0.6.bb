@@ -1,6 +1,6 @@
 inherit autotools gpe pkgconfig
 
-PR = "r0"
+PR = "r1"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget gpe-icons gpe-conf"
 RRECOMMENDS_${PN} = "gpe-conf"

@@ -1,5 +1,5 @@
 LICENSE     = "LGPL"
-PR          = "r0"
+PR          = "r1"
 DESCRIPTION = "libgpewidget contains a collection of widgets and other common code shared by many GPE applications."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"

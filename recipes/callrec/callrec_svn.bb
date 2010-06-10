@@ -6,7 +6,7 @@ SRCNAME = "callrec"
 DEPENDS = "gtk+"
 RDEPENDS_${PN} += "alsa-utils-alsactl alsa-utils-aplay"
 PV = "0.2.4+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/trunk"
 inherit autotools 

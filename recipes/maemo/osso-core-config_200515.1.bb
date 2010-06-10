@@ -1,5 +1,5 @@
 LICENSE    = "unknown"
-PR         = "r6"
+PR         = "r7"
 
 DEPENDS =	"base-passwd osso-af-startup"
 RDEPENDS_${PN} =	"base-passwd osso-af-startup"

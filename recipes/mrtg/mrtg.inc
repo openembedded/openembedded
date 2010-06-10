@@ -19,7 +19,7 @@ RDEPENDS_${PN} = " \
 	 "
 LICENSE = "GPL"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://oss.oetiker.ch/mrtg/pub/mrtg-${PV}.tar.gz;name=mrtg-${PV}"
 

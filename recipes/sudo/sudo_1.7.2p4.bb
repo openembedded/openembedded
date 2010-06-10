@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "libpam"
 RDEPENDS_${PN} = "libpam libpam-meta"

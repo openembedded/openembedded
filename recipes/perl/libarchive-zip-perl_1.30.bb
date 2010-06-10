@@ -4,7 +4,7 @@ LICENSE = "Artistic|GPL"
 
 DEPENDS += "libio-zlib-perl-native"
 RDEPENDS_${PN} += "libio-zlib-perl"
-PR= "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/Archive-Zip-${PV}.tar.gz"
 

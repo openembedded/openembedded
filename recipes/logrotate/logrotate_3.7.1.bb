@@ -5,7 +5,7 @@ DEPENDS = "popt"
 RDEPENDS_${PN} = "cron"
 SECTION = "admin"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/l/logrotate/logrotate_${PV}.orig.tar.gz \
 	   file://logrotate-3.7.1.patch \

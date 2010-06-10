@@ -8,7 +8,7 @@ DEPENDS = "python-native"
 
 SRCREV = "6"
 PV = "1.1.0+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/trunk"
 

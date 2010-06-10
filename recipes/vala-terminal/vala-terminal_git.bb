@@ -4,7 +4,7 @@ DEPENDS = "vala-native vte"
 SRCREV = "0241cf2f19710b885dc060d03ec80af438e8246e"
 PV = "1.1.1+gitr${SRCPV}"
 PE = "1"
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 

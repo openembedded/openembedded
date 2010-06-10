@@ -1,7 +1,7 @@
 DESCRIPTION = "Gnome videoconferencing application"
 LICENSE = "GPLv2"
 
-PR = "r1"
+PR = "r2"
 
 ARM_INSTRUCTION_SET = "arm"
 

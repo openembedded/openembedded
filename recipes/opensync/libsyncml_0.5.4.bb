@@ -7,7 +7,7 @@ LICENSE = "LGPL"
 DEPENDS = "libxml2 glib-2.0"
 RRECOMMENDS_${PN} = "wbxml2 openobex libsoup"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libsyncml/libsyncml-${PV}.tar.gz \
            "

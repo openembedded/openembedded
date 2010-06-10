@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 DEPENDS = "gmp flex-native"
 RRECOMMENDS_${PN} = "kernel-module-ipsec"
 RDEPENDS_append_nylon = "perl"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.openswan.org/download/openswan-${PV}.tar.gz \
 	   file://openswan-2.4.7-gentoo.patch \

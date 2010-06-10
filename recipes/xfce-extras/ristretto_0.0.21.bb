@@ -3,7 +3,7 @@ DEPENDS = "thunar libxfce4util libxfcegui4 libexif dbus"
 RDEPENDS_${PN} = "thunar libxfce4util libxfcegui4"
 
 SECTION = "x11"
-PR = "r1"
+PR = "r2"
 
 inherit xfce46
 

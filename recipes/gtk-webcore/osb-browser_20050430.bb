@@ -6,7 +6,7 @@ SECTION = "gpe"
 
 FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 PV = "0.5.0+cvs${FIXEDSRCDATE}"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "osb-nrcit gtk+ glib-2.0 libglade"
 RRECOMMENDS_${PN} = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-ico gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png"

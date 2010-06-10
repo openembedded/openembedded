@@ -13,7 +13,7 @@ RDEPENDS_${PN} = "\
 "
 RREPLACES_${PN} = "openmoko-sound-system"
 RPROVIDES_${PN} = "openmoko-sound-system"
-PR = "r5.01"
+PR = "r6"
 
 inherit openmoko-base update-rc.d
 

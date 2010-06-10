@@ -8,7 +8,7 @@ PROVIDES = "virtual/libx11"
 RPROVIDES_${PN} = "virtual-libx11"
 SRCREV = "c3f3e4a9e531d010312c97e753d6e543e607094d"
 PV = "1.3.3+git"
-PR = "r3"
+PR = "r4"
 
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"

@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "libpcap libnet libpcre"
 RDEPENDS_${PN} = "libpcap libnet libpcre barnyard"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " http://dl.snort.org/snort-current/${P}.tar.gz;name=tarball \
             file://snort.fix.configure.in.HACK;apply=yes \

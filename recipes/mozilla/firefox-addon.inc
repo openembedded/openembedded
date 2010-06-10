@@ -11,7 +11,7 @@ do_configure() {
 	unzip -o -q -d xpi *.xpi
 }
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 do_install() {
 	cd ${S}/xpi

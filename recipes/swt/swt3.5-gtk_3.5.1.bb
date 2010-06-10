@@ -1,6 +1,6 @@
 require swt-gtk.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://mirror.switch.ch/eclipse/eclipse/downloads/drops/R-3.5.1-200909170800/swt-3.5.1-gtk-linux-x86.zip;name=swt \
            file://Makefile"

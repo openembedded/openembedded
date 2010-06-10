@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "update-modules"
 PACKAGE_ARCH = "all"
-PR = "r9"
+PR = "r11"
 
 SRC_URI = "file://hostap_cs.conf \
            file://hostap_cs.modalias \

@@ -5,7 +5,7 @@ RDEPENDS_${PN} = "bluez-utils"
 RRECOMMENDS_${PN} = "gpsd flite"
 SRCREV = "118"
 PV = "2.0.3+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "svn://garage.maemo.org/svn/maemo-mapper;proto=https;module=trunk \
            file://mapper-hildon1.diff;maxrev=108" 

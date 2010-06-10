@@ -12,7 +12,7 @@ EXTRA_OECONF += " --enable-directfb \
 LDFLAGS_append += " -ldirectfb"
 CFLAGS_append  += " -I${STAGING_INCDIR}/directfb"
 
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/cairo-${PV}"
 

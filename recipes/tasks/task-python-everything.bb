@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
 PV = "2.6"
-PR = "ml44"
+PR = "ml45"
 
 RDEPENDS_${PN} = "\
   python-ao \

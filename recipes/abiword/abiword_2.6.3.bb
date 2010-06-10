@@ -1,6 +1,6 @@
 require abiword-2.5.inc
 
-PR = "r1"
+PR = "r2"
 
 RCONFLICTS_${PN} = "abiword-embedded"
 

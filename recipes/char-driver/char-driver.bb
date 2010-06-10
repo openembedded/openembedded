@@ -8,7 +8,7 @@ LICENSE = "GPL"
 RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.davehylands.com/gumstix-wiki/char-driver/char-driver-2.6.21.tar.gz \
    file://makefile.patch \

@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DESCRIPTION = "A GPE notebook to sketch your notes"
 export CVSBUILD = "no"
 
-PR = "r1"
+PR = "r2"
 
 inherit gpe pkgconfig
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Google Data APIs Python Client Library"
 SECTION = "devel/python"
 LICENSE = "Apache"
 HOMEPAGE = "http://code.google.com/p/gdata-python-client/"
-PR = "r0"
+PR = "r1"
 
 inherit distutils
 

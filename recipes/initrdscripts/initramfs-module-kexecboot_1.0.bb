@@ -1,5 +1,5 @@
 SRC_URI = "file://87-kexecboot.sh"
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "An initramfs module for kexecing kernel from rootfs."
 RDEPENDS_${PN} = "initramfs-uniboot kexec-klibc-static"
 

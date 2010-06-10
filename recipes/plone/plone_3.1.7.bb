@@ -2,7 +2,7 @@ DESCRIPTION = "Plone, a user friendly and powerful Content Management System bas
 SECTION = "network/cms"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "http://launchpadlibrarian.net/19393495/Plone-${PV}.tar.gz"
 S = "${WORKDIR}/Plone-${PV}"

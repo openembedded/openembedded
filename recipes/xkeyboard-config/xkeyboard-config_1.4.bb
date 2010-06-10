@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 Keyboard layouts"
 LICENSE = "MIT"
 DEPENDS = "intltool xkbcomp-native"
 RDEPENDS_${PN} = "xkbcomp"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://xlibs.freedesktop.org/xkbdesc/xkeyboard-config-${PV}.tar.bz2 \
            file://abnt2-fixes.patch"

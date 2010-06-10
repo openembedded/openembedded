@@ -2,7 +2,7 @@
 
 DESCRIPTION="XFCE4 Window Manager"
 SECTION = "x11/wm"
-PR = "r1"
+PR = "r2"
 
 inherit xfce46 update-alternatives
 

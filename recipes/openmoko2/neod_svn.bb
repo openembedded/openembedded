@@ -6,7 +6,7 @@ DEPENDS = "gtk+ pulseaudio apmd"
 RDEPENDS_${PN} = "gpe-scap xrandr alsa-utils-amixer ${DISTRO_APM} dbus"
 SRCREV = "4617"
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r7"
+PR = "r8"
 
 inherit openmoko2 gconf
 

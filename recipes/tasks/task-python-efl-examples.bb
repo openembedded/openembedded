@@ -8,6 +8,6 @@ RDEPENDS_${PN} = "\
   python-edje-examples \
   python-math python-textutils \
 "
-PR = "ml4.1"
+PR = "ml5"
 
 ALLOW_EMPTY = "1"

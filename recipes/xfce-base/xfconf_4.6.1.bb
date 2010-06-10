@@ -6,7 +6,7 @@ LICENSE = "GPL-2"
 DEPENDS = "libxfce4util"
 RDEPENDS_${PN} = "libxfce4util"
 
-PR = "r2"
+PR = "r3"
 
 inherit xfce46
 

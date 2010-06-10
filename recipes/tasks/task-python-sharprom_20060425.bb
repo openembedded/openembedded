@@ -1,7 +1,7 @@
 DESCRIPTION = "Everything Python for SharpROM"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml6"
+PR = "ml7"
 
 NONWORKING = "\
 		python-codes		\

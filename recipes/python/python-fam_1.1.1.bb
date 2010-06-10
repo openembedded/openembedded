@@ -4,7 +4,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "fam"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 

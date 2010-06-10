@@ -6,6 +6,6 @@ RDEPENDS_${PN} = "phoneui-shr-theme-neo elementary-theme-neo e-wm-theme-illume-n
 LICENSE = "unknown"
 
 PV = "0.2"
-PR = "r3"
+PR = "r4"
 
 ALLOW_EMPTY = "1"

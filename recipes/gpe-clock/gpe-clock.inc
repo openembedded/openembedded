@@ -5,6 +5,6 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ libschedule libgpewidget gpe-announce libgpelaunch"
 RDEPENDS_${PN} = "gpe-announce atd"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 inherit gpe

@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "openmoko/utilities"
 
 PV = "0.2+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 PE = "1"
 SRCREV = "206"
 

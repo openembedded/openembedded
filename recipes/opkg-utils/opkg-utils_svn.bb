@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "python"
 RDEPENDS_virtclass_native = ""
 SRCREV = "4595"
 PV = "0.0+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 BBCLASSEXTEND = "native"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar etoys"
 LICENSE = "GPLv2"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "sugar"
 RDEPENDS_${PN} = "sugar shared-mime-info"

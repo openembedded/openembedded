@@ -1,7 +1,7 @@
 DESCRIPTION = "Generic USB CCID smart card reader driver"
 HOMEPAGE = "http://pcsclite.alioth.debian.org/ccid.html"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "virtual/libusb0 pcsc-lite"
 RDEPENDS_${PN} = "pcsc-lite"

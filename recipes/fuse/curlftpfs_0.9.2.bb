@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "glib-2.0 fuse curl"
 RDEPENDS_${PN} += " libcurl "
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/curlftpfs/${P}.tar.gz"
 

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "update-modules"
 PACKAGE_ARCH = "all"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://spectrum.conf \
            file://hermes.conf \

@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 RDEPENDS_${PN} += "perl-module-exporter perl-module-strict perl-module-vars \
 	     perl-module-strict perl-module-vars"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TY/TYEMQ/Algorithm-Diff-${PV}.tar.gz"
 

@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 inherit gpe pkgconfig
 
 DESCRIPTION = "A package manager GUI for GPE"

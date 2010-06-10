@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 DEPENDS = "openssl"
 RDEPENDS_${PN} = "iscsi-target"
 
-PR = "r0"
+PR = "r1"
 SRC_URI = "http://stgt.berlios.de/releases/tgt-${PV}.tar.gz;name=tgttargz"
 SRC_URI[tgttargz.md5sum] = "5a7c6b2c585c5f969c64e2c19f49f439"
 SRC_URI[tgttargz.sha256sum] = "018f772370fe3dae815e09416e5dae5ae464335a1efe6343cf80612a29fe54e4"

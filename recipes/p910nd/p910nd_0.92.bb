@@ -3,7 +3,7 @@ SECTION = "console/utils"
 HOMEPAGE = "http://p910nd.sourceforge.net/"
 LICENSE = "GPLv2"
 SECTION = "console/utils"
-PR = "r0"
+PR = "r1"
 RRECOMMENDS_${PN} = "avahi"
 
 inherit update-rc.d

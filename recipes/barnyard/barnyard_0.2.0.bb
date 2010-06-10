@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.snort.org/"
 LICENSE = "QPL"
 DEPENDS = "libpcap"
 RDEPENDS_${PN} = "libpcap"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " http://dl.snort.org/barnyard/${P}.tar.gz;name=tarball \
           "

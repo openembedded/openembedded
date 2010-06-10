@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 
-PR = "r1"
+PR = "r2"
 
 INITSCRIPT_NAME = "robostix"
 INITSCRIPT_PARAMS = "defaults 10"

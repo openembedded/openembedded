@@ -8,7 +8,7 @@ RCONFLICTS_${PN} = "hotplug"
 RREPLACES_${PN} = "hotplug"
 SECTION = "base"
 RSUGGESTS_${PN} = "pciutils usbutils"
-PR = "r9"
+PR = "r11"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
 	file://dash.patch \

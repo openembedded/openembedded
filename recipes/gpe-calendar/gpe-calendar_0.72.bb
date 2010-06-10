@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "dbus-glib libeventdb libschedule libxsettings-client libgpepimc libgpevtype"
 RDEPENDS_${PN} = "gpe-icons"
 
-PR = "r0"
+PR = "r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

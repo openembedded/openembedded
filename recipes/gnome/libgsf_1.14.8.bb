@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "libs"
-PR = "r0"
+PR = "r1"
 
 DEPENDS= "libxml2 bzip2 glib-2.0 zlib gtk-doc libbonobo gnome-vfs"
 RDEPENDS_${PN} = "gconf gnome-vfs"

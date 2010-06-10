@@ -1,7 +1,7 @@
 DESCRIPTION = "Terminal emulator for the Xfce desktop environment"
 DEPENDS = "exo vte dbus-glib gtk+"
 RDEPENDS_${PN} += "gnome-pty-helper"
-PR = "r2"
+PR = "r3"
 
 inherit xfce46
 

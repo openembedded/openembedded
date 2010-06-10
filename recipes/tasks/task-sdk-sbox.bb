@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK task for Scratchbox rootstraps"
-PR = "r7"
+PR = "r8"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

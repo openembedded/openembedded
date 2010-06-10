@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "python-elementary python-dbus python-codecs python-shell pytho
 SECTION = "x11/application"
 SRCREV = "98ccc66d1e0e5e74bd8ea8c761116fb6a1844fc7"
 PV = "0.0.3+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 PE = "1"
 
 inherit setuptools

@@ -1,5 +1,5 @@
 SECTION = "x11/network"
-PR = "r5"
+PR = "r6"
 
 PACKAGES = "${PN}-dbg prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"

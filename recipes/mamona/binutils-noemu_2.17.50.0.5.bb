@@ -1,6 +1,6 @@
 require ../binutils/binutils.inc
 
-PR = "r1"
+PR = "r2"
 
 RCONFLICTS_${PN} = "binutils"
 RREPLACES_${PN} = "binutils"

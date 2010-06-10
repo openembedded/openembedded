@@ -17,7 +17,7 @@ PROVIDES = "\
 
 RPROVIDES_${PN} = "glibc glibc-utils libsegfault glibc-thread-db libgcc-dev libgcc libstdc++-dev libstdc++ ldd"
 PACKAGES_DYNAMIC = "glibc-gconv-*"
-PR = "r2"
+PR = "r3"
 
 inherit sdk
 
