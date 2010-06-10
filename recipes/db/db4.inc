@@ -17,7 +17,7 @@ LICENSE = "BSD"
 VIRTUAL_NAME ?= "virtual/db"
 CONFLICTS = "db3"
 
-SRC_URI = "http://download.oracle.com/berkeley-db/db-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.freebsd.org/pub/FreeBSD/distfiles/bdb/db-${PV}.tar.gz"
 
 inherit autotools
 
