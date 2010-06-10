@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "gstreamer gst-plugins-base bluez-libs-${PV} virtual/libusb0 dbus glib-2.0"
 PROVIDES = "bluez-utils-dbus"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
-RREPLACES = "bluez-utils-dbus"
+RREPLACES_${PN} = "bluez-utils-dbus"
 RCONFLICTS_${PN} = "bluez-utils-nodbus"
 LICENSE = "GPL"
 

@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "libvncserver jpeg zlib gmp tslib"
 RRECOMMENDS_${PN} = "kernel-modules-uinput kernel-module-keybdev"
-RCONFLICTS = "fbvncserver, fbvncserver-kmodule"
+RCONFLICTS_${PN} = "fbvncserver, fbvncserver-kmodule"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 

@@ -2,8 +2,8 @@ require abiword.inc
 
 EXTRA_OECONF += "--enable-embedded"
 
-RCONFLICTS = "abiword"
-RPROVIDES += "abiword"
+RCONFLICTS_${PN} = "abiword"
+RPROVIDES_${PN} += "abiword"
 
 do_compile_prepend() {
 	cp ${S}/src/af/xap/unix/hildon/xap_EmbeddedFeatures.h ${S}/src/af/xap/unix/

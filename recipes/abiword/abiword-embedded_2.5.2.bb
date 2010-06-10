@@ -4,8 +4,8 @@ EXTRA_OECONF += "--enable-embedded"
 
 S = "${WORKDIR}/abiword-${PV}"
 
-RCONFLICTS = "abiword"
-RPROVIDES += "abiword"
+RCONFLICTS_${PN} = "abiword"
+RPROVIDES_${PN} += "abiword"
 
 
 

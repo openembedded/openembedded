@@ -12,5 +12,5 @@ SRC_URI = "${FREESMARTPHONE_GIT}/vala-terminal.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
 
 RDEPENDS_${PN} = "ttf-liberation-mono"
-RREPLACES = "openmoko-terminal2"
-RPROVIDES = "openmoko-terminal2"
+RREPLACES_${PN} = "openmoko-terminal2"
+RPROVIDES_${PN} = "openmoko-terminal2"

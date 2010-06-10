@@ -2,8 +2,8 @@ DESCRIPTION = "Delayed job execution and batch processing."
 SECTION = "base"
 LICENSE="BSD"
 DEPENDS = "flex-native"
-RCONFLICTS = "atd"
-RREPLACES = "atd"
+RCONFLICTS_${PN} = "atd"
+RREPLACES_${PN} = "atd"
 
 PR = "r2"
 

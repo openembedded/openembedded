@@ -1,7 +1,7 @@
 require links.inc
 
 DEPENDS += "virtual/libx11"
-RCONFLICTS = "links"
+RCONFLICTS_${PN} = "links"
 PR = "r1"
 
 SRC_URI += " file://links2.desktop \

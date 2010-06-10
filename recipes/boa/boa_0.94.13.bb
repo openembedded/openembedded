@@ -2,7 +2,7 @@ DESCRIPTION = "Lightweight and High Performance WebServer"
 SECTION = "console/network"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "mime-support"
-RPROVIDES = "httpd"
+RPROVIDES_${PN} = "httpd"
 PR = "r3"
 
 SRC_URI = "http://www.boa.org/boa-${PV}.tar.gz \

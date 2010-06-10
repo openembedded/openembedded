@@ -2,9 +2,9 @@ DESCRIPTION = "This collection of code replaces the existing linux-hotplug \
 package with very tiny, compiled executable programs, instead of the \
 existing bash scripts."
 LICENSE = "GPL"
-RPROVIDES = "hotplug"
-RCONFLICTS = "hotplug"
-RREPLACES = "hotplug"
+RPROVIDES_${PN} = "hotplug"
+RCONFLICTS_${PN} = "hotplug"
+RREPLACES_${PN} = "hotplug"
 PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-ng-${PV}.tar.gz \

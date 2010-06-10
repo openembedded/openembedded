@@ -1,6 +1,6 @@
 require abiword.inc
 
-RCONFLICTS = "abiword-embedded"
+RCONFLICTS_${PN} = "abiword-embedded"
 
 
 SRC_URI[md5sum] = "30fbd0a9b539f15f54f90d3812a75266"

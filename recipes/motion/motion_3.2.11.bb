@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "jpeg ffmpeg mysql postgresql"
 
-RSUGGESTS = "mysql-client postgresql-client"
+RSUGGESTS_${PN} = "mysql-client postgresql-client"
 
 PR = "r1"
 

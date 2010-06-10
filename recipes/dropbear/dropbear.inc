@@ -4,7 +4,7 @@ SECTION = "console/network"
 LICENSE = "MIT"
 DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
-RPROVIDES = "ssh sshd"
+RPROVIDES_${PN} = "ssh sshd"
 
 INC_PR = "r3"
 

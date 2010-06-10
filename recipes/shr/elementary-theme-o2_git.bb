@@ -3,7 +3,7 @@ SECTION = "e/utils"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
-RSUGGESTS = "phoneui-shr-theme-o2"
+RSUGGESTS_${PN} = "phoneui-shr-theme-o2"
 LICENSE = "unknown"
 
 SRCREV = "b5eb3134850c277ad8ae1a960b03ff4a509278a8"

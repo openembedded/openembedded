@@ -13,7 +13,7 @@ SRC_URI += "file://gconftool-lossage.patch \
 
 # This is to provide compatibility with the gnome-vfs DBus fork
 PROVIDES = "gnome-vfs-plugin-dbus"
-RREPLACES = "gnome-vfs-dbus"
+RREPLACES_${PN} = "gnome-vfs-dbus"
 
 EXTRA_OECONF = " \
                  --disable-openssl \

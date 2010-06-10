@@ -1,6 +1,6 @@
 DESCRIPTION = "Rotates, compresses, removes and mails system log files"
 HOMEPAGE = "http://packages.debian.org/unstable/admin/logrotate"
-RCONFLICTS = "logrotate-script"
+RCONFLICTS_${PN} = "logrotate-script"
 DEPENDS = "popt"
 RDEPENDS_${PN} = "cron"
 SECTION = "admin"

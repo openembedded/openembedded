@@ -17,7 +17,7 @@ PROVIDES_sharprom-compatible = "\
   virtual/arm-linux-gcc-initial "
 PR = "r3"
 
-RPROVIDES = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
+RPROVIDES_${PN} = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
 PACKAGES_DYNAMIC = "glibc-gconv-*"
 
 # This needs to be extracted to /usr/local/arm :

@@ -6,8 +6,8 @@ LICENSE = "GPL"
 # remember to increment the -cross .bb PR too.
 PR = "r0"
 
-RCONFLICTS = "gcc"
-RREPLACES = "gcc"
+RCONFLICTS_${PN} = "gcc"
+RREPLACES_${PN} = "gcc"
 RCONFLICTS_g++-noemu = "g++"
 RREPLACES_g++-noemu = "g++"
 RCONFLICTS_cpp-noemu = "cpp"

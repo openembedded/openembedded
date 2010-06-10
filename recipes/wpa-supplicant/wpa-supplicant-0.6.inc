@@ -23,7 +23,7 @@ S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant"
 PACKAGES_prepend = "wpa-supplicant-passphrase "
 FILES_wpa-supplicant-passphrase = "/usr/sbin/wpa_passphrase"
 
-RREPLACES = "wpa-supplicant-cli"
+RREPLACES_${PN} = "wpa-supplicant-cli"
 
 RRECOMMENDS_${PN} = "wpa-supplicant-passphrase"
 

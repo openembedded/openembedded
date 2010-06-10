@@ -1,6 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation with unionroot"
 PROVIDES = "task-bootstrap"
-RPROVIDES = "task-bootstrap"
+RPROVIDES_${PN} = "task-bootstrap"
 PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 

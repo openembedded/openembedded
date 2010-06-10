@@ -3,8 +3,8 @@ LICENSE = "GPLv2"
 
 PR = "r1"
 
-RCONFLICTS = "esd"
-RREPLACES = "esd"
+RCONFLICTS_${PN} = "esd"
+RREPLACES_${PN} = "esd"
 
 RDEPENDS_${PN} = " \
 	pulseaudio-server \

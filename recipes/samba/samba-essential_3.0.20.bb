@@ -10,7 +10,7 @@ SRC_URI = "file://config-lfs.patch \
 	   file://smb-essential-inactive.conf \
 	   file://Managing-Samba.txt"
 
-RCONFLICTS = "samba"
+RCONFLICTS_${PN} = "samba"
 
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the

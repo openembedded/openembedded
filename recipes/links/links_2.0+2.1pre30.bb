@@ -1,7 +1,7 @@
 require links.inc
 
 DEPENDS += "gpm"
-RCONFLICTS = "links-x11"
+RCONFLICTS_${PN} = "links-x11"
 PR = "r1"
 
 EXTRA_OECONF = "--enable-javascript --with-libfl --enable-graphics \

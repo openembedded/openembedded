@@ -4,7 +4,7 @@ DESCRIPTION = "X Screen Saver extension library"
 LICENSE = "GPL"
 DEPENDS += "libxext scrnsaverproto"
 PROVIDES = "libxss"
-RREPLACES = "libxss"
+RREPLACES_${PN} = "libxss"
 PR = "r1"
 PE = "1"
 

@@ -9,7 +9,7 @@ EXTRA_OECONF = "--without-sound --with-x-toolkit=gtk"
 
 DEFAULT_PREFERENCE = "-1"
 
-RREPLACES = "emacs"
+RREPLACES_${PN} = "emacs"
 
 FILESPATHPKG =. "emacs-${PV}:"
 SRC_URI = "${GNU_MIRROR}/emacs/emacs-${PV}.tar.gz;name=tarball \

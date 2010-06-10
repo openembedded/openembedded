@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 PR = "r4"
 PROVIDES = "virtual/gnome-vfs"
-RPROVIDES = "gnome-vfs"
+RPROVIDES_${PN} = "gnome-vfs"
 
 inherit gnome pkgconfig
 

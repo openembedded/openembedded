@@ -5,7 +5,7 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "libgpewidget gtk+ sqlite"
 PROVIDES    = "libgepepimc"
-RPROVIDES   = "libgepepimc"
+RPROVIDES_${PN}   = "libgepepimc"
 
 SRC_URI     = "${GPE_MIRROR}/libgpepimc-${PV}.tar.bz2"
 

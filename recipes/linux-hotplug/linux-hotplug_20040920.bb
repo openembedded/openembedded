@@ -7,7 +7,7 @@ RPROVIDES_${PN} = "hotplug"
 RCONFLICTS_${PN} = "hotplug"
 RREPLACES_${PN} = "hotplug"
 SECTION = "base"
-RSUGGESTS = "pciutils usbutils"
+RSUGGESTS_${PN} = "pciutils usbutils"
 PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \

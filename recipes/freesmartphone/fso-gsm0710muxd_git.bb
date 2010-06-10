@@ -14,7 +14,7 @@ S = "${WORKDIR}/git"
 inherit autotools
 
 RDEPENDS_${PN} = "dbus dbus-glib"
-RCONFLICTS = "gsm0710muxd"
-RREPLACES = "gsm0710muxd"
+RCONFLICTS_${PN} = "gsm0710muxd"
+RREPLACES_${PN} = "gsm0710muxd"
 
 FILES_${PN} += "${datadir} ${sysconfdir}"

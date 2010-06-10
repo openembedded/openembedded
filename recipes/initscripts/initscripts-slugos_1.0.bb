@@ -6,7 +6,7 @@
 
 include initscripts_${PV}.bb
 
-RCONFLICTS = "initscripts"
+RCONFLICTS_${PN} = "initscripts"
 
 # SlugOS uses the busybox makedevs, so until that dependency gets virtualized
 # the below lines serve to remove the dependency on the full makedevs package,

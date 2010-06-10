@@ -6,7 +6,7 @@ LICENSE = "MIT"
 DEPENDS = "boost"
 
 PROVIDES = "monotone"
-RPROVIDES = "monotone"
+RPROVIDES_${PN} = "monotone"
 
 S = "${WORKDIR}/monotone-${PV}"
 # no cross compile support - it tries to run the test program even with

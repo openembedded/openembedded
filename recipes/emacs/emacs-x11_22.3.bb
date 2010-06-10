@@ -5,7 +5,7 @@ DEPENDS += "gtk+ libungif"
 
 EXTRA_OECONF = "--without-sound --with-x-toolkit=gtk"
 
-RREPLACES = "emacs"
+RREPLACES_${PN} = "emacs"
 
 FILESPATHPKG =. "emacs-${PV}:"
 SRC_URI = "${GNU_MIRROR}/emacs/emacs-${PV}.tar.gz \

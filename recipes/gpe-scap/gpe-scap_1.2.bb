@@ -4,7 +4,7 @@ PRIORITY = "optional"
 SECTION = "gpe"
 PR = "r1"
 
-RREPLACES = "gpe-screenshot"
+RREPLACES_${PN} = "gpe-screenshot"
 
 DEPENDS = "glib-2.0 gtk+ libgpewidget libglade libsoup"
 

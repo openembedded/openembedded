@@ -1,7 +1,7 @@
 DESCRIPTION = "Squid Analysis Report Generator"
 SECTION = "utils"
 DEPENDS = "gd"
-RSUGGESTS = "squid"
+RSUGGESTS_${PN} = "squid"
 LICENSE = "GPL"
 HOMEPAGE = "http://sarg.sourceforge.net/sarg.php"
 PR = "r0"

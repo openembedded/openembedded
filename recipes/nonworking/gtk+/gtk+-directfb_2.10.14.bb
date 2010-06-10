@@ -7,8 +7,8 @@ DEFAULT_PREFERENCE = "-1"
 S = "${WORKDIR}/gtk+-${PV}"
 
 
-RCONFLICTS = "gtk+"
-RPROVIDES ="gtk+-directfb"
+RCONFLICTS_${PN} = "gtk+"
+RPROVIDES_${PN} ="gtk+-directfb"
 DEPENDS = "glib-2.0 pango-directfb atk jpeg libpng gtk-doc libgcrypt cairo-directfb cups"
 LDFLAGS_append += " -ldirectfb"
 CFLAGS_append  += " -I${STAGING_INCDIR}/directfb"
