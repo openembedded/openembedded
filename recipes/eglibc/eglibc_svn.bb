@@ -1,11 +1,11 @@
 require eglibc.inc
 
 DEPENDS += "gperf-native"
-SRCREV = "10505"
+SRCREV = "10688"
 DEFAULT_PREFERENCE = "-1"
 FILESPATHPKG =. "eglibc-svn:"
-PV = "2.11+svnr${SRCPV}"
-PR = "${INC_PR}.4"
+PV = "2.12+svnr${SRCPV}"
+PR = "${INC_PR}.0"
 EGLIBC_BRANCH="trunk"
 SRC_URI = "svn://svn.eglibc.org;module=${EGLIBC_BRANCH} \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch \
