@@ -1,6 +1,7 @@
 require navit.inc
 
-PV = "0.1.0+svnr${SRCPV}"
+SRCREV = "3349"
+PV = "0.1.99+svnr${SRCPV}"
 PR = "${INC_PR}.6"
 
 S = "${WORKDIR}/navit"
@@ -11,9 +12,11 @@ RSUGGESTS_${PN} = "flite espeak"
 
 DEPENDS_shr += " gd librsvg-native"
 RDEPENDS_${PN} = " navit-icons"
+DEPENDS_append_shr = " gypsy"
+RDEPENDS_append_shr = " fsoraw"
+
 EXTRA_OECONF += " --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher --enable-cache-size=20971520"
 
-SRCREV = "3279"
 SRC_URI = "svn://anonymous@navit.svn.sourceforge.net/svnroot/navit/trunk;module=navit;proto=https"
 
 EXTRA_AUTORECONF = " -I m4"
@@ -39,9 +42,6 @@ SRC_URI += "file://navit.xml \
 SRC_URI_append_shr = "file://navitD.desktop \
                       file://navitD.png \
                      "
-
-DEPENDS_append_shr = " gypsy"
-RDEPENDS_append_shr = " fsoraw"
 
 do_configure_prepend() {
   #Remove xpm building, replaced by icons in own package
