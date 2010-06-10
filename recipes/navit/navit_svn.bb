@@ -2,16 +2,16 @@ require navit.inc
 
 SRCREV = "3349"
 PV = "0.1.99+svnr${SRCPV}"
-PR = "${INC_PR}.6"
+PR = "${INC_PR}.7"
 
 S = "${WORKDIR}/navit"
 
 # override navit.inc RRECOMMENDS, we only suggest a text2speech app
-RRECOMMENDS_${PN} = "gpsd"
-RSUGGESTS_${PN} = "flite espeak"
+RRECOMMENDS_${PN} = "gpsd ${PN}-dbus ${PN}-speech-cmdline ${PN}-gui-internal ${PN}-graphics-gtk"
+RSUGGESTS_${PN} = "flite espeak ${PN}-speech-dbus ${PN}-gui-gtk ${PN}-gui-qml ${PN}-graphics-sdl ${PN}-maptool"
 
 DEPENDS_shr += " gd librsvg-native"
-RDEPENDS_${PN} = " navit-icons"
+RDEPENDS_${PN} = " navit-icons ${PN}-config "
 DEPENDS_append_shr = " gypsy"
 RDEPENDS_append_shr = " fsoraw"
 
@@ -21,9 +21,7 @@ SRC_URI = "svn://anonymous@navit.svn.sourceforge.net/svnroot/navit/trunk;module=
 
 EXTRA_AUTORECONF = " -I m4"
 
-FILES_${PN} += " ${datadir}/dbus-1/services/ "
-
-CONFFILES_${PN} += "${datadir}/navit/navit.default.xml \
+CONFFILES_${PN}-config += "${datadir}/navit/navit.default.xml \
                     ${datadir}/navit/navit.xml \
                     ${datadir}/navit/maps.xml \
                     ${datadir}/navit/osd.xml \
@@ -37,6 +35,19 @@ SRC_URI += "file://navit.xml \
             file://speech.xml \
             file://plugins.xml \
            "
+
+PACKAGES =+ "${PN}-maptool ${PN}-config ${PN}-dbus ${PN}-speech-cmdline ${PN}-speech-dbus ${PN}-gui-gtk ${PN}-gui-internal ${PN}-gui-qml ${PN}-graphics-sdl ${PN}-graphics-gtk"
+
+FILES_${PN}-maptool = " ${bindir}/maptool "
+FILES_${PN}-config = " ${datadir}/navit/*.xml "
+FILES_${PN}-dbus = " ${datadir}/dbus-1/services/ ${libdir}/${PN}/binding/libbinding_dbus.so "
+FILES_${PN}-speech-cmdline = " ${libdir}/${PN}/speech/libspeech_cmdline.so "
+FILES_${PN}-speech-dbus = " ${libdir}/${PN}/speech/libspeech_dbus.so "
+FILES_${PN}-gui-gtk = " ${libdir}/${PN}/gui/libgui_gtk.so "
+FILES_${PN}-gui-qml = " ${libdir}/${PN}/gui/libgui_qml.so ${datadir}/navit/skins/ "
+FILES_${PN}-gui-internal = " ${libdir}/${PN}/gui/libgui_internal.so "
+FILES_${PN}-graphics-sdl = " ${libdir}/${PN}/graphics/libgraphics_sdl.so "
+FILES_${PN}-graphics-gtk = " ${libdir}/${PN}/graphics/libgraphics_gtk_drawing_area.so "
 
 #Second launcher for shr
 SRC_URI_append_shr = "file://navitD.desktop \
