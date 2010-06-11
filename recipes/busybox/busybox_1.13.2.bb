@@ -18,6 +18,7 @@ SRC_URI = "\
   \
   file://udhcpscript.patch \
   file://udhcpc-fix-nfsroot.patch \
+  file://udhcpc-background.patch \
   file://B921600.patch \
   file://get_header_tar.patch \
   file://busybox-appletlib-dependency.patch \

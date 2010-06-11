@@ -5,6 +5,7 @@ SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
   \
   file://udhcpscript.patch \
+  file://udhcpc-background.patch \
   file://B921600.patch \
   file://fdisk_lineedit_segfault.patch \
   file://iptunnel.patch \
