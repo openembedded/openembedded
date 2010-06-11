@@ -1,5 +1,5 @@
 SRC_URI = "file://zzapsplash-init"
-PR = "r5"
+PR = "r6"
 
 do_install_prepend() {
         install -d "${D}${sysconfdir}/init.d/"
@@ -8,7 +8,7 @@ do_install_prepend() {
 
 inherit update-rc.d
 
-RRECOMMENDS_${PN} = "psplash-angstrom"
+RRECOMMENDS_${PN} = "virtual-psplash"
 INITSCRIPT_NAME = "zzapsplash"
 INITSCRIPT_PARAMS = "start 99 5 S ."
 
