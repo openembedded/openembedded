@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r53"
+PR ="r54"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -19,6 +19,7 @@ SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch"
 SRC_URI_append_cm-t35 = "file://cm-t35/cm-t35.patch"
 SRC_URI_append_bug20 = "file://bug-uboot.patch"
+SRC_URI_append_bug20 += "file://bug-video-setting.patch"
 
 SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
                        file://0001-OMAP3-enable-i2c-bus-switching-for-Beagle-and-Overo.patch \
