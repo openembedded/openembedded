@@ -1,6 +1,6 @@
 DESCRIPTION =	"GTK+ industrial theme adjusted for GPE"
 LICENSE = 	"GPL"
-PR =		"r0"
+PR =		"r1"
 
 #it doesn't really depends on it, but it's nice to make OE build it
 DEPENDS =		"gtk-engines"

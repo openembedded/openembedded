@@ -3,12 +3,12 @@ SECTION = "e/utils"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
-RSUGGESTS = "phoneui-shr-theme-o2"
+RSUGGESTS_${PN} = "phoneui-shr-theme-o2"
 LICENSE = "unknown"
 
 SRCREV = "b5eb3134850c277ad8ae1a960b03ff4a509278a8"
 PV = "0.1-${EFL_SRCREV}+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master \
           "

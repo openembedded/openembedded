@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ libgnomeui"
 RDEPENDS_${PN} = "unzip"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 

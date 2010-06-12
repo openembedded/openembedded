@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "ppp gconf gpe-su"
 SECTION = "gpe"
 PRIORITY = "optional"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://familiar.handhelds.org/source/v0.8.2/${PN}-${PV}.tar.gz \
            file://gkdial-pgpe.patch \

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.callweaver.org"
 SECTION = "libs"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "perl callweaver-ogi"
-PR = "r0"
+PR = "r1"
 S = "${WORKDIR}/callweaver-1.2-${CWRCV}/contrib/ogi-perl/callweaver-perl-0.0.1"
 
 CWRCV = "rc5"

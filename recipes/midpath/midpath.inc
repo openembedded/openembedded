@@ -8,7 +8,7 @@ require midpath-common.inc
 RDEPENDS_${PN} = "midpath-core midpath-core-bluetooth midpath-core-ogg ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'midpath-core-mp3', d)}"
 
 PROVIDES = "midpath"
-RPROVIDES = "midpath"
+RPROVIDES_${PN} = "midpath"
 
 CONFIGURATION = "${@bb.fatal('Variable CONFIGURATION is not set in your midpath.inc-based recipe.')}"
 

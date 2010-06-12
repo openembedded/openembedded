@@ -3,7 +3,7 @@ HOMEPAGE = "http://wireless.kernel.org/en/developers/Regulatory/CRDA"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "ISC"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libgcrypt libnl python-native python-m2crypto-native"
 RDEPENDS_${PN} = "udev"

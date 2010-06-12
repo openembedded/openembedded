@@ -2,7 +2,7 @@ DESCRIPTION = "EFL based widget set for mobile devices"
 LICENSE = "LGPL"
 DEPENDS = "eet-native efreet evas ecore edje eet edbus"
 PV = "0.0.0+svnr${SRCPV}"
-PR = "r8"
+PR = "r9"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl
@@ -50,3 +50,5 @@ FILES_${PN}-tests = "\
   ${libdir}/elementary/modules/test_entry/* \
 "
 
+RREPLACES_${PN}-themes = "libelementary-ver-pre-svn-05-themes"
+RREPLACES_${PN}-configs = "libelementary-ver-pre-svn-05-configs"

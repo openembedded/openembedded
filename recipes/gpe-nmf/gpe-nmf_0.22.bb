@@ -2,7 +2,7 @@ require gpe-nmf.inc
 
 RDEPENDS_${PN} += "gst-plugin-decodebin"
 RRECOMMENDS_${PN} += "gst-plugin-ivorbis gst-plugin-tcp"
-PR = "r3"
+PR = "r4"
 
 SRC_URI += " file://playlist-segfault.patch;striplevel=0 \
              file://fix-includepath.patch"

@@ -10,7 +10,7 @@ DEPENDS = "gtk+ libgnomeui"
 RDEPENDS_${PN} ="rdesktop gail orbit2 gnome-vfs gnome-keyring libbonobo libbonoboui \ 
             libart-lgpl libgnome libidl libglade libgnomecanvas "
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/grdesktop/grdesktop-${PV}.tar.gz \
            file://fr.po.patch \

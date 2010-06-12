@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "libxtst libxext virtual/imlib2 libconfig"
 RDEPENDS_${PN} += "imlib2-loaders"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/qwo/qwo-${PV}.tar.gz \
            file://qwo.automake-1.11.patch"

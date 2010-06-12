@@ -2,7 +2,7 @@ DESCRIPTION = "The Powerful #1 Open-Source Spam Filter"
 HOMEPAGE = "http://spamassassin.apache.org/"
 SECTION = "network"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r4"
 
 inherit cpan
 
@@ -19,9 +19,9 @@ DEPENDS += " \
 	libip-country-perl-native \
 	libmail-dkim-perl-native \
 	libmail-spf-perl-native \
-	libnetaddr-ip-perl-native \
 	libnet-dns-perl-native \
 	libnet-ident-perl-native \
+	libnetaddr-ip-perl-native \
 	libwww-perl-native \
 	openssl \
 	zlib \
@@ -39,9 +39,9 @@ RDEPENDS_${PN} += " \
 	libip-country-perl \
 	libmail-dkim-perl \
 	libmail-spf-perl \
-	libnetaddr-ip-perl \
 	libnet-dns-perl \
 	libnet-ident-perl \
+	libnetaddr-ip-perl \
 	liburi-perl \
 	libwww-perl \
 	perl-module-base \
@@ -63,6 +63,7 @@ RDEPENDS_${PN} += " \
 	perl-module-file-spec \
 	perl-module-file-spec-unix \
 	perl-module-io-file \
+	perl-module-io-pipe \
 	perl-module-io-select \
 	perl-module-io-socket \
 	perl-module-io-socket-inet \
@@ -70,6 +71,8 @@ RDEPENDS_${PN} += " \
 	perl-module-pod-text \
 	perl-module-pod-usage \
 	perl-module-posix \
+	perl-module-posix-sigaction \
+	perl-module-re \
 	perl-module-socket \
 	perl-module-strict \
 	perl-module-sys-hostname \
@@ -83,6 +86,7 @@ RDEPENDS_${PN} += " \
 # Most of the patches are from Debian
 SRC_URI = " \
 	${APACHE_MIRROR}/spamassassin/source/Mail-SpamAssassin-${PV}.tar.bz2;name=spamassassin-${PV} \
+	${APACHE_MIRROR}/spamassassin/source/Mail-SpamAssassin-rules-${PV}.r923114.tgz;name=sa-rules-${PV} \
 	file://spamassassin.default \
 	file://spamassassin.init \
 	file://10_change_config_paths;apply=yes \
@@ -96,6 +100,8 @@ SRC_URI = " \
 	"
 SRC_URI[spamassassin-3.3.1.md5sum] = "bb977900c3b2627db13e9f44f9b5bfc8"
 SRC_URI[spamassassin-3.3.1.sha256sum] = "4c348cd951fc2c5688e9713fcbc6ba453df51d32a1ab332a63800d20ff18bdb4"
+SRC_URI[sa-rules-3.3.1.md5sum] = "3e6ae5a39b9dd2de7ec05a2b315c396b"
+SRC_URI[sa-rules-3.3.1.sha256sum] = "332ce81896ab289090dc040793a8264b5943a411f030238c6461f0ba56a8183e"
 
 S = "${WORKDIR}/Mail-SpamAssassin-${PV}"
 
@@ -129,4 +135,12 @@ do_install_append() {
 		${D}/${bindir}/sa-compile \
 		${D}/${bindir}/spamassassin \
 		${D}/${sbindir}/spamd
+	cp ${WORKDIR}/*.cf ${D}${datadir}/spamassassin/
+	cp ${WORKDIR}/*.txt ${D}${datadir}/spamassassin/
+	cp ${WORKDIR}/languages ${D}${datadir}/spamassassin/
+	cp ${WORKDIR}/user_prefs.template ${D}${datadir}/spamassassin/
 }
+
+PACKAGES =+ "${PN}-rules"
+FILES_${PN}-rules = "${datadir}/spamassassin/*.cf"
+RSUGGESTS_${PN}-rules = "${PN}"

@@ -5,7 +5,7 @@ DEPENDS = "virtual/kernel"
 RDEPENDS_${PN} = "imagemagick"
 
 PV = "1.1"
-PR = "r1"
+PR = "r2"
 PR_append = "+gitr${SRCREV}"
 
 SRCREV = "ef7ef29b5cdcf8630c901362a66905b956242e0d"

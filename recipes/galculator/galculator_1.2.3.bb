@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 inherit autotools pkgconfig gconf
 

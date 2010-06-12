@@ -3,7 +3,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 PR = "r1"
 
-FILESPATH_append = ":${@os.path.dirname(bb.data.getVar('FILE',d,1))}/vsftpd-2.0.5"
+FILESPATHPKG .= ":vsftpd-${PV}"
 
 SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
            file://vsftpd-charconv.patch \

@@ -4,7 +4,7 @@ HOMEPAGE = "http://blipapi.googlecode.com/"
 DEPENDS = "python-setuptools"
 LICENSE = "GPL"
 RDEPENDS_${PN} += "python-json"
-PR = "r0"
+PR = "r1"
 inherit setuptools
 
 SRC_URI = "http://blipapi.googlecode.com/files/BlipApiPY-0.02.04.tar.bz2"

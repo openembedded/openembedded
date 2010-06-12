@@ -1,5 +1,5 @@
 DESCRIPTION = "Image for development testing"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
 
 inherit task

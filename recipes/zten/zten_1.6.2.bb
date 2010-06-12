@@ -6,8 +6,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "eb kakasi"
 RDEPENDS_${PN} = "virtual-japanese-font"
-RCONFLICTS = "ztenv"
-PR = "r1"
+RCONFLICTS_${PN} = "ztenv"
+PR = "r2"
 
 SRC_URI = "http://www.gohome.org/cgi-bin/viewcvs.cgi/zten.tar.gz;md5sum=d24f03c8df5c98d510590bd9a63dc932 \
            file://zten.patch"

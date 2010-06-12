@@ -4,7 +4,7 @@ AUTHOR = "Sebastian Spaeth <Sebastian@SSpaeth.de>"
 LICENSE  = "MIT"
 RDEPENDS_${PN} = "python-elementary python python-edbus"
 SECTION = "x11/application"
-PR = "r0"
+PR = "r1"
 
 
 SRC_URI = "git://github.com/spaetz/calc.git;protocol=http;branch=master;tag=${PV}"

@@ -3,7 +3,7 @@ SECTION = "net"
 LICENSE = "GPL"
 DEPENDS = "dbus"
 RDEPENDS_${PN} = "dhcp-client"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "https://fedorahosted.org/releases/d/h/dhcdbd/dhcdbd-${PV}.tar.bz2 \
            file://dbus_connection_unref.patch \

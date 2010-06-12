@@ -1,11 +1,11 @@
-PR = "r14"
+PR = "r15"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 
-RCONFLICTS = "gcc"
-RREPLACES = "gcc"
+RCONFLICTS_${PN} = "gcc"
+RREPLACES_${PN} = "gcc"
 
 inherit autotools gettext
 

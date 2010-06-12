@@ -10,7 +10,7 @@ S = "${WORKDIR}/git"
 
 SRCREV = "93295f36f7b45c691df247cb2a65227facf13654"
 PV = "0.0+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 inherit distutils
 

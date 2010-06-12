@@ -1,6 +1,6 @@
 require cairo.inc
-RCONFLICTS = "cairo"
-RPROVIDES = "cairo-directfb"
+RCONFLICTS_${PN} = "cairo"
+RPROVIDES_${PN} = "cairo-directfb"
 DEPENDS = "directfb pixman libsm libpng fontconfig"
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz \
            file://configure_fix.patch "
@@ -12,7 +12,7 @@ EXTRA_OECONF += " --enable-directfb \
 LDFLAGS_append += " -ldirectfb"
 CFLAGS_append  += " -I${STAGING_INCDIR}/directfb"
 
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/cairo-${PV}"
 

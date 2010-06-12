@@ -1,7 +1,7 @@
 DESCRIPTION = "Various MIME modules."
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r1"
+PR = "r2"
 
 RDEPENDS_${PN} = "perl-module-test-more \
             perl-module-time-local"

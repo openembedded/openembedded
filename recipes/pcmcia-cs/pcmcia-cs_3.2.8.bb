@@ -7,7 +7,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
 RDEPENDS_${PN} = "hostap-conf orinoco-conf"
-PR = "r28"
+PR = "r29"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://busybox.patch \

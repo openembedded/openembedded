@@ -5,10 +5,10 @@ LICENSE = "GPL"
 AUTHOR = "Anton Maslovsky"
 HOMEPAGE = "http://my-zaurus.narod.ru/"
 RDEPENDS_${PN} = "qpealarmclock"
-RCONFLICTS = "opie-clockapplet"
-RREPLACES = "opie-clockapplet"
+RCONFLICTS_${PN} = "opie-clockapplet"
+RREPLACES_${PN} = "opie-clockapplet"
 
-PR = "r1"
+PR = "r2"
 
 APPNAME = "qpealarmclockapplet"
 APPTYPE = "binary"

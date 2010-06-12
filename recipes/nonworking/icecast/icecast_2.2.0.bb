@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 LICENSE = "GPLv2"
 
 DEPENDS = "libvorbis libogg libxslt"

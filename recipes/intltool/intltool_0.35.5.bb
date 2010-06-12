@@ -3,7 +3,7 @@ require intltool.inc
 RDEPENDS_${PN} = "perl-module-text-wrap perl-module-re"
 RRECOMMENDS_${PN} = "perl-modules"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 

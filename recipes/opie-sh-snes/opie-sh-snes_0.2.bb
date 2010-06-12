@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RDEPENDS_${PN} = "opie-sh"
 
 
-PR = "r2"
+PR = "r3"
 
 FILES_${PN} = "/opt/QtPalmtop"
 

@@ -4,7 +4,7 @@ DEPENDS = "libmokoui2 expat gstreamer libspiff curl"
 RDEPENDS_${PN} = "gst-meta-audio gconf gst-plugin-alsa"
 SRCREV = "4750"
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 inherit openmoko2
 

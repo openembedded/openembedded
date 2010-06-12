@@ -5,7 +5,7 @@ DEPENDS = "gtk+ libgpewidget gpe-icons"
 RDEPENDS_${PN} = "gdk-pixbuf-loader-jpeg"
 SECTION = "gpe"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://fix-make.patch"
 

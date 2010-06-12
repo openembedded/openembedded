@@ -5,7 +5,7 @@ DEPENDS = "tslib"
 RDEPENDS_${PN} = "procps"
 SRCDATE = "20090501"
 PV = "0.0+svn${SRCDATE}"
-PR = "r22"
+PR = "r23"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \

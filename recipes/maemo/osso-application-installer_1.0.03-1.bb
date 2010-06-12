@@ -1,4 +1,4 @@
-PR         = "r0"
+PR         = "r1"
 LICENSE    = "GPL"
 
 DEPENDS = "hildon-lgpl hildon-base-lib libosso hildon-libs hildon-control-panel shared-mime-info"

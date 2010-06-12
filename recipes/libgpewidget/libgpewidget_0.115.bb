@@ -2,7 +2,7 @@ DESCRIPTION = "libgpewidget contains a collection of widgets and other common co
 LICENSE = "LGPL"
 SECTION = "gpe/libs"
 DEPENDS = "gtk+ cairo libxinerama libxrender gtk-doc"
-PR = "r2"
+PR = "r3"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

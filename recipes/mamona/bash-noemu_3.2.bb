@@ -1,8 +1,8 @@
 require ../bash/bash.inc
-PR = "r1"
+PR = "r2"
 
-RCONFLICTS = "bash"
-RREPLACES = "bash"
+RCONFLICTS_${PN} = "bash"
+RREPLACES_${PN} = "bash"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
            file://001-005.patch \

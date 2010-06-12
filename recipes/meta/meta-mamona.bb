@@ -1,6 +1,6 @@
 DESCRIPTION = "Meta package for Mamona"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 inherit meta
 EXCLUDE_FROM_WORLD = "1"

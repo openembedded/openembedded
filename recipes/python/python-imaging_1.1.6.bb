@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "freetype jpeg tiff"
 RDEPENDS_${PN} = "python-lang python-stringold"
 SRCNAME = "Imaging"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "http://effbot.org/downloads/Imaging-${PV}.tar.gz \
            file://path.patch"

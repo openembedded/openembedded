@@ -5,7 +5,7 @@ DEPENDS = "libcontactsdb libgpewidget libgpepimc libdisplaymigration libgpevtype
 RDEPENDS_${PN} = "gpe-icons"
 SRCREV = "9312"
 PV = "0.47+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 inherit autotools gpe
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Graphical front-end for the gschem -> pcb workflow"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://www.gpleda.org/"
 FILES_${PN} += "${datadir}/icons"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "python-native"
 # python-codecs for gettext.py

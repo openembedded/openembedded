@@ -61,13 +61,16 @@ def oe_popen(d, cmd, **kwargs):
             d.setVar("__oe_popen_env", env)
         kwargs["env"] = env
 
+    kwargs["close_fds"] = True
     kwargs["preexec_fn"] = subprocess_setup
 
     return Popen(cmd, **kwargs)
 
-def oe_system(d, cmd):
+def oe_system(d, cmd, **kwargs):
     """ Popen based version of os.system. """
-    return oe_popen(d, cmd, shell=True).wait()
+    if not "shell" in kwargs:
+        kwargs["shell"] = True
+    return oe_popen(d, cmd, **kwargs).wait()
 
 # for MD5/SHA handling
 def base_chk_load_parser(config_paths):

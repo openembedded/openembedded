@@ -22,7 +22,7 @@ do_configure() {
 	unzip -o -q -d ${LANGUAGE} ${LANGUAGE}.xpi
 }
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 do_install() {
 	cd ${S}/${LANGUAGE}

@@ -5,7 +5,7 @@ DEPENDS += " evas ewl epsilon"
 RDEPENDS_${PN} += " epsilon-thumbd"
 SRCREV = "34"
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 inherit autotools
 

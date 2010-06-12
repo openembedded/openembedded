@@ -3,7 +3,7 @@ SECTION = "x11/office"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "qt4-x11-free"
-RSUGGESTS = "tetex"
+RSUGGESTS_${PN} = "tetex"
 RDEPENDS_${PN} = "python-shell python-textutils"
 
 SRC_URI = "\

@@ -4,11 +4,11 @@ PRIORITY = "optional"
 DEPENDS = "gstreamer gst-plugins-base bluez-libs-${PV} virtual/libusb0 dbus glib-2.0"
 PROVIDES = "bluez-utils-dbus"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
-RREPLACES = "bluez-utils-dbus"
+RREPLACES_${PN} = "bluez-utils-dbus"
 RCONFLICTS_${PN} = "bluez-utils-nodbus"
 LICENSE = "GPL"
 
-FILESPATH = "${FILE_DIRNAME}/bluez-utils-${PV}:${FILE_DIRNAME}/bluez-utils"
+FILESPATHPKG =. "bluez-utils-${PV}:bluez-utils:"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \

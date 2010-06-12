@@ -1,8 +1,8 @@
 require abiword-2.5.inc
 
-PR = "r1"
+PR = "r2"
 
-RCONFLICTS = "abiword-embedded"
+RCONFLICTS_${PN} = "abiword-embedded"
 
 FILES_${PN} 			+= "${datadir}/mime-info"
 FILES_abiword-strings           += "${datadir}/abiword-${SHRT_VER}/strings"

@@ -1,9 +1,9 @@
-PR = "r0"
+PR = "r1"
 
 require ../binutils/binutils.inc
 
-RCONFLICTS = "binutils"
-RREPLACES = "binutils"
+RCONFLICTS_${PN} = "binutils"
+RREPLACES_${PN} = "binutils"
 RCONFLICTS_binutils-noemu-symlinks = "binutils-symlinks"
 RREPLACES_binutils-noemu-symlinks = "binutils-symlinks"
 

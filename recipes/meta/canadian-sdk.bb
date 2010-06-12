@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "opkg-native ipkg-utils-native fakeroot-native sed-native zip-native"
-PR = "r4"
+PR = "r5"
 
 # NOTE: We need to save and restore PACKAGE_ARCHS, because sdk.bbclass
 # will change HOST_ARCH, which can result in SITEINFO_ENDIANESS (which

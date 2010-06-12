@@ -4,10 +4,10 @@ SECTION = "devel"
 LICENSE = "GPL"
 # NOTE: split PR.  If the main .bb changes something that affects its *build*
 # remember to increment the -cross .bb PR too.
-PR = "r0"
+PR = "r1"
 
-RCONFLICTS = "gcc"
-RREPLACES = "gcc"
+RCONFLICTS_${PN} = "gcc"
+RREPLACES_${PN} = "gcc"
 RCONFLICTS_g++-noemu = "g++"
 RREPLACES_g++-noemu = "g++"
 RCONFLICTS_cpp-noemu = "cpp"

@@ -14,6 +14,6 @@ RDEPENDS_${PN} = "\
   ewl \
   epdf \
 "
-PR = "r1"
+PR = "r2"
 
 ALLOW_EMPTY = "1"

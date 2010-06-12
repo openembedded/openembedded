@@ -4,7 +4,7 @@ RDEPENDS_${PN} = "libxfce4util libxfcegui4 gvfs fuse-utils"
 
 SECTION = "x11"
 LICENSE = "GPL-2"
-PR = "r3"
+PR = "r4"
 
 inherit xfce46
 

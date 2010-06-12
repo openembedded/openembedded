@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "ipkg-collateral unionroot busybox"
 SECTION = "base"
 PRIORITY = "optional"
 
-PR = "2"
+PR = "3"
 
 SRC_URI = "file://mount.unionroot \
 	   file://umount.unionroot"

@@ -4,7 +4,7 @@ SECTION = "x11/office"
 DEPENDS = "nautilus gnome-icon-theme tiff libxt espgs gnome-doc-utils poppler libxml2 gtk+ gconf libglade gnome-keyring "
 RDEPENDS_${PN} = "espgs gnome-icon-theme"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome pkgconfig gtk-icon-cache
 

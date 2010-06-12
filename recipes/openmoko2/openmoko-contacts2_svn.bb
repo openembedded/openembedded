@@ -4,7 +4,7 @@ DEPENDS = "libmokoui2 libmokojournal2 dbus-glib"
 RDEPENDS_${PN} = "libedata-book"
 SRCREV = "419"
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 inherit openmoko2
 

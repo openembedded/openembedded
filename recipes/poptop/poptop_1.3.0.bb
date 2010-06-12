@@ -11,7 +11,7 @@ PRIORITY    = "optional"
 DEPENDS     = "ppp"
 RDEPENDS_${PN}    = "ppp"
 
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 

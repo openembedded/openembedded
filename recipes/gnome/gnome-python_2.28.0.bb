@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 DEPENDS = "libgnomeui pyorbit python-pygtk"
 RDEPENDS_${PN} = "pyorbit"
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome distutils-base pkgconfig
 

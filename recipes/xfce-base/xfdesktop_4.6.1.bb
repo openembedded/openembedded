@@ -3,7 +3,7 @@ SECTION = "x11/base"
 
 DEPENDS = "virtual/libx11 exo libxfcegui4 xfce4-panel thunar gtk+"
 RDEPENDS_${PN} = "libxfcegui4 libxml2 xfce4-panel thunar exo gtk+"
-PR = "r2"
+PR = "r3"
 
 inherit xfce46
 

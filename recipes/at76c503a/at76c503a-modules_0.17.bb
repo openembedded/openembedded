@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for at76 based usb-wifi devices"
 SECTION = "base"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 RDEPENDS_${PN} = "at76c503-firmware"
 

@@ -1,15 +1,16 @@
 DESCRIPTION = "Delayed job execution and batch processing."
 SECTION = "base"
 LICENSE="BSD"
-DEPENDS = "flex"
-RCONFLICTS = "atd"
-RREPLACES = "atd"
+DEPENDS = "flex-native"
+RCONFLICTS_${PN} = "atd"
+RREPLACES_${PN} = "atd"
 
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
 	   file://configure.patch \
-	   file://nonrootinstall.patch"
+	   file://nonrootinstall.patch \
+	   file://use-ldflags.patch"
 
 inherit autotools
 

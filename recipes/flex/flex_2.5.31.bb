@@ -1,5 +1,5 @@
 require flex.inc
-PR = "r5"
+PR = "${INC_PR}.0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/flex/flex-${PV}.tar.bz2 \
            file://flex-lvalue.diff \

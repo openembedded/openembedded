@@ -3,7 +3,7 @@ SECTION = "utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "python python-pygtk python-xml python-netclient pydes python-audio"
-PR="r2"
+PR = "r3"
 
 ARCH_pyring = "all"
 

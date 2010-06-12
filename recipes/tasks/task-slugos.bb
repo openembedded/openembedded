@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r25"
+PR = "r27"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug)"
 ALLOW_EMPTY = "1"
@@ -74,12 +74,16 @@ kernel-module-ohci-hcd \
 kernel-module-uhci-hcd \
 "
 
+## Commented out MJW - due to space considerations;
+## add this back in as soon as cleanup tasks manage
+## to recover sufficient flash space.
 # Add packages and modules required for RAID-1 support
-SLUGOS_STANDARD_RRECOMMENDS += "\
-mdadm \
-kernel-module-md-mod \
-kernel-module-raid1 \
-"
+#SLUGOS_STANDARD_RRECOMMENDS += "\
+#mdadm \
+#kernel-module-md-mod \
+#kernel-module-raid1 \
+#"
+## End - MJW
 
 # Add the machine-specific RRECOMMENDS_${PN} stuff -- kernel modules required for
 # network support.
@@ -139,7 +143,8 @@ RDEPENDS_${PN} += "\
 
 DISTRO_EXTRA_RRECOMMENDS ?= ""
 RRECOMMENDS_${PN} += "\
-	openssh \
+	openssh-keygen \
+	openssh-sshd \
 	${SLUGOS_STANDARD_RRECOMMENDS} \
         ${SLUGOS_MACHINE_RRECOMMENDS} \
 	${DISTRO_EXTRA_RRECOMMENDS}"

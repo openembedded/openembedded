@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "popt binutils"
 RDEPENDS_${PN} += "binutils-symlinks"
 RRECOMMENDS_${PN} += "kernel-vmlinux"
-INC_PR = "r11"
+INC_PR = "r12"
 
 S = "${WORKDIR}/oprofile-${PV}"
 SRC_URI = "\

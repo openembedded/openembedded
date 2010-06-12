@@ -6,7 +6,7 @@ SRC_DISTRIBUTE_LICENSES += "${PN}"
 AUTHOR = "NetWalk Group <netwalkgroup@hotmail.com>"
 RDEPENDS_${PN} = "tickypip"
 PACKAGE_ARCH = "all"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/tickypip-levels_${PV}.tar.bz2"
 

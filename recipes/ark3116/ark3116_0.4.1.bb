@@ -6,7 +6,7 @@ HOMEPAGE = "http://avr.auctionant.de/ark3116_linux_driver/"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 RRECOMMENDS_${PN} = "kernel-module-usbserial"
 
 SRC_URI = "http://avr.auctionant.de/ark3116_linux_driver/releases/ark3116-0.4.1.tgz \

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 SRCREV = "1d69fb5b666ac2a9e54e46978c7afa8fe5dfc3c9"
 PV = "0.9.3.1+gitr${SRCPV}"
 PE = "1"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/gsm0710muxd.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"
@@ -14,7 +14,7 @@ S = "${WORKDIR}/git"
 inherit autotools
 
 RDEPENDS_${PN} = "dbus dbus-glib"
-RCONFLICTS = "gsm0710muxd"
-RREPLACES = "gsm0710muxd"
+RCONFLICTS_${PN} = "gsm0710muxd"
+RREPLACES_${PN} = "gsm0710muxd"
 
 FILES_${PN} += "${datadir} ${sysconfdir}"

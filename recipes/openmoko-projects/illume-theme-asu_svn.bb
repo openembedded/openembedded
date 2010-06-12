@@ -3,10 +3,10 @@ HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
 RPROVIDES_${PN} = "illume-theme"
-RCONFLICTS = "illume-config"
+RCONFLICTS_${PN} = "illume-config"
 SRCREV = "4881"
 PV = "0.0+svnr${SRCPV}"
-PR = "r9"
+PR = "r11"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target/themes/;module=illume-theme-asu;proto=http"
 

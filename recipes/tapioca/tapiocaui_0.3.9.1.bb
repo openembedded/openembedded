@@ -2,7 +2,7 @@ HOMEPAGE = "http://tapioca-voip.sourceforge.net/wiki/index.php/Tapioca"
 LICENSE = "LGPL"
 DEPENDS = "gtk+ glib-2.0 dbus gconf tapioca-xmpp tapioca farsight gst-plugins-farsight"
 RDEPENDS_${PN} = "tapioca-xmpp"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tapioca-voip/${P}.tar.gz"
 

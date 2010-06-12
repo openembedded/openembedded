@@ -1,5 +1,5 @@
 SRC_URI = "file://80-loopboot.sh"
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "An initramfs module for booting a filesystem image by loopback \
                mounting it."
 RDEPENDS_${PN} = "initramfs-uniboot initramfs-module-initfs"

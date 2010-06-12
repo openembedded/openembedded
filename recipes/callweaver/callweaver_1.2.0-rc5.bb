@@ -11,7 +11,7 @@ DEPENDS = "openssl zlib tiff libcap spandsp (>= 0.0.3+0.0.4pre10) speex readline
            sox-native findutils-native"
 RRECOMMENDS_${PN} = "logrotate"
 RRECOMMENDS_${PN}-ogi = "perl perl-module-strict callweaver-perl"
-PR = "r1"
+PR = "r2"
 S = "${WORKDIR}/callweaver-1.2-rc5"
 
 CWRCV = "rc5"

@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "mplayer"
 
 inherit gnome
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 SRC_URI = "http://gnome-mplayer.googlecode.com/files/${P}.tar.gz;name=gnomemplayer"
 

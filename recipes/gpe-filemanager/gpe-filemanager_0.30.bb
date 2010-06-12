@@ -2,7 +2,7 @@
 GPE_TARBALL_SUFFIX = "bz2"
 inherit autotools gpe
 
-PR          = "r0"
+PR          = "r1"
 LICENSE     = "GPL"
 DESCRIPTION = "GPE file manager"
 DEPENDS     = "libgpewidget gnome-vfs dbus-glib"

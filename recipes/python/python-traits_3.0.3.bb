@@ -2,7 +2,7 @@ DESCRIPTION = "Explicitly typed attributes for Python"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "BSD"
-PR = "ml0"
+PR = "ml1"
 
 inherit setuptools
 

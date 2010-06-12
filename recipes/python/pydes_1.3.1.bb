@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "python"
 
-PR = "r1"
+PR = "r2"
 ARCH_pydes = "all"
 
 SRC_URI = "http://twhiteman.netfirms.com/pyDES/pyDes-1.3.1.tar.gz"

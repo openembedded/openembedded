@@ -1,0 +1,10 @@
+Index: git/include/configs/omap3_bug.h
+===================================================================
+@@ -388,7 +388,7 @@
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+   "console=ttyS2,115200n8\0" \
+   "mmcboot=mmc init;ext2load mmc 0:1 0x80000000 /boot/uImage;run mmcargs;bootm 0x80000000\0"\
+-  "mmcargs=setenv bootargs console=${console} root=/dev/mmcblk0p1 rw rootwait rootdelay=1 kgdboc=${console} usbcore.autosuspend=-1\0" \
++  "mmcargs=setenv bootargs console=${console} root=/dev/mmcblk0p1 rw rootwait rootdelay=1 kgdboc=${console} usbcore.autosuspend=-1 vram=24M omapfb.vram=0:0M,1:24M,2:0M omapdss.def_disp=dvi omapfb.mode=dvi:1280x1024MR-32@57\0" \
+
+ #define CONFIG_ETHADDR		aa:bb:cc:dd:ee:ff

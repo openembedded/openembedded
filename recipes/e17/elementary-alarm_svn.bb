@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "elementary"
 SECTION = "x11"
 PV = "0.0.0+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e

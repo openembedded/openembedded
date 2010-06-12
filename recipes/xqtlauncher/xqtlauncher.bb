@@ -1,7 +1,7 @@
 DESCRIPTION = "xqtlauncher integrates X/Qt2 nicely into opie. You can launch applications with it from opies menue"
 HOMEPAGE = "http://angstrom-distribution.org/"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 RDEPENDS_${PN} = "xqt2 xorg-minimal-fonts"
 

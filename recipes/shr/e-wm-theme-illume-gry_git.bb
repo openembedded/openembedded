@@ -8,7 +8,7 @@ LICENCE = "unknown"
 
 SRCREV = "a0a974b1e1150aefdf29e8f0ac471a2a60e62532"
 PV = "0.3-${EFL_SRCREV}+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

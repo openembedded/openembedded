@@ -5,10 +5,10 @@ SECTION = "e/utils"
 LICENSE = "unknown"
 DEPENDS = "edje-native"
 RDEPENDS_${PN} = "libphone-ui-shr"
-RSUGGESTS = "elementary-theme-o2"
+RSUGGESTS_${PN} = "elementary-theme-o2"
 SRCREV = "20e5e82819a7612aa31c753a6898ccc9e940c7c6"
 PV = "0.1+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

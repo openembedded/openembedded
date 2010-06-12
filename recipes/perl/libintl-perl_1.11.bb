@@ -1,7 +1,7 @@
 DESCRIPTION = "libintl-perl is an internationalization library for Perl"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR= "r2"
+PR = "r3"
 
 SRC_URI = "http://www.cpan.org/authors/id/G/GU/GUIDO/libintl-perl-${PV}.tar.gz"
 

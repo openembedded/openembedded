@@ -8,7 +8,7 @@ RRECOMMENDS_${PN} = "gpsd espeak flite"
 PACKAGE_ARCH = "all"
 
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned  --enable-svg2png-scaling-flag=32 --disable-speech-speech-dispatcher"
 

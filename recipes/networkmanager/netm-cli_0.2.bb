@@ -3,7 +3,7 @@ HOMEPAGE = "http://dev.openbossa.org/mamona/gitweb?p=users/salveti/netm-cli.git;
 LICENSE = "GPLv2"
 SECTION = "console/network"
 RDEPENDS_${PN} = "python-dbus python-pygobject python-textutils networkmanager (>=0.6) networkmanager (<0.7)"
-PR = "r3"
+PR = "r4"
 
 inherit setuptools
 

@@ -3,7 +3,7 @@ HOMEPAGE = "http://sablevm.org"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 SECTION = "interpreters"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "libffi libtool popt \
            sablevm-classpath"

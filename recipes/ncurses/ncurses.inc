@@ -3,12 +3,11 @@ HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
 LICENSE = "MIT"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
+INC_PR = "r20"
 
 inherit autotools
 
 PARALLEL_MAKE=""
-
-FILESPATH = "${FILE_DIRNAME}/local:${FILE_DIRNAME}/ncurses-${PV}-${PR}:${FILE_DIRNAME}/ncurses-${PV}:${FILE_DIRNAME}/ncurses:${FILE_DIRNAME}"
 
 EXTRA_OECONF = "\
   --enable-static \
@@ -112,8 +111,7 @@ FILES_${PN}-tools = "\
 FILES_${PN}-terminfo = "\
   ${datadir}/terminfo \
 "
-RSUGGESTS_${PN} = "ncurses-terminfo"
+RSUGGESTS_${PN} = "${PN}-terminfo"
 RPROVIDES_${PN} = "libncurses5"
 RCONFLICTS_${PN} = "libncurses5"
 RREPLACES_${PN} = "libncurses5"
-

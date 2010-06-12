@@ -6,7 +6,7 @@ DEPENDS = "libsdl-x11 libsdl-image libsdl-mixer libsdl-net libsdl-ttf python-num
 DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'smpeg', d)}"
 RDEPENDS_${PN} = "python-numeric"
 SRCNAME = "pygame"
-PR = "ml4"
+PR = "ml5"
 
 SRC_URI = "http://www.pygame.org/ftp/${SRCNAME}-${PV}release.tar.gz;name=archive"
 SRC_URI[archive.md5sum] = "1c4cdc708d17c8250a2d78ef997222fc"

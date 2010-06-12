@@ -3,7 +3,7 @@ RRECOMMENDS_${PN} = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-load
 
 SRCREV = "9900"
 PV = "0.20+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 

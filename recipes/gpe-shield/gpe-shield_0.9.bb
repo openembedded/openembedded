@@ -6,7 +6,7 @@ DEPENDS     = "libgpewidget iptables virtual/kernel"
 RDEPENDS_${PN}    = "iptables"
 RRECOMMENDS_${PN} = "kernel-module-ipt-state"
 
-PR          = "r1"
+PR          = "r2"
 
 inherit gpe pkgconfig
 

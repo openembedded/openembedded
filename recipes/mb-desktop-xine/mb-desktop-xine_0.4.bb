@@ -25,7 +25,7 @@ RDEPENDS_${PN} = "libxine-plugin-vo-out-xshm \
             libxine-plugin-dmx-avi \
 	    libxine-plugin-ao-out-oss \
 	    matchbox-desktop	"
-PR = "r1"
+PR = "r2"
 
 SRC_URI="http://projects.o-hand.com/matchbox/sources/mb-desktop-xine/0.4/mb-desktop-xine-${PV}.tar.bz2"
 

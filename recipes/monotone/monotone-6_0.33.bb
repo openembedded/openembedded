@@ -6,7 +6,7 @@ LICENSE = "MIT"
 DEPENDS = "boost"
 
 PROVIDES = "monotone"
-RPROVIDES = "monotone"
+RPROVIDES_${PN} = "monotone"
 
 S = "${WORKDIR}/monotone-${PV}"
 # no cross compile support - it tries to run the test program even with
@@ -25,7 +25,7 @@ inherit autotools
 #FIXME: remove the following
 ARM_INSTRUCTION_SET = "arm"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://monotone.ca/downloads/${PV}/monotone-${PV}.tar.gz \
            file://txt2c-cross-post-0.22.patch \

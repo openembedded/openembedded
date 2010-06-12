@@ -5,7 +5,7 @@ require apt.inc
 
 SRC_URI += "file://no-ko-translation.patch \
             file://use-host.patch "
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://nodoc.patch"
 

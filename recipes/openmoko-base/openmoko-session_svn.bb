@@ -2,7 +2,7 @@ DESCRIPTION = "Matchbox session files for Openmoko"
 SECTION = "openmoko/base"
 RDEPENDS_${PN} = "matchbox-panel-2 matchbox-wm openmoko-today gconf"
 PV = "0.1+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 inherit openmoko-base
 

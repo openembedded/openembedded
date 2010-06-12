@@ -8,7 +8,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
 
-INC_PR = "r9"
+INC_PR = "r10"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz;name=tarball \
 	   file://sysctl.conf \
@@ -21,11 +21,6 @@ INITSCRIPT_NAME = "procps.sh"
 INITSCRIPT_PARAMS = "start 30 S ."
 
 FILES_${PN} += "${base_libdir}/libproc-*.so"
-
-FILES = "${bindir}/top.${PN} ${base_bindir}/ps.${PN} ${bindir}/uptime.${PN} ${base_bindir}/kill.${PN} \
-	 ${bindir}/free.${PN} ${bindir}/w ${bindir}/watch ${bindir}/pgrep ${bindir}/pmap ${bindir}/pwdx \
-	 ${bindir}/snice ${bindir}/vmstat ${bindir}/slabtop ${bindir}/pkill ${bindir}/skill ${bindir}/tload \
-	 ${base_sbindir}/sysctl.${PN}"
 
 CONFFILES_${PN} = "${sysconfdir}/sysctl.conf"
 
@@ -48,6 +43,7 @@ do_install_append () {
 	mv ${D}${bindir}/free ${D}${bindir}/free.${PN}
 	mv ${D}${base_sbindir}/sysctl ${D}${base_sbindir}/sysctl.${PN}
 	mv ${D}${bindir}/pkill ${D}${bindir}/pkill.${PN}
+	mv ${D}${bindir}/pgrep ${D}${bindir}/pgrep.${PN}
 }
 
 pkg_postinst() {
@@ -58,6 +54,7 @@ pkg_postinst() {
 	update-alternatives --install ${bindir}/free free free.${PN} 90
 	update-alternatives --install ${base_sbindir}/sysctl sysctl sysctl.${PN} 90
 	update-alternatives --install ${bindir}/pkill pkill pkill.${PN} 90
+	update-alternatives --install ${bindir}/pgrep pgrep pgrep.${PN} 90
 }
 
 pkg_postrm() {
@@ -68,4 +65,5 @@ pkg_postrm() {
 	update-alternatives --remove free free.${PN}
 	update-alternatives --remove sysctl sysctl.${PN}
 	update-alternatives --remove pkill pkill.${PN}
+	update-alternatives --remove pgrep pgrep.${PN}
 }

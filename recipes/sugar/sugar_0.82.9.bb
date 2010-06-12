@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "GPLv2"
 
-PR = "r4"
+PR = "r5"
 
 DEPENDS = "sugar-toolkit libxml2 gtk+"
 RDEPENDS_${PN} = "sugar-toolkit sugar-base sugar-datastore gnome-python-desktop"

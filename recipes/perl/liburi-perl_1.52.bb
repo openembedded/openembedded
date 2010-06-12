@@ -2,7 +2,7 @@ DESCRIPTION = "Manipulates and accesses URI strings"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 #RDEPENDS_${PN} += " libmime-base64-perl libnet-perl"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/URI-${PV}.tar.gz"
 

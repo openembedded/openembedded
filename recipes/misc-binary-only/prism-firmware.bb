@@ -2,10 +2,10 @@ DESCRIPTION = "Firmware for the Prism 2.x/3 cards"
 SECTION = "base"
 LICENSE = "closed"
 RDEPENDS_${PN} = "hostap-utils"
-RREPLACES = "prism3-firmware prism3-support"
-RCONFLICTS = "prism3-firmware prism3-support"
+RREPLACES_${PN} = "prism3-firmware prism3-support"
+RCONFLICTS_${PN} = "prism3-firmware prism3-support"
 PACKAGE_ARCH = "all"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.red-bean.com/~proski/firmware/primary.tar.bz2;name=primary \
            http://www.red-bean.com/~proski/firmware/1.7.4.tar.bz2;name=174 \

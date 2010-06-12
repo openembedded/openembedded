@@ -6,7 +6,7 @@
 
 include initscripts_${PV}.bb
 
-RCONFLICTS = "initscripts"
+RCONFLICTS_${PN} = "initscripts"
 
 # SlugOS uses the busybox makedevs, so until that dependency gets virtualized
 # the below lines serve to remove the dependency on the full makedevs package,
@@ -17,7 +17,7 @@ RDEPENDS_${PN} = "update-rc.d"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.23"
+PR := "${PR}.24"
 
 # Avoid a clash on /etc/device_table by ensuring that it gets removed
 # from the list of configuration files handled specially by opkg.

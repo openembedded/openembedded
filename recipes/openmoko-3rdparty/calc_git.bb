@@ -7,7 +7,7 @@ RDEPENDS_${PN} = "python-elementary python python-edbus"
 SECTION = "x11/application"
 SRCREV = "cff7c833d4fce0d39de0812bfc9ed9e0eb8fac09"
 PV = "0.0.1+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 

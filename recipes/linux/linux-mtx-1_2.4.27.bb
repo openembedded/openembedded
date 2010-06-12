@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for MTX-1 (MeshCube)"
 HOMEPAGE = "http://meshcube.org/meshwiki/"
 LICENSE = "GPLv2"
 KV = "${PV}"
-PR = "r11"
+PR = "r12"
 inherit module-base kernel
 
 PROVIDES = "virtual/kernel"

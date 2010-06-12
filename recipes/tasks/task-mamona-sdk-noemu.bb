@@ -1,9 +1,9 @@
-PR = "r2"
+PR = "r3"
 
 require mamona-sdk.inc
 
-RCONFLICTS = "task-mamona-sdk"
-RREPLACES = "task-mamona-sdk"
+RCONFLICTS_${PN} = "task-mamona-sdk"
+RREPLACES_${PN} = "task-mamona-sdk"
 
 RDEPENDS_${PN} += "\
   bash-noemu \

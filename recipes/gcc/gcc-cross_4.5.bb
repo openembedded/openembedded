@@ -1,9 +1,8 @@
-PR = "r0"
+PR = "r1"
 require gcc-${PV}.inc
 require gcc-cross4.inc
 
-DEPENDS += "libmpc-native"
-
+NATIVEDEPS += "libmpc-native libelf-native"
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch "
 
 EXTRA_OECONF += " --disable-libunwind-exceptions --with-mpfr=${STAGING_DIR_NATIVE}${prefix_native} --with-system-zlib"

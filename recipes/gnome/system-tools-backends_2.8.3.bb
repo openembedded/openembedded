@@ -1,7 +1,7 @@
 DESCRIPTION = "gnome system tools backends"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "dbus dbus-glib glib-2.0 policykit"
 

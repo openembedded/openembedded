@@ -1,10 +1,10 @@
 DESCRIPTION = "Standard Gtk+ theme for the Openmoko framework, QVGA edition"
 SECTION = "openmoko/base"
-RCONFLICTS = "openmoko-theme-standard"
-RPROVIDES = "openmoko-theme-standard-2"
+RCONFLICTS_${PN} = "openmoko-theme-standard"
+RPROVIDES_${PN} = "openmoko-theme-standard-2"
 SRCREV = "3425"
 PV = "0.1.1+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 inherit openmoko2
 

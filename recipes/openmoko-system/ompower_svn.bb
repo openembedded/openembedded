@@ -3,7 +3,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "ecore edbus"
 SRCREV = "4727"
 PV = "0.0.0+svnr${SRCPV}"
-PR = "r4"
+PR = "r5"
 RDEPENDS_${PN} = "initscripts"
 
 SRCNAME = "ompower"

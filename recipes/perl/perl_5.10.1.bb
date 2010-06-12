@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r4"
+PR = "r6"
 
 # Not tested enough
 DEFAULT_PREFERENCE = "-1"
@@ -168,7 +168,7 @@ do_stage() {
 
 PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod perl-doc"
 FILES_${PN} = "${bindir}/perl ${bindir}/perl${PV}"
-FILES_${PN}-lib = "${libdir}/libperl.so* ${libdir}/perl/${PVM} ${datadir}/perl/${PVM}"
+FILES_${PN}-lib = "${libdir}/libperl.so* ${libdir}/perl/${PVM} ${datadir}/perl/${PVM} ${datadir}/perl/${PV}/unicore/lib"
 FILES_${PN}-dev = "${libdir}/perl/${PV}/CORE"
 FILES_${PN}-pod = "${datadir}/perl/${PV}/pod \
 		   ${datadir}/perl/${PV}/*.pod \

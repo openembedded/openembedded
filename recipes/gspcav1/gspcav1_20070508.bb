@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r2"
+PR = "r3"
 
 RRECOMMENDS_${PN} = "kernel-module-videodev kernel-module-v4l1-compat kernel-module-v4l2-common"
 

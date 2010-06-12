@@ -6,7 +6,6 @@ DEPENDS = "perl-native bzip2-native zlib-native virtual/update-alternatives-nati
 RDEPENDS_${PN} = ""
 
 SRC_URI += "file://noman.patch"
-FILESPATH += "dpkg-${PV}"
 
 # We need to do this so our perl is picked up.
 do_configure_prepend() {

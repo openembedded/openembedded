@@ -8,7 +8,7 @@ DEPENDS = "libyaml-perl-native libversion-perl-native \
            libarchive-tar-perl-native"
 RDEPENDS_${PN} = "libyaml-perl libversion-perl libextutils-cbuilder-perl \
             libextutils-parsexs-perl libarchive-tar-perl"
-PR = "r5"
+PR = "r6"
 
 S = "${WORKDIR}/Module-Build-${PV}"
 

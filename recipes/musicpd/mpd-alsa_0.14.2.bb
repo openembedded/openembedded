@@ -10,7 +10,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
 file://mpd/mpd.conf \
 file://mpd/mpd.init"
 
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/mpd-${PV}"
 inherit autotools update-rc.d

@@ -46,7 +46,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r14"
+PR = "r15"
 
 PARALLEL_MAKE = ""
 

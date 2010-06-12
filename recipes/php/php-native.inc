@@ -11,5 +11,3 @@ EXTRA_OECONF = "--with-cgi --enable-sockets --enable-pcntl \
                 --without-libpng --without-libjpeg \
                 --with-libxml-dir=${STAGING_BINDIR_NATIVE} \
                "
-
-FILESPATH = "${FILE_DIRNAME}/php-${PV}:${FILE_DIRNAME}/php:${FILE_DIRNAME}/files"

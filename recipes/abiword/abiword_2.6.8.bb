@@ -1,6 +1,6 @@
 require abiword-2.5.inc
 
-RCONFLICTS = "abiword-embedded"
+RCONFLICTS_${PN} = "abiword-embedded"
 
 FILES_${PN} 			+= "${datadir}/mime-info"
 FILES_abiword-strings           += "${datadir}/abiword-${SHRT_VER}/strings"

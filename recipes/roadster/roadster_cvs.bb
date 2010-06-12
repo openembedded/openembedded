@@ -4,7 +4,7 @@ HOMEPAGE = "http://linuxadvocate.org/projects/roadster/"
 SECTION = "x11/navigation"
 SRCDATE = "20060814"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "tcp-wrappers mysql gpsd gtk+ cairo libxml2 libgnomeui libglade"
 RDEPENDS_${PN} = "gpsd gtk+ cairo libxml2"

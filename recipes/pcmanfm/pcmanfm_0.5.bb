@@ -4,7 +4,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 DEPENDS = "gtk+ hal gamin startup-notification"
 RRECOMMENDS_${PN} = "pmount-hal"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcmanfm/pcmanfm-${PV}.tar.gz \
            file://desired_mount_point.patch \

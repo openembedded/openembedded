@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS_${PN} = "busybox devio"
-PR = "r90"
+PR = "r91"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \

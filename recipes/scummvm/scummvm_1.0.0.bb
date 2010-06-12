@@ -8,6 +8,7 @@ DEPENDS = "virtual/libsdl libvorbis libogg zlib \
 SRC_URI += " file://scummvm.desktop \
              file://no-strip.patch \
            "
+PR = "${INC_PR}.0"
 
 SRC_URI_append_openmoko = " file://openmoko-scummvm "
 SRC_URI_append_shr = " file://openmoko-scummvm "

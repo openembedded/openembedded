@@ -1,10 +1,10 @@
 DESCRIPTION = "Lightweight At Daemon"
 SECTION = "base"
 LICENSE = "GPLv2"
-RCONFLICTS = "at"
-RREPLACES = "at"
+RCONFLICTS_${PN} = "at"
+RREPLACES_${PN} = "at"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://projects.linuxtogo.org/frs/download.php/222/${P}.tar.gz"
 

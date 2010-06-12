@@ -1,6 +1,6 @@
 DESCRIPTION = "Meta-package of extra applications for the GPE Palmtop Environment"
 LICENSE = "MIT"
-PR ="r3"
+PR = "r4"
 
 RDEPENDS_${PN} = "\
     task-gpe-apps \

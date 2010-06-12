@@ -3,9 +3,9 @@ SECTION = "x11/office"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "qt4-x11-free"
-RSUGGESTS = "tetex"
+RSUGGESTS_${PN} = "tetex"
 RDEPENDS_${PN} = "python-shell python-textutils"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   ftp://ftp.lyx.org/pub/lyx/stable/1.6.x/lyx-${PV}.tar.bz2 \

@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 DEFAULT_PREFERENCE = "1"
 PV = "3.3.1+git"
-PR = "r3+gitr${SRCREV}"
+PR = "r4+gitr${SRCREV}"
 SRCREV = "c81cabbee7901b6643907d08f9a530308044ec22"
 
 inherit gnome

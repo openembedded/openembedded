@@ -1,6 +1,6 @@
 DESCRIPTION = "Task mamona: Build and Install Mamona Platform"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"

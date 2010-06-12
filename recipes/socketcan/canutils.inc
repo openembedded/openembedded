@@ -5,8 +5,8 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libsocketcan"
-RCONFLICTS = "socketcan-utils-test"
-INC_PR = "r0"
+RCONFLICTS_${PN} = "socketcan-utils-test"
+INC_PR = "r1"
 
 SRC_URI = "git://git.pengutronix.de/git/tools/canutils.git;protocol=git;tag=${TAG} \
         "

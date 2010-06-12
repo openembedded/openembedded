@@ -1,6 +1,6 @@
 require e2fsprogs.inc
 
-PR = "r0"
+PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += "file://no-hardlinks.patch"

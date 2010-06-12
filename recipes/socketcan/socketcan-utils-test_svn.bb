@@ -2,7 +2,7 @@ DESCRIPTION = "Socketcan user space utilities and test apps"
 HOMEPAGE = "http://developer.berlios.de/projects/socketcan/"
 SECTION = "console/utils"
 LICENSE = "GPL"
-RCONFLICTS = "canutils"
+RCONFLICTS_${PN} = "canutils"
 
 SRCREV = "917"
 PV = "0.0+svnr${SRCPV}"

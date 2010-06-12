@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libio-zlib-perl-native"
 RDEPENDS_${PN} += "libio-zlib-perl perl-module-math-bigint"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MANU/Net-IP-${PV}.tar.gz"
 

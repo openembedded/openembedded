@@ -25,7 +25,7 @@ RDEPENDS_${PN} = "perl\
 RDEPENDS_${PN} += "perl-module-exporter-heavy"
 RDEPENDS_${PN} += "perl-module-file-spec-unix"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 	   file://ppmtojpeg.patch;striplevel=42 \

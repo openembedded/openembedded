@@ -5,7 +5,7 @@ DEPENDS = "icon-naming-utils-native glib-2.0 intltool-native"
 RDEPENDS_${PN} = "hicolor-icon-theme"
 RRECOMMENDS_${PN} = "librsvg-gtk"
 
-PR = "r3"
+PR = "r4"
 
 inherit gnome
 

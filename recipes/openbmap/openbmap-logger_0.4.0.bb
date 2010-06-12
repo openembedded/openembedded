@@ -1,6 +1,6 @@
 DESCRIPTION = "openBmap logger and uploader of GPS/GSM data"
 SECTION = "x11/utils"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
 ${SOURCEFORGE_MIRROR}/myposition/openbmap-logger-${PV}.tar.gz \

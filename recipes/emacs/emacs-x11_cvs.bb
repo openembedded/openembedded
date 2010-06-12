@@ -5,4 +5,4 @@ DEPENDS += "libx11"
 
 EXTRA_OECONF = "--without-sound"
 
-RREPLACES = "emacs"
+RREPLACES_${PN} = "emacs"

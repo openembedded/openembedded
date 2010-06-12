@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS += "virtual/libiconv"
 RDEPENDS_${PN} = "bash sed wget"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/podget/podget_${PV}.tar.gz \
            file://busybox_df.patch"

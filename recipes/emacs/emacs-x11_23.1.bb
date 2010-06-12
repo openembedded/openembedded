@@ -3,13 +3,13 @@ require emacs.inc
 # full X (non-diet) is needed for X support
 DEPENDS += "gtk+ libungif dbus"
 
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--without-sound --with-x-toolkit=gtk"
 
 DEFAULT_PREFERENCE = "-1"
 
-RREPLACES = "emacs"
+RREPLACES_${PN} = "emacs"
 
 FILESPATHPKG =. "emacs-${PV}:"
 SRC_URI = "${GNU_MIRROR}/emacs/emacs-${PV}.tar.gz;name=tarball \

@@ -1,10 +1,10 @@
 DESCRIPTION = "Calendar application for the Xfce Desktop  Environment"
 DEPENDS = "libxfcegui4  exo xfce4-panel"
 RDEPENDS_${PN} = "xfce4-panel"
-RREPLACES = "xfcalendar"
+RREPLACES_${PN} = "xfcalendar"
 
 SECTION = "x11"
-PR = "r3"
+PR = "r4"
 
 inherit xfce46
 

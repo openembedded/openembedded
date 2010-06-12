@@ -1,0 +1,98 @@
+diff -uNr dvsdk_demos_3_10_00_14_orig/dm355/loadmodules.sh dvsdk_demos_3_10_00_14/dm355/loadmodules.sh
+--- dvsdk_demos_3_10_00_14_orig/dm355/loadmodules.sh	2010-04-07 11:49:46.000000000 -0500
++++ dvsdk_demos_3_10_00_14/dm355/loadmodules.sh	2010-04-19 16:02:06.000000000 -0500
+@@ -15,13 +15,18 @@
+ rmmod edmak 2>/dev/null
+ rmmod dm350mmap 2>/dev/null
+ 
+-insmod cmemk.ko phys_start=0x86000000 phys_end=0x88000000 pools=10x829440,1x1529856,1x276,1x4320,1x560,2x344,1x144,1x81920,2x512,1x14000,1x12960,1x11360,1x4,2x296,1x8192,59x56,4x24,1x1505280,9x1658880,1x2258880
++depmod -a cmemk
++depmod -a irqk
++depmod -a dm350mmap
++depmod -a edmak
++
++modprobe cmemk phys_start=0x86000000 phys_end=0x88000000 pools=10x829440,1x1529856,1x276,1x4320,1x560,2x344,1x144,1x81920,2x512,1x14000,1x12960,1x11360,1x4,2x296,1x8192,59x56,4x24,1x1505280,9x1658880,1x2258880
+ 
+ ./mapdmaq
+ 
+-insmod irqk.ko 
+-insmod edmak.ko
+-insmod dm350mmap.ko
++modprobe irqk 
++modprobe edmak
++modprobe dm350mmap
+ 
+ rm -f /dev/dm350mmap
+ mknod /dev/dm350mmap c `awk "\\$2==\"dm350mmap\" {print \\$1}" /proc/devices` 0
+diff -uNr dvsdk_demos_3_10_00_14_orig/dm365/loadmodules_hd.sh dvsdk_demos_3_10_00_14/dm365/loadmodules_hd.sh
+--- dvsdk_demos_3_10_00_14_orig/dm365/loadmodules_hd.sh	2010-04-07 11:50:27.000000000 -0500
++++ dvsdk_demos_3_10_00_14/dm365/loadmodules_hd.sh	2010-04-19 16:00:31.000000000 -0500
+@@ -17,15 +17,20 @@
+ rmmod edmak 2>/dev/null
+ rmmod dm365mmap 2>/dev/null
+ 
++depmod -a cmemk
++depmod -a irqk
++depmod -a dm365mmap
++depmod -a edmak
++
+ # Pools configuration
+-insmod cmemk.ko phys_start=0x83C00000 phys_end=0x88000000 pools=1x384,2x5984,2x3133440,1x16384,1x48952,1x20480,1x60288,1x74,1x28,1x2048,1x6785280,1x146,1x896,1x65536,1x98,1x296,29x56,2x24,1x624,4x62,1x1456,1x18321120,1x65792,5x3523584,1x4194304,1x8355840
++modprobe cmemk phys_start=0x83C00000 phys_end=0x88000000 pools=1x384,2x5984,2x3133440,1x16384,1x48952,1x20480,1x60288,1x74,1x28,1x2048,1x6785280,1x146,1x896,1x65536,1x98,1x296,29x56,2x24,1x624,4x62,1x1456,1x18321120,1x65792,5x3523584,1x4194304,1x8355840
+ 
+ #VC1 decode pool configuration
+-# insmod cmemk.ko phys_start=0x83C00000 phys_end=0x88000000 pools=1x384,1x112665,3x7680,1x319264,2x1024,5x7208960,1x80,1x116,1x29184,1x2688,1x30720,1x551680,2x128,1x74,1x28,1x10240,1x47232,1x448,2x1152,1x8192,2x272896,18x56,2x24,1x86,4x62,2x7808,1x2097152
++# modprobe cmemk phys_start=0x83C00000 phys_end=0x88000000 pools=1x384,1x112665,3x7680,1x319264,2x1024,5x7208960,1x80,1x116,1x29184,1x2688,1x30720,1x551680,2x128,1x74,1x28,1x10240,1x47232,1x448,2x1152,1x8192,2x272896,18x56,2x24,1x86,4x62,2x7808,1x2097152
+ 
+-insmod irqk.ko 
+-insmod edmak.ko
+-insmod dm365mmap.ko
++modprobe irqk 
++modprobe edmak
++modprobe dm365mmap
+ 
+ rm -f /dev/dm365mmap
+ mknod /dev/dm365mmap c `awk "\\$2==\"dm365mmap\" {print \\$1}" /proc/devices` 0
+diff -uNr dvsdk_demos_3_10_00_14_orig/dm365/loadmodules.sh dvsdk_demos_3_10_00_14/dm365/loadmodules.sh
+--- dvsdk_demos_3_10_00_14_orig/dm365/loadmodules.sh	2010-04-07 11:50:17.000000000 -0500
++++ dvsdk_demos_3_10_00_14/dm365/loadmodules.sh	2010-04-19 15:59:00.000000000 -0500
+@@ -15,12 +15,17 @@
+ rmmod edmak 2>/dev/null
+ rmmod dm365mmap 2>/dev/null
+ 
++depmod -a cmemk
++depmod -a irqk
++depmod -a dm365mmap
++depmod -a edmak
++
+ # Pools configuration
+-insmod cmemk.ko phys_start=0x83C00000 phys_end=0x88000000 pools=2x384,1x16384,1x2688,1x20480,3x74,1x60288,2x28,1x147048,1x10240,1x896,1x65536,1x663552,1x9175376,4x24,1x282624,2x5984,1x58144,1x1024,1x48952,1x464,2x16768,1x1251264,1x30720,1x65792,8x774144,1x173712,1x146,1x98,2x296,50x56,2x86,1x624,1x3328,1x518912,4x62,1x242,4x663552,1x1637824,14x1645056,1x16538976,4x1382400
++modprobe cmemk phys_start=0x83C00000 phys_end=0x88000000 pools=2x384,1x16384,1x2688,1x20480,3x74,1x60288,2x28,1x147048,1x10240,1x896,1x65536,1x663552,1x9175376,4x24,1x282624,2x5984,1x58144,1x1024,1x48952,1x464,2x16768,1x1251264,1x30720,1x65792,8x774144,1x173712,1x146,1x98,2x296,50x56,2x86,1x624,1x3328,1x518912,4x62,1x242,4x663552,1x1637824,14x1645056,1x16538976,4x1382400
+ 
+-insmod irqk.ko 
+-insmod edmak.ko
+-insmod dm365mmap.ko
++modprobe irqk 
++modprobe edmak
++modprobe dm365mmap
+ 
+ rm -f /dev/dm365mmap
+ mknod /dev/dm365mmap c `awk "\\$2==\"dm365mmap\" {print \\$1}" /proc/devices` 0
+diff -uNr dvsdk_demos_3_10_00_14_orig/dm6467/loadmodules.sh dvsdk_demos_3_10_00_14/dm6467/loadmodules.sh
+--- dvsdk_demos_3_10_00_14_orig/dm6467/loadmodules.sh	2010-04-07 15:13:22.000000000 -0500
++++ dvsdk_demos_3_10_00_14/dm6467/loadmodules.sh	2010-04-19 15:56:35.000000000 -0500
+@@ -14,9 +14,12 @@
+ rmmod cmemk.ko 2>/dev/null
+ rmmod dsplinkk.ko 2>/dev/null 
+ 
+-insmod cmemk.ko phys_start=0x84C00000 phys_end=0x8ba00000 pools=2x921600,1x460800,1x1048576,1x345600,2x86400,11x564528,5x677376,14x5396480,3x4147200,4x1451520,4x1843200
++depmod -a cmemk
++depmod -a dsplinkk
+ 
+-insmod dsplinkk.ko
++modprobe cmemk phys_start=0x84C00000 phys_end=0x8ba00000 pools=2x921600,1x460800,1x1048576,1x345600,2x86400,11x564528,5x677376,14x5396480,3x4147200,4x1451520,4x1843200
++
++modprobe dsplinkk
+ 
+ # alter dma queue mapping for better visual performance
+ if [ -f mapdmaq-hd ]

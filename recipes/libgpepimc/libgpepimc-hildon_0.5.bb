@@ -1,11 +1,11 @@
 LICENSE     = "LGPL"
-PR          = "r0"
+PR          = "r1"
 DESCRIPTION = "Common code for GPE PIMs (hildon UI version)"
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "libgpewidget-hildon gtk+ sqlite hildon-lgpl"
 PROVIDES    = "libgepepimc"
-RPROVIDES   = "libgepepimc"
+RPROVIDES_${PN}   = "libgepepimc"
 
 SRC_URI     = "${GPE_MIRROR}/libgpepimc-${PV}.tar.bz2"
 

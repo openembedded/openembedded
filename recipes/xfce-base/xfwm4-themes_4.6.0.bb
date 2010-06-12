@@ -1,7 +1,7 @@
 # xfwm4-themes OE build file
 
 SECTION = "x11/wm"
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "xfwm4 libglade libxml2"
 RDEPENDS_${PN} = "xfwm4 libglade libxml2"

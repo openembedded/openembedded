@@ -1,6 +1,6 @@
 
 OE_QMAKE_PLATFORM = "${TARGET_OS}-oe-g++"
-QMAKESPEC := "${QMAKE_MKSPEC_PATH}/${OE_QMAKE_PLATFORM}"
+QMAKESPEC = "${QMAKE_MKSPEC_PATH}/${OE_QMAKE_PLATFORM}"
 
 # We override this completely to eliminate the -e normally passed in
 EXTRA_OEMAKE = ' MAKEFLAGS= '

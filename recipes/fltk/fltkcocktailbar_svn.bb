@@ -7,7 +7,7 @@ DEPENDS = "fltk zlib cairo"
 RDEPENDS_${PN} = "curl"
 SRCREV = "52"
 PV = "1.0+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 S = "${WORKDIR}/trunk"
 
 inherit autotools

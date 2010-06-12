@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 SECTION = "base"
 DESCRIPTION = "D-BUS glue for hotplug system"
 # DEPENDS = "dbus hotplug"

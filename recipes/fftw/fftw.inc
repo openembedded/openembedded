@@ -2,9 +2,9 @@ DESCRIPTION = "FFTW"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RPROVIDES += "libfftw3"
+RPROVIDES_${PN} += "libfftw3"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.fftw.org/fftw-${PV}.tar.gz"
 

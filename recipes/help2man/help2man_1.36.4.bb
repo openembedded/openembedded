@@ -11,7 +11,7 @@ SRC_URI    = "${GNU_MIRROR}/help2man/${P}.tar.gz"
 
 inherit autotools
 
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF += "PERL=/usr/bin/perl"
 

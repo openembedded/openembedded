@@ -1,5 +1,7 @@
 require flex.inc
 
+PR = "${INC_PR}.0"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/flex/flex-${PV}.tar.bz2;name=flex \
 "
 
@@ -8,3 +10,9 @@ SRC_URI[flex.sha256sum] = "0becbd4b2b36b99c67f8c22ab98f7f80c9860aec70f0350a0018f
 
 NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
+
+do_install_append () {
+	ln -sf flex ${D}${bindir}/lex
+	ln -sf flex ${D}${bindir}/lex++
+}
+

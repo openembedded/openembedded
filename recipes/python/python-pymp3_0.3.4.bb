@@ -3,7 +3,7 @@ SECTION = "console/multimedia"
 PRIORITY = "optional"
 RDEPENDS_${PN} = "python-core python-curses python-pyid3lib python-mad python-ao"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.vanille.de/mirror/PyMP3-0.3.4.tar.gz"
 S = "${WORKDIR}/PyMP3-0.3.4"

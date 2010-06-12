@@ -13,7 +13,7 @@
 # fixed (report bug).
 #
 # However the *recipe* for your program/library *must* declare
-# export WANT_LLVM_RELEASE = "<valid version number>
+# export WANT_LLVM_RELEASE = "<valid version number>"
 # The version number is picked up by a generic wrapper script which just calls
 # the variant of the specified version.
 

@@ -1,0 +1,210 @@
+#!/bin/bash
+#
+#
+# This script sets a series of environment variable that are referenced
+# in a doxygen configuration file.  The values passed in here are simply
+# plugged into the file locations and doxygen proceeds normaly.
+#
+# template location is ${VENDORS}/opensource/doxygen/templates/<version>
+#
+#
+
+# Revision history
+#! 02 Jul 2009 cring: Added cmd line args for doxygendir (-x) and template (-t)
+#! 13 Jul 2006 ada: New template smaller pdf generation
+#! 16 May 2006 ada: Added -p file to pdf for space in project names
+#! 08 May 2006 ada: Added pdf generation to tdox (Solaris/Linux only).
+#! 23 Jan 2006 ada: Overide file to change default doxyfile behaivior
+#! 19 Jan 2006 ada: 1093, ENUM_VALUES_PER_LINE set to 1, ref doxyfile via vers
+#! 05 Oct 2005 ada: 933,  doxyfile in tools, removed win and unix vendors path
+#! 24 Aug 2005 ada: Added 897 changes, optional css c or jave optimization
+#! 18 Aug 2005 ada: inital version from AR 887
+
+# Set these defaults here as the usage statement uses them
+TDOX_TEMPLATEDIR=${TOOLS}/default/doxygen_templates
+DOXYGEN_EXECUTABLE=doxygen
+
+function usage
+{
+  OPTIONS="`basename $0` code_location out_doc_location [-x doxygen_exe ] [-t tdox_templatedir] [-n project_name] [-v version] [-f FILE_PATTERNS ] [-s strip_dir] [-c css location] [-e exclude dirs] [-b enabled sections] [-m generate chm] [-p pdf_file] [-o override doxyfile] [-j]"
+  echo "`basename $1` $OPTIONS"
+  echo "Where: "
+  echo "\tcode_location: Top of tree(s) to search for code (required as 1st param)"
+  echo "\tout_doc_location: Output location for generated files (required as 2nd param)"
+  echo "\t[-n project_name]: title of generated documentation (defaults to Project)"
+  echo "\t[-x doxygen_exe]: location of doxygen executable (defaults to $DOXYGEN_EXECUTABLE)"
+  echo "\t[-t tdox_templatedir]: location of tdox templates (defaults to $TDOX_TEMPLATEDIR)"
+  echo "\t[-v version]: version number or string (defaults to 1.0)"
+  echo "\t[-f FILE_PATTERNS]: Optional list of files to document (defaults to all)"
+  echo "\t[-s strip_dirs]: Remove directory prefix from generated files (defaults to not remove)"
+  echo "\t[-c path_to_css]: Path to a user suplied CSS style sheet"
+  echo "\t[-e exclude dirs]: List of directories to exclude"
+  echo "\t[-b enabled sections]: List of sections to enable"
+  echo "\t[-m generate chm]: chm file name (required)"
+  echo "\t[-p generate pdf <file>]: create <file>.pdf in html/pdf (Linux only)"
+  echo "\t[-o override doxyfile]: file (advanced) Overide any doxyfile default"
+  echo "\t[-j]: Optimize for Java (Generate class files) defaults to C"
+  echo "\t[-r]: Call rshd to windows for chm generation (defaults to wine)"
+  echo
+  exit
+}
+
+function optimizeForJava
+{
+  DOX_OPTIMIZE_OUTPUT_JAVA="YES"
+  DOX_OPTIMIZE_OUTPUT_FOR_C="NO"
+}
+
+if [ "$#" -lt 2 ]; then
+   echo "Invalid number of parameters"
+   usage $0
+fi
+
+# get the required parameters then shift for the getopts parameters
+export DOX_INPUT="$1"
+shift
+export DOX_OUTPUT_DIRECTORY="$1"
+shift
+
+#set the global defaults
+DOX_QUIET="YES"
+DOX_OPTIMIZE_OUTPUT_JAVA="NO"
+DOX_OPTIMIZE_OUTPUT_FOR_C="YES"
+DOX_CHM_FILE=
+DOX_GENERATE_HTMLHELP="NO"
+OVERRIDE_FILE=""
+PDF=""
+
+# Process the rest of the arguments as getopts
+# parameters
+while getopts b:c:e:f:m:n:o:p:s:t:v:x:dhjr arg
+do
+  case $arg in
+    b)  DOX_ENABLED_SECTIONS=${OPTARG};;
+    c)  DOX_HTML_STYLESHEET=${OPTARG};;
+    d)  DEBUG=1;;
+    e)  DOX_EXCLUDE=${OPTARG};;
+    f)  DOX_FILE_PATTERNS=${OPTARG};;
+    h)  usage;exit 0;;
+    j)  optimizeForJava;;
+    r)  USERSHD=1;;
+    m)  DOX_CHM_FILE=${OPTARG};DOX_GENERATE_HTMLHELP="YES";;
+    n)  DOX_PROJECT_NAME=${OPTARG};;
+    s)  DOX_STRIP_FROM_PATH=${OPTARG};;
+    t)  TDOX_TEMPLATEDIR=${OPTARG};;
+    v)  DOX_PROJECT_NUMBER=${OPTARG};;
+    x)  DOXYGEN_EXECUTABLE=${OPTARG};;
+    o)  OVERRIDE_FILE=${OPTARG};;
+    p)  PDF=${OPTARG};;
+    \?) usage
+        exit 2;;
+  esac
+done
+
+if [ "$DEBUG" = "1" ]; then
+   DOX_QUIET="NO"
+   set -x
+fi
+
+if [ "$DOX_PROJECT_NAME" = "" ]; then
+   DOX_PROJECT_NAME="Project"
+fi
+
+if [ "$DOX_PROJECT_NUMBER" = "" ]; then
+   DOX_PROJECT_NUMBER="1.0"
+fi
+
+if [ "$DOX_FILE_PATTERNS" = "" ]; then
+   DOX_FILE_PATTERNS="*.c \
+                  *.cc \
+                  *.cxx \
+                  *.cpp \
+                  *.c++ \
+                  *.d \
+                  *.java \
+                  *.ii \
+                  *.ixx \
+                  *.ipp \
+                  *.i++ \
+                  *.inl \
+                  *.h \
+                  *.hh \
+                  *.hxx \
+                  *.hpp \
+                  *.h++ \
+                  *.idl \
+                  *.odl \
+                  *.cs \
+                  *.php \
+                  *.php3 \
+                  *.inc \
+                  *.m \
+                  *.mm \
+                  *.dox"
+fi
+
+export DOX_INPUT
+export DOX_OUTPUT_DIRECTORY
+export DOX_PROJECT_NAME
+export DOX_PROJECT_NUMBER
+export DOX_FILE_PATTERNS
+export DOX_STRIP_FROM_PATH
+export DOX_QUIET
+export DOX_HTML_STYLESHEET
+export DOX_OPTIMIZE_OUTPUT_FOR_C
+export DOX_OPTIMIZE_OUTPUT_JAVA
+export DOX_EXCLUDE
+export DOX_ENABLED_SECTIONS
+export DOX_CHM_FILE
+export DOX_GENERATE_HTMLHELP
+export TDOX_TEMPLATEDIR
+
+
+# Make sure the dir exists
+mkdir -p $DOX_OUTPUT_DIRECTORY
+
+# Create temp file copy of doxyfile and append overrides to the end of the file
+cp ${TDOX_TEMPLATEDIR}/doxyfile /tmp/doxyfile$$
+
+chmod +w /tmp/doxyfile$$
+if [ "$OVERRIDE_FILE" != "" ]; then
+   cat $OVERRIDE_FILE >> /tmp/doxyfile$$
+fi
+
+# Run doxygen and clean up temp file
+${DOXYGEN_EXECUTABLE} /tmp/doxyfile$$
+rm -f /tmp/doxyfile$$
+
+# Copy the TI banner gifs to the html directory.
+cp -p ${TDOX_TEMPLATEDIR}/*gif $DOX_OUTPUT_DIRECTORY/html
+
+# Generate PDF files
+if [ "$PDF" != "" ]; then
+  if [ "$BUILD_HOST_OS" = "Linux" ]; then
+    rm -rf $DOX_OUTPUT_DIRECTORY/html/pdf
+    mkdir -p $DOX_OUTPUT_DIRECTORY/html/pdf
+    cwd=`pwd`
+    cd  $DOX_OUTPUT_DIRECTORY/latex
+    latex refman.tex
+    makeindex refman.idx
+    latex refman.tex
+    latex_count=5
+    while egrep -s 'Rerun (LaTeX|to get cross-references right)' refman.log && [ $$latex_count -gt 0 ]
+    do
+        latex refman.tex
+        latex_count=`expr $$latex_count - 1`
+    done
+    dvips -o refman.ps refman.dvi
+    ps2pdf refman.ps refman.pdf
+    cd $cwd
+    mv $DOX_OUTPUT_DIRECTORY/latex/refman.pdf $DOX_OUTPUT_DIRECTORY/html/pdf/${PDF}.pdf
+  else
+    echo "Sorry... pdf generation supported under Linux only"
+  fi
+fi
+
+# Generate Windows compressed help
+if [ "$DOX_GENERATE_HTMLHELP" = "YES" ]; then
+ 
+     echo "chm generation is not supported"
+fi

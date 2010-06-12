@@ -3,10 +3,10 @@ SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opieplayer2"
-RPROVIDES = "opie-mediaplayer2-skin"
+RPROVIDES_${PN} = "opie-mediaplayer2-skin"
 OPIE_CVS_PV ?= "1.2.2+cvs${SRCDATE}"
 PV = "${OPIE_CVS_PV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/pics"
 

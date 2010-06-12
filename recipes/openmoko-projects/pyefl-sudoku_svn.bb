@@ -6,7 +6,7 @@ DEPENDS = "python-evas python-edje python-ecore"
 RDEPENDS_${PN} = "python-evas python-edje python-ecore"
 SRCREV = "49"
 PV = "0.0.2+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=pyefl-sudoku;proto=http"
 

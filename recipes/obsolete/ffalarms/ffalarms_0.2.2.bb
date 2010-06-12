@@ -20,7 +20,7 @@ RDEPENDS_${PN} += "python-re python-datetime python-edje python-ecore \
              atd-over-fso alsa-utils-amixer alsa-utils-alsactl \
              ttf-dejavu-sans"
 
-RSUGGESTS += "mplayer alsa-utils-aplay openmoko-alsa-scenarios"
+RSUGGESTS_${PN} += "mplayer alsa-utils-aplay openmoko-alsa-scenarios"
 
 SRC_URI[archive.md5sum] = "6f03b9663245b93e8370e43cc556dba1"
 SRC_URI[archive.sha256sum] = "df0561124faa5c2e64038f5efcf39432c4795829115b86819083ae66b001899a"

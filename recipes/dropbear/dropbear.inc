@@ -4,7 +4,9 @@ SECTION = "console/network"
 LICENSE = "MIT"
 DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
-RPROVIDES = "ssh sshd"
+RPROVIDES_${PN} = "ssh sshd"
+
+INC_PR = "r4"
 
 SRC_URI = "\
   http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \

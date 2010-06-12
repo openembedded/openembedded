@@ -3,7 +3,7 @@ DESCRIPTION = "Control program for GPS units using the MediaTek (MTK) chipset"
 HOMEPAGE = "http://www.rigacci.org/wiki/doku.php/doc/appunti/hardware/gps_logger_i_blue_747"
 LICENSE = "GPL"
 PACKAGE_ARCH = "all"
-PR = "r1"
+PR = "r2"
 
 RDEPENDS_${PN} = "libdevice-serialport-perl libtimedate-perl perl-module-file-basename perl-module-getopt-std"
 

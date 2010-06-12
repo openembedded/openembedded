@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.open-mesh.net/"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 RDEPENDS_${PN} = "kernel-module-tun"
 

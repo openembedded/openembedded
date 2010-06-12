@@ -6,7 +6,7 @@ LICENSE = "Classpath"
 PBN = "classpath"
 
 DEPENDS = "virtual/javac-native fastjar-native zip-native gmp antlr-native"
-RPROVIDES = ""
+RPROVIDES_${PN} = ""
 
 RDEPENDS_${PN} = "${PBN}-common (>= ${PV})"
 RDEPENDS_${PN}-examples = "java2-runtime ${PN}-awt"

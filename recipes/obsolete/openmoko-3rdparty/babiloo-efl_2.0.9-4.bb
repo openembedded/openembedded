@@ -9,7 +9,7 @@ RDEPENDS_${PN} = "python-elementary python-compression python-misc python-netcli
 PACKAGE_ARCH = "all"
 
 PV = "2.0.9-4"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://bazaar.launchpad.net/%7Evaudano/babiloo/efl/download/head%3A/babiloo_2.0.94.tar.g-20091201105555-efky7gi6fkm39xw8-2/babiloo_2.0.9-4.tar.gz;name=tarball"
 SRC_URI[tarball.md5sum] = "f5f25daff7accb8d409fa9f94c49fc17"

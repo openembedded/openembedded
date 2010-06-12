@@ -2,7 +2,7 @@ require python-efl.inc
 DEPENDS += "etk python-evas python-ecore"
 RDEPENDS_${PN} += "python-evas python-ecore python-edje python-numeric python-math etk-themes" 
 PV = "0.1.1+svnr${SRCPV}"
-PR = "ml1"
+PR = "ml2"
 
 SRCREV = "${EFL_SRCREV}"
 

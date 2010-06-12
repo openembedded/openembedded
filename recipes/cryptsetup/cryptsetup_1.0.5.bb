@@ -13,7 +13,7 @@ RRECOMMENDS_${PN} = "kernel-module-aes \
                kernel-module-cbc \
                kernel-module-sha256 \
               "
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://luks.endorphin.org/source/cryptsetup-${PV}.tar.bz2"
 

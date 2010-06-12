@@ -5,7 +5,7 @@ DEPENDS = "gettext pkgconfig intltool virtual/libx11 libxfce4util xfconf dbh lib
 RDEPENDS_${PN} = "xfconf startup-notification "
 
 SECTION = "x11/libs"
-PR = "r5"
+PR = "r6"
 
 inherit xfce46
 

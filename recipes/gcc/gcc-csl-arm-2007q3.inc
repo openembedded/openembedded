@@ -3,7 +3,7 @@ require gcc-common.inc
 BINV = "4.2.1"
 PV = "4.2.1+csl-arm-2007q3-53"
 
-FILESPATH = "${FILE_DIRNAME}/gcc-csl-arm-2007q3:${FILE_DIRNAME}/gcc-csl-arm"
+FILESPATHPKG =. "gcc-csl-arm-2007q3:gcc-csl-arm:"
 
 SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2007q3-53-arm-none-eabi.src.tar.bz2;name=archive \
            file://gcc-new-makeinfo.patch \

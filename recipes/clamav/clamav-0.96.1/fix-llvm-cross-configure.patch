@@ -1,0 +1,13 @@
+Index: clamav-0.96.1/libclamav/c++/llvm/configure
+===================================================================
+--- clamav-0.96.1.orig/libclamav/c++/llvm/configure	2010-05-21 15:09:40.000000000 +0400
++++ clamav-0.96.1/libclamav/c++/llvm/configure	2010-05-21 15:11:09.000000000 +0400
+@@ -4502,7 +4502,7 @@
+      fi
+   fi
+   test -z "$BUILD_CC" && as_fn_error "no acceptable cc found in \$PATH" "$LINENO" 5
+-  ac_build_link='${BUILD_CC-cc} -o conftest $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
++  ac_build_link='${BUILD_CC-cc} -o conftest $BUILD_CPPFLAGS $BUILD_LDFLAGS conftest.$ac_ext $LIBS 1>&5'
+   rm -f conftest*
+   echo 'int main () { return 0; }' > conftest.$ac_ext
+   ac_cv_build_exeext=

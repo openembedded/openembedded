@@ -11,7 +11,7 @@ inherit autotools gpe
 
 
 PV = "0.91+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${GPE_SVN}"
 S = "${WORKDIR}/${PN}"

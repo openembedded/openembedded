@@ -2,7 +2,7 @@ require oprofile.inc
 
 SRCDATE = "20080210"
 PV = "0.9.4+cvs${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 RDEPENDS_${PN} += "binutils-symlinks"
 

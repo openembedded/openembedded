@@ -5,7 +5,7 @@ RRECOMMENDS_${PN} = "shared-mime-info"
 inherit xfce pkgconfig
 
 SRC_URI = "http://www.us.xfce.org/archive/xfce-4.4.2/src/Thunar-${PV}.tar.bz2"
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/Thunar-${PV}/"
 

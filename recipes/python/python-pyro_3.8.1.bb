@@ -6,7 +6,7 @@ HOMEPAGE = "http://pyro.sourceforge.net"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/pyro/Pyro-${PV}.tar.gz \

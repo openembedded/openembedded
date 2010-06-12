@@ -1,5 +1,5 @@
 require dropbear.inc
-PR = "r1.01"
+PR = "${INC_PR}.0"
 
 SRC_URI += "file://no-host-lookup.patch"
 

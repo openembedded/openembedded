@@ -1,13 +1,13 @@
 require midpath-common.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
 S = "${WORKDIR}/midpath-0.3rc2"
 
 DEPENDS = "classpath qte-mt"
-RCONFLICTS = "midpath-backend-qt3"
+RCONFLICTS_${PN} = "midpath-backend-qt3"
 
 inherit qt3e
 

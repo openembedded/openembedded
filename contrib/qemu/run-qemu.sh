@@ -55,7 +55,7 @@
 #		is disabled
 
 supported_archs="{arm mips ppc sh4 x86}"
-if [ $# -ne 2 ]; then
+if [ $# -lt 2 ]; then
     echo -en "
     Usage: `basename $0` <arch> <libc>
     where <arch> is one $supported_archs
@@ -83,7 +83,7 @@ case $arch in
 	rootdisk="sda"
 	qemuopts="-nographic"
         kernel="zImage"
-        image="minimalist-image"
+        image="native-sdk-image"
         ;;
     mips)
 	address="10.0.1.102"
@@ -187,7 +187,7 @@ else
 	netopt="-net none"
 fi
 
-if [ "x$2" == "xsingle" ]; then
+if [ "x$3" == "xsingle" ]; then
     init="init=/bin/sh"
 else
     init=""

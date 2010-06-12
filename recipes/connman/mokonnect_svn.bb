@@ -7,7 +7,7 @@ RDEPENDS_${PN} = "python-elementary connman connman-plugin-wifi connman-plugin-u
 
 SRCREV = "113"
 PV = "0.4+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "svn://subversion.assembla.com/svn/shrdev;module=Mokonnect/trunk;proto=http"
 

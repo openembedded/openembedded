@@ -4,8 +4,8 @@ SECTION = "x11/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+-1.2 libpng openssl"
-RCONFLICTS = "dillo2"
-PR = "r2"
+RCONFLICTS_${PN} = "dillo2"
+PR = "r3"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
          file://dillo-i18n.diff \
          file://dillo.desktop \
