@@ -1,7 +1,7 @@
 DESCRIPTION = "vpx Multi-Format Codec SDK"
 LICENSE = "VP8"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://webm.googlecode.com/files/libvpx-${PV}.tar.bz2"
 
@@ -22,6 +22,7 @@ CONFIGUREOPTS = " \
           --target=${VPXTARGET} \
           --enable-vp8 \
           --enable-libs \
+	  --disable-install-docs \
 "
 
 do_install() {
