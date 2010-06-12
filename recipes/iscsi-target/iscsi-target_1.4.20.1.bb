@@ -3,15 +3,12 @@ HOMEPAGE = "http://iscsitarget.sourceforge.net/"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/iscsitarget/iscsitarget-${PV}.tar.gz;name=iscsitarget1419targz \
-
-           file://libs.patch \
-           file://2.6.31.patch \
-           file://2.6.32.patch \
+SRC_URI = "${SOURCEFORGE_MIRROR}/iscsitarget/iscsitarget-${PV}.tar.gz \
            file://ietd.conf \
            file://init"
-SRC_URI[iscsitarget1419targz.md5sum] = "9beca214c28949cce1716b49fec57de4"
-SRC_URI[iscsitarget1419targz.sha256sum] = "a9fc5e43a2806b8aa95513b2af06d97bb9181ef5fedc906d69144d93a86e664a"
+
+SRC_URI[md5sum] = "6e5e641b832d420e030d5efb59eca7ce"
+SRC_URI[sha256sum] = "994186389911d41a0d2a65b7001ff060f778e2c77f80bd98e03776b215e0732c"
 S = "${WORKDIR}/iscsitarget-${PV}"
 
 
