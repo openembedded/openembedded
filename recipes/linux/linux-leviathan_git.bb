@@ -2,7 +2,7 @@ require linux.inc
 DEPENDS += "android-image-utils-native"
 
 PV = "2.6.32+${PR}+gitr${SRCREV}"
-PR = "r18"
+PR = "r19"
 
 COMPATIBLE_MACHINE = "htcdream"
 CMDLINE = "console=tty1 root=/dev/mmcblk0p1 rootdelay=8 fbcon=rotate:1 panic=30 mem=110M"
@@ -17,8 +17,12 @@ SRC_URI = "\
 S = "${WORKDIR}/git"
 
 do_deploy_append() {
-    touch -f empty
-    gzip empty
+    if [ ! -e empty.gz ];then
+        if [ ! -e empty ];then
+            touch empty
+        fi
+        gzip empty
+    fi
     mkbootimg --kernel ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin \
               --ramdisk empty.gz \
               --cmdline "${CMDLINE}" \
