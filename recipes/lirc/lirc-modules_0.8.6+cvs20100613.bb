@@ -7,9 +7,8 @@ DEPENDS = "virtual/kernel fakeroot-native setserial"
 
 SRCDATE=${@bb.data.getVar('PV', d, 1)[9:]}
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
-S = "${WORKDIR}/lirc-${PV}"
-
+SRC_URI = "cvs://anonymous@lirc.cvs.sourceforge.net/cvsroot/lirc;module=lirc;method=pserver;cvsdate=${SRCDATE}"
+S = "${WORKDIR}/lirc"
 
 inherit autotools module
 
@@ -28,6 +27,3 @@ if [ ! -c $D/dev/lirc -a ! -f /sbin/udevd ]; then mknod $D/dev/lirc c 61 0; fi
 }
 
 FILES_${PN} = "/lib/modules"
-
-SRC_URI[md5sum] = "a9e44df2adbd71be586e0df6304605cc"
-SRC_URI[sha256sum] = "ab5752e9af2df5f4cd2bd6d4f13872fbb519d7fa1bd3f187cc14dcb163440234"

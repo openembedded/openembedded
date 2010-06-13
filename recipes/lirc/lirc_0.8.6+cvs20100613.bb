@@ -15,13 +15,15 @@ RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
+SRCDATE=${@bb.data.getVar('PV', d, 1)[9:]}
+
+SRC_URI = "cvs://anonymous@lirc.cvs.sourceforge.net/cvsroot/lirc;module=lirc;method=pserver;cvsdate=${SRCDATE} \
            file://lircd.init file://lircmd.init file://lircexec.init"
 SRC_URI_append_nslu2 = " file://lircd.conf_nslu2 file://lircrc_nslu2"
 
-S = "${WORKDIR}/lirc-${PV}"
+S = "${WORKDIR}/lirc"
 
 inherit autotools module-base update-rc.d
 
@@ -54,12 +56,10 @@ PACKAGES =+ "lirc-x lirc-exec lirc-remotes"
 PACKAGES_prepend_nslu2 = "lirc-nslu2example "
 
 FILES_${PN}-dbg += "${bindir}/.debug ${sbindir}/.debug"
-FILES_${PN} = "${bindir} ${sbindir} ${libdir} ${sysconfdir}/init.d"
+FILES_${PN}-dev += "${libdir}/liblirc_client.so"
+FILES_${PN} = "${bindir} ${sbindir} ${libdir} ${sysconfdir} ${exec_prefix}/var"
 FILES_lirc-x = "${bindir}/irxevent ${bindir}/xmode2"
 FILES_lirc-exec = "${bindir}/irexec ${sysconfdir}/init.d/lircexec"
 FILES_lirc-remotes = "${datadir}/lirc/remotes"
 FILES_lirc-nslu2example = "${sysconfdir}/lircd.conf ${sysconfdir}/lircrc"
 CONFFILES_lirc-nslu2example = "${FILES_lirc-nslu2example}"
-
-SRC_URI[md5sum] = "a9e44df2adbd71be586e0df6304605cc"
-SRC_URI[sha256sum] = "ab5752e9af2df5f4cd2bd6d4f13872fbb519d7fa1bd3f187cc14dcb163440234"
