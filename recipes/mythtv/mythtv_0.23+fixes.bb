@@ -14,10 +14,10 @@ PV = "0.23"
 # REALPV is here to support release candidates
 # OE in that case has as PV something like 0.21+0.22rc1
 # but for packaging the real PV is needed
-REALPV = "0.22"
+REALPV = "0.23"
 
 SRCREV = "25073"
-SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=mythtv;proto=http"
+SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-23-fixes;module=mythtv;proto=http"
 
 S = "${WORKDIR}/mythtv"
 

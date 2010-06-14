@@ -6,7 +6,7 @@ PV = "0.23"
 
 SRCREV = "25073"
 SRC_URI = \
-"svn://svn.mythtv.org/svn/branches/release-0-22-fixes;module=myththemes;proto=http"
+"svn://svn.mythtv.org/svn/branches/release-0-23-fixes;module=myththemes;proto=http"
 
 FILES_${PN} =+ "${datadir}"
 
