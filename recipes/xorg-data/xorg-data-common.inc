@@ -3,6 +3,7 @@ SECTION = "x11/data"
 LICENSE = "MIT-X"
 
 XORG_PN = "${PN}"
+INC_PR = "r1"
 
 SRC_URI = "${XORG_MIRROR}/individual/data/${XORG_PN}-${PV}.tar.bz2;name=archive"
 S = "${WORKDIR}/${XORG_PN}-${PV}"
