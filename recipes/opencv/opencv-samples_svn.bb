@@ -9,7 +9,7 @@ DEPENDS = "opencv"
 SRC_URI = "svn://code.ros.org/svn/opencv/trunk;module=opencv;proto=https \
 "
 
-SRCREV = "3058"
+SRCREV = "3217"
 PV = "2.1.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/opencv"
