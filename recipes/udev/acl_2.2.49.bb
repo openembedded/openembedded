@@ -30,6 +30,8 @@ do_install() {
     export PKG_MAN_DIR=${D}${mandir}
     export PKG_DOC_DIR=${D}${datadir}/doc/acl
     export PKG_LOCALE_DIR=${D}${datadir}/locale
+    # ensure the subdir Makefile do not use the (wrong) variable overrides from the include file
+    export MAKE="${MAKE} -e"
 
     oe_runmake -e install install-dev install-lib
 
