@@ -3,6 +3,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://vde.sf.net"
 
 RRECOMMENDS_${PN} = "kernel-module-tun kernel-module-tap"
+PR = "r1"
 
 inherit autotools pkgconfig
 

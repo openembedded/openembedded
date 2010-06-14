@@ -4,6 +4,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "PSF"
 RDEPENDS_${PN} = "python-core"
+PR = "r1"
 SRCNAME = "psyco"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}-src.tar.gz"

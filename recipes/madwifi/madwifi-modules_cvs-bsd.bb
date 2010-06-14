@@ -6,6 +6,7 @@ RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 PV = "1.0.0+cvs${SRCDATE}-bsd"
 DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@madwifi.cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;tag=BSD;date=${SRCDATE}"
 

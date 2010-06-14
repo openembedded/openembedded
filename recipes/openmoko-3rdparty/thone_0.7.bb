@@ -4,6 +4,7 @@ LICENSE = "GPLv3"
 AUTHOR = "pike"
 RDEPENDS_${PN} = "bash python python-dbus"
 PACKAGE_ARCH = "all"
+PR = "r1"
 
 SRC_URI = "http://thone.googlecode.com/files/${P}.tgz;name=archive"
 SRC_URI[archive.md5sum] = "ddf90638ac279b359e9081e0271fe881"

@@ -6,6 +6,7 @@ SRC_URI = "http://www.apache.org/dist/commons/beanutils/source/${BP}-src.tar.gz"
 
 DEPENDS += "commons-collections3 commons-logging"
 RDEPENDS_${PN} = "libcommons-collections3-java libcommons-logging-java"
+PR = "r1"
 
 CP = "commons-collections3 commons-logging"
 

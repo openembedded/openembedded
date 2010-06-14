@@ -7,6 +7,7 @@ RDEPENDS_${PN} = "vpnc wpa-supplicant"
 
 PV = "0.9+svnr${SRCPV}"
 SRCREV = "${EFL_SRCREV}"
+PR = "r1"
 
 inherit e
 

@@ -4,6 +4,7 @@ DESCRIPTION = "manual page browser for X"
 DEPENDS += " libxaw libxprintutil libxp libxt"
 RDEPENDS_${PN} = " man"
 PE = "1"
+PR = "r1"
 
 FILES_${PN} += " /usr/share/X11/xman.help"
 

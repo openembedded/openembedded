@@ -3,6 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "python python-pygtk python-xml python-netclient python-numeric pydes"
+PR = "r1"
 
 ARCH_pyring = "all"
 

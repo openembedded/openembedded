@@ -3,6 +3,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "cups"
+PR = "r1"
 SRCNAME = "pycups"
 
 SRC_URI = "http://cyberelk.net/tim/data/pycups/pycups-${PV}.tar.bz2"

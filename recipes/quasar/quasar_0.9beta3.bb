@@ -5,6 +5,7 @@ LICENSE = "GPL"
 SECTION = "multimedia"
 RDEPENDS_${PN} = "mplayer"
 PV = "0.8+0.9beta3"
+PR = "r1"
 S = "${WORKDIR}/v0.9_beta3"
 
 SRC_URI = "http://katastrophos.net/zaurus/sources/quasar/quasar_0.9_beta3_sources.tar.bz2\

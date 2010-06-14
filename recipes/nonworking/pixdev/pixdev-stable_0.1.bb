@@ -3,6 +3,7 @@ SECTION = "gui"
 PRIORITY = "optional"
 DEPENDS = "microwindows"
 RDEPENDS_${PN} = "microwindows"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pixdev/pixdev-stable-${PV}.tar.gz \
           file://${FILESDIR}/braces.patch"

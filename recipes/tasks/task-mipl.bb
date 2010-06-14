@@ -4,6 +4,7 @@
 # in the kernel .config
 
 DESCRIPTION = "Mobile ipv6 extensions"
+PR = "r1"
 
 inherit task
 

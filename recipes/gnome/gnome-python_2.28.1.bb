@@ -2,6 +2,7 @@ DESCRIPTION = "GNOME Python miscellaneous bindings"
 LICENSE = "LGPL"
 DEPENDS = "libgnomeui pyorbit python-pygtk"
 RDEPENDS_${PN} = "pyorbit"
+PR = "r1"
 
 inherit gnome distutils-base pkgconfig
 

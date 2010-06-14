@@ -3,6 +3,7 @@ LICENSES = "AL2.0"
 AUTHOR = "Apache Software Foundation"
 
 SRC_URI = "http://www.apache.org/dist/xerces/j/Xerces-J-src.${PV}.tar.gz"
+PR = "r1"
 
 S = "${WORKDIR}/xerces-2_9_1"
 

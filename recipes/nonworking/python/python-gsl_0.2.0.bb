@@ -4,6 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "gsl"
 RDEPENDS_${PN} = "python-core gsl"
 SRCNAME = "pygsl"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz \
            file://${FILESDIR}/cross-compile.patch"

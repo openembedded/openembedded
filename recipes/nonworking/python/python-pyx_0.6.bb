@@ -6,6 +6,7 @@ PRIORITY = "optional"
 RDEPENDS_${PN} = "python-core"
 DEPENDS = "kpsewhich-native"
 SRCNAME = "PyX"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyx/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

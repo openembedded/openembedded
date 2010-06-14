@@ -8,6 +8,7 @@ APPTYPE     = "binary"
 APPDESKTOP  = "${WORKDIR}"
 SRC_URI     = "http://z-soft.z-portal.info/zsafe/zsafe_2.1.3.tgz"
 S           = "${WORKDIR}"
+PR = "r1"
 
 inherit opie
 

@@ -31,6 +31,8 @@ RDEPENDS_${PN} = "librsvg-gtk \
             python-doctest \
             openssh-keygen"
 
+PR = "r1"
+
 SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-base/${PN}-${PV}.tar.bz2"
 
 inherit autotools distutils-base

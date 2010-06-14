@@ -1,6 +1,7 @@
 DESCRIPTION = "Enable tango-icon-theme in gtkrc"
 
 RDEPENDS_${PN} = "tango-icon-theme"
+PR = "r1"
 
 ALLOW_EMPTY_${PN} = "1"
 PACKAGE_ARCH = "all"

@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.openttd.org"
 LICENSE = "GPLv2"
 DEPENDS = "libsdl-net libpng zlib freetype fontconfig"
 RRECOMMENDS_${PN} = "openttd-gfx openttd-sfx"
+PR = "r1"
 
 inherit siteinfo sdl
 

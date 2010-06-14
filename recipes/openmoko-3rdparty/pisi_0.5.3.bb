@@ -9,6 +9,7 @@ RDEPENDS_${PN} = "python-vobject python-core python-pygtk python-pygobject pytho
            python-gdata python-webdav python-ldap python-epydoc python-core\
            python-dateutil python-sqlite3 python-netserver python-netclient\
            python-misc python-ctypes libsyncml"
+PR = "r1"
 
 PACKAGE_ARCH = "all"
 

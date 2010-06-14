@@ -2,6 +2,7 @@
 
 RDEPENDS_${PN} = "epiphany"
 RCONFLICTS_${PN} = "firefox"
+PR = "r1"
 
 do_install() {
 	install -d ${D}/${bindir}

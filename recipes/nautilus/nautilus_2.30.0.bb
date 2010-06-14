@@ -17,6 +17,7 @@ LICENSE="GPL"
 
 DEPENDS += "libunique  gvfs tracker librsvg libexif esound gnome-desktop orbit2-native"
 RDEPENDS_${PN} = "gvfs gvfsd-ftp gvfsd-sftp gvfsd-trash"
+PR = "r1"
 
 EXTRA_OECONF = " --disable-gtk-doc  --disable-update-mimedb "
 

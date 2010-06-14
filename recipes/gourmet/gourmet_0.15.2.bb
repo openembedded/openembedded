@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ python-pygtk"
 RDEPENDS_${PN} = "python-core"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/grecipe-manager/${PN}-${PV}.tar.gz"
 

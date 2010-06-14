@@ -2,6 +2,7 @@ DESCRIPTION = "A pure Python DAAP client implementation"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "LGPL"
+PR = "r1"
 
 inherit distutils
 

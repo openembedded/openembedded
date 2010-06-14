@@ -3,6 +3,7 @@ RDEPENDS_${PN} = "busybox"
 SECTION = "admin"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/logrotate_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"

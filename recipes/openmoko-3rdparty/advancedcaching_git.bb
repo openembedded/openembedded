@@ -6,6 +6,7 @@ HOMEPAGE = "http://www.opkg.org/package_268.html"
 RDEPENDS_${PN} = "python-pygtk python-html python-image python-netclient python-misc python-sqlite3 python-mime python-json"
 SRCREV = "9c3661f5573d2dd712437f1590070153d12e4c02"
 PV = "0.1.2+gitr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "git://github.com/webhamster/advancedcaching.git;protocol=git;branch=master"
 

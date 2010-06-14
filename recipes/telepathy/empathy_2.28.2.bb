@@ -7,6 +7,7 @@ libtelepathy telepathy-glib gtk+ gconf libglade eds-dbus \
 libunique"
 RDEPENDS_${PN} = "telepathy-mission-control"
 RRECOMMENDS_${PN} = "telepathy-gabble"
+PR = "r1"
 
 inherit gnome
 

@@ -9,6 +9,7 @@ inherit java-library
 
 DEPENDS = "fastjar-native jzlib"
 RDEPENDS_${PN} = "libjzlib-java"
+PR = "r1"
 
 do_compile() {
   mkdir -p build

@@ -3,6 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 
 RDEPENDS_${PN} += "marvell-gspi-fw"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "sgh-i900"
 

@@ -5,6 +5,7 @@ RCONFLICTS_${PN} = matchbox-keyboard-inputmethod
 SECTION = "x11"
 SRCREV = "373"
 PV = "0.0+svnr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=${PN};proto=http \
 	file://80multitappad"

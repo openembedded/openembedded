@@ -3,6 +3,7 @@ RDEPENDS_${PN} = "hostap-modules-pci hostap-utils"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "unknown"
+PR = "r1"
 
 SRC_URI = "http://www.red-bean.com/~proski/firmware/${PV}.tar.bz2"
 

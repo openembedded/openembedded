@@ -2,6 +2,7 @@ DESCRIPTION = "Yet another X Wallpaper Utility"
 DEPENDS += "imlib2 freetype zlib virtual/libx11 libxext"
 RDEPENDS_${PN} += "imlib2-loaders"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://thegraveyard.org/files/hsetroot-${PV}.tar.gz \
            file://pkgconfigize-imlib.patch"

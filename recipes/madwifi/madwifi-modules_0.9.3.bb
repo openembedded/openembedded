@@ -7,6 +7,7 @@ DEPENDS = "virtual/kernel"
 CONFLICTS = "hostap-daemon (<0.4.8)"
 SRCDATE = "20050803"
 PV = "0.9.3"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/madwifi/madwifi-${PV}.tar.bz2 \
 	   file://madwifi-devname.patch \

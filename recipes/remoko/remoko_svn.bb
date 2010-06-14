@@ -6,6 +6,7 @@ SECTION = "console/network"
 DEPENDS = "edje-native"
 SRCREV = "121"
 PV = "0.3.2+svnr${SRCPV}"
+PR = "r1"
 PE = "1"
 
 SRC_URI = "svn://remoko.googlecode.com/svn/trunk;module=BT_HID_UI;proto=http"

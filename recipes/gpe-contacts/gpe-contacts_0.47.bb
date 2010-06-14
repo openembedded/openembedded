@@ -4,6 +4,7 @@ SECTION = "gpe"
 
 DEPENDS = "libcontactsdb libgpewidget libgpepimc libdisplaymigration libgpevtype dbus-glib"
 RDEPENDS_${PN} = "gpe-icons"
+PR = "r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

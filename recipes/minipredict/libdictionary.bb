@@ -4,6 +4,7 @@ DESCRIPTION = "Dictionary access library, used by minipredict."
 RRECOMMENDS_${PN} = "dictionary"
 SECTION = "gpe"
 PRIORITY = "optional"
+PR = "r1"
 
 SRC_URI = "http://handhelds.org/~paxanima/files/${PN}.tar.gz"
 

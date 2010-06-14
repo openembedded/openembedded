@@ -2,6 +2,7 @@ DESCRIPTION = "Gives a fake root environment"
 HOMEPAGE = "http://fakeroot.alioth.debian.org"
 SECTION = "base"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \

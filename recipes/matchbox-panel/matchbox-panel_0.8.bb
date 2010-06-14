@@ -3,6 +3,7 @@ DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox virtual/libx11 libxext libxpm"
 RDEPENDS_${PN} = "libmatchbox matchbox-common"
+PR = "r1"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-panel/${PV}/matchbox-panel-${PV}.tar.bz2"
 S = "${WORKDIR}/matchbox-panel-${PV}"

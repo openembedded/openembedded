@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opieplayer2"
 RPROVIDES_${PN} = "opie-mediaplayer2-skin"
+PR = "r1"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/pics"

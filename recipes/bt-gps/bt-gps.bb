@@ -3,6 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "python python-pygtk gps-utils"
+PR = "r1"
 
 SRC_URI = "http://handheldshell.com/software/fso/btgps.tgz  \
 	  "

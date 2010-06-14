@@ -4,6 +4,7 @@ HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 RDEPENDS_${PN} = "phoneui-shr-theme-o2 elementary-theme-o2"
 LICENSE = "unknown"
+PR = "r1"
 
 PV = "0.1"
 

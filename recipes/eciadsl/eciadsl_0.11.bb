@@ -5,6 +5,7 @@ SRC_URI = "http://eciadsl.flashtux.org/download/eciadsl-usermode-${PV}.tar.gz \
 LICENSE = "GPL"
 RDEPENDS_${PN} = "bash kernel-module-n_hdlc ppp grep"
 S = "${WORKDIR}/eciadsl-usermode-${PV}"
+PR = "r1"
 
 inherit autotools
 

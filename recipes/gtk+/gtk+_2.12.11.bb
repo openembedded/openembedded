@@ -1,6 +1,6 @@
 require gtk+.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI += "file://cellrenderer-cairo.patch;striplevel=0 \
            file://entry-cairo.patch;striplevel=0 \

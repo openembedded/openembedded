@@ -2,6 +2,7 @@ DESCRIPTION = "Matchbox GTK+ theme configuration application."
 LICENSE = "GPL"
 DEPENDS = "gconf gtk+"
 RDEPENDS_${PN} = "settings-daemon"
+PR = "r1"
 
 SRCREV = "1614"
 PV = "0.0+svnr${SRCPV}"

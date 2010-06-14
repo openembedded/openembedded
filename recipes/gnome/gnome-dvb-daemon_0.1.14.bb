@@ -3,6 +3,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "libxml2 python-dbus python-gst python-pygtk libgee vala-native gstreamer gst-plugins-good gst-plugins-bad glib-2.0 dbus-glib sqlite3 gst-rtsp"
 RDEPENDS_${PN} = "python-dbus python-gst python-pygtk gst-plugin-dvb gst-fluendo-mpegdemux dvb-apps dvb-scan dvb-tzap dvb-czap dvbstream"
+PR = "r1"
 
 inherit gnome
 

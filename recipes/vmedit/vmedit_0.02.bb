@@ -4,6 +4,7 @@ AUTHOR = "Vladimir Martinek <vm@sykora.cz>"
 SECTION = "gpe"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "gpe-icons"
+PR = "r1"
 
 inherit gpe autotools
 

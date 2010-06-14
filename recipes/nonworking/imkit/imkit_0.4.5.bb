@@ -6,6 +6,7 @@ HOMEPAGE = "http://zaurus-ja.sourceforge.jp/imkit-anthy.html.en"
 SECTION = "opie/inputmethods"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "anthy"
+PR = "r1"
 
 SRC_URI = "http://downloads.sourceforge.jp/zaurus-ja/9316/imkit-0.4.5.tar.gz"
 S = "${WORKDIR}/imkit-${PV}"

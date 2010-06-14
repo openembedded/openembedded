@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "shfs-modules (${PV})"
 DEPENDS = "virtual/kernel"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/shfs/shfs-${PV}.tar.gz"
 S = "${WORKDIR}/shfs-${PV}/shfsmount"

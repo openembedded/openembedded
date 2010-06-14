@@ -2,6 +2,7 @@ DESCRIPTION = "An utility to manage OpenVZ containers"
 LICENSE = "GPLv2"
 
 RDEPENDS_${PN} = "bash gawk sed grep coreutils tar"
+PR = "r1"
 
 SRC_URI = "http://download.openvz.org/utils/vzctl/${PV}/src/vzctl-${PV}.tar.bz2 \
            file://vzctl-add-arm-syscalls.patch \

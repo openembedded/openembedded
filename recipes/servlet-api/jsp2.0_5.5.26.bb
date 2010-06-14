@@ -10,6 +10,7 @@ inherit java-library
 
 DEPENDS = "fastjar-native servlet2.4"
 RDEPENDS_${PN} = "libservlet2.4-java"
+PR = "r1"
 
 # Value of implementation.revision in build.xml
 IMPL_REVISION = "public_draft"

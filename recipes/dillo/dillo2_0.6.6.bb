@@ -3,6 +3,7 @@ DESCRIPTION = "Lightweight gtk+2 browser."
 LICENSE = "GPL"
 DEPENDS = "gtk+"
 RDEPENDS_${PN} = "gdk-pixbuf-loader-xpm"
+PR = "r1"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.gz \
          file://dillo2-gcc4.patch \
          file://gtk2.patch \

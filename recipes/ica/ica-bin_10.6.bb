@@ -4,6 +4,7 @@
 
 DEPENDS = "virtual/libx11 libxaw rpm2cpio-native fakeroot-native"
 RDEPENDS_${PN} = "libxaw"
+PR = "r1"
 
 HOMEPAGE="www.citrix.com/download/"
 

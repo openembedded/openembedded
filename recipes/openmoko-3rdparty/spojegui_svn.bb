@@ -8,6 +8,7 @@ RDEPENDS_${PN} = "python-core python-elementary python-sqlite3 python-netclient"
 
 SRCREV = "64"
 PV = "0.4.2+svnr${SRCPV}"
+PR = "r1"
 
 S = "${WORKDIR}/build"
 

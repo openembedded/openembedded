@@ -2,6 +2,7 @@ DESCRIPTION = "Enable gnome-icon-theme in gtkrc"
 LICENSE = "MIT"
 
 RDEPENDS_${PN} = "gnome-icon-theme"
+PR = "r1"
 
 ALLOW_EMPTY_${PN} = "1"
 PACKAGE_ARCH = "all"

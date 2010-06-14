@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "fltk"
 RDEPENDS_${PN} = "gnuchess"
+PR = "r1"
 
 
 SRC_URI = "http://members.cheese.at/woody/fltk-chess/fltk-chess-${PV}.tgz \

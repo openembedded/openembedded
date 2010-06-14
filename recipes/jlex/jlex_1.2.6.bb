@@ -3,6 +3,7 @@ AUTHOR = "Elliot Berk, A. Appel, C. Scott Ananian"
 
 DEPENDS = "fastjar-native"
 RDEPENDS_${PN} = "java2-runtime"
+PR = "r1"
 
 inherit java-library
 

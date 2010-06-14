@@ -4,6 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "gnome-doc-utils python-native telepathy-python telepathy-mission-control libtelepathy telepathy-glib gtk+ gconf libglade eds-dbus"
 RDEPENDS_${PN} = "telepathy-mission-control"
 RRECOMMENDS_${PN} = "telepathy-gabble"
+PR = "r1"
 
 inherit gnome
 

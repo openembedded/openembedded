@@ -4,6 +4,7 @@ SECTION = "x11/office"
 LICENSE = "GPLv2"
 DEPENDS = "asio boost loudmouth libwpd librsvg goffice poppler libglade"
 RDEPENDS_${PN} = "abiword"
+PR = "r1"
 
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz;name=plugins \

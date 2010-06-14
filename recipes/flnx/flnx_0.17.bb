@@ -4,6 +4,7 @@ DEPENDS = "microwindows"
 RDEPENDS_${PN} = "microwindows"
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}.tar.gz"
 DESCRIPTION = "fltk library for microwindows."
+PR = "r1"
 
 inherit autotools
 

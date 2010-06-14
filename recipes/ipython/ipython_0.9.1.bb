@@ -7,6 +7,7 @@ RDEPENDS_${PN} = "python-pprint python-io python-shell python-misc python-lang \
             python-stringold python-codecs python-crypt python-threading \
             python-pydoc python-debugger python-textutils python-pickle \
             python-subprocess"
+PR = "r1"
 
 SRC_URI = "http://ipython.scipy.org/dist/ipython-${PV}.tar.gz"
 

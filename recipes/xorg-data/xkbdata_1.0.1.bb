@@ -2,6 +2,7 @@ require xorg-data-common.inc
 PE = "1"
 
 RDEPENDS_${PN} = "xkbcomp"
+PR = "r1"
 
 FILES_${PN} += " /usr/share/X11/xkb"
 

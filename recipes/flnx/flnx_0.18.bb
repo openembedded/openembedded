@@ -6,6 +6,7 @@ SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/flnx/flnx-${PV}.tar.gz \
 	   file://gcc3.patch"
 S = "${WORKDIR}/flnx"
 LICENSE = "LGPL"
+PR = "r1"
 
 inherit autotools
 

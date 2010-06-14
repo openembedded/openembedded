@@ -3,6 +3,7 @@ LICENSE = "LGPL"
 
 DEPENDS = "swfdec glib-2.0"
 RDEPENDS_${PN} = "gst-ffmpeg"
+PR = "r1"
 
 SRC_URI = "http://swfdec.freedesktop.org/download/swfdec-mozilla/0.8/${P}.tar.gz \
 "

@@ -6,6 +6,7 @@ RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 SRCDATE = "20060814"
 PV = "1.0.0+cvs${SRCDATE}"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@madwifi.cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;date=${SRCDATE}"
 
