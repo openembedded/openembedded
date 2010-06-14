@@ -2,13 +2,13 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r19"
+PR = "r20"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
-SRCREV = "26df4208b57ccb0f0ca101ae4ddb92c956a0ecc0"
+SRCREV = "190b44619bac188d86e8dcee74b0853e33fb7de0"
 SRC_URI = "git://git.mansr.com/${PN};protocol=git \
-           file://fbplay-static.diff "
+"
 
 S = "${WORKDIR}/git"
 
@@ -21,7 +21,7 @@ do_compile() {
 	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S} || true
 	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S} || true
 	cp ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ${S} || true
-	oe_runmake -e
+	oe_runmake ${TARGET_ARCH}=y OMAPFB=y NETSYNC=y -e
 }
 
 do_install() {
