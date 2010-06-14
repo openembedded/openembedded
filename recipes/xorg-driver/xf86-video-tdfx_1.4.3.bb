@@ -12,3 +12,4 @@ EXTRA_OECONF += " \
 "
 SRC_URI[archive.md5sum] = "8161bbf2b100c21b609163f0010766b3"
 SRC_URI[archive.sha256sum] = "3ad935ca0aa306d10d1e6125a6bd485a3948c184dcfda01670961dc4740ebf33"
+PR = "${INC_PR}.0"

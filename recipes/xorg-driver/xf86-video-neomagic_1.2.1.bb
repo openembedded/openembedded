@@ -8,3 +8,4 @@ DEPENDS += " xf86dgaproto"
 
 SRC_URI[archive.md5sum] = "a72f57fca4f4dff9a2c82eb1fe7456f4"
 SRC_URI[archive.sha256sum] = "96e38d5378596174f76c735c4723ff2ac336f9069644502a9b706586b845e0a5"
+PR = "${INC_PR}.0"

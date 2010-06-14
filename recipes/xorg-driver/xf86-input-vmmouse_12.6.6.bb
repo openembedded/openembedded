@@ -7,3 +7,4 @@ COMPATIBLE_HOST = 'i.86.*-linux'
 
 SRC_URI[archive.md5sum] = "1c57338928a8897b7ca0b5524fcb1223"
 SRC_URI[archive.sha256sum] = "0cb2896b7a284efd6337c019c599fd4d5a6de74a58c6e6c31c31ed399efa8171"
+PR = "${INC_PR}.0"

@@ -11,3 +11,4 @@ SRC_URI = "http://projects.unbit.it/downloads/udlfb-0.2.3_and_xf86-video-display
 S = "${WORKDIR}/${PN}"
 SRC_URI[archive.md5sum] = "c2aedc8130c2e4d52e334b6804ab70da"
 SRC_URI[archive.sha256sum] = "487a1d7bf4b896d9a4b9e7dd1bd293adcadde5684fe9fe32aa209761c3191b3e"
+PR = "${INC_PR}.0"

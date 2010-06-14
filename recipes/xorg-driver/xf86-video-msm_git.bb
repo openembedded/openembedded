@@ -2,8 +2,6 @@ require xorg-driver-video.inc
 
 DESCRIPTION = "X.Org X server -- MSM display driver"
 
-PR_append = "e"
-
 SRCREV = "cfbbd17f0d4ab0f30915594d74e1b2b12c4ff8a1"
 PV = "1.1.0+${PR}+gitr${SRCREV}"
 PE = "1"
@@ -29,3 +27,4 @@ do_compile_prepend() {
 	install -m 0644 ${STAGING_KERNEL_DIR}/include/linux/msm_mdp.h ${S}/src/linux/
 	install -m 0644 ${WORKDIR}/kgsl_drm.h ${S}/src/drm/
 }
+PR = "${INC_PR}.0"

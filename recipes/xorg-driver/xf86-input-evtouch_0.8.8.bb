@@ -1,7 +1,5 @@
 require xorg-driver-input.inc
 
-PR = "r12"
-
 DESCRIPTION = "X.Org X server -- evtouch input driver"
 
 SRC_URI = "http://www.conan.de/touchscreen/xf86-input-evtouch-${PV}.tar.bz2;name=archive \
@@ -24,3 +22,4 @@ do_install_append() {
 FILES_${PN} += "${datadir}/hal"
 SRC_URI[archive.md5sum] = "4d8e092356d8353002f60a4907046c13"
 SRC_URI[archive.sha256sum] = "eafc4a09729a4b2b6120430c71e1954c5cac299ad6adf2f9a40aee8a7b51e476"
+PR = "${INC_PR}.0"
