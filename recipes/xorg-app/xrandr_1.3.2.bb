@@ -9,3 +9,4 @@ SRC_URI += "file://resolve_symbol_clash.patch"
 
 SRC_URI[archive.md5sum] = "2cb19bb1c19ccf77c40032b03dbe06f0"
 SRC_URI[archive.sha256sum] = "34d4334644a6494573141bb8647feb8f91c0ce8c8d3b6883b4861e038e912249"
+PR = "${INC_PR}.0"

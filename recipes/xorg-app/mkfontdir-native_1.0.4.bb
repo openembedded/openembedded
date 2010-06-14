@@ -6,3 +6,4 @@ DEPENDS = "util-macros-native mkfontscale-native"
 
 S = "${WORKDIR}/mkfontdir-${PV}"
 XORG_PN = "mkfontdir"
+PR = "${INC_PR}.0"

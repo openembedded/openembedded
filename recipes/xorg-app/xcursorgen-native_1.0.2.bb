@@ -5,3 +5,4 @@ DEPENDS = "libx11-native libpng-native"
 
 S="${WORKDIR}/xcursorgen-${PV}"
 XORG_PN="xcursorgen"
+PR = "${INC_PR}.0"
