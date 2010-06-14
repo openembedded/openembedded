@@ -1,12 +1,9 @@
+require xorg-app-common.inc
 DESCRIPTION = "xterm is the standard terminal emulator for the X Window System."
-SECTION = "x11/applications"
-LICENSE = "MIT-X"
 
 DEPENDS = "libxaw xproto virtual/libx11 xextproto xext xau libxpm ncurses"
 
 SRC_URI = "ftp://invisible-island.net/xterm/${PN}-${PV}.tgz"
-
-inherit autotools pkgconfig
 
 FILES_${PN} += " /usr/lib/X11"
 
