@@ -5,6 +5,7 @@ PR = "r1"
 
 SRC_URI += "file://gdb-6.8-fix-compile-karmic.patch \
 	    file://gdb-tcsetpgrp.patch \
+	    file://gdb-fix-sim-ppc.patch \
 	   "
 
 # Work-around problems while creating libbfd.a
