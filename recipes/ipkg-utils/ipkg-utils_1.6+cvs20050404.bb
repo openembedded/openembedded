@@ -5,7 +5,7 @@ LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS_${PN} = "python"
 SRCDATE = "20050930"
-PR = "r26"
+PR = "r27"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
