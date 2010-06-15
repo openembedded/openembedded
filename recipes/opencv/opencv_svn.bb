@@ -6,13 +6,14 @@ LICENSE = "GPLv2"
 
 ARM_INSTRUCTION_SET = "arm"
 
-DEPENDS = "ffmpeg gtk+ libtool swig swig-native python jpeg zlib libpng tiff glib-2.0"
+DEPENDS = "ffmpeg gtk+ libtool swig swig-native python jpeg bzip2 zlib libpng tiff glib-2.0"
 
 SRC_URI = "svn://code.ros.org/svn/opencv/trunk;module=opencv;proto=https \
 "
 
 SRCREV = "3217"
 PV = "2.1.0+svnr${SRCPV}"
+PR = "r1"
 
 S = "${WORKDIR}/opencv"
 
