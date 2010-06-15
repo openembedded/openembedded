@@ -320,3 +320,7 @@ do_configure_prepend() {
 do_compile_prepend() {
     set_icecc_env
 }
+
+do_install_prepend() {
+    set_icecc_env
+}
