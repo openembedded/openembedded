@@ -84,8 +84,6 @@ case "$arch" in
 			machines="dht-walnut kilauea magicbox xilinx-ml403 xilinx-ml410" ;;
 	"ppc440e")
 			machines="canyonlands sequoia xilinx-ml507" ;;
-	"ppc500")
-			machines="tqm8540" ;;
 	"ppc603e")
 			machines="efika lite5200 lsppchd lsppchg n1200 qemuppc storcenter" ;;
 	"ppce300c2")
@@ -185,7 +183,7 @@ for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i
 mkdir -p ../sdk ; mv *sdk.ipk ../sdk/ || true
  (mkdir -p ../sdk ; cd ../sdk && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
 
-for arch in armv4t armv4 armv5teb armv5te armv6-novfp armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt mips mipsel powerpc ppc405 ppc440e ppc500 ppce300c2 ppce300c3 ppce500v2 ppce500 ppce600 sh4 sparc x86_64 x86; do
+for arch in armv4t armv4 armv5teb armv5te armv6-novfp armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt mips mipsel powerpc ppc405 ppc440e ppce300c2 ppce300c3 ppce500v2 ppce500 ppce600 sh4 sparc x86_64 x86; do
 	do_sort
 done
 
