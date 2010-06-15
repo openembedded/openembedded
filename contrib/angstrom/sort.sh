@@ -3,6 +3,8 @@
 # Angstrom feed sorting script
 # This must be run in unsorted/ directory 
 
+ipkg_tools_path="/home/angstrom/bin"
+
 if [ $(basename $PWD) != "unsorted" ] ; then
 	echo "Not in feed dir! Exiting"
 	exit 1
@@ -121,7 +123,6 @@ for i in `find . -name  "*_$arch.ipk"` ; do mv $i ../$archdir/base/ ; done
 }
 
 do_index() {
-ipkg_tools_path="/home/angstrom/bin"
 echo "Processing $(basename $PWD) packages...."
 
 BPWD=`pwd`
@@ -178,10 +179,10 @@ cd ${BPWD}
 
 echo "Processing 'all' feed"
 for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i ../all/ ; done
- (mkdir -p ../all ; cd ../all && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )  
+ (mkdir -p ../all ; cd ../all && ${ipkg_tools_path}/ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
 
 mkdir -p ../sdk ; mv *sdk.ipk ../sdk/ || true
- (mkdir -p ../sdk ; cd ../sdk && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
+ (mkdir -p ../sdk ; cd ../sdk && ${ipkg_tools_path}/ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
 
 for arch in 486sx armv4t armv4 armv5teb armv5te armv6-novfp armv6 armv7a avr32 bfin geode i486 i586 i686 iwmmxt mips mipsel powerpc ppc405 ppc440e ppc603e ppce300c2 ppce300c3 ppce500v2 ppce500 ppce600 sh4 sparc x86_64 x86; do
 	do_sort
