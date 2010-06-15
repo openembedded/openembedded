@@ -1,8 +1,9 @@
 require evas.inc
-PR = "r6"
+PR = "r7"
 
 EVAS_CPU_TWEAKS = ""
-EVAS_CPU_TWEAKS_armv7a = "--enable-cpu-neon"
+# Disabled for now, see http://thread.gmane.org/gmane.comp.window-managers.enlightenment.devel/25194
+#EVAS_CPU_TWEAKS_armv7a = "--enable-cpu-neon"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
