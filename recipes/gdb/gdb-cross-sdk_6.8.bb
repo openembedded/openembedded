@@ -1,18 +1,9 @@
-require gdb-cross.inc
-LICENSE = "GPLv3"
+require gdb-cross-sdk.inc
 
 SRC_URI += "file://gcc-4.3-build-error.patch;striplevel=0 \
             file://gdb-6.8-fix-compile-karmic.patch"
 
-DEPENDS = "ncurses-sdk zlib-sdk flex-native"
-
-inherit sdk
-
-PR = "r2"
-
-do_stage() {
-	:
-}
+PR = "${INC_PR}.0"
 
 SRC_URI[md5sum] = "925695333524108291dc4012c4c9cbb8"
 SRC_URI[sha256sum] = "a3c5455f30ffb3e6eeafb9e54598b48f9fbf46e3e99f431120360c183ddcc889"
