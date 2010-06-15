@@ -3,7 +3,7 @@ require opkg_svn.bb
 DEPENDS = "curl"
 PROVIDES += "opkg"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 EXTRA_OECONF += " --disable-gpg \ 
                   --disable-openssl \ 
