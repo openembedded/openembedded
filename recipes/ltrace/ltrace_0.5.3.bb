@@ -1,8 +1,10 @@
 DESCRIPTION = "ltrace shows runtime library call information for dynamically linked executables."
 HOMEPAGE = "http://ltrace.alioth.debian.org"
 SECTION = "devel"
-DEPENDS = "libelf"
+DEPENDS = "libelf binutils"
 LICENSE = "GPLv2"
+
+PR = "r1"
 
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz;name=archive \
