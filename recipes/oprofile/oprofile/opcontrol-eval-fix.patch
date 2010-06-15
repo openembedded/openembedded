@@ -1,0 +1,19 @@
+Index: oprofile/utils/opcontrol
+===================================================================
+--- oprofile.orig/utils/opcontrol
++++ oprofile/utils/opcontrol
+@@ -362,12 +362,12 @@ create_dir()
+ 
+ get_event()
+ {
+-	GOTEVENT=`eval "echo \\$CHOSEN_EVENTS_$1"`
++	GOTEVENT=`eval "echo \"\\$CHOSEN_EVENTS_$1\""`
+ }
+ 
+ set_event()
+ {
+-	eval "CHOSEN_EVENTS_$1=$2"
++	eval "CHOSEN_EVENTS_$1=\"$2\""
+ }
+ 
+ 

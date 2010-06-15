@@ -5,12 +5,13 @@ LICENSE = "GPL"
 DEPENDS = "popt binutils"
 RDEPENDS_${PN} += "binutils-symlinks"
 RRECOMMENDS_${PN} += "kernel-vmlinux"
-INC_PR = "r12"
+INC_PR = "r13"
 
 S = "${WORKDIR}/oprofile-${PV}"
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz;name=tarball \
 	file://acinclude.m4 \
+	file://opcontrol-eval-fix.patch \
 	"
 
 inherit autotools
