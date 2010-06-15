@@ -38,9 +38,12 @@ def get_git_pv(path, d, tagadjust=None):
     mark_dependency(d, os.path.join(gitdir, "HEAD"))
 
     ref = popen(["git", "symbolic-ref", "HEAD"])
-    reffile = os.path.join(gitdir, ref)
-    if ref and os.path.exists(reffile):
-        mark_dependency(d, reffile)
+    if ref:
+        reffile = os.path.join(gitdir, ref)
+        if os.path.exists(reffile):
+            mark_dependency(d, reffile)
+        else:
+            mark_dependency(d, os.path.join(gitdir, "index"))
     else:
         # The ref might be hidden in packed-refs. Force a reparse if anything
         # in the working copy changes.
