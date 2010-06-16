@@ -9,7 +9,7 @@ RRECOMMENDS_${PN} = "gpsd ${PN}-dbus ${PN}-speech-cmdline ${PN}-gui-internal ${P
 RSUGGESTS_${PN} = "flite espeak ${PN}-speech-dbus ${PN}-gui-gtk ${PN}-gui-qml ${PN}-graphics-sdl ${PN}-graphics-qt ${PN}-maptool"
 
 PE = "1"
-INC_PR = "r7"
+INC_PR = "r8"
 
 inherit autotools
 
@@ -72,6 +72,8 @@ FILES_${PN}-graphics-gtk = " ${libdir}/${PN}/graphics/libgraphics_gtk_drawing_ar
 do_configure_prepend() {
   #Remove xpm building, replaced by icons in own package
   sed -i 's/\(.*SUBDIRS.*\) xpm\( \|$\)\(.*\)/\1\2\3/g' ${S}/navit/Makefile.am
+  # MOC=`$PKG_CONFIG QtGui --variable=moc_location` returns only /usr/bin/moc4 which is not available on hosts without Qt
+  sed -i "s#MOC=#MOC=${STAGING_DIR_NATIVE}#g" ${S}/configure.in
 }
 
 do_install_append() {

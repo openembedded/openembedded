@@ -1,20 +1,19 @@
 require llvm.inc
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
 SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
   file://BX_to_BLX.patch \
-  file://link.patch \
   "
 
 EXTRA_OECMAKE += "\
         -DLLVM_TARGET_ARCH:STRING=${LLVM_ARCH} \
         -DLLVM_ENABLE_ASSERTIONS:BOOL=ON \
-		-DBUILD_SHARED_LIBS:BOOL=ON \
         -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
+		-DBUILD_SHARED_LIBS:BOOL=ON \
 	"
 
 LLVM_RELEASE = "2.7"

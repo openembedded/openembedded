@@ -191,10 +191,6 @@ do_configure_prepend() {
 		yes '' | oe_runmake oldconfig
 }
 
-do_configure_append_avr32() {
-        sed -i -e s:-mno-pic::g arch/avr32/Makefile
-}
-
 do_configure_append() {
         if test -e scripts/Makefile.fwinst ; then
 		sed -i -e "s:-m0644:-m 0644:g" scripts/Makefile.fwinst
