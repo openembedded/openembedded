@@ -1,45 +1,36 @@
-diff --git a/Makefile b/Makefile
-index ed6156f..f0d42c5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -3144,6 +3144,9 @@ omap3_zoom1_config :	unconfig
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile	Usage: date [OPTION]... [+FORMAT]
++++ git/Makefile	Usage: date [OPTION]... [+FORMAT]
+@@ -3174,6 +3174,9 @@
  omap3_zoom2_config :	unconfig
-	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 zoom2 logicpd omap3
-
+ 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 zoom2 logicpd omap3
+ 
 +omap3_bug_config :	unconfig
 +	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 bug ti omap3
 +
  smdkc100_config:	unconfig
-	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 smdkc100 samsung s5pc1xx
-
-diff --git a/board/ti/beagle/beagle.h b/board/ti/beagle/beagle.h
-index 7fe6275..a7e8593 100644
---- a/board/ti/beagle/beagle.h
-+++ b/board/ti/beagle/beagle.h
-@@ -255,8 +255,8 @@ const omap3_sysinfo sysinfo = {
-	MUX_VAL(CP(HSUSB0_DATA7),	(IEN  | PTD | DIS | M0)) /*HSUSB0_DATA7*/\
-	MUX_VAL(CP(I2C1_SCL),		(IEN  | PTU | EN  | M0)) /*I2C1_SCL*/\
-	MUX_VAL(CP(I2C1_SDA),		(IEN  | PTU | EN  | M0)) /*I2C1_SDA*/\
+ 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 smdkc100 samsung s5pc1xx
+ 
+Index: git/board/ti/beagle/beagle.h
+===================================================================
+--- git.orig/board/ti/beagle/beagle.h	Usage: date [OPTION]... [+FORMAT]
++++ git/board/ti/beagle/beagle.h	Usage: date [OPTION]... [+FORMAT]
+@@ -255,8 +255,8 @@
+ 	MUX_VAL(CP(HSUSB0_DATA7),	(IEN  | PTD | DIS | M0)) /*HSUSB0_DATA7*/\
+ 	MUX_VAL(CP(I2C1_SCL),		(IEN  | PTU | EN  | M0)) /*I2C1_SCL*/\
+ 	MUX_VAL(CP(I2C1_SDA),		(IEN  | PTU | EN  | M0)) /*I2C1_SDA*/\
 -	MUX_VAL(CP(I2C2_SCL),		(IEN  | PTU | EN  | M4)) /*GPIO_168*/\
 -	MUX_VAL(CP(I2C2_SDA),		(IEN  | PTU | EN  | M4)) /*GPIO_183*/\
 +	MUX_VAL(CP(I2C2_SCL),		(IEN  | PTU | EN  | M0)) /*GPIO_168*/\
 +	MUX_VAL(CP(I2C2_SDA),		(IEN  | PTU | EN  | M0)) /*GPIO_183*/\
-	MUX_VAL(CP(I2C3_SCL),		(IEN  | PTU | EN  | M0)) /*I2C3_SCL*/\
-	MUX_VAL(CP(I2C3_SDA),		(IEN  | PTU | EN  | M0)) /*I2C3_SDA*/\
-	MUX_VAL(CP(I2C4_SCL),		(IEN  | PTU | EN  | M0)) /*I2C4_SCL*/\
-@@ -268,6 +268,7 @@ const omap3_sysinfo sysinfo = {
-	MUX_VAL(CP(MCSPI1_CS0),		(IEN  | PTD | EN  | M0)) /*McSPI1_CS0*/\
-	MUX_VAL(CP(MCSPI1_CS1),		(IDIS | PTD | EN  | M0)) /*McSPI1_CS1*/\
-	MUX_VAL(CP(MCSPI1_CS2),		(IDIS | PTD | DIS | M4)) /*GPIO_176*/\
-+>>>>>>> 6ca9da4d42aeb43df5ef29f7d0518009df583b2f
-  /* USB EHCI (port 2) */\
-	MUX_VAL(CP(MCSPI1_CS3),		(IEN  | PTU | DIS | M3)) /*HSUSB2_DATA2*/\
-	MUX_VAL(CP(MCSPI2_CLK),		(IEN  | PTU | DIS | M3)) /*HSUSB2_DATA7*/\
-diff --git a/board/ti/bug/Makefile b/board/ti/bug/Makefile
-new file mode 100644
-index 0000000..0751e39
---- /dev/null
-+++ b/board/ti/bug/Makefile
+ 	MUX_VAL(CP(I2C3_SCL),		(IEN  | PTU | EN  | M0)) /*I2C3_SCL*/\
+ 	MUX_VAL(CP(I2C3_SDA),		(IEN  | PTU | EN  | M0)) /*I2C3_SDA*/\
+ 	MUX_VAL(CP(I2C4_SCL),		(IEN  | PTU | EN  | M0)) /*I2C4_SCL*/\
+Index: git/board/ti/bug/Makefile
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/board/ti/bug/Makefile	Usage: date [OPTION]... [+FORMAT]
 @@ -0,0 +1,47 @@
 +#
 +# (C) Copyright 2000, 2001, 2002
@@ -88,11 +79,10 @@ index 0000000..0751e39
 +include $(SRCTREE)/rules.mk
 +
 +sinclude $(obj).depend
-diff --git a/board/ti/bug/bug.c b/board/ti/bug/bug.c
-new file mode 100644
-index 0000000..513a031
---- /dev/null
-+++ b/board/ti/bug/bug.c
+Index: git/board/ti/bug/bug.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/board/ti/bug/bug.c	Usage: date [OPTION]... [+FORMAT]
 @@ -0,0 +1,133 @@
 +/*
 + * (C) Copyright 2004-2008
@@ -227,11 +217,10 @@ index 0000000..513a031
 +#endif
 +	return rc;
 +}
-diff --git a/board/ti/bug/bug.h b/board/ti/bug/bug.h
-new file mode 100644
-index 0000000..9ec306e
---- /dev/null
-+++ b/board/ti/bug/bug.h
+Index: git/board/ti/bug/bug.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/board/ti/bug/bug.h	Usage: date [OPTION]... [+FORMAT]
 @@ -0,0 +1,411 @@
 +/*
 + * (C) Copyright 2008
@@ -644,11 +633,10 @@ index 0000000..9ec306e
 + MUX_VAL(CP(SDRC_CKE1),		(IDIS | PTD | DIS | M7)) /*sdrc_cke1*/\
 +
 +#endif
-diff --git a/board/ti/bug/config.mk b/board/ti/bug/config.mk
-new file mode 100644
-index 0000000..4d873eb
---- /dev/null
-+++ b/board/ti/bug/config.mk
+Index: git/board/ti/bug/config.mk
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/board/ti/bug/config.mk	Usage: date [OPTION]... [+FORMAT]
 @@ -0,0 +1,33 @@
 +#
 +# (C) Copyright 2006 - 2008
@@ -683,49 +671,47 @@ index 0000000..4d873eb
 +
 +# For use with external or internal boots.
 +TEXT_BASE = 0x80e80000
-diff --git a/drivers/mmc/omap3_mmc.c b/drivers/mmc/omap3_mmc.c
-index 96c0e65..d8643b8 100644
---- a/drivers/mmc/omap3_mmc.c
-+++ b/drivers/mmc/omap3_mmc.c
-@@ -507,9 +507,11 @@ unsigned char configure_mmc(mmc_card_data *mmc_card_cur)
+Index: git/drivers/mmc/omap3_mmc.c
+===================================================================
+--- git.orig/drivers/mmc/omap3_mmc.c	Usage: date [OPTION]... [+FORMAT]
++++ git/drivers/mmc/omap3_mmc.c	Usage: date [OPTION]... [+FORMAT]
+@@ -505,9 +505,10 @@
  unsigned long mmc_bread(int dev_num, unsigned long blknr, lbaint_t blkcnt,
-			void *dst)
+ 			void *dst)
  {
 +  //printf("mmc_bread...\n");
-	omap_mmc_read_sect(blknr, (blkcnt * MMCSD_SECTOR_SIZE), &cur_card_data,
-				(unsigned long *) dst);
+ 	omap_mmc_read_sect(blknr, (blkcnt * MMCSD_SECTOR_SIZE), &cur_card_data,
+ 				(unsigned long *) dst);
 -	return 1;
-+	//return 1;
 +	return blkcnt;
  }
-
+ 
  int mmc_legacy_init(int verbose)
-@@ -517,6 +519,7 @@ int mmc_legacy_init(int verbose)
-	if (configure_mmc(&cur_card_data) != 1)
-		return 1;
-
+@@ -515,6 +516,7 @@
+ 	if (configure_mmc(&cur_card_data) != 1)
+ 		return 1;
+ 
 +	printf("mmc_legacy_init...\n");
-	mmc_blk_dev.if_type = IF_TYPE_MMC;
-	mmc_blk_dev.part_type = PART_TYPE_DOS;
-	mmc_blk_dev.dev = 0;
-diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index 4fe3bd8..1f3a633 100644
---- a/include/configs/omap3_beagle.h
-+++ b/include/configs/omap3_beagle.h
-@@ -232,6 +232,8 @@
+ 	mmc_blk_dev.if_type = IF_TYPE_MMC;
+ 	mmc_blk_dev.part_type = PART_TYPE_DOS;
+ 	mmc_blk_dev.dev = 0;
+Index: git/include/configs/omap3_beagle.h
+===================================================================
+--- git.orig/include/configs/omap3_beagle.h	Usage: date [OPTION]... [+FORMAT]
++++ git/include/configs/omap3_beagle.h	Usage: date [OPTION]... [+FORMAT]
+@@ -215,6 +215,8 @@
   */
  #define V_PROMPT			"OMAP3 beagleboard.org # "
-
+ 
 +#define CONFIG_CMDLINE_EDITING
 +
  #define CONFIG_SYS_LONGHELP		/* undef to save memory */
  #define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */
  #define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
-diff --git a/include/configs/omap3_bug.h b/include/configs/omap3_bug.h
-new file mode 100644
-index 0000000..30e1d26
---- /dev/null
-+++ b/include/configs/omap3_bug.h
+Index: git/include/configs/omap3_bug.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/include/configs/omap3_bug.h	Usage: date [OPTION]... [+FORMAT]
 @@ -0,0 +1,432 @@
 +/*
 + * (C) Copyright 2006
@@ -1159,15 +1145,3 @@ index 0000000..30e1d26
 +#define NAND_WAIT_READY(nand)	udelay(10)
 +
 +#endif  /* __CONFIG_BUGBASE2_H */
-diff --git a/lib_arm/board.c b/lib_arm/board.c
-index e148739..f3c58ea 100644
---- a/lib_arm/board.c
-+++ b/lib_arm/board.c
-@@ -291,7 +291,6 @@ void start_armboot (void)
-			hang ();
-		}
-	}
--
-	/* armboot_start is defined in the board-specific linker script */
-	mem_malloc_init (_armboot_start - CONFIG_SYS_MALLOC_LEN,
-			CONFIG_SYS_MALLOC_LEN);
