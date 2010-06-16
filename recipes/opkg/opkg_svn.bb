@@ -1,10 +1,9 @@
 require opkg.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}"
 
 PROVIDES =+ "virtual/update-alternatives"
 RPROVIDES_${PN} = "update-alternatives"
-RPROVIDES_${PN}-dev = "virtual/opkg-dev"
 PACKAGES =+ "libopkg-dev libopkg"
 
 FILES_libopkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
