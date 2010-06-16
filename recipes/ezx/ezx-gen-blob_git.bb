@@ -5,16 +5,16 @@ HOMEPAGE = "http://people.openezx.org/wyrm/gen-blob"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
 DEPENDS = "virtual/kernel"
-SRCREV = "2519"
-PV = "1.0.0+svnr${SRCPV}"
+SRCREV = "48d1cf4dbc8228b982ff40c36922769f70347da1"
+PV = "1.0.0+gitr${SRCPV}"
+PR = "r0"
 PE = "1"
-PR = "r2"
 
 SRC_URI = "\
-  svn://svn.openezx.org/trunk/src/blob/;module=gen-blob;proto=http \
+  git://git.openezx.org/gen-blob.git;protocol=git;branch=master \
   file://remove-bogus-sed.patch \
 "
-S = "${WORKDIR}/gen-blob"
+S = "${WORKDIR}/git"
 
 inherit autotools
 
