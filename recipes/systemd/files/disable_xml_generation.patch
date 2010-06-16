@@ -1,0 +1,36 @@
+Index: git/Makefile.am
+===================================================================
+--- git.orig/Makefile.am	2010-06-15 22:58:46.752961117 +0200
++++ git/Makefile.am	2010-06-15 22:59:22.615040570 +0200
+@@ -75,21 +75,6 @@
+ dist_udevrules_DATA = \
+ 	src/99-systemd.rules
+ 
+-dbusinterface_DATA = \
+-	org.freedesktop.systemd1.Manager.xml \
+-	org.freedesktop.systemd1.Job.xml \
+-	org.freedesktop.systemd1.Unit.xml \
+-	org.freedesktop.systemd1.Service.xml \
+-	org.freedesktop.systemd1.Socket.xml \
+-	org.freedesktop.systemd1.Timer.xml \
+-	org.freedesktop.systemd1.Target.xml \
+-	org.freedesktop.systemd1.Device.xml \
+-	org.freedesktop.systemd1.Mount.xml \
+-	org.freedesktop.systemd1.Automount.xml \
+-	org.freedesktop.systemd1.Snapshot.xml \
+-	org.freedesktop.systemd1.Swap.xml \
+-	org.freedesktop.systemd1.Path.xml
+-
+ dist_systemunit_DATA = \
+ 	units/emergency.service \
+ 	units/basic.target \
+@@ -466,9 +451,6 @@
+ 	man/systemd.special.html.in
+ endif
+ 
+-org.freedesktop.systemd1.%.xml: systemd
+-	$(AM_V_GEN)./systemd --introspect=${@:.xml=} > $@
+-
+ CLEANFILES += $(dbusinterface_DATA)
+ 
+ install-data-hook:
