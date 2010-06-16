@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic SDK development packages"
-PR = "r4"
+PR = "r3"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -20,7 +20,7 @@ RDEPENDS_${PN} = "\
     glib-2.0-dev \
     gstreamer-dev \
     libice-dev \
-    virtual/opkg-dev \
+    ipkg-dev \
     jpeg-dev \
     libapm-dev \
     alsa-lib-dev \
