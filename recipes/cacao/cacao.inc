@@ -27,7 +27,8 @@ EXTRA_OECONF = "\
     --with-java-runtime-library-libdir=${libdir_jni}:${libdir} \
     --with-jni_md_h=${STAGING_INCDIR}/classpath \
     --with-jni_h=${STAGING_INCDIR}/classpath \
-  "
+	--libdir=${libdir}/cacao \
+"
 
 PACKAGES = "${PN} ${PN}-doc ${PN}-dbg"
 
