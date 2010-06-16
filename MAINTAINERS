@@ -203,8 +203,6 @@ Recipes:    mini-httpd,dmidecode,mktemp
 Person:     Marcin Juszkiewicz
 Mail:       marcin@juszkiewicz.com.pl
 Website:    http://marcin.juszkiewicz.com.pl/
-Machines:   bug, progear, alix, at91sam9263ek
-Distros:    Poky, Ångström
 
 Person:     Marco Cavallini
 Mail:       m.cavallini@koansoftware.com
