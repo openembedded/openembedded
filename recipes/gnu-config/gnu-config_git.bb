@@ -5,12 +5,16 @@ DEPENDS = ""
 INHIBIT_DEFAULT_DEPS = "1"
 
 PR = "r0"
-SRCREV="e35217687ee5f39b428119fe31c7e954f6de64f0"
-PR_append = "+gitr${SRCPV}"
+FAKESRCREV="e35217687ee5f39b428119fe31c7e954f6de64f0"
+PR_append = "+gitr${FAKESRCREV}"
 
-SRC_URI = "git://git.savannah.gnu.org/config.git;branch=master;protocol=git \
-	   file://config-guess-uclibc.patch \
+SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/git_git.savannah.gnu.org.config.git_${FAKESRCREV}.tar.gz \
+           file://config-guess-uclibc.patch \
            file://gnu-configize.in"
+
+SRC_URI[md5sum] = "6a45979aa33d15b23c874b95e24c8732"
+SRC_URI[sha256sum] = "a83bf7c7c972eb4106b5d7c6126d3b5b058f7aace7a62cae4e4f330d62f40259"
+
 S = "${WORKDIR}/git"
 
 do_compile() {
