@@ -40,3 +40,6 @@ FILES_${PN} = "${bindir} ${datadir}/gnu-config"
 
 BBCLASSEXTEND = "native"
 NATIVE_INSTALL_WORKS = "1"
+SRC_URI[md5sum] = "14d00a7da34eb605864ee793bee93d29"
+SRC_URI[sha256sum] = "1072000a8ec5e8f1e63e316adb0839da4d96fb0029f66cc3f2db60dce29a18ef"
+
