@@ -1,5 +1,6 @@
 require linux-libc-headers.inc
 
+NATIVE_INSTALL_WORKS = "0"
 HOMEPAGE = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/"
 # license note from the package:
 #   Linux-libc-headers are derived from linux kernel headers. For license of a

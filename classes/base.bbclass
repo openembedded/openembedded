@@ -75,6 +75,12 @@ def base_dep_prepend(d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
 	     	    bb.data.getVar('BUILD_SYS', d, 1)):
 			deps += " virtual/${TARGET_PREFIX}gcc virtual/libc "
+		elif bb.data.inherits_class('native', d) and \
+				bb.data.getVar('PN', d, True) not in \
+				("linux-libc-headers-native", "quilt-native",
+				 "unifdef-native", "shasum-native",
+				 "stagemanager-native", "coreutils-native"):
+			deps += " linux-libc-headers-native"
 	return deps
 
 DEPENDS_prepend="${@base_dep_prepend(d)} "

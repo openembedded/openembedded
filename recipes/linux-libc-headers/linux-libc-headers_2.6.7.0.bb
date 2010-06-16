@@ -1,6 +1,7 @@
 require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
+NATIVE_INSTALL_WORKS = "0"
 PR = "r4"
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""
