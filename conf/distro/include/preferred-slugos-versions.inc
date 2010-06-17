@@ -83,3 +83,6 @@ PREFERRED_VERSION_udev				?= "118"
 
 # latest tcl recipe has a bug that overwites regex.h; use the old tcl
 #PREFERRED_VERSION_tcl				?= "8.4.19"
+
+# We need the bluez4 version of the libs, which has default_precedence = -1
+PREFERRED_VERSION_bluez-libs			?= "4.42"
