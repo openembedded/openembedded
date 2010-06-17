@@ -13,9 +13,7 @@ python () {
         bb.data.setVar('EXTRA_OECONF', ' --with-ipc=tcp --program-prefix= ', d)
 }
 
-do_stage_append () {
-    oe_libinstall -so libfakeroot ${STAGING_LIBDIR}/libfakeroot/
-}
+NATIVE_INSTALL_WORKS = "1"
 
 RDEPENDS_${PN} = "util-linux-native"
 

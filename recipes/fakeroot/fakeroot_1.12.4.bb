@@ -2,7 +2,7 @@ DESCRIPTION = "Gives a fake root environment"
 HOMEPAGE = "http://fakeroot.alioth.debian.org"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \
@@ -11,10 +11,11 @@ SRC_URI = "\
 	    
 inherit autotools
 
-do_stage() {
-        install -d ${STAGING_INCDIR}/fakeroot
-        install -m 644 *.h ${STAGING_INCDIR}/fakeroot
-        autotools_stage_all
+do_install_append() {
+        install -d ${D}${includedir}/fakeroot
+        install -m 644 *.h ${D}${includedir}/fakeroot
+        install -d ${D}${libdir}/libfakeroot/
+        oe_libinstall -so libfakeroot ${D}${libdir}/libfakeroot/
 }
 
 # fakeroot needs getopt which is provided by the util-linux package
