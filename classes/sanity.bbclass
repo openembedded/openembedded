@@ -141,7 +141,7 @@ def check_sanity(e):
 		if not abi.isdigit():
 			f = file(abifile, "w")
 			f.write(current_abi)
-                elif abi == "3" and current_abi == "4":
+		elif abi == "3" and current_abi == "4":
 			import bb
 			bb.note("Converting staging from layout version 2 to layout version 3")
 			os.system(bb.data.expand("mv ${TMPDIR}/staging ${TMPDIR}/sysroots", e.data))

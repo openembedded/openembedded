@@ -141,7 +141,7 @@ ENABLE_BINARY_LOCALE_GENERATION_armv7a = "0"
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
 def detect_arm_abi (d):
-    	import bb
+	import bb
 	if bb.data.getVar('DISTRO_FEATURES',d) is None:
 		if bb.data.getVar('TARGET_ARCH', d, 1) in [ 'arm', 'armeb' ]:
 			return "oabi"
@@ -159,8 +159,8 @@ def compute_os_portion_of_target_triplet (d):
 	armv5te iwmmxt armv7a armv7 armv5teb armv4t"
 	ppc_spe_supporting_arches = "ppce500v2 ppce500"
 	gnu_suffix = ""
-  	if bb.data.getVar('LIBC', d, 1) == "uclibc":
-    		libc_suffix = "uclibc"
+	if bb.data.getVar('LIBC', d, 1) == "uclibc":
+		libc_suffix = "uclibc"
 	else:
 		libc_suffix = ""
 	
@@ -170,7 +170,7 @@ def compute_os_portion_of_target_triplet (d):
 		else:
 			os_suffix = "uclinux"
 	else:
-  		os_suffix = "linux"
+		os_suffix = "linux"
 	bparch = bb.data.getVar('BASE_PACKAGE_ARCH', d,1)
 
 	if bb.data.getVar('DISTRO_FEATURES',d,1) is not None and \

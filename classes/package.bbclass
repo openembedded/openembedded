@@ -1029,23 +1029,23 @@ def package_run_hooks(f, d):
 				bb.parse.parse_py.BBHandler.feeder(line, l, fn, os.path.basename(fn), d)
 				line += 1
 			fp.close()
-	                anonqueue = bb.data.getVar("__anonqueue", d, True) or []
-        	        body = [x['content'] for x in anonqueue]
-            	        flag = { 'python' : 1, 'func' : 1 }
-            	        bb.data.setVar("__anonfunc", "\n".join(body), d)
-         		bb.data.setVarFlags("__anonfunc", flag, d)
-		        try:
-                		t = bb.data.getVar('T', d)
-           			bb.data.setVar('T', '${TMPDIR}/', d)
-                		bb.build.exec_func("__anonfunc", d)
-                		bb.data.delVar('T', d)
-                		if t:
-                    			bb.data.setVar('T', t, d)
-		        except Exception, e:
-                		bb.msg.debug(1, bb.msg.domain.Parsing, "Exception when executing anonymous function: %s" % e)
-                		raise
-            		bb.data.delVar("__anonqueue", d)
-            		bb.data.delVar("__anonfunc", d)
+			anonqueue = bb.data.getVar("__anonqueue", d, True) or []
+			body = [x['content'] for x in anonqueue]
+			flag = { 'python' : 1, 'func' : 1 }
+			bb.data.setVar("__anonfunc", "\n".join(body), d)
+			bb.data.setVarFlags("__anonfunc", flag, d)
+			try:
+				t = bb.data.getVar('T', d)
+				bb.data.setVar('T', '${TMPDIR}/', d)
+				bb.build.exec_func("__anonfunc", d)
+				bb.data.delVar('T', d)
+				if t:
+					bb.data.setVar('T', t, d)
+			except Exception, e:
+				bb.msg.debug(1, bb.msg.domain.Parsing, "Exception when executing anonymous function: %s" % e)
+				raise
+			bb.data.delVar("__anonqueue", d)
+			bb.data.delVar("__anonfunc", d)
 
 python package_do_package () {
 	packages = (bb.data.getVar('PACKAGES', d, True) or "").split()
