@@ -1,5 +1,5 @@
 require dbus.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 RRECOMMENDS_${PN} = ""
 RDEPENDS_${PN} = ""
 inherit native
@@ -17,18 +17,13 @@ SRC_URI = "\
   file://dbus-1.init \
 "
 
-do_stage() {
-	oe_runmake install
-	autotools_stage_all
-
+do_install_append() {
 	# for dbus-glib-native introspection generation
-	install -d ${STAGING_DATADIR}/dbus
-	install -m 0644 bus/session.conf ${STAGING_DATADIR}/dbus/session.conf
+	install -d ${D}${datadir}/dbus
+	install -m 0644 bus/session.conf ${D}${datadir}/dbus/session.conf
 }
 
-do_install() {
-	:
-}
+NATIVE_INSTALL_WORKS = "1"
 
 SRC_URI[md5sum] = "b57aa1ba0834cbbb1e7502dc2cbfacc2"
 SRC_URI[sha256sum] = "8016540602189e1dca6aca6b7c0735706387e4f85ced75217c6a874980fd0e86"
