@@ -21,6 +21,7 @@ RDEPENDS_${PN} += "\
 		evopedia \
 		fbreader \
 		ffalarms \
+		foxtrotgps \
 		gpe-calendar \
 		gpe-todo \
 		gpe-scap \
