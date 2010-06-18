@@ -25,6 +25,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://gcc-ppc_add_d_constraint.patch \
 	file://gcc-pr41175.patch \
 	file://gcc-armv4-pass-fix-v4bx-to-ld.patch \
+	file://gcc-4.3.3-fix-EXTRA_BUILD.patch \
 	"
 # Language Overrides
 FORTRAN = ""

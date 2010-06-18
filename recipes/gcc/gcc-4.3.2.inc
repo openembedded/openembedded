@@ -57,6 +57,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://gcc-4.3.2-SYSROOT_CFLAGS_FOR_TARGET.patch \
 	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch \
 	file://zecke-xgcc-cpp.patch \
+	file://gcc-4.3.3-fix-EXTRA_BUILD.patch \
 	file://gcc-flags-for-build.patch \
 "
 
