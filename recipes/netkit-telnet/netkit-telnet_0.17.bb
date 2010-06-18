@@ -8,6 +8,8 @@ SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-telnet-${PV
            file://netkit-telnet-debian_0.17-36.diff \
            file://cross-compile.patch "
 
+LDFLAGS_libc-uclibc += " -lncurses"
+
 do_configure () {
     ./configure --prefix=${prefix}
 
