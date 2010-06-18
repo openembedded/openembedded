@@ -1,7 +1,6 @@
 require bluez4.inc
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_shr = "1"
 
 DEPENDS += "libsndfile1"
