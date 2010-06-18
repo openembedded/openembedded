@@ -5,6 +5,7 @@ DEPENDS = "readline udev dbus libcap2 libcgroup gtk+"
 PRIORITY = "optional"
 SECTION = "base/shell"
 
+PV = "0.0"
 PR_append = "+${SRCPV}"
 
 inherit autotools vala
@@ -41,7 +42,7 @@ FILES_${PN} = " ${base_bindir}/* \
                 ${bindir}/systemd-install \
                "
 
-FILES_${PN}-dbg += " /lib/systemd/.debug "o
+FILES_${PN}-dbg += " /lib/systemd/.debug "
 
 def get_baudrate(bb, d):
     return bb.data.getVar('SERIAL_CONSOLE', d, 1).split()[0]
