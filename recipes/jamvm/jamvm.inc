@@ -12,6 +12,8 @@ RPROVIDES_jamvm = "java2-runtime"
 # This uses 32 bit arm, so force the instruction set to arm, not thumb
 ARM_INSTRUCTION_SET = "arm"
 
+PRIVATE_LIBS = "libjvm.so"
+
 inherit java autotools update-alternatives
 
 EXTRA_OECONF = "--with-classpath-install-dir=${prefix} --libdir=${libdir}/jamvm"
