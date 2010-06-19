@@ -6,7 +6,7 @@ SRC_URI[sha256sum] = "c223cbb80df0b1f17f6ef4efd0be1fe35ae640bd979f852cfbcc452abc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
-DEPENDS += "libsndfile1"
+DEPENDS += "libnl libsndfile1"
 
 PR = "${INC_PR}.0"
 
