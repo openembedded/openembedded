@@ -19,51 +19,51 @@ def get_siteinfo_list(d):
        target = bb.data.getVar('HOST_ARCH', d, 1) + "-" + bb.data.getVar('HOST_OS', d, 1)
 
        targetinfo = {\
-               "armeb-linux":             "endian-big bit-32 common-linux common-glibc arm-common",\
-               "armeb-linux-gnueabi":     "endian-big bit-32 common-linux common-glibc arm-common armeb-linux",\
-               "armeb-linux-uclibc":      "endian-big bit-32 common-linux common-uclibc arm-common",\
-               "armeb-linux-uclibceabi":  "endian-big bit-32 common-linux common-uclibc arm-common armeb-linux-uclibc",\
                "arm-darwin":              "endian-little bit-32 common-darwin",\
                "arm-darwin9":             "endian-little bit-32 common-darwin",\
                "arm-linux":               "endian-little bit-32 common-linux common-glibc arm-common",\
                "arm-linux-gnueabi":       "endian-little bit-32 common-linux common-glibc arm-common arm-linux",\
                "arm-linux-uclibc":        "endian-little bit-32 common-linux common-uclibc arm-common",\
                "arm-linux-uclibceabi":    "endian-little bit-32 common-linux common-uclibc arm-common arm-linux-uclibc",\
+               "armeb-linux":             "endian-big bit-32 common-linux common-glibc arm-common",\
+               "armeb-linux-gnueabi":     "endian-big bit-32 common-linux common-glibc arm-common armeb-linux",\
+               "armeb-linux-uclibc":      "endian-big bit-32 common-linux common-uclibc arm-common",\
+               "armeb-linux-uclibceabi":  "endian-big bit-32 common-linux common-uclibc arm-common armeb-linux-uclibc",\
                "avr32-linux-uclibc":      "endian-big bit-32 common-linux common-uclibc avr32-common",\
                "bfin-uclinux-uclibc":     "endian-little bit-32 common-uclibc bfin-common",\
-               "i386-linux":          "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i486-linux":          "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i586-linux":          "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i686-linux":          "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i386-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
-               "i486-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
-               "i586-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
-               "i686-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
                "i386-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
-               "i486-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
-               "i586-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
-               "i686-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i386-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i386-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
                "i386-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
+               "i486-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i486-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i486-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
                "i486-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
+               "i586-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i586-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i586-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
                "i586-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
+               "i686-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i686-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i686-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
                "i686-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
-               "ia64-linux":	          "endian-little bit-64 common-linux common-glibc",\
-               "mipsel-linux":            "endian-little bit-32 common-linux common-glibc mips-common",\
-               "mipsel-linux-uclibc":     "endian-little bit-32 common-linux common-uclibc mips-common",\
+               "ia64-linux":              "endian-little bit-64 common-linux common-glibc",\
                "mips-linux":              "endian-big bit-32 common-linux common-glibc mips-common",\
                "mips-linux-uclibc":       "endian-big bit-32 common-linux common-uclibc mips-common",\
+               "mipsel-linux":            "endian-little bit-32 common-linux common-glibc mips-common",\
+               "mipsel-linux-uclibc":     "endian-little bit-32 common-linux common-uclibc mips-common",\
                "powerpc-darwin":          "endian-big bit-32 common-darwin",\
-               "ppc-linux":               "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
-               "ppc64-linux":             "endian-big bit-64 common-linux common-glibc powerpc-common powerpc64-linux",\
                "powerpc-linux":           "endian-big bit-32 common-linux common-glibc powerpc-common",\
-               "powerpc-linux-gnuspe":       "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
+               "powerpc-linux-gnuspe":    "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
                "powerpc-linux-uclibc":    "endian-big bit-32 common-linux common-uclibc powerpc-common",\
                "powerpc-linux-uclibcspe": "endian-big bit-32 common-linux common-uclibc powerpc-common powerpc-linux-uclibc",\
+               "ppc-linux":               "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
+               "ppc64-linux":             "endian-big bit-64 common-linux common-glibc powerpc-common powerpc64-linux",\
                "sh3-linux":               "endian-little bit-32 common-linux common-glibc sh-common",\
                "sh4-linux":               "endian-little bit-32 common-linux common-glibc sh-common",\
                "sh4-linux-uclibc":        "endian-little bit-32 common-linux common-uclibc sh-common",\
-               "sparc-linux":         "endian-big bit-32 common-linux common-glibc",\
-               "viac3-linux":         "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "sparc-linux":             "endian-big bit-32 common-linux common-glibc",\
+               "viac3-linux":             "endian-little bit-32 common-linux common-glibc ix86-common",\
                "x86_64-linux":            "endian-little bit-64 common-linux common-glibc",\
                "x86_64-linux-uclibc":     "endian-little bit-64 common-linux common-uclibc"}
        if target in targetinfo:
