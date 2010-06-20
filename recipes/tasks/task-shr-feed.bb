@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r57"
+PR = "r58"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -21,6 +21,7 @@ RDEPENDS_${PN} += "\
 		evopedia \
 		fbreader \
 		ffalarms \
+		foxtrotgps \
 		gpe-calendar \
 		gpe-todo \
 		gpe-scap \
@@ -287,6 +288,7 @@ RDEPENDS_${PN} += "\
 		neolight \
 		spojegui \
 		dbus-daemon-proxy \
+		unixbench \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)

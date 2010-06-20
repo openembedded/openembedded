@@ -164,6 +164,23 @@ do_configure_prepend() {
             echo 'CONFIG_DEVTMPFS_MOUNT=y' >> ${S}/.config
         fi
 
+        # Newer inits like systemd need cgroup support
+        if [ "${KERNEL_ENABLE_CGROUPS}" = "1" ] ; then
+            sed -e /CONFIG_CGROUP_SCHED/d \
+                -e /CONFIG_CGROUPS/d \
+                -i '${S}/.config'
+            
+            echo 'CONFIG_CGROUP_SCHED=y' >> ${S}/.config
+            echo 'CONFIG_CGROUPS=y' >> ${S}/.config
+            echo 'CONFIG_CGROUP_NS=y' >> ${S}/.config
+            echo 'CONFIG_CGROUP_FREEZER=y' >> ${S}/.config
+            echo 'CONFIG_CGROUP_DEVICE=y' >> ${S}/.config
+            echo 'CONFIG_CPUSETS=y' >> ${S}/.config
+            echo 'CONFIG_PROC_PID_CPUSET=y' >> ${S}/.config
+            echo 'CONFIG_CGROUP_CPUACCT=y' >> ${S}/.config
+            echo 'CONFIG_RESOURCE_COUNTERS=y' >> ${S}/.config
+        fi
+
         #
         # root-over-nfs-over-usb-eth support. Limited, but should cover some cases.
         # Enable this by setting a proper CMDLINE_NFSROOT_USB.

@@ -2,8 +2,8 @@ DESCRIPTION = "Libcap is a library for getting and setting POSIX.1e (formerly PO
 PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
-DEPENDS = "bison-native flex-native libattr"
-PR = "r0"
+DEPENDS = "bison-native flex-native attr"
+PR = "r1"
 
 BUILD_CFLAGS += "-I${S}/libcap/include"
 CFLAGS += "-I${S}/libcap/include"
@@ -23,12 +23,6 @@ do_install() {
 	install -m 0644 libcap/include/sys/capability.h ${D}${includedir}/sys/
 	install -d ${D}${libdir}
 	oe_libinstall -s -C libcap libcap ${D}${libdir}
-}
-
-do_stage() {
-	install -d ${STAGING_INCDIR}/sys
-	install -m 0644 libcap/include/sys/capability.h ${STAGING_INCDIR}/sys/
-	oe_libinstall -s -C libcap libcap ${STAGING_LIBDIR}
 }
 
 SRC_URI[md5sum] = "6e2c9d0f3c3118e41cd07288ba9577ce"

@@ -47,7 +47,7 @@ XSERVER_akita = "xserver-kdrive-1300-fbdev"
 
 # spitz uses xserver-xorg
 PREFERRED_PROVIDER_virtual/xserver_spitz = "xserver-xorg"
-XSERVER_spitz = "xserver-xorg xf86-input-keyboard xf86-input-mouse xf86-input-evdev"
+XSERVER_spitz = "xserver-xorg xf86-video-fbdev xf86-input-keyboard xf86-input-mouse xf86-input-evdev"
 PREFERRED_PROVIDER_virtual/libgl_spitz = "mesa-dri"
 
 

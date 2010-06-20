@@ -7,8 +7,7 @@ SECTION = "console/network"
 DEPENDS = "libfsoframework"
 LICENSE = "GPL"
 
-#SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-SRCREV = "696d93d7146adffdb76ddb951a7d8199b3dc8a81"
+SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "1.0.0+gitr${SRCPV}"
 PR = "${INC_PR}.0"
 

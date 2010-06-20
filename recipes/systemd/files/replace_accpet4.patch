@@ -1,0 +1,26 @@
+Index: git/src/logger.c
+===================================================================
+--- git.orig/src/logger.c	2010-06-15 23:02:38.212932153 +0200
++++ git/src/logger.c	2010-06-15 23:02:51.091686447 +0200
+@@ -331,7 +331,7 @@
+ 
+         assert(s);
+ 
+-        if ((fd = accept4(server_fd, NULL, NULL, SOCK_NONBLOCK|SOCK_CLOEXEC)) < 0)
++        if ((fd = accept(server_fd, NULL, NULL)) < 0)
+                 return -errno;
+ 
+         if (s->n_streams >= STREAMS_MAX) {
+Index: git/src/socket.c
+===================================================================
+--- git.orig/src/socket.c	2010-06-15 23:02:16.269606647 +0200
++++ git/src/socket.c	2010-06-15 23:02:31.115021717 +0200
+@@ -1201,7 +1201,7 @@
+         if (w->socket_accept) {
+                 for (;;) {
+ 
+-                        if ((cfd = accept4(fd, NULL, NULL, SOCK_NONBLOCK)) < 0) {
++                        if ((cfd = accept(fd, NULL, NULL)) < 0) {
+ 
+                                 if (errno == EINTR)
+                                         continue;

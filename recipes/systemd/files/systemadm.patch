@@ -1,0 +1,13 @@
+Index: git/src/systemadm.vala
+===================================================================
+--- git.orig/src/systemadm.vala	2010-06-15 11:02:35.863509632 +0200
++++ git/src/systemadm.vala	2010-06-15 11:06:16.305986249 +0200
+@@ -297,7 +297,7 @@
+ 
+                 bbox.pack_start(cancel_button, false, true, 0);
+ 
+-                bus = Bus.get(session ? BusType.SESSION : BusType.SYSTEM);
++                bus = DBus.Bus.get(session ? DBus.BusType.SESSION : DBus.BusType.SYSTEM);
+ 
+                 manager = bus.get_object(
+                                 "org.freedesktop.systemd1",

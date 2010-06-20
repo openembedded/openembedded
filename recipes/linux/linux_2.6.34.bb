@@ -2,6 +2,8 @@ require linux.inc
 
 PR = "r1"
 
+module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"                                                     
+
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "1"
@@ -10,6 +12,7 @@ DEFAULT_PREFERENCE_qemush4 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_lite5200 = "1"
+DEFAULT_PREFERENCE_omap5912osk = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;status=pending \

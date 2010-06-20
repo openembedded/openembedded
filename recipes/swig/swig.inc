@@ -4,6 +4,8 @@ LICENSE = "BSD"
 SECTION = "devel"
 INC_PR = "r1"
 
+DEPENDS = "python"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
 
 inherit autotools

@@ -1,0 +1,10 @@
+--- xfwm4-themes-4.6.0/themes/redmond/Makefile.am	2009-02-26 00:54:06.000000000 +0100
++++ xfwm4-themes-4.6.0/themes/redmond/Makefile.am~	2010-06-14 11:10:00.000000000 +0200
+@@ -16,7 +16,6 @@
+ 	left-inactive.xpm \
+ 	maximize-active.xpm \
+ 	maximize-toggled-active.xpm \
+-	maximize-inactive.xpm \
+ 	maximize-toggled-inactive.xpm \
+ 	maximize-inactive.xpm \
+ 	maximize-pressed.xpm \

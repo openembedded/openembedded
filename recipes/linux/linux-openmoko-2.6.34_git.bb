@@ -3,7 +3,7 @@ require linux-openmoko.inc
 
 KERNEL_RELEASE="2.6.34"
 
-SRCREV = "f37686260161644129601ba19880abe48c56cc8d"
+SRCREV = "5c40321e6e6a8ca8552c5c69d041d7f7f3205318"
 OEV = "oe4"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
