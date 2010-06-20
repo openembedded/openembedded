@@ -30,9 +30,24 @@ DEPENDS_virtclass-nativesdk_prepend = "${@autotools_deps(d)}"
 
 inherit siteinfo
 
+def _autotools_get_sitefiles(d):
+    def inherits(d, *classes):
+        if any(bb.data.inherits_class(cls, d) for cls in classes):
+            return True
+
+    if inherits(d, "native", "nativesdk"):
+        return
+
+    sitedata = siteinfo_data(d)
+    for path in d.getVar("BBPATH", True).split(":"):
+        for element in sitedata:
+            filename = os.path.join(path, "site", element)
+            if os.path.exists(filename):
+                yield filename
+
 # Space separated list of shell scripts with variables defined to supply test
 # results for autoconf tests we cannot run at build time.
-export CONFIG_SITE = "${@siteinfo_get_files(d)}"
+export CONFIG_SITE = "${@' '.join(_autotools_get_sitefiles(d))}"
 
 acpaths = "default"
 EXTRA_AUTORECONF = "--exclude=autopoint"

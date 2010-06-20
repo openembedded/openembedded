@@ -44,7 +44,7 @@ RDEPENDS_${PN}-browser-plugin += "${PN}"
 acpaths = " -Imacros"
 
 # Boost lacks defines for lots of archs
-TARGET_CC_ARCH_append = " -I${STAGING_INCDIR}/libxml2 -DHAVE_POLL_H ${@[' -D_BIG_ENDIAN', ' -D_LITTLE_ENDIAN'][bb.data.getVar('SITEINFO_ENDIANESS', d, 1) == 'le']}"
+TARGET_CC_ARCH_append = " -I${STAGING_INCDIR}/libxml2 -DHAVE_POLL_H ${@[' -D_BIG_ENDIAN', ' -D_LITTLE_ENDIAN'][bb.data.getVar('SITEINFO_ENDIANNESS', d, 1) == 'le']}"
 
 
 do_install_append() {
