@@ -11,7 +11,7 @@ inherit siteinfo
 INC_PR = "r12"
 
 AR_append = " r"
-CFLAG = "${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
+CFLAG = "${@base_conditional('SITEINFO_ENDIANNESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
 	-DTERMIO ${FULL_OPTIMIZATION} -Wall"
 
 # -02 does not work on mipsel: ssh hangs when it tries to read /dev/urandom

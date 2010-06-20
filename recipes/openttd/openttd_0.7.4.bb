@@ -21,7 +21,7 @@ do_configure() {
 	--host=${TARGET_SYS} \
 	--windres=${MACHINE_DISPLAY_WIDTH_PIXELS}x${MACHINE_DISPLAY_HEIGHT_PIXELS} \
 	--os=UNIX \
-	--endian=${SITEINFO_ENDIANESS} \
+	--endian=${SITEINFO_ENDIANNESS} \
 	--prefix-dir=${prefix} \
 	--binary-dir=bin \
 	--with-midi=/bin/true \

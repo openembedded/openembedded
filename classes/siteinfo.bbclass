@@ -15,123 +15,106 @@
 # It is an error for the target not to exist.
 # If 'what' doesn't exist then an empty value is returned
 #
-def get_siteinfo_list(d):
-       target = bb.data.getVar('HOST_ARCH', d, 1) + "-" + bb.data.getVar('HOST_OS', d, 1)
+def siteinfo_get_filenames(d):
+    archinfo = {
+        "arm": "endian-little bit-32 arm-common",
+        "armeb": "endian-big bit-32 arm-common",
+        "avr32": "endian-big bit-32 avr32-common",
+        "bfin": "endian-little bit-32 bfin-common",
+        "i386": "endian-little bit-32 ix86-common",
+        "i486": "endian-little bit-32 ix86-common",
+        "i586": "endian-little bit-32 ix86-common",
+        "i686": "endian-little bit-32 ix86-common",
+        "ia64": "endian-little bit-64",
+        "mips": "endian-big bit-32 mips-common",
+        "mipsel": "endian-little bit-32 mips-common",
+        "powerpc": "endian-big bit-32 powerpc-common",
+        "nios2": "endian-little bit-32 nios2-common",
+        "powerpc64": "endian-big bit-64 powerpc-common powerpc64-linux",
+        "ppc": "endian-big bit-32 powerpc-common",
+        "ppc64": "endian-big bit-64 powerpc-common powerpc64-linux",
+        "sh3": "endian-little bit-32 sh-common",
+        "sh4": "endian-little bit-32 sh-common",
+        "sparc": "endian-big bit-32",
+        "viac3": "endian-little bit-32 ix86-common",
+        "x86_64": "endian-little bit-64",
+    }
+    osinfo = {
+        "darwin": "common-darwin",
+        "darwin9": "common-darwin",
+        "linux": "common-linux common-glibc",
+        "linux-gnueabi": "common-linux common-glibc",
+        "linux-gnuspe": "common-linux common-glibc",
+        "linux-uclibc": "common-linux common-uclibc",
+        "linux-uclibceabi": "common-linux common-uclibc",
+        "linux-uclibcspe": "common-linux common-uclibc",
+        "uclinux-uclibc": "common-uclibc",
+        "cygwin": "common-cygwin",
+        "mingw32": "common-mingw",
+    }
+    targetinfo = {
+        "arm-linux-gnueabi":    "arm-linux",
+        "arm-linux-uclibceabi":    "arm-linux-uclibc",
+        "armeb-linux-gnueabi":     "armeb-linux",
+        "armeb-linux-uclibceabi":  "armeb-linux-uclibc",
+        "powerpc-linux-gnuspe":    "powerpc-linux",
+        "powerpc-linux-uclibcspe": "powerpc-linux-uclibc",
+    }
 
-       targetinfo = {\
-               "arm-darwin":              "endian-little bit-32 common-darwin",\
-               "arm-darwin9":             "endian-little bit-32 common-darwin",\
-               "arm-linux":               "endian-little bit-32 common-linux common-glibc arm-common",\
-               "arm-linux-gnueabi":       "endian-little bit-32 common-linux common-glibc arm-common arm-linux",\
-               "arm-linux-uclibc":        "endian-little bit-32 common-linux common-uclibc arm-common",\
-               "arm-linux-uclibceabi":    "endian-little bit-32 common-linux common-uclibc arm-common arm-linux-uclibc",\
-               "armeb-linux":             "endian-big bit-32 common-linux common-glibc arm-common",\
-               "armeb-linux-gnueabi":     "endian-big bit-32 common-linux common-glibc arm-common armeb-linux",\
-               "armeb-linux-uclibc":      "endian-big bit-32 common-linux common-uclibc arm-common",\
-               "armeb-linux-uclibceabi":  "endian-big bit-32 common-linux common-uclibc arm-common armeb-linux-uclibc",\
-               "avr32-linux-uclibc":      "endian-big bit-32 common-linux common-uclibc avr32-common",\
-               "bfin-uclinux-uclibc":     "endian-little bit-32 common-uclibc bfin-common",\
-               "i386-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
-               "i386-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i386-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
-               "i386-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
-               "i486-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
-               "i486-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i486-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
-               "i486-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
-               "i586-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
-               "i586-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i586-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
-               "i586-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
-               "i686-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
-               "i686-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "i686-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
-               "i686-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
-               "ia64-linux":              "endian-little bit-64 common-linux common-glibc",\
-               "mips-linux":              "endian-big bit-32 common-linux common-glibc mips-common",\
-               "mips-linux-uclibc":       "endian-big bit-32 common-linux common-uclibc mips-common",\
-               "mipsel-linux":            "endian-little bit-32 common-linux common-glibc mips-common",\
-               "mipsel-linux-uclibc":     "endian-little bit-32 common-linux common-uclibc mips-common",\
-               "nios2-linux":             "endian-little bit-32 common-linux common-glibc nios2-common nios2-linux",\
-               "nios2-linux-uclibc":      "endian-little bit-32 common-linux common-uclibc nios2-common nios2-linux-uclibc",\
-               "powerpc-darwin":          "endian-big bit-32 common-darwin",\
-               "powerpc-linux":           "endian-big bit-32 common-linux common-glibc powerpc-common",\
-               "powerpc-linux-gnuspe":    "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
-               "powerpc-linux-uclibc":    "endian-big bit-32 common-linux common-uclibc powerpc-common",\
-               "powerpc-linux-uclibcspe": "endian-big bit-32 common-linux common-uclibc powerpc-common powerpc-linux-uclibc",\
-               "ppc-linux":               "endian-big bit-32 common-linux common-glibc powerpc-common powerpc-linux",\
-               "ppc64-linux":             "endian-big bit-64 common-linux common-glibc powerpc-common powerpc64-linux",\
-               "sh3-linux":               "endian-little bit-32 common-linux common-glibc sh-common",\
-               "sh4-linux":               "endian-little bit-32 common-linux common-glibc sh-common",\
-               "sh4-linux-uclibc":        "endian-little bit-32 common-linux common-uclibc sh-common",\
-               "sparc-linux":             "endian-big bit-32 common-linux common-glibc",\
-               "viac3-linux":             "endian-little bit-32 common-linux common-glibc ix86-common",\
-               "x86_64-linux":            "endian-little bit-64 common-linux common-glibc",\
-               "x86_64-linux-uclibc":     "endian-little bit-64 common-linux common-uclibc"}
-       if target in targetinfo:
-               info = targetinfo[target].split()
-               info.append(target)
-               info.append("common")
-               return info
-       else:
-               bb.error("Information not available for target '%s'" % target)
+    arch = d.getVar("HOST_ARCH", True)
+    os = d.getVar("HOST_OS", True)
+    target = "%s-%s" % (arch, os)
 
+    sitefiles = []
+    if arch in archinfo:
+        sitefiles.extend(archinfo[arch].split())
+    if os in osinfo:
+        sitefiles.extend(osinfo[os].split())
+    if target in targetinfo:
+        sitefiles.extend(targetinfo[target].split())
+    sitefiles.append(target)
+    sitefiles.append("common")
 
-#
-# Define which site files to use. We check for several site files and
-# use each one that is found, based on the list returned by get_siteinfo_list()
-#
-# Search for the files in the following directories:
-# 1) ${BBPATH}/site (in reverse) - app specific, then site wide
-# 2) ${FILE_DIRNAME}/site-${PV}         - app version specific
-#
+    return sitefiles
+
+def _siteinfo_get_files(d):
+    import itertools
+
+    def inherits(d, *classes):
+        if any(bb.data.inherits_class(cls, d) for cls in classes):
+            return True
+
+    if inherits(d, "native", "nativesdk"):
+        return
+
+    paths = itertools.chain(d.getVar("BBPATH", True).split(":"),
+                            d.getVar("FILESPATH", True).split(":"))
+    for filename in siteinfo_get_filenames(d):
+        for p in paths:
+            fullpath = os.path.join(p, "site", filename)
+            if os.path.exists(fullpath):
+                yield fullpath
+
 def siteinfo_get_files(d):
-       sitefiles = ""
+    return " ".join(_siteinfo_get_files(d))
 
-       # Determine which site files to look for
-       sites = get_siteinfo_list(d)
-       sites.append("common");
+python () {
+    sitefiles = set(siteinfo_get_filenames(d))
+    if "endian-little" in sitefiles:
+        d.setVar("SITEINFO_ENDIANNESS", "le")
+    elif "endian-big" in sitefiles:
+        d.setVar("SITEINFO_ENDIANNESS", "be")
+    else:
+        bb.error("Unable to determine endianness for architecture '%s'" %
+                 d.getVar("HOST_ARCH", True))
+        bb.fatal("Please add your architecture to siteinfo.bbclass")
 
-       # Check along bbpath for site files and append in reverse order so
-       # the application specific sites files are last and system site
-       # files first.
-       path_bb = bb.data.getVar('BBPATH', d, 1)
-       for p in (path_bb or "").split(':'):
-               tmp = ""
-               for i in sites:
-                       fname = os.path.join(p, 'site', i)
-                       if os.path.exists(fname):
-                               tmp += fname + " "
-               sitefiles = tmp + sitefiles;
-
-       # Now check for the applications version specific site files
-       path_pkgv = os.path.join(bb.data.getVar('FILE_DIRNAME', d, 1), "site-" + bb.data.getVar('PV', d, 1))
-       for i in sites:
-               fname = os.path.join(path_pkgv, i)
-               if os.path.exists(fname):
-                       sitefiles += fname + " "
-
-       bb.debug(1, "SITE files " + sitefiles);
-       return sitefiles
-
-def siteinfo_get_endianess(d):
-       info = get_siteinfo_list(d)
-       if 'endian-little' in info:
-              return "le"
-       elif 'endian-big' in info:
-              return "be"
-       bb.error("Site info could not determine endianess for target")
-
-def siteinfo_get_bits(d):
-       info = get_siteinfo_list(d)
-       if 'bit-32' in info:
-              return "32"
-       elif 'bit-64' in info:
-              return "64"
-       bb.error("Site info could not determine bit size for target")
-
-#
-# Make some information available via variables
-#
-SITEINFO_ENDIANESS  = "${@siteinfo_get_endianess(d)}"
-SITEINFO_BITS       = "${@siteinfo_get_bits(d)}"
+    if "bit-32" in sitefiles:
+        d.setVar("SITEINFO_BITS", "32")
+    elif "bit-64" in sitefiles:
+        d.setVar("SITEINFO_BITS", "64")
+    else:
+        bb.error("Unable to determine bit size for architecture '%s'" %
+                 d.getVar("HOST_ARCH", True))
+        bb.fatal("Please add your architecture to siteinfo.bbclass")
+}

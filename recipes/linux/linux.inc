@@ -110,7 +110,7 @@ do_configure_prepend() {
 	#
 	# endian support
 	#
-        if [ "${SITEINFO_ENDIANESS}" = "be" ]; then
+        if [ "${SITEINFO_ENDIANNESS}" = "be" ]; then
                 echo "CONFIG_CPU_BIG_ENDIAN=y"          >> ${S}/.config
         fi
 
