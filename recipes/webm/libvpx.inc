@@ -1,11 +1,13 @@
 DESCRIPTION = "vpx Multi-Format Codec SDK"
 LICENSE = "BSD"
 
+PR = "r1"
+
 SRC_URI = "http://webm.googlecode.com/files/libvpx-${PV}.tar.bz2"
 
 inherit autotools
 
-CFLAGGS += "-fPIC"
+CFLAGS += "-fPIC"
 
 export CC
 export LD = "${CC}"
