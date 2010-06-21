@@ -1,7 +1,7 @@
 require gdb-cross.inc
 LICENSE = "GPLv3"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 inherit sdk
 
@@ -18,6 +18,7 @@ do_install_append() {
 
 	# we don't care about these infos, installed from binutils
 	rm -f ${D}/${infodir}/{configure,standards,bfd}.info
+    rm -f ${D}/${infodir}/dir
 
 	# We use libiberty from binutils
 	rm -f ${D}${prefix}/${TARGET_SYS}/lib/libiberty.a
