@@ -56,7 +56,7 @@ MKUBIFS_ARGS = "-m 1 -e 130944 -c 487"
 UBINIZE_ARGS = "-m 1 -p 128KiB "
 
 
-EXTRA_IMAGEDEPENDS += "ezx-boot-usb-native ezx-gen-blob"
+EXTRA_IMAGEDEPENDS += "moto-boot-usb-native ezx-gen-blob"
 
 IMAGE_INSTALL_append += "\
   kernel-module-ohci-hcd \
