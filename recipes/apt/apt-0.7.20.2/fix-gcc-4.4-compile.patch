@@ -1,0 +1,39 @@
+diff -rc apt-0.7.20.2.orig/apt-pkg/acquire.cc apt-0.7.20.2/apt-pkg/acquire.cc
+*** apt-0.7.20.2.orig/apt-pkg/acquire.cc	2010-06-21 18:14:15.815760996 +0800
+--- apt-0.7.20.2/apt-pkg/acquire.cc	2010-06-21 18:15:30.865760994 +0800
+***************
+*** 24,29 ****
+--- 24,30 ----
+  
+  #include <iostream>
+  #include <sstream>
++ #include <cstdio>
+      
+  #include <dirent.h>
+  #include <sys/time.h>
+diff -rc apt-0.7.20.2.orig/apt-pkg/contrib/sha256.h apt-0.7.20.2/apt-pkg/contrib/sha256.h
+*** apt-0.7.20.2.orig/apt-pkg/contrib/sha256.h	2010-06-21 18:14:15.815760996 +0800
+--- apt-0.7.20.2/apt-pkg/contrib/sha256.h	2010-06-21 18:14:59.565760993 +0800
+***************
+*** 17,22 ****
+--- 17,23 ----
+  #include <string>
+  #include <cstring>
+  #include <algorithm>
++ #include <stdint.h>
+  
+  using std::string;
+  using std::min;
+diff -rc apt-0.7.20.2.orig/apt-pkg/deb/dpkgpm.cc apt-0.7.20.2/apt-pkg/deb/dpkgpm.cc
+*** apt-0.7.20.2.orig/apt-pkg/deb/dpkgpm.cc	2010-06-21 18:14:15.815760996 +0800
+--- apt-0.7.20.2/apt-pkg/deb/dpkgpm.cc	2010-06-21 18:16:12.045760992 +0800
+***************
+*** 22,27 ****
+--- 22,28 ----
+  #include <sys/select.h>
+  #include <sys/types.h>
+  #include <sys/wait.h>
++ #include <sys/stat.h>
+  #include <signal.h>
+  #include <errno.h>
+  #include <stdio.h>
