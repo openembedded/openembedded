@@ -2,7 +2,7 @@ require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 NATIVE_INSTALL_WORKS = "0"
-PR = "r4"
+PR = "r5"
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""
 
@@ -12,22 +12,6 @@ SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-heade
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 
 do_configure () {
-	case ${TARGET_ARCH} in
-		alpha*)   ARCH=alpha ;;
-		arm*)     ARCH=arm ;;
-		cris*)    ARCH=cris ;;
-		hppa*)    ARCH=parisc ;;
-		i*86*)    ARCH=i386 ;;
-		ia64*)    ARCH=ia64 ;;
-		mips*)    ARCH=mips ;;
-		m68k*)    ARCH=m68k ;;
-		powerpc*) ARCH=ppc ;;
-		s390*)    ARCH=s390 ;;
-		sh*)      ARCH=sh ;;
-		sparc64*) ARCH=sparc64 ;;
-		sparc*)   ARCH=sparc ;;
-		x86_64*)  ARCH=x86_64 ;;
-	esac
 	if test !  -e include/asm-$ARCH; then
 		oefatal unable to create asm symlink in kernel headers
 	fi
