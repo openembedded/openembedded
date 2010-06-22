@@ -1,7 +1,7 @@
 DESCRIPTION = "Unix benchmark suite"
 DEPENDS = "virtual/libgl"
-RRECOMMENDS_${PN} = "x11perf perl perl-module-strict perl-module-posix perl-module-time-hires perl-module-exporter-heavy perl-module-io-handle perl-module-io"
-PR = "r1"
+RRECOMMENDS_${PN} = "x11perf perl perl-module-strict perl-module-posix perl-module-time-hires perl-module-exporter-heavy perl-module-io-handle perl-module-io make"
+PR = "r2"
 
 SRC_URI = "http://byte-unixbench.googlecode.com/files/${P}.tar.gz"
 
