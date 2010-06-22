@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 SRCREV = "160764"
 PV = "4.5"
@@ -29,6 +29,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://cache-amnesia.patch \
 	   file://gcc-flags-for-build.patch \
 	   file://libstdc++-emit-__cxa_end_cleanup-in-text.patch \
+	   file://arm-bswapsi2.patch \
 	  "
 
 # Language Overrides
