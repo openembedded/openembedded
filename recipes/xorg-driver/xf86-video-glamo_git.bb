@@ -1,5 +1,6 @@
 require xorg-driver-video.inc
-SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=master"
+SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=master \
+           file://remove_deprecated.patch"
 
 S = "${WORKDIR}/git"
 
@@ -13,4 +14,4 @@ DEPENDS += "libdrm"
 DESCRIPTION = "X.Org X server -- Glamo display driver with KMS support"
 
 EXTRA_OECONF = " --enable-kms "
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"

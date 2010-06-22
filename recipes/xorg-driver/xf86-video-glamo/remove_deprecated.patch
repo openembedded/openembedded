@@ -1,0 +1,304 @@
+From 1ee5b968926ac451cea8a2d374517ff9ca315686 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 22 Jun 2010 17:26:49 +0200
+Subject: [PATCH] Remove x*alloc/xfree calls deprecated in xserver 1.9 RC1
+
+---
+ src/glamo-cmdq.c       |    4 ++--
+ src/glamo-draw.c       |    4 ++--
+ src/glamo-dri2.c       |   34 +++++++++++++++++-----------------
+ src/glamo-driver.c     |   12 ++++++------
+ src/glamo-kms-crtc.c   |    4 ++--
+ src/glamo-kms-exa.c    |    8 ++++----
+ src/glamo-kms-output.c |    2 +-
+ src/glamo-output.c     |    2 +-
+ 8 files changed, 35 insertions(+), 35 deletions(-)
+
+diff --git a/src/glamo-cmdq.c b/src/glamo-cmdq.c
+index 38950d7..0413452 100644
+--- a/src/glamo-cmdq.c
++++ b/src/glamo-cmdq.c
+@@ -176,7 +176,7 @@ GLAMOCMDQInit(ScrnInfoPtr pScrn, size_t mem_start, size_t mem_size)
+ 
+     pGlamo->ring_len = (CQ_LEN + 1) * 1024;
+ 
+-    buf = (MemBuf *)xcalloc(1, sizeof(MemBuf) + pGlamo->ring_len);
++    buf = (MemBuf *)calloc(1, sizeof(MemBuf) + pGlamo->ring_len);
+ 
+     if (!buf) {
+         return FALSE;
+@@ -215,7 +215,7 @@ GLAMOCMDQFini(ScrnInfoPtr pScrn) {
+     GLAMOCMDQDisable(pScrn);
+ 
+     if (pGlamo->cmd_queue) {
+-	    xfree(pGlamo->cmd_queue);
++	    free(pGlamo->cmd_queue);
+ 	    pGlamo->cmd_queue = NULL;
+     }
+ }
+diff --git a/src/glamo-draw.c b/src/glamo-draw.c
+index c7be92b..ce9d183 100644
+--- a/src/glamo-draw.c
++++ b/src/glamo-draw.c
+@@ -197,7 +197,7 @@ GLAMODrawFini(ScrnInfoPtr pScrn) {
+     GLAMOCMDQFini(pScrn);
+     if (pGlamo->exa) {
+         exaDriverFini(pGlamo->pScreen);
+-        xfree(pGlamo->exa);
++        free(pGlamo->exa);
+         pGlamo->exa = NULL;
+     }
+ }
+@@ -286,7 +286,7 @@ GLAMODrawExaInit(ScrnInfoPtr pScrn, size_t mem_start, size_t mem_size)
+ 		ErrorF("Initialized EXA acceleration\n");
+ 	} else {
+ 		ErrorF("Failed to initialize EXA acceleration\n");
+-        xfree(pGlamo->exa);
++        free(pGlamo->exa);
+         pGlamo->exa = NULL;
+ 	}
+ 
+diff --git a/src/glamo-dri2.c b/src/glamo-dri2.c
+index 856eb8f..bb84358 100644
+--- a/src/glamo-dri2.c
++++ b/src/glamo-dri2.c
+@@ -103,13 +103,13 @@ static DRI2BufferPtr glamoCreateBuffer(DrawablePtr drawable,
+ 	struct glamo_exa_pixmap_priv *driver_priv;
+ 	int r;
+ 
+-	buffer = xcalloc(1, sizeof(*buffer));
++	buffer = calloc(1, sizeof(*buffer));
+ 	if (buffer == NULL) {
+ 		return NULL;
+ 	}
+-	private = xcalloc(1, sizeof(*private));
++	private = calloc(1, sizeof(*private));
+ 	if (private == NULL) {
+-		xfree(buffer);
++		free(buffer);
+ 		return NULL;
+ 	}
+ 
+@@ -130,8 +130,8 @@ static DRI2BufferPtr glamoCreateBuffer(DrawablePtr drawable,
+ 	exaMoveInPixmap(pixmap);
+ 	driver_priv = exaGetPixmapDriverPrivate(pixmap);
+ 	if ( !driver_priv ) {
+-		xfree(buffer);
+-		xfree(private);
++		free(buffer);
++		free(private);
+ 		return NULL;
+ 	}
+ 	r = glamo_gem_name_buffer(driver_priv->bo, &buffer->name);
+@@ -139,8 +139,8 @@ static DRI2BufferPtr glamoCreateBuffer(DrawablePtr drawable,
+ 		xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
+ 		           "Couldn't name buffer: %d %s\n",
+ 		           r, strerror(r));
+-		xfree(buffer);
+-		xfree(private);
++		free(buffer);
++		free(private);
+ 		return NULL;
+ 	}
+ 	buffer->attachment = attachment;
+@@ -166,11 +166,11 @@ static DRI2BufferPtr glamoCreateBuffers(DrawablePtr drawable,
+ 	DRI2BufferPtr buffers;
+ 	struct glamo_dri2_buffer_priv *privates;
+ 
+-	buffers = xcalloc(count, sizeof *buffers);
++	buffers = calloc(count, sizeof *buffers);
+ 	if ( buffers == NULL ) return NULL;
+-	privates = xcalloc(count, sizeof *privates);
++	privates = calloc(count, sizeof *privates);
+ 	if ( privates == NULL ) {
+-		xfree(buffers);
++		free(buffers);
+ 		return NULL;
+ 	}
+ 
+@@ -199,8 +199,8 @@ static DRI2BufferPtr glamoCreateBuffers(DrawablePtr drawable,
+ 		exaMoveInPixmap(pixmap);
+ 		driver_priv = exaGetPixmapDriverPrivate(pixmap);
+ 		if ( !driver_priv ) {
+-			xfree(buffers);
+-			xfree(privates);
++			free(buffers);
++			free(privates);
+ 			return NULL;
+ 		}
+ 		r = glamo_gem_name_buffer(driver_priv->bo, &buffers[i].name);
+@@ -208,8 +208,8 @@ static DRI2BufferPtr glamoCreateBuffers(DrawablePtr drawable,
+ 			xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
+ 			           "Couldn't name buffer: %d %s\n",
+ 			           r, strerror(r));
+-			xfree(buffers);
+-			xfree(privates);
++			free(buffers);
++			free(privates);
+ 			return NULL;
+ 		}
+ 		buffers[i].attachment = attachments[i];
+@@ -240,7 +240,7 @@ static void glamoDestroyBuffer(DrawablePtr pDraw,
+ 	pScreen->DestroyPixmap(private->pixmap);
+ 
+ 	if ( buffer ) {
+-		xfree(buffer->driverPrivate);
++		free(buffer->driverPrivate);
+ 	}
+ }
+ 
+@@ -259,8 +259,8 @@ static void glamoDestroyBuffers(DrawablePtr pDraw,
+ 	}
+ 
+ 	if ( buffers ) {
+-		xfree(buffers[0].driverPrivate);
+-		xfree(buffers);
++		free(buffers[0].driverPrivate);
++		free(buffers);
+ 	}
+ }
+ 
+diff --git a/src/glamo-driver.c b/src/glamo-driver.c
+index 283825e..a9005b9 100644
+--- a/src/glamo-driver.c
++++ b/src/glamo-driver.c
+@@ -195,7 +195,7 @@ GlamoFreeRec(ScrnInfoPtr pScrn)
+ {
+ 	if (pScrn->driverPrivate == NULL)
+ 		return;
+-	xfree(pScrn->driverPrivate);
++	free(pScrn->driverPrivate);
+ 	pScrn->driverPrivate = NULL;
+ }
+ 
+@@ -398,7 +398,7 @@ GlamoProbe(DriverPtr drv, int flags)
+ 	foundScreen = GlamoFbdevProbe(drv, devSections, numDevSections);
+ #endif  /* ENABLE_KMS */
+ 
+-	xfree(devSections);
++	free(devSections);
+ 	TRACE("probe done");
+ 	return foundScreen;
+ }
+@@ -487,7 +487,7 @@ GlamoPreInit(ScrnInfoPtr pScrn, int flags)
+ 
+     /* handle options */
+     xf86CollectOptions(pScrn, NULL);
+-    if (!(pGlamo->Options = xalloc(sizeof(GlamoOptions))))
++    if (!(pGlamo->Options = malloc(sizeof(GlamoOptions))))
+         return FALSE;
+     memcpy(pGlamo->Options, GlamoOptions, sizeof(GlamoOptions));
+     xf86ProcessOptions(pScrn->scrnIndex, pGlamo->pEnt->device->options, pGlamo->Options);
+@@ -667,7 +667,7 @@ GlamoCloseScreen(int scrnIndex, ScreenPtr pScreen)
+     GlamoUnmapMMIO(pScrn);
+ 
+     if (pGlamo->colormap) {
+-        xfree(pGlamo->colormap);
++        free(pGlamo->colormap);
+         pGlamo->colormap = NULL;
+     }
+ 
+@@ -860,10 +860,10 @@ GlamoLoadColormap(ScrnInfoPtr pScrn, int numColors, int *indices,
+     ErrorF("%s:%s[%d]\n", __FILE__, __func__, __LINE__);
+ 
+     if (pGlamo->colormap) {
+-        xfree (pGlamo->colormap);
++        free (pGlamo->colormap);
+     }
+ 
+-    pGlamo->colormap = xalloc (sizeof(uint16_t) * numColors);
++    pGlamo->colormap = malloc (sizeof(uint16_t) * numColors);
+ 
+     for (i = 0; i < numColors; ++i) {
+         pGlamo->colormap[i] =
+diff --git a/src/glamo-kms-crtc.c b/src/glamo-kms-crtc.c
+index 4df6b87..4a294da 100644
+--- a/src/glamo-kms-crtc.c
++++ b/src/glamo-kms-crtc.c
+@@ -291,7 +291,7 @@ static void crtc_destroy(xf86CrtcPtr crtc)
+ 	struct crtc_private *crtcp = crtc->driver_private;
+ 
+ 	drmModeFreeCrtc(crtcp->drm_crtc);
+-	xfree(crtcp);
++	free(crtcp);
+ }
+ 
+ 
+@@ -353,7 +353,7 @@ void crtc_init(ScrnInfoPtr pScrn)
+ 		if (crtc == NULL)
+ 		    goto out;
+ 
+-		crtcp = xcalloc(1, sizeof(struct crtc_private));
++		crtcp = calloc(1, sizeof(struct crtc_private));
+ 		if (!crtcp) {
+ 		    xf86CrtcDestroy(crtc);
+ 		    goto out;
+diff --git a/src/glamo-kms-exa.c b/src/glamo-kms-exa.c
+index 6f57918..af48703 100644
+--- a/src/glamo-kms-exa.c
++++ b/src/glamo-kms-exa.c
+@@ -299,7 +299,7 @@ static void *GlamoKMSExaCreatePixmap(ScreenPtr screen, int size, int align)
+ 	GlamoPtr pGlamo = GlamoPTR(pScrn);
+ 	struct glamo_exa_pixmap_priv *new_priv;
+ 
+-	new_priv = xcalloc(1, sizeof(struct glamo_exa_pixmap_priv));
++	new_priv = calloc(1, sizeof(struct glamo_exa_pixmap_priv));
+ 	if (!new_priv)
+ 		return NULL;
+ 
+@@ -311,7 +311,7 @@ static void *GlamoKMSExaCreatePixmap(ScreenPtr screen, int size, int align)
+ 	new_priv->bo = glamo_bo_open(pGlamo->bufmgr, 0, size, align,
+ 	                             GLAMO_GEM_DOMAIN_VRAM, 0);
+ 	if (!new_priv->bo) {
+-		xfree(new_priv);
++		free(new_priv);
+ 		xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
+ 		           "Failed to create pixmap\n");
+ 		return NULL;
+@@ -342,7 +342,7 @@ static void GlamoKMSExaDestroyPixmap(ScreenPtr pScreen, void *driverPriv)
+ 	if (driver_priv->bo)
+ 		glamo_bo_unref(driver_priv->bo);
+ 
+-	xfree(driver_priv);
++	free(driver_priv);
+ }
+ 
+ 
+@@ -588,7 +588,7 @@ void GlamoKMSExaInit(ScrnInfoPtr pScrn)
+ 	} else {
+ 		xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
+ 			"Failed to initialize EXA acceleration\n");
+-		xfree(pGlamo->exa);
++		free(pGlamo->exa);
+ 		pGlamo->exa = NULL;
+ 	}
+ }
+diff --git a/src/glamo-kms-output.c b/src/glamo-kms-output.c
+index 1f67eb0..89294ec 100644
+--- a/src/glamo-kms-output.c
++++ b/src/glamo-kms-output.c
+@@ -148,7 +148,7 @@ static DisplayModePtr get_modes(xf86OutputPtr output)
+ 	for (i = 0; i < drm_connector->count_modes; i++) {
+ 		drm_mode = &drm_connector->modes[i];
+ 		if (drm_mode) {
+-			mode = xcalloc(1, sizeof(DisplayModeRec));
++			mode = calloc(1, sizeof(DisplayModeRec));
+ 			if (!mode)
+ 				continue;
+ 			mode->type = 0;
+diff --git a/src/glamo-output.c b/src/glamo-output.c
+index 60ea902..10a0f8e 100644
+--- a/src/glamo-output.c
++++ b/src/glamo-output.c
+@@ -263,7 +263,7 @@ static void GlamoOutputDestroy(xf86OutputPtr output) {
+     GlamoOutputPtr pGlamoOutput = output->driver_private;
+     while (pGlamoOutput->modes)
+         xf86DeleteMode(&pGlamoOutput->modes, pGlamoOutput->modes);
+-    xfree(pGlamoOutput);
++    free(pGlamoOutput);
+ }
+ 
+ static DisplayModePtr GlamoOutputGetModes(xf86OutputPtr output) {
+-- 
+1.7.1
+
