@@ -27,4 +27,4 @@ do_install_append() {
 FILES_${PN} += "${datadir}/hal /lib/udev"
 SRC_URI[archive.md5sum] = "b7a4d2f11637ee3fcf432e044b1d017f"
 SRC_URI[archive.sha256sum] = "5f46fdef095a6e44a69e0f0b57c7d665224b26d990d006611236d8332e85b105"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
