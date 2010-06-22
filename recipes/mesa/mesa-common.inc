@@ -4,7 +4,7 @@ DESCRIPTION = "An open source implementation of the OpenGL spec"
 HOMEPAGE = "http://mesa3d.org"
 LICENSE = "MIT"
 
-INC_PR = "r8"
+INC_PR = "r9"
 PE = "2"
 
 PROTO_DEPS = "xf86driproto glproto"
@@ -47,15 +47,12 @@ FILES_libosmesa-dev = "${libdir}/libOSMesa.* ${includedir}/osmesa.h"
 FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
 FILES_libegl-dbg += "${libdir}/egl/.debug/*"
 
-do_stage() {
-        autotools_stage_all
-		install -d ${STAGING_INCDIR}/GL/	
-		cp -pPr ${S}/include/GL/internal* ${STAGING_INCDIR}/GL/
-}
-
+NATIVE_INSTALL_WORKS = "1"
 do_install_append () {
     install -d ${D}/${bindir}
     for i in glxdemo glxgears glxheads glxinfo; do 
         install -m 0755 ${S}/progs/xdemos/${i} ${D}/${bindir}
     done
+    install -d ${D}/${includedir}/GL
+    cp -pPr ${S}/include/GL/internal* ${D}/${includedir}/GL
 }
