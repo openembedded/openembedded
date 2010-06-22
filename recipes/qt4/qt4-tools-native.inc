@@ -15,6 +15,9 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
            file://linux.conf"
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
+# Suitable for qt4 tools which should not interfere with the system's qt libraries.
+LINKSTYLE = "-static"
+
 EXTRA_OECONF = "-prefix ${prefix} \
                 -L ${STAGING_LIBDIR_NATIVE} \
                 -I ${STAGING_INCDIR_NATIVE} \
@@ -25,7 +28,7 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -no-exceptions  \
                 -no-nas-sound \
                 -no-nis \
-                -verbose -release -static \
+                -verbose -release ${LINKSTYLE} \
                 -qt3support"
 
 # yank default -e, otherwise we get the following error:
