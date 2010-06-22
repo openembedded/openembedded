@@ -11,7 +11,7 @@ DEPENDS = "ffmpeg gtk+ libtool swig swig-native python jpeg bzip2 zlib libpng ti
 SRC_URI = "svn://code.ros.org/svn/opencv/trunk;module=opencv;proto=https \
 "
 
-SRCREV = "3217"
+SRCREV = "3241"
 PV = "2.1.0+svnr${SRCPV}"
 PR = "r1"
 
@@ -66,4 +66,5 @@ RDEPENDS_python-opencv = "python-core"
 
 do_install_append() {
 	cp ${S}/include/opencv/*.h ${D}${includedir}/opencv/
+	sed -i '/blobtrack/d' ${D}${includedir}/opencv/cvaux.h
 }
