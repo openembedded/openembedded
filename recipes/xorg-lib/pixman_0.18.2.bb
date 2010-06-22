@@ -1,5 +1,5 @@
 require pixman.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "2"
@@ -15,6 +15,8 @@ SRC_URI += "\
            file://0005-ARM-added-NEON-optimizations-for-fetch-store-r5g6b5-.patch\
            file://0006-A-copy-paste-version-of-16bpp-bilinear-scanline-fetc.patch\
            file://0007-ARM-added-missing-cache-preload.patch\
+           file://565-over-neon.patch \
+           file://neon-reverse-u.patch \
 "
 
 NEON = " --disable-arm-neon "
