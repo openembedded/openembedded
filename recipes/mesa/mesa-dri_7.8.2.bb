@@ -10,12 +10,12 @@ SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaLib-${PV}.tar.bz2;name=a
 	   file://fix-progs-makefile.patch \
 	   file://glamo.patch \
           "
-SRC_URI[archive.md5sum] = "25ec15f8e41fde6d206118cc786dbac4"
-SRC_URI[archive.sha256sum] = "b0b46e5abfd75db44501e308125fa92bcf1c91d91e97a043a3b1764cfa0907fa"
-SRC_URI[demos.md5sum] = "9ef47f911869657c6bf2f43ebce86b61"
-SRC_URI[demos.sha256sum] = "e9f20b9345240064ac35ec914ebce63322a96d3f7c566963791d0daf7e7a93e5"
+SRC_URI[archive.md5sum] = "6be2d343a0089bfd395ce02aaf8adb57"
+SRC_URI[archive.sha256sum] = "505bf418dceba05837f4ea1b1972b9620c35f8cb94bc4d1e6d573c15f562576d"
+SRC_URI[demos.md5sum] = "757d9e2e06f48b1a52848be9b0307ced"
+SRC_URI[demos.sha256sum] = "ea7b9ebfb7a80de2b275c0c9124c8a505382ec48411a2794ab82542f9885ac3c"
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.0"
 
 # most of our targets do not have DRI so will use mesa-xlib
 DEFAULT_PREFERENCE = "-1"
