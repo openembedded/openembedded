@@ -4,11 +4,17 @@ DESCRIPTION = "An open source implementation of the OpenGL spec"
 HOMEPAGE = "http://mesa3d.org"
 LICENSE = "MIT"
 
-INC_PR = "r7"
+INC_PR = "r8"
 PE = "2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2;name=archive \
-           ${SOURCEFORGE_MIRROR}/mesa3d/MesaDemos-${PV}.tar.bz2;name=demos "
+PROTO_DEPS = "xf86driproto glproto"
+LIB_DEPS = "virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
+
+DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
+
+SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaLib-${PV}.tar.bz2;name=archive \
+           ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaDemos-${PV}.tar.bz2;name=demos \
+          "
 S = "${WORKDIR}/Mesa-${PV}"
 
 PROVIDES = "virtual/libgl"
@@ -25,8 +31,10 @@ inherit glx-use-tls
 # Package contents vary according to ${MACHINE_DRI_MODULES}.
 PACKAGE_ARCH = "${MACHINE}"
 
-PACKAGES =+ "libegl libegl-dev libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev"
-FILES_libegl = "${libdir}/libEGL.so.*"
+PACKAGES =+ "libegl libegl-dev libegl-dbg libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev ${PN}-xprogs"
+FILES_${PN} += "${libdir}/dri/*.so"
+FILES_${PN}-xprogs = "${bindir}/glxdemo ${bindir}/glxgears ${bindir}/glxheads ${bindir}/glxinfo"
+FILES_libegl = "${libdir}/libEGL.so.* ${libdir}/egl/*.so"
 FILES_libgl = "${libdir}/libGL.so.*"
 FILES_libglu = "${libdir}/libGLU.so.*"
 FILES_libosmesa = "${libdir}/libOSMesa.so.*"
@@ -36,6 +44,8 @@ FILES_libgl-dev = "${libdir}/libGL.* ${includedir}/GL"
 FILES_libglu-dev = "${libdir}/libGLU.* ${includedir}/GL/glu*.h"
 FILES_libosmesa-dev = "${libdir}/libOSMesa.* ${includedir}/osmesa.h"
 
+FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
+FILES_libegl-dbg += "${libdir}/egl/.debug/*"
 
 do_stage() {
         autotools_stage_all
