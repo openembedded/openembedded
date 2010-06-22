@@ -5,8 +5,12 @@ DEPENDS = "opencv gstreamer ffmpeg"
 
 inherit autotools
 
-PV = "0.10.0.1+gitr${SRCPV}"
-SRCREV = "4514ee1608f001e85f264001355a76b5607b2144"
+CFLAGS += " -I${STAGING_INCDIR}/opencv"
+
+PE = "1"
+PV = "0.10.0.1"
+PR_append = "+gitr${SRCPV}"
+SRCREV = "c767c38c847b0ee32b0a"
 SRC_URI = "git://github.com/Elleo/gst-opencv.git;protocol=git"
 
 S = "${WORKDIR}/git"
