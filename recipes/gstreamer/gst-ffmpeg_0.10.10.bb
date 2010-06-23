@@ -7,11 +7,12 @@ DEPENDS = "ffmpeg gstreamer gst-plugins-base zlib"
 
 inherit autotools pkgconfig
 
-SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2;name=archive \
+SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
            file://lower-rank.diff \
 "
-SRC_URI[archive.md5sum] = "447292deff5f3748444e6a5fba41da29"
-SRC_URI[archive.sha256sum] = "697114483444a0a469028857a1d58145c99e6f5d2cd7edd8cb04cdc3fc72ad94"
+
+SRC_URI[md5sum] = "447292deff5f3748444e6a5fba41da29"
+SRC_URI[sha256sum] = "697114483444a0a469028857a1d58145c99e6f5d2cd7edd8cb04cdc3fc72ad94"
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
 FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
@@ -25,4 +26,5 @@ PATH_prepend="${CROSS_DIR}/${TARGET_SYS}/bin:"
 
 # Hack to get STAGING_LIBDIR into the linker path when building ffmpeg
 CC = "${CCACHE} ${HOST_PREFIX}gcc ${TARGET_CC_ARCH} -L${STAGING_LIBDIR}"
+
 
