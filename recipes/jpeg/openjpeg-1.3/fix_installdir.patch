@@ -1,0 +1,19 @@
+* status: pending
+* origin:
+  http://groups.google.com/group/openjpeg/browse_thread/thread/4cd7b53fbaab2822
+* comment: slightly modified patch by Patrick Reynolds, borrowed from
+  the thread above. Seems that it's not in upstream yet.
+  Had to modify header location from /usr/include/openjpeg/openjpeg.h to
+  /usr/include/openjpeg.h , as it's the only one header file anyway and
+  most of its users expect #include <openjpeg.h> to work.
+
+Index: libopenjpeg/CMakeLists.txt
+===================================================================
+--- a/libopenjpeg/CMakeLists.txt	(revision 541)
++++ b/libopenjpeg/CMakeLists.txt	(working copy)
+@@ -41,4 +41,4 @@
+ 
+ # Install includes files
+ INSTALL(FILES openjpeg.h
+-	DESTINATION ${INCLUDE_INSTALL_DIR}/openjpeg)
++	DESTINATION include)
