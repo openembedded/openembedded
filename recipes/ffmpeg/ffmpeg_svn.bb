@@ -1,10 +1,11 @@
 require ffmpeg.inc
 
-DEPENDS += "schroedinger libgsm"
+DEPENDS += "schroedinger libgsm libvpx"
 
-SRCREV = "22521"
+# When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
+SRCREV = "23733"
 
-PV = "0.5.0+${PR}+svnr${SRCPV}"
+PV = "0.6+${PR}+svnr${SRCPV}"
 PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE = "-1"
@@ -35,15 +36,14 @@ EXTRA_OECONF = " \
         \
         --enable-x11grab \
         --enable-libfaac \
-        --enable-libfaad \
-        --enable-libfaadbin \
         --enable-libgsm \
         --enable-libmp3lame \
         --enable-libschroedinger \
         --enable-libtheora  \
         --enable-libvorbis \
+        --enable-libvpx \
         --arch=${TARGET_ARCH} \
-	--target-os="linux" \
+        --target-os="linux" \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-ldflags="${TARGET_LDFLAGS}" \
