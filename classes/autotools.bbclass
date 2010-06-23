@@ -1,7 +1,7 @@
 # use autotools_stage_all for native packages
 AUTOTOOLS_NATIVE_STAGE_INSTALL = "1"
 
-def autotools_dep_prepend(d):
+def autotools_deps(d):
 	if bb.data.getVar('INHIBIT_AUTOTOOLS_DEPS', d, 1):
 		return ''
 
@@ -24,9 +24,9 @@ def autotools_dep_prepend(d):
 
 EXTRA_OEMAKE = ""
 
-DEPENDS_prepend = "${@autotools_dep_prepend(d)}"
-DEPENDS_virtclass-native_prepend = "${@autotools_dep_prepend(d)}"
-DEPENDS_virtclass-nativesdk_prepend = "${@autotools_dep_prepend(d)}"
+DEPENDS_prepend = "${@autotools_deps(d)}"
+DEPENDS_virtclass-native_prepend = "${@autotools_deps(d)}"
+DEPENDS_virtclass-nativesdk_prepend = "${@autotools_deps(d)}"
 
 inherit siteinfo
 

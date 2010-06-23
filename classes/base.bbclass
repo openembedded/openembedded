@@ -57,7 +57,7 @@ oe_runmake() {
 	${MAKE} ${EXTRA_OEMAKE} "$@" || die "oe_runmake failed"
 }
 
-def base_dep_prepend(d):
+def base_deps(d):
 	#
 	# Ideally this will check a flag so we will operate properly in
 	# the case where host == build == target, for now we don't work in
@@ -83,9 +83,9 @@ def base_dep_prepend(d):
 			deps += " linux-libc-headers-native"
 	return deps
 
-DEPENDS_prepend="${@base_dep_prepend(d)} "
-DEPENDS_virtclass-native_prepend="${@base_dep_prepend(d)} "
-DEPENDS_virtclass-nativesdk_prepend="${@base_dep_prepend(d)} "
+DEPENDS_prepend="${@base_deps(d)} "
+DEPENDS_virtclass-native_prepend="${@base_deps(d)} "
+DEPENDS_virtclass-nativesdk_prepend="${@base_deps(d)} "
 
 
 SCENEFUNCS += "base_scenefunction"
