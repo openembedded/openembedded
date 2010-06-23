@@ -1,4 +1,4 @@
-LICENSE = "GPLv3 LGPLv3"
+LICENSE = "BSD"
 PV = "0.1.0+svnr${SRCPV}"
 
 PR = "r4"
