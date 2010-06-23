@@ -2,7 +2,7 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
+DEPENDS = "libvpx live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
 	   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
 RDEPENDS_${PN} = "mplayer-common"
@@ -15,6 +15,9 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://fix-addrinfo.patch;maxrev=30302 \
        file://fix-avconfig.diff;maxrev=30376 \
 	   file://fix-emu_qtx_api.diff;maxrev=30165 \
+       file://codecs_conf-VP8.diff;striplevel=0 \
+       file://demux_mkv-V_VP8__webm_doctype.diff;striplevel=0 \
+       file://configure-libvpx_test.diff \
 "
 
 SRCREV = "30165"
@@ -40,7 +43,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc3+svnr${SRCPV}"
-PR = "r21"
+PR = "r22"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_shr = "1"
@@ -173,6 +176,7 @@ EXTRA_OECONF = " \
 	--disable-sunaudio \
 	--disable-win32waveout \
 	--enable-select \
+	--enable-libvpx-vp8-lavc \
 	\
 	--extra-libs=' -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock -lliveMedia -lstdc++' \
     --enable-protocol='file_protocol pipe_protocol http_protocol rtmp_protocol tcp_protocol udp_protocol' \

@@ -1,0 +1,72 @@
+--- /tmp/configure	2010-06-23 12:12:45.000000000 +0200
++++ trunk/configure	2010-06-23 12:13:53.000000000 +0200
+@@ -302,6 +302,7 @@
+   --disable-libdirac-lavc   disable Dirac in libavcodec [autodetect]
+   --disable-libschroedinger-lavc   disable Dirac in libavcodec (Schroedinger
+                                    decoder) [autodetect]
++  --disable-libvpx-vp8-lavc disable VP8 in libavcodec [autodetect]
+   --disable-libnut          disable libnut [autodetect]
+   --disable-libavutil_a     disable static libavutil [autodetect]
+   --disable-libavcodec_a    disable static libavcodec [autodetect]
+@@ -689,6 +690,7 @@
+ _x264_lavc=auto
+ _libdirac_lavc=auto
+ _libschroedinger_lavc=auto
++_libvpx_vp8_lavc=auto
+ _libnut=auto
+ _lirc=auto
+ _lircc=auto
+@@ -1142,6 +1144,8 @@
+   --disable-libdirac-lavc)  _libdirac_lavc=no   ;;
+   --enable-libschroedinger-lavc)   _libschroedinger_lavc=yes  ;;
+   --disable-libschroedinger-lavc)  _libschroedinger_lavc=no   ;;
++  --enable-libvpx-vp8-lavc)   _libvpx_vp8_lavc=yes  ;;
++  --disable-libvpx-vp8-lavc)  _libvpx_vp8_lavc=no   ;;
+   --enable-libnut)	_libnut=yes	;;
+   --disable-libnut)	_libnut=no	;;
+   --enable-libavutil_a)		_libavutil_a=yes	;;
+@@ -7425,6 +7429,44 @@
+ fi
+ echores "$_libschroedinger_lavc"
+ 
++echocheck "libvpx_vp8"
++if test "$_libvpx_vp8_lavc" = auto; then
++  _libvpx_vp8_lavc=no
++  if test "$_libavcodec_a" != yes; then
++    res_comment="libavcodec (static) is required by libvpx_vp8, sorry"
++  else
++    cat > $TMPC << EOF
++#define HAVE_STDINT_H 1
++#include <vpx_decoder.h>
++#include <vp8dx.h>
++#include <vpx_encoder.h>
++#include <vp8cx.h>
++int main(void)
++{
++    vpx_codec_dec_init(NULL,&vpx_codec_vp8_dx_algo,NULL,0);
++    vpx_codec_enc_init(NULL,&vpx_codec_vp8_cx_algo,NULL,0);
++    return 0;
++}
++EOF
++    _inc_vpx_vp8=
++    _ld_vpx_vp8=-lvpx
++    cc_check $_inc_vpx_vp8 $_ld_vpx_vp8        &&
++    _libvpx_vp8_lavc=yes                       &&
++    extra_cflags="$extra_cflags $_inc_vpx_vp8" &&
++    extra_ldflags="$extra_ldflags $_ld_vpx_vp8"
++  fi
++fi
++if test "$_libvpx_vp8_lavc" = yes ; then
++  def_libvpx_vp8_lavc='#define CONFIG_LIBVPX_VP8 1'
++  _libavencoders="$_libavencoders LIBVPX_VP8_ENCODER"
++  _libavdecoders="$_libavdecoders LIBVPX_VP8_DECODER"
++  codecmodules="libvpx_vp8 $codecmodules"
++else
++  def_libvpx_vp8_lavc='#define CONFIG_LIBVPX_VP8 0'
++  nocodecmodules="libvpx_vp8 $nocodecmodules"
++fi
++echores "$_libvpx_vp8_lavc"
++
+ echocheck "libnut"
+ if test "$_libnut" = auto ; then
+   cat > $TMPC << EOF
