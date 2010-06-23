@@ -1,0 +1,90 @@
+Patch from upstream darcs repository, see this bugzilla entry for details:
+http://bugs.ghostscript.com/show_bug.cgi?id=690932
+
+Wed Jun 16 10:29:54 UTC 2010  tor@ghostscript.com
+  * Do runtime endianness test instead of relying on unreliable preprocessor macros.
+diff -rN -u old-mupdf/apps/x11_image.c new-mupdf-1/apps/x11_image.c
+--- old-mupdf/apps/x11_image.c	2010-06-16 12:33:35.000000000 +0000
++++ new-mupdf-1/apps/x11_image.c	2010-06-16 12:33:35.000000000 +0000
+@@ -10,7 +10,7 @@
+ # define _XOPEN_SOURCE 1
+ #endif
+ 
+-#include <fitz.h>
++#include "fitz.h"
+ 
+ #include <X11/Xlib.h>
+ #include <X11/Xutil.h>
+@@ -205,11 +205,10 @@
+ 	unsigned long rs, gs, bs;
+ 
+ 	byteorder = ImageByteOrder(info.display);
+-#if BYTE_ORDER == BIG_ENDIAN
+-	byterev = byteorder != MSBFirst;
+-#else
+-	byterev = byteorder != LSBFirst;
+-#endif
++	if (fz_isbigendian())
++		byterev = byteorder != MSBFirst;
++	else
++		byterev = byteorder != LSBFirst;
+ 
+ 	rm = info.visual.red_mask;
+ 	gm = info.visual.green_mask;
+diff -rN -u old-mupdf/draw/imageunpack.c new-mupdf-1/draw/imageunpack.c
+--- old-mupdf/draw/imageunpack.c	2010-06-16 12:33:35.000000000 +0000
++++ new-mupdf-1/draw/imageunpack.c	2010-06-16 12:33:36.000000000 +0000
+@@ -31,6 +31,12 @@
+ 		justinvert &= min[i] == 255 && max[i] == 0 && sub[i] == -255;
+ 	}
+ 
++	unsigned mask;
++	if (fz_isbigendian())
++		mask = 0x00ff00ff;
++	else
++		mask = 0xff00ff00;
++
+ 	if (!needed)
+ 		return;
+ 
+@@ -51,11 +57,7 @@
+ 				wh = wh - 2 * hwh;
+ 				while(hwh--) {
+ 					unsigned in = *wp;
+-#if BYTE_ORDER == LITTLE_ENDIAN
+-					unsigned out = in ^ 0xff00ff00;
+-#else
+-					unsigned out = in ^ 0x00ff00ff;
+-#endif
++					unsigned out = in ^ mask;
+ 					*wp++ = out;
+ 				}
+ 				p = (byte *)wp;
+diff -rN -u old-mupdf/fitz/base_cpudep.c new-mupdf-1/fitz/base_cpudep.c
+--- old-mupdf/fitz/base_cpudep.c	2010-06-16 12:33:35.000000000 +0000
++++ new-mupdf-1/fitz/base_cpudep.c	2010-06-16 12:33:36.000000000 +0000
+@@ -10,6 +10,12 @@
+ /* global run-time constant */
+ unsigned fz_cpuflags = 0;
+ 
++int fz_isbigendian(void)
++{
++	static const int one = 1;
++	return *(char*)&one == 0;
++}
++
+ #ifndef HAVE_CPUDEP
+ 
+ void fz_cpudetect(void)
+diff -rN -u old-mupdf/fitz/fitz_base.h new-mupdf-1/fitz/fitz_base.h
+--- old-mupdf/fitz/fitz_base.h	2010-06-16 12:33:35.000000000 +0000
++++ new-mupdf-1/fitz/fitz_base.h	2010-06-16 12:33:36.000000000 +0000
+@@ -86,6 +86,8 @@
+ /* treat as constant! */
+ extern unsigned fz_cpuflags;
+ 
++int fz_isbigendian(void);
++
+ /*
+  * Base Fitz runtime.
+  */
