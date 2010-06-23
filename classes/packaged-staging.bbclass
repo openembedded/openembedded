@@ -12,7 +12,7 @@
 # bitbake.conf set PSTAGING_ACTIVE = "0", this class sets to "1" if we're active
 #
 PSTAGE_PKGVERSION = "${PV}-${PR}"
-PSTAGE_PKGARCH    = "${BUILD_SYS}"
+PSTAGE_PKGARCH    = "${PACKAGE_ARCH}-${HOST_OS}"
 PSTAGE_EXTRAPATH  ?= "/${OELAYOUT_ABI}/${DISTRO_PR}/"
 PSTAGE_PKGPATH    = "${DISTRO}${PSTAGE_EXTRAPATH}"
 PSTAGE_PKGPN      = "${@bb.data.expand('staging-${PN}-${MULTIMACH_ARCH}${TARGET_VENDOR}-${TARGET_OS}', d).replace('_', '-')}"
@@ -27,6 +27,12 @@ PSTAGE_NATIVEDEPENDS = "\
     "
 
 BB_STAMP_WHITELIST = "${PSTAGE_NATIVEDEPENDS}"
+
+python __anonymous() {
+    # We need PSTAGE_PKGARCH to contain information about the target.
+    if bb.data.inherits_class('cross', d):
+        bb.data.setVar('PSTAGE_PKGARCH', "${HOST_SYS}-${PACKAGE_ARCH}-${TARGET_OS}", d)
+}
 
 python () {
     pstage_allowed = True
@@ -148,14 +154,13 @@ staging_helper () {
 	# Assemble appropriate opkg.conf
 	conffile=${PSTAGE_MACHCONFIG}
 	mkdir -p ${PSTAGE_WORKDIR}/pstaging_lists
+	arch="${PSTAGE_PKGARCH}"
 	if [ ! -e $conffile ]; then
-		ipkgarchs="${BUILD_SYS}"
-		priority=1
-		for arch in $ipkgarchs; do
-			echo "arch $arch $priority" >> $conffile
-			priority=$(expr $priority + 5)
-		done
+		echo "arch $arch 1" > $conffile
 		echo "dest root /" >> $conffile
+	elif [ `grep -c " $arch " $conffile` -eq 0 ]; then
+		priority=$(expr `grep -cE "^arch" $conffile` + 1)
+		sed -i -e "/dest/iarch $arch $priority" $conffile
 	fi
 	if [ ! -e ${TMPDIR}${libdir_native}/opkg/info/ ]; then
 		mkdir -p ${TMPDIR}${libdir_native}/opkg/info/
