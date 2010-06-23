@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "firefox gnome-mplayer"
 
 PV = "0.9.9.2+${SRCPV}"
 SRCREV = "387"
-PR = "r1"
+PR = "r2"
 
 inherit autotools
 
