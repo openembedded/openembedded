@@ -14,6 +14,7 @@ DEPENDS_virtclass-native = "glib-2.0-native cairo-native"
 BBCLASSEXTEND = "native"
 
 PACKAGES_DYNAMIC = "pango-module-*"
+PACKAGES_DYNAMIC_virtclass-native = ""
 
 RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc" 
 
