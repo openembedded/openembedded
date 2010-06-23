@@ -64,7 +64,7 @@ fi
 if [ "$ACTION" = "remove" ] && [ -x "$UMOUNT" ] && [ -n "$DEVNAME" ]; then
 	for mnt in `cat /proc/mounts | grep "$DEVNAME" | cut -f 2 -d " " `
 	do
-		$UMOUNT $mnt
+		$UMOUNT -l $mnt
 	done
 	
 	# Remove empty directories from auto-mounter
