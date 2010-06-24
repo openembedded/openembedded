@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/parted/parted.html"
 LICENSE = "GPLv3"
 SECTION = "console/tools"
 DEPENDS = "readline util-linux-ng"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${GNU_MIRROR}/parted/parted-${PV}.tar.gz \
 	   file://use_llseek_syscall.patch \
@@ -14,8 +14,8 @@ EXTRA_OECONF = "--disable-Werror ac_cv_func_calloc_0_nonnull=yes"
 
 inherit autotools pkgconfig
 
-do_stage() {
-	autotools_stage_all
+do_configure() {
+	oe_runconf
 }
 
 SRC_URI[md5sum] = "0d494591731082ec57cc18627728124a"
