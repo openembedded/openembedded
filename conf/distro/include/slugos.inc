@@ -132,6 +132,7 @@ PREFERRED_PROVIDER_linux-libc-headers			    = "linux-libc-headers"
 # default we will select the standard libraries and permit the use of an
 # override if the user wishes (and has the correct PREFERRED_VERSIONs set).
 PREFERRED_PROVIDER_virtual/libx11		?= "libx11"
+PREFERRED_PROVIDER_virtual/libx11-native        ?= "libx11-native"
 
 # Ensure consistency across all SlugOS builds for the provider of a relational
 # database - use the latest version of the SleepyCat Berkeley database
