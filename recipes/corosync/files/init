@@ -96,7 +96,10 @@ stop() {
 	if [ $do_force = 1 ]; then
 	    echo -n "Escalating... "
 	    killall -KILL corosync
-	    ps | grep /usr/lib/heartbeat | sed "s,^ *,," | cut -f 1 -d ' ' | xargs kill -9
+            pids=`pgrep -f '/usr/lib/heartbeat/*'`
+            if [ -n "$pids" ]; then
+                kill -KILL $pids
+            fi
 	    sleep 5
 
 	    if
