@@ -5,7 +5,6 @@ DESCRIPTION = "X Composite extension library."
 LICENSE= "BSD-X"
 
 DEPENDS += " compositeproto virtual/libx11 libxfixes"
-PROVIDES = "xcomposite"
 
 XORG_PN = "libXcomposite"
 
