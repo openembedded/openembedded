@@ -2,7 +2,7 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "X Display Manager Control Protocol library"
 DEPENDS += "xproto"
-PROVIDES = "xdmcp"
+BBCLASSEXTEND = "native sdk"
 PR = "r1"
 PE = "1"
 
