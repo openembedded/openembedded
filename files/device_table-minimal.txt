@@ -30,7 +30,9 @@
 /dev/urandom	c	644	0	0	1	9	-	-	-
 /dev/ptmx	c	644	0	0	5	2	-	-	-
 
-/dev/input/event 	c	660	0	0	13	64	0	1	8
+# Input stuff
+/dev/input	d	755	0	0	-	-	-	-	-
+/dev/input/event c	660	0	0	13	64	0	1	8
 
 /dev/mmcblk0	b	660	0	6	179	0	-	-	-
 /dev/mmcblk0p	b	660	0	6	179	1	1	1	7
