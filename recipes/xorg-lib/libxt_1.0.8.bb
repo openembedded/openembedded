@@ -2,7 +2,7 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "X11 toolkit intrinsics library"
 DEPENDS += "libsm virtual/libx11 kbproto"
-PROVIDES = "xt"
+BBCLASSEXTEND = "native"
 PE = "1"
 
 XORG_PN = "libXt"

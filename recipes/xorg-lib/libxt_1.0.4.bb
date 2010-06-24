@@ -5,7 +5,7 @@ DESCRIPTION = "X Toolkit Intrinsics"
 PRIORITY = "optional"
 
 DEPENDS += " libsm virtual/libx11 xproto kbproto"
-PROVIDES = "xt"
+BBCLASSEXTEND = "native"
 
 XORG_PN = "libXt"
 
