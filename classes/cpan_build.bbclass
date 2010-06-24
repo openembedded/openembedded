@@ -11,7 +11,7 @@ NATIVE_INSTALL_WORKS = "1"
 # this class, but uses itself as the provider of
 # libmodule-build-perl)
 #
-def cpan_build_dep_prepend(d):
+def cpan_build_deps(d):
 	if bb.data.getVar('CPAN_BUILD_DEPS', d, 1):
 		return ''
 	pn = bb.data.getVar('PN', d, 1)
@@ -19,7 +19,7 @@ def cpan_build_dep_prepend(d):
 		return ''
 	return 'libmodule-build-perl-native '
 
-DEPENDS_prepend = "${@cpan_build_dep_prepend(d)}"
+DEPENDS_prepend = "${@cpan_build_deps(d)}"
 
 cpan_build_do_configure () {
 	if [ ${@is_target(d)} == "yes" ]; then
