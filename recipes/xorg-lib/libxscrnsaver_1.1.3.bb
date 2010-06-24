@@ -3,7 +3,6 @@ require xorg-lib-common.inc
 DESCRIPTION = "X Screen Saver extension library"
 LICENSE = "GPL"
 DEPENDS += "libxext scrnsaverproto"
-PROVIDES = "libxss"
 RREPLACES_${PN} = "libxss"
 PR = "r2"
 PE = "1"
