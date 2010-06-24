@@ -3,6 +3,7 @@ require xorg-lib-common.inc
 DESCRIPTION = "X cursor management library"
 LICENSE= "BSD-X"
 DEPENDS += "libxrender libxfixes"
+BBCLASSEXTEND = "native"
 PR = "r2"
 PE = "1"
 
