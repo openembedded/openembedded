@@ -3,6 +3,7 @@ require xorg-lib-common.inc
 DESCRIPTION = "X11 Inter-Client Exchange library"
 DEPENDS += "xproto xtrans"
 PROVIDES = "ice"
+BBCLASSEXTEND = "native"
 PR = "r1"
 PE = "1"
 
