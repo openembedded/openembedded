@@ -2,7 +2,6 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "FreeType-based font drawing library for X"
 DEPENDS += "libxrender freetype fontconfig"
-PROVIDES = "xft"
 PR = "r0"
 PE = "1"
 
