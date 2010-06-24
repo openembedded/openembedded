@@ -1,7 +1,7 @@
 DESCRIPTION = "Window navigation construction toolkit"
 LICENSE = "LGPL"
 SECTION = "x11/libs"
-DEPENDS = "gtk+ gdk-pixbuf-csource-native"
+DEPENDS = "gtk+ gtk+-native"
 
 inherit gnome
 SRC_URI[archive.md5sum] = "ed79955dabb606ee0e6d112a291005ad"
