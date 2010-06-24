@@ -4,7 +4,6 @@ DESCRIPTION = "X11 font rasterisation library"
 LICENSE= "BSD-X"
 DEPENDS += "freetype fontcacheproto xtrans fontsproto libfontenc"
 BBCLASSEXTEND = "native"
-PROVIDES = "xfont"
 PR = "r2"
 PE = "1"
 

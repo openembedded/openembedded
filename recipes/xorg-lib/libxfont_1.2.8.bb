@@ -8,7 +8,6 @@ SRC_URI += "file://no-scalable-crash.patch"
 
 DEPENDS += " freetype fontcacheproto zlib xproto xtrans fontsproto libfontenc"
 BBCLASSEXTEND = "native"
-PROVIDES = "xfont"
 PE = "1"
 
 XORG_PN = "libXfont"
