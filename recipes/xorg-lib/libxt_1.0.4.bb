@@ -11,7 +11,6 @@ XORG_PN = "libXt"
 
 SRC_URI += "file://pr10970-header-fix.patch"
 
-PR = "r1"
 
 EXTRA_OECONF="--enable-malloc0returnsnull --disable-install-makestrs --disable-xkb"
 
@@ -25,3 +24,4 @@ do_compile() {
 
 SRC_URI[archive.md5sum] = "937735f342c046db239852fec0413f6c"
 SRC_URI[archive.sha256sum] = "ec7088b2ffe8f56c177525283601fb048decaf6f175d9ee5db01e12810a4d345"
+PR = "${INC_PR}.0"

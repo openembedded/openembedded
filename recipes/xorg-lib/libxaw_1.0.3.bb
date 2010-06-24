@@ -2,7 +2,6 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "X Athena Widget Set"
 DEPENDS += "xproto virtual/libx11 libxext xextproto libxt libxmu libxpm libxp printproto libxau"
-PR = "r1"
 PE = "1"
 
 XORG_PN = "libXaw"
@@ -21,3 +20,4 @@ FILES_libxaw8 = "${libdir}/libXaw8.so.8*"
 
 SRC_URI[archive.md5sum] = "ee215536ea78798268ab3a444d10135a"
 SRC_URI[archive.sha256sum] = "45ca55bdac904a07b8118618c65ddb5bf8826e626c4c927e3c2508c58e231514"
+PR = "${INC_PR}.0"

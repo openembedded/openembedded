@@ -2,7 +2,6 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "FreeType-based font drawing library for X"
 DEPENDS += "libxrender freetype fontconfig"
-PR = "r1"
 PE = "1"
 
 SRC_URI += "file://autotools.patch"
@@ -22,3 +21,4 @@ FILES_${PN}-dev = "${includedir} ${libdir}/lib*${SOLIBSDEV} ${libdir}/*.la \
 
 SRC_URI[archive.md5sum] = "254e62a233491e0e1251636536163e20"
 SRC_URI[archive.sha256sum] = "700e9d594b81cad3dfd5fac4a5cfd0c4cf7780c812507ef04eb40139ebf5175e"
+PR = "${INC_PR}.0"

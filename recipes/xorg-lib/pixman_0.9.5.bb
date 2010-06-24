@@ -1,4 +1,5 @@
 require xorg-lib-common.inc
+PR = "${INC_PR}.0"
 
 DESCRIPTION = "Library for lowlevel pixel operations"
 DEPENDS = "virtual/libx11"
