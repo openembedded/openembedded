@@ -2,7 +2,6 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "X11 miscellaneous utility library"
 DEPENDS += "libxt libxext"
-PROVIDES = "xmu"
 PR = "r1"
 PE = "1"
 
