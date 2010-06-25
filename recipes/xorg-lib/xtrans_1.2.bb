@@ -12,4 +12,4 @@ FILESPATHPKG .= ":xtrans-${PV}:xtrans"
 
 ALLOW_EMPTY = "1"
 
-BBCLASSEXTEND = "native sdk"
+BBCLASSEXTEND = "native nativesdk"
