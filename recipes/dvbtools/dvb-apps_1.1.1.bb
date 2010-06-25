@@ -8,7 +8,7 @@ PR = "r1"
 
 S = "${WORKDIR}/linuxtv-dvb-apps-${PV}"
 
-PACKAGES =+ "evtest evtest-dbg \
+PACKAGES =+ "dvb-evtest dvb-evtest-dbg \
              dvbapp-tests dvbapp-tests-dbg \
              dvbdate dvbdate-dbg \
              dvbtraffic dvbtraffic-dbg \
@@ -28,8 +28,8 @@ FILES_${PN} = "${bindir} ${datadir}/dvb"
 FILES_${PN}-doc = ""
 FILES_${PN}-dev = "${includedir}"
 
-FILES_evtest = "${bindir}/evtest"
-FILES_evtest-dbg = "${bindir}/.debug/evtest"
+FILES_dvb-evtest = "${bindir}/evtest"
+FILES_dvb-evtest-dbg = "${bindir}/.debug/evtest"
 
 FILES_dvbapp-tests = "${bindir}/*test* "
 FILES_dvbapp-tests-dbg = "${bindir}/.debug/*test*"
