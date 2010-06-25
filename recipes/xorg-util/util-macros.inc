@@ -5,4 +5,4 @@ INC_PR = "r2"
 PE = "1"
 
 ALLOW_EMPTY = "1"
-BBCLASSEXTEND = "native sdk"
+BBCLASSEXTEND = "native nativesdk"
