@@ -3,6 +3,10 @@ LICENSE = "GPL"
 DEPENDS = "klibc"
 RDEPENDS_${PN} = "kexec-klibc-static"
 
+# The binary itself is not machine-specific
+# but the EXTRA_OECONF overrides have this effect 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
 inherit autotools
 
 # You can create your own *-img.h by doing
