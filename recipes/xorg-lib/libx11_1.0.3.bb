@@ -1,6 +1,6 @@
 require libx11.inc
 LICENSE = "XFree86"
-PR = "r7"
+PR = "${INC_PR}.0"
 
 DEPENDS = "${COMMON_DEPENDS}"
 EXTRA_OECONF += " --without-xcb"

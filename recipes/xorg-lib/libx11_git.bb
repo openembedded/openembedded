@@ -10,3 +10,4 @@ SRC_URI += " file://keysymdef_include.patch \
 "
 
 S = "${WORKDIR}/git"
+PR = "${INC_PR}.0"

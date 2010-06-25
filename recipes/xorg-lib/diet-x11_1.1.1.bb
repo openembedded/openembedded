@@ -8,3 +8,4 @@ SRC_URI += "file://X18NCMSstubs.diff \
             file://fix-utf8-wrong-define.patch \
 	    file://xim.patch \
 	    file://xchar2b.patch"
+PR = "${INC_PR}.0"
