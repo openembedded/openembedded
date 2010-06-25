@@ -8,10 +8,6 @@ DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts fon
 PE = "2"
 PR = "${INC_PR}.1"
 
-# Needs newer mesa-dri, where is D_P = "-1"
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_shr = "1"
-
 SRC_URI += " \
             file://dolt-fix-1.7.0.patch \
             file://randr-support-1.7.0.patch \
