@@ -1,7 +1,7 @@
 DESCRIPTION = "Blackbox Window Manager"
 SECTION = "x11/wm"
 LICENSE = "GPL"
-DEPENDS = "libx11 libxext libxcomposite libxfixes libxdamage libxrender libxinerama libxpm xrandr xft"
+DEPENDS = "libx11 libxext libxcomposite libxfixes libxdamage libxrender libxinerama libxpm xrandr libxft"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/blackboxwm/blackbox-0.70.1.tar.gz \

@@ -1,7 +1,7 @@
 DESCRIPTION = "Automatic sleep/suspend control daemon"
 SECTION = "x11/base"
 LICENSE = "GPL"
-DEPENDS = "apmd virtual/xserver libxext virtual/libx11 libxau xscrnsaverh libxss"
+DEPENDS = "apmd virtual/xserver libxext virtual/libx11 libxau xscrnsaverh libxscrnsaver"
 DISTRO_APM ?= "apm"
 RDEPENDS_${PN} = "${DISTRO_APM}"
 PR = "r8"

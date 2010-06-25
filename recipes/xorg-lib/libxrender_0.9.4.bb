@@ -1,7 +1,7 @@
 require xorg-lib-common.inc
 DESCRIPTION = "X11 Rendering Extension client library"
 LICENSE = "BSD-X"
-DEPENDS += "virtual/libx11 renderproto xproto xdmcp"
+DEPENDS += "virtual/libx11 renderproto xproto libxdmcp"
 PE = "1"
 PR = "${INC_PR}.0"
 

@@ -1,5 +1,5 @@
 require uim.inc
-DEPENDS = "gtk+ uim-native anthy fontconfig libxft xt glib-2.0 ncurses"
+DEPENDS = "gtk+ uim-native anthy fontconfig libxft libxt glib-2.0 ncurses"
 SECTION_uim-gtk2.0 = "x11/inputmethods"
 PR = "r3"
 

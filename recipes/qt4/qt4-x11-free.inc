@@ -3,7 +3,7 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS += "virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor"
+DEPENDS += "virtual/libx11 fontconfig libxft libxext libxrender libxrandr libxcursor"
 
 INC_PR = "r17"
 

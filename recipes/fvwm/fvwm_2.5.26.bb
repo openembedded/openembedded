@@ -1,7 +1,7 @@
 SECTION = "x11/wm"
 DESCRIPTION = "FVWM Window Manager"
 LICENSE = "GPL"
-DEPENDS = "virtual/libx11 libxext libxfixes libxpm xrandr xft libxml2 zlib libice libxau libxcb libxcursor libxdmcp libxrender libpng librsvg fontconfig libstroke"
+DEPENDS = "virtual/libx11 libxext libxfixes libxpm xrandr libxft libxml2 zlib libice libxau libxcb libxcursor libxdmcp libxrender libpng librsvg fontconfig libstroke"
 
 SRC_URI="ftp://ftp.fvwm.org/pub/fvwm/version-2/${P}.tar.bz2 \
 	file://oe-configure.ac.patch \

@@ -1,6 +1,6 @@
 require xorg-lib-common.inc
 DESCRIPTION = "X11 miscellaneous extension library"
-DEPENDS += "xproto virtual/libx11 xextproto libxau xdmcp"
+DEPENDS += "xproto virtual/libx11 xextproto libxau libxdmcp"
 PE = "1"
 PR = "${INC_PR}.0"
 

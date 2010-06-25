@@ -2,7 +2,7 @@ DESCRIPTION = "Patience game"
 LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
-DEPENDS = "virtual/libx11 xft libxtst libxpm fltk"
+DEPENDS = "virtual/libx11 libxft libxtst libxpm fltk"
 SRCDATE = "20061112"
 PR = "r0"
 

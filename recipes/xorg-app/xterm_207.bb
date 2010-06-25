@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 DESCRIPTION = "xterm is the standard terminal emulator for the X Window System."
 
-DEPENDS = "libxaw xproto virtual/libx11 xextproto xext xau libxpm ncurses"
+DEPENDS = "libxaw xproto virtual/libx11 xextproto libxext libxau libxpm ncurses"
 
 SRC_URI = "${XORG_MIRROR}/development/X11R7.0-RC4/extras/${PN}-${PV}.tar.gz"
 

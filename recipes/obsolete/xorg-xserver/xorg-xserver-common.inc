@@ -14,7 +14,7 @@ DISTRO_XORG_CONFIG_MANAGER_shr ?= ""
 CONFIG_MANAGER_OPTION += "${@['--disable-config-hal','--enable-config-hal',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['hal']]}"
 CONFIG_MANAGER_OPTION += "${@['--disable-config-udev','--enable-config-udev',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['udev']]}"
 
-DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \ 
+DEPENDS = "fontconfig freetype flex-native liblbxutil kbproto \ 
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \

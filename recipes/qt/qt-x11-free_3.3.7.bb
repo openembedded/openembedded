@@ -1,4 +1,4 @@
-DEPENDS = "uicmoc3-native freetype virtual/libx11 libxmu xft libxext libxrender libxrandr libxcursor mysql virtual/libgl"
+DEPENDS = "uicmoc3-native freetype virtual/libx11 libxmu libxft libxext libxrender libxrandr libxcursor mysql virtual/libgl"
 PROVIDES = "qt3x11"
 PR = "r3"
 
