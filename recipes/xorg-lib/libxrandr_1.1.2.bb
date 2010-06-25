@@ -5,6 +5,7 @@ DESCRIPTION = "X Resize and Rotate extension library."
 LICENSE = "BSD-X"
 
 DEPENDS += " virtual/libx11 randrproto libxext xextproto libxrender renderproto"
+BBCLASSEXTEND = "sdk"
 
 XORG_PN = "libXrandr"
 
