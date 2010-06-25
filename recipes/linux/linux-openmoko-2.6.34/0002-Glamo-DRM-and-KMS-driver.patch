@@ -1,7 +1,7 @@
-From 4fe52e62cc86fc303cbc0f9a3c5081e38f95b950 Mon Sep 17 00:00:00 2001
+From b47b5c8042832424555cecda7a2ab21f8e57f9d4 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Sat, 22 May 2010 19:01:00 +0200
-Subject: [PATCH 02/13] Glamo DRM and KMS driver
+Subject: [PATCH 2/8] Glamo DRM and KMS driver
 
 This adds the Glamo DRM and KMS driver, but note that modifications are needed
 elsewhere to support it.
@@ -9,85 +9,92 @@ elsewhere to support it.
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
 ---
- drivers/mfd/glamo/Kconfig             |   16 +
- drivers/mfd/glamo/Makefile            |    5 +-
- drivers/mfd/glamo/glamo-buffer.c      |  374 +++++++++++++
- drivers/mfd/glamo/glamo-buffer.h      |   60 ++
- drivers/mfd/glamo/glamo-cmdq.c        |  555 +++++++++++++++++++
- drivers/mfd/glamo/glamo-cmdq.h        |   49 ++
- drivers/mfd/glamo/glamo-display.c     |  975 +++++++++++++++++++++++++++++++++
- drivers/mfd/glamo/glamo-display.h     |   41 ++
- drivers/mfd/glamo/glamo-drm-drv.c     |  423 ++++++++++++++
- drivers/mfd/glamo/glamo-drm-private.h |  166 ++++++
- drivers/mfd/glamo/glamo-fence.c       |  330 +++++++++++
- drivers/mfd/glamo/glamo-fence.h       |   34 ++
- drivers/mfd/glamo/glamo-kms-fb.c      |  493 +++++++++++++++++
- drivers/mfd/glamo/glamo-kms-fb.h      |   41 ++
- include/drm/Kbuild                    |    1 +
- include/drm/glamo_drm.h               |  153 +++++
- 16 files changed, 3715 insertions(+), 1 deletions(-)
- create mode 100644 drivers/mfd/glamo/glamo-buffer.c
- create mode 100644 drivers/mfd/glamo/glamo-buffer.h
- create mode 100644 drivers/mfd/glamo/glamo-cmdq.c
- create mode 100644 drivers/mfd/glamo/glamo-cmdq.h
- create mode 100644 drivers/mfd/glamo/glamo-display.c
- create mode 100644 drivers/mfd/glamo/glamo-display.h
- create mode 100644 drivers/mfd/glamo/glamo-drm-drv.c
- create mode 100644 drivers/mfd/glamo/glamo-drm-private.h
- create mode 100644 drivers/mfd/glamo/glamo-fence.c
- create mode 100644 drivers/mfd/glamo/glamo-fence.h
- create mode 100644 drivers/mfd/glamo/glamo-kms-fb.c
- create mode 100644 drivers/mfd/glamo/glamo-kms-fb.h
+ drivers/gpu/drm/Kconfig                   |   16 +
+ drivers/gpu/drm/Makefile                  |    1 +
+ drivers/gpu/drm/glamo/Makefile            |    8 +
+ drivers/gpu/drm/glamo/glamo-buffer.c      |  374 +++++++++++
+ drivers/gpu/drm/glamo/glamo-buffer.h      |   60 ++
+ drivers/gpu/drm/glamo/glamo-cmdq.c        |  557 ++++++++++++++++
+ drivers/gpu/drm/glamo/glamo-cmdq.h        |   49 ++
+ drivers/gpu/drm/glamo/glamo-display.c     |  976 +++++++++++++++++++++++++++++
+ drivers/gpu/drm/glamo/glamo-display.h     |   41 ++
+ drivers/gpu/drm/glamo/glamo-drm-drv.c     |  424 +++++++++++++
+ drivers/gpu/drm/glamo/glamo-drm-private.h |  166 +++++
+ drivers/gpu/drm/glamo/glamo-fence.c       |  331 ++++++++++
+ drivers/gpu/drm/glamo/glamo-fence.h       |   34 +
+ drivers/gpu/drm/glamo/glamo-kms-fb.c      |  494 +++++++++++++++
+ drivers/gpu/drm/glamo/glamo-kms-fb.h      |   41 ++
+ include/drm/Kbuild                        |    1 +
+ include/drm/glamo_drm.h                   |  153 +++++
+ 17 files changed, 3726 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/gpu/drm/glamo/Makefile
+ create mode 100644 drivers/gpu/drm/glamo/glamo-buffer.c
+ create mode 100644 drivers/gpu/drm/glamo/glamo-buffer.h
+ create mode 100644 drivers/gpu/drm/glamo/glamo-cmdq.c
+ create mode 100644 drivers/gpu/drm/glamo/glamo-cmdq.h
+ create mode 100644 drivers/gpu/drm/glamo/glamo-display.c
+ create mode 100644 drivers/gpu/drm/glamo/glamo-display.h
+ create mode 100644 drivers/gpu/drm/glamo/glamo-drm-drv.c
+ create mode 100644 drivers/gpu/drm/glamo/glamo-drm-private.h
+ create mode 100644 drivers/gpu/drm/glamo/glamo-fence.c
+ create mode 100644 drivers/gpu/drm/glamo/glamo-fence.h
+ create mode 100644 drivers/gpu/drm/glamo/glamo-kms-fb.c
+ create mode 100644 drivers/gpu/drm/glamo/glamo-kms-fb.h
  create mode 100644 include/drm/glamo_drm.h
 
-diff --git a/drivers/mfd/glamo/Kconfig b/drivers/mfd/glamo/Kconfig
-index 3aa4831..a12ebf6 100644
---- a/drivers/mfd/glamo/Kconfig
-+++ b/drivers/mfd/glamo/Kconfig
-@@ -40,3 +40,19 @@ config MFD_GLAMO_MCI
- 	  neo1973 GTA-02.
- 
- 	  If unsure, say N.
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 7244cef..590324c 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -157,3 +157,19 @@ config DRM_SAVAGE
+ 	help
+ 	  Choose this option if you have a Savage3D/4/SuperSavage/Pro/Twister
+ 	  chipset. If M is selected the module will be called savage.
 +
-+config MFD_GLAMO_DRM
-+	tristate "Glamo direct rendering and kernel modesetting support"
-+	depends on MFD_GLAMO && DRM
-+	select FB_CFB_FILLRECT
-+	select FB_CFB_COPYAREA
-+	select FB_CFB_IMAGEBLIT
-+	select DRM_KMS_HELPER
-+	help
-+	  Direct Rendering Manager interface for the S-Media Glamo chip, as
-+	  used in Openmoko FreeRunner (GTA02).
++config DRM_GLAMO
++        tristate "Glamo direct rendering and kernel modesetting support"
++        depends on MFD_GLAMO && DRM
++        select FB_CFB_FILLRECT
++        select FB_CFB_COPYAREA
++        select FB_CFB_IMAGEBLIT
++        select DRM_KMS_HELPER
++        help
++          Direct Rendering Manager interface for the S-Media Glamo chip, as
++          used in Openmoko FreeRunner (GTA02).
++ 
++          This DRM driver includes kernel modesetting (KMS) support.  As such,
++          do not select FB_GLAMO if you choose to enable this option.
 +
-+	  This DRM driver includes kernel modesetting (KMS) support.  As such,
-+	  do not select MFD_GLAMO_FB above if you choose to enable this option.
++          If unsure, say N.
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index abe3f44..165058e 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -33,4 +33,5 @@ obj-$(CONFIG_DRM_SAVAGE)+= savage/
+ obj-$(CONFIG_DRM_VMWGFX)+= vmwgfx/
+ obj-$(CONFIG_DRM_VIA)	+=via/
+ obj-$(CONFIG_DRM_NOUVEAU) +=nouveau/
++obj-$(CONFIG_DRM_GLAMO) += glamo/
+ obj-y			+= i2c/
+diff --git a/drivers/gpu/drm/glamo/Makefile b/drivers/gpu/drm/glamo/Makefile
+new file mode 100644
+index 0000000..a111397
+--- /dev/null
++++ b/drivers/gpu/drm/glamo/Makefile
+@@ -0,0 +1,8 @@
++#
++# Makefile for the Smedia Glamo DRM driver
++#
 +
-+	  If unsure, say N.
-diff --git a/drivers/mfd/glamo/Makefile b/drivers/mfd/glamo/Makefile
-index ebf26f7..d5ebf8f 100644
---- a/drivers/mfd/glamo/Makefile
-+++ b/drivers/mfd/glamo/Makefile
-@@ -1,5 +1,5 @@
- #
--# Makefile for the Smedia Glamo framebuffer driver
-+# Makefile for the Smedia Glamo driver(s)
- #
- 
- obj-$(CONFIG_MFD_GLAMO)			+= glamo-core.o
-@@ -8,4 +8,7 @@ obj-$(CONFIG_MFD_GLAMO_SPI)		+= glamo-spi.o
- 
- obj-$(CONFIG_MFD_GLAMO_FB)		+= glamo-fb.o
- obj-$(CONFIG_MFD_GLAMO_MCI)		+= glamo-mci.o
-+obj-$(CONFIG_MFD_GLAMO_DRM)		+= glamo-drm.o
- 
++obj-$(CONFIG_DRM_GLAMO)		+= glamo-drm.o
++
 +glamo-drm-objs	:=  glamo-drm-drv.o glamo-cmdq.o glamo-buffer.o \
 +                    glamo-display.o glamo-kms-fb.o glamo-fence.o
-diff --git a/drivers/mfd/glamo/glamo-buffer.c b/drivers/mfd/glamo/glamo-buffer.c
+diff --git a/drivers/gpu/drm/glamo/glamo-buffer.c b/drivers/gpu/drm/glamo/glamo-buffer.c
 new file mode 100644
 index 0000000..82ea0c0
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-buffer.c
++++ b/drivers/gpu/drm/glamo/glamo-buffer.c
 @@ -0,0 +1,374 @@
 +/*
 + * SMedia Glamo 336x/337x memory management
@@ -463,11 +470,11 @@ index 0000000..82ea0c0
 +	kfree(gdrm->mmgr);
 +	return 0;
 +}
-diff --git a/drivers/mfd/glamo/glamo-buffer.h b/drivers/mfd/glamo/glamo-buffer.h
+diff --git a/drivers/gpu/drm/glamo/glamo-buffer.h b/drivers/gpu/drm/glamo/glamo-buffer.h
 new file mode 100644
 index 0000000..41f18fd
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-buffer.h
++++ b/drivers/gpu/drm/glamo/glamo-buffer.h
 @@ -0,0 +1,60 @@
 +/*
 + * SMedia Glamo 336x/337x memory management
@@ -529,12 +536,12 @@ index 0000000..41f18fd
 +				  struct drm_file *file_priv);
 +
 +#endif /* __GLAMO_BUFFER_H */
-diff --git a/drivers/mfd/glamo/glamo-cmdq.c b/drivers/mfd/glamo/glamo-cmdq.c
+diff --git a/drivers/gpu/drm/glamo/glamo-cmdq.c b/drivers/gpu/drm/glamo/glamo-cmdq.c
 new file mode 100644
-index 0000000..442963c
+index 0000000..71eb53c
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-cmdq.c
-@@ -0,0 +1,555 @@
++++ b/drivers/gpu/drm/glamo/glamo-cmdq.c
+@@ -0,0 +1,557 @@
 +/*
 + * SMedia Glamo 336x/337x command queue handling
 + *
@@ -591,9 +598,11 @@ index 0000000..442963c
 +#include <drm/drmP.h>
 +#include <drm/glamo_drm.h>
 +
-+#include "glamo-core.h"
++#include <linux/mfd/glamo-core.h>
++#include <linux/mfd/glamo-regs.h>
++
 +#include "glamo-drm-private.h"
-+#include "glamo-regs.h"
++#include "glamo-buffer.h"
 +
 +
 +#define GLAMO_CMDQ_SIZE (128 * 1024)    /* 128k ring buffer */
@@ -1090,11 +1099,11 @@ index 0000000..442963c
 +	}
 +	iounmap(cookie);
 +}
-diff --git a/drivers/mfd/glamo/glamo-cmdq.h b/drivers/mfd/glamo/glamo-cmdq.h
+diff --git a/drivers/gpu/drm/glamo/glamo-cmdq.h b/drivers/gpu/drm/glamo/glamo-cmdq.h
 new file mode 100644
 index 0000000..510d195
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-cmdq.h
++++ b/drivers/gpu/drm/glamo/glamo-cmdq.h
 @@ -0,0 +1,49 @@
 +/* Smedia Glamo 336x/337x command queue handling
 + *
@@ -1145,12 +1154,12 @@ index 0000000..510d195
 +                             unsigned int count);
 +
 +#endif /* __GLAMO_CMDQ_H */
-diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
+diff --git a/drivers/gpu/drm/glamo/glamo-display.c b/drivers/gpu/drm/glamo/glamo-display.c
 new file mode 100644
-index 0000000..75ad734
+index 0000000..ef7e8c8
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-display.c
-@@ -0,0 +1,975 @@
++++ b/drivers/gpu/drm/glamo/glamo-display.c
+@@ -0,0 +1,976 @@
 +/*
 + * SMedia Glamo 336x/337x display
 + *
@@ -1212,9 +1221,10 @@ index 0000000..75ad734
 +#include <linux/glamofb.h>
 +#include <linux/jbt6k74.h>
 +
-+#include "glamo-core.h"
++#include <linux/mfd/glamo-core.h>
++#include <linux/mfd/glamo-regs.h>
++
 +#include "glamo-drm-private.h"
-+#include "glamo-regs.h"
 +#include "glamo-kms-fb.h"
 +#include "glamo-display.h"
 +
@@ -2126,11 +2136,11 @@ index 0000000..75ad734
 +		                    gcrtc->current_fb);
 +	}
 +}
-diff --git a/drivers/mfd/glamo/glamo-display.h b/drivers/mfd/glamo/glamo-display.h
+diff --git a/drivers/gpu/drm/glamo/glamo-display.h b/drivers/gpu/drm/glamo/glamo-display.h
 new file mode 100644
 index 0000000..728bba5
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-display.h
++++ b/drivers/gpu/drm/glamo/glamo-display.h
 @@ -0,0 +1,41 @@
 +/* Smedia Glamo 336x/337x Display
 + *
@@ -2173,12 +2183,12 @@ index 0000000..728bba5
 +extern void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode);
 +
 +#endif /* __GLAMO_DISPLAY_H */
-diff --git a/drivers/mfd/glamo/glamo-drm-drv.c b/drivers/mfd/glamo/glamo-drm-drv.c
+diff --git a/drivers/gpu/drm/glamo/glamo-drm-drv.c b/drivers/gpu/drm/glamo/glamo-drm-drv.c
 new file mode 100644
-index 0000000..774eaff
+index 0000000..8a41b18
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-drm-drv.c
-@@ -0,0 +1,423 @@
++++ b/drivers/gpu/drm/glamo/glamo-drm-drv.c
+@@ -0,0 +1,424 @@
 +/* Smedia Glamo 336x/337x Graphics Driver
 + *
 + * Copyright (C) 2009 Openmoko, Inc. Jorge Luis Zapata <turran@openmoko.com>
@@ -2210,7 +2220,8 @@ index 0000000..774eaff
 +#include <drm/glamo_drm.h>
 +#include <linux/glamofb.h>
 +
-+#include "glamo-core.h"
++#include <linux/mfd/glamo-core.h>
++
 +#include "glamo-cmdq.h"
 +#include "glamo-buffer.h"
 +#include "glamo-drm-private.h"
@@ -2602,11 +2613,11 @@ index 0000000..774eaff
 +MODULE_AUTHOR(DRIVER_AUTHOR);
 +MODULE_DESCRIPTION(DRIVER_DESC);
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/mfd/glamo/glamo-drm-private.h b/drivers/mfd/glamo/glamo-drm-private.h
+diff --git a/drivers/gpu/drm/glamo/glamo-drm-private.h b/drivers/gpu/drm/glamo/glamo-drm-private.h
 new file mode 100644
-index 0000000..75f2757
+index 0000000..602af4c
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-drm-private.h
++++ b/drivers/gpu/drm/glamo/glamo-drm-private.h
 @@ -0,0 +1,166 @@
 +/* Smedia Glamo 336x/337x DRM private bits
 + *
@@ -2644,7 +2655,7 @@ index 0000000..75f2757
 +#include <linux/spinlock.h>
 +#include <linux/wait.h>
 +
-+#include "glamo-core.h"
++#include <linux/mfd/glamo-core.h>
 +
 +
 +/* Memory to allocate for the framebuffer.
@@ -2774,12 +2785,12 @@ index 0000000..75f2757
 +
 +
 +#endif /* __GLAMO_DRMPRIV_H */
-diff --git a/drivers/mfd/glamo/glamo-fence.c b/drivers/mfd/glamo/glamo-fence.c
+diff --git a/drivers/gpu/drm/glamo/glamo-fence.c b/drivers/gpu/drm/glamo/glamo-fence.c
 new file mode 100644
-index 0000000..9119675
+index 0000000..56d6426
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-fence.c
-@@ -0,0 +1,330 @@
++++ b/drivers/gpu/drm/glamo/glamo-fence.c
+@@ -0,0 +1,331 @@
 +/*
 + * SMedia Glamo 336x/337x fence objects
 + *
@@ -2840,9 +2851,10 @@ index 0000000..9119675
 +#include <linux/spinlock.h>
 +#include <linux/lockdep.h>
 +
++#include <linux/mfd/glamo-core.h>
++#include <linux/mfd/glamo-regs.h>
++
 +#include "glamo-drm-private.h"
-+#include "glamo-regs.h"
-+#include "glamo-core.h"
 +#include "glamo-cmdq.h"
 +
 +
@@ -3110,11 +3122,11 @@ index 0000000..9119675
 +	wake_up_all(&gdrm->fence_queue);
 +	tasklet_kill(&gdrm->fence_tl);
 +}
-diff --git a/drivers/mfd/glamo/glamo-fence.h b/drivers/mfd/glamo/glamo-fence.h
+diff --git a/drivers/gpu/drm/glamo/glamo-fence.h b/drivers/gpu/drm/glamo/glamo-fence.h
 new file mode 100644
 index 0000000..deda995
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-fence.h
++++ b/drivers/gpu/drm/glamo/glamo-fence.h
 @@ -0,0 +1,34 @@
 +/*
 + * SMedia Glamo 336x/337x fence objects
@@ -3150,12 +3162,12 @@ index 0000000..deda995
 +                                      struct drm_file *file_priv);
 +
 +#endif /* __GLAMO_FENCE_H */
-diff --git a/drivers/mfd/glamo/glamo-kms-fb.c b/drivers/mfd/glamo/glamo-kms-fb.c
+diff --git a/drivers/gpu/drm/glamo/glamo-kms-fb.c b/drivers/gpu/drm/glamo/glamo-kms-fb.c
 new file mode 100644
-index 0000000..d76dd24
+index 0000000..cac524c
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-kms-fb.c
-@@ -0,0 +1,493 @@
++++ b/drivers/gpu/drm/glamo/glamo-kms-fb.c
+@@ -0,0 +1,494 @@
 +/*
 + * SMedia Glamo 336x/337x KMS Framebuffer
 + *
@@ -3216,7 +3228,8 @@ index 0000000..d76dd24
 +#include <drm/drm_crtc_helper.h>
 +#include <drm/drm_crtc.h>
 +
-+#include "glamo-core.h"
++#include <linux/mfd/glamo-core.h>
++
 +#include "glamo-drm-private.h"
 +#include "glamo-display.h"
 +#include "glamo-buffer.h"
@@ -3649,11 +3662,11 @@ index 0000000..d76dd24
 +{
 +	fb_set_suspend(gdrm->fb, 0);
 +}
-diff --git a/drivers/mfd/glamo/glamo-kms-fb.h b/drivers/mfd/glamo/glamo-kms-fb.h
+diff --git a/drivers/gpu/drm/glamo/glamo-kms-fb.h b/drivers/gpu/drm/glamo/glamo-kms-fb.h
 new file mode 100644
 index 0000000..1960e76
 --- /dev/null
-+++ b/drivers/mfd/glamo/glamo-kms-fb.h
++++ b/drivers/gpu/drm/glamo/glamo-kms-fb.h
 @@ -0,0 +1,41 @@
 +/*
 + * SMedia Glamo 336x/337x KMS framebuffer

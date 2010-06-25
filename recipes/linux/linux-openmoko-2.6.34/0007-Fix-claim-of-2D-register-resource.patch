@@ -1,18 +1,18 @@
-From 92118a72fdf779a20693cb7d01d1a12fc8e12ace Mon Sep 17 00:00:00 2001
+From 2f8fb0d0308960e53395428873549ae2961469ca Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 6 May 2010 08:37:04 -0700
-Subject: [PATCH 08/13] Fix claim of 2D register resource
+Subject: [PATCH 7/8] Fix claim of 2D register resource
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
- drivers/mfd/glamo/glamo-drm-drv.c |    3 ++-
+ drivers/gpu/drm/glamo/glamo-drm-drv.c |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mfd/glamo/glamo-drm-drv.c b/drivers/mfd/glamo/glamo-drm-drv.c
-index ee648c1..4f982ad 100644
---- a/drivers/mfd/glamo/glamo-drm-drv.c
-+++ b/drivers/mfd/glamo/glamo-drm-drv.c
-@@ -272,7 +272,8 @@ static int glamodrm_probe(struct platform_device *pdev)
+diff --git a/drivers/gpu/drm/glamo/glamo-drm-drv.c b/drivers/gpu/drm/glamo/glamo-drm-drv.c
+index 9f74983..2a7f600 100644
+--- a/drivers/gpu/drm/glamo/glamo-drm-drv.c
++++ b/drivers/gpu/drm/glamo/glamo-drm-drv.c
+@@ -273,7 +273,8 @@ static int glamodrm_probe(struct platform_device *pdev)
  	}
  
  	/* Find the 2D engine */

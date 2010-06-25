@@ -1,4 +1,4 @@
-From cbc005e5e709407bae373d006d06a4cf51fd3062 Mon Sep 17 00:00:00 2001
+From 65954829e9732060a734e977817dbaa611b6c42b Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:17:28 +0200
 Subject: [PATCH 2/4] usbhost.patch

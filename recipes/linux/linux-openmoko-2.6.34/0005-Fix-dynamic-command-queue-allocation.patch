@@ -1,30 +1,22 @@
-From 752dfe99a5e2b361f740f2f986de93f5682b1a8d Mon Sep 17 00:00:00 2001
+From 2114f9008abe39b8ed914f650d50775e39f53cca Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 6 May 2010 05:40:15 -0700
-Subject: [PATCH 06/13] Fix dynamic command queue allocation
+Subject: [PATCH 5/8] Fix dynamic command queue allocation
 
 (Not tested...)
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
- drivers/mfd/glamo/glamo-cmdq.c    |   10 +++++++---
- drivers/mfd/glamo/glamo-cmdq.h    |    2 +-
- drivers/mfd/glamo/glamo-drm-drv.c |   17 +++++++----------
- 3 files changed, 15 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/glamo/glamo-cmdq.c    |    9 ++++++---
+ drivers/gpu/drm/glamo/glamo-cmdq.h    |    2 +-
+ drivers/gpu/drm/glamo/glamo-drm-drv.c |   17 +++++++----------
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mfd/glamo/glamo-cmdq.c b/drivers/mfd/glamo/glamo-cmdq.c
-index 442963c..28c5268 100644
---- a/drivers/mfd/glamo/glamo-cmdq.c
-+++ b/drivers/mfd/glamo/glamo-cmdq.c
-@@ -57,6 +57,7 @@
- #include "glamo-core.h"
- #include "glamo-drm-private.h"
- #include "glamo-regs.h"
-+#include "glamo-buffer.h"
- 
- 
- #define GLAMO_CMDQ_SIZE (128 * 1024)    /* 128k ring buffer */
-@@ -495,10 +496,11 @@ int glamo_cmdq_setup(struct glamodrm_handle *gdrm)
+diff --git a/drivers/gpu/drm/glamo/glamo-cmdq.c b/drivers/gpu/drm/glamo/glamo-cmdq.c
+index 3ce970e..4b0d55f 100644
+--- a/drivers/gpu/drm/glamo/glamo-cmdq.c
++++ b/drivers/gpu/drm/glamo/glamo-cmdq.c
+@@ -497,10 +497,11 @@ int glamo_cmdq_setup(struct glamodrm_handle *gdrm)
  }
  
  
@@ -37,7 +29,7 @@ index 442963c..28c5268 100644
  	int ret = 0;
  
  	obj = glamo_gem_object_alloc(dev, GLAMO_CMDQ_SIZE, 4);
-@@ -507,9 +509,10 @@ int glamo_cmdq_init(struct glamodrm_handle *gdrm)
+@@ -509,9 +510,10 @@ int glamo_cmdq_init(struct glamodrm_handle *gdrm)
  		ret = -ENOMEM;
  		goto out;
  	}
@@ -50,7 +42,7 @@ index 442963c..28c5268 100644
  
  	/* Set up registers */
  	glamo_cmdq_setup(gdrm);
-@@ -521,6 +524,7 @@ out:
+@@ -523,6 +525,7 @@ out:
  
  int glamo_cmdq_shutdown(struct glamodrm_handle *gdrm)
  {
@@ -58,10 +50,10 @@ index 442963c..28c5268 100644
  	return 0;
  }
  
-diff --git a/drivers/mfd/glamo/glamo-cmdq.h b/drivers/mfd/glamo/glamo-cmdq.h
+diff --git a/drivers/gpu/drm/glamo/glamo-cmdq.h b/drivers/gpu/drm/glamo/glamo-cmdq.h
 index 510d195..6d7f184 100644
---- a/drivers/mfd/glamo/glamo-cmdq.h
-+++ b/drivers/mfd/glamo/glamo-cmdq.h
+--- a/drivers/gpu/drm/glamo/glamo-cmdq.h
++++ b/drivers/gpu/drm/glamo/glamo-cmdq.h
 @@ -38,7 +38,7 @@ extern int glamo_ioctl_cmdburst(struct drm_device *dev, void *data,
  extern void glamo_cmdq_blank(struct glamodrm_handle *gdrm,
                               struct drm_gem_object *obj);
@@ -71,11 +63,11 @@ index 510d195..6d7f184 100644
  extern int glamo_cmdq_shutdown(struct glamodrm_handle *gdrm);
  extern void glamo_cmdq_suspend(struct glamodrm_handle *gdrm);
  extern void glamo_cmdq_resume(struct glamodrm_handle *gdrm);
-diff --git a/drivers/mfd/glamo/glamo-drm-drv.c b/drivers/mfd/glamo/glamo-drm-drv.c
-index 774eaff..ee648c1 100644
---- a/drivers/mfd/glamo/glamo-drm-drv.c
-+++ b/drivers/mfd/glamo/glamo-drm-drv.c
-@@ -128,7 +128,7 @@ static int glamodrm_load(struct drm_device *dev, unsigned long flags)
+diff --git a/drivers/gpu/drm/glamo/glamo-drm-drv.c b/drivers/gpu/drm/glamo/glamo-drm-drv.c
+index 224c857..9f74983 100644
+--- a/drivers/gpu/drm/glamo/glamo-drm-drv.c
++++ b/drivers/gpu/drm/glamo/glamo-drm-drv.c
+@@ -129,7 +129,7 @@ static int glamodrm_load(struct drm_device *dev, unsigned long flags)
  	gdrm = dev->dev_private;
  
  	glamo_buffer_init(gdrm);
@@ -84,7 +76,7 @@ index 774eaff..ee648c1 100644
  	glamo_fence_init(gdrm);
  	glamo_display_init(dev);
  
-@@ -237,14 +237,14 @@ static int glamodrm_probe(struct platform_device *pdev)
+@@ -238,14 +238,14 @@ static int glamodrm_probe(struct platform_device *pdev)
  	if ( !gdrm->vram ) {
  		dev_err(&pdev->dev, "Unable to find VRAM.\n");
  		rc = -ENOENT;
@@ -101,7 +93,7 @@ index 774eaff..ee648c1 100644
  	}
  
  	/* Find the LCD controller */
-@@ -316,10 +316,6 @@ out_release_lcd:
+@@ -317,10 +317,6 @@ out_release_lcd:
  	                   resource_size(gdrm->lcd_regs));
  out_release_vram:
  	release_mem_region(gdrm->vram->start, resource_size(gdrm->vram));
@@ -112,7 +104,7 @@ index 774eaff..ee648c1 100644
  out_unmap_regs:
  	iounmap(gdrm->reg_base);
  out_release_regs:
-@@ -349,9 +345,10 @@ static int glamodrm_remove(struct platform_device *pdev)
+@@ -350,9 +346,10 @@ static int glamodrm_remove(struct platform_device *pdev)
  	/* Release VRAM */
  	release_mem_region(gdrm->vram->start, resource_size(gdrm->vram));
  

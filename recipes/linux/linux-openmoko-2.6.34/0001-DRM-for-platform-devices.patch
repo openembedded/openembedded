@@ -1,7 +1,7 @@
-From 69d87612a1b545e6d4cf9fc93117be86f871f7d2 Mon Sep 17 00:00:00 2001
+From 2ec20c69573ac255b3aefd4306f4aaed16c310bc Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Sat, 22 May 2010 18:59:58 +0200
-Subject: [PATCH 01/13] DRM for platform devices
+Subject: [PATCH 1/8] DRM for platform devices
 
 This modifies the DRM core in a small number of places to allow platform
 devices to be used for direct rendering, alongside PCI devices.

@@ -1,24 +1,24 @@
-From 0c38c5d7bcce1b62534e76419ee04eea0fe50128 Mon Sep 17 00:00:00 2001
+From 21469ba33747fef2625bf20c72cbbe776d8c59b7 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 17 Nov 2009 23:45:29 +0100
-Subject: [PATCH 03/13] Work on Glamo-core for DRM
+Subject: [PATCH 3/8] Work on Glamo-core for DRM
 
 This adds modifications to the core of the Glamo driver to expose functionality
 to support DRM and KMS.
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
- drivers/mfd/glamo/glamo-core.c |   27 +++++++++++++++++++++------
- drivers/mfd/glamo/glamo-core.h |   32 ++++++++++++++++++++++----------
- drivers/mfd/glamo/glamo-regs.h |   24 ++++++++++++++++++++++++
+ drivers/mfd/glamo-core.c       |   27 +++++++++++++++++++++------
+ include/linux/mfd/glamo-core.h |   32 ++++++++++++++++++++++----------
+ include/linux/mfd/glamo-regs.h |   24 ++++++++++++++++++++++++
  include/linux/mfd/glamo.h      |    7 ++-----
  4 files changed, 69 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mfd/glamo/glamo-core.c b/drivers/mfd/glamo/glamo-core.c
-index 23073fe..f894c91 100644
---- a/drivers/mfd/glamo/glamo-core.c
-+++ b/drivers/mfd/glamo/glamo-core.c
-@@ -222,10 +222,25 @@ static struct resource glamo_fb_resources[] = {
+diff --git a/drivers/mfd/glamo-core.c b/drivers/mfd/glamo-core.c
+index 135856a..da32b77 100644
+--- a/drivers/mfd/glamo-core.c
++++ b/drivers/mfd/glamo-core.c
+@@ -221,10 +221,25 @@ static struct resource glamo_fb_resources[] = {
  		.flags	= IORESOURCE_MEM,
  	}, {
  		.name	= "glamo-fb-mem",
@@ -47,7 +47,7 @@ index 23073fe..f894c91 100644
  };
  
  static struct resource glamo_mmc_resources[] = {
-@@ -236,9 +251,9 @@ static struct resource glamo_mmc_resources[] = {
+@@ -235,9 +250,9 @@ static struct resource glamo_mmc_resources[] = {
  		.flags	= IORESOURCE_MEM
  	}, {
  		.name	= "glamo-mmc-mem",
@@ -60,10 +60,10 @@ index 23073fe..f894c91 100644
  		.flags	= IORESOURCE_MEM
  	}, {
  		.start	= GLAMO_IRQ_MMC,
-diff --git a/drivers/mfd/glamo/glamo-core.h b/drivers/mfd/glamo/glamo-core.h
-index 17017b0..0adba96 100644
---- a/drivers/mfd/glamo/glamo-core.h
-+++ b/drivers/mfd/glamo/glamo-core.h
+diff --git a/include/linux/mfd/glamo-core.h b/include/linux/mfd/glamo-core.h
+index 34ec7c4..25bd94d 100644
+--- a/include/linux/mfd/glamo-core.h
++++ b/include/linux/mfd/glamo-core.h
 @@ -3,18 +3,30 @@
  
  #include <linux/mfd/glamo.h>
@@ -104,11 +104,11 @@ index 17017b0..0adba96 100644
 +#define GLAMO_OFFSET_MMC	(GLAMO_OFFSET_CURSOR + GLAMO_CURSOR_SIZE)
  
  enum glamo_pll {
-     GLAMO_PLL1,
-diff --git a/drivers/mfd/glamo/glamo-regs.h b/drivers/mfd/glamo/glamo-regs.h
+ 	GLAMO_PLL1,
+diff --git a/include/linux/mfd/glamo-regs.h b/include/linux/mfd/glamo-regs.h
 index 59848e1..8b2fd47 100644
---- a/drivers/mfd/glamo/glamo-regs.h
-+++ b/drivers/mfd/glamo/glamo-regs.h
+--- a/include/linux/mfd/glamo-regs.h
++++ b/include/linux/mfd/glamo-regs.h
 @@ -627,4 +627,28 @@ enum glamo_core_revisions {
  	GLAMO_CORE_REV_A3		= 0x0003,
  };

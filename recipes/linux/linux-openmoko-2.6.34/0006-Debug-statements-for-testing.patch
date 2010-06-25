@@ -1,19 +1,19 @@
-From 6d0e40938fa71d6a3a1f3c9892251053bda3be6d Mon Sep 17 00:00:00 2001
+From cf82ca72810135babe7493bdd7c1cc63ed2ebac6 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 6 May 2010 05:40:33 -0700
-Subject: [PATCH 07/13] Debug statements for testing
+Subject: [PATCH 6/8] Debug statements for testing
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
- drivers/mfd/glamo/glamo-display.c |    7 +++++++
- drivers/video/backlight/jbt6k74.c |    4 +++-
+ drivers/gpu/drm/glamo/glamo-display.c |    7 +++++++
+ drivers/video/backlight/jbt6k74.c     |    4 +++-
  2 files changed, 10 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mfd/glamo/glamo-display.c b/drivers/mfd/glamo/glamo-display.c
-index 75ad734..57292ff 100644
---- a/drivers/mfd/glamo/glamo-display.c
-+++ b/drivers/mfd/glamo/glamo-display.c
-@@ -257,6 +257,8 @@ static int glamo_crtc_mode_set_base(struct drm_crtc *crtc, int x, int y,
+diff --git a/drivers/gpu/drm/glamo/glamo-display.c b/drivers/gpu/drm/glamo/glamo-display.c
+index a058b40..c54dd49 100644
+--- a/drivers/gpu/drm/glamo/glamo-display.c
++++ b/drivers/gpu/drm/glamo/glamo-display.c
+@@ -258,6 +258,8 @@ static int glamo_crtc_mode_set_base(struct drm_crtc *crtc, int x, int y,
  	u32 addr;
  	u16 addr_low, addr_high;
  
@@ -22,7 +22,7 @@ index 75ad734..57292ff 100644
  	if (!crtc->fb) {
  		DRM_DEBUG("No FB bound\n");
  		return -EINVAL;
-@@ -311,6 +313,8 @@ static int glamo_crtc_mode_set(struct drm_crtc *crtc,
+@@ -312,6 +314,8 @@ static int glamo_crtc_mode_set(struct drm_crtc *crtc,
  		msleep(500);
  	}
  
@@ -31,7 +31,7 @@ index 75ad734..57292ff 100644
  	/* Rotate? */
  	if ( (mode->hdisplay == 640) && (mode->vdisplay == 480) ) {
  		rot = GLAMO_LCD_ROT_MODE_90;
-@@ -935,15 +939,18 @@ void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode)
+@@ -936,15 +940,18 @@ void glamo_lcd_power(struct glamodrm_handle *gdrm, int mode)
  	struct glamo_crtc *gcrtc = to_glamo_crtc(crtc);
  
  	if ( mode ) {

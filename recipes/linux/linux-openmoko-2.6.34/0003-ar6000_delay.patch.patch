@@ -1,4 +1,4 @@
-From 3287722e641d6e21cb0e2a8fa13058467a5319e3 Mon Sep 17 00:00:00 2001
+From 32dcde00ad05fa148ba96f46427afe9af226ffb7 Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:18:02 +0200
 Subject: [PATCH 3/4] ar6000_delay.patch

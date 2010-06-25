@@ -1,4 +1,4 @@
-From b166d6d4fb0f5ed66b785e0c662db5fbd2f86e8c Mon Sep 17 00:00:00 2001
+From 784ad85c80030910862e5b7f655eb69a6f980e4f Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:22:23 +0200
 Subject: [PATCH 4/4] save_regs.patch
