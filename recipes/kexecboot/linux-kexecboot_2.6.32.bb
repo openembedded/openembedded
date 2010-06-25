@@ -28,6 +28,8 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=k
 SRC_URI[kernel.md5sum] = "260551284ac224c3a43c4adac7df4879"
 SRC_URI[kernel.sha256sum] = "5099786d80b8407d98a619df00209c2353517f22d804fdd9533b362adcb4504e"
 
+SRC_URI_append_c7x0 = " file://fix-corgi-card-detection.patch;status=pending "
+
 SRC_URI_append_omap3 = " git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git;rev=6833f1a8cdcb65a370f898bde6b6af63f81962df \
 file://defconfig \
 file://sctp-fix.patch \
