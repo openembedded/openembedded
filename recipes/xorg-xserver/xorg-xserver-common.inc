@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
-INC_PR = "r16"
+INC_PR = "r17"
 
 PROVIDES = "virtual/xserver"
 
@@ -48,7 +48,7 @@ EXTRA_OECONF_append_arm = " ac_cv_header_linux_apm_bios_h=no "
 
 PACKAGES =+ "xserver-security-policy"
 FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
-RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config xorg-minimal-fonts rgb xserver-xorg-conf"
+RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config rgb xserver-xorg-conf"
 
 PACKAGES =+ "${PN}-sdl ${PN}-fbdev ${PN}-xprint ${PN}-xvfb ${PN}-utils ${PN}-xephyr"
 
