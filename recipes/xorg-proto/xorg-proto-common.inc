@@ -1,4 +1,4 @@
-DESCRIPTION = "X protocol headers: ${XORG_PN}"
+DESCRIPTION = "X protocol headers: ${BPN}"
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/libs"
 LICENSE = "MIT-X"

@@ -6,7 +6,6 @@ BPN = "xextproto"
 
 require xextproto_7.0.5.bb
 
-XORG_PN = "xextproto"
 EXTRA_OECONF += "--includedir=${includedir}/xextproto-70"
 
 do_install_append() {
