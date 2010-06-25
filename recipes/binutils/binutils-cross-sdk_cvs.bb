@@ -1,5 +1,8 @@
 require binutils_cvs.bb
 require binutils-cross-sdk.inc
+
+PV = "2.20+cvs${SRCDATE}"
+
 PR = "${INC_PR}.2"
 FILESPATHPKG .= ":binutils-cvs"
 
