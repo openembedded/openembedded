@@ -55,8 +55,14 @@ do_install () {
 	# Manually run the target stripper since we won't get it run by
 	# the packaging.
 	if [ "x${OLD_PACKAGE_STRIP}" != "xno" ]; then
-		${TARGET_PREFIX}strip ${D}${prefix}/${TARGET_SYS}/lib/libstdc++.so.*
-		${TARGET_PREFIX}strip ${D}${prefix}/${TARGET_SYS}/lib/libg2c.so.* || true
-		${TARGET_PREFIX}strip ${D}${prefix}/${TARGET_SYS}/lib/libgcc_s.so.*
+		for soFile in ${D}${prefix}/${TARGET_SYS}/lib/libstdc++.so.* ${D}${prefix}/${TARGET_SYS}/lib/libg2c.so.* ${D}${prefix}/${TARGET_SYS}/lib/libgcc_s.so.*; do
+			if echo ${soFile} | grep '.py$' ; then 
+				echo "Not stripping .py file ${soFile}"
+			elif echo ${soFile} | grep '*' ; then 
+				echo "Not stripping non-existent mask ${soFile}"
+			else
+				${TARGET_PREFIX}strip ${soFile}
+			fi
+		done
 	fi
 }
