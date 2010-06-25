@@ -7,9 +7,7 @@ LICENSE = "GPL"
 PV = "0.0.1"
 PR = "r16"
 
-RPROVIDES_${PN} = "initscripts"
 RCONFLICTS_${PN} = "initscripts"
-RREPLACES_${PN} = "initscripts"
 
 SRC_URI = "file://alignment.sh \
 	   file://bootmisc.sh \
