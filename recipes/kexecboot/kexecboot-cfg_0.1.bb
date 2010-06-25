@@ -2,7 +2,7 @@ LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "Configuration file for kexecboot"
 
-PR = "r8"
+PR = "r9"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "file://icon.xpm"
@@ -47,6 +47,9 @@ KERNEL=/boot/${KERNEL_IMAGETYPE}
 #
 # Append this tags to the kernel cmdline.
 APPEND=${CMDLINE}
+#
+# Specify optional initrd/initramfs.
+# INITRD=/boot/initramfs.cpio.gz
 #
 # Specify full path for a custom distro-icon for the menu-item.
 # If not set, use device-icons as default (NAND, SD, CF, ...).
