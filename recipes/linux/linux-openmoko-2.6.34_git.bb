@@ -30,12 +30,11 @@ SRC_URI = "\
   file://0002-usbhost.patch.patch \
   file://0003-ar6000_delay.patch.patch \
   file://0004-save_regs.patch.patch \
+  file://defconfig \
 "
 
 S = "${WORKDIR}/git"
 
-CONFIG_NAME_om-gta02 = "gta02_drm_defconfig"
-
 do_configure_prepend() {
-        install -m 644 ./arch/arm/configs/${CONFIG_NAME} ${WORKDIR}/defconfig-oe
+        install -m 644 ${WORKDIR}/defconfig ${WORKDIR}/defconfig-oe
 }
