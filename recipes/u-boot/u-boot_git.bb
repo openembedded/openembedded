@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r55"
+PR ="r56"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -65,9 +65,7 @@ SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
 		       file://0001-OMAP3-Beagle-enable-support-for-second-and-third-m.patch \
 		       file://0038-BeagleBoard-Added-LED-driver.patch \
 		       file://0039-Add-led-command.patch \
-		       file://0040-BeagleBoard-Check-for-ramdisk-on-boot.patch \
 		       file://0041-BeagleBoard-Enabled-LEDs.patch \
-		       file://0042-BeagleBoard-New-command-for-status-of-USER-button.patch \
 		       file://0043-BeagleBoard-Add-CONFIG_SYS_MEMTEST_SCRATCH.patch \
                        file://fw_env.config \
 "
