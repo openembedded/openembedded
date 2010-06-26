@@ -6,6 +6,7 @@ HOMEPAGE = "http://xcb.freedesktop.org"
 PARALLEL_MAKE = ""
 DEPENDS = "xcb-proto xproto libxau libxslt-native"
 # DEPENDS += "xsltproc-native gperf-native"
+INC_PR = "r3"
 
 SRC_URI = "http://xcb.freedesktop.org/dist/libxcb-${PV}.tar.bz2 \
         file://configure.patch;striplevel=0"
@@ -13,8 +14,9 @@ SRC_URI = "http://xcb.freedesktop.org/dist/libxcb-${PV}.tar.bz2 \
 PACKAGES =+ "libxcb-composite libxcb-damage libxcb-dpms libxcb-glx \
              libxcb-randr libxcb-record libxcb-render libxcb-res \
              libxcb-screensaver libxcb-shape libxcb-shm libxcb-sync \
-             libxcb-xevie libxcb-xf86dri libxcb-xfixes libxcb-xlib \
-             libxcb-xprint libxcb-xtest libxcb-xv libxcb-xvmc"
+             libxcb-xevie libxcb-dri2 libxcb-xf86dri libxcb-xfixes \
+             libxcb-xinerama libxcb-xlib libxcb-xprint libxcb-xtest \
+             libxcb-xv libxcb-xvmc"
 
 FILES_${PN} = "${libdir}/libxcb.so.*"
 #FILES_${PN}-dev = "${libdir}/libxcb.* ${libdir}/pkgconfig/*.pc ${includedir}/xcb/*.h"
@@ -32,6 +34,7 @@ FILES_libxcb-shm = "${libdir}/libxcb-shm.so.*"
 FILES_libxcb-sync = "${libdir}/libxcb-sync.so.*"
 FILES_libxcb-xevie = "${libdir}/libxcb-xevie.so.*"
 FILES_libxcb-xf86dri = "${libdir}/libxcb-xf86dri.so.*"
+FILES_libxcb-dri2 = "${libdir}/libxcb-dri2.so.*"
 FILES_libxcb-xfixes = "${libdir}/libxcb-xfixes.so.*"
 FILES_libxcb-xinerama = "${libdir}/libxcb-xinerama.so.*"
 FILES_libxcb-xlib = "${libdir}/libxcb-xlib.so.*"
@@ -43,7 +46,3 @@ FILES_libxcb-xvmc = "${libdir}/libxcb-xvmc.so.*"
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "STAGING_DIR=${STAGING_DIR_HOST}"
-
-do_stage() {
-	autotools_stage_all
-}
