@@ -10,6 +10,7 @@ valid_archs = "alpha cris ia64 \
                sparc sparc64 \
                arm  arm26 \
                m32r mips \
+               nios2 \
                sh sh64 um h8300   \
                parisc s390  v850 \
                avr32 blackfin"
