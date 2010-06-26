@@ -4,7 +4,7 @@ DESCRIPTION = "An open source implementation of the OpenGL spec"
 HOMEPAGE = "http://mesa3d.org"
 LICENSE = "MIT"
 
-INC_PR = "r9"
+INC_PR = "r10"
 PE = "2"
 
 PROTO_DEPS = "xf86driproto glproto"
