@@ -1,0 +1,17 @@
+[PATCH] [ARM] pxa/corgi: fix MMC/SD card detection failure
+
+Reported-by: Andrea Adami <andrea.adami@gmail.com>
+Signed-off-by: Eric Miao <eric.y.miao@gmail.com>
+---
+--- a/arch/arm/mach-pxa/corgi.c
++++ b/arch/arm/mach-pxa/corgi.c
+@@ -438,7 +438,7 @@
+  */
+ static struct pxamci_platform_data corgi_mci_platform_data = {
+ 	.ocr_mask		= MMC_VDD_32_33|MMC_VDD_33_34,
+-	.gpio_card_detect	= -1,
++	.gpio_card_detect	= CORGI_GPIO_nSD_DETECT,
+ 	.gpio_card_ro		= CORGI_GPIO_nSD_WP,
+ 	.gpio_power		= CORGI_GPIO_SD_PWR,
+ };
+
