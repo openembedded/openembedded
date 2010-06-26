@@ -1,0 +1,25 @@
+From 9ff295528695c3a1b0a369e989f556db02ddf6b9 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Wed, 16 Jun 2010 04:28:06 +0300
+Subject: [PATCH 10/28] omap3beagle: camera: Change arch -> late_initcall
+
+This is for ensuring that the regulators are initialized already.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 20174a7..55a113c 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -293,4 +293,4 @@ int __init omap3beaglelmb_init(void)
+ 	platform_driver_register(&beagle_cam_driver);
+ 	return 0;
+ }
+-arch_initcall(omap3beaglelmb_init);
++late_initcall(omap3beaglelmb_init);
+-- 
+1.6.6.1
+

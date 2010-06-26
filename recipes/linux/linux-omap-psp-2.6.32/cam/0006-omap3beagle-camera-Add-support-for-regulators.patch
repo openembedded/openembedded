@@ -1,0 +1,238 @@
+From f99548efe1161c4f5418dcacb598b1c9637ca7d5 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 11 Jun 2010 16:50:39 -0500
+Subject: [PATCH 06/28] omap3beagle: camera: Add support for regulators
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   92 +++++++++++++++++++++---
+ arch/arm/mach-omap2/board-omap3beagle.c        |   53 ++++++++++++++
+ 2 files changed, 135 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index e93437f..af8581a 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -28,8 +28,9 @@
+ #include <linux/gpio.h>
+ #include <linux/mm.h>
+ #include <linux/videodev2.h>
+-#include <linux/i2c/twl.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/delay.h>
++#include <linux/platform_device.h>
+ 
+ #include <plat/mux.h>
+ #include <plat/board.h>
+@@ -50,6 +51,11 @@
+ 
+ #define CAM_USE_XCLKA       1
+ 
++static struct regulator *beagle_mt9t111_reg1;
++static struct regulator *beagle_mt9t111_reg2;
++
++static struct device *beaglecam_dev;
++
+ #if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
+ static struct isp_interface_config mt9t111_if_config = {
+ 	.ccdc_par_ser		= ISP_PARLL, 
+@@ -157,10 +163,13 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 
+ 	switch (power) {
+ 	case V4L2_POWER_OFF:
++	case V4L2_POWER_STANDBY:
+ 		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
+-		break;
+ 
+-	case V4L2_POWER_STANDBY:
++		if (regulator_is_enabled(beagle_mt9t111_reg1))
++			regulator_disable(beagle_mt9t111_reg1);
++		if (regulator_is_enabled(beagle_mt9t111_reg2))
++			regulator_disable(beagle_mt9t111_reg2);
+ 		break;
+ 
+ 	case V4L2_POWER_ON:
+@@ -169,6 +178,12 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ #if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+ 		isp_configure_interface(vdev->cam->isp, &mt9t111_if_config);
+ #endif
++
++		/* turn on analog power */
++		regulator_enable(beagle_mt9t111_reg1);
++		regulator_enable(beagle_mt9t111_reg2);
++		udelay(100);
++
+ 		break;
+ 
+ 	default:
+@@ -196,16 +211,22 @@ static struct i2c_board_info __initdata mt9t111_i2c_board_info = {
+ 
+ #endif				/* #ifdef CONFIG_VIDEO_MT9T111 */
+ 
+-/**
+- * @brief omap3beaglelmb_init - module init function. Should be called before any
+- *                          client driver init call
+- *
+- * @return result of operation - 0 is success
+- */
+-int __init omap3beaglelmb_init(void)
++
++static int beagle_cam_probe(struct platform_device *pdev)
+ {
+ 	int err;
+ 
++	beagle_mt9t111_reg1 = regulator_get(beaglecam_dev, "vaux3_1");
++	if (IS_ERR(beagle_mt9t111_reg1)) {
++		dev_err(beaglecam_dev, "vaux3_1 regulator missing\n");
++		return PTR_ERR(beagle_mt9t111_reg1);
++	}
++	beagle_mt9t111_reg2 = regulator_get(beaglecam_dev, "vaux4_1");
++	if (IS_ERR(beagle_mt9t111_reg2)) {
++		dev_err(beaglecam_dev, "vaux4_1 regulator missing\n");
++		regulator_put(beagle_mt9t111_reg1);
++		return PTR_ERR(beagle_mt9t111_reg2);
++	}
+ 	/*
+ 	 * Register the I2C devices present in the board to the I2C
+ 	 * framework.
+@@ -221,8 +242,59 @@ int __init omap3beaglelmb_init(void)
+ 		return err;
+ 	}
+ #endif
++
++	beaglecam_dev = &pdev->dev;
++
+ 	printk(KERN_INFO MODULE_NAME ": Driver registration complete \n");
+ 
+ 	return 0;
+ }
++
++static int beagle_cam_remove(struct platform_device *pdev)
++{
++	if (regulator_is_enabled(beagle_mt9t111_reg1))
++		regulator_disable(beagle_mt9t111_reg1);
++	regulator_put(beagle_mt9t111_reg1);
++	if (regulator_is_enabled(beagle_mt9t111_reg2))
++		regulator_disable(beagle_mt9t111_reg2);
++	regulator_put(beagle_mt9t111_reg2);
++
++	return 0;
++}
++
++static int beagle_cam_suspend(struct device *dev)
++{
++	return 0;
++}
++
++static int beagle_cam_resume(struct device *dev)
++{
++	return 0;
++}
++
++static struct dev_pm_ops beagle_cam_pm_ops = {
++	.suspend = beagle_cam_suspend,
++	.resume  = beagle_cam_resume,
++};
++
++static struct platform_driver beagle_cam_driver = {
++	.probe		= beagle_cam_probe,
++	.remove		= beagle_cam_remove,
++	.driver		= {
++		.name	= "beagle_cam",
++		.pm	= &beagle_cam_pm_ops,
++	},
++};
++
++/**
++ * @brief omap3beaglelmb_init - module init function. Should be called before any
++ *                          client driver init call
++ *
++ * @return result of operation - 0 is success
++ */
++int __init omap3beaglelmb_init(void)
++{
++	platform_driver_register(&beagle_cam_driver);
++	return 0;
++}
+ arch_initcall(omap3beaglelmb_init);
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index d6b69a6..aa16acd 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -403,6 +403,56 @@ static struct twl4030_gpio_platform_data beagle_gpio_data = {
+ 	.setup		= beagle_twl_gpio_setup,
+ };
+ 
++
++static struct platform_device beagle_cam_device = {
++	.name		= "beagle_cam",
++	.id		= -1,
++};
++
++static struct regulator_consumer_supply beagle_vaux3_supplies[] = {
++	{
++		.supply		= "vaux3_1",
++		.dev		= &beagle_cam_device.dev,
++	},
++};
++
++static struct regulator_consumer_supply beagle_vaux4_supplies[] = {
++	{
++		.supply		= "vaux4_1",
++		.dev		= &beagle_cam_device.dev,
++	},
++};
++
++/* VAUX3 for CAM_1V8 */
++static struct regulator_init_data beagle_vaux3 = {
++	.constraints = {
++		.min_uV			= 1800000,
++		.max_uV			= 1800000,
++		.apply_uV		= true,
++		.valid_modes_mask	= REGULATOR_MODE_NORMAL
++					| REGULATOR_MODE_STANDBY,
++		.valid_ops_mask		= REGULATOR_CHANGE_MODE
++					| REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies	= ARRAY_SIZE(beagle_vaux3_supplies),
++	.consumer_supplies	= beagle_vaux3_supplies,
++};
++
++/* VAUX4 for CAM_2V8 */
++static struct regulator_init_data beagle_vaux4 = {
++	.constraints = {
++		.min_uV			= 2800000,
++		.max_uV			= 2800000,
++		.apply_uV		= true,
++		.valid_modes_mask	= REGULATOR_MODE_NORMAL
++					| REGULATOR_MODE_STANDBY,
++		.valid_ops_mask		= REGULATOR_CHANGE_MODE
++					| REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies	= ARRAY_SIZE(beagle_vaux4_supplies),
++	.consumer_supplies	= beagle_vaux4_supplies,
++};
++
+ /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
+ static struct regulator_init_data beagle_vmmc1 = {
+ 	.constraints = {
+@@ -492,6 +542,8 @@ static struct twl4030_platform_data beagle_twldata = {
+ 	.vsim		= &beagle_vsim,
+ 	.vdac		= &beagle_vdac,
+ 	.vpll2		= &beagle_vpll2,
++	.vaux3		= &beagle_vaux3,
++	.vaux4		= &beagle_vaux4,
+ };
+ 
+ static struct i2c_board_info __initdata beagle_i2c1_boardinfo[] = {
+@@ -658,6 +710,7 @@ static struct platform_device *omap3_beagle_devices[] __initdata = {
+ 	&leds_gpio,
+ 	&keys_gpio,
+ 	&beagle_dss_device,
++	&beagle_cam_device,
+ };
+ 
+ static void __init omap3beagle_flash_init(void)
+-- 
+1.6.6.1
+

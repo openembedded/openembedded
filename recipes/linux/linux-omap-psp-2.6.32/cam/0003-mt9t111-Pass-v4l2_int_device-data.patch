@@ -1,0 +1,40 @@
+From e8188ea4c58ddf1b7006703b9caca3554fec68d7 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 11 Jun 2010 16:17:56 -0500
+Subject: [PATCH 03/28] mt9t111: Pass v4l2_int_device data
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t111.c |    2 +-
+ include/media/mt9t111.h       |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/video/mt9t111.c b/drivers/media/video/mt9t111.c
+index 95e1508..6a7b2c0 100644
+--- a/drivers/media/video/mt9t111.c
++++ b/drivers/media/video/mt9t111.c
+@@ -371,7 +371,7 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 	else
+ 		debug_dummy("debug_dummy -- enable clock\n");;
+ 
+-	rval = sensor->pdata->power_set(on);
++	rval = sensor->pdata->power_set(s, on);
+ 	if (rval < 0) {
+ 		dev_err(&c->dev, "Unable to set the power state: " "mt9t111"
+ 								" sensor\n");
+diff --git a/include/media/mt9t111.h b/include/media/mt9t111.h
+index 0a5161a..aae3f99 100644
+--- a/include/media/mt9t111.h
++++ b/include/media/mt9t111.h
+@@ -56,7 +56,7 @@
+ 
+ struct mt9t111_platform_data {
+ 	char *master;
+-	int (*power_set) (enum v4l2_power on);
++	int (*power_set) (struct v4l2_int_device *s, enum v4l2_power on);
+ 	int (*ifparm) (struct v4l2_ifparm *p);
+ 	int (*priv_data_set) (void *);
+ 	/* Interface control params */
+-- 
+1.6.6.1
+

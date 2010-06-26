@@ -1,0 +1,54 @@
+From 74fef5ae63ecf623ea3accdff05b092699437b11 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 11 Jun 2010 17:53:50 -0500
+Subject: [PATCH 08/28] omap3beagle: camera: Fix null pointer dereference
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   12 ++++--------
+ 1 files changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index af8581a..20174a7 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -54,8 +54,6 @@
+ static struct regulator *beagle_mt9t111_reg1;
+ static struct regulator *beagle_mt9t111_reg2;
+ 
+-static struct device *beaglecam_dev;
+-
+ #if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
+ static struct isp_interface_config mt9t111_if_config = {
+ 	.ccdc_par_ser		= ISP_PARLL, 
+@@ -216,14 +214,14 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+ 	int err;
+ 
+-	beagle_mt9t111_reg1 = regulator_get(beaglecam_dev, "vaux3_1");
++	beagle_mt9t111_reg1 = regulator_get(&pdev->dev, "vaux3_1");
+ 	if (IS_ERR(beagle_mt9t111_reg1)) {
+-		dev_err(beaglecam_dev, "vaux3_1 regulator missing\n");
++		dev_err(&pdev->dev, "vaux3_1 regulator missing\n");
+ 		return PTR_ERR(beagle_mt9t111_reg1);
+ 	}
+-	beagle_mt9t111_reg2 = regulator_get(beaglecam_dev, "vaux4_1");
++	beagle_mt9t111_reg2 = regulator_get(&pdev->dev, "vaux4_1");
+ 	if (IS_ERR(beagle_mt9t111_reg2)) {
+-		dev_err(beaglecam_dev, "vaux4_1 regulator missing\n");
++		dev_err(&pdev->dev, "vaux4_1 regulator missing\n");
+ 		regulator_put(beagle_mt9t111_reg1);
+ 		return PTR_ERR(beagle_mt9t111_reg2);
+ 	}
+@@ -243,8 +241,6 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 	}
+ #endif
+ 
+-	beaglecam_dev = &pdev->dev;
+-
+ 	printk(KERN_INFO MODULE_NAME ": Driver registration complete \n");
+ 
+ 	return 0;
+-- 
+1.6.6.1
+

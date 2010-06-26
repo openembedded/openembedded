@@ -1,0 +1,30 @@
+From 6add1bee85d7cbe5c89650b1325ee345aba904cd Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 24 Jun 2010 17:31:49 -0500
+Subject: [PATCH 16/28] omap3beagle: camera: Fix wrong XCLKA selection
+
+The CAM_USE_XCLKA should have been 0 instead of 1.
+
+Otherwise it was activating XCLKB instead!
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 1652f15..75c8345 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -47,7 +47,7 @@
+ 
+ #define MODULE_NAME			"omap3beaglelmb"
+ 
+-#define CAM_USE_XCLKA       1
++#define CAM_USE_XCLKA       0
+ 
+ static struct regulator *beagle_mt9t111_reg1;
+ static struct regulator *beagle_mt9t111_reg2;
+-- 
+1.6.6.1
+

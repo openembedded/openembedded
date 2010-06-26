@@ -1,0 +1,48 @@
+From 5c343b5261a3a7382cb9aa414be9f1b57acb3056 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 25 Jun 2010 13:43:54 -0500
+Subject: [PATCH 27/28] mt9t111: Fix detect function retval and cleanup prints
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t111.c |    8 +++-----
+ 1 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/video/mt9t111.c b/drivers/media/video/mt9t111.c
+index 6a7b2c0..08122ff 100644
+--- a/drivers/media/video/mt9t111.c
++++ b/drivers/media/video/mt9t111.c
+@@ -221,7 +221,6 @@ mt9t111_detect(struct i2c_client *client)
+ 	/* chip ID is at address 0 */
+ 	if (mt9t111_read_reg(client, MT9T111_CHIP_ID, &val) < 0)
+ 		return -ENODEV;
+-	dev_info(&client->dev, "model id detected 0x%x\n", val);
+ 
+ 	if (val != MT9T111_CHIP_ID_VALUE) {
+ 		dev_warn(&client->dev, "model id mismatch received 0x%x"
+@@ -231,7 +230,7 @@ mt9t111_detect(struct i2c_client *client)
+ 		return -ENODEV;
+ 	}
+ 
+-	return 0;
++	return (int)val;
+ 
+ }
+ 
+@@ -390,11 +389,10 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 			sensor->state = SENSOR_NOT_DETECTED;
+ 			return rval;
+ 		}
+-		mt9t111_loaddefault(c);
++		dev_info(&c->dev, "chip version 0x%02x detected\n", rval);
+ 		sensor->state = SENSOR_DETECTED;
+ 		sensor->ver = rval;
+-		pr_info("mt9t111" " chip version 0x%02x detected\n",
+-								sensor->ver);
++		mt9t111_loaddefault(c);
+ 	}
+ 	return 0;
+ }
+-- 
+1.6.6.1
+

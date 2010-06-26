@@ -1,0 +1,38 @@
+From e37a8b39623910576c5784ccc10229fabe51b4c3 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 16 Jun 2010 09:45:46 +0200
+Subject: [PATCH 12/28] ARM: OMAP3: make camera code build if MT9T111 is built as module or disabled
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 757d430..1e9a868 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -71,7 +71,7 @@ static struct omap_opp * _omap35x_l3_rate_table         = NULL;
+ static struct omap_opp * _omap37x_l3_rate_table         = NULL;
+ #endif  /* CONFIG_PM */
+ 
+-#ifdef CONFIG_VIDEO_MT9T111
++#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
+ #include <media/v4l2-int-device.h>
+ #include <media/mt9t111.h>
+ extern struct mt9t111_platform_data mt9t111_pdata;
+@@ -594,10 +594,12 @@ static struct i2c_board_info __initdata beagle_zippy_i2c2_boardinfo[] = {};
+ #endif
+ 
+ static struct i2c_board_info __initdata beagle_i2c2_boardinfo[] = {
++#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
+ 	{
+ 		I2C_BOARD_INFO("mt9t111", MT9T111_I2C_ADDR),
+ 		.platform_data	= &mt9t111_pdata,
+ 	},
++#endif
+ };
+ 
+ static int __init omap3_beagle_i2c_init(void)
+-- 
+1.6.6.1
+

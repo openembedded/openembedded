@@ -1,0 +1,36 @@
+From 140f36e6a0a01ccef5a13ff2a1a466bd38fa3b2d Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 24 Jun 2010 16:34:13 -0500
+Subject: [PATCH 20/28] omap3beagle: camera: set mclk for mt9t111
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 75c8345..529a6be 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -49,6 +49,8 @@
+ 
+ #define CAM_USE_XCLKA       0
+ 
++#define ISP_MT9T111_MCLK		216000000
++
+ static struct regulator *beagle_mt9t111_reg1;
+ static struct regulator *beagle_mt9t111_reg2;
+ 
+@@ -60,6 +62,9 @@ static struct isp_interface_config mt9t111_if_config = {
+ 	.strobe			= 0x0,
+ 	.prestrobe		= 0x0,
+ 	.shutter		= 0x0,
++	.cam_mclk		= ISP_MT9T111_MCLK,
++	.wenlog 		= ISPCCDC_CFG_WENLOG_AND,
++	.wait_hs_vs		= 2,
+ 	.u.par.par_bridge	= 0x1,
+ 	.u.par.par_clk_pol	= 0x0,
+ };
+-- 
+1.6.6.1
+

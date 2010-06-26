@@ -1,0 +1,37 @@
+From 7d5f49845f06feadb9bc97d458d1ce03814ff5f4 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 11 Jun 2010 16:52:25 -0500
+Subject: [PATCH 07/28] TEMP: omap3beagle: cam: Enable OMAP_MUX
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/configs/omap3_beagle_cam_defconfig |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/configs/omap3_beagle_cam_defconfig b/arch/arm/configs/omap3_beagle_cam_defconfig
+index 0ea8300..bcd9418 100644
+--- a/arch/arm/configs/omap3_beagle_cam_defconfig
++++ b/arch/arm/configs/omap3_beagle_cam_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.32
+-# Fri Jun 11 14:25:23 2010
++# Fri Jun 11 16:51:42 2010
+ #
+ CONFIG_ARM=y
+ CONFIG_SYS_SUPPORTS_APM_EMULATION=y
+@@ -240,7 +240,9 @@ CONFIG_ARCH_OMAP3=y
+ CONFIG_OMAP_SMARTREFLEX=y
+ # CONFIG_OMAP_SMARTREFLEX_TESTING is not set
+ CONFIG_OMAP_RESET_CLOCKS=y
+-# CONFIG_OMAP_MUX is not set
++CONFIG_OMAP_MUX=y
++# CONFIG_OMAP_MUX_DEBUG is not set
++CONFIG_OMAP_MUX_WARNINGS=y
+ CONFIG_OMAP_MCBSP=y
+ CONFIG_OMAP_MBOX_FWK=m
+ CONFIG_OMAP_IOMMU=y
+-- 
+1.6.6.1
+

@@ -1,0 +1,41 @@
+From 2cda8f55cb01496f88ba9ad15a276f84eaa02870 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 24 Jun 2010 14:27:39 -0500
+Subject: [PATCH 15/28] Revert "DEBUG: omap3beagle: camera: Force mode0 in cam_xclka"
+
+This reverts commit 158e14b3d449dde2c6aa9f8cddb86fbbee2d2cd7.
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 77f9469..1652f15 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -34,7 +34,6 @@
+ 
+ #include <plat/mux.h>
+ #include <plat/board.h>
+-#include <plat/control.h>
+ 
+ #include <media/v4l2-int-device.h>
+ #include <media/mt9t111.h>
+@@ -161,7 +160,6 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	switch (power) {
+ 	case V4L2_POWER_OFF:
+ 	case V4L2_POWER_STANDBY:
+-		omap_ctrl_writew(0x0, 0x110); /* Control XCLKA output mux */
+ 		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
+ 
+ 		if (regulator_is_enabled(beagle_mt9t111_reg1))
+@@ -171,7 +169,6 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		break;
+ 
+ 	case V4L2_POWER_ON:
+-		omap_ctrl_writew(0x0, 0x110); /* Control XCLKA output mux */
+ 		isp_set_xclk(vdev->cam->isp, MT9T111_CLK_MIN, CAM_USE_XCLKA);
+ 
+ #if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+-- 
+1.6.6.1
+

@@ -1,0 +1,107 @@
+From 4855949888a0ad8aca69c1ca3eefc7fbc8dad6f9 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Wed, 16 Jun 2010 04:58:46 +0300
+Subject: [PATCH 11/28] omap3beagle: camera: Move i2c registration to the main board
+
+This is because the board-omap3beagle-camera.c file now is
+late_initcall, and the i2c bus registration needed to be before
+i2c host init.
+
+So, in order to have the i2c init, meanwhile having late_initcall,
+this is so far the best solution.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   24 +-----------------------
+ arch/arm/mach-omap2/board-omap3beagle.c        |   12 +++++++++++-
+ 2 files changed, 12 insertions(+), 24 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 55a113c..1652f15 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -47,8 +47,6 @@
+ 
+ #define MODULE_NAME			"omap3beaglelmb"
+ 
+-#define MT9T111_I2C_BUSNUM	(2)
+-
+ #define CAM_USE_XCLKA       1
+ 
+ static struct regulator *beagle_mt9t111_reg1;
+@@ -191,7 +189,7 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	return 0;
+ }
+ 
+-static struct mt9t111_platform_data mt9t111_pdata = {
++struct mt9t111_platform_data mt9t111_pdata = {
+ 	.master		= "omap34xxcam",
+ 	.power_set	= mt9t111_power_set,
+ 	.priv_data_set	= mt9t111_set_prv_data,
+@@ -202,11 +200,6 @@ static struct mt9t111_platform_data mt9t111_pdata = {
+ 	.vs_polarity	= 1, /* 0 - Active low, 1- Active high */
+ };
+ 
+-static struct i2c_board_info __initdata mt9t111_i2c_board_info = {
+-	I2C_BOARD_INFO("mt9t111", MT9T111_I2C_ADDR),
+-	.platform_data	= &mt9t111_pdata,
+-};
+-
+ #endif				/* #ifdef CONFIG_VIDEO_MT9T111 */
+ 
+ 
+@@ -225,21 +218,6 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 		regulator_put(beagle_mt9t111_reg1);
+ 		return PTR_ERR(beagle_mt9t111_reg2);
+ 	}
+-	/*
+-	 * Register the I2C devices present in the board to the I2C
+-	 * framework.
+-	 * If more I2C devices are added, then each device information should
+-	 * be registered with I2C using i2c_register_board_info().
+-	 */
+-#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
+-	err = i2c_register_board_info(MT9T111_I2C_BUSNUM,
+-					&mt9t111_i2c_board_info, 1);
+-	if (err) {
+-		printk(KERN_ERR MODULE_NAME \
+-				": MT9T111 I2C Board Registration failed \n");
+-		return err;
+-	}
+-#endif
+ 
+ 	printk(KERN_INFO MODULE_NAME ": Driver registration complete \n");
+ 
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index aa16acd..757d430 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -71,6 +71,11 @@ static struct omap_opp * _omap35x_l3_rate_table         = NULL;
+ static struct omap_opp * _omap37x_l3_rate_table         = NULL;
+ #endif  /* CONFIG_PM */
+ 
++#ifdef CONFIG_VIDEO_MT9T111
++#include <media/v4l2-int-device.h>
++#include <media/mt9t111.h>
++extern struct mt9t111_platform_data mt9t111_pdata;
++#endif
+ 
+ #define GPMC_CS0_BASE  0x60
+ #define GPMC_CS_SIZE   0x30
+@@ -588,7 +593,12 @@ static struct i2c_board_info __initdata beagle_zippy_i2c2_boardinfo[] = {
+ static struct i2c_board_info __initdata beagle_zippy_i2c2_boardinfo[] = {};
+ #endif
+ 
+-static struct i2c_board_info __initdata beagle_i2c2_boardinfo[] = {};
++static struct i2c_board_info __initdata beagle_i2c2_boardinfo[] = {
++	{
++		I2C_BOARD_INFO("mt9t111", MT9T111_I2C_ADDR),
++		.platform_data	= &mt9t111_pdata,
++	},
++};
+ 
+ static int __init omap3_beagle_i2c_init(void)
+ {
+-- 
+1.6.6.1
+

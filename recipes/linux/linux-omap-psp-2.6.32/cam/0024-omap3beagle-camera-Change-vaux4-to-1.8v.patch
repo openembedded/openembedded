@@ -1,0 +1,32 @@
+From 838274e9850c8dfbb723c892604b017ebf5f0528 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 25 Jun 2010 11:24:07 -0500
+Subject: [PATCH 24/28] omap3beagle: camera: Change vaux4 to 1.8v
+
+Both voltage sources seem to need 1.8v.
+
+After this, sensor is detected :)
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 1e9a868..af9b818 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -446,8 +446,8 @@ static struct regulator_init_data beagle_vaux3 = {
+ /* VAUX4 for CAM_2V8 */
+ static struct regulator_init_data beagle_vaux4 = {
+ 	.constraints = {
+-		.min_uV			= 2800000,
+-		.max_uV			= 2800000,
++		.min_uV			= 1800000,
++		.max_uV			= 1800000,
+ 		.apply_uV		= true,
+ 		.valid_modes_mask	= REGULATOR_MODE_NORMAL
+ 					| REGULATOR_MODE_STANDBY,
+-- 
+1.6.6.1
+

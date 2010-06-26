@@ -1,0 +1,37 @@
+From f01fb232e43dcbc8f61c2ed29d8eb865ebb386b7 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 25 Jun 2010 12:04:48 -0500
+Subject: [PATCH 26/28] omap3beagle: camera: Complement remainig sensor hw config settings
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 8a4b7bc..b0148d6 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -57,6 +57,10 @@ static struct regulator *beagle_mt9t111_1_8v1;
+ static struct regulator *beagle_mt9t111_1_8v2;
+ 
+ #if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++
++/* Arbitrary memory handling limit */
++#define MT9T111_BIGGEST_FRAME_BYTE_SIZE	PAGE_ALIGN(2048 * 1536 * 4)
++
+ static struct isp_interface_config mt9t111_if_config = {
+ 	.ccdc_par_ser		= ISP_PARLL, 
+ 	.dataline_shift		= 0x0,
+@@ -125,6 +129,8 @@ static struct omap34xxcam_hw_config mt9t111_hwc = {
+ 	.dev_minor		= 0,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+ 	.u.sensor.sensor_isp	= 1,
++	.u.sensor.capture_mem	= MT9T111_BIGGEST_FRAME_BYTE_SIZE * 2,
++	.u.sensor.ival_default	= { 1, 10 },
+ };
+ #endif
+ 
+-- 
+1.6.6.1
+

@@ -1,0 +1,28 @@
+From 04f40f398ac899504e4836e78f8e791f98200cf2 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 24 Jun 2010 17:43:23 -0500
+Subject: [PATCH 21/28] mt9t111: Fix max supported xclk
+
+According to Aptina documentation, the max should be 54 MHz, not 75 MHz.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ include/media/mt9t111.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/media/mt9t111.h b/include/media/mt9t111.h
+index aae3f99..cd34885 100644
+--- a/include/media/mt9t111.h
++++ b/include/media/mt9t111.h
+@@ -42,7 +42,7 @@
+ /*i2c adress for MT9T111*/
+ #define MT9T111_I2C_ADDR  		(0x78 >> 1)
+ 
+-#define MT9T111_CLK_MAX 	(75000000) /* 75MHz */
++#define MT9T111_CLK_MAX 	(54000000) /* 54MHz */
+ #define MT9T111_CLK_MIN	(6000000)  /* 6Mhz */
+ 
+ #define MT9T111_I2C_CONFIG		(1)
+-- 
+1.6.6.1
+

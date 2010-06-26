@@ -1,0 +1,47 @@
+From 4f010e99c75490daf2f89cf5aed95ea5cd1f3fad Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Wed, 25 Nov 2009 12:30:46 -0600
+Subject: [PATCH 19/28] omap3isp: core: Do smarter MCLK setting
+
+Since the ratio between MCLK and DPLL4_M5 could not be 1:1
+(i.e. on 3430 its 2:1), it's necessary to check ratio
+between those 2 first.
+
+This should make MCLK setting more adequate to different
+chipsets.
+
+Tested on Zoom2 (3430 ES3.1)
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/isp/isp.c |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/media/video/isp/isp.c b/drivers/media/video/isp/isp.c
+index cf68720..29dd005 100644
+--- a/drivers/media/video/isp/isp.c
++++ b/drivers/media/video/isp/isp.c
+@@ -2353,8 +2353,19 @@ int isp_enable_mclk(struct device *dev)
+ {
+ 	struct isp_device *isp = dev_get_drvdata(dev);
+ 	int r;
++	unsigned long curr_mclk, curr_dpll4_m5, ratio;
+ 
+-	r = clk_set_rate(isp->dpll4_m5_ck, isp->mclk);
++	/* Check ratio between DPLL4_M5 and CAM_MCLK */
++	curr_mclk = clk_get_rate(isp->cam_mclk);
++	curr_dpll4_m5 = clk_get_rate(isp->dpll4_m5_ck);
++
++	/* Protection for potential Zero division, or zero-ratio result */
++	if (!curr_mclk || !curr_dpll4_m5)
++		BUG();
++
++	ratio = curr_mclk / curr_dpll4_m5;
++
++	r = clk_set_rate(isp->dpll4_m5_ck, isp->mclk / ratio);
+ 		if (r) {
+ 			dev_err(dev, "clk_set_rate for dpll4_m5_ck failed\n");
+ 			return r;
+-- 
+1.6.6.1
+

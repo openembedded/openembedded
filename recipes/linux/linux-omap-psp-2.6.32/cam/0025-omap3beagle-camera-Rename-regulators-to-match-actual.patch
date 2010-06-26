@@ -1,0 +1,110 @@
+From b8f60d7198d5df18336cb0151ac593cfa422f83a Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 25 Jun 2010 12:03:59 -0500
+Subject: [PATCH 25/28] omap3beagle: camera: Rename regulators to match actual voltage levels
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   46 ++++++++++++------------
+ 1 files changed, 23 insertions(+), 23 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 792c48d..8a4b7bc 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -53,8 +53,8 @@
+ 
+ #define LEOPARD_RESET_GPIO		98
+ 
+-static struct regulator *beagle_mt9t111_1_8v;
+-static struct regulator *beagle_mt9t111_2_8v;
++static struct regulator *beagle_mt9t111_1_8v1;
++static struct regulator *beagle_mt9t111_1_8v2;
+ 
+ #if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
+ static struct isp_interface_config mt9t111_if_config = {
+@@ -169,10 +169,10 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	case V4L2_POWER_STANDBY:
+ 		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
+ 
+-		if (regulator_is_enabled(beagle_mt9t111_1_8v))
+-			regulator_disable(beagle_mt9t111_1_8v);
+-		if (regulator_is_enabled(beagle_mt9t111_2_8v))
+-			regulator_disable(beagle_mt9t111_2_8v);
++		if (regulator_is_enabled(beagle_mt9t111_1_8v1))
++			regulator_disable(beagle_mt9t111_1_8v1);
++		if (regulator_is_enabled(beagle_mt9t111_1_8v2))
++			regulator_disable(beagle_mt9t111_1_8v2);
+ 		break;
+ 
+ 	case V4L2_POWER_ON:
+@@ -184,12 +184,12 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		gpio_set_value(LEOPARD_RESET_GPIO, 0);
+ 
+ 		/* turn on VDD */
+-		regulator_enable(beagle_mt9t111_1_8v);
++		regulator_enable(beagle_mt9t111_1_8v1);
+ 
+ 		mdelay(1);
+ 
+ 		/* turn on VDD_IO */
+-		regulator_enable(beagle_mt9t111_2_8v);
++		regulator_enable(beagle_mt9t111_1_8v2);
+ 
+ 		mdelay(50);
+ 
+@@ -240,23 +240,23 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+ 	int err;
+ 
+-	beagle_mt9t111_1_8v = regulator_get(&pdev->dev, "vaux3_1");
+-	if (IS_ERR(beagle_mt9t111_1_8v)) {
++	beagle_mt9t111_1_8v1 = regulator_get(&pdev->dev, "vaux3_1");
++	if (IS_ERR(beagle_mt9t111_1_8v1)) {
+ 		dev_err(&pdev->dev, "vaux3_1 regulator missing\n");
+-		return PTR_ERR(beagle_mt9t111_1_8v);
++		return PTR_ERR(beagle_mt9t111_1_8v1);
+ 	}
+-	beagle_mt9t111_2_8v = regulator_get(&pdev->dev, "vaux4_1");
+-	if (IS_ERR(beagle_mt9t111_2_8v)) {
++	beagle_mt9t111_1_8v2 = regulator_get(&pdev->dev, "vaux4_1");
++	if (IS_ERR(beagle_mt9t111_1_8v2)) {
+ 		dev_err(&pdev->dev, "vaux4_1 regulator missing\n");
+-		regulator_put(beagle_mt9t111_1_8v);
+-		return PTR_ERR(beagle_mt9t111_2_8v);
++		regulator_put(beagle_mt9t111_1_8v1);
++		return PTR_ERR(beagle_mt9t111_1_8v2);
+ 	}
+ 
+ 	if (gpio_request(LEOPARD_RESET_GPIO, "cam_rst") != 0) {
+ 		dev_err(&pdev->dev, "Could not request GPIO %d",
+ 			LEOPARD_RESET_GPIO);
+-		regulator_put(beagle_mt9t111_2_8v);
+-		regulator_put(beagle_mt9t111_1_8v);
++		regulator_put(beagle_mt9t111_1_8v2);
++		regulator_put(beagle_mt9t111_1_8v1);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -270,12 +270,12 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 
+ static int beagle_cam_remove(struct platform_device *pdev)
+ {
+-	if (regulator_is_enabled(beagle_mt9t111_1_8v))
+-		regulator_disable(beagle_mt9t111_1_8v);
+-	regulator_put(beagle_mt9t111_1_8v);
+-	if (regulator_is_enabled(beagle_mt9t111_2_8v))
+-		regulator_disable(beagle_mt9t111_2_8v);
+-	regulator_put(beagle_mt9t111_2_8v);
++	if (regulator_is_enabled(beagle_mt9t111_1_8v1))
++		regulator_disable(beagle_mt9t111_1_8v1);
++	regulator_put(beagle_mt9t111_1_8v1);
++	if (regulator_is_enabled(beagle_mt9t111_1_8v2))
++		regulator_disable(beagle_mt9t111_1_8v2);
++	regulator_put(beagle_mt9t111_1_8v2);
+ 
+ 	gpio_free(LEOPARD_RESET_GPIO);
+ 
+-- 
+1.6.6.1
+

@@ -1,0 +1,103 @@
+From 769bd80474aeb9951046336c4332f1cee3d27619 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 24 Jun 2010 17:53:55 -0500
+Subject: [PATCH 22/28] omap3beagle: camera: Clarify regulators names
+
+Changed:
+ - beagle_mt9t111_reg1 -> beagle_mt9t111_1_8v
+ - beagle_mt9t111_reg2 -> beagle_mt9t111_2_8v
+
+To help clarify sequence.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   42 ++++++++++++------------
+ 1 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 529a6be..6babaf3 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -51,8 +51,8 @@
+ 
+ #define ISP_MT9T111_MCLK		216000000
+ 
+-static struct regulator *beagle_mt9t111_reg1;
+-static struct regulator *beagle_mt9t111_reg2;
++static struct regulator *beagle_mt9t111_1_8v;
++static struct regulator *beagle_mt9t111_2_8v;
+ 
+ #if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
+ static struct isp_interface_config mt9t111_if_config = {
+@@ -167,10 +167,10 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	case V4L2_POWER_STANDBY:
+ 		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
+ 
+-		if (regulator_is_enabled(beagle_mt9t111_reg1))
+-			regulator_disable(beagle_mt9t111_reg1);
+-		if (regulator_is_enabled(beagle_mt9t111_reg2))
+-			regulator_disable(beagle_mt9t111_reg2);
++		if (regulator_is_enabled(beagle_mt9t111_1_8v))
++			regulator_disable(beagle_mt9t111_1_8v);
++		if (regulator_is_enabled(beagle_mt9t111_2_8v))
++			regulator_disable(beagle_mt9t111_2_8v);
+ 		break;
+ 
+ 	case V4L2_POWER_ON:
+@@ -181,8 +181,8 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ #endif
+ 
+ 		/* turn on analog power */
+-		regulator_enable(beagle_mt9t111_reg1);
+-		regulator_enable(beagle_mt9t111_reg2);
++		regulator_enable(beagle_mt9t111_1_8v);
++		regulator_enable(beagle_mt9t111_2_8v);
+ 		udelay(100);
+ 
+ 		break;
+@@ -212,16 +212,16 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+ 	int err;
+ 
+-	beagle_mt9t111_reg1 = regulator_get(&pdev->dev, "vaux3_1");
+-	if (IS_ERR(beagle_mt9t111_reg1)) {
++	beagle_mt9t111_1_8v = regulator_get(&pdev->dev, "vaux3_1");
++	if (IS_ERR(beagle_mt9t111_1_8v)) {
+ 		dev_err(&pdev->dev, "vaux3_1 regulator missing\n");
+-		return PTR_ERR(beagle_mt9t111_reg1);
++		return PTR_ERR(beagle_mt9t111_1_8v);
+ 	}
+-	beagle_mt9t111_reg2 = regulator_get(&pdev->dev, "vaux4_1");
+-	if (IS_ERR(beagle_mt9t111_reg2)) {
++	beagle_mt9t111_2_8v = regulator_get(&pdev->dev, "vaux4_1");
++	if (IS_ERR(beagle_mt9t111_2_8v)) {
+ 		dev_err(&pdev->dev, "vaux4_1 regulator missing\n");
+-		regulator_put(beagle_mt9t111_reg1);
+-		return PTR_ERR(beagle_mt9t111_reg2);
++		regulator_put(beagle_mt9t111_1_8v);
++		return PTR_ERR(beagle_mt9t111_2_8v);
+ 	}
+ 
+ 	printk(KERN_INFO MODULE_NAME ": Driver registration complete \n");
+@@ -231,12 +231,12 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 
+ static int beagle_cam_remove(struct platform_device *pdev)
+ {
+-	if (regulator_is_enabled(beagle_mt9t111_reg1))
+-		regulator_disable(beagle_mt9t111_reg1);
+-	regulator_put(beagle_mt9t111_reg1);
+-	if (regulator_is_enabled(beagle_mt9t111_reg2))
+-		regulator_disable(beagle_mt9t111_reg2);
+-	regulator_put(beagle_mt9t111_reg2);
++	if (regulator_is_enabled(beagle_mt9t111_1_8v))
++		regulator_disable(beagle_mt9t111_1_8v);
++	regulator_put(beagle_mt9t111_1_8v);
++	if (regulator_is_enabled(beagle_mt9t111_2_8v))
++		regulator_disable(beagle_mt9t111_2_8v);
++	regulator_put(beagle_mt9t111_2_8v);
+ 
+ 	return 0;
+ }
+-- 
+1.6.6.1
+
