@@ -13,7 +13,7 @@ DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
-INC_PR = "r14"
+INC_PR = "r15"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \
@@ -80,6 +80,9 @@ do_install_append() {
   # The system MDA will set this later anyway.
   sed -i 's/MAIL_DIR/#MAIL_DIR/g' ${D}${sysconfdir}/login.defs
   sed -i 's/#MAIL_FILE/MAIL_FILE/g' ${D}${sysconfdir}/login.defs
+
+  # disable checking emails at all
+  sed -i 's/MAIL_CHECK_ENAB/#MAIL_CHECK_ENAB/g' ${D}${sysconfdir}/login.defs
 
   install -d ${D}${sbindir} ${D}${base_sbindir} ${D}${base_bindir} 
   for i in passwd chfn newgrp chsh ; do
