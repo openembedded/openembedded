@@ -14,4 +14,4 @@ DEPENDS += "libdrm"
 DESCRIPTION = "X.Org X server -- Glamo display driver with KMS support"
 
 EXTRA_OECONF = " --enable-kms "
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
