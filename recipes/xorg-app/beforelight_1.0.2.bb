@@ -1,8 +1,6 @@
 require xorg-app-common.inc
 PE = "1"
 
-#DESCRIPTION = ""
-
 DEPENDS += " libxscrnsaver libxt libxaw libxt"
 
 

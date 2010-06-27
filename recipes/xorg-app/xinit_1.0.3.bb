@@ -1,8 +1,6 @@
 require xorg-app-common.inc
 PE = "1"
 
-#DESCRIPTION = ""
-
 FILES_${PN} += "  /usr/lib/X11/xinit"
 
 
