@@ -1,7 +1,5 @@
 # Build of xserver-kdrive is not possible with xextproto >= 7.1.
 # This package allows to install old 7.0 includes in parallel.
-PR_append = ".1"
-
 BPN = "xextproto"
 
 require xextproto_7.0.5.bb
@@ -18,3 +16,4 @@ do_stage() {
 # No, we really do not want to install .pc file and overwrite newer one:
 pkgconfig_sysroot_preprocess() {
 }
+PR = "${INC_PR}.0"
