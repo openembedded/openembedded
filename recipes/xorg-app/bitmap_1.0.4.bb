@@ -1,5 +1,5 @@
 require xorg-app-common.inc
-DEPENDS += " virtual/libx11 libxmu xbitmaps libxt"
+DEPENDS += " libxmu xbitmaps libxt"
 PE = "1"
 
 SRC_URI[archive.md5sum] = "7d0c1ac193be2491c72a91ccf37ef18e"

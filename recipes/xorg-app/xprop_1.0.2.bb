@@ -3,7 +3,7 @@ PE = "1"
 
 #DESCRIPTION = ""
 
-DEPENDS += " libxmu virtual/libx11"
+DEPENDS += " libxmu "
 
 
 SRC_URI[archive.md5sum] = "5b6f02a3b1cda0cadc35f84814fe53d4"

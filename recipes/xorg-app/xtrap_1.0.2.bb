@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 libxtrap"
+DEPENDS += " libxtrap"
 
 
 SRC_URI[archive.md5sum] = "97a62a011a11f03b46d72851aa298fa8"

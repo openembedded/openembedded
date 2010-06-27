@@ -1,6 +1,6 @@
 require xorg-app-common.inc
 DESCRIPTION = "query configuration information of DRI drivers"
-DEPENDS += " virtual/libx11 glproto virtual/libgl"
+DEPENDS += " glproto virtual/libgl"
 PE = "1"
 
 SRC_URI[archive.md5sum] = "a5ec51ed9f0a55dc3462d90d52ff899c"

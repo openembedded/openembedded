@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " libxp virtual/libx11"
+DEPENDS += " libxp "
 
 
 SRC_URI[archive.md5sum] = "99ee20a9af25375895f5d7ebc1004163"

@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " libxaw virtual/libx11 libxt libxext xtrans xproxymngproto libxau"
+DEPENDS += " libxaw libxt libxext xtrans xproxymngproto libxau"
 
 
 SRC_URI[archive.md5sum] = "c121945afcfc84e99af17158fda68be9"

@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " libxmu virtual/libx11"
+DEPENDS += " libxmu "
 
 
 SRC_URI[archive.md5sum] = "01c0a14755fc91369e8c011c9f881d5d"

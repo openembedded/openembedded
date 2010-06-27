@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 glproto virtual/libgl"
+DEPENDS += " glproto virtual/libgl"
 
 
 SRC_URI[archive.md5sum] = "be3c5a9b242a57226b5bb5f22ec341ca"

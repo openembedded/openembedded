@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " libice libxt virtual/libx11 xproxymngproto"
+DEPENDS += " libice libxt xproxymngproto"
 
 
 SRC_URI[archive.md5sum] = "aad44d0f65b97fd6d564b1d2ae510bb1"

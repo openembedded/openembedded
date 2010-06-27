@@ -1,6 +1,6 @@
 require xorg-app-common.inc
 DESCRIPTION = "analog / digital clock for X"
-DEPENDS += " virtual/libx11 libxaw libxrender libxft libxkbfile libxt"
+DEPENDS += " libxaw libxrender libxft libxkbfile libxt"
 PE = "1"
 
 SRC_URI[archive.md5sum] = "2b1a3d030d87e62a591db8ee4c0072e6"

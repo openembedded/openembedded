@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 
 DESCRIPTION = "print an X window dump"
-DEPENDS += " libxmu virtual/libx11"
+DEPENDS += " libxmu "
 PE = "1"
 
 SRC_URI[archive.md5sum] = "1c2c540d240def3ea65ff2030f059f8a"

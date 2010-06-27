@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " libxkbfile virtual/libx11"
+DEPENDS += " libxkbfile "
 
 
 SRC_URI[archive.md5sum] = "3d3eb10466442354d6b73b503b9829db"

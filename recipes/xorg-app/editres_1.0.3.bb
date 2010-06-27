@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 libxt libxmu libxaw"
+DEPENDS += " libxt libxmu libxaw"
 
 
 SRC_URI[archive.md5sum] = "a25f931cc6c8d03daaed434f5db5df2d"

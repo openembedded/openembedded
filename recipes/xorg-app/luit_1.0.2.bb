@@ -3,7 +3,7 @@ PE = "1"
 
 #DESCRIPTION = ""
 
-DEPENDS += " zlib zlib virtual/libx11 libfontenc"
+DEPENDS += " zlib zlib libfontenc"
 
 
 SRC_URI[archive.md5sum] = "aacda46598ce3af8ca16e2a8132db1b2"

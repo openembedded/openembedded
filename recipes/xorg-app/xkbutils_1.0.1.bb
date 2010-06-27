@@ -2,7 +2,7 @@ require xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libxaw libxkbfile virtual/libx11"
+DEPENDS += " libxaw libxkbfile "
 
 
 SRC_URI[archive.md5sum] = "84396a3dd75337caaae29d8fa5616fb1"

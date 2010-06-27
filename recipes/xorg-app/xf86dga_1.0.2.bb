@@ -3,7 +3,7 @@ PE = "1"
 
 #DESCRIPTION = ""
 
-DEPENDS += " virtual/libx11 libxxf86dga libxt libxaw libxmu"
+DEPENDS += " libxxf86dga libxt libxaw libxmu"
 
 
 SRC_URI[archive.md5sum] = "66feef21fb4e769cc1e2f193ae461a8c"

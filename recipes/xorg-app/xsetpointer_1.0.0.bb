@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " libxi virtual/libx11"
+DEPENDS += " libxi "
 
 
 SRC_URI[archive.md5sum] = "c94ea103e27e370e4e5030e50c5d5d69"

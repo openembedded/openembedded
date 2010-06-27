@@ -3,7 +3,7 @@ PE = "1"
 
 #DESCRIPTION = ""
 
-DEPENDS += " libxkbfile virtual/libx11"
+DEPENDS += " libxkbfile "
 
 
 SRC_URI[archive.md5sum] = "2f902e0a89aaf2b19e06e7f26c6efb3a"

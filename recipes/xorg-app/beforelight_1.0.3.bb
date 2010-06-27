@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 
 DESCRIPTION = "a sample implementation of a screen saver for X"
-DEPENDS += " virtual/libx11 libxscrnsaver libxt libxaw libxt"
+DEPENDS += " libxscrnsaver libxt libxaw libxt"
 PE = "1"
 
 SRC_URI[archive.md5sum] = "d55b0e7196dafcfeb4db3886af2e1969"

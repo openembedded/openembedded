@@ -5,7 +5,7 @@ PR = "${INC_PR}.0"
 # missing file from source archive, fixed just after release in http://cgit.freedesktop.org/xorg/app/xlsclients/commit/?id=f30f41b8dc37e775279835c97f2bea83a513dc10
 SRC_URI += "file://strnlen.h"
 
-DEPENDS += " virtual/libx11 xcb-util"
+DEPENDS += " xcb-util"
 
 do_compile_prepend() {
   mv ${WORKDIR}/strnlen.h ${S}

@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 libxxf86vm"
+DEPENDS += " libxxf86vm"
 
 
 SRC_URI[archive.md5sum] = "45d8fa3c85d4bfda87251798fd605a45"

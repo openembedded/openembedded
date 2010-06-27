@@ -3,7 +3,7 @@ PE = "1"
 
 DESCRIPTION = "The appres program prints the resources seen by an application."
 
-DEPENDS += " virtual/libx11 libxt"
+DEPENDS += " libxt"
 
 
 SRC_URI[archive.md5sum] = "420e6cdf38bb771ec8b00228bf09e8ff"

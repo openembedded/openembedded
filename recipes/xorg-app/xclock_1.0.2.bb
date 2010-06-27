@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 libxaw libxrender libxft libxkbfile libxt"
+DEPENDS += " libxaw libxrender libxft libxkbfile libxt"
 
 
 SRC_URI[archive.md5sum] = "6b930326f71993fb54b7203902b387cd"

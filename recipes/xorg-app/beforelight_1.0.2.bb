@@ -3,7 +3,7 @@ PE = "1"
 
 #DESCRIPTION = ""
 
-DEPENDS += " virtual/libx11 libxscrnsaver libxt libxaw libxt"
+DEPENDS += " libxscrnsaver libxt libxaw libxt"
 
 
 SRC_URI[archive.md5sum] = "8bc2e35cdcd2e6a80eab1b77c41f2a46"

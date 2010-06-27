@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 libxprintapputil libxaw libxprintutil libxt libxp"
+DEPENDS += " libxprintapputil libxaw libxprintutil libxt libxp"
 
 
 SRC_URI[archive.md5sum] = "5c7fd1e35dd63089229e357c46e4f407"

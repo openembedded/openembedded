@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 
 DESCRIPTION = "Alter a monitor's gamma correction through the X server"
-DEPENDS += " virtual/libx11 libxxf86vm"
+DEPENDS += " libxxf86vm"
 PE = "1"
 
 SRC_URI[archive.md5sum] = "f13ddedaa63a608d3b025d326f4f5b5d"

@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " libxp libxprintutil virtual/libx11"
+DEPENDS += " libxp libxprintutil "
 
 
 SRC_URI[archive.md5sum] = "c1558277f4a010473ff0744845c49537"

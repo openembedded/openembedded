@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 libxfont libfs libfontenc"
+DEPENDS += " libxfont libfs libfontenc"
 
 
 SRC_URI[archive.md5sum] = "d5d560ea77541591d2a6656991286457"

@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 PE = "1"
 
-DEPENDS += " virtual/libx11 libfs"
+DEPENDS += " libfs"
 
 
 SRC_URI[archive.md5sum] = "99144743ab3cbb9cf37090fdc9e747db"
