@@ -1,7 +1,7 @@
 require xorg-driver-video.inc
 PE = "1"
 
-#DESCRIPTION = ""
+
 
 DEPENDS += " drm xf86driproto"
 SRC_URI[archive.md5sum] = "04c49acb5c5dbde14eabd32d06df6e73"

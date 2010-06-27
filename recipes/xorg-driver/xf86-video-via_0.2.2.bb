@@ -1,7 +1,7 @@
 require xorg-driver-video.inc
 PE = "1"
 
-#DESCRIPTION = ""
+
 
 DEPENDS += " drm xf86driproto libxvmc"
 SRC_URI[archive.md5sum] = "d5fe25d3cfa0a64cc77681f15f9c3159"

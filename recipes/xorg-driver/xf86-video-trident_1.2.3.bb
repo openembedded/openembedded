@@ -1,7 +1,7 @@
 require xorg-driver-video.inc
 PE = "1"
 
-#DESCRIPTION = ""
+
 
 DEPENDS += " xf86dgaproto"
 SRC_URI[archive.md5sum] = "c0e8b2f54942b6902b7dd4f30defe800"

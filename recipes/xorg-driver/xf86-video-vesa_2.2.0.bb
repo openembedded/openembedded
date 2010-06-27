@@ -4,7 +4,7 @@ PE = "1"
 SRC_URI += "file://fix-includepath.patch \
             file://fix-configure-includes.patch"
 
-#DESCRIPTION = ""
+
 
 RDEPENDS_${PN} += "xserver-xorg-module-libint10 "
 SRC_URI[archive.md5sum] = "9a86b683f73f3806f55d05cd804a6f4a"
