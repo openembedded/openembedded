@@ -1,6 +1,5 @@
 require xorg-driver-video.inc
 DESCRIPTION = "X.Org X server -- SiliconMotion display driver"
-
 PE = "1"
 PR = "${INC_PR}.0"
 

@@ -1,5 +1,4 @@
 require xorg-driver-input.inc
-
 DESCRIPTION = "X.Org X server -- ELOGraphics input driver"
 PE = "2"
 PR = "${INC_PR}.0"
