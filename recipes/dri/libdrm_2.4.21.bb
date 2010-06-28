@@ -2,7 +2,7 @@ require libdrm.inc
 
 DEPENDS = "libpthread-stubs"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI += "file://glamo.patch"
 
@@ -11,6 +11,8 @@ SRC_URI[sha256sum] = "4e1b612ba3b6b1deae4a8c14946099283e7a00e48a5ab002eaf4312f5a
 
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '', '--disable-intel',d)}"
 EXTRA_OECONF_append_shr = " --enable-glamo-experimental-api --disable-radeon --disable-intel"
+
+EXTRA_OECONF_append_angstrom = " --disable-radeon "
 
 PACKAGES =+ "${@base_contains('MACHINE_FEATURES', 'x86', '${PN}-intel', '',d)}"
 
