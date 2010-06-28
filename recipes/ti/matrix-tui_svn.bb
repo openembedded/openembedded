@@ -3,10 +3,11 @@ HOMEPAGE = "https://gforge.ti.com/gf/project/matrix_tui/"
 LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
+DEPENDS = "libxml2"
 
 SRCREV = "29"
 PV = "1.0"
-PR = "r1+svnr${SRCPV}"
+PR = "r2+svnr${SRCPV}"
 
 INSANE_SKIP_${PN} = "True"
 
