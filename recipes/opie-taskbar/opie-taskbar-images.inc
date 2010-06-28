@@ -2,7 +2,7 @@ DESCRIPTION = "Opie Launcher and Taskbar"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RPROVIDES_${PN} = "${PN}"
+RPROVIDES = "${PN}"
 APPNAME = "qpe"
 
 S = "${WORKDIR}/pics"
