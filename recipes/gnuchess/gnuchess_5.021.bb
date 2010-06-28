@@ -5,6 +5,9 @@ MAINTAINER = "Andreas Holzer <a.holzer@cheese.at>"
 LICENSE = "GPL"
 PR = "r1"
 RSUGGESTS_${PN} = "xboard"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 SRC_URI = "http://members.cheese.at/woody/fltk-chess/gnuchess_5.02.tar.gz \
            file://gnuchess.desktop \
            file://gnuchess.png \
