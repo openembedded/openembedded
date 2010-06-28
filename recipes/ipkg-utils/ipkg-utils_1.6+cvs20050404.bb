@@ -5,7 +5,9 @@ LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS_${PN} = "python"
 SRCDATE = "20050930"
-PR = "r25"
+PR = "r26"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
            file://ipkg-utils-fix.patch \
