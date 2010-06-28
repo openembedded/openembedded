@@ -10,7 +10,7 @@ QT_CONFIG_FLAGS += "-release -no-cups -no-accessibility -reduce-relocations \
                     -shared -no-nas-sound -no-sm -no-nis \
                     -qt-gif -system-libjpeg -system-libpng -system-zlib \
                     -no-sql-ibase -plugin-sql-mysql -no-sql-odbc -plugin-sql-psql -plugin-sql-sqlite -plugin-sql-sqlite2 \
-                    -no-pch -qdbus -stl -glib -phonon -webkit -xmlpatterns"
+                    -no-pch -qdbus -stl -glib -phonon -webkit"
 
 EXTRA_OEMAKE = "-e"
 
