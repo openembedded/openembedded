@@ -4,6 +4,7 @@ SRC_URI = "http://dri.freedesktop.org/libdrm/libdrm-${PV}.tar.bz2"
 PROVIDES = "drm"
 
 INC_PR = "r5"
+PE = "1"
 
 inherit autotools pkgconfig
 
