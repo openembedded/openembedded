@@ -19,6 +19,7 @@ export CODEC_INSTALL_DIR_RECIPE      = "${installdir}/ti-codecs-tree"
 export DSPLIB_INSTALL_DIR_RECIPE     = "${installdir}/ti-dsplib-tree"
 export DVSDK_DEMOS_INSTALL_DIR_RECIPE = "${installdir}/ti-dvsdk-demos-tree"
 export BIOSPSP_INSTALL_DIR_RECIPE    = "${installdir}/ti-biospsp-tree"
+export AUDIO_SOC_INSTALL_DIR_RECIPE  = "${installdir}/ti-audio-soc-example-tree"
 
 # This is where the tools will end up in staging provided PACKAGE_ARCH = ${MACHINE_ARCH} is set
 export CODEGEN_INSTALL_DIR    = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${CODEGEN_INSTALL_DIR_RECIPE}"
