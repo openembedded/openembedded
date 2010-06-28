@@ -7,4 +7,6 @@ SRC_URI = "${XORG_MIRROR}/individual/doc/${BPN}-${PV}.tar.bz2;name=archive"
 
 S = "${WORKDIR}/${BPN}-${PV}"
 
+INC_PR = "r1"
+
 inherit autotools pkgconfig
