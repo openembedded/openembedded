@@ -55,45 +55,57 @@ EXTRA_OECMAKE = "\
   -DCMAKE_STRIP:FILEPATH=${STRIP} \
   -DNM_PATH:FILEPATH=${NM} \
   -DLLVM_ENABLE_PIC:BOOL=ON \
+  -DLLVM_TARGET_ARCH:STRING=${LLVM_ARCH} \
+  -DLLVM_ENABLE_ASSERTIONS:BOOL=ON \
+  -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
+  -DBUILD_SHARED_LIBS:BOOL=ON \
 "
+
+PACKAGES = " ${PN}-dev ${PN}-dbg ${PN}-doc "
+
+PACKAGES_DYNAMIC = "llvm-*"
+
+python populate_packages_prepend () {
+        libllvm_libdir = bb.data.expand('${libdir}/', d)
+
+        do_split_packages(d, libllvm_libdir, '^lib(.*)\.so$', 'libllvm-%s', 'Split package for %s', allow_dirs=True)
+}
+
+FILES_${PN}-dev = "${includedir} ${bindir}/* ${libdir}/LLVMHello.so"
 
 llvm_stage() {
 	# Install into a private directory to be able to reorganize the files.
-  oe_runmake DESTDIR=${WORKDIR}/llvm-install install
+	oe_runmake DESTDIR=${WORKDIR}/llvm-install install
 
 	# Create our custom target directories
 	install -d ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
-    install -d ${STAGING_INCDIR}/llvm${LLVM_RELEASE}
+	install -d ${STAGING_INCDIR}/llvm${LLVM_RELEASE}
 	install -d ${STAGING_LIBDIR}/llvm${LLVM_RELEASE}
 
 	#	Move headers into their own directory
 	cp -r ${WORKDIR}/llvm-install/${prefix}/include/llvm \
-    ${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
+	${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
 	cp -r ${WORKDIR}/llvm-install/${prefix}/include/llvm-c \
-    ${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
-
-	# llvm somehow forgets these
-#	find include/llvm -name "*.h" -maxdepth 1 -exec \
-#    install {} ${STAGING_INCDIR}/llvm${LLVM_RELEASE}/llvm \;
+	${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
 
 	find ${WORKDIR}/llvm-install/${prefix}/lib -name "*" -maxdepth 1 -exec \
-    install {} ${STAGING_LIBDIR}/llvm${LLVM_RELEASE} \;
+	install {} ${STAGING_LIBDIR}/llvm${LLVM_RELEASE} \;
 
 	#	I dont know another way out. Binaries are installed into a special subdir
 	find ${WORKDIR}/llvm-install/${prefix}/bin -name "*" -maxdepth 1 -exec \
-    install {} ${STAGING_BINDIR}/llvm${LLVM_RELEASE} \;
+	install {} ${STAGING_BINDIR}/llvm${LLVM_RELEASE} \;
 
 	# LLVM does not install this by default.
-  install bin/tblgen ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
+	install bin/tblgen ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
 
-  # Fix the paths in the config script to make it find the binaries and
-  # library files. Doing so allows 3rd party configure scripts working
-  # unmodified.
-  sed -e's!my.*ABS_RUN_DIR =.*!my $ABS_RUN_DIR = "${STAGING_DIR_TARGET}";!' \
-      -e's!my.*INCLUDEDIR =.*!my $INCLUDEDIR = "${STAGING_INCDIR}/llvm${LLVM_RELEASE}";!' \
-      -e's!my.*LIBDIR.*!my $LIBDIR = "${STAGING_LIBDIR}/llvm${LLVM_RELEASE}";!' \
-      -e's!my.*BINDIR.*!my $BINDIR = "${STAGING_BINDIR}/llvm${LLVM_RELEASE}";!' \
-      bin/llvm-config > bin/llvm-config${LLVM_RELEASE}
+	# Fix the paths in the config script to make it find the binaries and
+	# library files. Doing so allows 3rd party configure scripts working
+	# unmodified.
+	sed -e's!my.*ABS_RUN_DIR =.*!my $ABS_RUN_DIR = "${STAGING_DIR_TARGET}";!' \
+		-e's!my.*INCLUDEDIR =.*!my $INCLUDEDIR = "${STAGING_INCDIR}/llvm${LLVM_RELEASE}";!' \
+		-e's!my.*LIBDIR.*!my $LIBDIR = "${STAGING_LIBDIR}/llvm${LLVM_RELEASE}";!' \
+		-e's!my.*BINDIR.*!my $BINDIR = "${STAGING_BINDIR}/llvm${LLVM_RELEASE}";!' \
+		bin/llvm-config > bin/llvm-config${LLVM_RELEASE}
 }
 
 do_stage() {
