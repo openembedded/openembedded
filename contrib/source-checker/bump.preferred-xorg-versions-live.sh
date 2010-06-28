@@ -33,6 +33,11 @@ function updateVersions {
   if ls -1 ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ; then
     echo "PREFERRED_VERSION_${PKG} ?= \"${VER}\"" >> ${PREFS_LIVE}
   fi
+  if ls -1 ${BBS}${GRP}/${PKG}-native_*.bb >/dev/null 2>/dev/null || 
+       grep "BBCLASSEXTEND.*native" ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ||
+       grep "BBCLASSEXTEND.*native" ${BBS}${GRP}/${PKG}.inc >/dev/null 2>/dev/null ; then
+    echo "PREFERRED_VERSION_${PKG}-native ?= \"${VER}\"" >> ${PREFS_LIVE}
+  fi
   if [[ -n ${BB_VER} && ${BB_VER} != ${VER} ]] ; then
     echo "bump: $GRP ${PKG} ${BB_VER} -> ${VER}" | tee -a ${OUT_LOG}
     echo "cp ${BBS}${GRP}/${PKG}_${BB_VER}.bb ${BBS}${GRP}/${PKG}_${VER}.bb" >> ${OUT_CMD}
@@ -68,7 +73,6 @@ cat ${DIR}/latest.txt | while read LINE; do
   GRP=`echo ${LINE} | sed "s%^\(.*\)\/\(.*\)\/\(.*\)$%\1%g;"`
   VER=`echo ${LINE} | sed "s%^\(.*\)\/\(.*\)\/\(.*\)$%\3%g;"`
   updateVersions ${PKG} ${GRP} ${VER}
-  updateVersions ${PKG}-native ${GRP} ${VER}
 done
 
 echo "Check ${OUT_LOG} if there is something new and interesting"
