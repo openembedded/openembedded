@@ -8,6 +8,7 @@ SRC_URI = "http://xcb.freedesktop.org/dist/xcb-proto-${PV}.tar.bz2"
 inherit autotools pkgconfig
 
 FILES_${PN}-dev += "${datadir}/xcb/*.xml"
+ALLOW_EMPTY_${PN} = "1"
 
 do_stage() {
 	oe_runmake DESTDIR="${D}" install
