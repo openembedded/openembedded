@@ -1,7 +1,7 @@
 DESCRIPTION = "EFL based widget set for mobile devices"
 LICENSE = "LGPL"
 DEPENDS = "eet-native efreet evas ecore edje eet edbus"
-PV = "0.0.0+svnr${SRCPV}"
+PV = "0.7.0+svnr${SRCPV}"
 PR = "r10"
 SRCREV = "${EFL_SRCREV}"
 
@@ -50,5 +50,8 @@ FILES_${PN}-tests = "\
   ${libdir}/elementary/modules/test_entry/* \
 "
 
-RREPLACES_${PN}-themes = "libelementary-ver-pre-svn-05-themes libelementary-ver-svn-06-themes"
-RREPLACES_${PN}-configs = "libelementary-ver-pre-svn-05-configs libelementary-ver-svn-06-configs"
+# Some upgrade path tweaking, as in evas
+AUTO_LIBNAME_PKGS = ""
+
+RREPLACES_${PN}-themes = "libelementary-ver-pre-svn-05-themes libelementary-ver-svn-06-themes libelementary-ver-pre-svn-06-themes"
+RREPLACES_${PN}-configs = "libelementary-ver-pre-svn-05-configs libelementary-ver-svn-06-configs libelementary-ver-pre-svn-06-configs"
