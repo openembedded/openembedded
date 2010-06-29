@@ -8,6 +8,6 @@ RDEPENDS_${PN} = "\
     gdb \
     sbrsh \
     fakeroot \
-    opkg-nogpg \
+    opkg \
     opkg-utils \
     "

@@ -5,4 +5,4 @@ PR = "${INC_PR}"
 target_libdir := "${libdir}"
 inherit sdk
 
-EXTRA_OECONF += "--with-opkglibdir=${target_libdir} --disable-gpg"
+EXTRA_OECONF += "--with-opkglibdir=${target_libdir}"

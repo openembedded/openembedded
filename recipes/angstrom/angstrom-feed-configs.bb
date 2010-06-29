@@ -1,6 +1,6 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
 
-RRECOMMENDS_${PN} += "opkg-nogpg-nocurl"
+RRECOMMENDS_${PN} += "opkg"
 
 #PV = "${DISTRO_VERSION}"
 PR = "r11"

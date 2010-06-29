@@ -15,16 +15,6 @@ PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV_pn-linux-ixp4xx}"
 #
 #===============================================================================#
 #===============================================================================#
-#                              NOTE NOTE NOTE
-#
-# Override the sane-srcrev file with regard to the opkg versions - this should
-# be removed as soon as opkg starts to work correctly again as newer opkg
-# versions fix a number of bugs and add some desireable features.
-#
-OPKG_SRCREV = "160"
-#
-#===============================================================================#
-#===============================================================================#
 
 ### Standard package preferred versions go here, sorted
 ### alphabetically.  Note that the main slugos.inc file

@@ -15,7 +15,7 @@ TOOLCHAIN_TARGET_EXCLUDE += "\
     libthread-db1 \
     sln \
     curl \
-    opkg-nogpg \
+    opkg \
     alsa-conf-base \
     update-rc.d \
     update-rc.d-dev \

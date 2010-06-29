@@ -2,19 +2,13 @@ DESCRIPTION = "Opkg Package Manager"
 DESCRIPTION_libopkg = "Opkg Package Manager Library"
 SECTION = "base"
 LICENSE = "GPLv2"
-DEPENDS = "curl gpgme openssl"
 SRCREV = ${OPKG_SRCREV}
-PV = "0.1.6+svnr${SRCPV}"
-INC_PR = "r21"
-
-FILESPATHPKG =. "opkg:"
+PV = "0.1.8+svnr${SRCPV}"
+INC_PR = "r0"
 
 SRC_URI = "svn://opkg.googlecode.com/svn;module=trunk;proto=http \
-	file://opkg_unarchive.patch;maxrev=201 \
-	file://opkg-intercept-cleanup.patch;maxrev=241 \
+	   file://configure \
 "
-
-SRC_URI += "file://configure"
 
 S = "${WORKDIR}/trunk"
 
@@ -25,3 +19,7 @@ do_install_prepend() {
   install -m 0755 ${WORKDIR}/configure ${D}${sysconfdir}/rcS.d/S98configure
 }
 
+EXTRA_OECONF += " --disable-gpg \ 
+                  --disable-openssl \ 
+                  --disable-ssl-curl \
+                  --disable-curl"
