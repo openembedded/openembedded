@@ -3,6 +3,7 @@ SECTION = "utility"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 
+PR = "r1"
 SRC_URI = "${DEBIAN_MIRROR}/main/r/realpath/realpath_${PV}.tar.gz;name=realpath \
 	   file://fix-common-mk.patch \
 	   file://no-po4a.patch  \
@@ -10,6 +11,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/r/realpath/realpath_${PV}.tar.gz;name=realpath 
 	  "
 
 CFLAGS += "-DVERSION=${PV}"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_install () {
 	install -d ${D}${bindir}
