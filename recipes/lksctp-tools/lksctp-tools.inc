@@ -5,19 +5,19 @@ LICENSE = "LGPLv2"
 
 S = "${WORKDIR}/${BPN}-${PV}"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 BBCLASSEXTEND = "native"
 
 inherit autotools pkgconfig binconfig
 
-export LDFLAGS += "-ldl"
-
 do_install_append_virtclass-native() {
 	:
 }
 
-DEBIANNAME_${PN} = "lksctp"
+RREPLACES = "lksctp"
+
+LEAD_SONAME = "libsctp.so"
 
 PACKAGES =+ "${PN}-withsctp ${PN}-utils"
 
