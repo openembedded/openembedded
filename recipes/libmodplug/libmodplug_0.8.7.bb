@@ -3,14 +3,17 @@ HOMEPAGE = "http://modplug-xmms.sf.net"
 SECTION = "libs"
 LICENSE = "GPL"
 
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/modplug-xmms/libmodplug-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
 # NOTE: autotools_stage_all does nothing here, we need to do it manually
-do_stage() {
-	install -m 0644 ${S}/src/modplug.h ${STAGING_INCDIR}
-	oe_libinstall -C src -so libmodplug ${STAGING_LIBDIR}
+do_install_append() {
+	install -d ${D}${includedir}/libmodplug
+	install -m 0644 ${S}/src/modplug.h ${D}${includedir}/libmodplug
+	install -m 0644 ${S}/src/modplug.h ${D}${includedir}/
 }
 
 SRC_URI[md5sum] = "d2d9ccd8da22412999caed076140f786"
