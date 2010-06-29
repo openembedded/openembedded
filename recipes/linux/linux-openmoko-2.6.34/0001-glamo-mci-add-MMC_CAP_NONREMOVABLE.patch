@@ -1,0 +1,24 @@
+From ceee4a77574ebb8fe211043731f64f585f87b7de Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 29 Jun 2010 12:54:03 +0200
+Subject: [PATCH] glamo-mci: add MMC_CAP_NONREMOVABLE
+
+---
+ drivers/mmc/host/glamo-mci.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mmc/host/glamo-mci.c b/drivers/mmc/host/glamo-mci.c
+index b2442c2..7c96b4c 100644
+--- a/drivers/mmc/host/glamo-mci.c
++++ b/drivers/mmc/host/glamo-mci.c
+@@ -811,6 +811,7 @@ static int glamo_mci_probe(struct platform_device *pdev)
+ 	mmc->ocr_avail	= mmc_regulator_get_ocrmask(host->regulator);
+ 	mmc->caps	= MMC_CAP_4_BIT_DATA |
+ 			    MMC_CAP_MMC_HIGHSPEED |
++			    MMC_CAP_NONREMOVABLE |
+ 			    MMC_CAP_SD_HIGHSPEED;
+ 	mmc->f_min	= host->clk_rate / 256;
+ 	mmc->f_max	= sd_max_clk;
+-- 
+1.7.1
+
