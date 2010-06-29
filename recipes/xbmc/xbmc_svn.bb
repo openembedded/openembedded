@@ -1,4 +1,4 @@
-DESCRIPTION = "Xbox Media Centre"
+DESCRIPTION = "XBMC Media Centre"
 LICENSE = "xbmc"
 
 DEPENDS = "libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image libsdl-mixer virtual/egl mysql5 sqlite3 libmms faad2 libcdio libpcre boost lzo2 enca avahi libsamplerate0 libxrandr bzip2 virtual/libsdl"
