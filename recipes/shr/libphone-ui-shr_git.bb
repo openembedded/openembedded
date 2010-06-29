@@ -18,4 +18,6 @@ do_configure_prepend() {
 }
 
 FILES_${PN} += "${libdir}/phoneui/modules/shr.so"
+FILES_${PN}-dev += "${libdir}/phoneui/modules/*.la"
 FILES_${PN}-dbg += "${libdir}/phoneui/modules/.debug"
+FILES_${PN}-static += "${libdir}/phoneui/modules/*.a"
