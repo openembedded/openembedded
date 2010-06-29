@@ -1,0 +1,45 @@
+From 50193c0722ff25e4fcb762884fc24fb69181ebda Mon Sep 17 00:00:00 2001
+From: topfs2 <topfs2@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+Date: Mon, 7 Jun 2010 21:04:34 +0000
+Subject: [PATCH 03/11] =?UTF-8?q?Workaround=20to=20compile=20python=20on=20=C3=85ngstr=C3=B6m=20with=20Python=202.6?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/gsoc-2010-beagleboard@30919 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ xbmc/lib/libPython/Python/Include/unicodeobject.h |    2 +-
+ xbmc/lib/libPython/xbmcmodule/pyutil.cpp          |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/xbmc/lib/libPython/Python/Include/unicodeobject.h b/xbmc/lib/libPython/Python/Include/unicodeobject.h
+index b534187..8a66ab7 100644
+--- a/xbmc/lib/libPython/Python/Include/unicodeobject.h
++++ b/xbmc/lib/libPython/Python/Include/unicodeobject.h
+@@ -147,7 +147,7 @@ typedef PY_UNICODE_TYPE Py_UNICODE;
+ # define PyUnicode_AsRawUnicodeEscapeString PyUnicodeUCS2_AsRawUnicodeEscapeString
+ # define PyUnicode_AsUTF16String PyUnicodeUCS2_AsUTF16String
+ # define PyUnicode_AsUTF8String PyUnicodeUCS2_AsUTF8String
+-# define PyUnicode_AsUnicode PyUnicodeUCS2_AsUnicode
++//# define PyUnicode_AsUnicode PyUnicodeUCS2_AsUnicode
+ # define PyUnicode_AsUnicodeEscapeString PyUnicodeUCS2_AsUnicodeEscapeString
+ # define PyUnicode_AsWideChar PyUnicodeUCS2_AsWideChar
+ # define PyUnicode_Compare PyUnicodeUCS2_Compare
+diff --git a/xbmc/lib/libPython/xbmcmodule/pyutil.cpp b/xbmc/lib/libPython/xbmcmodule/pyutil.cpp
+index 673b2e3..0322b10 100644
+--- a/xbmc/lib/libPython/xbmcmodule/pyutil.cpp
++++ b/xbmc/lib/libPython/xbmcmodule/pyutil.cpp
+@@ -55,8 +55,8 @@ namespace PYXBMC
+       //
+       CStdString utf8String;
+ 
+-      CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
+-      g_charsetConverter.wToUTF8(utf16String, utf8String);
++//      CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
++//      g_charsetConverter.wToUTF8(utf16String, utf8String);
+ 
+       buf = utf8String;
+       return 1;
+-- 
+1.6.6.1
+

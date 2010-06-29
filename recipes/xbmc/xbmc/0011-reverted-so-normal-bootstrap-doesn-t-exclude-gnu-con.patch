@@ -1,0 +1,66 @@
+From f217484b4c0d036697dacb3a93a450b90dd44f82 Mon Sep 17 00:00:00 2001
+From: topfs2 <topfs2@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+Date: Fri, 25 Jun 2010 09:00:55 +0000
+Subject: [PATCH 11/11] reverted so normal bootstrap doesn't exclude gnu-configize but added a bootstrap.angstrom who does
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/gsoc-2010-beagleboard@31375 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ bootstrap          |   14 +++++++-------
+ bootstrap.angstrom |   17 +++++++++++++++++
+ 2 files changed, 24 insertions(+), 7 deletions(-)
+ create mode 100755 bootstrap.angstrom
+
+diff --git a/bootstrap b/bootstrap
+index 09ceefc..c77ae98 100755
+--- a/bootstrap
++++ b/bootstrap
+@@ -2,16 +2,16 @@
+ 
+ set -e
+ 
+-autoreconf -vif --exclude gnu-configize
+-autoreconf -vif --exclude gnu-configize lib/cpluff
++autoreconf -vif
++autoreconf -vif lib/cpluff
+ # w must autoreconf libass as we don't know till later if it's used.
+-autoreconf -vif --exclude gnu-configize lib/libass
+-autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libbdnav
++autoreconf -vif lib/libass
++autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
+ # order matters with libbdnav and friends
+ [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ] && \
+-  autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
+-autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
+-autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
++  autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
++autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
++autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
+ 
+ # Clean the generated files
+ find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
+diff --git a/bootstrap.angstrom b/bootstrap.angstrom
+new file mode 100755
+index 0000000..8549f89
+--- /dev/null
++++ b/bootstrap.angstrom
+@@ -0,0 +1,17 @@
++#!/bin/sh
++
++set -e
++
++autoreconf -vif --exclude gnu-configize
++autoreconf -vif --exclude gnu-configize lib/cpluff
++# w must autoreconf libass as we don't know till later if it's used.
++autoreconf -vif --exclude gnu-configize lib/libass
++autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libbdnav
++# order matters with libbdnav and friends
++[ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ] && \
++  autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
++autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
++autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
++
++echo "Please (re)run configure..."
++
+-- 
+1.6.6.1
+

@@ -1,0 +1,38 @@
+From d119bc01f9f15950ef40dfeef9925789f7414b45 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 29 Jun 2010 19:06:37 +0200
+Subject: [PATCH 07/11] No need for FEH on embedded (need a better way to not be hardcoded for armv7l)
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/gsoc-2010-beagleboard@30923 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+
+Conflicts:
+
+	tools/Linux/xbmc.sh.in
+---
+ tools/Linux/xbmc.sh.in |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/tools/Linux/xbmc.sh.in b/tools/Linux/xbmc.sh.in
+index 9612659..5b5f967 100644
+--- a/tools/Linux/xbmc.sh.in
++++ b/tools/Linux/xbmc.sh.in
+@@ -100,10 +100,12 @@ print_crash_report()
+   echo "Crash report available at $FILE"
+ }
+ 
+-python @datadir@/xbmc/FEH.py "$SAVED_ARGS"
+-RET=$?
+-if [ $RET -ne 0 ]; then
+-  exit $RET
++if [ ! `uname -m` = "armv7l" ]; then
++  python @prefix@/share/xbmc/FEH.py "$SAVED_ARGS"
++  RET=$?
++  if [ $RET -ne 0 ]; then
++    exit $RET
++  fi
+ fi
+ 
+ # Output warning in case ulimit is unsupported by shell
+-- 
+1.6.6.1
+

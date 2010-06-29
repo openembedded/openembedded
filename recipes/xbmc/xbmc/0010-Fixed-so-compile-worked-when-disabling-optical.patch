@@ -1,0 +1,136 @@
+From 2a5804ffc7c27496605c033bcbb9fc6569ec134f Mon Sep 17 00:00:00 2001
+From: topfs2 <topfs2@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+Date: Fri, 25 Jun 2010 09:00:12 +0000
+Subject: [PATCH 10/11] Fixed so compile worked when disabling optical
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/gsoc-2010-beagleboard@31374 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ guilib/system.h                 |    5 ++++-
+ xbmc/MediaManager.h             |    3 ++-
+ xbmc/MusicDatabase.cpp          |    1 +
+ xbmc/MusicInfoTagLoaderCDDA.cpp |    4 +++-
+ xbmc/Util.cpp                   |    2 +-
+ xbmc/utils/Builtins.cpp         |    7 ++++++-
+ 6 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/guilib/system.h b/guilib/system.h
+index 6e21cdb..f24665a 100644
+--- a/guilib/system.h
++++ b/guilib/system.h
+@@ -52,7 +52,6 @@
+ #define HAS_JSONRPC
+ #define HAS_HTTPAPI
+ 
+-#define HAS_CDDA_RIPPER
+ #ifdef HAVE_ASAP_CODEC
+ #define HAS_ASAP_CODEC
+ #endif
+@@ -250,6 +249,10 @@
+ #endif
+ #endif
+ 
++#ifdef HAS_DVD_DRIVE
++#define HAS_CDDA_RIPPER
++#endif
++
+ #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
+ #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
+ #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
+diff --git a/xbmc/MediaManager.h b/xbmc/MediaManager.h
+index 11338b1..4cba1df 100644
+--- a/xbmc/MediaManager.h
++++ b/xbmc/MediaManager.h
+@@ -22,6 +22,7 @@
+ 
+ #include "MediaSource.h" // for VECSOURCES
+ #include <map>
++#include "utils/SingleLock.h"
+ #ifdef HAS_DVD_DRIVE
+ #include "FileSystem/cdioSupport.h"
+ #endif
+@@ -70,8 +71,8 @@ public:
+ #ifdef HAS_DVD_DRIVE
+   CCdInfo* GetCdInfo(const CStdString& devicePath="");
+   bool RemoveCdInfo(const CStdString& devicePath="");
+-#endif
+   CStdString GetDiskLabel(const CStdString& devicePath="");
++#endif
+   void SetHasOpticalDrive(bool bstatus);
+ 
+   bool Eject(CStdString mountpath);
+diff --git a/xbmc/MusicDatabase.cpp b/xbmc/MusicDatabase.cpp
+index f53271e..5d608a5 100644
+--- a/xbmc/MusicDatabase.cpp
++++ b/xbmc/MusicDatabase.cpp
+@@ -58,6 +58,7 @@
+ #include "utils/TimeUtils.h"
+ #include "TextureCache.h"
+ #include "GUIWindowAddonBrowser.h"
++#include "AutoPtrHandle.h"
+ 
+ using namespace std;
+ using namespace AUTOPTR;
+diff --git a/xbmc/MusicInfoTagLoaderCDDA.cpp b/xbmc/MusicInfoTagLoaderCDDA.cpp
+index 8b4dcbe..aad19c3 100644
+--- a/xbmc/MusicInfoTagLoaderCDDA.cpp
++++ b/xbmc/MusicInfoTagLoaderCDDA.cpp
+@@ -27,9 +27,11 @@
+ #include "MediaManager.h"
+ #include "utils/log.h"
+ 
+-using namespace MEDIA_DETECT;
+ using namespace MUSIC_INFO;
++#ifdef HAS_DVD_DRIVE
++using namespace MEDIA_DETECT;
+ using namespace CDDB;
++#endif
+ 
+ CMusicInfoTagLoaderCDDA::CMusicInfoTagLoaderCDDA(void)
+ {
+diff --git a/xbmc/Util.cpp b/xbmc/Util.cpp
+index 276bf5f..dab73a4 100644
+--- a/xbmc/Util.cpp
++++ b/xbmc/Util.cpp
+@@ -1829,7 +1829,7 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
+ 
+ void CUtil::PlayDVD(const CStdString& strProtocol)
+ {
+-#ifdef HAS_DVDPLAYER
++#if defined(HAS_DVDPLAYER) && defined(HAS_DVD_DRIVE)
+   CIoSupport::Dismount("Cdrom0");
+   CIoSupport::RemapDriveLetter('D', "Cdrom0");
+   CStdString strPath;
+diff --git a/xbmc/utils/Builtins.cpp b/xbmc/utils/Builtins.cpp
+index 64e44a9..a7e8b31 100644
+--- a/xbmc/utils/Builtins.cpp
++++ b/xbmc/utils/Builtins.cpp
+@@ -87,9 +87,12 @@
+ 
+ using namespace std;
+ using namespace XFILE;
+-using namespace MEDIA_DETECT;
+ using namespace ADDON;
+ 
++#ifdef HAS_DVD_DRIVE
++using namespace MEDIA_DETECT;
++#endif
++
+ typedef struct
+ {
+   const char* command;
+@@ -759,10 +762,12 @@ int CBuiltins::Execute(const CStdString& execString)
+   {
+     g_playlistPlayer.Clear();
+   }
++#ifdef HAS_DVD_DRIVE
+   else if (execute.Equals("ejecttray"))
+   {
+     CIoSupport::ToggleTray();
+   }
++#endif
+   else if( execute.Equals("alarmclock") && params.size() > 1 )
+   {
+     // format is alarmclock(name,command[,seconds,true]);
+-- 
+1.6.6.1
+
