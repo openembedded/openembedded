@@ -4,9 +4,10 @@ DEPENDS += "libdrm"
 RDEPENDS_${PN} = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"
 PE = "2"
 PV = "1.0.0+gitr${SRCPV}"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
-SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=master"
+SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=master \
+           file://0001-glamo-output-initialize-mode-name-to-NULL.patch"
 
 S = "${WORKDIR}/git"
 SRCREV = "e43cf499d0df41eb6ca2a1a7c21af71e31207635"
