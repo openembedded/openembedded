@@ -1,6 +1,6 @@
 require libxsettings-client.inc
 
-PR = "r1"
+PR = "${INC_PR}.1"
 
 SRC_URI = "${GPE_MIRROR}/xsettings-client-${PV}.tar.bz2"
 

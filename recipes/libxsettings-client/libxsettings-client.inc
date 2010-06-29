@@ -8,6 +8,8 @@ DEPENDS = "libxsettings virtual/libx11 libxt"
 GPE_TARBALL_SUFFIX = "bz2"
 inherit autotools pkgconfig gpe
 
+INC_PR = "r2"
+
 SRC_URI = "${GPE_MIRROR}/libxsettings-client-${PV}.tar.bz2 \
 "
 

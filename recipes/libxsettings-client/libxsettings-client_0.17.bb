@@ -1,7 +1,7 @@
 require libxsettings-client.inc
 
 DEPENDS += "gtk-doc"
-PR ="r2"
+PR ="${INC_PR}.1"
 
 SRC_URI += "file://no-host-includes.patch "
 
