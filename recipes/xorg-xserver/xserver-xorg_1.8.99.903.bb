@@ -15,7 +15,8 @@ DEFAULT_PREFERENCE_shr = "1"
 SRC_URI += " \
             file://dolt-fix-1.7.0.patch \
             file://randr-support-1.7.0.patch \
-	    file://hack-fbdev-ignore-return-mode.patch \
+            file://hack-fbdev-ignore-return-mode.patch \
+            file://0001-xf86Modes-make-sure-that-DisplayModeRec-name-is-init.patch \
            "
 SRC_URI[archive.md5sum] = "d49305baa79772ca965407b0fd2dcb84"
 SRC_URI[archive.sha256sum] = "2e7e999da9e23e2daee35715c4432447408ae1edc4bdac0b13e667af58cd5775"
