@@ -1,12 +1,12 @@
 DESCRIPTION = "XBMC Media Center"
 LICENSE = "xbmc"
 
-DEPENDS = "libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image libsdl-mixer virtual/egl mysql5 sqlite3 libmms faad2 libcdio libpcre boost lzo2 enca avahi libsamplerate0 libxrandr bzip2 virtual/libsdl"
+DEPENDS = "libxmu fribidi mpeg2dec ffmpeg samba fontconfig curl libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image libsdl-mixer virtual/egl mysql5 sqlite3 libmms faad2 libcdio libpcre boost lzo2 enca avahi libsamplerate0 libxrandr bzip2 virtual/libsdl"
 
-SRCREV = "21029056aa4c26c6ce3aa7d09703ca8b458df201"
+SRCREV = "11eb9981945e60828678ef641dae8f950a2e9295"
 
 PV = "10.05"
-PR = "r2"
+PR = "r3"
 PR_append = "+gitr${SRCPV}"
 
 SRC_URI = "git://xbmc.git.sourceforge.net/gitroot/xbmc/xbmc;protocol=git;branch=master \
