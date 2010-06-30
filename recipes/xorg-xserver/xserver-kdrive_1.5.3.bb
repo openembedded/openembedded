@@ -6,7 +6,7 @@ RDEPENDS_${PN} += "hal"
 DEFAULT_PREFERENCE = "-99" 
 
 PE = "1"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
@@ -21,6 +21,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://drmfix.patch \
 	file://no_xkb.patch \
 	file://keyboard_device.patch \
+	file://enable-xcalibrate.patch \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"
