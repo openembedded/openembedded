@@ -4,7 +4,7 @@ LICENSE = "BSD-X"
 PRIORITY = "optional"
 DEPENDS = "virtual/libx11"
 
-PR = "r1"
+PR = "r2"
 
 inherit gpe
 
