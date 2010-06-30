@@ -1,24 +1,25 @@
-From 8fbaa322761429ed26a0f048f14590f120a6b440 Mon Sep 17 00:00:00 2001
+From 993affdb7cdcc4d2bd9c5df784c2d61c75d34701 Mon Sep 17 00:00:00 2001
 From: Martin Jansa <Martin.Jansa@gmail.com>
-Date: Tue, 29 Jun 2010 14:02:15 +0200
-Subject: [PATCH] glamo-output: initialize mode->name to NULL
+Date: Wed, 30 Jun 2010 10:05:23 +0200
+Subject: [PATCH] glamo-output: initialize mode name to NULL with calloc
 
 ---
- src/glamo-output.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ src/glamo-output.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/src/glamo-output.c b/src/glamo-output.c
-index 60ea902..ca71c59 100644
+index 10a0f8e..eea3cb2 100644
 --- a/src/glamo-output.c
 +++ b/src/glamo-output.c
-@@ -171,6 +174,7 @@ GlamoOutputInit(ScrnInfoPtr pScrn) {
+@@ -165,7 +165,7 @@ GlamoOutputInit(ScrnInfoPtr pScrn) {
+     output->driver_private = pGlamoOutput;
+     pGlamoOutput->modes = NULL;
  
-     mode->next = NULL;
-     mode->prev = NULL;
-+    mode->name = NULL;
+-    mode = xnfalloc(sizeof(DisplayModeRec));
++    mode = xnfcalloc(1, sizeof(DisplayModeRec));
+     if (!mode)
+         return;
  
-     ConvertModeFbToXfree(&pGlamo->fb_var, mode, NULL);
-     xf86SetModeDefaultName(mode);
 -- 
 1.7.1
 
