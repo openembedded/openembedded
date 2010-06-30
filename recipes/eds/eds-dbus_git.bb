@@ -1,27 +1,32 @@
 DESCRIPTION = "Evolution database backend server"
-HOMEPAGE = "http://projects.o-hand.com/eds"
+HOMEPAGE = "http://labs.o-hand.com/embedded-eds/"
 LICENSE = "LGPL"
-DEPENDS = "intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool"
+DEPENDS = "intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool libxml2"
 
-PV = "1.4.0+svnr${SRCPV}"
-PR = "r7"
-SRCREV = "736"
+SRCREV = "91812cd2f797fb8ec8befbb2685037584ce144ee"
+PV = "1.4.0"
+PR = "r2"
+PE = "1"
+PR_append = "+gitr${SRCREV}"
 
-SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
-           file://no_libdb.patch;maxrev=659 \
-           file://no_iconv_test.patch \
-           file://no_libedataserverui.patch;maxrev=659 \
-           file://iconv-detect.h"
+SRC_URI = "git://git.o-hand.com/eds-dbus;branch=master;protocol=git \
+           file://iconv-detect.h \
+           file://libxml2-for-libedataserverui.patch;patch=1 \
+           file://gtk-doc.make"
 
-S = "${WORKDIR}/trunk"
+S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 
 # -ldb needs this on some platforms
 LDFLAGS += "-lpthread"
 
-do_configure_append = " cp ${WORKDIR}/iconv-detect.h ${S} "
-EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb=${STAGING_DIR_HOST}${layout_prefix} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc"
+do_configure_prepend () {
+     cp ${WORKDIR}/iconv-detect.h ${S}
+     cp ${WORKDIR}/gtk-doc.make ${S}
+}
+
+EXTRA_OECONF = "--without-openldap --with-dbus --without-weather --without-bug-buddy --without-soup --without-libdb --with-libdb=${STAGING_DIR_HOST}${layout_prefix} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc --disable-calendar --disable-hula --disable-dot-locking --disable-gnome-keyring"
 
 PACKAGES =+ "libcamel-collateral libcamel libcamel-dev libebook libebook-dev libecal libecal-dev libedata-book libedata-book-dev libedata-cal libedata-cal-dev libedataserver libedataserver-dev"
 
@@ -50,10 +55,6 @@ FILES_libedata-cal-dev = "${libdir}/libedata-cal-*.so ${libdir}/pkgconfig/libeda
 
 FILES_libedataserver = "${libdir}/libedataserver-*.so.*"
 FILES_libedataserver-dev = "${libdir}/libedataserver-*.so ${libdir}/pkgconfig/libedataserver-*.pc ${includedir}/evolution-data-server-*/libedataserver/*.h"
-
-do_stage () {
-        autotools_stage_all
-}
 
 do_install_append () {
 	rm ${D}${libdir}/evolution-data-server-*/*/*.la

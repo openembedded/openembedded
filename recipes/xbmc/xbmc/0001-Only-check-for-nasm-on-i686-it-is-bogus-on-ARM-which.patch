@@ -1,0 +1,26 @@
+From cbe1089a3455c306d58e175dced0227b5d22ffa5 Mon Sep 17 00:00:00 2001
+From: topfs2 <topfs2@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+Date: Mon, 7 Jun 2010 21:03:47 +0000
+Subject: [PATCH 01/11] Only check for nasm on i686, it is bogus on ARM, which is also !x86_64 - Thanks koen
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/gsoc-2010-beagleboard@30917 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 8d714b5..806e9c2 100644
+--- a/configure.in
++++ b/configure.in
+@@ -986,7 +986,7 @@ if test "$HAVE_ZIP" = "no" ; then
+   AC_MSG_ERROR($missing_program)
+ fi
+ 
+-if test "$ARCH" != "x86_64-linux"; then
++if test "$ARCH" = "i686-linux"; then
+   AC_CHECK_PROG(HAVE_NASM,nasm,"yes","no",)
+   if test "$HAVE_NASM" = "no" ; then
+     AC_MSG_ERROR($missing_program)
+-- 
+1.6.6.1
+

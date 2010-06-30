@@ -1,0 +1,62 @@
+DESCRIPTION = "XBMC Media Center"
+LICENSE = "xbmc"
+
+DEPENDS = "libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image libsdl-mixer virtual/egl mysql5 sqlite3 libmms faad2 libcdio libpcre boost lzo2 enca avahi libsamplerate0 libxrandr bzip2 virtual/libsdl"
+
+SRCREV = "21029056aa4c26c6ce3aa7d09703ca8b458df201"
+
+PV = "10.05"
+PR = "r2"
+PR_append = "+gitr${SRCPV}"
+
+SRC_URI = "git://xbmc.git.sourceforge.net/gitroot/xbmc/xbmc;protocol=git;branch=master \
+file://0001-Only-check-for-nasm-on-i686-it-is-bogus-on-ARM-which.patch \
+file://0002-Exclude-gnu-configize-for-ngstr-m-Thanks-koen.patch \
+file://0003-Workaround-to-compile-python-on-ngstr-m-with-Python-.patch \
+file://0004-Don-t-use-sudo-in-install-of-xbmc.bin-not-all-distri.patch \
+file://0005-Hardcode-arm7-for-now.patch \
+file://0006-Hardcode-python2.6-for-now.patch \
+file://0007-No-need-for-FEH-on-embedded-need-a-better-way-to-not.patch \
+file://0008-configure.in-also-pass-down-target-when-using-host-a.patch \
+file://0009-Added-a-configure-option-disable-optical-drive.patch \
+file://0010-Fixed-so-compile-worked-when-disabling-optical.patch \
+file://0011-reverted-so-normal-bootstrap-doesn-t-exclude-gnu-con.patch \
+"
+
+inherit autotools gettext
+
+S = "${WORKDIR}/git"
+
+EXTRA_OECONF = " \
+ --enable-gles \
+ --disable-optical-drive \
+ --enable-external-libraries \
+"
+
+do_configure() {
+	sh bootstrap.angstrom
+	oe_runconf
+}
+
+do_compile_prepend() {
+	for i in $(find . -name "Makefil*") ; do
+		sed -i 's:I/usr/include:I${STAGING_INCDIR}:g' $i
+	done
+	for i in $(find . -name "*.mak*") ; do
+		sed -i 's:I/usr/include:I${STAGING_INCDIR}:g' $i
+	done
+	sed -i 's:I/usr/include:I${STAGING_INCDIR}:g' ${S}/Makefile	
+}
+
+do_install_append() {
+	ln -sf ${libdir}/xbmc/system/python/python24-arm.so ${D}${datadir}/xbmc/system/python/ || true
+	ln -sf ${libdir}/xbmc/system/python/python26-arm.so ${D}${datadir}/xbmc/system/python/ || true
+}
+
+FILES_${PN} += "${datadir}/xsessions"
+FILES_${PN}-dbg += "${libdir}/xbmc/.debug ${libdir}/xbmc/*/.debug ${libdir}/xbmc/*/*/.debug ${libdir}/xbmc/*/*/*/.debug"
+
+# GNU_HASH QA errors...
+INSANE_SKIP_${PN} = "True"
+
+

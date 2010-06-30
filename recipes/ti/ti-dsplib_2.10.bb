@@ -10,7 +10,7 @@ PV = "1_20"
 SRC_URI[dsplibgz.md5sum] = "0e9f0fc05b17d8eefc6117f36ecd576e"
 SRC_URI[dsplibgz.sha256sum] = "96e320a3dcb8b238e5245a36b26c2f7f1d00a8467ab65d6c5c93f5f57c891252"
 
-PR = "r1"
+PR = "r2"
 
 require ti-paths.inc
 require ti-staging.inc
@@ -70,6 +70,7 @@ do_compile() {
 do_install() {
 
     install -d ${D}${DSPLIB_INSTALL_DIR_RECIPE}
+	sed -i 's,\\,/,g' ${S}/dsplib64plus.h
     cp -pPrf ${S}/* ${D}${DSPLIB_INSTALL_DIR_RECIPE}
 }
 

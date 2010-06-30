@@ -17,6 +17,10 @@ EXTRA_OECMAKE = "\
   -DNM_PATH:FILEPATH=${NM} \
 "
 
+PACKAGES = ""
+
+PACKAGES_DYNAMIC = ""
+
 do_stage() {
   cd ${OECMAKE_BUILDPATH}
 

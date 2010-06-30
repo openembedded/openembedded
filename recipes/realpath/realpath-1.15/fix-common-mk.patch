@@ -1,0 +1,38 @@
+Index: realpath-1.15/common.mk
+===================================================================
+--- realpath-1.15.orig/common.mk	2010-06-28 17:26:17.611275002 -0700
++++ realpath-1.15/common.mk	2010-06-28 17:31:40.151275002 -0700
+@@ -8,17 +8,15 @@
+ 
+ override PACKAGE  := realpath
+ 
+-PATH            := /usr/bin:/usr/sbin:/bin:/sbin:$(PATH)
+-
+ # build abstraction
+-install_file    := install -p -o root -g root -m 644
+-install_script  := install -p -o root -g root -m 755
+-install_dir     := install -d -o root -g root -m 755
++install_file    := install -p -m 644
++install_script  := install -p -m 755
++install_dir     := install -d -m 755
+ install_link    := ln -sf
+ compress        := gzip -9f
+ 
+-prefix          := /usr
+-etcdir          := /etc/$(PACKAGE)
++prefix          := $(prefix)
++etcdir          := $(sysconfdir)/$(PACKAGE)
+ bindir          := $(prefix)/bin
+ sbindir         := $(prefix)/sbin
+ mandir          := $(prefix)/share/man
+@@ -33,8 +31,8 @@
+ webcgidir	      := $(prefix)/lib/cgi-bin
+ applicationsdir := $(prefix)/share/applications
+ 
+-PERL            := /usr/bin/perl
+-CC              := gcc
++PERL            := perl
++CC              := $(CC)
+ CFLAGS           = -Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Werror -g -DVERSION='"$(VERSION)"' -DPACKAGE='"$(PACKAGE)"' -DLOCALEDIR='"$(nlsdir)"'
+ LDFLAGS         :=
+ LIBS            := 

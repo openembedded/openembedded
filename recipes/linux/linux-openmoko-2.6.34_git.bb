@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.34"
 
 SRCREV = "4ce5f33cd4bcde2e25d50ae0880eb39213e2b6d2"
-OEV = "oe4"
+OEV = "oe4.2"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -29,6 +29,8 @@ SRC_URI = "\
   file://0002-usbhost.patch.patch \
   file://0003-ar6000_delay.patch.patch \
   file://0004-save_regs.patch.patch \
+# possible resume fix  
+  file://0001-glamo-mci-add-MMC_CAP_NONREMOVABLE.patch \
   file://defconfig \
 "
 

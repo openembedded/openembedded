@@ -16,7 +16,7 @@ PROVIDES += "ti-dsplink-examples"
 
 # This package builds a kernel module, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "f"
+PR_append = "h"
 
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
@@ -166,6 +166,17 @@ do_install () {
     install -d ${D}${LINK_INSTALL_DIR_RECIPE}
     cp -pPrf ${S}/* ${D}${LINK_INSTALL_DIR_RECIPE}
     chmod -R +w ${D}${LINK_INSTALL_DIR_RECIPE}
+
+    # Changes path of include txt file to use LINK_INSTALL_DIR variable for GPP
+    for i in $(find ${D}${LINK_INSTALL_DIR_RECIPE}/dsplink/gpp/export/BIN/Linux/${DSPLINKPLATFORM}/*/ -name "*.txt"); do
+       sed -i ${i} -e s=${S}=\$\{LINK_INSTALL_DIR\}=g
+    done
+
+    # Changes path of include txt file to use LINK_INSTALL_DIR variable for DSP 
+    for i in $(find ${D}${LINK_INSTALL_DIR_RECIPE}/dsplink/dsp/export/BIN/DspBios/${DSPLINKPLATFORM}/${DSPLINKDSP}/*/ -name "*.txt"); do
+    sed -i ${i} -e s=${S}=\$\{LINK_INSTALL_DIR\}=g
+    done
+
 }
 
 PACKAGES += "ti-dsplink-module"

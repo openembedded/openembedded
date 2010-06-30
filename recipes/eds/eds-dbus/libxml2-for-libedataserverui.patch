@@ -1,0 +1,25 @@
+diff --git a/.gitignore b/.gitignore
+index 96787d6..622d967 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -24,7 +24,6 @@ missing
+ mkinstalldirs
+ stamp-it
+ stamp-h1
+-gtk-doc.make
+ po/POTFILES
+ *.la
+ *.lo
+diff --git a/configure.ac b/configure.ac
+index ae9addb..83239d3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1472,7 +1472,7 @@ EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUA
+ AC_SUBST(E_DATA_SERVER_CFLAGS)
+ AC_SUBST(E_DATA_SERVER_LIBS)
+ 
+-E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gobject-2.0 gthread-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
++E_DATA_SERVER_UI_DEPS="libxml-2.0 gtk+-2.0 libglade-2.0 gobject-2.0 gthread-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
+ 
+ EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
+ AC_SUBST(E_DATA_SERVER_UI_CFLAGS)

@@ -1,0 +1,27 @@
+Index: realpath-1.15/src/realpath.c
+===================================================================
+--- realpath-1.15.orig/src/realpath.c	2010-06-28 17:24:05.591275001 -0700
++++ realpath-1.15/src/realpath.c	2010-06-28 17:24:52.731275001 -0700
+@@ -23,9 +23,8 @@
+ #include <errno.h>
+ #include <getopt.h>
+ #include <stdarg.h>
+-#include <libintl.h>
+ 
+-#define _(String) gettext (String)
++#define _(String) (String)
+ 
+ static char *stripdir(char * dir, char *buf, int maxlen);
+ 
+@@ -115,11 +114,6 @@
+ 
+ 	myname = ( p = strchr(argv[0], '/') ) ? p+1 : argv[0];
+ 
+-	setlocale(LC_ALL, "");
+-	bindtextdomain(PACKAGE, LOCALEDIR);
+-	textdomain(PACKAGE);
+-
+-
+ 	parse_options(argc, argv);
+ 
+ 	while (optind < argc) {

@@ -2,6 +2,8 @@ DESCRIPTION = "Playlist parser for Totem, a GTK2 based media player"
 HOMEPAGE = "http://www.gnome.org/projects/totem/"
 LICENSE = "LGPLv2"
 
+PR = "r1"
+
 DEPENDS = "gmime eds-dbus"
 
 inherit gnome

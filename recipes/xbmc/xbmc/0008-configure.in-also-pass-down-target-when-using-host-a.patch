@@ -1,0 +1,129 @@
+From 8cd72c7fdfb625c9be7a367ec92c763924bd7bf1 Mon Sep 17 00:00:00 2001
+From: topfs2 <topfs2@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+Date: Fri, 18 Jun 2010 14:03:47 +0000
+Subject: [PATCH 08/11] configure.in: also pass down --target when using --host and --build. Thanks Koen Kooi!
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/gsoc-2010-beagleboard@31176 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ configure.in |   21 +++++++++++++++++----
+ 1 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 806e9c2..b69261f 100644
+--- a/configure.in
++++ b/configure.in
+@@ -1510,6 +1510,7 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
+     ./configure \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \
+       --disable-ipv6 \
+       --enable-unicode=ucs4 \
+       --without-cxx \
+@@ -1622,6 +1623,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
+     ./configure \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --disable-oss \
+       --disable-solaris-audio \
+       --disable-al-audio \
+@@ -1642,6 +1644,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
+       CFLAGS="$CFLAGS" \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --disable-doc \
+       --enable-static \
+       --with-pic
+@@ -1664,6 +1667,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
+       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --enable-static \
+       --disable-shared \
+       --disable-strip \
+@@ -1692,6 +1696,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
+       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --enable-static \
+       --disable-shared \
+       --cc="$CC"
+@@ -1723,6 +1728,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
+     ./configure \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --with-pic \
+       --disable-static \
+       --enable-shared \
+@@ -1760,7 +1766,8 @@ XB_CONFIG_MODULE([lib/libass], [
+     CFLAGS="$CFLAGS" \
+     ./configure \
+       --host=$host_alias \
+-      --build=$build_alias
++      --build=$build_alias \
++      --target=$target_alias
+   fi
+ ], [$USE_EXTERNAL_LIBASS])
+ 
+@@ -1778,6 +1785,7 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
+       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --disable-static \
+       --with-pic
+   fi
+@@ -1805,6 +1813,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
+       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --disable-shared \
+       --enable-static \
+       --with-pic
+@@ -1837,6 +1846,7 @@ if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
+       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+       --host=$host_alias \
+       --build=$build_alias \
++      --target=$target_alias \      
+       --without-xscreensaver \
+       --disable-sound \
+       --disable-cyclone \
+@@ -1857,7 +1867,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
+   else
+     ./configure --without-openssl \
+       --host=$host_alias \
+-      --build=$build_alias CFLAGS="$CFLAGS"
++      --build=$build_alias \
++      --target=$target_alias CFLAGS="$CFLAGS"
+   fi
+ ], [0])
+ 
+@@ -1868,7 +1879,8 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
+   else
+     ./configure \
+       --host=$host_alias \
+-      --build=$build_alias CFLAGS="$CFLAGS"
++      --build=$build_alias \
++      --target=$target_alias CFLAGS="$CFLAGS" 
+   fi
+ ], [0])
+ 
+@@ -1898,7 +1910,8 @@ XB_CONFIG_MODULE([lib/cpluff], [
+   else
+     ./configure --disable-nls \
+       --host=$host_alias \
+-      --build=$build_alias CFLAGS="$CFLAGS"
++      --build=$build_alias \
++      --target=$target_alias CFLAGS="$CFLAGS"
+   fi
+ ], [0])
+ 
+-- 
+1.6.6.1
+

@@ -11,7 +11,7 @@ require ti-paths.inc
 require ti-staging.inc
 
 #This is a kernel module, don't set PR directly
-MACHINE_KERNEL_PR_append = "c"
+MACHINE_KERNEL_PR_append = "d"
 
 inherit module
 
@@ -23,6 +23,8 @@ do_compile() {
             modules="cmem edma irq";;
     omap3)
             modules="cmem sdma";;
+	dm355)
+            modules="cmem edma irq";;
     *)
             modules="cmem"
     esac

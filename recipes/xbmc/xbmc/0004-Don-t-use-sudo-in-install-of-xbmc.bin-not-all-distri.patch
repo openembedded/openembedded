@@ -1,0 +1,26 @@
+From cbac0c8500a67e06ca136591a574c0cf1ae1b0e9 Mon Sep 17 00:00:00 2001
+From: topfs2 <topfs2@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+Date: Mon, 7 Jun 2010 21:04:52 +0000
+Subject: [PATCH 04/11] Don't use sudo in install of xbmc.bin - not all distributions have sudo
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/gsoc-2010-beagleboard@30920 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ Makefile.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index f6a8b8d..01bbf54 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -503,7 +503,7 @@ tools/TexturePacker/TexturePacker: guilib/guilib.a xbmc/lib/libsquish/libsquish-
+ 	$(MAKE) -C tools/TexturePacker/
+ 
+ install-bin: xbmc.bin # developement convenience target
+-	sudo install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc
++	install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc
+ 
+ ifeq ($(findstring osx,$(ARCH)), osx)
+ 	# TODO: add osx install
+-- 
+1.6.6.1
+

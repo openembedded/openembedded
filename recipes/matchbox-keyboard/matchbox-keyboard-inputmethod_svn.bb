@@ -2,11 +2,10 @@ DESCRIPTION = "Matchbox virtual keyboard for X11"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft gtk+ matchbox-panel-2"
 RCONFLICTS_${PN} = "matchbox-keyboard"
-RPROVIDES_${PN} = "matchbox-keyboard"
 SECTION = "x11"
 SRCREV = "1910"
 PV = "0.0+svnr${SRCPV}"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \
 	    file://smallscreen-fontsize.patch \

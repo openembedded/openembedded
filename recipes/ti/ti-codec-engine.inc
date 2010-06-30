@@ -85,7 +85,7 @@ do_prepsources() {
                      CGTOOLS_V5T="${TOOLCHAIN_PATH}" \
                      CGTOOLS_C64P="${CODEGEN_INSTALL_DIR}" \
                      CGTOOLS_C674="${CODEGEN_INSTALL_DIR}" \
-                     clean
+                     .make clean
         done
 }
 
