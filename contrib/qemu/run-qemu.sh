@@ -69,8 +69,8 @@ arch=$1
 libc=$2
 mem=256				# memory for guest server in Mb
 imagetype="ext2"
-networking="no"
-nfsboot="no"
+networking="yes"
+nfsboot="yes"
 staticip="yes"
 
 case $arch in
@@ -94,7 +94,7 @@ case $arch in
 	rootdisk="hda"
 	qemuopts="-nographic"
         kernel="vmlinux"
-        image="minimalist-image"
+        image="native-sdk-image"
         ;;
     ppc|powerpc)
     	arch=ppc
@@ -102,6 +102,7 @@ case $arch in
         macaddr="00:16:3e:00:00:03"
 	machine="g3beige"
 	gdbport="1236"
+	mem="1024"
         consoleopt="console=ttyS0"
 	rootdisk="hdc"
 	qemuopts="-nographic"
@@ -144,7 +145,7 @@ netmask="255.255.0.0"		# subnet mask
 hostname="qemu$arch"		# hostname for guest server
 nfsdir="/opt/oe/$hostname"	# nfs directory where root file system is
 device="eth0"			# interface that guest server will use
-gdbit="-redir tcp:2222::22 -gdb tcp::$gdbport"   # debug the kernel using gdb set it to -s
+#gdbit="-redir tcp:2222::22 -gdb tcp::$gdbport -S"   # debug the kernel using gdb
 				# add -S to stop after launch and wait for
 				# gdb to connect
 
@@ -202,10 +203,13 @@ else
 fi
 kernelimage=$oetmpdir/deploy/$libc/images/qemu$arch/$kernel-qemu$arch.bin
 hdimage=$oetmpdir/deploy/$libc/images/qemu$arch/$image-qemu$arch.$imagetype
+if [ $nfsboot != "yes" ]; then
+    qemuopts="$qemuopts -drive file=$hdimage"
+fi
 echo "Starting QEMU ..."
 set -x
 $qemu -M $machine --snapshot $gdbit -m $mem \
-	-kernel $kernelimage -drive file=$hdimage \
+	-kernel $kernelimage \
 	-usb -usbdevice wacom-tablet --no-reboot -localtime \
 	$qemuopts \
 	-append "$consoleopt $rootfs $ipopt $init debug user_debug=-1" \
