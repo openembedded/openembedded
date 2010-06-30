@@ -1,35 +1,25 @@
-From 2ba68d05755b4dc8ec8b70733cfece032e01ce89 Mon Sep 17 00:00:00 2001
+From 7deb3068ff65ecadf035e8e493d418aca89c9212 Mon Sep 17 00:00:00 2001
 From: Martin Jansa <Martin.Jansa@gmail.com>
-Date: Tue, 29 Jun 2010 13:26:59 +0200
+Date: Wed, 30 Jun 2010 10:42:36 +0200
 Subject: [PATCH] xf86Modes: make sure that DisplayModeRec name is initialized to NULL and then don't call free() on it in xf86SetModeDefaultName
 
-Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
 ---
- hw/xfree86/modes/xf86Modes.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ hw/xfree86/modes/xf86Modes.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/hw/xfree86/modes/xf86Modes.c b/hw/xfree86/modes/xf86Modes.c
-index 05f4319..ccd2cc6 100644
+index 05f4319..09a9679 100644
 --- a/hw/xfree86/modes/xf86Modes.c
 +++ b/hw/xfree86/modes/xf86Modes.c
-@@ -138,7 +138,8 @@ xf86SetModeDefaultName(DisplayModePtr mode)
+@@ -206,7 +206,7 @@ xf86DuplicateMode(const DisplayModeRec *pMode)
  {
-     Bool interlaced = !!(mode->Flags & V_INTERLACE);
+     DisplayModePtr pNew;
  
--    free(mode->name);
-+    if (mode->name)
-+	free(mode->name);
- 
-     mode->name = XNFprintf("%dx%d%s", mode->HDisplay, mode->VDisplay,
- 			   interlaced ? "i" : "");
-@@ -210,6 +211,7 @@ xf86DuplicateMode(const DisplayModeRec *pMode)
+-    pNew = xnfalloc(sizeof(DisplayModeRec));
++    pNew = xnfcalloc(1, sizeof(DisplayModeRec));
      *pNew = *pMode;
      pNew->next = NULL;
      pNew->prev = NULL;
-+    pNew->name = NULL;
- 
-     if (pMode->name == NULL)
- 	xf86SetModeDefaultName(pNew);
 -- 
 1.7.1
 

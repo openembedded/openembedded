@@ -6,7 +6,7 @@ require xorg-xserver-common.inc
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
 PE = "2"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 # Needs newer mesa-dri, where is D_P = "-1"
 DEFAULT_PREFERENCE = "-1"
