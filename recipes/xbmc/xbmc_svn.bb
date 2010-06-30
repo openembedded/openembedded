@@ -5,7 +5,7 @@ DEPENDS = "libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image lib
 
 SRCREV = "21029056aa4c26c6ce3aa7d09703ca8b458df201"
 
-PV = "0.0"
+PV = "10.05"
 PR = "r2"
 PR_append = "+gitr${SRCPV}"
 
@@ -46,6 +46,11 @@ do_compile_prepend() {
 		sed -i 's:I/usr/include:I${STAGING_INCDIR}:g' $i
 	done
 	sed -i 's:I/usr/include:I${STAGING_INCDIR}:g' ${S}/Makefile	
+}
+
+do_install_append() {
+	ln -sf ${libdir}/xbmc/system/python/python24-arm.so ${D}${datadir}/xbmc/system/python/ || true
+	ln -sf ${libdir}/xbmc/system/python/python26-arm.so ${D}${datadir}/xbmc/system/python/ || true
 }
 
 FILES_${PN} += "${datadir}/xsessions"
