@@ -1,6 +1,5 @@
 require x-load.inc
 
-DEFAULT_PREFERENCE_am3517-evm = "-1"
 DEFAULT_PREFERENCE_omap3-pandora = "-1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/x-load-git/${MACHINE}"
@@ -10,7 +9,7 @@ SRCREV_beagleboard = "1c9276af4d6a5b7014a7630a1abeddf3b3177563"
 
 PV = "1.42+${PR}+gitr${SRCREV}"
 PV_beagleboard = "1.44+${PR}+gitr${SRCREV}"
-PR ="r11"
+PR ="r12"
 PE = "1"
 
 SRC_URI = "git://gitorious.org/x-load-omap3/mainline.git;branch=master;protocol=git"
@@ -25,10 +24,20 @@ SRC_URI_append_omap3-touchbook = " \
                               file://screen-off.patch \
                              "
 
+# TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
+SRC_URI_omap3evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"
+SRCREV_omap3evm = "cd4084a528fb0d9a2059a98ad0e4ed2ba3170fda"
+PV_omap3evm = "1.46+${PR}+gitr${SRCREV}"
 
-SRC_URI_append_am3517-evm = " \
-                                 file://xload-shiva.diff \
-"
+# TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
+SRC_URI_dm3730-am3715-evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"
+SRCREV_dm3730-am3715-evm = "cd4084a528fb0d9a2059a98ad0e4ed2ba3170fda"
+PV_dm3730-am3715-evm = "1.46+${PR}+gitr${SRCREV}"
+
+# TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
+SRC_URI_am3517-evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"
+SRCREV_am3517-evm = "cd4084a528fb0d9a2059a98ad0e4ed2ba3170fda"
+PV_am3517-evm = "1.46+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/bootloader/x-loader.git;protocol=git \
                      http://www.xora.org.uk/~dp/oe/zoom2.u-boot.git_78e778e0ea884306841c6499851a1e35177d81d0.tar.gz;name=uboot"
