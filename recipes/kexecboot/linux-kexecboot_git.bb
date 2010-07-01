@@ -1,12 +1,11 @@
 require linux-kexecboot.inc
 
 KERNEL_RELEASE = "2.6.35-rc3"
-SRCREV = "5904b3b81d25166e5e39b9727645bb47937618e3"
+SRCREV = "980019d74e4b2428362b36a0506519d6d9460800"
 PV = "${KERNEL_RELEASE}+gitr${SRCPV}"
 
 SRC_URI += "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;branch=master \
-            file://use-noclone-attribute-for-naked.patch;status=pending \
-           file://defconfig"
+            file://defconfig"
 
 S = "${WORKDIR}/git"
 
