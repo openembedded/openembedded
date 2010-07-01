@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 SRCREV = "161450"
 PV = "4.5"
@@ -18,7 +18,7 @@ PV = "4.5"
 # 4.5.1 then the value below will be 2 which will mean 4.5.2
 # which will be next minor release and so on.
 
-BINV = "${PV}.2"
+BINV = "${PV}.1"
 BRANCH = "gcc-4_5-branch"
 PR_append = "+svnr${SRCPV}"
 
