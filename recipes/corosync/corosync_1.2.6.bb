@@ -10,8 +10,9 @@ SRC_URI = " \
 	file://corosync.conf \
 	file://volatiles \
 	"
-SRC_URI[md5sum] = "03b8cc311619c07ae1a84a5d59f13d0b"
-SRC_URI[sha256sum] = "4dd2aa43d82bb22c9bfed146da4ea2e07134d413a42f164dff86da9f34719fc9"
+SRC_URI[md5sum] = "82d91373585f0d48cb98a8599a237e48"
+SRC_URI[sha256sum] = "ad41e3133659a5fb32e878aa85199aba6cc84aa5e0e913b4f6e31c4a4805f9d9"
+
 
 inherit autotools_stage update-rc.d
 
