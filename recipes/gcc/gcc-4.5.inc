@@ -18,7 +18,7 @@ PV = "4.5"
 # 4.5.1 then the value below will be 2 which will mean 4.5.2
 # which will be next minor release and so on.
 
-BINV = "${PV}.1"
+BINV = "${PV}.2"
 BRANCH = "gcc-4_5-branch"
 PR_append = "+svnr${SRCPV}"
 
@@ -54,4 +54,3 @@ EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libgomp --disable-li
 EXTRA_OECONF_append_linux-uclibc = " --disable-decimal-float "
 EXTRA_OECONF_append_linux-uclibceabi = " --disable-decimal-float "
 EXTRA_OECONF_append_linux-uclibcspe = " --disable-decimal-float "
-EXTRA_OECONF_append_linux-uclibc = " ${@base_contains('TARGET_ARCH', 'powerpc', '--without-long-double-128', '',d)}"
