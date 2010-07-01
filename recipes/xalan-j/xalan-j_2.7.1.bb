@@ -3,6 +3,7 @@ LICENSE = "AL2.0"
 
 AUTHOR = "Apache Software Foundation"
 HOMEPAGE = "http://xml.apache.org/xalan-j
+PR = "r1"
 
 DEPENDS = "fastjar-native xerces-j regexp jlex cup jaxp1.3 bcel"
 
@@ -43,6 +44,9 @@ do_install_append() {
   oe_jarinstall serializer-${PV}.jar serializer.jar
 }
 
+do_stage_append() {
+  oe_jarinstall -s serializer-${PV}.jar serializer.jar
+}
 PACKAGES = "libxalan2-serializer-java ${JPN}"
 
 FILES_libxalan2-serializer-java = "${datadir_java}/serializer*.jar"
