@@ -3,7 +3,7 @@ LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
@@ -14,6 +14,7 @@ SRC_URI = "\
   file://tcllibrary.diff;striplevel=2 \
   file://tclpackagepath.diff;striplevel=2 \
   file://tclprivate.diff;striplevel=2 \
+  file://mips-tclstrtod.patch;striplevel=0 \
 "
 
 SRC_URI[md5sum] = "7f123e53b3daaaba2478d3af5a0752e3"
