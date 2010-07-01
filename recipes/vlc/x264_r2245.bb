@@ -1,6 +1,6 @@
 DESCRIPTION = "H.264 encoder"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 X264PV = "snapshot-20100531-2245"
 
@@ -15,6 +15,7 @@ inherit autotools lib_package pkgconfig
 # default --extra-cflags
 X264_ECFLAGS = ""
 X264_ECFLAGS_mips = "-fPIC"
+X264_ECFLAGS_mipsel = "-fPIC"
 
 # disable use of assembler written functions
 X264_DISABLE_ASM = "--disable-asm"
