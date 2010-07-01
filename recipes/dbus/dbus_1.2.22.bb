@@ -1,5 +1,7 @@
 include dbus.inc
 
+PR = "${INC_PR}.0"
+
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz;name=dbus \
   file://tmpdir.patch \

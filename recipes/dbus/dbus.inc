@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
 
-INC_PR = "r18"
+INC_PR = "r19"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz;name=dbus \
@@ -35,8 +35,13 @@ EXTRA_OECONF = "\
   ${EXTRA_OECONF_X} \
 "
 
-do_compile_prepend_mipsel() {
-	sed -i -e 's/\-fPIE//' -e 's/\-pie\ \-Wl\,\-z\,relro//' bus/Makefile
+# On mipsel, D-Bus fails to link with --gc-sections and segfaults before main()
+# when built with -fPIE/-pie.
+do_configure_prepend_mipsel() {
+	sed -i -e 's/\-fPIE//' \
+		-e 's/\-pie\ \-Wl\,\-z\,relro//' \
+		-e 's/-Wl,--gc-sections//' \
+		${S}/configure.in
 }
 
 do_install_append() {

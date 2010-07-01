@@ -1,5 +1,7 @@
 include dbus.inc
 
+PR = "${INC_PR}.0"
+
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   \
@@ -19,8 +21,6 @@ SRC_URI = "\
 
 # This is the development version of dbus that will lead to 1.4.x
 DEFAULT_PREFERENCE = "-1"
-
-PR = "r2"
 
 SRC_URI[md5sum] = "b3298d5ce0e4ad4731b1e4e1787d56bb"
 SRC_URI[sha256sum] = "fe32b49667894cf91b0a97503163be5c4814ecf67259e8feb26d1ba57cb03dae"
