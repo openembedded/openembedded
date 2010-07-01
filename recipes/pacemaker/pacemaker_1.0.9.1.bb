@@ -16,18 +16,18 @@ DEPENDS = " \
 	"
 RDEPENDS_${PN} += "openais"
 
-PR = "r4"
+PR = "r0"
 
 SRC_URI = " \
-	http://hg.clusterlabs.org/pacemaker/stable-1.0/archive/Pacemaker-${PV}.tar.bz2;name=tar \
+	http://hg.clusterlabs.org/pacemaker/stable-1.0/archive/Pacemaker-${PV}.tar.bz2 \
 	file://pacemaker-remove-native-includes.patch \
 	file://pacemaker-dont-use-help2man.patch \
 	file://fix-header-defs-lookup.patch \
 	file://volatiles \
 	"
 SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch"
-SRC_URI[tar.md5sum] = "088569ca893fe9f2239b68abe2856132"
-SRC_URI[tar.sha256sum] = "07e2e5559720890603baac96aa7635ff02f0b33ead592977554e661c6afe7b55"
+SRC_URI[md5sum] = "c844d98a5e6163192dd9f073ba9856ff"
+SRC_URI[sha256sum] = "55b30bf018720f28d92c22519cbb26ebedb5c511dbeedb7e2c2a2712034ebd92"
 inherit autotools_stage python-dir
 
 S = "${WORKDIR}/Pacemaker-1-0-Pacemaker-${PV}"
