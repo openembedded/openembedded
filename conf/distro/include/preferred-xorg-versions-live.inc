@@ -1,4 +1,4 @@
-#Mon Jun 28 09:07:30 CEST 2010
+#Thu Jul  1 16:47:21 CEST 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -353,4 +353,4 @@ PREFERRED_VERSION_util-macros ?= "1.10.0"
 PREFERRED_VERSION_util-macros-native ?= "1.10.0"
 PREFERRED_VERSION_xorg-cf-files ?= "1.0.3"
 #xserver
-PREFERRED_VERSION_xserver-xorg ?= "1.8.99.903"
+PREFERRED_VERSION_xserver-xorg ?= "1.8.99.904"
