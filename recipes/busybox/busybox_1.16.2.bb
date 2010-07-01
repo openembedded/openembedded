@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -46,4 +46,15 @@ do_install_append() {
     install -d ${D}${sysconfdir}/mdev
     install -m 0755 ${WORKDIR}/find-touchscreen.sh ${D}${sysconfdir}/mdev/
     install -m 0755 ${WORKDIR}/mdev ${D}${sysconfdir}/init.d/
+
+    if grep "CONFIG_UDHCPD=y" ${WORKDIR}/defconfig; then
+          install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}${sysconfdir}/init.d/
+    fi
+
+    if grep "CONFIG_UDHCPC=y" ${WORKDIR}/defconfig; then
+          install -d ${D}${sysconfdir}/udhcpc.d
+          install -d ${D}${datadir}/udhcpc
+          install -m 0755 ${WORKDIR}/simple.script ${D}${sysconfdir}/udhcpc.d/50default
+          install -m 0755 ${WORKDIR}/default.script ${D}${datadir}/udhcpc/default.script
+    fi
 }
