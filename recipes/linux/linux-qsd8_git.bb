@@ -5,7 +5,7 @@ PR = "r15"
 
 COMPATIBLE_MACHINE = "htcnexus|htcleo"
 
-SRCREV = "bc796399c0a19622b8aa1f705d841c9b4059550b"
+SRCREV = "3aa5467b241e74b1e74f4bdb3766e464b1c39a9d"
 
 SRC_BRANCH = "htc-msm-2.6.32"
 
