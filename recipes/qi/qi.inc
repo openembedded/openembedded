@@ -42,6 +42,13 @@ do_compile() {
 	make CPU=s3c6410
 }
 
+do_compile_om-gta01() {
+        make clean && make CPU=s3c2410
+}
+do_compile_om-gta02() {
+        make clean && make CPU=s3c2442
+}
+
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
 	cp -f image/qi-*.udfu ${DEPLOY_DIR_IMAGE}
