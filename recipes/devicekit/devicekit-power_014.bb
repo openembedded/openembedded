@@ -3,10 +3,10 @@ LICENSE = "GPLv2"
 DEPENDS = "libusb1 udev glib-2.0 dbus-glib policykit"
 
 
-SRC_URI = "http://cgit.freedesktop.org/DeviceKit/DeviceKit-power/snapshot/DeviceKit-power-${PV}.tar.gz;name=archive"
+SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/DeviceKit-power-014.tar.gz"
 
-SRC_URI[archive.md5sum] = "570846c933df16b768082879b5ee0605"
-SRC_URI[archive.sha256sum] = "ae450e86443df825b31a664562f12117983ebd7d106f5c5cd82ca2f38791166d"
+SRC_URI[md5sum] = "115eed840713d53f073f2d431571662e"
+SRC_URI[sha256sum] = "8157388102569b1a0dcd8b26aea754d0159803795280ca96c852f8350d2aa354"
 
 S = "${WORKDIR}/DeviceKit-power-${PV}"
 
