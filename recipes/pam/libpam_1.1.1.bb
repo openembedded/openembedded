@@ -15,7 +15,7 @@ DEPENDS = "flex flex-native"
 # PAM is not a lot of use without configuration files and the plugins
 RRECOMMENDS_${PN} = "libpam-meta libpam-base-files"
 
-PR = "r0"
+PR = "r1"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -30,6 +30,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/library/${p}.tar.bz2 \
 
 UCLIBC_PATCHES = " file://Linux-PAM-1.1.0-uclibc.patch \
                    file://disable_modules_uclibc.patch \
+                   file://pam-no-innetgr.patch \
                  "
 
 SRC_URI_append_linux-uclibc = ${UCLIBC_PATCHES}

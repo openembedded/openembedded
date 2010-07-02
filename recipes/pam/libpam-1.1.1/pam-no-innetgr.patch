@@ -1,0 +1,95 @@
+innetgr may not be there so make sure that when innetgr is not present
+then we inform about it and not use it.
+
+-Khem
+Index: Linux-PAM-1.1.1/modules/pam_group/pam_group.c
+===================================================================
+--- Linux-PAM-1.1.1.orig/modules/pam_group/pam_group.c	2010-07-01 19:23:08.885170000 -0700
++++ Linux-PAM-1.1.1/modules/pam_group/pam_group.c	2010-07-01 19:27:05.475170000 -0700
+@@ -659,9 +659,13 @@ static int check_account(pam_handle_t *p
+ 	}
+ 	/* If buffer starts with @, we are using netgroups */
+ 	if (buffer[0] == '@')
+-	  good &= innetgr (&buffer[1], NULL, user, NULL);
++#ifdef HAVE_INNETGR
++	    good &= innetgr (&buffer[1], NULL, user, NULL);
++#else
++	    pam_syslog (pamh, LOG_ERR, "pam_group does not have netgroup support");
++#endif
+ 	else
+-	  good &= logic_field(pamh,user, buffer, count, is_same);
++	    good &= logic_field(pamh,user, buffer, count, is_same);
+ 	D(("with user: %s", good ? "passes":"fails" ));
+ 
+ 	/* here we get the time field */
+Index: Linux-PAM-1.1.1/modules/pam_time/pam_time.c
+===================================================================
+--- Linux-PAM-1.1.1.orig/modules/pam_time/pam_time.c	2010-07-01 19:29:46.145170000 -0700
++++ Linux-PAM-1.1.1/modules/pam_time/pam_time.c	2010-07-01 19:32:42.215170002 -0700
+@@ -555,9 +555,13 @@ check_account(pam_handle_t *pamh, const
+ 	  }
+ 	  /* If buffer starts with @, we are using netgroups */
+ 	  if (buffer[0] == '@')
+-	    good &= innetgr (&buffer[1], NULL, user, NULL);
++#ifdef HAVE_INNETGR
++	       good &= innetgr (&buffer[1], NULL, user, NULL);
++#else
++	       pam_syslog (pamh, LOG_ERR, "pam_time does not have netgroup support");
++#endif
+ 	  else
+-	    good &= logic_field(pamh, user, buffer, count, is_same);
++	       good &= logic_field(pamh, user, buffer, count, is_same);
+ 	  D(("with user: %s", good ? "passes":"fails" ));
+ 
+ 	  /* here we get the time field */
+Index: Linux-PAM-1.1.1/modules/pam_succeed_if/pam_succeed_if.c
+===================================================================
+--- Linux-PAM-1.1.1.orig/modules/pam_succeed_if/pam_succeed_if.c	2010-07-01 19:41:38.305170002 -0700
++++ Linux-PAM-1.1.1/modules/pam_succeed_if/pam_succeed_if.c	2010-07-01 19:52:08.955170002 -0700
+@@ -231,18 +231,27 @@ evaluate_notingroup(pam_handle_t *pamh,
+ }
+ /* Return PAM_SUCCESS if the (host,user) is in the netgroup. */
+ static int
+-evaluate_innetgr(const char *host, const char *user, const char *group)
++evaluate_innetgr(const pam_handle_t* pamh, const char *host, const char *user, const char *group)
+ {
++#ifdef HAVE_INNETGR
+ 	if (innetgr(group, host, user, NULL) == 1)
+ 		return PAM_SUCCESS;
++#else
++        pam_syslog (pamh, LOG_ERR, "pam_succeed_if does not have netgroup support");
++#endif
++
+ 	return PAM_AUTH_ERR;
+ }
+ /* Return PAM_SUCCESS if the (host,user) is NOT in the netgroup. */
+ static int
+-evaluate_notinnetgr(const char *host, const char *user, const char *group)
++evaluate_notinnetgr(const pam_handle_t* pamh, const char *host, const char *user, const char *group)
+ {
++#ifdef HAVE_INNETGR
+ 	if (innetgr(group, host, user, NULL) == 0)
+ 		return PAM_SUCCESS;
++#else
++	pam_syslog (pamh, LOG_ERR, "pam_succeed_if does not have netgroup support");
++#endif
+ 	return PAM_AUTH_ERR;
+ }
+ 
+@@ -361,14 +370,14 @@ evaluate(pam_handle_t *pamh, int debug,
+ 		const void *rhost;
+ 		if (pam_get_item(pamh, PAM_RHOST, &rhost) != PAM_SUCCESS)
+ 			rhost = NULL;
+-		return evaluate_innetgr(rhost, user, right);
++		return evaluate_innetgr(pamh, rhost, user, right);
+ 	}
+ 	/* (Rhost, user) is not in this group. */
+ 	if (strcasecmp(qual, "notinnetgr") == 0) {
+ 		const void *rhost;
+ 		if (pam_get_item(pamh, PAM_RHOST, &rhost) != PAM_SUCCESS)
+ 			rhost = NULL;
+-		return evaluate_notinnetgr(rhost, user, right);
++		return evaluate_notinnetgr(pamh, rhost, user, right);
+ 	}
+ 	/* Fail closed. */
+ 	return PAM_SERVICE_ERR;
