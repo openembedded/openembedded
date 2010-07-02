@@ -11,7 +11,7 @@ PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://git.o-hand.com/eds-dbus;branch=master;protocol=git \
            file://iconv-detect.h \
-           file://libxml2-for-libedataserverui.patch;patch=1 \
+           file://libxml2-for-libedataserverui.patch \
            file://gtk-doc.make"
 
 S = "${WORKDIR}/git"

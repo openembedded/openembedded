@@ -4,7 +4,7 @@ DEPENDS = "virtual/libsdl libvorbis libogg zlib \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad mpeg2dec', d)}"
 
 SRC_URI += " file://scummvm.desktop \
-             file://no-strip.patch;patch=1 \
+             file://no-strip.patch \
            "
 PR = "${INC_PR}.0"
 

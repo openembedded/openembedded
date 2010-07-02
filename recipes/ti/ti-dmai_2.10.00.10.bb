@@ -5,7 +5,7 @@ PR = "r2"
  
 COMPATIBLE_MACHINE = "(dm365-evm|dm355-evm|dm6467-evm)"
 
-SRC_URI_append = "file://0001-Correct-DMAI-s-Resize-module-for-DM365.patch;patch=3 \
+SRC_URI_append = "file://0001-Correct-DMAI-s-Resize-module-for-DM365.patch;striplevel=3 \
 	file://doxygen_templates.tar.gz \
         file://arago-tdox"
 
