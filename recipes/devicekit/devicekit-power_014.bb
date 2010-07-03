@@ -15,6 +15,7 @@ inherit autotools pkgconfig
 EXTRA_OECONF = " --with-backend=linux"
 
 do_configure_prepend() {
+	gtkdocize
 	sed -i -e s:-nonet:\:g ${S}/doc/man/Makefile.am
 }	
 
