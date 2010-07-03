@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r67"
+PR = "r68"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -46,6 +46,7 @@ SLUGOS_PACKAGES = "\
 	bind \
 	binutils \
 	bison \
+	bluez-libs \
 	bogofilter \
 	bonnie++ \
 	boost \
@@ -62,6 +63,7 @@ SLUGOS_PACKAGES = "\
 	curl \
 	cvs \
 	db \
+	dbus \
 	devio \
 	devlabel \
 	diffstat \
@@ -224,29 +226,24 @@ SLUGOS_PACKAGES = "\
 	zlib \
 	"
 
-# Packages that pull in dbus, which pulls in X11 libs.
-SLUGOS_DBUS_PACKAGES = "\
+# Packages that may pull in X11 libs.  We need to consider
+# if these are practical.
+SLUGOS_X11_PACKAGES = "\
+	bluez-hcidump \
+	bluez4 \
 	cups \
 	gpsd \
 	ircp \
+	libao \
+	mpd \
+	netatalk \
 	obexftp \
 	obexpush \
 	openobex-apps \
 	openobex \
 	rtorrent \
-	task-mokogateway-everything \
-	"
-
-
-# Packages that pull in X11 libs (impractical packages).
-# These are not built by default any more.
-SLUGOS_X11_PACKAGES = "\
-	bluez-hcidump \
-	bluez4 \
-	libao \
-	mpd \
-	netatalk \
 	sane-backends \
+	task-mokogateway-everything \
 	wireshark \
 	"
 
