@@ -1,8 +1,5 @@
 require hal.inc
 
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_angstrom = "1"
-
 SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
         file://0001-Add-touchscreen-option.patch \
         file://20hal \
