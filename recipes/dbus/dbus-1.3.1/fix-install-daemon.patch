@@ -1,0 +1,13 @@
+Index: dbus-1.3.1/bus/Makefile.am
+===================================================================
+--- dbus-1.3.1.orig/bus/Makefile.am
++++ dbus-1.3.1/bus/Makefile.am
+@@ -206,7 +206,7 @@
+ 		$(mkinstalldirs) $(DESTDIR)$(DBUS_DAEMONDIR); \
+ 		chmod 755 $(DESTDIR)$(DBUS_DAEMONDIR); \
+ 	fi
+-	$(INSTALL_PROGRAM) dbus-daemon$(EXEEXT) $(DESTDIR)$(DBUS_DAEMONDIR)
++	$(INSTALL_PROGRAM) .libs/dbus-daemon$(EXEEXT) $(DESTDIR)$(DBUS_DAEMONDIR)
+ 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)/dbus-1
+ 	if test -f dbus-daemon-launch-helper$(EXEEXT) ; then \
+ 	$(INSTALL_PROGRAM) dbus-daemon-launch-helper$(EXEEXT) $(DESTDIR)$(libexecdir); \
