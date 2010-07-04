@@ -177,6 +177,7 @@ def oe_unpack_file(file, data, url = None):
 	else:
 		efile = file
 	cmd = None
+	(type, host, path, user, pswd, parm) = bb.decodeurl(url)
 	if file.endswith('.tar'):
 		cmd = 'tar x --no-same-owner -f %s' % file
 	elif file.endswith('.tgz') or file.endswith('.tar.gz') or file.endswith('.tar.Z'):
@@ -193,10 +194,12 @@ def oe_unpack_file(file, data, url = None):
 		cmd = 'xz -dc %s > %s' % (file, efile)
 	elif file.endswith('.zip') or file.endswith('.jar'):
 		cmd = 'unzip -q -o'
-		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
 		if 'dos' in parm:
 			cmd = '%s -a' % cmd
 		cmd = "%s '%s'" % (cmd, file)
+	elif (type == "file" and file.endswith('.patch') or file.endswith('.diff')) and parm.get('apply') != 'no':
+	# patch and diff files are special and need not be copied to workdir
+		cmd = ""
 	elif os.path.isdir(file):
 		destdir = "."
 		filespath = bb.data.getVar("FILESPATH", data, 1).split(":")
@@ -212,28 +215,23 @@ def oe_unpack_file(file, data, url = None):
 
 		cmd = 'cp -pPR %s %s/%s/' % (file, os.getcwd(), destdir)
 	else:
-		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
 		if not 'patch' in parm and parm.get('apply') != 'yes':
 			# The "destdir" handling was specifically done for FILESPATH
 			# items.  So, only do so for file:// entries.
 			if type == "file":
-				destdir = bb.decodeurl(url)[1] or "."
+				dest = os.path.dirname(path) or "."
 			else:
-				destdir = "."
-			bb.mkdirhier("%s/%s" % (os.getcwd(), destdir))
-			cmd = 'cp %s %s/%s/' % (file, os.getcwd(), destdir)
-
+				dest = "."
+			bb.mkdirhier("%s" % os.path.join(os.getcwd(),dest))
+			cmd = 'cp %s %s' % (file, os.path.join(os.getcwd(), dest))
 	if not cmd:
 		return True
-
-	dest = os.path.join(os.getcwd(), os.path.basename(file))
+	dest = os.path.join(os.getcwd(), path)
 	if os.path.exists(dest):
 		if os.path.samefile(file, dest):
 			return True
-
 	# Change to subdir before executing command
 	save_cwd = os.getcwd();
-	parm = bb.decodeurl(url)[5]
 	if 'subdir' in parm:
 		newdir = ("%s/%s" % (os.getcwd(), parm['subdir']))
 		bb.mkdirhier(newdir)
