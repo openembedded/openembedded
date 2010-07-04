@@ -6,6 +6,7 @@ PR = "${INC_PR}.6"
 inherit gettext
 
 SRC_URI += "\
+  file://configure-ac.patch \
   file://buildfix.patch \
   file://alsaerror.patch \
   file://periodfix.patch \
