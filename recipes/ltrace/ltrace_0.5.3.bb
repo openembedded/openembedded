@@ -4,7 +4,7 @@ SECTION = "devel"
 DEPENDS = "libelf binutils"
 LICENSE = "GPLv2"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz;name=archive \
@@ -23,7 +23,7 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 do_configure_prepend() {
 	case ${TARGET_ARCH} in
 		arm*)  ln -sf ./linux-gnu sysdeps/linux-gnueabi ;;
-		mips)  ln -sf ./mipsel sysdeps/linux-gnu/mips ;;
+		mips*)  ln -sf ./mipsel sysdeps/linux-gnu/mips ;;
 	esac
 	sed -e 's:uname -m:echo @HOST_CPU@:' \
 		sysdeps/linux-gnu/Makefile > sysdeps/linux-gnu/Makefile.in
