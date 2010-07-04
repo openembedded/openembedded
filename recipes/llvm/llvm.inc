@@ -61,7 +61,7 @@ EXTRA_OECMAKE = "\
   -DBUILD_SHARED_LIBS:BOOL=ON \
 "
 
-PACKAGES = " ${PN}-dev ${PN}-dbg ${PN}-doc "
+PACKAGES = "${PN} ${PN}-dev ${PN}-dbg ${PN}-doc"
 
 PACKAGES_DYNAMIC = "llvm-*"
 
@@ -70,6 +70,9 @@ python populate_packages_prepend () {
 
         do_split_packages(d, libllvm_libdir, '^lib(.*)\.so$', 'libllvm-%s', 'Split package for %s', allow_dirs=True)
 }
+
+FILES_${PN} = ""
+ALLOW_EMPTY_${PN} = "1"
 
 FILES_${PN}-dev = "${includedir} ${bindir}/* ${libdir}/LLVMHello.so"
 
