@@ -1,5 +1,5 @@
 require mc.inc
-PR = "r4"
+PR = "${INC_PR}.0"
 HOMEPAGE = "http://www.midnight-commander.org/"
 
 # most of these fixes were copied from openSUSE Factory.

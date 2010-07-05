@@ -6,6 +6,7 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0 glib-2.0-native"
 RDEPENDS_${PN} = "ncurses-terminfo"
+INC_PR = "r5"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 
@@ -32,7 +33,7 @@ PACKAGE_ARCH_${PN}-hilite = "all"
 
 export CC_FOR_BUILD = "${BUILD_CC}"
 export CFLAGS_FOR_BUILD = "${BUILD_CFLAGS}"
-export LD_FOR_BUILD = "${BUILD_CC}"
+export LD_FOR_BUILD = "${BUILD_CC} -Wl,-rpath -Wl,${STAGING_LIBDIR_NATIVE}"
 do_compile_prepend() {
 	# FIXME: Ugly! Should be done globally with respect to the host system (in classes) instead of NATIVE_PKGCONFIG_PATH:
 	export HOST_PKG_CONFIG_PATH=
