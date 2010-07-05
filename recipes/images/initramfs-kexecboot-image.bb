@@ -3,8 +3,6 @@
 
 #export IMAGE_BASENAME = "initramfs-kexecboot-image"
 
-DEPENDS = "lzma-native"
-
 IMAGE_FSTYPES = "cpio.gz cpio.lzma"
 
 # avoid circular dependencies
