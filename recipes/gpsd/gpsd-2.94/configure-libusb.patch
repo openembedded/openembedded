@@ -1,0 +1,118 @@
+upstream: https://lists.berlios.de/pipermail/gpsd-dev/2010-July/008015.html
+status: pending
+diff -ru gpsd-2.94-orig/Makefile.am gpsd-2.94/Makefile.am
+--- gpsd-2.94-orig/Makefile.am	2010-04-20 19:07:21.000000000 +0930
++++ gpsd-2.94/Makefile.am	2010-07-06 10:03:02.000000000 +0930
+@@ -42,7 +42,7 @@
+ endif
+ 
+ # Conditional includes.
+-INCLUDES = $(INCUSB)
++INCLUDES = $(LIBUSB_CFLAGS)
+ if HAVE_DBUS
+ INCLUDES += $(DBUS_CFLAGS) $(DBUS_GLIB_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
+ endif
+@@ -105,13 +105,13 @@
+ #
+ gpsd_c_sources = gpsd_dbus.c gpsd.c
+ gpsd_SOURCES = $(gpsd_c_sources) gpsd_dbus.h
+-gpsd_LDADD = $(DBUS_LIBS) $(LIBM) libgpsd.la libgps.la -lm $(LIBPTHREAD) $(LIBUSB)
++gpsd_LDADD = $(DBUS_LIBS) $(LIBM) libgpsd.la libgps.la -lm $(LIBPTHREAD) $(LIBUSB_LIBS)
+ 
+ #
+ # Build gpsctl
+ #
+ gpsctl_SOURCES = gpsctl.c
+-gpsctl_LDADD = $(LIBM) libgpsd.la libgps.la -lm $(LIBPTHREAD) $(LIBUSB)
++gpsctl_LDADD = $(LIBM) libgpsd.la libgps.la -lm $(LIBPTHREAD) $(LIBUSB_LIBS)
+ 
+ #
+ # Build gpspipe
+@@ -131,13 +131,13 @@
+ gpsmon_SOURCES = gpsmon.c monitor_nmea.c monitor_sirf.c \
+ 	monitor_italk.c monitor_ubx.c monitor_superstar2.c \
+ 	monitor_oncore.c monitor_tnt.c
+-gpsmon_LDADD = $(LIBM) $(NCURSES_LIBS) libgpsd.la libgps.la -lm $(LIBPTHREAD)  $(LIBUSB)
++gpsmon_LDADD = $(LIBM) $(NCURSES_LIBS) libgpsd.la libgps.la -lm $(LIBPTHREAD)  $(LIBUSB_LIBS)
+ 
+ #
+ # Build gpsdecode
+ #
+ gpsdecode_SOURCES = gpsdecode.c
+-gpsdecode_LDADD = $(LIBM) libgpsd.la libgps.la -lm $(LIBPTHREAD)  $(LIBUSB)
++gpsdecode_LDADD = $(LIBM) libgpsd.la libgps.la -lm $(LIBPTHREAD)  $(LIBUSB_LIBS)
+ 
+ #
+ # Build shared libraries
+@@ -309,20 +309,20 @@
+ # Build test_gpsmm
+ #
+ test_gpsmm_SOURCES = test_gpsmm.cpp
+-test_gpsmm_LDADD = $(LIBC) libgps.la -lm  $(LIBUSB)
++test_gpsmm_LDADD = $(LIBC) libgps.la -lm  $(LIBUSB_LIBS)
+ endif
+ 
+ #
+ # Build test_bits tester
+ #
+ test_bits_SOURCES = test_bits.c
+-test_bits_LDADD = $(LIBC) libgpsd.la libgps.la  $(LIBUSB)
++test_bits_LDADD = $(LIBC) libgpsd.la libgps.la  $(LIBUSB_LIBS)
+ 
+ #
+ # Build packets tester
+ #
+ test_packet_SOURCES = test_packet.c
+-test_packet_LDADD = $(LIBC) libgpsd.la libgps.la -lm  $(LIBUSB)
++test_packet_LDADD = $(LIBC) libgpsd.la libgps.la -lm  $(LIBUSB_LIBS)
+ 
+ #
+ # Build geoid model tester
+@@ -495,7 +495,7 @@
+ 	$(CC) $(CFLAGS) -o libgps -lm -DTESTMAIN $(LIBPTHREAD) -g libgps_core.c .libs/libgps.a
+ 
+ # Report splint warnings
+-SPLINTOPTS = -I/usr/include/dbus-1.0/ $(INCUSB) +quiet
++SPLINTOPTS = -I/usr/include/dbus-1.0/ $(LIBUSB_CFLAGS) +quiet
+ splint: gpsd.h packet_names.h
+ 	@echo "Running splint on daemon and libraries..."
+ 	-splint $(SPLINTOPTS) -exportlocal -redef $(gpsd_c_sources) $(libgpsd_c_sources) $(libgps_c_sources)
+diff -ru gpsd-2.94-orig/configure.ac gpsd-2.94/configure.ac
+--- gpsd-2.94-orig/configure.ac	2010-04-21 03:25:08.000000000 +0930
++++ gpsd-2.94/configure.ac	2010-07-06 10:03:09.000000000 +0930
+@@ -233,30 +233,12 @@
+ 	AC_DEFINE([HAVE_LIBPTHREAD], [], [pthread libraries are present])])
+ AC_SUBST(LIBPTHREAD)
+ 
+-#
+-# We want libusb-1.x or later.  Checking for this is messy in 2010
+-# since many Linux systems ship with .0,1.x versions and that's 
+-# what you get if you check naively for -lusb.  
+-#
+-# We use the fact that the obsolete versions put their include file in
+-# /usr/include/usb.h, while the newer ones have it in 
+-# /usr/include/libusb-*/libusb.h
+-#
+-AC_MSG_CHECKING([for libusb version >= 1.0.0])
+-if test -f /usr/include/libusb-*/libusb.h ;
+-then
+-    usb=$(basename /usr/lib/libusb-*.so | sed -e s/\.so// -e s/^lib//)
+-    AC_DEFINE([HAVE_LIBUSB], [], [will link with -l$usb; ])
+-    LIBUSB=-l${usb}
+-    INCUSB=-I/usr/include/lib${usb}
+-    ac_libusb=yes
+-    AC_MSG_RESULT([found.])
+-else
+-    ac_libusb=yes
+-    AC_MSG_RESULT([not found.])
++PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0, [ac_libusb=yes], [ac_libusb=no])
++AC_SUBST(LIBUSB_LIBS)
++AC_SUBST(LIBUSB_CFLAGS)
++if test x"$ac_libusb" = x"yes" ; then
++	AC_DEFINE([HAVE_LIBUSB], 1, [libusb support])
+ fi
+-AC_SUBST(LIBUSB)
+-AC_SUBST(INCUSB)
+ 
+ AH_VERBATIM([_GNU_SOURCE],
+ 	  [/* Some libc's don't have strlcat/strlcpy. Local copies are provided */
