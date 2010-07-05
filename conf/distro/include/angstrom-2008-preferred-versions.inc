@@ -56,6 +56,8 @@ PREFERRED_VERSION_samba		= "3.3.9"
 PREFERRED_VERSION_tiff 		= "3.9.2+4.0.0beta5"
 
 PREFERRED_VERSION_udev 		= "151"
+PREFERRED_VERSION_udev_spitz	= "141"
+PREFERRED_VERSION_udev_akita	= "141"
 PREFERRED_VERSION_udev_libc-uclibc = "141"
 UDEV_GE_141 = "1"
 
