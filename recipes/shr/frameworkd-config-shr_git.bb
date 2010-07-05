@@ -6,11 +6,11 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 
 SRCREV_pn-frameworkd-config-shr_FSO_REV ?= "cfc0a5c3def2dc2556c86f3dad182181124de006"
-SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "8ba6f1545068399060483017451261e9b3c70d4a"
+SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "7a681fab18573f259575252736ecfe668d9efef4"
 
 SRCREV_FORMAT = "FSO_REV-SHR_REV"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master;name=FSO_REV \
            git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master;name=SHR_REV"
