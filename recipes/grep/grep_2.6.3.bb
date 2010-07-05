@@ -3,7 +3,7 @@ SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
 PR = "r1"
 
-DEPENDS += "xz-native"
+do_unpack[depends] += "xz-native:do_populate_sysroot"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.xz \
            file://uclibc-fix.patch"
