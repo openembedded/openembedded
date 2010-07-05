@@ -1,6 +1,8 @@
 # the binaries are statical linked against dietlibc
 require kexec-tools2.inc
 
+FILESPATHPKG =. "kexec-tools-${PV}:"
+
 SRC_URI += "file://dietlibc.patch"
 
 inherit dietlibc
