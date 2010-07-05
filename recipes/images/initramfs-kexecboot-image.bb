@@ -1,8 +1,6 @@
 # Initramfs image providing kexecboot
 # a linux as bootloader implementation
 
-#export IMAGE_BASENAME = "initramfs-kexecboot-image"
-
 IMAGE_FSTYPES = "cpio.gz cpio.lzma"
 
 # avoid circular dependencies
