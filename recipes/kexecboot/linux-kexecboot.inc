@@ -25,8 +25,13 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
 TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 
-KERNEL_IMAGE_MAXSIZE = "1294336"
+# Zaurus machines need kernel size-check
+KERNEL_IMAGE_MAXSIZE_akita = "1294336"
+KERNEL_IMAGE_MAXSIZE_c7x0 = "1294336"
 KERNEL_IMAGE_MAXSIZE_collie = "1048576"
+KERNEL_IMAGE_MAXSIZE_poodle "1294336"
+KERNEL_IMAGE_MAXSIZE_tosa = "1294336"
+KERNEL_IMAGE_MAXSIZE_spitz = "1294336"
 
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}"
