@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.34
-# Sat May 22 23:20:02 2010
+# Tue Jun 29 00:57:22 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -82,11 +82,11 @@ CONFIG_EMBEDDED=y
 # CONFIG_SYSCTL_SYSCALL is not set
 # CONFIG_KALLSYMS is not set
 CONFIG_HOTPLUG=y
-CONFIG_PRINTK=y
-CONFIG_BUG=y
+# CONFIG_PRINTK is not set
+# CONFIG_BUG is not set
 # CONFIG_ELF_CORE is not set
 # CONFIG_BASE_FULL is not set
-CONFIG_FUTEX=y
+# CONFIG_FUTEX is not set
 CONFIG_EPOLL=y
 CONFIG_SIGNALFD=y
 CONFIG_TIMERFD=y
