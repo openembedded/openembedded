@@ -3,13 +3,14 @@ in a style similar to the original SuperMario games."
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 APPIMAGE = "${WORKDIR}/supertux.png"
 APPDESKTOP = "${WORKDIR}/supertux.desktop"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/super-tux/supertux-${PV}.tar.bz2;name=archive \
            http://ssel.vub.ac.be/Members/DennisWagelaar/download/zaurus/supertux-0.1.2-fp.patch.gz;name=patch \
+           file://install-no-overwrite.patch \
 	   file://supertux.png"
 
 export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"

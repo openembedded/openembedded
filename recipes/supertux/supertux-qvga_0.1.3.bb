@@ -4,7 +4,7 @@ SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libsdl-gfx imagemagick-native pngcrush-native"
-PR = "r0.20"
+PR = "r0.21"
 
 APPIMAGE = "${WORKDIR}/supertux.png"
 APPDESKTOP = "${WORKDIR}/supertux.desktop"
@@ -13,6 +13,7 @@ PACKAGES_prepend = " ${PN}-levels-bonus1 ${PN}-levels-bonus2 "
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/super-tux/supertux-${PV}.tar.bz2 \
 #           file://supertux-qvga-gfx.tar.bz2 \
+           file://install-no-overwrite.patch \
            file://supertux-smallsize-data.tar.bz2 \
 	   file://gp2x.patch \
 	   file://img-resize.sh \

@@ -1,0 +1,13 @@
+Index: supertux-0.1.3/data/Makefile.am
+===================================================================
+--- supertux-0.1.3.orig/data/Makefile.am	2010-07-04 22:53:15.209949507 +0200
++++ supertux-0.1.3/data/Makefile.am	2010-07-04 22:53:51.490637559 +0200
+@@ -2,8 +2,6 @@
+   supertux.strf \
+   $(wildcard *.txt) \
+   CREDITS \
+-  $(wildcard sounds/*.wav) \
+-  images/icon.xpm \
+   $(wildcard images/*.png) \
+   $(wildcard images/*.xpm) \
+   $(wildcard images/background/*.png) \
