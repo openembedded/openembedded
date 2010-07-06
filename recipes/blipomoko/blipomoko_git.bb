@@ -8,9 +8,9 @@ SECTION = "x11/applications"
 SRC_URI = "git://github.com/dos1/blipomoko.git;protocol=http"
 S = "${WORKDIR}/git"
 
-SRCREV = "93295f36f7b45c691df247cb2a65227facf13654"
-PV = "0.0+gitr${SRCPV}"
-PR = "r1"
+SRCREV = "73ffa20d535d7bcf693981ac00d488db72dd2f68"
+PV = "0.2.99+gitr${SRCPV}"
+PR = "r0"
 
 inherit distutils
 
