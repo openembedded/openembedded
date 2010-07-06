@@ -1,7 +1,7 @@
 # the binaries are statical linked against klibc
 require kexec-tools.inc
 
-PR = "r8"
+PR = "r9"
 DEPENDS = "klibc"
 
 FILESPATHPKG =. "kexec-tools-${PV}:"
