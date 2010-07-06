@@ -70,6 +70,15 @@ SRC_URI_append_powerpc = " file://ppc-sfp-machine.patch \
                            file://powerpc-sqrt-hack.diff \
                            file://glibc-2.5-soft-fp-separate-strong-alias.patch"
 
+FILESPATHPKG_nios2 = "glibc-2.5:glibc-2.4:files:"
+
+SRC_URI_append_nios2 = " \
+  file://sysdeps-nios2.patch \
+  file://nios2-elf.patch \
+  file://nios2-iconv.patch \
+  file://nios2-ld-collate.patch \
+"
+
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
