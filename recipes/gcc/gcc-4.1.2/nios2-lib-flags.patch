@@ -1,0 +1,10 @@
+Index: gcc-4.1.2/config/mt-ospace
+===================================================================
+--- gcc-4.1.2.orig/config/mt-ospace	2010-06-02 10:23:01.000000000 +0200
++++ gcc-4.1.2/config/mt-ospace	2010-06-02 10:23:28.000000000 +0200
+@@ -1,3 +1,2 @@
+-# Build libraries optimizing for space, not speed.
+- CFLAGS_FOR_TARGET = -g -Os
+- CXXFLAGS_FOR_TARGET = -g -Os
++ CFLAGS_FOR_TARGET = -g -O2
++ CXXFLAGS_FOR_TARGET = -g -O2

@@ -1,0 +1,41 @@
+Index: gcc-4.1.2/config.sub
+===================================================================
+--- gcc-4.1.2.orig/config.sub	2010-05-27 15:30:45.069455792 +0200
++++ gcc-4.1.2/config.sub	2010-05-27 15:36:32.868205558 +0200
+@@ -267,6 +267,7 @@
+ 	| mn10200 | mn10300 \
+ 	| mt \
+ 	| msp430 \
++        | nios2 \
+ 	| ns16k | ns32k \
+ 	| or32 \
+ 	| pdp10 | pdp11 | pj | pjl \
+@@ -349,6 +350,7 @@
+ 	| mmix-* \
+ 	| mt-* \
+ 	| msp430-* \
++        | nios2-* \
+ 	| none-* | np1-* | ns16k-* | ns32k-* \
+ 	| orion-* \
+ 	| pdp10-* | pdp11-* | pj-* | pjl-* | pn-* | power-* \
+Index: gcc-4.1.2/gcc/config.gcc
+===================================================================
+--- gcc-4.1.2.orig/gcc/config.gcc	2010-05-27 15:30:45.039455207 +0200
++++ gcc-4.1.2/gcc/config.gcc	2010-05-27 15:33:26.249455379 +0200
+@@ -1597,6 +1597,16 @@
+         tm_file="dbxelf.h elfos.h svr4.h ${tm_file}"
+         tmake_file="${tmake_file} mt/t-mt"
+         ;;
++nios2-*-*)
++	tm_file="elfos.h ${tm_file}"
++        tmake_file="${tmake_file} nios2/t-nios2"
++        case ${target} in
++        nios2-*-linux*)
++                tm_file="${tm_file} linux.h nios2/linux.h"
++		tmake_file="${tmake_file} nios2/t-linux"
++                ;;
++        esac
++	;;
+ ns32k-*-netbsdelf*)
+ 	echo "GCC does not yet support the ${target} target"; exit 1
+ 	;;
