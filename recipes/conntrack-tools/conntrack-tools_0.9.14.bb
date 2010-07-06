@@ -2,6 +2,8 @@ DESCRIPTION = "Connection tracking userspace tools for Linux"
 LICENSE = "GPL"
 DEPENDS = "libnfnetlink libnetfilter-conntrack"
 
+PR = "r1"
+
 SRC_URI = " \
 	http://www.netfilter.org/projects/conntrack-tools/files/conntrack-tools-${PV}.tar.bz2;name=tar \
 	file://conntrack-failover \

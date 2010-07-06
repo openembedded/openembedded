@@ -65,8 +65,8 @@ case "$1" in
 	fi
 	;;
   restart)
-	$0 start
 	$0 stop
+	$0 start
 	;;
 
   *)
