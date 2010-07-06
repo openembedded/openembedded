@@ -26,7 +26,6 @@ FILESPATHPKG =. "uclibc-git:uclibc-${UCLIBC_BASE}:"
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 
 SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
-	${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
 	file://uClibc.config \
 	file://uClibc.machine \
 	file://uClibc.distro \

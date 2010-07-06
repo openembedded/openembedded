@@ -12,11 +12,8 @@ do_install() {
 
 	#ln -sf include ${CROSS_DIR}/${TARGET_SYS}/sys-include
 
-	# This conflicts with the c++ version of this header
-	rm -f ${D}${includedir}/bits/atomicity.h
 	install -d ${D}${libdir}/
-	install -m 644 lib/crt[1in].o ${D}${libdir}/
-	install -m 644 lib/libc.so ${D}${libdir}/
+	install -m 644 lib/crt[1in].o lib/libc.so ${D}${libdir}/
 }
 
 do_compile () {

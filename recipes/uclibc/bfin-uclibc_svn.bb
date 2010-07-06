@@ -9,7 +9,7 @@
 UCLIBC_BASE ?= "0.9.29"
 PV = "${UCLIBC_BASE}+svnr${SRCPV}"
 
-require uclibc.inc
+require uclibc-old.inc
 PR = "${INC_PR}.0"
 SRCREV = "1857"
 PROVIDES_append_bfin = " virtual/${TARGET_PREFIX}libc-for-gcc "

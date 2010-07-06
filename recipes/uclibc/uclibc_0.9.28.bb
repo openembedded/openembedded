@@ -1,4 +1,4 @@
-require uclibc.inc
+require uclibc-old.inc
 PR = "${INC_PR}.0"
 
 # This is the correct KERNEL_SOURCE location, if the uClibc
