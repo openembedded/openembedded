@@ -4,10 +4,10 @@ LICENSE = "GPLv2"
 DEPENDS = "openssl"
 RDEPENDS_${PN} = "iscsi-target"
 
-PR = "r0"
+PR = "r1"
 SRC_URI = "http://stgt.berlios.de/releases/tgt-${PV}.tar.gz"
-SRC_URI[md5sum] = "200fb1b4e8d42b072de2bac238c7d779"
-SRC_URI[sha256sum] = "b8cc9fdbacdcd9717b6c4bc15f7999a5bd4a20a334a09b47a3ae5ea21383eb1a"
+SRC_URI[md5sum] = "a7e40b4f6854d25e4216c6dfde441a9c"
+SRC_URI[sha256sum] = "3f29e4ebdc096a601a258fc56fc15bd673c6c614fcfbe17513c0ebbe2f38b798"
 
 EXTRA_OEMAKE += "ISCSI=1"
 
