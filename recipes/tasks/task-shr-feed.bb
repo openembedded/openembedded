@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r58"
+PR = "r59"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -263,6 +263,7 @@ RDEPENDS_${PN} += "\
 		fltkwwpointcal \
 		transmission \
 		xf86-input-tslib \
+		xf86-video-fbdev \
 		fltkcocktailbar \
 		fltkcurrency \
 		fltkspacetrader \
