@@ -219,14 +219,25 @@ def oe_unpack_file(file, data, url = None):
 			# The "destdir" handling was specifically done for FILESPATH
 			# items.  So, only do so for file:// entries.
 			if type == "file":
-				dest = os.path.dirname(path) or "."
+				if not host:
+					dest = os.path.dirname(path) or "."
+				else:
+				# this case is for backward compatiblity with older version
+				# of bitbake which do not have the fix
+				# http://cgit.openembedded.org/cgit.cgi/bitbake/commit/?id=ca257adc587bb0937ea76d8b32b654fdbf4192b8
+				# this should not be needed once all releases of bitbake has this fix
+				# applied/backported
+					dest = host + os.path.dirname(path) or "."
 			else:
 				dest = "."
 			bb.mkdirhier("%s" % os.path.join(os.getcwd(),dest))
 			cmd = 'cp %s %s' % (file, os.path.join(os.getcwd(), dest))
 	if not cmd:
 		return True
-	dest = os.path.join(os.getcwd(), path)
+	if not host:
+		dest = os.path.join(os.getcwd(), path)
+	else:
+		dest = os.path.join(os.getcwd(), os.path.join(host, path))
 	if os.path.exists(dest):
 		if os.path.samefile(file, dest):
 			return True
