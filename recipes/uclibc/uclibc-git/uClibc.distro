@@ -151,3 +151,4 @@ WARNINGS="-Wall"
 
 # math stuff for perl
 DO_C99_MATH=y
+UCLIBC_HAS_LONG_DOUBLE_MATH=y
