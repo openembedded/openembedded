@@ -4,12 +4,14 @@ LICENSE = "BSD"
 DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
 PROVIDES = "virtual/imlib2"
 PV = "1.4.2.001+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 
-EXTRA_OECONF = "--with-x"
+EXTRA_OECONF = "--with-x \
+		--x-includes=${STAGING_INCDIR} \
+		--x-libraries=${STAGING_LIBDIR} "
 
 # TODO: Use more fine granular version
 #OE_LT_RPATH_ALLOW=":${libdir}/imlib2/loaders:${libdir}/imlib2/filters:"
