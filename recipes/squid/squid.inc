@@ -1,10 +1,11 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
 LICENSE = "GPLv2"
-INC_PR = "r7"
-DEPENDS = "squid-native-${PV} openssl openldap"
+INC_PR = "r8"
+DEPENDS = "openssl openssl-native openldap"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
            file://fix_epoll_check.patch \
+	   file://squidv2-build-cf_gen.patch \
            file://squid.init \
 	   file://squid-volatiles \
 	   "
@@ -26,10 +27,6 @@ EXTRA_OEMAKE = "\
   "
 
 INITSCRIPT_NAME = "squid"
-
-do_configure_append() {
-   sed -i -e 's|./cf_gen |${STAGING_BINDIR_NATIVE}/cf_gen |g' src/Makefile
-}
 
 do_install_prepend() {
 	install -d ${D}${sysconfdir}/squid

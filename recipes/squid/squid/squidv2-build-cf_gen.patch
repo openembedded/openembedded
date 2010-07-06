@@ -1,0 +1,48 @@
+Index: squid-2.7.STABLE8/configure.in
+===================================================================
+--- squid-2.7.STABLE8.orig/configure.in	2010-07-06 13:53:58.000000000 +0400
++++ squid-2.7.STABLE8/configure.in	2010-07-06 14:17:39.000000000 +0400
+@@ -27,6 +27,17 @@
+ AM_PROG_CC_C_O
+ AC_CANONICAL_HOST
+ 
++dnl Define BUILD_CC
++BUILD_CC="$BUILD_CC"
++AC_SUBST(BUILD_CC)
++
++dnl Define BUILD_CFLAGS
++BUILD_CFLAGS="$BUILD_CFLAGS"
++AC_SUBST(BUILD_CFLAGS)
++
++dnl Define BUILD_LDFLAGS
++BUILD_LDFLAGS="$BUILD_LDFLAGS"
++AC_SUBST(BUILD_LDFLAGS)
+ 
+ CRYPTLIB=''
+ REGEXLIB=''	# -lregex
+Index: squid-2.7.STABLE8/src/Makefile.am
+===================================================================
+--- squid-2.7.STABLE8.orig/src/Makefile.am	2010-07-06 13:44:14.000000000 +0400
++++ squid-2.7.STABLE8/src/Makefile.am	2010-07-06 14:40:53.000000000 +0400
+@@ -115,11 +115,20 @@
+ 	$(UNLINKD) \
+ 	$(LOGFILED)
+ 
+-cf_gen_SOURCES = cf_gen.c defines.h debug.c
++cf_gen_SOURCES = cf_gen.c defines.h
+ nodist_cf_gen_SOURCES = globals.c
+ nodist_cf_gen_HEADER = cf_gen_defines.h
+ cf_gen.$(OBJEXT): cf_gen_defines.h
+ 
++BUILD_CC ?= @BUILD_CC@
++BUILD_CFLAGS ?= @BUILD_CFLAGS@
++BUILD_LDFLAGS ?= @BUILD_LDFLAGS@
++
++cf_gen$(EXEEXT): $(nodist_cf_gen_SOURCES) $(nodist_cf_gen_HEADER) $(cf_gen_SOURCES) $(cf_gen_DEPENDENCIES)
++	$(BUILD_CC) $(BUILD_CFLAGS) $(BUILD_LDFLAGS) -lm -o $@ $(srcdir)/cf_gen.c \
++		$(srcdir)/globals.c $(srcdir)/debug.c $(top_srcdir)/lib/util.c -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
++		${INCLUDES}
++
+ EXTRA_squid_SOURCES = \
+ 	delay_pools.c \
+ 	dns.c \
