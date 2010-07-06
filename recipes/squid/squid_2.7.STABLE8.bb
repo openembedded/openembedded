@@ -1,5 +1,4 @@
 PR = "${INC_PR}.0"
-SQUID_MAJOR = "2.7"
 
 include squid.inc
 

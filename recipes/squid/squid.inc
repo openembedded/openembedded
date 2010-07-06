@@ -3,7 +3,10 @@ LICENSE = "GPLv2"
 INC_PR = "r8"
 DEPENDS = "openssl openssl-native openldap"
 
-SRC_URI = "http://www.squid-cache.org/Versions/v2/${SQUID_MAJOR}/squid-${PV}.tar.bz2;name=squid-${PV} \
+SQ_MAJ = "${@bb.data.getVar('PV',d,1).split('.')[0]}"
+SQ_MIN = "${@bb.data.getVar('PV',d,1).split('.')[1]}"
+
+SRC_URI = "http://www.squid-cache.org/Versions/v${SQ_MAJ}/${SQ_MAJ}.${SQ_MIN}/squid-${PV}.tar.bz2;name=squid-${PV} \
            file://fix_epoll_check.patch \
 	   file://squidv2-build-cf_gen.patch \
            file://squid.init \
