@@ -1,0 +1,33 @@
+From 72ad63c5ce9f2d25a119612065d86bd317bf80ed Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <seba.dos1@gmail.com>
+Date: Wed, 7 Jul 2010 15:01:59 +0200
+Subject: [PATCH] oeventsd: workaround buggy kernel to get full vibration power.
+ This patch should be disabled as soon as fixed kernel arrives.
+
+---
+ framework/subsystems/oeventsd/fso_actions.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/framework/subsystems/oeventsd/fso_actions.py b/framework/subsystems/oeventsd/fso_actions.py
+index c0a29dd..b9a2104 100644
+--- a/framework/subsystems/oeventsd/fso_actions.py
++++ b/framework/subsystems/oeventsd/fso_actions.py
+@@ -162,13 +162,13 @@ class VibratorAction(Action):
+                         'org.freesmartphone.odeviced',
+                         '/org/freesmartphone/Device/Vibrator/%s' % self.target,
+                         'org.freesmartphone.Device.Vibrator',
+-                        'VibratePattern', 999, 300, 700, 90).trigger()
++                        'VibratePattern', 999, 300, 700, 25).trigger()
+         elif self.mode == "oneshot":
+             DBusAction(dbus.SystemBus(),
+                         'org.freesmartphone.odeviced',
+                         '/org/freesmartphone/Device/Vibrator/%s' % self.target,
+                         'org.freesmartphone.Device.Vibrator',
+-                        'Vibrate', 400, 90).trigger()
++                        'Vibrate', 400, 25).trigger()
+         else:
+             logger.warning( "invalid vibration mode '%s', valid are 'continuous' or 'oneshot'" )
+ 
+-- 
+1.7.1
+

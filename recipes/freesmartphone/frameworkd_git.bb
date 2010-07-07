@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV = "8f618948c4c74853f28b773cdc74ceefa1fb6899"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r4"
+PR = "r5"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
@@ -20,7 +20,9 @@ SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd \
            file://frameworkd.conf \
 	   "
-SRC_URI_append_shr = "file://oeventsd-use-opimd-signals.patch"
+SRC_URI_append_shr = "file://oeventsd-use-opimd-signals.patch \
+                      file://0001-oeventsd-workaround-buggy-kernel-to-get-full-vibrati.patch \
+                      "
 
 S = "${WORKDIR}/git"
 
