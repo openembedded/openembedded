@@ -7,15 +7,13 @@ SQ_MAJ = "${@bb.data.getVar('PV',d,1).split('.')[0]}"
 SQ_MIN = "${@bb.data.getVar('PV',d,1).split('.')[1]}"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v${SQ_MAJ}/${SQ_MAJ}.${SQ_MIN}/squid-${PV}.tar.bz2;name=squid-${PV} \
-           file://fix_epoll_check.patch \
-	   file://squidv2-build-cf_gen.patch \
            file://squid.init \
 	   file://squid-volatiles \
 	   "
 
 inherit autotools update-rc.d
 
-EXTRA_OECONF = "--disable-epoll --disable-nls --enable-ssl --enable-storeio=null,ufs --enable-digest-auth-helpers=ldap --enable-basic-auth-helpers=LDAP"
+EXTRA_OECONF = "--disable-epoll --disable-nls --enable-ssl --enable-digest-auth-helpers=ldap --enable-basic-auth-helpers=LDAP"
 
 logdir = ${localstatedir}/log/squid
 EXTRA_OEMAKE = "\
