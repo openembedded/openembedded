@@ -1,0 +1,52 @@
+--- gcc-4.4-20090519/gcc/config/arm/linux-eabi.h.~1~	2007-11-08 14:44:09.000000000 +0100
++++ gcc-4.4-20090519/gcc/config/arm/linux-eabi.h	2009-05-22 20:38:51.000000000 +0200
+@@ -72,6 +72,49 @@
+    do not use -lfloat.  */
+ #undef LIBGCC_SPEC
+ 
++/* Some symbols are only in the static libgcc. Override REAL_LIBGCC_SPEC
++   to always pass -lgcc to the linker, even for --shared-libgcc, otherwise
++   shared libraries break. */
++#ifdef ENABLE_SHARED_LIBGCC
++
++#ifndef USE_LD_AS_NEEDED
++#define USE_LD_AS_NEEDED 0
++#endif
++
++#if USE_LD_AS_NEEDED
++#define REAL_LIBGCC_SPEC_1 "\
++	%{!shared-libgcc:-lgcc --as-needed -lgcc_s --no-as-needed} \
++	%{shared-libgcc:-lgcc_s -lgcc}"		/* always append -lgcc */
++#else
++#define REAL_LIBGCC_SPEC_1 "\
++	%{!shared: \
++	  %{!shared-libgcc:-lgcc -lgcc_eh} \
++	  %{shared-libgcc:-lgcc_s -lgcc}}"
++#endif
++
++#ifdef LINK_EH_SPEC
++#define REAL_LIBGCC_SPEC_2 "\
++	%{shared: \
++	  %{!shared-libgcc:-lgcc} \
++	  %{shared-libgcc:-lgcc_s -lgcc}}"	/* always append -lgcc */
++#else
++#define REAL_LIBGCC_SPEC_2 "\
++	%{shared:-lgcc_s -lgcc}"		/* always append -lgcc */
++#endif
++
++#define REAL_LIBGCC_SPEC " \
++	%{static|static-libgcc:-lgcc -lgcc_eh} \
++	%{!static:%{!static-libgcc: \
++	"REAL_LIBGCC_SPEC_1" \
++	"REAL_LIBGCC_SPEC_2" \
++	}}"
++
++#else	/* !ENABLE_SHARED_LIBGCC */
++
++#define REAL_LIBGCC_SPEC " -lgcc "
++
++#endif	/* !ENABLE_SHARED_LIBGCC */
++
+ /* Clear the instruction cache from `beg' to `end'.  This makes an
+    inline system call to SYS_cacheflush.  */
+ #undef  CLEAR_INSN_CACHE
