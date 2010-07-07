@@ -91,7 +91,9 @@ def setup_checksum_deps(d):
                          (depends, "shasum-native:do_populate_sysroot"))
 
 def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data):
-    strict_checking =  bb.data.getVar("OE_STRICT_CHECKSUMS", data, True)
+    strict_checking = True
+    if bb.data.getVar("OE_STRICT_CHECKSUMS", data, True) != "1":
+        strict_checking = False
     if not os.path.exists(localpath):
         localpath = base_path_out(localpath, data)
         bb.note("The localpath does not exist '%s'" % localpath)
