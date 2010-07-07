@@ -2,19 +2,23 @@ require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
-PV = "1.7.999"
-PR = "${INC_PR}.2"
+PV = "1.8.99.904"
+PR = "${INC_PR}.4"
 PR_append = "+gitr${SRCPV}"
 PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_shr = "1"
 
-SRCREV = "67b814d9b2baea6beccfb1625a1e3f0b2ba7218b"
+SRCREV = "2307ab5bc9365ebbe04568edb7c7620a23689b70"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
            file://dolt-fix-1.7.0.patch \
            file://randr-support-1.7.0.patch \
 	   file://hack-fbdev-ignore-return-mode.patch \
            "
+
+SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch"
+SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch"
 
 S = "${WORKDIR}/git"
 
