@@ -55,21 +55,17 @@ def process_dir (directory, d):
                 # If the rpath shares a root with base_prefix determine a new dynamic rpath from the
                 # base_prefix shared root
                 if rpath.find(basedir) != -1:
-                    depth = fpath.partition(basedir)[2].count('/')
-                    libpath = rpath.partition(basedir)[2].strip()
+                    fdir = os.path.dirname(fpath.partition(basedir)[2])
+                    ldir = rpath.partition(basedir)[2].strip()
                 # otherwise (i.e. cross packages) determine a shared root based on the TMPDIR
                 # NOTE: This will not work reliably for cross packages, particularly in the case
                 # where your TMPDIR is a short path (i.e. /usr/poky) as chrpath cannot insert an
                 # rpath longer than that which is already set.
                 else:
-                    depth = fpath.rpartition(tmpdir)[2].count('/')
-                    libpath = rpath.partition(tmpdir)[2].strip()
+                    fdir = os.path.dirname(fpath.rpartition(tmpdir)[2])
+                    ldir = rpath.partition(tmpdir)[2].strip()
 
-                base = "$ORIGIN"
-                while depth > 1:
-                    base += "/.."
-                    depth-=1
-                new_rpaths.append("%s%s" % (base, libpath))
+                new_rpaths.append("$ORIGIN/%s" % oe.path.relative(fdir, ldir))
 
             # if we have modified some rpaths call chrpath to update the binary
             if len(new_rpaths):
