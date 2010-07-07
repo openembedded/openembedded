@@ -3,12 +3,13 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r19"
+PR = "r20"
 NATIVE_INSTALL_WORKS = "1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/5.0/perl-${PV}.tar.gz \
+           file://CPAN-Config.pm \
            file://perl-5.8.8-gcc-4.2.patch \
            file://Configure-multilib.patch \
            file://perl-configpm-switch.patch \
@@ -90,6 +91,9 @@ do_install() {
                  thread.h warnings.h; do
             install $i ${D}${libdir}/perl/${PV}/CORE
         done
+        # Make sure CPAN is configured
+        sed -e "s,@SYSROOTBASE@,${base_prefix}," ${WORKDIR}/CPAN-Config.pm > \
+                 ${D}${libdir}/perl/${PV}/CPAN/Config.pm
 }
 
 do_install_append_nylon() {

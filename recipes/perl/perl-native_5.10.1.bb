@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r3"
+PR = "r4"
 NATIVE_INSTALL_WORKS = "1"
 
 # Not tested enough
@@ -12,6 +12,7 @@ DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
+           file://CPAN-Config.pm \
            file://Configure-multilib.patch \
            file://perl-configpm-switch.patch \
            file://native-nopacklist.patch \
@@ -92,6 +93,9 @@ do_install() {
                  thread.h warnings.h; do
             install $i ${D}${libdir}/perl/${PV}/CORE
         done
+        # Make sure CPAN is configured
+        sed -e "s,@SYSROOTBASE@,${base_prefix}," ${WORKDIR}/CPAN-Config.pm > \
+                 ${D}${libdir}/perl/${PV}/CPAN/Config.pm
 
 	# Fix Errno.pm for target builds
 	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${libdir}/perl/${PV}/Errno.pm
